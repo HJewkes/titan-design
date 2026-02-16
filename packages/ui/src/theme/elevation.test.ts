@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getGlowShadow, type GlowIntensity } from './elevation'
+import { getGlowShadow } from './elevation'
 
 describe('getGlowShadow', () => {
   it('returns shadow style for valid hex color', () => {

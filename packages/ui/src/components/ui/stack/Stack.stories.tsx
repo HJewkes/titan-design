@@ -76,14 +76,14 @@ export const Vertical: Story = {
 export const WithAlignment: Story = {
   render: () => (
     <VStack gap={6}>
-      <Text className="text-sm font-medium text-neutral-400">justify="between"</Text>
+      <Text className="text-sm font-medium text-neutral-400">justify=&quot;between&quot;</Text>
       <HStack gap={2} justify="between" className="w-full">
         <Box>A</Box>
         <Box>B</Box>
         <Box>C</Box>
       </HStack>
 
-      <Text className="text-sm font-medium text-neutral-400">align="center"</Text>
+      <Text className="text-sm font-medium text-neutral-400">align=&quot;center&quot;</Text>
       <HStack gap={2} align="center">
         <View className="rounded bg-primary-500 px-4 py-1">
           <Text className="text-sm text-white">Short</Text>

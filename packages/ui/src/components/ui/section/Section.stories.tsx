@@ -75,7 +75,7 @@ export const MultipleSections: Story = {
       <Section>
         <SectionHeader title="Today" subtitle="3 exercises" />
         <SectionContent className="rounded-lg bg-surface-secondary p-4">
-          <Text style={{ color: '#a0a0a0' }}>Today's workout data</Text>
+          <Text style={{ color: '#a0a0a0' }}>Today&apos;s workout data</Text>
         </SectionContent>
       </Section>
 
