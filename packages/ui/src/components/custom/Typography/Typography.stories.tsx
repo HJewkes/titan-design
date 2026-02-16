@@ -65,11 +65,11 @@ export const AllBody: Story = {
   render: () => (
     <View style={{ gap: 16, maxWidth: 400 }}>
       <Typography variant="body1">
-        Body 1 - This is the default body text style. It's used for main content
+        Body 1 - This is the default body text style. It&apos;s used for main content
         and paragraphs throughout the application.
       </Typography>
       <Typography variant="body2">
-        Body 2 - This is a smaller body text style. It's useful for secondary
+        Body 2 - This is a smaller body text style. It&apos;s useful for secondary
         content or when you need more compact text.
       </Typography>
       <Typography variant="subtitle1">
@@ -122,11 +122,11 @@ export const ParagraphComponent: Story = {
     <View style={{ gap: 16, maxWidth: 400 }}>
       <Paragraph>
         This is a regular paragraph using the default body1 variant.
-        It's great for main content.
+        It&apos;s great for main content.
       </Paragraph>
       <Paragraph small>
         This is a small paragraph using the body2 variant.
-        It's useful for secondary content.
+        It&apos;s useful for secondary content.
       </Paragraph>
     </View>
   ),
