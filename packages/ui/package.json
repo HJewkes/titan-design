@@ -36,6 +36,8 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "lint": "eslint src/",
+    "type-check": "tsc --noEmit",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\"",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "storybook": "storybook dev -p 6006",
