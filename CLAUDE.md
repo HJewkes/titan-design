@@ -4,7 +4,7 @@ Cross-platform React + React Native design system built on Gluestack UI, NativeW
 
 ## Quick Reference
 
-- **Package**: `@hjewkes/titan-ui` (in `packages/ui/`)
+- **Package**: `@titan-design/react-ui` (in `packages/ui/`)
 - **Monorepo**: pnpm workspaces + Turborepo
 - **Node**: Use `pnpm` (v9.15.0) for all package management
 - **Build**: `pnpm build` (tsup, outputs ESM + CJS + DTS to `dist/`)
@@ -177,14 +177,14 @@ Levels -2 to +5 with calculated surface colors and shadows:
 
 ```tsx
 // Components + theme + utils
-import { Button, ButtonText, Card, Typography, cn } from '@hjewkes/titan-ui'
+import { Button, ButtonText, Card, Typography, cn } from '@titan-design/react-ui'
 
 // Theme only (subpath export)
-import { semanticColorsDark, elevation } from '@hjewkes/titan-ui/theme'
+import { semanticColorsDark, elevation } from '@titan-design/react-ui/theme'
 
 // CSS (required by consumers)
-import '@hjewkes/titan-ui/theme/global.css'
+import '@titan-design/react-ui/theme/global.css'
 
 // Tailwind config (for extending in consuming apps)
-const tailwindConfig = require('@hjewkes/titan-ui/tailwind.config.js')
+const tailwindConfig = require('@titan-design/react-ui/tailwind.config.js')
 ```

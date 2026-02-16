@@ -16,7 +16,7 @@ Titan Design is a cross-platform React design system that uses:
 ```
 titan-design/
 ├── packages/
-│   └── ui/                       # @hjewkes/titan-ui - Core component library
+│   └── ui/                       # @titan-design/react-ui - Core component library
 │       ├── src/
 │       │   ├── components/
 │       │   │   ├── ui/           # Gluestack-based components

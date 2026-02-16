@@ -13,7 +13,7 @@ A cross-platform React design system built on NativeWind (Tailwind CSS for React
 
 ## Packages
 
-- **[@hjewkes/titan-ui](./packages/ui)** - Core component library
+- **[@titan-design/react-ui](./packages/ui)** - Core component library
 
 ## Quick Start
 
@@ -39,8 +39,8 @@ pnpm storybook
 ### Using the Components
 
 ```tsx
-import { Button, ButtonText, Typography, Card, CardContent } from '@hjewkes/titan-ui'
-import '@hjewkes/titan-ui/theme/global.css'
+import { Button, ButtonText, Typography, Card, CardContent } from '@titan-design/react-ui'
+import '@titan-design/react-ui/theme/global.css'
 
 function App() {
   return (

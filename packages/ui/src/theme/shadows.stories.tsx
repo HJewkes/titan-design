@@ -97,7 +97,7 @@ export const NeumorphicShadows: Story = {
       {/* Code example */}
       <View className="bg-surface-base p-4 rounded-lg">
         <Text className="text-text-secondary text-[11px] font-mono">
-{`import { neumorphicShadows } from '@hjewkes/titan-ui'
+{`import { neumorphicShadows } from '@titan-design/react-ui'
 
 // Apply to a View
 <View style={neumorphicShadows.charcoal.raised.subtle} />
@@ -289,7 +289,7 @@ export const SurfaceVariants: Story = {
         {/* Code example */}
         <View className="bg-surface-base p-4 rounded-lg mt-4">
           <Text className="text-text-secondary text-[11px] font-mono">
-{`import { getHoverColors, lighten, darken } from '@hjewkes/titan-ui'
+{`import { getHoverColors, lighten, darken } from '@titan-design/react-ui'
 
 // Get hover colors for a button background
 const hover = getHoverColors('#3C3C3C', 'medium')

@@ -1,4 +1,4 @@
-# @hjewkes/titan-ui
+# @titan-design/react-ui
 
 A cross-platform design system built on React Native primitives with NativeWind (Tailwind CSS). Works on web and React Native.
 
@@ -14,7 +14,7 @@ A cross-platform design system built on React Native primitives with NativeWind 
 ## Installation
 
 ```bash
-pnpm add @hjewkes/titan-ui
+pnpm add @titan-design/react-ui
 ```
 
 ### Peer Dependencies
@@ -33,7 +33,7 @@ pnpm add react react-native lucide-react-native
 
 ```tsx
 // App.tsx or entry point
-import '@hjewkes/titan-ui/theme/global.css'
+import '@titan-design/react-ui/theme/global.css'
 ```
 
 ### 2. Configure Tailwind (optional, for custom styling)
@@ -43,7 +43,7 @@ import '@hjewkes/titan-ui/theme/global.css'
 module.exports = {
   content: [
     './src/**/*.{js,jsx,ts,tsx}',
-    './node_modules/@hjewkes/titan-ui/dist/**/*.{js,mjs}',
+    './node_modules/@titan-design/react-ui/dist/**/*.{js,mjs}',
   ],
   presets: [require('nativewind/preset')],
   // Your customizations...
@@ -64,7 +64,7 @@ import {
   CardContent,
   Input,
   InputGroup,
-} from '@hjewkes/titan-ui'
+} from '@titan-design/react-ui'
 import { Plus } from 'lucide-react'
 
 function App() {
@@ -195,7 +195,7 @@ The design system uses CSS custom properties for theming. Dark mode is the defau
 Import the global CSS in your app:
 
 ```tsx
-import '@hjewkes/titan-ui/theme/global.css'
+import '@titan-design/react-ui/theme/global.css'
 ```
 
 ### Switching Themes

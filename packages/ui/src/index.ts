@@ -1,4 +1,4 @@
-// Main entry point for @hjewkes/titan-ui
+// Main entry point for @titan-design/react-ui
 
 // Components
 export * from './components'
