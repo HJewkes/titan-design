@@ -1,5 +1,6 @@
-dist/
-node_modules/
-storybook-static/
-coverage/
+dist
+coverage
+storybook-static
 pnpm-lock.yaml
+*.min.js
+*.min.css

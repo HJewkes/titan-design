@@ -39,7 +39,7 @@ export default meta
 type Story = StoryObj<typeof Select>
 
 export const Default: Story = {
-  render: () => {
+  render: function Render() {
     const [value, setValue] = useState<string | null>(null)
     return (
       <View style={{ width: 300 }}>
@@ -55,7 +55,7 @@ export const Default: Story = {
 }
 
 export const WithPlaceholder: Story = {
-  render: () => {
+  render: function Render() {
     const [value, setValue] = useState<string | null>(null)
     return (
       <View style={{ width: 300 }}>
@@ -71,7 +71,7 @@ export const WithPlaceholder: Story = {
 }
 
 export const WithPreselectedValue: Story = {
-  render: () => {
+  render: function Render() {
     const [value, setValue] = useState<string | null>('cherry')
     return (
       <View style={{ width: 300 }}>
@@ -113,7 +113,7 @@ export const Disabled: Story = {
 }
 
 export const Invalid: Story = {
-  render: () => {
+  render: function Render() {
     const [value, setValue] = useState<string | null>(null)
     return (
       <View style={{ width: 300, gap: 4 }}>
@@ -131,7 +131,7 @@ export const Invalid: Story = {
 }
 
 export const MultiSelect: Story = {
-  render: () => {
+  render: function Render() {
     const [values, setValues] = useState<string[]>([])
     return (
       <View style={{ width: 300, gap: 8 }}>
@@ -151,7 +151,7 @@ export const MultiSelect: Story = {
 }
 
 export const MultiSelectWithPreselected: Story = {
-  render: () => {
+  render: function Render() {
     const [values, setValues] = useState<string[]>(['apple', 'cherry'])
     return (
       <View style={{ width: 300, gap: 8 }}>
@@ -171,7 +171,7 @@ export const MultiSelectWithPreselected: Story = {
 }
 
 export const ManyOptions: Story = {
-  render: () => {
+  render: function Render() {
     const manyOptions: SelectOption[] = Array.from({ length: 50 }, (_, i) => ({
       value: `option-${i + 1}`,
       label: `Option ${i + 1}`,
@@ -191,7 +191,7 @@ export const ManyOptions: Story = {
 }
 
 export const WithDisabledOptions: Story = {
-  render: () => {
+  render: function Render() {
     const optionsWithDisabled: SelectOption[] = [
       { value: 'apple', label: 'Apple' },
       { value: 'banana', label: 'Banana', isDisabled: true },
@@ -214,7 +214,7 @@ export const WithDisabledOptions: Story = {
 }
 
 export const Controlled: Story = {
-  render: () => {
+  render: function Render() {
     const [value, setValue] = useState<string | null>('apple')
     return (
       <View style={{ width: 300, gap: 12 }}>
@@ -251,7 +251,7 @@ export const Controlled: Story = {
 }
 
 export const InFormLayout: Story = {
-  render: () => {
+  render: function Render() {
     const [fruit, setFruit] = useState<string | null>(null)
     const [color, setColor] = useState<string | null>(null)
     const colorOptions: SelectOption[] = [

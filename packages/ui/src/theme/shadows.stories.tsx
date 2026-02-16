@@ -208,7 +208,7 @@ function ColorMathButton({ surface, bgColor, textColor = '#fff' }: ColorMathButt
   
   return (
     <View
-      // @ts-ignore - web events
+      // @ts-expect-error - web events
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => setIsActive(!isActive)}
@@ -473,7 +473,7 @@ export const InteractiveDemo: Story = {
                   {intensity}
                 </Text>
                 <View
-                  // @ts-ignore - web events
+                  // @ts-expect-error - web events
                   onMouseEnter={() => setHoveredStates(s => ({ ...s, [intensity]: true }))}
                   onMouseLeave={() => setHoveredStates(s => ({ ...s, [intensity]: false }))}
                   onClick={() => setActiveStates(s => ({ ...s, [intensity]: !s[intensity] }))}

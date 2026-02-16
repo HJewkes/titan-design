@@ -287,7 +287,7 @@ export const CollapseDefaultOpen: Story = {
 }
 
 export const CollapseControlled: Story = {
-  render: () => {
+  render: function Render() {
     const [isOpen, setIsOpen] = useState(false)
     return (
       <View style={{ width: 400, gap: 8 }}>

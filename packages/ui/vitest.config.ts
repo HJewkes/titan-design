@@ -17,6 +17,12 @@ export default defineConfig({
         'src/**/*.test.tsx',
         'src/**/index.ts',
       ],
+      thresholds: {
+        statements: 5,
+        branches: 5,
+        functions: 5,
+        lines: 5,
+      },
     },
   },
   resolve: {

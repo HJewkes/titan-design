@@ -108,7 +108,7 @@ export const Default: Story = {
 }
 
 export const WithSorting: Story = {
-  render: () => {
+  render: function Render() {
     const [sortColumn, setSortColumn] = useState<string | undefined>(undefined)
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null)
 
@@ -157,7 +157,7 @@ export const WithSorting: Story = {
 }
 
 export const WithRowSelection: Story = {
-  render: () => {
+  render: function Render() {
     const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
     const rowIds = sampleUsers.map((u) => u.id)
 
@@ -258,7 +258,7 @@ export const EmptyState: Story = {
 }
 
 export const WithPagination: Story = {
-  render: () => {
+  render: function Render() {
     const {
       paginatedData,
       page,
@@ -340,7 +340,7 @@ export const WithColumnWidths: Story = {
 }
 
 export const UseTableHook: Story = {
-  render: () => {
+  render: function Render() {
     const {
       paginatedData,
       page,
@@ -397,7 +397,7 @@ export const UseTableHook: Story = {
 }
 
 export const SortingAndSelection: Story = {
-  render: () => {
+  render: function Render() {
     const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
 
     const {
