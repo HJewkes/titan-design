@@ -1,10 +1,11 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { HelpTip, LabelWithHelp } from './HelpTip'
 
 const meta: Meta<typeof HelpTip> = {
   title: 'Components/HelpTip',
   component: HelpTip,
+  tags: ['autodocs'],
   argTypes: {
     size: {
       control: 'select',

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { View, Text } from 'react-native'
 import { Autocomplete, AutocompleteOption } from './Autocomplete'
@@ -6,6 +6,7 @@ import { Autocomplete, AutocompleteOption } from './Autocomplete'
 const meta: Meta<typeof Autocomplete> = {
   title: 'Components/Autocomplete',
   component: Autocomplete,
+  tags: ['autodocs'],
   argTypes: {
     isDisabled: {
       control: 'boolean',

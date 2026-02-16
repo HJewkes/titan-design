@@ -53,12 +53,7 @@ function ElevationBox({
           shadowStyle,
         ]}
       >
-        <Text
-          className="text-xs font-semibold"
-          style={{
-            color: theme === 'light' ? '#121828' : '#F3F4F6',
-          }}
-        >
+        <Text className="text-xs font-semibold text-text-primary">
           {level}
         </Text>
       </View>
@@ -110,54 +105,24 @@ function ElevationShowcase({
   )
 }
 
-export const LightModeBase: Story = {
+export const ElevationLevels: Story = {
   render: () => {
-    const theme = 'light'
+    const theme = useTheme()
     const baseColor = getBaseSurfaceColor(theme)
-    
-    return (
-      <View 
-        className="p-6 min-h-screen"
-        style={{ backgroundColor: '#EBEBEB' }}  // Light mode background-base
-      >
-        <View className="max-w-6xl mx-auto">
-          <Text className="text-2xl font-bold text-text-primary mb-2">
-            Light Mode Base Color
-          </Text>
-          <Text className="text-sm text-text-secondary mb-6">
-            Base color: {baseColor} (neutral[100] - #F3F4F6)
-          </Text>
-          <ElevationShowcase
-            baseColor={baseColor}
-            baseColorName="Light Mode Base"
-            theme={theme}
-          />
-        </View>
-      </View>
-    )
-  },
-}
+    const modeName = theme === 'light' ? 'Light' : 'Dark'
 
-export const DarkModeBase: Story = {
-  render: () => {
-    const theme = 'dark'
-    const baseColor = getBaseSurfaceColor(theme)
-    
     return (
-      <View 
-        className="p-6 min-h-screen"
-        style={{ backgroundColor: '#101010' }}  // Dark mode background-base
-      >
+      <View className="p-6 min-h-screen bg-background-base">
         <View className="max-w-6xl mx-auto">
           <Text className="text-2xl font-bold text-text-primary mb-2">
-            Dark Mode Base Color
+            {modeName} Mode Base Color
           </Text>
           <Text className="text-sm text-text-secondary mb-6">
-            Base color: {baseColor} (charcoal[600] - #191919)
+            Base color: {baseColor} ({theme} mode) — toggle the Storybook theme to see the other mode.
           </Text>
           <ElevationShowcase
             baseColor={baseColor}
-            baseColorName="Dark Mode Base"
+            baseColorName={`${modeName} Mode Base`}
             theme={theme}
           />
         </View>
@@ -203,13 +168,10 @@ export const CustomColors: Story = {
 export const StackedLayers: Story = {
   render: () => {
     const theme = useTheme()
-    const backgroundBase = theme === 'light' ? '#EBEBEB' : '#101010'
-    
+
     return (
-      <View 
-        className="p-6 min-h-screen"
-        style={{ backgroundColor: backgroundBase }}
-      >
+      <View className="p-6 min-h-screen bg-background-base">
+
         <View className="max-w-4xl mx-auto gap-6">
           <Text className="text-2xl font-bold text-text-primary mb-2">
             Stacked Layers - All Elevations
@@ -270,13 +232,10 @@ export const ElevationComparison: Story = {
   render: () => {
     const theme = useTheme()
     const baseColor = getBaseSurfaceColor(theme)
-    const backgroundBase = theme === 'light' ? '#EBEBEB' : '#101010'
-    
+
     return (
-      <View 
-        className="p-6 min-h-screen"
-        style={{ backgroundColor: backgroundBase }}
-      >
+      <View className="p-6 min-h-screen bg-background-base">
+
         <View className="max-w-6xl mx-auto">
           <Text className="text-2xl font-bold text-text-primary mb-2">
             Elevation Comparison
@@ -300,20 +259,10 @@ export const ElevationComparison: Story = {
                       shadowStyle,
                     ]}
                   >
-                    <Text
-                      className="text-2xl font-bold mb-1"
-                      style={{
-                        color: theme === 'light' ? '#121828' : '#F3F4F6',
-                      }}
-                    >
+                    <Text className="text-2xl font-bold mb-1 text-text-primary">
                       {level}
                     </Text>
-                    <Text
-                      className="text-xs text-center"
-                      style={{
-                        color: theme === 'light' ? '#65748B' : '#9CA3AF',
-                      }}
-                    >
+                    <Text className="text-xs text-center text-text-secondary">
                       {config.name}
                     </Text>
                   </View>
@@ -339,8 +288,7 @@ export const ComponentElevationRanges: Story = {
   render: () => {
     const theme = useTheme()
     const baseColor = getBaseSurfaceColor(theme)
-    const backgroundBase = theme === 'light' ? '#EBEBEB' : '#101010'
-    
+
     const componentRanges = [
       { name: 'Button', elevations: [2] as const },
       { name: 'Card', elevations: [1, 2, 3] as const },
@@ -349,10 +297,7 @@ export const ComponentElevationRanges: Story = {
     ]
     
     return (
-      <View 
-        className="p-6 min-h-screen"
-        style={{ backgroundColor: backgroundBase }}
-      >
+      <View className="p-6 min-h-screen bg-background-base">
         <View className="max-w-6xl mx-auto">
           <Text className="text-2xl font-bold text-text-primary mb-2">
             Component Elevation Ranges
@@ -381,12 +326,7 @@ export const ComponentElevationRanges: Story = {
                           shadowStyle,
                         ]}
                       >
-                        <Text
-                          className="text-lg font-bold"
-                          style={{
-                            color: theme === 'light' ? '#121828' : '#F3F4F6',
-                          }}
-                        >
+                        <Text className="text-lg font-bold text-text-primary">
                           {level}
                         </Text>
                       </View>

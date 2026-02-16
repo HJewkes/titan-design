@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text, TextInput } from 'react-native'
 import { FormField, FormSection, FormActions, FormRow } from './FormField'
 import { Button, ButtonText } from '../button'
@@ -7,6 +7,7 @@ import { Input } from '../input'
 const meta: Meta<typeof FormField> = {
   title: 'Components/FormField',
   component: FormField,
+  tags: ['autodocs'],
   argTypes: {
     labelSize: {
       control: 'select',
@@ -38,7 +39,7 @@ function SimpleInput({ isInvalid, isDisabled, ...props }: any) {
     >
       <TextInput
         className="text-text-primary"
-        placeholderTextColor="#6b7280"
+        placeholderTextColor="var(--color-text-tertiary)"
         editable={!isDisabled}
         {...props}
       />

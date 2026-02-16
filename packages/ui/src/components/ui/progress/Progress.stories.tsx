@@ -1,10 +1,11 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { Progress, CircularProgress, ProgressSteps } from './Progress'
 
 const meta: Meta<typeof Progress> = {
   title: 'Components/Progress',
   component: Progress,
+  tags: ['autodocs'],
   argTypes: {
     value: {
       control: { type: 'range', min: 0, max: 100, step: 1 },

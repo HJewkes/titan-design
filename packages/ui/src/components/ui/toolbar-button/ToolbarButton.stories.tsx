@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { ToolbarButton, ToolbarButtonGroup } from './ToolbarButton'
 
 const meta: Meta<typeof ToolbarButton> = {
   title: 'Components/ToolbarButton',
   component: ToolbarButton,
+  tags: ['autodocs'],
   argTypes: {
     variant: {
       control: 'select',
@@ -39,19 +40,19 @@ type Story = StoryObj<typeof ToolbarButton>
 // These simulate MUI SvgIcon components at 20x20
 const SettingsIcon = ({ color }: { color?: string }) => (
   <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center' }}>
-    <Text style={{ color: color || '#D1D1D1', fontSize: 16 }}>⚙</Text>
+    <Text className={color ? undefined : 'text-text-secondary'} style={{ fontSize: 16, ...(color ? { color } : {}) }}>⚙</Text>
   </View>
 )
 
 const FilterIcon = ({ color }: { color?: string }) => (
   <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center' }}>
-    <Text style={{ color: color || '#D1D1D1', fontSize: 16 }}>⏣</Text>
+    <Text className={color ? undefined : 'text-text-secondary'} style={{ fontSize: 16, ...(color ? { color } : {}) }}>⏣</Text>
   </View>
 )
 
 const ViewIcon = ({ color }: { color?: string }) => (
   <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center' }}>
-    <Text style={{ color: color || '#D1D1D1', fontSize: 16 }}>◉</Text>
+    <Text className={color ? undefined : 'text-text-secondary'} style={{ fontSize: 16, ...(color ? { color } : {}) }}>◉</Text>
   </View>
 )
 
@@ -216,9 +217,9 @@ export const WithMenu: Story = {
         isActive={false}
         menuContent={
           <View style={{ paddingVertical: 8 }}>
-            <Text style={{ paddingHorizontal: 16, paddingVertical: 8, color: '#fff' }}>Grid View</Text>
-            <Text style={{ paddingHorizontal: 16, paddingVertical: 8, color: '#fff' }}>List View</Text>
-            <Text style={{ paddingHorizontal: 16, paddingVertical: 8, color: '#fff' }}>Compact View</Text>
+            <Text className="text-text-primary" style={{ paddingHorizontal: 16, paddingVertical: 8 }}>Grid View</Text>
+            <Text className="text-text-primary" style={{ paddingHorizontal: 16, paddingVertical: 8 }}>List View</Text>
+            <Text className="text-text-primary" style={{ paddingHorizontal: 16, paddingVertical: 8 }}>Compact View</Text>
           </View>
         }
       />
@@ -289,8 +290,8 @@ export const ToolbarExample: Story = {
             isActive={false}
             menuContent={
               <View style={{ paddingVertical: 8 }}>
-                <Text style={{ paddingHorizontal: 16, paddingVertical: 8, color: '#fff' }}>Grid</Text>
-                <Text style={{ paddingHorizontal: 16, paddingVertical: 8, color: '#fff' }}>List</Text>
+                <Text className="text-text-primary" style={{ paddingHorizontal: 16, paddingVertical: 8 }}>Grid</Text>
+                <Text className="text-text-primary" style={{ paddingHorizontal: 16, paddingVertical: 8 }}>List</Text>
               </View>
             }
           />

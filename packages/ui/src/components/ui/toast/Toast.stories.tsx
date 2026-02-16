@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 import { Toast, ToastProvider, useToast } from './Toast'
 import { Button, ButtonText } from '../button'
@@ -6,6 +6,7 @@ import { Button, ButtonText } from '../button'
 const meta: Meta<typeof Toast> = {
   title: 'Components/Toast',
   component: Toast,
+  tags: ['autodocs'],
   argTypes: {
     status: {
       control: 'select',

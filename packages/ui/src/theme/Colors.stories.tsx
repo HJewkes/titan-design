@@ -5,6 +5,7 @@ import { semanticColorsLight, semanticColorsDark } from './tokens/semantic'
 
 const meta: Meta = {
   title: 'Design Tokens/Colors',
+  tags: ['autodocs'],
 }
 
 export default meta

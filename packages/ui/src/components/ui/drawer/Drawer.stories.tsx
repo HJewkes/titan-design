@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { View, Text, Pressable } from 'react-native'
 import { Drawer, DrawerBody, DrawerFooter } from './Drawer'
@@ -7,6 +7,7 @@ import { Button, ButtonText } from '../button'
 const meta: Meta<typeof Drawer> = {
   title: 'Components/Drawer',
   component: Drawer,
+  tags: ['autodocs'],
   argTypes: {
     placement: {
       control: 'select',

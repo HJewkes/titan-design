@@ -250,16 +250,16 @@ export const InsetElements: Story = {
   ),
 }
 
-// Status colors from the theme
+// Status colors from the theme (using CSS custom properties for theme compliance)
 const statusColors = {
-  success: '#14B8A6',
-  successSubtle: 'rgba(20, 184, 166, 0.12)',
-  error: '#D14343',
-  errorSubtle: 'rgba(209, 67, 67, 0.12)',
-  warning: '#FFB020',
-  warningSubtle: 'rgba(255, 176, 32, 0.12)',
-  info: '#2196F3',
-  infoSubtle: 'rgba(33, 150, 243, 0.12)',
+  success: 'var(--color-status-success)',
+  successSubtle: 'var(--color-status-success-subtle)',
+  error: 'var(--color-status-error)',
+  errorSubtle: 'var(--color-status-error-subtle)',
+  warning: 'var(--color-status-warning)',
+  warningSubtle: 'var(--color-status-warning-subtle)',
+  info: 'var(--color-status-info)',
+  infoSubtle: 'var(--color-status-info-subtle)',
 }
 
 export const StatusOutlineCards: Story = {
@@ -405,10 +405,10 @@ export const BrandColoredCards: Story = {
         Brand Colored Cards
       </Text>
       
-      <Card 
-        variant="outline" 
-        borderColor="#FF7900"
-        bgColor="rgba(255, 121, 0, 0.08)"
+      <Card
+        variant="outline"
+        borderColor="var(--color-brand-primary)"
+        bgColor="var(--color-brand-primary-subtle)"
         style={{ width: 320 }}
       >
         <CardHeader>
@@ -421,11 +421,11 @@ export const BrandColoredCards: Story = {
           </Text>
         </CardContent>
       </Card>
-      
-      <Card 
-        variant="outline" 
-        borderColor="#406D87"
-        bgColor="rgba(64, 109, 135, 0.08)"
+
+      <Card
+        variant="outline"
+        borderColor="var(--color-brand-secondary)"
+        bgColor="var(--color-brand-secondary-subtle)"
         style={{ width: 320 }}
       >
         <CardHeader>

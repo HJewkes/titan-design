@@ -1,10 +1,11 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { DateTime } from './DateTime'
 
 const meta: Meta<typeof DateTime> = {
-  title: 'Components/DateTime',
+  title: 'Custom/DateTime',
   component: DateTime,
+  tags: ['autodocs'],
   argTypes: {
     format: {
       control: 'select',

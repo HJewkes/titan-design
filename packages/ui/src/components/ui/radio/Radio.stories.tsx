@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { View, Text } from 'react-native'
 import { Radio, RadioGroup } from './Radio'
@@ -6,6 +6,7 @@ import { Radio, RadioGroup } from './Radio'
 const meta: Meta<typeof RadioGroup> = {
   title: 'Components/Radio',
   component: RadioGroup,
+  tags: ['autodocs'],
   argTypes: {
     size: {
       control: 'select',
