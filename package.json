@@ -1,0 +1,23 @@
+{
+  "name": "titan-design",
+  "private": true,
+  "version": "0.0.1",
+  "author": "Henry Jewkes",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HJewkes/titan-design.git"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "storybook": "turbo run storybook",
+    "build-storybook": "turbo run build-storybook"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.0"
+  }
+}

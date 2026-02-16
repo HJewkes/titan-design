@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+storybook-static/
+.turbo/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Test
+coverage/
+.nyc_output/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# React Native
+*.hbc
+.expo/
+__generated__/
+
+# Development roadmap (local planning)
+roadmap/
+
+# AI tooling (keep local, don't publish)
+.claude/coordination/
+.cursor/
+
+# Internal planning docs
+LIGHT_THEME_REVIEW.md
+SHADOW_SURFACE_STANDARDIZATION_PLAN.md
