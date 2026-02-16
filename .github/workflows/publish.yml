@@ -20,7 +20,6 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-          registry-url: https://registry.npmjs.org
 
       - run: pnpm install --frozen-lockfile
 
@@ -36,10 +35,9 @@ jobs:
       - name: Test
         run: pnpm test -- -- --run --coverage
 
-      - name: Set npm auth
-        run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+      - name: Publish
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > packages/ui/.npmrc
+          pnpm --filter @titan-design/react-ui publish --access public --no-git-checks
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish
-        run: pnpm --filter @titan-design/react-ui publish --access public --no-git-checks
