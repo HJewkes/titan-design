@@ -15,7 +15,9 @@
     "lint": "turbo run lint",
     "test": "turbo run test",
     "storybook": "turbo run storybook",
-    "build-storybook": "turbo run build-storybook"
+    "build-storybook": "turbo run build-storybook",
+    "type-check": "turbo run type-check",
+    "format:check": "turbo run format:check"
   },
   "devDependencies": {
     "turbo": "^2.3.0"
