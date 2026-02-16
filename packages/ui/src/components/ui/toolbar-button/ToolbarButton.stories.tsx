@@ -157,7 +157,7 @@ export const Disabled: Story = {
   render: () => (
     <View style={{ gap: 16 }}>
       <Text className="text-text-secondary text-xs">
-        Disabled buttons use MUI's default dark theme styling.
+        Disabled buttons use MUI&apos;s default dark theme styling.
       </Text>
       <Text className="text-text-secondary text-[11px]">
         Background: rgba(255,255,255,0.12) | No shadows | Colors preserved with opacity

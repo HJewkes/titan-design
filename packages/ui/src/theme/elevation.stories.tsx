@@ -106,7 +106,7 @@ function ElevationShowcase({
 }
 
 export const ElevationLevels: Story = {
-  render: () => {
+  render: function Render() {
     const theme = useTheme()
     const baseColor = getBaseSurfaceColor(theme)
     const modeName = theme === 'light' ? 'Light' : 'Dark'
@@ -132,7 +132,7 @@ export const ElevationLevels: Story = {
 }
 
 export const CustomColors: Story = {
-  render: () => {
+  render: function Render() {
     const theme = useTheme()
     const customColors = [
       { name: 'Orange', color: '#FF7900' },
@@ -166,7 +166,7 @@ export const CustomColors: Story = {
 }
 
 export const StackedLayers: Story = {
-  render: () => {
+  render: function Render() {
     const theme = useTheme()
 
     return (
@@ -229,7 +229,7 @@ export const StackedLayers: Story = {
 }
 
 export const ElevationComparison: Story = {
-  render: () => {
+  render: function Render() {
     const theme = useTheme()
     const baseColor = getBaseSurfaceColor(theme)
 
@@ -285,7 +285,7 @@ export const ElevationComparison: Story = {
 }
 
 export const ComponentElevationRanges: Story = {
-  render: () => {
+  render: function Render() {
     const theme = useTheme()
     const baseColor = getBaseSurfaceColor(theme)
 

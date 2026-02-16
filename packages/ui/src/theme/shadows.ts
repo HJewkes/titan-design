@@ -79,8 +79,8 @@ export function hsvToRgb(h: number, s: number, v: number): { r: number; g: numbe
   const x = c * (1 - Math.abs((h / 60) % 2 - 1))
   const m = v - c
   
-  let rPrime = 0, gPrime = 0, bPrime = 0
-  
+  let rPrime: number, gPrime: number, bPrime: number
+
   if (h >= 0 && h < 60) {
     rPrime = c; gPrime = x; bPrime = 0
   } else if (h >= 60 && h < 120) {
