@@ -1,0 +1,27 @@
+name: Task
+description: Refactoring, infra, docs, or chores
+labels: ["type:task"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What needs to be done and why?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Checklist of conditions that must be true when this is done.
+      value: |
+        - [ ]
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Background info, links, or related issues.
+    validations:
+      required: false

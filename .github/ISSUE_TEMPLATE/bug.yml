@@ -1,0 +1,34 @@
+name: Bug
+description: Something broken
+labels: ["type:bug"]
+body:
+  - type: textarea
+    id: what-happens
+    attributes:
+      label: What Happens
+      description: Describe the current (broken) behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What should happen instead?
+    validations:
+      required: true
+  - type: textarea
+    id: repro-steps
+    attributes:
+      label: Repro Steps
+      description: Steps to reproduce the issue.
+      value: |
+        1.
+    validations:
+      required: true
+  - type: input
+    id: affected-component
+    attributes:
+      label: Affected Component
+      description: Which component is broken? (e.g., Button, Card, Typography)
+    validations:
+      required: false
