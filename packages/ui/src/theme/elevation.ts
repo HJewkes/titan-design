@@ -514,7 +514,54 @@ export function getValidatedElevation(
   if (requested < sorted[0]) return sorted[0]
   if (requested > sorted[sorted.length - 1]) return sorted[sorted.length - 1]
   // Find closest
-  return sorted.reduce((prev, curr) => 
+  return sorted.reduce((prev, curr) =>
     Math.abs(curr - requested) < Math.abs(prev - requested) ? curr : prev
   ) as ElevationLevel
+}
+
+// =============================================================================
+// Glow Shadow Support
+// =============================================================================
+
+export type GlowIntensity = 'subtle' | 'medium' | 'strong'
+
+const glowConfig: Record<GlowIntensity, { blur: number; spread: number; opacity: number }> = {
+  subtle: { blur: 12, spread: 0, opacity: 0.25 },
+  medium: { blur: 20, spread: 2, opacity: 0.4 },
+  strong: { blur: 30, spread: 4, opacity: 0.55 },
+}
+
+/**
+ * Get a glow shadow style for emphasis/active states.
+ *
+ * Creates a colored radial glow around an element, useful for:
+ * - Active recording indicators (orange glow)
+ * - Success states (green glow)
+ * - Error/danger indicators (red glow)
+ * - Focus rings and attention-drawing elements
+ *
+ * @param color - Glow color (hex string, e.g. '#FF7900')
+ * @param intensity - Glow intensity level
+ * @returns ViewStyle with platform-specific shadow properties
+ */
+export function getGlowShadow(
+  color: string,
+  intensity: GlowIntensity = 'medium'
+): ViewStyle {
+  const config = glowConfig[intensity]
+  const rgb = hexToRgb(color)
+  if (!rgb) return {}
+
+  return Platform.select({
+    web: {
+      boxShadow: `0 0 ${config.blur}px ${config.spread}px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${config.opacity})`,
+    } as any,
+    default: {
+      shadowColor: color,
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: config.opacity,
+      shadowRadius: config.blur / 2,
+      elevation: 0,
+    },
+  }) as ViewStyle
 }
