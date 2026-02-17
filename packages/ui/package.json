@@ -13,21 +13,26 @@
   "bugs": {
     "url": "https://github.com/HJewkes/titan-design/issues"
   },
+  "source": "./src/index.ts",
+  "react-native": "./src/index.ts",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "react-native": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
     "./theme": {
+      "react-native": "./src/theme/index.ts",
       "types": "./dist/theme/index.d.ts",
       "import": "./dist/theme/index.mjs",
       "require": "./dist/theme/index.js"
     },
-    "./theme/global.css": "./src/theme/global.css"
+    "./theme/global.css": "./src/theme/global.css",
+    "./tailwind.config.js": "./tailwind.config.js"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -47,8 +52,8 @@
   "peerDependencies": {
     "lucide-react": ">=0.400.0",
     "lucide-react-native": ">=0.400.0",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
     "react-native": ">=0.72.0",
     "react-native-web": ">=0.19.0"
   },
@@ -106,7 +111,7 @@
   },
   "files": [
     "dist",
-    "src/theme/global.css",
+    "src",
     "tailwind.config.js"
   ],
   "sideEffects": false,
