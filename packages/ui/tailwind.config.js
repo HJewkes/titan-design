@@ -189,6 +189,45 @@ module.exports = {
         lg: '12px',
         xl: '16px',
       },
+      transitionTimingFunction: {
+        'out': 'cubic-bezier(0.22, 1, 0.36, 1)',
+        'in-out': 'cubic-bezier(0.65, 0, 0.35, 1)',
+        'spring': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+      },
+      transitionDuration: {
+        'fast': '150ms',
+        'normal': '250ms',
+        'slow': '400ms',
+      },
+      keyframes: {
+        'fade-in': {
+          '0%': { opacity: '0', transform: 'translateY(8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'slide-down': {
+          '0%': { opacity: '0', transform: 'translateY(-8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'slide-up': {
+          '0%': { opacity: '0', transform: 'translateY(100%)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'scale-in': {
+          '0%': { opacity: '0', transform: 'scale(0.95)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+      },
+      animation: {
+        'fade-in': 'fade-in 250ms cubic-bezier(0.22, 1, 0.36, 1)',
+        'slide-down': 'slide-down 250ms cubic-bezier(0.22, 1, 0.36, 1)',
+        'slide-up': 'slide-up 400ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'scale-in': 'scale-in 200ms cubic-bezier(0.22, 1, 0.36, 1)',
+        shimmer: 'shimmer 2s linear infinite',
+      },
     },
   },
   plugins: [],
