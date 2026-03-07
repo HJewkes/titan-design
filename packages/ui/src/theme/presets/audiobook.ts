@@ -86,6 +86,7 @@ export const audiobookPreset: ThemePreset = {
       'status-error-rgb': '216, 92, 74',
       'status-warning-rgb': '212, 164, 58',
       'status-info-rgb': '90, 143, 212',
+      'background-base-rgb': '10, 11, 13',
     },
   },
   rootClasses: ['atmosphere-warm', 'grain'],

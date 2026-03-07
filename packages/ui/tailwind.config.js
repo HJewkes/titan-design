@@ -160,9 +160,10 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        body: ['Nunito Sans', 'sans-serif'],
-        heading: ['Space Grotesk', 'sans-serif'],
+        sans: ['var(--font-family-sans)', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        body: ['var(--font-family-body)', 'sans-serif'],
+        heading: ['var(--font-family-heading)', 'sans-serif'],
+        mono: ['var(--font-family-mono)', 'monospace'],
       },
       fontSize: {
         xs: ['0.75rem', { lineHeight: '1rem' }],
