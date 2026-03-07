@@ -115,6 +115,18 @@ describe('Progress', () => {
         unmount()
       })
     })
+
+    it('renders SVG circles', () => {
+      const { container } = render(<CircularProgress value={50} />)
+      const circles = container.querySelectorAll('circle')
+      expect(circles.length).toBe(2) // track + progress
+    })
+
+    it('applies custom color to SVG progress circle', () => {
+      const { container } = render(<CircularProgress value={50} color="success" />)
+      const progressCircle = container.querySelectorAll('circle')[1]
+      expect(progressCircle?.getAttribute('stroke')).toBe('var(--color-status-success)')
+    })
   })
 
   describe('ProgressSteps', () => {

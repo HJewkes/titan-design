@@ -116,6 +116,29 @@
 
     --color-avatar-background: #4B5563;
     --color-avatar-text: #FFFFFF;
+
+    /* RGB decomposed values for glow shadows */
+    --color-brand-primary-rgb: 255, 121, 0;
+    --color-brand-secondary-rgb: 64, 109, 135;
+    --color-status-success-rgb: 20, 184, 166;
+    --color-status-error-rgb: 209, 67, 67;
+    --color-status-warning-rgb: 255, 176, 32;
+    --color-status-info-rgb: 33, 150, 243;
+    --color-background-base-rgb: 16, 16, 16;
+
+    /* Font families */
+    --font-family-sans: 'Inter';
+    --font-family-body: 'Nunito Sans';
+    --font-family-heading: 'Space Grotesk';
+    --font-family-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+    /* Animation tokens */
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --duration-fast: 150ms;
+    --duration-normal: 250ms;
+    --duration-slow: 400ms;
   }
 
   /* Light mode */
@@ -222,11 +245,34 @@
 
     --color-avatar-background: #6B7280;
     --color-avatar-text: #FFFFFF;
+
+    /* RGB decomposed values for glow shadows */
+    --color-brand-primary-rgb: 255, 121, 0;
+    --color-brand-secondary-rgb: 64, 109, 135;
+    --color-status-success-rgb: 20, 184, 166;
+    --color-status-error-rgb: 209, 67, 67;
+    --color-status-warning-rgb: 255, 176, 32;
+    --color-status-info-rgb: 33, 150, 243;
+    --color-background-base-rgb: 16, 16, 16;
+
+    /* Font families */
+    --font-family-sans: 'Inter';
+    --font-family-body: 'Nunito Sans';
+    --font-family-heading: 'Space Grotesk';
+    --font-family-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+    /* Animation tokens */
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --duration-fast: 150ms;
+    --duration-normal: 250ms;
+    --duration-slow: 400ms;
   }
 
   /* Base styles */
   html {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-family: var(--font-family-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -246,5 +292,87 @@
   ::selection {
     background-color: var(--color-brand-primary-subtle);
     color: var(--color-text-primary);
+  }
+}
+
+@layer utilities {
+  /* Opt-in styled scrollbar — apply to scrollable containers */
+  .scrollbar-styled::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar-styled::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-styled::-webkit-scrollbar-thumb {
+    background: var(--color-border-strong);
+    border-radius: 4px;
+  }
+
+  .scrollbar-styled::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-tertiary);
+  }
+
+  /* Thin variant */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: var(--color-border-strong);
+    border-radius: 2px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-tertiary);
+  }
+
+  /* Hide scrollbar but keep scrollable */
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Atmosphere: subtle radial gradient washes for ambient color */
+  .atmosphere-warm {
+    position: relative;
+  }
+
+  .atmosphere-warm::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse 140% 100% at 15% 5%, rgba(var(--color-brand-primary-rgb, 255, 121, 0), 0.06) 0%, transparent 45%),
+      radial-gradient(ellipse 120% 80% at 85% 95%, rgba(var(--color-brand-secondary-rgb, 64, 109, 135), 0.04) 0%, transparent 45%);
+  }
+
+  /* Film grain overlay for vintage texture */
+  .grain {
+    position: relative;
+  }
+
+  .grain::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.015;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   }
 }
