@@ -173,8 +173,8 @@ export function Card({
     }
     
     if (!style) return elevationStyle
-    // Merge styles, with elevation style taking precedence for background/shadow
-    return [style, elevationStyle]
+    // User style takes precedence over elevation defaults (e.g. maxWidth, custom bg)
+    return [elevationStyle, style]
   }, [style, surfaceColor, shadowStyle, borderColor, bgColor])
 
   if (isClickable) {
