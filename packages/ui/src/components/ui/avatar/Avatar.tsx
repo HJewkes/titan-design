@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, Image, type ViewProps, type ImageSourcePropType } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { avatarColor, getInitials } from '../../../utils/avatar-color'
 
 export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
 
@@ -13,6 +14,8 @@ export interface AvatarProps extends ViewProps {
   fallback?: string
   /** Alt text for accessibility */
   alt?: string
+  /** Generate background color and initials from a name */
+  colorFromName?: string
   /** Additional className */
   className?: string
 }
@@ -48,22 +51,27 @@ export function Avatar({
   source,
   fallback,
   alt,
+  colorFromName,
   className,
   ...props
 }: AvatarProps) {
   const styles = sizeStyles[size]
   const hasImage = source !== undefined
 
+  const resolvedFallback = fallback ?? (colorFromName ? getInitials(colorFromName) : undefined)
+  const nameColor = colorFromName ? avatarColor(colorFromName) : undefined
+
   return (
     <View
       accessibilityRole="image"
-      accessibilityLabel={alt || fallback || 'Avatar'}
+      accessibilityLabel={alt || resolvedFallback || 'Avatar'}
       className={cn(
         'items-center justify-center rounded-full overflow-hidden',
-        'bg-border-strong',
+        !nameColor && 'bg-border-strong',
         styles.container,
         className
       )}
+      style={nameColor ? { backgroundColor: nameColor } : undefined}
       {...props}
     >
       {hasImage ? (
@@ -72,9 +80,9 @@ export function Avatar({
           className={cn('rounded-full', styles.image)}
           accessibilityLabel={alt}
         />
-      ) : fallback ? (
-        <Text className={cn('font-semibold text-text-primary', styles.text)}>
-          {fallback}
+      ) : resolvedFallback ? (
+        <Text className={cn('font-semibold text-text-inverse', styles.text)}>
+          {resolvedFallback}
         </Text>
       ) : (
         <View className="w-full h-full bg-surface-raised" />

@@ -10,7 +10,7 @@ import {
 } from '../../../theme'
 import { useTheme } from '../../../utils/useTheme'
 
-export type CardVariant = 'elevated' | 'outline' | 'filled'
+export type CardVariant = 'elevated' | 'outline' | 'filled' | 'accent' | 'subtle'
 export type CardElevation = 1 | 2 | 3  // subtle, standard, prominent
 
 export interface CardProps extends ViewProps {
@@ -28,6 +28,10 @@ export interface CardProps extends ViewProps {
   borderColor?: string
   /** Custom background color (hex, rgb, or CSS color). Useful for colored cards. */
   bgColor?: string
+  /** Accent stripe color for accent variant (CSS color or hex) */
+  accentColor?: string
+  /** Accent stripe width for accent variant in pixels (default: 3) */
+  accentWidth?: number
   /** Additional className */
   className?: string
   children?: React.ReactNode
@@ -43,6 +47,8 @@ const variantStyles: Record<CardVariant, string> = {
   elevated: '', // Will be set dynamically via elevation system
   outline: 'border-2 border-border-strong',  // Thicker border with stronger contrast
   filled: '', // Will be set dynamically via elevation system
+  accent: 'border border-border-default',
+  subtle: 'border border-border-subtle',
 }
 
 /**
@@ -75,6 +81,8 @@ export function Card({
   onPress,
   borderColor,
   bgColor,
+  accentColor,
+  accentWidth,
   className,
   children,
   style,
@@ -91,8 +99,8 @@ export function Card({
   const elevationLevel = useMemo(() => {
     const validated = getValidatedElevation('card', elevation as ElevationLevel)
     // Map variant to elevation if needed
-    if (variant === 'outline') {
-      return 1 as ElevationLevel  // Outline uses subtle elevation
+    if (variant === 'outline' || variant === 'accent' || variant === 'subtle') {
+      return 1 as ElevationLevel  // These border variants use subtle elevation
     }
     return validated
   }, [variant, elevation])
@@ -103,8 +111,12 @@ export function Card({
   // Calculate surface color and shadow from elevation
   const surfaceColor = useMemo(() => {
     // Outline variant in light mode uses a specific off-white for clear visibility
-    if (variant === 'outline' && theme === 'light') {
+    if ((variant === 'outline' || variant === 'accent') && theme === 'light') {
       return '#FAFAFA'  // Matches --color-surface-elevated in light mode
+    }
+    // Subtle variant uses the base surface color without elevation lift
+    if (variant === 'subtle') {
+      return getElevationSurface(baseColor, 0 as ElevationLevel, theme)
     }
     return getElevationSurface(baseColor, elevationLevel, theme)
   }, [baseColor, elevationLevel, theme, variant])
@@ -148,8 +160,8 @@ export function Card({
   const baseClassName = cn(
     'rounded-lg overflow-hidden relative',
     // Apply variant styles, but only use default border color if no custom borderColor
-    variant === 'outline' 
-      ? borderColor 
+    variant === 'outline'
+      ? borderColor
         ? 'border-2'  // Just the border width, color via style
         : variantStyles[variant]  // Full variant styles including color
       : variantStyles[variant],
@@ -160,22 +172,31 @@ export function Card({
     className
   )
 
+  // Accent variant: left stripe via borderLeft override
+  const accentStyle = useMemo(() => variant === 'accent' ? {
+    borderLeftWidth: accentWidth ?? 3,
+    borderLeftColor: accentColor ?? 'var(--color-brand-primary)',
+  } : {}, [variant, accentWidth, accentColor])
+
   // Merge styles: background color from elevation + shadow style + custom colors + custom style
   const mergedStyle = useMemo(() => {
     const elevationStyle: Record<string, any> = {
       backgroundColor: bgColor || surfaceColor,
+      borderRadius: 8,
+      overflow: 'hidden' as const,
       ...shadowStyle,
+      ...accentStyle,
     }
-    
+
     // Add custom border color if provided
     if (borderColor) {
       elevationStyle.borderColor = borderColor
     }
-    
+
     if (!style) return elevationStyle
     // User style takes precedence over elevation defaults (e.g. maxWidth, custom bg)
     return [elevationStyle, style]
-  }, [style, surfaceColor, shadowStyle, borderColor, bgColor])
+  }, [style, surfaceColor, shadowStyle, borderColor, bgColor, accentStyle])
 
   if (isClickable) {
     return (

@@ -216,6 +216,35 @@ describe('Card', () => {
     })
   })
 
+  describe('accent and subtle variants', () => {
+    it('renders accent variant', () => {
+      const { container } = render(
+        <Card variant="accent">
+          <CardContent>Accent card</CardContent>
+        </Card>
+      )
+      expect(container.firstChild).toBeInTheDocument()
+    })
+
+    it('renders subtle variant', () => {
+      const { container } = render(
+        <Card variant="subtle">
+          <CardContent>Subtle card</CardContent>
+        </Card>
+      )
+      expect(container.firstChild).toBeInTheDocument()
+    })
+
+    it('renders accent variant with custom accentColor and accentWidth', () => {
+      const { container } = render(
+        <Card variant="accent" accentColor="#FF0000" accentWidth={5}>
+          <CardContent>Custom accent</CardContent>
+        </Card>
+      )
+      expect(container.firstChild).toBeInTheDocument()
+    })
+  })
+
   describe('custom styling', () => {
     it('applies custom borderColor', () => {
       const { container } = render(

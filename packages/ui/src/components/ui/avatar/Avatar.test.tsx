@@ -54,6 +54,23 @@ describe('Avatar', () => {
     expect(screen.getByRole('img')).toBeInTheDocument()
   })
 
+  describe('colorFromName', () => {
+    it('renders initials from colorFromName', () => {
+      render(<Avatar colorFromName="John Doe" />)
+      expect(screen.getByText('JD')).toBeInTheDocument()
+    })
+
+    it('generates deterministic color from name', () => {
+      const { container } = render(<Avatar colorFromName="Alice" />)
+      expect(container.firstChild).toBeInTheDocument()
+    })
+
+    it('colorFromName fallback is overridden by explicit fallback', () => {
+      render(<Avatar colorFromName="John Doe" fallback="XX" />)
+      expect(screen.getByText('XX')).toBeInTheDocument()
+    })
+  })
+
   describe('AvatarBadge', () => {
     it('renders with default success color', () => {
       const { container } = render(<AvatarBadge />)
