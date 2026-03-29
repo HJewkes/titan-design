@@ -1,0 +1,172 @@
+// Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
+import React from 'react'
+import { View, Text, Pressable } from 'react-native'
+
+export interface RestTimerProps {
+  totalSeconds: number
+  elapsedMs: number
+  onSkip: () => void
+  onAddTime: () => void
+  nextSetInfo?: string
+  visible: boolean
+}
+
+export function RestTimer({
+  totalSeconds,
+  elapsedMs,
+  onSkip,
+  onAddTime,
+  nextSetInfo,
+  visible,
+}: RestTimerProps) {
+  if (!visible) return null
+
+  const remainingMs = Math.max(0, totalSeconds * 1000 - elapsedMs)
+  const remainingSec = Math.ceil(remainingMs / 1000)
+  const minutes = Math.floor(remainingSec / 60)
+  const seconds = remainingSec % 60
+  const timeDisplay = `${minutes}:${String(seconds).padStart(2, '0')}`
+  const progressPct = Math.min(100, (elapsedMs / (totalSeconds * 1000)) * 100)
+
+  return (
+    <View
+      style={{
+        width: '100%',
+        backgroundColor: '#1C1C1C',
+        borderTopWidth: 1,
+        borderTopColor: '#1F1F1F',
+        paddingVertical: 12,
+        paddingHorizontal: 16,
+      }}
+      accessibilityRole="timer"
+      accessibilityLabel={`Rest timer, ${remainingSec} seconds remaining`}
+      testID="rest-timer"
+    >
+      {/* Top row */}
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 8,
+        }}
+      >
+        {/* Left side */}
+        <View style={{ flexDirection: 'column' }}>
+          <Text
+            style={{
+              fontSize: 11,
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: '600',
+              textTransform: 'uppercase',
+              letterSpacing: 1,
+              color: '#9CA3AF',
+            }}
+            testID="rest-timer-label"
+          >
+            REST
+          </Text>
+          {nextSetInfo != null && (
+            <Text
+              style={{
+                fontSize: 11,
+                fontFamily: 'Inter, sans-serif',
+                color: '#6B7280',
+                marginTop: 2,
+              }}
+              testID="rest-timer-next-set"
+            >
+              {nextSetInfo}
+            </Text>
+          )}
+        </View>
+
+        {/* Right side - time display */}
+        <Text
+          style={{
+            fontSize: 28,
+            fontFamily: '"Space Grotesk", sans-serif',
+            fontWeight: '700',
+            color: '#F3F4F6',
+            fontVariant: ['tabular-nums'],
+            letterSpacing: -0.5,
+          }}
+          testID="rest-timer-time"
+        >
+          {timeDisplay}
+        </Text>
+      </View>
+
+      {/* Progress bar */}
+      <View
+        style={{
+          height: 3,
+          backgroundColor: '#1F1F1F',
+          borderRadius: 2,
+          marginBottom: 12,
+        }}
+        testID="rest-timer-progress-track"
+      >
+        <View
+          style={{
+            height: '100%',
+            backgroundColor: '#FF7900',
+            borderRadius: 2,
+            width: `${progressPct}%`,
+          }}
+          testID="rest-timer-progress-fill"
+        />
+      </View>
+
+      {/* Actions row */}
+      <View style={{ flexDirection: 'row', gap: 8 }}>
+        <Pressable
+          onPress={onAddTime}
+          style={{
+            backgroundColor: 'rgba(255,255,255,0.06)',
+            paddingVertical: 8,
+            paddingHorizontal: 20,
+            borderRadius: 8,
+          }}
+          accessibilityRole="button"
+          accessibilityLabel="Add 30 seconds"
+          testID="rest-timer-add-time"
+        >
+          <Text
+            style={{
+              fontSize: 11,
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: '600',
+              color: '#9CA3AF',
+            }}
+          >
+            +30s
+          </Text>
+        </Pressable>
+        <Pressable
+          onPress={onSkip}
+          style={{
+            backgroundColor: 'rgba(255,121,0,0.12)',
+            paddingVertical: 8,
+            paddingHorizontal: 20,
+            borderRadius: 8,
+          }}
+          accessibilityRole="button"
+          accessibilityLabel="Skip rest"
+          testID="rest-timer-skip"
+        >
+          <Text
+            style={{
+              fontSize: 11,
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: '600',
+              color: '#FF7900',
+            }}
+          >
+            Skip
+          </Text>
+        </Pressable>
+      </View>
+    </View>
+  )
+}
