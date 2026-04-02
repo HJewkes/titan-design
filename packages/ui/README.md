@@ -52,13 +52,15 @@ module.exports = {
 
 ### 3. Web Setup (Vite)
 
-If you are consuming Titan in a Vite-based web app, you need to configure the NativeWind JSX transform, alias `react-native` to `react-native-web`, and point Tailwind at Titan's source files. See the full guide: **[Web Consumer Setup](docs/web-consumer-setup.md)**
+Titan's web dist includes a built-in JSX runtime that handles className-to-CSS
+conversion automatically. No NativeWind runtime or special Vite config is needed.
+See the full guide: **[Web Consumer Setup](docs/WEB_SETUP.md)**
 
 Quick summary:
 
-1. `npm install nativewind react-native-css-interop --legacy-peer-deps`
-2. Set `jsxImportSource: 'nativewind'` in the Vite React plugin and add `react-native` to `resolve.conditions`
-3. Add `@titan-design/react-ui/src/**` to your Tailwind `content` array and use Titan's config as a preset
+1. `npm install react-native-web` and `npm install -D nativewind` (Tailwind preset only)
+2. Add `resolve.alias: { 'react-native': 'react-native-web' }` to your Vite config
+3. Add titan's dist to your Tailwind `content` array and use titan's config as a preset
 
 ## Usage
 
