@@ -7,6 +7,52 @@ export type ButtonVariant = 'solid' | 'outline' | 'ghost' | 'link'
 export type ButtonSize = 'sm' | 'md' | 'lg'
 export type ButtonColor = 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info'
 
+/** Inline color map for RNW where Tailwind text classes get dropped */
+const textColorMap: Record<ButtonVariant, Record<ButtonColor, string>> = {
+  solid: {
+    primary: '#FFFFFF',
+    secondary: '#FFFFFF',
+    success: '#FFFFFF',
+    error: '#FFFFFF',
+    warning: '#FFFFFF',
+    info: '#FFFFFF',
+  },
+  outline: {
+    primary: semanticColorsDark['brand-primary'],
+    secondary: semanticColorsDark['brand-secondary'],
+    success: semanticColorsDark['status-success'],
+    error: semanticColorsDark['status-error'],
+    warning: semanticColorsDark['status-warning'],
+    info: semanticColorsDark['status-info'],
+  },
+  ghost: {
+    primary: semanticColorsDark['brand-primary'],
+    secondary: semanticColorsDark['brand-secondary'],
+    success: semanticColorsDark['status-success'],
+    error: semanticColorsDark['status-error'],
+    warning: semanticColorsDark['status-warning'],
+    info: semanticColorsDark['status-info'],
+  },
+  link: {
+    primary: semanticColorsDark['brand-primary'],
+    secondary: semanticColorsDark['brand-secondary'],
+    success: semanticColorsDark['status-success'],
+    error: semanticColorsDark['status-error'],
+    warning: semanticColorsDark['status-warning'],
+    info: semanticColorsDark['status-info'],
+  },
+}
+
+/** Inline border color map for outline variant */
+const borderColorMap: Record<ButtonColor, string> = {
+  primary: semanticColorsDark['brand-primary'],
+  secondary: semanticColorsDark['brand-secondary'],
+  success: semanticColorsDark['status-success'],
+  error: semanticColorsDark['status-error'],
+  warning: semanticColorsDark['status-warning'],
+  info: semanticColorsDark['status-info'],
+}
+
 export interface ButtonProps extends Omit<PressableProps, 'children'> {
   /** Visual style variant */
   variant?: ButtonVariant
@@ -151,6 +197,13 @@ export const Button = forwardRef<View, ButtonProps>(function Button(
 ) {
   const disabled = isDisabled || isLoading
 
+  const inlineStyle: Record<string, string> = {
+    color: textColorMap[variant][color],
+  }
+  if (variant === 'outline') {
+    inlineStyle.borderColor = borderColorMap[color]
+  }
+
   return (
     <Pressable
       ref={ref}
@@ -172,6 +225,7 @@ export const Button = forwardRef<View, ButtonProps>(function Button(
         variant === 'link' && 'px-0 py-0 min-h-0',
         className
       )}
+      style={inlineStyle}
       {...props}
     >
       {isLoading && (
@@ -188,6 +242,7 @@ export const Button = forwardRef<View, ButtonProps>(function Button(
             textSizeStyles[size],
             textStyles[variant][color]
           )}
+          style={{ color: textColorMap[variant][color] }}
         >
           {loadingText}
         </Text>

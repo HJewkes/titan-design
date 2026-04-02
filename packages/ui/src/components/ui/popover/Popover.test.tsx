@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { render, screen, fireEvent, act } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import {
   Popover,
@@ -237,6 +237,148 @@ describe('Popover', () => {
       fireEvent.click(trigger)
       // Verify popover opens by checking for content
       expect(screen.getByText('Content')).toBeInTheDocument()
+    })
+  })
+
+  describe('hover mode', () => {
+    beforeEach(() => {
+      vi.useFakeTimers()
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    it('opens popover on mouseEnter of trigger', () => {
+      render(
+        <Popover triggerMode="hover">
+          <PopoverTrigger>
+            <button>Hover me</button>
+          </PopoverTrigger>
+          <PopoverContent>
+            <span>Hover content</span>
+          </PopoverContent>
+        </Popover>
+      )
+
+      expect(screen.queryByText('Hover content')).not.toBeInTheDocument()
+      fireEvent.mouseEnter(screen.getByText('Hover me'))
+      expect(screen.getByText('Hover content')).toBeInTheDocument()
+    })
+
+    it('closes popover on mouseLeave after closeDelay', () => {
+      render(
+        <Popover triggerMode="hover" closeDelay={200}>
+          <PopoverTrigger>
+            <button>Hover me</button>
+          </PopoverTrigger>
+          <PopoverContent>
+            <span>Hover content</span>
+          </PopoverContent>
+        </Popover>
+      )
+
+      fireEvent.mouseEnter(screen.getByText('Hover me'))
+      expect(screen.getByText('Hover content')).toBeInTheDocument()
+
+      fireEvent.mouseLeave(screen.getByText('Hover me'))
+      // Still visible before delay expires
+      expect(screen.getByText('Hover content')).toBeInTheDocument()
+
+      act(() => {
+        vi.advanceTimersByTime(200)
+      })
+      expect(screen.queryByText('Hover content')).not.toBeInTheDocument()
+    })
+
+    it('cancels close when hovering back onto trigger', () => {
+      render(
+        <Popover triggerMode="hover" closeDelay={150}>
+          <PopoverTrigger>
+            <button>Hover me</button>
+          </PopoverTrigger>
+          <PopoverContent>
+            <span>Hover content</span>
+          </PopoverContent>
+        </Popover>
+      )
+
+      fireEvent.mouseEnter(screen.getByText('Hover me'))
+      expect(screen.getByText('Hover content')).toBeInTheDocument()
+
+      fireEvent.mouseLeave(screen.getByText('Hover me'))
+      act(() => {
+        vi.advanceTimersByTime(50)
+      })
+
+      // Re-enter trigger before delay expires
+      fireEvent.mouseEnter(screen.getByText('Hover me'))
+      act(() => {
+        vi.advanceTimersByTime(150)
+      })
+      expect(screen.getByText('Hover content')).toBeInTheDocument()
+    })
+
+    it('cancels close when hovering onto content', () => {
+      render(
+        <Popover triggerMode="hover" closeDelay={150}>
+          <PopoverTrigger>
+            <button>Hover me</button>
+          </PopoverTrigger>
+          <PopoverContent>
+            <span>Hover content</span>
+          </PopoverContent>
+        </Popover>
+      )
+
+      fireEvent.mouseEnter(screen.getByText('Hover me'))
+      fireEvent.mouseLeave(screen.getByText('Hover me'))
+
+      // Hover onto the content text (inside PopoverContent)
+      fireEvent.mouseEnter(screen.getByText('Hover content'))
+      act(() => {
+        vi.advanceTimersByTime(300)
+      })
+      expect(screen.getByText('Hover content')).toBeInTheDocument()
+    })
+
+    it('still closes on click outside in hover mode', () => {
+      render(
+        <Popover triggerMode="hover">
+          <PopoverTrigger>
+            <button>Hover me</button>
+          </PopoverTrigger>
+          <PopoverContent>
+            <span>Hover content</span>
+          </PopoverContent>
+        </Popover>
+      )
+
+      fireEvent.mouseEnter(screen.getByText('Hover me'))
+      expect(screen.getByText('Hover content')).toBeInTheDocument()
+
+      // The backdrop is the click-outside mechanism
+      fireEvent.click(screen.getByText('Hover content').parentElement!.previousSibling as Element)
+      expect(screen.queryByText('Hover content')).not.toBeInTheDocument()
+    })
+
+    it('defaults to click mode when triggerMode is not specified', () => {
+      render(
+        <Popover>
+          <PopoverTrigger>
+            <button>Click me</button>
+          </PopoverTrigger>
+          <PopoverContent>
+            <span>Click content</span>
+          </PopoverContent>
+        </Popover>
+      )
+
+      fireEvent.mouseEnter(screen.getByText('Click me'))
+      expect(screen.queryByText('Click content')).not.toBeInTheDocument()
+
+      fireEvent.click(screen.getByText('Click me'))
+      expect(screen.getByText('Click content')).toBeInTheDocument()
     })
   })
 

@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext } from 'react'
+import React, { useState, useRef, useCallback, createContext, useContext } from 'react'
 import { View, Pressable, Modal, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 
@@ -8,12 +8,18 @@ interface PopoverContextType {
   isOpen: boolean
   setIsOpen: (open: boolean) => void
   placement: PopoverPlacement
+  triggerMode: 'click' | 'hover'
+  handleHoverIn: () => void
+  handleHoverOut: () => void
 }
 
 const PopoverContext = createContext<PopoverContextType>({
   isOpen: false,
   setIsOpen: () => {},
   placement: 'bottom',
+  triggerMode: 'click',
+  handleHoverIn: () => {},
+  handleHoverOut: () => {},
 })
 
 export interface PopoverProps extends ViewProps {
@@ -25,6 +31,10 @@ export interface PopoverProps extends ViewProps {
   onOpenChange?: (isOpen: boolean) => void
   /** Whether clicking outside closes the popover */
   closeOnClickOutside?: boolean
+  /** Trigger mode: 'click' opens on click, 'hover' opens on hover */
+  triggerMode?: 'click' | 'hover'
+  /** Delay in ms before closing in hover mode (default 150) */
+  closeDelay?: number
   /** Additional className */
   className?: string
   children?: React.ReactNode
@@ -48,22 +58,44 @@ export function Popover({
   isOpen: controlledIsOpen,
   onOpenChange,
   closeOnClickOutside = true,
+  triggerMode = 'click',
+  closeDelay = 150,
   className,
   children,
   ...props
 }: PopoverProps) {
   const [internalIsOpen, setInternalIsOpen] = useState(false)
   const isOpen = controlledIsOpen ?? internalIsOpen
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const setIsOpen = (open: boolean) => {
+  const setIsOpen = useCallback((open: boolean) => {
     if (controlledIsOpen === undefined) {
       setInternalIsOpen(open)
     }
     onOpenChange?.(open)
-  }
+  }, [controlledIsOpen, onOpenChange])
+
+  const handleHoverIn = useCallback(() => {
+    if (triggerMode !== 'hover') return
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current)
+      closeTimerRef.current = null
+    }
+    setIsOpen(true)
+  }, [triggerMode, setIsOpen])
+
+  const handleHoverOut = useCallback(() => {
+    if (triggerMode !== 'hover') return
+    closeTimerRef.current = setTimeout(() => {
+      setIsOpen(false)
+      closeTimerRef.current = null
+    }, closeDelay)
+  }, [triggerMode, closeDelay, setIsOpen])
 
   return (
-    <PopoverContext.Provider value={{ isOpen, setIsOpen, placement }}>
+    <PopoverContext.Provider
+      value={{ isOpen, setIsOpen, placement, triggerMode, handleHoverIn, handleHoverOut }}
+    >
       <View className={cn('relative', className)} {...props}>
         {children}
       </View>
@@ -80,7 +112,18 @@ export interface PopoverTriggerProps {
  * Trigger element for the popover.
  */
 export function PopoverTrigger({ children, className }: PopoverTriggerProps) {
-  const { isOpen, setIsOpen } = useContext(PopoverContext)
+  const { isOpen, setIsOpen, triggerMode, handleHoverIn, handleHoverOut } =
+    useContext(PopoverContext)
+
+  const hoverProps =
+    triggerMode === 'hover'
+      ? {
+          onHoverIn: handleHoverIn,
+          onHoverOut: handleHoverOut,
+          onMouseEnter: handleHoverIn,
+          onMouseLeave: handleHoverOut,
+        }
+      : {}
 
   return (
     <Pressable
@@ -88,6 +131,7 @@ export function PopoverTrigger({ children, className }: PopoverTriggerProps) {
       accessibilityRole="button"
       accessibilityState={{ expanded: isOpen }}
       className={className}
+      {...hoverProps}
     >
       {children}
     </Pressable>
@@ -99,11 +143,19 @@ export interface PopoverContentProps {
   className?: string
 }
 
+const SPACER_STYLES: Record<PopoverPlacement, React.CSSProperties> = {
+  top: { left: 0, right: 0, bottom: 0, height: 8, transform: 'translateY(100%)' },
+  bottom: { left: 0, right: 0, top: 0, height: 8, transform: 'translateY(-100%)' },
+  left: { top: 0, bottom: 0, right: 0, width: 8, transform: 'translateX(100%)' },
+  right: { top: 0, bottom: 0, left: 0, width: 8, transform: 'translateX(-100%)' },
+}
+
 /**
  * Content container for the popover.
  */
 export function PopoverContent({ children, className }: PopoverContentProps) {
-  const { isOpen, setIsOpen, placement } = useContext(PopoverContext)
+  const { isOpen, setIsOpen, placement, triggerMode, handleHoverIn, handleHoverOut } =
+    useContext(PopoverContext)
 
   if (!isOpen) return null
 
@@ -113,6 +165,16 @@ export function PopoverContent({ children, className }: PopoverContentProps) {
     left: 'right-full top-0 mr-2',
     right: 'left-full top-0 ml-2',
   }
+
+  const hoverProps =
+    triggerMode === 'hover'
+      ? {
+          onHoverIn: handleHoverIn,
+          onHoverOut: handleHoverOut,
+          onMouseEnter: handleHoverIn,
+          onMouseLeave: handleHoverOut,
+        }
+      : {}
 
   return (
     <>
@@ -131,7 +193,20 @@ export function PopoverContent({ children, className }: PopoverContentProps) {
           placementStyles[placement],
           className
         )}
+        {...hoverProps}
       >
+        {triggerMode === 'hover' && (
+          <div
+            style={{
+              position: 'absolute',
+              pointerEvents: 'auto',
+              background: 'transparent',
+              ...SPACER_STYLES[placement],
+            }}
+            onMouseEnter={handleHoverIn}
+            onMouseLeave={handleHoverOut}
+          />
+        )}
         {children}
       </View>
     </>
