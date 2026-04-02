@@ -1,13 +1,13 @@
 import { defineConfig } from '@playwright/test'
 
 export default defineConfig({
-  testDir: './src/components',
+  testDir: './specimen',
   testMatch: '**/*.visual.test.ts',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 0,
   use: {
-    baseURL: 'http://localhost:6006',
+    baseURL: 'http://localhost:5200',
     screenshot: 'only-on-failure',
     trace: 'retain-on-failure',
   },
@@ -16,14 +16,14 @@ export default defineConfig({
       name: 'chromium',
       use: {
         browserName: 'chromium',
-        viewport: { width: 375, height: 812 },
+        viewport: { width: 1200, height: 900 },
       },
     },
   ],
   webServer: {
-    command: 'pnpm storybook --ci',
-    port: 6006,
+    command: 'pnpm specimen --port 5200',
+    port: 5200,
     reuseExistingServer: true,
-    timeout: 120000,
+    timeout: 60000,
   },
 })
