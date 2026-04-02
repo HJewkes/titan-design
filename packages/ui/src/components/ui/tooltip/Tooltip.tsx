@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { View, Text, Pressable, Platform, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 
@@ -84,44 +84,41 @@ export function Tooltip({
 
   const isPortalMode = usePortalProp && Platform.OS === 'web' && !!createPortal
 
-  const computePortalPosition = useCallback(() => {
-    if (!isPortalMode || !triggerRef.current) return
-    const node = triggerRef.current as unknown as HTMLElement
-    const rect = node.getBoundingClientRect()
-    const gap = 8
-    const cardinal = placement.split('-')[0] as 'top' | 'bottom' | 'left' | 'right'
-
-    const positions: Record<string, PortalPosition> = {
-      top: {
-        top: rect.top - gap,
-        left: rect.left + rect.width / 2,
-        transform: 'translate(-50%, -100%)',
-      },
-      bottom: {
-        top: rect.bottom + gap,
-        left: rect.left + rect.width / 2,
-        transform: 'translate(-50%, 0%)',
-      },
-      left: {
-        top: rect.top + rect.height / 2,
-        left: rect.left - gap,
-        transform: 'translate(-100%, -50%)',
-      },
-      right: {
-        top: rect.top + rect.height / 2,
-        left: rect.right + gap,
-        transform: 'translate(0%, -50%)',
-      },
-    }
-
-    setPortalPos(positions[cardinal] ?? positions.top)
-  }, [isPortalMode, placement])
-
   useEffect(() => {
-    if (isVisible && isPortalMode) {
-      computePortalPosition()
-    }
-  }, [isVisible, isPortalMode, computePortalPosition])
+    if (!isVisible || !isPortalMode || !triggerRef.current) return
+    const node = triggerRef.current as unknown as HTMLElement
+    const id = requestAnimationFrame(() => {
+      const rect = node.getBoundingClientRect()
+      const gap = 8
+      const cardinal = placement.split('-')[0] as 'top' | 'bottom' | 'left' | 'right'
+
+      const positions: Record<string, PortalPosition> = {
+        top: {
+          top: rect.top - gap,
+          left: rect.left + rect.width / 2,
+          transform: 'translate(-50%, -100%)',
+        },
+        bottom: {
+          top: rect.bottom + gap,
+          left: rect.left + rect.width / 2,
+          transform: 'translate(-50%, 0%)',
+        },
+        left: {
+          top: rect.top + rect.height / 2,
+          left: rect.left - gap,
+          transform: 'translate(-100%, -50%)',
+        },
+        right: {
+          top: rect.top + rect.height / 2,
+          left: rect.right + gap,
+          transform: 'translate(0%, -50%)',
+        },
+      }
+
+      setPortalPos(positions[cardinal] ?? positions.top)
+    })
+    return () => cancelAnimationFrame(id)
+  }, [isVisible, isPortalMode, placement])
 
   const clearTimeouts = () => {
     if (openTimeoutRef.current) clearTimeout(openTimeoutRef.current)
@@ -186,14 +183,14 @@ export function Tooltip({
   )
 
   const renderPortalTooltip = () => {
-    if (!isVisible || !isPortalMode || !portalPos || !createPortal) return null
+    if (!isVisible || !isPortalMode || !createPortal) return null
     return createPortal(
       <div
         style={{
           position: 'fixed',
-          top: portalPos.top,
-          left: portalPos.left,
-          transform: portalPos.transform,
+          top: portalPos?.top ?? 0,
+          left: portalPos?.left ?? 0,
+          transform: portalPos?.transform ?? 'translate(-50%, -100%)',
           zIndex: 10000,
           pointerEvents: 'none',
         }}
