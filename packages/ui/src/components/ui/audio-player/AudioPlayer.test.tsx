@@ -102,13 +102,13 @@ describe('AudioPlayer', () => {
   it('renders seek bar in default variant', () => {
     render(<AudioPlayer src="/audio/test.mp3" />)
 
-    expect(screen.getByRole('adjustable', { name: 'Seek' })).toBeInTheDocument()
+    expect(screen.getByRole('slider', { name: 'Seek' })).toBeInTheDocument()
   })
 
   it('does not render seek bar in compact variant', () => {
     render(<AudioPlayer src="/audio/test.mp3" variant="compact" />)
 
-    expect(screen.queryByRole('adjustable', { name: 'Seek' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('slider', { name: 'Seek' })).not.toBeInTheDocument()
   })
 
   it('renders time display', () => {
