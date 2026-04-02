@@ -37,3 +37,4 @@ export {
   type ElevationConfig,
   type ComponentType,
 } from './elevation'
+export * from './presets'

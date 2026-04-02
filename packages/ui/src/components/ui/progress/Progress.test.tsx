@@ -79,6 +79,23 @@ describe('Progress', () => {
     expect(container.firstChild).toBeInTheDocument()
   })
 
+  describe('trackWidth and customColor', () => {
+    it('supports fixed trackWidth', () => {
+      const { container } = render(<Progress value={50} trackWidth={60} />)
+      expect(container.firstChild).toBeInTheDocument()
+    })
+
+    it('supports customColor', () => {
+      const { container } = render(<Progress value={50} customColor="#FF6B6B" />)
+      expect(container.firstChild).toBeInTheDocument()
+    })
+
+    it('renders correctly without trackWidth or customColor', () => {
+      render(<Progress value={75} />)
+      expect(screen.getByRole('progressbar')).toBeInTheDocument()
+    })
+  })
+
   describe('CircularProgress', () => {
     it('renders correctly', () => {
       render(<CircularProgress value={50} />)
@@ -114,6 +131,18 @@ describe('Progress', () => {
         expect(screen.getByRole('progressbar')).toBeInTheDocument()
         unmount()
       })
+    })
+
+    it('renders SVG circles', () => {
+      const { container } = render(<CircularProgress value={50} />)
+      const circles = container.querySelectorAll('circle')
+      expect(circles.length).toBe(2) // track + progress
+    })
+
+    it('applies custom color to SVG progress circle', () => {
+      const { container } = render(<CircularProgress value={50} color="success" />)
+      const progressCircle = container.querySelectorAll('circle')[1]
+      expect(progressCircle?.getAttribute('stroke')).toBe('var(--color-status-success)')
     })
   })
 

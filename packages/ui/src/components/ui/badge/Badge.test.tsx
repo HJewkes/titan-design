@@ -72,6 +72,23 @@ describe('Badge', () => {
     })
   })
 
+  describe('dot indicator', () => {
+    it('renders dot when dot prop is true', () => {
+      const { container } = render(<Badge dot color="success">Active</Badge>)
+      expect(container.firstChild).toBeInTheDocument()
+    })
+
+    it('renders dot with explicit dotColor', () => {
+      const { container } = render(<Badge dot dotColor="warning">Pending</Badge>)
+      expect(container.firstChild).toBeInTheDocument()
+    })
+
+    it('does not render dot by default', () => {
+      const { container } = render(<Badge>No dot</Badge>)
+      expect(container.firstChild).toBeInTheDocument()
+    })
+  })
+
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const { container } = render(

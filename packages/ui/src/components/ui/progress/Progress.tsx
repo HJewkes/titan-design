@@ -33,6 +33,10 @@ export interface ProgressProps extends ViewProps {
   formatValue?: (value: number, max: number) => string
   /** Label text */
   label?: string
+  /** Fixed track width in pixels (default: full width) */
+  trackWidth?: number
+  /** Custom hex color override for the fill bar */
+  customColor?: string
   /** Additional className */
   className?: string
 }
@@ -85,6 +89,8 @@ export function Progress({
   showValue = false,
   formatValue = (v, m) => `${Math.round((v / m) * 100)}%`,
   label,
+  trackWidth,
+  customColor,
   className,
   ...props
 }: ProgressProps) {
@@ -109,10 +115,12 @@ export function Progress({
       {/* Progress Track */}
       <View
         className={cn(
-          'w-full rounded-full overflow-hidden',
+          'rounded-full overflow-hidden',
+          trackWidth ? undefined : 'w-full',
           trackColorStyles[color],
           sizeStyles[size]
         )}
+        style={trackWidth ? { width: trackWidth } : undefined}
         accessibilityRole="progressbar"
         accessibilityValue={{
           min: 0,
@@ -124,10 +132,13 @@ export function Progress({
         <View
           className={cn(
             'h-full rounded-full',
-            colorStyles[color],
+            !customColor && colorStyles[color],
             isIndeterminate && 'animate-pulse w-1/3'
           )}
-          style={isIndeterminate ? undefined : { width: `${percentage}%` }}
+          style={{
+            ...(isIndeterminate ? {} : { width: `${percentage}%` }),
+            ...(customColor ? { backgroundColor: customColor } : {}),
+          }}
         />
       </View>
     </View>
@@ -177,8 +188,8 @@ export function CircularProgress({
   const radius = (size - strokeWidth) / 2
   const circumference = 2 * Math.PI * radius
   const strokeDashoffset = circumference - (percentage / 100) * circumference
+  const center = size / 2
 
-  // For web, we use SVG. For native, we use a simplified view-based approach.
   return (
     <View
       className={cn('items-center justify-center', className)}
@@ -191,41 +202,49 @@ export function CircularProgress({
       }}
       {...props}
     >
-      {/* Background circle */}
+      {/* SVG implementation for web */}
       <View
-        className={cn(
-          'absolute rounded-full border-4',
-          'border-border-default'
-        )}
-        style={{
-          width: size,
-          height: size,
-          borderWidth: strokeWidth,
-        }}
-      />
-
-      {/* Progress arc (simplified) */}
-      <View
-        className={cn(
-          'absolute rounded-full',
-          colorStyles[color],
-          isIndeterminate && 'animate-spin'
-        )}
-        style={{
-          width: size,
-          height: size,
-          borderWidth: strokeWidth,
-          borderColor: 'transparent',
-          borderTopColor: colorVarMap[color],
-          borderRightColor: percentage > 25 ? colorVarMap[color] : 'transparent',
-          borderBottomColor: percentage > 50 ? colorVarMap[color] : 'transparent',
-          borderLeftColor: percentage > 75 ? colorVarMap[color] : 'transparent',
-        }}
-      />
+        className={cn(isIndeterminate && 'animate-spin')}
+        style={{ width: size, height: size }}
+      >
+        <svg
+          width={size}
+          height={size}
+          viewBox={`0 0 ${size} ${size}`}
+          style={{ position: 'absolute' }}
+        >
+          {/* Background track */}
+          <circle
+            cx={center}
+            cy={center}
+            r={radius}
+            fill="none"
+            stroke="var(--color-border-default)"
+            strokeWidth={strokeWidth}
+          />
+          {/* Progress arc */}
+          <circle
+            cx={center}
+            cy={center}
+            r={radius}
+            fill="none"
+            stroke={colorVarMap[color]}
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            strokeDashoffset={isIndeterminate ? circumference * 0.75 : strokeDashoffset}
+            transform={`rotate(-90 ${center} ${center})`}
+            style={{ transition: 'stroke-dashoffset 300ms cubic-bezier(0.22, 1, 0.36, 1)' }}
+          />
+        </svg>
+      </View>
 
       {/* Center value */}
       {showValue && !isIndeterminate && (
-        <Text className="text-xs font-semibold text-text-primary">
+        <Text
+          className="text-xs font-semibold text-text-primary absolute"
+          style={{ fontSize: Math.max(size * 0.22, 10) }}
+        >
           {formatValue(value, max)}
         </Text>
       )}

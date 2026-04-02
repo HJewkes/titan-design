@@ -16,6 +16,12 @@ export default defineConfig({
     'react-native-web',
     'lucide-react',
     'lucide-react-native',
+    'nativewind',
+    'react-native-css-interop',
   ],
   treeshake: true,
+  esbuildOptions(options) {
+    options.jsx = 'automatic'
+    options.jsxImportSource = 'nativewind'
+  },
 })

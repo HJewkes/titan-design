@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { Indicator, type IndicatorColor } from '../indicator'
 
 export type BadgeVariant = 'solid' | 'subtle' | 'outline'
 export type BadgeColor = 'default' | 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info'
@@ -13,6 +14,10 @@ export interface BadgeProps extends ViewProps {
   color?: BadgeColor
   /** Size */
   size?: BadgeSize
+  /** Show a leading indicator dot */
+  dot?: boolean
+  /** Color for the dot indicator (defaults to match badge color) */
+  dotColor?: IndicatorColor
   /** Additional className */
   className?: string
   children?: React.ReactNode
@@ -65,6 +70,8 @@ export function Badge({
   variant = 'subtle',
   color = 'default',
   size = 'md',
+  dot,
+  dotColor,
   className,
   children,
   ...props
@@ -79,6 +86,13 @@ export function Badge({
       )}
       {...props}
     >
+      {dot && (
+        <Indicator
+          size="xs"
+          color={dotColor ?? (color === 'default' || color === 'secondary' ? 'default' : color as IndicatorColor)}
+          className="mr-0.5"
+        />
+      )}
       {typeof children === 'string' ? (
         <Text className="text-inherit font-medium">{children}</Text>
       ) : (

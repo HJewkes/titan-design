@@ -41,12 +41,18 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "lint": "eslint src/",
+    "lint:borders": "bash scripts/check-border-classes.sh",
     "type-check": "tsc --noEmit",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\"",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
+    "test:visual": "playwright test",
+    "test:visual:update": "playwright test --update-snapshots",
+    "specimen": "vite --config specimen/vite.config.ts",
+    "specimen:compare": "vite --config specimen/vite.config.ts --open /comparison.html",
+    "test:visual:compare": "playwright test --config playwright.comparison.config.ts",
     "prepublishOnly": "tsup && vitest --run"
   },
   "peerDependencies": {
@@ -72,11 +78,12 @@
     "@gluestack-style/react": "^1.0.0",
     "@gluestack-ui/themed": "^1.1.0",
     "clsx": "^2.1.0",
-    "nativewind": "^4.1.0",
+    "nativewind": "^4.2.1",
     "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.58.2",
     "@storybook/addon-a11y": "^10.2.0",
     "@storybook/addon-docs": "^10.2.0",
     "@storybook/addon-react-native-web": "^0.0.29",
