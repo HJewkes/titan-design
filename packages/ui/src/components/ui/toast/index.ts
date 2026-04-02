@@ -7,10 +7,3 @@ export type {
   ToastPosition,
 } from './Toast'
 
-export { ToastProviderV2, useToastV2 } from './ToastProvider'
-export type {
-  ToastProviderV2Props,
-  ToastProviderPosition,
-  ToastOptions,
-  ToastVariant,
-} from './ToastProvider'
