@@ -58,12 +58,16 @@
   "peerDependencies": {
     "lucide-react": ">=0.400.0",
     "lucide-react-native": ">=0.400.0",
+    "nativewind": "^4.2.1",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0",
     "react-native": ">=0.72.0",
     "react-native-web": ">=0.19.0"
   },
   "peerDependenciesMeta": {
+    "nativewind": {
+      "optional": true
+    },
     "react-native": {
       "optional": true
     },
@@ -78,10 +82,10 @@
     "@gluestack-style/react": "^1.0.0",
     "@gluestack-ui/themed": "^1.1.0",
     "clsx": "^2.1.0",
-    "nativewind": "^4.2.1",
     "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {
+    "nativewind": "^4.2.1",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.58.2",
     "@storybook/addon-a11y": "^10.2.0",
