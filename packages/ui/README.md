@@ -50,6 +50,16 @@ module.exports = {
 }
 ```
 
+### 3. Web Setup (Vite)
+
+If you are consuming Titan in a Vite-based web app, you need to configure the NativeWind JSX transform, alias `react-native` to `react-native-web`, and point Tailwind at Titan's source files. See the full guide: **[Web Consumer Setup](docs/web-consumer-setup.md)**
+
+Quick summary:
+
+1. `npm install nativewind react-native-css-interop --legacy-peer-deps`
+2. Set `jsxImportSource: 'nativewind'` in the Vite React plugin and add `react-native` to `resolve.conditions`
+3. Add `@titan-design/react-ui/src/**` to your Tailwind `content` array and use Titan's config as a preset
+
 ## Usage
 
 ```tsx
@@ -242,11 +252,45 @@ The design system uses a two-tier token system following DTCG conventions:
 
 ```tsx
 // In components
-<View className="bg-surface-elevated border border-border-default rounded-lg">
+<View className="bg-surface-elevated rounded-lg" style={{ borderWidth: 1, borderColor: '#1F1F1F' }}>
   <Text className="text-text-primary">Primary text</Text>
   <Text className="text-text-secondary">Secondary text</Text>
 </View>
 ```
+
+> **Note:** Do not combine `border` + `border-border-*` classes for colored borders. The bare `border` utility sets `borderColor: currentColor` (often black), which overrides the token color unreliably. Use `style={{ borderWidth: 1, borderColor: '...' }}` instead. See [Common Pitfalls](#common-pitfalls) below.
+
+## Common Pitfalls
+
+### Border Styling
+
+The bare `border` Tailwind utility sets both `borderWidth: 1` **and** `borderColor: currentColor`. When combined with a `border-border-*` color class, the color assignment order is not guaranteed in NativeWind/React Native, which can produce black borders instead of the intended theme color.
+
+```tsx
+// WRONG — border sets currentColor, may render black on native
+<View className="border border-border-default" />
+
+// WRONG — same problem with any border-* color class
+<View className="border border-border-input" />
+```
+
+```tsx
+// RIGHT — explicit inline style, no ambiguity
+<View style={{ borderWidth: 1, borderColor: '#1F1F1F' }} />
+
+// RIGHT — use WORKOUT_TOKENS constants for type-safe access
+import { WORKOUT_TOKENS } from '@titan-design/react-ui/theme'
+<View style={{ borderWidth: 1, borderColor: WORKOUT_TOKENS.border.default }} />
+
+// RIGHT on web only — border-border (no bare 'border') resolves to the CSS variable
+<View className="border-[1px] border-border" />
+```
+
+Run `pnpm lint:borders` to catch any `border border-*` patterns in source components.
+
+For full token reference and additional pitfalls, see [`src/theme/TOKEN_MAPPING.md`](src/theme/TOKEN_MAPPING.md).
+
+---
 
 ## Development
 

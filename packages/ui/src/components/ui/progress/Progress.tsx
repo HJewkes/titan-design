@@ -33,6 +33,10 @@ export interface ProgressProps extends ViewProps {
   formatValue?: (value: number, max: number) => string
   /** Label text */
   label?: string
+  /** Fixed track width in pixels (default: full width) */
+  trackWidth?: number
+  /** Custom hex color override for the fill bar */
+  customColor?: string
   /** Additional className */
   className?: string
 }
@@ -85,6 +89,8 @@ export function Progress({
   showValue = false,
   formatValue = (v, m) => `${Math.round((v / m) * 100)}%`,
   label,
+  trackWidth,
+  customColor,
   className,
   ...props
 }: ProgressProps) {
@@ -109,10 +115,12 @@ export function Progress({
       {/* Progress Track */}
       <View
         className={cn(
-          'w-full rounded-full overflow-hidden',
+          'rounded-full overflow-hidden',
+          trackWidth ? undefined : 'w-full',
           trackColorStyles[color],
           sizeStyles[size]
         )}
+        style={trackWidth ? { width: trackWidth } : undefined}
         accessibilityRole="progressbar"
         accessibilityValue={{
           min: 0,
@@ -124,10 +132,13 @@ export function Progress({
         <View
           className={cn(
             'h-full rounded-full',
-            colorStyles[color],
+            !customColor && colorStyles[color],
             isIndeterminate && 'animate-pulse w-1/3'
           )}
-          style={isIndeterminate ? undefined : { width: `${percentage}%` }}
+          style={{
+            ...(isIndeterminate ? {} : { width: `${percentage}%` }),
+            ...(customColor ? { backgroundColor: customColor } : {}),
+          }}
         />
       </View>
     </View>

@@ -1,6 +1,18 @@
-import React, { useState, useRef } from 'react'
-import { View, Text, Pressable, Modal, type ViewProps } from 'react-native'
+import React, { useState, useRef, useEffect } from 'react'
+import { View, Text, Pressable, Platform, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+
+let createPortal: typeof import('react-dom').createPortal | undefined
+if (Platform.OS === 'web') {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    createPortal = require('react-dom').createPortal
+  } catch {
+    // react-dom unavailable
+  }
+}
+
+type PortalPosition = { top: number; left: number; transform: string }
 
 export type TooltipPlacement =
   | 'top'
@@ -13,8 +25,10 @@ export type TooltipPlacement =
   | 'right'
 
 export interface TooltipProps extends ViewProps {
-  /** Tooltip content */
-  label: string
+  /** Plain-text tooltip content */
+  label?: string
+  /** Rich tooltip content (takes precedence over label) */
+  content?: React.ReactNode
   /** Trigger element */
   children: React.ReactNode
   /** Tooltip placement */
@@ -29,6 +43,8 @@ export interface TooltipProps extends ViewProps {
   isDisabled?: boolean
   /** Additional className for tooltip */
   className?: string
+  /** Render tooltip via portal to escape overflow:hidden ancestors (web only) */
+  usePortal?: boolean
 }
 
 /**
@@ -37,12 +53,19 @@ export interface TooltipProps extends ViewProps {
  * Note: On native, tooltips appear on long press. On web, they appear on hover.
  *
  * @example
+ * // String-only tooltip
  * <Tooltip label="This is a tooltip">
+ *   <Button><ButtonText>Hover me</ButtonText></Button>
+ * </Tooltip>
+ *
+ * // Rich content tooltip
+ * <Tooltip content={<View><Text>Bold tip</Text><Text>with details</Text></View>}>
  *   <Button><ButtonText>Hover me</ButtonText></Button>
  * </Tooltip>
  */
 export function Tooltip({
   label,
+  content,
   children,
   placement = 'top',
   openDelay = 0,
@@ -50,11 +73,52 @@ export function Tooltip({
   hasArrow = true,
   isDisabled = false,
   className,
+  usePortal: usePortalProp = false,
   ...props
 }: TooltipProps) {
   const [isVisible, setIsVisible] = useState(false)
+  const [portalPos, setPortalPos] = useState<PortalPosition | null>(null)
   const openTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const triggerRef = useRef<View>(null)
+
+  const isPortalMode = usePortalProp && Platform.OS === 'web' && !!createPortal
+
+  useEffect(() => {
+    if (!isVisible || !isPortalMode || !triggerRef.current) return
+    const node = triggerRef.current as unknown as HTMLElement
+    const id = requestAnimationFrame(() => {
+      const rect = node.getBoundingClientRect()
+      const gap = 8
+      const cardinal = placement.split('-')[0] as 'top' | 'bottom' | 'left' | 'right'
+
+      const positions: Record<string, PortalPosition> = {
+        top: {
+          top: rect.top - gap,
+          left: rect.left + rect.width / 2,
+          transform: 'translate(-50%, -100%)',
+        },
+        bottom: {
+          top: rect.bottom + gap,
+          left: rect.left + rect.width / 2,
+          transform: 'translate(-50%, 0%)',
+        },
+        left: {
+          top: rect.top + rect.height / 2,
+          left: rect.left - gap,
+          transform: 'translate(-100%, -50%)',
+        },
+        right: {
+          top: rect.top + rect.height / 2,
+          left: rect.right + gap,
+          transform: 'translate(0%, -50%)',
+        },
+      }
+
+      setPortalPos(positions[cardinal] ?? positions.top)
+    })
+    return () => cancelAnimationFrame(id)
+  }, [isVisible, isPortalMode, placement])
 
   const clearTimeouts = () => {
     if (openTimeoutRef.current) clearTimeout(openTimeoutRef.current)
@@ -104,8 +168,43 @@ export function Tooltip({
     right: 'left-full top-1/2 -translate-y-1/2 ml-2',
   }
 
+  const tooltipContent = (
+    <View className="bg-neutral-800 px-3 py-2 rounded-md shadow-lg max-w-xs">
+      {content ?? <Text className="text-white text-sm">{label}</Text>}
+      {hasArrow && (
+        <View
+          className={cn(
+            'absolute w-0 h-0 border-4',
+            arrowStyles[placement]
+          )}
+        />
+      )}
+    </View>
+  )
+
+  const renderPortalTooltip = () => {
+    if (!isVisible || !isPortalMode || !createPortal) return null
+    return createPortal(
+      <div
+        style={{
+          position: 'fixed',
+          top: portalPos?.top ?? 0,
+          left: portalPos?.left ?? 0,
+          transform: portalPos?.transform ?? 'translate(-50%, -100%)',
+          zIndex: 10000,
+          pointerEvents: 'none',
+        }}
+        data-testid="tooltip-portal"
+        className={className}
+      >
+        {tooltipContent}
+      </div>,
+      document.body
+    )
+  }
+
   return (
-    <View className="relative" {...props}>
+    <View className="relative" ref={triggerRef} {...props}>
       <Pressable
         onHoverIn={show}
         onHoverOut={hide}
@@ -116,28 +215,20 @@ export function Tooltip({
         {children}
       </Pressable>
 
-      {isVisible && (
-        <View
-          className={cn(
-            'absolute z-50',
-            tooltipPositionStyles[placement],
-            className
+      {isPortalMode
+        ? renderPortalTooltip()
+        : isVisible && (
+            <View
+              className={cn(
+                'absolute z-50 web:animate-fade-in',
+                tooltipPositionStyles[placement],
+                className
+              )}
+              pointerEvents="none"
+            >
+              {tooltipContent}
+            </View>
           )}
-          pointerEvents="none"
-        >
-          <View className="bg-neutral-800 px-3 py-2 rounded-md shadow-lg max-w-xs">
-            <Text className="text-white text-sm">{label}</Text>
-            {hasArrow && (
-              <View
-                className={cn(
-                  'absolute w-0 h-0 border-4',
-                  arrowStyles[placement]
-                )}
-              />
-            )}
-          </View>
-        </View>
-      )}
     </View>
   )
 }

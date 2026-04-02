@@ -141,6 +141,26 @@ describe('Select', () => {
     })
   })
 
+  describe('filled variant', () => {
+    it('renders with filled variant without errors', () => {
+      render(<Select options={defaultOptions} variant="filled" />)
+      expect(screen.getByRole('combobox')).toBeInTheDocument()
+    })
+
+    it('renders with default variant when omitted', () => {
+      render(<Select options={defaultOptions} />)
+      expect(screen.getByRole('combobox')).toBeInTheDocument()
+    })
+
+    it('supports selection in filled variant', () => {
+      const onChange = vi.fn()
+      render(<Select options={defaultOptions} variant="filled" onChange={onChange} />)
+      fireEvent.click(screen.getByRole('combobox'))
+      fireEvent.click(screen.getByText('Option 2'))
+      expect(onChange).toHaveBeenCalledWith('2')
+    })
+  })
+
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const { container } = render(

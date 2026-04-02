@@ -45,6 +45,8 @@ export interface SelectProps<T = string> extends ViewProps {
   isInvalid?: boolean
   /** Options to display */
   options: SelectOption<T>[]
+  /** Visual variant — use 'filled' on dark/elevated surfaces */
+  variant?: 'default' | 'filled'
   /** Additional className */
   className?: string
 }
@@ -81,6 +83,7 @@ export function Select<T extends string = string>({
   isDisabled = false,
   isInvalid = false,
   options,
+  variant = 'default',
   className,
   ...props
 }: SelectProps<T>) {
@@ -138,8 +141,12 @@ export function Select<T extends string = string>({
           accessibilityState={{ expanded: isOpen, disabled: isDisabled }}
           className={cn(
             'flex-row items-center justify-between px-4 py-2.5 rounded-md border',
-            'bg-surface-base',
-            isInvalid ? 'border-border-input-error' : 'border-border-input',
+            variant === 'filled' ? 'bg-black/30' : 'bg-surface-base',
+            isInvalid
+              ? 'border-border-input-error'
+              : variant === 'filled'
+                ? 'border-border-subtle'
+                : 'border-border-input',
             !isDisabled && !isInvalid && 'web:hover:border-border-input-hover',
             isOpen && 'border-border-input-focus',
             isDisabled && 'opacity-50 cursor-not-allowed'

@@ -79,6 +79,23 @@ describe('Progress', () => {
     expect(container.firstChild).toBeInTheDocument()
   })
 
+  describe('trackWidth and customColor', () => {
+    it('supports fixed trackWidth', () => {
+      const { container } = render(<Progress value={50} trackWidth={60} />)
+      expect(container.firstChild).toBeInTheDocument()
+    })
+
+    it('supports customColor', () => {
+      const { container } = render(<Progress value={50} customColor="#FF6B6B" />)
+      expect(container.firstChild).toBeInTheDocument()
+    })
+
+    it('renders correctly without trackWidth or customColor', () => {
+      render(<Progress value={75} />)
+      expect(screen.getByRole('progressbar')).toBeInTheDocument()
+    })
+  })
+
   describe('CircularProgress', () => {
     it('renders correctly', () => {
       render(<CircularProgress value={50} />)

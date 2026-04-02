@@ -60,6 +60,32 @@ describe('Tooltip', () => {
     expect(screen.queryByText('Tooltip text')).not.toBeInTheDocument()
   })
 
+  describe('rich content', () => {
+    it('renders content prop instead of label', () => {
+      render(
+        <Tooltip content={<span data-testid="rich">Rich content</span>}>
+          <button>Hover me</button>
+        </Tooltip>
+      )
+
+      hoverTrigger('Hover me')
+      expect(screen.getByTestId('rich')).toBeInTheDocument()
+      expect(screen.getByText('Rich content')).toBeInTheDocument()
+    })
+
+    it('content takes precedence over label', () => {
+      render(
+        <Tooltip label="Plain label" content={<em>Rich wins</em>}>
+          <button>Hover me</button>
+        </Tooltip>
+      )
+
+      hoverTrigger('Hover me')
+      expect(screen.getByText('Rich wins')).toBeInTheDocument()
+      expect(screen.queryByText('Plain label')).not.toBeInTheDocument()
+    })
+  })
+
   describe('disabled state', () => {
     it('does not show tooltip when isDisabled is true', () => {
       render(
@@ -162,6 +188,63 @@ describe('Tooltip', () => {
 
       hoverTrigger('Trigger')
       expect(screen.getByText('No arrow')).toBeInTheDocument()
+    })
+  })
+
+  describe('portal mode', () => {
+    it('renders tooltip into document.body when usePortal is true', () => {
+      render(
+        <Tooltip label="Portal tooltip" usePortal>
+          <button>Hover me</button>
+        </Tooltip>
+      )
+
+      hoverTrigger('Hover me')
+      expect(screen.getByText('Portal tooltip')).toBeInTheDocument()
+      expect(screen.getByTestId('tooltip-portal')).toBeInTheDocument()
+      expect(screen.getByTestId('tooltip-portal').parentElement).toBe(
+        document.body
+      )
+    })
+
+    it('applies fixed positioning and z-index to portal tooltip', () => {
+      render(
+        <Tooltip label="Styled portal" usePortal>
+          <button>Hover me</button>
+        </Tooltip>
+      )
+
+      hoverTrigger('Hover me')
+      const portal = screen.getByTestId('tooltip-portal')
+      expect(portal.style.position).toBe('fixed')
+      expect(portal.style.zIndex).toBe('10000')
+      expect(portal.style.pointerEvents).toBe('none')
+    })
+
+    it('hides portal tooltip on hover out', () => {
+      render(
+        <Tooltip label="Portal hide" usePortal>
+          <button>Hover me</button>
+        </Tooltip>
+      )
+
+      hoverTrigger('Hover me')
+      expect(screen.getByText('Portal hide')).toBeInTheDocument()
+
+      unhoverTrigger('Hover me')
+      expect(screen.queryByText('Portal hide')).not.toBeInTheDocument()
+    })
+
+    it('does not render portal when usePortal is false (default)', () => {
+      render(
+        <Tooltip label="Inline tooltip">
+          <button>Hover me</button>
+        </Tooltip>
+      )
+
+      hoverTrigger('Hover me')
+      expect(screen.getByText('Inline tooltip')).toBeInTheDocument()
+      expect(screen.queryByTestId('tooltip-portal')).not.toBeInTheDocument()
     })
   })
 
