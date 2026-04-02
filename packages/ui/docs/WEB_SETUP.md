@@ -17,9 +17,10 @@ npm install @titan-design/react-ui react-native-web
 npm install -D tailwindcss autoprefixer postcss nativewind
 ```
 
-> `nativewind` is a **dev dependency only** — it provides a Tailwind preset that adds
-> React Native platform variants (`web:`, `native:`) used by titan components.
-> It is NOT needed at runtime on web.
+> `nativewind` is an **optional peer dependency** and only needed at build time — it
+> provides a Tailwind preset that adds React Native platform variants (`web:`,
+> `native:`) used by titan components. It is NOT needed at runtime on web.
+> Install it as a dev dependency so Tailwind can resolve the preset.
 
 ### 2. Configure Vite
 
