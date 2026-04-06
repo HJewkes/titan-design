@@ -49,7 +49,7 @@ jobs:
           echo "Version verified: $PKG_VERSION"
 
       - name: Publish to npm
-        run: npm publish --provenance --access public
+        run: npx npm@latest publish --provenance --access public
         working-directory: packages/ui
 
   github-release:
