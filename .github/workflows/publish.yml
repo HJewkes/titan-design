@@ -1,9 +1,13 @@
-name: Release
+name: Publish
 
 on:
   push:
     tags:
       - 'v*'
+
+permissions:
+  contents: write
+  id-token: write
 
 jobs:
   validate:
@@ -19,14 +23,11 @@ jobs:
       - run: pnpm lint
       - run: pnpm type-check
       - run: pnpm build
-      - run: pnpm test -- -- --run --coverage
+      - run: pnpm test -- -- --run
 
   publish:
     needs: validate
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -35,7 +36,6 @@ jobs:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org'
           cache: 'pnpm'
-      - run: npm install -g npm@latest
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @titan-design/react-ui build
 
@@ -56,8 +56,6 @@ jobs:
   github-release:
     needs: publish
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
       - name: Create Release
