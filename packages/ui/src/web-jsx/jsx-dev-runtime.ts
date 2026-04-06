@@ -8,7 +8,7 @@ import type { StyleProp } from 'react-native'
 type JsxDevFn = typeof reactJsxDEV
 
 function wrapJsxDev(fn: JsxDevFn): JsxDevFn {
-  return function (type, props, ...rest) {
+  return function (type, props: Record<string, any>, ...rest) {
     if (props && typeof props.className === 'string' && props.className) {
       const cn = props.className
       const cssStyle = { $$css: true, [cn]: cn } as unknown as StyleProp<any>

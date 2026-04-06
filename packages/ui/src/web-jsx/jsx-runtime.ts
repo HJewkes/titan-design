@@ -20,7 +20,7 @@ import type { StyleProp } from 'react-native'
 type JsxFn = typeof reactJsx
 
 function wrapJsx(fn: JsxFn): JsxFn {
-  return function (type, props, ...rest) {
+  return function (type, props: Record<string, any>, ...rest) {
     if (props && typeof props.className === 'string' && props.className) {
       const cn = props.className
       const cssStyle = { $$css: true, [cn]: cn } as unknown as StyleProp<any>
