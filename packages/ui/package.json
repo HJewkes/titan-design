@@ -1,6 +1,6 @@
 {
   "name": "@titan-design/react-ui",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Cross-platform design system built on Gluestack UI",
   "author": "Henry Jewkes",
   "license": "MIT",
@@ -123,6 +123,7 @@
   "files": [
     "dist",
     "src",
+    "docs",
     "tailwind.config.js"
   ],
   "sideEffects": false,
