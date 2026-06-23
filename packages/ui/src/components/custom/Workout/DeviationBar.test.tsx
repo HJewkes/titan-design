@@ -58,6 +58,24 @@ describe('DeviationBar', () => {
     expect(bar).toHaveAttribute('role', 'slider')
   })
 
+  it('renders an 8px dot with a text-primary border and shadow', () => {
+    const { getByTestId } = render(<DeviationBar deviation={0} />)
+    const dot = getByTestId('deviation-dot')
+    expect(dot).toHaveStyle({ width: '8px', height: '8px' })
+    expect(dot).toHaveStyle({ borderTopWidth: '1.5px', borderTopColor: '#F3F4F6' })
+    expect(dot).toHaveStyle({ boxShadow: '0 0 4px rgba(0,0,0,0.5)' })
+  })
+
+  it('renders the track with the deviation gradient background', () => {
+    const { getByTestId } = render(<DeviationBar deviation={0} />)
+    const bar = getByTestId('deviation-bar')
+    const track = bar.firstElementChild as HTMLElement
+    expect(track).toHaveStyle({
+      backgroundImage:
+        'linear-gradient(90deg, rgba(20,184,166,0.25) 0%, rgba(107,114,128,0.15) 50%, rgba(255,176,32,0.25) 100%)',
+    })
+  })
+
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const { container } = render(<DeviationBar deviation={0.3} />)

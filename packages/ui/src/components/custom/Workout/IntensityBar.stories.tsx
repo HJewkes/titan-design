@@ -8,56 +8,53 @@ const meta: Meta<typeof IntensityBar> = {
   tags: ['autodocs'],
   argTypes: {
     level: {
-      control: { type: 'range', min: 0, max: 140, step: 5 },
-      description: 'Intensity percentage (0-140)',
+      control: { type: 'range', min: 0, max: 1, step: 0.05 },
+      description: 'Intensity level (0-1)',
     },
-    target: {
-      control: { type: 'range', min: 0, max: 100, step: 5 },
-      description: 'Target percentage (blue line)',
+    threshold: {
+      control: { type: 'range', min: 0, max: 1, step: 0.05 },
+      description: 'MRV/overexertion threshold position (0-1)',
     },
-    height: { control: 'number', description: 'Bar height in pixels' },
-    showLabel: { control: 'boolean', description: 'Show percentage label below bar' },
+    orientation: {
+      control: { type: 'radio' },
+      options: ['vertical', 'horizontal'],
+      description: 'Bar orientation',
+    },
+    size: { control: 'number', description: 'Length along the fill axis (px)' },
+    thickness: { control: 'number', description: 'Bar thickness (px)' },
+    showThresholdLabel: { control: 'boolean', description: 'Show MRV label' },
   },
 }
 
 export default meta
 type Story = StoryObj<typeof IntensityBar>
 
-export const Building: Story = {
-  args: { level: 50, target: 85, showLabel: true },
+export const Low: Story = {
+  args: { level: 0.3, threshold: 0.85, showThresholdLabel: true },
 }
 
-export const Approaching: Story = {
-  args: { level: 85, target: 85, showLabel: true },
+export const Moderate: Story = {
+  args: { level: 0.55, threshold: 0.85, showThresholdLabel: true },
 }
 
-export const AtTarget: Story = {
-  args: { level: 96, target: 95, showLabel: true },
+export const High: Story = {
+  args: { level: 0.85, threshold: 0.85, showThresholdLabel: true },
 }
 
-export const Over110: Story = {
-  args: { level: 110, target: 85, showLabel: true },
+export const Horizontal: Story = {
+  args: { level: 0.6, threshold: 0.85, orientation: 'horizontal', size: 120 },
 }
 
-export const Over120: Story = {
-  args: { level: 120, target: 85, showLabel: true },
-}
-
-export const Over130: Story = {
-  args: { level: 130, target: 85, showLabel: true },
-}
-
-export const AllLevels: Story = {
+export const AllZones: Story = {
   render: () => (
     <View style={{ flexDirection: 'row', gap: 16, alignItems: 'flex-end', padding: 16 }}>
-      <IntensityBar level={30} target={85} showLabel />
-      <IntensityBar level={60} target={85} showLabel />
-      <IntensityBar level={80} target={85} showLabel />
-      <IntensityBar level={90} target={85} showLabel />
-      <IntensityBar level={97} target={95} showLabel />
-      <IntensityBar level={110} target={85} showLabel />
-      <IntensityBar level={120} target={85} showLabel />
-      <IntensityBar level={130} target={85} showLabel />
+      <IntensityBar level={0.2} threshold={0.85} showThresholdLabel />
+      <IntensityBar level={0.35} threshold={0.85} showThresholdLabel />
+      <IntensityBar level={0.5} threshold={0.85} showThresholdLabel />
+      <IntensityBar level={0.65} threshold={0.85} showThresholdLabel />
+      <IntensityBar level={0.75} threshold={0.85} showThresholdLabel />
+      <IntensityBar level={0.9} threshold={0.85} showThresholdLabel />
+      <IntensityBar level={1.0} threshold={0.85} showThresholdLabel />
     </View>
   ),
 }

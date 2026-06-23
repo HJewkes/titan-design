@@ -19,8 +19,8 @@ describe('WorkoutPill', () => {
     expect(screen.getByTestId('workout-pill-dash')).toBeInTheDocument()
   })
 
-  it('does not show checkmark for active status', () => {
-    render(<WorkoutPill name="Lower B" status="active" />)
+  it('does not show checkmark for current status', () => {
+    render(<WorkoutPill name="Lower B" status="current" />)
     expect(screen.queryByTestId('workout-pill-check')).not.toBeInTheDocument()
   })
 
@@ -57,8 +57,8 @@ describe('WorkoutPill', () => {
   })
 
   it('has correct accessibility label', () => {
-    render(<WorkoutPill name="Upper A" status="active" />)
-    expect(screen.getByLabelText('Upper A workout, active')).toBeInTheDocument()
+    render(<WorkoutPill name="Upper A" status="current" />)
+    expect(screen.getByLabelText('Upper A workout, current')).toBeInTheDocument()
   })
 
   it('has correct accessibility label for missed', () => {
@@ -72,7 +72,7 @@ describe('WorkoutPill', () => {
   })
 
   it('renders all status variants without error', () => {
-    const statuses = ['completed', 'active', 'next', 'upcoming', 'missed', 'deload'] as const
+    const statuses = ['completed', 'current', 'next', 'upcoming', 'missed', 'deload'] as const
     for (const status of statuses) {
       const { unmount } = render(<WorkoutPill name="Test" status={status} />)
       expect(screen.getByTestId('workout-pill')).toBeInTheDocument()
@@ -80,31 +80,40 @@ describe('WorkoutPill', () => {
     }
   })
 
-  describe('pulse prop', () => {
-    it('does not pulse by default', () => {
-      render(<WorkoutPill name="Upper A" status="active" />)
-      expect(screen.getByTestId('workout-pill')).toBeInTheDocument()
+  describe('pulse', () => {
+    it('pulses by default on current status', () => {
+      render(<WorkoutPill name="Upper A" status="current" />)
+      const pill = screen.getByTestId('workout-pill')
+      expect(pill).toBeInTheDocument()
+      expect(pill).toHaveStyle({ opacity: 1 })
     })
 
-    it('pulses when pulse is true', () => {
-      render(<WorkoutPill name="Upper A" status="active" pulse />)
-      expect(screen.getByTestId('workout-pill')).toBeInTheDocument()
+    it('does not pulse on non-current statuses by default', () => {
+      render(<WorkoutPill name="Upper A" status="upcoming" />)
+      const pill = screen.getByTestId('workout-pill')
+      expect(pill).toBeInTheDocument()
+      expect(pill.style.opacity).toBe('')
     })
 
-    it('pulse is independent of status', () => {
+    it('can force pulse on a non-current status', () => {
       render(<WorkoutPill name="Upper A" status="upcoming" pulse />)
-      expect(screen.getByTestId('workout-pill')).toBeInTheDocument()
+      expect(screen.getByTestId('workout-pill')).toHaveStyle({ opacity: 1 })
+    })
+
+    it('can disable pulse on current status', () => {
+      render(<WorkoutPill name="Upper A" status="current" pulse={false} />)
+      expect(screen.getByTestId('workout-pill').style.opacity).toBe('')
     })
   })
 
   describe('highlighted prop', () => {
     it('renders without highlighted by default', () => {
-      render(<WorkoutPill name="Upper A" status="active" />)
+      render(<WorkoutPill name="Upper A" status="current" />)
       expect(screen.getByTestId('workout-pill')).toBeInTheDocument()
     })
 
     it('renders with highlighted prop', () => {
-      render(<WorkoutPill name="Upper A" status="active" highlighted />)
+      render(<WorkoutPill name="Upper A" status="current" highlighted />)
       expect(screen.getByTestId('workout-pill')).toBeInTheDocument()
     })
   })

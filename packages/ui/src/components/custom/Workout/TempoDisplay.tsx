@@ -1,25 +1,29 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import React, { useState, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 
 export interface TempoDisplayProps extends ViewProps {
-  concentric: number
-  hold: number
-  eccentric: number
-  idle: number
+  /** Tempo values: [eccentric, pauseBottom, concentric, pauseTop] in seconds */
+  tempo: [number, number, number, number]
   size?: 'sm' | 'md'
   /** Colored phases or mono (all gray) */
   colored?: boolean
+  /** Show info tooltip on press */
+  showInfo?: boolean
   onPress?: () => void
   className?: string
 }
 
+const INTER = 'Inter, sans-serif'
+const TEXT_TERTIARY = '#6B7280'
+
+// Phase colors: [eccentric, pauseBottom, concentric, pauseTop]
 const phaseColors = {
-  concentric: '#FF7900',
-  hold: '#2196F3',
-  eccentric: '#14B8A6',
-  idle: '#9CA3AF',
-  dash: '#9CA3AF',
+  eccentric: '#FFB020', // status-warning (amber)
+  pauseBottom: TEXT_TERTIARY,
+  concentric: '#14B8A6', // status-success (teal)
+  pauseTop: TEXT_TERTIARY,
+  dash: TEXT_TERTIARY,
 }
 
 function TempoValue({
@@ -34,11 +38,11 @@ function TempoValue({
   return (
     <Text
       style={{
-        fontFamily: '"Nunito Sans", sans-serif',
+        fontFamily: INTER,
         fontSize,
         color,
         fontWeight: '600',
-        letterSpacing: 2,
+        letterSpacing: 1,
       }}
     >
       {value}
@@ -50,11 +54,11 @@ function TempoSeparator({ color, fontSize }: { color: string; fontSize: number }
   return (
     <Text
       style={{
-        fontFamily: '"Nunito Sans", sans-serif',
+        fontFamily: INTER,
         fontSize,
         color,
         fontWeight: '600',
-        letterSpacing: 2,
+        letterSpacing: 1,
       }}
     >
       -
@@ -63,27 +67,28 @@ function TempoSeparator({ color, fontSize }: { color: string; fontSize: number }
 }
 
 export function TempoDisplay({
-  concentric,
-  hold,
-  eccentric,
-  idle,
+  tempo,
   size = 'md',
   colored = true,
+  showInfo = true,
   onPress,
   className,
   ...props
 }: TempoDisplayProps) {
   const [showTooltip, setShowTooltip] = useState(false)
+  const [eccentric, pauseBottom, concentric, pauseTop] = tempo
   const isSm = size === 'sm'
   const fontSize = isSm ? 9 : 11
-  const monoColor = '#9CA3AF'
+  const monoColor = TEXT_TERTIARY
 
   const handlePress = useCallback(() => {
     if (onPress) {
       onPress()
     }
-    setShowTooltip((prev) => !prev)
-  }, [onPress])
+    if (showInfo) {
+      setShowTooltip((prev) => !prev)
+    }
+  }, [onPress, showInfo])
 
   const content = (
     <View
@@ -93,33 +98,46 @@ export function TempoDisplay({
         alignItems: 'center',
         backgroundColor: '#1C1C1C',
         paddingHorizontal: isSm ? 6 : 8,
-        paddingVertical: 2,
-        borderRadius: 2,
+        paddingVertical: 3,
+        borderRadius: 4,
       }}
       {...props}
     >
+      <Text
+        style={{
+          fontFamily: INTER,
+          fontSize: 9,
+          fontWeight: '500',
+          color: TEXT_TERTIARY,
+          letterSpacing: 0.5,
+          textTransform: 'uppercase',
+          marginRight: 6,
+        }}
+      >
+        TEMPO
+      </Text>
       <View style={{ flexDirection: 'row' }} testID="tempo-value">
         {colored ? (
           <>
-            <TempoValue value={concentric} color={phaseColors.concentric} fontSize={fontSize} />
-            <TempoSeparator color={phaseColors.dash} fontSize={fontSize} />
-            <TempoValue value={hold} color={phaseColors.hold} fontSize={fontSize} />
-            <TempoSeparator color={phaseColors.dash} fontSize={fontSize} />
             <TempoValue value={eccentric} color={phaseColors.eccentric} fontSize={fontSize} />
             <TempoSeparator color={phaseColors.dash} fontSize={fontSize} />
-            <TempoValue value={idle} color={phaseColors.idle} fontSize={fontSize} />
+            <TempoValue value={pauseBottom} color={phaseColors.pauseBottom} fontSize={fontSize} />
+            <TempoSeparator color={phaseColors.dash} fontSize={fontSize} />
+            <TempoValue value={concentric} color={phaseColors.concentric} fontSize={fontSize} />
+            <TempoSeparator color={phaseColors.dash} fontSize={fontSize} />
+            <TempoValue value={pauseTop} color={phaseColors.pauseTop} fontSize={fontSize} />
           </>
         ) : (
           <Text
             style={{
-              fontFamily: '"Nunito Sans", sans-serif',
+              fontFamily: INTER,
               fontSize,
               color: monoColor,
               fontWeight: '600',
-              letterSpacing: 2,
+              letterSpacing: 1,
             }}
           >
-            {concentric}-{hold}-{eccentric}-{idle}
+            {eccentric}-{pauseBottom}-{concentric}-{pauseTop}
           </Text>
         )}
       </View>
@@ -128,7 +146,7 @@ export function TempoDisplay({
 
   return (
     <Pressable
-      accessibilityLabel={`Tempo: ${concentric} second concentric, ${hold} second hold, ${eccentric} second eccentric, ${idle} second idle`}
+      accessibilityLabel={`Tempo: ${eccentric} second eccentric, ${pauseBottom} second pause, ${concentric} second concentric, ${pauseTop} second pause`}
       accessibilityRole="button"
       onPress={handlePress}
       testID="tempo-display"
@@ -157,17 +175,17 @@ export function TempoDisplay({
               borderColor: '#2C2C2C',
             }}
           >
-            <Text style={{ fontSize: 10, lineHeight: 16, color: '#9CA3AF', fontFamily: '"Nunito Sans", sans-serif' }}>
-              Concentric: {concentric}s
-            </Text>
-            <Text style={{ fontSize: 10, lineHeight: 16, color: '#9CA3AF', fontFamily: '"Nunito Sans", sans-serif' }}>
-              Hold: {hold}s
-            </Text>
-            <Text style={{ fontSize: 10, lineHeight: 16, color: '#9CA3AF', fontFamily: '"Nunito Sans", sans-serif' }}>
+            <Text style={{ fontSize: 10, lineHeight: 16, color: '#9CA3AF', fontFamily: INTER }}>
               Eccentric: {eccentric}s
             </Text>
-            <Text style={{ fontSize: 10, lineHeight: 16, color: '#9CA3AF', fontFamily: '"Nunito Sans", sans-serif' }}>
-              Idle: {idle}s
+            <Text style={{ fontSize: 10, lineHeight: 16, color: '#9CA3AF', fontFamily: INTER }}>
+              Pause (bottom): {pauseBottom}s
+            </Text>
+            <Text style={{ fontSize: 10, lineHeight: 16, color: '#9CA3AF', fontFamily: INTER }}>
+              Concentric: {concentric}s
+            </Text>
+            <Text style={{ fontSize: 10, lineHeight: 16, color: '#9CA3AF', fontFamily: INTER }}>
+              Pause (top): {pauseTop}s
             </Text>
           </View>
           <View

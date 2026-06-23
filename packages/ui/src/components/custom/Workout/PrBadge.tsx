@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { View, Text, Animated, Easing, type ViewProps } from 'react-native'
 
 export type PRType = 'e1rm' | 'weight' | 'reps' | 'volume' | 'velocity'
@@ -33,8 +33,8 @@ export function PrBadge({
   ...props
 }: PrBadgeProps) {
   const resolvedLabel = labelProp ?? typeLabels[type]
-  const scale = useRef(new Animated.Value(animate ? 0.8 : 1)).current
-  const opacity = useRef(new Animated.Value(animate ? 0 : 1)).current
+  const [scale] = useState(() => new Animated.Value(animate ? 0.8 : 1))
+  const [opacity] = useState(() => new Animated.Value(animate ? 0 : 1))
 
   useEffect(() => {
     if (!animate) return
@@ -87,7 +87,7 @@ export function PrBadge({
     >
       <Text
         style={{
-          fontSize: 12,
+          fontSize: 10,
           color: '#FF7900',
           fontWeight: '700',
           fontFamily: 'Inter, sans-serif',

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 import { VelocityStrip } from './VelocityStrip'
@@ -87,22 +87,24 @@ export const Mini: Story = {
   },
 }
 
+function InteractiveVelocityStrip() {
+  const [expanded, setExpanded] = useState(false)
+  return (
+    <View style={{ width: 300, padding: 16 }}>
+      <VelocityStrip
+        velocities={moderateSet}
+        expanded={expanded}
+        onToggle={() => setExpanded(!expanded)}
+        onRepPress={(index, velocity) =>
+          console.log(`Rep ${index + 1}: ${velocity}`)
+        }
+      />
+    </View>
+  )
+}
+
 export const Interactive: Story = {
-  render: () => {
-    const [expanded, setExpanded] = useState(false)
-    return (
-      <View style={{ width: 300, padding: 16 }}>
-        <VelocityStrip
-          velocities={moderateSet}
-          expanded={expanded}
-          onToggle={() => setExpanded(!expanded)}
-          onRepPress={(index, velocity) =>
-            console.log(`Rep ${index + 1}: ${velocity}`)
-          }
-        />
-      </View>
-    )
-  },
+  render: () => <InteractiveVelocityStrip />,
 }
 
 export const AllProfiles: Story = {

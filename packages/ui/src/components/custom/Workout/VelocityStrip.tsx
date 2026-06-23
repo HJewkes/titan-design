@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-native'
 
 export interface VelocityStripProps extends ViewProps {
@@ -88,9 +88,9 @@ export function VelocityStrip({
   const loss = calculateVelocityLoss(velocities)
   const meanZone = getVelocityZoneName(meanVelocity)
 
-  const heightAnim = useRef(new Animated.Value(expanded ? 60 : 3)).current
-  const labelOpacity = useRef(new Animated.Value(expanded ? 1 : 0)).current
-  const infoOpacity = useRef(new Animated.Value(expanded ? 1 : 0)).current
+  const [heightAnim] = useState(() => new Animated.Value(expanded ? 60 : 3))
+  const [labelOpacity] = useState(() => new Animated.Value(expanded ? 1 : 0))
+  const [infoOpacity] = useState(() => new Animated.Value(expanded ? 1 : 0))
 
   useEffect(() => {
     if (variant === 'mini') return

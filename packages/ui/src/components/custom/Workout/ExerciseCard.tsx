@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { View, Text, Pressable } from 'react-native'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { VelocityStrip } from './VelocityStrip'
@@ -296,13 +296,7 @@ function ExpandedCard({
 
       {tempo && (
         <View style={{ marginTop: 8, paddingHorizontal: 14 }} testID="exercise-card-tempo">
-          <TempoDisplay
-            concentric={tempo[0]}
-            hold={tempo[1]}
-            eccentric={tempo[2]}
-            idle={tempo[3]}
-            size="sm"
-          />
+          <TempoDisplay tempo={tempo} size="sm" />
         </View>
       )}
 

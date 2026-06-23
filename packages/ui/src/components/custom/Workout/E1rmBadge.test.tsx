@@ -56,6 +56,20 @@ describe('E1rmBadge', () => {
       render(<E1rmBadge value={315} isPr />)
       expect(screen.getByTestId('e1rm-badge')).toBeInTheDocument()
     })
+
+    it('uses default border color when not a PR', () => {
+      render(<E1rmBadge value={225} />)
+      expect(screen.getByTestId('e1rm-badge')).toHaveStyle({
+        borderTopColor: '#1F1F1F',
+      })
+    })
+
+    it('uses brand-primary-subtle border color on PR state', () => {
+      render(<E1rmBadge value={315} isPr />)
+      expect(screen.getByTestId('e1rm-badge')).toHaveStyle({
+        borderTopColor: 'rgba(255, 121, 0, 0.12)',
+      })
+    })
   })
 
   describe('size', () => {

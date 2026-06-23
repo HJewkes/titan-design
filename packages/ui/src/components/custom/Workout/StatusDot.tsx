@@ -1,5 +1,4 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import React from 'react'
 import { View, Text, type ViewProps } from 'react-native'
 
 export type StatusDotVariant =
@@ -47,14 +46,14 @@ const ringVariantStyles: Record<string, Record<string, unknown>> = {
   },
 }
 
-const glowStyles: Record<StatusDotVariant, Record<string, unknown> | null> = {
+const glowStyles: Record<StatusDotVariant, Record<string, unknown>> = {
   success: { boxShadow: '0 0 4px rgba(20,184,166,0.4)' },
   warning: { boxShadow: '0 0 4px rgba(245,158,11,0.4)' },
   error: { boxShadow: '0 0 4px rgba(239,68,68,0.4)' },
-  neutral: null,
-  'on-track': null,
-  deviation: null,
-  future: null,
+  neutral: { boxShadow: '0 0 4px rgba(107,114,128,0.4)' },
+  'on-track': { boxShadow: '0 0 4px rgba(20,184,166,0.4)' },
+  deviation: { boxShadow: '0 0 4px rgba(245,158,11,0.4)' },
+  future: { boxShadow: '0 0 4px rgba(107,114,128,0.4)' },
 }
 
 const iconChars: Record<string, string> = {

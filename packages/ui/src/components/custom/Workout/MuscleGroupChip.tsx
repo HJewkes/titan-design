@@ -1,5 +1,4 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import React from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 
 // Aliases for spec compatibility: under=behind, maintenance=ontrack, productive=target
@@ -40,11 +39,11 @@ export function MuscleGroupChip({
         flexDirection: 'row',
         alignItems: 'center',
         borderRadius: 9999,
-        paddingHorizontal: 8,
-        paddingVertical: 2,
-        backgroundColor: '#1C1C1C',
+        paddingHorizontal: 9,
+        paddingVertical: 3,
+        backgroundColor: 'var(--color-surface-raised)',
         borderWidth: 1,
-        borderColor: '#1F1F1F',
+        borderColor: 'var(--color-border-default)',
       }}
       accessibilityLabel={onPress ? undefined : `${name}, volume status: ${statusLabel}`}
       testID="muscle-group-chip"
@@ -55,7 +54,7 @@ export function MuscleGroupChip({
           width: 6,
           height: 6,
           borderRadius: 9999,
-          marginRight: 6,
+          marginRight: 5,
           flexShrink: 0,
           backgroundColor: dotColor,
         }}
@@ -64,10 +63,10 @@ export function MuscleGroupChip({
       />
       <Text
         style={{
-          fontFamily: '"Nunito Sans", sans-serif',
+          fontFamily: 'Inter, sans-serif',
           fontWeight: '500',
-          fontSize: 10,
-          color: '#9CA3AF',
+          fontSize: 11,
+          color: 'var(--color-text-secondary)',
         }}
         accessibilityElementsHidden
       >

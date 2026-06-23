@@ -1,13 +1,17 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-native'
 
-export type WorkoutPillStatus = 'completed' | 'active' | 'next' | 'upcoming' | 'missed' | 'deload'
+/**
+ * Spec statuses: completed | current | upcoming | deload.
+ * `next` and `missed` are additive extras supported by this implementation.
+ */
+export type WorkoutPillStatus = 'completed' | 'current' | 'upcoming' | 'deload' | 'next' | 'missed'
 
 export interface WorkoutPillProps extends ViewProps {
   name: string
   status: WorkoutPillStatus
-  /** Pulsing animation, independent of status */
+  /** Force pulsing animation. Defaults to pulsing only on `current` status. */
   pulse?: boolean
   onPress?: () => void
   highlighted?: boolean
@@ -16,7 +20,7 @@ export interface WorkoutPillProps extends ViewProps {
 
 const statusBgColors: Record<WorkoutPillStatus, string> = {
   completed: 'rgba(20,184,166,0.15)',
-  active: 'rgba(255,121,0,0.15)',
+  current: 'rgba(255,121,0,0.15)',
   next: 'transparent',
   upcoming: '#1C1C1C',
   missed: 'rgba(209,67,67,0.1)',
@@ -25,7 +29,7 @@ const statusBgColors: Record<WorkoutPillStatus, string> = {
 
 const statusBorderStyles: Record<WorkoutPillStatus, Record<string, unknown>> = {
   completed: { borderWidth: 1, borderColor: 'rgba(20,184,166,0.3)' },
-  active: { borderWidth: 1, borderColor: 'rgba(255,121,0,0.3)' },
+  current: { borderWidth: 1, borderColor: 'rgba(255,121,0,0.3)' },
   next: { borderWidth: 1, borderColor: 'rgba(255,121,0,0.4)' },
   upcoming: { borderWidth: 1, borderColor: '#1F1F1F' },
   missed: { borderWidth: 1, borderColor: 'rgba(209,67,67,0.25)' },
@@ -34,7 +38,7 @@ const statusBorderStyles: Record<WorkoutPillStatus, Record<string, unknown>> = {
 
 const textColors: Record<WorkoutPillStatus, string> = {
   completed: '#14B8A6',
-  active: '#FF7900',
+  current: '#FF7900',
   next: '#FF7900',
   upcoming: '#6B7280',
   missed: 'rgba(209,67,67,0.7)',
@@ -42,7 +46,7 @@ const textColors: Record<WorkoutPillStatus, string> = {
 }
 
 function usePulse(enabled: boolean) {
-  const opacity = useRef(new Animated.Value(1)).current
+  const [opacity] = useState(() => new Animated.Value(1))
 
   useEffect(() => {
     if (!enabled) {
@@ -77,19 +81,20 @@ function usePulse(enabled: boolean) {
 export function WorkoutPill({
   name,
   status,
-  pulse = false,
+  pulse,
   onPress,
   highlighted = false,
   className,
   ...props
 }: WorkoutPillProps) {
-  const pulseOpacity = usePulse(pulse)
+  const shouldPulse = pulse ?? status === 'current'
+  const pulseOpacity = usePulse(shouldPulse)
   const isCompleted = status === 'completed'
   const isMissed = status === 'missed'
 
   const pill = (
     <Animated.View
-      style={pulse ? { opacity: pulseOpacity } : undefined}
+      style={shouldPulse ? { opacity: pulseOpacity } : undefined}
       testID="workout-pill"
     >
       <View

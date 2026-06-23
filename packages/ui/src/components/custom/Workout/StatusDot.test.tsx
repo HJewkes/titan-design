@@ -83,6 +83,13 @@ describe('StatusDot', () => {
       expect(screen.getByTestId('status-dot')).toBeInTheDocument()
       expect(screen.getByLabelText('future status')).toBeInTheDocument()
     })
+
+    it('renders the future variant with a 1px dashed border', () => {
+      render(<StatusDot variant="future" />)
+      const dot = screen.getByTestId('status-dot')
+      expect(dot.style.borderTopStyle).toBe('dashed')
+      expect(dot.style.borderTopWidth).toBe('1px')
+    })
   })
 
   describe('md size', () => {
@@ -93,14 +100,28 @@ describe('StatusDot', () => {
   })
 
   describe('glow', () => {
-    it('renders with glow prop without error', () => {
+    it('applies a box-shadow when glow is set on a solid variant', () => {
       render(<StatusDot variant="success" glow />)
-      expect(screen.getByTestId('status-dot')).toBeInTheDocument()
+      const dot = screen.getByTestId('status-dot')
+      expect(dot.style.boxShadow).toContain('rgba(20,184,166,0.4)')
     })
 
-    it('renders glow on ring variants', () => {
+    it('applies a box-shadow when glow is set on a ring variant', () => {
       render(<StatusDot variant="on-track" glow />)
-      expect(screen.getByTestId('status-dot')).toBeInTheDocument()
+      const dot = screen.getByTestId('status-dot')
+      expect(dot.style.boxShadow).toContain('rgba(20,184,166,0.4)')
+    })
+
+    it('applies a gray box-shadow when glow is set on the future variant', () => {
+      render(<StatusDot variant="future" glow />)
+      const dot = screen.getByTestId('status-dot')
+      expect(dot.style.boxShadow).toContain('rgba(107,114,128,0.4)')
+    })
+
+    it('does not apply a box-shadow when glow is not set', () => {
+      render(<StatusDot variant="on-track" />)
+      const dot = screen.getByTestId('status-dot')
+      expect(dot.style.boxShadow).toBe('')
     })
   })
 

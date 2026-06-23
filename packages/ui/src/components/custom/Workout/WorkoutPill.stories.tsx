@@ -10,7 +10,7 @@ const meta: Meta<typeof WorkoutPill> = {
     name: { control: 'text', description: 'Workout name' },
     status: {
       control: 'select',
-      options: ['completed', 'active', 'next', 'upcoming', 'missed', 'deload'],
+      options: ['completed', 'current', 'next', 'upcoming', 'missed', 'deload'],
       description: 'Pill status',
     },
     pulse: { control: 'boolean', description: 'Pulsing animation (independent of status)' },
@@ -25,12 +25,12 @@ export const Completed: Story = {
   args: { name: 'Upper A', status: 'completed' },
 }
 
-export const Active: Story = {
-  args: { name: 'Lower B', status: 'active' },
+export const Current: Story = {
+  args: { name: 'Lower B', status: 'current' },
 }
 
-export const ActivePulsing: Story = {
-  args: { name: 'Lower B', status: 'active', pulse: true },
+export const CurrentNoPulse: Story = {
+  args: { name: 'Lower B', status: 'current', pulse: false },
 }
 
 export const Next: Story = {
@@ -53,7 +53,7 @@ export const AllStatuses: Story = {
   render: () => (
     <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
       <WorkoutPill name="Upper A" status="completed" />
-      <WorkoutPill name="Lower B" status="active" pulse />
+      <WorkoutPill name="Lower B" status="current" />
       <WorkoutPill name="Upper B" status="next" />
       <WorkoutPill name="Lower A" status="upcoming" />
       <WorkoutPill name="Rest Day" status="missed" />

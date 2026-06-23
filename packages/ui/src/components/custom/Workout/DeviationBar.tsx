@@ -1,6 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import React from 'react'
-import { View, type ViewProps } from 'react-native'
+import { View, type ViewProps, type ViewStyle } from 'react-native'
 
 export interface DeviationBarProps extends ViewProps {
   deviation: number
@@ -31,8 +30,8 @@ export function DeviationBar({
   const clamped = Math.max(-1, Math.min(1, deviation))
   const resolvedWidth = width ?? 40
   const dotPosition = ((clamped + 1) / 2) * resolvedWidth
-  const dotSize = 6
-  const trackHeight = 4
+  const dotSize = 8
+  const trackHeight = 6
   const containerHeight = 10
   const valueNow = Math.round(clamped * 100)
 
@@ -50,7 +49,14 @@ export function DeviationBar({
       {...props}
     >
       <View
-        style={{ height: trackHeight, backgroundColor: '#333333', width: resolvedWidth, borderRadius: 9999 }}
+        style={{
+          height: trackHeight,
+          width: resolvedWidth,
+          borderRadius: 3,
+          // react-native-web renders backgroundImage at runtime; not in RN ViewStyle types
+          backgroundImage:
+            'linear-gradient(90deg, rgba(20,184,166,0.25) 0%, rgba(107,114,128,0.15) 50%, rgba(255,176,32,0.25) 100%)',
+        } as ViewStyle}
       />
       <View
         style={{
@@ -58,6 +64,9 @@ export function DeviationBar({
           width: dotSize,
           height: dotSize,
           borderRadius: 9999,
+          borderWidth: 1.5,
+          borderColor: '#F3F4F6',
+          boxShadow: '0 0 4px rgba(0,0,0,0.5)',
           backgroundColor: getDotColor(clamped),
           left: Math.max(0, Math.min(dotPosition - dotSize / 2, resolvedWidth - dotSize)),
           top: (containerHeight - dotSize) / 2,

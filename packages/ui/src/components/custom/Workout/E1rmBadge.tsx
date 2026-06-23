@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import React, { useRef } from 'react'
+import { useState } from 'react'
 import { View, Text, Pressable, Animated, type ViewProps } from 'react-native'
 import { Crown } from 'lucide-react'
 
@@ -36,7 +36,7 @@ export function E1rmBadge({
   className,
   ...props
 }: E1rmBadgeProps) {
-  const scaleAnim = useRef(new Animated.Value(1)).current
+  const [scaleAnim] = useState(() => new Animated.Value(1))
   const config = sizeConfig[size]
 
   const handlePressIn = () => {
@@ -69,7 +69,7 @@ export function E1rmBadge({
         gap: 3,
         borderRadius: 2,
         borderWidth: 1,
-        borderColor: isPr ? 'rgba(255, 121, 0, 0.3)' : '#1F1F1F',
+        borderColor: isPr ? 'rgba(255, 121, 0, 0.12)' : '#1F1F1F',
         backgroundColor: isPr ? 'rgba(255, 121, 0, 0.12)' : '#1C1C1C',
         paddingHorizontal: config.paddingH,
         paddingVertical: config.paddingV,
