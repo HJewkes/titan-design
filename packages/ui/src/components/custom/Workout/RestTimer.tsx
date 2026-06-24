@@ -1,6 +1,8 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import React from 'react'
 import { View, Text, Pressable } from 'react-native'
+import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
+
+const BRAND_PRIMARY = '#FF7900'
 
 export interface RestTimerProps {
   totalSeconds: number
@@ -32,9 +34,9 @@ export function RestTimer({
     <View
       style={{
         width: '100%',
-        backgroundColor: '#1C1C1C',
+        backgroundColor: WORKOUT_TOKENS.surface.raised,
         borderTopWidth: 1,
-        borderTopColor: '#1F1F1F',
+        borderTopColor: WORKOUT_TOKENS.border.default,
         paddingVertical: 12,
         paddingHorizontal: 16,
       }}
@@ -101,7 +103,7 @@ export function RestTimer({
       <View
         style={{
           height: 3,
-          backgroundColor: '#1F1F1F',
+          backgroundColor: WORKOUT_TOKENS.border.default,
           borderRadius: 2,
           marginBottom: 12,
         }}
@@ -110,7 +112,7 @@ export function RestTimer({
         <View
           style={{
             height: '100%',
-            backgroundColor: '#FF7900',
+            backgroundColor: BRAND_PRIMARY,
             borderRadius: 2,
             width: `${progressPct}%`,
           }}
@@ -160,7 +162,7 @@ export function RestTimer({
               fontSize: 11,
               fontFamily: 'Inter, sans-serif',
               fontWeight: '600',
-              color: '#FF7900',
+              color: BRAND_PRIMARY,
             }}
           >
             Skip

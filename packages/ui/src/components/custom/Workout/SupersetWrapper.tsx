@@ -6,7 +6,6 @@ export interface SupersetWrapperProps {
   label?: string
   color?: string
   children: React.ReactNode
-  syncExpansion?: boolean
 }
 
 const DEFAULTS = {
@@ -31,7 +30,7 @@ export function SupersetWrapper({
         marginBottom: 8,
         overflow: 'visible',
       }}
-      accessibilityRole={"group" as any}
+      accessibilityRole={'group' as never}
       accessibilityLabel={`Superset: ${label}`}
       testID="superset-wrapper"
     >
