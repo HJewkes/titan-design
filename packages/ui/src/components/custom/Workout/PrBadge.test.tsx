@@ -73,10 +73,13 @@ describe('PrBadge', () => {
   })
 
   describe('compact mode', () => {
-    it('renders only star icon when compact', () => {
+    it('renders only the star icon when compact', () => {
       render(<PrBadge compact animate={false} />)
       const star = screen.getByTestId('pr-badge-star')
-      expect(star).toHaveTextContent('\u2605')
+      expect(star).toBeInTheDocument()
+      // The compact star is now a Lucide SVG icon, not text
+      expect(star.querySelector('svg')).toBeInTheDocument()
+      expect(star).not.toHaveTextContent('\u2605')
     })
 
     it('does not show label text in compact mode', () => {

@@ -1,4 +1,14 @@
-export { E1rmBadge, type E1rmBadgeProps, type E1rmBadgeSize } from './E1rmBadge'
+export {
+  BaseBadge,
+  type BaseBadgeProps,
+  type BaseBadgeVariant,
+  type BaseBadgeSize,
+} from './BaseBadge'
+export {
+  WeightBadge,
+  type WeightBadgeProps,
+  type WeightBadgeSize,
+} from './WeightBadge'
 export { PrBadge, type PrBadgeProps, type PRType } from './PrBadge'
 export { StatusDot, type StatusDotVariant, type StatusDotProps } from './StatusDot'
 export { PlaceholderStrip, type PlaceholderStripProps } from './PlaceholderStrip'
