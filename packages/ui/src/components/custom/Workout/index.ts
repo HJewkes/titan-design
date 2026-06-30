@@ -83,3 +83,11 @@ export {
   type StrengthTrendDataPoint,
   type StrengthTrendChartMesoBoundary,
 } from './StrengthTrendChart'
+export {
+  CapacityBandChart,
+  type CapacityBandChartProps,
+  type CapacityBandDataPoint,
+  type CapacityBandProjection,
+  type WorkoutDot,
+  type WorkoutDotStatus,
+} from './CapacityBandChart'
