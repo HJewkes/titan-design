@@ -54,3 +54,9 @@ export {
   type MesoCardProps,
   type MesoVolumeHeatmapEntry,
 } from './MesoCard'
+export {
+  StrengthTrendChart,
+  type StrengthTrendChartProps,
+  type StrengthTrendDataPoint,
+  type StrengthTrendChartMesoBoundary,
+} from './StrengthTrendChart'
