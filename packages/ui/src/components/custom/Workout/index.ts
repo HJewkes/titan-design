@@ -77,3 +77,9 @@ export {
   type MesoStatusCoaching,
   type MesoStatusNextTarget,
 } from './MesoStatusCard'
+export {
+  StrengthTrendChart,
+  type StrengthTrendChartProps,
+  type StrengthTrendDataPoint,
+  type StrengthTrendChartMesoBoundary,
+} from './StrengthTrendChart'
