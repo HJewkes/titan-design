@@ -55,6 +55,12 @@ export {
   type MesoVolumeHeatmapEntry,
 } from './MesoCard'
 export {
+  PrHistoryModal,
+  type PrHistoryModalProps,
+  type PrRecord,
+  type PrRecordType,
+} from './PrHistoryModal'
+export {
   ReadinessCheck,
   type ReadinessCheckProps,
   type ReadinessFactor,
