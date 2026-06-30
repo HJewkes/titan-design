@@ -1,15 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
-import { E1rmBadge } from './E1rmBadge'
+import { WeightBadge } from './WeightBadge'
 
-const meta: Meta<typeof E1rmBadge> = {
-  title: 'Custom/Workout/E1rmBadge',
-  component: E1rmBadge,
+const meta: Meta<typeof WeightBadge> = {
+  title: 'Custom/Workout/WeightBadge',
+  component: WeightBadge,
   tags: ['autodocs'],
   argTypes: {
-    value: { control: 'number', description: 'Estimated 1RM value' },
+    value: { control: 'number', description: 'Weight value' },
     unit: { control: 'select', options: ['lbs', 'kg'], description: 'Unit system' },
-    showIcon: { control: 'boolean', description: 'Show crown icon' },
+    reps: {
+      control: 'number',
+      description: 'N-rep max context (omit for estimated 1RM)',
+    },
+    showIcon: { control: 'boolean', description: 'Show the weight icon' },
     isPr: { control: 'boolean', description: 'Apply PR styling (orange bg, star)' },
     size: { control: 'select', options: ['sm', 'md', 'lg'], description: 'Badge size' },
     delta: { control: 'number', description: 'Percentage change since last mesocycle' },
@@ -18,7 +22,7 @@ const meta: Meta<typeof E1rmBadge> = {
 }
 
 export default meta
-type Story = StoryObj<typeof E1rmBadge>
+type Story = StoryObj<typeof WeightBadge>
 
 export const Default: Story = {
   args: { value: 217, unit: 'lbs' },
@@ -26,6 +30,10 @@ export const Default: Story = {
 
 export const WithoutIcon: Story = {
   args: { value: 217, unit: 'lbs', showIcon: false },
+}
+
+export const RepMax: Story = {
+  args: { value: 275, unit: 'lbs', reps: 5 },
 }
 
 export const WithPr: Story = {
@@ -48,26 +56,31 @@ export const AllVariants: Story = {
   render: () => (
     <View style={{ gap: 12 }}>
       <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
-        <E1rmBadge value={217} unit="lbs" size="sm" />
-        <E1rmBadge value={217} unit="lbs" size="md" />
-        <E1rmBadge value={217} unit="lbs" size="lg" />
+        <WeightBadge value={217} unit="lbs" size="sm" />
+        <WeightBadge value={217} unit="lbs" size="md" />
+        <WeightBadge value={217} unit="lbs" size="lg" />
       </View>
       <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
-        <E1rmBadge value={217} unit="lbs" size="sm" showIcon={false} />
-        <E1rmBadge value={217} unit="lbs" size="md" showIcon={false} />
-        <E1rmBadge value={217} unit="lbs" size="lg" showIcon={false} />
+        <WeightBadge value={217} unit="lbs" size="sm" showIcon={false} />
+        <WeightBadge value={217} unit="lbs" size="md" showIcon={false} />
+        <WeightBadge value={217} unit="lbs" size="lg" showIcon={false} />
       </View>
       <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
-        <E1rmBadge value={217} unit="lbs" size="sm" isPr />
-        <E1rmBadge value={217} unit="lbs" size="md" isPr />
-        <E1rmBadge value={217} unit="lbs" size="lg" isPr />
+        <WeightBadge value={275} unit="lbs" reps={5} />
+        <WeightBadge value={315} unit="lbs" reps={3} />
+        <WeightBadge value={185} unit="lbs" reps={8} />
       </View>
       <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
-        <E1rmBadge value={217} unit="lbs" delta={3} />
-        <E1rmBadge value={217} unit="lbs" delta={-2} />
+        <WeightBadge value={217} unit="lbs" size="sm" isPr />
+        <WeightBadge value={217} unit="lbs" size="md" isPr />
+        <WeightBadge value={217} unit="lbs" size="lg" isPr />
       </View>
       <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
-        <E1rmBadge value={217} unit="lbs" isPr delta={3} size="lg" />
+        <WeightBadge value={217} unit="lbs" delta={3} />
+        <WeightBadge value={217} unit="lbs" delta={-2} />
+      </View>
+      <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
+        <WeightBadge value={217} unit="lbs" isPr delta={3} size="lg" />
       </View>
     </View>
   ),

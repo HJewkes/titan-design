@@ -4,7 +4,7 @@ import { View, Text, Pressable } from 'react-native'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { VelocityStrip } from './VelocityStrip'
 import { PlaceholderStrip } from './PlaceholderStrip'
-import { E1rmBadge } from './E1rmBadge'
+import { WeightBadge } from './WeightBadge'
 import { PrBadge } from './PrBadge'
 import { TempoDisplay } from './TempoDisplay'
 import { SetRow, type SetRowProps } from './SetRow'
@@ -169,7 +169,7 @@ function CollapsedCard({
             </Text>
           )}
           {e1rm && (
-            <E1rmBadge
+            <WeightBadge
               value={e1rm.value}
               unit={e1rm.unit}
               size="sm"
@@ -278,7 +278,7 @@ function ExpandedCard({
             </Text>
           )}
           {e1rm && (
-            <E1rmBadge
+            <WeightBadge
               value={e1rm.value}
               unit={e1rm.unit}
               size="sm"

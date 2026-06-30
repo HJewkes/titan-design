@@ -31,7 +31,7 @@ describe('ExerciseCard', () => {
       )
     })
 
-    it('renders E1rmBadge when e1rm provided', () => {
+    it('renders WeightBadge when e1rm provided', () => {
       render(
         <ExerciseCard
           {...baseCollapsedProps}

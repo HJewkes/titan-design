@@ -1,6 +1,8 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useEffect, useState } from 'react'
 import { View, Text, Animated, Easing, type ViewProps } from 'react-native'
+import { Star } from 'lucide-react'
+import { BaseBadge } from './BaseBadge'
 
 export type PRType = 'e1rm' | 'weight' | 'reps' | 'volume' | 'velocity'
 
@@ -59,29 +61,17 @@ export function PrBadge({
   const badge = compact ? (
     <View
       className={className}
+      accessibilityRole="image"
       accessibilityLabel={`Personal record: ${resolvedLabel}`}
+      testID="pr-badge-star"
       {...props}
     >
-      <Text
-        style={{ fontSize: 13, color: '#FF7900', lineHeight: 20 }}
-        testID="pr-badge-star"
-      >
-        {'\u2605'}
-      </Text>
+      <Star size={14} color="#FF7900" fill="#FF7900" strokeWidth={2} />
     </View>
   ) : (
-    <View
+    <BaseBadge
+      variant="pr"
       className={className}
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: 'rgba(255, 121, 0, 0.12)',
-        paddingHorizontal: 8,
-        paddingVertical: 2,
-        borderRadius: 2,
-        borderWidth: 1,
-        borderColor: 'rgba(255, 121, 0, 0.3)',
-      }}
       accessibilityLabel={`Personal record: ${resolvedLabel}`}
       {...props}
     >
@@ -95,7 +85,7 @@ export function PrBadge({
       >
         {'\u2605'} {resolvedLabel}
       </Text>
-    </View>
+    </BaseBadge>
   )
 
   if (animate) {
