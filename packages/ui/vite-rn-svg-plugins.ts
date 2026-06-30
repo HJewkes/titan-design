@@ -33,7 +33,11 @@ export function reactNativeSvgWebResolver(): Plugin {
     name: 'react-native-svg-web-resolver',
     enforce: 'pre',
     resolveId(source, importer) {
-      if (!importer || !importer.includes('react-native-svg') || !source.startsWith('.')) {
+      // Path-bounded match: only the real package dir (.../node_modules/react-native-svg/...)
+      // contains '/react-native-svg/'. pnpm peer-hash dirs encode it as
+      // 'react-native-svg@<version>' (e.g. lucide-react-native's hash), so a bare
+      // substring would over-match and rewrite their relative imports too.
+      if (!importer || !importer.includes('/react-native-svg/') || !source.startsWith('.')) {
         return null
       }
       const base = resolvePath(dirname(importer), source)
@@ -96,16 +100,22 @@ export function reactNativeBodyHighlighterEsm(): Plugin {
 /** Alias entries that point react-native(-svg) at their web builds. */
 export const svgWebAliases: Alias[] = [{ find: /^react-native-svg$/, replacement: svgModuleEntry }]
 
-/** `.web.*`-first extension order so web platform files win over native. */
+/**
+ * `.web.*`-first extension order so web platform files win over native. The
+ * remainder mirrors Vite's default extension order, so using this as a full
+ * replacement stays equivalent to "web-prepended defaults" — preserving `.mjs`
+ * priority and `.mts`, which a hand-trimmed list would otherwise drop.
+ */
 export const webResolveExtensions = [
   '.web.tsx',
   '.web.ts',
   '.web.jsx',
   '.web.js',
-  '.tsx',
+  '.mjs',
+  '.js',
+  '.mts',
   '.ts',
   '.jsx',
-  '.js',
-  '.mjs',
+  '.tsx',
   '.json',
 ]
