@@ -54,3 +54,11 @@ export {
   type MesoCardProps,
   type MesoVolumeHeatmapEntry,
 } from './MesoCard'
+export {
+  CapacityBandChart,
+  type CapacityBandChartProps,
+  type CapacityBandDataPoint,
+  type CapacityBandProjection,
+  type WorkoutDot,
+  type WorkoutDotStatus,
+} from './CapacityBandChart'
