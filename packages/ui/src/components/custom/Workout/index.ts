@@ -93,6 +93,12 @@ export {
 } from './CapacityBandChart'
 export { BodyMap, type BodyMapProps, type BodyMapData } from './BodyMap'
 export {
+  BodyMapDetailPanel,
+  type BodyMapDetailPanelProps,
+  type ContributingExercise,
+  type UpcomingExercise,
+} from './BodyMapDetailPanel'
+export {
   MuscleGroup,
   SimpleMuscleGroup,
   SIMPLE_TO_DETAILED,
