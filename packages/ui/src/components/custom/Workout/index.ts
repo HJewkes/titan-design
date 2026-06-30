@@ -91,3 +91,19 @@ export {
   type WorkoutDot,
   type WorkoutDotStatus,
 } from './CapacityBandChart'
+export { BodyMap, type BodyMapProps, type BodyMapData } from './BodyMap'
+export {
+  MuscleGroup,
+  SimpleMuscleGroup,
+  SIMPLE_TO_DETAILED,
+  DETAILED_TO_SIMPLE,
+  MUSCLE_TO_SVG_SLUGS,
+  MUSCLE_TO_CATEGORY,
+  MUSCLE_DISPLAY_NAMES,
+  SIMPLE_DISPLAY_NAMES,
+  DEFAULT_VOLUME_LANDMARKS,
+  VOLUME_STATUS_LABELS,
+  getHeatmapColor,
+  type MovementCategory,
+  type VolumeLandmarks,
+} from './muscleTaxonomy'

@@ -11,6 +11,17 @@ export const WORKOUT_TOKENS = {
     red: '#ff4757',
   },
 
+  // BodyMap volume heatmap scale (drive dynamic SVG fills, so inline values).
+  // Maps weekly-volume status against MEV/MAV/MRV landmarks to a fill color.
+  heatmap: {
+    none: '#E0E0E0', // gray — no training data
+    under: '#4A90D9', // cool blue — below MEV
+    maintenance: '#F5C842', // warm yellow — MEV to MAV
+    productive: '#4CAF50', // green — MAV to MRV
+    approaching: '#FFA502', // orange — near MRV
+    over: '#FF6B35', // red-orange — over MRV
+  },
+
   // Badge border-radius (rounded-sm is 4px, we need 2px)
   badgeRadius: 2,
 
