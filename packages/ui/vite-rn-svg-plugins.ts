@@ -2,6 +2,7 @@ import { createRequire } from 'node:module'
 import { dirname, resolve as resolvePath } from 'node:path'
 import { existsSync } from 'node:fs'
 import type { Alias, Plugin } from 'vite'
+import type { Plugin as EsbuildPlugin } from 'esbuild'
 
 const require = createRequire(import.meta.url)
 // esbuild ships nested under vite in the pnpm store; resolve it from there.
@@ -93,6 +94,33 @@ export function reactNativeBodyHighlighterEsm(): Plugin {
         logLevel: 'silent',
       })
       return { code: result.outputFiles[0].text, map: null }
+    },
+  }
+}
+
+/**
+ * esbuild-plugin equivalent of {@link reactNativeSvgWebResolver}, for use during
+ * Vite's dependency pre-bundling (`optimizeDeps.esbuildOptions.plugins`). The
+ * Vite `resolveId` plugin above never runs inside esbuild's optimizer pass, so
+ * when react-native-svg / react-native-body-highlighter are pre-bundled (rather
+ * than excluded) the same web resolution must be replayed here:
+ *   - bare `react-native-svg` -> its ESM ("module") build entry, and
+ *   - relative imports inside the package -> their `.web.js` siblings when one
+ *     exists (so the web implementations win over the native Flow sources).
+ */
+export function reactNativeSvgWebResolverEsbuild(): EsbuildPlugin {
+  return {
+    name: 'react-native-svg-web-resolver-esbuild',
+    setup(build) {
+      build.onResolve({ filter: /^react-native-svg$/ }, () => ({ path: svgModuleEntry }))
+      build.onResolve({ filter: /^\./ }, (args) => {
+        if (!args.importer.includes('/react-native-svg/')) return null
+        const base = resolvePath(dirname(args.importer), args.path)
+        for (const candidate of [`${base}.web.js`, `${base}/index.web.js`]) {
+          if (existsSync(candidate)) return { path: candidate }
+        }
+        return null
+      })
     },
   }
 }
