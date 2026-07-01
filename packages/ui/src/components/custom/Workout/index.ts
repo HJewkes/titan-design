@@ -141,3 +141,20 @@ export {
   type MovementCategory,
   type VolumeLandmarks,
 } from './muscleTaxonomy'
+export {
+  ActiveWorkoutPage,
+  countCompletedSets,
+  deriveWorkoutProgress,
+  findActiveExercise,
+  statusToCardState,
+  toActiveCardProps,
+  groupExercises,
+  type ActiveWorkoutPageProps,
+  type ActiveWorkoutExercise,
+  type ActiveWorkoutSuperset,
+  type ActiveWorkoutInput,
+  type ActiveWorkoutRest,
+  type ActiveExerciseStatus,
+  type WorkoutProgress,
+  type WorkoutGroup,
+} from './ActiveWorkoutPage'
