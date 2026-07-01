@@ -100,6 +100,30 @@ describe('ExerciseCard', () => {
       expect(headers).toHaveTextContent('RPE')
     })
 
+    it('shows the KG weight header when the unit is kg', () => {
+      render(
+        <ExerciseCard
+          {...expandedProps}
+          summary={{ sets: 3, reps: 8, weight: 84, unit: 'kg' }}
+        />,
+      )
+      const headers = screen.getByTestId('exercise-card-column-headers')
+      expect(headers).toHaveTextContent('KG')
+      expect(headers).not.toHaveTextContent('LBS')
+    })
+
+    it('derives the weight header from the sets unit when summary is absent', () => {
+      render(
+        <ExerciseCard
+          name="Squat"
+          state="expanded"
+          onToggle={vi.fn()}
+          sets={[{ mode: 'completed', setNumber: 1, reps: 8, weight: 60, unit: 'kg' }]}
+        />,
+      )
+      expect(screen.getByTestId('exercise-card-column-headers')).toHaveTextContent('KG')
+    })
+
     it('renders SetRow components', () => {
       render(<ExerciseCard {...expandedProps} />)
       const setRows = screen.getAllByTestId('set-row')
