@@ -104,6 +104,34 @@ describe('ReadinessCheck', () => {
       )
       expect(screen.getByTestId('readiness-check-warmup-badge')).toHaveTextContent('Caution')
     })
+
+    it('phrases a zero deficit as on-average rather than "below"', () => {
+      render(
+        <ReadinessCheck
+          {...baseProps}
+          factors={makeFactors()}
+          warmUpCompleted
+          warmUpValidation={{ velocityDeficit: 0, recommendation: 'Proceed.', status: 'good' }}
+        />,
+      )
+      expect(screen.getByTestId('readiness-check-warmup-deficit')).toHaveTextContent(
+        'Velocity on 14-day average',
+      )
+    })
+
+    it('phrases a negative deficit as above average', () => {
+      render(
+        <ReadinessCheck
+          {...baseProps}
+          factors={makeFactors()}
+          warmUpCompleted
+          warmUpValidation={{ velocityDeficit: -6, recommendation: 'Proceed.', status: 'good' }}
+        />,
+      )
+      expect(screen.getByTestId('readiness-check-warmup-deficit')).toHaveTextContent(
+        'Velocity 6% above 14-day average',
+      )
+    })
   })
 
   describe('accessibility', () => {

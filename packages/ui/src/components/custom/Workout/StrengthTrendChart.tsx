@@ -95,7 +95,9 @@ function buildGeometry(
   height: number,
 ): Geometry {
   const values = [...data, ...projection].map((p) => p.e1rm)
-  if (values.length === 0) {
+  // Empty state keys off actual data only: a projection with no measured
+  // sessions still shows the placeholder rather than a "Current: 0" chart.
+  if (data.length === 0) {
     return {
       hasData: false,
       toX: () => 0,
@@ -165,7 +167,11 @@ function computeTrend(
   if (boundaries.length > 0) {
     const lastBoundary = Math.max(...boundaries.map((b) => timeOf(b.date)))
     const filtered = data.filter((p) => timeOf(p.date) >= lastBoundary)
-    if (filtered.length >= 2) series = filtered
+    // The pill is labelled "this meso"; if the current meso has <2 points
+    // there is no meso trend to show — stay neutral rather than silently
+    // reporting the whole-series change under a "this meso" label.
+    if (filtered.length < 2) return { percent: 0, positive: true }
+    series = filtered
   }
   const first = series[0].e1rm
   const last = series[series.length - 1].e1rm

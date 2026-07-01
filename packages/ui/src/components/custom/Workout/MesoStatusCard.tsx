@@ -93,6 +93,7 @@ export interface MesoStatusCardProps extends ViewProps {
 }
 
 function clamp01(value: number): number {
+  if (!Number.isFinite(value)) return 0
   if (value < 0) return 0
   if (value > 1) return 1
   return value
@@ -380,16 +381,16 @@ export function MesoStatusCard({
             style={{ gap: 8 }}
             testID="meso-status-card-metrics"
           >
-            {metrics.map((metric) => (
-              <MetricCell key={metric.label} metric={metric} />
+            {metrics.map((metric, index) => (
+              <MetricCell key={`${metric.label}-${index}`} metric={metric} />
             ))}
           </View>
         )}
 
         {gauges.length > 0 && (
           <View style={{ gap: 12 }} testID="meso-status-card-gauges">
-            {gauges.map((gauge) => (
-              <Gauge key={gauge.label} gauge={gauge} />
+            {gauges.map((gauge, index) => (
+              <Gauge key={`${gauge.label}-${index}`} gauge={gauge} />
             ))}
           </View>
         )}

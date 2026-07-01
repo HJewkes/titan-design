@@ -98,6 +98,16 @@ describe('CapacityBandChart', () => {
       expect(dots[2]).toHaveStyle({ backgroundColor: '#2196F3' }) // below
     })
 
+    it('renders dots at the spec 8px size with a visible outline', () => {
+      render(<CapacityBandChart {...baseProps} />)
+      const dots = screen.getAllByTestId('capacity-band-chart-dot')
+      expect(dots[0]).toHaveStyle({
+        width: '8px',
+        height: '8px',
+        borderTopColor: '#F3F4F6',
+      })
+    })
+
     it('does not render dots as buttons without onWorkoutPress', () => {
       render(<CapacityBandChart {...baseProps} />)
       expect(screen.queryByRole('button')).not.toBeInTheDocument()

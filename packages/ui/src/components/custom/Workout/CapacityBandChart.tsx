@@ -5,7 +5,9 @@ import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-n
 const STATUS_SUCCESS = '#14B8A6'
 const STATUS_WARNING = '#FFB020'
 const STATUS_INFO = '#2196F3'
-const SURFACE_ELEVATED = '#191919'
+/** Dot outline: near-white ring so load dots read on the band fill and any
+ *  surface (matches the MesoStatusCard gauge-marker convention). */
+const DOT_BORDER = '#F3F4F6'
 const TEXT_TERTIARY = '#6B7280'
 const BAND_FILL = 'rgba(20,184,166,0.1)'
 const BAND_EDGE = 'rgba(20,184,166,0.45)'
@@ -16,7 +18,7 @@ const PADDING_RIGHT = 10
 const PADDING_TOP = 8
 const PADDING_BOTTOM = 16
 const COLUMN_STEP = 4
-const DOT_SIZE = 12
+const DOT_SIZE = 8
 
 export type WorkoutDotStatus = 'within' | 'above' | 'below'
 
@@ -451,7 +453,7 @@ export function CapacityBandChart({
           borderRadius: DOT_SIZE / 2,
           backgroundColor: color,
           borderWidth: 2,
-          borderColor: SURFACE_ELEVATED,
+          borderColor: DOT_BORDER,
         }
         const label = `Workout on ${formatDate(workout.date)}, load ${workout.load}, ${
           STATUS_PHRASES[workout.status]
