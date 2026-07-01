@@ -43,9 +43,11 @@ export interface WorkoutCardProps extends ViewProps {
 }
 
 const COLORS = {
-  textPrimary: '#F3F4F6',
-  textSecondary: '#9CA3AF',
-  textTertiary: '#6B7280',
+  // Theme-aware foregrounds: resolve to a readable color in both light and dark
+  // (react-native-web passes the CSS var through to the inline style).
+  textPrimary: 'var(--color-text-primary)',
+  textSecondary: 'var(--color-text-secondary)',
+  textTertiary: 'var(--color-text-tertiary)',
   statusSuccess: '#14B8A6',
   brandPrimary: '#FF7900',
   borderDefault: '#1F1F1F',
