@@ -169,7 +169,7 @@ export const UsageExample: Story = {
       <View className="gap-2 p-4 bg-surface-elevated rounded-lg max-w-md">
         <Text className="text-lg font-semibold text-text-primary mb-2">Upcoming Events</Text>
         {items.map((item, index) => (
-          <View key={index} className="flex-row justify-between items-center py-2 border-b border-border-default">
+          <View key={index} className="flex-row justify-between items-center py-2 border-b border-border">
             <Text className="text-text-primary">{item.title}</Text>
             <DateTime value={item.date} format="relative" color="secondary" className="text-sm" />
           </View>

@@ -64,7 +64,7 @@ export function Sidebar({
       <View
         style={{ width: currentWidth }}
         className={cn(
-          'h-full flex-col bg-surface-base border-r border-border-default transition-all duration-200',
+          'h-full flex-col bg-surface-base border-r border-border transition-all duration-200',
           className
         )}
         {...props}

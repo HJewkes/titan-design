@@ -188,7 +188,7 @@ export function PopoverContent({ children, className }: PopoverContentProps) {
       <View
         className={cn(
           'absolute z-50 min-w-[200px]',
-          'bg-surface-elevated rounded-lg shadow-lg border border-border-default',
+          'bg-surface-elevated rounded-lg shadow-lg border border-border',
           'p-4',
           placementStyles[placement],
           className

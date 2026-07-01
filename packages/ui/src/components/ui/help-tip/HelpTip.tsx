@@ -155,7 +155,7 @@ export function HelpTip({
           className={cn(
             'absolute z-50',
             'bg-surface-elevated rounded-lg shadow-lg',
-            'border border-border-default',
+            'border border-border',
             'px-3 py-2',
             placementStyles[placement],
             tooltipClassName

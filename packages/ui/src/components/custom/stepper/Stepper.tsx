@@ -91,7 +91,7 @@ function StepConnector({ index }: StepConnectorProps) {
       <View
         className={cn(
           'flex-1 h-0.5 mx-2',
-          isCompleted ? 'bg-brand-primary' : 'bg-border-default'
+          isCompleted ? 'bg-brand-primary' : 'bg-border'
         )}
       />
     )
@@ -101,7 +101,7 @@ function StepConnector({ index }: StepConnectorProps) {
     <View
       className={cn(
         'w-0.5 h-8 ml-4 my-1',
-        isCompleted ? 'bg-brand-primary' : 'bg-border-default'
+        isCompleted ? 'bg-brand-primary' : 'bg-border'
       )}
     />
   )
