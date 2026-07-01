@@ -1,5 +1,6 @@
 import type { StorybookConfig } from '@storybook/react-native-web-vite'
 import {
+  reactNativeBodyHighlighterEsm,
   reactNativeSvgWebResolver,
   reactNativeSvgWebResolverEsbuild,
   svgWebAliases,
@@ -30,8 +31,19 @@ const config: StorybookConfig = {
   // dynamic require, no duplicate react / invalid-hook-call). The svg `.web.js`
   // resolution that the Vite resolveId plugin provides for non-pre-bundled
   // paths is replayed inside the optimizer via the esbuild-plugin form.
-  viteFinal: async (cfg) => {
-    cfg.plugins = [reactNativeSvgWebResolver(), ...(cfg.plugins ?? [])]
+  //
+  // The dep optimizer only runs on the dev server. `build-storybook` (a Rollup
+  // production build) never pre-bundles, so it would hand the package's raw CJS
+  // dist — untranspiled JSX plus `exports.default` with no static ESM default —
+  // straight to Rollup, which fails with "default is not exported by dist/index.js".
+  // For the build only, pre-transform the entry to self-contained ESM via
+  // esbuild (reactNativeBodyHighlighterEsm) so Rollup sees a real default export.
+  // It is scoped to PRODUCTION because its esbuild-externalized react/react-native
+  // imports would break the dev server's ESM serving (hence the optimizer there).
+  viteFinal: async (cfg, options) => {
+    const buildOnlyPlugins =
+      options.configType === 'PRODUCTION' ? [reactNativeBodyHighlighterEsm()] : []
+    cfg.plugins = [reactNativeSvgWebResolver(), ...buildOnlyPlugins, ...(cfg.plugins ?? [])]
     cfg.resolve = cfg.resolve ?? {}
     const existingAlias = cfg.resolve.alias
     const existingAliasArray = Array.isArray(existingAlias)
