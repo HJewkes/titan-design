@@ -111,6 +111,22 @@ export {
   type ProgramBreadcrumb,
 } from './ProgramPlanningPage'
 export {
+  ExerciseDetailPage,
+  deriveExerciseStats,
+  toExerciseCardProps,
+  summarizeVbt,
+  EXERCISE_DETAIL_TABS,
+  type ExerciseDetailPageProps,
+  type ExerciseDetailTab,
+  type ExerciseDetailHeader,
+  type ExerciseDetailEntry,
+  type ExerciseTrend,
+  type ExerciseVbtSet,
+  type ExerciseVbt,
+  type ExerciseDetailStats,
+  type VbtSummary,
+} from './ExerciseDetailPage'
+export {
   MuscleGroup,
   SimpleMuscleGroup,
   SIMPLE_TO_DETAILED,
