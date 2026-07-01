@@ -2,15 +2,14 @@
 import { View, Text, Pressable } from 'react-native'
 import { Card } from '../../ui/card'
 import { Badge, type BadgeColor } from '../../ui/badge'
-import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 
 const BRAND_PRIMARY = '#FF7900'
 const BRAND_PRIMARY_SUBTLE = 'rgba(255,121,0,0.12)'
 const STATUS_SUCCESS = '#14B8A6'
 const STATUS_WARNING = '#FFB020'
 const STATUS_ERROR = '#D14343'
-const TEXT_PRIMARY = '#F3F4F6'
-const TEXT_SECONDARY = '#9CA3AF'
+const TEXT_PRIMARY = 'var(--color-text-primary)'
+const TEXT_SECONDARY = 'var(--color-text-secondary)'
 
 /** Emoji option sets per known factor, keyed by lowercase id/label. */
 const EMOJI_SETS: Record<string, readonly string[]> = {
@@ -121,8 +120,8 @@ function EmojiSlider({ factor }: EmojiSliderProps) {
                 paddingVertical: 8,
                 borderRadius: 8,
                 borderWidth: 1,
-                borderColor: selected ? BRAND_PRIMARY : WORKOUT_TOKENS.border.default,
-                backgroundColor: selected ? BRAND_PRIMARY_SUBTLE : WORKOUT_TOKENS.surface.raised,
+                borderColor: selected ? BRAND_PRIMARY : 'var(--color-border-default)',
+                backgroundColor: selected ? BRAND_PRIMARY_SUBTLE : 'var(--color-surface-raised)',
                 opacity: selected ? 1 : pressed ? 0.8 : 0.55,
                 transform: [{ scale: selected ? 1.06 : 1 }],
               })}
@@ -150,7 +149,7 @@ function ScoreGauge({ score }: { score: number }) {
         borderRadius: 30,
         borderWidth: 4,
         borderColor: color,
-        backgroundColor: WORKOUT_TOKENS.surface.raised,
+        backgroundColor: 'var(--color-surface-raised)',
         alignItems: 'center',
         justifyContent: 'center',
       }}
@@ -175,8 +174,8 @@ function WarmUpCard({ validation }: { validation: WarmUpValidation }) {
         padding: 12,
         borderRadius: 8,
         borderWidth: 1,
-        borderColor: WORKOUT_TOKENS.border.default,
-        backgroundColor: WORKOUT_TOKENS.surface.raised,
+        borderColor: 'var(--color-border-default)',
+        backgroundColor: 'var(--color-surface-raised)',
       }}
       testID="readiness-check-warmup"
     >

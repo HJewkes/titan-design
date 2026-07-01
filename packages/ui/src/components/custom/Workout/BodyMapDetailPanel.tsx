@@ -11,7 +11,6 @@ import {
   type ViewStyle,
 } from 'react-native'
 import { Badge, type BadgeColor } from '../../ui/badge'
-import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { Sparkline } from './Sparkline'
 import {
   MuscleGroup,
@@ -20,14 +19,14 @@ import {
   type VolumeStatus,
 } from './muscleTaxonomy'
 
-const SURFACE_ELEVATED = WORKOUT_TOKENS.surface.elevated
-const SURFACE_RAISED = WORKOUT_TOKENS.surface.raised
-const BORDER_STRONG = WORKOUT_TOKENS.border.strong
-const BORDER_DEFAULT = WORKOUT_TOKENS.border.default
+const SURFACE_ELEVATED = 'var(--color-surface-elevated)'
+const SURFACE_RAISED = 'var(--color-surface-raised)'
+const BORDER_STRONG = 'var(--color-border-strong)'
+const BORDER_DEFAULT = 'var(--color-border-default)'
 const BRAND_PRIMARY = '#FF7900'
-const TEXT_PRIMARY = '#F3F4F6'
-const TEXT_SECONDARY = '#9CA3AF'
-const TEXT_TERTIARY = '#6B7280'
+const TEXT_PRIMARY = 'var(--color-text-primary)'
+const TEXT_SECONDARY = 'var(--color-text-secondary)'
+const TEXT_TERTIARY = 'var(--color-text-tertiary)'
 
 /** Volume track gradient: status-info (blue) -> result-improve (teal) -> status-error (red). */
 const VOLUME_GRADIENT = 'linear-gradient(90deg, #2196F3 0%, #14B8A6 50%, #D14343 100%)'
