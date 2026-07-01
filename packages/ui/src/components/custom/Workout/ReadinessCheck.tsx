@@ -74,6 +74,14 @@ function emojiSet(factor: ReadinessFactor): readonly string[] {
   return EMOJI_SETS[factor.id.toLowerCase()] ?? EMOJI_SETS[factor.label.toLowerCase()] ?? DEFAULT_EMOJI_SET
 }
 
+/** Warm-up velocity phrasing. Deficit is % below the 14-day average, so a
+ *  non-positive deficit means velocity is on/above average — never "below". */
+function velocityDeficitText(deficit: number): string {
+  if (deficit > 0) return `Velocity ${deficit}% below 14-day average`
+  if (deficit < 0) return `Velocity ${Math.abs(deficit)}% above 14-day average`
+  return 'Velocity on 14-day average'
+}
+
 interface EmojiSliderProps {
   factor: ReadinessFactor
 }
@@ -177,7 +185,7 @@ function WarmUpCard({ validation }: { validation: WarmUpValidation }) {
           style={{ fontSize: 12, fontWeight: '600', fontFamily: 'Inter, sans-serif', color: TEXT_SECONDARY }}
           testID="readiness-check-warmup-deficit"
         >
-          {`Velocity ${validation.velocityDeficit}% below 14-day average`}
+          {velocityDeficitText(validation.velocityDeficit)}
         </Text>
         <Badge variant="subtle" color={badge.color} size="sm" testID="readiness-check-warmup-badge">
           {badge.label}

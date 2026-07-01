@@ -117,6 +117,24 @@ describe('StrengthTrendChart', () => {
       const pill = screen.getByTestId('strength-trend-chart-trend-pill')
       expect(pill.textContent?.startsWith('-')).toBe(true)
     })
+
+    it('stays neutral instead of using the whole series when the current meso has <2 points', () => {
+      render(
+        <StrengthTrendChart
+          {...baseProps}
+          data={[
+            { date: '2026-01-06', e1rm: 200 },
+            { date: '2026-02-01', e1rm: 210 },
+            { date: '2026-03-20', e1rm: 250 },
+          ]}
+          mesoBoundaries={[{ date: '2026-03-01', label: 'Peak' }]}
+        />,
+      )
+      // Only one point falls in the current meso, so the pill must not report
+      // the whole-series jump (+25%) under the "this meso" label.
+      const pill = screen.getByTestId('strength-trend-chart-trend-pill')
+      expect(pill).toHaveTextContent('+0.0% this meso')
+    })
   })
 
   describe('interaction', () => {
@@ -143,6 +161,16 @@ describe('StrengthTrendChart', () => {
   describe('empty state', () => {
     it('renders an empty placeholder when there is no data', () => {
       render(<StrengthTrendChart {...baseProps} data={[]} />)
+      expect(
+        screen.getByTestId('strength-trend-chart-empty'),
+      ).toBeInTheDocument()
+      expect(
+        screen.queryByTestId('strength-trend-chart-canvas'),
+      ).not.toBeInTheDocument()
+    })
+
+    it('shows the placeholder when data is empty even if a projection exists', () => {
+      render(<StrengthTrendChart {...baseProps} data={[]} projection={projection} />)
       expect(
         screen.getByTestId('strength-trend-chart-empty'),
       ).toBeInTheDocument()

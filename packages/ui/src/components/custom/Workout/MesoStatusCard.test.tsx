@@ -59,6 +59,19 @@ describe('MesoStatusCard', () => {
       expect(screen.getByText('3×8 @ 185 lbs')).toBeInTheDocument()
     })
 
+    it('renders every metric cell even when labels repeat (stable unique keys)', () => {
+      render(
+        <MesoStatusCard
+          {...baseProps}
+          metrics={[
+            { label: 'Set', value: '1' },
+            { label: 'Set', value: '2' },
+          ]}
+        />,
+      )
+      expect(screen.getAllByTestId('meso-status-card-metric')).toHaveLength(2)
+    })
+
     it('does not render the metrics grid when empty', () => {
       render(<MesoStatusCard {...baseProps} metrics={[]} />)
       expect(
@@ -102,6 +115,30 @@ describe('MesoStatusCard', () => {
         />,
       )
       expect(screen.getByLabelText('Volume: 100%')).toBeInTheDocument()
+    })
+
+    it('guards a non-finite level, rendering 0% instead of NaN%', () => {
+      render(
+        <MesoStatusCard
+          {...baseProps}
+          gauges={[{ label: 'Intensity', level: Number.NaN }]}
+        />,
+      )
+      expect(screen.getByLabelText('Intensity: 0%')).toBeInTheDocument()
+      expect(screen.queryByLabelText('Intensity: NaN%')).not.toBeInTheDocument()
+    })
+
+    it('renders every gauge even when labels repeat (stable unique keys)', () => {
+      render(
+        <MesoStatusCard
+          {...baseProps}
+          gauges={[
+            { label: 'Load', level: 0.3 },
+            { label: 'Load', level: 0.6 },
+          ]}
+        />,
+      )
+      expect(screen.getAllByTestId('meso-status-card-gauge')).toHaveLength(2)
     })
   })
 
