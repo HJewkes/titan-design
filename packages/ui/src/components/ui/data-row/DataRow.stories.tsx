@@ -73,6 +73,6 @@ export const CustomClassName: Story = {
   args: {
     label: 'Bordered Row',
     value: 'With custom styles',
-    className: 'border-b border-border-primary px-4',
+    className: 'border-b border-border px-4',
   },
 }

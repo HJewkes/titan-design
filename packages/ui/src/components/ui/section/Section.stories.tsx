@@ -62,7 +62,7 @@ export const FullExample: Story = {
           <Text style={{ color: '#6366f1', fontSize: 13 }}>Details</Text>
         }
       />
-      <SectionContent className="rounded-lg bg-surface-secondary p-4">
+      <SectionContent className="rounded-lg bg-surface-elevated p-4">
         <Text style={{ color: '#a0a0a0' }}>Chart or data visualization</Text>
       </SectionContent>
     </Section>
@@ -74,7 +74,7 @@ export const MultipleSections: Story = {
     <View>
       <Section>
         <SectionHeader title="Today" subtitle="3 exercises" />
-        <SectionContent className="rounded-lg bg-surface-secondary p-4">
+        <SectionContent className="rounded-lg bg-surface-elevated p-4">
           <Text style={{ color: '#a0a0a0' }}>Today&apos;s workout data</Text>
         </SectionContent>
       </Section>
@@ -87,14 +87,14 @@ export const MultipleSections: Story = {
             <Text style={{ color: '#6366f1', fontSize: 13 }}>See All</Text>
           }
         />
-        <SectionContent className="rounded-lg bg-surface-secondary p-4">
+        <SectionContent className="rounded-lg bg-surface-elevated p-4">
           <Text style={{ color: '#a0a0a0' }}>Weekly summary</Text>
         </SectionContent>
       </Section>
 
       <Section>
         <SectionHeader title="Personal Records" />
-        <SectionContent className="rounded-lg bg-surface-secondary p-4">
+        <SectionContent className="rounded-lg bg-surface-elevated p-4">
           <Text style={{ color: '#a0a0a0' }}>PR list</Text>
         </SectionContent>
       </Section>

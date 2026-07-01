@@ -34,7 +34,7 @@ type Story = StoryObj<typeof Stack>
 
 function Box({ children }: { children: string }) {
   return (
-    <View className="rounded bg-primary-500 px-4 py-2">
+    <View className="rounded bg-brand-primary px-4 py-2">
       <Text className="text-sm text-white">{children}</Text>
     </View>
   )
@@ -85,13 +85,13 @@ export const WithAlignment: Story = {
 
       <Text className="text-sm font-medium text-neutral-400">align=&quot;center&quot;</Text>
       <HStack gap={2} align="center">
-        <View className="rounded bg-primary-500 px-4 py-1">
+        <View className="rounded bg-brand-primary px-4 py-1">
           <Text className="text-sm text-white">Short</Text>
         </View>
-        <View className="rounded bg-primary-500 px-4 py-4">
+        <View className="rounded bg-brand-primary px-4 py-4">
           <Text className="text-sm text-white">Tall</Text>
         </View>
-        <View className="rounded bg-primary-500 px-4 py-2">
+        <View className="rounded bg-brand-primary px-4 py-2">
           <Text className="text-sm text-white">Medium</Text>
         </View>
       </HStack>
