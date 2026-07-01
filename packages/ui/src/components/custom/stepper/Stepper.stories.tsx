@@ -137,7 +137,7 @@ export const VerticalWithContent: Story = {
             <Text className="text-text-secondary text-sm">
               Fill in your profile details to continue.
             </Text>
-            <View className="bg-surface-inset border border-border rounded-md px-3 py-2">
+            <View className="bg-surface-input border border-border rounded-md px-3 py-2">
               <Text className="text-text-secondary text-sm">Display Name</Text>
             </View>
           </View>
