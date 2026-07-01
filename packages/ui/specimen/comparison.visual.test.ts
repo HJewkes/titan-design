@@ -357,34 +357,34 @@ test.describe('HTML vs React Component Comparison', () => {
     await page.waitForTimeout(500)
   })
 
-  // ── E1rmBadge ──
+  // ── WeightBadge ──
 
-  test('E1rmBadge default md', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-e1rm-badge-default-md', '.e1rm-badge', '[data-testid="e1rm-badge"]', { reactTextSelector: '[data-testid="e1rm-badge"] div[dir="auto"]' })
+  test('WeightBadge default md', async ({ page }) => {
+    await assertStyleMatch(page, 'compare-weight-badge-default-md', '.weight-badge', '[data-testid="weight-badge"]', { reactTextSelector: '[data-testid="weight-badge"] div[dir="auto"]' })
   })
 
-  test('E1rmBadge default sm', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-e1rm-badge-default-sm', '.e1rm-badge', '[data-testid="e1rm-badge"]', { reactTextSelector: '[data-testid="e1rm-badge"] div[dir="auto"]' })
+  test('WeightBadge default sm', async ({ page }) => {
+    await assertStyleMatch(page, 'compare-weight-badge-default-sm', '.weight-badge', '[data-testid="weight-badge"]', { reactTextSelector: '[data-testid="weight-badge"] div[dir="auto"]' })
   })
 
-  test('E1rmBadge default lg', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-e1rm-badge-default-lg', '.e1rm-badge', '[data-testid="e1rm-badge"]', { reactTextSelector: '[data-testid="e1rm-badge"] div[dir="auto"]' })
+  test('WeightBadge default lg', async ({ page }) => {
+    await assertStyleMatch(page, 'compare-weight-badge-default-lg', '.weight-badge', '[data-testid="weight-badge"]', { reactTextSelector: '[data-testid="weight-badge"] div[dir="auto"]' })
   })
 
-  test('E1rmBadge PR', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-e1rm-badge-pr', '.e1rm-badge', '[data-testid="e1rm-badge"]', { reactTextSelector: '[data-testid="e1rm-badge"] div[dir="auto"]' })
+  test('WeightBadge PR', async ({ page }) => {
+    await assertStyleMatch(page, 'compare-weight-badge-pr', '.weight-badge', '[data-testid="weight-badge"]', { reactTextSelector: '[data-testid="weight-badge"] div[dir="auto"]' })
   })
 
-  test('E1rmBadge delta positive', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-e1rm-badge-delta-positive', '.e1rm-badge', '[data-testid="e1rm-badge"]', { reactTextSelector: '[data-testid="e1rm-badge"] div[dir="auto"]' })
+  test('WeightBadge delta positive', async ({ page }) => {
+    await assertStyleMatch(page, 'compare-weight-badge-delta-positive', '.weight-badge', '[data-testid="weight-badge"]', { reactTextSelector: '[data-testid="weight-badge"] div[dir="auto"]' })
   })
 
-  test('E1rmBadge delta negative', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-e1rm-badge-delta-negative', '.e1rm-badge', '[data-testid="e1rm-badge"]', { reactTextSelector: '[data-testid="e1rm-badge"] div[dir="auto"]' })
+  test('WeightBadge delta negative', async ({ page }) => {
+    await assertStyleMatch(page, 'compare-weight-badge-delta-negative', '.weight-badge', '[data-testid="weight-badge"]', { reactTextSelector: '[data-testid="weight-badge"] div[dir="auto"]' })
   })
 
-  test('E1rmBadge no icon', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-e1rm-badge-no-icon', '.e1rm-badge', '[data-testid="e1rm-badge"]', { reactTextSelector: '[data-testid="e1rm-badge"] div[dir="auto"]' })
+  test('WeightBadge no icon', async ({ page }) => {
+    await assertStyleMatch(page, 'compare-weight-badge-no-icon', '.weight-badge', '[data-testid="weight-badge"]', { reactTextSelector: '[data-testid="weight-badge"] div[dir="auto"]' })
   })
 
   // ── PrBadge ──
