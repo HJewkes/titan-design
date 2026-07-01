@@ -12,6 +12,7 @@ export type StatusDotVariant =
 
 export interface StatusDotProps extends ViewProps {
   variant: StatusDotVariant
+  /** Center glyph. Only rendered at size="md"; the 8px "sm" dot is too small to fit one. */
   icon?: 'check' | 'exclamation' | 'dash'
   size?: 'sm' | 'md'
   /** Adds a subtle glow effect in the variant color */

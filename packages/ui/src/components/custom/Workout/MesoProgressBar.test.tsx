@@ -139,3 +139,15 @@ describe('MesoProgressBar', () => {
     })
   })
 })
+
+describe('MesoProgressBar invalid weekCount (flex guard)', () => {
+  it('clamps zero and negative weekCount to a valid flex of 1', () => {
+    const edgeMesos: Meso[] = [
+      { id: 'z', name: 'Zero', weekCount: 0, status: 'upcoming' },
+      { id: 'n', name: 'Neg', weekCount: -3, status: 'upcoming' },
+    ]
+    render(<MesoProgressBar mesos={edgeMesos} activeMesoId={null} onMesoPress={vi.fn()} />)
+    expect(screen.getByTestId('meso-segment-z')).toHaveStyle({ flex: 1 })
+    expect(screen.getByTestId('meso-segment-n')).toHaveStyle({ flex: 1 })
+  })
+})
