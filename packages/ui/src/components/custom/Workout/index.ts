@@ -4,11 +4,7 @@ export {
   type BaseBadgeVariant,
   type BaseBadgeSize,
 } from './BaseBadge'
-export {
-  WeightBadge,
-  type WeightBadgeProps,
-  type WeightBadgeSize,
-} from './WeightBadge'
+export { WeightBadge, type WeightBadgeProps, type WeightBadgeSize } from './WeightBadge'
 export { PrBadge, type PrBadgeProps, type PRType } from './PrBadge'
 export { StatusDot, type StatusDotVariant, type StatusDotProps } from './StatusDot'
 export { PlaceholderStrip, type PlaceholderStripProps } from './PlaceholderStrip'
@@ -24,11 +20,7 @@ export {
   calculateVelocityLoss,
   calculateMeanVelocity,
 } from './VelocityStrip'
-export {
-  MuscleGroupChip,
-  type MuscleGroupChipProps,
-  type VolumeStatus,
-} from './MuscleGroupChip'
+export { MuscleGroupChip, type MuscleGroupChipProps, type VolumeStatus } from './MuscleGroupChip'
 export { Sparkline, type SparklineProps } from './Sparkline'
 export { SetRow, type SetRowProps, type SetRowMode } from './SetRow'
 export { InputBar, type InputBarProps } from './InputBar'
@@ -49,11 +41,7 @@ export {
   type WorkoutMuscleGroup,
   type WorkoutMuscleVolumeStatus,
 } from './WorkoutCard'
-export {
-  MesoCard,
-  type MesoCardProps,
-  type MesoVolumeHeatmapEntry,
-} from './MesoCard'
+export { MesoCard, type MesoCardProps, type MesoVolumeHeatmapEntry } from './MesoCard'
 export {
   PrHistoryModal,
   type PrHistoryModalProps,
@@ -98,6 +86,14 @@ export {
   type ContributingExercise,
   type UpcomingExercise,
 } from './BodyMapDetailPanel'
+export {
+  TrainingStatusPage,
+  deriveTrainingSummary,
+  toBodyMapData,
+  type TrainingStatusPageProps,
+  type TrainingStatusMuscle,
+  type TrainingStatusSummary,
+} from './TrainingStatusPage'
 export {
   MuscleGroup,
   SimpleMuscleGroup,
