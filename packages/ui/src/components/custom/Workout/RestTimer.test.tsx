@@ -143,3 +143,13 @@ describe('RestTimer', () => {
     })
   })
 })
+
+describe('RestTimer zero-duration timer (NaN guard)', () => {
+  it('emits a valid 100% width (not NaN) when totalSeconds is 0', () => {
+    const { container } = render(
+      <RestTimer {...defaultProps} totalSeconds={0} elapsedMs={0} />,
+    )
+    expect(screen.getByTestId('rest-timer-progress-fill')).toHaveStyle({ width: '100%' })
+    expect(container.innerHTML).not.toContain('NaN')
+  })
+})

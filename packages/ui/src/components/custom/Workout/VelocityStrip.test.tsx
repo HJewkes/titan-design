@@ -232,3 +232,13 @@ describe('calculateMeanVelocity', () => {
     expect(calculateMeanVelocity([])).toBe(0)
   })
 })
+
+describe('VelocityStrip all-zero velocities (NaN guard)', () => {
+  it('emits a valid 0% bar height (not NaN) when every velocity is zero (expanded)', () => {
+    render(<VelocityStrip velocities={[0, 0, 0]} expanded />)
+    // Without the guard, 0 / (0 * 1.15) === NaN and the bar height becomes
+    // 'NaN%' (dropped by jsdom, leaving no height); the guard flattens to '0%'.
+    expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ height: '0%' })
+    expect(screen.getByTestId('velocity-bar-2')).toHaveStyle({ height: '0%' })
+  })
+})

@@ -28,7 +28,10 @@ export function RestTimer({
   const minutes = Math.floor(remainingSec / 60)
   const seconds = remainingSec % 60
   const timeDisplay = `${minutes}:${String(seconds).padStart(2, '0')}`
-  const progressPct = Math.min(100, (elapsedMs / (totalSeconds * 1000)) * 100)
+  // A zero-duration timer is already complete; guard the 0 / 0 === NaN case
+  // that would otherwise emit width:'NaN%'.
+  const totalMs = totalSeconds * 1000
+  const progressPct = totalMs > 0 ? Math.min(100, (elapsedMs / totalMs) * 100) : 100
 
   return (
     <View

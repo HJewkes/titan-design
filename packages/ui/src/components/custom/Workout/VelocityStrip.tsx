@@ -178,7 +178,10 @@ export function VelocityStrip({
       >
         {velocities.map((v, i) => {
           const zone = getVelocityZoneColor(v)
-          const barHeightPct = Math.round((v / (maxVelocity * 1.15)) * 100)
+          // Guard all-zero velocities (idle / pre-rep): maxVelocity === 0 makes
+          // this 0 / 0 === NaN and emits height:'NaN%'. Flatten the bars instead.
+          const barHeightPct =
+            maxVelocity > 0 ? Math.round((v / (maxVelocity * 1.15)) * 100) : 0
 
           const bar = (
             <View

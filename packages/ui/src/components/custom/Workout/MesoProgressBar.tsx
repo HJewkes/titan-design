@@ -66,9 +66,13 @@ function MesoSegment({ meso, isActive, onPress }: SegmentProps) {
     ? clampProgress(meso.currentWeek, meso.weekCount)
     : 0
 
+  // weekCount drives the segment's flex width; guard 0 / negative so flex stays
+  // a valid positive value and the segment never collapses out of the layout.
+  const segmentFlex = Math.max(1, meso.weekCount)
+
   return (
     <Pressable
-      style={{ flex: meso.weekCount }}
+      style={{ flex: segmentFlex }}
       onPress={() => onPress(meso.id)}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
