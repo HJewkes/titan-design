@@ -2,9 +2,11 @@
  * Token CSS Generator
  *
  * Emits a static `:root {}` CSS block from the canonical theme token maps
- * (`darkThemeCSSVars` / `lightThemeCSSVars`). HTML prototypes import the
- * generated stylesheet so they always resolve to the exact same values as
- * the design system. Pure codegen: deterministic and diffable against source.
+ * (`darkThemeCSSVars` / `lightThemeCSSVars`). Those maps mirror every `:root`
+ * custom property in `theme/global.css` — completeness and value parity are
+ * enforced by `config.completeness.test.ts`, so HTML prototypes that import the
+ * generated stylesheet resolve to the exact same values as the design system.
+ * Pure codegen: deterministic and diffable against source.
  *
  * Dark mode is the default (`:root`); light mode is activated with `.light`,
  * matching the convention in `theme/global.css`.

@@ -7,6 +7,35 @@
 
 import { semanticColorsLight, semanticColorsDark, type ThemeMode } from './tokens/semantic'
 
+// Theme-independent custom properties: identical in light and dark in
+// global.css (RGB glow decompositions, font families, animation tokens). Kept
+// as literals since they are not part of the semantic COLOR maps, and spread
+// into both theme maps so codegen mirrors global.css exactly.
+const themeIndependentCSSVars = {
+  // RGB decomposed values for glow shadows
+  '--color-brand-primary-rgb': '255, 121, 0',
+  '--color-brand-secondary-rgb': '64, 109, 135',
+  '--color-status-success-rgb': '20, 184, 166',
+  '--color-status-error-rgb': '209, 67, 67',
+  '--color-status-warning-rgb': '255, 176, 32',
+  '--color-status-info-rgb': '33, 150, 243',
+  '--color-background-base-rgb': '16, 16, 16',
+
+  // Font families
+  '--font-family-sans': "'Inter'",
+  '--font-family-body': "'Nunito Sans'",
+  '--font-family-heading': "'Space Grotesk'",
+  '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace",
+
+  // Animation tokens
+  '--ease-out': 'cubic-bezier(0.22, 1, 0.36, 1)',
+  '--ease-in-out': 'cubic-bezier(0.65, 0, 0.35, 1)',
+  '--ease-spring': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+  '--duration-fast': '150ms',
+  '--duration-normal': '250ms',
+  '--duration-slow': '400ms',
+} as const
+
 // CSS custom properties for light mode
 export const lightThemeCSSVars = {
   '--color-brand-primary': semanticColorsLight['brand-primary'],
@@ -57,6 +86,67 @@ export const lightThemeCSSVars = {
   '--color-interactive-disabled': semanticColorsLight['interactive-disabled'],
 
   '--color-divider': semanticColorsLight['divider'],
+
+  '--color-brand-primary-hover': semanticColorsLight['brand-primary-hover'],
+  '--color-brand-primary-active': semanticColorsLight['brand-primary-active'],
+  '--color-brand-secondary-hover': semanticColorsLight['brand-secondary-hover'],
+  '--color-brand-secondary-active': semanticColorsLight['brand-secondary-active'],
+
+  '--color-status-success-light': semanticColorsLight['status-success-light'],
+  '--color-status-success-dark': semanticColorsLight['status-success-dark'],
+  '--color-status-error-light': semanticColorsLight['status-error-light'],
+  '--color-status-error-dark': semanticColorsLight['status-error-dark'],
+  '--color-status-warning-light': semanticColorsLight['status-warning-light'],
+  '--color-status-warning-dark': semanticColorsLight['status-warning-dark'],
+  '--color-status-info-light': semanticColorsLight['status-info-light'],
+  '--color-status-info-dark': semanticColorsLight['status-info-dark'],
+
+  '--color-on-status-success': semanticColorsLight['on-status-success'],
+  '--color-on-status-error': semanticColorsLight['on-status-error'],
+  '--color-on-status-warning': semanticColorsLight['on-status-warning'],
+  '--color-on-status-info': semanticColorsLight['on-status-info'],
+
+  '--color-result-improve': semanticColorsLight['result-improve'],
+  '--color-result-improve-light': semanticColorsLight['result-improve-light'],
+  '--color-result-improve-dark': semanticColorsLight['result-improve-dark'],
+  '--color-result-degrade': semanticColorsLight['result-degrade'],
+  '--color-result-degrade-light': semanticColorsLight['result-degrade-light'],
+  '--color-result-degrade-dark': semanticColorsLight['result-degrade-dark'],
+  '--color-result-inconclusive': semanticColorsLight['result-inconclusive'],
+  '--color-result-inconclusive-light': semanticColorsLight['result-inconclusive-light'],
+  '--color-result-neutral': semanticColorsLight['result-neutral'],
+
+  '--color-on-result-improve': semanticColorsLight['on-result-improve'],
+  '--color-on-result-degrade': semanticColorsLight['on-result-degrade'],
+  '--color-on-result-inconclusive': semanticColorsLight['on-result-inconclusive'],
+
+  '--color-data-1': semanticColorsLight['data-1'],
+  '--color-data-2': semanticColorsLight['data-2'],
+  '--color-data-3': semanticColorsLight['data-3'],
+  '--color-data-4': semanticColorsLight['data-4'],
+  '--color-data-5': semanticColorsLight['data-5'],
+  '--color-data-6': semanticColorsLight['data-6'],
+  '--color-data-7': semanticColorsLight['data-7'],
+  '--color-data-8': semanticColorsLight['data-8'],
+  '--color-data-9': semanticColorsLight['data-9'],
+  '--color-data-10': semanticColorsLight['data-10'],
+
+  '--color-text-link-hover': semanticColorsLight['text-link-hover'],
+
+  '--color-surface-overlay': semanticColorsLight['surface-overlay'],
+  '--color-surface-input': semanticColorsLight['surface-input'],
+
+  '--color-border-input': semanticColorsLight['border-input'],
+  '--color-border-input-hover': semanticColorsLight['border-input-hover'],
+  '--color-border-input-focus': semanticColorsLight['border-input-focus'],
+  '--color-border-input-error': semanticColorsLight['border-input-error'],
+
+  '--color-interactive-disabled-text': semanticColorsLight['interactive-disabled-text'],
+
+  '--color-avatar-background': semanticColorsLight['avatar-background'],
+  '--color-avatar-text': semanticColorsLight['avatar-text'],
+
+  ...themeIndependentCSSVars,
 } as const
 
 // CSS custom properties for dark mode (default)
@@ -109,6 +199,67 @@ export const darkThemeCSSVars = {
   '--color-interactive-disabled': semanticColorsDark['interactive-disabled'],
 
   '--color-divider': semanticColorsDark['divider'],
+
+  '--color-brand-primary-hover': semanticColorsDark['brand-primary-hover'],
+  '--color-brand-primary-active': semanticColorsDark['brand-primary-active'],
+  '--color-brand-secondary-hover': semanticColorsDark['brand-secondary-hover'],
+  '--color-brand-secondary-active': semanticColorsDark['brand-secondary-active'],
+
+  '--color-status-success-light': semanticColorsDark['status-success-light'],
+  '--color-status-success-dark': semanticColorsDark['status-success-dark'],
+  '--color-status-error-light': semanticColorsDark['status-error-light'],
+  '--color-status-error-dark': semanticColorsDark['status-error-dark'],
+  '--color-status-warning-light': semanticColorsDark['status-warning-light'],
+  '--color-status-warning-dark': semanticColorsDark['status-warning-dark'],
+  '--color-status-info-light': semanticColorsDark['status-info-light'],
+  '--color-status-info-dark': semanticColorsDark['status-info-dark'],
+
+  '--color-on-status-success': semanticColorsDark['on-status-success'],
+  '--color-on-status-error': semanticColorsDark['on-status-error'],
+  '--color-on-status-warning': semanticColorsDark['on-status-warning'],
+  '--color-on-status-info': semanticColorsDark['on-status-info'],
+
+  '--color-result-improve': semanticColorsDark['result-improve'],
+  '--color-result-improve-light': semanticColorsDark['result-improve-light'],
+  '--color-result-improve-dark': semanticColorsDark['result-improve-dark'],
+  '--color-result-degrade': semanticColorsDark['result-degrade'],
+  '--color-result-degrade-light': semanticColorsDark['result-degrade-light'],
+  '--color-result-degrade-dark': semanticColorsDark['result-degrade-dark'],
+  '--color-result-inconclusive': semanticColorsDark['result-inconclusive'],
+  '--color-result-inconclusive-light': semanticColorsDark['result-inconclusive-light'],
+  '--color-result-neutral': semanticColorsDark['result-neutral'],
+
+  '--color-on-result-improve': semanticColorsDark['on-result-improve'],
+  '--color-on-result-degrade': semanticColorsDark['on-result-degrade'],
+  '--color-on-result-inconclusive': semanticColorsDark['on-result-inconclusive'],
+
+  '--color-data-1': semanticColorsDark['data-1'],
+  '--color-data-2': semanticColorsDark['data-2'],
+  '--color-data-3': semanticColorsDark['data-3'],
+  '--color-data-4': semanticColorsDark['data-4'],
+  '--color-data-5': semanticColorsDark['data-5'],
+  '--color-data-6': semanticColorsDark['data-6'],
+  '--color-data-7': semanticColorsDark['data-7'],
+  '--color-data-8': semanticColorsDark['data-8'],
+  '--color-data-9': semanticColorsDark['data-9'],
+  '--color-data-10': semanticColorsDark['data-10'],
+
+  '--color-text-link-hover': semanticColorsDark['text-link-hover'],
+
+  '--color-surface-overlay': semanticColorsDark['surface-overlay'],
+  '--color-surface-input': semanticColorsDark['surface-input'],
+
+  '--color-border-input': semanticColorsDark['border-input'],
+  '--color-border-input-hover': semanticColorsDark['border-input-hover'],
+  '--color-border-input-focus': semanticColorsDark['border-input-focus'],
+  '--color-border-input-error': semanticColorsDark['border-input-error'],
+
+  '--color-interactive-disabled-text': semanticColorsDark['interactive-disabled-text'],
+
+  '--color-avatar-background': semanticColorsDark['avatar-background'],
+  '--color-avatar-text': semanticColorsDark['avatar-text'],
+
+  ...themeIndependentCSSVars,
 } as const
 
 // Helper to get CSS vars for a theme mode
