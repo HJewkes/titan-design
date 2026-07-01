@@ -101,6 +101,7 @@ titan-design/
 - **[Architecture](./docs/ARCHITECTURE.md)** - Technical architecture and design decisions
 - **[Storybook Setup](./docs/STORYBOOK_SETUP.md)** - Storybook configuration guide
 - **[CLAUDE.md](./CLAUDE.md)** - Component patterns, tokens, and development conventions
+- **[Component Implementation Checklist](./docs/component-implementation-checklist.md)** - Per-component "done" gate for the HTML-to-React extraction pipeline
 
 ## Tech Stack
 
