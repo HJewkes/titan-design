@@ -25,18 +25,9 @@ export const WORKOUT_TOKENS = {
   // Badge border-radius (rounded-sm is 4px, we need 2px)
   badgeRadius: 2,
 
-  // Border colors (use inline to avoid 'border' class pitfall)
-  border: {
-    default: '#1F1F1F',
-    strong: '#2C2C2C',
-    subtle: '#1C1C1C',
-  },
-
-  // Surface colors for inline use
-  surface: {
-    raised: '#1C1C1C',
-    elevated: '#191919',
-  },
+  // Surface and border colors were removed here: those flip with the theme, so
+  // components use the CSS custom properties (var(--color-surface-*/border-*))
+  // directly. Only theme-independent data-viz values remain below.
 
   // Intensity bar specific
   intensity: {

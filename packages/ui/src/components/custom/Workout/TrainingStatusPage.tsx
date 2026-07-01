@@ -1,7 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useMemo, useState } from 'react'
 import { View, Text, type ViewProps } from 'react-native'
-import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { BodyMap, type BodyMapData } from './BodyMap'
 import {
   BodyMapDetailPanel,
@@ -17,12 +16,12 @@ import {
   type VolumeStatus,
 } from './muscleTaxonomy'
 
-const SURFACE_ELEVATED = WORKOUT_TOKENS.surface.elevated
-const BORDER_DEFAULT = WORKOUT_TOKENS.border.default
-const TEXT_PRIMARY = '#F3F4F6'
-const TEXT_SECONDARY = '#9CA3AF'
-const TEXT_TERTIARY = '#6B7280'
-const PAGE_BG = '#0E0E0E'
+const SURFACE_ELEVATED = 'var(--color-surface-elevated)'
+const BORDER_DEFAULT = 'var(--color-border-default)'
+const TEXT_PRIMARY = 'var(--color-text-primary)'
+const TEXT_SECONDARY = 'var(--color-text-secondary)'
+const TEXT_TERTIARY = 'var(--color-text-tertiary)'
+const PAGE_BG = 'var(--color-background-base)'
 
 /** Volume statuses in display order for the legend and summary cards. */
 const STATUS_ORDER: VolumeStatus[] = ['under', 'maintenance', 'productive', 'over']
