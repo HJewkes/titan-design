@@ -1,7 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useState } from 'react'
 import { View, Text, Pressable } from 'react-native'
-import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { VelocityStrip } from './VelocityStrip'
 import { PlaceholderStrip } from './PlaceholderStrip'
 import { WeightBadge } from './WeightBadge'
@@ -35,10 +34,18 @@ export interface ExerciseCardProps {
 }
 
 const COLORS = {
-  textPrimary: '#F3F4F6',
-  textSecondary: '#9CA3AF',
-  textTertiary: '#6B7280',
+  // Theme-aware tokens: text foregrounds and this card's own surfaces/borders
+  // must flip together so text stays readable in both light and dark. The
+  // expanded/pressed surfaces are self-owned here (not from a themed Card), so
+  // hardcoding dark values would leave dark-on-dark once the text flips.
+  // react-native-web passes the CSS var through to the inline style.
+  textPrimary: 'var(--color-text-primary)',
+  textSecondary: 'var(--color-text-secondary)',
+  textTertiary: 'var(--color-text-tertiary)',
   brandPrimary: '#FF7900',
+  surfaceRaised: 'var(--color-surface-raised)',
+  surfaceElevated: 'var(--color-surface-elevated)',
+  borderDefault: 'var(--color-border-default)',
 }
 
 const COLUMN_HEADERS = ['SET', 'PREV', 'REPS', 'LBS', 'RPE'] as const
@@ -132,9 +139,7 @@ function CollapsedCard({
           padding: 12,
           paddingHorizontal: 14,
           cursor: 'pointer',
-          backgroundColor: pressed
-            ? WORKOUT_TOKENS.surface.raised
-            : 'transparent',
+          backgroundColor: pressed ? COLORS.surfaceRaised : 'transparent',
           ...borderRadius,
           ...supersetMargin,
         }}
@@ -227,9 +232,9 @@ function ExpandedCard({
   return (
     <View
       style={{
-        backgroundColor: WORKOUT_TOKENS.surface.elevated,
+        backgroundColor: COLORS.surfaceElevated,
         borderWidth: 1,
-        borderColor: WORKOUT_TOKENS.border.default,
+        borderColor: COLORS.borderDefault,
         ...borderRadius,
         ...supersetMargin,
       }}
@@ -249,7 +254,7 @@ function ExpandedCard({
             paddingHorizontal: 14,
             paddingBottom: 10,
             borderBottomWidth: 1,
-            borderBottomColor: WORKOUT_TOKENS.border.default,
+            borderBottomColor: COLORS.borderDefault,
           }}
         >
           <Text

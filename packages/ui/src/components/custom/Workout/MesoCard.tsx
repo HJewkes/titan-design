@@ -9,8 +9,10 @@ const BRAND_PRIMARY = '#FF7900'
 const BRAND_PRIMARY_DARK = '#C45E00'
 const BRAND_PRIMARY_LIGHT = '#FFB066'
 const BORDER_DEFAULT = '#1F1F1F'
-const TEXT_PRIMARY = '#F3F4F6'
-const TEXT_SECONDARY = '#9CA3AF'
+// Theme-aware foregrounds: resolve to a readable color in both light and dark
+// (react-native-web passes the CSS var through to the inline style).
+const TEXT_PRIMARY = 'var(--color-text-primary)'
+const TEXT_SECONDARY = 'var(--color-text-secondary)'
 
 /** Gradient stops for the 3px top accent: dark -> primary -> light. */
 const ACCENT_STOPS = [BRAND_PRIMARY_DARK, BRAND_PRIMARY, BRAND_PRIMARY_LIGHT]
