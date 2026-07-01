@@ -8,7 +8,7 @@ const STATUS_INFO = '#2196F3'
 /** Dot outline: near-white ring so load dots read on the band fill and any
  *  surface (matches the MesoStatusCard gauge-marker convention). */
 const DOT_BORDER = '#F3F4F6'
-const TEXT_TERTIARY = '#6B7280'
+const TEXT_TERTIARY = 'var(--color-text-tertiary)'
 const BAND_FILL = 'rgba(20,184,166,0.1)'
 const BAND_EDGE = 'rgba(20,184,166,0.45)'
 const PROJECTION_FILL = 'rgba(20,184,166,0.05)'

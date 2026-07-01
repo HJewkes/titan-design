@@ -1,7 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 
 export interface PlaceholderStripProps extends ViewProps {
   width?: number | string
@@ -26,7 +25,7 @@ function SingleStrip({
           backgroundColor: 'transparent',
           borderWidth: 1,
           borderStyle: 'dashed',
-          borderColor: WORKOUT_TOKENS.border.strong,
+          borderColor: 'var(--color-border-strong)',
           borderRadius: 1,
           opacity: 0.5,
         },
@@ -67,7 +66,7 @@ function SegmentedStrip({
             backgroundColor: 'transparent',
             borderWidth: 1,
             borderStyle: 'dashed',
-            borderColor: WORKOUT_TOKENS.border.strong,
+            borderColor: 'var(--color-border-strong)',
             borderRadius: 1,
             minWidth: 4,
           }}

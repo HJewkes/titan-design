@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-native'
 import BodyHighlighter, { type ExtendedBodyPart, type Slug } from 'react-native-body-highlighter'
 import { cn } from '../../../utils/cn'
-import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import {
   MuscleGroup,
   SimpleMuscleGroup,
@@ -28,8 +27,8 @@ const Body = ((BodyHighlighter as unknown as { default?: typeof BodyHighlighter 
 const OUTLINE_FILL = 'rgba(255,255,255,0.08)'
 const OUTLINE_BORDER = 'rgba(255,255,255,0.12)'
 const BODY_SCALE = 0.8 // 200x400 intrinsic -> ~160x320 px
-const TEXT_PRIMARY = '#F3F4F6'
-const TEXT_SECONDARY = '#9CA3AF'
+const TEXT_PRIMARY = 'var(--color-text-primary)'
+const TEXT_SECONDARY = 'var(--color-text-secondary)'
 
 export interface BodyMapData {
   muscleGroup: MuscleGroup
@@ -277,7 +276,7 @@ function ViewToggle({ view, onViewChange }: ViewToggleProps) {
               borderRadius: 9999,
               backgroundColor: active ? 'rgba(255,121,0,0.16)' : 'transparent',
               borderWidth: 1,
-              borderColor: active ? '#FF7900' : WORKOUT_TOKENS.border.strong,
+              borderColor: active ? '#FF7900' : 'var(--color-border-strong)',
             }}
             testID={`body-map-toggle-${side}`}
           >
@@ -322,8 +321,8 @@ function MuscleButton({ entry, highlighted, onMusclePress }: MuscleButtonProps) 
         paddingVertical: 3,
         borderRadius: 9999,
         borderWidth: 1,
-        borderColor: highlighted ? '#FF7900' : WORKOUT_TOKENS.border.default,
-        backgroundColor: WORKOUT_TOKENS.surface.raised,
+        borderColor: highlighted ? '#FF7900' : 'var(--color-border-default)',
+        backgroundColor: 'var(--color-surface-raised)',
       }}
       testID={`body-map-muscle-${entry.key}`}
     >

@@ -1,7 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useMemo, useState } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
-import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { MesoProgressBar, type Meso, type MesoStatus } from './MesoProgressBar'
 import { MesoCard, type MesoVolumeHeatmapEntry } from './MesoCard'
 import { type WeekRowProps, type WeekRowWorkout } from './WeekRow'
@@ -9,12 +8,12 @@ import { WorkoutCard, type WorkoutStatus, type WorkoutMuscleGroup } from './Work
 import { type WorkoutPillStatus } from './WorkoutPill'
 import { type ExerciseCardProps } from './ExerciseCard'
 
-const SURFACE_ELEVATED = WORKOUT_TOKENS.surface.elevated
-const BORDER_DEFAULT = WORKOUT_TOKENS.border.default
+const SURFACE_ELEVATED = 'var(--color-surface-elevated)'
+const BORDER_DEFAULT = 'var(--color-border-default)'
 const BRAND_PRIMARY = '#FF7900'
-const TEXT_PRIMARY = '#F3F4F6'
-const TEXT_TERTIARY = '#6B7280'
-const PAGE_BG = '#0E0E0E'
+const TEXT_PRIMARY = 'var(--color-text-primary)'
+const TEXT_TERTIARY = 'var(--color-text-tertiary)'
+const PAGE_BG = 'var(--color-background-base)'
 
 /** A single workout within a planned week, plus its exercise breakdown. */
 export interface PlanWorkout {

@@ -1,20 +1,19 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useMemo, useState } from 'react'
 import { View, Text, type ViewProps } from 'react-native'
-import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { ExerciseCard, type ExerciseCardProps, type ExerciseCardState } from './ExerciseCard'
 import { InputBar } from './InputBar'
 import { RestTimer } from './RestTimer'
 import { SupersetWrapper } from './SupersetWrapper'
 import { type SetRowProps } from './SetRow'
 
-const SURFACE_ELEVATED = WORKOUT_TOKENS.surface.elevated
-const BORDER_DEFAULT = WORKOUT_TOKENS.border.default
+const SURFACE_ELEVATED = 'var(--color-surface-elevated)'
+const BORDER_DEFAULT = 'var(--color-border-default)'
 const BRAND_PRIMARY = '#FF7900'
-const TEXT_PRIMARY = '#F3F4F6'
-const TEXT_SECONDARY = '#9CA3AF'
-const TEXT_TERTIARY = '#6B7280'
-const PAGE_BG = '#0E0E0E'
+const TEXT_PRIMARY = 'var(--color-text-primary)'
+const TEXT_SECONDARY = 'var(--color-text-secondary)'
+const TEXT_TERTIARY = 'var(--color-text-tertiary)'
+const PAGE_BG = 'var(--color-background-base)'
 
 /** Where an exercise sits in the during-workout flow. */
 export type ActiveExerciseStatus = 'completed' | 'active' | 'upcoming'
