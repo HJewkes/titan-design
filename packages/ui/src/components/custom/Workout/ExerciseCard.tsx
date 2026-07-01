@@ -48,7 +48,10 @@ const COLORS = {
   borderDefault: 'var(--color-border-default)',
 }
 
-const COLUMN_HEADERS = ['SET', 'PREV', 'REPS', 'LBS', 'RPE'] as const
+/** Column headers; the weight column reflects the card's unit (LBS / KG). */
+function buildColumnHeaders(unit: 'lbs' | 'kg'): string[] {
+  return ['SET', 'PREV', 'REPS', unit.toUpperCase(), 'RPE']
+}
 
 function getSupersetBorderRadius(
   position: ExerciseCardProps['supersetPosition'],
@@ -228,6 +231,10 @@ function ExpandedCard({
 }: ExerciseCardProps) {
   const borderRadius = getSupersetBorderRadius(supersetPosition)
   const supersetMargin = getSupersetMargin(supersetPosition)
+  // Summary is the card-level authority for the weight column; fall back to the
+  // first set's unit, then lbs. (Mixed per-set units keep the card-level label.)
+  const unit = summary?.unit ?? sets?.[0]?.unit ?? 'lbs'
+  const columnHeaders = buildColumnHeaders(unit)
 
   return (
     <View
@@ -314,7 +321,7 @@ function ExpandedCard({
         }}
         testID="exercise-card-column-headers"
       >
-        {COLUMN_HEADERS.map((header, i) => {
+        {columnHeaders.map((header, i) => {
           const widths = [36, undefined, 44, 56, 36]
           const width = widths[i]
           const isFlex = width === undefined
