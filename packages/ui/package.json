@@ -51,6 +51,7 @@
     "test:visual": "playwright test",
     "test:visual:update": "playwright test --update-snapshots",
     "extract-css": "node scripts/extract-css-properties.mjs",
+    "design-freeze": "node scripts/design-freeze.mjs",
     "specimen": "vite --config specimen/vite.config.ts",
     "specimen:compare": "vite --config specimen/vite.config.ts --open /comparison.html",
     "test:visual:compare": "playwright test --config playwright.comparison.config.ts",
