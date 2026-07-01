@@ -974,7 +974,7 @@ function App() {
         label="TempoDisplay colored md"
         htmlContent={`<div class="tempo-display md-size tempo-colored"><span class="tempo-value"><span class="t-con">1</span><span class="t-dash">-</span><span class="t-hold">1</span><span class="t-dash">-</span><span class="t-ecc">3</span><span class="t-dash">-</span><span class="t-idle">0</span></span></div>`}
       >
-        <TempoDisplay concentric={1} hold={1} eccentric={3} idle={0} colored />
+        <TempoDisplay tempo={[1, 1, 3, 0]} colored />
       </ComparisonPair>
 
       <ComparisonPair
@@ -982,7 +982,7 @@ function App() {
         label="TempoDisplay mono md"
         htmlContent={`<div class="tempo-display md-size"><span class="tempo-value mono">1-1-3-0</span></div>`}
       >
-        <TempoDisplay concentric={1} hold={1} eccentric={3} idle={0} colored={false} />
+        <TempoDisplay tempo={[1, 1, 3, 0]} colored={false} />
       </ComparisonPair>
 
       <ComparisonPair
@@ -990,7 +990,7 @@ function App() {
         label="TempoDisplay colored sm"
         htmlContent={`<div class="tempo-display sm-size tempo-colored"><span class="tempo-value"><span class="t-con">1</span><span class="t-dash">-</span><span class="t-hold">1</span><span class="t-dash">-</span><span class="t-ecc">3</span><span class="t-dash">-</span><span class="t-idle">0</span></span></div>`}
       >
-        <TempoDisplay concentric={1} hold={1} eccentric={3} idle={0} size="sm" colored />
+        <TempoDisplay tempo={[1, 1, 3, 0]} size="sm" colored />
       </ComparisonPair>
 
       {/* ── 7. DeviationBar ── */}
@@ -1020,7 +1020,7 @@ function App() {
         label="IntensityBar 20% (building)"
         htmlContent={`<div class="intensity-bar"><div class="intensity-track" style="height:36px"><div class="intensity-fill building" style="height:20%"></div></div><span class="intensity-label">20%</span></div>`}
       >
-        <IntensityBar level={20} height={36} showLabel />
+        <IntensityBar level={0.2} size={36} />
       </ComparisonPair>
 
       <ComparisonPair
@@ -1028,7 +1028,7 @@ function App() {
         label="IntensityBar 75% (approaching)"
         htmlContent={`<div class="intensity-bar"><div class="intensity-track" style="height:36px"><div class="intensity-fill approaching" style="height:75%"></div></div><span class="intensity-label">75%</span></div>`}
       >
-        <IntensityBar level={75} height={36} showLabel />
+        <IntensityBar level={0.75} size={36} />
       </ComparisonPair>
 
       <ComparisonPair
@@ -1036,7 +1036,7 @@ function App() {
         label="IntensityBar 100% (target gradient)"
         htmlContent={`<div class="intensity-bar"><div class="intensity-track" style="height:36px"><div class="intensity-fill target" style="height:100%"></div></div><span class="intensity-label">100%</span></div>`}
       >
-        <IntensityBar level={100} height={36} showLabel />
+        <IntensityBar level={1} size={36} />
       </ComparisonPair>
 
       <ComparisonPair
@@ -1044,7 +1044,7 @@ function App() {
         label="IntensityBar 110% (over + bulge)"
         htmlContent={`<div class="intensity-bar"><div class="intensity-track" style="height:36px"><div class="intensity-fill over-1" style="height:100%"></div><div class="intensity-bulge over-1" style="width:8px;height:8px"></div></div><span class="intensity-label">110%</span></div>`}
       >
-        <IntensityBar level={110} height={36} showLabel />
+        <IntensityBar level={1.1} size={36} />
       </ComparisonPair>
 
       <ComparisonPair
@@ -1052,7 +1052,7 @@ function App() {
         label="IntensityBar 50% at target (blue glow)"
         htmlContent={`<div class="intensity-bar"><div class="intensity-track" style="height:36px"><div class="intensity-fill building at-target" style="height:50%"></div><div class="intensity-line-target" style="bottom:50%"></div></div><span class="intensity-label">50%</span></div>`}
       >
-        <IntensityBar level={50} target={50} height={36} showLabel />
+        <IntensityBar level={0.5} threshold={0.5} size={36} />
       </ComparisonPair>
 
       <ComparisonPair
@@ -1060,7 +1060,7 @@ function App() {
         label="IntensityBar 120% (over-2)"
         htmlContent={`<div class="intensity-bar"><div class="intensity-track" style="height:36px"><div class="intensity-fill over-2" style="height:100%"></div><div class="intensity-bulge over-2" style="width:10px;height:10px"></div></div><span class="intensity-label">120%</span></div>`}
       >
-        <IntensityBar level={120} height={36} showLabel />
+        <IntensityBar level={1.2} size={36} />
       </ComparisonPair>
 
       <ComparisonPair
@@ -1068,7 +1068,7 @@ function App() {
         label="IntensityBar 130% (over-3)"
         htmlContent={`<div class="intensity-bar"><div class="intensity-track" style="height:36px"><div class="intensity-fill over-3" style="height:100%"></div><div class="intensity-bulge over-3" style="width:11px;height:11px"></div></div><span class="intensity-label">130%</span></div>`}
       >
-        <IntensityBar level={130} height={36} showLabel />
+        <IntensityBar level={1.3} size={36} />
       </ComparisonPair>
 
       {/* ── 9. WorkoutPill ── */}
@@ -1087,6 +1087,8 @@ function App() {
           missed: '\u2014 ',
         }
         const prefix = prefixes[status] ?? ''
+        // The prototype's `active` state was renamed `current` in the component.
+        const reactStatus = status === 'active' ? 'current' : status
         return (
           <ComparisonPair
             key={status}
@@ -1094,7 +1096,7 @@ function App() {
             label={`WorkoutPill ${status}`}
             htmlContent={`<div class="workout-pill ${status}">${prefix}${names[status]}</div>`}
           >
-            <WorkoutPill name={names[status]} status={status} />
+            <WorkoutPill name={names[status]} status={reactStatus} />
           </ComparisonPair>
         )
       })}
