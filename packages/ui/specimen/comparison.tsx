@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client'
 import '../src/theme/global.css'
 
 import {
-  E1rmBadge,
+  WeightBadge,
   PrBadge,
   StatusDot,
   PlaceholderStrip,
@@ -54,8 +54,8 @@ const HTML_CSS = `
     --font-body: 'Inter', sans-serif;
   }
 
-  /* 1. E1rmBadge */
-  .html-scope .e1rm-badge {
+  /* 1. WeightBadge */
+  .html-scope .weight-badge {
     display: inline-flex;
     align-items: center;
     gap: 3px;
@@ -66,12 +66,12 @@ const HTML_CSS = `
     font-weight: 600;
     color: var(--text-secondary);
   }
-  .html-scope .e1rm-icon {
+  .html-scope .weight-icon {
     display: inline-flex;
     align-items: center;
     margin-top: -1px;
   }
-  .html-scope .e1rm-icon svg {
+  .html-scope .weight-icon svg {
     stroke: currentColor;
     stroke-width: 2;
     stroke-linecap: round;
@@ -79,22 +79,22 @@ const HTML_CSS = `
     fill: none;
     display: block;
   }
-  .html-scope .e1rm-badge.sm .e1rm-icon svg { width: 10px; height: 10px; }
-  .html-scope .e1rm-badge.md .e1rm-icon svg { width: 12px; height: 12px; }
-  .html-scope .e1rm-badge.lg .e1rm-icon svg { width: 14px; height: 14px; }
-  .html-scope .e1rm-badge.sm { font-size: 9px; padding: 2px 6px; }
-  .html-scope .e1rm-badge.md { font-size: 10px; padding: 2px 8px; }
-  .html-scope .e1rm-badge.lg { font-size: 12px; padding: 4px 10px; }
-  .html-scope .e1rm-badge.pr {
+  .html-scope .weight-badge.sm .weight-icon svg { width: 10px; height: 10px; }
+  .html-scope .weight-badge.md .weight-icon svg { width: 12px; height: 12px; }
+  .html-scope .weight-badge.lg .weight-icon svg { width: 14px; height: 14px; }
+  .html-scope .weight-badge.sm { font-size: 9px; padding: 2px 6px; }
+  .html-scope .weight-badge.md { font-size: 10px; padding: 2px 8px; }
+  .html-scope .weight-badge.lg { font-size: 12px; padding: 4px 10px; }
+  .html-scope .weight-badge.pr {
     background: var(--brand-primary-subtle);
-    border-color: rgba(255, 121, 0, 0.3);
+    border-color: rgba(255, 121, 0, 0.12);
     color: var(--brand-primary);
   }
-  .html-scope .e1rm-delta {
+  .html-scope .weight-delta {
     margin-left: 4px;
   }
-  .html-scope .e1rm-delta.positive { color: var(--result-improve); }
-  .html-scope .e1rm-delta.negative { color: var(--result-degrade); }
+  .html-scope .weight-delta.positive { color: var(--result-improve); }
+  .html-scope .weight-delta.negative { color: var(--result-degrade); }
 
   /* 2. PrBadge */
   .html-scope .pr-badge {
@@ -741,10 +741,11 @@ function SectionHeader({ title }: { title: string }) {
 }
 
 /* ─────────────────────────────────────────────
-   Crown SVG for HTML e1rm badges
+   Dumbbell SVG for HTML weight badges
+   (mirrors lucide-react's Dumbbell rendered by WeightBadge)
    ───────────────────────────────────────────── */
-const crownSvg = (w: number, h: number) =>
-  `<svg viewBox="0 2 24 20" width="${w}" height="${h}" style="stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;display:block"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7z"/><path d="M4 18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2"/></svg>`
+const dumbbellSvg = (w: number, h: number) =>
+  `<svg viewBox="0 0 24 24" width="${w}" height="${h}" style="stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;display:block"><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/></svg>`
 
 /* ─────────────────────────────────────────────
    App
@@ -765,63 +766,63 @@ function App() {
         Side-by-side rendering of HTML ground truth (left) vs React components (right).
       </p>
 
-      {/* ── 1. E1rmBadge ── */}
-      <SectionHeader title="1. E1rmBadge" />
+      {/* ── 1. WeightBadge ── */}
+      <SectionHeader title="1. WeightBadge" />
 
       <ComparisonPair
-        testId="compare-e1rm-badge-default-md"
-        label="E1rmBadge default md"
-        htmlContent={`<div class="e1rm-badge md"><span class="e1rm-icon">${crownSvg(12, 12)}</span>217 lbs</div>`}
+        testId="compare-weight-badge-default-md"
+        label="WeightBadge default md"
+        htmlContent={`<div class="weight-badge md"><span class="weight-icon">${dumbbellSvg(12, 12)}</span>217 lbs</div>`}
       >
-        <E1rmBadge value={217} size="md" />
+        <WeightBadge value={217} size="md" />
       </ComparisonPair>
 
       <ComparisonPair
-        testId="compare-e1rm-badge-default-sm"
-        label="E1rmBadge default sm"
-        htmlContent={`<div class="e1rm-badge sm"><span class="e1rm-icon">${crownSvg(10, 10)}</span>217 lbs</div>`}
+        testId="compare-weight-badge-default-sm"
+        label="WeightBadge default sm"
+        htmlContent={`<div class="weight-badge sm"><span class="weight-icon">${dumbbellSvg(10, 10)}</span>217 lbs</div>`}
       >
-        <E1rmBadge value={217} size="sm" />
+        <WeightBadge value={217} size="sm" />
       </ComparisonPair>
 
       <ComparisonPair
-        testId="compare-e1rm-badge-default-lg"
-        label="E1rmBadge default lg"
-        htmlContent={`<div class="e1rm-badge lg"><span class="e1rm-icon">${crownSvg(14, 14)}</span>217 lbs</div>`}
+        testId="compare-weight-badge-default-lg"
+        label="WeightBadge default lg"
+        htmlContent={`<div class="weight-badge lg"><span class="weight-icon">${dumbbellSvg(14, 14)}</span>217 lbs</div>`}
       >
-        <E1rmBadge value={217} size="lg" />
+        <WeightBadge value={217} size="lg" />
       </ComparisonPair>
 
       <ComparisonPair
-        testId="compare-e1rm-badge-pr"
-        label="E1rmBadge PR md"
-        htmlContent={`<div class="e1rm-badge md pr"><span class="e1rm-icon">${crownSvg(12, 12)}</span>\u2733 217 lbs</div>`}
+        testId="compare-weight-badge-pr"
+        label="WeightBadge PR md"
+        htmlContent={`<div class="weight-badge md pr"><span class="weight-icon">${dumbbellSvg(12, 12)}</span>\u2733 217 lbs</div>`}
       >
-        <E1rmBadge value={217} size="md" isPr />
+        <WeightBadge value={217} size="md" isPr />
       </ComparisonPair>
 
       <ComparisonPair
-        testId="compare-e1rm-badge-delta-positive"
-        label="E1rmBadge with +delta"
-        htmlContent={`<div class="e1rm-badge md"><span class="e1rm-icon">${crownSvg(12, 12)}</span>217 lbs <span class="e1rm-delta positive">+3%</span></div>`}
+        testId="compare-weight-badge-delta-positive"
+        label="WeightBadge with +delta"
+        htmlContent={`<div class="weight-badge md"><span class="weight-icon">${dumbbellSvg(12, 12)}</span>217 lbs <span class="weight-delta positive">+3%</span></div>`}
       >
-        <E1rmBadge value={217} delta={3} />
+        <WeightBadge value={217} delta={3} />
       </ComparisonPair>
 
       <ComparisonPair
-        testId="compare-e1rm-badge-delta-negative"
-        label="E1rmBadge with -delta"
-        htmlContent={`<div class="e1rm-badge md"><span class="e1rm-icon">${crownSvg(12, 12)}</span>217 lbs <span class="e1rm-delta negative">-2%</span></div>`}
+        testId="compare-weight-badge-delta-negative"
+        label="WeightBadge with -delta"
+        htmlContent={`<div class="weight-badge md"><span class="weight-icon">${dumbbellSvg(12, 12)}</span>217 lbs <span class="weight-delta negative">-2%</span></div>`}
       >
-        <E1rmBadge value={217} delta={-2} />
+        <WeightBadge value={217} delta={-2} />
       </ComparisonPair>
 
       <ComparisonPair
-        testId="compare-e1rm-badge-no-icon"
-        label="E1rmBadge no icon"
-        htmlContent={`<div class="e1rm-badge md">217 lbs</div>`}
+        testId="compare-weight-badge-no-icon"
+        label="WeightBadge no icon"
+        htmlContent={`<div class="weight-badge md">217 lbs</div>`}
       >
-        <E1rmBadge value={217} showIcon={false} />
+        <WeightBadge value={217} showIcon={false} />
       </ComparisonPair>
 
       {/* ── 2. PrBadge ── */}
