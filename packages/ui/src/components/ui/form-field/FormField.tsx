@@ -253,7 +253,7 @@ export function FormActions({
     <View
       className={cn(
         'flex-row items-center gap-3 pt-4',
-        'border-t border-border-default mt-4',
+        'border-t border-border mt-4',
         alignStyles[align],
         className
       )}

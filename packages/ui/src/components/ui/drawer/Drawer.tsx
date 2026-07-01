@@ -125,7 +125,7 @@ export function Drawer({
         >
           {/* Header */}
           {(title || showCloseButton) && (
-            <View className="flex-row items-center justify-between px-4 py-3 border-b border-border-default">
+            <View className="flex-row items-center justify-between px-4 py-3 border-b border-border">
               {title && (
                 <Text className="text-lg font-semibold text-text-primary">
                   {title}
@@ -165,7 +165,7 @@ export interface DrawerHeaderProps extends ViewProps {
 export function DrawerHeader({ className, children, ...props }: DrawerHeaderProps) {
   return (
     <View
-      className={cn('px-4 py-3 border-b border-border-default', className)}
+      className={cn('px-4 py-3 border-b border-border', className)}
       {...props}
     >
       {children}
@@ -217,7 +217,7 @@ export function DrawerFooter({ className, children, ...props }: DrawerFooterProp
     <View
       className={cn(
         'flex-row items-center justify-end gap-3',
-        'px-4 py-3 border-t border-border-default',
+        'px-4 py-3 border-t border-border',
         className
       )}
       {...props}

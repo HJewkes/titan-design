@@ -36,7 +36,7 @@ const variantColorStyles: Record<PillVariant, Record<PillColor, string>> = {
     info: 'bg-status-info/10 border-status-info/25 text-status-info',
   },
   outline: {
-    default: 'border-border-default text-text-secondary',
+    default: 'border-border text-text-secondary',
     primary: 'border-brand-primary text-brand-primary',
     secondary: 'border-brand-secondary text-brand-secondary',
     success: 'border-status-success text-status-success',

@@ -116,7 +116,7 @@ export function MenuList({ children, className }: MenuListProps) {
       <View
         className={cn(
           'absolute z-50 top-full left-0 mt-1 min-w-[160px]',
-          'bg-surface-elevated rounded-lg shadow-lg border border-border-default',
+          'bg-surface-elevated rounded-lg shadow-lg border border-border',
           'py-1 overflow-hidden',
           className
         )}
@@ -195,7 +195,7 @@ export interface MenuDividerProps {
  * Divider between menu items.
  */
 export function MenuDivider({ className }: MenuDividerProps) {
-  return <View className={cn('h-px bg-border-default my-1', className)} />
+  return <View className={cn('h-px bg-border my-1', className)} />
 }
 
 export interface MenuGroupProps {

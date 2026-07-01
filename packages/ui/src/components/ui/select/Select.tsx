@@ -187,7 +187,7 @@ export function Select<T extends string = string>({
             <View
               className={cn(
                 'absolute z-50 top-full left-0 right-0 mt-1',
-                'bg-surface-elevated rounded-md shadow-lg border border-border-default',
+                'bg-surface-elevated rounded-md shadow-lg border border-border',
                 'max-h-60 overflow-hidden'
               )}
             >
