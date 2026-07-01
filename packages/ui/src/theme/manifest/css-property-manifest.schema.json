@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://titan-design.dev/schemas/css-property-manifest.schema.json",
+  "title": "Component CSS Property Manifest",
+  "description": "Per-component record of visual CSS properties, the design token each one resolves from, the expected computed style value, and any per-variant overrides. Generated manifests serve as fixtures for Playwright computed-style assertions (see packages/ui/tests/visual).",
+  "type": "object",
+  "required": ["component", "properties"],
+  "additionalProperties": false,
+  "properties": {
+    "component": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "Component identifier matching its src/components/ui/{component} directory and Storybook id (e.g. \"button\")."
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional human-readable note about what this manifest covers."
+    },
+    "baseVariant": {
+      "$ref": "#/$defs/variantAxes",
+      "description": "The variant axis values (e.g. { \"variant\": \"solid\", \"color\": \"primary\", \"size\": \"md\" }) that each property's top-level resolvedValue was captured against. Axis names must match the component's own prop names."
+    },
+    "properties": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/cssPropertyEntry" },
+      "description": "One entry per visual CSS property tracked for this component."
+    }
+  },
+  "$defs": {
+    "variantAxes": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "type": "string" },
+      "description": "A set of variant axis name/value pairs (e.g. variant, color, size, state) as accepted by the component's props."
+    },
+    "cssPropertyEntry": {
+      "type": "object",
+      "required": ["property", "token", "resolvedValue"],
+      "additionalProperties": false,
+      "properties": {
+        "property": {
+          "type": "string",
+          "pattern": "^[a-zA-Z]+$",
+          "description": "CSS property name in camelCase as returned by window.getComputedStyle (e.g. backgroundColor, borderColor, fontSize)."
+        },
+        "token": {
+          "type": ["string", "null"],
+          "description": "Semantic design token key this property is sourced from (e.g. \"brand-primary\"), matching a key in packages/ui/src/theme/tokens/semantic.ts. Use null when the value is a literal not backed by a token."
+        },
+        "cssVariable": {
+          "type": ["string", "null"],
+          "description": "CSS custom property backing the token (e.g. \"--color-brand-primary\"), as declared in packages/ui/src/theme/global.css. Omit or null when no CSS variable is involved."
+        },
+        "resolvedValue": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Expected computed style value for baseVariant, in the format getComputedStyle returns it (e.g. \"rgb(255, 121, 0)\", \"8px\")."
+        },
+        "variantOverrides": {
+          "type": "array",
+          "default": [],
+          "items": { "$ref": "#/$defs/variantOverride" },
+          "description": "Overrides of token/resolvedValue for specific variant axis combinations, merged onto baseVariant."
+        }
+      }
+    },
+    "variantOverride": {
+      "type": "object",
+      "required": ["variant", "resolvedValue"],
+      "additionalProperties": false,
+      "properties": {
+        "variant": {
+          "$ref": "#/$defs/variantAxes",
+          "description": "Partial variant axis values that trigger this override (e.g. { \"variant\": \"outline\" } or { \"color\": \"error\", \"state\": \"hover\" })."
+        },
+        "token": {
+          "type": ["string", "null"],
+          "description": "Semantic token key for this override, or null for a literal value."
+        },
+        "cssVariable": {
+          "type": ["string", "null"],
+          "description": "CSS custom property backing the token for this override."
+        },
+        "resolvedValue": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Expected computed style value when the variant axes match."
+        }
+      }
+    }
+  }
+}

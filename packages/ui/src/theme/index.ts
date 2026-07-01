@@ -3,11 +3,12 @@ export * from './tokens'
 export * from './config'
 export * from './shadows'
 export * from './elevation'
+export * from './manifest'
 
 // Re-export commonly used items
 export { getSemanticColors, type ThemeMode } from './tokens/semantic'
 export { getThemeCSSVars, gluestackConfig } from './config'
-export { 
+export {
   neumorphicShadows,
   // Color math utilities (HSV-based)
   lighten,

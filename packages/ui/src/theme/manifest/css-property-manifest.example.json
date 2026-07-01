@@ -1,0 +1,79 @@
+{
+  "component": "button",
+  "description": "Illustrative example conforming to css-property-manifest.schema.json. Values are derived from Button.tsx's variant/color/size style maps and the semantic token definitions they reference, not measured via getComputedStyle — a follow-up ticket generates verified manifests from the rendered Storybook DOM.",
+  "baseVariant": { "variant": "solid", "color": "primary", "size": "md" },
+  "properties": [
+    {
+      "property": "backgroundColor",
+      "token": "brand-primary",
+      "cssVariable": "--color-brand-primary",
+      "resolvedValue": "rgb(255, 121, 0)",
+      "variantOverrides": [
+        {
+          "variant": { "variant": "outline" },
+          "token": null,
+          "cssVariable": null,
+          "resolvedValue": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "variant": { "variant": "solid", "color": "error" },
+          "token": "status-error",
+          "cssVariable": "--color-status-error",
+          "resolvedValue": "rgb(209, 67, 67)"
+        }
+      ]
+    },
+    {
+      "property": "color",
+      "token": null,
+      "resolvedValue": "rgb(255, 255, 255)",
+      "variantOverrides": [
+        {
+          "variant": { "variant": "outline" },
+          "token": "brand-primary",
+          "cssVariable": "--color-brand-primary",
+          "resolvedValue": "rgb(255, 121, 0)"
+        }
+      ]
+    },
+    {
+      "property": "borderColor",
+      "token": null,
+      "resolvedValue": "rgba(0, 0, 0, 0)",
+      "variantOverrides": [
+        {
+          "variant": { "variant": "outline" },
+          "token": "brand-primary",
+          "cssVariable": "--color-brand-primary",
+          "resolvedValue": "rgb(255, 121, 0)"
+        }
+      ]
+    },
+    {
+      "property": "borderWidth",
+      "token": null,
+      "resolvedValue": "0px",
+      "variantOverrides": [
+        {
+          "variant": { "variant": "outline" },
+          "token": null,
+          "resolvedValue": "2px"
+        }
+      ]
+    },
+    {
+      "property": "borderRadius",
+      "token": null,
+      "resolvedValue": "6px"
+    },
+    {
+      "property": "paddingLeft",
+      "token": null,
+      "resolvedValue": "20px",
+      "variantOverrides": [
+        { "variant": { "size": "sm" }, "token": null, "resolvedValue": "16px" },
+        { "variant": { "size": "lg" }, "token": null, "resolvedValue": "24px" }
+      ]
+    }
+  ]
+}
