@@ -104,7 +104,7 @@ export function WeekRow({
             fontSize: 13,
             fontWeight: '700',
             fontFamily: 'Inter, sans-serif',
-            color: isCurrent ? BRAND_PRIMARY : '#F3F4F6',
+            color: isCurrent ? BRAND_PRIMARY : 'var(--color-text-primary)',
           }}
           accessibilityElementsHidden
         >

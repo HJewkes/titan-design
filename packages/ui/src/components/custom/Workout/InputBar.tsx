@@ -1,7 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import React from 'react'
 import { View, Text, Pressable, TextInput } from 'react-native'
-import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 
 export interface InputBarProps {
   exerciseName: string
@@ -18,16 +17,16 @@ export interface InputBarProps {
 }
 
 const BRAND_PRIMARY = '#FF7900'
-const TEXT_PRIMARY = '#F3F4F6'
-const TEXT_TERTIARY = '#6B7280'
+const TEXT_PRIMARY = 'var(--color-text-primary)'
+const TEXT_TERTIARY = 'var(--color-text-tertiary)'
 
 const inputStyle = {
   fontSize: 14,
   fontWeight: '600' as const,
   fontFamily: 'Inter, sans-serif',
-  backgroundColor: WORKOUT_TOKENS.surface.raised,
+  backgroundColor: 'var(--color-surface-raised)',
   borderWidth: 1,
-  borderColor: WORKOUT_TOKENS.border.strong,
+  borderColor: 'var(--color-border-strong)',
   borderRadius: 6,
   textAlign: 'center' as const,
   color: TEXT_PRIMARY,
@@ -56,9 +55,9 @@ export function InputBar({
     <View
       style={{
         width: '100%',
-        backgroundColor: WORKOUT_TOKENS.surface.elevated,
+        backgroundColor: 'var(--color-surface-elevated)',
         borderTopWidth: 1,
-        borderTopColor: WORKOUT_TOKENS.border.default,
+        borderTopColor: 'var(--color-border-default)',
         paddingTop: 10,
         paddingHorizontal: 16,
         paddingBottom: 12,

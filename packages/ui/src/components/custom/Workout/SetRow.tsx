@@ -116,7 +116,7 @@ export function SetRow({
               fontSize: 13,
               fontWeight: '600',
               fontFamily: 'Inter, sans-serif',
-              color: '#9CA3AF',
+              color: 'var(--color-text-secondary)',
             }}
           >
             {setNumber}
@@ -132,7 +132,7 @@ export function SetRow({
           style={{
             fontSize: 12,
             fontFamily: 'Inter, sans-serif',
-            color: '#9CA3AF',
+            color: 'var(--color-text-secondary)',
           }}
         >
           {previous
@@ -151,7 +151,7 @@ export function SetRow({
               fontSize: 13,
               fontStyle: 'italic',
               fontFamily: 'Inter, sans-serif',
-              color: '#6B7280',
+              color: 'var(--color-text-tertiary)',
             }}
             testID="set-row-target-reps"
           >
@@ -163,7 +163,7 @@ export function SetRow({
               fontSize: 14,
               fontWeight: '600',
               fontFamily: 'Inter, sans-serif',
-              color: reps != null ? '#F3F4F6' : '#6B7280',
+              color: reps != null ? 'var(--color-text-primary)' : 'var(--color-text-tertiary)',
             }}
           >
             {reps != null ? reps : '\u2014'}
@@ -181,7 +181,7 @@ export function SetRow({
               fontSize: 13,
               fontStyle: 'italic',
               fontFamily: 'Inter, sans-serif',
-              color: '#6B7280',
+              color: 'var(--color-text-tertiary)',
             }}
             testID="set-row-target-weight"
           >
@@ -193,7 +193,7 @@ export function SetRow({
               fontSize: 14,
               fontWeight: '600',
               fontFamily: 'Inter, sans-serif',
-              color: weight != null ? '#F3F4F6' : '#6B7280',
+              color: weight != null ? 'var(--color-text-primary)' : 'var(--color-text-tertiary)',
             }}
           >
             {weight != null ? weight : '\u2014'}
@@ -210,7 +210,7 @@ export function SetRow({
             fontSize: 13,
             fontWeight: '600',
             fontFamily: 'Inter, sans-serif',
-            color: rpe != null ? getRPEColor(rpe) : '#6B7280',
+            color: rpe != null ? getRPEColor(rpe) : 'var(--color-text-tertiary)',
           }}
         >
           {rpe != null ? rpe : '\u2014'}

@@ -1,6 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, Text, Pressable } from 'react-native'
-import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 
 const BRAND_PRIMARY = '#FF7900'
 
@@ -37,9 +36,9 @@ export function RestTimer({
     <View
       style={{
         width: '100%',
-        backgroundColor: WORKOUT_TOKENS.surface.raised,
+        backgroundColor: 'var(--color-surface-raised)',
         borderTopWidth: 1,
-        borderTopColor: WORKOUT_TOKENS.border.default,
+        borderTopColor: 'var(--color-border-default)',
         paddingVertical: 12,
         paddingHorizontal: 16,
       }}
@@ -65,7 +64,7 @@ export function RestTimer({
               fontWeight: '600',
               textTransform: 'uppercase',
               letterSpacing: 1,
-              color: '#9CA3AF',
+              color: 'var(--color-text-secondary)',
             }}
             testID="rest-timer-label"
           >
@@ -76,7 +75,7 @@ export function RestTimer({
               style={{
                 fontSize: 11,
                 fontFamily: 'Inter, sans-serif',
-                color: '#6B7280',
+                color: 'var(--color-text-tertiary)',
                 marginTop: 2,
               }}
               testID="rest-timer-next-set"
@@ -92,7 +91,7 @@ export function RestTimer({
             fontSize: 28,
             fontFamily: '"Space Grotesk", sans-serif',
             fontWeight: '700',
-            color: '#F3F4F6',
+            color: 'var(--color-text-primary)',
             fontVariant: ['tabular-nums'],
             letterSpacing: -0.5,
           }}
@@ -106,7 +105,7 @@ export function RestTimer({
       <View
         style={{
           height: 3,
-          backgroundColor: WORKOUT_TOKENS.border.default,
+          backgroundColor: 'var(--color-border-default)',
           borderRadius: 2,
           marginBottom: 12,
         }}
@@ -142,7 +141,7 @@ export function RestTimer({
               fontSize: 11,
               fontFamily: 'Inter, sans-serif',
               fontWeight: '600',
-              color: '#9CA3AF',
+              color: 'var(--color-text-secondary)',
             }}
           >
             +30s

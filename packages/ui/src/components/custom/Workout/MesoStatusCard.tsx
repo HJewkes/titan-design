@@ -7,9 +7,9 @@ import { StatusDot } from './StatusDot'
 const BRAND_PRIMARY = '#FF7900'
 const BRAND_PRIMARY_DARK = '#C45E00'
 const BRAND_PRIMARY_LIGHT = '#FFB066'
-const TEXT_PRIMARY = '#F3F4F6'
-const TEXT_SECONDARY = '#9CA3AF'
-const TEXT_TERTIARY = '#6B7280'
+const TEXT_PRIMARY = 'var(--color-text-primary)'
+const TEXT_SECONDARY = 'var(--color-text-secondary)'
+const TEXT_TERTIARY = 'var(--color-text-tertiary)'
 
 const SUCCESS = '#14B8A6'
 const WARNING = '#FFB020'
@@ -18,9 +18,9 @@ const ERROR = '#D14343'
 /** Gradient stops for the 3px top accent: dark -> primary -> light (matches MesoCard). */
 const ACCENT_STOPS = [BRAND_PRIMARY_DARK, BRAND_PRIMARY, BRAND_PRIMARY_LIGHT]
 
-/** Card surface gradient: surface-elevated -> near-black at 135deg. */
+/** Card surface gradient: elevated -> raised at 135deg (theme-aware). */
 const CARD_GRADIENT =
-  'linear-gradient(135deg, #191919 0%, rgba(25,25,25,0.95) 100%)'
+  'linear-gradient(135deg, var(--color-surface-elevated) 0%, var(--color-surface-raised) 100%)'
 
 /** Gauge track gradient (teal -> amber -> red) at 0.25 alpha. */
 const GAUGE_GRADIENT =
