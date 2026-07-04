@@ -79,20 +79,20 @@ export {
   type WorkoutDot,
   type WorkoutDotStatus,
 } from './CapacityBandChart'
-export { BodyMap, type BodyMapProps, type BodyMapData } from './BodyMap'
-export {
-  BodyMapDetailPanel,
-  type BodyMapDetailPanelProps,
-  type ContributingExercise,
-  type UpcomingExercise,
+// BodyMap / BodyMapDetailPanel / TrainingStatusPage depend on
+// `react-native-body-highlighter` at runtime. Their VALUE exports live behind the
+// `@titan-design/react-ui/bodymap` subpath to keep this barrel body-highlighter-free.
+// Type-only re-exports stay here (erased at build, so no runtime pull).
+export type { BodyMapProps, BodyMapData } from './BodyMap'
+export type {
+  BodyMapDetailPanelProps,
+  ContributingExercise,
+  UpcomingExercise,
 } from './BodyMapDetailPanel'
-export {
-  TrainingStatusPage,
-  deriveTrainingSummary,
-  toBodyMapData,
-  type TrainingStatusPageProps,
-  type TrainingStatusMuscle,
-  type TrainingStatusSummary,
+export type {
+  TrainingStatusPageProps,
+  TrainingStatusMuscle,
+  TrainingStatusSummary,
 } from './TrainingStatusPage'
 export {
   ProgramPlanningPage,
@@ -126,20 +126,14 @@ export {
   type ExerciseDetailStats,
   type VbtSummary,
 } from './ExerciseDetailPage'
-export {
+// muscleTaxonomy imports `react-native-body-highlighter` at runtime. Its value
+// exports (incl. the MuscleGroup / SimpleMuscleGroup enums) live behind the
+// `@titan-design/react-ui/bodymap` subpath. Only type-only re-exports stay here.
+export type {
   MuscleGroup,
   SimpleMuscleGroup,
-  SIMPLE_TO_DETAILED,
-  DETAILED_TO_SIMPLE,
-  MUSCLE_TO_SVG_SLUGS,
-  MUSCLE_TO_CATEGORY,
-  MUSCLE_DISPLAY_NAMES,
-  SIMPLE_DISPLAY_NAMES,
-  DEFAULT_VOLUME_LANDMARKS,
-  VOLUME_STATUS_LABELS,
-  getHeatmapColor,
-  type MovementCategory,
-  type VolumeLandmarks,
+  MovementCategory,
+  VolumeLandmarks,
 } from './muscleTaxonomy'
 export {
   ActiveWorkoutPage,
