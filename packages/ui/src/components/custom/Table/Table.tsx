@@ -101,7 +101,7 @@ export function Table({
     >
       <View className={cn('w-full', className)} {...props}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View className="w-full min-w-full">
+          <View role="table" className="w-full min-w-full">
             {isLoading ? (
               <TableLoadingSkeleton rowCount={loadingRowCount} />
             ) : (
@@ -125,7 +125,7 @@ export interface TableHeaderProps {
 export function TableHeader({ children, className }: TableHeaderProps) {
   return (
     <View
-      accessibilityRole="none"
+      role="rowgroup"
       className={cn('bg-background-subtle rounded-t-lg', className)}
     >
       {children}
@@ -143,7 +143,7 @@ export interface TableBodyProps {
  */
 export function TableBody({ children, className }: TableBodyProps) {
   return (
-    <View accessibilityRole="none" className={className}>
+    <View role="rowgroup" className={className}>
       {children}
     </View>
   )
@@ -171,7 +171,7 @@ export function TableRow({
 }: TableRowProps) {
   return (
     <View
-      accessibilityRole="none"
+      role="row"
       className={cn(
         'flex-row border-b border-divider',
         isHoverable && 'web:hover:bg-interactive-hover',
@@ -212,6 +212,13 @@ export function TableHeaderCell({
   const { sortColumn, sortDirection, onSort } = useContext(TableContext)
   const isSorted = sortKey && sortColumn === sortKey
   const isSortable = !!sortKey && !!onSort
+  const ariaSort = isSorted
+    ? sortDirection === 'asc'
+      ? 'ascending'
+      : sortDirection === 'desc'
+        ? 'descending'
+        : 'none'
+    : 'none'
 
   const handlePress = (e: any) => {
     if (isSortable && sortKey) {
@@ -245,27 +252,35 @@ export function TableHeaderCell({
   )
 
   if (isSortable) {
+    // columnheader cell wraps the sort button so it carries proper table
+    // semantics (role + aria-sort) while the inner control keeps its button role.
     return (
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={`Sort by ${children}`}
-        onPress={handlePress}
+      <View
+        role="columnheader"
+        aria-sort={ariaSort}
         style={width ? { width } : { flex: 1 }}
-        className={cn(
-          'flex-row items-center px-4 py-3',
-          alignStyles[align],
-          'web:hover:bg-interactive-hover active:bg-interactive-active',
-          className
-        )}
-        {...props}
       >
-        {content}
-      </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`Sort by ${children}`}
+          onPress={handlePress}
+          className={cn(
+            'flex-row items-center px-4 py-3',
+            alignStyles[align],
+            'web:hover:bg-interactive-hover active:bg-interactive-active',
+            className
+          )}
+          {...props}
+        >
+          {content}
+        </Pressable>
+      </View>
     )
   }
 
   return (
     <View
+      role="columnheader"
       style={width ? { width } : { flex: 1 }}
       className={cn(
         'flex-row items-center px-4 py-3',
@@ -306,6 +321,7 @@ export function TableCell({
 
   return (
     <View
+      role="cell"
       style={width ? { width } : { flex: 1 }}
       className={cn(
         'justify-center px-4 py-3.5',

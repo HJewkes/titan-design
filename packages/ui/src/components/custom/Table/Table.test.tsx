@@ -515,6 +515,33 @@ describe('Table', () => {
       expect(screen.getByRole('button', { name: /sort by name/i })).toBeInTheDocument()
     })
 
+    it('exposes real ARIA table semantics (table/rowgroup/row/columnheader/cell)', () => {
+      renderBasicTable()
+      expect(screen.getByRole('table')).toBeInTheDocument()
+      // header rowgroup + body rowgroup
+      expect(screen.getAllByRole('rowgroup')).toHaveLength(2)
+      // 1 header row + 2 body rows
+      expect(screen.getAllByRole('row')).toHaveLength(3)
+      expect(screen.getAllByRole('columnheader')).toHaveLength(3)
+      expect(screen.getAllByRole('cell')).toHaveLength(6)
+    })
+
+    it('sortable header reflects sort state via aria-sort', () => {
+      render(
+        <Table sortColumn="name" sortDirection="asc" onSort={vi.fn()}>
+          <TableHeader>
+            <TableRow>
+              <TableHeaderCell sortKey="name">Name</TableHeaderCell>
+              <TableHeaderCell sortKey="email">Email</TableHeaderCell>
+            </TableRow>
+          </TableHeader>
+        </Table>
+      )
+      const [name, email] = screen.getAllByRole('columnheader')
+      expect(name).toHaveAttribute('aria-sort', 'ascending')
+      expect(email).toHaveAttribute('aria-sort', 'none')
+    })
+
     it('pagination buttons have accessible labels', () => {
       render(
         <TablePagination
