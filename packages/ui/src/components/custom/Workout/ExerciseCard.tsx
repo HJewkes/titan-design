@@ -7,6 +7,7 @@ import { WeightBadge } from './WeightBadge'
 import { PrBadge } from './PrBadge'
 import { TempoDisplay } from './TempoDisplay'
 import { SetRow, type SetRowProps } from './SetRow'
+import { roundWeight } from '../../../utils/workout-format'
 
 export type ExerciseCardState = 'collapsed' | 'expanded' | 'upcoming'
 
@@ -99,7 +100,7 @@ function getSupersetMargin(
 
 function formatSummary(summary: ExerciseCardProps['summary']): string {
   if (!summary) return ''
-  return `${summary.sets}\u00D7${summary.reps} @ ${summary.weight} ${summary.unit}`
+  return `${summary.sets}\u00D7${summary.reps} @ ${roundWeight(summary.weight)} ${summary.unit}`
 }
 
 function formatAccessibilityLabel(
@@ -178,7 +179,7 @@ function CollapsedCard({
           )}
           {e1rm && (
             <WeightBadge
-              value={e1rm.value}
+              value={roundWeight(e1rm.value)}
               unit={e1rm.unit}
               size="sm"
               showIcon={false}
@@ -291,7 +292,7 @@ function ExpandedCard({
           )}
           {e1rm && (
             <WeightBadge
-              value={e1rm.value}
+              value={roundWeight(e1rm.value)}
               unit={e1rm.unit}
               size="sm"
               showIcon={false}
