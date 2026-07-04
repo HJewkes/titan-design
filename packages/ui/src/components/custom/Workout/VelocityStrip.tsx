@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-native'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
+import { formatVelocity } from '../../../utils/workout-format'
 
 export interface VelocityStripProps extends ViewProps {
   velocities: number[]
@@ -191,7 +192,7 @@ export function VelocityStrip({
                     style={{ fontSize: 8, fontWeight: '600', color: 'var(--color-text-secondary)' }}
                     testID={`velocity-label-${i}`}
                   >
-                    {v.toFixed(2)}
+                    {formatVelocity(v)}
                   </Text>
                 </Animated.View>
               )}
@@ -210,7 +211,7 @@ export function VelocityStrip({
                 }
                 testID={`velocity-bar-${i}`}
                 accessibilityRole="image"
-                accessibilityLabel={`Rep ${i + 1}: ${v.toFixed(2)} meters per second`}
+                accessibilityLabel={`Rep ${i + 1}: ${formatVelocity(v)} meters per second`}
               />
             </View>
           )
@@ -222,7 +223,7 @@ export function VelocityStrip({
                 style={{ flex: 1, height: '100%' }}
                 onPress={() => onRepPress(i, v)}
                 accessibilityRole="button"
-                accessibilityLabel={`Rep ${i + 1}: ${v.toFixed(2)} meters per second, tap for details`}
+                accessibilityLabel={`Rep ${i + 1}: ${formatVelocity(v)} meters per second, tap for details`}
                 testID={`velocity-bar-pressable-${i}`}
               >
                 {bar}
@@ -253,7 +254,7 @@ export function VelocityStrip({
               fontFamily: 'Inter, sans-serif',
             }}
           >
-            {meanZone} {'\u00B7'} {meanVelocity.toFixed(2)} m/s
+            {meanZone} {'\u00B7'} {formatVelocity(meanVelocity)} m/s
           </Text>
           <Text
             style={{

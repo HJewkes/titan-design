@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useState, useCallback } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
+import { roundTempo } from '../../../utils/workout-format'
 
 export interface TempoDisplayProps extends ViewProps {
   /** Tempo values: [eccentric, pauseBottom, concentric, pauseTop] in seconds */
@@ -76,7 +77,8 @@ export function TempoDisplay({
   ...props
 }: TempoDisplayProps) {
   const [showTooltip, setShowTooltip] = useState(false)
-  const [eccentric, pauseBottom, concentric, pauseTop] = tempo
+  // Round exact (unrounded) tempo seconds to the 1-dp display granularity.
+  const [eccentric, pauseBottom, concentric, pauseTop] = roundTempo(tempo)
   const isSm = size === 'sm'
   const fontSize = isSm ? 9 : 11
   const monoColor = TEXT_TERTIARY

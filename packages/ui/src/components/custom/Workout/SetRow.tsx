@@ -2,7 +2,7 @@
 import { View, Text } from 'react-native'
 import { VelocityStrip } from './VelocityStrip'
 import { PrBadge, type PRType } from './PrBadge'
-import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
+import { roundRpe, rpeColor, roundWeight } from '../../../utils/workout-format'
 
 export type SetRowMode = 'active' | 'completed' | 'history'
 
@@ -23,15 +23,6 @@ export interface SetRowProps {
   targets?: { reps: number; weight: number }
 }
 
-// RPE color maps onto the canonical performance scale (see workout-tokens.ts).
-// Direction is inverted vs velocity: higher RPE = harder = red.
-function getRPEColor(rpe: number): string {
-  if (rpe >= 9.5) return WORKOUT_TOKENS.scale.red
-  if (rpe >= 8.5) return WORKOUT_TOKENS.scale.orange
-  if (rpe >= 7) return WORKOUT_TOKENS.scale.yellow
-  return WORKOUT_TOKENS.scale.green
-}
-
 function formatAccessibilityLabel(
   setNumber: number,
   reps: number | null,
@@ -39,7 +30,7 @@ function formatAccessibilityLabel(
   unit: string,
 ): string {
   const repsText = reps != null ? `${reps} reps` : 'no reps'
-  const weightText = weight != null ? `at ${weight} ${unit}` : ''
+  const weightText = weight != null ? `at ${roundWeight(weight)} ${unit}` : ''
   return `Set ${setNumber}: ${repsText}${weightText ? ` ${weightText}` : ''}`
 }
 
@@ -139,7 +130,7 @@ export function SetRow({
           }}
         >
           {previous
-            ? `${previous.reps} x ${previous.weight}`
+            ? `${previous.reps} x ${roundWeight(previous.weight)}`
             : '\u2014'}
         </Text>
       </View>
@@ -188,7 +179,7 @@ export function SetRow({
             }}
             testID="set-row-target-weight"
           >
-            {targets.weight}
+            {roundWeight(targets.weight)}
           </Text>
         ) : (
           <Text
@@ -199,7 +190,7 @@ export function SetRow({
               color: weight != null ? 'var(--color-text-primary)' : 'var(--color-text-tertiary)',
             }}
           >
-            {weight != null ? weight : '\u2014'}
+            {weight != null ? roundWeight(weight) : '\u2014'}
           </Text>
         )}
       </View>
@@ -213,10 +204,10 @@ export function SetRow({
             fontSize: 13,
             fontWeight: '600',
             fontFamily: 'Inter, sans-serif',
-            color: rpe != null ? getRPEColor(rpe) : 'var(--color-text-tertiary)',
+            color: rpe != null ? rpeColor(rpe) : 'var(--color-text-tertiary)',
           }}
         >
-          {rpe != null ? rpe : '\u2014'}
+          {rpe != null ? roundRpe(rpe) : '\u2014'}
         </Text>
       </View>
 
