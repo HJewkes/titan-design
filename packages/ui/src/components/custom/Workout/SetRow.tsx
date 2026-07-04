@@ -2,6 +2,7 @@
 import { View, Text } from 'react-native'
 import { VelocityStrip } from './VelocityStrip'
 import { PrBadge, type PRType } from './PrBadge'
+import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 
 export type SetRowMode = 'active' | 'completed' | 'history'
 
@@ -22,11 +23,13 @@ export interface SetRowProps {
   targets?: { reps: number; weight: number }
 }
 
+// RPE color maps onto the canonical performance scale (see workout-tokens.ts).
+// Direction is inverted vs velocity: higher RPE = harder = red.
 function getRPEColor(rpe: number): string {
-  if (rpe >= 9.5) return '#ff4757'
-  if (rpe >= 8.5) return '#ffa502'
-  if (rpe >= 7) return '#ffd43b'
-  return '#2ed573'
+  if (rpe >= 9.5) return WORKOUT_TOKENS.scale.red
+  if (rpe >= 8.5) return WORKOUT_TOKENS.scale.orange
+  if (rpe >= 7) return WORKOUT_TOKENS.scale.yellow
+  return WORKOUT_TOKENS.scale.green
 }
 
 function formatAccessibilityLabel(

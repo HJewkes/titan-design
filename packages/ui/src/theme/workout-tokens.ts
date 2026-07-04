@@ -3,8 +3,15 @@
  * Use these inline instead of Tailwind classes.
  */
 export const WORKOUT_TOKENS = {
-  // Velocity zones (not in Tailwind)
-  velocity: {
+  // Canonical 4-band performance scale — the single source for BOTH the
+  // VelocityStrip zone bars and the SetRow RPE color (TD-03.43). The direction
+  // is intentionally inverted between the two consumers: for velocity, green =
+  // fastest/best; for RPE, green = easiest. Each component maps its own
+  // thresholds onto these four colors. Kept as vivid data-viz values (distinct
+  // from the muted status tokens) and theme-independent, so — like the heatmap
+  // scale below — they are consumed inline as a JS import rather than CSS vars.
+  // A JS import also resolves on native RN, unlike var(--…) strings.
+  scale: {
     green: '#2ed573',
     yellow: '#ffd43b',
     orange: '#ffa502',
