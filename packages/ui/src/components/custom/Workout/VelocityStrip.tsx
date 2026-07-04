@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useEffect, useState } from 'react'
 import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-native'
+import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 
 export interface VelocityStripProps extends ViewProps {
   velocities: number[]
@@ -12,12 +13,8 @@ export interface VelocityStripProps extends ViewProps {
   className?: string
 }
 
-const VEL_COLORS = {
-  green: '#2ed573',
-  yellow: '#ffd43b',
-  orange: '#ffa502',
-  red: '#ff4757',
-}
+// Canonical scale shared with SetRow's RPE color (see theme/workout-tokens.ts).
+const VEL_COLORS = WORKOUT_TOKENS.scale
 
 export function getVelocityZoneColor(velocity: number): string {
   if (velocity >= 1.0) return 'vel-green'
@@ -164,7 +161,7 @@ export function VelocityStrip({
           paddingBottom: expanded ? 24 : 0,
           paddingHorizontal: expanded ? 6 : 0,
           paddingVertical: expanded ? undefined : 8,
-          backgroundColor: expanded ? '#1C1C1C' : 'transparent',
+          backgroundColor: expanded ? 'var(--color-surface-raised)' : 'transparent',
           overflow: expanded ? 'visible' : 'hidden',
         },
       ]}
@@ -191,7 +188,7 @@ export function VelocityStrip({
               {expanded && (
                 <Animated.View style={{ opacity: labelOpacity, alignItems: 'center', position: 'absolute', top: -13, left: 0, right: 0 }} accessibilityElementsHidden>
                   <Text
-                    style={{ fontSize: 8, fontWeight: '600', color: '#9CA3AF' }}
+                    style={{ fontSize: 8, fontWeight: '600', color: 'var(--color-text-secondary)' }}
                     testID={`velocity-label-${i}`}
                   >
                     {v.toFixed(2)}
@@ -252,7 +249,7 @@ export function VelocityStrip({
           <Text
             style={{
               fontSize: 10,
-              color: '#9CA3AF',
+              color: 'var(--color-text-secondary)',
               fontFamily: 'Inter, sans-serif',
             }}
           >
@@ -261,7 +258,7 @@ export function VelocityStrip({
           <Text
             style={{
               fontSize: 10,
-              color: '#9CA3AF',
+              color: 'var(--color-text-secondary)',
               fontFamily: 'Inter, sans-serif',
               ...getLossStyle(loss),
             }}
