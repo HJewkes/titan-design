@@ -8,7 +8,12 @@ export { WeightBadge, type WeightBadgeProps, type WeightBadgeSize } from './Weig
 export { PrBadge, type PrBadgeProps, type PRType } from './PrBadge'
 export { StatusDot, type StatusDotVariant, type StatusDotProps } from './StatusDot'
 export { PlaceholderStrip, type PlaceholderStripProps } from './PlaceholderStrip'
-export { TempoDisplay, type TempoDisplayProps } from './TempoDisplay'
+export {
+  TempoDisplay,
+  type TempoDisplayProps,
+  type TempoLivePhase,
+  type TempoLiveState,
+} from './TempoDisplay'
 export {
   TempoBar,
   type TempoBarProps,
