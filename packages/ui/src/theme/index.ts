@@ -4,6 +4,7 @@ export * from './config'
 export * from './shadows'
 export * from './elevation'
 export * from './manifest'
+export { ThemeProvider, type ThemeProviderProps, type ThemeProviderMode } from './ThemeProvider'
 
 // Re-export commonly used items
 export { getSemanticColors, type ThemeMode } from './tokens/semantic'
