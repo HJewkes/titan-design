@@ -34,16 +34,14 @@ export function MuscleGroupChip({
 
   const content = (
     <View
-      className={className}
+      className={['bg-surface-raised border-border', className].filter(Boolean).join(' ')}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
         borderRadius: 9999,
         paddingHorizontal: 9,
         paddingVertical: 3,
-        backgroundColor: 'var(--color-surface-raised)',
         borderWidth: 1,
-        borderColor: 'var(--color-border-default)',
       }}
       accessibilityLabel={onPress ? undefined : `${name}, volume status: ${statusLabel}`}
       testID="muscle-group-chip"
@@ -62,11 +60,11 @@ export function MuscleGroupChip({
         testID="muscle-group-chip-dot"
       />
       <Text
+        className="text-text-secondary"
         style={{
           fontFamily: 'Inter, sans-serif',
           fontWeight: '500',
           fontSize: 11,
-          color: 'var(--color-text-secondary)',
         }}
         accessibilityElementsHidden
       >

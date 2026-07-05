@@ -5,6 +5,7 @@ export * from './shadows'
 export * from './elevation'
 export * from './manifest'
 export { ThemeProvider, type ThemeProviderProps, type ThemeProviderMode } from './ThemeProvider'
+export { resolveColor } from './resolve-color'
 
 // Re-export commonly used items
 export { getSemanticColors, type ThemeMode } from './tokens/semantic'

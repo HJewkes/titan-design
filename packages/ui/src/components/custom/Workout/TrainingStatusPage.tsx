@@ -16,13 +16,6 @@ import {
   type VolumeStatus,
 } from './muscleTaxonomy'
 
-const SURFACE_ELEVATED = 'var(--color-surface-elevated)'
-const BORDER_DEFAULT = 'var(--color-border-default)'
-const TEXT_PRIMARY = 'var(--color-text-primary)'
-const TEXT_SECONDARY = 'var(--color-text-secondary)'
-const TEXT_TERTIARY = 'var(--color-text-tertiary)'
-const PAGE_BG = 'var(--color-background-base)'
-
 /** Volume statuses in display order for the legend and summary cards. */
 const STATUS_ORDER: VolumeStatus[] = ['under', 'maintenance', 'productive', 'over']
 
@@ -121,28 +114,28 @@ function SummaryCards({ summary }: { summary: TrainingStatusSummary }) {
         return (
           <View
             key={key}
+            className="bg-surface-elevated border-border"
             style={{
               flexGrow: 1,
               flexBasis: '46%',
               padding: 12,
               borderRadius: 10,
-              backgroundColor: SURFACE_ELEVATED,
               borderWidth: 1,
-              borderColor: BORDER_DEFAULT,
             }}
             testID={`training-status-page-summary-${key}`}
           >
             <Text
+              className="text-text-primary"
               style={{
                 fontSize: 22,
                 fontFamily: '"Space Grotesk", sans-serif',
                 fontWeight: '700',
-                color: TEXT_PRIMARY,
               }}
             >
               {value}
             </Text>
             <Text
+              className="text-text-tertiary"
               style={{
                 marginTop: 2,
                 fontSize: 11,
@@ -150,7 +143,6 @@ function SummaryCards({ summary }: { summary: TrainingStatusSummary }) {
                 fontWeight: '600',
                 letterSpacing: 0.4,
                 textTransform: 'uppercase',
-                color: TEXT_TERTIARY,
               }}
             >
               {label}
@@ -186,10 +178,10 @@ function StatusLegend() {
             accessibilityElementsHidden
           />
           <Text
+            className="text-text-secondary"
             style={{
               fontSize: 11,
               fontFamily: 'Inter, sans-serif',
-              color: TEXT_SECONDARY,
               textTransform: 'capitalize',
             }}
           >
@@ -247,8 +239,8 @@ export function TrainingStatusPage({
 
   return (
     <View
-      className={className}
-      style={{ position: 'relative', width: 390, backgroundColor: PAGE_BG }}
+      className={['bg-background-base', className].filter(Boolean).join(' ')}
+      style={{ position: 'relative', width: 390 }}
       accessibilityRole={'main' as ViewProps['accessibilityRole']}
       aria-label={title}
       testID="training-status-page"
@@ -257,11 +249,11 @@ export function TrainingStatusPage({
       <View style={{ padding: 16, gap: 16 }} testID="training-status-page-content">
         <Text
           accessibilityRole="header"
+          className="text-text-primary"
           style={{
             fontSize: 20,
             fontFamily: '"Space Grotesk", sans-serif',
             fontWeight: '700',
-            color: TEXT_PRIMARY,
           }}
           testID="training-status-page-title"
         >
@@ -273,10 +265,9 @@ export function TrainingStatusPage({
         <SummaryCards summary={summary} />
 
         <View
+          className="bg-surface-elevated border-border"
           style={{
-            backgroundColor: SURFACE_ELEVATED,
             borderWidth: 1,
-            borderColor: BORDER_DEFAULT,
             borderRadius: 12,
             padding: 12,
             gap: 12,

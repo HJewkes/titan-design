@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import React from 'react'
 import { View, Text, Pressable, TextInput } from 'react-native'
+import { resolveColor } from '../../../theme/resolve-color'
 
 export interface InputBarProps {
   exerciseName: string
@@ -17,19 +18,15 @@ export interface InputBarProps {
 }
 
 const BRAND_PRIMARY = '#FF7900'
-const TEXT_PRIMARY = 'var(--color-text-primary)'
-const TEXT_TERTIARY = 'var(--color-text-tertiary)'
+const INPUT_CLASSNAME = 'bg-surface-raised border-border-strong text-text-primary'
 
 const inputStyle = {
   fontSize: 14,
   fontWeight: '600' as const,
   fontFamily: 'Inter, sans-serif',
-  backgroundColor: 'var(--color-surface-raised)',
   borderWidth: 1,
-  borderColor: 'var(--color-border-strong)',
   borderRadius: 6,
   textAlign: 'center' as const,
-  color: TEXT_PRIMARY,
   paddingVertical: 5,
   paddingHorizontal: 2,
 }
@@ -53,11 +50,11 @@ export function InputBar({
 
   return (
     <View
+      className="bg-surface-elevated"
       style={{
         width: '100%',
-        backgroundColor: 'var(--color-surface-elevated)',
         borderTopWidth: 1,
-        borderTopColor: 'var(--color-border-default)',
+        borderTopColor: resolveColor('border-default'),
         paddingTop: 10,
         paddingHorizontal: 16,
         paddingBottom: 12,
@@ -70,11 +67,11 @@ export function InputBar({
     >
       <View style={{ minWidth: 80, flexDirection: 'column' }}>
         <Text
+          className="text-text-primary"
           style={{
             fontSize: 12,
             fontWeight: '700',
             fontFamily: '"Space Grotesk", sans-serif',
-            color: TEXT_PRIMARY,
           }}
           testID="input-bar-exercise-name"
           numberOfLines={1}
@@ -82,10 +79,10 @@ export function InputBar({
           {exerciseName}
         </Text>
         <Text
+          className="text-text-tertiary"
           style={{
             fontSize: 10,
             fontFamily: 'Inter, sans-serif',
-            color: TEXT_TERTIARY,
           }}
           testID="input-bar-set-info"
         >
@@ -97,16 +94,17 @@ export function InputBar({
         <TextInput
           value={reps}
           onChangeText={onRepsChange}
+          className={INPUT_CLASSNAME}
           style={{ ...inputStyle, width: 36 }}
           accessibilityLabel="Reps"
           testID="input-bar-reps"
           keyboardType="numeric"
         />
         <Text
+          className="text-text-tertiary"
           style={{
             fontSize: 12,
             fontFamily: 'Inter, sans-serif',
-            color: TEXT_TERTIARY,
           }}
         >
           {'\u00D7'}
@@ -114,17 +112,18 @@ export function InputBar({
         <TextInput
           value={weight}
           onChangeText={onWeightChange}
+          className={INPUT_CLASSNAME}
           style={{ ...inputStyle, width: 52 }}
           accessibilityLabel={`Weight in ${unit}`}
           testID="input-bar-weight"
           keyboardType="numeric"
         />
         <Text
+          className="text-text-tertiary"
           style={{
             fontSize: 12,
             fontWeight: '500',
             fontFamily: 'Inter, sans-serif',
-            color: TEXT_TERTIARY,
           }}
           testID="input-bar-unit"
         >

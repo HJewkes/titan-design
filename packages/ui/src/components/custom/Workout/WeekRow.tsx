@@ -100,11 +100,12 @@ export function WeekRow({
           />
         )}
         <Text
+          className={isCurrent ? undefined : 'text-text-primary'}
           style={{
             fontSize: 13,
             fontWeight: '700',
             fontFamily: 'Inter, sans-serif',
-            color: isCurrent ? BRAND_PRIMARY : 'var(--color-text-primary)',
+            color: isCurrent ? BRAND_PRIMARY : undefined,
           }}
           accessibilityElementsHidden
         >

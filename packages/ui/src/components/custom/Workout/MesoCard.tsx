@@ -9,10 +9,6 @@ const BRAND_PRIMARY = '#FF7900'
 const BRAND_PRIMARY_DARK = '#C45E00'
 const BRAND_PRIMARY_LIGHT = '#FFB066'
 const BORDER_DEFAULT = '#1F1F1F'
-// Theme-aware foregrounds: resolve to a readable color in both light and dark
-// (react-native-web passes the CSS var through to the inline style).
-const TEXT_PRIMARY = 'var(--color-text-primary)'
-const TEXT_SECONDARY = 'var(--color-text-secondary)'
 
 /** Gradient stops for the 3px top accent: dark -> primary -> light. */
 const ACCENT_STOPS = [BRAND_PRIMARY_DARK, BRAND_PRIMARY, BRAND_PRIMARY_LIGHT]
@@ -119,11 +115,11 @@ export function MesoCard({
     <View style={{ paddingHorizontal: 14, paddingTop: 12, paddingBottom: 10 }} testID="meso-card-body">
       <View className="flex-row items-center" style={{ gap: 8 }} testID="meso-card-header">
         <Text
+          className="text-text-primary"
           style={{
             fontSize: 15,
             fontFamily: '"Space Grotesk", sans-serif',
             fontWeight: '700',
-            color: TEXT_PRIMARY,
           }}
           testID="meso-card-name"
         >
@@ -135,11 +131,11 @@ export function MesoCard({
       </View>
 
       <Text
+        className="text-text-secondary"
         style={{
           marginTop: 4,
           fontSize: 12,
           fontFamily: 'Inter, sans-serif',
-          color: TEXT_SECONDARY,
         }}
         testID="meso-card-subheader"
       >

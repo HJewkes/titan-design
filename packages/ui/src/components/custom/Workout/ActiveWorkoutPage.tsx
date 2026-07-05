@@ -6,14 +6,9 @@ import { InputBar } from './InputBar'
 import { RestTimer } from './RestTimer'
 import { SupersetWrapper } from './SupersetWrapper'
 import { type SetRowProps } from './SetRow'
+import { resolveColor } from '../../../theme/resolve-color'
 
-const SURFACE_ELEVATED = 'var(--color-surface-elevated)'
-const BORDER_DEFAULT = 'var(--color-border-default)'
 const BRAND_PRIMARY = '#FF7900'
-const TEXT_PRIMARY = 'var(--color-text-primary)'
-const TEXT_SECONDARY = 'var(--color-text-secondary)'
-const TEXT_TERTIARY = 'var(--color-text-tertiary)'
-const PAGE_BG = 'var(--color-background-base)'
 
 /** Where an exercise sits in the during-workout flow. */
 export type ActiveExerciseStatus = 'completed' | 'active' | 'upcoming'
@@ -232,11 +227,11 @@ function WorkoutHeader({
         <View style={{ flexShrink: 1 }}>
           <Text
             accessibilityRole="header"
+            className="text-text-primary"
             style={{
               fontSize: 20,
               fontFamily: '"Space Grotesk", sans-serif',
               fontWeight: '700',
-              color: TEXT_PRIMARY,
             }}
             testID="active-workout-page-title"
           >
@@ -244,11 +239,11 @@ function WorkoutHeader({
           </Text>
           {subtitle != null && (
             <Text
+              className="text-text-secondary"
               style={{
                 marginTop: 2,
                 fontSize: 12,
                 fontFamily: 'Inter, sans-serif',
-                color: TEXT_SECONDARY,
               }}
               testID="active-workout-page-subtitle"
             >
@@ -269,13 +264,13 @@ function WorkoutHeader({
             {`${progress.completedExercises}/${progress.totalExercises}`}
           </Text>
           <Text
+            className="text-text-tertiary"
             style={{
               fontSize: 10,
               fontFamily: 'Inter, sans-serif',
               fontWeight: '600',
               letterSpacing: 0.4,
               textTransform: 'uppercase',
-              color: TEXT_TERTIARY,
             }}
           >
             {`${progress.completedSets}/${progress.totalSets} sets`}
@@ -283,7 +278,8 @@ function WorkoutHeader({
         </View>
       </View>
       <View
-        style={{ height: 4, backgroundColor: BORDER_DEFAULT, borderRadius: 2 }}
+        className="bg-border"
+        style={{ height: 4, borderRadius: 2 }}
         testID="active-workout-page-progress-track"
       >
         <View
@@ -314,10 +310,9 @@ function ExerciseList({ groups, focusedId, onToggle }: ExerciseListProps) {
           return (
             <View
               key={group.exercise.id}
+              className="bg-surface-elevated border-border"
               style={{
-                backgroundColor: SURFACE_ELEVATED,
                 borderWidth: 1,
-                borderColor: BORDER_DEFAULT,
                 borderRadius: 12,
               }}
             >
@@ -395,8 +390,8 @@ export function ActiveWorkoutPage({
 
   return (
     <View
-      className={className}
-      style={{ position: 'relative', width: 390, backgroundColor: PAGE_BG }}
+      className={['bg-background-base', className].filter(Boolean).join(' ')}
+      style={{ position: 'relative', width: 390 }}
       accessibilityRole={'main' as ViewProps['accessibilityRole']}
       aria-label={title}
       testID="active-workout-page"
@@ -409,7 +404,7 @@ export function ActiveWorkoutPage({
 
       {(showRest || showInput) && (
         <View
-          style={{ borderTopWidth: 1, borderTopColor: BORDER_DEFAULT }}
+          style={{ borderTopWidth: 1, borderTopColor: resolveColor('border-default') }}
           testID="active-workout-page-bottom-bar"
         >
           {showRest && rest != null ? (
