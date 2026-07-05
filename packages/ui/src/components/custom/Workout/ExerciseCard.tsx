@@ -8,6 +8,7 @@ import { PrBadge } from './PrBadge'
 import { TempoDisplay } from './TempoDisplay'
 import { SetRow, type SetRowProps } from './SetRow'
 import { roundWeight } from '../../../utils/workout-format'
+import { resolveColor } from '../../../theme/resolve-color'
 
 export type ExerciseCardState = 'collapsed' | 'expanded' | 'upcoming'
 
@@ -32,21 +33,6 @@ export interface ExerciseCardProps {
   previousBest?: string
   supersetPosition?: 'first' | 'last' | 'middle' | null
   supersetColor?: string
-}
-
-const COLORS = {
-  // Theme-aware tokens: text foregrounds and this card's own surfaces/borders
-  // must flip together so text stays readable in both light and dark. The
-  // expanded/pressed surfaces are self-owned here (not from a themed Card), so
-  // hardcoding dark values would leave dark-on-dark once the text flips.
-  // react-native-web passes the CSS var through to the inline style.
-  textPrimary: 'var(--color-text-primary)',
-  textSecondary: 'var(--color-text-secondary)',
-  textTertiary: 'var(--color-text-tertiary)',
-  brandPrimary: '#FF7900',
-  surfaceRaised: 'var(--color-surface-raised)',
-  surfaceElevated: 'var(--color-surface-elevated)',
-  borderDefault: 'var(--color-border-default)',
 }
 
 /** Column headers; the weight column reflects the card's unit (LBS / KG). */
@@ -139,11 +125,11 @@ function CollapsedCard({
       testID="exercise-card"
     >
       <View
+        className={pressed ? 'bg-surface-raised' : undefined}
         style={{
           padding: 12,
           paddingHorizontal: 14,
           cursor: 'pointer',
-          backgroundColor: pressed ? COLORS.surfaceRaised : 'transparent',
           ...borderRadius,
           ...supersetMargin,
         }}
@@ -153,11 +139,11 @@ function CollapsedCard({
           testID="exercise-card-header"
         >
           <Text
+            className="text-text-primary"
             style={{
               fontSize: 14,
               fontFamily: '"Space Grotesk", sans-serif',
               fontWeight: '700',
-              color: COLORS.textPrimary,
             }}
             testID="exercise-card-name"
           >
@@ -166,10 +152,10 @@ function CollapsedCard({
           <View className="flex-1" />
           {summary && (
             <Text
+              className="text-text-secondary"
               style={{
                 fontSize: 12,
                 fontFamily: 'Inter, sans-serif',
-                color: COLORS.textSecondary,
                 marginRight: 8,
               }}
               testID="exercise-card-summary"
@@ -239,10 +225,9 @@ function ExpandedCard({
 
   return (
     <View
+      className="bg-surface-elevated border-border"
       style={{
-        backgroundColor: COLORS.surfaceElevated,
         borderWidth: 1,
-        borderColor: COLORS.borderDefault,
         ...borderRadius,
         ...supersetMargin,
       }}
@@ -262,15 +247,15 @@ function ExpandedCard({
             paddingHorizontal: 14,
             paddingBottom: 10,
             borderBottomWidth: 1,
-            borderBottomColor: COLORS.borderDefault,
+            borderBottomColor: resolveColor('border-default'),
           }}
         >
           <Text
+            className="text-text-primary"
             style={{
               fontSize: 14,
               fontFamily: '"Space Grotesk", sans-serif',
               fontWeight: '700',
-              color: COLORS.textPrimary,
             }}
             testID="exercise-card-name"
           >
@@ -279,10 +264,10 @@ function ExpandedCard({
           <View className="flex-1" />
           {summary && (
             <Text
+              className="text-text-secondary"
               style={{
                 fontSize: 12,
                 fontFamily: 'Inter, sans-serif',
-                color: COLORS.textSecondary,
                 marginRight: 8,
               }}
               testID="exercise-card-summary"
@@ -339,13 +324,13 @@ function ExpandedCard({
               {...(isFlex ? { className: 'flex-1' } : {})}
             >
               <Text
+                className="text-text-tertiary"
                 style={{
                   fontSize: 10,
                   fontWeight: '600',
                   fontFamily: 'Inter, sans-serif',
                   textTransform: 'uppercase',
                   letterSpacing: 0.8,
-                  color: COLORS.textTertiary,
                 }}
               >
                 {header}
@@ -389,11 +374,11 @@ function UpcomingCard({
     >
       <View className="flex-row items-center">
         <Text
+          className="text-text-primary"
           style={{
             fontSize: 14,
             fontFamily: '"Space Grotesk", sans-serif',
             fontWeight: '700',
-            color: COLORS.textPrimary,
           }}
           testID="exercise-card-name"
         >
@@ -401,10 +386,10 @@ function UpcomingCard({
         </Text>
         {prescription && (
           <Text
+            className="text-text-secondary"
             style={{
               fontSize: 12,
               fontFamily: 'Inter, sans-serif',
-              color: COLORS.textSecondary,
               marginLeft: 8,
             }}
             testID="exercise-card-prescription"
@@ -415,10 +400,10 @@ function UpcomingCard({
         <View className="flex-1" />
         {previousBest && (
           <Text
+            className="text-text-tertiary"
             style={{
               fontSize: 11,
               fontFamily: 'Inter, sans-serif',
-              color: COLORS.textTertiary,
             }}
             testID="exercise-card-previous-best"
           >

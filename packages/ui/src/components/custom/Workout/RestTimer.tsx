@@ -1,5 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, Text, Pressable } from 'react-native'
+import { resolveColor } from '../../../theme/resolve-color'
 
 const BRAND_PRIMARY = '#FF7900'
 
@@ -34,11 +35,11 @@ export function RestTimer({
 
   return (
     <View
+      className="bg-surface-raised"
       style={{
         width: '100%',
-        backgroundColor: 'var(--color-surface-raised)',
         borderTopWidth: 1,
-        borderTopColor: 'var(--color-border-default)',
+        borderTopColor: resolveColor('border-default'),
         paddingVertical: 12,
         paddingHorizontal: 16,
       }}
@@ -58,13 +59,13 @@ export function RestTimer({
         {/* Left side */}
         <View style={{ flexDirection: 'column' }}>
           <Text
+            className="text-text-secondary"
             style={{
               fontSize: 11,
               fontFamily: 'Inter, sans-serif',
               fontWeight: '600',
               textTransform: 'uppercase',
               letterSpacing: 1,
-              color: 'var(--color-text-secondary)',
             }}
             testID="rest-timer-label"
           >
@@ -72,10 +73,10 @@ export function RestTimer({
           </Text>
           {nextSetInfo != null && (
             <Text
+              className="text-text-tertiary"
               style={{
                 fontSize: 11,
                 fontFamily: 'Inter, sans-serif',
-                color: 'var(--color-text-tertiary)',
                 marginTop: 2,
               }}
               testID="rest-timer-next-set"
@@ -87,11 +88,11 @@ export function RestTimer({
 
         {/* Right side - time display */}
         <Text
+          className="text-text-primary"
           style={{
             fontSize: 28,
             fontFamily: '"Space Grotesk", sans-serif',
             fontWeight: '700',
-            color: 'var(--color-text-primary)',
             fontVariant: ['tabular-nums'],
             letterSpacing: -0.5,
           }}
@@ -103,9 +104,9 @@ export function RestTimer({
 
       {/* Progress bar */}
       <View
+        className="bg-border"
         style={{
           height: 3,
-          backgroundColor: 'var(--color-border-default)',
           borderRadius: 2,
           marginBottom: 12,
         }}
@@ -137,11 +138,11 @@ export function RestTimer({
           testID="rest-timer-add-time"
         >
           <Text
+            className="text-text-secondary"
             style={{
               fontSize: 11,
               fontFamily: 'Inter, sans-serif',
               fontWeight: '600',
-              color: 'var(--color-text-secondary)',
             }}
           >
             +30s

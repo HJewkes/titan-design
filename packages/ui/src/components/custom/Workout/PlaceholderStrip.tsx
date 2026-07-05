@@ -18,14 +18,13 @@ function SingleStrip({
 }: Omit<PlaceholderStripProps, 'mode' | 'segments'>) {
   return (
     <View
-      className={cn(className)}
+      className={cn('border-border-strong', className)}
       style={[
         {
           height: 3,
           backgroundColor: 'transparent',
           borderWidth: 1,
           borderStyle: 'dashed',
-          borderColor: 'var(--color-border-strong)',
           borderRadius: 1,
           opacity: 0.5,
         },
@@ -60,13 +59,13 @@ function SegmentedStrip({
       {Array.from({ length: segments }, (_, i) => (
         <View
           key={i}
+          className="border-border-strong"
           style={{
             flex: 1,
             height: 3,
             backgroundColor: 'transparent',
             borderWidth: 1,
             borderStyle: 'dashed',
-            borderColor: 'var(--color-border-strong)',
             borderRadius: 1,
             minWidth: 4,
           }}

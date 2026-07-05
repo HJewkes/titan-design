@@ -8,8 +8,6 @@ const BRAND_PRIMARY_SUBTLE = 'rgba(255,121,0,0.12)'
 const STATUS_SUCCESS = '#14B8A6'
 const STATUS_WARNING = '#FFB020'
 const STATUS_ERROR = '#D14343'
-const TEXT_PRIMARY = 'var(--color-text-primary)'
-const TEXT_SECONDARY = 'var(--color-text-secondary)'
 
 /** Emoji option sets per known factor, keyed by lowercase id/label. */
 const EMOJI_SETS: Record<string, readonly string[]> = {
@@ -91,7 +89,8 @@ function EmojiSlider({ factor }: EmojiSliderProps) {
   return (
     <View style={{ marginTop: 14 }} testID={`readiness-check-factor-${factor.id}`}>
       <Text
-        style={{ fontSize: 12, fontWeight: '500', fontFamily: 'Inter, sans-serif', color: TEXT_SECONDARY }}
+        className="text-text-secondary"
+        style={{ fontSize: 12, fontWeight: '500', fontFamily: 'Inter, sans-serif' }}
         testID="readiness-check-factor-label"
       >
         {factor.label}
@@ -114,14 +113,15 @@ function EmojiSlider({ factor }: EmojiSliderProps) {
               accessibilityLabel={`${factor.label} level ${level} of 5`}
               aria-checked={selected}
               testID="readiness-check-emoji"
+              className={selected ? undefined : 'border-border bg-surface-raised'}
               style={({ pressed }) => ({
                 flex: 1,
                 alignItems: 'center',
                 paddingVertical: 8,
                 borderRadius: 8,
                 borderWidth: 1,
-                borderColor: selected ? BRAND_PRIMARY : 'var(--color-border-default)',
-                backgroundColor: selected ? BRAND_PRIMARY_SUBTLE : 'var(--color-surface-raised)',
+                borderColor: selected ? BRAND_PRIMARY : undefined,
+                backgroundColor: selected ? BRAND_PRIMARY_SUBTLE : undefined,
                 opacity: selected ? 1 : pressed ? 0.8 : 0.55,
                 transform: [{ scale: selected ? 1.06 : 1 }],
               })}
@@ -143,13 +143,13 @@ function ScoreGauge({ score }: { score: number }) {
       accessibilityRole="image"
       accessibilityLabel={`Readiness score: ${score} out of 100`}
       testID="readiness-check-score"
+      className="bg-surface-raised"
       style={{
         width: 60,
         height: 60,
         borderRadius: 30,
         borderWidth: 4,
         borderColor: color,
-        backgroundColor: 'var(--color-surface-raised)',
         alignItems: 'center',
         justifyContent: 'center',
       }}
@@ -169,19 +169,19 @@ function WarmUpCard({ validation }: { validation: WarmUpValidation }) {
   const badge = WARMUP_BADGE[validation.status]
   return (
     <View
+      className="border-border bg-surface-raised"
       style={{
         marginTop: 16,
         padding: 12,
         borderRadius: 8,
         borderWidth: 1,
-        borderColor: 'var(--color-border-default)',
-        backgroundColor: 'var(--color-surface-raised)',
       }}
       testID="readiness-check-warmup"
     >
       <View className="flex-row items-center justify-between" style={{ gap: 8 }}>
         <Text
-          style={{ fontSize: 12, fontWeight: '600', fontFamily: 'Inter, sans-serif', color: TEXT_SECONDARY }}
+          className="text-text-secondary"
+          style={{ fontSize: 12, fontWeight: '600', fontFamily: 'Inter, sans-serif' }}
           testID="readiness-check-warmup-deficit"
         >
           {velocityDeficitText(validation.velocityDeficit)}
@@ -191,7 +191,8 @@ function WarmUpCard({ validation }: { validation: WarmUpValidation }) {
         </Badge>
       </View>
       <Text
-        style={{ marginTop: 6, fontSize: 13, fontFamily: 'Inter, sans-serif', color: TEXT_PRIMARY }}
+        className="text-text-primary"
+        style={{ marginTop: 6, fontSize: 13, fontFamily: 'Inter, sans-serif' }}
         testID="readiness-check-warmup-recommendation"
       >
         {validation.recommendation}
@@ -226,7 +227,8 @@ export function ReadinessCheck({
       <View style={{ padding: 16 }}>
         <View className="flex-row items-center justify-between" style={{ gap: 12 }}>
           <Text
-            style={{ fontSize: 18, fontWeight: '700', fontFamily: '"Space Grotesk", sans-serif', color: TEXT_PRIMARY }}
+            className="text-text-primary"
+            style={{ fontSize: 18, fontWeight: '700', fontFamily: '"Space Grotesk", sans-serif' }}
             testID="readiness-check-title"
           >
             How are you feeling?

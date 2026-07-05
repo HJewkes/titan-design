@@ -19,14 +19,7 @@ import {
   type VolumeStatus,
 } from './muscleTaxonomy'
 
-const SURFACE_ELEVATED = 'var(--color-surface-elevated)'
-const SURFACE_RAISED = 'var(--color-surface-raised)'
-const BORDER_STRONG = 'var(--color-border-strong)'
-const BORDER_DEFAULT = 'var(--color-border-default)'
 const BRAND_PRIMARY = '#FF7900'
-const TEXT_PRIMARY = 'var(--color-text-primary)'
-const TEXT_SECONDARY = 'var(--color-text-secondary)'
-const TEXT_TERTIARY = 'var(--color-text-tertiary)'
 
 /** Volume track gradient: status-info (blue) -> result-improve (teal) -> status-error (red). */
 const VOLUME_GRADIENT = 'linear-gradient(90deg, #2196F3 0%, #14B8A6 50%, #D14343 100%)'
@@ -205,8 +198,8 @@ export function BodyMapDetailPanel({
         accessibilityRole={'dialog' as ViewProps['accessibilityRole']}
         accessibilityLabel={dialogLabel}
         aria-label={dialogLabel}
+        className="bg-surface-elevated"
         style={{
-          backgroundColor: SURFACE_ELEVATED,
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
           maxHeight: '88%',
@@ -224,7 +217,8 @@ export function BodyMapDetailPanel({
           testID="body-map-detail-panel-handle"
         >
           <View
-            style={{ width: 40, height: 4, borderRadius: 2, backgroundColor: BORDER_STRONG }}
+            className="bg-border-strong"
+            style={{ width: 40, height: 4, borderRadius: 2 }}
             accessibilityElementsHidden
           />
         </Pressable>
@@ -242,11 +236,11 @@ export function BodyMapDetailPanel({
             <View className="flex-row items-center" style={{ gap: 8, flexShrink: 1 }}>
               <Text
                 accessibilityRole="header"
+                className="text-text-primary"
                 style={{
                   fontSize: 16,
                   fontFamily: '"Space Grotesk", sans-serif',
                   fontWeight: '700',
-                  color: TEXT_PRIMARY,
                 }}
                 testID="body-map-detail-panel-title"
               >
@@ -269,13 +263,14 @@ export function BodyMapDetailPanel({
               style={{ padding: 4, margin: -4 }}
               testID="body-map-detail-panel-close"
             >
-              <Text style={{ fontSize: 22, lineHeight: 22, color: TEXT_SECONDARY }}>{'×'}</Text>
+              <Text className="text-text-secondary" style={{ fontSize: 22, lineHeight: 22 }}>{'×'}</Text>
             </Pressable>
           </View>
 
           {lastTrained != null && (
             <Text
-              style={{ fontSize: 12, fontFamily: 'Inter, sans-serif', color: TEXT_SECONDARY }}
+              className="text-text-secondary"
+              style={{ fontSize: 12, fontFamily: 'Inter, sans-serif' }}
               testID="body-map-detail-panel-last-trained"
             >
               {`Last trained ${lastTrained}`}
@@ -288,10 +283,10 @@ export function BodyMapDetailPanel({
               style={{ marginBottom: 6 }}
               accessibilityElementsHidden
             >
-              <Text style={{ fontSize: 10, fontFamily: 'Inter, sans-serif', fontWeight: '600', color: TEXT_TERTIARY }}>
+              <Text className="text-text-tertiary" style={{ fontSize: 10, fontFamily: 'Inter, sans-serif', fontWeight: '600' }}>
                 {`MEV ${landmarks.mev}`}
               </Text>
-              <Text style={{ fontSize: 10, fontFamily: 'Inter, sans-serif', fontWeight: '600', color: TEXT_TERTIARY }}>
+              <Text className="text-text-tertiary" style={{ fontSize: 10, fontFamily: 'Inter, sans-serif', fontWeight: '600' }}>
                 {`MRV ${landmarks.mrv}`}
               </Text>
             </View>
@@ -310,6 +305,7 @@ export function BodyMapDetailPanel({
                 accessibilityElementsHidden
               />
               <View
+                className="border-text-primary bg-surface-elevated"
                 style={{
                   position: 'absolute',
                   left: `${markerLeft}%`,
@@ -318,8 +314,6 @@ export function BodyMapDetailPanel({
                   height: 14,
                   borderRadius: 7,
                   borderWidth: 2,
-                  borderColor: TEXT_PRIMARY,
-                  backgroundColor: SURFACE_ELEVATED,
                   boxShadow: '0 0 4px rgba(0,0,0,0.5)',
                 }}
                 accessibilityElementsHidden
@@ -330,18 +324,19 @@ export function BodyMapDetailPanel({
 
           <View className="flex-row items-baseline" style={{ marginTop: 14, gap: 4 }}>
             <Text
+              className="text-text-primary"
               style={{
                 fontSize: 24,
                 fontFamily: '"Space Grotesk", sans-serif',
                 fontWeight: '700',
-                color: TEXT_PRIMARY,
               }}
               testID="body-map-detail-panel-set-count"
             >
               {weeklySets}
             </Text>
             <Text
-              style={{ fontSize: 12, fontFamily: 'Inter, sans-serif', color: TEXT_SECONDARY }}
+              className="text-text-secondary"
+              style={{ fontSize: 12, fontFamily: 'Inter, sans-serif' }}
               testID="body-map-detail-panel-mrv-suffix"
             >
               {`/ ${landmarks.mrv} MRV`}
@@ -351,11 +346,11 @@ export function BodyMapDetailPanel({
           {weeklyHistory != null && weeklyHistory.length > 0 && (
             <View style={{ marginTop: 14 }} testID="body-map-detail-panel-sparkline">
               <Text
+                className="text-text-tertiary"
                 style={{
                   fontSize: 10,
                   fontFamily: 'Inter, sans-serif',
                   fontWeight: '600',
-                  color: TEXT_TERTIARY,
                   marginBottom: 6,
                 }}
                 accessibilityElementsHidden
@@ -369,11 +364,11 @@ export function BodyMapDetailPanel({
           {hasContributing && (
             <View style={{ marginTop: 16 }} testID="body-map-detail-panel-contributing">
               <Text
+                className="text-text-tertiary"
                 style={{
                   fontSize: 10,
                   fontFamily: 'Inter, sans-serif',
                   fontWeight: '600',
-                  color: TEXT_TERTIARY,
                   marginBottom: 8,
                 }}
               >
@@ -382,27 +377,27 @@ export function BodyMapDetailPanel({
               {contributingExercises!.map((exercise, index) => (
                 <View
                   key={`${exercise.name}-${index}`}
-                  className="flex-row items-center justify-between"
+                  className="flex-row items-center justify-between bg-surface-raised border-border"
                   style={{
                     gap: 10,
                     paddingVertical: 8,
                     paddingHorizontal: 12,
                     marginBottom: 6,
                     borderRadius: 8,
-                    backgroundColor: SURFACE_RAISED,
                     borderWidth: 1,
-                    borderColor: BORDER_DEFAULT,
                   }}
                   testID={`body-map-detail-panel-contributing-${index}`}
                 >
                   <Text
-                    style={{ flex: 1, fontSize: 13, fontFamily: 'Inter, sans-serif', fontWeight: '600', color: TEXT_PRIMARY }}
+                    className="text-text-primary"
+                    style={{ flex: 1, fontSize: 13, fontFamily: 'Inter, sans-serif', fontWeight: '600' }}
                     testID={`body-map-detail-panel-contributing-${index}-name`}
                   >
                     {exercise.name}
                   </Text>
                   <Text
-                    style={{ fontSize: 12, fontFamily: 'Inter, sans-serif', color: TEXT_SECONDARY }}
+                    className="text-text-secondary"
+                    style={{ fontSize: 12, fontFamily: 'Inter, sans-serif' }}
                     testID={`body-map-detail-panel-contributing-${index}-detail`}
                   >
                     {`${exercise.sets} sets · ${Math.round(exercise.contributionWeight * 100)}%`}
@@ -415,11 +410,11 @@ export function BodyMapDetailPanel({
           {hasUpcoming && (
             <View style={{ marginTop: 16 }} testID="body-map-detail-panel-upcoming">
               <Text
+                className="text-text-tertiary"
                 style={{
                   fontSize: 10,
                   fontFamily: 'Inter, sans-serif',
                   fontWeight: '600',
-                  color: TEXT_TERTIARY,
                   marginBottom: 8,
                 }}
               >
@@ -433,13 +428,15 @@ export function BodyMapDetailPanel({
                   testID={`body-map-detail-panel-upcoming-${index}`}
                 >
                   <Text
-                    style={{ flex: 1, fontSize: 13, fontFamily: 'Inter, sans-serif', fontWeight: '600', color: TEXT_PRIMARY }}
+                    className="text-text-primary"
+                    style={{ flex: 1, fontSize: 13, fontFamily: 'Inter, sans-serif', fontWeight: '600' }}
                     testID={`body-map-detail-panel-upcoming-${index}-name`}
                   >
                     {exercise.name}
                   </Text>
                   <Text
-                    style={{ fontSize: 12, fontFamily: 'Inter, sans-serif', color: TEXT_TERTIARY }}
+                    className="text-text-tertiary"
+                    style={{ fontSize: 12, fontFamily: 'Inter, sans-serif' }}
                     testID={`body-map-detail-panel-upcoming-${index}-detail`}
                   >
                     {`${exercise.workoutName} · ${exercise.sets} sets`}

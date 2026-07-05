@@ -151,7 +151,9 @@ export function VelocityStrip({
 
   const stripContent = (
     <Animated.View
-      className={className}
+      className={[className, expanded ? 'bg-surface-raised' : 'bg-transparent']
+        .filter(Boolean)
+        .join(' ')}
       style={[
         {
           height: heightAnim,
@@ -162,7 +164,6 @@ export function VelocityStrip({
           paddingBottom: expanded ? 24 : 0,
           paddingHorizontal: expanded ? 6 : 0,
           paddingVertical: expanded ? undefined : 8,
-          backgroundColor: expanded ? 'var(--color-surface-raised)' : 'transparent',
           overflow: expanded ? 'visible' : 'hidden',
         },
       ]}
@@ -189,7 +190,8 @@ export function VelocityStrip({
               {expanded && (
                 <Animated.View style={{ opacity: labelOpacity, alignItems: 'center', position: 'absolute', top: -13, left: 0, right: 0 }} accessibilityElementsHidden>
                   <Text
-                    style={{ fontSize: 8, fontWeight: '600', color: 'var(--color-text-secondary)' }}
+                    className="text-text-secondary"
+                    style={{ fontSize: 8, fontWeight: '600' }}
                     testID={`velocity-label-${i}`}
                   >
                     {formatVelocity(v)}
@@ -248,18 +250,18 @@ export function VelocityStrip({
           testID="velocity-info-row"
         >
           <Text
+            className="text-text-secondary"
             style={{
               fontSize: 10,
-              color: 'var(--color-text-secondary)',
               fontFamily: 'Inter, sans-serif',
             }}
           >
             {meanZone} {'\u00B7'} {formatVelocity(meanVelocity)} m/s
           </Text>
           <Text
+            className="text-text-secondary"
             style={{
               fontSize: 10,
-              color: 'var(--color-text-secondary)',
               fontFamily: 'Inter, sans-serif',
               ...getLossStyle(loss),
             }}

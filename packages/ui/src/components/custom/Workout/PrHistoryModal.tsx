@@ -2,15 +2,14 @@
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { Star } from 'lucide-react'
 import { Drawer, DrawerBody } from '../../ui/drawer'
+import { resolveColor } from '../../../theme/resolve-color'
 
 const BRAND_PRIMARY = '#FF7900'
 const RECENT_BORDER = 'rgba(255,176,32,0.3)'
 const RECENT_GLOW = '0 0 12px rgba(255,176,32,0.06)'
-const SURFACE_RAISED = 'var(--color-surface-raised)'
-const BORDER_DEFAULT = 'var(--color-border-default)'
-const TEXT_PRIMARY = 'var(--color-text-primary)'
-const TEXT_SECONDARY = 'var(--color-text-secondary)'
-const TEXT_TERTIARY = 'var(--color-text-tertiary)'
+// Native-safe fallback for the conditional row border (recent uses a computed
+// rgba, so className can't express both branches).
+const BORDER_DEFAULT = resolveColor('border-default')
 
 export type PrRecordType = 'e1rm' | 'weight' | 'reps' | 'volume' | 'velocity'
 
@@ -72,14 +71,13 @@ function PrRecordRow({ record, index }: { record: PrRecord; index: number }) {
     <View
       accessibilityRole="text"
       accessibilityLabel={a11yLabel}
-      className="flex-row items-center"
+      className="flex-row items-center bg-surface-raised"
       style={{
         gap: 10,
         paddingVertical: 10,
         paddingHorizontal: 12,
         marginBottom: 8,
         borderRadius: 8,
-        backgroundColor: SURFACE_RAISED,
         borderWidth: 1,
         borderColor: record.isRecent ? RECENT_BORDER : BORDER_DEFAULT,
         ...(record.isRecent ? { boxShadow: RECENT_GLOW } : {}),
@@ -88,35 +86,35 @@ function PrRecordRow({ record, index }: { record: PrRecord; index: number }) {
     >
       <Star size={16} color={BRAND_PRIMARY} fill={BRAND_PRIMARY} strokeWidth={2} />
       <Text
+        className="text-text-secondary"
         style={{
           flex: 1,
           fontSize: 13,
           fontFamily: 'Inter, sans-serif',
           fontWeight: '600',
-          color: TEXT_SECONDARY,
         }}
         testID={`pr-history-modal-record-${index}-type`}
       >
         {label}
       </Text>
       <Text
+        className="text-text-primary"
         style={{
           fontSize: 14,
           fontFamily: '"Space Grotesk", sans-serif',
           fontWeight: '700',
-          color: TEXT_PRIMARY,
         }}
         testID={`pr-history-modal-record-${index}-value`}
       >
         {valueText}
       </Text>
       <Text
+        className="text-text-tertiary"
         style={{
           minWidth: 64,
           textAlign: 'right',
           fontSize: 11,
           fontFamily: 'Inter, sans-serif',
-          color: TEXT_TERTIARY,
         }}
         testID={`pr-history-modal-record-${index}-date`}
       >
@@ -173,13 +171,13 @@ export function PrHistoryModal({
     >
       <View
         accessibilityElementsHidden
+        className="bg-border"
         style={{
           alignSelf: 'center',
           width: 40,
           height: 4,
           borderRadius: 2,
           marginTop: 8,
-          backgroundColor: BORDER_DEFAULT,
         }}
         testID="pr-history-modal-handle"
       />
@@ -191,11 +189,11 @@ export function PrHistoryModal({
       >
         <Text
           accessibilityRole="header"
+          className="text-text-primary"
           style={{
             fontSize: 16,
             fontFamily: '"Space Grotesk", sans-serif',
             fontWeight: '700',
-            color: TEXT_PRIMARY,
           }}
           testID="pr-history-modal-title"
         >
@@ -209,7 +207,7 @@ export function PrHistoryModal({
           style={{ padding: 4, margin: -4 }}
           testID="pr-history-modal-close"
         >
-          <Text style={{ fontSize: 22, lineHeight: 22, color: TEXT_SECONDARY }}>
+          <Text className="text-text-secondary" style={{ fontSize: 22, lineHeight: 22 }}>
             {'×'}
           </Text>
         </Pressable>
@@ -219,11 +217,11 @@ export function PrHistoryModal({
         {records.length === 0 ? (
           <View style={{ paddingVertical: 24 }} testID="pr-history-modal-empty">
             <Text
+              className="text-text-tertiary"
               style={{
                 textAlign: 'center',
                 fontSize: 13,
                 fontFamily: 'Inter, sans-serif',
-                color: TEXT_TERTIARY,
               }}
             >
               No personal records yet

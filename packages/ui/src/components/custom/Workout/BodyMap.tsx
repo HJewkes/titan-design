@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-native'
 import BodyHighlighter, { type ExtendedBodyPart, type Slug } from 'react-native-body-highlighter'
 import { cn } from '../../../utils/cn'
+import { resolveColor } from '../../../theme/resolve-color'
 import {
   MuscleGroup,
   SimpleMuscleGroup,
@@ -27,8 +28,6 @@ const Body = ((BodyHighlighter as unknown as { default?: typeof BodyHighlighter 
 const OUTLINE_FILL = 'rgba(255,255,255,0.08)'
 const OUTLINE_BORDER = 'rgba(255,255,255,0.12)'
 const BODY_SCALE = 0.8 // 200x400 intrinsic -> ~160x320 px
-const TEXT_PRIMARY = 'var(--color-text-primary)'
-const TEXT_SECONDARY = 'var(--color-text-secondary)'
 
 export interface BodyMapData {
   muscleGroup: MuscleGroup
@@ -217,10 +216,10 @@ export function BodyMap({
 
       {legend.length === 0 ? (
         <Text
+          className="text-text-secondary"
           style={{
             marginTop: 8,
             fontSize: 12,
-            color: TEXT_SECONDARY,
             textAlign: 'center',
             fontFamily: 'Inter, sans-serif',
           }}
@@ -276,7 +275,7 @@ function ViewToggle({ view, onViewChange }: ViewToggleProps) {
               borderRadius: 9999,
               backgroundColor: active ? 'rgba(255,121,0,0.16)' : 'transparent',
               borderWidth: 1,
-              borderColor: active ? '#FF7900' : 'var(--color-border-strong)',
+              borderColor: active ? '#FF7900' : resolveColor('border-strong'),
             }}
             testID={`body-map-toggle-${side}`}
           >
@@ -285,7 +284,7 @@ function ViewToggle({ view, onViewChange }: ViewToggleProps) {
                 fontSize: 12,
                 fontFamily: 'Inter, sans-serif',
                 fontWeight: active ? '700' : '500',
-                color: active ? '#FF7900' : TEXT_SECONDARY,
+                color: active ? '#FF7900' : resolveColor('text-secondary'),
                 textTransform: 'capitalize',
               }}
             >
@@ -313,6 +312,7 @@ function MuscleButton({ entry, highlighted, onMusclePress }: MuscleButtonProps) 
       accessibilityRole="button"
       accessibilityLabel={label}
       aria-pressed={highlighted}
+      className="bg-surface-raised"
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -321,8 +321,7 @@ function MuscleButton({ entry, highlighted, onMusclePress }: MuscleButtonProps) 
         paddingVertical: 3,
         borderRadius: 9999,
         borderWidth: 1,
-        borderColor: highlighted ? '#FF7900' : 'var(--color-border-default)',
-        backgroundColor: 'var(--color-surface-raised)',
+        borderColor: highlighted ? '#FF7900' : resolveColor('border-default'),
       }}
       testID={`body-map-muscle-${entry.key}`}
     >
@@ -332,11 +331,11 @@ function MuscleButton({ entry, highlighted, onMusclePress }: MuscleButtonProps) 
         testID={`body-map-muscle-dot-${entry.key}`}
       />
       <Text
+        className="text-text-primary"
         style={{
           fontSize: 11,
           fontFamily: 'Inter, sans-serif',
           fontWeight: '500',
-          color: TEXT_PRIMARY,
         }}
         accessibilityElementsHidden
       >

@@ -16,14 +16,10 @@ import {
 import { ExerciseCard, type ExerciseCardProps } from './ExerciseCard'
 import { type SetRowProps } from './SetRow'
 import { VelocityStrip, calculateMeanVelocity, calculateVelocityLoss } from './VelocityStrip'
+import { resolveColor } from '../../../theme/resolve-color'
+import { cn } from '../../../utils/cn'
 
-const SURFACE_ELEVATED = 'var(--color-surface-elevated)'
-const BORDER_DEFAULT = 'var(--color-border-default)'
 const BRAND_PRIMARY = '#FF7900'
-const TEXT_PRIMARY = 'var(--color-text-primary)'
-const TEXT_SECONDARY = 'var(--color-text-secondary)'
-const TEXT_TERTIARY = 'var(--color-text-tertiary)'
-const PAGE_BG = 'var(--color-background-base)'
 
 /** Inner plot width: page width 390 − 16 page padding − 12 card padding on each side. */
 const CHART_WIDTH = 326
@@ -190,7 +186,7 @@ function TabBar({ active, onSelect }: TabBarProps) {
       className="flex-row"
       style={{
         borderBottomWidth: 1,
-        borderBottomColor: BORDER_DEFAULT,
+        borderBottomColor: resolveColor('border-default'),
       }}
       accessibilityRole={'tablist' as ViewProps['accessibilityRole']}
       testID="exercise-detail-page-tabs"
@@ -213,11 +209,11 @@ function TabBar({ active, onSelect }: TabBarProps) {
             testID={`exercise-detail-page-tab-${key}`}
           >
             <Text
+              className={isActive ? 'text-text-primary' : 'text-text-tertiary'}
               style={{
                 fontSize: 13,
                 fontFamily: 'Inter, sans-serif',
                 fontWeight: isActive ? '700' : '500',
-                color: isActive ? TEXT_PRIMARY : TEXT_TERTIARY,
               }}
             >
               {label}
@@ -244,27 +240,27 @@ function StatStrip({ stats, unit }: { stats: ExerciseDetailStats; unit: 'lbs' | 
         return (
           <View
             key={key}
+            className="bg-surface-elevated border-border"
             style={{
               flex: 1,
               padding: 12,
               borderRadius: 10,
-              backgroundColor: SURFACE_ELEVATED,
               borderWidth: 1,
-              borderColor: BORDER_DEFAULT,
             }}
             testID={`exercise-detail-page-stat-${key}`}
           >
             <Text
+              className="text-text-primary"
               style={{
                 fontSize: 18,
                 fontFamily: '"Space Grotesk", sans-serif',
                 fontWeight: '700',
-                color: TEXT_PRIMARY,
               }}
             >
               {value}
             </Text>
             <Text
+              className="text-text-tertiary"
               style={{
                 marginTop: 2,
                 fontSize: 10,
@@ -272,7 +268,6 @@ function StatStrip({ stats, unit }: { stats: ExerciseDetailStats; unit: 'lbs' | 
                 fontWeight: '600',
                 letterSpacing: 0.4,
                 textTransform: 'uppercase',
-                color: TEXT_TERTIARY,
               }}
             >
               {label}
@@ -295,10 +290,9 @@ function SectionCard({
 }) {
   return (
     <View
+      className="bg-surface-elevated border-border"
       style={{
-        backgroundColor: SURFACE_ELEVATED,
         borderWidth: 1,
-        borderColor: BORDER_DEFAULT,
         borderRadius: 12,
         padding: 12,
         gap: 10,
@@ -306,13 +300,13 @@ function SectionCard({
       testID={testID}
     >
       <Text
+        className="text-text-tertiary"
         style={{
           fontSize: 11,
           fontFamily: 'Inter, sans-serif',
           fontWeight: '600',
           letterSpacing: 0.6,
           textTransform: 'uppercase',
-          color: TEXT_TERTIARY,
         }}
       >
         {title}
@@ -334,7 +328,8 @@ function EntryList({ entries, expandedId, onToggle, emptyLabel, testID }: EntryL
   if (entries.length === 0) {
     return (
       <Text
-        style={{ fontSize: 12, fontFamily: 'Inter, sans-serif', color: TEXT_TERTIARY }}
+        className="text-text-tertiary"
+        style={{ fontSize: 12, fontFamily: 'Inter, sans-serif' }}
         testID={`${testID}-empty`}
       >
         {emptyLabel}
@@ -367,12 +362,12 @@ function VbtBreakdown({ sets }: { sets: ExerciseVbtSet[] }) {
             testID="exercise-detail-page-vbt-set"
           >
             <Text
+              className="text-text-secondary"
               style={{
                 width: 44,
                 fontSize: 11,
                 fontFamily: 'Inter, sans-serif',
                 fontWeight: '600',
-                color: TEXT_SECONDARY,
               }}
             >
               {set.label}
@@ -381,11 +376,11 @@ function VbtBreakdown({ sets }: { sets: ExerciseVbtSet[] }) {
               <VelocityStrip velocities={set.velocities} variant="mini" />
             </View>
             <Text
+              className="text-text-tertiary"
               style={{
                 fontSize: 11,
                 fontFamily: 'Inter, sans-serif',
                 fontVariant: ['tabular-nums'],
-                color: TEXT_TERTIARY,
               }}
             >
               {`${mean.toFixed(2)} · -${loss}%`}
@@ -407,26 +402,26 @@ function VbtSummaryRow({ summary }: { summary: VbtSummary }) {
       {cells.map((cell) => (
         <View
           key={cell.label}
+          className="bg-surface-elevated border-border"
           style={{
             flex: 1,
             padding: 12,
             borderRadius: 10,
-            backgroundColor: SURFACE_ELEVATED,
             borderWidth: 1,
-            borderColor: BORDER_DEFAULT,
           }}
         >
           <Text
+            className="text-text-primary"
             style={{
               fontSize: 16,
               fontFamily: '"Space Grotesk", sans-serif',
               fontWeight: '700',
-              color: TEXT_PRIMARY,
             }}
           >
             {cell.value}
           </Text>
           <Text
+            className="text-text-tertiary"
             style={{
               marginTop: 2,
               fontSize: 10,
@@ -434,7 +429,6 @@ function VbtSummaryRow({ summary }: { summary: VbtSummary }) {
               fontWeight: '600',
               letterSpacing: 0.4,
               textTransform: 'uppercase',
-              color: TEXT_TERTIARY,
             }}
           >
             {cell.label}
@@ -488,8 +482,8 @@ export function ExerciseDetailPage({
 
   return (
     <View
-      className={className}
-      style={{ width: 390, backgroundColor: PAGE_BG }}
+      className={cn('bg-background-base', className)}
+      style={{ width: 390 }}
       accessibilityRole={'main' as ViewProps['accessibilityRole']}
       aria-label={exercise.name}
       testID="exercise-detail-page"
@@ -504,22 +498,22 @@ export function ExerciseDetailPage({
           <View style={{ flexShrink: 1 }}>
             <Text
               accessibilityRole="header"
+              className="text-text-primary"
               style={{
                 fontSize: 20,
                 fontFamily: '"Space Grotesk", sans-serif',
                 fontWeight: '700',
-                color: TEXT_PRIMARY,
               }}
               testID="exercise-detail-page-title"
             >
               {exercise.name}
             </Text>
             <Text
+              className="text-text-secondary"
               style={{
                 marginTop: 2,
                 fontSize: 12,
                 fontFamily: 'Inter, sans-serif',
-                color: TEXT_SECONDARY,
               }}
               testID="exercise-detail-page-subtitle"
             >
@@ -539,13 +533,13 @@ export function ExerciseDetailPage({
               testID="exercise-detail-page-e1rm"
             >
               <Text
+                className="text-text-tertiary"
                 style={{
                   fontSize: 9,
                   fontFamily: 'Inter, sans-serif',
                   fontWeight: '600',
                   letterSpacing: 0.4,
                   textTransform: 'uppercase',
-                  color: TEXT_TERTIARY,
                 }}
               >
                 e1RM

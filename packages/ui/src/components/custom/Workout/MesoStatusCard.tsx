@@ -3,13 +3,11 @@ import { Fragment, type ReactNode } from 'react'
 import { View, Text, type ViewProps, type ViewStyle } from 'react-native'
 import { Card } from '../../ui/card'
 import { StatusDot } from './StatusDot'
+import { resolveColor } from '../../../theme/resolve-color'
 
 const BRAND_PRIMARY = '#FF7900'
 const BRAND_PRIMARY_DARK = '#C45E00'
 const BRAND_PRIMARY_LIGHT = '#FFB066'
-const TEXT_PRIMARY = 'var(--color-text-primary)'
-const TEXT_SECONDARY = 'var(--color-text-secondary)'
-const TEXT_TERTIARY = 'var(--color-text-tertiary)'
 
 const SUCCESS = '#14B8A6'
 const WARNING = '#FFB020'
@@ -18,9 +16,12 @@ const ERROR = '#D14343'
 /** Gradient stops for the 3px top accent: dark -> primary -> light (matches MesoCard). */
 const ACCENT_STOPS = [BRAND_PRIMARY_DARK, BRAND_PRIMARY, BRAND_PRIMARY_LIGHT]
 
-/** Card surface gradient: elevated -> raised at 135deg (theme-aware). */
-const CARD_GRADIENT =
-  'linear-gradient(135deg, var(--color-surface-elevated) 0%, var(--color-surface-raised) 100%)'
+/**
+ * Card surface gradient: elevated -> raised at 135deg. Uses resolved dark-theme
+ * hexes (a gradient string can't carry a className token, and var() renders
+ * black on native).
+ */
+const CARD_GRADIENT = `linear-gradient(135deg, ${resolveColor('surface-elevated')} 0%, ${resolveColor('surface-raised')} 100%)`
 
 /** Gauge track gradient (teal -> amber -> red) at 0.25 alpha. */
 const GAUGE_GRADIENT =
@@ -118,7 +119,8 @@ function renderCoachingText(text: string, highlights?: string[]): ReactNode {
     highlights.includes(part) ? (
       <Text
         key={`${part}-${index}`}
-        style={{ fontWeight: '700', color: TEXT_PRIMARY }}
+        className="text-text-primary"
+        style={{ fontWeight: '700' }}
       >
         {part}
       </Text>
@@ -166,24 +168,24 @@ function MetricCell({ metric }: { metric: MesoStatusMetric }) {
   return (
     <View style={{ width: '48%' }} testID="meso-status-card-metric">
       <Text
+        className="text-text-tertiary"
         style={{
           fontSize: 10,
           fontFamily: 'Inter, sans-serif',
           fontWeight: '600',
           letterSpacing: 0.5,
           textTransform: 'uppercase',
-          color: TEXT_TERTIARY,
         }}
       >
         {metric.label}
       </Text>
       <Text
+        className="text-text-primary"
         style={{
           marginTop: 2,
           fontSize: 13,
           fontFamily: 'Inter, sans-serif',
           fontWeight: '600',
-          color: TEXT_PRIMARY,
         }}
       >
         {metric.value}
@@ -212,24 +214,24 @@ function Gauge({ gauge }: { gauge: MesoStatusGauge }) {
         accessibilityElementsHidden
       >
         <Text
+          className="text-text-secondary"
           style={{
             fontSize: 10,
             fontFamily: 'Inter, sans-serif',
             fontWeight: '500',
             letterSpacing: 0.5,
             textTransform: 'uppercase',
-            color: TEXT_SECONDARY,
           }}
         >
           {gauge.label}
         </Text>
         {gauge.sublabel != null && (
           <Text
+            className="text-text-tertiary"
             style={{
               fontSize: 10,
               fontFamily: 'Inter, sans-serif',
               fontWeight: '500',
-              color: TEXT_TERTIARY,
             }}
           >
             {gauge.sublabel}
@@ -261,6 +263,7 @@ function Gauge({ gauge }: { gauge: MesoStatusGauge }) {
           testID="meso-status-card-gauge-center"
         />
         <View
+          className="border-text-primary"
           style={{
             position: 'absolute',
             left: `${percentage}%`,
@@ -270,7 +273,6 @@ function Gauge({ gauge }: { gauge: MesoStatusGauge }) {
             height: 14,
             borderRadius: 9999,
             borderWidth: 2,
-            borderColor: TEXT_PRIMARY,
             backgroundColor: markerColor,
             boxShadow: '0 0 4px rgba(0,0,0,0.5)',
           }}
@@ -349,12 +351,12 @@ export function MesoStatusCard({
             style={{ gap: 8 }}
           >
             <Text
+              className="text-text-primary"
               style={{
                 flexShrink: 1,
                 fontSize: 15,
                 fontFamily: '"Space Grotesk", sans-serif',
                 fontWeight: '700',
-                color: TEXT_PRIMARY,
               }}
               testID="meso-status-card-name"
             >
@@ -363,11 +365,11 @@ export function MesoStatusCard({
             <StatusPill badge={statusBadge} />
           </View>
           <Text
+            className="text-text-secondary"
             style={{
               marginTop: 4,
               fontSize: 12,
               fontFamily: 'Inter, sans-serif',
-              color: TEXT_SECONDARY,
             }}
             testID="meso-status-card-subtitle"
           >
@@ -408,11 +410,11 @@ export function MesoStatusCard({
             testID="meso-status-card-coaching"
           >
             <Text
+              className="text-text-secondary"
               style={{
                 fontSize: 12,
                 lineHeight: 17,
                 fontFamily: 'Inter, sans-serif',
-                color: TEXT_SECONDARY,
               }}
             >
               {renderCoachingText(coaching.text, coaching.highlights)}

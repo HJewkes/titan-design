@@ -2,17 +2,16 @@
 import { useEffect, useMemo, useState } from 'react'
 import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { resolveColor } from '../../../theme/resolve-color'
 
 const BRAND_PRIMARY = '#FF7900'
-const TEXT_PRIMARY = 'var(--color-text-primary)'
-const TEXT_SECONDARY = 'var(--color-text-secondary)'
-const TEXT_TERTIARY = 'var(--color-text-tertiary)'
-const BORDER_STRONG = 'var(--color-border-strong)'
+// Line/border color for the dashed projection, used where a className cannot
+// apply (passed as a prop into an inline style, and a per-edge borderTopColor).
+const PROJECTION_LINE_COLOR = resolveColor('text-tertiary')
 const STATUS_SUCCESS = '#14B8A6'
 const STATUS_ERROR = '#D14343'
 const STATUS_WARNING = '#FFB020'
 const GRID_LINE = 'rgba(255,255,255,0.06)'
-const TOOLTIP_BG = 'var(--color-surface-elevated)'
 const SUCCESS_PILL_BG = 'rgba(20,184,166,0.10)'
 const SUCCESS_PILL_BORDER = 'rgba(20,184,166,0.20)'
 const ERROR_PILL_BG = 'rgba(209,67,67,0.10)'
@@ -312,7 +311,7 @@ export function StrengthTrendChart({
             justifyContent: 'center',
           }}
         >
-          <Text style={{ fontSize: 12, fontFamily: 'Inter, sans-serif', color: TEXT_TERTIARY }}>
+          <Text className="text-text-tertiary" style={{ fontSize: 12, fontFamily: 'Inter, sans-serif' }}>
             No strength data yet
           </Text>
         </View>
@@ -358,6 +357,7 @@ export function StrengthTrendChart({
               }}
             >
               <Text
+                className="text-text-tertiary"
                 style={{
                   position: 'absolute',
                   left: -PLOT_LEFT,
@@ -366,7 +366,6 @@ export function StrengthTrendChart({
                   textAlign: 'right',
                   fontSize: 9,
                   fontFamily: 'Inter, sans-serif',
-                  color: TEXT_TERTIARY,
                 }}
               >
                 {line.label}
@@ -406,7 +405,7 @@ export function StrengthTrendChart({
             <View style={{ width, height, position: 'absolute', top: 0, left: 0 }}>
               <ChartLine
                 coords={geometry.projection}
-                color={TEXT_TERTIARY}
+                color={PROJECTION_LINE_COLOR}
                 strokeWidth={2}
                 dashed
                 testID="strength-trend-chart-projection-segment"
@@ -475,6 +474,7 @@ export function StrengthTrendChart({
           <View
             testID="strength-trend-chart-tooltip"
             accessibilityElementsHidden
+            className="bg-surface-elevated border-border-strong"
             style={{
               position: 'absolute',
               left: Math.max(
@@ -483,30 +483,28 @@ export function StrengthTrendChart({
               ),
               top: Math.max(0, selectedCoord.y - 52),
               maxWidth: TOOLTIP_WIDTH,
-              backgroundColor: TOOLTIP_BG,
               borderWidth: 1,
-              borderColor: BORDER_STRONG,
               borderRadius: 8,
               paddingVertical: 8,
               paddingHorizontal: 10,
             }}
           >
             <Text
+              className="text-text-tertiary"
               style={{
                 fontSize: 10,
                 fontFamily: 'Inter, sans-serif',
-                color: TEXT_TERTIARY,
               }}
             >
               {selectedCoord.point.sessionLabel ?? selectedCoord.point.date}
             </Text>
             <Text
+              className="text-text-primary"
               style={{
                 marginTop: 2,
                 fontSize: 13,
                 fontFamily: 'Inter, sans-serif',
                 fontWeight: '700',
-                color: TEXT_PRIMARY,
               }}
             >
               {`${formatValue(selectedCoord.point.e1rm)} ${unit}`}
@@ -547,6 +545,7 @@ export function StrengthTrendChart({
             <Text
               key={`axis-${i}`}
               testID="strength-trend-chart-axis-label"
+              className="text-text-tertiary"
               style={{
                 position: 'absolute',
                 left: boundary.x - 24,
@@ -554,7 +553,6 @@ export function StrengthTrendChart({
                 textAlign: 'center',
                 fontSize: 10,
                 fontFamily: 'Inter, sans-serif',
-                color: TEXT_TERTIARY,
               }}
             >
               {boundary.label}
@@ -598,7 +596,7 @@ export function StrengthTrendChart({
       >
         <View className="flex-row items-center" style={{ gap: 5 }}>
           <View style={{ width: 14, height: 2.5, borderRadius: 1.5, backgroundColor: BRAND_PRIMARY }} />
-          <Text style={{ fontSize: 10, fontFamily: 'Inter, sans-serif', color: TEXT_SECONDARY }}>
+          <Text className="text-text-secondary" style={{ fontSize: 10, fontFamily: 'Inter, sans-serif' }}>
             Actual
           </Text>
         </View>
@@ -609,16 +607,16 @@ export function StrengthTrendChart({
               height: 0,
               borderTopWidth: 2,
               borderStyle: 'dashed',
-              borderTopColor: TEXT_TERTIARY,
+              borderTopColor: PROJECTION_LINE_COLOR,
             }}
           />
-          <Text style={{ fontSize: 10, fontFamily: 'Inter, sans-serif', color: TEXT_SECONDARY }}>
+          <Text className="text-text-secondary" style={{ fontSize: 10, fontFamily: 'Inter, sans-serif' }}>
             Projected
           </Text>
         </View>
         <View className="flex-row items-center" style={{ gap: 5 }}>
           <Text style={{ fontSize: 12, color: STATUS_WARNING }}>★</Text>
-          <Text style={{ fontSize: 10, fontFamily: 'Inter, sans-serif', color: TEXT_SECONDARY }}>
+          <Text className="text-text-secondary" style={{ fontSize: 10, fontFamily: 'Inter, sans-serif' }}>
             PR
           </Text>
         </View>

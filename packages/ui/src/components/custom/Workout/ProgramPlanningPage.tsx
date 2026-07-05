@@ -7,13 +7,9 @@ import { type WeekRowProps, type WeekRowWorkout } from './WeekRow'
 import { WorkoutCard, type WorkoutStatus, type WorkoutMuscleGroup } from './WorkoutCard'
 import { type WorkoutPillStatus } from './WorkoutPill'
 import { type ExerciseCardProps } from './ExerciseCard'
+import { cn } from '../../../utils/cn'
 
-const SURFACE_ELEVATED = 'var(--color-surface-elevated)'
-const BORDER_DEFAULT = 'var(--color-border-default)'
 const BRAND_PRIMARY = '#FF7900'
-const TEXT_PRIMARY = 'var(--color-text-primary)'
-const TEXT_TERTIARY = 'var(--color-text-tertiary)'
-const PAGE_BG = 'var(--color-background-base)'
 
 /** A single workout within a planned week, plus its exercise breakdown. */
 export interface PlanWorkout {
@@ -157,7 +153,7 @@ function Breadcrumbs({ crumbs, onNavigate }: BreadcrumbsProps) {
         const isLast = index === crumbs.length - 1
         return (
           <View key={crumb.key} className="flex-row items-center" style={{ gap: 4 }}>
-            {index > 0 && <Text style={{ fontSize: 12, color: TEXT_TERTIARY }}>{'›'}</Text>}
+            {index > 0 && <Text className="text-text-tertiary" style={{ fontSize: 12 }}>{'›'}</Text>}
             <Pressable
               onPress={() => onNavigate(crumb.level)}
               disabled={isLast}
@@ -165,11 +161,12 @@ function Breadcrumbs({ crumbs, onNavigate }: BreadcrumbsProps) {
               testID={`program-planning-page-crumb-${crumb.key}`}
             >
               <Text
+                className={isLast ? 'text-text-primary' : undefined}
                 style={{
                   fontSize: 12,
                   fontFamily: 'Inter, sans-serif',
                   fontWeight: isLast ? '700' : '500',
-                  color: isLast ? TEXT_PRIMARY : BRAND_PRIMARY,
+                  color: isLast ? undefined : BRAND_PRIMARY,
                 }}
               >
                 {crumb.label}
@@ -351,8 +348,8 @@ export function ProgramPlanningPage({
 
   return (
     <View
-      className={className}
-      style={{ width: 390, backgroundColor: PAGE_BG }}
+      className={cn(className, 'bg-background-base')}
+      style={{ width: 390 }}
       accessibilityRole={'main' as ViewProps['accessibilityRole']}
       aria-label={title}
       testID="program-planning-page"
@@ -361,11 +358,11 @@ export function ProgramPlanningPage({
       <View style={{ padding: 16, gap: 14 }} testID="program-planning-page-content">
         <Text
           accessibilityRole="header"
+          className="text-text-primary"
           style={{
             fontSize: 20,
             fontFamily: '"Space Grotesk", sans-serif',
             fontWeight: '700',
-            color: TEXT_PRIMARY,
           }}
           testID="program-planning-page-title"
         >
@@ -388,10 +385,9 @@ export function ProgramPlanningPage({
         )}
 
         <View
+          className="bg-surface-elevated border-border"
           style={{
-            backgroundColor: SURFACE_ELEVATED,
             borderWidth: 1,
-            borderColor: BORDER_DEFAULT,
             borderRadius: 12,
             padding: 12,
           }}

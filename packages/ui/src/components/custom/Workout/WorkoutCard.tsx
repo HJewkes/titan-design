@@ -43,11 +43,6 @@ export interface WorkoutCardProps extends ViewProps {
 }
 
 const COLORS = {
-  // Theme-aware foregrounds: resolve to a readable color in both light and dark
-  // (react-native-web passes the CSS var through to the inline style).
-  textPrimary: 'var(--color-text-primary)',
-  textSecondary: 'var(--color-text-secondary)',
-  textTertiary: 'var(--color-text-tertiary)',
   statusSuccess: '#14B8A6',
   brandPrimary: '#FF7900',
   borderDefault: '#1F1F1F',
@@ -124,11 +119,11 @@ export function WorkoutCard({
     <View style={{ padding: 14 }} testID="workout-card-body">
       <View className="flex-row items-center" testID="workout-card-header">
         <Text
+          className="text-text-primary"
           style={{
             fontSize: 15,
             fontFamily: '"Space Grotesk", sans-serif',
             fontWeight: '700',
-            color: COLORS.textPrimary,
           }}
           testID="workout-card-name"
         >
@@ -136,10 +131,10 @@ export function WorkoutCard({
         </Text>
         <View className="flex-1" />
         <Text
+          className="text-text-tertiary"
           style={{
             fontSize: 11,
             fontFamily: 'Inter, sans-serif',
-            color: COLORS.textTertiary,
           }}
           testID="workout-card-date"
         >
@@ -148,11 +143,11 @@ export function WorkoutCard({
       </View>
 
       <Text
+        className="text-text-secondary"
         style={{
           marginTop: 4,
           fontSize: 12,
           fontFamily: 'Inter, sans-serif',
-          color: COLORS.textSecondary,
         }}
         testID="workout-card-stats"
       >
