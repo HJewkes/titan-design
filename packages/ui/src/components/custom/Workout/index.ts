@@ -9,6 +9,15 @@ export { PrBadge, type PrBadgeProps, type PRType } from './PrBadge'
 export { StatusDot, type StatusDotVariant, type StatusDotProps } from './StatusDot'
 export { PlaceholderStrip, type PlaceholderStripProps } from './PlaceholderStrip'
 export { TempoDisplay, type TempoDisplayProps } from './TempoDisplay'
+export {
+  TempoBar,
+  type TempoBarProps,
+  type TempoPhaseKey,
+  type TempoPacingState,
+  TEMPO_PACING,
+  getTempoPacingState,
+  getTempoFillPct,
+} from './TempoBar'
 export { DeviationBar, type DeviationBarProps } from './DeviationBar'
 export { IntensityBar, type IntensityBarProps } from './IntensityBar'
 export { WorkoutPill, type WorkoutPillProps, type WorkoutPillStatus } from './WorkoutPill'
