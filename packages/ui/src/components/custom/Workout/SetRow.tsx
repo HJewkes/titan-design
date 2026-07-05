@@ -106,11 +106,11 @@ export function SetRow({
           </Text>
         ) : (
           <Text
+            className="text-text-secondary"
             style={{
               fontSize: 13,
               fontWeight: '600',
               fontFamily: 'Inter, sans-serif',
-              color: 'var(--color-text-secondary)',
             }}
           >
             {setNumber}
@@ -123,10 +123,10 @@ export function SetRow({
         testID="set-row-previous"
       >
         <Text
+          className="text-text-secondary"
           style={{
             fontSize: 12,
             fontFamily: 'Inter, sans-serif',
-            color: 'var(--color-text-secondary)',
           }}
         >
           {previous
@@ -141,11 +141,11 @@ export function SetRow({
       >
         {isActive && reps == null && targets ? (
           <Text
+            className="text-text-tertiary"
             style={{
               fontSize: 13,
               fontStyle: 'italic',
               fontFamily: 'Inter, sans-serif',
-              color: 'var(--color-text-tertiary)',
             }}
             testID="set-row-target-reps"
           >
@@ -153,11 +153,11 @@ export function SetRow({
           </Text>
         ) : (
           <Text
+            className={reps != null ? 'text-text-primary' : 'text-text-tertiary'}
             style={{
               fontSize: 14,
               fontWeight: '600',
               fontFamily: 'Inter, sans-serif',
-              color: reps != null ? 'var(--color-text-primary)' : 'var(--color-text-tertiary)',
             }}
           >
             {reps != null ? reps : '\u2014'}
@@ -171,11 +171,11 @@ export function SetRow({
       >
         {isActive && weight == null && targets ? (
           <Text
+            className="text-text-tertiary"
             style={{
               fontSize: 13,
               fontStyle: 'italic',
               fontFamily: 'Inter, sans-serif',
-              color: 'var(--color-text-tertiary)',
             }}
             testID="set-row-target-weight"
           >
@@ -183,11 +183,11 @@ export function SetRow({
           </Text>
         ) : (
           <Text
+            className={weight != null ? 'text-text-primary' : 'text-text-tertiary'}
             style={{
               fontSize: 14,
               fontWeight: '600',
               fontFamily: 'Inter, sans-serif',
-              color: weight != null ? 'var(--color-text-primary)' : 'var(--color-text-tertiary)',
             }}
           >
             {weight != null ? roundWeight(weight) : '\u2014'}
@@ -200,11 +200,14 @@ export function SetRow({
         testID="set-row-rpe"
       >
         <Text
+          className={rpe != null ? undefined : 'text-text-tertiary'}
           style={{
             fontSize: 13,
             fontWeight: '600',
             fontFamily: 'Inter, sans-serif',
-            color: rpe != null ? rpeColor(rpe) : 'var(--color-text-tertiary)',
+            // rpeColor returns a concrete hex (native-safe); only the tertiary
+            // fallback needs the className token.
+            color: rpe != null ? rpeColor(rpe) : undefined,
           }}
         >
           {rpe != null ? roundRpe(rpe) : '\u2014'}

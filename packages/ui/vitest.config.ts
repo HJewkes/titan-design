@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import {
@@ -40,6 +41,13 @@ export default defineConfig({
     alias: [
       ...svgWebAliases,
       { find: /^react-native$/, replacement: 'react-native-web' },
+      // nativewind pulls RN Flow sources jsdom can't parse; only ThemeProvider
+      // imports it (for native `vars()`). Stub it on web — tokens come from
+      // global.css there. Real package used at build/native.
+      {
+        find: /^nativewind$/,
+        replacement: fileURLToPath(new URL('./src/test/nativewind-stub.ts', import.meta.url)),
+      },
       { find: '@', replacement: './src' },
     ],
     extensions: webResolveExtensions,
