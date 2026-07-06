@@ -11,6 +11,8 @@ export interface RestTimerProps {
   onAddTime: () => void
   nextSetInfo?: string
   visible: boolean
+  /** Passive/poll-only mode: hides the Skip and +30s controls, keeps the countdown, progress bar, and next-set line. */
+  displayOnly?: boolean
 }
 
 export function RestTimer({
@@ -20,6 +22,7 @@ export function RestTimer({
   onAddTime,
   nextSetInfo,
   visible,
+  displayOnly = false,
 }: RestTimerProps) {
   if (!visible) return null
 
@@ -123,55 +126,57 @@ export function RestTimer({
         />
       </View>
 
-      {/* Actions row */}
-      <View style={{ flexDirection: 'row', gap: 8 }}>
-        <Pressable
-          onPress={onAddTime}
-          style={{
-            backgroundColor: 'rgba(255,255,255,0.06)',
-            paddingVertical: 8,
-            paddingHorizontal: 20,
-            borderRadius: 8,
-          }}
-          accessibilityRole="button"
-          accessibilityLabel="Add 30 seconds"
-          testID="rest-timer-add-time"
-        >
-          <Text
-            className="text-text-secondary"
+      {/* Actions row — hidden in display-only (poll-only) mode */}
+      {!displayOnly && (
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          <Pressable
+            onPress={onAddTime}
             style={{
-              fontSize: 11,
-              fontFamily: 'Inter, sans-serif',
-              fontWeight: '600',
+              backgroundColor: 'rgba(255,255,255,0.06)',
+              paddingVertical: 8,
+              paddingHorizontal: 20,
+              borderRadius: 8,
             }}
+            accessibilityRole="button"
+            accessibilityLabel="Add 30 seconds"
+            testID="rest-timer-add-time"
           >
-            +30s
-          </Text>
-        </Pressable>
-        <Pressable
-          onPress={onSkip}
-          style={{
-            backgroundColor: 'rgba(255,121,0,0.12)',
-            paddingVertical: 8,
-            paddingHorizontal: 20,
-            borderRadius: 8,
-          }}
-          accessibilityRole="button"
-          accessibilityLabel="Skip rest"
-          testID="rest-timer-skip"
-        >
-          <Text
+            <Text
+              className="text-text-secondary"
+              style={{
+                fontSize: 11,
+                fontFamily: 'Inter, sans-serif',
+                fontWeight: '600',
+              }}
+            >
+              +30s
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={onSkip}
             style={{
-              fontSize: 11,
-              fontFamily: 'Inter, sans-serif',
-              fontWeight: '600',
-              color: BRAND_PRIMARY,
+              backgroundColor: 'rgba(255,121,0,0.12)',
+              paddingVertical: 8,
+              paddingHorizontal: 20,
+              borderRadius: 8,
             }}
+            accessibilityRole="button"
+            accessibilityLabel="Skip rest"
+            testID="rest-timer-skip"
           >
-            Skip
-          </Text>
-        </Pressable>
-      </View>
+            <Text
+              style={{
+                fontSize: 11,
+                fontFamily: 'Inter, sans-serif',
+                fontWeight: '600',
+                color: BRAND_PRIMARY,
+              }}
+            >
+              Skip
+            </Text>
+          </Pressable>
+        </View>
+      )}
     </View>
   )
 }

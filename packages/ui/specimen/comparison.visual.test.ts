@@ -408,11 +408,9 @@ test.describe('HTML vs React Component Comparison', () => {
     )
   })
 
-  // QUARANTINED (test.fixme) pending TD-04.13: not a component regression — the
-  // compact badge intentionally renders a Lucide SVG <Star> (per PrBadge.test.tsx),
-  // but the GT still emits a text ★ glyph, so the harness measures the SVG
-  // container as text and mismatches. Resolve by rendering an SVG star in the GT.
-  test.fixme('PrBadge compact', async ({ page }) => {
+  // TD-04.13 resolved: the GT now emits an inline orange <Star> SVG (14px, #FF7900)
+  // to match the component's Lucide <Star>, so the compact badge reaches parity.
+  test('PrBadge compact', async ({ page }) => {
     await assertStyleMatch(
       page, 'compare-pr-badge-compact',
       '.pr-badge-compact', '[data-testid="pr-badge-star"]',
@@ -705,18 +703,15 @@ test.describe('HTML vs React Component Comparison', () => {
   }
 
   // ── IntensityBar ──
-  // QUARANTINED (test.fixme) pending TD-04.12: these 7 parity failures are a
-  // genuine design fork, not stale ground truth. The frozen-HTML GT encodes a
-  // rich workout-semantic model (numeric %-label, teal→amber→graded-red zones,
-  // at-target blue glow, >100% over-target grading + bulge) that the React
-  // component deliberately does NOT implement — its 0.4/0.7 zone boundaries and
-  // label-less bar are locked by IntensityBar.test.tsx, so reconciling either
-  // way is a product decision (redesign + test rewrites, or GT rebaseline).
+  // TD-04.12 resolved: the React component now implements the rich workout-semantic
+  // model encoded by the frozen-HTML GT — numeric %-label, teal→amber→graded-red
+  // zones, at-target blue glow + target line, and >100% over-target grading + bulge —
+  // so these 7 variants reach parity.
   const intensityBarProps = [
     'alignItems', 'display', 'flexDirection',
   ] as const
 
-  test.fixme('IntensityBar 20% building', async ({ page }) => {
+  test('IntensityBar 20% building', async ({ page }) => {
     await assertStyleMatch(page, 'compare-intensity-20', '.intensity-bar', '[data-testid="intensity-bar"]',
       intensityBarProps,
     )
@@ -725,7 +720,7 @@ test.describe('HTML vs React Component Comparison', () => {
     )
   })
 
-  test.fixme('IntensityBar 75% approaching', async ({ page }) => {
+  test('IntensityBar 75% approaching', async ({ page }) => {
     await assertStyleMatch(page, 'compare-intensity-75', '.intensity-bar', '[data-testid="intensity-bar"]',
       intensityBarProps,
     )
@@ -734,13 +729,13 @@ test.describe('HTML vs React Component Comparison', () => {
     )
   })
 
-  test.fixme('IntensityBar 100% target', async ({ page }) => {
+  test('IntensityBar 100% target', async ({ page }) => {
     await assertStyleMatch(page, 'compare-intensity-100', '.intensity-bar', '[data-testid="intensity-bar"]',
       intensityBarProps,
     )
   })
 
-  test.fixme('IntensityBar 110% over', async ({ page }) => {
+  test('IntensityBar 110% over', async ({ page }) => {
     await assertStyleMatch(page, 'compare-intensity-110', '.intensity-fill', '[data-testid="intensity-fill"]',
       ['backgroundColor'] as const,
     )
@@ -761,7 +756,7 @@ test.describe('HTML vs React Component Comparison', () => {
     }
   })
 
-  test.fixme('IntensityBar 50% at target (blue glow)', async ({ page }) => {
+  test('IntensityBar 50% at target (blue glow)', async ({ page }) => {
     await assertStyleMatch(page, 'compare-intensity-50-target', '.intensity-fill', '[data-testid="intensity-fill"]',
       ['backgroundColor', 'boxShadow'] as const,
     )
@@ -783,7 +778,7 @@ test.describe('HTML vs React Component Comparison', () => {
   })
 
   // Priority 3e: IntensityBar over-2 and over-3
-  test.fixme('IntensityBar 120% over-2', async ({ page }) => {
+  test('IntensityBar 120% over-2', async ({ page }) => {
     await assertStyleMatch(page, 'compare-intensity-120', '.intensity-bar', '[data-testid="intensity-bar"]',
       intensityBarProps,
     )
@@ -807,7 +802,7 @@ test.describe('HTML vs React Component Comparison', () => {
     }
   })
 
-  test.fixme('IntensityBar 130% over-3', async ({ page }) => {
+  test('IntensityBar 130% over-3', async ({ page }) => {
     await assertStyleMatch(page, 'compare-intensity-130', '.intensity-bar', '[data-testid="intensity-bar"]',
       intensityBarProps,
     )

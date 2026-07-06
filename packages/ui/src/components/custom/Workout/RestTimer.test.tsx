@@ -75,16 +75,51 @@ describe('RestTimer', () => {
     })
   })
 
-  describe('next set info', () => {
-    it('displays nextSetInfo when provided', () => {
+  describe('display-only mode', () => {
+    it('renders the Skip and +30s actions by default', () => {
+      render(<RestTimer {...defaultProps} />)
+      expect(screen.getByTestId('rest-timer-skip')).toBeInTheDocument()
+      expect(screen.getByTestId('rest-timer-add-time')).toBeInTheDocument()
+    })
+
+    it('hides the Skip and +30s actions when displayOnly', () => {
+      render(<RestTimer {...defaultProps} displayOnly />)
+      expect(screen.queryByTestId('rest-timer-skip')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('rest-timer-add-time')).not.toBeInTheDocument()
+    })
+
+    it('keeps the countdown, progress bar, and next-set line when displayOnly', () => {
       render(
         <RestTimer
           {...defaultProps}
+          elapsedMs={30000}
+          displayOnly
           nextSetInfo="Bench Press — Set 3 of 4"
-        />,
+        />
       )
+      expect(screen.getByTestId('rest-timer-time')).toHaveTextContent('2:00')
+      expect(screen.getByTestId('rest-timer-progress-fill')).toBeInTheDocument()
       expect(screen.getByTestId('rest-timer-next-set')).toHaveTextContent(
-        'Bench Press — Set 3 of 4',
+        'Bench Press — Set 3 of 4'
+      )
+    })
+
+    it('does not fire callbacks in display-only mode (controls absent)', () => {
+      const onSkip = vi.fn()
+      const onAddTime = vi.fn()
+      render(<RestTimer {...defaultProps} onSkip={onSkip} onAddTime={onAddTime} displayOnly />)
+      expect(screen.queryByLabelText('Skip rest')).not.toBeInTheDocument()
+      expect(screen.queryByLabelText('Add 30 seconds')).not.toBeInTheDocument()
+      expect(onSkip).not.toHaveBeenCalled()
+      expect(onAddTime).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('next set info', () => {
+    it('displays nextSetInfo when provided', () => {
+      render(<RestTimer {...defaultProps} nextSetInfo="Bench Press — Set 3 of 4" />)
+      expect(screen.getByTestId('rest-timer-next-set')).toHaveTextContent(
+        'Bench Press — Set 3 of 4'
       )
     })
 
@@ -127,9 +162,7 @@ describe('RestTimer', () => {
 
     it('has timer role with remaining seconds in label', () => {
       render(<RestTimer {...defaultProps} totalSeconds={90} elapsedMs={30000} />)
-      expect(
-        screen.getByLabelText('Rest timer, 60 seconds remaining'),
-      ).toBeInTheDocument()
+      expect(screen.getByLabelText('Rest timer, 60 seconds remaining')).toBeInTheDocument()
     })
 
     it('skip button has accessible label', () => {
@@ -146,9 +179,7 @@ describe('RestTimer', () => {
 
 describe('RestTimer zero-duration timer (NaN guard)', () => {
   it('emits a valid 100% width (not NaN) when totalSeconds is 0', () => {
-    const { container } = render(
-      <RestTimer {...defaultProps} totalSeconds={0} elapsedMs={0} />,
-    )
+    const { container } = render(<RestTimer {...defaultProps} totalSeconds={0} elapsedMs={0} />)
     expect(screen.getByTestId('rest-timer-progress-fill')).toHaveStyle({ width: '100%' })
     expect(container.innerHTML).not.toContain('NaN')
   })
