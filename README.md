@@ -75,6 +75,30 @@ pnpm test
 pnpm typecheck
 ```
 
+## Visual Regression
+
+The workout components are guarded by a Playwright visual suite that runs on
+every PR via the **Visual Regression** workflow
+(`.github/workflows/visual.yml`). It boots the specimen dev server and runs two
+layers, failing the build on any regression:
+
+- **Layer 3 — parity** (`pnpm --filter @titan-design/react-ui test:visual:compare`):
+  compares each React component's `getComputedStyle` against its HTML ground
+  truth in `specimen/comparison.tsx`.
+- **Layer 1 — screenshot baselines** (`pnpm --filter @titan-design/react-ui test:visual:baseline`):
+  pixel-compares each React component against committed baselines under
+  `specimen/baseline/*-snapshots/`.
+
+The job runs inside the pinned `mcr.microsoft.com/playwright` image so rendering
+matches the committed `*-chromium-linux.png` baselines. Regenerate baselines
+after an intentional visual change with the same image, e.g.:
+
+```bash
+docker run --rm -v "$PWD":/work -w /work/packages/ui \
+  mcr.microsoft.com/playwright:v1.58.2-noble \
+  bash -c 'corepack enable && pnpm install --frozen-lockfile && pnpm test:visual:baseline:update'
+```
+
 ## Architecture
 
 ```
