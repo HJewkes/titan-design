@@ -77,7 +77,7 @@ export function PrBadge({
     >
       <Text
         style={{
-          fontSize: 10,
+          fontSize: 12,
           color: '#FF7900',
           fontWeight: '700',
           fontFamily: 'Inter, sans-serif',

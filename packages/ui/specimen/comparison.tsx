@@ -87,7 +87,7 @@ const HTML_CSS = `
   .html-scope .weight-badge.lg { font-size: 12px; padding: 4px 10px; }
   .html-scope .weight-badge.pr {
     background: var(--brand-primary-subtle);
-    border-color: rgba(255, 121, 0, 0.12);
+    border-color: rgba(255, 121, 0, 0.3);
     color: var(--brand-primary);
   }
   .html-scope .weight-delta {
@@ -100,6 +100,7 @@ const HTML_CSS = `
   .html-scope .pr-badge {
     display: inline-flex;
     align-items: center;
+    gap: 3px;
     background: var(--brand-primary-subtle);
     border: 1px solid rgba(255, 121, 0, 0.3);
     border-radius: 2px;
@@ -197,20 +198,28 @@ const HTML_CSS = `
     display: inline-flex;
     align-items: center;
     background: var(--surface-raised);
-    border-radius: 2px;
+    border-radius: 4px;
     font-family: var(--font-ui);
     position: relative;
     cursor: pointer;
   }
-  .html-scope .tempo-display.md-size { padding: 2px 8px; }
-  .html-scope .tempo-display.sm-size { padding: 2px 6px; }
+  .html-scope .tempo-display.md-size { padding: 3px 8px; }
+  .html-scope .tempo-display.sm-size { padding: 3px 6px; }
+  .html-scope .tempo-label {
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-right: 6px;
+  }
   .html-scope .tempo-value {
     font-weight: 600;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
   }
   .html-scope .tempo-display.md-size .tempo-value { font-size: 11px; }
   .html-scope .tempo-display.sm-size .tempo-value { font-size: 9px; }
-  .html-scope .tempo-value.mono { color: #9CA3AF; }
+  .html-scope .tempo-value.mono { color: #6B7280; }
   .html-scope .tempo-colored .t-con { color: var(--brand-primary); }
   .html-scope .tempo-colored .t-hold { color: #2196F3; }
   .html-scope .tempo-colored .t-ecc { color: var(--status-success); }
@@ -345,11 +354,11 @@ const HTML_CSS = `
     background: var(--surface-raised);
     border: 1px solid var(--border-default);
     border-radius: 100px;
-    padding: 2px 8px;
-    font-size: 10px;
+    padding: 3px 9px;
+    font-size: 11px;
     font-weight: 500;
     color: var(--text-secondary);
-    font-family: var(--font-ui);
+    font-family: var(--font-body);
   }
   .html-scope .muscle-chip-dot {
     width: 6px;
@@ -972,7 +981,7 @@ function App() {
       <ComparisonPair
         testId="compare-tempo-colored-md"
         label="TempoDisplay colored md"
-        htmlContent={`<div class="tempo-display md-size tempo-colored"><span class="tempo-value"><span class="t-con">1</span><span class="t-dash">-</span><span class="t-hold">1</span><span class="t-dash">-</span><span class="t-ecc">3</span><span class="t-dash">-</span><span class="t-idle">0</span></span></div>`}
+        htmlContent={`<div class="tempo-display md-size tempo-colored"><span class="tempo-label">TEMPO</span><span class="tempo-value"><span class="t-con">1</span><span class="t-dash">-</span><span class="t-hold">1</span><span class="t-dash">-</span><span class="t-ecc">3</span><span class="t-dash">-</span><span class="t-idle">0</span></span></div>`}
       >
         <TempoDisplay tempo={[1, 1, 3, 0]} colored />
       </ComparisonPair>
@@ -980,7 +989,7 @@ function App() {
       <ComparisonPair
         testId="compare-tempo-mono-md"
         label="TempoDisplay mono md"
-        htmlContent={`<div class="tempo-display md-size"><span class="tempo-value mono">1-1-3-0</span></div>`}
+        htmlContent={`<div class="tempo-display md-size"><span class="tempo-label">TEMPO</span><span class="tempo-value mono">1-1-3-0</span></div>`}
       >
         <TempoDisplay tempo={[1, 1, 3, 0]} colored={false} />
       </ComparisonPair>
@@ -988,7 +997,7 @@ function App() {
       <ComparisonPair
         testId="compare-tempo-colored-sm"
         label="TempoDisplay colored sm"
-        htmlContent={`<div class="tempo-display sm-size tempo-colored"><span class="tempo-value"><span class="t-con">1</span><span class="t-dash">-</span><span class="t-hold">1</span><span class="t-dash">-</span><span class="t-ecc">3</span><span class="t-dash">-</span><span class="t-idle">0</span></span></div>`}
+        htmlContent={`<div class="tempo-display sm-size tempo-colored"><span class="tempo-label">TEMPO</span><span class="tempo-value"><span class="t-con">1</span><span class="t-dash">-</span><span class="t-hold">1</span><span class="t-dash">-</span><span class="t-ecc">3</span><span class="t-dash">-</span><span class="t-idle">0</span></span></div>`}
       >
         <TempoDisplay tempo={[1, 1, 3, 0]} size="sm" colored />
       </ComparisonPair>

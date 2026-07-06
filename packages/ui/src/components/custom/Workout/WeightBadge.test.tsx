@@ -75,10 +75,10 @@ describe('WeightBadge', () => {
       })
     })
 
-    it('uses brand-primary-subtle border color on PR state', () => {
+    it('uses a brand-primary border ring on PR state', () => {
       render(<WeightBadge value={315} isPr />)
       expect(screen.getByTestId('weight-badge')).toHaveStyle({
-        borderTopColor: 'rgba(255, 121, 0, 0.12)',
+        borderTopColor: 'rgba(255, 121, 0, 0.3)',
       })
     })
   })

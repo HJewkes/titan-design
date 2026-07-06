@@ -22,7 +22,7 @@ describe('BaseBadge', () => {
       </BaseBadge>,
     )
     expect(screen.getByTestId('bb')).toHaveStyle({
-      borderTopColor: 'rgba(255, 121, 0, 0.12)',
+      borderTopColor: 'rgba(255, 121, 0, 0.3)',
     })
   })
 
