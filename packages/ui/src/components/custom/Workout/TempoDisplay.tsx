@@ -2,6 +2,23 @@
 import { useState, useCallback } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { roundTempo } from '../../../utils/workout-format'
+import { alpha } from '../../../utils/colors'
+import { getTempoFillPct, getTempoPacingState } from './TempoBar'
+
+/** The four tempo phases, in the order the display renders them. */
+export type TempoLivePhase = 'eccentric' | 'pauseBottom' | 'concentric' | 'pauseTop'
+
+/**
+ * Live rep state driving the phase-fill overlay. Controlled by the consumer
+ * (matching titan's `elapsedMs`-in convention) so the same real timer feeds
+ * both web dashboard and native app — TempoDisplay owns rendering only.
+ */
+export interface TempoLiveState {
+  /** Phase currently in progress, or null when idle/at rest. */
+  activePhase: TempoLivePhase | null
+  /** Elapsed time (ms) within the active phase. */
+  phaseElapsedMs: number
+}
 
 export interface TempoDisplayProps extends ViewProps {
   /** Tempo values: [eccentric, pauseBottom, concentric, pauseTop] in seconds */
@@ -11,12 +28,19 @@ export interface TempoDisplayProps extends ViewProps {
   colored?: boolean
   /** Show info tooltip on press */
   showInfo?: boolean
+  /**
+   * When set, renders a live phase-fill: the active phase digit fills against
+   * its prescribed duration and inactive phases dim. Omit for the static
+   * prescription string (default, backward compatible).
+   */
+  live?: TempoLiveState
   onPress?: () => void
   className?: string
 }
 
 const INTER = 'Inter, sans-serif'
 const TEXT_TERTIARY = '#6B7280'
+const STATUS_ERROR = '#D14343' // status-error (red), shown when a phase runs behind pace
 
 // Phase colors: [eccentric, pauseBottom, concentric, pauseTop]
 const phaseColors = {
@@ -67,11 +91,84 @@ function TempoSeparator({ color, fontSize }: { color: string; fontSize: number }
   )
 }
 
+// Phase order + color matching the tempo tuple, for the live phase-fill row.
+const LIVE_PHASES: { key: TempoLivePhase; color: string }[] = [
+  { key: 'eccentric', color: phaseColors.eccentric },
+  { key: 'pauseBottom', color: phaseColors.pauseBottom },
+  { key: 'concentric', color: phaseColors.concentric },
+  { key: 'pauseTop', color: phaseColors.pauseTop },
+]
+
+function LiveTempoCell({
+  value,
+  color,
+  isActive,
+  phaseElapsedMs,
+  fontSize,
+}: {
+  value: number
+  color: string
+  isActive: boolean
+  phaseElapsedMs: number
+  fontSize: number
+}) {
+  if (!isActive) {
+    return <TempoValue value={value} color={alpha(color, 0.35)} fontSize={fontSize} />
+  }
+  const targetMs = value > 0 ? value * 1000 : null
+  const barColor = getTempoPacingState(phaseElapsedMs, targetMs) === 'behind' ? STATUS_ERROR : color
+  const fillPct = getTempoFillPct(phaseElapsedMs, targetMs)
+  return (
+    <View style={{ position: 'relative' }} testID="tempo-live-active">
+      <View
+        style={{
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          bottom: 0,
+          width: `${fillPct}%`,
+          backgroundColor: alpha(barColor, 0.3),
+          borderRadius: 2,
+        }}
+      />
+      <TempoValue value={value} color={barColor} fontSize={fontSize} />
+    </View>
+  )
+}
+
+function LiveTempoRow({
+  values,
+  live,
+  fontSize,
+}: {
+  values: [number, number, number, number]
+  live: TempoLiveState
+  fontSize: number
+}) {
+  return (
+    <>
+      {LIVE_PHASES.map((phase, i) => (
+        <View key={phase.key} style={{ flexDirection: 'row' }}>
+          {i > 0 && <TempoSeparator color={phaseColors.dash} fontSize={fontSize} />}
+          <LiveTempoCell
+            value={values[i]}
+            color={phase.color}
+            isActive={live.activePhase === phase.key}
+            phaseElapsedMs={live.phaseElapsedMs}
+            fontSize={fontSize}
+          />
+        </View>
+      ))}
+    </>
+  )
+}
+
 export function TempoDisplay({
   tempo,
   size = 'md',
   colored = true,
   showInfo = true,
+  live,
   onPress,
   className,
   ...props
@@ -119,7 +216,13 @@ export function TempoDisplay({
         TEMPO
       </Text>
       <View style={{ flexDirection: 'row' }} testID="tempo-value">
-        {colored ? (
+        {live ? (
+          <LiveTempoRow
+            values={[eccentric, pauseBottom, concentric, pauseTop]}
+            live={live}
+            fontSize={fontSize}
+          />
+        ) : colored ? (
           <>
             <TempoValue value={eccentric} color={phaseColors.eccentric} fontSize={fontSize} />
             <TempoSeparator color={phaseColors.dash} fontSize={fontSize} />

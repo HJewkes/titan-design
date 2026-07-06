@@ -80,6 +80,41 @@ describe('TempoDisplay', () => {
     })
   })
 
+  describe('live phase-fill', () => {
+    it('is inert by default (no active fill) for backward-compatible static use', () => {
+      render(<TempoDisplay tempo={[3, 1, 1, 0]} />)
+      expect(screen.queryByTestId('tempo-live-active')).not.toBeInTheDocument()
+    })
+
+    it('renders an active fill overlay for the in-progress phase when live', () => {
+      render(
+        <TempoDisplay
+          tempo={[3, 1, 1, 0]}
+          live={{ activePhase: 'eccentric', phaseElapsedMs: 1500 }}
+        />
+      )
+      expect(screen.getByTestId('tempo-live-active')).toBeInTheDocument()
+      expect(screen.getByText('3')).toBeInTheDocument()
+    })
+
+    it('marks no phase active when idle (activePhase null)', () => {
+      render(<TempoDisplay tempo={[3, 1, 1, 0]} live={{ activePhase: null, phaseElapsedMs: 0 }} />)
+      expect(screen.queryByTestId('tempo-live-active')).not.toBeInTheDocument()
+    })
+
+    it('still renders all four phase digits in live mode', () => {
+      render(
+        <TempoDisplay
+          tempo={[4, 3, 2, 1]}
+          live={{ activePhase: 'concentric', phaseElapsedMs: 500 }}
+        />
+      )
+      for (const digit of ['4', '3', '2', '1']) {
+        expect(screen.getByText(digit)).toBeInTheDocument()
+      }
+    })
+  })
+
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const { container } = render(<TempoDisplay tempo={[3, 1, 1, 0]} />)
