@@ -408,11 +408,9 @@ test.describe('HTML vs React Component Comparison', () => {
     )
   })
 
-  // QUARANTINED (test.fixme) pending TD-04.13: not a component regression — the
-  // compact badge intentionally renders a Lucide SVG <Star> (per PrBadge.test.tsx),
-  // but the GT still emits a text ★ glyph, so the harness measures the SVG
-  // container as text and mismatches. Resolve by rendering an SVG star in the GT.
-  test.fixme('PrBadge compact', async ({ page }) => {
+  // TD-04.13 resolved: the GT now emits an inline orange <Star> SVG (14px, #FF7900)
+  // to match the component's Lucide <Star>, so the compact badge reaches parity.
+  test('PrBadge compact', async ({ page }) => {
     await assertStyleMatch(
       page, 'compare-pr-badge-compact',
       '.pr-badge-compact', '[data-testid="pr-badge-star"]',
