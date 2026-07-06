@@ -33,7 +33,7 @@ const variantColors: Record<
   plain: { backgroundColor: '#1C1C1C', borderColor: '#1F1F1F' },
   pr: {
     backgroundColor: 'rgba(255, 121, 0, 0.12)',
-    borderColor: 'rgba(255, 121, 0, 0.12)',
+    borderColor: 'rgba(255, 121, 0, 0.3)',
   },
 }
 

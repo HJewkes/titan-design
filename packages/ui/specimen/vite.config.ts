@@ -49,6 +49,11 @@ export default defineConfig({
     exclude: ['react-native-svg', 'react-native-body-highlighter'],
     esbuildOptions: {
       resolveExtensions: webResolveExtensions,
+      // nativewind (titan >=0.4 ThemeProvider) pulls react-native-css-interop,
+      // whose `dist/doctor.js` ships JSX in a `.js` file. esbuild's dep
+      // pre-bundler defaults `.js` to the plain `js` loader and fails to parse
+      // it; parse `.js` as JSX so the interop runtime pre-bundles cleanly.
+      loader: { '.js': 'jsx' },
       plugins: [reactNativeSvgWebResolverEsbuild()],
     },
   },
