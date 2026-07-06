@@ -37,12 +37,12 @@ describe('WeekRow', () => {
 
     it('passes the threshold through to the intensity bar', () => {
       render(<WeekRow {...baseProps} intensityThreshold={0.8} />)
-      expect(screen.getByTestId('intensity-threshold')).toBeInTheDocument()
+      expect(screen.getByTestId('intensity-target')).toBeInTheDocument()
     })
 
     it('omits the threshold line when not provided', () => {
       render(<WeekRow {...baseProps} />)
-      expect(screen.queryByTestId('intensity-threshold')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('intensity-target')).not.toBeInTheDocument()
     })
   })
 
