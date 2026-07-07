@@ -51,6 +51,15 @@ export const semanticColorsLight = {
   'status-error-dark': p.red[700],           // #922E2E
   'status-error-subtle': p.red[50],
 
+  'status-success-vivid': p.greenVivid[500], // #2ED573 - vivid live/go green
+  'status-success-vivid-light': p.greenVivid[400],
+  'status-success-vivid-dark': p.greenVivid[700],
+  'status-success-vivid-subtle': 'rgba(46, 213, 115, 0.12)',
+  'status-error-vivid': p.redVivid[500],     // #FF4757 - vivid alert red
+  'status-error-vivid-light': p.redVivid[400],
+  'status-error-vivid-dark': p.redVivid[700],
+  'status-error-vivid-subtle': 'rgba(255, 71, 87, 0.12)',
+
   'status-warning': p.amber[500],            // #FFB020
   'status-warning-light': p.amber[400],      // #FFBF4C
   'status-warning-dark': p.amber[600],       // #B27B16
@@ -121,6 +130,7 @@ export const semanticColorsLight = {
   'border-default': '#E8E9EB',
   'border-subtle': p.neutral[100],
   'border-strong': p.neutral[300],
+  'border-prominent': p.neutral[400],        // #9CA3AF - high-visibility divider
   'border-focus': p.blue[600],
   'border-input': p.neutral[300],             // Input field border
   'border-input-hover': p.neutral[400],       // Input field border on hover
@@ -174,6 +184,15 @@ export const semanticColorsDark = {
   'status-error-light': p.red[400],
   'status-error-dark': p.red[700],
   'status-error-subtle': 'rgba(209, 67, 67, 0.12)',
+
+  'status-success-vivid': p.greenVivid[500],
+  'status-success-vivid-light': p.greenVivid[400],
+  'status-success-vivid-dark': p.greenVivid[700],
+  'status-success-vivid-subtle': 'rgba(46, 213, 115, 0.12)',
+  'status-error-vivid': p.redVivid[500],
+  'status-error-vivid-light': p.redVivid[400],
+  'status-error-vivid-dark': p.redVivid[700],
+  'status-error-vivid-subtle': 'rgba(255, 71, 87, 0.12)',
 
   'status-warning': p.amber[500],
   'status-warning-light': p.amber[400],
@@ -244,6 +263,7 @@ export const semanticColorsDark = {
   'border-default': p.charcoal[400],       // #1F1F1F - default border
   'border-subtle': p.charcoal[500],        // #1C1C1C - subtle border
   'border-strong': p.charcoal[300],        // #2C2C2C - strong border
+  'border-prominent': p.charcoal[200],     // #3C3C3C - high-visibility divider
   'border-focus': '#828DF8',
   'border-input': p.neutral[600],
   'border-input-hover': p.neutral[500],

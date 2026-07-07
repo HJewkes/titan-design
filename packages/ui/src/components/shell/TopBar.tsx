@@ -53,6 +53,13 @@ export function TopBar({
   return (
     <View
       onLayout={onLayout}
+      // subtle dark gradient between theme surface tokens (web); solid bg-surface-elevated is the native fallback
+      style={
+        {
+          backgroundImage:
+            'linear-gradient(180deg, var(--color-surface-elevated), var(--color-background-base))',
+        } as object
+      }
       className={cn(
         'h-[46px] flex-row items-center gap-[14px] px-4 bg-surface-elevated border-b border-border',
         className
@@ -63,11 +70,11 @@ export function TopBar({
       {/* right cluster — order: state · device · time (time pinned to the edge) */}
       <View className="ml-auto flex-row items-center gap-[12px]">
         <SessionStatePill state={state} />
-        <Divider orientation="vertical" className="h-4" />
+        <Divider orientation="vertical" className="h-4 bg-border-prominent" />
         <DeviceMenu devices={devices} onSelectDevice={onSelectDevice} />
         {clockVisible ? (
           <>
-            <Divider orientation="vertical" className="h-4" />
+            <Divider orientation="vertical" className="h-4 bg-border-prominent" />
             <Text className="font-mono text-[11px] text-text-secondary min-w-[38px] text-right">
               {time}
             </Text>

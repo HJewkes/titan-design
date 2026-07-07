@@ -17,11 +17,11 @@ export interface DeviceIndicatorProps extends ViewProps {
   className?: string
 }
 
-// currentColor drives the stroke → color the wrapper's text token by state.
+// currentColor drives the stroke → color the wrapper's text token by state (vivid, matches LIVE).
 const statusTextClass: Record<DeviceConnState, string> = {
-  connected: 'text-status-success',
+  connected: 'text-status-success-vivid',
   degraded: 'text-status-warning',
-  lost: 'text-status-error',
+  lost: 'text-status-error-vivid',
 }
 
 /**

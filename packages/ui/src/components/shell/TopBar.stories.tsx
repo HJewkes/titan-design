@@ -59,6 +59,86 @@ export const Responsive: Story = {
   ),
 }
 
+/* ── HTML reference (the pre-titan specimen) for the parity comparison ───────── */
+const REF_CSS = `
+.s1ref *{box-sizing:border-box}
+.s1ref .bar{height:46px;display:flex;align-items:center;gap:14px;padding:0 16px;
+  background:linear-gradient(180deg,#141519,#101113);border-bottom:1px solid #212429;border-radius:7px;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.s1ref .brand{font-weight:800;letter-spacing:1.5px;font-size:12px;color:#e9eaec;display:flex;align-items:center;gap:7px}
+.s1ref .brand .mk{color:#ff7900;font-size:14px}
+.s1ref .brand .dim{font-weight:600;letter-spacing:.4px;color:#5f646c;font-size:10px}
+.s1ref .cluster{display:flex;align-items:center;gap:12px;margin-left:auto;font-family:ui-monospace,Menlo,monospace;font-size:11px}
+.s1ref .div{width:1px;height:16px;background:#3a3e45}
+.s1ref .state{display:flex;align-items:center;gap:8px;font-weight:700;letter-spacing:.5px;color:#e9eaec}
+.s1ref .state.idle{color:#9aa0a8;font-weight:600}
+.s1ref .dot{width:8px;height:8px;border-radius:50%}
+.s1ref .dot.green{background:#2ed573;box-shadow:0 0 0 0 rgba(46,213,115,.6);animation:s1pulse 1.6s infinite}
+.s1ref .dot.amber{background:#ffa502}
+.s1ref .dot.off{background:#5f646c}
+@keyframes s1pulse{0%{box-shadow:0 0 0 0 rgba(46,213,115,.55)}70%{box-shadow:0 0 0 7px rgba(46,213,115,0)}100%{box-shadow:0 0 0 0 rgba(46,213,115,0)}}
+.s1ref .dev{display:flex;align-items:center;justify-content:center;width:26px;height:28px;color:#2ed573}
+.s1ref .dev.lost{color:#ff4757}
+.s1ref .dev svg{width:18px;height:18px}
+.s1ref .clock{color:#9aa0a8;min-width:38px;text-align:right}
+`
+const BT = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7 17 17 12 22 12 2 17 7 7 17"/></svg>`
+function htmlBar(opts: {
+  dotClass: string
+  label: string
+  labelIdle?: boolean
+  devLost?: boolean
+  time: string
+}) {
+  return `<div class="bar"><div class="brand"><span class="mk">◇</span> VOLTRAS <span class="dim">/ wall dashboard</span></div>
+  <div class="cluster"><div class="state${opts.labelIdle ? ' idle' : ''}"><span class="dot ${opts.dotClass}"></span>${opts.label}</div>
+  <div class="div"></div><div class="dev${opts.devLost ? ' lost' : ''}">${BT}</div><div class="div"></div><div class="clock">${opts.time}</div></div></div>`
+}
+
+/** HTML reference (top) vs titan React (bottom), per state — the parity check. */
+export const Comparison: Story = {
+  render: () => (
+    <div style={{ background: '#101010', padding: 12 }}>
+      <style>{REF_CSS}</style>
+      {[
+        {
+          html: { dotClass: 'green', label: 'LIVE', time: '16:12' },
+          titan: { state: 'live' as const },
+        },
+        {
+          html: { dotClass: 'amber', label: 'REST', time: '16:14' },
+          titan: { state: 'rest' as const },
+        },
+        {
+          html: { dotClass: 'off', label: 'IDLE', labelIdle: true, time: '16:31' },
+          titan: { state: 'idle' as const },
+        },
+        {
+          html: { dotClass: 'green', label: 'LIVE', devLost: true, time: '16:12' },
+          titan: { state: 'live' as const, lost: true },
+        },
+      ].map((row, i) => (
+        <div key={i} style={{ marginBottom: 22 }}>
+          <div style={{ fontFamily: 'monospace', fontSize: 10, color: '#6B7280', marginBottom: 4 }}>
+            HTML reference ↓
+          </div>
+          <div className="s1ref" dangerouslySetInnerHTML={{ __html: htmlBar(row.html) }} />
+          <div
+            style={{ fontFamily: 'monospace', fontSize: 10, color: '#FF7900', margin: '6px 0 4px' }}
+          >
+            titan React ↓
+          </div>
+          <TopBar
+            state={row.titan.state}
+            devices={row.titan.lost ? DEVICES_LOST : DEVICES}
+            time={row.html.time}
+          />
+        </div>
+      ))}
+    </div>
+  ),
+}
+
 /** The sub-components S1 decomposes into (each shippable on its own). */
 export const Parts: Story = {
   render: () => (

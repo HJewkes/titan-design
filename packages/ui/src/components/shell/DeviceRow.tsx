@@ -23,10 +23,10 @@ export interface DeviceRowProps extends ViewProps {
 }
 
 const stateColor: Record<DeviceRowState, IndicatorColor> = {
-  connected: 'success',
+  connected: 'success-vivid',
   available: 'info',
   degraded: 'warning',
-  lost: 'error',
+  lost: 'error-vivid',
 }
 const stateLabel: Record<DeviceRowState, string> = {
   connected: 'connected',
@@ -35,10 +35,10 @@ const stateLabel: Record<DeviceRowState, string> = {
   lost: 'lost',
 }
 const stateTextClass: Record<DeviceRowState, string> = {
-  connected: 'text-status-success',
+  connected: 'text-status-success-vivid',
   available: 'text-status-info',
   degraded: 'text-status-warning',
-  lost: 'text-status-error',
+  lost: 'text-status-error-vivid',
 }
 
 /**

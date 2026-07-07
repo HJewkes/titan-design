@@ -78,15 +78,33 @@ export const CustomColor: Story = {
 
 export const Pulse: Story = {
   render: () => (
-    <View className="flex-row gap-4 items-center">
+    <View className="flex-row gap-6 items-center">
       <Indicator size="md" color="success" pulse />
+      <Indicator size="md" color="success-vivid" pulse="ping" />
       <Indicator size="md" color="warning" />
       <Indicator size="md" color="default" />
     </View>
   ),
   parameters: {
     docs: {
-      description: { story: 'Live/active status pulses (opacity); rest is solid; idle is dim.' },
+      description: {
+        story:
+          'Opacity pulse (default), expanding-ring pulse (`pulse="ping"`, vivid green for live), solid, dim.',
+      },
     },
+  },
+}
+
+export const Vivid: Story = {
+  render: () => (
+    <View className="flex-row gap-4 items-center">
+      <Indicator size="md" color="success" />
+      <Indicator size="md" color="success-vivid" />
+      <Indicator size="md" color="error" />
+      <Indicator size="md" color="error-vivid" />
+    </View>
+  ),
+  parameters: {
+    docs: { description: { story: 'Standard status vs the vivid palette (success/error).' } },
   },
 }

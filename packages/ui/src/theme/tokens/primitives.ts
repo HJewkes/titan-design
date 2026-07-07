@@ -62,6 +62,34 @@ export const primitiveColors = {
     900: '#7F1D1D',
   },
 
+  // Vivid green scale (live/go success)
+  greenVivid: {
+    50: '#E9FBF0',
+    100: '#C8F7DA',
+    200: '#9FF0BF',
+    300: '#6BE79D',
+    400: '#47DE84', // Success vivid light
+    500: '#2ED573', // Success vivid main
+    600: '#22B85F',
+    700: '#1A9950', // Success vivid dark
+    800: '#157A40',
+    900: '#105C30',
+  },
+
+  // Vivid red scale (alert)
+  redVivid: {
+    50: '#FFECEE',
+    100: '#FFD6DB',
+    200: '#FFB3BC',
+    300: '#FF8593',
+    400: '#FF6070', // Error vivid light
+    500: '#FF4757', // Error vivid main
+    600: '#E63548',
+    700: '#C42539', // Error vivid dark
+    800: '#9E1C2C',
+    900: '#7A1520',
+  },
+
   // Amber scale (warning)
   amber: {
     50: '#FFFBEB',

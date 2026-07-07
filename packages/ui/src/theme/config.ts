@@ -16,7 +16,9 @@ const themeIndependentCSSVars = {
   '--color-brand-primary-rgb': '255, 121, 0',
   '--color-brand-secondary-rgb': '64, 109, 135',
   '--color-status-success-rgb': '20, 184, 166',
+  '--color-status-success-vivid-rgb': '46, 213, 115',
   '--color-status-error-rgb': '209, 67, 67',
+  '--color-status-error-vivid-rgb': '255, 71, 87',
   '--color-status-warning-rgb': '255, 176, 32',
   '--color-status-info-rgb': '33, 150, 243',
   '--color-background-base-rgb': '16, 16, 16',
@@ -59,6 +61,15 @@ export const lightThemeCSSVars = {
   '--color-status-info': semanticColorsLight['status-info'],
   '--color-status-info-subtle': semanticColorsLight['status-info-subtle'],
 
+  '--color-status-success-vivid': semanticColorsLight['status-success-vivid'],
+  '--color-status-success-vivid-light': semanticColorsLight['status-success-vivid-light'],
+  '--color-status-success-vivid-dark': semanticColorsLight['status-success-vivid-dark'],
+  '--color-status-success-vivid-subtle': semanticColorsLight['status-success-vivid-subtle'],
+  '--color-status-error-vivid': semanticColorsLight['status-error-vivid'],
+  '--color-status-error-vivid-light': semanticColorsLight['status-error-vivid-light'],
+  '--color-status-error-vivid-dark': semanticColorsLight['status-error-vivid-dark'],
+  '--color-status-error-vivid-subtle': semanticColorsLight['status-error-vivid-subtle'],
+
   '--color-text-primary': semanticColorsLight['text-primary'],
   '--color-text-secondary': semanticColorsLight['text-secondary'],
   '--color-text-tertiary': semanticColorsLight['text-tertiary'],
@@ -77,6 +88,7 @@ export const lightThemeCSSVars = {
   '--color-border-default': semanticColorsLight['border-default'],
   '--color-border-subtle': semanticColorsLight['border-subtle'],
   '--color-border-strong': semanticColorsLight['border-strong'],
+  '--color-border-prominent': semanticColorsLight['border-prominent'],
   '--color-border-focus': semanticColorsLight['border-focus'],
 
   '--color-interactive-hover': semanticColorsLight['interactive-hover'],
@@ -172,6 +184,15 @@ export const darkThemeCSSVars = {
   '--color-status-info': semanticColorsDark['status-info'],
   '--color-status-info-subtle': semanticColorsDark['status-info-subtle'],
 
+  '--color-status-success-vivid': semanticColorsDark['status-success-vivid'],
+  '--color-status-success-vivid-light': semanticColorsDark['status-success-vivid-light'],
+  '--color-status-success-vivid-dark': semanticColorsDark['status-success-vivid-dark'],
+  '--color-status-success-vivid-subtle': semanticColorsDark['status-success-vivid-subtle'],
+  '--color-status-error-vivid': semanticColorsDark['status-error-vivid'],
+  '--color-status-error-vivid-light': semanticColorsDark['status-error-vivid-light'],
+  '--color-status-error-vivid-dark': semanticColorsDark['status-error-vivid-dark'],
+  '--color-status-error-vivid-subtle': semanticColorsDark['status-error-vivid-subtle'],
+
   '--color-text-primary': semanticColorsDark['text-primary'],
   '--color-text-secondary': semanticColorsDark['text-secondary'],
   '--color-text-tertiary': semanticColorsDark['text-tertiary'],
@@ -190,6 +211,7 @@ export const darkThemeCSSVars = {
   '--color-border-default': semanticColorsDark['border-default'],
   '--color-border-subtle': semanticColorsDark['border-subtle'],
   '--color-border-strong': semanticColorsDark['border-strong'],
+  '--color-border-prominent': semanticColorsDark['border-prominent'],
   '--color-border-focus': semanticColorsDark['border-focus'],
 
   '--color-interactive-hover': semanticColorsDark['interactive-hover'],
