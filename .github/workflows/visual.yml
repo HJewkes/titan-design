@@ -37,6 +37,24 @@ jobs:
       - name: Layer 1 — component screenshot baselines
         run: pnpm --filter @titan-design/react-ui test:visual:baseline
 
+      # Layer 2 — Storybook story baselines (shell + icons; clock-frozen so
+      # live/animated stories are deterministic).
+      #
+      # BOOTSTRAP: baselines aren't committed yet (they must be generated in
+      # THIS pinned container to match byte-for-byte). This step generates them
+      # and uploads them as the `storybook-visual-baselines` artifact. To turn on
+      # the gate: download the artifact, commit its *-chromium-linux.png under
+      # packages/ui/tests/visual/reference/stories.spec.ts-snapshots/, then change
+      # `test:visual:stories:update` below to the gate `test:visual:stories`.
+      - name: Layer 2 — Storybook story baselines (seed)
+        run: pnpm --filter @titan-design/react-ui test:visual:stories:update
+      - name: Upload seeded Storybook baselines
+        uses: actions/upload-artifact@v4
+        with:
+          name: storybook-visual-baselines
+          path: packages/ui/tests/visual/reference/stories.spec.ts-snapshots/
+          retention-days: 7
+
       - name: Upload Playwright report on failure
         if: failure()
         uses: actions/upload-artifact@v4

@@ -68,6 +68,17 @@ Every leaf now composes a primitive rather than hand-rolling it:
 | chrome gradient | `surfaceGradient.chrome` | inline `linear-gradient` strings |
 | colors | semantic tokens (vivid palette) | magic hex |
 
+## Testing
+
+- **Unit** — every component + primitive has a `*.test.tsx` (render, behavior, a11y); shell branch coverage ≈96%.
+- **Visual** — `tests/visual/stories.spec.ts` screenshots the `Shell/*` + `Icons` stories via Playwright
+  (`toHaveScreenshot`), clock-frozen + animations-disabled so the live-clock/animated stories are
+  deterministic. Widen `SCOPE` to cover more of the library. **Baselines must be generated in the pinned
+  container** (`mcr.microsoft.com/playwright:v1.58.2-noble`) — the `visual.yml` "Layer 2" step seeds them as
+  an artifact; commit the `*-chromium-linux.png` and flip the step to the `test:visual:stories` gate.
+- **Lint guardrails** — components may not inline `linear-gradient` (use `surfaceGradient`); shell + icons may
+  not use raw hex (use tokens).
+
 **Watch-list (known gaps to close as we go):**
 - **Dot primitive overlap** — titan has both `StatusDot` (Workout, semantic) and `Indicator` (ui, generic).
   The shell standardizes on `Indicator`; a future pass could consolidate.
