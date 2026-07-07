@@ -91,5 +91,40 @@ module.exports = tseslint.config(
         },
       ],
     },
+  },
+
+  // Stricter token discipline for the newer, token-pure families (shell + icons).
+  // A codebase-wide hex→token migration is a separate effort; scoping here keeps
+  // this guardrail actionable (0 warnings today) instead of burying 140+ legacy hits.
+  {
+    files: ['src/components/shell/**/*.{ts,tsx}', 'src/components/icons/**/*.{ts,tsx}'],
+    ignores: ['**/*.stories.tsx', '**/*.test.tsx'],
+    rules: {
+      // Flat config replaces (not merges) this rule per file, so repeat the
+      // gradient selectors here alongside the shell/icons-only hex ones.
+      'no-restricted-syntax': [
+        'warn',
+        {
+          selector: 'Literal[value=/linear-gradient/]',
+          message:
+            'Use surfaceGradient / linearGradient from theme/gradients instead of an inline linear-gradient string.',
+        },
+        {
+          selector: 'TemplateElement[value.raw=/linear-gradient/]',
+          message:
+            'Use surfaceGradient / linearGradient from theme/gradients instead of an inline linear-gradient string.',
+        },
+        {
+          selector: 'Literal[value=/#[0-9a-fA-F]{3,8}\\b/]',
+          message:
+            'Avoid raw hex colors — use a semantic token (className `bg-*`/`text-*`, or `resolveColor(token)` for inline styles).',
+        },
+        {
+          selector: 'TemplateElement[value.raw=/#[0-9a-fA-F]{3,8}\\b/]',
+          message:
+            'Avoid raw hex colors — use a semantic token (className `bg-*`/`text-*`, or `resolveColor(token)` for inline styles).',
+        },
+      ],
+    },
   }
 )
