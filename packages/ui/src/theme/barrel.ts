@@ -12,6 +12,7 @@ export * from './shadows'
 export * from './elevation'
 export * from './manifest'
 export { resolveColor } from './resolve-color'
+export { linearGradient, surfaceGradient, type GradientStyle } from './gradients'
 
 // ThemeProvider TYPES may stay on the root (erased at build — no nativewind
 // pull). Only the ThemeProvider VALUE moves to the `/theme` subpath.

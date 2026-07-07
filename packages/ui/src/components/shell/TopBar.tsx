@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { View, type LayoutChangeEvent } from 'react-native'
 import { cn } from '../../utils/cn'
+import { surfaceGradient } from '../../theme/gradients'
 import { Divider } from '../ui/divider'
 import { DateTime } from '../custom/DateTime'
 import { BrandLockup } from './BrandLockup'
@@ -54,13 +55,8 @@ export function TopBar({
   return (
     <View
       onLayout={onLayout}
-      // subtle dark gradient between theme surface tokens (web); solid bg-surface-elevated is the native fallback
-      style={
-        {
-          backgroundImage:
-            'linear-gradient(180deg, var(--color-surface-elevated), var(--color-background-base))',
-        } as object
-      }
+      // shared chrome gradient (web); solid bg-surface-elevated is the native fallback
+      style={surfaceGradient.chrome() as object}
       className={cn(
         'h-[46px] flex-row items-center gap-[14px] px-4 bg-surface-elevated border-b border-border',
         className

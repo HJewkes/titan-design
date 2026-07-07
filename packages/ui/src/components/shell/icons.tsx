@@ -14,6 +14,33 @@ export interface ShellIconProps {
 }
 
 /**
+ * Voltras brand mark — the ◇ diamond. Outline by default (matches the U+25C7
+ * glyph it replaces); pass `fill` for a solid mark. Inherits `currentColor`.
+ */
+export function VoltrasMark({
+  size = 14,
+  color = 'currentColor',
+  strokeWidth = 2,
+  title,
+}: ShellIconProps & { fill?: string }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth={strokeWidth}
+      strokeLinejoin="round"
+      {...(title ? { role: 'img', 'aria-label': title } : { 'aria-hidden': true })}
+    >
+      {title ? <title>{title}</title> : null}
+      <path d="M12 2 22 12 12 22 2 12Z" />
+    </svg>
+  )
+}
+
+/**
  * Bluetooth glyph (stroked). Inherits `currentColor` by default so a wrapper's
  * text-color token (e.g. `text-status-success`) drives the connection-state color.
  */

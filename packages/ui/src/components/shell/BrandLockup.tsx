@@ -1,5 +1,7 @@
-import { View, Text, type ViewProps } from 'react-native'
+import { View, type ViewProps } from 'react-native'
 import { cn } from '../../utils/cn'
+import { Typography } from '../custom/Typography'
+import { VoltrasMark } from './icons'
 
 export interface BrandLockupProps extends ViewProps {
   /** The "/ subtitle" that follows the wordmark. Default "wall dashboard". */
@@ -11,7 +13,7 @@ export interface BrandLockupProps extends ViewProps {
 
 /**
  * Product identity lockup for the top bar: ◇ mark + VOLTRAS wordmark + optional
- * subtitle. Bespoke brand molecule (S1 · BrandLockup).
+ * subtitle. Composes the VoltrasMark icon + Typography. S1 · BrandLockup.
  */
 export function BrandLockup({
   subtitle = 'wall dashboard',
@@ -21,12 +23,24 @@ export function BrandLockup({
 }: BrandLockupProps) {
   return (
     <View className={cn('flex-row items-center gap-[7px]', className)} {...props}>
-      <Text className="text-brand-primary text-[14px]">◇</Text>
-      <Text className="text-text-primary font-extrabold text-[12px] tracking-[1.5px]">VOLTRAS</Text>
+      <View className="text-brand-primary">
+        <VoltrasMark size={14} color="currentColor" />
+      </View>
+      <Typography
+        variant="button"
+        color="primary"
+        className="text-[12px] font-extrabold tracking-[1.5px]"
+      >
+        VOLTRAS
+      </Typography>
       {showSubtitle && subtitle ? (
-        <Text className="text-text-tertiary font-semibold text-[10px] tracking-[0.4px]">
+        <Typography
+          variant="button"
+          color="tertiary"
+          className="text-[10px] font-semibold tracking-[0.4px]"
+        >
           / {subtitle}
-        </Text>
+        </Typography>
       ) : null}
     </View>
   )

@@ -21,9 +21,24 @@ const DEVICES_LOST: Device[] = [
 const FIXED_TIME = new Date(2024, 0, 1, 16, 12)
 
 const meta: Meta<typeof TopBar> = {
-  title: 'Shell/TopBar',
+  title: 'Shell/Organisms/TopBar',
   component: TopBar,
-  parameters: { layout: 'fullscreen' },
+  tags: ['autodocs'],
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: {
+        component:
+          '**Organism** — the persistent shell chrome band. Composes ' +
+          '[BrandLockup](?path=/docs/shell-molecules-brandlockup--docs) + ' +
+          '[SessionStatePill](?path=/docs/shell-molecules-sessionstatepill--docs) + ' +
+          '[Divider](?path=/docs/components-divider--docs) (`bg-border-prominent`) + ' +
+          '[DeviceMenu](?path=/docs/shell-organisms-devicemenu--docs) + ' +
+          '[DateTime](?path=/docs/custom-datetime--docs) (`variant="mono"` live clock). ' +
+          'Background = the shared `surfaceGradient.chrome` gradient primitive; container-responsive via onLayout (SIZE-D01).',
+      },
+    },
+  },
 }
 export default meta
 type Story = StoryObj<typeof TopBar>
