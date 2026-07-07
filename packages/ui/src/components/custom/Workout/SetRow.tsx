@@ -1,6 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, Text } from 'react-native'
-import { VelocityStrip } from './VelocityStrip'
+import { VelocityStrip, type VelocityZoneBandProp } from './VelocityStrip'
 import { PrBadge, type PRType } from './PrBadge'
 import { roundRpe, rpeColor, roundWeight } from '../../../utils/workout-format'
 
@@ -14,7 +14,12 @@ export interface SetRowProps {
   weight: number | null
   rpe?: number | null
   unit: 'lbs' | 'kg'
+  /** Per-rep MEAN concentric velocities (m/s). */
   velocities?: number[]
+  /** Optional velocity-zone bands (WA `VelocityZones.bands`); default scale when absent. */
+  velocityZones?: readonly VelocityZoneBandProp[]
+  /** Live mode: index of the newest rep bar to animate (pop / new-peak bounce). */
+  velocityLiveRepIndex?: number
   velocityExpanded?: boolean
   onVelocityToggle?: () => void
   setType?: string
@@ -43,6 +48,8 @@ export function SetRow({
   rpe,
   unit,
   velocities,
+  velocityZones,
+  velocityLiveRepIndex,
   velocityExpanded,
   onVelocityToggle,
   setType,
@@ -239,6 +246,8 @@ export function SetRow({
         >
           <VelocityStrip
             velocities={velocities}
+            zones={velocityZones}
+            liveRepIndex={velocityLiveRepIndex}
             expanded={velocityExpanded}
             onToggle={onVelocityToggle}
             variant={onVelocityToggle ? 'full' : 'mini'}
