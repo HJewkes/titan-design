@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import React from 'react'
 import { View, Text } from 'react-native'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 export interface SupersetWrapperProps {
   label?: string
@@ -10,7 +11,7 @@ export interface SupersetWrapperProps {
 
 const DEFAULTS = {
   label: 'SS',
-  color: '#FF7900',
+  color: getSemanticColors('dark')['brand-primary'],
   bgBase: '#101010',
 } as const
 

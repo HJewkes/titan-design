@@ -3,7 +3,10 @@ import { useState, useCallback } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { roundTempo } from '../../../utils/workout-format'
 import { alpha } from '../../../utils/colors'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { getTempoFillPct, getTempoPacingState } from './TempoBar'
+
+const t = getSemanticColors('dark')
 
 /** The four tempo phases, in the order the display renders them. */
 export type TempoLivePhase = 'eccentric' | 'pauseBottom' | 'concentric' | 'pauseTop'
@@ -40,13 +43,13 @@ export interface TempoDisplayProps extends ViewProps {
 
 const INTER = 'Inter, sans-serif'
 const TEXT_TERTIARY = '#6B7280'
-const STATUS_ERROR = '#D14343' // status-error (red), shown when a phase runs behind pace
+const STATUS_ERROR = t['status-error'] // status-error (red), shown when a phase runs behind pace
 
 // Phase colors: [eccentric, pauseBottom, concentric, pauseTop]
 const phaseColors = {
-  eccentric: '#FFB020', // status-warning (amber)
+  eccentric: t['status-warning'], // status-warning (amber)
   pauseBottom: TEXT_TERTIARY,
-  concentric: '#14B8A6', // status-success (teal)
+  concentric: t['status-success'], // status-success (teal)
   pauseTop: TEXT_TERTIARY,
   dash: TEXT_TERTIARY,
 }

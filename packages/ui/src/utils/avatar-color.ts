@@ -1,6 +1,6 @@
-const AVATAR_COLORS = [
-  '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8'
-]
+import { AVATAR_CATEGORICAL_COLORS } from '../theme/extracted-colors-ui'
+
+const AVATAR_COLORS = AVATAR_CATEGORICAL_COLORS
 
 export function avatarColor(name: string): string {
   let hash = 0

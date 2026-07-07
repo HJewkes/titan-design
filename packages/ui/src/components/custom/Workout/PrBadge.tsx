@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react'
 import { View, Text, Animated, Easing, type ViewProps } from 'react-native'
 import { StarIcon } from './icons'
 import { BaseBadge } from './BaseBadge'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+
+const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
 
 export type PRType = 'e1rm' | 'weight' | 'reps' | 'volume' | 'velocity'
 
@@ -66,7 +69,7 @@ export function PrBadge({
       testID="pr-badge-star"
       {...props}
     >
-      <StarIcon size={14} color="#FF7900" fill="#FF7900" strokeWidth={2} />
+      <StarIcon size={14} color={BRAND_PRIMARY} fill={BRAND_PRIMARY} strokeWidth={2} />
     </View>
   ) : (
     <BaseBadge
@@ -78,7 +81,7 @@ export function PrBadge({
       <Text
         style={{
           fontSize: 12,
-          color: '#FF7900',
+          color: BRAND_PRIMARY,
           fontWeight: '700',
           fontFamily: 'Inter, sans-serif',
         }}

@@ -3,14 +3,17 @@ import { useEffect, useMemo, useState } from 'react'
 import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { resolveColor } from '../../../theme/resolve-color'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
-const BRAND_PRIMARY = '#FF7900'
+const sem = getSemanticColors('dark')
+
+const BRAND_PRIMARY = sem['brand-primary']
 // Line/border color for the dashed projection, used where a className cannot
 // apply (passed as a prop into an inline style, and a per-edge borderTopColor).
 const PROJECTION_LINE_COLOR = resolveColor('text-tertiary')
-const STATUS_SUCCESS = '#14B8A6'
-const STATUS_ERROR = '#D14343'
-const STATUS_WARNING = '#FFB020'
+const STATUS_SUCCESS = sem['status-success']
+const STATUS_ERROR = sem['status-error']
+const STATUS_WARNING = sem['status-warning']
 const GRID_LINE = 'rgba(255,255,255,0.06)'
 const SUCCESS_PILL_BG = 'rgba(20,184,166,0.10)'
 const SUCCESS_PILL_BORDER = 'rgba(20,184,166,0.20)'

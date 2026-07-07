@@ -2,12 +2,15 @@
 import { View, Text, Pressable } from 'react-native'
 import { Card } from '../../ui/card'
 import { Badge, type BadgeColor } from '../../ui/badge'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
-const BRAND_PRIMARY = '#FF7900'
+const t = getSemanticColors('dark')
+
+const BRAND_PRIMARY = t['brand-primary']
 const BRAND_PRIMARY_SUBTLE = 'rgba(255,121,0,0.12)'
-const STATUS_SUCCESS = '#14B8A6'
-const STATUS_WARNING = '#FFB020'
-const STATUS_ERROR = '#D14343'
+const STATUS_SUCCESS = t['status-success']
+const STATUS_WARNING = t['status-warning']
+const STATUS_ERROR = t['status-error']
 
 /** Emoji option sets per known factor, keyed by lowercase id/label. */
 const EMOJI_SETS: Record<string, readonly string[]> = {

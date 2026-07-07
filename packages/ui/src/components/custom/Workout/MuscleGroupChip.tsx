@@ -1,5 +1,8 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, Text, Pressable, type ViewProps } from 'react-native'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+
+const t = getSemanticColors('dark')
 
 // Aliases for spec compatibility: under=behind, maintenance=ontrack, productive=target
 export type VolumeStatus = 'untrained' | 'behind' | 'ontrack' | 'target' | 'over'
@@ -13,10 +16,10 @@ export interface MuscleGroupChipProps extends ViewProps {
 
 const dotColorMap: Record<VolumeStatus, string> = {
   untrained: '#2C2C2C',
-  behind: '#406D87',
-  ontrack: '#14B8A6',
-  target: '#FF7900',
-  over: '#D14343',
+  behind: t['brand-secondary'],
+  ontrack: t['status-success'],
+  target: t['brand-primary'],
+  over: t['status-error'],
 }
 
 export function MuscleGroupChip({

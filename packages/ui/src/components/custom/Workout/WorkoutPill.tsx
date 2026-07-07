@@ -1,6 +1,10 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useEffect, useState } from 'react'
 import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-native'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { WORKOUT_PILL_DELOAD } from '../../../theme/extracted-colors-dataviz'
+
+const t = getSemanticColors('dark')
 
 /**
  * Spec statuses: completed | current | upcoming | deload.
@@ -37,12 +41,12 @@ const statusBorderStyles: Record<WorkoutPillStatus, Record<string, unknown>> = {
 }
 
 const textColors: Record<WorkoutPillStatus, string> = {
-  completed: '#14B8A6',
-  current: '#FF7900',
-  next: '#FF7900',
+  completed: t['status-success'],
+  current: t['brand-primary'],
+  next: t['brand-primary'],
   upcoming: '#6B7280',
   missed: 'rgba(209,67,67,0.7)',
-  deload: '#9333ea',
+  deload: WORKOUT_PILL_DELOAD,
 }
 
 function usePulse(enabled: boolean) {

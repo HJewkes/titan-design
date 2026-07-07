@@ -1,8 +1,9 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useState } from 'react'
 import { View, Pressable, Animated, type ViewProps } from 'react-native'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
-const BRAND_PRIMARY = '#FF7900'
+const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
 
 export type MesoStatus = 'completed' | 'current' | 'upcoming'
 

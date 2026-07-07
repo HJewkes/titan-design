@@ -1,6 +1,7 @@
 import React from 'react'
 import { ActivityIndicator, View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { SPINNER_PRIMARY, SPINNER_SECONDARY } from '../../../theme/extracted-colors-ui'
 
 export type SpinnerSize = 'sm' | 'md' | 'lg' | 'xl'
 export type SpinnerColor = 'primary' | 'secondary' | 'white' | 'default'
@@ -24,8 +25,8 @@ const sizeMap: Record<SpinnerSize, 'small' | 'large'> = {
 }
 
 const colorMap: Record<SpinnerColor, string> = {
-  primary: '#5048E5',
-  secondary: '#10B981',
+  primary: SPINNER_PRIMARY,
+  secondary: SPINNER_SECONDARY,
   white: '#FFFFFF',
   default: '#6B7280',
 }

@@ -3,8 +3,9 @@ import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { StarIcon } from './icons'
 import { Drawer, DrawerBody } from '../../ui/drawer'
 import { resolveColor } from '../../../theme/resolve-color'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
-const BRAND_PRIMARY = '#FF7900'
+const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
 const RECENT_BORDER = 'rgba(255,176,32,0.3)'
 const RECENT_GLOW = '0 0 12px rgba(255,176,32,0.06)'
 // Native-safe fallback for the conditional row border (recent uses a computed
