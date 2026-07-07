@@ -1,6 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { Text } from 'react-native'
-import { Dumbbell } from 'lucide-react'
+import { DumbbellIcon } from './icons'
 import {
   BaseBadge,
   baseBadgeSizeConfig,
@@ -61,7 +61,7 @@ export function WeightBadge({
       className={className}
       icon={
         showIcon ? (
-          <Dumbbell size={config.iconSize} color={iconColor} strokeWidth={2} />
+          <DumbbellIcon size={config.iconSize} color={iconColor} strokeWidth={2} />
         ) : undefined
       }
       accessibilityLabel={fullLabel}

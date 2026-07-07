@@ -1,6 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, Text, Pressable, type ViewProps } from 'react-native'
-import { Star } from 'lucide-react'
+import { StarIcon } from './icons'
 import { Drawer, DrawerBody } from '../../ui/drawer'
 import { resolveColor } from '../../../theme/resolve-color'
 
@@ -84,7 +84,7 @@ function PrRecordRow({ record, index }: { record: PrRecord; index: number }) {
       }}
       testID={`pr-history-modal-record-${index}`}
     >
-      <Star size={16} color={BRAND_PRIMARY} fill={BRAND_PRIMARY} strokeWidth={2} />
+      <StarIcon size={16} color={BRAND_PRIMARY} fill={BRAND_PRIMARY} strokeWidth={2} />
       <Text
         className="text-text-secondary"
         style={{

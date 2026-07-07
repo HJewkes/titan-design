@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useEffect, useState } from 'react'
 import { View, Text, Animated, Easing, type ViewProps } from 'react-native'
-import { Star } from 'lucide-react'
+import { StarIcon } from './icons'
 import { BaseBadge } from './BaseBadge'
 
 export type PRType = 'e1rm' | 'weight' | 'reps' | 'volume' | 'velocity'
@@ -66,7 +66,7 @@ export function PrBadge({
       testID="pr-badge-star"
       {...props}
     >
-      <Star size={14} color="#FF7900" fill="#FF7900" strokeWidth={2} />
+      <StarIcon size={14} color="#FF7900" fill="#FF7900" strokeWidth={2} />
     </View>
   ) : (
     <BaseBadge

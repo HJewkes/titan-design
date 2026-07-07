@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
-import { Dumbbell } from 'lucide-react'
+import { DumbbellIcon } from './icons'
 import { BaseBadge } from './BaseBadge'
 
 const meta: Meta<typeof BaseBadge> = {
@@ -47,7 +47,7 @@ export const Pr: Story = {
 export const WithIcon: Story = {
   args: {
     variant: 'plain',
-    icon: <Dumbbell size={12} color="#9CA3AF" strokeWidth={2} />,
+    icon: <DumbbellIcon size={12} color="#9CA3AF" strokeWidth={2} />,
     children: <Label>225 lbs</Label>,
   },
 }
@@ -66,7 +66,7 @@ export const AllVariants: Story = {
         <BaseBadge variant="pr" size="lg"><Label color="#FF7900">PR</Label></BaseBadge>
       </View>
       <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
-        <BaseBadge icon={<Dumbbell size={12} color="#9CA3AF" strokeWidth={2} />}>
+        <BaseBadge icon={<DumbbellIcon size={12} color="#9CA3AF" strokeWidth={2} />}>
           <Label>225 lbs</Label>
         </BaseBadge>
       </View>

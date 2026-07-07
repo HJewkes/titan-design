@@ -8,6 +8,7 @@ export default defineConfig({
   entry: {
     index: 'src/index.ts',
     bodymap: 'src/bodymap.ts',
+    pages: 'src/pages.ts',
     'theme/index': 'src/theme/index.ts',
     'theme/tokens-css': 'src/theme/tokens-css.ts',
   },
@@ -15,13 +16,18 @@ export default defineConfig({
   dts: true,
   sourcemap: true,
   clean: true,
+  // Self-contained entries (no shared ESM chunks). Code-splitting merged the
+  // nativewind-importing ThemeProvider into a theme-utils chunk that the root
+  // entry also pulled, re-leaking nativewind into `@titan-design/react-ui` even
+  // after ThemeProvider left the root barrel. Without splitting, each entry only
+  // bundles what it imports, so the root stays nativewind-free (as CJS already
+  // was) and ThemeProvider's nativewind chain is confined to the /theme entry.
+  splitting: false,
   external: [
     'react',
     'react-dom',
     'react-native',
     'react-native-web',
-    'lucide-react',
-    'lucide-react-native',
   ],
   treeshake: true,
   esbuildOptions(options) {
