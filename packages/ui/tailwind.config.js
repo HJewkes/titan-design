@@ -44,6 +44,18 @@ module.exports = {
             dark: 'var(--color-status-error-dark)',
             subtle: 'var(--color-status-error-subtle)',
           },
+          'success-vivid': {
+            DEFAULT: 'var(--color-status-success-vivid)',
+            light: 'var(--color-status-success-vivid-light)',
+            dark: 'var(--color-status-success-vivid-dark)',
+            subtle: 'var(--color-status-success-vivid-subtle)',
+          },
+          'error-vivid': {
+            DEFAULT: 'var(--color-status-error-vivid)',
+            light: 'var(--color-status-error-vivid-light)',
+            dark: 'var(--color-status-error-vivid-dark)',
+            subtle: 'var(--color-status-error-vivid-subtle)',
+          },
           warning: {
             DEFAULT: 'var(--color-status-warning)',
             light: 'var(--color-status-warning-light)',
@@ -132,6 +144,7 @@ module.exports = {
           DEFAULT: 'var(--color-border-default)',
           subtle: 'var(--color-border-subtle)',
           strong: 'var(--color-border-strong)',
+          prominent: 'var(--color-border-prominent)',
           focus: 'var(--color-border-focus)',
           input: {
             DEFAULT: 'var(--color-border-input)',

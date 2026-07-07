@@ -18,7 +18,16 @@ describe('Indicator', () => {
   })
 
   it('renders with all color options', () => {
-    const colors = ['default', 'primary', 'success', 'error', 'warning', 'info'] as const
+    const colors = [
+      'default',
+      'primary',
+      'success',
+      'error',
+      'warning',
+      'info',
+      'success-vivid',
+      'error-vivid',
+    ] as const
     colors.forEach((color) => {
       const { unmount } = render(<Indicator color={color} />)
       unmount()
@@ -42,6 +51,16 @@ describe('Indicator', () => {
 
   it('supports glow prop', () => {
     const { container } = render(<Indicator glow color="success" />)
+    expect(container.firstChild).toBeInTheDocument()
+  })
+
+  it('supports pulse prop (opacity)', () => {
+    const { container } = render(<Indicator pulse color="success" />)
+    expect(container.firstChild).toBeInTheDocument()
+  })
+
+  it('supports the ping pulse variant', () => {
+    const { container } = render(<Indicator pulse="ping" color="success-vivid" />)
     expect(container.firstChild).toBeInTheDocument()
   })
 

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
-import { DateTime } from './DateTime'
+import { DateTime, type DateTimeFormat } from './DateTime'
 
 const meta: Meta<typeof DateTime> = {
   title: 'Custom/DateTime',
@@ -25,9 +25,6 @@ export default meta
 type Story = StoryObj<typeof DateTime>
 
 const now = Date.now()
-const yesterday = now - 24 * 60 * 60 * 1000
-const lastWeek = now - 7 * 24 * 60 * 60 * 1000
-const nextWeek = now + 7 * 24 * 60 * 60 * 1000
 
 export const Default: Story = {
   args: {
@@ -53,13 +50,89 @@ export const AllFormats: Story = {
   },
 }
 
-function Row({ label, value, format }: { label: string; value: any; format: any }) {
+function Row({
+  label,
+  value,
+  format,
+}: {
+  label: string
+  value: number | Date | string
+  format: DateTimeFormat
+}) {
   return (
     <View className="flex-row items-center">
       <Text className="w-24 text-text-secondary text-sm">{label}:</Text>
       <DateTime value={value} format={format} className="text-text-primary" />
     </View>
   )
+}
+
+/** Self-ticking clock (`live`), 24h, via the `mono` Typography variant — the substrate the shell TopBar uses. */
+export const LiveClock: Story = {
+  render: () => (
+    <View className="gap-4 p-6 bg-surface-elevated rounded-xl items-start">
+      <DateTime
+        live
+        format="time"
+        hour12={false}
+        variant="mono"
+        className="text-4xl text-text-primary"
+      />
+      <View className="flex-row items-center gap-3">
+        <DateTime live format="time" hour12={false} variant="mono" color="secondary" />
+        <Text className="text-text-tertiary text-xs">← ticks every second, 24h, mono</Text>
+      </View>
+    </View>
+  ),
+}
+
+/** With and without seconds (`seconds`). */
+export const Seconds: Story = {
+  render: () => {
+    const at = new Date(2024, 0, 1, 16, 12, 7)
+    return (
+      <View className="gap-3">
+        <View className="flex-row items-center">
+          <Text className="w-32 text-text-secondary text-sm">no seconds:</Text>
+          <DateTime value={at} format="time" hour12={false} variant="mono" color="primary" />
+        </View>
+        <View className="flex-row items-center">
+          <Text className="w-32 text-text-secondary text-sm">with seconds:</Text>
+          <DateTime
+            value={at}
+            format="time"
+            hour12={false}
+            seconds
+            variant="mono"
+            color="primary"
+          />
+        </View>
+        <View className="flex-row items-center">
+          <Text className="w-32 text-text-secondary text-sm">live w/ seconds:</Text>
+          <DateTime live format="time" hour12={false} seconds variant="mono" color="primary" />
+        </View>
+      </View>
+    )
+  },
+}
+
+/** 24h vs 12h for the same moment (`hour12`). */
+export const HourCycle: Story = {
+  render: () => {
+    const at = new Date(2024, 0, 1, 16, 12)
+    return (
+      <View className="gap-3">
+        <View className="flex-row items-center">
+          <Text className="w-24 text-text-secondary text-sm">24h:</Text>
+          <DateTime value={at} format="time" hour12={false} className="text-text-primary" />
+        </View>
+        <View className="flex-row items-center">
+          <Text className="w-24 text-text-secondary text-sm">12h:</Text>
+          <DateTime value={at} format="time" hour12 className="text-text-primary" />
+        </View>
+      </View>
+    )
+  },
 }
 
 export const RelativeTime: Story = {
@@ -169,7 +242,10 @@ export const UsageExample: Story = {
       <View className="gap-2 p-4 bg-surface-elevated rounded-lg max-w-md">
         <Text className="text-lg font-semibold text-text-primary mb-2">Upcoming Events</Text>
         {items.map((item, index) => (
-          <View key={index} className="flex-row justify-between items-center py-2 border-b border-border">
+          <View
+            key={index}
+            className="flex-row justify-between items-center py-2 border-b border-border"
+          >
             <Text className="text-text-primary">{item.title}</Text>
             <DateTime value={item.date} format="relative" color="secondary" className="text-sm" />
           </View>

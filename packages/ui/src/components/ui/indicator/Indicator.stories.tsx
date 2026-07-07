@@ -8,7 +8,10 @@ const meta: Meta<typeof Indicator> = {
   tags: ['autodocs'],
   argTypes: {
     size: { control: 'select', options: ['xs', 'sm', 'md', 'lg'] },
-    color: { control: 'select', options: ['default', 'primary', 'success', 'error', 'warning', 'info'] },
+    color: {
+      control: 'select',
+      options: ['default', 'primary', 'success', 'error', 'warning', 'info'],
+    },
     glow: { control: 'boolean' },
     ring: { control: 'boolean' },
   },
@@ -71,4 +74,37 @@ export const CustomColor: Story = {
       <Indicator size="md" customColor="#45B7D1" glow />
     </View>
   ),
+}
+
+export const Pulse: Story = {
+  render: () => (
+    <View className="flex-row gap-6 items-center">
+      <Indicator size="md" color="success" pulse />
+      <Indicator size="md" color="success-vivid" pulse="ping" />
+      <Indicator size="md" color="warning" />
+      <Indicator size="md" color="default" />
+    </View>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Opacity pulse (default), expanding-ring pulse (`pulse="ping"`, vivid green for live), solid, dim.',
+      },
+    },
+  },
+}
+
+export const Vivid: Story = {
+  render: () => (
+    <View className="flex-row gap-4 items-center">
+      <Indicator size="md" color="success" />
+      <Indicator size="md" color="success-vivid" />
+      <Indicator size="md" color="error" />
+      <Indicator size="md" color="error-vivid" />
+    </View>
+  ),
+  parameters: {
+    docs: { description: { story: 'Standard status vs the vivid palette (success/error).' } },
+  },
 }

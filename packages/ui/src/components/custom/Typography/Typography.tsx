@@ -16,6 +16,8 @@ export type TypographyVariant =
   | 'caption'
   | 'overline'
   | 'button'
+  | 'mono'
+  | 'monoLabel'
 
 export type TypographyColor =
   | 'primary'
@@ -70,6 +72,9 @@ const variantStyles: Record<TypographyVariant, string> = {
   caption: 'font-body text-xs font-normal leading-loose',
   overline: 'font-body text-xs font-semibold uppercase tracking-widest leading-relaxed',
   button: 'font-sans text-sm font-semibold leading-relaxed',
+  // Monospace technical readouts (clocks, ids, metrics) and their all-caps label form.
+  mono: 'font-mono text-xs font-normal leading-normal',
+  monoLabel: 'font-mono text-xs font-bold uppercase tracking-wide leading-normal',
 }
 
 const colorStyles: Record<TypographyColor, string> = {

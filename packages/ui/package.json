@@ -70,6 +70,8 @@
     "test:visual:baseline": "playwright test --config playwright.baseline.config.ts",
     "test:visual:baseline:update": "playwright test --config playwright.baseline.config.ts --update-snapshots",
     "test:visual:tokens": "playwright test --config playwright.tokens.config.ts",
+    "test:visual:stories": "playwright test stories.spec.ts",
+    "test:visual:stories:update": "playwright test stories.spec.ts --update-snapshots",
     "prepublishOnly": "tsup && vitest --run"
   },
   "peerDependencies": {

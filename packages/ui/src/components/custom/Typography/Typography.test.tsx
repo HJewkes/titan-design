@@ -77,6 +77,18 @@ describe('Typography', () => {
     })
   })
 
+  describe('mono variants', () => {
+    it('renders the mono variant', () => {
+      render(<Typography variant="mono">16:12</Typography>)
+      expect(screen.getByText('16:12')).toBeInTheDocument()
+    })
+
+    it('renders the monoLabel variant', () => {
+      render(<Typography variant="monoLabel">live</Typography>)
+      expect(screen.getByText('live')).toBeInTheDocument()
+    })
+  })
+
   describe('accessibility', () => {
     it('headings have no accessibility violations', async () => {
       const { container } = render(
@@ -91,9 +103,7 @@ describe('Typography', () => {
     })
 
     it('body text has no accessibility violations', async () => {
-      const { container } = render(
-        <Typography variant="body1">Body text content</Typography>
-      )
+      const { container } = render(<Typography variant="body1">Body text content</Typography>)
 
       const results = await axe(container)
       expect(results).toHaveNoViolations()
