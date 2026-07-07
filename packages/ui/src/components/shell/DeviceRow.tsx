@@ -1,6 +1,7 @@
-import { View, Text, Pressable, type ViewProps } from 'react-native'
+import { View, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../utils/cn'
 import { Indicator, type IndicatorColor } from '../ui/indicator'
+import { Typography } from '../custom/Typography'
 
 export type DeviceRowState = 'connected' | 'available' | 'degraded' | 'lost'
 
@@ -42,15 +43,16 @@ export function DeviceRow({ device, onPress, className, ...props }: DeviceRowPro
       {...props}
     >
       <Indicator size="md" color={stateColor[device.state]} />
-      <Text
-        className={cn(
-          'flex-1 font-bold text-[12px]',
-          device.slot ? 'text-text-primary' : 'text-text-secondary'
-        )}
+      <Typography
+        variant="body2"
+        color={device.slot ? 'primary' : 'secondary'}
+        className="flex-1 font-bold text-[12px]"
       >
         {device.nickname}
-      </Text>
-      <Text className="font-mono text-[10px] text-text-tertiary">{device.id}</Text>
+      </Typography>
+      <Typography variant="mono" color="tertiary" className="text-[10px]">
+        {device.id}
+      </Typography>
     </Wrapper>
   )
 }

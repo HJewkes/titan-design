@@ -81,8 +81,9 @@ export function TopBar({
               live={time == null}
               format="time"
               hour12={false}
+              variant="mono"
               color="secondary"
-              className="font-mono text-[11px] min-w-[38px] text-right"
+              className="text-[11px] min-w-[38px] text-right"
             />
           </>
         ) : null}

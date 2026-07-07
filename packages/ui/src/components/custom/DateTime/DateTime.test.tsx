@@ -55,6 +55,18 @@ describe('DateTime', () => {
     expect(container.textContent).toMatch(/^\d{1,2}:\d{2}/)
   })
 
+  it('includes seconds when seconds is set', () => {
+    render(<DateTime value={new Date(2024, 0, 1, 16, 12, 7)} format="time" hour12={false} seconds />)
+    expect(screen.getByText('16:12:07')).toBeInTheDocument()
+  })
+
+  it('renders through Typography when a variant is given', () => {
+    render(
+      <DateTime value={new Date(2024, 0, 1, 16, 12)} format="time" hour12={false} variant="mono" />
+    )
+    expect(screen.getByText('16:12')).toBeInTheDocument()
+  })
+
   it('renders Invalid Date for bad input', () => {
     render(<DateTime value="not-a-date" />)
     expect(screen.getByText('Invalid Date')).toBeInTheDocument()

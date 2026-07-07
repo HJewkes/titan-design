@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Text, type TextProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { Typography, type TypographyVariant } from '../Typography'
 
 export type DateTimeFormat =
   | 'date' // 2024-01-15
@@ -23,6 +24,10 @@ export interface DateTimeProps extends TextProps {
   isUTC?: boolean
   /** Force 12h (true) or 24h (false) for time/datetime formats; locale default when omitted. */
   hour12?: boolean
+  /** Include seconds in time/datetime formats. */
+  seconds?: boolean
+  /** Render through Typography with this variant (e.g. 'mono'); plain inheriting Text when omitted. */
+  variant?: TypographyVariant
   /** Track the current time and re-render on an interval (ignores `value`). For clocks / relative time. */
   live?: boolean
   /** Refresh interval in ms when `live` (default 1000). */
@@ -49,7 +54,8 @@ function formatDate(
   value: number | Date | string,
   format: DateTimeFormat,
   isUTC: boolean,
-  hour12?: boolean
+  hour12?: boolean,
+  seconds?: boolean
 ): string {
   const date = value instanceof Date ? value : new Date(value)
 
@@ -110,6 +116,10 @@ function formatDate(
 
   if (hour12 !== undefined && (options.hour !== undefined || options.minute !== undefined)) {
     options.hour12 = hour12
+  }
+
+  if (seconds && options.hour !== undefined) {
+    options.second = '2-digit'
   }
 
   return new Intl.DateTimeFormat(undefined, options).format(date)
@@ -209,6 +219,8 @@ export function DateTime({
   customFormat,
   isUTC = false,
   hour12,
+  seconds,
+  variant,
   live = false,
   refreshMs = 1000,
   fallback = '-',
@@ -225,20 +237,24 @@ export function DateTime({
   }, [live, refreshMs])
 
   const effectiveValue = live ? now : value
+  const text =
+    effectiveValue === null || effectiveValue === undefined
+      ? fallback
+      : formatDate(effectiveValue, format, isUTC, hour12, seconds)
 
-  if (effectiveValue === null || effectiveValue === undefined) {
+  // Route through Typography (shared text substrate) when a variant is given;
+  // otherwise render a plain inheriting Text (backward-compatible default).
+  if (variant) {
     return (
-      <Text className={cn(colorStyles[color], className)} {...props}>
-        {fallback}
-      </Text>
+      <Typography variant={variant} color={color} className={className} {...props}>
+        {text}
+      </Typography>
     )
   }
 
-  const formattedDate = formatDate(effectiveValue, format, isUTC, hour12)
-
   return (
     <Text className={cn(colorStyles[color], className)} {...props}>
-      {formattedDate}
+      {text}
     </Text>
   )
 }

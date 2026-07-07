@@ -1,6 +1,7 @@
-import { View, Text, type ViewProps } from 'react-native'
+import { View, type ViewProps } from 'react-native'
 import { cn } from '../../utils/cn'
 import { Indicator, type IndicatorColor, type IndicatorPulse } from '../ui/indicator'
+import { Typography, type TypographyColor } from '../custom/Typography'
 
 export type SessionState = 'live' | 'rest' | 'idle'
 
@@ -14,12 +15,17 @@ export interface SessionStatePillProps extends ViewProps {
 
 const stateConfig: Record<
   SessionState,
-  { label: string; color: IndicatorColor; pulse: boolean | IndicatorPulse; textClass: string }
+  {
+    label: string
+    color: IndicatorColor
+    pulse: boolean | IndicatorPulse
+    textColor: TypographyColor
+  }
 > = {
   // live = vivid green with an expanding ring; rest = solid amber (no pulse — operator); idle is dim.
-  live: { label: 'LIVE', color: 'success-vivid', pulse: 'ping', textClass: 'text-text-primary' },
-  rest: { label: 'REST', color: 'warning', pulse: false, textClass: 'text-text-primary' },
-  idle: { label: 'IDLE', color: 'default', pulse: false, textClass: 'text-text-secondary' },
+  live: { label: 'LIVE', color: 'success-vivid', pulse: 'ping', textColor: 'primary' },
+  rest: { label: 'REST', color: 'warning', pulse: false, textColor: 'primary' },
+  idle: { label: 'IDLE', color: 'default', pulse: false, textColor: 'secondary' },
 }
 
 /**
@@ -32,9 +38,9 @@ export function SessionStatePill({ state, label, className, ...props }: SessionS
   return (
     <View className={cn('flex-row items-center gap-2', className)} {...props}>
       <Indicator size="md" color={cfg.color} pulse={cfg.pulse} />
-      <Text className={cn('font-mono font-bold text-[11px] tracking-[0.5px]', cfg.textClass)}>
+      <Typography variant="monoLabel" color={cfg.textColor} className="text-[11px]">
         {label ?? cfg.label}
-      </Text>
+      </Typography>
     </View>
   )
 }

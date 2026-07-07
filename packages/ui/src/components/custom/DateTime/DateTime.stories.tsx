@@ -67,7 +67,7 @@ function Row({
   )
 }
 
-/** Self-ticking clock (`live`) in 24h — the shared substrate the shell TopBar uses. */
+/** Self-ticking clock (`live`), 24h, via the `mono` Typography variant — the substrate the shell TopBar uses. */
 export const LiveClock: Story = {
   render: () => (
     <View className="gap-4 p-6 bg-surface-elevated rounded-xl items-start">
@@ -75,20 +75,45 @@ export const LiveClock: Story = {
         live
         format="time"
         hour12={false}
-        className="font-mono text-4xl text-text-primary"
+        variant="mono"
+        className="text-4xl text-text-primary"
       />
       <View className="flex-row items-center gap-3">
-        <DateTime
-          live
-          format="time"
-          hour12={false}
-          color="secondary"
-          className="font-mono text-sm"
-        />
-        <Text className="text-text-tertiary text-xs">← ticks every second, 24h</Text>
+        <DateTime live format="time" hour12={false} variant="mono" color="secondary" />
+        <Text className="text-text-tertiary text-xs">← ticks every second, 24h, mono</Text>
       </View>
     </View>
   ),
+}
+
+/** With and without seconds (`seconds`). */
+export const Seconds: Story = {
+  render: () => {
+    const at = new Date(2024, 0, 1, 16, 12, 7)
+    return (
+      <View className="gap-3">
+        <View className="flex-row items-center">
+          <Text className="w-32 text-text-secondary text-sm">no seconds:</Text>
+          <DateTime value={at} format="time" hour12={false} variant="mono" color="primary" />
+        </View>
+        <View className="flex-row items-center">
+          <Text className="w-32 text-text-secondary text-sm">with seconds:</Text>
+          <DateTime
+            value={at}
+            format="time"
+            hour12={false}
+            seconds
+            variant="mono"
+            color="primary"
+          />
+        </View>
+        <View className="flex-row items-center">
+          <Text className="w-32 text-text-secondary text-sm">live w/ seconds:</Text>
+          <DateTime live format="time" hour12={false} seconds variant="mono" color="primary" />
+        </View>
+      </View>
+    )
+  },
 }
 
 /** 24h vs 12h for the same moment (`hour12`). */
