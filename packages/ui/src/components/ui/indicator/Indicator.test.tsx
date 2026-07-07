@@ -45,6 +45,11 @@ describe('Indicator', () => {
     expect(container.firstChild).toBeInTheDocument()
   })
 
+  it('supports pulse prop', () => {
+    const { container } = render(<Indicator pulse color="success" />)
+    expect(container.firstChild).toBeInTheDocument()
+  })
+
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const { container } = render(<Indicator color="success" />)

@@ -8,7 +8,10 @@ const meta: Meta<typeof Indicator> = {
   tags: ['autodocs'],
   argTypes: {
     size: { control: 'select', options: ['xs', 'sm', 'md', 'lg'] },
-    color: { control: 'select', options: ['default', 'primary', 'success', 'error', 'warning', 'info'] },
+    color: {
+      control: 'select',
+      options: ['default', 'primary', 'success', 'error', 'warning', 'info'],
+    },
     glow: { control: 'boolean' },
     ring: { control: 'boolean' },
   },
@@ -71,4 +74,19 @@ export const CustomColor: Story = {
       <Indicator size="md" customColor="#45B7D1" glow />
     </View>
   ),
+}
+
+export const Pulse: Story = {
+  render: () => (
+    <View className="flex-row gap-4 items-center">
+      <Indicator size="md" color="success" pulse />
+      <Indicator size="md" color="warning" />
+      <Indicator size="md" color="default" />
+    </View>
+  ),
+  parameters: {
+    docs: {
+      description: { story: 'Live/active status pulses (opacity); rest is solid; idle is dim.' },
+    },
+  },
 }

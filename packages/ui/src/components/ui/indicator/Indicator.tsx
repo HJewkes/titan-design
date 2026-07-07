@@ -1,4 +1,3 @@
-import React from 'react'
 import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 
@@ -16,6 +15,8 @@ export interface IndicatorProps extends ViewProps {
   glow?: boolean
   /** Add a ring border */
   ring?: boolean
+  /** Gently pulse the dot (opacity), for live/active status. Native-safe via `animate-pulse`. */
+  pulse?: boolean
   /** Additional className */
   className?: string
 }
@@ -42,6 +43,7 @@ export function Indicator({
   customColor,
   glow = false,
   ring = false,
+  pulse = false,
   className,
   style,
   ...props
@@ -59,6 +61,7 @@ export function Indicator({
         'rounded-full shrink-0',
         sizeStyles[size],
         !customColor && colorStyles[color],
+        pulse && 'animate-pulse',
         ring && 'border-2 border-background-base',
         glow && !customColor && color === 'success' && 'shadow-[0_0_6px_rgba(20,184,166,0.6)]',
         glow && !customColor && color === 'error' && 'shadow-[0_0_6px_rgba(239,68,68,0.6)]',
