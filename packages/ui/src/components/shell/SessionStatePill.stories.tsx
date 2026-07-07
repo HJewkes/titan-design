@@ -1,18 +1,22 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
 import { SessionStatePill } from './SessionStatePill'
 
 const meta: Meta<typeof SessionStatePill> = {
-  title: 'Shell/Molecules/SessionStatePill',
+  title: 'Shell/TopBar/SessionStatePill',
   component: SessionStatePill,
   tags: ['autodocs'],
+  args: { state: 'live' },
+  argTypes: {
+    state: { control: 'select', options: ['live', 'rest', 'idle'] },
+    label: { control: 'text' },
+  },
   parameters: {
     docs: {
       description: {
         component:
-          '**Molecule** (= the ledger’s StatusPill). Composes ' +
-          '[Indicator](?path=/docs/components-indicator--docs) (pulse: `ping` for live, vivid color) + ' +
-          '[Typography](?path=/docs/custom-typography--docs) (`monoLabel`).',
+          '**Molecule** (= the ledger’s reusable StatusPill — also used by the Live-view header). Composes ' +
+          '[Indicator](?path=/docs/components-indicator--docs) (pulse `ping` + vivid color for live) + ' +
+          '[Typography](?path=/docs/custom-typography--docs) (`monoLabel`). Use the `state` control to switch.',
       },
     },
   },
@@ -20,16 +24,4 @@ const meta: Meta<typeof SessionStatePill> = {
 export default meta
 type Story = StoryObj<typeof SessionStatePill>
 
-export const AllStates: Story = {
-  render: () => (
-    <View className="flex-row gap-6">
-      <SessionStatePill state="live" />
-      <SessionStatePill state="rest" />
-      <SessionStatePill state="idle" />
-    </View>
-  ),
-}
-
-export const Live: Story = { args: { state: 'live' } }
-export const Rest: Story = { args: { state: 'rest' } }
-export const Idle: Story = { args: { state: 'idle' } }
+export const Default: Story = {}

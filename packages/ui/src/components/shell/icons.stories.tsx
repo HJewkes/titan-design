@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import type { ReactNode } from 'react'
 import { View, Text } from 'react-native'
 import { VoltrasMark, BluetoothIcon } from './icons'
 
 const meta: Meta = {
-  title: 'Shell/Atoms/Icons',
+  title: 'Shell/TopBar/Icons',
   tags: ['autodocs'],
   parameters: {
     docs: {
@@ -18,7 +19,7 @@ const meta: Meta = {
 export default meta
 type Story = StoryObj
 
-function Swatch({ label, children }: { label: string; children: React.ReactNode }) {
+function Swatch({ label, children }: { label: string; children: ReactNode }) {
   return (
     <View className="items-center gap-2">
       {children}
