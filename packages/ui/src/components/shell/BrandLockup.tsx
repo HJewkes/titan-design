@@ -1,7 +1,7 @@
 import { View, type ViewProps } from 'react-native'
 import { cn } from '../../utils/cn'
 import { Typography } from '../custom/Typography'
-import { VoltrasMark } from './icons'
+import { VoltrasMark } from '../icons'
 
 export interface BrandLockupProps extends ViewProps {
   /** The "/ subtitle" that follows the wordmark. Default "wall dashboard". */

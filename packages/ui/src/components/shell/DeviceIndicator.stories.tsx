@@ -15,7 +15,7 @@ const meta: Meta<typeof DeviceIndicator> = {
     docs: {
       description: {
         component:
-          '**Molecule.** Composes [BluetoothIcon](?path=/docs/shell-topbar-icons--docs), color-coded by ' +
+          '**Molecule.** Composes [BluetoothIcon](?path=/docs/icons--docs), color-coded by ' +
           'connection state via a `text-status-*-vivid` token — the glyph color alone carries the fault ' +
           '(no separate badge). Switch the `status` control to see connected / degraded / lost.',
       },

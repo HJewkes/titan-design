@@ -1,6 +1,6 @@
 import { View, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../utils/cn'
-import { BluetoothIcon } from './icons'
+import { BluetoothIcon } from '../icons'
 
 export type DeviceConnState = 'connected' | 'degraded' | 'lost'
 

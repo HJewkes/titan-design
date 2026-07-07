@@ -14,7 +14,7 @@ and every component's autodocs page repeats its "Composes" links.
 ```
 TopBar ....................... organism — the chrome band (Shell/TopBar)
 ├─ BrandLockup ............... molecule
-│  ├─ VoltrasMark ............ atom (icon)
+│  ├─ VoltrasMark ............ icons (shared primitive)
 │  └─ Typography ............. titan · button variant
 ├─ SessionStatePill .......... molecule  (= the reusable StatusPill)
 │  ├─ Indicator .............. titan · ping pulse + vivid color
@@ -22,7 +22,7 @@ TopBar ....................... organism — the chrome band (Shell/TopBar)
 ├─ Divider ................... titan · bg-border-prominent
 ├─ DeviceMenu ................ organism
 │  ├─ Popover ................ titan
-│  ├─ DeviceIndicator ........ molecule → BluetoothIcon (atom)
+│  ├─ DeviceIndicator ........ molecule → BluetoothIcon (icons primitive)
 │  ├─ DeviceRow .............. molecule → Indicator + Typography (body2 / mono)
 │  └─ Typography ............. titan · monoLabel (header)
 ├─ DateTime .................. titan · mono variant, live 24h clock
@@ -39,12 +39,15 @@ TopBar ....................... organism — the chrome band (Shell/TopBar)
 | `DeviceMenu` | organism | Popover, DeviceIndicator, DeviceRow, Typography | TopBar |
 | `DeviceIndicator` | molecule | BluetoothIcon | DeviceMenu |
 | `DeviceRow` | molecule | Indicator, Typography | DeviceMenu |
-| `VoltrasMark` / `BluetoothIcon` | atom (icon) | — | BrandLockup / DeviceIndicator |
+| `VoltrasMark` / `BluetoothIcon` | **`components/icons`** primitive | `SvgIcon` base | BrandLockup / DeviceIndicator (+ any consumer) |
 
 ## Shared substrates introduced here (reusable beyond the shell)
 
 Building S1 grew the design system — these are now available to every component:
 
+- **`components/icons`** — a shared icon primitive: an `SvgIcon` base (24×24, a11y contract, `currentColor`)
+  + `IconProps`. VoltrasMark / BluetoothIcon live here, and the previously-orphaned Workout icons
+  (Dumbbell / Star) were folded in (re-exported from `Workout/icons` for back-compat).
 - **`theme/gradients.ts`** — `linearGradient(from, to, angle)` + named `surfaceGradient.*`, built on
   `resolveColor` (themeable web CSS vars + native hex fallback).
 - **`Indicator`** (titan atom) — `pulse: 'ping'` (expanding ring) + `success-vivid` / `error-vivid` colors.

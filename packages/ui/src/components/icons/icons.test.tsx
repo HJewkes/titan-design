@@ -1,12 +1,16 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { VoltrasMark, BluetoothIcon } from './icons'
+import { VoltrasMark, BluetoothIcon, DumbbellIcon, StarIcon } from './icons'
+import { SvgIcon } from './SvgIcon'
 
-describe('shell icons', () => {
-  it('render an svg', () => {
-    const { container } = render(<VoltrasMark />)
-    expect(container.querySelector('svg')).toBeInTheDocument()
+describe('icon primitives', () => {
+  it('every icon renders an svg', () => {
+    ;[VoltrasMark, BluetoothIcon, DumbbellIcon, StarIcon].forEach((Icon) => {
+      const { container, unmount } = render(<Icon />)
+      expect(container.querySelector('svg')).toBeInTheDocument()
+      unmount()
+    })
   })
 
   it('a titled icon is exposed as an accessible image', () => {
@@ -21,15 +25,19 @@ describe('shell icons', () => {
     expect(svg.getAttribute('role')).toBeNull()
   })
 
-  it('honor size + strokeWidth', () => {
-    const { container } = render(<BluetoothIcon size={32} strokeWidth={3} />)
+  it('honors size + strokeWidth via the SvgIcon base', () => {
+    const { container } = render(
+      <SvgIcon size={32} strokeWidth={3}>
+        <path d="M0 0" />
+      </SvgIcon>
+    )
     const svg = container.querySelector('svg')!
     expect(svg.getAttribute('width')).toBe('32')
     expect(svg.getAttribute('stroke-width')).toBe('3')
   })
 
   it('a decorative icon has no accessibility violations', async () => {
-    const { container } = render(<BluetoothIcon />)
+    const { container } = render(<StarIcon />)
     expect(await axe(container)).toHaveNoViolations()
   })
 })

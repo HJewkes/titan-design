@@ -14,7 +14,7 @@ const meta: Meta<typeof BrandLockup> = {
     docs: {
       description: {
         component:
-          '**Molecule.** Composes [VoltrasMark](?path=/docs/shell-topbar-icons--docs) (icon) + ' +
+          '**Molecule.** Composes [VoltrasMark](?path=/docs/icons--docs) (icon) + ' +
           '[Typography](?path=/docs/custom-typography--docs) (wordmark + subtitle). ' +
           'Toggle `showSubtitle` to see the responsive collapse.',
       },

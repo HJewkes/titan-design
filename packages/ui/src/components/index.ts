@@ -1,3 +1,6 @@
+// Icon primitives (shared, design-system-wide)
+export * from './icons'
+
 // Re-export all UI components
 export * from './ui'
 
