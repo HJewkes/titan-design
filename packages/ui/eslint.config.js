@@ -69,5 +69,27 @@ module.exports = tseslint.config(
       // Allow spreading props (common in component libraries)
       'react/jsx-props-no-spreading': 'off',
     },
+  },
+
+  // Design-system reuse guardrails: components should compose shared primitives,
+  // not hand-roll paints. (Warn — surfaces existing violators without breaking CI.)
+  {
+    files: ['src/components/**/*.{ts,tsx}'],
+    ignores: ['**/*.stories.tsx', '**/*.test.tsx'],
+    rules: {
+      'no-restricted-syntax': [
+        'warn',
+        {
+          selector: 'Literal[value=/linear-gradient/]',
+          message:
+            'Use surfaceGradient / linearGradient from theme/gradients instead of an inline linear-gradient string.',
+        },
+        {
+          selector: 'TemplateElement[value.raw=/linear-gradient/]',
+          message:
+            'Use surfaceGradient / linearGradient from theme/gradients instead of an inline linear-gradient string.',
+        },
+      ],
+    },
   }
 )

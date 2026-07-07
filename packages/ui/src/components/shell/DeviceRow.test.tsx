@@ -23,4 +23,15 @@ describe('DeviceRow', () => {
     expect(screen.getByText('Spare')).toBeInTheDocument()
     expect(screen.getByText('Voltra-77E0')).toBeInTheDocument()
   })
+
+  it('renders every connection state without crashing', () => {
+    const states = ['connected', 'available', 'degraded', 'lost'] as const
+    states.forEach((state) => {
+      const { unmount, container } = render(
+        <DeviceRow device={{ id: 'X', nickname: 'Cable', slot: 'L', state }} />
+      )
+      expect(container.firstChild).toBeInTheDocument()
+      unmount()
+    })
+  })
 })
