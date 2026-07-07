@@ -15,7 +15,12 @@ import {
 } from './CapacityBandChart'
 import { ExerciseCard, type ExerciseCardProps } from './ExerciseCard'
 import { type SetRowProps } from './SetRow'
-import { VelocityStrip, calculateMeanVelocity, calculateVelocityLoss } from './VelocityStrip'
+import {
+  VelocityStrip,
+  calculateMeanVelocity,
+  calculateVelocityLoss,
+  type VelocityZoneBandProp,
+} from './VelocityStrip'
 import { resolveColor } from '../../../theme/resolve-color'
 import { cn } from '../../../utils/cn'
 
@@ -97,6 +102,8 @@ export interface ExerciseVbt {
   projection?: CapacityBandProjection
   /** Per-set velocity traces for the most recent session. */
   sets: ExerciseVbtSet[]
+  /** Optional velocity-zone bands for this exercise (WA `VelocityZones.bands`). */
+  zones?: readonly VelocityZoneBandProp[]
 }
 
 /** Page-level roll-up of the logged sessions. */
@@ -348,7 +355,13 @@ function EntryList({ entries, expandedId, onToggle, emptyLabel, testID }: EntryL
   )
 }
 
-function VbtBreakdown({ sets }: { sets: ExerciseVbtSet[] }) {
+function VbtBreakdown({
+  sets,
+  zones,
+}: {
+  sets: ExerciseVbtSet[]
+  zones?: readonly VelocityZoneBandProp[]
+}) {
   return (
     <View style={{ gap: 10 }} testID="exercise-detail-page-vbt-breakdown">
       {sets.map((set) => {
@@ -373,7 +386,7 @@ function VbtBreakdown({ sets }: { sets: ExerciseVbtSet[] }) {
               {set.label}
             </Text>
             <View className="flex-1" style={{ height: 8, justifyContent: 'center' }}>
-              <VelocityStrip velocities={set.velocities} variant="mini" />
+              <VelocityStrip velocities={set.velocities} zones={zones} variant="mini" />
             </View>
             <Text
               className="text-text-tertiary"
@@ -614,7 +627,7 @@ export function ExerciseDetailPage({
             </SectionCard>
             <VbtSummaryRow summary={vbtSummary} />
             <SectionCard title="Velocity Breakdown" testID="exercise-detail-page-velocity">
-              <VbtBreakdown sets={vbt.sets} />
+              <VbtBreakdown sets={vbt.sets} zones={vbt.zones} />
             </SectionCard>
           </View>
         )}

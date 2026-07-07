@@ -1,11 +1,54 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useEffect, useState } from 'react'
-import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-native'
+import { View, Text, Pressable, Animated, Easing, type ViewProps, type ViewStyle } from 'react-native'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { formatVelocity } from '../../../utils/workout-format'
 
+/**
+ * Structural velocity-zone band accepted from an upstream analytics source
+ * (e.g. workout-analytics' `VelocityZones.bands`).
+ *
+ * Deliberately a plain structural shape — titan never imports the analytics
+ * package (same policy as TempoBar's presentational phase key). Any object with
+ * this shape can be passed, so `zones={waVelocityZones.bands}` works directly.
+ * Bands are ordered slow → fast, contiguous, and cover `[0, ∞)` with the top
+ * band's `max === null`. Bands carry NO color — color is a UI concern resolved
+ * here via {@link zoneIdToScaleToken}.
+ */
+export interface VelocityZoneBandProp {
+  /** Stable zone identity (e.g. WA's `VelocityZoneId`). Drives color mapping. */
+  id: string
+  /** Human-readable label shown in the summary row. */
+  label: string
+  /** Inclusive lower bound (m/s mean concentric velocity). */
+  min: number
+  /** Exclusive upper bound (m/s); `null` marks the open top band. */
+  max: number | null
+}
+
 export interface VelocityStripProps extends ViewProps {
+  /**
+   * Per-rep MEAN concentric velocity (m/s), one entry per rep (brain WA-D02).
+   * Drives both bar height and — in the default path — zone color. Callers must
+   * feed mean (not peak) concentric velocity so bar color, height, and the
+   * summary label all describe one metric.
+   */
   velocities: number[]
+  /**
+   * Optional velocity-zone bands (shape-compatible with WA's
+   * `VelocityZones.bands`). When provided, bar color and the summary zone label
+   * come from these bands via {@link zoneIdToScaleToken}. When omitted, the
+   * built-in default scale (≥1.0 / ≥0.75 / ≥0.5) is used — identical to prior
+   * releases. Colors NEVER come from the bands themselves.
+   */
+  zones?: readonly VelocityZoneBandProp[]
+  /**
+   * Live mode: index of the most-recently-completed rep. That bar animates in
+   * with a "pop"; if it is also the current set peak (a new best), it "bounces"
+   * instead. Only the latest bar animates. Honors `prefers-reduced-motion`.
+   * Full variant only.
+   */
+  liveRepIndex?: number
   expanded?: boolean
   onToggle?: () => void
   onRepPress?: (index: number, velocity: number) => void
@@ -14,8 +57,35 @@ export interface VelocityStripProps extends ViewProps {
   className?: string
 }
 
-// Canonical scale shared with SetRow's RPE color (see theme/workout-tokens.ts).
+// Canonical 4-color performance scale shared with SetRow's RPE color
+// (see theme/workout-tokens.ts). green = fastest, red = slowest/grinding.
 const VEL_COLORS = WORKOUT_TOKENS.scale
+
+/**
+ * Map a velocity-zone id (WA's 5-band taxonomy) onto the canonical 4-color
+ * scale. The scale has 4 hues but the taxonomy has 5 bands, so the two slowest
+ * bands — `maximalStrength` and `grinding` — intentionally share `red`: both
+ * read as "heavy / effortful" and there is no distinct 5th data-viz hue. The
+ * top three bands align 1:1 with the legacy default scale so an exercise moving
+ * from default to profile-derived zones never shifts its fast-end colors.
+ *
+ * Legacy default parity: speed=green, power=yellow, strengthSpeed=orange, and
+ * the old sub-0.5 "Strength" band (now split into maximalStrength + grinding)
+ * stays red.
+ *
+ * Unknown ids fall back to `green` (matching the historical default-path
+ * fallback), so a forward-compatible band id never renders an empty bar.
+ */
+const zoneIdToScaleToken: Record<string, keyof typeof VEL_COLORS> = {
+  speed: 'green',
+  power: 'yellow',
+  strengthSpeed: 'orange',
+  maximalStrength: 'red',
+  grinding: 'red',
+}
+
+// --- Default (no-zones) scale ------------------------------------------------
+// Retained as named exports for back-compat; they define the default path.
 
 export function getVelocityZoneColor(velocity: number): string {
   if (velocity >= 1.0) return 'vel-green'
@@ -31,35 +101,47 @@ export function getVelocityZoneName(velocity: number): string {
   return 'Strength'
 }
 
-export function calculateVelocityLoss(velocities: number[]): number {
-  if (velocities.length < 2) return 0
-  const first = velocities[0]
-  const last = velocities[velocities.length - 1]
-  if (first === 0) return 0
-  return Math.round(((first - last) / first) * 100)
+const zoneHexMap: Record<string, string> = {
+  'vel-green': VEL_COLORS.green,
+  'vel-yellow': VEL_COLORS.yellow,
+  'vel-orange': VEL_COLORS.orange,
+  'vel-red': VEL_COLORS.red,
 }
 
+/**
+ * Velocity loss for a set, as a whole percentage. Uses the running-best rep as
+ * the reference (matching WA-02.05 / brain WA-D01): `(vBest − vLast) / vBest`,
+ * clamped to ≥ 0 so a set that ends on its best rep reports 0 loss.
+ */
+export function calculateVelocityLoss(velocities: number[]): number {
+  if (velocities.length < 2) return 0
+  const best = Math.max(...velocities)
+  if (best <= 0) return 0
+  const last = velocities[velocities.length - 1]
+  return Math.max(0, Math.round(((best - last) / best) * 100))
+}
+
+/** Arithmetic mean of the per-rep mean-concentric velocities. */
 export function calculateMeanVelocity(velocities: number[]): number {
   if (velocities.length === 0) return 0
   const sum = velocities.reduce((acc, v) => acc + v, 0)
   return sum / velocities.length
 }
 
-function getBarColor(zone: string): string {
-  switch (zone) {
-    case 'vel-green': return VEL_COLORS.green
-    case 'vel-yellow': return VEL_COLORS.yellow
-    case 'vel-orange': return VEL_COLORS.orange
-    case 'vel-red': return VEL_COLORS.red
-    default: return VEL_COLORS.green
+/** Classify a velocity into its band (slow → fast, min inclusive / max exclusive). */
+function classifyBand(
+  velocity: number,
+  bands: readonly VelocityZoneBandProp[],
+): VelocityZoneBandProp | undefined {
+  for (const band of bands) {
+    if (band.max === null || velocity < band.max) return band
   }
+  return bands[bands.length - 1]
 }
 
-const zoneHexMap: Record<string, string> = {
-  'vel-green': VEL_COLORS.green,
-  'vel-yellow': VEL_COLORS.yellow,
-  'vel-orange': VEL_COLORS.orange,
-  'vel-red': VEL_COLORS.red,
+function bandColor(band: VelocityZoneBandProp): string {
+  const token = zoneIdToScaleToken[band.id]
+  return token ? VEL_COLORS[token] : VEL_COLORS.green
 }
 
 function getLossStyle(loss: number): Record<string, string> | null {
@@ -68,11 +150,33 @@ function getLossStyle(loss: number): Record<string, string> | null {
   return null
 }
 
+function getReducedMotionPreference(): boolean {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+
+/** Track the OS "reduce motion" preference; falls back to `false` (jsdom/SSR). */
+function usePrefersReducedMotion(): boolean {
+  const [reduced, setReduced] = useState(getReducedMotionPreference)
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const handler = () => setReduced(mq.matches)
+    handler()
+    mq.addEventListener?.('change', handler)
+    return () => mq.removeEventListener?.('change', handler)
+  }, [])
+  return reduced
+}
+
 const ANIMATION_DURATION = 400
 const ANIMATION_EASING = Easing.bezier(0.22, 1, 0.36, 1)
+const POP_EASING = Easing.bezier(0.34, 1.56, 0.64, 1)
 
 export function VelocityStrip({
   velocities,
+  zones,
+  liveRepIndex,
   expanded = false,
   onToggle,
   onRepPress,
@@ -84,11 +188,55 @@ export function VelocityStrip({
   const maxVelocity = Math.max(...velocities, 0)
   const meanVelocity = calculateMeanVelocity(velocities)
   const loss = calculateVelocityLoss(velocities)
-  const meanZone = getVelocityZoneName(meanVelocity)
 
+  const hasZones = zones != null && zones.length > 0
+  const barColorFor = (v: number): string =>
+    hasZones ? bandColor(classifyBand(v, zones)!) : zoneHexMap[getVelocityZoneColor(v)]
+  const meanZone = hasZones
+    ? (classifyBand(meanVelocity, zones)?.label ?? '')
+    : getVelocityZoneName(meanVelocity)
+
+  const prefersReducedMotion = usePrefersReducedMotion()
   const [heightAnim] = useState(() => new Animated.Value(expanded ? 60 : 3))
   const [labelOpacity] = useState(() => new Animated.Value(expanded ? 1 : 0))
   const [infoOpacity] = useState(() => new Animated.Value(expanded ? 1 : 0))
+  const [liveScale] = useState(() => new Animated.Value(1))
+
+  // Newest-rep animation: pop for a normal rep, bounce when it sets a new peak.
+  const liveVelocity = liveRepIndex != null ? velocities[liveRepIndex] : undefined
+  const isNewPeak = liveVelocity != null && maxVelocity > 0 && liveVelocity === maxVelocity
+  useEffect(() => {
+    if (variant === 'mini' || liveRepIndex == null || liveVelocity == null) return
+    if (prefersReducedMotion) {
+      liveScale.setValue(1)
+      return
+    }
+    if (isNewPeak) {
+      liveScale.setValue(1)
+      Animated.sequence([
+        Animated.timing(liveScale, {
+          toValue: 1.25,
+          duration: 150,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.spring(liveScale, {
+          toValue: 1,
+          friction: 3,
+          tension: 140,
+          useNativeDriver: true,
+        }),
+      ]).start()
+    } else {
+      liveScale.setValue(0.8)
+      Animated.timing(liveScale, {
+        toValue: 1,
+        duration: 300,
+        easing: POP_EASING,
+        useNativeDriver: true,
+      }).start()
+    }
+  }, [variant, liveRepIndex, liveVelocity, isNewPeak, prefersReducedMotion, liveScale])
 
   useEffect(() => {
     if (variant === 'mini') return
@@ -131,7 +279,7 @@ export function VelocityStrip({
             key={i}
             style={{
               flex: 1,
-              backgroundColor: getBarColor(getVelocityZoneColor(v)),
+              backgroundColor: barColorFor(v),
               borderRadius: 1,
               minWidth: 4,
               height: '100%' as unknown as number,
@@ -176,11 +324,44 @@ export function VelocityStrip({
         style={{ flexDirection: 'row', flex: 1, gap: 2, alignItems: 'flex-end' }}
       >
         {velocities.map((v, i) => {
-          const zone = getVelocityZoneColor(v)
+          const barBackground = barColorFor(v)
           // Guard all-zero velocities (idle / pre-rep): maxVelocity === 0 makes
           // this 0 / 0 === NaN and emits height:'NaN%'. Flatten the bars instead.
           const barHeightPct =
             maxVelocity > 0 ? Math.round((v / (maxVelocity * 1.15)) * 100) : 0
+          const isLive = liveRepIndex === i
+          const liveLabelSuffix = isLive
+            ? isNewPeak
+              ? ', latest rep, new set peak'
+              : ', latest rep'
+            : ''
+
+          const barStyle: ViewStyle = expanded
+            ? { height: `${barHeightPct}%`, minHeight: 2, borderTopLeftRadius: 2, borderTopRightRadius: 2, backgroundColor: barBackground }
+            : {
+                minHeight: '100%' as unknown as number,
+                borderTopLeftRadius: 2,
+                borderTopRightRadius: 2,
+                borderBottomLeftRadius: 0,
+                borderBottomRightRadius: 0,
+                backgroundColor: barBackground,
+              }
+
+          const barInner = isLive ? (
+            <Animated.View
+              style={[barStyle, { transform: [{ scale: liveScale }] }]}
+              testID={`velocity-bar-${i}`}
+              accessibilityRole="image"
+              accessibilityLabel={`Rep ${i + 1}: ${formatVelocity(v)} meters per second${liveLabelSuffix}`}
+            />
+          ) : (
+            <View
+              style={barStyle}
+              testID={`velocity-bar-${i}`}
+              accessibilityRole="image"
+              accessibilityLabel={`Rep ${i + 1}: ${formatVelocity(v)} meters per second`}
+            />
+          )
 
           const bar = (
             <View
@@ -198,23 +379,7 @@ export function VelocityStrip({
                   </Text>
                 </Animated.View>
               )}
-              <View
-                style={
-                  expanded
-                    ? { height: `${barHeightPct}%`, minHeight: 2, borderTopLeftRadius: 2, borderTopRightRadius: 2, backgroundColor: zoneHexMap[zone] }
-                    : {
-                        minHeight: '100%' as unknown as number,
-                        borderTopLeftRadius: 2,
-                        borderTopRightRadius: 2,
-                        borderBottomLeftRadius: 0,
-                        borderBottomRightRadius: 0,
-                        backgroundColor: zoneHexMap[zone],
-                      }
-                }
-                testID={`velocity-bar-${i}`}
-                accessibilityRole="image"
-                accessibilityLabel={`Rep ${i + 1}: ${formatVelocity(v)} meters per second`}
-              />
+              {barInner}
             </View>
           )
 
@@ -256,7 +421,7 @@ export function VelocityStrip({
               fontFamily: 'Inter, sans-serif',
             }}
           >
-            {meanZone} {'\u00B7'} {formatVelocity(meanVelocity)} m/s
+            {meanZone} {'·'} {formatVelocity(meanVelocity)} m/s
           </Text>
           <Text
             className="text-text-secondary"

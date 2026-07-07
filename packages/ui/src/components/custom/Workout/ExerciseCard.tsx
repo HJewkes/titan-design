@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useState } from 'react'
 import { View, Text, Pressable } from 'react-native'
-import { VelocityStrip } from './VelocityStrip'
+import { VelocityStrip, type VelocityZoneBandProp } from './VelocityStrip'
 import { PlaceholderStrip } from './PlaceholderStrip'
 import { WeightBadge } from './WeightBadge'
 import { PrBadge } from './PrBadge'
@@ -26,6 +26,8 @@ export interface ExerciseCardProps {
   e1rm?: { value: number; unit: 'lbs' | 'kg' }
   isPR?: boolean
   setVelocities?: number[][]
+  /** Optional velocity-zone bands shared across this exercise's sets (WA bands). */
+  velocityZones?: readonly VelocityZoneBandProp[]
   totalPlannedSets?: number
   sets?: SetRowProps[]
   tempo?: [number, number, number, number]
@@ -106,6 +108,7 @@ function CollapsedCard({
   e1rm,
   isPR,
   setVelocities,
+  velocityZones,
   totalPlannedSets,
   supersetPosition,
 }: ExerciseCardProps) {
@@ -189,6 +192,7 @@ function CollapsedCard({
               <VelocityStrip
                 key={i}
                 velocities={velocities}
+                zones={velocityZones}
                 variant="mini"
                 testID={`exercise-card-velocity-strip-${i}`}
               />

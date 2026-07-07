@@ -29,6 +29,7 @@ export { WorkoutPill, type WorkoutPillProps, type WorkoutPillStatus } from './Wo
 export {
   VelocityStrip,
   type VelocityStripProps,
+  type VelocityZoneBandProp,
   getVelocityZoneColor,
   getVelocityZoneName,
   calculateVelocityLoss,

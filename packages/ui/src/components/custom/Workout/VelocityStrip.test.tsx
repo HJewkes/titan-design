@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import {
@@ -210,8 +210,24 @@ describe('getVelocityZoneName', () => {
 })
 
 describe('calculateVelocityLoss', () => {
-  it('calculates percentage loss from first to last rep', () => {
+  it('calculates percentage loss from running-best to last rep', () => {
+    // Best is the first rep here, so best->last matches the legacy result.
     expect(calculateVelocityLoss([1.0, 0.8])).toBe(20)
+  })
+
+  it('uses the best rep (not the first) as the reference for non-monotonic sets', () => {
+    // best = 1.0 (rep 2), last = 0.6 -> (1.0 - 0.6) / 1.0 = 40%.
+    // Legacy first->last would have been (0.8 - 0.6) / 0.8 = 25%.
+    expect(calculateVelocityLoss([0.8, 1.0, 0.6])).toBe(40)
+  })
+
+  it('clamps to 0 when the set ends on its best rep', () => {
+    expect(calculateVelocityLoss([0.6, 0.8, 1.0])).toBe(0)
+  })
+
+  it('clamps to 0 when a later rep exceeds the first rep', () => {
+    // best = 1.2 (last), so loss is negative pre-clamp -> 0.
+    expect(calculateVelocityLoss([1.0, 0.9, 1.2])).toBe(0)
   })
 
   it('returns 0 for single rep', () => {
@@ -220,6 +236,10 @@ describe('calculateVelocityLoss', () => {
 
   it('returns 0 for empty array', () => {
     expect(calculateVelocityLoss([])).toBe(0)
+  })
+
+  it('returns 0 when the best rep is non-positive', () => {
+    expect(calculateVelocityLoss([0, 0])).toBe(0)
   })
 })
 
@@ -230,6 +250,73 @@ describe('calculateMeanVelocity', () => {
 
   it('returns 0 for empty array', () => {
     expect(calculateMeanVelocity([])).toBe(0)
+  })
+})
+
+// WA-shaped 5-band zone set (compound movement-class defaults, mean m/s).
+const compoundBands = [
+  { id: 'grinding', label: 'Grinding', min: 0, max: 0.35 },
+  { id: 'maximalStrength', label: 'Max Strength', min: 0.35, max: 0.5 },
+  { id: 'strengthSpeed', label: 'Strength-Speed', min: 0.5, max: 0.75 },
+  { id: 'power', label: 'Power', min: 0.75, max: 1.0 },
+  { id: 'speed', label: 'Speed', min: 1.0, max: null },
+] as const
+
+describe('VelocityStrip zones prop', () => {
+  it('colors bars from the supplied bands (mini)', () => {
+    render(<VelocityStrip velocities={[1.1, 0.45]} zones={compoundBands} variant="mini" />)
+    // 1.1 -> speed -> green; 0.45 -> maximalStrength -> red (shared with grinding).
+    expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: '#2ed573' })
+    expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ backgroundColor: '#ff4757' })
+  })
+
+  it('labels the summary row with the band containing the mean velocity', () => {
+    // mean of the sample = 0.80 -> power band.
+    render(<VelocityStrip velocities={sampleVelocities} zones={compoundBands} expanded />)
+    expect(screen.getByTestId('velocity-info-row')).toHaveTextContent('Power')
+  })
+
+  it('falls back to the default scale when zones is absent', () => {
+    render(<VelocityStrip velocities={[1.1]} variant="mini" />)
+    expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: '#2ed573' })
+  })
+})
+
+describe('VelocityStrip live mode', () => {
+  const originalMatchMedia = window.matchMedia
+
+  afterEach(() => {
+    if (originalMatchMedia) window.matchMedia = originalMatchMedia
+    else delete (window as { matchMedia?: unknown }).matchMedia
+  })
+
+  it('marks the latest rep bar in its accessibility label', () => {
+    render(<VelocityStrip velocities={sampleVelocities} liveRepIndex={3} expanded />)
+    expect(
+      screen.getByLabelText(/Rep 4: 0\.68 meters per second, latest rep$/),
+    ).toBeInTheDocument()
+  })
+
+  it('flags a new set peak on the latest bar', () => {
+    render(<VelocityStrip velocities={sampleVelocities} liveRepIndex={0} expanded />)
+    expect(
+      screen.getByLabelText(/Rep 1: 1\.10 meters per second, latest rep, new set peak$/),
+    ).toBeInTheDocument()
+  })
+
+  it('renders without animation when prefers-reduced-motion is set', () => {
+    window.matchMedia = vi.fn().mockReturnValue({
+      matches: true,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    }) as unknown as typeof window.matchMedia
+    render(<VelocityStrip velocities={sampleVelocities} liveRepIndex={0} expanded />)
+    expect(screen.getByTestId('velocity-bar-0')).toBeInTheDocument()
+  })
+
+  it('does not apply live marking in the mini variant', () => {
+    render(<VelocityStrip velocities={sampleVelocities} liveRepIndex={0} variant="mini" />)
+    expect(screen.queryByLabelText(/latest rep/)).not.toBeInTheDocument()
   })
 })
 
