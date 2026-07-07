@@ -1,18 +1,17 @@
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../utils/cn'
 import { Indicator, type IndicatorColor } from '../ui/indicator'
-import { Pill } from '../ui/pill'
 
 export type DeviceRowState = 'connected' | 'available' | 'degraded' | 'lost'
 
 export interface Device {
   /** Stable device id (e.g. "Voltra-A3F2"). */
   id: string
-  /** User-assigned nickname/label (e.g. "Left Cable"). */
+  /** User-assigned slot/device name (e.g. "Left Cable"). */
   nickname: string
-  /** Bound slot, or null when unbound/available. */
+  /** Bound slot, or null when unbound/available (used for the menu's bound/available tally). */
   slot?: 'L' | 'R' | null
-  /** Connection/availability state. */
+  /** Connection/availability state → the status dot color. */
   state: DeviceRowState
 }
 
@@ -28,26 +27,14 @@ const stateColor: Record<DeviceRowState, IndicatorColor> = {
   degraded: 'warning',
   lost: 'error-vivid',
 }
-const stateLabel: Record<DeviceRowState, string> = {
-  connected: 'connected',
-  available: 'available',
-  degraded: 'degraded',
-  lost: 'lost',
-}
-const stateTextClass: Record<DeviceRowState, string> = {
-  connected: 'text-status-success-vivid',
-  available: 'text-status-info',
-  degraded: 'text-status-warning',
-  lost: 'text-status-error-vivid',
-}
 
 /**
- * One device in the DeviceMenu: status dot · nickname + slot badge · id ·
- * connection state. Composes Indicator + Pill. S1 · DeviceRow.
+ * One device in the DeviceMenu: status dot · name · Bluetooth id. The dot color
+ * carries the connection state (no redundant status text); the name is the one
+ * slot label (no duplicate slot badge). S1 · DeviceRow.
  */
 export function DeviceRow({ device, onPress, className, ...props }: DeviceRowProps) {
   const Wrapper = onPress ? Pressable : View
-  const bound = device.slot ? `SLOT ${device.slot}` : 'unbound'
   return (
     <Wrapper
       {...(onPress ? { onPress, accessibilityRole: 'button' } : {})}
@@ -55,25 +42,15 @@ export function DeviceRow({ device, onPress, className, ...props }: DeviceRowPro
       {...props}
     >
       <Indicator size="md" color={stateColor[device.state]} />
-      <View className="flex-1">
-        <View className="flex-row items-center gap-[6px]">
-          <Text
-            className={cn(
-              'font-bold text-[12px]',
-              device.slot ? 'text-text-primary' : 'text-text-secondary'
-            )}
-          >
-            {device.nickname}
-          </Text>
-          <Pill size="xs" variant="outline" color="default">
-            {bound}
-          </Pill>
-        </View>
-        <Text className="font-mono text-[10px] text-text-tertiary">{device.id}</Text>
-      </View>
-      <Text className={cn('font-mono text-[10px]', stateTextClass[device.state])}>
-        {stateLabel[device.state]}
+      <Text
+        className={cn(
+          'flex-1 font-bold text-[12px]',
+          device.slot ? 'text-text-primary' : 'text-text-secondary'
+        )}
+      >
+        {device.nickname}
       </Text>
+      <Text className="font-mono text-[10px] text-text-tertiary">{device.id}</Text>
     </Wrapper>
   )
 }

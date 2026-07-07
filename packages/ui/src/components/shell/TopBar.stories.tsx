@@ -17,6 +17,9 @@ const DEVICES_LOST: Device[] = [
   { id: 'Voltra-77E0', nickname: 'Spare', slot: null, state: 'available' },
 ]
 
+// A fixed moment for the parity comparison (so both sides show the same time).
+const FIXED_TIME = new Date(2024, 0, 1, 16, 12)
+
 const meta: Meta<typeof TopBar> = {
   title: 'Shell/TopBar',
   component: TopBar,
@@ -25,19 +28,19 @@ const meta: Meta<typeof TopBar> = {
 export default meta
 type Story = StoryObj<typeof TopBar>
 
-/** The resolved shipping bar — Live, set active. Click the device glyph to open the menu. */
+/** The resolved shipping bar — Live, set active. The clock ticks live (DateTime `live`). Click the glyph for devices. */
 export const Live: Story = {
-  args: { state: 'live', devices: DEVICES, time: '16:12' },
+  render: () => <TopBar state="live" devices={DEVICES} />,
 }
 
-/** All session states, plus a device-lost fault (glyph red + alert badge, state stays LIVE). */
+/** All session states, plus a device-lost fault (glyph turns red, state stays LIVE). */
 export const States: Story = {
   render: () => (
     <View className="gap-2 bg-background-base p-3">
-      <TopBar state="live" devices={DEVICES} time="16:12" />
-      <TopBar state="rest" devices={DEVICES} time="16:14" />
-      <TopBar state="idle" devices={DEVICES} time="16:31" />
-      <TopBar state="live" devices={DEVICES_LOST} time="16:12" />
+      <TopBar state="live" devices={DEVICES} />
+      <TopBar state="rest" devices={DEVICES} />
+      <TopBar state="idle" devices={DEVICES} />
+      <TopBar state="live" devices={DEVICES_LOST} />
     </View>
   ),
 }
@@ -47,13 +50,13 @@ export const Responsive: Story = {
   render: () => (
     <View className="gap-3 bg-background-base p-3">
       <View style={{ width: 1280 }}>
-        <TopBar state="live" devices={DEVICES} time="16:12" />
+        <TopBar state="live" devices={DEVICES} />
       </View>
       <View style={{ width: 820 }}>
-        <TopBar state="live" devices={DEVICES} time="16:12" />
+        <TopBar state="live" devices={DEVICES} />
       </View>
       <View style={{ width: 390 }}>
-        <TopBar state="live" devices={DEVICES} time="16:12" />
+        <TopBar state="live" devices={DEVICES} />
       </View>
     </View>
   ),
@@ -131,7 +134,7 @@ export const Comparison: Story = {
           <TopBar
             state={row.titan.state}
             devices={row.titan.lost ? DEVICES_LOST : DEVICES}
-            time={row.html.time}
+            time={FIXED_TIME}
           />
         </div>
       ))}

@@ -1,8 +1,8 @@
-import React from 'react'
+import { useEffect, useState } from 'react'
 import { Text, type TextProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 
-export type DateTimeFormat = 
+export type DateTimeFormat =
   | 'date' // 2024-01-15
   | 'time' // 14:30
   | 'datetime' // 2024-01-15 14:30
@@ -13,14 +13,20 @@ export type DateTimeFormat =
   | 'full' // Monday, January 15, 2024
 
 export interface DateTimeProps extends TextProps {
-  /** Date value (timestamp in ms, Date object, or ISO string) */
-  value: number | Date | string | null | undefined
+  /** Date value (timestamp in ms, Date object, or ISO string). Optional when `live`. */
+  value?: number | Date | string | null | undefined
   /** Display format */
   format?: DateTimeFormat
   /** Custom format string (overrides format) */
   customFormat?: string
   /** Whether to show in UTC */
   isUTC?: boolean
+  /** Force 12h (true) or 24h (false) for time/datetime formats; locale default when omitted. */
+  hour12?: boolean
+  /** Track the current time and re-render on an interval (ignores `value`). For clocks / relative time. */
+  live?: boolean
+  /** Refresh interval in ms when `live` (default 1000). */
+  refreshMs?: number
   /** Fallback text when value is null/undefined */
   fallback?: string
   /** Text color */
@@ -42,10 +48,11 @@ const colorStyles = {
 function formatDate(
   value: number | Date | string,
   format: DateTimeFormat,
-  isUTC: boolean
+  isUTC: boolean,
+  hour12?: boolean
 ): string {
   const date = value instanceof Date ? value : new Date(value)
-  
+
   if (isNaN(date.getTime())) {
     return 'Invalid Date'
   }
@@ -57,7 +64,7 @@ function formatDate(
 
   // Use Intl.DateTimeFormat for locale-aware formatting
   const options: Intl.DateTimeFormatOptions = {}
-  
+
   switch (format) {
     case 'date':
       options.year = 'numeric'
@@ -101,6 +108,10 @@ function formatDate(
     options.timeZone = 'UTC'
   }
 
+  if (hour12 !== undefined && (options.hour !== undefined || options.minute !== undefined)) {
+    options.hour12 = hour12
+  }
+
   return new Intl.DateTimeFormat(undefined, options).format(date)
 }
 
@@ -121,7 +132,7 @@ function getRelativeTime(date: Date): string {
   // Use Intl.RelativeTimeFormat if available
   if (typeof Intl !== 'undefined' && Intl.RelativeTimeFormat) {
     const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' })
-    
+
     if (Math.abs(diffSecs) < 60) {
       return rtf.format(diffSecs, 'second')
     }
@@ -197,12 +208,25 @@ export function DateTime({
   format = 'datetime',
   customFormat,
   isUTC = false,
+  hour12,
+  live = false,
+  refreshMs = 1000,
   fallback = '-',
   color = 'inherit',
   className,
   ...props
 }: DateTimeProps) {
-  if (value === null || value === undefined) {
+  // When live, track "now" and re-render on an interval (the value prop is ignored).
+  const [now, setNow] = useState(() => Date.now())
+  useEffect(() => {
+    if (!live) return
+    const id = setInterval(() => setNow(Date.now()), refreshMs)
+    return () => clearInterval(id)
+  }, [live, refreshMs])
+
+  const effectiveValue = live ? now : value
+
+  if (effectiveValue === null || effectiveValue === undefined) {
     return (
       <Text className={cn(colorStyles[color], className)} {...props}>
         {fallback}
@@ -210,7 +234,7 @@ export function DateTime({
     )
   }
 
-  const formattedDate = formatDate(value, format, isUTC)
+  const formattedDate = formatDate(effectiveValue, format, isUTC, hour12)
 
   return (
     <Text className={cn(colorStyles[color], className)} {...props}>

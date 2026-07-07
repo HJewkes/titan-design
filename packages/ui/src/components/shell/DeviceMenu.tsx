@@ -14,11 +14,11 @@ export interface DeviceMenuProps {
 }
 
 /** Aggregate the bound devices into a single glyph state (worst-of). */
-function aggregateStatus(devices: Device[]): { status: DeviceConnState; alert: boolean } {
+function aggregateStatus(devices: Device[]): DeviceConnState {
   const bound = devices.filter((d) => d.slot)
-  if (bound.some((d) => d.state === 'lost')) return { status: 'lost', alert: true }
-  if (bound.some((d) => d.state === 'degraded')) return { status: 'degraded', alert: false }
-  return { status: 'connected', alert: false }
+  if (bound.some((d) => d.state === 'lost')) return 'lost'
+  if (bound.some((d) => d.state === 'degraded')) return 'degraded'
+  return 'connected'
 }
 
 /**
@@ -33,14 +33,14 @@ export function DeviceMenu({
   onSelectDevice,
   className,
 }: DeviceMenuProps) {
-  const { status, alert } = aggregateStatus(devices)
+  const status = aggregateStatus(devices)
   const boundCount = devices.filter((d) => d.slot).length
   const availCount = devices.filter((d) => !d.slot).length
 
   return (
     <Popover placement="bottom" isOpen={isOpen} onOpenChange={onOpenChange} className={className}>
       <PopoverTrigger>
-        <DeviceIndicator status={status} alert={alert} />
+        <DeviceIndicator status={status} />
       </PopoverTrigger>
       <PopoverContent className="right-0 left-auto mt-[10px] w-[326px] bg-surface-elevated border border-border-strong rounded-[10px] p-[7px]">
         <Text className="font-mono text-[9px] tracking-[0.8px] uppercase text-text-tertiary px-2 pt-[6px] pb-2">

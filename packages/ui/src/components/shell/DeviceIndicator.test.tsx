@@ -19,8 +19,8 @@ describe('DeviceIndicator', () => {
     expect(onPress).toHaveBeenCalledTimes(1)
   })
 
-  it('renders an alert badge without crashing', () => {
-    const { container } = render(<DeviceIndicator status="lost" alert />)
+  it('renders the lost state (red glyph, no separate badge)', () => {
+    const { container } = render(<DeviceIndicator status="lost" />)
     expect(container.firstChild).toBeInTheDocument()
   })
 })

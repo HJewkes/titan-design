@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { View, Text, type LayoutChangeEvent } from 'react-native'
+import { View, type LayoutChangeEvent } from 'react-native'
 import { cn } from '../../utils/cn'
 import { Divider } from '../ui/divider'
+import { DateTime } from '../custom/DateTime'
 import { BrandLockup } from './BrandLockup'
 import { SessionStatePill, type SessionState } from './SessionStatePill'
 import { DeviceMenu } from './DeviceMenu'
@@ -12,8 +13,8 @@ export interface TopBarProps {
   state: SessionState
   /** Devices for the connection glyph + dropdown. */
   devices: Device[]
-  /** Pre-formatted 24h time string (e.g. "16:12"). Consumer owns the clock/format util. */
-  time?: string
+  /** The moment to display in the clock (Date/timestamp). Omit for a live ticking clock. */
+  time?: number | Date
   /** Brand subtitle. Default "wall dashboard". */
   subtitle?: string
   /** Force the subtitle on/off; defaults to container-responsive (hidden below ~1024px). */
@@ -48,7 +49,7 @@ export function TopBar({
   const onLayout = (e: LayoutChangeEvent) => setWidth(e.nativeEvent.layout.width)
 
   const subtitleVisible = showSubtitle ?? width >= SUBTITLE_MIN
-  const clockVisible = (showClock ?? width >= CLOCK_MIN) && !!time
+  const clockVisible = showClock ?? width >= CLOCK_MIN
 
   return (
     <View
@@ -75,9 +76,14 @@ export function TopBar({
         {clockVisible ? (
           <>
             <Divider orientation="vertical" className="h-4 bg-border-prominent" />
-            <Text className="font-mono text-[11px] text-text-secondary min-w-[38px] text-right">
-              {time}
-            </Text>
+            <DateTime
+              value={time}
+              live={time == null}
+              format="time"
+              hour12={false}
+              color="secondary"
+              className="font-mono text-[11px] min-w-[38px] text-right"
+            />
           </>
         ) : null}
       </View>

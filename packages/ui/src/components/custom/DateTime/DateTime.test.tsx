@@ -39,6 +39,22 @@ describe('DateTime', () => {
     expect(screen.getByText('N/A')).toBeInTheDocument()
   })
 
+  it('forces 24h time with hour12={false}', () => {
+    render(<DateTime value={new Date(2024, 0, 1, 16, 12)} format="time" hour12={false} />)
+    expect(screen.getByText('16:12')).toBeInTheDocument()
+  })
+
+  it('forces 12h time with hour12={true}', () => {
+    render(<DateTime value={new Date(2024, 0, 1, 16, 12)} format="time" hour12 />)
+    expect(screen.getByText(/4:12/)).toBeInTheDocument()
+  })
+
+  it('renders a live clock (ignores value, shows current time)', () => {
+    const { container } = render(<DateTime live format="time" hour12={false} />)
+    // renders a HH:MM string without crashing
+    expect(container.textContent).toMatch(/^\d{1,2}:\d{2}/)
+  })
+
   it('renders Invalid Date for bad input', () => {
     render(<DateTime value="not-a-date" />)
     expect(screen.getByText('Invalid Date')).toBeInTheDocument()
@@ -136,9 +152,7 @@ describe('DateTime', () => {
 
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
-      const { container } = render(
-        <DateTime value={testDate} format="medium" isUTC />
-      )
+      const { container } = render(<DateTime value={testDate} format="medium" isUTC />)
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
