@@ -31,6 +31,12 @@
       "import": "./dist/bodymap.mjs",
       "require": "./dist/bodymap.js"
     },
+    "./pages": {
+      "react-native": "./src/pages.ts",
+      "types": "./dist/pages.d.ts",
+      "import": "./dist/pages.mjs",
+      "require": "./dist/pages.js"
+    },
     "./theme": {
       "react-native": "./src/theme/index.ts",
       "types": "./dist/theme/index.d.ts",
@@ -67,8 +73,6 @@
     "prepublishOnly": "tsup && vitest --run"
   },
   "peerDependencies": {
-    "lucide-react": ">=0.400.0",
-    "lucide-react-native": ">=0.400.0",
     "nativewind": "^4.2.1",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0",
@@ -78,9 +82,6 @@
     "react-native-web": ">=0.19.0"
   },
   "peerDependenciesMeta": {
-    "lucide-react-native": {
-      "optional": true
-    },
     "nativewind": {
       "optional": true
     },
@@ -125,7 +126,6 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "jest-axe": "^9.0.0",
     "jsdom": "^25.0.0",
-    "lucide-react": "^0.469.0",
     "nativewind": "^4.2.1",
     "prettier": "^3.8.1",
     "react": "^18.3.0",

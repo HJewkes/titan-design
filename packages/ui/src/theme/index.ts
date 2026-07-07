@@ -1,43 +1,8 @@
-// Theme exports
-export * from './tokens'
-export * from './config'
-export * from './shadows'
-export * from './elevation'
-export * from './manifest'
-export { ThemeProvider, type ThemeProviderProps, type ThemeProviderMode } from './ThemeProvider'
-export { resolveColor } from './resolve-color'
-
-// Re-export commonly used items
-export { getSemanticColors, type ThemeMode } from './tokens/semantic'
-export { getThemeCSSVars, gluestackConfig } from './config'
-export {
-  neumorphicShadows,
-  // Color math utilities (HSV-based)
-  lighten,
-  darken,
-  getHoverColors,
-  isDark,
-  hexToRgb,
-  rgbToHsv,
-  // Shadow creation functions
-  createRaisedShadow,
-  createRaisedHoverShadow,
-  createPressedShadow,
-  createPressedHoverShadow,
-  createFlatShadow,
-  shadowColors,
-  type ShadowIntensity,
-  type ShadowSurface,
-} from './shadows'
-export {
-  getElevationConfig,
-  getElevationSurface,
-  getElevationShadow,
-  getBaseSurfaceColor,
-  getValidatedElevation,
-  componentElevationRanges,
-  type ElevationLevel,
-  type ElevationConfig,
-  type ComponentType,
-} from './elevation'
-export * from './presets'
+// Theme subpath entry: @titan-design/react-ui/theme
+//
+// The full theme surface. This is the nativewind-free `./barrel` PLUS the
+// `ThemeProvider` value — which imports `nativewind` and therefore does NOT
+// belong on the root barrel (that split happened in titan 0.5.0). Native
+// consumers wrap their app root in `<ThemeProvider>` and import it from HERE.
+export * from './barrel'
+export { ThemeProvider } from './ThemeProvider'

@@ -3,8 +3,9 @@
 // Components
 export * from './components'
 
-// Theme
-export * from './theme'
+// Theme (nativewind-free surface; ThemeProvider value lives on the /theme
+// subpath so the root barrel does not pull the nativewind import chain)
+export * from './theme/barrel'
 
 // Utilities
 export * from './utils'

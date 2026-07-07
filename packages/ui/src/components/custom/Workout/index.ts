@@ -108,37 +108,29 @@ export type {
   TrainingStatusMuscle,
   TrainingStatusSummary,
 } from './TrainingStatusPage'
-export {
-  ProgramPlanningPage,
-  deriveNavLevel,
-  toProgressBarMesos,
-  findMeso,
-  findWeek,
-  findWorkout,
-  buildBreadcrumbs,
-  type ProgramPlanningPageProps,
-  type PlanMeso,
-  type PlanWeek,
-  type PlanWorkout,
-  type ProgramNavLevel,
-  type ProgramSelection,
-  type ProgramBreadcrumb,
+// ActiveWorkoutPage / ExerciseDetailPage / ProgramPlanningPage are page-level
+// organisms demoted to the `@titan-design/react-ui/pages` subpath (titan 0.5.0).
+// Their VALUE exports (components + derivation helpers) live there; only
+// type-only re-exports stay on this barrel (erased at build, no runtime pull).
+export type {
+  ProgramPlanningPageProps,
+  PlanMeso,
+  PlanWeek,
+  PlanWorkout,
+  ProgramNavLevel,
+  ProgramSelection,
+  ProgramBreadcrumb,
 } from './ProgramPlanningPage'
-export {
-  ExerciseDetailPage,
-  deriveExerciseStats,
-  toExerciseCardProps,
-  summarizeVbt,
-  EXERCISE_DETAIL_TABS,
-  type ExerciseDetailPageProps,
-  type ExerciseDetailTab,
-  type ExerciseDetailHeader,
-  type ExerciseDetailEntry,
-  type ExerciseTrend,
-  type ExerciseVbtSet,
-  type ExerciseVbt,
-  type ExerciseDetailStats,
-  type VbtSummary,
+export type {
+  ExerciseDetailPageProps,
+  ExerciseDetailTab,
+  ExerciseDetailHeader,
+  ExerciseDetailEntry,
+  ExerciseTrend,
+  ExerciseVbtSet,
+  ExerciseVbt,
+  ExerciseDetailStats,
+  VbtSummary,
 } from './ExerciseDetailPage'
 // muscleTaxonomy imports `react-native-body-highlighter` at runtime. Its value
 // exports (incl. the MuscleGroup / SimpleMuscleGroup enums) live behind the
@@ -149,20 +141,13 @@ export type {
   MovementCategory,
   VolumeLandmarks,
 } from './muscleTaxonomy'
-export {
-  ActiveWorkoutPage,
-  countCompletedSets,
-  deriveWorkoutProgress,
-  findActiveExercise,
-  statusToCardState,
-  toActiveCardProps,
-  groupExercises,
-  type ActiveWorkoutPageProps,
-  type ActiveWorkoutExercise,
-  type ActiveWorkoutSuperset,
-  type ActiveWorkoutInput,
-  type ActiveWorkoutRest,
-  type ActiveExerciseStatus,
-  type WorkoutProgress,
-  type WorkoutGroup,
+export type {
+  ActiveWorkoutPageProps,
+  ActiveWorkoutExercise,
+  ActiveWorkoutSuperset,
+  ActiveWorkoutInput,
+  ActiveWorkoutRest,
+  ActiveExerciseStatus,
+  WorkoutProgress,
+  WorkoutGroup,
 } from './ActiveWorkoutPage'
