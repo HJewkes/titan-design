@@ -20,9 +20,9 @@ describe('Gauge', () => {
     const { rerender } = render(<Gauge value={30} />)
     expect(screen.getByTestId('gauge-value')).toHaveStyle({ color: '#D14343' })
     rerender(<Gauge value={70} />)
-    expect(screen.getByTestId('gauge-value')).toHaveStyle({ color: '#FFB020' })
+    expect(screen.getByTestId('gauge-value')).toHaveStyle({ color: '#F9B415' })
     rerender(<Gauge value={90} />)
-    expect(screen.getByTestId('gauge-value')).toHaveStyle({ color: '#14B8A6' })
+    expect(screen.getByTestId('gauge-value')).toHaveStyle({ color: '#2ED573' })
   })
 
   it('honors a single-color override over thresholds', () => {

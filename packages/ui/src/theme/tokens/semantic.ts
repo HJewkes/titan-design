@@ -17,58 +17,60 @@
  * - interactive-* : Hover/focus/active/disabled states
  */
 
-import { primitiveColors as p, discreteRainbow } from './primitives'
+import { primitiveColors as p, primitiveRamps as ramp, discreteRainbow } from './primitives'
 
 // Light mode semantic colors (default)
 export const semanticColorsLight = {
   // Brand colors (brand-*)
-  'brand-primary': p.accent[400],              // #FF7900
-  'brand-primary-light': p.accent[200],        // #FF9630
-  'brand-primary-dark': p.accent[700],         // #D0620C
+  'brand-primary': ramp.orange[400],           // #FF7900
+  'brand-primary-light': ramp.orange[300],     // #FFA063
+  'brand-primary-dark': ramp.orange[500],      // #DA5F00
   'brand-primary-subtle': 'rgba(255, 121, 0, 0.08)',
-  'brand-primary-hover': p.accent[500],
-  'brand-primary-active': p.accent[600],
+  'brand-primary-hover': ramp.orange[500],     // #DA5F00
+  'brand-primary-active': ramp.orange[600],    // #B94A00
 
-  'brand-secondary': p.steel[500],           // #406D87
-  'brand-secondary-light': p.steel[300],     // #678498
-  'brand-secondary-dark': p.steel[700],      // #32556D
-  'brand-secondary-subtle': 'rgba(64, 109, 135, 0.08)',
-  'brand-secondary-hover': p.steel[600],
-  'brand-secondary-active': p.steel[700],
+  'brand-secondary': ramp.cyan[600],         // #307B9B (steel→cyan)
+  'brand-secondary-light': ramp.cyan[500],   // #2697B7
+  'brand-secondary-dark': ramp.cyan[700],    // #2A617F
+  'brand-secondary-subtle': 'rgba(48, 123, 155, 0.08)',
+  'brand-secondary-hover': ramp.cyan[700],   // #2A617F
+  'brand-secondary-active': ramp.cyan[800],  // #22465F
 
   // Text on brand backgrounds (on-*)
   'on-brand-primary': p.white,
   'on-brand-secondary': p.white,
 
   // Status colors (status-*)
-  'status-success': p.teal[500],             // #14B8A6
-  'status-success-light': p.teal[400],       // #43C6B7
-  'status-success-dark': p.teal[700],        // #0E8074
-  'status-success-subtle': p.teal[50],
+  'status-success': ramp.green[300],         // #2ED573 (teal→green; unified with old vivid)
+  'status-success-light': ramp.green[200],   // #58F69E
+  'status-success-dark': ramp.green[600],    // #298732
+  'status-success-subtle': ramp.green[50],   // #E3FFEE
 
-  'status-error': p.red[600],                // #D14343
-  'status-error-light': p.red[400],          // #DA6868
-  'status-error-dark': p.red[700],           // #922E2E
-  'status-error-subtle': p.red[50],
+  'status-error': ramp.red[600],             // #D14343
+  'status-error-light': ramp.red[500],       // #E05254
+  'status-error-dark': ramp.red[700],        // #A4221C
+  'status-error-subtle': ramp.red[50],       // #FFF4F4
 
-  'status-success-vivid': p.greenVivid[500], // #2ED573 - vivid live/go green
-  'status-success-vivid-light': p.greenVivid[400],
-  'status-success-vivid-dark': p.greenVivid[700],
+  // Deprecated alias — unified onto the green ramp (== status-success); kept for
+  // API compatibility (Indicator `color="success-vivid"`), to be dropped later.
+  'status-success-vivid': ramp.green[300],   // #2ED573
+  'status-success-vivid-light': ramp.green[200],
+  'status-success-vivid-dark': ramp.green[600],
   'status-success-vivid-subtle': 'rgba(46, 213, 115, 0.12)',
   'status-error-vivid': p.redVivid[500],     // #FF4757 - vivid alert red
   'status-error-vivid-light': p.redVivid[400],
   'status-error-vivid-dark': p.redVivid[700],
   'status-error-vivid-subtle': 'rgba(255, 71, 87, 0.12)',
 
-  'status-warning': p.amber[500],            // #FFB020
-  'status-warning-light': p.amber[400],      // #FFBF4C
-  'status-warning-dark': p.amber[600],       // #B27B16
-  'status-warning-subtle': p.amber[50],
+  'status-warning': ramp.amber[300],         // #F9B415
+  'status-warning-light': ramp.amber[200],   // #FFD352
+  'status-warning-dark': ramp.amber[500],    // #C27400
+  'status-warning-subtle': ramp.amber[50],   // #FFF7DD
 
-  'status-info': p.sky[500],                 // #2196F3
-  'status-info-light': p.sky[400],           // #64B6F7
-  'status-info-dark': p.sky[700],            // #0B79D0
-  'status-info-subtle': p.sky[50],
+  'status-info': ramp.blue[500],             // #2196F3
+  'status-info-light': ramp.blue[300],       // #78C2FF
+  'status-info-dark': ramp.blue[600],        // #1072CB
+  'status-info-subtle': ramp.blue[50],       // #EFF8FF
 
   // Text on status backgrounds (on-status-*)
   'on-status-success': p.white,
@@ -156,52 +158,53 @@ export const semanticColorsLight = {
 // Dark mode semantic colors
 export const semanticColorsDark = {
   // Brand colors stay the same in dark mode
-  'brand-primary': p.accent[400],
-  'brand-primary-light': p.accent[200],
-  'brand-primary-dark': p.accent[700],
+  'brand-primary': ramp.orange[400],
+  'brand-primary-light': ramp.orange[300],
+  'brand-primary-dark': ramp.orange[500],
   'brand-primary-subtle': 'rgba(255, 121, 0, 0.12)',
-  'brand-primary-hover': p.accent[300],
-  'brand-primary-active': p.accent[200],
+  'brand-primary-hover': ramp.orange[300],
+  'brand-primary-active': ramp.orange[200],
 
-  'brand-secondary': p.steel[500],
-  'brand-secondary-light': p.steel[300],
-  'brand-secondary-dark': p.steel[700],
-  'brand-secondary-subtle': 'rgba(64, 109, 135, 0.12)',
-  'brand-secondary-hover': p.steel[400],
-  'brand-secondary-active': p.steel[300],
+  'brand-secondary': ramp.cyan[600],
+  'brand-secondary-light': ramp.cyan[500],
+  'brand-secondary-dark': ramp.cyan[700],
+  'brand-secondary-subtle': 'rgba(48, 123, 155, 0.12)',
+  'brand-secondary-hover': ramp.cyan[500],
+  'brand-secondary-active': ramp.cyan[400],
 
   // Text on brand backgrounds
   'on-brand-primary': p.white,
   'on-brand-secondary': p.white,
 
   // Status colors
-  'status-success': p.teal[500],
-  'status-success-light': p.teal[400],
-  'status-success-dark': p.teal[700],
-  'status-success-subtle': 'rgba(20, 184, 166, 0.12)',
+  'status-success': ramp.green[300],
+  'status-success-light': ramp.green[200],
+  'status-success-dark': ramp.green[600],
+  'status-success-subtle': 'rgba(46, 213, 115, 0.12)',
 
-  'status-error': p.red[600],
-  'status-error-light': p.red[400],
-  'status-error-dark': p.red[700],
+  'status-error': ramp.red[600],
+  'status-error-light': ramp.red[500],
+  'status-error-dark': ramp.red[700],
   'status-error-subtle': 'rgba(209, 67, 67, 0.12)',
 
-  'status-success-vivid': p.greenVivid[500],
-  'status-success-vivid-light': p.greenVivid[400],
-  'status-success-vivid-dark': p.greenVivid[700],
+  // Deprecated alias — unified onto the green ramp (== status-success).
+  'status-success-vivid': ramp.green[300],
+  'status-success-vivid-light': ramp.green[200],
+  'status-success-vivid-dark': ramp.green[600],
   'status-success-vivid-subtle': 'rgba(46, 213, 115, 0.12)',
   'status-error-vivid': p.redVivid[500],
   'status-error-vivid-light': p.redVivid[400],
   'status-error-vivid-dark': p.redVivid[700],
   'status-error-vivid-subtle': 'rgba(255, 71, 87, 0.12)',
 
-  'status-warning': p.amber[500],
-  'status-warning-light': p.amber[400],
-  'status-warning-dark': p.amber[600],
-  'status-warning-subtle': 'rgba(255, 176, 32, 0.12)',
+  'status-warning': ramp.amber[300],
+  'status-warning-light': ramp.amber[200],
+  'status-warning-dark': ramp.amber[500],
+  'status-warning-subtle': 'rgba(249, 180, 21, 0.12)',
 
-  'status-info': p.sky[500],
-  'status-info-light': p.sky[400],
-  'status-info-dark': p.sky[700],
+  'status-info': ramp.blue[500],
+  'status-info-light': ramp.blue[300],
+  'status-info-dark': ramp.blue[600],
   'status-info-subtle': 'rgba(33, 150, 243, 0.12)',
 
   // Text on status backgrounds

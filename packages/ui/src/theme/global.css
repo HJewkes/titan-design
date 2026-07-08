@@ -16,32 +16,32 @@
   /* Dark mode (default) */
   :root {
     --color-brand-primary: #FF7900;
-    --color-brand-primary-light: #FF9630;
-    --color-brand-primary-dark: #D0620C;
+    --color-brand-primary-light: #FFA063;
+    --color-brand-primary-dark: #DA5F00;
     --color-brand-primary-subtle: rgba(255, 121, 0, 0.12);
-    --color-brand-secondary: #406D87;
-    --color-brand-secondary-light: #678498;
-    --color-brand-secondary-dark: #32556D;
-    --color-brand-secondary-subtle: rgba(64, 109, 135, 0.12);
-    --color-brand-primary-hover: #FF8500;
-    --color-brand-primary-active: #FF9630;
-    --color-brand-secondary-hover: #557488;
-    --color-brand-secondary-active: #678498;
+    --color-brand-secondary: #307B9B;
+    --color-brand-secondary-light: #2697B7;
+    --color-brand-secondary-dark: #2A617F;
+    --color-brand-secondary-subtle: rgba(48, 123, 155, 0.12);
+    --color-brand-primary-hover: #FFA063;
+    --color-brand-primary-active: #FFC7A2;
+    --color-brand-secondary-hover: #2697B7;
+    --color-brand-secondary-active: #01B5D1;
 
     --color-on-brand-primary: #FFFFFF;
     --color-on-brand-secondary: #FFFFFF;
 
-    --color-status-success: #14B8A6;
-    --color-status-success-light: #43C6B7;
-    --color-status-success-dark: #0E8074;
-    --color-status-success-subtle: rgba(20, 184, 166, 0.12);
+    --color-status-success: #2ED573;
+    --color-status-success-light: #58F69E;
+    --color-status-success-dark: #298732;
+    --color-status-success-subtle: rgba(46, 213, 115, 0.12);
     --color-status-error: #D14343;
-    --color-status-error-light: #DA6868;
-    --color-status-error-dark: #922E2E;
+    --color-status-error-light: #E05254;
+    --color-status-error-dark: #A4221C;
     --color-status-error-subtle: rgba(209, 67, 67, 0.12);
     --color-status-success-vivid: #2ED573;
-    --color-status-success-vivid-light: #47DE84;
-    --color-status-success-vivid-dark: #1A9950;
+    --color-status-success-vivid-light: #58F69E;
+    --color-status-success-vivid-dark: #298732;
     --color-status-success-vivid-subtle: rgba(46, 213, 115, 0.12);
     --color-status-error-vivid: #FF4757;
     --color-status-error-vivid-light: #FF6070;
@@ -50,13 +50,13 @@
     --color-status-success-vivid-rgb: 46, 213, 115;
     --color-status-error-vivid-rgb: 255, 71, 87;
     --color-border-prominent: #3C3C3C;
-    --color-status-warning: #FFB020;
-    --color-status-warning-light: #FFBF4C;
-    --color-status-warning-dark: #B27B16;
-    --color-status-warning-subtle: rgba(255, 176, 32, 0.12);
+    --color-status-warning: #F9B415;
+    --color-status-warning-light: #FFD352;
+    --color-status-warning-dark: #C27400;
+    --color-status-warning-subtle: rgba(249, 180, 21, 0.12);
     --color-status-info: #2196F3;
-    --color-status-info-light: #64B6F7;
-    --color-status-info-dark: #0B79D0;
+    --color-status-info-light: #78C2FF;
+    --color-status-info-dark: #1072CB;
     --color-status-info-subtle: rgba(33, 150, 243, 0.12);
 
     --color-on-status-success: #FFFFFF;
@@ -130,10 +130,10 @@
 
     /* RGB decomposed values for glow shadows */
     --color-brand-primary-rgb: 255, 121, 0;
-    --color-brand-secondary-rgb: 64, 109, 135;
-    --color-status-success-rgb: 20, 184, 166;
+    --color-brand-secondary-rgb: 48, 123, 155;
+    --color-status-success-rgb: 46, 213, 115;
     --color-status-error-rgb: 209, 67, 67;
-    --color-status-warning-rgb: 255, 176, 32;
+    --color-status-warning-rgb: 249, 180, 21;
     --color-status-info-rgb: 33, 150, 243;
     --color-background-base-rgb: 16, 16, 16;
 
@@ -156,32 +156,32 @@
   .light,
   :root.light {
     --color-brand-primary: #FF7900;
-    --color-brand-primary-light: #FF9630;
-    --color-brand-primary-dark: #D0620C;
+    --color-brand-primary-light: #FFA063;
+    --color-brand-primary-dark: #DA5F00;
     --color-brand-primary-subtle: rgba(255, 121, 0, 0.08);
-    --color-brand-secondary: #406D87;
-    --color-brand-secondary-light: #678498;
-    --color-brand-secondary-dark: #32556D;
-    --color-brand-secondary-subtle: rgba(64, 109, 135, 0.08);
-    --color-brand-primary-hover: #F56C00;
-    --color-brand-primary-active: #E06D10;
-    --color-brand-secondary-hover: #39617A;
-    --color-brand-secondary-active: #32556D;
+    --color-brand-secondary: #307B9B;
+    --color-brand-secondary-light: #2697B7;
+    --color-brand-secondary-dark: #2A617F;
+    --color-brand-secondary-subtle: rgba(48, 123, 155, 0.08);
+    --color-brand-primary-hover: #DA5F00;
+    --color-brand-primary-active: #B94A00;
+    --color-brand-secondary-hover: #2A617F;
+    --color-brand-secondary-active: #22465F;
 
     --color-on-brand-primary: #FFFFFF;
     --color-on-brand-secondary: #FFFFFF;
 
-    --color-status-success: #14B8A6;
-    --color-status-success-light: #43C6B7;
-    --color-status-success-dark: #0E8074;
-    --color-status-success-subtle: #F0FDFA;
+    --color-status-success: #2ED573;
+    --color-status-success-light: #58F69E;
+    --color-status-success-dark: #298732;
+    --color-status-success-subtle: #E3FFEE;
     --color-status-error: #D14343;
-    --color-status-error-light: #DA6868;
-    --color-status-error-dark: #922E2E;
-    --color-status-error-subtle: #FEF2F2;
+    --color-status-error-light: #E05254;
+    --color-status-error-dark: #A4221C;
+    --color-status-error-subtle: #FFF4F4;
     --color-status-success-vivid: #2ED573;
-    --color-status-success-vivid-light: #47DE84;
-    --color-status-success-vivid-dark: #1A9950;
+    --color-status-success-vivid-light: #58F69E;
+    --color-status-success-vivid-dark: #298732;
     --color-status-success-vivid-subtle: rgba(46, 213, 115, 0.12);
     --color-status-error-vivid: #FF4757;
     --color-status-error-vivid-light: #FF6070;
@@ -190,14 +190,14 @@
     --color-status-success-vivid-rgb: 46, 213, 115;
     --color-status-error-vivid-rgb: 255, 71, 87;
     --color-border-prominent: #9CA3AF;
-    --color-status-warning: #FFB020;
-    --color-status-warning-light: #FFBF4C;
-    --color-status-warning-dark: #B27B16;
-    --color-status-warning-subtle: #FFFBEB;
+    --color-status-warning: #F9B415;
+    --color-status-warning-light: #FFD352;
+    --color-status-warning-dark: #C27400;
+    --color-status-warning-subtle: #FFF7DD;
     --color-status-info: #2196F3;
-    --color-status-info-light: #64B6F7;
-    --color-status-info-dark: #0B79D0;
-    --color-status-info-subtle: #F0F9FF;
+    --color-status-info-light: #78C2FF;
+    --color-status-info-dark: #1072CB;
+    --color-status-info-subtle: #EFF8FF;
 
     --color-on-status-success: #FFFFFF;
     --color-on-status-error: #FFFFFF;
@@ -270,10 +270,10 @@
 
     /* RGB decomposed values for glow shadows */
     --color-brand-primary-rgb: 255, 121, 0;
-    --color-brand-secondary-rgb: 64, 109, 135;
-    --color-status-success-rgb: 20, 184, 166;
+    --color-brand-secondary-rgb: 48, 123, 155;
+    --color-status-success-rgb: 46, 213, 115;
     --color-status-error-rgb: 209, 67, 67;
-    --color-status-warning-rgb: 255, 176, 32;
+    --color-status-warning-rgb: 249, 180, 21;
     --color-status-info-rgb: 33, 150, 243;
     --color-background-base-rgb: 16, 16, 16;
 

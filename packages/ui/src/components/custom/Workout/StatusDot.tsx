@@ -33,9 +33,9 @@ const solidVariantColors: Record<string, string> = {
 
 const ringVariantStyles: Record<string, Record<string, unknown>> = {
   'on-track': {
-    backgroundColor: 'rgba(20,184,166,0.15)',
+    backgroundColor: 'rgba(46,213,115,0.15)',
     borderWidth: 1,
-    borderColor: 'rgba(20,184,166,0.3)',
+    borderColor: 'rgba(46,213,115,0.3)',
   },
   deviation: {
     backgroundColor: 'rgba(245,158,11,0.15)',
@@ -51,11 +51,11 @@ const ringVariantStyles: Record<string, Record<string, unknown>> = {
 }
 
 const glowStyles: Record<StatusDotVariant, Record<string, unknown>> = {
-  success: { boxShadow: '0 0 4px rgba(20,184,166,0.4)' },
+  success: { boxShadow: '0 0 4px rgba(46,213,115,0.4)' },
   warning: { boxShadow: '0 0 4px rgba(245,158,11,0.4)' },
   error: { boxShadow: '0 0 4px rgba(239,68,68,0.4)' },
   neutral: { boxShadow: '0 0 4px rgba(107,114,128,0.4)' },
-  'on-track': { boxShadow: '0 0 4px rgba(20,184,166,0.4)' },
+  'on-track': { boxShadow: '0 0 4px rgba(46,213,115,0.4)' },
   deviation: { boxShadow: '0 0 4px rgba(245,158,11,0.4)' },
   future: { boxShadow: '0 0 4px rgba(107,114,128,0.4)' },
 }

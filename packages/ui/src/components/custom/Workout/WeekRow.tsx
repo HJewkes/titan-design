@@ -67,7 +67,7 @@ export function WeekRow({
   }
 
   if (isDeload) {
-    rowStyle.backgroundColor = 'rgba(147,51,234,0.06)'
+    rowStyle.backgroundColor = 'rgba(186,41,150,0.06)'
   }
 
   if (isCurrent) {

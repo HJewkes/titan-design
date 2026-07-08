@@ -14,12 +14,12 @@ import { semanticColorsLight, semanticColorsDark, type ThemeMode } from './token
 const themeIndependentCSSVars = {
   // RGB decomposed values for glow shadows
   '--color-brand-primary-rgb': '255, 121, 0',
-  '--color-brand-secondary-rgb': '64, 109, 135',
-  '--color-status-success-rgb': '20, 184, 166',
+  '--color-brand-secondary-rgb': '48, 123, 155',
+  '--color-status-success-rgb': '46, 213, 115',
   '--color-status-success-vivid-rgb': '46, 213, 115',
   '--color-status-error-rgb': '209, 67, 67',
   '--color-status-error-vivid-rgb': '255, 71, 87',
-  '--color-status-warning-rgb': '255, 176, 32',
+  '--color-status-warning-rgb': '249, 180, 21',
   '--color-status-info-rgb': '33, 150, 243',
   '--color-background-base-rgb': '16, 16, 16',
 

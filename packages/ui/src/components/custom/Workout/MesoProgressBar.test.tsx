@@ -40,7 +40,7 @@ describe('MesoProgressBar', () => {
     it('applies completed color at 0.3 alpha', () => {
       render(<MesoProgressBar mesos={mesos} activeMesoId={null} onMesoPress={vi.fn()} />)
       expect(screen.getByTestId('meso-segment-inner-m1')).toHaveStyle({
-        backgroundColor: 'rgba(20,184,166,0.3)',
+        backgroundColor: 'rgba(46,213,115,0.3)',
       })
     })
 

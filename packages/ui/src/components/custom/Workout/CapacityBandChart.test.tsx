@@ -93,8 +93,8 @@ describe('CapacityBandChart', () => {
     it('colors dots by status relative to the band', () => {
       render(<CapacityBandChart {...baseProps} />)
       const dots = screen.getAllByTestId('capacity-band-chart-dot')
-      expect(dots[0]).toHaveStyle({ backgroundColor: '#14B8A6' }) // within
-      expect(dots[1]).toHaveStyle({ backgroundColor: '#FFB020' }) // above
+      expect(dots[0]).toHaveStyle({ backgroundColor: '#2ED573' }) // within
+      expect(dots[1]).toHaveStyle({ backgroundColor: '#F9B415' }) // above
       expect(dots[2]).toHaveStyle({ backgroundColor: '#2196F3' }) // below
     })
 
