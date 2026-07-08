@@ -43,13 +43,13 @@ export interface TempoDisplayProps extends ViewProps {
 
 const INTER = 'Inter, sans-serif'
 const TEXT_TERTIARY = '#6B7280'
-const STATUS_ERROR = t['status-error'] // status-error (red), shown when a phase runs behind pace
+const STATUS_ERROR = t['status-error'] // shown when a phase runs behind pace
 
 // Phase colors: [eccentric, pauseBottom, concentric, pauseTop]
 const phaseColors = {
-  eccentric: t['status-warning'], // status-warning (amber)
+  eccentric: t['status-warning'],
   pauseBottom: TEXT_TERTIARY,
-  concentric: t['status-success'], // status-success (teal)
+  concentric: t['status-success'],
   pauseTop: TEXT_TERTIARY,
   dash: TEXT_TERTIARY,
 }

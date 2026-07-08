@@ -22,49 +22,49 @@ import { primitiveColors as p, primitiveRamps as ramp, discreteRainbow } from '.
 // Light mode semantic colors (default)
 export const semanticColorsLight = {
   // Brand colors (brand-*)
-  'brand-primary': ramp.orange[400],           // #FF7900
-  'brand-primary-light': ramp.orange[300],     // #FFA063
-  'brand-primary-dark': ramp.orange[500],      // #DA5F00
+  'brand-primary': ramp.orange[400],
+  'brand-primary-light': ramp.orange[300],
+  'brand-primary-dark': ramp.orange[500],
   'brand-primary-subtle': 'rgba(255, 121, 0, 0.08)',
-  'brand-primary-hover': ramp.orange[500],     // #DA5F00
-  'brand-primary-active': ramp.orange[600],    // #B94A00
+  'brand-primary-hover': ramp.orange[500],
+  'brand-primary-active': ramp.orange[600],
 
-  'brand-secondary': ramp.cyan[600],         // #307B9B (steel→cyan)
-  'brand-secondary-light': ramp.cyan[500],   // #2697B7
-  'brand-secondary-dark': ramp.cyan[700],    // #2A617F
+  'brand-secondary': ramp.cyan[600],
+  'brand-secondary-light': ramp.cyan[500],
+  'brand-secondary-dark': ramp.cyan[700],
   'brand-secondary-subtle': 'rgba(48, 123, 155, 0.08)',
-  'brand-secondary-hover': ramp.cyan[700],   // #2A617F
-  'brand-secondary-active': ramp.cyan[800],  // #22465F
+  'brand-secondary-hover': ramp.cyan[700],
+  'brand-secondary-active': ramp.cyan[800],
 
   // Text on brand backgrounds (on-*)
   'on-brand-primary': p.white,
   'on-brand-secondary': p.white,
 
   // Status colors (status-*)
-  'status-success': ramp.green[300],         // #2ED573 (teal→green; unified with old vivid)
-  'status-success-light': ramp.green[200],   // #58F69E
-  'status-success-dark': ramp.green[600],    // #298732
-  'status-success-subtle': ramp.green[50],   // #E3FFEE
+  'status-success': ramp.green[300],
+  'status-success-light': ramp.green[200],
+  'status-success-dark': ramp.green[600],
+  'status-success-subtle': ramp.green[50],
 
-  'status-error': ramp.red[600],             // #D14343
-  'status-error-light': ramp.red[500],       // #E05254
-  'status-error-dark': ramp.red[700],        // #A4221C
-  'status-error-subtle': ramp.red[50],       // #FFF4F4
+  'status-error': ramp.red[600],
+  'status-error-light': ramp.red[500],
+  'status-error-dark': ramp.red[700],
+  'status-error-subtle': ramp.red[50],
 
-  'status-error-vivid': p.redVivid[500],     // #FF4757 - vivid alert red
+  'status-error-vivid': p.redVivid[500],     // vivid alert red
   'status-error-vivid-light': p.redVivid[400],
   'status-error-vivid-dark': p.redVivid[700],
   'status-error-vivid-subtle': 'rgba(255, 71, 87, 0.12)',
 
-  'status-warning': ramp.amber[300],         // #F9B415
-  'status-warning-light': ramp.amber[200],   // #FFD352
-  'status-warning-dark': ramp.amber[500],    // #C27400
-  'status-warning-subtle': ramp.amber[50],   // #FFF7DD
+  'status-warning': ramp.amber[300],
+  'status-warning-light': ramp.amber[200],
+  'status-warning-dark': ramp.amber[500],
+  'status-warning-subtle': ramp.amber[50],
 
-  'status-info': ramp.blue[500],             // #2196F3
-  'status-info-light': ramp.blue[300],       // #78C2FF
-  'status-info-dark': ramp.blue[600],        // #1072CB
-  'status-info-subtle': ramp.blue[50],       // #EFF8FF
+  'status-info': ramp.blue[500],
+  'status-info-light': ramp.blue[300],
+  'status-info-dark': ramp.blue[600],
+  'status-info-subtle': ramp.blue[50],
 
   // Text on status backgrounds (on-status-*)
   'on-status-success': p.white,
@@ -90,16 +90,16 @@ export const semanticColorsLight = {
 
   // Data visualization colors (data-*)
   // First 10 colors from discrete rainbow optimized for charts
-  'data-1': discreteRainbow[9],               // #1965B0 - Blue
-  'data-2': discreteRainbow[14],              // #4EB265 - Green
-  'data-3': discreteRainbow[17],              // #F7F056 - Yellow
-  'data-4': discreteRainbow[25],              // #DC050C - Red
-  'data-5': discreteRainbow[8],               // #882E72 - Purple
-  'data-6': discreteRainbow[20],              // #F4A736 - Orange
-  'data-7': discreteRainbow[13],              // #7BAFDE - Light Blue
-  'data-8': discreteRainbow[15],              // #90C987 - Light Green
-  'data-9': discreteRainbow[3],               // #CAACCB - Lavender
-  'data-10': discreteRainbow[22],             // #EE8026 - Dark Orange
+  'data-1': discreteRainbow[9],               // Blue
+  'data-2': discreteRainbow[14],              // Green
+  'data-3': discreteRainbow[17],              // Yellow
+  'data-4': discreteRainbow[25],              // Red
+  'data-5': discreteRainbow[8],               // Purple
+  'data-6': discreteRainbow[20],              // Orange
+  'data-7': discreteRainbow[13],              // Light Blue
+  'data-8': discreteRainbow[15],              // Light Green
+  'data-9': discreteRainbow[3],               // Lavender
+  'data-10': discreteRainbow[22],             // Dark Orange
 
   // Text colors (text-*)
   'text-primary': '#121828',
@@ -112,8 +112,8 @@ export const semanticColorsLight = {
 
   // Surface colors (surface-*) - for elevated containers
   'surface-base': p.white,
-  'surface-elevated': p.neutral[50],          // #FAFAFA - slightly off-white for elevated cards
-  'surface-raised': p.neutral[100],           // #F3F4F6 - light gray for raised cards
+  'surface-elevated': p.neutral[50],          // slightly off-white for elevated cards
+  'surface-raised': p.neutral[100],           // light gray for raised cards
   'surface-overlay': p.white,
   'surface-input': p.neutral[50],             // Input field background (filled variant)
 
@@ -126,7 +126,7 @@ export const semanticColorsLight = {
   'border-default': '#E8E9EB',
   'border-subtle': p.neutral[100],
   'border-strong': p.neutral[300],
-  'border-prominent': p.neutral[400],        // #9CA3AF - high-visibility divider
+  'border-prominent': p.neutral[400],        // high-visibility divider
   'border-focus': p.blue[600],
   'border-input': p.neutral[300],             // Input field border
   'border-input-hover': p.neutral[400],       // Input field border on hover
@@ -240,22 +240,22 @@ export const semanticColorsDark = {
   'text-link-hover': p.blue[400],
 
   // Surface colors - dark backgrounds
-  'surface-base': p.charcoal[700],         // #161616 - main surface
-  'surface-elevated': p.charcoal[600],     // #191919 - elevated surface
-  'surface-raised': p.charcoal[500],       // #1C1C1C - raised surface
-  'surface-overlay': p.charcoal[600],      // #191919 - overlay surface
-  'surface-input': p.charcoal[600],        // #191919 - input surface
+  'surface-base': p.charcoal[700],         // main surface
+  'surface-elevated': p.charcoal[600],     // elevated surface
+  'surface-raised': p.charcoal[500],       // raised surface
+  'surface-overlay': p.charcoal[600],      // overlay surface
+  'surface-input': p.charcoal[600],        // input surface
 
   // Background colors
-  'background-base': p.charcoal[900],      // #101010 - darkest charcoal
-  'background-default': p.charcoal[700],    // #161616 - main background
-  'background-subtle': p.charcoal[500],     // #1C1C1C - subtle background
+  'background-base': p.charcoal[900],      // darkest charcoal
+  'background-default': p.charcoal[700],    // main background
+  'background-subtle': p.charcoal[500],     // subtle background
 
   // Border colors
-  'border-default': p.charcoal[400],       // #1F1F1F - default border
-  'border-subtle': p.charcoal[500],        // #1C1C1C - subtle border
-  'border-strong': p.charcoal[300],        // #2C2C2C - strong border
-  'border-prominent': p.charcoal[200],     // #3C3C3C - high-visibility divider
+  'border-default': p.charcoal[400],       // default border
+  'border-subtle': p.charcoal[500],        // subtle border
+  'border-strong': p.charcoal[300],        // strong border
+  'border-prominent': p.charcoal[200],     // high-visibility divider
   'border-focus': '#828DF8',
   'border-input': p.neutral[600],
   'border-input-hover': p.neutral[500],
@@ -271,7 +271,7 @@ export const semanticColorsDark = {
   'interactive-disabled-text': 'rgba(255, 255, 255, 0.26)',
 
   // Divider
-  'divider': p.charcoal[400],              // #1F1F1F - divider color
+  'divider': p.charcoal[400],              // divider color
 
   // Avatar default
   'avatar-background': p.neutral[600],

@@ -24,7 +24,7 @@ const t = getSemanticColors('dark')
 
 const BRAND_PRIMARY = t['brand-primary']
 
-/** Volume track gradient: status-info (blue) -> status-success (teal) -> status-error (red). */
+/** Volume track gradient: status-info -> status-success -> status-error. */
 const VOLUME_GRADIENT = `linear-gradient(90deg, ${t['status-info']} 0%, ${t['status-success']} 50%, ${t['status-error']} 100%)`
 
 /** Sheet slides up from this offset (px) and the backdrop fades to this opacity. */

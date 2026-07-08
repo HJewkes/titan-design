@@ -185,10 +185,7 @@ export const primitiveColors = {
  *
  * Seven OKLCH-generated hue ramps, 11 perceptual lightness steps each (50 -> 950).
  * Built with hue-torsion + a chroma arc, anchored through existing brand/semantic
- * hexes. Two hues were consolidated where their used colors never collided along
- * the lightness axis: `amber` absorbs the former yellow (lemon light end -> warm
- * amber body), `cyan` absorbs the former steel (vivid cyan -> muted steel dark,
- * brand-secondary at 600). `pin` marks the step each ramp flows through its anchor.
+ * hexes. `pin` marks the step each ramp flows through its anchor.
  * This is the single source of truth for chromatic hexes — the categorical palette
  * below references these steps rather than duplicating values.
  * See coordination/design-explorations/foundations.
@@ -220,7 +217,7 @@ export const primitiveRamps = {
     900: '#4E1C0C',
     950: '#331107',
   },
-  amber: { // yellow-merged: lemon top, warm-rich body
+  amber: {
     50: '#FFF7DD',
     100: '#FFEAA9',
     200: '#FFD352',
@@ -246,7 +243,7 @@ export const primitiveRamps = {
     900: '#1B3515',
     950: '#11220D',
   },
-  cyan: { // steel-merged: brand-secondary at 600
+  cyan: {
     50: '#E6FBFF',
     100: '#C2F6FF',
     200: '#62EAFF',

@@ -68,7 +68,7 @@ describe('primitiveRamps', () => {
     const anchors: Record<string, string> = {
       'red-600': '#D14343', // status-error
       'orange-400': '#FF7900', // brand-primary
-      'amber-300': '#F9B415', // status-warning (yellow-merged, nudged toward the lemon top)
+      'amber-300': '#F9B415', // status-warning
       'green-300': '#2ED573', // status-success
       'cyan-300': '#22D3EE', // vivid cyan identity
       'blue-500': '#2196F3', // status-info
