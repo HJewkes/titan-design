@@ -2,21 +2,22 @@
  * Workout-specific tokens not yet in the main Tailwind config.
  * Use these inline instead of Tailwind classes.
  */
-import { divergingScale, sequentialEffort, primitiveRamps as ramp } from './tokens/primitives'
+import { divergingScale, primitiveRamps as ramp } from './tokens/primitives'
 
 export const WORKOUT_TOKENS = {
   // Canonical 4-band performance scale — the single source for BOTH the
   // VelocityStrip zone bars and the SetRow RPE color (TD-03.43). The direction
   // is intentionally inverted between the two consumers: for velocity, green =
   // fastest/best; for RPE, green = easiest. Each component maps its own
-  // thresholds onto these four colors. A 4-stop subsample of the canonical
-  // `sequentialEffort` scale (green → yellow → orange → red); theme-independent
-  // and consumed inline as a JS import (resolves on native RN, unlike var(--…)).
+  // thresholds onto these four colors. Bright ramp steps chosen for a smooth
+  // green → yellow → orange → red strip (peaks light at yellow, eases down) —
+  // the mid-orange (orange-300) stays legible rather than crashing to the red's
+  // darkness. Theme-independent; consumed inline (resolves on native RN).
   scale: {
-    green: sequentialEffort[0], // green-400
-    yellow: sequentialEffort[1], // amber-200
-    orange: sequentialEffort[3], // orange-500
-    red: sequentialEffort[4], // red-500
+    green: ramp.green[300], // #2ED573
+    yellow: ramp.amber[200], // #FFD352
+    orange: ramp.orange[300], // #FFA063
+    red: ramp.red[500], // #E05254
   },
 
   // BodyMap volume heatmap — the canonical `divergingScale` (under → optimal →
