@@ -43,3 +43,46 @@ export function StarIcon(props: IconProps) {
     </SvgIcon>
   )
 }
+
+/** Activity / pulse-line glyph (mirrors lucide-react `Activity`). Shell S2 nav → Live. */
+export function ActivityIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+    </SvgIcon>
+  )
+}
+
+/** History / clock-arrow glyph (mirrors lucide-react `History`). Shell S2 nav → Review. */
+export function HistoryIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
+      <path d="M3 3v5h5" />
+      <path d="M12 7v5l4 2" />
+    </SvgIcon>
+  )
+}
+
+/** Layers / stack glyph (mirrors lucide-react `Layers`). Shell S2 nav → Program (mesocycle stack). */
+export function LayersIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z" />
+      <path d="m6.08 9.5-3.49 1.59a1 1 0 0 0 0 1.81l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9a1 1 0 0 0 0-1.83l-3.5-1.59" />
+      <path d="m6.08 14.5-3.49 1.59a1 1 0 0 0 0 1.81l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9a1 1 0 0 0 0-1.83l-3.5-1.59" />
+    </SvgIcon>
+  )
+}
+
+/** Standing-figure glyph (mirrors lucide-react `PersonStanding`). Shell S2 nav → Body (muscle map). */
+export function PersonStandingIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <circle cx="12" cy="5" r="1" />
+      <path d="m9 20 3-6 3 6" />
+      <path d="m6 8 6 2 6-2" />
+      <path d="M12 10v4" />
+    </SvgIcon>
+  )
+}

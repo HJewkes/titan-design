@@ -35,6 +35,8 @@
     --color-status-success-light: #58F69E;
     --color-status-success-dark: #298732;
     --color-status-success-subtle: rgba(46, 213, 115, 0.12);
+    --color-status-live: #2ED573;
+    --color-status-live-muted: #22A444;
     --color-status-error: #D14343;
     --color-status-error-light: #E05254;
     --color-status-error-dark: #A4221C;
@@ -170,6 +172,8 @@
     --color-status-success-light: #58F69E;
     --color-status-success-dark: #298732;
     --color-status-success-subtle: #E3FFEE;
+    --color-status-live: #2ED573;
+    --color-status-live-muted: #22A444;
     --color-status-error: #D14343;
     --color-status-error-light: #E05254;
     --color-status-error-dark: #A4221C;

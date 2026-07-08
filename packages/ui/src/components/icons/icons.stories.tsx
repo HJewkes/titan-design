@@ -1,7 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ReactNode } from 'react'
 import { View, Text } from 'react-native'
-import { VoltrasMark, BluetoothIcon, DumbbellIcon, StarIcon } from './icons'
+import {
+  VoltrasMark,
+  BluetoothIcon,
+  DumbbellIcon,
+  StarIcon,
+  ActivityIcon,
+  HistoryIcon,
+  LayersIcon,
+  PersonStandingIcon,
+} from './icons'
 
 const meta: Meta = {
   title: 'Icons',
@@ -50,6 +59,26 @@ export const All: Story = {
       <Swatch label="StarIcon (fill)">
         <View className="text-brand-primary">
           <StarIcon size={28} fill="currentColor" />
+        </View>
+      </Swatch>
+      <Swatch label="ActivityIcon">
+        <View className="text-text-primary">
+          <ActivityIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="HistoryIcon">
+        <View className="text-text-primary">
+          <HistoryIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="LayersIcon">
+        <View className="text-text-primary">
+          <LayersIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="PersonStandingIcon">
+        <View className="text-text-primary">
+          <PersonStandingIcon size={28} />
         </View>
       </Swatch>
     </View>

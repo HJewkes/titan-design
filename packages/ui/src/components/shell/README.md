@@ -9,6 +9,23 @@ This README is the **index**: it maps each component's dependencies (**composes 
 should be reaching for an existing primitive instead. Storybook mirrors this tree under `Shell/TopBar/…`,
 and every component's autodocs page repeats its "Composes" links.
 
+## Specimen: `SideNav` (the second shell unit, S2)
+
+```
+SideNav ...................... organism — the 60px left rail (Shell/SideNav)
+├─ NavItem ................... molecule × 4 (Live · Review · Plan · Body)
+│  ├─ icon ................... icons (shared primitive) — Activity/History/Layers/PersonStanding
+│  └─ Typography ............. titan · button variant (uppercase micro-label)
+└─ (accent bar) .............. bg-brand-primary edge bar on the active item
+```
+
+Decisions locked 2026-07-08 (specimen `coordination/design-explorations/shell/S2-sidenav/`): lucide glyphs
+(activity · history · layers · figure) · **Plan** label (narrower than "Program") · active = **left accent
+bar** (short, centered on the icon+label) · **60px** icon+micro-label · live cue = **muted-green label**
+(`status-live-muted`) on the Live item while a set runs off-Live · four items, no footer, no top-nav. Fixed
+60px at every width (labels sit under the glyph). `SideNav` is presentational — `activeKey` / `onNavigate` /
+`liveKey`; the app owns routing + which key is live.
+
 ## Specimen: `TopBar` (the first shell unit, S1)
 
 ```
@@ -33,6 +50,8 @@ TopBar ....................... organism — the chrome band (Shell/TopBar)
 
 | Component | Tier | Composes ↓ | Used-by ↑ |
 |---|---|---|---|
+| `SideNav` | organism | NavItem ×4, `components/icons` (Activity/History/Layers/PersonStanding) | dashboard app root *(planned)* |
+| `NavItem` | molecule | icon, Typography | SideNav |
 | `TopBar` | organism | BrandLockup, SessionStatePill, Divider, DeviceMenu, DateTime, `surfaceGradient.chrome` | dashboard app root *(planned)* |
 | `BrandLockup` | molecule | VoltrasMark, Typography | TopBar |
 | `SessionStatePill` | molecule | Indicator, Typography | TopBar, **Live-view header** *(planned reuse)* |
@@ -79,8 +98,19 @@ Every leaf now composes a primitive rather than hand-rolling it:
 - **Lint guardrails** — components may not inline `linear-gradient` (use `surfaceGradient`); shell + icons may
   not use raw hex (use tokens).
 
+**S2 shared substrate:** four nav glyphs added to `components/icons` (`ActivityIcon`, `HistoryIcon`,
+`LayersIcon`, `PersonStandingIcon` — lucide-mirrored, like Dumbbell/Star), available system-wide.
+
 **Watch-list (known gaps to close as we go):**
 - **Dot primitive overlap** — titan has both `StatusDot` (Workout, semantic) and `Indicator` (ui, generic).
   The shell standardizes on `Indicator`; a future pass could consolidate.
 - **Other hand-rolled gradients** — `MesoCard`, `DeviationBar`, `MesoStatusCard`, `BodyMapDetailPanel` still
   inline `linear-gradient` strings; they should adopt `surfaceGradient` / `linearGradient`.
+- **`status-live` token family (new, decoupled from success)** — introduced `status-live` (green-300, the
+  vivid LIVE-pill green) + `status-live-muted` (green-500 `#22A444`, the quiet nav cue) so "live" has its own
+  role: changing `status-success` no longer affects live, and vice-versa. Wired the full chain (semantic →
+  config → global.css → tailwind); `Indicator` gained a `live` color; the S1 LIVE pill was repointed
+  `success`→`live` (value-preserving). This realized a slice of TD-05.09 Fork 1b (wiring ramp steps as tokens).
+- **`aria-selected` on `NavItem`** — RNW does not emit `aria-selected` from `accessibilityState={{selected}}`
+  in the jsdom test env, so active-state is asserted via the accent-bar testID. Confirm the on-device/RNW
+  build exposes selection to AT (may need an explicit `aria-selected` for full tab semantics).

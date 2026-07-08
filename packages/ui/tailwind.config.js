@@ -38,6 +38,11 @@ module.exports = {
             dark: 'var(--color-status-success-dark)',
             subtle: 'var(--color-status-success-subtle)',
           },
+          // Live-session accent — own role, decoupled from success
+          live: {
+            DEFAULT: 'var(--color-status-live)',
+            muted: 'var(--color-status-live-muted)',
+          },
           error: {
             DEFAULT: 'var(--color-status-error)',
             light: 'var(--color-status-error-light)',
