@@ -79,16 +79,13 @@ export const PrimitiveColors: StoryObj = {
         Primitive Colors
       </Text>
       <Text className="text-text-secondary mb-6">
-        Raw color values. Use semantic tokens instead when building components.
+        Raw color values. Chromatic hues live as OKLCH tonal ramps (see the Tonal Ramps story);
+        these are the achromatic and support scales. Use semantic tokens when building components.
       </Text>
 
-      <ColorScale name="Orange (Primary Brand)" colors={primitiveColors.accent} />
-      <ColorScale name="Steel (Secondary Brand)" colors={primitiveColors.steel} />
       <ColorScale name="Blue" colors={primitiveColors.blue} />
-      <ColorScale name="Green" colors={primitiveColors.green} />
-      <ColorScale name="Teal (Success)" colors={primitiveColors.teal} />
-      <ColorScale name="Red (Error)" colors={primitiveColors.red} />
-      <ColorScale name="Sky (Info)" colors={primitiveColors.sky} />
+      <ColorScale name="Red" colors={primitiveColors.red} />
+      <ColorScale name="Red Vivid" colors={primitiveColors.redVivid} />
       <ColorScale name="Neutral" colors={primitiveColors.neutral} />
       <ColorScale name="Charcoal (Dark Backgrounds)" colors={primitiveColors.charcoal} />
     </View>

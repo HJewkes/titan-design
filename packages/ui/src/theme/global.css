@@ -369,7 +369,7 @@
     z-index: 0;
     background:
       radial-gradient(ellipse 140% 100% at 15% 5%, rgba(var(--color-brand-primary-rgb, 255, 121, 0), 0.06) 0%, transparent 45%),
-      radial-gradient(ellipse 120% 80% at 85% 95%, rgba(var(--color-brand-secondary-rgb, 64, 109, 135), 0.04) 0%, transparent 45%);
+      radial-gradient(ellipse 120% 80% at 85% 95%, rgba(var(--color-brand-secondary-rgb, 48, 123, 155), 0.04) 0%, transparent 45%);
   }
 
   /* Film grain overlay for vintage texture */
