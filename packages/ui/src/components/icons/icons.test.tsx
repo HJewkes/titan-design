@@ -1,12 +1,30 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { VoltrasMark, BluetoothIcon, DumbbellIcon, StarIcon } from './icons'
+import {
+  VoltrasMark,
+  BluetoothIcon,
+  DumbbellIcon,
+  StarIcon,
+  ActivityIcon,
+  HistoryIcon,
+  LayersIcon,
+  PersonStandingIcon,
+} from './icons'
 import { SvgIcon } from './SvgIcon'
 
 describe('icon primitives', () => {
   it('every icon renders an svg', () => {
-    ;[VoltrasMark, BluetoothIcon, DumbbellIcon, StarIcon].forEach((Icon) => {
+    ;[
+      VoltrasMark,
+      BluetoothIcon,
+      DumbbellIcon,
+      StarIcon,
+      ActivityIcon,
+      HistoryIcon,
+      LayersIcon,
+      PersonStandingIcon,
+    ].forEach((Icon) => {
       const { container, unmount } = render(<Icon />)
       expect(container.querySelector('svg')).toBeInTheDocument()
       unmount()

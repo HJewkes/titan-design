@@ -6,3 +6,6 @@ export * from './DeviceIndicator'
 export * from './DeviceRow'
 export * from './DeviceMenu'
 export * from './TopBar'
+// S2 · Side nav family.
+export * from './NavItem'
+export * from './SideNav'
