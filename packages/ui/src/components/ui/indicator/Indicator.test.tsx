@@ -25,7 +25,6 @@ describe('Indicator', () => {
       'error',
       'warning',
       'info',
-      'success-vivid',
       'error-vivid',
     ] as const
     colors.forEach((color) => {
@@ -60,7 +59,7 @@ describe('Indicator', () => {
   })
 
   it('supports the ping pulse variant', () => {
-    const { container } = render(<Indicator pulse="ping" color="success-vivid" />)
+    const { container } = render(<Indicator pulse="ping" color="success" />)
     expect(container.firstChild).toBeInTheDocument()
   })
 

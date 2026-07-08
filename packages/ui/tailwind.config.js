@@ -44,12 +44,6 @@ module.exports = {
             dark: 'var(--color-status-error-dark)',
             subtle: 'var(--color-status-error-subtle)',
           },
-          'success-vivid': {
-            DEFAULT: 'var(--color-status-success-vivid)',
-            light: 'var(--color-status-success-vivid-light)',
-            dark: 'var(--color-status-success-vivid-dark)',
-            subtle: 'var(--color-status-success-vivid-subtle)',
-          },
           'error-vivid': {
             DEFAULT: 'var(--color-status-error-vivid)',
             light: 'var(--color-status-error-vivid-light)',
@@ -197,10 +191,10 @@ module.exports = {
         xl: '0px 20px 25px rgba(100, 116, 139, 0.12)',
         // Glow shadows (colored radial glow for emphasis)
         'glow-primary': '0 0 20px 2px rgba(var(--color-brand-primary-rgb, 255, 121, 0), 0.4)',
-        'glow-secondary': '0 0 20px 2px rgba(var(--color-brand-secondary-rgb, 64, 109, 135), 0.4)',
-        'glow-success': '0 0 20px 2px rgba(var(--color-status-success-rgb, 20, 184, 166), 0.35)',
+        'glow-secondary': '0 0 20px 2px rgba(var(--color-brand-secondary-rgb, 48, 123, 155), 0.4)',
+        'glow-success': '0 0 20px 2px rgba(var(--color-status-success-rgb, 46, 213, 115), 0.35)',
         'glow-error': '0 0 20px 2px rgba(var(--color-status-error-rgb, 209, 67, 67), 0.4)',
-        'glow-warning': '0 0 20px 2px rgba(var(--color-status-warning-rgb, 255, 176, 32), 0.35)',
+        'glow-warning': '0 0 20px 2px rgba(var(--color-status-warning-rgb, 249, 180, 21), 0.35)',
         'glow-info': '0 0 20px 2px rgba(var(--color-status-info-rgb, 33, 150, 243), 0.35)',
         'glow-sm': '0 0 12px 0px',
         'glow-md': '0 0 20px 2px',

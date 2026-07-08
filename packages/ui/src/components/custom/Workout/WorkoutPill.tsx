@@ -23,21 +23,21 @@ export interface WorkoutPillProps extends ViewProps {
 }
 
 const statusBgColors: Record<WorkoutPillStatus, string> = {
-  completed: 'rgba(20,184,166,0.15)',
+  completed: 'rgba(46,213,115,0.15)',
   current: 'rgba(255,121,0,0.15)',
   next: 'transparent',
   upcoming: '#1C1C1C',
   missed: 'rgba(209,67,67,0.1)',
-  deload: 'rgba(147,51,234,0.15)',
+  deload: 'rgba(186,41,150,0.15)',
 }
 
 const statusBorderStyles: Record<WorkoutPillStatus, Record<string, unknown>> = {
-  completed: { borderWidth: 1, borderColor: 'rgba(20,184,166,0.3)' },
+  completed: { borderWidth: 1, borderColor: 'rgba(46,213,115,0.3)' },
   current: { borderWidth: 1, borderColor: 'rgba(255,121,0,0.3)' },
   next: { borderWidth: 1, borderColor: 'rgba(255,121,0,0.4)' },
   upcoming: { borderWidth: 1, borderColor: '#1F1F1F' },
   missed: { borderWidth: 1, borderColor: 'rgba(209,67,67,0.25)' },
-  deload: { borderWidth: 1, borderColor: 'rgba(147,51,234,0.3)' },
+  deload: { borderWidth: 1, borderColor: 'rgba(186,41,150,0.3)' },
 }
 
 const textColors: Record<WorkoutPillStatus, string> = {

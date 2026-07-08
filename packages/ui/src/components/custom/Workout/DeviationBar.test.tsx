@@ -72,7 +72,7 @@ describe('DeviationBar', () => {
     const track = bar.firstElementChild as HTMLElement
     expect(track).toHaveStyle({
       backgroundImage:
-        'linear-gradient(90deg, rgba(20,184,166,0.25) 0%, rgba(107,114,128,0.15) 50%, rgba(255,176,32,0.25) 100%)',
+        'linear-gradient(90deg, rgba(46,213,115,0.25) 0%, rgba(107,114,128,0.15) 50%, rgba(249,180,21,0.25) 100%)',
     })
   })
 

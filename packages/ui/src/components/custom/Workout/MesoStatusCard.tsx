@@ -32,7 +32,7 @@ const CARD_GRADIENT = `linear-gradient(135deg, ${resolveColor('surface-elevated'
 
 /** Gauge track gradient (teal -> amber -> red) at 0.25 alpha. */
 const GAUGE_GRADIENT =
-  'linear-gradient(90deg, rgba(20,184,166,0.25) 0%, rgba(255,176,32,0.25) 50%, rgba(209,67,67,0.25) 100%)'
+  'linear-gradient(90deg, rgba(46,213,115,0.25) 0%, rgba(249,180,21,0.25) 50%, rgba(209,67,67,0.25) 100%)'
 
 export type MesoStatusBadgeVariant = 'success' | 'warning' | 'error'
 
@@ -40,8 +40,8 @@ const STATUS_VARIANTS: Record<
   MesoStatusBadgeVariant,
   { bg: string; border: string; text: string }
 > = {
-  success: { bg: 'rgba(20,184,166,0.15)', border: 'rgba(20,184,166,0.3)', text: SUCCESS },
-  warning: { bg: 'rgba(255,176,32,0.15)', border: 'rgba(255,176,32,0.3)', text: WARNING },
+  success: { bg: 'rgba(46,213,115,0.15)', border: 'rgba(46,213,115,0.3)', text: SUCCESS },
+  warning: { bg: 'rgba(249,180,21,0.15)', border: 'rgba(249,180,21,0.3)', text: WARNING },
   error: { bg: 'rgba(209,67,67,0.15)', border: 'rgba(209,67,67,0.25)', text: ERROR },
 }
 
@@ -407,9 +407,9 @@ export function MesoStatusCard({
         {coaching != null && (
           <View
             style={{
-              backgroundColor: 'rgba(255,176,32,0.06)',
+              backgroundColor: 'rgba(249,180,21,0.06)',
               borderWidth: 1,
-              borderColor: 'rgba(255,176,32,0.15)',
+              borderColor: 'rgba(249,180,21,0.15)',
               borderRadius: 8,
               paddingVertical: 10,
               paddingHorizontal: 12,
@@ -434,9 +434,9 @@ export function MesoStatusCard({
             className="flex-row items-center"
             style={{
               gap: 8,
-              backgroundColor: 'rgba(20,184,166,0.06)',
+              backgroundColor: 'rgba(46,213,115,0.06)',
               borderWidth: 1,
-              borderColor: 'rgba(20,184,166,0.2)',
+              borderColor: 'rgba(46,213,115,0.2)',
               borderRadius: 8,
               paddingVertical: 10,
               paddingHorizontal: 12,

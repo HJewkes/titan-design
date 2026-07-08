@@ -50,7 +50,7 @@ Building S1 grew the design system — these are now available to every componen
   (Dumbbell / Star) were folded in (re-exported from `Workout/icons` for back-compat).
 - **`theme/gradients.ts`** — `linearGradient(from, to, angle)` + named `surfaceGradient.*`, built on
   `resolveColor` (themeable web CSS vars + native hex fallback).
-- **`Indicator`** (titan atom) — `pulse: 'ping'` (expanding ring) + `success-vivid` / `error-vivid` colors.
+- **`Indicator`** (titan atom) — `pulse: 'ping'` (expanding ring) + `success` / `error-vivid` colors.
 - **`DateTime`** (titan) — `hour12`, `seconds`, self-ticking `live`, and Typography routing via `variant`.
 - **`Typography`** — `mono` (technical readouts) + `monoLabel` (all-caps mono) variants.
 - **Tokens** — a full **vivid** green/red palette + **`border-prominent`** divider token.

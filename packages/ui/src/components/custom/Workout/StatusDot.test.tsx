@@ -103,13 +103,13 @@ describe('StatusDot', () => {
     it('applies a box-shadow when glow is set on a solid variant', () => {
       render(<StatusDot variant="success" glow />)
       const dot = screen.getByTestId('status-dot')
-      expect(dot.style.boxShadow).toContain('rgba(20,184,166,0.4)')
+      expect(dot.style.boxShadow).toContain('rgba(46,213,115,0.4)')
     })
 
     it('applies a box-shadow when glow is set on a ring variant', () => {
       render(<StatusDot variant="on-track" glow />)
       const dot = screen.getByTestId('status-dot')
-      expect(dot.style.boxShadow).toContain('rgba(20,184,166,0.4)')
+      expect(dot.style.boxShadow).toContain('rgba(46,213,115,0.4)')
     })
 
     it('applies a gray box-shadow when glow is set on the future variant', () => {

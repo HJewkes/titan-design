@@ -9,7 +9,6 @@ export type IndicatorColor =
   | 'error'
   | 'warning'
   | 'info'
-  | 'success-vivid'
   | 'error-vivid'
 
 /** How a pulsing indicator animates: a subtle opacity fade, or an expanding ring. */
@@ -46,7 +45,6 @@ const colorStyles: Record<IndicatorColor, string> = {
   error: 'bg-status-error',
   warning: 'bg-status-warning',
   info: 'bg-status-info',
-  'success-vivid': 'bg-status-success-vivid',
   'error-vivid': 'bg-status-error-vivid',
 }
 
@@ -100,14 +98,10 @@ export function Indicator({
         colorClass,
         pulseMode === 'opacity' && 'animate-pulse',
         ring && 'border-2 border-background-base',
-        glow && !customColor && color === 'success' && 'shadow-[0_0_6px_rgba(20,184,166,0.6)]',
+        glow && !customColor && color === 'success' && 'shadow-[0_0_6px_rgba(46,213,115,0.6)]',
         glow && !customColor && color === 'error' && 'shadow-[0_0_6px_rgba(239,68,68,0.6)]',
         glow && !customColor && color === 'warning' && 'shadow-[0_0_6px_rgba(245,158,11,0.6)]',
         glow && !customColor && color === 'primary' && 'shadow-[0_0_6px_rgba(255,121,0,0.6)]',
-        glow &&
-          !customColor &&
-          color === 'success-vivid' &&
-          'shadow-[0_0_6px_rgba(46,213,115,0.6)]',
         glow && !customColor && color === 'error-vivid' && 'shadow-[0_0_6px_rgba(255,71,87,0.6)]',
         className
       )}

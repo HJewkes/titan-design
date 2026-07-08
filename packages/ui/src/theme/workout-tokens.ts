@@ -2,31 +2,34 @@
  * Workout-specific tokens not yet in the main Tailwind config.
  * Use these inline instead of Tailwind classes.
  */
+import { divergingScale, sequentialEffort, primitiveRamps as ramp } from './tokens/primitives'
+
 export const WORKOUT_TOKENS = {
   // Canonical 4-band performance scale — the single source for BOTH the
   // VelocityStrip zone bars and the SetRow RPE color (TD-03.43). The direction
   // is intentionally inverted between the two consumers: for velocity, green =
-  // fastest/best; for RPE, green = easiest. Each component maps its own
-  // thresholds onto these four colors. Kept as vivid data-viz values (distinct
-  // from the muted status tokens) and theme-independent, so — like the heatmap
-  // scale below — they are consumed inline as a JS import rather than CSS vars.
-  // A JS import also resolves on native RN, unlike var(--…) strings.
+  // fastest/best; for RPE, green = easiest. This is the [0,1,2,4] subsample of
+  // the canonical `sequentialEffort` primitive — it walks the two ambers
+  // (green-300 · amber-200 · amber-300 · red-600) to mirror the legacy strip's
+  // golden third stop rather than jumping to the pure orange. The `orange` key
+  // is the band label; its value is the gold amber-300. Consumed inline (RN).
   scale: {
-    green: '#2ed573',
-    yellow: '#ffd43b',
-    orange: '#ffa502',
-    red: '#ff4757',
+    green: sequentialEffort[0], // green-300 #2ED573
+    yellow: sequentialEffort[1], // amber-200 #FFD352
+    orange: sequentialEffort[2], // amber-300 #F9B415 (gold band)
+    red: sequentialEffort[4], // red-600 #D14343
   },
 
-  // BodyMap volume heatmap scale (drive dynamic SVG fills, so inline values).
-  // Maps weekly-volume status against MEV/MAV/MRV landmarks to a fill color.
+  // BodyMap volume heatmap — the canonical `divergingScale` (under → optimal →
+  // over): a true diverging shape with a light green center, cool-blue under-
+  // trained end and warm-red over-reaching end (colorblind-robust in lightness).
   heatmap: {
     none: '#E0E0E0', // gray — no training data
-    under: '#4A90D9', // cool blue — below MEV
-    maintenance: '#F5C842', // warm yellow — MEV to MAV
-    productive: '#4CAF50', // green — MAV to MRV
-    approaching: '#FFA502', // orange — near MRV
-    over: '#FF6B35', // red-orange — over MRV
+    under: divergingScale[0], // blue-500 — below MEV
+    maintenance: divergingScale[1], // cyan-300 — MEV to MAV
+    productive: divergingScale[2], // green-200 (optimal center) — MAV to MRV
+    approaching: divergingScale[3], // amber-300 — near MRV
+    over: divergingScale[4], // red-600 — over MRV
   },
 
   // Badge border-radius (rounded-sm is 4px, we need 2px)
@@ -36,12 +39,12 @@ export const WORKOUT_TOKENS = {
   // components use the CSS custom properties (var(--color-surface-*/border-*))
   // directly. Only theme-independent data-viz values remain below.
 
-  // Intensity bar specific
+  // Intensity bar specific — over-target tiers deepen along the red ramp.
   intensity: {
     track: '#333333',
-    over1: '#D14343',
-    over2: '#A62626',
-    over3: '#7A1C1C',
+    over1: ramp.red[600], // #D14343 (matches status-error)
+    over2: ramp.red[700], // #A4221C
+    over3: ramp.red[800], // #7E1002
     targetLine: 'rgba(33, 150, 243, 0.5)',
     atTargetGlow:
       '0 0 5px 1px rgba(33, 150, 243, 0.35), 0 0 10px 3px rgba(33, 150, 243, 0.15)',

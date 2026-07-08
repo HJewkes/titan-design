@@ -354,35 +354,38 @@ export function getCategoricalColor(index: number, variant: CategoricalVariant =
 /**
  * Diverging status scale (BodyMap training-status: under → optimal → over) as
  * references into {@link primitiveRamps}. A true diverging shape — `optimal` is
- * the lightest center, the extremes (`under`/`over`) go dark — so the signal
- * reads in lightness (colorblind-robust; worst-case deut/protanopia min ΔE ~13.7)
- * and the direction reads in the blue↔red axis (the CVD-safe hue pair).
+ * the lightest center, the extremes go darker — so the signal reads in lightness
+ * (colorblind-robust; worst-case deut/protanopia min ΔE ~10.9) and the direction
+ * reads in the blue↔red axis (the CVD-safe hue pair).
  *
- * Fills carry labels: use per-cell best-contrast text — white on the dark
- * extremes (under/over), black on the lighter middle three (see {@link bestTextColor}).
+ * Tuned so every stop is dark enough for the fill yet light enough that BLACK
+ * text clears 4.5:1 on all five — no per-cell white/black flipping. The value
+ * valley is symmetric: the two mid-arms (maintenance / approaching) sit at equal
+ * lightness (both ~0.53 relative luminance), the ends darker.
  */
 export const divergingScale = [
-  primitiveRamps.blue[700], // under
-  primitiveRamps.cyan[400], // maintenance
-  primitiveRamps.green[300], // optimal (light center)
-  primitiveRamps.orange[500], // approaching
-  primitiveRamps.red[700], // over
+  primitiveRamps.blue[500], // under
+  primitiveRamps.cyan[300], // maintenance
+  primitiveRamps.green[200], // optimal (light center)
+  primitiveRamps.amber[300], // approaching
+  primitiveRamps.red[600], // over
 ] as const
 
 /**
  * Sequential "effort" scale (low → high intensity: green → yellow → orange → red)
- * as references into {@link primitiveRamps}. An ordinal palette that components
- * sub-sample — IntensityBar uses the full 6 stops; VelocityStrip/RPE takes a
- * 4-stop subsample. Order encodes magnitude, so it tolerates the green↔red CVD
- * pair; the light-yellow stop is the visual pivot. Stops 1–5 take black text,
- * the dark red-700 max takes white.
+ * as references into {@link primitiveRamps}. A 6-stop ordinal palette; the
+ * velocity/RPE strip sub-samples it. Every adjacent pair clears the CVD floor
+ * (min deut/protan ΔE ≥ 4.5), and within that the hue walk is kept smooth —
+ * the amber-200 → amber-300 → orange-400 run steps the yellow→orange transition
+ * gradually rather than lurching. Order encodes magnitude, so it tolerates the
+ * green↔red CVD pair. Stops 0–3 take black text; the dark reds take white.
  */
 export const sequentialEffort = [
-  primitiveRamps.green[400],
+  primitiveRamps.green[300],
   primitiveRamps.amber[200],
-  primitiveRamps.amber[400],
-  primitiveRamps.orange[500],
-  primitiveRamps.red[500],
+  primitiveRamps.amber[300],
+  primitiveRamps.orange[400],
+  primitiveRamps.red[600],
   primitiveRamps.red[700],
 ] as const
 

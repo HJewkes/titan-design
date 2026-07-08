@@ -27,7 +27,7 @@ export interface MesoProgressBarProps extends ViewProps {
 }
 
 const segmentBgColors: Record<MesoStatus, string> = {
-  completed: 'rgba(20,184,166,0.3)',
+  completed: 'rgba(46,213,115,0.3)',
   current: 'rgba(255,121,0,0.5)',
   upcoming: 'rgba(255,255,255,0.06)',
 }

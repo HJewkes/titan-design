@@ -15,8 +15,8 @@ const STATUS_SUCCESS = sem['status-success']
 const STATUS_ERROR = sem['status-error']
 const STATUS_WARNING = sem['status-warning']
 const GRID_LINE = 'rgba(255,255,255,0.06)'
-const SUCCESS_PILL_BG = 'rgba(20,184,166,0.10)'
-const SUCCESS_PILL_BORDER = 'rgba(20,184,166,0.20)'
+const SUCCESS_PILL_BG = 'rgba(46,213,115,0.10)'
+const SUCCESS_PILL_BORDER = 'rgba(46,213,115,0.20)'
 const ERROR_PILL_BG = 'rgba(209,67,67,0.10)'
 const ERROR_PILL_BORDER = 'rgba(209,67,67,0.20)'
 

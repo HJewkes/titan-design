@@ -44,19 +44,19 @@ describe('IntensityBar', () => {
   })
 
   describe('zone colors graded by true percentage', () => {
-    it('renders teal below the target ramp (< 75%)', () => {
+    it('renders green below the target ramp (< 75%)', () => {
       render(<IntensityBar level={0.2} />)
-      expect(screen.getByTestId('intensity-fill')).toHaveStyle({ backgroundColor: '#14B8A6' })
+      expect(screen.getByTestId('intensity-fill')).toHaveStyle({ backgroundColor: '#2ED573' })
     })
 
-    it('stays teal just under the amber boundary', () => {
+    it('stays green just under the amber boundary', () => {
       render(<IntensityBar level={0.74} />)
-      expect(screen.getByTestId('intensity-fill')).toHaveStyle({ backgroundColor: '#14B8A6' })
+      expect(screen.getByTestId('intensity-fill')).toHaveStyle({ backgroundColor: '#2ED573' })
     })
 
     it('renders amber approaching the target (75-99%)', () => {
       render(<IntensityBar level={0.75} />)
-      expect(screen.getByTestId('intensity-fill')).toHaveStyle({ backgroundColor: '#FFB020' })
+      expect(screen.getByTestId('intensity-fill')).toHaveStyle({ backgroundColor: '#F9B415' })
     })
 
     it('renders the brand target color exactly at 100%', () => {
@@ -71,12 +71,12 @@ describe('IntensityBar', () => {
 
     it('renders over-2 deep red at 120%', () => {
       render(<IntensityBar level={1.2} />)
-      expect(screen.getByTestId('intensity-fill')).toHaveStyle({ backgroundColor: '#A62626' })
+      expect(screen.getByTestId('intensity-fill')).toHaveStyle({ backgroundColor: '#A4221C' })
     })
 
     it('renders over-3 darkest red at 130%', () => {
       render(<IntensityBar level={1.3} />)
-      expect(screen.getByTestId('intensity-fill')).toHaveStyle({ backgroundColor: '#7A1C1C' })
+      expect(screen.getByTestId('intensity-fill')).toHaveStyle({ backgroundColor: '#7E1002' })
     })
   })
 
@@ -88,7 +88,7 @@ describe('IntensityBar', () => {
 
     it('colors the bulge to match the over-target zone', () => {
       render(<IntensityBar level={1.2} />)
-      expect(screen.getByTestId('intensity-bulge')).toHaveStyle({ backgroundColor: '#A62626' })
+      expect(screen.getByTestId('intensity-bulge')).toHaveStyle({ backgroundColor: '#A4221C' })
     })
 
     it('does not render a bulge at or below target', () => {

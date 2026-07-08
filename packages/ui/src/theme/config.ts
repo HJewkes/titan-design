@@ -14,12 +14,11 @@ import { semanticColorsLight, semanticColorsDark, type ThemeMode } from './token
 const themeIndependentCSSVars = {
   // RGB decomposed values for glow shadows
   '--color-brand-primary-rgb': '255, 121, 0',
-  '--color-brand-secondary-rgb': '64, 109, 135',
-  '--color-status-success-rgb': '20, 184, 166',
-  '--color-status-success-vivid-rgb': '46, 213, 115',
+  '--color-brand-secondary-rgb': '48, 123, 155',
+  '--color-status-success-rgb': '46, 213, 115',
   '--color-status-error-rgb': '209, 67, 67',
   '--color-status-error-vivid-rgb': '255, 71, 87',
-  '--color-status-warning-rgb': '255, 176, 32',
+  '--color-status-warning-rgb': '249, 180, 21',
   '--color-status-info-rgb': '33, 150, 243',
   '--color-background-base-rgb': '16, 16, 16',
 
@@ -61,10 +60,6 @@ export const lightThemeCSSVars = {
   '--color-status-info': semanticColorsLight['status-info'],
   '--color-status-info-subtle': semanticColorsLight['status-info-subtle'],
 
-  '--color-status-success-vivid': semanticColorsLight['status-success-vivid'],
-  '--color-status-success-vivid-light': semanticColorsLight['status-success-vivid-light'],
-  '--color-status-success-vivid-dark': semanticColorsLight['status-success-vivid-dark'],
-  '--color-status-success-vivid-subtle': semanticColorsLight['status-success-vivid-subtle'],
   '--color-status-error-vivid': semanticColorsLight['status-error-vivid'],
   '--color-status-error-vivid-light': semanticColorsLight['status-error-vivid-light'],
   '--color-status-error-vivid-dark': semanticColorsLight['status-error-vivid-dark'],
@@ -184,10 +179,6 @@ export const darkThemeCSSVars = {
   '--color-status-info': semanticColorsDark['status-info'],
   '--color-status-info-subtle': semanticColorsDark['status-info-subtle'],
 
-  '--color-status-success-vivid': semanticColorsDark['status-success-vivid'],
-  '--color-status-success-vivid-light': semanticColorsDark['status-success-vivid-light'],
-  '--color-status-success-vivid-dark': semanticColorsDark['status-success-vivid-dark'],
-  '--color-status-success-vivid-subtle': semanticColorsDark['status-success-vivid-subtle'],
   '--color-status-error-vivid': semanticColorsDark['status-error-vivid'],
   '--color-status-error-vivid-light': semanticColorsDark['status-error-vivid-light'],
   '--color-status-error-vivid-dark': semanticColorsDark['status-error-vivid-dark'],
