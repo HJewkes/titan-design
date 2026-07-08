@@ -371,18 +371,19 @@ export const divergingScale = [
 
 /**
  * Sequential "effort" scale (low → high intensity: green → yellow → orange → red)
- * as references into {@link primitiveRamps}. An ordinal palette that components
- * sub-sample — IntensityBar uses the full 6 stops; VelocityStrip/RPE takes a
- * 4-stop subsample. Order encodes magnitude, so it tolerates the green↔red CVD
- * pair; the light-yellow stop is the visual pivot. Stops 1–5 take black text,
- * the dark red-700 max takes white.
+ * as references into {@link primitiveRamps}. A 6-stop ordinal palette; the
+ * velocity/RPE strip sub-samples it. Every adjacent pair clears the CVD floor
+ * (min deut/protan ΔE ≥ 4.5), and within that the hue walk is kept smooth —
+ * the amber-200 → amber-300 → orange-400 run steps the yellow→orange transition
+ * gradually rather than lurching. Order encodes magnitude, so it tolerates the
+ * green↔red CVD pair. Stops 0–3 take black text; the dark reds take white.
  */
 export const sequentialEffort = [
-  primitiveRamps.green[400],
+  primitiveRamps.green[300],
   primitiveRamps.amber[200],
-  primitiveRamps.amber[400],
-  primitiveRamps.orange[500],
-  primitiveRamps.red[500],
+  primitiveRamps.amber[300],
+  primitiveRamps.orange[400],
+  primitiveRamps.red[600],
   primitiveRamps.red[700],
 ] as const
 

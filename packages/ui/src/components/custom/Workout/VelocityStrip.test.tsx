@@ -267,7 +267,7 @@ describe('VelocityStrip zones prop', () => {
     render(<VelocityStrip velocities={[1.1, 0.45]} zones={compoundBands} variant="mini" />)
     // 1.1 -> speed -> green; 0.45 -> maximalStrength -> red (shared with grinding).
     expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: '#2ED573' })
-    expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ backgroundColor: '#E05254' })
+    expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ backgroundColor: '#D14343' })
   })
 
   it('labels the summary row with the band containing the mean velocity', () => {
