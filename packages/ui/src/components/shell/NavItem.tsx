@@ -38,7 +38,7 @@ export function NavItem({
   const labelColor = active
     ? 'text-brand-primary'
     : live
-      ? 'text-status-success-dark'
+      ? 'text-status-live-muted'
       : 'text-text-tertiary'
 
   return (
@@ -47,12 +47,12 @@ export function NavItem({
       accessibilityState={{ selected: active }}
       accessibilityLabel={label}
       onPress={onPress}
-      className={cn('relative h-[54px] w-[60px] items-center justify-center', className)}
+      className={cn('relative h-[46px] w-[60px] items-center justify-center', className)}
     >
       {active ? (
         <View
           testID="nav-item-accent"
-          className="absolute left-0 top-[7px] bottom-[7px] w-[3px] rounded-r-[3px] bg-brand-primary"
+          className="absolute left-0 top-[13px] bottom-[13px] w-[3px] rounded-r-[3px] bg-brand-primary"
         />
       ) : null}
       <View

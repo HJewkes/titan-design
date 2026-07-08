@@ -46,6 +46,10 @@ export const semanticColorsLight = {
   'status-success-dark': ramp.green[600],
   'status-success-subtle': ramp.green[50],
 
+  // Live-session accent — its OWN role, decoupled from success so the two can diverge
+  'status-live': ramp.green[300],
+  'status-live-muted': ramp.green[500],
+
   'status-error': ramp.red[600],
   'status-error-light': ramp.red[500],
   'status-error-dark': ramp.red[700],
@@ -175,6 +179,10 @@ export const semanticColorsDark = {
   'status-success-light': ramp.green[200],
   'status-success-dark': ramp.green[600],
   'status-success-subtle': 'rgba(46, 213, 115, 0.12)',
+
+  // Live-session accent — its OWN role, decoupled from success so the two can diverge
+  'status-live': ramp.green[300],
+  'status-live-muted': ramp.green[500],
 
   'status-error': ramp.red[600],
   'status-error-light': ramp.red[500],

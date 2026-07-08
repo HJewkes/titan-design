@@ -10,7 +10,7 @@ const meta: Meta<typeof Indicator> = {
     size: { control: 'select', options: ['xs', 'sm', 'md', 'lg'] },
     color: {
       control: 'select',
-      options: ['default', 'primary', 'success', 'error', 'warning', 'info'],
+      options: ['default', 'primary', 'success', 'live', 'error', 'warning', 'info'],
     },
     glow: { control: 'boolean' },
     ring: { control: 'boolean' },

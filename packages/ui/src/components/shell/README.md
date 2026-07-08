@@ -13,15 +13,16 @@ and every component's autodocs page repeats its "Composes" links.
 
 ```
 SideNav ...................... organism — the 60px left rail (Shell/SideNav)
-├─ NavItem ................... molecule × 4 (Live · Review · Program · Body)
+├─ NavItem ................... molecule × 4 (Live · Review · Plan · Body)
 │  ├─ icon ................... icons (shared primitive) — Activity/History/Layers/PersonStanding
 │  └─ Typography ............. titan · button variant (uppercase micro-label)
 └─ (accent bar) .............. bg-brand-primary edge bar on the active item
 ```
 
 Decisions locked 2026-07-08 (specimen `coordination/design-explorations/shell/S2-sidenav/`): lucide glyphs
-(activity · history · layers · figure) · active = **left accent bar** · **60px** icon+micro-label · live cue =
-**muted-green label** on the Live item while a set runs off-Live · four items, no footer, no top-nav. Fixed
+(activity · history · layers · figure) · **Plan** label (narrower than "Program") · active = **left accent
+bar** (short, centered on the icon+label) · **60px** icon+micro-label · live cue = **muted-green label**
+(`status-live-muted`) on the Live item while a set runs off-Live · four items, no footer, no top-nav. Fixed
 60px at every width (labels sit under the glyph). `SideNav` is presentational — `activeKey` / `onNavigate` /
 `liveKey`; the app owns routing + which key is live.
 
@@ -105,10 +106,11 @@ Every leaf now composes a primitive rather than hand-rolling it:
   The shell standardizes on `Indicator`; a future pass could consolidate.
 - **Other hand-rolled gradients** — `MesoCard`, `DeviationBar`, `MesoStatusCard`, `BodyMapDetailPanel` still
   inline `linear-gradient` strings; they should adopt `surfaceGradient` / `linearGradient`.
-- **S2 live-cue green token** — the live-elsewhere label uses `status-success-dark` (green-600 `#298732`),
-  the closest wired token to the operator-approved green-500 `#22a444` (which isn't wired). If the exact
-  mid-green is wanted, it rides on the foundations green-ramp work (TD-05.09 Fork 1b/2). Verify the shade
-  reads on the dark rail at operator visual sign-off.
+- **`status-live` token family (new, decoupled from success)** — introduced `status-live` (green-300, the
+  vivid LIVE-pill green) + `status-live-muted` (green-500 `#22A444`, the quiet nav cue) so "live" has its own
+  role: changing `status-success` no longer affects live, and vice-versa. Wired the full chain (semantic →
+  config → global.css → tailwind); `Indicator` gained a `live` color; the S1 LIVE pill was repointed
+  `success`→`live` (value-preserving). This realized a slice of TD-05.09 Fork 1b (wiring ramp steps as tokens).
 - **`aria-selected` on `NavItem`** — RNW does not emit `aria-selected` from `accessibilityState={{selected}}`
   in the jsdom test env, so active-state is asserted via the accent-bar testID. Confirm the on-device/RNW
   build exposes selection to AT (may need an explicit `aria-selected` for full tab semantics).

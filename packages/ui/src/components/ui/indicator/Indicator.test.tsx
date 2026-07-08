@@ -22,6 +22,7 @@ describe('Indicator', () => {
       'default',
       'primary',
       'success',
+      'live',
       'error',
       'warning',
       'info',

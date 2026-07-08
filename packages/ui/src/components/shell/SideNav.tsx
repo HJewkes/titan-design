@@ -32,7 +32,7 @@ export interface SideNavProps {
 export const defaultNavItems: SideNavItem[] = [
   { key: 'live', label: 'Live', icon: <ActivityIcon size={20} color="currentColor" /> },
   { key: 'review', label: 'Review', icon: <HistoryIcon size={20} color="currentColor" /> },
-  { key: 'program', label: 'Program', icon: <LayersIcon size={20} color="currentColor" /> },
+  { key: 'program', label: 'Plan', icon: <LayersIcon size={20} color="currentColor" /> },
   { key: 'body', label: 'Body', icon: <PersonStandingIcon size={20} color="currentColor" /> },
 ]
 

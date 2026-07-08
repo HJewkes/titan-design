@@ -7,7 +7,7 @@ describe('SideNav', () => {
   it('renders the four default categories as tabs in a tablist', () => {
     render(<SideNav activeKey="live" />)
     expect(screen.getByRole('tablist')).toBeInTheDocument()
-    ;['Live', 'Review', 'Program', 'Body'].forEach((name) => {
+    ;['Live', 'Review', 'Plan', 'Body'].forEach((name) => {
       expect(screen.getByRole('tab', { name })).toBeInTheDocument()
     })
   })
@@ -16,7 +16,7 @@ describe('SideNav', () => {
     render(<SideNav activeKey="program" />)
     expect(screen.getAllByTestId('nav-item-accent')).toHaveLength(1)
     expect(
-      within(screen.getByRole('tab', { name: 'Program' })).getByTestId('nav-item-accent')
+      within(screen.getByRole('tab', { name: 'Plan' })).getByTestId('nav-item-accent')
     ).toBeInTheDocument()
     expect(
       within(screen.getByRole('tab', { name: 'Live' })).queryByTestId('nav-item-accent')

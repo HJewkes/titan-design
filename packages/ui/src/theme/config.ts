@@ -53,6 +53,8 @@ export const lightThemeCSSVars = {
 
   '--color-status-success': semanticColorsLight['status-success'],
   '--color-status-success-subtle': semanticColorsLight['status-success-subtle'],
+  '--color-status-live': semanticColorsLight['status-live'],
+  '--color-status-live-muted': semanticColorsLight['status-live-muted'],
   '--color-status-error': semanticColorsLight['status-error'],
   '--color-status-error-subtle': semanticColorsLight['status-error-subtle'],
   '--color-status-warning': semanticColorsLight['status-warning'],
@@ -172,6 +174,8 @@ export const darkThemeCSSVars = {
 
   '--color-status-success': semanticColorsDark['status-success'],
   '--color-status-success-subtle': semanticColorsDark['status-success-subtle'],
+  '--color-status-live': semanticColorsDark['status-live'],
+  '--color-status-live-muted': semanticColorsDark['status-live-muted'],
   '--color-status-error': semanticColorsDark['status-error'],
   '--color-status-error-subtle': semanticColorsDark['status-error-subtle'],
   '--color-status-warning': semanticColorsDark['status-warning'],

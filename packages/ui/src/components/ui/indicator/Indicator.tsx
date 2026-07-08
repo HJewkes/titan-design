@@ -6,6 +6,7 @@ export type IndicatorColor =
   | 'default'
   | 'primary'
   | 'success'
+  | 'live'
   | 'error'
   | 'warning'
   | 'info'
@@ -42,6 +43,7 @@ const colorStyles: Record<IndicatorColor, string> = {
   default: 'bg-text-tertiary',
   primary: 'bg-brand-primary',
   success: 'bg-status-success',
+  live: 'bg-status-live',
   error: 'bg-status-error',
   warning: 'bg-status-warning',
   info: 'bg-status-info',
@@ -98,7 +100,10 @@ export function Indicator({
         colorClass,
         pulseMode === 'opacity' && 'animate-pulse',
         ring && 'border-2 border-background-base',
-        glow && !customColor && color === 'success' && 'shadow-[0_0_6px_rgba(46,213,115,0.6)]',
+        glow &&
+          !customColor &&
+          (color === 'success' || color === 'live') &&
+          'shadow-[0_0_6px_rgba(46,213,115,0.6)]',
         glow && !customColor && color === 'error' && 'shadow-[0_0_6px_rgba(239,68,68,0.6)]',
         glow && !customColor && color === 'warning' && 'shadow-[0_0_6px_rgba(245,158,11,0.6)]',
         glow && !customColor && color === 'primary' && 'shadow-[0_0_6px_rgba(255,121,0,0.6)]',
