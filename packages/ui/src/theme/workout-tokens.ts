@@ -25,11 +25,11 @@ export const WORKOUT_TOKENS = {
   // trained end and warm-red over-reaching end (colorblind-robust in lightness).
   heatmap: {
     none: '#E0E0E0', // gray — no training data
-    under: divergingScale[0], // blue-700 — below MEV
-    maintenance: divergingScale[1], // cyan-400 — MEV to MAV
-    productive: divergingScale[2], // green-300 (optimal center) — MAV to MRV
-    approaching: divergingScale[3], // orange-500 — near MRV
-    over: divergingScale[4], // red-700 — over MRV
+    under: divergingScale[0], // blue-500 — below MEV
+    maintenance: divergingScale[1], // cyan-300 — MEV to MAV
+    productive: divergingScale[2], // green-200 (optimal center) — MAV to MRV
+    approaching: divergingScale[3], // amber-300 — near MRV
+    over: divergingScale[4], // red-600 — over MRV
   },
 
   // Badge border-radius (rounded-sm is 4px, we need 2px)
