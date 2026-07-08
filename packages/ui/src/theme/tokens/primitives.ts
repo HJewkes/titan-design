@@ -6,7 +6,7 @@
  */
 
 export const primitiveColors = {
-  // Blue scale (primary brand)
+  // Blue scale
   blue: {
     50: '#EFF6FF',
     100: '#DBEAFE',
@@ -14,108 +14,38 @@ export const primitiveColors = {
     300: '#93C5FD',
     400: '#60A5FA',
     500: '#3B82F6',
-    600: '#5048E5', // Primary main
-    700: '#3832A0', // Primary dark
+    600: '#5048E5',
+    700: '#3832A0',
     800: '#1E40AF',
     900: '#1E3A8A',
   },
 
-  // Green scale (secondary brand)
-  green: {
-    50: '#ECFDF5',
-    100: '#D1FAE5',
-    200: '#A7F3D0',
-    300: '#6EE7B7',
-    400: '#3FC79A', // Secondary light
-    500: '#10B981', // Secondary main
-    600: '#059669',
-    700: '#0B815A', // Secondary dark
-    800: '#065F46',
-    900: '#064E3B',
-  },
-
-  // Teal scale (success)
-  teal: {
-    50: '#F0FDFA',
-    100: '#CCFBF1',
-    200: '#99F6E4',
-    300: '#5EEAD4',
-    400: '#43C6B7', // Success light
-    500: '#14B8A6', // Success main
-    600: '#0D9488',
-    700: '#0E8074', // Success dark
-    800: '#115E59',
-    900: '#134E4A',
-  },
-
-  // Red scale (error)
+  // Red scale
   red: {
     50: '#FEF2F2',
     100: '#FEE2E2',
     200: '#FECACA',
     300: '#FCA5A5',
-    400: '#DA6868', // Error light
+    400: '#DA6868',
     500: '#EF4444',
-    600: '#D14343', // Error main
-    700: '#922E2E', // Error dark
+    600: '#D14343',
+    700: '#922E2E',
     800: '#991B1B',
     900: '#7F1D1D',
   },
 
-  // Vivid green scale (live/go success)
-  greenVivid: {
-    50: '#E9FBF0',
-    100: '#C8F7DA',
-    200: '#9FF0BF',
-    300: '#6BE79D',
-    400: '#47DE84', // Success vivid light
-    500: '#2ED573', // Success vivid main
-    600: '#22B85F',
-    700: '#1A9950', // Success vivid dark
-    800: '#157A40',
-    900: '#105C30',
-  },
-
-  // Vivid red scale (alert)
+  // Vivid red scale
   redVivid: {
     50: '#FFECEE',
     100: '#FFD6DB',
     200: '#FFB3BC',
     300: '#FF8593',
-    400: '#FF6070', // Error vivid light
-    500: '#FF4757', // Error vivid main
+    400: '#FF6070',
+    500: '#FF4757',
     600: '#E63548',
-    700: '#C42539', // Error vivid dark
+    700: '#C42539',
     800: '#9E1C2C',
     900: '#7A1520',
-  },
-
-  // Amber scale (warning)
-  amber: {
-    50: '#FFFBEB',
-    100: '#FEF3C7',
-    200: '#FDE68A',
-    300: '#FCD34D',
-    400: '#FFBF4C', // Warning light
-    500: '#FFB020', // Warning main
-    600: '#B27B16', // Warning dark
-    700: '#B45309',
-    800: '#92400E',
-    900: '#78350F',
-  },
-
-  // Sky/Blue scale (info)
-  sky: {
-    50: '#F0F9FF',
-    100: '#E0F2FE',
-    200: '#BAE6FD',
-    300: '#7DD3FC',
-    400: '#64B6F7', // Info light
-    500: '#2196F3', // Info main
-    600: '#0284C7',
-    700: '#0B79D0', // Info dark
-    800: '#075985',
-    900: '#0C4A6E',
   },
 
   // Neutral/Gray scale
@@ -133,19 +63,6 @@ export const primitiveColors = {
     950: '#030712',
   },
 
-  // Orange scale (accent/brand color)
-  accent: {
-    100: '#FFA860',
-    200: '#FF9630',
-    300: '#FF8500',
-    400: '#FF7900',
-    500: '#F56C00',
-    600: '#E06D10',
-    700: '#D0620C',
-    800: '#B75500',
-    900: '#A34900',
-  },
-
   // Charcoal scale (dark backgrounds)
   charcoal: {
     0: '#6E6E6E',
@@ -159,19 +76,6 @@ export const primitiveColors = {
     700: '#161616',
     800: '#131313',
     900: '#101010',
-  },
-
-  // Steel scale (cool accent)
-  steel: {
-    100: '#8AA4B8',
-    200: '#7894A8',
-    300: '#678498',
-    400: '#557488',
-    500: '#406D87',
-    600: '#39617A',
-    700: '#32556D',
-    800: '#243D53',
-    900: '#1D3146',
   },
 
   // Pure colors
