@@ -38,12 +38,12 @@ const AT_TARGET_GLOW = '0 0 5px 1px rgba(33, 150, 243, 0.35), 0 0 10px 3px rgba(
 
 // Zone colors graded by TRUE percentage (level * 100).
 const ZONE = {
-  building: t['status-success'], // teal   — below target ramp-up
-  approaching: t['status-warning'], // amber  — nearing target
-  target: t['brand-primary'], // brand  — exactly at target
-  over1: t['status-error'], // red    — mild over-target
-  over2: WORKOUT_TOKENS.intensity.over2, // deep red — moderate over-target
-  over3: WORKOUT_TOKENS.intensity.over3, // darkest red — severe over-target
+  building: t['status-success'], // below target ramp-up
+  approaching: t['status-warning'], // nearing target
+  target: t['brand-primary'], // exactly at target
+  over1: t['status-error'], // mild over-target
+  over2: WORKOUT_TOKENS.intensity.over2, // moderate over-target
+  over3: WORKOUT_TOKENS.intensity.over3, // severe over-target
 } as const
 
 type OverTier = 0 | 1 | 2 | 3

@@ -276,9 +276,9 @@ export const TonalRamps: StoryObj = {
 
       <ColorScale name="Red" colors={primitiveRamps.red} />
       <ColorScale name="Orange" colors={primitiveRamps.orange} />
-      <ColorScale name="Amber (yellow-merged)" colors={primitiveRamps.amber} />
+      <ColorScale name="Amber" colors={primitiveRamps.amber} />
       <ColorScale name="Green" colors={primitiveRamps.green} />
-      <ColorScale name="Cyan (steel-merged)" colors={primitiveRamps.cyan} />
+      <ColorScale name="Cyan" colors={primitiveRamps.cyan} />
       <ColorScale name="Blue" colors={primitiveRamps.blue} />
       <ColorScale name="Magenta" colors={primitiveRamps.magenta} />
     </View>

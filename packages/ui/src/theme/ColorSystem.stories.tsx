@@ -96,24 +96,22 @@ function Chip({ hex, label, sub }: { hex: string; label?: string; sub?: string }
 const RAMP_NAMES: Array<[keyof typeof primitiveRamps, string]> = [
   ['red', 'Red'],
   ['orange', 'Orange'],
-  ['amber', 'Amber · yellow-merged'],
+  ['amber', 'Amber'],
   ['green', 'Green'],
-  ['cyan', 'Cyan · steel-merged'],
+  ['cyan', 'Cyan'],
   ['blue', 'Blue'],
   ['magenta', 'Magenta'],
 ]
 
-// Final semantic mappings (token -> new ramp step). These are the values the
-// PR-2 repoint will apply; shown here as the design target.
 const SEM = {
-  success: primitiveRamps.green[300], // teal folds into green; unified (no separate vivid)
+  success: primitiveRamps.green[300],
   warning: primitiveRamps.amber[300],
   error: primitiveRamps.red[600],
   info: primitiveRamps.blue[500],
-  deload: primitiveRamps.magenta[600], // violet folds into magenta
+  deload: primitiveRamps.magenta[600],
   brand: primitiveRamps.orange[400],
   brandDark: primitiveRamps.orange[600],
-  brandSecondary: primitiveRamps.cyan[600], // steel folds into cyan
+  brandSecondary: primitiveRamps.cyan[600],
   spinner: primitiveRamps.cyan[600],
   neutral: primitiveColors.neutral[500],
 } as const
@@ -121,25 +119,13 @@ const SEM = {
 // BodyMap training-status diverging scale (from the divergingScale token).
 const D3_STATUS = divergingScale
 
-// Semantic token: current value -> new mapping, for the migration section.
-const SEM_MIGRATION: Array<{ label: string; old: string; next: string; flag?: boolean }> = [
-  { label: 'brand', old: primitiveColors.accent[400], next: SEM.brand },
-  { label: 'brand-secondary', old: primitiveColors.steel[500], next: SEM.brandSecondary, flag: true },
-  { label: 'info', old: primitiveColors.sky[500], next: SEM.info },
-  { label: 'error', old: primitiveColors.red[600], next: SEM.error },
-  { label: 'warning', old: primitiveColors.amber[500], next: SEM.warning, flag: true },
-  { label: 'success (unified)', old: primitiveColors.teal[500], next: SEM.success, flag: true },
-  { label: 'deload', old: '#9333EA', next: SEM.deload, flag: true },
-  { label: 'spinner', old: '#5048E5', next: SEM.spinner, flag: true },
-]
-
 export const Overview: StoryObj = {
   render: () => (
     <View style={{ padding: 24, gap: 6 }}>
       <Text className="text-2xl font-bold text-text-primary mb-1">Color System</Text>
       <Text className="text-text-secondary mb-4">
-        Seven OKLCH tonal ramps (amber absorbs yellow, cyan absorbs steel) and an ordered, colorblind-safe
-        categorical palette. Ramps are the single source of truth; the categorical references ramp steps.
+        Seven OKLCH tonal ramps and an ordered, colorblind-safe categorical palette. Ramps are the single
+        source of truth; the categorical references ramp steps.
       </Text>
 
       <SectionTitle>Tonal ramps</SectionTitle>
@@ -147,21 +133,13 @@ export const Overview: StoryObj = {
         <Ramp key={key} name={name} ramp={primitiveRamps[key]} />
       ))}
 
-      <SectionTitle>Semantic tokens — current → new</SectionTitle>
-      <Text className="text-text-secondary text-xs mb-3">
-        ⚑ marks a deliberate hue change (teal-success → green, warning warms, deload violet → magenta,
-        brand-secondary/spinner steel+indigo → cyan). The rest re-home onto the nearest ramp step.
-      </Text>
+      <SectionTitle>Semantic tokens</SectionTitle>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 18 }}>
-        {SEM_MIGRATION.map((m) => (
-          <View key={m.label} style={{ alignItems: 'center' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-              <Chip hex={m.old} />
-              <Text className="text-text-secondary">→</Text>
-              <Chip hex={m.next} />
-            </View>
+        {Object.entries(SEM).map(([label, hex]) => (
+          <View key={label} style={{ alignItems: 'center' }}>
+            <Chip hex={hex} />
             <Text className="text-text-secondary" style={{ fontSize: 9, marginTop: 3 }}>
-              {m.flag ? '⚑ ' : ''}{m.label}
+              {label}
             </Text>
           </View>
         ))}

@@ -130,7 +130,7 @@ export function ToolbarButton({
 
   // Determine icon color based on state
   const getIconColor = () => {
-    if (isActive === true) return resolveColor('brand-primary') // #FF7900
+    if (isActive === true) return resolveColor('brand-primary')
     return showActive ? '#FFFFFF' : '#D1D1D1'
   }
 
