@@ -38,7 +38,7 @@ export const All: Story = {
         </View>
       </Swatch>
       <Swatch label="BluetoothIcon">
-        <View className="text-status-success-vivid">
+        <View className="text-status-success">
           <BluetoothIcon size={28} />
         </View>
       </Swatch>

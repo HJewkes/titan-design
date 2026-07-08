@@ -23,7 +23,7 @@ export interface DeviceRowProps extends ViewProps {
 }
 
 const stateColor: Record<DeviceRowState, IndicatorColor> = {
-  connected: 'success-vivid',
+  connected: 'success',
   available: 'info',
   degraded: 'warning',
   lost: 'error-vivid',

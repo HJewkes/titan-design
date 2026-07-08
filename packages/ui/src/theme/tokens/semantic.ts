@@ -51,12 +51,6 @@ export const semanticColorsLight = {
   'status-error-dark': ramp.red[700],        // #A4221C
   'status-error-subtle': ramp.red[50],       // #FFF4F4
 
-  // Deprecated alias — unified onto the green ramp (== status-success); kept for
-  // API compatibility (Indicator `color="success-vivid"`), to be dropped later.
-  'status-success-vivid': ramp.green[300],   // #2ED573
-  'status-success-vivid-light': ramp.green[200],
-  'status-success-vivid-dark': ramp.green[600],
-  'status-success-vivid-subtle': 'rgba(46, 213, 115, 0.12)',
   'status-error-vivid': p.redVivid[500],     // #FF4757 - vivid alert red
   'status-error-vivid-light': p.redVivid[400],
   'status-error-vivid-dark': p.redVivid[700],
@@ -187,11 +181,6 @@ export const semanticColorsDark = {
   'status-error-dark': ramp.red[700],
   'status-error-subtle': 'rgba(209, 67, 67, 0.12)',
 
-  // Deprecated alias — unified onto the green ramp (== status-success).
-  'status-success-vivid': ramp.green[300],
-  'status-success-vivid-light': ramp.green[200],
-  'status-success-vivid-dark': ramp.green[600],
-  'status-success-vivid-subtle': 'rgba(46, 213, 115, 0.12)',
   'status-error-vivid': p.redVivid[500],
   'status-error-vivid-light': p.redVivid[400],
   'status-error-vivid-dark': p.redVivid[700],

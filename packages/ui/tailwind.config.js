@@ -44,12 +44,6 @@ module.exports = {
             dark: 'var(--color-status-error-dark)',
             subtle: 'var(--color-status-error-subtle)',
           },
-          'success-vivid': {
-            DEFAULT: 'var(--color-status-success-vivid)',
-            light: 'var(--color-status-success-vivid-light)',
-            dark: 'var(--color-status-success-vivid-dark)',
-            subtle: 'var(--color-status-success-vivid-subtle)',
-          },
           'error-vivid': {
             DEFAULT: 'var(--color-status-error-vivid)',
             light: 'var(--color-status-error-vivid-light)',

@@ -80,7 +80,7 @@ export const Pulse: Story = {
   render: () => (
     <View className="flex-row gap-6 items-center">
       <Indicator size="md" color="success" pulse />
-      <Indicator size="md" color="success-vivid" pulse="ping" />
+      <Indicator size="md" color="success" pulse="ping" />
       <Indicator size="md" color="warning" />
       <Indicator size="md" color="default" />
     </View>
@@ -89,7 +89,7 @@ export const Pulse: Story = {
     docs: {
       description: {
         story:
-          'Opacity pulse (default), expanding-ring pulse (`pulse="ping"`, vivid green for live), solid, dim.',
+          'Opacity pulse (default), expanding-ring pulse (`pulse="ping"`, green for live), solid, dim.',
       },
     },
   },
@@ -99,7 +99,7 @@ export const Vivid: Story = {
   render: () => (
     <View className="flex-row gap-4 items-center">
       <Indicator size="md" color="success" />
-      <Indicator size="md" color="success-vivid" />
+      <Indicator size="md" color="success" />
       <Indicator size="md" color="error" />
       <Indicator size="md" color="error-vivid" />
     </View>

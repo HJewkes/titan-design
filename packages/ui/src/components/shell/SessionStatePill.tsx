@@ -23,7 +23,7 @@ const stateConfig: Record<
   }
 > = {
   // live = vivid green with an expanding ring; rest = solid amber (no pulse — operator); idle is dim.
-  live: { label: 'LIVE', color: 'success-vivid', pulse: 'ping', textColor: 'primary' },
+  live: { label: 'LIVE', color: 'success', pulse: 'ping', textColor: 'primary' },
   rest: { label: 'REST', color: 'warning', pulse: false, textColor: 'primary' },
   idle: { label: 'IDLE', color: 'default', pulse: false, textColor: 'secondary' },
 }
