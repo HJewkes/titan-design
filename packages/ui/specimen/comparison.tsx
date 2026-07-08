@@ -31,7 +31,7 @@ const HTML_CSS = `
     --brand-primary: #FF7900;
     --brand-primary-light: #FF9630;
     --brand-primary-subtle: rgba(255, 121, 0, 0.12);
-    --brand-secondary: #406D87;
+    --brand-secondary: #307B9B;
     --bg-base: #101010;
     --surface-elevated: #191919;
     --surface-raised: #1C1C1C;
@@ -40,14 +40,14 @@ const HTML_CSS = `
     --text-tertiary: #6B7280;
     --border-default: #1F1F1F;
     --border-strong: #2C2C2C;
-    --status-success: #14B8A6;
+    --status-success: #2ED573;
     --status-error: #D14343;
-    --status-warning: #FFB020;
+    --status-warning: #F9B415;
     --result-improve: #4caf50;
     --result-degrade: #ef5350;
-    --vel-red: #ff4757;
-    --vel-orange: #ffa502;
-    --vel-yellow: #ffd43b;
+    --vel-red: #d14343;
+    --vel-orange: #f9b415;
+    --vel-yellow: #ffd352;
     --vel-green: #2ed573;
     --font-heading: 'Space Grotesk', sans-serif;
     --font-ui: 'Nunito Sans', sans-serif;
@@ -130,8 +130,8 @@ const HTML_CSS = `
   .html-scope .status-dot.error { background: var(--status-error); }
   .html-scope .status-dot.neutral { background: var(--text-tertiary); }
   .html-scope .status-dot.on-track {
-    background: rgba(20,184,166,0.15);
-    border: 1px solid rgba(20,184,166,0.3);
+    background: rgba(46,213,115,0.15);
+    border: 1px solid rgba(46,213,115,0.3);
   }
   .html-scope .status-dot.deviation {
     background: rgba(245,158,11,0.15);
@@ -153,7 +153,7 @@ const HTML_CSS = `
   .html-scope .status-dot.on-track .dot-icon { color: var(--status-success); }
   .html-scope .status-dot.deviation .dot-icon { color: var(--status-warning); }
   .html-scope .status-dot.future .dot-icon { color: var(--text-tertiary); }
-  .html-scope .glow-success { box-shadow: 0 0 4px rgba(20,184,166,0.4); }
+  .html-scope .glow-success { box-shadow: 0 0 4px rgba(46,213,115,0.4); }
   .html-scope .glow-warning { box-shadow: 0 0 4px rgba(245,158,11,0.4); }
   .html-scope .glow-error { box-shadow: 0 0 4px rgba(239,68,68,0.4); }
 
@@ -279,8 +279,8 @@ const HTML_CSS = `
     background: linear-gradient(to top, var(--status-warning) 0%, var(--brand-primary) 50%, var(--status-error) 100%);
   }
   .html-scope .intensity-fill.over-1 { background: var(--status-error); height: 100% !important; }
-  .html-scope .intensity-fill.over-2 { background: #A62626; height: 100% !important; }
-  .html-scope .intensity-fill.over-3 { background: #7A1C1C; height: 100% !important; }
+  .html-scope .intensity-fill.over-2 { background: #A4221C; height: 100% !important; }
+  .html-scope .intensity-fill.over-3 { background: #7E1002; height: 100% !important; }
   .html-scope .intensity-fill.at-target {
     box-shadow: 0 0 5px 1px rgba(33, 150, 243, 0.35), 0 0 10px 3px rgba(33, 150, 243, 0.15);
   }
@@ -293,8 +293,8 @@ const HTML_CSS = `
     z-index: 1;
   }
   .html-scope .intensity-bulge.over-1 { background: var(--status-error); }
-  .html-scope .intensity-bulge.over-2 { background: #A62626; }
-  .html-scope .intensity-bulge.over-3 { background: #7A1C1C; }
+  .html-scope .intensity-bulge.over-2 { background: #A4221C; }
+  .html-scope .intensity-bulge.over-3 { background: #7E1002; }
   .html-scope .intensity-line-target {
     position: absolute;
     left: -3px;
@@ -321,8 +321,8 @@ const HTML_CSS = `
     font-family: var(--font-ui);
   }
   .html-scope .workout-pill.completed {
-    background: rgba(20,184,166,0.15);
-    border: 1px solid rgba(20,184,166,0.3);
+    background: rgba(46,213,115,0.15);
+    border: 1px solid rgba(46,213,115,0.3);
     color: var(--status-success);
   }
   .html-scope .workout-pill.active {
@@ -374,9 +374,9 @@ const HTML_CSS = `
 
   /* WorkoutPill deload */
   .html-scope .workout-pill.deload {
-    background: rgba(147,51,234,0.15);
-    border: 1px solid rgba(147,51,234,0.3);
-    color: #9333ea;
+    background: rgba(186,41,150,0.15);
+    border: 1px solid rgba(186,41,150,0.3);
+    color: #ba2996;
   }
 
   /* 12. SetRow */
