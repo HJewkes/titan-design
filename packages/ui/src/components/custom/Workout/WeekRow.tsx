@@ -2,8 +2,9 @@
 import { View, Text, type ViewProps } from 'react-native'
 import { WorkoutPill, type WorkoutPillStatus } from './WorkoutPill'
 import { IntensityBar } from './IntensityBar'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
-const BRAND_PRIMARY = '#FF7900'
+const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
 
 export interface WeekRowWorkout {
   name: string

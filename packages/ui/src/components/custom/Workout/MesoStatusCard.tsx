@@ -4,14 +4,21 @@ import { View, Text, type ViewProps, type ViewStyle } from 'react-native'
 import { Card } from '../../ui/card'
 import { StatusDot } from './StatusDot'
 import { resolveColor } from '../../../theme/resolve-color'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+import {
+  MESO_ACCENT_GRADIENT_DARK,
+  MESO_ACCENT_GRADIENT_LIGHT,
+} from '../../../theme/extracted-colors-dataviz'
 
-const BRAND_PRIMARY = '#FF7900'
-const BRAND_PRIMARY_DARK = '#C45E00'
-const BRAND_PRIMARY_LIGHT = '#FFB066'
+const t = getSemanticColors('dark')
 
-const SUCCESS = '#14B8A6'
-const WARNING = '#FFB020'
-const ERROR = '#D14343'
+const BRAND_PRIMARY = t['brand-primary']
+const BRAND_PRIMARY_DARK = MESO_ACCENT_GRADIENT_DARK
+const BRAND_PRIMARY_LIGHT = MESO_ACCENT_GRADIENT_LIGHT
+
+const SUCCESS = t['status-success']
+const WARNING = t['status-warning']
+const ERROR = t['status-error']
 
 /** Gradient stops for the 3px top accent: dark -> primary -> light (matches MesoCard). */
 const ACCENT_STOPS = [BRAND_PRIMARY_DARK, BRAND_PRIMARY, BRAND_PRIMARY_LIGHT]

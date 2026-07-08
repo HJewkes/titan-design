@@ -18,11 +18,14 @@ import {
   type VolumeLandmarks,
   type VolumeStatus,
 } from './muscleTaxonomy'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
-const BRAND_PRIMARY = '#FF7900'
+const t = getSemanticColors('dark')
 
-/** Volume track gradient: status-info (blue) -> result-improve (teal) -> status-error (red). */
-const VOLUME_GRADIENT = 'linear-gradient(90deg, #2196F3 0%, #14B8A6 50%, #D14343 100%)'
+const BRAND_PRIMARY = t['brand-primary']
+
+/** Volume track gradient: status-info (blue) -> status-success (teal) -> status-error (red). */
+const VOLUME_GRADIENT = `linear-gradient(90deg, ${t['status-info']} 0%, ${t['status-success']} 50%, ${t['status-error']} 100%)`
 
 /** Sheet slides up from this offset (px) and the backdrop fades to this opacity. */
 const SLIDE_OFFSET = 400

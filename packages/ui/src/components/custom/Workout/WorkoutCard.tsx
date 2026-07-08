@@ -6,6 +6,9 @@ import {
   MuscleGroupChip,
   type VolumeStatus,
 } from './MuscleGroupChip'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+
+const t = getSemanticColors('dark')
 
 export type WorkoutStatus = 'completed' | 'today' | 'upcoming'
 
@@ -43,8 +46,8 @@ export interface WorkoutCardProps extends ViewProps {
 }
 
 const COLORS = {
-  statusSuccess: '#14B8A6',
-  brandPrimary: '#FF7900',
+  statusSuccess: t['status-success'],
+  brandPrimary: t['brand-primary'],
   borderDefault: '#1F1F1F',
   brandPrimarySubtle: 'rgba(255,121,0,0.06)',
 }

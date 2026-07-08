@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { DATAVIZ_CATEGORICAL_PALETTE } from '../../../theme/extracted-colors-dataviz'
 
 export interface TreemapDatum {
   /** Stable identity — returned by onPress and used as the React key. */
@@ -35,11 +36,8 @@ export interface TreemapProps extends Omit<ViewProps, 'children'> {
   className?: string
 }
 
-/** Titan categorical fallback palette (data-1..data-8). */
-const PALETTE = [
-  '#5B9BD5', '#14B8A6', '#F4A736', '#F83030',
-  '#823CA0', '#D4A520', '#406D87', '#43C6B7',
-]
+/** Titan categorical fallback palette (see extracted-colors-dataviz). */
+const PALETTE = DATAVIZ_CATEGORICAL_PALETTE
 
 interface Rect {
   x: number

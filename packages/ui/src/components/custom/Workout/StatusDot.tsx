@@ -1,5 +1,8 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, Text, type ViewProps } from 'react-native'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+
+const t = getSemanticColors('dark')
 
 export type StatusDotVariant =
   | 'success'
@@ -22,9 +25,9 @@ export interface StatusDotProps extends ViewProps {
 }
 
 const solidVariantColors: Record<string, string> = {
-  success: '#14B8A6',
-  warning: '#FFB020',
-  error: '#D14343',
+  success: t['status-success'],
+  warning: t['status-warning'],
+  error: t['status-error'],
   neutral: '#6B7280',
 }
 
@@ -69,8 +72,8 @@ const iconColors: Record<StatusDotVariant, string> = {
   warning: '#6B4000',
   error: '#5C1A1A',
   neutral: '#D1D5DB',
-  'on-track': '#14B8A6',
-  deviation: '#FFB020',
+  'on-track': t['status-success'],
+  deviation: t['status-warning'],
   future: '#6B7280',
 }
 

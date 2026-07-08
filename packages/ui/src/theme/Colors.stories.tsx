@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
-import { primitiveColors, discreteRainbow } from './tokens/primitives'
+import { primitiveColors, discreteRainbow, primitiveRamps, categoricalPalette } from './tokens/primitives'
 import { semanticColorsLight, semanticColorsDark } from './tokens/semantic'
 
 const meta: Meta = {
@@ -232,6 +232,74 @@ export const DataVisualizationColors: StoryObj = {
           />
         ))}
       </View>
+    </View>
+  ),
+}
+
+function CategoricalRow({ name, colors }: { name: string; colors: readonly string[] }) {
+  return (
+    <View style={{ marginBottom: 24 }}>
+      <Text className="text-lg font-bold text-text-primary mb-3">
+        {name} <Text className="text-text-secondary text-sm">({colors.length})</Text>
+      </Text>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+        {colors.map((color, index) => (
+          <View key={index} style={{ alignItems: 'center' }}>
+            <View
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: 8,
+                backgroundColor: color,
+                borderWidth: 1,
+                borderColor: '#374151',
+              }}
+            />
+            <Text className="text-text-secondary text-xs mt-1">{color.toUpperCase()}</Text>
+          </View>
+        ))}
+      </View>
+    </View>
+  )
+}
+
+export const TonalRamps: StoryObj = {
+  render: () => (
+    <View style={{ padding: 24 }}>
+      <Text className="text-2xl font-bold text-text-primary mb-6">
+        Tonal Ramps (Foundations)
+      </Text>
+      <Text className="text-text-secondary mb-6">
+        Seven OKLCH-generated hue ramps, 11 perceptual steps each (50 → 950). Built with hue-torsion and a
+        chroma arc; amber absorbs the former yellow (lemon → warm body) and cyan absorbs the former steel.
+      </Text>
+
+      <ColorScale name="Red" colors={primitiveRamps.red} />
+      <ColorScale name="Orange" colors={primitiveRamps.orange} />
+      <ColorScale name="Amber (yellow-merged)" colors={primitiveRamps.amber} />
+      <ColorScale name="Green" colors={primitiveRamps.green} />
+      <ColorScale name="Cyan (steel-merged)" colors={primitiveRamps.cyan} />
+      <ColorScale name="Blue" colors={primitiveRamps.blue} />
+      <ColorScale name="Magenta" colors={primitiveRamps.magenta} />
+    </View>
+  ),
+}
+
+export const CategoricalPalette: StoryObj = {
+  render: () => (
+    <View style={{ padding: 24 }}>
+      <Text className="text-2xl font-bold text-text-primary mb-6">
+        Categorical Palette
+      </Text>
+      <Text className="text-text-secondary mb-6">
+        Ordered, colorblind-safe qualitative series (worst-case deut/protanopia floor 8 through the first
+        six colors; the 7th is extended — pair it with a legend). Series index is stable. Use{' '}
+        <Text className="font-semibold">default</Text> on neutral/light surfaces (also legible under black
+        text) and <Text className="font-semibold">dark</Text> where white text sits on the swatch.
+      </Text>
+
+      <CategoricalRow name="Default" colors={categoricalPalette.default} />
+      <CategoricalRow name="Dark (white text)" colors={categoricalPalette.dark} />
     </View>
   ),
 }

@@ -7,6 +7,7 @@ import {
   type BaseBadgeSize,
   type BaseBadgeProps,
 } from './BaseBadge'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 export type WeightBadgeSize = BaseBadgeSize
 
@@ -42,7 +43,7 @@ export function WeightBadge({
   ...props
 }: WeightBadgeProps) {
   const config = baseBadgeSizeConfig[size]
-  const textColor = isPr ? '#FF7900' : '#9CA3AF'
+  const textColor = isPr ? getSemanticColors('dark')['brand-primary'] : '#9CA3AF'
   // Dumbbell reads clearly as a weight/strength metric and is unit-agnostic
   // across estimated-1RM and N-rep-max contexts (vs. TrendingUp which implies
   // change/trend rather than a load value).
@@ -100,7 +101,10 @@ export function WeightBadge({
             fontFamily: '"Space Grotesk", sans-serif',
             fontSize: config.fontSize,
             marginLeft: 4,
-            color: delta >= 0 ? '#4caf50' : '#ef5350',
+            color:
+              delta >= 0
+                ? getSemanticColors('dark')['result-improve']
+                : getSemanticColors('dark')['result-degrade'],
           }}
           testID="weight-badge-delta"
         >

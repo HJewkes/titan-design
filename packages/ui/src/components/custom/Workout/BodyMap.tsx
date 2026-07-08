@@ -4,6 +4,7 @@ import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-n
 import BodyHighlighter, { type ExtendedBodyPart, type Slug } from 'react-native-body-highlighter'
 import { cn } from '../../../utils/cn'
 import { resolveColor } from '../../../theme/resolve-color'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import {
   MuscleGroup,
   SimpleMuscleGroup,
@@ -24,6 +25,8 @@ import {
  */
 const Body = ((BodyHighlighter as unknown as { default?: typeof BodyHighlighter }).default ??
   BodyHighlighter) as typeof BodyHighlighter
+
+const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
 
 const OUTLINE_FILL = 'rgba(255,255,255,0.08)'
 const OUTLINE_BORDER = 'rgba(255,255,255,0.12)'
@@ -275,7 +278,7 @@ function ViewToggle({ view, onViewChange }: ViewToggleProps) {
               borderRadius: 9999,
               backgroundColor: active ? 'rgba(255,121,0,0.16)' : 'transparent',
               borderWidth: 1,
-              borderColor: active ? '#FF7900' : resolveColor('border-strong'),
+              borderColor: active ? BRAND_PRIMARY : resolveColor('border-strong'),
             }}
             testID={`body-map-toggle-${side}`}
           >
@@ -284,7 +287,7 @@ function ViewToggle({ view, onViewChange }: ViewToggleProps) {
                 fontSize: 12,
                 fontFamily: 'Inter, sans-serif',
                 fontWeight: active ? '700' : '500',
-                color: active ? '#FF7900' : resolveColor('text-secondary'),
+                color: active ? BRAND_PRIMARY : resolveColor('text-secondary'),
                 textTransform: 'capitalize',
               }}
             >
@@ -321,7 +324,7 @@ function MuscleButton({ entry, highlighted, onMusclePress }: MuscleButtonProps) 
         paddingVertical: 3,
         borderRadius: 9999,
         borderWidth: 1,
-        borderColor: highlighted ? '#FF7900' : resolveColor('border-default'),
+        borderColor: highlighted ? BRAND_PRIMARY : resolveColor('border-default'),
       }}
       testID={`body-map-muscle-${entry.key}`}
     >

@@ -1,5 +1,6 @@
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { DATAVIZ_CATEGORICAL_PALETTE } from '../../../theme/extracted-colors-dataviz'
 
 export interface ScatterDatum {
   /** Stable identity — returned by onPress and used as the React key. */
@@ -45,11 +46,8 @@ export interface ScatterProps extends Omit<ViewProps, 'children'> {
   className?: string
 }
 
-/** Titan categorical fallback palette (data-1..data-8). */
-const PALETTE = [
-  '#5B9BD5', '#14B8A6', '#F4A736', '#F83030',
-  '#823CA0', '#D4A520', '#406D87', '#43C6B7',
-]
+/** Titan categorical fallback palette (see extracted-colors-dataviz). */
+const PALETTE = DATAVIZ_CATEGORICAL_PALETTE
 
 const GRID_LINE = 'rgba(255,255,255,0.07)'
 const AXIS_LINE = 'rgba(255,255,255,0.18)'

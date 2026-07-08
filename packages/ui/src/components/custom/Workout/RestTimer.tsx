@@ -1,8 +1,9 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, Text, Pressable } from 'react-native'
 import { resolveColor } from '../../../theme/resolve-color'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
-const BRAND_PRIMARY = '#FF7900'
+const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
 
 export interface RestTimerProps {
   totalSeconds: number

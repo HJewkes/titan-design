@@ -7,8 +7,9 @@ import { RestTimer } from './RestTimer'
 import { SupersetWrapper } from './SupersetWrapper'
 import { type SetRowProps } from './SetRow'
 import { resolveColor } from '../../../theme/resolve-color'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
-const BRAND_PRIMARY = '#FF7900'
+const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
 
 /** Where an exercise sits in the during-workout flow. */
 export type ActiveExerciseStatus = 'completed' | 'active' | 'upcoming'

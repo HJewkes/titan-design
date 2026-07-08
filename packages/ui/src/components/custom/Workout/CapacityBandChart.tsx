@@ -1,10 +1,13 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useEffect, useState, useMemo } from 'react'
 import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-native'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
-const STATUS_SUCCESS = '#14B8A6'
-const STATUS_WARNING = '#FFB020'
-const STATUS_INFO = '#2196F3'
+const t = getSemanticColors('dark')
+
+const STATUS_SUCCESS = t['status-success']
+const STATUS_WARNING = t['status-warning']
+const STATUS_INFO = t['status-info']
 /** Dot outline: near-white ring so load dots read on the band fill and any
  *  surface (matches the MesoStatusCard gauge-marker convention). */
 const DOT_BORDER = '#F3F4F6'

@@ -2,6 +2,7 @@
 import React from 'react'
 import { View, Text, Pressable, TextInput } from 'react-native'
 import { resolveColor } from '../../../theme/resolve-color'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 export interface InputBarProps {
   exerciseName: string
@@ -17,7 +18,7 @@ export interface InputBarProps {
   visible: boolean
 }
 
-const BRAND_PRIMARY = '#FF7900'
+const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
 const INPUT_CLASSNAME = 'bg-surface-raised border-border-strong text-text-primary'
 
 const inputStyle = {

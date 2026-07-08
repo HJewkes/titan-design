@@ -22,9 +22,10 @@ import {
   type VelocityZoneBandProp,
 } from './VelocityStrip'
 import { resolveColor } from '../../../theme/resolve-color'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { cn } from '../../../utils/cn'
 
-const BRAND_PRIMARY = '#FF7900'
+const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
 
 /** Inner plot width: page width 390 − 16 page padding − 12 card padding on each side. */
 const CHART_WIDTH = 326

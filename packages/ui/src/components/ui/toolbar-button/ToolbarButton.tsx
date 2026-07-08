@@ -2,6 +2,7 @@ import React, { useState, useCallback, createContext, useContext } from 'react'
 import { View, Text, Pressable, type ViewProps, StyleSheet, Platform } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { neumorphicShadows, getHoverColors } from '../../../theme'
+import { resolveColor } from '../../../theme/resolve-color'
 
 export type ToolbarButtonVariant = 'default' | 'neumorphic'
 export type ToolbarButtonSize = 'sm' | 'md' | 'lg'
@@ -129,7 +130,7 @@ export function ToolbarButton({
 
   // Determine icon color based on state
   const getIconColor = () => {
-    if (isActive === true) return '#FF7900' // brand-primary
+    if (isActive === true) return resolveColor('brand-primary') // #FF7900
     return showActive ? '#FFFFFF' : '#D1D1D1'
   }
 

@@ -8,8 +8,9 @@ import { WorkoutCard, type WorkoutStatus, type WorkoutMuscleGroup } from './Work
 import { type WorkoutPillStatus } from './WorkoutPill'
 import { type ExerciseCardProps } from './ExerciseCard'
 import { cn } from '../../../utils/cn'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
-const BRAND_PRIMARY = '#FF7900'
+const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
 
 /** A single workout within a planned week, plus its exercise breakdown. */
 export interface PlanWorkout {

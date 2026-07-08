@@ -3,6 +3,7 @@ import { View, Text } from 'react-native'
 import { VelocityStrip, type VelocityZoneBandProp } from './VelocityStrip'
 import { PrBadge, type PRType } from './PrBadge'
 import { roundRpe, rpeColor, roundWeight } from '../../../utils/workout-format'
+import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 
 export type SetRowMode = 'active' | 'completed' | 'history'
 
@@ -100,7 +101,7 @@ export function SetRow({
               fontSize: 10,
               fontWeight: '700',
               fontFamily: 'Inter, sans-serif',
-              color: '#ffa502',
+              color: WORKOUT_TOKENS.scale.orange,
               backgroundColor: 'rgba(255,165,2,0.12)',
               paddingVertical: 1,
               paddingHorizontal: 5,

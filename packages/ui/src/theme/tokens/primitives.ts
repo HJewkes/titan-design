@@ -181,6 +181,225 @@ export const primitiveColors = {
 } as const
 
 /**
+ * Derived tonal ramps (TD-05.09 color foundations)
+ *
+ * Seven OKLCH-generated hue ramps, 11 perceptual lightness steps each (50 -> 950).
+ * Built with hue-torsion + a chroma arc, anchored through existing brand/semantic
+ * hexes. Two hues were consolidated where their used colors never collided along
+ * the lightness axis: `amber` absorbs the former yellow (lemon light end -> warm
+ * amber body), `cyan` absorbs the former steel (vivid cyan -> muted steel dark,
+ * brand-secondary at 600). `pin` marks the step each ramp flows through its anchor.
+ * This is the single source of truth for chromatic hexes — the categorical palette
+ * below references these steps rather than duplicating values.
+ * See coordination/design-explorations/foundations.
+ */
+export const primitiveRamps = {
+  red: {
+    50: '#FFF4F4',
+    100: '#FFE3E5',
+    200: '#FFC2C5',
+    300: '#FF9A9D',
+    400: '#F77175',
+    500: '#E05254',
+    600: '#D14343', // pin
+    700: '#A4221C',
+    800: '#7E1002',
+    900: '#5A0900',
+    950: '#3D0400',
+  },
+  orange: {
+    50: '#FFF5ED',
+    100: '#FFE6D4',
+    200: '#FFC7A2',
+    300: '#FFA063',
+    400: '#FF7900', // pin
+    500: '#DA5F00',
+    600: '#B94A00',
+    700: '#983804',
+    800: '#6F290F',
+    900: '#4E1C0C',
+    950: '#331107',
+  },
+  amber: { // yellow-merged: lemon top, warm-rich body
+    50: '#FFF7DD',
+    100: '#FFEAA9',
+    200: '#FFD352',
+    300: '#F9B415', // pin
+    400: '#E08C00',
+    500: '#C27400',
+    600: '#A45E00',
+    700: '#814D14',
+    800: '#5B3A1A',
+    900: '#442503',
+    950: '#301500',
+  },
+  green: {
+    50: '#E3FFEE',
+    100: '#B5FFD2',
+    200: '#58F69E',
+    300: '#2ED573', // pin
+    400: '#21C05D',
+    500: '#22A444',
+    600: '#298732',
+    700: '#2B6B25',
+    800: '#264D1C',
+    900: '#1B3515',
+    950: '#11220D',
+  },
+  cyan: { // steel-merged: brand-secondary at 600
+    50: '#E6FBFF',
+    100: '#C2F6FF',
+    200: '#62EAFF',
+    300: '#22D3EE', // pin
+    400: '#01B5D1',
+    500: '#2697B7',
+    600: '#307B9B',
+    700: '#2A617F',
+    800: '#22465F',
+    900: '#0B3149',
+    950: '#001F36',
+  },
+  blue: {
+    50: '#EFF8FF',
+    100: '#D9EFFF',
+    200: '#ACDBFF',
+    300: '#78C2FF',
+    400: '#3CA8FF',
+    500: '#2196F3', // pin
+    600: '#1072CB',
+    700: '#135AA8',
+    800: '#14407E',
+    900: '#112C5A',
+    950: '#091B3C',
+  },
+  magenta: {
+    50: '#FFF3F9',
+    100: '#FFE2F1',
+    200: '#FFBDE2',
+    300: '#FF8FD5',
+    400: '#ED69C3',
+    500: '#D548AF',
+    600: '#BA2996',
+    700: '#9C0D7A', // pin
+    800: '#77005A',
+    900: '#56003F',
+    950: '#3B0029',
+  },
+} as const
+
+/**
+ * Categorical (qualitative) palette — an ordered, CVD-safe series expressed as
+ * references into {@link primitiveRamps} (one source of truth; the palette moves
+ * with the ramps).
+ *
+ * Design: a single canonical hue order (blue, magenta, red, orange, green, cyan,
+ * amber), with steps chosen vivid-midtone-first and fanned lighter/darker as the
+ * series grows to preserve separation. The sequence is nested-stable — a chart
+ * with N series uses the first N colors, and the series index is stable as N
+ * changes. Colorblind-safe worst-case deuteranopia/protanopia floor 8 holds
+ * through {@link CATEGORICAL_CVD_SAFE_MAX} colors; the 7th is an extended color
+ * that should be paired with a legend or other secondary encoding.
+ *
+ * Two variants: `default` (vivid, sits on neutral/light surfaces, legible under
+ * black text) and `dark` (deeper shades legible under white text on a fill). A
+ * separate "light" variant was dropped — the vivid `default` picks already clear
+ * black-text contrast, so it doubles as the light-context palette.
+ */
+export const categoricalPalette = {
+  default: [
+    primitiveRamps.blue[500],
+    primitiveRamps.magenta[500],
+    primitiveRamps.red[500],
+    primitiveRamps.orange[400],
+    primitiveRamps.green[300],
+    primitiveRamps.cyan[300],
+    primitiveRamps.amber[600], // extended (7th) — pair with a legend
+  ],
+  dark: [
+    primitiveRamps.blue[600],
+    primitiveRamps.magenta[600],
+    primitiveRamps.red[500],
+    primitiveRamps.orange[600],
+    primitiveRamps.green[800],
+    primitiveRamps.cyan[800],
+    primitiveRamps.amber[500], // extended (7th) — pair with a legend
+  ],
+} as const
+
+/** Largest series count that holds the CVD floor without a legend. */
+export const CATEGORICAL_CVD_SAFE_MAX = 6
+
+/**
+ * Categorical palette variant.
+ * - `default` : vivid; neutral/light surfaces, legible under black text
+ * - `dark`    : deeper shades, legible under white text on a filled swatch
+ */
+export type CategoricalVariant = keyof typeof categoricalPalette
+
+/**
+ * Get a color from the ordered categorical palette by series index.
+ * The palette is nested-stable, so the color for a given index does not change
+ * with the total series count; `index` simply wraps past the end.
+ *
+ * @param index - 0-based series index (wraps past the end)
+ * @param variant - `default` (black-text / light surfaces) or `dark` (white text)
+ * @returns The hex color string
+ */
+export function getCategoricalColor(index: number, variant: CategoricalVariant = 'default'): string {
+  const palette = categoricalPalette[variant]
+  index = Math.max(0, Math.floor(index))
+  return palette[index % palette.length]
+}
+
+/**
+ * Diverging status scale (BodyMap training-status: under → optimal → over) as
+ * references into {@link primitiveRamps}. A true diverging shape — `optimal` is
+ * the lightest center, the extremes (`under`/`over`) go dark — so the signal
+ * reads in lightness (colorblind-robust; worst-case deut/protanopia min ΔE ~13.7)
+ * and the direction reads in the blue↔red axis (the CVD-safe hue pair).
+ *
+ * Fills carry labels: use per-cell best-contrast text — white on the dark
+ * extremes (under/over), black on the lighter middle three (see {@link bestTextColor}).
+ */
+export const divergingScale = [
+  primitiveRamps.blue[700], // under
+  primitiveRamps.cyan[400], // maintenance
+  primitiveRamps.green[300], // optimal (light center)
+  primitiveRamps.orange[500], // approaching
+  primitiveRamps.red[700], // over
+] as const
+
+/**
+ * Sequential "effort" scale (low → high intensity: green → yellow → orange → red)
+ * as references into {@link primitiveRamps}. An ordinal palette that components
+ * sub-sample — IntensityBar uses the full 6 stops; VelocityStrip/RPE takes a
+ * 4-stop subsample. Order encodes magnitude, so it tolerates the green↔red CVD
+ * pair; the light-yellow stop is the visual pivot. Stops 1–5 take black text,
+ * the dark red-700 max takes white.
+ */
+export const sequentialEffort = [
+  primitiveRamps.green[400],
+  primitiveRamps.amber[200],
+  primitiveRamps.amber[400],
+  primitiveRamps.orange[500],
+  primitiveRamps.red[500],
+  primitiveRamps.red[700],
+] as const
+
+/**
+ * Best-contrast text color (black or white) for a solid fill — for labels sitting
+ * on categorical/diverging/effort swatches. Uses the WCAG relative-luminance ratio.
+ */
+export function bestTextColor(hex: string): '#000000' | '#FFFFFF' {
+  const [r, g, b] = [0, 2, 4].map((i) => {
+    const c = parseInt(hex.replace('#', '').slice(i, i + 2), 16) / 255
+    return c >= 0.04045 ? ((c + 0.055) / 1.055) ** 2.4 : c / 12.92
+  })
+  const l = 0.2126 * r + 0.7152 * g + 0.0722 * b
+  return (l + 0.05) / 0.05 >= 1.05 / (l + 0.05) ? '#000000' : '#FFFFFF'
+}
+
+/**
  * Discrete rainbow palette for data visualization
  * Based on Paul Tol's color schemes: https://personal.sron.nl/~pault/#fig:scheme_rainbow_discrete
  */

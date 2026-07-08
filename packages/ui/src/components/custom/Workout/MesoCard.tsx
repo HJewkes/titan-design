@@ -4,10 +4,15 @@ import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-n
 import { Card } from '../../ui/card'
 import { Badge } from '../../ui/badge'
 import { WeekRow, type WeekRowProps } from './WeekRow'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+import {
+  MESO_ACCENT_GRADIENT_DARK,
+  MESO_ACCENT_GRADIENT_LIGHT,
+} from '../../../theme/extracted-colors-dataviz'
 
-const BRAND_PRIMARY = '#FF7900'
-const BRAND_PRIMARY_DARK = '#C45E00'
-const BRAND_PRIMARY_LIGHT = '#FFB066'
+const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
+const BRAND_PRIMARY_DARK = MESO_ACCENT_GRADIENT_DARK
+const BRAND_PRIMARY_LIGHT = MESO_ACCENT_GRADIENT_LIGHT
 const BORDER_DEFAULT = '#1F1F1F'
 
 /** Gradient stops for the 3px top accent: dark -> primary -> light. */

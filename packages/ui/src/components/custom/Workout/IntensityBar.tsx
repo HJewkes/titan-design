@@ -8,6 +8,10 @@ import {
   type ViewStyle,
   type DimensionValue,
 } from 'react-native'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
+
+const t = getSemanticColors('dark')
 
 export type IntensityBarOrientation = 'vertical' | 'horizontal'
 
@@ -34,12 +38,12 @@ const AT_TARGET_GLOW = '0 0 5px 1px rgba(33, 150, 243, 0.35), 0 0 10px 3px rgba(
 
 // Zone colors graded by TRUE percentage (level * 100).
 const ZONE = {
-  building: '#14B8A6', // teal   — below target ramp-up
-  approaching: '#FFB020', // amber  — nearing target
-  target: '#FF7900', // brand  — exactly at target
-  over1: '#D14343', // red    — mild over-target
-  over2: '#A62626', // deep red — moderate over-target
-  over3: '#7A1C1C', // darkest red — severe over-target
+  building: t['status-success'], // teal   — below target ramp-up
+  approaching: t['status-warning'], // amber  — nearing target
+  target: t['brand-primary'], // brand  — exactly at target
+  over1: t['status-error'], // red    — mild over-target
+  over2: WORKOUT_TOKENS.intensity.over2, // deep red — moderate over-target
+  over3: WORKOUT_TOKENS.intensity.over3, // darkest red — severe over-target
 } as const
 
 type OverTier = 0 | 1 | 2 | 3
