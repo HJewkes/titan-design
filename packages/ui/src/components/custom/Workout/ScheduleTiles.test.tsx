@@ -1,15 +1,13 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { ScheduleTiles } from './ScheduleTiles'
-import { formatDateTime } from '../DateTime/DateTime'
+import { ScheduleTiles, compactUntil } from './ScheduleTiles'
 import { primitiveRamps } from '../../../theme/tokens/primitives'
 
 const HOUR = 60 * 60 * 1000
 const DAY = 24 * HOUR
 const ORANGE = primitiveRamps.orange[400]
 
-// Anchor `now` to the real clock so the injected accent calc and the relative
-// Until text (which formatDateTime derives from the real clock) stay in sync.
+// A fixed reference; the compact Until label is deterministic from (when - now).
 const NOW = Date.now()
 
 describe('ScheduleTiles', () => {
@@ -23,14 +21,14 @@ describe('ScheduleTiles', () => {
   it('does not accent the Until value when more than a day away', () => {
     const when = NOW + 2 * DAY
     render(<ScheduleTiles now={NOW} when={when} />)
-    const value = screen.getByText(formatDateTime(when, 'relative'))
+    const value = screen.getByText(compactUntil(when - NOW))
     expect(value.style.color).toBe('')
   })
 
   it('accents the Until value orange when less than a day away', () => {
     const when = NOW + 5 * HOUR
     render(<ScheduleTiles now={NOW} when={when} />)
-    const value = screen.getByText(formatDateTime(when, 'relative'))
+    const value = screen.getByText(compactUntil(when - NOW))
     expect(value).toHaveStyle({ color: ORANGE })
   })
 })

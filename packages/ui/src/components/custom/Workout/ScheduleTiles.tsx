@@ -10,6 +10,18 @@ const DAY_MS = 24 * 60 * 60 * 1000
 /** Accent applied to the Until value when the session is < 1 day away. */
 const SOON_ACCENT = primitiveRamps.orange[400]
 
+/** Compact time-until label: `30m` / `5h` / `2d` / `3w`. Deterministic from the delta. */
+export function compactUntil(ms: number): string {
+  if (ms <= 0) return 'now'
+  const min = Math.round(ms / 60000)
+  if (min < 60) return `${min}m`
+  const hr = Math.round(min / 60)
+  if (hr < 24) return `${hr}h`
+  const d = Math.round(hr / 24)
+  if (d < 7) return `${d}d`
+  return `${Math.round(d / 7)}w`
+}
+
 type Gap = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 8 | 10 | 12
 
 export interface ScheduleTilesProps extends ViewProps {
@@ -50,7 +62,7 @@ export function ScheduleTiles({ when, now, gap = 1, ...props }: ScheduleTilesPro
       <Tile label="Time" value={time} />
       <Tile
         label="Until"
-        value={formatDateTime(when, 'relative')}
+        value={compactUntil(whenMs - reference)}
         valueColor={soon ? SOON_ACCENT : undefined}
       />
     </HStack>
