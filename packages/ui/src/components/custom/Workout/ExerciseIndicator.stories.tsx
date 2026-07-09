@@ -8,9 +8,19 @@ import { ExerciseIndicator } from './ExerciseIndicator'
  * taxonomy can grow without touching call sites.
  */
 const meta: Meta<typeof ExerciseIndicator> = {
-  title: 'Custom/Workout/ExerciseIndicator',
+  title: 'Shell/SessionRail/ExerciseCard/ExerciseIndicator',
   component: ExerciseIndicator,
   tags: ['autodocs'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '**Atom.** A small circular chip in an exercise heading title line (PR / issue / ' +
+          'info); `kind` is a config-backed open union. Used-by ↑ ' +
+          '[ExerciseCard](?path=/docs/shell-sessionrail-exercisecard--docs) rail heading.',
+      },
+    },
+  },
   argTypes: {
     kind: { control: 'select', options: ['pr', 'issue', 'info'] },
     onPress: { action: 'press' },

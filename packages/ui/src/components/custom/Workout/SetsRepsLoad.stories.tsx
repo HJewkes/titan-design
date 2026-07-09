@@ -5,13 +5,23 @@ import { SetsRepsLoad } from './SetsRepsLoad'
 /**
  * `SetsRepsLoad` — the `sets × reps @ load` prescription line in the TempoDisplay
  * visual language (Inter · 600 · letter-spacing 1 · value cells with muted
- * separators). Shares the `MetricCell` primitive with
- * [TempoDisplay](?path=/docs/custom-workout-tempodisplay--docs).
+ * separators).
  */
 const meta: Meta<typeof SetsRepsLoad> = {
-  title: 'Custom/Workout/SetsRepsLoad',
+  title: 'Shell/SessionRail/ExerciseCard/SetsRepsLoad',
   component: SetsRepsLoad,
   tags: ['autodocs'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '**Atom.** The `sets × reps @ load` prescription line in the TempoDisplay visual ' +
+          'language. Composes [MetricCell](?path=/docs/shell-sessionrail-exercisecard-setsrepsload-metriccell--docs) ' +
+          '(shared with [TempoDisplay](?path=/docs/shell-sessionrail-exercisecard-tempodisplay--docs)). ' +
+          'Used-by ↑ [ExerciseCard](?path=/docs/shell-sessionrail-exercisecard--docs) rail heading.',
+      },
+    },
+  },
   decorators: [
     (Story) => (
       <View style={{ padding: 16, backgroundColor: '#131313' }}>

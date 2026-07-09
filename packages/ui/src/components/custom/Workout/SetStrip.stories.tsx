@@ -6,13 +6,23 @@ import { SetStrip, type SetStripSet } from './SetStrip'
  * `SetStrip` — the per-set segmented performance strip. One continuous bar per
  * set (rep intensities as butted color segments, no rep gaps); sets separated by
  * a fixed gap. Colors are the real titan ramp pins (red-600 · orange-400 ·
- * amber-300 · green-300). Composes into the [ExerciseCard](?path=/docs/custom-workout-exercisecard--docs)
- * rail heading and the [SessionRail](?path=/docs/custom-workout-sessionrail--docs) organism.
+ * amber-300 · green-300).
  */
 const meta: Meta<typeof SetStrip> = {
-  title: 'Custom/Workout/SetStrip',
+  title: 'Shell/SessionRail/ExerciseCard/SetStrip',
   component: SetStrip,
   tags: ['autodocs'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '**Molecule.** The per-set segmented performance strip — one bar per set, rep ' +
+          'intensities as butted ramp-pin segments (no rep gaps), active set pulses. ' +
+          'Used-by ↑ [ExerciseCard](?path=/docs/shell-sessionrail-exercisecard--docs) rail ' +
+          'heading + [SessionRail](?path=/docs/shell-sessionrail--docs).',
+      },
+    },
+  },
   argTypes: {
     height: { control: { type: 'range', min: 2, max: 16, step: 1 } },
   },

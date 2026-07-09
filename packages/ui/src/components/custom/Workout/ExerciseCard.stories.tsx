@@ -4,9 +4,23 @@ import { ExerciseCard } from './ExerciseCard'
 import type { SetRowProps } from './SetRow'
 
 const meta: Meta<typeof ExerciseCard> = {
-  title: 'Custom/Workout/ExerciseCard',
+  title: 'Shell/SessionRail/ExerciseCard',
   component: ExerciseCard,
   tags: ['autodocs'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '**Organism** (data-contract card; `state="collapsed" | "expanded" | "upcoming" | "rail"`). ' +
+          'The `rail` heading representation composes ' +
+          '[ExerciseIndicator](?path=/docs/shell-sessionrail-exercisecard-exerciseindicator--docs) + ' +
+          '[SetsRepsLoad](?path=/docs/shell-sessionrail-exercisecard-setsrepsload--docs) + ' +
+          '[TempoDisplay](?path=/docs/shell-sessionrail-exercisecard-tempodisplay--docs) + ' +
+          '[SetStrip](?path=/docs/shell-sessionrail-exercisecard-setstrip--docs). ' +
+          'Used-by ↑ [SessionRail](?path=/docs/shell-sessionrail--docs).',
+      },
+    },
+  },
   argTypes: {
     state: {
       control: 'select',
@@ -191,7 +205,7 @@ export const RailHeading: Story = {
         story:
           'The session-rail heading representation: name + indicator row, the tight ' +
           'sets/reps/load line beside the real TempoDisplay, and the per-set SetStrip. ' +
-          'Consumed by [SessionRail](?path=/docs/custom-workout-sessionrail--docs).',
+          'Consumed by [SessionRail](?path=/docs/shell-sessionrail--docs).',
       },
     },
   },

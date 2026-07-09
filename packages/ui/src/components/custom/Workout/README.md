@@ -56,6 +56,11 @@ type props without pulling the dependency.
   inset (`neumorphicShadows.charcoal.pressed.subtle`). The heading design is locked
   in `coordination/.../S3-sessionrail/DECISIONS-ExerciseRow.md`; the exploration
   specimens live under `Custom/Workout/Explorations/*` (do not repoint yet).
+  In Storybook the family nests by composition under **`Shell/SessionRail/…`**
+  (organism → `ExerciseCard` → its atoms/molecules → `MetricCell`), each node's
+  autodocs carrying a **Composes** link down the tree — matching the S1/S2 shell
+  families. (The component files stay flat on disk in `custom/Workout/`; only the
+  story `title`s build the tree.)
 - Badge icons (WeightBadge's dumbbell, PrBadge / PrHistoryModal's star) are inline
   SVGs (`./icons.tsx`), not `lucide-react` — that dependency was dropped in 0.5.0
   to keep the root barrel light. The SVG paths mirror lucide's glyphs so rendering

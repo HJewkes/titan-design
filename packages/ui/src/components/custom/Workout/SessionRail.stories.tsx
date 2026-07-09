@@ -4,13 +4,12 @@ import { SessionRail, type SessionRailExercise } from './SessionRail'
 
 /**
  * `SessionRail` (shell organism) — the live-workout exercise list: a flat raised
- * heading plane over a sunk, inset list of [ExerciseCard](?path=/docs/custom-workout-exercisecard--docs)
- * rail headings, with a `footer` slot for the (separately built) session-pace tile.
- * Surfaces bind to the charcoal ramp; the list depth is a subtle neumorphic inset.
- * Presentational — driven entirely by props.
+ * heading plane over a sunk, inset list of ExerciseCard rail headings, with a
+ * `footer` slot for the (separately built) session-pace tile. Surfaces bind to the
+ * charcoal ramp; the list depth is a subtle neumorphic inset. Driven entirely by props.
  */
 const meta: Meta<typeof SessionRail> = {
-  title: 'Custom/Workout/SessionRail',
+  title: 'Shell/SessionRail',
   component: SessionRail,
   tags: ['autodocs'],
   argTypes: {
@@ -27,7 +26,19 @@ const meta: Meta<typeof SessionRail> = {
       </View>
     ),
   ],
-  parameters: { layout: 'fullscreen' },
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: {
+        component:
+          '**Organism** (shell S3). The live-workout exercise list: raised heading plane over ' +
+          'a sunk inset list, subtle neumorphic depth (charcoal ramp + `neumorphicShadows`), ' +
+          '`footer` slot for the session-pace tile. Composes ' +
+          '[ExerciseCard](?path=/docs/shell-sessionrail-exercisecard--docs) (`state="rail"`) × N + ' +
+          'StatusDot. Sits beside [SideNav](?path=/docs/shell-sidenav--docs) in the dashboard shell.',
+      },
+    },
+  },
 }
 
 export default meta
