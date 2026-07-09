@@ -54,3 +54,5 @@ SHADOW_SURFACE_STANDARDIZATION_PLAN.md
 
 # Planning workflow artifacts (working state, not committed)
 .plans/
+
+.codewatch/
