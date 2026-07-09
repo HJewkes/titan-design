@@ -40,7 +40,26 @@ export { Sparkline, type SparklineProps } from './Sparkline'
 export { SetRow, type SetRowProps, type SetRowMode } from './SetRow'
 export { InputBar, type InputBarProps } from './InputBar'
 export { RestTimer, type RestTimerProps } from './RestTimer'
+export { MetricCell, type MetricCellProps, METRIC_FONT } from './metricText'
+export { SetsRepsLoad, type SetsRepsLoadProps } from './SetsRepsLoad'
+export {
+  SetStrip,
+  type SetStripProps,
+  type SetStripSet,
+  SET_STRIP_ZONES,
+  velocityZoneColor,
+} from './SetStrip'
+export {
+  ExerciseIndicator,
+  type ExerciseIndicatorProps,
+  type ExerciseIndicatorKind,
+} from './ExerciseIndicator'
 export { ExerciseCard, type ExerciseCardProps, type ExerciseCardState } from './ExerciseCard'
+export {
+  SessionRail,
+  type SessionRailProps,
+  type SessionRailExercise,
+} from './SessionRail'
 export { SupersetWrapper, type SupersetWrapperProps } from './SupersetWrapper'
 export {
   MesoProgressBar,

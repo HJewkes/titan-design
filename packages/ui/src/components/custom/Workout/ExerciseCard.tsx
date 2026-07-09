@@ -7,10 +7,13 @@ import { WeightBadge } from './WeightBadge'
 import { PrBadge } from './PrBadge'
 import { TempoDisplay } from './TempoDisplay'
 import { SetRow, type SetRowProps } from './SetRow'
+import { SetStrip, type SetStripSet } from './SetStrip'
+import { SetsRepsLoad } from './SetsRepsLoad'
+import { ExerciseIndicator, type ExerciseIndicatorKind } from './ExerciseIndicator'
 import { roundWeight } from '../../../utils/workout-format'
 import { resolveColor } from '../../../theme/resolve-color'
 
-export type ExerciseCardState = 'collapsed' | 'expanded' | 'upcoming'
+export type ExerciseCardState = 'collapsed' | 'expanded' | 'upcoming' | 'rail'
 
 export interface ExerciseCardProps {
   name: string
@@ -35,6 +38,14 @@ export interface ExerciseCardProps {
   previousBest?: string
   supersetPosition?: 'first' | 'last' | 'middle' | null
   supersetColor?: string
+  /** Rail heading representation (`state="rail"`): per-set performance strip data. */
+  setStates?: SetStripSet[]
+  /** Rail heading representation: a small PR / issue / info chip in the title line. */
+  indicator?: ExerciseIndicatorKind
+  /** Rail heading strip height in px. Default 8. */
+  stripHeight?: number
+  /** Rail heading: dim the row (upcoming exercise). */
+  dimmed?: boolean
 }
 
 /** Column headers; the weight column reflects the card's unit (LBS / KG). */
@@ -428,6 +439,72 @@ function UpcomingCard({
   )
 }
 
+// The session-rail heading representation: name + indicator on their own row, a
+// tight sets/reps/load line beside the real TempoDisplay, and the per-set strip.
+// e1RM is intentionally dropped here (it's a planning / live-panel concern).
+function RailCard({
+  name,
+  onToggle,
+  summary,
+  tempo,
+  indicator,
+  setStates,
+  stripHeight = 8,
+  dimmed,
+}: ExerciseCardProps) {
+  // The name row is the press target (expand/select). TempoDisplay is a sibling,
+  // not a descendant, because it is itself a Pressable — nesting it inside the row
+  // button would be an a11y nested-interactive violation.
+  return (
+    <View
+      style={{ paddingVertical: 9, paddingHorizontal: 12, opacity: dimmed ? 0.55 : 1 }}
+      testID="exercise-card"
+    >
+      <Pressable
+        onPress={onToggle}
+        accessibilityRole="button"
+        accessibilityLabel={formatAccessibilityLabel(name, summary, undefined)}
+        className="flex-row items-center"
+        style={{ gap: 8 }}
+        testID="exercise-card-header"
+      >
+        <Text
+          className="text-text-primary"
+          style={{ fontSize: 14, fontFamily: '"Space Grotesk", sans-serif', fontWeight: '700' }}
+          testID="exercise-card-name"
+        >
+          {name}
+        </Text>
+        <View className="flex-1" />
+        {indicator && <ExerciseIndicator kind={indicator} />}
+      </Pressable>
+
+      {summary && (
+        <View
+          className="flex-row items-center"
+          style={{ gap: 8, marginTop: 1 }}
+          testID="exercise-card-summary"
+        >
+          <SetsRepsLoad
+            sets={summary.sets}
+            reps={summary.reps}
+            load={summary.weight}
+            unit={summary.unit}
+          />
+          <View className="flex-1" />
+          {tempo && <TempoDisplay tempo={tempo} size="sm" showLabel={false} showInfo={false} />}
+        </View>
+      )}
+
+      {setStates && setStates.length > 0 && (
+        <View style={{ marginTop: 7 }} testID="exercise-card-strip">
+          <SetStrip sets={setStates} height={stripHeight} />
+        </View>
+      )}
+    </View>
+  )
+}
+
 export function ExerciseCard(props: ExerciseCardProps) {
   switch (props.state) {
     case 'collapsed':
@@ -436,5 +513,7 @@ export function ExerciseCard(props: ExerciseCardProps) {
       return <ExpandedCard {...props} />
     case 'upcoming':
       return <UpcomingCard {...props} />
+    case 'rail':
+      return <RailCard {...props} />
   }
 }

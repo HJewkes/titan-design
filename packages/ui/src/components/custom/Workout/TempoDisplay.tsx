@@ -5,6 +5,7 @@ import { roundTempo } from '../../../utils/workout-format'
 import { alpha } from '../../../utils/colors'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { getTempoFillPct, getTempoPacingState } from './TempoBar'
+import { MetricCell } from './metricText'
 
 const t = getSemanticColors('dark')
 
@@ -66,33 +67,17 @@ function TempoValue({
   fontSize: number
 }) {
   return (
-    <Text
-      style={{
-        fontFamily: INTER,
-        fontSize,
-        color,
-        fontWeight: '600',
-        letterSpacing: 1,
-      }}
-    >
+    <MetricCell color={color} fontSize={fontSize}>
       {value}
-    </Text>
+    </MetricCell>
   )
 }
 
 function TempoSeparator({ color, fontSize }: { color: string; fontSize: number }) {
   return (
-    <Text
-      style={{
-        fontFamily: INTER,
-        fontSize,
-        color,
-        fontWeight: '600',
-        letterSpacing: 1,
-      }}
-    >
+    <MetricCell color={color} fontSize={fontSize}>
       -
-    </Text>
+    </MetricCell>
   )
 }
 
