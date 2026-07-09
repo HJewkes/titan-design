@@ -91,14 +91,13 @@ The live-workout rail is a **feature assembly**: the genuinely rail-specific par
 (header / pace / expand drawer / set-table header) nest under `Shell/SessionRail/*`,
 while reused leaves stay in their `Workout/*` tier and are **referenced via Composes
 links, not re-homed** (`SetRow`, `ExerciseCardHeading`). This is the one deliberate
-exception to the flat `Shell` taxonomy — the four NEW components below are the only
+exception to the flat `Shell` taxonomy — the NEW components below are the only
 ones that nest.
 
 ```
 Shell/SessionRail                       (organism — SessionRail.tsx)
-├─ SessionHeader                        (NEW · real — eyebrow + live StatusDot, title, mono status)
-├─ ExerciseCardHeading × N              (Workout/ · linked, NOT re-homed)
-└─ (footer slot) SessionPacePanel       (NEW · 🚧 WIP pace tile — derivation is VMCP-02.76)
+├─ SessionHeader                        (NEW · real — title, stat tiles, chunked pace bar, ⏱ readout)
+└─ ExerciseCardHeading × N              (Workout/ · linked, NOT re-homed)
 
 Shell/SessionRail/ExpandedDrawer        (NEW · 🚧 WIP — opens when an exercise expands)
 ├─ TableHeader                          (NEW · 🚧 WIP — exported as `SetTableHeader`; the generic
@@ -106,18 +105,17 @@ Shell/SessionRail/ExpandedDrawer        (NEW · 🚧 WIP — opens when an exerc
 └─ SetRow × N                           (Workout/ · linked, NOT re-homed)
 ```
 
-- `SessionHeader` was extracted out of `SessionRail.tsx` (behavior-preserving: the
-  rail's public API + rendered testIDs are unchanged); it is the only REAL (non-WIP)
-  new component.
+- `SessionHeader` is the rail's session glance: the title over a stat row (Volume/Load/
+  Fatigue live, Date/Time/Until upcoming) and a per-exercise chunked pace bar with a
+  mono sets label + ⏱ readout. It composes the merged primitives (`MetricTiles` /
+  `ScheduleTiles` + `SegmentedProgressBar` + `TimerReadout`); the old footer pace tile is
+  gone — the header carries the glance. It is the REAL (non-WIP) new component.
 - `SetTableHeader` (story leaf `.../ExpandedDrawer/TableHeader`) is the expanded-set
   column-header row extracted from `ExerciseCard`'s `expanded` state; `ExerciseCard`
   now consumes it too (backward-compatible — it passes its own
   `testID="exercise-card-column-headers"`).
-- `SessionPacePanel` ports the visual of the `Lab/Explorations/Session Pace` specimen
-  as a rough placeholder (inline styles, sample numbers). Real derivation: VMCP-02.76.
 - Each new node's autodocs carry a `**Tier.** Composes […] / Used-by ↑ […]` line; the
-  WIP three (`SessionPacePanel`, `ExpandedDrawer`, `TableHeader`) are prefixed
-  `**🚧 WIP / placeholder.**`.
+  WIP two (`ExpandedDrawer`, `TableHeader`) are prefixed `**🚧 WIP / placeholder.**`.
 
 ## Dead candidates (do NOT remove yet — pending TD-03.56 responsive unification)
 
@@ -128,12 +126,12 @@ responsive level views land (removal is out of scope for this scaffold ticket):
   width). Its own header says it moves into real components "when these decisions
   harden" — which has now happened (`SessionRail` / `SessionHeader` /
   `ExerciseCardHeading` / `ExerciseHeading` / `SetStrip` / `SetBar` /
-  `SetTableHeader` / `SessionPacePanel`).
+  `SetTableHeader`).
 - **The five `Lab/Explorations` specimens that import it** — `S3FullRail`
   (Full Rail), `S3SessionRailHeading` (Session Rail Heading), `S3WorkoutExpansion`
   (Workout Expansion), `S3SetTypes` (Set Types), `S3SessionPace` (Session Pace).
   Each is superseded by a real Shell/SessionRail component + its Storybook stories;
-  `S3SessionPace` in particular is superseded by `SessionPacePanel`.
+  `S3SessionPace` in particular is superseded by the `SessionHeader` pace glance.
 - **`ExerciseCard`'s `collapsed` / `upcoming` state representations** — the rail now
   owns the live-list heading (`rail` state → `ExerciseCardHeading`) and the expanded
   view is moving to `ExpandedDrawer`. Once the responsive unification (TD-03.56)

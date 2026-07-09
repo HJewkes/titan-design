@@ -2,7 +2,12 @@
 import { View, Text, type ViewProps } from 'react-native'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { StatusDot } from './StatusDot'
+import { Typography } from '../Typography'
+import { TimerReadout } from '../TimerReadout'
+import { SegmentedProgressBar } from './SegmentedProgressBar'
+import { MetricTiles, type MetricTileData } from './MetricTiles'
+import { ScheduleTiles } from './ScheduleTiles'
+import { paceTone, paceToneColor } from './paceTone'
 
 const t = getSemanticColors('dark')
 
@@ -10,42 +15,82 @@ const t = getSemanticColors('dark')
 // the nav; depth lives on the sunk list below it, not here.
 const RAISED = primitiveColors.charcoal[400] // #1F1F1F
 
+// The chunked pace bar matches the SetStrip language but sits tighter than the default
+// SetStrip gap (5) — the locked design uses a 3px gap and a 9px track.
+const BAR_HEIGHT = 9
+const BAR_GAP = 3
+
+export interface SessionHeaderPlanEntry {
+  /** Exercise name (currently informational — chunk widths come from `sets`). */
+  name?: string
+  /** Planned set count — drives this exercise's chunk width (∝ sets). */
+  sets: number
+}
+
 export interface SessionHeaderProps extends ViewProps {
-  /** Session title, e.g. "Pull A · Intensification". */
+  /** Session title — the live session's name, or the next session's name when `next` is set. */
   title: string
-  /** Mono progress sub-line, e.g. "ex 3/5 · set 2 live". */
-  status?: string
-  /** Small uppercase eyebrow above the title. Default "Live session". */
-  eyebrow?: string
-  /** Show the live status dot beside the eyebrow. Default true. */
-  live?: boolean
+  /** Exercises in order → chunk widths (∝ sets). */
+  plan: SessionHeaderPlanEntry[]
+  /** Fractional sets completed (live). 0/undefined leaves the bar empty. */
+  setsDone?: number
+  /** Live elapsed time in ms — drives the ⏱ readout and the pace marker. */
+  elapsedMs?: number
+  /** Optional time budget in ms → adds the pace marker and the ` / budget` suffix. Omit → no marker, plain (steel) progress. */
+  budgetMs?: number
+  /** Elapsed readout goes live-green while true. Default true (live). */
+  running?: boolean
+  /** Live stat tiles (Volume / Load / Fatigue). Ignored when `next` is set. */
+  metrics?: MetricTileData[]
+  /** When set → UPCOMING layout: schedule tiles + empty bar; `title` is the next session's name. */
+  next?: number | Date
   className?: string
 }
 
 /**
- * The session-rail heading chrome: an uppercase eyebrow (with an optional live
- * {@link StatusDot}) over the session title and a mono status sub-line. Rendered on
- * the raised charcoal plane. Presentational — the standalone heading that
- * {@link SessionRail} mounts at the top of the rail.
+ * The session-rail heading: the session title over a stat row and a chunked pace bar.
+ * Live, it shows Volume/Load/Fatigue tiles, a per-exercise progress bar (fill ∝ sets
+ * done, coloured green/amber against the elapsed-vs-budget pace, with a live marker),
+ * a mono `n/total sets` label and a ⏱ elapsed readout. Upcoming (`next` set), the tiles
+ * become Date/Time/Until, the bar is the empty plan shape, and the readout shows the
+ * planned duration. Rendered on the raised charcoal plane; presentational. Composes
+ * {@link MetricTiles} / {@link ScheduleTiles} + {@link SegmentedProgressBar} +
+ * {@link TimerReadout}.
  */
 export function SessionHeader({
   title,
-  status,
-  eyebrow = 'Live session',
-  live = true,
+  plan,
+  setsDone = 0,
+  elapsedMs,
+  budgetMs,
+  running = true,
+  metrics = [],
+  next,
   className,
   style,
   ...props
 }: SessionHeaderProps) {
+  const upcoming = next != null
+  const totalSets = plan.reduce((sum, e) => sum + e.sets, 0)
+
+  const hasPace = !upcoming && budgetMs != null && elapsedMs != null
+  const target = hasPace ? (elapsedMs as number) / (budgetMs as number) : undefined
+
+  const setsLabel = upcoming ? `${totalSets} sets` : `${Math.floor(setsDone)}/${totalSets} sets`
+  const setsLabelColor = upcoming
+    ? t['text-secondary']
+    : paceToneColor(paceTone(totalSets > 0 ? setsDone / totalSets : 0, target))
+
   return (
     <View
       className={className}
       style={[
         {
           backgroundColor: RAISED,
-          paddingHorizontal: 12,
           paddingTop: 11,
-          paddingBottom: 10,
+          paddingRight: 12,
+          paddingBottom: 12,
+          paddingLeft: 12,
           zIndex: 2,
         },
         style,
@@ -53,48 +98,55 @@ export function SessionHeader({
       testID="session-rail-header"
       {...props}
     >
-      {eyebrow && (
-        <View className="flex-row items-center" style={{ gap: 5 }} testID="session-rail-eyebrow">
-          {live && <StatusDot variant="success" size="sm" />}
-          <Text
-            style={{
-              fontSize: 9,
-              fontWeight: '800',
-              letterSpacing: 1,
-              textTransform: 'uppercase',
-              color: t['text-tertiary'],
-            }}
-          >
-            {eyebrow}
-          </Text>
-        </View>
-      )}
       <Text
         accessibilityRole="header"
         style={{
-          fontSize: 14,
+          fontSize: 16,
+          lineHeight: 18,
           fontWeight: '700',
           fontFamily: '"Space Grotesk", sans-serif',
           color: t['text-primary'],
-          marginTop: 3,
+          marginBottom: 10,
         }}
         testID="session-rail-title"
       >
         {title}
       </Text>
-      {status && (
-        <Text
+
+      {upcoming ? <ScheduleTiles when={next} /> : <MetricTiles metrics={metrics} />}
+
+      <View style={{ marginTop: 10 }}>
+        <SegmentedProgressBar
+          segments={plan.map((e) => ({ weight: e.sets }))}
+          value={upcoming ? 0 : setsDone}
+          target={target}
+          height={BAR_HEIGHT}
+          gap={BAR_GAP}
+        />
+        <View
           style={{
-            fontSize: 10,
-            fontFamily: 'monospace',
-            color: t['text-secondary'],
-            marginTop: 2,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'baseline',
+            marginTop: 5,
           }}
-          testID="session-rail-status"
         >
-          {status}
-        </Text>
-      )}
+          <Typography
+            variant="mono"
+            style={{ fontSize: 10, color: setsLabelColor }}
+            testID="session-rail-sets"
+          >
+            {setsLabel}
+          </Typography>
+          <TimerReadout
+            mode="up"
+            elapsedMs={upcoming ? budgetMs : elapsedMs}
+            durationMs={budgetMs}
+            running={running && !upcoming}
+            showTotal={budgetMs != null && !upcoming}
+          />
+        </View>
+      </View>
     </View>
   )
 }

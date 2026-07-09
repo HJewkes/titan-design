@@ -1,6 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import { Text } from 'react-native'
 import { axe } from 'jest-axe'
 import { SessionRail, type SessionRailExercise } from './SessionRail'
 
@@ -23,12 +22,19 @@ const exercises: SessionRailExercise[] = [
     upcoming: true,
     setStates: [{ status: 'todo', planned: 18 }],
   },
-]
+] // total = 11 sets
 
 const baseProps = {
   title: 'Pull A · Intensification',
-  status: 'ex 3/5 · set 2 live',
   exercises,
+  setsDone: 4,
+  elapsedMs: 20 * 60 * 1000,
+  budgetMs: 60 * 60 * 1000,
+  metrics: [
+    { label: 'Volume', value: '40%' },
+    { label: 'Load', value: '3.1k' },
+    { label: 'Fatigue', value: 'LOW' },
+  ],
 }
 
 describe('SessionRail', () => {
@@ -37,25 +43,23 @@ describe('SessionRail', () => {
     expect(screen.getByTestId('session-rail-title')).toHaveTextContent('Pull A · Intensification')
   })
 
-  it('renders the mono status sub-line', () => {
+  it('derives the header sets label from the exercises', () => {
     render(<SessionRail {...baseProps} />)
-    expect(screen.getByTestId('session-rail-status')).toHaveTextContent('ex 3/5 · set 2 live')
+    expect(screen.getByTestId('session-rail-sets')).toHaveTextContent('4/11 sets')
   })
 
-  it('omits the status line when no status is given', () => {
-    render(<SessionRail title="Pull A" exercises={exercises} />)
-    expect(screen.queryByTestId('session-rail-status')).not.toBeInTheDocument()
-  })
-
-  it('defaults the eyebrow to "Live session" with a live dot', () => {
+  it('feeds the live metric tiles into the header', () => {
     render(<SessionRail {...baseProps} />)
-    expect(screen.getByTestId('session-rail-eyebrow')).toHaveTextContent('Live session')
-    expect(screen.getByTestId('status-dot')).toBeInTheDocument()
+    expect(screen.getByText('Volume')).toBeInTheDocument()
+    expect(screen.getByText('Fatigue')).toBeInTheDocument()
   })
 
-  it('hides the live dot when live is false', () => {
-    render(<SessionRail {...baseProps} live={false} />)
-    expect(screen.queryByTestId('status-dot')).not.toBeInTheDocument()
+  it('renders the upcoming glance when next is set', () => {
+    render(
+      <SessionRail title="Lower B" exercises={exercises} next={new Date('2026-07-11T18:30:00')} />
+    )
+    expect(screen.getByText('Date')).toBeInTheDocument()
+    expect(screen.getByText('Until')).toBeInTheDocument()
   })
 
   it('renders one rail heading per exercise', () => {
@@ -72,23 +76,9 @@ describe('SessionRail', () => {
     expect(onExercisePress).toHaveBeenCalledWith(exercises[1], 1)
   })
 
-  describe('footer slot', () => {
-    it('renders the footer when provided', () => {
-      render(<SessionRail {...baseProps} footer={<Text>Session pace</Text>} />)
-      expect(screen.getByTestId('session-rail-footer')).toHaveTextContent('Session pace')
-    })
-
-    it('renders no footer slot when absent', () => {
-      render(<SessionRail {...baseProps} />)
-      expect(screen.queryByTestId('session-rail-footer')).not.toBeInTheDocument()
-    })
-  })
-
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
-      const { container } = render(
-        <SessionRail {...baseProps} footer={<Text>Session pace</Text>} />
-      )
+      const { container } = render(<SessionRail {...baseProps} />)
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })

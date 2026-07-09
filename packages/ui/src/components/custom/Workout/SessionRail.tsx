@@ -1,10 +1,10 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import type { ReactNode } from 'react'
 import { View, type ViewProps } from 'react-native'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { neumorphicShadows } from '../../../theme/shadows'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
 import { SessionHeader } from './SessionHeader'
+import type { MetricTileData } from './MetricTiles'
 import type { SetStripSet } from './SetStrip'
 import type { ExerciseIndicatorKind } from './ExerciseIndicator'
 
@@ -30,39 +30,46 @@ export interface SessionRailExercise {
 }
 
 export interface SessionRailProps extends ViewProps {
-  /** Session title, e.g. "Pull A · Intensification". */
+  /** Session title — the live session's name, or the next session's name when `next` is set. */
   title: string
-  /** Mono progress sub-line, e.g. "ex 3/5 · set 2 live". */
-  status?: string
-  /** Small uppercase eyebrow above the title. Default "Live session". */
-  eyebrow?: string
-  /** Show the live status dot beside the eyebrow. Default true. */
-  live?: boolean
   exercises: SessionRailExercise[]
+  /** Fractional sets completed (live) — drives the header's pace bar + sets label. */
+  setsDone?: number
+  /** Live elapsed time in ms — drives the header's ⏱ readout and pace marker. */
+  elapsedMs?: number
+  /** Optional time budget in ms → header pace marker + ` / budget`. */
+  budgetMs?: number
+  /** Header elapsed readout goes live-green while true. Default true (live). */
+  running?: boolean
+  /** Live stat tiles (Volume / Load / Fatigue). Ignored when `next` is set. */
+  metrics?: MetricTileData[]
+  /** When set → the header renders the UPCOMING glance (Date/Time/Until + empty bar). */
+  next?: number | Date
   /** Heading strip height in px, forwarded to each row. Default 8. */
   stripHeight?: number
   /** Rail width in px. Default 246. */
   width?: number
-  /** Footer slot — the SessionPace tile mounts here (built separately). */
-  footer?: ReactNode
   onExercisePress?: (exercise: SessionRailExercise, index: number) => void
   className?: string
 }
 
 /**
- * The live-workout session rail: a flat raised heading plane over a sunk, inset
- * list of {@link ExerciseCardHeading} exercise headings, with a footer slot for
- * the session-pace tile. Presentational — driven entirely by props.
+ * The live-workout session rail: a flat raised {@link SessionHeader} glance (title,
+ * stat tiles, chunked pace bar) over a sunk, inset list of {@link ExerciseCardHeading}
+ * exercise headings. The header's plan (chunk widths ∝ sets) is derived from `exercises`.
+ * Presentational — driven entirely by props.
  */
 export function SessionRail({
   title,
-  status,
-  eyebrow = 'Live session',
-  live = true,
   exercises,
+  setsDone,
+  elapsedMs,
+  budgetMs,
+  running,
+  metrics,
+  next,
   stripHeight = 8,
   width = DEFAULT_WIDTH,
-  footer,
   onExercisePress,
   className,
   style,
@@ -75,7 +82,16 @@ export function SessionRail({
       testID="session-rail"
       {...props}
     >
-      <SessionHeader title={title} status={status} eyebrow={eyebrow} live={live} />
+      <SessionHeader
+        title={title}
+        plan={exercises.map((ex) => ({ name: ex.name, sets: ex.summary.sets }))}
+        setsDone={setsDone}
+        elapsedMs={elapsedMs}
+        budgetMs={budgetMs}
+        running={running}
+        metrics={metrics}
+        next={next}
+      />
 
       <View
         style={[{ flex: 1, backgroundColor: INSET }, neumorphicShadows.charcoal.pressed.subtle]}
@@ -105,8 +121,6 @@ export function SessionRail({
           </View>
         ))}
       </View>
-
-      {footer && <View testID="session-rail-footer">{footer}</View>}
     </View>
   )
 }

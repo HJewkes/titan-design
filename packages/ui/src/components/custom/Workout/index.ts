@@ -68,12 +68,11 @@ export { ExerciseHeading, type ExerciseHeadingProps } from './ExerciseHeading'
 export { ExerciseCardHeading, type ExerciseCardHeadingProps } from './ExerciseCardHeading'
 export { ExerciseCard, type ExerciseCardProps, type ExerciseCardState } from './ExerciseCard'
 export { SetTableHeader, type SetTableHeaderProps } from './SetTableHeader'
-export { SessionHeader, type SessionHeaderProps } from './SessionHeader'
 export {
-  SessionPacePanel,
-  type SessionPacePanelProps,
-  type SessionPaceState,
-} from './SessionPacePanel'
+  SessionHeader,
+  type SessionHeaderProps,
+  type SessionHeaderPlanEntry,
+} from './SessionHeader'
 export { ExpandedDrawer, type ExpandedDrawerProps } from './ExpandedDrawer'
 export { SessionRail, type SessionRailProps, type SessionRailExercise } from './SessionRail'
 export { SupersetWrapper, type SupersetWrapperProps } from './SupersetWrapper'
