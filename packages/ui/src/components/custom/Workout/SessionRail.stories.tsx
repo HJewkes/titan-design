@@ -1,13 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
+import { primitiveRamps } from '../../../theme/tokens/primitives'
 import { SessionRail, type SessionRailExercise } from './SessionRail'
-import { SessionPacePanel } from './SessionPacePanel'
 
 /**
  * `SessionRail` (shell organism) — the live-workout exercise list: a flat raised
- * heading plane over a sunk, inset list of ExerciseCard rail headings, with a
- * `footer` slot for the (separately built) session-pace tile. Surfaces bind to the
- * charcoal ramp; the list depth is a subtle neumorphic inset. Driven entirely by props.
+ * `SessionHeader` glance (title, stat tiles, chunked pace bar) over a sunk, inset list
+ * of ExerciseCard rail headings. The header plan (chunk widths ∝ sets) is derived from
+ * `exercises`. Surfaces bind to the charcoal ramp; the list depth is a subtle neumorphic
+ * inset. Driven entirely by props.
  */
 const meta: Meta<typeof SessionRail> = {
   title: 'Shell/SessionRail',
@@ -32,12 +33,11 @@ const meta: Meta<typeof SessionRail> = {
     docs: {
       description: {
         component:
-          '**Organism** (shell S3). The live-workout exercise list: raised heading plane over ' +
-          'a sunk inset list, subtle neumorphic depth (charcoal ramp + `neumorphicShadows`), ' +
-          '`footer` slot for the session-pace tile. Composes ' +
+          '**Organism** (shell S3). The live-workout exercise list: raised header glance over ' +
+          'a sunk inset list, subtle neumorphic depth (charcoal ramp + `neumorphicShadows`). ' +
+          'Composes ' +
           '[SessionHeader](?path=/docs/shell-sessionrail-sessionheader--docs) + ' +
-          '[ExerciseCardHeading](?path=/docs/workout-exercisecardheading--docs) × N + ' +
-          '[SessionPacePanel](?path=/docs/shell-sessionrail-sessionpacepanel--docs) (footer). ' +
+          '[ExerciseCardHeading](?path=/docs/workout-exercisecardheading--docs) × N. ' +
           'Sits beside [SideNav](?path=/docs/shell-sidenav--docs) in the dashboard shell.',
       },
     },
@@ -46,6 +46,8 @@ const meta: Meta<typeof SessionRail> = {
 
 export default meta
 type Story = StoryObj<typeof SessionRail>
+
+const AMBER = primitiveRamps.amber[300]
 
 const decay = (n: number, start: number, span = 0.4): number[] =>
   Array.from({ length: n }, (_, r) => +(start - (span * r) / Math.max(1, n - 1)).toFixed(3))
@@ -91,45 +93,61 @@ const SESSION: SessionRailExercise[] = [
   },
 ]
 
+const LIVE_METRICS = [
+  { label: 'Volume', value: '76%' },
+  { label: 'Load', value: '7.3k' },
+  { label: 'Fatigue', value: 'MOD', valueColor: AMBER },
+]
+
 const baseArgs = {
   title: 'Pull A · Intensification',
-  status: 'ex 3/5 · set 2 live',
   exercises: SESSION,
   stripHeight: 8,
 }
 
 export const Default: Story = {
-  args: { ...baseArgs, footer: <SessionPacePanel state="behind" /> },
+  args: {
+    ...baseArgs,
+    setsDone: 7.2,
+    elapsedMs: (42 * 60 + 18) * 1000,
+    budgetMs: 60 * 60 * 1000,
+    metrics: LIVE_METRICS,
+  },
   parameters: {
     docs: {
       description: {
-        story:
-          'The rail with the (WIP) [SessionPacePanel](?path=/docs/shell-sessionrail-sessionpacepanel--docs) ' +
-          'mounted in its `footer` slot.',
+        story: 'Live, behind pace — the header carries the session glance over the exercise list.',
       },
     },
   },
 }
 
-export const NoFooter: Story = {
-  args: baseArgs,
-}
-
-export const Idle: Story = {
+export const NoTimeTarget: Story = {
   args: {
-    title: 'Pull A · Intensification',
-    live: false,
-    eyebrow: 'Session ended',
-    exercises: SESSION.map((ex) => ({
-      ...ex,
-      upcoming: false,
-      setStates: ex.setStates.map((s) =>
-        s.status === 'active' ? { status: 'done', velocities: s.velocities } : s
-      ),
-    })),
-    stripHeight: 8,
+    ...baseArgs,
+    setsDone: 7.2,
+    elapsedMs: (42 * 60 + 18) * 1000,
+    metrics: LIVE_METRICS,
   },
   parameters: {
-    docs: { description: { story: 'Ended session — no live dot, no active pulse.' } },
+    docs: {
+      description: { story: 'Live with no time budget — plain (steel) progress, ⏱ elapsed only.' },
+    },
+  },
+}
+
+export const Upcoming: Story = {
+  args: {
+    ...baseArgs,
+    title: 'Lower B · Volume',
+    budgetMs: 52 * 60 * 1000,
+    next: Date.now() + 2 * 24 * 60 * 60 * 1000,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Upcoming session — the header shows Date / Time / Until + the empty plan bar.',
+      },
+    },
   },
 }
