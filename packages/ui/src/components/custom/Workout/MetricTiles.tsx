@@ -2,7 +2,7 @@ import { type ViewProps } from 'react-native'
 import { HStack } from '../../ui/stack'
 import { Tile } from '../../ui/tile'
 
-export interface Metric {
+export interface MetricTileData {
   /** Uppercase micro-label shown above the value */
   label: string
   /** Primary value */
@@ -13,7 +13,7 @@ export interface Metric {
 
 export interface MetricTilesProps extends ViewProps {
   /** Stat cells rendered left-to-right; typically three */
-  metrics: Metric[]
+  metrics: MetricTileData[]
   /** Space between tiles (Stack gap scale, default 1 ≈ 4px) */
   gap?: 0 | 1 | 2 | 3 | 4
 }

@@ -42,12 +42,15 @@ export { InputBar, type InputBarProps } from './InputBar'
 export { RestTimer, type RestTimerProps } from './RestTimer'
 export { MetricCell, type MetricCellProps, METRIC_FONT } from './metricText'
 export { SetsRepsLoad, type SetsRepsLoadProps } from './SetsRepsLoad'
-export {
-  SegmentedBar,
-  type SegmentedBarProps,
-  type SegmentedBarSegment,
-} from './SegmentedBar'
+export { SegmentedBar, type SegmentedBarProps, type SegmentedBarSegment } from './SegmentedBar'
 export { paceTone, paceToneColor, type PaceTone } from './paceTone'
+export {
+  SegmentedProgressBar,
+  type SegmentedProgressBarProps,
+  type SegmentedProgressBarSegment,
+} from './SegmentedProgressBar'
+export { MetricTiles, type MetricTilesProps, type MetricTileData } from './MetricTiles'
+export { ScheduleTiles, type ScheduleTilesProps } from './ScheduleTiles'
 export { SetBar, type SetBarProps } from './SetBar'
 export {
   SetStrip,
@@ -72,11 +75,7 @@ export {
   type SessionPaceState,
 } from './SessionPacePanel'
 export { ExpandedDrawer, type ExpandedDrawerProps } from './ExpandedDrawer'
-export {
-  SessionRail,
-  type SessionRailProps,
-  type SessionRailExercise,
-} from './SessionRail'
+export { SessionRail, type SessionRailProps, type SessionRailExercise } from './SessionRail'
 export { SupersetWrapper, type SupersetWrapperProps } from './SupersetWrapper'
 export {
   MesoProgressBar,
