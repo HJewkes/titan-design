@@ -10,11 +10,11 @@ component is pure import churn with no file moves.
 **Atoms** — single-purpose, no cross-component state:
 BaseBadge · WeightBadge · PrBadge · StatusDot · PlaceholderStrip · TempoBar ·
 DeviationBar · IntensityBar · WorkoutPill · MuscleGroupChip · Sparkline ·
-SupersetWrapper · InputBar · MetricCell · SetsRepsLoad · ExerciseIndicator
+SupersetWrapper · InputBar · MetricCell · SetsRepsLoad · ExerciseIndicator · SetBar
 
 **Molecules** — compose atoms, own a little local state:
 VelocityStrip · SetRow · TempoDisplay · RestTimer · MesoProgressBar · WeekRow ·
-WorkoutCard · SetStrip
+WorkoutCard · SetStrip · ExerciseHeading · ExerciseCardHeading
 
 **Organisms** — full features, often with their own data contract:
 ExerciseCard · SessionRail · MesoCard · MesoStatusCard · PrHistoryModal ·
@@ -48,19 +48,38 @@ type props without pulling the dependency.
   letter-spacing-1 value/separator cell. `TempoDisplay` (tempo digits) and
   `SetsRepsLoad` (sets × reps @ load) both compose it so the two read as one
   visual language. Exported for composition, not for direct app use.
-- **S3 session-rail family** — `SessionRail` (organism) composes `ExerciseCard`
-  `state="rail"`, which in turn composes `SetsRepsLoad` + real `TempoDisplay`
-  (`showLabel={false}`) + `ExerciseIndicator` + `SetStrip`. `SetStrip` colors are
-  the real titan ramp pins (`primitiveRamps` red-600 / orange-400 / amber-300 /
-  green-300); the rail surfaces bind to the charcoal ramp + a subtle neumorphic
-  inset (`neumorphicShadows.charcoal.pressed.subtle`). The heading design is locked
-  in `coordination/.../S3-sessionrail/DECISIONS-ExerciseRow.md`; the exploration
-  specimens live under `Custom/Workout/Explorations/*` (do not repoint yet).
+- **S3 session-rail family** — `SessionRail` (organism) composes the standalone
+  `ExerciseCardHeading` molecule per exercise, which composes an `ExerciseHeading`
+  info block + a `SetStrip`:
+
+  ```
+  SessionRail
+  └─ ExerciseCardHeading            (complete standalone heading)
+     ├─ ExerciseHeading             (name/indicator + metrics, no strip)
+     │  ├─ ExerciseIndicator
+     │  ├─ SetsRepsLoad → MetricCell
+     │  └─ TempoDisplay  (showLabel={false}) → MetricCell
+     └─ SetStrip
+        └─ SetBar × N               (one set's per-rep colour bar)
+
+  ExerciseCard state="rail"  ──delegates to──▶  ExerciseCardHeading
+  ```
+
+  `ExerciseCard`'s `rail` state is now a thin adapter that delegates to
+  `ExerciseCardHeading` (so the heading is reusable without the card). `SetBar`
+  owns the per-set colour/pulse logic; `SetStrip` lays several side by side.
+  `SetStrip`/`SetBar` colors are the real titan ramp pins (`primitiveRamps` red-600 /
+  orange-400 / amber-300 / green-300); the rail surfaces bind to the charcoal ramp +
+  a subtle neumorphic inset (`neumorphicShadows.charcoal.pressed.subtle`). The heading
+  design is locked in `coordination/.../S3-sessionrail/DECISIONS-ExerciseRow.md`; the
+  exploration specimens live under `Custom/Workout/Explorations/*` (do not repoint yet).
   In Storybook the family nests by composition under **`Shell/SessionRail/…`**
-  (organism → `ExerciseCard` → its atoms/molecules → `MetricCell`), each node's
-  autodocs carrying a **Composes** link down the tree — matching the S1/S2 shell
-  families. (The component files stay flat on disk in `custom/Workout/`; only the
-  story `title`s build the tree.)
+  (organism → `ExerciseCardHeading` → `ExerciseHeading` → its atoms/molecules →
+  `MetricCell`, and `SetStrip` → `SetBar`; `ExerciseCard` sits as a leaf whose
+  Composes link points at `ExerciseCardHeading`), each node's autodocs carrying a
+  **Composes** link down the tree — matching the S1/S2 shell families. (The component
+  files stay flat on disk in `custom/Workout/`; only the story `title`s build the tree.)
+
 - Badge icons (WeightBadge's dumbbell, PrBadge / PrHistoryModal's star) are inline
   SVGs (`./icons.tsx`), not `lucide-react` — that dependency was dropped in 0.5.0
   to keep the root barrel light. The SVG paths mirror lucide's glyphs so rendering

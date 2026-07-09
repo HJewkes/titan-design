@@ -4,7 +4,7 @@ import { View, Text, type ViewProps } from 'react-native'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { neumorphicShadows } from '../../../theme/shadows'
-import { ExerciseCard } from './ExerciseCard'
+import { ExerciseCardHeading } from './ExerciseCardHeading'
 import { StatusDot } from './StatusDot'
 import type { SetStripSet } from './SetStrip'
 import type { ExerciseIndicatorKind } from './ExerciseIndicator'
@@ -55,8 +55,8 @@ export interface SessionRailProps extends ViewProps {
 
 /**
  * The live-workout session rail: a flat raised heading plane over a sunk, inset
- * list of exercise headings ({@link ExerciseCard} `state="rail"`), with a footer
- * slot for the session-pace tile. Presentational — driven entirely by props.
+ * list of {@link ExerciseCardHeading} exercise headings, with a footer slot for
+ * the session-pace tile. Presentational — driven entirely by props.
  */
 export function SessionRail({
   title,
@@ -145,16 +145,18 @@ export function SessionRail({
               borderBottomColor: DIVIDER,
             }}
           >
-            <ExerciseCard
-              state="rail"
+            <ExerciseCardHeading
               name={ex.name}
-              summary={ex.summary}
+              sets={ex.summary.sets}
+              reps={ex.summary.reps}
+              load={ex.summary.weight}
+              unit={ex.summary.unit}
               tempo={ex.tempo}
               indicator={ex.indicator}
               setStates={ex.setStates}
               stripHeight={stripHeight}
               dimmed={ex.upcoming}
-              onToggle={() => onExercisePress?.(ex, i)}
+              onPress={() => onExercisePress?.(ex, i)}
             />
           </View>
         ))}

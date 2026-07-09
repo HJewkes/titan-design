@@ -42,6 +42,7 @@ export { InputBar, type InputBarProps } from './InputBar'
 export { RestTimer, type RestTimerProps } from './RestTimer'
 export { MetricCell, type MetricCellProps, METRIC_FONT } from './metricText'
 export { SetsRepsLoad, type SetsRepsLoadProps } from './SetsRepsLoad'
+export { SetBar, type SetBarProps } from './SetBar'
 export {
   SetStrip,
   type SetStripProps,
@@ -54,6 +55,8 @@ export {
   type ExerciseIndicatorProps,
   type ExerciseIndicatorKind,
 } from './ExerciseIndicator'
+export { ExerciseHeading, type ExerciseHeadingProps } from './ExerciseHeading'
+export { ExerciseCardHeading, type ExerciseCardHeadingProps } from './ExerciseCardHeading'
 export { ExerciseCard, type ExerciseCardProps, type ExerciseCardState } from './ExerciseCard'
 export {
   SessionRail,

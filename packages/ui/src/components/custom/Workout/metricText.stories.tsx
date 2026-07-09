@@ -8,7 +8,7 @@ import { MetricCell } from './metricText'
  * single source of the value/separator look shared by SetsRepsLoad and TempoDisplay.
  */
 const meta: Meta<typeof MetricCell> = {
-  title: 'Shell/SessionRail/ExerciseCard/SetsRepsLoad/MetricCell',
+  title: 'Shell/SessionRail/ExerciseCardHeading/ExerciseHeading/SetsRepsLoad/MetricCell',
   component: MetricCell,
   tags: ['autodocs'],
   parameters: {
@@ -18,8 +18,8 @@ const meta: Meta<typeof MetricCell> = {
           '**Primitive.** The shared Inter·600·letter-spacing-1 value/separator cell. ' +
           'Extracted so the two prescription readouts read as one visual language instead of ' +
           'drifting copies. Used-by ↑ ' +
-          '[SetsRepsLoad](?path=/docs/shell-sessionrail-exercisecard-setsrepsload--docs) + ' +
-          '[TempoDisplay](?path=/docs/shell-sessionrail-exercisecard-tempodisplay--docs).',
+          '[SetsRepsLoad](?path=/docs/shell-sessionrail-exercisecardheading-exerciseheading-setsrepsload--docs) + ' +
+          '[TempoDisplay](?path=/docs/shell-sessionrail-exercisecardheading-exerciseheading-tempodisplay--docs).',
       },
     },
   },

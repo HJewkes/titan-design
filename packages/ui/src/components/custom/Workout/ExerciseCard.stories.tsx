@@ -12,12 +12,10 @@ const meta: Meta<typeof ExerciseCard> = {
       description: {
         component:
           '**Organism** (data-contract card; `state="collapsed" | "expanded" | "upcoming" | "rail"`). ' +
-          'The `rail` heading representation composes ' +
-          '[ExerciseIndicator](?path=/docs/shell-sessionrail-exercisecard-exerciseindicator--docs) + ' +
-          '[SetsRepsLoad](?path=/docs/shell-sessionrail-exercisecard-setsrepsload--docs) + ' +
-          '[TempoDisplay](?path=/docs/shell-sessionrail-exercisecard-tempodisplay--docs) + ' +
-          '[SetStrip](?path=/docs/shell-sessionrail-exercisecard-setstrip--docs). ' +
-          'Used-by ↑ [SessionRail](?path=/docs/shell-sessionrail--docs).',
+          'The `rail` heading representation delegates to ' +
+          '[ExerciseCardHeading](?path=/docs/shell-sessionrail-exercisecardheading--docs) ' +
+          '(the standalone heading molecule). Used-by ↑ ' +
+          '[SessionRail](?path=/docs/shell-sessionrail--docs).',
       },
     },
   },
