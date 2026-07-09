@@ -16,6 +16,17 @@ export const SET_STRIP_ZONES = {
 /** Grey fill for planned-but-unperformed reps / upcoming sets (charcoal placeholder). */
 const TODO_COLOR = primitiveColors.charcoal[300]
 
+/**
+ * Active-set pulse range per zone: each segment eases between its pin's adjacent
+ * lighter/darker ramp steps, keeping the intensity reading while signalling "live".
+ */
+const PULSE_RANGE: Record<string, [string, string]> = {
+  [SET_STRIP_ZONES.slow]: [primitiveRamps.red[500], primitiveRamps.red[700]],
+  [SET_STRIP_ZONES.moderate]: [primitiveRamps.orange[300], primitiveRamps.orange[500]],
+  [SET_STRIP_ZONES.fast]: [primitiveRamps.amber[200], primitiveRamps.amber[400]],
+  [SET_STRIP_ZONES.fastest]: [primitiveRamps.green[200], primitiveRamps.green[400]],
+}
+
 /** Map a per-rep mean-velocity ratio to its zone pin (fastest = green, slowest = red). */
 export function velocityZoneColor(v: number): string {
   if (v < 0.5) return SET_STRIP_ZONES.slow
@@ -42,7 +53,10 @@ function setSegments(set: SetStripSet): SegmentedBarSegment[] {
   if (set.status === 'done') {
     return set.velocities.map((v) => ({ color: velocityZoneColor(v) }))
   }
-  const performed = set.velocities.map((v) => ({ color: velocityZoneColor(v), pulse: true }))
+  const performed = set.velocities.map((v) => {
+    const color = velocityZoneColor(v)
+    return { color, pulse: true, pulseColor: PULSE_RANGE[color] }
+  })
   const remaining = Math.max(0, set.planned - set.velocities.length)
   return [...performed, ...Array.from({ length: remaining }, () => ({ color: TODO_COLOR }))]
 }

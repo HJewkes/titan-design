@@ -18,8 +18,13 @@ export interface SegmentedBarSegment {
   fill?: number
   /** Fill colour — a literal hex (RNW-safe), never a `var()` token ref. */
   color: string
-  /** When true the fill breathes its opacity on the shared active-pulse loop. */
+  /** When true the fill animates on the shared active-pulse loop. */
   pulse?: boolean
+  /**
+   * When pulsing, interpolate the fill's `backgroundColor` from→to over the loop
+   * (full opacity). Omit to fall back to the default opacity breathe.
+   */
+  pulseColor?: [from: string, to: string]
 }
 
 export interface SegmentedBarProps extends ViewProps {
@@ -112,10 +117,19 @@ export function SegmentedBar({
               <Animated.View
                 style={{
                   ...fillStyle,
-                  opacity: pulse.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [PULSE_MIN_OPACITY, 1],
-                  }),
+                  ...(seg.pulseColor
+                    ? {
+                        backgroundColor: pulse.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: seg.pulseColor,
+                        }),
+                      }
+                    : {
+                        opacity: pulse.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [PULSE_MIN_OPACITY, 1],
+                        }),
+                      }),
                 }}
                 accessibilityElementsHidden
                 testID={testID}
