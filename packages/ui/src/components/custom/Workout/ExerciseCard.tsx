@@ -8,6 +8,7 @@ import { PrBadge } from './PrBadge'
 import { TempoDisplay } from './TempoDisplay'
 import { SetRow, type SetRowProps } from './SetRow'
 import { type SetStripSet } from './SetStrip'
+import { SetTableHeader } from './SetTableHeader'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
 import { type ExerciseIndicatorKind } from './ExerciseIndicator'
 import { roundWeight } from '../../../utils/workout-format'
@@ -46,11 +47,6 @@ export interface ExerciseCardProps {
   stripHeight?: number
   /** Rail heading: dim the row (upcoming exercise). */
   dimmed?: boolean
-}
-
-/** Column headers; the weight column reflects the card's unit (LBS / KG). */
-function buildColumnHeaders(unit: 'lbs' | 'kg'): string[] {
-  return ['SET', 'PREV', 'REPS', unit.toUpperCase(), 'RPE']
 }
 
 function getSupersetBorderRadius(
@@ -236,7 +232,6 @@ function ExpandedCard({
   // Summary is the card-level authority for the weight column; fall back to the
   // first set's unit, then lbs. (Mixed per-set units keep the card-level label.)
   const unit = summary?.unit ?? sets?.[0]?.unit ?? 'lbs'
-  const columnHeaders = buildColumnHeaders(unit)
 
   return (
     <View
@@ -313,47 +308,7 @@ function ExpandedCard({
         </View>
       )}
 
-      <View
-        className="flex-row"
-        style={{
-          paddingVertical: 8,
-          paddingHorizontal: 8,
-          paddingBottom: 4,
-        }}
-        testID="exercise-card-column-headers"
-      >
-        {columnHeaders.map((header, i) => {
-          const widths = [36, undefined, 44, 56, 36]
-          const width = widths[i]
-          const isFlex = width === undefined
-
-          return (
-            <View
-              key={header}
-              style={{
-                ...(isFlex ? { minWidth: 44 } : { width, flexShrink: 1 }),
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 8,
-              }}
-              {...(isFlex ? { className: 'flex-1' } : {})}
-            >
-              <Text
-                className="text-text-tertiary"
-                style={{
-                  fontSize: 10,
-                  fontWeight: '600',
-                  fontFamily: 'Inter, sans-serif',
-                  textTransform: 'uppercase',
-                  letterSpacing: 0.8,
-                }}
-              >
-                {header}
-              </Text>
-            </View>
-          )
-        })}
-      </View>
+      <SetTableHeader unit={unit} testID="exercise-card-column-headers" />
 
       {sets && (
         <View testID="exercise-card-sets">

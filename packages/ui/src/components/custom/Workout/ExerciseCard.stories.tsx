@@ -14,8 +14,9 @@ const meta: Meta<typeof ExerciseCard> = {
           '**Organism** (data-contract card; `state="collapsed" | "expanded" | "upcoming" | "rail"`). ' +
           'The `rail` heading representation delegates to ' +
           '[ExerciseCardHeading](?path=/docs/workout-exercisecardheading--docs) ' +
-          '(the standalone heading molecule). Used-by ↑ ' +
-          '[SessionRail](?path=/docs/shell-sessionrail--docs).',
+          '(the standalone heading molecule); the `expanded` state composes ' +
+          '[TableHeader](?path=/docs/shell-sessionrail-expandeddrawer-tableheader--docs). ' +
+          'Used-by ↑ [SessionRail](?path=/docs/shell-sessionrail--docs).',
       },
     },
   },

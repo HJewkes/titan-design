@@ -84,3 +84,58 @@ type props without pulling the dependency.
   SVGs (`./icons.tsx`), not `lucide-react` — that dependency was dropped in 0.5.0
   to keep the root barrel light. The SVG paths mirror lucide's glyphs so rendering
   is unchanged.
+
+## Shell/SessionRail feature area
+
+The live-workout rail is a **feature assembly**: the genuinely rail-specific parts
+(header / pace / expand drawer / set-table header) nest under `Shell/SessionRail/*`,
+while reused leaves stay in their `Workout/*` tier and are **referenced via Composes
+links, not re-homed** (`SetRow`, `ExerciseCardHeading`). This is the one deliberate
+exception to the flat `Shell` taxonomy — the four NEW components below are the only
+ones that nest.
+
+```
+Shell/SessionRail                       (organism — SessionRail.tsx)
+├─ SessionHeader                        (NEW · real — eyebrow + live StatusDot, title, mono status)
+├─ ExerciseCardHeading × N              (Workout/ · linked, NOT re-homed)
+└─ (footer slot) SessionPacePanel       (NEW · 🚧 WIP pace tile — derivation is VMCP-02.76)
+
+Shell/SessionRail/ExpandedDrawer        (NEW · 🚧 WIP — opens when an exercise expands)
+├─ TableHeader                          (NEW · 🚧 WIP — exported as `SetTableHeader`; the generic
+│                                         `TableHeader` name is owned by the DataViz `Table`)
+└─ SetRow × N                           (Workout/ · linked, NOT re-homed)
+```
+
+- `SessionHeader` was extracted out of `SessionRail.tsx` (behavior-preserving: the
+  rail's public API + rendered testIDs are unchanged); it is the only REAL (non-WIP)
+  new component.
+- `SetTableHeader` (story leaf `.../ExpandedDrawer/TableHeader`) is the expanded-set
+  column-header row extracted from `ExerciseCard`'s `expanded` state; `ExerciseCard`
+  now consumes it too (backward-compatible — it passes its own
+  `testID="exercise-card-column-headers"`).
+- `SessionPacePanel` ports the visual of the `Lab/Explorations/Session Pace` specimen
+  as a rough placeholder (inline styles, sample numbers). Real derivation: VMCP-02.76.
+- Each new node's autodocs carry a `**Tier.** Composes […] / Used-by ↑ […]` line; the
+  WIP three (`SessionPacePanel`, `ExpandedDrawer`, `TableHeader`) are prefixed
+  `**🚧 WIP / placeholder.**`.
+
+## Dead candidates (do NOT remove yet — pending TD-03.56 responsive unification)
+
+Superseded by the target Shell/SessionRail scaffold; flagged now, removed only when the
+responsive level views land (removal is out of scope for this scaffold ticket):
+
+- **`setHeadingKit.tsx`** — the throwaway CSS R&D kit (raw HTML `<div>`s at the rail
+  width). Its own header says it moves into real components "when these decisions
+  harden" — which has now happened (`SessionRail` / `SessionHeader` /
+  `ExerciseCardHeading` / `ExerciseHeading` / `SetStrip` / `SetBar` /
+  `SetTableHeader` / `SessionPacePanel`).
+- **The five `Lab/Explorations` specimens that import it** — `S3FullRail`
+  (Full Rail), `S3SessionRailHeading` (Session Rail Heading), `S3WorkoutExpansion`
+  (Workout Expansion), `S3SetTypes` (Set Types), `S3SessionPace` (Session Pace).
+  Each is superseded by a real Shell/SessionRail component + its Storybook stories;
+  `S3SessionPace` in particular is superseded by `SessionPacePanel`.
+- **`ExerciseCard`'s `collapsed` / `upcoming` state representations** — the rail now
+  owns the live-list heading (`rail` state → `ExerciseCardHeading`) and the expanded
+  view is moving to `ExpandedDrawer`. Once the responsive unification (TD-03.56)
+  lands a single responsive card, the `collapsed`/`upcoming` branches of
+  `ExerciseCard` are the superseded representations to retire.
