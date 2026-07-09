@@ -159,7 +159,7 @@ function Sheet() {
           <Row name="Triceps Pushdown" meta="myo · ~12 + clusters to failure">
             <MyoUpcomingBar activationLen={12} blue={VAR_CYAN_900} h={H} />
           </Row>
-          <span style={{ fontSize: 10, color: T_TERTIARY, maxWidth: RAIL_W }}>Grey activation (expected) + blue "clusters-to-failure" trail that fades and leaves the right edge open — reuses the variable/opportunity blue, signalling "more coming, count unknown."</span>
+          <span style={{ fontSize: 10, color: T_TERTIARY, maxWidth: RAIL_W }}>{'Grey activation (expected) + blue "clusters-to-failure" trail that fades and leaves the right edge open — reuses the variable/opportunity blue, signalling "more coming, count unknown."'}</span>
         </Col>
       </div>
     </Page>
