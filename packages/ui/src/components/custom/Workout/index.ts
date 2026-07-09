@@ -42,6 +42,12 @@ export { InputBar, type InputBarProps } from './InputBar'
 export { RestTimer, type RestTimerProps } from './RestTimer'
 export { MetricCell, type MetricCellProps, METRIC_FONT } from './metricText'
 export { SetsRepsLoad, type SetsRepsLoadProps } from './SetsRepsLoad'
+export {
+  SegmentedBar,
+  type SegmentedBarProps,
+  type SegmentedBarSegment,
+} from './SegmentedBar'
+export { paceTone, paceToneColor, type PaceTone } from './paceTone'
 export { SetBar, type SetBarProps } from './SetBar'
 export {
   SetStrip,
