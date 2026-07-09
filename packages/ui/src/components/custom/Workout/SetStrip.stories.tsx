@@ -9,7 +9,7 @@ import { SetStrip, type SetStripSet } from './SetStrip'
  * amber-300 · green-300).
  */
 const meta: Meta<typeof SetStrip> = {
-  title: 'Shell/SessionRail/ExerciseCard/SetStrip',
+  title: 'Shell/SessionRail/ExerciseCardHeading/SetStrip',
   component: SetStrip,
   tags: ['autodocs'],
   parameters: {
@@ -17,9 +17,9 @@ const meta: Meta<typeof SetStrip> = {
       description: {
         component:
           '**Molecule.** The per-set segmented performance strip — one bar per set, rep ' +
-          'intensities as butted ramp-pin segments (no rep gaps), active set pulses. ' +
-          'Used-by ↑ [ExerciseCard](?path=/docs/shell-sessionrail-exercisecard--docs) rail ' +
-          'heading + [SessionRail](?path=/docs/shell-sessionrail--docs).',
+          'intensities as butted ramp-pin segments (no rep gaps), active set pulses. Composes ' +
+          '[SetBar](?path=/docs/shell-sessionrail-exercisecardheading-setstrip-setbar--docs) × N. ' +
+          'Used-by ↑ [ExerciseCardHeading](?path=/docs/shell-sessionrail-exercisecardheading--docs).',
       },
     },
   },
