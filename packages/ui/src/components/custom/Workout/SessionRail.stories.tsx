@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { SessionRail, type SessionRailExercise } from './SessionRail'
+import { SessionPacePanel } from './SessionPacePanel'
 
 /**
  * `SessionRail` (shell organism) — the live-workout exercise list: a flat raised
@@ -34,8 +35,10 @@ const meta: Meta<typeof SessionRail> = {
           '**Organism** (shell S3). The live-workout exercise list: raised heading plane over ' +
           'a sunk inset list, subtle neumorphic depth (charcoal ramp + `neumorphicShadows`), ' +
           '`footer` slot for the session-pace tile. Composes ' +
+          '[SessionHeader](?path=/docs/shell-sessionrail-sessionheader--docs) + ' +
           '[ExerciseCardHeading](?path=/docs/workout-exercisecardheading--docs) × N + ' +
-          'StatusDot. Sits beside [SideNav](?path=/docs/shell-sidenav--docs) in the dashboard shell.',
+          '[SessionPacePanel](?path=/docs/shell-sessionrail-sessionpacepanel--docs) (footer). ' +
+          'Sits beside [SideNav](?path=/docs/shell-sidenav--docs) in the dashboard shell.',
       },
     },
   },
@@ -95,19 +98,17 @@ const baseArgs = {
   stripHeight: 8,
 }
 
-/** A stand-in for the (separately built) session-pace tile that mounts in the footer slot. */
-function PaceFooterStub() {
-  return (
-    <View style={{ backgroundColor: '#1F1F1F', padding: 12 }}>
-      <Text style={{ color: '#9CA3AF', fontSize: 10, fontFamily: 'monospace' }}>
-        SessionPace tile (footer slot)
-      </Text>
-    </View>
-  )
-}
-
 export const Default: Story = {
-  args: { ...baseArgs, footer: <PaceFooterStub /> },
+  args: { ...baseArgs, footer: <SessionPacePanel state="behind" /> },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'The rail with the (WIP) [SessionPacePanel](?path=/docs/shell-sessionrail-sessionpacepanel--docs) ' +
+          'mounted in its `footer` slot.',
+      },
+    },
+  },
 }
 
 export const NoFooter: Story = {

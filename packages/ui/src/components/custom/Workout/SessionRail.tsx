@@ -1,20 +1,16 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import type { ReactNode } from 'react'
-import { View, Text, type ViewProps } from 'react-native'
+import { View, type ViewProps } from 'react-native'
 import { primitiveColors } from '../../../theme/tokens/primitives'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { neumorphicShadows } from '../../../theme/shadows'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
-import { StatusDot } from './StatusDot'
+import { SessionHeader } from './SessionHeader'
 import type { SetStripSet } from './SetStrip'
 import type { ExerciseIndicatorKind } from './ExerciseIndicator'
 
-const t = getSemanticColors('dark')
-
-// Charcoal-ramp surfaces (the locked S3 shell shades): the nav + this heading plane
+// Charcoal-ramp surfaces (the locked S3 shell shades): the nav + the heading plane
 // read as ONE flat raised surface; the exercise list is sunk. Depth comes only from
 // the list's subtle inset shadow (top cast by the heading, faint left edge by the nav).
-const RAISED = primitiveColors.charcoal[400] // #1F1F1F — raised nav + heading plane
 const INSET = primitiveColors.charcoal[800] // #131313 — sunk exercise list
 const DIVIDER = primitiveColors.charcoal[500] // #1C1C1C — row divider
 
@@ -79,59 +75,7 @@ export function SessionRail({
       testID="session-rail"
       {...props}
     >
-      <View
-        style={{
-          backgroundColor: RAISED,
-          paddingHorizontal: 12,
-          paddingTop: 11,
-          paddingBottom: 10,
-          zIndex: 2,
-        }}
-        testID="session-rail-header"
-      >
-        {eyebrow && (
-          <View className="flex-row items-center" style={{ gap: 5 }} testID="session-rail-eyebrow">
-            {live && <StatusDot variant="success" size="sm" />}
-            <Text
-              style={{
-                fontSize: 9,
-                fontWeight: '800',
-                letterSpacing: 1,
-                textTransform: 'uppercase',
-                color: t['text-tertiary'],
-              }}
-            >
-              {eyebrow}
-            </Text>
-          </View>
-        )}
-        <Text
-          accessibilityRole="header"
-          style={{
-            fontSize: 14,
-            fontWeight: '700',
-            fontFamily: '"Space Grotesk", sans-serif',
-            color: t['text-primary'],
-            marginTop: 3,
-          }}
-          testID="session-rail-title"
-        >
-          {title}
-        </Text>
-        {status && (
-          <Text
-            style={{
-              fontSize: 10,
-              fontFamily: 'monospace',
-              color: t['text-secondary'],
-              marginTop: 2,
-            }}
-            testID="session-rail-status"
-          >
-            {status}
-          </Text>
-        )}
-      </View>
+      <SessionHeader title={title} status={status} eyebrow={eyebrow} live={live} />
 
       <View
         style={[{ flex: 1, backgroundColor: INSET }, neumorphicShadows.charcoal.pressed.subtle]}
