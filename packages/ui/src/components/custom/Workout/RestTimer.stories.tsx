@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { RestTimer } from './RestTimer'
 
 const meta: Meta<typeof RestTimer> = {
-  title: 'Custom/Workout/RestTimer',
+  title: 'Workout/RestTimer',
   component: RestTimer,
   tags: ['autodocs'],
   argTypes: {

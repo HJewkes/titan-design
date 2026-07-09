@@ -4,7 +4,7 @@ import { SupersetWrapper } from './SupersetWrapper'
 import { ExerciseCard } from './ExerciseCard'
 
 const meta: Meta<typeof SupersetWrapper> = {
-  title: 'Custom/Workout/SupersetWrapper',
+  title: 'Workout/SupersetWrapper',
   component: SupersetWrapper,
   tags: ['autodocs'],
   decorators: [

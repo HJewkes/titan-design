@@ -4,7 +4,7 @@ import { View, Text } from 'react-native'
 import { ToolbarButton, ToolbarButtonGroup } from './ToolbarButton'
 
 const meta: Meta<typeof ToolbarButton> = {
-  title: 'Components/ToolbarButton',
+  title: 'Components/Molecules/ToolbarButton',
   component: ToolbarButton,
   tags: ['autodocs'],
   argTypes: {

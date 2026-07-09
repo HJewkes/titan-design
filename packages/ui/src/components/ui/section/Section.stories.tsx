@@ -3,7 +3,7 @@ import { View, Text } from 'react-native'
 import { Section, SectionHeader, SectionContent } from './Section'
 
 const meta: Meta<typeof Section> = {
-  title: 'Components/Section',
+  title: 'Components/Atoms/Section',
   component: Section,
   tags: ['autodocs'],
 }

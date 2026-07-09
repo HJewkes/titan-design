@@ -10,7 +10,7 @@ import type { SetStripSet } from './SetStrip'
  * An empty `setStates` renders no strip.
  */
 const meta: Meta<typeof ExerciseCardHeading> = {
-  title: 'Shell/SessionRail/ExerciseCardHeading',
+  title: 'Workout/ExerciseCardHeading',
   component: ExerciseCardHeading,
   tags: ['autodocs'],
   parameters: {
@@ -18,10 +18,10 @@ const meta: Meta<typeof ExerciseCardHeading> = {
       description: {
         component:
           '**Molecule.** The complete standalone session-rail heading. Composes ' +
-          '[ExerciseHeading](?path=/docs/shell-sessionrail-exercisecardheading-exerciseheading--docs) + ' +
-          '[SetStrip](?path=/docs/shell-sessionrail-exercisecardheading-setstrip--docs). ' +
+          '[ExerciseHeading](?path=/docs/workout-exerciseheading--docs) + ' +
+          '[SetStrip](?path=/docs/workout-setstrip--docs). ' +
           'Used-by ↑ [SessionRail](?path=/docs/shell-sessionrail--docs); ' +
-          '[ExerciseCard](?path=/docs/shell-sessionrail-exercisecard--docs) `state="rail"` delegates here.',
+          '[ExerciseCard](?path=/docs/workout-exercisecard--docs) `state="rail"` delegates here.',
       },
     },
   },

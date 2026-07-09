@@ -3,7 +3,7 @@ import { View, Text } from 'react-native'
 import { HelpTip, LabelWithHelp } from './HelpTip'
 
 const meta: Meta<typeof HelpTip> = {
-  title: 'Components/HelpTip',
+  title: 'Components/Molecules/HelpTip',
   component: HelpTip,
   tags: ['autodocs'],
   argTypes: {

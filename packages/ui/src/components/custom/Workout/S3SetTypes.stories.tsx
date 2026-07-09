@@ -167,7 +167,7 @@ function Sheet() {
 }
 
 const meta: Meta = {
-  title: 'Custom/Workout/Explorations/Set Types',
+  title: 'Lab/Explorations/Set Types',
   parameters: { layout: 'fullscreen' },
 }
 export default meta

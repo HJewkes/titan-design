@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { IntensityBar } from './IntensityBar'
 
 const meta: Meta<typeof IntensityBar> = {
-  title: 'Custom/Workout/IntensityBar',
+  title: 'Workout/DataViz/IntensityBar',
   component: IntensityBar,
   tags: ['autodocs'],
   argTypes: {

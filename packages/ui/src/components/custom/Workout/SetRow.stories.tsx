@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { SetRow } from './SetRow'
 
 const meta: Meta<typeof SetRow> = {
-  title: 'Custom/Workout/SetRow',
+  title: 'Workout/SetRow',
   component: SetRow,
   tags: ['autodocs'],
   argTypes: {

@@ -29,11 +29,11 @@ const meta: Meta<typeof TopBar> = {
         component:
           '**Organism** — the persistent shell chrome band, and the root of the top-bar family ' +
           '(see `shell/README.md` for the full dependency map). Composes ' +
-          '[BrandLockup](?path=/docs/shell-topbar-brandlockup--docs) + ' +
-          '[SessionStatePill](?path=/docs/shell-topbar-sessionstatepill--docs) + ' +
-          '[Divider](?path=/docs/components-divider--docs) (`bg-border-prominent`) + ' +
-          '[DeviceMenu](?path=/docs/shell-topbar-devicemenu--docs) + ' +
-          '[DateTime](?path=/docs/custom-datetime--docs) (`variant="mono"` live clock). ' +
+          '[BrandLockup](?path=/docs/shell-brandlockup--docs) + ' +
+          '[SessionStatePill](?path=/docs/shell-sessionstatepill--docs) + ' +
+          '[Divider](?path=/docs/components-atoms-divider--docs) (`bg-border-prominent`) + ' +
+          '[DeviceMenu](?path=/docs/shell-devicemenu--docs) + ' +
+          '[DateTime](?path=/docs/components-molecules-datetime--docs) (`variant="mono"` live clock). ' +
           'Background = the shared `surfaceGradient.chrome` primitive.\n\n' +
           '**Try it:** use the **Controls** to change `state`, edit `devices` (set one to `lost` to see the ' +
           'fault), or toggle `showSubtitle` / `showClock`. **Resize the canvas** to watch the ' +

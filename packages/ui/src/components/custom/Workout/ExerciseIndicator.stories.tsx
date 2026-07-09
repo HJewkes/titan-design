@@ -8,7 +8,7 @@ import { ExerciseIndicator } from './ExerciseIndicator'
  * taxonomy can grow without touching call sites.
  */
 const meta: Meta<typeof ExerciseIndicator> = {
-  title: 'Shell/SessionRail/ExerciseCardHeading/ExerciseHeading/ExerciseIndicator',
+  title: 'Workout/ExerciseIndicator',
   component: ExerciseIndicator,
   tags: ['autodocs'],
   parameters: {
@@ -17,7 +17,7 @@ const meta: Meta<typeof ExerciseIndicator> = {
         component:
           '**Atom.** A small circular chip in an exercise heading title line (PR / issue / ' +
           'info); `kind` is a config-backed open union. Used-by ↑ ' +
-          '[ExerciseHeading](?path=/docs/shell-sessionrail-exercisecardheading-exerciseheading--docs).',
+          '[ExerciseHeading](?path=/docs/workout-exerciseheading--docs).',
       },
     },
   },

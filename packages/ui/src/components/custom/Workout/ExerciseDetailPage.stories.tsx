@@ -188,7 +188,7 @@ const vbt: ExerciseVbt = {
 }
 
 const meta: Meta<typeof ExerciseDetailPage> = {
-  title: 'Custom/Workout/ExerciseDetailPage',
+  title: 'Pages/Exercise Detail',
   component: ExerciseDetailPage,
   parameters: { layout: 'fullscreen' },
   tags: ['autodocs'],

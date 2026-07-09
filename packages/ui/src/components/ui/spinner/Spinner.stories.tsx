@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { Spinner } from './Spinner'
 
 const meta: Meta<typeof Spinner> = {
-  title: 'Components/Spinner',
+  title: 'Components/Atoms/Spinner',
   component: Spinner,
   tags: ['autodocs'],
   argTypes: {

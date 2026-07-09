@@ -5,7 +5,7 @@ import { TempoDisplay, type TempoLivePhase, type TempoLiveState } from './TempoD
 
 // tempo = [eccentric, pauseBottom, concentric, pauseTop]
 const meta: Meta<typeof TempoDisplay> = {
-  title: 'Shell/SessionRail/ExerciseCardHeading/ExerciseHeading/TempoDisplay',
+  title: 'Workout/TempoDisplay',
   component: TempoDisplay,
   tags: ['autodocs'],
   parameters: {
@@ -13,9 +13,9 @@ const meta: Meta<typeof TempoDisplay> = {
       description: {
         component:
           '**Molecule.** The eccentric/pause/concentric/pause tempo display. Composes ' +
-          '[MetricCell](?path=/docs/shell-sessionrail-exercisecardheading-exerciseheading-setsrepsload-metriccell--docs) ' +
+          '[MetricCell](?path=/docs/workout-metriccell--docs) ' +
           '(shared value/separator cell). Used-by ↑ ' +
-          '[ExerciseHeading](?path=/docs/shell-sessionrail-exercisecardheading-exerciseheading--docs) (`showLabel={false}`).',
+          '[ExerciseHeading](?path=/docs/workout-exerciseheading--docs) (`showLabel={false}`).',
       },
     },
   },

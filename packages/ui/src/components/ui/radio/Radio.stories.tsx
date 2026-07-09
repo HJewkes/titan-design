@@ -4,7 +4,7 @@ import { View, Text } from 'react-native'
 import { Radio, RadioGroup } from './Radio'
 
 const meta: Meta<typeof RadioGroup> = {
-  title: 'Components/Radio',
+  title: 'Components/Molecules/Radio',
   component: RadioGroup,
   tags: ['autodocs'],
   argTypes: {

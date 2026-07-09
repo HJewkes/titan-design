@@ -13,7 +13,7 @@ import {
 } from './icons'
 
 const meta: Meta = {
-  title: 'Icons',
+  title: 'Foundations/Icons',
   tags: ['autodocs'],
   parameters: {
     docs: {

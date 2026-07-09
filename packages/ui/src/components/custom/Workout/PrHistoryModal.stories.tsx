@@ -12,7 +12,7 @@ const records: PrRecord[] = [
 ]
 
 const meta: Meta<typeof PrHistoryModal> = {
-  title: 'Custom/Workout/PrHistoryModal',
+  title: 'Workout/PrHistoryModal',
   component: PrHistoryModal,
   tags: ['autodocs'],
   argTypes: {

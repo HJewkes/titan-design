@@ -5,7 +5,7 @@ import { Drawer, DrawerBody, DrawerFooter } from './Drawer'
 import { Button, ButtonText } from '../button'
 
 const meta: Meta<typeof Drawer> = {
-  title: 'Components/Drawer',
+  title: 'Components/Organisms/Drawer',
   component: Drawer,
   tags: ['autodocs'],
   argTypes: {

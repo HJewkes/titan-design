@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { DeviceRow } from './DeviceRow'
 
 const meta: Meta<typeof DeviceRow> = {
-  title: 'Shell/TopBar/DeviceMenu/DeviceRow',
+  title: 'Shell/DeviceRow',
   component: DeviceRow,
   tags: ['autodocs'],
   args: {
@@ -25,8 +25,8 @@ const meta: Meta<typeof DeviceRow> = {
       description: {
         component:
           '**Molecule.** One device row: status dot · name · Bluetooth id. Composes ' +
-          '[Indicator](?path=/docs/components-indicator--docs) (status dot) + ' +
-          '[Typography](?path=/docs/custom-typography--docs) (`body2` name, `mono` id). ' +
+          '[Indicator](?path=/docs/components-atoms-indicator--docs) (status dot) + ' +
+          '[Typography](?path=/docs/foundations-typography--docs) (`body2` name, `mono` id). ' +
           'Edit the `device` control (set `state` to `lost` / `available`, `slot` to `null`) to explore.',
       },
     },

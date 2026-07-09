@@ -4,7 +4,7 @@ import { ExerciseCard } from './ExerciseCard'
 import type { SetRowProps } from './SetRow'
 
 const meta: Meta<typeof ExerciseCard> = {
-  title: 'Shell/SessionRail/ExerciseCard',
+  title: 'Workout/ExerciseCard',
   component: ExerciseCard,
   tags: ['autodocs'],
   parameters: {
@@ -13,7 +13,7 @@ const meta: Meta<typeof ExerciseCard> = {
         component:
           '**Organism** (data-contract card; `state="collapsed" | "expanded" | "upcoming" | "rail"`). ' +
           'The `rail` heading representation delegates to ' +
-          '[ExerciseCardHeading](?path=/docs/shell-sessionrail-exercisecardheading--docs) ' +
+          '[ExerciseCardHeading](?path=/docs/workout-exercisecardheading--docs) ' +
           '(the standalone heading molecule). Used-by ↑ ' +
           '[SessionRail](?path=/docs/shell-sessionrail--docs).',
       },

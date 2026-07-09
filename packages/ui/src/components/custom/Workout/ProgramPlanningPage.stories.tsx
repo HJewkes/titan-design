@@ -240,7 +240,7 @@ const accumulationDone: PlanMeso = {
 const mesos: PlanMeso[] = [accumulationDone, accumulation, intensification, peak]
 
 const meta: Meta<typeof ProgramPlanningPage> = {
-  title: 'Custom/Workout/ProgramPlanningPage',
+  title: 'Pages/Program Planning',
   component: ProgramPlanningPage,
   parameters: { layout: 'fullscreen' },
   tags: ['autodocs'],

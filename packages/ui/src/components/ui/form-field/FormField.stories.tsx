@@ -5,7 +5,7 @@ import { Button, ButtonText } from '../button'
 import { Input } from '../input'
 
 const meta: Meta<typeof FormField> = {
-  title: 'Components/FormField',
+  title: 'Components/Molecules/FormField',
   component: FormField,
   tags: ['autodocs'],
   argTypes: {

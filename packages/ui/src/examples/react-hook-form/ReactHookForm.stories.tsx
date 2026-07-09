@@ -10,7 +10,7 @@ import { RhfContactForm, type ContactFormValues } from './RhfContactForm'
  * `Controller` render-prop idiom. See `ControlledFields.tsx` for the adapters.
  */
 const meta: Meta<typeof RhfContactForm> = {
-  title: 'Examples/React Hook Form',
+  title: 'Lab/Recipes/React Hook Form',
   component: RhfContactForm,
   tags: ['autodocs'],
   parameters: {

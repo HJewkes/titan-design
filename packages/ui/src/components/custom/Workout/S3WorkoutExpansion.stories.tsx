@@ -32,7 +32,7 @@ const OPEN: [string, string][] = [
   ['Read-only density', 'Rail is read-only. Candidates to drop for rail density: the TEMPO row, per-rep strips on every completed row. The heading already carries tempo + the set strip.'],
 ]
 
-const meta: Meta = { title: 'Custom/Workout/Explorations/Workout Expansion', parameters: { layout: 'fullscreen' } }
+const meta: Meta = { title: 'Lab/Explorations/Workout Expansion', parameters: { layout: 'fullscreen' } }
 export default meta
 type Story = StoryObj
 

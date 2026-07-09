@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { WorkoutPill } from './WorkoutPill'
 
 const meta: Meta<typeof WorkoutPill> = {
-  title: 'Custom/Workout/WorkoutPill',
+  title: 'Workout/WorkoutPill',
   component: WorkoutPill,
   tags: ['autodocs'],
   argTypes: {

@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { Button, ButtonText, ButtonIcon } from './Button'
 
 const meta: Meta<typeof Button> = {
-  title: 'Components/Button',
+  title: 'Components/Molecules/Button',
   component: Button,
   tags: ['autodocs'],
   argTypes: {

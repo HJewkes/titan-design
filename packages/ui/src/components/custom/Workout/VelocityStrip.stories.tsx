@@ -4,7 +4,7 @@ import { View } from 'react-native'
 import { VelocityStrip } from './VelocityStrip'
 
 const meta: Meta<typeof VelocityStrip> = {
-  title: 'Custom/Workout/VelocityStrip',
+  title: 'Workout/DataViz/VelocityStrip',
   component: VelocityStrip,
   tags: ['autodocs'],
   argTypes: {

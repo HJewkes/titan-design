@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { PlaceholderStrip } from './PlaceholderStrip'
 
 const meta: Meta<typeof PlaceholderStrip> = {
-  title: 'Custom/Workout/PlaceholderStrip',
+  title: 'Workout/PlaceholderStrip',
   component: PlaceholderStrip,
   tags: ['autodocs'],
   argTypes: {

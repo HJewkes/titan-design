@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { Indicator } from './Indicator'
 
 const meta: Meta<typeof Indicator> = {
-  title: 'Components/Indicator',
+  title: 'Components/Atoms/Indicator',
   component: Indicator,
   tags: ['autodocs'],
   argTypes: {

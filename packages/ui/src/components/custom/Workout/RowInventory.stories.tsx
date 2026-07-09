@@ -132,7 +132,7 @@ const mesos = [
 
 // ----------------------------------------------------------------------------- the pane
 const meta: Meta = {
-  title: 'Custom/Workout/Row Inventory',
+  title: 'Lab/Audits/Row Inventory',
   parameters: { layout: 'fullscreen' },
 }
 export default meta

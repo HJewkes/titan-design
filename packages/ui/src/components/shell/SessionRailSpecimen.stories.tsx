@@ -583,7 +583,7 @@ function Frame({ children }: { children: React.ReactNode }) {
 }
 
 const meta: Meta = {
-  title: 'Shell/SessionRail (specimen)',
+  title: 'Lab/Specimens/Session Rail',
   parameters: { layout: 'fullscreen' },
 }
 export default meta

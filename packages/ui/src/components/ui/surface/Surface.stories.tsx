@@ -4,7 +4,7 @@ import { Surface } from './Surface'
 import type { ElevationLevel } from '../../../theme/elevation'
 
 const meta: Meta<typeof Surface> = {
-  title: 'Components/Surface',
+  title: 'Components/Atoms/Surface',
   component: Surface,
   tags: ['autodocs'],
   argTypes: {

@@ -4,7 +4,7 @@ import { NavItem } from './NavItem'
 import { ActivityIcon } from '../icons'
 
 const meta: Meta<typeof NavItem> = {
-  title: 'Shell/SideNav/NavItem',
+  title: 'Shell/NavItem',
   component: NavItem,
   tags: ['autodocs'],
   args: { label: 'Live', active: false, live: false },
@@ -28,7 +28,7 @@ const meta: Meta<typeof NavItem> = {
         component:
           '**Molecule.** One category button — a glyph over an uppercase micro-label in a 46×46 target, ' +
           'spanning the full 60px rail so the active accent bar sits flush to the edge. Composes an ' +
-          '[icon](?path=/docs/icons--docs) + [Typography](?path=/docs/custom-typography--docs). Toggle ' +
+          '[icon](?path=/docs/foundations-icons--docs) + [Typography](?path=/docs/foundations-typography--docs). Toggle ' +
           '`active` / `live` to see the states.',
       },
     },
