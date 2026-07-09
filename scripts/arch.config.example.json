@@ -1,0 +1,8 @@
+{
+  "//": "Copy to arch.config.json to point the arch-graph at your local consuming apps. Paths are relative to the titan-design repo root. kind 'native' scans react-native primitive imports; 'web' consumers use RNW/HTML. Missing paths are skipped (in-library-only analysis).",
+  "consumers": [
+    { "name": "mobile", "path": "../voltras/mobile/src", "kind": "native" },
+    { "name": "mcp", "path": "../voltras-mcp/src", "kind": "web" },
+    { "name": "dash", "path": "../codewatch/dashboard/src", "kind": "web" }
+  ]
+}

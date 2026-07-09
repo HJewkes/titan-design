@@ -1,0 +1,4301 @@
+{
+  "schema": 1,
+  "components": [
+    {
+      "name": "ActiveWorkoutPage",
+      "file": "packages/ui/src/components/custom/Workout/ActiveWorkoutPage.tsx",
+      "dir": "workout",
+      "exports": [
+        "countCompletedSets",
+        "deriveWorkoutProgress",
+        "findActiveExercise",
+        "statusToCardState",
+        "toActiveCardProps",
+        "groupExercises",
+        "ActiveWorkoutPage",
+        "ActiveExerciseStatus",
+        "ActiveWorkoutExercise",
+        "ActiveWorkoutSuperset",
+        "ActiveWorkoutInput",
+        "ActiveWorkoutRest",
+        "WorkoutProgress",
+        "WorkoutGroup",
+        "ActiveWorkoutPageProps",
+        "supersetPositionAt",
+        "toggleFocus"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "ExerciseCard",
+        "InputBar",
+        "RestTimer",
+        "SetRow",
+        "SupersetWrapper"
+      ],
+      "leak": {
+        "rawView": 11,
+        "rawText": 4,
+        "inlineStyle": 15,
+        "rawHex": 0,
+        "loc": 444,
+        "score": 45
+      },
+      "tier": "page",
+      "verdict": "demo-only",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Alert",
+      "file": "packages/ui/src/components/ui/alert/Alert.tsx",
+      "dir": "ui",
+      "exports": [
+        "Alert",
+        "AlertTitle",
+        "AlertDescription",
+        "AlertStatus",
+        "AlertVariant",
+        "AlertProps",
+        "AlertTitleProps",
+        "AlertDescriptionProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 6,
+        "total": 6
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 3,
+        "rawText": 4,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 171,
+        "score": 7
+      },
+      "tier": "atom",
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "Autocomplete",
+      "file": "packages/ui/src/components/ui/autocomplete/Autocomplete.tsx",
+      "dir": "ui",
+      "exports": [
+        "Autocomplete",
+        "AutocompleteOption",
+        "AutocompleteProps",
+        "defaultFilterFn"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 5,
+        "rawText": 10,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 333,
+        "score": 15
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "Avatar",
+      "file": "packages/ui/src/components/ui/avatar/Avatar.tsx",
+      "dir": "ui",
+      "exports": [
+        "Avatar",
+        "AvatarBadge",
+        "AvatarGroup",
+        "AvatarSize",
+        "AvatarProps",
+        "AvatarBadgeProps",
+        "AvatarGroupProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 6,
+        "rawText": 2,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 177,
+        "score": 8
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "Badge",
+      "file": "packages/ui/src/components/ui/badge/Badge.tsx",
+      "dir": "ui",
+      "exports": [
+        "Badge",
+        "BadgeText",
+        "BadgeVariant",
+        "BadgeColor",
+        "BadgeSize",
+        "BadgeProps",
+        "BadgeTextProps"
+      ],
+      "libDependents": 3,
+      "storyRefs": 3,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 2,
+        "total": 2
+      },
+      "dependsOn": [
+        "Indicator"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 2,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 120,
+        "score": 3
+      },
+      "tier": "molecule",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "BaseBadge",
+      "file": "packages/ui/src/components/custom/Workout/BaseBadge.tsx",
+      "dir": "workout",
+      "exports": [
+        "BaseBadge",
+        "BaseBadgeVariant",
+        "BaseBadgeSize",
+        "BaseBadgeProps",
+        "baseBadgeSizeConfig",
+        "handlePressIn",
+        "handlePressOut"
+      ],
+      "libDependents": 2,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 2,
+        "rawHex": 2,
+        "loc": 114,
+        "score": 8
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "BodyMap",
+      "file": "packages/ui/src/components/custom/Workout/BodyMap.tsx",
+      "dir": "workout",
+      "exports": [
+        "BodyMap",
+        "BodyMapData",
+        "BodyMapProps",
+        "buildSlugParts",
+        "buildSimpleLegend",
+        "buildDetailedLegend",
+        "handleBodyPress"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 4,
+        "rawText": 3,
+        "inlineStyle": 8,
+        "rawHex": 0,
+        "loc": 350,
+        "score": 23
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "BodyMapDetailPanel",
+      "file": "packages/ui/src/components/custom/Workout/BodyMapDetailPanel.tsx",
+      "dir": "workout",
+      "exports": [
+        "BodyMapDetailPanel",
+        "ContributingExercise",
+        "UpcomingExercise",
+        "BodyMapDetailPanelProps",
+        "clamp01",
+        "markerFraction"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Badge",
+        "Sparkline"
+      ],
+      "leak": {
+        "rawView": 15,
+        "rawText": 15,
+        "inlineStyle": 37,
+        "rawHex": 1,
+        "loc": 478,
+        "score": 105
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "BrandLockup",
+      "file": "packages/ui/src/components/shell/BrandLockup.tsx",
+      "dir": "shell",
+      "exports": [
+        "BrandLockup",
+        "BrandLockupProps"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Typography",
+        "icons"
+      ],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 48,
+        "score": 2
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Breadcrumbs",
+      "file": "packages/ui/src/components/ui/breadcrumbs/Breadcrumbs.tsx",
+      "dir": "ui",
+      "exports": [
+        "Breadcrumbs",
+        "BreadcrumbItem",
+        "BreadcrumbsProps",
+        "BreadcrumbItemProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 2,
+        "rawText": 4,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 128,
+        "score": 6
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "Button",
+      "file": "packages/ui/src/components/ui/button/Button.tsx",
+      "dir": "ui",
+      "exports": [
+        "ButtonText",
+        "ButtonIcon",
+        "ButtonSpinner",
+        "ButtonVariant",
+        "ButtonSize",
+        "ButtonColor",
+        "ButtonProps",
+        "Button",
+        "ButtonTextProps",
+        "ButtonIconProps",
+        "ButtonSpinnerProps"
+      ],
+      "libDependents": 1,
+      "storyRefs": 12,
+      "xproj": {
+        "mobile": 14,
+        "mcp": 0,
+        "dash": 2,
+        "total": 16
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 0,
+        "rawText": 2,
+        "inlineStyle": 1,
+        "rawHex": 6,
+        "loc": 298,
+        "score": 10
+      },
+      "tier": "atom",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "CapacityBandChart",
+      "file": "packages/ui/src/components/custom/Workout/CapacityBandChart.tsx",
+      "dir": "workout",
+      "exports": [
+        "CapacityBandChart",
+        "WorkoutDotStatus",
+        "CapacityBandDataPoint",
+        "WorkoutDot",
+        "CapacityBandProjection",
+        "CapacityBandChartProps",
+        "parseTime",
+        "formatDate",
+        "toPixels",
+        "interpEdge",
+        "buildColumns",
+        "buildEdges",
+        "collectValues",
+        "currentStatus",
+        "toX",
+        "toY"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 4,
+        "dash": 0,
+        "total": 4
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 9,
+        "rawText": 4,
+        "inlineStyle": 12,
+        "rawHex": 1,
+        "loc": 496,
+        "score": 38
+      },
+      "tier": "atom",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Card",
+      "file": "packages/ui/src/components/ui/card/Card.tsx",
+      "dir": "ui",
+      "exports": [
+        "Card",
+        "CardHeader",
+        "CardTitle",
+        "CardDescription",
+        "CardContent",
+        "CardFooter",
+        "CardSkeleton",
+        "CardInset",
+        "CardVariant",
+        "CardElevation",
+        "CardProps",
+        "CardHeaderProps",
+        "CardTitleProps",
+        "CardDescriptionProps",
+        "CardContentProps",
+        "CardFooterProps",
+        "CardSkeletonProps",
+        "CardInsetProps"
+      ],
+      "libDependents": 4,
+      "storyRefs": 4,
+      "xproj": {
+        "mobile": 69,
+        "mcp": 6,
+        "dash": 2,
+        "total": 77
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 13,
+        "rawText": 4,
+        "inlineStyle": 0,
+        "rawHex": 1,
+        "loc": 402,
+        "score": 18
+      },
+      "tier": "atom",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "Checkbox",
+      "file": "packages/ui/src/components/ui/checkbox/Checkbox.tsx",
+      "dir": "ui",
+      "exports": [
+        "CheckboxGroup",
+        "CheckboxSize",
+        "CheckboxProps",
+        "Checkbox",
+        "CheckboxGroupProps",
+        "handlePress"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 6,
+        "rawText": 4,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 164,
+        "score": 10
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "Chip",
+      "file": "packages/ui/src/components/ui/chip/Chip.tsx",
+      "dir": "ui",
+      "exports": [
+        "Chip",
+        "ChipVariant",
+        "ChipColor",
+        "ChipSize",
+        "ChipProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 2,
+        "rawText": 2,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 152,
+        "score": 4
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "Collapse",
+      "file": "packages/ui/src/components/ui/collapse/Collapse.tsx",
+      "dir": "ui",
+      "exports": [
+        "Collapse",
+        "CollapseButton",
+        "CollapseContent",
+        "Accordion",
+        "AccordionItem",
+        "AccordionButton",
+        "AccordionPanel",
+        "CollapseProps",
+        "CollapseButtonProps",
+        "CollapseContentProps",
+        "AccordionProps",
+        "AccordionItemProps",
+        "AccordionButtonProps",
+        "AccordionPanelProps",
+        "toggle",
+        "cn"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 5,
+        "rawText": 5,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 276,
+        "score": 10
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "DataRow",
+      "file": "packages/ui/src/components/ui/data-row/DataRow.tsx",
+      "dir": "ui",
+      "exports": [
+        "DataRow",
+        "DataRowProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 2,
+        "mcp": 0,
+        "dash": 0,
+        "total": 2
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 2,
+        "rawText": 2,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 30,
+        "score": 4
+      },
+      "tier": "atom",
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "DateTime",
+      "file": "packages/ui/src/components/custom/DateTime/DateTime.tsx",
+      "dir": "custom",
+      "exports": [
+        "DateTime",
+        "formatDateTime",
+        "DateTimeFormat",
+        "DateTimeProps",
+        "formatDate",
+        "getRelativeTime"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 1,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 276,
+        "score": 1
+      },
+      "tier": "molecule",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "DeviationBar",
+      "file": "packages/ui/src/components/custom/Workout/DeviationBar.tsx",
+      "dir": "workout",
+      "exports": [
+        "DeviationBar",
+        "DeviationBarProps",
+        "getDotColor",
+        "getDeviationDescription"
+      ],
+      "libDependents": 2,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 1,
+        "dash": 0,
+        "total": 1
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 3,
+        "rawText": 0,
+        "inlineStyle": 3,
+        "rawHex": 2,
+        "loc": 82,
+        "score": 11
+      },
+      "tier": "atom",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "DeviceIndicator",
+      "file": "packages/ui/src/components/shell/DeviceIndicator.tsx",
+      "dir": "shell",
+      "exports": [
+        "DeviceIndicator",
+        "DeviceConnState",
+        "DeviceIndicatorProps",
+        "cn"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "icons"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 53,
+        "score": 0
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "DeviceMenu",
+      "file": "packages/ui/src/components/shell/DeviceMenu.tsx",
+      "dir": "shell",
+      "exports": [
+        "DeviceMenu",
+        "DeviceMenuProps",
+        "aggregateStatus"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "DeviceIndicator",
+        "DeviceRow",
+        "Popover",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 66,
+        "score": 1
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "DeviceRow",
+      "file": "packages/ui/src/components/shell/DeviceRow.tsx",
+      "dir": "shell",
+      "exports": [
+        "DeviceRow",
+        "DeviceRowState",
+        "Device",
+        "DeviceRowProps",
+        "cn"
+      ],
+      "libDependents": 2,
+      "storyRefs": 3,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Indicator",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 59,
+        "score": 0
+      },
+      "tier": "molecule",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Divider",
+      "file": "packages/ui/src/components/ui/divider/Divider.tsx",
+      "dir": "ui",
+      "exports": [
+        "Divider",
+        "DividerOrientation",
+        "DividerProps"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 38,
+        "score": 1
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "Drawer",
+      "file": "packages/ui/src/components/ui/drawer/Drawer.tsx",
+      "dir": "ui",
+      "exports": [
+        "Drawer",
+        "DrawerHeader",
+        "DrawerBody",
+        "DrawerFooter",
+        "DrawerPlacement",
+        "DrawerSize",
+        "DrawerProps",
+        "DrawerHeaderProps",
+        "DrawerBodyProps",
+        "DrawerFooterProps",
+        "handleOverlayPress",
+        "cn"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 6,
+        "mcp": 0,
+        "dash": 0,
+        "total": 6
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 7,
+        "rawText": 3,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 229,
+        "score": 10
+      },
+      "tier": "atom",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "EmptyState",
+      "file": "packages/ui/src/components/custom/EmptyState/EmptyState.tsx",
+      "dir": "custom",
+      "exports": [
+        "EmptyState",
+        "EmptyStateProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 1,
+        "mcp": 0,
+        "dash": 4,
+        "total": 5
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 3,
+        "rawText": 2,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 69,
+        "score": 5
+      },
+      "tier": "atom",
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "ExerciseCard",
+      "file": "packages/ui/src/components/custom/Workout/ExerciseCard.tsx",
+      "dir": "workout",
+      "exports": [
+        "ExerciseCard",
+        "ExerciseCardState",
+        "ExerciseCardProps",
+        "buildColumnHeaders",
+        "getSupersetBorderRadius",
+        "getSupersetMargin",
+        "formatSummary",
+        "formatAccessibilityLabel"
+      ],
+      "libDependents": 5,
+      "storyRefs": 4,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 2,
+        "dash": 0,
+        "total": 2
+      },
+      "dependsOn": [
+        "PlaceholderStrip",
+        "PrBadge",
+        "SetRow",
+        "TempoDisplay",
+        "VelocityStrip",
+        "WeightBadge"
+      ],
+      "leak": {
+        "rawView": 16,
+        "rawText": 8,
+        "inlineStyle": 18,
+        "rawHex": 0,
+        "loc": 432,
+        "score": 60
+      },
+      "tier": "organism",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "ExerciseDetailPage",
+      "file": "packages/ui/src/components/custom/Workout/ExerciseDetailPage.tsx",
+      "dir": "workout",
+      "exports": [
+        "deriveExerciseStats",
+        "toExerciseCardProps",
+        "summarizeVbt",
+        "ExerciseDetailPage",
+        "ExerciseDetailTab",
+        "EXERCISE_DETAIL_TABS",
+        "ExerciseDetailHeader",
+        "ExerciseDetailEntry",
+        "ExerciseTrend",
+        "ExerciseVbtSet",
+        "ExerciseVbt",
+        "ExerciseDetailStats",
+        "VbtSummary",
+        "ExerciseDetailPageProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "CapacityBandChart",
+        "ExerciseCard",
+        "MesoStatusCard",
+        "SetRow",
+        "StrengthTrendChart",
+        "VelocityStrip"
+      ],
+      "leak": {
+        "rawView": 18,
+        "rawText": 13,
+        "inlineStyle": 32,
+        "rawHex": 0,
+        "loc": 639,
+        "score": 95
+      },
+      "tier": "page",
+      "verdict": "demo-only",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "FormField",
+      "file": "packages/ui/src/components/ui/form-field/FormField.tsx",
+      "dir": "ui",
+      "exports": [
+        "FormField",
+        "FormSection",
+        "FormActions",
+        "FormRow",
+        "FormFieldProps",
+        "FormSectionProps",
+        "FormActionsProps",
+        "FormRowProps"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 9,
+        "rawText": 6,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 309,
+        "score": 15
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "Gauge",
+      "file": "packages/ui/src/components/custom/Gauge/Gauge.tsx",
+      "dir": "custom",
+      "exports": [
+        "Gauge",
+        "GaugeThreshold",
+        "GaugeProps",
+        "clamp01",
+        "formatValue",
+        "bandColor",
+        "buildTicks",
+        "activeColor"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 1,
+        "total": 1
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 4,
+        "rawText": 3,
+        "inlineStyle": 4,
+        "rawHex": 0,
+        "loc": 171,
+        "score": 15
+      },
+      "tier": "atom",
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "HelpTip",
+      "file": "packages/ui/src/components/ui/help-tip/HelpTip.tsx",
+      "dir": "ui",
+      "exports": [
+        "HelpTip",
+        "LabelWithHelp",
+        "HelpTipSize",
+        "HelpTipPlacement",
+        "HelpTipIcon",
+        "HelpTipProps",
+        "LabelWithHelpProps",
+        "handlePress",
+        "handleHoverIn",
+        "handleHoverOut",
+        "cn"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 5,
+        "rawText": 5,
+        "inlineStyle": 1,
+        "rawHex": 0,
+        "loc": 230,
+        "score": 12
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "IconBox",
+      "file": "packages/ui/src/components/ui/icon-box/IconBox.tsx",
+      "dir": "ui",
+      "exports": [
+        "IconBox",
+        "IconBoxProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 58,
+        "score": 1
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "icons",
+      "file": "packages/ui/src/components/custom/Workout/icons.tsx",
+      "dir": "workout",
+      "exports": [],
+      "libDependents": 0,
+      "storyRefs": 0,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "SvgIcon"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 8,
+        "score": 0
+      },
+      "tier": "molecule",
+      "verdict": "remove",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "icons",
+      "file": "packages/ui/src/components/icons/icons.tsx",
+      "dir": "custom",
+      "exports": [
+        "VoltrasMark",
+        "BluetoothIcon",
+        "DumbbellIcon",
+        "StarIcon",
+        "ActivityIcon",
+        "HistoryIcon",
+        "LayersIcon",
+        "PersonStandingIcon"
+      ],
+      "libDependents": 6,
+      "storyRefs": 3,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "SvgIcon"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 89,
+        "score": 0
+      },
+      "tier": "molecule",
+      "verdict": "remove",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Indicator",
+      "file": "packages/ui/src/components/ui/indicator/Indicator.tsx",
+      "dir": "ui",
+      "exports": [
+        "Indicator",
+        "IndicatorSize",
+        "IndicatorColor",
+        "IndicatorPulse",
+        "IndicatorProps"
+      ],
+      "libDependents": 3,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 4,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 118,
+        "score": 4
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Input",
+      "file": "packages/ui/src/components/ui/input/Input.tsx",
+      "dir": "ui",
+      "exports": [
+        "InputGroup",
+        "InputSize",
+        "InputVariant",
+        "InputProps",
+        "Input",
+        "InputGroupProps",
+        "PasswordInputProps",
+        "PasswordInput",
+        "handleFocus",
+        "handleBlur",
+        "cn",
+        "toggleVisibility"
+      ],
+      "libDependents": 1,
+      "storyRefs": 4,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 12,
+        "rawText": 4,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 274,
+        "score": 16
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "InputBar",
+      "file": "packages/ui/src/components/custom/Workout/InputBar.tsx",
+      "dir": "workout",
+      "exports": [
+        "InputBar",
+        "InputBarProps"
+      ],
+      "libDependents": 2,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 3,
+        "rawText": 5,
+        "inlineStyle": 10,
+        "rawHex": 1,
+        "loc": 163,
+        "score": 29
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "IntensityBar",
+      "file": "packages/ui/src/components/custom/Workout/IntensityBar.tsx",
+      "dir": "workout",
+      "exports": [
+        "IntensityBar",
+        "IntensityBarOrientation",
+        "IntensityBarProps",
+        "zoneForPct",
+        "clampFill",
+        "isAtTarget"
+      ],
+      "libDependents": 3,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 4,
+        "rawText": 2,
+        "inlineStyle": 5,
+        "rawHex": 2,
+        "loc": 222,
+        "score": 18
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Link",
+      "file": "packages/ui/src/components/ui/link/Link.tsx",
+      "dir": "ui",
+      "exports": [
+        "Link",
+        "LinkUnderline",
+        "LinkColor",
+        "LinkProps",
+        "handlePress"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 0,
+        "rawText": 1,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 87,
+        "score": 1
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "ListItem",
+      "file": "packages/ui/src/components/ui/list-item/ListItem.tsx",
+      "dir": "ui",
+      "exports": [
+        "ListItem",
+        "ListItemIcon",
+        "ListItemContent",
+        "ListItemTrailing",
+        "ListItemDivider",
+        "ListItemProps",
+        "ListItemIconProps",
+        "ListItemContentProps",
+        "ListItemTrailingProps",
+        "ListItemDividerProps",
+        "cn"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 9,
+        "mcp": 0,
+        "dash": 0,
+        "total": 9
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 4,
+        "rawText": 2,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 90,
+        "score": 6
+      },
+      "tier": "atom",
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "Menu",
+      "file": "packages/ui/src/components/ui/menu/Menu.tsx",
+      "dir": "ui",
+      "exports": [
+        "Menu",
+        "MenuTrigger",
+        "MenuList",
+        "MenuItem",
+        "MenuDivider",
+        "MenuGroup",
+        "MenuProps",
+        "MenuTriggerProps",
+        "MenuListProps",
+        "MenuItemProps",
+        "MenuDividerProps",
+        "MenuGroupProps",
+        "setIsOpen",
+        "closeMenu"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 5,
+        "rawText": 2,
+        "inlineStyle": 1,
+        "rawHex": 0,
+        "loc": 223,
+        "score": 9
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "MesoCard",
+      "file": "packages/ui/src/components/custom/Workout/MesoCard.tsx",
+      "dir": "workout",
+      "exports": [
+        "MesoCard",
+        "MesoVolumeHeatmapEntry",
+        "MesoCardProps",
+        "heatmapColor"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Badge",
+        "Card",
+        "WeekRow"
+      ],
+      "leak": {
+        "rawView": 8,
+        "rawText": 2,
+        "inlineStyle": 9,
+        "rawHex": 1,
+        "loc": 239,
+        "score": 29
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "MesoProgressBar",
+      "file": "packages/ui/src/components/custom/Workout/MesoProgressBar.tsx",
+      "dir": "workout",
+      "exports": [
+        "MesoProgressBar",
+        "MesoStatus",
+        "Meso",
+        "MesoProgressBarProps",
+        "clampProgress",
+        "handlePressIn",
+        "handlePressOut"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 3,
+        "rawHex": 0,
+        "loc": 167,
+        "score": 8
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "MesoStatusCard",
+      "file": "packages/ui/src/components/custom/Workout/MesoStatusCard.tsx",
+      "dir": "workout",
+      "exports": [
+        "MesoStatusCard",
+        "MesoStatusBadgeVariant",
+        "MesoStatusBadge",
+        "MesoStatusMetric",
+        "MesoStatusGauge",
+        "MesoStatusCoaching",
+        "MesoStatusNextTarget",
+        "MesoStatusCardProps",
+        "clamp01",
+        "getGaugeZoneColor",
+        "renderCoachingText"
+      ],
+      "libDependents": 2,
+      "storyRefs": 3,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 1,
+        "dash": 0,
+        "total": 1
+      },
+      "dependsOn": [
+        "Card",
+        "StatusDot"
+      ],
+      "leak": {
+        "rawView": 17,
+        "rawText": 11,
+        "inlineStyle": 24,
+        "rawHex": 0,
+        "loc": 466,
+        "score": 76
+      },
+      "tier": "molecule",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Metric",
+      "file": "packages/ui/src/components/custom/Metric/Metric.tsx",
+      "dir": "custom",
+      "exports": [
+        "Metric",
+        "MetricGroup",
+        "MetricTrend",
+        "MetricProps",
+        "MetricGroupProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 8,
+        "mcp": 3,
+        "dash": 1,
+        "total": 12
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 5,
+        "rawText": 4,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 93,
+        "score": 9
+      },
+      "tier": "atom",
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Modal",
+      "file": "packages/ui/src/components/ui/modal/Modal.tsx",
+      "dir": "ui",
+      "exports": [
+        "Modal",
+        "ModalContent",
+        "ModalHeader",
+        "ModalTitle",
+        "ModalCloseButton",
+        "ModalBody",
+        "ModalFooter",
+        "ModalSize",
+        "ModalScrollBehavior",
+        "ModalProps",
+        "ModalContentProps",
+        "ModalHeaderProps",
+        "ModalTitleProps",
+        "ModalCloseButtonProps",
+        "ModalBodyProps",
+        "ModalFooterProps",
+        "handleBackdropPress",
+        "cn"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 4,
+        "rawText": 3,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 255,
+        "score": 7
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "MuscleGroupChip",
+      "file": "packages/ui/src/components/custom/Workout/MuscleGroupChip.tsx",
+      "dir": "workout",
+      "exports": [
+        "MuscleGroupChip",
+        "VolumeStatus",
+        "MuscleGroupChipProps"
+      ],
+      "libDependents": 3,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 2,
+        "dash": 0,
+        "total": 2
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 2,
+        "rawText": 1,
+        "inlineStyle": 3,
+        "rawHex": 2,
+        "loc": 94,
+        "score": 11
+      },
+      "tier": "atom",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "NavItem",
+      "file": "packages/ui/src/components/shell/NavItem.tsx",
+      "dir": "shell",
+      "exports": [
+        "NavItem",
+        "NavItemProps",
+        "cn"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 76,
+        "score": 2
+      },
+      "tier": "molecule",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Pill",
+      "file": "packages/ui/src/components/ui/pill/Pill.tsx",
+      "dir": "ui",
+      "exports": [
+        "Pill",
+        "PillVariant",
+        "PillColor",
+        "PillSize",
+        "PillProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 1,
+        "rawText": 1,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 105,
+        "score": 2
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "PlaceholderStrip",
+      "file": "packages/ui/src/components/custom/Workout/PlaceholderStrip.tsx",
+      "dir": "workout",
+      "exports": [
+        "PlaceholderStrip",
+        "PlaceholderStripProps",
+        "SingleStrip"
+      ],
+      "libDependents": 3,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 3,
+        "rawText": 0,
+        "inlineStyle": 1,
+        "rawHex": 0,
+        "loc": 86,
+        "score": 5
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Popover",
+      "file": "packages/ui/src/components/ui/popover/Popover.tsx",
+      "dir": "ui",
+      "exports": [
+        "Popover",
+        "PopoverTrigger",
+        "PopoverContent",
+        "PopoverCloseButton",
+        "PopoverPlacement",
+        "PopoverProps",
+        "PopoverTriggerProps",
+        "PopoverContentProps",
+        "PopoverCloseButtonProps",
+        "cn"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 2,
+        "rawText": 1,
+        "inlineStyle": 2,
+        "rawHex": 0,
+        "loc": 238,
+        "score": 7
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "PrBadge",
+      "file": "packages/ui/src/components/custom/Workout/PrBadge.tsx",
+      "dir": "workout",
+      "exports": [
+        "PrBadge",
+        "PRType",
+        "PrBadgeProps"
+      ],
+      "libDependents": 4,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "BaseBadge",
+        "icons"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 1,
+        "inlineStyle": 2,
+        "rawHex": 0,
+        "loc": 107,
+        "score": 6
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "PrHistoryModal",
+      "file": "packages/ui/src/components/custom/Workout/PrHistoryModal.tsx",
+      "dir": "workout",
+      "exports": [
+        "PrHistoryModal",
+        "PrRecordType",
+        "PrRecord",
+        "PrHistoryModalProps",
+        "recordLabel",
+        "recordValueText"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 1,
+        "dash": 0,
+        "total": 1
+      },
+      "dependsOn": [
+        "Drawer",
+        "icons"
+      ],
+      "leak": {
+        "rawView": 4,
+        "rawText": 6,
+        "inlineStyle": 11,
+        "rawHex": 0,
+        "loc": 244,
+        "score": 32
+      },
+      "tier": "organism",
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "ProgramPlanningPage",
+      "file": "packages/ui/src/components/custom/Workout/ProgramPlanningPage.tsx",
+      "dir": "workout",
+      "exports": [
+        "deriveNavLevel",
+        "toProgressBarMesos",
+        "findMeso",
+        "findWeek",
+        "findWorkout",
+        "buildBreadcrumbs",
+        "ProgramPlanningPage",
+        "PlanWorkout",
+        "PlanWeek",
+        "PlanMeso",
+        "ProgramNavLevel",
+        "ProgramSelection",
+        "ProgramBreadcrumb",
+        "ProgramPlanningPageProps",
+        "selectMeso",
+        "selectWeek",
+        "selectWorkout",
+        "toggleExercise",
+        "navigateTo"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "ExerciseCard",
+        "MesoCard",
+        "MesoProgressBar",
+        "WeekRow",
+        "WorkoutCard",
+        "WorkoutPill"
+      ],
+      "leak": {
+        "rawView": 9,
+        "rawText": 3,
+        "inlineStyle": 11,
+        "rawHex": 0,
+        "loc": 420,
+        "score": 34
+      },
+      "tier": "page",
+      "verdict": "demo-only",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Progress",
+      "file": "packages/ui/src/components/ui/progress/Progress.tsx",
+      "dir": "ui",
+      "exports": [
+        "Progress",
+        "CircularProgress",
+        "ProgressSteps",
+        "ProgressSize",
+        "ProgressColor",
+        "ProgressVariant",
+        "ProgressProps",
+        "CircularProgressProps",
+        "ProgressStepsProps",
+        "cn"
+      ],
+      "libDependents": 0,
+      "storyRefs": 3,
+      "xproj": {
+        "mobile": 2,
+        "mcp": 0,
+        "dash": 0,
+        "total": 2
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 11,
+        "rawText": 4,
+        "inlineStyle": 6,
+        "rawHex": 0,
+        "loc": 340,
+        "score": 27
+      },
+      "tier": "atom",
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "Radio",
+      "file": "packages/ui/src/components/ui/radio/Radio.tsx",
+      "dir": "ui",
+      "exports": [
+        "RadioGroup",
+        "Radio",
+        "RadioSize",
+        "RadioColor",
+        "RadioGroupProps",
+        "RadioProps",
+        "cn"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 2,
+        "mcp": 0,
+        "dash": 0,
+        "total": 2
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 4,
+        "rawText": 2,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 201,
+        "score": 6
+      },
+      "tier": "atom",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "ReadinessCheck",
+      "file": "packages/ui/src/components/custom/Workout/ReadinessCheck.tsx",
+      "dir": "workout",
+      "exports": [
+        "ReadinessCheck",
+        "WarmUpStatus",
+        "ReadinessFactor",
+        "WarmUpValidation",
+        "ReadinessCheckProps",
+        "scoreColor",
+        "emojiSet",
+        "velocityDeficitText"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Badge",
+        "Card"
+      ],
+      "leak": {
+        "rawView": 7,
+        "rawText": 7,
+        "inlineStyle": 14,
+        "rawHex": 1,
+        "loc": 271,
+        "score": 43
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "RestTimer",
+      "file": "packages/ui/src/components/custom/Workout/RestTimer.tsx",
+      "dir": "workout",
+      "exports": [
+        "RestTimer",
+        "RestTimerProps"
+      ],
+      "libDependents": 2,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 6,
+        "rawText": 5,
+        "inlineStyle": 13,
+        "rawHex": 0,
+        "loc": 184,
+        "score": 37
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Scatter",
+      "file": "packages/ui/src/components/custom/Scatter/Scatter.tsx",
+      "dir": "custom",
+      "exports": [
+        "Scatter",
+        "ScatterDatum",
+        "ScatterAxis",
+        "ScatterProps",
+        "domainOf",
+        "ticksOf",
+        "formatTick",
+        "LineSegment",
+        "toX",
+        "toY"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 1,
+        "total": 1
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 8,
+        "rawText": 5,
+        "inlineStyle": 14,
+        "rawHex": 1,
+        "loc": 259,
+        "score": 42
+      },
+      "tier": "atom",
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Section",
+      "file": "packages/ui/src/components/ui/section/Section.tsx",
+      "dir": "ui",
+      "exports": [
+        "Section",
+        "SectionHeader",
+        "SectionContent",
+        "SectionProps",
+        "SectionHeaderProps",
+        "SectionContentProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 10,
+        "mcp": 0,
+        "dash": 0,
+        "total": 10
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 5,
+        "rawText": 2,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 53,
+        "score": 7
+      },
+      "tier": "atom",
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "Select",
+      "file": "packages/ui/src/components/ui/select/Select.tsx",
+      "dir": "ui",
+      "exports": [
+        "Select",
+        "SelectOption",
+        "SelectProps",
+        "selectValue",
+        "isSelected",
+        "getDisplayValue",
+        "clearValue"
+      ],
+      "libDependents": 2,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 4,
+        "rawText": 5,
+        "inlineStyle": 1,
+        "rawHex": 0,
+        "loc": 244,
+        "score": 11
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "SessionStatePill",
+      "file": "packages/ui/src/components/shell/SessionStatePill.tsx",
+      "dir": "shell",
+      "exports": [
+        "SessionStatePill",
+        "SessionState",
+        "SessionStatePillProps"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Indicator",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 47,
+        "score": 1
+      },
+      "tier": "molecule",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "SetRow",
+      "file": "packages/ui/src/components/custom/Workout/SetRow.tsx",
+      "dir": "workout",
+      "exports": [
+        "SetRow",
+        "SetRowMode",
+        "SetRowProps",
+        "formatAccessibilityLabel"
+      ],
+      "libDependents": 4,
+      "storyRefs": 4,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 1,
+        "dash": 0,
+        "total": 1
+      },
+      "dependsOn": [
+        "PrBadge",
+        "VelocityStrip"
+      ],
+      "leak": {
+        "rawView": 8,
+        "rawText": 8,
+        "inlineStyle": 14,
+        "rawHex": 0,
+        "loc": 261,
+        "score": 44
+      },
+      "tier": "organism",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Sidebar",
+      "file": "packages/ui/src/components/custom/Sidebar/Sidebar.tsx",
+      "dir": "custom",
+      "exports": [
+        "Sidebar",
+        "SidebarHeader",
+        "SidebarContent",
+        "SidebarFooter",
+        "SidebarSection",
+        "SidebarItem",
+        "SidebarDivider",
+        "SidebarProps",
+        "SidebarHeaderProps",
+        "SidebarContentProps",
+        "SidebarFooterProps",
+        "SidebarSectionProps",
+        "SidebarItemProps",
+        "SidebarDividerProps",
+        "cn",
+        "handlePress"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 3,
+        "total": 3
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 7,
+        "rawText": 3,
+        "inlineStyle": 1,
+        "rawHex": 0,
+        "loc": 258,
+        "score": 12
+      },
+      "tier": "atom",
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "SideNav",
+      "file": "packages/ui/src/components/shell/SideNav.tsx",
+      "dir": "shell",
+      "exports": [
+        "SideNav",
+        "SideNavItem",
+        "SideNavProps",
+        "defaultNavItems"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "NavItem",
+        "icons"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 75,
+        "score": 1
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "Skeleton",
+      "file": "packages/ui/src/components/ui/skeleton/Skeleton.tsx",
+      "dir": "ui",
+      "exports": [
+        "Skeleton",
+        "SkeletonText",
+        "SkeletonCircle",
+        "SkeletonCard",
+        "SkeletonListItem",
+        "SkeletonVariant",
+        "SkeletonAnimation",
+        "SkeletonProps",
+        "SkeletonTextProps",
+        "SkeletonCircleProps",
+        "SkeletonCardProps",
+        "SkeletonListItemProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 6,
+        "rawText": 0,
+        "inlineStyle": 1,
+        "rawHex": 0,
+        "loc": 230,
+        "score": 8
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "Sparkline",
+      "file": "packages/ui/src/components/custom/Workout/Sparkline.tsx",
+      "dir": "workout",
+      "exports": [
+        "Sparkline",
+        "SparklineProps",
+        "normalizeData",
+        "normalizeValue"
+      ],
+      "libDependents": 3,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 5,
+        "rawText": 1,
+        "inlineStyle": 5,
+        "rawHex": 0,
+        "loc": 190,
+        "score": 16
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Spinner",
+      "file": "packages/ui/src/components/ui/spinner/Spinner.tsx",
+      "dir": "ui",
+      "exports": [
+        "Spinner",
+        "SpinnerSize",
+        "SpinnerColor",
+        "SpinnerProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 2,
+        "loc": 74,
+        "score": 3
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "Stack",
+      "file": "packages/ui/src/components/ui/stack/Stack.tsx",
+      "dir": "ui",
+      "exports": [
+        "Stack",
+        "HStack",
+        "VStack",
+        "StackProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 27,
+        "mcp": 0,
+        "dash": 0,
+        "total": 27
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 77,
+        "score": 1
+      },
+      "tier": "atom",
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "StatusDot",
+      "file": "packages/ui/src/components/custom/Workout/StatusDot.tsx",
+      "dir": "workout",
+      "exports": [
+        "StatusDot",
+        "StatusDotVariant",
+        "StatusDotProps",
+        "isSolidVariant"
+      ],
+      "libDependents": 4,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 4,
+        "rawText": 2,
+        "inlineStyle": 3,
+        "rawHex": 7,
+        "loc": 164,
+        "score": 19
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Stepper",
+      "file": "packages/ui/src/components/custom/stepper/Stepper.tsx",
+      "dir": "custom",
+      "exports": [
+        "Stepper",
+        "Step",
+        "StepIndicator",
+        "StepLabel",
+        "StepContent",
+        "StepStatus",
+        "StepperOrientation",
+        "StepperProps",
+        "StepProps",
+        "StepIndicatorProps",
+        "StepLabelProps",
+        "StepContentProps",
+        "cn"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 6,
+        "rawText": 2,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 251,
+        "score": 8
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "StrengthTrendChart",
+      "file": "packages/ui/src/components/custom/Workout/StrengthTrendChart.tsx",
+      "dir": "workout",
+      "exports": [
+        "StrengthTrendChart",
+        "StrengthTrendDataPoint",
+        "StrengthTrendChartMesoBoundary",
+        "StrengthTrendChartProps",
+        "timeOf",
+        "formatValue",
+        "buildGeometry",
+        "toX",
+        "toY",
+        "project",
+        "computeTrend"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 1,
+        "dash": 0,
+        "total": 1
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 20,
+        "rawText": 12,
+        "inlineStyle": 33,
+        "rawHex": 0,
+        "loc": 630,
+        "score": 98
+      },
+      "tier": "atom",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "SupersetWrapper",
+      "file": "packages/ui/src/components/custom/Workout/SupersetWrapper.tsx",
+      "dir": "workout",
+      "exports": [
+        "SupersetWrapper",
+        "SupersetWrapperProps"
+      ],
+      "libDependents": 2,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 2,
+        "rawText": 1,
+        "inlineStyle": 3,
+        "rawHex": 1,
+        "loc": 64,
+        "score": 10
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Surface",
+      "file": "packages/ui/src/components/ui/surface/Surface.tsx",
+      "dir": "ui",
+      "exports": [
+        "Surface",
+        "SurfaceProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 23,
+        "mcp": 0,
+        "dash": 0,
+        "total": 23
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 52,
+        "score": 1
+      },
+      "tier": "atom",
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "SvgIcon",
+      "file": "packages/ui/src/components/icons/SvgIcon.tsx",
+      "dir": "custom",
+      "exports": [
+        "SvgIcon",
+        "IconProps",
+        "SvgIconProps"
+      ],
+      "libDependents": 1,
+      "storyRefs": 0,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 51,
+        "score": 0
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Switch",
+      "file": "packages/ui/src/components/ui/switch/Switch.tsx",
+      "dir": "ui",
+      "exports": [
+        "SwitchSize",
+        "SwitchProps",
+        "Switch",
+        "handlePress"
+      ],
+      "libDependents": 0,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 2,
+        "rawText": 2,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 104,
+        "score": 4
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "Table",
+      "file": "packages/ui/src/components/custom/Table/Table.tsx",
+      "dir": "custom",
+      "exports": [
+        "Table",
+        "TableHeader",
+        "TableBody",
+        "TableRow",
+        "TableHeaderCell",
+        "TableCell",
+        "TablePagination",
+        "useTable",
+        "TableSelectAllCell",
+        "TableSelectCell",
+        "TableEmptyState",
+        "SortDirection",
+        "TableProps",
+        "TableHeaderProps",
+        "TableBodyProps",
+        "TableRowProps",
+        "TableHeaderCellProps",
+        "TableCellProps",
+        "TablePaginationProps",
+        "UseTableOptions",
+        "UseTableReturn",
+        "TableSelectAllCellProps",
+        "TableSelectCellProps",
+        "TableEmptyStateProps",
+        "cn",
+        "handleSort",
+        "handlePageSizeChange"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 12,
+        "total": 12
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 21,
+        "rawText": 12,
+        "inlineStyle": 1,
+        "rawHex": 0,
+        "loc": 713,
+        "score": 35
+      },
+      "tier": "atom",
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "Tabs",
+      "file": "packages/ui/src/components/ui/tabs/Tabs.tsx",
+      "dir": "ui",
+      "exports": [
+        "Tabs",
+        "TabList",
+        "Tab",
+        "TabPanels",
+        "TabPanel",
+        "TabsVariant",
+        "TabsOrientation",
+        "TabsProps",
+        "TabListProps",
+        "TabProps",
+        "TabPanelsProps",
+        "TabPanelProps",
+        "setActiveIndex",
+        "cn"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 4,
+        "rawText": 1,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 254,
+        "score": 5
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "TempoBar",
+      "file": "packages/ui/src/components/custom/Workout/TempoBar.tsx",
+      "dir": "workout",
+      "exports": [
+        "getTempoPacingState",
+        "getTempoFillPct",
+        "TempoBar",
+        "TempoPhaseKey",
+        "TEMPO_PACING",
+        "TempoPacingState",
+        "TempoBarProps",
+        "formatDuration"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 9,
+        "rawText": 3,
+        "inlineStyle": 11,
+        "rawHex": 1,
+        "loc": 216,
+        "score": 35
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "TempoDisplay",
+      "file": "packages/ui/src/components/custom/Workout/TempoDisplay.tsx",
+      "dir": "workout",
+      "exports": [
+        "TempoDisplay",
+        "TempoLivePhase",
+        "TempoLiveState",
+        "TempoDisplayProps",
+        "TempoValue",
+        "TempoSeparator"
+      ],
+      "libDependents": 3,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 2,
+        "dash": 0,
+        "total": 2
+      },
+      "dependsOn": [
+        "TempoBar"
+      ],
+      "leak": {
+        "rawView": 8,
+        "rawText": 8,
+        "inlineStyle": 16,
+        "rawHex": 9,
+        "loc": 316,
+        "score": 57
+      },
+      "tier": "molecule",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Toast",
+      "file": "packages/ui/src/components/ui/toast/Toast.tsx",
+      "dir": "ui",
+      "exports": [
+        "ToastProvider",
+        "useToast",
+        "Toast",
+        "ToastStatus",
+        "ToastPosition",
+        "ToastConfig",
+        "ToastProviderProps",
+        "ToastProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 9,
+        "rawText": 8,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 328,
+        "score": 17
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "ToolbarButton",
+      "file": "packages/ui/src/components/ui/toolbar-button/ToolbarButton.tsx",
+      "dir": "ui",
+      "exports": [
+        "ToolbarButton",
+        "ToolbarButtonGroup",
+        "useToolbarButton",
+        "ToolbarButtonVariant",
+        "ToolbarButtonSize",
+        "ToolbarButtonProps",
+        "ToolbarButtonGroupProps",
+        "getIconColor",
+        "getNeumorphicStyle",
+        "cn"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 4,
+        "rawText": 1,
+        "inlineStyle": 0,
+        "rawHex": 5,
+        "loc": 309,
+        "score": 10
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "Tooltip",
+      "file": "packages/ui/src/components/ui/tooltip/Tooltip.tsx",
+      "dir": "ui",
+      "exports": [
+        "Tooltip",
+        "TooltipPlacement",
+        "TooltipProps",
+        "clearTimeouts",
+        "show",
+        "hide"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 6,
+        "rawText": 3,
+        "inlineStyle": 1,
+        "rawHex": 0,
+        "loc": 235,
+        "score": 11
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "TopBar",
+      "file": "packages/ui/src/components/shell/TopBar.tsx",
+      "dir": "shell",
+      "exports": [
+        "TopBar",
+        "TopBarProps",
+        "onLayout"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "BrandLockup",
+        "DateTime",
+        "DeviceMenu",
+        "DeviceRow",
+        "Divider",
+        "SessionStatePill"
+      ],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 90,
+        "score": 2
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "TrainingStatusPage",
+      "file": "packages/ui/src/components/custom/Workout/TrainingStatusPage.tsx",
+      "dir": "workout",
+      "exports": [
+        "deriveTrainingSummary",
+        "toBodyMapData",
+        "TrainingStatusPage",
+        "TrainingStatusMuscle",
+        "TrainingStatusSummary",
+        "TrainingStatusPageProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "BodyMap",
+        "BodyMapDetailPanel",
+        "MesoStatusCard"
+      ],
+      "leak": {
+        "rawView": 10,
+        "rawText": 4,
+        "inlineStyle": 14,
+        "rawHex": 0,
+        "loc": 313,
+        "score": 42
+      },
+      "tier": "page",
+      "verdict": "demo-only",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Treemap",
+      "file": "packages/ui/src/components/custom/Treemap/Treemap.tsx",
+      "dir": "custom",
+      "exports": [
+        "Treemap",
+        "TreemapDatum",
+        "TreemapScale",
+        "TreemapProps",
+        "scaleValue",
+        "worstRatio",
+        "squarify"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 1,
+        "rawText": 1,
+        "inlineStyle": 2,
+        "rawHex": 2,
+        "loc": 191,
+        "score": 8
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Typography",
+      "file": "packages/ui/src/components/custom/Typography/Typography.tsx",
+      "dir": "custom",
+      "exports": [
+        "Typography",
+        "Heading",
+        "Paragraph",
+        "Caption",
+        "Label",
+        "Overline",
+        "TypographyVariant",
+        "TypographyColor",
+        "TypographyAlign",
+        "TypographyMarginBottom",
+        "TypographyProps",
+        "HeadingProps",
+        "ParagraphProps",
+        "CaptionProps",
+        "LabelProps",
+        "OverlineProps"
+      ],
+      "libDependents": 6,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 1,
+        "total": 1
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 0,
+        "rawText": 1,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 224,
+        "score": 1
+      },
+      "tier": "atom",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "VelocityStrip",
+      "file": "packages/ui/src/components/custom/Workout/VelocityStrip.tsx",
+      "dir": "workout",
+      "exports": [
+        "getVelocityZoneColor",
+        "getVelocityZoneName",
+        "calculateVelocityLoss",
+        "calculateMeanVelocity",
+        "VelocityStrip",
+        "VelocityZoneBandProp",
+        "VelocityStripProps",
+        "classifyBand",
+        "bandColor",
+        "getLossStyle",
+        "getReducedMotionPreference",
+        "usePrefersReducedMotion",
+        "handler",
+        "barColorFor"
+      ],
+      "libDependents": 5,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 1,
+        "dash": 0,
+        "total": 1
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 5,
+        "rawText": 3,
+        "inlineStyle": 9,
+        "rawHex": 0,
+        "loc": 456,
+        "score": 26
+      },
+      "tier": "atom",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "WeekRow",
+      "file": "packages/ui/src/components/custom/Workout/WeekRow.tsx",
+      "dir": "workout",
+      "exports": [
+        "WeekRow",
+        "WeekRowWorkout",
+        "WeekRowProps"
+      ],
+      "libDependents": 2,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 2,
+        "dash": 0,
+        "total": 2
+      },
+      "dependsOn": [
+        "IntensityBar",
+        "WorkoutPill"
+      ],
+      "leak": {
+        "rawView": 5,
+        "rawText": 1,
+        "inlineStyle": 4,
+        "rawHex": 0,
+        "loc": 143,
+        "score": 14
+      },
+      "tier": "molecule",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "WeightBadge",
+      "file": "packages/ui/src/components/custom/Workout/WeightBadge.tsx",
+      "dir": "workout",
+      "exports": [
+        "WeightBadge",
+        "WeightBadgeSize",
+        "WeightBadgeProps",
+        "showIcon"
+      ],
+      "libDependents": 4,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "BaseBadge",
+        "icons"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 3,
+        "inlineStyle": 3,
+        "rawHex": 1,
+        "loc": 118,
+        "score": 10
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "WorkoutCard",
+      "file": "packages/ui/src/components/custom/Workout/WorkoutCard.tsx",
+      "dir": "workout",
+      "exports": [
+        "WorkoutCard",
+        "WorkoutStatus",
+        "WorkoutMuscleVolumeStatus",
+        "WorkoutMuscleGroup",
+        "WorkoutCardProps",
+        "formatStats"
+      ],
+      "libDependents": 1,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 1,
+        "dash": 0,
+        "total": 1
+      },
+      "dependsOn": [
+        "Card",
+        "ExerciseCard",
+        "MuscleGroupChip"
+      ],
+      "leak": {
+        "rawView": 5,
+        "rawText": 3,
+        "inlineStyle": 6,
+        "rawHex": 1,
+        "loc": 227,
+        "score": 21
+      },
+      "tier": "organism",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "WorkoutPill",
+      "file": "packages/ui/src/components/custom/Workout/WorkoutPill.tsx",
+      "dir": "workout",
+      "exports": [
+        "WorkoutPill",
+        "WorkoutPillStatus",
+        "WorkoutPillProps",
+        "usePulse"
+      ],
+      "libDependents": 4,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 1,
+        "rawText": 3,
+        "inlineStyle": 3,
+        "rawHex": 3,
+        "loc": 182,
+        "score": 13
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    }
+  ],
+  "edges": [
+    [
+      "DateTime",
+      "Typography"
+    ],
+    [
+      "ActiveWorkoutPage",
+      "ExerciseCard"
+    ],
+    [
+      "ActiveWorkoutPage",
+      "InputBar"
+    ],
+    [
+      "ActiveWorkoutPage",
+      "RestTimer"
+    ],
+    [
+      "ActiveWorkoutPage",
+      "SupersetWrapper"
+    ],
+    [
+      "ActiveWorkoutPage",
+      "SetRow"
+    ],
+    [
+      "BodyMapDetailPanel",
+      "Badge"
+    ],
+    [
+      "BodyMapDetailPanel",
+      "Sparkline"
+    ],
+    [
+      "ExerciseCard",
+      "VelocityStrip"
+    ],
+    [
+      "ExerciseCard",
+      "PlaceholderStrip"
+    ],
+    [
+      "ExerciseCard",
+      "WeightBadge"
+    ],
+    [
+      "ExerciseCard",
+      "PrBadge"
+    ],
+    [
+      "ExerciseCard",
+      "TempoDisplay"
+    ],
+    [
+      "ExerciseCard",
+      "SetRow"
+    ],
+    [
+      "ExerciseDetailPage",
+      "MesoStatusCard"
+    ],
+    [
+      "ExerciseDetailPage",
+      "StrengthTrendChart"
+    ],
+    [
+      "ExerciseDetailPage",
+      "CapacityBandChart"
+    ],
+    [
+      "ExerciseDetailPage",
+      "ExerciseCard"
+    ],
+    [
+      "ExerciseDetailPage",
+      "SetRow"
+    ],
+    [
+      "ExerciseDetailPage",
+      "VelocityStrip"
+    ],
+    [
+      "MesoCard",
+      "Card"
+    ],
+    [
+      "MesoCard",
+      "Badge"
+    ],
+    [
+      "MesoCard",
+      "WeekRow"
+    ],
+    [
+      "MesoStatusCard",
+      "Card"
+    ],
+    [
+      "MesoStatusCard",
+      "StatusDot"
+    ],
+    [
+      "PrBadge",
+      "icons"
+    ],
+    [
+      "PrBadge",
+      "BaseBadge"
+    ],
+    [
+      "PrHistoryModal",
+      "icons"
+    ],
+    [
+      "PrHistoryModal",
+      "Drawer"
+    ],
+    [
+      "ProgramPlanningPage",
+      "MesoProgressBar"
+    ],
+    [
+      "ProgramPlanningPage",
+      "MesoCard"
+    ],
+    [
+      "ProgramPlanningPage",
+      "WeekRow"
+    ],
+    [
+      "ProgramPlanningPage",
+      "WorkoutCard"
+    ],
+    [
+      "ProgramPlanningPage",
+      "WorkoutPill"
+    ],
+    [
+      "ProgramPlanningPage",
+      "ExerciseCard"
+    ],
+    [
+      "ReadinessCheck",
+      "Card"
+    ],
+    [
+      "ReadinessCheck",
+      "Badge"
+    ],
+    [
+      "SetRow",
+      "VelocityStrip"
+    ],
+    [
+      "SetRow",
+      "PrBadge"
+    ],
+    [
+      "TempoDisplay",
+      "TempoBar"
+    ],
+    [
+      "TrainingStatusPage",
+      "BodyMap"
+    ],
+    [
+      "TrainingStatusPage",
+      "BodyMapDetailPanel"
+    ],
+    [
+      "TrainingStatusPage",
+      "MesoStatusCard"
+    ],
+    [
+      "WeekRow",
+      "WorkoutPill"
+    ],
+    [
+      "WeekRow",
+      "IntensityBar"
+    ],
+    [
+      "WeightBadge",
+      "icons"
+    ],
+    [
+      "WeightBadge",
+      "BaseBadge"
+    ],
+    [
+      "WorkoutCard",
+      "Card"
+    ],
+    [
+      "WorkoutCard",
+      "ExerciseCard"
+    ],
+    [
+      "WorkoutCard",
+      "MuscleGroupChip"
+    ],
+    [
+      "icons",
+      "SvgIcon"
+    ],
+    [
+      "BrandLockup",
+      "Typography"
+    ],
+    [
+      "BrandLockup",
+      "icons"
+    ],
+    [
+      "DeviceIndicator",
+      "icons"
+    ],
+    [
+      "DeviceMenu",
+      "Typography"
+    ],
+    [
+      "DeviceMenu",
+      "Popover"
+    ],
+    [
+      "DeviceMenu",
+      "DeviceIndicator"
+    ],
+    [
+      "DeviceMenu",
+      "DeviceRow"
+    ],
+    [
+      "DeviceRow",
+      "Indicator"
+    ],
+    [
+      "DeviceRow",
+      "Typography"
+    ],
+    [
+      "NavItem",
+      "Typography"
+    ],
+    [
+      "SessionStatePill",
+      "Indicator"
+    ],
+    [
+      "SessionStatePill",
+      "Typography"
+    ],
+    [
+      "SideNav",
+      "icons"
+    ],
+    [
+      "SideNav",
+      "NavItem"
+    ],
+    [
+      "TopBar",
+      "Divider"
+    ],
+    [
+      "TopBar",
+      "DateTime"
+    ],
+    [
+      "TopBar",
+      "BrandLockup"
+    ],
+    [
+      "TopBar",
+      "SessionStatePill"
+    ],
+    [
+      "TopBar",
+      "DeviceMenu"
+    ],
+    [
+      "TopBar",
+      "DeviceRow"
+    ],
+    [
+      "Badge",
+      "Indicator"
+    ]
+  ],
+  "summary": {
+    "total": 91,
+    "dead": [
+      "Autocomplete",
+      "Avatar",
+      "Breadcrumbs",
+      "Chip",
+      "Collapse",
+      "HelpTip",
+      "IconBox",
+      "Link",
+      "Menu",
+      "Modal",
+      "Pill",
+      "ReadinessCheck",
+      "SideNav",
+      "Skeleton",
+      "Spinner",
+      "Stepper",
+      "Switch",
+      "Tabs",
+      "Toast",
+      "ToolbarButton",
+      "Tooltip",
+      "TopBar",
+      "Treemap"
+    ],
+    "deadByAssociation": [
+      "BodyMap",
+      "BodyMapDetailPanel",
+      "BrandLockup",
+      "DateTime",
+      "DeviceIndicator",
+      "DeviceMenu",
+      "DeviceRow",
+      "Divider",
+      "InputBar",
+      "MesoCard",
+      "MesoProgressBar",
+      "NavItem",
+      "Popover",
+      "RestTimer",
+      "SessionStatePill",
+      "Sparkline",
+      "SupersetWrapper",
+      "SvgIcon"
+    ],
+    "auditedCount": 0,
+    "standardCoverage": [
+      {
+        "name": "Button",
+        "category": "Forms",
+        "status": "present",
+        "have": [
+          "Button"
+        ]
+      },
+      {
+        "name": "IconButton",
+        "category": "Forms",
+        "status": "present-dead",
+        "have": [
+          "IconBox",
+          "ToolbarButton"
+        ]
+      },
+      {
+        "name": "Input",
+        "category": "Forms",
+        "status": "present",
+        "have": [
+          "Input"
+        ]
+      },
+      {
+        "name": "Textarea",
+        "category": "Forms",
+        "status": "missing",
+        "have": []
+      },
+      {
+        "name": "Select",
+        "category": "Forms",
+        "status": "present",
+        "have": [
+          "Select"
+        ]
+      },
+      {
+        "name": "Combobox",
+        "category": "Forms",
+        "status": "present-dead",
+        "have": [
+          "Autocomplete"
+        ]
+      },
+      {
+        "name": "Checkbox",
+        "category": "Forms",
+        "status": "present",
+        "have": [
+          "Checkbox"
+        ]
+      },
+      {
+        "name": "Radio",
+        "category": "Forms",
+        "status": "present",
+        "have": [
+          "Radio"
+        ]
+      },
+      {
+        "name": "Switch",
+        "category": "Forms",
+        "status": "present-dead",
+        "have": [
+          "Switch"
+        ]
+      },
+      {
+        "name": "Slider",
+        "category": "Forms",
+        "status": "missing",
+        "have": []
+      },
+      {
+        "name": "FormField",
+        "category": "Forms",
+        "status": "present",
+        "have": [
+          "FormField"
+        ]
+      },
+      {
+        "name": "DatePicker",
+        "category": "Forms",
+        "status": "present-dead",
+        "have": [
+          "DateTime"
+        ]
+      },
+      {
+        "name": "Tabs",
+        "category": "Navigation",
+        "status": "present-dead",
+        "have": [
+          "Tabs"
+        ]
+      },
+      {
+        "name": "Breadcrumbs",
+        "category": "Navigation",
+        "status": "present-dead",
+        "have": [
+          "Breadcrumbs"
+        ]
+      },
+      {
+        "name": "Menu",
+        "category": "Navigation",
+        "status": "present-dead",
+        "have": [
+          "Menu"
+        ]
+      },
+      {
+        "name": "Link",
+        "category": "Navigation",
+        "status": "present-dead",
+        "have": [
+          "Link"
+        ]
+      },
+      {
+        "name": "Pagination",
+        "category": "Navigation",
+        "status": "missing",
+        "have": []
+      },
+      {
+        "name": "Stepper",
+        "category": "Navigation",
+        "status": "present-dead",
+        "have": [
+          "Stepper"
+        ]
+      },
+      {
+        "name": "Sidebar",
+        "category": "Navigation",
+        "status": "present",
+        "have": [
+          "SideNav",
+          "Sidebar"
+        ]
+      },
+      {
+        "name": "Alert",
+        "category": "Feedback",
+        "status": "present",
+        "have": [
+          "Alert"
+        ]
+      },
+      {
+        "name": "Toast",
+        "category": "Feedback",
+        "status": "present-dead",
+        "have": [
+          "Toast"
+        ]
+      },
+      {
+        "name": "Tooltip",
+        "category": "Feedback",
+        "status": "present-dead",
+        "have": [
+          "Tooltip"
+        ]
+      },
+      {
+        "name": "Popover",
+        "category": "Feedback",
+        "status": "present-dead",
+        "have": [
+          "Popover"
+        ]
+      },
+      {
+        "name": "Modal",
+        "category": "Feedback",
+        "status": "present-dead",
+        "have": [
+          "Modal"
+        ]
+      },
+      {
+        "name": "Drawer",
+        "category": "Feedback",
+        "status": "present",
+        "have": [
+          "Drawer"
+        ]
+      },
+      {
+        "name": "Progress",
+        "category": "Feedback",
+        "status": "present",
+        "have": [
+          "Progress"
+        ]
+      },
+      {
+        "name": "Spinner",
+        "category": "Feedback",
+        "status": "present-dead",
+        "have": [
+          "Spinner"
+        ]
+      },
+      {
+        "name": "Skeleton",
+        "category": "Feedback",
+        "status": "present-dead",
+        "have": [
+          "Skeleton"
+        ]
+      },
+      {
+        "name": "EmptyState",
+        "category": "Feedback",
+        "status": "present",
+        "have": [
+          "EmptyState"
+        ]
+      },
+      {
+        "name": "Card",
+        "category": "Data display",
+        "status": "present",
+        "have": [
+          "Card"
+        ]
+      },
+      {
+        "name": "Badge",
+        "category": "Data display",
+        "status": "present",
+        "have": [
+          "Badge"
+        ]
+      },
+      {
+        "name": "Avatar",
+        "category": "Data display",
+        "status": "present-dead",
+        "have": [
+          "Avatar"
+        ]
+      },
+      {
+        "name": "Table",
+        "category": "Data display",
+        "status": "present",
+        "have": [
+          "Table"
+        ]
+      },
+      {
+        "name": "ListItem",
+        "category": "Data display",
+        "status": "present",
+        "have": [
+          "ListItem"
+        ]
+      },
+      {
+        "name": "Chip",
+        "category": "Data display",
+        "status": "present-dead",
+        "have": [
+          "Chip",
+          "Pill"
+        ]
+      },
+      {
+        "name": "Accordion",
+        "category": "Data display",
+        "status": "present-dead",
+        "have": [
+          "Collapse"
+        ]
+      },
+      {
+        "name": "Tooltip / HelpTip",
+        "category": "Data display",
+        "status": "present-dead",
+        "have": [
+          "HelpTip"
+        ]
+      },
+      {
+        "name": "Typography",
+        "category": "Layout",
+        "status": "present",
+        "have": [
+          "Typography"
+        ]
+      },
+      {
+        "name": "Stack",
+        "category": "Layout",
+        "status": "present",
+        "have": [
+          "Stack"
+        ]
+      },
+      {
+        "name": "Surface",
+        "category": "Layout",
+        "status": "present",
+        "have": [
+          "Surface"
+        ]
+      },
+      {
+        "name": "Divider",
+        "category": "Layout",
+        "status": "present-dead",
+        "have": [
+          "Divider"
+        ]
+      },
+      {
+        "name": "Section",
+        "category": "Layout",
+        "status": "present",
+        "have": [
+          "Section"
+        ]
+      }
+    ],
+    "extractionTop": [
+      {
+        "name": "BodyMapDetailPanel",
+        "tier": "organism",
+        "rawView": 15,
+        "rawText": 15,
+        "inlineStyle": 37,
+        "rawHex": 1,
+        "loc": 478,
+        "score": 105
+      },
+      {
+        "name": "StrengthTrendChart",
+        "tier": "atom",
+        "rawView": 20,
+        "rawText": 12,
+        "inlineStyle": 33,
+        "rawHex": 0,
+        "loc": 630,
+        "score": 98
+      },
+      {
+        "name": "ExerciseDetailPage",
+        "tier": "page",
+        "rawView": 18,
+        "rawText": 13,
+        "inlineStyle": 32,
+        "rawHex": 0,
+        "loc": 639,
+        "score": 95
+      },
+      {
+        "name": "MesoStatusCard",
+        "tier": "molecule",
+        "rawView": 17,
+        "rawText": 11,
+        "inlineStyle": 24,
+        "rawHex": 0,
+        "loc": 466,
+        "score": 76
+      },
+      {
+        "name": "ExerciseCard",
+        "tier": "organism",
+        "rawView": 16,
+        "rawText": 8,
+        "inlineStyle": 18,
+        "rawHex": 0,
+        "loc": 432,
+        "score": 60
+      },
+      {
+        "name": "TempoDisplay",
+        "tier": "molecule",
+        "rawView": 8,
+        "rawText": 8,
+        "inlineStyle": 16,
+        "rawHex": 9,
+        "loc": 316,
+        "score": 57
+      },
+      {
+        "name": "ActiveWorkoutPage",
+        "tier": "page",
+        "rawView": 11,
+        "rawText": 4,
+        "inlineStyle": 15,
+        "rawHex": 0,
+        "loc": 444,
+        "score": 45
+      },
+      {
+        "name": "SetRow",
+        "tier": "organism",
+        "rawView": 8,
+        "rawText": 8,
+        "inlineStyle": 14,
+        "rawHex": 0,
+        "loc": 261,
+        "score": 44
+      },
+      {
+        "name": "ReadinessCheck",
+        "tier": "organism",
+        "rawView": 7,
+        "rawText": 7,
+        "inlineStyle": 14,
+        "rawHex": 1,
+        "loc": 271,
+        "score": 43
+      },
+      {
+        "name": "Scatter",
+        "tier": "atom",
+        "rawView": 8,
+        "rawText": 5,
+        "inlineStyle": 14,
+        "rawHex": 1,
+        "loc": 259,
+        "score": 42
+      },
+      {
+        "name": "TrainingStatusPage",
+        "tier": "page",
+        "rawView": 10,
+        "rawText": 4,
+        "inlineStyle": 14,
+        "rawHex": 0,
+        "loc": 313,
+        "score": 42
+      },
+      {
+        "name": "CapacityBandChart",
+        "tier": "atom",
+        "rawView": 9,
+        "rawText": 4,
+        "inlineStyle": 12,
+        "rawHex": 1,
+        "loc": 496,
+        "score": 38
+      },
+      {
+        "name": "RestTimer",
+        "tier": "atom",
+        "rawView": 6,
+        "rawText": 5,
+        "inlineStyle": 13,
+        "rawHex": 0,
+        "loc": 184,
+        "score": 37
+      },
+      {
+        "name": "Table",
+        "tier": "atom",
+        "rawView": 21,
+        "rawText": 12,
+        "inlineStyle": 1,
+        "rawHex": 0,
+        "loc": 713,
+        "score": 35
+      },
+      {
+        "name": "TempoBar",
+        "tier": "atom",
+        "rawView": 9,
+        "rawText": 3,
+        "inlineStyle": 11,
+        "rawHex": 1,
+        "loc": 216,
+        "score": 35
+      }
+    ],
+    "substitution": {
+      "library(titan)": {
+        "Text": 68,
+        "View": 84,
+        "TouchableOpacity": 0,
+        "Pressable": 50,
+        "TextInput": 3,
+        "ActivityIndicator": 2,
+        "Switch": 0,
+        "Modal": 3
+      },
+      "mobile": {
+        "Text": 92,
+        "View": 91,
+        "TouchableOpacity": 34,
+        "Pressable": 9,
+        "TextInput": 3,
+        "ActivityIndicator": 7,
+        "Switch": 3,
+        "Modal": 5
+      },
+      "mcp": {
+        "Text": 0,
+        "View": 0,
+        "TouchableOpacity": 0,
+        "Pressable": 0,
+        "TextInput": 0,
+        "ActivityIndicator": 0,
+        "Switch": 0,
+        "Modal": 0
+      },
+      "dash": {
+        "Text": 12,
+        "View": 12,
+        "TouchableOpacity": 0,
+        "Pressable": 10,
+        "TextInput": 1,
+        "ActivityIndicator": 0,
+        "Switch": 0,
+        "Modal": 0
+      }
+    },
+    "consumers": [
+      {
+        "name": "mobile",
+        "present": true
+      },
+      {
+        "name": "mcp",
+        "present": true
+      },
+      {
+        "name": "dash",
+        "present": true
+      }
+    ]
+  }
+}
