@@ -10,15 +10,15 @@ component is pure import churn with no file moves.
 **Atoms** — single-purpose, no cross-component state:
 BaseBadge · WeightBadge · PrBadge · StatusDot · PlaceholderStrip · TempoBar ·
 DeviationBar · IntensityBar · WorkoutPill · MuscleGroupChip · Sparkline ·
-SupersetWrapper · InputBar
+SupersetWrapper · InputBar · MetricCell · SetsRepsLoad · ExerciseIndicator
 
 **Molecules** — compose atoms, own a little local state:
 VelocityStrip · SetRow · TempoDisplay · RestTimer · MesoProgressBar · WeekRow ·
-WorkoutCard
+WorkoutCard · SetStrip
 
 **Organisms** — full features, often with their own data contract:
-ExerciseCard · MesoCard · MesoStatusCard · PrHistoryModal · ReadinessCheck ·
-StrengthTrendChart · CapacityBandChart · BodyMap · BodyMapDetailPanel
+ExerciseCard · SessionRail · MesoCard · MesoStatusCard · PrHistoryModal ·
+ReadinessCheck · StrengthTrendChart · CapacityBandChart · BodyMap · BodyMapDetailPanel
 
 **Pages** — phone-shaped reference screens (whole-screen compositions):
 ActiveWorkoutPage · ExerciseDetailPage · ProgramPlanningPage · TrainingStatusPage
@@ -44,6 +44,18 @@ type props without pulling the dependency.
 - **BaseBadge is an internal composition primitive** — the shared shell that
   WeightBadge and PrBadge build on. It is exempt from orphan accounting; it is not
   meant to be consumed directly even though it is exported for composition.
+- **MetricCell is an internal composition primitive** — the shared Inter · 600 ·
+  letter-spacing-1 value/separator cell. `TempoDisplay` (tempo digits) and
+  `SetsRepsLoad` (sets × reps @ load) both compose it so the two read as one
+  visual language. Exported for composition, not for direct app use.
+- **S3 session-rail family** — `SessionRail` (organism) composes `ExerciseCard`
+  `state="rail"`, which in turn composes `SetsRepsLoad` + real `TempoDisplay`
+  (`showLabel={false}`) + `ExerciseIndicator` + `SetStrip`. `SetStrip` colors are
+  the real titan ramp pins (`primitiveRamps` red-600 / orange-400 / amber-300 /
+  green-300); the rail surfaces bind to the charcoal ramp + a subtle neumorphic
+  inset (`neumorphicShadows.charcoal.pressed.subtle`). The heading design is locked
+  in `coordination/.../S3-sessionrail/DECISIONS-ExerciseRow.md`; the exploration
+  specimens live under `Custom/Workout/Explorations/*` (do not repoint yet).
 - Badge icons (WeightBadge's dumbbell, PrBadge / PrHistoryModal's star) are inline
   SVGs (`./icons.tsx`), not `lucide-react` — that dependency was dropped in 0.5.0
   to keep the root barrel light. The SVG paths mirror lucide's glyphs so rendering

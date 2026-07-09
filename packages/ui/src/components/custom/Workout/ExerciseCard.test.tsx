@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ExerciseCard } from './ExerciseCard'
 import type { SetRowProps } from './SetRow'
+import type { SetStripSet } from './SetStrip'
 
 const baseCollapsedProps = {
   name: 'Bench Press',
@@ -272,6 +273,82 @@ describe('ExerciseCard', () => {
         borderBottomLeftRadius: '8px',
         borderBottomRightRadius: '8px',
       })
+    })
+  })
+
+  describe('rail state', () => {
+    const railSetStates: SetStripSet[] = [
+      { status: 'done', velocities: [1, 0.9] },
+      { status: 'active', velocities: [0.6], planned: 8 },
+    ]
+    const railProps = {
+      name: 'Seated Cable Row',
+      state: 'rail' as const,
+      onToggle: vi.fn(),
+      summary: { sets: 5, reps: 8, weight: 145, unit: 'lbs' as const },
+      tempo: [3, 1, 2, 0] as [number, number, number, number],
+      indicator: 'pr' as const,
+      setStates: railSetStates,
+    }
+
+    it('renders the exercise name on its own row', () => {
+      render(<ExerciseCard {...railProps} />)
+      expect(screen.getByTestId('exercise-card-name')).toHaveTextContent('Seated Cable Row')
+    })
+
+    it('renders the sets/reps/load line', () => {
+      render(<ExerciseCard {...railProps} />)
+      const summary = screen.getByTestId('exercise-card-summary')
+      expect(summary).toHaveTextContent('5')
+      expect(summary).toHaveTextContent('8')
+      expect(summary).toHaveTextContent('145')
+      expect(summary).toHaveTextContent('×')
+      expect(summary).toHaveTextContent('@')
+    })
+
+    it('renders the TempoDisplay without its TEMPO caption', () => {
+      render(<ExerciseCard {...railProps} />)
+      expect(screen.getByTestId('tempo-display')).toBeInTheDocument()
+      expect(screen.queryByText('TEMPO')).not.toBeInTheDocument()
+    })
+
+    it('renders the indicator chip when provided', () => {
+      render(<ExerciseCard {...railProps} />)
+      expect(screen.getByLabelText('Personal record')).toBeInTheDocument()
+    })
+
+    it('omits the indicator chip when absent', () => {
+      render(<ExerciseCard {...railProps} indicator={undefined} />)
+      expect(screen.queryByTestId('exercise-indicator')).not.toBeInTheDocument()
+    })
+
+    it('renders the per-set strip', () => {
+      render(<ExerciseCard {...railProps} />)
+      expect(screen.getByTestId('exercise-card-strip')).toBeInTheDocument()
+      expect(screen.getByTestId('set-strip')).toBeInTheDocument()
+    })
+
+    it('fires onToggle when the row is pressed', () => {
+      const onToggle = vi.fn()
+      render(<ExerciseCard {...railProps} onToggle={onToggle} />)
+      fireEvent.click(screen.getByTestId('exercise-card-header'))
+      expect(onToggle).toHaveBeenCalledOnce()
+    })
+
+    it('dims the row when marked upcoming', () => {
+      render(<ExerciseCard {...railProps} dimmed />)
+      expect(screen.getByTestId('exercise-card')).toHaveStyle({ opacity: 0.55 })
+    })
+
+    it('is full opacity by default', () => {
+      render(<ExerciseCard {...railProps} />)
+      expect(screen.getByTestId('exercise-card')).toHaveStyle({ opacity: 1 })
+    })
+
+    it('has no accessibility violations', async () => {
+      const { container } = render(<ExerciseCard {...railProps} />)
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
     })
   })
 
