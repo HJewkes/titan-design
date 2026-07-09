@@ -207,6 +207,20 @@ function Diagram({
                 strokeWidth={isSel ? 2 : c.verdict === 'dead' ? 1.6 : 1}
               />
               <rect width={4} height={NODE_H} rx={2} fill={verdictColor(c.verdict)} />
+              {c.deadByAssociation && (
+                <rect
+                  width={NODE_W}
+                  height={NODE_H}
+                  rx={5}
+                  fill="none"
+                  stroke={C['status-warning']}
+                  strokeWidth={1}
+                  strokeDasharray="3 3"
+                />
+              )}
+              {c.audited === 'audited' && (
+                <circle cx={NODE_W - 30} cy={NODE_H / 2} r={3} fill={C['status-success']} />
+              )}
               <text
                 x={11}
                 y={NODE_H / 2 + 4}
@@ -329,6 +343,15 @@ function DetailPanel({
         <span style={{ fontFamily: 'monospace', fontSize: 12, color: C['text-tertiary'] }}>
           lib {comp.libDependents} · story {comp.storyRefs} · app {comp.xproj.total}
         </span>
+        {comp.standard && <Chip color={C['brand-secondary']}>standard</Chip>}
+        <Chip color={comp.audited === 'audited' ? C['status-success'] : C['text-tertiary']}>
+          {comp.audited === 'audited'
+            ? 'audited'
+            : comp.audited === 'reviewing'
+              ? 'reviewing'
+              : 'unaudited'}
+        </Chip>
+        {comp.deadByAssociation && <Chip color={C['status-warning']}>⚠ only dead consumers</Chip>}
         <div style={{ flex: 1 }} />
         <button
           onClick={() => onOpenRender(comp.name)}
@@ -517,39 +540,91 @@ function Td({
 
 function DeadTable() {
   const dead = graph.components.filter(
-    (c) => c.verdict === 'dead' || c.verdict === 'remove' || c.verdict === 'demo-only'
+    (c) =>
+      c.verdict === 'dead' ||
+      c.verdict === 'remove' ||
+      c.verdict === 'demo-only' ||
+      c.deadByAssociation
   )
+  const label = (c: Comp) =>
+    c.deadByAssociation && c.verdict.startsWith('keep')
+      ? { text: 'Only dead consumers', color: C['status-warning'] }
+      : { text: VERDICT[c.verdict]?.label ?? c.verdict, color: verdictColor(c.verdict) }
   return (
     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
       <thead>
         <tr>
           <Th>Component</Th>
           <Th>Tier</Th>
-          <Th>Verdict</Th>
+          <Th>Status</Th>
           <Th right>lib</Th>
           <Th right>story</Th>
           <Th right>app</Th>
         </tr>
       </thead>
       <tbody>
-        {dead.map((c) => (
-          <tr key={c.name}>
-            <Td>{c.name}</Td>
-            <Td>{c.tier}</Td>
-            <Td>
-              <Chip color={verdictColor(c.verdict)}>{VERDICT[c.verdict]?.label ?? c.verdict}</Chip>
-            </Td>
-            <Td right mono>
-              {c.libDependents}
-            </Td>
-            <Td right mono>
-              {c.storyRefs}
-            </Td>
-            <Td right mono>
-              {c.xproj.total}
-            </Td>
-          </tr>
-        ))}
+        {dead.map((c) => {
+          const l = label(c)
+          return (
+            <tr key={c.name}>
+              <Td>{c.name}</Td>
+              <Td>{c.tier}</Td>
+              <Td>
+                <Chip color={l.color}>{l.text}</Chip>
+              </Td>
+              <Td right mono>
+                {c.libDependents}
+              </Td>
+              <Td right mono>
+                {c.storyRefs}
+              </Td>
+              <Td right mono>
+                {c.xproj.total}
+              </Td>
+            </tr>
+          )
+        })}
+      </tbody>
+    </table>
+  )
+}
+
+function StandardCoverageTable() {
+  const cov = graph.summary.standardCoverage
+  const cats = [...new Set(cov.map((s) => s.category))]
+  const statusChip: Record<string, { label: string; color: string }> = {
+    present: { label: 'present', color: C['status-success'] },
+    'present-dead': { label: 'present but dead', color: C['status-warning'] },
+    missing: { label: 'missing', color: C['status-error-vivid'] },
+  }
+  return (
+    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <thead>
+        <tr>
+          <Th>Category</Th>
+          <Th>Standard component</Th>
+          <Th>Status</Th>
+          <Th>Our component</Th>
+        </tr>
+      </thead>
+      <tbody>
+        {cats.flatMap((cat) =>
+          cov
+            .filter((s) => s.category === cat)
+            .map((s) => {
+              const sc = statusChip[s.status]
+              return (
+                <tr key={cat + s.name}>
+                  <Td>{s.category}</Td>
+                  <Td>{s.name}</Td>
+                  <Td>
+                    <Chip color={sc.color}>{sc.label}</Chip>
+                  </Td>
+                  <Td mono>{s.have.length ? s.have.join(', ') : '—'}</Td>
+                </tr>
+              )
+            })
+        )}
       </tbody>
     </table>
   )
@@ -679,6 +754,12 @@ function ArchitecturePage() {
   const dead = graph.components.filter((c) => c.verdict === 'dead').length
   const libLeak = graph.summary.substitution['library(titan)']
   const leakText = (libLeak?.Text ?? 0) + (libLeak?.View ?? 0)
+  const standardDead = graph.summary.standardCoverage.filter(
+    (s) => s.status === 'present-dead'
+  ).length
+  const standardMissing = graph.summary.standardCoverage.filter(
+    (s) => s.status === 'missing'
+  ).length
   const sel = selected ? byName[selected] : null
 
   return (
@@ -705,6 +786,15 @@ function ArchitecturePage() {
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 8 }}>
         <Chip color={C['text-secondary']}>{graph.components.length} components</Chip>
         <Chip color={C['status-error-vivid']}>{dead} dead everywhere</Chip>
+        <Chip color={C['status-warning']}>
+          {graph.summary.deadByAssociation.length} dead-by-association
+        </Chip>
+        <Chip color={C['status-info']}>
+          {graph.summary.auditedCount}/{graph.components.length} audited
+        </Chip>
+        <Chip color={C['brand-secondary']}>
+          {standardDead} standard dead · {standardMissing} missing
+        </Chip>
         <Chip color={C['status-warning']}>{leakText} raw Text/View leaks in-library</Chip>
         {graph.summary.consumers.map((c) => (
           <Chip key={c.name} color={c.present ? C['status-success'] : C['text-tertiary']}>
@@ -716,7 +806,7 @@ function ArchitecturePage() {
 
       <Section
         title="Dependency diagram"
-        subtitle="Columns by composition depth (leaves = atoms). Hover to trace, click a node to pin it, or press ↗ on any node to render the component live. Border color = verdict."
+        subtitle="Columns by composition depth (leaves = atoms). Hover to trace, click a node to pin it, or press ↗ on any node to render the component live. Border color = verdict; dashed outline = only dead consumers."
       >
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 10 }}>
           {Object.entries(VERDICT).map(([k, v]) => (
@@ -732,8 +822,15 @@ function ArchitecturePage() {
       </Section>
 
       <Section
+        title="Standard component coverage"
+        subtitle="The canonical set a design system is expected to provide (curated in annotations.json), cross-referenced against what we ship. 'present but dead' = we built it but nothing uses it."
+      >
+        <StandardCoverageTable />
+      </Section>
+
+      <Section
         title="Dead & unshipped"
-        subtitle="Zero production dependents in the library AND zero imports across all consuming apps — only their own story references them."
+        subtitle="Zero production dependents in the library AND zero imports across all apps (dead everywhere), or kept alive only by other dead components (only dead consumers). Dashed warning outline in the diagram."
       >
         <DeadTable />
       </Section>

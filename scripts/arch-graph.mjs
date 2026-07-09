@@ -265,6 +265,69 @@ function verdict(c) {
 }
 comps = comps.map((c) => ({ ...c, tier: tierOf(c), verdict: verdict(c) }));
 
+// ---- 6b. transitive death: components whose only consumers are (transitively)
+// dead. A component with no app usage and ≥1 in-library consumer, all of which
+// are dead/removed/unshipped or themselves dead-by-association, is effectively
+// dead too — kept alive only by dead code. Computed as a fixpoint.
+const usedByNames = {};
+for (const [a, b] of edges) (usedByNames[b] ||= new Set()).add(a);
+const compByName = Object.fromEntries(comps.map((c) => [c.name, c]));
+const deadSeed = new Set(
+  comps
+    .filter((c) => ["dead", "remove", "demo-only"].includes(c.verdict))
+    .map((c) => c.name),
+);
+const assoc = new Set();
+for (let changed = true; changed; ) {
+  changed = false;
+  for (const c of comps) {
+    if (deadSeed.has(c.name) || assoc.has(c.name)) continue;
+    if (c.xproj.total > 0) continue; // a real app consumes it — not dead
+    const consumers = [...(usedByNames[c.name] ?? [])].filter(
+      (n) => compByName[n],
+    );
+    if (consumers.length === 0) continue; // no in-library consumers → already 'dead' verdict
+    if (consumers.every((n) => deadSeed.has(n) || assoc.has(n))) {
+      assoc.add(c.name);
+      changed = true;
+    }
+  }
+}
+comps = comps.map((c) => ({ ...c, deadByAssociation: assoc.has(c.name) }));
+
+// ---- 6c. curated annotations (audit status + standard-component checklist) ---
+// Hand-maintained in annotations.json; merged in, never overwritten.
+const annPath = path.join(ROOT, "packages/ui/src/arch/annotations.json");
+const ann = fs.existsSync(annPath)
+  ? JSON.parse(fs.readFileSync(annPath, "utf8"))
+  : { audited: {}, standard: [] };
+const auditOf = (name) => ann.audited?.[name] ?? "unaudited";
+const standardNames = new Set();
+for (const s of ann.standard ?? [])
+  for (const a of s.aliases ?? []) standardNames.add(a);
+comps = comps.map((c) => ({
+  ...c,
+  audited: auditOf(c.name),
+  standard: standardNames.has(c.name),
+}));
+
+// coverage: for each canonical entry, is it present / present-but-dead / missing?
+const liveNames = new Set(
+  comps
+    .filter(
+      (c) => c.xproj.total > 0 || (c.libDependents > 0 && !c.deadByAssociation),
+    )
+    .map((c) => c.name),
+);
+const existingNames = new Set(comps.map((c) => c.name));
+const standardCoverage = (ann.standard ?? []).map((s) => {
+  const have = (s.aliases ?? []).filter((a) => existingNames.has(a));
+  const live = have.filter((a) => liveNames.has(a));
+  const status =
+    have.length === 0 ? "missing" : live.length ? "present" : "present-dead";
+  return { name: s.name, category: s.category, status, have };
+});
+
 // ---- 7. emit ----------------------------------------------------------------
 const summary = {
   total: comps.length,
@@ -272,6 +335,12 @@ const summary = {
     .filter((c) => c.verdict === "dead")
     .map((c) => c.name)
     .sort(),
+  deadByAssociation: comps
+    .filter((c) => c.deadByAssociation)
+    .map((c) => c.name)
+    .sort(),
+  auditedCount: comps.filter((c) => c.audited === "audited").length,
+  standardCoverage,
   extractionTop: [...comps]
     .sort((a, b) => b.leak.score - a.leak.score)
     .slice(0, 15)

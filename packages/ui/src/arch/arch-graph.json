@@ -48,7 +48,10 @@
         "score": 45
       },
       "tier": "page",
-      "verdict": "demo-only"
+      "verdict": "demo-only",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Alert",
@@ -82,7 +85,10 @@
         "score": 7
       },
       "tier": "atom",
-      "verdict": "keep-app"
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "Autocomplete",
@@ -112,7 +118,10 @@
         "score": 15
       },
       "tier": "atom",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "Avatar",
@@ -145,7 +154,10 @@
         "score": 8
       },
       "tier": "atom",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "Badge",
@@ -180,7 +192,10 @@
         "score": 3
       },
       "tier": "molecule",
-      "verdict": "keep-core"
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "BaseBadge",
@@ -213,7 +228,10 @@
         "score": 8
       },
       "tier": "atom",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "BodyMap",
@@ -246,7 +264,10 @@
         "score": 23
       },
       "tier": "atom",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "BodyMapDetailPanel",
@@ -281,7 +302,10 @@
         "score": 105
       },
       "tier": "organism",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "BrandLockup",
@@ -312,7 +336,10 @@
         "score": 2
       },
       "tier": "organism",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Breadcrumbs",
@@ -342,7 +369,10 @@
         "score": 6
       },
       "tier": "atom",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "Button",
@@ -379,7 +409,10 @@
         "score": 10
       },
       "tier": "atom",
-      "verdict": "keep-core"
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "CapacityBandChart",
@@ -421,7 +454,10 @@
         "score": 38
       },
       "tier": "atom",
-      "verdict": "keep-core"
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Card",
@@ -465,7 +501,10 @@
         "score": 18
       },
       "tier": "atom",
-      "verdict": "keep-core"
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "Checkbox",
@@ -497,7 +536,10 @@
         "score": 10
       },
       "tier": "atom",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "Chip",
@@ -528,7 +570,10 @@
         "score": 4
       },
       "tier": "atom",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "Collapse",
@@ -570,7 +615,10 @@
         "score": 10
       },
       "tier": "atom",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "DataRow",
@@ -598,7 +646,10 @@
         "score": 4
       },
       "tier": "atom",
-      "verdict": "keep-app"
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "DateTime",
@@ -632,7 +683,10 @@
         "score": 1
       },
       "tier": "molecule",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "DeviationBar",
@@ -662,7 +716,10 @@
         "score": 11
       },
       "tier": "atom",
-      "verdict": "keep-core"
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "DeviceIndicator",
@@ -694,7 +751,10 @@
         "score": 0
       },
       "tier": "organism",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "DeviceMenu",
@@ -728,7 +788,10 @@
         "score": 1
       },
       "tier": "organism",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "DeviceRow",
@@ -762,7 +825,10 @@
         "score": 0
       },
       "tier": "molecule",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Divider",
@@ -791,7 +857,10 @@
         "score": 1
       },
       "tier": "atom",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "Drawer",
@@ -829,7 +898,10 @@
         "score": 10
       },
       "tier": "atom",
-      "verdict": "keep-core"
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "EmptyState",
@@ -857,7 +929,10 @@
         "score": 5
       },
       "tier": "atom",
-      "verdict": "keep-app"
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "ExerciseCard",
@@ -898,7 +973,10 @@
         "score": 60
       },
       "tier": "organism",
-      "verdict": "keep-core"
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "ExerciseDetailPage",
@@ -945,7 +1023,10 @@
         "score": 95
       },
       "tier": "page",
-      "verdict": "demo-only"
+      "verdict": "demo-only",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "FormField",
@@ -979,7 +1060,10 @@
         "score": 15
       },
       "tier": "atom",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "Gauge",
@@ -1013,7 +1097,10 @@
         "score": 15
       },
       "tier": "atom",
-      "verdict": "keep-app"
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "HelpTip",
@@ -1050,7 +1137,10 @@
         "score": 12
       },
       "tier": "atom",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "IconBox",
@@ -1078,7 +1168,10 @@
         "score": 1
       },
       "tier": "atom",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "icons",
@@ -1105,7 +1198,10 @@
         "score": 0
       },
       "tier": "molecule",
-      "verdict": "remove"
+      "verdict": "remove",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "icons",
@@ -1141,7 +1237,10 @@
         "score": 0
       },
       "tier": "molecule",
-      "verdict": "remove"
+      "verdict": "remove",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Indicator",
@@ -1172,7 +1271,10 @@
         "score": 4
       },
       "tier": "atom",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Input",
@@ -1210,7 +1312,10 @@
         "score": 16
       },
       "tier": "atom",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "InputBar",
@@ -1238,7 +1343,10 @@
         "score": 29
       },
       "tier": "atom",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "IntensityBar",
@@ -1270,7 +1378,10 @@
         "score": 18
       },
       "tier": "atom",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Link",
@@ -1301,7 +1412,10 @@
         "score": 1
       },
       "tier": "atom",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "ListItem",
@@ -1338,7 +1452,10 @@
         "score": 6
       },
       "tier": "atom",
-      "verdict": "keep-app"
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "Menu",
@@ -1378,7 +1495,10 @@
         "score": 9
       },
       "tier": "atom",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "MesoCard",
@@ -1412,7 +1532,10 @@
         "score": 29
       },
       "tier": "organism",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "MesoProgressBar",
@@ -1445,7 +1568,10 @@
         "score": 8
       },
       "tier": "atom",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "MesoStatusCard",
@@ -1485,7 +1611,10 @@
         "score": 76
       },
       "tier": "molecule",
-      "verdict": "keep-core"
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Metric",
@@ -1516,7 +1645,10 @@
         "score": 9
       },
       "tier": "atom",
-      "verdict": "keep-app"
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Modal",
@@ -1560,7 +1692,10 @@
         "score": 7
       },
       "tier": "atom",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "MuscleGroupChip",
@@ -1589,7 +1724,10 @@
         "score": 11
       },
       "tier": "atom",
-      "verdict": "keep-core"
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "NavItem",
@@ -1620,7 +1758,10 @@
         "score": 2
       },
       "tier": "molecule",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Pill",
@@ -1651,7 +1792,10 @@
         "score": 2
       },
       "tier": "atom",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "PlaceholderStrip",
@@ -1680,7 +1824,10 @@
         "score": 5
       },
       "tier": "atom",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Popover",
@@ -1716,7 +1863,10 @@
         "score": 7
       },
       "tier": "atom",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "PrBadge",
@@ -1748,7 +1898,10 @@
         "score": 6
       },
       "tier": "organism",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "PrHistoryModal",
@@ -1783,7 +1936,10 @@
         "score": 32
       },
       "tier": "organism",
-      "verdict": "keep-app"
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "ProgramPlanningPage",
@@ -1835,7 +1991,10 @@
         "score": 34
       },
       "tier": "page",
-      "verdict": "demo-only"
+      "verdict": "demo-only",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Progress",
@@ -1871,7 +2030,10 @@
         "score": 27
       },
       "tier": "atom",
-      "verdict": "keep-app"
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "Radio",
@@ -1904,7 +2066,10 @@
         "score": 6
       },
       "tier": "atom",
-      "verdict": "keep-core"
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "ReadinessCheck",
@@ -1941,7 +2106,10 @@
         "score": 43
       },
       "tier": "organism",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "RestTimer",
@@ -1969,7 +2137,10 @@
         "score": 37
       },
       "tier": "atom",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Scatter",
@@ -2005,7 +2176,10 @@
         "score": 42
       },
       "tier": "atom",
-      "verdict": "keep-app"
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Section",
@@ -2037,7 +2211,10 @@
         "score": 7
       },
       "tier": "atom",
-      "verdict": "keep-app"
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "Select",
@@ -2070,7 +2247,10 @@
         "score": 11
       },
       "tier": "atom",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "SessionStatePill",
@@ -2102,7 +2282,10 @@
         "score": 1
       },
       "tier": "molecule",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "SetRow",
@@ -2135,7 +2318,10 @@
         "score": 44
       },
       "tier": "organism",
-      "verdict": "keep-core"
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Sidebar",
@@ -2177,7 +2363,10 @@
         "score": 12
       },
       "tier": "atom",
-      "verdict": "keep-app"
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "SideNav",
@@ -2210,7 +2399,10 @@
         "score": 1
       },
       "tier": "organism",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "Skeleton",
@@ -2248,7 +2440,10 @@
         "score": 8
       },
       "tier": "atom",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "Sparkline",
@@ -2278,7 +2473,10 @@
         "score": 16
       },
       "tier": "atom",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Spinner",
@@ -2308,7 +2506,10 @@
         "score": 3
       },
       "tier": "atom",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "Stack",
@@ -2338,7 +2539,10 @@
         "score": 1
       },
       "tier": "atom",
-      "verdict": "keep-app"
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "StatusDot",
@@ -2368,7 +2572,10 @@
         "score": 19
       },
       "tier": "atom",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Stepper",
@@ -2407,7 +2614,10 @@
         "score": 8
       },
       "tier": "atom",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "StrengthTrendChart",
@@ -2444,7 +2654,10 @@
         "score": 98
       },
       "tier": "atom",
-      "verdict": "keep-core"
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "SupersetWrapper",
@@ -2472,7 +2685,10 @@
         "score": 10
       },
       "tier": "atom",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Surface",
@@ -2500,7 +2716,10 @@
         "score": 1
       },
       "tier": "atom",
-      "verdict": "keep-app"
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "SvgIcon",
@@ -2529,7 +2748,10 @@
         "score": 0
       },
       "tier": "atom",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Switch",
@@ -2559,7 +2781,10 @@
         "score": 4
       },
       "tier": "atom",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "Table",
@@ -2612,7 +2837,10 @@
         "score": 35
       },
       "tier": "atom",
-      "verdict": "keep-app"
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "Tabs",
@@ -2652,7 +2880,10 @@
         "score": 5
       },
       "tier": "atom",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "TempoBar",
@@ -2686,7 +2917,10 @@
         "score": 35
       },
       "tier": "atom",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "TempoDisplay",
@@ -2720,7 +2954,10 @@
         "score": 57
       },
       "tier": "molecule",
-      "verdict": "keep-core"
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Toast",
@@ -2754,7 +2991,10 @@
         "score": 17
       },
       "tier": "atom",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "ToolbarButton",
@@ -2790,7 +3030,10 @@
         "score": 10
       },
       "tier": "atom",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "Tooltip",
@@ -2822,7 +3065,10 @@
         "score": 11
       },
       "tier": "atom",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "TopBar",
@@ -2858,7 +3104,10 @@
         "score": 2
       },
       "tier": "organism",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "TrainingStatusPage",
@@ -2894,7 +3143,10 @@
         "score": 42
       },
       "tier": "page",
-      "verdict": "demo-only"
+      "verdict": "demo-only",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Treemap",
@@ -2927,7 +3179,10 @@
         "score": 8
       },
       "tier": "atom",
-      "verdict": "dead"
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Typography",
@@ -2969,7 +3224,10 @@
         "score": 1
       },
       "tier": "atom",
-      "verdict": "keep-core"
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
     },
     {
       "name": "VelocityStrip",
@@ -3009,7 +3267,10 @@
         "score": 26
       },
       "tier": "atom",
-      "verdict": "keep-core"
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "WeekRow",
@@ -3041,7 +3302,10 @@
         "score": 14
       },
       "tier": "molecule",
-      "verdict": "keep-core"
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "WeightBadge",
@@ -3074,7 +3338,10 @@
         "score": 10
       },
       "tier": "organism",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "WorkoutCard",
@@ -3110,7 +3377,10 @@
         "score": 21
       },
       "tier": "organism",
-      "verdict": "keep-core"
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "WorkoutPill",
@@ -3140,7 +3410,10 @@
         "score": 13
       },
       "tier": "atom",
-      "verdict": "keep-internal"
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     }
   ],
   "edges": [
@@ -3459,6 +3732,362 @@
       "Tooltip",
       "TopBar",
       "Treemap"
+    ],
+    "deadByAssociation": [
+      "BodyMap",
+      "BodyMapDetailPanel",
+      "BrandLockup",
+      "DateTime",
+      "DeviceIndicator",
+      "DeviceMenu",
+      "DeviceRow",
+      "Divider",
+      "InputBar",
+      "MesoCard",
+      "MesoProgressBar",
+      "NavItem",
+      "Popover",
+      "RestTimer",
+      "SessionStatePill",
+      "Sparkline",
+      "SupersetWrapper",
+      "SvgIcon"
+    ],
+    "auditedCount": 0,
+    "standardCoverage": [
+      {
+        "name": "Button",
+        "category": "Forms",
+        "status": "present",
+        "have": [
+          "Button"
+        ]
+      },
+      {
+        "name": "IconButton",
+        "category": "Forms",
+        "status": "present-dead",
+        "have": [
+          "IconBox",
+          "ToolbarButton"
+        ]
+      },
+      {
+        "name": "Input",
+        "category": "Forms",
+        "status": "present",
+        "have": [
+          "Input"
+        ]
+      },
+      {
+        "name": "Textarea",
+        "category": "Forms",
+        "status": "missing",
+        "have": []
+      },
+      {
+        "name": "Select",
+        "category": "Forms",
+        "status": "present",
+        "have": [
+          "Select"
+        ]
+      },
+      {
+        "name": "Combobox",
+        "category": "Forms",
+        "status": "present-dead",
+        "have": [
+          "Autocomplete"
+        ]
+      },
+      {
+        "name": "Checkbox",
+        "category": "Forms",
+        "status": "present",
+        "have": [
+          "Checkbox"
+        ]
+      },
+      {
+        "name": "Radio",
+        "category": "Forms",
+        "status": "present",
+        "have": [
+          "Radio"
+        ]
+      },
+      {
+        "name": "Switch",
+        "category": "Forms",
+        "status": "present-dead",
+        "have": [
+          "Switch"
+        ]
+      },
+      {
+        "name": "Slider",
+        "category": "Forms",
+        "status": "missing",
+        "have": []
+      },
+      {
+        "name": "FormField",
+        "category": "Forms",
+        "status": "present",
+        "have": [
+          "FormField"
+        ]
+      },
+      {
+        "name": "DatePicker",
+        "category": "Forms",
+        "status": "present-dead",
+        "have": [
+          "DateTime"
+        ]
+      },
+      {
+        "name": "Tabs",
+        "category": "Navigation",
+        "status": "present-dead",
+        "have": [
+          "Tabs"
+        ]
+      },
+      {
+        "name": "Breadcrumbs",
+        "category": "Navigation",
+        "status": "present-dead",
+        "have": [
+          "Breadcrumbs"
+        ]
+      },
+      {
+        "name": "Menu",
+        "category": "Navigation",
+        "status": "present-dead",
+        "have": [
+          "Menu"
+        ]
+      },
+      {
+        "name": "Link",
+        "category": "Navigation",
+        "status": "present-dead",
+        "have": [
+          "Link"
+        ]
+      },
+      {
+        "name": "Pagination",
+        "category": "Navigation",
+        "status": "missing",
+        "have": []
+      },
+      {
+        "name": "Stepper",
+        "category": "Navigation",
+        "status": "present-dead",
+        "have": [
+          "Stepper"
+        ]
+      },
+      {
+        "name": "Sidebar",
+        "category": "Navigation",
+        "status": "present",
+        "have": [
+          "SideNav",
+          "Sidebar"
+        ]
+      },
+      {
+        "name": "Alert",
+        "category": "Feedback",
+        "status": "present",
+        "have": [
+          "Alert"
+        ]
+      },
+      {
+        "name": "Toast",
+        "category": "Feedback",
+        "status": "present-dead",
+        "have": [
+          "Toast"
+        ]
+      },
+      {
+        "name": "Tooltip",
+        "category": "Feedback",
+        "status": "present-dead",
+        "have": [
+          "Tooltip"
+        ]
+      },
+      {
+        "name": "Popover",
+        "category": "Feedback",
+        "status": "present-dead",
+        "have": [
+          "Popover"
+        ]
+      },
+      {
+        "name": "Modal",
+        "category": "Feedback",
+        "status": "present-dead",
+        "have": [
+          "Modal"
+        ]
+      },
+      {
+        "name": "Drawer",
+        "category": "Feedback",
+        "status": "present",
+        "have": [
+          "Drawer"
+        ]
+      },
+      {
+        "name": "Progress",
+        "category": "Feedback",
+        "status": "present",
+        "have": [
+          "Progress"
+        ]
+      },
+      {
+        "name": "Spinner",
+        "category": "Feedback",
+        "status": "present-dead",
+        "have": [
+          "Spinner"
+        ]
+      },
+      {
+        "name": "Skeleton",
+        "category": "Feedback",
+        "status": "present-dead",
+        "have": [
+          "Skeleton"
+        ]
+      },
+      {
+        "name": "EmptyState",
+        "category": "Feedback",
+        "status": "present",
+        "have": [
+          "EmptyState"
+        ]
+      },
+      {
+        "name": "Card",
+        "category": "Data display",
+        "status": "present",
+        "have": [
+          "Card"
+        ]
+      },
+      {
+        "name": "Badge",
+        "category": "Data display",
+        "status": "present",
+        "have": [
+          "Badge"
+        ]
+      },
+      {
+        "name": "Avatar",
+        "category": "Data display",
+        "status": "present-dead",
+        "have": [
+          "Avatar"
+        ]
+      },
+      {
+        "name": "Table",
+        "category": "Data display",
+        "status": "present",
+        "have": [
+          "Table"
+        ]
+      },
+      {
+        "name": "ListItem",
+        "category": "Data display",
+        "status": "present",
+        "have": [
+          "ListItem"
+        ]
+      },
+      {
+        "name": "Chip",
+        "category": "Data display",
+        "status": "present-dead",
+        "have": [
+          "Chip",
+          "Pill"
+        ]
+      },
+      {
+        "name": "Accordion",
+        "category": "Data display",
+        "status": "present-dead",
+        "have": [
+          "Collapse"
+        ]
+      },
+      {
+        "name": "Tooltip / HelpTip",
+        "category": "Data display",
+        "status": "present-dead",
+        "have": [
+          "HelpTip"
+        ]
+      },
+      {
+        "name": "Typography",
+        "category": "Layout",
+        "status": "present",
+        "have": [
+          "Typography"
+        ]
+      },
+      {
+        "name": "Stack",
+        "category": "Layout",
+        "status": "present",
+        "have": [
+          "Stack"
+        ]
+      },
+      {
+        "name": "Surface",
+        "category": "Layout",
+        "status": "present",
+        "have": [
+          "Surface"
+        ]
+      },
+      {
+        "name": "Divider",
+        "category": "Layout",
+        "status": "present-dead",
+        "have": [
+          "Divider"
+        ]
+      },
+      {
+        "name": "Section",
+        "category": "Layout",
+        "status": "present",
+        "have": [
+          "Section"
+        ]
+      }
     ],
     "extractionTop": [
       {
