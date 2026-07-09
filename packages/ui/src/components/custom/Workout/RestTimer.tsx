@@ -2,6 +2,7 @@
 import { View, Text, Pressable } from 'react-native'
 import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { useTimer } from '../../../hooks/useTimer'
 
 const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
 
@@ -25,17 +26,21 @@ export function RestTimer({
   visible,
   displayOnly = false,
 }: RestTimerProps) {
-  if (!visible) return null
-
-  const remainingMs = Math.max(0, totalSeconds * 1000 - elapsedMs)
+  // useTimer owns the countdown math (remaining/progress/mm:ss); a zero-duration
+  // timer is complete, which keeps the width out of the 0/0 === NaN case.
+  const {
+    remainingMs,
+    progress,
+    label: timeDisplay,
+  } = useTimer({
+    mode: 'down',
+    durationMs: totalSeconds * 1000,
+    elapsedMs,
+  })
   const remainingSec = Math.ceil(remainingMs / 1000)
-  const minutes = Math.floor(remainingSec / 60)
-  const seconds = remainingSec % 60
-  const timeDisplay = `${minutes}:${String(seconds).padStart(2, '0')}`
-  // A zero-duration timer is already complete; guard the 0 / 0 === NaN case
-  // that would otherwise emit width:'NaN%'.
-  const totalMs = totalSeconds * 1000
-  const progressPct = totalMs > 0 ? Math.min(100, (elapsedMs / totalMs) * 100) : 100
+  const progressPct = progress * 100
+
+  if (!visible) return null
 
   return (
     <View
