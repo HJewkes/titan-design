@@ -320,7 +320,7 @@ function ExpandedCard({
             <View
               key={header}
               style={{
-                ...(isFlex ? {} : { width }),
+                ...(isFlex ? { minWidth: 44 } : { width, flexShrink: 1 }),
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: 8,
@@ -360,62 +360,71 @@ function UpcomingCard({
   prescription,
   previousBest,
   supersetPosition,
+  onToggle,
 }: ExerciseCardProps) {
   const borderRadius = getSupersetBorderRadius(supersetPosition)
   const supersetMargin = getSupersetMargin(supersetPosition)
 
   return (
-    <View
-      style={{
-        opacity: 0.6,
-        padding: 12,
-        paddingHorizontal: 14,
-        ...borderRadius,
-        ...supersetMargin,
-      }}
-      accessibilityLabel={formatAccessibilityLabel(name, undefined, prescription)}
-      testID="exercise-card"
-    >
-      <View className="flex-row items-center">
-        <Text
-          className="text-text-primary"
-          style={{
-            fontSize: 14,
-            fontFamily: '"Space Grotesk", sans-serif',
-            fontWeight: '700',
-          }}
-          testID="exercise-card-name"
-        >
-          {name}
-        </Text>
-        {prescription && (
+    <Pressable onPress={onToggle} accessibilityRole="button">
+      <View
+        style={{
+          opacity: 0.6,
+          padding: 12,
+          paddingHorizontal: 14,
+          ...borderRadius,
+          ...supersetMargin,
+        }}
+        accessibilityLabel={formatAccessibilityLabel(name, undefined, prescription)}
+        testID="exercise-card"
+      >
+        <View className="flex-row items-center">
+          {/* Name never truncates (no numberOfLines); prescription + previousBest ellipsize first. */}
           <Text
-            className="text-text-secondary"
+            className="text-text-primary"
             style={{
-              fontSize: 12,
-              fontFamily: 'Inter, sans-serif',
-              marginLeft: 8,
+              flexShrink: 0,
+              fontSize: 14,
+              fontFamily: '"Space Grotesk", sans-serif',
+              fontWeight: '700',
             }}
-            testID="exercise-card-prescription"
+            testID="exercise-card-name"
           >
-            {prescription}
+            {name}
           </Text>
-        )}
-        <View className="flex-1" />
-        {previousBest && (
-          <Text
-            className="text-text-tertiary"
-            style={{
-              fontSize: 11,
-              fontFamily: 'Inter, sans-serif',
-            }}
-            testID="exercise-card-previous-best"
-          >
-            {previousBest}
-          </Text>
-        )}
+          {prescription && (
+            <Text
+              className="text-text-secondary"
+              numberOfLines={1}
+              style={{
+                flexShrink: 1,
+                fontSize: 12,
+                fontFamily: 'Inter, sans-serif',
+                marginLeft: 8,
+              }}
+              testID="exercise-card-prescription"
+            >
+              {prescription}
+            </Text>
+          )}
+          <View className="flex-1" style={{ minWidth: 8 }} />
+          {previousBest && (
+            <Text
+              className="text-text-tertiary"
+              numberOfLines={1}
+              style={{
+                flexShrink: 1,
+                fontSize: 11,
+                fontFamily: 'Inter, sans-serif',
+              }}
+              testID="exercise-card-previous-best"
+            >
+              {previousBest}
+            </Text>
+          )}
+        </View>
       </View>
-    </View>
+    </Pressable>
   )
 }
 

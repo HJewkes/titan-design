@@ -29,6 +29,8 @@ export interface TempoDisplayProps extends ViewProps {
   size?: 'sm' | 'md'
   /** Colored phases or mono (all gray) */
   colored?: boolean
+  /** Show the "TEMPO" caption before the values. Default true. */
+  showLabel?: boolean
   /** Show info tooltip on press */
   showInfo?: boolean
   /**
@@ -170,6 +172,7 @@ export function TempoDisplay({
   tempo,
   size = 'md',
   colored = true,
+  showLabel = true,
   showInfo = true,
   live,
   onPress,
@@ -205,19 +208,21 @@ export function TempoDisplay({
       }}
       {...props}
     >
-      <Text
-        style={{
-          fontFamily: INTER,
-          fontSize: 9,
-          fontWeight: '500',
-          color: TEXT_TERTIARY,
-          letterSpacing: 0.5,
-          textTransform: 'uppercase',
-          marginRight: 6,
-        }}
-      >
-        TEMPO
-      </Text>
+      {showLabel && (
+        <Text
+          style={{
+            fontFamily: INTER,
+            fontSize: 9,
+            fontWeight: '500',
+            color: TEXT_TERTIARY,
+            letterSpacing: 0.5,
+            textTransform: 'uppercase',
+            marginRight: 6,
+          }}
+        >
+          TEMPO
+        </Text>
+      )}
       <View style={{ flexDirection: 'row' }} testID="tempo-value">
         {live ? (
           <LiveTempoRow

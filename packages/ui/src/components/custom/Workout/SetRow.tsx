@@ -27,6 +27,11 @@ export interface SetRowProps {
   prBadges?: Array<{ type: PRType; label: string }>
   isNextSet?: boolean
   targets?: { reps: number; weight: number }
+  /**
+   * The set is being performed RIGHT NOW. Shows reps-done / target (e.g. "5/8") with a live green
+   * treatment; `velocities.length` is the reps-done count. Distinct from `isNextSet` (queued next).
+   */
+  isLive?: boolean
 }
 
 function formatAccessibilityLabel(
@@ -57,9 +62,11 @@ export function SetRow({
   prBadges,
   isNextSet,
   targets,
+  isLive,
 }: SetRowProps) {
   const isActive = mode === 'active'
   const isCompleted = mode === 'completed'
+  const liveRepsDone = velocities?.length ?? 0
 
   const rowStyle: Record<string, unknown> = {
     flexDirection: 'row' as const,
@@ -70,7 +77,11 @@ export function SetRow({
     borderRadius: 8,
   }
 
-  if (isActive && isNextSet) {
+  if (isLive) {
+    rowStyle.backgroundColor = 'rgba(46,213,115,0.08)'
+    rowStyle.borderWidth = 1
+    rowStyle.borderColor = 'rgba(46,213,115,0.35)'
+  } else if (isActive && isNextSet) {
     rowStyle.backgroundColor = 'rgba(255,121,0,0.06)'
     rowStyle.borderWidth = 1
     rowStyle.borderColor = 'rgba(255,121,0,0.15)'
@@ -92,7 +103,7 @@ export function SetRow({
       testID="set-row"
     >
       <View
-        style={{ width: 36, alignItems: 'center', justifyContent: 'center' }}
+        style={{ width: 36, flexShrink: 1, alignItems: 'center', justifyContent: 'center' }}
         testID="set-row-set-number"
       >
         {setType ? (
@@ -128,10 +139,12 @@ export function SetRow({
 
       <View
         className="flex-1"
+        style={{ minWidth: 44 }}
         testID="set-row-previous"
       >
         <Text
           className="text-text-secondary"
+          numberOfLines={1}
           style={{
             fontSize: 12,
             fontFamily: 'Inter, sans-serif',
@@ -144,10 +157,22 @@ export function SetRow({
       </View>
 
       <View
-        style={{ width: 44, alignItems: 'center', justifyContent: 'center' }}
+        style={{ width: 44, flexShrink: 1, alignItems: 'center', justifyContent: 'center' }}
         testID="set-row-reps"
       >
-        {isActive && reps == null && targets ? (
+        {isLive ? (
+          <Text
+            className="text-status-live"
+            style={{
+              fontSize: 14,
+              fontWeight: '700',
+              fontFamily: 'Inter, sans-serif',
+            }}
+            testID="set-row-live-reps"
+          >
+            {liveRepsDone}/{targets?.reps ?? '\u2014'}
+          </Text>
+        ) : isActive && reps == null && targets ? (
           <Text
             className="text-text-tertiary"
             style={{
@@ -174,10 +199,21 @@ export function SetRow({
       </View>
 
       <View
-        style={{ width: 56, alignItems: 'center', justifyContent: 'center' }}
+        style={{ width: 56, flexShrink: 1, alignItems: 'center', justifyContent: 'center' }}
         testID="set-row-weight"
       >
-        {isActive && weight == null && targets ? (
+        {isLive && targets ? (
+          <Text
+            className="text-text-primary"
+            style={{
+              fontSize: 14,
+              fontWeight: '600',
+              fontFamily: 'Inter, sans-serif',
+            }}
+          >
+            {roundWeight(targets.weight)}
+          </Text>
+        ) : isActive && weight == null && targets ? (
           <Text
             className="text-text-tertiary"
             style={{
@@ -204,7 +240,7 @@ export function SetRow({
       </View>
 
       <View
-        style={{ width: 36, alignItems: 'center', justifyContent: 'center' }}
+        style={{ width: 36, flexShrink: 1, alignItems: 'center', justifyContent: 'center' }}
         testID="set-row-rpe"
       >
         <Text
