@@ -3,6 +3,13 @@ import { withThemeByClassName } from '@storybook/addon-themes'
 import React from 'react'
 import '../src/theme/global.css'
 
+// Sidebar information architecture (TD Storybook reorg).
+//
+// Six top-level roots, ordered foundations → build-up → full screens → lab:
+//   Foundations → Components → Workout → Shell → Pages → Lab.
+// `Components` reads by tier (Atoms → Molecules → Organisms → DataViz) and `Lab`
+// sorts last. Composition is expressed as autodocs "**Tier.** Composes […]" /
+// "Used-by ↑ […]" prose links between canonical stories — never physical nesting.
 const preview: Preview = {
   parameters: {
     controls: {
@@ -12,6 +19,23 @@ const preview: Preview = {
       },
     },
     layout: 'centered',
+    options: {
+      storySort: {
+        method: 'alphabetical',
+        order: [
+          'Foundations',
+          ['Color', 'Typography', 'Icons', 'Elevation', 'Shadows', 'Theme Presets'],
+          'Components',
+          ['Atoms', 'Molecules', 'Organisms', 'DataViz'],
+          'Workout',
+          'Shell',
+          'Pages',
+          'Lab',
+          ['Explorations', 'Specimens', 'Audits', 'Recipes'],
+        ],
+        locales: 'en-US',
+      },
+    },
   },
   decorators: [
     withThemeByClassName({

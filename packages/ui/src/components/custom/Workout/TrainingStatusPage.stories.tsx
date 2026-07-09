@@ -181,7 +181,7 @@ const muscles: TrainingStatusMuscle[] = [
 ]
 
 const meta: Meta<typeof TrainingStatusPage> = {
-  title: 'Custom/Workout/TrainingStatusPage',
+  title: 'Pages/Training Status',
   component: TrainingStatusPage,
   parameters: { layout: 'fullscreen' },
   tags: ['autodocs'],

@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { Switch } from './Switch'
 
 const meta: Meta<typeof Switch> = {
-  title: 'Components/Switch',
+  title: 'Components/Molecules/Switch',
   component: Switch,
   tags: ['autodocs'],
   argTypes: {

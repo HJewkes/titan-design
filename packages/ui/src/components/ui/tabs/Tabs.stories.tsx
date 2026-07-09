@@ -3,7 +3,7 @@ import { View, Text } from 'react-native'
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from './Tabs'
 
 const meta: Meta<typeof Tabs> = {
-  title: 'Components/Tabs',
+  title: 'Components/Molecules/Tabs',
   component: Tabs,
   tags: ['autodocs'],
   argTypes: {

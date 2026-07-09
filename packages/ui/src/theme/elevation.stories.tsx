@@ -21,7 +21,7 @@ import { useTheme } from '../utils/useTheme'
 import { Card, CardContent, CardInset } from '../components/ui/card/Card'
 
 const meta: Meta = {
-  title: 'Theme/Elevation System',
+  title: 'Foundations/Elevation',
   tags: ['autodocs'],
 }
 

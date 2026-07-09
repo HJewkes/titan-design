@@ -34,7 +34,7 @@ const meta: Meta<typeof SessionRail> = {
           '**Organism** (shell S3). The live-workout exercise list: raised heading plane over ' +
           'a sunk inset list, subtle neumorphic depth (charcoal ramp + `neumorphicShadows`), ' +
           '`footer` slot for the session-pace tile. Composes ' +
-          '[ExerciseCardHeading](?path=/docs/shell-sessionrail-exercisecardheading--docs) × N + ' +
+          '[ExerciseCardHeading](?path=/docs/workout-exercisecardheading--docs) × N + ' +
           'StatusDot. Sits beside [SideNav](?path=/docs/shell-sidenav--docs) in the dashboard shell.',
       },
     },

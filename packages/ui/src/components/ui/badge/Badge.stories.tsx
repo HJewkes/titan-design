@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { Badge, BadgeText } from './Badge'
 
 const meta: Meta<typeof Badge> = {
-  title: 'Components/Badge',
+  title: 'Components/Atoms/Badge',
   component: Badge,
   tags: ['autodocs'],
   argTypes: {

@@ -4,7 +4,7 @@ import { View } from 'react-native'
 import { InputBar } from './InputBar'
 
 const meta: Meta<typeof InputBar> = {
-  title: 'Custom/Workout/InputBar',
+  title: 'Workout/InputBar',
   component: InputBar,
   tags: ['autodocs'],
   argTypes: {

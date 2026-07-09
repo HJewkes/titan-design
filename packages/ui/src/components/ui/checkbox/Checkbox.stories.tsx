@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { Checkbox, CheckboxGroup } from './Checkbox'
 
 const meta: Meta<typeof Checkbox> = {
-  title: 'Components/Checkbox',
+  title: 'Components/Molecules/Checkbox',
   component: Checkbox,
   tags: ['autodocs'],
   argTypes: {

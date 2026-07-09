@@ -3,7 +3,7 @@ import { View, Text } from 'react-native'
 import { Stepper, Step, StepIndicator, StepLabel, StepContent } from './Stepper'
 
 const meta: Meta<typeof Stepper> = {
-  title: 'Custom/Stepper',
+  title: 'Components/Molecules/Stepper',
   component: Stepper,
   tags: ['autodocs'],
   argTypes: {

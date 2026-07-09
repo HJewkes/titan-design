@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { Link } from './Link'
 
 const meta: Meta<typeof Link> = {
-  title: 'Components/Link',
+  title: 'Components/Atoms/Link',
   component: Link,
   tags: ['autodocs'],
   argTypes: {

@@ -12,7 +12,7 @@ import {
 } from './Collapse'
 
 const meta: Meta<typeof Accordion> = {
-  title: 'Components/Accordion',
+  title: 'Components/Organisms/Accordion',
   component: Accordion,
   tags: ['autodocs'],
   argTypes: {

@@ -16,7 +16,7 @@ const staticFactors: ReadinessFactor[] = FACTOR_SEED.map((f) => ({
 }))
 
 const meta: Meta<typeof ReadinessCheck> = {
-  title: 'Custom/Workout/ReadinessCheck',
+  title: 'Workout/ReadinessCheck',
   component: ReadinessCheck,
   tags: ['autodocs'],
   argTypes: {

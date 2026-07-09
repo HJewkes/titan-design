@@ -23,7 +23,7 @@ function Row({ ex, h }: { ex: Exercise; h: number }) {
 
 type Args = { stripHeight: number }
 const meta: Meta<Args> = {
-  title: 'Custom/Workout/Explorations/Session Rail Heading',
+  title: 'Lab/Explorations/Session Rail Heading',
   parameters: { layout: 'fullscreen' },
   argTypes: { stripHeight: { control: { type: 'range', min: 3, max: 14, step: 1 } } },
   args: { stripHeight: 8 },

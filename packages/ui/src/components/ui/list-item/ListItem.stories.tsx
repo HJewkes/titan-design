@@ -45,7 +45,7 @@ function ChevronRight({ size = 16 }: { size?: number }) {
 }
 
 const meta: Meta<typeof ListItem> = {
-  title: 'Components/ListItem',
+  title: 'Components/Molecules/ListItem',
   component: ListItem,
   tags: ['autodocs'],
 }

@@ -85,7 +85,7 @@ const exercises: ActiveWorkoutExercise[] = [
 ]
 
 const meta: Meta<typeof ActiveWorkoutPage> = {
-  title: 'Custom/Workout/ActiveWorkoutPage',
+  title: 'Pages/Active Workout',
   component: ActiveWorkoutPage,
   parameters: { layout: 'fullscreen' },
   tags: ['autodocs'],

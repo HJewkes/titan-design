@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { Typography, Heading, Paragraph, Caption, Label, Overline } from './Typography'
 
 const meta: Meta<typeof Typography> = {
-  title: 'Custom/Typography',
+  title: 'Foundations/Typography',
   component: Typography,
   tags: ['autodocs'],
   argTypes: {

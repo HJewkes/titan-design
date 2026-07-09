@@ -3,7 +3,7 @@ import { View, Text } from 'react-native'
 import { Divider } from './Divider'
 
 const meta: Meta<typeof Divider> = {
-  title: 'Components/Divider',
+  title: 'Components/Atoms/Divider',
   component: Divider,
   tags: ['autodocs'],
   argTypes: {

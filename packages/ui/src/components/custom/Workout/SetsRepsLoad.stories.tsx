@@ -8,7 +8,7 @@ import { SetsRepsLoad } from './SetsRepsLoad'
  * separators).
  */
 const meta: Meta<typeof SetsRepsLoad> = {
-  title: 'Shell/SessionRail/ExerciseCardHeading/ExerciseHeading/SetsRepsLoad',
+  title: 'Workout/SetsRepsLoad',
   component: SetsRepsLoad,
   tags: ['autodocs'],
   parameters: {
@@ -16,9 +16,9 @@ const meta: Meta<typeof SetsRepsLoad> = {
       description: {
         component:
           '**Atom.** The `sets × reps @ load` prescription line in the TempoDisplay visual ' +
-          'language. Composes [MetricCell](?path=/docs/shell-sessionrail-exercisecardheading-exerciseheading-setsrepsload-metriccell--docs) ' +
-          '(shared with [TempoDisplay](?path=/docs/shell-sessionrail-exercisecardheading-exerciseheading-tempodisplay--docs)). ' +
-          'Used-by ↑ [ExerciseHeading](?path=/docs/shell-sessionrail-exercisecardheading-exerciseheading--docs).',
+          'language. Composes [MetricCell](?path=/docs/workout-metriccell--docs) ' +
+          '(shared with [TempoDisplay](?path=/docs/workout-tempodisplay--docs)). ' +
+          'Used-by ↑ [ExerciseHeading](?path=/docs/workout-exerciseheading--docs).',
       },
     },
   },

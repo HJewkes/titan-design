@@ -51,8 +51,8 @@ const meta: Meta<typeof SideNav> = {
       description: {
         component:
           '**Organism** (shell region). The persistent 60px left rail switching Live · Review · Plan · ' +
-          'Body. Composes [NavItem](?path=/docs/shell-sidenav-navitem--docs) × the four categories + the ' +
-          'shared [icon set](?path=/docs/icons--docs). Presentational — drive it with `activeKey` / ' +
+          'Body. Composes [NavItem](?path=/docs/shell-navitem--docs) × the four categories + the ' +
+          'shared [icon set](?path=/docs/foundations-icons--docs). Presentational — drive it with `activeKey` / ' +
           '`onNavigate` / `liveKey`. Active = left accent bar; `liveKey` (when not active) tints that ' +
           'label a muted green.\n\n' +
           '**Try it:** stories render in a full-height shell frame — the rail pins to the left edge and ' +

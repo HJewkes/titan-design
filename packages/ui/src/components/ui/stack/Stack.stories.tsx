@@ -3,7 +3,7 @@ import { View, Text } from 'react-native'
 import { Stack, HStack, VStack } from './Stack'
 
 const meta: Meta<typeof Stack> = {
-  title: 'Components/Stack',
+  title: 'Components/Atoms/Stack',
   component: Stack,
   tags: ['autodocs'],
   argTypes: {

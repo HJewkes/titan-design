@@ -3,7 +3,7 @@ import { View, Text } from 'react-native'
 import { EmptyState } from './EmptyState'
 
 const meta: Meta<typeof EmptyState> = {
-  title: 'Custom/EmptyState',
+  title: 'Components/Molecules/EmptyState',
   component: EmptyState,
   tags: ['autodocs'],
   argTypes: {

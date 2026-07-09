@@ -66,7 +66,7 @@ function PresetShowcase({ preset }: { preset: typeof audiobookPreset }) {
 }
 
 const meta: Meta = {
-  title: 'Theme/Presets',
+  title: 'Foundations/Theme Presets',
   parameters: {
     layout: 'fullscreen',
   },

@@ -3,7 +3,7 @@ import { View, Text } from 'react-native'
 import { DataRow } from './DataRow'
 
 const meta: Meta<typeof DataRow> = {
-  title: 'Components/DataRow',
+  title: 'Components/Molecules/DataRow',
   component: DataRow,
   tags: ['autodocs'],
   argTypes: {

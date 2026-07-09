@@ -9,7 +9,7 @@ import {
 } from './Skeleton'
 
 const meta: Meta<typeof Skeleton> = {
-  title: 'Components/Skeleton',
+  title: 'Components/Atoms/Skeleton',
   component: Skeleton,
   tags: ['autodocs'],
   argTypes: {

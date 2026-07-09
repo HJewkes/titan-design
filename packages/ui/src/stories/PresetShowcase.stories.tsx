@@ -438,7 +438,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 // ---------------------------------------------------------------------------
 
 const meta: Meta = {
-  title: 'Theme/Preset Showcase',
+  title: 'Lab/Recipes/Theme Preset Showcase',
   parameters: {
     layout: 'fullscreen',
   },

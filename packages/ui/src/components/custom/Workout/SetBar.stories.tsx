@@ -9,7 +9,7 @@ import { SetBar, type SetStripSet } from './SetBar'
  * (red-600 · orange-400 · amber-300 · green-300). {@link SetStrip} lays several side by side.
  */
 const meta: Meta<typeof SetBar> = {
-  title: 'Shell/SessionRail/ExerciseCardHeading/SetStrip/SetBar',
+  title: 'Workout/SetBar',
   component: SetBar,
   tags: ['autodocs'],
   parameters: {
@@ -18,7 +18,7 @@ const meta: Meta<typeof SetBar> = {
         component:
           '**Atom.** ONE set’s multi-coloured bar — the per-rep colour segments for a ' +
           'single set (done / active-with-pulse / todo). Colours are the real titan ramp pins. ' +
-          'Used-by ↑ [SetStrip](?path=/docs/shell-sessionrail-exercisecardheading-setstrip--docs).',
+          'Used-by ↑ [SetStrip](?path=/docs/workout-setstrip--docs).',
       },
     },
   },

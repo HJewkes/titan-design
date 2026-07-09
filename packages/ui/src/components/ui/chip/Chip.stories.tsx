@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { Chip } from './Chip'
 
 const meta: Meta<typeof Chip> = {
-  title: 'Components/Chip',
+  title: 'Components/Atoms/Chip',
   component: Chip,
   tags: ['autodocs'],
   argTypes: {

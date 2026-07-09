@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { WeightBadge } from './WeightBadge'
 
 const meta: Meta<typeof WeightBadge> = {
-  title: 'Custom/Workout/WeightBadge',
+  title: 'Components/Atoms/WeightBadge',
   component: WeightBadge,
   tags: ['autodocs'],
   argTypes: {

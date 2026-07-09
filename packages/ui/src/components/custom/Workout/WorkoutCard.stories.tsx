@@ -4,7 +4,7 @@ import { WorkoutCard } from './WorkoutCard'
 import type { ExerciseCardProps } from './ExerciseCard'
 
 const meta: Meta<typeof WorkoutCard> = {
-  title: 'Custom/Workout/WorkoutCard',
+  title: 'Workout/WorkoutCard',
   component: WorkoutCard,
   tags: ['autodocs'],
   argTypes: {

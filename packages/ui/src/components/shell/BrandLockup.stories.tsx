@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { BrandLockup } from './BrandLockup'
 
 const meta: Meta<typeof BrandLockup> = {
-  title: 'Shell/TopBar/BrandLockup',
+  title: 'Shell/BrandLockup',
   component: BrandLockup,
   tags: ['autodocs'],
   args: { subtitle: 'wall dashboard', showSubtitle: true },
@@ -14,8 +14,8 @@ const meta: Meta<typeof BrandLockup> = {
     docs: {
       description: {
         component:
-          '**Molecule.** Composes [VoltrasMark](?path=/docs/icons--docs) (icon) + ' +
-          '[Typography](?path=/docs/custom-typography--docs) (wordmark + subtitle). ' +
+          '**Molecule.** Composes [VoltrasMark](?path=/docs/foundations-icons--docs) (icon) + ' +
+          '[Typography](?path=/docs/foundations-typography--docs) (wordmark + subtitle). ' +
           'Toggle `showSubtitle` to see the responsive collapse.',
       },
     },

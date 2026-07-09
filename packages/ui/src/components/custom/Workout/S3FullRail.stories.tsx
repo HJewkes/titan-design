@@ -7,7 +7,7 @@ import { NavStub, Rail, Page, T_TERTIARY } from './setHeadingKit'
 
 type Args = { stripHeight: number }
 const meta: Meta<Args> = {
-  title: 'Custom/Workout/Explorations/Full Rail',
+  title: 'Lab/Explorations/Full Rail',
   parameters: { layout: 'fullscreen' },
   argTypes: { stripHeight: { control: { type: 'range', min: 3, max: 14, step: 1 } } },
   args: { stripHeight: 8 },
