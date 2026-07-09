@@ -9,3 +9,5 @@ export * from './TopBar'
 // S2 · Side nav family.
 export * from './NavItem'
 export * from './SideNav'
+// S3 · Dashboard shell — composes the nav + top-bar chrome over a content slot.
+export * from './DashboardShell'
