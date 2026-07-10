@@ -48,7 +48,7 @@ const weeks: WeekRowProps[] = [
 ]
 
 const meta: Meta<typeof MesoCard> = {
-  title: 'Custom/Workout/MesoCard',
+  title: 'Workout/MesoCard',
   component: MesoCard,
   tags: ['autodocs'],
   argTypes: {

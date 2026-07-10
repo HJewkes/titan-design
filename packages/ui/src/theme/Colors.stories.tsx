@@ -4,7 +4,7 @@ import { primitiveColors, discreteRainbow, primitiveRamps, categoricalPalette } 
 import { semanticColorsLight, semanticColorsDark } from './tokens/semantic'
 
 const meta: Meta = {
-  title: 'Design Tokens/Colors',
+  title: 'Foundations/Color/Palette',
   tags: ['autodocs'],
 }
 

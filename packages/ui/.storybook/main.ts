@@ -1,3 +1,6 @@
+import { readdirSync, readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import type { StorybookConfig } from '@storybook/react-native-web-vite'
 import {
   reactNativeBodyHighlighterEsm,
@@ -7,8 +10,39 @@ import {
   webResolveExtensions,
 } from '../vite-rn-svg-plugins'
 
+// Lab/* build-exclusion.
+//
+// `Lab/*` (WIP explorations, rapid-prototype specimens, dated audits, and
+// integration recipes) is dev-visible but excluded from the shared/published
+// static build. `storybook dev` serves the full glob; a published build built
+// with `STORYBOOK_PUBLIC=1 storybook build` drops every Lab-titled story so
+// consumers never see WIP. Lab membership is read from the story's canonical
+// `title: 'Lab/…'` — the same taxonomy the sidebar uses — so any future Lab
+// story is quarantined automatically without touching this config.
+//
+// The vitest `stories-smoke` test discovers stories via its own
+// `import.meta.glob('../components/**/*.stories.tsx')` against the filesystem,
+// independent of this `stories` field, so Lab stories stay importable in the
+// test env regardless of the published exclusion.
+const SRC_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'src')
+
+const collectStoryFiles = (dir: string): string[] =>
+  readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const full = join(dir, entry.name)
+    if (entry.isDirectory()) return collectStoryFiles(full)
+    return /\.stories\.(ts|tsx)$/.test(entry.name) ? [full] : []
+  })
+
+const isLabStory = (file: string): boolean => readFileSync(file, 'utf8').includes("title: 'Lab/")
+
+const publishOnly = process.env.STORYBOOK_PUBLIC === '1'
+
+const stories: StorybookConfig['stories'] = publishOnly
+  ? collectStoryFiles(SRC_DIR).filter((file) => !isLabStory(file))
+  : ['../src/**/*.stories.@(ts|tsx)']
+
 const config: StorybookConfig = {
-  stories: ['../src/**/*.stories.@(ts|tsx)'],
+  stories,
   addons: ['@storybook/addon-a11y', '@storybook/addon-docs', '@storybook/addon-themes'],
   framework: {
     name: '@storybook/react-native-web-vite',

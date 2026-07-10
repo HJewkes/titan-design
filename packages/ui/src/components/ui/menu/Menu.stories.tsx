@@ -4,7 +4,7 @@ import { Menu, MenuTrigger, MenuList, MenuItem, MenuDivider, MenuGroup } from '.
 import { Button, ButtonText } from '../button/Button'
 
 const meta: Meta<typeof Menu> = {
-  title: 'Components/Menu',
+  title: 'Components/Molecules/Menu',
   component: Menu,
   tags: ['autodocs'],
   argTypes: {

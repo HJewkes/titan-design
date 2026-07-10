@@ -4,7 +4,7 @@ import { DumbbellIcon } from './icons'
 import { BaseBadge } from './BaseBadge'
 
 const meta: Meta<typeof BaseBadge> = {
-  title: 'Custom/Workout/BaseBadge',
+  title: 'Components/Atoms/BaseBadge',
   component: BaseBadge,
   tags: ['autodocs'],
   argTypes: {

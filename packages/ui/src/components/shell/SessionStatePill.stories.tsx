@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SessionStatePill } from './SessionStatePill'
 
 const meta: Meta<typeof SessionStatePill> = {
-  title: 'Shell/TopBar/SessionStatePill',
+  title: 'Shell/SessionStatePill',
   component: SessionStatePill,
   tags: ['autodocs'],
   args: { state: 'live' },
@@ -15,8 +15,8 @@ const meta: Meta<typeof SessionStatePill> = {
       description: {
         component:
           '**Molecule** (= the ledger’s reusable StatusPill — also used by the Live-view header). Composes ' +
-          '[Indicator](?path=/docs/components-indicator--docs) (pulse `ping` + vivid color for live) + ' +
-          '[Typography](?path=/docs/custom-typography--docs) (`monoLabel`). Use the `state` control to switch.',
+          '[Indicator](?path=/docs/components-atoms-indicator--docs) (pulse `ping` + vivid color for live) + ' +
+          '[Typography](?path=/docs/foundations-typography--docs) (`monoLabel`). Use the `state` control to switch.',
       },
     },
   },

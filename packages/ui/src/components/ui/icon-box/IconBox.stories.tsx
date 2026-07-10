@@ -53,7 +53,7 @@ function BoltIcon({ size = 20, className }: { size?: number; className?: string 
 }
 
 const meta: Meta<typeof IconBox> = {
-  title: 'Components/IconBox',
+  title: 'Components/Atoms/IconBox',
   component: IconBox,
   tags: ['autodocs'],
   argTypes: {

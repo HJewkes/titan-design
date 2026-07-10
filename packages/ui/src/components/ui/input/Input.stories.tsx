@@ -3,7 +3,7 @@ import { View, Text } from 'react-native'
 import { Input, InputGroup, PasswordInput } from './Input'
 
 const meta: Meta<typeof Input> = {
-  title: 'Components/Input',
+  title: 'Components/Molecules/Input',
   component: Input,
   tags: ['autodocs'],
   argTypes: {

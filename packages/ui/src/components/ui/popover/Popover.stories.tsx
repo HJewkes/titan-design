@@ -4,7 +4,7 @@ import { Popover, PopoverTrigger, PopoverContent, PopoverCloseButton } from './P
 import { Button, ButtonText } from '../button/Button'
 
 const meta: Meta<typeof Popover> = {
-  title: 'Components/Popover',
+  title: 'Components/Molecules/Popover',
   component: Popover,
   tags: ['autodocs'],
   argTypes: {

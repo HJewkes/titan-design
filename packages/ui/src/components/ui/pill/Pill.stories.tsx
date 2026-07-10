@@ -4,7 +4,7 @@ import { Pill } from './Pill'
 import { Indicator } from '../indicator'
 
 const meta: Meta<typeof Pill> = {
-  title: 'Components/Pill',
+  title: 'Components/Atoms/Pill',
   component: Pill,
   tags: ['autodocs'],
   argTypes: {

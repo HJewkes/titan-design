@@ -10,7 +10,7 @@ const DEVICES: Device[] = [
 ]
 
 const meta: Meta<typeof DeviceMenu> = {
-  title: 'Shell/TopBar/DeviceMenu',
+  title: 'Shell/DeviceMenu',
   component: DeviceMenu,
   tags: ['autodocs'],
   args: { devices: DEVICES, isOpen: false },
@@ -32,10 +32,10 @@ const meta: Meta<typeof DeviceMenu> = {
       description: {
         component:
           '**Organism.** The device glyph + its dropdown. Composes ' +
-          '[Popover](?path=/docs/components-popover--docs) + ' +
-          '[DeviceIndicator](?path=/docs/shell-topbar-devicemenu-deviceindicator--docs) (trigger) + ' +
-          '[DeviceRow](?path=/docs/shell-topbar-devicemenu-devicerow--docs) (list) + ' +
-          '[Typography](?path=/docs/custom-typography--docs) (header). Aggregates the bound devices ' +
+          '[Popover](?path=/docs/components-molecules-popover--docs) + ' +
+          '[DeviceIndicator](?path=/docs/shell-deviceindicator--docs) (trigger) + ' +
+          '[DeviceRow](?path=/docs/shell-devicerow--docs) (list) + ' +
+          '[Typography](?path=/docs/foundations-typography--docs) (header). Aggregates the bound devices ' +
           '(worst-of) for the glyph state. Click the glyph, or toggle the `isOpen` control.',
       },
     },

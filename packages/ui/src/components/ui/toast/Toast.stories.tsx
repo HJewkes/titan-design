@@ -4,7 +4,7 @@ import { Toast, ToastProvider, useToast } from './Toast'
 import { Button, ButtonText } from '../button'
 
 const meta: Meta<typeof Toast> = {
-  title: 'Components/Toast',
+  title: 'Components/Molecules/Toast',
   component: Toast,
   tags: ['autodocs'],
   argTypes: {

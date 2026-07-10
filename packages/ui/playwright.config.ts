@@ -7,6 +7,10 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 0,
+  // The story-baseline suite is one test looping over every in-scope story
+  // (goto + networkidle + screenshot each), so its runtime scales with the
+  // story count. Give it well past the 30s default as the shell family grows.
+  timeout: 120_000,
   use: {
     baseURL: 'http://localhost:6006',
     screenshot: 'only-on-failure',

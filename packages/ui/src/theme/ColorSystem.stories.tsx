@@ -13,7 +13,7 @@ import {
 } from './tokens/primitives'
 
 const meta: Meta = {
-  title: 'Design Tokens/Color System',
+  title: 'Foundations/Color/System',
   tags: ['autodocs'],
 }
 export default meta

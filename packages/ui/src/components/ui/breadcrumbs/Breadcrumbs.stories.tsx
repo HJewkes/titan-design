@@ -3,7 +3,7 @@ import { Text } from 'react-native'
 import { Breadcrumbs, BreadcrumbItem } from './Breadcrumbs'
 
 const meta: Meta<typeof Breadcrumbs> = {
-  title: 'Components/Breadcrumbs',
+  title: 'Components/Molecules/Breadcrumbs',
   component: Breadcrumbs,
   tags: ['autodocs'],
   argTypes: {

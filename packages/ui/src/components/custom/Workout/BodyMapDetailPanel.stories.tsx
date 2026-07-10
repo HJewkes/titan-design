@@ -21,7 +21,7 @@ const upcoming: UpcomingExercise[] = [
 ]
 
 const meta: Meta<typeof BodyMapDetailPanel> = {
-  title: 'Custom/Workout/BodyMapDetailPanel',
+  title: 'Workout/DataViz/BodyMapDetailPanel',
   component: BodyMapDetailPanel,
   tags: ['autodocs'],
   decorators: [

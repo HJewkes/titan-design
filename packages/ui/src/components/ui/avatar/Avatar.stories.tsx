@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { Avatar, AvatarBadge, AvatarGroup } from './Avatar'
 
 const meta: Meta<typeof Avatar> = {
-  title: 'Components/Avatar',
+  title: 'Components/Atoms/Avatar',
   component: Avatar,
   tags: ['autodocs'],
   argTypes: {

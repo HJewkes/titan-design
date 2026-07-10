@@ -5,6 +5,7 @@ import { roundTempo } from '../../../utils/workout-format'
 import { alpha } from '../../../utils/colors'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { getTempoFillPct, getTempoPacingState } from './TempoBar'
+import { MetricCell } from './metricText'
 
 const t = getSemanticColors('dark')
 
@@ -29,6 +30,8 @@ export interface TempoDisplayProps extends ViewProps {
   size?: 'sm' | 'md'
   /** Colored phases or mono (all gray) */
   colored?: boolean
+  /** Show the "TEMPO" caption before the values. Default true. */
+  showLabel?: boolean
   /** Show info tooltip on press */
   showInfo?: boolean
   /**
@@ -64,33 +67,17 @@ function TempoValue({
   fontSize: number
 }) {
   return (
-    <Text
-      style={{
-        fontFamily: INTER,
-        fontSize,
-        color,
-        fontWeight: '600',
-        letterSpacing: 1,
-      }}
-    >
+    <MetricCell color={color} fontSize={fontSize}>
       {value}
-    </Text>
+    </MetricCell>
   )
 }
 
 function TempoSeparator({ color, fontSize }: { color: string; fontSize: number }) {
   return (
-    <Text
-      style={{
-        fontFamily: INTER,
-        fontSize,
-        color,
-        fontWeight: '600',
-        letterSpacing: 1,
-      }}
-    >
+    <MetricCell color={color} fontSize={fontSize}>
       -
-    </Text>
+    </MetricCell>
   )
 }
 
@@ -170,6 +157,7 @@ export function TempoDisplay({
   tempo,
   size = 'md',
   colored = true,
+  showLabel = true,
   showInfo = true,
   live,
   onPress,
@@ -205,19 +193,21 @@ export function TempoDisplay({
       }}
       {...props}
     >
-      <Text
-        style={{
-          fontFamily: INTER,
-          fontSize: 9,
-          fontWeight: '500',
-          color: TEXT_TERTIARY,
-          letterSpacing: 0.5,
-          textTransform: 'uppercase',
-          marginRight: 6,
-        }}
-      >
-        TEMPO
-      </Text>
+      {showLabel && (
+        <Text
+          style={{
+            fontFamily: INTER,
+            fontSize: 9,
+            fontWeight: '500',
+            color: TEXT_TERTIARY,
+            letterSpacing: 0.5,
+            textTransform: 'uppercase',
+            marginRight: 6,
+          }}
+        >
+          TEMPO
+        </Text>
+      )}
       <View style={{ flexDirection: 'row' }} testID="tempo-value">
         {live ? (
           <LiveTempoRow

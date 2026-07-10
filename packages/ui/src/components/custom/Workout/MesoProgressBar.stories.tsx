@@ -4,7 +4,7 @@ import { View } from 'react-native'
 import { MesoProgressBar, type Meso } from './MesoProgressBar'
 
 const meta: Meta<typeof MesoProgressBar> = {
-  title: 'Custom/Workout/MesoProgressBar',
+  title: 'Workout/MesoProgressBar',
   component: MesoProgressBar,
   tags: ['autodocs'],
   argTypes: {

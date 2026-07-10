@@ -39,7 +39,7 @@ const projection: CapacityBandProjection = {
 }
 
 const meta: Meta<typeof CapacityBandChart> = {
-  title: 'Custom/Workout/CapacityBandChart',
+  title: 'Workout/DataViz/CapacityBandChart',
   component: CapacityBandChart,
   tags: ['autodocs'],
   argTypes: {

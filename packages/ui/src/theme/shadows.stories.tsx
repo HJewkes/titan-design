@@ -8,7 +8,7 @@ import {
 } from './shadows'
 
 const meta: Meta = {
-  title: 'Theme/Shadows',
+  title: 'Foundations/Shadows',
 }
 
 export default meta

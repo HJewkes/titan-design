@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { Alert, AlertTitle, AlertDescription } from './Alert'
 
 const meta: Meta<typeof Alert> = {
-  title: 'Components/Alert',
+  title: 'Components/Molecules/Alert',
   component: Alert,
   tags: ['autodocs'],
   argTypes: {

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Scatter, type ScatterDatum } from './Scatter'
 
 const meta: Meta<typeof Scatter> = {
-  title: 'Custom/Scatter',
+  title: 'Components/DataViz/Scatter',
   component: Scatter,
   tags: ['autodocs'],
   argTypes: {

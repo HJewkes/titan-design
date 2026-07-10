@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { TempoBar } from './TempoBar'
 
 const meta: Meta<typeof TempoBar> = {
-  title: 'Custom/Workout/TempoBar',
+  title: 'Workout/TempoBar',
   component: TempoBar,
   tags: ['autodocs'],
   argTypes: {

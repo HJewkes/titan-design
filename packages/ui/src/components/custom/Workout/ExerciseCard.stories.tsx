@@ -4,13 +4,26 @@ import { ExerciseCard } from './ExerciseCard'
 import type { SetRowProps } from './SetRow'
 
 const meta: Meta<typeof ExerciseCard> = {
-  title: 'Custom/Workout/ExerciseCard',
+  title: 'Workout/ExerciseCard',
   component: ExerciseCard,
   tags: ['autodocs'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '**Organism** (data-contract card; `state="collapsed" | "expanded" | "upcoming" | "rail"`). ' +
+          'The `rail` heading representation delegates to ' +
+          '[ExerciseCardHeading](?path=/docs/workout-exercisecardheading--docs) ' +
+          '(the standalone heading molecule); the `expanded` state composes ' +
+          '[TableHeader](?path=/docs/shell-sessionrail-expandeddrawer-tableheader--docs). ' +
+          'Used-by ↑ [SessionRail](?path=/docs/shell-sessionrail--docs).',
+      },
+    },
+  },
   argTypes: {
     state: {
       control: 'select',
-      options: ['collapsed', 'expanded', 'upcoming'],
+      options: ['collapsed', 'expanded', 'upcoming', 'rail'],
       description: 'Card display state',
     },
   },
@@ -158,6 +171,42 @@ export const Upcoming: Story = {
     onToggle: () => {},
     prescription: '3\u00D78-12 @ RPE 8',
     previousBest: '135 lbs \u00D7 10',
+  },
+}
+
+const railDecay = (n: number, start: number, span = 0.4): number[] =>
+  Array.from({ length: n }, (_, r) => +(start - (span * r) / Math.max(1, n - 1)).toFixed(3))
+
+export const RailHeading: Story = {
+  args: {
+    name: 'Cable Chest Press',
+    state: 'rail',
+    onToggle: () => {},
+    summary: { sets: 3, reps: 10, weight: 90, unit: 'lbs' },
+    tempo: [2, 1, 2, 0],
+    indicator: 'info',
+    setStates: [
+      { status: 'done', velocities: railDecay(10, 0.72) },
+      { status: 'active', velocities: railDecay(5, 0.62), planned: 10 },
+      { status: 'todo', planned: 10 },
+    ],
+  },
+  decorators: [
+    (Story) => (
+      <View style={{ width: 246, backgroundColor: '#131313' }}>
+        <Story />
+      </View>
+    ),
+  ],
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'The session-rail heading representation: name + indicator row, the tight ' +
+          'sets/reps/load line beside the real TempoDisplay, and the per-set SetStrip. ' +
+          'Consumed by [SessionRail](?path=/docs/shell-sessionrail--docs).',
+      },
+    },
   },
 }
 

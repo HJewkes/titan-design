@@ -7,10 +7,14 @@ import { WeightBadge } from './WeightBadge'
 import { PrBadge } from './PrBadge'
 import { TempoDisplay } from './TempoDisplay'
 import { SetRow, type SetRowProps } from './SetRow'
+import { type SetStripSet } from './SetStrip'
+import { SetTableHeader } from './SetTableHeader'
+import { ExerciseCardHeading } from './ExerciseCardHeading'
+import { type ExerciseIndicatorKind } from './ExerciseIndicator'
 import { roundWeight } from '../../../utils/workout-format'
 import { resolveColor } from '../../../theme/resolve-color'
 
-export type ExerciseCardState = 'collapsed' | 'expanded' | 'upcoming'
+export type ExerciseCardState = 'collapsed' | 'expanded' | 'upcoming' | 'rail'
 
 export interface ExerciseCardProps {
   name: string
@@ -35,11 +39,14 @@ export interface ExerciseCardProps {
   previousBest?: string
   supersetPosition?: 'first' | 'last' | 'middle' | null
   supersetColor?: string
-}
-
-/** Column headers; the weight column reflects the card's unit (LBS / KG). */
-function buildColumnHeaders(unit: 'lbs' | 'kg'): string[] {
-  return ['SET', 'PREV', 'REPS', unit.toUpperCase(), 'RPE']
+  /** Rail heading representation (`state="rail"`): per-set performance strip data. */
+  setStates?: SetStripSet[]
+  /** Rail heading representation: a small PR / issue / info chip in the title line. */
+  indicator?: ExerciseIndicatorKind
+  /** Rail heading strip height in px. Default 8. */
+  stripHeight?: number
+  /** Rail heading: dim the row (upcoming exercise). */
+  dimmed?: boolean
 }
 
 function getSupersetBorderRadius(
@@ -225,7 +232,6 @@ function ExpandedCard({
   // Summary is the card-level authority for the weight column; fall back to the
   // first set's unit, then lbs. (Mixed per-set units keep the card-level label.)
   const unit = summary?.unit ?? sets?.[0]?.unit ?? 'lbs'
-  const columnHeaders = buildColumnHeaders(unit)
 
   return (
     <View
@@ -302,47 +308,7 @@ function ExpandedCard({
         </View>
       )}
 
-      <View
-        className="flex-row"
-        style={{
-          paddingVertical: 8,
-          paddingHorizontal: 8,
-          paddingBottom: 4,
-        }}
-        testID="exercise-card-column-headers"
-      >
-        {columnHeaders.map((header, i) => {
-          const widths = [36, undefined, 44, 56, 36]
-          const width = widths[i]
-          const isFlex = width === undefined
-
-          return (
-            <View
-              key={header}
-              style={{
-                ...(isFlex ? {} : { width }),
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 8,
-              }}
-              {...(isFlex ? { className: 'flex-1' } : {})}
-            >
-              <Text
-                className="text-text-tertiary"
-                style={{
-                  fontSize: 10,
-                  fontWeight: '600',
-                  fontFamily: 'Inter, sans-serif',
-                  textTransform: 'uppercase',
-                  letterSpacing: 0.8,
-                }}
-              >
-                {header}
-              </Text>
-            </View>
-          )
-        })}
-      </View>
+      <SetTableHeader unit={unit} testID="exercise-card-column-headers" />
 
       {sets && (
         <View testID="exercise-card-sets">
@@ -360,62 +326,103 @@ function UpcomingCard({
   prescription,
   previousBest,
   supersetPosition,
+  onToggle,
 }: ExerciseCardProps) {
   const borderRadius = getSupersetBorderRadius(supersetPosition)
   const supersetMargin = getSupersetMargin(supersetPosition)
 
   return (
-    <View
-      style={{
-        opacity: 0.6,
-        padding: 12,
-        paddingHorizontal: 14,
-        ...borderRadius,
-        ...supersetMargin,
-      }}
-      accessibilityLabel={formatAccessibilityLabel(name, undefined, prescription)}
-      testID="exercise-card"
-    >
-      <View className="flex-row items-center">
-        <Text
-          className="text-text-primary"
-          style={{
-            fontSize: 14,
-            fontFamily: '"Space Grotesk", sans-serif',
-            fontWeight: '700',
-          }}
-          testID="exercise-card-name"
-        >
-          {name}
-        </Text>
-        {prescription && (
+    <Pressable onPress={onToggle} accessibilityRole="button">
+      <View
+        style={{
+          opacity: 0.6,
+          padding: 12,
+          paddingHorizontal: 14,
+          ...borderRadius,
+          ...supersetMargin,
+        }}
+        accessibilityLabel={formatAccessibilityLabel(name, undefined, prescription)}
+        testID="exercise-card"
+      >
+        <View className="flex-row items-center">
+          {/* Name never truncates (no numberOfLines); prescription + previousBest ellipsize first. */}
           <Text
-            className="text-text-secondary"
+            className="text-text-primary"
             style={{
-              fontSize: 12,
-              fontFamily: 'Inter, sans-serif',
-              marginLeft: 8,
+              flexShrink: 0,
+              fontSize: 14,
+              fontFamily: '"Space Grotesk", sans-serif',
+              fontWeight: '700',
             }}
-            testID="exercise-card-prescription"
+            testID="exercise-card-name"
           >
-            {prescription}
+            {name}
           </Text>
-        )}
-        <View className="flex-1" />
-        {previousBest && (
-          <Text
-            className="text-text-tertiary"
-            style={{
-              fontSize: 11,
-              fontFamily: 'Inter, sans-serif',
-            }}
-            testID="exercise-card-previous-best"
-          >
-            {previousBest}
-          </Text>
-        )}
+          {prescription && (
+            <Text
+              className="text-text-secondary"
+              numberOfLines={1}
+              style={{
+                flexShrink: 1,
+                fontSize: 12,
+                fontFamily: 'Inter, sans-serif',
+                marginLeft: 8,
+              }}
+              testID="exercise-card-prescription"
+            >
+              {prescription}
+            </Text>
+          )}
+          <View className="flex-1" style={{ minWidth: 8 }} />
+          {previousBest && (
+            <Text
+              className="text-text-tertiary"
+              numberOfLines={1}
+              style={{
+                flexShrink: 1,
+                fontSize: 11,
+                fontFamily: 'Inter, sans-serif',
+              }}
+              testID="exercise-card-previous-best"
+            >
+              {previousBest}
+            </Text>
+          )}
+        </View>
       </View>
-    </View>
+    </Pressable>
+  )
+}
+
+// The session-rail heading representation. Delegates to the standalone
+// ExerciseCardHeading molecule (name + indicator, sets/reps/load beside the real
+// TempoDisplay, per-set strip); e1RM is intentionally dropped here (a planning /
+// live-panel concern). Kept as a thin adapter so the `rail` state stays a valid
+// ExerciseCard variant while the heading itself is independently reusable.
+function RailCard({
+  name,
+  onToggle,
+  summary,
+  tempo,
+  indicator,
+  setStates,
+  stripHeight = 8,
+  dimmed,
+}: ExerciseCardProps) {
+  return (
+    <ExerciseCardHeading
+      name={name}
+      sets={summary?.sets ?? 0}
+      reps={summary?.reps ?? 0}
+      load={summary?.weight ?? 0}
+      unit={summary?.unit ?? 'lbs'}
+      tempo={tempo}
+      indicator={indicator}
+      setStates={setStates ?? []}
+      stripHeight={stripHeight}
+      dimmed={dimmed}
+      onPress={onToggle}
+    />
   )
 }
 
@@ -427,5 +434,7 @@ export function ExerciseCard(props: ExerciseCardProps) {
       return <ExpandedCard {...props} />
     case 'upcoming':
       return <UpcomingCard {...props} />
+    case 'rail':
+      return <RailCard {...props} />
   }
 }

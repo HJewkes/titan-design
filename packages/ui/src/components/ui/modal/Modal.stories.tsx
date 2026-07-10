@@ -13,7 +13,7 @@ import {
 import { Button, ButtonText } from '../button/Button'
 
 const meta: Meta<typeof Modal> = {
-  title: 'Components/Modal',
+  title: 'Components/Organisms/Modal',
   component: Modal,
   tags: ['autodocs'],
   argTypes: {
