@@ -28,6 +28,7 @@ const meta: Meta<typeof SetTableHeader> = {
   },
   argTypes: {
     unit: { control: 'select', options: ['lbs', 'kg'] },
+    showPrevious: { control: 'boolean' },
   },
   decorators: [
     (Story) => (
@@ -49,5 +50,18 @@ export const Kg: Story = {
   args: { unit: 'kg' },
   parameters: {
     docs: { description: { story: 'The weight column reflects the `kg` unit.' } },
+  },
+}
+
+export const NoPrevious: Story = {
+  args: { unit: 'lbs', showPrevious: false },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'PREV dropped for rail density (`showPrevious={false}`); the column blanks to a flex ' +
+          'spacer so REPS/LOAD/RPE hold their positions. Pair with `SetRow`’s `showPrevious`.',
+      },
+    },
   },
 }

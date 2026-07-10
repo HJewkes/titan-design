@@ -1,65 +1,170 @@
 /**
- * SHEET · Workout Expansion (page 2, EARLY) — what a rail item reveals when expanded.
- * Shows the REAL ExerciseCard expanded (responsive fit + isLive already landed this session) in the rail
- * context, alongside the open questions. NOT yet explored — this frames the next exploration.
- * OPEN: drop the PREV column · embed reps/RPE/weight INTO the velocity bar (vs the current table) · live-set
- * treatment in the expanded view · read-only density (tempo row? per-rep strips per row?). See DECISIONS doc.
+ * SHEET · Workout Expansion (page 2) — what a rail item reveals when expanded.
+ * Anchored on the REAL unexpanded rail row (`ExerciseCardHeading`) as the persistent header, then the
+ * revealed body in two REAL-component directions so the fork is concrete:
+ *   A — Table   (real `SetTableHeader` + real `SetRow`s — the current expanded body).
+ *   C — Embed   (real `VelocityStrip` full/expanded per set + a compact caption — the bar IS the set).
+ * B (drop PREV) is a trivial prop on the table, noted but not forked here. Same data across both: set 1 done
+ * · set 2 LIVE 5/10 · set 3 upcoming, with velocities that DECAY within a set so the "shape" reading is real.
+ * OPEN: A-vs-C · live-set treatment in the body · read-only density (drop TEMPO row? per-row strips?). DECISIONS doc.
  */
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { ExerciseCard, type ExerciseCardProps } from './ExerciseCard'
-import { INSET, INSET_SHADOW, RAISED, T_PRIMARY, T_SECONDARY, ORANGE, Page } from './setHeadingKit'
+import { View, Text } from 'react-native'
+import { ExerciseCardHeading } from './ExerciseCardHeading'
+import { SetTableHeader } from './SetTableHeader'
+import { SetRow, type SetRowProps } from './SetRow'
+import { VelocityStrip } from './VelocityStrip'
+import { type SetStripSet } from './SetStrip'
+import {
+  INSET, INSET_SHADOW, RAISED, BORDER_SUBTLE, GREEN,
+  T_PRIMARY, T_SECONDARY, T_TERTIARY, Page, sectionTitle, monoTag,
+} from './setHeadingKit'
 
-const perRep = (n: number, start: number) => Array.from({ length: n }, (_, r) => +(start + 0.04 - r * 0.015).toFixed(2))
+// Per-rep mean velocity that DECAYS across a set (fast → slow) so bar height/color carries shape.
+const decay = (n: number, start: number, span = 0.5) =>
+  Array.from({ length: n }, (_, r) => +(start - (span * r) / Math.max(1, n - 1)).toFixed(3))
 
-// the active exercise expanded: set 1 done, set 2 LIVE (5/8), set 3 not-started
-const EXPANDED: ExerciseCardProps = {
-  name: 'Cable Chest Press',
-  state: 'expanded',
-  onToggle: () => {},
-  summary: { sets: 3, reps: 10, weight: 90, unit: 'lbs' },
-  tempo: [2, 1, 2, 0],
-  sets: [
-    { mode: 'completed', setNumber: 1, previous: { reps: 10, weight: 90 }, reps: 10, weight: 90, rpe: 7.5, unit: 'lbs', velocities: perRep(10, 0.7) },
-    { mode: 'active', setNumber: 2, previous: { reps: 10, weight: 90 }, reps: null, weight: null, unit: 'lbs', isLive: true, targets: { reps: 10, weight: 90 }, velocities: perRep(5, 0.62) },
-    { mode: 'active', setNumber: 3, previous: { reps: 10, weight: 90 }, reps: null, weight: null, unit: 'lbs', isNextSet: false, targets: { reps: 10, weight: 90 } },
-  ],
+// ---- shared data (real prop shapes) ------------------------------------------------
+// Heading strip (SetStripSet[]): set1 done · set2 active 5/10 · set3 todo.
+const HEADING_STATES: SetStripSet[] = [
+  { status: 'done', velocities: decay(10, 1.05) },
+  { status: 'active', velocities: decay(5, 0.95, 0.3), planned: 10 },
+  { status: 'todo', planned: 10 },
+]
+// Expanded-body per-set rows (real SetRowProps).
+const BODY_SETS: SetRowProps[] = [
+  { mode: 'completed', setNumber: 1, previous: { reps: 10, weight: 90 }, reps: 10, weight: 90, rpe: 7.5, unit: 'lbs', velocities: decay(10, 1.05) },
+  { mode: 'active', setNumber: 2, previous: { reps: 10, weight: 90 }, reps: null, weight: null, unit: 'lbs', isLive: true, targets: { reps: 10, weight: 90 }, velocities: decay(5, 0.95, 0.3) },
+  { mode: 'active', setNumber: 3, previous: { reps: 10, weight: 90 }, reps: null, weight: null, unit: 'lbs', isNextSet: false, targets: { reps: 10, weight: 90 } },
+]
+
+// ---- the real unexpanded rail row, used as the persistent expansion header ---------
+function RailHeader() {
+  return (
+    <View style={{ position: 'relative', zIndex: 2, backgroundColor: RAISED }}>
+      <ExerciseCardHeading
+        name="Cable Chest Press"
+        sets={3}
+        reps={10}
+        load={90}
+        unit="lbs"
+        tempo={[2, 1, 2, 0]}
+        indicator="info"
+        setStates={HEADING_STATES}
+      />
+    </View>
+  )
 }
 
-const OPEN: [string, string][] = [
-  ['Drop PREV', 'The PREV column is reference data, not decision-relevant mid-set — operator wants it gone. Keeps set# · reps · weight · RPE.'],
-  ['Embed in the bar', 'Reps/RPE may be redundant with the per-rep velocity bar + the load at top. Explore riding reps/RPE/weight ON the velocity bar instead of a separate table row (a suite of iterations — like the heading was).'],
-  ['Live set', 'isLive landed (green “5/8” + grey remainder). In the expanded table it needs to read as clearly in-progress vs the not-started row below.'],
-  ['Read-only density', 'Rail is read-only. Candidates to drop for rail density: the TEMPO row, per-rep strips on every completed row. The heading already carries tempo + the set strip.'],
-]
+// ---- A · table body: real SetTableHeader + real SetRow (LOCKED: drop PREV, keep strips)
+function TableBody() {
+  return (
+    <View>
+      <SetTableHeader unit="lbs" showPrevious={false} />
+      {BODY_SETS.map((s, i) => (
+        <SetRow key={i} {...s} showPrevious={false} />
+      ))}
+    </View>
+  )
+}
+
+// ---- C · embed body: real VelocityStrip (full/expanded) per set + compact caption ---
+const capText = { fontFamily: 'Inter, sans-serif', fontSize: 11, fontWeight: '600' as const, color: T_PRIMARY }
+const dimText = { ...capText, color: T_SECONDARY, fontWeight: '500' as const }
+function EmbedSetRow({ s }: { s: SetRowProps }) {
+  const live = s.isLive
+  const todo = s.mode === 'active' && !s.isLive && s.reps == null
+  const done = s.mode === 'completed'
+  const vels = s.velocities ?? []
+  return (
+    <View
+      style={{
+        paddingVertical: 7,
+        paddingHorizontal: 10,
+        marginHorizontal: 2,
+        marginBottom: 4,
+        borderRadius: 8,
+        opacity: todo ? 0.55 : 1,
+        ...(live ? { backgroundColor: 'rgba(46,213,115,0.06)', borderWidth: 1, borderColor: 'rgba(46,213,115,0.30)' } : {}),
+      }}
+    >
+      <View style={{ flexDirection: 'row', alignItems: 'baseline', marginBottom: 6 }}>
+        <Text style={{ ...dimText, width: 22, color: T_TERTIARY }}>{s.setNumber}</Text>
+        {live ? (
+          <Text style={{ ...capText, color: GREEN, fontWeight: '700' }}>
+            {vels.length}/{s.targets?.reps} × {s.targets?.weight}
+          </Text>
+        ) : done ? (
+          <Text style={capText}>{s.reps} × {s.weight}</Text>
+        ) : (
+          <Text style={dimText}>{s.targets?.reps} × {s.targets?.weight}</Text>
+        )}
+        <View style={{ flex: 1 }} />
+        {s.rpe != null && <Text style={dimText}>RPE {s.rpe}</Text>}
+        {live && <Text style={{ ...capText, color: GREEN, fontWeight: '700' }}>live</Text>}
+      </View>
+      {vels.length > 0 ? (
+        <VelocityStrip velocities={vels} variant="full" expanded showInfo={false} />
+      ) : (
+        <View style={{ height: 24, flexDirection: 'row', gap: 2 }}>
+          {Array.from({ length: s.targets?.reps ?? 10 }).map((_, i) => (
+            <View key={i} style={{ flex: 1, height: 6, alignSelf: 'flex-end', backgroundColor: '#2C2C2C', borderRadius: 1, opacity: 0.5 }} />
+          ))}
+        </View>
+      )}
+    </View>
+  )
+}
+function EmbedBody() {
+  return (
+    <View style={{ paddingTop: 6 }}>
+      {BODY_SETS.map((s, i) => (
+        <EmbedSetRow key={i} s={s} />
+      ))}
+    </View>
+  )
+}
+
+// ---- expanded item = real rail header + revealed body ------------------------------
+function ExpandedItem({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <View style={{ gap: 8 }}>
+      <Text style={{ ...monoTag, color: T_SECONDARY }}>{label}</Text>
+      <View style={{ width: 260, backgroundColor: INSET, boxShadow: INSET_SHADOW, borderRadius: 4, overflow: 'hidden' } as object}>
+        <RailHeader />
+        <View style={{ backgroundColor: INSET, paddingBottom: 8, borderTopWidth: 1, borderTopColor: BORDER_SUBTLE }}>
+          {children}
+        </View>
+      </View>
+    </View>
+  )
+}
 
 const meta: Meta = { title: 'Lab/Explorations/Workout Expansion', parameters: { layout: 'fullscreen' } }
 export default meta
 type Story = StoryObj
 
-export const Framing: Story = {
-  name: 'Expanded item · current + open questions',
+export const DirectionStudy: Story = {
+  name: 'Expanded item · A table / C embed-in-bar (real components)',
   render: () => (
     <Page
-      title="Workout expansion — page 2 (early / framing)"
-      note="The real ExerciseCard expanded (responsive fit + isLive landed this session) in the rail. This is the NEXT exploration, not yet done — the panel lists the open questions. The big idea: embed reps/RPE/weight into the velocity bar and drop PREV."
+      title="Workout expansion — direction study (page 2)"
+      note="LOCKED (2026-07-10): body = direction A, the SetTableHeader+SetRow table, with PREV dropped (real showPrevious={false}) and the per-row velocity strips kept. C (per-rep VelocityStrip becomes the set row) shown for the record — rejected as too novel; the table already carries velocity shape via the per-row strip. Anchored on the REAL unexpanded rail row (ExerciseCardHeading) as the persistent header; data: set 1 done · set 2 live 5/10 · set 3 upcoming, velocities decaying within a set."
     >
-      <div style={{ display: 'flex', gap: 40, alignItems: 'flex-start', flexWrap: 'wrap' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <span style={{ fontFamily: 'monospace', fontSize: 11, color: T_SECONDARY }}>real ExerciseCard · expanded @ rail width</span>
-          <div style={{ width: 246, background: INSET, boxShadow: INSET_SHADOW, padding: '0 0 8px' }}>
-            <ExerciseCard {...EXPANDED} />
-          </div>
-        </div>
-        <div style={{ width: 360, display: 'flex', flexDirection: 'column', gap: 14 }}>
-          <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: 1.2, textTransform: 'uppercase', color: ORANGE }}>Open questions</span>
-          {OPEN.map(([k, v]) => (
-            <div key={k} style={{ display: 'flex', flexDirection: 'column', gap: 3, background: RAISED, borderRadius: 8, padding: '10px 12px' }}>
-              <span style={{ fontSize: 12, fontWeight: 800, color: T_PRIMARY }}>{k}</span>
-              <span style={{ fontSize: 12, lineHeight: 1.45, color: T_SECONDARY }}>{v}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      <View style={{ flexDirection: 'row', gap: 44, alignItems: 'flex-start', flexWrap: 'wrap' }}>
+        <View style={{ gap: 12 }}>
+          <Text style={sectionTitle}>A · Table (current body)</Text>
+          <ExpandedItem label="real SetTableHeader + SetRow">
+            <TableBody />
+          </ExpandedItem>
+        </View>
+        <View style={{ gap: 12 }}>
+          <Text style={sectionTitle}>C · Embed in the bar</Text>
+          <ExpandedItem label="real VelocityStrip (full) + caption">
+            <EmbedBody />
+          </ExpandedItem>
+        </View>
+      </View>
     </Page>
   ),
 }

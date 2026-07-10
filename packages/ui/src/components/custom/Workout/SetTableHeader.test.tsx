@@ -14,6 +14,16 @@ describe('SetTableHeader', () => {
     expect(header).toHaveTextContent('RPE')
   })
 
+  it('drops the PREV column when showPrevious is false', () => {
+    render(<SetTableHeader showPrevious={false} />)
+    const header = screen.getByTestId('table-header')
+    expect(header).not.toHaveTextContent('PREV')
+    // the other columns remain
+    expect(header).toHaveTextContent('SET')
+    expect(header).toHaveTextContent('REPS')
+    expect(header).toHaveTextContent('RPE')
+  })
+
   it('shows the KG weight column when unit is kg', () => {
     render(<SetTableHeader unit="kg" />)
     const header = screen.getByTestId('table-header')
