@@ -25,6 +25,17 @@ export interface SegmentedBarSegment {
    * (full opacity). Omit to fall back to the default opacity breathe.
    */
   pulseColor?: [from: string, to: string]
+  /**
+   * A fixed gap (px) carved in before this segment's slot — lets a composer split
+   * an otherwise-butted bar into sub-structure (drop notch, myo cluster) without a
+   * uniform {@link SegmentedBarProps.gap}. Default 0 (butted against the previous).
+   */
+  leadingGap?: number
+  /**
+   * Static fill opacity 0..1 for a non-pulsing segment (e.g. a fading "count
+   * unknown" trail). Ignored for `pulse` segments, which drive their own opacity.
+   */
+  opacity?: number
 }
 
 export interface SegmentedBarProps extends ViewProps {
@@ -100,6 +111,7 @@ export function SegmentedBar({
           width: `${(seg.fill ?? 1) * 100}%` as DimensionValue,
           height: '100%' as DimensionValue,
           backgroundColor: seg.color,
+          opacity: seg.opacity,
         }
         const testID = segmentTestID?.(seg, i) ?? 'segmented-bar-segment'
         return (
@@ -109,6 +121,7 @@ export function SegmentedBar({
               flex: seg.weight ?? 1,
               minWidth: 0,
               height: '100%',
+              marginLeft: seg.leadingGap,
               borderRadius: radius,
               overflow: 'hidden',
             }}

@@ -4,17 +4,40 @@ import { SetBar, type SetStripSet } from './SetBar'
 
 // Re-exported so the per-set colour vocabulary stays importable from either the
 // molecule (SetStrip) or the atom (SetBar) it now lives in.
-export { SET_STRIP_ZONES, velocityZoneColor, SetBar, type SetBarProps } from './SetBar'
+export {
+  SET_STRIP_ZONES,
+  SET_STRIP_VARIABLE_COLOR,
+  velocityZoneColor,
+  SetBar,
+  type SetBarProps,
+} from './SetBar'
 export type { SetStripSet } from './SetBar'
 
 /** Gap between set bars — ~2× the (zero) rep gap, so sets read as discrete units. */
 const SET_STRIP_GAP = 5
 
+/** Collapse a set (flat or set-type) to its glance category for the progress summary. */
+function setCategory(set: SetStripSet): 'done' | 'active' | 'upcoming' {
+  switch (set.status) {
+    case 'done':
+    case 'drop':
+    case 'myo':
+      return 'done'
+    case 'active':
+      return 'active'
+    case 'range':
+      return set.doneVels.length > 0 ? 'active' : 'upcoming'
+    case 'todo':
+    case 'myo-upcoming':
+      return 'upcoming'
+  }
+}
+
 function describeSets(sets: SetStripSet[]): string {
-  const done = sets.filter((s) => s.status === 'done').length
-  const active = sets.filter((s) => s.status === 'active').length
-  const todo = sets.filter((s) => s.status === 'todo').length
-  return `Set progress: ${done} done, ${active} in progress, ${todo} upcoming`
+  const done = sets.filter((s) => setCategory(s) === 'done').length
+  const active = sets.filter((s) => setCategory(s) === 'active').length
+  const upcoming = sets.filter((s) => setCategory(s) === 'upcoming').length
+  return `Set progress: ${done} done, ${active} in progress, ${upcoming} upcoming`
 }
 
 export interface SetStripProps extends ViewProps {

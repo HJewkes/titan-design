@@ -68,6 +68,16 @@ type props without pulling the dependency.
   `ExerciseCard`'s `rail` state is now a thin adapter that delegates to
   `ExerciseCardHeading` (so the heading is reusable without the card). `SetBar`
   owns the per-set colour/pulse logic; `SetStrip` lays several side by side.
+  Beyond the flat `done`/`active`/`todo` sets, `SetStripSet` models set-type
+  prescriptions: `range` (variable rep-range — range-max segments, committed-todo grey
+  vs. variable-todo cyan), `drop` (one set, sub-loads split by 2px notches), `myo`
+  (done rest-pause — activation + clusters split by 3px cluster gaps), and
+  `myo-upcoming` (planned myo, length unknown — grey activation + a fading, right-open
+  cyan "clusters-to-failure" trail). The chunk-size *pattern* carries set-type identity:
+  **butted reps (0) < notch (2px) < cluster gap (3px) < set gap (5px)**. `cyan-900`
+  (`SET_STRIP_VARIABLE_COLOR`) is the shared "variable / unknown / opportunity" pin.
+  `SegmentedBar` carries these via additive `leadingGap` (per-segment left margin) and
+  static `opacity` props — the flat sets stay byte-identical.
   `SetStrip`/`SetBar` colors are the real titan ramp pins (`primitiveRamps` red-600 /
   orange-400 / amber-300 / green-300); the rail surfaces bind to the charcoal ramp +
   a subtle neumorphic inset (`neumorphicShadows.charcoal.pressed.subtle`). The heading
