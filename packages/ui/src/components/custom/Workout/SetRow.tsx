@@ -32,6 +32,12 @@ export interface SetRowProps {
    * treatment; `velocities.length` is the reps-done count. Distinct from `isNextSet` (queued next).
    */
   isLive?: boolean
+  /**
+   * Show the PREV (previous-best) column. Default true; false blanks it to an empty
+   * flex spacer (rail density) so REPS/LOAD/RPE keep their positions. Pair with
+   * {@link SetTableHeader}'s `showPrevious`.
+   */
+  showPrevious?: boolean
 }
 
 function formatAccessibilityLabel(
@@ -63,6 +69,7 @@ export function SetRow({
   isNextSet,
   targets,
   isLive,
+  showPrevious = true,
 }: SetRowProps) {
   const isActive = mode === 'active'
   const isCompleted = mode === 'completed'
@@ -142,18 +149,20 @@ export function SetRow({
         style={{ minWidth: 44 }}
         testID="set-row-previous"
       >
-        <Text
-          className="text-text-secondary"
-          numberOfLines={1}
-          style={{
-            fontSize: 12,
-            fontFamily: 'Inter, sans-serif',
-          }}
-        >
-          {previous
-            ? `${previous.reps} x ${roundWeight(previous.weight)}`
-            : '\u2014'}
-        </Text>
+        {showPrevious && (
+          <Text
+            className="text-text-secondary"
+            numberOfLines={1}
+            style={{
+              fontSize: 12,
+              fontFamily: 'Inter, sans-serif',
+            }}
+          >
+            {previous
+              ? `${previous.reps} x ${roundWeight(previous.weight)}`
+              : '\u2014'}
+          </Text>
+        )}
       </View>
 
       <View

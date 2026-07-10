@@ -1,30 +1,46 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, Text } from 'react-native'
 
-// Column widths, in order: SET · PREV (flex) · REPS · LOAD · RPE. Matches SetRow's
-// per-cell widths so the header aligns over the rows beneath it.
-const COLUMN_WIDTHS: (number | undefined)[] = [36, undefined, 44, 56, 36]
+// One header column: its label and its fixed width (PREV is the lone flex column,
+// `undefined`). Order + widths mirror SetRow's cells so headers align over rows.
+type Column = { label: string; width: number | undefined }
 
 export interface SetTableHeaderProps {
   /** Weight-column label: LBS / KG. Default lbs. */
   unit?: 'lbs' | 'kg'
+  /** Show the PREV (previous-best) column. Default true; false drops it for rail density. */
+  showPrevious?: boolean
   /** Overridable so a host card can keep its own testID. Default "table-header". */
   testID?: string
 }
 
-/** Column labels; the weight column reflects the given unit (LBS / KG). */
-function buildColumnHeaders(unit: 'lbs' | 'kg'): string[] {
-  return ['SET', 'PREV', 'REPS', unit.toUpperCase(), 'RPE']
+// The flex (previous-best) column keeps its slot even when hidden — blanked to an
+// empty spacer — so REPS/LOAD/RPE hold the same positions over the full-width strip.
+const PREV_COLUMN: Column = { label: 'PREV', width: undefined }
+
+/** Columns in order, with the weight column reflecting `unit`; PREV blanked when hidden. */
+function buildColumns(unit: 'lbs' | 'kg', showPrevious: boolean): Column[] {
+  return [
+    { label: 'SET', width: 36 },
+    showPrevious ? PREV_COLUMN : { label: '', width: undefined },
+    { label: 'REPS', width: 44 },
+    { label: unit.toUpperCase(), width: 56 },
+    { label: 'RPE', width: 36 },
+  ]
 }
 
 /**
  * The expanded-set-table column-header row: SET · PREV · REPS · LOAD · RPE, with
- * the weight column reflecting `unit`. Its per-column widths mirror {@link SetRow}
- * so headers align over the rows. Extracted from {@link ExerciseCard}'s expanded
- * state so the expanded workout drawer can reuse it.
+ * the weight column reflecting `unit`. `showPrevious={false}` drops PREV (rail
+ * density). Its per-column widths mirror {@link SetRow} so headers align over the
+ * rows. Extracted from {@link ExerciseCard}'s expanded state for reuse.
  */
-export function SetTableHeader({ unit = 'lbs', testID = 'table-header' }: SetTableHeaderProps) {
-  const columnHeaders = buildColumnHeaders(unit)
+export function SetTableHeader({
+  unit = 'lbs',
+  showPrevious = true,
+  testID = 'table-header',
+}: SetTableHeaderProps) {
+  const columns = buildColumns(unit, showPrevious)
 
   return (
     <View
@@ -32,13 +48,12 @@ export function SetTableHeader({ unit = 'lbs', testID = 'table-header' }: SetTab
       style={{ paddingVertical: 8, paddingHorizontal: 8, paddingBottom: 4 }}
       testID={testID}
     >
-      {columnHeaders.map((header, i) => {
-        const width = COLUMN_WIDTHS[i]
+      {columns.map(({ label, width }) => {
         const isFlex = width === undefined
 
         return (
           <View
-            key={header}
+            key={label}
             style={{
               ...(isFlex ? { minWidth: 44 } : { width, flexShrink: 1 }),
               alignItems: 'center',
@@ -57,7 +72,7 @@ export function SetTableHeader({ unit = 'lbs', testID = 'table-header' }: SetTab
                 letterSpacing: 0.8,
               }}
             >
-              {header}
+              {label}
             </Text>
           </View>
         )

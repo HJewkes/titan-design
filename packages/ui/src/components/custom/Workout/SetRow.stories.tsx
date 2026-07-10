@@ -21,6 +21,10 @@ const meta: Meta<typeof SetRow> = {
       control: 'boolean',
       description: 'Whether this is the next set to perform',
     },
+    showPrevious: {
+      control: 'boolean',
+      description: 'Show the PREV column (false blanks it to a flex spacer for rail density)',
+    },
   },
 }
 

@@ -33,6 +33,15 @@ describe('SetRow', () => {
       expect(screen.getByTestId('set-row-previous')).toHaveTextContent('\u2014')
     })
 
+    it('blanks the previous column when showPrevious is false', () => {
+      render(
+        <SetRow {...baseProps} previous={{ reps: 6, weight: 130 }} showPrevious={false} />,
+      )
+      // the flex spacer stays (testID present so positions hold) but its value is gone
+      expect(screen.getByTestId('set-row-previous')).toBeInTheDocument()
+      expect(screen.getByTestId('set-row-previous')).not.toHaveTextContent('130')
+    })
+
     it('applies reduced opacity for non-next completed sets', () => {
       render(<SetRow {...baseProps} />)
       const row = screen.getByTestId('set-row')
