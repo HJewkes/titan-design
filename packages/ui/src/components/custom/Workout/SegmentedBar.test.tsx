@@ -33,6 +33,24 @@ describe('SegmentedBar', () => {
     expect(screen.getByTestId('segmented-bar')).toHaveStyle({ height: '4px' })
   })
 
+  it('carves a leading gap before a segment as a fixed left margin on its slot', () => {
+    render(
+      <SegmentedBar
+        segments={[{ color: '#D14343' }, { color: '#FF7900', leadingGap: 3 }]}
+        gap={0}
+        segmentTestID={(_, i) => `seg-${i}`}
+      />
+    )
+    const slot = (fill: string) => screen.getByTestId(fill).parentElement as HTMLElement
+    expect(slot('seg-0')).not.toHaveStyle({ marginLeft: '3px' })
+    expect(slot('seg-1')).toHaveStyle({ marginLeft: '3px' })
+  })
+
+  it('applies a static fill opacity to a non-pulsing segment', () => {
+    render(<SegmentedBar segments={[{ color: '#0B3149', opacity: 0.36 }]} />)
+    expect(screen.getByTestId('segmented-bar-segment')).toHaveStyle({ opacity: 0.36 })
+  })
+
   it('draws a marker line only when a marker is supplied', () => {
     const { rerender } = render(<SegmentedBar segments={threeSegments} />)
     expect(screen.queryByTestId('segmented-bar-marker')).not.toBeInTheDocument()

@@ -57,3 +57,68 @@ export const Active: Story = {
 export const Todo: Story = {
   args: { height: 8, set: { status: 'todo', planned: 10 } as SetStripSet },
 }
+
+export const Range: Story = {
+  args: {
+    height: 8,
+    set: { status: 'range', floor: 15, max: 20, doneVels: decay(17, 0.85) } as SetStripSet,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Variable rep-range (e.g. 15–20): range-max segments. Done reps are velocity-' +
+          'coloured (even past the floor), the committed-todo zone is grey, and the variable-' +
+          'todo zone (floor→max) is the cyan variable/opportunity pin.',
+      },
+    },
+  },
+}
+
+export const Drop: Story = {
+  args: {
+    height: 8,
+    set: { status: 'drop', subloads: [decay(10, 0.85), decay(8, 0.7), decay(6, 0.6)] } as SetStripSet,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'One set, no rest: sub-loads butted internally and split by 2px notches.',
+      },
+    },
+  },
+}
+
+export const Myo: Story = {
+  args: {
+    height: 8,
+    set: {
+      status: 'myo',
+      activation: decay(15, 0.75),
+      clusters: [decay(5, 0.6), decay(5, 0.55), decay(5, 0.5)],
+    } as SetStripSet,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Myo-rep / rest-pause (done): activation chunk + mini-clusters split by 3px gaps.',
+      },
+    },
+  },
+}
+
+export const MyoUpcoming: Story = {
+  args: {
+    height: 8,
+    set: { status: 'myo-upcoming', activationLen: 15 } as SetStripSet,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Planned myo, length unknown: grey activation + a fading cyan "clusters-to-failure" ' +
+          'trail whose right edge is left open — "more coming, count unknown".',
+      },
+    },
+  },
+}

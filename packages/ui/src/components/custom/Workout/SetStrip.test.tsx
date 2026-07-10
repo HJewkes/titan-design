@@ -71,6 +71,29 @@ describe('SetStrip', () => {
     ).toBeInTheDocument()
   })
 
+  it('categorises set-type variants in the progress summary', () => {
+    // drop + myo read as done · a started range reads in progress · myo-upcoming reads upcoming
+    const sets: SetStripSet[] = [
+      { status: 'drop', subloads: [[0.8], [0.7]] },
+      { status: 'myo', activation: [0.75], clusters: [[0.6]] },
+      { status: 'range', floor: 15, max: 20, doneVels: [0.9, 0.85] },
+      { status: 'myo-upcoming', activationLen: 12 },
+    ]
+    render(<SetStrip sets={sets} />)
+    expect(
+      screen.getByLabelText('Set progress: 2 done, 1 in progress, 1 upcoming')
+    ).toBeInTheDocument()
+  })
+
+  it('renders one bar per set across mixed set-type variants', () => {
+    const sets: SetStripSet[] = [
+      { status: 'drop', subloads: [[0.8, 0.7], [0.6]] },
+      { status: 'range', floor: 3, max: 5, doneVels: [] },
+    ]
+    render(<SetStrip sets={sets} />)
+    expect(screen.getAllByTestId('set-strip-set')).toHaveLength(2)
+  })
+
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const sets: SetStripSet[] = [
