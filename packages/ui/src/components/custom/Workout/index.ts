@@ -57,6 +57,7 @@ export {
   type SetStripProps,
   type SetStripSet,
   SET_STRIP_ZONES,
+  SET_STRIP_VARIABLE_COLOR,
   velocityZoneColor,
 } from './SetStrip'
 export {
