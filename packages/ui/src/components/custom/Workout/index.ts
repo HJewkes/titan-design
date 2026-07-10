@@ -62,6 +62,8 @@ export {
 } from './SetStrip'
 export {
   ExerciseIndicator,
+  resolveIndicator,
+  INDICATOR_PRECEDENCE,
   type ExerciseIndicatorProps,
   type ExerciseIndicatorKind,
 } from './ExerciseIndicator'

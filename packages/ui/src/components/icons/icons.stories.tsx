@@ -10,6 +10,12 @@ import {
   HistoryIcon,
   LayersIcon,
   PersonStandingIcon,
+  ScaleIcon,
+  AlertTriangleIcon,
+  TrendingDownIcon,
+  CircleSlashIcon,
+  AwardIcon,
+  InfoIcon,
 } from './icons'
 
 const meta: Meta = {
@@ -79,6 +85,36 @@ export const All: Story = {
       <Swatch label="PersonStandingIcon">
         <View className="text-text-primary">
           <PersonStandingIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="ScaleIcon">
+        <View className="text-status-error">
+          <ScaleIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="AlertTriangleIcon">
+        <View className="text-status-error">
+          <AlertTriangleIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="TrendingDownIcon">
+        <View className="text-status-warning">
+          <TrendingDownIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="CircleSlashIcon">
+        <View className="text-status-warning">
+          <CircleSlashIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="AwardIcon">
+        <View className="text-status-success">
+          <AwardIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="InfoIcon">
+        <View className="text-status-info">
+          <InfoIcon size={28} />
         </View>
       </Swatch>
     </View>

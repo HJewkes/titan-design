@@ -10,6 +10,12 @@ import {
   HistoryIcon,
   LayersIcon,
   PersonStandingIcon,
+  ScaleIcon,
+  AlertTriangleIcon,
+  TrendingDownIcon,
+  CircleSlashIcon,
+  AwardIcon,
+  InfoIcon,
 } from './icons'
 import { SvgIcon } from './SvgIcon'
 
@@ -24,6 +30,12 @@ describe('icon primitives', () => {
       HistoryIcon,
       LayersIcon,
       PersonStandingIcon,
+      ScaleIcon,
+      AlertTriangleIcon,
+      TrendingDownIcon,
+      CircleSlashIcon,
+      AwardIcon,
+      InfoIcon,
     ].forEach((Icon) => {
       const { container, unmount } = render(<Icon />)
       expect(container.querySelector('svg')).toBeInTheDocument()
