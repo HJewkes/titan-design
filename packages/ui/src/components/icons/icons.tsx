@@ -86,3 +86,68 @@ export function PersonStandingIcon(props: IconProps) {
     </SvgIcon>
   )
 }
+
+/** Balance-scale glyph (mirrors lucide-react `Scale`). ExerciseIndicator → `imbalance`. */
+export function ScaleIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+      <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+      <path d="M7 21h10" />
+      <path d="M12 3v18" />
+      <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2" />
+    </SvgIcon>
+  )
+}
+
+/** Warning-triangle glyph (mirrors lucide-react `AlertTriangle`). ExerciseIndicator → `overshoot`. */
+export function AlertTriangleIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+      <path d="M12 9v4" />
+      <path d="M12 17h.01" />
+    </SvgIcon>
+  )
+}
+
+/** Down-trend glyph (mirrors lucide-react `TrendingDown`). ExerciseIndicator → `velocity-loss`. */
+export function TrendingDownIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="M16 17h6v-6" />
+      <path d="m22 17-8.5-8.5-5 5L2 7" />
+    </SvgIcon>
+  )
+}
+
+/** Slashed-circle glyph (mirrors lucide-react `CircleSlash`). ExerciseIndicator → `missed-reps`. */
+export function CircleSlashIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <circle cx="12" cy="12" r="10" />
+      <path d="m9 15 6-6" />
+    </SvgIcon>
+  )
+}
+
+/** Medal glyph (mirrors lucide-react `Award`). ExerciseIndicator → `pr`. */
+export function AwardIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526" />
+      <circle cx="12" cy="8" r="6" />
+    </SvgIcon>
+  )
+}
+
+/** Info-circle glyph (mirrors lucide-react `Info`). ExerciseIndicator → `info`. */
+export function InfoIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 16v-4" />
+      <path d="M12 8h.01" />
+    </SvgIcon>
+  )
+}

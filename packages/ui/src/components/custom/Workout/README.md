@@ -84,6 +84,27 @@ type props without pulling the dependency.
   SVGs (`./icons.tsx`), not `lucide-react` — that dependency was dropped in 0.5.0
   to keep the root barrel light. The SVG paths mirror lucide's glyphs so rendering
   is unchanged.
+- **`ExerciseIndicator` taxonomy (LOCKED, TD-03.51)** — one precedence-ranked slot
+  per exercise, six distinct kinds over four tier colors (bound to titan status
+  tokens, read as literal hex via `getSemanticColors('dark')` — the TempoBar
+  pattern). Glyph = the specific signal; color = the severity tier. Chips are
+  outlined (border + glyph, no fill) so they never collide with the *filled*
+  velocity strip, and static (no pulse — they are chrome). Precedence, high → low:
+
+  | # | kind | tier | glyph (mirrors lucide) |
+  |---|------|------|------------------------|
+  | 1 | `imbalance` | danger (`status-error`) | `Scale` |
+  | 2 | `overshoot` | danger (`status-error`) | `AlertTriangle` |
+  | 3 | `velocity-loss` | warning (`status-warning`) | `TrendingDown` |
+  | 4 | `missed-reps` | warning (`status-warning`) | `CircleSlash` |
+  | 5 | `pr` | success (`status-success`) | `Award` |
+  | 6 | `info` | info (`status-info`) | `Info` |
+
+  `resolveIndicator(candidates)` collapses the active signals to the single
+  highest-precedence kind to show (`undefined` when none). Alerts outrank `pr`. The
+  glyphs are new inline SVGs in the shared `components/icons` set (not the local
+  `./icons.tsx` badge glyphs). The old generic `issue` kind is superseded by the
+  specific danger/warning kinds and was removed.
 
 ## Shell/SessionRail feature area
 

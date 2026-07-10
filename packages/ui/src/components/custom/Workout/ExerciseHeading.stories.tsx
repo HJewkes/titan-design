@@ -26,7 +26,10 @@ const meta: Meta<typeof ExerciseHeading> = {
   },
   argTypes: {
     unit: { control: 'select', options: ['lbs', 'kg'] },
-    indicator: { control: 'select', options: [undefined, 'pr', 'issue', 'info'] },
+    indicator: {
+      control: 'select',
+      options: [undefined, 'imbalance', 'overshoot', 'velocity-loss', 'missed-reps', 'pr', 'info'],
+    },
     dimmed: { control: 'boolean' },
     onPress: { action: 'press' },
   },

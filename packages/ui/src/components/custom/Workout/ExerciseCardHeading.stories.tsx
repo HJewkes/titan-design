@@ -27,7 +27,10 @@ const meta: Meta<typeof ExerciseCardHeading> = {
   },
   argTypes: {
     unit: { control: 'select', options: ['lbs', 'kg'] },
-    indicator: { control: 'select', options: [undefined, 'pr', 'issue', 'info'] },
+    indicator: {
+      control: 'select',
+      options: [undefined, 'imbalance', 'overshoot', 'velocity-loss', 'missed-reps', 'pr', 'info'],
+    },
     stripHeight: { control: { type: 'range', min: 2, max: 16, step: 1 } },
     dimmed: { control: 'boolean' },
     onPress: { action: 'press' },
