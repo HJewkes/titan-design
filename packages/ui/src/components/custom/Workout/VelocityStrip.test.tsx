@@ -335,8 +335,11 @@ describe('VelocityStrip all-zero velocities (NaN guard)', () => {
 const TODO_GREY = '#2C2C2C'
 const VARIABLE_CYAN = '#0B3149'
 const CONTINUE_OUTLINE = '#22465F'
-const REP_GAP_PX = '2px'
-const WIDE_GAP_PX = '7px'
+// The mini container carries a uniform 2px rep gap; per-slot marginLeft adds only
+// the EXTRA for a wide chunk boundary (2px gap + 5px = 7px effective).
+const CONTAINER_GAP_PX = '2px'
+const REP_SLOT_ML = '0px' // a butted rep — no extra margin (the 2px gap is on the container)
+const WIDE_SLOT_ML = '5px' // drop / myo / cluster chunk boundary — 2 + 5 = 7px effective
 
 describe('VelocityStrip set-type modes (mini)', () => {
   it('straight: done reps colored + grey todo remainder to the planned count', () => {
@@ -390,9 +393,9 @@ describe('VelocityStrip set-type modes (mini)', () => {
     // 6 reps total; the first rep of each later sub-load carries the wide gap.
     expect(screen.getAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(6)
     expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ marginLeft: '0px' })
-    expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ marginLeft: REP_GAP_PX })
-    expect(screen.getByTestId('velocity-bar-2')).toHaveStyle({ marginLeft: WIDE_GAP_PX })
-    expect(screen.getByTestId('velocity-bar-4')).toHaveStyle({ marginLeft: WIDE_GAP_PX })
+    expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ marginLeft: REP_SLOT_ML })
+    expect(screen.getByTestId('velocity-bar-2')).toHaveStyle({ marginLeft: WIDE_SLOT_ML })
+    expect(screen.getByTestId('velocity-bar-4')).toHaveStyle({ marginLeft: WIDE_SLOT_ML })
   })
 
   it('myo: activation + clusters split by WIDE gaps, open adds a cyan continue', () => {
@@ -409,8 +412,8 @@ describe('VelocityStrip set-type modes (mini)', () => {
     )
     // activation 3 + cluster 2 + cluster 2 = 7 reps + a continue slot.
     expect(screen.getAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(7)
-    expect(screen.getByTestId('velocity-bar-3')).toHaveStyle({ marginLeft: WIDE_GAP_PX })
-    expect(screen.getByTestId('velocity-bar-5')).toHaveStyle({ marginLeft: WIDE_GAP_PX })
+    expect(screen.getByTestId('velocity-bar-3')).toHaveStyle({ marginLeft: WIDE_SLOT_ML })
+    expect(screen.getByTestId('velocity-bar-5')).toHaveStyle({ marginLeft: WIDE_SLOT_ML })
     expect(screen.getByTestId('velocity-slot-continue')).toBeInTheDocument()
   })
 
@@ -435,8 +438,8 @@ describe('VelocityStrip set-type modes (mini)', () => {
     expect(screen.getAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(5)
     expect(screen.getAllByTestId('velocity-slot-todo')).toHaveLength(3)
     expect(screen.queryByTestId('velocity-slot-continue')).not.toBeInTheDocument()
-    expect(screen.getByTestId('velocity-bar-2')).toHaveStyle({ marginLeft: WIDE_GAP_PX })
-    expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ marginLeft: REP_GAP_PX })
+    expect(screen.getByTestId('velocity-bar-2')).toHaveStyle({ marginLeft: WIDE_SLOT_ML })
+    expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ marginLeft: REP_SLOT_ML })
   })
 
   it('back-compat: a velocities-only mini strip is unchanged (rep colors, rep gaps only)', () => {
@@ -446,8 +449,10 @@ describe('VelocityStrip set-type modes (mini)', () => {
     expect(screen.queryByTestId('velocity-slot-variable')).not.toBeInTheDocument()
     expect(screen.queryByTestId('velocity-slot-continue')).not.toBeInTheDocument()
     expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ marginLeft: '0px' })
-    expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ marginLeft: REP_GAP_PX })
+    expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ marginLeft: REP_SLOT_ML })
     expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: '#2ED573' })
+    // the 2px rep spacing lives on the container gap (preserving HTML-parity), not per-slot margins
+    expect(screen.getByTestId('velocity-strip-mini')).toHaveStyle({ gap: CONTAINER_GAP_PX })
   })
 
   it('derives the summary from a set descriptor (mean / loss info row)', () => {

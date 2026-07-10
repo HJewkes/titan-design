@@ -473,14 +473,14 @@ export function VelocityStrip({
 
   if (variant === 'mini') {
     const { style: externalStyle, ...restProps } = props
-    // The container drops its uniform `gap` — per-slot `marginLeft` carries the
-    // gap hierarchy (REP_GAP butts reps; WIDE_GAP notches drop / myo / cluster
-    // chunks). A no-`set` strip is [0, 2, 2, …] here, i.e. the old uniform gap.
+    // The container keeps the uniform REP_GAP (so a no-`set` strip is byte-identical
+    // to prior releases and holds HTML-parity); per-slot `marginLeft` carries only
+    // the EXTRA spacing for the WIDE notch that chunks drop / myo / cluster sets.
     return (
       <View
         className={className}
         style={[
-          { flexDirection: 'row', height: 3, borderRadius: 2, overflow: 'hidden' },
+          { flexDirection: 'row', height: 3, gap: REP_GAP, borderRadius: 2, overflow: 'hidden' },
           externalStyle,
         ]}
         accessibilityRole="image"
@@ -497,7 +497,7 @@ export function VelocityStrip({
               borderRadius: 1,
               minWidth: 4,
               height: '100%' as unknown as number,
-              marginLeft: slot.leadingGap,
+              marginLeft: Math.max(0, slot.leadingGap - REP_GAP),
               ...(slot.kind === 'continue'
                 ? { borderWidth: 1, borderColor: CONTINUE_OUTLINE }
                 : {}),
