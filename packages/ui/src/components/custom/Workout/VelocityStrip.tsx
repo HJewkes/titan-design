@@ -208,8 +208,12 @@ interface VelocitySlot {
 
 /** Butted reps carry this gap; chunk boundaries carry {@link WIDE_GAP}. */
 const REP_GAP = 2
-/** Drop sub-load notch / myo cluster gap / cluster intra-rest gap — one wide value carries the chunk identity. */
-const WIDE_GAP = 7
+/**
+ * Drop sub-load notch / myo cluster gap / cluster intra-rest gap — one wide value
+ * carries the chunk identity. 6× the rep gap so groups read as separate even at
+ * wall-dashboard scale (glanced across the room).
+ */
+const WIDE_GAP = 12
 
 /** Grey fill for planned-but-unperformed reps (charcoal placeholder, literal hex). */
 const TODO_COLOR = primitiveColors.charcoal[300]
