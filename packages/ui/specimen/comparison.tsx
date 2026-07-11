@@ -46,8 +46,8 @@ const HTML_CSS = `
     --result-improve: #4caf50;
     --result-degrade: #ef5350;
     --vel-red: #d14343;
-    --vel-orange: #f9b415;
-    --vel-yellow: #ffd352;
+    --vel-orange: #ff7900;
+    --vel-yellow: #f9b415;
     --vel-green: #2ed573;
     --font-heading: 'Space Grotesk', sans-serif;
     --font-ui: 'Nunito Sans', sans-serif;

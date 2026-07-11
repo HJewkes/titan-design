@@ -265,9 +265,17 @@ const compoundBands = [
 describe('VelocityStrip zones prop', () => {
   it('colors bars from the supplied bands (mini)', () => {
     render(<VelocityStrip velocities={[1.1, 0.45]} zones={compoundBands} variant="mini" />)
-    // 1.1 -> speed -> green; 0.45 -> maximalStrength -> red (shared with grinding).
+    // 1.1 -> speed -> green; 0.45 -> maximalStrength -> red-600.
     expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: '#2ED573' })
     expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ backgroundColor: '#D14343' })
+  })
+
+  it('gives grinding and maximalStrength DISTINCT reds (5-band, no collapse)', () => {
+    // The 5-band taxonomy samples 5 stops of the effort ramp: maximalStrength =
+    // red-600 (#D14343), grinding = red-700 (#A4221C). They no longer share one red.
+    render(<VelocityStrip velocities={[0.45, 0.2]} zones={compoundBands} variant="mini" />)
+    expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: '#D14343' }) // maximalStrength
+    expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ backgroundColor: '#A4221C' }) // grinding
   })
 
   it('labels the summary row with the band containing the mean velocity', () => {
