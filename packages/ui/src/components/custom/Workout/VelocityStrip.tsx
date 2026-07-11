@@ -74,7 +74,17 @@ export interface VelocityStripProps extends ViewProps {
   expanded?: boolean
   onToggle?: () => void
   onRepPress?: (index: number, velocity: number) => void
-  variant?: 'full' | 'mini'
+  /**
+   * `full` — the tap-to-expand chart (flat 3px collapsed → 60px expanded with
+   * per-bar labels + a mean/loss info row, plus the mount animation). `mini` — a
+   * flat 3px static strip (set-type aware). `compact` — a small fixed-height
+   * (~24px) velocity-HEIGHT strip: bar height ∝ velocity, set-type aware, but with
+   * none of the full variant's chrome (no labels, no info row, no animation). The
+   * compact variant is the active-set "spotlight" of the unified {@link ExerciseCard}.
+   */
+  variant?: 'full' | 'mini' | 'compact'
+  /** Compact-variant bar height in px (bar heights scale to this). Default 24. */
+  compactHeight?: number
   showInfo?: boolean
   className?: string
 }
@@ -338,6 +348,24 @@ const EXPANDED_TODO_STUB_PCT = 16
 /** Expanded height for advanced set-types (drop / myo / cluster / range / amrap): a short mini-style bar. */
 const EXPANDED_ENCODED_PCT = 45
 
+/** Default compact-variant strip height (px) — the active-set spotlight. */
+const COMPACT_HEIGHT = 24
+/**
+ * Fixed velocity ceiling (m/s) the compact bar heights scale against. Unlike the
+ * expanded path (which scales to the set's own peak), the compact variant uses a
+ * FIXED ceiling so a bar's height reads the same absolute velocity across sets.
+ */
+const COMPACT_MAX_VELOCITY = 1.15
+/** Minimum compact bar height (px) — a planned / variable / continue stub, or a near-zero rep. */
+const COMPACT_STUB_HEIGHT = 3
+
+/** Compact bar height (px): velocity-scaled for a performed rep, a short stub otherwise. */
+function compactSlotHeight(slot: VelocitySlot, height: number): number {
+  if (slot.kind !== 'rep') return COMPACT_STUB_HEIGHT
+  const ratio = Math.min(1, (slot.velocity ?? 0) / COMPACT_MAX_VELOCITY)
+  return Math.max(COMPACT_STUB_HEIGHT, ratio * height)
+}
+
 function getReducedMotionPreference(): boolean {
   if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -370,6 +398,7 @@ export function VelocityStrip({
   onToggle,
   onRepPress,
   variant = 'full',
+  compactHeight = COMPACT_HEIGHT,
   showInfo = true,
   className,
   ...props
@@ -412,7 +441,7 @@ export function VelocityStrip({
   const liveVelocity = liveRepIndex != null ? doneVelocities[liveRepIndex] : undefined
   const isNewPeak = liveVelocity != null && maxVelocity > 0 && liveVelocity === maxVelocity
   useEffect(() => {
-    if (variant === 'mini' || liveRepIndex == null || liveVelocity == null) return
+    if (variant !== 'full' || liveRepIndex == null || liveVelocity == null) return
     if (prefersReducedMotion) {
       liveScale.setValue(1)
       return
@@ -445,7 +474,7 @@ export function VelocityStrip({
   }, [variant, liveRepIndex, liveVelocity, isNewPeak, prefersReducedMotion, liveScale])
 
   useEffect(() => {
-    if (variant === 'mini') return
+    if (variant !== 'full') return
 
     Animated.parallel([
       Animated.timing(heightAnim, {
@@ -503,6 +532,45 @@ export function VelocityStrip({
               height: '100%' as unknown as number,
               // The container's uniform 2px gap covers rep spacing; a wide slot adds
               // only the EXTRA (WIDE_GAP − REP_GAP) so the notch totals WIDE_GAP.
+              marginLeft: Math.max(0, slot.leadingGap - REP_GAP),
+              ...(slot.kind === 'continue'
+                ? { borderWidth: 1, borderColor: CONTINUE_OUTLINE }
+                : {}),
+            }}
+            accessibilityElementsHidden
+            testID={slot.kind === 'rep' ? `velocity-bar-${i}` : `velocity-slot-${slot.kind}`}
+          />
+        ))}
+      </View>
+    )
+  }
+
+  if (variant === 'compact') {
+    const { style: externalStyle, ...restProps } = props
+    // Velocity-HEIGHT bars at a fixed small height, no chrome. Set-type gaps carry
+    // over from the slot model exactly as in `mini` (container REP_GAP + per-slot
+    // extra for a WIDE notch); planned / variable / continue slots draw as stubs.
+    return (
+      <View
+        className={className}
+        style={[
+          { flexDirection: 'row', height: compactHeight, gap: REP_GAP, alignItems: 'flex-end' },
+          externalStyle,
+        ]}
+        accessibilityRole="image"
+        accessibilityLabel={miniLabel}
+        testID="velocity-strip-compact"
+        {...restProps}
+      >
+        {slots.map((slot, i) => (
+          <View
+            key={i}
+            style={{
+              flex: 1,
+              minWidth: 4,
+              height: compactSlotHeight(slot, compactHeight),
+              borderRadius: 1,
+              backgroundColor: slotColor(slot),
               marginLeft: Math.max(0, slot.leadingGap - REP_GAP),
               ...(slot.kind === 'continue'
                 ? { borderWidth: 1, borderColor: CONTINUE_OUTLINE }
