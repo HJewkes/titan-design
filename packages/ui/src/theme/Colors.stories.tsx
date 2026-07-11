@@ -1,6 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
-import { primitiveColors, discreteRainbow, primitiveRamps, categoricalPalette } from './tokens/primitives'
+import {
+  primitiveColors,
+  discreteRainbow,
+  primitiveRamps,
+  categoricalPalette,
+} from './tokens/primitives'
 import { semanticColorsLight, semanticColorsDark } from './tokens/semantic'
 
 const meta: Meta = {
@@ -32,12 +37,8 @@ function ColorSwatch({ name, value, textColor = '#FFFFFF' }: ColorSwatchProps) {
         }}
       />
       <View>
-        <Text className="font-semibold text-text-primary text-sm">
-          {name}
-        </Text>
-        <Text className="text-text-secondary text-xs">
-          {displayValue}
-        </Text>
+        <Text className="font-semibold text-text-primary text-sm">{name}</Text>
+        <Text className="text-text-secondary text-xs">{displayValue}</Text>
       </View>
     </View>
   )
@@ -46,9 +47,7 @@ function ColorSwatch({ name, value, textColor = '#FFFFFF' }: ColorSwatchProps) {
 function ColorScale({ name, colors }: { name: string; colors: Record<string | number, string> }) {
   return (
     <View style={{ marginBottom: 32 }}>
-      <Text className="text-lg font-bold text-text-primary mb-3">
-        {name}
-      </Text>
+      <Text className="text-lg font-bold text-text-primary mb-3">{name}</Text>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
         {Object.entries(colors).map(([shade, color]) => (
           <View key={shade} style={{ alignItems: 'center' }}>
@@ -62,9 +61,7 @@ function ColorScale({ name, colors }: { name: string; colors: Record<string | nu
                 borderColor: '#374151',
               }}
             />
-            <Text className="text-text-secondary text-xs mt-1">
-              {shade}
-            </Text>
+            <Text className="text-text-secondary text-xs mt-1">{shade}</Text>
           </View>
         ))}
       </View>
@@ -75,9 +72,7 @@ function ColorScale({ name, colors }: { name: string; colors: Record<string | nu
 export const PrimitiveColors: StoryObj = {
   render: () => (
     <View style={{ padding: 24 }}>
-      <Text className="text-2xl font-bold text-text-primary mb-6">
-        Primitive Colors
-      </Text>
+      <Text className="text-2xl font-bold text-text-primary mb-6">Primitive Colors</Text>
       <Text className="text-text-secondary mb-6">
         Raw color values. Chromatic hues live as OKLCH tonal ramps (see the Tonal Ramps story);
         these are the achromatic and support scales. Use semantic tokens when building components.
@@ -95,17 +90,24 @@ export const PrimitiveColors: StoryObj = {
 export const BrandColors: StoryObj = {
   render: () => (
     <View style={{ padding: 24 }}>
-      <Text className="text-2xl font-bold text-text-primary mb-6">
-        Brand Colors
-      </Text>
+      <Text className="text-2xl font-bold text-text-primary mb-6">Brand Colors</Text>
 
       <View style={{ gap: 16 }}>
         <ColorSwatch name="brand-primary" value={semanticColorsLight['brand-primary']} />
-        <ColorSwatch name="brand-primary-light" value={semanticColorsLight['brand-primary-light']} />
+        <ColorSwatch
+          name="brand-primary-light"
+          value={semanticColorsLight['brand-primary-light']}
+        />
         <ColorSwatch name="brand-primary-dark" value={semanticColorsLight['brand-primary-dark']} />
         <ColorSwatch name="brand-secondary" value={semanticColorsLight['brand-secondary']} />
-        <ColorSwatch name="brand-secondary-light" value={semanticColorsLight['brand-secondary-light']} />
-        <ColorSwatch name="brand-secondary-dark" value={semanticColorsLight['brand-secondary-dark']} />
+        <ColorSwatch
+          name="brand-secondary-light"
+          value={semanticColorsLight['brand-secondary-light']}
+        />
+        <ColorSwatch
+          name="brand-secondary-dark"
+          value={semanticColorsLight['brand-secondary-dark']}
+        />
       </View>
     </View>
   ),
@@ -114,9 +116,7 @@ export const BrandColors: StoryObj = {
 export const StatusColors: StoryObj = {
   render: () => (
     <View style={{ padding: 24 }}>
-      <Text className="text-2xl font-bold text-text-primary mb-6">
-        Status Colors
-      </Text>
+      <Text className="text-2xl font-bold text-text-primary mb-6">Status Colors</Text>
 
       <View style={{ gap: 16 }}>
         <ColorSwatch name="status-success" value={semanticColorsLight['status-success']} />
@@ -131,9 +131,7 @@ export const StatusColors: StoryObj = {
 export const TextColors: StoryObj = {
   render: () => (
     <View style={{ padding: 24 }}>
-      <Text className="text-2xl font-bold text-text-primary mb-6">
-        Text Colors (Dark Mode)
-      </Text>
+      <Text className="text-2xl font-bold text-text-primary mb-6">Text Colors (Dark Mode)</Text>
 
       <View style={{ gap: 16 }}>
         <ColorSwatch name="text-primary" value={semanticColorsDark['text-primary']} />
@@ -149,9 +147,7 @@ export const TextColors: StoryObj = {
 export const SurfaceColors: StoryObj = {
   render: () => (
     <View style={{ padding: 24 }}>
-      <Text className="text-2xl font-bold text-text-primary mb-6">
-        Surface Colors (Dark Mode)
-      </Text>
+      <Text className="text-2xl font-bold text-text-primary mb-6">Surface Colors (Dark Mode)</Text>
 
       <View style={{ gap: 16 }}>
         <ColorSwatch name="surface-base" value={semanticColorsDark['surface-base']} />
@@ -168,34 +164,52 @@ export const SurfaceColors: StoryObj = {
 export const ResultColors: StoryObj = {
   render: () => (
     <View style={{ padding: 24 }}>
-      <Text className="text-2xl font-bold text-text-primary mb-6">
-        Result/Outcome Colors
-      </Text>
+      <Text className="text-2xl font-bold text-text-primary mb-6">Result/Outcome Colors</Text>
       <Text className="text-text-secondary mb-6">
         Colors for indicating positive, negative, or neutral outcomes.
       </Text>
 
       <View style={{ gap: 16 }}>
         <ColorSwatch name="result-improve" value={semanticColorsLight['result-improve']} />
-        <ColorSwatch name="result-improve-light" value={semanticColorsLight['result-improve-light']} />
+        <ColorSwatch
+          name="result-improve-light"
+          value={semanticColorsLight['result-improve-light']}
+        />
         <ColorSwatch name="result-degrade" value={semanticColorsLight['result-degrade']} />
-        <ColorSwatch name="result-degrade-light" value={semanticColorsLight['result-degrade-light']} />
-        <ColorSwatch name="result-inconclusive" value={semanticColorsLight['result-inconclusive']} />
-        <ColorSwatch name="result-inconclusive-light" value={semanticColorsLight['result-inconclusive-light']} />
+        <ColorSwatch
+          name="result-degrade-light"
+          value={semanticColorsLight['result-degrade-light']}
+        />
+        <ColorSwatch
+          name="result-inconclusive"
+          value={semanticColorsLight['result-inconclusive']}
+        />
+        <ColorSwatch
+          name="result-inconclusive-light"
+          value={semanticColorsLight['result-inconclusive-light']}
+        />
         <ColorSwatch name="result-neutral" value={semanticColorsLight['result-neutral']} />
       </View>
     </View>
   ),
 }
 
-export const DataVisualizationColors: StoryObj = {
+/**
+ * LEGACY — superseded. The Paul-Tol `discreteRainbow` scale behind the `data-1..10`
+ * tokens is no longer used by any component; charts and qualitative series now use
+ * the {@link CategoricalPalette} (CVD-safe, nested-stable). Kept only to document the
+ * still-defined `--color-data-N` tokens; see `CategoricalPalette` for current work.
+ */
+export const LegacyDataVisualizationColors: StoryObj = {
   render: () => (
     <View style={{ padding: 24 }}>
-      <Text className="text-2xl font-bold text-text-primary mb-6">
-        Data Visualization Colors
+      <Text className="text-2xl font-bold text-text-primary mb-2">
+        Data Visualization Colors — Legacy
       </Text>
       <Text className="text-text-secondary mb-6">
-        Colors optimized for charts and data visualization. Based on Paul Tol&apos;s color schemes.
+        SUPERSEDED. Paul Tol&apos;s discrete-rainbow scale behind the `data-1..10` tokens — no
+        longer used by any component. Use the Categorical Palette (below) for charts and qualitative
+        series; this is retained only to document the still-defined tokens.
       </Text>
 
       <View style={{ gap: 16 }}>
@@ -263,12 +277,11 @@ function CategoricalRow({ name, colors }: { name: string; colors: readonly strin
 export const TonalRamps: StoryObj = {
   render: () => (
     <View style={{ padding: 24 }}>
-      <Text className="text-2xl font-bold text-text-primary mb-6">
-        Tonal Ramps (Foundations)
-      </Text>
+      <Text className="text-2xl font-bold text-text-primary mb-6">Tonal Ramps (Foundations)</Text>
       <Text className="text-text-secondary mb-6">
-        Seven OKLCH-generated hue ramps, 11 perceptual steps each (50 → 950). Built with hue-torsion and a
-        chroma arc; amber absorbs the former yellow (lemon → warm body) and cyan absorbs the former steel.
+        Seven OKLCH-generated hue ramps, 11 perceptual steps each (50 → 950). Built with hue-torsion
+        and a chroma arc; amber absorbs the former yellow (lemon → warm body) and cyan absorbs the
+        former steel.
       </Text>
 
       <ColorScale name="Red" colors={primitiveRamps.red} />
@@ -285,14 +298,13 @@ export const TonalRamps: StoryObj = {
 export const CategoricalPalette: StoryObj = {
   render: () => (
     <View style={{ padding: 24 }}>
-      <Text className="text-2xl font-bold text-text-primary mb-6">
-        Categorical Palette
-      </Text>
+      <Text className="text-2xl font-bold text-text-primary mb-6">Categorical Palette</Text>
       <Text className="text-text-secondary mb-6">
-        Ordered, colorblind-safe qualitative series (worst-case deut/protanopia floor 8 through the first
-        six colors; the 7th is extended — pair it with a legend). Series index is stable. Use{' '}
-        <Text className="font-semibold">default</Text> on neutral/light surfaces (also legible under black
-        text) and <Text className="font-semibold">dark</Text> where white text sits on the swatch.
+        Ordered, colorblind-safe qualitative series (worst-case deut/protanopia floor 8 through the
+        first six colors; the 7th is extended — pair it with a legend). Series index is stable. Use{' '}
+        <Text className="font-semibold">default</Text> on neutral/light surfaces (also legible under
+        black text) and <Text className="font-semibold">dark</Text> where white text sits on the
+        swatch.
       </Text>
 
       <CategoricalRow name="Default" colors={categoricalPalette.default} />
@@ -304,9 +316,7 @@ export const CategoricalPalette: StoryObj = {
 export const BorderColors: StoryObj = {
   render: () => (
     <View style={{ padding: 24 }}>
-      <Text className="text-2xl font-bold text-text-primary mb-6">
-        Border Colors (Dark Mode)
-      </Text>
+      <Text className="text-2xl font-bold text-text-primary mb-6">Border Colors (Dark Mode)</Text>
 
       <View style={{ gap: 16 }}>
         <ColorSwatch name="border-default" value={semanticColorsDark['border-default']} />
