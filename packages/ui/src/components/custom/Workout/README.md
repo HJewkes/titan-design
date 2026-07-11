@@ -90,6 +90,28 @@ type props without pulling the dependency.
   **Composes** link down the tree — matching the S1/S2 shell families. (The component
   files stay flat on disk in `custom/Workout/`; only the story `title`s build the tree.)
 
+- **VelocityStrip set-type modes (`set` prop)** — beyond the flat `velocities`
+  array (unchanged, still the source of truth for `SetRow` / `ExerciseCard`), the
+  strip accepts an optional structured `VelocitySet` descriptor and renders the
+  strength set-type vocabulary as a typed slot list. Slots are
+  `rep` (velocity-coloured) · `todo` (charcoal-300 grey) · `variable` /
+  `continue` (`SET_STRIP_VARIABLE_COLOR` cyan-900; `continue` adds a cyan-800
+  outline to read as "keep going"). Types: `straight` (done + grey todo to
+  `planned`), `range` (committed grey + a cyan variable window `floor..max`),
+  `amrap` (reps + a trailing cyan continue), `drop` (sub-loads split by a wide
+  notch), `myo` (activation + clusters split by wide gaps, `open` adds a continue),
+  `cluster` (fixed count grouped by wide intra-rest gaps). The gap hierarchy is
+  **butted reps (`REP_GAP` 2px) < chunk boundary (`WIDE_GAP` 7px)**, applied as
+  per-slot `marginLeft` (the mini container drops its uniform `gap` so wide gaps
+  render; a no-`set` strip is `[0, 2, 2, …]`, i.e. byte-identical to before). The
+  done-velocity array (`velocities`, or subloads/activation+clusters flattened) is
+  derived from the `set` and drives the mean · loss · zone summary either way. The
+  `mini` variant is the primary set-type surface; `expanded` gives `straight` the
+  active-set spotlight (velocity-height done reps + short grey stubs) and renders
+  the advanced types as a short mini-style encoding. Every modality is documented
+  with a copy-paste `set` config in **`Workout/DataViz/VelocityStrip/Set
+  Modalities`** (each card carries a `Collapse` accordion; promoted from the
+  now-deleted `S3SetModalities` Lab specimen).
 - Badge icons (WeightBadge's dumbbell, PrBadge / PrHistoryModal's star) are inline
   SVGs (`./icons.tsx`), not `lucide-react` — that dependency was dropped in 0.5.0
   to keep the root barrel light. The SVG paths mirror lucide's glyphs so rendering
