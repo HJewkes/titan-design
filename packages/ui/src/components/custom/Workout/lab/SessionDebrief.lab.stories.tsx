@@ -230,9 +230,9 @@ function SessionDebriefSpecimen({
 }
 
 const meta: Meta<typeof SessionDebriefSpecimen> = {
-  title: 'Lab/Candidates/Summary/SessionDebrief',
+  title: 'Lab/SessionReview/SessionDebrief',
   component: SessionDebriefSpecimen,
-  tags: ['status:candidate', '!status:review'],
+  tags: ['status:lab', '!status:review'],
   parameters: {
     docs: {
       description: {

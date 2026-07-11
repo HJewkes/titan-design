@@ -265,9 +265,9 @@ function LoadProfileChartSpecimen({
 }
 
 const meta: Meta<typeof LoadProfileChartSpecimen> = {
-  title: 'Lab/Candidates/Charts/LoadProfileChart',
+  title: 'Lab/Explorations/LoadProfileChart',
   component: LoadProfileChartSpecimen,
-  tags: ['status:candidate', '!status:review'],
+  tags: ['status:lab', '!status:review'],
   parameters: {
     docs: {
       description: {

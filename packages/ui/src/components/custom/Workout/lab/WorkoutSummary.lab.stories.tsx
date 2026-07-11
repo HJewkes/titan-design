@@ -138,9 +138,9 @@ function WorkoutSummarySpecimen({
 }
 
 const meta: Meta<typeof WorkoutSummarySpecimen> = {
-  title: 'Lab/Candidates/Summary/WorkoutSummary',
+  title: 'Lab/SessionReview/WorkoutSummary',
   component: WorkoutSummarySpecimen,
-  tags: ['status:candidate', '!status:review'],
+  tags: ['status:lab', '!status:review'],
   parameters: {
     docs: {
       description: {

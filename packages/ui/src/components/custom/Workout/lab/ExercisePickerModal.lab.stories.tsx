@@ -131,9 +131,9 @@ function ExercisePickerModalSpecimen({ groups }: { groups: MuscleGroupData[] }) 
 }
 
 const meta: Meta<typeof ExercisePickerModalSpecimen> = {
-  title: 'Lab/Candidates/Pickers/ExercisePickerModal',
+  title: 'Lab/ExerciseSelection/ExercisePickerModal',
   component: ExercisePickerModalSpecimen,
-  tags: ['status:candidate', '!status:review'],
+  tags: ['status:lab', '!status:review'],
   parameters: {
     docs: {
       description: {

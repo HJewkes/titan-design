@@ -117,9 +117,9 @@ function TrainingLoadGaugeSpecimen({ load, width }: { load: TrainingLoad; width:
 }
 
 const meta: Meta<typeof TrainingLoadGaugeSpecimen> = {
-  title: 'Lab/Candidates/Charts/TrainingLoadGauge',
+  title: 'Lab/Explorations/TrainingLoadGauge',
   component: TrainingLoadGaugeSpecimen,
-  tags: ['status:candidate', '!status:review'],
+  tags: ['status:lab', '!status:review'],
   parameters: {
     docs: {
       description: {

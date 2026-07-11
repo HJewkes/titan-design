@@ -224,9 +224,9 @@ function SetSummaryModalSpecimen({
 }
 
 const meta: Meta<typeof SetSummaryModalSpecimen> = {
-  title: 'Lab/Candidates/Summary/SetSummaryModal',
+  title: 'Lab/SessionReview/SetSummaryModal',
   component: SetSummaryModalSpecimen,
-  tags: ['status:candidate', '!status:review'],
+  tags: ['status:lab', '!status:review'],
   parameters: {
     docs: {
       description: {

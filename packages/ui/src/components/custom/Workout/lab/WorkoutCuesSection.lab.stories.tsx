@@ -98,9 +98,9 @@ function WorkoutCuesSectionSpecimen({
 }
 
 const meta: Meta<typeof WorkoutCuesSectionSpecimen> = {
-  title: 'Lab/Candidates/Coaching/WorkoutCuesSection',
+  title: 'Lab/Settings/WorkoutCuesSection',
   component: WorkoutCuesSectionSpecimen,
-  tags: ['status:candidate', '!status:review'],
+  tags: ['status:lab', '!status:review'],
   parameters: {
     docs: {
       description: {

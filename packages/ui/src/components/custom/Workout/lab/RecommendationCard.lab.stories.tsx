@@ -221,9 +221,9 @@ function RecommendationCardSpecimen({
 }
 
 const meta: Meta<typeof RecommendationCardSpecimen> = {
-  title: 'Lab/Candidates/Alerts/RecommendationCard',
+  title: 'Lab/Discovery/RecommendationCard',
   component: RecommendationCardSpecimen,
-  tags: ['status:candidate', '!status:review'],
+  tags: ['status:lab', '!status:review'],
   parameters: {
     docs: {
       description: {

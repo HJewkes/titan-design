@@ -226,9 +226,9 @@ function ExerciseSessionSummaryCardSpecimen({
 }
 
 const meta: Meta<typeof ExerciseSessionSummaryCardSpecimen> = {
-  title: 'Lab/Candidates/Summary/ExerciseSessionSummaryCard',
+  title: 'Lab/SessionReview/ExerciseSessionSummaryCard',
   component: ExerciseSessionSummaryCardSpecimen,
-  tags: ['status:candidate', '!status:review'],
+  tags: ['status:lab', '!status:review'],
   parameters: {
     docs: {
       description: {

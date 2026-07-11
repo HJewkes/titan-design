@@ -144,9 +144,9 @@ function DiscoveryStepCardSpecimen({
 }
 
 const meta: Meta<typeof DiscoveryStepCardSpecimen> = {
-  title: 'Lab/Candidates/Cards/DiscoveryStepCard',
+  title: 'Lab/Discovery/DiscoveryStepCard',
   component: DiscoveryStepCardSpecimen,
-  tags: ['status:candidate', '!status:review'],
+  tags: ['status:lab', '!status:review'],
   parameters: {
     docs: {
       description: {
