@@ -1,305 +1,197 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
+import { type ReactNode } from 'react'
 import { View, Text } from 'react-native'
 import { VelocityStrip, type VelocityZoneBandProp } from './VelocityStrip'
-import { PrBadge, type PRType } from './PrBadge'
-import { roundRpe, rpeColor, roundWeight } from '../../../utils/workout-format'
+import { roundWeight, roundRpe } from '../../../utils/workout-format'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 
-export type SetRowMode = 'active' | 'completed' | 'history'
+export type SetRowUnit = 'lbs' | 'kg'
 
-export interface SetRowProps {
-  mode: SetRowMode
+/** A set's lifecycle: logged (`done`), being performed now (`live`), or planned (`todo`). */
+export type SetRowState = 'done' | 'live' | 'todo'
+
+interface SetRowBase {
   setNumber: number
-  previous?: { reps: number; weight: number } | null
-  reps: number | null
-  weight: number | null
-  rpe?: number | null
-  unit: 'lbs' | 'kg'
-  /** Per-rep MEAN concentric velocities (m/s). */
-  velocities?: number[]
+  unit: SetRowUnit
+  /** Optional set-type marker (e.g. "DROP", "AMRAP") shown in the SET cell. */
+  setType?: string
   /** Optional velocity-zone bands (WA `VelocityZones.bands`); default scale when absent. */
   velocityZones?: readonly VelocityZoneBandProp[]
-  /** Live mode: index of the newest rep bar to animate (pop / new-peak bounce). */
-  velocityLiveRepIndex?: number
-  velocityExpanded?: boolean
-  onVelocityToggle?: () => void
-  setType?: string
-  prBadges?: Array<{ type: PRType; label: string }>
-  isNextSet?: boolean
-  targets?: { reps: number; weight: number }
-  /**
-   * The set is being performed RIGHT NOW. Shows reps-done / target (e.g. "5/8") with a live green
-   * treatment; `velocities.length` is the reps-done count. Distinct from `isNextSet` (queued next).
-   */
-  isLive?: boolean
-  /**
-   * Show the PREV (previous-best) column. Default true; false blanks it to an empty
-   * flex spacer (rail density) so REPS/LOAD/RPE keep their positions. Pair with
-   * {@link SetTableHeader}'s `showPrevious`.
-   */
-  showPrevious?: boolean
 }
 
-function formatAccessibilityLabel(
-  setNumber: number,
-  reps: number | null,
-  weight: number | null,
-  unit: string,
-): string {
-  const repsText = reps != null ? `${reps} reps` : 'no reps'
-  const weightText = weight != null ? `at ${roundWeight(weight)} ${unit}` : ''
-  return `Set ${setNumber}: ${repsText}${weightText ? ` ${weightText}` : ''}`
+/**
+ * One row of the unified expanded exercise table (SET · REPS · LBS · RPE + a
+ * per-row velocity strip), as a lifecycle discriminated union:
+ * - `done` — a logged set: recorded reps / weight / rpe, a flat `mini` strip.
+ * - `live` — performed right now: shows its TARGET (never "reps-done/target"),
+ *   stands out by brightness, and a compact velocity-HEIGHT spotlight strip.
+ * - `todo` — planned: shows its target, muted, a flat grey `mini` stub strip.
+ *
+ * `done` + `todo` share ONE muted treatment; only `live` is brightened. There is
+ * no PREV column (dropped in the unified design).
+ */
+export type SetRowProps =
+  | (SetRowBase & {
+      state: 'done'
+      reps: number
+      weight: number
+      rpe?: number | null
+      /** Per-rep MEAN concentric velocities (m/s). */
+      velocities: number[]
+    })
+  | (SetRowBase & {
+      state: 'live'
+      /** The prescribed target shown in the REPS / LBS cells (no live "5/10"). */
+      target: { reps: number; weight: number }
+      /** Reps / weight committed so far (available to hosts; the display shows `target`). */
+      reps: number
+      weight: number
+      rpe?: number | null
+      /** Per-rep MEAN concentric velocities logged so far this set. */
+      velocities: number[]
+      /** Newest rep index — reserved; the compact spotlight strip is static. */
+      liveRepIndex?: number
+    })
+  | (SetRowBase & {
+      state: 'todo'
+      /** The prescribed target shown in the REPS / LBS cells. */
+      target: { reps: number; weight: number }
+      /** Planned rep count backing the grey stub strip. Default `target.reps`. */
+      planned?: number
+    })
+
+const DARK = getSemanticColors('dark')
+/** Live set — brightest (neutral 100). Done + upcoming share the muted neutral 400. */
+const TEXT_ACTIVE = DARK['text-primary']
+const TEXT_MUTED = DARK['text-secondary']
+
+/** Column widths mirror SetTableHeader(showPrevious=false) so cells align under it. */
+const COL = { set: 36, reps: 44, load: 56, rpe: 36 } as const
+const cellText = { fontFamily: 'Inter, sans-serif', fontSize: 13, fontWeight: '600' as const }
+const typeBadge = {
+  fontSize: 10,
+  fontWeight: '700' as const,
+  fontFamily: 'Inter, sans-serif',
+  color: WORKOUT_TOKENS.scale.orange,
+  backgroundColor: 'rgba(255,165,2,0.12)',
+  paddingVertical: 1,
+  paddingHorizontal: 5,
+  borderRadius: 3,
+  overflow: 'hidden' as const,
 }
 
-export function SetRow({
-  mode,
-  setNumber,
-  previous,
-  reps,
-  weight,
-  rpe,
-  unit,
-  velocities,
-  velocityZones,
-  velocityLiveRepIndex,
-  velocityExpanded,
-  onVelocityToggle,
-  setType,
-  prBadges,
-  isNextSet,
-  targets,
-  isLive,
-  showPrevious = true,
-}: SetRowProps) {
-  const isActive = mode === 'active'
-  const isCompleted = mode === 'completed'
-  const liveRepsDone = velocities?.length ?? 0
+/** Reps to show: recorded for a `done` set, else the prescribed target. */
+function displayReps(set: SetRowProps): number {
+  return set.state === 'done' ? set.reps : set.target.reps
+}
 
-  const rowStyle: Record<string, unknown> = {
-    flexDirection: 'row' as const,
-    alignItems: 'center' as const,
-    padding: 7,
-    paddingHorizontal: 8,
-    gap: 8,
-    borderRadius: 8,
-  }
+function displayWeight(set: SetRowProps): number {
+  return set.state === 'done' ? set.weight : set.target.weight
+}
 
-  if (isLive) {
-    rowStyle.backgroundColor = 'rgba(46,213,115,0.08)'
-    rowStyle.borderWidth = 1
-    rowStyle.borderColor = 'rgba(46,213,115,0.35)'
-  } else if (isActive && isNextSet) {
-    rowStyle.backgroundColor = 'rgba(255,121,0,0.06)'
-    rowStyle.borderWidth = 1
-    rowStyle.borderColor = 'rgba(255,121,0,0.15)'
-  }
+/** Planned rep count backing the row's strip. */
+function plannedReps(set: SetRowProps): number {
+  if (set.state === 'done') return set.velocities.length
+  if (set.state === 'live') return set.target.reps
+  return set.planned ?? set.target.reps
+}
 
-  if (isCompleted && !isNextSet) {
-    rowStyle.opacity = 0.55
+function accessibilityLabel(set: SetRowProps): string {
+  const base = `Set ${set.setNumber}: ${displayReps(set)} reps at ${roundWeight(displayWeight(set))} ${set.unit}`
+  if (set.state === 'live') return `${base}, in progress`
+  if (set.state === 'todo') return `${base}, upcoming`
+  return base
+}
+
+function Cell({
+  width,
+  children,
+  testID,
+}: {
+  width: number
+  children: ReactNode
+  testID?: string
+}) {
+  return (
+    <View style={{ width, alignItems: 'center', justifyContent: 'center' }} testID={testID}>
+      {children}
+    </View>
+  )
+}
+
+/** The per-row velocity strip: compact spotlight for the live set, flat mini otherwise. */
+function RowStrip({ set }: { set: SetRowProps }) {
+  const zones = set.velocityZones
+  if (set.state === 'live') {
+    // The active-set spotlight: the bare velocity-height `expanded` chart at 24px,
+    // fixed scale, no labels / info (both chrome flags off → the bare strip).
+    return (
+      <VelocityStrip
+        variant="expanded"
+        showNumbers={false}
+        showInfo={false}
+        height={24}
+        scale="fixed"
+        set={{ type: 'straight', velocities: set.velocities, planned: set.target.reps }}
+        zones={zones}
+      />
+    )
   }
+  const velocities = set.state === 'done' ? set.velocities : []
+  return (
+    <VelocityStrip
+      variant="mini"
+      set={{ type: 'straight', velocities, planned: plannedReps(set) }}
+      zones={zones}
+    />
+  )
+}
+
+/**
+ * ONE set row of the unified expanded exercise table. SET · REPS · LBS · RPE over
+ * a per-row {@link VelocityStrip}; `live` stands out by brightness with a compact
+ * velocity-height spotlight, `done`/`todo` are muted with a flat mini strip. Its
+ * column widths mirror {@link SetTableHeader}(`showPrevious={false}`).
+ */
+export function SetRow(set: SetRowProps) {
+  const live = set.state === 'live'
+  const valueColor = live ? TEXT_ACTIVE : TEXT_MUTED
+  const rpe = set.state === 'todo' ? null : set.rpe
 
   return (
     <View
-      style={rowStyle}
-      accessibilityLabel={formatAccessibilityLabel(
-        setNumber,
-        reps,
-        weight,
-        unit,
-      )}
+      style={{ paddingVertical: 6, paddingHorizontal: 8 }}
+      accessibilityLabel={accessibilityLabel(set)}
       testID="set-row"
     >
-      <View
-        style={{ width: 36, flexShrink: 1, alignItems: 'center', justifyContent: 'center' }}
-        testID="set-row-set-number"
-      >
-        {setType ? (
-          <Text
-            style={{
-              fontSize: 10,
-              fontWeight: '700',
-              fontFamily: 'Inter, sans-serif',
-              color: WORKOUT_TOKENS.scale.orange,
-              backgroundColor: 'rgba(255,165,2,0.12)',
-              paddingVertical: 1,
-              paddingHorizontal: 5,
-              borderRadius: 3,
-              overflow: 'hidden',
-            }}
-            testID="set-row-type-badge"
-          >
-            {setType}
+      <View className="flex-row items-center" style={{ justifyContent: 'space-between' }}>
+        <Cell width={COL.set} testID="set-row-set-number">
+          {set.setType ? (
+            <Text style={typeBadge} testID="set-row-type-badge">
+              {set.setType}
+            </Text>
+          ) : (
+            <Text style={{ ...cellText, color: valueColor, fontWeight: live ? '700' : '600' }}>
+              {set.setNumber}
+            </Text>
+          )}
+        </Cell>
+        <Cell width={COL.reps} testID="set-row-reps">
+          <Text style={{ ...cellText, color: valueColor }}>{displayReps(set)}</Text>
+        </Cell>
+        <Cell width={COL.load} testID="set-row-weight">
+          <Text style={{ ...cellText, color: valueColor }}>{roundWeight(displayWeight(set))}</Text>
+        </Cell>
+        <Cell width={COL.rpe} testID="set-row-rpe">
+          <Text style={{ ...cellText, color: TEXT_MUTED }}>
+            {rpe != null ? roundRpe(rpe) : '—'}
           </Text>
-        ) : (
-          <Text
-            className="text-text-secondary"
-            style={{
-              fontSize: 13,
-              fontWeight: '600',
-              fontFamily: 'Inter, sans-serif',
-            }}
-          >
-            {setNumber}
-          </Text>
-        )}
+        </Cell>
       </View>
-
-      <View
-        className="flex-1"
-        style={{ minWidth: 44 }}
-        testID="set-row-previous"
-      >
-        {showPrevious && (
-          <Text
-            className="text-text-secondary"
-            numberOfLines={1}
-            style={{
-              fontSize: 12,
-              fontFamily: 'Inter, sans-serif',
-            }}
-          >
-            {previous
-              ? `${previous.reps} x ${roundWeight(previous.weight)}`
-              : '\u2014'}
-          </Text>
-        )}
+      <View style={{ marginTop: live ? 6 : 4 }} testID="set-row-strip">
+        <RowStrip set={set} />
       </View>
-
-      <View
-        style={{ width: 44, flexShrink: 1, alignItems: 'center', justifyContent: 'center' }}
-        testID="set-row-reps"
-      >
-        {isLive ? (
-          <Text
-            className="text-status-live"
-            style={{
-              fontSize: 14,
-              fontWeight: '700',
-              fontFamily: 'Inter, sans-serif',
-            }}
-            testID="set-row-live-reps"
-          >
-            {liveRepsDone}/{targets?.reps ?? '\u2014'}
-          </Text>
-        ) : isActive && reps == null && targets ? (
-          <Text
-            className="text-text-tertiary"
-            style={{
-              fontSize: 13,
-              fontStyle: 'italic',
-              fontFamily: 'Inter, sans-serif',
-            }}
-            testID="set-row-target-reps"
-          >
-            {targets.reps}
-          </Text>
-        ) : (
-          <Text
-            className={reps != null ? 'text-text-primary' : 'text-text-tertiary'}
-            style={{
-              fontSize: 14,
-              fontWeight: '600',
-              fontFamily: 'Inter, sans-serif',
-            }}
-          >
-            {reps != null ? reps : '\u2014'}
-          </Text>
-        )}
-      </View>
-
-      <View
-        style={{ width: 56, flexShrink: 1, alignItems: 'center', justifyContent: 'center' }}
-        testID="set-row-weight"
-      >
-        {isLive && targets ? (
-          <Text
-            className="text-text-primary"
-            style={{
-              fontSize: 14,
-              fontWeight: '600',
-              fontFamily: 'Inter, sans-serif',
-            }}
-          >
-            {roundWeight(targets.weight)}
-          </Text>
-        ) : isActive && weight == null && targets ? (
-          <Text
-            className="text-text-tertiary"
-            style={{
-              fontSize: 13,
-              fontStyle: 'italic',
-              fontFamily: 'Inter, sans-serif',
-            }}
-            testID="set-row-target-weight"
-          >
-            {roundWeight(targets.weight)}
-          </Text>
-        ) : (
-          <Text
-            className={weight != null ? 'text-text-primary' : 'text-text-tertiary'}
-            style={{
-              fontSize: 14,
-              fontWeight: '600',
-              fontFamily: 'Inter, sans-serif',
-            }}
-          >
-            {weight != null ? roundWeight(weight) : '\u2014'}
-          </Text>
-        )}
-      </View>
-
-      <View
-        style={{ width: 36, flexShrink: 1, alignItems: 'center', justifyContent: 'center' }}
-        testID="set-row-rpe"
-      >
-        <Text
-          className={rpe != null ? undefined : 'text-text-tertiary'}
-          style={{
-            fontSize: 13,
-            fontWeight: '600',
-            fontFamily: 'Inter, sans-serif',
-            // rpeColor returns a concrete hex (native-safe); only the tertiary
-            // fallback needs the className token.
-            color: rpe != null ? rpeColor(rpe) : undefined,
-          }}
-        >
-          {rpe != null ? roundRpe(rpe) : '\u2014'}
-        </Text>
-      </View>
-
-      {prBadges && prBadges.length > 0 && (
-        <View
-          className="flex-row items-center"
-          style={{ gap: 4 }}
-          testID="set-row-pr-badges"
-        >
-          {prBadges.map((badge, i) => (
-            <PrBadge
-              key={i}
-              type={badge.type}
-              label={badge.label}
-              animate={false}
-              compact
-            />
-          ))}
-        </View>
-      )}
-
-      {velocities && velocities.length > 0 && (
-        <View
-          style={{ position: 'absolute', bottom: 0, left: 8, right: 8 }}
-          testID="set-row-velocity-strip"
-        >
-          <VelocityStrip
-            velocities={velocities}
-            zones={velocityZones}
-            liveRepIndex={velocityLiveRepIndex}
-            expanded={velocityExpanded}
-            onToggle={onVelocityToggle}
-            variant={onVelocityToggle ? 'full' : 'mini'}
-          />
-        </View>
-      )}
     </View>
   )
 }

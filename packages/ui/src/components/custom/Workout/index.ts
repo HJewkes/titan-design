@@ -38,7 +38,7 @@ export {
 } from './VelocityStrip'
 export { MuscleGroupChip, type MuscleGroupChipProps, type VolumeStatus } from './MuscleGroupChip'
 export { Sparkline, type SparklineProps } from './Sparkline'
-export { SetRow, type SetRowProps, type SetRowMode } from './SetRow'
+export { SetRow, type SetRowProps, type SetRowState, type SetRowUnit } from './SetRow'
 export { InputBar, type InputBarProps } from './InputBar'
 export { RestTimer, type RestTimerProps } from './RestTimer'
 export { MetricCell, type MetricCellProps, METRIC_FONT } from './metricText'
@@ -70,14 +70,13 @@ export {
 } from './ExerciseIndicator'
 export { ExerciseHeading, type ExerciseHeadingProps } from './ExerciseHeading'
 export { ExerciseCardHeading, type ExerciseCardHeadingProps } from './ExerciseCardHeading'
-export { ExerciseCard, type ExerciseCardProps, type ExerciseCardState } from './ExerciseCard'
+export { ExerciseCard, type ExerciseCardProps } from './ExerciseCard'
 export { SetTableHeader, type SetTableHeaderProps } from './SetTableHeader'
 export {
   SessionHeader,
   type SessionHeaderProps,
   type SessionHeaderPlanEntry,
 } from './SessionHeader'
-export { ExpandedDrawer, type ExpandedDrawerProps } from './ExpandedDrawer'
 export { SessionRail, type SessionRailProps, type SessionRailExercise } from './SessionRail'
 export { SupersetWrapper, type SupersetWrapperProps } from './SupersetWrapper'
 export {

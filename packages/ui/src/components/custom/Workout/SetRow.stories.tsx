@@ -1,29 +1,39 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 import { SetRow } from './SetRow'
+import { SetTableHeader } from './SetTableHeader'
 
 const meta: Meta<typeof SetRow> = {
   title: 'Workout/SetRow',
   component: SetRow,
   tags: ['autodocs'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '**Molecule** — one row of the unified expanded exercise table (SET · REPS · LBS · RPE ' +
+          'over a per-row velocity strip), as a lifecycle discriminated union on `state`: `done` ' +
+          '(logged), `live` (performing now — brightened, compact velocity-height spotlight), `todo` ' +
+          '(planned — muted grey stub). Done + upcoming share one muted treatment; only `live` is ' +
+          'brightened. No PREV column. Composed by ' +
+          '[ExerciseCard](?path=/docs/workout-exercisecard--docs) (expanded).',
+      },
+    },
+  },
   argTypes: {
-    mode: {
+    state: {
       control: 'select',
-      options: ['active', 'completed', 'history'],
-      description: 'Row display mode',
+      options: ['done', 'live', 'todo'],
+      description: 'Set lifecycle',
     },
     unit: {
       control: 'select',
       options: ['lbs', 'kg'],
       description: 'Weight unit',
     },
-    isNextSet: {
-      control: 'boolean',
-      description: 'Whether this is the next set to perform',
-    },
-    showPrevious: {
-      control: 'boolean',
-      description: 'Show the PREV column (false blanks it to a flex spacer for rail density)',
+    setType: {
+      control: 'text',
+      description: 'Optional set-type marker shown in the SET cell (e.g. "W", "DROP")',
     },
   },
 }
@@ -31,139 +41,75 @@ const meta: Meta<typeof SetRow> = {
 export default meta
 type Story = StoryObj<typeof SetRow>
 
-export const CompletedWithVelocity: Story = {
+export const Done: Story = {
   args: {
-    mode: 'completed',
+    state: 'done',
     setNumber: 1,
+    unit: 'lbs',
     reps: 8,
     weight: 135,
-    unit: 'lbs',
     rpe: 7.5,
-    previous: { reps: 8, weight: 130 },
     velocities: [1.1, 0.95, 0.82, 0.68, 0.55, 0.48, 0.42, 0.38],
   },
 }
 
-export const ActiveWithTargets: Story = {
+export const Live: Story = {
   args: {
-    mode: 'active',
-    setNumber: 3,
-    reps: null,
-    weight: null,
-    unit: 'lbs',
-    previous: { reps: 8, weight: 135 },
-    targets: { reps: 10, weight: 150 },
-  },
-}
-
-export const ActiveNextSet: Story = {
-  args: {
-    mode: 'active',
+    state: 'live',
     setNumber: 2,
-    reps: null,
-    weight: null,
     unit: 'lbs',
-    isNextSet: true,
-    targets: { reps: 8, weight: 135 },
-    previous: { reps: 8, weight: 130 },
+    target: { reps: 10, weight: 150 },
+    reps: 5,
+    weight: 150,
+    velocities: [0.95, 0.9, 0.86, 0.8, 0.72],
   },
 }
 
-export const HistorySet: Story = {
+export const Todo: Story = {
   args: {
-    mode: 'history',
-    setNumber: 1,
-    reps: 10,
-    weight: 185,
+    state: 'todo',
+    setNumber: 3,
     unit: 'lbs',
-    rpe: 8,
-    previous: { reps: 10, weight: 180 },
+    target: { reps: 10, weight: 150 },
   },
 }
 
 export const WithTypeBadge: Story = {
   args: {
-    mode: 'completed',
+    state: 'done',
     setNumber: 1,
+    unit: 'lbs',
     reps: 5,
     weight: 95,
-    unit: 'lbs',
     setType: 'W',
-    previous: null,
+    velocities: [1.05, 0.98, 0.9, 0.84, 0.78],
   },
 }
 
-export const WithPrBadges: Story = {
-  args: {
-    mode: 'completed',
-    setNumber: 3,
-    reps: 8,
-    weight: 225,
-    unit: 'lbs',
-    rpe: 9.5,
-    previous: { reps: 8, weight: 215 },
-    prBadges: [
-      { type: 'e1rm', label: 'PR e1RM' },
-      { type: 'weight', label: 'PR Weight' },
-    ],
-  },
-}
-
-export const WithRPE: Story = {
-  args: {
-    mode: 'completed',
-    setNumber: 4,
-    reps: 5,
-    weight: 275,
-    unit: 'lbs',
-    rpe: 10,
-    previous: { reps: 5, weight: 265 },
-  },
-}
-
-export const AllVariants: Story = {
+/** The lifecycle in context: header + done → live → todo, as the expanded card lays it out. */
+export const TableInContext: Story = {
   render: () => (
-    <View style={{ gap: 4, padding: 16, maxWidth: 400 }}>
+    <View style={{ padding: 16, maxWidth: 400 }}>
+      <SetTableHeader unit="lbs" showPrevious={false} />
       <SetRow
-        mode="completed"
+        state="done"
         setNumber={1}
+        unit="lbs"
         reps={8}
         weight={135}
-        unit="lbs"
-        rpe={7}
-        previous={{ reps: 8, weight: 130 }}
+        rpe={7.5}
         velocities={[1.1, 0.95, 0.82, 0.68, 0.55, 0.48, 0.42, 0.38]}
-        prBadges={[{ type: 'e1rm', label: 'PR e1RM' }]}
       />
       <SetRow
-        mode="completed"
+        state="live"
         setNumber={2}
-        reps={8}
+        unit="lbs"
+        target={{ reps: 8, weight: 135 }}
+        reps={5}
         weight={135}
-        unit="lbs"
-        rpe={8.5}
-        previous={{ reps: 8, weight: 135 }}
-        velocities={[0.95, 0.88, 0.78, 0.65, 0.52, 0.45, 0.40, 0.35]}
+        velocities={[0.95, 0.88, 0.78, 0.65, 0.52]}
       />
-      <SetRow
-        mode="active"
-        setNumber={3}
-        reps={null}
-        weight={null}
-        unit="lbs"
-        isNextSet
-        targets={{ reps: 8, weight: 135 }}
-        previous={{ reps: 8, weight: 135 }}
-      />
-      <SetRow
-        mode="active"
-        setNumber={4}
-        reps={null}
-        weight={null}
-        unit="lbs"
-        targets={{ reps: 8, weight: 135 }}
-        previous={{ reps: 8, weight: 135 }}
-      />
+      <SetRow state="todo" setNumber={3} unit="lbs" target={{ reps: 8, weight: 135 }} />
     </View>
   ),
 }

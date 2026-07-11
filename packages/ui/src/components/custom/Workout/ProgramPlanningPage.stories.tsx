@@ -18,10 +18,7 @@ const lowerMuscles: WorkoutMuscleGroup[] = [
 const upperExercises: ExerciseCardProps[] = [
   {
     name: 'Barbell Bench Press',
-    state: 'collapsed',
-    onToggle: () => {},
     summary: { sets: 4, reps: 8, weight: 185, unit: 'lbs' },
-    e1rm: { value: 235, unit: 'lbs' },
     isPR: true,
     setVelocities: [
       [1.05, 0.94, 0.82, 0.74],
@@ -31,16 +28,12 @@ const upperExercises: ExerciseCardProps[] = [
   },
   {
     name: 'Incline Dumbbell Press',
-    state: 'collapsed',
-    onToggle: () => {},
     summary: { sets: 3, reps: 10, weight: 70, unit: 'lbs' },
-    e1rm: { value: 92, unit: 'lbs' },
     totalPlannedSets: 3,
   },
   {
     name: 'Cable Triceps Pushdown',
-    state: 'upcoming',
-    onToggle: () => {},
+    upcoming: true,
     prescription: '3×12-15 @ RPE 8',
     previousBest: '50 lbs × 14',
   },
@@ -49,23 +42,18 @@ const upperExercises: ExerciseCardProps[] = [
 const lowerExercises: ExerciseCardProps[] = [
   {
     name: 'Back Squat',
-    state: 'collapsed',
-    onToggle: () => {},
     summary: { sets: 5, reps: 5, weight: 275, unit: 'lbs' },
-    e1rm: { value: 335, unit: 'lbs' },
     totalPlannedSets: 5,
   },
   {
     name: 'Romanian Deadlift',
-    state: 'upcoming',
-    onToggle: () => {},
+    upcoming: true,
     prescription: '3×8-10 @ RPE 8',
     previousBest: '225 lbs × 9',
   },
   {
     name: 'Leg Press',
-    state: 'upcoming',
-    onToggle: () => {},
+    upcoming: true,
     prescription: '3×12 @ RPE 9',
     previousBest: '450 lbs × 12',
   },

@@ -65,8 +65,8 @@ export interface ExerciseDetailEntry {
   title: string
   /** Collapsed summary (sets × reps @ weight). */
   summary?: ExerciseCardProps['summary']
-  /** Estimated one-rep max badge. */
-  e1rm?: ExerciseCardProps['e1rm']
+  /** Estimated one-rep max, feeding the page's best-e1RM stat. */
+  e1rm?: { value: number; unit: 'lbs' | 'kg' }
   /** Flags a personal-record entry. */
   isPR?: boolean
   /** Prescribed tempo, revealed when expanded. */
@@ -162,10 +162,9 @@ export function toExerciseCardProps(
 ): ExerciseCardProps {
   return {
     name: entry.title,
-    state: expanded ? 'expanded' : 'collapsed',
-    onToggle,
+    expanded,
+    onExpandedChange: onToggle,
     summary: entry.summary,
-    e1rm: entry.e1rm,
     isPR: entry.isPR,
     tempo: entry.tempo,
     sets: expanded ? entry.sets : undefined,

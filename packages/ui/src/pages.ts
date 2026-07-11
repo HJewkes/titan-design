@@ -15,7 +15,7 @@ export {
   countCompletedSets,
   deriveWorkoutProgress,
   findActiveExercise,
-  statusToCardState,
+  isUpcomingExercise,
   toActiveCardProps,
   groupExercises,
   type ActiveWorkoutPageProps,

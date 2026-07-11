@@ -68,7 +68,9 @@ function Cell({
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <span style={{ fontSize: 13, fontWeight: 800, color: '#E8EAED' }}>{name}</span>
-        <span style={{ fontFamily: 'monospace', fontSize: 10, color: '#5b616d', letterSpacing: 0.3 }}>
+        <span
+          style={{ fontFamily: 'monospace', fontSize: 10, color: '#5b616d', letterSpacing: 0.3 }}
+        >
           {entity} · {expand}
         </span>
       </div>
@@ -110,9 +112,8 @@ const setVel = [
   [0.55, 0.52, 0.5, 0.47],
 ]
 const exSets = [1, 2, 3, 4].map((n) => ({
-  mode: 'completed' as const,
+  state: 'done' as const,
   setNumber: n,
-  previous: { reps: 8, weight: 145 },
   reps: 8,
   weight: 145,
   rpe: 6.5 + n * 0.5,
@@ -120,9 +121,27 @@ const exSets = [1, 2, 3, 4].map((n) => ({
   velocities: setVel[(n - 1) % 3],
 }))
 const weeks = [
-  { weekNumber: 1, workouts: [{ name: 'Upper', status: 'completed' as const }, { name: 'Lower', status: 'completed' as const }] },
-  { weekNumber: 2, workouts: [{ name: 'Upper', status: 'current' as const }, { name: 'Lower', status: 'upcoming' as const }] },
-  { weekNumber: 3, workouts: [{ name: 'Upper', status: 'upcoming' as const }, { name: 'Lower', status: 'upcoming' as const }] },
+  {
+    weekNumber: 1,
+    workouts: [
+      { name: 'Upper', status: 'completed' as const },
+      { name: 'Lower', status: 'completed' as const },
+    ],
+  },
+  {
+    weekNumber: 2,
+    workouts: [
+      { name: 'Upper', status: 'current' as const },
+      { name: 'Lower', status: 'upcoming' as const },
+    ],
+  },
+  {
+    weekNumber: 3,
+    workouts: [
+      { name: 'Upper', status: 'upcoming' as const },
+      { name: 'Lower', status: 'upcoming' as const },
+    ],
+  },
 ]
 const mesos = [
   { id: 'm1', name: 'Accumulation', weekCount: 4, status: 'completed' as const },
@@ -157,52 +176,52 @@ export const AllRows: Story = {
           Workout library · row representations
         </span>
         <span style={{ fontSize: 12, color: '#8D95A3', maxWidth: 720 }}>
-          Every existing component that draws an exercise / set / workout / week / meso as a list entry.
-          Read-only survey for the S3 reuse decision — names + entity + expand behavior, no code changes.
+          Every existing component that draws an exercise / set / workout / week / meso as a list
+          entry. Read-only survey for the S3 reuse decision — names + entity + expand behavior, no
+          code changes.
         </span>
       </div>
 
-      <Section title="Exercise" note="3 overlapping representations (ExerciseCard is the library primitive; the rail specimen adds a 4th fork)">
-        <Cell name="ExerciseCard" entity="exercise" expand="expandable · state enum">
+      <Section
+        title="Exercise"
+        note="3 representations of the one ExerciseCard: collapsed glance, expanded body, upcoming"
+      >
+        <Cell name="ExerciseCard" entity="exercise" expand="collapsed · expandable">
           <ExerciseCard
             name="Seated Cable Row"
-            state="collapsed"
-            onToggle={() => {}}
             summary={{ sets: 4, reps: 8, weight: 145, unit: 'lbs' }}
-            e1rm={{ value: 205, unit: 'lbs' }}
             isPR
             totalPlannedSets={5}
             setVelocities={setVel}
           />
         </Cell>
-        <Cell name="ExerciseCard" entity="exercise" expand="state='expanded' → reveals SetRows">
+        <Cell name="ExerciseCard" entity="exercise" expand="expanded → reveals SetRows">
           <ExerciseCard
             name="Seated Cable Row"
-            state="expanded"
-            onToggle={() => {}}
+            defaultExpanded
             summary={{ sets: 4, reps: 8, weight: 145, unit: 'lbs' }}
-            e1rm={{ value: 205, unit: 'lbs' }}
             tempo={[3, 1, 2, 0]}
             sets={exSets}
           />
         </Cell>
-        <Cell name="ExerciseCard" entity="exercise" expand="state='upcoming' (static)">
+        <Cell name="ExerciseCard" entity="exercise" expand="upcoming (static)">
           <ExerciseCard
             name="Face Pull"
-            state="upcoming"
-            onToggle={() => {}}
+            upcoming
             prescription="3 × 12-15 @ RPE 7"
             previousBest="15 × 35 lb"
           />
         </Cell>
       </Section>
 
-      <Section title="Set" note="SetRow is the primitive; the rail specimen adds a denser fork (adds velocity-loss %)">
-        <Cell name="SetRow" entity="set · completed" expand="no (velocity strip toggles)" width={360}>
+      <Section
+        title="Set"
+        note="SetRow is the primitive — one row per set lifecycle state (done / live / todo)"
+      >
+        <Cell name="SetRow" entity="set · done" expand="no · flat mini strip" width={360}>
           <SetRow
-            mode="completed"
+            state="done"
             setNumber={1}
-            previous={{ reps: 8, weight: 145 }}
             reps={8}
             weight={145}
             rpe={8}
@@ -210,21 +229,32 @@ export const AllRows: Story = {
             velocities={[0.6, 0.58, 0.55, 0.52]}
           />
         </Cell>
-        <Cell name="SetRow" entity="set · active" expand="no" width={360}>
+        <Cell name="SetRow" entity="set · live" expand="no · compact spotlight" width={360}>
           <SetRow
-            mode="active"
-            setNumber={4}
-            reps={null}
-            weight={null}
+            state="live"
+            setNumber={2}
             unit="lbs"
-            isNextSet
-            targets={{ reps: 8, weight: 145 }}
+            target={{ reps: 8, weight: 145 }}
+            reps={8}
+            weight={145}
+            velocities={[0.58, 0.55, 0.53, 0.5]}
           />
+        </Cell>
+        <Cell name="SetRow" entity="set · todo" expand="no · grey stub strip" width={360}>
+          <SetRow state="todo" setNumber={4} unit="lbs" target={{ reps: 8, weight: 145 }} />
         </Cell>
       </Section>
 
-      <Section title="Workout" note="WorkoutCard (full) and WorkoutPill (chip) = two legit densities; ExerciseDetailPage overloads ExerciseCard as a 3rd">
-        <Cell name="WorkoutCard" entity="workout" expand="expandable · expanded+onToggle → ExerciseCards" width={380}>
+      <Section
+        title="Workout"
+        note="WorkoutCard (full) and WorkoutPill (chip) = two legit densities; ExerciseDetailPage overloads ExerciseCard as a 3rd"
+      >
+        <Cell
+          name="WorkoutCard"
+          entity="workout"
+          expand="expandable · expanded+onToggle → ExerciseCards"
+          width={380}
+        >
           <WorkoutCard
             name="Push Day A"
             date="Mon · Jul 6"
@@ -251,8 +281,16 @@ export const AllRows: Story = {
         </Cell>
       </Section>
 
-      <Section title="Week" note="WeekRow is the primitive; ExerciseDetailPage overloads ExerciseCard as a competing week row">
-        <Cell name="WeekRow" entity="week" expand="no · row of WorkoutPills + intensity bar" width={380}>
+      <Section
+        title="Week"
+        note="WeekRow is the primitive; ExerciseDetailPage overloads ExerciseCard as a competing week row"
+      >
+        <Cell
+          name="WeekRow"
+          entity="week"
+          expand="no · row of WorkoutPills + intensity bar"
+          width={380}
+        >
           <WeekRow
             weekNumber={3}
             totalWeeks={4}
@@ -264,8 +302,16 @@ export const AllRows: Story = {
         </Cell>
       </Section>
 
-      <Section title="Mesocycle" note="3 views for different jobs (list card / timeline / detail) — each with its own status enum">
-        <Cell name="MesoCard" entity="meso" expand="expandable · expanded+onToggle → WeekRows" width={380}>
+      <Section
+        title="Mesocycle"
+        note="3 views for different jobs (list card / timeline / detail) — each with its own status enum"
+      >
+        <Cell
+          name="MesoCard"
+          entity="meso"
+          expand="expandable · expanded+onToggle → WeekRows"
+          width={380}
+        >
           <MesoCard
             name="Accumulation"
             goal="Hypertrophy"
@@ -286,7 +332,10 @@ export const AllRows: Story = {
         </Cell>
       </Section>
 
-      <Section title="Shared sub-parts" note="appear inside the rows above — not entity rows themselves">
+      <Section
+        title="Shared sub-parts"
+        note="appear inside the rows above — not entity rows themselves"
+      >
         <Cell name="MuscleGroupChip" entity="muscle-group" expand="no">
           <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
             <MuscleGroupChip name="Chest" volumeStatus="ontrack" />

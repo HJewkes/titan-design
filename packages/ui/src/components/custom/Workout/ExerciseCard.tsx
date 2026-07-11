@@ -3,23 +3,28 @@ import { useState } from 'react'
 import { View, Text, Pressable } from 'react-native'
 import { VelocityStrip, type VelocityZoneBandProp } from './VelocityStrip'
 import { PlaceholderStrip } from './PlaceholderStrip'
-import { WeightBadge } from './WeightBadge'
 import { PrBadge } from './PrBadge'
-import { TempoDisplay } from './TempoDisplay'
 import { SetRow, type SetRowProps } from './SetRow'
 import { type SetStripSet } from './SetStrip'
 import { SetTableHeader } from './SetTableHeader'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
 import { type ExerciseIndicatorKind } from './ExerciseIndicator'
 import { roundWeight } from '../../../utils/workout-format'
-import { resolveColor } from '../../../theme/resolve-color'
-
-export type ExerciseCardState = 'collapsed' | 'expanded' | 'upcoming' | 'rail'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 export interface ExerciseCardProps {
   name: string
-  state: ExerciseCardState
-  onToggle: () => void
+  /**
+   * The dimmed, not-yet-reached representation (prescription + previous-best line).
+   * Overrides the expand state — an upcoming card never expands.
+   */
+  upcoming?: boolean
+  /** Controlled expand state. Omit to run uncontrolled (see {@link defaultExpanded}). */
+  expanded?: boolean
+  /** Uncontrolled initial expand state. Default false. Ignored when `expanded` is set. */
+  defaultExpanded?: boolean
+  /** Notified when the user toggles the card between collapsed and expanded. */
+  onExpandedChange?: (expanded: boolean) => void
   onNavigateDetail?: () => void
   summary?: {
     sets: number
@@ -27,30 +32,36 @@ export interface ExerciseCardProps {
     weight: number
     unit: 'lbs' | 'kg'
   }
-  e1rm?: { value: number; unit: 'lbs' | 'kg' }
   isPR?: boolean
+  /** Collapsed glance: per-set logged velocities (drives the mini strips). */
   setVelocities?: number[][]
   /** Optional velocity-zone bands shared across this exercise's sets (WA bands). */
   velocityZones?: readonly VelocityZoneBandProp[]
+  /** Collapsed glance: total planned sets (placeholder strips fill the remainder). */
   totalPlannedSets?: number
+  /** Expanded body: the per-set rows (done / live / todo). */
   sets?: SetRowProps[]
   tempo?: [number, number, number, number]
   prescription?: string
   previousBest?: string
   supersetPosition?: 'first' | 'last' | 'middle' | null
   supersetColor?: string
-  /** Rail heading representation (`state="rail"`): per-set performance strip data. */
+  /** Expanded header per-set strip override; derived from `sets` when omitted. */
   setStates?: SetStripSet[]
-  /** Rail heading representation: a small PR / issue / info chip in the title line. */
+  /** A small PR / issue / info chip in the title line (expanded header). */
   indicator?: ExerciseIndicatorKind
-  /** Rail heading strip height in px. Default 8. */
+  /** Expanded header strip height in px. Default 8. */
   stripHeight?: number
-  /** Rail heading: dim the row (upcoming exercise). */
-  dimmed?: boolean
 }
 
+/** The sub-card render props: everything but the expand-control surface, plus a resolved toggle. */
+type CardBodyProps = Omit<
+  ExerciseCardProps,
+  'upcoming' | 'expanded' | 'defaultExpanded' | 'onExpandedChange'
+> & { onToggle: () => void }
+
 function getSupersetBorderRadius(
-  position: ExerciseCardProps['supersetPosition'],
+  position: ExerciseCardProps['supersetPosition']
 ): Record<string, number> {
   switch (position) {
     case 'first':
@@ -85,7 +96,7 @@ function getSupersetBorderRadius(
 }
 
 function getSupersetMargin(
-  position: ExerciseCardProps['supersetPosition'],
+  position: ExerciseCardProps['supersetPosition']
 ): Record<string, number> {
   if (position === 'first' || position === 'middle') {
     return { marginBottom: 2 }
@@ -95,13 +106,13 @@ function getSupersetMargin(
 
 function formatSummary(summary: ExerciseCardProps['summary']): string {
   if (!summary) return ''
-  return `${summary.sets}\u00D7${summary.reps} @ ${roundWeight(summary.weight)} ${summary.unit}`
+  return `${summary.sets}×${summary.reps} @ ${roundWeight(summary.weight)} ${summary.unit}`
 }
 
 function formatAccessibilityLabel(
   name: string,
   summary: ExerciseCardProps['summary'],
-  prescription: ExerciseCardProps['prescription'],
+  prescription: ExerciseCardProps['prescription']
 ): string {
   if (summary) return `${name}, ${formatSummary(summary)}`
   if (prescription) return `${name}, ${prescription}`
@@ -112,13 +123,12 @@ function CollapsedCard({
   name,
   onToggle,
   summary,
-  e1rm,
   isPR,
   setVelocities,
   velocityZones,
   totalPlannedSets,
   supersetPosition,
-}: ExerciseCardProps) {
+}: CardBodyProps) {
   const [pressed, setPressed] = useState(false)
   const completedSets = setVelocities?.length ?? 0
   const remaining = Math.max(0, (totalPlannedSets ?? 0) - completedSets)
@@ -144,10 +154,7 @@ function CollapsedCard({
           ...supersetMargin,
         }}
       >
-        <View
-          className="flex-row items-center"
-          testID="exercise-card-header"
-        >
+        <View className="flex-row items-center" testID="exercise-card-header">
           <Text
             className="text-text-primary"
             style={{
@@ -173,15 +180,6 @@ function CollapsedCard({
               {formatSummary(summary)}
             </Text>
           )}
-          {e1rm && (
-            <WeightBadge
-              value={roundWeight(e1rm.value)}
-              unit={e1rm.unit}
-              size="sm"
-              showIcon={false}
-              testID="exercise-card-e1rm"
-            />
-          )}
           {isPR && (
             <View style={{ marginLeft: 4 }}>
               <PrBadge type="e1rm" compact animate={false} />
@@ -190,11 +188,7 @@ function CollapsedCard({
         </View>
 
         {(completedSets > 0 || remaining > 0) && (
-          <View
-            className="flex-row"
-            style={{ marginTop: 6, gap: 4 }}
-            testID="exercise-card-strips"
-          >
+          <View className="flex-row" style={{ marginTop: 6, gap: 4 }} testID="exercise-card-strips">
             {setVelocities?.map((velocities, i) => (
               <VelocityStrip
                 key={i}
@@ -217,21 +211,52 @@ function CollapsedCard({
   )
 }
 
+// --- Unified expanded card ---------------------------------------------------
+// The expanded card is "one object" with its rail heading: the persistent header
+// is the real ExerciseCardHeading, and the revealed body drops PREV and renders
+// one real SetRow per set (muted done/todo, brightened live spotlight).
+
+const DARK = getSemanticColors('dark')
+/** The header↔body seam. */
+const BODY_DIVIDER = DARK['border-subtle']
+
+/** Project the set rows onto the heading strip's per-set state (done / active / todo). */
+function deriveHeaderSetStates(sets: SetRowProps[]): SetStripSet[] {
+  return sets.map((set): SetStripSet => {
+    switch (set.state) {
+      case 'live':
+        return { status: 'active', velocities: set.velocities, planned: set.target.reps }
+      case 'done':
+        return { status: 'done', velocities: set.velocities }
+      case 'todo':
+        return { status: 'todo', planned: set.planned ?? set.target.reps }
+    }
+  })
+}
+
 function ExpandedCard({
   name,
   onToggle,
   summary,
-  e1rm,
   isPR,
   sets,
   tempo,
+  indicator,
+  setStates,
+  stripHeight = 8,
+  velocityZones,
   supersetPosition,
-}: ExerciseCardProps) {
+}: CardBodyProps) {
   const borderRadius = getSupersetBorderRadius(supersetPosition)
   const supersetMargin = getSupersetMargin(supersetPosition)
   // Summary is the card-level authority for the weight column; fall back to the
   // first set's unit, then lbs. (Mixed per-set units keep the card-level label.)
   const unit = summary?.unit ?? sets?.[0]?.unit ?? 'lbs'
+  // The rail heading IS the header: its per-set strip comes from an explicit
+  // `setStates` when supplied, else it's derived from the set rows. e1RM is dropped
+  // entirely; a PR surfaces via the chip.
+  const headerStates = setStates ?? (sets ? deriveHeaderSetStates(sets) : [])
+  const headerIndicator = indicator ?? (isPR ? 'pr' : undefined)
 
   return (
     <View
@@ -243,80 +268,34 @@ function ExpandedCard({
       }}
       testID="exercise-card"
     >
-      <Pressable
+      <ExerciseCardHeading
+        name={name}
+        sets={summary?.sets ?? sets?.length ?? 0}
+        reps={summary?.reps ?? 0}
+        load={summary?.weight ?? 0}
+        unit={unit}
+        tempo={tempo}
+        indicator={headerIndicator}
+        setStates={headerStates}
+        stripHeight={stripHeight}
         onPress={onToggle}
-        accessibilityRole="button"
-        accessibilityLabel={formatAccessibilityLabel(name, summary, undefined)}
-        aria-expanded={true}
-        testID="exercise-card-header"
+        testID="exercise-card-heading"
+      />
+
+      <View
+        style={{ borderTopWidth: 1, borderTopColor: BODY_DIVIDER, paddingBottom: 6 }}
+        testID="exercise-card-body"
       >
-        <View
-          className="flex-row items-center"
-          style={{
-            padding: 12,
-            paddingHorizontal: 14,
-            paddingBottom: 10,
-            borderBottomWidth: 1,
-            borderBottomColor: resolveColor('border-default'),
-          }}
-        >
-          <Text
-            className="text-text-primary"
-            style={{
-              fontSize: 14,
-              fontFamily: '"Space Grotesk", sans-serif',
-              fontWeight: '700',
-            }}
-            testID="exercise-card-name"
-          >
-            {name}
-          </Text>
-          <View className="flex-1" />
-          {summary && (
-            <Text
-              className="text-text-secondary"
-              style={{
-                fontSize: 12,
-                fontFamily: 'Inter, sans-serif',
-                marginRight: 8,
-              }}
-              testID="exercise-card-summary"
-            >
-              {formatSummary(summary)}
-            </Text>
-          )}
-          {e1rm && (
-            <WeightBadge
-              value={roundWeight(e1rm.value)}
-              unit={e1rm.unit}
-              size="sm"
-              showIcon={false}
-              testID="exercise-card-e1rm"
-            />
-          )}
-          {isPR && (
-            <View style={{ marginLeft: 4 }}>
-              <PrBadge type="e1rm" compact animate={false} />
-            </View>
-          )}
-        </View>
-      </Pressable>
+        <SetTableHeader unit={unit} showPrevious={false} testID="exercise-card-column-headers" />
 
-      {tempo && (
-        <View style={{ marginTop: 8, paddingHorizontal: 14 }} testID="exercise-card-tempo">
-          <TempoDisplay tempo={tempo} size="sm" />
-        </View>
-      )}
-
-      <SetTableHeader unit={unit} testID="exercise-card-column-headers" />
-
-      {sets && (
-        <View testID="exercise-card-sets">
-          {sets.map((setProps, i) => (
-            <SetRow key={i} {...setProps} />
-          ))}
-        </View>
-      )}
+        {sets && (
+          <View testID="exercise-card-sets">
+            {sets.map((set, i) => (
+              <SetRow key={i} {...set} velocityZones={set.velocityZones ?? velocityZones} />
+            ))}
+          </View>
+        )}
+      </View>
     </View>
   )
 }
@@ -327,7 +306,7 @@ function UpcomingCard({
   previousBest,
   supersetPosition,
   onToggle,
-}: ExerciseCardProps) {
+}: CardBodyProps) {
   const borderRadius = getSupersetBorderRadius(supersetPosition)
   const supersetMargin = getSupersetMargin(supersetPosition)
 
@@ -394,47 +373,37 @@ function UpcomingCard({
   )
 }
 
-// The session-rail heading representation. Delegates to the standalone
-// ExerciseCardHeading molecule (name + indicator, sets/reps/load beside the real
-// TempoDisplay, per-set strip); e1RM is intentionally dropped here (a planning /
-// live-panel concern). Kept as a thin adapter so the `rail` state stays a valid
-// ExerciseCard variant while the heading itself is independently reusable.
-function RailCard({
-  name,
-  onToggle,
-  summary,
-  tempo,
-  indicator,
-  setStates,
-  stripHeight = 8,
-  dimmed,
+/**
+ * The data-contract exercise card, in three representations:
+ * - `upcoming` — a dimmed, not-yet-reached row (prescription + previous best).
+ * - collapsed — a glance: name + summary + per-set velocity strips.
+ * - expanded — the unified card: the real {@link ExerciseCardHeading} header over
+ *   the SET · REPS · LBS · RPE body (one {@link SetRow} per set).
+ *
+ * Expand is controlled (`expanded` + `onExpandedChange`) or uncontrolled
+ * (`defaultExpanded`, internal state). `upcoming` overrides expand.
+ */
+export function ExerciseCard({
+  upcoming,
+  expanded,
+  defaultExpanded,
+  onExpandedChange,
+  ...rest
 }: ExerciseCardProps) {
-  return (
-    <ExerciseCardHeading
-      name={name}
-      sets={summary?.sets ?? 0}
-      reps={summary?.reps ?? 0}
-      load={summary?.weight ?? 0}
-      unit={summary?.unit ?? 'lbs'}
-      tempo={tempo}
-      indicator={indicator}
-      setStates={setStates ?? []}
-      stripHeight={stripHeight}
-      dimmed={dimmed}
-      onPress={onToggle}
-    />
-  )
-}
+  const [internalExpanded, setInternalExpanded] = useState(defaultExpanded ?? false)
+  const isControlled = expanded !== undefined
+  const isExpanded = isControlled ? expanded : internalExpanded
 
-export function ExerciseCard(props: ExerciseCardProps) {
-  switch (props.state) {
-    case 'collapsed':
-      return <CollapsedCard {...props} />
-    case 'expanded':
-      return <ExpandedCard {...props} />
-    case 'upcoming':
-      return <UpcomingCard {...props} />
-    case 'rail':
-      return <RailCard {...props} />
+  const onToggle = () => {
+    const next = !isExpanded
+    onExpandedChange?.(next)
+    if (!isControlled) setInternalExpanded(next)
   }
+
+  if (upcoming) return <UpcomingCard {...rest} onToggle={onToggle} />
+  return isExpanded ? (
+    <ExpandedCard {...rest} onToggle={onToggle} />
+  ) : (
+    <CollapsedCard {...rest} onToggle={onToggle} />
+  )
 }
