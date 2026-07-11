@@ -11,35 +11,48 @@ const meta: Meta<typeof VelocityStrip> = {
     docs: {
       description: {
         component:
-          'Per-rep velocity strip. Three variants: `full` (tap-to-expand chart — flat 3px → 60px ' +
-          'with labels + a mean/loss info row), `mini` (flat 3px static), and `compact` (a small ' +
-          'fixed-height velocity-HEIGHT spotlight, ~24px, bar height ∝ velocity). Feed either ' +
-          '`velocities` (a flat array) or a structured `set` descriptor (set-type aware). See the ' +
-          '[set-type modalities](?path=/docs/workout-dataviz-velocitystrip-modalities--docs) sheet.',
+          'Per-rep velocity strip. Two variants: `mini` (a flat 3px static strip) and `expanded` ' +
+          '(the velocity-HEIGHT bar chart, rounded tops). The `expanded` chrome is prop-driven — ' +
+          'with `showNumbers`/`showInfo` on it is the framed chart (raised surface, per-bar m/s ' +
+          'labels, mean/loss info row, interactive tap-to-expand); with both off it is a bare strip, ' +
+          'the active-set spotlight. `height` sets the plot height; `scale` is `peak` (to the set max) ' +
+          'or `fixed` (a fixed ceiling, cross-set-comparable). Feed either `velocities` or a `set` ' +
+          'descriptor (set-type aware — see the ' +
+          '[modalities](?path=/docs/workout-dataviz-velocitystrip-modalities--docs) sheet).',
       },
     },
   },
   argTypes: {
     variant: {
       control: 'select',
-      options: ['full', 'mini', 'compact'],
+      options: ['mini', 'expanded'],
       description: 'Display variant',
     },
     expanded: {
       control: 'boolean',
-      description: 'full variant: expand into the bar chart',
+      description: 'expanded (framed): whether the chart is open (toggle for tap-to-expand)',
+    },
+    showNumbers: {
+      control: 'boolean',
+      description: 'expanded framed chart: per-bar m/s labels (default true)',
     },
     showInfo: {
       control: 'boolean',
-      description: 'full+expanded: show the info row (zone name + loss %)',
+      description: 'expanded framed chart: the mean/loss info row (default true)',
     },
-    compactHeight: {
-      control: { type: 'number', min: 12, max: 48, step: 2 },
-      description: 'compact variant: bar-plot height in px (bars scale to this). Default 24.',
+    height: {
+      control: { type: 'number', min: 12, max: 96, step: 2 },
+      description: 'expanded plot height in px (bars scale to this). Default 60.',
+    },
+    scale: {
+      control: 'inline-radio',
+      options: ['peak', 'fixed'],
+      description: 'expanded bar scaling: peak (set max) or fixed (cross-set ceiling)',
     },
     liveRepIndex: {
       control: 'number',
-      description: 'full+expanded: index of the newest rep to animate (pop / new-peak bounce)',
+      description:
+        'expanded framed chart: index of the newest rep to animate (pop / new-peak bounce)',
     },
     set: { control: false, description: 'Structured set descriptor (supersedes `velocities`)' },
     zones: { control: false, description: 'Velocity-zone bands (WA); default scale when absent' },
@@ -54,13 +67,16 @@ const slowSet = [0.65, 0.58, 0.52, 0.48, 0.42]
 const mixedSet = [1.1, 0.95, 0.82, 0.68, 0.55, 0.45]
 const moderateSet = [0.88, 0.85, 0.82, 0.78, 0.76]
 
-/** Controls-driven: flip `variant` / `expanded` / `showInfo` / `compactHeight` in the panel. */
+/** Controls-driven: flip `variant` / `showNumbers` / `showInfo` / `height` / `scale` in the panel. */
 export const Playground: Story = {
   args: {
     velocities: moderateSet,
-    variant: 'full',
+    variant: 'expanded',
     expanded: true,
+    showNumbers: true,
     showInfo: true,
+    height: 60,
+    scale: 'peak',
     onToggle: () => {},
   },
   decorators: [
@@ -77,10 +93,26 @@ export const Mini: Story = {
   args: { velocities: mixedSet, variant: 'mini' },
 }
 
-/** The compact velocity-HEIGHT spotlight (bar height ∝ velocity) — the live-set treatment. */
-export const Compact: Story = {
+/** Framed chart with per-bar m/s labels + info row (numbers ON) — the rich readout. */
+export const ExpandedWithNumbers: Story = {
+  args: { velocities: mixedSet, variant: 'expanded', expanded: true },
+  decorators: [
+    (Story) => (
+      <View style={{ width: 300, padding: 16 }}>
+        <Story />
+      </View>
+    ),
+  ],
+}
+
+/** Bare velocity-height strip (numbers OFF, info OFF, fixed 24px) — the active-set spotlight. */
+export const ExpandedBareSpotlight: Story = {
   args: {
-    variant: 'compact',
+    variant: 'expanded',
+    showNumbers: false,
+    showInfo: false,
+    height: 24,
+    scale: 'fixed',
     set: { type: 'straight', velocities: [0.95, 0.9, 0.86, 0.8, 0.72], planned: 10 },
   },
 }
@@ -114,12 +146,12 @@ function InteractiveVelocityStrip() {
   )
 }
 
-/** Tap to expand; tap a bar for its rep. */
+/** Tap to expand (3px ↔ chart); tap a bar for its rep. */
 export const Interactive: Story = {
   render: () => <InteractiveVelocityStrip />,
 }
 
-/** The four zone profiles across every variant, so the color scale reads at a glance. */
+/** The four zone profiles across the treatments, so the color scale reads at a glance. */
 export const Profiles: Story = {
   render: () => {
     const rows: [string, number[]][] = [
@@ -135,9 +167,18 @@ export const Profiles: Story = {
             <Text style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, color: '#9CA3AF' }}>
               {label}
             </Text>
-            <VelocityStrip velocities={velocities} expanded showInfo={false} onToggle={() => {}} />
             <VelocityStrip
-              variant="compact"
+              velocities={velocities}
+              variant="expanded"
+              showInfo={false}
+              onToggle={() => {}}
+            />
+            <VelocityStrip
+              variant="expanded"
+              showNumbers={false}
+              showInfo={false}
+              height={24}
+              scale="fixed"
               set={{ type: 'straight', velocities, planned: velocities.length }}
             />
             <VelocityStrip velocities={velocities} variant="mini" />

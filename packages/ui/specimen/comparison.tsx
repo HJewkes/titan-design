@@ -914,7 +914,7 @@ function App() {
         label="VelocityStrip expanded"
         htmlContent={`<div style="display:flex;flex-direction:column;align-items:center;width:200px;height:60px;gap:2px;border-radius:6px;padding:16px 6px 24px;background:#1C1C1C;position:relative;overflow:visible"><div style="display:flex;flex-direction:row;flex:1;gap:2px;align-items:flex-end;width:100%"><div style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end"><div class="vel-bar green" style="height:87%;border-top-left-radius:2px;border-top-right-radius:2px"></div></div><div style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end"><div class="vel-bar green" style="height:80%;border-top-left-radius:2px;border-top-right-radius:2px"></div></div><div style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end"><div class="vel-bar green" style="height:74%;border-top-left-radius:2px;border-top-right-radius:2px"></div></div></div></div>`}
       >
-        <VelocityStrip velocities={[1.15, 1.06, 0.98]} variant="full" expanded showInfo={false} style={{ width: 200 }} />
+        <VelocityStrip velocities={[1.15, 1.06, 0.98]} variant="expanded" expanded showInfo={false} style={{ width: 200 }} />
       </ComparisonPair>
 
       {/* ── 6. TempoDisplay ── */}

@@ -144,7 +144,7 @@ function EmbedSetRow({ s }: { s: SetRowProps }) {
         {live && <Text style={{ ...capText, color: GREEN, fontWeight: '700' }}>live</Text>}
       </View>
       {vels.length > 0 ? (
-        <VelocityStrip velocities={vels} variant="full" expanded showInfo={false} />
+        <VelocityStrip velocities={vels} variant="expanded" showInfo={false} />
       ) : (
         <View style={{ height: 24, flexDirection: 'row', gap: 2 }}>
           {Array.from({ length: s.state === 'todo' ? s.target.reps : 10 }).map((_, i) => (

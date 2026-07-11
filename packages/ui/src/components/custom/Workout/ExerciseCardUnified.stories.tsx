@@ -112,11 +112,15 @@ export const Unified: Story = {
 
       <View style={{ gap: 10, maxWidth: 320 }}>
         <Text style={{ ...monoTag, color: T_SECONDARY }}>
-          the locked active-set spotlight · VelocityStrip variant=&quot;compact&quot;
+          the locked active-set spotlight · VelocityStrip variant=&quot;expanded&quot; (bare)
         </Text>
         <View style={{ backgroundColor: INSET, borderRadius: 8, padding: 12 }}>
           <VelocityStrip
-            variant="compact"
+            variant="expanded"
+            showNumbers={false}
+            showInfo={false}
+            height={24}
+            scale="fixed"
             set={{ type: 'straight', velocities: ACTIVE, planned: 10 }}
           />
         </View>

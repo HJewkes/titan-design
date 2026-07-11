@@ -68,23 +68,36 @@ export interface VelocityStripProps extends ViewProps {
    * Live mode: index of the most-recently-completed rep. That bar animates in
    * with a "pop"; if it is also the current set peak (a new best), it "bounces"
    * instead. Only the latest bar animates. Honors `prefers-reduced-motion`.
-   * Full variant only.
+   * Framed `expanded` chart only (interactive tap-to-expand use).
    */
   liveRepIndex?: number
+  /**
+   * `expanded` variant: whether the chart is OPEN. Default true (the variant shows
+   * its chart). Toggle it (with {@link onToggle}) for the interactive tap-to-expand
+   * collapse↔chart animation; a static open chart (no `onToggle`) does not animate.
+   */
   expanded?: boolean
   onToggle?: () => void
   onRepPress?: (index: number, velocity: number) => void
   /**
-   * `full` — the tap-to-expand chart (flat 3px collapsed → 60px expanded with
-   * per-bar labels + a mean/loss info row, plus the mount animation). `mini` — a
-   * flat 3px static strip (set-type aware). `compact` — a small fixed-height
-   * (~24px) velocity-HEIGHT strip: bar height ∝ velocity, set-type aware, but with
-   * none of the full variant's chrome (no labels, no info row, no animation). The
-   * compact variant is the active-set "spotlight" of the unified {@link ExerciseCard}.
+   * `mini` — a flat 3px static strip (set-type aware). `expanded` — the velocity-
+   * HEIGHT bar chart (rounded tops), whose chrome is prop-driven: with
+   * {@link showNumbers} or {@link showInfo} on it's the framed chart (raised surface,
+   * padding, per-bar m/s labels, mean/loss info row, interactive collapse); with both
+   * off it's a bare strip — the active-set "spotlight" of {@link ExerciseCard}.
    */
-  variant?: 'full' | 'mini' | 'compact'
-  /** Compact-variant bar height in px (bar heights scale to this). Default 24. */
-  compactHeight?: number
+  variant?: 'mini' | 'expanded'
+  /** `expanded` plot height in px (bars scale to this). Default 60. */
+  height?: number
+  /**
+   * `expanded` bar scaling. `peak` (default) scales to the set's own max (+15%
+   * headroom). `fixed` scales to a fixed velocity ceiling so bar heights read the
+   * same absolute velocity across sets (the spotlight).
+   */
+  scale?: 'peak' | 'fixed'
+  /** `expanded` framed chart: per-bar m/s labels. Default true. */
+  showNumbers?: boolean
+  /** `expanded` framed chart: the mean/loss info row. Default true. */
   showInfo?: boolean
   className?: string
 }
@@ -348,22 +361,27 @@ const EXPANDED_TODO_STUB_PCT = 16
 /** Expanded height for advanced set-types (drop / myo / cluster / range / amrap): a short mini-style bar. */
 const EXPANDED_ENCODED_PCT = 45
 
-/** Default compact-variant strip height (px) — the active-set spotlight. */
-const COMPACT_HEIGHT = 24
+/** Default framed `expanded` chart height (px). */
+const EXPANDED_HEIGHT = 60
 /**
- * Fixed velocity ceiling (m/s) the compact bar heights scale against. Unlike the
- * expanded path (which scales to the set's own peak), the compact variant uses a
- * FIXED ceiling so a bar's height reads the same absolute velocity across sets.
+ * The `scale="fixed"` velocity ceiling (m/s). `peak` scales to the set's own max
+ * (+15% headroom); `fixed` uses this constant so a bar's height reads the same
+ * absolute velocity across sets (the spotlight).
  */
-const COMPACT_MAX_VELOCITY = 1.15
-/** Minimum compact bar height (px) — a planned / variable / continue stub, or a near-zero rep. */
-const COMPACT_STUB_HEIGHT = 3
+const FIXED_MAX_VELOCITY = 1.15
+/** Minimum bare-strip bar height (px) — a planned / variable / continue stub, or a near-zero rep. */
+const BARE_STUB_HEIGHT = 3
 
-/** Compact bar height (px): velocity-scaled for a performed rep, a short stub otherwise. */
-function compactSlotHeight(slot: VelocitySlot, height: number): number {
-  if (slot.kind !== 'rep') return COMPACT_STUB_HEIGHT
-  const ratio = Math.min(1, (slot.velocity ?? 0) / COMPACT_MAX_VELOCITY)
-  return Math.max(COMPACT_STUB_HEIGHT, ratio * height)
+/** The bar-height scaling denominator for the given `scale` (guarded ≥ 0 by callers). */
+function scaleDenominator(scale: 'peak' | 'fixed', maxVelocity: number): number {
+  return scale === 'fixed' ? FIXED_MAX_VELOCITY : maxVelocity * 1.15
+}
+
+/** Bare-strip bar height (px): velocity-scaled for a performed rep, a short stub otherwise. */
+function bareSlotHeight(slot: VelocitySlot, height: number, denom: number): number {
+  if (slot.kind !== 'rep' || denom <= 0) return BARE_STUB_HEIGHT
+  const ratio = Math.min(1, (slot.velocity ?? 0) / denom)
+  return Math.max(BARE_STUB_HEIGHT, ratio * height)
 }
 
 function getReducedMotionPreference(): boolean {
@@ -394,11 +412,13 @@ export function VelocityStrip({
   set,
   zones,
   liveRepIndex,
-  expanded = false,
+  expanded = true,
   onToggle,
   onRepPress,
-  variant = 'full',
-  compactHeight = COMPACT_HEIGHT,
+  variant = 'expanded',
+  height = EXPANDED_HEIGHT,
+  scale = 'peak',
+  showNumbers = true,
   showInfo = true,
   className,
   ...props
@@ -419,6 +439,11 @@ export function VelocityStrip({
   const meanVelocity = calculateMeanVelocity(doneVelocities)
   const loss = calculateVelocityLoss(doneVelocities)
 
+  // The framed chart (raised box, labels, info) vs the bare spotlight strip is the
+  // only fork in the `expanded` variant — keyed by whether any chrome is requested.
+  const framed = showNumbers || showInfo
+  const scaleDenom = scaleDenominator(scale, maxVelocity)
+
   const hasZones = zones != null && zones.length > 0
   const barColorFor = (v: number): string =>
     hasZones ? bandColor(classifyBand(v, zones)!) : zoneHexMap[getVelocityZoneColor(v)]
@@ -432,7 +457,7 @@ export function VelocityStrip({
     : getVelocityZoneName(meanVelocity)
 
   const prefersReducedMotion = usePrefersReducedMotion()
-  const [heightAnim] = useState(() => new Animated.Value(expanded ? 60 : 3))
+  const [heightAnim] = useState(() => new Animated.Value(expanded ? height : 3))
   const [labelOpacity] = useState(() => new Animated.Value(expanded ? 1 : 0))
   const [infoOpacity] = useState(() => new Animated.Value(expanded ? 1 : 0))
   const [liveScale] = useState(() => new Animated.Value(1))
@@ -441,7 +466,7 @@ export function VelocityStrip({
   const liveVelocity = liveRepIndex != null ? doneVelocities[liveRepIndex] : undefined
   const isNewPeak = liveVelocity != null && maxVelocity > 0 && liveVelocity === maxVelocity
   useEffect(() => {
-    if (variant !== 'full' || liveRepIndex == null || liveVelocity == null) return
+    if (variant !== 'expanded' || !framed || liveRepIndex == null || liveVelocity == null) return
     if (prefersReducedMotion) {
       liveScale.setValue(1)
       return
@@ -471,14 +496,14 @@ export function VelocityStrip({
         useNativeDriver: true,
       }).start()
     }
-  }, [variant, liveRepIndex, liveVelocity, isNewPeak, prefersReducedMotion, liveScale])
+  }, [variant, framed, liveRepIndex, liveVelocity, isNewPeak, prefersReducedMotion, liveScale])
 
   useEffect(() => {
-    if (variant !== 'full') return
+    if (variant !== 'expanded' || !framed) return
 
     Animated.parallel([
       Animated.timing(heightAnim, {
-        toValue: expanded ? 60 : 3,
+        toValue: expanded ? height : 3,
         duration: ANIMATION_DURATION,
         easing: ANIMATION_EASING,
         useNativeDriver: false,
@@ -496,7 +521,7 @@ export function VelocityStrip({
         useNativeDriver: false,
       }),
     ]).start()
-  }, [expanded, variant, heightAnim, labelOpacity, infoOpacity])
+  }, [expanded, variant, framed, height, heightAnim, labelOpacity, infoOpacity])
 
   // Nothing to draw: neither a legacy velocity array nor a set descriptor.
   if (set == null && velocities == null) return null
@@ -545,16 +570,17 @@ export function VelocityStrip({
     )
   }
 
-  if (variant === 'compact') {
+  // Bare `expanded` strip (both chrome flags off): the velocity-HEIGHT spotlight —
+  // px bar heights, no raised box / labels / info row / animation. Set-type gaps carry
+  // over from the slot model exactly as in `mini` (container REP_GAP + per-slot extra
+  // for a WIDE notch); planned / variable / continue slots draw as stubs.
+  if (!framed) {
     const { style: externalStyle, ...restProps } = props
-    // Velocity-HEIGHT bars at a fixed small height, no chrome. Set-type gaps carry
-    // over from the slot model exactly as in `mini` (container REP_GAP + per-slot
-    // extra for a WIDE notch); planned / variable / continue slots draw as stubs.
     return (
       <View
         className={className}
         style={[
-          { flexDirection: 'row', height: compactHeight, gap: REP_GAP, alignItems: 'flex-end' },
+          { flexDirection: 'row', height, gap: REP_GAP, alignItems: 'flex-end' },
           externalStyle,
         ]}
         accessibilityRole="image"
@@ -568,7 +594,7 @@ export function VelocityStrip({
             style={{
               flex: 1,
               minWidth: 4,
-              height: compactSlotHeight(slot, compactHeight),
+              height: bareSlotHeight(slot, height, scaleDenom),
               borderRadius: 1,
               backgroundColor: slotColor(slot),
               marginLeft: Math.max(0, slot.leadingGap - REP_GAP),
@@ -599,8 +625,8 @@ export function VelocityStrip({
     slots.map((slot, i) => {
       const isStraightRep = set.type === 'straight' && slot.kind === 'rep'
       const heightPct = isStraightRep
-        ? maxVelocity > 0
-          ? Math.round(((slot.velocity ?? 0) / (maxVelocity * 1.15)) * 100)
+        ? scaleDenom > 0
+          ? Math.round(((slot.velocity ?? 0) / scaleDenom) * 100)
           : 0
         : set.type === 'straight'
           ? EXPANDED_TODO_STUB_PCT
@@ -662,10 +688,9 @@ export function VelocityStrip({
           ? setBars
           : doneVelocities.map((v, i) => {
               const barBackground = barColorFor(v)
-              // Guard all-zero velocities (idle / pre-rep): maxVelocity === 0 makes
+              // Guard all-zero velocities (idle / pre-rep): a 0 denominator makes
               // this 0 / 0 === NaN and emits height:'NaN%'. Flatten the bars instead.
-              const barHeightPct =
-                maxVelocity > 0 ? Math.round((v / (maxVelocity * 1.15)) * 100) : 0
+              const barHeightPct = scaleDenom > 0 ? Math.round((v / scaleDenom) * 100) : 0
               const isLive = liveRepIndex === i
               const liveLabelSuffix = isLive
                 ? isNewPeak
@@ -716,7 +741,7 @@ export function VelocityStrip({
                     position: 'relative',
                   }}
                 >
-                  {expanded && (
+                  {expanded && showNumbers && (
                     <Animated.View
                       style={{
                         opacity: labelOpacity,

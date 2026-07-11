@@ -124,9 +124,15 @@ function Cell({
 function RowStrip({ set }: { set: SetRowProps }) {
   const zones = set.velocityZones
   if (set.state === 'live') {
+    // The active-set spotlight: the bare velocity-height `expanded` chart at 24px,
+    // fixed scale, no labels / info (both chrome flags off → the bare strip).
     return (
       <VelocityStrip
-        variant="compact"
+        variant="expanded"
+        showNumbers={false}
+        showInfo={false}
+        height={24}
+        scale="fixed"
         set={{ type: 'straight', velocities: set.velocities, planned: set.target.reps }}
         zones={zones}
       />
