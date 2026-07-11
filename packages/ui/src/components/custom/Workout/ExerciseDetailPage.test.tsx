@@ -16,8 +16,8 @@ const entry = (id: string, weight: number, e1rm: number, isPR = false): Exercise
   e1rm: { value: e1rm, unit: 'lbs' },
   isPR,
   sets: [
-    { mode: 'history', setNumber: 1, reps: 8, weight, rpe: 8, unit: 'lbs' },
-    { mode: 'history', setNumber: 2, reps: 8, weight, rpe: 8.5, unit: 'lbs' },
+    { state: 'done', setNumber: 1, unit: 'lbs', reps: 8, weight, rpe: 8, velocities: [] },
+    { state: 'done', setNumber: 2, unit: 'lbs', reps: 8, weight, rpe: 8.5, velocities: [] },
   ],
 })
 
@@ -67,11 +67,11 @@ describe('deriveExerciseStats', () => {
 describe('toExerciseCardProps', () => {
   it('collapses without sets and expands with them', () => {
     const collapsed = toExerciseCardProps(history[0], false, () => {})
-    expect(collapsed.state).toBe('collapsed')
+    expect(collapsed.expanded).toBe(false)
     expect(collapsed.sets).toBeUndefined()
 
     const expanded = toExerciseCardProps(history[0], true, () => {})
-    expect(expanded.state).toBe('expanded')
+    expect(expanded.expanded).toBe(true)
     expect(expanded.sets).toHaveLength(2)
     expect(expanded.name).toBe('Session a')
   })

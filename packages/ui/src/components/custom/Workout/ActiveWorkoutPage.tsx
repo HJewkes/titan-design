@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useMemo, useState } from 'react'
 import { View, Text, type ViewProps } from 'react-native'
-import { ExerciseCard, type ExerciseCardProps, type ExerciseCardState } from './ExerciseCard'
+import { ExerciseCard, type ExerciseCardProps } from './ExerciseCard'
 import { InputBar } from './InputBar'
 import { RestTimer } from './RestTimer'
 import { SupersetWrapper } from './SupersetWrapper'
@@ -32,8 +32,6 @@ export interface ActiveWorkoutExercise {
   totalPlannedSets: number
   /** Collapsed summary (sets × reps @ weight) for a completed exercise. */
   summary?: ExerciseCardProps['summary']
-  /** Estimated one-rep max badge. */
-  e1rm?: ExerciseCardProps['e1rm']
   /** Flags a personal-record exercise. */
   isPR?: boolean
   /** Prescribed tempo, revealed when expanded. */
@@ -148,13 +146,9 @@ export function findActiveExercise(
   return exercises.find((exercise) => exercise.status === 'active') ?? null
 }
 
-/** Map an exercise's status + focus onto an `ExerciseCard` visual state (pure). */
-export function statusToCardState(
-  status: ActiveExerciseStatus,
-  focused: boolean
-): ExerciseCardState {
-  if (status === 'upcoming') return 'upcoming'
-  return focused ? 'expanded' : 'collapsed'
+/** Whether an exercise renders as the dimmed, not-yet-reached representation (pure). */
+export function isUpcomingExercise(status: ActiveExerciseStatus): boolean {
+  return status === 'upcoming'
 }
 
 /** Project an exercise onto ExerciseCard props, wiring zoom focus (pure). */
@@ -165,18 +159,18 @@ export function toActiveCardProps(
   supersetPosition: ExerciseCardProps['supersetPosition'] = null,
   supersetColor?: string
 ): ExerciseCardProps {
-  const state = statusToCardState(exercise.status, focused)
+  const upcoming = isUpcomingExercise(exercise.status)
   return {
     name: exercise.name,
-    state,
-    onToggle,
+    upcoming,
+    expanded: focused,
+    onExpandedChange: onToggle,
     summary: exercise.summary,
-    e1rm: exercise.e1rm,
     isPR: exercise.isPR,
     tempo: exercise.tempo,
     setVelocities: exercise.setVelocities,
     totalPlannedSets: exercise.totalPlannedSets,
-    sets: state === 'expanded' ? exercise.sets : undefined,
+    sets: focused ? exercise.sets : undefined,
     prescription: exercise.prescription,
     previousBest: exercise.previousBest,
     supersetPosition,

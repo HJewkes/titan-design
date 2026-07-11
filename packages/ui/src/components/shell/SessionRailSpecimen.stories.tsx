@@ -291,7 +291,15 @@ function RailItem({
   )
 }
 
-function PaceFooter({ context, ahead, onToggle }: { context: RailContext; ahead: boolean; onToggle: () => void }) {
+function PaceFooter({
+  context,
+  ahead,
+  onToggle,
+}: {
+  context: RailContext
+  ahead: boolean
+  onToggle: () => void
+}) {
   if (context === 'idle') {
     return (
       <div className="pace">
@@ -368,13 +376,7 @@ function PaceFooter({ context, ahead, onToggle }: { context: RailContext; ahead:
 
 // Shared rail chrome header (context dot + title + meta) — reused by both the adapted rail and the
 // "ExerciseCard exactly" comparison so only the item body differs.
-function RailHeader({
-  context,
-  meta,
-}: {
-  context: RailContext
-  meta?: string
-}) {
+function RailHeader({ context, meta }: { context: RailContext; meta?: string }) {
   const hist = context === 'historical'
   const ctxLabel =
     context === 'historical'
@@ -449,9 +451,8 @@ const CARD_MIX: { ex: SpecExercise; status: CardStatus }[] = SESSION.map((ex, i)
 }))
 
 const completedSet = (ex: SpecExercise, i: number, s: SpecSet): SetRowProps => ({
-  mode: 'completed',
+  state: 'done',
   setNumber: i + 1,
-  previous: { reps: 8, weight: ex.wt },
   reps: s.reps,
   weight: ex.wt,
   rpe: 7 + i * 0.5,
@@ -459,31 +460,24 @@ const completedSet = (ex: SpecExercise, i: number, s: SpecSet): SetRowProps => (
   velocities: perRepVel(s),
 })
 
-// The active exercise's 3-set mix: finished · in-progress (5/8) · not-started.
-// NOTE: SetRow has no explicit "in-progress" state — the live set keeps null reps (italic target) with a
-// partial strip; no "5/8" count, no pulse. That gap is the audit's key finding.
+// The active exercise's 3-set mix: done · LIVE · todo. The live set is now a
+// first-class SetRow state — the compact velocity-height spotlight strip, brightened.
 const activeSets = (ex: SpecExercise): SetRowProps[] => [
   completedSet(ex, 0, ex.sets[0]),
   {
-    mode: 'active',
+    state: 'live',
     setNumber: 2,
-    previous: { reps: 8, weight: ex.wt },
-    reps: null,
-    weight: null,
     unit: 'lbs',
-    isLive: true,
-    targets: { reps: 8, weight: ex.wt },
+    target: { reps: 8, weight: ex.wt },
+    reps: 8,
+    weight: ex.wt,
     velocities: [0.58, 0.55, 0.53, 0.5, 0.48],
   },
   {
-    mode: 'active',
+    state: 'todo',
     setNumber: 3,
-    previous: { reps: 8, weight: ex.wt },
-    reps: null,
-    weight: null,
     unit: 'lbs',
-    isNextSet: false,
-    targets: { reps: 8, weight: ex.wt },
+    target: { reps: 8, weight: ex.wt },
   },
 ]
 
@@ -491,9 +485,9 @@ const activeSets = (ex: SpecExercise): SetRowProps[] => [
 function cardProps(
   ex: SpecExercise,
   status: CardStatus,
-  open: boolean,
-): Omit<ExerciseCardProps, 'onToggle'> {
-  const base = { name: ex.name, e1rm: { value: ex.e1rm, unit: 'lbs' as const }, isPR: ex.pr }
+  open: boolean
+): Omit<ExerciseCardProps, 'onExpandedChange'> {
+  const base = { name: ex.name, isPR: ex.pr }
   const summary = {
     sets: status === 'active' ? 3 : ex.sets.length,
     reps: ex.sets[0].reps,
@@ -501,35 +495,32 @@ function cardProps(
     unit: 'lbs' as const,
   }
   if (status === 'upcoming') {
-    // UpcomingCard is now Pressable → open reveals the planned sets as targets (not-started rows).
+    // Closed → the dimmed upcoming row; open → an expanded card of planned (todo) sets.
     if (!open) {
       return {
         ...base,
-        state: 'upcoming',
+        upcoming: true,
         prescription: `${ex.sets.length} × ${ex.sets[0].reps} @ RPE 8`,
         previousBest: `${ex.sets[0].reps} × ${ex.wt} lb`,
       }
     }
     return {
       ...base,
-      state: 'expanded',
+      expanded: true,
       summary,
       tempo: [3, 1, 2, 0],
       sets: ex.sets.map((s, i) => ({
-        mode: 'active',
+        state: 'todo',
         setNumber: i + 1,
-        previous: { reps: 8, weight: ex.wt },
-        reps: null,
-        weight: null,
         unit: 'lbs',
-        targets: { reps: s.reps, weight: ex.wt },
+        target: { reps: s.reps, weight: ex.wt },
       })),
     }
   }
   if (open) {
     return {
       ...base,
-      state: 'expanded',
+      expanded: true,
       summary,
       tempo: [3, 1, 2, 0],
       sets: status === 'active' ? activeSets(ex) : ex.sets.map((s, i) => completedSet(ex, i, s)),
@@ -538,7 +529,7 @@ function cardProps(
   const doneSets = status === 'active' ? ex.sets.slice(0, 1) : ex.sets
   return {
     ...base,
-    state: 'collapsed',
+    expanded: false,
     summary,
     totalPlannedSets: status === 'active' ? 3 : ex.sets.length,
     setVelocities: doneSets.map(perRepVel),
@@ -556,7 +547,7 @@ function ExerciseCardPlan() {
           <ExerciseCard
             key={ex.id}
             {...cardProps(ex, status, !!open[ex.id])}
-            onToggle={() => setOpen((o) => ({ ...o, [ex.id]: !o[ex.id] }))}
+            onExpandedChange={() => setOpen((o) => ({ ...o, [ex.id]: !o[ex.id] }))}
           />
         ))}
       </div>
@@ -568,14 +559,20 @@ function ExerciseCardPlan() {
 function ReferenceCard() {
   const [open, setOpen] = useState(true)
   return (
-    <ExerciseCard {...cardProps(SESSION[0], 'finished', open)} onToggle={() => setOpen((v) => !v)} />
+    <ExerciseCard
+      {...cardProps(SESSION[0], 'finished', open)}
+      onExpandedChange={() => setOpen((v) => !v)}
+    />
   )
 }
 
 // ----------------------------------------------------------------------------- stories
 function Frame({ children }: { children: React.ReactNode }) {
   return (
-    <div className="s3spec" style={{ display: 'flex', height: '100vh', background: 'var(--stage)' }}>
+    <div
+      className="s3spec"
+      style={{ display: 'flex', height: '100vh', background: 'var(--stage)' }}
+    >
       <style>{RAIL_CSS}</style>
       {children}
     </div>
@@ -632,11 +629,26 @@ export const ContextSwap: Story = {
 }
 
 const RAIL_DELTAS: [string, string][] = [
-  ['Width / fit ✓ DONE', 'FIXED in the real component: SetRow fixed columns now flexShrink + PREV minWidth → the 5-col table renders correctly at 246px (was: "8×145" mangled per-char). No-op at 390px. This is the whole "make it reactive" ask.'],
-  ['Tick row', 'REUSE ExerciseCard’s collapsed strip-row (mini VelocityStrips + PlaceholderStrips) AS the set-tick row — already the same concept (see collapsed items in the left column).'],
-  ['Live set marker', 'ADD an in-progress tick (pulsing + “5/8” rep count). ExerciseCard only knows completed strips + placeholders — no live state.'],
-  ['Expanded body', 'OPTIONAL: swap the (now-fitting) 5-col input table for a read-only compact list (mean-con · reps×wt · loss%). Rail is read-only — density preference, no longer a fit blocker.'],
-  ['States', 'Add context-swap (live/historical/idle) + a “live” header tag + leading index; drop input affordances.'],
+  [
+    'Width / fit ✓ DONE',
+    'FIXED in the real component: SetRow fixed columns now flexShrink + PREV minWidth → the 5-col table renders correctly at 246px (was: "8×145" mangled per-char). No-op at 390px. This is the whole "make it reactive" ask.',
+  ],
+  [
+    'Tick row',
+    'REUSE ExerciseCard’s collapsed strip-row (mini VelocityStrips + PlaceholderStrips) AS the set-tick row — already the same concept (see collapsed items in the left column).',
+  ],
+  [
+    'Live set marker',
+    'ADD an in-progress tick (pulsing + “5/8” rep count). ExerciseCard only knows completed strips + placeholders — no live state.',
+  ],
+  [
+    'Expanded body',
+    'OPTIONAL: swap the (now-fitting) 5-col input table for a read-only compact list (mean-con · reps×wt · loss%). Rail is read-only — density preference, no longer a fit blocker.',
+  ],
+  [
+    'States',
+    'Add context-swap (live/historical/idle) + a “live” header tag + leading index; drop input affordances.',
+  ],
 ]
 
 /**
@@ -648,7 +660,9 @@ export const Directions: Story = {
   render: () => (
     <Frame>
       <div className="speccol">
-        <div className="speclabel">ExerciseCard rail — state mix (2 finished · 1 active · 2 upcoming)</div>
+        <div className="speclabel">
+          ExerciseCard rail — state mix (2 finished · 1 active · 2 upcoming)
+        </div>
         <div className="rail">
           <ExerciseCardPlan />
         </div>
@@ -727,7 +741,9 @@ export const SessionPacePiece: Story = {
       ).map(([label, ctx, ahead]) => (
         <div className="speccol" key={label} style={{ height: 'auto' }}>
           <div className="speclabel">{label}</div>
-          <div style={{ width: 246, background: 'var(--spine)', border: '1px solid var(--border)' }}>
+          <div
+            style={{ width: 246, background: 'var(--spine)', border: '1px solid var(--border)' }}
+          >
             <PaceFooter context={ctx} ahead={ahead} onToggle={() => {}} />
           </div>
         </div>

@@ -15,7 +15,6 @@ import {
   WorkoutPill,
   MuscleGroupChip,
   Sparkline,
-  SetRow,
   InputBar,
   RestTimer,
   ExerciseCard,
@@ -377,67 +376,6 @@ const HTML_CSS = `
     background: rgba(186,41,150,0.15);
     border: 1px solid rgba(186,41,150,0.3);
     color: #ba2996;
-  }
-
-  /* 12. SetRow */
-  .html-scope .set-row {
-    display: flex;
-    align-items: center;
-    padding: 7px 8px;
-    gap: 8px;
-    border-radius: 8px;
-  }
-  .html-scope .set-row .col-set {
-    width: 36px;
-    text-align: center;
-    font-family: var(--font-body);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-secondary);
-  }
-  .html-scope .set-row .col-prev {
-    flex: 1;
-    font-family: var(--font-body);
-    font-size: 12px;
-    color: var(--text-secondary);
-  }
-  .html-scope .set-row .col-reps {
-    width: 44px;
-    text-align: center;
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-primary);
-  }
-  .html-scope .set-row .col-weight {
-    width: 56px;
-    text-align: center;
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-primary);
-  }
-  .html-scope .set-row .col-rpe {
-    width: 36px;
-    text-align: center;
-    font-family: var(--font-body);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-tertiary);
-  }
-  .html-scope .set-row.completed-dim { opacity: 0.55; }
-  .html-scope .set-row.next-set {
-    background: rgba(255, 121, 0, 0.06);
-    border: 1px solid rgba(255, 121, 0, 0.15);
-  }
-  .html-scope .set-row .set-type-badge {
-    font-family: var(--font-body);
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--vel-orange);
-    background: rgba(255, 165, 2, 0.12);
-    padding: 1px 5px;
-    border-radius: 3px;
   }
 
   /* 13. InputBar */
@@ -1172,33 +1110,6 @@ function App() {
         <Sparkline data={[15, 20, 18, 25, 30]} width={80} height={30} highlightLast />
       </ComparisonPair>
 
-      {/* ── 12. SetRow ── */}
-      <SectionHeader title="12. SetRow" />
-
-      <ComparisonPair
-        testId="compare-set-row-completed"
-        label="SetRow completed"
-        htmlContent={`<div class="set-row completed-dim"><span class="col-set">1</span><span class="col-prev">6 x 175</span><span class="col-reps">6</span><span class="col-weight">175</span><span class="col-rpe">\u2014</span></div>`}
-      >
-        <SetRow mode="completed" setNumber={1} previous={{ reps: 6, weight: 175 }} reps={6} weight={175} unit="lbs" />
-      </ComparisonPair>
-
-      <ComparisonPair
-        testId="compare-set-row-active-next"
-        label="SetRow active isNextSet"
-        htmlContent={`<div class="set-row next-set"><span class="col-set">2</span><span class="col-prev">\u2014</span><span class="col-reps" style="color:var(--text-tertiary);font-style:italic;font-size:13px">8</span><span class="col-weight" style="color:var(--text-tertiary);font-style:italic;font-size:13px">185</span><span class="col-rpe">\u2014</span></div>`}
-      >
-        <SetRow mode="active" setNumber={2} reps={null} weight={null} unit="lbs" isNextSet targets={{ reps: 8, weight: 185 }} />
-      </ComparisonPair>
-
-      <ComparisonPair
-        testId="compare-set-row-type-badge"
-        label="SetRow with type badge"
-        htmlContent={`<div class="set-row"><span class="col-set"><span class="set-type-badge">W</span></span><span class="col-prev">\u2014</span><span class="col-reps">10</span><span class="col-weight">95</span><span class="col-rpe">\u2014</span></div>`}
-      >
-        <SetRow mode="completed" setNumber={1} setType="W" reps={10} weight={95} unit="lbs" />
-      </ComparisonPair>
-
       {/* ── 15. ExerciseCard ── */}
       <SectionHeader title="15. ExerciseCard" />
 
@@ -1207,7 +1118,7 @@ function App() {
         label="ExerciseCard collapsed"
         htmlContent={`<div class="exercise-card-comparison"><div class="ec-row1"><span class="ec-name">Bench Press</span><span style="flex:1"></span><span class="ec-summary">3\u00D76 @ 185 lbs</span></div></div>`}
       >
-        <ExerciseCard name="Bench Press" state="collapsed" onToggle={() => {}} summary={{ sets: 3, reps: 6, weight: 185, unit: 'lbs' }} />
+        <ExerciseCard name="Bench Press" summary={{ sets: 3, reps: 6, weight: 185, unit: 'lbs' }} />
       </ComparisonPair>
 
       <ComparisonPair
@@ -1215,7 +1126,7 @@ function App() {
         label="ExerciseCard upcoming"
         htmlContent={`<div class="exercise-card-upcoming"><div class="ec-row1"><span class="ec-name">Overhead Press</span><span class="ec-prescription">3\u00D78-12 @ RPE 8</span><span class="ec-prev-best">135 lbs \u00D7 10</span></div></div>`}
       >
-        <ExerciseCard name="Overhead Press" state="upcoming" onToggle={() => {}} prescription="3×8-12 @ RPE 8" previousBest="135 lbs × 10" />
+        <ExerciseCard name="Overhead Press" upcoming prescription="3×8-12 @ RPE 8" previousBest="135 lbs × 10" />
       </ComparisonPair>
 
       {/* ── 16. SupersetWrapper ── */}

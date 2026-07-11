@@ -3,23 +3,37 @@ import { render, screen, fireEvent, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ExerciseCard } from './ExerciseCard'
 import type { SetRowProps } from './SetRow'
-import type { SetStripSet } from './SetStrip'
 
 const baseCollapsedProps = {
   name: 'Bench Press',
-  state: 'collapsed' as const,
-  onToggle: vi.fn(),
   summary: { sets: 3, reps: 6, weight: 175, unit: 'lbs' as const },
 }
 
-const baseSets: SetRowProps[] = [
-  { mode: 'completed', setNumber: 1, reps: 8, weight: 135, unit: 'lbs' },
-  { mode: 'completed', setNumber: 2, reps: 8, weight: 135, unit: 'lbs' },
-  { mode: 'active', setNumber: 3, reps: null, weight: null, unit: 'lbs', isNextSet: true },
+// Done · LIVE · upcoming — the locked "one object" narrative.
+const unifiedSets: SetRowProps[] = [
+  {
+    state: 'done',
+    setNumber: 1,
+    unit: 'lbs',
+    reps: 10,
+    weight: 90,
+    rpe: 7.5,
+    velocities: [1.05, 0.9, 0.82],
+  },
+  {
+    state: 'live',
+    setNumber: 2,
+    unit: 'lbs',
+    target: { reps: 10, weight: 90 },
+    reps: 2,
+    weight: 90,
+    velocities: [0.95, 0.9],
+  },
+  { state: 'todo', setNumber: 3, unit: 'lbs', target: { reps: 10, weight: 90 } },
 ]
 
 describe('ExerciseCard', () => {
-  describe('collapsed state', () => {
+  describe('collapsed', () => {
     it('renders exercise name', () => {
       render(<ExerciseCard {...baseCollapsedProps} />)
       expect(screen.getByTestId('exercise-card-name')).toHaveTextContent('Bench Press')
@@ -27,12 +41,7 @@ describe('ExerciseCard', () => {
 
     it('renders summary text', () => {
       render(<ExerciseCard {...baseCollapsedProps} />)
-      expect(screen.getByTestId('exercise-card-summary')).toHaveTextContent('3\u00D76 @ 175 lbs')
-    })
-
-    it('renders WeightBadge when e1rm provided', () => {
-      render(<ExerciseCard {...baseCollapsedProps} e1rm={{ value: 225, unit: 'lbs' }} />)
-      expect(screen.getByTestId('exercise-card-e1rm')).toBeInTheDocument()
+      expect(screen.getByTestId('exercise-card-summary')).toHaveTextContent('3×6 @ 175 lbs')
     })
 
     it('renders PrBadge when isPR is true', () => {
@@ -40,7 +49,7 @@ describe('ExerciseCard', () => {
       expect(screen.getByTestId('pr-badge-star')).toBeInTheDocument()
     })
 
-    it('renders mini velocity strips for completed sets', () => {
+    it('renders mini velocity strips for logged sets', () => {
       render(
         <ExerciseCard
           {...baseCollapsedProps}
@@ -69,42 +78,10 @@ describe('ExerciseCard', () => {
     })
   })
 
-  describe('expanded state (unified: rail heading header + faded body)', () => {
-    // Done · LIVE · upcoming, the locked "one object" narrative. The done set carries
-    // velocities + rpe; the live set is performing against its target; set 3 is upcoming.
-    const unifiedSets: SetRowProps[] = [
-      {
-        mode: 'completed',
-        setNumber: 1,
-        reps: 10,
-        weight: 90,
-        rpe: 7.5,
-        unit: 'lbs',
-        velocities: [1.05, 0.9, 0.82],
-      },
-      {
-        mode: 'active',
-        setNumber: 2,
-        reps: null,
-        weight: null,
-        unit: 'lbs',
-        isLive: true,
-        targets: { reps: 10, weight: 90 },
-        velocities: [0.95, 0.9],
-      },
-      {
-        mode: 'active',
-        setNumber: 3,
-        reps: null,
-        weight: null,
-        unit: 'lbs',
-        targets: { reps: 10, weight: 90 },
-      },
-    ]
+  describe('expanded (unified: rail heading header + faded body)', () => {
     const expandedProps = {
       name: 'Squat',
-      state: 'expanded' as const,
-      onToggle: vi.fn(),
+      defaultExpanded: true,
       summary: { sets: 3, reps: 8, weight: 185, unit: 'lbs' as const },
       sets: unifiedSets,
     }
@@ -120,7 +97,6 @@ describe('ExerciseCard', () => {
 
     it('is a single object: the heading is nested in the card, not a duplicate exercise-card', () => {
       render(<ExerciseCard {...expandedProps} />)
-      // The outer card owns the testID; the heading is re-tagged so getByTestId stays unambiguous.
       expect(screen.getByTestId('exercise-card')).toBeInTheDocument()
       expect(screen.getByTestId('exercise-card-heading')).toBeInTheDocument()
       expect(screen.getByTestId('exercise-card-body')).toBeInTheDocument()
@@ -155,31 +131,28 @@ describe('ExerciseCard', () => {
       render(
         <ExerciseCard
           name="Squat"
-          state="expanded"
-          onToggle={vi.fn()}
-          sets={[{ mode: 'completed', setNumber: 1, reps: 8, weight: 60, unit: 'kg' }]}
+          defaultExpanded
+          sets={[{ state: 'done', setNumber: 1, unit: 'kg', reps: 8, weight: 60, velocities: [] }]}
         />
       )
       expect(screen.getByTestId('exercise-card-column-headers')).toHaveTextContent('KG')
     })
 
-    it('renders one body row per set', () => {
+    it('renders one SetRow per set', () => {
       render(<ExerciseCard {...expandedProps} />)
-      expect(screen.getAllByTestId('exercise-card-set-row')).toHaveLength(3)
+      expect(screen.getAllByTestId('set-row')).toHaveLength(3)
     })
 
-    it('shows the TARGET reps for the live set (no live "reps-done/target")', () => {
+    it('shows the TARGET reps for the live set (no "reps-done/target")', () => {
       render(<ExerciseCard {...expandedProps} />)
-      const rows = screen.getAllByTestId('exercise-card-set-row')
-      // Live set 2 renders its target (10), never "2/10".
+      const rows = screen.getAllByTestId('set-row')
       expect(rows[1]).toHaveTextContent('10')
       expect(rows[1]).not.toHaveTextContent('2/10')
     })
 
     it('spotlights the active set by brightness and mutes done + upcoming', () => {
       render(<ExerciseCard {...expandedProps} />)
-      const rows = screen.getAllByTestId('exercise-card-set-row')
-      // Set-number cell text: live = bright neutral-100, done/upcoming = muted neutral-400.
+      const rows = screen.getAllByTestId('set-row')
       expect(within(rows[0]).getByText('1')).toHaveStyle({ color: T_MUTED })
       expect(within(rows[1]).getByText('2')).toHaveStyle({ color: T_ACTIVE })
       expect(within(rows[2]).getByText('3')).toHaveStyle({ color: T_MUTED })
@@ -187,7 +160,6 @@ describe('ExerciseCard', () => {
 
     it('uses the compact velocity-height spotlight for the live set and mini elsewhere', () => {
       render(<ExerciseCard {...expandedProps} />)
-      // Exactly one compact strip (the live set); the done + upcoming rows use mini.
       expect(screen.getAllByTestId('velocity-strip-compact')).toHaveLength(1)
       expect(screen.getAllByTestId('velocity-strip-mini')).toHaveLength(2)
     })
@@ -203,19 +175,17 @@ describe('ExerciseCard', () => {
     })
   })
 
-  describe('upcoming state', () => {
+  describe('upcoming', () => {
     const upcomingProps = {
       name: 'Deadlift',
-      state: 'upcoming' as const,
-      onToggle: vi.fn(),
-      prescription: '3\u00D78-12 @ RPE 8',
-      previousBest: '185 lbs \u00D7 10',
+      upcoming: true,
+      prescription: '3×8-12 @ RPE 8',
+      previousBest: '185 lbs × 10',
     }
 
     it('renders with reduced opacity', () => {
       render(<ExerciseCard {...upcomingProps} />)
-      const card = screen.getByTestId('exercise-card')
-      expect(card).toHaveStyle({ opacity: 0.6 })
+      expect(screen.getByTestId('exercise-card')).toHaveStyle({ opacity: 0.6 })
     })
 
     it('renders exercise name', () => {
@@ -225,46 +195,72 @@ describe('ExerciseCard', () => {
 
     it('renders prescription text', () => {
       render(<ExerciseCard {...upcomingProps} />)
-      expect(screen.getByTestId('exercise-card-prescription')).toHaveTextContent(
-        '3\u00D78-12 @ RPE 8'
-      )
+      expect(screen.getByTestId('exercise-card-prescription')).toHaveTextContent('3×8-12 @ RPE 8')
     })
 
     it('renders previous best text', () => {
       render(<ExerciseCard {...upcomingProps} />)
-      expect(screen.getByTestId('exercise-card-previous-best')).toHaveTextContent(
-        '185 lbs \u00D7 10'
-      )
+      expect(screen.getByTestId('exercise-card-previous-best')).toHaveTextContent('185 lbs × 10')
     })
 
-    it('does not render interactive elements', () => {
-      render(<ExerciseCard {...upcomingProps} />)
-      expect(screen.queryByTestId('exercise-card-strips')).not.toBeInTheDocument()
+    it('ignores expand and never reveals the body', () => {
+      render(<ExerciseCard {...upcomingProps} defaultExpanded sets={unifiedSets} />)
+      expect(screen.queryByTestId('exercise-card-body')).not.toBeInTheDocument()
       expect(screen.queryByTestId('exercise-card-column-headers')).not.toBeInTheDocument()
     })
   })
 
-  describe('onToggle', () => {
-    it('fires onToggle when collapsed card is pressed', () => {
-      const onToggle = vi.fn()
-      render(<ExerciseCard {...baseCollapsedProps} onToggle={onToggle} />)
+  describe('expand control', () => {
+    it('uncontrolled: defaultExpanded opens, and pressing the header collapses it', () => {
+      render(<ExerciseCard {...baseCollapsedProps} defaultExpanded sets={unifiedSets} />)
+      expect(screen.getByTestId('exercise-card-body')).toBeInTheDocument()
       fireEvent.click(screen.getByTestId('exercise-card-header'))
-      expect(onToggle).toHaveBeenCalledOnce()
+      expect(screen.queryByTestId('exercise-card-body')).not.toBeInTheDocument()
     })
 
-    it('fires onToggle when expanded header is pressed', () => {
-      const onToggle = vi.fn()
-      render(<ExerciseCard name="Squat" state="expanded" onToggle={onToggle} sets={baseSets} />)
+    it('uncontrolled: collapsed by default, pressing the header expands it', () => {
+      render(<ExerciseCard {...baseCollapsedProps} sets={unifiedSets} />)
+      expect(screen.queryByTestId('exercise-card-body')).not.toBeInTheDocument()
       fireEvent.click(screen.getByTestId('exercise-card-header'))
-      expect(onToggle).toHaveBeenCalledOnce()
+      expect(screen.getByTestId('exercise-card-body')).toBeInTheDocument()
+    })
+
+    it('controlled: reports the requested state but does not self-toggle', () => {
+      const onExpandedChange = vi.fn()
+      render(
+        <ExerciseCard
+          {...baseCollapsedProps}
+          expanded={false}
+          onExpandedChange={onExpandedChange}
+          sets={unifiedSets}
+        />
+      )
+      expect(screen.queryByTestId('exercise-card-body')).not.toBeInTheDocument()
+      fireEvent.click(screen.getByTestId('exercise-card-header'))
+      expect(onExpandedChange).toHaveBeenCalledWith(true)
+      // Controlled: still collapsed until the parent flips `expanded`.
+      expect(screen.queryByTestId('exercise-card-body')).not.toBeInTheDocument()
+    })
+
+    it('fires onExpandedChange(false) when an expanded header is pressed', () => {
+      const onExpandedChange = vi.fn()
+      render(
+        <ExerciseCard
+          {...baseCollapsedProps}
+          defaultExpanded
+          onExpandedChange={onExpandedChange}
+          sets={unifiedSets}
+        />
+      )
+      fireEvent.click(screen.getByTestId('exercise-card-header'))
+      expect(onExpandedChange).toHaveBeenCalledWith(false)
     })
   })
 
   describe('superset position border radius', () => {
     it('applies first position border radius', () => {
       render(<ExerciseCard {...baseCollapsedProps} supersetPosition="first" />)
-      const card = screen.getByTestId('exercise-card')
-      const container = card.firstChild as HTMLElement
+      const container = screen.getByTestId('exercise-card').firstChild as HTMLElement
       expect(container).toHaveStyle({
         borderTopLeftRadius: '12px',
         borderTopRightRadius: '12px',
@@ -275,8 +271,7 @@ describe('ExerciseCard', () => {
 
     it('applies last position border radius', () => {
       render(<ExerciseCard {...baseCollapsedProps} supersetPosition="last" />)
-      const card = screen.getByTestId('exercise-card')
-      const container = card.firstChild as HTMLElement
+      const container = screen.getByTestId('exercise-card').firstChild as HTMLElement
       expect(container).toHaveStyle({
         borderTopLeftRadius: '8px',
         borderTopRightRadius: '8px',
@@ -287,8 +282,7 @@ describe('ExerciseCard', () => {
 
     it('applies middle position border radius', () => {
       render(<ExerciseCard {...baseCollapsedProps} supersetPosition="middle" />)
-      const card = screen.getByTestId('exercise-card')
-      const container = card.firstChild as HTMLElement
+      const container = screen.getByTestId('exercise-card').firstChild as HTMLElement
       expect(container).toHaveStyle({
         borderTopLeftRadius: '8px',
         borderTopRightRadius: '8px',
@@ -298,105 +292,21 @@ describe('ExerciseCard', () => {
     })
   })
 
-  describe('rail state', () => {
-    const railSetStates: SetStripSet[] = [
-      { status: 'done', velocities: [1, 0.9] },
-      { status: 'active', velocities: [0.6], planned: 8 },
-    ]
-    const railProps = {
-      name: 'Seated Cable Row',
-      state: 'rail' as const,
-      onToggle: vi.fn(),
-      summary: { sets: 5, reps: 8, weight: 145, unit: 'lbs' as const },
-      tempo: [3, 1, 2, 0] as [number, number, number, number],
-      indicator: 'pr' as const,
-      setStates: railSetStates,
-    }
-
-    it('renders the exercise name on its own row', () => {
-      render(<ExerciseCard {...railProps} />)
-      expect(screen.getByTestId('exercise-card-name')).toHaveTextContent('Seated Cable Row')
-    })
-
-    it('renders the sets/reps/load line', () => {
-      render(<ExerciseCard {...railProps} />)
-      const summary = screen.getByTestId('exercise-card-summary')
-      expect(summary).toHaveTextContent('5')
-      expect(summary).toHaveTextContent('8')
-      expect(summary).toHaveTextContent('145')
-      expect(summary).toHaveTextContent('×')
-      expect(summary).toHaveTextContent('@')
-    })
-
-    it('renders the TempoDisplay without its TEMPO caption', () => {
-      render(<ExerciseCard {...railProps} />)
-      expect(screen.getByTestId('tempo-display')).toBeInTheDocument()
-      expect(screen.queryByText('TEMPO')).not.toBeInTheDocument()
-    })
-
-    it('renders the indicator chip when provided', () => {
-      render(<ExerciseCard {...railProps} />)
-      expect(screen.getByLabelText('Personal record')).toBeInTheDocument()
-    })
-
-    it('omits the indicator chip when absent', () => {
-      render(<ExerciseCard {...railProps} indicator={undefined} />)
-      expect(screen.queryByTestId('exercise-indicator')).not.toBeInTheDocument()
-    })
-
-    it('renders the per-set strip', () => {
-      render(<ExerciseCard {...railProps} />)
-      expect(screen.getByTestId('exercise-card-strip')).toBeInTheDocument()
-      expect(screen.getByTestId('set-strip')).toBeInTheDocument()
-    })
-
-    it('fires onToggle when the row is pressed', () => {
-      const onToggle = vi.fn()
-      render(<ExerciseCard {...railProps} onToggle={onToggle} />)
-      fireEvent.click(screen.getByTestId('exercise-card-header'))
-      expect(onToggle).toHaveBeenCalledOnce()
-    })
-
-    it('dims the row when marked upcoming', () => {
-      render(<ExerciseCard {...railProps} dimmed />)
-      expect(screen.getByTestId('exercise-card')).toHaveStyle({ opacity: 0.55 })
-    })
-
-    it('is full opacity by default', () => {
-      render(<ExerciseCard {...railProps} />)
-      expect(screen.getByTestId('exercise-card')).toHaveStyle({ opacity: 1 })
-    })
-
-    it('has no accessibility violations', async () => {
-      const { container } = render(<ExerciseCard {...railProps} />)
-      const results = await axe(container)
-      expect(results).toHaveNoViolations()
-    })
-  })
-
   describe('accessibility', () => {
-    it('has correct accessibility label for collapsed state', () => {
+    it('has correct accessibility label for collapsed', () => {
       render(<ExerciseCard {...baseCollapsedProps} />)
-      expect(screen.getByLabelText('Bench Press, 3\u00D76 @ 175 lbs')).toBeInTheDocument()
+      expect(screen.getByLabelText('Bench Press, 3×6 @ 175 lbs')).toBeInTheDocument()
     })
 
-    it('has correct accessibility label for upcoming state with prescription', () => {
-      render(
-        <ExerciseCard
-          name="Deadlift"
-          state="upcoming"
-          onToggle={vi.fn()}
-          prescription="3x8 @ RPE 8"
-        />
-      )
+    it('has correct accessibility label for upcoming with prescription', () => {
+      render(<ExerciseCard name="Deadlift" upcoming prescription="3x8 @ RPE 8" />)
       expect(screen.getByLabelText('Deadlift, 3x8 @ RPE 8')).toBeInTheDocument()
     })
 
-    it('has no accessibility violations in collapsed state', async () => {
+    it('has no accessibility violations when collapsed', async () => {
       const { container } = render(
         <ExerciseCard
           {...baseCollapsedProps}
-          e1rm={{ value: 225, unit: 'lbs' }}
           isPR
           setVelocities={[[1.1, 0.95]]}
           totalPlannedSets={3}
@@ -406,14 +316,13 @@ describe('ExerciseCard', () => {
       expect(results).toHaveNoViolations()
     })
 
-    it('has no accessibility violations in expanded state', async () => {
+    it('has no accessibility violations when expanded', async () => {
       const { container } = render(
         <ExerciseCard
           name="Squat"
-          state="expanded"
-          onToggle={vi.fn()}
+          defaultExpanded
           summary={{ sets: 3, reps: 8, weight: 185, unit: 'lbs' }}
-          sets={baseSets}
+          sets={unifiedSets}
           tempo={[2, 1, 3, 0]}
         />
       )
@@ -421,12 +330,11 @@ describe('ExerciseCard', () => {
       expect(results).toHaveNoViolations()
     })
 
-    it('has no accessibility violations in upcoming state', async () => {
+    it('has no accessibility violations when upcoming', async () => {
       const { container } = render(
         <ExerciseCard
           name="Deadlift"
-          state="upcoming"
-          onToggle={vi.fn()}
+          upcoming
           prescription="3x8 @ RPE 8"
           previousBest="185 lbs x 10"
         />

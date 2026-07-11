@@ -1,21 +1,19 @@
 /**
- * SHEET · Unified exercise card (page 2) — the LOCKED rail-expansion, now hardened onto the
+ * SHEET · Unified exercise card (page 2) — the LOCKED rail-expansion, hardened onto the
  * REAL {@link ExerciseCard}. The collapsed rail item and the expanded card are ONE object: the
- * persistent header is the real {@link ExerciseCardHeading} (via `ExerciseCard` state `rail`),
- * and expanding reveals the body on the SAME surface — PREV dropped, done + upcoming sets share
- * ONE muted treatment, the ACTIVE set stands out by brightness. Every per-row strip is the REAL
- * {@link VelocityStrip} via its `set` descriptor: `mini` (flat 3px) for done/upcoming, and the
- * new `compact` velocity-height variant as the active-set SPOTLIGHT (option B, locked).
- *
- * The hand-built `CompactSpotlight` prototype this sheet used to fork three ways (A/B/C) is
- * retired: B won and is now `VelocityStrip variant="compact"`, so the card is on real components
- * end to end. A standalone row of the compact variant is shown for the record.
+ * persistent header is the real {@link ExerciseCardHeading}, and expanding reveals the body on the
+ * SAME surface — PREV dropped, done + upcoming sets share ONE muted treatment, the ACTIVE set
+ * stands out by brightness. Every per-row strip is the REAL {@link VelocityStrip} via its `set`
+ * descriptor: `mini` (flat 3px) for done/upcoming, and the `compact` velocity-height variant as
+ * the active-set SPOTLIGHT (option B, locked). No hand-built prototype strip remains.
  */
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { ExerciseCard } from './ExerciseCard'
+import { ExerciseCardHeading } from './ExerciseCardHeading'
 import { VelocityStrip } from './VelocityStrip'
 import { type SetRowProps } from './SetRow'
+import { type SetStripSet } from './SetStrip'
 import { INSET, BORDER_SUBTLE, T_PRIMARY, T_SECONDARY, Page, monoTag } from './setHeadingKit'
 
 const INTER = 'Inter, sans-serif'
@@ -28,36 +26,27 @@ const decay = (n: number, start: number, span = 0.5) =>
 const DONE = decay(10, 1.05)
 const ACTIVE = decay(5, 0.95, 0.3)
 
-// One data source drives both representations. Set 1 done · set 2 LIVE (5/10) · set 3 upcoming.
-// The expanded header's per-set strip is DERIVED from these rows by ExerciseCard.
+// One data source drives both representations. Set 1 done · set 2 LIVE · set 3 upcoming.
 const SETS: SetRowProps[] = [
+  { state: 'done', setNumber: 1, unit: 'lbs', reps: 10, weight: 90, rpe: 7.5, velocities: DONE },
   {
-    mode: 'completed',
-    setNumber: 1,
-    reps: 10,
-    weight: 90,
-    rpe: 7.5,
-    unit: 'lbs',
-    velocities: DONE,
-  },
-  {
-    mode: 'active',
+    state: 'live',
     setNumber: 2,
-    reps: null,
-    weight: null,
     unit: 'lbs',
-    isLive: true,
-    targets: { reps: 10, weight: 90 },
+    target: { reps: 10, weight: 90 },
+    reps: 5,
+    weight: 90,
     velocities: ACTIVE,
   },
-  {
-    mode: 'active',
-    setNumber: 3,
-    reps: null,
-    weight: null,
-    unit: 'lbs',
-    targets: { reps: 10, weight: 90 },
-  },
+  { state: 'todo', setNumber: 3, unit: 'lbs', target: { reps: 10, weight: 90 } },
+]
+
+// The header's per-set strip: the same lifecycle the card derives internally, built here
+// so the collapsed rail item (ExerciseCardHeading) reads from the same source as the body.
+const HEADER_STATES: SetStripSet[] = [
+  { status: 'done', velocities: DONE },
+  { status: 'active', velocities: ACTIVE, planned: 10 },
+  { status: 'todo', planned: 10 },
 ]
 
 const CARD_PROPS = {
@@ -66,7 +55,6 @@ const CARD_PROPS = {
   tempo: [2, 1, 2, 0] as [number, number, number, number],
   indicator: 'info' as const,
   sets: SETS,
-  onToggle: () => {},
 }
 
 function Surface({ children, width = 260 }: { children: React.ReactNode; width?: number }) {
@@ -89,15 +77,24 @@ export const Unified: Story = {
   render: () => (
     <Page
       title="Unified exercise card — the rail heading IS the header"
-      note="The LOCKED rail-expansion, hardened onto the real ExerciseCard. Collapsed, it's the rail item (state `rail`); expanded (state `expanded`), the SAME surface reveals the table body — PREV dropped, done + upcoming sets share ONE muted treatment, the ACTIVE set stands out by brightness. Every per-row strip is the real VelocityStrip: `mini` for done/upcoming, the new `compact` velocity-height variant as the active-set spotlight (B, locked). No hand-built prototype strip remains."
+      note="The LOCKED rail-expansion, hardened onto the real ExerciseCard. Collapsed, it's the rail item (the real ExerciseCardHeading); expanded, the SAME surface reveals the table body — PREV dropped, done + upcoming sets share ONE muted treatment, the ACTIVE set stands out by brightness. Every per-row strip is the real VelocityStrip: `mini` for done/upcoming, the `compact` velocity-height variant as the active-set spotlight (B, locked). No hand-built prototype strip remains."
     >
       <View style={{ flexDirection: 'row', gap: 40, alignItems: 'flex-start', flexWrap: 'wrap' }}>
         <View style={{ gap: 8 }}>
           <Text style={{ ...monoTag, color: T_SECONDARY }}>
-            collapsed · rail item (the header on its own)
+            collapsed · rail item (ExerciseCardHeading)
           </Text>
           <Surface>
-            <ExerciseCard state="rail" {...CARD_PROPS} />
+            <ExerciseCardHeading
+              name={CARD_PROPS.name}
+              sets={3}
+              reps={10}
+              load={90}
+              unit="lbs"
+              tempo={CARD_PROPS.tempo}
+              indicator={CARD_PROPS.indicator}
+              setStates={HEADER_STATES}
+            />
           </Surface>
         </View>
 
@@ -106,7 +103,7 @@ export const Unified: Story = {
             expanded · same header + revealed body
           </Text>
           <Surface>
-            <ExerciseCard state="expanded" {...CARD_PROPS} />
+            <ExerciseCard {...CARD_PROPS} defaultExpanded />
           </Surface>
         </View>
       </View>
@@ -142,9 +139,8 @@ export const Unified: Story = {
         }}
       >
         The header is the same molecule collapsed and expanded — the card reads as one object, the
-        body flowing out of the rail row rather than a separate panel. Both cards are the real
-        ExerciseCard driven by one set of props; the expanded header&apos;s per-set strip is derived
-        from the same rows the body renders.
+        body flowing out of the rail row rather than a separate panel. The expanded card is the real
+        ExerciseCard; its header per-set strip is derived from the same rows the body renders.
       </Text>
     </Page>
   ),

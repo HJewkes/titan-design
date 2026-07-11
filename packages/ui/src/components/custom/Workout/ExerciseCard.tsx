@@ -1,24 +1,30 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { useState, type ReactNode } from 'react'
+import { useState } from 'react'
 import { View, Text, Pressable } from 'react-native'
 import { VelocityStrip, type VelocityZoneBandProp } from './VelocityStrip'
 import { PlaceholderStrip } from './PlaceholderStrip'
-import { WeightBadge } from './WeightBadge'
 import { PrBadge } from './PrBadge'
-import { type SetRowProps } from './SetRow'
+import { SetRow, type SetRowProps } from './SetRow'
 import { type SetStripSet } from './SetStrip'
 import { SetTableHeader } from './SetTableHeader'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
 import { type ExerciseIndicatorKind } from './ExerciseIndicator'
-import { roundWeight, roundRpe } from '../../../utils/workout-format'
+import { roundWeight } from '../../../utils/workout-format'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-
-export type ExerciseCardState = 'collapsed' | 'expanded' | 'upcoming' | 'rail'
 
 export interface ExerciseCardProps {
   name: string
-  state: ExerciseCardState
-  onToggle: () => void
+  /**
+   * The dimmed, not-yet-reached representation (prescription + previous-best line).
+   * Overrides the expand state — an upcoming card never expands.
+   */
+  upcoming?: boolean
+  /** Controlled expand state. Omit to run uncontrolled (see {@link defaultExpanded}). */
+  expanded?: boolean
+  /** Uncontrolled initial expand state. Default false. Ignored when `expanded` is set. */
+  defaultExpanded?: boolean
+  /** Notified when the user toggles the card between collapsed and expanded. */
+  onExpandedChange?: (expanded: boolean) => void
   onNavigateDetail?: () => void
   summary?: {
     sets: number
@@ -26,27 +32,33 @@ export interface ExerciseCardProps {
     weight: number
     unit: 'lbs' | 'kg'
   }
-  e1rm?: { value: number; unit: 'lbs' | 'kg' }
   isPR?: boolean
+  /** Collapsed glance: per-set logged velocities (drives the mini strips). */
   setVelocities?: number[][]
   /** Optional velocity-zone bands shared across this exercise's sets (WA bands). */
   velocityZones?: readonly VelocityZoneBandProp[]
+  /** Collapsed glance: total planned sets (placeholder strips fill the remainder). */
   totalPlannedSets?: number
+  /** Expanded body: the per-set rows (done / live / todo). */
   sets?: SetRowProps[]
   tempo?: [number, number, number, number]
   prescription?: string
   previousBest?: string
   supersetPosition?: 'first' | 'last' | 'middle' | null
   supersetColor?: string
-  /** Rail heading representation (`state="rail"`): per-set performance strip data. */
+  /** Expanded header per-set strip override; derived from `sets` when omitted. */
   setStates?: SetStripSet[]
-  /** Rail heading representation: a small PR / issue / info chip in the title line. */
+  /** A small PR / issue / info chip in the title line (expanded header). */
   indicator?: ExerciseIndicatorKind
-  /** Rail heading strip height in px. Default 8. */
+  /** Expanded header strip height in px. Default 8. */
   stripHeight?: number
-  /** Rail heading: dim the row (upcoming exercise). */
-  dimmed?: boolean
 }
+
+/** The sub-card render props: everything but the expand-control surface, plus a resolved toggle. */
+type CardBodyProps = Omit<
+  ExerciseCardProps,
+  'upcoming' | 'expanded' | 'defaultExpanded' | 'onExpandedChange'
+> & { onToggle: () => void }
 
 function getSupersetBorderRadius(
   position: ExerciseCardProps['supersetPosition']
@@ -94,7 +106,7 @@ function getSupersetMargin(
 
 function formatSummary(summary: ExerciseCardProps['summary']): string {
   if (!summary) return ''
-  return `${summary.sets}\u00D7${summary.reps} @ ${roundWeight(summary.weight)} ${summary.unit}`
+  return `${summary.sets}×${summary.reps} @ ${roundWeight(summary.weight)} ${summary.unit}`
 }
 
 function formatAccessibilityLabel(
@@ -111,13 +123,12 @@ function CollapsedCard({
   name,
   onToggle,
   summary,
-  e1rm,
   isPR,
   setVelocities,
   velocityZones,
   totalPlannedSets,
   supersetPosition,
-}: ExerciseCardProps) {
+}: CardBodyProps) {
   const [pressed, setPressed] = useState(false)
   const completedSets = setVelocities?.length ?? 0
   const remaining = Math.max(0, (totalPlannedSets ?? 0) - completedSets)
@@ -169,15 +180,6 @@ function CollapsedCard({
               {formatSummary(summary)}
             </Text>
           )}
-          {e1rm && (
-            <WeightBadge
-              value={roundWeight(e1rm.value)}
-              unit={e1rm.unit}
-              size="sm"
-              showIcon={false}
-              testID="exercise-card-e1rm"
-            />
-          )}
           {isPR && (
             <View style={{ marginLeft: 4 }}>
               <PrBadge type="e1rm" compact animate={false} />
@@ -209,140 +211,27 @@ function CollapsedCard({
   )
 }
 
-// --- Unified expanded body ---------------------------------------------------
+// --- Unified expanded card ---------------------------------------------------
 // The expanded card is "one object" with its rail heading: the persistent header
-// is the real ExerciseCardHeading, and the revealed body drops PREV, fades done +
-// upcoming sets to ONE muted treatment, and spotlights the ACTIVE set by
-// brightness. Every per-row strip is the real VelocityStrip (mini for done/todo,
-// the compact velocity-height spotlight for the live set).
+// is the real ExerciseCardHeading, and the revealed body drops PREV and renders
+// one real SetRow per set (muted done/todo, brightened live spotlight).
 
 const DARK = getSemanticColors('dark')
-/** Live set — brightest (neutral 100). Done + upcoming share the muted neutral 400. */
-const BODY_TEXT_ACTIVE = DARK['text-primary']
-const BODY_TEXT_MUTED = DARK['text-secondary']
 /** The header↔body seam. */
 const BODY_DIVIDER = DARK['border-subtle']
-
-/** Column widths mirror SetTableHeader(showPrevious=false) / SetRow so cells align. */
-const COL = { set: 36, reps: 44, load: 56, rpe: 36 } as const
-const bodyText = { fontFamily: 'Inter, sans-serif', fontSize: 13, fontWeight: '600' as const }
-
-type UnifiedRowState = 'done' | 'live' | 'todo'
-
-function rowStateOf(set: SetRowProps): UnifiedRowState {
-  if (set.isLive) return 'live'
-  if (set.mode === 'completed') return 'done'
-  return 'todo'
-}
-
-/** Reps to show: the recorded count for a done set, else the TARGET (no live "5/10"). */
-function rowReps(set: SetRowProps): number | string {
-  const value = set.mode === 'completed' ? set.reps : (set.targets?.reps ?? set.reps)
-  return value ?? '—'
-}
-
-function rowWeight(set: SetRowProps): number | string {
-  const value = set.mode === 'completed' ? set.weight : (set.targets?.weight ?? set.weight)
-  return value != null ? roundWeight(value) : '—'
-}
-
-/** Planned rep count backing a row's strip / heading state (target, else recorded). */
-function rowPlanned(set: SetRowProps): number {
-  return (
-    set.targets?.reps ?? (typeof set.reps === 'number' ? set.reps : (set.velocities?.length ?? 0))
-  )
-}
 
 /** Project the set rows onto the heading strip's per-set state (done / active / todo). */
 function deriveHeaderSetStates(sets: SetRowProps[]): SetStripSet[] {
   return sets.map((set): SetStripSet => {
-    if (set.isLive)
-      return { status: 'active', velocities: set.velocities ?? [], planned: rowPlanned(set) }
-    if (set.mode === 'completed') return { status: 'done', velocities: set.velocities ?? [] }
-    return { status: 'todo', planned: rowPlanned(set) }
+    switch (set.state) {
+      case 'live':
+        return { status: 'active', velocities: set.velocities, planned: set.target.reps }
+      case 'done':
+        return { status: 'done', velocities: set.velocities }
+      case 'todo':
+        return { status: 'todo', planned: set.planned ?? set.target.reps }
+    }
   })
-}
-
-function Cell({ width, children }: { width: number; children: ReactNode }) {
-  return <View style={{ width, alignItems: 'center', justifyContent: 'center' }}>{children}</View>
-}
-
-function RowStrip({
-  state,
-  velocities,
-  planned,
-  zones,
-}: {
-  state: UnifiedRowState
-  velocities: number[]
-  planned: number
-  zones?: readonly VelocityZoneBandProp[]
-}) {
-  if (state === 'live') {
-    return (
-      <VelocityStrip
-        variant="compact"
-        set={{ type: 'straight', velocities, planned }}
-        zones={zones}
-      />
-    )
-  }
-  const done = state === 'done'
-  return (
-    <VelocityStrip
-      variant="mini"
-      set={{
-        type: 'straight',
-        velocities: done ? velocities : [],
-        planned: done ? velocities.length : planned,
-      }}
-      zones={zones}
-    />
-  )
-}
-
-function UnifiedSetRow({
-  set,
-  zones,
-}: {
-  set: SetRowProps
-  zones?: readonly VelocityZoneBandProp[]
-}) {
-  const state = rowStateOf(set)
-  const live = state === 'live'
-  const valueColor = live ? BODY_TEXT_ACTIVE : BODY_TEXT_MUTED
-
-  return (
-    <View style={{ paddingVertical: 6, paddingHorizontal: 8 }} testID="exercise-card-set-row">
-      <View className="flex-row items-center">
-        <Cell width={COL.set}>
-          <Text style={{ ...bodyText, color: valueColor, fontWeight: live ? '700' : '600' }}>
-            {set.setNumber}
-          </Text>
-        </Cell>
-        <View className="flex-1" style={{ minWidth: 44 }} />
-        <Cell width={COL.reps}>
-          <Text style={{ ...bodyText, color: valueColor }}>{rowReps(set)}</Text>
-        </Cell>
-        <Cell width={COL.load}>
-          <Text style={{ ...bodyText, color: valueColor }}>{rowWeight(set)}</Text>
-        </Cell>
-        <Cell width={COL.rpe}>
-          <Text style={{ ...bodyText, color: BODY_TEXT_MUTED }}>
-            {set.rpe != null ? roundRpe(set.rpe) : '—'}
-          </Text>
-        </Cell>
-      </View>
-      <View style={{ marginTop: live ? 6 : 4 }} testID="exercise-card-set-strip">
-        <RowStrip
-          state={state}
-          velocities={set.velocities ?? []}
-          planned={rowPlanned(set)}
-          zones={zones}
-        />
-      </View>
-    </View>
-  )
 }
 
 function ExpandedCard({
@@ -357,7 +246,7 @@ function ExpandedCard({
   stripHeight = 8,
   velocityZones,
   supersetPosition,
-}: ExerciseCardProps) {
+}: CardBodyProps) {
   const borderRadius = getSupersetBorderRadius(supersetPosition)
   const supersetMargin = getSupersetMargin(supersetPosition)
   // Summary is the card-level authority for the weight column; fall back to the
@@ -365,7 +254,7 @@ function ExpandedCard({
   const unit = summary?.unit ?? sets?.[0]?.unit ?? 'lbs'
   // The rail heading IS the header: its per-set strip comes from an explicit
   // `setStates` when supplied, else it's derived from the set rows. e1RM is dropped
-  // here (a planning concern, per ExerciseCardHeading); a PR still surfaces via the chip.
+  // entirely; a PR surfaces via the chip.
   const headerStates = setStates ?? (sets ? deriveHeaderSetStates(sets) : [])
   const headerIndicator = indicator ?? (isPR ? 'pr' : undefined)
 
@@ -401,8 +290,8 @@ function ExpandedCard({
 
         {sets && (
           <View testID="exercise-card-sets">
-            {sets.map((setProps, i) => (
-              <UnifiedSetRow key={i} set={setProps} zones={velocityZones} />
+            {sets.map((set, i) => (
+              <SetRow key={i} {...set} velocityZones={set.velocityZones ?? velocityZones} />
             ))}
           </View>
         )}
@@ -417,7 +306,7 @@ function UpcomingCard({
   previousBest,
   supersetPosition,
   onToggle,
-}: ExerciseCardProps) {
+}: CardBodyProps) {
   const borderRadius = getSupersetBorderRadius(supersetPosition)
   const supersetMargin = getSupersetMargin(supersetPosition)
 
@@ -484,47 +373,37 @@ function UpcomingCard({
   )
 }
 
-// The session-rail heading representation. Delegates to the standalone
-// ExerciseCardHeading molecule (name + indicator, sets/reps/load beside the real
-// TempoDisplay, per-set strip); e1RM is intentionally dropped here (a planning /
-// live-panel concern). Kept as a thin adapter so the `rail` state stays a valid
-// ExerciseCard variant while the heading itself is independently reusable.
-function RailCard({
-  name,
-  onToggle,
-  summary,
-  tempo,
-  indicator,
-  setStates,
-  stripHeight = 8,
-  dimmed,
+/**
+ * The data-contract exercise card, in three representations:
+ * - `upcoming` — a dimmed, not-yet-reached row (prescription + previous best).
+ * - collapsed — a glance: name + summary + per-set velocity strips.
+ * - expanded — the unified card: the real {@link ExerciseCardHeading} header over
+ *   the SET · REPS · LBS · RPE body (one {@link SetRow} per set).
+ *
+ * Expand is controlled (`expanded` + `onExpandedChange`) or uncontrolled
+ * (`defaultExpanded`, internal state). `upcoming` overrides expand.
+ */
+export function ExerciseCard({
+  upcoming,
+  expanded,
+  defaultExpanded,
+  onExpandedChange,
+  ...rest
 }: ExerciseCardProps) {
-  return (
-    <ExerciseCardHeading
-      name={name}
-      sets={summary?.sets ?? 0}
-      reps={summary?.reps ?? 0}
-      load={summary?.weight ?? 0}
-      unit={summary?.unit ?? 'lbs'}
-      tempo={tempo}
-      indicator={indicator}
-      setStates={setStates ?? []}
-      stripHeight={stripHeight}
-      dimmed={dimmed}
-      onPress={onToggle}
-    />
-  )
-}
+  const [internalExpanded, setInternalExpanded] = useState(defaultExpanded ?? false)
+  const isControlled = expanded !== undefined
+  const isExpanded = isControlled ? expanded : internalExpanded
 
-export function ExerciseCard(props: ExerciseCardProps) {
-  switch (props.state) {
-    case 'collapsed':
-      return <CollapsedCard {...props} />
-    case 'expanded':
-      return <ExpandedCard {...props} />
-    case 'upcoming':
-      return <UpcomingCard {...props} />
-    case 'rail':
-      return <RailCard {...props} />
+  const onToggle = () => {
+    const next = !isExpanded
+    onExpandedChange?.(next)
+    if (!isControlled) setInternalExpanded(next)
   }
+
+  if (upcoming) return <UpcomingCard {...rest} onToggle={onToggle} />
+  return isExpanded ? (
+    <ExpandedCard {...rest} onToggle={onToggle} />
+  ) : (
+    <CollapsedCard {...rest} onToggle={onToggle} />
+  )
 }

@@ -921,46 +921,11 @@ test.describe('HTML vs React Component Comparison', () => {
   })
 
   // ── SetRow ──
-
-  // ── SetRow ──
-  // SetRow uses fixed-width RN Views vs flexible HTML spans, so full assertStyleMatch
-  // produces DOM-level mismatches (display: flex vs block, dimension differences).
-  // These tests verify React-side computed styles match the spec.
-
-  test('SetRow completed -- renders with correct border radius', async ({ page }) => {
-    const container = page.locator('[data-testid="compare-set-row-completed"]')
-    await expect(container).toBeAttached()
-    const reactEl = container.locator('.react-version [data-testid="set-row"]').first()
-    await expect(reactEl).toBeAttached({ timeout: 3000 })
-    const styles = await reactEl.evaluate(el => {
-      const cs = window.getComputedStyle(el)
-      return { borderRadius: cs.borderRadius, opacity: cs.opacity }
-    })
-    expect.soft(styles.borderRadius, 'SetRow borderRadius').toBe('8px')
-    expect.soft(styles.opacity, 'Completed non-next set opacity').toBe('0.55')
-  })
-
-  test('SetRow active isNextSet -- highlight background and border', async ({ page }) => {
-    const container = page.locator('[data-testid="compare-set-row-active-next"]')
-    await expect(container).toBeAttached()
-    const reactEl = container.locator('.react-version [data-testid="set-row"]').first()
-    await expect(reactEl).toBeAttached({ timeout: 3000 })
-    const styles = await reactEl.evaluate(el => {
-      const cs = window.getComputedStyle(el)
-      return { backgroundColor: cs.backgroundColor, borderColor: cs.borderColor, borderWidth: cs.borderWidth }
-    })
-    expect.soft(styles.backgroundColor, 'isNextSet bg').toContain('rgba(255')
-    expect.soft(styles.borderWidth, 'isNextSet borderWidth').toBe('1px')
-  })
-
-  test('SetRow type badge -- badge colors', async ({ page }) => {
-    const container = page.locator('[data-testid="compare-set-row-type-badge"]')
-    await expect(container).toBeAttached()
-    const reactBadge = container.locator('.react-version [data-testid="set-row-type-badge"]').first()
-    await expect(reactBadge).toBeAttached({ timeout: 3000 })
-    const textContent = await reactBadge.textContent()
-    expect.soft(textContent?.trim(), 'Type badge text').toBe('W')
-  })
+  // The SetRow was redesigned into a lifecycle discriminated union (done / live / todo)
+  // — a two-row composition (SET·REPS·LBS·RPE over a real VelocityStrip), no PREV column,
+  // no opacity dimming or isNextSet highlight. Its parity is now carried by the
+  // VelocityStrip compare pairs it composes plus its own unit suite; the obsolete
+  // single-row GT pairs were retired.
 
   // ── ExerciseCard ──
 

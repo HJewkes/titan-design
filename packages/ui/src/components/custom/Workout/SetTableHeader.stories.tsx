@@ -10,18 +10,17 @@ import { SetTableHeader } from './SetTableHeader'
  * unification (TD-03.56).
  */
 const meta: Meta<typeof SetTableHeader> = {
-  title: 'Shell/SessionRail/ExpandedDrawer/TableHeader',
+  title: 'Workout/SetTableHeader',
   component: SetTableHeader,
   tags: ['autodocs'],
   parameters: {
     docs: {
       description: {
         component:
-          '**🚧 WIP / placeholder.** **Atom** (shell S3). The expanded-set-table column header ' +
-          'row; per-column widths mirror [SetRow](?path=/docs/workout-setrow--docs) so headers ' +
-          'align over the rows. Used-by ↑ ' +
-          '[ExpandedDrawer](?path=/docs/shell-sessionrail-expandeddrawer--docs) and ' +
-          '[ExerciseCard](?path=/docs/workout-exercisecard--docs) (expanded). ' +
+          '**Atom.** The expanded-set-table column header row; per-column widths mirror ' +
+          '[SetRow](?path=/docs/workout-setrow--docs) so headers align over the rows. ' +
+          'Used-by ↑ [ExerciseCard](?path=/docs/workout-exercisecard--docs) (expanded), which ' +
+          'renders it with `showPrevious={false}`. ' +
           'Column set / widths provisional pending TD-03.56 responsive unification.',
       },
     },
