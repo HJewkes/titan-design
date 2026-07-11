@@ -10,7 +10,7 @@ import {
   type ViewStyle,
 } from 'react-native'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
-import { primitiveColors, primitiveRamps } from '../../../theme/tokens/primitives'
+import { primitiveColors, primitiveRamps, sequentialEffort } from '../../../theme/tokens/primitives'
 import { formatVelocity } from '../../../utils/workout-format'
 import { SET_STRIP_VARIABLE_COLOR } from './SetStrip'
 
@@ -84,26 +84,25 @@ export interface VelocityStripProps extends ViewProps {
 const VEL_COLORS = WORKOUT_TOKENS.scale
 
 /**
- * Map a velocity-zone id (WA's 5-band taxonomy) onto the canonical 4-color
- * scale. The scale has 4 hues but the taxonomy has 5 bands, so the two slowest
- * bands — `maximalStrength` and `grinding` — intentionally share `red`: both
- * read as "heavy / effortful" and there is no distinct 5th data-viz hue. The
- * top three bands align 1:1 with the legacy default scale so an exercise moving
- * from default to profile-derived zones never shifts its fast-end colors.
- *
- * Legacy default parity: speed=green, power=yellow, strengthSpeed=orange, and
- * the old sub-0.5 "Strength" band (now split into maximalStrength + grinding)
- * stays red.
+ * Map a velocity-zone id (WA's 5-band taxonomy) directly onto the 6-stop
+ * `sequentialEffort` ramp. The default strip uses the 4-color {@link VEL_COLORS}
+ * scale (a subsample of the same ramp), but the 5-band taxonomy has one more
+ * level than that scale carries, so it samples 5 stops: the top four align with
+ * the default scale (speed/power/strengthSpeed/maximalStrength = green/gold/
+ * orange/red) and `grinding` takes the ramp's darker red. `maximalStrength` and
+ * `grinding` therefore stay DISTINCT — they no longer collapse onto one red for
+ * lack of a 5th hue. An exercise moving from default to profile-derived zones
+ * never shifts its fast-end colors.
  *
  * Unknown ids fall back to `green` (matching the historical default-path
  * fallback), so a forward-compatible band id never renders an empty bar.
  */
-const zoneIdToScaleToken: Record<string, keyof typeof VEL_COLORS> = {
-  speed: 'green',
-  power: 'yellow',
-  strengthSpeed: 'orange',
-  maximalStrength: 'red',
-  grinding: 'red',
+const bandIdToEffortColor: Record<string, string> = {
+  speed: sequentialEffort[0], // green-300
+  power: sequentialEffort[2], // amber-300 (gold)
+  strengthSpeed: sequentialEffort[3], // orange-400
+  maximalStrength: sequentialEffort[4], // red-600
+  grinding: sequentialEffort[5], // red-700 — the distinct 5th band
 }
 
 // --- Default (no-zones) scale ------------------------------------------------
@@ -162,8 +161,7 @@ function classifyBand(
 }
 
 function bandColor(band: VelocityZoneBandProp): string {
-  const token = zoneIdToScaleToken[band.id]
-  return token ? VEL_COLORS[token] : VEL_COLORS.green
+  return bandIdToEffortColor[band.id] ?? VEL_COLORS.green
 }
 
 function getLossStyle(loss: number): Record<string, string> | null {

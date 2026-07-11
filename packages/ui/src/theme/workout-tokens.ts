@@ -8,14 +8,18 @@ export const WORKOUT_TOKENS = {
   // Canonical 4-band performance scale — the single source for BOTH the
   // VelocityStrip zone bars and the SetRow RPE color (TD-03.43). The direction
   // is intentionally inverted between the two consumers: for velocity, green =
-  // fastest/best; for RPE, green = easiest. This is the [0,1,2,4] subsample of
-  // the canonical `sequentialEffort` primitive. The `orange` key is the band
-  // label. Consumed inline (RN).
+  // fastest/best; for RPE, green = easiest. This is the [0,2,3,4] subsample of
+  // the canonical `sequentialEffort` primitive: an EVEN hue walk across the ramp
+  // (green → gold → orange → red). The earlier [0,1,2,4] spent two of its four
+  // bands on adjacent yellows (amber-200 + amber-300) and skipped orange, reading
+  // yellow-heavy with an abrupt jump to red; sampling amber-300 + orange-400
+  // instead gives four cleanly separable bands that hold at 3px strip scale.
+  // Consumed inline (RN).
   scale: {
-    green: sequentialEffort[0],
-    yellow: sequentialEffort[1],
-    orange: sequentialEffort[2], // gold band
-    red: sequentialEffort[4],
+    green: sequentialEffort[0], // green-300
+    yellow: sequentialEffort[2], // amber-300 (gold)
+    orange: sequentialEffort[3], // orange-400 (true orange)
+    red: sequentialEffort[4], // red-600
   },
 
   // BodyMap volume heatmap — the canonical `divergingScale` (under → optimal →
