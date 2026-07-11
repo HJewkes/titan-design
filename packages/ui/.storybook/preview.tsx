@@ -31,7 +31,7 @@ const preview: Preview = {
           'Shell',
           'Pages',
           'Lab',
-          ['Explorations', 'Specimens', 'Audits', 'Recipes'],
+          ['Candidates', 'Explorations', 'Specimens', 'Audits', 'Recipes'],
         ],
         locales: 'en-US',
       },
@@ -47,9 +47,12 @@ const preview: Preview = {
       parentSelector: 'html', // Apply class to html element
     }),
     (Story) => (
-      <div className="font-sans text-text-primary" style={{ 
-        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
-      }}>
+      <div
+        className="font-sans text-text-primary"
+        style={{
+          fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+        }}
+      >
         <Story />
       </div>
     ),
