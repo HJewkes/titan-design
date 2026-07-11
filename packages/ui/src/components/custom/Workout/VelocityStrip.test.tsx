@@ -336,10 +336,10 @@ const TODO_GREY = '#2C2C2C'
 const VARIABLE_CYAN = '#0B3149'
 const CONTINUE_OUTLINE = '#22465F'
 // The mini container carries a uniform 2px rep gap; per-slot marginLeft adds only
-// the EXTRA for a wide chunk boundary (2px gap + 5px = 7px effective).
+// the EXTRA for a wide chunk boundary (2px gap + 6px = 8px effective notch).
 const CONTAINER_GAP_PX = '2px'
 const REP_SLOT_ML = '0px' // a butted rep — no extra margin (the 2px gap is on the container)
-const WIDE_SLOT_ML = '10px' // drop / myo / cluster chunk boundary — 2 + 10 = 12px effective
+const WIDE_SLOT_ML = '6px' // drop / myo / cluster chunk boundary — 2 + 6 = 8px effective
 
 describe('VelocityStrip set-type modes (mini)', () => {
   it('straight: done reps colored + grey todo remainder to the planned count', () => {

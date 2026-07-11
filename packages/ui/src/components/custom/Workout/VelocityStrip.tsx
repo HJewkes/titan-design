@@ -209,11 +209,13 @@ interface VelocitySlot {
 /** Butted reps carry this gap; chunk boundaries carry {@link WIDE_GAP}. */
 const REP_GAP = 2
 /**
- * Drop sub-load notch / myo cluster gap / cluster intra-rest gap — one wide value
- * carries the chunk identity. 6× the rep gap so groups read as separate even at
- * wall-dashboard scale (glanced across the room).
+ * The between-group notch (drop sub-loads / myo clusters / cluster intra-rests): a
+ * fixed 8px total gap that reads as a group break without dominating a narrow strip.
+ * 4× the rep gap — enough to separate groups at session-rail scale AND wall scale
+ * without the notch ballooning at large widths. In the mini variant the container's
+ * 2px gap covers part of it, so per-slot margin adds the remaining 6px (2 + 6 = 8).
  */
-const WIDE_GAP = 12
+const WIDE_GAP = 8
 
 /** Grey fill for planned-but-unperformed reps (charcoal placeholder, literal hex). */
 const TODO_COLOR = primitiveColors.charcoal[300]
@@ -501,6 +503,8 @@ export function VelocityStrip({
               borderRadius: 1,
               minWidth: 4,
               height: '100%' as unknown as number,
+              // The container's uniform 2px gap covers rep spacing; a wide slot adds
+              // only the EXTRA (WIDE_GAP − REP_GAP) so the notch totals WIDE_GAP.
               marginLeft: Math.max(0, slot.leadingGap - REP_GAP),
               ...(slot.kind === 'continue'
                 ? { borderWidth: 1, borderColor: CONTINUE_OUTLINE }
