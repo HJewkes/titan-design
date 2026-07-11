@@ -14,15 +14,16 @@ export interface SetTableHeaderProps {
   testID?: string
 }
 
-// The flex (previous-best) column keeps its slot even when hidden — blanked to an
-// empty spacer — so REPS/LOAD/RPE hold the same positions over the full-width strip.
+// The previous-best column is the lone flex column (`undefined` width). When hidden
+// it is dropped entirely (not blanked to a spacer) and the four fixed columns
+// distribute across the full strip width via `justifyContent: space-between`.
 const PREV_COLUMN: Column = { label: 'PREV', width: undefined }
 
-/** Columns in order, with the weight column reflecting `unit`; PREV blanked when hidden. */
+/** Columns in order, with the weight column reflecting `unit`; PREV dropped when hidden. */
 function buildColumns(unit: 'lbs' | 'kg', showPrevious: boolean): Column[] {
   return [
     { label: 'SET', width: 36 },
-    showPrevious ? PREV_COLUMN : { label: '', width: undefined },
+    ...(showPrevious ? [PREV_COLUMN] : []),
     { label: 'REPS', width: 44 },
     { label: unit.toUpperCase(), width: 56 },
     { label: 'RPE', width: 36 },
@@ -45,7 +46,12 @@ export function SetTableHeader({
   return (
     <View
       className="flex-row"
-      style={{ paddingVertical: 8, paddingHorizontal: 8, paddingBottom: 4 }}
+      style={{
+        paddingVertical: 8,
+        paddingHorizontal: 8,
+        paddingBottom: 4,
+        ...(showPrevious ? {} : { justifyContent: 'space-between' }),
+      }}
       testID={testID}
     >
       {columns.map(({ label, width }) => {

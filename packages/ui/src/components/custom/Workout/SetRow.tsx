@@ -159,7 +159,7 @@ export function SetRow(set: SetRowProps) {
       accessibilityLabel={accessibilityLabel(set)}
       testID="set-row"
     >
-      <View className="flex-row items-center">
+      <View className="flex-row items-center" style={{ justifyContent: 'space-between' }}>
         <Cell width={COL.set} testID="set-row-set-number">
           {set.setType ? (
             <Text style={typeBadge} testID="set-row-type-badge">
@@ -171,7 +171,6 @@ export function SetRow(set: SetRowProps) {
             </Text>
           )}
         </Cell>
-        <View className="flex-1" style={{ minWidth: 44 }} />
         <Cell width={COL.reps} testID="set-row-reps">
           <Text style={{ ...cellText, color: valueColor }}>{displayReps(set)}</Text>
         </Cell>
