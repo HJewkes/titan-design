@@ -133,20 +133,18 @@ export const SetTypeMini: Story = {
 }
 
 function InteractiveVelocityStrip() {
-  const [expanded, setExpanded] = useState(false)
+  const [open, setOpen] = useState(false)
+  // Tap-to-expand: `onToggle` + the controlled `expanded` boolean. Tapping the strip
+  // toggles both ways (collapsed 3px ↔ chart). No `onRepPress` here — per-bar rep
+  // presses would intercept bar taps and block collapse; that's a separate mode.
   return (
     <View style={{ width: 300, padding: 16 }}>
-      <VelocityStrip
-        velocities={moderateSet}
-        expanded={expanded}
-        onToggle={() => setExpanded(!expanded)}
-        onRepPress={(index, velocity) => console.log(`Rep ${index + 1}: ${velocity}`)}
-      />
+      <VelocityStrip velocities={moderateSet} expanded={open} onToggle={() => setOpen((v) => !v)} />
     </View>
   )
 }
 
-/** Tap to expand (3px ↔ chart); tap a bar for its rep. */
+/** Tap to expand; tap again to collapse (3px ↔ chart, animated). */
 export const Interactive: Story = {
   render: () => <InteractiveVelocityStrip />,
 }
