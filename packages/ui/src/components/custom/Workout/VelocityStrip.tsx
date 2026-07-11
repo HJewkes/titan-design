@@ -595,7 +595,10 @@ export function VelocityStrip({
               flex: 1,
               minWidth: 4,
               height: bareSlotHeight(slot, height, scaleDenom),
-              borderRadius: 1,
+              // Top-rounded to match the framed chart's bars (the "rounded tops from
+              // the numbers one"); square bottoms since bars sit on the baseline.
+              borderTopLeftRadius: 2,
+              borderTopRightRadius: 2,
               backgroundColor: slotColor(slot),
               marginLeft: Math.max(0, slot.leadingGap - REP_GAP),
               ...(slot.kind === 'continue'
@@ -673,7 +676,9 @@ export function VelocityStrip({
           borderRadius: expanded ? 6 : 2,
           paddingTop: expanded ? 16 : 0,
           paddingBottom: expanded ? 24 : 0,
-          paddingHorizontal: expanded ? 6 : 0,
+          // No horizontal inset — the framed chart's bars span full width, matching
+          // the bare spotlight and mini. Numbers/info sit in the vertical padding.
+          paddingHorizontal: 0,
           paddingVertical: expanded ? undefined : 8,
           overflow: expanded ? 'visible' : 'hidden',
         },
