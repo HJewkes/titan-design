@@ -278,6 +278,7 @@ export const sessionSignals = {
     "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-codewatch/f628aef1-79d9-4f67-8c04-5b27a4d3c120.jsonl",
     "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-codewatch/f6324d6b-6972-4f50-9c89-21bd31535746.jsonl",
     "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-codewatch/fd633b58-2657-4859-bca3-03c57a0277f0.jsonl",
+    "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace/036ffed7-2643-4ff1-8ebc-37c40584735c.jsonl",
     "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace/154a2e9b-30c5-4f6e-94e1-fd9f4d86ac82.jsonl",
     "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace/1794823e-ecb1-4214-b274-ffadcbb76b67.jsonl",
     "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace/248daffe-e0f0-43f1-b811-89131c31c94a.jsonl",
@@ -456,155 +457,10 @@ export const sessionSignals = {
   ],
   "locatorFormat": "[transcriptIndex, byteOffset, byteLength] into transcripts[]; seek+read one JSONL line",
   "generatedFrom": {
-    "sessions": 187,
-    "events": 20052
+    "sessions": 165,
+    "events": 20159
   },
   "sessions": [
-    {
-      "id": "34db5555-f435-4071-a1cc-6729725d3c53",
-      "dir": "-Users-hjewkes-Library-Application-Support-active-work-active-work",
-      "aiTitle": "Linux smoke test for active-work daemon",
-      "seedPrompt": "Starting a session on `active-work` (active-work — durable workspace state).  # Why we're doing this  # active-work — durable workspace state  ## Why this exists  Engineering work spans days; Claude C…",
-      "bridgeSessionId": "cse_01NgpFbjAvS3kR6aSg15Xuqz",
-      "firstTs": "2026-07-12T13:47:56.814Z",
-      "lastTs": "2026-07-12T21:12:57.382Z",
-      "durationMs": 26700568,
-      "turns": 915,
-      "userPrompts": 26,
-      "version": "2.1.206",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "AW-17",
-        "AW-1",
-        "AW-7"
-      ],
-      "fileTouches": 0,
-      "tokensIn": 69904,
-      "tokensOut": 1024548,
-      "cacheRead": 251598331,
-      "commits": 2,
-      "pushes": 1,
-      "errors": 7,
-      "compactions": 0,
-      "decisions": 5,
-      "subagents": 10,
-      "artifacts": 0,
-      "tools": {
-        "Bash": 200,
-        "AskUserQuestion": 5,
-        "Read": 53,
-        "Edit": 110,
-        "Write": 19,
-        "Agent": 10,
-        "Skill": 2,
-        "ToolSearch": 1,
-        "WebSearch": 2,
-        "SendUserFile": 1
-      },
-      "startLoc": [
-        227,
-        0,
-        82
-      ]
-    },
-    {
-      "id": "d2557b1d-a5ca-4c88-9c3b-52bcbb0146a8",
-      "dir": "-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace",
-      "aiTitle": "Voltras workspace coordination and wave merges",
-      "seedPrompt": "Starting a session on `voltras-workspace` (Voltras workspace — coordination & wave merges).  # Why we're doing this # Voltras workspace — coordination & wave merges  `voltras-workspace` is a coordinat…",
-      "bridgeSessionId": "cse_01B6KsLdv6z2qN2YvmeMJvVE",
-      "firstTs": "2026-07-12T13:47:58.335Z",
-      "lastTs": "2026-07-12T19:17:18.082Z",
-      "durationMs": 19759747,
-      "turns": 174,
-      "userPrompts": 10,
-      "version": "2.1.206",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "VW-27"
-      ],
-      "fileTouches": 0,
-      "tokensIn": 22533,
-      "tokensOut": 268437,
-      "cacheRead": 22514017,
-      "commits": 0,
-      "pushes": 0,
-      "errors": 2,
-      "compactions": 0,
-      "decisions": 5,
-      "subagents": 5,
-      "artifacts": 0,
-      "tools": {
-        "Bash": 41,
-        "Agent": 5,
-        "AskUserQuestion": 5,
-        "Write": 5,
-        "Read": 4,
-        "Edit": 5
-      },
-      "startLoc": [
-        314,
-        0,
-        82
-      ]
-    },
-    {
-      "id": "5dd3a4c7-1bef-4a5c-89d5-b73dd6cacafa",
-      "dir": "-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace",
-      "aiTitle": "Session rail expandability and shell decomposition",
-      "seedPrompt": "Starting a session on `voltras-workspace` (Voltras workspace — coordination & wave merges).  # Why we're doing this # Voltras workspace — coordination & wave merges  `voltras-workspace` is a coordinat…",
-      "bridgeSessionId": "cse_013pLC9kvykYwbB9uLtjwJDv",
-      "firstTs": "2026-07-09T20:51:24.268Z",
-      "lastTs": "2026-07-12T13:56:05.894Z",
-      "durationMs": 234281626,
-      "turns": 2300,
-      "userPrompts": 151,
-      "version": "2.1.205",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "VW-23",
-        "VW-25",
-        "VW-2",
-        "VW-29",
-        "VW-35",
-        "VW-28",
-        "VW-36"
-      ],
-      "fileTouches": 0,
-      "tokensIn": 502205,
-      "tokensOut": 3907517,
-      "cacheRead": 848123621,
-      "commits": 3,
-      "pushes": 6,
-      "errors": 20,
-      "compactions": 2,
-      "decisions": 11,
-      "subagents": 27,
-      "artifacts": 3,
-      "tools": {
-        "AskUserQuestion": 11,
-        "Bash": 533,
-        "Read": 106,
-        "Edit": 118,
-        "Monitor": 1,
-        "Agent": 27,
-        "Skill": 3,
-        "Write": 26,
-        "Artifact": 2,
-        "ToolSearch": 2,
-        "SendMessage": 12,
-        "TaskList": 1,
-        "TaskStop": 1
-      },
-      "startLoc": [
-        282,
-        0,
-        82
-      ]
-    },
     {
       "id": "46f73e3d-4489-4e79-98c5-536e46ad1405",
       "dir": "-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace",
@@ -617,17 +473,25 @@ export const sessionSignals = {
       "turns": 1246,
       "userPrompts": 62,
       "version": "2.1.205",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "VW-23"
+      "branches": [
+        "feat/TD-shell-s3-harden",
+        "feat/TD-shell-s3-decompose",
+        "feat/TD-storybook-reorg",
+        "feat/TD-sessionrail-scaffold",
+        "feat/TD-arch-graph",
+        "feat/TD-dashboard-shell",
+        "feat/TD-shell-s3-sessionrail",
+        "wt/$u",
+        "wt/assemble"
       ],
+      "prs": [],
+      "tasks": [],
       "fileTouches": 1,
       "tokensIn": 242317,
       "tokensOut": 2011874,
       "cacheRead": 399986779,
-      "commits": 1,
-      "pushes": 0,
+      "commits": 11,
+      "pushes": 4,
       "errors": 10,
       "compactions": 1,
       "decisions": 14,
@@ -648,269 +512,7 @@ export const sessionSignals = {
         "TaskUpdate": 3
       },
       "startLoc": [
-        279,
-        0,
-        82
-      ]
-    },
-    {
-      "id": "248daffe-e0f0-43f1-b811-89131c31c94a",
-      "dir": "-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace",
-      "aiTitle": "S3 SessionRail shell component build",
-      "seedPrompt": "Starting a session on `voltras-workspace` (Voltras workspace — coordination & wave merges).  # Why we're doing this # Voltras workspace — coordination & wave merges  `voltras-workspace` is a coordinat…",
-      "bridgeSessionId": null,
-      "firstTs": "2026-07-08T21:29:02.602Z",
-      "lastTs": "2026-07-09T02:42:55.370Z",
-      "durationMs": 18832768,
-      "turns": 627,
-      "userPrompts": 47,
-      "version": "2.1.204",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "VW-23"
-      ],
-      "fileTouches": 0,
-      "tokensIn": 73801,
-      "tokensOut": 1161792,
-      "cacheRead": 234536543,
-      "commits": 0,
-      "pushes": 0,
-      "errors": 2,
-      "compactions": 0,
-      "decisions": 2,
-      "subagents": 2,
-      "artifacts": 0,
-      "tools": {
-        "AskUserQuestion": 2,
-        "Skill": 1,
-        "Read": 50,
-        "Bash": 116,
-        "Agent": 2,
-        "Write": 17,
-        "Edit": 70,
-        "ToolSearch": 2
-      },
-      "startLoc": [
-        275,
-        0,
-        82
-      ]
-    },
-    {
-      "id": "53ef4f51-af9c-4523-b2b0-f206d7d1926f",
-      "dir": "-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace",
-      "aiTitle": "Voltras workspace color migration PR merge and verification",
-      "seedPrompt": "Starting a session on `voltras-workspace` (Voltras workspace — coordination & wave merges).  # Why we're doing this # Voltras workspace — coordination & wave merges  `voltras-workspace` is a coordinat…",
-      "bridgeSessionId": "cse_01Enc5cHxSogAHijcWn41TEu",
-      "firstTs": "2026-07-08T15:24:52.593Z",
-      "lastTs": "2026-07-08T17:30:12.327Z",
-      "durationMs": 7519734,
-      "turns": 412,
-      "userPrompts": 17,
-      "version": "2.1.204",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "VW-22",
-        "VW-18"
-      ],
-      "fileTouches": 0,
-      "tokensIn": 44687,
-      "tokensOut": 498465,
-      "cacheRead": 67111395,
-      "commits": 2,
-      "pushes": 4,
-      "errors": 0,
-      "compactions": 0,
-      "decisions": 1,
-      "subagents": 7,
-      "artifacts": 0,
-      "tools": {
-        "Bash": 123,
-        "Read": 7,
-        "Edit": 23,
-        "AskUserQuestion": 1,
-        "Agent": 7,
-        "ToolSearch": 2,
-        "Skill": 1
-      },
-      "startLoc": [
-        281,
-        0,
-        82
-      ]
-    },
-    {
-      "id": "154a2e9b-30c5-4f6e-94e1-fd9f4d86ac82",
-      "dir": "-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace",
-      "aiTitle": "Voltras workspace color system semantic repoint",
-      "seedPrompt": "Starting a session on `voltras-workspace` (Voltras workspace — coordination & wave merges).  # Why we're doing this # Voltras workspace — coordination & wave merges  `voltras-workspace` is a coordinat…",
-      "bridgeSessionId": null,
-      "firstTs": "2026-07-08T05:56:44.465Z",
-      "lastTs": "2026-07-08T15:24:27.689Z",
-      "durationMs": 34063224,
-      "turns": 696,
-      "userPrompts": 20,
-      "version": "2.1.204",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "VW-22"
-      ],
-      "fileTouches": 0,
-      "tokensIn": 82654,
-      "tokensOut": 936600,
-      "cacheRead": 202399139,
-      "commits": 1,
-      "pushes": 2,
-      "errors": 5,
-      "compactions": 0,
-      "decisions": 2,
-      "subagents": 0,
-      "artifacts": 16,
-      "tools": {
-        "Bash": 146,
-        "AskUserQuestion": 2,
-        "ToolSearch": 4,
-        "Read": 36,
-        "TaskCreate": 5,
-        "TaskUpdate": 9,
-        "Write": 15,
-        "Edit": 67,
-        "Skill": 1,
-        "Artifact": 8
-      },
-      "startLoc": [
-        273,
-        0,
-        82
-      ]
-    },
-    {
-      "id": "c1312ef4-0416-4b87-ac60-584c87ecb181",
-      "dir": "-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace",
-      "aiTitle": "Voltras workspace coordination setup",
-      "seedPrompt": "Starting a session on `voltras-workspace` (Voltras workspace — coordination & wave merges).  # Why we're doing this # Voltras workspace — coordination & wave merges  `voltras-workspace` is a coordinat…",
-      "bridgeSessionId": null,
-      "firstTs": "2026-07-08T03:21:58.164Z",
-      "lastTs": "2026-07-08T05:55:56.350Z",
-      "durationMs": 9238186,
-      "turns": 593,
-      "userPrompts": 40,
-      "version": "2.1.204",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "VW-22"
-      ],
-      "fileTouches": 0,
-      "tokensIn": 49456,
-      "tokensOut": 1303388,
-      "cacheRead": 196218030,
-      "commits": 0,
-      "pushes": 0,
-      "errors": 7,
-      "compactions": 0,
-      "decisions": 4,
-      "subagents": 2,
-      "artifacts": 0,
-      "tools": {
-        "AskUserQuestion": 4,
-        "Bash": 129,
-        "Read": 21,
-        "Edit": 45,
-        "Write": 5,
-        "Agent": 2,
-        "ToolSearch": 2,
-        "Skill": 1
-      },
-      "startLoc": [
-        307,
-        0,
-        82
-      ]
-    },
-    {
-      "id": "a9400649-3198-4fbe-8e3d-c46ebde7ef38",
-      "dir": "-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace",
-      "aiTitle": "Mine color-system session into reusable skill set",
-      "seedPrompt": "Starting a session on `voltras-workspace` (Voltras workspace — coordination & wave merges).  # Why we're doing this # Voltras workspace — coordination & wave merges  `voltras-workspace` is a coordinat…",
-      "bridgeSessionId": null,
-      "firstTs": "2026-07-08T01:40:51.921Z",
-      "lastTs": "2026-07-08T03:19:16.281Z",
-      "durationMs": 5904360,
-      "turns": 256,
-      "userPrompts": 9,
-      "version": "2.1.204",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "VW-21"
-      ],
-      "fileTouches": 0,
-      "tokensIn": 32032,
-      "tokensOut": 461731,
-      "cacheRead": 43712114,
-      "commits": 0,
-      "pushes": 0,
-      "errors": 3,
-      "compactions": 0,
-      "decisions": 4,
-      "subagents": 4,
-      "artifacts": 0,
-      "tools": {
-        "AskUserQuestion": 4,
-        "Bash": 41,
-        "Read": 10,
-        "Write": 19,
-        "Edit": 26,
-        "ToolSearch": 2,
-        "Agent": 4
-      },
-      "startLoc": [
-        300,
-        0,
-        82
-      ]
-    },
-    {
-      "id": "1794823e-ecb1-4214-b274-ffadcbb76b67",
-      "dir": "-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace",
-      "aiTitle": "Voltras workspace coordination overview",
-      "seedPrompt": "Starting a session on `voltras-workspace` (Voltras workspace — coordination & wave merges).  # Why we're doing this # Voltras workspace — coordination & wave merges  `voltras-workspace` is a coordinat…",
-      "bridgeSessionId": null,
-      "firstTs": "2026-07-07T20:13:33.527Z",
-      "lastTs": "2026-07-07T22:50:58.786Z",
-      "durationMs": 9445259,
-      "turns": 529,
-      "userPrompts": 7,
-      "version": "2.1.202",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "VW-16"
-      ],
-      "fileTouches": 0,
-      "tokensIn": 63081,
-      "tokensOut": 447019,
-      "cacheRead": 115692538,
-      "commits": 0,
-      "pushes": 2,
-      "errors": 0,
-      "compactions": 0,
-      "decisions": 3,
-      "subagents": 0,
-      "artifacts": 0,
-      "tools": {
-        "Bash": 125,
-        "Read": 68,
-        "AskUserQuestion": 3,
-        "Edit": 58,
-        "Write": 4
-      },
-      "startLoc": [
-        274,
+        280,
         0,
         82
       ]
@@ -927,9 +529,7 @@ export const sessionSignals = {
       "turns": 33,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
@@ -966,9 +566,7 @@ export const sessionSignals = {
       "turns": 43,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 9,
@@ -1006,9 +604,7 @@ export const sessionSignals = {
       "turns": 33,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
@@ -1045,9 +641,7 @@ export const sessionSignals = {
       "turns": 39,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
@@ -1085,9 +679,7 @@ export const sessionSignals = {
       "turns": 9,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -1123,9 +715,7 @@ export const sessionSignals = {
       "turns": 11,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -1162,9 +752,7 @@ export const sessionSignals = {
       "turns": 34,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
@@ -1202,9 +790,7 @@ export const sessionSignals = {
       "turns": 7,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -1239,9 +825,7 @@ export const sessionSignals = {
       "turns": 17,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
@@ -1277,9 +861,7 @@ export const sessionSignals = {
       "turns": 7,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -1314,9 +896,7 @@ export const sessionSignals = {
       "turns": 7,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -1351,9 +931,7 @@ export const sessionSignals = {
       "turns": 52,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 11,
@@ -1391,9 +969,7 @@ export const sessionSignals = {
       "turns": 11,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -1430,9 +1006,7 @@ export const sessionSignals = {
       "turns": 7,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -1467,9 +1041,7 @@ export const sessionSignals = {
       "turns": 27,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
@@ -1506,9 +1078,7 @@ export const sessionSignals = {
       "turns": 10,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -1544,9 +1114,7 @@ export const sessionSignals = {
       "turns": 24,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
@@ -1584,9 +1152,7 @@ export const sessionSignals = {
       "turns": 7,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -1621,9 +1187,7 @@ export const sessionSignals = {
       "turns": 48,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 12,
@@ -1661,9 +1225,7 @@ export const sessionSignals = {
       "turns": 27,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
@@ -1701,9 +1263,7 @@ export const sessionSignals = {
       "turns": 32,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
@@ -1740,9 +1300,7 @@ export const sessionSignals = {
       "turns": 30,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
@@ -1780,9 +1338,7 @@ export const sessionSignals = {
       "turns": 46,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 13,
@@ -1821,9 +1377,7 @@ export const sessionSignals = {
       "turns": 18,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
@@ -1861,9 +1415,7 @@ export const sessionSignals = {
       "turns": 10,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -1899,9 +1451,7 @@ export const sessionSignals = {
       "turns": 36,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 9,
@@ -1939,9 +1489,7 @@ export const sessionSignals = {
       "turns": 32,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 3,
@@ -1978,9 +1526,7 @@ export const sessionSignals = {
       "turns": 16,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
@@ -2017,9 +1563,7 @@ export const sessionSignals = {
       "turns": 36,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 9,
@@ -2057,9 +1601,7 @@ export const sessionSignals = {
       "turns": 6,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -2094,9 +1636,7 @@ export const sessionSignals = {
       "turns": 36,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
@@ -2134,9 +1674,7 @@ export const sessionSignals = {
       "turns": 11,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -2172,9 +1710,7 @@ export const sessionSignals = {
       "turns": 37,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 10,
@@ -2212,9 +1748,7 @@ export const sessionSignals = {
       "turns": 38,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
@@ -2252,9 +1786,7 @@ export const sessionSignals = {
       "turns": 13,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -2291,9 +1823,7 @@ export const sessionSignals = {
       "turns": 36,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
@@ -2331,9 +1861,7 @@ export const sessionSignals = {
       "turns": 31,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
@@ -2371,9 +1899,7 @@ export const sessionSignals = {
       "turns": 30,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -2410,9 +1936,7 @@ export const sessionSignals = {
       "turns": 40,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 13,
@@ -2451,9 +1975,7 @@ export const sessionSignals = {
       "turns": 49,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
@@ -2492,9 +2014,7 @@ export const sessionSignals = {
       "turns": 14,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
@@ -2531,9 +2051,7 @@ export const sessionSignals = {
       "turns": 41,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
@@ -2571,9 +2089,7 @@ export const sessionSignals = {
       "turns": 7,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -2608,9 +2124,7 @@ export const sessionSignals = {
       "turns": 30,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
@@ -2648,9 +2162,7 @@ export const sessionSignals = {
       "turns": 10,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -2687,9 +2199,7 @@ export const sessionSignals = {
       "turns": 12,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
@@ -2725,9 +2235,7 @@ export const sessionSignals = {
       "turns": 41,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 13,
@@ -2767,9 +2275,7 @@ export const sessionSignals = {
       "turns": 19,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -2806,9 +2312,7 @@ export const sessionSignals = {
       "turns": 23,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
@@ -2846,9 +2350,7 @@ export const sessionSignals = {
       "turns": 7,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -2883,9 +2385,7 @@ export const sessionSignals = {
       "turns": 37,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 9,
@@ -2923,9 +2423,7 @@ export const sessionSignals = {
       "turns": 35,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
@@ -2962,9 +2460,7 @@ export const sessionSignals = {
       "turns": 20,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 3,
@@ -3001,9 +2497,7 @@ export const sessionSignals = {
       "turns": 28,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
@@ -3041,9 +2535,7 @@ export const sessionSignals = {
       "turns": 34,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
@@ -3081,9 +2573,7 @@ export const sessionSignals = {
       "turns": 7,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -3118,9 +2608,7 @@ export const sessionSignals = {
       "turns": 32,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
@@ -3158,9 +2646,7 @@ export const sessionSignals = {
       "turns": 36,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
@@ -3198,9 +2684,7 @@ export const sessionSignals = {
       "turns": 43,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 10,
@@ -3238,9 +2722,7 @@ export const sessionSignals = {
       "turns": 31,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 9,
@@ -3278,9 +2760,7 @@ export const sessionSignals = {
       "turns": 43,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 10,
@@ -3318,9 +2798,7 @@ export const sessionSignals = {
       "turns": 27,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
@@ -3357,9 +2835,7 @@ export const sessionSignals = {
       "turns": 25,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
@@ -3396,9 +2872,7 @@ export const sessionSignals = {
       "turns": 20,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 1,
@@ -3435,9 +2909,7 @@ export const sessionSignals = {
       "turns": 18,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
@@ -3473,9 +2945,7 @@ export const sessionSignals = {
       "turns": 20,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 2,
@@ -3512,9 +2982,7 @@ export const sessionSignals = {
       "turns": 6,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -3549,9 +3017,7 @@ export const sessionSignals = {
       "turns": 11,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -3587,9 +3053,7 @@ export const sessionSignals = {
       "turns": 11,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -3625,9 +3089,7 @@ export const sessionSignals = {
       "turns": 31,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
@@ -3664,9 +3126,7 @@ export const sessionSignals = {
       "turns": 18,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -3702,9 +3162,7 @@ export const sessionSignals = {
       "turns": 40,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
@@ -3742,9 +3200,7 @@ export const sessionSignals = {
       "turns": 34,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
@@ -3781,9 +3237,7 @@ export const sessionSignals = {
       "turns": 32,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
@@ -3821,9 +3275,7 @@ export const sessionSignals = {
       "turns": 42,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 13,
@@ -3861,9 +3313,7 @@ export const sessionSignals = {
       "turns": 34,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 9,
@@ -3901,9 +3351,7 @@ export const sessionSignals = {
       "turns": 28,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
@@ -3940,9 +3388,7 @@ export const sessionSignals = {
       "turns": 15,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -3978,9 +3424,7 @@ export const sessionSignals = {
       "turns": 45,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
@@ -4018,9 +3462,7 @@ export const sessionSignals = {
       "turns": 14,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
@@ -4057,9 +3499,7 @@ export const sessionSignals = {
       "turns": 28,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
@@ -4096,9 +3536,7 @@ export const sessionSignals = {
       "turns": 24,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -4136,9 +3574,7 @@ export const sessionSignals = {
       "turns": 21,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -4176,9 +3612,7 @@ export const sessionSignals = {
       "turns": 47,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 13,
@@ -4217,9 +3651,7 @@ export const sessionSignals = {
       "turns": 26,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 3,
@@ -4256,9 +3688,7 @@ export const sessionSignals = {
       "turns": 40,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 9,
@@ -4296,9 +3726,7 @@ export const sessionSignals = {
       "turns": 32,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
@@ -4335,9 +3763,7 @@ export const sessionSignals = {
       "turns": 30,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -4374,9 +3800,7 @@ export const sessionSignals = {
       "turns": 32,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
@@ -4414,9 +3838,7 @@ export const sessionSignals = {
       "turns": 19,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
@@ -4453,9 +3875,7 @@ export const sessionSignals = {
       "turns": 22,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
@@ -4491,9 +3911,7 @@ export const sessionSignals = {
       "turns": 27,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
@@ -4531,9 +3949,7 @@ export const sessionSignals = {
       "turns": 24,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
@@ -4571,9 +3987,7 @@ export const sessionSignals = {
       "turns": 29,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
@@ -4611,9 +4025,7 @@ export const sessionSignals = {
       "turns": 22,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
@@ -4649,9 +4061,7 @@ export const sessionSignals = {
       "turns": 30,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
@@ -4689,9 +4099,7 @@ export const sessionSignals = {
       "turns": 39,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
@@ -4728,9 +4136,7 @@ export const sessionSignals = {
       "turns": 31,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 9,
@@ -4768,9 +4174,7 @@ export const sessionSignals = {
       "turns": 17,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
@@ -4808,9 +4212,7 @@ export const sessionSignals = {
       "turns": 27,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
@@ -4850,9 +4252,7 @@ export const sessionSignals = {
       "turns": 30,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -4889,9 +4289,7 @@ export const sessionSignals = {
       "turns": 9,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -4927,9 +4325,7 @@ export const sessionSignals = {
       "turns": 22,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
@@ -4966,9 +4362,7 @@ export const sessionSignals = {
       "turns": 12,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -5005,9 +4399,7 @@ export const sessionSignals = {
       "turns": 42,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 9,
@@ -5045,9 +4437,7 @@ export const sessionSignals = {
       "turns": 34,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
@@ -5085,9 +4475,7 @@ export const sessionSignals = {
       "turns": 39,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 13,
@@ -5125,9 +4513,7 @@ export const sessionSignals = {
       "turns": 27,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
@@ -5165,9 +4551,7 @@ export const sessionSignals = {
       "turns": 44,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 10,
@@ -5206,9 +4590,7 @@ export const sessionSignals = {
       "turns": 27,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -5245,9 +4627,7 @@ export const sessionSignals = {
       "turns": 34,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 9,
@@ -5286,9 +4666,7 @@ export const sessionSignals = {
       "turns": 30,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
@@ -5325,9 +4703,7 @@ export const sessionSignals = {
       "turns": 22,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
@@ -5365,9 +4741,7 @@ export const sessionSignals = {
       "turns": 23,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -5403,9 +4777,7 @@ export const sessionSignals = {
       "turns": 30,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
@@ -5443,9 +4815,7 @@ export const sessionSignals = {
       "turns": 29,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -5483,9 +4853,7 @@ export const sessionSignals = {
       "turns": 50,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 13,
@@ -5523,9 +4891,7 @@ export const sessionSignals = {
       "turns": 28,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 3,
@@ -5562,9 +4928,7 @@ export const sessionSignals = {
       "turns": 29,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
@@ -5602,9 +4966,7 @@ export const sessionSignals = {
       "turns": 30,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
@@ -5643,9 +5005,7 @@ export const sessionSignals = {
       "turns": 45,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
@@ -5684,9 +5044,7 @@ export const sessionSignals = {
       "turns": 42,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
@@ -5724,9 +5082,7 @@ export const sessionSignals = {
       "turns": 29,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
@@ -5765,9 +5121,7 @@ export const sessionSignals = {
       "turns": 23,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 2,
@@ -5804,9 +5158,7 @@ export const sessionSignals = {
       "turns": 31,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
@@ -5843,9 +5195,7 @@ export const sessionSignals = {
       "turns": 40,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
@@ -5883,9 +5233,7 @@ export const sessionSignals = {
       "turns": 25,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -5922,7 +5270,9 @@ export const sessionSignals = {
       "turns": 186,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [],
+      "branches": [
+        "feat/c88-conventions"
+      ],
       "prs": [],
       "tasks": [],
       "fileTouches": 34,
@@ -5960,9 +5310,7 @@ export const sessionSignals = {
       "turns": 28,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 3,
@@ -5999,9 +5347,7 @@ export const sessionSignals = {
       "turns": 11,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 3,
@@ -6038,9 +5384,7 @@ export const sessionSignals = {
       "turns": 3,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 1,
@@ -6075,9 +5419,7 @@ export const sessionSignals = {
       "turns": 6,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 2,
@@ -6113,9 +5455,7 @@ export const sessionSignals = {
       "turns": 7,
       "userPrompts": 1,
       "version": "2.1.202",
-      "branches": [
-        "feat/c88-conventions"
-      ],
+      "branches": [],
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
@@ -6150,7 +5490,11 @@ export const sessionSignals = {
       "turns": 249,
       "userPrompts": 7,
       "version": "2.1.202",
-      "branches": [],
+      "branches": [
+        "feat/c88-capability-embeddings",
+        "main",
+        "eval-lane-$i"
+      ],
       "prs": [
         121
       ],
@@ -6161,8 +5505,8 @@ export const sessionSignals = {
       "tokensIn": 46700,
       "tokensOut": 302468,
       "cacheRead": 41217991,
-      "commits": 0,
-      "pushes": 0,
+      "commits": 1,
+      "pushes": 1,
       "errors": 3,
       "compactions": 0,
       "decisions": 0,
@@ -6237,7 +5581,9 @@ export const sessionSignals = {
       "turns": 168,
       "userPrompts": 1,
       "version": "2.1.201",
-      "branches": [],
+      "branches": [
+        "feat/c89-seeded-pagerank-relevance"
+      ],
       "prs": [
         120
       ],
@@ -6351,50 +5697,6 @@ export const sessionSignals = {
       ]
     },
     {
-      "id": "28663668-09f9-429a-9392-b8eebf5f6c4a",
-      "dir": "-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace",
-      "aiTitle": "Voltras workspace coordination and wave merges",
-      "seedPrompt": "Starting a session on `voltras-workspace` (Voltras workspace — coordination & wave merges).  # Why we're doing this # Voltras workspace — coordination & wave merges  `voltras-workspace` is a coordinat…",
-      "bridgeSessionId": null,
-      "firstTs": "2026-07-06T05:10:46.242Z",
-      "lastTs": "2026-07-06T07:17:44.988Z",
-      "durationMs": 7618746,
-      "turns": 382,
-      "userPrompts": 4,
-      "version": "2.1.201",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "VLT-09",
-        "VW-20"
-      ],
-      "fileTouches": 0,
-      "tokensIn": 47941,
-      "tokensOut": 467009,
-      "cacheRead": 62204363,
-      "commits": 0,
-      "pushes": 2,
-      "errors": 4,
-      "compactions": 0,
-      "decisions": 4,
-      "subagents": 2,
-      "artifacts": 0,
-      "tools": {
-        "Bash": 117,
-        "AskUserQuestion": 4,
-        "Read": 7,
-        "Edit": 12,
-        "Write": 7,
-        "Agent": 2,
-        "Monitor": 1
-      },
-      "startLoc": [
-        276,
-        0,
-        82
-      ]
-    },
-    {
       "id": "45851359-f22b-4839-a74e-2bcc515293b5",
       "dir": "-Users-hjewkes-Library-Application-Support-active-work-codewatch",
       "aiTitle": "Start Codewatch session 23",
@@ -6406,7 +5708,12 @@ export const sessionSignals = {
       "turns": 832,
       "userPrompts": 24,
       "version": "2.1.201",
-      "branches": [],
+      "branches": [
+        "fix/c83-bench-infra",
+        "main",
+        "packages/cli/src/mcp/server.ts",
+        "feat/mcp-http-server"
+      ],
       "prs": [
         118,
         119
@@ -6421,8 +5728,8 @@ export const sessionSignals = {
       "tokensIn": 125104,
       "tokensOut": 1097170,
       "cacheRead": 239051892,
-      "commits": 1,
-      "pushes": 1,
+      "commits": 4,
+      "pushes": 2,
       "errors": 12,
       "compactions": 0,
       "decisions": 2,
@@ -6456,7 +5763,10 @@ export const sessionSignals = {
       "turns": 176,
       "userPrompts": 1,
       "version": "2.1.201",
-      "branches": [],
+      "branches": [
+        "feat/c83-coding-bench-stage-a",
+        "main"
+      ],
       "prs": [
         117
       ],
@@ -6467,7 +5777,7 @@ export const sessionSignals = {
       "tokensIn": 32710,
       "tokensOut": 194433,
       "cacheRead": 20026034,
-      "commits": 1,
+      "commits": 2,
       "pushes": 1,
       "errors": 2,
       "compactions": 0,
@@ -6547,7 +5857,11 @@ export const sessionSignals = {
       "turns": 295,
       "userPrompts": 7,
       "version": "2.1.201",
-      "branches": [],
+      "branches": [
+        "$br",
+        "feat/c82-retrieval-suite",
+        "main"
+      ],
       "prs": [
         113,
         114,
@@ -6555,12 +5869,12 @@ export const sessionSignals = {
         116
       ],
       "tasks": [],
-      "fileTouches": 0,
+      "fileTouches": 6,
       "tokensIn": 35718,
       "tokensOut": 338229,
       "cacheRead": 43506576,
-      "commits": 0,
-      "pushes": 0,
+      "commits": 1,
+      "pushes": 6,
       "errors": 5,
       "compactions": 0,
       "decisions": 0,
@@ -6593,7 +5907,12 @@ export const sessionSignals = {
       "turns": 427,
       "userPrompts": 8,
       "version": "2.1.201",
-      "branches": [],
+      "branches": [
+        "feat/c79-symbol-signatures",
+        "main",
+        "feat/c80-context-bundle",
+        "feat/c82-oracle-foundation"
+      ],
       "prs": [
         110,
         111,
@@ -6604,8 +5923,8 @@ export const sessionSignals = {
       "tokensIn": 67892,
       "tokensOut": 516071,
       "cacheRead": 80782960,
-      "commits": 0,
-      "pushes": 0,
+      "commits": 4,
+      "pushes": 3,
       "errors": 8,
       "compactions": 0,
       "decisions": 1,
@@ -6639,17 +5958,20 @@ export const sessionSignals = {
       "turns": 293,
       "userPrompts": 22,
       "version": "2.1.201",
-      "branches": [],
+      "branches": [
+        "feat/graph-context-spike",
+        "feat/C-74-graph-context"
+      ],
       "prs": [
         107
       ],
       "tasks": [],
-      "fileTouches": 0,
+      "fileTouches": 28,
       "tokensIn": 22766,
       "tokensOut": 506301,
       "cacheRead": 52817410,
-      "commits": 0,
-      "pushes": 1,
+      "commits": 2,
+      "pushes": 2,
       "errors": 2,
       "compactions": 0,
       "decisions": 1,
@@ -6681,7 +6003,10 @@ export const sessionSignals = {
       "turns": 464,
       "userPrompts": 1,
       "version": "2.1.201",
-      "branches": [],
+      "branches": [
+        "fix/C-71-lifetime-window",
+        "fix/C-71-dashboard-lifetime"
+      ],
       "prs": [
         108,
         109
@@ -6689,12 +6014,12 @@ export const sessionSignals = {
       "tasks": [
         "C-71"
       ],
-      "fileTouches": 8,
+      "fileTouches": 93,
       "tokensIn": 71830,
       "tokensOut": 360874,
       "cacheRead": 93597756,
-      "commits": 0,
-      "pushes": 1,
+      "commits": 3,
+      "pushes": 4,
       "errors": 3,
       "compactions": 0,
       "decisions": 1,
@@ -6719,51 +6044,6 @@ export const sessionSignals = {
       ]
     },
     {
-      "id": "bd4c4c1f-fe26-48b7-8812-52f1bb7c16f1",
-      "dir": "-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace",
-      "aiTitle": "Determine next steps",
-      "seedPrompt": "Go ahead",
-      "bridgeSessionId": null,
-      "firstTs": "2026-07-05T00:45:21.519Z",
-      "lastTs": "2026-07-05T14:59:31.183Z",
-      "durationMs": 51249664,
-      "turns": 645,
-      "userPrompts": 12,
-      "version": "2.1.201",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "VW-19",
-        "VW-18"
-      ],
-      "fileTouches": 0,
-      "tokensIn": 69238,
-      "tokensOut": 572834,
-      "cacheRead": 139149907,
-      "commits": 0,
-      "pushes": 4,
-      "errors": 3,
-      "compactions": 0,
-      "decisions": 2,
-      "subagents": 1,
-      "artifacts": 0,
-      "tools": {
-        "Bash": 199,
-        "Read": 19,
-        "Edit": 52,
-        "Write": 11,
-        "AskUserQuestion": 2,
-        "Agent": 1,
-        "Monitor": 3,
-        "ToolSearch": 1
-      },
-      "startLoc": [
-        306,
-        0,
-        82
-      ]
-    },
-    {
       "id": "ccc70e24-b27c-4ef8-86ab-3a137d0e6c92",
       "dir": "-Users-hjewkes-Library-Application-Support-active-work-codewatch",
       "aiTitle": "Continue intra-function analysis roadmap phase 4",
@@ -6775,7 +6055,10 @@ export const sessionSignals = {
       "turns": 339,
       "userPrompts": 2,
       "version": "2.1.201",
-      "branches": [],
+      "branches": [
+        "fix/c70-multihop-reexport-references",
+        "main"
+      ],
       "prs": [
         106
       ],
@@ -6784,8 +6067,8 @@ export const sessionSignals = {
       "tokensIn": 42464,
       "tokensOut": 404106,
       "cacheRead": 58028173,
-      "commits": 0,
-      "pushes": 0,
+      "commits": 1,
+      "pushes": 1,
       "errors": 10,
       "compactions": 0,
       "decisions": 1,
@@ -6821,19 +6104,23 @@ export const sessionSignals = {
       "turns": 236,
       "userPrompts": 11,
       "version": "2.1.201",
-      "branches": [],
+      "branches": [
+        "main",
+        "fix/c69-stale-baseline",
+        "feat/c7-init-json-parity"
+      ],
       "prs": [
         103,
         104,
         105
       ],
       "tasks": [],
-      "fileTouches": 2,
+      "fileTouches": 22,
       "tokensIn": 31507,
       "tokensOut": 216980,
       "cacheRead": 27574063,
-      "commits": 1,
-      "pushes": 0,
+      "commits": 3,
+      "pushes": 1,
       "errors": 2,
       "compactions": 0,
       "decisions": 0,
@@ -6914,50 +6201,6 @@ export const sessionSignals = {
       ]
     },
     {
-      "id": "8a844343-2a6d-45b2-867d-f90d7d2de118",
-      "dir": "-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace",
-      "aiTitle": "Voltras workspace coordination setup",
-      "seedPrompt": "Starting a session on `voltras-workspace` (Voltras workspace — coordination & wave merges).  # Why we're doing this # Voltras workspace — coordination & wave merges  `voltras-workspace` is a coordinat…",
-      "bridgeSessionId": "cse_01Rxj5qPj39r2h9MALqjMCyT",
-      "firstTs": "2026-07-04T14:26:32.121Z",
-      "lastTs": "2026-07-04T19:47:28.469Z",
-      "durationMs": 19256348,
-      "turns": 960,
-      "userPrompts": 26,
-      "version": "2.1.201",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "VW-18"
-      ],
-      "fileTouches": 0,
-      "tokensIn": 153133,
-      "tokensOut": 1104635,
-      "cacheRead": 354818015,
-      "commits": 0,
-      "pushes": 3,
-      "errors": 3,
-      "compactions": 0,
-      "decisions": 4,
-      "subagents": 2,
-      "artifacts": 0,
-      "tools": {
-        "AskUserQuestion": 4,
-        "ToolSearch": 6,
-        "Bash": 230,
-        "Read": 18,
-        "Edit": 165,
-        "Write": 13,
-        "Agent": 2,
-        "mcp__claude-in-chrome__tabs_context_mcp": 1
-      },
-      "startLoc": [
-        295,
-        0,
-        82
-      ]
-    },
-    {
       "id": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
       "dir": "-Users-hjewkes-Library-Application-Support-active-work-codewatch",
       "aiTitle": "Plan deep-analysis roadmap and symbol-granularity work",
@@ -6969,7 +6212,20 @@ export const sessionSignals = {
       "turns": 987,
       "userPrompts": 21,
       "version": "2.1.201",
-      "branches": [],
+      "branches": [
+        "feat/c64-model-b-symbol-nodes",
+        "main",
+        "feat/c65-unused-exports",
+        "feat/c65-function-local-deadcode",
+        "feat/c65-unused-bindings",
+        "feat/c65-dynamic-imports",
+        "feat/c65-dead-modules",
+        "feat/c66-growth-risk-loop-depth",
+        "feat/c66-recursion-patterns",
+        "feat/c63-symbol-line-spans",
+        "feat/c63-coverage-ingest",
+        "feat/c63-coverage-surface"
+      ],
       "prs": [
         78,
         79,
@@ -6988,8 +6244,8 @@ export const sessionSignals = {
       "tokensIn": 70015,
       "tokensOut": 1230166,
       "cacheRead": 382973420,
-      "commits": 2,
-      "pushes": 10,
+      "commits": 17,
+      "pushes": 13,
       "errors": 5,
       "compactions": 0,
       "decisions": 0,
@@ -7020,14 +6276,18 @@ export const sessionSignals = {
       "turns": 511,
       "userPrompts": 9,
       "version": "2.1.201",
-      "branches": [],
+      "branches": [
+        "feat/c58-per-symbol-complexity",
+        "main",
+        "feat/c59-symbol-dossier",
+        "fix/c61-decompose-indexer-walker"
+      ],
       "prs": [
         75,
         76,
         77
       ],
       "tasks": [
-        "C-53",
         "C-59",
         "C-58"
       ],
@@ -7035,8 +6295,8 @@ export const sessionSignals = {
       "tokensIn": 149838,
       "tokensOut": 621174,
       "cacheRead": 121223688,
-      "commits": 2,
-      "pushes": 3,
+      "commits": 5,
+      "pushes": 5,
       "errors": 1,
       "compactions": 0,
       "decisions": 1,
@@ -7061,48 +6321,6 @@ export const sessionSignals = {
       ]
     },
     {
-      "id": "8a13403b-65e5-45ef-a90c-4119b224df55",
-      "dir": "-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace",
-      "aiTitle": "Dashboard phase 6 layout cohesion merge",
-      "seedPrompt": "Starting a session on `voltras-workspace` (Voltras workspace — coordination & wave merges).  # Why we're doing this # Voltras workspace — coordination & wave merges  `voltras-workspace` is a coordinat…",
-      "bridgeSessionId": null,
-      "firstTs": "2026-07-04T13:19:43.581Z",
-      "lastTs": "2026-07-04T14:21:58.953Z",
-      "durationMs": 3735372,
-      "turns": 318,
-      "userPrompts": 2,
-      "version": "2.1.201",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "VW-18"
-      ],
-      "fileTouches": 0,
-      "tokensIn": 67069,
-      "tokensOut": 321106,
-      "cacheRead": 45072077,
-      "commits": 1,
-      "pushes": 3,
-      "errors": 3,
-      "compactions": 0,
-      "decisions": 2,
-      "subagents": 0,
-      "artifacts": 0,
-      "tools": {
-        "Bash": 90,
-        "AskUserQuestion": 2,
-        "ToolSearch": 3,
-        "Read": 18,
-        "Edit": 36,
-        "Write": 4
-      },
-      "startLoc": [
-        294,
-        0,
-        82
-      ]
-    },
-    {
       "id": "ae027a39-3ace-4d50-83ac-2f740cd20edf",
       "dir": "-Users-hjewkes-Library-Application-Support-active-work-codewatch",
       "aiTitle": "Barrel-hidden coupling arc shipped",
@@ -7114,7 +6332,10 @@ export const sessionSignals = {
       "turns": 484,
       "userPrompts": 10,
       "version": "2.1.200",
-      "branches": [],
+      "branches": [
+        "feat/per-symbol-utilization-blast-radius",
+        "main"
+      ],
       "prs": [
         74
       ],
@@ -7125,8 +6346,8 @@ export const sessionSignals = {
       "tokensIn": 47771,
       "tokensOut": 467364,
       "cacheRead": 107096913,
-      "commits": 1,
-      "pushes": 0,
+      "commits": 2,
+      "pushes": 1,
       "errors": 2,
       "compactions": 0,
       "decisions": 2,
@@ -7162,7 +6383,14 @@ export const sessionSignals = {
       "turns": 565,
       "userPrompts": 13,
       "version": "2.1.200",
-      "branches": [],
+      "branches": [
+        "feat/c52-utilization-metric",
+        "feat/c54-barrel-resolved-utilization",
+        "feat/c55-barrel-resolved-utilization",
+        "packages/render/src/index.ts",
+        "feat/c54-module-coupling-view",
+        "feat/c57-barrel-toggle"
+      ],
       "prs": [
         70,
         71,
@@ -7179,8 +6407,8 @@ export const sessionSignals = {
       "tokensIn": 52289,
       "tokensOut": 620710,
       "cacheRead": 128248306,
-      "commits": 3,
-      "pushes": 2,
+      "commits": 4,
+      "pushes": 4,
       "errors": 7,
       "compactions": 0,
       "decisions": 1,
@@ -7213,7 +6441,10 @@ export const sessionSignals = {
       "turns": 239,
       "userPrompts": 2,
       "version": "2.1.199",
-      "branches": [],
+      "branches": [
+        "feat/edge-weight-reference-count",
+        "main"
+      ],
       "prs": [
         69
       ],
@@ -7225,7 +6456,7 @@ export const sessionSignals = {
       "tokensIn": 32698,
       "tokensOut": 221202,
       "cacheRead": 27612279,
-      "commits": 0,
+      "commits": 2,
       "pushes": 2,
       "errors": 3,
       "compactions": 0,
@@ -7248,50 +6479,6 @@ export const sessionSignals = {
       ]
     },
     {
-      "id": "65a6a954-a7aa-48f7-9a4a-3401fd6c3233",
-      "dir": "-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace",
-      "aiTitle": "Voltras workspace coordination and wave merges",
-      "seedPrompt": "Starting a session on `voltras-workspace` (Voltras workspace — coordination & wave merges).  # Why we're doing this # Voltras workspace — coordination & wave merges  `voltras-workspace` is a coordinat…",
-      "bridgeSessionId": null,
-      "firstTs": "2026-07-03T06:04:57.981Z",
-      "lastTs": "2026-07-03T13:37:38.382Z",
-      "durationMs": 27160401,
-      "turns": 290,
-      "userPrompts": 8,
-      "version": "2.1.199",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "VW-16"
-      ],
-      "fileTouches": 0,
-      "tokensIn": 42437,
-      "tokensOut": 227147,
-      "cacheRead": 39293176,
-      "commits": 1,
-      "pushes": 2,
-      "errors": 3,
-      "compactions": 0,
-      "decisions": 1,
-      "subagents": 3,
-      "artifacts": 0,
-      "tools": {
-        "Bash": 84,
-        "mcp__voltras__server_health": 1,
-        "mcp__voltras__device_get_state": 1,
-        "AskUserQuestion": 1,
-        "Agent": 3,
-        "Read": 18,
-        "Edit": 14,
-        "Write": 2
-      },
-      "startLoc": [
-        287,
-        0,
-        82
-      ]
-    },
-    {
       "id": "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
       "dir": "-Users-hjewkes-Library-Application-Support-active-work-codewatch",
       "aiTitle": "Codewatch code-health observability CLI development",
@@ -7303,7 +6490,13 @@ export const sessionSignals = {
       "turns": 541,
       "userPrompts": 4,
       "version": "2.1.198",
-      "branches": [],
+      "branches": [
+        "feat/c49-dossier-metric-heat",
+        "main",
+        "feat/c50-focus-view-render",
+        "feat/c50-focus-layout-refine",
+        "feat/c50-focus-picker"
+      ],
       "prs": [
         65,
         66,
@@ -7320,7 +6513,7 @@ export const sessionSignals = {
       "tokensIn": 35942,
       "tokensOut": 511801,
       "cacheRead": 112709108,
-      "commits": 2,
+      "commits": 4,
       "pushes": 4,
       "errors": 2,
       "compactions": 0,
@@ -7342,50 +6535,6 @@ export const sessionSignals = {
       ]
     },
     {
-      "id": "63109e74-7ad3-4b23-b9b3-e3cc9a92afd1",
-      "dir": "-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace",
-      "aiTitle": "Voltras workspace coordination and wave merges",
-      "seedPrompt": "Starting a session on `voltras-workspace` (Voltras workspace — coordination & wave merges).  # Why we're doing this # Voltras workspace — coordination & wave merges  `voltras-workspace` is a coordinat…",
-      "bridgeSessionId": null,
-      "firstTs": "2026-07-02T17:40:12.000Z",
-      "lastTs": "2026-07-03T05:13:50.667Z",
-      "durationMs": 41618667,
-      "turns": 745,
-      "userPrompts": 8,
-      "version": "2.1.198",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "VLT-05"
-      ],
-      "fileTouches": 0,
-      "tokensIn": 100788,
-      "tokensOut": 817535,
-      "cacheRead": 192917314,
-      "commits": 0,
-      "pushes": 2,
-      "errors": 3,
-      "compactions": 0,
-      "decisions": 1,
-      "subagents": 4,
-      "artifacts": 0,
-      "tools": {
-        "AskUserQuestion": 1,
-        "Bash": 225,
-        "Read": 20,
-        "Agent": 4,
-        "Edit": 38,
-        "ToolSearch": 1,
-        "Write": 8,
-        "Skill": 1
-      },
-      "startLoc": [
-        285,
-        0,
-        82
-      ]
-    },
-    {
       "id": "848f1a22-a8a8-42b7-a545-a2000aa36939",
       "dir": "-Users-hjewkes-Library-Application-Support-active-work-codewatch",
       "aiTitle": "Codewatch code-health observability CLI overview",
@@ -7397,7 +6546,16 @@ export const sessionSignals = {
       "turns": 576,
       "userPrompts": 9,
       "version": "2.1.198",
-      "branches": [],
+      "branches": [
+        "fix/c45-ci-fitness-gate-head-snapshot",
+        "main",
+        "feat/c46-c47-arch-graph-elk-weighted-edges",
+        "feat/arch-graph-linework",
+        "feat/arch-graph-elk-orthogonal-routing",
+        "fix/arch-graph-palette-endpoints-color-persist",
+        "feat/arch-graph-fanin-fanout-labels",
+        "docs/dependency-graph-rendering"
+      ],
       "prs": [
         58,
         59,
@@ -7417,8 +6575,8 @@ export const sessionSignals = {
       "tokensIn": 40990,
       "tokensOut": 674394,
       "cacheRead": 136926772,
-      "commits": 3,
-      "pushes": 5,
+      "commits": 8,
+      "pushes": 7,
       "errors": 2,
       "compactions": 0,
       "decisions": 1,
@@ -7443,50 +6601,6 @@ export const sessionSignals = {
       ]
     },
     {
-      "id": "a7b2f46b-ff78-4c81-8850-e6af863b1e4e",
-      "dir": "-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace",
-      "aiTitle": "Firmware canonical rep-sourcing Phase 0-1 merge",
-      "seedPrompt": "Starting a session on `voltras-workspace` (Voltras workspace — coordination & wave merges).  # Why we're doing this # Voltras workspace — coordination & wave merges  `voltras-workspace` is a coordinat…",
-      "bridgeSessionId": null,
-      "firstTs": "2026-07-01T23:19:49.151Z",
-      "lastTs": "2026-07-02T05:26:21.092Z",
-      "durationMs": 21991941,
-      "turns": 354,
-      "userPrompts": 5,
-      "version": "2.1.198",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "VMCP-02"
-      ],
-      "fileTouches": 0,
-      "tokensIn": 47011,
-      "tokensOut": 272524,
-      "cacheRead": 41375229,
-      "commits": 1,
-      "pushes": 2,
-      "errors": 4,
-      "compactions": 0,
-      "decisions": 2,
-      "subagents": 0,
-      "artifacts": 0,
-      "tools": {
-        "Bash": 97,
-        "AskUserQuestion": 2,
-        "Read": 20,
-        "Edit": 22,
-        "Write": 2,
-        "ToolSearch": 2,
-        "TaskCreate": 3,
-        "TaskUpdate": 6
-      },
-      "startLoc": [
-        298,
-        0,
-        82
-      ]
-    },
-    {
       "id": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
       "dir": "-Users-hjewkes-Library-Application-Support-active-work-codewatch",
       "aiTitle": "Start codewatch code-health observability CLI session",
@@ -7498,7 +6612,10 @@ export const sessionSignals = {
       "turns": 256,
       "userPrompts": 3,
       "version": "2.1.198",
-      "branches": [],
+      "branches": [
+        "feat/c28-multi-window-churn",
+        "main"
+      ],
       "prs": [
         57
       ],
@@ -7509,7 +6626,7 @@ export const sessionSignals = {
       "tokensIn": 33650,
       "tokensOut": 210496,
       "cacheRead": 29291464,
-      "commits": 0,
+      "commits": 1,
       "pushes": 1,
       "errors": 0,
       "compactions": 0,
@@ -7531,62 +6648,6 @@ export const sessionSignals = {
       ]
     },
     {
-      "id": "cbf04327-5f7d-497d-8118-78d52417208e",
-      "dir": "-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace",
-      "aiTitle": "Resume bilateral rig on-device validation",
-      "seedPrompt": "Starting a session on `voltras-workspace` (Voltras workspace — coordination & wave merges).  # Why we're doing this # Voltras workspace — coordination & wave merges  `voltras-workspace` is a coordinat…",
-      "bridgeSessionId": null,
-      "firstTs": "2026-07-01T18:33:14.990Z",
-      "lastTs": "2026-07-01T22:45:38.576Z",
-      "durationMs": 15143586,
-      "turns": 399,
-      "userPrompts": 31,
-      "version": "2.1.197",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "VW-15"
-      ],
-      "fileTouches": 0,
-      "tokensIn": 95405,
-      "tokensOut": 508740,
-      "cacheRead": 70802744,
-      "commits": 0,
-      "pushes": 0,
-      "errors": 3,
-      "compactions": 0,
-      "decisions": 5,
-      "subagents": 3,
-      "artifacts": 0,
-      "tools": {
-        "ToolSearch": 8,
-        "mcp__voltras__server_health": 1,
-        "mcp__voltras__slot_bindings_list": 1,
-        "mcp__voltras__device_get_state": 6,
-        "Bash": 61,
-        "AskUserQuestion": 5,
-        "mcp__voltras__device_scan": 3,
-        "mcp__voltras__device_connect": 3,
-        "mcp__voltras__device_set_mode": 3,
-        "mcp__voltras__device_set_weight": 2,
-        "mcp__voltras__session_start": 2,
-        "Read": 16,
-        "mcp__voltras__device_disconnect": 3,
-        "mcp__voltras__set_start": 1,
-        "mcp__voltras__session_end": 2,
-        "mcp__voltras__device_start_guided_load": 2,
-        "mcp__voltras__device_unload": 1,
-        "Agent": 3,
-        "Write": 2,
-        "Edit": 13
-      },
-      "startLoc": [
-        312,
-        0,
-        82
-      ]
-    },
-    {
       "id": "822b9538-5851-4433-8835-ff1cc1d15c3a",
       "dir": "-Users-hjewkes-Library-Application-Support-active-work-codewatch",
       "aiTitle": "Codewatch health dashboard dogfooding and signal auditing",
@@ -7598,7 +6659,11 @@ export const sessionSignals = {
       "turns": 273,
       "userPrompts": 5,
       "version": "2.1.197",
-      "branches": [],
+      "branches": [
+        "fix/c44-relative-import-resolution",
+        "feat/c23-empty-window-suppress-sections",
+        "fix/c42-c43-dashboard-viz-polish"
+      ],
       "prs": [
         54,
         55,
@@ -7612,7 +6677,7 @@ export const sessionSignals = {
       "tokensIn": 32154,
       "tokensOut": 210889,
       "cacheRead": 32823691,
-      "commits": 2,
+      "commits": 3,
       "pushes": 3,
       "errors": 4,
       "compactions": 0,
@@ -7645,7 +6710,12 @@ export const sessionSignals = {
       "turns": 424,
       "userPrompts": 2,
       "version": "2.1.197",
-      "branches": [],
+      "branches": [
+        "feat/confine-ownership-to-tab",
+        "main",
+        "fix/c40-hidden-coupling-unverifiable",
+        "feat/c41-recency-discount"
+      ],
       "prs": [
         51,
         52,
@@ -7660,7 +6730,7 @@ export const sessionSignals = {
       "tokensIn": 28979,
       "tokensOut": 375807,
       "cacheRead": 74979197,
-      "commits": 2,
+      "commits": 3,
       "pushes": 3,
       "errors": 0,
       "compactions": 0,
@@ -7694,7 +6764,16 @@ export const sessionSignals = {
       "turns": 619,
       "userPrompts": 3,
       "version": "2.1.197",
-      "branches": [],
+      "branches": [
+        "feat/c33-drift-badges-iso-line",
+        "main",
+        "feat/c34-fitness-ratchet-banner",
+        "feat/c35-architecture-cohesion",
+        "feat/c36-health-breakdown",
+        "feat/c37-ux-polish",
+        "feat/c38-package-depgraph",
+        "refactor/c5-rename-codewatch"
+      ],
       "prs": [
         44,
         45,
@@ -7713,7 +6792,7 @@ export const sessionSignals = {
       "tokensIn": 40505,
       "tokensOut": 540641,
       "cacheRead": 134579286,
-      "commits": 6,
+      "commits": 8,
       "pushes": 7,
       "errors": 6,
       "compactions": 0,
@@ -7745,7 +6824,13 @@ export const sessionSignals = {
       "turns": 500,
       "userPrompts": 13,
       "version": "2.1.197",
-      "branches": [],
+      "branches": [
+        "docs/dashboard-value-critique",
+        "feat/c30-authorcount-ownership",
+        "main",
+        "feat/c31-coupling-hidden-edges",
+        "fix/c32-data-contract"
+      ],
       "prs": [
         40,
         41,
@@ -7760,8 +6845,8 @@ export const sessionSignals = {
       "tokensIn": 102605,
       "tokensOut": 590034,
       "cacheRead": 110801458,
-      "commits": 1,
-      "pushes": 0,
+      "commits": 5,
+      "pushes": 3,
       "errors": 8,
       "compactions": 0,
       "decisions": 0,
@@ -7786,50 +6871,6 @@ export const sessionSignals = {
       ]
     },
     {
-      "id": "c6a8f75c-ce3c-4467-8e61-4cf246d2e95d",
-      "dir": "-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace",
-      "aiTitle": "VMCP guided-load and training-mode-unification wave",
-      "seedPrompt": "Starting a session on `voltras-workspace` (Voltras workspace — coordination & wave merges).  # Why we're doing this # Voltras workspace — coordination & wave merges  `voltras-workspace` is a coordinat…",
-      "bridgeSessionId": null,
-      "firstTs": "2026-07-01T00:18:17.893Z",
-      "lastTs": "2026-07-01T10:34:43.925Z",
-      "durationMs": 36986032,
-      "turns": 959,
-      "userPrompts": 53,
-      "version": "2.1.197",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "VW-4"
-      ],
-      "fileTouches": 0,
-      "tokensIn": 163270,
-      "tokensOut": 1431861,
-      "cacheRead": 379620021,
-      "commits": 1,
-      "pushes": 2,
-      "errors": 6,
-      "compactions": 0,
-      "decisions": 1,
-      "subagents": 55,
-      "artifacts": 0,
-      "tools": {
-        "Bash": 227,
-        "Read": 17,
-        "AskUserQuestion": 1,
-        "Edit": 27,
-        "Agent": 55,
-        "Write": 8,
-        "ToolSearch": 1,
-        "SendMessage": 2
-      },
-      "startLoc": [
-        308,
-        0,
-        82
-      ]
-    },
-    {
       "id": "ede9df8d-425b-4f7d-8708-93b44767ef3b",
       "dir": "-Users-hjewkes-Library-Application-Support-active-work-codewatch",
       "aiTitle": "Start codewatch session and review open tasks",
@@ -7841,7 +6882,17 @@ export const sessionSignals = {
       "turns": 1154,
       "userPrompts": 38,
       "version": "2.1.197",
-      "branches": [],
+      "branches": [
+        "fix/default-db-git-toplevel",
+        "feat/c23-dogfood-ux",
+        "feat/status-dashboard",
+        "feat/treemap-component",
+        "main",
+        "feat/dashboard-v1",
+        "feat/dashboard-v1.1",
+        "feat/dashboard-architecture",
+        "feat/dashboard-embed-graph"
+      ],
       "prs": [
         33,
         34,
@@ -7858,8 +6909,8 @@ export const sessionSignals = {
       "tokensIn": 124726,
       "tokensOut": 1291558,
       "cacheRead": 481299146,
-      "commits": 4,
-      "pushes": 2,
+      "commits": 16,
+      "pushes": 11,
       "errors": 7,
       "compactions": 0,
       "decisions": 0,
@@ -7896,7 +6947,11 @@ export const sessionSignals = {
       "turns": 449,
       "userPrompts": 5,
       "version": "2.1.197",
-      "branches": [],
+      "branches": [
+        "main",
+        "feat/test-source-linker",
+        "fix/partition-quality-nul-key"
+      ],
       "prs": [
         31,
         32
@@ -7910,7 +6965,7 @@ export const sessionSignals = {
       "tokensIn": 67011,
       "tokensOut": 407672,
       "cacheRead": 70495404,
-      "commits": 1,
+      "commits": 3,
       "pushes": 2,
       "errors": 3,
       "compactions": 0,
@@ -7935,48 +6990,6 @@ export const sessionSignals = {
       ]
     },
     {
-      "id": "e31cff48-fa19-4635-b009-3607ca5efc16",
-      "dir": "-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace",
-      "aiTitle": "Voltras workspace session kickoff — coordination & wave merges",
-      "seedPrompt": "Starting a session on `voltras-workspace` (Voltras workspace — coordination & wave merges).  # Why we're doing this # Voltras workspace — coordination & wave merges  `voltras-workspace` is a coordinat…",
-      "bridgeSessionId": null,
-      "firstTs": "2026-06-30T21:51:28.695Z",
-      "lastTs": "2026-07-01T00:17:01.539Z",
-      "durationMs": 8732844,
-      "turns": 605,
-      "userPrompts": 6,
-      "version": "2.1.197",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "VW-4"
-      ],
-      "fileTouches": 0,
-      "tokensIn": 56552,
-      "tokensOut": 518102,
-      "cacheRead": 133535959,
-      "commits": 0,
-      "pushes": 1,
-      "errors": 4,
-      "compactions": 0,
-      "decisions": 3,
-      "subagents": 0,
-      "artifacts": 0,
-      "tools": {
-        "AskUserQuestion": 3,
-        "Bash": 156,
-        "Read": 55,
-        "Edit": 45,
-        "Write": 6,
-        "ToolSearch": 2
-      },
-      "startLoc": [
-        316,
-        0,
-        82
-      ]
-    },
-    {
       "id": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
       "dir": "-Users-hjewkes-Library-Application-Support-active-work-codewatch",
       "aiTitle": "Context refresh and C-2 schema-healing aliases",
@@ -7988,7 +7001,10 @@ export const sessionSignals = {
       "turns": 440,
       "userPrompts": 4,
       "version": "2.1.196",
-      "branches": [],
+      "branches": [
+        "feat/schema-healing-aliases",
+        "feat/incremental-default-autoupdate-hook"
+      ],
       "prs": [
         29,
         30
@@ -8028,148 +7044,6 @@ export const sessionSignals = {
       ]
     },
     {
-      "id": "d851586b-62a3-487d-b4c0-573e013b2dc0",
-      "dir": "-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace",
-      "aiTitle": "Voltras workspace coordination and wave merges",
-      "seedPrompt": "Starting a session on `voltras-workspace` (Voltras workspace — coordination & wave merges).  # Why we're doing this # Voltras workspace — coordination & wave merges  `voltras-workspace` is a coordinat…",
-      "bridgeSessionId": null,
-      "firstTs": "2026-06-30T13:15:29.943Z",
-      "lastTs": "2026-06-30T21:51:26.445Z",
-      "durationMs": 30956502,
-      "turns": 460,
-      "userPrompts": 14,
-      "version": "2.1.195",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "VW-13"
-      ],
-      "fileTouches": 0,
-      "tokensIn": 62660,
-      "tokensOut": 517546,
-      "cacheRead": 93658105,
-      "commits": 0,
-      "pushes": 0,
-      "errors": 8,
-      "compactions": 0,
-      "decisions": 4,
-      "subagents": 5,
-      "artifacts": 0,
-      "tools": {
-        "Bash": 120,
-        "AskUserQuestion": 4,
-        "ToolSearch": 3,
-        "mcp__brain-vnm__brain_pm_task_complete": 1,
-        "mcp__brain-vnm__brain_pm_task_list": 1,
-        "Agent": 5,
-        "Write": 5,
-        "Workflow": 2,
-        "Read": 17,
-        "Edit": 12,
-        "mcp__claude-in-chrome__tabs_context_mcp": 2
-      },
-      "startLoc": [
-        315,
-        0,
-        82
-      ]
-    },
-    {
-      "id": "b1e917cd-d67b-437d-be1c-f668fc9a6bf3",
-      "dir": "-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace",
-      "aiTitle": "VW-12 autonomous burn-down review and merge",
-      "seedPrompt": "Starting a session on `voltras-workspace` (Voltras workspace — coordination & wave merges).  # Why we're doing this # Voltras workspace — coordination & wave merges  `voltras-workspace` is a coordinat…",
-      "bridgeSessionId": null,
-      "firstTs": "2026-06-23T21:55:12.850Z",
-      "lastTs": "2026-06-26T14:46:58.908Z",
-      "durationMs": 233506058,
-      "turns": 495,
-      "userPrompts": 18,
-      "version": "2.1.187",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "VW-12"
-      ],
-      "fileTouches": 0,
-      "tokensIn": 47466,
-      "tokensOut": 447179,
-      "cacheRead": 89263308,
-      "commits": 0,
-      "pushes": 4,
-      "errors": 14,
-      "compactions": 0,
-      "decisions": 5,
-      "subagents": 6,
-      "artifacts": 0,
-      "tools": {
-        "Bash": 137,
-        "AskUserQuestion": 5,
-        "Agent": 6,
-        "Read": 11,
-        "Edit": 11,
-        "ToolSearch": 5,
-        "mcp__active-work__active__task__done": 1,
-        "mcp__active-work__active__session__record": 5,
-        "mcp__brain-vnm__brain_pm_task_show": 2,
-        "mcp__active-work__active__task__list": 1,
-        "mcp__brain-vnm__brain_pm_task_list": 1,
-        "Write": 3,
-        "Workflow": 2,
-        "mcp__active-work__active__task__edit": 3,
-        "mcp__brain-vnm__brain_pm_task_complete": 1
-      },
-      "startLoc": [
-        302,
-        0,
-        82
-      ]
-    },
-    {
-      "id": "c8af7a2d-9b90-41c1-bc24-865572c8d3bd",
-      "dir": "-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace",
-      "aiTitle": "Voltras workspace coordination and wave merges",
-      "seedPrompt": "Starting a session on `voltras-workspace` (Voltras workspace — coordination & wave merges).  # Why we're doing this # Voltras workspace — coordination & wave merges  `voltras-workspace` is a coordinat…",
-      "bridgeSessionId": null,
-      "firstTs": "2026-05-28T18:13:23.917Z",
-      "lastTs": "2026-06-23T19:43:24.861Z",
-      "durationMs": 2251800944,
-      "turns": 339,
-      "userPrompts": 6,
-      "version": "2.1.154",
-      "branches": [],
-      "prs": [],
-      "tasks": [
-        "VW-4",
-        "VMCP-02"
-      ],
-      "fileTouches": 0,
-      "tokensIn": 56280,
-      "tokensOut": 284825,
-      "cacheRead": 44136971,
-      "commits": 0,
-      "pushes": 2,
-      "errors": 2,
-      "compactions": 0,
-      "decisions": 4,
-      "subagents": 2,
-      "artifacts": 0,
-      "tools": {
-        "Bash": 87,
-        "AskUserQuestion": 4,
-        "Read": 34,
-        "Edit": 30,
-        "Skill": 1,
-        "Write": 4,
-        "Agent": 2
-      },
-      "startLoc": [
-        310,
-        0,
-        82
-      ]
-    },
-    {
       "id": "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff",
       "dir": "-Users-hjewkes-Library-Application-Support-active-work-codewatch",
       "aiTitle": "Start codewatch code-health observability CLI session",
@@ -8181,7 +7055,9 @@ export const sessionSignals = {
       "turns": 244,
       "userPrompts": 1,
       "version": "2.1.160",
-      "branches": [],
+      "branches": [
+        "feat/fingerprint-incremental-index"
+      ],
       "prs": [
         28
       ],
@@ -8222,10 +7098,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/121",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c88-capability-embeddings",
       "firstTs": "2026-07-06T23:45:52.797Z",
       "lastTs": "2026-07-07T01:22:19.337Z",
       "sessions": [
         "f6324d6b-6972-4f50-9c89-21bd31535746"
+      ],
+      "linkLoc": [
+        271,
+        1605159,
+        214
       ]
     },
     {
@@ -8233,10 +7115,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/120",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c89-seeded-pagerank-relevance",
       "firstTs": "2026-07-06T17:29:30.212Z",
       "lastTs": "2026-07-06T17:35:10.149Z",
       "sessions": [
         "26f5e28e-f687-42d8-bb19-cbbee69709c1"
+      ],
+      "linkLoc": [
+        246,
+        1005224,
+        214
       ]
     },
     {
@@ -8244,10 +7132,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/119",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/mcp-http-server",
       "firstTs": "2026-07-06T05:53:19.600Z",
       "lastTs": "2026-07-06T07:11:25.284Z",
       "sessions": [
         "45851359-f22b-4839-a74e-2bcc515293b5"
+      ],
+      "linkLoc": [
+        249,
+        3908049,
+        214
       ]
     },
     {
@@ -8255,10 +7149,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/118",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "fix/c83-bench-infra",
       "firstTs": "2026-07-06T04:49:59.715Z",
       "lastTs": "2026-07-06T05:52:45.329Z",
       "sessions": [
         "45851359-f22b-4839-a74e-2bcc515293b5"
+      ],
+      "linkLoc": [
+        249,
+        2457432,
+        214
       ]
     },
     {
@@ -8266,10 +7166,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/117",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c83-coding-bench-stage-a",
       "firstTs": "2026-07-06T01:40:30.571Z",
       "lastTs": "2026-07-06T01:45:51.507Z",
       "sessions": [
         "cc3546be-2c7d-4203-8789-3275ac58a61c"
+      ],
+      "linkLoc": [
+        265,
+        825521,
+        214
       ]
     },
     {
@@ -8277,10 +7183,34 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/116",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "main",
       "firstTs": "2026-07-05T22:49:07.909Z",
       "lastTs": "2026-07-05T22:53:53.644Z",
       "sessions": [
-        "20f87461-9661-40ba-9af5-6e510817957a"
+        "20f87461-9661-40ba-9af5-6e510817957a",
+        "06e0ac05-9729-4fba-bb3a-e10c79c59a7c",
+        "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
+        "122c4f8f-7dc4-4211-a818-95be2df9b24e",
+        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+        "45851359-f22b-4839-a74e-2bcc515293b5",
+        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+        "759a6037-8fee-4639-8faa-ffac0e1f18f4",
+        "848f1a22-a8a8-42b7-a545-a2000aa36939",
+        "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+        "a86e0245-8fd6-4f8f-bd15-b45669812b3f",
+        "ae027a39-3ace-4d50-83ac-2f740cd20edf",
+        "cc3546be-2c7d-4203-8789-3275ac58a61c",
+        "ccc70e24-b27c-4ef8-86ab-3a137d0e6c92",
+        "ce00b199-172a-4cdb-a183-2178407d04a7",
+        "ede9df8d-425b-4f7d-8708-93b44767ef3b",
+        "f6324d6b-6972-4f50-9c89-21bd31535746",
+        "fd633b58-2657-4859-bca3-03c57a0277f0"
+      ],
+      "linkLoc": [
+        244,
+        1091719,
+        214
       ]
     },
     {
@@ -8288,10 +7218,34 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/115",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "main",
       "firstTs": "2026-07-05T22:45:29.215Z",
       "lastTs": "2026-07-05T23:20:19.316Z",
       "sessions": [
-        "20f87461-9661-40ba-9af5-6e510817957a"
+        "20f87461-9661-40ba-9af5-6e510817957a",
+        "06e0ac05-9729-4fba-bb3a-e10c79c59a7c",
+        "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
+        "122c4f8f-7dc4-4211-a818-95be2df9b24e",
+        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+        "45851359-f22b-4839-a74e-2bcc515293b5",
+        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+        "759a6037-8fee-4639-8faa-ffac0e1f18f4",
+        "848f1a22-a8a8-42b7-a545-a2000aa36939",
+        "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+        "a86e0245-8fd6-4f8f-bd15-b45669812b3f",
+        "ae027a39-3ace-4d50-83ac-2f740cd20edf",
+        "cc3546be-2c7d-4203-8789-3275ac58a61c",
+        "ccc70e24-b27c-4ef8-86ab-3a137d0e6c92",
+        "ce00b199-172a-4cdb-a183-2178407d04a7",
+        "ede9df8d-425b-4f7d-8708-93b44767ef3b",
+        "f6324d6b-6972-4f50-9c89-21bd31535746",
+        "fd633b58-2657-4859-bca3-03c57a0277f0"
+      ],
+      "linkLoc": [
+        244,
+        1376724,
+        214
       ]
     },
     {
@@ -8299,10 +7253,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/114",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c82-retrieval-suite",
       "firstTs": "2026-07-05T22:43:07.318Z",
       "lastTs": "2026-07-05T22:47:59.577Z",
       "sessions": [
         "20f87461-9661-40ba-9af5-6e510817957a"
+      ],
+      "linkLoc": [
+        244,
+        892282,
+        214
       ]
     },
     {
@@ -8310,10 +7270,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/113",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c82-retrieval-suite",
       "firstTs": "2026-07-05T22:39:55.936Z",
       "lastTs": "2026-07-05T22:42:21.659Z",
       "sessions": [
         "20f87461-9661-40ba-9af5-6e510817957a"
+      ],
+      "linkLoc": [
+        244,
+        707917,
+        214
       ]
     },
     {
@@ -8321,43 +7287,67 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/112",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c82-oracle-foundation",
       "firstTs": "2026-07-05T21:59:41.019Z",
       "lastTs": "2026-07-05T22:22:01.933Z",
       "sessions": [
         "fd633b58-2657-4859-bca3-03c57a0277f0"
+      ],
+      "linkLoc": [
+        272,
+        2187701,
+        214
       ]
     },
     {
       "number": 111,
       "url": "https://github.com/HJewkes/codewatch/pull/111",
       "repo": "HJewkes/codewatch",
-      "merged": false,
+      "merged": true,
+      "branch": "feat/c80-context-bundle",
       "firstTs": "2026-07-05T21:44:08.292Z",
       "lastTs": "2026-07-05T21:58:43.447Z",
       "sessions": [
         "fd633b58-2657-4859-bca3-03c57a0277f0"
+      ],
+      "linkLoc": [
+        272,
+        1572094,
+        214
       ]
     },
     {
       "number": 110,
       "url": "https://github.com/HJewkes/codewatch/pull/110",
       "repo": "HJewkes/codewatch",
-      "merged": false,
+      "merged": true,
+      "branch": "feat/c79-symbol-signatures",
       "firstTs": "2026-07-05T19:10:05.984Z",
       "lastTs": "2026-07-05T21:42:54.401Z",
       "sessions": [
         "fd633b58-2657-4859-bca3-03c57a0277f0"
+      ],
+      "linkLoc": [
+        272,
+        1396898,
+        214
       ]
     },
     {
       "number": 109,
       "url": "https://github.com/HJewkes/codewatch/pull/109",
       "repo": "HJewkes/codewatch",
-      "merged": false,
+      "merged": true,
+      "branch": "fix/C-71-dashboard-lifetime",
       "firstTs": "2026-07-05T18:23:59.946Z",
       "lastTs": "2026-07-05T18:29:24.853Z",
       "sessions": [
         "ea64d801-972c-4519-9a34-85fea7f8d776"
+      ],
+      "linkLoc": [
+        268,
+        2649043,
+        214
       ]
     },
     {
@@ -8365,10 +7355,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/108",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "fix/C-71-lifetime-window",
       "firstTs": "2026-07-05T18:00:35.026Z",
       "lastTs": "2026-07-05T18:23:03.800Z",
       "sessions": [
         "ea64d801-972c-4519-9a34-85fea7f8d776"
+      ],
+      "linkLoc": [
+        268,
+        2530771,
+        214
       ]
     },
     {
@@ -8376,21 +7372,33 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/107",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/C-74-graph-context",
       "firstTs": "2026-07-05T17:45:32.427Z",
       "lastTs": "2026-07-05T18:46:32.319Z",
       "sessions": [
         "5abbb0ce-143a-4089-9d99-16de251fa361"
+      ],
+      "linkLoc": [
+        251,
+        1921297,
+        214
       ]
     },
     {
       "number": 106,
       "url": "https://github.com/HJewkes/codewatch/pull/106",
       "repo": "HJewkes/codewatch",
-      "merged": false,
+      "merged": true,
+      "branch": "fix/c70-multihop-reexport-references",
       "firstTs": "2026-07-05T14:00:26.284Z",
       "lastTs": "2026-07-05T14:03:59.141Z",
       "sessions": [
         "ccc70e24-b27c-4ef8-86ab-3a137d0e6c92"
+      ],
+      "linkLoc": [
+        266,
+        1894978,
+        214
       ]
     },
     {
@@ -8398,10 +7406,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/105",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c7-init-json-parity",
       "firstTs": "2026-07-05T01:13:41.059Z",
       "lastTs": "2026-07-05T01:18:16.782Z",
       "sessions": [
         "06e0ac05-9729-4fba-bb3a-e10c79c59a7c"
+      ],
+      "linkLoc": [
+        237,
+        1045875,
+        214
       ]
     },
     {
@@ -8409,10 +7423,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/104",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c7-init-json-parity",
       "firstTs": "2026-07-05T01:04:48.049Z",
       "lastTs": "2026-07-05T01:13:07.587Z",
       "sessions": [
         "06e0ac05-9729-4fba-bb3a-e10c79c59a7c"
+      ],
+      "linkLoc": [
+        237,
+        968402,
+        214
       ]
     },
     {
@@ -8420,10 +7440,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/103",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "fix/c69-stale-baseline",
       "firstTs": "2026-07-05T00:54:00.525Z",
       "lastTs": "2026-07-05T01:01:23.851Z",
       "sessions": [
         "06e0ac05-9729-4fba-bb3a-e10c79c59a7c"
+      ],
+      "linkLoc": [
+        237,
+        688333,
+        214
       ]
     },
     {
@@ -8431,10 +7457,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/102",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": null,
       "firstTs": "2026-07-04T21:35:06.605Z",
       "lastTs": "2026-07-05T00:43:50.299Z",
       "sessions": [
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
+      ],
+      "linkLoc": [
+        250,
+        943405,
+        214
       ]
     },
     {
@@ -8442,10 +7474,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/101",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": null,
       "firstTs": "2026-07-04T21:03:32.088Z",
       "lastTs": "2026-07-04T21:29:41.661Z",
       "sessions": [
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
+      ],
+      "linkLoc": [
+        250,
+        789699,
+        214
       ]
     },
     {
@@ -8453,21 +7491,33 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/100",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": null,
       "firstTs": "2026-07-04T21:00:22.284Z",
       "lastTs": "2026-07-04T21:02:32.862Z",
       "sessions": [
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
+      ],
+      "linkLoc": [
+        250,
+        713183,
+        214
       ]
     },
     {
       "number": 99,
       "url": "https://github.com/HJewkes/codewatch/pull/99",
       "repo": "HJewkes/codewatch",
-      "merged": false,
+      "merged": true,
+      "branch": null,
       "firstTs": "2026-07-04T20:55:32.976Z",
       "lastTs": "2026-07-04T20:55:47.129Z",
       "sessions": [
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
+      ],
+      "linkLoc": [
+        250,
+        677583,
+        212
       ]
     },
     {
@@ -8475,10 +7525,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/98",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": null,
       "firstTs": "2026-07-04T20:05:51.399Z",
       "lastTs": "2026-07-04T20:51:58.829Z",
       "sessions": [
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
+      ],
+      "linkLoc": [
+        250,
+        633342,
+        212
       ]
     },
     {
@@ -8486,10 +7542,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/97",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": null,
       "firstTs": "2026-07-04T19:47:25.410Z",
       "lastTs": "2026-07-04T19:50:42.703Z",
       "sessions": [
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
+      ],
+      "linkLoc": [
+        250,
+        584406,
+        212
       ]
     },
     {
@@ -8497,10 +7559,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/96",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": null,
       "firstTs": "2026-07-04T19:42:46.969Z",
       "lastTs": "2026-07-04T19:46:09.818Z",
       "sessions": [
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
+      ],
+      "linkLoc": [
+        250,
+        506161,
+        212
       ]
     },
     {
@@ -8508,10 +7576,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/95",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": null,
       "firstTs": "2026-07-04T19:35:56.959Z",
       "lastTs": "2026-07-04T19:42:00.737Z",
       "sessions": [
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
+      ],
+      "linkLoc": [
+        250,
+        456336,
+        212
       ]
     },
     {
@@ -8519,10 +7593,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/94",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": null,
       "firstTs": "2026-07-04T19:20:51.325Z",
       "lastTs": "2026-07-04T19:20:51.325Z",
       "sessions": [
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
+      ],
+      "linkLoc": [
+        250,
+        434469,
+        212
       ]
     },
     {
@@ -8530,21 +7610,33 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/93",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": null,
       "firstTs": "2026-07-04T19:18:41.762Z",
       "lastTs": "2026-07-04T19:18:41.762Z",
       "sessions": [
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
+      ],
+      "linkLoc": [
+        250,
+        434256,
+        212
       ]
     },
     {
       "number": 92,
       "url": "https://github.com/HJewkes/codewatch/pull/92",
       "repo": "HJewkes/codewatch",
-      "merged": false,
+      "merged": true,
+      "branch": null,
       "firstTs": "2026-07-04T19:16:33.845Z",
       "lastTs": "2026-07-04T19:16:33.845Z",
       "sessions": [
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
+      ],
+      "linkLoc": [
+        250,
+        434043,
+        212
       ]
     },
     {
@@ -8552,10 +7644,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/91",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": null,
       "firstTs": "2026-07-04T19:10:28.705Z",
       "lastTs": "2026-07-04T19:10:28.705Z",
       "sessions": [
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
+      ],
+      "linkLoc": [
+        250,
+        433830,
+        212
       ]
     },
     {
@@ -8563,10 +7661,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/90",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": null,
       "firstTs": "2026-07-04T19:09:29.522Z",
       "lastTs": "2026-07-04T19:09:29.522Z",
       "sessions": [
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
+      ],
+      "linkLoc": [
+        250,
+        433617,
+        212
       ]
     },
     {
@@ -8574,10 +7678,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/89",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": null,
       "firstTs": "2026-07-04T18:58:47.449Z",
       "lastTs": "2026-07-04T19:03:55.053Z",
       "sessions": [
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
+      ],
+      "linkLoc": [
+        250,
+        413897,
+        212
       ]
     },
     {
@@ -8585,10 +7695,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/88",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c63-coverage-surface",
       "firstTs": "2026-07-04T17:51:22.676Z",
       "lastTs": "2026-07-04T17:58:33.902Z",
       "sessions": [
         "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+      ],
+      "linkLoc": [
+        247,
+        5622390,
+        212
       ]
     },
     {
@@ -8596,10 +7712,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/87",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c63-coverage-ingest",
       "firstTs": "2026-07-04T17:44:05.726Z",
       "lastTs": "2026-07-04T17:50:09.874Z",
       "sessions": [
         "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+      ],
+      "linkLoc": [
+        247,
+        5363447,
+        212
       ]
     },
     {
@@ -8607,10 +7729,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/86",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c63-symbol-line-spans",
       "firstTs": "2026-07-04T17:29:23.460Z",
       "lastTs": "2026-07-04T17:42:20.619Z",
       "sessions": [
         "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+      ],
+      "linkLoc": [
+        247,
+        5104508,
+        212
       ]
     },
     {
@@ -8618,10 +7746,34 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/85",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "main",
       "firstTs": "2026-07-04T17:22:14.526Z",
       "lastTs": "2026-07-04T17:28:10.930Z",
       "sessions": [
-        "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+        "06e0ac05-9729-4fba-bb3a-e10c79c59a7c",
+        "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
+        "122c4f8f-7dc4-4211-a818-95be2df9b24e",
+        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+        "20f87461-9661-40ba-9af5-6e510817957a",
+        "45851359-f22b-4839-a74e-2bcc515293b5",
+        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+        "759a6037-8fee-4639-8faa-ffac0e1f18f4",
+        "848f1a22-a8a8-42b7-a545-a2000aa36939",
+        "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+        "a86e0245-8fd6-4f8f-bd15-b45669812b3f",
+        "ae027a39-3ace-4d50-83ac-2f740cd20edf",
+        "cc3546be-2c7d-4203-8789-3275ac58a61c",
+        "ccc70e24-b27c-4ef8-86ab-3a137d0e6c92",
+        "ce00b199-172a-4cdb-a183-2178407d04a7",
+        "ede9df8d-425b-4f7d-8708-93b44767ef3b",
+        "f6324d6b-6972-4f50-9c89-21bd31535746",
+        "fd633b58-2657-4859-bca3-03c57a0277f0"
+      ],
+      "linkLoc": [
+        247,
+        4678931,
+        212
       ]
     },
     {
@@ -8629,10 +7781,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/84",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c66-growth-risk-loop-depth",
       "firstTs": "2026-07-04T17:14:58.185Z",
       "lastTs": "2026-07-04T17:21:11.748Z",
       "sessions": [
         "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+      ],
+      "linkLoc": [
+        247,
+        4448394,
+        212
       ]
     },
     {
@@ -8640,10 +7798,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/83",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c65-dead-modules",
       "firstTs": "2026-07-04T16:54:38.571Z",
       "lastTs": "2026-07-04T17:13:42.213Z",
       "sessions": [
         "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+      ],
+      "linkLoc": [
+        247,
+        4181226,
+        212
       ]
     },
     {
@@ -8651,10 +7815,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/82",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c65-dynamic-imports",
       "firstTs": "2026-07-04T16:44:20.697Z",
       "lastTs": "2026-07-04T16:53:46.962Z",
       "sessions": [
         "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+      ],
+      "linkLoc": [
+        247,
+        3574307,
+        212
       ]
     },
     {
@@ -8662,10 +7832,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/81",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c65-unused-bindings",
       "firstTs": "2026-07-04T16:34:17.287Z",
       "lastTs": "2026-07-04T16:43:00.601Z",
       "sessions": [
         "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+      ],
+      "linkLoc": [
+        247,
+        3300105,
+        212
       ]
     },
     {
@@ -8673,10 +7849,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/80",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c65-function-local-deadcode",
       "firstTs": "2026-07-04T16:27:28.751Z",
       "lastTs": "2026-07-04T16:33:46.811Z",
       "sessions": [
         "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+      ],
+      "linkLoc": [
+        247,
+        3024000,
+        212
       ]
     },
     {
@@ -8684,10 +7866,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/79",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c65-unused-exports",
       "firstTs": "2026-07-04T16:17:21.781Z",
       "lastTs": "2026-07-04T16:26:34.841Z",
       "sessions": [
         "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+      ],
+      "linkLoc": [
+        247,
+        2798520,
+        212
       ]
     },
     {
@@ -8695,10 +7883,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/78",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c64-model-b-symbol-nodes",
       "firstTs": "2026-07-04T15:53:36.884Z",
       "lastTs": "2026-07-04T16:17:04.673Z",
       "sessions": [
         "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+      ],
+      "linkLoc": [
+        247,
+        2532670,
+        212
       ]
     },
     {
@@ -8706,10 +7900,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/77",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "fix/c61-decompose-indexer-walker",
       "firstTs": "2026-07-04T15:16:19.001Z",
       "lastTs": "2026-07-04T15:27:31.502Z",
       "sessions": [
         "5e8f4b04-c57a-41a0-930b-eb1fc02bb677"
+      ],
+      "linkLoc": [
+        252,
+        3513340,
+        212
       ]
     },
     {
@@ -8717,10 +7917,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/76",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c59-symbol-dossier",
       "firstTs": "2026-07-04T14:49:52.601Z",
       "lastTs": "2026-07-04T15:15:54.819Z",
       "sessions": [
         "5e8f4b04-c57a-41a0-930b-eb1fc02bb677"
+      ],
+      "linkLoc": [
+        252,
+        3237044,
+        212
       ]
     },
     {
@@ -8728,10 +7934,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/75",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c58-per-symbol-complexity",
       "firstTs": "2026-07-04T14:31:06.634Z",
       "lastTs": "2026-07-04T14:48:22.192Z",
       "sessions": [
         "5e8f4b04-c57a-41a0-930b-eb1fc02bb677"
+      ],
+      "linkLoc": [
+        252,
+        2583942,
+        212
       ]
     },
     {
@@ -8739,10 +7951,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/74",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/per-symbol-utilization-blast-radius",
       "firstTs": "2026-07-03T23:13:16.027Z",
       "lastTs": "2026-07-04T13:12:07.437Z",
       "sessions": [
         "ae027a39-3ace-4d50-83ac-2f740cd20edf"
+      ],
+      "linkLoc": [
+        262,
+        5168297,
+        212
       ]
     },
     {
@@ -8750,10 +7968,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/73",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c57-barrel-toggle",
       "firstTs": "2026-07-03T22:16:02.874Z",
       "lastTs": "2026-07-03T22:24:50.139Z",
       "sessions": [
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
+      ],
+      "linkLoc": [
+        263,
+        7559468,
+        212
       ]
     },
     {
@@ -8761,10 +7985,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/72",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c54-module-coupling-view",
       "firstTs": "2026-07-03T21:56:08.152Z",
       "lastTs": "2026-07-03T22:14:41.209Z",
       "sessions": [
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
+      ],
+      "linkLoc": [
+        263,
+        7477860,
+        212
       ]
     },
     {
@@ -8772,10 +8002,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/71",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c55-barrel-resolved-utilization",
       "firstTs": "2026-07-03T21:17:46.762Z",
       "lastTs": "2026-07-03T21:54:51.660Z",
       "sessions": [
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
+      ],
+      "linkLoc": [
+        263,
+        5952611,
+        212
       ]
     },
     {
@@ -8783,10 +8019,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/70",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c52-utilization-metric",
       "firstTs": "2026-07-03T20:19:01.753Z",
       "lastTs": "2026-07-03T21:17:07.516Z",
       "sessions": [
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
+      ],
+      "linkLoc": [
+        263,
+        3022980,
+        212
       ]
     },
     {
@@ -8794,10 +8036,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/69",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/edge-weight-reference-count",
       "firstTs": "2026-07-03T13:28:46.051Z",
       "lastTs": "2026-07-03T13:44:04.376Z",
       "sessions": [
         "a86e0245-8fd6-4f8f-bd15-b45669812b3f"
+      ],
+      "linkLoc": [
+        260,
+        1157739,
+        212
       ]
     },
     {
@@ -8805,10 +8053,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/68",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c50-focus-picker",
       "firstTs": "2026-07-03T07:15:31.542Z",
       "lastTs": "2026-07-03T07:19:15.395Z",
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf"
+      ],
+      "linkLoc": [
+        239,
+        6239683,
+        212
       ]
     },
     {
@@ -8816,10 +8070,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/67",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c50-focus-layout-refine",
       "firstTs": "2026-07-03T06:09:22.817Z",
       "lastTs": "2026-07-03T07:15:08.226Z",
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf"
+      ],
+      "linkLoc": [
+        239,
+        5508041,
+        212
       ]
     },
     {
@@ -8827,10 +8087,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/66",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c50-focus-view-render",
       "firstTs": "2026-07-03T05:07:43.320Z",
       "lastTs": "2026-07-03T06:08:18.647Z",
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf"
+      ],
+      "linkLoc": [
+        239,
+        4192935,
+        212
       ]
     },
     {
@@ -8838,10 +8104,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/65",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c49-dossier-metric-heat",
       "firstTs": "2026-07-02T21:57:06.028Z",
       "lastTs": "2026-07-03T05:06:06.406Z",
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf"
+      ],
+      "linkLoc": [
+        239,
+        2904252,
+        212
       ]
     },
     {
@@ -8849,10 +8121,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/64",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "docs/dependency-graph-rendering",
       "firstTs": "2026-07-02T21:30:21.459Z",
       "lastTs": "2026-07-02T21:30:53.672Z",
       "sessions": [
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
+      ],
+      "linkLoc": [
+        255,
+        6523507,
+        212
       ]
     },
     {
@@ -8860,10 +8138,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/63",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/arch-graph-fanin-fanout-labels",
       "firstTs": "2026-07-02T21:16:20.755Z",
       "lastTs": "2026-07-02T21:27:36.362Z",
       "sessions": [
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
+      ],
+      "linkLoc": [
+        255,
+        6482387,
+        212
       ]
     },
     {
@@ -8871,10 +8155,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/62",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "fix/arch-graph-palette-endpoints-color-persist",
       "firstTs": "2026-07-02T21:05:10.642Z",
       "lastTs": "2026-07-02T21:12:49.390Z",
       "sessions": [
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
+      ],
+      "linkLoc": [
+        255,
+        6343640,
+        212
       ]
     },
     {
@@ -8882,10 +8172,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/61",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/arch-graph-elk-orthogonal-routing",
       "firstTs": "2026-07-02T20:45:50.536Z",
       "lastTs": "2026-07-02T21:03:57.946Z",
       "sessions": [
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
+      ],
+      "linkLoc": [
+        255,
+        5892989,
+        212
       ]
     },
     {
@@ -8893,10 +8189,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/60",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/arch-graph-linework",
       "firstTs": "2026-07-02T20:31:18.392Z",
       "lastTs": "2026-07-02T20:45:02.002Z",
       "sessions": [
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
+      ],
+      "linkLoc": [
+        255,
+        3854707,
+        212
       ]
     },
     {
@@ -8904,10 +8206,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/59",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c46-c47-arch-graph-elk-weighted-edges",
       "firstTs": "2026-07-02T18:15:06.126Z",
       "lastTs": "2026-07-02T20:30:13.358Z",
       "sessions": [
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
+      ],
+      "linkLoc": [
+        255,
+        3317692,
+        212
       ]
     },
     {
@@ -8915,10 +8223,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/58",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "fix/c45-ci-fitness-gate-head-snapshot",
       "firstTs": "2026-07-02T05:00:03.805Z",
       "lastTs": "2026-07-02T18:14:46.190Z",
       "sessions": [
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
+      ],
+      "linkLoc": [
+        255,
+        1872716,
+        212
       ]
     },
     {
@@ -8926,10 +8240,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/57",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c28-multi-window-churn",
       "firstTs": "2026-07-01T21:15:11.364Z",
       "lastTs": "2026-07-01T22:26:54.848Z",
       "sessions": [
         "91e27139-78f8-4b2b-ac22-4c26c6eda2db"
+      ],
+      "linkLoc": [
+        258,
+        1768630,
+        212
       ]
     },
     {
@@ -8937,10 +8257,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/56",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "fix/c42-c43-dashboard-viz-polish",
       "firstTs": "2026-07-01T18:54:19.181Z",
       "lastTs": "2026-07-01T18:54:19.313Z",
       "sessions": [
         "822b9538-5851-4433-8835-ff1cc1d15c3a"
+      ],
+      "linkLoc": [
+        254,
+        2202866,
+        212
       ]
     },
     {
@@ -8948,10 +8274,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/55",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c23-empty-window-suppress-sections",
       "firstTs": "2026-07-01T18:15:20.523Z",
       "lastTs": "2026-07-01T18:52:52.903Z",
       "sessions": [
         "822b9538-5851-4433-8835-ff1cc1d15c3a"
+      ],
+      "linkLoc": [
+        254,
+        2168532,
+        212
       ]
     },
     {
@@ -8959,10 +8291,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/54",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "fix/c44-relative-import-resolution",
       "firstTs": "2026-07-01T17:38:17.937Z",
       "lastTs": "2026-07-01T18:14:04.013Z",
       "sessions": [
         "822b9538-5851-4433-8835-ff1cc1d15c3a"
+      ],
+      "linkLoc": [
+        254,
+        758539,
+        212
       ]
     },
     {
@@ -8970,10 +8308,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/53",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c41-recency-discount",
       "firstTs": "2026-07-01T16:41:38.634Z",
       "lastTs": "2026-07-01T16:45:12.468Z",
       "sessions": [
         "122c4f8f-7dc4-4211-a818-95be2df9b24e"
+      ],
+      "linkLoc": [
+        240,
+        6940420,
+        212
       ]
     },
     {
@@ -8981,10 +8325,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/52",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "fix/c40-hidden-coupling-unverifiable",
       "firstTs": "2026-07-01T16:18:09.386Z",
       "lastTs": "2026-07-01T16:40:47.381Z",
       "sessions": [
         "122c4f8f-7dc4-4211-a818-95be2df9b24e"
+      ],
+      "linkLoc": [
+        240,
+        6867492,
+        212
       ]
     },
     {
@@ -8992,10 +8342,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/51",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/confine-ownership-to-tab",
       "firstTs": "2026-07-01T16:00:39.491Z",
       "lastTs": "2026-07-01T16:18:09.201Z",
       "sessions": [
         "122c4f8f-7dc4-4211-a818-95be2df9b24e"
+      ],
+      "linkLoc": [
+        240,
+        5302841,
+        212
       ]
     },
     {
@@ -9003,10 +8359,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/50",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "refactor/c5-rename-codewatch",
       "firstTs": "2026-07-01T13:42:37.183Z",
       "lastTs": "2026-07-01T13:45:38.535Z",
       "sessions": [
         "ce00b199-172a-4cdb-a183-2178407d04a7"
+      ],
+      "linkLoc": [
+        267,
+        7540269,
+        212
       ]
     },
     {
@@ -9014,10 +8376,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/49",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c38-package-depgraph",
       "firstTs": "2026-07-01T13:14:10.935Z",
       "lastTs": "2026-07-01T13:42:36.692Z",
       "sessions": [
         "ce00b199-172a-4cdb-a183-2178407d04a7"
+      ],
+      "linkLoc": [
+        267,
+        7498374,
+        212
       ]
     },
     {
@@ -9025,10 +8393,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/48",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c37-ux-polish",
       "firstTs": "2026-07-01T13:02:55.482Z",
       "lastTs": "2026-07-01T13:13:01.926Z",
       "sessions": [
         "ce00b199-172a-4cdb-a183-2178407d04a7"
+      ],
+      "linkLoc": [
+        267,
+        7008061,
+        212
       ]
     },
     {
@@ -9036,10 +8410,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/47",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c36-health-breakdown",
       "firstTs": "2026-07-01T12:55:51.566Z",
       "lastTs": "2026-07-01T13:02:18.360Z",
       "sessions": [
         "ce00b199-172a-4cdb-a183-2178407d04a7"
+      ],
+      "linkLoc": [
+        267,
+        6426489,
+        212
       ]
     },
     {
@@ -9047,10 +8427,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/46",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c35-architecture-cohesion",
       "firstTs": "2026-07-01T12:44:47.420Z",
       "lastTs": "2026-07-01T12:55:08.091Z",
       "sessions": [
         "ce00b199-172a-4cdb-a183-2178407d04a7"
+      ],
+      "linkLoc": [
+        267,
+        5420395,
+        212
       ]
     },
     {
@@ -9058,10 +8444,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/45",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c34-fitness-ratchet-banner",
       "firstTs": "2026-07-01T12:38:37.166Z",
       "lastTs": "2026-07-01T12:44:05.292Z",
       "sessions": [
         "ce00b199-172a-4cdb-a183-2178407d04a7"
+      ],
+      "linkLoc": [
+        267,
+        4716471,
+        212
       ]
     },
     {
@@ -9069,10 +8461,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/44",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c33-drift-badges-iso-line",
       "firstTs": "2026-07-01T12:07:29.598Z",
       "lastTs": "2026-07-01T12:38:18.720Z",
       "sessions": [
         "ce00b199-172a-4cdb-a183-2178407d04a7"
+      ],
+      "linkLoc": [
+        267,
+        4306179,
+        212
       ]
     },
     {
@@ -9080,10 +8478,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/43",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "fix/c32-data-contract",
       "firstTs": "2026-07-01T11:23:35.457Z",
       "lastTs": "2026-07-01T11:24:04.328Z",
       "sessions": [
         "759a6037-8fee-4639-8faa-ffac0e1f18f4"
+      ],
+      "linkLoc": [
+        253,
+        3701128,
+        212
       ]
     },
     {
@@ -9091,10 +8495,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/42",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/c31-coupling-hidden-edges",
       "firstTs": "2026-07-01T11:13:27.516Z",
       "lastTs": "2026-07-01T11:22:57.883Z",
       "sessions": [
         "759a6037-8fee-4639-8faa-ffac0e1f18f4"
+      ],
+      "linkLoc": [
+        253,
+        3664544,
+        212
       ]
     },
     {
@@ -9102,10 +8512,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/41",
       "repo": "HJewkes/codewatch",
       "merged": false,
+      "branch": "docs/dashboard-value-critique",
       "firstTs": "2026-07-01T10:42:40.355Z",
       "lastTs": "2026-07-01T11:11:39.691Z",
       "sessions": [
         "759a6037-8fee-4639-8faa-ffac0e1f18f4"
+      ],
+      "linkLoc": [
+        253,
+        3316544,
+        212
       ]
     },
     {
@@ -9113,10 +8529,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/40",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "docs/dashboard-value-critique",
       "firstTs": "2026-07-01T10:42:18.413Z",
       "lastTs": "2026-07-01T10:42:18.413Z",
       "sessions": [
         "759a6037-8fee-4639-8faa-ffac0e1f18f4"
+      ],
+      "linkLoc": [
+        253,
+        2477400,
+        212
       ]
     },
     {
@@ -9124,43 +8546,67 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/39",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/dashboard-embed-graph",
       "firstTs": "2026-07-01T04:39:33.293Z",
       "lastTs": "2026-07-01T04:49:27.641Z",
       "sessions": [
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
+      ],
+      "linkLoc": [
+        269,
+        12933551,
+        212
       ]
     },
     {
       "number": 38,
       "url": "https://github.com/HJewkes/codewatch/pull/38",
       "repo": "HJewkes/codewatch",
-      "merged": false,
+      "merged": true,
+      "branch": "feat/dashboard-architecture",
       "firstTs": "2026-07-01T04:18:36.758Z",
       "lastTs": "2026-07-01T04:38:19.374Z",
       "sessions": [
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
+      ],
+      "linkLoc": [
+        269,
+        12683794,
+        212
       ]
     },
     {
       "number": 37,
       "url": "https://github.com/HJewkes/codewatch/pull/37",
       "repo": "HJewkes/codewatch",
-      "merged": false,
+      "merged": true,
+      "branch": "feat/dashboard-v1.1",
       "firstTs": "2026-07-01T02:20:17.173Z",
       "lastTs": "2026-07-01T04:17:27.008Z",
       "sessions": [
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
+      ],
+      "linkLoc": [
+        269,
+        10494970,
+        212
       ]
     },
     {
       "number": 36,
       "url": "https://github.com/HJewkes/codewatch/pull/36",
       "repo": "HJewkes/codewatch",
-      "merged": false,
+      "merged": true,
+      "branch": "feat/dashboard-v1",
       "firstTs": "2026-07-01T02:09:32.881Z",
       "lastTs": "2026-07-01T02:18:33.279Z",
       "sessions": [
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
+      ],
+      "linkLoc": [
+        269,
+        6146592,
+        212
       ]
     },
     {
@@ -9168,10 +8614,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/35",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/treemap-component",
       "firstTs": "2026-07-01T01:42:18.624Z",
       "lastTs": "2026-07-01T02:05:29.744Z",
       "sessions": [
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
+      ],
+      "linkLoc": [
+        269,
+        5247013,
+        212
       ]
     },
     {
@@ -9179,10 +8631,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/34",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "fix/default-db-git-toplevel",
       "firstTs": "2026-07-01T01:20:28.749Z",
       "lastTs": "2026-07-01T01:41:18.091Z",
       "sessions": [
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
+      ],
+      "linkLoc": [
+        269,
+        4444895,
+        212
       ]
     },
     {
@@ -9190,21 +8648,33 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/33",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "fix/default-db-git-toplevel",
       "firstTs": "2026-07-01T00:40:37.947Z",
       "lastTs": "2026-07-01T01:19:33.689Z",
       "sessions": [
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
+      ],
+      "linkLoc": [
+        269,
+        1306477,
+        212
       ]
     },
     {
       "number": 32,
       "url": "https://github.com/HJewkes/codewatch/pull/32",
       "repo": "HJewkes/codewatch",
-      "merged": false,
+      "merged": true,
+      "branch": "fix/partition-quality-nul-key",
       "firstTs": "2026-06-30T22:59:23.158Z",
       "lastTs": "2026-07-01T00:19:56.501Z",
       "sessions": [
         "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1"
+      ],
+      "linkLoc": [
+        243,
+        1980009,
+        212
       ]
     },
     {
@@ -9212,10 +8682,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/31",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/test-source-linker",
       "firstTs": "2026-06-30T22:37:19.025Z",
       "lastTs": "2026-06-30T22:58:21.967Z",
       "sessions": [
         "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1"
+      ],
+      "linkLoc": [
+        243,
+        1366024,
+        212
       ]
     },
     {
@@ -9223,10 +8699,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/30",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/incremental-default-autoupdate-hook",
       "firstTs": "2026-06-30T17:08:32.736Z",
       "lastTs": "2026-06-30T21:54:24.259Z",
       "sessions": [
         "8cb0fce6-865e-4a97-aca9-4e16013f2503"
+      ],
+      "linkLoc": [
+        256,
+        2714999,
+        212
       ]
     },
     {
@@ -9234,10 +8716,16 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/29",
       "repo": "HJewkes/codewatch",
       "merged": true,
+      "branch": "feat/schema-healing-aliases",
       "firstTs": "2026-06-30T14:00:51.889Z",
       "lastTs": "2026-06-30T17:07:42.280Z",
       "sessions": [
         "8cb0fce6-865e-4a97-aca9-4e16013f2503"
+      ],
+      "linkLoc": [
+        256,
+        2477553,
+        212
       ]
     },
     {
@@ -9245,238 +8733,1319 @@ export const sessionSignals = {
       "url": "https://github.com/HJewkes/codewatch/pull/28",
       "repo": "HJewkes/codewatch",
       "merged": false,
+      "branch": "feat/fingerprint-incremental-index",
       "firstTs": "2026-06-05T18:47:02.424Z",
       "lastTs": "2026-06-23T19:43:24.779Z",
       "sessions": [
         "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff"
+      ],
+      "linkLoc": [
+        261,
+        1298224,
+        212
       ]
     }
   ],
   "branches": [
     {
-      "name": "feat/c88-conventions",
+      "name": "main",
       "sessions": [
-        "022013fa-2f78-4419-b57d-43f1743ca50e",
-        "02698882-78ae-4b6e-aa76-34a134f3e880",
-        "02861bac-d128-4bfd-bea8-d9222e2c9649",
-        "02a1093d-f7a0-4432-b66d-5b446f38d074",
-        "03ab4f61-5aae-487e-b42a-f022247f6903",
-        "04a3cd05-c581-4ac1-a2de-2245c756a068",
-        "057d3c3c-4207-48e1-9dac-e7dc808c73c9",
-        "07951ff5-cc20-414c-8f4b-8d9e184f5c96",
-        "07d87966-06df-458b-aad1-d7f897416252",
-        "0874f23f-0121-473d-8345-cb0b062f9a29",
-        "0934cbc6-f5ed-48ca-96ce-8a297cbe0f7d",
-        "0a867c35-0ace-48e8-8739-8a35601403a6",
-        "0b62b5fa-bafe-4a6d-9abf-9214294af95b",
-        "0dabf263-3ea7-4505-b804-74d7664a669b",
-        "0e253d14-5365-4f92-89fd-d542060fd22e",
-        "0ec4de3a-0b71-444e-b78b-e47fe8bebd73",
-        "0f269378-ab3c-41a0-9d28-2e8b9e4631f7",
-        "0fd4b2b2-5770-42e9-9b9f-063868da7cbb",
-        "11f8f77f-0897-4e3b-9be0-44216dc0c056",
-        "154834ab-7099-4ff9-8be4-e58f91af499b",
-        "1703e27a-db3e-42e6-b439-7c4da8c80fed",
-        "19058b88-810a-43de-8620-12c591c89d04",
-        "19ca862a-d1c9-4ecf-9aa1-5cde0296a921",
-        "1ba30b26-9e7b-4906-9c95-e19d64aa8cd7",
-        "1c24f1f3-eb8c-4940-a8f9-ec4f5e850c83",
-        "1ccf503f-ddb1-461c-b0ab-b6562cdfc31b",
-        "1f1d91ca-ca77-4418-8f54-ee3cf5e8b705",
-        "1fb71eef-3a13-4c9b-b711-fd6fd2f89e42",
-        "209e1827-4fcb-4377-9fa0-6a0baa5575f9",
-        "20ced87b-02aa-4c02-bed3-aab53b4990f2",
-        "222a4cea-317c-4729-8838-30ec405c8ef9",
-        "22415e22-314e-4316-98b4-425342cef16b",
-        "2319a451-9faf-495b-ad8d-caf30dd5ff0d",
-        "247740e4-db21-405a-9599-b50001ffe725",
-        "2782ecad-b2ea-437d-be04-aeb221a45a88",
-        "2821ce7a-c731-47cd-a056-8078067249f1",
-        "29837920-2444-40d1-ae8a-cf09ca6ff42c",
-        "2ba2b690-ea97-4670-a55d-cced2827b873",
-        "2c393106-53bf-4905-be71-8de2c995f404",
-        "2da44a7a-6360-4873-8033-de1f5849f7b3",
-        "2f2533e3-e5dd-468a-979d-e4fe23773160",
-        "301a892f-6b99-42e8-90b8-8c86c1caa189",
-        "312c0f31-72b8-461f-8111-30b92fc55412",
-        "31565acb-8b92-4af7-9e1e-38e2dd7400ec",
-        "3318c174-b532-460c-8d92-147dd33684be",
-        "34d31730-9954-44cd-aaba-6938201ed27c",
-        "36696478-6dc9-4197-a134-4da32c2e4df6",
-        "3684bfd2-0c08-4d46-9dc6-fc044968ce98",
-        "36896a91-1104-411a-8c68-0ca4cc1ce7d7",
-        "36b82e93-6b2f-4627-bab2-88ec774af4eb",
-        "37cb3071-3727-44d1-bece-ad1b95707264",
-        "3891b15d-5a33-4499-b806-6a2e0a56607f",
-        "3d67840c-75c9-4278-baef-ae52d0504e64",
-        "3f45c36e-40dd-4236-9b03-cf65d65971e6",
-        "44713a0a-b366-49ac-8ddb-4ce746f17472",
-        "44c21936-d316-4f82-ab4f-a6f8b0dc050b",
-        "45e6d45b-1aa8-4fa8-b326-9716e4d0efb3",
-        "46dd0ba7-8e3c-4ea7-9b2c-148bb48f5558",
-        "47be9aeb-f7cc-415a-a750-0b48013dcbc0",
-        "47e94054-9d43-400e-b052-a21e7901fbfa",
-        "49452e42-b2b8-438b-a797-e4e6b1e4fe5b",
-        "49ced6c0-2f90-4d68-801d-c539325e874d",
-        "4a768415-481d-4b8f-a2b1-04e5dff0dc87",
-        "4ae6ec4c-1a8e-4b0a-8ba5-ea1702ccb093",
-        "4d9fdb06-15e4-46d5-92b7-327a52a736da",
-        "4e5e8d04-d1dd-4a44-9241-92cb9c315829",
-        "4f8f5852-cc11-4372-b2e7-5b0b6faa4c5f",
-        "4fb6c8e5-9749-4582-a1cf-000eb71ccfed",
-        "50978d72-750f-4096-885b-74907b405c63",
-        "514992db-6e89-4845-8d69-8f2f480028dc",
-        "52d9ccbf-f4d1-4134-b4a9-5605f47d780b",
-        "530f8212-8ed6-4bee-8b81-b4b1d327f47a",
-        "5489e158-e121-44cd-81c9-9b9f8bb65fd0",
-        "554522a9-f11c-414f-9176-945d534deeb1",
-        "5ab5b882-fc8c-4206-bec4-57d1fa911118",
-        "5c7f9d4e-99eb-497f-947c-c771353bc5e6",
-        "5d9469b8-4e0b-495e-9838-fe7b7ba9b9ae",
-        "5dce4269-fa83-490b-a26c-702318117777",
-        "5ef3e57f-3649-4f0f-b884-3ff8395569f4",
-        "5f68e45d-8ec2-40f3-b207-def869a05916",
-        "60c82abe-f559-48d0-925e-da633dabb3e6",
-        "61b1138f-b055-4256-b3ec-009a818f04b3",
-        "63067919-0803-4a67-ada7-4cc07457c1c6",
-        "655cb7b1-ffe2-419b-ae60-206f962e659c",
-        "657903ad-022f-4981-b715-968e82b673bd",
-        "6700cdb0-1c79-4146-a8f9-9b3b7b979df7",
-        "69336fa4-574c-408e-9a04-f0861732768f",
-        "69e2baae-aa77-4712-b6c9-f37bb5068792",
-        "6adbd243-a967-457a-9ecf-49e663f0ee8c",
-        "6e7e2553-36d7-4add-b3fb-8dfa202cc90e",
-        "6f3121e4-8914-4d4a-bc4e-faf4d0205670",
-        "6f5a01a2-3694-4590-8dcd-460fe95e5814",
-        "6fd3d861-c961-48ef-93e7-8560e4959478",
-        "70a51979-a215-45ce-ba91-d25090ce87e1",
-        "712037a0-f1a8-48d6-8aaa-41949fc12637",
-        "725fa58a-ffe6-440e-b8b4-d253343345d1",
-        "76197902-fe31-4c4b-b1c3-4881fd697004",
-        "7a537748-c7d3-41cb-add4-3c8a84a1804a",
-        "7a969bc8-e8c9-40ec-bbb6-808ab0dcc842",
-        "7b3d918c-2533-4501-b3b5-d7315b69047c",
-        "7b86e6b3-c66f-4a2a-b072-3c01fe09cfa2",
-        "8095f5b6-a25f-4734-88e0-a64d8e36f312",
-        "8179cffe-17a4-4927-b335-21284039a28b",
-        "81f7cda8-4949-4e5d-afa2-1b3bdeebde82",
-        "83619313-8b22-4c57-b912-430197ef5760",
-        "84a68af2-70df-4b40-85fd-2e9c42b2aeab",
-        "86f19c00-54ea-47bf-a015-bfdc5adf2613",
-        "87331a1d-d154-4464-95f9-42b5badc0c70",
-        "87c2208e-d317-4841-9fea-0f725e8024ee",
-        "89c4391c-71ff-4e36-89e0-26751c38b366",
-        "8a345510-08e9-4367-ba6a-ba7d97b2ba45",
-        "8c4519c6-2287-42dc-b1e6-1b15145ce3de",
-        "8de5da19-80ef-4d45-b25f-a29f8230088a",
-        "8ea1bcb8-1a3f-4a84-adf8-57ccb718db2b",
-        "9192015b-07c4-4ab5-bf82-2c032ffdd2cf",
-        "92b750d3-6eaf-4ab1-b553-969b3bd8a526",
-        "9382988a-b784-4f75-b8bc-ed756049acba",
-        "93dd3821-46a2-4d2d-a72e-e4fbac645d47",
-        "94f7f439-878b-4a9f-9a41-7d283044f2e3",
-        "96d16192-31fb-42aa-bc19-044b72b0feb1",
-        "9a22b1a6-56fc-49cb-a4b9-b2d44d396220",
-        "9a973783-69f7-4c0e-923d-d37e89d4f294",
-        "9cc385ba-8f06-4212-9053-3cc28ec3465e",
-        "9fbdd2a0-08bb-4125-a1a2-f65307e09ef0",
-        "a063e713-1e4b-4252-a806-0ad087e5a87c",
-        "a1751f7b-ef56-4d5f-9c27-f8353e4717ab",
-        "a64bbd88-86ed-405e-b02b-d6f0678712f6",
-        "a6e0f4fe-40f5-46a6-a2ca-e33cbb985f48",
-        "a944db97-ca61-498a-8186-009af3b58933",
-        "a9ac5dcf-19bf-4288-baf3-ca46b01c2260",
-        "aa5be11e-e57e-44c8-a11b-ed0726ca8ea0",
-        "aa63aad7-f5df-4145-9078-1b0d6f857ac0",
-        "ab9ef86c-5b5b-4e94-9512-61c20320e2a4",
-        "ad3c5c20-21a7-46df-acc2-ff04295aafe9",
-        "add3ddb2-dd80-4677-808e-1abc82d6cb98",
-        "ae2c41ab-8c64-4211-ad32-4f5ac26c2c7b",
-        "afb29984-9c2b-4c70-a8c3-7ce51e7ef5a0",
-        "b08fc16c-d60a-4d80-aecf-02ca35192711",
-        "b0b9104b-2ba0-4be7-a857-1d16a06496ac",
-        "b112a899-2598-4fcb-9183-682f19677ac8",
-        "b17813cf-fd71-40e6-aad8-29ce2def8874",
-        "b3d47996-7bfa-4076-bc57-54036f091ccb",
-        "b55b5e9c-f7b7-4038-830e-4386f318e79b",
-        "b56c6474-f9c4-4e2d-b9bc-992f7837a6e4",
-        "b74bd4ff-e749-4737-9a77-db2c011a9149",
-        "b90a7236-3a1a-48ca-9123-7f11c591e385",
-        "b98dbad6-552a-4571-b7de-815810931180",
-        "b9a7382b-b7c5-4f7e-89aa-ec7f821e4577",
-        "bb182e03-6d59-4d41-ba59-6c1ecbceae00",
-        "bbfb3f39-53c2-4101-a7d9-b9ee6be6f929",
-        "be2da8cd-7ab2-4ff3-a65e-afc99287330e",
-        "be9122ec-38c0-4563-bf99-dfaa667f79f1",
-        "bf0eeafd-6b75-4166-a160-7de8b2eaf3b6",
-        "c23ca815-9fa2-4bd6-9c3a-db91bda0aff6",
-        "c44b44d7-aded-467f-9e2e-0b9090ac6877",
-        "c4687fa1-1bc8-4b1a-8b3b-6d6939d941a0",
-        "c477458b-4900-4026-bdc7-d10f3ea05879",
-        "c48d6fa1-7895-46c8-9fe4-77335fe7f1bb",
-        "c5d42469-bdb3-4ebb-bb65-389645f02823",
-        "c7663260-e5db-43c5-b4c7-4afb40992c14",
-        "cb01a4a6-3f22-4adb-869b-90930c2160a0",
-        "cbe8627c-6680-4199-b4cb-9446be09e378",
-        "cc05b28a-9287-4c97-9f93-89a9ed2ba7dd",
-        "cce60266-14be-446a-b647-a16706d36b9f",
-        "cd9cf150-4e33-4e40-b19f-ce3c3797d180",
-        "ce990100-ac18-41cf-97bb-7cba94d09784",
-        "d0b4e64a-3f79-4cab-99f4-1c8b4a8076da",
-        "d242131e-2cf0-4ddb-bc57-a66cefe392c7",
-        "d287e0fc-255d-40eb-a603-760bc30e109e",
-        "d2d2ffc5-ce19-423b-9fad-d93cd0e54751",
-        "d370c57f-034e-441d-8530-8a942c276e2c",
-        "d48af521-c41c-41e8-af38-ac0658eb72d7",
-        "d55c8a21-5375-44ba-8f3c-4c6e49483ce5",
-        "d5d476f5-c556-4a47-8fc7-ca8a9e523264",
-        "d5f47325-7a12-4723-9d72-eac161be5716",
-        "d9741579-75c7-45b8-b17c-cbbb8fabac63",
-        "d98f60b3-6ad5-4cff-8ec3-1919ff343a7b",
-        "d9d78daa-8163-4411-b74e-02a66e28228b",
-        "dab90dcb-0064-4bbd-9075-3c5990a2ad95",
-        "db4bcd0f-1901-443e-adee-4d7833652c4f",
-        "dbeedcdd-1655-4261-a939-501ca029755f",
-        "dcae634d-0289-4710-99a5-c6a477e53833",
-        "dce407d6-b0bd-46d7-bf0f-4a480cf6e503",
-        "dd91920f-a568-40bc-92fd-0223d21a54e9",
-        "df5e740b-87d0-41a2-9fca-c1f34564a254",
-        "e108c9cc-762b-43cc-b5a7-a6ed1ecc8e31",
-        "e17abbe3-d9a0-4e46-953f-605618b0faee",
-        "e3f62609-542f-45c2-b5ae-03af337767cc",
-        "e5093004-5475-4b79-8a10-2f07406634e1",
-        "e59d4191-2455-4767-a4e9-62dcb3426e7a",
-        "e5d23ff3-407e-4104-9cff-5886574e03cd",
-        "e7c0068b-e4ac-404d-94a3-d481f3fd33c8",
-        "e9c25e8f-61d9-4440-9651-0f1d13dcd7c5",
-        "ef304c43-ac45-401f-870d-e243e8126ad9",
-        "f02e3754-859d-4eff-aad7-84213d6b48fd",
-        "f2c8bf2c-755e-48b1-a17e-bba983de1cb1",
-        "f30f5bd0-255b-4faf-9495-d03ffbf82263",
-        "f315fe42-6ab2-49d2-9478-5ee763521211",
-        "f3920c53-33d1-4b87-8395-33c9ef012446",
-        "f47560d3-e872-4929-8d82-959bf731f45f",
-        "f4ee3486-3c72-4b4c-997b-6972c7ffb539",
-        "f4f85f28-d52e-4780-bd8b-2486fd68a0ac",
-        "f55d0595-85fe-477f-99ff-287987e88233",
-        "f6037c52-2a8d-42b1-8f09-088f6914653c",
-        "f643db25-5e46-4abc-a7a9-56d803e685c5",
-        "f72ee28a-7e90-4205-8275-227c4c755758",
-        "f9e65521-6166-47f9-a37f-4ea060f5bddb",
-        "fb9b9dd9-85f8-470e-806d-19ed704c97d2",
-        "fc5fdeca-daba-4c3f-9f25-aa130ee83e00",
-        "fc9b9822-503f-48dc-84f0-56dd31258eb8",
-        "fcceb387-c3f4-4293-b1e4-b199d2df11c8",
-        "fd2da2cb-c15e-4773-97c5-daf48e83e939",
-        "fd6bfb65-2bb9-4080-928c-af15138762e9",
-        "fefcdba1-dadc-415e-8103-049e09866c80",
-        "ff6f37ea-31ba-4c55-9c96-247bd4be5298"
+        "06e0ac05-9729-4fba-bb3a-e10c79c59a7c",
+        "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
+        "122c4f8f-7dc4-4211-a818-95be2df9b24e",
+        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+        "20f87461-9661-40ba-9af5-6e510817957a",
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+        "45851359-f22b-4839-a74e-2bcc515293b5",
+        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+        "759a6037-8fee-4639-8faa-ffac0e1f18f4",
+        "848f1a22-a8a8-42b7-a545-a2000aa36939",
+        "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+        "a86e0245-8fd6-4f8f-bd15-b45669812b3f",
+        "ae027a39-3ace-4d50-83ac-2f740cd20edf",
+        "cc3546be-2c7d-4203-8789-3275ac58a61c",
+        "ccc70e24-b27c-4ef8-86ab-3a137d0e6c92",
+        "ce00b199-172a-4cdb-a183-2178407d04a7",
+        "ede9df8d-425b-4f7d-8708-93b44767ef3b",
+        "f6324d6b-6972-4f50-9c89-21bd31535746",
+        "fd633b58-2657-4859-bca3-03c57a0277f0"
       ],
-      "firstTs": "2026-07-07T01:45:27.795Z",
-      "lastTs": "2026-07-07T02:01:24.524Z",
+      "firstTs": "2026-06-30T22:01:01.524Z",
+      "lastTs": "2026-07-07T00:32:37.325Z",
+      "commits": 20,
+      "pushes": 66,
+      "files": 79,
+      "prs": [
+        115,
+        116,
+        85
+      ]
+    },
+    {
+      "name": "feat/c7-init-json-parity",
+      "sessions": [
+        "06e0ac05-9729-4fba-bb3a-e10c79c59a7c"
+      ],
+      "firstTs": "2026-07-05T00:45:01.578Z",
+      "lastTs": "2026-07-05T01:19:12.975Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 6,
+      "prs": [
+        104,
+        105
+      ]
+    },
+    {
+      "name": "feat/c82-retrieval-suite",
+      "sessions": [
+        "20f87461-9661-40ba-9af5-6e510817957a"
+      ],
+      "firstTs": "2026-07-05T22:27:08.355Z",
+      "lastTs": "2026-07-05T23:31:56.085Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 6,
+      "prs": [
+        113,
+        114
+      ]
+    },
+    {
+      "name": "docs/dashboard-value-critique",
+      "sessions": [
+        "759a6037-8fee-4639-8faa-ffac0e1f18f4"
+      ],
+      "firstTs": "2026-07-01T04:55:32.067Z",
+      "lastTs": "2026-07-01T11:27:05.596Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        40,
+        41
+      ]
+    },
+    {
+      "name": "fix/default-db-git-toplevel",
+      "sessions": [
+        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
+      ],
+      "firstTs": "2026-07-01T00:29:14.732Z",
+      "lastTs": "2026-07-01T04:50:28.943Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 1,
+      "prs": [
+        33,
+        34
+      ]
+    },
+    {
+      "name": "fix/c69-stale-baseline",
+      "sessions": [
+        "06e0ac05-9729-4fba-bb3a-e10c79c59a7c"
+      ],
+      "firstTs": "2026-07-05T00:45:01.578Z",
+      "lastTs": "2026-07-05T01:19:12.975Z",
       "commits": 0,
       "pushes": 0,
-      "files": 29
+      "files": 1,
+      "prs": [
+        103
+      ]
+    },
+    {
+      "name": "feat/c49-dossier-metric-heat",
+      "sessions": [
+        "106c21eb-c5af-45b2-a31c-6009a84bdaaf"
+      ],
+      "firstTs": "2026-07-02T21:44:50.966Z",
+      "lastTs": "2026-07-03T07:19:36.472Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        65
+      ]
+    },
+    {
+      "name": "feat/c50-focus-view-render",
+      "sessions": [
+        "106c21eb-c5af-45b2-a31c-6009a84bdaaf"
+      ],
+      "firstTs": "2026-07-02T21:44:50.966Z",
+      "lastTs": "2026-07-03T07:19:36.472Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        66
+      ]
+    },
+    {
+      "name": "feat/c50-focus-layout-refine",
+      "sessions": [
+        "106c21eb-c5af-45b2-a31c-6009a84bdaaf"
+      ],
+      "firstTs": "2026-07-02T21:44:50.966Z",
+      "lastTs": "2026-07-03T07:19:36.472Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        67
+      ]
+    },
+    {
+      "name": "feat/c50-focus-picker",
+      "sessions": [
+        "106c21eb-c5af-45b2-a31c-6009a84bdaaf"
+      ],
+      "firstTs": "2026-07-02T21:44:50.966Z",
+      "lastTs": "2026-07-03T07:19:36.472Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        68
+      ]
+    },
+    {
+      "name": "feat/confine-ownership-to-tab",
+      "sessions": [
+        "122c4f8f-7dc4-4211-a818-95be2df9b24e"
+      ],
+      "firstTs": "2026-07-01T15:28:58.791Z",
+      "lastTs": "2026-07-01T16:45:12.310Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        51
+      ]
+    },
+    {
+      "name": "fix/c40-hidden-coupling-unverifiable",
+      "sessions": [
+        "122c4f8f-7dc4-4211-a818-95be2df9b24e"
+      ],
+      "firstTs": "2026-07-01T15:28:58.791Z",
+      "lastTs": "2026-07-01T16:45:12.310Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        52
+      ]
+    },
+    {
+      "name": "feat/c41-recency-discount",
+      "sessions": [
+        "122c4f8f-7dc4-4211-a818-95be2df9b24e"
+      ],
+      "firstTs": "2026-07-01T15:28:58.791Z",
+      "lastTs": "2026-07-01T16:45:12.310Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        53
+      ]
+    },
+    {
+      "name": "feat/test-source-linker",
+      "sessions": [
+        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1"
+      ],
+      "firstTs": "2026-06-30T22:01:01.524Z",
+      "lastTs": "2026-07-01T00:20:36.054Z",
+      "commits": 2,
+      "pushes": 1,
+      "files": 2,
+      "prs": [
+        31
+      ]
+    },
+    {
+      "name": "fix/partition-quality-nul-key",
+      "sessions": [
+        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1"
+      ],
+      "firstTs": "2026-06-30T22:01:01.524Z",
+      "lastTs": "2026-07-01T00:20:36.054Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        32
+      ]
+    },
+    {
+      "name": "feat/c89-seeded-pagerank-relevance",
+      "sessions": [
+        "26f5e28e-f687-42d8-bb19-cbbee69709c1"
+      ],
+      "firstTs": "2026-07-06T17:15:49.781Z",
+      "lastTs": "2026-07-06T17:35:25.652Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 10,
+      "prs": [
+        120
+      ]
+    },
+    {
+      "name": "feat/c64-model-b-symbol-nodes",
+      "sessions": [
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+      ],
+      "firstTs": "2026-07-04T15:28:31.061Z",
+      "lastTs": "2026-07-04T18:31:15.248Z",
+      "commits": 3,
+      "pushes": 2,
+      "files": 13,
+      "prs": [
+        78
+      ]
+    },
+    {
+      "name": "feat/c65-unused-exports",
+      "sessions": [
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+      ],
+      "firstTs": "2026-07-04T15:28:31.061Z",
+      "lastTs": "2026-07-04T18:31:15.248Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 5,
+      "prs": [
+        79
+      ]
+    },
+    {
+      "name": "feat/c65-function-local-deadcode",
+      "sessions": [
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+      ],
+      "firstTs": "2026-07-04T15:28:31.061Z",
+      "lastTs": "2026-07-04T18:31:15.248Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 4,
+      "prs": [
+        80
+      ]
+    },
+    {
+      "name": "feat/c65-unused-bindings",
+      "sessions": [
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+      ],
+      "firstTs": "2026-07-04T15:28:31.061Z",
+      "lastTs": "2026-07-04T18:31:15.248Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 3,
+      "prs": [
+        81
+      ]
+    },
+    {
+      "name": "feat/c65-dynamic-imports",
+      "sessions": [
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+      ],
+      "firstTs": "2026-07-04T15:28:31.061Z",
+      "lastTs": "2026-07-04T18:31:15.248Z",
+      "commits": 2,
+      "pushes": 1,
+      "files": 5,
+      "prs": [
+        82
+      ]
+    },
+    {
+      "name": "feat/c65-dead-modules",
+      "sessions": [
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+      ],
+      "firstTs": "2026-07-04T15:28:31.061Z",
+      "lastTs": "2026-07-04T18:31:15.248Z",
+      "commits": 2,
+      "pushes": 2,
+      "files": 5,
+      "prs": [
+        83
+      ]
+    },
+    {
+      "name": "feat/c66-growth-risk-loop-depth",
+      "sessions": [
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+      ],
+      "firstTs": "2026-07-04T15:28:31.061Z",
+      "lastTs": "2026-07-04T18:31:15.248Z",
+      "commits": 2,
+      "pushes": 1,
+      "files": 14,
+      "prs": [
+        84
+      ]
+    },
+    {
+      "name": "feat/c63-symbol-line-spans",
+      "sessions": [
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+      ],
+      "firstTs": "2026-07-04T15:28:31.061Z",
+      "lastTs": "2026-07-04T18:31:15.248Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 5,
+      "prs": [
+        86
+      ]
+    },
+    {
+      "name": "feat/c63-coverage-ingest",
+      "sessions": [
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+      ],
+      "firstTs": "2026-07-04T15:28:31.061Z",
+      "lastTs": "2026-07-04T18:31:15.248Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 7,
+      "prs": [
+        87
+      ]
+    },
+    {
+      "name": "feat/c63-coverage-surface",
+      "sessions": [
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+      ],
+      "firstTs": "2026-07-04T15:28:31.061Z",
+      "lastTs": "2026-07-04T18:31:15.248Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 6,
+      "prs": [
+        88
+      ]
+    },
+    {
+      "name": "fix/c83-bench-infra",
+      "sessions": [
+        "45851359-f22b-4839-a74e-2bcc515293b5"
+      ],
+      "firstTs": "2026-07-06T03:11:43.548Z",
+      "lastTs": "2026-07-06T07:11:49.302Z",
+      "commits": 3,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        118
+      ]
+    },
+    {
+      "name": "feat/mcp-http-server",
+      "sessions": [
+        "45851359-f22b-4839-a74e-2bcc515293b5"
+      ],
+      "firstTs": "2026-07-06T03:11:43.548Z",
+      "lastTs": "2026-07-06T07:11:49.302Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        119
+      ]
+    },
+    {
+      "name": "feat/C-74-graph-context",
+      "sessions": [
+        "5abbb0ce-143a-4089-9d99-16de251fa361"
+      ],
+      "firstTs": "2026-07-05T14:03:52.643Z",
+      "lastTs": "2026-07-05T18:47:24.880Z",
+      "commits": 0,
+      "pushes": 2,
+      "files": 0,
+      "prs": [
+        107
+      ]
+    },
+    {
+      "name": "feat/c58-per-symbol-complexity",
+      "sessions": [
+        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677"
+      ],
+      "firstTs": "2026-07-04T13:16:15.953Z",
+      "lastTs": "2026-07-04T15:27:31.379Z",
+      "commits": 2,
+      "pushes": 2,
+      "files": 9,
+      "prs": [
+        75
+      ]
+    },
+    {
+      "name": "feat/c59-symbol-dossier",
+      "sessions": [
+        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677"
+      ],
+      "firstTs": "2026-07-04T13:16:15.953Z",
+      "lastTs": "2026-07-04T15:27:31.379Z",
+      "commits": 2,
+      "pushes": 2,
+      "files": 1,
+      "prs": [
+        76
+      ]
+    },
+    {
+      "name": "fix/c61-decompose-indexer-walker",
+      "sessions": [
+        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677"
+      ],
+      "firstTs": "2026-07-04T13:16:15.953Z",
+      "lastTs": "2026-07-04T15:27:31.379Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        77
+      ]
+    },
+    {
+      "name": "feat/c31-coupling-hidden-edges",
+      "sessions": [
+        "759a6037-8fee-4639-8faa-ffac0e1f18f4"
+      ],
+      "firstTs": "2026-07-01T04:55:32.067Z",
+      "lastTs": "2026-07-01T11:27:05.596Z",
+      "commits": 2,
+      "pushes": 1,
+      "files": 4,
+      "prs": [
+        42
+      ]
+    },
+    {
+      "name": "fix/c32-data-contract",
+      "sessions": [
+        "759a6037-8fee-4639-8faa-ffac0e1f18f4"
+      ],
+      "firstTs": "2026-07-01T04:55:32.067Z",
+      "lastTs": "2026-07-01T11:27:05.596Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 4,
+      "prs": [
+        43
+      ]
+    },
+    {
+      "name": "fix/c44-relative-import-resolution",
+      "sessions": [
+        "822b9538-5851-4433-8835-ff1cc1d15c3a"
+      ],
+      "firstTs": "2026-07-01T17:24:57.525Z",
+      "lastTs": "2026-07-01T18:57:58.950Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 2,
+      "prs": [
+        54
+      ]
+    },
+    {
+      "name": "feat/c23-empty-window-suppress-sections",
+      "sessions": [
+        "822b9538-5851-4433-8835-ff1cc1d15c3a"
+      ],
+      "firstTs": "2026-07-01T17:24:57.525Z",
+      "lastTs": "2026-07-01T18:57:58.950Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 2,
+      "prs": [
+        55
+      ]
+    },
+    {
+      "name": "fix/c42-c43-dashboard-viz-polish",
+      "sessions": [
+        "822b9538-5851-4433-8835-ff1cc1d15c3a"
+      ],
+      "firstTs": "2026-07-01T17:24:57.525Z",
+      "lastTs": "2026-07-01T18:57:58.950Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        56
+      ]
+    },
+    {
+      "name": "fix/c45-ci-fitness-gate-head-snapshot",
+      "sessions": [
+        "848f1a22-a8a8-42b7-a545-a2000aa36939"
+      ],
+      "firstTs": "2026-07-02T04:53:56.087Z",
+      "lastTs": "2026-07-02T21:31:40.303Z",
+      "commits": 2,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        58
+      ]
+    },
+    {
+      "name": "feat/c46-c47-arch-graph-elk-weighted-edges",
+      "sessions": [
+        "848f1a22-a8a8-42b7-a545-a2000aa36939"
+      ],
+      "firstTs": "2026-07-02T04:53:56.087Z",
+      "lastTs": "2026-07-02T21:31:40.303Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        59
+      ]
+    },
+    {
+      "name": "feat/arch-graph-linework",
+      "sessions": [
+        "848f1a22-a8a8-42b7-a545-a2000aa36939"
+      ],
+      "firstTs": "2026-07-02T04:53:56.087Z",
+      "lastTs": "2026-07-02T21:31:40.303Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        60
+      ]
+    },
+    {
+      "name": "feat/arch-graph-elk-orthogonal-routing",
+      "sessions": [
+        "848f1a22-a8a8-42b7-a545-a2000aa36939"
+      ],
+      "firstTs": "2026-07-02T04:53:56.087Z",
+      "lastTs": "2026-07-02T21:31:40.303Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        61
+      ]
+    },
+    {
+      "name": "fix/arch-graph-palette-endpoints-color-persist",
+      "sessions": [
+        "848f1a22-a8a8-42b7-a545-a2000aa36939"
+      ],
+      "firstTs": "2026-07-02T04:53:56.087Z",
+      "lastTs": "2026-07-02T21:31:40.303Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        62
+      ]
+    },
+    {
+      "name": "feat/arch-graph-fanin-fanout-labels",
+      "sessions": [
+        "848f1a22-a8a8-42b7-a545-a2000aa36939"
+      ],
+      "firstTs": "2026-07-02T04:53:56.087Z",
+      "lastTs": "2026-07-02T21:31:40.303Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        63
+      ]
+    },
+    {
+      "name": "docs/dependency-graph-rendering",
+      "sessions": [
+        "848f1a22-a8a8-42b7-a545-a2000aa36939"
+      ],
+      "firstTs": "2026-07-02T04:53:56.087Z",
+      "lastTs": "2026-07-02T21:31:40.303Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        64
+      ]
+    },
+    {
+      "name": "feat/schema-healing-aliases",
+      "sessions": [
+        "8cb0fce6-865e-4a97-aca9-4e16013f2503"
+      ],
+      "firstTs": "2026-06-30T13:36:45.714Z",
+      "lastTs": "2026-06-30T21:54:35.135Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 15,
+      "prs": [
+        29
+      ]
+    },
+    {
+      "name": "feat/incremental-default-autoupdate-hook",
+      "sessions": [
+        "8cb0fce6-865e-4a97-aca9-4e16013f2503"
+      ],
+      "firstTs": "2026-06-30T13:36:45.714Z",
+      "lastTs": "2026-06-30T21:54:35.135Z",
+      "commits": 2,
+      "pushes": 1,
+      "files": 10,
+      "prs": [
+        30
+      ]
+    },
+    {
+      "name": "feat/c28-multi-window-churn",
+      "sessions": [
+        "91e27139-78f8-4b2b-ac22-4c26c6eda2db"
+      ],
+      "firstTs": "2026-07-01T20:53:04.237Z",
+      "lastTs": "2026-07-02T04:21:57.474Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        57
+      ]
+    },
+    {
+      "name": "feat/edge-weight-reference-count",
+      "sessions": [
+        "a86e0245-8fd6-4f8f-bd15-b45669812b3f"
+      ],
+      "firstTs": "2026-07-03T13:10:14.089Z",
+      "lastTs": "2026-07-03T13:44:16.249Z",
+      "commits": 2,
+      "pushes": 2,
+      "files": 10,
+      "prs": [
+        69
+      ]
+    },
+    {
+      "name": "feat/fingerprint-incremental-index",
+      "sessions": [
+        "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff"
+      ],
+      "firstTs": "2026-06-02T19:53:43.423Z",
+      "lastTs": "2026-06-05T18:50:18.687Z",
+      "commits": 2,
+      "pushes": 1,
+      "files": 19,
+      "prs": [
+        28
+      ]
+    },
+    {
+      "name": "feat/per-symbol-utilization-blast-radius",
+      "sessions": [
+        "ae027a39-3ace-4d50-83ac-2f740cd20edf"
+      ],
+      "firstTs": "2026-07-03T22:26:35.173Z",
+      "lastTs": "2026-07-04T13:12:35.941Z",
+      "commits": 2,
+      "pushes": 1,
+      "files": 28,
+      "prs": [
+        74
+      ]
+    },
+    {
+      "name": "feat/c52-utilization-metric",
+      "sessions": [
+        "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
+      ],
+      "firstTs": "2026-07-03T18:53:52.062Z",
+      "lastTs": "2026-07-03T22:25:10.468Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 8,
+      "prs": [
+        70
+      ]
+    },
+    {
+      "name": "feat/c55-barrel-resolved-utilization",
+      "sessions": [
+        "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
+      ],
+      "firstTs": "2026-07-03T18:53:52.062Z",
+      "lastTs": "2026-07-03T22:25:10.468Z",
+      "commits": 0,
+      "pushes": 1,
+      "files": 6,
+      "prs": [
+        71
+      ]
+    },
+    {
+      "name": "feat/c54-module-coupling-view",
+      "sessions": [
+        "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
+      ],
+      "firstTs": "2026-07-03T18:53:52.062Z",
+      "lastTs": "2026-07-03T22:25:10.468Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 9,
+      "prs": [
+        72
+      ]
+    },
+    {
+      "name": "feat/c57-barrel-toggle",
+      "sessions": [
+        "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
+      ],
+      "firstTs": "2026-07-03T18:53:52.062Z",
+      "lastTs": "2026-07-03T22:25:10.468Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        73
+      ]
+    },
+    {
+      "name": "feat/c83-coding-bench-stage-a",
+      "sessions": [
+        "cc3546be-2c7d-4203-8789-3275ac58a61c"
+      ],
+      "firstTs": "2026-07-06T01:23:17.921Z",
+      "lastTs": "2026-07-06T01:46:32.400Z",
+      "commits": 2,
+      "pushes": 1,
+      "files": 9,
+      "prs": [
+        117
+      ]
+    },
+    {
+      "name": "fix/c70-multihop-reexport-references",
+      "sessions": [
+        "ccc70e24-b27c-4ef8-86ab-3a137d0e6c92"
+      ],
+      "firstTs": "2026-07-05T13:04:43.837Z",
+      "lastTs": "2026-07-05T14:04:40.424Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 6,
+      "prs": [
+        106
+      ]
+    },
+    {
+      "name": "feat/c33-drift-badges-iso-line",
+      "sessions": [
+        "ce00b199-172a-4cdb-a183-2178407d04a7"
+      ],
+      "firstTs": "2026-07-01T11:46:28.843Z",
+      "lastTs": "2026-07-01T13:46:44.051Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        44
+      ]
+    },
+    {
+      "name": "feat/c34-fitness-ratchet-banner",
+      "sessions": [
+        "ce00b199-172a-4cdb-a183-2178407d04a7"
+      ],
+      "firstTs": "2026-07-01T11:46:28.843Z",
+      "lastTs": "2026-07-01T13:46:44.051Z",
+      "commits": 2,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        45
+      ]
+    },
+    {
+      "name": "feat/c35-architecture-cohesion",
+      "sessions": [
+        "ce00b199-172a-4cdb-a183-2178407d04a7"
+      ],
+      "firstTs": "2026-07-01T11:46:28.843Z",
+      "lastTs": "2026-07-01T13:46:44.051Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        46
+      ]
+    },
+    {
+      "name": "feat/c36-health-breakdown",
+      "sessions": [
+        "ce00b199-172a-4cdb-a183-2178407d04a7"
+      ],
+      "firstTs": "2026-07-01T11:46:28.843Z",
+      "lastTs": "2026-07-01T13:46:44.051Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 2,
+      "prs": [
+        47
+      ]
+    },
+    {
+      "name": "feat/c37-ux-polish",
+      "sessions": [
+        "ce00b199-172a-4cdb-a183-2178407d04a7"
+      ],
+      "firstTs": "2026-07-01T11:46:28.843Z",
+      "lastTs": "2026-07-01T13:46:44.051Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 1,
+      "prs": [
+        48
+      ]
+    },
+    {
+      "name": "feat/c38-package-depgraph",
+      "sessions": [
+        "ce00b199-172a-4cdb-a183-2178407d04a7"
+      ],
+      "firstTs": "2026-07-01T11:46:28.843Z",
+      "lastTs": "2026-07-01T13:46:44.051Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        49
+      ]
+    },
+    {
+      "name": "refactor/c5-rename-codewatch",
+      "sessions": [
+        "ce00b199-172a-4cdb-a183-2178407d04a7"
+      ],
+      "firstTs": "2026-07-01T11:46:28.843Z",
+      "lastTs": "2026-07-01T13:46:44.051Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 4,
+      "prs": [
+        50
+      ]
+    },
+    {
+      "name": "fix/C-71-lifetime-window",
+      "sessions": [
+        "ea64d801-972c-4519-9a34-85fea7f8d776"
+      ],
+      "firstTs": "2026-07-05T17:18:02.704Z",
+      "lastTs": "2026-07-05T18:29:44.756Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 17,
+      "prs": [
+        108
+      ]
+    },
+    {
+      "name": "fix/C-71-dashboard-lifetime",
+      "sessions": [
+        "ea64d801-972c-4519-9a34-85fea7f8d776"
+      ],
+      "firstTs": "2026-07-05T17:18:02.704Z",
+      "lastTs": "2026-07-05T18:29:44.756Z",
+      "commits": 2,
+      "pushes": 3,
+      "files": 6,
+      "prs": [
+        109
+      ]
+    },
+    {
+      "name": "feat/treemap-component",
+      "sessions": [
+        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
+      ],
+      "firstTs": "2026-07-01T00:29:14.732Z",
+      "lastTs": "2026-07-01T04:50:28.943Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        35
+      ]
+    },
+    {
+      "name": "feat/dashboard-v1",
+      "sessions": [
+        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
+      ],
+      "firstTs": "2026-07-01T00:29:14.732Z",
+      "lastTs": "2026-07-01T04:50:28.943Z",
+      "commits": 2,
+      "pushes": 1,
+      "files": 7,
+      "prs": [
+        36
+      ]
+    },
+    {
+      "name": "feat/dashboard-v1.1",
+      "sessions": [
+        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
+      ],
+      "firstTs": "2026-07-01T00:29:14.732Z",
+      "lastTs": "2026-07-01T04:50:28.943Z",
+      "commits": 2,
+      "pushes": 2,
+      "files": 16,
+      "prs": [
+        37
+      ]
+    },
+    {
+      "name": "feat/dashboard-architecture",
+      "sessions": [
+        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
+      ],
+      "firstTs": "2026-07-01T00:29:14.732Z",
+      "lastTs": "2026-07-01T04:50:28.943Z",
+      "commits": 5,
+      "pushes": 1,
+      "files": 16,
+      "prs": [
+        38
+      ]
+    },
+    {
+      "name": "feat/dashboard-embed-graph",
+      "sessions": [
+        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
+      ],
+      "firstTs": "2026-07-01T00:29:14.732Z",
+      "lastTs": "2026-07-01T04:50:28.943Z",
+      "commits": 2,
+      "pushes": 2,
+      "files": 1,
+      "prs": [
+        39
+      ]
+    },
+    {
+      "name": "feat/c88-capability-embeddings",
+      "sessions": [
+        "f6324d6b-6972-4f50-9c89-21bd31535746"
+      ],
+      "firstTs": "2026-07-06T23:28:55.318Z",
+      "lastTs": "2026-07-07T00:32:37.325Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 17,
+      "prs": [
+        121
+      ]
+    },
+    {
+      "name": "feat/c79-symbol-signatures",
+      "sessions": [
+        "fd633b58-2657-4859-bca3-03c57a0277f0"
+      ],
+      "firstTs": "2026-07-05T18:48:37.574Z",
+      "lastTs": "2026-07-05T22:27:08.343Z",
+      "commits": 2,
+      "pushes": 1,
+      "files": 11,
+      "prs": [
+        110
+      ]
+    },
+    {
+      "name": "feat/c80-context-bundle",
+      "sessions": [
+        "fd633b58-2657-4859-bca3-03c57a0277f0"
+      ],
+      "firstTs": "2026-07-05T18:48:37.574Z",
+      "lastTs": "2026-07-05T22:27:08.343Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 3,
+      "prs": [
+        111
+      ]
+    },
+    {
+      "name": "feat/c82-oracle-foundation",
+      "sessions": [
+        "fd633b58-2657-4859-bca3-03c57a0277f0"
+      ],
+      "firstTs": "2026-07-05T18:48:37.574Z",
+      "lastTs": "2026-07-05T22:27:08.343Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 0,
+      "prs": [
+        112
+      ]
+    },
+    {
+      "name": "feat/c88-conventions",
+      "sessions": [
+        "13ba3709-ff7f-4cf7-903d-9e54c208f6bb"
+      ],
+      "firstTs": "2026-07-07T01:22:21.512Z",
+      "lastTs": "2026-07-07T01:58:07.996Z",
+      "commits": 0,
+      "pushes": 0,
+      "files": 41,
+      "prs": []
+    },
+    {
+      "name": "$br",
+      "sessions": [
+        "20f87461-9661-40ba-9af5-6e510817957a"
+      ],
+      "firstTs": "2026-07-05T22:27:08.355Z",
+      "lastTs": "2026-07-05T23:31:56.085Z",
+      "commits": 0,
+      "pushes": 0,
+      "files": 0,
+      "prs": []
+    },
+    {
+      "name": "feat/c66-recursion-patterns",
+      "sessions": [
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+      ],
+      "firstTs": "2026-07-04T15:28:31.061Z",
+      "lastTs": "2026-07-04T18:31:15.248Z",
+      "commits": 0,
+      "pushes": 1,
+      "files": 6,
+      "prs": []
+    },
+    {
+      "name": "packages/cli/src/mcp/server.ts",
+      "sessions": [
+        "45851359-f22b-4839-a74e-2bcc515293b5"
+      ],
+      "firstTs": "2026-07-06T03:11:43.548Z",
+      "lastTs": "2026-07-06T07:11:49.302Z",
+      "commits": 0,
+      "pushes": 0,
+      "files": 3,
+      "prs": []
+    },
+    {
+      "name": "feat/graph-context-spike",
+      "sessions": [
+        "5abbb0ce-143a-4089-9d99-16de251fa361"
+      ],
+      "firstTs": "2026-07-05T14:03:52.643Z",
+      "lastTs": "2026-07-05T18:47:24.880Z",
+      "commits": 2,
+      "pushes": 0,
+      "files": 8,
+      "prs": []
+    },
+    {
+      "name": "feat/c30-authorcount-ownership",
+      "sessions": [
+        "759a6037-8fee-4639-8faa-ffac0e1f18f4"
+      ],
+      "firstTs": "2026-07-01T04:55:32.067Z",
+      "lastTs": "2026-07-01T11:27:05.596Z",
+      "commits": 1,
+      "pushes": 0,
+      "files": 9,
+      "prs": []
+    },
+    {
+      "name": "feat/c54-barrel-resolved-utilization",
+      "sessions": [
+        "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
+      ],
+      "firstTs": "2026-07-03T18:53:52.062Z",
+      "lastTs": "2026-07-03T22:25:10.468Z",
+      "commits": 1,
+      "pushes": 0,
+      "files": 9,
+      "prs": []
+    },
+    {
+      "name": "packages/render/src/index.ts",
+      "sessions": [
+        "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
+      ],
+      "firstTs": "2026-07-03T18:53:52.062Z",
+      "lastTs": "2026-07-03T22:25:10.468Z",
+      "commits": 0,
+      "pushes": 0,
+      "files": 6,
+      "prs": []
+    },
+    {
+      "name": "feat/c23-dogfood-ux",
+      "sessions": [
+        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
+      ],
+      "firstTs": "2026-07-01T00:29:14.732Z",
+      "lastTs": "2026-07-01T04:50:28.943Z",
+      "commits": 0,
+      "pushes": 1,
+      "files": 0,
+      "prs": []
+    },
+    {
+      "name": "feat/status-dashboard",
+      "sessions": [
+        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
+      ],
+      "firstTs": "2026-07-01T00:29:14.732Z",
+      "lastTs": "2026-07-01T04:50:28.943Z",
+      "commits": 1,
+      "pushes": 1,
+      "files": 24,
+      "prs": []
+    },
+    {
+      "name": "eval-lane-$i",
+      "sessions": [
+        "f6324d6b-6972-4f50-9c89-21bd31535746"
+      ],
+      "firstTs": "2026-07-06T23:28:55.318Z",
+      "lastTs": "2026-07-07T00:32:37.325Z",
+      "commits": 0,
+      "pushes": 0,
+      "files": 0,
+      "prs": []
+    },
+    {
+      "name": "feat/TD-shell-s3-harden",
+      "sessions": [
+        "46f73e3d-4489-4e79-98c5-536e46ad1405"
+      ],
+      "firstTs": "2026-07-09T02:43:06.051Z",
+      "lastTs": "2026-07-09T20:33:57.627Z",
+      "commits": 2,
+      "pushes": 0,
+      "files": 0,
+      "prs": []
+    },
+    {
+      "name": "feat/TD-shell-s3-decompose",
+      "sessions": [
+        "46f73e3d-4489-4e79-98c5-536e46ad1405"
+      ],
+      "firstTs": "2026-07-09T02:43:06.051Z",
+      "lastTs": "2026-07-09T20:33:57.627Z",
+      "commits": 1,
+      "pushes": 0,
+      "files": 0,
+      "prs": []
+    },
+    {
+      "name": "feat/TD-storybook-reorg",
+      "sessions": [
+        "46f73e3d-4489-4e79-98c5-536e46ad1405"
+      ],
+      "firstTs": "2026-07-09T02:43:06.051Z",
+      "lastTs": "2026-07-09T20:33:57.627Z",
+      "commits": 0,
+      "pushes": 0,
+      "files": 0,
+      "prs": []
+    },
+    {
+      "name": "feat/TD-sessionrail-scaffold",
+      "sessions": [
+        "46f73e3d-4489-4e79-98c5-536e46ad1405"
+      ],
+      "firstTs": "2026-07-09T02:43:06.051Z",
+      "lastTs": "2026-07-09T20:33:57.627Z",
+      "commits": 0,
+      "pushes": 0,
+      "files": 1,
+      "prs": []
+    },
+    {
+      "name": "feat/TD-arch-graph",
+      "sessions": [
+        "46f73e3d-4489-4e79-98c5-536e46ad1405"
+      ],
+      "firstTs": "2026-07-09T02:43:06.051Z",
+      "lastTs": "2026-07-09T20:33:57.627Z",
+      "commits": 3,
+      "pushes": 2,
+      "files": 0,
+      "prs": []
+    },
+    {
+      "name": "feat/TD-dashboard-shell",
+      "sessions": [
+        "46f73e3d-4489-4e79-98c5-536e46ad1405"
+      ],
+      "firstTs": "2026-07-09T02:43:06.051Z",
+      "lastTs": "2026-07-09T20:33:57.627Z",
+      "commits": 1,
+      "pushes": 2,
+      "files": 0,
+      "prs": []
+    },
+    {
+      "name": "feat/TD-shell-s3-sessionrail",
+      "sessions": [
+        "46f73e3d-4489-4e79-98c5-536e46ad1405"
+      ],
+      "firstTs": "2026-07-09T02:43:06.051Z",
+      "lastTs": "2026-07-09T20:33:57.627Z",
+      "commits": 3,
+      "pushes": 4,
+      "files": 0,
+      "prs": []
+    },
+    {
+      "name": "wt/$u",
+      "sessions": [
+        "46f73e3d-4489-4e79-98c5-536e46ad1405"
+      ],
+      "firstTs": "2026-07-09T02:43:06.051Z",
+      "lastTs": "2026-07-09T20:33:57.627Z",
+      "commits": 1,
+      "pushes": 0,
+      "files": 0,
+      "prs": []
+    },
+    {
+      "name": "wt/assemble",
+      "sessions": [
+        "46f73e3d-4489-4e79-98c5-536e46ad1405"
+      ],
+      "firstTs": "2026-07-09T02:43:06.051Z",
+      "lastTs": "2026-07-09T20:33:57.627Z",
+      "commits": 1,
+      "pushes": 0,
+      "files": 0,
+      "prs": []
     }
   ],
   "files": [
@@ -10344,10 +10913,10 @@ export const sessionSignals = {
     },
     {
       "path": "packages/cli/src/commands/dashboard-payload.ts",
-      "reads": 16,
+      "reads": 18,
       "writes": 1,
-      "edits": 55,
-      "touches": 72,
+      "edits": 63,
+      "touches": 82,
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
         "122c4f8f-7dc4-4211-a818-95be2df9b24e",
@@ -10355,37 +10924,45 @@ export const sessionSignals = {
         "759a6037-8fee-4639-8faa-ffac0e1f18f4",
         "ae027a39-3ace-4d50-83ac-2f740cd20edf",
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
-        "ce00b199-172a-4cdb-a183-2178407d04a7"
+        "ce00b199-172a-4cdb-a183-2178407d04a7",
+        "ea64d801-972c-4519-9a34-85fea7f8d776"
       ],
       "branches": [
-        "HEAD"
+        "main",
+        "feat/c31-coupling-hidden-edges",
+        "fix/c32-data-contract",
+        "feat/per-symbol-utilization-blast-radius",
+        "feat/c54-barrel-resolved-utilization",
+        "feat/c36-health-breakdown",
+        "fix/C-71-lifetime-window",
+        "fix/C-71-dashboard-lifetime"
       ],
-      "netGrowth": 16283,
+      "netGrowth": 17030,
       "firstTouched": "2026-07-01T11:09:07.456Z",
-      "lastTouched": "2026-07-04T14:44:04.431Z",
+      "lastTouched": "2026-07-05T18:21:40.841Z",
       "coChange": [
         {
           "path": "dashboard/src/types.ts",
-          "count": 7
+          "count": 8
         },
         {
           "path": "dashboard/src/App.tsx",
-          "count": 6
-        },
-        {
-          "path": "packages/cli/src/__tests__/dashboard-coupling.test.ts",
-          "count": 4
+          "count": 7
         },
         {
           "path": "packages/graph/src/index-metrics.ts",
-          "count": 4
-        },
-        {
-          "path": "packages/graph/src/types.ts",
-          "count": 4
+          "count": 5
         },
         {
           "path": "packages/cli/src/commands/graph-dashboard.ts",
+          "count": 5
+        },
+        {
+          "path": "packages/cli/src/commands/dashboard-node-metrics.ts",
+          "count": 5
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report-types.ts",
           "count": 4
         }
       ],
@@ -10520,47 +11097,57 @@ export const sessionSignals = {
     },
     {
       "path": "packages/cli/src/commands/graph-dashboard.ts",
-      "reads": 14,
+      "reads": 15,
       "writes": 2,
-      "edits": 56,
-      "touches": 72,
+      "edits": 58,
+      "touches": 75,
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
         "759a6037-8fee-4639-8faa-ffac0e1f18f4",
         "848f1a22-a8a8-42b7-a545-a2000aa36939",
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
         "ce00b199-172a-4cdb-a183-2178407d04a7",
+        "ea64d801-972c-4519-9a34-85fea7f8d776",
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
       "branches": [
-        "HEAD"
+        "main",
+        "feat/c30-authorcount-ownership",
+        "feat/c31-coupling-hidden-edges",
+        "feat/c55-barrel-resolved-utilization",
+        "packages/render/src/index.ts",
+        "feat/c54-module-coupling-view",
+        "fix/C-71-dashboard-lifetime",
+        "feat/dashboard-v1",
+        "feat/dashboard-v1.1",
+        "feat/dashboard-architecture"
       ],
-      "netGrowth": 20268,
+      "netGrowth": 20440,
       "firstTouched": "2026-07-01T02:00:49.344Z",
-      "lastTouched": "2026-07-03T22:12:20.473Z",
+      "lastTouched": "2026-07-05T18:08:41.990Z",
       "coChange": [
         {
           "path": "dashboard/src/types.ts",
+          "count": 6
+        },
+        {
+          "path": "dashboard/src/App.tsx",
           "count": 5
+        },
+        {
+          "path": "packages/cli/src/commands/dashboard-payload.ts",
+          "count": 5
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report.ts",
+          "count": 4
         },
         {
           "path": "packages/graph/src/types.ts",
           "count": 4
         },
         {
-          "path": "dashboard/src/App.tsx",
-          "count": 4
-        },
-        {
           "path": "dashboard/src/theme.ts",
-          "count": 4
-        },
-        {
-          "path": "packages/cli/src/commands/dashboard-payload.ts",
-          "count": 4
-        },
-        {
-          "path": "packages/render/src/collapse-packages.ts",
           "count": 4
         }
       ],
@@ -10697,8 +11284,8 @@ export const sessionSignals = {
       "path": "packages/graph/src/indexer.ts",
       "reads": 23,
       "writes": 0,
-      "edits": 44,
-      "touches": 67,
+      "edits": 48,
+      "touches": 71,
       "sessions": [
         "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
         "3a7136f7-74ab-40b8-abe4-db917c4aed00",
@@ -10707,22 +11294,41 @@ export const sessionSignals = {
         "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
         "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff",
         "ae027a39-3ace-4d50-83ac-2f740cd20edf",
+        "ea64d801-972c-4519-9a34-85fea7f8d776",
         "ede9df8d-425b-4f7d-8708-93b44767ef3b",
         "fd633b58-2657-4859-bca3-03c57a0277f0"
       ],
       "branches": [
-        "HEAD"
+        "main",
+        "feat/c64-model-b-symbol-nodes",
+        "feat/c65-dynamic-imports",
+        "feat/c66-growth-risk-loop-depth",
+        "feat/c63-symbol-line-spans",
+        "feat/c58-per-symbol-complexity",
+        "feat/incremental-default-autoupdate-hook",
+        "feat/fingerprint-incremental-index",
+        "feat/per-symbol-utilization-blast-radius",
+        "fix/C-71-lifetime-window",
+        "feat/c79-symbol-signatures"
       ],
-      "netGrowth": 378,
+      "netGrowth": 560,
       "firstTouched": "2026-06-02T20:01:53.673Z",
       "lastTouched": "2026-07-05T19:01:55.859Z",
       "coChange": [
         {
           "path": "packages/graph/src/index-metrics.ts",
-          "count": 6
+          "count": 7
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report.ts",
+          "count": 5
         },
         {
           "path": "packages/cli/src/commands/graph-cli.ts",
+          "count": 5
+        },
+        {
+          "path": "dashboard/src/types.ts",
           "count": 5
         },
         {
@@ -10732,14 +11338,6 @@ export const sessionSignals = {
         {
           "path": "packages/cli/src/__tests__/graph-index.test.ts",
           "count": 5
-        },
-        {
-          "path": "packages/cli/src/commands/graph-report.ts",
-          "count": 4
-        },
-        {
-          "path": "packages/graph/src/types.ts",
-          "count": 4
         }
       ],
       "touchLocs": [
@@ -10873,10 +11471,10 @@ export const sessionSignals = {
     },
     {
       "path": "dashboard/src/App.tsx",
-      "reads": 14,
+      "reads": 17,
       "writes": 3,
-      "edits": 36,
-      "touches": 53,
+      "edits": 39,
+      "touches": 59,
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
         "122c4f8f-7dc4-4211-a818-95be2df9b24e",
@@ -10884,37 +11482,47 @@ export const sessionSignals = {
         "759a6037-8fee-4639-8faa-ffac0e1f18f4",
         "ae027a39-3ace-4d50-83ac-2f740cd20edf",
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
+        "ea64d801-972c-4519-9a34-85fea7f8d776",
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
       "branches": [
-        "HEAD"
+        "main",
+        "feat/c58-per-symbol-complexity",
+        "feat/per-symbol-utilization-blast-radius",
+        "feat/c52-utilization-metric",
+        "feat/c54-barrel-resolved-utilization",
+        "fix/C-71-lifetime-window",
+        "fix/C-71-dashboard-lifetime",
+        "feat/status-dashboard",
+        "feat/dashboard-v1.1",
+        "feat/dashboard-architecture"
       ],
-      "netGrowth": 38784,
+      "netGrowth": 39228,
       "firstTouched": "2026-07-01T01:30:10.344Z",
-      "lastTouched": "2026-07-04T14:47:46.565Z",
+      "lastTouched": "2026-07-05T18:09:22.674Z",
       "coChange": [
         {
           "path": "dashboard/src/types.ts",
-          "count": 7
+          "count": 8
         },
         {
           "path": "packages/cli/src/commands/dashboard-payload.ts",
-          "count": 6
-        },
-        {
-          "path": "packages/cli/src/__tests__/dashboard-coupling.test.ts",
-          "count": 4
+          "count": 7
         },
         {
           "path": "packages/graph/src/index-metrics.ts",
-          "count": 4
-        },
-        {
-          "path": "packages/graph/src/types.ts",
-          "count": 4
+          "count": 5
         },
         {
           "path": "packages/cli/src/commands/graph-dashboard.ts",
+          "count": 5
+        },
+        {
+          "path": "packages/cli/src/commands/dashboard-node-metrics.ts",
+          "count": 5
+        },
+        {
+          "path": "packages/cli/src/__tests__/dashboard-coupling.test.ts",
           "count": 4
         }
       ],
@@ -11048,6 +11656,198 @@ export const sessionSignals = {
       ]
     },
     {
+      "path": "packages/cli/src/commands/graph-report.ts",
+      "reads": 21,
+      "writes": 0,
+      "edits": 26,
+      "touches": 47,
+      "sessions": [
+        "0b62b5fa-bafe-4a6d-9abf-9214294af95b",
+        "20ced87b-02aa-4c02-bed3-aab53b4990f2",
+        "47be9aeb-f7cc-415a-a750-0b48013dcbc0",
+        "92b750d3-6eaf-4ab1-b553-969b3bd8a526",
+        "9a973783-69f7-4c0e-923d-d37e89d4f294",
+        "c48d6fa1-7895-46c8-9fe4-77335fe7f1bb",
+        "fcceb387-c3f4-4293-b1e4-b199d2df11c8",
+        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+        "759a6037-8fee-4639-8faa-ffac0e1f18f4",
+        "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+        "ce00b199-172a-4cdb-a183-2178407d04a7",
+        "ea64d801-972c-4519-9a34-85fea7f8d776",
+        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
+      ],
+      "branches": [
+        "feat/c88-conventions",
+        "main",
+        "feat/c65-unused-exports",
+        "feat/c65-dead-modules",
+        "feat/c66-growth-risk-loop-depth",
+        "feat/c63-coverage-surface",
+        "feat/c30-authorcount-ownership",
+        "feat/schema-healing-aliases",
+        "fix/C-71-lifetime-window",
+        "feat/dashboard-v1"
+      ],
+      "netGrowth": 3788,
+      "firstTouched": "2026-06-30T13:44:27.511Z",
+      "lastTouched": "2026-07-07T01:55:12.020Z",
+      "coChange": [
+        {
+          "path": "packages/cli/src/commands/graph-report-types.ts",
+          "count": 12
+        },
+        {
+          "path": ".plans/insight-layer-pr1-profile-risk/spec.md",
+          "count": 6
+        },
+        {
+          "path": ".plans/insight-layer-pr1-profile-risk/design.md",
+          "count": 6
+        },
+        {
+          "path": ".plans/insight-layer-pr1-profile-risk/acceptance-criteria.md",
+          "count": 6
+        },
+        {
+          "path": "packages/cli/src/commands/graph-cli.ts",
+          "count": 6
+        },
+        {
+          "path": "packages/graph/src/indexer.ts",
+          "count": 5
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:28:37.427Z",
+          "loc": [
+            243,
+            785423,
+            1874
+          ]
+        },
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:28:48.260Z",
+          "loc": [
+            243,
+            800702,
+            1677
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T16:13:46.607Z",
+          "loc": [
+            247,
+            2344677,
+            1794
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T16:13:50.854Z",
+          "loc": [
+            247,
+            2358469,
+            1860
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T16:13:55.446Z",
+          "loc": [
+            247,
+            2374107,
+            1917
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T16:49:54.632Z",
+          "loc": [
+            247,
+            3440816,
+            1731
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T16:49:59.067Z",
+          "loc": [
+            247,
+            3444097,
+            1766
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T17:08:03.254Z",
+          "loc": [
+            247,
+            3927593,
+            1761
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T17:08:11.204Z",
+          "loc": [
+            247,
+            3930945,
+            1876
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T17:12:28.827Z",
+          "loc": [
+            247,
+            4120448,
+            1844
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T17:48:34.171Z",
+          "loc": [
+            247,
+            5287727,
+            1791
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T17:48:38.419Z",
+          "loc": [
+            247,
+            5291135,
+            1786
+          ]
+        },
+        {
+          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+          "ts": "2026-06-30T13:47:55.053Z",
+          "loc": [
+            256,
+            1016930,
+            1756
+          ]
+        },
+        {
+          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+          "ts": "2026-06-30T13:48:01.215Z",
+          "loc": [
+            256,
+            1028677,
+            1703
+          ]
+        }
+      ]
+    },
+    {
       "path": "packages/graph/src/extractors/ts-morph-extractor.ts",
       "reads": 13,
       "writes": 0,
@@ -11065,7 +11865,13 @@ export const sessionSignals = {
         "fd633b58-2657-4859-bca3-03c57a0277f0"
       ],
       "branches": [
-        "HEAD"
+        "feat/c64-model-b-symbol-nodes",
+        "feat/c65-dynamic-imports",
+        "feat/edge-weight-reference-count",
+        "feat/fingerprint-incremental-index",
+        "feat/per-symbol-utilization-blast-radius",
+        "fix/c70-multihop-reexport-references",
+        "feat/c79-symbol-signatures"
       ],
       "netGrowth": 7570,
       "firstTouched": "2026-06-02T20:15:46.400Z",
@@ -11226,11 +12032,200 @@ export const sessionSignals = {
       ]
     },
     {
+      "path": "packages/cli/src/commands/graph-cli.ts",
+      "reads": 14,
+      "writes": 0,
+      "edits": 28,
+      "touches": 42,
+      "sessions": [
+        "7a969bc8-e8c9-40ec-bbb6-808ab0dcc842",
+        "92b750d3-6eaf-4ab1-b553-969b3bd8a526",
+        "c48d6fa1-7895-46c8-9fe4-77335fe7f1bb",
+        "fcceb387-c3f4-4293-b1e4-b199d2df11c8",
+        "06e0ac05-9729-4fba-bb3a-e10c79c59a7c",
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+        "5abbb0ce-143a-4089-9d99-16de251fa361",
+        "848f1a22-a8a8-42b7-a545-a2000aa36939",
+        "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+        "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+        "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff",
+        "ede9df8d-425b-4f7d-8708-93b44767ef3b",
+        "f6324d6b-6972-4f50-9c89-21bd31535746"
+      ],
+      "branches": [
+        "feat/c88-conventions",
+        "feat/c7-init-json-parity",
+        "feat/c63-coverage-ingest",
+        "feat/graph-context-spike",
+        "feat/incremental-default-autoupdate-hook",
+        "feat/fingerprint-incremental-index",
+        "feat/dashboard-v1",
+        "feat/c88-capability-embeddings"
+      ],
+      "netGrowth": 1872,
+      "firstTouched": "2026-06-02T20:18:17.137Z",
+      "lastTouched": "2026-07-07T01:57:39.905Z",
+      "coChange": [
+        {
+          "path": "packages/cli/src/commands/graph-report.ts",
+          "count": 6
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report-types.ts",
+          "count": 5
+        },
+        {
+          "path": "packages/graph/src/indexer.ts",
+          "count": 5
+        },
+        {
+          "path": "packages/graph/src/database.ts",
+          "count": 4
+        },
+        {
+          "path": "packages/graph/src/index.ts",
+          "count": 4
+        },
+        {
+          "path": "packages/graph/src/types.ts",
+          "count": 4
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "06e0ac05-9729-4fba-bb3a-e10c79c59a7c",
+          "ts": "2026-07-05T00:59:05.606Z",
+          "loc": [
+            237,
+            596428,
+            1681
+          ]
+        },
+        {
+          "session": "06e0ac05-9729-4fba-bb3a-e10c79c59a7c",
+          "ts": "2026-07-05T00:59:13.627Z",
+          "loc": [
+            237,
+            601718,
+            1675
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T17:38:51.135Z",
+          "loc": [
+            247,
+            4967662,
+            1687
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T17:38:55.565Z",
+          "loc": [
+            247,
+            4971130,
+            1673
+          ]
+        },
+        {
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:37:30.357Z",
+          "loc": [
+            251,
+            933522,
+            1696
+          ]
+        },
+        {
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:37:34.039Z",
+          "loc": [
+            251,
+            938941,
+            1675
+          ]
+        },
+        {
+          "session": "848f1a22-a8a8-42b7-a545-a2000aa36939",
+          "ts": "2026-07-02T04:55:54.162Z",
+          "loc": [
+            255,
+            279573,
+            2076
+          ]
+        },
+        {
+          "session": "848f1a22-a8a8-42b7-a545-a2000aa36939",
+          "ts": "2026-07-02T04:56:00.089Z",
+          "loc": [
+            255,
+            285127,
+            1973
+          ]
+        },
+        {
+          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+          "ts": "2026-06-30T16:53:08.507Z",
+          "loc": [
+            256,
+            1840580,
+            1887
+          ]
+        },
+        {
+          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+          "ts": "2026-06-30T16:57:27.104Z",
+          "loc": [
+            256,
+            2030933,
+            1586
+          ]
+        },
+        {
+          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+          "ts": "2026-06-30T16:57:39.334Z",
+          "loc": [
+            256,
+            2035289,
+            2959
+          ]
+        },
+        {
+          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+          "ts": "2026-06-30T17:03:29.900Z",
+          "loc": [
+            256,
+            2296985,
+            2963
+          ]
+        },
+        {
+          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+          "ts": "2026-06-30T17:03:36.824Z",
+          "loc": [
+            256,
+            2304136,
+            1624
+          ]
+        },
+        {
+          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+          "ts": "2026-06-30T17:03:44.693Z",
+          "loc": [
+            256,
+            2307450,
+            1624
+          ]
+        }
+      ]
+    },
+    {
       "path": "packages/cli/src/commands/graph-report-types.ts",
       "reads": 25,
       "writes": 0,
-      "edits": 13,
-      "touches": 38,
+      "edits": 15,
+      "touches": 40,
       "sessions": [
         "0934cbc6-f5ed-48ca-96ce-8a297cbe0f7d",
         "0b62b5fa-bafe-4a6d-9abf-9214294af95b",
@@ -11257,13 +12252,21 @@ export const sessionSignals = {
         "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
         "3a7136f7-74ab-40b8-abe4-db917c4aed00",
         "759a6037-8fee-4639-8faa-ffac0e1f18f4",
-        "ce00b199-172a-4cdb-a183-2178407d04a7"
+        "ce00b199-172a-4cdb-a183-2178407d04a7",
+        "ea64d801-972c-4519-9a34-85fea7f8d776"
       ],
       "branches": [
         "feat/c88-conventions",
-        "HEAD"
+        "main",
+        "feat/c65-unused-exports",
+        "feat/c65-dead-modules",
+        "feat/c66-growth-risk-loop-depth",
+        "feat/c66-recursion-patterns",
+        "feat/c63-coverage-surface",
+        "feat/c30-authorcount-ownership",
+        "fix/C-71-lifetime-window"
       ],
-      "netGrowth": 2890,
+      "netGrowth": 3003,
       "firstTouched": "2026-06-30T22:27:44.800Z",
       "lastTouched": "2026-07-07T01:57:36.093Z",
       "coChange": [
@@ -11281,11 +12284,11 @@ export const sessionSignals = {
         },
         {
           "path": "packages/cli/src/commands/graph-report.ts",
-          "count": 11
+          "count": 12
         },
         {
           "path": "packages/cli/src/commands/graph-report-sections.ts",
-          "count": 5
+          "count": 6
         },
         {
           "path": "packages/cli/src/commands/graph-cli.ts",
@@ -11409,606 +12412,24 @@ export const sessionSignals = {
             333253,
             1578
           ]
-        }
-      ]
-    },
-    {
-      "path": "packages/cli/src/commands/graph-report.ts",
-      "reads": 20,
-      "writes": 0,
-      "edits": 18,
-      "touches": 38,
-      "sessions": [
-        "0b62b5fa-bafe-4a6d-9abf-9214294af95b",
-        "20ced87b-02aa-4c02-bed3-aab53b4990f2",
-        "47be9aeb-f7cc-415a-a750-0b48013dcbc0",
-        "92b750d3-6eaf-4ab1-b553-969b3bd8a526",
-        "9a973783-69f7-4c0e-923d-d37e89d4f294",
-        "c48d6fa1-7895-46c8-9fe4-77335fe7f1bb",
-        "fcceb387-c3f4-4293-b1e4-b199d2df11c8",
-        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-        "759a6037-8fee-4639-8faa-ffac0e1f18f4",
-        "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-        "ce00b199-172a-4cdb-a183-2178407d04a7",
-        "ea64d801-972c-4519-9a34-85fea7f8d776",
-        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
-      ],
-      "branches": [
-        "feat/c88-conventions",
-        "HEAD"
-      ],
-      "netGrowth": 1643,
-      "firstTouched": "2026-06-30T13:44:27.511Z",
-      "lastTouched": "2026-07-07T01:55:12.020Z",
-      "coChange": [
-        {
-          "path": "packages/cli/src/commands/graph-report-types.ts",
-          "count": 11
         },
         {
-          "path": ".plans/insight-layer-pr1-profile-risk/spec.md",
-          "count": 6
-        },
-        {
-          "path": ".plans/insight-layer-pr1-profile-risk/design.md",
-          "count": 6
-        },
-        {
-          "path": ".plans/insight-layer-pr1-profile-risk/acceptance-criteria.md",
-          "count": 6
-        },
-        {
-          "path": "packages/cli/src/commands/graph-cli.ts",
-          "count": 6
-        },
-        {
-          "path": "packages/graph/src/database.ts",
-          "count": 4
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-          "ts": "2026-06-30T22:28:37.427Z",
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:44:02.267Z",
           "loc": [
-            243,
-            785423,
-            1874
-          ]
-        },
-        {
-          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-          "ts": "2026-06-30T22:28:48.260Z",
-          "loc": [
-            243,
-            800702,
-            1677
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T16:13:46.607Z",
-          "loc": [
-            247,
-            2344677,
-            1794
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T16:13:50.854Z",
-          "loc": [
-            247,
-            2358469,
-            1860
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T16:13:55.446Z",
-          "loc": [
-            247,
-            2374107,
-            1917
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T16:49:54.632Z",
-          "loc": [
-            247,
-            3440816,
-            1731
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T16:49:59.067Z",
-          "loc": [
-            247,
-            3444097,
-            1766
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T17:08:03.254Z",
-          "loc": [
-            247,
-            3927593,
-            1761
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T17:08:11.204Z",
-          "loc": [
-            247,
-            3930945,
-            1876
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T17:12:28.827Z",
-          "loc": [
-            247,
-            4120448,
-            1844
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T17:48:34.171Z",
-          "loc": [
-            247,
-            5287727,
-            1791
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T17:48:38.419Z",
-          "loc": [
-            247,
-            5291135,
-            1786
-          ]
-        },
-        {
-          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-          "ts": "2026-06-30T13:47:55.053Z",
-          "loc": [
-            256,
-            1016930,
-            1756
-          ]
-        },
-        {
-          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-          "ts": "2026-06-30T13:48:01.215Z",
-          "loc": [
-            256,
-            1028677,
-            1703
-          ]
-        }
-      ]
-    },
-    {
-      "path": "packages/cli/src/commands/graph-cli.ts",
-      "reads": 14,
-      "writes": 0,
-      "edits": 24,
-      "touches": 38,
-      "sessions": [
-        "7a969bc8-e8c9-40ec-bbb6-808ab0dcc842",
-        "92b750d3-6eaf-4ab1-b553-969b3bd8a526",
-        "c48d6fa1-7895-46c8-9fe4-77335fe7f1bb",
-        "fcceb387-c3f4-4293-b1e4-b199d2df11c8",
-        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-        "848f1a22-a8a8-42b7-a545-a2000aa36939",
-        "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-        "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-        "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff",
-        "ede9df8d-425b-4f7d-8708-93b44767ef3b",
-        "f6324d6b-6972-4f50-9c89-21bd31535746"
-      ],
-      "branches": [
-        "feat/c88-conventions",
-        "HEAD"
-      ],
-      "netGrowth": 1695,
-      "firstTouched": "2026-06-02T20:18:17.137Z",
-      "lastTouched": "2026-07-07T01:57:39.905Z",
-      "coChange": [
-        {
-          "path": "packages/cli/src/commands/graph-report.ts",
-          "count": 6
-        },
-        {
-          "path": "packages/cli/src/commands/graph-report-types.ts",
-          "count": 5
-        },
-        {
-          "path": "packages/graph/src/indexer.ts",
-          "count": 5
-        },
-        {
-          "path": "packages/graph/src/database.ts",
-          "count": 4
-        },
-        {
-          "path": "packages/cli/src/commands/graph-check.ts",
-          "count": 4
-        },
-        {
-          "path": ".plans/insight-layer-pr1-profile-risk/spec.md",
-          "count": 3
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T17:38:51.135Z",
-          "loc": [
-            247,
-            4967662,
-            1687
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T17:38:55.565Z",
-          "loc": [
-            247,
-            4971130,
-            1673
-          ]
-        },
-        {
-          "session": "848f1a22-a8a8-42b7-a545-a2000aa36939",
-          "ts": "2026-07-02T04:55:54.162Z",
-          "loc": [
-            255,
-            279573,
-            2076
-          ]
-        },
-        {
-          "session": "848f1a22-a8a8-42b7-a545-a2000aa36939",
-          "ts": "2026-07-02T04:56:00.089Z",
-          "loc": [
-            255,
-            285127,
-            1973
-          ]
-        },
-        {
-          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-          "ts": "2026-06-30T16:53:08.507Z",
-          "loc": [
-            256,
-            1840580,
-            1887
-          ]
-        },
-        {
-          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-          "ts": "2026-06-30T16:57:27.104Z",
-          "loc": [
-            256,
-            2030933,
-            1586
-          ]
-        },
-        {
-          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-          "ts": "2026-06-30T16:57:39.334Z",
-          "loc": [
-            256,
-            2035289,
-            2959
-          ]
-        },
-        {
-          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-          "ts": "2026-06-30T17:03:29.900Z",
-          "loc": [
-            256,
-            2296985,
-            2963
-          ]
-        },
-        {
-          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-          "ts": "2026-06-30T17:03:36.824Z",
-          "loc": [
-            256,
-            2304136,
-            1624
-          ]
-        },
-        {
-          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-          "ts": "2026-06-30T17:03:44.693Z",
-          "loc": [
-            256,
-            2307450,
-            1624
-          ]
-        },
-        {
-          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-          "ts": "2026-07-01T21:03:30.880Z",
-          "loc": [
-            258,
-            488693,
-            1887
-          ]
-        },
-        {
-          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-          "ts": "2026-07-01T21:03:49.426Z",
-          "loc": [
-            258,
-            511161,
-            2080
-          ]
-        },
-        {
-          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-          "ts": "2026-07-01T21:03:59.986Z",
-          "loc": [
-            258,
-            527046,
-            1745
-          ]
-        },
-        {
-          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-          "ts": "2026-07-01T21:04:04.930Z",
-          "loc": [
-            258,
-            530408,
-            1806
-          ]
-        }
-      ]
-    },
-    {
-      "path": "CLAUDE.md",
-      "reads": 31,
-      "writes": 0,
-      "edits": 0,
-      "touches": 31,
-      "sessions": [
-        "0874f23f-0121-473d-8345-cb0b062f9a29",
-        "11f8f77f-0897-4e3b-9be0-44216dc0c056",
-        "2c393106-53bf-4905-be71-8de2c995f404",
-        "301a892f-6b99-42e8-90b8-8c86c1caa189",
-        "37cb3071-3727-44d1-bece-ad1b95707264",
-        "3891b15d-5a33-4499-b806-6a2e0a56607f",
-        "46dd0ba7-8e3c-4ea7-9b2c-148bb48f5558",
-        "4d9fdb06-15e4-46d5-92b7-327a52a736da",
-        "50978d72-750f-4096-885b-74907b405c63",
-        "5ab5b882-fc8c-4206-bec4-57d1fa911118",
-        "5c7f9d4e-99eb-497f-947c-c771353bc5e6",
-        "6adbd243-a967-457a-9ecf-49e663f0ee8c",
-        "6e7e2553-36d7-4add-b3fb-8dfa202cc90e",
-        "6f5a01a2-3694-4590-8dcd-460fe95e5814",
-        "6fd3d861-c961-48ef-93e7-8560e4959478",
-        "8095f5b6-a25f-4734-88e0-a64d8e36f312",
-        "8a345510-08e9-4367-ba6a-ba7d97b2ba45",
-        "8c4519c6-2287-42dc-b1e6-1b15145ce3de",
-        "9cc385ba-8f06-4212-9053-3cc28ec3465e",
-        "b112a899-2598-4fcb-9183-682f19677ac8",
-        "b90a7236-3a1a-48ca-9123-7f11c591e385",
-        "cb01a4a6-3f22-4adb-869b-90930c2160a0",
-        "cce60266-14be-446a-b647-a16706d36b9f",
-        "dbeedcdd-1655-4261-a939-501ca029755f",
-        "dd91920f-a568-40bc-92fd-0223d21a54e9",
-        "e59d4191-2455-4767-a4e9-62dcb3426e7a",
-        "e7c0068b-e4ac-404d-94a3-d481f3fd33c8",
-        "f4ee3486-3c72-4b4c-997b-6972c7ffb539",
-        "fb9b9dd9-85f8-470e-806d-19ed704c97d2",
-        "fc5fdeca-daba-4c3f-9f25-aa130ee83e00",
-        "fd2da2cb-c15e-4773-97c5-daf48e83e939"
-      ],
-      "branches": [
-        "feat/c88-conventions"
-      ],
-      "netGrowth": 0,
-      "firstTouched": "2026-07-07T01:52:31.309Z",
-      "lastTouched": "2026-07-07T02:00:53.749Z",
-      "coChange": [],
-      "touchLocs": []
-    },
-    {
-      "path": "dashboard/src/types.ts",
-      "reads": 7,
-      "writes": 1,
-      "edits": 22,
-      "touches": 30,
-      "sessions": [
-        "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
-        "122c4f8f-7dc4-4211-a818-95be2df9b24e",
-        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-        "759a6037-8fee-4639-8faa-ffac0e1f18f4",
-        "ae027a39-3ace-4d50-83ac-2f740cd20edf",
-        "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
-        "ce00b199-172a-4cdb-a183-2178407d04a7",
-        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
-      ],
-      "branches": [
-        "HEAD"
-      ],
-      "netGrowth": 7220,
-      "firstTouched": "2026-07-01T01:26:08.218Z",
-      "lastTouched": "2026-07-04T15:44:31.977Z",
-      "coChange": [
-        {
-          "path": "dashboard/src/App.tsx",
-          "count": 7
-        },
-        {
-          "path": "packages/cli/src/commands/dashboard-payload.ts",
-          "count": 7
-        },
-        {
-          "path": "packages/graph/src/index-metrics.ts",
-          "count": 5
-        },
-        {
-          "path": "packages/cli/src/commands/dashboard-node-metrics.ts",
-          "count": 5
-        },
-        {
-          "path": "packages/cli/src/commands/graph-dashboard.ts",
-          "count": 5
-        },
-        {
-          "path": "packages/cli/src/commands/graph-report-types.ts",
-          "count": 4
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
-          "ts": "2026-07-02T21:48:03.467Z",
-          "loc": [
-            239,
-            347388,
-            2134
-          ]
-        },
-        {
-          "session": "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
-          "ts": "2026-07-02T21:48:14.480Z",
-          "loc": [
-            239,
-            356955,
-            1795
-          ]
-        },
-        {
-          "session": "122c4f8f-7dc4-4211-a818-95be2df9b24e",
-          "ts": "2026-07-01T16:08:37.274Z",
-          "loc": [
-            240,
-            4033981,
-            2103
-          ]
-        },
-        {
-          "session": "122c4f8f-7dc4-4211-a818-95be2df9b24e",
-          "ts": "2026-07-01T16:37:55.294Z",
-          "loc": [
-            240,
-            6321946,
-            1795
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T15:44:31.977Z",
-          "loc": [
-            247,
-            913338,
-            2181
-          ]
-        },
-        {
-          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-          "ts": "2026-07-04T14:42:37.801Z",
-          "loc": [
-            252,
-            1474873,
-            2021
-          ]
-        },
-        {
-          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-          "ts": "2026-07-04T14:42:42.822Z",
-          "loc": [
-            252,
-            1486076,
-            2054
-          ]
-        },
-        {
-          "session": "759a6037-8fee-4639-8faa-ffac0e1f18f4",
-          "ts": "2026-07-01T10:33:10.942Z",
-          "loc": [
-            253,
-            1939168,
-            2012
-          ]
-        },
-        {
-          "session": "759a6037-8fee-4639-8faa-ffac0e1f18f4",
-          "ts": "2026-07-01T10:33:22.342Z",
-          "loc": [
-            253,
-            1947193,
-            1824
-          ]
-        },
-        {
-          "session": "759a6037-8fee-4639-8faa-ffac0e1f18f4",
-          "ts": "2026-07-01T11:20:56.216Z",
-          "loc": [
-            253,
-            3566963,
-            1898
-          ]
-        },
-        {
-          "session": "759a6037-8fee-4639-8faa-ffac0e1f18f4",
-          "ts": "2026-07-01T11:21:04.412Z",
-          "loc": [
-            253,
-            3572786,
-            1786
-          ]
-        },
-        {
-          "session": "ae027a39-3ace-4d50-83ac-2f740cd20edf",
-          "ts": "2026-07-03T23:01:35.645Z",
-          "loc": [
-            262,
-            1500149,
-            3196
-          ]
-        },
-        {
-          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
-          "ts": "2026-07-03T20:00:48.004Z",
-          "loc": [
-            263,
-            410728,
-            1718
-          ]
-        },
-        {
-          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
-          "ts": "2026-07-03T21:11:26.903Z",
-          "loc": [
-            263,
-            2557542,
-            1803
+            268,
+            766720,
+            1636
           ]
         }
       ]
     },
     {
       "path": "packages/cli/src/commands/graph-report-sections.ts",
-      "reads": 14,
+      "reads": 16,
       "writes": 0,
-      "edits": 15,
-      "touches": 29,
+      "edits": 19,
+      "touches": 35,
       "sessions": [
         "0e253d14-5365-4f92-89fd-d542060fd22e",
         "7a969bc8-e8c9-40ec-bbb6-808ab0dcc842",
@@ -12016,22 +12437,35 @@ export const sessionSignals = {
         "9a973783-69f7-4c0e-923d-d37e89d4f294",
         "122c4f8f-7dc4-4211-a818-95be2df9b24e",
         "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-        "3a7136f7-74ab-40b8-abe4-db917c4aed00"
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+        "ea64d801-972c-4519-9a34-85fea7f8d776"
       ],
       "branches": [
         "feat/c88-conventions",
-        "HEAD"
+        "main",
+        "feat/c65-unused-exports",
+        "feat/c65-dead-modules",
+        "feat/c66-growth-risk-loop-depth",
+        "fix/C-71-lifetime-window"
       ],
-      "netGrowth": 8172,
+      "netGrowth": 8373,
       "firstTouched": "2026-06-30T22:21:29.260Z",
       "lastTouched": "2026-07-07T01:57:19.895Z",
       "coChange": [
         {
           "path": "packages/cli/src/commands/graph-report-types.ts",
-          "count": 5
+          "count": 6
         },
         {
           "path": ".plans/insight-layer-pr1-profile-risk/spec.md",
+          "count": 4
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report.ts",
+          "count": 4
+        },
+        {
+          "path": "packages/graph/src/index-metrics.ts",
           "count": 4
         },
         {
@@ -12040,14 +12474,6 @@ export const sessionSignals = {
         },
         {
           "path": ".plans/insight-layer-pr1-profile-risk/acceptance-criteria.md",
-          "count": 3
-        },
-        {
-          "path": "packages/cli/src/commands/graph-report.ts",
-          "count": 3
-        },
-        {
-          "path": "packages/graph/src/index-metrics.ts",
           "count": 3
         }
       ],
@@ -12181,6 +12607,429 @@ export const sessionSignals = {
       ]
     },
     {
+      "path": "dashboard/src/types.ts",
+      "reads": 8,
+      "writes": 1,
+      "edits": 23,
+      "touches": 32,
+      "sessions": [
+        "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
+        "122c4f8f-7dc4-4211-a818-95be2df9b24e",
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+        "759a6037-8fee-4639-8faa-ffac0e1f18f4",
+        "ae027a39-3ace-4d50-83ac-2f740cd20edf",
+        "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
+        "ce00b199-172a-4cdb-a183-2178407d04a7",
+        "ea64d801-972c-4519-9a34-85fea7f8d776",
+        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
+      ],
+      "branches": [
+        "main",
+        "feat/c64-model-b-symbol-nodes",
+        "feat/c30-authorcount-ownership",
+        "fix/c32-data-contract",
+        "feat/per-symbol-utilization-blast-radius",
+        "feat/c52-utilization-metric",
+        "feat/c54-barrel-resolved-utilization",
+        "fix/C-71-dashboard-lifetime",
+        "feat/status-dashboard",
+        "feat/dashboard-v1",
+        "feat/dashboard-v1.1",
+        "feat/dashboard-architecture"
+      ],
+      "netGrowth": 7317,
+      "firstTouched": "2026-07-01T01:26:08.218Z",
+      "lastTouched": "2026-07-05T18:09:01.311Z",
+      "coChange": [
+        {
+          "path": "dashboard/src/App.tsx",
+          "count": 8
+        },
+        {
+          "path": "packages/cli/src/commands/dashboard-payload.ts",
+          "count": 8
+        },
+        {
+          "path": "packages/graph/src/index-metrics.ts",
+          "count": 6
+        },
+        {
+          "path": "packages/cli/src/commands/dashboard-node-metrics.ts",
+          "count": 6
+        },
+        {
+          "path": "packages/cli/src/commands/graph-dashboard.ts",
+          "count": 6
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report-types.ts",
+          "count": 5
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
+          "ts": "2026-07-02T21:48:03.467Z",
+          "loc": [
+            239,
+            347388,
+            2134
+          ]
+        },
+        {
+          "session": "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
+          "ts": "2026-07-02T21:48:14.480Z",
+          "loc": [
+            239,
+            356955,
+            1795
+          ]
+        },
+        {
+          "session": "122c4f8f-7dc4-4211-a818-95be2df9b24e",
+          "ts": "2026-07-01T16:08:37.274Z",
+          "loc": [
+            240,
+            4033981,
+            2103
+          ]
+        },
+        {
+          "session": "122c4f8f-7dc4-4211-a818-95be2df9b24e",
+          "ts": "2026-07-01T16:37:55.294Z",
+          "loc": [
+            240,
+            6321946,
+            1795
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T15:44:31.977Z",
+          "loc": [
+            247,
+            913338,
+            2181
+          ]
+        },
+        {
+          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+          "ts": "2026-07-04T14:42:37.801Z",
+          "loc": [
+            252,
+            1474873,
+            2021
+          ]
+        },
+        {
+          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+          "ts": "2026-07-04T14:42:42.822Z",
+          "loc": [
+            252,
+            1486076,
+            2054
+          ]
+        },
+        {
+          "session": "759a6037-8fee-4639-8faa-ffac0e1f18f4",
+          "ts": "2026-07-01T10:33:10.942Z",
+          "loc": [
+            253,
+            1939168,
+            2012
+          ]
+        },
+        {
+          "session": "759a6037-8fee-4639-8faa-ffac0e1f18f4",
+          "ts": "2026-07-01T10:33:22.342Z",
+          "loc": [
+            253,
+            1947193,
+            1824
+          ]
+        },
+        {
+          "session": "759a6037-8fee-4639-8faa-ffac0e1f18f4",
+          "ts": "2026-07-01T11:20:56.216Z",
+          "loc": [
+            253,
+            3566963,
+            1898
+          ]
+        },
+        {
+          "session": "759a6037-8fee-4639-8faa-ffac0e1f18f4",
+          "ts": "2026-07-01T11:21:04.412Z",
+          "loc": [
+            253,
+            3572786,
+            1786
+          ]
+        },
+        {
+          "session": "ae027a39-3ace-4d50-83ac-2f740cd20edf",
+          "ts": "2026-07-03T23:01:35.645Z",
+          "loc": [
+            262,
+            1500149,
+            3196
+          ]
+        },
+        {
+          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
+          "ts": "2026-07-03T20:00:48.004Z",
+          "loc": [
+            263,
+            410728,
+            1718
+          ]
+        },
+        {
+          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
+          "ts": "2026-07-03T21:11:26.903Z",
+          "loc": [
+            263,
+            2557542,
+            1803
+          ]
+        }
+      ]
+    },
+    {
+      "path": "CLAUDE.md",
+      "reads": 31,
+      "writes": 0,
+      "edits": 0,
+      "touches": 31,
+      "sessions": [
+        "0874f23f-0121-473d-8345-cb0b062f9a29",
+        "11f8f77f-0897-4e3b-9be0-44216dc0c056",
+        "2c393106-53bf-4905-be71-8de2c995f404",
+        "301a892f-6b99-42e8-90b8-8c86c1caa189",
+        "37cb3071-3727-44d1-bece-ad1b95707264",
+        "3891b15d-5a33-4499-b806-6a2e0a56607f",
+        "46dd0ba7-8e3c-4ea7-9b2c-148bb48f5558",
+        "4d9fdb06-15e4-46d5-92b7-327a52a736da",
+        "50978d72-750f-4096-885b-74907b405c63",
+        "5ab5b882-fc8c-4206-bec4-57d1fa911118",
+        "5c7f9d4e-99eb-497f-947c-c771353bc5e6",
+        "6adbd243-a967-457a-9ecf-49e663f0ee8c",
+        "6e7e2553-36d7-4add-b3fb-8dfa202cc90e",
+        "6f5a01a2-3694-4590-8dcd-460fe95e5814",
+        "6fd3d861-c961-48ef-93e7-8560e4959478",
+        "8095f5b6-a25f-4734-88e0-a64d8e36f312",
+        "8a345510-08e9-4367-ba6a-ba7d97b2ba45",
+        "8c4519c6-2287-42dc-b1e6-1b15145ce3de",
+        "9cc385ba-8f06-4212-9053-3cc28ec3465e",
+        "b112a899-2598-4fcb-9183-682f19677ac8",
+        "b90a7236-3a1a-48ca-9123-7f11c591e385",
+        "cb01a4a6-3f22-4adb-869b-90930c2160a0",
+        "cce60266-14be-446a-b647-a16706d36b9f",
+        "dbeedcdd-1655-4261-a939-501ca029755f",
+        "dd91920f-a568-40bc-92fd-0223d21a54e9",
+        "e59d4191-2455-4767-a4e9-62dcb3426e7a",
+        "e7c0068b-e4ac-404d-94a3-d481f3fd33c8",
+        "f4ee3486-3c72-4b4c-997b-6972c7ffb539",
+        "fb9b9dd9-85f8-470e-806d-19ed704c97d2",
+        "fc5fdeca-daba-4c3f-9f25-aa130ee83e00",
+        "fd2da2cb-c15e-4773-97c5-daf48e83e939"
+      ],
+      "branches": [
+        "feat/c88-conventions"
+      ],
+      "netGrowth": 0,
+      "firstTouched": "2026-07-07T01:52:31.309Z",
+      "lastTouched": "2026-07-07T02:00:53.749Z",
+      "coChange": [],
+      "touchLocs": []
+    },
+    {
+      "path": "packages/graph/src/index-metrics.ts",
+      "reads": 8,
+      "writes": 1,
+      "edits": 22,
+      "touches": 31,
+      "sessions": [
+        "122c4f8f-7dc4-4211-a818-95be2df9b24e",
+        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+        "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+        "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff",
+        "ae027a39-3ace-4d50-83ac-2f740cd20edf",
+        "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
+        "ea64d801-972c-4519-9a34-85fea7f8d776"
+      ],
+      "branches": [
+        "main",
+        "feat/c64-model-b-symbol-nodes",
+        "feat/c65-function-local-deadcode",
+        "feat/c66-growth-risk-loop-depth",
+        "feat/c58-per-symbol-complexity",
+        "feat/fingerprint-incremental-index",
+        "feat/per-symbol-utilization-blast-radius",
+        "fix/C-71-lifetime-window"
+      ],
+      "netGrowth": 8273,
+      "firstTouched": "2026-06-05T18:42:49.819Z",
+      "lastTouched": "2026-07-05T17:43:09.284Z",
+      "coChange": [
+        {
+          "path": "packages/graph/src/indexer.ts",
+          "count": 7
+        },
+        {
+          "path": "dashboard/src/types.ts",
+          "count": 6
+        },
+        {
+          "path": "dashboard/src/App.tsx",
+          "count": 5
+        },
+        {
+          "path": "packages/cli/src/commands/dashboard-payload.ts",
+          "count": 5
+        },
+        {
+          "path": "packages/cli/src/commands/dashboard-node-metrics.ts",
+          "count": 5
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report-types.ts",
+          "count": 4
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "122c4f8f-7dc4-4211-a818-95be2df9b24e",
+          "ts": "2026-07-01T16:31:20.273Z",
+          "loc": [
+            240,
+            5552706,
+            1667
+          ]
+        },
+        {
+          "session": "122c4f8f-7dc4-4211-a818-95be2df9b24e",
+          "ts": "2026-07-01T16:31:29.088Z",
+          "loc": [
+            240,
+            5560430,
+            2158
+          ]
+        },
+        {
+          "session": "122c4f8f-7dc4-4211-a818-95be2df9b24e",
+          "ts": "2026-07-01T16:31:43.697Z",
+          "loc": [
+            240,
+            5568667,
+            2395
+          ]
+        },
+        {
+          "session": "122c4f8f-7dc4-4211-a818-95be2df9b24e",
+          "ts": "2026-07-01T16:32:56.964Z",
+          "loc": [
+            240,
+            5646151,
+            2366
+          ]
+        },
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:24:34.478Z",
+          "loc": [
+            243,
+            518490,
+            2468
+          ]
+        },
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:24:48.456Z",
+          "loc": [
+            243,
+            526635,
+            3605
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T15:40:55.719Z",
+          "loc": [
+            247,
+            650804,
+            2381
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T15:41:01.098Z",
+          "loc": [
+            247,
+            663139,
+            1772
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T16:22:46.390Z",
+          "loc": [
+            247,
+            2665994,
+            1782
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T16:22:51.217Z",
+          "loc": [
+            247,
+            2676671,
+            1935
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T17:06:43.293Z",
+          "loc": [
+            247,
+            3828247,
+            1684
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T17:06:50.668Z",
+          "loc": [
+            247,
+            3838877,
+            1825
+          ]
+        },
+        {
+          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+          "ts": "2026-07-04T14:15:20.052Z",
+          "loc": [
+            252,
+            846372,
+            1956
+          ]
+        },
+        {
+          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+          "ts": "2026-07-04T14:15:26.667Z",
+          "loc": [
+            252,
+            857191,
+            2581
+          ]
+        }
+      ]
+    },
+    {
       "path": "dashboard/src/views/OverviewView.tsx",
       "reads": 5,
       "writes": 1,
@@ -12193,7 +13042,11 @@ export const sessionSignals = {
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
       "branches": [
-        "HEAD"
+        "main",
+        "fix/c32-data-contract",
+        "feat/status-dashboard",
+        "feat/dashboard-v1.1",
+        "feat/dashboard-architecture"
       ],
       "netGrowth": 8417,
       "firstTouched": "2026-07-01T01:28:37.797Z",
@@ -12368,7 +13221,13 @@ export const sessionSignals = {
         "fd633b58-2657-4859-bca3-03c57a0277f0"
       ],
       "branches": [
-        "HEAD"
+        "feat/c64-model-b-symbol-nodes",
+        "feat/c65-dynamic-imports",
+        "feat/c63-symbol-line-spans",
+        "feat/edge-weight-reference-count",
+        "feat/per-symbol-utilization-blast-radius",
+        "fix/c70-multihop-reexport-references",
+        "feat/c79-symbol-signatures"
       ],
       "netGrowth": 17305,
       "firstTouched": "2026-07-01T17:32:11.733Z",
@@ -12573,179 +13432,183 @@ export const sessionSignals = {
       "touchLocs": []
     },
     {
-      "path": "packages/graph/src/index-metrics.ts",
-      "reads": 8,
+      "path": "packages/cli/src/commands/dashboard-node-metrics.ts",
+      "reads": 10,
       "writes": 1,
-      "edits": 18,
-      "touches": 27,
+      "edits": 14,
+      "touches": 25,
       "sessions": [
-        "122c4f8f-7dc4-4211-a818-95be2df9b24e",
-        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+        "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
         "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+        "5abbb0ce-143a-4089-9d99-16de251fa361",
         "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-        "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-        "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff",
         "ae027a39-3ace-4d50-83ac-2f740cd20edf",
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
         "ea64d801-972c-4519-9a34-85fea7f8d776"
       ],
       "branches": [
-        "HEAD"
+        "feat/c64-model-b-symbol-nodes",
+        "feat/graph-context-spike",
+        "feat/c58-per-symbol-complexity",
+        "main",
+        "feat/per-symbol-utilization-blast-radius",
+        "feat/c52-utilization-metric",
+        "feat/c54-barrel-resolved-utilization"
       ],
-      "netGrowth": 7245,
-      "firstTouched": "2026-06-05T18:42:49.819Z",
-      "lastTouched": "2026-07-05T17:19:39.966Z",
+      "netGrowth": 9538,
+      "firstTouched": "2026-07-02T21:54:34.146Z",
+      "lastTouched": "2026-07-05T17:30:52.883Z",
       "coChange": [
         {
-          "path": "packages/graph/src/indexer.ts",
+          "path": "dashboard/src/types.ts",
           "count": 6
         },
         {
-          "path": "dashboard/src/types.ts",
-          "count": 5
-        },
-        {
-          "path": "packages/cli/src/commands/dashboard-node-metrics.ts",
+          "path": "packages/graph/src/index-metrics.ts",
           "count": 5
         },
         {
           "path": "dashboard/src/App.tsx",
-          "count": 4
+          "count": 5
         },
         {
           "path": "packages/cli/src/commands/dashboard-payload.ts",
+          "count": 5
+        },
+        {
+          "path": "packages/graph/src/index.ts",
           "count": 4
         },
         {
-          "path": "packages/graph/src/types.ts",
+          "path": "packages/cli/src/__tests__/dashboard-metrics.test.ts",
           "count": 4
         }
       ],
       "touchLocs": [
         {
-          "session": "122c4f8f-7dc4-4211-a818-95be2df9b24e",
-          "ts": "2026-07-01T16:31:20.273Z",
+          "session": "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
+          "ts": "2026-07-02T21:54:34.146Z",
           "loc": [
-            240,
-            5552706,
-            1667
-          ]
-        },
-        {
-          "session": "122c4f8f-7dc4-4211-a818-95be2df9b24e",
-          "ts": "2026-07-01T16:31:29.088Z",
-          "loc": [
-            240,
-            5560430,
-            2158
-          ]
-        },
-        {
-          "session": "122c4f8f-7dc4-4211-a818-95be2df9b24e",
-          "ts": "2026-07-01T16:31:43.697Z",
-          "loc": [
-            240,
-            5568667,
-            2395
-          ]
-        },
-        {
-          "session": "122c4f8f-7dc4-4211-a818-95be2df9b24e",
-          "ts": "2026-07-01T16:32:56.964Z",
-          "loc": [
-            240,
-            5646151,
-            2366
-          ]
-        },
-        {
-          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-          "ts": "2026-06-30T22:24:34.478Z",
-          "loc": [
-            243,
-            518490,
-            2468
-          ]
-        },
-        {
-          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-          "ts": "2026-06-30T22:24:48.456Z",
-          "loc": [
-            243,
-            526635,
-            3605
+            239,
+            1506726,
+            4044
           ]
         },
         {
           "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T15:40:55.719Z",
+          "ts": "2026-07-04T15:43:34.709Z",
           "loc": [
             247,
-            650804,
-            2381
+            846282,
+            3478
           ]
         },
         {
           "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T15:41:01.098Z",
+          "ts": "2026-07-04T15:43:56.099Z",
           "loc": [
             247,
-            663139,
-            1772
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T16:22:46.390Z",
-          "loc": [
-            247,
-            2665994,
-            1782
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T16:22:51.217Z",
-          "loc": [
-            247,
-            2676671,
-            1935
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T17:06:43.293Z",
-          "loc": [
-            247,
-            3828247,
-            1684
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T17:06:50.668Z",
-          "loc": [
-            247,
-            3838877,
-            1825
+            866715,
+            5449
           ]
         },
         {
           "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-          "ts": "2026-07-04T14:15:20.052Z",
+          "ts": "2026-07-04T14:15:52.075Z",
           "loc": [
             252,
-            846372,
-            1956
+            898321,
+            2361
           ]
         },
         {
           "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-          "ts": "2026-07-04T14:15:26.667Z",
+          "ts": "2026-07-04T14:16:04.359Z",
           "loc": [
             252,
-            857191,
-            2581
+            911272,
+            3995
+          ]
+        },
+        {
+          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+          "ts": "2026-07-04T14:42:50.813Z",
+          "loc": [
+            252,
+            1498437,
+            2236
+          ]
+        },
+        {
+          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+          "ts": "2026-07-04T14:43:00.892Z",
+          "loc": [
+            252,
+            1509118,
+            1984
+          ]
+        },
+        {
+          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+          "ts": "2026-07-04T14:43:06.483Z",
+          "loc": [
+            252,
+            1521602,
+            2331
+          ]
+        },
+        {
+          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+          "ts": "2026-07-04T14:43:20.137Z",
+          "loc": [
+            252,
+            1535637,
+            4150
+          ]
+        },
+        {
+          "session": "ae027a39-3ace-4d50-83ac-2f740cd20edf",
+          "ts": "2026-07-03T23:00:16.276Z",
+          "loc": [
+            262,
+            1400787,
+            6738
+          ]
+        },
+        {
+          "session": "ae027a39-3ace-4d50-83ac-2f740cd20edf",
+          "ts": "2026-07-03T23:09:44.422Z",
+          "loc": [
+            262,
+            2546557,
+            3684
+          ]
+        },
+        {
+          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
+          "ts": "2026-07-03T19:59:59.177Z",
+          "loc": [
+            263,
+            367021,
+            1615
+          ]
+        },
+        {
+          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
+          "ts": "2026-07-03T20:00:02.964Z",
+          "loc": [
+            263,
+            372671,
+            1639
+          ]
+        },
+        {
+          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
+          "ts": "2026-07-03T21:11:18.972Z",
+          "loc": [
+            263,
+            2548851,
+            1760
           ]
         }
       ]
@@ -12763,7 +13626,8 @@ export const sessionSignals = {
         "ce00b199-172a-4cdb-a183-2178407d04a7"
       ],
       "branches": [
-        "HEAD"
+        "main",
+        "feat/edge-weight-reference-count"
       ],
       "netGrowth": 1802,
       "firstTouched": "2026-07-01T13:08:06.607Z",
@@ -12934,7 +13798,7 @@ export const sessionSignals = {
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
       ],
       "branches": [
-        "HEAD"
+        "main"
       ],
       "netGrowth": 5193,
       "firstTouched": "2026-07-02T18:04:49.682Z",
@@ -13095,176 +13959,519 @@ export const sessionSignals = {
       ]
     },
     {
-      "path": "packages/cli/src/commands/dashboard-node-metrics.ts",
-      "reads": 8,
-      "writes": 1,
-      "edits": 14,
+      "path": "packages/graph/src/churn.ts",
+      "reads": 4,
+      "writes": 0,
+      "edits": 19,
       "touches": 23,
       "sessions": [
-        "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
-        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-        "ae027a39-3ace-4d50-83ac-2f740cd20edf",
-        "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
+        "122c4f8f-7dc4-4211-a818-95be2df9b24e",
+        "759a6037-8fee-4639-8faa-ffac0e1f18f4",
+        "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
         "ea64d801-972c-4519-9a34-85fea7f8d776"
       ],
       "branches": [
-        "HEAD"
+        "main",
+        "feat/c30-authorcount-ownership",
+        "fix/C-71-lifetime-window"
       ],
-      "netGrowth": 9538,
-      "firstTouched": "2026-07-02T21:54:34.146Z",
-      "lastTouched": "2026-07-05T17:19:58.820Z",
+      "netGrowth": 6739,
+      "firstTouched": "2026-07-01T10:31:52.236Z",
+      "lastTouched": "2026-07-05T17:55:31.204Z",
       "coChange": [
         {
-          "path": "dashboard/src/types.ts",
-          "count": 5
-        },
-        {
-          "path": "packages/graph/src/index-metrics.ts",
-          "count": 5
-        },
-        {
-          "path": "packages/cli/src/__tests__/dashboard-metrics.test.ts",
-          "count": 4
-        },
-        {
-          "path": "dashboard/src/components/dossier-metrics.tsx",
-          "count": 4
+          "path": "packages/cli/src/commands/graph-report-types.ts",
+          "count": 3
         },
         {
           "path": "dashboard/src/App.tsx",
-          "count": 4
+          "count": 3
+        },
+        {
+          "path": "dashboard/src/types.ts",
+          "count": 3
         },
         {
           "path": "packages/cli/src/commands/dashboard-payload.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/__tests__/graph-dashboard.test.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/graph/src/index-metrics.ts",
+          "count": 3
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "122c4f8f-7dc4-4211-a818-95be2df9b24e",
+          "ts": "2026-07-01T16:30:55.743Z",
+          "loc": [
+            240,
+            5511494,
+            4322
+          ]
+        },
+        {
+          "session": "122c4f8f-7dc4-4211-a818-95be2df9b24e",
+          "ts": "2026-07-01T16:31:04.888Z",
+          "loc": [
+            240,
+            5529689,
+            2359
+          ]
+        },
+        {
+          "session": "122c4f8f-7dc4-4211-a818-95be2df9b24e",
+          "ts": "2026-07-01T16:32:47.647Z",
+          "loc": [
+            240,
+            5627275,
+            4143
+          ]
+        },
+        {
+          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+          "ts": "2026-07-01T21:01:43.931Z",
+          "loc": [
+            258,
+            342290,
+            1984
+          ]
+        },
+        {
+          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+          "ts": "2026-07-01T21:01:55.332Z",
+          "loc": [
+            258,
+            356275,
+            3499
+          ]
+        },
+        {
+          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+          "ts": "2026-07-01T21:02:01.887Z",
+          "loc": [
+            258,
+            375260,
+            2101
+          ]
+        },
+        {
+          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+          "ts": "2026-07-01T21:02:13.232Z",
+          "loc": [
+            258,
+            393531,
+            2665
+          ]
+        },
+        {
+          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+          "ts": "2026-07-01T21:02:27.700Z",
+          "loc": [
+            258,
+            411790,
+            3825
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:41:33.094Z",
+          "loc": [
+            268,
+            559954,
+            2330
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:41:36.837Z",
+          "loc": [
+            268,
+            564995,
+            1800
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:41:40.409Z",
+          "loc": [
+            268,
+            568476,
+            1727
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:41:47.495Z",
+          "loc": [
+            268,
+            573259,
+            2546
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:41:57.676Z",
+          "loc": [
+            268,
+            579272,
+            3690
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:42:04.061Z",
+          "loc": [
+            268,
+            589579,
+            2170
+          ]
+        }
+      ]
+    },
+    {
+      "path": "packages/graph/src/index.ts",
+      "reads": 11,
+      "writes": 0,
+      "edits": 11,
+      "touches": 22,
+      "sessions": [
+        "1fb71eef-3a13-4c9b-b711-fd6fd2f89e42",
+        "301a892f-6b99-42e8-90b8-8c86c1caa189",
+        "44713a0a-b366-49ac-8ddb-4ce746f17472",
+        "13ba3709-ff7f-4cf7-903d-9e54c208f6bb",
+        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+        "26f5e28e-f687-42d8-bb19-cbbee69709c1",
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+        "5abbb0ce-143a-4089-9d99-16de251fa361",
+        "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+        "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
+        "ea64d801-972c-4519-9a34-85fea7f8d776",
+        "f6324d6b-6972-4f50-9c89-21bd31535746"
+      ],
+      "branches": [
+        "feat/c88-conventions",
+        "main",
+        "feat/c89-seeded-pagerank-relevance",
+        "feat/c63-coverage-ingest",
+        "feat/graph-context-spike",
+        "feat/schema-healing-aliases",
+        "feat/c55-barrel-resolved-utilization",
+        "packages/render/src/index.ts",
+        "fix/C-71-lifetime-window",
+        "feat/c88-capability-embeddings"
+      ],
+      "netGrowth": 2053,
+      "firstTouched": "2026-06-30T13:47:41.674Z",
+      "lastTouched": "2026-07-07T01:56:38.137Z",
+      "coChange": [
+        {
+          "path": "packages/cli/src/commands/graph-report.ts",
+          "count": 4
+        },
+        {
+          "path": "packages/graph/src/types.ts",
+          "count": 4
+        },
+        {
+          "path": "packages/graph/src/index-metrics.ts",
+          "count": 4
+        },
+        {
+          "path": "packages/graph/src/indexer.ts",
+          "count": 4
+        },
+        {
+          "path": "packages/cli/src/commands/graph-cli.ts",
+          "count": 4
+        },
+        {
+          "path": "packages/cli/src/commands/dashboard-node-metrics.ts",
           "count": 4
         }
       ],
       "touchLocs": [
         {
-          "session": "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
-          "ts": "2026-07-02T21:54:34.146Z",
+          "session": "13ba3709-ff7f-4cf7-903d-9e54c208f6bb",
+          "ts": "2026-07-07T01:33:03.236Z",
           "loc": [
-            239,
-            1506726,
-            4044
+            241,
+            617616,
+            2646
+          ]
+        },
+        {
+          "session": "13ba3709-ff7f-4cf7-903d-9e54c208f6bb",
+          "ts": "2026-07-07T01:33:18.366Z",
+          "loc": [
+            241,
+            625745,
+            2646
+          ]
+        },
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:24:26.714Z",
+          "loc": [
+            243,
+            509423,
+            1904
+          ]
+        },
+        {
+          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
+          "ts": "2026-07-06T17:20:56.484Z",
+          "loc": [
+            246,
+            485739,
+            1705
           ]
         },
         {
           "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T15:43:34.709Z",
+          "ts": "2026-07-04T17:37:55.384Z",
           "loc": [
             247,
-            846282,
-            3478
+            4912209,
+            1860
+          ]
+        },
+        {
+          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+          "ts": "2026-06-30T13:47:47.963Z",
+          "loc": [
+            256,
+            1008726,
+            1718
+          ]
+        },
+        {
+          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+          "ts": "2026-06-30T13:51:19.912Z",
+          "loc": [
+            256,
+            1227911,
+            1635
+          ]
+        },
+        {
+          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
+          "ts": "2026-07-03T21:40:24.496Z",
+          "loc": [
+            263,
+            3175133,
+            1657
+          ]
+        },
+        {
+          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
+          "ts": "2026-07-03T21:49:16.934Z",
+          "loc": [
+            263,
+            4345076,
+            1663
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:43:38.448Z",
+          "loc": [
+            268,
+            717692,
+            1885
+          ]
+        },
+        {
+          "session": "f6324d6b-6972-4f50-9c89-21bd31535746",
+          "ts": "2026-07-06T23:36:32.233Z",
+          "loc": [
+            271,
+            533819,
+            2066
+          ]
+        }
+      ]
+    },
+    {
+      "path": "packages/cli/src/commands/graph-report-format.ts",
+      "reads": 3,
+      "writes": 0,
+      "edits": 19,
+      "touches": 22,
+      "sessions": [
+        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+        "822b9538-5851-4433-8835-ff1cc1d15c3a",
+        "ea64d801-972c-4519-9a34-85fea7f8d776"
+      ],
+      "branches": [
+        "main",
+        "feat/c65-unused-exports",
+        "feat/c65-dead-modules",
+        "feat/c66-growth-risk-loop-depth",
+        "feat/c66-recursion-patterns",
+        "feat/c63-coverage-surface",
+        "fix/c44-relative-import-resolution",
+        "fix/C-71-lifetime-window"
+      ],
+      "netGrowth": 4704,
+      "firstTouched": "2026-06-30T22:27:47.281Z",
+      "lastTouched": "2026-07-05T17:45:53.578Z",
+      "coChange": [
+        {
+          "path": "packages/cli/src/commands/graph-report-types.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report-sections.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/graph/src/index.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/graph/src/index-metrics.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/graph/src/indexer.ts",
+          "count": 3
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:28:53.803Z",
+          "loc": [
+            243,
+            815659,
+            1889
+          ]
+        },
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:28:59.851Z",
+          "loc": [
+            243,
+            825416,
+            1787
+          ]
+        },
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:29:06.861Z",
+          "loc": [
+            243,
+            835319,
+            2222
           ]
         },
         {
           "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T15:43:56.099Z",
+          "ts": "2026-07-04T16:14:08.903Z",
           "loc": [
             247,
-            866715,
-            5449
+            2406978,
+            1705
           ]
         },
         {
-          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-          "ts": "2026-07-04T14:15:52.075Z",
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T16:14:13.085Z",
           "loc": [
-            252,
-            898321,
-            2361
+            247,
+            2418098,
+            1818
           ]
         },
         {
-          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-          "ts": "2026-07-04T14:16:04.359Z",
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T16:14:20.887Z",
           "loc": [
-            252,
-            911272,
-            3995
+            247,
+            2428490,
+            2642
           ]
         },
         {
-          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-          "ts": "2026-07-04T14:42:50.813Z",
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T16:50:03.940Z",
           "loc": [
-            252,
-            1498437,
-            2236
+            247,
+            3447695,
+            1739
           ]
         },
         {
-          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-          "ts": "2026-07-04T14:43:00.892Z",
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T16:50:09.911Z",
           "loc": [
-            252,
-            1509118,
-            1984
+            247,
+            3459899,
+            1916
           ]
         },
         {
-          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-          "ts": "2026-07-04T14:43:06.483Z",
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T16:50:24.397Z",
           "loc": [
-            252,
-            1521602,
-            2331
+            247,
+            3471559,
+            2417
           ]
         },
         {
-          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-          "ts": "2026-07-04T14:43:20.137Z",
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T17:08:15.876Z",
           "loc": [
-            252,
-            1535637,
-            4150
+            247,
+            3934723,
+            1775
           ]
         },
         {
-          "session": "ae027a39-3ace-4d50-83ac-2f740cd20edf",
-          "ts": "2026-07-03T23:00:16.276Z",
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T17:08:21.334Z",
           "loc": [
-            262,
-            1400787,
-            6738
+            247,
+            3946820,
+            2010
           ]
         },
         {
-          "session": "ae027a39-3ace-4d50-83ac-2f740cd20edf",
-          "ts": "2026-07-03T23:09:44.422Z",
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T17:08:28.645Z",
           "loc": [
-            262,
-            2546557,
-            3684
+            247,
+            3960585,
+            2409
           ]
         },
         {
-          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
-          "ts": "2026-07-03T19:59:59.177Z",
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T17:17:52.653Z",
           "loc": [
-            263,
-            367021,
-            1615
+            247,
+            4322080,
+            1912
           ]
         },
         {
-          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
-          "ts": "2026-07-03T20:00:02.964Z",
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T17:18:03.675Z",
           "loc": [
-            263,
-            372671,
-            1639
-          ]
-        },
-        {
-          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
-          "ts": "2026-07-03T21:11:18.972Z",
-          "loc": [
-            263,
-            2548851,
-            1760
+            247,
+            4338861,
+            2117
           ]
         }
       ]
@@ -13286,7 +14493,11 @@ export const sessionSignals = {
       ],
       "branches": [
         "feat/c88-conventions",
-        "HEAD"
+        "main",
+        "feat/c63-coverage-ingest",
+        "feat/fingerprint-incremental-index",
+        "feat/per-symbol-utilization-blast-radius",
+        "feat/c88-capability-embeddings"
       ],
       "netGrowth": 975,
       "firstTouched": "2026-06-02T20:15:37.218Z",
@@ -13460,7 +14671,11 @@ export const sessionSignals = {
         "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff"
       ],
       "branches": [
-        "HEAD"
+        "feat/c64-model-b-symbol-nodes",
+        "feat/c58-per-symbol-complexity",
+        "feat/schema-healing-aliases",
+        "feat/edge-weight-reference-count",
+        "feat/fingerprint-incremental-index"
       ],
       "netGrowth": 4428,
       "firstTouched": "2026-06-02T20:17:39.608Z",
@@ -13621,317 +14836,175 @@ export const sessionSignals = {
       ]
     },
     {
-      "path": "packages/cli/src/commands/graph-report-format.ts",
+      "path": "packages/cli/src/commands/graph-context-build.ts",
       "reads": 2,
-      "writes": 0,
-      "edits": 18,
+      "writes": 1,
+      "edits": 17,
       "touches": 20,
       "sessions": [
-        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-        "822b9538-5851-4433-8835-ff1cc1d15c3a"
+        "26f5e28e-f687-42d8-bb19-cbbee69709c1",
+        "5abbb0ce-143a-4089-9d99-16de251fa361",
+        "fd633b58-2657-4859-bca3-03c57a0277f0"
       ],
       "branches": [
-        "HEAD"
+        "feat/c89-seeded-pagerank-relevance",
+        "feat/graph-context-spike",
+        "feat/c79-symbol-signatures"
       ],
-      "netGrowth": 4593,
-      "firstTouched": "2026-06-30T22:27:47.281Z",
-      "lastTouched": "2026-07-04T17:48:55.633Z",
+      "netGrowth": 11375,
+      "firstTouched": "2026-07-05T17:35:54.115Z",
+      "lastTouched": "2026-07-06T17:23:33.280Z",
       "coChange": [
         {
-          "path": "packages/cli/src/commands/graph-report-types.ts",
-          "count": 2
+          "path": "packages/cli/src/commands/graph-context.ts",
+          "count": 3
         },
         {
-          "path": "packages/cli/src/commands/graph-report.ts",
-          "count": 2
+          "path": "packages/cli/src/__tests__/graph-context-build.test.ts",
+          "count": 3
         },
         {
-          "path": "packages/cli/src/commands/graph-report-sections.ts",
-          "count": 2
+          "path": "packages/cli/src/commands/graph-context-format.ts",
+          "count": 3
         },
         {
           "path": "packages/graph/src/index.ts",
           "count": 2
         },
         {
-          "path": "packages/graph/src/database.ts",
+          "path": "packages/cli/src/commands/graph-context-bundle.ts",
           "count": 2
         },
         {
-          "path": "packages/graph/src/index-metrics.ts",
+          "path": "packages/cli/src/__tests__/graph-context-bundle.test.ts",
           "count": 2
         }
       ],
       "touchLocs": [
         {
-          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-          "ts": "2026-06-30T22:28:53.803Z",
+          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
+          "ts": "2026-07-06T17:23:02.948Z",
           "loc": [
-            243,
-            815659,
-            1889
-          ]
-        },
-        {
-          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-          "ts": "2026-06-30T22:28:59.851Z",
-          "loc": [
-            243,
-            825416,
-            1787
-          ]
-        },
-        {
-          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-          "ts": "2026-06-30T22:29:06.861Z",
-          "loc": [
-            243,
-            835319,
-            2222
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T16:14:08.903Z",
-          "loc": [
-            247,
-            2406978,
-            1705
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T16:14:13.085Z",
-          "loc": [
-            247,
-            2418098,
-            1818
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T16:14:20.887Z",
-          "loc": [
-            247,
-            2428490,
-            2642
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T16:50:03.940Z",
-          "loc": [
-            247,
-            3447695,
-            1739
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T16:50:09.911Z",
-          "loc": [
-            247,
-            3459899,
-            1916
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T16:50:24.397Z",
-          "loc": [
-            247,
-            3471559,
-            2417
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T17:08:15.876Z",
-          "loc": [
-            247,
-            3934723,
-            1775
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T17:08:21.334Z",
-          "loc": [
-            247,
-            3946820,
-            2010
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T17:08:28.645Z",
-          "loc": [
-            247,
-            3960585,
-            2409
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T17:17:52.653Z",
-          "loc": [
-            247,
-            4322080,
-            1912
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T17:18:03.675Z",
-          "loc": [
-            247,
-            4338861,
-            2117
-          ]
-        }
-      ]
-    },
-    {
-      "path": "packages/graph/src/index.ts",
-      "reads": 9,
-      "writes": 0,
-      "edits": 10,
-      "touches": 19,
-      "sessions": [
-        "1fb71eef-3a13-4c9b-b711-fd6fd2f89e42",
-        "301a892f-6b99-42e8-90b8-8c86c1caa189",
-        "44713a0a-b366-49ac-8ddb-4ce746f17472",
-        "13ba3709-ff7f-4cf7-903d-9e54c208f6bb",
-        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-        "26f5e28e-f687-42d8-bb19-cbbee69709c1",
-        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-        "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-        "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
-        "f6324d6b-6972-4f50-9c89-21bd31535746"
-      ],
-      "branches": [
-        "feat/c88-conventions",
-        "HEAD"
-      ],
-      "netGrowth": 2017,
-      "firstTouched": "2026-06-30T13:47:41.674Z",
-      "lastTouched": "2026-07-07T01:56:38.137Z",
-      "coChange": [
-        {
-          "path": "packages/graph/src/types.ts",
-          "count": 4
-        },
-        {
-          "path": "packages/cli/src/read-api/reader.ts",
-          "count": 3
-        },
-        {
-          "path": "packages/cli/src/read-api/contract.ts",
-          "count": 3
-        },
-        {
-          "path": "packages/cli/src/commands/graph-report.ts",
-          "count": 3
-        },
-        {
-          "path": "packages/graph/src/database.ts",
-          "count": 3
-        },
-        {
-          "path": "packages/graph/src/index-metrics.ts",
-          "count": 3
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "13ba3709-ff7f-4cf7-903d-9e54c208f6bb",
-          "ts": "2026-07-07T01:33:03.236Z",
-          "loc": [
-            241,
-            617616,
-            2646
-          ]
-        },
-        {
-          "session": "13ba3709-ff7f-4cf7-903d-9e54c208f6bb",
-          "ts": "2026-07-07T01:33:18.366Z",
-          "loc": [
-            241,
-            625745,
-            2646
-          ]
-        },
-        {
-          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-          "ts": "2026-06-30T22:24:26.714Z",
-          "loc": [
-            243,
-            509423,
-            1904
+            246,
+            657837,
+            1757
           ]
         },
         {
           "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
-          "ts": "2026-07-06T17:20:56.484Z",
+          "ts": "2026-07-06T17:23:11.297Z",
           "loc": [
             246,
-            485739,
-            1705
+            661245,
+            2030
           ]
         },
         {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T17:37:55.384Z",
+          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
+          "ts": "2026-07-06T17:23:23.362Z",
           "loc": [
-            247,
-            4912209,
-            1860
+            246,
+            667620,
+            3147
           ]
         },
         {
-          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-          "ts": "2026-06-30T13:47:47.963Z",
+          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
+          "ts": "2026-07-06T17:23:33.280Z",
           "loc": [
-            256,
-            1008726,
-            1718
+            246,
+            674606,
+            2381
           ]
         },
         {
-          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-          "ts": "2026-06-30T13:51:19.912Z",
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:35:54.115Z",
           "loc": [
-            256,
-            1227911,
-            1635
+            251,
+            840654,
+            9882
           ]
         },
         {
-          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
-          "ts": "2026-07-03T21:40:24.496Z",
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:36:04.183Z",
           "loc": [
-            263,
-            3175133,
-            1657
+            251,
+            864276,
+            2409
           ]
         },
         {
-          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
-          "ts": "2026-07-03T21:49:16.934Z",
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:42:44.479Z",
           "loc": [
-            263,
-            4345076,
-            1663
+            251,
+            1138798,
+            3013
           ]
         },
         {
-          "session": "f6324d6b-6972-4f50-9c89-21bd31535746",
-          "ts": "2026-07-06T23:36:32.233Z",
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:42:51.469Z",
           "loc": [
-            271,
-            533819,
-            2066
+            251,
+            1155173,
+            2286
+          ]
+        },
+        {
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:42:56.703Z",
+          "loc": [
+            251,
+            1169586,
+            2209
+          ]
+        },
+        {
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:43:02.471Z",
+          "loc": [
+            251,
+            1185196,
+            2085
+          ]
+        },
+        {
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:43:08.499Z",
+          "loc": [
+            251,
+            1199932,
+            2179
+          ]
+        },
+        {
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:43:13.630Z",
+          "loc": [
+            251,
+            1214891,
+            2128
+          ]
+        },
+        {
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:43:17.886Z",
+          "loc": [
+            251,
+            1229353,
+            1780
+          ]
+        },
+        {
+          "session": "fd633b58-2657-4859-bca3-03c57a0277f0",
+          "ts": "2026-07-05T19:02:03.105Z",
+          "loc": [
+            272,
+            440953,
+            2227
           ]
         }
       ]
@@ -13949,7 +15022,11 @@ export const sessionSignals = {
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
       "branches": [
-        "HEAD"
+        "main",
+        "feat/per-symbol-utilization-blast-radius",
+        "feat/c37-ux-polish",
+        "feat/status-dashboard",
+        "feat/dashboard-v1.1"
       ],
       "netGrowth": 6024,
       "firstTouched": "2026-07-01T01:29:00.057Z",
@@ -14122,7 +15199,11 @@ export const sessionSignals = {
         "ae027a39-3ace-4d50-83ac-2f740cd20edf"
       ],
       "branches": [
-        "HEAD"
+        "feat/c65-function-local-deadcode",
+        "feat/c66-growth-risk-loop-depth",
+        "feat/c58-per-symbol-complexity",
+        "feat/fingerprint-incremental-index",
+        "feat/per-symbol-utilization-blast-radius"
       ],
       "netGrowth": 8102,
       "firstTouched": "2026-06-02T20:23:42.264Z",
@@ -14275,7 +15356,8 @@ export const sessionSignals = {
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
       ],
       "branches": [
-        "HEAD"
+        "main",
+        "feat/c54-module-coupling-view"
       ],
       "netGrowth": 3277,
       "firstTouched": "2026-07-03T04:55:45.024Z",
@@ -14411,7 +15493,10 @@ export const sessionSignals = {
         "f6324d6b-6972-4f50-9c89-21bd31535746"
       ],
       "branches": [
-        "HEAD"
+        "feat/c88-conventions",
+        "main",
+        "packages/cli/src/mcp/server.ts",
+        "feat/c88-capability-embeddings"
       ],
       "netGrowth": 6253,
       "firstTouched": "2026-07-06T04:31:10.744Z",
@@ -14566,7 +15651,10 @@ export const sessionSignals = {
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
       "branches": [
-        "HEAD"
+        "feat/c23-empty-window-suppress-sections",
+        "main",
+        "feat/dashboard-architecture",
+        "feat/dashboard-embed-graph"
       ],
       "netGrowth": 8923,
       "firstTouched": "2026-07-01T03:40:06.860Z",
@@ -14740,7 +15828,10 @@ export const sessionSignals = {
       ],
       "branches": [
         "feat/c88-conventions",
-        "HEAD"
+        "main",
+        "feat/schema-healing-aliases",
+        "feat/fingerprint-incremental-index",
+        "feat/per-symbol-utilization-blast-radius"
       ],
       "netGrowth": 79,
       "firstTouched": "2026-06-02T20:15:41.995Z",
@@ -14796,7 +15887,10 @@ export const sessionSignals = {
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
       ],
       "branches": [
-        "HEAD"
+        "feat/c64-model-b-symbol-nodes",
+        "feat/c58-per-symbol-complexity",
+        "main",
+        "feat/c52-utilization-metric"
       ],
       "netGrowth": 6237,
       "firstTouched": "2026-07-02T21:51:16.809Z",
@@ -14921,6 +16015,134 @@ export const sessionSignals = {
       ]
     },
     {
+      "path": "packages/graph/src/__tests__/churn.test.ts",
+      "reads": 5,
+      "writes": 0,
+      "edits": 9,
+      "touches": 14,
+      "sessions": [
+        "122c4f8f-7dc4-4211-a818-95be2df9b24e",
+        "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+        "ea64d801-972c-4519-9a34-85fea7f8d776"
+      ],
+      "branches": [
+        "main",
+        "fix/C-71-lifetime-window"
+      ],
+      "netGrowth": 6589,
+      "firstTouched": "2026-07-01T16:33:43.246Z",
+      "lastTouched": "2026-07-05T17:48:51.124Z",
+      "coChange": [
+        {
+          "path": "packages/graph/src/churn.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/graph/src/index-metrics.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report-types.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report-sections.ts",
+          "count": 2
+        },
+        {
+          "path": "dashboard/src/App.tsx",
+          "count": 2
+        },
+        {
+          "path": "dashboard/src/types.ts",
+          "count": 2
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "122c4f8f-7dc4-4211-a818-95be2df9b24e",
+          "ts": "2026-07-01T16:33:43.246Z",
+          "loc": [
+            240,
+            5676254,
+            3333
+          ]
+        },
+        {
+          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+          "ts": "2026-07-01T21:04:33.454Z",
+          "loc": [
+            258,
+            554730,
+            4538
+          ]
+        },
+        {
+          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+          "ts": "2026-07-01T21:04:49.220Z",
+          "loc": [
+            258,
+            574341,
+            2259
+          ]
+        },
+        {
+          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+          "ts": "2026-07-01T21:05:53.812Z",
+          "loc": [
+            258,
+            654242,
+            1899
+          ]
+        },
+        {
+          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+          "ts": "2026-07-01T21:06:11.749Z",
+          "loc": [
+            258,
+            665294,
+            4959
+          ]
+        },
+        {
+          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+          "ts": "2026-07-01T21:07:27.013Z",
+          "loc": [
+            258,
+            737000,
+            1927
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:48:28.774Z",
+          "loc": [
+            268,
+            1069632,
+            1970
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:48:41.987Z",
+          "loc": [
+            268,
+            1083876,
+            2685
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:48:51.124Z",
+          "loc": [
+            268,
+            1099936,
+            2878
+          ]
+        }
+      ]
+    },
+    {
       "path": "packages/cli/src/__tests__/graph-index.test.ts",
       "reads": 4,
       "writes": 0,
@@ -14934,7 +16156,15 @@ export const sessionSignals = {
         "fd633b58-2657-4859-bca3-03c57a0277f0"
       ],
       "branches": [
-        "HEAD"
+        "feat/c64-model-b-symbol-nodes",
+        "feat/c65-dynamic-imports",
+        "feat/c66-growth-risk-loop-depth",
+        "main",
+        "feat/c63-symbol-line-spans",
+        "feat/c58-per-symbol-complexity",
+        "feat/incremental-default-autoupdate-hook",
+        "feat/per-symbol-utilization-blast-radius",
+        "feat/c79-symbol-signatures"
       ],
       "netGrowth": 1852,
       "firstTouched": "2026-06-30T16:55:22.444Z",
@@ -15059,120 +16289,391 @@ export const sessionSignals = {
       ]
     },
     {
-      "path": "packages/graph/src/churn.ts",
-      "reads": 4,
-      "writes": 0,
-      "edits": 8,
-      "touches": 12,
+      "path": "packages/cli/src/__tests__/graph-context-build.test.ts",
+      "reads": 3,
+      "writes": 1,
+      "edits": 9,
+      "touches": 13,
       "sessions": [
-        "122c4f8f-7dc4-4211-a818-95be2df9b24e",
-        "759a6037-8fee-4639-8faa-ffac0e1f18f4",
-        "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-        "ea64d801-972c-4519-9a34-85fea7f8d776"
+        "26f5e28e-f687-42d8-bb19-cbbee69709c1",
+        "5abbb0ce-143a-4089-9d99-16de251fa361",
+        "fd633b58-2657-4859-bca3-03c57a0277f0"
       ],
       "branches": [
-        "HEAD"
+        "feat/c89-seeded-pagerank-relevance",
+        "feat/graph-context-spike",
+        "feat/c79-symbol-signatures"
       ],
-      "netGrowth": 6197,
-      "firstTouched": "2026-07-01T10:31:52.236Z",
-      "lastTouched": "2026-07-05T17:19:01.103Z",
+      "netGrowth": 6434,
+      "firstTouched": "2026-07-05T17:38:29.113Z",
+      "lastTouched": "2026-07-06T17:25:51.840Z",
       "coChange": [
         {
-          "path": "packages/graph/src/index-metrics.ts",
+          "path": "packages/cli/src/commands/graph-context-build.ts",
           "count": 3
         },
         {
-          "path": "packages/cli/src/commands/graph-report-types.ts",
+          "path": "packages/cli/src/commands/graph-context.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/commands/graph-context-format.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/graph/src/index.ts",
           "count": 2
         },
         {
-          "path": "dashboard/src/App.tsx",
+          "path": "packages/cli/src/commands/graph-context-bundle.ts",
           "count": 2
         },
         {
-          "path": "dashboard/src/types.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/dashboard-payload.ts",
-          "count": 2
-        },
-        {
-          "path": "dashboard/src/views/OverviewView.tsx",
+          "path": "packages/cli/src/__tests__/graph-context-bundle.test.ts",
           "count": 2
         }
       ],
       "touchLocs": [
         {
-          "session": "122c4f8f-7dc4-4211-a818-95be2df9b24e",
-          "ts": "2026-07-01T16:30:55.743Z",
+          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
+          "ts": "2026-07-06T17:25:39.032Z",
           "loc": [
-            240,
-            5511494,
-            4322
+            246,
+            780085,
+            2052
           ]
         },
         {
-          "session": "122c4f8f-7dc4-4211-a818-95be2df9b24e",
-          "ts": "2026-07-01T16:31:04.888Z",
+          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
+          "ts": "2026-07-06T17:25:51.840Z",
           "loc": [
-            240,
-            5529689,
-            2359
+            246,
+            788044,
+            2206
           ]
         },
         {
-          "session": "122c4f8f-7dc4-4211-a818-95be2df9b24e",
-          "ts": "2026-07-01T16:32:47.647Z",
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:38:29.113Z",
           "loc": [
-            240,
-            5627275,
-            4143
+            251,
+            967067,
+            6339
           ]
         },
         {
-          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-          "ts": "2026-07-01T21:01:43.931Z",
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:38:57.061Z",
           "loc": [
-            258,
-            342290,
-            1984
+            251,
+            1004511,
+            1766
           ]
         },
         {
-          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-          "ts": "2026-07-01T21:01:55.332Z",
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:44:12.062Z",
           "loc": [
-            258,
-            356275,
-            3499
+            251,
+            1308119,
+            1940
           ]
         },
         {
-          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-          "ts": "2026-07-01T21:02:01.887Z",
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:44:18.899Z",
           "loc": [
-            258,
-            375260,
-            2101
+            251,
+            1316744,
+            2510
           ]
         },
         {
-          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-          "ts": "2026-07-01T21:02:13.232Z",
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:44:25.935Z",
           "loc": [
-            258,
-            393531,
-            2665
+            251,
+            1328104,
+            2593
           ]
         },
         {
-          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-          "ts": "2026-07-01T21:02:27.700Z",
+          "session": "fd633b58-2657-4859-bca3-03c57a0277f0",
+          "ts": "2026-07-05T19:03:07.068Z",
           "loc": [
-            258,
-            411790,
-            3825
+            272,
+            537720,
+            2084
+          ]
+        },
+        {
+          "session": "fd633b58-2657-4859-bca3-03c57a0277f0",
+          "ts": "2026-07-05T19:03:13.241Z",
+          "loc": [
+            272,
+            548973,
+            2329
+          ]
+        },
+        {
+          "session": "fd633b58-2657-4859-bca3-03c57a0277f0",
+          "ts": "2026-07-05T19:03:20.894Z",
+          "loc": [
+            272,
+            559658,
+            2182
+          ]
+        }
+      ]
+    },
+    {
+      "path": "packages/cli/src/commands/graph-index.ts",
+      "reads": 5,
+      "writes": 0,
+      "edits": 7,
+      "touches": 12,
+      "sessions": [
+        "06e0ac05-9729-4fba-bb3a-e10c79c59a7c",
+        "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff",
+        "ea64d801-972c-4519-9a34-85fea7f8d776",
+        "f6324d6b-6972-4f50-9c89-21bd31535746"
+      ],
+      "branches": [
+        "feat/c7-init-json-parity",
+        "feat/fingerprint-incremental-index",
+        "fix/C-71-lifetime-window",
+        "feat/c88-capability-embeddings"
+      ],
+      "netGrowth": 1910,
+      "firstTouched": "2026-06-02T20:18:20.149Z",
+      "lastTouched": "2026-07-06T23:37:59.322Z",
+      "coChange": [
+        {
+          "path": "packages/cli/src/commands/graph-cli.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/graph/src/index.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/graph/src/index-metrics.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/graph/src/indexer.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/graph/src/types.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/graph/src/database.ts",
+          "count": 2
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff",
+          "ts": "2026-06-02T20:26:04.602Z",
+          "loc": [
+            261,
+            611174,
+            2501
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:43:46.266Z",
+          "loc": [
+            268,
+            730196,
+            2168
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:43:50.050Z",
+          "loc": [
+            268,
+            741455,
+            1875
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:43:53.894Z",
+          "loc": [
+            268,
+            751283,
+            1887
+          ]
+        },
+        {
+          "session": "f6324d6b-6972-4f50-9c89-21bd31535746",
+          "ts": "2026-07-06T23:37:47.390Z",
+          "loc": [
+            271,
+            609104,
+            3409
+          ]
+        },
+        {
+          "session": "f6324d6b-6972-4f50-9c89-21bd31535746",
+          "ts": "2026-07-06T23:37:50.606Z",
+          "loc": [
+            271,
+            623679,
+            2348
+          ]
+        },
+        {
+          "session": "f6324d6b-6972-4f50-9c89-21bd31535746",
+          "ts": "2026-07-06T23:37:59.322Z",
+          "loc": [
+            271,
+            636611,
+            3100
+          ]
+        }
+      ]
+    },
+    {
+      "path": "packages/cli/src/commands/graph-context.ts",
+      "reads": 2,
+      "writes": 1,
+      "edits": 9,
+      "touches": 12,
+      "sessions": [
+        "26f5e28e-f687-42d8-bb19-cbbee69709c1",
+        "5abbb0ce-143a-4089-9d99-16de251fa361",
+        "fd633b58-2657-4859-bca3-03c57a0277f0"
+      ],
+      "branches": [
+        "feat/c89-seeded-pagerank-relevance",
+        "feat/graph-context-spike",
+        "main",
+        "feat/c80-context-bundle"
+      ],
+      "netGrowth": 9514,
+      "firstTouched": "2026-07-05T17:37:26.832Z",
+      "lastTouched": "2026-07-06T17:21:37.869Z",
+      "coChange": [
+        {
+          "path": "packages/cli/src/commands/graph-context-build.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/__tests__/graph-context-build.test.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/commands/graph-context-format.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/graph/src/index.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/cli/src/commands/graph-context-bundle.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/cli/src/__tests__/graph-context-bundle.test.ts",
+          "count": 2
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
+          "ts": "2026-07-06T17:21:07.836Z",
+          "loc": [
+            246,
+            497911,
+            2010
+          ]
+        },
+        {
+          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
+          "ts": "2026-07-06T17:21:14.913Z",
+          "loc": [
+            246,
+            511264,
+            2565
+          ]
+        },
+        {
+          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
+          "ts": "2026-07-06T17:21:31.804Z",
+          "loc": [
+            246,
+            528477,
+            3397
+          ]
+        },
+        {
+          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
+          "ts": "2026-07-06T17:21:37.869Z",
+          "loc": [
+            246,
+            547745,
+            2135
+          ]
+        },
+        {
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:37:26.832Z",
+          "loc": [
+            251,
+            915244,
+            7577
+          ]
+        },
+        {
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:43:25.682Z",
+          "loc": [
+            251,
+            1246961,
+            2057
+          ]
+        },
+        {
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:43:29.985Z",
+          "loc": [
+            251,
+            1257310,
+            1815
+          ]
+        },
+        {
+          "session": "fd633b58-2657-4859-bca3-03c57a0277f0",
+          "ts": "2026-07-05T21:40:21.005Z",
+          "loc": [
+            272,
+            1263758,
+            3358
+          ]
+        },
+        {
+          "session": "fd633b58-2657-4859-bca3-03c57a0277f0",
+          "ts": "2026-07-05T21:40:38.799Z",
+          "loc": [
+            272,
+            1277567,
+            5717
+          ]
+        },
+        {
+          "session": "fd633b58-2657-4859-bca3-03c57a0277f0",
+          "ts": "2026-07-05T21:40:54.372Z",
+          "loc": [
+            272,
+            1302386,
+            5226
           ]
         }
       ]
@@ -15188,7 +16689,7 @@ export const sessionSignals = {
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
       ],
       "branches": [
-        "HEAD"
+        "main"
       ],
       "netGrowth": 915,
       "firstTouched": "2026-07-02T18:03:55.843Z",
@@ -15277,155 +16778,42 @@ export const sessionSignals = {
       ]
     },
     {
-      "path": "packages/cli/src/commands/graph-context-build.ts",
-      "reads": 2,
-      "writes": 0,
-      "edits": 9,
-      "touches": 11,
-      "sessions": [
-        "26f5e28e-f687-42d8-bb19-cbbee69709c1",
-        "fd633b58-2657-4859-bca3-03c57a0277f0"
-      ],
-      "branches": [
-        "HEAD"
-      ],
-      "netGrowth": 1548,
-      "firstTouched": "2026-07-05T18:54:53.513Z",
-      "lastTouched": "2026-07-06T17:23:33.280Z",
-      "coChange": [
-        {
-          "path": "packages/cli/src/commands/graph-context.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/graph-context-bundle.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/__tests__/graph-context-bundle.test.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/__tests__/graph-context-build.test.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/graph-context-format.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/graph/src/index.ts",
-          "count": 1
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
-          "ts": "2026-07-06T17:23:02.948Z",
-          "loc": [
-            246,
-            657837,
-            1757
-          ]
-        },
-        {
-          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
-          "ts": "2026-07-06T17:23:11.297Z",
-          "loc": [
-            246,
-            661245,
-            2030
-          ]
-        },
-        {
-          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
-          "ts": "2026-07-06T17:23:23.362Z",
-          "loc": [
-            246,
-            667620,
-            3147
-          ]
-        },
-        {
-          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
-          "ts": "2026-07-06T17:23:33.280Z",
-          "loc": [
-            246,
-            674606,
-            2381
-          ]
-        },
-        {
-          "session": "fd633b58-2657-4859-bca3-03c57a0277f0",
-          "ts": "2026-07-05T19:02:03.105Z",
-          "loc": [
-            272,
-            440953,
-            2227
-          ]
-        },
-        {
-          "session": "fd633b58-2657-4859-bca3-03c57a0277f0",
-          "ts": "2026-07-05T19:02:10.978Z",
-          "loc": [
-            272,
-            457094,
-            1953
-          ]
-        },
-        {
-          "session": "fd633b58-2657-4859-bca3-03c57a0277f0",
-          "ts": "2026-07-05T19:02:20.036Z",
-          "loc": [
-            272,
-            471358,
-            1997
-          ]
-        },
-        {
-          "session": "fd633b58-2657-4859-bca3-03c57a0277f0",
-          "ts": "2026-07-05T19:02:25.723Z",
-          "loc": [
-            272,
-            487096,
-            2178
-          ]
-        },
-        {
-          "session": "fd633b58-2657-4859-bca3-03c57a0277f0",
-          "ts": "2026-07-05T19:02:29.844Z",
-          "loc": [
-            272,
-            492025,
-            1857
-          ]
-        }
-      ]
-    },
-    {
       "path": "packages/cli/src/__tests__/graph-dashboard.test.ts",
       "reads": 4,
       "writes": 1,
-      "edits": 5,
-      "touches": 10,
+      "edits": 6,
+      "touches": 11,
       "sessions": [
         "122c4f8f-7dc4-4211-a818-95be2df9b24e",
         "759a6037-8fee-4639-8faa-ffac0e1f18f4",
+        "ea64d801-972c-4519-9a34-85fea7f8d776",
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
       "branches": [
-        "HEAD"
+        "main",
+        "feat/c30-authorcount-ownership",
+        "feat/c31-coupling-hidden-edges",
+        "fix/C-71-dashboard-lifetime",
+        "feat/dashboard-v1"
       ],
-      "netGrowth": 7047,
+      "netGrowth": 9224,
       "firstTouched": "2026-07-01T02:04:00.897Z",
-      "lastTouched": "2026-07-01T16:16:26.025Z",
+      "lastTouched": "2026-07-05T18:19:20.854Z",
       "coChange": [
         {
           "path": "dashboard/src/App.tsx",
-          "count": 3
+          "count": 4
         },
         {
           "path": "dashboard/src/types.ts",
+          "count": 4
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report-types.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/commands/dashboard-payload.ts",
           "count": 3
         },
         {
@@ -15435,14 +16823,6 @@ export const sessionSignals = {
         {
           "path": "dashboard/src/views/CouplingView.tsx",
           "count": 3
-        },
-        {
-          "path": "packages/cli/src/commands/graph-report-types.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/dashboard-payload.ts",
-          "count": 2
         }
       ],
       "touchLocs": [
@@ -15492,12 +16872,131 @@ export const sessionSignals = {
           ]
         },
         {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T18:19:20.854Z",
+          "loc": [
+            268,
+            2393392,
+            4251
+          ]
+        },
+        {
           "session": "ede9df8d-425b-4f7d-8708-93b44767ef3b",
           "ts": "2026-07-01T02:04:00.897Z",
           "loc": [
             269,
             5182618,
             3770
+          ]
+        }
+      ]
+    },
+    {
+      "path": "packages/graph/src/__tests__/ownership.test.ts",
+      "reads": 4,
+      "writes": 0,
+      "edits": 7,
+      "touches": 11,
+      "sessions": [
+        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+        "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+        "ea64d801-972c-4519-9a34-85fea7f8d776"
+      ],
+      "branches": [
+        "main",
+        "fix/C-71-lifetime-window"
+      ],
+      "netGrowth": 3610,
+      "firstTouched": "2026-06-30T22:25:04.450Z",
+      "lastTouched": "2026-07-05T17:50:39.703Z",
+      "coChange": [
+        {
+          "path": "packages/graph/src/index-metrics.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/graph/src/indexer.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report-types.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report-sections.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/graph/src/index.ts",
+          "count": 2
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:25:45.771Z",
+          "loc": [
+            243,
+            589077,
+            1877
+          ]
+        },
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:26:05.075Z",
+          "loc": [
+            243,
+            598273,
+            5068
+          ]
+        },
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:26:53.615Z",
+          "loc": [
+            243,
+            655986,
+            2369
+          ]
+        },
+        {
+          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+          "ts": "2026-07-01T21:05:00.512Z",
+          "loc": [
+            258,
+            593901,
+            1593
+          ]
+        },
+        {
+          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+          "ts": "2026-07-01T21:05:08.155Z",
+          "loc": [
+            258,
+            607749,
+            1637
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:49:03.854Z",
+          "loc": [
+            268,
+            1119122,
+            2367
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:50:39.703Z",
+          "loc": [
+            268,
+            1244343,
+            3029
           ]
         }
       ]
@@ -15512,7 +17011,7 @@ export const sessionSignals = {
         "45851359-f22b-4839-a74e-2bcc515293b5"
       ],
       "branches": [
-        "HEAD"
+        "main"
       ],
       "netGrowth": 13871,
       "firstTouched": "2026-07-06T03:30:14.436Z",
@@ -15637,6 +17136,106 @@ export const sessionSignals = {
       ]
     },
     {
+      "path": "packages/graph/src/__tests__/indexer-churn.test.ts",
+      "reads": 4,
+      "writes": 0,
+      "edits": 6,
+      "touches": 10,
+      "sessions": [
+        "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+        "ea64d801-972c-4519-9a34-85fea7f8d776",
+        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
+      ],
+      "branches": [
+        "fix/C-71-lifetime-window"
+      ],
+      "netGrowth": 4052,
+      "firstTouched": "2026-07-01T00:36:53.538Z",
+      "lastTouched": "2026-07-05T17:50:54.577Z",
+      "coChange": [
+        {
+          "path": "packages/graph/src/indexer.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report.ts",
+          "count": 2
+        },
+        {
+          "path": "dashboard/src/App.tsx",
+          "count": 2
+        },
+        {
+          "path": "dashboard/src/types.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/cli/src/commands/graph-dashboard.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/cli/src/__tests__/graph-dashboard.test.ts",
+          "count": 2
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+          "ts": "2026-07-01T21:07:40.298Z",
+          "loc": [
+            258,
+            758525,
+            3275
+          ]
+        },
+        {
+          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+          "ts": "2026-07-01T21:07:54.919Z",
+          "loc": [
+            258,
+            779696,
+            2513
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:49:22.582Z",
+          "loc": [
+            268,
+            1160408,
+            2955
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:49:35.524Z",
+          "loc": [
+            268,
+            1177441,
+            3971
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:50:54.577Z",
+          "loc": [
+            268,
+            1259992,
+            4345
+          ]
+        },
+        {
+          "session": "ede9df8d-425b-4f7d-8708-93b44767ef3b",
+          "ts": "2026-07-01T00:37:07.435Z",
+          "loc": [
+            269,
+            361294,
+            1710
+          ]
+        }
+      ]
+    },
+    {
       "path": "packages/cli/src/commands/graph-coupled.ts",
       "reads": 9,
       "writes": 0,
@@ -15663,6 +17262,101 @@ export const sessionSignals = {
       "touchLocs": []
     },
     {
+      "path": "packages/graph/src/ownership.ts",
+      "reads": 4,
+      "writes": 0,
+      "edits": 5,
+      "touches": 9,
+      "sessions": [
+        "8c4519c6-2287-42dc-b1e6-1b15145ce3de",
+        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+        "759a6037-8fee-4639-8faa-ffac0e1f18f4",
+        "ea64d801-972c-4519-9a34-85fea7f8d776"
+      ],
+      "branches": [
+        "feat/c88-conventions",
+        "main",
+        "feat/c30-authorcount-ownership",
+        "fix/C-71-lifetime-window"
+      ],
+      "netGrowth": 2296,
+      "firstTouched": "2026-06-30T22:11:16.934Z",
+      "lastTouched": "2026-07-07T01:57:17.747Z",
+      "coChange": [
+        {
+          "path": "packages/cli/src/commands/graph-report-sections.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report-types.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/graph/src/types.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/graph/src/index.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/graph/src/index-metrics.ts",
+          "count": 2
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:24:03.777Z",
+          "loc": [
+            243,
+            485858,
+            1717
+          ]
+        },
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:24:18.700Z",
+          "loc": [
+            243,
+            492241,
+            3745
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:42:12.661Z",
+          "loc": [
+            268,
+            598090,
+            1883
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:42:18.152Z",
+          "loc": [
+            268,
+            607182,
+            1714
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:42:21.574Z",
+          "loc": [
+            268,
+            615962,
+            1574
+          ]
+        }
+      ]
+    },
+    {
       "path": "packages/cli/src/index.ts",
       "reads": 4,
       "writes": 0,
@@ -15673,7 +17367,8 @@ export const sessionSignals = {
         "8cb0fce6-865e-4a97-aca9-4e16013f2503"
       ],
       "branches": [
-        "HEAD"
+        "fix/c69-stale-baseline",
+        "feat/incremental-default-autoupdate-hook"
       ],
       "netGrowth": -2186,
       "firstTouched": "2026-06-30T16:51:49.117Z",
@@ -15684,15 +17379,15 @@ export const sessionSignals = {
           "count": 2
         },
         {
+          "path": "packages/cli/src/commands/graph-cli.ts",
+          "count": 2
+        },
+        {
           "path": "packages/cli/src/commands/graph-report.ts",
           "count": 1
         },
         {
           "path": "packages/graph/src/index.ts",
-          "count": 1
-        },
-        {
-          "path": "packages/cli/src/commands/graph-cli.ts",
           "count": 1
         },
         {
@@ -15765,7 +17460,9 @@ export const sessionSignals = {
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
       "branches": [
-        "HEAD"
+        "main",
+        "feat/status-dashboard",
+        "feat/dashboard-architecture"
       ],
       "netGrowth": 4300,
       "firstTouched": "2026-07-01T01:26:22.675Z",
@@ -15865,7 +17562,7 @@ export const sessionSignals = {
         "91e27139-78f8-4b2b-ac22-4c26c6eda2db"
       ],
       "branches": [
-        "HEAD"
+        "main"
       ],
       "netGrowth": 2827,
       "firstTouched": "2026-07-01T22:26:00.879Z",
@@ -15964,7 +17661,8 @@ export const sessionSignals = {
         "a86e0245-8fd6-4f8f-bd15-b45669812b3f"
       ],
       "branches": [
-        "HEAD"
+        "main",
+        "feat/edge-weight-reference-count"
       ],
       "netGrowth": 4529,
       "firstTouched": "2026-07-03T04:57:48.522Z",
@@ -16062,123 +17760,39 @@ export const sessionSignals = {
       ]
     },
     {
-      "path": "packages/graph/src/__tests__/churn.test.ts",
-      "reads": 3,
-      "writes": 0,
-      "edits": 6,
-      "touches": 9,
-      "sessions": [
-        "122c4f8f-7dc4-4211-a818-95be2df9b24e",
-        "91e27139-78f8-4b2b-ac22-4c26c6eda2db"
-      ],
-      "branches": [
-        "HEAD"
-      ],
-      "netGrowth": 5077,
-      "firstTouched": "2026-07-01T16:33:43.246Z",
-      "lastTouched": "2026-07-01T21:07:27.013Z",
-      "coChange": [
-        {
-          "path": "packages/graph/src/churn.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/graph/src/index-metrics.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/graph-report-types.ts",
-          "count": 1
-        },
-        {
-          "path": "packages/cli/src/commands/graph-report-sections.ts",
-          "count": 1
-        },
-        {
-          "path": "dashboard/src/App.tsx",
-          "count": 1
-        },
-        {
-          "path": "dashboard/src/types.ts",
-          "count": 1
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "122c4f8f-7dc4-4211-a818-95be2df9b24e",
-          "ts": "2026-07-01T16:33:43.246Z",
-          "loc": [
-            240,
-            5676254,
-            3333
-          ]
-        },
-        {
-          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-          "ts": "2026-07-01T21:04:33.454Z",
-          "loc": [
-            258,
-            554730,
-            4538
-          ]
-        },
-        {
-          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-          "ts": "2026-07-01T21:04:49.220Z",
-          "loc": [
-            258,
-            574341,
-            2259
-          ]
-        },
-        {
-          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-          "ts": "2026-07-01T21:05:53.812Z",
-          "loc": [
-            258,
-            654242,
-            1899
-          ]
-        },
-        {
-          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-          "ts": "2026-07-01T21:06:11.749Z",
-          "loc": [
-            258,
-            665294,
-            4959
-          ]
-        },
-        {
-          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-          "ts": "2026-07-01T21:07:27.013Z",
-          "loc": [
-            258,
-            737000,
-            1927
-          ]
-        }
-      ]
-    },
-    {
-      "path": "packages/cli/src/commands/graph-context.ts",
-      "reads": 2,
-      "writes": 0,
+      "path": "packages/cli/src/commands/graph-context-format.ts",
+      "reads": 1,
+      "writes": 1,
       "edits": 7,
       "touches": 9,
       "sessions": [
         "26f5e28e-f687-42d8-bb19-cbbee69709c1",
+        "5abbb0ce-143a-4089-9d99-16de251fa361",
         "fd633b58-2657-4859-bca3-03c57a0277f0"
       ],
       "branches": [
-        "HEAD"
+        "feat/c89-seeded-pagerank-relevance",
+        "feat/graph-context-spike",
+        "feat/c79-symbol-signatures"
       ],
-      "netGrowth": 3502,
-      "firstTouched": "2026-07-05T21:36:20.649Z",
-      "lastTouched": "2026-07-06T17:21:37.869Z",
+      "netGrowth": 3847,
+      "firstTouched": "2026-07-05T17:36:25.310Z",
+      "lastTouched": "2026-07-06T17:23:41.596Z",
       "coChange": [
         {
           "path": "packages/cli/src/commands/graph-context-build.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/commands/graph-context.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/__tests__/graph-context-build.test.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/graph/src/index.ts",
           "count": 2
         },
         {
@@ -16188,82 +17802,79 @@ export const sessionSignals = {
         {
           "path": "packages/cli/src/__tests__/graph-context-bundle.test.ts",
           "count": 2
-        },
-        {
-          "path": "packages/cli/src/__tests__/graph-context-build.test.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/graph-context-format.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/graph/src/index.ts",
-          "count": 1
         }
       ],
       "touchLocs": [
         {
           "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
-          "ts": "2026-07-06T17:21:07.836Z",
+          "ts": "2026-07-06T17:23:41.596Z",
           "loc": [
             246,
-            497911,
-            2010
+            681406,
+            2201
           ]
         },
         {
-          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
-          "ts": "2026-07-06T17:21:14.913Z",
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:36:25.310Z",
           "loc": [
-            246,
-            511264,
-            2565
+            251,
+            883139,
+            5036
           ]
         },
         {
-          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
-          "ts": "2026-07-06T17:21:31.804Z",
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:43:33.927Z",
           "loc": [
-            246,
-            528477,
-            3397
+            251,
+            1268329,
+            1739
           ]
         },
         {
-          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
-          "ts": "2026-07-06T17:21:37.869Z",
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:43:40.740Z",
           "loc": [
-            246,
-            547745,
-            2135
+            251,
+            1275115,
+            2465
+          ]
+        },
+        {
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:43:47.034Z",
+          "loc": [
+            251,
+            1286745,
+            1766
+          ]
+        },
+        {
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:43:53.577Z",
+          "loc": [
+            251,
+            1293848,
+            2422
           ]
         },
         {
           "session": "fd633b58-2657-4859-bca3-03c57a0277f0",
-          "ts": "2026-07-05T21:40:21.005Z",
+          "ts": "2026-07-05T19:02:40.378Z",
           "loc": [
             272,
-            1263758,
-            3358
+            500051,
+            2103
           ]
         },
         {
           "session": "fd633b58-2657-4859-bca3-03c57a0277f0",
-          "ts": "2026-07-05T21:40:38.799Z",
+          "ts": "2026-07-05T19:02:50.069Z",
           "loc": [
             272,
-            1277567,
-            5717
-          ]
-        },
-        {
-          "session": "fd633b58-2657-4859-bca3-03c57a0277f0",
-          "ts": "2026-07-05T21:40:54.372Z",
-          "loc": [
-            272,
-            1302386,
-            5226
+            508767,
+            2041
           ]
         }
       ]
@@ -16281,7 +17892,11 @@ export const sessionSignals = {
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
       ],
       "branches": [
-        "HEAD"
+        "feat/c64-model-b-symbol-nodes",
+        "main",
+        "feat/per-symbol-utilization-blast-radius",
+        "feat/c52-utilization-metric",
+        "feat/c54-barrel-resolved-utilization"
       ],
       "netGrowth": 9217,
       "firstTouched": "2026-07-03T20:16:19.620Z",
@@ -16390,7 +18005,10 @@ export const sessionSignals = {
         "fd633b58-2657-4859-bca3-03c57a0277f0"
       ],
       "branches": [
-        "HEAD"
+        "feat/c64-model-b-symbol-nodes",
+        "feat/c63-symbol-line-spans",
+        "fix/c70-multihop-reexport-references",
+        "feat/c79-symbol-signatures"
       ],
       "netGrowth": 3318,
       "firstTouched": "2026-07-04T15:50:53.620Z",
@@ -16490,7 +18108,10 @@ export const sessionSignals = {
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
       ],
       "branches": [
-        "HEAD"
+        "main",
+        "feat/per-symbol-utilization-blast-radius",
+        "feat/c52-utilization-metric",
+        "feat/c54-barrel-resolved-utilization"
       ],
       "netGrowth": 4328,
       "firstTouched": "2026-07-03T19:57:25.164Z",
@@ -16586,7 +18207,7 @@ export const sessionSignals = {
       ],
       "branches": [
         "feat/c88-conventions",
-        "HEAD"
+        "main"
       ],
       "netGrowth": 0,
       "firstTouched": "2026-06-30T22:21:18.388Z",
@@ -16607,7 +18228,9 @@ export const sessionSignals = {
         "ae027a39-3ace-4d50-83ac-2f740cd20edf"
       ],
       "branches": [
-        "HEAD"
+        "main",
+        "feat/c59-symbol-dossier",
+        "feat/per-symbol-utilization-blast-radius"
       ],
       "netGrowth": 1744,
       "firstTouched": "2026-07-01T16:09:27.742Z",
@@ -16700,7 +18323,9 @@ export const sessionSignals = {
         "ce00b199-172a-4cdb-a183-2178407d04a7"
       ],
       "branches": [
-        "HEAD"
+        "main",
+        "feat/edge-weight-reference-count",
+        "packages/render/src/index.ts"
       ],
       "netGrowth": 2099,
       "firstTouched": "2026-07-01T13:09:36.158Z",
@@ -16782,7 +18407,9 @@ export const sessionSignals = {
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
       "branches": [
-        "HEAD"
+        "main",
+        "feat/c31-coupling-hidden-edges",
+        "feat/dashboard-v1.1"
       ],
       "netGrowth": 9955,
       "firstTouched": "2026-07-01T02:14:35.580Z",
@@ -16883,7 +18510,9 @@ export const sessionSignals = {
         "f6324d6b-6972-4f50-9c89-21bd31535746"
       ],
       "branches": [
-        "HEAD"
+        "feat/c88-conventions",
+        "feat/c89-seeded-pagerank-relevance",
+        "feat/c88-capability-embeddings"
       ],
       "netGrowth": 618,
       "firstTouched": "2026-07-05T23:32:39.828Z",
@@ -16963,186 +18592,6 @@ export const sessionSignals = {
       ]
     },
     {
-      "path": "packages/graph/src/__tests__/ownership.test.ts",
-      "reads": 3,
-      "writes": 0,
-      "edits": 5,
-      "touches": 8,
-      "sessions": [
-        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-        "91e27139-78f8-4b2b-ac22-4c26c6eda2db"
-      ],
-      "branches": [
-        "HEAD"
-      ],
-      "netGrowth": 2855,
-      "firstTouched": "2026-06-30T22:25:04.450Z",
-      "lastTouched": "2026-07-01T21:05:08.155Z",
-      "coChange": [
-        {
-          "path": "packages/graph/src/index-metrics.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/graph/src/indexer.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/graph-report-types.ts",
-          "count": 1
-        },
-        {
-          "path": "packages/cli/src/commands/graph-report.ts",
-          "count": 1
-        },
-        {
-          "path": "packages/cli/src/commands/graph-report-sections.ts",
-          "count": 1
-        },
-        {
-          "path": "packages/graph/src/types.ts",
-          "count": 1
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-          "ts": "2026-06-30T22:25:45.771Z",
-          "loc": [
-            243,
-            589077,
-            1877
-          ]
-        },
-        {
-          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-          "ts": "2026-06-30T22:26:05.075Z",
-          "loc": [
-            243,
-            598273,
-            5068
-          ]
-        },
-        {
-          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-          "ts": "2026-06-30T22:26:53.615Z",
-          "loc": [
-            243,
-            655986,
-            2369
-          ]
-        },
-        {
-          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-          "ts": "2026-07-01T21:05:00.512Z",
-          "loc": [
-            258,
-            593901,
-            1593
-          ]
-        },
-        {
-          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-          "ts": "2026-07-01T21:05:08.155Z",
-          "loc": [
-            258,
-            607749,
-            1637
-          ]
-        }
-      ]
-    },
-    {
-      "path": "packages/cli/src/__tests__/graph-context-build.test.ts",
-      "reads": 3,
-      "writes": 0,
-      "edits": 5,
-      "touches": 8,
-      "sessions": [
-        "26f5e28e-f687-42d8-bb19-cbbee69709c1",
-        "fd633b58-2657-4859-bca3-03c57a0277f0"
-      ],
-      "branches": [
-        "HEAD"
-      ],
-      "netGrowth": 1356,
-      "firstTouched": "2026-07-05T19:02:57.693Z",
-      "lastTouched": "2026-07-06T17:25:51.840Z",
-      "coChange": [
-        {
-          "path": "packages/cli/src/commands/graph-context-build.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/graph-context.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/graph-context-bundle.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/__tests__/graph-context-bundle.test.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/graph-context-format.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/graph/src/index.ts",
-          "count": 1
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
-          "ts": "2026-07-06T17:25:39.032Z",
-          "loc": [
-            246,
-            780085,
-            2052
-          ]
-        },
-        {
-          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
-          "ts": "2026-07-06T17:25:51.840Z",
-          "loc": [
-            246,
-            788044,
-            2206
-          ]
-        },
-        {
-          "session": "fd633b58-2657-4859-bca3-03c57a0277f0",
-          "ts": "2026-07-05T19:03:07.068Z",
-          "loc": [
-            272,
-            537720,
-            2084
-          ]
-        },
-        {
-          "session": "fd633b58-2657-4859-bca3-03c57a0277f0",
-          "ts": "2026-07-05T19:03:13.241Z",
-          "loc": [
-            272,
-            548973,
-            2329
-          ]
-        },
-        {
-          "session": "fd633b58-2657-4859-bca3-03c57a0277f0",
-          "ts": "2026-07-05T19:03:20.894Z",
-          "loc": [
-            272,
-            559658,
-            2182
-          ]
-        }
-      ]
-    },
-    {
       "path": "dashboard/src/sample-data.ts",
       "reads": 2,
       "writes": 1,
@@ -17153,7 +18602,11 @@ export const sessionSignals = {
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
       "branches": [
-        "HEAD"
+        "feat/c30-authorcount-ownership",
+        "fix/c32-data-contract",
+        "feat/status-dashboard",
+        "feat/dashboard-v1.1",
+        "feat/dashboard-architecture"
       ],
       "netGrowth": 5327,
       "firstTouched": "2026-07-01T01:26:55.617Z",
@@ -17254,7 +18707,8 @@ export const sessionSignals = {
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
       "branches": [
-        "HEAD"
+        "feat/schema-healing-aliases",
+        "feat/dashboard-v1"
       ],
       "netGrowth": 153,
       "firstTouched": "2026-06-30T13:50:07.719Z",
@@ -17335,7 +18789,8 @@ export const sessionSignals = {
         "f6324d6b-6972-4f50-9c89-21bd31535746"
       ],
       "branches": [
-        "HEAD"
+        "feat/fingerprint-incremental-index",
+        "feat/c88-capability-embeddings"
       ],
       "netGrowth": 863,
       "firstTouched": "2026-06-02T20:28:09.327Z",
@@ -17350,11 +18805,11 @@ export const sessionSignals = {
           "count": 2
         },
         {
-          "path": "packages/graph/src/migrations.ts",
+          "path": "packages/cli/src/commands/graph-index.ts",
           "count": 2
         },
         {
-          "path": "packages/cli/src/commands/graph-index.ts",
+          "path": "packages/graph/src/migrations.ts",
           "count": 2
         },
         {
@@ -17440,7 +18895,7 @@ export const sessionSignals = {
       ],
       "branches": [
         "feat/c88-conventions",
-        "HEAD"
+        "feat/per-symbol-utilization-blast-radius"
       ],
       "netGrowth": 0,
       "firstTouched": "2026-07-03T22:46:39.941Z",
@@ -17460,7 +18915,10 @@ export const sessionSignals = {
         "ce00b199-172a-4cdb-a183-2178407d04a7"
       ],
       "branches": [
-        "HEAD"
+        "main",
+        "feat/c55-barrel-resolved-utilization",
+        "packages/render/src/index.ts",
+        "feat/c54-module-coupling-view"
       ],
       "netGrowth": 344,
       "firstTouched": "2026-07-01T13:09:54.884Z",
@@ -17560,7 +19018,7 @@ export const sessionSignals = {
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
       "branches": [
-        "HEAD"
+        "feat/dashboard-v1.1"
       ],
       "netGrowth": 13899,
       "firstTouched": "2026-07-01T02:14:10.214Z",
@@ -17651,7 +19109,9 @@ export const sessionSignals = {
         "f6324d6b-6972-4f50-9c89-21bd31535746"
       ],
       "branches": [
-        "HEAD"
+        "feat/c88-conventions",
+        "feat/fingerprint-incremental-index",
+        "feat/c88-capability-embeddings"
       ],
       "netGrowth": 2183,
       "firstTouched": "2026-06-02T20:15:34.721Z",
@@ -17734,7 +19194,8 @@ export const sessionSignals = {
         "f6324d6b-6972-4f50-9c89-21bd31535746"
       ],
       "branches": [
-        "HEAD"
+        "feat/c88-conventions",
+        "feat/c88-capability-embeddings"
       ],
       "netGrowth": 791,
       "firstTouched": "2026-07-05T23:32:35.208Z",
@@ -17806,7 +19267,8 @@ export const sessionSignals = {
         "fd633b58-2657-4859-bca3-03c57a0277f0"
       ],
       "branches": [
-        "HEAD"
+        "feat/c89-seeded-pagerank-relevance",
+        "feat/c80-context-bundle"
       ],
       "netGrowth": 9470,
       "firstTouched": "2026-07-05T21:39:42.125Z",
@@ -17895,6 +19357,99 @@ export const sessionSignals = {
       ]
     },
     {
+      "path": "packages/cli/src/__tests__/graph-report.test.ts",
+      "reads": 2,
+      "writes": 0,
+      "edits": 5,
+      "touches": 7,
+      "sessions": [
+        "822b9538-5851-4433-8835-ff1cc1d15c3a",
+        "ea64d801-972c-4519-9a34-85fea7f8d776",
+        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
+      ],
+      "branches": [
+        "fix/c44-relative-import-resolution",
+        "fix/C-71-lifetime-window",
+        "feat/dashboard-v1.1"
+      ],
+      "netGrowth": 4083,
+      "firstTouched": "2026-07-01T02:18:30.575Z",
+      "lastTouched": "2026-07-05T17:50:02.332Z",
+      "coChange": [
+        {
+          "path": "packages/cli/src/commands/graph-report.ts",
+          "count": 2
+        },
+        {
+          "path": "dashboard/src/App.tsx",
+          "count": 2
+        },
+        {
+          "path": "dashboard/src/types.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/cli/src/commands/graph-dashboard.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/cli/src/__tests__/graph-dashboard.test.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report-format.ts",
+          "count": 2
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "822b9538-5851-4433-8835-ff1cc1d15c3a",
+          "ts": "2026-07-01T18:12:48.938Z",
+          "loc": [
+            254,
+            691413,
+            3525
+          ]
+        },
+        {
+          "session": "822b9538-5851-4433-8835-ff1cc1d15c3a",
+          "ts": "2026-07-01T18:13:13.933Z",
+          "loc": [
+            254,
+            727696,
+            2193
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:49:50.464Z",
+          "loc": [
+            268,
+            1217730,
+            1637
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:50:02.332Z",
+          "loc": [
+            268,
+            1220919,
+            3930
+          ]
+        },
+        {
+          "session": "ede9df8d-425b-4f7d-8708-93b44767ef3b",
+          "ts": "2026-07-01T02:18:30.575Z",
+          "loc": [
+            269,
+            6129528,
+            3349
+          ]
+        }
+      ]
+    },
+    {
       "path": "packages/graph/src/__tests__/incremental.test.ts",
       "reads": 3,
       "writes": 1,
@@ -17907,7 +19462,9 @@ export const sessionSignals = {
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
       "branches": [
-        "HEAD"
+        "feat/incremental-default-autoupdate-hook",
+        "feat/fingerprint-incremental-index",
+        "feat/per-symbol-utilization-blast-radius"
       ],
       "netGrowth": 8579,
       "firstTouched": "2026-06-02T20:27:45.040Z",
@@ -17988,7 +19545,9 @@ export const sessionSignals = {
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
       ],
       "branches": [
-        "HEAD"
+        "feat/per-symbol-utilization-blast-radius",
+        "feat/c52-utilization-metric",
+        "feat/c54-barrel-resolved-utilization"
       ],
       "netGrowth": 3598,
       "firstTouched": "2026-07-03T20:01:32.550Z",
@@ -18069,8 +19628,7 @@ export const sessionSignals = {
         "13ba3709-ff7f-4cf7-903d-9e54c208f6bb"
       ],
       "branches": [
-        "feat/c88-conventions",
-        "HEAD"
+        "feat/c88-conventions"
       ],
       "netGrowth": 13453,
       "firstTouched": "2026-07-07T01:31:59.879Z",
@@ -18150,67 +19708,172 @@ export const sessionSignals = {
       ]
     },
     {
-      "path": "packages/graph/src/ownership.ts",
-      "reads": 4,
-      "writes": 0,
-      "edits": 2,
+      "path": "packages/cli/src/commands/graph-coverage.ts",
+      "reads": 1,
+      "writes": 1,
+      "edits": 4,
       "touches": 6,
       "sessions": [
-        "8c4519c6-2287-42dc-b1e6-1b15145ce3de",
-        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-        "759a6037-8fee-4639-8faa-ffac0e1f18f4",
-        "ea64d801-972c-4519-9a34-85fea7f8d776"
+        "06e0ac05-9729-4fba-bb3a-e10c79c59a7c",
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00"
       ],
       "branches": [
-        "feat/c88-conventions",
-        "HEAD"
+        "feat/c7-init-json-parity",
+        "feat/c63-coverage-ingest"
       ],
-      "netGrowth": 2251,
-      "firstTouched": "2026-06-30T22:11:16.934Z",
-      "lastTouched": "2026-07-07T01:57:17.747Z",
+      "netGrowth": 4402,
+      "firstTouched": "2026-07-04T17:38:41.375Z",
+      "lastTouched": "2026-07-05T00:59:31.316Z",
       "coChange": [
         {
-          "path": "packages/cli/src/commands/graph-report.ts",
-          "count": 3
-        },
-        {
-          "path": "packages/cli/src/commands/graph-report-sections.ts",
+          "path": "packages/cli/src/commands/graph-cli.ts",
           "count": 2
         },
         {
           "path": "packages/cli/src/commands/graph-report-types.ts",
-          "count": 2
+          "count": 1
         },
         {
-          "path": "packages/graph/src/types.ts",
-          "count": 2
+          "path": "packages/cli/src/commands/graph-report.ts",
+          "count": 1
         },
         {
-          "path": "packages/graph/src/index-metrics.ts",
-          "count": 2
+          "path": "packages/cli/src/commands/graph-report-sections.ts",
+          "count": 1
         },
         {
-          "path": "packages/graph/src/churn.ts",
-          "count": 2
+          "path": "packages/graph/src/index.ts",
+          "count": 1
+        },
+        {
+          "path": "packages/graph/src/database.ts",
+          "count": 1
         }
       ],
       "touchLocs": [
         {
-          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-          "ts": "2026-06-30T22:24:03.777Z",
+          "session": "06e0ac05-9729-4fba-bb3a-e10c79c59a7c",
+          "ts": "2026-07-05T00:59:25.865Z",
           "loc": [
-            243,
-            485858,
-            1717
+            237,
+            616619,
+            2065
           ]
         },
         {
-          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-          "ts": "2026-06-30T22:24:18.700Z",
+          "session": "06e0ac05-9729-4fba-bb3a-e10c79c59a7c",
+          "ts": "2026-07-05T00:59:31.316Z",
           "loc": [
-            243,
-            492241,
-            3745
+            237,
+            625250,
+            2389
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T17:38:41.375Z",
+          "loc": [
+            247,
+            4947691,
+            5736
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T17:40:18.387Z",
+          "loc": [
+            247,
+            5012404,
+            1825
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T17:40:48.525Z",
+          "loc": [
+            247,
+            5040636,
+            2366
+          ]
+        }
+      ]
+    },
+    {
+      "path": "packages/cli/src/commands/graph-arch.ts",
+      "reads": 2,
+      "writes": 0,
+      "edits": 4,
+      "touches": 6,
+      "sessions": [
+        "06e0ac05-9729-4fba-bb3a-e10c79c59a7c"
+      ],
+      "branches": [
+        "main"
+      ],
+      "netGrowth": 222,
+      "firstTouched": "2026-07-05T01:09:56.101Z",
+      "lastTouched": "2026-07-05T01:11:14.438Z",
+      "coChange": [
+        {
+          "path": "packages/graph/src/types.ts",
+          "count": 1
+        },
+        {
+          "path": "packages/cli/src/commands/graph-cli.ts",
+          "count": 1
+        },
+        {
+          "path": "packages/cli/src/index.ts",
+          "count": 1
+        },
+        {
+          "path": "packages/cli/src/commands/graph-index.ts",
+          "count": 1
+        },
+        {
+          "path": "packages/cli/src/commands/graph-init.ts",
+          "count": 1
+        },
+        {
+          "path": "packages/cli/src/commands/graph-coverage.ts",
+          "count": 1
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "06e0ac05-9729-4fba-bb3a-e10c79c59a7c",
+          "ts": "2026-07-05T01:10:47.610Z",
+          "loc": [
+            237,
+            879539,
+            1665
+          ]
+        },
+        {
+          "session": "06e0ac05-9729-4fba-bb3a-e10c79c59a7c",
+          "ts": "2026-07-05T01:10:55.629Z",
+          "loc": [
+            237,
+            883204,
+            1817
+          ]
+        },
+        {
+          "session": "06e0ac05-9729-4fba-bb3a-e10c79c59a7c",
+          "ts": "2026-07-05T01:11:04.520Z",
+          "loc": [
+            237,
+            886899,
+            2204
+          ]
+        },
+        {
+          "session": "06e0ac05-9729-4fba-bb3a-e10c79c59a7c",
+          "ts": "2026-07-05T01:11:14.438Z",
+          "loc": [
+            237,
+            896516,
+            2025
           ]
         }
       ]
@@ -18226,7 +19889,7 @@ export const sessionSignals = {
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
       ],
       "branches": [
-        "HEAD"
+        "main"
       ],
       "netGrowth": 12172,
       "firstTouched": "2026-07-02T21:27:28.223Z",
@@ -18298,7 +19961,8 @@ export const sessionSignals = {
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
       ],
       "branches": [
-        "HEAD"
+        "main",
+        "feat/c54-module-coupling-view"
       ],
       "netGrowth": 1610,
       "firstTouched": "2026-07-03T07:02:33.909Z",
@@ -18379,7 +20043,8 @@ export const sessionSignals = {
         "f6324d6b-6972-4f50-9c89-21bd31535746"
       ],
       "branches": [
-        "HEAD"
+        "feat/c88-conventions",
+        "feat/c88-capability-embeddings"
       ],
       "netGrowth": 9451,
       "firstTouched": "2026-07-06T23:36:25.359Z",
@@ -18468,7 +20133,7 @@ export const sessionSignals = {
         "13ba3709-ff7f-4cf7-903d-9e54c208f6bb"
       ],
       "branches": [
-        "HEAD"
+        "feat/c88-conventions"
       ],
       "netGrowth": 5237,
       "firstTouched": "2026-07-07T01:29:56.530Z",
@@ -18567,7 +20232,8 @@ export const sessionSignals = {
         "f6324d6b-6972-4f50-9c89-21bd31535746"
       ],
       "branches": [
-        "HEAD"
+        "feat/c88-conventions",
+        "feat/c88-capability-embeddings"
       ],
       "netGrowth": 1503,
       "firstTouched": "2026-07-06T23:40:34.666Z",
@@ -18648,7 +20314,8 @@ export const sessionSignals = {
         "fd633b58-2657-4859-bca3-03c57a0277f0"
       ],
       "branches": [
-        "HEAD"
+        "feat/c89-seeded-pagerank-relevance",
+        "feat/c80-context-bundle"
       ],
       "netGrowth": 11469,
       "firstTouched": "2026-07-05T21:42:21.383Z",
@@ -18717,516 +20384,9 @@ export const sessionSignals = {
           ]
         }
       ]
-    },
-    {
-      "path": "packages/graph/src/__tests__/source-metrics.test.ts",
-      "reads": 2,
-      "writes": 0,
-      "edits": 4,
-      "touches": 6,
-      "sessions": [
-        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677"
-      ],
-      "branches": [
-        "HEAD"
-      ],
-      "netGrowth": 5769,
-      "firstTouched": "2026-07-04T14:17:17.304Z",
-      "lastTouched": "2026-07-04T15:59:12.922Z",
-      "coChange": [
-        {
-          "path": "dashboard/src/types.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/__tests__/dashboard-metrics.test.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/dashboard-node-metrics.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/graph/src/index-metrics.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/graph/src/extractors/ts-morph-extractor.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/graph/src/indexer.ts",
-          "count": 2
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T15:42:44.506Z",
-          "loc": [
-            247,
-            768466,
-            1664
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T15:42:57.184Z",
-          "loc": [
-            247,
-            780559,
-            4145
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T15:59:12.922Z",
-          "loc": [
-            247,
-            1792006,
-            1726
-          ]
-        },
-        {
-          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-          "ts": "2026-07-04T14:17:17.304Z",
-          "loc": [
-            252,
-            974182,
-            6715
-          ]
-        }
-      ]
-    },
-    {
-      "path": "packages/graph/src/diff.ts",
-      "reads": 2,
-      "writes": 1,
-      "edits": 3,
-      "touches": 6,
-      "sessions": [
-        "8cb0fce6-865e-4a97-aca9-4e16013f2503"
-      ],
-      "branches": [
-        "HEAD"
-      ],
-      "netGrowth": 6273,
-      "firstTouched": "2026-06-30T13:44:13.177Z",
-      "lastTouched": "2026-06-30T13:47:18.452Z",
-      "coChange": [
-        {
-          "path": "packages/cli/src/commands/graph-report.ts",
-          "count": 1
-        },
-        {
-          "path": "packages/graph/src/types.ts",
-          "count": 1
-        },
-        {
-          "path": "packages/graph/src/index.ts",
-          "count": 1
-        },
-        {
-          "path": "packages/cli/src/commands/graph-cli.ts",
-          "count": 1
-        },
-        {
-          "path": "packages/cli/src/index.ts",
-          "count": 1
-        },
-        {
-          "path": "packages/graph/src/indexer.ts",
-          "count": 1
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-          "ts": "2026-06-30T13:45:43.915Z",
-          "loc": [
-            256,
-            909765,
-            1643
-          ]
-        },
-        {
-          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-          "ts": "2026-06-30T13:45:53.567Z",
-          "loc": [
-            256,
-            918920,
-            1676
-          ]
-        },
-        {
-          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-          "ts": "2026-06-30T13:46:06.212Z",
-          "loc": [
-            256,
-            928945,
-            1528
-          ]
-        },
-        {
-          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-          "ts": "2026-06-30T13:47:18.452Z",
-          "loc": [
-            256,
-            965924,
-            7802
-          ]
-        }
-      ]
-    },
-    {
-      "path": "packages/graph/src/__tests__/indexer-churn.test.ts",
-      "reads": 3,
-      "writes": 0,
-      "edits": 3,
-      "touches": 6,
-      "sessions": [
-        "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
-      ],
-      "branches": [
-        "HEAD"
-      ],
-      "netGrowth": 1024,
-      "firstTouched": "2026-07-01T00:36:53.538Z",
-      "lastTouched": "2026-07-01T21:07:54.919Z",
-      "coChange": [
-        {
-          "path": "packages/cli/src/commands/graph-cli.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/graph/src/indexer.ts",
-          "count": 2
-        },
-        {
-          "path": "dashboard/src/views/ArchitectureView.tsx",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/graph-check.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/graph-report.ts",
-          "count": 1
-        },
-        {
-          "path": "dashboard/src/App.tsx",
-          "count": 1
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-          "ts": "2026-07-01T21:07:40.298Z",
-          "loc": [
-            258,
-            758525,
-            3275
-          ]
-        },
-        {
-          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-          "ts": "2026-07-01T21:07:54.919Z",
-          "loc": [
-            258,
-            779696,
-            2513
-          ]
-        },
-        {
-          "session": "ede9df8d-425b-4f7d-8708-93b44767ef3b",
-          "ts": "2026-07-01T00:37:07.435Z",
-          "loc": [
-            269,
-            361294,
-            1710
-          ]
-        }
-      ]
-    },
-    {
-      "path": "packages/cli/src/commands/graph-index.ts",
-      "reads": 2,
-      "writes": 0,
-      "edits": 4,
-      "touches": 6,
-      "sessions": [
-        "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff",
-        "f6324d6b-6972-4f50-9c89-21bd31535746"
-      ],
-      "branches": [
-        "HEAD"
-      ],
-      "netGrowth": 1648,
-      "firstTouched": "2026-06-02T20:18:20.149Z",
-      "lastTouched": "2026-07-06T23:37:59.322Z",
-      "coChange": [
-        {
-          "path": "packages/graph/src/database.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/graph-cli.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/graph/src/migrations.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/graph/src/__tests__/migrations.test.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/graph/src/types.ts",
-          "count": 1
-        },
-        {
-          "path": "packages/graph/src/index-metrics.ts",
-          "count": 1
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff",
-          "ts": "2026-06-02T20:26:04.602Z",
-          "loc": [
-            261,
-            611174,
-            2501
-          ]
-        },
-        {
-          "session": "f6324d6b-6972-4f50-9c89-21bd31535746",
-          "ts": "2026-07-06T23:37:47.390Z",
-          "loc": [
-            271,
-            609104,
-            3409
-          ]
-        },
-        {
-          "session": "f6324d6b-6972-4f50-9c89-21bd31535746",
-          "ts": "2026-07-06T23:37:50.606Z",
-          "loc": [
-            271,
-            623679,
-            2348
-          ]
-        },
-        {
-          "session": "f6324d6b-6972-4f50-9c89-21bd31535746",
-          "ts": "2026-07-06T23:37:59.322Z",
-          "loc": [
-            271,
-            636611,
-            3100
-          ]
-        }
-      ]
-    },
-    {
-      "path": "dashboard/src/components/primitives.tsx",
-      "reads": 1,
-      "writes": 1,
-      "edits": 4,
-      "touches": 6,
-      "sessions": [
-        "ce00b199-172a-4cdb-a183-2178407d04a7",
-        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
-      ],
-      "branches": [
-        "HEAD"
-      ],
-      "netGrowth": 3722,
-      "firstTouched": "2026-07-01T01:28:06.956Z",
-      "lastTouched": "2026-07-01T11:51:03.325Z",
-      "coChange": [
-        {
-          "path": "packages/cli/src/commands/graph-report.ts",
-          "count": 2
-        },
-        {
-          "path": "dashboard/src/types.ts",
-          "count": 2
-        },
-        {
-          "path": "dashboard/src/theme.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/graph-dashboard.ts",
-          "count": 2
-        },
-        {
-          "path": "dashboard/src/views/OverviewView.tsx",
-          "count": 2
-        },
-        {
-          "path": "dashboard/src/views/DriftView.tsx",
-          "count": 2
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "ce00b199-172a-4cdb-a183-2178407d04a7",
-          "ts": "2026-07-01T11:51:03.325Z",
-          "loc": [
-            267,
-            427920,
-            2943
-          ]
-        },
-        {
-          "session": "ede9df8d-425b-4f7d-8708-93b44767ef3b",
-          "ts": "2026-07-01T01:28:06.956Z",
-          "loc": [
-            269,
-            1640991,
-            4522
-          ]
-        },
-        {
-          "session": "ede9df8d-425b-4f7d-8708-93b44767ef3b",
-          "ts": "2026-07-01T02:27:14.945Z",
-          "loc": [
-            269,
-            6278031,
-            2322
-          ]
-        },
-        {
-          "session": "ede9df8d-425b-4f7d-8708-93b44767ef3b",
-          "ts": "2026-07-01T04:00:51.591Z",
-          "loc": [
-            269,
-            9424593,
-            1522
-          ]
-        },
-        {
-          "session": "ede9df8d-425b-4f7d-8708-93b44767ef3b",
-          "ts": "2026-07-01T04:01:00.134Z",
-          "loc": [
-            269,
-            9430820,
-            2327
-          ]
-        }
-      ]
-    },
-    {
-      "path": "packages/graph/src/__tests__/indexer-id-root.test.ts",
-      "reads": 1,
-      "writes": 0,
-      "edits": 5,
-      "touches": 6,
-      "sessions": [
-        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
-      ],
-      "branches": [
-        "HEAD"
-      ],
-      "netGrowth": 1393,
-      "firstTouched": "2026-07-01T00:32:43.712Z",
-      "lastTouched": "2026-07-01T00:34:33.609Z",
-      "coChange": [
-        {
-          "path": "packages/cli/src/commands/graph-report.ts",
-          "count": 1
-        },
-        {
-          "path": "packages/cli/src/commands/graph-cli.ts",
-          "count": 1
-        },
-        {
-          "path": "dashboard/src/App.tsx",
-          "count": 1
-        },
-        {
-          "path": "dashboard/src/types.ts",
-          "count": 1
-        },
-        {
-          "path": "dashboard/src/theme.ts",
-          "count": 1
-        },
-        {
-          "path": "packages/cli/src/commands/graph-dashboard.ts",
-          "count": 1
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "ede9df8d-425b-4f7d-8708-93b44767ef3b",
-          "ts": "2026-07-01T00:33:15.958Z",
-          "loc": [
-            269,
-            223842,
-            2201
-          ]
-        },
-        {
-          "session": "ede9df8d-425b-4f7d-8708-93b44767ef3b",
-          "ts": "2026-07-01T00:33:26.579Z",
-          "loc": [
-            269,
-            238826,
-            3184
-          ]
-        },
-        {
-          "session": "ede9df8d-425b-4f7d-8708-93b44767ef3b",
-          "ts": "2026-07-01T00:33:36.646Z",
-          "loc": [
-            269,
-            259091,
-            2273
-          ]
-        },
-        {
-          "session": "ede9df8d-425b-4f7d-8708-93b44767ef3b",
-          "ts": "2026-07-01T00:33:57.802Z",
-          "loc": [
-            269,
-            274359,
-            2117
-          ]
-        },
-        {
-          "session": "ede9df8d-425b-4f7d-8708-93b44767ef3b",
-          "ts": "2026-07-01T00:34:33.609Z",
-          "loc": [
-            269,
-            292590,
-            2767
-          ]
-        }
-      ]
     }
   ],
   "tasks": [
-    {
-      "id": "VW-18",
-      "sessions": [
-        "53ef4f51-af9c-4523-b2b0-f206d7d1926f",
-        "8a13403b-65e5-45ef-a90c-4119b224df55",
-        "8a844343-2a6d-45b2-867d-f90d7d2de118",
-        "bd4c4c1f-fe26-48b7-8812-52f1bb7c16f1"
-      ],
-      "actions": {
-        "edit": 4,
-        "list": 4,
-        "--help": 2
-      }
-    },
     {
       "id": "C-5",
       "sessions": [
@@ -19254,46 +20414,6 @@ export const sessionSignals = {
       }
     },
     {
-      "id": "VW-22",
-      "sessions": [
-        "154a2e9b-30c5-4f6e-94e1-fd9f4d86ac82",
-        "53ef4f51-af9c-4523-b2b0-f206d7d1926f",
-        "c1312ef4-0416-4b87-ac60-584c87ecb181"
-      ],
-      "actions": {
-        "list": 2,
-        "edit": 2,
-        "show": 1,
-        "done": 1
-      }
-    },
-    {
-      "id": "VW-23",
-      "sessions": [
-        "248daffe-e0f0-43f1-b811-89131c31c94a",
-        "46f73e3d-4489-4e79-98c5-536e46ad1405",
-        "5dd3a4c7-1bef-4a5c-89d5-b73dd6cacafa"
-      ],
-      "actions": {
-        "add": 1,
-        "list": 2,
-        "--help": 1,
-        "edit": 1
-      }
-    },
-    {
-      "id": "VW-4",
-      "sessions": [
-        "c6a8f75c-ce3c-4467-8e61-4cf246d2e95d",
-        "c8af7a2d-9b90-41c1-bc24-865572c8d3bd",
-        "e31cff48-fa19-4635-b009-3607ca5efc16"
-      ],
-      "actions": {
-        "edit": 7,
-        "list": 1
-      }
-    },
-    {
       "id": "C-4",
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
@@ -19301,8 +20421,7 @@ export const sessionSignals = {
       ],
       "actions": {
         "add": 3,
-        "show": 1,
-        "edit": 3,
+        "edit": 1,
         "done": 1
       }
     },
@@ -19319,78 +20438,15 @@ export const sessionSignals = {
       }
     },
     {
-      "id": "C-53",
-      "sessions": [
-        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-        "ae027a39-3ace-4d50-83ac-2f740cd20edf"
-      ],
-      "actions": {
-        "add": 1,
-        "done": 2
-      }
-    },
-    {
       "id": "C-51",
       "sessions": [
         "a86e0245-8fd6-4f8f-bd15-b45669812b3f",
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
       ],
       "actions": {
-        "update": 1,
         "edit": 1,
         "done": 1,
         "add": 2
-      }
-    },
-    {
-      "id": "VW-16",
-      "sessions": [
-        "1794823e-ecb1-4214-b274-ffadcbb76b67",
-        "65a6a954-a7aa-48f7-9a4a-3401fd6c3233"
-      ],
-      "actions": {
-        "list": 4,
-        "edit": 3
-      }
-    },
-    {
-      "id": "VMCP-02",
-      "sessions": [
-        "a7b2f46b-ff78-4c81-8850-e6af863b1e4e",
-        "c8af7a2d-9b90-41c1-bc24-865572c8d3bd"
-      ],
-      "actions": {
-        "session": 2,
-        "add": 1
-      }
-    },
-    {
-      "id": "AW-17",
-      "sessions": [
-        "34db5555-f435-4071-a1cc-6729725d3c53"
-      ],
-      "actions": {
-        "done": 1
-      }
-    },
-    {
-      "id": "AW-1",
-      "sessions": [
-        "34db5555-f435-4071-a1cc-6729725d3c53"
-      ],
-      "actions": {
-        "show": 1,
-        "edit": 2,
-        "done": 1
-      }
-    },
-    {
-      "id": "AW-7",
-      "sessions": [
-        "34db5555-f435-4071-a1cc-6729725d3c53"
-      ],
-      "actions": {
-        "add": 1
       }
     },
     {
@@ -19399,7 +20455,7 @@ export const sessionSignals = {
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf"
       ],
       "actions": {
-        "done": 2,
+        "done": 1,
         "session": 4
       }
     },
@@ -19517,15 +20573,6 @@ export const sessionSignals = {
       }
     },
     {
-      "id": "C-58: per-symbol complexity (exports-fir",
-      "sessions": [
-        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
       "id": "C-59",
       "sessions": [
         "5e8f4b04-c57a-41a0-930b-eb1fc02bb677"
@@ -19619,42 +20666,6 @@ export const sessionSignals = {
       }
     },
     {
-      "id": "Create aliases.ts module (maps + helpers",
-      "sessions": [
-        "8cb0fce6-865e-4a97-aca9-4e16013f2503"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Wire alias normalization into diff.ts + ",
-      "sessions": [
-        "8cb0fce6-865e-4a97-aca9-4e16013f2503"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Soften check.json validation to deprecat",
-      "sessions": [
-        "8cb0fce6-865e-4a97-aca9-4e16013f2503"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Add tests for all alias paths",
-      "sessions": [
-        "8cb0fce6-865e-4a97-aca9-4e16013f2503"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
       "id": "C-19",
       "sessions": [
         "8cb0fce6-865e-4a97-aca9-4e16013f2503"
@@ -19662,42 +20673,6 @@ export const sessionSignals = {
       "actions": {
         "list": 1,
         "done": 1
-      }
-    },
-    {
-      "id": "C-19: flip graph index to incremental-by",
-      "sessions": [
-        "8cb0fce6-865e-4a97-aca9-4e16013f2503"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "C-3: add graph auto-update command (conf",
-      "sessions": [
-        "8cb0fce6-865e-4a97-aca9-4e16013f2503"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "C-3: install/remove post-commit auto-upd",
-      "sessions": [
-        "8cb0fce6-865e-4a97-aca9-4e16013f2503"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "C-3/C-19: tests + dogfood verification",
-      "sessions": [
-        "8cb0fce6-865e-4a97-aca9-4e16013f2503"
-      ],
-      "actions": {
-        "create": 1
       }
     },
     {
@@ -19728,6 +20703,15 @@ export const sessionSignals = {
       "actions": {
         "done": 1,
         "add": 1
+      }
+    },
+    {
+      "id": "C-53",
+      "sessions": [
+        "ae027a39-3ace-4d50-83ac-2f740cd20edf"
+      ],
+      "actions": {
+        "done": 1
       }
     },
     {
@@ -19799,535 +20783,12 @@ export const sessionSignals = {
       }
     },
     {
-      "id": "C-23: dogfood UX — scripts/archive exclu",
-      "sessions": [
-        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Dashboard: design + IA via brainstorm/re",
-      "sessions": [
-        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Dashboard: build prototype + screenshot/",
-      "sessions": [
-        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Build embedding store + ollama embedder ",
-      "sessions": [
-        "f6324d6b-6972-4f50-9c89-21bd31535746"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Add embed pass + `graph embed` / `graph ",
-      "sessions": [
-        "f6324d6b-6972-4f50-9c89-21bd31535746"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Add query-time top-K surface: `graph sim",
-      "sessions": [
-        "f6324d6b-6972-4f50-9c89-21bd31535746"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Tests + verify: unit tests, e2e on codew",
-      "sessions": [
-        "f6324d6b-6972-4f50-9c89-21bd31535746"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
       "id": "C-88",
       "sessions": [
         "f6324d6b-6972-4f50-9c89-21bd31535746"
       ],
       "actions": {
         "session": 2
-      }
-    },
-    {
-      "id": "Set up eval corpus: copy tRPC clone, ind",
-      "sessions": [
-        "f6324d6b-6972-4f50-9c89-21bd31535746"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Generate ~12 dup-writing tasks (paraphra",
-      "sessions": [
-        "f6324d6b-6972-4f50-9c89-21bd31535746"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Run A0 (control) vs A1 (injected find_si",
-      "sessions": [
-        "f6324d6b-6972-4f50-9c89-21bd31535746"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Grade deterministically + write up to so",
-      "sessions": [
-        "f6324d6b-6972-4f50-9c89-21bd31535746"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "PR2 · Repoint semantic.ts onto ramp step",
-      "sessions": [
-        "154a2e9b-30c5-4f6e-94e1-fd9f4d86ac82"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "PR2 · Sync config.ts + global.css + tail",
-      "sessions": [
-        "154a2e9b-30c5-4f6e-94e1-fd9f4d86ac82"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "PR2 · Repoint extracted-colors-*.ts stra",
-      "sessions": [
-        "154a2e9b-30c5-4f6e-94e1-fd9f4d86ac82"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "PR2 · Component adoption (BodyMap, Inten",
-      "sessions": [
-        "154a2e9b-30c5-4f6e-94e1-fd9f4d86ac82"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "PR2 · Verify: gates + visual regression ",
-      "sessions": [
-        "154a2e9b-30c5-4f6e-94e1-fd9f4d86ac82"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "VLT-09",
-      "sessions": [
-        "28663668-09f9-429a-9392-b8eebf5f6c4a"
-      ],
-      "actions": {
-        "session": 2
-      }
-    },
-    {
-      "id": "VW-20",
-      "sessions": [
-        "28663668-09f9-429a-9392-b8eebf5f6c4a"
-      ],
-      "actions": {
-        "session": 1
-      }
-    },
-    {
-      "id": "Wave 1: SegmentedBar + strip refactor + ",
-      "sessions": [
-        "46f73e3d-4489-4e79-98c5-536e46ad1405"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Wave 1: useTimer + RestTimer refactor",
-      "sessions": [
-        "46f73e3d-4489-4e79-98c5-536e46ad1405"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Wave 1: Tile atom",
-      "sessions": [
-        "46f73e3d-4489-4e79-98c5-536e46ad1405"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Wave 2: SegmentedProgressBar, TimerReado",
-      "sessions": [
-        "46f73e3d-4489-4e79-98c5-536e46ad1405"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Wave 3: rewrite SessionHeader, update Se",
-      "sessions": [
-        "46f73e3d-4489-4e79-98c5-536e46ad1405"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "VW-25",
-      "sessions": [
-        "5dd3a4c7-1bef-4a5c-89d5-b73dd6cacafa"
-      ],
-      "actions": {
-        "list": 2
-      }
-    },
-    {
-      "id": "VW-2",
-      "sessions": [
-        "5dd3a4c7-1bef-4a5c-89d5-b73dd6cacafa"
-      ],
-      "actions": {
-        "list": 1
-      }
-    },
-    {
-      "id": "VW-29",
-      "sessions": [
-        "5dd3a4c7-1bef-4a5c-89d5-b73dd6cacafa"
-      ],
-      "actions": {
-        "edit": 1
-      }
-    },
-    {
-      "id": "VW-35",
-      "sessions": [
-        "5dd3a4c7-1bef-4a5c-89d5-b73dd6cacafa"
-      ],
-      "actions": {
-        "edit": 1
-      }
-    },
-    {
-      "id": "VW-28",
-      "sessions": [
-        "5dd3a4c7-1bef-4a5c-89d5-b73dd6cacafa"
-      ],
-      "actions": {
-        "edit": 1
-      }
-    },
-    {
-      "id": "VW-36",
-      "sessions": [
-        "5dd3a4c7-1bef-4a5c-89d5-b73dd6cacafa"
-      ],
-      "actions": {
-        "edit": 1
-      }
-    },
-    {
-      "id": "VLT-05",
-      "sessions": [
-        "63109e74-7ad3-4b23-b9b3-e3cc9a92afd1"
-      ],
-      "actions": {
-        "add": 2
-      }
-    },
-    {
-      "id": "Verify titan dev environment (Storybook/",
-      "sessions": [
-        "76250c99-5548-4f56-bc16-ab9dd5aed4a0"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Extend titan Indicator with a pulse prop",
-      "sessions": [
-        "76250c99-5548-4f56-bc16-ab9dd5aed4a0"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Add BluetoothIcon to titan icon set",
-      "sessions": [
-        "76250c99-5548-4f56-bc16-ab9dd5aed4a0"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Build S1 shell components in titan (Bran",
-      "sessions": [
-        "76250c99-5548-4f56-bc16-ab9dd5aed4a0"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Author S1 Storybook specimen story + ver",
-      "sessions": [
-        "76250c99-5548-4f56-bc16-ab9dd5aed4a0"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Add vivid green/red palette + border-pro",
-      "sessions": [
-        "76250c99-5548-4f56-bc16-ab9dd5aed4a0"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Indicator ring-pulse variant + vivid col",
-      "sessions": [
-        "76250c99-5548-4f56-bc16-ab9dd5aed4a0"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Publish workout-analytics 1.4.0",
-      "sessions": [
-        "a7b2f46b-ff78-4c81-8850-e6af863b1e4e"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "VMCP-02.54 rest-timer opt-in lifecycle f",
-      "sessions": [
-        "a7b2f46b-ff78-4c81-8850-e6af863b1e4e"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Phase 2: wire firmware rep boundaries vi",
-      "sessions": [
-        "a7b2f46b-ff78-4c81-8850-e6af863b1e4e"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "VW-21",
-      "sessions": [
-        "a9400649-3198-4fbe-8e3d-c46ebde7ef38"
-      ],
-      "actions": {
-        "done": 1,
-        "list": 1
-      }
-    },
-    {
-      "id": "VW-12",
-      "sessions": [
-        "b1e917cd-d67b-437d-be1c-f668fc9a6bf3"
-      ],
-      "actions": {
-        "done": 1
-      }
-    },
-    {
-      "id": "Ingest inputs: 6 reader/inventory agents",
-      "sessions": [
-        "b86e8d50-cac2-4437-b6f8-12931fa4fb1a"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Synthesize: identify decisions, tensions",
-      "sessions": [
-        "b86e8d50-cac2-4437-b6f8-12931fa4fb1a"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Drill-down design pass: navigation-direc",
-      "sessions": [
-        "b86e8d50-cac2-4437-b6f8-12931fa4fb1a"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Write the organization + implementation ",
-      "sessions": [
-        "b86e8d50-cac2-4437-b6f8-12931fa4fb1a"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Gate + merge Phase-1 PRs (WA 1.6.0, tita",
-      "sessions": [
-        "b86e8d50-cac2-4437-b6f8-12931fa4fb1a"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "R2 React harness: build, review with ope",
-      "sessions": [
-        "b86e8d50-cac2-4437-b6f8-12931fa4fb1a"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Specimen sheets A–D in harness → operato",
-      "sessions": [
-        "b86e8d50-cac2-4437-b6f8-12931fa4fb1a"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Family E body-part pass: decomposition +",
-      "sessions": [
-        "b86e8d50-cac2-4437-b6f8-12931fa4fb1a"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Phase 1 — WA exact view-model derivation",
-      "sessions": [
-        "bbc4e59c-36d7-4c51-bb12-0b22af930cb5"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Phase 2 — titan format utils + component",
-      "sessions": [
-        "bbc4e59c-36d7-4c51-bb12-0b22af930cb5"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Phase 3 — voltras-mcp dashboard rewire o",
-      "sessions": [
-        "bbc4e59c-36d7-4c51-bb12-0b22af930cb5"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "Phase 4 — dashboard BodyMap /bodymap sub",
-      "sessions": [
-        "bbc4e59c-36d7-4c51-bb12-0b22af930cb5"
-      ],
-      "actions": {
-        "create": 1
-      }
-    },
-    {
-      "id": "VW-19",
-      "sessions": [
-        "bd4c4c1f-fe26-48b7-8812-52f1bb7c16f1"
-      ],
-      "actions": {
-        "done": 1
-      }
-    },
-    {
-      "id": "VW-15",
-      "sessions": [
-        "cbf04327-5f7d-497d-8118-78d52417208e"
-      ],
-      "actions": {
-        "done": 1
-      }
-    },
-    {
-      "id": "VW-27",
-      "sessions": [
-        "d2557b1d-a5ca-4c88-9c3b-52bcbb0146a8"
-      ],
-      "actions": {
-        "--help": 1
-      }
-    },
-    {
-      "id": "VW-13",
-      "sessions": [
-        "d851586b-62a3-487d-b4c0-573e013b2dc0"
-      ],
-      "actions": {
-        "list": 1
       }
     }
   ],
@@ -22239,20 +22700,20 @@ export const sessionSignals = {
     }
   ],
   "metrics": {
-    "tokensIn": 8011996,
-    "tokensOut": 38120809,
-    "cacheRead": 7128454411,
-    "errors": 509,
-    "decisions": 119,
-    "compactions": 3,
-    "commits": 51,
-    "pushes": 94,
-    "subagents": 243,
+    "tokensIn": 6062393,
+    "tokensOut": 20620269,
+    "cacheRead": 3460701494,
+    "errors": 403,
+    "decisions": 44,
+    "compactions": 1,
+    "commits": 119,
+    "pushes": 95,
+    "subagents": 103,
     "turnDurationMs": {
-      "p50": 163242,
-      "p85": 805855,
-      "p99": 5203212,
-      "count": 699
+      "p50": 166856,
+      "p85": 807734,
+      "p99": 4117918,
+      "count": 703
     }
   }
 } as const;

@@ -15,9 +15,45 @@
  * Usage: node mine-session-signals.mjs --repo <absoluteRepoPath> [--top N] [--out file.ts]
  */
 import { promises as fs, createReadStream } from 'node:fs';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 import readline from 'node:readline';
 import path from 'node:path';
 import os from 'node:os';
+
+const pexec = promisify(execFile);
+
+/**
+ * A repo plus every worktree it was ever edited from is ONE logical repo. Build
+ * a resolver that maps any absolute path to a repo-relative path (or null).
+ * Covers: the main repo, current linked worktrees (`git worktree list`), and —
+ * for worktrees since removed — a sibling naming pattern `<repo>[-<suffix>]/`.
+ */
+async function buildRepoResolver(repo) {
+  const parent = path.dirname(repo);
+  const name = path.basename(repo);
+  const roots = new Set([repo]);
+  try {
+    const { stdout } = await pexec('git', ['-C', repo, 'worktree', 'list', '--porcelain']);
+    for (const line of stdout.split('\n'))
+      if (line.startsWith('worktree ')) roots.add(line.slice('worktree '.length).trim());
+  } catch {
+    /* not a repo / git missing — main root only */
+  }
+  const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // sibling worktree: <parent>/<name>[-<suffix>]/<rel>  (catches removed worktrees)
+  const siblingRe = new RegExp('^' + esc(parent + '/' + name) + '(?:-[^/]+)?/(.+)$');
+  const rootList = [...roots].sort((a, b) => b.length - a.length); // longest first
+  return (p) => {
+    if (typeof p !== 'string') return null;
+    for (const root of rootList) {
+      if (p === root) return '';
+      if (p.startsWith(root + '/')) return p.slice(root.length + 1);
+    }
+    const m = p.match(siblingRe);
+    return m ? m[1] : null;
+  };
+}
 
 const IGNORE = /(^|\/)(node_modules|\.git|dist|build|\.next|coverage|\.turbo|storybook-static)(\/|$)/;
 const TASK_ID = /\b([A-Z]{1,5}-\d+)\b/;
@@ -66,9 +102,30 @@ function ensure(map, key, make) {
   return v;
 }
 
+const B = "['\"]?([^\\s'\"&|;]+)"; // a branch-name capture (unquoted token)
+const RE_NEW = new RegExp('\\bgit\\s+(?:-C\\s+\\S+\\s+)?(?:checkout\\s+-[bB]|switch\\s+-c)\\s+' + B);
+const RE_SWITCH = new RegExp('\\bgit\\s+(?:-C\\s+\\S+\\s+)?(?:checkout|switch)\\s+(?![-\\d])' + B);
+const RE_WT = new RegExp('\\bgit\\s+worktree\\s+add\\b[^&|;]*?\\s-b\\s+' + B);
+const RE_PUSH_B = new RegExp('\\bgit\\s+push\\b[^&|;]*?\\borigin\\s+(?:-u\\s+)?' + B);
+const RE_HEAD = new RegExp('\\bgh\\s+pr\\s+create\\b[^&|;]*?--head\\s+' + B);
+const RE_MERGE = /\bgh\s+pr\s+merge\s+(\d+)/;
+
+/** Extract branch/commit/push/merge intent from a raw (compound) Bash command. */
+function parseGit(raw) {
+  if (typeof raw !== 'string' || (!raw.includes('git') && !raw.includes('gh '))) return null;
+  const clean = (n) => (n || '').replace(/^origin\//, '').replace(/['"]/g, '');
+  const setBranch =
+    (RE_NEW.exec(raw) || RE_WT.exec(raw) || RE_HEAD.exec(raw) || RE_PUSH_B.exec(raw) || RE_SWITCH.exec(raw))?.[1];
+  const mergePr = RE_MERGE.exec(raw)?.[1];
+  const commit = /\bgit\s+(?:-C\s+\S+\s+)?commit\b/.test(raw);
+  const push = /\bgit\s+(?:-C\s+\S+\s+)?push\b/.test(raw);
+  const b = setBranch ? clean(setBranch) : null;
+  return { setBranch: b && b !== 'HEAD' && !b.startsWith('-') ? b : null, mergePr: mergePr ? Number(mergePr) : null, commit, push };
+}
+
 async function mine({ repo, topN }) {
   const repoName = path.basename(repo);
-  const repoTail = '/' + repoName + '/'; // for prRepository "owner/repo" match
+  const repoRel = await buildRepoResolver(repo); // path -> repo-relative | null (worktree-aware)
   const sessions = new Map();
   const prs = new Map(); // number -> rec
   const branches = new Map(); // name -> rec
@@ -76,6 +133,7 @@ async function mine({ repo, topN }) {
   const tasks = new Map(); // id -> rec
   const subagents = [];
   const artifacts = [];
+  const branchStats = new Map(); // branch name -> { commits, pushes } (from commands)
   let events = 0;
   let turnDurations = [];
 
@@ -92,6 +150,8 @@ async function mine({ repo, topN }) {
       userPrompts: 0,
       version: null,
       branches: new Set(),
+      codeBranches: new Set(), // branch names seen in this session's git/gh commands
+      curBranch: null, // the code branch currently checked out (from commands)
       prs: new Set(),
       tasks: new Set(),
       fileTouches: 0,
@@ -160,10 +220,10 @@ async function mine({ repo, topN }) {
       const ts = o.timestamp ?? null;
       const branch = typeof o.gitBranch === 'string' && o.gitBranch ? o.gitBranch : null;
       const cwd = o.cwd;
-      const inRepo = typeof cwd === 'string' && (cwd === repo || cwd.startsWith(repo + '/'));
+      const inRepo = repoRel(cwd) !== null; // cwd is in the repo or one of its worktrees
 
       // ---- typed event lines (asset records) ----
-      if (o.type === 'pr-link' && typeof o.prRepository === 'string' && o.prRepository.endsWith(repoTail.slice(0, -1))) {
+      if (o.type === 'pr-link' && typeof o.prRepository === 'string' && o.prRepository.endsWith('/' + repoName)) {
         const pr = ensure(prs, o.prNumber, () => ({
           number: o.prNumber,
           url: o.prUrl,
@@ -171,6 +231,7 @@ async function mine({ repo, topN }) {
           firstTs: ts,
           lastTs: ts,
           merged: false,
+          branch: null,
           sessions: new Set(),
           linkLoc: loc,
         }));
@@ -179,6 +240,8 @@ async function mine({ repo, topN }) {
         if (id) {
           pr.sessions.add(id);
           sess(id).prs.add(o.prNumber);
+          // The code branch checked out in this session when the PR was linked.
+          if (!pr.branch && sess(id).curBranch) pr.branch = sess(id).curBranch;
         }
         events++;
         continue;
@@ -216,20 +279,10 @@ async function mine({ repo, topN }) {
         if (!s.lastTs || ts > s.lastTs) s.lastTs = ts;
       }
       if (o.version) s.version = o.version;
-      if (branch && inRepo) {
-        s.branches.add(branch);
-        const b = ensure(branches, branch, () => ({
-          name: branch,
-          sessions: new Set(),
-          firstTs: ts,
-          lastTs: ts,
-          commits: 0,
-          pushes: 0,
-          files: new Set(),
-        }));
-        b.sessions.add(id);
-        b.lastTs = ts;
-      }
+      // gitBranch is only a usable fallback when it's a real branch name (not
+      // detached HEAD) and the cwd is in the repo; the primary branch signal is
+      // parsed from git/gh commands below (works for the workspace pattern too).
+      if (branch && branch !== 'HEAD' && inRepo && !s.curBranch) s.curBranch = branch;
 
       const content = o.message?.content;
       if (o.type === 'user') {
@@ -255,11 +308,11 @@ async function mine({ repo, topN }) {
         const fp = b.input?.file_path ?? b.input?.notebook_path;
 
         if ((b.name === 'Read' || b.name === 'Write' || b.name === 'Edit' || b.name === 'MultiEdit') && typeof fp === 'string') {
-          const rel = path.relative(repo, fp);
-          if (!rel.startsWith('..') && !path.isAbsolute(rel) && !IGNORE.test(rel)) {
+          const rel = repoRel(fp); // worktree-aware; merges the same file across worktrees
+          if (rel && !IGNORE.test(rel)) {
             const f = files_(rel);
             f.sessions.add(id);
-            if (branch) f.branches.add(branch);
+            if (s.curBranch) f.branches.add(s.curBranch); // the code branch checked out now
             if (ts) {
               if (!f.firstTs || ts < f.firstTs) f.firstTs = ts;
               if (!f.lastTs || ts > f.lastTs) f.lastTs = ts;
@@ -281,7 +334,6 @@ async function mine({ repo, topN }) {
             // Locator back to the raw turn that mutated the file (bounded).
             if (b.name !== 'Read' && f.touchLocs.length < 14)
               f.touchLocs.push({ session: id, ts, loc });
-            if (branch && inRepo) branches.get(branch)?.files.add(rel);
           }
         } else if (b.name === 'Agent') {
           s.subagents++;
@@ -293,25 +345,33 @@ async function mine({ repo, topN }) {
           s.artifacts++;
           artifacts.push({ session: id, title: b.input?.description ?? null, path: b.input?.file_path ?? null, url: null });
         } else if (b.name === 'Bash') {
-          const cmd = realCmd(b.input?.command);
-          const w = cmd.split(/\s+/);
-          if (w[0] === 'git') {
-            if (w[1] === 'commit') s.commits++;
-            if (w[1] === 'push') s.pushes++;
-            if (branch && inRepo) {
-              const bb = branches.get(branch);
-              if (bb) {
-                if (w[1] === 'commit') bb.commits++;
-                if (w[1] === 'push') bb.pushes++;
-              }
+          const raw = b.input?.command;
+          // Branch/commit/push/merge parsed from the raw (possibly compound) command.
+          const g = parseGit(raw);
+          if (g) {
+            if (g.setBranch) {
+              s.curBranch = g.setBranch;
+              s.codeBranches.add(g.setBranch);
             }
-          } else if (w[0] === 'gh' && w[1] === 'pr' && w[2] === 'merge') {
-            const n = Number(w[3]);
-            if (Number.isFinite(n)) {
-              const pr = prs.get(n);
+            if (g.commit) {
+              s.commits++;
+              if (s.curBranch) ensure(branchStats, s.curBranch, () => ({ commits: 0, pushes: 0 })).commits++;
+            }
+            if (g.push) {
+              s.pushes++;
+              if (s.curBranch) ensure(branchStats, s.curBranch, () => ({ commits: 0, pushes: 0 })).pushes++;
+            }
+            if (g.mergePr != null) {
+              const pr = prs.get(g.mergePr);
               if (pr) pr.merged = true;
             }
-          } else if (w[0] === 'active-work' || w[0] === 'aw') {
+          }
+          const cmd = realCmd(raw);
+          const w = cmd.split(/\s+/);
+          // active-work task/session ops, scoped to THIS repo's initiative (the
+          // slug token must equal the repo name — otherwise it's another
+          // initiative's task and doesn't belong to this repo's index).
+          if ((w[0] === 'active-work' || w[0] === 'aw') && w.includes(repoName)) {
             const sub = w[1] === 'task' ? w[2] : w[1];
             const m = cmd.match(TASK_ID);
             if (m) {
@@ -321,16 +381,39 @@ async function mine({ repo, topN }) {
               s.tasks.add(m[1]);
             }
           }
-        } else if (b.name === 'TaskCreate') {
-          const subj = b.input?.subject;
-          if (subj) {
-            const key = 'TC:' + subj.slice(0, 40);
-            const t = ensure(tasks, key, () => ({ id: subj.slice(0, 40), sessions: new Set(), actions: {} }));
-            t.sessions.add(id);
-            t.actions.create = (t.actions.create ?? 0) + 1;
-          }
         }
       }
+    }
+  }
+
+  // Build the branch index from command-derived branch usage in repo-relevant
+  // sessions (a session that touched repo files or PRs).
+  for (const s of sessions.values()) {
+    if (!(s.fileTouches > 0 || s.prs.size > 0)) continue;
+    for (const name of s.codeBranches) {
+      const b = ensure(branches, name, () => ({
+        name,
+        sessions: new Set(),
+        firstTs: s.firstTs,
+        lastTs: s.lastTs,
+        files: new Set(),
+      }));
+      b.sessions.add(s.id);
+      if (s.firstTs && (!b.firstTs || s.firstTs < b.firstTs)) b.firstTs = s.firstTs;
+      if (s.lastTs && (!b.lastTs || s.lastTs > b.lastTs)) b.lastTs = s.lastTs;
+    }
+  }
+  // files → branch
+  for (const f of files.values())
+    for (const name of f.branches) branches.get(name)?.files.add(f.path);
+
+  // Derive PR ↔ branch ↔ sessions: a PR's branch is the code branch checked out
+  // when it was linked; every session that worked that branch helped build it.
+  const branchPrs = new Map(); // branch -> Set<prNumber>
+  for (const pr of prs.values()) {
+    if (pr.branch && branches.has(pr.branch)) {
+      for (const sid of branches.get(pr.branch).sessions) pr.sessions.add(sid);
+      ensure(branchPrs, pr.branch, () => new Set()).add(pr.number);
     }
   }
 
@@ -346,7 +429,7 @@ async function mine({ repo, topN }) {
     const arr = [...set];
     for (let i = 0; i < arr.length; i++)
       for (let j = i + 1; j < arr.length; j++) {
-        const k = arr[i] < arr[j] ? arr[i] + ' ' + arr[j] : arr[j] + ' ' + arr[i];
+        const k = arr[i] < arr[j] ? arr[i] + ' ' + arr[j] : arr[j] + ' ' + arr[i];
         pair.set(k, (pair.get(k) ?? 0) + 1);
       }
   }
@@ -358,7 +441,7 @@ async function mine({ repo, topN }) {
     .map((f) => {
       const co = [];
       for (const [k, c] of pair) {
-        const [a, b] = k.split(' ');
+        const [a, b] = k.split(' ');
         if (a === f.path) co.push({ path: b, count: c });
         else if (b === f.path) co.push({ path: a, count: c });
       }
@@ -392,7 +475,7 @@ async function mine({ repo, topN }) {
     turns: s.turns,
     userPrompts: s.userPrompts,
     version: s.version,
-    branches: [...s.branches],
+    branches: [...s.codeBranches],
     prs: [...s.prs],
     tasks: [...s.tasks],
     fileTouches: s.fileTouches,
@@ -419,9 +502,11 @@ async function mine({ repo, topN }) {
     url: p.url,
     repo: p.repo,
     merged: p.merged,
+    branch: p.branch,
     firstTs: p.firstTs,
     lastTs: p.lastTs,
     sessions: [...p.sessions],
+    linkLoc: p.linkLoc,
   })).sort((a, b) => b.number - a.number);
 
   const branchesArr = ser(branches, (b) => ({
@@ -429,10 +514,11 @@ async function mine({ repo, topN }) {
     sessions: [...b.sessions],
     firstTs: b.firstTs,
     lastTs: b.lastTs,
-    commits: b.commits,
-    pushes: b.pushes,
+    commits: branchStats.get(b.name)?.commits ?? 0,
+    pushes: branchStats.get(b.name)?.pushes ?? 0,
     files: b.files.size,
-  })).sort((a, b) => b.commits + b.pushes - (a.commits + a.pushes));
+    prs: [...(branchPrs.get(b.name) ?? [])],
+  })).sort((a, b) => b.prs.length + b.sessions.length - (a.prs.length + a.sessions.length));
 
   const tasksArr = ser(tasks, (t) => ({ id: t.id, sessions: [...t.sessions], actions: t.actions })).sort(
     (a, b) => b.sessions.length - a.sessions.length,
