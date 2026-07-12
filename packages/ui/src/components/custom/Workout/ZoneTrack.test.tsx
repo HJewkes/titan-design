@@ -1,0 +1,137 @@
+import { describe, it, expect } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import { axe } from 'jest-axe'
+import { ZoneTrack, type ZoneTrackZone } from './ZoneTrack'
+import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
+
+const { green, yellow, orange, red } = WORKOUT_TOKENS.scale
+
+const ZONES: ZoneTrackZone[] = [
+  { upTo: 10, color: green },
+  { upTo: 20, color: yellow },
+  { upTo: 30, color: orange },
+  { upTo: 40, color: red },
+]
+
+describe('ZoneTrack', () => {
+  it('renders one band per zone', () => {
+    render(<ZoneTrack zones={ZONES} max={40} />)
+    expect(screen.getAllByTestId('zone-track-band')).toHaveLength(4)
+  })
+
+  it('colours each band from the supplied zone token (literal hex, not a var ref)', () => {
+    render(<ZoneTrack zones={ZONES} max={40} />)
+    const bands = screen.getAllByTestId('zone-track-band')
+    expect(bands[0]).toHaveStyle({ backgroundColor: green })
+    expect(bands[3]).toHaveStyle({ backgroundColor: red })
+  })
+
+  it('weights each band by its domain span', () => {
+    render(
+      <ZoneTrack
+        zones={[
+          { upTo: 30, color: green },
+          { upTo: 40, color: red },
+        ]}
+        max={40}
+      />
+    )
+    const bands = screen.getAllByTestId('zone-track-band')
+    expect(bands[0]).toHaveStyle({ flexGrow: 30 })
+    expect(bands[1]).toHaveStyle({ flexGrow: 10 })
+  })
+
+  it('renders no marker when none is supplied', () => {
+    render(<ZoneTrack zones={ZONES} max={40} />)
+    expect(screen.queryByTestId('zone-track-needle')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('zone-track-fill')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('zone-track-unfilled')).not.toBeInTheDocument()
+  })
+
+  it('positions a needle marker at the value fraction of the domain', () => {
+    render(<ZoneTrack zones={ZONES} max={40} marker={{ type: 'needle', value: 10 }} />)
+    expect(screen.getByTestId('zone-track-needle')).toHaveStyle({ left: '25%' })
+  })
+
+  it('clamps a needle past the max to the track end', () => {
+    render(<ZoneTrack zones={ZONES} max={40} marker={{ type: 'needle', value: 100 }} />)
+    expect(screen.getByTestId('zone-track-needle')).toHaveStyle({ left: '100%' })
+  })
+
+  it('clip-reveals the gradient for a fill marker without a colour', () => {
+    render(<ZoneTrack zones={ZONES} max={40} marker={{ type: 'fill', value: 20 }} />)
+    expect(screen.getByTestId('zone-track-unfilled')).toHaveStyle({ left: '50%' })
+    expect(screen.queryByTestId('zone-track-fill')).not.toBeInTheDocument()
+  })
+
+  it('draws a solid trend fill when the fill marker has a colour', () => {
+    render(<ZoneTrack zones={ZONES} max={40} marker={{ type: 'fill', value: 30, color: red }} />)
+    const fill = screen.getByTestId('zone-track-fill')
+    expect(fill).toHaveStyle({ width: '75%', backgroundColor: red })
+  })
+
+  it('renders a tick with its label per entry', () => {
+    render(
+      <ZoneTrack
+        zones={ZONES}
+        max={40}
+        ticks={[
+          { value: 0, label: 'fresh' },
+          { value: 40, label: 'stop' },
+        ]}
+      />
+    )
+    expect(screen.getAllByTestId('zone-track-tick')).toHaveLength(2)
+    expect(screen.getByText('fresh')).toBeInTheDocument()
+    expect(screen.getByText('stop')).toBeInTheDocument()
+  })
+
+  it('draws a range highlight only when a band is supplied', () => {
+    const { rerender } = render(<ZoneTrack zones={ZONES} max={40} />)
+    expect(screen.queryByTestId('zone-track-band-highlight')).not.toBeInTheDocument()
+    rerender(
+      <ZoneTrack
+        zones={ZONES}
+        max={40}
+        band={{ from: 10, to: 20, color: 'rgba(255,255,255,0.2)' }}
+      />
+    )
+    expect(screen.getByTestId('zone-track-band-highlight')).toHaveStyle({
+      left: '25%',
+      width: '25%',
+    })
+  })
+
+  // RNW does not map accessibilityValue → aria-valuenow under jsdom (gotcha #11), so the
+  // value is verified via the marker position + the accessible name, not aria-valuenow.
+  it('exposes the progressbar role with an accessible name', () => {
+    render(
+      <ZoneTrack
+        zones={ZONES}
+        max={40}
+        marker={{ type: 'needle', value: 12 }}
+        accessibilityLabel="Fatigue meter"
+      />
+    )
+    expect(screen.getByRole('progressbar', { name: 'Fatigue meter' })).toBeInTheDocument()
+  })
+
+  describe('accessibility', () => {
+    it('has no accessibility violations', async () => {
+      const { container } = render(
+        <ZoneTrack
+          zones={ZONES}
+          max={40}
+          marker={{ type: 'needle', value: 21 }}
+          ticks={[
+            { value: 0, label: 'fresh' },
+            { value: 40, label: 'stop' },
+          ]}
+          accessibilityLabel="Fatigue meter"
+        />
+      )
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
+  })
+})
