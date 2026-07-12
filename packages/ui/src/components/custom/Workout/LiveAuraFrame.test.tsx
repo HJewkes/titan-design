@@ -41,11 +41,14 @@ describe('LiveAuraFrame', () => {
   ]
 
   floods.forEach(({ category, token, opacity }) => {
-    it(`floods ${category} with the ${token} token`, () => {
+    it(`floods ${category} with a ${token}-tinted radial wash that fades to transparent`, () => {
       render(<LiveAuraFrame category={category} />)
-      expect(screen.getByTestId('live-aura-flood')).toHaveStyle({
-        backgroundColor: alpha(t[token], opacity),
-      })
+      // Web (the target): a top-down radial gradient tinted with the token color,
+      // fading to transparent — matches R2's .aura-* CSS, NOT a flat surface fill.
+      const flood = screen.getByTestId('live-aura-flood') as HTMLElement
+      expect(flood.style.backgroundImage).toContain(alpha(t[token], opacity))
+      expect(flood.style.backgroundImage).toContain('transparent')
+      expect(flood.style.backgroundColor).toBe('')
     })
   })
 

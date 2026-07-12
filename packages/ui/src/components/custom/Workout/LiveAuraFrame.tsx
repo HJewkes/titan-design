@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { View, StyleSheet, type ViewProps, type ViewStyle } from 'react-native'
+import { View, StyleSheet, Platform, type ViewProps, type ViewStyle } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { alpha } from '../../../utils/colors'
 
@@ -61,13 +61,16 @@ export function LiveAuraFrame({
   const color = liveAuraColor(category)
   const tint = color ? alpha(color, floodOpacity[category]) : 'transparent'
 
+  // Match R2's canonical aura: a top-down radial wash that FADES TO TRANSPARENT
+  // by ~62%, so the charcoal base shows through the lower panel — NOT a flat
+  // full-surface tint. On web (the target: MCP dashboard + Storybook) render the
+  // gradient only; native has no gradient support, so fall back to a solid tint.
   const floodStyle = {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: tint,
-    // react-native-web renders backgroundImage at runtime; not in RN ViewStyle types.
-    backgroundImage: color
-      ? `radial-gradient(130% 95% at 50% 0%, ${tint}, transparent 62%)`
-      : undefined,
+    ...(Platform.OS === 'web'
+      ? // backgroundImage is a runtime RNW style, not in RN ViewStyle types.
+        { backgroundImage: `radial-gradient(130% 95% at 50% 0%, ${tint}, transparent 62%)` }
+      : { backgroundColor: tint }),
   } as ViewStyle
 
   return (
