@@ -1,12 +1,10 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, Text, type ViewProps } from 'react-native'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { ZoneTrack } from './ZoneTrack'
+import { DataRow } from '../../ui/data-row/DataRow'
 import type { VolumeLandmarks } from './muscleTaxonomy'
-
-const t = getSemanticColors('dark')
 
 // Reuse the canonical BodyMap volume HEAT scale (the `divergingScale` under →
 // optimal → over) rather than reinventing a fill ramp. Same color language as
@@ -16,7 +14,6 @@ const HEAT = WORKOUT_TOKENS.heatmap
 // The muted, un-reached track colour — the same charcoal step ZoneTrack defaults
 // to, so the bar sits on the shared gauge-track surface.
 const NEUTRAL_TRACK = primitiveColors.charcoal[200]
-const TICK_COLOR = t['text-tertiary']
 const MONO = 'monospace'
 
 export type VolumeZone = 'under' | 'maintenance' | 'productive' | 'approaching' | 'over'
@@ -26,7 +23,7 @@ export type VolumeZone = 'under' | 'maintenance' | 'productive' | 'approaching' 
 export type { VolumeLandmarks }
 
 export interface VolumeLandmarkBarProps extends ViewProps {
-  /** Muscle group label shown above the track. */
+  /** Muscle group label shown in the header lockup. */
   muscle: string
   /** Current weekly working sets for this muscle group. */
   currentSets: number
@@ -60,6 +57,12 @@ const ZONE_DESCRIPTION: Record<VolumeZone, string> = {
   over: 'over MRV',
 }
 
+const LANDMARK_NAME: Record<'MEV' | 'MAV' | 'MRV', string> = {
+  MEV: 'Minimum Effective Volume',
+  MAV: 'Maximum Adaptive Volume',
+  MRV: 'Maximum Recoverable Volume',
+}
+
 /** Map weekly sets against the three landmarks to a diverging HEAT zone. */
 function zoneForSets(sets: number, { mev, mav, mrv }: VolumeLandmarks): VolumeZone {
   if (sets < mev) return 'under'
@@ -71,72 +74,17 @@ function zoneForSets(sets: number, { mev, mav, mrv }: VolumeLandmarks): VolumeZo
   return sets < midpoint ? 'productive' : 'approaching'
 }
 
-function clamp01(value: number): number {
-  if (value < 0) return 0
-  if (value > 1) return 1
-  return value
-}
-
-interface LandmarkTickProps {
-  name: 'MEV' | 'MAV' | 'MRV'
-  value: number
-  left: number
-  trackHeight: number
-  emphasized: boolean
-}
-
-/** A full-height landmark line drawn over the track + its label/value below. */
-function LandmarkTick({ name, value, left, trackHeight, emphasized }: LandmarkTickProps) {
-  const lineWidth = emphasized ? 2 : 1.5
-  const color = emphasized ? t['brand-primary'] : TICK_COLOR
-  return (
-    <>
-      <View
-        style={{
-          position: 'absolute',
-          left,
-          top: -3,
-          width: lineWidth,
-          height: trackHeight + 6,
-          borderRadius: lineWidth / 2,
-          backgroundColor: color,
-          zIndex: 3,
-        }}
-        testID={`volume-landmark-tick-${name.toLowerCase()}`}
-      />
-      <View
-        style={{
-          position: 'absolute',
-          left: left - 20,
-          top: trackHeight + 8,
-          width: 40,
-          alignItems: 'center',
-        }}
-        accessibilityElementsHidden
-        testID={`volume-landmark-label-${name.toLowerCase()}`}
-      >
-        <Text style={{ fontSize: 8, fontFamily: MONO, color, letterSpacing: 0.5 }}>{name}</Text>
-        <Text style={{ fontSize: 9, fontFamily: MONO, color: t['text-secondary'] }}>{value}</Text>
-      </View>
-    </>
-  )
-}
-
 /**
- * Horizontal weekly-volume bar with MEV / MAV / MRV landmark ticks, a HEAT-scale
- * fill positioned against the MAV target, and a % readout. Composes the shared
- * {@link ZoneTrack} gauge primitive for the track + fill (so it sits on the same
- * base as FatigueMeter / TrainingLoadGauge rather than hand-rolling a track), and
- * overlays the volume-specific landmark ticks. Reuses the canonical BodyMap
- * volume heat scale so a muscle's status reads the same here as in the body map.
- * Richer than DeviationBar / MesoProgressBar, which carry no landmark markers.
+ * Horizontal weekly-volume bar with MEV / MAV / MRV landmark ticks and a HEAT-scale
+ * fill positioned against the MAV target. Composes the shared {@link ZoneTrack}
+ * gauge primitive (track + active-zone fill + colored/tooltip landmark ticks; glows
+ * when in the productive zone) and a {@link DataRow} header lockup (muscle title +
+ * current % at matched type height). The tick acronyms expand to their full name +
+ * raw set count on hover/long-press, keeping the footer light. Reuses the canonical
+ * BodyMap volume heat scale so a muscle's status reads the same as in the body map.
  *
  * @example
- * <VolumeLandmarkBar
- *   muscle="Quads"
- *   currentSets={16}
- *   landmarks={{ mev: 8, mav: 16, mrv: 22 }}
- * />
+ * <VolumeLandmarkBar muscle="Quads" currentSets={16} landmarks={{ mev: 8, mav: 16, mrv: 22 }} />
  */
 export function VolumeLandmarkBar({
   muscle,
@@ -153,77 +101,54 @@ export function VolumeLandmarkBar({
   const max = scaleMax ?? mrv * 1.2
   const zone = zoneForSets(currentSets, landmarks)
   const fillColor = HEAT_BY_ZONE[zone]
-
-  const posFor = (value: number) => clamp01(value / max) * width
   const pct = mav > 0 ? Math.round((currentSets / mav) * 100) : 0
 
   return (
     <View
       className={className}
-      style={[{ width, gap: 4, overflow: 'visible' }, style]}
+      style={[{ width, gap: 3 }, style]}
       testID="volume-landmark-bar"
       {...props}
     >
-      <View
-        style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' }}
-        accessibilityElementsHidden
-      >
-        <Text
-          style={{
-            fontSize: 11,
-            fontFamily: '"Nunito Sans", sans-serif',
-            color: t['text-secondary'],
-          }}
-          testID="volume-landmark-muscle"
-        >
-          {muscle}
-        </Text>
-        <Text
-          style={{ fontSize: 15, fontWeight: '700', fontFamily: MONO, color: fillColor }}
-          testID="volume-landmark-pct"
-        >
-          {pct}%
-        </Text>
-      </View>
+      <DataRow
+        label={muscle}
+        value={
+          <Text
+            testID="volume-landmark-pct"
+            style={{ fontSize: 14, fontWeight: '700', fontFamily: MONO, color: fillColor }}
+          >
+            {pct}%
+          </Text>
+        }
+        className="py-0"
+        testID="volume-landmark-header"
+      />
 
-      {/* The shared ZoneTrack primitive carries the track + active-zone fill + the
-          progressbar a11y; the volume landmarks are overlaid on top of it. */}
-      <View style={{ width, position: 'relative' }}>
-        <ZoneTrack
-          zones={[{ upTo: max, color: NEUTRAL_TRACK }]}
-          max={max}
-          marker={{ type: 'fill', value: currentSets, color: fillColor }}
-          trackHeight={trackHeight}
-          trackColor={NEUTRAL_TRACK}
-          accessibilityLabel={`${muscle} weekly volume: ${currentSets} sets, ${pct}% of MAV target, ${ZONE_DESCRIPTION[zone]}`}
-          testID="volume-landmark-track"
-        />
-
-        <LandmarkTick
-          name="MEV"
-          value={mev}
-          left={posFor(mev)}
-          trackHeight={trackHeight}
-          emphasized={false}
-        />
-        <LandmarkTick
-          name="MAV"
-          value={mav}
-          left={posFor(mav)}
-          trackHeight={trackHeight}
-          emphasized
-        />
-        <LandmarkTick
-          name="MRV"
-          value={mrv}
-          left={posFor(mrv)}
-          trackHeight={trackHeight}
-          emphasized={false}
-        />
-      </View>
-
-      {/* Reserve vertical room for the absolutely-positioned landmark labels. */}
-      <View style={{ height: 22 }} accessibilityElementsHidden />
+      <ZoneTrack
+        zones={[{ upTo: max, color: NEUTRAL_TRACK }]}
+        max={max}
+        marker={{
+          type: 'fill',
+          value: currentSets,
+          color: fillColor,
+          // Glow when in the optimal productive band — the "sweet spot" cue.
+          glow: zone === 'productive',
+        }}
+        trackColor={NEUTRAL_TRACK}
+        trackHeight={trackHeight}
+        ticks={[
+          { value: mev, label: 'MEV', tooltip: `${LANDMARK_NAME.MEV} · ${mev} sets/wk` },
+          {
+            value: mav,
+            label: 'MAV',
+            emphasized: true,
+            tooltip: `${LANDMARK_NAME.MAV} (target) · ${mav} sets/wk`,
+          },
+          { value: mrv, label: 'MRV', tooltip: `${LANDMARK_NAME.MRV} · ${mrv} sets/wk` },
+        ]}
+        accessibilityLabel={`${muscle} weekly volume: ${currentSets} sets, ${pct}% of MAV target, ${ZONE_DESCRIPTION[zone]}`}
+        testID="volume-landmark-track"
+      />
     </View>
   )
 }

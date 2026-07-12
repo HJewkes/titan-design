@@ -2,8 +2,15 @@
 import { View, Text, type ViewProps, type DimensionValue } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { primitiveColors } from '../../../theme/tokens/primitives'
+import { alpha } from '../../../utils/colors'
+import { Tooltip } from '../../ui/tooltip/Tooltip'
 
 const t = getSemanticColors('dark')
+
+/** Soft two-stop glow in `color`, for a marker's optional `glow`. */
+function glowShadow(color: string): string {
+  return `0 0 5px 1px ${alpha(color, 0.3)}, 0 0 10px 3px ${alpha(color, 0.12)}`
+}
 
 /** Muted, un-reached track colour — a charcoal step, matches the IntensityBar track family. */
 const DEFAULT_TRACK_COLOR = primitiveColors.charcoal[200]
@@ -24,12 +31,22 @@ export interface ZoneTrackZone {
   color: string
 }
 
-/** A tick mark with an optional label, positioned at `value` in the domain. */
+/**
+ * A tick at `value`: a colored line over the track + an optional compact label
+ * below, with an optional tooltip (to expand an acronym / show the raw value so
+ * the label footer can stay light). Multiple ticks are supported.
+ */
 export interface ZoneTrackTick {
   /** Position of the tick in domain units. */
   value: number
-  /** Optional label rendered under the tick. */
+  /** Optional compact label rendered under the tick. */
   label?: string
+  /** Line + label colour. Defaults to a muted tick colour (or brand when `emphasized`). */
+  color?: string
+  /** Emphasize this tick (thicker line, brand colour by default) — e.g. a target landmark. */
+  emphasized?: boolean
+  /** Tooltip content shown on hover (web) / long-press (native) — expand the acronym, show the raw value. */
+  tooltip?: string
 }
 
 /**
@@ -39,8 +56,8 @@ export interface ZoneTrackTick {
  *   gradient up to `value`; supply `color` for a solid trend-coloured fill (FatigueGauge-style).
  */
 export type ZoneTrackMarker =
-  | { type: 'needle'; value: number; color?: string }
-  | { type: 'fill'; value: number; color?: string }
+  | { type: 'needle'; value: number; color?: string; glow?: boolean }
+  | { type: 'fill'; value: number; color?: string; glow?: boolean }
 
 /** An optional translucent range highlight (e.g. RpeCalibration's predicted CI band). */
 export interface ZoneTrackBand {
@@ -143,6 +160,11 @@ export function ZoneTrack({
             backgroundColor: trackColor,
             overflow: 'hidden',
             flexDirection: 'row',
+            // The pill's own box-shadow renders outside its overflow:hidden, so
+            // `glow` haloes the whole track in the marker colour.
+            ...(marker?.glow
+              ? { boxShadow: glowShadow(marker.color ?? DEFAULT_MARKER_COLOR) }
+              : null),
           }}
         >
           {bands.map((b, i) => (
@@ -217,41 +239,75 @@ export function ZoneTrack({
             }}
           />
         )}
+
+        {/* Colored tick lines over the track (decorative; the labels below carry the a11y). */}
+        {ticks?.map((tick, i) => {
+          const emphasized = tick.emphasized === true
+          const lineColor = tick.color ?? (emphasized ? t['brand-primary'] : TICK_COLOR)
+          const lineWidth = emphasized ? 2 : 1.5
+          return (
+            <View
+              key={`line-${i}`}
+              testID="zone-track-tick-line"
+              accessibilityElementsHidden
+              style={{
+                position: 'absolute',
+                top: (markerHeight - trackHeight) / 2 - 2,
+                left: pct(fraction(tick.value, min, max)),
+                width: lineWidth,
+                height: trackHeight + 4,
+                borderRadius: lineWidth / 2,
+                backgroundColor: lineColor,
+                transform: [{ translateX: -lineWidth / 2 }],
+                zIndex: 3,
+              }}
+            />
+          )
+        })}
       </View>
 
       {ticks != null && ticks.length > 0 && (
-        <View
-          style={{ position: 'relative', height: 14, marginTop: 4 }}
-          accessibilityElementsHidden
-        >
-          {ticks.map((tick, i) => (
-            <View
-              key={i}
-              testID="zone-track-tick"
-              style={{
-                position: 'absolute',
-                left: pct(fraction(tick.value, min, max)),
-                alignItems: 'center',
-                transform: [{ translateX: -12 }],
-                width: 24,
-              }}
-            >
-              <View style={{ width: 1, height: 3, backgroundColor: TICK_COLOR }} />
-              {tick.label != null && (
-                <Text
-                  testID="zone-track-tick-label"
-                  style={{
-                    fontSize: 8,
-                    color: TICK_COLOR,
-                    fontFamily: '"Nunito Sans", sans-serif',
-                    marginTop: 2,
-                  }}
-                >
-                  {tick.label}
-                </Text>
-              )}
-            </View>
-          ))}
+        <View style={{ position: 'relative', height: 16, marginTop: 5 }}>
+          {ticks.map((tick, i) => {
+            if (tick.label == null) return null
+            const emphasized = tick.emphasized === true
+            const labelColor = tick.color ?? (emphasized ? t['brand-primary'] : TICK_COLOR)
+            const labelNode = (
+              <Text
+                testID="zone-track-tick-label"
+                style={{
+                  fontSize: 9,
+                  letterSpacing: 0.5,
+                  color: labelColor,
+                  fontFamily: 'monospace',
+                  fontWeight: emphasized ? '700' : '400',
+                }}
+              >
+                {tick.label}
+              </Text>
+            )
+            return (
+              <View
+                key={`label-${i}`}
+                testID="zone-track-tick"
+                style={{
+                  position: 'absolute',
+                  left: pct(fraction(tick.value, min, max)),
+                  transform: [{ translateX: -14 }],
+                  width: 28,
+                  alignItems: 'center',
+                }}
+              >
+                {tick.tooltip != null ? (
+                  <Tooltip label={tick.tooltip} placement="top">
+                    {labelNode}
+                  </Tooltip>
+                ) : (
+                  labelNode
+                )}
+              </View>
+            )
+          })}
         </View>
       )}
     </View>

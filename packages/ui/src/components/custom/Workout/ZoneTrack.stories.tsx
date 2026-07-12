@@ -113,3 +113,28 @@ export const WallDensity: Story = {
     needleOverhang: 9,
   },
 }
+
+/** `marker.glow` haloes the whole track in the marker colour — a "sweet spot" / attention cue. */
+export const Glow: Story = {
+  args: {
+    zones: FATIGUE_ZONES,
+    max: 40,
+    marker: { type: 'fill', value: 20, color: green, glow: true },
+    trackHeight: 12,
+  },
+}
+
+/** Colored + emphasized ticks with tooltips — hover a label to expand the acronym / show the raw value. */
+export const ColoredTooltipTicks: Story = {
+  args: {
+    zones: FATIGUE_ZONES,
+    max: 40,
+    marker: { type: 'needle', value: 22 },
+    trackHeight: 12,
+    ticks: [
+      { value: 10, label: 'VL10', tooltip: '10% velocity loss' },
+      { value: 20, label: 'VL20', emphasized: true, tooltip: '20% velocity loss — threshold' },
+      { value: 30, label: 'STOP', color: red, tooltip: '30% velocity loss — stop the set' },
+    ],
+  },
+}

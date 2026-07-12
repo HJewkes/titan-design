@@ -3,8 +3,10 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ZoneTrack, type ZoneTrackZone } from './ZoneTrack'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 const { green, yellow, orange, red } = WORKOUT_TOKENS.scale
+const t = getSemanticColors('dark')
 
 const ZONES: ZoneTrackZone[] = [
   { upTo: 10, color: green },
@@ -132,6 +134,67 @@ describe('ZoneTrack', () => {
       )
       const results = await axe(container)
       expect(results).toHaveNoViolations()
+    })
+  })
+
+  describe('glow', () => {
+    it('haloes the track when the marker has glow', () => {
+      render(
+        <ZoneTrack
+          zones={ZONES}
+          max={40}
+          marker={{ type: 'fill', value: 24, color: orange, glow: true }}
+        />
+      )
+      expect((screen.getByTestId('zone-track-track') as HTMLElement).style.boxShadow).not.toBe('')
+    })
+    it('has no glow by default', () => {
+      render(
+        <ZoneTrack zones={ZONES} max={40} marker={{ type: 'fill', value: 24, color: orange }} />
+      )
+      expect((screen.getByTestId('zone-track-track') as HTMLElement).style.boxShadow).toBe('')
+    })
+  })
+
+  describe('ticks (colored lines + labels + tooltip)', () => {
+    it('renders a line and label per tick', () => {
+      render(
+        <ZoneTrack
+          zones={ZONES}
+          max={40}
+          ticks={[
+            { value: 10, label: 'A' },
+            { value: 30, label: 'B' },
+          ]}
+        />
+      )
+      expect(screen.getAllByTestId('zone-track-tick-line')).toHaveLength(2)
+      expect(screen.getAllByTestId('zone-track-tick-label').map((e) => e.textContent)).toEqual([
+        'A',
+        'B',
+      ])
+    })
+    it('colours an emphasized tick line with the brand accent', () => {
+      render(
+        <ZoneTrack zones={ZONES} max={40} ticks={[{ value: 20, label: 'T', emphasized: true }]} />
+      )
+      expect(screen.getByTestId('zone-track-tick-line')).toHaveStyle({
+        backgroundColor: t['brand-primary'],
+      })
+    })
+    it('applies a per-tick color override to the line', () => {
+      render(<ZoneTrack zones={ZONES} max={40} ticks={[{ value: 20, label: 'X', color: red }]} />)
+      expect(screen.getByTestId('zone-track-tick-line')).toHaveStyle({ backgroundColor: red })
+    })
+    it('renders a tooltip label trigger', () => {
+      render(
+        <ZoneTrack
+          zones={ZONES}
+          max={40}
+          ticks={[{ value: 20, label: 'MAV', tooltip: 'Maximum Adaptive Volume' }]}
+        />
+      )
+      expect(screen.getByText('MAV')).toBeInTheDocument()
     })
   })
 })
