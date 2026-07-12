@@ -181,6 +181,7 @@ async function mine({ repo, topN }) {
       firstTs: null,
       lastTs: null,
       touchLocs: [],
+      locSessions: new Set(), // one locator per distinct session that mutated it
     }));
 
   // Transcript index: each locator points back into the raw JSONL by
@@ -331,9 +332,12 @@ async function mine({ repo, topN }) {
                 else f.charsRemoved += -d;
               }
             }
-            // Locator back to the raw turn that mutated the file (bounded).
-            if (b.name !== 'Read' && f.touchLocs.length < 14)
-              f.touchLocs.push({ session: id, ts, loc });
+            // One jump-to-log locator per distinct session that touched the file
+            // (read or write), tagged with the tool; trimmed to most-recent later.
+            if (!f.locSessions.has(id)) {
+              f.locSessions.add(id);
+              f.touchLocs.push({ session: id, ts, tool: b.name, loc });
+            }
           }
         } else if (b.name === 'Agent') {
           s.subagents++;
@@ -458,7 +462,8 @@ async function mine({ repo, topN }) {
         firstTouched: f.firstTs,
         lastTouched: f.lastTs,
         coChange: co.slice(0, 6),
-        touchLocs: f.touchLocs,
+        // most-recent sessions first, capped — these carry the jump-to-log links
+        touchLocs: [...f.touchLocs].sort((a, b) => String(b.ts).localeCompare(String(a.ts))).slice(0, 40),
       };
     });
 
