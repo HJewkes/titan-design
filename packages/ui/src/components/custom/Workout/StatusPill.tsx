@@ -52,7 +52,7 @@ export function statusPillColor(status: StatusPillStatus): string {
  * stays consistent with the atom. Tint and border are derived from the same
  * semantic token via `alpha()` — no per-status raw hex.
  */
-export function StatusPill({ status, label, className, ...props }: StatusPillProps) {
+export function StatusPill({ status, label, className, style, ...props }: StatusPillProps) {
   const color = statusPillColor(status)
   const text = label ?? defaultLabel[status]
 
@@ -60,18 +60,21 @@ export function StatusPill({ status, label, className, ...props }: StatusPillPro
     <View
       testID="status-pill"
       className={className}
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 7,
-        alignSelf: 'flex-start',
-        paddingVertical: 7,
-        paddingHorizontal: 13,
-        borderRadius: 9,
-        backgroundColor: alpha(color, 0.14),
-        borderWidth: 1,
-        borderColor: alpha(color, 0.4),
-      }}
+      style={[
+        {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 7,
+          alignSelf: 'flex-start',
+          paddingVertical: 7,
+          paddingHorizontal: 13,
+          borderRadius: 9,
+          backgroundColor: alpha(color, 0.14),
+          borderWidth: 1,
+          borderColor: alpha(color, 0.4),
+        },
+        style,
+      ]}
       {...props}
     >
       <View accessibilityElementsHidden>

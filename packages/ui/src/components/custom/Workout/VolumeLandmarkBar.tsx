@@ -141,6 +141,7 @@ export function VolumeLandmarkBar({
   trackHeight = 10,
   scaleMax,
   className,
+  style,
   ...props
 }: VolumeLandmarkBarProps) {
   const { mev, mav, mrv } = landmarks
@@ -156,7 +157,7 @@ export function VolumeLandmarkBar({
   return (
     <View
       className={className}
-      style={{ width, gap: 4, overflow: 'visible' }}
+      style={[{ width, gap: 4, overflow: 'visible' }, style]}
       accessibilityRole="progressbar"
       accessibilityValue={{ min: 0, max: Math.round(max), now: currentSets }}
       accessibilityLabel={`${muscle} weekly volume: ${currentSets} sets, ${pct}% of MAV target, ${ZONE_DESCRIPTION[zone]}`}

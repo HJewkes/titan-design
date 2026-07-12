@@ -55,6 +55,7 @@ export function LiveAuraFrame({
   pulse = true,
   className,
   children,
+  style,
   ...props
 }: LiveAuraFrameProps) {
   const color = liveAuraColor(category)
@@ -73,14 +74,17 @@ export function LiveAuraFrame({
     <View
       testID="live-aura-frame"
       className={className}
-      style={{
-        position: 'relative',
-        overflow: 'hidden',
-        borderRadius: 10,
-        backgroundColor: t['background-base'],
-        borderWidth: 1,
-        borderColor: t['border-default'],
-      }}
+      style={[
+        {
+          position: 'relative',
+          overflow: 'hidden',
+          borderRadius: 10,
+          backgroundColor: t['background-base'],
+          borderWidth: 1,
+          borderColor: t['border-default'],
+        },
+        style,
+      ]}
       {...props}
     >
       {color && (
