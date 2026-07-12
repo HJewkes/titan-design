@@ -34,7 +34,7 @@ describe('VolumeLandmarkBar', () => {
     renderBar(10)
     expect(screen.getByTestId('volume-landmark-bar')).toBeInTheDocument()
     expect(screen.getByTestId('volume-landmark-track')).toBeInTheDocument()
-    expect(screen.getByTestId('volume-landmark-fill')).toBeInTheDocument()
+    expect(screen.getByTestId('zone-track-fill')).toBeInTheDocument()
   })
 
   it('renders the muscle label', () => {
@@ -106,35 +106,35 @@ describe('VolumeLandmarkBar', () => {
   describe('HEAT zone fill color by landmark position', () => {
     it('is under (blue) below MEV', () => {
       renderBar(3)
-      expect(screen.getByTestId('volume-landmark-fill')).toHaveStyle({
+      expect(screen.getByTestId('zone-track-fill')).toHaveStyle({
         backgroundColor: HEAT.under,
       })
     })
 
     it('is maintenance (cyan) between MEV and MAV', () => {
       renderBar(10)
-      expect(screen.getByTestId('volume-landmark-fill')).toHaveStyle({
+      expect(screen.getByTestId('zone-track-fill')).toHaveStyle({
         backgroundColor: HEAT.maintenance,
       })
     })
 
     it('is productive (green) just above MAV', () => {
       renderBar(16)
-      expect(screen.getByTestId('volume-landmark-fill')).toHaveStyle({
+      expect(screen.getByTestId('zone-track-fill')).toHaveStyle({
         backgroundColor: HEAT.productive,
       })
     })
 
     it('is approaching (amber) in the upper MAV-MRV band', () => {
       renderBar(18)
-      expect(screen.getByTestId('volume-landmark-fill')).toHaveStyle({
+      expect(screen.getByTestId('zone-track-fill')).toHaveStyle({
         backgroundColor: HEAT.approaching,
       })
     })
 
     it('is over (red) at or beyond MRV', () => {
       renderBar(25)
-      expect(screen.getByTestId('volume-landmark-fill')).toHaveStyle({ backgroundColor: HEAT.over })
+      expect(screen.getByTestId('zone-track-fill')).toHaveStyle({ backgroundColor: HEAT.over })
     })
 
     it('mirrors the fill color in the percentage headline', () => {
@@ -143,23 +143,16 @@ describe('VolumeLandmarkBar', () => {
     })
   })
 
-  describe('fill geometry', () => {
+  describe('fill geometry (delegated to ZoneTrack, expressed as a track fraction)', () => {
     it('sizes the fill proportionally to current sets', () => {
-      // 10 / 25 * 200 = 80px
+      // 10 / 25 = 40% of the track
       renderBar(10)
-      expect(screen.getByTestId('volume-landmark-fill')).toHaveStyle({ width: '80px' })
+      expect(screen.getByTestId('zone-track-fill')).toHaveStyle({ width: '40%' })
     })
 
     it('clamps the fill to the track for extreme over-volume', () => {
       renderBar(100)
-      expect(screen.getByTestId('volume-landmark-fill')).toHaveStyle({ width: '200px' })
-    })
-
-    it('applies the productive glow only in the productive zone', () => {
-      renderBar(16)
-      expect(screen.getByTestId('volume-landmark-fill')).toHaveStyle({
-        boxShadow: '0 0 5px 1px rgba(88,246,158,0.30), 0 0 10px 3px rgba(88,246,158,0.12)',
-      })
+      expect(screen.getByTestId('zone-track-fill')).toHaveStyle({ width: '100%' })
     })
   })
 

@@ -2,6 +2,8 @@
 import { View, Text, type ViewProps } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
+import { primitiveColors } from '../../../theme/tokens/primitives'
+import { ZoneTrack } from './ZoneTrack'
 import type { VolumeLandmarks } from './muscleTaxonomy'
 
 const t = getSemanticColors('dark')
@@ -11,11 +13,11 @@ const t = getSemanticColors('dark')
 // BodyMap / MesoProgressBar so a muscle reads identically across the app.
 const HEAT = WORKOUT_TOKENS.heatmap
 
-const TRACK_BG = '#333333'
-const TICK_COLOR = '#6B7280'
+// The muted, un-reached track colour — the same charcoal step ZoneTrack defaults
+// to, so the bar sits on the shared gauge-track surface.
+const NEUTRAL_TRACK = primitiveColors.charcoal[200]
+const TICK_COLOR = t['text-tertiary']
 const MONO = 'monospace'
-// Optimal-zone glow: the fill sits on the MAV productive target.
-const PRODUCTIVE_GLOW = '0 0 5px 1px rgba(88,246,158,0.30), 0 0 10px 3px rgba(88,246,158,0.12)'
 
 export type VolumeZone = 'under' | 'maintenance' | 'productive' | 'approaching' | 'over'
 
@@ -83,6 +85,7 @@ interface LandmarkTickProps {
   emphasized: boolean
 }
 
+/** A full-height landmark line drawn over the track + its label/value below. */
 function LandmarkTick({ name, value, left, trackHeight, emphasized }: LandmarkTickProps) {
   const lineWidth = emphasized ? 2 : 1.5
   const color = emphasized ? t['brand-primary'] : TICK_COLOR
@@ -121,10 +124,12 @@ function LandmarkTick({ name, value, left, trackHeight, emphasized }: LandmarkTi
 
 /**
  * Horizontal weekly-volume bar with MEV / MAV / MRV landmark ticks, a HEAT-scale
- * fill positioned against the MAV target, and a % readout. Reuses the canonical
- * BodyMap volume heat scale so a muscle's training status reads the same here as
- * in the body map. Richer than DeviationBar / MesoProgressBar, which carry no
- * landmark markers.
+ * fill positioned against the MAV target, and a % readout. Composes the shared
+ * {@link ZoneTrack} gauge primitive for the track + fill (so it sits on the same
+ * base as FatigueMeter / TrainingLoadGauge rather than hand-rolling a track), and
+ * overlays the volume-specific landmark ticks. Reuses the canonical BodyMap
+ * volume heat scale so a muscle's status reads the same here as in the body map.
+ * Richer than DeviationBar / MesoProgressBar, which carry no landmark markers.
  *
  * @example
  * <VolumeLandmarkBar
@@ -150,17 +155,12 @@ export function VolumeLandmarkBar({
   const fillColor = HEAT_BY_ZONE[zone]
 
   const posFor = (value: number) => clamp01(value / max) * width
-  const fillWidth = posFor(currentSets)
-
   const pct = mav > 0 ? Math.round((currentSets / mav) * 100) : 0
 
   return (
     <View
       className={className}
       style={[{ width, gap: 4, overflow: 'visible' }, style]}
-      accessibilityRole="progressbar"
-      accessibilityValue={{ min: 0, max: Math.round(max), now: currentSets }}
-      accessibilityLabel={`${muscle} weekly volume: ${currentSets} sets, ${pct}% of MAV target, ${ZONE_DESCRIPTION[zone]}`}
       testID="volume-landmark-bar"
       {...props}
     >
@@ -186,31 +186,17 @@ export function VolumeLandmarkBar({
         </Text>
       </View>
 
-      <View
-        style={{
-          width,
-          height: trackHeight,
-          borderRadius: trackHeight / 2,
-          backgroundColor: TRACK_BG,
-          position: 'relative',
-          overflow: 'visible',
-        }}
-        accessibilityElementsHidden
-        testID="volume-landmark-track"
-      >
-        <View
-          style={{
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            bottom: 0,
-            width: fillWidth,
-            borderRadius: trackHeight / 2,
-            backgroundColor: fillColor,
-            zIndex: 1,
-            ...(zone === 'productive' ? { boxShadow: PRODUCTIVE_GLOW } : null),
-          }}
-          testID="volume-landmark-fill"
+      {/* The shared ZoneTrack primitive carries the track + active-zone fill + the
+          progressbar a11y; the volume landmarks are overlaid on top of it. */}
+      <View style={{ width, position: 'relative' }}>
+        <ZoneTrack
+          zones={[{ upTo: max, color: NEUTRAL_TRACK }]}
+          max={max}
+          marker={{ type: 'fill', value: currentSets, color: fillColor }}
+          trackHeight={trackHeight}
+          trackColor={NEUTRAL_TRACK}
+          accessibilityLabel={`${muscle} weekly volume: ${currentSets} sets, ${pct}% of MAV target, ${ZONE_DESCRIPTION[zone]}`}
+          testID="volume-landmark-track"
         />
 
         <LandmarkTick
