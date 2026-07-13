@@ -123,6 +123,34 @@ function parseGit(raw) {
   return { setBranch: b && b !== 'HEAD' && !b.startsWith('-') ? b : null, mergePr: mergePr ? Number(mergePr) : null, commit, push };
 }
 
+/**
+ * Fold one assistant turn's `usage` into the session, bucketed by model. Tokens
+ * are NOT fungible across models (Opus vs Sonnet price differently), so we keep
+ * a per-model breakdown alongside the session totals, plus cache-creation and
+ * billable server-tool (web search/fetch) counts that the earlier miner dropped.
+ */
+function addUsage(s, model, u) {
+  if (!u) return;
+  const inTok = u.input_tokens ?? 0;
+  const outTok = u.output_tokens ?? 0;
+  const cr = u.cache_read_input_tokens ?? 0;
+  const cc = u.cache_creation_input_tokens ?? 0;
+  s.tokensIn += inTok;
+  s.tokensOut += outTok;
+  s.cacheRead += cr;
+  s.cacheCreation += cc;
+  const stu = u.server_tool_use;
+  if (stu && typeof stu === 'object') for (const v of Object.values(stu)) if (typeof v === 'number') s.serverToolUse += v;
+  if (u.service_tier) s.serviceTiers[u.service_tier] = (s.serviceTiers[u.service_tier] ?? 0) + 1;
+  if (model) {
+    const m = s.tokensByModel[model] ?? (s.tokensByModel[model] = { in: 0, out: 0, cacheRead: 0, cacheCreation: 0 });
+    m.in += inTok;
+    m.out += outTok;
+    m.cacheRead += cr;
+    m.cacheCreation += cc;
+  }
+}
+
 async function mine({ repo, topN }) {
   const repoName = path.basename(repo);
   const repoRel = await buildRepoResolver(repo); // path -> repo-relative | null (worktree-aware)
@@ -158,6 +186,16 @@ async function mine({ repo, topN }) {
       tokensIn: 0,
       tokensOut: 0,
       cacheRead: 0,
+      cacheCreation: 0,
+      serverToolUse: 0,
+      serviceTiers: {},
+      tokensByModel: {}, // model -> { in, out, cacheRead, cacheCreation }
+      thinkingBlocks: 0,
+      thinkingChars: 0,
+      textBlocks: 0,
+      phases: [], // ordered mode/permission spans: { kind, value, loc }
+      maxTurnsHits: 0,
+      humanEdits: 0, // user-authored file edits (edited_text_file attachments)
       commits: 0,
       pushes: 0,
       errors: 0,
@@ -174,6 +212,7 @@ async function mine({ repo, topN }) {
       reads: 0,
       writes: 0,
       edits: 0,
+      humanEdits: 0, // user edits from edited_text_file attachments (not Claude)
       charsAdded: 0,
       charsRemoved: 0,
       sessions: new Set(),
@@ -182,6 +221,7 @@ async function mine({ repo, topN }) {
       lastTs: null,
       touchLocs: [],
       locSessions: new Set(), // one locator per distinct session that mutated it
+      humanLocSessions: new Set(), // one human-edit locator per distinct session
     }));
 
   // Transcript index: each locator points back into the raw JSONL by
@@ -197,6 +237,47 @@ async function mine({ repo, topN }) {
       transcriptIdx.set(p, i);
     }
     return i;
+  };
+
+  // Record a mode/permission-mode transition. `mode` and `permission` lines
+  // interleave and fire often, so dedup against the last value *per kind* (not the
+  // last entry overall) — we only want genuine phase changes. No timestamp on
+  // these events, so the locator gives position/order.
+  const lastPhaseVal = new Map(); // `${sessionId}:${kind}` -> value
+  const pushPhase = (s, kind, value, loc) => {
+    const k = s.id + ':' + kind;
+    if (lastPhaseVal.get(k) === value) return;
+    lastPhaseVal.set(k, value);
+    s.phases.push({ kind, value, loc });
+  };
+
+  // Fold an attachment line into the session. Two subtypes carry real signal:
+  // edited_text_file = a user-authored edit (invisible to the Read/Write/Edit
+  // tool path), and max_turns_reached = a turn-limit friction hit.
+  const handleAttachment = (s, o, loc) => {
+    const a = o.attachment;
+    if (!a || typeof a !== 'object') return;
+    if (a.type === 'max_turns_reached') {
+      s.maxTurnsHits++;
+      return;
+    }
+    if (a.type !== 'edited_text_file' || typeof a.filename !== 'string') return;
+    const rel = repoRel(a.filename);
+    if (!rel || IGNORE.test(rel)) return;
+    const f = files_(rel);
+    const ts = o.timestamp ?? null;
+    f.humanEdits++;
+    s.humanEdits++;
+    f.sessions.add(s.id);
+    if (s.curBranch) f.branches.add(s.curBranch);
+    if (ts) {
+      if (!f.firstTs || ts < f.firstTs) f.firstTs = ts;
+      if (!f.lastTs || ts > f.lastTs) f.lastTs = ts;
+    }
+    if (!f.humanLocSessions.has(s.id)) {
+      f.humanLocSessions.add(s.id);
+      f.touchLocs.push({ session: s.id, ts, tool: 'edited_text_file', loc });
+    }
   };
 
   for (const { dir, file } of await transcripts()) {
@@ -269,6 +350,18 @@ async function mine({ repo, topN }) {
         if (o.subtype === 'turn_duration' && typeof o.durationMs === 'number') turnDurations.push(o.durationMs);
         continue;
       }
+      if (o.type === 'mode' && id && typeof o.mode === 'string') {
+        pushPhase(sess(id), 'mode', o.mode, loc);
+        continue;
+      }
+      if (o.type === 'permission-mode' && id && typeof o.permissionMode === 'string') {
+        pushPhase(sess(id), 'permission', o.permissionMode, loc);
+        continue;
+      }
+      if (o.type === 'attachment' && id) {
+        handleAttachment(sess(id), o, loc);
+        continue;
+      }
 
       // ---- conversation lines ----
       if (!id) continue;
@@ -295,14 +388,18 @@ async function mine({ repo, topN }) {
       }
       if (o.type !== 'assistant' || !Array.isArray(content)) continue;
       s.turns++;
-      const u = o.message?.usage;
-      if (u) {
-        s.tokensIn += u.input_tokens ?? 0;
-        s.tokensOut += u.output_tokens ?? 0;
-        s.cacheRead += u.cache_read_input_tokens ?? 0;
-      }
+      addUsage(s, o.message?.model ?? null, o.message?.usage);
 
       for (const b of content) {
+        if (b.type === 'thinking') {
+          s.thinkingBlocks++;
+          s.thinkingChars += (b.thinking ?? '').length;
+          continue;
+        }
+        if (b.type === 'text') {
+          s.textBlocks++;
+          continue;
+        }
         if (b.type !== 'tool_use') continue;
         events++;
         s.tools[b.name] = (s.tools[b.name] ?? 0) + 1;
@@ -439,7 +536,7 @@ async function mine({ repo, topN }) {
   }
 
   const fileArr = [...files.values()]
-    .map((f) => ({ ...f, touches: f.reads + f.writes + f.edits }))
+    .map((f) => ({ ...f, touches: f.reads + f.writes + f.edits + f.humanEdits }))
     .sort((a, b) => b.touches - a.touches)
     .slice(0, topN)
     .map((f) => {
@@ -455,6 +552,7 @@ async function mine({ repo, topN }) {
         reads: f.reads,
         writes: f.writes,
         edits: f.edits,
+        humanEdits: f.humanEdits,
         touches: f.touches,
         sessions: [...f.sessions],
         branches: [...f.branches],
@@ -484,9 +582,19 @@ async function mine({ repo, topN }) {
     prs: [...s.prs],
     tasks: [...s.tasks],
     fileTouches: s.fileTouches,
+    humanEdits: s.humanEdits,
     tokensIn: s.tokensIn,
     tokensOut: s.tokensOut,
     cacheRead: s.cacheRead,
+    cacheCreation: s.cacheCreation,
+    serverToolUse: s.serverToolUse,
+    serviceTiers: s.serviceTiers,
+    tokensByModel: s.tokensByModel,
+    thinkingBlocks: s.thinkingBlocks,
+    thinkingChars: s.thinkingChars,
+    textBlocks: s.textBlocks,
+    phases: s.phases,
+    maxTurnsHits: s.maxTurnsHits,
     commits: s.commits,
     pushes: s.pushes,
     errors: s.errors,
@@ -532,10 +640,28 @@ async function mine({ repo, topN }) {
   turnDurations.sort((a, b) => a - b);
   const pct = (p) => turnDurations[Math.floor((turnDurations.length - 1) * p)] ?? 0;
 
+  // Global per-model token rollup — the sum across models is not meaningful for
+  // cost (different prices), so keep the breakdown at the top level too.
+  const tokensByModel = {};
+  for (const s of sessionsArr)
+    for (const [model, v] of Object.entries(s.tokensByModel)) {
+      const t = tokensByModel[model] ?? (tokensByModel[model] = { in: 0, out: 0, cacheRead: 0, cacheCreation: 0 });
+      t.in += v.in;
+      t.out += v.out;
+      t.cacheRead += v.cacheRead;
+      t.cacheCreation += v.cacheCreation;
+    }
+
   const metrics = {
     tokensIn: sessionsArr.reduce((n, s) => n + s.tokensIn, 0),
     tokensOut: sessionsArr.reduce((n, s) => n + s.tokensOut, 0),
     cacheRead: sessionsArr.reduce((n, s) => n + s.cacheRead, 0),
+    cacheCreation: sessionsArr.reduce((n, s) => n + s.cacheCreation, 0),
+    serverToolUse: sessionsArr.reduce((n, s) => n + s.serverToolUse, 0),
+    tokensByModel,
+    thinkingBlocks: sessionsArr.reduce((n, s) => n + s.thinkingBlocks, 0),
+    humanEdits: sessionsArr.reduce((n, s) => n + s.humanEdits, 0),
+    maxTurnsHits: sessionsArr.reduce((n, s) => n + s.maxTurnsHits, 0),
     errors: sessionsArr.reduce((n, s) => n + s.errors, 0),
     decisions: sessionsArr.reduce((n, s) => n + s.decisions, 0),
     compactions: sessionsArr.reduce((n, s) => n + s.compactions, 0),
@@ -591,9 +717,15 @@ async function main() {
   );
   console.log(
     `metrics → tokens in/out ${(m.tokensIn / 1e6).toFixed(1)}M/${(m.tokensOut / 1e6).toFixed(1)}M · ` +
-      `commits ${m.commits} · pushes ${m.pushes} · errors ${m.errors} · decisions ${m.decisions} · ` +
-      `compactions ${m.compactions} · turn p50/p85 ${(m.turnDurationMs.p50 / 1000) | 0}s/${(m.turnDurationMs.p85 / 1000) | 0}s`,
+      `cacheCreate ${(m.cacheCreation / 1e6).toFixed(1)}M · commits ${m.commits} · pushes ${m.pushes} · errors ${m.errors} · ` +
+      `decisions ${m.decisions} · compactions ${m.compactions} · turn p50/p85 ${(m.turnDurationMs.p50 / 1000) | 0}s/${(m.turnDurationMs.p85 / 1000) | 0}s`,
   );
+  console.log(
+    `signals → human edits ${m.humanEdits} · maxTurnsHits ${m.maxTurnsHits} · thinking blocks ${m.thinkingBlocks} · serverToolUse ${m.serverToolUse}`,
+  );
+  console.log('tokens by model (in/out/cacheCreate):');
+  for (const [model, v] of Object.entries(m.tokensByModel))
+    console.log(`  ${model}: ${(v.in / 1e6).toFixed(1)}M / ${(v.out / 1e6).toFixed(1)}M / ${(v.cacheCreation / 1e6).toFixed(1)}M`);
   console.log('\ntop PRs (number · sessions · merged):');
   for (const p of data.prs.slice(0, 6)) console.log(`  #${p.number}  ${p.sessions.length}s  ${p.merged ? 'merged' : 'open'}`);
   console.log('\ntop branches (name · commits+pushes · sessions · files):');

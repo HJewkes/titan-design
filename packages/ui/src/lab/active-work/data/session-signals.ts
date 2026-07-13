@@ -11,6 +11,8 @@ export const sessionSignals = {
     "~/.claude/projects/-Users-hjewkes/98a12e8c-fe6b-4c14-9b05-868115c56554.jsonl",
     "~/.claude/projects/-Users-hjewkes/cece753b-07c9-421e-be40-f318f2f1a995.jsonl",
     "~/.claude/projects/-Users-hjewkes/f3f5d60e-31d2-4430-bbc7-c2ab34c355c8.jsonl",
+    "~/.claude/projects/-Users-hjewkes-Documents-projects-active-work/6caffed7-bf3e-47ed-8585-638bbbcbea6f.jsonl",
+    "~/.claude/projects/-Users-hjewkes-Documents-projects-active-work/b4a86b61-0cc0-4fe0-a455-f43e8640175e.jsonl",
     "~/.claude/projects/-Users-hjewkes-Documents-projects-audiobook/32dcbf09-8a6d-4956-9b62-21e443fa0cdc.jsonl",
     "~/.claude/projects/-Users-hjewkes-Documents-projects-audiobook/da8d50b2-0eaa-445e-8837-a1464981744f.jsonl",
     "~/.claude/projects/-Users-hjewkes-Documents-projects-codewatch/022013fa-2f78-4419-b57d-43f1743ca50e.jsonl",
@@ -281,6 +283,7 @@ export const sessionSignals = {
     "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace/036ffed7-2643-4ff1-8ebc-37c40584735c.jsonl",
     "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace/154a2e9b-30c5-4f6e-94e1-fd9f4d86ac82.jsonl",
     "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace/1794823e-ecb1-4214-b274-ffadcbb76b67.jsonl",
+    "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace/1f682217-a2e9-44a1-9259-cb52dcbc4365.jsonl",
     "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace/248daffe-e0f0-43f1-b811-89131c31c94a.jsonl",
     "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace/28663668-09f9-429a-9392-b8eebf5f6c4a.jsonl",
     "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace/3bc29826-0b27-4b5d-9e59-ee9581649c72.jsonl",
@@ -304,6 +307,7 @@ export const sessionSignals = {
     "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace/8a844343-2a6d-45b2-867d-f90d7d2de118.jsonl",
     "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace/8c68f4e7-d41e-4e87-901d-b741f2374c24.jsonl",
     "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace/9f6b4722-1202-412c-8eb5-f7f23488648b.jsonl",
+    "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace/a0e9f338-b1c3-4916-ab04-a23c281c1496.jsonl",
     "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace/a7b2f46b-ff78-4c81-8850-e6af863b1e4e.jsonl",
     "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace/a8c11d93-2b38-4567-b9eb-228ee8da27f1.jsonl",
     "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace/a9400649-3198-4fbe-8e3d-c46ebde7ef38.jsonl",
@@ -323,6 +327,7 @@ export const sessionSignals = {
     "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace/d2557b1d-a5ca-4c88-9c3b-52bcbb0146a8.jsonl",
     "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace/d851586b-62a3-487d-b4c0-573e013b2dc0.jsonl",
     "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace/e31cff48-fa19-4635-b009-3607ca5efc16.jsonl",
+    "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-voltras-workspace/e8853be9-4748-4353-be90-8fb5e0c2fbdf.jsonl",
     "~/.claude/projects/-Users-hjewkes-Library-Application-Support-active-work-youtube/a870fe64-f9cb-4e38-86c7-58507f35e098.jsonl",
     "~/.claude/projects/-Users-hjewkes-projects-audiobook-backend/1fcbd55d-ae88-495f-b510-0ebbb7dab9df.jsonl",
     "~/.claude/projects/-Users-hjewkes-projects-audiobook-backend/2e084d06-35a1-4a23-8270-6e7d7b081e22.jsonl",
@@ -458,7 +463,7 @@ export const sessionSignals = {
   "locatorFormat": "[transcriptIndex, byteOffset, byteLength] into transcripts[]; seek+read one JSONL line",
   "generatedFrom": {
     "sessions": 165,
-    "events": 20201
+    "events": 20740
   },
   "sessions": [
     {
@@ -467,9 +472,9 @@ export const sessionSignals = {
       "aiTitle": "S3 SessionRail design exploration and component hardening",
       "seedPrompt": "Starting a session on `voltras-workspace` (Voltras workspace — coordination & wave merges).  # Why we're doing this # Voltras workspace — coordination & wave merges  `voltras-workspace` is a coordinat…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-09T02:43:06.051Z",
+      "firstTs": "2026-07-09T02:43:06.052Z",
       "lastTs": "2026-07-09T20:33:57.627Z",
-      "durationMs": 64251576,
+      "durationMs": 64251575,
       "turns": 1246,
       "userPrompts": 62,
       "version": "2.1.205",
@@ -487,9 +492,47 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 1,
+      "humanEdits": 0,
       "tokensIn": 242317,
       "tokensOut": 2011874,
       "cacheRead": 399986779,
+      "cacheCreation": 5516314,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 1246
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 242317,
+          "out": 2011874,
+          "cacheRead": 399986779,
+          "cacheCreation": 5516314
+        }
+      },
+      "thinkingBlocks": 368,
+      "thinkingChars": 0,
+      "textBlocks": 378,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            283,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "default",
+          "loc": [
+            283,
+            83,
+            104
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 11,
       "pushes": 4,
       "errors": 10,
@@ -512,9 +555,9 @@ export const sessionSignals = {
         "TaskUpdate": 3
       },
       "startLoc": [
-        280,
-        0,
-        82
+        283,
+        660,
+        17596
       ]
     },
     {
@@ -523,9 +566,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:45.742Z",
+      "firstTs": "2026-07-07T01:45:45.899Z",
       "lastTs": "2026-07-07T02:02:59.087Z",
-      "durationMs": 1033345,
+      "durationMs": 1033188,
       "turns": 33,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -533,9 +576,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
+      "humanEdits": 0,
       "tokensIn": 32703,
       "tokensOut": 40309,
       "cacheRead": 2001465,
+      "cacheCreation": 217985,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 32
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 32703,
+          "out": 40309,
+          "cacheRead": 2001465,
+          "cacheCreation": 217985
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 10,
+      "thinkingChars": 0,
+      "textBlocks": 11,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -549,7 +617,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        140,
+        142,
         0,
         8317
       ]
@@ -560,9 +628,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:17.111Z",
+      "firstTs": "2026-07-07T01:45:17.133Z",
       "lastTs": "2026-07-07T02:02:41.055Z",
-      "durationMs": 1043944,
+      "durationMs": 1043922,
       "turns": 43,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -570,9 +638,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 9,
+      "humanEdits": 0,
       "tokensIn": 25818,
       "tokensOut": 47368,
       "cacheRead": 2715794,
+      "cacheCreation": 190084,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 42
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 25818,
+          "out": 47368,
+          "cacheRead": 2715794,
+          "cacheCreation": 190084
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 13,
+      "thinkingChars": 0,
+      "textBlocks": 14,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 5,
@@ -587,7 +680,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        184,
+        186,
         0,
         8317
       ]
@@ -598,9 +691,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:33.885Z",
+      "firstTs": "2026-07-07T01:45:33.891Z",
       "lastTs": "2026-07-07T02:02:29.756Z",
-      "durationMs": 1015871,
+      "durationMs": 1015865,
       "turns": 33,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -608,9 +701,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
+      "humanEdits": 0,
       "tokensIn": 22413,
       "tokensOut": 30929,
       "cacheRead": 2072739,
+      "cacheCreation": 175282,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 32
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 22413,
+          "out": 30929,
+          "cacheRead": 2072739,
+          "cacheCreation": 175282
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 12,
+      "thinkingChars": 0,
+      "textBlocks": 12,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -624,7 +742,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        203,
+        205,
         0,
         8317
       ]
@@ -635,9 +753,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:25.156Z",
+      "firstTs": "2026-07-07T01:45:25.161Z",
       "lastTs": "2026-07-07T02:02:25.787Z",
-      "durationMs": 1020631,
+      "durationMs": 1020626,
       "turns": 39,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -645,9 +763,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
+      "humanEdits": 1,
       "tokensIn": 33369,
       "tokensOut": 35955,
       "cacheRead": 2622871,
+      "cacheCreation": 221566,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 38
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 33369,
+          "out": 35955,
+          "cacheRead": 2622871,
+          "cacheCreation": 221566
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 13,
+      "thinkingChars": 0,
+      "textBlocks": 15,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -662,7 +805,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        92,
+        94,
         0,
         8317
       ]
@@ -673,9 +816,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:54:40.913Z",
+      "firstTs": "2026-07-07T01:54:46.507Z",
       "lastTs": "2026-07-07T02:02:23.983Z",
-      "durationMs": 463070,
+      "durationMs": 457476,
       "turns": 9,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -683,9 +826,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 59374,
       "tokensOut": 11490,
       "cacheRead": 183512,
+      "cacheCreation": 25767,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 8
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 59374,
+          "out": 11490,
+          "cacheRead": 183512,
+          "cacheCreation": 25767
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 2,
+      "thinkingChars": 0,
+      "textBlocks": 2,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -698,7 +866,7 @@ export const sessionSignals = {
         "Bash": 1
       },
       "startLoc": [
-        76,
+        78,
         0,
         6046
       ]
@@ -709,9 +877,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:55:33.816Z",
+      "firstTs": "2026-07-07T01:55:37.959Z",
       "lastTs": "2026-07-07T02:02:22.359Z",
-      "durationMs": 408543,
+      "durationMs": 404400,
       "turns": 11,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -719,9 +887,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 69014,
       "tokensOut": 13556,
       "cacheRead": 229390,
+      "cacheCreation": 30368,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 10
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 69014,
+          "out": 13556,
+          "cacheRead": 229390,
+          "cacheCreation": 30368
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 2,
+      "thinkingChars": 0,
+      "textBlocks": 3,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -735,7 +928,7 @@ export const sessionSignals = {
         "Grep": 1
       },
       "startLoc": [
-        96,
+        98,
         0,
         6046
       ]
@@ -746,9 +939,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:46:38.327Z",
+      "firstTs": "2026-07-07T01:46:38.618Z",
       "lastTs": "2026-07-07T02:02:19.913Z",
-      "durationMs": 941586,
+      "durationMs": 941295,
       "turns": 34,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -756,9 +949,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
+      "humanEdits": 0,
       "tokensIn": 19224,
       "tokensOut": 59144,
       "cacheRead": 2161370,
+      "cacheCreation": 129307,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 33
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 19224,
+          "out": 59144,
+          "cacheRead": 2161370,
+          "cacheCreation": 129307
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 11,
+      "thinkingChars": 0,
+      "textBlocks": 11,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 4,
@@ -773,7 +991,7 @@ export const sessionSignals = {
         "Edit": 2
       },
       "startLoc": [
-        206,
+        208,
         0,
         8317
       ]
@@ -784,9 +1002,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:57:55.984Z",
+      "firstTs": "2026-07-07T01:58:01.836Z",
       "lastTs": "2026-07-07T02:02:18.378Z",
-      "durationMs": 262394,
+      "durationMs": 256542,
       "turns": 7,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -794,9 +1012,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 29346,
       "tokensOut": 2460,
       "cacheRead": 137634,
+      "cacheCreation": 0,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 6
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 29346,
+          "out": 2460,
+          "cacheRead": 137634,
+          "cacheCreation": 0
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 1,
+      "thinkingChars": 0,
+      "textBlocks": 2,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -808,7 +1051,7 @@ export const sessionSignals = {
         "Read": 4
       },
       "startLoc": [
-        59,
+        61,
         0,
         6046
       ]
@@ -819,9 +1062,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:53:24.213Z",
+      "firstTs": "2026-07-07T01:53:27.838Z",
       "lastTs": "2026-07-07T02:02:17.985Z",
-      "durationMs": 533772,
+      "durationMs": 530147,
       "turns": 17,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -829,9 +1072,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
+      "humanEdits": 0,
       "tokensIn": 53418,
       "tokensOut": 14136,
       "cacheRead": 438439,
+      "cacheCreation": 115575,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 16
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 53418,
+          "out": 14136,
+          "cacheRead": 438439,
+          "cacheCreation": 115575
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 3,
+      "thinkingChars": 0,
+      "textBlocks": 4,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -844,7 +1112,7 @@ export const sessionSignals = {
         "Grep": 2
       },
       "startLoc": [
-        49,
+        51,
         0,
         6046
       ]
@@ -855,9 +1123,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:58:14.071Z",
+      "firstTs": "2026-07-07T01:58:19.772Z",
       "lastTs": "2026-07-07T02:02:17.584Z",
-      "durationMs": 243513,
+      "durationMs": 237812,
       "turns": 7,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -865,9 +1133,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 35598,
       "tokensOut": 2460,
       "cacheRead": 137634,
+      "cacheCreation": 0,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 6
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 35598,
+          "out": 2460,
+          "cacheRead": 137634,
+          "cacheCreation": 0
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 1,
+      "thinkingChars": 0,
+      "textBlocks": 2,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -879,7 +1172,7 @@ export const sessionSignals = {
         "Read": 4
       },
       "startLoc": [
-        208,
+        210,
         0,
         6046
       ]
@@ -890,9 +1183,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:57:58.741Z",
+      "firstTs": "2026-07-07T01:58:04.694Z",
       "lastTs": "2026-07-07T02:02:17.198Z",
-      "durationMs": 258457,
+      "durationMs": 252504,
       "turns": 7,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -900,9 +1193,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 35598,
       "tokensOut": 2448,
       "cacheRead": 137634,
+      "cacheCreation": 0,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 6
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 35598,
+          "out": 2448,
+          "cacheRead": 137634,
+          "cacheCreation": 0
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 1,
+      "thinkingChars": 0,
+      "textBlocks": 2,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -914,7 +1232,7 @@ export const sessionSignals = {
         "Read": 4
       },
       "startLoc": [
-        219,
+        221,
         0,
         6046
       ]
@@ -925,9 +1243,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:21.543Z",
+      "firstTs": "2026-07-07T01:45:21.548Z",
       "lastTs": "2026-07-07T02:02:11.950Z",
-      "durationMs": 1010407,
+      "durationMs": 1010402,
       "turns": 52,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -935,9 +1253,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 11,
+      "humanEdits": 0,
       "tokensIn": 40893,
       "tokensOut": 47016,
       "cacheRead": 3679681,
+      "cacheCreation": 275891,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 51
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 40893,
+          "out": 47016,
+          "cacheRead": 3679681,
+          "cacheCreation": 275891
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 16,
+      "thinkingChars": 0,
+      "textBlocks": 15,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 4,
@@ -952,7 +1295,7 @@ export const sessionSignals = {
         "Edit": 3
       },
       "startLoc": [
-        146,
+        148,
         0,
         8317
       ]
@@ -963,9 +1306,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:55:22.279Z",
+      "firstTs": "2026-07-07T01:55:27.931Z",
       "lastTs": "2026-07-07T02:02:10.492Z",
-      "durationMs": 408213,
+      "durationMs": 402561,
       "turns": 11,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -973,9 +1316,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 35966,
       "tokensOut": 5510,
       "cacheRead": 229390,
+      "cacheCreation": 73808,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 10
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 35966,
+          "out": 5510,
+          "cacheRead": 229390,
+          "cacheCreation": 73808
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 2,
+      "thinkingChars": 0,
+      "textBlocks": 3,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -989,7 +1357,7 @@ export const sessionSignals = {
         "Grep": 1
       },
       "startLoc": [
-        199,
+        201,
         0,
         6046
       ]
@@ -1000,9 +1368,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:57:21.542Z",
+      "firstTs": "2026-07-07T01:57:27.598Z",
       "lastTs": "2026-07-07T02:02:09.325Z",
-      "durationMs": 287783,
+      "durationMs": 281727,
       "turns": 7,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1010,9 +1378,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 35598,
       "tokensOut": 2454,
       "cacheRead": 137634,
+      "cacheCreation": 0,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 6
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 35598,
+          "out": 2454,
+          "cacheRead": 137634,
+          "cacheCreation": 0
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 1,
+      "thinkingChars": 0,
+      "textBlocks": 2,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -1024,7 +1417,7 @@ export const sessionSignals = {
         "Read": 4
       },
       "startLoc": [
-        109,
+        111,
         0,
         6046
       ]
@@ -1035,9 +1428,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:47:41.291Z",
+      "firstTs": "2026-07-07T01:47:42.702Z",
       "lastTs": "2026-07-07T02:02:09.024Z",
-      "durationMs": 867733,
+      "durationMs": 866322,
       "turns": 27,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1045,9 +1438,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
+      "humanEdits": 0,
       "tokensIn": 8208,
       "tokensOut": 35384,
       "cacheRead": 1585034,
+      "cacheCreation": 182727,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 26
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 8208,
+          "out": 35384,
+          "cacheRead": 1585034,
+          "cacheCreation": 182727
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 8,
+      "thinkingChars": 0,
+      "textBlocks": 9,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -1061,7 +1479,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        31,
+        33,
         0,
         8317
       ]
@@ -1072,9 +1490,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:55:02.327Z",
+      "firstTs": "2026-07-07T01:55:07.243Z",
       "lastTs": "2026-07-07T02:02:08.745Z",
-      "durationMs": 426418,
+      "durationMs": 421502,
       "turns": 10,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1082,9 +1500,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 69321,
       "tokensOut": 5572,
       "cacheRead": 240807,
+      "cacheCreation": 0,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 9
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 69321,
+          "out": 5572,
+          "cacheRead": 240807,
+          "cacheCreation": 0
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 2,
+      "thinkingChars": 0,
+      "textBlocks": 2,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -1097,7 +1540,7 @@ export const sessionSignals = {
         "Bash": 2
       },
       "startLoc": [
-        216,
+        218,
         0,
         6046
       ]
@@ -1108,9 +1551,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:50:03.817Z",
+      "firstTs": "2026-07-07T01:50:06.366Z",
       "lastTs": "2026-07-07T02:02:07.226Z",
-      "durationMs": 723409,
+      "durationMs": 720860,
       "turns": 24,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1118,9 +1561,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
+      "humanEdits": 0,
       "tokensIn": 28000,
       "tokensOut": 28238,
       "cacheRead": 1047129,
+      "cacheCreation": 234133,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 23
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 28000,
+          "out": 28238,
+          "cacheRead": 1047129,
+          "cacheCreation": 234133
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 5,
+      "thinkingChars": 0,
+      "textBlocks": 7,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -1135,7 +1603,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        66,
+        68,
         0,
         8317
       ]
@@ -1146,9 +1614,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:56:06.921Z",
+      "firstTs": "2026-07-07T01:56:13.004Z",
       "lastTs": "2026-07-07T02:02:06.663Z",
-      "durationMs": 359742,
+      "durationMs": 353659,
       "turns": 7,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1156,9 +1624,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 35598,
       "tokensOut": 2424,
       "cacheRead": 137634,
+      "cacheCreation": 0,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 6
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 35598,
+          "out": 2424,
+          "cacheRead": 137634,
+          "cacheCreation": 0
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 1,
+      "thinkingChars": 0,
+      "textBlocks": 2,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -1170,7 +1663,7 @@ export const sessionSignals = {
         "Read": 4
       },
       "startLoc": [
-        99,
+        101,
         0,
         6046
       ]
@@ -1181,9 +1674,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:44:58.753Z",
+      "firstTs": "2026-07-07T01:44:58.758Z",
       "lastTs": "2026-07-07T02:02:05.583Z",
-      "durationMs": 1026830,
+      "durationMs": 1026825,
       "turns": 48,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1191,9 +1684,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 12,
+      "humanEdits": 0,
       "tokensIn": 46949,
       "tokensOut": 69629,
       "cacheRead": 3560638,
+      "cacheCreation": 307875,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 47
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 46949,
+          "out": 69629,
+          "cacheRead": 3560638,
+          "cacheCreation": 307875
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 14,
+      "thinkingChars": 0,
+      "textBlocks": 15,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 4,
@@ -1208,7 +1726,7 @@ export const sessionSignals = {
         "Edit": 2
       },
       "startLoc": [
-        183,
+        185,
         0,
         8317
       ]
@@ -1219,9 +1737,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:48:44.566Z",
+      "firstTs": "2026-07-07T01:48:46.824Z",
       "lastTs": "2026-07-07T02:02:04.167Z",
-      "durationMs": 799601,
+      "durationMs": 797343,
       "turns": 27,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1229,9 +1747,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
+      "humanEdits": 0,
       "tokensIn": 52916,
       "tokensOut": 55031,
       "cacheRead": 1200843,
+      "cacheCreation": 205851,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 26
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 52916,
+          "out": 55031,
+          "cacheRead": 1200843,
+          "cacheCreation": 205851
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 7,
+      "thinkingChars": 0,
+      "textBlocks": 7,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -1246,7 +1789,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        30,
+        32,
         0,
         8317
       ]
@@ -1257,9 +1800,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:53.501Z",
+      "firstTs": "2026-07-07T01:45:53.678Z",
       "lastTs": "2026-07-07T02:02:03.932Z",
-      "durationMs": 970431,
+      "durationMs": 970254,
       "turns": 32,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1267,9 +1810,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
+      "humanEdits": 0,
       "tokensIn": 17072,
       "tokensOut": 44272,
       "cacheRead": 2029108,
+      "cacheCreation": 213177,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 31
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 17072,
+          "out": 44272,
+          "cacheRead": 2029108,
+          "cacheCreation": 213177
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 11,
+      "thinkingChars": 0,
+      "textBlocks": 11,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -1283,7 +1851,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        156,
+        158,
         0,
         8317
       ]
@@ -1294,9 +1862,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:47:35.895Z",
+      "firstTs": "2026-07-07T01:47:36.949Z",
       "lastTs": "2026-07-07T02:02:01.462Z",
-      "durationMs": 865567,
+      "durationMs": 864513,
       "turns": 30,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1304,9 +1872,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
+      "humanEdits": 0,
       "tokensIn": 27118,
       "tokensOut": 33052,
       "cacheRead": 1660694,
+      "cacheCreation": 234095,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 29
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 27118,
+          "out": 33052,
+          "cacheRead": 1660694,
+          "cacheCreation": 234095
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 10,
+      "thinkingChars": 0,
+      "textBlocks": 9,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -1321,7 +1914,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        132,
+        134,
         0,
         8317
       ]
@@ -1332,9 +1925,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:11.912Z",
+      "firstTs": "2026-07-07T01:45:11.917Z",
       "lastTs": "2026-07-07T02:02:01.365Z",
-      "durationMs": 1009453,
+      "durationMs": 1009448,
       "turns": 46,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1342,9 +1935,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 13,
+      "humanEdits": 1,
       "tokensIn": 37431,
       "tokensOut": 61249,
       "cacheRead": 3138483,
+      "cacheCreation": 276676,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 45
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 37431,
+          "out": 61249,
+          "cacheRead": 3138483,
+          "cacheCreation": 276676
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 14,
+      "thinkingChars": 0,
+      "textBlocks": 13,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 3,
@@ -1360,7 +1978,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        165,
+        167,
         0,
         8317
       ]
@@ -1371,9 +1989,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:51:45.403Z",
+      "firstTs": "2026-07-07T01:51:48.112Z",
       "lastTs": "2026-07-07T02:02:01.340Z",
-      "durationMs": 615937,
+      "durationMs": 613228,
       "turns": 18,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1381,9 +1999,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
+      "humanEdits": 0,
       "tokensIn": 54139,
       "tokensOut": 53459,
       "cacheRead": 471434,
+      "cacheCreation": 143331,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 17
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 54139,
+          "out": 53459,
+          "cacheRead": 471434,
+          "cacheCreation": 143331
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 4,
+      "thinkingChars": 0,
+      "textBlocks": 4,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -1398,7 +2041,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        191,
+        193,
         0,
         6046
       ]
@@ -1409,9 +2052,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:55:06.978Z",
+      "firstTs": "2026-07-07T01:55:11.574Z",
       "lastTs": "2026-07-07T02:01:58.836Z",
-      "durationMs": 411858,
+      "durationMs": 407262,
       "turns": 10,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1419,9 +2062,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 29409,
       "tokensOut": 3720,
       "cacheRead": 206451,
+      "cacheCreation": 52386,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 9
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 29409,
+          "out": 3720,
+          "cacheRead": 206451,
+          "cacheCreation": 52386
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 2,
+      "thinkingChars": 0,
+      "textBlocks": 3,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -1434,7 +2102,7 @@ export const sessionSignals = {
         "Bash": 1
       },
       "startLoc": [
-        26,
+        28,
         0,
         6046
       ]
@@ -1445,9 +2113,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:30.963Z",
+      "firstTs": "2026-07-07T01:45:30.993Z",
       "lastTs": "2026-07-07T02:01:58.667Z",
-      "durationMs": 987704,
+      "durationMs": 987674,
       "turns": 36,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1455,9 +2123,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 9,
+      "humanEdits": 0,
       "tokensIn": 22889,
       "tokensOut": 36574,
       "cacheRead": 2296316,
+      "cacheCreation": 172109,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 35
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 22889,
+          "out": 36574,
+          "cacheRead": 2296316,
+          "cacheCreation": 172109
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 13,
+      "thinkingChars": 0,
+      "textBlocks": 12,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 3,
@@ -1472,7 +2165,7 @@ export const sessionSignals = {
         "Edit": 3
       },
       "startLoc": [
-        158,
+        160,
         0,
         8317
       ]
@@ -1483,9 +2176,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:46:57.387Z",
+      "firstTs": "2026-07-07T01:46:58.145Z",
       "lastTs": "2026-07-07T02:01:54.144Z",
-      "durationMs": 896757,
+      "durationMs": 895999,
       "turns": 32,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1493,9 +2186,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 3,
+      "humanEdits": 0,
       "tokensIn": 21542,
       "tokensOut": 30022,
       "cacheRead": 1834212,
+      "cacheCreation": 155335,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 31
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 21542,
+          "out": 30022,
+          "cacheRead": 1834212,
+          "cacheCreation": 155335
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 10,
+      "thinkingChars": 0,
+      "textBlocks": 11,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 3,
@@ -1509,7 +2227,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        28,
+        30,
         0,
         8317
       ]
@@ -1520,9 +2238,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:52:39.621Z",
+      "firstTs": "2026-07-07T01:52:42.610Z",
       "lastTs": "2026-07-07T02:01:54.092Z",
-      "durationMs": 554471,
+      "durationMs": 551482,
       "turns": 16,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1530,9 +2248,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
+      "humanEdits": 0,
       "tokensIn": 37396,
       "tokensOut": 17131,
       "cacheRead": 431595,
+      "cacheCreation": 87728,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 15
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 37396,
+          "out": 17131,
+          "cacheRead": 431595,
+          "cacheCreation": 87728
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 3,
+      "thinkingChars": 0,
+      "textBlocks": 4,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -1546,7 +2289,7 @@ export const sessionSignals = {
         "Grep": 3
       },
       "startLoc": [
-        17,
+        19,
         0,
         6046
       ]
@@ -1557,9 +2300,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:46:02.260Z",
+      "firstTs": "2026-07-07T01:46:02.440Z",
       "lastTs": "2026-07-07T02:01:53.379Z",
-      "durationMs": 951119,
+      "durationMs": 950939,
       "turns": 36,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1567,9 +2310,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 9,
+      "humanEdits": 0,
       "tokensIn": 23092,
       "tokensOut": 38890,
       "cacheRead": 2250266,
+      "cacheCreation": 224631,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 35
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 23092,
+          "out": 38890,
+          "cacheRead": 2250266,
+          "cacheCreation": 224631
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 13,
+      "thinkingChars": 0,
+      "textBlocks": 12,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -1584,7 +2352,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        34,
+        36,
         0,
         8317
       ]
@@ -1595,9 +2363,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:56:45.404Z",
+      "firstTs": "2026-07-07T01:56:50.785Z",
       "lastTs": "2026-07-07T02:01:53.123Z",
-      "durationMs": 307719,
+      "durationMs": 302338,
       "turns": 6,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1605,9 +2373,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 29000,
       "tokensOut": 1845,
       "cacheRead": 114695,
+      "cacheCreation": 0,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 5
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 29000,
+          "out": 1845,
+          "cacheRead": 114695,
+          "cacheCreation": 0
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 1,
+      "thinkingChars": 0,
+      "textBlocks": 1,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -1619,7 +2412,7 @@ export const sessionSignals = {
         "Read": 4
       },
       "startLoc": [
-        147,
+        149,
         0,
         6046
       ]
@@ -1630,9 +2423,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:38.244Z",
+      "firstTs": "2026-07-07T01:45:38.254Z",
       "lastTs": "2026-07-07T02:01:51.879Z",
-      "durationMs": 973635,
+      "durationMs": 973625,
       "turns": 36,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1640,9 +2433,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
+      "humanEdits": 0,
       "tokensIn": 22718,
       "tokensOut": 46823,
       "cacheRead": 2396800,
+      "cacheCreation": 154579,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 35
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 22718,
+          "out": 46823,
+          "cacheRead": 2396800,
+          "cacheCreation": 154579
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 13,
+      "thinkingChars": 0,
+      "textBlocks": 12,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 3,
@@ -1657,7 +2475,7 @@ export const sessionSignals = {
         "Edit": 2
       },
       "startLoc": [
-        120,
+        122,
         0,
         8317
       ]
@@ -1668,9 +2486,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:54:39.797Z",
+      "firstTs": "2026-07-07T01:54:45.156Z",
       "lastTs": "2026-07-07T02:01:51.389Z",
-      "durationMs": 431592,
+      "durationMs": 426233,
       "turns": 11,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1678,9 +2496,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 30125,
       "tokensOut": 20635,
       "cacheRead": 229390,
+      "cacheCreation": 92000,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 10
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 30125,
+          "out": 20635,
+          "cacheRead": 229390,
+          "cacheCreation": 92000
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 2,
+      "thinkingChars": 0,
+      "textBlocks": 2,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -1693,7 +2536,7 @@ export const sessionSignals = {
         "Grep": 3
       },
       "startLoc": [
-        83,
+        85,
         0,
         6046
       ]
@@ -1704,9 +2547,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:21.988Z",
+      "firstTs": "2026-07-07T01:45:21.994Z",
       "lastTs": "2026-07-07T02:01:50.506Z",
-      "durationMs": 988518,
+      "durationMs": 988512,
       "turns": 37,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1714,9 +2557,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 10,
+      "humanEdits": 0,
       "tokensIn": 38254,
       "tokensOut": 59987,
       "cacheRead": 2491057,
+      "cacheCreation": 225541,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 36
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 38254,
+          "out": 59987,
+          "cacheRead": 2491057,
+          "cacheCreation": 225541
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 11,
+      "thinkingChars": 0,
+      "textBlocks": 11,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 3,
@@ -1731,7 +2599,7 @@ export const sessionSignals = {
         "Edit": 2
       },
       "startLoc": [
-        209,
+        211,
         0,
         8317
       ]
@@ -1742,9 +2610,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:28.940Z",
+      "firstTs": "2026-07-07T01:45:28.945Z",
       "lastTs": "2026-07-07T02:01:47.883Z",
-      "durationMs": 978943,
+      "durationMs": 978938,
       "turns": 38,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1752,9 +2620,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
+      "humanEdits": 0,
       "tokensIn": 40742,
       "tokensOut": 30961,
       "cacheRead": 2475426,
+      "cacheCreation": 229164,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 37
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 40742,
+          "out": 30961,
+          "cacheRead": 2475426,
+          "cacheCreation": 229164
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 12,
+      "thinkingChars": 0,
+      "textBlocks": 12,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -1769,7 +2662,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        33,
+        35,
         0,
         8317
       ]
@@ -1780,9 +2673,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:54:41.637Z",
+      "firstTs": "2026-07-07T01:54:47.136Z",
       "lastTs": "2026-07-07T02:01:46.033Z",
-      "durationMs": 424396,
+      "durationMs": 418897,
       "turns": 13,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1790,9 +2683,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 36150,
       "tokensOut": 7326,
       "cacheRead": 275268,
+      "cacheCreation": 110748,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 12
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 36150,
+          "out": 7326,
+          "cacheRead": 275268,
+          "cacheCreation": 110748
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 2,
+      "thinkingChars": 0,
+      "textBlocks": 3,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -1806,7 +2724,7 @@ export const sessionSignals = {
         "Glob": 2
       },
       "startLoc": [
-        82,
+        84,
         0,
         6046
       ]
@@ -1817,9 +2735,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:29.507Z",
+      "firstTs": "2026-07-07T01:45:29.514Z",
       "lastTs": "2026-07-07T02:01:44.744Z",
-      "durationMs": 975237,
+      "durationMs": 975230,
       "turns": 36,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1827,9 +2745,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
+      "humanEdits": 0,
       "tokensIn": 52725,
       "tokensOut": 53435,
       "cacheRead": 2301220,
+      "cacheCreation": 251766,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 35
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 52725,
+          "out": 53435,
+          "cacheRead": 2301220,
+          "cacheCreation": 251766
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 11,
+      "thinkingChars": 0,
+      "textBlocks": 12,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -1844,7 +2787,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        212,
+        214,
         0,
         8317
       ]
@@ -1855,9 +2798,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:47:07.556Z",
+      "firstTs": "2026-07-07T01:47:08.618Z",
       "lastTs": "2026-07-07T02:01:44.408Z",
-      "durationMs": 876852,
+      "durationMs": 875790,
       "turns": 31,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1865,9 +2808,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
+      "humanEdits": 0,
       "tokensIn": 12106,
       "tokensOut": 33852,
       "cacheRead": 1782969,
+      "cacheCreation": 200451,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 30
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 12106,
+          "out": 33852,
+          "cacheRead": 1782969,
+          "cacheCreation": 200451
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 11,
+      "thinkingChars": 0,
+      "textBlocks": 8,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -1882,7 +2850,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        134,
+        136,
         0,
         8317
       ]
@@ -1893,9 +2861,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:46:55.799Z",
+      "firstTs": "2026-07-07T01:46:56.542Z",
       "lastTs": "2026-07-07T02:01:43.862Z",
-      "durationMs": 888063,
+      "durationMs": 887320,
       "turns": 30,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1903,9 +2871,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 21692,
       "tokensOut": 28087,
       "cacheRead": 1628069,
+      "cacheCreation": 138510,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 29
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 21692,
+          "out": 28087,
+          "cacheRead": 1628069,
+          "cacheCreation": 138510
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 9,
+      "thinkingChars": 0,
+      "textBlocks": 10,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 3,
@@ -1919,7 +2912,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        44,
+        46,
         0,
         8317
       ]
@@ -1930,9 +2923,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:18.955Z",
+      "firstTs": "2026-07-07T01:45:18.960Z",
       "lastTs": "2026-07-07T02:01:43.729Z",
-      "durationMs": 984774,
+      "durationMs": 984769,
       "turns": 40,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1940,9 +2933,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 13,
+      "humanEdits": 0,
       "tokensIn": 48203,
       "tokensOut": 61183,
       "cacheRead": 2764633,
+      "cacheCreation": 270669,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 39
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 48203,
+          "out": 61183,
+          "cacheRead": 2764633,
+          "cacheCreation": 270669
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 12,
+      "thinkingChars": 0,
+      "textBlocks": 12,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 5,
@@ -1958,7 +2976,7 @@ export const sessionSignals = {
         "Edit": 4
       },
       "startLoc": [
-        139,
+        141,
         0,
         8317
       ]
@@ -1969,9 +2987,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:10.786Z",
+      "firstTs": "2026-07-07T01:45:10.791Z",
       "lastTs": "2026-07-07T02:01:43.496Z",
-      "durationMs": 992710,
+      "durationMs": 992705,
       "turns": 49,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -1979,9 +2997,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
+      "humanEdits": 0,
       "tokensIn": 28146,
       "tokensOut": 47461,
       "cacheRead": 3139344,
+      "cacheCreation": 225417,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 48
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 28146,
+          "out": 47461,
+          "cacheRead": 3139344,
+          "cacheCreation": 225417
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 14,
+      "thinkingChars": 0,
+      "textBlocks": 15,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 3,
@@ -1997,7 +3040,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        112,
+        114,
         0,
         8317
       ]
@@ -2008,9 +3051,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:53:25.524Z",
+      "firstTs": "2026-07-07T01:53:30.045Z",
       "lastTs": "2026-07-07T02:01:43.427Z",
-      "durationMs": 497903,
+      "durationMs": 493382,
       "turns": 14,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2018,9 +3061,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
+      "humanEdits": 0,
       "tokensIn": 44813,
       "tokensOut": 14185,
       "cacheRead": 355319,
+      "cacheCreation": 83552,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 13
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 44813,
+          "out": 14185,
+          "cacheRead": 355319,
+          "cacheCreation": 83552
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 3,
+      "thinkingChars": 0,
+      "textBlocks": 2,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -2034,7 +3102,7 @@ export const sessionSignals = {
         "Grep": 2
       },
       "startLoc": [
-        65,
+        67,
         0,
         6046
       ]
@@ -2045,9 +3113,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:01.594Z",
+      "firstTs": "2026-07-07T01:45:01.598Z",
       "lastTs": "2026-07-07T02:01:43.145Z",
-      "durationMs": 1001551,
+      "durationMs": 1001547,
       "turns": 41,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2055,9 +3123,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
+      "humanEdits": 0,
       "tokensIn": 32334,
       "tokensOut": 66856,
       "cacheRead": 2872550,
+      "cacheCreation": 224344,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 40
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 32334,
+          "out": 66856,
+          "cacheRead": 2872550,
+          "cacheCreation": 224344
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 12,
+      "thinkingChars": 0,
+      "textBlocks": 13,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 6,
@@ -2072,7 +3165,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        169,
+        171,
         0,
         8317
       ]
@@ -2083,9 +3176,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:56:59.454Z",
+      "firstTs": "2026-07-07T01:57:05.067Z",
       "lastTs": "2026-07-07T02:01:42.990Z",
-      "durationMs": 283536,
+      "durationMs": 277923,
       "turns": 7,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2093,9 +3186,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 35598,
       "tokensOut": 2418,
       "cacheRead": 137634,
+      "cacheCreation": 0,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 6
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 35598,
+          "out": 2418,
+          "cacheRead": 137634,
+          "cacheCreation": 0
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 1,
+      "thinkingChars": 0,
+      "textBlocks": 2,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -2107,7 +3225,7 @@ export const sessionSignals = {
         "Read": 4
       },
       "startLoc": [
-        130,
+        132,
         0,
         6046
       ]
@@ -2118,9 +3236,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:47:14.592Z",
+      "firstTs": "2026-07-07T01:47:15.830Z",
       "lastTs": "2026-07-07T02:01:41.986Z",
-      "durationMs": 867394,
+      "durationMs": 866156,
       "turns": 30,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2128,9 +3246,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
+      "humanEdits": 0,
       "tokensIn": 19328,
       "tokensOut": 54974,
       "cacheRead": 1722242,
+      "cacheCreation": 190724,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 29
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 19328,
+          "out": 54974,
+          "cacheRead": 1722242,
+          "cacheCreation": 190724
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 8,
+      "thinkingChars": 0,
+      "textBlocks": 11,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -2145,7 +3288,7 @@ export const sessionSignals = {
         "Grep": 1
       },
       "startLoc": [
-        12,
+        14,
         0,
         8317
       ]
@@ -2156,9 +3299,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:53:40.937Z",
+      "firstTs": "2026-07-07T01:53:45.808Z",
       "lastTs": "2026-07-07T02:01:41.865Z",
-      "durationMs": 480928,
+      "durationMs": 476057,
       "turns": 10,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2166,9 +3309,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 29781,
       "tokensOut": 11469,
       "cacheRead": 206451,
+      "cacheCreation": 70988,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 9
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 29781,
+          "out": 11469,
+          "cacheRead": 206451,
+          "cacheCreation": 70988
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 2,
+      "thinkingChars": 0,
+      "textBlocks": 2,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -2182,7 +3350,7 @@ export const sessionSignals = {
         "Grep": 1
       },
       "startLoc": [
-        72,
+        74,
         0,
         6046
       ]
@@ -2193,9 +3361,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:52:53.181Z",
+      "firstTs": "2026-07-07T01:52:56.909Z",
       "lastTs": "2026-07-07T02:01:41.716Z",
-      "durationMs": 528535,
+      "durationMs": 524807,
       "turns": 12,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2203,9 +3371,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
+      "humanEdits": 0,
       "tokensIn": 35731,
       "tokensOut": 5100,
       "cacheRead": 305189,
+      "cacheCreation": 43458,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 11
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 35731,
+          "out": 5100,
+          "cacheRead": 305189,
+          "cacheCreation": 43458
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 3,
+      "thinkingChars": 0,
+      "textBlocks": 1,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -2218,7 +3411,7 @@ export const sessionSignals = {
         "Bash": 1
       },
       "startLoc": [
-        100,
+        102,
         0,
         6046
       ]
@@ -2229,9 +3422,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:26.580Z",
+      "firstTs": "2026-07-07T01:45:26.584Z",
       "lastTs": "2026-07-07T02:01:41.138Z",
-      "durationMs": 974558,
+      "durationMs": 974554,
       "turns": 41,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2239,9 +3432,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 13,
+      "humanEdits": 1,
       "tokensIn": 53186,
       "tokensOut": 45551,
       "cacheRead": 2654390,
+      "cacheCreation": 240806,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 40
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 53186,
+          "out": 45551,
+          "cacheRead": 2654390,
+          "cacheCreation": 240806
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 12,
+      "thinkingChars": 0,
+      "textBlocks": 13,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 3,
@@ -2258,7 +3476,7 @@ export const sessionSignals = {
         "Edit": 2
       },
       "startLoc": [
-        37,
+        39,
         0,
         8317
       ]
@@ -2269,9 +3487,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:50:58.565Z",
+      "firstTs": "2026-07-07T01:51:01.740Z",
       "lastTs": "2026-07-07T02:01:40.780Z",
-      "durationMs": 642215,
+      "durationMs": 639040,
       "turns": 19,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2279,9 +3497,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 48351,
       "tokensOut": 29890,
       "cacheRead": 824993,
+      "cacheCreation": 115000,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 18
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 48351,
+          "out": 29890,
+          "cacheRead": 824993,
+          "cacheCreation": 115000
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 5,
+      "thinkingChars": 0,
+      "textBlocks": 6,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -2295,7 +3538,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        107,
+        109,
         0,
         8317
       ]
@@ -2306,9 +3549,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:46:27.387Z",
+      "firstTs": "2026-07-07T01:46:27.539Z",
       "lastTs": "2026-07-07T02:01:39.535Z",
-      "durationMs": 912148,
+      "durationMs": 911996,
       "turns": 23,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2316,9 +3559,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
+      "humanEdits": 0,
       "tokensIn": 18923,
       "tokensOut": 44043,
       "cacheRead": 974144,
+      "cacheCreation": 70101,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 22
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 18923,
+          "out": 44043,
+          "cacheRead": 974144,
+          "cacheCreation": 70101
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 8,
+      "thinkingChars": 0,
+      "textBlocks": 7,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -2333,7 +3601,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        35,
+        37,
         0,
         8317
       ]
@@ -2344,9 +3612,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:56:37.140Z",
+      "firstTs": "2026-07-07T01:56:43.119Z",
       "lastTs": "2026-07-07T02:01:39.162Z",
-      "durationMs": 302022,
+      "durationMs": 296043,
       "turns": 7,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2354,9 +3622,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 34800,
       "tokensOut": 2568,
       "cacheRead": 137634,
+      "cacheCreation": 0,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 6
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 34800,
+          "out": 2568,
+          "cacheRead": 137634,
+          "cacheCreation": 0
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 1,
+      "thinkingChars": 0,
+      "textBlocks": 2,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -2368,7 +3661,7 @@ export const sessionSignals = {
         "Read": 4
       },
       "startLoc": [
-        215,
+        217,
         0,
         6046
       ]
@@ -2379,9 +3672,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:12.920Z",
+      "firstTs": "2026-07-07T01:45:12.924Z",
       "lastTs": "2026-07-07T02:01:39.034Z",
-      "durationMs": 986114,
+      "durationMs": 986110,
       "turns": 37,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2389,9 +3682,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 9,
+      "humanEdits": 0,
       "tokensIn": 31758,
       "tokensOut": 41227,
       "cacheRead": 2424110,
+      "cacheCreation": 232798,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 36
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 31758,
+          "out": 41227,
+          "cacheRead": 2424110,
+          "cacheCreation": 232798
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 12,
+      "thinkingChars": 0,
+      "textBlocks": 10,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -2406,7 +3724,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        9,
+        11,
         0,
         8317
       ]
@@ -2417,9 +3735,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:27.795Z",
+      "firstTs": "2026-07-07T01:45:27.801Z",
       "lastTs": "2026-07-07T02:01:38.827Z",
-      "durationMs": 971032,
+      "durationMs": 971026,
       "turns": 35,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2427,9 +3745,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
+      "humanEdits": 0,
       "tokensIn": 25487,
       "tokensOut": 65621,
       "cacheRead": 2164914,
+      "cacheCreation": 189505,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 34
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 25487,
+          "out": 65621,
+          "cacheRead": 2164914,
+          "cacheCreation": 189505
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 10,
+      "thinkingChars": 0,
+      "textBlocks": 12,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 3,
@@ -2443,7 +3786,7 @@ export const sessionSignals = {
         "Write": 2
       },
       "startLoc": [
-        8,
+        10,
         0,
         8317
       ]
@@ -2454,9 +3797,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:50:08.638Z",
+      "firstTs": "2026-07-07T01:50:11.587Z",
       "lastTs": "2026-07-07T02:01:38.140Z",
-      "durationMs": 689502,
+      "durationMs": 686553,
       "turns": 20,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2464,9 +3807,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 3,
+      "humanEdits": 0,
       "tokensIn": 37753,
       "tokensOut": 36998,
       "cacheRead": 832574,
+      "cacheCreation": 191512,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 19
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 37753,
+          "out": 36998,
+          "cacheRead": 832574,
+          "cacheCreation": 191512
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 4,
+      "thinkingChars": 0,
+      "textBlocks": 7,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -2480,7 +3848,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        48,
+        50,
         0,
         8317
       ]
@@ -2491,9 +3859,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:56.626Z",
+      "firstTs": "2026-07-07T01:45:56.681Z",
       "lastTs": "2026-07-07T02:01:38.006Z",
-      "durationMs": 941380,
+      "durationMs": 941325,
       "turns": 28,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2501,9 +3869,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
+      "humanEdits": 0,
       "tokensIn": 10633,
       "tokensOut": 31709,
       "cacheRead": 1696572,
+      "cacheCreation": 160294,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 27
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 10633,
+          "out": 31709,
+          "cacheRead": 1696572,
+          "cacheCreation": 160294
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 10,
+      "thinkingChars": 0,
+      "textBlocks": 9,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -2518,7 +3911,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        39,
+        41,
         0,
         8317
       ]
@@ -2529,9 +3922,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:48.994Z",
+      "firstTs": "2026-07-07T01:45:49.049Z",
       "lastTs": "2026-07-07T02:01:37.761Z",
-      "durationMs": 948767,
+      "durationMs": 948712,
       "turns": 34,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2539,9 +3932,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
+      "humanEdits": 0,
       "tokensIn": 21406,
       "tokensOut": 31237,
       "cacheRead": 2083215,
+      "cacheCreation": 170295,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 33
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 21406,
+          "out": 31237,
+          "cacheRead": 2083215,
+          "cacheCreation": 170295
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 12,
+      "thinkingChars": 0,
+      "textBlocks": 11,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -2556,7 +3974,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        111,
+        113,
         0,
         8317
       ]
@@ -2567,9 +3985,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:56:17.852Z",
+      "firstTs": "2026-07-07T01:56:23.778Z",
       "lastTs": "2026-07-07T02:01:36.316Z",
-      "durationMs": 318464,
+      "durationMs": 312538,
       "turns": 7,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2577,9 +3995,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 35598,
       "tokensOut": 2436,
       "cacheRead": 137634,
+      "cacheCreation": 0,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 6
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 35598,
+          "out": 2436,
+          "cacheRead": 137634,
+          "cacheCreation": 0
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 1,
+      "thinkingChars": 0,
+      "textBlocks": 2,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -2591,7 +4034,7 @@ export const sessionSignals = {
         "Read": 4
       },
       "startLoc": [
-        46,
+        48,
         0,
         6046
       ]
@@ -2602,9 +4045,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:46:36.199Z",
+      "firstTs": "2026-07-07T01:46:36.628Z",
       "lastTs": "2026-07-07T02:01:36.034Z",
-      "durationMs": 899835,
+      "durationMs": 899406,
       "turns": 32,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2612,9 +4055,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
+      "humanEdits": 0,
       "tokensIn": 18969,
       "tokensOut": 36889,
       "cacheRead": 1942377,
+      "cacheCreation": 129115,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 31
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 18969,
+          "out": 36889,
+          "cacheRead": 1942377,
+          "cacheCreation": 129115
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 11,
+      "thinkingChars": 0,
+      "textBlocks": 11,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -2629,7 +4097,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        193,
+        195,
         0,
         8317
       ]
@@ -2640,9 +4108,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:31.648Z",
+      "firstTs": "2026-07-07T01:45:31.655Z",
       "lastTs": "2026-07-07T02:01:34.360Z",
-      "durationMs": 962712,
+      "durationMs": 962705,
       "turns": 36,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2650,9 +4118,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
+      "humanEdits": 0,
       "tokensIn": 22808,
       "tokensOut": 49659,
       "cacheRead": 2197578,
+      "cacheCreation": 192164,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 35
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 22808,
+          "out": 49659,
+          "cacheRead": 2197578,
+          "cacheCreation": 192164
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 13,
+      "thinkingChars": 0,
+      "textBlocks": 11,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -2667,7 +4160,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        10,
+        12,
         0,
         8317
       ]
@@ -2678,9 +4171,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:24.251Z",
+      "firstTs": "2026-07-07T01:45:24.256Z",
       "lastTs": "2026-07-07T02:01:34.164Z",
-      "durationMs": 969913,
+      "durationMs": 969908,
       "turns": 43,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2688,9 +4181,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 10,
+      "humanEdits": 0,
       "tokensIn": 43706,
       "tokensOut": 40293,
       "cacheRead": 2787642,
+      "cacheCreation": 241719,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 42
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 43706,
+          "out": 40293,
+          "cacheRead": 2787642,
+          "cacheCreation": 241719
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 13,
+      "thinkingChars": 0,
+      "textBlocks": 14,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 6,
@@ -2705,7 +4223,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        60,
+        62,
         0,
         8317
       ]
@@ -2716,9 +4234,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:50.312Z",
+      "firstTs": "2026-07-07T01:45:50.338Z",
       "lastTs": "2026-07-07T02:01:33.950Z",
-      "durationMs": 943638,
+      "durationMs": 943612,
       "turns": 31,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2726,9 +4244,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 9,
+      "humanEdits": 0,
       "tokensIn": 45215,
       "tokensOut": 59135,
       "cacheRead": 1907510,
+      "cacheCreation": 198629,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 30
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 45215,
+          "out": 59135,
+          "cacheRead": 1907510,
+          "cacheCreation": 198629
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 9,
+      "thinkingChars": 0,
+      "textBlocks": 11,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 3,
@@ -2743,7 +4286,7 @@ export const sessionSignals = {
         "Edit": 2
       },
       "startLoc": [
-        104,
+        106,
         0,
         8317
       ]
@@ -2754,9 +4297,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:19.867Z",
+      "firstTs": "2026-07-07T01:45:19.877Z",
       "lastTs": "2026-07-07T02:01:31.378Z",
-      "durationMs": 971511,
+      "durationMs": 971501,
       "turns": 43,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2764,9 +4307,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 10,
+      "humanEdits": 0,
       "tokensIn": 45705,
       "tokensOut": 29867,
       "cacheRead": 2880387,
+      "cacheCreation": 284476,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 42
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 45705,
+          "out": 29867,
+          "cacheRead": 2880387,
+          "cacheCreation": 284476
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 13,
+      "thinkingChars": 0,
+      "textBlocks": 13,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -2781,7 +4349,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        133,
+        135,
         0,
         8317
       ]
@@ -2792,9 +4360,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:46:12.647Z",
+      "firstTs": "2026-07-07T01:46:12.720Z",
       "lastTs": "2026-07-07T02:01:31.314Z",
-      "durationMs": 918667,
+      "durationMs": 918594,
       "turns": 27,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2802,9 +4370,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
+      "humanEdits": 0,
       "tokensIn": 7833,
       "tokensOut": 37400,
       "cacheRead": 1755603,
+      "cacheCreation": 119152,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 26
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 7833,
+          "out": 37400,
+          "cacheRead": 1755603,
+          "cacheCreation": 119152
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 10,
+      "thinkingChars": 0,
+      "textBlocks": 11,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -2818,7 +4411,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        131,
+        133,
         0,
         8317
       ]
@@ -2829,9 +4422,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:46:00.047Z",
+      "firstTs": "2026-07-07T01:46:00.437Z",
       "lastTs": "2026-07-07T02:01:30.156Z",
-      "durationMs": 930109,
+      "durationMs": 929719,
       "turns": 25,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2839,9 +4432,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
+      "humanEdits": 0,
       "tokensIn": 18310,
       "tokensOut": 16003,
       "cacheRead": 1188180,
+      "cacheCreation": 86344,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 24
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 18310,
+          "out": 16003,
+          "cacheRead": 1188180,
+          "cacheCreation": 86344
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 10,
+      "thinkingChars": 0,
+      "textBlocks": 10,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -2855,7 +4473,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        94,
+        96,
         0,
         8317
       ]
@@ -2866,9 +4484,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:51:26.591Z",
+      "firstTs": "2026-07-07T01:51:29.679Z",
       "lastTs": "2026-07-07T02:01:29.747Z",
-      "durationMs": 603156,
+      "durationMs": 600068,
       "turns": 20,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2876,9 +4494,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 1,
+      "humanEdits": 0,
       "tokensIn": 18657,
       "tokensOut": 19522,
       "cacheRead": 875213,
+      "cacheCreation": 121475,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 19
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 18657,
+          "out": 19522,
+          "cacheRead": 875213,
+          "cacheCreation": 121475
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 5,
+      "thinkingChars": 0,
+      "textBlocks": 8,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -2892,7 +4535,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        64,
+        66,
         0,
         8317
       ]
@@ -2903,9 +4546,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:50:24.087Z",
+      "firstTs": "2026-07-07T01:50:27.399Z",
       "lastTs": "2026-07-07T02:01:28.674Z",
-      "durationMs": 664587,
+      "durationMs": 661275,
       "turns": 18,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2913,9 +4556,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
+      "humanEdits": 0,
       "tokensIn": 18841,
       "tokensOut": 5926,
       "cacheRead": 739730,
+      "cacheCreation": 180227,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 17
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 18841,
+          "out": 5926,
+          "cacheRead": 739730,
+          "cacheCreation": 180227
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 3,
+      "thinkingChars": 0,
+      "textBlocks": 6,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 0,
@@ -2928,7 +4596,7 @@ export const sessionSignals = {
         "Read": 7
       },
       "startLoc": [
-        123,
+        125,
         0,
         8317
       ]
@@ -2939,9 +4607,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:50:59.199Z",
+      "firstTs": "2026-07-07T01:51:02.390Z",
       "lastTs": "2026-07-07T02:01:28.211Z",
-      "durationMs": 629012,
+      "durationMs": 625821,
       "turns": 20,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2949,9 +4617,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 2,
+      "humanEdits": 0,
       "tokensIn": 18808,
       "tokensOut": 20024,
       "cacheRead": 880227,
+      "cacheCreation": 119258,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 19
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 18808,
+          "out": 20024,
+          "cacheRead": 880227,
+          "cacheCreation": 119258
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 6,
+      "thinkingChars": 0,
+      "textBlocks": 7,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -2965,7 +4658,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        127,
+        129,
         0,
         8317
       ]
@@ -2976,9 +4669,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:56:15.177Z",
+      "firstTs": "2026-07-07T01:56:20.200Z",
       "lastTs": "2026-07-07T02:01:26.711Z",
-      "durationMs": 311534,
+      "durationMs": 306511,
       "turns": 6,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -2986,9 +4679,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 24435,
       "tokensOut": 1860,
       "cacheRead": 114695,
+      "cacheCreation": 0,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 5
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 24435,
+          "out": 1860,
+          "cacheRead": 114695,
+          "cacheCreation": 0
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 1,
+      "thinkingChars": 0,
+      "textBlocks": 1,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -3000,7 +4718,7 @@ export const sessionSignals = {
         "Read": 4
       },
       "startLoc": [
-        197,
+        199,
         0,
         6046
       ]
@@ -3011,9 +4729,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:54:05.324Z",
+      "firstTs": "2026-07-07T01:54:08.787Z",
       "lastTs": "2026-07-07T02:01:26.503Z",
-      "durationMs": 441179,
+      "durationMs": 437716,
       "turns": 11,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3021,9 +4739,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 35966,
       "tokensOut": 5442,
       "cacheRead": 263618,
+      "cacheCreation": 39244,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 10
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 35966,
+          "out": 5442,
+          "cacheRead": 263618,
+          "cacheCreation": 39244
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 2,
+      "thinkingChars": 0,
+      "textBlocks": 3,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -3036,7 +4779,7 @@ export const sessionSignals = {
         "Bash": 2
       },
       "startLoc": [
-        171,
+        173,
         0,
         6046
       ]
@@ -3047,9 +4790,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:53:57.022Z",
+      "firstTs": "2026-07-07T01:54:01.383Z",
       "lastTs": "2026-07-07T02:01:24.529Z",
-      "durationMs": 447507,
+      "durationMs": 443146,
       "turns": 11,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3057,9 +4800,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 75960,
       "tokensOut": 24205,
       "cacheRead": 229390,
+      "cacheCreation": 42600,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 10
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 75960,
+          "out": 24205,
+          "cacheRead": 229390,
+          "cacheCreation": 42600
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 2,
+      "thinkingChars": 0,
+      "textBlocks": 2,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -3072,7 +4840,7 @@ export const sessionSignals = {
         "Grep": 3
       },
       "startLoc": [
-        188,
+        190,
         0,
         6046
       ]
@@ -3083,9 +4851,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:46:31.002Z",
+      "firstTs": "2026-07-07T01:46:31.408Z",
       "lastTs": "2026-07-07T02:01:24.524Z",
-      "durationMs": 893522,
+      "durationMs": 893116,
       "turns": 31,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3093,9 +4861,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
+      "humanEdits": 0,
       "tokensIn": 32392,
       "tokensOut": 45437,
       "cacheRead": 1279802,
+      "cacheCreation": 116253,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 30
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 32392,
+          "out": 45437,
+          "cacheRead": 1279802,
+          "cacheCreation": 116253
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 10,
+      "thinkingChars": 0,
+      "textBlocks": 9,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -3109,7 +4902,7 @@ export const sessionSignals = {
         "Write": 2
       },
       "startLoc": [
-        222,
+        224,
         0,
         8317
       ]
@@ -3120,9 +4913,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:51:01.761Z",
+      "firstTs": "2026-07-07T01:51:04.706Z",
       "lastTs": "2026-07-07T02:01:24.437Z",
-      "durationMs": 622676,
+      "durationMs": 619731,
       "turns": 18,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3130,9 +4923,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 26571,
       "tokensOut": 24340,
       "cacheRead": 497208,
+      "cacheCreation": 111954,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 17
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 26571,
+          "out": 24340,
+          "cacheRead": 497208,
+          "cacheCreation": 111954
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 4,
+      "thinkingChars": 0,
+      "textBlocks": 5,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 0,
@@ -3145,7 +4963,7 @@ export const sessionSignals = {
         "Read": 4
       },
       "startLoc": [
-        85,
+        87,
         0,
         8317
       ]
@@ -3156,9 +4974,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:13.726Z",
+      "firstTs": "2026-07-07T01:45:13.731Z",
       "lastTs": "2026-07-07T02:01:21.110Z",
-      "durationMs": 967384,
+      "durationMs": 967379,
       "turns": 40,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3166,9 +4984,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
+      "humanEdits": 0,
       "tokensIn": 25854,
       "tokensOut": 42486,
       "cacheRead": 2603568,
+      "cacheCreation": 200035,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 39
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 25854,
+          "out": 42486,
+          "cacheRead": 2603568,
+          "cacheCreation": 200035
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 14,
+      "thinkingChars": 0,
+      "textBlocks": 13,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 4,
@@ -3183,7 +5026,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        102,
+        104,
         0,
         8317
       ]
@@ -3194,9 +5037,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:46:20.866Z",
+      "firstTs": "2026-07-07T01:46:21.164Z",
       "lastTs": "2026-07-07T02:01:19.497Z",
-      "durationMs": 898631,
+      "durationMs": 898333,
       "turns": 34,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3204,9 +5047,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
+      "humanEdits": 0,
       "tokensIn": 21213,
       "tokensOut": 50886,
       "cacheRead": 2044681,
+      "cacheCreation": 244348,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 33
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 21213,
+          "out": 50886,
+          "cacheRead": 2044681,
+          "cacheCreation": 244348
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 11,
+      "thinkingChars": 0,
+      "textBlocks": 11,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -3220,7 +5088,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        136,
+        138,
         0,
         8317
       ]
@@ -3231,9 +5099,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:46:28.387Z",
+      "firstTs": "2026-07-07T01:46:28.728Z",
       "lastTs": "2026-07-07T02:01:19.198Z",
-      "durationMs": 890811,
+      "durationMs": 890470,
       "turns": 32,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3241,9 +5109,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
+      "humanEdits": 0,
       "tokensIn": 21033,
       "tokensOut": 55317,
       "cacheRead": 1928857,
+      "cacheCreation": 137610,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 31
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 21033,
+          "out": 55317,
+          "cacheRead": 1928857,
+          "cacheCreation": 137610
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 11,
+      "thinkingChars": 0,
+      "textBlocks": 11,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 3,
@@ -3258,7 +5151,7 @@ export const sessionSignals = {
         "Edit": 2
       },
       "startLoc": [
-        98,
+        100,
         0,
         8317
       ]
@@ -3269,9 +5162,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:46:17.824Z",
+      "firstTs": "2026-07-07T01:46:18.369Z",
       "lastTs": "2026-07-07T02:01:17.914Z",
-      "durationMs": 900090,
+      "durationMs": 899545,
       "turns": 42,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3279,9 +5172,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 13,
+      "humanEdits": 0,
       "tokensIn": 8910,
       "tokensOut": 72823,
       "cacheRead": 2703372,
+      "cacheCreation": 201879,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 41
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 8910,
+          "out": 72823,
+          "cacheRead": 2703372,
+          "cacheCreation": 201879
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 11,
+      "thinkingChars": 0,
+      "textBlocks": 14,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 12,
@@ -3296,7 +5214,7 @@ export const sessionSignals = {
         "Edit": 8
       },
       "startLoc": [
-        42,
+        44,
         0,
         8317
       ]
@@ -3307,9 +5225,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:26.093Z",
+      "firstTs": "2026-07-07T01:45:26.147Z",
       "lastTs": "2026-07-07T02:01:17.061Z",
-      "durationMs": 950968,
+      "durationMs": 950914,
       "turns": 34,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3317,9 +5235,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 9,
+      "humanEdits": 0,
       "tokensIn": 33619,
       "tokensOut": 34098,
       "cacheRead": 2119839,
+      "cacheCreation": 248640,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 33
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 33619,
+          "out": 34098,
+          "cacheRead": 2119839,
+          "cacheCreation": 248640
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 11,
+      "thinkingChars": 0,
+      "textBlocks": 10,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -3334,7 +5277,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        220,
+        222,
         0,
         8317
       ]
@@ -3345,9 +5288,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:48:07.264Z",
+      "firstTs": "2026-07-07T01:48:09.218Z",
       "lastTs": "2026-07-07T02:01:16.985Z",
-      "durationMs": 789721,
+      "durationMs": 787767,
       "turns": 28,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3355,9 +5298,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
+      "humanEdits": 0,
       "tokensIn": 26280,
       "tokensOut": 35873,
       "cacheRead": 1392615,
+      "cacheCreation": 223524,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 27
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 26280,
+          "out": 35873,
+          "cacheRead": 1392615,
+          "cacheCreation": 223524
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 7,
+      "thinkingChars": 0,
+      "textBlocks": 7,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -3371,7 +5339,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        160,
+        162,
         0,
         8317
       ]
@@ -3382,9 +5350,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:52:26.606Z",
+      "firstTs": "2026-07-07T01:52:29.765Z",
       "lastTs": "2026-07-07T02:01:15.725Z",
-      "durationMs": 529119,
+      "durationMs": 525960,
       "turns": 15,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3392,9 +5360,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 71910,
       "tokensOut": 12058,
       "cacheRead": 355350,
+      "cacheCreation": 84572,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 14
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 71910,
+          "out": 12058,
+          "cacheRead": 355350,
+          "cacheCreation": 84572
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 3,
+      "thinkingChars": 0,
+      "textBlocks": 4,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -3407,7 +5400,7 @@ export const sessionSignals = {
         "Bash": 4
       },
       "startLoc": [
-        97,
+        99,
         0,
         6046
       ]
@@ -3418,9 +5411,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:20.481Z",
+      "firstTs": "2026-07-07T01:45:20.486Z",
       "lastTs": "2026-07-07T02:01:15.548Z",
-      "durationMs": 955067,
+      "durationMs": 955062,
       "turns": 45,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3428,9 +5421,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
+      "humanEdits": 0,
       "tokensIn": 27956,
       "tokensOut": 44594,
       "cacheRead": 2961114,
+      "cacheCreation": 264481,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 44
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 27956,
+          "out": 44594,
+          "cacheRead": 2961114,
+          "cacheCreation": 264481
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 13,
+      "thinkingChars": 0,
+      "textBlocks": 15,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 4,
@@ -3445,7 +5463,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        45,
+        47,
         0,
         8317
       ]
@@ -3456,9 +5474,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:52:01.117Z",
+      "firstTs": "2026-07-07T01:52:03.423Z",
       "lastTs": "2026-07-07T02:01:15.169Z",
-      "durationMs": 554052,
+      "durationMs": 551746,
       "turns": 14,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3466,9 +5484,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
+      "humanEdits": 0,
       "tokensIn": 46098,
       "tokensOut": 44649,
       "cacheRead": 341059,
+      "cacheCreation": 90277,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 13
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 46098,
+          "out": 44649,
+          "cacheRead": 341059,
+          "cacheCreation": 90277
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 3,
+      "thinkingChars": 0,
+      "textBlocks": 4,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -3482,7 +5525,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        153,
+        155,
         0,
         6046
       ]
@@ -3493,9 +5536,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:34.740Z",
+      "firstTs": "2026-07-07T01:45:34.749Z",
       "lastTs": "2026-07-07T02:01:13.797Z",
-      "durationMs": 939057,
+      "durationMs": 939048,
       "turns": 28,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3503,9 +5546,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
+      "humanEdits": 0,
       "tokensIn": 50444,
       "tokensOut": 28103,
       "cacheRead": 1607812,
+      "cacheCreation": 127894,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 27
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 50444,
+          "out": 28103,
+          "cacheRead": 1607812,
+          "cacheCreation": 127894
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 9,
+      "thinkingChars": 0,
+      "textBlocks": 10,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -3519,7 +5587,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        167,
+        169,
         0,
         8317
       ]
@@ -3530,9 +5598,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:48:50.109Z",
+      "firstTs": "2026-07-07T01:48:52.124Z",
       "lastTs": "2026-07-07T02:01:13.648Z",
-      "durationMs": 743539,
+      "durationMs": 741524,
       "turns": 24,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3540,9 +5608,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 21248,
       "tokensOut": 31963,
       "cacheRead": 1168484,
+      "cacheCreation": 175508,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 23
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 21248,
+          "out": 31963,
+          "cacheRead": 1168484,
+          "cacheCreation": 175508
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 6,
+      "thinkingChars": 0,
+      "textBlocks": 8,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -3557,7 +5650,7 @@ export const sessionSignals = {
         "Write": 2
       },
       "startLoc": [
-        47,
+        49,
         0,
         8317
       ]
@@ -3568,9 +5661,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:49:24.388Z",
+      "firstTs": "2026-07-07T01:49:26.639Z",
       "lastTs": "2026-07-07T02:01:13.501Z",
-      "durationMs": 709113,
+      "durationMs": 706862,
       "turns": 21,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3578,9 +5671,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 31600,
       "tokensOut": 32487,
       "cacheRead": 935934,
+      "cacheCreation": 215144,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 20
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 31600,
+          "out": 32487,
+          "cacheRead": 935934,
+          "cacheCreation": 215144
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 5,
+      "thinkingChars": 0,
+      "textBlocks": 7,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -3595,7 +5713,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        54,
+        56,
         0,
         8317
       ]
@@ -3606,9 +5724,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:44:58.013Z",
+      "firstTs": "2026-07-07T01:44:58.017Z",
       "lastTs": "2026-07-07T02:01:13.208Z",
-      "durationMs": 975195,
+      "durationMs": 975191,
       "turns": 47,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3616,9 +5734,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 13,
+      "humanEdits": 0,
       "tokensIn": 31824,
       "tokensOut": 42372,
       "cacheRead": 3301570,
+      "cacheCreation": 304981,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 46
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 31824,
+          "out": 42372,
+          "cacheRead": 3301570,
+          "cacheCreation": 304981
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 14,
+      "thinkingChars": 0,
+      "textBlocks": 14,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -3634,7 +5777,7 @@ export const sessionSignals = {
         "Write": 2
       },
       "startLoc": [
-        129,
+        131,
         0,
         8317
       ]
@@ -3645,9 +5788,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:48:32.501Z",
+      "firstTs": "2026-07-07T01:48:33.823Z",
       "lastTs": "2026-07-07T02:01:12.280Z",
-      "durationMs": 759779,
+      "durationMs": 758457,
       "turns": 26,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3655,9 +5798,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 3,
+      "humanEdits": 0,
       "tokensIn": 18824,
       "tokensOut": 38533,
       "cacheRead": 1377505,
+      "cacheCreation": 160323,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 25
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 18824,
+          "out": 38533,
+          "cacheRead": 1377505,
+          "cacheCreation": 160323
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 8,
+      "thinkingChars": 0,
+      "textBlocks": 9,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -3671,7 +5839,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        141,
+        143,
         0,
         8317
       ]
@@ -3682,9 +5850,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:44:56.704Z",
+      "firstTs": "2026-07-07T01:44:56.708Z",
       "lastTs": "2026-07-07T02:01:12.110Z",
-      "durationMs": 975406,
+      "durationMs": 975402,
       "turns": 40,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3692,9 +5860,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 9,
+      "humanEdits": 0,
       "tokensIn": 25719,
       "tokensOut": 36669,
       "cacheRead": 2488178,
+      "cacheCreation": 290526,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 39
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 25719,
+          "out": 36669,
+          "cacheRead": 2488178,
+          "cacheCreation": 290526
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 13,
+      "thinkingChars": 0,
+      "textBlocks": 12,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 4,
@@ -3709,7 +5902,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        32,
+        34,
         0,
         8317
       ]
@@ -3720,9 +5913,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:23.514Z",
+      "firstTs": "2026-07-07T01:45:23.523Z",
       "lastTs": "2026-07-07T02:01:04.700Z",
-      "durationMs": 941186,
+      "durationMs": 941177,
       "turns": 32,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3730,9 +5923,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
+      "humanEdits": 0,
       "tokensIn": 35582,
       "tokensOut": 41221,
       "cacheRead": 1963584,
+      "cacheCreation": 169852,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 31
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 35582,
+          "out": 41221,
+          "cacheRead": 1963584,
+          "cacheCreation": 169852
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 12,
+      "thinkingChars": 0,
+      "textBlocks": 11,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 4,
@@ -3746,7 +5964,7 @@ export const sessionSignals = {
         "Write": 2
       },
       "startLoc": [
-        116,
+        118,
         0,
         8317
       ]
@@ -3757,9 +5975,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:47:59.349Z",
+      "firstTs": "2026-07-07T01:48:01.400Z",
       "lastTs": "2026-07-07T02:01:04.351Z",
-      "durationMs": 785002,
+      "durationMs": 782951,
       "turns": 30,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3767,9 +5985,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 38555,
       "tokensOut": 22367,
       "cacheRead": 1571373,
+      "cacheCreation": 167055,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 29
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 38555,
+          "out": 22367,
+          "cacheRead": 1571373,
+          "cacheCreation": 167055
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 9,
+      "thinkingChars": 0,
+      "textBlocks": 10,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -3783,7 +6026,7 @@ export const sessionSignals = {
         "Edit": 2
       },
       "startLoc": [
-        135,
+        137,
         0,
         8317
       ]
@@ -3794,9 +6037,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:23.222Z",
+      "firstTs": "2026-07-07T01:45:23.227Z",
       "lastTs": "2026-07-07T02:01:03.921Z",
-      "durationMs": 940699,
+      "durationMs": 940694,
       "turns": 32,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3804,9 +6047,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
+      "humanEdits": 0,
       "tokensIn": 25327,
       "tokensOut": 34986,
       "cacheRead": 1989676,
+      "cacheCreation": 191345,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 31
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 25327,
+          "out": 34986,
+          "cacheRead": 1989676,
+          "cacheCreation": 191345
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 12,
+      "thinkingChars": 0,
+      "textBlocks": 11,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -3821,7 +6089,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        137,
+        139,
         0,
         8317
       ]
@@ -3832,9 +6100,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:50:05.428Z",
+      "firstTs": "2026-07-07T01:50:07.284Z",
       "lastTs": "2026-07-07T02:01:03.077Z",
-      "durationMs": 657649,
+      "durationMs": 655793,
       "turns": 19,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3842,9 +6110,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
+      "humanEdits": 0,
       "tokensIn": 28304,
       "tokensOut": 25183,
       "cacheRead": 800170,
+      "cacheCreation": 208985,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 18
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 28304,
+          "out": 25183,
+          "cacheRead": 800170,
+          "cacheCreation": 208985
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 5,
+      "thinkingChars": 0,
+      "textBlocks": 6,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -3858,7 +6151,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        201,
+        203,
         0,
         8317
       ]
@@ -3869,9 +6162,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:49:34.625Z",
+      "firstTs": "2026-07-07T01:49:36.984Z",
       "lastTs": "2026-07-07T02:01:01.438Z",
-      "durationMs": 686813,
+      "durationMs": 684454,
       "turns": 22,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3879,9 +6172,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
+      "humanEdits": 0,
       "tokensIn": 29569,
       "tokensOut": 19146,
       "cacheRead": 713794,
+      "cacheCreation": 139437,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 21
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 29569,
+          "out": 19146,
+          "cacheRead": 713794,
+          "cacheCreation": 139437
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 5,
+      "thinkingChars": 0,
+      "textBlocks": 6,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 0,
@@ -3894,7 +6212,7 @@ export const sessionSignals = {
         "Read": 5
       },
       "startLoc": [
-        22,
+        24,
         0,
         8317
       ]
@@ -3905,9 +6223,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:48:09.917Z",
+      "firstTs": "2026-07-07T01:48:11.977Z",
       "lastTs": "2026-07-07T02:00:59.457Z",
-      "durationMs": 769540,
+      "durationMs": 767480,
       "turns": 27,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3915,9 +6233,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
+      "humanEdits": 0,
       "tokensIn": 18762,
       "tokensOut": 25323,
       "cacheRead": 1410088,
+      "cacheCreation": 153710,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 26
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 18762,
+          "out": 25323,
+          "cacheRead": 1410088,
+          "cacheCreation": 153710
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 7,
+      "thinkingChars": 0,
+      "textBlocks": 10,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -3932,7 +6275,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        155,
+        157,
         0,
         8317
       ]
@@ -3943,9 +6286,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:46:09.398Z",
+      "firstTs": "2026-07-07T01:46:09.640Z",
       "lastTs": "2026-07-07T02:00:59.455Z",
-      "durationMs": 890057,
+      "durationMs": 889815,
       "turns": 24,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3953,9 +6296,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
+      "humanEdits": 0,
       "tokensIn": 10102,
       "tokensOut": 85474,
       "cacheRead": 1444997,
+      "cacheCreation": 142393,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 23
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 10102,
+          "out": 85474,
+          "cacheRead": 1444997,
+          "cacheCreation": 142393
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 7,
+      "thinkingChars": 0,
+      "textBlocks": 10,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 5,
@@ -3970,7 +6338,7 @@ export const sessionSignals = {
         "Write": 4
       },
       "startLoc": [
-        200,
+        202,
         0,
         8317
       ]
@@ -3981,9 +6349,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:47:38.085Z",
+      "firstTs": "2026-07-07T01:47:39.728Z",
       "lastTs": "2026-07-07T02:00:58.950Z",
-      "durationMs": 800865,
+      "durationMs": 799222,
       "turns": 29,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -3991,9 +6359,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
+      "humanEdits": 0,
       "tokensIn": 6942,
       "tokensOut": 27104,
       "cacheRead": 1633372,
+      "cacheCreation": 161106,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 28
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 6942,
+          "out": 27104,
+          "cacheRead": 1633372,
+          "cacheCreation": 161106
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 10,
+      "thinkingChars": 0,
+      "textBlocks": 10,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -4008,7 +6401,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        180,
+        182,
         0,
         8317
       ]
@@ -4019,9 +6412,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:48:04.054Z",
+      "firstTs": "2026-07-07T01:48:05.524Z",
       "lastTs": "2026-07-07T02:00:56.751Z",
-      "durationMs": 772697,
+      "durationMs": 771227,
       "turns": 22,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4029,9 +6422,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
+      "humanEdits": 0,
       "tokensIn": 34441,
       "tokensOut": 7030,
       "cacheRead": 759995,
+      "cacheCreation": 88572,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 21
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 34441,
+          "out": 7030,
+          "cacheRead": 759995,
+          "cacheCreation": 88572
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 3,
+      "thinkingChars": 0,
+      "textBlocks": 6,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 0,
@@ -4044,45 +6462,7 @@ export const sessionSignals = {
         "Read": 5
       },
       "startLoc": [
-        62,
-        0,
-        8317
-      ]
-    },
-    {
-      "id": "0a867c35-0ace-48e8-8739-8a35601403a6",
-      "dir": "-Users-hjewkes-Documents-projects-codewatch",
-      "aiTitle": null,
-      "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
-      "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:46:21.913Z",
-      "lastTs": "2026-07-07T02:00:55.756Z",
-      "durationMs": 873843,
-      "turns": 30,
-      "userPrompts": 1,
-      "version": "2.1.202",
-      "branches": [],
-      "prs": [],
-      "tasks": [],
-      "fileTouches": 5,
-      "tokensIn": 21001,
-      "tokensOut": 28041,
-      "cacheRead": 1796705,
-      "commits": 0,
-      "pushes": 0,
-      "errors": 1,
-      "compactions": 0,
-      "decisions": 0,
-      "subagents": 0,
-      "artifacts": 0,
-      "tools": {
-        "Bash": 6,
-        "Read": 4,
-        "Write": 1,
-        "Edit": 1
-      },
-      "startLoc": [
-        19,
+        64,
         0,
         8317
       ]
@@ -4093,9 +6473,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:07.179Z",
+      "firstTs": "2026-07-07T01:45:07.188Z",
       "lastTs": "2026-07-07T02:00:55.277Z",
-      "durationMs": 948098,
+      "durationMs": 948089,
       "turns": 39,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4103,9 +6483,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
+      "humanEdits": 1,
       "tokensIn": 32895,
       "tokensOut": 56957,
       "cacheRead": 2389628,
+      "cacheCreation": 151704,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 38
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 32895,
+          "out": 56957,
+          "cacheRead": 2389628,
+          "cacheCreation": 151704
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 12,
+      "thinkingChars": 0,
+      "textBlocks": 11,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 4,
@@ -4119,7 +6524,7 @@ export const sessionSignals = {
         "Write": 4
       },
       "startLoc": [
-        174,
+        176,
         0,
         8317
       ]
@@ -4130,9 +6535,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:46:20.559Z",
+      "firstTs": "2026-07-07T01:46:21.068Z",
       "lastTs": "2026-07-07T02:00:54.283Z",
-      "durationMs": 873724,
+      "durationMs": 873215,
       "turns": 31,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4140,9 +6545,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 9,
+      "humanEdits": 0,
       "tokensIn": 49004,
       "tokensOut": 62972,
       "cacheRead": 1919280,
+      "cacheCreation": 172887,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 30
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 49004,
+          "out": 62972,
+          "cacheRead": 1919280,
+          "cacheCreation": 172887
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 10,
+      "thinkingChars": 0,
+      "textBlocks": 10,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 4,
@@ -4157,7 +6587,7 @@ export const sessionSignals = {
         "Write": 2
       },
       "startLoc": [
-        18,
+        20,
         0,
         8317
       ]
@@ -4168,9 +6598,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:51:49.962Z",
+      "firstTs": "2026-07-07T01:51:52.841Z",
       "lastTs": "2026-07-07T02:00:54.173Z",
-      "durationMs": 544211,
+      "durationMs": 541332,
       "turns": 17,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4178,9 +6608,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
+      "humanEdits": 0,
       "tokensIn": 52713,
       "tokensOut": 54786,
       "cacheRead": 475238,
+      "cacheCreation": 98603,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 16
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 52713,
+          "out": 54786,
+          "cacheRead": 475238,
+          "cacheCreation": 98603
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 4,
+      "thinkingChars": 0,
+      "textBlocks": 4,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -4195,7 +6650,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        168,
+        170,
         0,
         6046
       ]
@@ -4206,9 +6661,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:46:12.830Z",
+      "firstTs": "2026-07-07T01:46:13.297Z",
       "lastTs": "2026-07-07T02:00:54.086Z",
-      "durationMs": 881256,
+      "durationMs": 880789,
       "turns": 27,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4216,9 +6671,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
+      "humanEdits": 0,
       "tokensIn": 16828,
       "tokensOut": 34160,
       "cacheRead": 1640663,
+      "cacheCreation": 114032,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 26
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 16828,
+          "out": 34160,
+          "cacheRead": 1640663,
+          "cacheCreation": 114032
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 8,
+      "thinkingChars": 0,
+      "textBlocks": 9,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 3,
@@ -4235,7 +6715,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        78,
+        80,
         0,
         8317
       ]
@@ -4246,9 +6726,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:46:57.647Z",
+      "firstTs": "2026-07-07T01:46:58.273Z",
       "lastTs": "2026-07-07T02:00:53.940Z",
-      "durationMs": 836293,
+      "durationMs": 835667,
       "turns": 30,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4256,9 +6736,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 21337,
       "tokensOut": 28020,
       "cacheRead": 1628504,
+      "cacheCreation": 143740,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 29
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 21337,
+          "out": 28020,
+          "cacheRead": 1628504,
+          "cacheCreation": 143740
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 10,
+      "thinkingChars": 0,
+      "textBlocks": 10,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -4272,7 +6777,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        11,
+        13,
         0,
         8317
       ]
@@ -4283,9 +6788,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:53:46.350Z",
+      "firstTs": "2026-07-07T01:53:50.470Z",
       "lastTs": "2026-07-07T02:00:50.756Z",
-      "durationMs": 424406,
+      "durationMs": 420286,
       "turns": 9,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4293,9 +6798,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 29752,
       "tokensOut": 6296,
       "cacheRead": 183512,
+      "cacheCreation": 53262,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 8
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 29752,
+          "out": 6296,
+          "cacheRead": 183512,
+          "cacheCreation": 53262
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 2,
+      "thinkingChars": 0,
+      "textBlocks": 2,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -4308,7 +6838,7 @@ export const sessionSignals = {
         "Bash": 1
       },
       "startLoc": [
-        118,
+        120,
         0,
         6046
       ]
@@ -4319,9 +6849,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:51:46.194Z",
+      "firstTs": "2026-07-07T01:51:49.191Z",
       "lastTs": "2026-07-07T02:00:46.835Z",
-      "durationMs": 540641,
+      "durationMs": 537644,
       "turns": 22,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4329,9 +6859,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
+      "humanEdits": 0,
       "tokensIn": 35353,
       "tokensOut": 26181,
       "cacheRead": 691002,
+      "cacheCreation": 133543,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 21
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 35353,
+          "out": 26181,
+          "cacheRead": 691002,
+          "cacheCreation": 133543
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 5,
+      "thinkingChars": 0,
+      "textBlocks": 2,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -4345,7 +6900,7 @@ export const sessionSignals = {
         "Glob": 2
       },
       "startLoc": [
-        119,
+        121,
         0,
         6046
       ]
@@ -4356,9 +6911,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Critic: workflow:planning:critic:c6750314  ## Context  - Plan: insight-layer-pr1-profile-risk - Project: CW - Location: `/Users/hjewkes/Documents/projects/codewatch`  ## Input  Read these a…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:53:16.725Z",
+      "firstTs": "2026-07-07T01:53:20.977Z",
       "lastTs": "2026-07-07T02:00:46.049Z",
-      "durationMs": 449324,
+      "durationMs": 445072,
       "turns": 12,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4366,9 +6921,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 80833,
       "tokensOut": 20809,
       "cacheRead": 252329,
+      "cacheCreation": 42785,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 11
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 80833,
+          "out": 20809,
+          "cacheRead": 252329,
+          "cacheCreation": 42785
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 2,
+      "thinkingChars": 0,
+      "textBlocks": 3,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -4382,7 +6962,7 @@ export const sessionSignals = {
         "Grep": 2
       },
       "startLoc": [
-        58,
+        60,
         0,
         6046
       ]
@@ -4393,9 +6973,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:05.330Z",
+      "firstTs": "2026-07-07T01:45:05.335Z",
       "lastTs": "2026-07-07T02:00:45.969Z",
-      "durationMs": 940639,
+      "durationMs": 940634,
       "turns": 42,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4403,9 +6983,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 9,
+      "humanEdits": 0,
       "tokensIn": 26268,
       "tokensOut": 123767,
       "cacheRead": 2780683,
+      "cacheCreation": 216117,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 41
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 26268,
+          "out": 123767,
+          "cacheRead": 2780683,
+          "cacheCreation": 216117
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 13,
+      "thinkingChars": 0,
+      "textBlocks": 13,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 5,
@@ -4420,7 +7025,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        217,
+        219,
         0,
         8317
       ]
@@ -4431,9 +7036,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:15.589Z",
+      "firstTs": "2026-07-07T01:45:15.596Z",
       "lastTs": "2026-07-07T02:00:45.763Z",
-      "durationMs": 930174,
+      "durationMs": 930167,
       "turns": 34,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4441,9 +7046,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
+      "humanEdits": 0,
       "tokensIn": 25781,
       "tokensOut": 44479,
       "cacheRead": 2075700,
+      "cacheCreation": 182727,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 33
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 25781,
+          "out": 44479,
+          "cacheRead": 2075700,
+          "cacheCreation": 182727
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 12,
+      "thinkingChars": 0,
+      "textBlocks": 12,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 3,
@@ -4458,7 +7088,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        53,
+        55,
         0,
         8317
       ]
@@ -4469,9 +7099,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:44:57.400Z",
+      "firstTs": "2026-07-07T01:44:57.405Z",
       "lastTs": "2026-07-07T02:00:45.730Z",
-      "durationMs": 948330,
+      "durationMs": 948325,
       "turns": 39,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4479,9 +7109,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 13,
+      "humanEdits": 0,
       "tokensIn": 35797,
       "tokensOut": 101069,
       "cacheRead": 2571062,
+      "cacheCreation": 295515,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 38
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 35797,
+          "out": 101069,
+          "cacheRead": 2571062,
+          "cacheCreation": 295515
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 11,
+      "thinkingChars": 0,
+      "textBlocks": 13,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 4,
@@ -4496,7 +7151,7 @@ export const sessionSignals = {
         "Write": 5
       },
       "startLoc": [
-        148,
+        150,
         0,
         8317
       ]
@@ -4507,9 +7162,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:39.709Z",
+      "firstTs": "2026-07-07T01:45:39.755Z",
       "lastTs": "2026-07-07T02:00:43.976Z",
-      "durationMs": 904267,
+      "durationMs": 904221,
       "turns": 27,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4517,9 +7172,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
+      "humanEdits": 2,
       "tokensIn": 53889,
       "tokensOut": 29174,
       "cacheRead": 1698087,
+      "cacheCreation": 145070,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 26
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 53889,
+          "out": 29174,
+          "cacheRead": 1698087,
+          "cacheCreation": 145070
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 10,
+      "thinkingChars": 0,
+      "textBlocks": 8,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -4534,7 +7214,7 @@ export const sessionSignals = {
         "Edit": 2
       },
       "startLoc": [
-        13,
+        15,
         0,
         8317
       ]
@@ -4545,9 +7225,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:18.328Z",
+      "firstTs": "2026-07-07T01:45:18.337Z",
       "lastTs": "2026-07-07T02:00:42.944Z",
-      "durationMs": 924616,
+      "durationMs": 924607,
       "turns": 44,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4555,9 +7235,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 10,
+      "humanEdits": 0,
       "tokensIn": 34413,
       "tokensOut": 45355,
       "cacheRead": 2978625,
+      "cacheCreation": 281580,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 43
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 34413,
+          "out": 45355,
+          "cacheRead": 2978625,
+          "cacheCreation": 281580
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 13,
+      "thinkingChars": 0,
+      "textBlocks": 13,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 4,
@@ -4573,7 +7278,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        20,
+        22,
         0,
         8317
       ]
@@ -4584,9 +7289,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:46:48.568Z",
+      "firstTs": "2026-07-07T01:46:50.107Z",
       "lastTs": "2026-07-07T02:00:42.020Z",
-      "durationMs": 833452,
+      "durationMs": 831913,
       "turns": 27,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4594,9 +7299,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 22122,
       "tokensOut": 58592,
       "cacheRead": 1398331,
+      "cacheCreation": 177266,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 26
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 22122,
+          "out": 58592,
+          "cacheRead": 1398331,
+          "cacheCreation": 177266
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 8,
+      "thinkingChars": 0,
+      "textBlocks": 9,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -4610,7 +7340,7 @@ export const sessionSignals = {
         "Write": 2
       },
       "startLoc": [
-        128,
+        130,
         0,
         8317
       ]
@@ -4621,9 +7351,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:46:23.286Z",
+      "firstTs": "2026-07-07T01:46:23.616Z",
       "lastTs": "2026-07-07T02:00:41.749Z",
-      "durationMs": 858463,
+      "durationMs": 858133,
       "turns": 34,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4631,9 +7361,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 9,
+      "humanEdits": 0,
       "tokensIn": 48838,
       "tokensOut": 46117,
       "cacheRead": 2039021,
+      "cacheCreation": 144460,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 33
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 48838,
+          "out": 46117,
+          "cacheRead": 2039021,
+          "cacheCreation": 144460
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 11,
+      "thinkingChars": 0,
+      "textBlocks": 10,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -4649,7 +7404,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        86,
+        88,
         0,
         8317
       ]
@@ -4660,9 +7415,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:47:27.989Z",
+      "firstTs": "2026-07-07T01:47:29.754Z",
       "lastTs": "2026-07-07T02:00:40.066Z",
-      "durationMs": 792077,
+      "durationMs": 790312,
       "turns": 30,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4670,9 +7425,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
+      "humanEdits": 0,
       "tokensIn": 31585,
       "tokensOut": 36982,
       "cacheRead": 1541208,
+      "cacheCreation": 236753,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 29
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 31585,
+          "out": 36982,
+          "cacheRead": 1541208,
+          "cacheCreation": 236753
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 8,
+      "thinkingChars": 0,
+      "textBlocks": 9,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -4686,7 +7466,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        16,
+        18,
         0,
         8317
       ]
@@ -4697,9 +7477,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:47:12.659Z",
+      "firstTs": "2026-07-07T01:47:13.434Z",
       "lastTs": "2026-07-07T02:00:39.549Z",
-      "durationMs": 806890,
+      "durationMs": 806115,
       "turns": 22,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4707,9 +7487,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
+      "humanEdits": 0,
       "tokensIn": 38084,
       "tokensOut": 48973,
       "cacheRead": 1051849,
+      "cacheCreation": 164562,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 21
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 38084,
+          "out": 48973,
+          "cacheRead": 1051849,
+          "cacheCreation": 164562
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 6,
+      "thinkingChars": 0,
+      "textBlocks": 7,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -4724,7 +7529,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        106,
+        108,
         0,
         8317
       ]
@@ -4735,9 +7540,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:49:23.319Z",
+      "firstTs": "2026-07-07T01:49:26.192Z",
       "lastTs": "2026-07-07T02:00:39.406Z",
-      "durationMs": 676087,
+      "durationMs": 673214,
       "turns": 23,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4745,9 +7550,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 23865,
       "tokensOut": 26983,
       "cacheRead": 902943,
+      "cacheCreation": 243160,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 22
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 23865,
+          "out": 26983,
+          "cacheRead": 902943,
+          "cacheCreation": 243160
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 6,
+      "thinkingChars": 0,
+      "textBlocks": 7,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 0,
@@ -4760,7 +7590,7 @@ export const sessionSignals = {
         "Read": 5
       },
       "startLoc": [
-        149,
+        151,
         0,
         8317
       ]
@@ -4771,9 +7601,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:43.771Z",
+      "firstTs": "2026-07-07T01:45:43.813Z",
       "lastTs": "2026-07-07T02:00:39.393Z",
-      "durationMs": 895622,
+      "durationMs": 895580,
       "turns": 30,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4781,9 +7611,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
+      "humanEdits": 0,
       "tokensIn": 37095,
       "tokensOut": 42854,
       "cacheRead": 1881979,
+      "cacheCreation": 223002,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 29
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 37095,
+          "out": 42854,
+          "cacheRead": 1881979,
+          "cacheCreation": 223002
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 9,
+      "thinkingChars": 0,
+      "textBlocks": 10,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -4798,7 +7653,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        194,
+        196,
         0,
         8317
       ]
@@ -4809,9 +7664,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:48:45.498Z",
+      "firstTs": "2026-07-07T01:48:48.080Z",
       "lastTs": "2026-07-07T02:00:38.926Z",
-      "durationMs": 713428,
+      "durationMs": 710846,
       "turns": 29,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4819,9 +7674,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 27679,
       "tokensOut": 33144,
       "cacheRead": 1442262,
+      "cacheCreation": 209662,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 28
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 27679,
+          "out": 33144,
+          "cacheRead": 1442262,
+          "cacheCreation": 209662
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 8,
+      "thinkingChars": 0,
+      "textBlocks": 7,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -4836,7 +7716,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        114,
+        116,
         0,
         8317
       ]
@@ -4847,9 +7727,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:44:56.069Z",
+      "firstTs": "2026-07-07T01:44:56.073Z",
       "lastTs": "2026-07-07T02:00:38.298Z",
-      "durationMs": 942229,
+      "durationMs": 942225,
       "turns": 50,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4857,9 +7737,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 13,
+      "humanEdits": 0,
       "tokensIn": 30470,
       "tokensOut": 62576,
       "cacheRead": 3408953,
+      "cacheCreation": 342286,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 49
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 30470,
+          "out": 62576,
+          "cacheRead": 3408953,
+          "cacheCreation": 342286
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 13,
+      "thinkingChars": 0,
+      "textBlocks": 15,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 4,
@@ -4874,7 +7779,7 @@ export const sessionSignals = {
         "Write": 4
       },
       "startLoc": [
-        218,
+        220,
         0,
         8317
       ]
@@ -4885,9 +7790,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:46:39.194Z",
+      "firstTs": "2026-07-07T01:46:39.528Z",
       "lastTs": "2026-07-07T02:00:37.629Z",
-      "durationMs": 838435,
+      "durationMs": 838101,
       "turns": 28,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4895,9 +7800,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 3,
+      "humanEdits": 0,
       "tokensIn": 7889,
       "tokensOut": 23816,
       "cacheRead": 1691544,
+      "cacheCreation": 94440,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 27
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 7889,
+          "out": 23816,
+          "cacheRead": 1691544,
+          "cacheCreation": 94440
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 11,
+      "thinkingChars": 0,
+      "textBlocks": 9,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -4911,7 +7841,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        43,
+        45,
         0,
         8317
       ]
@@ -4922,9 +7852,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:46:26.806Z",
+      "firstTs": "2026-07-07T01:46:27.031Z",
       "lastTs": "2026-07-07T02:00:34.283Z",
-      "durationMs": 847477,
+      "durationMs": 847252,
       "turns": 29,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4932,9 +7862,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
+      "humanEdits": 0,
       "tokensIn": 20863,
       "tokensOut": 39115,
       "cacheRead": 1714084,
+      "cacheCreation": 110071,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 28
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 20863,
+          "out": 39115,
+          "cacheRead": 1714084,
+          "cacheCreation": 110071
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 10,
+      "thinkingChars": 0,
+      "textBlocks": 11,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -4949,7 +7904,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        144,
+        146,
         0,
         8317
       ]
@@ -4960,9 +7915,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:52.243Z",
+      "firstTs": "2026-07-07T01:45:52.271Z",
       "lastTs": "2026-07-07T02:00:29.448Z",
-      "durationMs": 877205,
+      "durationMs": 877177,
       "turns": 30,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -4970,9 +7925,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
+      "humanEdits": 0,
       "tokensIn": 9218,
       "tokensOut": 31986,
       "cacheRead": 1725765,
+      "cacheCreation": 175528,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 29
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 9218,
+          "out": 31986,
+          "cacheRead": 1725765,
+          "cacheCreation": 175528
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 11,
+      "thinkingChars": 0,
+      "textBlocks": 10,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -4988,7 +7968,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        126,
+        128,
         0,
         8317
       ]
@@ -4999,9 +7979,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:14.561Z",
+      "firstTs": "2026-07-07T01:45:14.566Z",
       "lastTs": "2026-07-07T02:00:26.968Z",
-      "durationMs": 912407,
+      "durationMs": 912402,
       "turns": 45,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -5009,9 +7989,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 8,
+      "humanEdits": 0,
       "tokensIn": 29661,
       "tokensOut": 33185,
       "cacheRead": 2753215,
+      "cacheCreation": 235544,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 44
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 29661,
+          "out": 33185,
+          "cacheRead": 2753215,
+          "cacheCreation": 235544
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 15,
+      "thinkingChars": 0,
+      "textBlocks": 14,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 4,
@@ -5027,7 +8032,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        122,
+        124,
         0,
         8317
       ]
@@ -5038,9 +8043,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:17.823Z",
+      "firstTs": "2026-07-07T01:45:17.828Z",
       "lastTs": "2026-07-07T02:00:26.324Z",
-      "durationMs": 908501,
+      "durationMs": 908496,
       "turns": 42,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -5048,9 +8053,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 7,
+      "humanEdits": 0,
       "tokensIn": 25924,
       "tokensOut": 41378,
       "cacheRead": 2675318,
+      "cacheCreation": 198834,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 41
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 25924,
+          "out": 41378,
+          "cacheRead": 2675318,
+          "cacheCreation": 198834
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 14,
+      "thinkingChars": 0,
+      "textBlocks": 13,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 3,
@@ -5065,7 +8095,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        204,
+        206,
         0,
         8317
       ]
@@ -5076,9 +8106,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:46:06.246Z",
+      "firstTs": "2026-07-07T01:46:06.334Z",
       "lastTs": "2026-07-07T02:00:25.300Z",
-      "durationMs": 859054,
+      "durationMs": 858966,
       "turns": 29,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -5086,9 +8116,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 6,
+      "humanEdits": 0,
       "tokensIn": 7985,
       "tokensOut": 44653,
       "cacheRead": 1820460,
+      "cacheCreation": 126943,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 28
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 7985,
+          "out": 44653,
+          "cacheRead": 1820460,
+          "cacheCreation": 126943
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 11,
+      "thinkingChars": 0,
+      "textBlocks": 10,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -5104,7 +8159,7 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        163,
+        165,
         0,
         8317
       ]
@@ -5115,9 +8170,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:49:23.850Z",
+      "firstTs": "2026-07-07T01:49:26.036Z",
       "lastTs": "2026-07-07T02:00:21.849Z",
-      "durationMs": 657999,
+      "durationMs": 655813,
       "turns": 23,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -5125,9 +8180,34 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 2,
+      "humanEdits": 0,
       "tokensIn": 18708,
       "tokensOut": 35120,
       "cacheRead": 1091195,
+      "cacheCreation": 132316,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 22
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 18708,
+          "out": 35120,
+          "cacheRead": 1091195,
+          "cacheCreation": 132316
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 7,
+      "thinkingChars": 0,
+      "textBlocks": 8,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -5141,7 +8221,64 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        175,
+        177,
+        0,
+        8317
+      ]
+    },
+    {
+      "id": "0a867c35-0ace-48e8-8739-8a35601403a6",
+      "dir": "-Users-hjewkes-Documents-projects-codewatch",
+      "aiTitle": null,
+      "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
+      "bridgeSessionId": null,
+      "firstTs": "2026-07-07T01:46:22.205Z",
+      "lastTs": "2026-07-07T01:59:37.780Z",
+      "durationMs": 795575,
+      "turns": 30,
+      "userPrompts": 1,
+      "version": "2.1.202",
+      "branches": [],
+      "prs": [],
+      "tasks": [],
+      "fileTouches": 5,
+      "humanEdits": 0,
+      "tokensIn": 21001,
+      "tokensOut": 28041,
+      "cacheRead": 1796705,
+      "cacheCreation": 110821,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 30
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 21001,
+          "out": 28041,
+          "cacheRead": 1796705,
+          "cacheCreation": 110821
+        }
+      },
+      "thinkingBlocks": 11,
+      "thinkingChars": 0,
+      "textBlocks": 11,
+      "phases": [],
+      "maxTurnsHits": 0,
+      "commits": 0,
+      "pushes": 0,
+      "errors": 1,
+      "compactions": 0,
+      "decisions": 0,
+      "subagents": 0,
+      "artifacts": 0,
+      "tools": {
+        "Bash": 6,
+        "Read": 4,
+        "Write": 1,
+        "Edit": 1
+      },
+      "startLoc": [
+        21,
         0,
         8317
       ]
@@ -5152,9 +8289,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:27.361Z",
-      "lastTs": "2026-07-07T02:00:12.241Z",
-      "durationMs": 884880,
+      "firstTs": "2026-07-07T01:45:27.372Z",
+      "lastTs": "2026-07-07T01:58:42.633Z",
+      "durationMs": 795261,
       "turns": 31,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -5162,9 +8299,28 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
+      "humanEdits": 0,
       "tokensIn": 25611,
       "tokensOut": 34630,
       "cacheRead": 1832608,
+      "cacheCreation": 159431,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 31
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 25611,
+          "out": 34630,
+          "cacheRead": 1832608,
+          "cacheCreation": 159431
+        }
+      },
+      "thinkingBlocks": 11,
+      "thinkingChars": 0,
+      "textBlocks": 11,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -5178,7 +8334,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        170,
+        172,
         0,
         8317
       ]
@@ -5189,9 +8345,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:08.872Z",
-      "lastTs": "2026-07-07T01:59:48.164Z",
-      "durationMs": 879292,
+      "firstTs": "2026-07-07T01:45:08.877Z",
+      "lastTs": "2026-07-07T01:58:27.587Z",
+      "durationMs": 798710,
       "turns": 40,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -5199,9 +8355,28 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 5,
+      "humanEdits": 0,
       "tokensIn": 27305,
       "tokensOut": 74403,
       "cacheRead": 2567296,
+      "cacheCreation": 203053,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 40
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 27305,
+          "out": 74403,
+          "cacheRead": 2567296,
+          "cacheCreation": 203053
+        }
+      },
+      "thinkingBlocks": 13,
+      "thinkingChars": 0,
+      "textBlocks": 12,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 4,
@@ -5216,7 +8391,7 @@ export const sessionSignals = {
         "Write": 3
       },
       "startLoc": [
-        190,
+        192,
         0,
         8317
       ]
@@ -5227,9 +8402,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:47:14.135Z",
-      "lastTs": "2026-07-07T01:59:10.725Z",
-      "durationMs": 716590,
+      "firstTs": "2026-07-07T01:47:14.886Z",
+      "lastTs": "2026-07-07T01:58:17.563Z",
+      "durationMs": 662677,
       "turns": 25,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -5237,9 +8412,28 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 7029,
       "tokensOut": 31411,
       "cacheRead": 1463229,
+      "cacheCreation": 160726,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 25
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 7029,
+          "out": 31411,
+          "cacheRead": 1463229,
+          "cacheCreation": 160726
+        }
+      },
+      "thinkingBlocks": 9,
+      "thinkingChars": 0,
+      "textBlocks": 9,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -5253,7 +8447,7 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        105,
+        107,
         0,
         8317
       ]
@@ -5276,9 +8470,47 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 34,
+      "humanEdits": 0,
       "tokensIn": 27011,
       "tokensOut": 204473,
       "cacheRead": 27222790,
+      "cacheCreation": 424387,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 186
+      },
+      "tokensByModel": {
+        "claude-fable-5": {
+          "in": 27011,
+          "out": 204473,
+          "cacheRead": 27222790,
+          "cacheCreation": 424387
+        }
+      },
+      "thinkingBlocks": 66,
+      "thinkingChars": 0,
+      "textBlocks": 27,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            243,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "default",
+          "loc": [
+            243,
+            83,
+            104
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 3,
@@ -5293,9 +8525,9 @@ export const sessionSignals = {
         "Edit": 19
       },
       "startLoc": [
-        241,
-        0,
-        82
+        243,
+        660,
+        26415
       ]
     },
     {
@@ -5304,9 +8536,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:00.180Z",
-      "lastTs": "2026-07-07T01:52:03.170Z",
-      "durationMs": 422990,
+      "firstTs": "2026-07-07T01:45:00.202Z",
+      "lastTs": "2026-07-07T01:51:32.242Z",
+      "durationMs": 392040,
       "turns": 28,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -5314,9 +8546,28 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 3,
+      "humanEdits": 0,
       "tokensIn": 25201,
       "tokensOut": 36652,
       "cacheRead": 1568668,
+      "cacheCreation": 159524,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 28
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 25201,
+          "out": 36652,
+          "cacheRead": 1568668,
+          "cacheCreation": 159524
+        }
+      },
+      "thinkingBlocks": 9,
+      "thinkingChars": 0,
+      "textBlocks": 9,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 3,
@@ -5330,7 +8581,7 @@ export const sessionSignals = {
         "Write": 3
       },
       "startLoc": [
-        143,
+        145,
         0,
         8317
       ]
@@ -5341,9 +8592,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "# Planning Design: workflow:planning:design:c6750314  Produce design artifacts for a planning workflow. Read the research brief, synthesize with interview answers (if provided), and write spec, design…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:03.479Z",
-      "lastTs": "2026-07-07T01:50:50.342Z",
-      "durationMs": 346863,
+      "firstTs": "2026-07-07T01:45:03.487Z",
+      "lastTs": "2026-07-07T01:50:19.885Z",
+      "durationMs": 316398,
       "turns": 11,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -5351,9 +8602,28 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 3,
+      "humanEdits": 0,
       "tokensIn": 24335,
       "tokensOut": 20670,
       "cacheRead": 399291,
+      "cacheCreation": 107582,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 11
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 24335,
+          "out": 20670,
+          "cacheRead": 399291,
+          "cacheCreation": 107582
+        }
+      },
+      "thinkingBlocks": 2,
+      "thinkingChars": 0,
+      "textBlocks": 4,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 0,
@@ -5367,7 +8637,7 @@ export const sessionSignals = {
         "Write": 3
       },
       "startLoc": [
-        57,
+        59,
         0,
         8317
       ]
@@ -5378,9 +8648,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "You are writing one entry of a repository \"convention map\" — a capability-altitude summary coding agents read at PLAN time to learn how this repo does things and where new code belongs.  Capability ar…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:41.196Z",
-      "lastTs": "2026-07-07T01:45:57.624Z",
-      "durationMs": 16428,
+      "firstTs": "2026-07-07T01:45:41.208Z",
+      "lastTs": "2026-07-07T01:45:55.326Z",
+      "durationMs": 14118,
       "turns": 3,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -5388,9 +8658,28 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 1,
+      "humanEdits": 0,
       "tokensIn": 6,
       "tokensOut": 907,
       "cacheRead": 96872,
+      "cacheCreation": 18366,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 3
+      },
+      "tokensByModel": {
+        "claude-sonnet-5": {
+          "in": 6,
+          "out": 907,
+          "cacheRead": 96872,
+          "cacheCreation": 18366
+        }
+      },
+      "thinkingBlocks": 1,
+      "thinkingChars": 0,
+      "textBlocks": 1,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 0,
@@ -5402,7 +8691,7 @@ export const sessionSignals = {
         "Read": 1
       },
       "startLoc": [
-        15,
+        17,
         0,
         3586
       ]
@@ -5413,9 +8702,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "You are writing one entry of a repository \"convention map\" — a capability-altitude summary coding agents read at PLAN time to learn how this repo does things and where new code belongs.  Capability ar…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:45:16.502Z",
-      "lastTs": "2026-07-07T01:45:34.320Z",
-      "durationMs": 17818,
+      "firstTs": "2026-07-07T01:45:16.506Z",
+      "lastTs": "2026-07-07T01:45:33.218Z",
+      "durationMs": 16712,
       "turns": 6,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -5423,9 +8712,28 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 2,
+      "humanEdits": 0,
       "tokensIn": 12,
       "tokensOut": 1855,
       "cacheRead": 215316,
+      "cacheCreation": 24208,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 6
+      },
+      "tokensByModel": {
+        "claude-sonnet-5": {
+          "in": 12,
+          "out": 1855,
+          "cacheRead": 215316,
+          "cacheCreation": 24208
+        }
+      },
+      "thinkingBlocks": 2,
+      "thinkingChars": 0,
+      "textBlocks": 1,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 0,
@@ -5438,7 +8746,7 @@ export const sessionSignals = {
         "Read": 2
       },
       "startLoc": [
-        74,
+        76,
         0,
         3002
       ]
@@ -5449,9 +8757,9 @@ export const sessionSignals = {
       "aiTitle": null,
       "seedPrompt": "You are writing one entry of a repository \"convention map\" — a capability-altitude summary coding agents read at PLAN time to learn how this repo does things and where new code belongs.  Capability ar…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-07T01:44:55.464Z",
-      "lastTs": "2026-07-07T01:45:12.149Z",
-      "durationMs": 16685,
+      "firstTs": "2026-07-07T01:44:55.468Z",
+      "lastTs": "2026-07-07T01:45:11.880Z",
+      "durationMs": 16412,
       "turns": 7,
       "userPrompts": 1,
       "version": "2.1.202",
@@ -5459,9 +8767,28 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 4,
+      "humanEdits": 0,
       "tokensIn": 14,
       "tokensOut": 1772,
       "cacheRead": 225454,
+      "cacheCreation": 52588,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 7
+      },
+      "tokensByModel": {
+        "claude-sonnet-5": {
+          "in": 14,
+          "out": 1772,
+          "cacheRead": 225454,
+          "cacheCreation": 52588
+        }
+      },
+      "thinkingBlocks": 2,
+      "thinkingChars": 0,
+      "textBlocks": 1,
+      "phases": [],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 0,
@@ -5473,7 +8800,7 @@ export const sessionSignals = {
         "Read": 4
       },
       "startLoc": [
-        27,
+        29,
         0,
         3013
       ]
@@ -5502,9 +8829,47 @@ export const sessionSignals = {
         "C-88"
       ],
       "fileTouches": 47,
+      "humanEdits": 0,
       "tokensIn": 46700,
       "tokensOut": 302468,
       "cacheRead": 41217991,
+      "cacheCreation": 869541,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 249
+      },
+      "tokensByModel": {
+        "claude-fable-5": {
+          "in": 46700,
+          "out": 302468,
+          "cacheRead": 41217991,
+          "cacheCreation": 869541
+        }
+      },
+      "thinkingBlocks": 76,
+      "thinkingChars": 0,
+      "textBlocks": 30,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            273,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "default",
+          "loc": [
+            273,
+            83,
+            104
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 1,
       "pushes": 1,
       "errors": 3,
@@ -5524,9 +8889,9 @@ export const sessionSignals = {
         "Skill": 1
       },
       "startLoc": [
-        271,
-        0,
-        82
+        273,
+        660,
+        24482
       ]
     },
     {
@@ -5545,9 +8910,47 @@ export const sessionSignals = {
       "prs": [],
       "tasks": [],
       "fileTouches": 2,
+      "humanEdits": 0,
       "tokensIn": 38820,
       "tokensOut": 134113,
       "cacheRead": 12405795,
+      "cacheCreation": 740464,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 118
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 38820,
+          "out": 134113,
+          "cacheRead": 12405795,
+          "cacheCreation": 740464
+        }
+      },
+      "thinkingBlocks": 32,
+      "thinkingChars": 0,
+      "textBlocks": 31,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            244,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "default",
+          "loc": [
+            244,
+            83,
+            104
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 0,
@@ -5564,9 +8967,9 @@ export const sessionSignals = {
         "ToolSearch": 4
       },
       "startLoc": [
-        242,
-        0,
-        82
+        244,
+        660,
+        22031
       ]
     },
     {
@@ -5591,9 +8994,47 @@ export const sessionSignals = {
         "C-89"
       ],
       "fileTouches": 34,
+      "humanEdits": 0,
       "tokensIn": 26624,
       "tokensOut": 114849,
       "cacheRead": 21087153,
+      "cacheCreation": 776681,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 168
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 26624,
+          "out": 114849,
+          "cacheRead": 21087153,
+          "cacheCreation": 776681
+        }
+      },
+      "thinkingBlocks": 38,
+      "thinkingChars": 0,
+      "textBlocks": 42,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            248,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "default",
+          "loc": [
+            248,
+            83,
+            104
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 1,
       "pushes": 1,
       "errors": 3,
@@ -5609,9 +9050,9 @@ export const sessionSignals = {
         "ToolSearch": 2
       },
       "startLoc": [
-        246,
-        0,
-        82
+        248,
+        660,
+        21997
       ]
     },
     {
@@ -5620,9 +9061,9 @@ export const sessionSignals = {
       "aiTitle": "Codewatch C-89 personalized PageRank implementation",
       "seedPrompt": "Starting a session on `codewatch` (Codewatch).  # Why we're doing this # Codewatch  ## Why this exists  Code-health observability CLI for TypeScript repos. Indexes a working tree into a graph (`.codew…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-06T15:30:41.914Z",
+      "firstTs": "2026-07-06T15:30:41.915Z",
       "lastTs": "2026-07-06T15:43:58.224Z",
-      "durationMs": 796310,
+      "durationMs": 796309,
       "turns": 98,
       "userPrompts": 1,
       "version": "2.1.201",
@@ -5632,9 +9073,47 @@ export const sessionSignals = {
         "C-94"
       ],
       "fileTouches": 0,
+      "humanEdits": 0,
       "tokensIn": 26335,
       "tokensOut": 114249,
       "cacheRead": 9175427,
+      "cacheCreation": 272012,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 98
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 26335,
+          "out": 114249,
+          "cacheRead": 9175427,
+          "cacheCreation": 272012
+        }
+      },
+      "thinkingBlocks": 25,
+      "thinkingChars": 0,
+      "textBlocks": 23,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            259,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "default",
+          "loc": [
+            259,
+            83,
+            104
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -5649,9 +9128,9 @@ export const sessionSignals = {
         "Edit": 16
       },
       "startLoc": [
-        257,
-        0,
-        82
+        259,
+        660,
+        22216
       ]
     },
     {
@@ -5672,9 +9151,47 @@ export const sessionSignals = {
         "C-87"
       ],
       "fileTouches": 0,
+      "humanEdits": 0,
       "tokensIn": 79120,
       "tokensOut": 357969,
       "cacheRead": 16539517,
+      "cacheCreation": 1745385,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 116
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 79120,
+          "out": 357969,
+          "cacheRead": 16539517,
+          "cacheCreation": 1745385
+        }
+      },
+      "thinkingBlocks": 34,
+      "thinkingChars": 0,
+      "textBlocks": 34,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            247,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "default",
+          "loc": [
+            247,
+            83,
+            104
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 1,
@@ -5691,9 +9208,9 @@ export const sessionSignals = {
         "Edit": 2
       },
       "startLoc": [
-        245,
-        0,
-        82
+        247,
+        660,
+        21812
       ]
     },
     {
@@ -5725,9 +9242,47 @@ export const sessionSignals = {
         "C-86"
       ],
       "fileTouches": 42,
+      "humanEdits": 4,
       "tokensIn": 125104,
       "tokensOut": 1097170,
       "cacheRead": 239051892,
+      "cacheCreation": 2006580,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 832
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 125104,
+          "out": 1097170,
+          "cacheRead": 239051892,
+          "cacheCreation": 2006580
+        }
+      },
+      "thinkingBlocks": 243,
+      "thinkingChars": 0,
+      "textBlocks": 269,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            251,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "default",
+          "loc": [
+            251,
+            83,
+            104
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 4,
       "pushes": 2,
       "errors": 12,
@@ -5746,9 +9301,9 @@ export const sessionSignals = {
         "Agent": 9
       },
       "startLoc": [
-        249,
-        0,
-        82
+        251,
+        660,
+        20337
       ]
     },
     {
@@ -5757,9 +9312,9 @@ export const sessionSignals = {
       "aiTitle": "Codewatch coding benchmark design and staging",
       "seedPrompt": "Starting a session on `codewatch` (Codewatch).  # Why we're doing this # Codewatch  ## Why this exists  Code-health observability CLI for TypeScript repos. Indexes a working tree into a graph (`.codew…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-06T01:23:17.921Z",
+      "firstTs": "2026-07-06T01:23:17.922Z",
       "lastTs": "2026-07-06T01:46:32.400Z",
-      "durationMs": 1394479,
+      "durationMs": 1394478,
       "turns": 176,
       "userPrompts": 1,
       "version": "2.1.201",
@@ -5774,9 +9329,47 @@ export const sessionSignals = {
         "C-83"
       ],
       "fileTouches": 15,
+      "humanEdits": 0,
       "tokensIn": 32710,
       "tokensOut": 194433,
       "cacheRead": 20026034,
+      "cacheCreation": 540211,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 176
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 32710,
+          "out": 194433,
+          "cacheRead": 20026034,
+          "cacheCreation": 540211
+        }
+      },
+      "thinkingBlocks": 50,
+      "thinkingChars": 0,
+      "textBlocks": 43,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            267,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "default",
+          "loc": [
+            267,
+            83,
+            104
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 2,
       "pushes": 1,
       "errors": 2,
@@ -5792,9 +9385,9 @@ export const sessionSignals = {
         "Edit": 6
       },
       "startLoc": [
-        265,
-        0,
-        82
+        267,
+        660,
+        21037
       ]
     },
     {
@@ -5816,9 +9409,38 @@ export const sessionSignals = {
         "C-83"
       ],
       "fileTouches": 5,
+      "humanEdits": 0,
       "tokensIn": 57921,
       "tokensOut": 325004,
       "cacheRead": 42162864,
+      "cacheCreation": 774892,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 265
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 57921,
+          "out": 325004,
+          "cacheRead": 42162864,
+          "cacheCreation": 774892
+        }
+      },
+      "thinkingBlocks": 74,
+      "thinkingChars": 0,
+      "textBlocks": 80,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            261,
+            0,
+            82
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 4,
@@ -5840,9 +9462,9 @@ export const sessionSignals = {
         "Artifact": 1
       },
       "startLoc": [
-        259,
-        0,
-        82
+        261,
+        319,
+        690
       ]
     },
     {
@@ -5870,9 +9492,38 @@ export const sessionSignals = {
       ],
       "tasks": [],
       "fileTouches": 6,
+      "humanEdits": 0,
       "tokensIn": 35718,
       "tokensOut": 338229,
       "cacheRead": 43506576,
+      "cacheCreation": 616228,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 295
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 35718,
+          "out": 338229,
+          "cacheRead": 43506576,
+          "cacheCreation": 616228
+        }
+      },
+      "thinkingBlocks": 94,
+      "thinkingChars": 0,
+      "textBlocks": 85,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            246,
+            0,
+            82
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 1,
       "pushes": 6,
       "errors": 5,
@@ -5890,9 +9541,9 @@ export const sessionSignals = {
         "Artifact": 1
       },
       "startLoc": [
-        244,
-        0,
-        82
+        246,
+        319,
+        690
       ]
     },
     {
@@ -5901,9 +9552,9 @@ export const sessionSignals = {
       "aiTitle": "Codewatch understandability context-engine initiative",
       "seedPrompt": "Starting a session on `codewatch` (Codewatch).  # Why we're doing this # Codewatch  ## Why this exists  Code-health observability CLI for TypeScript repos. Indexes a working tree into a graph (`.codew…",
       "bridgeSessionId": "cse_01CfckT8igKBHZcMTuTrThR9",
-      "firstTs": "2026-07-05T18:48:37.574Z",
+      "firstTs": "2026-07-05T18:48:37.579Z",
       "lastTs": "2026-07-05T22:27:08.343Z",
-      "durationMs": 13110769,
+      "durationMs": 13110764,
       "turns": 427,
       "userPrompts": 8,
       "version": "2.1.201",
@@ -5920,9 +9571,47 @@ export const sessionSignals = {
       ],
       "tasks": [],
       "fileTouches": 35,
+      "humanEdits": 0,
       "tokensIn": 67892,
       "tokensOut": 516071,
       "cacheRead": 80782960,
+      "cacheCreation": 2273770,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 427
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 67892,
+          "out": 516071,
+          "cacheRead": 80782960,
+          "cacheCreation": 2273770
+        }
+      },
+      "thinkingBlocks": 112,
+      "thinkingChars": 0,
+      "textBlocks": 129,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            274,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "default",
+          "loc": [
+            274,
+            83,
+            104
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 4,
       "pushes": 3,
       "errors": 8,
@@ -5941,9 +9630,9 @@ export const sessionSignals = {
         "TaskStop": 1
       },
       "startLoc": [
-        272,
-        0,
-        82
+        274,
+        660,
+        21989
       ]
     },
     {
@@ -5952,9 +9641,9 @@ export const sessionSignals = {
       "aiTitle": "Dogfood codewatch on tRPC external repo",
       "seedPrompt": "Starting a session on `codewatch` (Codewatch).  # Why we're doing this # Codewatch  ## Why this exists  Code-health observability CLI for TypeScript repos. Indexes a working tree into a graph (`.codew…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-05T14:03:52.643Z",
+      "firstTs": "2026-07-05T14:03:52.644Z",
       "lastTs": "2026-07-05T18:47:24.880Z",
-      "durationMs": 17012237,
+      "durationMs": 17012236,
       "turns": 293,
       "userPrompts": 22,
       "version": "2.1.201",
@@ -5967,9 +9656,47 @@ export const sessionSignals = {
       ],
       "tasks": [],
       "fileTouches": 28,
+      "humanEdits": 0,
       "tokensIn": 22766,
       "tokensOut": 506301,
       "cacheRead": 52817410,
+      "cacheCreation": 722905,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 293
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 22766,
+          "out": 506301,
+          "cacheRead": 52817410,
+          "cacheCreation": 722905
+        }
+      },
+      "thinkingBlocks": 85,
+      "thinkingChars": 0,
+      "textBlocks": 99,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            253,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "default",
+          "loc": [
+            253,
+            83,
+            104
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 2,
       "pushes": 2,
       "errors": 2,
@@ -5986,9 +9713,9 @@ export const sessionSignals = {
         "Edit": 31
       },
       "startLoc": [
-        251,
-        0,
-        82
+        253,
+        660,
+        18832
       ]
     },
     {
@@ -5997,9 +9724,9 @@ export const sessionSignals = {
       "aiTitle": "Fix unused-export false positive in multi-hop re-exports",
       "seedPrompt": "Starting a session on `codewatch` (Codewatch).  # Why we're doing this # Codewatch  ## Why this exists  Code-health observability CLI for TypeScript repos. Indexes a working tree into a graph (`.codew…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-05T17:18:02.704Z",
+      "firstTs": "2026-07-05T17:18:02.705Z",
       "lastTs": "2026-07-05T18:29:44.756Z",
-      "durationMs": 4302052,
+      "durationMs": 4302051,
       "turns": 464,
       "userPrompts": 1,
       "version": "2.1.201",
@@ -6015,9 +9742,47 @@ export const sessionSignals = {
         "C-71"
       ],
       "fileTouches": 93,
+      "humanEdits": 1,
       "tokensIn": 71830,
       "tokensOut": 360874,
       "cacheRead": 93597756,
+      "cacheCreation": 946412,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 464
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 71830,
+          "out": 360874,
+          "cacheRead": 93597756,
+          "cacheCreation": 946412
+        }
+      },
+      "thinkingBlocks": 120,
+      "thinkingChars": 0,
+      "textBlocks": 124,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            270,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "default",
+          "loc": [
+            270,
+            83,
+            104
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 3,
       "pushes": 4,
       "errors": 3,
@@ -6038,9 +9803,9 @@ export const sessionSignals = {
         "mcp__claude-in-chrome__computer": 3
       },
       "startLoc": [
-        268,
-        0,
-        82
+        270,
+        660,
+        18838
       ]
     },
     {
@@ -6064,9 +9829,47 @@ export const sessionSignals = {
       ],
       "tasks": [],
       "fileTouches": 32,
+      "humanEdits": 0,
       "tokensIn": 42464,
       "tokensOut": 404106,
       "cacheRead": 58028173,
+      "cacheCreation": 782171,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 339
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 42464,
+          "out": 404106,
+          "cacheRead": 58028173,
+          "cacheCreation": 782171
+        }
+      },
+      "thinkingBlocks": 95,
+      "thinkingChars": 0,
+      "textBlocks": 97,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            268,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "default",
+          "loc": [
+            268,
+            83,
+            104
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 1,
       "pushes": 1,
       "errors": 10,
@@ -6087,9 +9890,9 @@ export const sessionSignals = {
         "Edit": 22
       },
       "startLoc": [
-        266,
-        0,
-        82
+        268,
+        660,
+        17801
       ]
     },
     {
@@ -6116,9 +9919,38 @@ export const sessionSignals = {
       ],
       "tasks": [],
       "fileTouches": 22,
+      "humanEdits": 0,
       "tokensIn": 31507,
       "tokensOut": 216980,
       "cacheRead": 27574063,
+      "cacheCreation": 474811,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 236
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 31507,
+          "out": 216980,
+          "cacheRead": 27574063,
+          "cacheCreation": 474811
+        }
+      },
+      "thinkingBlocks": 68,
+      "thinkingChars": 0,
+      "textBlocks": 77,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            239,
+            0,
+            82
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 3,
       "pushes": 1,
       "errors": 2,
@@ -6134,9 +9966,9 @@ export const sessionSignals = {
         "Edit": 12
       },
       "startLoc": [
-        237,
-        0,
-        82
+        239,
+        319,
+        690
       ]
     },
     {
@@ -6173,9 +10005,38 @@ export const sessionSignals = {
         "C-62"
       ],
       "fileTouches": 0,
+      "humanEdits": 0,
       "tokensIn": 29891,
       "tokensOut": 269830,
       "cacheRead": 19430707,
+      "cacheCreation": 986994,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 172
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 29891,
+          "out": 269830,
+          "cacheRead": 19430707,
+          "cacheCreation": 986994
+        }
+      },
+      "thinkingBlocks": 59,
+      "thinkingChars": 0,
+      "textBlocks": 64,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            252,
+            0,
+            82
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 0,
       "pushes": 0,
       "errors": 2,
@@ -6195,9 +10056,9 @@ export const sessionSignals = {
         "Edit": 1
       },
       "startLoc": [
-        250,
-        0,
-        82
+        252,
+        319,
+        690
       ]
     },
     {
@@ -6241,9 +10102,47 @@ export const sessionSignals = {
       ],
       "tasks": [],
       "fileTouches": 167,
+      "humanEdits": 3,
       "tokensIn": 70015,
       "tokensOut": 1230166,
       "cacheRead": 382973420,
+      "cacheCreation": 2254841,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 987
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 70015,
+          "out": 1230166,
+          "cacheRead": 382973420,
+          "cacheCreation": 2254841
+        }
+      },
+      "thinkingBlocks": 279,
+      "thinkingChars": 0,
+      "textBlocks": 289,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            249,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "default",
+          "loc": [
+            249,
+            83,
+            104
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 17,
       "pushes": 13,
       "errors": 5,
@@ -6259,9 +10158,9 @@ export const sessionSignals = {
         "Agent": 4
       },
       "startLoc": [
-        247,
-        0,
-        82
+        249,
+        660,
+        18375
       ]
     },
     {
@@ -6292,9 +10191,47 @@ export const sessionSignals = {
         "C-58"
       ],
       "fileTouches": 73,
+      "humanEdits": 7,
       "tokensIn": 149838,
       "tokensOut": 621174,
       "cacheRead": 121223688,
+      "cacheCreation": 985612,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 511
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 149838,
+          "out": 621174,
+          "cacheRead": 121223688,
+          "cacheCreation": 985612
+        }
+      },
+      "thinkingBlocks": 128,
+      "thinkingChars": 0,
+      "textBlocks": 145,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            254,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "default",
+          "loc": [
+            254,
+            83,
+            104
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 5,
       "pushes": 5,
       "errors": 1,
@@ -6315,9 +10252,9 @@ export const sessionSignals = {
         "Agent": 4
       },
       "startLoc": [
-        252,
-        0,
-        82
+        254,
+        660,
+        17811
       ]
     },
     {
@@ -6343,9 +10280,47 @@ export const sessionSignals = {
         "C-53"
       ],
       "fileTouches": 100,
+      "humanEdits": 0,
       "tokensIn": 47771,
       "tokensOut": 467364,
       "cacheRead": 107096913,
+      "cacheCreation": 1714699,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 484
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 47771,
+          "out": 467364,
+          "cacheRead": 107096913,
+          "cacheCreation": 1714699
+        }
+      },
+      "thinkingBlocks": 139,
+      "thinkingChars": 0,
+      "textBlocks": 116,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            264,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "default",
+          "loc": [
+            264,
+            83,
+            104
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 2,
       "pushes": 1,
       "errors": 2,
@@ -6366,9 +10341,9 @@ export const sessionSignals = {
         "Artifact": 1
       },
       "startLoc": [
-        262,
-        0,
-        82
+        264,
+        660,
+        17009
       ]
     },
     {
@@ -6377,9 +10352,9 @@ export const sessionSignals = {
       "aiTitle": "Start codewatch code-health observability CLI session",
       "seedPrompt": "Starting a session on `codewatch` (Codewatch).  # Why we're doing this # Codewatch  ## Why this exists  Code-health observability CLI for TypeScript repos. Indexes a working tree into a graph (`.codew…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-03T18:53:52.062Z",
+      "firstTs": "2026-07-03T18:53:52.063Z",
       "lastTs": "2026-07-03T22:25:10.468Z",
-      "durationMs": 12678406,
+      "durationMs": 12678405,
       "turns": 565,
       "userPrompts": 13,
       "version": "2.1.200",
@@ -6404,9 +10379,47 @@ export const sessionSignals = {
         "C-57"
       ],
       "fileTouches": 76,
+      "humanEdits": 3,
       "tokensIn": 52289,
       "tokensOut": 620710,
       "cacheRead": 128248306,
+      "cacheCreation": 1155384,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 565
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 52289,
+          "out": 620710,
+          "cacheRead": 128248306,
+          "cacheCreation": 1155384
+        }
+      },
+      "thinkingBlocks": 150,
+      "thinkingChars": 0,
+      "textBlocks": 151,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            265,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "default",
+          "loc": [
+            265,
+            83,
+            104
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 4,
       "pushes": 4,
       "errors": 7,
@@ -6424,9 +10437,9 @@ export const sessionSignals = {
         "Write": 14
       },
       "startLoc": [
-        263,
-        0,
-        82
+        265,
+        660,
+        16160
       ]
     },
     {
@@ -6453,9 +10466,47 @@ export const sessionSignals = {
         "C-5"
       ],
       "fileTouches": 33,
+      "humanEdits": 0,
       "tokensIn": 32698,
       "tokensOut": 221202,
       "cacheRead": 27612279,
+      "cacheCreation": 356616,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 239
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 32698,
+          "out": 221202,
+          "cacheRead": 27612279,
+          "cacheCreation": 356616
+        }
+      },
+      "thinkingBlocks": 63,
+      "thinkingChars": 0,
+      "textBlocks": 63,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            262,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "default",
+          "loc": [
+            262,
+            83,
+            104
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 2,
       "pushes": 2,
       "errors": 3,
@@ -6473,9 +10524,9 @@ export const sessionSignals = {
         "Write": 2
       },
       "startLoc": [
-        260,
-        0,
-        82
+        262,
+        660,
+        16106
       ]
     },
     {
@@ -6510,9 +10561,47 @@ export const sessionSignals = {
         "C-5"
       ],
       "fileTouches": 107,
+      "humanEdits": 0,
       "tokensIn": 35942,
       "tokensOut": 511801,
       "cacheRead": 112709108,
+      "cacheCreation": 1619880,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 541
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 35942,
+          "out": 511801,
+          "cacheRead": 112709108,
+          "cacheCreation": 1619880
+        }
+      },
+      "thinkingBlocks": 135,
+      "thinkingChars": 0,
+      "textBlocks": 151,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            241,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "default",
+          "loc": [
+            241,
+            83,
+            104
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 4,
       "pushes": 4,
       "errors": 2,
@@ -6529,9 +10618,9 @@ export const sessionSignals = {
         "AskUserQuestion": 2
       },
       "startLoc": [
-        239,
-        0,
-        82
+        241,
+        660,
+        15169
       ]
     },
     {
@@ -6540,9 +10629,9 @@ export const sessionSignals = {
       "aiTitle": "Codewatch code-health observability CLI overview",
       "seedPrompt": "Starting a session on `codewatch` (Codewatch).  # Why we're doing this # Codewatch  ## Why this exists  Code-health observability CLI for TypeScript repos. Indexes a working tree into a graph (`.codew…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-02T04:53:56.087Z",
+      "firstTs": "2026-07-02T04:53:56.088Z",
       "lastTs": "2026-07-02T21:31:40.303Z",
-      "durationMs": 59864216,
+      "durationMs": 59864215,
       "turns": 576,
       "userPrompts": 9,
       "version": "2.1.198",
@@ -6572,9 +10661,47 @@ export const sessionSignals = {
         "C-48"
       ],
       "fileTouches": 69,
+      "humanEdits": 0,
       "tokensIn": 40990,
       "tokensOut": 674394,
       "cacheRead": 136926772,
+      "cacheCreation": 2224246,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 576
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 40990,
+          "out": 674394,
+          "cacheRead": 136926772,
+          "cacheCreation": 2224246
+        }
+      },
+      "thinkingBlocks": 153,
+      "thinkingChars": 0,
+      "textBlocks": 165,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            257,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "auto",
+          "loc": [
+            257,
+            83,
+            101
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 8,
       "pushes": 7,
       "errors": 2,
@@ -6595,9 +10722,9 @@ export const sessionSignals = {
         "Skill": 1
       },
       "startLoc": [
-        255,
-        0,
-        82
+        257,
+        657,
+        15283
       ]
     },
     {
@@ -6606,9 +10733,9 @@ export const sessionSignals = {
       "aiTitle": "Start codewatch code-health observability CLI session",
       "seedPrompt": "Starting a session on `codewatch` (Codewatch).  # Why we're doing this # Codewatch  ## Why this exists  Code-health observability CLI for TypeScript repos. Indexes a working tree into a graph (`.codew…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-01T20:53:04.237Z",
+      "firstTs": "2026-07-01T20:53:04.238Z",
       "lastTs": "2026-07-02T04:21:57.474Z",
-      "durationMs": 26933237,
+      "durationMs": 26933236,
       "turns": 256,
       "userPrompts": 3,
       "version": "2.1.198",
@@ -6623,9 +10750,47 @@ export const sessionSignals = {
         "C-28"
       ],
       "fileTouches": 39,
+      "humanEdits": 0,
       "tokensIn": 33650,
       "tokensOut": 210496,
       "cacheRead": 29291464,
+      "cacheCreation": 1283044,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 256
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 33650,
+          "out": 210496,
+          "cacheRead": 29291464,
+          "cacheCreation": 1283044
+        }
+      },
+      "thinkingBlocks": 70,
+      "thinkingChars": 0,
+      "textBlocks": 68,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            260,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "auto",
+          "loc": [
+            260,
+            83,
+            101
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 1,
       "pushes": 1,
       "errors": 0,
@@ -6642,9 +10807,9 @@ export const sessionSignals = {
         "ToolSearch": 2
       },
       "startLoc": [
-        258,
-        0,
-        82
+        260,
+        657,
+        15141
       ]
     },
     {
@@ -6653,9 +10818,9 @@ export const sessionSignals = {
       "aiTitle": "Codewatch health dashboard dogfooding and signal auditing",
       "seedPrompt": "Starting a session on `codewatch` (Codewatch).  # Why we're doing this # Codewatch  ## Why this exists  Code-health observability CLI for TypeScript repos. Indexes a working tree into a graph (`.codew…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-01T17:24:57.525Z",
+      "firstTs": "2026-07-01T17:24:57.526Z",
       "lastTs": "2026-07-01T18:57:58.950Z",
-      "durationMs": 5581425,
+      "durationMs": 5581424,
       "turns": 273,
       "userPrompts": 5,
       "version": "2.1.197",
@@ -6674,9 +10839,47 @@ export const sessionSignals = {
         "C-23"
       ],
       "fileTouches": 13,
+      "humanEdits": 0,
       "tokensIn": 32154,
       "tokensOut": 210889,
       "cacheRead": 32823691,
+      "cacheCreation": 660897,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 273
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 32154,
+          "out": 210889,
+          "cacheRead": 32823691,
+          "cacheCreation": 660897
+        }
+      },
+      "thinkingBlocks": 70,
+      "thinkingChars": 0,
+      "textBlocks": 70,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            256,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "auto",
+          "loc": [
+            256,
+            83,
+            101
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 3,
       "pushes": 3,
       "errors": 4,
@@ -6693,9 +10896,9 @@ export const sessionSignals = {
         "Write": 1
       },
       "startLoc": [
-        254,
-        0,
-        82
+        256,
+        657,
+        15769
       ]
     },
     {
@@ -6727,9 +10930,47 @@ export const sessionSignals = {
         "C-41"
       ],
       "fileTouches": 68,
+      "humanEdits": 0,
       "tokensIn": 28979,
       "tokensOut": 375807,
       "cacheRead": 74979197,
+      "cacheCreation": 708705,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 424
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 28979,
+          "out": 375807,
+          "cacheRead": 74979197,
+          "cacheCreation": 708705
+        }
+      },
+      "thinkingBlocks": 109,
+      "thinkingChars": 0,
+      "textBlocks": 122,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            242,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "auto",
+          "loc": [
+            242,
+            83,
+            101
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 3,
       "pushes": 3,
       "errors": 0,
@@ -6747,9 +10988,9 @@ export const sessionSignals = {
         "mcp__claude-in-chrome__tabs_context_mcp": 1
       },
       "startLoc": [
-        240,
-        0,
-        82
+        242,
+        657,
+        14290
       ]
     },
     {
@@ -6758,9 +10999,9 @@ export const sessionSignals = {
       "aiTitle": "Codewatch dashboard P1 fixes and refactoring",
       "seedPrompt": "Starting a session on `codewatch` (Codewatch).  # Why we're doing this # Codewatch  ## Why this exists  Code-health observability CLI for TypeScript repos. Indexes a working tree into a graph (`.codew…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-01T11:46:28.843Z",
+      "firstTs": "2026-07-01T11:46:28.844Z",
       "lastTs": "2026-07-01T13:46:44.051Z",
-      "durationMs": 7215208,
+      "durationMs": 7215207,
       "turns": 619,
       "userPrompts": 3,
       "version": "2.1.197",
@@ -6789,9 +11030,47 @@ export const sessionSignals = {
         "C-5"
       ],
       "fileTouches": 79,
+      "humanEdits": 0,
       "tokensIn": 40505,
       "tokensOut": 540641,
       "cacheRead": 134579286,
+      "cacheCreation": 1152082,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 619
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 40505,
+          "out": 540641,
+          "cacheRead": 134579286,
+          "cacheCreation": 1152082
+        }
+      },
+      "thinkingBlocks": 154,
+      "thinkingChars": 0,
+      "textBlocks": 171,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            269,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "auto",
+          "loc": [
+            269,
+            83,
+            101
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 8,
       "pushes": 7,
       "errors": 6,
@@ -6807,9 +11086,9 @@ export const sessionSignals = {
         "ToolSearch": 3
       },
       "startLoc": [
-        267,
-        0,
-        82
+        269,
+        657,
+        15523
       ]
     },
     {
@@ -6842,9 +11121,53 @@ export const sessionSignals = {
         "C-30"
       ],
       "fileTouches": 70,
+      "humanEdits": 5,
       "tokensIn": 102605,
       "tokensOut": 590034,
       "cacheRead": 110801458,
+      "cacheCreation": 1443180,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 499
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 102605,
+          "out": 590034,
+          "cacheRead": 110801458,
+          "cacheCreation": 1443180
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 141,
+      "thinkingChars": 0,
+      "textBlocks": 146,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            255,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "auto",
+          "loc": [
+            255,
+            83,
+            101
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 5,
       "pushes": 3,
       "errors": 8,
@@ -6865,9 +11188,9 @@ export const sessionSignals = {
         "Skill": 1
       },
       "startLoc": [
-        253,
-        0,
-        82
+        255,
+        657,
+        14575
       ]
     },
     {
@@ -6876,9 +11199,9 @@ export const sessionSignals = {
       "aiTitle": "Start codewatch session and review open tasks",
       "seedPrompt": "Starting a session on `codewatch` (Codewatch).  # Why we're doing this # Codewatch  ## Why this exists  Code-health observability CLI for TypeScript repos. Indexes a working tree into a graph (`.codew…",
       "bridgeSessionId": null,
-      "firstTs": "2026-07-01T00:29:14.732Z",
+      "firstTs": "2026-07-01T00:29:14.733Z",
       "lastTs": "2026-07-01T04:50:28.943Z",
-      "durationMs": 15674211,
+      "durationMs": 15674210,
       "turns": 1154,
       "userPrompts": 38,
       "version": "2.1.197",
@@ -6906,9 +11229,53 @@ export const sessionSignals = {
         "C-22"
       ],
       "fileTouches": 157,
+      "humanEdits": 0,
       "tokensIn": 124726,
       "tokensOut": 1291558,
       "cacheRead": 481299146,
+      "cacheCreation": 3551904,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 1152
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 124726,
+          "out": 1291558,
+          "cacheRead": 481299146,
+          "cacheCreation": 3551904
+        },
+        "<synthetic>": {
+          "in": 0,
+          "out": 0,
+          "cacheRead": 0,
+          "cacheCreation": 0
+        }
+      },
+      "thinkingBlocks": 338,
+      "thinkingChars": 0,
+      "textBlocks": 352,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            271,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "auto",
+          "loc": [
+            271,
+            83,
+            101
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 16,
       "pushes": 11,
       "errors": 7,
@@ -6930,9 +11297,9 @@ export const sessionSignals = {
         "TaskUpdate": 3
       },
       "startLoc": [
-        269,
-        0,
-        82
+        271,
+        657,
+        14166
       ]
     },
     {
@@ -6962,9 +11329,47 @@ export const sessionSignals = {
         "C-2"
       ],
       "fileTouches": 45,
+      "humanEdits": 10,
       "tokensIn": 67011,
       "tokensOut": 407672,
       "cacheRead": 70495404,
+      "cacheCreation": 755479,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 449
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 67011,
+          "out": 407672,
+          "cacheRead": 70495404,
+          "cacheCreation": 755479
+        }
+      },
+      "thinkingBlocks": 131,
+      "thinkingChars": 0,
+      "textBlocks": 130,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            245,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "auto",
+          "loc": [
+            245,
+            83,
+            101
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 3,
       "pushes": 2,
       "errors": 3,
@@ -6984,9 +11389,9 @@ export const sessionSignals = {
         "Write": 5
       },
       "startLoc": [
-        243,
-        0,
-        82
+        245,
+        657,
+        12818
       ]
     },
     {
@@ -7014,9 +11419,47 @@ export const sessionSignals = {
         "C-19"
       ],
       "fileTouches": 84,
+      "humanEdits": 11,
       "tokensIn": 83861,
       "tokensOut": 378829,
       "cacheRead": 76361265,
+      "cacheCreation": 2480959,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 440
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 83861,
+          "out": 378829,
+          "cacheRead": 76361265,
+          "cacheCreation": 2480959
+        }
+      },
+      "thinkingBlocks": 99,
+      "thinkingChars": 0,
+      "textBlocks": 119,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            258,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "auto",
+          "loc": [
+            258,
+            83,
+            101
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 3,
       "pushes": 2,
       "errors": 9,
@@ -7038,9 +11481,9 @@ export const sessionSignals = {
         "Edit": 55
       },
       "startLoc": [
-        256,
-        0,
-        82
+        258,
+        657,
+        11351
       ]
     },
     {
@@ -7063,9 +11506,47 @@ export const sessionSignals = {
       ],
       "tasks": [],
       "fileTouches": 60,
+      "humanEdits": 1,
       "tokensIn": 50221,
       "tokensOut": 314193,
       "cacheRead": 32817917,
+      "cacheCreation": 1239614,
+      "serverToolUse": 0,
+      "serviceTiers": {
+        "standard": 244
+      },
+      "tokensByModel": {
+        "claude-opus-4-8": {
+          "in": 50221,
+          "out": 314193,
+          "cacheRead": 32817917,
+          "cacheCreation": 1239614
+        }
+      },
+      "thinkingBlocks": 65,
+      "thinkingChars": 0,
+      "textBlocks": 66,
+      "phases": [
+        {
+          "kind": "mode",
+          "value": "normal",
+          "loc": [
+            263,
+            0,
+            82
+          ]
+        },
+        {
+          "kind": "permission",
+          "value": "auto",
+          "loc": [
+            263,
+            83,
+            101
+          ]
+        }
+      ],
+      "maxTurnsHits": 0,
       "commits": 2,
       "pushes": 1,
       "errors": 4,
@@ -7086,9 +11567,9 @@ export const sessionSignals = {
         "mcp__active-work__active__session__record": 1
       },
       "startLoc": [
-        261,
-        0,
-        82
+        263,
+        657,
+        11774
       ]
     }
   ],
@@ -7105,7 +11586,7 @@ export const sessionSignals = {
         "f6324d6b-6972-4f50-9c89-21bd31535746"
       ],
       "linkLoc": [
-        271,
+        273,
         1605159,
         214
       ]
@@ -7122,7 +11603,7 @@ export const sessionSignals = {
         "26f5e28e-f687-42d8-bb19-cbbee69709c1"
       ],
       "linkLoc": [
-        246,
+        248,
         1005224,
         214
       ]
@@ -7139,7 +11620,7 @@ export const sessionSignals = {
         "45851359-f22b-4839-a74e-2bcc515293b5"
       ],
       "linkLoc": [
-        249,
+        251,
         3908049,
         214
       ]
@@ -7156,7 +11637,7 @@ export const sessionSignals = {
         "45851359-f22b-4839-a74e-2bcc515293b5"
       ],
       "linkLoc": [
-        249,
+        251,
         2457432,
         214
       ]
@@ -7173,7 +11654,7 @@ export const sessionSignals = {
         "cc3546be-2c7d-4203-8789-3275ac58a61c"
       ],
       "linkLoc": [
-        265,
+        267,
         825521,
         214
       ]
@@ -7208,7 +11689,7 @@ export const sessionSignals = {
         "fd633b58-2657-4859-bca3-03c57a0277f0"
       ],
       "linkLoc": [
-        244,
+        246,
         1091719,
         214
       ]
@@ -7243,7 +11724,7 @@ export const sessionSignals = {
         "fd633b58-2657-4859-bca3-03c57a0277f0"
       ],
       "linkLoc": [
-        244,
+        246,
         1376724,
         214
       ]
@@ -7260,7 +11741,7 @@ export const sessionSignals = {
         "20f87461-9661-40ba-9af5-6e510817957a"
       ],
       "linkLoc": [
-        244,
+        246,
         892282,
         214
       ]
@@ -7277,7 +11758,7 @@ export const sessionSignals = {
         "20f87461-9661-40ba-9af5-6e510817957a"
       ],
       "linkLoc": [
-        244,
+        246,
         707917,
         214
       ]
@@ -7294,7 +11775,7 @@ export const sessionSignals = {
         "fd633b58-2657-4859-bca3-03c57a0277f0"
       ],
       "linkLoc": [
-        272,
+        274,
         2187701,
         214
       ]
@@ -7311,7 +11792,7 @@ export const sessionSignals = {
         "fd633b58-2657-4859-bca3-03c57a0277f0"
       ],
       "linkLoc": [
-        272,
+        274,
         1572094,
         214
       ]
@@ -7328,7 +11809,7 @@ export const sessionSignals = {
         "fd633b58-2657-4859-bca3-03c57a0277f0"
       ],
       "linkLoc": [
-        272,
+        274,
         1396898,
         214
       ]
@@ -7345,7 +11826,7 @@ export const sessionSignals = {
         "ea64d801-972c-4519-9a34-85fea7f8d776"
       ],
       "linkLoc": [
-        268,
+        270,
         2649043,
         214
       ]
@@ -7362,7 +11843,7 @@ export const sessionSignals = {
         "ea64d801-972c-4519-9a34-85fea7f8d776"
       ],
       "linkLoc": [
-        268,
+        270,
         2530771,
         214
       ]
@@ -7379,7 +11860,7 @@ export const sessionSignals = {
         "5abbb0ce-143a-4089-9d99-16de251fa361"
       ],
       "linkLoc": [
-        251,
+        253,
         1921297,
         214
       ]
@@ -7396,7 +11877,7 @@ export const sessionSignals = {
         "ccc70e24-b27c-4ef8-86ab-3a137d0e6c92"
       ],
       "linkLoc": [
-        266,
+        268,
         1894978,
         214
       ]
@@ -7413,7 +11894,7 @@ export const sessionSignals = {
         "06e0ac05-9729-4fba-bb3a-e10c79c59a7c"
       ],
       "linkLoc": [
-        237,
+        239,
         1045875,
         214
       ]
@@ -7430,7 +11911,7 @@ export const sessionSignals = {
         "06e0ac05-9729-4fba-bb3a-e10c79c59a7c"
       ],
       "linkLoc": [
-        237,
+        239,
         968402,
         214
       ]
@@ -7447,7 +11928,7 @@ export const sessionSignals = {
         "06e0ac05-9729-4fba-bb3a-e10c79c59a7c"
       ],
       "linkLoc": [
-        237,
+        239,
         688333,
         214
       ]
@@ -7464,7 +11945,7 @@ export const sessionSignals = {
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
       ],
       "linkLoc": [
-        250,
+        252,
         943405,
         214
       ]
@@ -7481,7 +11962,7 @@ export const sessionSignals = {
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
       ],
       "linkLoc": [
-        250,
+        252,
         789699,
         214
       ]
@@ -7498,7 +11979,7 @@ export const sessionSignals = {
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
       ],
       "linkLoc": [
-        250,
+        252,
         713183,
         214
       ]
@@ -7515,7 +11996,7 @@ export const sessionSignals = {
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
       ],
       "linkLoc": [
-        250,
+        252,
         677583,
         212
       ]
@@ -7532,7 +12013,7 @@ export const sessionSignals = {
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
       ],
       "linkLoc": [
-        250,
+        252,
         633342,
         212
       ]
@@ -7549,7 +12030,7 @@ export const sessionSignals = {
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
       ],
       "linkLoc": [
-        250,
+        252,
         584406,
         212
       ]
@@ -7566,7 +12047,7 @@ export const sessionSignals = {
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
       ],
       "linkLoc": [
-        250,
+        252,
         506161,
         212
       ]
@@ -7583,7 +12064,7 @@ export const sessionSignals = {
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
       ],
       "linkLoc": [
-        250,
+        252,
         456336,
         212
       ]
@@ -7600,7 +12081,7 @@ export const sessionSignals = {
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
       ],
       "linkLoc": [
-        250,
+        252,
         434469,
         212
       ]
@@ -7617,7 +12098,7 @@ export const sessionSignals = {
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
       ],
       "linkLoc": [
-        250,
+        252,
         434256,
         212
       ]
@@ -7634,7 +12115,7 @@ export const sessionSignals = {
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
       ],
       "linkLoc": [
-        250,
+        252,
         434043,
         212
       ]
@@ -7651,7 +12132,7 @@ export const sessionSignals = {
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
       ],
       "linkLoc": [
-        250,
+        252,
         433830,
         212
       ]
@@ -7668,7 +12149,7 @@ export const sessionSignals = {
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
       ],
       "linkLoc": [
-        250,
+        252,
         433617,
         212
       ]
@@ -7685,7 +12166,7 @@ export const sessionSignals = {
         "4e4f4811-6f06-4ad8-a799-9225f3b322ea"
       ],
       "linkLoc": [
-        250,
+        252,
         413897,
         212
       ]
@@ -7702,7 +12183,7 @@ export const sessionSignals = {
         "3a7136f7-74ab-40b8-abe4-db917c4aed00"
       ],
       "linkLoc": [
-        247,
+        249,
         5622390,
         212
       ]
@@ -7719,7 +12200,7 @@ export const sessionSignals = {
         "3a7136f7-74ab-40b8-abe4-db917c4aed00"
       ],
       "linkLoc": [
-        247,
+        249,
         5363447,
         212
       ]
@@ -7736,7 +12217,7 @@ export const sessionSignals = {
         "3a7136f7-74ab-40b8-abe4-db917c4aed00"
       ],
       "linkLoc": [
-        247,
+        249,
         5104508,
         212
       ]
@@ -7771,7 +12252,7 @@ export const sessionSignals = {
         "fd633b58-2657-4859-bca3-03c57a0277f0"
       ],
       "linkLoc": [
-        247,
+        249,
         4678931,
         212
       ]
@@ -7788,7 +12269,7 @@ export const sessionSignals = {
         "3a7136f7-74ab-40b8-abe4-db917c4aed00"
       ],
       "linkLoc": [
-        247,
+        249,
         4448394,
         212
       ]
@@ -7805,7 +12286,7 @@ export const sessionSignals = {
         "3a7136f7-74ab-40b8-abe4-db917c4aed00"
       ],
       "linkLoc": [
-        247,
+        249,
         4181226,
         212
       ]
@@ -7822,7 +12303,7 @@ export const sessionSignals = {
         "3a7136f7-74ab-40b8-abe4-db917c4aed00"
       ],
       "linkLoc": [
-        247,
+        249,
         3574307,
         212
       ]
@@ -7839,7 +12320,7 @@ export const sessionSignals = {
         "3a7136f7-74ab-40b8-abe4-db917c4aed00"
       ],
       "linkLoc": [
-        247,
+        249,
         3300105,
         212
       ]
@@ -7856,7 +12337,7 @@ export const sessionSignals = {
         "3a7136f7-74ab-40b8-abe4-db917c4aed00"
       ],
       "linkLoc": [
-        247,
+        249,
         3024000,
         212
       ]
@@ -7873,7 +12354,7 @@ export const sessionSignals = {
         "3a7136f7-74ab-40b8-abe4-db917c4aed00"
       ],
       "linkLoc": [
-        247,
+        249,
         2798520,
         212
       ]
@@ -7890,7 +12371,7 @@ export const sessionSignals = {
         "3a7136f7-74ab-40b8-abe4-db917c4aed00"
       ],
       "linkLoc": [
-        247,
+        249,
         2532670,
         212
       ]
@@ -7907,7 +12388,7 @@ export const sessionSignals = {
         "5e8f4b04-c57a-41a0-930b-eb1fc02bb677"
       ],
       "linkLoc": [
-        252,
+        254,
         3513340,
         212
       ]
@@ -7924,7 +12405,7 @@ export const sessionSignals = {
         "5e8f4b04-c57a-41a0-930b-eb1fc02bb677"
       ],
       "linkLoc": [
-        252,
+        254,
         3237044,
         212
       ]
@@ -7941,7 +12422,7 @@ export const sessionSignals = {
         "5e8f4b04-c57a-41a0-930b-eb1fc02bb677"
       ],
       "linkLoc": [
-        252,
+        254,
         2583942,
         212
       ]
@@ -7958,7 +12439,7 @@ export const sessionSignals = {
         "ae027a39-3ace-4d50-83ac-2f740cd20edf"
       ],
       "linkLoc": [
-        262,
+        264,
         5168297,
         212
       ]
@@ -7975,7 +12456,7 @@ export const sessionSignals = {
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
       ],
       "linkLoc": [
-        263,
+        265,
         7559468,
         212
       ]
@@ -7992,7 +12473,7 @@ export const sessionSignals = {
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
       ],
       "linkLoc": [
-        263,
+        265,
         7477860,
         212
       ]
@@ -8009,7 +12490,7 @@ export const sessionSignals = {
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
       ],
       "linkLoc": [
-        263,
+        265,
         5952611,
         212
       ]
@@ -8026,7 +12507,7 @@ export const sessionSignals = {
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
       ],
       "linkLoc": [
-        263,
+        265,
         3022980,
         212
       ]
@@ -8043,7 +12524,7 @@ export const sessionSignals = {
         "a86e0245-8fd6-4f8f-bd15-b45669812b3f"
       ],
       "linkLoc": [
-        260,
+        262,
         1157739,
         212
       ]
@@ -8060,7 +12541,7 @@ export const sessionSignals = {
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf"
       ],
       "linkLoc": [
-        239,
+        241,
         6239683,
         212
       ]
@@ -8077,7 +12558,7 @@ export const sessionSignals = {
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf"
       ],
       "linkLoc": [
-        239,
+        241,
         5508041,
         212
       ]
@@ -8094,7 +12575,7 @@ export const sessionSignals = {
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf"
       ],
       "linkLoc": [
-        239,
+        241,
         4192935,
         212
       ]
@@ -8111,7 +12592,7 @@ export const sessionSignals = {
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf"
       ],
       "linkLoc": [
-        239,
+        241,
         2904252,
         212
       ]
@@ -8128,7 +12609,7 @@ export const sessionSignals = {
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
       ],
       "linkLoc": [
-        255,
+        257,
         6523507,
         212
       ]
@@ -8145,7 +12626,7 @@ export const sessionSignals = {
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
       ],
       "linkLoc": [
-        255,
+        257,
         6482387,
         212
       ]
@@ -8162,7 +12643,7 @@ export const sessionSignals = {
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
       ],
       "linkLoc": [
-        255,
+        257,
         6343640,
         212
       ]
@@ -8179,7 +12660,7 @@ export const sessionSignals = {
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
       ],
       "linkLoc": [
-        255,
+        257,
         5892989,
         212
       ]
@@ -8196,7 +12677,7 @@ export const sessionSignals = {
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
       ],
       "linkLoc": [
-        255,
+        257,
         3854707,
         212
       ]
@@ -8213,7 +12694,7 @@ export const sessionSignals = {
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
       ],
       "linkLoc": [
-        255,
+        257,
         3317692,
         212
       ]
@@ -8230,7 +12711,7 @@ export const sessionSignals = {
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
       ],
       "linkLoc": [
-        255,
+        257,
         1872716,
         212
       ]
@@ -8247,7 +12728,7 @@ export const sessionSignals = {
         "91e27139-78f8-4b2b-ac22-4c26c6eda2db"
       ],
       "linkLoc": [
-        258,
+        260,
         1768630,
         212
       ]
@@ -8264,7 +12745,7 @@ export const sessionSignals = {
         "822b9538-5851-4433-8835-ff1cc1d15c3a"
       ],
       "linkLoc": [
-        254,
+        256,
         2202866,
         212
       ]
@@ -8281,7 +12762,7 @@ export const sessionSignals = {
         "822b9538-5851-4433-8835-ff1cc1d15c3a"
       ],
       "linkLoc": [
-        254,
+        256,
         2168532,
         212
       ]
@@ -8298,7 +12779,7 @@ export const sessionSignals = {
         "822b9538-5851-4433-8835-ff1cc1d15c3a"
       ],
       "linkLoc": [
-        254,
+        256,
         758539,
         212
       ]
@@ -8315,7 +12796,7 @@ export const sessionSignals = {
         "122c4f8f-7dc4-4211-a818-95be2df9b24e"
       ],
       "linkLoc": [
-        240,
+        242,
         6940420,
         212
       ]
@@ -8332,7 +12813,7 @@ export const sessionSignals = {
         "122c4f8f-7dc4-4211-a818-95be2df9b24e"
       ],
       "linkLoc": [
-        240,
+        242,
         6867492,
         212
       ]
@@ -8349,7 +12830,7 @@ export const sessionSignals = {
         "122c4f8f-7dc4-4211-a818-95be2df9b24e"
       ],
       "linkLoc": [
-        240,
+        242,
         5302841,
         212
       ]
@@ -8366,7 +12847,7 @@ export const sessionSignals = {
         "ce00b199-172a-4cdb-a183-2178407d04a7"
       ],
       "linkLoc": [
-        267,
+        269,
         7540269,
         212
       ]
@@ -8383,7 +12864,7 @@ export const sessionSignals = {
         "ce00b199-172a-4cdb-a183-2178407d04a7"
       ],
       "linkLoc": [
-        267,
+        269,
         7498374,
         212
       ]
@@ -8400,7 +12881,7 @@ export const sessionSignals = {
         "ce00b199-172a-4cdb-a183-2178407d04a7"
       ],
       "linkLoc": [
-        267,
+        269,
         7008061,
         212
       ]
@@ -8417,7 +12898,7 @@ export const sessionSignals = {
         "ce00b199-172a-4cdb-a183-2178407d04a7"
       ],
       "linkLoc": [
-        267,
+        269,
         6426489,
         212
       ]
@@ -8434,7 +12915,7 @@ export const sessionSignals = {
         "ce00b199-172a-4cdb-a183-2178407d04a7"
       ],
       "linkLoc": [
-        267,
+        269,
         5420395,
         212
       ]
@@ -8451,7 +12932,7 @@ export const sessionSignals = {
         "ce00b199-172a-4cdb-a183-2178407d04a7"
       ],
       "linkLoc": [
-        267,
+        269,
         4716471,
         212
       ]
@@ -8468,7 +12949,7 @@ export const sessionSignals = {
         "ce00b199-172a-4cdb-a183-2178407d04a7"
       ],
       "linkLoc": [
-        267,
+        269,
         4306179,
         212
       ]
@@ -8485,7 +12966,7 @@ export const sessionSignals = {
         "759a6037-8fee-4639-8faa-ffac0e1f18f4"
       ],
       "linkLoc": [
-        253,
+        255,
         3701128,
         212
       ]
@@ -8502,7 +12983,7 @@ export const sessionSignals = {
         "759a6037-8fee-4639-8faa-ffac0e1f18f4"
       ],
       "linkLoc": [
-        253,
+        255,
         3664544,
         212
       ]
@@ -8519,7 +13000,7 @@ export const sessionSignals = {
         "759a6037-8fee-4639-8faa-ffac0e1f18f4"
       ],
       "linkLoc": [
-        253,
+        255,
         3316544,
         212
       ]
@@ -8536,7 +13017,7 @@ export const sessionSignals = {
         "759a6037-8fee-4639-8faa-ffac0e1f18f4"
       ],
       "linkLoc": [
-        253,
+        255,
         2477400,
         212
       ]
@@ -8553,7 +13034,7 @@ export const sessionSignals = {
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
       "linkLoc": [
-        269,
+        271,
         12933551,
         212
       ]
@@ -8570,7 +13051,7 @@ export const sessionSignals = {
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
       "linkLoc": [
-        269,
+        271,
         12683794,
         212
       ]
@@ -8587,7 +13068,7 @@ export const sessionSignals = {
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
       "linkLoc": [
-        269,
+        271,
         10494970,
         212
       ]
@@ -8604,7 +13085,7 @@ export const sessionSignals = {
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
       "linkLoc": [
-        269,
+        271,
         6146592,
         212
       ]
@@ -8621,7 +13102,7 @@ export const sessionSignals = {
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
       "linkLoc": [
-        269,
+        271,
         5247013,
         212
       ]
@@ -8638,7 +13119,7 @@ export const sessionSignals = {
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
       "linkLoc": [
-        269,
+        271,
         4444895,
         212
       ]
@@ -8655,7 +13136,7 @@ export const sessionSignals = {
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
       "linkLoc": [
-        269,
+        271,
         1306477,
         212
       ]
@@ -8672,7 +13153,7 @@ export const sessionSignals = {
         "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1"
       ],
       "linkLoc": [
-        243,
+        245,
         1980009,
         212
       ]
@@ -8689,7 +13170,7 @@ export const sessionSignals = {
         "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1"
       ],
       "linkLoc": [
-        243,
+        245,
         1366024,
         212
       ]
@@ -8706,7 +13187,7 @@ export const sessionSignals = {
         "8cb0fce6-865e-4a97-aca9-4e16013f2503"
       ],
       "linkLoc": [
-        256,
+        258,
         2714999,
         212
       ]
@@ -8723,7 +13204,7 @@ export const sessionSignals = {
         "8cb0fce6-865e-4a97-aca9-4e16013f2503"
       ],
       "linkLoc": [
-        256,
+        258,
         2477553,
         212
       ]
@@ -8740,7 +13221,7 @@ export const sessionSignals = {
         "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff"
       ],
       "linkLoc": [
-        261,
+        263,
         1298224,
         212
       ]
@@ -8773,8 +13254,8 @@ export const sessionSignals = {
       "firstTs": "2026-06-30T22:01:01.524Z",
       "lastTs": "2026-07-07T00:32:37.325Z",
       "commits": 20,
-      "pushes": 66,
-      "files": 79,
+      "pushes": 69,
+      "files": 83,
       "prs": [
         115,
         116,
@@ -8831,7 +13312,7 @@ export const sessionSignals = {
       "sessions": [
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
-      "firstTs": "2026-07-01T00:29:14.732Z",
+      "firstTs": "2026-07-01T00:29:14.733Z",
       "lastTs": "2026-07-01T04:50:28.943Z",
       "commits": 1,
       "pushes": 1,
@@ -8976,7 +13457,7 @@ export const sessionSignals = {
       "lastTs": "2026-07-01T00:20:36.054Z",
       "commits": 1,
       "pushes": 1,
-      "files": 0,
+      "files": 9,
       "prs": [
         32
       ]
@@ -9168,7 +13649,7 @@ export const sessionSignals = {
       "sessions": [
         "5abbb0ce-143a-4089-9d99-16de251fa361"
       ],
-      "firstTs": "2026-07-05T14:03:52.643Z",
+      "firstTs": "2026-07-05T14:03:52.644Z",
       "lastTs": "2026-07-05T18:47:24.880Z",
       "commits": 0,
       "pushes": 2,
@@ -9252,7 +13733,7 @@ export const sessionSignals = {
       "sessions": [
         "822b9538-5851-4433-8835-ff1cc1d15c3a"
       ],
-      "firstTs": "2026-07-01T17:24:57.525Z",
+      "firstTs": "2026-07-01T17:24:57.526Z",
       "lastTs": "2026-07-01T18:57:58.950Z",
       "commits": 1,
       "pushes": 1,
@@ -9266,7 +13747,7 @@ export const sessionSignals = {
       "sessions": [
         "822b9538-5851-4433-8835-ff1cc1d15c3a"
       ],
-      "firstTs": "2026-07-01T17:24:57.525Z",
+      "firstTs": "2026-07-01T17:24:57.526Z",
       "lastTs": "2026-07-01T18:57:58.950Z",
       "commits": 1,
       "pushes": 1,
@@ -9280,7 +13761,7 @@ export const sessionSignals = {
       "sessions": [
         "822b9538-5851-4433-8835-ff1cc1d15c3a"
       ],
-      "firstTs": "2026-07-01T17:24:57.525Z",
+      "firstTs": "2026-07-01T17:24:57.526Z",
       "lastTs": "2026-07-01T18:57:58.950Z",
       "commits": 1,
       "pushes": 1,
@@ -9294,7 +13775,7 @@ export const sessionSignals = {
       "sessions": [
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
       ],
-      "firstTs": "2026-07-02T04:53:56.087Z",
+      "firstTs": "2026-07-02T04:53:56.088Z",
       "lastTs": "2026-07-02T21:31:40.303Z",
       "commits": 2,
       "pushes": 1,
@@ -9308,7 +13789,7 @@ export const sessionSignals = {
       "sessions": [
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
       ],
-      "firstTs": "2026-07-02T04:53:56.087Z",
+      "firstTs": "2026-07-02T04:53:56.088Z",
       "lastTs": "2026-07-02T21:31:40.303Z",
       "commits": 1,
       "pushes": 1,
@@ -9322,7 +13803,7 @@ export const sessionSignals = {
       "sessions": [
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
       ],
-      "firstTs": "2026-07-02T04:53:56.087Z",
+      "firstTs": "2026-07-02T04:53:56.088Z",
       "lastTs": "2026-07-02T21:31:40.303Z",
       "commits": 1,
       "pushes": 1,
@@ -9336,7 +13817,7 @@ export const sessionSignals = {
       "sessions": [
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
       ],
-      "firstTs": "2026-07-02T04:53:56.087Z",
+      "firstTs": "2026-07-02T04:53:56.088Z",
       "lastTs": "2026-07-02T21:31:40.303Z",
       "commits": 1,
       "pushes": 1,
@@ -9350,7 +13831,7 @@ export const sessionSignals = {
       "sessions": [
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
       ],
-      "firstTs": "2026-07-02T04:53:56.087Z",
+      "firstTs": "2026-07-02T04:53:56.088Z",
       "lastTs": "2026-07-02T21:31:40.303Z",
       "commits": 1,
       "pushes": 1,
@@ -9364,7 +13845,7 @@ export const sessionSignals = {
       "sessions": [
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
       ],
-      "firstTs": "2026-07-02T04:53:56.087Z",
+      "firstTs": "2026-07-02T04:53:56.088Z",
       "lastTs": "2026-07-02T21:31:40.303Z",
       "commits": 1,
       "pushes": 1,
@@ -9378,7 +13859,7 @@ export const sessionSignals = {
       "sessions": [
         "848f1a22-a8a8-42b7-a545-a2000aa36939"
       ],
-      "firstTs": "2026-07-02T04:53:56.087Z",
+      "firstTs": "2026-07-02T04:53:56.088Z",
       "lastTs": "2026-07-02T21:31:40.303Z",
       "commits": 1,
       "pushes": 1,
@@ -9410,7 +13891,7 @@ export const sessionSignals = {
       "lastTs": "2026-06-30T21:54:35.135Z",
       "commits": 2,
       "pushes": 1,
-      "files": 10,
+      "files": 21,
       "prs": [
         30
       ]
@@ -9420,7 +13901,7 @@ export const sessionSignals = {
       "sessions": [
         "91e27139-78f8-4b2b-ac22-4c26c6eda2db"
       ],
-      "firstTs": "2026-07-01T20:53:04.237Z",
+      "firstTs": "2026-07-01T20:53:04.238Z",
       "lastTs": "2026-07-02T04:21:57.474Z",
       "commits": 1,
       "pushes": 1,
@@ -9476,7 +13957,7 @@ export const sessionSignals = {
       "sessions": [
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
       ],
-      "firstTs": "2026-07-03T18:53:52.062Z",
+      "firstTs": "2026-07-03T18:53:52.063Z",
       "lastTs": "2026-07-03T22:25:10.468Z",
       "commits": 1,
       "pushes": 1,
@@ -9490,7 +13971,7 @@ export const sessionSignals = {
       "sessions": [
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
       ],
-      "firstTs": "2026-07-03T18:53:52.062Z",
+      "firstTs": "2026-07-03T18:53:52.063Z",
       "lastTs": "2026-07-03T22:25:10.468Z",
       "commits": 0,
       "pushes": 1,
@@ -9504,7 +13985,7 @@ export const sessionSignals = {
       "sessions": [
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
       ],
-      "firstTs": "2026-07-03T18:53:52.062Z",
+      "firstTs": "2026-07-03T18:53:52.063Z",
       "lastTs": "2026-07-03T22:25:10.468Z",
       "commits": 1,
       "pushes": 1,
@@ -9518,7 +13999,7 @@ export const sessionSignals = {
       "sessions": [
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
       ],
-      "firstTs": "2026-07-03T18:53:52.062Z",
+      "firstTs": "2026-07-03T18:53:52.063Z",
       "lastTs": "2026-07-03T22:25:10.468Z",
       "commits": 1,
       "pushes": 1,
@@ -9532,7 +14013,7 @@ export const sessionSignals = {
       "sessions": [
         "cc3546be-2c7d-4203-8789-3275ac58a61c"
       ],
-      "firstTs": "2026-07-06T01:23:17.921Z",
+      "firstTs": "2026-07-06T01:23:17.922Z",
       "lastTs": "2026-07-06T01:46:32.400Z",
       "commits": 2,
       "pushes": 1,
@@ -9560,7 +14041,7 @@ export const sessionSignals = {
       "sessions": [
         "ce00b199-172a-4cdb-a183-2178407d04a7"
       ],
-      "firstTs": "2026-07-01T11:46:28.843Z",
+      "firstTs": "2026-07-01T11:46:28.844Z",
       "lastTs": "2026-07-01T13:46:44.051Z",
       "commits": 1,
       "pushes": 1,
@@ -9574,7 +14055,7 @@ export const sessionSignals = {
       "sessions": [
         "ce00b199-172a-4cdb-a183-2178407d04a7"
       ],
-      "firstTs": "2026-07-01T11:46:28.843Z",
+      "firstTs": "2026-07-01T11:46:28.844Z",
       "lastTs": "2026-07-01T13:46:44.051Z",
       "commits": 2,
       "pushes": 1,
@@ -9588,7 +14069,7 @@ export const sessionSignals = {
       "sessions": [
         "ce00b199-172a-4cdb-a183-2178407d04a7"
       ],
-      "firstTs": "2026-07-01T11:46:28.843Z",
+      "firstTs": "2026-07-01T11:46:28.844Z",
       "lastTs": "2026-07-01T13:46:44.051Z",
       "commits": 1,
       "pushes": 1,
@@ -9602,7 +14083,7 @@ export const sessionSignals = {
       "sessions": [
         "ce00b199-172a-4cdb-a183-2178407d04a7"
       ],
-      "firstTs": "2026-07-01T11:46:28.843Z",
+      "firstTs": "2026-07-01T11:46:28.844Z",
       "lastTs": "2026-07-01T13:46:44.051Z",
       "commits": 1,
       "pushes": 1,
@@ -9616,7 +14097,7 @@ export const sessionSignals = {
       "sessions": [
         "ce00b199-172a-4cdb-a183-2178407d04a7"
       ],
-      "firstTs": "2026-07-01T11:46:28.843Z",
+      "firstTs": "2026-07-01T11:46:28.844Z",
       "lastTs": "2026-07-01T13:46:44.051Z",
       "commits": 1,
       "pushes": 1,
@@ -9630,7 +14111,7 @@ export const sessionSignals = {
       "sessions": [
         "ce00b199-172a-4cdb-a183-2178407d04a7"
       ],
-      "firstTs": "2026-07-01T11:46:28.843Z",
+      "firstTs": "2026-07-01T11:46:28.844Z",
       "lastTs": "2026-07-01T13:46:44.051Z",
       "commits": 1,
       "pushes": 1,
@@ -9644,7 +14125,7 @@ export const sessionSignals = {
       "sessions": [
         "ce00b199-172a-4cdb-a183-2178407d04a7"
       ],
-      "firstTs": "2026-07-01T11:46:28.843Z",
+      "firstTs": "2026-07-01T11:46:28.844Z",
       "lastTs": "2026-07-01T13:46:44.051Z",
       "commits": 1,
       "pushes": 1,
@@ -9658,7 +14139,7 @@ export const sessionSignals = {
       "sessions": [
         "ea64d801-972c-4519-9a34-85fea7f8d776"
       ],
-      "firstTs": "2026-07-05T17:18:02.704Z",
+      "firstTs": "2026-07-05T17:18:02.705Z",
       "lastTs": "2026-07-05T18:29:44.756Z",
       "commits": 1,
       "pushes": 1,
@@ -9672,7 +14153,7 @@ export const sessionSignals = {
       "sessions": [
         "ea64d801-972c-4519-9a34-85fea7f8d776"
       ],
-      "firstTs": "2026-07-05T17:18:02.704Z",
+      "firstTs": "2026-07-05T17:18:02.705Z",
       "lastTs": "2026-07-05T18:29:44.756Z",
       "commits": 2,
       "pushes": 3,
@@ -9686,7 +14167,7 @@ export const sessionSignals = {
       "sessions": [
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
-      "firstTs": "2026-07-01T00:29:14.732Z",
+      "firstTs": "2026-07-01T00:29:14.733Z",
       "lastTs": "2026-07-01T04:50:28.943Z",
       "commits": 1,
       "pushes": 1,
@@ -9700,7 +14181,7 @@ export const sessionSignals = {
       "sessions": [
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
-      "firstTs": "2026-07-01T00:29:14.732Z",
+      "firstTs": "2026-07-01T00:29:14.733Z",
       "lastTs": "2026-07-01T04:50:28.943Z",
       "commits": 2,
       "pushes": 1,
@@ -9714,7 +14195,7 @@ export const sessionSignals = {
       "sessions": [
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
-      "firstTs": "2026-07-01T00:29:14.732Z",
+      "firstTs": "2026-07-01T00:29:14.733Z",
       "lastTs": "2026-07-01T04:50:28.943Z",
       "commits": 2,
       "pushes": 2,
@@ -9728,7 +14209,7 @@ export const sessionSignals = {
       "sessions": [
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
-      "firstTs": "2026-07-01T00:29:14.732Z",
+      "firstTs": "2026-07-01T00:29:14.733Z",
       "lastTs": "2026-07-01T04:50:28.943Z",
       "commits": 5,
       "pushes": 1,
@@ -9742,7 +14223,7 @@ export const sessionSignals = {
       "sessions": [
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
-      "firstTs": "2026-07-01T00:29:14.732Z",
+      "firstTs": "2026-07-01T00:29:14.733Z",
       "lastTs": "2026-07-01T04:50:28.943Z",
       "commits": 2,
       "pushes": 2,
@@ -9770,7 +14251,7 @@ export const sessionSignals = {
       "sessions": [
         "fd633b58-2657-4859-bca3-03c57a0277f0"
       ],
-      "firstTs": "2026-07-05T18:48:37.574Z",
+      "firstTs": "2026-07-05T18:48:37.579Z",
       "lastTs": "2026-07-05T22:27:08.343Z",
       "commits": 2,
       "pushes": 1,
@@ -9784,7 +14265,7 @@ export const sessionSignals = {
       "sessions": [
         "fd633b58-2657-4859-bca3-03c57a0277f0"
       ],
-      "firstTs": "2026-07-05T18:48:37.574Z",
+      "firstTs": "2026-07-05T18:48:37.579Z",
       "lastTs": "2026-07-05T22:27:08.343Z",
       "commits": 1,
       "pushes": 1,
@@ -9798,7 +14279,7 @@ export const sessionSignals = {
       "sessions": [
         "fd633b58-2657-4859-bca3-03c57a0277f0"
       ],
-      "firstTs": "2026-07-05T18:48:37.574Z",
+      "firstTs": "2026-07-05T18:48:37.579Z",
       "lastTs": "2026-07-05T22:27:08.343Z",
       "commits": 1,
       "pushes": 1,
@@ -9860,7 +14341,7 @@ export const sessionSignals = {
       "sessions": [
         "5abbb0ce-143a-4089-9d99-16de251fa361"
       ],
-      "firstTs": "2026-07-05T14:03:52.643Z",
+      "firstTs": "2026-07-05T14:03:52.644Z",
       "lastTs": "2026-07-05T18:47:24.880Z",
       "commits": 2,
       "pushes": 0,
@@ -9884,7 +14365,7 @@ export const sessionSignals = {
       "sessions": [
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
       ],
-      "firstTs": "2026-07-03T18:53:52.062Z",
+      "firstTs": "2026-07-03T18:53:52.063Z",
       "lastTs": "2026-07-03T22:25:10.468Z",
       "commits": 1,
       "pushes": 0,
@@ -9896,7 +14377,7 @@ export const sessionSignals = {
       "sessions": [
         "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
       ],
-      "firstTs": "2026-07-03T18:53:52.062Z",
+      "firstTs": "2026-07-03T18:53:52.063Z",
       "lastTs": "2026-07-03T22:25:10.468Z",
       "commits": 0,
       "pushes": 0,
@@ -9908,7 +14389,7 @@ export const sessionSignals = {
       "sessions": [
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
-      "firstTs": "2026-07-01T00:29:14.732Z",
+      "firstTs": "2026-07-01T00:29:14.733Z",
       "lastTs": "2026-07-01T04:50:28.943Z",
       "commits": 0,
       "pushes": 1,
@@ -9920,7 +14401,7 @@ export const sessionSignals = {
       "sessions": [
         "ede9df8d-425b-4f7d-8708-93b44767ef3b"
       ],
-      "firstTs": "2026-07-01T00:29:14.732Z",
+      "firstTs": "2026-07-01T00:29:14.733Z",
       "lastTs": "2026-07-01T04:50:28.943Z",
       "commits": 1,
       "pushes": 1,
@@ -9944,7 +14425,7 @@ export const sessionSignals = {
       "sessions": [
         "46f73e3d-4489-4e79-98c5-536e46ad1405"
       ],
-      "firstTs": "2026-07-09T02:43:06.051Z",
+      "firstTs": "2026-07-09T02:43:06.052Z",
       "lastTs": "2026-07-09T20:33:57.627Z",
       "commits": 2,
       "pushes": 0,
@@ -9956,7 +14437,7 @@ export const sessionSignals = {
       "sessions": [
         "46f73e3d-4489-4e79-98c5-536e46ad1405"
       ],
-      "firstTs": "2026-07-09T02:43:06.051Z",
+      "firstTs": "2026-07-09T02:43:06.052Z",
       "lastTs": "2026-07-09T20:33:57.627Z",
       "commits": 1,
       "pushes": 0,
@@ -9968,7 +14449,7 @@ export const sessionSignals = {
       "sessions": [
         "46f73e3d-4489-4e79-98c5-536e46ad1405"
       ],
-      "firstTs": "2026-07-09T02:43:06.051Z",
+      "firstTs": "2026-07-09T02:43:06.052Z",
       "lastTs": "2026-07-09T20:33:57.627Z",
       "commits": 0,
       "pushes": 0,
@@ -9980,7 +14461,7 @@ export const sessionSignals = {
       "sessions": [
         "46f73e3d-4489-4e79-98c5-536e46ad1405"
       ],
-      "firstTs": "2026-07-09T02:43:06.051Z",
+      "firstTs": "2026-07-09T02:43:06.052Z",
       "lastTs": "2026-07-09T20:33:57.627Z",
       "commits": 0,
       "pushes": 0,
@@ -9992,7 +14473,7 @@ export const sessionSignals = {
       "sessions": [
         "46f73e3d-4489-4e79-98c5-536e46ad1405"
       ],
-      "firstTs": "2026-07-09T02:43:06.051Z",
+      "firstTs": "2026-07-09T02:43:06.052Z",
       "lastTs": "2026-07-09T20:33:57.627Z",
       "commits": 3,
       "pushes": 2,
@@ -10004,7 +14485,7 @@ export const sessionSignals = {
       "sessions": [
         "46f73e3d-4489-4e79-98c5-536e46ad1405"
       ],
-      "firstTs": "2026-07-09T02:43:06.051Z",
+      "firstTs": "2026-07-09T02:43:06.052Z",
       "lastTs": "2026-07-09T20:33:57.627Z",
       "commits": 1,
       "pushes": 2,
@@ -10016,7 +14497,7 @@ export const sessionSignals = {
       "sessions": [
         "46f73e3d-4489-4e79-98c5-536e46ad1405"
       ],
-      "firstTs": "2026-07-09T02:43:06.051Z",
+      "firstTs": "2026-07-09T02:43:06.052Z",
       "lastTs": "2026-07-09T20:33:57.627Z",
       "commits": 3,
       "pushes": 4,
@@ -10028,7 +14509,7 @@ export const sessionSignals = {
       "sessions": [
         "46f73e3d-4489-4e79-98c5-536e46ad1405"
       ],
-      "firstTs": "2026-07-09T02:43:06.051Z",
+      "firstTs": "2026-07-09T02:43:06.052Z",
       "lastTs": "2026-07-09T20:33:57.627Z",
       "commits": 1,
       "pushes": 0,
@@ -10040,7 +14521,7 @@ export const sessionSignals = {
       "sessions": [
         "46f73e3d-4489-4e79-98c5-536e46ad1405"
       ],
-      "firstTs": "2026-07-09T02:43:06.051Z",
+      "firstTs": "2026-07-09T02:43:06.052Z",
       "lastTs": "2026-07-09T20:33:57.627Z",
       "commits": 1,
       "pushes": 0,
@@ -10054,7 +14535,8 @@ export const sessionSignals = {
       "reads": 157,
       "writes": 88,
       "edits": 11,
-      "touches": 256,
+      "humanEdits": 3,
+      "touches": 259,
       "sessions": [
         "022013fa-2f78-4419-b57d-43f1743ca50e",
         "02698882-78ae-4b6e-aa76-34a134f3e880",
@@ -10219,7 +14701,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T02:00:50.823Z",
           "tool": "Read",
           "loc": [
-            208,
+            210,
             40315,
             1397
           ]
@@ -10229,7 +14711,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T02:00:21.279Z",
           "tool": "Read",
           "loc": [
-            219,
+            221,
             40306,
             1397
           ]
@@ -10239,7 +14721,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T02:00:19.185Z",
           "tool": "Read",
           "loc": [
-            59,
+            61,
             36224,
             1397
           ]
@@ -10249,7 +14731,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:59:35.195Z",
           "tool": "Write",
           "loc": [
-            106,
+            108,
             314842,
             8285
           ]
@@ -10259,7 +14741,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:59:21.506Z",
           "tool": "Read",
           "loc": [
-            109,
+            111,
             40327,
             1397
           ]
@@ -10269,7 +14751,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:59:16.787Z",
           "tool": "Write",
           "loc": [
-            64,
+            66,
             252607,
             7832
           ]
@@ -10279,7 +14761,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:59:10.200Z",
           "tool": "Write",
           "loc": [
-            66,
+            68,
             298876,
             8230
           ]
@@ -10289,7 +14771,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:51.357Z",
           "tool": "Write",
           "loc": [
-            48,
+            50,
             298097,
             7916
           ]
@@ -10299,7 +14781,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:24.000Z",
           "tool": "Read",
           "loc": [
-            130,
+            132,
             40308,
             1397
           ]
@@ -10309,7 +14791,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:02.948Z",
           "tool": "Read",
           "loc": [
-            215,
+            217,
             40382,
             1397
           ]
@@ -10319,9 +14801,19 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:02.349Z",
           "tool": "Read",
           "loc": [
-            147,
+            149,
             38982,
             1397
+          ]
+        },
+        {
+          "session": "d0b4e64a-3f79-4cab-99f4-1c8b4a8076da",
+          "ts": "2026-07-07T01:57:39.844Z",
+          "tool": "edited_text_file",
+          "loc": [
+            176,
+            368545,
+            5932
           ]
         },
         {
@@ -10329,7 +14821,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:37.776Z",
           "tool": "Read",
           "loc": [
-            197,
+            199,
             34890,
             1397
           ]
@@ -10339,7 +14831,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:37.415Z",
           "tool": "Read",
           "loc": [
-            46,
+            48,
             40315,
             1397
           ]
@@ -10349,7 +14841,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:32.527Z",
           "tool": "Write",
           "loc": [
-            127,
+            129,
             239684,
             7397
           ]
@@ -10359,7 +14851,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:28.478Z",
           "tool": "Read",
           "loc": [
-            99,
+            101,
             40310,
             1397
           ]
@@ -10369,7 +14861,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:53.735Z",
           "tool": "Read",
           "loc": [
-            96,
+            98,
             36188,
             1397
           ]
@@ -10379,7 +14871,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:52.878Z",
           "tool": "Write",
           "loc": [
-            175,
+            177,
             267962,
             6803
           ]
@@ -10389,7 +14881,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:41.070Z",
           "tool": "Read",
           "loc": [
-            199,
+            201,
             40332,
             1397
           ]
@@ -10399,7 +14891,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:23.639Z",
           "tool": "Read",
           "loc": [
-            26,
+            28,
             36198,
             1397
           ]
@@ -10409,7 +14901,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:15.868Z",
           "tool": "Write",
           "loc": [
-            141,
+            143,
             287491,
             8156
           ]
@@ -10419,7 +14911,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:11.412Z",
           "tool": "Read",
           "loc": [
-            216,
+            218,
             39003,
             1397
           ]
@@ -10429,7 +14921,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:05.320Z",
           "tool": "Write",
           "loc": [
-            47,
+            49,
             284131,
             7273
           ]
@@ -10439,7 +14931,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:54.217Z",
           "tool": "Read",
           "loc": [
-            82,
+            84,
             40407,
             1397
           ]
@@ -10449,7 +14941,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:53.314Z",
           "tool": "Read",
           "loc": [
-            76,
+            78,
             39003,
             1397
           ]
@@ -10459,7 +14951,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:49.451Z",
           "tool": "Read",
           "loc": [
-            83,
+            85,
             39003,
             1397
           ]
@@ -10469,7 +14961,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:31.877Z",
           "tool": "Write",
           "loc": [
-            160,
+            162,
             300882,
             7183
           ]
@@ -10479,7 +14971,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:29.042Z",
           "tool": "Read",
           "loc": [
-            85,
+            87,
             127371,
             1445
           ]
@@ -10489,7 +14981,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:19.863Z",
           "tool": "Read",
           "loc": [
-            171,
+            173,
             40327,
             1397
           ]
@@ -10499,7 +14991,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:14.813Z",
           "tool": "Edit",
           "loc": [
-            132,
+            134,
             356742,
             2110
           ]
@@ -10509,7 +15001,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:03.127Z",
           "tool": "Read",
           "loc": [
-            188,
+            190,
             39003,
             1397
           ]
@@ -10519,7 +15011,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:54:50.585Z",
           "tool": "Read",
           "loc": [
-            118,
+            120,
             39011,
             1397
           ]
@@ -10529,7 +15021,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:54:48.811Z",
           "tool": "Read",
           "loc": [
-            72,
+            74,
             38991,
             1397
           ]
@@ -10539,7 +15031,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:54:43.959Z",
           "tool": "Write",
           "loc": [
-            107,
+            109,
             214641,
             6967
           ]
@@ -10549,7 +15041,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:54:28.263Z",
           "tool": "Read",
           "loc": [
-            49,
+            51,
             40307,
             1397
           ]
@@ -10559,7 +15051,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:54:25.229Z",
           "tool": "Read",
           "loc": [
-            65,
+            67,
             39103,
             1397
           ]
@@ -10569,7 +15061,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:54:25.192Z",
           "tool": "Write",
           "loc": [
-            11,
+            13,
             262951,
             7617
           ]
@@ -10579,7 +15071,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:54:16.587Z",
           "tool": "Read",
           "loc": [
-            58,
+            60,
             40327,
             1397
           ]
@@ -10589,7 +15081,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:54:11.093Z",
           "tool": "Read",
           "loc": [
-            149,
+            151,
             282420,
             1409
           ]
@@ -10599,19 +15091,9 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:53:52.398Z",
           "tool": "Read",
           "loc": [
-            100,
+            102,
             34920,
             1397
-          ]
-        },
-        {
-          "session": "d55c8a21-5375-44ba-8f3c-4c6e49483ce5",
-          "ts": "2026-07-07T01:53:43.084Z",
-          "tool": "Write",
-          "loc": [
-            180,
-            252377,
-            7246
           ]
         }
       ]
@@ -10621,7 +15103,8 @@ export const sessionSignals = {
       "reads": 160,
       "writes": 32,
       "edits": 49,
-      "touches": 241,
+      "humanEdits": 1,
+      "touches": 242,
       "sessions": [
         "022013fa-2f78-4419-b57d-43f1743ca50e",
         "02698882-78ae-4b6e-aa76-34a134f3e880",
@@ -10780,7 +15263,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T02:01:44.396Z",
           "tool": "Write",
           "loc": [
-            30,
+            32,
             354653,
             17830
           ]
@@ -10790,7 +15273,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T02:00:53.090Z",
           "tool": "Read",
           "loc": [
-            208,
+            210,
             41713,
             1399
           ]
@@ -10800,7 +15283,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T02:00:47.270Z",
           "tool": "Write",
           "loc": [
-            35,
+            37,
             248257,
             16533
           ]
@@ -10810,7 +15293,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T02:00:40.835Z",
           "tool": "Read",
           "loc": [
-            219,
+            221,
             41704,
             1399
           ]
@@ -10820,7 +15303,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T02:00:38.787Z",
           "tool": "Read",
           "loc": [
-            59,
+            61,
             37622,
             1399
           ]
@@ -10830,7 +15313,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T02:00:08.608Z",
           "tool": "Read",
           "loc": [
-            66,
+            68,
             311059,
             1407
           ]
@@ -10840,7 +15323,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:59:32.913Z",
           "tool": "Write",
           "loc": [
-            114,
+            116,
             324490,
             15562
           ]
@@ -10850,7 +15333,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:59:24.824Z",
           "tool": "Read",
           "loc": [
-            109,
+            111,
             41725,
             1399
           ]
@@ -10860,7 +15343,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:59:16.699Z",
           "tool": "Read",
           "loc": [
-            141,
+            143,
             323486,
             1445
           ]
@@ -10870,7 +15353,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:27.915Z",
           "tool": "Read",
           "loc": [
-            130,
+            132,
             41706,
             1399
           ]
@@ -10880,7 +15363,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:07.269Z",
           "tool": "Read",
           "loc": [
-            215,
+            217,
             41780,
             1399
           ]
@@ -10890,7 +15373,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:06.403Z",
           "tool": "Read",
           "loc": [
-            147,
+            149,
             40380,
             1399
           ]
@@ -10900,7 +15383,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:46.677Z",
           "tool": "Read",
           "loc": [
-            44,
+            46,
             287385,
             1441
           ]
@@ -10910,7 +15393,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:42.372Z",
           "tool": "Read",
           "loc": [
-            46,
+            48,
             41713,
             1399
           ]
@@ -10920,7 +15403,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:41.572Z",
           "tool": "Read",
           "loc": [
-            197,
+            199,
             36288,
             1399
           ]
@@ -10930,7 +15413,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:32.421Z",
           "tool": "Read",
           "loc": [
-            99,
+            101,
             41708,
             1399
           ]
@@ -10940,7 +15423,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:18.665Z",
           "tool": "Read",
           "loc": [
-            11,
+            13,
             297899,
             1407
           ]
@@ -10950,7 +15433,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:11.137Z",
           "tool": "Read",
           "loc": [
-            160,
+            162,
             321257,
             1441
           ]
@@ -10960,7 +15443,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:02.581Z",
           "tool": "Read",
           "loc": [
-            43,
+            45,
             298592,
             1407
           ]
@@ -10970,7 +15453,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:59.227Z",
           "tool": "Read",
           "loc": [
-            107,
+            109,
             232747,
             1403
           ]
@@ -10980,7 +15463,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:57.243Z",
           "tool": "Read",
           "loc": [
-            96,
+            98,
             37586,
             1399
           ]
@@ -10990,7 +15473,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:44.718Z",
           "tool": "Read",
           "loc": [
-            199,
+            201,
             41730,
             1399
           ]
@@ -11000,7 +15483,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:39.313Z",
           "tool": "Read",
           "loc": [
-            129,
+            131,
             458784,
             1409
           ]
@@ -11010,7 +15493,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:34.081Z",
           "tool": "Read",
           "loc": [
-            180,
+            182,
             286970,
             1445
           ]
@@ -11020,7 +15503,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:34.013Z",
           "tool": "Write",
           "loc": [
-            37,
+            39,
             372160,
             15361
           ]
@@ -11030,7 +15513,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:28.972Z",
           "tool": "Write",
           "loc": [
-            86,
+            88,
             338672,
             14777
           ]
@@ -11040,7 +15523,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:26.938Z",
           "tool": "Read",
           "loc": [
-            26,
+            28,
             37596,
             1399
           ]
@@ -11050,7 +15533,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:26.853Z",
           "tool": "Write",
           "loc": [
-            126,
+            128,
             304954,
             15135
           ]
@@ -11060,7 +15543,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:15.305Z",
           "tool": "Read",
           "loc": [
-            216,
+            218,
             40401,
             1399
           ]
@@ -11070,7 +15553,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:07.140Z",
           "tool": "Read",
           "loc": [
-            131,
+            133,
             310235,
             1441
           ]
@@ -11080,7 +15563,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:58.512Z",
           "tool": "Read",
           "loc": [
-            82,
+            84,
             41805,
             1399
           ]
@@ -11090,7 +15573,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:57.381Z",
           "tool": "Read",
           "loc": [
-            203,
+            205,
             333638,
             1441
           ]
@@ -11100,7 +15583,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:57.211Z",
           "tool": "Read",
           "loc": [
-            76,
+            78,
             40401,
             1399
           ]
@@ -11110,7 +15593,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:53.467Z",
           "tool": "Read",
           "loc": [
-            193,
+            195,
             308703,
             1445
           ]
@@ -11120,7 +15603,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:53.150Z",
           "tool": "Read",
           "loc": [
-            83,
+            85,
             40401,
             1399
           ]
@@ -11130,7 +15613,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:37.319Z",
           "tool": "Read",
           "loc": [
-            132,
+            134,
             363569,
             1407
           ]
@@ -11140,7 +15623,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:34.024Z",
           "tool": "Read",
           "loc": [
-            8,
+            10,
             313807,
             1403
           ]
@@ -11150,7 +15633,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:31.370Z",
           "tool": "Read",
           "loc": [
-            85,
+            87,
             128817,
             1447
           ]
@@ -11160,7 +15643,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:22.817Z",
           "tool": "Read",
           "loc": [
-            171,
+            173,
             41725,
             1399
           ]
@@ -11170,7 +15653,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:14.767Z",
           "tool": "Write",
           "loc": [
-            28,
+            30,
             277190,
             14470
           ]
@@ -11182,7 +15665,8 @@ export const sessionSignals = {
       "reads": 133,
       "writes": 12,
       "edits": 22,
-      "touches": 167,
+      "humanEdits": 2,
+      "touches": 169,
       "sessions": [
         "022013fa-2f78-4419-b57d-43f1743ca50e",
         "02698882-78ae-4b6e-aa76-34a134f3e880",
@@ -11336,7 +15820,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T02:00:53.408Z",
           "tool": "Read",
           "loc": [
-            208,
+            210,
             43113,
             1412
           ]
@@ -11346,7 +15830,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T02:00:43.353Z",
           "tool": "Read",
           "loc": [
-            59,
+            61,
             39022,
             1412
           ]
@@ -11356,7 +15840,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T02:00:42.945Z",
           "tool": "Read",
           "loc": [
-            219,
+            221,
             43104,
             1412
           ]
@@ -11366,7 +15850,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T02:00:16.910Z",
           "tool": "Read",
           "loc": [
-            28,
+            30,
             339391,
             1416
           ]
@@ -11376,7 +15860,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T02:00:10.806Z",
           "tool": "Read",
           "loc": [
-            66,
+            68,
             312467,
             1420
           ]
@@ -11386,7 +15870,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:59:37.103Z",
           "tool": "Read",
           "loc": [
-            44,
+            46,
             320077,
             1458
           ]
@@ -11396,7 +15880,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:59:25.652Z",
           "tool": "Read",
           "loc": [
-            109,
+            111,
             43125,
             1412
           ]
@@ -11406,7 +15890,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:39.834Z",
           "tool": "Write",
           "loc": [
-            132,
+            134,
             412146,
             12158
           ]
@@ -11416,9 +15900,19 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:31.571Z",
           "tool": "Read",
           "loc": [
-            11,
+            13,
             328852,
             1420
+          ]
+        },
+        {
+          "session": "20ced87b-02aa-4c02-bed3-aab53b4990f2",
+          "ts": "2026-07-07T01:58:29.690Z",
+          "tool": "edited_text_file",
+          "loc": [
+            39,
+            420674,
+            9087
           ]
         },
         {
@@ -11426,7 +15920,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:28.130Z",
           "tool": "Read",
           "loc": [
-            130,
+            132,
             43106,
             1412
           ]
@@ -11436,7 +15930,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:13.563Z",
           "tool": "Read",
           "loc": [
-            218,
+            220,
             448329,
             1458
           ]
@@ -11446,7 +15940,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:11.290Z",
           "tool": "Read",
           "loc": [
-            122,
+            124,
             401755,
             1458
           ]
@@ -11456,7 +15950,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:09.679Z",
           "tool": "Read",
           "loc": [
-            144,
+            146,
             352762,
             1420
           ]
@@ -11466,7 +15960,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:09.281Z",
           "tool": "Read",
           "loc": [
-            215,
+            217,
             43180,
             1412
           ]
@@ -11476,7 +15970,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:07.901Z",
           "tool": "Read",
           "loc": [
-            147,
+            149,
             41780,
             1412
           ]
@@ -11486,7 +15980,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:05.719Z",
           "tool": "Read",
           "loc": [
-            204,
+            206,
             412155,
             1458
           ]
@@ -11496,7 +15990,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:02.247Z",
           "tool": "Read",
           "loc": [
-            86,
+            88,
             366086,
             1456
           ]
@@ -11506,7 +16000,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:51.959Z",
           "tool": "Read",
           "loc": [
-            180,
+            182,
             319440,
             1458
           ]
@@ -11516,7 +16010,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:49.394Z",
           "tool": "Read",
           "loc": [
-            155,
+            157,
             312120,
             1460
           ]
@@ -11526,7 +16020,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:44.240Z",
           "tool": "Read",
           "loc": [
-            46,
+            48,
             43113,
             1412
           ]
@@ -11536,7 +16030,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:43.704Z",
           "tool": "Read",
           "loc": [
-            197,
+            199,
             37688,
             1412
           ]
@@ -11546,7 +16040,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:34.415Z",
           "tool": "Read",
           "loc": [
-            99,
+            101,
             43108,
             1412
           ]
@@ -11556,7 +16050,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:32.223Z",
           "tool": "Read",
           "loc": [
-            131,
+            133,
             344550,
             1458
           ]
@@ -11566,7 +16060,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:27.517Z",
           "tool": "Read",
           "loc": [
-            13,
+            15,
             404615,
             1458
           ]
@@ -11576,7 +16070,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:26.207Z",
           "tool": "Read",
           "loc": [
-            45,
+            47,
             439289,
             1460
           ]
@@ -11586,7 +16080,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:23.803Z",
           "tool": "Read",
           "loc": [
-            193,
+            195,
             341072,
             1458
           ]
@@ -11596,7 +16090,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:11.909Z",
           "tool": "Read",
           "loc": [
-            160,
+            162,
             322699,
             1454
           ]
@@ -11606,7 +16100,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:00.383Z",
           "tool": "Read",
           "loc": [
-            107,
+            109,
             234151,
             1416
           ]
@@ -11616,7 +16110,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:59.142Z",
           "tool": "Read",
           "loc": [
-            96,
+            98,
             38986,
             1412
           ]
@@ -11626,7 +16120,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:54.685Z",
           "tool": "Read",
           "loc": [
-            8,
+            10,
             346432,
             1420
           ]
@@ -11636,7 +16130,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:46.727Z",
           "tool": "Read",
           "loc": [
-            199,
+            201,
             43130,
             1412
           ]
@@ -11646,9 +16140,19 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:34.281Z",
           "tool": "Read",
           "loc": [
-            170,
+            172,
             340811,
             1420
+          ]
+        },
+        {
+          "session": "c48d6fa1-7895-46c8-9fe4-77335fe7f1bb",
+          "ts": "2026-07-07T01:56:33.024Z",
+          "tool": "edited_text_file",
+          "loc": [
+            167,
+            496985,
+            8779
           ]
         },
         {
@@ -11656,7 +16160,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:32.800Z",
           "tool": "Read",
           "loc": [
-            105,
+            107,
             312305,
             1416
           ]
@@ -11666,7 +16170,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:29.621Z",
           "tool": "Read",
           "loc": [
-            47,
+            49,
             296161,
             1430
           ]
@@ -11676,7 +16180,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:28.675Z",
           "tool": "Read",
           "loc": [
-            26,
+            28,
             38996,
             1412
           ]
@@ -11686,7 +16190,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:28.580Z",
           "tool": "Read",
           "loc": [
-            42,
+            44,
             342978,
             1460
           ]
@@ -11696,7 +16200,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:23.560Z",
           "tool": "Read",
           "loc": [
-            39,
+            41,
             329084,
             1458
           ]
@@ -11706,29 +16210,9 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:18.022Z",
           "tool": "Read",
           "loc": [
-            134,
+            136,
             312315,
             1454
-          ]
-        },
-        {
-          "session": "fc5fdeca-daba-4c3f-9f25-aa130ee83e00",
-          "ts": "2026-07-07T01:56:16.858Z",
-          "tool": "Read",
-          "loc": [
-            216,
-            41801,
-            1412
-          ]
-        },
-        {
-          "session": "5ab5b882-fc8c-4206-bec4-57d1fa911118",
-          "ts": "2026-07-07T01:55:59.407Z",
-          "tool": "Read",
-          "loc": [
-            82,
-            43205,
-            1412
           ]
         }
       ]
@@ -11738,6 +16222,7 @@ export const sessionSignals = {
       "reads": 18,
       "writes": 1,
       "edits": 63,
+      "humanEdits": 0,
       "touches": 82,
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
@@ -11794,7 +16279,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T17:58:14.793Z",
           "tool": "Read",
           "loc": [
-            268,
+            270,
             1463059,
             1491
           ]
@@ -11804,7 +16289,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T14:10:17.051Z",
           "tool": "Read",
           "loc": [
-            252,
+            254,
             633252,
             1485
           ]
@@ -11814,7 +16299,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T22:58:24.286Z",
           "tool": "Read",
           "loc": [
-            262,
+            264,
             1343206,
             1486
           ]
@@ -11824,7 +16309,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T21:10:55.499Z",
           "tool": "Read",
           "loc": [
-            263,
+            265,
             2529450,
             1485
           ]
@@ -11834,7 +16319,7 @@ export const sessionSignals = {
           "ts": "2026-07-02T21:46:14.564Z",
           "tool": "Read",
           "loc": [
-            239,
+            241,
             242005,
             1459
           ]
@@ -11844,7 +16329,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T15:49:06.927Z",
           "tool": "Read",
           "loc": [
-            240,
+            242,
             2552392,
             1487
           ]
@@ -11854,7 +16339,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T11:47:07.623Z",
           "tool": "Read",
           "loc": [
-            267,
+            269,
             161755,
             1405
           ]
@@ -11864,7 +16349,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T11:09:07.456Z",
           "tool": "Write",
           "loc": [
-            253,
+            255,
             3192373,
             8846
           ]
@@ -11876,7 +16361,8 @@ export const sessionSignals = {
       "reads": 15,
       "writes": 2,
       "edits": 58,
-      "touches": 75,
+      "humanEdits": 2,
+      "touches": 77,
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
         "759a6037-8fee-4639-8faa-ffac0e1f18f4",
@@ -11933,9 +16419,19 @@ export const sessionSignals = {
           "ts": "2026-07-05T18:08:34.415Z",
           "tool": "Read",
           "loc": [
-            268,
+            270,
             1667958,
             1484
+          ]
+        },
+        {
+          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
+          "ts": "2026-07-03T21:45:06.721Z",
+          "tool": "edited_text_file",
+          "loc": [
+            265,
+            4265643,
+            7631
           ]
         },
         {
@@ -11943,7 +16439,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T21:38:55.488Z",
           "tool": "Read",
           "loc": [
-            263,
+            265,
             3115038,
             1479
           ]
@@ -11953,7 +16449,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T04:55:00.114Z",
           "tool": "Read",
           "loc": [
-            239,
+            241,
             1769421,
             1451
           ]
@@ -11963,7 +16459,7 @@ export const sessionSignals = {
           "ts": "2026-07-02T18:08:21.315Z",
           "tool": "Read",
           "loc": [
-            255,
+            257,
             1028804,
             1428
           ]
@@ -11973,9 +16469,19 @@ export const sessionSignals = {
           "ts": "2026-07-01T13:06:16.004Z",
           "tool": "Read",
           "loc": [
-            267,
+            269,
             6482474,
             1423
+          ]
+        },
+        {
+          "session": "759a6037-8fee-4639-8faa-ffac0e1f18f4",
+          "ts": "2026-07-01T10:42:54.212Z",
+          "tool": "edited_text_file",
+          "loc": [
+            255,
+            2501364,
+            9149
           ]
         },
         {
@@ -11983,7 +16489,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T10:30:35.020Z",
           "tool": "Read",
           "loc": [
-            253,
+            255,
             1793502,
             1401
           ]
@@ -11993,7 +16499,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T02:00:49.344Z",
           "tool": "Write",
           "loc": [
-            269,
+            271,
             4747787,
             7663
           ]
@@ -12005,7 +16511,8 @@ export const sessionSignals = {
       "reads": 23,
       "writes": 0,
       "edits": 48,
-      "touches": 71,
+      "humanEdits": 2,
+      "touches": 73,
       "sessions": [
         "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
         "3a7136f7-74ab-40b8-abe4-db917c4aed00",
@@ -12066,7 +16573,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T19:01:55.859Z",
           "tool": "Edit",
           "loc": [
-            272,
+            274,
             434096,
             1770
           ]
@@ -12076,7 +16583,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T17:43:24.145Z",
           "tool": "Edit",
           "loc": [
-            268,
+            270,
             699146,
             2192
           ]
@@ -12086,9 +16593,19 @@ export const sessionSignals = {
           "ts": "2026-07-04T15:41:06.613Z",
           "tool": "Edit",
           "loc": [
-            247,
+            249,
             676205,
             1725
+          ]
+        },
+        {
+          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+          "ts": "2026-07-04T14:21:21.561Z",
+          "tool": "edited_text_file",
+          "loc": [
+            254,
+            1129747,
+            575
           ]
         },
         {
@@ -12096,7 +16613,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T14:15:37.678Z",
           "tool": "Read",
           "loc": [
-            252,
+            254,
             886507,
             1461
           ]
@@ -12106,7 +16623,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T22:35:24.416Z",
           "tool": "Read",
           "loc": [
-            262,
+            264,
             300345,
             1461
           ]
@@ -12116,7 +16633,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T21:03:19.100Z",
           "tool": "Edit",
           "loc": [
-            258,
+            260,
             478887,
             1792
           ]
@@ -12126,7 +16643,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T00:31:16.883Z",
           "tool": "Read",
           "loc": [
-            269,
+            271,
             132136,
             1412
           ]
@@ -12136,7 +16653,7 @@ export const sessionSignals = {
           "ts": "2026-06-30T23:16:26.500Z",
           "tool": "Read",
           "loc": [
-            243,
+            245,
             1612922,
             1416
           ]
@@ -12146,9 +16663,19 @@ export const sessionSignals = {
           "ts": "2026-06-30T16:51:27.370Z",
           "tool": "Read",
           "loc": [
-            256,
+            258,
             1779449,
             1416
+          ]
+        },
+        {
+          "session": "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff",
+          "ts": "2026-06-02T20:31:32.761Z",
+          "tool": "edited_text_file",
+          "loc": [
+            263,
+            842474,
+            9252
           ]
         },
         {
@@ -12156,7 +16683,7 @@ export const sessionSignals = {
           "ts": "2026-06-02T20:01:53.673Z",
           "tool": "Read",
           "loc": [
-            261,
+            263,
             131796,
             1413
           ]
@@ -12168,6 +16695,7 @@ export const sessionSignals = {
       "reads": 17,
       "writes": 3,
       "edits": 39,
+      "humanEdits": 0,
       "touches": 59,
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
@@ -12226,7 +16754,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T18:01:27.641Z",
           "tool": "Read",
           "loc": [
-            268,
+            270,
             1551969,
             1465
           ]
@@ -12236,7 +16764,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T14:31:32.686Z",
           "tool": "Read",
           "loc": [
-            252,
+            254,
             1262650,
             1458
           ]
@@ -12246,7 +16774,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T23:01:40.372Z",
           "tool": "Read",
           "loc": [
-            262,
+            264,
             1515066,
             1457
           ]
@@ -12256,7 +16784,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T18:54:38.000Z",
           "tool": "Read",
           "loc": [
-            263,
+            265,
             180083,
             1453
           ]
@@ -12266,7 +16794,7 @@ export const sessionSignals = {
           "ts": "2026-07-02T21:45:38.536Z",
           "tool": "Read",
           "loc": [
-            239,
+            241,
             190075,
             1452
           ]
@@ -12276,7 +16804,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T15:50:22.190Z",
           "tool": "Read",
           "loc": [
-            240,
+            242,
             2635163,
             1486
           ]
@@ -12286,7 +16814,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T04:57:09.301Z",
           "tool": "Read",
           "loc": [
-            253,
+            255,
             159946,
             1458
           ]
@@ -12296,7 +16824,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T01:30:10.344Z",
           "tool": "Write",
           "loc": [
-            269,
+            271,
             1721538,
             9424
           ]
@@ -12308,7 +16836,8 @@ export const sessionSignals = {
       "reads": 21,
       "writes": 0,
       "edits": 26,
-      "touches": 47,
+      "humanEdits": 2,
+      "touches": 49,
       "sessions": [
         "0b62b5fa-bafe-4a6d-9abf-9214294af95b",
         "20ced87b-02aa-4c02-bed3-aab53b4990f2",
@@ -12328,12 +16857,14 @@ export const sessionSignals = {
       "branches": [
         "feat/c88-conventions",
         "main",
+        "fix/partition-quality-nul-key",
         "feat/c65-unused-exports",
         "feat/c65-dead-modules",
         "feat/c66-growth-risk-loop-depth",
         "feat/c63-coverage-surface",
         "feat/c30-authorcount-ownership",
         "feat/schema-healing-aliases",
+        "feat/incremental-default-autoupdate-hook",
         "fix/C-71-lifetime-window",
         "feat/dashboard-v1"
       ],
@@ -12372,7 +16903,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:12.020Z",
           "tool": "Read",
           "loc": [
-            123,
+            125,
             244430,
             1401
           ]
@@ -12382,7 +16913,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:53:03.356Z",
           "tool": "Read",
           "loc": [
-            66,
+            68,
             217480,
             1405
           ]
@@ -12392,7 +16923,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:46:33.187Z",
           "tool": "Read",
           "loc": [
-            37,
+            39,
             219458,
             2627
           ]
@@ -12402,7 +16933,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:58.260Z",
           "tool": "Read",
           "loc": [
-            20,
+            22,
             236017,
             1401
           ]
@@ -12412,7 +16943,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:55.649Z",
           "tool": "Read",
           "loc": [
-            165,
+            167,
             265678,
             1401
           ]
@@ -12422,7 +16953,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:21.902Z",
           "tool": "Read",
           "loc": [
-            129,
+            131,
             227010,
             1403
           ]
@@ -12432,7 +16963,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:20.787Z",
           "tool": "Read",
           "loc": [
-            218,
+            220,
             231916,
             1401
           ]
@@ -12442,7 +16973,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T17:18:56.285Z",
           "tool": "Read",
           "loc": [
-            268,
+            270,
             215013,
             1479
           ]
@@ -12452,7 +16983,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T16:10:14.328Z",
           "tool": "Read",
           "loc": [
-            247,
+            249,
             2145385,
             1476
           ]
@@ -12462,7 +16993,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T11:47:57.747Z",
           "tool": "Read",
           "loc": [
-            267,
+            269,
             220228,
             1424
           ]
@@ -12472,7 +17003,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T10:30:54.540Z",
           "tool": "Read",
           "loc": [
-            253,
+            255,
             1832288,
             1430
           ]
@@ -12482,9 +17013,19 @@ export const sessionSignals = {
           "ts": "2026-07-01T02:10:27.985Z",
           "tool": "Read",
           "loc": [
-            269,
+            271,
             5387219,
             1428
+          ]
+        },
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:58:01.797Z",
+          "tool": "edited_text_file",
+          "loc": [
+            245,
+            1333650,
+            9279
           ]
         },
         {
@@ -12492,9 +17033,19 @@ export const sessionSignals = {
           "ts": "2026-06-30T22:21:49.937Z",
           "tool": "Read",
           "loc": [
-            243,
+            245,
             416661,
             1419
+          ]
+        },
+        {
+          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+          "ts": "2026-06-30T16:49:24.456Z",
+          "tool": "edited_text_file",
+          "loc": [
+            258,
+            1684841,
+            9306
           ]
         },
         {
@@ -12502,7 +17053,7 @@ export const sessionSignals = {
           "ts": "2026-06-30T13:44:27.511Z",
           "tool": "Read",
           "loc": [
-            256,
+            258,
             855322,
             1427
           ]
@@ -12514,6 +17065,7 @@ export const sessionSignals = {
       "reads": 13,
       "writes": 0,
       "edits": 31,
+      "humanEdits": 0,
       "touches": 44,
       "sessions": [
         "1a69bc74-60ee-4cb8-91a5-094de1991925",
@@ -12570,7 +17122,7 @@ export const sessionSignals = {
           "ts": "2026-07-06T18:06:14.030Z",
           "tool": "Read",
           "loc": [
-            242,
+            244,
             214605,
             1492
           ]
@@ -12580,7 +17132,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T18:58:04.551Z",
           "tool": "Read",
           "loc": [
-            272,
+            274,
             258858,
             1464
           ]
@@ -12590,7 +17142,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T13:31:00.505Z",
           "tool": "Read",
           "loc": [
-            266,
+            268,
             948368,
             1489
           ]
@@ -12600,7 +17152,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T15:33:17.067Z",
           "tool": "Read",
           "loc": [
-            247,
+            249,
             263046,
             1464
           ]
@@ -12610,7 +17162,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T14:08:07.484Z",
           "tool": "Read",
           "loc": [
-            252,
+            254,
             507921,
             1462
           ]
@@ -12620,7 +17172,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T22:32:23.522Z",
           "tool": "Read",
           "loc": [
-            262,
+            264,
             167167,
             1460
           ]
@@ -12630,7 +17182,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T13:14:42.994Z",
           "tool": "Read",
           "loc": [
-            260,
+            262,
             155621,
             1462
           ]
@@ -12640,7 +17192,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T17:32:05.996Z",
           "tool": "Edit",
           "loc": [
-            254,
+            256,
             202700,
             8303
           ]
@@ -12650,7 +17202,7 @@ export const sessionSignals = {
           "ts": "2026-06-02T20:15:46.400Z",
           "tool": "Read",
           "loc": [
-            261,
+            263,
             231618,
             1410
           ]
@@ -12662,6 +17214,7 @@ export const sessionSignals = {
       "reads": 14,
       "writes": 0,
       "edits": 28,
+      "humanEdits": 0,
       "touches": 42,
       "sessions": [
         "7a969bc8-e8c9-40ec-bbb6-808ab0dcc842",
@@ -12723,7 +17276,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:39.905Z",
           "tool": "Read",
           "loc": [
-            123,
+            125,
             304156,
             1404
           ]
@@ -12733,7 +17286,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:49:34.367Z",
           "tool": "Read",
           "loc": [
-            106,
+            108,
             211678,
             1419
           ]
@@ -12743,7 +17296,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:46:51.512Z",
           "tool": "Read",
           "loc": [
-            165,
+            167,
             331844,
             3034
           ]
@@ -12753,7 +17306,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:14.882Z",
           "tool": "Read",
           "loc": [
-            218,
+            220,
             220895,
             1417
           ]
@@ -12763,7 +17316,7 @@ export const sessionSignals = {
           "ts": "2026-07-06T23:34:17.539Z",
           "tool": "Read",
           "loc": [
-            271,
+            273,
             431424,
             1452
           ]
@@ -12773,7 +17326,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T17:37:30.357Z",
           "tool": "Edit",
           "loc": [
-            251,
+            253,
             933522,
             1696
           ]
@@ -12783,7 +17336,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T00:59:05.606Z",
           "tool": "Edit",
           "loc": [
-            237,
+            239,
             596428,
             1681
           ]
@@ -12793,7 +17346,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T17:38:51.135Z",
           "tool": "Edit",
           "loc": [
-            247,
+            249,
             4967662,
             1687
           ]
@@ -12803,7 +17356,7 @@ export const sessionSignals = {
           "ts": "2026-07-02T04:54:48.159Z",
           "tool": "Read",
           "loc": [
-            255,
+            257,
             211261,
             1425
           ]
@@ -12813,7 +17366,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T21:03:30.880Z",
           "tool": "Edit",
           "loc": [
-            258,
+            260,
             488693,
             1887
           ]
@@ -12823,7 +17376,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T00:32:05.251Z",
           "tool": "Read",
           "loc": [
-            269,
+            271,
             157866,
             1416
           ]
@@ -12833,7 +17386,7 @@ export const sessionSignals = {
           "ts": "2026-06-30T16:50:31.378Z",
           "tool": "Read",
           "loc": [
-            256,
+            258,
             1753866,
             1422
           ]
@@ -12843,7 +17396,7 @@ export const sessionSignals = {
           "ts": "2026-06-02T20:18:17.137Z",
           "tool": "Read",
           "loc": [
-            261,
+            263,
             332287,
             1416
           ]
@@ -12855,7 +17408,8 @@ export const sessionSignals = {
       "reads": 25,
       "writes": 0,
       "edits": 15,
-      "touches": 40,
+      "humanEdits": 1,
+      "touches": 41,
       "sessions": [
         "0934cbc6-f5ed-48ca-96ce-8a297cbe0f7d",
         "0b62b5fa-bafe-4a6d-9abf-9214294af95b",
@@ -12888,6 +17442,7 @@ export const sessionSignals = {
       "branches": [
         "feat/c88-conventions",
         "main",
+        "fix/partition-quality-nul-key",
         "feat/c65-unused-exports",
         "feat/c65-dead-modules",
         "feat/c66-growth-risk-loop-depth",
@@ -12931,7 +17486,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:36.093Z",
           "tool": "Read",
           "loc": [
-            123,
+            125,
             301327,
             1413
           ]
@@ -12941,7 +17496,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:11.421Z",
           "tool": "Read",
           "loc": [
-            48,
+            50,
             254768,
             1411
           ]
@@ -12951,7 +17506,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:08.915Z",
           "tool": "Read",
           "loc": [
-            66,
+            68,
             255569,
             1407
           ]
@@ -12961,7 +17516,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:08.172Z",
           "tool": "Read",
           "loc": [
-            30,
+            32,
             300445,
             1407
           ]
@@ -12971,7 +17526,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:51:10.728Z",
           "tool": "Read",
           "loc": [
-            106,
+            108,
             225690,
             1407
           ]
@@ -12981,7 +17536,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:48:30.125Z",
           "tool": "Read",
           "loc": [
-            78,
+            80,
             217508,
             1411
           ]
@@ -12991,7 +17546,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:47:55.129Z",
           "tool": "Read",
           "loc": [
-            170,
+            172,
             229520,
             2137
           ]
@@ -13001,7 +17556,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:47:54.635Z",
           "tool": "Read",
           "loc": [
-            86,
+            88,
             208325,
             2934
           ]
@@ -13011,7 +17566,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:47:48.783Z",
           "tool": "Read",
           "loc": [
-            18,
+            20,
             218767,
             4314
           ]
@@ -13021,7 +17576,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:47:35.821Z",
           "tool": "Read",
           "loc": [
-            34,
+            36,
             226920,
             1415
           ]
@@ -13031,7 +17586,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:47:16.126Z",
           "tool": "Read",
           "loc": [
-            37,
+            39,
             263441,
             1407
           ]
@@ -13041,7 +17596,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:46:50.473Z",
           "tool": "Read",
           "loc": [
-            167,
+            169,
             212209,
             3361
           ]
@@ -13051,7 +17606,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:59.163Z",
           "tool": "Read",
           "loc": [
-            20,
+            22,
             237419,
             1407
           ]
@@ -13061,7 +17616,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:56.117Z",
           "tool": "Read",
           "loc": [
-            165,
+            167,
             267080,
             1407
           ]
@@ -13071,7 +17626,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:55.070Z",
           "tool": "Read",
           "loc": [
-            139,
+            141,
             229069,
             1407
           ]
@@ -13081,7 +17636,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:44.694Z",
           "tool": "Read",
           "loc": [
-            60,
+            62,
             241741,
             1415
           ]
@@ -13091,7 +17646,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:37.436Z",
           "tool": "Read",
           "loc": [
-            133,
+            135,
             243234,
             1415
           ]
@@ -13101,7 +17656,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:31.995Z",
           "tool": "Read",
           "loc": [
-            218,
+            220,
             291218,
             1413
           ]
@@ -13111,7 +17666,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:27.123Z",
           "tool": "Read",
           "loc": [
-            148,
+            150,
             265540,
             1415
           ]
@@ -13121,7 +17676,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:22.610Z",
           "tool": "Read",
           "loc": [
-            129,
+            131,
             257124,
             1409
           ]
@@ -13131,7 +17686,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:17.670Z",
           "tool": "Read",
           "loc": [
-            183,
+            185,
             221020,
             1415
           ]
@@ -13141,7 +17696,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T17:44:02.267Z",
           "tool": "Edit",
           "loc": [
-            268,
+            270,
             766720,
             1636
           ]
@@ -13151,7 +17706,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T16:11:03.454Z",
           "tool": "Read",
           "loc": [
-            247,
+            249,
             2177690,
             1460
           ]
@@ -13161,7 +17716,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T16:37:23.561Z",
           "tool": "Edit",
           "loc": [
-            240,
+            242,
             6297577,
             1792
           ]
@@ -13171,7 +17726,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T11:48:25.464Z",
           "tool": "Read",
           "loc": [
-            267,
+            269,
             238007,
             1432
           ]
@@ -13181,9 +17736,19 @@ export const sessionSignals = {
           "ts": "2026-07-01T10:32:27.127Z",
           "tool": "Read",
           "loc": [
-            253,
+            255,
             1903839,
             1431
+          ]
+        },
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:58:01.797Z",
+          "tool": "edited_text_file",
+          "loc": [
+            245,
+            1342930,
+            1035
           ]
         },
         {
@@ -13191,7 +17756,7 @@ export const sessionSignals = {
           "ts": "2026-06-30T22:27:44.800Z",
           "tool": "Read",
           "loc": [
-            243,
+            245,
             713262,
             1404
           ]
@@ -13203,7 +17768,8 @@ export const sessionSignals = {
       "reads": 16,
       "writes": 0,
       "edits": 19,
-      "touches": 35,
+      "humanEdits": 2,
+      "touches": 37,
       "sessions": [
         "0e253d14-5365-4f92-89fd-d542060fd22e",
         "7a969bc8-e8c9-40ec-bbb6-808ab0dcc842",
@@ -13217,6 +17783,7 @@ export const sessionSignals = {
       "branches": [
         "feat/c88-conventions",
         "main",
+        "fix/partition-quality-nul-key",
         "feat/c65-unused-exports",
         "feat/c65-dead-modules",
         "feat/c66-growth-risk-loop-depth",
@@ -13257,7 +17824,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:19.895Z",
           "tool": "Read",
           "loc": [
-            119,
+            121,
             143698,
             1435
           ]
@@ -13267,7 +17834,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:39.334Z",
           "tool": "Read",
           "loc": [
-            22,
+            24,
             205280,
             1436
           ]
@@ -13277,7 +17844,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:53:04.081Z",
           "tool": "Read",
           "loc": [
-            106,
+            108,
             246236,
             1410
           ]
@@ -13287,9 +17854,19 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:30.484Z",
           "tool": "Read",
           "loc": [
-            129,
+            131,
             276756,
             1436
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:44:38.819Z",
+          "tool": "edited_text_file",
+          "loc": [
+            270,
+            835399,
+            8980
           ]
         },
         {
@@ -13297,7 +17874,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T17:40:53.195Z",
           "tool": "Read",
           "loc": [
-            268,
+            270,
             510669,
             1494
           ]
@@ -13307,7 +17884,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T16:11:12.057Z",
           "tool": "Read",
           "loc": [
-            247,
+            249,
             2189115,
             1463
           ]
@@ -13317,9 +17894,19 @@ export const sessionSignals = {
           "ts": "2026-07-01T16:29:38.728Z",
           "tool": "Read",
           "loc": [
-            240,
+            242,
             5482005,
             1436
+          ]
+        },
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:58:01.798Z",
+          "tool": "edited_text_file",
+          "loc": [
+            245,
+            1355638,
+            544
           ]
         },
         {
@@ -13327,7 +17914,7 @@ export const sessionSignals = {
           "ts": "2026-06-30T22:21:29.260Z",
           "tool": "Read",
           "loc": [
-            243,
+            245,
             393594,
             1433
           ]
@@ -13339,7 +17926,8 @@ export const sessionSignals = {
       "reads": 8,
       "writes": 1,
       "edits": 23,
-      "touches": 32,
+      "humanEdits": 1,
+      "touches": 33,
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
         "122c4f8f-7dc4-4211-a818-95be2df9b24e",
@@ -13401,7 +17989,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T18:08:57.231Z",
           "tool": "Read",
           "loc": [
-            268,
+            270,
             1708938,
             1461
           ]
@@ -13411,7 +17999,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T15:44:31.977Z",
           "tool": "Edit",
           "loc": [
-            247,
+            249,
             913338,
             2181
           ]
@@ -13421,7 +18009,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T14:42:26.652Z",
           "tool": "Read",
           "loc": [
-            252,
+            254,
             1460963,
             1458
           ]
@@ -13431,7 +18019,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T23:01:25.635Z",
           "tool": "Read",
           "loc": [
-            262,
+            264,
             1487971,
             1454
           ]
@@ -13441,7 +18029,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T20:00:44.535Z",
           "tool": "Read",
           "loc": [
-            263,
+            265,
             407300,
             1455
           ]
@@ -13451,7 +18039,7 @@ export const sessionSignals = {
           "ts": "2026-07-02T21:45:46.484Z",
           "tool": "Read",
           "loc": [
-            239,
+            241,
             203053,
             1433
           ]
@@ -13461,7 +18049,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T16:08:37.274Z",
           "tool": "Edit",
           "loc": [
-            240,
+            242,
             4033981,
             2103
           ]
@@ -13471,9 +18059,19 @@ export const sessionSignals = {
           "ts": "2026-07-01T11:47:03.046Z",
           "tool": "Read",
           "loc": [
-            267,
+            269,
             149229,
             1385
+          ]
+        },
+        {
+          "session": "759a6037-8fee-4639-8faa-ffac0e1f18f4",
+          "ts": "2026-07-01T10:42:54.212Z",
+          "tool": "edited_text_file",
+          "loc": [
+            255,
+            2500132,
+            1231
           ]
         },
         {
@@ -13481,7 +18079,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T10:32:34.391Z",
           "tool": "Read",
           "loc": [
-            253,
+            255,
             1917775,
             1381
           ]
@@ -13491,9 +18089,180 @@ export const sessionSignals = {
           "ts": "2026-07-01T01:26:08.218Z",
           "tool": "Write",
           "loc": [
-            269,
+            271,
             1559050,
             3621
+          ]
+        }
+      ]
+    },
+    {
+      "path": "packages/graph/src/index-metrics.ts",
+      "reads": 8,
+      "writes": 1,
+      "edits": 22,
+      "humanEdits": 2,
+      "touches": 33,
+      "sessions": [
+        "122c4f8f-7dc4-4211-a818-95be2df9b24e",
+        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+        "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+        "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff",
+        "ae027a39-3ace-4d50-83ac-2f740cd20edf",
+        "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
+        "ea64d801-972c-4519-9a34-85fea7f8d776"
+      ],
+      "branches": [
+        "main",
+        "fix/partition-quality-nul-key",
+        "feat/c64-model-b-symbol-nodes",
+        "feat/c65-function-local-deadcode",
+        "feat/c66-growth-risk-loop-depth",
+        "feat/c58-per-symbol-complexity",
+        "feat/fingerprint-incremental-index",
+        "feat/per-symbol-utilization-blast-radius",
+        "fix/C-71-lifetime-window"
+      ],
+      "netGrowth": 8273,
+      "firstTouched": "2026-06-05T18:42:49.819Z",
+      "lastTouched": "2026-07-05T17:43:09.284Z",
+      "coChange": [
+        {
+          "path": "packages/graph/src/indexer.ts",
+          "count": 7
+        },
+        {
+          "path": "dashboard/src/types.ts",
+          "count": 6
+        },
+        {
+          "path": "dashboard/src/App.tsx",
+          "count": 5
+        },
+        {
+          "path": "packages/cli/src/commands/dashboard-payload.ts",
+          "count": 5
+        },
+        {
+          "path": "packages/cli/src/commands/dashboard-node-metrics.ts",
+          "count": 5
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report-types.ts",
+          "count": 4
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:19:39.966Z",
+          "tool": "Read",
+          "loc": [
+            270,
+            281304,
+            1446
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T15:33:57.580Z",
+          "tool": "Read",
+          "loc": [
+            249,
+            307398,
+            1448
+          ]
+        },
+        {
+          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+          "ts": "2026-07-04T14:21:21.561Z",
+          "tool": "edited_text_file",
+          "loc": [
+            254,
+            1128566,
+            581
+          ]
+        },
+        {
+          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+          "ts": "2026-07-04T14:08:32.221Z",
+          "tool": "Read",
+          "loc": [
+            254,
+            551603,
+            1446
+          ]
+        },
+        {
+          "session": "ae027a39-3ace-4d50-83ac-2f740cd20edf",
+          "ts": "2026-07-03T22:35:03.882Z",
+          "tool": "Read",
+          "loc": [
+            264,
+            259537,
+            1452
+          ]
+        },
+        {
+          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
+          "ts": "2026-07-03T19:57:16.788Z",
+          "tool": "Read",
+          "loc": [
+            265,
+            263191,
+            1465
+          ]
+        },
+        {
+          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+          "ts": "2026-07-01T20:55:00.923Z",
+          "tool": "Read",
+          "loc": [
+            260,
+            136716,
+            1394
+          ]
+        },
+        {
+          "session": "122c4f8f-7dc4-4211-a818-95be2df9b24e",
+          "ts": "2026-07-01T16:28:05.334Z",
+          "tool": "Read",
+          "loc": [
+            242,
+            5435004,
+            1418
+          ]
+        },
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:58:01.797Z",
+          "tool": "edited_text_file",
+          "loc": [
+            245,
+            1354561,
+            529
+          ]
+        },
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:11:19.942Z",
+          "tool": "Read",
+          "loc": [
+            245,
+            320704,
+            1392
+          ]
+        },
+        {
+          "session": "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff",
+          "ts": "2026-06-05T18:42:49.819Z",
+          "tool": "Write",
+          "loc": [
+            263,
+            1047722,
+            3763
           ]
         }
       ]
@@ -13503,6 +18272,7 @@ export const sessionSignals = {
       "reads": 31,
       "writes": 0,
       "edits": 0,
+      "humanEdits": 0,
       "touches": 31,
       "sessions": [
         "0874f23f-0121-473d-8345-cb0b062f9a29",
@@ -13550,7 +18320,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T02:00:53.749Z",
           "tool": "Read",
           "loc": [
-            208,
+            210,
             44526,
             1361
           ]
@@ -13560,7 +18330,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T02:00:44.846Z",
           "tool": "Read",
           "loc": [
-            59,
+            61,
             40435,
             1361
           ]
@@ -13570,7 +18340,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T02:00:44.365Z",
           "tool": "Read",
           "loc": [
-            219,
+            221,
             44517,
             1361
           ]
@@ -13580,7 +18350,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:59:25.821Z",
           "tool": "Read",
           "loc": [
-            109,
+            111,
             44538,
             1361
           ]
@@ -13590,7 +18360,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:28.259Z",
           "tool": "Read",
           "loc": [
-            130,
+            132,
             44519,
             1361
           ]
@@ -13600,7 +18370,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:09.997Z",
           "tool": "Read",
           "loc": [
-            215,
+            217,
             44593,
             1361
           ]
@@ -13610,7 +18380,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:08.833Z",
           "tool": "Read",
           "loc": [
-            147,
+            149,
             43193,
             1361
           ]
@@ -13620,7 +18390,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:44.994Z",
           "tool": "Read",
           "loc": [
-            46,
+            48,
             44526,
             1361
           ]
@@ -13630,7 +18400,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:44.499Z",
           "tool": "Read",
           "loc": [
-            197,
+            199,
             39101,
             1361
           ]
@@ -13640,7 +18410,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:57:35.625Z",
           "tool": "Read",
           "loc": [
-            99,
+            101,
             44521,
             1361
           ]
@@ -13650,7 +18420,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:59.352Z",
           "tool": "Read",
           "loc": [
-            96,
+            98,
             40399,
             1361
           ]
@@ -13660,7 +18430,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:47.797Z",
           "tool": "Read",
           "loc": [
-            199,
+            201,
             44543,
             1361
           ]
@@ -13670,7 +18440,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:29.420Z",
           "tool": "Read",
           "loc": [
-            26,
+            28,
             40409,
             1361
           ]
@@ -13680,7 +18450,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:17.832Z",
           "tool": "Read",
           "loc": [
-            216,
+            218,
             43214,
             1361
           ]
@@ -13690,7 +18460,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:56:00.647Z",
           "tool": "Read",
           "loc": [
-            82,
+            84,
             44618,
             1361
           ]
@@ -13700,7 +18470,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:59.462Z",
           "tool": "Read",
           "loc": [
-            76,
+            78,
             43214,
             1361
           ]
@@ -13710,7 +18480,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:56.396Z",
           "tool": "Read",
           "loc": [
-            83,
+            85,
             43214,
             1361
           ]
@@ -13720,7 +18490,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:23.824Z",
           "tool": "Read",
           "loc": [
-            171,
+            173,
             44538,
             1361
           ]
@@ -13730,7 +18500,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:08.118Z",
           "tool": "Read",
           "loc": [
-            188,
+            190,
             43214,
             1361
           ]
@@ -13740,7 +18510,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:54:55.648Z",
           "tool": "Read",
           "loc": [
-            118,
+            120,
             43222,
             1361
           ]
@@ -13750,7 +18520,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:54:53.347Z",
           "tool": "Read",
           "loc": [
-            72,
+            74,
             43202,
             1361
           ]
@@ -13760,7 +18530,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:54:33.730Z",
           "tool": "Read",
           "loc": [
-            49,
+            51,
             44518,
             1361
           ]
@@ -13770,7 +18540,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:54:30.911Z",
           "tool": "Read",
           "loc": [
-            65,
+            67,
             43314,
             1361
           ]
@@ -13780,7 +18550,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:54:23.273Z",
           "tool": "Read",
           "loc": [
-            58,
+            60,
             44538,
             1361
           ]
@@ -13790,7 +18560,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:53:57.455Z",
           "tool": "Read",
           "loc": [
-            100,
+            102,
             39131,
             1361
           ]
@@ -13800,7 +18570,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:53:37.873Z",
           "tool": "Read",
           "loc": [
-            17,
+            19,
             44523,
             1361
           ]
@@ -13810,7 +18580,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:53:31.878Z",
           "tool": "Read",
           "loc": [
-            97,
+            99,
             44519,
             1361
           ]
@@ -13820,7 +18590,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:52:50.711Z",
           "tool": "Read",
           "loc": [
-            168,
+            170,
             44520,
             1361
           ]
@@ -13830,7 +18600,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:52:49.225Z",
           "tool": "Read",
           "loc": [
-            153,
+            155,
             40507,
             1361
           ]
@@ -13840,7 +18610,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:52:32.604Z",
           "tool": "Read",
           "loc": [
-            191,
+            193,
             44598,
             1373
           ]
@@ -13850,158 +18620,9 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:52:31.309Z",
           "tool": "Read",
           "loc": [
-            119,
+            121,
             43214,
             1361
-          ]
-        }
-      ]
-    },
-    {
-      "path": "packages/graph/src/index-metrics.ts",
-      "reads": 8,
-      "writes": 1,
-      "edits": 22,
-      "touches": 31,
-      "sessions": [
-        "122c4f8f-7dc4-4211-a818-95be2df9b24e",
-        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-        "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-        "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff",
-        "ae027a39-3ace-4d50-83ac-2f740cd20edf",
-        "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
-        "ea64d801-972c-4519-9a34-85fea7f8d776"
-      ],
-      "branches": [
-        "main",
-        "feat/c64-model-b-symbol-nodes",
-        "feat/c65-function-local-deadcode",
-        "feat/c66-growth-risk-loop-depth",
-        "feat/c58-per-symbol-complexity",
-        "feat/fingerprint-incremental-index",
-        "feat/per-symbol-utilization-blast-radius",
-        "fix/C-71-lifetime-window"
-      ],
-      "netGrowth": 8273,
-      "firstTouched": "2026-06-05T18:42:49.819Z",
-      "lastTouched": "2026-07-05T17:43:09.284Z",
-      "coChange": [
-        {
-          "path": "packages/graph/src/indexer.ts",
-          "count": 7
-        },
-        {
-          "path": "dashboard/src/types.ts",
-          "count": 6
-        },
-        {
-          "path": "dashboard/src/App.tsx",
-          "count": 5
-        },
-        {
-          "path": "packages/cli/src/commands/dashboard-payload.ts",
-          "count": 5
-        },
-        {
-          "path": "packages/cli/src/commands/dashboard-node-metrics.ts",
-          "count": 5
-        },
-        {
-          "path": "packages/cli/src/commands/graph-report-types.ts",
-          "count": 4
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
-          "ts": "2026-07-05T17:19:39.966Z",
-          "tool": "Read",
-          "loc": [
-            268,
-            281304,
-            1446
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T15:33:57.580Z",
-          "tool": "Read",
-          "loc": [
-            247,
-            307398,
-            1448
-          ]
-        },
-        {
-          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-          "ts": "2026-07-04T14:08:32.221Z",
-          "tool": "Read",
-          "loc": [
-            252,
-            551603,
-            1446
-          ]
-        },
-        {
-          "session": "ae027a39-3ace-4d50-83ac-2f740cd20edf",
-          "ts": "2026-07-03T22:35:03.882Z",
-          "tool": "Read",
-          "loc": [
-            262,
-            259537,
-            1452
-          ]
-        },
-        {
-          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
-          "ts": "2026-07-03T19:57:16.788Z",
-          "tool": "Read",
-          "loc": [
-            263,
-            263191,
-            1465
-          ]
-        },
-        {
-          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-          "ts": "2026-07-01T20:55:00.923Z",
-          "tool": "Read",
-          "loc": [
-            258,
-            136716,
-            1394
-          ]
-        },
-        {
-          "session": "122c4f8f-7dc4-4211-a818-95be2df9b24e",
-          "ts": "2026-07-01T16:28:05.334Z",
-          "tool": "Read",
-          "loc": [
-            240,
-            5435004,
-            1418
-          ]
-        },
-        {
-          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-          "ts": "2026-06-30T22:11:19.942Z",
-          "tool": "Read",
-          "loc": [
-            243,
-            320704,
-            1392
-          ]
-        },
-        {
-          "session": "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff",
-          "ts": "2026-06-05T18:42:49.819Z",
-          "tool": "Write",
-          "loc": [
-            261,
-            1047722,
-            3763
           ]
         }
       ]
@@ -14011,6 +18632,7 @@ export const sessionSignals = {
       "reads": 5,
       "writes": 1,
       "edits": 23,
+      "humanEdits": 0,
       "touches": 29,
       "sessions": [
         "122c4f8f-7dc4-4211-a818-95be2df9b24e",
@@ -14060,7 +18682,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T15:48:58.461Z",
           "tool": "Read",
           "loc": [
-            240,
+            242,
             2528977,
             1477
           ]
@@ -14070,7 +18692,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T11:46:59.710Z",
           "tool": "Read",
           "loc": [
-            267,
+            269,
             125373,
             1393
           ]
@@ -14080,7 +18702,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T10:15:10.838Z",
           "tool": "Read",
           "loc": [
-            253,
+            255,
             1517018,
             1397
           ]
@@ -14090,7 +18712,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T01:28:37.797Z",
           "tool": "Write",
           "loc": [
-            269,
+            271,
             1657153,
             7196
           ]
@@ -14102,6 +18724,7 @@ export const sessionSignals = {
       "reads": 10,
       "writes": 0,
       "edits": 19,
+      "humanEdits": 0,
       "touches": 29,
       "sessions": [
         "3a7136f7-74ab-40b8-abe4-db917c4aed00",
@@ -14155,7 +18778,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T18:59:52.127Z",
           "tool": "Read",
           "loc": [
-            272,
+            274,
             344526,
             1491
           ]
@@ -14165,7 +18788,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T13:32:06.367Z",
           "tool": "Read",
           "loc": [
-            266,
+            268,
             994617,
             1488
           ]
@@ -14175,7 +18798,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T15:38:37.706Z",
           "tool": "Read",
           "loc": [
-            247,
+            249,
             499247,
             1491
           ]
@@ -14185,7 +18808,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T22:41:02.193Z",
           "tool": "Read",
           "loc": [
-            262,
+            264,
             629889,
             1468
           ]
@@ -14195,7 +18818,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T13:21:34.684Z",
           "tool": "Read",
           "loc": [
-            260,
+            262,
             506117,
             1466
           ]
@@ -14205,7 +18828,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T17:32:11.733Z",
           "tool": "Read",
           "loc": [
-            254,
+            256,
             232166,
             1438
           ]
@@ -14217,6 +18840,7 @@ export const sessionSignals = {
       "reads": 27,
       "writes": 0,
       "edits": 0,
+      "humanEdits": 0,
       "touches": 27,
       "sessions": [
         "02698882-78ae-4b6e-aa76-34a134f3e880",
@@ -14260,7 +18884,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:53:25.954Z",
           "tool": "Read",
           "loc": [
-            85,
+            87,
             89355,
             1417
           ]
@@ -14270,7 +18894,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:51:31.087Z",
           "tool": "Read",
           "loc": [
-            22,
+            24,
             86322,
             1417
           ]
@@ -14280,7 +18904,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:51:17.840Z",
           "tool": "Read",
           "loc": [
-            149,
+            151,
             86655,
             1415
           ]
@@ -14290,7 +18914,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:50:28.473Z",
           "tool": "Read",
           "loc": [
-            114,
+            116,
             89935,
             1417
           ]
@@ -14300,7 +18924,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:50:25.898Z",
           "tool": "Read",
           "loc": [
-            30,
+            32,
             89925,
             1417
           ]
@@ -14310,7 +18934,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:49:46.963Z",
           "tool": "Read",
           "loc": [
-            160,
+            162,
             87406,
             1417
           ]
@@ -14320,7 +18944,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:49:42.258Z",
           "tool": "Read",
           "loc": [
-            62,
+            64,
             88174,
             1417
           ]
@@ -14330,7 +18954,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:49:20.180Z",
           "tool": "Read",
           "loc": [
-            132,
+            134,
             86633,
             1417
           ]
@@ -14340,7 +18964,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:48:53.059Z",
           "tool": "Read",
           "loc": [
-            16,
+            18,
             85932,
             1417
           ]
@@ -14350,7 +18974,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:48:28.037Z",
           "tool": "Read",
           "loc": [
-            134,
+            136,
             82183,
             1417
           ]
@@ -14360,7 +18984,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:47:30.550Z",
           "tool": "Read",
           "loc": [
-            222,
+            224,
             87440,
             1417
           ]
@@ -14370,7 +18994,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:47:29.028Z",
           "tool": "Read",
           "loc": [
-            94,
+            96,
             84888,
             2395
           ]
@@ -14380,7 +19004,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:47:27.085Z",
           "tool": "Read",
           "loc": [
-            156,
+            158,
             84886,
             2767
           ]
@@ -14390,7 +19014,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:47:25.691Z",
           "tool": "Read",
           "loc": [
-            35,
+            37,
             81193,
             2193
           ]
@@ -14400,7 +19024,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:47:01.768Z",
           "tool": "Read",
           "loc": [
-            136,
+            138,
             87928,
             1417
           ]
@@ -14410,7 +19034,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:46:42.119Z",
           "tool": "Read",
           "loc": [
-            140,
+            142,
             86548,
             1813
           ]
@@ -14420,7 +19044,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:46:40.083Z",
           "tool": "Read",
           "loc": [
-            194,
+            196,
             88297,
             1811
           ]
@@ -14430,7 +19054,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:46:33.136Z",
           "tool": "Read",
           "loc": [
-            86,
+            88,
             48316,
             1407
           ]
@@ -14440,7 +19064,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:52.910Z",
           "tool": "Read",
           "loc": [
-            13,
+            15,
             90030,
             1417
           ]
@@ -14450,7 +19074,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:46.071Z",
           "tool": "Read",
           "loc": [
-            220,
+            222,
             89572,
             1415
           ]
@@ -14460,7 +19084,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:41.035Z",
           "tool": "Read",
           "loc": [
-            33,
+            35,
             89648,
             1417
           ]
@@ -14470,7 +19094,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:36.192Z",
           "tool": "Read",
           "loc": [
-            146,
+            148,
             89617,
             1415
           ]
@@ -14480,7 +19104,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:34.920Z",
           "tool": "Read",
           "loc": [
-            60,
+            62,
             86192,
             1415
           ]
@@ -14490,7 +19114,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:28.671Z",
           "tool": "Read",
           "loc": [
-            133,
+            135,
             86211,
             1415
           ]
@@ -14500,7 +19124,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:23.755Z",
           "tool": "Read",
           "loc": [
-            9,
+            11,
             87963,
             1415
           ]
@@ -14510,7 +19134,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:14.234Z",
           "tool": "Read",
           "loc": [
-            148,
+            150,
             86331,
             1415
           ]
@@ -14520,7 +19144,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:11.871Z",
           "tool": "Read",
           "loc": [
-            169,
+            171,
             89621,
             1415
           ]
@@ -14532,7 +19156,8 @@ export const sessionSignals = {
       "reads": 10,
       "writes": 1,
       "edits": 14,
-      "touches": 25,
+      "humanEdits": 1,
+      "touches": 26,
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
         "3a7136f7-74ab-40b8-abe4-db917c4aed00",
@@ -14586,7 +19211,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T17:30:46.722Z",
           "tool": "Read",
           "loc": [
-            251,
+            253,
             683882,
             1496
           ]
@@ -14596,7 +19221,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T17:19:58.820Z",
           "tool": "Read",
           "loc": [
-            268,
+            270,
             306242,
             1464
           ]
@@ -14606,9 +19231,19 @@ export const sessionSignals = {
           "ts": "2026-07-04T15:36:53.290Z",
           "tool": "Read",
           "loc": [
-            247,
+            249,
             422412,
             1464
+          ]
+        },
+        {
+          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+          "ts": "2026-07-04T14:21:21.561Z",
+          "tool": "edited_text_file",
+          "loc": [
+            254,
+            1110238,
+            8621
           ]
         },
         {
@@ -14616,7 +19251,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T14:09:41.272Z",
           "tool": "Read",
           "loc": [
-            252,
+            254,
             598852,
             1488
           ]
@@ -14626,7 +19261,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T22:58:20.167Z",
           "tool": "Read",
           "loc": [
-            262,
+            264,
             1334306,
             1462
           ]
@@ -14636,7 +19271,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T19:58:14.191Z",
           "tool": "Read",
           "loc": [
-            263,
+            265,
             303863,
             1458
           ]
@@ -14646,9 +19281,226 @@ export const sessionSignals = {
           "ts": "2026-07-02T21:54:34.146Z",
           "tool": "Write",
           "loc": [
-            239,
+            241,
             1506726,
             4044
+          ]
+        }
+      ]
+    },
+    {
+      "path": "packages/graph/src/index.ts",
+      "reads": 11,
+      "writes": 0,
+      "edits": 11,
+      "humanEdits": 3,
+      "touches": 25,
+      "sessions": [
+        "1fb71eef-3a13-4c9b-b711-fd6fd2f89e42",
+        "301a892f-6b99-42e8-90b8-8c86c1caa189",
+        "44713a0a-b366-49ac-8ddb-4ce746f17472",
+        "13ba3709-ff7f-4cf7-903d-9e54c208f6bb",
+        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+        "26f5e28e-f687-42d8-bb19-cbbee69709c1",
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+        "5abbb0ce-143a-4089-9d99-16de251fa361",
+        "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+        "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
+        "ea64d801-972c-4519-9a34-85fea7f8d776",
+        "f6324d6b-6972-4f50-9c89-21bd31535746"
+      ],
+      "branches": [
+        "feat/c88-conventions",
+        "main",
+        "fix/partition-quality-nul-key",
+        "feat/c89-seeded-pagerank-relevance",
+        "feat/c63-coverage-ingest",
+        "feat/graph-context-spike",
+        "feat/schema-healing-aliases",
+        "feat/incremental-default-autoupdate-hook",
+        "feat/c55-barrel-resolved-utilization",
+        "packages/render/src/index.ts",
+        "fix/C-71-lifetime-window",
+        "feat/c88-capability-embeddings"
+      ],
+      "netGrowth": 2053,
+      "firstTouched": "2026-06-30T13:47:41.674Z",
+      "lastTouched": "2026-07-07T01:56:38.137Z",
+      "coChange": [
+        {
+          "path": "packages/cli/src/commands/graph-report.ts",
+          "count": 4
+        },
+        {
+          "path": "packages/graph/src/types.ts",
+          "count": 4
+        },
+        {
+          "path": "packages/graph/src/index-metrics.ts",
+          "count": 4
+        },
+        {
+          "path": "packages/graph/src/indexer.ts",
+          "count": 4
+        },
+        {
+          "path": "packages/cli/src/commands/graph-cli.ts",
+          "count": 4
+        },
+        {
+          "path": "packages/cli/src/commands/dashboard-node-metrics.ts",
+          "count": 4
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "301a892f-6b99-42e8-90b8-8c86c1caa189",
+          "ts": "2026-07-07T01:56:38.137Z",
+          "tool": "Read",
+          "loc": [
+            51,
+            107954,
+            1395
+          ]
+        },
+        {
+          "session": "44713a0a-b366-49ac-8ddb-4ce746f17472",
+          "ts": "2026-07-07T01:52:17.666Z",
+          "tool": "Read",
+          "loc": [
+            64,
+            190497,
+            1387
+          ]
+        },
+        {
+          "session": "1fb71eef-3a13-4c9b-b711-fd6fd2f89e42",
+          "ts": "2026-07-07T01:48:37.108Z",
+          "tool": "Read",
+          "loc": [
+            37,
+            126223,
+            6274
+          ]
+        },
+        {
+          "session": "13ba3709-ff7f-4cf7-903d-9e54c208f6bb",
+          "ts": "2026-07-07T01:33:03.236Z",
+          "tool": "Edit",
+          "loc": [
+            243,
+            617616,
+            2646
+          ]
+        },
+        {
+          "session": "f6324d6b-6972-4f50-9c89-21bd31535746",
+          "ts": "2026-07-06T23:34:24.059Z",
+          "tool": "Read",
+          "loc": [
+            273,
+            443145,
+            1443
+          ]
+        },
+        {
+          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
+          "ts": "2026-07-06T17:20:52.428Z",
+          "tool": "Read",
+          "loc": [
+            248,
+            481534,
+            1464
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:43:34.037Z",
+          "tool": "Read",
+          "loc": [
+            270,
+            713564,
+            1466
+          ]
+        },
+        {
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:30:30.255Z",
+          "tool": "Read",
+          "loc": [
+            253,
+            660483,
+            1441
+          ]
+        },
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T17:37:55.384Z",
+          "tool": "Edit",
+          "loc": [
+            249,
+            4912209,
+            1860
+          ]
+        },
+        {
+          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
+          "ts": "2026-07-03T21:45:06.721Z",
+          "tool": "edited_text_file",
+          "loc": [
+            265,
+            4274396,
+            1115
+          ]
+        },
+        {
+          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
+          "ts": "2026-07-03T21:40:24.496Z",
+          "tool": "Edit",
+          "loc": [
+            265,
+            3175133,
+            1657
+          ]
+        },
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:58:01.797Z",
+          "tool": "edited_text_file",
+          "loc": [
+            245,
+            1354039,
+            521
+          ]
+        },
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:23:30.455Z",
+          "tool": "Read",
+          "loc": [
+            245,
+            458807,
+            1407
+          ]
+        },
+        {
+          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+          "ts": "2026-06-30T16:49:24.456Z",
+          "tool": "edited_text_file",
+          "loc": [
+            258,
+            1670361,
+            1242
+          ]
+        },
+        {
+          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+          "ts": "2026-06-30T13:47:41.674Z",
+          "tool": "Read",
+          "loc": [
+            258,
+            1004587,
+            1407
           ]
         }
       ]
@@ -14658,6 +19510,7 @@ export const sessionSignals = {
       "reads": 9,
       "writes": 0,
       "edits": 16,
+      "humanEdits": 0,
       "touches": 25,
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
@@ -14704,7 +19557,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T13:17:19.177Z",
           "tool": "Read",
           "loc": [
-            260,
+            262,
             239315,
             1473
           ]
@@ -14714,7 +19567,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T04:55:54.820Z",
           "tool": "Read",
           "loc": [
-            239,
+            241,
             1825136,
             1472
           ]
@@ -14724,7 +19577,7 @@ export const sessionSignals = {
           "ts": "2026-07-02T18:03:36.921Z",
           "tool": "Read",
           "loc": [
-            255,
+            257,
             751447,
             1402
           ]
@@ -14734,7 +19587,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T13:08:06.607Z",
           "tool": "Read",
           "loc": [
-            267,
+            269,
             6535671,
             1396
           ]
@@ -14746,6 +19599,7 @@ export const sessionSignals = {
       "reads": 8,
       "writes": 0,
       "edits": 16,
+      "humanEdits": 0,
       "touches": 24,
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
@@ -14789,7 +19643,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T04:56:02.432Z",
           "tool": "Read",
           "loc": [
-            239,
+            241,
             1837477,
             1470
           ]
@@ -14799,7 +19653,7 @@ export const sessionSignals = {
           "ts": "2026-07-02T18:04:49.682Z",
           "tool": "Read",
           "loc": [
-            255,
+            257,
             834973,
             1405
           ]
@@ -14811,6 +19665,7 @@ export const sessionSignals = {
       "reads": 4,
       "writes": 0,
       "edits": 19,
+      "humanEdits": 0,
       "touches": 23,
       "sessions": [
         "122c4f8f-7dc4-4211-a818-95be2df9b24e",
@@ -14858,7 +19713,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T17:19:01.103Z",
           "tool": "Read",
           "loc": [
-            268,
+            270,
             222096,
             1434
           ]
@@ -14868,7 +19723,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T20:54:57.900Z",
           "tool": "Read",
           "loc": [
-            258,
+            260,
             112730,
             1382
           ]
@@ -14878,7 +19733,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T16:26:26.259Z",
           "tool": "Read",
           "loc": [
-            240,
+            242,
             5385077,
             1392
           ]
@@ -14888,193 +19743,9 @@ export const sessionSignals = {
           "ts": "2026-07-01T10:31:52.236Z",
           "tool": "Read",
           "loc": [
-            253,
+            255,
             1882438,
             1411
-          ]
-        }
-      ]
-    },
-    {
-      "path": "packages/graph/src/index.ts",
-      "reads": 11,
-      "writes": 0,
-      "edits": 11,
-      "touches": 22,
-      "sessions": [
-        "1fb71eef-3a13-4c9b-b711-fd6fd2f89e42",
-        "301a892f-6b99-42e8-90b8-8c86c1caa189",
-        "44713a0a-b366-49ac-8ddb-4ce746f17472",
-        "13ba3709-ff7f-4cf7-903d-9e54c208f6bb",
-        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-        "26f5e28e-f687-42d8-bb19-cbbee69709c1",
-        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-        "5abbb0ce-143a-4089-9d99-16de251fa361",
-        "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-        "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
-        "ea64d801-972c-4519-9a34-85fea7f8d776",
-        "f6324d6b-6972-4f50-9c89-21bd31535746"
-      ],
-      "branches": [
-        "feat/c88-conventions",
-        "main",
-        "feat/c89-seeded-pagerank-relevance",
-        "feat/c63-coverage-ingest",
-        "feat/graph-context-spike",
-        "feat/schema-healing-aliases",
-        "feat/c55-barrel-resolved-utilization",
-        "packages/render/src/index.ts",
-        "fix/C-71-lifetime-window",
-        "feat/c88-capability-embeddings"
-      ],
-      "netGrowth": 2053,
-      "firstTouched": "2026-06-30T13:47:41.674Z",
-      "lastTouched": "2026-07-07T01:56:38.137Z",
-      "coChange": [
-        {
-          "path": "packages/cli/src/commands/graph-report.ts",
-          "count": 4
-        },
-        {
-          "path": "packages/graph/src/types.ts",
-          "count": 4
-        },
-        {
-          "path": "packages/graph/src/index-metrics.ts",
-          "count": 4
-        },
-        {
-          "path": "packages/graph/src/indexer.ts",
-          "count": 4
-        },
-        {
-          "path": "packages/cli/src/commands/graph-cli.ts",
-          "count": 4
-        },
-        {
-          "path": "packages/cli/src/commands/dashboard-node-metrics.ts",
-          "count": 4
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "301a892f-6b99-42e8-90b8-8c86c1caa189",
-          "ts": "2026-07-07T01:56:38.137Z",
-          "tool": "Read",
-          "loc": [
-            49,
-            107954,
-            1395
-          ]
-        },
-        {
-          "session": "44713a0a-b366-49ac-8ddb-4ce746f17472",
-          "ts": "2026-07-07T01:52:17.666Z",
-          "tool": "Read",
-          "loc": [
-            62,
-            190497,
-            1387
-          ]
-        },
-        {
-          "session": "1fb71eef-3a13-4c9b-b711-fd6fd2f89e42",
-          "ts": "2026-07-07T01:48:37.108Z",
-          "tool": "Read",
-          "loc": [
-            35,
-            126223,
-            6274
-          ]
-        },
-        {
-          "session": "13ba3709-ff7f-4cf7-903d-9e54c208f6bb",
-          "ts": "2026-07-07T01:33:03.236Z",
-          "tool": "Edit",
-          "loc": [
-            241,
-            617616,
-            2646
-          ]
-        },
-        {
-          "session": "f6324d6b-6972-4f50-9c89-21bd31535746",
-          "ts": "2026-07-06T23:34:24.059Z",
-          "tool": "Read",
-          "loc": [
-            271,
-            443145,
-            1443
-          ]
-        },
-        {
-          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
-          "ts": "2026-07-06T17:20:52.428Z",
-          "tool": "Read",
-          "loc": [
-            246,
-            481534,
-            1464
-          ]
-        },
-        {
-          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
-          "ts": "2026-07-05T17:43:34.037Z",
-          "tool": "Read",
-          "loc": [
-            268,
-            713564,
-            1466
-          ]
-        },
-        {
-          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
-          "ts": "2026-07-05T17:30:30.255Z",
-          "tool": "Read",
-          "loc": [
-            251,
-            660483,
-            1441
-          ]
-        },
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T17:37:55.384Z",
-          "tool": "Edit",
-          "loc": [
-            247,
-            4912209,
-            1860
-          ]
-        },
-        {
-          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
-          "ts": "2026-07-03T21:40:24.496Z",
-          "tool": "Edit",
-          "loc": [
-            263,
-            3175133,
-            1657
-          ]
-        },
-        {
-          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-          "ts": "2026-06-30T22:23:30.455Z",
-          "tool": "Read",
-          "loc": [
-            243,
-            458807,
-            1407
-          ]
-        },
-        {
-          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-          "ts": "2026-06-30T13:47:41.674Z",
-          "tool": "Read",
-          "loc": [
-            256,
-            1004587,
-            1407
           ]
         }
       ]
@@ -15084,7 +19755,8 @@ export const sessionSignals = {
       "reads": 3,
       "writes": 0,
       "edits": 19,
-      "touches": 22,
+      "humanEdits": 1,
+      "touches": 23,
       "sessions": [
         "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
         "3a7136f7-74ab-40b8-abe4-db917c4aed00",
@@ -15093,6 +19765,7 @@ export const sessionSignals = {
       ],
       "branches": [
         "main",
+        "fix/partition-quality-nul-key",
         "feat/c65-unused-exports",
         "feat/c65-dead-modules",
         "feat/c66-growth-risk-loop-depth",
@@ -15136,7 +19809,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T17:45:47.446Z",
           "tool": "Read",
           "loc": [
-            268,
+            270,
             920401,
             1491
           ]
@@ -15146,7 +19819,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T16:14:01.554Z",
           "tool": "Read",
           "loc": [
-            247,
+            249,
             2381753,
             1457
           ]
@@ -15156,9 +19829,19 @@ export const sessionSignals = {
           "ts": "2026-07-01T18:12:33.705Z",
           "tool": "Edit",
           "loc": [
-            254,
+            256,
             670228,
             2678
+          ]
+        },
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:58:01.798Z",
+          "tool": "edited_text_file",
+          "loc": [
+            245,
+            1356183,
+            542
           ]
         },
         {
@@ -15166,9 +19849,122 @@ export const sessionSignals = {
           "ts": "2026-06-30T22:27:47.281Z",
           "tool": "Read",
           "loc": [
-            243,
+            245,
             719300,
             1432
+          ]
+        }
+      ]
+    },
+    {
+      "path": "packages/graph/src/source-metrics.ts",
+      "reads": 5,
+      "writes": 0,
+      "edits": 16,
+      "humanEdits": 1,
+      "touches": 22,
+      "sessions": [
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+        "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+        "a86e0245-8fd6-4f8f-bd15-b45669812b3f",
+        "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff"
+      ],
+      "branches": [
+        "feat/c64-model-b-symbol-nodes",
+        "feat/c58-per-symbol-complexity",
+        "feat/schema-healing-aliases",
+        "feat/edge-weight-reference-count",
+        "feat/fingerprint-incremental-index"
+      ],
+      "netGrowth": 4428,
+      "firstTouched": "2026-06-02T20:17:39.608Z",
+      "lastTouched": "2026-07-04T16:01:23.905Z",
+      "coChange": [
+        {
+          "path": "packages/graph/src/extractors/ts-morph-extractor.ts",
+          "count": 4
+        },
+        {
+          "path": "packages/graph/src/indexer.ts",
+          "count": 4
+        },
+        {
+          "path": "packages/cli/src/commands/graph-cli.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/graph/src/index-metrics.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/graph/src/incremental.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/__tests__/graph-index.test.ts",
+          "count": 3
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T15:33:01.101Z",
+          "tool": "Read",
+          "loc": [
+            249,
+            233456,
+            1447
+          ]
+        },
+        {
+          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+          "ts": "2026-07-04T14:21:21.561Z",
+          "tool": "edited_text_file",
+          "loc": [
+            254,
+            1127983,
+            582
+          ]
+        },
+        {
+          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+          "ts": "2026-07-04T13:47:20.077Z",
+          "tool": "Read",
+          "loc": [
+            254,
+            403245,
+            1447
+          ]
+        },
+        {
+          "session": "a86e0245-8fd6-4f8f-bd15-b45669812b3f",
+          "ts": "2026-07-03T13:34:09.985Z",
+          "tool": "Read",
+          "loc": [
+            262,
+            894950,
+            1469
+          ]
+        },
+        {
+          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+          "ts": "2026-06-30T13:45:16.224Z",
+          "tool": "Read",
+          "loc": [
+            258,
+            884295,
+            1418
+          ]
+        },
+        {
+          "session": "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff",
+          "ts": "2026-06-02T20:17:39.608Z",
+          "tool": "Read",
+          "loc": [
+            263,
+            287326,
+            1397
           ]
         }
       ]
@@ -15178,6 +19974,7 @@ export const sessionSignals = {
       "reads": 7,
       "writes": 0,
       "edits": 14,
+      "humanEdits": 0,
       "touches": 21,
       "sessions": [
         "20ced87b-02aa-4c02-bed3-aab53b4990f2",
@@ -15231,7 +20028,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:53:55.743Z",
           "tool": "Read",
           "loc": [
-            123,
+            125,
             212481,
             1394
           ]
@@ -15241,7 +20038,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:46:33.187Z",
           "tool": "Read",
           "loc": [
-            37,
+            39,
             219458,
             2627
           ]
@@ -15251,7 +20048,7 @@ export const sessionSignals = {
           "ts": "2026-07-06T23:33:49.125Z",
           "tool": "Read",
           "loc": [
-            271,
+            273,
             361190,
             1452
           ]
@@ -15261,7 +20058,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T17:37:23.393Z",
           "tool": "Edit",
           "loc": [
-            247,
+            249,
             4884471,
             2604
           ]
@@ -15271,7 +20068,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T22:49:22.937Z",
           "tool": "Read",
           "loc": [
-            262,
+            264,
             1017012,
             1467
           ]
@@ -15281,7 +20078,7 @@ export const sessionSignals = {
           "ts": "2026-06-30T23:18:30.530Z",
           "tool": "Read",
           "loc": [
-            243,
+            245,
             1668840,
             1414
           ]
@@ -15291,111 +20088,9 @@ export const sessionSignals = {
           "ts": "2026-06-02T20:15:37.218Z",
           "tool": "Read",
           "loc": [
-            261,
+            263,
             188704,
             1383
-          ]
-        }
-      ]
-    },
-    {
-      "path": "packages/graph/src/source-metrics.ts",
-      "reads": 5,
-      "writes": 0,
-      "edits": 16,
-      "touches": 21,
-      "sessions": [
-        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-        "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-        "a86e0245-8fd6-4f8f-bd15-b45669812b3f",
-        "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff"
-      ],
-      "branches": [
-        "feat/c64-model-b-symbol-nodes",
-        "feat/c58-per-symbol-complexity",
-        "feat/schema-healing-aliases",
-        "feat/edge-weight-reference-count",
-        "feat/fingerprint-incremental-index"
-      ],
-      "netGrowth": 4428,
-      "firstTouched": "2026-06-02T20:17:39.608Z",
-      "lastTouched": "2026-07-04T16:01:23.905Z",
-      "coChange": [
-        {
-          "path": "packages/graph/src/extractors/ts-morph-extractor.ts",
-          "count": 4
-        },
-        {
-          "path": "packages/graph/src/indexer.ts",
-          "count": 4
-        },
-        {
-          "path": "packages/cli/src/commands/graph-cli.ts",
-          "count": 3
-        },
-        {
-          "path": "packages/graph/src/index-metrics.ts",
-          "count": 3
-        },
-        {
-          "path": "packages/graph/src/incremental.ts",
-          "count": 3
-        },
-        {
-          "path": "packages/cli/src/__tests__/graph-index.test.ts",
-          "count": 3
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T15:33:01.101Z",
-          "tool": "Read",
-          "loc": [
-            247,
-            233456,
-            1447
-          ]
-        },
-        {
-          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-          "ts": "2026-07-04T13:47:20.077Z",
-          "tool": "Read",
-          "loc": [
-            252,
-            403245,
-            1447
-          ]
-        },
-        {
-          "session": "a86e0245-8fd6-4f8f-bd15-b45669812b3f",
-          "ts": "2026-07-03T13:34:09.985Z",
-          "tool": "Read",
-          "loc": [
-            260,
-            894950,
-            1469
-          ]
-        },
-        {
-          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-          "ts": "2026-06-30T13:45:16.224Z",
-          "tool": "Read",
-          "loc": [
-            256,
-            884295,
-            1418
-          ]
-        },
-        {
-          "session": "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff",
-          "ts": "2026-06-02T20:17:39.608Z",
-          "tool": "Read",
-          "loc": [
-            261,
-            287326,
-            1397
           ]
         }
       ]
@@ -15405,6 +20100,7 @@ export const sessionSignals = {
       "reads": 2,
       "writes": 1,
       "edits": 17,
+      "humanEdits": 0,
       "touches": 20,
       "sessions": [
         "26f5e28e-f687-42d8-bb19-cbbee69709c1",
@@ -15451,7 +20147,7 @@ export const sessionSignals = {
           "ts": "2026-07-06T17:16:40.956Z",
           "tool": "Read",
           "loc": [
-            246,
+            248,
             243971,
             1453
           ]
@@ -15461,7 +20157,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T18:54:53.513Z",
           "tool": "Read",
           "loc": [
-            272,
+            274,
             153007,
             1453
           ]
@@ -15471,9 +20167,201 @@ export const sessionSignals = {
           "ts": "2026-07-05T17:35:54.115Z",
           "tool": "Write",
           "loc": [
-            251,
+            253,
             840654,
             9882
+          ]
+        }
+      ]
+    },
+    {
+      "path": "packages/cli/src/mcp/server.ts",
+      "reads": 4,
+      "writes": 0,
+      "edits": 12,
+      "humanEdits": 3,
+      "touches": 19,
+      "sessions": [
+        "13ba3709-ff7f-4cf7-903d-9e54c208f6bb",
+        "45851359-f22b-4839-a74e-2bcc515293b5",
+        "f6324d6b-6972-4f50-9c89-21bd31535746"
+      ],
+      "branches": [
+        "feat/c88-conventions",
+        "main",
+        "packages/cli/src/mcp/server.ts",
+        "feat/c88-capability-embeddings"
+      ],
+      "netGrowth": 6253,
+      "firstTouched": "2026-07-06T04:31:10.744Z",
+      "lastTouched": "2026-07-07T01:36:49.567Z",
+      "coChange": [
+        {
+          "path": "packages/graph/src/index.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/graph/src/embeddings.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/cli/src/commands/graph-embed.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/graph/src/migrations.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/cli/src/read-api/reader.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/cli/src/read-api/contract.ts",
+          "count": 2
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "13ba3709-ff7f-4cf7-903d-9e54c208f6bb",
+          "ts": "2026-07-07T01:26:50.168Z",
+          "tool": "Read",
+          "loc": [
+            243,
+            381523,
+            1440
+          ]
+        },
+        {
+          "session": "f6324d6b-6972-4f50-9c89-21bd31535746",
+          "ts": "2026-07-06T23:34:17.000Z",
+          "tool": "Read",
+          "loc": [
+            273,
+            418358,
+            1444
+          ]
+        },
+        {
+          "session": "45851359-f22b-4839-a74e-2bcc515293b5",
+          "ts": "2026-07-06T05:13:23.330Z",
+          "tool": "edited_text_file",
+          "loc": [
+            251,
+            1860659,
+            7176
+          ]
+        },
+        {
+          "session": "45851359-f22b-4839-a74e-2bcc515293b5",
+          "ts": "2026-07-06T04:31:10.744Z",
+          "tool": "Read",
+          "loc": [
+            251,
+            1200160,
+            1449
+          ]
+        }
+      ]
+    },
+    {
+      "path": "packages/graph/src/incremental.ts",
+      "reads": 5,
+      "writes": 1,
+      "edits": 11,
+      "humanEdits": 1,
+      "touches": 18,
+      "sessions": [
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+        "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff",
+        "ae027a39-3ace-4d50-83ac-2f740cd20edf"
+      ],
+      "branches": [
+        "feat/c65-function-local-deadcode",
+        "feat/c66-growth-risk-loop-depth",
+        "feat/c58-per-symbol-complexity",
+        "feat/fingerprint-incremental-index",
+        "feat/per-symbol-utilization-blast-radius"
+      ],
+      "netGrowth": 8102,
+      "firstTouched": "2026-06-02T20:23:42.264Z",
+      "lastTouched": "2026-07-04T17:07:04.900Z",
+      "coChange": [
+        {
+          "path": "packages/graph/src/index-metrics.ts",
+          "count": 4
+        },
+        {
+          "path": "packages/graph/src/extractors/ts-morph-extractor.ts",
+          "count": 4
+        },
+        {
+          "path": "packages/graph/src/indexer.ts",
+          "count": 4
+        },
+        {
+          "path": "packages/graph/src/database.ts",
+          "count": 3
+        },
+        {
+          "path": "dashboard/src/types.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/commands/dashboard-node-metrics.ts",
+          "count": 3
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T15:34:39.513Z",
+          "tool": "Read",
+          "loc": [
+            249,
+            338129,
+            1446
+          ]
+        },
+        {
+          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+          "ts": "2026-07-04T14:21:21.561Z",
+          "tool": "edited_text_file",
+          "loc": [
+            254,
+            1118860,
+            9122
+          ]
+        },
+        {
+          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+          "ts": "2026-07-04T14:09:02.023Z",
+          "tool": "Read",
+          "loc": [
+            254,
+            579343,
+            1510
+          ]
+        },
+        {
+          "session": "ae027a39-3ace-4d50-83ac-2f740cd20edf",
+          "ts": "2026-07-03T22:34:40.533Z",
+          "tool": "Read",
+          "loc": [
+            264,
+            235532,
+            1446
+          ]
+        },
+        {
+          "session": "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff",
+          "ts": "2026-06-02T20:23:42.264Z",
+          "tool": "Write",
+          "loc": [
+            263,
+            507162,
+            5479
           ]
         }
       ]
@@ -15483,6 +20371,7 @@ export const sessionSignals = {
       "reads": 2,
       "writes": 1,
       "edits": 14,
+      "humanEdits": 0,
       "touches": 17,
       "sessions": [
         "122c4f8f-7dc4-4211-a818-95be2df9b24e",
@@ -15532,7 +20421,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T23:02:24.862Z",
           "tool": "Read",
           "loc": [
-            262,
+            264,
             1605404,
             1449
           ]
@@ -15542,7 +20431,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T16:36:37.676Z",
           "tool": "Edit",
           "loc": [
-            240,
+            242,
             6255074,
             1789
           ]
@@ -15552,7 +20441,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T11:46:54.952Z",
           "tool": "Read",
           "loc": [
-            267,
+            269,
             99848,
             1395
           ]
@@ -15562,100 +20451,9 @@ export const sessionSignals = {
           "ts": "2026-07-01T01:29:00.057Z",
           "tool": "Write",
           "loc": [
-            269,
+            271,
             1677693,
             5732
-          ]
-        }
-      ]
-    },
-    {
-      "path": "packages/graph/src/incremental.ts",
-      "reads": 5,
-      "writes": 1,
-      "edits": 11,
-      "touches": 17,
-      "sessions": [
-        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-        "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff",
-        "ae027a39-3ace-4d50-83ac-2f740cd20edf"
-      ],
-      "branches": [
-        "feat/c65-function-local-deadcode",
-        "feat/c66-growth-risk-loop-depth",
-        "feat/c58-per-symbol-complexity",
-        "feat/fingerprint-incremental-index",
-        "feat/per-symbol-utilization-blast-radius"
-      ],
-      "netGrowth": 8102,
-      "firstTouched": "2026-06-02T20:23:42.264Z",
-      "lastTouched": "2026-07-04T17:07:04.900Z",
-      "coChange": [
-        {
-          "path": "packages/graph/src/index-metrics.ts",
-          "count": 4
-        },
-        {
-          "path": "packages/graph/src/extractors/ts-morph-extractor.ts",
-          "count": 4
-        },
-        {
-          "path": "packages/graph/src/indexer.ts",
-          "count": 4
-        },
-        {
-          "path": "packages/graph/src/database.ts",
-          "count": 3
-        },
-        {
-          "path": "dashboard/src/types.ts",
-          "count": 3
-        },
-        {
-          "path": "packages/cli/src/commands/dashboard-node-metrics.ts",
-          "count": 3
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T15:34:39.513Z",
-          "tool": "Read",
-          "loc": [
-            247,
-            338129,
-            1446
-          ]
-        },
-        {
-          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-          "ts": "2026-07-04T14:09:02.023Z",
-          "tool": "Read",
-          "loc": [
-            252,
-            579343,
-            1510
-          ]
-        },
-        {
-          "session": "ae027a39-3ace-4d50-83ac-2f740cd20edf",
-          "ts": "2026-07-03T22:34:40.533Z",
-          "tool": "Read",
-          "loc": [
-            262,
-            235532,
-            1446
-          ]
-        },
-        {
-          "session": "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff",
-          "ts": "2026-06-02T20:23:42.264Z",
-          "tool": "Write",
-          "loc": [
-            261,
-            507162,
-            5479
           ]
         }
       ]
@@ -15665,6 +20463,7 @@ export const sessionSignals = {
       "reads": 6,
       "writes": 0,
       "edits": 10,
+      "humanEdits": 0,
       "touches": 16,
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
@@ -15709,7 +20508,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T22:10:16.381Z",
           "tool": "Read",
           "loc": [
-            263,
+            265,
             6195366,
             1464
           ]
@@ -15719,88 +20518,9 @@ export const sessionSignals = {
           "ts": "2026-07-03T04:55:45.024Z",
           "tool": "Read",
           "loc": [
-            239,
+            241,
             1813997,
             1464
-          ]
-        }
-      ]
-    },
-    {
-      "path": "packages/cli/src/mcp/server.ts",
-      "reads": 4,
-      "writes": 0,
-      "edits": 12,
-      "touches": 16,
-      "sessions": [
-        "13ba3709-ff7f-4cf7-903d-9e54c208f6bb",
-        "45851359-f22b-4839-a74e-2bcc515293b5",
-        "f6324d6b-6972-4f50-9c89-21bd31535746"
-      ],
-      "branches": [
-        "feat/c88-conventions",
-        "main",
-        "packages/cli/src/mcp/server.ts",
-        "feat/c88-capability-embeddings"
-      ],
-      "netGrowth": 6253,
-      "firstTouched": "2026-07-06T04:31:10.744Z",
-      "lastTouched": "2026-07-07T01:36:49.567Z",
-      "coChange": [
-        {
-          "path": "packages/graph/src/index.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/graph/src/embeddings.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/graph-embed.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/graph/src/migrations.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/read-api/reader.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/read-api/contract.ts",
-          "count": 2
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "13ba3709-ff7f-4cf7-903d-9e54c208f6bb",
-          "ts": "2026-07-07T01:26:50.168Z",
-          "tool": "Read",
-          "loc": [
-            241,
-            381523,
-            1440
-          ]
-        },
-        {
-          "session": "f6324d6b-6972-4f50-9c89-21bd31535746",
-          "ts": "2026-07-06T23:34:17.000Z",
-          "tool": "Read",
-          "loc": [
-            271,
-            418358,
-            1444
-          ]
-        },
-        {
-          "session": "45851359-f22b-4839-a74e-2bcc515293b5",
-          "ts": "2026-07-06T04:31:10.744Z",
-          "tool": "Read",
-          "loc": [
-            249,
-            1200160,
-            1449
           ]
         }
       ]
@@ -15810,6 +20530,7 @@ export const sessionSignals = {
       "reads": 3,
       "writes": 1,
       "edits": 12,
+      "humanEdits": 0,
       "touches": 16,
       "sessions": [
         "822b9538-5851-4433-8835-ff1cc1d15c3a",
@@ -15858,7 +20579,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T22:25:45.052Z",
           "tool": "Read",
           "loc": [
-            258,
+            260,
             1710725,
             1399
           ]
@@ -15868,7 +20589,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T18:51:30.731Z",
           "tool": "Edit",
           "loc": [
-            254,
+            256,
             1647315,
             2529
           ]
@@ -15878,7 +20599,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T12:41:27.235Z",
           "tool": "Read",
           "loc": [
-            267,
+            269,
             4335243,
             1397
           ]
@@ -15888,9 +20609,110 @@ export const sessionSignals = {
           "ts": "2026-07-01T03:40:06.860Z",
           "tool": "Write",
           "loc": [
-            269,
+            271,
             7552574,
             5769
+          ]
+        }
+      ]
+    },
+    {
+      "path": "packages/cli/src/__tests__/dashboard-metrics.test.ts",
+      "reads": 4,
+      "writes": 1,
+      "edits": 9,
+      "humanEdits": 1,
+      "touches": 15,
+      "sessions": [
+        "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+        "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
+      ],
+      "branches": [
+        "feat/c64-model-b-symbol-nodes",
+        "feat/c58-per-symbol-complexity",
+        "main",
+        "feat/c52-utilization-metric"
+      ],
+      "netGrowth": 6237,
+      "firstTouched": "2026-07-02T21:51:16.809Z",
+      "lastTouched": "2026-07-04T15:45:39.653Z",
+      "coChange": [
+        {
+          "path": "dashboard/src/types.ts",
+          "count": 4
+        },
+        {
+          "path": "packages/cli/src/commands/dashboard-node-metrics.ts",
+          "count": 4
+        },
+        {
+          "path": "packages/graph/src/index-metrics.ts",
+          "count": 3
+        },
+        {
+          "path": "dashboard/src/components/dossier-metrics.tsx",
+          "count": 3
+        },
+        {
+          "path": "dashboard/src/App.tsx",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/commands/dashboard-payload.ts",
+          "count": 3
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T15:45:08.671Z",
+          "tool": "Read",
+          "loc": [
+            249,
+            970710,
+            1488
+          ]
+        },
+        {
+          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+          "ts": "2026-07-04T14:21:21.561Z",
+          "tool": "edited_text_file",
+          "loc": [
+            254,
+            1129148,
+            598
+          ]
+        },
+        {
+          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+          "ts": "2026-07-04T14:17:33.623Z",
+          "tool": "Read",
+          "loc": [
+            254,
+            1007009,
+            1459
+          ]
+        },
+        {
+          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
+          "ts": "2026-07-03T20:01:54.207Z",
+          "tool": "Read",
+          "loc": [
+            265,
+            485382,
+            1459
+          ]
+        },
+        {
+          "session": "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
+          "ts": "2026-07-02T21:51:16.809Z",
+          "tool": "Write",
+          "loc": [
+            241,
+            521525,
+            3354
           ]
         }
       ]
@@ -15900,6 +20722,7 @@ export const sessionSignals = {
       "reads": 13,
       "writes": 0,
       "edits": 1,
+      "humanEdits": 0,
       "touches": 14,
       "sessions": [
         "19ca862a-d1c9-4ecf-9aa1-5cde0296a921",
@@ -15958,7 +20781,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:52:33.909Z",
           "tool": "Read",
           "loc": [
-            30,
+            32,
             154493,
             1391
           ]
@@ -15968,7 +20791,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:52:15.299Z",
           "tool": "Read",
           "loc": [
-            62,
+            64,
             189109,
             1387
           ]
@@ -15978,7 +20801,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:48:44.562Z",
           "tool": "Read",
           "loc": [
-            94,
+            96,
             126007,
             8532
           ]
@@ -15988,7 +20811,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:48:38.753Z",
           "tool": "Read",
           "loc": [
-            222,
+            224,
             133102,
             5600
           ]
@@ -15998,7 +20821,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T00:57:36.514Z",
           "tool": "Read",
           "loc": [
-            237,
+            239,
             522462,
             1460
           ]
@@ -16008,7 +20831,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T22:35:14.044Z",
           "tool": "Read",
           "loc": [
-            262,
+            264,
             278419,
             1438
           ]
@@ -16018,7 +20841,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T19:58:09.133Z",
           "tool": "Read",
           "loc": [
-            263,
+            265,
             297567,
             1460
           ]
@@ -16028,7 +20851,7 @@ export const sessionSignals = {
           "ts": "2026-07-02T21:47:08.055Z",
           "tool": "Read",
           "loc": [
-            239,
+            241,
             308050,
             1461
           ]
@@ -16038,7 +20861,7 @@ export const sessionSignals = {
           "ts": "2026-07-02T18:03:51.508Z",
           "tool": "Read",
           "loc": [
-            255,
+            257,
             787474,
             1407
           ]
@@ -16048,7 +20871,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T10:59:11.549Z",
           "tool": "Read",
           "loc": [
-            253,
+            255,
             2584779,
             1411
           ]
@@ -16058,7 +20881,7 @@ export const sessionSignals = {
           "ts": "2026-06-30T22:25:07.696Z",
           "tool": "Read",
           "loc": [
-            243,
+            245,
             561270,
             1410
           ]
@@ -16068,7 +20891,7 @@ export const sessionSignals = {
           "ts": "2026-06-30T13:45:16.986Z",
           "tool": "Read",
           "loc": [
-            256,
+            258,
             888027,
             1408
           ]
@@ -16078,99 +20901,9 @@ export const sessionSignals = {
           "ts": "2026-06-02T20:15:41.995Z",
           "tool": "Read",
           "loc": [
-            261,
+            263,
             217606,
             1386
-          ]
-        }
-      ]
-    },
-    {
-      "path": "packages/cli/src/__tests__/dashboard-metrics.test.ts",
-      "reads": 4,
-      "writes": 1,
-      "edits": 9,
-      "touches": 14,
-      "sessions": [
-        "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
-        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-        "af3c02a6-8f49-4edd-b390-dad4ef2d3708"
-      ],
-      "branches": [
-        "feat/c64-model-b-symbol-nodes",
-        "feat/c58-per-symbol-complexity",
-        "main",
-        "feat/c52-utilization-metric"
-      ],
-      "netGrowth": 6237,
-      "firstTouched": "2026-07-02T21:51:16.809Z",
-      "lastTouched": "2026-07-04T15:45:39.653Z",
-      "coChange": [
-        {
-          "path": "dashboard/src/types.ts",
-          "count": 4
-        },
-        {
-          "path": "packages/cli/src/commands/dashboard-node-metrics.ts",
-          "count": 4
-        },
-        {
-          "path": "packages/graph/src/index-metrics.ts",
-          "count": 3
-        },
-        {
-          "path": "dashboard/src/components/dossier-metrics.tsx",
-          "count": 3
-        },
-        {
-          "path": "dashboard/src/App.tsx",
-          "count": 3
-        },
-        {
-          "path": "packages/cli/src/commands/dashboard-payload.ts",
-          "count": 3
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
-          "ts": "2026-07-04T15:45:08.671Z",
-          "tool": "Read",
-          "loc": [
-            247,
-            970710,
-            1488
-          ]
-        },
-        {
-          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
-          "ts": "2026-07-04T14:17:33.623Z",
-          "tool": "Read",
-          "loc": [
-            252,
-            1007009,
-            1459
-          ]
-        },
-        {
-          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
-          "ts": "2026-07-03T20:01:54.207Z",
-          "tool": "Read",
-          "loc": [
-            263,
-            485382,
-            1459
-          ]
-        },
-        {
-          "session": "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
-          "ts": "2026-07-02T21:51:16.809Z",
-          "tool": "Write",
-          "loc": [
-            239,
-            521525,
-            3354
           ]
         }
       ]
@@ -16180,6 +20913,7 @@ export const sessionSignals = {
       "reads": 5,
       "writes": 0,
       "edits": 9,
+      "humanEdits": 0,
       "touches": 14,
       "sessions": [
         "122c4f8f-7dc4-4211-a818-95be2df9b24e",
@@ -16225,7 +20959,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T17:48:16.923Z",
           "tool": "Read",
           "loc": [
-            268,
+            270,
             1039128,
             1486
           ]
@@ -16235,7 +20969,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T21:04:12.572Z",
           "tool": "Read",
           "loc": [
-            258,
+            260,
             537547,
             1423
           ]
@@ -16245,7 +20979,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T16:33:43.246Z",
           "tool": "Edit",
           "loc": [
-            240,
+            242,
             5676254,
             3333
           ]
@@ -16257,6 +20991,7 @@ export const sessionSignals = {
       "reads": 4,
       "writes": 0,
       "edits": 10,
+      "humanEdits": 0,
       "touches": 14,
       "sessions": [
         "3a7136f7-74ab-40b8-abe4-db917c4aed00",
@@ -16311,7 +21046,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T19:04:28.734Z",
           "tool": "Edit",
           "loc": [
-            272,
+            274,
             621816,
             1623
           ]
@@ -16321,7 +21056,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T15:43:18.891Z",
           "tool": "Edit",
           "loc": [
-            247,
+            249,
             828505,
             1625
           ]
@@ -16331,7 +21066,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T14:33:38.593Z",
           "tool": "Read",
           "loc": [
-            252,
+            254,
             1329489,
             1481
           ]
@@ -16341,7 +21076,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T23:10:58.990Z",
           "tool": "Read",
           "loc": [
-            262,
+            264,
             2603590,
             1564
           ]
@@ -16351,7 +21086,7 @@ export const sessionSignals = {
           "ts": "2026-06-30T16:55:22.444Z",
           "tool": "Edit",
           "loc": [
-            256,
+            258,
             1951674,
             2539
           ]
@@ -16363,6 +21098,7 @@ export const sessionSignals = {
       "reads": 3,
       "writes": 1,
       "edits": 9,
+      "humanEdits": 0,
       "touches": 13,
       "sessions": [
         "26f5e28e-f687-42d8-bb19-cbbee69709c1",
@@ -16409,7 +21145,7 @@ export const sessionSignals = {
           "ts": "2026-07-06T17:19:58.170Z",
           "tool": "Read",
           "loc": [
-            246,
+            248,
             435844,
             1467
           ]
@@ -16419,7 +21155,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T19:02:57.693Z",
           "tool": "Read",
           "loc": [
-            272,
+            274,
             520739,
             1463
           ]
@@ -16429,7 +21165,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T17:38:29.113Z",
           "tool": "Write",
           "loc": [
-            251,
+            253,
             967067,
             6339
           ]
@@ -16441,6 +21177,7 @@ export const sessionSignals = {
       "reads": 5,
       "writes": 0,
       "edits": 7,
+      "humanEdits": 0,
       "touches": 12,
       "sessions": [
         "06e0ac05-9729-4fba-bb3a-e10c79c59a7c",
@@ -16489,7 +21226,7 @@ export const sessionSignals = {
           "ts": "2026-07-06T23:34:24.566Z",
           "tool": "Read",
           "loc": [
-            271,
+            273,
             454080,
             1456
           ]
@@ -16499,7 +21236,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T17:41:16.590Z",
           "tool": "Read",
           "loc": [
-            268,
+            270,
             542485,
             1478
           ]
@@ -16509,7 +21246,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T00:58:14.857Z",
           "tool": "Read",
           "loc": [
-            237,
+            239,
             543316,
             1482
           ]
@@ -16519,153 +21256,9 @@ export const sessionSignals = {
           "ts": "2026-06-02T20:18:20.149Z",
           "tool": "Read",
           "loc": [
-            261,
+            263,
             340708,
             1399
-          ]
-        }
-      ]
-    },
-    {
-      "path": "packages/cli/src/commands/graph-context.ts",
-      "reads": 2,
-      "writes": 1,
-      "edits": 9,
-      "touches": 12,
-      "sessions": [
-        "26f5e28e-f687-42d8-bb19-cbbee69709c1",
-        "5abbb0ce-143a-4089-9d99-16de251fa361",
-        "fd633b58-2657-4859-bca3-03c57a0277f0"
-      ],
-      "branches": [
-        "feat/c89-seeded-pagerank-relevance",
-        "feat/graph-context-spike",
-        "main",
-        "feat/c80-context-bundle"
-      ],
-      "netGrowth": 9514,
-      "firstTouched": "2026-07-05T17:37:26.832Z",
-      "lastTouched": "2026-07-06T17:21:37.869Z",
-      "coChange": [
-        {
-          "path": "packages/cli/src/commands/graph-context-build.ts",
-          "count": 3
-        },
-        {
-          "path": "packages/cli/src/__tests__/graph-context-build.test.ts",
-          "count": 3
-        },
-        {
-          "path": "packages/cli/src/commands/graph-context-format.ts",
-          "count": 3
-        },
-        {
-          "path": "packages/graph/src/index.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/graph-context-bundle.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/__tests__/graph-context-bundle.test.ts",
-          "count": 2
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
-          "ts": "2026-07-06T17:16:49.643Z",
-          "tool": "Read",
-          "loc": [
-            246,
-            271436,
-            1453
-          ]
-        },
-        {
-          "session": "fd633b58-2657-4859-bca3-03c57a0277f0",
-          "ts": "2026-07-05T21:36:20.649Z",
-          "tool": "Read",
-          "loc": [
-            272,
-            1118806,
-            1459
-          ]
-        },
-        {
-          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
-          "ts": "2026-07-05T17:37:26.832Z",
-          "tool": "Write",
-          "loc": [
-            251,
-            915244,
-            7577
-          ]
-        }
-      ]
-    },
-    {
-      "path": "packages/render/src/template-cy-styles.ts",
-      "reads": 5,
-      "writes": 0,
-      "edits": 6,
-      "touches": 11,
-      "sessions": [
-        "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
-        "848f1a22-a8a8-42b7-a545-a2000aa36939"
-      ],
-      "branches": [
-        "main"
-      ],
-      "netGrowth": 915,
-      "firstTouched": "2026-07-02T18:03:55.843Z",
-      "lastTouched": "2026-07-03T05:03:56.663Z",
-      "coChange": [
-        {
-          "path": "packages/graph/src/types.ts",
-          "count": 2
-        },
-        {
-          "path": "docs/architecture/dependency-graph-rendering.md",
-          "count": 2
-        },
-        {
-          "path": "packages/render/src/collapse-packages.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/render/src/types.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/graph-dashboard.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/render/src/layout.ts",
-          "count": 2
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
-          "ts": "2026-07-03T05:02:49.720Z",
-          "tool": "Read",
-          "loc": [
-            239,
-            2493532,
-            1482
-          ]
-        },
-        {
-          "session": "848f1a22-a8a8-42b7-a545-a2000aa36939",
-          "ts": "2026-07-02T18:03:55.843Z",
-          "tool": "Read",
-          "loc": [
-            255,
-            793225,
-            1398
           ]
         }
       ]
@@ -16675,7 +21268,8 @@ export const sessionSignals = {
       "reads": 4,
       "writes": 1,
       "edits": 6,
-      "touches": 11,
+      "humanEdits": 1,
+      "touches": 12,
       "sessions": [
         "122c4f8f-7dc4-4211-a818-95be2df9b24e",
         "759a6037-8fee-4639-8faa-ffac0e1f18f4",
@@ -16724,7 +21318,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T18:19:20.854Z",
           "tool": "Edit",
           "loc": [
-            268,
+            270,
             2393392,
             4251
           ]
@@ -16734,9 +21328,19 @@ export const sessionSignals = {
           "ts": "2026-07-01T16:16:02.184Z",
           "tool": "Read",
           "loc": [
-            240,
+            242,
             5237867,
             1434
+          ]
+        },
+        {
+          "session": "759a6037-8fee-4639-8faa-ffac0e1f18f4",
+          "ts": "2026-07-01T10:42:54.212Z",
+          "tool": "edited_text_file",
+          "loc": [
+            255,
+            2516668,
+            3096
           ]
         },
         {
@@ -16744,7 +21348,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T10:37:55.348Z",
           "tool": "Read",
           "loc": [
-            253,
+            255,
             2338352,
             1409
           ]
@@ -16754,7 +21358,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T02:04:00.897Z",
           "tool": "Write",
           "loc": [
-            269,
+            271,
             5182618,
             3770
           ]
@@ -16766,7 +21370,8 @@ export const sessionSignals = {
       "reads": 4,
       "writes": 0,
       "edits": 7,
-      "touches": 11,
+      "humanEdits": 1,
+      "touches": 12,
       "sessions": [
         "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
         "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
@@ -16774,6 +21379,7 @@ export const sessionSignals = {
       ],
       "branches": [
         "main",
+        "fix/partition-quality-nul-key",
         "fix/C-71-lifetime-window"
       ],
       "netGrowth": 3610,
@@ -16811,7 +21417,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T17:48:55.595Z",
           "tool": "Read",
           "loc": [
-            268,
+            270,
             1109956,
             1484
           ]
@@ -16821,9 +21427,19 @@ export const sessionSignals = {
           "ts": "2026-07-01T21:04:56.810Z",
           "tool": "Read",
           "loc": [
-            258,
+            260,
             589925,
             1425
+          ]
+        },
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:58:01.797Z",
+          "tool": "edited_text_file",
+          "loc": [
+            245,
+            1343966,
+            6061
           ]
         },
         {
@@ -16831,9 +21447,257 @@ export const sessionSignals = {
           "ts": "2026-06-30T22:25:04.450Z",
           "tool": "Read",
           "loc": [
-            243,
+            245,
             545612,
             1403
+          ]
+        }
+      ]
+    },
+    {
+      "path": "packages/cli/src/commands/graph-context.ts",
+      "reads": 2,
+      "writes": 1,
+      "edits": 9,
+      "humanEdits": 0,
+      "touches": 12,
+      "sessions": [
+        "26f5e28e-f687-42d8-bb19-cbbee69709c1",
+        "5abbb0ce-143a-4089-9d99-16de251fa361",
+        "fd633b58-2657-4859-bca3-03c57a0277f0"
+      ],
+      "branches": [
+        "feat/c89-seeded-pagerank-relevance",
+        "feat/graph-context-spike",
+        "main",
+        "feat/c80-context-bundle"
+      ],
+      "netGrowth": 9514,
+      "firstTouched": "2026-07-05T17:37:26.832Z",
+      "lastTouched": "2026-07-06T17:21:37.869Z",
+      "coChange": [
+        {
+          "path": "packages/cli/src/commands/graph-context-build.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/__tests__/graph-context-build.test.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/commands/graph-context-format.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/graph/src/index.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/cli/src/commands/graph-context-bundle.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/cli/src/__tests__/graph-context-bundle.test.ts",
+          "count": 2
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
+          "ts": "2026-07-06T17:16:49.643Z",
+          "tool": "Read",
+          "loc": [
+            248,
+            271436,
+            1453
+          ]
+        },
+        {
+          "session": "fd633b58-2657-4859-bca3-03c57a0277f0",
+          "ts": "2026-07-05T21:36:20.649Z",
+          "tool": "Read",
+          "loc": [
+            274,
+            1118806,
+            1459
+          ]
+        },
+        {
+          "session": "5abbb0ce-143a-4089-9d99-16de251fa361",
+          "ts": "2026-07-05T17:37:26.832Z",
+          "tool": "Write",
+          "loc": [
+            253,
+            915244,
+            7577
+          ]
+        }
+      ]
+    },
+    {
+      "path": "packages/render/src/template-cy-styles.ts",
+      "reads": 5,
+      "writes": 0,
+      "edits": 6,
+      "humanEdits": 0,
+      "touches": 11,
+      "sessions": [
+        "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
+        "848f1a22-a8a8-42b7-a545-a2000aa36939"
+      ],
+      "branches": [
+        "main"
+      ],
+      "netGrowth": 915,
+      "firstTouched": "2026-07-02T18:03:55.843Z",
+      "lastTouched": "2026-07-03T05:03:56.663Z",
+      "coChange": [
+        {
+          "path": "packages/graph/src/types.ts",
+          "count": 2
+        },
+        {
+          "path": "docs/architecture/dependency-graph-rendering.md",
+          "count": 2
+        },
+        {
+          "path": "packages/render/src/collapse-packages.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/render/src/types.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/cli/src/commands/graph-dashboard.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/render/src/layout.ts",
+          "count": 2
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
+          "ts": "2026-07-03T05:02:49.720Z",
+          "tool": "Read",
+          "loc": [
+            241,
+            2493532,
+            1482
+          ]
+        },
+        {
+          "session": "848f1a22-a8a8-42b7-a545-a2000aa36939",
+          "ts": "2026-07-02T18:03:55.843Z",
+          "tool": "Read",
+          "loc": [
+            257,
+            793225,
+            1398
+          ]
+        }
+      ]
+    },
+    {
+      "path": "packages/graph/src/ownership.ts",
+      "reads": 4,
+      "writes": 0,
+      "edits": 5,
+      "humanEdits": 1,
+      "touches": 10,
+      "sessions": [
+        "8c4519c6-2287-42dc-b1e6-1b15145ce3de",
+        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+        "759a6037-8fee-4639-8faa-ffac0e1f18f4",
+        "ea64d801-972c-4519-9a34-85fea7f8d776"
+      ],
+      "branches": [
+        "feat/c88-conventions",
+        "main",
+        "fix/partition-quality-nul-key",
+        "feat/c30-authorcount-ownership",
+        "fix/C-71-lifetime-window"
+      ],
+      "netGrowth": 2296,
+      "firstTouched": "2026-06-30T22:11:16.934Z",
+      "lastTouched": "2026-07-07T01:57:17.747Z",
+      "coChange": [
+        {
+          "path": "packages/cli/src/commands/graph-report-sections.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report-types.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/graph/src/types.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/graph/src/index.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/graph/src/index-metrics.ts",
+          "count": 2
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "8c4519c6-2287-42dc-b1e6-1b15145ce3de",
+          "ts": "2026-07-07T01:57:17.747Z",
+          "tool": "Read",
+          "loc": [
+            121,
+            142282,
+            1415
+          ]
+        },
+        {
+          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
+          "ts": "2026-07-05T17:19:34.709Z",
+          "tool": "Read",
+          "loc": [
+            270,
+            265357,
+            1442
+          ]
+        },
+        {
+          "session": "759a6037-8fee-4639-8faa-ffac0e1f18f4",
+          "ts": "2026-07-01T10:31:16.501Z",
+          "tool": "Read",
+          "loc": [
+            255,
+            1850158,
+            1394
+          ]
+        },
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:58:01.797Z",
+          "tool": "edited_text_file",
+          "loc": [
+            245,
+            1350028,
+            4010
+          ]
+        },
+        {
+          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
+          "ts": "2026-06-30T22:11:16.934Z",
+          "tool": "Read",
+          "loc": [
+            245,
+            311927,
+            1392
           ]
         }
       ]
@@ -16843,6 +21707,7 @@ export const sessionSignals = {
       "reads": 0,
       "writes": 1,
       "edits": 9,
+      "humanEdits": 0,
       "touches": 10,
       "sessions": [
         "45851359-f22b-4839-a74e-2bcc515293b5"
@@ -16885,7 +21750,7 @@ export const sessionSignals = {
           "ts": "2026-07-06T03:30:14.436Z",
           "tool": "Write",
           "loc": [
-            249,
+            251,
             322592,
             13644
           ]
@@ -16897,6 +21762,7 @@ export const sessionSignals = {
       "reads": 4,
       "writes": 0,
       "edits": 6,
+      "humanEdits": 0,
       "touches": 10,
       "sessions": [
         "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
@@ -16941,7 +21807,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T17:49:08.037Z",
           "tool": "Read",
           "loc": [
-            268,
+            270,
             1135826,
             1466
           ]
@@ -16951,7 +21817,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T21:07:31.884Z",
           "tool": "Read",
           "loc": [
-            258,
+            260,
             753004,
             1430
           ]
@@ -16961,7 +21827,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T00:36:53.538Z",
           "tool": "Read",
           "loc": [
-            269,
+            271,
             350033,
             1429
           ]
@@ -16973,6 +21839,7 @@ export const sessionSignals = {
       "reads": 9,
       "writes": 0,
       "edits": 0,
+      "humanEdits": 0,
       "touches": 9,
       "sessions": [
         "0b62b5fa-bafe-4a6d-9abf-9214294af95b",
@@ -16998,7 +21865,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:10.359Z",
           "tool": "Read",
           "loc": [
-            123,
+            125,
             243027,
             1402
           ]
@@ -17008,7 +21875,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:09.730Z",
           "tool": "Read",
           "loc": [
-            30,
+            32,
             301853,
             1426
           ]
@@ -17018,7 +21885,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:52:52.133Z",
           "tool": "Read",
           "loc": [
-            48,
+            50,
             216289,
             1406
           ]
@@ -17028,7 +21895,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:49:12.561Z",
           "tool": "Read",
           "loc": [
-            86,
+            88,
             247684,
             1408
           ]
@@ -17038,7 +21905,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:47:10.007Z",
           "tool": "Read",
           "loc": [
-            194,
+            196,
             235069,
             1406
           ]
@@ -17048,7 +21915,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:59.325Z",
           "tool": "Read",
           "loc": [
-            20,
+            22,
             238827,
             1402
           ]
@@ -17058,7 +21925,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:26.122Z",
           "tool": "Read",
           "loc": [
-            148,
+            150,
             242037,
             1410
           ]
@@ -17068,7 +21935,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:21.146Z",
           "tool": "Read",
           "loc": [
-            218,
+            220,
             233318,
             1402
           ]
@@ -17078,99 +21945,9 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:18.171Z",
           "tool": "Read",
           "loc": [
-            183,
+            185,
             234052,
             1410
-          ]
-        }
-      ]
-    },
-    {
-      "path": "packages/graph/src/ownership.ts",
-      "reads": 4,
-      "writes": 0,
-      "edits": 5,
-      "touches": 9,
-      "sessions": [
-        "8c4519c6-2287-42dc-b1e6-1b15145ce3de",
-        "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-        "759a6037-8fee-4639-8faa-ffac0e1f18f4",
-        "ea64d801-972c-4519-9a34-85fea7f8d776"
-      ],
-      "branches": [
-        "feat/c88-conventions",
-        "main",
-        "feat/c30-authorcount-ownership",
-        "fix/C-71-lifetime-window"
-      ],
-      "netGrowth": 2296,
-      "firstTouched": "2026-06-30T22:11:16.934Z",
-      "lastTouched": "2026-07-07T01:57:17.747Z",
-      "coChange": [
-        {
-          "path": "packages/cli/src/commands/graph-report-sections.ts",
-          "count": 3
-        },
-        {
-          "path": "packages/cli/src/commands/graph-report-types.ts",
-          "count": 3
-        },
-        {
-          "path": "packages/cli/src/commands/graph-report.ts",
-          "count": 3
-        },
-        {
-          "path": "packages/graph/src/types.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/graph/src/index.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/graph/src/index-metrics.ts",
-          "count": 2
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "8c4519c6-2287-42dc-b1e6-1b15145ce3de",
-          "ts": "2026-07-07T01:57:17.747Z",
-          "tool": "Read",
-          "loc": [
-            119,
-            142282,
-            1415
-          ]
-        },
-        {
-          "session": "ea64d801-972c-4519-9a34-85fea7f8d776",
-          "ts": "2026-07-05T17:19:34.709Z",
-          "tool": "Read",
-          "loc": [
-            268,
-            265357,
-            1442
-          ]
-        },
-        {
-          "session": "759a6037-8fee-4639-8faa-ffac0e1f18f4",
-          "ts": "2026-07-01T10:31:16.501Z",
-          "tool": "Read",
-          "loc": [
-            253,
-            1850158,
-            1394
-          ]
-        },
-        {
-          "session": "1f043a1f-b0da-488f-ba9a-fcf66bb44ab1",
-          "ts": "2026-06-30T22:11:16.934Z",
-          "tool": "Read",
-          "loc": [
-            243,
-            311927,
-            1392
           ]
         }
       ]
@@ -17180,6 +21957,7 @@ export const sessionSignals = {
       "reads": 4,
       "writes": 0,
       "edits": 5,
+      "humanEdits": 0,
       "touches": 9,
       "sessions": [
         "06e0ac05-9729-4fba-bb3a-e10c79c59a7c",
@@ -17224,7 +22002,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T00:51:11.049Z",
           "tool": "Read",
           "loc": [
-            237,
+            239,
             399782,
             1463
           ]
@@ -17234,7 +22012,7 @@ export const sessionSignals = {
           "ts": "2026-06-30T16:51:49.117Z",
           "tool": "Read",
           "loc": [
-            256,
+            258,
             1795532,
             1410
           ]
@@ -17246,6 +22024,7 @@ export const sessionSignals = {
       "reads": 3,
       "writes": 1,
       "edits": 5,
+      "humanEdits": 0,
       "touches": 9,
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
@@ -17293,7 +22072,7 @@ export const sessionSignals = {
           "ts": "2026-07-02T21:45:58.274Z",
           "tool": "Read",
           "loc": [
-            239,
+            241,
             220689,
             1433
           ]
@@ -17303,7 +22082,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T11:48:44.987Z",
           "tool": "Read",
           "loc": [
-            267,
+            269,
             261912,
             1379
           ]
@@ -17313,7 +22092,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T10:11:56.258Z",
           "tool": "Read",
           "loc": [
-            253,
+            255,
             850038,
             1385
           ]
@@ -17323,7 +22102,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T01:26:22.675Z",
           "tool": "Write",
           "loc": [
-            269,
+            271,
             1569913,
             3371
           ]
@@ -17335,6 +22114,7 @@ export const sessionSignals = {
       "reads": 3,
       "writes": 0,
       "edits": 6,
+      "humanEdits": 0,
       "touches": 9,
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
@@ -17379,7 +22159,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T04:55:29.055Z",
           "tool": "Read",
           "loc": [
-            239,
+            241,
             1792270,
             1448
           ]
@@ -17389,7 +22169,7 @@ export const sessionSignals = {
           "ts": "2026-07-02T18:04:30.804Z",
           "tool": "Read",
           "loc": [
-            255,
+            257,
             818081,
             1392
           ]
@@ -17399,7 +22179,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T22:26:00.879Z",
           "tool": "Read",
           "loc": [
-            258,
+            260,
             1742566,
             1390
           ]
@@ -17411,6 +22191,7 @@ export const sessionSignals = {
       "reads": 2,
       "writes": 1,
       "edits": 6,
+      "humanEdits": 0,
       "touches": 9,
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
@@ -17455,7 +22236,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T13:17:12.389Z",
           "tool": "Read",
           "loc": [
-            260,
+            262,
             225484,
             1451
           ]
@@ -17465,7 +22246,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T04:57:48.522Z",
           "tool": "Write",
           "loc": [
-            239,
+            241,
             1892720,
             5253
           ]
@@ -17477,6 +22258,7 @@ export const sessionSignals = {
       "reads": 1,
       "writes": 1,
       "edits": 7,
+      "humanEdits": 0,
       "touches": 9,
       "sessions": [
         "26f5e28e-f687-42d8-bb19-cbbee69709c1",
@@ -17523,7 +22305,7 @@ export const sessionSignals = {
           "ts": "2026-07-06T17:23:41.596Z",
           "tool": "Edit",
           "loc": [
-            246,
+            248,
             681406,
             2201
           ]
@@ -17533,7 +22315,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T18:59:14.880Z",
           "tool": "Read",
           "loc": [
-            272,
+            274,
             308627,
             1462
           ]
@@ -17543,7 +22325,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T17:36:25.310Z",
           "tool": "Write",
           "loc": [
-            251,
+            253,
             883139,
             5036
           ]
@@ -17555,6 +22337,7 @@ export const sessionSignals = {
       "reads": 2,
       "writes": 1,
       "edits": 6,
+      "humanEdits": 0,
       "touches": 9,
       "sessions": [
         "3a7136f7-74ab-40b8-abe4-db917c4aed00",
@@ -17604,7 +22387,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T15:44:58.069Z",
           "tool": "Edit",
           "loc": [
-            247,
+            249,
             929218,
             7029
           ]
@@ -17614,7 +22397,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T14:41:21.446Z",
           "tool": "Read",
           "loc": [
-            252,
+            254,
             1419329,
             1461
           ]
@@ -17624,7 +22407,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T23:01:52.764Z",
           "tool": "Read",
           "loc": [
-            262,
+            264,
             1551767,
             1453
           ]
@@ -17634,7 +22417,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T20:16:19.620Z",
           "tool": "Write",
           "loc": [
-            263,
+            265,
             1677728,
             7320
           ]
@@ -17646,6 +22429,7 @@ export const sessionSignals = {
       "reads": 3,
       "writes": 1,
       "edits": 5,
+      "humanEdits": 0,
       "touches": 9,
       "sessions": [
         "3a7136f7-74ab-40b8-abe4-db917c4aed00",
@@ -17693,7 +22477,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T18:54:41.931Z",
           "tool": "Read",
           "loc": [
-            272,
+            274,
             138173,
             1450
           ]
@@ -17703,7 +22487,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T13:36:02.753Z",
           "tool": "Read",
           "loc": [
-            266,
+            268,
             1148763,
             1483
           ]
@@ -17713,7 +22497,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T15:50:53.620Z",
           "tool": "Write",
           "loc": [
-            247,
+            249,
             1609911,
             3896
           ]
@@ -17725,6 +22509,7 @@ export const sessionSignals = {
       "reads": 4,
       "writes": 1,
       "edits": 4,
+      "humanEdits": 0,
       "touches": 9,
       "sessions": [
         "3a7136f7-74ab-40b8-abe4-db917c4aed00",
@@ -17772,7 +22557,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T16:09:14.337Z",
           "tool": "Read",
           "loc": [
-            247,
+            249,
             2107258,
             1461
           ]
@@ -17782,7 +22567,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T22:32:27.037Z",
           "tool": "Read",
           "loc": [
-            262,
+            264,
             192571,
             1440
           ]
@@ -17792,9 +22577,190 @@ export const sessionSignals = {
           "ts": "2026-07-03T19:57:25.164Z",
           "tool": "Read",
           "loc": [
-            263,
+            265,
             275994,
             1440
+          ]
+        }
+      ]
+    },
+    {
+      "path": "dashboard/src/sample-data.ts",
+      "reads": 2,
+      "writes": 1,
+      "edits": 5,
+      "humanEdits": 1,
+      "touches": 9,
+      "sessions": [
+        "759a6037-8fee-4639-8faa-ffac0e1f18f4",
+        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
+      ],
+      "branches": [
+        "feat/c30-authorcount-ownership",
+        "main",
+        "fix/c32-data-contract",
+        "feat/status-dashboard",
+        "feat/dashboard-v1.1",
+        "feat/dashboard-architecture"
+      ],
+      "netGrowth": 5327,
+      "firstTouched": "2026-07-01T01:26:55.617Z",
+      "lastTouched": "2026-07-01T11:21:42.565Z",
+      "coChange": [
+        {
+          "path": "packages/cli/src/commands/graph-report.ts",
+          "count": 2
+        },
+        {
+          "path": "dashboard/src/App.tsx",
+          "count": 2
+        },
+        {
+          "path": "dashboard/src/types.ts",
+          "count": 2
+        },
+        {
+          "path": "dashboard/src/theme.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/cli/src/commands/graph-dashboard.ts",
+          "count": 2
+        },
+        {
+          "path": "dashboard/src/views/OverviewView.tsx",
+          "count": 2
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "759a6037-8fee-4639-8faa-ffac0e1f18f4",
+          "ts": "2026-07-01T10:42:54.212Z",
+          "tool": "edited_text_file",
+          "loc": [
+            255,
+            2510514,
+            6153
+          ]
+        },
+        {
+          "session": "759a6037-8fee-4639-8faa-ffac0e1f18f4",
+          "ts": "2026-07-01T10:35:41.413Z",
+          "tool": "Read",
+          "loc": [
+            255,
+            2027480,
+            1408
+          ]
+        },
+        {
+          "session": "ede9df8d-425b-4f7d-8708-93b44767ef3b",
+          "ts": "2026-07-01T01:26:55.617Z",
+          "tool": "Write",
+          "loc": [
+            271,
+            1588631,
+            4870
+          ]
+        }
+      ]
+    },
+    {
+      "path": "packages/cli/src/commands/graph-check.ts",
+      "reads": 4,
+      "writes": 0,
+      "edits": 4,
+      "humanEdits": 1,
+      "touches": 9,
+      "sessions": [
+        "848f1a22-a8a8-42b7-a545-a2000aa36939",
+        "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+        "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
+      ],
+      "branches": [
+        "feat/schema-healing-aliases",
+        "feat/incremental-default-autoupdate-hook",
+        "feat/dashboard-v1"
+      ],
+      "netGrowth": 153,
+      "firstTouched": "2026-06-30T13:50:07.719Z",
+      "lastTouched": "2026-07-02T04:55:46.152Z",
+      "coChange": [
+        {
+          "path": "packages/cli/src/commands/graph-cli.ts",
+          "count": 4
+        },
+        {
+          "path": "packages/graph/src/indexer.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/commands/graph-report.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/graph/src/types.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/graph/src/__tests__/incremental.test.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/cli/src/commands/graph-auto-update.ts",
+          "count": 2
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "848f1a22-a8a8-42b7-a545-a2000aa36939",
+          "ts": "2026-07-02T04:54:32.535Z",
+          "tool": "Read",
+          "loc": [
+            257,
+            183294,
+            1397
+          ]
+        },
+        {
+          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
+          "ts": "2026-07-01T21:12:41.514Z",
+          "tool": "Read",
+          "loc": [
+            260,
+            1499730,
+            1428
+          ]
+        },
+        {
+          "session": "ede9df8d-425b-4f7d-8708-93b44767ef3b",
+          "ts": "2026-07-01T02:10:38.789Z",
+          "tool": "Read",
+          "loc": [
+            271,
+            5394704,
+            1424
+          ]
+        },
+        {
+          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+          "ts": "2026-06-30T16:49:24.457Z",
+          "tool": "edited_text_file",
+          "loc": [
+            258,
+            1695200,
+            534
+          ]
+        },
+        {
+          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+          "ts": "2026-06-30T13:50:07.719Z",
+          "tool": "Edit",
+          "loc": [
+            258,
+            1143212,
+            1573
           ]
         }
       ]
@@ -17804,6 +22770,7 @@ export const sessionSignals = {
       "reads": 8,
       "writes": 0,
       "edits": 0,
+      "humanEdits": 0,
       "touches": 8,
       "sessions": [
         "301a892f-6b99-42e8-90b8-8c86c1caa189",
@@ -17828,7 +22795,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T02:00:10.125Z",
           "tool": "Read",
           "loc": [
-            65,
+            67,
             123217,
             1399
           ]
@@ -17838,7 +22805,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:59:41.756Z",
           "tool": "Read",
           "loc": [
-            49,
+            51,
             141481,
             1421
           ]
@@ -17848,7 +22815,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:20.132Z",
           "tool": "Read",
           "loc": [
-            100,
+            102,
             112019,
             1401
           ]
@@ -17858,7 +22825,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:44.599Z",
           "tool": "Read",
           "loc": [
-            62,
+            64,
             227953,
             1408
           ]
@@ -17868,7 +22835,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:48:44.562Z",
           "tool": "Read",
           "loc": [
-            94,
+            96,
             126007,
             8532
           ]
@@ -17878,7 +22845,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:36.428Z",
           "tool": "Read",
           "loc": [
-            133,
+            135,
             241828,
             1405
           ]
@@ -17888,7 +22855,7 @@ export const sessionSignals = {
           "ts": "2026-06-30T22:21:18.388Z",
           "tool": "Read",
           "loc": [
-            243,
+            245,
             377742,
             1403
           ]
@@ -17900,6 +22867,7 @@ export const sessionSignals = {
       "reads": 3,
       "writes": 1,
       "edits": 4,
+      "humanEdits": 0,
       "touches": 8,
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
@@ -17947,7 +22915,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T14:51:05.382Z",
           "tool": "Read",
           "loc": [
-            252,
+            254,
             2638275,
             1484
           ]
@@ -17957,7 +22925,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T23:01:11.592Z",
           "tool": "Read",
           "loc": [
-            262,
+            264,
             1470201,
             1484
           ]
@@ -17967,7 +22935,7 @@ export const sessionSignals = {
           "ts": "2026-07-02T21:50:30.398Z",
           "tool": "Read",
           "loc": [
-            239,
+            241,
             477818,
             1484
           ]
@@ -17977,7 +22945,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T16:09:27.742Z",
           "tool": "Write",
           "loc": [
-            240,
+            242,
             4071564,
             3072
           ]
@@ -17989,6 +22957,7 @@ export const sessionSignals = {
       "reads": 4,
       "writes": 1,
       "edits": 3,
+      "humanEdits": 0,
       "touches": 8,
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
@@ -18037,7 +23006,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T21:47:46.208Z",
           "tool": "Read",
           "loc": [
-            263,
+            265,
             4313790,
             1447
           ]
@@ -18047,7 +23016,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T13:17:06.631Z",
           "tool": "Read",
           "loc": [
-            260,
+            262,
             216214,
             1453
           ]
@@ -18057,7 +23026,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T04:54:45.568Z",
           "tool": "Read",
           "loc": [
-            239,
+            241,
             1746515,
             1453
           ]
@@ -18067,7 +23036,7 @@ export const sessionSignals = {
           "ts": "2026-07-02T18:03:33.804Z",
           "tool": "Read",
           "loc": [
-            255,
+            257,
             744405,
             1393
           ]
@@ -18077,9 +23046,99 @@ export const sessionSignals = {
           "ts": "2026-07-01T13:09:36.158Z",
           "tool": "Write",
           "loc": [
-            267,
+            269,
             6594677,
             3516
+          ]
+        }
+      ]
+    },
+    {
+      "path": "packages/render/src/index.ts",
+      "reads": 1,
+      "writes": 0,
+      "edits": 6,
+      "humanEdits": 1,
+      "touches": 8,
+      "sessions": [
+        "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
+        "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
+        "ce00b199-172a-4cdb-a183-2178407d04a7"
+      ],
+      "branches": [
+        "main",
+        "feat/c55-barrel-resolved-utilization",
+        "packages/render/src/index.ts",
+        "feat/c54-module-coupling-view"
+      ],
+      "netGrowth": 344,
+      "firstTouched": "2026-07-01T13:09:54.884Z",
+      "lastTouched": "2026-07-03T22:10:12.821Z",
+      "coChange": [
+        {
+          "path": "dashboard/src/types.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/commands/dashboard-payload.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/render/src/collapse-packages.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/render/src/types.ts",
+          "count": 3
+        },
+        {
+          "path": "packages/cli/src/commands/graph-dashboard.ts",
+          "count": 3
+        },
+        {
+          "path": "dashboard/src/theme.ts",
+          "count": 2
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
+          "ts": "2026-07-03T21:45:06.721Z",
+          "tool": "edited_text_file",
+          "loc": [
+            265,
+            4273275,
+            1120
+          ]
+        },
+        {
+          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
+          "ts": "2026-07-03T21:40:30.520Z",
+          "tool": "Edit",
+          "loc": [
+            265,
+            3182810,
+            1690
+          ]
+        },
+        {
+          "session": "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
+          "ts": "2026-07-03T04:54:47.952Z",
+          "tool": "Read",
+          "loc": [
+            241,
+            1753221,
+            1439
+          ]
+        },
+        {
+          "session": "ce00b199-172a-4cdb-a183-2178407d04a7",
+          "ts": "2026-07-01T13:09:54.884Z",
+          "tool": "Edit",
+          "loc": [
+            269,
+            6608881,
+            1785
           ]
         }
       ]
@@ -18089,6 +23148,7 @@ export const sessionSignals = {
       "reads": 2,
       "writes": 3,
       "edits": 3,
+      "humanEdits": 0,
       "touches": 8,
       "sessions": [
         "122c4f8f-7dc4-4211-a818-95be2df9b24e",
@@ -18135,7 +23195,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T16:06:53.253Z",
           "tool": "Read",
           "loc": [
-            240,
+            242,
             3964721,
             1395
           ]
@@ -18145,7 +23205,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T11:03:19.326Z",
           "tool": "Write",
           "loc": [
-            253,
+            255,
             2723868,
             4877
           ]
@@ -18155,7 +23215,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T02:14:35.580Z",
           "tool": "Write",
           "loc": [
-            269,
+            271,
             5544053,
             4144
           ]
@@ -18167,6 +23227,7 @@ export const sessionSignals = {
       "reads": 3,
       "writes": 0,
       "edits": 5,
+      "humanEdits": 0,
       "touches": 8,
       "sessions": [
         "13ba3709-ff7f-4cf7-903d-9e54c208f6bb",
@@ -18214,7 +23275,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:35:27.425Z",
           "tool": "Read",
           "loc": [
-            241,
+            243,
             745721,
             1464
           ]
@@ -18224,7 +23285,7 @@ export const sessionSignals = {
           "ts": "2026-07-06T23:33:49.878Z",
           "tool": "Read",
           "loc": [
-            271,
+            273,
             372384,
             1447
           ]
@@ -18234,7 +23295,7 @@ export const sessionSignals = {
           "ts": "2026-07-06T17:23:50.822Z",
           "tool": "Edit",
           "loc": [
-            246,
+            248,
             694843,
             1582
           ]
@@ -18244,166 +23305,9 @@ export const sessionSignals = {
           "ts": "2026-07-05T23:32:39.828Z",
           "tool": "Read",
           "loc": [
-            259,
+            261,
             252395,
             1448
-          ]
-        }
-      ]
-    },
-    {
-      "path": "dashboard/src/sample-data.ts",
-      "reads": 2,
-      "writes": 1,
-      "edits": 5,
-      "touches": 8,
-      "sessions": [
-        "759a6037-8fee-4639-8faa-ffac0e1f18f4",
-        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
-      ],
-      "branches": [
-        "feat/c30-authorcount-ownership",
-        "fix/c32-data-contract",
-        "feat/status-dashboard",
-        "feat/dashboard-v1.1",
-        "feat/dashboard-architecture"
-      ],
-      "netGrowth": 5327,
-      "firstTouched": "2026-07-01T01:26:55.617Z",
-      "lastTouched": "2026-07-01T11:21:42.565Z",
-      "coChange": [
-        {
-          "path": "packages/cli/src/commands/graph-report.ts",
-          "count": 2
-        },
-        {
-          "path": "dashboard/src/App.tsx",
-          "count": 2
-        },
-        {
-          "path": "dashboard/src/types.ts",
-          "count": 2
-        },
-        {
-          "path": "dashboard/src/theme.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/graph-dashboard.ts",
-          "count": 2
-        },
-        {
-          "path": "dashboard/src/views/OverviewView.tsx",
-          "count": 2
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "759a6037-8fee-4639-8faa-ffac0e1f18f4",
-          "ts": "2026-07-01T10:35:41.413Z",
-          "tool": "Read",
-          "loc": [
-            253,
-            2027480,
-            1408
-          ]
-        },
-        {
-          "session": "ede9df8d-425b-4f7d-8708-93b44767ef3b",
-          "ts": "2026-07-01T01:26:55.617Z",
-          "tool": "Write",
-          "loc": [
-            269,
-            1588631,
-            4870
-          ]
-        }
-      ]
-    },
-    {
-      "path": "packages/cli/src/commands/graph-check.ts",
-      "reads": 4,
-      "writes": 0,
-      "edits": 4,
-      "touches": 8,
-      "sessions": [
-        "848f1a22-a8a8-42b7-a545-a2000aa36939",
-        "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-        "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-        "ede9df8d-425b-4f7d-8708-93b44767ef3b"
-      ],
-      "branches": [
-        "feat/schema-healing-aliases",
-        "feat/dashboard-v1"
-      ],
-      "netGrowth": 153,
-      "firstTouched": "2026-06-30T13:50:07.719Z",
-      "lastTouched": "2026-07-02T04:55:46.152Z",
-      "coChange": [
-        {
-          "path": "packages/cli/src/commands/graph-cli.ts",
-          "count": 4
-        },
-        {
-          "path": "packages/graph/src/indexer.ts",
-          "count": 3
-        },
-        {
-          "path": "packages/cli/src/commands/graph-report.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/graph/src/types.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/graph/src/__tests__/incremental.test.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/graph-auto-update.ts",
-          "count": 2
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "848f1a22-a8a8-42b7-a545-a2000aa36939",
-          "ts": "2026-07-02T04:54:32.535Z",
-          "tool": "Read",
-          "loc": [
-            255,
-            183294,
-            1397
-          ]
-        },
-        {
-          "session": "91e27139-78f8-4b2b-ac22-4c26c6eda2db",
-          "ts": "2026-07-01T21:12:41.514Z",
-          "tool": "Read",
-          "loc": [
-            258,
-            1499730,
-            1428
-          ]
-        },
-        {
-          "session": "ede9df8d-425b-4f7d-8708-93b44767ef3b",
-          "ts": "2026-07-01T02:10:38.789Z",
-          "tool": "Read",
-          "loc": [
-            269,
-            5394704,
-            1424
-          ]
-        },
-        {
-          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
-          "ts": "2026-06-30T13:50:07.719Z",
-          "tool": "Edit",
-          "loc": [
-            256,
-            1143212,
-            1573
           ]
         }
       ]
@@ -18413,6 +23317,7 @@ export const sessionSignals = {
       "reads": 2,
       "writes": 0,
       "edits": 6,
+      "humanEdits": 0,
       "touches": 8,
       "sessions": [
         "aaf23224-a98e-4e2a-b4aa-7ea6ec37a1ff",
@@ -18457,7 +23362,7 @@ export const sessionSignals = {
           "ts": "2026-07-06T23:42:07.082Z",
           "tool": "Read",
           "loc": [
-            271,
+            273,
             912495,
             1478
           ]
@@ -18467,7 +23372,7 @@ export const sessionSignals = {
           "ts": "2026-06-02T20:28:09.327Z",
           "tool": "Read",
           "loc": [
-            261,
+            263,
             709919,
             1404
           ]
@@ -18479,6 +23384,7 @@ export const sessionSignals = {
       "reads": 7,
       "writes": 0,
       "edits": 0,
+      "humanEdits": 0,
       "touches": 7,
       "sessions": [
         "0874f23f-0121-473d-8345-cb0b062f9a29",
@@ -18503,7 +23409,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T02:00:04.673Z",
           "tool": "Read",
           "loc": [
-            65,
+            67,
             121813,
             1403
           ]
@@ -18513,7 +23419,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:59:36.794Z",
           "tool": "Read",
           "loc": [
-            49,
+            51,
             140065,
             1415
           ]
@@ -18523,7 +23429,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:41.149Z",
           "tool": "Read",
           "loc": [
-            17,
+            19,
             124584,
             1415
           ]
@@ -18533,7 +23439,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:58:17.170Z",
           "tool": "Read",
           "loc": [
-            100,
+            102,
             110624,
             1394
           ]
@@ -18543,7 +23449,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:55:47.204Z",
           "tool": "Read",
           "loc": [
-            62,
+            64,
             229362,
             1401
           ]
@@ -18553,7 +23459,7 @@ export const sessionSignals = {
           "ts": "2026-07-06T17:16:17.593Z",
           "tool": "Read",
           "loc": [
-            246,
+            248,
             193418,
             1435
           ]
@@ -18563,88 +23469,9 @@ export const sessionSignals = {
           "ts": "2026-07-03T22:46:39.941Z",
           "tool": "Read",
           "loc": [
-            262,
+            264,
             919110,
             1445
-          ]
-        }
-      ]
-    },
-    {
-      "path": "packages/render/src/index.ts",
-      "reads": 1,
-      "writes": 0,
-      "edits": 6,
-      "touches": 7,
-      "sessions": [
-        "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
-        "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
-        "ce00b199-172a-4cdb-a183-2178407d04a7"
-      ],
-      "branches": [
-        "main",
-        "feat/c55-barrel-resolved-utilization",
-        "packages/render/src/index.ts",
-        "feat/c54-module-coupling-view"
-      ],
-      "netGrowth": 344,
-      "firstTouched": "2026-07-01T13:09:54.884Z",
-      "lastTouched": "2026-07-03T22:10:12.821Z",
-      "coChange": [
-        {
-          "path": "dashboard/src/types.ts",
-          "count": 3
-        },
-        {
-          "path": "packages/cli/src/commands/dashboard-payload.ts",
-          "count": 3
-        },
-        {
-          "path": "packages/render/src/collapse-packages.ts",
-          "count": 3
-        },
-        {
-          "path": "packages/render/src/types.ts",
-          "count": 3
-        },
-        {
-          "path": "packages/cli/src/commands/graph-dashboard.ts",
-          "count": 3
-        },
-        {
-          "path": "dashboard/src/theme.ts",
-          "count": 2
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "af3c02a6-8f49-4edd-b390-dad4ef2d3708",
-          "ts": "2026-07-03T21:40:30.520Z",
-          "tool": "Edit",
-          "loc": [
-            263,
-            3182810,
-            1690
-          ]
-        },
-        {
-          "session": "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
-          "ts": "2026-07-03T04:54:47.952Z",
-          "tool": "Read",
-          "loc": [
-            239,
-            1753221,
-            1439
-          ]
-        },
-        {
-          "session": "ce00b199-172a-4cdb-a183-2178407d04a7",
-          "ts": "2026-07-01T13:09:54.884Z",
-          "tool": "Edit",
-          "loc": [
-            267,
-            6608881,
-            1785
           ]
         }
       ]
@@ -18654,6 +23481,7 @@ export const sessionSignals = {
       "reads": 2,
       "writes": 2,
       "edits": 3,
+      "humanEdits": 0,
       "touches": 7,
       "sessions": [
         "122c4f8f-7dc4-4211-a818-95be2df9b24e",
@@ -18698,7 +23526,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T15:49:50.470Z",
           "tool": "Read",
           "loc": [
-            240,
+            242,
             2597670,
             1480
           ]
@@ -18708,7 +23536,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T11:46:57.279Z",
           "tool": "Read",
           "loc": [
-            267,
+            269,
             111104,
             1390
           ]
@@ -18718,7 +23546,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T02:14:10.214Z",
           "tool": "Write",
           "loc": [
-            269,
+            271,
             5520825,
             6321
           ]
@@ -18730,6 +23558,7 @@ export const sessionSignals = {
       "reads": 3,
       "writes": 0,
       "edits": 4,
+      "humanEdits": 0,
       "touches": 7,
       "sessions": [
         "13ba3709-ff7f-4cf7-903d-9e54c208f6bb",
@@ -18776,7 +23605,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:32:36.555Z",
           "tool": "Edit",
           "loc": [
-            241,
+            243,
             595376,
             2668
           ]
@@ -18786,7 +23615,7 @@ export const sessionSignals = {
           "ts": "2026-07-06T23:33:43.873Z",
           "tool": "Read",
           "loc": [
-            271,
+            273,
             340258,
             1444
           ]
@@ -18796,7 +23625,7 @@ export const sessionSignals = {
           "ts": "2026-06-02T20:15:34.721Z",
           "tool": "Read",
           "loc": [
-            261,
+            263,
             182504,
             1385
           ]
@@ -18808,6 +23637,7 @@ export const sessionSignals = {
       "reads": 4,
       "writes": 0,
       "edits": 3,
+      "humanEdits": 0,
       "touches": 7,
       "sessions": [
         "13ba3709-ff7f-4cf7-903d-9e54c208f6bb",
@@ -18854,7 +23684,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:35:20.152Z",
           "tool": "Read",
           "loc": [
-            241,
+            243,
             732010,
             1443
           ]
@@ -18864,7 +23694,7 @@ export const sessionSignals = {
           "ts": "2026-07-06T23:34:16.531Z",
           "tool": "Read",
           "loc": [
-            271,
+            273,
             408713,
             1449
           ]
@@ -18874,7 +23704,7 @@ export const sessionSignals = {
           "ts": "2026-07-06T17:17:14.339Z",
           "tool": "Read",
           "loc": [
-            246,
+            248,
             319101,
             1446
           ]
@@ -18884,7 +23714,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T23:32:35.208Z",
           "tool": "Read",
           "loc": [
-            259,
+            261,
             240630,
             1444
           ]
@@ -18896,6 +23726,7 @@ export const sessionSignals = {
       "reads": 1,
       "writes": 1,
       "edits": 5,
+      "humanEdits": 0,
       "touches": 7,
       "sessions": [
         "26f5e28e-f687-42d8-bb19-cbbee69709c1",
@@ -18940,7 +23771,7 @@ export const sessionSignals = {
           "ts": "2026-07-06T17:17:00.478Z",
           "tool": "Read",
           "loc": [
-            246,
+            248,
             297625,
             1460
           ]
@@ -18950,9 +23781,86 @@ export const sessionSignals = {
           "ts": "2026-07-05T21:39:42.125Z",
           "tool": "Write",
           "loc": [
-            272,
+            274,
             1230354,
             8893
+          ]
+        }
+      ]
+    },
+    {
+      "path": "packages/graph/src/__tests__/source-metrics.test.ts",
+      "reads": 2,
+      "writes": 0,
+      "edits": 4,
+      "humanEdits": 1,
+      "touches": 7,
+      "sessions": [
+        "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+        "5e8f4b04-c57a-41a0-930b-eb1fc02bb677"
+      ],
+      "branches": [
+        "feat/c64-model-b-symbol-nodes",
+        "feat/c58-per-symbol-complexity"
+      ],
+      "netGrowth": 5769,
+      "firstTouched": "2026-07-04T14:17:17.304Z",
+      "lastTouched": "2026-07-04T15:59:12.922Z",
+      "coChange": [
+        {
+          "path": "dashboard/src/types.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/cli/src/__tests__/dashboard-metrics.test.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/cli/src/commands/dashboard-node-metrics.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/graph/src/index-metrics.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/graph/src/extractors/ts-morph-extractor.ts",
+          "count": 2
+        },
+        {
+          "path": "packages/graph/src/indexer.ts",
+          "count": 2
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "3a7136f7-74ab-40b8-abe4-db917c4aed00",
+          "ts": "2026-07-04T15:42:25.481Z",
+          "tool": "Read",
+          "loc": [
+            249,
+            748444,
+            1490
+          ]
+        },
+        {
+          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+          "ts": "2026-07-04T14:21:21.561Z",
+          "tool": "edited_text_file",
+          "loc": [
+            254,
+            1104672,
+            5565
+          ]
+        },
+        {
+          "session": "5e8f4b04-c57a-41a0-930b-eb1fc02bb677",
+          "ts": "2026-07-04T14:17:17.304Z",
+          "tool": "Edit",
+          "loc": [
+            254,
+            974182,
+            6715
           ]
         }
       ]
@@ -18962,6 +23870,7 @@ export const sessionSignals = {
       "reads": 2,
       "writes": 0,
       "edits": 5,
+      "humanEdits": 0,
       "touches": 7,
       "sessions": [
         "822b9538-5851-4433-8835-ff1cc1d15c3a",
@@ -19008,7 +23917,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T17:49:50.464Z",
           "tool": "Edit",
           "loc": [
-            268,
+            270,
             1217730,
             1637
           ]
@@ -19018,7 +23927,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T18:12:38.580Z",
           "tool": "Read",
           "loc": [
-            254,
+            256,
             684715,
             1428
           ]
@@ -19028,9 +23937,75 @@ export const sessionSignals = {
           "ts": "2026-07-01T02:18:30.575Z",
           "tool": "Edit",
           "loc": [
-            269,
+            271,
             6129528,
             3349
+          ]
+        }
+      ]
+    },
+    {
+      "path": "packages/graph/src/diff.ts",
+      "reads": 2,
+      "writes": 1,
+      "edits": 3,
+      "humanEdits": 1,
+      "touches": 7,
+      "sessions": [
+        "8cb0fce6-865e-4a97-aca9-4e16013f2503"
+      ],
+      "branches": [
+        "feat/schema-healing-aliases",
+        "feat/incremental-default-autoupdate-hook"
+      ],
+      "netGrowth": 6273,
+      "firstTouched": "2026-06-30T13:44:13.177Z",
+      "lastTouched": "2026-06-30T16:49:24.456Z",
+      "coChange": [
+        {
+          "path": "packages/cli/src/commands/graph-report.ts",
+          "count": 1
+        },
+        {
+          "path": "packages/graph/src/types.ts",
+          "count": 1
+        },
+        {
+          "path": "packages/graph/src/index.ts",
+          "count": 1
+        },
+        {
+          "path": "packages/cli/src/commands/graph-cli.ts",
+          "count": 1
+        },
+        {
+          "path": "packages/cli/src/index.ts",
+          "count": 1
+        },
+        {
+          "path": "packages/graph/src/indexer.ts",
+          "count": 1
+        }
+      ],
+      "touchLocs": [
+        {
+          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+          "ts": "2026-06-30T16:49:24.456Z",
+          "tool": "edited_text_file",
+          "loc": [
+            258,
+            1694148,
+            520
+          ]
+        },
+        {
+          "session": "8cb0fce6-865e-4a97-aca9-4e16013f2503",
+          "ts": "2026-06-30T13:44:13.177Z",
+          "tool": "Read",
+          "loc": [
+            258,
+            837806,
+            1399
           ]
         }
       ]
@@ -19040,6 +24015,7 @@ export const sessionSignals = {
       "reads": 3,
       "writes": 1,
       "edits": 3,
+      "humanEdits": 0,
       "touches": 7,
       "sessions": [
         "8cb0fce6-865e-4a97-aca9-4e16013f2503",
@@ -19087,7 +24063,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T22:42:11.444Z",
           "tool": "Read",
           "loc": [
-            262,
+            264,
             733625,
             1457
           ]
@@ -19097,7 +24073,7 @@ export const sessionSignals = {
           "ts": "2026-07-01T00:36:02.128Z",
           "tool": "Read",
           "loc": [
-            269,
+            271,
             329607,
             1426
           ]
@@ -19107,7 +24083,7 @@ export const sessionSignals = {
           "ts": "2026-06-30T16:54:15.193Z",
           "tool": "Read",
           "loc": [
-            256,
+            258,
             1889502,
             1433
           ]
@@ -19117,7 +24093,7 @@ export const sessionSignals = {
           "ts": "2026-06-02T20:27:45.040Z",
           "tool": "Write",
           "loc": [
-            261,
+            263,
             674570,
             8646
           ]
@@ -19129,6 +24105,7 @@ export const sessionSignals = {
       "reads": 3,
       "writes": 0,
       "edits": 4,
+      "humanEdits": 0,
       "touches": 7,
       "sessions": [
         "ae027a39-3ace-4d50-83ac-2f740cd20edf",
@@ -19174,7 +24151,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T22:41:51.523Z",
           "tool": "Read",
           "loc": [
-            262,
+            264,
             697121,
             1476
           ]
@@ -19184,7 +24161,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T20:01:32.550Z",
           "tool": "Read",
           "loc": [
-            263,
+            265,
             452849,
             1449
           ]
@@ -19196,6 +24173,7 @@ export const sessionSignals = {
       "reads": 1,
       "writes": 1,
       "edits": 4,
+      "humanEdits": 0,
       "touches": 6,
       "sessions": [
         "07951ff5-cc20-414c-8f4b-8d9e184f5c96",
@@ -19239,7 +24217,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:45:46.842Z",
           "tool": "Read",
           "loc": [
-            15,
+            17,
             31767,
             1402
           ]
@@ -19249,7 +24227,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:31:59.879Z",
           "tool": "Write",
           "loc": [
-            241,
+            243,
             544894,
             15237
           ]
@@ -19261,6 +24239,7 @@ export const sessionSignals = {
       "reads": 1,
       "writes": 1,
       "edits": 4,
+      "humanEdits": 0,
       "touches": 6,
       "sessions": [
         "06e0ac05-9729-4fba-bb3a-e10c79c59a7c",
@@ -19305,7 +24284,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T00:59:17.168Z",
           "tool": "Read",
           "loc": [
-            237,
+            239,
             609915,
             1480
           ]
@@ -19315,7 +24294,7 @@ export const sessionSignals = {
           "ts": "2026-07-04T17:38:41.375Z",
           "tool": "Write",
           "loc": [
-            247,
+            249,
             4947691,
             5736
           ]
@@ -19327,6 +24306,7 @@ export const sessionSignals = {
       "reads": 2,
       "writes": 0,
       "edits": 4,
+      "humanEdits": 0,
       "touches": 6,
       "sessions": [
         "06e0ac05-9729-4fba-bb3a-e10c79c59a7c"
@@ -19369,7 +24349,7 @@ export const sessionSignals = {
           "ts": "2026-07-05T01:09:56.101Z",
           "tool": "Read",
           "loc": [
-            237,
+            239,
             830430,
             1478
           ]
@@ -19381,6 +24361,7 @@ export const sessionSignals = {
       "reads": 3,
       "writes": 1,
       "edits": 2,
+      "humanEdits": 0,
       "touches": 6,
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
@@ -19424,7 +24405,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T04:52:41.642Z",
           "tool": "Read",
           "loc": [
-            239,
+            241,
             1705690,
             1480
           ]
@@ -19434,7 +24415,7 @@ export const sessionSignals = {
           "ts": "2026-07-02T21:27:28.223Z",
           "tool": "Write",
           "loc": [
-            255,
+            257,
             6456473,
             12831
           ]
@@ -19446,6 +24427,7 @@ export const sessionSignals = {
       "reads": 2,
       "writes": 0,
       "edits": 4,
+      "humanEdits": 0,
       "touches": 6,
       "sessions": [
         "106c21eb-c5af-45b2-a31c-6009a84bdaaf",
@@ -19490,7 +24472,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T22:10:48.965Z",
           "tool": "Read",
           "loc": [
-            263,
+            265,
             6254482,
             1476
           ]
@@ -19500,7 +24482,7 @@ export const sessionSignals = {
           "ts": "2026-07-03T07:02:33.909Z",
           "tool": "Read",
           "loc": [
-            239,
+            241,
             4353532,
             1458
           ]
@@ -19512,6 +24494,7 @@ export const sessionSignals = {
       "reads": 1,
       "writes": 1,
       "edits": 4,
+      "humanEdits": 0,
       "touches": 6,
       "sessions": [
         "13ba3709-ff7f-4cf7-903d-9e54c208f6bb",
@@ -19556,7 +24539,7 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:24:39.243Z",
           "tool": "Read",
           "loc": [
-            241,
+            243,
             276953,
             1456
           ]
@@ -19566,7 +24549,7 @@ export const sessionSignals = {
           "ts": "2026-07-06T23:36:25.359Z",
           "tool": "Write",
           "loc": [
-            271,
+            273,
             512824,
             10259
           ]
@@ -19578,6 +24561,7 @@ export const sessionSignals = {
       "reads": 0,
       "writes": 1,
       "edits": 5,
+      "humanEdits": 0,
       "touches": 6,
       "sessions": [
         "13ba3709-ff7f-4cf7-903d-9e54c208f6bb"
@@ -19620,141 +24604,9 @@ export const sessionSignals = {
           "ts": "2026-07-07T01:29:56.530Z",
           "tool": "Write",
           "loc": [
-            241,
+            243,
             486805,
             6294
-          ]
-        }
-      ]
-    },
-    {
-      "path": "packages/cli/src/read-api/__tests__/read-api.test.ts",
-      "reads": 2,
-      "writes": 0,
-      "edits": 4,
-      "touches": 6,
-      "sessions": [
-        "13ba3709-ff7f-4cf7-903d-9e54c208f6bb",
-        "f6324d6b-6972-4f50-9c89-21bd31535746"
-      ],
-      "branches": [
-        "feat/c88-conventions",
-        "feat/c88-capability-embeddings"
-      ],
-      "netGrowth": 1503,
-      "firstTouched": "2026-07-06T23:40:34.666Z",
-      "lastTouched": "2026-07-07T01:38:45.702Z",
-      "coChange": [
-        {
-          "path": "packages/graph/src/index.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/graph/src/embeddings.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/graph-embed.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/mcp/server.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/graph/src/migrations.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/read-api/reader.ts",
-          "count": 2
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "13ba3709-ff7f-4cf7-903d-9e54c208f6bb",
-          "ts": "2026-07-07T01:38:45.702Z",
-          "tool": "Read",
-          "loc": [
-            241,
-            875742,
-            1472
-          ]
-        },
-        {
-          "session": "f6324d6b-6972-4f50-9c89-21bd31535746",
-          "ts": "2026-07-06T23:40:34.666Z",
-          "tool": "Read",
-          "loc": [
-            271,
-            813457,
-            1504
-          ]
-        }
-      ]
-    },
-    {
-      "path": "packages/cli/src/__tests__/graph-context-bundle.test.ts",
-      "reads": 2,
-      "writes": 2,
-      "edits": 2,
-      "touches": 6,
-      "sessions": [
-        "26f5e28e-f687-42d8-bb19-cbbee69709c1",
-        "fd633b58-2657-4859-bca3-03c57a0277f0"
-      ],
-      "branches": [
-        "feat/c89-seeded-pagerank-relevance",
-        "feat/c80-context-bundle"
-      ],
-      "netGrowth": 11469,
-      "firstTouched": "2026-07-05T21:42:21.383Z",
-      "lastTouched": "2026-07-06T17:25:24.730Z",
-      "coChange": [
-        {
-          "path": "packages/cli/src/commands/graph-context-build.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/graph-context.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/graph-context-bundle.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/__tests__/graph-context-build.test.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/cli/src/commands/graph-context-format.ts",
-          "count": 2
-        },
-        {
-          "path": "packages/graph/src/index.ts",
-          "count": 1
-        }
-      ],
-      "touchLocs": [
-        {
-          "session": "26f5e28e-f687-42d8-bb19-cbbee69709c1",
-          "ts": "2026-07-06T17:19:45.266Z",
-          "tool": "Read",
-          "loc": [
-            246,
-            420586,
-            1468
-          ]
-        },
-        {
-          "session": "fd633b58-2657-4859-bca3-03c57a0277f0",
-          "ts": "2026-07-05T21:42:21.383Z",
-          "tool": "Write",
-          "loc": [
-            272,
-            1360888,
-            6544
           ]
         }
       ]
@@ -20181,6 +25033,21 @@ export const sessionSignals = {
       "session": "98a12e8c-fe6b-4c14-9b05-868115c56554",
       "label": "Claude Code remote agent startup",
       "type": "claude-code-guide"
+    },
+    {
+      "session": "6caffed7-bf3e-47ed-8585-638bbbcbea6f",
+      "label": "Research agent memory & self-improvement systems",
+      "type": "general-purpose"
+    },
+    {
+      "session": "6caffed7-bf3e-47ed-8585-638bbbcbea6f",
+      "label": "Research deterministic extractors & dev-activity mining",
+      "type": "general-purpose"
+    },
+    {
+      "session": "6caffed7-bf3e-47ed-8585-638bbbcbea6f",
+      "label": "Research text-data efficiency: LLM vs deterministic",
+      "type": "general-purpose"
     },
     {
       "session": "60c82abe-f559-48d0-925e-da633dabb3e6",
@@ -20683,6 +25550,11 @@ export const sessionSignals = {
       "type": "general-purpose"
     },
     {
+      "session": "036ffed7-2643-4ff1-8ebc-37c40584735c",
+      "label": "Trace mock-mode drivability",
+      "type": "Explore"
+    },
+    {
       "session": "248daffe-e0f0-43f1-b811-89131c31c94a",
       "label": "Gather composed component interfaces",
       "type": "Explore"
@@ -21146,6 +26018,26 @@ export const sessionSignals = {
       "session": "8c68f4e7-d41e-4e87-901d-b741f2374c24",
       "label": "Verify stale VMCP tickets are done",
       "type": "general-purpose"
+    },
+    {
+      "session": "a0e9f338-b1c3-4916-ab04-a23c281c1496",
+      "label": "Audit voltras-mcp store layer",
+      "type": "Explore"
+    },
+    {
+      "session": "a0e9f338-b1c3-4916-ab04-a23c281c1496",
+      "label": "Inventory titan component provenance",
+      "type": "Explore"
+    },
+    {
+      "session": "a0e9f338-b1c3-4916-ab04-a23c281c1496",
+      "label": "Extract prior canonical decisions from docs",
+      "type": "Explore"
+    },
+    {
+      "session": "a0e9f338-b1c3-4916-ab04-a23c281c1496",
+      "label": "Analyze week of session history",
+      "type": "Explore"
     },
     {
       "session": "a9400649-3198-4fbe-8e3d-c46ebde7ef38",
@@ -22077,6 +26969,37 @@ export const sessionSignals = {
     "tokensIn": 6062393,
     "tokensOut": 20620269,
     "cacheRead": 3460701494,
+    "cacheCreation": 64102307,
+    "serverToolUse": 0,
+    "tokensByModel": {
+      "claude-opus-4-8": {
+        "in": 5988650,
+        "out": 20108794,
+        "cacheRead": 3391723071,
+        "cacheCreation": 62713217
+      },
+      "<synthetic>": {
+        "in": 0,
+        "out": 0,
+        "cacheRead": 0,
+        "cacheCreation": 0
+      },
+      "claude-fable-5": {
+        "in": 73711,
+        "out": 506941,
+        "cacheRead": 68440781,
+        "cacheCreation": 1293928
+      },
+      "claude-sonnet-5": {
+        "in": 32,
+        "out": 4534,
+        "cacheRead": 537642,
+        "cacheCreation": 95162
+      }
+    },
+    "thinkingBlocks": 4911,
+    "humanEdits": 51,
+    "maxTurnsHits": 0,
     "errors": 403,
     "decisions": 44,
     "compactions": 1,
@@ -22084,10 +27007,10 @@ export const sessionSignals = {
     "pushes": 95,
     "subagents": 103,
     "turnDurationMs": {
-      "p50": 163242,
-      "p85": 807734,
+      "p50": 158962,
+      "p85": 805855,
       "p99": 4117918,
-      "count": 704
+      "count": 750
     }
   }
 } as const;
