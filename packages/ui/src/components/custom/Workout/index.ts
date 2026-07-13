@@ -189,3 +189,19 @@ export type {
   WorkoutProgress,
   WorkoutGroup,
 } from './ActiveWorkoutPage'
+export { ZoneTrack } from './ZoneTrack'
+export type {
+  ZoneTrackProps,
+  ZoneTrackZone,
+  ZoneTrackTick,
+  ZoneTrackMarker,
+  ZoneTrackBand,
+} from './ZoneTrack'
+export { FatigueMeter } from './FatigueMeter'
+export type { FatigueMeterProps } from './FatigueMeter'
+export { VolumeLandmarkBar } from './VolumeLandmarkBar'
+export type { VolumeLandmarkBarProps, VolumeZone } from './VolumeLandmarkBar'
+export { StatusPill, statusPillColor } from './StatusPill'
+export type { StatusPillProps, StatusPillStatus } from './StatusPill'
+export { LiveAuraFrame, liveAuraColor } from './LiveAuraFrame'
+export type { LiveAuraFrameProps, LiveAuraCategory } from './LiveAuraFrame'
