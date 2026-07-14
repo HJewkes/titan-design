@@ -34,6 +34,8 @@ export interface LiveModel {
   force: number
   /** Current movement phase. */
   phase: 'concentric' | 'hold' | 'eccentric' | 'idle'
+  /** Elapsed time (ms) within the current phase — drives the live tempo fill. */
+  phaseElapsedMs: number
   /** The most-recently completed rep. */
   lastRep: RepModel
   /** Per-rep mean-concentric velocities logged so far this set (m/s). */
@@ -83,6 +85,7 @@ export const dashboardFixture: DashboardModel = {
     velocity: 0.41,
     force: 498,
     phase: 'concentric',
+    phaseElapsedMs: 700,
     lastRep: { vCon: 0.405, rom: 0.58, peakVelocity: 0.61 },
     repVelocities: [0.52, 0.5, 0.48, 0.46, 0.44, 0.405],
     velocityLossPct: 22,

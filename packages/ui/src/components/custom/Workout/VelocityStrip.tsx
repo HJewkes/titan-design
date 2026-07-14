@@ -394,7 +394,7 @@ const HERO_LABEL_HEADROOM = 20
 /** Gap between hero bars (px) — a group-notch-free even rhythm at wall scale. */
 const HERO_BAR_GAP = 8
 /** Cap on a single hero bar's width so a 2–3 rep set doesn't render slab-wide bars (px). */
-const HERO_BAR_MAX_WIDTH = 52
+const HERO_BAR_MAX_WIDTH = 120
 /** Below this per-bar width the value labels collide, so all but the peak + live rep are dropped. */
 const HERO_LABEL_MIN_BAR_WIDTH = 30
 /** Top-corner radius on hero bars (px). */
@@ -553,6 +553,9 @@ function HeroVelocityChart({
       ? Math.min(HERO_BAR_MAX_WIDTH, (plotW - HERO_BAR_GAP * (totalSlots - 1)) / totalSlots)
       : HERO_BAR_MAX_WIDTH
   const labelsCrowded = plotW > 0 && barWidth < HERO_LABEL_MIN_BAR_WIDTH
+  // Step the inter-bar gap down with the bars so the gaps never dwarf the bars themselves.
+  const heroGap =
+    plotW === 0 ? HERO_BAR_GAP : barWidth < 16 ? 2 : barWidth < 28 ? 4 : HERO_BAR_GAP
   const peakIndex = doneVelocities.reduce(
     (best, v, i) => (v > doneVelocities[best] ? i : best),
     0,
@@ -584,7 +587,7 @@ function HeroVelocityChart({
           flex: 1,
           flexDirection: 'row',
           alignItems: 'flex-end',
-          gap: HERO_BAR_GAP,
+          gap: heroGap,
           position: 'relative',
           borderBottomWidth: 2,
           borderBottomColor: HERO_PENDING_COLOR,

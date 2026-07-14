@@ -58,7 +58,9 @@ export function LivePage({ variant = 'live', model = dashboardFixture }: LivePag
         {variant === 'live-dual' ? (
           <DualLiveStage model={model} />
         ) : variant === 'live' ? (
-          <LiveView model={model} />
+          // `slot` names the active voltra — the shell has two connected, so the live view
+          // flags which one it is reading from (the multi-device single-view case).
+          <LiveView model={model} slot="L" />
         ) : (
           <RestView model={model} />
         )}
