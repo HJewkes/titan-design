@@ -10,10 +10,37 @@ import {
   TempoBar,
   FatigueMeter,
   Alert,
-  AlertTitle,
-  AlertDescription,
 } from '../../components'
 import { type DashboardModel, meanVelocity, verdictFromLoss } from './fixtures'
+
+/** Which Voltra this layer renders, in a dual-mode (bilateral) exercise. */
+export type LiveSide = 'left' | 'right'
+
+const SIDE_META: Record<LiveSide, { label: string; glyph: string }> = {
+  left: { label: 'LEFT VOLTRA', glyph: '◧' },
+  right: { label: 'RIGHT VOLTRA', glyph: '◨' },
+}
+
+/** The per-voltra badge shown in a dual-mode layer's head. */
+function SideBadge({ side }: { side: LiveSide }) {
+  const { label, glyph } = SIDE_META[side]
+  return (
+    <View
+      className="flex-row items-center bg-surface-raised border-border"
+      style={{ gap: 6, borderWidth: 1, borderRadius: 999, paddingHorizontal: 10, paddingVertical: 3 }}
+    >
+      <Text className="text-text-secondary" style={{ fontSize: 13 }}>
+        {glyph}
+      </Text>
+      <Text
+        className="text-text-secondary"
+        style={{ fontSize: 10, fontWeight: '700', letterSpacing: 1 }}
+      >
+        {label}
+      </Text>
+    </View>
+  )
+}
 
 /**
  * Lab specimen — the LIVE (mid-set) stage of the North Star wall dashboard.
@@ -21,32 +48,41 @@ import { type DashboardModel, meanVelocity, verdictFromLoss } from './fixtures'
  * Composes production primitives around the fixture read-model. The stage root is
  * wrapped in a {@link LiveAuraFrame} whose category tracks the velocity-loss verdict.
  * NOT a published component — lab-scoped composition only.
+ *
+ * `side` renders this as ONE LAYER of a dual-mode (bilateral) exercise — a per-voltra
+ * badge in the head and a slightly denser hero. LivePage stacks two of these (one per
+ * voltra) for dual-mode sets; a unified split-bar treatment is a later exploration.
  */
-export function LiveView({ model }: { model: DashboardModel }) {
+export function LiveView({ model, side }: { model: DashboardModel; side?: LiveSide }) {
   const { live, session } = model
   const verdict = verdictFromLoss(live.velocityLossPct)
   const meanCon = meanVelocity(live.repVelocities)
+  const dual = side != null
+  const heroHeight = dual ? 180 : 240
 
   return (
     // head verdict → full-surface aura flood (threshold amber for the mid-zone fixture).
-    <LiveAuraFrame category={verdict} style={{ flex: 1, margin: 20 }}>
-      <View style={{ flex: 1, padding: 28, gap: 24 }}>
+    <LiveAuraFrame category={verdict} style={{ flex: 1, margin: dual ? 12 : 20 }}>
+      <View style={{ flex: 1, padding: dual ? 20 : 28, gap: dual ? 16 : 24 }}>
         {/* head: exercise identity + load line, with the read-once verdict pill. */}
         <View className="flex-row items-start justify-between">
-          <ExerciseHeading
-            name={session.exerciseName}
-            sets={session.plannedSets}
-            reps={8}
-            load={session.weightLbs}
-            unit={session.unit}
-            tempo={session.tempo}
-            indicator="velocity-loss"
-          />
+          <View className="flex-row items-center" style={{ gap: 12 }}>
+            {side && <SideBadge side={side} />}
+            <ExerciseHeading
+              name={session.exerciseName}
+              sets={session.plannedSets}
+              reps={8}
+              load={session.weightLbs}
+              unit={session.unit}
+              tempo={session.tempo}
+              indicator="velocity-loss"
+            />
+          </View>
           <StatusPill status={verdict} />
         </View>
 
         <View className="flex-row" style={{ flex: 1, gap: 28 }}>
-          {/* left: the velocity hero. STUB: VelocityStrip — pending hero variant (Tier-C, Gate-1). */}
+          {/* left: the velocity hero (wall live-set treatment). */}
           <View style={{ flex: 3 }}>
             <Text
               className="text-text-tertiary"
@@ -54,17 +90,18 @@ export function LiveView({ model }: { model: DashboardModel }) {
             >
               CONCENTRIC VELOCITY · THIS SET
             </Text>
-            {/* STUB: VelocityStrip — pending hero variant (Tier-C, Gate-1) */}
             <VelocityStrip
+              variant="hero"
               velocities={live.repVelocities}
               liveRepIndex={live.repVelocities.length - 1}
-              height={240}
+              targetReps={8}
+              height={heroHeight}
               scale="fixed"
             />
           </View>
 
-          {/* right: the live metrics stack. */}
-          <View style={{ flex: 2, gap: 20 }}>
+          {/* right: the live metrics stack (tighter gaps in a dual-mode layer). */}
+          <View style={{ flex: 2, gap: dual ? 14 : 20 }}>
             {/* primary numeral = MEAN concentric (not peak). */}
             <Metric
               value={meanCon.toFixed(2)}
@@ -96,7 +133,7 @@ export function LiveView({ model }: { model: DashboardModel }) {
               <Metric size="sm" value={String(session.completedSets.length + 1)} label="Set" />
             </MetricGroup>
 
-            {/* STUB: TempoBar — pending size='wall' (Tier-C, Gate-1) */}
+            {/* TEMPO — wall density (full phase words, active delta countdown). */}
             <View>
               <Text
                 className="text-text-tertiary"
@@ -105,6 +142,8 @@ export function LiveView({ model }: { model: DashboardModel }) {
                 TEMPO
               </Text>
               <TempoBar
+                size="wall"
+                activeDisplay="delta"
                 activePhase="concentric"
                 phaseElapsedMs={700}
                 completed={{ eccentric: 3100, hold: 900 }}
@@ -112,16 +151,16 @@ export function LiveView({ model }: { model: DashboardModel }) {
               />
             </View>
 
-            {/* FatigueMeter — base density (default track). */}
-            <FatigueMeter value={live.velocityLossPct} />
+            {/* FatigueMeter — wall density (bigger track, needle, tick labels). */}
+            <FatigueMeter size="wall" value={live.velocityLossPct} />
 
-            {/* STUB: Alert — pending CueFlag (Tier-C, Gate-1) */}
-            <Alert status="warning" variant="subtle">
-              <AlertTitle>Approaching threshold</AlertTitle>
-              <AlertDescription>
-                {`${live.velocityLossPct}% velocity loss — one or two reps left in the productive band.`}
-              </AlertDescription>
-            </Alert>
+            {/* Live coaching cue — compact, batteries-included colored one-liner. */}
+            <Alert
+              status="warning"
+              variant="subtle"
+              size="compact"
+              message={`VL${live.velocityLossPct} · approaching threshold — 1–2 productive reps left`}
+            />
           </View>
         </View>
       </View>

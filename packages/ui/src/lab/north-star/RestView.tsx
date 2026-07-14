@@ -43,8 +43,10 @@ export function RestView({ model }: { model: DashboardModel }) {
     <View className="flex-row" style={{ flex: 1, padding: 20, gap: 20 }}>
       {/* left: the countdown + the just-completed exercise recap. */}
       <View style={{ flex: 2, gap: 20 }}>
-        {/* STUB: RestTimer — pending ring variant (Tier-C, Gate-1) */}
+        {/* Rest countdown — ring variant (across-the-room wall treatment). */}
         <RestTimer
+          variant="ring"
+          size={220}
           totalSeconds={120}
           elapsedMs={47_000}
           visible

@@ -10,8 +10,9 @@ import { LivePage, type LivePageVariant } from './LivePage'
  * around a lab-scoped `LivePage`) into the target surface. It is NOT a published
  * library component — nothing here is added to a package barrel.
  *
- * Tier-C slots render their BASE component as an explicit stub (velocity hero, wall
- * tempo bar, rest ring, cue flag) pending their Gate-1 variant.
+ * The live-stage slots now render their REAL wall variants (0.8.0 / Wave-2): the
+ * VelocityStrip hero, `size='wall'` TempoBar + FatigueMeter, RestTimer ring, and the
+ * compact Alert cue. `live-dual` stacks two live layers, one per voltra.
  */
 const DEVICES: Device[] = [
   { id: 'Voltra-A3F2', nickname: 'Left Cable', slot: 'L', state: 'connected' },
@@ -26,7 +27,7 @@ const meta: Meta<WallArgs> = {
   title: 'Lab/North Star/Live Wall Dashboard',
   args: { variant: 'live' },
   argTypes: {
-    variant: { control: 'inline-radio', options: ['live', 'rest'] },
+    variant: { control: 'inline-radio', options: ['live', 'live-dual', 'rest'] },
   },
   render: ({ variant }) => (
     <DashboardShell
@@ -70,6 +71,22 @@ export const Live: Story = {
   parameters: {
     docs: {
       description: { story: 'The live (mid-set) stage — ~22% velocity loss, threshold verdict.' },
+    },
+  },
+}
+
+/** Dual-mode (bilateral): two stacked live layers, one per voltra — left dominant, right lags. */
+export const LiveDual: Story = {
+  args: { variant: 'live-dual' },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'A dual-mode (bilateral) exercise — the stage stacks two live layers, one per ' +
+          'voltra. The RIGHT voltra shows a realistic left-dominant deficit (slower reps, ' +
+          'more velocity loss). v1 renders the two sides independently; a unified split-bar ' +
+          'treatment is a later exploration.',
+      },
     },
   },
 }

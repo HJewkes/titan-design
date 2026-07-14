@@ -177,3 +177,41 @@ export function deriveRailExercises(model: DashboardModel): SessionRailExercise[
     },
   ]
 }
+
+// --- Dual-mode (bilateral) projection -----------------------------------------
+
+/**
+ * Split a single-cable model into a bilateral (dual-mode) pair — one model per voltra.
+ *
+ * A dual-mode exercise drives two Voltra devices as a left/right pair. For v1 the two
+ * layers are rendered independently (one {@link LiveModel} each); a unified split-bar
+ * treatment is deferred. The fixture gives the RIGHT side a realistic left-dominant
+ * deficit (slightly slower reps, more velocity loss, a touch less force) so the two
+ * layers read as genuinely different streams rather than a mirror.
+ */
+export function deriveDualModel(base: DashboardModel = dashboardFixture): {
+  left: DashboardModel
+  right: DashboardModel
+} {
+  // Left is the dominant side — the base fixture verbatim.
+  const left: DashboardModel = base
+  // Right lags: ~8% slower per-rep concentric velocity, +7 pts velocity loss, ~6% less force.
+  const scale = (v: number) => Number((v * 0.92).toFixed(3))
+  const right: DashboardModel = {
+    session: base.session,
+    live: {
+      ...base.live,
+      velocity: scale(base.live.velocity),
+      force: Math.round(base.live.force * 0.94),
+      peakForce: Math.round(base.live.peakForce * 0.94),
+      velocityLossPct: base.live.velocityLossPct + 7,
+      repVelocities: base.live.repVelocities.map(scale),
+      lastRep: {
+        vCon: scale(base.live.lastRep.vCon),
+        rom: Number((base.live.lastRep.rom * 0.96).toFixed(2)),
+        peakVelocity: scale(base.live.lastRep.peakVelocity),
+      },
+    },
+  }
+  return { left, right }
+}
