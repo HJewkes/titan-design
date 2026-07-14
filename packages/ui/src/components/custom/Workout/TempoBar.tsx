@@ -1,6 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useState } from 'react'
-import { View, Text, Pressable, type ViewProps } from 'react-native'
+import { View, Text, Pressable, type ViewProps, type LayoutChangeEvent } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { alpha } from '../../../utils/colors'
 
@@ -84,6 +84,18 @@ const TEMPO_SIZES: Record<TempoBarSize, TempoBarSizing> = {
   wall: { labelMargin: 8, labelFont: 15, barGap: 4, barHeight: 40, radius: 6, segFont: 22 },
 }
 
+// The wall scale assumes a wide stage. Below this measured width the wall bar steps
+// down to a compact scale + short phase labels (Con/Hold/Ecc) so nothing truncates.
+const WALL_COMPACT_WIDTH = 380
+const WALL_COMPACT_SIZE: TempoBarSizing = {
+  labelMargin: 6,
+  labelFont: 12,
+  barGap: 3,
+  barHeight: 30,
+  radius: 5,
+  segFont: 15,
+}
+
 export interface TempoBarProps extends ViewProps {
   /** Phase currently in progress, or null when idle/at rest. */
   activePhase: TempoPhaseKey | null
@@ -129,12 +141,20 @@ export function TempoBar({
   className,
   ...props
 }: TempoBarProps) {
-  const s = TEMPO_SIZES[size]
+  // Measure so the wall scale can step down to a compact scale on a narrow stage
+  // (idiomatic RN responsiveness — no CSS media queries). Width 0 (unmeasured) keeps
+  // the full wall treatment, so server/test renders are unchanged.
+  const [barW, setBarW] = useState(0)
+  const onBarLayout = (e: LayoutChangeEvent) => setBarW(e.nativeEvent.layout.width)
+  const wallCompact = size === 'wall' && barW > 0 && barW < WALL_COMPACT_WIDTH
+  const s = wallCompact ? WALL_COMPACT_SIZE : TEMPO_SIZES[size]
+  // Full phase words only on a wide wall; abbreviate everywhere else so they never clip.
+  const useWallLabels = size === 'wall' && !wallCompact
   // Runtime toggle of the active readout, seeded from `activeDisplay`.
   const [display, setDisplay] = useState<TempoActiveDisplay>(activeDisplay)
   const toggleDisplay = () => setDisplay((d) => (d === 'time' ? 'delta' : 'time'))
   return (
-    <View className={className} testID="tempo-bar" {...props}>
+    <View className={className} testID="tempo-bar" onLayout={onBarLayout} {...props}>
       {/* Phase labels */}
       <View style={{ flexDirection: 'row', marginBottom: s.labelMargin }}>
         {PHASE_ORDER.map((phase) => {
@@ -142,7 +162,7 @@ export function TempoBar({
           return (
             <View key={phase} style={{ flex: config.flex, alignItems: 'center' }}>
               <Text numberOfLines={1} style={{ fontSize: s.labelFont, color: t['text-disabled'] }}>
-                {size === 'wall' ? config.wallLabel : config.label}
+                {useWallLabels ? config.wallLabel : config.label}
               </Text>
             </View>
           )

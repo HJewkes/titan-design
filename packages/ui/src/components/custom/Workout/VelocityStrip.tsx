@@ -8,6 +8,7 @@ import {
   Easing,
   type ViewProps,
   type ViewStyle,
+  type LayoutChangeEvent,
 } from 'react-native'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { primitiveColors, primitiveRamps, sequentialEffort } from '../../../theme/tokens/primitives'
@@ -394,6 +395,8 @@ const HERO_LABEL_HEADROOM = 20
 const HERO_BAR_GAP = 8
 /** Cap on a single hero bar's width so a 2–3 rep set doesn't render slab-wide bars (px). */
 const HERO_BAR_MAX_WIDTH = 52
+/** Below this per-bar width the value labels collide, so all but the peak + live rep are dropped. */
+const HERO_LABEL_MIN_BAR_WIDTH = 30
 /** Top-corner radius on hero bars (px). */
 const HERO_BAR_RADIUS = 5
 /** Minimum drawn height of a performed hero bar (px) — a near-zero rep still reads as a rep. */
@@ -525,6 +528,11 @@ function HeroVelocityChart({
   const liveVelocity = liveRepIndex != null ? doneVelocities[liveRepIndex] : undefined
   const liveScale = useLiveRepPop(true, liveRepIndex, liveVelocity, isNewPeak)
 
+  // Measure the plot so per-bar value labels can thin on a narrow chart (they collide once
+  // bars get thin). Width 0 (unmeasured) → show all, so test/server renders are unchanged.
+  const [plotW, setPlotW] = useState(0)
+  const onPlotLayout = (e: LayoutChangeEvent) => setPlotW(e.nativeEvent.layout.width)
+
   // Reserve a band above the tallest bar for its value label so a peak bar never clips.
   const plotHeight = Math.max(0, height - HERO_LABEL_HEADROOM)
   const barHeight = (velocity: number): number =>
@@ -537,6 +545,20 @@ function HeroVelocityChart({
     referenceVelocity > 0 && scaleDenom > 0
       ? Math.min(plotHeight, (referenceVelocity / scaleDenom) * plotHeight)
       : 0
+
+  // When bars get too thin, keep only the peak + live-rep labels so the rest don't overlap.
+  const totalSlots = doneVelocities.length + pendingCount
+  const barWidth =
+    plotW > 0 && totalSlots > 0
+      ? Math.min(HERO_BAR_MAX_WIDTH, (plotW - HERO_BAR_GAP * (totalSlots - 1)) / totalSlots)
+      : HERO_BAR_MAX_WIDTH
+  const labelsCrowded = plotW > 0 && barWidth < HERO_LABEL_MIN_BAR_WIDTH
+  const peakIndex = doneVelocities.reduce(
+    (best, v, i) => (v > doneVelocities[best] ? i : best),
+    0,
+  )
+  const showBarLabel = (i: number): boolean =>
+    !labelsCrowded || i === peakIndex || i === liveRepIndex
 
   const repCount = doneVelocities.length
   const total = Math.max(repCount, targetReps ?? repCount)
@@ -557,6 +579,7 @@ function HeroVelocityChart({
       {...restProps}
     >
       <View
+        onLayout={onPlotLayout}
         style={{
           flex: 1,
           flexDirection: 'row',
@@ -606,13 +629,15 @@ function HeroVelocityChart({
                 justifyContent: 'flex-end',
               }}
             >
-              <Text
-                className="text-text-primary"
-                style={{ fontSize: 12, fontWeight: '800', marginBottom: 4 }}
-                testID={`velocity-label-${i}`}
-              >
-                {formatVelocity(velocity)}
-              </Text>
+              {showBarLabel(i) && (
+                <Text
+                  className="text-text-primary"
+                  style={{ fontSize: 12, fontWeight: '800', marginBottom: 4 }}
+                  testID={`velocity-label-${i}`}
+                >
+                  {formatVelocity(velocity)}
+                </Text>
+              )}
               <Animated.View
                 style={[
                   {

@@ -1,5 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { View, Text, type ViewProps, type DimensionValue } from 'react-native'
+import { useState } from 'react'
+import { View, Text, type ViewProps, type DimensionValue, type LayoutChangeEvent } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { alpha } from '../../../utils/colors'
@@ -181,6 +182,17 @@ export function ZoneTrack({
   const s = ZONE_SIZES[size]
   const trackHeight = trackHeightProp ?? s.trackHeight
   const needleOverhang = needleOverhangProp ?? s.needleOverhang
+
+  // Thin the tick labels on a narrow track so they never overlap (each occupies a fixed
+  // `tickCellWidth` cell). Width 0 (unmeasured) → show all, so test/server renders match.
+  const [trackW, setTrackW] = useState(0)
+  const onTrackLayout = (e: LayoutChangeEvent) => setTrackW(e.nativeEvent.layout.width)
+  const tickCount = ticks?.length ?? 0
+  const tickSpacing = trackW > 0 && tickCount > 0 ? trackW / tickCount : Infinity
+  const tickStep = tickSpacing < s.tickCellWidth ? Math.ceil(s.tickCellWidth / tickSpacing) : 1
+  // Keep the first, last, evenly-stepped, and any emphasized ticks; drop the rest's labels.
+  const showTickLabel = (i: number, emphasized: boolean): boolean =>
+    tickStep <= 1 || i === 0 || i === tickCount - 1 || i % tickStep === 0 || emphasized
   const isNeedle = marker?.type === 'needle'
   const markerHeight = isNeedle ? trackHeight + needleOverhang * 2 : trackHeight
   const markerFrac = marker != null ? fraction(marker.value, min, max) : 0
@@ -200,6 +212,7 @@ export function ZoneTrack({
       accessibilityValue={marker != null ? { min, max, now: marker.value } : { min, max, now: min }}
       accessibilityLabel={accessibilityLabel ?? `Zone track: ${marker?.value ?? min}`}
       testID="zone-track"
+      onLayout={onTrackLayout}
       {...props}
     >
       <View style={{ position: 'relative', height: markerHeight }}>
@@ -329,6 +342,7 @@ export function ZoneTrack({
           {ticks.map((tick, i) => {
             if (tick.label == null) return null
             const emphasized = tick.emphasized === true
+            if (!showTickLabel(i, emphasized)) return null
             const labelColor = tick.color ?? (emphasized ? t['brand-primary'] : TICK_COLOR)
             const labelNode = (
               <Text
