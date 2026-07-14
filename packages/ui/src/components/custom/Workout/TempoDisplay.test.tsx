@@ -91,15 +91,30 @@ describe('TempoDisplay', () => {
       expect(screen.queryByTestId('tempo-live-active')).not.toBeInTheDocument()
     })
 
-    it('renders an active fill overlay for the in-progress phase when live', () => {
+    it('renders the active phase as a live countdown readout with a fill', () => {
       render(
         <TempoDisplay
           tempo={[3, 1, 1, 0]}
-          live={{ activePhase: 'eccentric', phaseElapsedMs: 1500 }}
+          live={{ activePhase: 'eccentric', phaseElapsedMs: 1000 }}
         />
       )
       expect(screen.getByTestId('tempo-live-active')).toBeInTheDocument()
-      expect(screen.getByText('3')).toBeInTheDocument()
+      // eccentric target 3s, 1s in → 2.0s remaining (countdown is the default)
+      expect(screen.getByText('2.0')).toBeInTheDocument()
+      // the static eccentric digit is replaced by the readout
+      expect(screen.queryByText('3')).not.toBeInTheDocument()
+    })
+
+    it('counts elapsed up when liveReadout is countup', () => {
+      render(
+        <TempoDisplay
+          tempo={[3, 1, 1, 0]}
+          liveReadout="countup"
+          live={{ activePhase: 'eccentric', phaseElapsedMs: 1000 }}
+        />
+      )
+      // 1s elapsed of the 3s eccentric → 1.0 counting up
+      expect(screen.getByText('1.0')).toBeInTheDocument()
     })
 
     it('marks no phase active when idle (activePhase null)', () => {
@@ -107,16 +122,20 @@ describe('TempoDisplay', () => {
       expect(screen.queryByTestId('tempo-live-active')).not.toBeInTheDocument()
     })
 
-    it('still renders all four phase digits in live mode', () => {
+    it('renders inactive digits statically and the active phase as its readout', () => {
       render(
         <TempoDisplay
           tempo={[4, 3, 2, 1]}
           live={{ activePhase: 'concentric', phaseElapsedMs: 500 }}
         />
       )
-      for (const digit of ['4', '3', '2', '1']) {
+      // the three inactive phases keep their static digits...
+      for (const digit of ['4', '3', '1']) {
         expect(screen.getByText(digit)).toBeInTheDocument()
       }
+      // ...and the active concentric (2s target, 0.5s in) shows the readout, not "2"
+      expect(screen.getByText('1.5')).toBeInTheDocument()
+      expect(screen.queryByText('2')).not.toBeInTheDocument()
     })
   })
 

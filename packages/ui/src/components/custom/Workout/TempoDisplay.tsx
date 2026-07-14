@@ -4,7 +4,7 @@ import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { roundTempo } from '../../../utils/workout-format'
 import { alpha } from '../../../utils/colors'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { getTempoFillPct, getTempoPacingState } from './TempoBar'
+import { getTempoFillPct } from './TempoBar'
 import { MetricCell } from './metricText'
 
 const t = getSemanticColors('dark')
@@ -42,6 +42,8 @@ export interface TempoDisplayProps extends ViewProps {
    * prescription string (default, backward compatible).
    */
   live?: TempoLiveState
+  /** Active-phase readout when `live`: `countdown` remaining to 0.0 (default), or `countup` elapsed. */
+  liveReadout?: TempoLiveReadout
   onPress?: () => void
   className?: string
 }
@@ -49,6 +51,36 @@ export interface TempoDisplayProps extends ViewProps {
 const INTER = 'Inter, sans-serif'
 const TEXT_TERTIARY = '#6B7280'
 const STATUS_ERROR = t['status-error'] // shown when a phase runs behind pace
+const STATUS_SUCCESS = t['status-success'] // shown when the active phase is on target
+
+/** Live active-phase readout: `countdown` remaining to 0.0, or `countup` elapsed to target. */
+export type TempoLiveReadout = 'countdown' | 'countup'
+
+/** ± the target ratio that still counts as "on target" (matches TempoBar's behind threshold). */
+const PACE_BAND = 0.15
+
+/**
+ * Pacing tone for the active phase's number: the phase colour while comfortably under
+ * target (ahead / in progress), success once within the band of target (on target), and
+ * error once past it (behind). Text colour alone carries the pacing.
+ */
+function activePacingTone(elapsedMs: number, targetMs: number | null, phaseColor: string): string {
+  if (targetMs == null || targetMs < 500) return phaseColor
+  const ratio = elapsedMs / targetMs
+  if (ratio > 1 + PACE_BAND) return STATUS_ERROR
+  if (ratio >= 1 - PACE_BAND) return STATUS_SUCCESS
+  return phaseColor
+}
+
+/** The active number: `countup` elapsed (→ target) or `countdown` remaining (→ 0.0, then −). */
+function liveReadoutText(
+  elapsedMs: number,
+  targetMs: number,
+  readout: TempoLiveReadout,
+): string {
+  const seconds = readout === 'countup' ? elapsedMs / 1000 : (targetMs - elapsedMs) / 1000
+  return seconds.toFixed(1)
+}
 
 // Phase colors: [eccentric, pauseBottom, concentric, pauseTop]
 const phaseColors = {
@@ -97,33 +129,53 @@ function LiveTempoCell({
   isActive,
   phaseElapsedMs,
   fontSize,
+  readout,
 }: {
   value: number
   color: string
   isActive: boolean
   phaseElapsedMs: number
   fontSize: number
+  readout: TempoLiveReadout
 }) {
-  if (!isActive) {
-    return <TempoValue value={value} color={alpha(color, 0.35)} fontSize={fontSize} />
-  }
+  // Wider spacing than the static row so the vertical fill bar reads behind the number.
+  const pad = Math.round(fontSize * 0.45)
   const targetMs = value > 0 ? value * 1000 : null
-  const barColor = getTempoPacingState(phaseElapsedMs, targetMs) === 'behind' ? STATUS_ERROR : color
+
+  if (!isActive) {
+    return (
+      <View style={{ paddingHorizontal: pad }}>
+        <TempoValue value={value} color={alpha(color, 0.35)} fontSize={fontSize} />
+      </View>
+    )
+  }
+
+  // Active: a bottom-anchored vertical fill grows with the phase; the number reads the live
+  // time (countdown/countup) to 0.1s, coloured by pacing (ahead/on-target/behind).
+  const tone = activePacingTone(phaseElapsedMs, targetMs, color)
   const fillPct = getTempoFillPct(phaseElapsedMs, targetMs)
+  const text = targetMs != null ? liveReadoutText(phaseElapsedMs, targetMs, readout) : String(value)
   return (
-    <View style={{ position: 'relative' }} testID="tempo-live-active">
+    <View
+      style={{ position: 'relative', paddingHorizontal: pad, alignItems: 'center', justifyContent: 'center' }}
+      testID="tempo-live-active"
+    >
       <View
         style={{
           position: 'absolute',
-          left: 0,
-          top: 0,
+          left: 2,
+          right: 2,
           bottom: 0,
-          width: `${fillPct}%`,
-          backgroundColor: alpha(barColor, 0.3),
-          borderRadius: 2,
+          height: `${fillPct}%`,
+          backgroundColor: alpha(tone, 0.28),
+          borderRadius: 3,
         }}
       />
-      <TempoValue value={value} color={barColor} fontSize={fontSize} />
+      <Text
+        style={{ fontFamily: INTER, fontSize, color: tone, fontWeight: '700', letterSpacing: 1 }}
+      >
+        {text}
+      </Text>
     </View>
   )
 }
@@ -132,15 +184,17 @@ function LiveTempoRow({
   values,
   live,
   fontSize,
+  readout,
 }: {
   values: [number, number, number, number]
   live: TempoLiveState
   fontSize: number
+  readout: TempoLiveReadout
 }) {
   return (
     <>
       {LIVE_PHASES.map((phase, i) => (
-        <View key={phase.key} style={{ flexDirection: 'row' }}>
+        <View key={phase.key} style={{ flexDirection: 'row', alignItems: 'center' }}>
           {i > 0 && <TempoSeparator color={phaseColors.dash} fontSize={fontSize} />}
           <LiveTempoCell
             value={values[i]}
@@ -148,6 +202,7 @@ function LiveTempoRow({
             isActive={live.activePhase === phase.key}
             phaseElapsedMs={live.phaseElapsedMs}
             fontSize={fontSize}
+            readout={readout}
           />
         </View>
       ))}
@@ -163,6 +218,7 @@ export function TempoDisplay({
   showLabel = true,
   showInfo = true,
   live,
+  liveReadout = 'countdown',
   onPress,
   className,
   ...props
@@ -217,6 +273,7 @@ export function TempoDisplay({
             values={[eccentric, pauseBottom, concentric, pauseTop]}
             live={live}
             fontSize={fontSize}
+            readout={liveReadout}
           />
         ) : colored ? (
           <>
