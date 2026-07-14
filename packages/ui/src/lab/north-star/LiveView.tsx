@@ -1,7 +1,16 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { useState } from 'react'
+import { useState, type ReactElement } from 'react'
 import { View, Text, type LayoutChangeEvent } from 'react-native'
-import { LiveAuraFrame, VelocityStrip, TempoDisplay, SetsRepsLoad } from '../../components'
+import {
+  LiveAuraFrame,
+  VelocityStrip,
+  TempoDisplay,
+  SetsRepsLoad,
+  ActivityIcon,
+  AlertTriangleIcon,
+  CircleSlashIcon,
+  type IconProps,
+} from '../../components'
 import { Tooltip } from '../../components/ui/tooltip/Tooltip'
 import { getSemanticColors } from '../../theme/tokens/semantic'
 import { alpha } from '../../utils/colors'
@@ -10,10 +19,15 @@ import { type DashboardModel, verdictFromLoss } from './fixtures'
 
 const t = getSemanticColors('dark')
 
-/** Below this content width the alert message collapses to a hover tip. */
-const NARROW_CONTENT = 620
 /** Raised-card elevation shared by the alert + tempo cards. */
 const CARD_SHADOW = neumorphicShadows.charcoal.raised.medium
+
+/** Clamped linear interpolation of `v` between `vLo..vHi` as `w` runs `wLo..wHi`. */
+function clampLerp(w: number, wLo: number, wHi: number, vLo: number, vHi: number): number {
+  if (w <= wLo) return vLo
+  if (w >= wHi) return vHi
+  return vLo + ((w - wLo) / (wHi - wLo)) * (vHi - vLo)
+}
 
 // --- Voltra slot --------------------------------------------------------------
 
@@ -64,55 +78,120 @@ const VERDICT_LABEL: Record<Verdict, string> = {
   threshold: 'Threshold',
   stop: 'Stop',
 }
+// A CONTEXTUAL glyph keyed on proximity to the velocity-loss threshold (replaces the flat
+// colour dot): a healthy pulse well under, a warning triangle at the threshold band, a
+// slashed circle once past it.
+const STATUS_ICON: Record<Verdict, (props: IconProps) => ReactElement> = {
+  productive: ActivityIcon,
+  threshold: AlertTriangleIcon,
+  stop: CircleSlashIcon,
+}
+
+/** How much of the alert survives at the current width. */
+export type AlertMode = 'full' | 'compact' | 'icon'
+
+/** The tinted alert surface (border + wash + raised shadow) shared by the card and the icon pill. */
+function alertSurface(tone: string) {
+  return {
+    borderWidth: 1,
+    borderColor: alpha(tone, 0.45),
+    backgroundColor: alpha(tone, 0.14),
+    ...CARD_SHADOW,
+  }
+}
 
 /**
- * The single status element — a tinted alert CARD that carries the exertion message
- * INSIDE it. On a narrow layer the message collapses (leaving just the verdict) and moves
- * to a hover tip so the detail is still one hover away.
+ * The single status element — a tinted alert card carrying the exertion message. It sheds
+ * detail as space tightens: `full` shows the contextual icon + verdict + inline message
+ * (capped at `availWidth` so it ellipsises + keeps a hover tip rather than running off-page);
+ * `compact` drops the message to the tip; `icon` collapses to just the contextual glyph,
+ * verdict + message on hover.
  */
-function AlertCue({ status, message, narrow }: { status: Verdict; message: string; narrow: boolean }) {
+function AlertCue({
+  status,
+  message,
+  mode,
+  availWidth,
+}: {
+  status: Verdict
+  message: string
+  mode: AlertMode
+  /** Pixels the alert may occupy (row width − tempo − gap); caps the card so the message clips. */
+  availWidth?: number
+}) {
   const tone = STATUS_COLOR[status]
+  const Icon = STATUS_ICON[status]
   const meaningful = status === 'threshold' || status === 'stop'
+
+  // Tightest: icon-only pill. Verdict + message live in the hover tip.
+  if (mode === 'icon') {
+    const pill = (
+      <View
+        style={{
+          width: 34,
+          height: 34,
+          borderRadius: 9,
+          alignItems: 'center',
+          justifyContent: 'center',
+          ...alertSurface(tone),
+        }}
+      >
+        <Icon size={17} color={tone} />
+      </View>
+    )
+    return meaningful ? (
+      <Tooltip label={`${VERDICT_LABEL[status]} · ${message}`} placement="bottom">
+        {pill}
+      </Tooltip>
+    ) : (
+      pill
+    )
+  }
+
   const card = (
     <View
       className="flex-row items-center"
       style={{
-        gap: 10,
-        alignSelf: 'flex-start',
-        borderWidth: 1,
-        borderColor: alpha(tone, 0.45),
-        backgroundColor: alpha(tone, 0.14),
+        gap: 8,
+        // Concrete px cap (not %) so the single-line message ellipsises through the wrapper chain.
+        maxWidth: availWidth,
         borderRadius: 10,
-        paddingHorizontal: 14,
-        paddingVertical: 9,
-        ...CARD_SHADOW,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        ...alertSurface(tone),
       }}
     >
-      <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: tone }} />
-      <Text style={{ color: tone, fontSize: 13, fontWeight: '700' }}>{VERDICT_LABEL[status]}</Text>
-      {meaningful && !narrow && (
-        <Text numberOfLines={1} style={{ color: tone, fontSize: 13, fontWeight: '600', flexShrink: 1 }}>
+      <Icon size={15} color={tone} />
+      <Text style={{ color: tone, fontSize: 13, fontWeight: '700', flexShrink: 0 }}>
+        {VERDICT_LABEL[status]}
+      </Text>
+      {mode === 'full' && meaningful && (
+        // Bounded + single-line: ellipsises instead of pushing off the page (full text on hover).
+        <Text
+          numberOfLines={1}
+          style={{ color: tone, fontSize: 13, fontWeight: '600', flexShrink: 1, minWidth: 0 }}
+        >
           · {message}
         </Text>
       )}
     </View>
   )
-  // Collapsed (narrow): the detail is a hover away.
-  if (narrow && meaningful) {
-    return (
-      <Tooltip label={message} placement="bottom">
-        {card}
-      </Tooltip>
-    )
-  }
-  return card
+  // Keep the full message a hover away whenever it isn't fully spelled out (compact) or may be
+  // clipped (full → ellipsis).
+  return meaningful ? (
+    <Tooltip label={message} placement="bottom">
+      {card}
+    </Tooltip>
+  ) : (
+    card
+  )
 }
 
 // --- Live tempo phase mapping -------------------------------------------------
 
 /** Map the model's movement phase onto TempoDisplay's live-fill phase key. */
 function mapLivePhase(
-  phase: DashboardModel['live']['phase'],
+  phase: DashboardModel['live']['phase']
 ): 'eccentric' | 'pauseBottom' | 'concentric' | null {
   switch (phase) {
     case 'concentric':
@@ -128,18 +207,37 @@ function mapLivePhase(
 
 // --- Page-level exercise header -----------------------------------------------
 
+/** Below this header width the targets line wraps under the name (at the set-heading ratio). */
+const HEADER_WRAP = 480
+/** At/above this header width the targets render at full size. */
+const HEADER_WIDE = 760
+/** Targets:name size ratio on the wrapped second line — matches ExerciseHeading (11 / 14). */
+const SET_HEADING_RATIO = 11 / 14
+const HEADER_NAME_SIZE = 30
+
 /**
  * The workout title + targets — the exercise being performed, independent of how many
  * voltras drive it, so it lives at the TOP OF THE PAGE (above the live stage) and stays
- * visible across single/dual. NOT a published component.
+ * visible across single/dual. The targets shrink with width and only wrap under the name
+ * (at the set-heading size ratio) once too tight to shrink further. NOT a published component.
  */
 export function ExerciseHeader({ session }: { session: DashboardModel['session'] }) {
+  const [w, setW] = useState(0)
+  const onLayout = (e: LayoutChangeEvent) => setW(e.nativeEvent.layout.width)
+  const wrap = w > 0 && w < HEADER_WRAP
+  const targetSize = wrap
+    ? Math.round(HEADER_NAME_SIZE * SET_HEADING_RATIO) // set-heading ratio on the second line
+    : Math.round(clampLerp(w || HEADER_WIDE, HEADER_WRAP, HEADER_WIDE, 22, 28))
+
   return (
     <View
-      className="flex-row items-baseline justify-between border-border"
+      onLayout={onLayout}
+      className="border-border"
       style={{
-        gap: 22,
-        flexWrap: 'wrap',
+        flexDirection: wrap ? 'column' : 'row',
+        alignItems: wrap ? 'flex-start' : 'baseline',
+        justifyContent: 'space-between',
+        gap: wrap ? 4 : 22,
         paddingHorizontal: 24,
         paddingTop: 20,
         paddingBottom: 16,
@@ -148,23 +246,32 @@ export function ExerciseHeader({ session }: { session: DashboardModel['session']
     >
       <Text
         className="text-text-primary"
-        style={{ fontSize: 30, fontFamily: '"Space Grotesk", sans-serif', fontWeight: '700' }}
+        style={{
+          fontSize: HEADER_NAME_SIZE,
+          fontFamily: '"Space Grotesk", sans-serif',
+          fontWeight: '700',
+        }}
       >
         {session.exerciseName}
       </Text>
-      {/* targets pinned to the right, across from the name. */}
+      {/* targets: pinned right when inline, tucked under the name (smaller) when wrapped. */}
       <SetsRepsLoad
         sets={session.plannedSets}
         reps={8}
         load={session.weightLbs}
         unit={session.unit}
-        fontSize={28}
+        fontSize={targetSize}
       />
     </View>
   )
 }
 
 // --- Live stage ---------------------------------------------------------------
+
+/** Below this content width the alert drops its inline message to a hover tip. */
+const ALERT_COMPACT = 620
+/** Below this content width the alert collapses to just its contextual icon. */
+const ALERT_ICON = 430
 
 /**
  * Lab specimen — the LIVE (mid-set) stage of one voltra. The exercise identity + targets
@@ -191,7 +298,20 @@ export function LiveView({
 
   const [contentW, setContentW] = useState(0)
   const onContentLayout = (e: LayoutChangeEvent) => setContentW(e.nativeEvent.layout.width)
-  const narrow = contentW > 0 && contentW < NARROW_CONTENT
+  const [tempoW, setTempoW] = useState(0)
+  const onTempoLayout = (e: LayoutChangeEvent) => setTempoW(e.nativeEvent.layout.width)
+  // Alert sheds detail as the row tightens; the tempo shrinks in step (never wraps to 2 lines).
+  const alertMode: AlertMode =
+    contentW === 0 || contentW >= ALERT_COMPACT
+      ? 'full'
+      : contentW >= ALERT_ICON
+        ? 'compact'
+        : 'icon'
+  const tempoFont = Math.round(clampLerp(contentW || 720, 420, 700, 13, 18))
+  // Width the alert may take once the tempo is measured — caps its card so a long message clips.
+  const CONTROLS_GAP = 16
+  const alertAvail =
+    contentW > 0 && tempoW > 0 ? Math.max(0, contentW - tempoW - CONTROLS_GAP) : undefined
 
   const [heroH, setHeroH] = useState(0)
   const onHeroLayout = (e: LayoutChangeEvent) => setHeroH(e.nativeEvent.layout.height)
@@ -201,27 +321,30 @@ export function LiveView({
   const message = `VL${live.velocityLossPct} · approaching threshold — 1–2 productive reps left`
 
   return (
-    // head verdict → full-surface aura flood; fills its section edge-to-edge (no card margin).
-    <LiveAuraFrame category={verdict} style={{ flex: 1 }}>
+    // head verdict → full-surface aura flood; fills its section edge-to-edge — squared off
+    // (no radius/border), since it's the section background, not a card within it.
+    <LiveAuraFrame category={verdict} style={{ flex: 1, borderRadius: 0, borderWidth: 0 }}>
       <View className="flex-row" style={{ flex: 1 }}>
         {badgeSlot && <VerticalSlotLabel slot={badgeSlot} />}
         <View
           onLayout={onContentLayout}
           style={{ flex: 1, padding: dual ? 18 : 24, gap: dual ? 8 : 10 }}
         >
-          {/* controls row: tempo pinned upper-left, alert pinned upper-right. */}
-          <View className="flex-row items-center justify-between" style={{ gap: 16 }}>
-            {/* tempo card — balanced with the alert (smaller than the old head lockup), raised. */}
-            <View style={{ borderRadius: 9, ...CARD_SHADOW }}>
+          {/* controls row: tempo pinned upper-left, alert pinned upper-right (justify-between). */}
+          <View className="flex-row items-center justify-between" style={{ gap: CONTROLS_GAP }}>
+            {/* tempo card — sized to sit at the alert's height, shrinks with width, never wraps. */}
+            <View onLayout={onTempoLayout} style={{ borderRadius: 9, ...CARD_SHADOW }}>
               <TempoDisplay
                 tempo={session.tempo}
-                fontSize={22}
-                live={activePhase ? { activePhase, phaseElapsedMs: live.phaseElapsedMs } : undefined}
+                fontSize={tempoFont}
+                live={
+                  activePhase ? { activePhase, phaseElapsedMs: live.phaseElapsedMs } : undefined
+                }
                 showLabel={false}
                 showInfo={false}
               />
             </View>
-            <AlertCue status={verdict} message={message} narrow={narrow} />
+            <AlertCue status={verdict} message={message} mode={alertMode} availWidth={alertAvail} />
           </View>
 
           {/* the velocity hero fills the rest. */}
