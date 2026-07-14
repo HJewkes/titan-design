@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import type { ComponentProps } from 'react'
 import { useEffect, useState } from 'react'
-import { View } from 'react-native'
+import { View, Text } from 'react-native'
 import { TempoDisplay, type TempoLivePhase, type TempoLiveState } from './TempoDisplay'
 
 // tempo = [eccentric, pauseBottom, concentric, pauseTop]
@@ -141,4 +142,137 @@ export const StaticVsLive: Story = {
       <LiveTempoDemo />
     </View>
   ),
+}
+
+// --- Active tempo conditions (the countdown/fill readout under different states) ----
+
+/** One captioned live-tempo specimen at a larger scale so the fill + readout read clearly. */
+function Condition({
+  caption,
+  ...props
+}: { caption: string } & ComponentProps<typeof TempoDisplay>) {
+  return (
+    <View style={{ gap: 5 }}>
+      <Text style={{ color: '#9CA3AF', fontFamily: 'Inter, sans-serif', fontSize: 11 }}>
+        {caption}
+      </Text>
+      <TempoDisplay showLabel={false} showInfo={false} fontSize={26} {...props} />
+    </View>
+  )
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <View style={{ gap: 12 }}>
+      <Text
+        style={{
+          color: '#E5E7EB',
+          fontFamily: 'Inter, sans-serif',
+          fontSize: 12,
+          fontWeight: '700',
+          letterSpacing: 1,
+          textTransform: 'uppercase',
+        }}
+      >
+        {title}
+      </Text>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 36, alignItems: 'flex-start' }}>
+        {children}
+      </View>
+    </View>
+  )
+}
+
+// tempo [3,1,2,1] — every phase has a non-zero target so each can be shown active.
+const TEMPO = [3, 1, 2, 1] as [number, number, number, number]
+
+/**
+ * The active tempo across the states it moves through: pacing (ahead → on-target →
+ * behind), each phase active, the countdown vs count-up readout, and idle. Static
+ * frames plus the self-driving animation, all in the one hyphenated display.
+ */
+export const ActiveTempoConditions: Story = {
+  render: () => (
+    <View style={{ gap: 28, padding: 8 }}>
+      <Section title="Pacing — eccentric (3s target), countdown">
+        <Condition
+          caption="Ahead / in progress · 1.2s → 1.8 left"
+          tempo={TEMPO}
+          live={{ activePhase: 'eccentric', phaseElapsedMs: 1200 }}
+        />
+        <Condition
+          caption="On target · 2.9s → 0.1 left (green)"
+          tempo={TEMPO}
+          live={{ activePhase: 'eccentric', phaseElapsedMs: 2900 }}
+        />
+        <Condition
+          caption="Behind · 3.8s → −0.8 over (red)"
+          tempo={TEMPO}
+          live={{ activePhase: 'eccentric', phaseElapsedMs: 3800 }}
+        />
+      </Section>
+
+      <Section title="Each phase active (countdown, mid-phase)">
+        <Condition
+          caption="Eccentric"
+          tempo={TEMPO}
+          live={{ activePhase: 'eccentric', phaseElapsedMs: 1500 }}
+        />
+        <Condition
+          caption="Pause (bottom)"
+          tempo={TEMPO}
+          live={{ activePhase: 'pauseBottom', phaseElapsedMs: 500 }}
+        />
+        <Condition
+          caption="Concentric"
+          tempo={TEMPO}
+          live={{ activePhase: 'concentric', phaseElapsedMs: 1000 }}
+        />
+        <Condition
+          caption="Pause (top)"
+          tempo={TEMPO}
+          live={{ activePhase: 'pauseTop', phaseElapsedMs: 500 }}
+        />
+      </Section>
+
+      <Section title="Readout mode — eccentric, 1.0s into a 3s phase">
+        <Condition
+          caption="Countdown → 0.0 · shows 2.0 left"
+          tempo={TEMPO}
+          liveReadout="countdown"
+          live={{ activePhase: 'eccentric', phaseElapsedMs: 1000 }}
+        />
+        <Condition
+          caption="Count-up → target · shows 1.0 elapsed"
+          tempo={TEMPO}
+          liveReadout="countup"
+          live={{ activePhase: 'eccentric', phaseElapsedMs: 1000 }}
+        />
+      </Section>
+
+      <Section title="Idle & animated">
+        <Condition
+          caption="Idle · no active phase (static)"
+          tempo={TEMPO}
+          live={{ activePhase: null, phaseElapsedMs: 0 }}
+        />
+        <View style={{ gap: 5 }}>
+          <Text style={{ color: '#9CA3AF', fontFamily: 'Inter, sans-serif', fontSize: 11 }}>
+            Animated · self-driving Ecc → Pause → Con
+          </Text>
+          <LiveTempoDemo />
+        </View>
+      </Section>
+    </View>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'The active tempo under different conditions — pacing (ahead → on-target → behind), ' +
+          'each phase active, the countdown vs count-up readout, and idle — all in the one ' +
+          'hyphenated display with the vertical phase-progress fill.',
+      },
+    },
+  },
 }
