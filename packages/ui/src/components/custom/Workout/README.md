@@ -112,6 +112,24 @@ type props without pulling the dependency.
   with a copy-paste `set` config in **`Workout/DataViz/VelocityStrip/Set
   Modalities`** (each card carries a `Collapse` accordion; promoted from the
   now-deleted `S3SetModalities` Lab specimen).
+- **VelocityStrip `hero` variant** — the across-the-room, single-set **wall**
+  treatment (the north-star live page's velocity hero). Tall bars (default 220px
+  plot) with a per-bar velocity value label, a dashed **running-best reference
+  line** (unlabeled — the tallest bar already shows the number, and the container
+  a11y label carries it), and dashed **placeholders for the reps still to come**
+  driven by a new `targetReps` prop. Absorbs the R2 `HeroVelocityBars` candidate
+  into the atom rather than shipping a parallel component. Reuses the shared zone
+  scale (`barColorFor`) and the extracted `useLiveRepPop` entrance (now shared with
+  the framed `expanded` chart). **Layout:** width-fluid (flex bars, capped at 52px,
+  left-packed) with a caller-set fixed height; the eyebrow/section title is
+  organism chrome, not part of the primitive. **Live-update model:** the plan's
+  slots are pre-allocated (`max(done, target)` columns), so a landing rep converts
+  placeholder→bar in the *same* slot with a pop — no reflow within the plan; pair
+  with `scale="fixed"` so heights never rescale either. The one reflow case is
+  set-expansion **beyond** `targetReps` (AMRAP overflow adds a column and flex-
+  narrows the rest — currently snaps; smooth overflow reflow is a deferred
+  follow-up). Documented by the `HeroPlayground` / `Hero*` stories on the wall
+  background.
 - Badge icons (WeightBadge's dumbbell, PrBadge / PrHistoryModal's star) are inline
   SVGs (`./icons.tsx`), not `lucide-react` — that dependency was dropped in 0.5.0
   to keep the root barrel light. The SVG paths mirror lucide's glyphs so rendering
