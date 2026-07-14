@@ -206,21 +206,21 @@ export function LiveView({
         {badgeSlot && <VerticalSlotLabel slot={badgeSlot} />}
         <View
           onLayout={onContentLayout}
-          style={{ flex: 1, padding: dual ? 18 : 24, gap: dual ? 14 : 18 }}
+          style={{ flex: 1, padding: dual ? 18 : 24, gap: dual ? 8 : 10 }}
         >
-          {/* controls row: the alert + the live tempo, in line on the left. */}
-          <View className="flex-row items-center" style={{ gap: 16, flexWrap: 'wrap' }}>
-            <AlertCue status={verdict} message={message} narrow={narrow} />
+          {/* controls row: tempo pinned upper-left, alert pinned upper-right. */}
+          <View className="flex-row items-center justify-between" style={{ gap: 16 }}>
             {/* tempo card — balanced with the alert (smaller than the old head lockup), raised. */}
             <View style={{ borderRadius: 9, ...CARD_SHADOW }}>
               <TempoDisplay
                 tempo={session.tempo}
                 fontSize={22}
                 live={activePhase ? { activePhase, phaseElapsedMs: live.phaseElapsedMs } : undefined}
-                showLabel
+                showLabel={false}
                 showInfo={false}
               />
             </View>
+            <AlertCue status={verdict} message={message} narrow={narrow} />
           </View>
 
           {/* the velocity hero fills the rest. */}
