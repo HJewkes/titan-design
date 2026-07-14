@@ -1,17 +1,23 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, Text } from 'react-native'
 import {
-  ExerciseHeading,
   StatusPill,
   LiveAuraFrame,
   VelocityStrip,
-  Metric,
-  MetricGroup,
   TempoBar,
+  TempoDisplay,
   FatigueMeter,
   Alert,
 } from '../../components'
-import { type DashboardModel, meanVelocity, verdictFromLoss } from './fixtures'
+import { type DashboardModel, verdictFromLoss } from './fixtures'
+
+/** Shared style for the head's large prescription numerals (sets × reps, load). */
+const PRESCRIPTION_VALUE = {
+  fontSize: 40,
+  lineHeight: 44,
+  fontFamily: '"Space Grotesk", sans-serif',
+  fontWeight: '800' as const,
+}
 
 /** Which Voltra this layer renders, in a dual-mode (bilateral) exercise. */
 export type LiveSide = 'left' | 'right'
@@ -56,7 +62,6 @@ function SideBadge({ side }: { side: LiveSide }) {
 export function LiveView({ model, side }: { model: DashboardModel; side?: LiveSide }) {
   const { live, session } = model
   const verdict = verdictFromLoss(live.velocityLossPct)
-  const meanCon = meanVelocity(live.repVelocities)
   const dual = side != null
   const heroHeight = dual ? 180 : 240
 
@@ -64,19 +69,37 @@ export function LiveView({ model, side }: { model: DashboardModel; side?: LiveSi
     // head verdict → full-surface aura flood (threshold amber for the mid-zone fixture).
     <LiveAuraFrame category={verdict} style={{ flex: 1, margin: dual ? 12 : 20 }}>
       <View style={{ flex: 1, padding: dual ? 20 : 28, gap: dual ? 16 : 24 }}>
-        {/* head: exercise identity + load line, with the read-once verdict pill. */}
+        {/* head: exercise identity + a LARGE prescription read-out (sets × reps @ load · tempo). */}
         <View className="flex-row items-start justify-between">
-          <View className="flex-row items-center" style={{ gap: 12 }}>
-            {side && <SideBadge side={side} />}
-            <ExerciseHeading
-              name={session.exerciseName}
-              sets={session.plannedSets}
-              reps={8}
-              load={session.weightLbs}
-              unit={session.unit}
-              tempo={session.tempo}
-              indicator="velocity-loss"
-            />
+          <View style={{ gap: 8, flexShrink: 1 }}>
+            <View className="flex-row items-center" style={{ gap: 10 }}>
+              {side && <SideBadge side={side} />}
+              <Text
+                className="text-text-primary"
+                style={{
+                  fontSize: 26,
+                  fontFamily: '"Space Grotesk", sans-serif',
+                  fontWeight: '700',
+                }}
+              >
+                {session.exerciseName}
+              </Text>
+            </View>
+            {/* the prescription, sized up to be the head's hero read-out. */}
+            <View className="flex-row items-baseline" style={{ gap: 20, flexWrap: 'wrap' }}>
+              <Text className="text-text-primary" style={PRESCRIPTION_VALUE}>
+                {session.plannedSets} × 8
+              </Text>
+              <View className="flex-row items-baseline" style={{ gap: 5 }}>
+                <Text className="text-text-primary" style={PRESCRIPTION_VALUE}>
+                  {session.weightLbs}
+                </Text>
+                <Text className="text-text-secondary" style={{ fontSize: 18, fontWeight: '600' }}>
+                  {session.unit}
+                </Text>
+              </View>
+              <TempoDisplay tempo={session.tempo} size="md" showLabel={false} showInfo={false} />
+            </View>
           </View>
           <StatusPill status={verdict} />
         </View>
@@ -90,48 +113,19 @@ export function LiveView({ model, side }: { model: DashboardModel; side?: LiveSi
             >
               CONCENTRIC VELOCITY · THIS SET
             </Text>
+            {/* `peak` scale so the bars fill the plot (fixed scale left ~half the chart empty). */}
             <VelocityStrip
               variant="hero"
               velocities={live.repVelocities}
               liveRepIndex={live.repVelocities.length - 1}
               targetReps={8}
               height={heroHeight}
-              scale="fixed"
+              scale="peak"
             />
           </View>
 
-          {/* right: the live metrics stack (tighter gaps in a dual-mode layer). */}
+          {/* right: in-set feedback — wall tempo, fatigue, and the live cue. */}
           <View style={{ flex: 2, gap: dual ? 14 : 20 }}>
-            {/* primary numeral = MEAN concentric (not peak). */}
-            <Metric
-              value={meanCon.toFixed(2)}
-              unit="m/s"
-              label="MEAN CONCENTRIC"
-              size="lg"
-              trend="down"
-            />
-
-            {/* MetricGroup ×3 — the live telemetry rows. */}
-            <MetricGroup>
-              <Metric
-                size="sm"
-                value={live.lastRep.peakVelocity.toFixed(2)}
-                unit="m/s"
-                label="Peak vel"
-              />
-              <Metric size="sm" value={live.velocity.toFixed(2)} unit="m/s" label="Now" />
-              <Metric size="sm" value={live.lastRep.rom.toFixed(2)} unit="m" label="ROM" />
-            </MetricGroup>
-            <MetricGroup>
-              <Metric size="sm" value={String(live.force)} unit="N" label="Force" />
-              <Metric size="sm" value={String(live.peakForce)} unit="N" label="Peak force" />
-              <Metric size="sm" value={String(live.repVelocities.length)} label="Reps" />
-            </MetricGroup>
-            <MetricGroup>
-              <Metric size="sm" value={`${live.velocityLossPct}%`} label="Vel loss" trend="down" />
-              <Metric size="sm" value={String(session.weightLbs)} unit="lbs" label="Load" />
-              <Metric size="sm" value={String(session.completedSets.length + 1)} label="Set" />
-            </MetricGroup>
 
             {/* TEMPO — wall density (full phase words, active delta countdown). */}
             <View>
