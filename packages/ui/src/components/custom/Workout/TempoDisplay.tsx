@@ -190,10 +190,11 @@ function LiveTempoCell({
     <Text style={{ fontFamily: MONO, fontSize, color: c, fontWeight: '700' }}>{text}</Text>
   )
 
-  // Upcoming: the phase's prescribed time, dimmed, no fill.
+  // Upcoming / idle: the phase's prescribed time in the FULL phase colour, no fill — so a
+  // not-yet-started (or fully idle) row just reads as the base tempo lockup, not a dim mode.
   if (status === 'upcoming') {
     const targetText = targetMs != null ? (targetMs / 1000).toFixed(1) : String(value)
-    return <View style={wrap}>{num(alpha(color, 0.35), targetText)}</View>
+    return <View style={wrap}>{num(color, targetText)}</View>
   }
 
   // Done: FROZEN at the phase's final readout (its actual completed time, not the target),
