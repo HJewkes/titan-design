@@ -8,7 +8,7 @@ component is pure import churn with no file moves.
 ## Tier map
 
 **Atoms** — single-purpose, no cross-component state:
-BaseBadge · WeightBadge · PrBadge · StatusDot · PlaceholderStrip · TempoBar ·
+BaseBadge · WeightBadge · PrBadge · StatusDot · PlaceholderStrip ·
 DeviationBar · IntensityBar · WorkoutPill · MuscleGroupChip · Sparkline ·
 SupersetWrapper · InputBar · MetricCell · SetsRepsLoad · ExerciseIndicator · SetBar
 
@@ -48,6 +48,29 @@ type props without pulling the dependency.
   letter-spacing-1 value/separator cell. `TempoDisplay` (tempo digits) and
   `SetsRepsLoad` (sets × reps @ load) both compose it so the two read as one
   visual language. Exported for composition, not for direct app use.
+- **TempoDisplay is deliberately NOT decomposed further** — it is the single tempo
+  component (the standalone `TempoBar` was retired into it). It renders two modes from
+  one chip: the static phase-coloured **prescription** and, with the `live` prop, the
+  running tempo (per-phase countdown/count-up to 0.1s, a bottom-anchored phase-progress
+  fill, semantic pacing tones, and banked/frozen finals). Its internal parts —
+  `LiveTempoRow`, `LiveTempoCell`, `CellFill` (the fill behind a number), and the
+  `activeNumberTone` pacing helper — are **TempoDisplay-private with no second consumer**,
+  so per the ≥2-consumer rule they stay internal rather than becoming top-level primitives.
+  The only already-shared primitive is `MetricCell`.
+
+  **If reuse emerges, decompose along these seams** (in likely order):
+  1. **`CellFill` → a shared `ProgressCell`/`FillBehind` primitive** — the moment a
+     second component needs "a bottom-anchored progress fill behind centred text" (e.g. a
+     generic timer/meter cell). Cleanest extraction; pure presentation, no tempo semantics.
+  2. **`activeNumberTone` + `ON_TARGET_MS` → a `tempo-pacing` util** — if another surface
+     needs the same yellow/green/red "time-to-target" tone (a coach card, a rep-tempo
+     summary). It is pure logic, trivially portable.
+  3. **`LiveTempoRow` → a `TempoLiveRow` molecule** — only if a consumer wants the running
+     row *without* the chip chrome (label/background/padding). Until then the chrome and the
+     row belong together as one component with a `live` prop, not two.
+
+  Not worth splitting today (speculative extraction the workflow warns against); this note
+  is the trigger list for when it stops being speculative.
 - **S3 session-rail family** — `SessionRail` (organism) composes the standalone
   `ExerciseCardHeading` molecule per exercise, which composes an `ExerciseHeading`
   info block + a `SetStrip`:
@@ -147,26 +170,23 @@ type props without pulling the dependency.
   `size` (default 180) sets the diameter; the eyebrow/section title is organism
   chrome. Web/RNW-only (like `CircularProgress`) — the wall variant; mobile keeps
   `bar`. `Ring*` (RestTimer) + `Custom/CircularTimer` stories on the wall background.
-- **`size="wall"` density (TempoBar · FatigueMeter · ZoneTrack)** — the across-the-room
+- **`size="wall"` density (FatigueMeter · ZoneTrack)** — the across-the-room
   dashboard scale, added as the idiomatic titan `size` union (a JS number-map per
   component; **`default` values are byte-identical** to before, so existing consumers are
-  untouched). **TempoBar** scales its bar/labels/durations and at wall spells out the full
-  phase words (Concentric / Hold / Eccentric); its completed segments are **colour-coded**
-  (a missed target reads red, not just a ✗), and the **active** segment shows a **delta
-  countdown** (`activeDisplay`) — remaining time to target counting to `0.0` then negative
-  (red) once over — **tap to toggle** delta ↔ elapsed/target. **ZoneTrack** (the shared
-  gauge primitive) gained `size` that scales track, needle, tick lines and tick labels
-  together; its *other* consumers (TrainingLoadGauge, RpeCalibration) default to `default`
-  and are unaffected. **FatigueMeter** passes `size` through and lets `trackHeight` flow
-  from it. `Wall*` / `WallDensity` stories on the wall background.
+  untouched). **ZoneTrack** (the shared gauge primitive) gained `size` that scales track,
+  needle, tick lines and tick labels together; its *other* consumers (TrainingLoadGauge,
+  RpeCalibration) default to `default` and are unaffected. **FatigueMeter** passes `size`
+  through and lets `trackHeight` flow from it. `Wall*` / `WallDensity` stories on the wall
+  background. (**TempoBar** was retired here — the standalone active-tempo bar is superseded
+  by `TempoDisplay`'s live mode; see the TempoDisplay note.)
 - Badge icons (WeightBadge's dumbbell, PrBadge / PrHistoryModal's star) are inline
   SVGs (`./icons.tsx`), not `lucide-react` — that dependency was dropped in 0.5.0
   to keep the root barrel light. The SVG paths mirror lucide's glyphs so rendering
   is unchanged.
 - **`ExerciseIndicator` taxonomy (LOCKED, TD-03.51)** — one precedence-ranked slot
   per exercise, six distinct kinds over four tier colors (bound to titan status
-  tokens, read as literal hex via `getSemanticColors('dark')` — the TempoBar
-  pattern). Glyph = the specific signal; color = the severity tier. Chips are
+  tokens, read as literal hex via `getSemanticColors('dark')`, not `resolveColor`,
+  so tests can assert them). Glyph = the specific signal; color = the severity tier. Chips are
   outlined (border + glyph, no fill) so they never collide with the *filled*
   velocity strip, and static (no pulse — they are chrome). Precedence, high → low:
 
