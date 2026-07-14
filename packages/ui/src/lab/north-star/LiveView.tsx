@@ -136,7 +136,7 @@ function mapLivePhase(
 export function ExerciseHeader({ session }: { session: DashboardModel['session'] }) {
   return (
     <View
-      className="flex-row items-baseline border-border"
+      className="flex-row items-baseline justify-between border-border"
       style={{
         gap: 22,
         flexWrap: 'wrap',
@@ -152,6 +152,7 @@ export function ExerciseHeader({ session }: { session: DashboardModel['session']
       >
         {session.exerciseName}
       </Text>
+      {/* targets pinned to the right, across from the name. */}
       <SetsRepsLoad
         sets={session.plannedSets}
         reps={8}
@@ -200,8 +201,8 @@ export function LiveView({
   const message = `VL${live.velocityLossPct} · approaching threshold — 1–2 productive reps left`
 
   return (
-    // head verdict → full-surface aura flood (threshold amber for the mid-zone fixture).
-    <LiveAuraFrame category={verdict} style={{ flex: 1, margin: dual ? 12 : 20 }}>
+    // head verdict → full-surface aura flood; fills its section edge-to-edge (no card margin).
+    <LiveAuraFrame category={verdict} style={{ flex: 1 }}>
       <View className="flex-row" style={{ flex: 1 }}>
         {badgeSlot && <VerticalSlotLabel slot={badgeSlot} />}
         <View

@@ -406,9 +406,15 @@ const HERO_PENDING_COLOR = primitiveColors.charcoal[100]
 /** The dashed running-best reference line + its label (the lightest charcoal step). */
 const HERO_REFERENCE_COLOR = primitiveColors.charcoal[0]
 
+/**
+ * Headroom above the peak bar: just enough to seat its value label without a big empty
+ * band at the top (was 1.15 — too airy for the wall hero).
+ */
+const PEAK_HEADROOM = 1.06
+
 /** The bar-height scaling denominator for the given `scale` (guarded ≥ 0 by callers). */
 function scaleDenominator(scale: 'peak' | 'fixed', maxVelocity: number): number {
-  return scale === 'fixed' ? FIXED_MAX_VELOCITY : maxVelocity * 1.15
+  return scale === 'fixed' ? FIXED_MAX_VELOCITY : maxVelocity * PEAK_HEADROOM
 }
 
 /** Bare-strip bar height (px): velocity-scaled for a performed rep, a short stub otherwise. */

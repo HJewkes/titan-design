@@ -78,10 +78,10 @@ describe('VelocityStrip expanded (framed chart)', () => {
   })
 
   describe('scale', () => {
-    it('peak (default) scales the tallest rep to full height', () => {
-      // maxV=1.0 -> denom 1.15 -> 1.0/1.15 = 87%.
+    it('peak (default) scales the tallest rep to nearly full height', () => {
+      // maxV=1.0 -> denom 1.06 (peak headroom) -> 1.0/1.06 = 94%.
       render(<VelocityStrip velocities={[1.0, 0.5]} showInfo={false} />)
-      expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ height: '87%' })
+      expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ height: '94%' })
     })
 
     it('fixed scales against the 1.15 ceiling regardless of the set max', () => {
