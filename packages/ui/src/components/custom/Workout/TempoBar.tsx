@@ -101,6 +101,12 @@ export interface TempoBarProps extends ViewProps {
    * the bar. Tapping the active segment toggles between the two at runtime.
    */
   activeDisplay?: TempoActiveDisplay
+  /**
+   * Show the `✓`/`✗` pacing mark on completed phases. Default `true`. Set `false` to
+   * let COLOUR alone carry hit/miss (red fill + red duration on a miss) — the
+   * across-the-room treatment, where the glyphs read as noise.
+   */
+  showPacingMark?: boolean
   className?: string
 }
 
@@ -119,6 +125,7 @@ export function TempoBar({
   target,
   size = 'default',
   activeDisplay = 'time',
+  showPacingMark = true,
   className,
   ...props
 }: TempoBarProps) {
@@ -177,6 +184,7 @@ export function TempoBar({
                   completedMs={completedMs}
                   targetMs={targetMs}
                   font={s.segFont}
+                  showPacingMark={showPacingMark}
                 />
               ) : null}
             </View>
@@ -255,16 +263,22 @@ function CompletedSegment({
   completedMs,
   targetMs,
   font,
+  showPacingMark,
 }: {
   config: PhaseConfig
   completedMs: number
   targetMs: number | null
   font: number
+  showPacingMark: boolean
 }) {
   const pacing = getTempoPacingState(completedMs, targetMs)
   const hitTarget = pacing !== 'behind'
   const indicator =
-    targetMs && targetMs >= TEMPO_PACING.minPhaseDurationMs ? (hitTarget ? ' ✓' : ' ✗') : ''
+    showPacingMark && targetMs && targetMs >= TEMPO_PACING.minPhaseDurationMs
+      ? hitTarget
+        ? ' ✓'
+        : ' ✗'
+      : ''
   // A missed target reads by COLOUR first (red fill + red duration), the ✓/✗ second —
   // glanceable across a room; a hit keeps the phase's own colour.
   const cueColor = hitTarget ? config.color : t['status-error']

@@ -92,6 +92,22 @@ describe('TempoBar', () => {
     expect(screen.getByText('4.0 ✗')).toBeInTheDocument()
   })
 
+  it('omits the ✓/✗ pacing mark when showPacingMark is false (colour-only)', () => {
+    render(
+      <TempoBar
+        activePhase="hold"
+        phaseElapsedMs={100}
+        completed={{ concentric: 950, eccentric: 4000 }}
+        target={TARGET}
+        showPacingMark={false}
+      />
+    )
+    // Durations still render, but with no ✓/✗ glyph appended.
+    expect(screen.getByText('0.9')).toBeInTheDocument()
+    expect(screen.getByText('4.0')).toBeInTheDocument()
+    expect(screen.queryByText(/[✓✗]/)).not.toBeInTheDocument()
+  })
+
   it('has no accessibility violations', async () => {
     const { container } = render(
       <TempoBar

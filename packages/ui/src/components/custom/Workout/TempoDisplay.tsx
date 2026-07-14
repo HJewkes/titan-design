@@ -28,6 +28,8 @@ export interface TempoDisplayProps extends ViewProps {
   /** Tempo values: [eccentric, pauseBottom, concentric, pauseTop] in seconds */
   tempo: [number, number, number, number]
   size?: 'sm' | 'md'
+  /** Override the digit font size (px). Defaults from `size` (9 sm / 11 md); raise for a wall read-out. */
+  fontSize?: number
   /** Colored phases or mono (all gray) */
   colored?: boolean
   /** Show the "TEMPO" caption before the values. Default true. */
@@ -156,6 +158,7 @@ function LiveTempoRow({
 export function TempoDisplay({
   tempo,
   size = 'md',
+  fontSize: fontSizeProp,
   colored = true,
   showLabel = true,
   showInfo = true,
@@ -168,7 +171,7 @@ export function TempoDisplay({
   // Round exact (unrounded) tempo seconds to the 1-dp display granularity.
   const [eccentric, pauseBottom, concentric, pauseTop] = roundTempo(tempo)
   const isSm = size === 'sm'
-  const fontSize = isSm ? 9 : 11
+  const fontSize = fontSizeProp ?? (isSm ? 9 : 11)
   const monoColor = TEXT_TERTIARY
 
   const handlePress = useCallback(() => {

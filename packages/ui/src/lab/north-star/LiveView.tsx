@@ -6,18 +6,14 @@ import {
   VelocityStrip,
   TempoBar,
   TempoDisplay,
+  SetsRepsLoad,
   FatigueMeter,
   Alert,
 } from '../../components'
 import { type DashboardModel, verdictFromLoss } from './fixtures'
 
-/** Shared style for the head's large prescription numerals (sets × reps, load). */
-const PRESCRIPTION_VALUE = {
-  fontSize: 40,
-  lineHeight: 44,
-  fontFamily: '"Space Grotesk", sans-serif',
-  fontWeight: '800' as const,
-}
+/** Font size for the head's large prescription read-out (SetsRepsLoad + tempo). */
+const PRESCRIPTION_SIZE = 32
 
 /** Which Voltra this layer renders, in a dual-mode (bilateral) exercise. */
 export type LiveSide = 'left' | 'right'
@@ -85,20 +81,22 @@ export function LiveView({ model, side }: { model: DashboardModel; side?: LiveSi
                 {session.exerciseName}
               </Text>
             </View>
-            {/* the prescription, sized up to be the head's hero read-out. */}
-            <View className="flex-row items-baseline" style={{ gap: 20, flexWrap: 'wrap' }}>
-              <Text className="text-text-primary" style={PRESCRIPTION_VALUE}>
-                {session.plannedSets} × 8
-              </Text>
-              <View className="flex-row items-baseline" style={{ gap: 5 }}>
-                <Text className="text-text-primary" style={PRESCRIPTION_VALUE}>
-                  {session.weightLbs}
-                </Text>
-                <Text className="text-text-secondary" style={{ fontSize: 18, fontWeight: '600' }}>
-                  {session.unit}
-                </Text>
-              </View>
-              <TempoDisplay tempo={session.tempo} size="md" showLabel={false} showInfo={false} />
+            {/* the prescription, in the SetsRepsLoad / TempoDisplay language (faded ×/@/dashes),
+                scaled up to be the head's hero read-out. */}
+            <View className="flex-row items-baseline" style={{ gap: 24, flexWrap: 'wrap' }}>
+              <SetsRepsLoad
+                sets={session.plannedSets}
+                reps={8}
+                load={session.weightLbs}
+                unit={session.unit}
+                fontSize={PRESCRIPTION_SIZE}
+              />
+              <TempoDisplay
+                tempo={session.tempo}
+                fontSize={PRESCRIPTION_SIZE}
+                showLabel={false}
+                showInfo={false}
+              />
             </View>
           </View>
           <StatusPill status={verdict} />
@@ -138,6 +136,7 @@ export function LiveView({ model, side }: { model: DashboardModel; side?: LiveSi
               <TempoBar
                 size="wall"
                 activeDisplay="delta"
+                showPacingMark={false}
                 activePhase="concentric"
                 phaseElapsedMs={700}
                 completed={{ eccentric: 3100, hold: 900 }}

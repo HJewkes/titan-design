@@ -78,6 +78,11 @@ describe('TempoDisplay', () => {
       render(<TempoDisplay tempo={[3, 1, 1, 0]} size="md" />)
       expect(screen.getByTestId('tempo-value')).toBeInTheDocument()
     })
+
+    it('overrides the digit font size via fontSize', () => {
+      render(<TempoDisplay tempo={[3, 1, 1, 0]} fontSize={32} showLabel={false} />)
+      expect(screen.getByText('3')).toHaveStyle({ fontSize: 32 })
+    })
   })
 
   describe('live phase-fill', () => {
