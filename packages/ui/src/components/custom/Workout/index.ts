@@ -13,16 +13,8 @@ export {
   type TempoDisplayProps,
   type TempoLivePhase,
   type TempoLiveState,
+  type TempoLiveReadout,
 } from './TempoDisplay'
-export {
-  TempoBar,
-  type TempoBarProps,
-  type TempoPhaseKey,
-  type TempoPacingState,
-  TEMPO_PACING,
-  getTempoPacingState,
-  getTempoFillPct,
-} from './TempoBar'
 export { DeviationBar, type DeviationBarProps } from './DeviationBar'
 export { IntensityBar, type IntensityBarProps } from './IntensityBar'
 export { WorkoutPill, type WorkoutPillProps, type WorkoutPillStatus } from './WorkoutPill'

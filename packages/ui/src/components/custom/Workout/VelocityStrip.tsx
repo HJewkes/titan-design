@@ -20,7 +20,7 @@ import { SET_STRIP_VARIABLE_COLOR } from './SetStrip'
  * (e.g. workout-analytics' `VelocityZones.bands`).
  *
  * Deliberately a plain structural shape — titan never imports the analytics
- * package (same policy as TempoBar's presentational phase key). Any object with
+ * package (the same presentational-only policy the Workout family follows). Any object with
  * this shape can be passed, so `zones={waVelocityZones.bands}` works directly.
  * Bands are ordered slow → fast, contiguous, and cover `[0, ∞)` with the top
  * band's `max === null`. Bands carry NO color — color is a UI concern resolved

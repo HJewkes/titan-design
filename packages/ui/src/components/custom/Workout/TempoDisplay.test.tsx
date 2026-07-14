@@ -22,14 +22,9 @@ describe('TempoDisplay', () => {
     expect(tempoValue.children.length).toBeGreaterThan(1)
   })
 
-  it('renders mono variant', () => {
-    render(<TempoDisplay tempo={[3, 1, 1, 0]} colored={false} />)
-    expect(screen.getByText('3-1-1-0')).toBeInTheDocument()
-  })
-
   it('renders order: eccentric-pauseBottom-concentric-pauseTop', () => {
-    render(<TempoDisplay tempo={[4, 3, 2, 1]} colored={false} />)
-    expect(screen.getByText('4-3-2-1')).toBeInTheDocument()
+    render(<TempoDisplay tempo={[4, 3, 2, 1]} />)
+    expect(screen.getByTestId('tempo-value')).toHaveTextContent('4-3-2-1')
   })
 
   it('has correct accessibility label', () => {

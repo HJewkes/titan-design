@@ -26,7 +26,8 @@ const meta: Meta<typeof TempoDisplay> = {
       description: 'Tempo values [eccentric, pauseBottom, concentric, pauseTop] in seconds',
     },
     size: { control: 'select', options: ['sm', 'md'], description: 'Size variant' },
-    colored: { control: 'boolean', description: 'Colored vs mono display' },
+    fontSize: { control: { type: 'range', min: 9, max: 48, step: 1 }, description: 'Digit size (overrides `size`)' },
+    showLabel: { control: 'boolean', description: 'Show the TEMPO caption' },
     showInfo: { control: 'boolean', description: 'Show info tooltip on press' },
     live: {
       control: 'object',
@@ -38,64 +39,13 @@ const meta: Meta<typeof TempoDisplay> = {
 export default meta
 type Story = StoryObj<typeof TempoDisplay>
 
-export const ColoredStandard: Story = {
-  args: { tempo: [3, 1, 1, 0], colored: true },
+// The static prescription — the base tempo lockup (phase-coloured), no live readout.
+// Add the `live` prop (see the Live stories below) to turn it into the running tempo.
+export const Prescription: Story = {
+  args: { tempo: [3, 1, 2, 2] },
 }
 
-export const MonoStandard: Story = {
-  args: { tempo: [3, 1, 1, 0], colored: false },
-}
-
-export const ColoredExplosive: Story = {
-  args: { tempo: [1, 0, 1, 0], colored: true },
-}
-
-export const MonoExplosive: Story = {
-  args: { tempo: [1, 0, 1, 0], colored: false },
-}
-
-export const ColoredSlowEccentric: Story = {
-  args: { tempo: [5, 2, 1, 1], colored: true },
-}
-
-export const SmallColored: Story = {
-  args: { tempo: [3, 1, 1, 0], size: 'sm', colored: true },
-}
-
-export const SmallMono: Story = {
-  args: { tempo: [3, 1, 1, 0], size: 'sm', colored: false },
-}
-
-export const AllVariants: Story = {
-  render: () => (
-    <View style={{ gap: 12 }}>
-      <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
-        <TempoDisplay tempo={[3, 1, 1, 0]} colored />
-        <TempoDisplay tempo={[3, 1, 1, 0]} colored={false} />
-      </View>
-      <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
-        <TempoDisplay tempo={[1, 0, 1, 0]} colored />
-        <TempoDisplay tempo={[1, 0, 1, 0]} colored={false} />
-      </View>
-      <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
-        <TempoDisplay tempo={[3, 1, 1, 0]} size="sm" colored />
-        <TempoDisplay tempo={[3, 1, 1, 0]} size="sm" colored={false} />
-      </View>
-    </View>
-  ),
-}
-
-// --- Live phase-fill (opt-in) ----------------------------------------------
-
-// Deterministic mid-rep frames — the active phase digit fills against its target.
-export const LiveEccentricInProgress: Story = {
-  args: { tempo: [3, 1, 1, 0], live: { activePhase: 'eccentric', phaseElapsedMs: 1500 } },
-}
-
-// Concentric target is 1s; 1.6s elapsed is behind pace, so the digit turns red.
-export const LiveBehindPace: Story = {
-  args: { tempo: [3, 1, 1, 0], live: { activePhase: 'concentric', phaseElapsedMs: 1600 } },
-}
+// --- Live tempo (opt-in via the `live` prop) --------------------------------
 
 // A full rep cycle incl. a 2s rest at the top between reps.
 const LIVE_CYCLE: { phase: TempoLivePhase; ms: number }[] = [

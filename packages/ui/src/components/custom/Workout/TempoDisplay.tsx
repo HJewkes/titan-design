@@ -5,7 +5,6 @@ import { roundTempo } from '../../../utils/workout-format'
 import { alpha } from '../../../utils/colors'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { primitiveRamps } from '../../../theme/tokens/primitives'
-import { getTempoFillPct } from './TempoBar'
 import { MetricCell } from './metricText'
 
 const t = getSemanticColors('dark')
@@ -37,8 +36,6 @@ export interface TempoDisplayProps extends ViewProps {
   size?: 'sm' | 'md'
   /** Override the digit font size (px). Defaults from `size` (9 sm / 11 md); raise for a wall read-out. */
   fontSize?: number
-  /** Colored phases or mono (all gray) */
-  colored?: boolean
   /** Show the "TEMPO" caption before the values. Default true. */
   showLabel?: boolean
   /** Show info tooltip on press */
@@ -66,6 +63,12 @@ export type TempoLiveReadout = 'countdown' | 'countup'
 
 /** ± this window (ms) around the target still counts as on target (0.0 ± 0.1s). */
 const ON_TARGET_MS = 100
+
+/** Phase-progress fill percent (0–100): how far the active phase has run toward its target. */
+function getTempoFillPct(elapsedMs: number, targetMs: number | null): number {
+  if (!targetMs) return 100
+  return Math.min(100, (elapsedMs / targetMs) * 100)
+}
 
 /**
  * Semantic pacing tone for the active/completed phase's NUMBER (the fill bar carries phase
@@ -270,7 +273,6 @@ export function TempoDisplay({
   tempo,
   size = 'md',
   fontSize: fontSizeProp,
-  colored = true,
   showLabel = true,
   showInfo = true,
   live,
@@ -284,7 +286,6 @@ export function TempoDisplay({
   const [eccentric, pauseBottom, concentric, pauseTop] = roundTempo(tempo)
   const isSm = size === 'sm'
   const fontSize = fontSizeProp ?? (isSm ? 9 : 11)
-  const monoColor = TEXT_TERTIARY
   // The chrome (padding, radius, label) scales with the digit size so the whole view stays
   // proportional at any form factor — a compact rail chip up to a wall read-out.
   const chromePadX = Math.round(fontSize * 0.6)
@@ -338,7 +339,8 @@ export function TempoDisplay({
             fontSize={fontSize}
             readout={liveReadout}
           />
-        ) : colored ? (
+        ) : (
+          // Static prescription: the phase-coloured lockup (the same colours the live row rests at).
           <>
             <TempoValue value={eccentric} color={phaseColors.eccentric} fontSize={fontSize} />
             <TempoSeparator color={phaseColors.dash} fontSize={fontSize} />
@@ -348,18 +350,6 @@ export function TempoDisplay({
             <TempoSeparator color={phaseColors.dash} fontSize={fontSize} />
             <TempoValue value={pauseTop} color={phaseColors.pauseTop} fontSize={fontSize} />
           </>
-        ) : (
-          <Text
-            style={{
-              fontFamily: INTER,
-              fontSize,
-              color: monoColor,
-              fontWeight: '600',
-              letterSpacing: 1,
-            }}
-          >
-            {eccentric}-{pauseBottom}-{concentric}-{pauseTop}
-          </Text>
         )}
       </View>
     </View>

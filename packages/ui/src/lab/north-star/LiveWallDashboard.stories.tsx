@@ -10,9 +10,9 @@ import { LivePage, type LivePageVariant } from './LivePage'
  * around a lab-scoped `LivePage`) into the target surface. It is NOT a published
  * library component — nothing here is added to a package barrel.
  *
- * The live-stage slots now render their REAL wall variants (0.8.0 / Wave-2): the
- * VelocityStrip hero, `size='wall'` TempoBar + FatigueMeter, RestTimer ring, and the
- * compact Alert cue. `live-dual` stacks two live layers, one per voltra.
+ * The live-stage slots render their REAL treatments: the VelocityStrip hero, the live
+ * TempoDisplay (running tempo, folded into the head), the consolidated status cue, and
+ * the RestTimer ring. `live-dual` stacks two live layers, one per voltra.
  */
 const DEVICES: Device[] = [
   { id: 'Voltra-A3F2', nickname: 'Left Cable', slot: 'L', state: 'connected' },
