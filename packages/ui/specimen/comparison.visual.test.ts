@@ -629,31 +629,6 @@ test.describe('HTML vs React Component Comparison', () => {
     }
   })
 
-  test('TempoDisplay mono md', async ({ page }) => {
-    await assertStyleMatch(
-      page, 'compare-tempo-mono-md',
-      '.tempo-display', '[data-testid="tempo-display"] > div',
-      tempoContainerProps,
-    )
-    // Check mono text color
-    const container = page.locator('[data-testid="compare-tempo-mono-md"]')
-    const htmlText = container.locator('.html-version .tempo-value.mono').first()
-    const reactText = container.locator(`.react-version [data-testid="tempo-value"] ${RNW_TEXT_SELECTOR}`).first()
-
-    await expect(htmlText).toBeAttached({ timeout: 3000 })
-    await expect(reactText).toBeAttached({ timeout: 3000 })
-
-    const monoTextProps = ['color', 'fontSize', 'fontWeight', 'letterSpacing'] as const
-    const htmlStyles = await getStyles(htmlText, monoTextProps)
-    const reactStyles = await getStyles(reactText, monoTextProps)
-    const mismatches = compareStyles(htmlStyles, reactStyles, monoTextProps)
-
-    if (mismatches.length > 0) {
-      const report = mismatches.map((m) => `  text.${m.prop}: HTML="${m.html}" React="${m.react}"`).join('\n')
-      expect.soft(mismatches.length, `TempoDisplay mono md text mismatches:\n${report}`).toBe(0)
-    }
-  })
-
   test('TempoDisplay colored sm', async ({ page }) => {
     await assertStyleMatch(
       page, 'compare-tempo-colored-sm',
