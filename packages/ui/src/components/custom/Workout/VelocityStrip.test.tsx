@@ -564,3 +564,67 @@ describe('VelocityStrip expanded bare strip (spotlight: numbers + info off)', ()
     expect(await axe(container)).toHaveNoViolations()
   })
 })
+
+describe('VelocityStrip hero variant', () => {
+  const heroSet = [0.9, 0.86, 0.82, 0.78]
+
+  it('renders one bar per performed rep, each with a value label', () => {
+    render(<VelocityStrip velocities={heroSet} variant="hero" targetReps={8} />)
+    expect(screen.getByTestId('velocity-strip-hero')).toBeInTheDocument()
+    expect(screen.getAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(heroSet.length)
+    expect(screen.getAllByTestId(/^velocity-label-\d+$/)).toHaveLength(heroSet.length)
+    expect(screen.getByTestId('velocity-label-0')).toHaveTextContent('0.90')
+  })
+
+  it('draws a dashed placeholder for each rep still to come (target − done)', () => {
+    render(<VelocityStrip velocities={heroSet} variant="hero" targetReps={8} />)
+    expect(screen.getAllByTestId('velocity-slot-todo')).toHaveLength(4)
+  })
+
+  it('draws no placeholders when the target is met exactly', () => {
+    render(<VelocityStrip velocities={heroSet} variant="hero" targetReps={heroSet.length} />)
+    expect(screen.queryByTestId('velocity-slot-todo')).not.toBeInTheDocument()
+  })
+
+  it('set expansion: reps beyond target render as bars with no negative placeholders', () => {
+    const overflow = [0.9, 0.86, 0.82, 0.78, 0.74, 0.7, 0.66, 0.62, 0.58]
+    render(<VelocityStrip velocities={overflow} variant="hero" targetReps={8} />)
+    expect(screen.getAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(overflow.length)
+    expect(screen.queryByTestId('velocity-slot-todo')).not.toBeInTheDocument()
+  })
+
+  it('draws no placeholders when targetReps is omitted', () => {
+    render(<VelocityStrip velocities={heroSet} variant="hero" />)
+    expect(screen.getAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(heroSet.length)
+    expect(screen.queryByTestId('velocity-slot-todo')).not.toBeInTheDocument()
+  })
+
+  it('renders the running-best reference line when there is a positive best', () => {
+    render(<VelocityStrip velocities={heroSet} variant="hero" targetReps={8} />)
+    expect(screen.getByTestId('velocity-hero-reference')).toBeInTheDocument()
+  })
+
+  it('omits the reference line when every velocity is zero (NaN / no-best guard)', () => {
+    render(<VelocityStrip velocities={[0, 0, 0]} variant="hero" targetReps={4} />)
+    expect(screen.queryByTestId('velocity-hero-reference')).not.toBeInTheDocument()
+  })
+
+  it('summarizes reps done, target and best in the accessibility label', () => {
+    render(<VelocityStrip velocities={heroSet} variant="hero" targetReps={8} />)
+    expect(
+      screen.getByLabelText('Velocity chart, 4 of 8 reps, best 0.90 meters per second')
+    ).toBeInTheDocument()
+  })
+
+  it('renders nothing when neither velocities nor set is provided', () => {
+    render(<VelocityStrip variant="hero" targetReps={8} />)
+    expect(screen.queryByTestId('velocity-strip-hero')).not.toBeInTheDocument()
+  })
+
+  it('has no accessibility violations', async () => {
+    const { container } = render(
+      <VelocityStrip velocities={heroSet} variant="hero" targetReps={8} liveRepIndex={3} />
+    )
+    expect(await axe(container)).toHaveNoViolations()
+  })
+})

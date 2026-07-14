@@ -84,15 +84,24 @@ export interface VelocityStripProps extends ViewProps {
    * HEIGHT bar chart (rounded tops), whose chrome is prop-driven: with
    * {@link showNumbers} or {@link showInfo} on it's the framed chart (raised surface,
    * padding, per-bar m/s labels, mean/loss info row, interactive collapse); with both
-   * off it's a bare strip — the active-set "spotlight" of {@link ExerciseCard}.
+   * off it's a bare strip — the active-set "spotlight" of {@link ExerciseCard}. `hero`
+   * — the across-the-room, single-set wall treatment: tall bars, a per-bar m/s value
+   * label, a dashed running-best reference line, and dashed placeholders for the reps
+   * still to come (see {@link targetReps}). Reuses the zone scale and the live-rep pop.
    */
-  variant?: 'mini' | 'expanded'
-  /** `expanded` plot height in px (bars scale to this). Default 60. */
+  variant?: 'mini' | 'expanded' | 'hero'
+  /** `expanded` / `hero` plot height in px (bars scale to this). Default 60 (`expanded`) / 220 (`hero`). */
   height?: number
   /**
-   * `expanded` bar scaling. `peak` (default) scales to the set's own max (+15%
-   * headroom). `fixed` scales to a fixed velocity ceiling so bar heights read the
-   * same absolute velocity across sets (the spotlight).
+   * `hero` only: the set's planned rep count. Reps beyond {@link velocities} draw as
+   * dashed placeholder stubs so the wall reads "3 of 8 done" at a glance. Ignored
+   * (and no placeholders drawn) when absent or ≤ the performed-rep count.
+   */
+  targetReps?: number
+  /**
+   * `expanded` / `hero` bar scaling. `peak` (default) scales to the set's own max
+   * (+15% headroom). `fixed` scales to a fixed velocity ceiling so bar heights read
+   * the same absolute velocity across sets (the spotlight).
    */
   scale?: 'peak' | 'fixed'
   /** `expanded` framed chart: per-bar m/s labels. Default true. */
@@ -372,6 +381,28 @@ const FIXED_MAX_VELOCITY = 1.15
 /** Minimum bare-strip bar height (px) — a planned / variable / continue stub, or a near-zero rep. */
 const BARE_STUB_HEIGHT = 3
 
+// --- Hero variant ------------------------------------------------------------
+// The across-the-room, single-set wall treatment. Absorbs the R2 "HeroVelocityBars"
+// candidate into VelocityStrip: tall bars + per-bar value labels + a dashed
+// running-best reference line + dashed placeholders for the reps still to come.
+
+/** Default `hero` plot height (px) — tall enough to read a set's velocity shape across a room. */
+const HERO_HEIGHT = 220
+/** Vertical band reserved above the tallest bar for its value label (px). */
+const HERO_LABEL_HEADROOM = 20
+/** Gap between hero bars (px) — a group-notch-free even rhythm at wall scale. */
+const HERO_BAR_GAP = 8
+/** Cap on a single hero bar's width so a 2–3 rep set doesn't render slab-wide bars (px). */
+const HERO_BAR_MAX_WIDTH = 52
+/** Top-corner radius on hero bars (px). */
+const HERO_BAR_RADIUS = 5
+/** Minimum drawn height of a performed hero bar (px) — a near-zero rep still reads as a rep. */
+const HERO_MIN_BAR_HEIGHT = 4
+/** Dashed-stub border for a planned-but-unperformed hero rep (charcoal, reads on a dark wall). */
+const HERO_PENDING_COLOR = primitiveColors.charcoal[100]
+/** The dashed running-best reference line + its label (the lightest charcoal step). */
+const HERO_REFERENCE_COLOR = primitiveColors.charcoal[0]
+
 /** The bar-height scaling denominator for the given `scale` (guarded ≥ 0 by callers). */
 function scaleDenominator(scale: 'peak' | 'fixed', maxVelocity: number): number {
   return scale === 'fixed' ? FIXED_MAX_VELOCITY : maxVelocity * 1.15
@@ -407,6 +438,229 @@ const ANIMATION_DURATION = 400
 const ANIMATION_EASING = Easing.bezier(0.22, 1, 0.36, 1)
 const POP_EASING = Easing.bezier(0.34, 1.56, 0.64, 1)
 
+/**
+ * The newest-rep entrance shared by the framed `expanded` chart and `hero`: a
+ * bounce when the rep is a new set peak, a pop otherwise. Honors reduced motion.
+ * Returns the scale `Animated.Value` for the live bar; inert while `active` is
+ * false or no live rep is present.
+ */
+function useLiveRepPop(
+  active: boolean,
+  liveRepIndex: number | undefined,
+  liveVelocity: number | undefined,
+  isNewPeak: boolean
+): Animated.Value {
+  const prefersReducedMotion = usePrefersReducedMotion()
+  const [liveScale] = useState(() => new Animated.Value(1))
+  useEffect(() => {
+    if (!active || liveRepIndex == null || liveVelocity == null) return
+    if (prefersReducedMotion) {
+      liveScale.setValue(1)
+      return
+    }
+    if (isNewPeak) {
+      liveScale.setValue(1)
+      Animated.sequence([
+        Animated.timing(liveScale, {
+          toValue: 1.25,
+          duration: 150,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.spring(liveScale, {
+          toValue: 1,
+          friction: 3,
+          tension: 140,
+          useNativeDriver: true,
+        }),
+      ]).start()
+    } else {
+      liveScale.setValue(0.8)
+      Animated.timing(liveScale, {
+        toValue: 1,
+        duration: 300,
+        easing: POP_EASING,
+        useNativeDriver: true,
+      }).start()
+    }
+  }, [active, liveRepIndex, liveVelocity, isNewPeak, prefersReducedMotion, liveScale])
+  return liveScale
+}
+
+interface HeroVelocityChartProps {
+  /** Performed per-rep mean concentric velocities (m/s). */
+  doneVelocities: number[]
+  /** Zone → color resolver, shared with the other variants (single-sources the scale). */
+  barColorFor: (velocity: number) => string
+  /** Bar-height scaling denominator (`peak` set-max or `fixed` ceiling). */
+  scaleDenom: number
+  /** Running-best velocity (the set peak) — drives the dashed reference line. */
+  referenceVelocity: number
+  liveRepIndex?: number
+  isNewPeak: boolean
+  targetReps?: number
+  height: number
+  className?: string
+  viewProps: ViewProps
+}
+
+/**
+ * The `hero` render: the across-the-room, single-set wall treatment. Tall bars +
+ * a per-bar value label + a dashed running-best reference line + dashed placeholders
+ * for the reps still to come. Reuses {@link barColorFor} (zone scale) and the
+ * {@link useLiveRepPop} entrance so it stays consistent with the framed chart.
+ */
+function HeroVelocityChart({
+  doneVelocities,
+  barColorFor,
+  scaleDenom,
+  referenceVelocity,
+  liveRepIndex,
+  isNewPeak,
+  targetReps,
+  height,
+  className,
+  viewProps,
+}: HeroVelocityChartProps) {
+  const liveVelocity = liveRepIndex != null ? doneVelocities[liveRepIndex] : undefined
+  const liveScale = useLiveRepPop(true, liveRepIndex, liveVelocity, isNewPeak)
+
+  // Reserve a band above the tallest bar for its value label so a peak bar never clips.
+  const plotHeight = Math.max(0, height - HERO_LABEL_HEADROOM)
+  const barHeight = (velocity: number): number =>
+    scaleDenom > 0
+      ? Math.max(HERO_MIN_BAR_HEIGHT, Math.min(1, velocity / scaleDenom) * plotHeight)
+      : HERO_MIN_BAR_HEIGHT
+
+  const pendingCount = Math.max(0, (targetReps ?? 0) - doneVelocities.length)
+  const referencePx =
+    referenceVelocity > 0 && scaleDenom > 0
+      ? Math.min(plotHeight, (referenceVelocity / scaleDenom) * plotHeight)
+      : 0
+
+  const repCount = doneVelocities.length
+  const total = Math.max(repCount, targetReps ?? repCount)
+  const label =
+    referenceVelocity > 0
+      ? `Velocity chart, ${repCount} of ${total} reps, best ${formatVelocity(referenceVelocity)} meters per second`
+      : `Velocity chart, ${repCount} of ${total} reps`
+
+  const { style: externalStyle, ...restProps } = viewProps
+
+  return (
+    <View
+      className={className}
+      style={[{ height }, externalStyle]}
+      accessibilityRole="image"
+      accessibilityLabel={label}
+      testID="velocity-strip-hero"
+      {...restProps}
+    >
+      <View
+        style={{
+          flex: 1,
+          flexDirection: 'row',
+          alignItems: 'flex-end',
+          gap: HERO_BAR_GAP,
+          position: 'relative',
+          borderBottomWidth: 2,
+          borderBottomColor: HERO_PENDING_COLOR,
+        }}
+      >
+        {/*
+         * Running-best reference line. Deliberately unlabeled: it sits at the tallest
+         * bar's top, and that bar already displays its velocity as its own value label,
+         * so a "best X.XX" tag would duplicate it — and would collide with that label
+         * whenever the peak bar is on the same side (declines peak-left, ends-on-best
+         * peak-right). The line alone reads as "how far has velocity fallen from best".
+         * The numeric best is in the container's accessibility label.
+         */}
+        {referencePx > 0 && (
+          <View
+            accessibilityElementsHidden
+            style={{
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              bottom: referencePx,
+              borderTopWidth: 1,
+              borderStyle: 'dashed',
+              borderColor: HERO_REFERENCE_COLOR,
+              pointerEvents: 'none',
+            }}
+            testID="velocity-hero-reference"
+          />
+        )}
+
+        {doneVelocities.map((velocity, i) => {
+          const isLive = liveRepIndex === i
+          return (
+            <View
+              key={i}
+              accessibilityElementsHidden
+              style={{
+                flex: 1,
+                maxWidth: HERO_BAR_MAX_WIDTH,
+                height: '100%',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+              }}
+            >
+              <Text
+                className="text-text-primary"
+                style={{ fontSize: 12, fontWeight: '800', marginBottom: 4 }}
+                testID={`velocity-label-${i}`}
+              >
+                {formatVelocity(velocity)}
+              </Text>
+              <Animated.View
+                style={[
+                  {
+                    width: '100%',
+                    height: barHeight(velocity),
+                    borderTopLeftRadius: HERO_BAR_RADIUS,
+                    borderTopRightRadius: HERO_BAR_RADIUS,
+                    backgroundColor: barColorFor(velocity),
+                  },
+                  isLive ? { transform: [{ scale: liveScale }] } : null,
+                ]}
+                testID={`velocity-bar-${i}`}
+              />
+            </View>
+          )
+        })}
+
+        {Array.from({ length: pendingCount }, (_, i) => (
+          <View
+            key={`pending-${i}`}
+            accessibilityElementsHidden
+            style={{
+              flex: 1,
+              maxWidth: HERO_BAR_MAX_WIDTH,
+              height: '100%',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+            }}
+          >
+            <View
+              style={{
+                width: '100%',
+                height: HERO_MIN_BAR_HEIGHT * 3,
+                borderWidth: 1,
+                borderStyle: 'dashed',
+                borderColor: HERO_PENDING_COLOR,
+                borderTopLeftRadius: HERO_BAR_RADIUS,
+                borderTopRightRadius: HERO_BAR_RADIUS,
+              }}
+              testID="velocity-slot-todo"
+            />
+          </View>
+        ))}
+      </View>
+    </View>
+  )
+}
+
 export function VelocityStrip({
   velocities,
   set,
@@ -417,6 +671,7 @@ export function VelocityStrip({
   onRepPress,
   variant = 'expanded',
   height = EXPANDED_HEIGHT,
+  targetReps,
   scale = 'peak',
   showNumbers = true,
   showInfo = true,
@@ -456,47 +711,19 @@ export function VelocityStrip({
     ? (classifyBand(meanVelocity, zones)?.label ?? '')
     : getVelocityZoneName(meanVelocity)
 
-  const prefersReducedMotion = usePrefersReducedMotion()
   const [heightAnim] = useState(() => new Animated.Value(expanded ? height : 3))
   const [labelOpacity] = useState(() => new Animated.Value(expanded ? 1 : 0))
   const [infoOpacity] = useState(() => new Animated.Value(expanded ? 1 : 0))
-  const [liveScale] = useState(() => new Animated.Value(1))
 
   // Newest-rep animation: pop for a normal rep, bounce when it sets a new peak.
   const liveVelocity = liveRepIndex != null ? doneVelocities[liveRepIndex] : undefined
   const isNewPeak = liveVelocity != null && maxVelocity > 0 && liveVelocity === maxVelocity
-  useEffect(() => {
-    if (variant !== 'expanded' || !framed || liveRepIndex == null || liveVelocity == null) return
-    if (prefersReducedMotion) {
-      liveScale.setValue(1)
-      return
-    }
-    if (isNewPeak) {
-      liveScale.setValue(1)
-      Animated.sequence([
-        Animated.timing(liveScale, {
-          toValue: 1.25,
-          duration: 150,
-          easing: Easing.out(Easing.quad),
-          useNativeDriver: true,
-        }),
-        Animated.spring(liveScale, {
-          toValue: 1,
-          friction: 3,
-          tension: 140,
-          useNativeDriver: true,
-        }),
-      ]).start()
-    } else {
-      liveScale.setValue(0.8)
-      Animated.timing(liveScale, {
-        toValue: 1,
-        duration: 300,
-        easing: POP_EASING,
-        useNativeDriver: true,
-      }).start()
-    }
-  }, [variant, framed, liveRepIndex, liveVelocity, isNewPeak, prefersReducedMotion, liveScale])
+  const liveScale = useLiveRepPop(
+    variant === 'expanded' && framed,
+    liveRepIndex,
+    liveVelocity,
+    isNewPeak
+  )
 
   useEffect(() => {
     if (variant !== 'expanded' || !framed) return
@@ -528,6 +755,26 @@ export function VelocityStrip({
 
   const repCount = doneVelocities.length
   const miniLabel = set ? setAccessibilityLabel(set, repCount) : `Velocity strip, ${repCount} reps`
+
+  if (variant === 'hero') {
+    // Hero's plot is far taller than the expanded chart; apply its own default when
+    // the caller left `height` at the shared 60px default.
+    const heroHeight = height === EXPANDED_HEIGHT ? HERO_HEIGHT : height
+    return (
+      <HeroVelocityChart
+        doneVelocities={doneVelocities}
+        barColorFor={barColorFor}
+        scaleDenom={scaleDenom}
+        referenceVelocity={maxVelocity}
+        liveRepIndex={liveRepIndex}
+        isNewPeak={isNewPeak}
+        targetReps={targetReps}
+        height={heroHeight}
+        className={className}
+        viewProps={props}
+      />
+    )
+  }
 
   if (variant === 'mini') {
     const { style: externalStyle, ...restProps } = props
