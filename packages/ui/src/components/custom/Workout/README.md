@@ -147,6 +147,18 @@ type props without pulling the dependency.
   `size` (default 180) sets the diameter; the eyebrow/section title is organism
   chrome. Web/RNW-only (like `CircularProgress`) — the wall variant; mobile keeps
   `bar`. `Ring*` (RestTimer) + `Custom/CircularTimer` stories on the wall background.
+- **`size="wall"` density (TempoBar · FatigueMeter · ZoneTrack)** — the across-the-room
+  dashboard scale, added as the idiomatic titan `size` union (a JS number-map per
+  component; **`default` values are byte-identical** to before, so existing consumers are
+  untouched). **TempoBar** scales its bar/labels/durations and at wall spells out the full
+  phase words (Concentric / Hold / Eccentric); its completed segments are **colour-coded**
+  (a missed target reads red, not just a ✗), and the **active** segment shows a **delta
+  countdown** (`activeDisplay`) — remaining time to target counting to `0.0` then negative
+  (red) once over — **tap to toggle** delta ↔ elapsed/target. **ZoneTrack** (the shared
+  gauge primitive) gained `size` that scales track, needle, tick lines and tick labels
+  together; its *other* consumers (TrainingLoadGauge, RpeCalibration) default to `default`
+  and are unaffected. **FatigueMeter** passes `size` through and lets `trackHeight` flow
+  from it. `Wall*` / `WallDensity` stories on the wall background.
 - Badge icons (WeightBadge's dumbbell, PrBadge / PrHistoryModal's star) are inline
   SVGs (`./icons.tsx`), not `lucide-react` — that dependency was dropped in 0.5.0
   to keep the root barrel light. The SVG paths mirror lucide's glyphs so rendering

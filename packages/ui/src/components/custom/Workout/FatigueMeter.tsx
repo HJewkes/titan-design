@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import type { ViewProps } from 'react-native'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
-import { ZoneTrack, type ZoneTrackZone, type ZoneTrackTick } from './ZoneTrack'
+import { ZoneTrack, type ZoneTrackZone, type ZoneTrackTick, type ZoneTrackSize } from './ZoneTrack'
 
 const { green, yellow, orange, red } = WORKOUT_TOKENS.scale
 
@@ -24,7 +24,9 @@ export interface FatigueMeterProps extends ViewProps {
   zoneColors?: [string, string, string, string]
   /** Tick labels at [min, ...thresholds, max]. Default ['fresh','VL10','VL20','VL30','stop']. */
   labels?: string[]
-  /** Track height in px. Default 14. */
+  /** Density: `default` (compact) or `wall` (the across-the-room dashboard scale — bigger track, needle and tick labels). */
+  size?: ZoneTrackSize
+  /** Track height in px. Overrides the `size` default (14 default / 24 wall). */
   trackHeight?: number
   /** Needle colour. Default white. */
   needleColor?: string
@@ -49,7 +51,8 @@ export function FatigueMeter({
   thresholds = DEFAULT_THRESHOLDS,
   zoneColors = DEFAULT_ZONE_COLORS,
   labels = DEFAULT_LABELS,
-  trackHeight = 14,
+  size = 'default',
+  trackHeight,
   needleColor,
   className,
   ...props
@@ -71,6 +74,7 @@ export function FatigueMeter({
       zones={zones}
       min={0}
       max={max}
+      size={size}
       trackHeight={trackHeight}
       ticks={ticks}
       marker={{ type: 'needle', value, color: needleColor }}

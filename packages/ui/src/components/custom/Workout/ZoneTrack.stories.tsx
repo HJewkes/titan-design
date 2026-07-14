@@ -102,15 +102,14 @@ export const BareTrack: Story = {
   args: { zones: FATIGUE_ZONES, max: 40 },
 }
 
-/** Chunky wall-glanceable density via a taller track. */
+/** The across-the-room wall scale — `size="wall"` grows track, needle, tick lines and labels together. */
 export const WallDensity: Story = {
   args: {
     zones: FATIGUE_ZONES,
     max: 40,
     marker: { type: 'needle', value: 15 },
     ticks: FATIGUE_TICKS,
-    trackHeight: 22,
-    needleOverhang: 9,
+    size: 'wall',
   },
 }
 
