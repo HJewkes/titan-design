@@ -7,7 +7,7 @@ export type ProgressColor = 'primary' | 'secondary' | 'success' | 'error' | 'war
 export type ProgressVariant = 'linear' | 'circular'
 
 /** Maps the color prop to a CSS variable reference for inline styles */
-const colorVarMap: Record<ProgressColor, string> = {
+export const colorVarMap: Record<ProgressColor, string> = {
   primary: 'var(--color-brand-primary)',
   secondary: 'var(--color-brand-secondary)',
   success: 'var(--color-status-success)',
@@ -101,13 +101,9 @@ export function Progress({
       {/* Label and Value Row */}
       {(label || showValue) && (
         <View className="flex-row justify-between items-center mb-1">
-          {label && (
-            <Text className="text-sm text-text-secondary">{label}</Text>
-          )}
+          {label && <Text className="text-sm text-text-secondary">{label}</Text>}
           {showValue && !isIndeterminate && (
-            <Text className="text-sm font-medium text-text-primary">
-              {formatValue(value, max)}
-            </Text>
+            <Text className="text-sm font-medium text-text-primary">{formatValue(value, max)}</Text>
           )}
         </View>
       )}
@@ -162,6 +158,19 @@ export interface CircularProgressProps extends ViewProps {
   showValue?: boolean
   /** Custom value format function */
   formatValue?: (value: number, max: number) => string
+  /**
+   * Custom center content (a numeral, a timer readout, an icon). When provided it
+   * replaces the {@link showValue} text — the ring becomes a generic container for
+   * any centered element. See {@link CircularTimer} for the batteries-included timer.
+   */
+  children?: React.ReactNode
+  /**
+   * Fill the parent container (responsive) instead of drawing a fixed `size` box.
+   * The SVG uses a `0 0 size size` viewBox scaled to the container, so `size` still
+   * sets the geometry proportions (radius, stroke) while the ring grows/shrinks with
+   * its parent — e.g. a wall column. Default false (fixed `size` px).
+   */
+  fill?: boolean
   /** Additional className */
   className?: string
 }
@@ -181,6 +190,8 @@ export function CircularProgress({
   color = 'primary',
   showValue = false,
   formatValue = (v, m) => `${Math.round((v / m) * 100)}%`,
+  children,
+  fill = false,
   className,
   ...props
 }: CircularProgressProps) {
@@ -189,11 +200,14 @@ export function CircularProgress({
   const circumference = 2 * Math.PI * radius
   const strokeDashoffset = circumference - (percentage / 100) * circumference
   const center = size / 2
+  // Fixed: a `size × size` px box. Fill: fill the parent, staying square, and let
+  // the `0 0 size size` viewBox scale the geometry to fit (a responsive ring).
+  const boxStyle = fill ? { width: '100%' as const, aspectRatio: 1 } : { width: size, height: size }
 
   return (
     <View
       className={cn('items-center justify-center', className)}
-      style={{ width: size, height: size }}
+      style={boxStyle}
       accessibilityRole="progressbar"
       accessibilityValue={{
         min: 0,
@@ -202,14 +216,11 @@ export function CircularProgress({
       }}
       {...props}
     >
-      {/* SVG implementation for web */}
-      <View
-        className={cn(isIndeterminate && 'animate-spin')}
-        style={{ width: size, height: size }}
-      >
+      {/* SVG implementation for web — width/height 100% so it scales with `boxStyle`. */}
+      <View className={cn(isIndeterminate && 'animate-spin')} style={boxStyle}>
         <svg
-          width={size}
-          height={size}
+          width="100%"
+          height="100%"
           viewBox={`0 0 ${size} ${size}`}
           style={{ position: 'absolute' }}
         >
@@ -239,14 +250,28 @@ export function CircularProgress({
         </svg>
       </View>
 
-      {/* Center value */}
-      {showValue && !isIndeterminate && (
-        <Text
-          className="text-xs font-semibold text-text-primary absolute"
-          style={{ fontSize: Math.max(size * 0.22, 10) }}
+      {/* Center: custom children take precedence over the showValue readout. */}
+      {children != null ? (
+        <View
+          style={{
+            position: 'absolute',
+            alignItems: 'center',
+            justifyContent: 'center',
+            pointerEvents: 'none',
+          }}
         >
-          {formatValue(value, max)}
-        </Text>
+          {children}
+        </View>
+      ) : (
+        showValue &&
+        !isIndeterminate && (
+          <Text
+            className="text-xs font-semibold text-text-primary absolute"
+            style={{ fontSize: Math.max(size * 0.22, 10) }}
+          >
+            {formatValue(value, max)}
+          </Text>
+        )
       )}
     </View>
   )

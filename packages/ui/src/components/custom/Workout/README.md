@@ -130,6 +130,23 @@ type props without pulling the dependency.
   narrows the rest — currently snaps; smooth overflow reflow is a deferred
   follow-up). Documented by the `HeroPlayground` / `Hero*` stories on the wall
   background.
+- **RestTimer `ring` variant** — the across-the-room **wall** rest treatment (the
+  north-star rest page). Built as a **three-tier decomposition** (not a one-off):
+  `CircularProgress` (atom, gained a **`children`** center slot + a **`fill`**
+  responsive mode) → **`CircularTimer`** (new molecule, `custom/CircularTimer/` — a
+  batteries-included circular countdown/countup; owns `useTimer`, renders the mm:ss
+  readout into the ring center, flips a completed `down` timer to a full `doneColor`
+  ring reading its `doneLabel`, and takes an optional `controls` slot) → **RestTimer
+  `ring`** which composes `CircularTimer` (`doneLabel="GO"`, `doneColor="success"`,
+  `controls={<RestActions/>}`) and adds the rest-specific next-set footer caption.
+  No third copy of the arc math and no `react-native-svg` — it rides
+  `CircularProgress`'s web-`<svg>` + free `stroke-dashoffset` transition. Absorbs
+  the R2 `RestRing` candidate into the atom; the mobile `CircularTimer` countup fork
+  is the natural second consumer of the new molecule (via `mode="up"`). `displayOnly`
+  hides the shared `RestActions` (+30s/Skip, extracted, used by both variants);
+  `size` (default 180) sets the diameter; the eyebrow/section title is organism
+  chrome. Web/RNW-only (like `CircularProgress`) — the wall variant; mobile keeps
+  `bar`. `Ring*` (RestTimer) + `Custom/CircularTimer` stories on the wall background.
 - Badge icons (WeightBadge's dumbbell, PrBadge / PrHistoryModal's star) are inline
   SVGs (`./icons.tsx`), not `lucide-react` — that dependency was dropped in 0.5.0
   to keep the root barrel light. The SVG paths mirror lucide's glyphs so rendering
