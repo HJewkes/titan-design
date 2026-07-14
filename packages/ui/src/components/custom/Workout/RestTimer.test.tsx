@@ -184,3 +184,76 @@ describe('RestTimer zero-duration timer (NaN guard)', () => {
     expect(container.innerHTML).not.toContain('NaN')
   })
 })
+
+describe('RestTimer ring variant', () => {
+  const ringProps = { ...defaultProps, variant: 'ring' as const }
+
+  it('renders the ring (composed CircularProgress) instead of the linear bar', () => {
+    render(<RestTimer {...ringProps} />)
+    expect(screen.getByTestId('rest-timer-ring')).toBeInTheDocument()
+    expect(screen.getByRole('progressbar')).toBeInTheDocument()
+    expect(screen.queryByTestId('rest-timer-progress-track')).not.toBeInTheDocument()
+  })
+
+  it('shows the mm:ss countdown in the ring center while resting', () => {
+    render(<RestTimer {...ringProps} totalSeconds={120} elapsedMs={60000} />)
+    expect(screen.getByTestId('circular-timer-label')).toHaveTextContent('1:00')
+  })
+
+  it('shows GO (not a time) when rest is complete', () => {
+    render(<RestTimer {...ringProps} totalSeconds={120} elapsedMs={120000} />)
+    expect(screen.getByTestId('circular-timer-label')).toHaveTextContent('GO')
+  })
+
+  it('labels the completed ring as rest complete', () => {
+    render(<RestTimer {...ringProps} totalSeconds={120} elapsedMs={125000} />)
+    expect(screen.getByLabelText('Rest complete, next set ready')).toBeInTheDocument()
+  })
+
+  it('labels the resting ring with seconds remaining', () => {
+    render(<RestTimer {...ringProps} totalSeconds={120} elapsedMs={60000} />)
+    expect(screen.getByLabelText('Rest timer, 60 seconds remaining')).toBeInTheDocument()
+  })
+
+  it('renders the next-set line and controls by default', () => {
+    render(<RestTimer {...ringProps} nextSetInfo="Next · Bench · set 3 of 4" />)
+    expect(screen.getByTestId('rest-timer-next-set')).toHaveTextContent('Next · Bench · set 3 of 4')
+    expect(screen.getByTestId('rest-timer-add-time')).toBeInTheDocument()
+    expect(screen.getByTestId('rest-timer-skip')).toBeInTheDocument()
+  })
+
+  it('hides the controls in displayOnly mode (keeps ring + next-set)', () => {
+    render(<RestTimer {...ringProps} nextSetInfo="Next" displayOnly />)
+    expect(screen.getByTestId('rest-timer-ring')).toBeInTheDocument()
+    expect(screen.getByTestId('rest-timer-next-set')).toBeInTheDocument()
+    expect(screen.queryByTestId('rest-timer-skip')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('rest-timer-add-time')).not.toBeInTheDocument()
+  })
+
+  it('fires onSkip / onAddTime from the ring controls', () => {
+    const onSkip = vi.fn()
+    const onAddTime = vi.fn()
+    render(<RestTimer {...ringProps} onSkip={onSkip} onAddTime={onAddTime} />)
+    fireEvent.click(screen.getByTestId('rest-timer-skip'))
+    fireEvent.click(screen.getByTestId('rest-timer-add-time'))
+    expect(onSkip).toHaveBeenCalledOnce()
+    expect(onAddTime).toHaveBeenCalledOnce()
+  })
+
+  it('respects visible=false', () => {
+    render(<RestTimer {...ringProps} visible={false} />)
+    expect(screen.queryByTestId('rest-timer-ring')).not.toBeInTheDocument()
+  })
+
+  it('emits no NaN when totalSeconds is 0', () => {
+    const { container } = render(<RestTimer {...ringProps} totalSeconds={0} elapsedMs={0} />)
+    expect(container.innerHTML).not.toContain('NaN')
+  })
+
+  it('has no accessibility violations', async () => {
+    const { container } = render(
+      <RestTimer {...ringProps} nextSetInfo="Next · Bench · set 3 of 4" />
+    )
+    expect(await axe(container)).toHaveNoViolations()
+  })
+})
