@@ -1,62 +1,57 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useState } from 'react'
 import { View, Text, type LayoutChangeEvent } from 'react-native'
-import {
-  StatusPill,
-  LiveAuraFrame,
-  VelocityStrip,
-  TempoDisplay,
-  SetsRepsLoad,
-} from '../../components'
+import { LiveAuraFrame, VelocityStrip, TempoDisplay, SetsRepsLoad } from '../../components'
+import { Tooltip } from '../../components/ui/tooltip/Tooltip'
 import { getSemanticColors } from '../../theme/tokens/semantic'
+import { alpha } from '../../utils/colors'
+import { neumorphicShadows } from '../../theme/shadows'
 import { type DashboardModel, verdictFromLoss } from './fixtures'
 
 const t = getSemanticColors('dark')
 
-/** Font size for the head's large prescription read-out (SetsRepsLoad + tempo). */
-const PRESCRIPTION_SIZE = 32
-/** Below this stage width the head scales down and the status message collapses. */
-const NARROW_STAGE = 760
+/** Below this content width the alert message collapses to a hover tip. */
+const NARROW_CONTENT = 620
+/** Raised-card elevation shared by the alert + tempo cards. */
+const CARD_SHADOW = neumorphicShadows.charcoal.raised.medium
 
 // --- Voltra slot --------------------------------------------------------------
 
 /** Which Voltra a live view is reading from — for dual mode and multi-device sessions. */
 export type VoltraSlot = 'L' | 'R'
 
-const SLOT_META: Record<VoltraSlot, { label: string; glyph: string }> = {
-  L: { label: 'LEFT VOLTRA', glyph: '◧' },
-  R: { label: 'RIGHT VOLTRA', glyph: '◨' },
+const SLOT_META: Record<VoltraSlot, { label: string }> = {
+  L: { label: 'LEFT VOLTRA' },
+  R: { label: 'RIGHT VOLTRA' },
 }
 
-/** The slot badge — names the voltra this view reads (dual layers, or one-of-many active). */
-function SlotBadge({ slot, compact = false }: { slot: VoltraSlot; compact?: boolean }) {
-  const { label, glyph } = SLOT_META[slot]
+/** The voltra name set vertically down the far-left edge of a layer (dual / multi-device). */
+function VerticalSlotLabel({ slot }: { slot: VoltraSlot }) {
+  const { label } = SLOT_META[slot]
   return (
     <View
-      className="flex-row items-center bg-surface-raised border-border"
-      style={{
-        gap: 6,
-        borderWidth: 1,
-        borderRadius: 999,
-        paddingHorizontal: compact ? 8 : 10,
-        paddingVertical: 3,
-        flexShrink: 0,
-      }}
+      className="border-border"
+      style={{ width: 34, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1 }}
     >
-      <Text className="text-text-secondary" style={{ fontSize: 13 }}>
-        {glyph}
-      </Text>
+      {/* Fixed width holds the full label before rotation (a bare rotate clips to the strip). */}
       <Text
-        className="text-text-secondary"
-        style={{ fontSize: 10, fontWeight: '700', letterSpacing: 1 }}
+        className="text-text-tertiary"
+        style={{
+          width: 150,
+          textAlign: 'center',
+          fontSize: 12,
+          fontWeight: '700',
+          letterSpacing: 3,
+          transform: [{ rotate: '-90deg' }],
+        }}
       >
-        {compact ? slot : label}
+        {label}
       </Text>
     </View>
   )
 }
 
-// --- Consolidated status cue --------------------------------------------------
+// --- Alert cue ----------------------------------------------------------------
 
 type Verdict = 'productive' | 'threshold' | 'stop'
 const STATUS_COLOR: Record<Verdict, string> = {
@@ -64,38 +59,53 @@ const STATUS_COLOR: Record<Verdict, string> = {
   threshold: t['status-warning'],
   stop: t['status-error'],
 }
+const VERDICT_LABEL: Record<Verdict, string> = {
+  productive: 'Productive',
+  threshold: 'Threshold',
+  stop: 'Stop',
+}
 
 /**
- * The single verdict element: the {@link StatusPill}, which EXPANDS to carry an inline
- * message when the verdict is meaningful (threshold/stop). The threshold alert lives in
- * ONE place — not duplicated as a separate cue below. The message collapses on a narrow
- * stage, leaving just the pill.
+ * The single status element — a tinted alert CARD that carries the exertion message
+ * INSIDE it. On a narrow layer the message collapses (leaving just the verdict) and moves
+ * to a hover tip so the detail is still one hover away.
  */
-function StatusCue({
-  status,
-  message,
-  narrow,
-}: {
-  status: Verdict
-  message: string
-  narrow: boolean
-}) {
-  const expanded = (status === 'threshold' || status === 'stop') && !narrow
-  return (
-    <View className="flex-row items-center" style={{ gap: 12, flexShrink: 1, justifyContent: 'flex-end' }}>
-      {expanded && (
-        <Text
-          numberOfLines={1}
-          style={{ color: STATUS_COLOR[status], fontSize: 14, fontWeight: '600', flexShrink: 1, textAlign: 'right' }}
-        >
-          {message}
+function AlertCue({ status, message, narrow }: { status: Verdict; message: string; narrow: boolean }) {
+  const tone = STATUS_COLOR[status]
+  const meaningful = status === 'threshold' || status === 'stop'
+  const card = (
+    <View
+      className="flex-row items-center"
+      style={{
+        gap: 10,
+        alignSelf: 'flex-start',
+        borderWidth: 1,
+        borderColor: alpha(tone, 0.45),
+        backgroundColor: alpha(tone, 0.14),
+        borderRadius: 10,
+        paddingHorizontal: 14,
+        paddingVertical: 9,
+        ...CARD_SHADOW,
+      }}
+    >
+      <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: tone }} />
+      <Text style={{ color: tone, fontSize: 13, fontWeight: '700' }}>{VERDICT_LABEL[status]}</Text>
+      {meaningful && !narrow && (
+        <Text numberOfLines={1} style={{ color: tone, fontSize: 13, fontWeight: '600', flexShrink: 1 }}>
+          · {message}
         </Text>
       )}
-      <View style={{ flexShrink: 0 }}>
-        <StatusPill status={status} />
-      </View>
     </View>
   )
+  // Collapsed (narrow): the detail is a hover away.
+  if (narrow && meaningful) {
+    return (
+      <Tooltip label={message} placement="bottom">
+        {card}
+      </Tooltip>
+    )
+  }
+  return card
 }
 
 // --- Live tempo phase mapping -------------------------------------------------
@@ -116,17 +126,53 @@ function mapLivePhase(
   }
 }
 
+// --- Page-level exercise header -----------------------------------------------
+
+/**
+ * The workout title + targets — the exercise being performed, independent of how many
+ * voltras drive it, so it lives at the TOP OF THE PAGE (above the live stage) and stays
+ * visible across single/dual. NOT a published component.
+ */
+export function ExerciseHeader({ session }: { session: DashboardModel['session'] }) {
+  return (
+    <View
+      className="flex-row items-baseline border-border"
+      style={{
+        gap: 22,
+        flexWrap: 'wrap',
+        paddingHorizontal: 24,
+        paddingTop: 20,
+        paddingBottom: 16,
+        borderBottomWidth: 1,
+      }}
+    >
+      <Text
+        className="text-text-primary"
+        style={{ fontSize: 30, fontFamily: '"Space Grotesk", sans-serif', fontWeight: '700' }}
+      >
+        {session.exerciseName}
+      </Text>
+      <SetsRepsLoad
+        sets={session.plannedSets}
+        reps={8}
+        load={session.weightLbs}
+        unit={session.unit}
+        fontSize={28}
+      />
+    </View>
+  )
+}
+
 // --- Live stage ---------------------------------------------------------------
 
 /**
- * Lab specimen — the LIVE (mid-set) stage of the North Star wall dashboard.
+ * Lab specimen — the LIVE (mid-set) stage of one voltra. The exercise identity + targets
+ * are the PAGE header ({@link ExerciseHeader}); this layer carries only per-voltra live
+ * data: an optional vertical slot label (far left), the alert + live tempo in a row, and
+ * the velocity hero. NOT a published component.
  *
- * The velocity hero IS the stage: the head carries identity, the prescription with a
- * LIVE tempo fill (the single tempo view — no duplicate active-tempo bar), and one
- * consolidated status cue; the velocity chart fills the body. NOT a published component.
- *
- * `side` renders this as one LAYER of a dual-mode (bilateral) exercise (denser, per-voltra
- * badge). `slot` names the active voltra in a single-view multi-device session.
+ * `side` renders this as one LAYER of a dual-mode set; `slot` names the active voltra in a
+ * single-view multi-device session. Either shows the vertical slot label.
  */
 export function LiveView({
   model,
@@ -142,16 +188,13 @@ export function LiveView({
   const dual = side != null
   const badgeSlot: VoltraSlot | null = side ? (side === 'left' ? 'L' : 'R') : (slot ?? null)
 
-  // Measure the stage (shell nav + rail eat ~360px) so the head can scale to the real width.
-  const [stageW, setStageW] = useState(0)
-  const onStageLayout = (e: LayoutChangeEvent) => setStageW(e.nativeEvent.layout.width)
-  const narrow = stageW > 0 && stageW < NARROW_STAGE
-  const prescriptionSize = narrow ? 24 : PRESCRIPTION_SIZE
+  const [contentW, setContentW] = useState(0)
+  const onContentLayout = (e: LayoutChangeEvent) => setContentW(e.nativeEvent.layout.width)
+  const narrow = contentW > 0 && contentW < NARROW_CONTENT
 
-  // The hero fills the body: measure the region and hand its height to the chart.
   const [heroH, setHeroH] = useState(0)
   const onHeroLayout = (e: LayoutChangeEvent) => setHeroH(e.nativeEvent.layout.height)
-  const heroHeight = heroH > 0 ? heroH : dual ? 200 : 340
+  const heroHeight = heroH > 0 ? heroH : dual ? 200 : 320
 
   const activePhase = mapLivePhase(live.phase)
   const message = `VL${live.velocityLossPct} · approaching threshold — 1–2 productive reps left`
@@ -159,56 +202,38 @@ export function LiveView({
   return (
     // head verdict → full-surface aura flood (threshold amber for the mid-zone fixture).
     <LiveAuraFrame category={verdict} style={{ flex: 1, margin: dual ? 12 : 20 }}>
-      <View onLayout={onStageLayout} style={{ flex: 1, padding: dual ? 20 : 28, gap: dual ? 14 : 20 }}>
-        {/* head: identity + one consolidated status cue, then the prescription with LIVE tempo. */}
-        <View style={{ gap: 10 }}>
-          <View className="flex-row items-center justify-between" style={{ gap: 12 }}>
-            <View className="flex-row items-center" style={{ gap: 10, flex: 1, minWidth: 0 }}>
-              {badgeSlot && <SlotBadge slot={badgeSlot} compact={narrow} />}
-              <Text
-                numberOfLines={1}
-                className="text-text-primary"
-                style={{
-                  fontSize: narrow ? 20 : 26,
-                  fontFamily: '"Space Grotesk", sans-serif',
-                  fontWeight: '700',
-                }}
-              >
-                {session.exerciseName}
-              </Text>
+      <View className="flex-row" style={{ flex: 1 }}>
+        {badgeSlot && <VerticalSlotLabel slot={badgeSlot} />}
+        <View
+          onLayout={onContentLayout}
+          style={{ flex: 1, padding: dual ? 18 : 24, gap: dual ? 14 : 18 }}
+        >
+          {/* controls row: the alert + the live tempo, in line on the left. */}
+          <View className="flex-row items-center" style={{ gap: 16, flexWrap: 'wrap' }}>
+            <AlertCue status={verdict} message={message} narrow={narrow} />
+            {/* tempo card — balanced with the alert (smaller than the old head lockup), raised. */}
+            <View style={{ borderRadius: 9, ...CARD_SHADOW }}>
+              <TempoDisplay
+                tempo={session.tempo}
+                fontSize={22}
+                live={activePhase ? { activePhase, phaseElapsedMs: live.phaseElapsedMs } : undefined}
+                showLabel
+                showInfo={false}
+              />
             </View>
-            <StatusCue status={verdict} message={message} narrow={narrow} />
           </View>
-          {/* prescription in the SetsRepsLoad / TempoDisplay language (faded ×/@/dashes), scaled
-              up — the tempo runs LIVE (active-phase fill), so it is the one and only tempo view. */}
-          <View className="flex-row items-baseline" style={{ gap: 24, flexWrap: 'wrap' }}>
-            <SetsRepsLoad
-              sets={session.plannedSets}
-              reps={8}
-              load={session.weightLbs}
-              unit={session.unit}
-              fontSize={prescriptionSize}
-            />
-            <TempoDisplay
-              tempo={session.tempo}
-              fontSize={prescriptionSize}
-              live={activePhase ? { activePhase, phaseElapsedMs: live.phaseElapsedMs } : undefined}
-              showLabel={false}
-              showInfo={false}
-            />
-          </View>
-        </View>
 
-        {/* body: the velocity hero, full width, filling the space freed by the dropped panels. */}
-        <View style={{ flex: 1 }} onLayout={onHeroLayout}>
-          <VelocityStrip
-            variant="hero"
-            velocities={live.repVelocities}
-            liveRepIndex={live.repVelocities.length - 1}
-            targetReps={8}
-            height={heroHeight}
-            scale="peak"
-          />
+          {/* the velocity hero fills the rest. */}
+          <View style={{ flex: 1 }} onLayout={onHeroLayout}>
+            <VelocityStrip
+              variant="hero"
+              velocities={live.repVelocities}
+              liveRepIndex={live.repVelocities.length - 1}
+              targetReps={8}
+              height={heroHeight}
+              scale="peak"
+            />
+          </View>
         </View>
       </View>
     </LiveAuraFrame>

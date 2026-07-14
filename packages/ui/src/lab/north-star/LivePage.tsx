@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { ScrollView, View } from 'react-native'
 import { SessionRail } from '../../components'
-import { LiveView } from './LiveView'
+import { ExerciseHeader, LiveView } from './LiveView'
 import { RestView } from './RestView'
 import {
   dashboardFixture,
@@ -55,15 +55,19 @@ export function LivePage({ variant = 'live', model = dashboardFixture }: LivePag
       {/* footer pace strip — STUB / NO-DATA: intentionally omitted (no store field yet). */}
 
       <View className="flex-1">
-        {variant === 'live-dual' ? (
-          <DualLiveStage model={model} />
-        ) : variant === 'live' ? (
-          // `slot` names the active voltra — the shell has two connected, so the live view
-          // flags which one it is reading from (the multi-device single-view case).
-          <LiveView model={model} slot="L" />
-        ) : (
-          <RestView model={model} />
-        )}
+        {/* workout title + targets — page-level, always visible, independent of single/dual. */}
+        <ExerciseHeader session={model.session} />
+        <View className="flex-1">
+          {variant === 'live-dual' ? (
+            <DualLiveStage model={model} />
+          ) : variant === 'live' ? (
+            // `slot` names the active voltra — the shell has two connected, so the live view
+            // flags which one it is reading from (the multi-device single-view case).
+            <LiveView model={model} slot="L" />
+          ) : (
+            <RestView model={model} />
+          )}
+        </View>
       </View>
     </View>
   )
