@@ -97,35 +97,46 @@ export const LiveBehindPace: Story = {
   args: { tempo: [3, 1, 1, 0], live: { activePhase: 'concentric', phaseElapsedMs: 1600 } },
 }
 
+// A full rep cycle incl. a 2s rest at the top between reps.
 const LIVE_CYCLE: { phase: TempoLivePhase; ms: number }[] = [
   { phase: 'eccentric', ms: 3000 },
   { phase: 'pauseBottom', ms: 1000 },
-  { phase: 'concentric', ms: 1000 },
+  { phase: 'concentric', ms: 2000 },
+  { phase: 'pauseTop', ms: 2000 },
 ]
 
 function LiveTempoDemo() {
-  const [live, setLive] = useState<TempoLiveState>({ activePhase: 'eccentric', phaseElapsedMs: 0 })
+  const [live, setLive] = useState<TempoLiveState>({
+    activePhase: 'eccentric',
+    phaseElapsedMs: 0,
+    completed: {},
+  })
   useEffect(() => {
     let idx = 0
     let start = Date.now()
+    let completed: TempoLiveState['completed'] = {}
     const id = setInterval(() => {
       const step = LIVE_CYCLE[idx]
       const elapsed = Date.now() - start
-      if (elapsed >= step.ms + 400) {
+      if (elapsed >= step.ms + 300) {
+        // Bank the phase's actual duration, advance; a new rep (wrap to idx 0) resets the row.
+        completed = { ...completed, [step.phase]: elapsed }
         idx = (idx + 1) % LIVE_CYCLE.length
+        if (idx === 0) completed = {}
         start = Date.now()
       }
       setLive({
         activePhase: LIVE_CYCLE[idx].phase,
-        phaseElapsedMs: Math.min(elapsed, step.ms + 400),
+        phaseElapsedMs: Math.min(elapsed, step.ms + 300),
+        completed,
       })
     }, 50)
     return () => clearInterval(id)
   }, [])
-  return <TempoDisplay tempo={[3, 1, 1, 0]} live={live} />
+  return <TempoDisplay tempo={[3, 1, 2, 2]} live={live} />
 }
 
-// Self-driving demo cycling Ecc → Pause → Con to show the fill animating.
+// Self-driving demo cycling Ecc → Pause → Con → 2s rest, banking each phase as it completes.
 export const LiveAnimated: Story = {
   render: () => <LiveTempoDemo />,
 }
@@ -183,8 +194,8 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   )
 }
 
-// tempo [3,1,2,1] — every phase has a non-zero target so each can be shown active.
-const TEMPO = [3, 1, 2, 1] as [number, number, number, number]
+// tempo [3,1,2,2] — 3s eccentric, 1s bottom pause, 2s concentric, and a 2s rest at the top.
+const TEMPO = [3, 1, 2, 2] as [number, number, number, number]
 
 /**
  * The active tempo across the states it moves through: pacing (ahead → on-target →
@@ -212,26 +223,34 @@ export const ActiveTempoConditions: Story = {
         />
       </Section>
 
-      <Section title="Each phase active (countdown, mid-phase)">
+      <Section title="Through a rep — earlier phases bank their final time (countdown)">
         <Condition
-          caption="Eccentric"
+          caption="Eccentric active · nothing banked yet"
           tempo={TEMPO}
           live={{ activePhase: 'eccentric', phaseElapsedMs: 1500 }}
         />
         <Condition
-          caption="Pause (bottom)"
+          caption="Pause active · ecc banked at −0.1 (a touch long)"
           tempo={TEMPO}
-          live={{ activePhase: 'pauseBottom', phaseElapsedMs: 500 }}
+          live={{ activePhase: 'pauseBottom', phaseElapsedMs: 500, completed: { eccentric: 3100 } }}
         />
         <Condition
-          caption="Concentric"
+          caption="Concentric active · ecc + pause banked"
           tempo={TEMPO}
-          live={{ activePhase: 'concentric', phaseElapsedMs: 1000 }}
+          live={{
+            activePhase: 'concentric',
+            phaseElapsedMs: 1000,
+            completed: { eccentric: 3000, pauseBottom: 900 },
+          }}
         />
         <Condition
-          caption="Pause (top)"
+          caption="Rest at top (2s) · whole rep banked"
           tempo={TEMPO}
-          live={{ activePhase: 'pauseTop', phaseElapsedMs: 500 }}
+          live={{
+            activePhase: 'pauseTop',
+            phaseElapsedMs: 700,
+            completed: { eccentric: 3000, pauseBottom: 900, concentric: 2050 },
+          }}
         />
       </Section>
 
@@ -258,7 +277,7 @@ export const ActiveTempoConditions: Story = {
         />
         <View style={{ gap: 5 }}>
           <Text style={{ color: '#9CA3AF', fontFamily: 'Inter, sans-serif', fontSize: 11 }}>
-            Animated · self-driving Ecc → Pause → Con
+            Animated · Ecc → Pause → Con → 2s rest, banking each phase
           </Text>
           <LiveTempoDemo />
         </View>

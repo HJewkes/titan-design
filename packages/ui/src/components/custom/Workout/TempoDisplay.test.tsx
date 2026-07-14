@@ -108,13 +108,13 @@ describe('TempoDisplay', () => {
     it('counts elapsed up when liveReadout is countup', () => {
       render(
         <TempoDisplay
-          tempo={[3, 1, 1, 0]}
+          tempo={[4, 1, 2, 3]}
           liveReadout="countup"
-          live={{ activePhase: 'eccentric', phaseElapsedMs: 1000 }}
+          live={{ activePhase: 'eccentric', phaseElapsedMs: 1500 }}
         />
       )
-      // 1s elapsed of the 3s eccentric → 1.0 counting up
-      expect(screen.getByText('1.0')).toBeInTheDocument()
+      // 1.5s elapsed of the 4s eccentric → 1.5 counting up (unique among the target readouts)
+      expect(screen.getByText('1.5')).toBeInTheDocument()
     })
 
     it('marks no phase active when idle (activePhase null)', () => {
@@ -122,20 +122,46 @@ describe('TempoDisplay', () => {
       expect(screen.queryByTestId('tempo-live-active')).not.toBeInTheDocument()
     })
 
-    it('renders inactive digits statically and the active phase as its readout', () => {
+    it('locks the phases completed earlier in the rep, and resets on the first phase', () => {
+      // Concentric active (3rd phase) → eccentric + pauseBottom are locked done.
+      const mid = render(
+        <TempoDisplay tempo={[3, 1, 2, 1]} live={{ activePhase: 'concentric', phaseElapsedMs: 800 }} />
+      )
+      expect(mid.getAllByTestId('tempo-live-done')).toHaveLength(2)
+      // Back to the first phase (next rep) → nothing is locked yet.
+      mid.rerender(
+        <TempoDisplay tempo={[3, 1, 2, 1]} live={{ activePhase: 'eccentric', phaseElapsedMs: 200 }} />
+      )
+      expect(mid.queryByTestId('tempo-live-done')).not.toBeInTheDocument()
+    })
+
+    it('colours the TEMPO label live-muted while live', () => {
+      const { getByText, rerender } = render(<TempoDisplay tempo={[3, 1, 1, 0]} />)
+      const restColor = getByText('TEMPO').style.color
+      rerender(<TempoDisplay tempo={[3, 1, 1, 0]} live={{ activePhase: 'eccentric', phaseElapsedMs: 500 }} />)
+      expect(getByText('TEMPO').style.color).not.toBe(restColor)
+    })
+
+    it('shows upcoming phases as their prescribed time and the active as the live readout', () => {
+      render(
+        <TempoDisplay tempo={[5, 3, 2, 1]} live={{ activePhase: 'eccentric', phaseElapsedMs: 1000 }} />
+      )
+      // active eccentric: 5s target, 1s in → 4.0 remaining
+      expect(screen.getByText('4.0')).toBeInTheDocument()
+      // upcoming pauseBottom shows its prescribed 3s as 3.0 (no bare integer digits in live mode)
+      expect(screen.getByText('3.0')).toBeInTheDocument()
+      expect(screen.queryByText('5')).not.toBeInTheDocument()
+    })
+
+    it('freezes a completed phase at its actual final time, not the target', () => {
       render(
         <TempoDisplay
-          tempo={[4, 3, 2, 1]}
-          live={{ activePhase: 'concentric', phaseElapsedMs: 500 }}
+          tempo={[3, 1, 2, 2]}
+          live={{ activePhase: 'concentric', phaseElapsedMs: 500, completed: { eccentric: 3400 } }}
         />
       )
-      // the three inactive phases keep their static digits...
-      for (const digit of ['4', '3', '1']) {
-        expect(screen.getByText(digit)).toBeInTheDocument()
-      }
-      // ...and the active concentric (2s target, 0.5s in) shows the readout, not "2"
-      expect(screen.getByText('1.5')).toBeInTheDocument()
-      expect(screen.queryByText('2')).not.toBeInTheDocument()
+      // eccentric ran 3.4s vs its 3s target → countdown froze at 3.0 − 3.4 = −0.4, not the target
+      expect(screen.getByText('-0.4')).toBeInTheDocument()
     })
   })
 

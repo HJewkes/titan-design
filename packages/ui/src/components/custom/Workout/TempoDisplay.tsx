@@ -4,6 +4,7 @@ import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { roundTempo } from '../../../utils/workout-format'
 import { alpha } from '../../../utils/colors'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { primitiveRamps } from '../../../theme/tokens/primitives'
 import { getTempoFillPct } from './TempoBar'
 import { MetricCell } from './metricText'
 
@@ -22,6 +23,12 @@ export interface TempoLiveState {
   activePhase: TempoLivePhase | null
   /** Elapsed time (ms) within the active phase. */
   phaseElapsedMs: number
+  /**
+   * Actual completed durations (ms) for phases finished earlier THIS rep. A done cell
+   * freezes at its final readout (not the target) until the next rep resets the row.
+   * Omit a phase to fall back to its target (assume it completed on pace).
+   */
+  completed?: Partial<Record<TempoLivePhase, number>>
 }
 
 export interface TempoDisplayProps extends ViewProps {
@@ -60,16 +67,16 @@ export type TempoLiveReadout = 'countdown' | 'countup'
 const PACE_BAND = 0.15
 
 /**
- * Pacing tone for the active phase's number: the phase colour while comfortably under
- * target (ahead / in progress), success once within the band of target (on target), and
- * error once past it (behind). Text colour alone carries the pacing.
+ * Semantic pacing tone for the active phase's NUMBER (the fill bar carries phase identity,
+ * so the number is free to carry pacing): neutral while comfortably under target (ahead /
+ * in progress), success once within the band of target (on target), error once past it.
  */
-function activePacingTone(elapsedMs: number, targetMs: number | null, phaseColor: string): string {
-  if (targetMs == null || targetMs < 500) return phaseColor
+function activeNumberTone(elapsedMs: number, targetMs: number | null): string {
+  if (targetMs == null || targetMs < 500) return t['text-primary']
   const ratio = elapsedMs / targetMs
   if (ratio > 1 + PACE_BAND) return STATUS_ERROR
   if (ratio >= 1 - PACE_BAND) return STATUS_SUCCESS
-  return phaseColor
+  return t['text-primary']
 }
 
 /** The active number: `countup` elapsed (→ target) or `countdown` remaining (→ 0.0, then −). */
@@ -82,11 +89,13 @@ function liveReadoutText(
   return seconds.toFixed(1)
 }
 
-// Phase colors: [eccentric, pauseBottom, concentric, pauseTop]
+// Phase IDENTITY colours — deliberately NON-semantic (magenta ecc / cyan con) so the
+// phase hue never collides with the semantic pacing tones (success/error) the active
+// number carries. Pauses stay neutral grey. [eccentric, pauseBottom, concentric, pauseTop]
 const phaseColors = {
-  eccentric: t['status-warning'],
+  eccentric: primitiveRamps.magenta[400],
   pauseBottom: TEXT_TERTIARY,
-  concentric: t['status-success'],
+  concentric: primitiveRamps.cyan[300],
   pauseTop: TEXT_TERTIARY,
   dash: TEXT_TERTIARY,
 }
@@ -123,59 +132,92 @@ const LIVE_PHASES: { key: TempoLivePhase; color: string }[] = [
   { key: 'pauseTop', color: phaseColors.pauseTop },
 ]
 
+/** A phase's place in the current rep: already done (locked full), filling now, or still to come. */
+type LiveCellStatus = 'done' | 'active' | 'upcoming'
+
+/** A bottom-anchored vertical fill behind the number (the phase-progress bar). */
+function CellFill({ color, pct }: { color: string; pct: number }) {
+  return (
+    <View
+      style={{
+        position: 'absolute',
+        left: 2,
+        right: 2,
+        bottom: 0,
+        height: `${pct}%`,
+        backgroundColor: alpha(color, 0.28),
+        borderRadius: 3,
+      }}
+    />
+  )
+}
+
+/** Monospace stack for the live readout so digit widths never shift. */
+const MONO = 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace'
+/** Widest readout the cell must hold: sign · two whole digits · point · tenths, e.g. "-12.3". */
+const READOUT_MAX_CHARS = 5
+
 function LiveTempoCell({
   value,
   color,
-  isActive,
+  status,
   phaseElapsedMs,
+  completedMs,
   fontSize,
   readout,
 }: {
   value: number
   color: string
-  isActive: boolean
+  status: LiveCellStatus
   phaseElapsedMs: number
+  completedMs: number | undefined
   fontSize: number
   readout: TempoLiveReadout
 }) {
-  // Wider spacing than the static row so the vertical fill bar reads behind the number.
-  const pad = Math.round(fontSize * 0.45)
   const targetMs = value > 0 ? value * 1000 : null
+  // Fixed, monospace-width cell sized to the widest readout — a phase activating or its
+  // number changing never shifts the layout (the fill bar stays put too).
+  const cellW = Math.ceil(fontSize * 0.62 * READOUT_MAX_CHARS)
+  const wrap = {
+    position: 'relative' as const,
+    width: cellW,
+    minHeight: Math.round(fontSize * 1.25),
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
+  }
+  const num = (c: string, text: string) => (
+    <Text style={{ fontFamily: MONO, fontSize, color: c, fontWeight: '700' }}>{text}</Text>
+  )
 
-  if (!isActive) {
+  // Upcoming: the phase's prescribed time, dimmed, no fill.
+  if (status === 'upcoming') {
+    const targetText = targetMs != null ? (targetMs / 1000).toFixed(1) : String(value)
+    return <View style={wrap}>{num(alpha(color, 0.35), targetText)}</View>
+  }
+
+  // Done: FROZEN at the phase's final readout (its actual completed time, not the target),
+  // fill locked full in the phase colour — banked progress until the next rep resets the row.
+  if (status === 'done') {
+    const finalMs = completedMs ?? targetMs ?? 0
+    const finalText = targetMs != null ? liveReadoutText(finalMs, targetMs, readout) : String(value)
     return (
-      <View style={{ paddingHorizontal: pad }}>
-        <TempoValue value={value} color={alpha(color, 0.35)} fontSize={fontSize} />
+      <View style={wrap} testID="tempo-live-done">
+        <CellFill color={color} pct={100} />
+        {num(color, finalText)}
       </View>
     )
   }
 
-  // Active: a bottom-anchored vertical fill grows with the phase; the number reads the live
-  // time (countdown/countup) to 0.1s, coloured by pacing (ahead/on-target/behind).
-  const tone = activePacingTone(phaseElapsedMs, targetMs, color)
+  // Active: the phase-hued fill grows with the phase; the number reads the live time
+  // (countdown/countup) to 0.1s, coloured SEMANTICALLY by pacing (neutral/on-target/behind).
+  const numberTone = activeNumberTone(phaseElapsedMs, targetMs)
   const fillPct = getTempoFillPct(phaseElapsedMs, targetMs)
-  const text = targetMs != null ? liveReadoutText(phaseElapsedMs, targetMs, readout) : String(value)
+  const activeText =
+    targetMs != null ? liveReadoutText(phaseElapsedMs, targetMs, readout) : String(value)
   return (
-    <View
-      style={{ position: 'relative', paddingHorizontal: pad, alignItems: 'center', justifyContent: 'center' }}
-      testID="tempo-live-active"
-    >
-      <View
-        style={{
-          position: 'absolute',
-          left: 2,
-          right: 2,
-          bottom: 0,
-          height: `${fillPct}%`,
-          backgroundColor: alpha(tone, 0.28),
-          borderRadius: 3,
-        }}
-      />
-      <Text
-        style={{ fontFamily: INTER, fontSize, color: tone, fontWeight: '700', letterSpacing: 1 }}
-      >
-        {text}
-      </Text>
+    <View style={wrap} testID="tempo-live-active">
+      <CellFill color={color} pct={fillPct} />
+      {num(numberTone, activeText)}
     </View>
   )
 }
@@ -191,21 +233,31 @@ function LiveTempoRow({
   fontSize: number
   readout: TempoLiveReadout
 }) {
+  // Phases run in a fixed order within a rep, so the active phase's position tells us which
+  // phases are already done (locked). When it wraps back to the first phase, the row resets.
+  const activeIndex = live.activePhase
+    ? LIVE_PHASES.findIndex((p) => p.key === live.activePhase)
+    : -1
   return (
     <>
-      {LIVE_PHASES.map((phase, i) => (
-        <View key={phase.key} style={{ flexDirection: 'row', alignItems: 'center' }}>
-          {i > 0 && <TempoSeparator color={phaseColors.dash} fontSize={fontSize} />}
-          <LiveTempoCell
-            value={values[i]}
-            color={phase.color}
-            isActive={live.activePhase === phase.key}
-            phaseElapsedMs={live.phaseElapsedMs}
-            fontSize={fontSize}
-            readout={readout}
-          />
-        </View>
-      ))}
+      {LIVE_PHASES.map((phase, i) => {
+        const status: LiveCellStatus =
+          activeIndex < 0 || i > activeIndex ? 'upcoming' : i < activeIndex ? 'done' : 'active'
+        return (
+          <View key={phase.key} style={{ flexDirection: 'row', alignItems: 'center' }}>
+            {i > 0 && <TempoSeparator color={phaseColors.dash} fontSize={fontSize} />}
+            <LiveTempoCell
+              value={values[i]}
+              color={phase.color}
+              status={status}
+              phaseElapsedMs={live.phaseElapsedMs}
+              completedMs={live.completed?.[phase.key]}
+              fontSize={fontSize}
+              readout={readout}
+            />
+          </View>
+        )
+      })}
     </>
   )
 }
@@ -258,7 +310,8 @@ export function TempoDisplay({
             fontFamily: INTER,
             fontSize: 9,
             fontWeight: '500',
-            color: TEXT_TERTIARY,
+            // Live-muted green while a rep is running, tertiary at rest.
+            color: live ? t['status-live-muted'] : TEXT_TERTIARY,
             letterSpacing: 0.5,
             textTransform: 'uppercase',
             marginRight: 6,
