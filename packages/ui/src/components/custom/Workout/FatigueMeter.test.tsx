@@ -71,3 +71,15 @@ describe('FatigueMeter', () => {
     })
   })
 })
+
+describe('FatigueMeter size="wall"', () => {
+  it('passes wall density through to the composed ZoneTrack (thicker needle)', () => {
+    render(<FatigueMeter value={20} size="wall" />)
+    expect(screen.getByTestId('zone-track-needle')).toHaveStyle({ width: '7px' })
+  })
+
+  it('keeps the compact needle by default', () => {
+    render(<FatigueMeter value={20} />)
+    expect(screen.getByTestId('zone-track-needle')).toHaveStyle({ width: '4px' })
+  })
+})

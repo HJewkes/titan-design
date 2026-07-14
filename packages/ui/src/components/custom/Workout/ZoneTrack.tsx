@@ -19,9 +19,59 @@ const DEFAULT_MARKER_COLOR = primitiveColors.white
 /** Tick mark + tick label colour. */
 const TICK_COLOR = t['text-tertiary']
 
-const DEFAULT_TRACK_HEIGHT = 14
-const DEFAULT_NEEDLE_OVERHANG = 6
-const NEEDLE_WIDTH = 4
+/** Density. `default` — the compact card/rail gauge. `wall` — the across-the-room dashboard scale. */
+export type ZoneTrackSize = 'default' | 'wall'
+
+interface ZoneTrackSizing {
+  trackHeight: number
+  needleOverhang: number
+  needleWidth: number
+  tickLineNormal: number
+  tickLineEmphasized: number
+  tickLineHeightPad: number
+  tickLineTopPad: number
+  labelRowHeight: number
+  labelMarginTop: number
+  tickFont: number
+  tickLetterSpacing: number
+  tickCellWidth: number
+}
+
+/**
+ * Per-density magnitudes. `default` reproduces the original compact values exactly;
+ * `wall` scales the track, needle, tick lines and tick labels up together so the gauge
+ * reads across a room. `trackHeight` / `needleOverhang` remain overridable per call.
+ */
+const ZONE_SIZES: Record<ZoneTrackSize, ZoneTrackSizing> = {
+  default: {
+    trackHeight: 14,
+    needleOverhang: 6,
+    needleWidth: 4,
+    tickLineNormal: 1.5,
+    tickLineEmphasized: 2,
+    tickLineHeightPad: 4,
+    tickLineTopPad: 2,
+    labelRowHeight: 16,
+    labelMarginTop: 5,
+    tickFont: 9,
+    tickLetterSpacing: 0.5,
+    tickCellWidth: 28,
+  },
+  wall: {
+    trackHeight: 24,
+    needleOverhang: 9,
+    needleWidth: 7,
+    tickLineNormal: 2.5,
+    tickLineEmphasized: 3.5,
+    tickLineHeightPad: 6,
+    tickLineTopPad: 3,
+    labelRowHeight: 24,
+    labelMarginTop: 8,
+    tickFont: 14,
+    tickLetterSpacing: 0.5,
+    tickCellWidth: 48,
+  },
+}
 
 /** A single colour band of the zone gradient, spanning `[prev.upTo, upTo]` of the domain. */
 export interface ZoneTrackZone {
@@ -82,9 +132,11 @@ export interface ZoneTrackProps extends ViewProps {
   ticks?: ZoneTrackTick[]
   /** Optional translucent range highlight drawn over the gradient. */
   band?: ZoneTrackBand | null
-  /** Track height in px. Default 14. */
+  /** Density: `default` (compact) or `wall` (the across-the-room dashboard scale). Scales track, needle, ticks and labels together. */
+  size?: ZoneTrackSize
+  /** Track height in px. Overrides the `size` default (14 default / 24 wall). */
   trackHeight?: number
-  /** How far a needle marker overhangs the track top + bottom, in px. Default 6. */
+  /** How far a needle marker overhangs the track top + bottom, in px. Overrides the `size` default (6 default / 9 wall). */
   needleOverhang?: number
   /** Muted colour of the track behind / beyond the fill. Default a charcoal step. */
   trackColor?: string
@@ -117,14 +169,18 @@ export function ZoneTrack({
   marker = null,
   ticks,
   band = null,
-  trackHeight = DEFAULT_TRACK_HEIGHT,
-  needleOverhang = DEFAULT_NEEDLE_OVERHANG,
+  size = 'default',
+  trackHeight: trackHeightProp,
+  needleOverhang: needleOverhangProp,
   trackColor = DEFAULT_TRACK_COLOR,
   className,
   style,
   accessibilityLabel,
   ...props
 }: ZoneTrackProps) {
+  const s = ZONE_SIZES[size]
+  const trackHeight = trackHeightProp ?? s.trackHeight
+  const needleOverhang = needleOverhangProp ?? s.needleOverhang
   const isNeedle = marker?.type === 'needle'
   const markerHeight = isNeedle ? trackHeight + needleOverhang * 2 : trackHeight
   const markerFrac = marker != null ? fraction(marker.value, min, max) : 0
@@ -231,11 +287,11 @@ export function ZoneTrack({
               position: 'absolute',
               top: 0,
               left: pct(markerFrac),
-              width: NEEDLE_WIDTH,
+              width: s.needleWidth,
               height: markerHeight,
-              borderRadius: NEEDLE_WIDTH / 2,
+              borderRadius: s.needleWidth / 2,
               backgroundColor: marker.color ?? DEFAULT_MARKER_COLOR,
-              transform: [{ translateX: -NEEDLE_WIDTH / 2 }],
+              transform: [{ translateX: -s.needleWidth / 2 }],
             }}
           />
         )}
@@ -244,7 +300,7 @@ export function ZoneTrack({
         {ticks?.map((tick, i) => {
           const emphasized = tick.emphasized === true
           const lineColor = tick.color ?? (emphasized ? t['brand-primary'] : TICK_COLOR)
-          const lineWidth = emphasized ? 2 : 1.5
+          const lineWidth = emphasized ? s.tickLineEmphasized : s.tickLineNormal
           return (
             <View
               key={`line-${i}`}
@@ -252,10 +308,10 @@ export function ZoneTrack({
               accessibilityElementsHidden
               style={{
                 position: 'absolute',
-                top: (markerHeight - trackHeight) / 2 - 2,
+                top: (markerHeight - trackHeight) / 2 - s.tickLineTopPad,
                 left: pct(fraction(tick.value, min, max)),
                 width: lineWidth,
-                height: trackHeight + 4,
+                height: trackHeight + s.tickLineHeightPad,
                 borderRadius: lineWidth / 2,
                 backgroundColor: lineColor,
                 transform: [{ translateX: -lineWidth / 2 }],
@@ -267,7 +323,9 @@ export function ZoneTrack({
       </View>
 
       {ticks != null && ticks.length > 0 && (
-        <View style={{ position: 'relative', height: 16, marginTop: 5 }}>
+        <View
+          style={{ position: 'relative', height: s.labelRowHeight, marginTop: s.labelMarginTop }}
+        >
           {ticks.map((tick, i) => {
             if (tick.label == null) return null
             const emphasized = tick.emphasized === true
@@ -276,8 +334,8 @@ export function ZoneTrack({
               <Text
                 testID="zone-track-tick-label"
                 style={{
-                  fontSize: 9,
-                  letterSpacing: 0.5,
+                  fontSize: s.tickFont,
+                  letterSpacing: s.tickLetterSpacing,
                   color: labelColor,
                   fontFamily: 'monospace',
                   fontWeight: emphasized ? '700' : '400',
@@ -293,8 +351,8 @@ export function ZoneTrack({
                 style={{
                   position: 'absolute',
                   left: pct(fraction(tick.value, min, max)),
-                  transform: [{ translateX: -14 }],
-                  width: 28,
+                  transform: [{ translateX: -s.tickCellWidth / 2 }],
+                  width: s.tickCellWidth,
                   alignItems: 'center',
                 }}
               >

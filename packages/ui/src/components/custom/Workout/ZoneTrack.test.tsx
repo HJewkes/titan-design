@@ -198,3 +198,37 @@ describe('ZoneTrack', () => {
     })
   })
 })
+
+describe('ZoneTrack size="wall"', () => {
+  const TICKS = [
+    { value: 0, label: 'fresh' },
+    { value: 40, label: 'stop' },
+  ]
+
+  it('scales the needle and tick labels up together', () => {
+    render(
+      <ZoneTrack
+        zones={ZONES}
+        max={40}
+        size="wall"
+        marker={{ type: 'needle', value: 20 }}
+        ticks={TICKS}
+      />
+    )
+    expect(screen.getByTestId('zone-track-needle')).toHaveStyle({ width: '7px' })
+    expect(screen.getAllByTestId('zone-track-tick-label')[0]).toHaveStyle({ fontSize: 14 })
+  })
+
+  it('defaults to the compact scale (needle 4 / label 9) when size is omitted', () => {
+    render(
+      <ZoneTrack zones={ZONES} max={40} marker={{ type: 'needle', value: 20 }} ticks={TICKS} />
+    )
+    expect(screen.getByTestId('zone-track-needle')).toHaveStyle({ width: '4px' })
+    expect(screen.getAllByTestId('zone-track-tick-label')[0]).toHaveStyle({ fontSize: 9 })
+  })
+
+  it('still lets an explicit trackHeight override the size default', () => {
+    render(<ZoneTrack zones={ZONES} max={40} size="wall" trackHeight={30} />)
+    expect(screen.getByTestId('zone-track-track')).toHaveStyle({ height: '30px' })
+  })
+})

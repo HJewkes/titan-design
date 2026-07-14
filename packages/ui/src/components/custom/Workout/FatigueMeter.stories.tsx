@@ -42,8 +42,8 @@ export const Vl20: Story = { args: { value: 21 } }
 /** Stop zone — deep into the red. */
 export const StopZone: Story = { args: { value: 34 } }
 
-/** Chunky wall-glanceable density via a taller track. */
-export const WallDensity: Story = { args: { value: 21, trackHeight: 22 } }
+/** The across-the-room wall scale — `size="wall"` grows the track, needle and tick labels together. */
+export const WallDensity: Story = { args: { value: 21, size: 'wall' } }
 
 /** Custom scale — a tighter 0..30 domain with earlier thresholds. */
 export const CustomScale: Story = {
