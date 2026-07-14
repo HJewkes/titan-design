@@ -57,26 +57,27 @@ export interface TempoDisplayProps extends ViewProps {
 
 const INTER = 'Inter, sans-serif'
 const TEXT_TERTIARY = '#6B7280'
-const STATUS_ERROR = t['status-error'] // shown when a phase runs behind pace
-const STATUS_SUCCESS = t['status-success'] // shown when the active phase is on target
+const STATUS_ERROR = t['status-error'] // slow — over the target time
+const STATUS_SUCCESS = t['status-success'] // on target (within the band of 0.0)
+const STATUS_WARNING = t['status-warning'] // ahead — still time left to the target
 
 /** Live active-phase readout: `countdown` remaining to 0.0, or `countup` elapsed to target. */
 export type TempoLiveReadout = 'countdown' | 'countup'
 
-/** ± the target ratio that still counts as "on target" (matches TempoBar's behind threshold). */
-const PACE_BAND = 0.15
+/** ± this window (ms) around the target still counts as on target (0.0 ± 0.1s). */
+const ON_TARGET_MS = 100
 
 /**
- * Semantic pacing tone for the active phase's NUMBER (the fill bar carries phase identity,
- * so the number is free to carry pacing): neutral while comfortably under target (ahead /
- * in progress), success once within the band of target (on target), error once past it.
+ * Semantic pacing tone for the active/completed phase's NUMBER (the fill bar carries phase
+ * identity, so the number is free to carry pacing). Keyed on time remaining to target:
+ * ahead of target (still counting) → warning; within ±0.1s of 0.0 → success; over → error.
  */
 function activeNumberTone(elapsedMs: number, targetMs: number | null): string {
-  if (targetMs == null || targetMs < 500) return t['text-primary']
-  const ratio = elapsedMs / targetMs
-  if (ratio > 1 + PACE_BAND) return STATUS_ERROR
-  if (ratio >= 1 - PACE_BAND) return STATUS_SUCCESS
-  return t['text-primary']
+  if (targetMs == null) return t['text-primary']
+  const remainingMs = targetMs - elapsedMs
+  if (remainingMs > ON_TARGET_MS) return STATUS_WARNING
+  if (remainingMs >= -ON_TARGET_MS) return STATUS_SUCCESS
+  return STATUS_ERROR
 }
 
 /** The active number: `countup` elapsed (→ target) or `countdown` remaining (→ 0.0, then −). */
@@ -196,14 +197,16 @@ function LiveTempoCell({
   }
 
   // Done: FROZEN at the phase's final readout (its actual completed time, not the target),
-  // fill locked full in the phase colour — banked progress until the next rep resets the row.
+  // fill locked full in the phase colour. The number keeps its SEMANTIC pacing tone (it is
+  // showing the final time, not the target) — banked progress until the next rep resets.
   if (status === 'done') {
     const finalMs = completedMs ?? targetMs ?? 0
     const finalText = targetMs != null ? liveReadoutText(finalMs, targetMs, readout) : String(value)
+    const finalTone = targetMs != null ? activeNumberTone(finalMs, targetMs) : color
     return (
       <View style={wrap} testID="tempo-live-done">
         <CellFill color={color} pct={100} />
-        {num(color, finalText)}
+        {num(finalTone, finalText)}
       </View>
     )
   }
@@ -281,6 +284,12 @@ export function TempoDisplay({
   const isSm = size === 'sm'
   const fontSize = fontSizeProp ?? (isSm ? 9 : 11)
   const monoColor = TEXT_TERTIARY
+  // The chrome (padding, radius, label) scales with the digit size so the whole view stays
+  // proportional at any form factor — a compact rail chip up to a wall read-out.
+  const chromePadX = Math.round(fontSize * 0.6)
+  const chromePadY = Math.round(fontSize * 0.3)
+  const chromeRadius = Math.round(fontSize * 0.4)
+  const labelFont = Math.max(9, Math.round(fontSize * 0.5))
 
   const handlePress = useCallback(() => {
     if (onPress) {
@@ -298,9 +307,9 @@ export function TempoDisplay({
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '#1C1C1C',
-        paddingHorizontal: isSm ? 6 : 8,
-        paddingVertical: 3,
-        borderRadius: 4,
+        paddingHorizontal: chromePadX,
+        paddingVertical: chromePadY,
+        borderRadius: chromeRadius,
       }}
       {...props}
     >
@@ -308,13 +317,13 @@ export function TempoDisplay({
         <Text
           style={{
             fontFamily: INTER,
-            fontSize: 9,
+            fontSize: labelFont,
             fontWeight: '500',
             // Live-muted green while a rep is running, tertiary at rest.
             color: live ? t['status-live-muted'] : TEXT_TERTIARY,
             letterSpacing: 0.5,
             textTransform: 'uppercase',
-            marginRight: 6,
+            marginRight: Math.round(fontSize * 0.5),
           }}
         >
           TEMPO
