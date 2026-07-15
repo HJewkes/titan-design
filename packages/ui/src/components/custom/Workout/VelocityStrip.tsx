@@ -8,6 +8,7 @@ import {
   Easing,
   type ViewProps,
   type ViewStyle,
+  type LayoutChangeEvent,
 } from 'react-native'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { primitiveColors, primitiveRamps, sequentialEffort } from '../../../theme/tokens/primitives'
@@ -19,7 +20,7 @@ import { SET_STRIP_VARIABLE_COLOR } from './SetStrip'
  * (e.g. workout-analytics' `VelocityZones.bands`).
  *
  * Deliberately a plain structural shape — titan never imports the analytics
- * package (same policy as TempoBar's presentational phase key). Any object with
+ * package (the same presentational-only policy the Workout family follows). Any object with
  * this shape can be passed, so `zones={waVelocityZones.bands}` works directly.
  * Bands are ordered slow → fast, contiguous, and cover `[0, ∞)` with the top
  * band's `max === null`. Bands carry NO color — color is a UI concern resolved
@@ -393,7 +394,9 @@ const HERO_LABEL_HEADROOM = 20
 /** Gap between hero bars (px) — a group-notch-free even rhythm at wall scale. */
 const HERO_BAR_GAP = 8
 /** Cap on a single hero bar's width so a 2–3 rep set doesn't render slab-wide bars (px). */
-const HERO_BAR_MAX_WIDTH = 52
+const HERO_BAR_MAX_WIDTH = 120
+/** Below this per-bar width the value labels collide, so all but the peak + live rep are dropped. */
+const HERO_LABEL_MIN_BAR_WIDTH = 30
 /** Top-corner radius on hero bars (px). */
 const HERO_BAR_RADIUS = 5
 /** Minimum drawn height of a performed hero bar (px) — a near-zero rep still reads as a rep. */
@@ -403,9 +406,15 @@ const HERO_PENDING_COLOR = primitiveColors.charcoal[100]
 /** The dashed running-best reference line + its label (the lightest charcoal step). */
 const HERO_REFERENCE_COLOR = primitiveColors.charcoal[0]
 
+/**
+ * Headroom above the peak bar: just enough to seat its value label without a big empty
+ * band at the top (was 1.15 — too airy for the wall hero).
+ */
+const PEAK_HEADROOM = 1.06
+
 /** The bar-height scaling denominator for the given `scale` (guarded ≥ 0 by callers). */
 function scaleDenominator(scale: 'peak' | 'fixed', maxVelocity: number): number {
-  return scale === 'fixed' ? FIXED_MAX_VELOCITY : maxVelocity * 1.15
+  return scale === 'fixed' ? FIXED_MAX_VELOCITY : maxVelocity * PEAK_HEADROOM
 }
 
 /** Bare-strip bar height (px): velocity-scaled for a performed rep, a short stub otherwise. */
@@ -525,6 +534,11 @@ function HeroVelocityChart({
   const liveVelocity = liveRepIndex != null ? doneVelocities[liveRepIndex] : undefined
   const liveScale = useLiveRepPop(true, liveRepIndex, liveVelocity, isNewPeak)
 
+  // Measure the plot so per-bar value labels can thin on a narrow chart (they collide once
+  // bars get thin). Width 0 (unmeasured) → show all, so test/server renders are unchanged.
+  const [plotW, setPlotW] = useState(0)
+  const onPlotLayout = (e: LayoutChangeEvent) => setPlotW(e.nativeEvent.layout.width)
+
   // Reserve a band above the tallest bar for its value label so a peak bar never clips.
   const plotHeight = Math.max(0, height - HERO_LABEL_HEADROOM)
   const barHeight = (velocity: number): number =>
@@ -537,6 +551,23 @@ function HeroVelocityChart({
     referenceVelocity > 0 && scaleDenom > 0
       ? Math.min(plotHeight, (referenceVelocity / scaleDenom) * plotHeight)
       : 0
+
+  // When bars get too thin, keep only the peak + live-rep labels so the rest don't overlap.
+  const totalSlots = doneVelocities.length + pendingCount
+  const barWidth =
+    plotW > 0 && totalSlots > 0
+      ? Math.min(HERO_BAR_MAX_WIDTH, (plotW - HERO_BAR_GAP * (totalSlots - 1)) / totalSlots)
+      : HERO_BAR_MAX_WIDTH
+  const labelsCrowded = plotW > 0 && barWidth < HERO_LABEL_MIN_BAR_WIDTH
+  // Step the inter-bar gap down with the bars so the gaps never dwarf the bars themselves.
+  const heroGap =
+    plotW === 0 ? HERO_BAR_GAP : barWidth < 16 ? 2 : barWidth < 28 ? 4 : HERO_BAR_GAP
+  const peakIndex = doneVelocities.reduce(
+    (best, v, i) => (v > doneVelocities[best] ? i : best),
+    0,
+  )
+  const showBarLabel = (i: number): boolean =>
+    !labelsCrowded || i === peakIndex || i === liveRepIndex
 
   const repCount = doneVelocities.length
   const total = Math.max(repCount, targetReps ?? repCount)
@@ -557,11 +588,12 @@ function HeroVelocityChart({
       {...restProps}
     >
       <View
+        onLayout={onPlotLayout}
         style={{
           flex: 1,
           flexDirection: 'row',
           alignItems: 'flex-end',
-          gap: HERO_BAR_GAP,
+          gap: heroGap,
           position: 'relative',
           borderBottomWidth: 2,
           borderBottomColor: HERO_PENDING_COLOR,
@@ -606,13 +638,15 @@ function HeroVelocityChart({
                 justifyContent: 'flex-end',
               }}
             >
-              <Text
-                className="text-text-primary"
-                style={{ fontSize: 12, fontWeight: '800', marginBottom: 4 }}
-                testID={`velocity-label-${i}`}
-              >
-                {formatVelocity(velocity)}
-              </Text>
+              {showBarLabel(i) && (
+                <Text
+                  className="text-text-primary"
+                  style={{ fontSize: 12, fontWeight: '800', marginBottom: 4 }}
+                  testID={`velocity-label-${i}`}
+                >
+                  {formatVelocity(velocity)}
+                </Text>
+              )}
               <Animated.View
                 style={[
                   {

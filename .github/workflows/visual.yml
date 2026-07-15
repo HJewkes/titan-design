@@ -37,6 +37,24 @@ jobs:
       - name: Layer 1 — component screenshot baselines
         run: pnpm --filter @titan-design/react-ui test:visual:baseline
 
+      # Layer 1 — REGEN (refresh): regenerate the Layer-1 baselines IN this pinned
+      # container and upload them, so a drifted baseline can be refreshed byte-exact.
+      # Runs even when the gate above fails (`if: always()`). Because it renders in
+      # the same container as the gate, UNCHANGED baselines come back byte-identical
+      # (git shows no diff) and only genuinely-changed components differ — no local
+      # env noise. To refresh: download the `component-visual-baselines` artifact and
+      # commit the changed *-chromium-linux.png under packages/ui/specimen/baseline/.
+      - name: Layer 1 — regenerate baselines (refresh)
+        if: always()
+        run: pnpm --filter @titan-design/react-ui test:visual:baseline:update
+      - name: Upload regenerated component baselines
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: component-visual-baselines
+          path: packages/ui/specimen/baseline/**/*-chromium-linux.png
+          retention-days: 7
+
       # Layer 2 — Storybook story baselines (shell + icons; clock-frozen so
       # live/animated stories are deterministic).
       #

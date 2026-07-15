@@ -201,8 +201,8 @@ const HTML_CSS = `
     position: relative;
     cursor: pointer;
   }
-  .html-scope .tempo-display.md-size { padding: 3px 8px; }
-  .html-scope .tempo-display.sm-size { padding: 3px 6px; }
+  .html-scope .tempo-display.md-size { padding: 3px 7px; }
+  .html-scope .tempo-display.sm-size { padding: 3px 5px; }
   .html-scope .tempo-label {
     font-size: 9px;
     font-weight: 500;
@@ -217,12 +217,11 @@ const HTML_CSS = `
   }
   .html-scope .tempo-display.md-size .tempo-value { font-size: 11px; }
   .html-scope .tempo-display.sm-size .tempo-value { font-size: 9px; }
-  .html-scope .tempo-value.mono { color: #6B7280; }
-  .html-scope .tempo-colored .t-con { color: var(--brand-primary); }
-  .html-scope .tempo-colored .t-hold { color: #2196F3; }
-  .html-scope .tempo-colored .t-ecc { color: var(--status-success); }
-  .html-scope .tempo-colored .t-idle { color: var(--text-secondary); }
-  .html-scope .tempo-colored .t-dash { color: var(--text-secondary); }
+  /* Phase-identity hues: eccentric magenta, concentric cyan, pauses grey. */
+  .html-scope .tempo-colored .t-ecc { color: #ED69C3; }
+  .html-scope .tempo-colored .t-con { color: #22D3EE; }
+  .html-scope .tempo-colored .t-pause { color: #6B7280; }
+  .html-scope .tempo-colored .t-dash { color: #6B7280; }
 
   /* 7. DeviationBar */
   .html-scope .deviation-bar {
@@ -922,26 +921,18 @@ function App() {
 
       <ComparisonPair
         testId="compare-tempo-colored-md"
-        label="TempoDisplay colored md"
-        htmlContent={`<div class="tempo-display md-size tempo-colored"><span class="tempo-label">TEMPO</span><span class="tempo-value"><span class="t-con">1</span><span class="t-dash">-</span><span class="t-hold">1</span><span class="t-dash">-</span><span class="t-ecc">3</span><span class="t-dash">-</span><span class="t-idle">0</span></span></div>`}
+        label="TempoDisplay prescription md"
+        htmlContent={`<div class="tempo-display md-size tempo-colored"><span class="tempo-label">TEMPO</span><span class="tempo-value"><span class="t-ecc">1</span><span class="t-dash">-</span><span class="t-pause">1</span><span class="t-dash">-</span><span class="t-con">3</span><span class="t-dash">-</span><span class="t-pause">0</span></span></div>`}
       >
-        <TempoDisplay tempo={[1, 1, 3, 0]} colored />
-      </ComparisonPair>
-
-      <ComparisonPair
-        testId="compare-tempo-mono-md"
-        label="TempoDisplay mono md"
-        htmlContent={`<div class="tempo-display md-size"><span class="tempo-label">TEMPO</span><span class="tempo-value mono">1-1-3-0</span></div>`}
-      >
-        <TempoDisplay tempo={[1, 1, 3, 0]} colored={false} />
+        <TempoDisplay tempo={[1, 1, 3, 0]} />
       </ComparisonPair>
 
       <ComparisonPair
         testId="compare-tempo-colored-sm"
-        label="TempoDisplay colored sm"
-        htmlContent={`<div class="tempo-display sm-size tempo-colored"><span class="tempo-label">TEMPO</span><span class="tempo-value"><span class="t-con">1</span><span class="t-dash">-</span><span class="t-hold">1</span><span class="t-dash">-</span><span class="t-ecc">3</span><span class="t-dash">-</span><span class="t-idle">0</span></span></div>`}
+        label="TempoDisplay prescription sm"
+        htmlContent={`<div class="tempo-display sm-size tempo-colored"><span class="tempo-label">TEMPO</span><span class="tempo-value"><span class="t-ecc">1</span><span class="t-dash">-</span><span class="t-pause">1</span><span class="t-dash">-</span><span class="t-con">3</span><span class="t-dash">-</span><span class="t-pause">0</span></span></div>`}
       >
-        <TempoDisplay tempo={[1, 1, 3, 0]} size="sm" colored />
+        <TempoDisplay tempo={[1, 1, 3, 0]} size="sm" />
       </ComparisonPair>
 
       {/* ── 7. DeviationBar ── */}
