@@ -12,6 +12,9 @@ import {
 
 export type LivePageVariant = 'live' | 'live-dual' | 'rest'
 
+/** Floor the live panel around phone width so it stops collapsing on a narrow window. */
+const PANEL_MIN_WIDTH = 390
+
 export interface LivePageProps {
   /** Which stage to show in the main region. */
   variant?: LivePageVariant
@@ -54,7 +57,9 @@ export function LivePage({ variant = 'live', model = dashboardFixture }: LivePag
       />
       {/* footer pace strip — STUB / NO-DATA: intentionally omitted (no store field yet). */}
 
-      <View className="flex-1">
+      {/* Panel floors at ~phone width so the live view stops collapsing; rail-aware
+          breakpoints below this are a later pass. */}
+      <View className="flex-1" style={{ minWidth: PANEL_MIN_WIDTH }}>
         {/* workout title + targets — page-level, always visible, independent of single/dual. */}
         <ExerciseHeader session={model.session} />
         <View className="flex-1">

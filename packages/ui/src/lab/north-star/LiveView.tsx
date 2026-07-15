@@ -21,6 +21,10 @@ const t = getSemanticColors('dark')
 
 /** Raised-card elevation shared by the alert + tempo cards. */
 const CARD_SHADOW = neumorphicShadows.charcoal.raised.medium
+/** One row height for the tempo + alert cards, so they line up regardless of tempo font size. */
+const CONTROL_HEIGHT = 34
+/** The tempo card ground — mirrors TempoDisplay's own charcoal so a shorter inner pill reads seamless. */
+const TEMPO_GROUND = '#1C1C1C'
 
 /** Clamped linear interpolation of `v` between `vLo..vHi` as `w` runs `wLo..wHi`. */
 function clampLerp(w: number, wLo: number, wHi: number, vLo: number, vHi: number): number {
@@ -128,8 +132,8 @@ function AlertCue({
     const pill = (
       <View
         style={{
-          width: 34,
-          height: 34,
+          width: CONTROL_HEIGHT,
+          height: CONTROL_HEIGHT,
           borderRadius: 9,
           alignItems: 'center',
           justifyContent: 'center',
@@ -153,11 +157,11 @@ function AlertCue({
       className="flex-row items-center"
       style={{
         gap: 8,
+        height: CONTROL_HEIGHT,
         // Concrete px cap (not %) so the single-line message ellipsises through the wrapper chain.
         maxWidth: availWidth,
         borderRadius: 10,
         paddingHorizontal: 12,
-        paddingVertical: 8,
         ...alertSurface(tone),
       }}
     >
@@ -272,6 +276,10 @@ export function ExerciseHeader({ session }: { session: DashboardModel['session']
 const ALERT_COMPACT = 620
 /** Below this content width the alert collapses to just its contextual icon. */
 const ALERT_ICON = 430
+/** Tempo digit size at rest — matched to sit within {@link CONTROL_HEIGHT}. */
+const TEMPO_BASE_FONT = 18
+/** Content width at which the tempo has shrunk as far as it goes (near the panel min). */
+const TEMPO_SHRINK_FLOOR = 300
 
 /**
  * Lab specimen — the LIVE (mid-set) stage of one voltra. The exercise identity + targets
@@ -298,20 +306,26 @@ export function LiveView({
 
   const [contentW, setContentW] = useState(0)
   const onContentLayout = (e: LayoutChangeEvent) => setContentW(e.nativeEvent.layout.width)
+  const [rowW, setRowW] = useState(0)
+  const onRowLayout = (e: LayoutChangeEvent) => setRowW(e.nativeEvent.layout.width)
   const [tempoW, setTempoW] = useState(0)
   const onTempoLayout = (e: LayoutChangeEvent) => setTempoW(e.nativeEvent.layout.width)
-  // Alert sheds detail as the row tightens; the tempo shrinks in step (never wraps to 2 lines).
+  // The alert sheds detail first (message → verdict → icon); the tempo holds its full size
+  // until the alert can't shrink any further, then it takes over shrinking.
   const alertMode: AlertMode =
     contentW === 0 || contentW >= ALERT_COMPACT
       ? 'full'
       : contentW >= ALERT_ICON
         ? 'compact'
         : 'icon'
-  const tempoFont = Math.round(clampLerp(contentW || 720, 420, 700, 13, 18))
-  // Width the alert may take once the tempo is measured — caps its card so a long message clips.
+  const tempoFont =
+    contentW === 0 || contentW >= ALERT_ICON
+      ? TEMPO_BASE_FONT
+      : Math.round(clampLerp(contentW, TEMPO_SHRINK_FLOOR, ALERT_ICON, 14, TEMPO_BASE_FONT))
+  // Width the alert may take — measured off the ROW (inside the panel padding) so a long
+  // message ellipsises at the side margin rather than running to the panel edge.
   const CONTROLS_GAP = 16
-  const alertAvail =
-    contentW > 0 && tempoW > 0 ? Math.max(0, contentW - tempoW - CONTROLS_GAP) : undefined
+  const alertAvail = rowW > 0 && tempoW > 0 ? Math.max(0, rowW - tempoW - CONTROLS_GAP) : undefined
 
   const [heroH, setHeroH] = useState(0)
   const onHeroLayout = (e: LayoutChangeEvent) => setHeroH(e.nativeEvent.layout.height)
@@ -331,9 +345,25 @@ export function LiveView({
           style={{ flex: 1, padding: dual ? 18 : 24, gap: dual ? 8 : 10 }}
         >
           {/* controls row: tempo pinned upper-left, alert pinned upper-right (justify-between). */}
-          <View className="flex-row items-center justify-between" style={{ gap: CONTROLS_GAP }}>
-            {/* tempo card — sized to sit at the alert's height, shrinks with width, never wraps. */}
-            <View onLayout={onTempoLayout} style={{ borderRadius: 9, ...CARD_SHADOW }}>
+          <View
+            onLayout={onRowLayout}
+            className="flex-row items-center justify-between"
+            style={{ gap: CONTROLS_GAP }}
+          >
+            {/* tempo card — locked to the alert's height (this view only); the inner TempoDisplay
+                shrinks its font but stays centred on the shared charcoal ground so it reads seamless. */}
+            <View
+              onLayout={onTempoLayout}
+              style={{
+                height: CONTROL_HEIGHT,
+                justifyContent: 'center',
+                alignItems: 'flex-start',
+                backgroundColor: TEMPO_GROUND,
+                borderRadius: 9,
+                overflow: 'hidden',
+                ...CARD_SHADOW,
+              }}
+            >
               <TempoDisplay
                 tempo={session.tempo}
                 fontSize={tempoFont}
