@@ -322,10 +322,21 @@ export function LiveView({
     contentW === 0 || contentW >= ALERT_ICON
       ? TEMPO_BASE_FONT
       : Math.round(clampLerp(contentW, TEMPO_SHRINK_FLOOR, ALERT_ICON, 14, TEMPO_BASE_FONT))
+  // Tempo is optional: a set may have no prescribed tempo — then the card is hidden entirely
+  // and the alert takes the whole row.
+  const hasTempo = session.tempo != null
   // Width the alert may take — measured off the ROW (inside the panel padding) so a long
-  // message ellipsises at the side margin rather than running to the panel edge.
+  // message ellipsises at the side margin rather than running to the panel edge. With no tempo
+  // card the alert gets the full row; otherwise it's the row minus the (measured) tempo + gap.
   const CONTROLS_GAP = 16
-  const alertAvail = rowW > 0 && tempoW > 0 ? Math.max(0, rowW - tempoW - CONTROLS_GAP) : undefined
+  const alertAvail =
+    rowW > 0
+      ? hasTempo
+        ? tempoW > 0
+          ? Math.max(0, rowW - tempoW - CONTROLS_GAP)
+          : undefined
+        : rowW
+      : undefined
 
   const [heroH, setHeroH] = useState(0)
   const onHeroLayout = (e: LayoutChangeEvent) => setHeroH(e.nativeEvent.layout.height)
@@ -344,36 +355,39 @@ export function LiveView({
           onLayout={onContentLayout}
           style={{ flex: 1, padding: dual ? 18 : 24, gap: dual ? 8 : 10 }}
         >
-          {/* controls row: tempo pinned upper-left, alert pinned upper-right (justify-between). */}
+          {/* controls row: tempo upper-left (when prescribed), alert upper-right. With no tempo
+              the alert simply pins right (flex-end); otherwise they split (space-between). */}
           <View
             onLayout={onRowLayout}
-            className="flex-row items-center justify-between"
-            style={{ gap: CONTROLS_GAP }}
+            className="flex-row items-center"
+            style={{ gap: CONTROLS_GAP, justifyContent: hasTempo ? 'space-between' : 'flex-end' }}
           >
             {/* tempo card — locked to the alert's height (this view only); the inner TempoDisplay
                 shrinks its font but stays centred on the shared charcoal ground so it reads seamless. */}
-            <View
-              onLayout={onTempoLayout}
-              style={{
-                height: CONTROL_HEIGHT,
-                justifyContent: 'center',
-                alignItems: 'flex-start',
-                backgroundColor: TEMPO_GROUND,
-                borderRadius: 9,
-                overflow: 'hidden',
-                ...CARD_SHADOW,
-              }}
-            >
-              <TempoDisplay
-                tempo={session.tempo}
-                fontSize={tempoFont}
-                live={
-                  activePhase ? { activePhase, phaseElapsedMs: live.phaseElapsedMs } : undefined
-                }
-                showLabel={false}
-                showInfo={false}
-              />
-            </View>
+            {session.tempo != null && (
+              <View
+                onLayout={onTempoLayout}
+                style={{
+                  height: CONTROL_HEIGHT,
+                  justifyContent: 'center',
+                  alignItems: 'flex-start',
+                  backgroundColor: TEMPO_GROUND,
+                  borderRadius: 9,
+                  overflow: 'hidden',
+                  ...CARD_SHADOW,
+                }}
+              >
+                <TempoDisplay
+                  tempo={session.tempo}
+                  fontSize={tempoFont}
+                  live={
+                    activePhase ? { activePhase, phaseElapsedMs: live.phaseElapsedMs } : undefined
+                  }
+                  showLabel={false}
+                  showInfo={false}
+                />
+              </View>
+            )}
             <AlertCue status={verdict} message={message} mode={alertMode} availWidth={alertAvail} />
           </View>
 

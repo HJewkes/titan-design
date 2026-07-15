@@ -62,8 +62,12 @@ export interface SessionModel {
   title: string
   weightLbs: number
   unit: 'lbs' | 'kg'
-  /** Prescribed tempo tuple [ecc, pauseBottom, con, pauseTop]. */
-  tempo: [number, number, number, number]
+  /**
+   * Prescribed tempo tuple [ecc, pauseBottom, con, pauseTop]. OPTIONAL — a set may carry no
+   * prescribed tempo (coach left it unset and no exercise default); the live view then hides
+   * the tempo readout entirely rather than inventing one.
+   */
+  tempo?: [number, number, number, number]
   completedSets: CompletedSet[]
   plannedSets: number
 }
