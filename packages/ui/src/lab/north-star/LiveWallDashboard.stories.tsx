@@ -2,6 +2,13 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 import { DashboardShell, type Device } from '../../components'
 import { LivePage, type LivePageVariant } from './LivePage'
+import { dashboardFixture } from './fixtures'
+
+/** The fixture with its prescribed tempo stripped — a set with no tempo (hidden readout). */
+const noTempoModel = {
+  ...dashboardFixture,
+  session: { ...dashboardFixture.session, tempo: undefined },
+}
 
 /**
  * `Lab/North Star/Live Wall Dashboard` — the north-star wall-dashboard specimen.
@@ -21,15 +28,18 @@ const DEVICES: Device[] = [
 
 interface WallArgs {
   variant: LivePageVariant
+  /** Whether the current set has a prescribed tempo; off hides the tempo readout. */
+  tempo: boolean
 }
 
 const meta: Meta<WallArgs> = {
   title: 'Lab/North Star/Live Wall Dashboard',
-  args: { variant: 'live' },
+  args: { variant: 'live', tempo: true },
   argTypes: {
     variant: { control: 'inline-radio', options: ['live', 'live-dual', 'rest'] },
+    tempo: { control: 'boolean' },
   },
-  render: ({ variant }) => (
+  render: ({ variant, tempo }) => (
     <DashboardShell
       activeKey="live"
       state={variant === 'rest' ? 'rest' : 'live'}
@@ -37,7 +47,7 @@ const meta: Meta<WallArgs> = {
       devices={DEVICES}
       subtitle="wall dashboard"
     >
-      <LivePage variant={variant} />
+      <LivePage variant={variant} model={tempo ? dashboardFixture : noTempoModel} />
     </DashboardShell>
   ),
   decorators: [
@@ -71,6 +81,21 @@ export const Live: Story = {
   parameters: {
     docs: {
       description: { story: 'The live (mid-set) stage — ~22% velocity loss, threshold verdict.' },
+    },
+  },
+}
+
+/** Mid-set with NO prescribed tempo — the tempo readout is hidden; the alert takes the row. */
+export const LiveNoTempo: Story = {
+  args: { variant: 'live', tempo: false },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'The live stage for a set with no prescribed tempo (coach left it unset and no ' +
+          'exercise default). The tempo card is hidden entirely — no invented placeholder — ' +
+          'and the alert cue simply pins to the right of the row.',
+      },
     },
   },
 }
