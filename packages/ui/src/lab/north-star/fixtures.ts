@@ -49,7 +49,11 @@ export interface LiveModel {
 /** A logged set on the session read-model. */
 export interface CompletedSet {
   weightLbs: number
-  /** Resistance mode (cascade echo, cmd=0x10). */
+  /**
+   * Resistance mode as echoed back from the requested-settings cascade — i.e. the mode the
+   * machine confirms it is applying, NOT the lazily-updated state-dump fields (which can lag
+   * or report stale values mid-set).
+   */
   mode: 'weight' | 'chains' | 'eccentric' | 'isokinetic'
   repCount: number
   /** Per-rep mean-concentric velocities (m/s). */
