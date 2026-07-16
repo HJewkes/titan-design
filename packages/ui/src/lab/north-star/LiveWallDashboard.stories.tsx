@@ -38,14 +38,18 @@ const meta: Meta<WallArgs> = {
   argTypes: {
     variant: {
       control: 'inline-radio',
-      options: ['live', 'live-dual', 'rest', 'ready', 'idle', 'no-device'],
+      options: ['live', 'live-dual', 'rest', 'ready', 'ready-unnamed', 'idle', 'no-device'],
     },
     tempo: { control: 'boolean' },
   },
   render: ({ variant, tempo }) => {
     // Idle stages (VW-68) map onto the shell's `idle` session pill; `no-device` also drops the
     // TopBar's connected Voltras so the shell chrome tells the same disconnected story.
-    const empty = variant === 'idle' || variant === 'ready' || variant === 'no-device'
+    const empty =
+      variant === 'idle' ||
+      variant === 'ready' ||
+      variant === 'ready-unnamed' ||
+      variant === 'no-device'
     const state = empty ? 'idle' : variant === 'rest' ? 'rest' : 'live'
     return (
       <DashboardShell
@@ -150,6 +154,25 @@ export const SessionReady: Story = {
           'A session is open but no set has begun. The stage is the designed EmptyLiveView — ' +
           '"Ready · Cable Chest Press" with the real loaded weight — not a blank box. The header ' +
           'and rail keep their context because a session exists.',
+      },
+    },
+  },
+}
+
+/**
+ * IDLE — a session is open but its exercise has not resolved a name (VW-68). The stage shows
+ * the neutral ordinal "Ready · Exercise 1" — never a guessed name or a bare em-dash — and the
+ * header hides until there is a real name to title.
+ */
+export const SessionReadyUnnamed: Story = {
+  args: { variant: 'ready-unnamed' },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'A session with no resolved exercise identity. The hero reads "Ready · Exercise 1" — ' +
+          'the honest ordinal default — rather than fabricating a specific exercise or showing ' +
+          'a dash. The real loaded weight still shows; the exercise header is hidden.',
       },
     },
   },

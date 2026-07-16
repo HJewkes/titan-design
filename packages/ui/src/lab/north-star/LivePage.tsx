@@ -11,12 +11,19 @@ import {
   type DashboardModel,
 } from './fixtures'
 
-export type LivePageVariant = 'live' | 'live-dual' | 'rest' | 'idle' | 'ready' | 'no-device'
+export type LivePageVariant =
+  | 'live'
+  | 'live-dual'
+  | 'rest'
+  | 'idle'
+  | 'ready'
+  | 'ready-unnamed'
+  | 'no-device'
 
 /** The idle-stage variants (VW-68) → the {@link EmptyLiveView} kind they render, or null. */
 function emptyKindFor(variant: LivePageVariant): EmptyKind | null {
   if (variant === 'idle') return 'no-session'
-  if (variant === 'ready') return 'ready'
+  if (variant === 'ready' || variant === 'ready-unnamed') return 'ready'
   if (variant === 'no-device') return 'no-device'
   return null
 }
@@ -51,6 +58,10 @@ export function LivePage({ variant = 'live', model = dashboardFixture }: LivePag
   // begun); `idle`/`no-device` drop the header — there is no exercise to name.
   if (emptyKind) {
     const sessionOpen = emptyKind === 'ready'
+    // `ready-unnamed` models an open session whose exercise has not resolved a name — the
+    // EmptyLiveView then shows the neutral `Exercise 1` ordinal (VW-68), and the header hides
+    // (no name to title yet).
+    const named = variant !== 'ready-unnamed'
     return (
       <View className="flex-1 flex-row bg-surface-base">
         <SessionRail
@@ -61,11 +72,11 @@ export function LivePage({ variant = 'live', model = dashboardFixture }: LivePag
           width={272}
         />
         <View className="flex-1" style={{ minWidth: PANEL_MIN_WIDTH }}>
-          {sessionOpen && <ExerciseHeader session={model.session} />}
+          {sessionOpen && named && <ExerciseHeader session={model.session} />}
           <View className="flex-1">
             <EmptyLiveView
               kind={emptyKind}
-              exerciseName={model.session.exerciseName}
+              exerciseName={named ? model.session.exerciseName : undefined}
               weightLbs={sessionOpen ? model.session.weightLbs : undefined}
               unit={model.session.unit}
             />

@@ -38,7 +38,9 @@ const COPY: Record<
   },
   ready: {
     icon: DumbbellIcon,
-    title: (name) => `Ready · ${name ?? 'Session'}`,
+    // Falls back to the neutral `Exercise 1` ordinal (VW-68) when the session has not resolved
+    // a name — never a guessed exercise, never a bare em-dash.
+    title: (name) => `Ready · ${name ?? 'Exercise 1'}`,
     description: 'Start the first set — live velocity, tempo and fatigue will appear here.',
   },
   'no-session': {
