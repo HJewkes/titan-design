@@ -147,6 +147,7 @@
   "files": [
     "dist",
     "src",
+    "!src/lab",
     "docs",
     "tailwind.config.js"
   ],
