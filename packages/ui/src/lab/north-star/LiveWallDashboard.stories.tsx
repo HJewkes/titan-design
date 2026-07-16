@@ -36,20 +36,29 @@ const meta: Meta<WallArgs> = {
   title: 'Lab/North Star/Live Wall Dashboard',
   args: { variant: 'live', tempo: true },
   argTypes: {
-    variant: { control: 'inline-radio', options: ['live', 'live-dual', 'rest'] },
+    variant: {
+      control: 'inline-radio',
+      options: ['live', 'live-dual', 'rest', 'ready', 'idle', 'no-device'],
+    },
     tempo: { control: 'boolean' },
   },
-  render: ({ variant, tempo }) => (
-    <DashboardShell
-      activeKey="live"
-      state={variant === 'rest' ? 'rest' : 'live'}
-      liveKey={variant === 'rest' ? 'live' : null}
-      devices={DEVICES}
-      subtitle="wall dashboard"
-    >
-      <LivePage variant={variant} model={tempo ? dashboardFixture : noTempoModel} />
-    </DashboardShell>
-  ),
+  render: ({ variant, tempo }) => {
+    // Idle stages (VW-68) map onto the shell's `idle` session pill; `no-device` also drops the
+    // TopBar's connected Voltras so the shell chrome tells the same disconnected story.
+    const empty = variant === 'idle' || variant === 'ready' || variant === 'no-device'
+    const state = empty ? 'idle' : variant === 'rest' ? 'rest' : 'live'
+    return (
+      <DashboardShell
+        activeKey="live"
+        state={state}
+        liveKey={variant === 'rest' ? 'live' : null}
+        devices={variant === 'no-device' ? [] : DEVICES}
+        subtitle="wall dashboard"
+      >
+        <LivePage variant={variant} model={tempo ? dashboardFixture : noTempoModel} />
+      </DashboardShell>
+    )
+  },
   decorators: [
     (Story) => (
       <View style={{ height: '100vh' as unknown as number, backgroundColor: '#0E0E0E' }}>
@@ -123,6 +132,56 @@ export const Rest: Story = {
     docs: {
       description: {
         story: 'The rest stage — countdown, set recap, verdict, and a mock next-set preview.',
+      },
+    },
+  },
+}
+
+/**
+ * IDLE — a session is open but its first set has not begun (VW-68). The stage shows a
+ * "Ready · {exercise}" hero with the real loaded weight; the header + rail context stay.
+ */
+export const SessionReady: Story = {
+  args: { variant: 'ready' },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'A session is open but no set has begun. The stage is the designed EmptyLiveView — ' +
+          '"Ready · Cable Chest Press" with the real loaded weight — not a blank box. The header ' +
+          'and rail keep their context because a session exists.',
+      },
+    },
+  },
+}
+
+/**
+ * IDLE — connected, no session, no plan (VW-68). The barren view the operator hit, redesigned:
+ * a "Waiting for a set" hero and an EMPTY rail (no `— × — @ 0 lbs` stub row).
+ */
+export const NoSession: Story = {
+  args: { variant: 'idle' },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Connected but no session — the state that motivated VW-68. The stage shows an honest ' +
+          '"Waiting for a set" empty state, the rail is empty (no stubbed placeholder row), and ' +
+          'the shell pill reads IDLE. Sets start on the machine / via MCP, so there is no button.',
+      },
+    },
+  },
+}
+
+/** IDLE — no Voltra connected (VW-68): a "connect a Voltra" hero; the TopBar drops its devices. */
+export const NoDevice: Story = {
+  args: { variant: 'no-device' },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'No Voltra connected. The stage copy shifts to "No Voltra connected" and the shell ' +
+          'TopBar shows no devices — the content and chrome tell the same disconnected story.',
       },
     },
   },

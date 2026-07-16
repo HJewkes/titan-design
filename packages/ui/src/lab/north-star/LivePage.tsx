@@ -3,6 +3,7 @@ import { ScrollView, View } from 'react-native'
 import { SessionRail } from '../../components'
 import { ExerciseHeader, LiveView } from './LiveView'
 import { RestView } from './RestView'
+import { EmptyLiveView, type EmptyKind } from './EmptyLiveView'
 import {
   dashboardFixture,
   deriveDualModel,
@@ -10,7 +11,15 @@ import {
   type DashboardModel,
 } from './fixtures'
 
-export type LivePageVariant = 'live' | 'live-dual' | 'rest'
+export type LivePageVariant = 'live' | 'live-dual' | 'rest' | 'idle' | 'ready' | 'no-device'
+
+/** The idle-stage variants (VW-68) → the {@link EmptyLiveView} kind they render, or null. */
+function emptyKindFor(variant: LivePageVariant): EmptyKind | null {
+  if (variant === 'idle') return 'no-session'
+  if (variant === 'ready') return 'ready'
+  if (variant === 'no-device') return 'no-device'
+  return null
+}
 
 /** Floor the live panel around phone width so it stops collapsing on a narrow window. */
 const PANEL_MIN_WIDTH = 390
@@ -35,6 +44,37 @@ export interface LivePageProps {
  * The rail footer pace read-out is intentionally OMITTED (NO-DATA — no store field yet).
  */
 export function LivePage({ variant = 'live', model = dashboardFixture }: LivePageProps) {
+  const emptyKind = emptyKindFor(variant)
+  // Idle stages (VW-68): the stage would otherwise be a blank RestView. Render the designed
+  // EmptyLiveView beside an EMPTY rail (no stub row for a session that does not exist). The
+  // `ready` case keeps the header + rollup context because a session IS open (first set not
+  // begun); `idle`/`no-device` drop the header — there is no exercise to name.
+  if (emptyKind) {
+    const sessionOpen = emptyKind === 'ready'
+    return (
+      <View className="flex-1 flex-row bg-surface-base">
+        <SessionRail
+          title={sessionOpen ? model.session.title : 'Session'}
+          exercises={[]}
+          setsDone={0}
+          running={false}
+          width={272}
+        />
+        <View className="flex-1" style={{ minWidth: PANEL_MIN_WIDTH }}>
+          {sessionOpen && <ExerciseHeader session={model.session} />}
+          <View className="flex-1">
+            <EmptyLiveView
+              kind={emptyKind}
+              exerciseName={model.session.exerciseName}
+              weightLbs={sessionOpen ? model.session.weightLbs : undefined}
+              unit={model.session.unit}
+            />
+          </View>
+        </View>
+      </View>
+    )
+  }
+
   const exercises = deriveRailExercises(model)
   const completedSets = model.session.completedSets.length
   const isLive = variant === 'live' || variant === 'live-dual'
