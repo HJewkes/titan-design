@@ -2,6 +2,7 @@ const js = require('@eslint/js')
 const tseslint = require('typescript-eslint')
 const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
+const noDeviceInternals = require('./eslint-rules/no-device-internals')
 
 module.exports = tseslint.config(
   // Global ignores
@@ -68,6 +69,21 @@ module.exports = tseslint.config(
 
       // Allow spreading props (common in component libraries)
       'react/jsx-props-no-spreading': 'off',
+    },
+  },
+
+  // titan renders values a machine has already interpreted, so low-level device
+  // identifiers (hex opcodes, raw byte frames, transport UUIDs) have no business
+  // in this package. Errors rather than warns: unlike the guardrails below there
+  // are no existing violators, so this holds the line at zero instead of
+  // documenting a backlog. Covers comments too, which AST selectors never match.
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    plugins: {
+      titan: { rules: { 'no-device-internals': noDeviceInternals } },
+    },
+    rules: {
+      'titan/no-device-internals': 'error',
     },
   },
 
