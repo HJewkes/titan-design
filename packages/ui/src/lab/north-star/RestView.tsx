@@ -98,7 +98,7 @@ export function RestView({ model }: { model: DashboardModel }) {
           </MetricGroup>
           <MetricGroup>
             <Metric size="md" value={String(session.weightLbs)} unit="lbs" label="Load" />
-            <Metric size="md" value={String(live.peakForce)} unit="N" label="Peak force" />
+            <Metric size="md" value={String(live.peakForce)} unit="lbs" label="Peak force" />
           </MetricGroup>
           <MetricGroup>
             <Metric

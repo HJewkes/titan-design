@@ -30,7 +30,7 @@ export interface RepModel {
 export interface LiveModel {
   /** Instantaneous cable velocity (m/s). */
   velocity: number
-  /** Instantaneous cable force (N). */
+  /** Instantaneous cable force (lbs). */
   force: number
   /** Current movement phase. */
   phase: 'concentric' | 'hold' | 'eccentric' | 'idle'
@@ -42,7 +42,7 @@ export interface LiveModel {
   repVelocities: number[]
   /** Velocity loss vs the set's best rep (%). Drives verdict + aura + fatigue. */
   velocityLossPct: number
-  /** Peak concentric force this set (N). */
+  /** Peak concentric force this set (lbs). */
   peakForce: number
 }
 
