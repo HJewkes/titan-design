@@ -1,6 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, Text, type ViewProps } from 'react-native'
-import { primitiveColors } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { Typography } from '../Typography'
 import { TimerReadout } from '../TimerReadout'
@@ -11,9 +10,11 @@ import { paceTone, paceToneColor } from './paceTone'
 
 const t = getSemanticColors('dark')
 
-// The raised charcoal heading plane (charcoal 400) — reads as one flat surface with
-// the nav; depth lives on the sunk list below it, not here.
-const RAISED = primitiveColors.charcoal[400] // #1F1F1F
+// The header shares the SideNav's `background-base` (charcoal 900, #101010) so the nav and
+// the rail header read as ONE continuous dark plane on the left — the sunk exercise list
+// (charcoal 800) sits raised off it. Previously charcoal 400 (#1F1F1F), which made the header
+// the lightest rail surface and let it blend with the rows instead of anchoring to the nav.
+const HEADER_BG = t['background-base'] // #101010 — matches SideNav bg-background-base
 
 // The chunked pace bar matches the SetStrip language but sits tighter than the default
 // SetStrip gap (5) — the locked design uses a 3px gap and a 9px track.
@@ -86,7 +87,7 @@ export function SessionHeader({
       className={className}
       style={[
         {
-          backgroundColor: RAISED,
+          backgroundColor: HEADER_BG,
           paddingTop: 11,
           paddingRight: 12,
           paddingBottom: 12,

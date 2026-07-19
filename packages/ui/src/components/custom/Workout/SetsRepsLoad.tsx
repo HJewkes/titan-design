@@ -11,7 +11,8 @@ const AT = '@'
 export interface SetsRepsLoadProps extends ViewProps {
   sets: number
   reps: number | string
-  load: number
+  /** Load value; a string (e.g. "—") passes through verbatim for an unset/discovery load. */
+  load: number | string
   /** Displayed load unit label (e.g. "lb", "kg"). */
   unit?: string
   /** Cell font size (px). Default 11 — the compact rail/card scale. Raise for a wall read-out. */

@@ -58,15 +58,13 @@ export function DashboardShell({
   className,
 }: DashboardShellProps) {
   return (
-    <View className={cn('flex-1 flex-row bg-surface-base', className)}>
-      <SideNav activeKey={activeKey} items={navItems} liveKey={liveKey} onNavigate={onNavigate} />
-      <View className="flex-1">
-        <TopBar
-          state={state}
-          devices={devices}
-          subtitle={subtitle}
-          onSelectDevice={onSelectDevice}
-        />
+    // Column: the TopBar spans the FULL width across the top, and the SideNav sits BELOW it
+    // in the content row (not a full-height left rail). This keeps the brand/status band
+    // unbroken edge-to-edge and lets the nav align under it.
+    <View className={cn('flex-1 bg-surface-base', className)}>
+      <TopBar state={state} devices={devices} subtitle={subtitle} onSelectDevice={onSelectDevice} />
+      <View className="flex-1 flex-row">
+        <SideNav activeKey={activeKey} items={navItems} liveKey={liveKey} onNavigate={onNavigate} />
         <View className="flex-1">{children ?? <ContentPlaceholder />}</View>
       </View>
     </View>

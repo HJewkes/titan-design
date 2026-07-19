@@ -8,11 +8,14 @@ import type { MetricTileData } from './MetricTiles'
 import type { SetStripSet } from './SetStrip'
 import type { ExerciseIndicatorKind } from './ExerciseIndicator'
 
-// Charcoal-ramp surfaces (the locked S3 shell shades): the nav + the heading plane
-// read as ONE flat raised surface; the exercise list is sunk. Depth comes only from
-// the list's subtle inset shadow (top cast by the heading, faint left edge by the nav).
-const INSET = primitiveColors.charcoal[800] // #131313 — sunk exercise list
-const DIVIDER = primitiveColors.charcoal[500] // #1C1C1C — row divider
+// Charcoal-ramp surfaces (the locked S3 shell shades): the nav + the heading plane read as
+// ONE dark plane (charcoal 900, #101010, set in SessionHeader). The exercise list is a
+// LIGHTER inset panel (charcoal 600) — recessed via its inner shadow yet paler than the
+// header, so the transparent exercise headings on it never blend into the header plane.
+// (Band-aid: the list is picked to clear the components; the durable fix is a `<Surface>`
+// primitive whose cards own their own raised background — see the rail's PR notes.)
+const INSET = primitiveColors.charcoal[600] // #191919 — lighter sunk exercise-list panel
+const DIVIDER = primitiveColors.charcoal[300] // #2C2C2C — row divider (raised to read on #191919)
 
 const DEFAULT_WIDTH = 246
 
@@ -20,7 +23,15 @@ export interface SessionRailExercise {
   /** Stable key + press payload. Falls back to list index when absent. */
   id?: string
   name: string
-  summary: { sets: number; reps: number | string; weight: number; unit: 'lbs' | 'kg' }
+  /** `weight` accepts a string (e.g. "—") for an unset/discovery load — never a faked 0. */
+  summary: { sets: number; reps: number | string; weight: number | string; unit: 'lbs' | 'kg' }
+  /**
+   * Prescribed set count for the header total + pace-bar segment width. Distinct from
+   * `summary.sets`, which is the row's live DONE count (0 for the active exercise before
+   * its first set) — using that for the total under-counts by the active exercise's
+   * remaining sets. Falls back to `summary.sets` when absent.
+   */
+  plannedSets?: number
   tempo?: [number, number, number, number]
   indicator?: ExerciseIndicatorKind
   /** Per-set performance data driving the heading strip. */
@@ -84,7 +95,7 @@ export function SessionRail({
     >
       <SessionHeader
         title={title}
-        plan={exercises.map((ex) => ({ name: ex.name, sets: ex.summary.sets }))}
+        plan={exercises.map((ex) => ({ name: ex.name, sets: ex.plannedSets ?? ex.summary.sets }))}
         setsDone={setsDone}
         elapsedMs={elapsedMs}
         budgetMs={budgetMs}
