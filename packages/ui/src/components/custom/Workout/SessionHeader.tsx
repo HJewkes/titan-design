@@ -1,6 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, Text, type ViewProps } from 'react-native'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { Surface, onSurfaceColors, useSurfaceMode } from '../../ui/surface'
 import { Typography } from '../Typography'
 import { TimerReadout } from '../TimerReadout'
 import { SegmentedProgressBar } from './SegmentedProgressBar'
@@ -8,13 +8,10 @@ import { MetricTiles, type MetricTileData } from './MetricTiles'
 import { ScheduleTiles } from './ScheduleTiles'
 import { paceTone, paceToneColor } from './paceTone'
 
-const t = getSemanticColors('dark')
-
 // The header shares the SideNav's `background-base` (charcoal 900, #101010) so the nav and
 // the rail header read as ONE continuous dark plane on the left — the sunk exercise list
-// (charcoal 800) sits raised off it. Previously charcoal 400 (#1F1F1F), which made the header
-// the lightest rail surface and let it blend with the rows instead of anchoring to the nav.
-const HEADER_BG = t['background-base'] // #101010 — matches SideNav bg-background-base
+// sits raised off it. A `<Surface level="background">` owns that plane so the header no
+// longer hand-sets it, and its title/label text resolve on-surface colours from context.
 
 // The chunked pace bar matches the SetStrip language but sits tighter than the default
 // SetStrip gap (5) — the locked design uses a 3px gap and a 9px track.
@@ -73,21 +70,22 @@ export function SessionHeader({
 }: SessionHeaderProps) {
   const upcoming = next != null
   const totalSets = plan.reduce((sum, e) => sum + e.sets, 0)
+  const onSurface = onSurfaceColors(useSurfaceMode())
 
   const hasPace = !upcoming && budgetMs != null && elapsedMs != null
   const target = hasPace ? (elapsedMs as number) / (budgetMs as number) : undefined
 
   const setsLabel = upcoming ? `${totalSets} sets` : `${Math.floor(setsDone)}/${totalSets} sets`
   const setsLabelColor = upcoming
-    ? t['text-secondary']
+    ? onSurface.secondary
     : paceToneColor(paceTone(totalSets > 0 ? setsDone / totalSets : 0, target))
 
   return (
-    <View
+    <Surface
+      level="background"
       className={className}
       style={[
         {
-          backgroundColor: HEADER_BG,
           paddingTop: 11,
           paddingRight: 12,
           paddingBottom: 12,
@@ -106,7 +104,7 @@ export function SessionHeader({
           lineHeight: 18,
           fontWeight: '700',
           fontFamily: '"Space Grotesk", sans-serif',
-          color: t['text-primary'],
+          color: onSurface.primary,
           marginBottom: 10,
         }}
         testID="session-rail-title"
@@ -148,6 +146,6 @@ export function SessionHeader({
           />
         </View>
       </View>
-    </View>
+    </Surface>
   )
 }

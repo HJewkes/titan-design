@@ -2,6 +2,7 @@
 import { View, type ViewProps } from 'react-native'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { neumorphicShadows } from '../../../theme/shadows'
+import { Surface } from '../../ui/surface'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
 import { SessionHeader } from './SessionHeader'
 import type { MetricTileData } from './MetricTiles'
@@ -9,12 +10,11 @@ import type { SetStripSet } from './SetStrip'
 import type { ExerciseIndicatorKind } from './ExerciseIndicator'
 
 // Charcoal-ramp surfaces (the locked S3 shell shades): the nav + the heading plane read as
-// ONE dark plane (charcoal 900, #101010, set in SessionHeader). The exercise list is a
-// LIGHTER inset panel (charcoal 600) — recessed via its inner shadow yet paler than the
-// header, so the transparent exercise headings on it never blend into the header plane.
-// (Band-aid: the list is picked to clear the components; the durable fix is a `<Surface>`
-// primitive whose cards own their own raised background — see the rail's PR notes.)
-const INSET = primitiveColors.charcoal[600] // #191919 — lighter sunk exercise-list panel
+// ONE dark plane (charcoal 900, #101010, owned by SessionHeader's `<Surface level="background">`).
+// The exercise list is a LIGHTER inset panel — `<Surface level="elevated">` (charcoal 600,
+// #191919) — recessed via its inner shadow yet paler than the header, so the transparent
+// exercise headings on it never blend into the header plane. Surface owns both backgrounds,
+// so the rail no longer hand-sets them.
 const DIVIDER = primitiveColors.charcoal[300] // #2C2C2C — row divider (raised to read on #191919)
 
 const DEFAULT_WIDTH = 246
@@ -87,9 +87,10 @@ export function SessionRail({
   ...props
 }: SessionRailProps) {
   return (
-    <View
+    <Surface
+      level="elevated"
       className={className}
-      style={[{ width, flexDirection: 'column', backgroundColor: INSET }, style]}
+      style={[{ width, flexDirection: 'column' }, style]}
       testID="session-rail"
       {...props}
     >
@@ -104,8 +105,9 @@ export function SessionRail({
         next={next}
       />
 
-      <View
-        style={[{ flex: 1, backgroundColor: INSET }, neumorphicShadows.charcoal.pressed.subtle]}
+      <Surface
+        level="elevated"
+        style={[{ flex: 1 }, neumorphicShadows.charcoal.pressed.subtle]}
         testID="session-rail-list"
       >
         {exercises.map((ex, i) => (
@@ -131,7 +133,7 @@ export function SessionRail({
             />
           </View>
         ))}
-      </View>
-    </View>
+      </Surface>
+    </Surface>
   )
 }
