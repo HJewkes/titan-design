@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { Surface } from './Surface'
+import { useOnSurfaceColor, type SurfaceLevel } from './SurfaceContext'
 import type { ElevationLevel } from '../../../theme/elevation'
 
 const meta: Meta<typeof Surface> = {
@@ -12,10 +13,15 @@ const meta: Meta<typeof Surface> = {
       control: { type: 'range', min: -2, max: 5, step: 1 },
       description: 'Elevation level (-2 to 5)',
     },
+    level: {
+      control: 'select',
+      options: ['background', 'base', 'elevated', 'raised', 'overlay'],
+      description: 'Named charcoal plane (flat background from a semantic token)',
+    },
     theme: {
       control: 'select',
       options: ['light', 'dark'],
-      description: 'Color theme',
+      description: 'Color theme (also seeds the on-surface colour context)',
     },
     glowColor: {
       control: 'color',
@@ -73,6 +79,49 @@ export const WithGlow: Story = {
       </Surface>
       <Surface elevation={2} glowColor="#EF4444" glowIntensity="medium" style={{ padding: 16 }}>
         <Text style={{ color: '#fff' }}>Red Glow (Error)</Text>
+      </Surface>
+    </View>
+  ),
+}
+
+// The named-plane model: flat, full-bleed charcoal planes straight from the
+// semantic surface tokens — reaching the darker nav/page shades the numeric
+// lighten model can't. These back the shell / rail / stage.
+export const NamedPlanes: Story = {
+  render: () => (
+    <View style={{ gap: 12, padding: 24 }}>
+      {(['background', 'base', 'elevated', 'raised', 'overlay'] as SurfaceLevel[]).map((level) => (
+        <Surface key={level} level={level} style={{ padding: 16 }}>
+          <Text style={{ color: '#fff' }}>level=&quot;{level}&quot;</Text>
+        </Surface>
+      ))}
+    </View>
+  ),
+}
+
+// On-surface colour context: descendant text reads its colour from the Surface
+// via `useOnSurfaceColor` — no hard-coded hex, so it never renders black when the
+// tree mounts as raw RN in the standalone wall SPA.
+function OnSurfaceLabels() {
+  return (
+    <View style={{ gap: 4 }}>
+      <Text style={{ color: useOnSurfaceColor('primary'), fontSize: 16, fontWeight: '700' }}>
+        Primary on this surface
+      </Text>
+      <Text style={{ color: useOnSurfaceColor('secondary') }}>Secondary on this surface</Text>
+      <Text style={{ color: useOnSurfaceColor('tertiary') }}>Tertiary on this surface</Text>
+    </View>
+  )
+}
+
+export const OnSurfaceText: Story = {
+  render: () => (
+    <View style={{ gap: 16, padding: 24 }}>
+      <Surface level="background" style={{ padding: 16 }}>
+        <OnSurfaceLabels />
+      </Surface>
+      <Surface theme="light" level="base" style={{ padding: 16 }}>
+        <OnSurfaceLabels />
       </Surface>
     </View>
   ),
