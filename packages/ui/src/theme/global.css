@@ -94,19 +94,21 @@
     --color-text-link: #828DF8;
     --color-text-link-hover: #60A5FA;
 
-    --color-surface-base: #161616;
-    --color-surface-elevated: #191919;
-    --color-surface-raised: #1C1C1C;
-    --color-surface-overlay: #191919;
-    --color-surface-input: #191919;
+    /* Surface ramp — warm TAPERED (warm shadows → near-neutral highlights). De-collided. */
+    --color-surface-base: #1A1816;
+    --color-surface-elevated: #23211F;
+    --color-surface-raised: #2C2B2A;
+    --color-surface-overlay: #353433;
+    --color-surface-input: #15120F;              /* inset well — recessed below base */
 
-    --color-background-base: #101010;
-    --color-background-default: #161616;
-    --color-background-subtle: #1C1C1C;
+    --color-background-base: #120F0D;            /* warm near-black frame */
+    --color-background-default: #1A1816;
+    --color-background-subtle: #23211F;
 
-    --color-border-default: #1F1F1F;
-    --color-border-subtle: #1C1C1C;
-    --color-border-strong: #2C2C2C;
+    /* Separators — self-normalizing alpha-white hairlines (constant ΔL* on any plane). */
+    --color-border-default: rgba(255, 255, 255, 0.09);
+    --color-border-subtle: rgba(255, 255, 255, 0.06);
+    --color-border-strong: rgba(255, 255, 255, 0.14);
     --color-border-focus: #828DF8;
     --color-border-input: #4B5563;
     --color-border-input-hover: #6B7280;
@@ -120,7 +122,7 @@
     --color-interactive-disabled: rgba(255, 255, 255, 0.12);
     --color-interactive-disabled-text: rgba(255, 255, 255, 0.26);
 
-    --color-divider: #1F1F1F;
+    --color-divider: rgba(255, 255, 255, 0.08);
 
     --color-avatar-background: #4B5563;
     --color-avatar-text: #FFFFFF;

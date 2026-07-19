@@ -2,6 +2,7 @@
 import { View, Text } from 'react-native'
 import { RestTimer, ExerciseCard, Metric, MetricGroup, type SetRowProps } from '../../components'
 import { type DashboardModel, meanVelocity, verdictFromLoss } from './fixtures'
+import { paperSheet, insetWell } from './surfaces'
 
 /** Project the fixture's completed + current sets onto the recap card's set rows. */
 function deriveRecapSets(model: DashboardModel): SetRowProps[] {
@@ -62,19 +63,30 @@ export function RestView({ model }: { model: DashboardModel }) {
           >
             SET JUST COMPLETED
           </Text>
-          <ExerciseCard
-            name={session.exerciseName}
-            expanded
-            summary={{
-              sets: session.plannedSets,
-              reps: 8,
-              weight: session.weightLbs,
-              unit: session.unit,
+          {/* Hero recap on a matte PAPER sheet, canted a hair so it reads as a laid sheet
+              (paper tone == ExerciseCard's own raised plane → one continuous surface). */}
+          <View
+            style={{
+              ...paperSheet(),
+              borderRadius: 14,
+              padding: 6,
+              transform: [{ rotate: '-0.4deg' }],
             }}
-            tempo={session.tempo}
-            indicator="velocity-loss"
-            sets={deriveRecapSets(model)}
-          />
+          >
+            <ExerciseCard
+              name={session.exerciseName}
+              expanded
+              summary={{
+                sets: session.plannedSets,
+                reps: 8,
+                weight: session.weightLbs,
+                unit: session.unit,
+              }}
+              tempo={session.tempo}
+              indicator="velocity-loss"
+              sets={deriveRecapSets(model)}
+            />
+          </View>
         </View>
       </View>
 
@@ -87,40 +99,41 @@ export function RestView({ model }: { model: DashboardModel }) {
           >
             SET VERDICT
           </Text>
-          {/* MetricGroup ×4 — the read-once summary of the finished set. */}
-          <MetricGroup>
-            <Metric size="md" value={meanCon.toFixed(2)} unit="m/s" label="Mean con" />
-            <Metric size="md" value={peakCon.toFixed(2)} unit="m/s" label="Peak con" />
-          </MetricGroup>
-          <MetricGroup>
-            <Metric size="md" value={`${live.velocityLossPct}%`} label="Vel loss" trend="down" />
-            <Metric size="md" value={String(live.repVelocities.length)} label="Reps" />
-          </MetricGroup>
-          <MetricGroup>
-            <Metric size="md" value={String(session.weightLbs)} unit="lbs" label="Load" />
-            <Metric size="md" value={String(live.peakForce)} unit="lbs" label="Peak force" />
-          </MetricGroup>
-          <MetricGroup>
-            <Metric
-              size="md"
-              value={verdict === 'threshold' ? 'MOD' : verdict === 'stop' ? 'HIGH' : 'LOW'}
-              label="Fatigue"
-              trend={verdict === 'productive' ? 'up' : 'neutral'}
-            />
-            <Metric
-              size="md"
-              value={String(live.lastRep.rom.toFixed(2))}
-              unit="m"
-              label="Avg ROM"
-            />
-          </MetricGroup>
+          {/* The read-once summary sits in a single recessed INSET well — the metrics
+              read as pressed into the frame, one grouped panel rather than 8 loose cards. */}
+          <View style={{ ...insetWell(), borderRadius: 12, padding: 12, gap: 10 }}>
+            <MetricGroup>
+              <Metric size="md" value={meanCon.toFixed(2)} unit="m/s" label="Mean con" />
+              <Metric size="md" value={peakCon.toFixed(2)} unit="m/s" label="Peak con" />
+            </MetricGroup>
+            <MetricGroup>
+              <Metric size="md" value={`${live.velocityLossPct}%`} label="Vel loss" trend="down" />
+              <Metric size="md" value={String(live.repVelocities.length)} label="Reps" />
+            </MetricGroup>
+            <MetricGroup>
+              <Metric size="md" value={String(session.weightLbs)} unit="lbs" label="Load" />
+              <Metric size="md" value={String(live.peakForce)} unit="lbs" label="Peak force" />
+            </MetricGroup>
+            <MetricGroup>
+              <Metric
+                size="md"
+                value={verdict === 'threshold' ? 'MOD' : verdict === 'stop' ? 'HIGH' : 'LOW'}
+                label="Fatigue"
+                trend={verdict === 'productive' ? 'up' : 'neutral'}
+              />
+              <Metric
+                size="md"
+                value={String(live.lastRep.rom.toFixed(2))}
+                unit="m"
+                label="Avg ROM"
+              />
+            </MetricGroup>
+          </View>
         </View>
 
-        {/* mock "next set" block — clearly labelled NO-DATA / mock, not a wired read-model. */}
-        <View
-          className="border-border"
-          style={{ borderWidth: 1, borderStyle: 'dashed', borderRadius: 10, padding: 16, gap: 4 }}
-        >
+        {/* mock "next set" block — a recessed INSET well reads as an empty slot AWAITING
+            data, which is exactly its NO-DATA/mock status (was a dashed outline). */}
+        <View style={{ ...insetWell(), borderRadius: 10, padding: 16, gap: 4 }}>
           <Text
             className="text-text-tertiary"
             style={{ fontSize: 10, fontWeight: '700', letterSpacing: 1 }}

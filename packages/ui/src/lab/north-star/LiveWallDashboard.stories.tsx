@@ -52,7 +52,7 @@ const meta: Meta<WallArgs> = {
   ),
   decorators: [
     (Story) => (
-      <View style={{ height: '100vh' as unknown as number, backgroundColor: '#0E0E0E' }}>
+      <View style={{ height: '100vh' as unknown as number, backgroundColor: '#120F0D' }}>
         <Story />
       </View>
     ),

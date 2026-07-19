@@ -247,23 +247,23 @@ export const semanticColorsDark = {
   'text-link': '#828DF8',
   'text-link-hover': p.blue[400],
 
-  // Surface colors - dark backgrounds
-  'surface-base': p.charcoal[700],         // main surface
-  'surface-elevated': p.charcoal[600],     // elevated surface
-  'surface-raised': p.charcoal[500],       // raised surface
-  'surface-overlay': p.charcoal[600],      // overlay surface
-  'surface-input': p.charcoal[600],        // input surface
+  // Surface ramp — warm TAPERED (warm shadows → near-neutral highlights), de-collided
+  'surface-base': '#1A1816',               // main surface
+  'surface-elevated': '#23211F',           // elevated surface (nav/rail)
+  'surface-raised': '#2C2B2A',             // raised surface (cards)
+  'surface-overlay': '#353433',            // overlay surface (hero/popover)
+  'surface-input': '#15120F',              // inset well — recessed below base
 
   // Background colors
-  'background-base': p.charcoal[900],      // darkest charcoal
-  'background-default': p.charcoal[700],    // main background
-  'background-subtle': p.charcoal[500],     // subtle background
+  'background-base': '#120F0D',            // warm near-black frame
+  'background-default': '#1A1816',         // main background
+  'background-subtle': '#23211F',          // subtle background
 
-  // Border colors
-  'border-default': p.charcoal[400],       // default border
-  'border-subtle': p.charcoal[500],        // subtle border
-  'border-strong': p.charcoal[300],        // strong border
-  'border-prominent': p.charcoal[200],     // high-visibility divider
+  // Border colors — self-normalizing alpha-white hairlines
+  'border-default': 'rgba(255,255,255,0.09)',   // default border
+  'border-subtle': 'rgba(255,255,255,0.06)',    // subtle border
+  'border-strong': 'rgba(255,255,255,0.14)',    // strong border
+  'border-prominent': 'rgba(255,255,255,0.20)', // high-visibility divider
   'border-focus': '#828DF8',
   'border-input': p.neutral[600],
   'border-input-hover': p.neutral[500],
