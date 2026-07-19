@@ -50,6 +50,49 @@ const RAMPS: Ramp[] = [
 
 const TEXT = { primary: '#F3F4F6', secondary: '#9CA3AF', tertiary: '#6B7280' }
 
+// ---------------------------------------------------------------------------
+// Color math shared by the NEUTRAL-vs-WARM comparison + the ALPHA-LAYERING demo.
+// ---------------------------------------------------------------------------
+
+const clampByte = (v: number) => Math.max(0, Math.min(255, Math.round(v)))
+const toHex = (r: number, g: number, b: number) =>
+  '#' + [r, g, b].map((v) => clampByte(v).toString(16).padStart(2, '0')).join('')
+const channels = (hex: string) => [0, 2, 4].map((i) => parseInt(hex.slice(1 + i, 3 + i), 16))
+
+/** True CIELAB L* (perceptual lightness) — the surface-separation metric. */
+function lstar(hex: string): number {
+  const lin = channels(hex)
+    .map((c) => c / 255)
+    .map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4))
+  const y = 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2]
+  return y <= 0.008856 ? y * 903.3 : 116 * Math.cbrt(y) - 16
+}
+
+/** Flatten an alpha `tint` over an opaque `base` → the resulting opaque hex.
+ *  This is what an "elevation = white overlay" model actually paints. */
+function over(base: string, a: number, tint: [number, number, number] = [255, 255, 255]): string {
+  const b = channels(base)
+  return toHex(b[0] * (1 - a) + tint[0] * a, b[1] * (1 - a) + tint[1] * a, b[2] * (1 - a) + tint[2] * a)
+}
+
+// The two candidate base ramps, L*-matched. Neutral = pure gray (R=G=B). Warm
+// = a "greige" tint that GROWS with plane lightness (R up, B down) so the warmth
+// reads more as planes lift — the look we used in the audiobook app.
+const NEUTRAL_RAMP = ['#0F0F0F', '#181818', '#212121', '#2B2B2B', '#343434']
+
+/** Warm ramp derived from NEUTRAL_RAMP at warmth intensity `w`, keeping L* ~matched. */
+function warmRamp(w: number): string[] {
+  return NEUTRAL_RAMP.map((hex) => {
+    const v = channels(hex)[0] // neutral → all channels equal
+    const t = v * w
+    return toHex(v + t * 0.7, v + t * 0.15, v - t * 0.7)
+  })
+}
+
+const WARM_SUBTLE = warmRamp(0.1)
+const WARM_MEDIUM = warmRamp(0.18)
+const WARM_STRONG = warmRamp(0.28)
+
 type Separation = 'tonal' | 'hairline' | 'skeuo'
 
 // The separation treatment applied to every nested plane. `tonal` leans on the
@@ -579,4 +622,263 @@ export const PaperWithBrand: Story = {
       </View>
     )
   },
+}
+
+// ===========================================================================
+// NEUTRAL vs WARM — the base-ramp decision. Blue-grey is out (too common). This
+// compares pure neutral against three warmth intensities, then shows the two
+// finalists (neutral + warm-medium) AT SCALE and as LAYERED PAPER, so the choice
+// is made against real density, not a swatch. L*/ΔL* labels prove the warm ramp
+// is perceptually L*-matched to neutral (same separation, different temperature).
+// ===========================================================================
+
+// A 5-plane ramp shown as a solid strip with per-plane L* + step ΔL* — so you can
+// see the SEPARATION (ΔL*) is identical while only the TEMPERATURE changes.
+function RampBar({ name, planes, note }: { name: string; planes: string[]; note?: string }) {
+  return (
+    <View style={{ gap: 6 }}>
+      <Text style={{ color: TEXT.primary, fontSize: 12, fontWeight: '600' }}>{name}</Text>
+      {note && <Text style={{ color: TEXT.tertiary, fontSize: 10 }}>{note}</Text>}
+      <View style={{ flexDirection: 'row', borderRadius: 8, overflow: 'hidden' }}>
+        {planes.map((p, i) => {
+          const L = lstar(p)
+          const d = i === 0 ? null : L - lstar(planes[i - 1])
+          const ink = L > 42 ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.85)'
+          return (
+            <View
+              key={i}
+              style={{ width: 104, height: 88, backgroundColor: p, padding: 8, justifyContent: 'flex-end' }}
+            >
+              <Text style={{ color: ink, fontSize: 11, fontWeight: '600' }}>{p.toUpperCase()}</Text>
+              <Text style={{ color: ink, fontSize: 10, opacity: 0.8 }}>L* {L.toFixed(1)}</Text>
+              {d != null && (
+                <Text style={{ color: ink, fontSize: 10, opacity: 0.8 }}>ΔL* {d.toFixed(1)}</Text>
+              )}
+            </View>
+          )
+        })}
+      </View>
+    </View>
+  )
+}
+
+export const NeutralVsWarm: Story = {
+  render: () => (
+    <View style={{ backgroundColor: '#000', padding: 32, gap: 22 }}>
+      <RampBar name="Neutral · pure gray" planes={NEUTRAL_RAMP} note="R=G=B — the safe drop-in" />
+      <RampBar
+        name="Warm · subtle"
+        planes={WARM_SUBTLE}
+        note="barely-there greige — reads neutral in isolation, warm only in a stack"
+      />
+      <RampBar
+        name="Warm · medium  ← candidate"
+        planes={WARM_MEDIUM}
+        note="clear temperature, still restrained — pairs with the orange brand"
+      />
+      <RampBar
+        name="Warm · strong"
+        planes={WARM_STRONG}
+        note="audiobook-app level — tan/greige, cozy but starts to tint content"
+      />
+    </View>
+  ),
+}
+
+// A denser, realistic lockup (top bar · rail with session list · stage · live
+// card · nested chip · metric tiles) so the ramp is judged AT SCALE. Same scene
+// under neutral and warm-medium, alpha-hairline separation on every plane.
+function ScaleLockup({ planes }: { planes: string[] }) {
+  const p = planes
+  const sep = sepStyle('hairline')
+  const tile = (label: string, value: string, unit: string) => (
+    <View key={label} style={{ flex: 1, backgroundColor: p[4], borderRadius: 8, padding: 10, gap: 2, ...sep }}>
+      <Eyebrow>{label}</Eyebrow>
+      <Text style={{ color: TEXT.primary, fontSize: 20, fontWeight: '700' }}>{value}</Text>
+      <Text style={{ color: TEXT.tertiary, fontSize: 10 }}>{unit}</Text>
+    </View>
+  )
+  return (
+    <View style={{ width: 620, backgroundColor: p[0], borderRadius: 16, padding: 12, gap: 10 }}>
+      {/* top bar = elevated */}
+      <View
+        style={{ backgroundColor: p[2], borderRadius: 10, padding: 12, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', ...sep }}
+      >
+        <Text style={{ color: TEXT.primary, fontSize: 14, fontWeight: '700' }}>Upper Body · Push/Pull</Text>
+        <Text style={{ color: TEXT.secondary, fontSize: 12 }}>34:12 · 6 exercises</Text>
+      </View>
+      <View style={{ flexDirection: 'row', gap: 10 }}>
+        {/* rail = base */}
+        <View style={{ width: 190, backgroundColor: p[1], borderRadius: 10, padding: 12, gap: 10, ...sep }}>
+          <Eyebrow>SESSION</Eyebrow>
+          {[
+            ['Smith Bench', 3, 3],
+            ['Cable Row', 2, 3],
+            ['Bayesian Curl', 0, 3],
+            ['French Press', 0, 3],
+            ['Lat Raise', 0, 2],
+          ].map(([name, done, total]) => (
+            <View key={name as string} style={{ gap: 5 }}>
+              <Text style={{ color: (done as number) > 0 ? TEXT.primary : TEXT.tertiary, fontSize: 12 }}>
+                {name as string}
+              </Text>
+              <View style={{ flexDirection: 'row', gap: 4 }}>
+                {Array.from({ length: total as number }).map((_, i) => (
+                  <View
+                    key={i}
+                    style={{
+                      width: 16,
+                      height: 5,
+                      borderRadius: 3,
+                      backgroundColor: i < (done as number) ? '#FF7900' : p[3],
+                    }}
+                  />
+                ))}
+              </View>
+            </View>
+          ))}
+        </View>
+        {/* stage = raised, holding a live card (overlay) + metric tiles */}
+        <View style={{ flex: 1, backgroundColor: p[3], borderRadius: 10, padding: 12, gap: 10, ...sep }}>
+          <Eyebrow>LIVE</Eyebrow>
+          <View style={{ backgroundColor: p[4], borderRadius: 10, padding: 14, gap: 6, ...sep }}>
+            <Text style={{ color: TEXT.primary, fontSize: 18, fontWeight: '700' }}>Seated Cable Row</Text>
+            <Text style={{ color: TEXT.secondary, fontSize: 13 }}>set 2 · 8 reps · 0.42 m/s</Text>
+            {/* nested chip pushes the deepest plane against the card */}
+            <View style={{ alignSelf: 'flex-start', marginTop: 2, backgroundColor: p[0], borderRadius: 999, paddingVertical: 4, paddingHorizontal: 10, ...sep }}>
+              <Text style={{ color: '#FF7900', fontSize: 12, fontWeight: '700' }}>75 lb · +5</Text>
+            </View>
+          </View>
+          <View style={{ flexDirection: 'row', gap: 10 }}>
+            {tile('VOLUME', '4.2k', 'lb · session')}
+            {tile('TEMPO', '2·0·1', 'ecc·pause·con')}
+            {tile('FATIGUE', '12%', 'vs set 1')}
+          </View>
+        </View>
+      </View>
+    </View>
+  )
+}
+
+export const NeutralVsWarmAtScale: Story = {
+  render: () => (
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 32, backgroundColor: '#000', padding: 32 }}>
+      <View style={{ gap: 10 }}>
+        <Text style={{ color: TEXT.primary, fontSize: 13, fontWeight: '700' }}>NEUTRAL</Text>
+        <ScaleLockup planes={NEUTRAL_RAMP} />
+      </View>
+      <View style={{ gap: 10 }}>
+        <Text style={{ color: TEXT.primary, fontSize: 13, fontWeight: '700' }}>WARM · medium</Text>
+        <ScaleLockup planes={WARM_MEDIUM} />
+      </View>
+    </View>
+  ),
+}
+
+// The layered-paper accent in both temperatures. Warm paper = "construction
+// paper / kraft"; neutral paper = "cardstock / concrete" — colder, more clinical.
+// Judge the paper aesthetic specifically: which desk + sheets feels like a
+// premium object you'd want the hero surface to be.
+const NEUTRAL_PAPER = ['#242424', '#1D1D1D', '#2E2E2E', '#3A3A3A']
+const WARM_PAPER = ['#2A2620', '#221E19', '#35302A', '#423B32']
+function PaperCollage({ tones, desk, accent }: { tones: string[]; desk: string; accent: string }) {
+  return (
+    <View style={{ width: 300, height: 250, borderRadius: 12, padding: 4, backgroundColor: desk, backgroundImage: noise(0.025), position: 'relative' }}>
+      <PaperSheet tone={tones[1]} w={190} h={150} left={12} top={54} rotate={-3} />
+      <PaperSheet tone={tones[0]} w={200} h={168} left={64} top={10} rotate={2}>
+        <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: 9, fontWeight: '700', letterSpacing: 1 }}>LIVE</Text>
+        <Text style={{ color: '#F4F1EC', fontSize: 16, fontWeight: '700' }}>Seated Cable Row</Text>
+        <Text style={{ color: 'rgba(255,255,255,0.72)', fontSize: 12 }}>set 2 · 8 reps · 0.42 m/s</Text>
+      </PaperSheet>
+      <PaperSheet tone={accent} w={116} h={92} left={172} top={132} rotate={-1}>
+        <Text style={{ color: '#fff', fontSize: 9, fontWeight: '700', letterSpacing: 1 }}>LOAD</Text>
+        <Text style={{ color: '#fff', fontSize: 24, fontWeight: '800' }}>75</Text>
+        <Text style={{ color: 'rgba(255,255,255,0.85)', fontSize: 11 }}>lb · +5</Text>
+      </PaperSheet>
+    </View>
+  )
+}
+
+export const NeutralVsWarmPaper: Story = {
+  render: () => (
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 40, backgroundColor: '#151515', padding: 40 }}>
+      <View style={{ gap: 12 }}>
+        <Text style={{ color: TEXT.primary, fontSize: 13, fontWeight: '700' }}>NEUTRAL PAPER · cardstock</Text>
+        <PaperCollage tones={NEUTRAL_PAPER} desk="#1E1E1E" accent="#B94A00" />
+        <RampBar name="tones" planes={NEUTRAL_PAPER} />
+      </View>
+      <View style={{ gap: 12 }}>
+        <Text style={{ color: TEXT.primary, fontSize: 13, fontWeight: '700' }}>WARM PAPER · kraft</Text>
+        <PaperCollage tones={WARM_PAPER} desk="#211D17" accent="#B94A00" />
+        <RampBar name="tones" planes={WARM_PAPER} />
+      </View>
+    </View>
+  ),
+}
+
+// ===========================================================================
+// ALPHA LAYERING — the "elevation = one base + white-overlay steps" model. The
+// user likes the idea; this shows the real technical tradeoff so it's a choice,
+// not a surprise. Each strip flattens the overlay to the opaque hex it produces.
+//
+// PRO: one base + one alpha scale generates every plane, works over ANY base,
+//   nests predictably, themes by swapping one color. Great for a hairline/state
+//   layer that must sit on unknown backgrounds.
+// CON (visible below): a WHITE overlay pulls every plane toward neutral as it
+//   lightens — so a WARM base loses its warmth exactly where planes are lightest
+//   (row 2). Compare the ΔR-B spread top vs bottom. Fix = tint the overlay warm
+//   (row 3) or hand-pick opaque stops (row 4, full temperature control).
+// ===========================================================================
+
+const OVERLAY_ALPHAS = [0, 0.06, 0.12, 0.18, 0.24]
+function AlphaStrip({
+  label,
+  base,
+  tint,
+  opaque,
+}: {
+  label: string
+  base?: string
+  tint?: [number, number, number]
+  opaque?: string[]
+}) {
+  const planes = opaque ?? OVERLAY_ALPHAS.map((a) => over(base as string, a, tint))
+  return (
+    <View style={{ gap: 6 }}>
+      <Text style={{ color: TEXT.secondary, fontSize: 11 }}>{label}</Text>
+      <View style={{ flexDirection: 'row', borderRadius: 8, overflow: 'hidden' }}>
+        {planes.map((p, i) => {
+          const [r, , b] = channels(p)
+          const ink = lstar(p) > 42 ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.8)'
+          return (
+            <View key={i} style={{ width: 118, height: 78, backgroundColor: p, padding: 8, justifyContent: 'flex-end' }}>
+              <Text style={{ color: ink, fontSize: 11, fontWeight: '600' }}>{p.toUpperCase()}</Text>
+              <Text style={{ color: ink, fontSize: 10, opacity: 0.8 }}>R−B {r - b}</Text>
+            </View>
+          )
+        })}
+      </View>
+    </View>
+  )
+}
+
+export const AlphaLayering: Story = {
+  render: () => (
+    <View style={{ backgroundColor: '#000', padding: 32, gap: 20 }}>
+      <Text style={{ color: TEXT.primary, fontSize: 13, fontWeight: '700' }}>
+        Elevation = base + white-alpha overlay — R−B is the warmth (0 = neutral)
+      </Text>
+      <AlphaStrip label="Neutral base #181818 + white α — stays neutral (R−B = 0 throughout) ✓" base="#181818" />
+      <AlphaStrip
+        label="Warm base #1A1714 + WHITE α — warmth FADES as it lightens (R−B shrinks) ✗"
+        base="#1A1714"
+      />
+      <AlphaStrip
+        label="Warm base #1A1714 + WARM-white α rgba(255,248,240) — warmth holds ✓"
+        base="#1A1714"
+        tint={[255, 248, 240]}
+      />
+      <AlphaStrip label="Opaque hand-picked warm ramp — full temperature control (no overlay) ✓" opaque={WARM_MEDIUM} />
+    </View>
+  ),
 }
