@@ -956,7 +956,9 @@ export const AtScaleComparison: Story = {
 // bright hero (card/tiles/chip) so nothing goes tan. Neutral shown for reference.
 const CURVE_AT_SCALE: { name: string; skin: Skin }[] = [
   { name: 'Neutral (reference)', skin: paperSkinCurve(0, 0) },
-  { name: 'Warm · faint (1→3.5)', skin: paperSkinCurve(1, 3.5) },
+  { name: 'Warm · faint (grows 1→3.5)', skin: paperSkinCurve(1, 3.5) },
+  { name: 'Warm · subtle (grows, ≈2→7)', skin: paperSkin(0.1) },
+  { name: 'Warm · medium (grows, ≈3.5→13)', skin: paperSkin(0.18) },
   { name: 'Warm · tapered (5→2) — warm shadows, cool highlights', skin: paperSkinCurve(5, 2) },
 ]
 
