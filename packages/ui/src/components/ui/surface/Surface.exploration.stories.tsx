@@ -103,6 +103,25 @@ function warmTint(hex: string, w: number): string {
   return toHex(r + t * 0.7, g + t * 0.15, b - t * 0.7)
 }
 
+// --- Warmth CURVE control -------------------------------------------------
+// The earlier warm ramps tie warmth to lightness (warmth GROWS toward the top,
+// so bright planes curve tan). These decouple it: set the R−B warmth explicitly
+// per plane so the curve can stay flat — or even cool off — as planes lighten.
+
+/** Re-temperature a hex to an EXACT R−B warmth (0 = neutral), preserving its L*. */
+function withWarmth(hex: string, rb: number): string {
+  const [r, g, b] = channels(hex)
+  const v = (r + g + b) / 3
+  return toHex(v + rb / 2, v + rb * 0.08, v - rb / 2)
+}
+
+/** A base ramp whose R−B warmth ramps linearly from `startRB` (darkest plane) to
+ *  `endRB` (lightest). start=end → constant; end<start → cools toward the top. */
+function warmCurve(startRB: number, endRB: number): string[] {
+  const n = NEUTRAL_RAMP.length
+  return NEUTRAL_RAMP.map((hex, i) => withWarmth(hex, startRB + ((endRB - startRB) * i) / (n - 1)))
+}
+
 // The three finalists as one list — drives the at-scale + paper comparisons.
 const PALETTES: { name: string; ramp: string[]; w: number }[] = [
   { name: 'Neutral', ramp: NEUTRAL_RAMP, w: 0 },
@@ -669,7 +688,18 @@ export const PaperWithBrand: Story = {
 
 // A 5-plane ramp shown as a solid strip with per-plane L* + step ΔL* — so you can
 // see the SEPARATION (ΔL*) is identical while only the TEMPERATURE changes.
-function RampBar({ name, planes, note }: { name: string; planes: string[]; note?: string }) {
+function RampBar({
+  name,
+  planes,
+  note,
+  warmth,
+}: {
+  name: string
+  planes: string[]
+  note?: string
+  /** show the R−B warmth readout (0 = neutral) instead of the step ΔL*. */
+  warmth?: boolean
+}) {
   return (
     <View style={{ gap: 6 }}>
       <Text style={{ color: TEXT.primary, fontSize: 12, fontWeight: '600' }}>{name}</Text>
@@ -677,6 +707,7 @@ function RampBar({ name, planes, note }: { name: string; planes: string[]; note?
       <View style={{ flexDirection: 'row', borderRadius: 8, overflow: 'hidden' }}>
         {planes.map((p, i) => {
           const L = lstar(p)
+          const [r, , b] = channels(p)
           const d = i === 0 ? null : L - lstar(planes[i - 1])
           const ink = L > 42 ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.85)'
           return (
@@ -686,8 +717,12 @@ function RampBar({ name, planes, note }: { name: string; planes: string[]; note?
             >
               <Text style={{ color: ink, fontSize: 11, fontWeight: '600' }}>{p.toUpperCase()}</Text>
               <Text style={{ color: ink, fontSize: 10, opacity: 0.8 }}>L* {L.toFixed(1)}</Text>
-              {d != null && (
-                <Text style={{ color: ink, fontSize: 10, opacity: 0.8 }}>ΔL* {d.toFixed(1)}</Text>
+              {warmth ? (
+                <Text style={{ color: ink, fontSize: 10, opacity: 0.8 }}>R−B {r - b}</Text>
+              ) : (
+                d != null && (
+                  <Text style={{ color: ink, fontSize: 10, opacity: 0.8 }}>ΔL* {d.toFixed(1)}</Text>
+                )
               )}
             </View>
           )
@@ -716,6 +751,44 @@ export const NeutralVsWarm: Story = {
         planes={WARM_STRONG}
         note="audiobook-app level — tan/greige, cozy but starts to tint content"
       />
+    </View>
+  ),
+}
+
+// WARMTH CURVE — the earlier warm ramps tie warmth to lightness, so the BRIGHT
+// planes read warmest (the "tan at the top" the eye caught). These candidates
+// decouple it: `grows` keeps that curve, `flat` holds one warmth on every plane,
+// `tapered` starts warm and cools toward the highlights. Top = base ramps with an
+// R−B (warmth) readout so the curve is explicit; bottom = the same curves as
+// paper, to judge warmth at the bright tones where it actually shows.
+const WARMTH_CANDIDATES: { name: string; note: string; s: number; e: number }[] = [
+  { name: 'Neutral', note: 'R−B 0 — reference', s: 0, e: 0 },
+  { name: 'Warm · faint (grows 1→3.5)', note: 'between neutral and subtle', s: 1, e: 3.5 },
+  { name: 'Warm · subtle (grows 2→7) — current', note: 'today’s subtle; brights curve tan', s: 2, e: 7 },
+  { name: 'Warm · flat (constant 3.5)', note: 'same warmth every plane; brights stay put', s: 3.5, e: 3.5 },
+  { name: 'Warm · tapered (5→2)', note: 'warm base, near-neutral highlights', s: 5, e: 2 },
+]
+
+export const WarmthCurves: Story = {
+  render: () => (
+    <View style={{ backgroundColor: '#000', padding: 32, gap: 28 }}>
+      <View style={{ gap: 16 }}>
+        {WARMTH_CANDIDATES.map((c) => (
+          <RampBar key={c.name} name={c.name} planes={warmCurve(c.s, c.e)} note={c.note} warmth />
+        ))}
+      </View>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 30 }}>
+        {WARMTH_CANDIDATES.map((c) => {
+          const keys = [PAPER_TONES.back, PAPER_TONES.mid, PAPER_TONES.light, PAPER_TONES.lighter]
+          const tones = keys.map((h, i) => withWarmth(h, c.s + ((c.e - c.s) * i) / 3))
+          return (
+            <View key={c.name} style={{ gap: 8 }}>
+              <Text style={{ color: TEXT.secondary, fontSize: 11 }}>{c.name}</Text>
+              <PaperCollage tones={[tones[2], tones[0]]} desk={withWarmth(PAPER_DESK, c.s)} accent={PAPER_ACCENT} />
+            </View>
+          )
+        })}
+      </View>
     </View>
   ),
 }
