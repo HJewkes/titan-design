@@ -93,6 +93,41 @@ const WARM_SUBTLE = warmRamp(0.1)
 const WARM_MEDIUM = warmRamp(0.18)
 const WARM_STRONG = warmRamp(0.28)
 
+/** Apply the greige warm tint to an arbitrary hex at intensity `w` (0 = identity),
+ *  so a neutral template can be re-temperatured while keeping its lightness. */
+function warmTint(hex: string, w: number): string {
+  if (!w) return hex
+  const [r, g, b] = channels(hex)
+  const v = (r + g + b) / 3
+  const t = v * w
+  return toHex(r + t * 0.7, g + t * 0.15, b - t * 0.7)
+}
+
+// The three finalists as one list — drives the at-scale + paper comparisons.
+const PALETTES: { name: string; ramp: string[]; w: number }[] = [
+  { name: 'Neutral', ramp: NEUTRAL_RAMP, w: 0 },
+  { name: 'Warm · subtle', ramp: WARM_SUBTLE, w: 0.1 },
+  { name: 'Warm · medium', ramp: WARM_MEDIUM, w: 0.18 },
+]
+
+// Matte paper template (neutral). Warm variants come from warmTint(...,w) so all
+// three are LIGHTNESS-matched — only temperature differs.
+const PAPER_TONES = { back: '#222222', mid: '#2A2A2A', light: '#353535', lighter: '#424242' }
+const PAPER_DESK = '#1F1F1F'
+const PAPER_ACCENT = '#B94A00' // brand orange-600 on-surface; vivid -400 stays for content
+
+/** A paper plane: matte fill + grain + top rim + a contact shadow. `sheet` = a
+ *  raised leaf (stronger shadow) vs a container resting on the desk. */
+function paperPlane(tone: string, sheet: boolean): object {
+  return {
+    backgroundColor: tone,
+    backgroundImage: noise(0.05),
+    boxShadow: sheet
+      ? 'inset 0 1px 0 rgba(255,255,255,0.12), 0 5px 12px rgba(0,0,0,0.45)'
+      : 'inset 0 1px 0 rgba(255,255,255,0.07), 0 2px 6px rgba(0,0,0,0.28)',
+  }
+}
+
 type Separation = 'tonal' | 'hairline' | 'skeuo'
 
 // The separation treatment applied to every nested plane. `tonal` leans on the
@@ -685,67 +720,100 @@ export const NeutralVsWarm: Story = {
   ),
 }
 
-// A denser, realistic lockup (top bar · rail with session list · stage · live
-// card · nested chip · metric tiles) so the ramp is judged AT SCALE. Same scene
-// under neutral and warm-medium, alpha-hairline separation on every plane.
-function ScaleLockup({ planes }: { planes: string[] }) {
-  const p = planes
-  const sep = sepStyle('hairline')
+// One dense lockup (top bar · rail w/ session list · stage · live card · nested
+// chip · metric tiles), rendered through a SKIN so the SAME markup can be shown
+// as the structural `hairline` system OR the `paper` accent aesthetic.
+interface Skin {
+  outer: object
+  bar: object
+  rail: object
+  stage: object
+  card: object
+  tile: object
+  chip: object
+  ink: { primary: string; secondary: string; tertiary: string }
+  dotOff: string
+}
+const HAIR = { borderWidth: 1, borderColor: 'rgba(255,255,255,0.09)' }
+const SESSION_ROWS: [string, number, number][] = [
+  ['Smith Bench', 3, 3],
+  ['Cable Row', 2, 3],
+  ['Bayesian Curl', 0, 3],
+  ['French Press', 0, 3],
+  ['Lat Raise', 0, 2],
+]
+
+// Structural skin: flat planes off the base ramp + one alpha-white hairline.
+function hairlineSkin(ramp: string[]): Skin {
+  return {
+    outer: { backgroundColor: ramp[0] },
+    bar: { backgroundColor: ramp[2], ...HAIR },
+    rail: { backgroundColor: ramp[1], ...HAIR },
+    stage: { backgroundColor: ramp[3], ...HAIR },
+    card: { backgroundColor: ramp[4], ...HAIR },
+    tile: { backgroundColor: ramp[4], ...HAIR },
+    chip: { backgroundColor: ramp[0], ...HAIR },
+    ink: TEXT,
+    dotOff: ramp[3],
+  }
+}
+
+// Paper skin: matte grained sheets separated by contact shadow, not by ramp step
+// — containers rest on the desk, the live card + tiles are raised leaves.
+function paperSkin(w: number): Skin {
+  const t = (tone: string) => warmTint(tone, w)
+  const container = paperPlane(t(PAPER_TONES.back), false)
+  return {
+    outer: { backgroundColor: t(PAPER_DESK), backgroundImage: noise(0.025) },
+    bar: container,
+    rail: container,
+    stage: container,
+    card: paperPlane(t(PAPER_TONES.light), true),
+    tile: paperPlane(t(PAPER_TONES.mid), true),
+    chip: paperPlane(t(PAPER_TONES.lighter), true),
+    ink: { primary: '#F4F1EC', secondary: 'rgba(255,255,255,0.72)', tertiary: 'rgba(255,255,255,0.5)' },
+    dotOff: t(PAPER_TONES.lighter),
+  }
+}
+
+function Lockup({ skin }: { skin: Skin }) {
+  const ink = skin.ink
+  const eyebrow = (s: string) => (
+    <Text style={{ color: ink.tertiary, fontSize: 9, fontWeight: '700', letterSpacing: 1 }}>{s}</Text>
+  )
   const tile = (label: string, value: string, unit: string) => (
-    <View key={label} style={{ flex: 1, backgroundColor: p[4], borderRadius: 8, padding: 10, gap: 2, ...sep }}>
-      <Eyebrow>{label}</Eyebrow>
-      <Text style={{ color: TEXT.primary, fontSize: 20, fontWeight: '700' }}>{value}</Text>
-      <Text style={{ color: TEXT.tertiary, fontSize: 10 }}>{unit}</Text>
+    <View key={label} style={{ flex: 1, borderRadius: 8, padding: 10, gap: 2, ...skin.tile }}>
+      {eyebrow(label)}
+      <Text style={{ color: ink.primary, fontSize: 20, fontWeight: '700' }}>{value}</Text>
+      <Text style={{ color: ink.tertiary, fontSize: 10 }}>{unit}</Text>
     </View>
   )
   return (
-    <View style={{ width: 620, backgroundColor: p[0], borderRadius: 16, padding: 12, gap: 10 }}>
-      {/* top bar = elevated */}
-      <View
-        style={{ backgroundColor: p[2], borderRadius: 10, padding: 12, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', ...sep }}
-      >
-        <Text style={{ color: TEXT.primary, fontSize: 14, fontWeight: '700' }}>Upper Body · Push/Pull</Text>
-        <Text style={{ color: TEXT.secondary, fontSize: 12 }}>34:12 · 6 exercises</Text>
+    <View style={{ width: 620, borderRadius: 16, padding: 12, gap: 10, ...skin.outer }}>
+      <View style={{ borderRadius: 10, padding: 12, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', ...skin.bar }}>
+        <Text style={{ color: ink.primary, fontSize: 14, fontWeight: '700' }}>Upper Body · Push/Pull</Text>
+        <Text style={{ color: ink.secondary, fontSize: 12 }}>34:12 · 6 exercises</Text>
       </View>
       <View style={{ flexDirection: 'row', gap: 10 }}>
-        {/* rail = base */}
-        <View style={{ width: 190, backgroundColor: p[1], borderRadius: 10, padding: 12, gap: 10, ...sep }}>
-          <Eyebrow>SESSION</Eyebrow>
-          {[
-            ['Smith Bench', 3, 3],
-            ['Cable Row', 2, 3],
-            ['Bayesian Curl', 0, 3],
-            ['French Press', 0, 3],
-            ['Lat Raise', 0, 2],
-          ].map(([name, done, total]) => (
-            <View key={name as string} style={{ gap: 5 }}>
-              <Text style={{ color: (done as number) > 0 ? TEXT.primary : TEXT.tertiary, fontSize: 12 }}>
-                {name as string}
-              </Text>
+        <View style={{ width: 190, borderRadius: 10, padding: 12, gap: 10, ...skin.rail }}>
+          {eyebrow('SESSION')}
+          {SESSION_ROWS.map(([name, done, total]) => (
+            <View key={name} style={{ gap: 5 }}>
+              <Text style={{ color: done > 0 ? ink.primary : ink.tertiary, fontSize: 12 }}>{name}</Text>
               <View style={{ flexDirection: 'row', gap: 4 }}>
-                {Array.from({ length: total as number }).map((_, i) => (
-                  <View
-                    key={i}
-                    style={{
-                      width: 16,
-                      height: 5,
-                      borderRadius: 3,
-                      backgroundColor: i < (done as number) ? '#FF7900' : p[3],
-                    }}
-                  />
+                {Array.from({ length: total }).map((_, i) => (
+                  <View key={i} style={{ width: 16, height: 5, borderRadius: 3, backgroundColor: i < done ? '#FF7900' : skin.dotOff }} />
                 ))}
               </View>
             </View>
           ))}
         </View>
-        {/* stage = raised, holding a live card (overlay) + metric tiles */}
-        <View style={{ flex: 1, backgroundColor: p[3], borderRadius: 10, padding: 12, gap: 10, ...sep }}>
-          <Eyebrow>LIVE</Eyebrow>
-          <View style={{ backgroundColor: p[4], borderRadius: 10, padding: 14, gap: 6, ...sep }}>
-            <Text style={{ color: TEXT.primary, fontSize: 18, fontWeight: '700' }}>Seated Cable Row</Text>
-            <Text style={{ color: TEXT.secondary, fontSize: 13 }}>set 2 · 8 reps · 0.42 m/s</Text>
-            {/* nested chip pushes the deepest plane against the card */}
-            <View style={{ alignSelf: 'flex-start', marginTop: 2, backgroundColor: p[0], borderRadius: 999, paddingVertical: 4, paddingHorizontal: 10, ...sep }}>
+        <View style={{ flex: 1, borderRadius: 10, padding: 12, gap: 10, ...skin.stage }}>
+          {eyebrow('LIVE')}
+          <View style={{ borderRadius: 10, padding: 14, gap: 6, ...skin.card }}>
+            <Text style={{ color: ink.primary, fontSize: 18, fontWeight: '700' }}>Seated Cable Row</Text>
+            <Text style={{ color: ink.secondary, fontSize: 13 }}>set 2 · 8 reps · 0.42 m/s</Text>
+            <View style={{ alignSelf: 'flex-start', marginTop: 2, borderRadius: 999, paddingVertical: 4, paddingHorizontal: 10, ...skin.chip }}>
               <Text style={{ color: '#FF7900', fontSize: 12, fontWeight: '700' }}>75 lb · +5</Text>
             </View>
           </View>
@@ -760,27 +828,35 @@ function ScaleLockup({ planes }: { planes: string[] }) {
   )
 }
 
-export const NeutralVsWarmAtScale: Story = {
+// AT SCALE × TREATMENT — the 3 finalists (neutral / warm-subtle / warm-medium),
+// each rendered TWICE: as-is (hairline system) and with the paper treatment. Six
+// panels, so temperature AND treatment are judged against real density.
+export const AtScaleComparison: Story = {
   render: () => (
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 32, backgroundColor: '#000', padding: 32 }}>
-      <View style={{ gap: 10 }}>
-        <Text style={{ color: TEXT.primary, fontSize: 13, fontWeight: '700' }}>NEUTRAL</Text>
-        <ScaleLockup planes={NEUTRAL_RAMP} />
-      </View>
-      <View style={{ gap: 10 }}>
-        <Text style={{ color: TEXT.primary, fontSize: 13, fontWeight: '700' }}>WARM · medium</Text>
-        <ScaleLockup planes={WARM_MEDIUM} />
-      </View>
+    <View style={{ backgroundColor: '#000', padding: 32, gap: 30 }}>
+      {PALETTES.map((pal) => (
+        <View key={pal.name} style={{ gap: 12 }}>
+          <Text style={{ color: TEXT.primary, fontSize: 14, fontWeight: '700' }}>{pal.name.toUpperCase()}</Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 28 }}>
+            <View style={{ gap: 8 }}>
+              <Text style={{ color: TEXT.secondary, fontSize: 11 }}>as-is · hairline system</Text>
+              <Lockup skin={hairlineSkin(pal.ramp)} />
+            </View>
+            <View style={{ gap: 8 }}>
+              <Text style={{ color: TEXT.secondary, fontSize: 11 }}>paper treatment</Text>
+              <Lockup skin={paperSkin(pal.w)} />
+            </View>
+          </View>
+        </View>
+      ))}
     </View>
   ),
 }
 
-// The layered-paper accent in both temperatures. Warm paper = "construction
-// paper / kraft"; neutral paper = "cardstock / concrete" — colder, more clinical.
-// Judge the paper aesthetic specifically: which desk + sheets feels like a
-// premium object you'd want the hero surface to be.
-const NEUTRAL_PAPER = ['#242424', '#1D1D1D', '#2E2E2E', '#3A3A3A']
-const WARM_PAPER = ['#2A2620', '#221E19', '#35302A', '#423B32']
+// The layered-paper accent across the 3 finalists. Neutral = "cardstock /
+// concrete" (colder, clinical); warm-subtle = greige; warm-medium = "kraft".
+// All three are LIGHTNESS-matched (one template, re-temperatured) so only warmth
+// changes. Judge which desk + sheets feels like a premium object.
 function PaperCollage({ tones, desk, accent }: { tones: string[]; desk: string; accent: string }) {
   return (
     <View style={{ width: 300, height: 250, borderRadius: 12, padding: 4, backgroundColor: desk, backgroundImage: noise(0.025), position: 'relative' }}>
@@ -799,19 +875,29 @@ function PaperCollage({ tones, desk, accent }: { tones: string[]; desk: string; 
   )
 }
 
-export const NeutralVsWarmPaper: Story = {
+const PAPER_SUBTITLE: Record<string, string> = {
+  Neutral: 'cardstock / concrete',
+  'Warm · subtle': 'greige',
+  'Warm · medium': 'kraft',
+}
+
+export const PaperModels: Story = {
   render: () => (
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 40, backgroundColor: '#151515', padding: 40 }}>
-      <View style={{ gap: 12 }}>
-        <Text style={{ color: TEXT.primary, fontSize: 13, fontWeight: '700' }}>NEUTRAL PAPER · cardstock</Text>
-        <PaperCollage tones={NEUTRAL_PAPER} desk="#1E1E1E" accent="#B94A00" />
-        <RampBar name="tones" planes={NEUTRAL_PAPER} />
-      </View>
-      <View style={{ gap: 12 }}>
-        <Text style={{ color: TEXT.primary, fontSize: 13, fontWeight: '700' }}>WARM PAPER · kraft</Text>
-        <PaperCollage tones={WARM_PAPER} desk="#211D17" accent="#B94A00" />
-        <RampBar name="tones" planes={WARM_PAPER} />
-      </View>
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 40, backgroundColor: '#141414', padding: 40 }}>
+      {PALETTES.map((pal) => {
+        const t = (tone: string) => warmTint(tone, pal.w)
+        const collage = [t(PAPER_TONES.light), t(PAPER_TONES.back)] // front (hero) + back sheet
+        const strip = [PAPER_TONES.back, PAPER_TONES.mid, PAPER_TONES.light, PAPER_TONES.lighter].map(t)
+        return (
+          <View key={pal.name} style={{ gap: 12 }}>
+            <Text style={{ color: TEXT.primary, fontSize: 13, fontWeight: '700' }}>
+              {pal.name.toUpperCase()} PAPER · {PAPER_SUBTITLE[pal.name]}
+            </Text>
+            <PaperCollage tones={collage} desk={t(PAPER_DESK)} accent={PAPER_ACCENT} />
+            <RampBar name="tones" planes={strip} />
+          </View>
+        )
+      })}
     </View>
   ),
 }
