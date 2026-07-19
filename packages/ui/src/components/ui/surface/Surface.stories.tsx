@@ -138,3 +138,137 @@ export const LightTheme: Story = {
     </View>
   ),
 }
+
+// ===========================================================================
+// The Surface WORK — composition, context inheritance, and the real wall lockup.
+// The stories above exercise the primitive in isolation; these show it doing the
+// job it was built for (TD-05.12): stacking planes, propagating the on-surface
+// colour context, and backing the migrated shell / rail / stage.
+// ===========================================================================
+
+/** An all-caps eyebrow whose colour resolves on whatever Surface encloses it. */
+function Eyebrow({ children }: { children: string }) {
+  return (
+    <Text
+      style={{
+        color: useOnSurfaceColor('tertiary'),
+        fontSize: 10,
+        fontWeight: '700',
+        letterSpacing: 1,
+      }}
+    >
+      {children}
+    </Text>
+  )
+}
+
+/** Primary + secondary body text, both on-surface — no hard-coded hex. */
+function OnSurfaceBody({ title, sub }: { title: string; sub: string }) {
+  return (
+    <View style={{ gap: 2 }}>
+      <Text style={{ color: useOnSurfaceColor('primary'), fontSize: 14, fontWeight: '600' }}>
+        {title}
+      </Text>
+      <Text style={{ color: useOnSurfaceColor('secondary'), fontSize: 12 }}>{sub}</Text>
+    </View>
+  )
+}
+
+// Nesting + context inheritance — the core mechanic. Each Surface publishes its
+// level; the planes read darkest → lightest as they nest (background < base <
+// elevated < raised). The labels call `useOnSurfaceColor` and stay legible on
+// every plane WITHOUT a hard-coded hex — on-surface text resolves from the mode,
+// so one set of roles reads correctly across all the dark planes.
+export const NestedPlanes: Story = {
+  render: () => (
+    <Surface level="background" style={{ padding: 20, gap: 14 }}>
+      <Eyebrow>LEVEL = BACKGROUND</Eyebrow>
+      <Surface level="base" style={{ padding: 16, gap: 14, borderRadius: 14 }}>
+        <Eyebrow>LEVEL = BASE</Eyebrow>
+        <Surface level="elevated" style={{ padding: 16, gap: 14, borderRadius: 12 }}>
+          <Eyebrow>LEVEL = ELEVATED</Eyebrow>
+          <Surface level="raised" style={{ padding: 16, gap: 6, borderRadius: 10 }}>
+            <Eyebrow>LEVEL = RAISED</Eyebrow>
+            <OnSurfaceBody title="On-surface text" sub="resolves from the enclosing Surface" />
+          </Surface>
+        </Surface>
+      </Surface>
+    </Surface>
+  ),
+}
+
+// Theme inheritance — a Surface seeds the mode; the nested Surfaces and text with
+// NO explicit `theme` inherit it. The SAME subtree renders on both grounds and
+// stays legible, because on-surface colours resolve from the inherited mode
+// rather than a fixed hex. (A numeric `elevation` Surface inherits mode too.)
+function InheritingCard() {
+  return (
+    <Surface level="base" style={{ padding: 14, gap: 10, borderRadius: 12 }}>
+      <OnSurfaceBody title="Inherited mode" sub="no theme prop on this card" />
+      <Surface level="raised" style={{ padding: 12, borderRadius: 8 }}>
+        <Eyebrow>NESTED · STILL INHERITS</Eyebrow>
+      </Surface>
+    </Surface>
+  )
+}
+
+export const ThemeInheritance: Story = {
+  render: () => (
+    <View style={{ flexDirection: 'row', gap: 16, padding: 24 }}>
+      <Surface theme="dark" level="background" style={{ padding: 16, gap: 10, flex: 1 }}>
+        <Eyebrow>THEME = DARK (SEEDS CONTEXT)</Eyebrow>
+        <InheritingCard />
+      </Surface>
+      <Surface theme="light" level="background" style={{ padding: 16, gap: 10, flex: 1 }}>
+        <Eyebrow>THEME = LIGHT (SEEDS CONTEXT)</Eyebrow>
+        <InheritingCard />
+      </Surface>
+    </View>
+  ),
+}
+
+// The wall lockup, as migrated (DashboardShell / SessionRail / stage). The shell
+// is a `background` plane; the page a `base` plane; the session rail an
+// `elevated` inset; the live stage a `raised` panel. Every eyebrow/label reads
+// on-surface — this composition is what replaced the inline `getSemanticColors`
+// text patches the standalone wall SPA used to carry.
+function RailRow({ name, sets }: { name: string; sets: string }) {
+  return (
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+      <Text style={{ color: useOnSurfaceColor('primary'), fontSize: 13 }}>{name}</Text>
+      <Text style={{ color: useOnSurfaceColor('tertiary'), fontSize: 13 }}>{sets}</Text>
+    </View>
+  )
+}
+
+export const WallLockup: Story = {
+  render: () => (
+    <Surface level="background" style={{ flexDirection: 'row', height: 320, padding: 12, gap: 12 }}>
+      {/* left nav — flush to the shell edge, on the same background plane */}
+      <View style={{ width: 56, alignItems: 'center', paddingTop: 10 }}>
+        <Eyebrow>NAV</Eyebrow>
+      </View>
+      {/* page — a base plane holding the rail + stage */}
+      <Surface
+        level="base"
+        style={{ flex: 1, flexDirection: 'row', padding: 12, gap: 12, borderRadius: 14 }}
+      >
+        {/* session rail — an elevated inset */}
+        <Surface level="elevated" style={{ width: 150, padding: 12, gap: 10, borderRadius: 12 }}>
+          <Eyebrow>SESSION</Eyebrow>
+          <RailRow name="Bench" sets="3/3" />
+          <RailRow name="Cable Row" sets="1/3" />
+          <RailRow name="Curl" sets="0/3" />
+        </Surface>
+        {/* live stage — a raised panel */}
+        <Surface
+          level="raised"
+          style={{ flex: 1, padding: 16, gap: 6, justifyContent: 'center', borderRadius: 12 }}
+        >
+          <Eyebrow>LIVE</Eyebrow>
+          <OnSurfaceBody title="Seated Cable Row" sub="set 2 · 8 reps · 0.42 m/s" />
+        </Surface>
+      </Surface>
+    </Surface>
+  ),
+}
