@@ -849,6 +849,30 @@ function paperSkin(w: number): Skin {
   }
 }
 
+// Paper skin driven by a warmth CURVE: each plane's R−B is set from its own
+// lightness (desk = startRB, brightest sheet = endRB), so `tapered` keeps the
+// bright hero card/chip near-neutral while the shadows stay warm.
+function paperSkinCurve(startRB: number, endRB: number): Skin {
+  const loL = lstar(PAPER_DESK)
+  const hiL = lstar(PAPER_TONES.lighter)
+  const t = (hex: string) => {
+    const frac = Math.max(0, Math.min(1, (lstar(hex) - loL) / (hiL - loL)))
+    return withWarmth(hex, startRB + (endRB - startRB) * frac)
+  }
+  const container = paperPlane(t(PAPER_TONES.back), false)
+  return {
+    outer: { backgroundColor: t(PAPER_DESK), backgroundImage: noise(0.025) },
+    bar: container,
+    rail: container,
+    stage: container,
+    card: paperPlane(t(PAPER_TONES.light), true),
+    tile: paperPlane(t(PAPER_TONES.mid), true),
+    chip: paperPlane(t(PAPER_TONES.lighter), true),
+    ink: { primary: '#F4F1EC', secondary: 'rgba(255,255,255,0.72)', tertiary: 'rgba(255,255,255,0.5)' },
+    dotOff: t(PAPER_TONES.lighter),
+  }
+}
+
 function Lockup({ skin }: { skin: Skin }) {
   const ink = skin.ink
   const eyebrow = (s: string) => (
@@ -920,6 +944,29 @@ export const AtScaleComparison: Story = {
               <Lockup skin={paperSkin(pal.w)} />
             </View>
           </View>
+        </View>
+      ))}
+    </View>
+  ),
+}
+
+// WARMTH CURVES × AT SCALE (paper) — the two curves the eye asked for, rendered
+// as the full paper lockup so warmth is judged on the surfaces you actually read.
+// Faint = a hair of warmth that grows mildly; tapered = warm shadows, near-neutral
+// bright hero (card/tiles/chip) so nothing goes tan. Neutral shown for reference.
+const CURVE_AT_SCALE: { name: string; skin: Skin }[] = [
+  { name: 'Neutral (reference)', skin: paperSkinCurve(0, 0) },
+  { name: 'Warm · faint (1→3.5)', skin: paperSkinCurve(1, 3.5) },
+  { name: 'Warm · tapered (5→2) — warm shadows, cool highlights', skin: paperSkinCurve(5, 2) },
+]
+
+export const WarmthCurvesAtScale: Story = {
+  render: () => (
+    <View style={{ backgroundColor: '#000', padding: 32, gap: 26 }}>
+      {CURVE_AT_SCALE.map((c) => (
+        <View key={c.name} style={{ gap: 10 }}>
+          <Text style={{ color: TEXT.primary, fontSize: 13, fontWeight: '700' }}>{c.name}</Text>
+          <Lockup skin={c.skin} />
         </View>
       ))}
     </View>
