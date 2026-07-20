@@ -1321,26 +1321,126 @@ export const TopBarTreatments: Story = {
     // All gradients bottom-anchored to surface-base (seamless into content); only the
     // TOP stop changes. The strong ones concentrate the glow near the top edge (fades
     // to base by ~55%) so most of the bar is flat base and only the bezel edge lifts.
-    // Top bar STAYS on the shell plane (matches the left nav = frame); the gradient
-    // is a top-edge white SHEEN (a bezel highlight), not a fade toward another plane.
+    // Top bar STAYS on the shell plane (matches the left nav = frame). Options are
+    // MUCH subtler sheens now, and layered over the shared paper GRAIN tile (comma-
+    // separated backgroundImage: grain first, then the sheen gradient under it).
     const shell = c['background-base']
-    const sheen = (a: number) => ({
+    const GRAIN = noise(0.05)
+    const sheen = (a: number) => `linear-gradient(180deg, rgba(255,255,255,${a}), transparent 55%)`
+    const bar = (a: number, grain: boolean) => ({
       backgroundColor: shell,
-      backgroundImage: `linear-gradient(180deg, rgba(255,255,255,${a}), transparent 55%)`,
+      backgroundImage: grain ? (a ? `${GRAIN}, ${sheen(a)}` : GRAIN) : sheen(a),
     })
     return (
-      <View style={{ backgroundColor: '#000', padding: 32, gap: 20 }}>
-        <TopBarDemo
-          label="Flat shell — top bar = the left-nav tone (frame), no gradient"
-          barStyle={{ backgroundColor: shell }}
+      <View style={{ backgroundColor: '#000', padding: 32, gap: 18 }}>
+        <TopBarDemo label="Flat shell — no gradient, no texture (baseline)" barStyle={{ backgroundColor: shell }} />
+        <TopBarDemo label="Sheen α.03 (whisper) — no grain" barStyle={bar(0.03, false)} />
+        <TopBarDemo label="Sheen α.05 (very subtle) — no grain" barStyle={bar(0.05, false)} />
+        <TopBarDemo label="Paper GRAIN only (α.05) — texture, no sheen" barStyle={bar(0, true)} />
+        <TopBarDemo label="GRAIN + sheen α.03 — texture + a whisper of bezel light" barStyle={bar(0.03, true)} />
+        <TopBarDemo label="GRAIN + sheen α.05" barStyle={bar(0.05, true)} />
+      </View>
+    )
+  },
+}
+
+// ===========================================================================
+// FRAME + RECESSED CONTENT — the top bar + left nav are ONE flat bezel plane (no
+// per-element rim/shadow → no junction artifacts over the nav); the main content
+// is a WELL recessed into it via an inner shadow on its TOP + LEFT edges (the sides
+// touching the frame), never on the screen-edge sides. Since the shell is now
+// PURELY the frame, it drops to a dark bezel — the recess reads better against it.
+// ===========================================================================
+
+function FrameDemo({
+  label,
+  bezel,
+  contentStyle,
+  grain,
+}: {
+  label: string
+  bezel: string
+  contentStyle: object
+  grain?: boolean
+}) {
+  const c = getSemanticColors('dark')
+  return (
+    <View style={{ gap: 8 }}>
+      <Text style={{ color: TEXT.secondary, fontSize: 12, fontWeight: '600' }}>{label}</Text>
+      <View
+        style={{
+          width: 720,
+          height: 240,
+          borderRadius: 12,
+          overflow: 'hidden',
+          backgroundColor: bezel,
+          ...(grain ? { backgroundImage: noise(0.05) } : {}),
+        }}
+      >
+        {/* top bar — bezel, no hairline */}
+        <View style={{ height: 46, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, gap: 10 }}>
+          <Text style={{ color: '#F3F4F6', fontSize: 14, fontWeight: '800', letterSpacing: 1 }}>VOLTRAS</Text>
+          <Text style={{ color: TEXT.tertiary, fontSize: 12 }}>/ wall dashboard</Text>
+          <View style={{ marginLeft: 'auto', flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: '#2ED573' }} />
+            <Text style={{ color: '#F3F4F6', fontSize: 12, fontWeight: '700' }}>LIVE</Text>
+          </View>
+        </View>
+        {/* row: nav (bezel) + recessed content well */}
+        <View style={{ flex: 1, flexDirection: 'row' }}>
+          <View style={{ width: 56, alignItems: 'center', paddingTop: 14, gap: 16 }}>
+            <Text style={{ color: '#FF7900', fontSize: 10, fontWeight: '700' }}>LIVE</Text>
+            <Text style={{ color: TEXT.tertiary, fontSize: 10 }}>HIST</Text>
+            <Text style={{ color: TEXT.tertiary, fontSize: 10 }}>PLAN</Text>
+          </View>
+          <View style={{ flex: 1, backgroundColor: c['surface-base'], ...contentStyle }}>
+            <View style={{ padding: 18 }}>
+              <Text style={{ color: '#F3F4F6', fontSize: 22, fontWeight: '700' }}>Cable Chest Press</Text>
+              <Text style={{ color: TEXT.secondary, fontSize: 13, marginTop: 4 }}>content well · surface-base</Text>
+              <Text style={{ color: TEXT.tertiary, fontSize: 12, marginTop: 10 }}>
+                recessed into the frame — inner shadow on top + left only
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </View>
+  )
+}
+
+// inner shadow on TOP + LEFT edges only (negative spread hugs each edge, none on
+// the screen-edge sides); optional 1px rim-light lip at the very top of the recess.
+const RECESS = 'inset 0 10px 14px -8px rgba(0,0,0,0.75), inset 10px 0 14px -8px rgba(0,0,0,0.75)'
+const RECESS_RIM = `inset 0 1px 0 rgba(255,255,255,0.06), ${RECESS}`
+
+export const FrameRecess: Story = {
+  render: () => {
+    const c = getSemanticColors('dark')
+    const HAIR = 'rgba(255,255,255,0.09)'
+    return (
+      <View style={{ backgroundColor: '#000', padding: 32, gap: 18 }}>
+        <FrameDemo
+          label="A · Current — shell frame (#1C1916) + hairline separators (baseline)"
+          bezel={c['background-base']}
+          contentStyle={{ borderTopWidth: 1, borderLeftWidth: 1, borderColor: HAIR }}
         />
-        <TopBarDemo
-          label="Shell + top-edge sheen α.12 — matches the nav, keeps the gradient (bezel highlight) ✓ shipped"
-          barStyle={sheen(0.12)}
+        <FrameDemo
+          label="B · DARK BEZEL (#100D0A) + recessed content (inner shadow top+left), NO hairline"
+          bezel="#100D0A"
+          contentStyle={{ boxShadow: RECESS } as object}
+          grain
         />
-        <TopBarDemo
-          label="Shell + top-edge sheen α.20 — stronger bezel highlight"
-          barStyle={sheen(0.2)}
+        <FrameDemo
+          label="C · + top rim-light lip on the recess (full paper standard: rim + shadow)"
+          bezel="#100D0A"
+          contentStyle={{ boxShadow: RECESS_RIM } as object}
+          grain
+        />
+        <FrameDemo
+          label="D · even darker bezel (#0B0908) — how far the frame can drop"
+          bezel="#0B0908"
+          contentStyle={{ boxShadow: RECESS_RIM } as object}
+          grain
         />
       </View>
     )
