@@ -94,16 +94,19 @@
     --color-text-link: #828DF8;
     --color-text-link-hover: #60A5FA;
 
-    /* Surface ramp — warm TAPERED (warm shadows → near-neutral highlights), lifted. De-collided. */
-    --color-surface-base: #35322E;
-    --color-surface-elevated: #423F3B;
-    --color-surface-raised: #504D48;
-    --color-surface-overlay: #5E5B56;
-    --color-surface-input: #1C1915;              /* inset well — recessed below base */
+    /* Surface ramp — DERIVED, not hand-picked: even CIELAB L* steps from a shell
+       base, warm-tapered. Formula: L*(n) = shellL* + n·step; shellL*=9 (leaves
+       darkening headroom below), step=5 (> ~2 JND). Warmth R−B tapers 6→1.5.
+       See lab story `Surface Ramp System` + surface-system-north-star.md §2–§3. */
+    --color-surface-base: #262422;               /* L* 14 */
+    --color-surface-elevated: #302E2C;           /* L* 19 */
+    --color-surface-raised: #3A3938;             /* L* 24 */
+    --color-surface-overlay: #454443;            /* L* 29 */
+    --color-surface-input: #13100D;              /* inset well — sub-shell, L* 4.5 */
 
-    --color-background-base: #211E1A;            /* warm frame (kept dark to anchor) */
-    --color-background-default: #35322E;
-    --color-background-subtle: #423F3B;
+    --color-background-base: #1C1916;            /* shell / frame — L* 9 */
+    --color-background-default: #262422;
+    --color-background-subtle: #302E2C;
 
     /* Separators — self-normalizing alpha-white hairlines (constant ΔL* on any plane). */
     --color-border-default: rgba(255, 255, 255, 0.09);

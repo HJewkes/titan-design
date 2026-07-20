@@ -68,6 +68,14 @@ function lstar(hex: string): number {
   return y <= 0.008856 ? y * 903.3 : 116 * Math.cbrt(y) - 16
 }
 
+/** Inverse of `lstar` for a NEUTRAL gray: L* → the sRGB channel value (0..255).
+ *  The lightness half of the surface-ramp system. */
+function grayForL(L: number): number {
+  const Y = L > 8 ? ((L + 16) / 116) ** 3 : L / 903.3 // L* → relative luminance (gray: Y = linear)
+  const s = Y <= 0.0031308 ? 12.92 * Y : 1.055 * Y ** (1 / 2.4) - 0.055
+  return s * 255
+}
+
 /** Flatten an alpha `tint` over an opaque `base` → the resulting opaque hex.
  *  This is what an "elevation = white overlay" model actually paints. */
 function over(base: string, a: number, tint: [number, number, number] = [255, 255, 255]): string {
@@ -1089,4 +1097,93 @@ export const AlphaLayering: Story = {
       <AlphaStrip label="Opaque hand-picked warm ramp — full temperature control (no overlay) ✓" opaque={WARM_MEDIUM} />
     </View>
   ),
+}
+
+// ===========================================================================
+// SURFACE RAMP SYSTEM — the one formula the shipped tokens are derived from, so
+// the ramp is a system, not arbitrary hand-picks. TWO halves, TWO knobs:
+//   • LIGHTNESS — even CIELAB L* steps off a shell base: L*(n) = shellL* + n·step.
+//     L* is perceptually uniform, so equal steps look equal (sRGB steps crush near
+//     black). shellL* is chosen to leave DARKENING HEADROOM below it (an inset /
+//     cast shadow sits ~one step under the shell, still a real colour, never #000).
+//   • WARMTH — the locked TAPERED curve via `withWarmth`: R−B high in the shadow
+//     end, tapering to ~neutral highlights, so bright content surfaces never go tan.
+// Shipped tokens use shellL*=9, step=5 (→ base #262421 … overlay #454444).
+// ===========================================================================
+
+interface SurfacePlane {
+  name: string
+  role: string
+  L: number
+  rb: number
+  hex: string
+}
+function deriveSurfaceRamp(shellL = 9, step = 5, rbShadow = 6, rbHilite = 1.5): SurfacePlane[] {
+  const levels: [string, string, number][] = [
+    ['inset', 'sub-shell well / pressed', shellL - 0.9 * step],
+    ['background', 'shell / frame', shellL],
+    ['base', 'main content plane', shellL + 1 * step],
+    ['elevated', 'nav / rail', shellL + 2 * step],
+    ['raised', 'cards', shellL + 3 * step],
+    ['overlay', 'hero / popover', shellL + 4 * step],
+  ]
+  const Lmax = shellL + 4 * step
+  return levels.map(([name, role, L]) => {
+    const f = Math.max(0, Math.min(1, (L - shellL) / (Lmax - shellL))) // 0 at shell → 1 at overlay
+    const rb = rbShadow + (rbHilite - rbShadow) * f // tapered warmth (withWarmth)
+    const g = clampByte(grayForL(L))
+    return { name, role, L, rb, hex: withWarmth(toHex(g, g, g), rb) }
+  })
+}
+
+export const SurfaceRampSystem: Story = {
+  render: () => {
+    const planes = deriveSurfaceRamp() // shipped params: shellL*=9, step=5
+    return (
+      <View style={{ backgroundColor: '#000', padding: 32, gap: 16 }}>
+        <Text style={{ color: TEXT.primary, fontSize: 14, fontWeight: '700' }}>
+          Surface ramp — L*(n) = 9 + n·5, warmth tapered 6 → 1.5 (R−B)
+        </Text>
+        <Text style={{ color: TEXT.tertiary, fontSize: 11, maxWidth: 640 }}>
+          Even CIELAB L* steps (perceptually uniform) off a shell chosen to leave darkening
+          headroom below it; warmth from the locked tapered curve. The inset sits BELOW the
+          shell — the reserved sub-shell band for wells + shadows.
+        </Text>
+        {planes.map((p, i) => {
+          const dL = i === 0 ? null : p.L - planes[i - 1].L
+          const ink = p.L > 42 ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.9)'
+          const sub = p.L > 42 ? 'rgba(0,0,0,0.6)' : 'rgba(255,255,255,0.6)'
+          return (
+            <View
+              key={p.name}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 16,
+                backgroundColor: p.hex,
+                borderRadius: 8,
+                paddingVertical: 14,
+                paddingHorizontal: 18,
+                borderWidth: p.name === 'inset' ? 1 : 0,
+                borderColor: 'rgba(255,255,255,0.06)',
+              }}
+            >
+              <Text style={{ color: ink, fontSize: 14, fontWeight: '700', width: 120 }}>
+                {p.name}
+              </Text>
+              <Text style={{ color: sub, fontSize: 11, width: 160 }}>{p.role}</Text>
+              <Text style={{ color: ink, fontSize: 12, fontWeight: '600', width: 90 }}>
+                {p.hex.toUpperCase()}
+              </Text>
+              <Text style={{ color: sub, fontSize: 11, width: 70 }}>L* {p.L.toFixed(1)}</Text>
+              <Text style={{ color: sub, fontSize: 11, width: 80 }}>
+                {dL == null ? '—' : `ΔL* ${dL.toFixed(1)}`}
+              </Text>
+              <Text style={{ color: sub, fontSize: 11 }}>R−B {p.rb.toFixed(1)}</Text>
+            </View>
+          )
+        })}
+      </View>
+    )
+  },
 }

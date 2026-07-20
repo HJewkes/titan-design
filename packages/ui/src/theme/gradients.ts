@@ -30,7 +30,11 @@ export function linearGradient(
  * per-component inline `linear-gradient` strings.
  */
 export const surfaceGradient = {
-  /** Chrome bands (top bar, headers): elevated → base, a subtle dark wash. */
+  /**
+   * Chrome bands (top bar, headers): a gentle one-step wash from `surface-base`
+   * down to the shell (`background-base`) — the band reads as the frame with a
+   * soft top sheen, anchored to the frame, NOT lifted to a full elevated plane.
+   */
   chrome: (mode: ThemeMode = 'dark'): GradientStyle =>
-    linearGradient('surface-elevated', 'background-base', 180, mode),
+    linearGradient('surface-base', 'background-base', 180, mode),
 }
