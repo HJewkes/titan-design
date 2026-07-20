@@ -55,10 +55,12 @@ export function TopBar({
   return (
     <View
       onLayout={onLayout}
-      // shared chrome gradient (web); solid bg-surface-elevated is the native fallback
+      // Top bar = SHELL plane (matches the SideNav = frame) + a top-edge white sheen
+      // (surfaceGradient.chrome). Content below is a different, lighter plane; the
+      // bottom hairline handles that transition. bg-background-base is the flat fallback.
       style={surfaceGradient.chrome() as object}
       className={cn(
-        'h-[46px] flex-row items-center gap-[14px] px-4 bg-surface-elevated border-b border-border',
+        'h-[46px] flex-row items-center gap-[14px] px-4 bg-background-base border-b border-border',
         className
       )}
     >

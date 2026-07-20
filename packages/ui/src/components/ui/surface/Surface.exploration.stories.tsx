@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ReactNode } from 'react'
 import { View, Text } from 'react-native'
 import { categoricalPalette, primitiveRamps } from '../../../theme/tokens/primitives'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 // ===========================================================================
 // DESIGN EXPLORATION — NOT shipped tokens. These stories exist to compare dark
@@ -1201,6 +1202,146 @@ export const SurfaceRampSystem: Story = {
             </View>
           )
         })}
+      </View>
+    )
+  },
+}
+
+// ===========================================================================
+// TOP-BAR TREATMENTS — the two options side by side, IN CONTEXT (shell frame +
+// left nav + content plane), so the bottom edge of each bar is judged against
+// what it actually meets. V1 = flat shell (top bar is FRAME, matches the nav).
+// V2 = gradient anchored at the bottom to the content plane (top bar is content
+// chrome; lifted at the top edge — the screen bezel — melting into content below).
+// ===========================================================================
+
+const HAIRLINE = 'rgba(255,255,255,0.09)'
+function NavCol({ full }: { full?: boolean }) {
+  const c = getSemanticColors('dark')
+  return (
+    <View
+      style={{
+        width: 56,
+        backgroundColor: c['background-base'],
+        borderRightWidth: 1,
+        borderColor: HAIRLINE,
+        alignItems: 'center',
+        paddingTop: full ? 16 : 14,
+        gap: 16,
+      }}
+    >
+      {full && (
+        <View style={{ width: 22, height: 22, borderRadius: 6, borderWidth: 1.5, borderColor: '#FF7900', transform: [{ rotate: '45deg' }], marginBottom: 4 }} />
+      )}
+      <Text style={{ color: '#FF7900', fontSize: 10, fontWeight: '700' }}>LIVE</Text>
+      <Text style={{ color: TEXT.tertiary, fontSize: 10 }}>HIST</Text>
+      <Text style={{ color: TEXT.tertiary, fontSize: 10 }}>PLAN</Text>
+    </View>
+  )
+}
+function TopBarRow({ barStyle }: { barStyle: object }) {
+  return (
+    <View
+      style={{
+        height: 46,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        gap: 10,
+        borderBottomWidth: 1,
+        borderColor: HAIRLINE,
+        ...barStyle,
+      }}
+    >
+      <Text style={{ color: '#F3F4F6', fontSize: 14, fontWeight: '800', letterSpacing: 1 }}>
+        VOLTRAS
+      </Text>
+      <Text style={{ color: TEXT.tertiary, fontSize: 12 }}>/ wall dashboard</Text>
+      <View style={{ marginLeft: 'auto', flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+        <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: '#2ED573' }} />
+        <Text style={{ color: '#F3F4F6', fontSize: 12, fontWeight: '700' }}>LIVE</Text>
+      </View>
+    </View>
+  )
+}
+function ContentPane({ note }: { note: string }) {
+  const c = getSemanticColors('dark')
+  return (
+    <View style={{ flex: 1, backgroundColor: c['surface-base'], padding: 18 }}>
+      <Text style={{ color: '#F3F4F6', fontSize: 22, fontWeight: '700' }}>Cable Chest Press</Text>
+      <Text style={{ color: TEXT.secondary, fontSize: 13, marginTop: 4 }}>content plane · surface-base</Text>
+      <Text style={{ color: TEXT.tertiary, fontSize: 12, marginTop: 10 }}>{note}</Text>
+    </View>
+  )
+}
+
+// `spine` = left nav is FULL-HEIGHT (the frame spine) and the top bar spans only
+// the content column — so the bar's bottom only ever meets `base`, no nav mismatch.
+// Default = the current full-width bar (bar spans over the darker nav too).
+function TopBarDemo({ label, barStyle, spine }: { label: string; barStyle: object; spine?: boolean }) {
+  const c = getSemanticColors('dark')
+  return (
+    <View style={{ gap: 8 }}>
+      <Text style={{ color: TEXT.secondary, fontSize: 12, fontWeight: '600' }}>{label}</Text>
+      <View
+        style={{
+          width: 720,
+          height: 240,
+          borderRadius: 12,
+          overflow: 'hidden',
+          backgroundColor: c['background-base'],
+          flexDirection: spine ? 'row' : 'column',
+        }}
+      >
+        {spine ? (
+          <>
+            <NavCol full />
+            <View style={{ flex: 1 }}>
+              <TopBarRow barStyle={barStyle} />
+              <ContentPane note="top bar spans ONLY the content — bottom = base matches everywhere" />
+            </View>
+          </>
+        ) : (
+          <>
+            <TopBarRow barStyle={barStyle} />
+            <View style={{ flex: 1, flexDirection: 'row' }}>
+              <NavCol />
+              <ContentPane note="content plane (base) — a lighter plane than the shell top bar; the hairline handles it" />
+            </View>
+          </>
+        )}
+      </View>
+    </View>
+  )
+}
+
+export const TopBarTreatments: Story = {
+  render: () => {
+    const c = getSemanticColors('dark')
+    // All gradients bottom-anchored to surface-base (seamless into content); only the
+    // TOP stop changes. The strong ones concentrate the glow near the top edge (fades
+    // to base by ~55%) so most of the bar is flat base and only the bezel edge lifts.
+    // Top bar STAYS on the shell plane (matches the left nav = frame); the gradient
+    // is a top-edge white SHEEN (a bezel highlight), not a fade toward another plane.
+    const shell = c['background-base']
+    const sheen = (a: number) => ({
+      backgroundColor: shell,
+      backgroundImage: `linear-gradient(180deg, rgba(255,255,255,${a}), transparent 55%)`,
+    })
+    return (
+      <View style={{ backgroundColor: '#000', padding: 32, gap: 20 }}>
+        <TopBarDemo
+          label="Flat shell — top bar = the left-nav tone (frame), no gradient"
+          barStyle={{ backgroundColor: shell }}
+        />
+        <TopBarDemo
+          label="Shell + top-edge sheen α.12 — matches the nav, keeps the gradient (bezel highlight) ✓ shipped"
+          barStyle={sheen(0.12)}
+        />
+        <TopBarDemo
+          label="Shell + top-edge sheen α.20 — stronger bezel highlight"
+          barStyle={sheen(0.2)}
+        />
       </View>
     )
   },
