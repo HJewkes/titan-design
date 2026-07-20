@@ -1,8 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 import { DashboardShell, type Device } from '../../components'
+import { getSemanticColors } from '../../theme/tokens/semantic'
 import { LivePage, type LivePageVariant } from './LivePage'
 import { dashboardFixture } from './fixtures'
+
+/** The wall frame behind the shell — the darkest surface token, not a hardcoded hex. */
+const FRAME = getSemanticColors('dark')['background-base']
 
 /** The fixture with its prescribed tempo stripped — a set with no tempo (hidden readout). */
 const noTempoModel = {
@@ -52,7 +56,7 @@ const meta: Meta<WallArgs> = {
   ),
   decorators: [
     (Story) => (
-      <View style={{ height: '100vh' as unknown as number, backgroundColor: '#120F0D' }}>
+      <View style={{ height: '100vh' as unknown as number, backgroundColor: FRAME }}>
         <Story />
       </View>
     ),

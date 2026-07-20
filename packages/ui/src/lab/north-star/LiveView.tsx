@@ -14,17 +14,15 @@ import {
 import { Tooltip } from '../../components/ui/tooltip/Tooltip'
 import { getSemanticColors } from '../../theme/tokens/semantic'
 import { alpha } from '../../utils/colors'
-import { neumorphicShadows } from '../../theme/shadows'
+import { insetWell } from './surfaces'
 import { type DashboardModel, verdictFromLoss } from './fixtures'
 
 const t = getSemanticColors('dark')
 
-/** Raised-card elevation shared by the alert + tempo cards. */
-const CARD_SHADOW = neumorphicShadows.charcoal.raised.medium
 /** One row height for the tempo + alert cards, so they line up regardless of tempo font size. */
 const CONTROL_HEIGHT = 34
-/** The tempo card ground — mirrors TempoDisplay's own charcoal so a shorter inner pill reads seamless. */
-const TEMPO_GROUND = '#1C1C1C'
+/** The tempo card ground — the inset-well token, so the recessed tempo reads on-system. */
+const TEMPO_GROUND = t['surface-input']
 
 /** Clamped linear interpolation of `v` between `vLo..vHi` as `w` runs `wLo..wHi`. */
 function clampLerp(w: number, wLo: number, wHi: number, vLo: number, vHi: number): number {
@@ -94,13 +92,15 @@ const STATUS_ICON: Record<Verdict, (props: IconProps) => ReactElement> = {
 /** How much of the alert survives at the current width. */
 export type AlertMode = 'full' | 'compact' | 'icon'
 
-/** The tinted alert surface (border + wash + raised shadow) shared by the card and the icon pill. */
+/** The alert as a canted POST-IT note: a tinted matte fill + rim + contact shadow +
+ *  a deliberate tilt, shared by the card and the icon pill. */
 function alertSurface(tone: string) {
   return {
     borderWidth: 1,
-    borderColor: alpha(tone, 0.45),
-    backgroundColor: alpha(tone, 0.14),
-    ...CARD_SHADOW,
+    borderColor: alpha(tone, 0.5),
+    backgroundColor: alpha(tone, 0.2),
+    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10), 0 6px 14px rgba(0,0,0,0.45)',
+    transform: [{ rotate: '-1.5deg' }],
   }
 }
 
@@ -371,10 +371,9 @@ export function LiveView({
                   height: CONTROL_HEIGHT,
                   justifyContent: 'center',
                   alignItems: 'flex-start',
-                  backgroundColor: TEMPO_GROUND,
                   borderRadius: 9,
                   overflow: 'hidden',
-                  ...CARD_SHADOW,
+                  ...insetWell(TEMPO_GROUND),
                 }}
               >
                 <TempoDisplay

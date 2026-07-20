@@ -61,15 +61,16 @@ export function LiveAuraFrame({
   const color = liveAuraColor(category)
   const tint = color ? alpha(color, floodOpacity[category]) : 'transparent'
 
-  // Match R2's canonical aura: a top-down radial wash that FADES TO TRANSPARENT
-  // by ~62%, so the charcoal base shows through the lower panel — NOT a flat
-  // full-surface tint. On web (the target: MCP dashboard + Storybook) render the
-  // gradient only; native has no gradient support, so fall back to a solid tint.
+  // A radial wash flooding from the LEFT edge, fading to transparent by ~62% so
+  // the charcoal base shows through the right of the panel. Left-origin (not
+  // top-down) so stacked dual-voltra layers each flood sideways — no horizontal
+  // seam where two top-down washes would meet. Web renders the gradient; native
+  // has no gradient support, so it falls back to a solid tint.
   const floodStyle = {
     ...StyleSheet.absoluteFillObject,
     ...(Platform.OS === 'web'
       ? // backgroundImage is a runtime RNW style, not in RN ViewStyle types.
-        { backgroundImage: `radial-gradient(130% 95% at 50% 0%, ${tint}, transparent 62%)` }
+        { backgroundImage: `radial-gradient(95% 130% at 0% 50%, ${tint}, transparent 62%)` }
       : { backgroundColor: tint }),
   } as ViewStyle
 

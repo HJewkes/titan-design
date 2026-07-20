@@ -1,6 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
-import { primitiveColors } from '../../../theme/tokens/primitives'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { neumorphicShadows } from '../../../theme/shadows'
 import { Surface } from '../../ui/surface'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
@@ -15,7 +15,8 @@ import type { ExerciseIndicatorKind } from './ExerciseIndicator'
 // #191919) — recessed via its inner shadow yet paler than the header, so the transparent
 // exercise headings on it never blend into the header plane. Surface owns both backgrounds,
 // so the rail no longer hand-sets them.
-const DIVIDER = primitiveColors.charcoal[300] // #2C2C2C — row divider (raised to read on #191919)
+// Row divider — the self-normalizing alpha-white hairline token (reads constant on any plane).
+const DIVIDER = getSemanticColors('dark')['border-subtle']
 
 const DEFAULT_WIDTH = 246
 

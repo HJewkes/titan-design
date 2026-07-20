@@ -2,7 +2,7 @@
 import { View, Text } from 'react-native'
 import { RestTimer, ExerciseCard, Metric, MetricGroup, type SetRowProps } from '../../components'
 import { type DashboardModel, meanVelocity, verdictFromLoss } from './fixtures'
-import { paperSheet, insetWell } from './surfaces'
+import { insetWell, postIt, debossLabel } from './surfaces'
 
 /** Project the fixture's completed + current sets onto the recap card's set rows. */
 function deriveRecapSets(model: DashboardModel): SetRowProps[] {
@@ -59,34 +59,23 @@ export function RestView({ model }: { model: DashboardModel }) {
         <View style={{ gap: 8 }}>
           <Text
             className="text-text-tertiary"
-            style={{ fontSize: 11, fontWeight: '700', letterSpacing: 1 }}
+            style={{ fontSize: 11, fontWeight: '700', letterSpacing: 1, ...debossLabel }}
           >
             SET JUST COMPLETED
           </Text>
-          {/* Hero recap on a matte PAPER sheet, canted a hair so it reads as a laid sheet
-              (paper tone == ExerciseCard's own raised plane → one continuous surface). */}
-          <View
-            style={{
-              ...paperSheet(),
-              borderRadius: 14,
-              padding: 6,
-              transform: [{ rotate: '-0.4deg' }],
+          <ExerciseCard
+            name={session.exerciseName}
+            expanded
+            summary={{
+              sets: session.plannedSets,
+              reps: 8,
+              weight: session.weightLbs,
+              unit: session.unit,
             }}
-          >
-            <ExerciseCard
-              name={session.exerciseName}
-              expanded
-              summary={{
-                sets: session.plannedSets,
-                reps: 8,
-                weight: session.weightLbs,
-                unit: session.unit,
-              }}
-              tempo={session.tempo}
-              indicator="velocity-loss"
-              sets={deriveRecapSets(model)}
-            />
-          </View>
+            tempo={session.tempo}
+            indicator="velocity-loss"
+            sets={deriveRecapSets(model)}
+          />
         </View>
       </View>
 
@@ -95,7 +84,7 @@ export function RestView({ model }: { model: DashboardModel }) {
         <View style={{ gap: 6 }}>
           <Text
             className="text-text-tertiary"
-            style={{ fontSize: 11, fontWeight: '700', letterSpacing: 1 }}
+            style={{ fontSize: 11, fontWeight: '700', letterSpacing: 1, ...debossLabel }}
           >
             SET VERDICT
           </Text>
@@ -131,12 +120,12 @@ export function RestView({ model }: { model: DashboardModel }) {
           </View>
         </View>
 
-        {/* mock "next set" block — a recessed INSET well reads as an empty slot AWAITING
-            data, which is exactly its NO-DATA/mock status (was a dashed outline). */}
-        <View style={{ ...insetWell(), borderRadius: 10, padding: 16, gap: 4 }}>
+        {/* mock "next set" block — an askew POST-IT note: a coming-up reminder pinned to
+            the surface, canted the opposite way to the live alert so it reads as a note. */}
+        <View style={{ ...postIt(undefined, 1.4), borderRadius: 10, padding: 16, gap: 4 }}>
           <Text
             className="text-text-tertiary"
-            style={{ fontSize: 10, fontWeight: '700', letterSpacing: 1 }}
+            style={{ fontSize: 10, fontWeight: '700', letterSpacing: 1, ...debossLabel }}
           >
             NEXT SET · MOCK (NO DATA)
           </Text>

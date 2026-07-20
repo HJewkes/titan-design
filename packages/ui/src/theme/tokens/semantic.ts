@@ -247,17 +247,17 @@ export const semanticColorsDark = {
   'text-link': '#828DF8',
   'text-link-hover': p.blue[400],
 
-  // Surface ramp — warm TAPERED (warm shadows → near-neutral highlights), de-collided
-  'surface-base': '#1A1816',               // main surface
-  'surface-elevated': '#23211F',           // elevated surface (nav/rail)
-  'surface-raised': '#2C2B2A',             // raised surface (cards)
-  'surface-overlay': '#353433',            // overlay surface (hero/popover)
-  'surface-input': '#15120F',              // inset well — recessed below base
+  // Surface ramp — warm TAPERED (warm shadows → near-neutral highlights), lifted, de-collided
+  'surface-base': '#35322E',               // main surface
+  'surface-elevated': '#423F3B',           // elevated surface (nav/rail)
+  'surface-raised': '#504D48',             // raised surface (cards)
+  'surface-overlay': '#5E5B56',            // overlay surface (hero/popover)
+  'surface-input': '#1C1915',              // inset well — recessed below base
 
   // Background colors
-  'background-base': '#120F0D',            // warm near-black frame
-  'background-default': '#1A1816',         // main background
-  'background-subtle': '#23211F',          // subtle background
+  'background-base': '#211E1A',            // warm frame (kept dark to anchor)
+  'background-default': '#35322E',         // main background
+  'background-subtle': '#423F3B',          // subtle background
 
   // Border colors — self-normalizing alpha-white hairlines
   'border-default': 'rgba(255,255,255,0.09)',   // default border

@@ -94,16 +94,16 @@
     --color-text-link: #828DF8;
     --color-text-link-hover: #60A5FA;
 
-    /* Surface ramp — warm TAPERED (warm shadows → near-neutral highlights). De-collided. */
-    --color-surface-base: #1A1816;
-    --color-surface-elevated: #23211F;
-    --color-surface-raised: #2C2B2A;
-    --color-surface-overlay: #353433;
-    --color-surface-input: #15120F;              /* inset well — recessed below base */
+    /* Surface ramp — warm TAPERED (warm shadows → near-neutral highlights), lifted. De-collided. */
+    --color-surface-base: #35322E;
+    --color-surface-elevated: #423F3B;
+    --color-surface-raised: #504D48;
+    --color-surface-overlay: #5E5B56;
+    --color-surface-input: #1C1915;              /* inset well — recessed below base */
 
-    --color-background-base: #120F0D;            /* warm near-black frame */
-    --color-background-default: #1A1816;
-    --color-background-subtle: #23211F;
+    --color-background-base: #211E1A;            /* warm frame (kept dark to anchor) */
+    --color-background-default: #35322E;
+    --color-background-subtle: #423F3B;
 
     /* Separators — self-normalizing alpha-white hairlines (constant ΔL* on any plane). */
     --color-border-default: rgba(255, 255, 255, 0.09);
