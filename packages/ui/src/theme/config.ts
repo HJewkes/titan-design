@@ -81,6 +81,7 @@ export const lightThemeCSSVars = {
   '--color-background-base': semanticColorsLight['background-base'],
   '--color-background-default': semanticColorsLight['background-default'],
   '--color-background-subtle': semanticColorsLight['background-subtle'],
+  '--color-bezel': semanticColorsLight['bezel'],
 
   '--color-border-default': semanticColorsLight['border-default'],
   '--color-border-subtle': semanticColorsLight['border-subtle'],
@@ -202,6 +203,7 @@ export const darkThemeCSSVars = {
   '--color-background-base': semanticColorsDark['background-base'],
   '--color-background-default': semanticColorsDark['background-default'],
   '--color-background-subtle': semanticColorsDark['background-subtle'],
+  '--color-bezel': semanticColorsDark['bezel'],
 
   '--color-border-default': semanticColorsDark['border-default'],
   '--color-border-subtle': semanticColorsDark['border-subtle'],

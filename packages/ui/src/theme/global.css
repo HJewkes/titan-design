@@ -108,6 +108,8 @@
     --color-background-base: #1C1916;            /* shell / frame — L* 9 */
     --color-background-default: #252321;
     --color-background-subtle: #2A2827;
+    /* frame bezel — warm near-black; the TopBar + SideNav plane the content well recesses into */
+    --color-bezel: #100D0A;
 
     /* Separators — self-normalizing alpha-white hairlines (constant ΔL* on any plane). */
     --color-border-default: rgba(255, 255, 255, 0.09);
@@ -246,6 +248,8 @@
     --color-background-base: #EBEBEB;
     --color-background-default: #FFFFFF;
     --color-background-subtle: #FAFAFA;
+    /* frame bezel — light-mode parity; the dashboard ships dark */
+    --color-bezel: #EBEBEB;
 
     --color-border-default: #E8E9EB;
     --color-border-subtle: #F3F4F6;

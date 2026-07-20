@@ -126,6 +126,8 @@ module.exports = {
           DEFAULT: 'var(--color-background-default)',
           subtle: 'var(--color-background-subtle)',
         },
+        // Frame bezel — warm near-black chrome plane (TopBar + SideNav)
+        bezel: 'var(--color-bezel)',
         // Text colors
         text: {
           primary: 'var(--color-text-primary)',

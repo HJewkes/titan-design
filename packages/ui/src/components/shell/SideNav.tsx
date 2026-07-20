@@ -55,7 +55,9 @@ export function SideNav({
     <View
       accessibilityRole="tablist"
       className={cn(
-        'w-[60px] items-center gap-[6px] border-r border-border bg-background-base py-3',
+        // FRAME BEZEL — same warm near-black plane as the TopBar, so nav + top bar
+        // read as one continuous frame. The right hairline marks the content well's left edge.
+        'w-[60px] items-center gap-[6px] border-r border-border bg-bezel py-3',
         className
       )}
     >

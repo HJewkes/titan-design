@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { View, type LayoutChangeEvent } from 'react-native'
 import { cn } from '../../utils/cn'
-import { surfaceGradient } from '../../theme/gradients'
 import { Divider } from '../ui/divider'
 import { DateTime } from '../custom/DateTime'
 import { BrandLockup } from './BrandLockup'
@@ -55,12 +54,11 @@ export function TopBar({
   return (
     <View
       onLayout={onLayout}
-      // Top bar = SHELL plane (matches the SideNav = frame) + a top-edge white sheen
-      // (surfaceGradient.chrome). Content below is a different, lighter plane; the
-      // bottom hairline handles that transition. bg-background-base is the flat fallback.
-      style={surfaceGradient.chrome() as object}
+      // Top bar = FRAME BEZEL (one flat warm near-black plane shared with the SideNav);
+      // no sheen, so the bezel reads as a single continuous frame. The content well
+      // below recesses INTO it — the bottom hairline marks that opening's top edge.
       className={cn(
-        'h-[46px] flex-row items-center gap-[14px] px-4 bg-background-base border-b border-border',
+        'h-[46px] flex-row items-center gap-[14px] px-4 bg-bezel border-b border-border',
         className
       )}
     >

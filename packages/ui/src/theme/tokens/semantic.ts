@@ -125,6 +125,7 @@ export const semanticColorsLight = {
   'background-base': '#EBEBEB',
   'background-default': p.white,
   'background-subtle': p.neutral[50],
+  'bezel': '#EBEBEB', // frame bezel — light-mode parity; dashboard ships dark
 
   // Border colors (border-*)
   'border-default': '#E8E9EB',
@@ -261,6 +262,7 @@ export const semanticColorsDark = {
   'background-base': '#1C1916',            // shell / frame — L* 9
   'background-default': '#252321',         // main background
   'background-subtle': '#2A2827',          // subtle background
+  'bezel': '#100D0A',                      // frame bezel — warm near-black (TopBar + SideNav)
 
   // Border colors — self-normalizing alpha-white hairlines
   'border-default': 'rgba(255,255,255,0.09)',   // default border

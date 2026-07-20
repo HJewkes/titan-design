@@ -33,6 +33,14 @@ export interface DashboardShellProps {
   className?: string
 }
 
+// The content well recesses INTO the frame: an inner shadow on the frame-facing
+// edges only — stronger at the TOP opening (α.90), quieter down the LEFT (α.68),
+// nothing on the screen-edge (right/bottom) sides. Painted as a pointer-transparent
+// overlay ON TOP of the content so an opaque rail/stage can't hide it (an inset
+// box-shadow renders below a container's children). Matches Lab "Frame Recess · 2-deep".
+const RECESS_SHADOW =
+  'inset 0 8px 12px -7px rgba(0,0,0,0.9), inset 8px 0 12px -7px rgba(0,0,0,0.68)'
+
 const DEMO_DEVICES: Device[] = [
   { id: 'Voltra-A3F2', nickname: 'Left Cable', slot: 'L', state: 'connected' },
   { id: 'Voltra-9B1C', nickname: 'Right Cable', slot: 'R', state: 'connected' },
@@ -68,7 +76,25 @@ export function DashboardShell({
       <TopBar state={state} devices={devices} subtitle={subtitle} onSelectDevice={onSelectDevice} />
       <View className="flex-1 flex-row">
         <SideNav activeKey={activeKey} items={navItems} liveKey={liveKey} onNavigate={onNavigate} />
-        <View className="flex-1">{children ?? <ContentPlaceholder />}</View>
+        <View className="flex-1" style={{ position: 'relative' }}>
+          {children ?? <ContentPlaceholder />}
+          {/* Recess overlay — renders AFTER children (so it's on top) and is
+              pointer-transparent, letting the frame-facing inner shadow read
+              over an opaque rail/stage without intercepting interaction. */}
+          <View
+            pointerEvents="none"
+            style={
+              {
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                boxShadow: RECESS_SHADOW,
+              } as object
+            }
+          />
+        </View>
       </View>
     </Surface>
   )
