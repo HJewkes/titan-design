@@ -1363,8 +1363,8 @@ function FrameDemo({
   bezel: string
   contentStyle: object
   grain?: boolean
-  /** 'topbar' = a hairline under the top bar (separates it from the nav); 'all' = that + a nav→content line. */
-  hairlines?: 'none' | 'topbar' | 'all'
+  /** 'topbar' = line under the top bar; 'all' = that + nav→content line; 'nav-top' = ONLY a line at the top of the nav column. */
+  hairlines?: 'none' | 'topbar' | 'all' | 'nav-top'
 }) {
   const c = getSemanticColors('dark')
   const HAIRC = 'rgba(255,255,255,0.09)'
@@ -1389,7 +1389,7 @@ function FrameDemo({
             alignItems: 'center',
             paddingHorizontal: 16,
             gap: 10,
-            borderBottomWidth: hairlines !== 'none' ? 1 : 0,
+            borderBottomWidth: hairlines === 'topbar' || hairlines === 'all' ? 1 : 0,
             borderColor: HAIRC,
           }}
         >
@@ -1409,6 +1409,7 @@ function FrameDemo({
               paddingTop: 14,
               gap: 16,
               borderRightWidth: hairlines === 'all' ? 1 : 0,
+              borderTopWidth: hairlines === 'nav-top' ? 1 : 0,
               borderColor: HAIRC,
             }}
           >
@@ -1447,6 +1448,8 @@ export const FrameRecess: Story = {
   render: () => {
     // All rows: warm near-black bezel, ALL hairlines, top-emphasized rim. Only the
     // recess crispness/depth varies (soft/wide → crisp; plus one deeper).
+    // Full hairlines (top-bar + nav→content), NO rim on the content top (rim=0) —
+    // the recess inner shadow alone gives the depth. Three shadow depths.
     const row = (label: string, shadow: string) => (
       <FrameDemo
         label={label}
@@ -1458,11 +1461,9 @@ export const FrameRecess: Story = {
     )
     return (
       <View style={{ backgroundColor: '#000', padding: 32, gap: 18 }}>
-        {row('1 · SOFT / WIDE — o10 b16 (diffuse, the softest)', recessShadow(10, 16, -8, 0.7, 0.5, 0.06))}
-        {row('2 · GENTLE — o8 b12 (≈ what you saw)', recessShadow(8, 12, -7, 0.72, 0.52, 0.07))}
-        {row('3 · CRISPER — o6 b8 (tighter edge, keeps depth) ← likely', recessShadow(6, 8, -5, 0.8, 0.58, 0.08))}
-        {row('4 · CRISP + DEEPER — o6 b7, darker (more sunk)', recessShadow(6, 7, -4, 0.9, 0.68, 0.08))}
-        {row('5 · VERY CRISP — o4 b4 (near hard-edged inset)', recessShadow(4, 4, -2, 0.9, 0.7, 0.09))}
+        {row('1-deep · SOFT/WIDE (o10 b16) α.90 — all hairlines, no rim', recessShadow(10, 16, -8, 0.9, 0.68, 0))}
+        {row('2-deep · GENTLE (o8 b12) α.90 — all hairlines, no rim', recessShadow(8, 12, -7, 0.9, 0.68, 0))}
+        {row('4 · CRISP+DEEPER (o6 b7) α.90 — all hairlines, no rim', recessShadow(6, 7, -4, 0.9, 0.68, 0))}
       </View>
     )
   },
