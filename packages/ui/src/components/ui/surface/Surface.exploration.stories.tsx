@@ -1357,13 +1357,17 @@ function FrameDemo({
   bezel,
   contentStyle,
   grain,
+  hairlines = 'none',
 }: {
   label: string
   bezel: string
   contentStyle: object
   grain?: boolean
+  /** 'topbar' = a hairline under the top bar (separates it from the nav); 'all' = that + a nav→content line. */
+  hairlines?: 'none' | 'topbar' | 'all'
 }) {
   const c = getSemanticColors('dark')
+  const HAIRC = 'rgba(255,255,255,0.09)'
   return (
     <View style={{ gap: 8 }}>
       <Text style={{ color: TEXT.secondary, fontSize: 12, fontWeight: '600' }}>{label}</Text>
@@ -1377,8 +1381,18 @@ function FrameDemo({
           ...(grain ? { backgroundImage: noise(0.05) } : {}),
         }}
       >
-        {/* top bar — bezel, no hairline */}
-        <View style={{ height: 46, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, gap: 10 }}>
+        {/* top bar — bezel; bottom hairline separates it from the nav below-left */}
+        <View
+          style={{
+            height: 46,
+            flexDirection: 'row',
+            alignItems: 'center',
+            paddingHorizontal: 16,
+            gap: 10,
+            borderBottomWidth: hairlines !== 'none' ? 1 : 0,
+            borderColor: HAIRC,
+          }}
+        >
           <Text style={{ color: '#F3F4F6', fontSize: 14, fontWeight: '800', letterSpacing: 1 }}>VOLTRAS</Text>
           <Text style={{ color: TEXT.tertiary, fontSize: 12 }}>/ wall dashboard</Text>
           <View style={{ marginLeft: 'auto', flexDirection: 'row', alignItems: 'center', gap: 6 }}>
@@ -1388,7 +1402,16 @@ function FrameDemo({
         </View>
         {/* row: nav (bezel) + recessed content well */}
         <View style={{ flex: 1, flexDirection: 'row' }}>
-          <View style={{ width: 56, alignItems: 'center', paddingTop: 14, gap: 16 }}>
+          <View
+            style={{
+              width: 56,
+              alignItems: 'center',
+              paddingTop: 14,
+              gap: 16,
+              borderRightWidth: hairlines === 'all' ? 1 : 0,
+              borderColor: HAIRC,
+            }}
+          >
             <Text style={{ color: '#FF7900', fontSize: 10, fontWeight: '700' }}>LIVE</Text>
             <Text style={{ color: TEXT.tertiary, fontSize: 10 }}>HIST</Text>
             <Text style={{ color: TEXT.tertiary, fontSize: 10 }}>PLAN</Text>
@@ -1415,32 +1438,34 @@ const RECESS_RIM = `inset 0 1px 0 rgba(255,255,255,0.06), ${RECESS}`
 
 export const FrameRecess: Story = {
   render: () => {
-    const c = getSemanticColors('dark')
-    const HAIR = 'rgba(255,255,255,0.09)'
     return (
       <View style={{ backgroundColor: '#000', padding: 32, gap: 18 }}>
         <FrameDemo
-          label="A · Current — shell frame (#1C1916) + hairline separators (baseline)"
-          bezel={c['background-base']}
-          contentStyle={{ borderTopWidth: 1, borderLeftWidth: 1, borderColor: HAIR }}
+          label="C (no hairline) — recess + rim, but top bar & nav merge into one blob (the weird bit)"
+          bezel="#100D0A"
+          contentStyle={{ boxShadow: RECESS_RIM } as object}
+          grain
         />
         <FrameDemo
-          label="B · DARK BEZEL (#100D0A) + recessed content (inner shadow top+left), NO hairline"
+          label="C + TOP-BAR HAIRLINE — a line under the top bar separates it from the nav; content still recessed ✓"
           bezel="#100D0A"
           contentStyle={{ boxShadow: RECESS } as object}
           grain
+          hairlines="topbar"
         />
         <FrameDemo
-          label="C · + top rim-light lip on the recess (full paper standard: rim + shadow)"
+          label="C + ALL HAIRLINES — also a nav→content line (fuller structure)"
           bezel="#100D0A"
-          contentStyle={{ boxShadow: RECESS_RIM } as object}
+          contentStyle={{ boxShadow: RECESS } as object}
           grain
+          hairlines="all"
         />
         <FrameDemo
-          label="D · even darker bezel (#0B0908) — how far the frame can drop"
+          label="Same, darker bezel (#0B0908) + top-bar hairline"
           bezel="#0B0908"
-          contentStyle={{ boxShadow: RECESS_RIM } as object}
+          contentStyle={{ boxShadow: RECESS } as object}
           grain
+          hairlines="topbar"
         />
       </View>
     )
