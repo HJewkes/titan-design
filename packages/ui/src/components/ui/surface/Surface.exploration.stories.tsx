@@ -1101,14 +1101,20 @@ export const AlphaLayering: Story = {
 
 // ===========================================================================
 // SURFACE RAMP SYSTEM — the one formula the shipped tokens are derived from, so
-// the ramp is a system, not arbitrary hand-picks. TWO halves, TWO knobs:
-//   • LIGHTNESS — even CIELAB L* steps off a shell base: L*(n) = shellL* + n·step.
-//     L* is perceptually uniform, so equal steps look equal (sRGB steps crush near
-//     black). shellL* is chosen to leave DARKENING HEADROOM below it (an inset /
-//     cast shadow sits ~one step under the shell, still a real colour, never #000).
+// the ramp is a system, not arbitrary hand-picks. Grounded in how real dark UIs
+// actually elevate (Material's DIMINISHING white-overlay steps; Apple's 3-level
+// COMPRESSED backgrounds) — NOT a constant big step, which piles into a stark
+// bright top and over-relies on lightness (breaking §4's hairline-first thesis).
+//   • LIGHTNESS — CIELAB L* off a shell with DIMINISHING steps: the frame→content
+//     jump is biggest, each higher plane adds LESS, total span stays COMPRESSED
+//     (~L*9→19.5) so the hero is a moderate charcoal, not near-white. shellL* is
+//     chosen to leave DARKENING HEADROOM below it (an inset / cast shadow sits one
+//     step under the shell, still a real colour, never #000).
 //   • WARMTH — the locked TAPERED curve via `withWarmth`: R−B high in the shadow
 //     end, tapering to ~neutral highlights, so bright content surfaces never go tan.
-// Shipped tokens use shellL*=9, step=5 (→ base #262421 … overlay #454444).
+//   • SEPARATION is MULTI-CHANNEL — the tight upper steps are carried by the alpha
+//     hairline + shadow + paper (§4), NOT by lightness alone.
+// Shipped: shellL*=9, steps [4.5,2.5,2,1.5] (→ base #252321 … overlay #302F2E).
 // ===========================================================================
 
 interface SurfacePlane {
@@ -1118,36 +1124,48 @@ interface SurfacePlane {
   rb: number
   hex: string
 }
-function deriveSurfaceRamp(shellL = 9, step = 5, rbShadow = 6, rbHilite = 1.5): SurfacePlane[] {
+function deriveSurfaceRamp(
+  shellL = 9,
+  steps = [4.5, 2.5, 2, 1.5],
+  rbShadow = 6,
+  rbHilite = 1.5
+): SurfacePlane[] {
+  const cum: number[] = []
+  let L = shellL
+  for (const s of steps) {
+    L += s
+    cum.push(L)
+  }
+  const Lmax = L
   const levels: [string, string, number][] = [
-    ['inset', 'sub-shell well / pressed', shellL - 0.9 * step],
+    ['inset', 'sub-shell well / pressed', shellL - steps[0]],
     ['background', 'shell / frame', shellL],
-    ['base', 'main content plane', shellL + 1 * step],
-    ['elevated', 'nav / rail', shellL + 2 * step],
-    ['raised', 'cards', shellL + 3 * step],
-    ['overlay', 'hero / popover', shellL + 4 * step],
+    ['base', 'main content plane', cum[0]],
+    ['elevated', 'nav / rail', cum[1]],
+    ['raised', 'cards', cum[2]],
+    ['overlay', 'hero / popover', cum[3]],
   ]
-  const Lmax = shellL + 4 * step
-  return levels.map(([name, role, L]) => {
-    const f = Math.max(0, Math.min(1, (L - shellL) / (Lmax - shellL))) // 0 at shell → 1 at overlay
+  return levels.map(([name, role, l]) => {
+    const f = Math.max(0, Math.min(1, (l - shellL) / (Lmax - shellL))) // 0 at shell → 1 at overlay
     const rb = rbShadow + (rbHilite - rbShadow) * f // tapered warmth (withWarmth)
-    const g = clampByte(grayForL(L))
-    return { name, role, L, rb, hex: withWarmth(toHex(g, g, g), rb) }
+    const g = clampByte(grayForL(l))
+    return { name, role, L: l, rb, hex: withWarmth(toHex(g, g, g), rb) }
   })
 }
 
 export const SurfaceRampSystem: Story = {
   render: () => {
-    const planes = deriveSurfaceRamp() // shipped params: shellL*=9, step=5
+    const planes = deriveSurfaceRamp() // shipped: shellL*=9, diminishing steps [4.5,2.5,2,1.5]
     return (
       <View style={{ backgroundColor: '#000', padding: 32, gap: 16 }}>
         <Text style={{ color: TEXT.primary, fontSize: 14, fontWeight: '700' }}>
-          Surface ramp — L*(n) = 9 + n·5, warmth tapered 6 → 1.5 (R−B)
+          Surface ramp — shell L*9, DIMINISHING steps 4.5·2.5·2·1.5, warmth tapered 6 → 1.5
         </Text>
-        <Text style={{ color: TEXT.tertiary, fontSize: 11, maxWidth: 640 }}>
-          Even CIELAB L* steps (perceptually uniform) off a shell chosen to leave darkening
-          headroom below it; warmth from the locked tapered curve. The inset sits BELOW the
-          shell — the reserved sub-shell band for wells + shadows.
+        <Text style={{ color: TEXT.tertiary, fontSize: 11, maxWidth: 660 }}>
+          Compressed span (L*9→19.5, like Apple's 3-level backgrounds) with diminishing steps
+          (like Material's overlay elevation) — the frame→content jump is biggest, upper planes
+          converge and lean on the hairline + shadow + paper for separation (§4), not lightness.
+          Shell leaves darkening headroom; the inset sits BELOW it (sub-shell band for wells + shadows).
         </Text>
         {planes.map((p, i) => {
           const dL = i === 0 ? null : p.L - planes[i - 1].L

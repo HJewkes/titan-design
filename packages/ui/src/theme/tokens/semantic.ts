@@ -248,18 +248,19 @@ export const semanticColorsDark = {
   'text-link-hover': p.blue[400],
 
   // Surface ramp — warm TAPERED (warm shadows → near-neutral highlights), lifted, de-collided
-  // DERIVED ramp: even CIELAB L* steps from shell (L*9) + step 5, warm-tapered
-  // (R−B 6→1.5). L*(n) = 9 + n·5. See lab story `Surface Ramp System` + §2–§3.
-  'surface-base': '#262422',               // main surface — L* 14
-  'surface-elevated': '#302E2C',           // elevated surface (nav/rail) — L* 19
-  'surface-raised': '#3A3938',             // raised surface (cards) — L* 24
-  'surface-overlay': '#454443',            // overlay surface (hero/popover) — L* 29
+  // DERIVED ramp: CIELAB L* off shell (L*9) with DIMINISHING steps [4.5,2.5,2,1.5],
+  // warm-tapered (R−B 6→1.5). Compressed span (L*9→19.5) — upper steps carried by
+  // hairline+shadow+paper, not lightness. See lab story `Surface Ramp System`.
+  'surface-base': '#252321',               // main surface — L* 13.5
+  'surface-elevated': '#2A2827',           // elevated surface (nav/rail) — L* 16
+  'surface-raised': '#2D2C2B',             // raised surface (cards) — L* 18
+  'surface-overlay': '#302F2E',            // overlay surface (hero/popover) — L* 19.5
   'surface-input': '#13100D',              // inset well — sub-shell, L* 4.5
 
   // Background colors
   'background-base': '#1C1916',            // shell / frame — L* 9
-  'background-default': '#262422',         // main background
-  'background-subtle': '#302E2C',          // subtle background
+  'background-default': '#252321',         // main background
+  'background-subtle': '#2A2827',          // subtle background
 
   // Border colors — self-normalizing alpha-white hairlines
   'border-default': 'rgba(255,255,255,0.09)',   // default border

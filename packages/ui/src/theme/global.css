@@ -94,19 +94,20 @@
     --color-text-link: #828DF8;
     --color-text-link-hover: #60A5FA;
 
-    /* Surface ramp — DERIVED, not hand-picked: even CIELAB L* steps from a shell
-       base, warm-tapered. Formula: L*(n) = shellL* + n·step; shellL*=9 (leaves
-       darkening headroom below), step=5 (> ~2 JND). Warmth R−B tapers 6→1.5.
-       See lab story `Surface Ramp System` + surface-system-north-star.md §2–§3. */
-    --color-surface-base: #262422;               /* L* 14 */
-    --color-surface-elevated: #302E2C;           /* L* 19 */
-    --color-surface-raised: #3A3938;             /* L* 24 */
-    --color-surface-overlay: #454443;            /* L* 29 */
+    /* Surface ramp — DERIVED, not hand-picked. CIELAB L* off a shell (L*9, leaves
+       darkening headroom) with DIMINISHING steps [4.5,2.5,2,1.5] — compressed span
+       (L*9→19.5, like Apple/Material) so the hero is a moderate charcoal, not
+       near-white; the tight upper steps are carried by the hairline+shadow+paper,
+       not lightness. Warmth R−B tapers 6→1.5. See lab story `Surface Ramp System`. */
+    --color-surface-base: #252321;               /* L* 13.5 */
+    --color-surface-elevated: #2A2827;           /* L* 16 */
+    --color-surface-raised: #2D2C2B;             /* L* 18 */
+    --color-surface-overlay: #302F2E;            /* L* 19.5 */
     --color-surface-input: #13100D;              /* inset well — sub-shell, L* 4.5 */
 
     --color-background-base: #1C1916;            /* shell / frame — L* 9 */
-    --color-background-default: #262422;
-    --color-background-subtle: #302E2C;
+    --color-background-default: #252321;
+    --color-background-subtle: #2A2827;
 
     /* Separators — self-normalizing alpha-white hairlines (constant ΔL* on any plane). */
     --color-border-default: rgba(255, 255, 255, 0.09);
