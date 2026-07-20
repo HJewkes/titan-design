@@ -1431,42 +1431,38 @@ function FrameDemo({
   )
 }
 
-// inner shadow on TOP + LEFT edges only (negative spread hugs each edge, none on
-// the screen-edge sides); optional 1px rim-light lip at the very top of the recess.
-const RECESS = 'inset 0 10px 14px -8px rgba(0,0,0,0.75), inset 10px 0 14px -8px rgba(0,0,0,0.75)'
-const RECESS_RIM = `inset 0 1px 0 rgba(255,255,255,0.06), ${RECESS}`
+// A recess that's MORE aggressive at the top opening than down the left: a top
+// rim-light lip + a top inner shadow (alpha `a`) + a subtler LEFT inner shadow
+// (alpha `la`). `o/b/sp` = offset / blur / spread → the crispness knob (small blur
+// + tight spread = crisp edge; large blur = soft/wide). None on the screen-edge sides.
+function recessShadow(o: number, b: number, sp: number, a: number, la: number, rim: number): string {
+  return [
+    `inset 0 1px 0 rgba(255,255,255,${rim})`, // top bezel highlight (the lit lip of the opening)
+    `inset 0 ${o}px ${b}px ${sp}px rgba(0,0,0,${a})`, // top inner shadow (stronger)
+    `inset ${o}px 0 ${b}px ${sp}px rgba(0,0,0,${la})`, // left inner shadow (quieter)
+  ].join(', ')
+}
 
 export const FrameRecess: Story = {
   render: () => {
+    // All rows: warm near-black bezel, ALL hairlines, top-emphasized rim. Only the
+    // recess crispness/depth varies (soft/wide → crisp; plus one deeper).
+    const row = (label: string, shadow: string) => (
+      <FrameDemo
+        label={label}
+        bezel="#100D0A"
+        contentStyle={{ boxShadow: shadow } as object}
+        grain
+        hairlines="all"
+      />
+    )
     return (
       <View style={{ backgroundColor: '#000', padding: 32, gap: 18 }}>
-        <FrameDemo
-          label="C (no hairline) — recess + rim, but top bar & nav merge into one blob (the weird bit)"
-          bezel="#100D0A"
-          contentStyle={{ boxShadow: RECESS_RIM } as object}
-          grain
-        />
-        <FrameDemo
-          label="C + TOP-BAR HAIRLINE — a line under the top bar separates it from the nav; content still recessed ✓"
-          bezel="#100D0A"
-          contentStyle={{ boxShadow: RECESS } as object}
-          grain
-          hairlines="topbar"
-        />
-        <FrameDemo
-          label="C + ALL HAIRLINES — also a nav→content line (fuller structure)"
-          bezel="#100D0A"
-          contentStyle={{ boxShadow: RECESS } as object}
-          grain
-          hairlines="all"
-        />
-        <FrameDemo
-          label="Same, darker bezel (#0B0908) + top-bar hairline"
-          bezel="#0B0908"
-          contentStyle={{ boxShadow: RECESS } as object}
-          grain
-          hairlines="topbar"
-        />
+        {row('1 · SOFT / WIDE — o10 b16 (diffuse, the softest)', recessShadow(10, 16, -8, 0.7, 0.5, 0.06))}
+        {row('2 · GENTLE — o8 b12 (≈ what you saw)', recessShadow(8, 12, -7, 0.72, 0.52, 0.07))}
+        {row('3 · CRISPER — o6 b8 (tighter edge, keeps depth) ← likely', recessShadow(6, 8, -5, 0.8, 0.58, 0.08))}
+        {row('4 · CRISP + DEEPER — o6 b7, darker (more sunk)', recessShadow(6, 7, -4, 0.9, 0.68, 0.08))}
+        {row('5 · VERY CRISP — o4 b4 (near hard-edged inset)', recessShadow(4, 4, -2, 0.9, 0.7, 0.09))}
       </View>
     )
   },
