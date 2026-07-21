@@ -13,8 +13,13 @@ export const SET_STRIP_ZONES = {
   fastest: primitiveRamps.green[300],
 } as const
 
-/** Grey fill for planned-but-unperformed reps / upcoming sets (charcoal placeholder). */
-const TODO_COLOR = primitiveColors.charcoal[300]
+/**
+ * Grey fill for planned-but-unperformed reps / upcoming sets (charcoal placeholder).
+ * Sits one ramp step above charcoal[300] so it stays legible against the warm
+ * content plane (surface-base) the rail now sits flat on — [300] read ~ΔL*4 from
+ * surface-base and vanished under the upcoming-row dim; [200] holds ~ΔL*11.
+ */
+const TODO_COLOR = primitiveColors.charcoal[200]
 
 /**
  * The learned "variable / unknown / opportunity" semantic (cyan-900, a real ramp
