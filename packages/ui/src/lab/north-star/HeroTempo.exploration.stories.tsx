@@ -22,6 +22,7 @@ import { getSemanticColors } from '../../theme/tokens/semantic'
 import { primitiveColors, primitiveRamps } from '../../theme/tokens/primitives'
 import { alpha } from '../../utils/colors'
 import { roundTempo } from '../../utils/workout-format'
+import { grainForTone } from './surfaces'
 
 const T = getSemanticColors('dark')
 const PAGE_BG = primitiveColors.charcoal[900]
@@ -261,19 +262,13 @@ function AmbientClockTempo({ side }: { side: 'L' | 'R' }) {
 // hit/miss of target cadence (numerals + cadence bar) + a smaller ambient clock.
 // =============================================================================
 
-/** The same fractalNoise tile the north-star `paperSheet` uses, at a stronger opacity so the
- *  matte texture actually reads on these small chips (the 0.04 surface grain washes out here). */
-const CHIP_GRAIN =
-  `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E` +
-  `%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E` +
-  `%3Crect width='120' height='120' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E")`
-
-/** A muted, PAPER-TEXTURED chip: darker tone + visible grain + a rim-light and soft inner
- *  shade, so a phase / semantic hue reads as a matte plane that belongs on the warm dark hero. */
+/** A muted, PAPER-TEXTURED chip: darker tone + BRIGHTNESS-SCALED grain (via the shared
+ *  `grainForTone`, so a dark chip only whispers) + a rim-light and soft inner shade, so a
+ *  phase / semantic hue reads as a matte plane that belongs on the warm dark hero. */
 const paperChip = (tone: string): ViewStyle =>
   ({
     backgroundColor: tone,
-    backgroundImage: CHIP_GRAIN,
+    backgroundImage: grainForTone(tone),
     boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -2px 4px rgba(0,0,0,0.40)',
   }) as unknown as ViewStyle
 
@@ -409,14 +404,6 @@ function CadenceBarRefined({ exec }: { exec: Exec[] }) {
             />
           )
         })}
-      </View>
-      {/* deviation rail — did each phase hit its target? */}
-      <View style={{ width: 12 }}>
-        {exec.map((e, i) => (
-          <View key={e.key} style={{ height: segH(i), marginTop: i ? 3 : 0 }}>
-            <DeviationTick e={e} laneH={segH(i)} />
-          </View>
-        ))}
       </View>
       {/* secondary actual-second labels */}
       <View>
@@ -617,14 +604,14 @@ export const CadenceBarRefinedStory: Story = {
       <View style={{ gap: 4 }}>
         <SectionTitle>Cadence bar — refined</SectionTitle>
         <Caption>
-          The segmented bar keeps its rhythm-with-the-velocity-bars form, now with paper-textured, darker phase hues sized ∝
-          each phase’s target seconds. A deviation rail beside it carries the semantic hit/miss — the same paper-textured
-          diverging marks (slow above the target line, rushed below) — so the bar shows the prescribed shape and the rail shows
-          how the actual execution diverged, per phase.
+          The segmented bar keeps its rhythm-with-the-velocity-bars form, with paper-textured, darker phase hues sized ∝ each
+          phase’s target seconds — brightness-scaled grain so the darker segments stay calm (no hot noise). The small secondary
+          labels carry the actual seconds; the +/− hit/miss marks are dropped here (they weren’t landing) — the shape + color
+          selection do the work.
         </Caption>
       </View>
       <Panel width={860}>
-        <Kicker>IN CONTEXT · dual hero · segments ∝ target · rail = actual vs target</Kicker>
+        <Kicker>IN CONTEXT · dual hero · segments ∝ target seconds</Kicker>
         <MiniDualHero gutter={78} renderTempo={refinedTempo((p) => <CadenceBarRefined {...p} />)} />
       </Panel>
     </Page>
@@ -660,10 +647,10 @@ export const RefinedOverview: Story = {
       <View style={{ gap: 4 }}>
         <SectionTitle>Hero tempo — refined set</SectionTitle>
         <Caption>
-          The three treatments retuned: paper-textured, darker phase hues on all of them (magenta ecc / cyan con), semantic
-          hit/miss of the target cadence on the numerals + cadence bar (paper-textured green / amber / red diverging marks), and
-          a smaller ambient clock. LEFT executes cleanly, RIGHT rushes — the tempo now tells the coach which phases fail, not
-          just the numbers.
+          The three treatments retuned: paper-textured, darker phase hues on all of them (magenta ecc / cyan con) with
+          brightness-scaled grain so dark chips stay calm, semantic hit/miss of the target cadence on the HERO NUMERALS
+          (paper-textured green / amber / red diverging marks — LEFT clean, RIGHT rushing), and a smaller ambient clock. The
+          cadence bar keeps the color selection but drops the +/− marks.
         </Caption>
       </View>
       <View style={{ flexDirection: 'row', gap: 20, flexWrap: 'wrap', alignItems: 'flex-start' }}>

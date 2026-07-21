@@ -425,27 +425,45 @@ const HERO_REFERENCE_COLOR = primitiveColors.charcoal[0]
 const PEAK_HEADROOM = 1.06
 
 /**
- * The matte paper grain — the same `fractalNoise` tile the north-star `paperSheet` uses,
- * at a stronger ~0.20 opacity (vs the 0.04 surface grain) so the texture reads clearly on a
- * bar's saturated zone color instead of washing out.
+ * Grain opacity scaled by a color's perceived brightness — the SAME curve as the north-star
+ * `surfaces.grainForTone` (mirrored here because a shipped component must not import lab code):
+ * a bright bar keeps full texture, a darker bar carries proportionally less so the grain never
+ * reads hot on a dark tone. Anchored so lum ≈ 0.13 → ≈ 0.06 and lum ≈ 0.58 → ≈ 0.20.
  */
-const HERO_BAR_GRAIN =
-  `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E` +
-  `%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E` +
-  `%3Crect width='120' height='120' filter='url(%23n)' opacity='0.20'/%3E%3C/svg%3E")`
+function grainOpacityForColor(hex: string): number {
+  const h = hex.replace('#', '')
+  const full = h.length === 3 ? h.split('').map((ch) => ch + ch).join('') : h
+  const r = parseInt(full.slice(0, 2), 16)
+  const g = parseInt(full.slice(2, 4), 16)
+  const b = parseInt(full.slice(4, 6), 16)
+  if ([r, g, b].some(Number.isNaN)) return 0.14
+  const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255
+  return Math.min(0.24, Math.max(0.04, 0.02 + 0.31 * lum))
+}
+
+/** The matte paper grain tile (same fractalNoise as `paperSheet`), opacity brightness-scaled to `color`. */
+function heroBarGrain(color: string): string {
+  const op = grainOpacityForColor(color).toFixed(3)
+  return (
+    `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E` +
+    `%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E` +
+    `%3Crect width='120' height='120' filter='url(%23n)' opacity='${op}'/%3E%3C/svg%3E")`
+  )
+}
 
 /**
- * Exploratory PAPER / raised treatment for the hero velocity bars — the matte paper grain
- * + a crisp top rim-light + a defined contact shadow (the `paperSheet` surface language)
- * that gives the colored bars a little dimensionality and texture. SCOPED to the velocity
- * hero bars (single hero + diverging dual wings); it never touches the shared SegmentedBar /
- * SetStrip. Easy to back out: delete this constant (+ the grain) and its two
- * `...HERO_BAR_PAPER` spreads.
+ * Exploratory PAPER / raised treatment for a hero velocity bar of the given zone `color` — a
+ * brightness-scaled matte grain + a crisp top rim-light + a defined contact shadow (the
+ * `paperSheet` surface language) that gives the colored bars dimensionality and texture. SCOPED
+ * to the velocity hero bars (single hero + diverging dual wings); it never touches the shared
+ * SegmentedBar / SetStrip. Back out: delete these helpers and the two `heroBarPaper(...)` spreads.
  */
-const HERO_BAR_PAPER = {
-  backgroundImage: HERO_BAR_GRAIN,
-  boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.22), 0 6px 16px rgba(0,0,0,0.45)',
-} as unknown as ViewStyle
+function heroBarPaper(color: string): ViewStyle {
+  return {
+    backgroundImage: heroBarGrain(color),
+    boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.22), 0 6px 16px rgba(0,0,0,0.45)',
+  } as unknown as ViewStyle
+}
 
 /** The bar-height scaling denominator for the given `scale` (guarded ≥ 0 by callers). */
 function scaleDenominator(scale: 'peak' | 'fixed', maxVelocity: number): number {
@@ -691,7 +709,7 @@ function HeroVelocityChart({
                     borderTopRightRadius: HERO_BAR_RADIUS,
                     backgroundColor: barColorFor(velocity),
                   },
-                  HERO_BAR_PAPER,
+                  heroBarPaper(barColorFor(velocity)),
                   isLive ? { transform: [{ scale: liveScale }] } : null,
                 ]}
                 testID={`velocity-bar-${i}`}
@@ -896,7 +914,7 @@ function WingBar({ slot, grow, c, color, barPx, liveScale, isLive, testID }: Win
     height: barPx,
     backgroundColor: color,
     ...r,
-    ...(c.paper ? HERO_BAR_PAPER : null),
+    ...(c.paper ? heroBarPaper(color) : null),
   }
   return isLive ? (
     <Animated.View style={[barStyle, { transform: [{ scale: liveScale }] }]} testID={testID} />
