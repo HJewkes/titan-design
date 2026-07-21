@@ -7,6 +7,8 @@ import {
   DualVelocityStrip,
   TempoDisplay,
   SetsRepsLoad,
+  SetStrip,
+  type SetStripSet,
   ActivityIcon,
   AlertTriangleIcon,
   CircleSlashIcon,
@@ -226,7 +228,15 @@ const HEADER_NAME_SIZE = 30
  * visible across single/dual. The targets shrink with width and only wrap under the name
  * (at the set-heading size ratio) once too tight to shrink further. NOT a published component.
  */
-export function ExerciseHeader({ session }: { session: DashboardModel['session'] }) {
+export function ExerciseHeader({
+  session,
+  setStates,
+}: {
+  session: DashboardModel['session']
+  /** The active exercise's per-set states — rendered as the collapsed SetStrip line
+   *  under the name + targets (the same data the rail's active row draws). */
+  setStates?: SetStripSet[]
+}) {
   const [w, setW] = useState(0)
   const onLayout = (e: LayoutChangeEvent) => setW(e.nativeEvent.layout.width)
   const wrap = w > 0 && w < HEADER_WRAP
@@ -239,34 +249,42 @@ export function ExerciseHeader({ session }: { session: DashboardModel['session']
       onLayout={onLayout}
       className="border-border"
       style={{
-        flexDirection: wrap ? 'column' : 'row',
-        alignItems: wrap ? 'flex-start' : 'baseline',
-        justifyContent: 'space-between',
-        gap: wrap ? 4 : 22,
         paddingHorizontal: 24,
         paddingTop: 20,
         paddingBottom: 16,
         borderBottomWidth: 1,
+        gap: 12,
       }}
     >
-      <Text
-        className="text-text-primary"
+      <View
         style={{
-          fontSize: HEADER_NAME_SIZE,
-          fontFamily: '"Space Grotesk", sans-serif',
-          fontWeight: '700',
+          flexDirection: wrap ? 'column' : 'row',
+          alignItems: wrap ? 'flex-start' : 'baseline',
+          justifyContent: 'space-between',
+          gap: wrap ? 4 : 22,
         }}
       >
-        {session.exerciseName}
-      </Text>
-      {/* targets: pinned right when inline, tucked under the name (smaller) when wrapped. */}
-      <SetsRepsLoad
-        sets={session.plannedSets}
-        reps={8}
-        load={session.weightLbs}
-        unit={session.unit}
-        fontSize={targetSize}
-      />
+        <Text
+          className="text-text-primary"
+          style={{
+            fontSize: HEADER_NAME_SIZE,
+            fontFamily: '"Space Grotesk", sans-serif',
+            fontWeight: '700',
+          }}
+        >
+          {session.exerciseName}
+        </Text>
+        {/* targets: pinned right when inline, tucked under the name (smaller) when wrapped. */}
+        <SetsRepsLoad
+          sets={session.plannedSets}
+          reps={8}
+          load={session.weightLbs}
+          unit={session.unit}
+          fontSize={targetSize}
+        />
+      </View>
+      {/* the active exercise's collapsed per-set strip (done / active / todo) under the heading. */}
+      {setStates != null && setStates.length > 0 && <SetStrip sets={setStates} height={10} />}
     </View>
   )
 }
@@ -419,7 +437,11 @@ export function DualLiveView({ left, right }: { left: DashboardModel; right: Das
   const { session } = left
   const lLoss = left.live.velocityLossPct
   const rLoss = right.live.velocityLossPct
-  // Aura + alert track the MORE-fatigued side (the safety signal), tagged with which side.
+  // Split aura: TOP half colored by the LEFT side's verdict, BOTTOM half by the RIGHT's —
+  // matching the diverging chart (L up / R down), one radial glow from the panel centre.
+  const leftVerdict = verdictFromLoss(lLoss)
+  const rightVerdict = verdictFromLoss(rLoss)
+  // The alert tracks the MORE-fatigued side (the safety signal), tagged with which side.
   const worseSide: 'LEFT' | 'RIGHT' = rLoss >= lLoss ? 'RIGHT' : 'LEFT'
   const worseLoss = Math.max(lLoss, rLoss)
   const verdict = verdictFromLoss(worseLoss)
@@ -431,7 +453,11 @@ export function DualLiveView({ left, right }: { left: DashboardModel; right: Das
   const heroHeight = heroH > 0 ? heroH : 320
 
   return (
-    <LiveAuraFrame category={verdict} style={{ flex: 1, borderRadius: 0, borderWidth: 0 }}>
+    <LiveAuraFrame
+      category={verdict}
+      split={{ top: leftVerdict, bottom: rightVerdict }}
+      style={{ flex: 1, borderRadius: 0, borderWidth: 0 }}
+    >
       <View style={{ flex: 1, padding: 24, gap: 10 }}>
         {/* Shared controls row — one prescribed tempo drives both cables; the alert reflects
             whichever side is closer to threshold. */}

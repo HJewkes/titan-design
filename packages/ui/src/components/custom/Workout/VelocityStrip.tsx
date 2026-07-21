@@ -424,6 +424,29 @@ const HERO_REFERENCE_COLOR = primitiveColors.charcoal[0]
  */
 const PEAK_HEADROOM = 1.06
 
+/**
+ * The matte paper grain — the same `fractalNoise` tile the north-star `paperSheet` uses,
+ * at a stronger ~0.13 opacity (vs the 0.04 surface grain) so the texture reads on a bar's
+ * saturated zone color instead of washing out.
+ */
+const HERO_BAR_GRAIN =
+  `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E` +
+  `%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E` +
+  `%3Crect width='120' height='120' filter='url(%23n)' opacity='0.13'/%3E%3C/svg%3E")`
+
+/**
+ * Exploratory PAPER / raised treatment for the hero velocity bars — the matte paper grain
+ * + a crisp top rim-light + a defined contact shadow (the `paperSheet` surface language)
+ * that gives the colored bars a little dimensionality and texture. SCOPED to the velocity
+ * hero bars (single hero + diverging dual wings); it never touches the shared SegmentedBar /
+ * SetStrip. Easy to back out: delete this constant (+ the grain) and its two
+ * `...HERO_BAR_PAPER` spreads.
+ */
+const HERO_BAR_PAPER = {
+  backgroundImage: HERO_BAR_GRAIN,
+  boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.22), 0 6px 16px rgba(0,0,0,0.45)',
+} as unknown as ViewStyle
+
 /** The bar-height scaling denominator for the given `scale` (guarded ≥ 0 by callers). */
 function scaleDenominator(scale: 'peak' | 'fixed', maxVelocity: number): number {
   return scale === 'fixed' ? FIXED_MAX_VELOCITY : maxVelocity * PEAK_HEADROOM
@@ -668,6 +691,7 @@ function HeroVelocityChart({
                     borderTopRightRadius: HERO_BAR_RADIUS,
                     backgroundColor: barColorFor(velocity),
                   },
+                  HERO_BAR_PAPER,
                   isLive ? { transform: [{ scale: liveScale }] } : null,
                 ]}
                 testID={`velocity-bar-${i}`}
@@ -773,6 +797,7 @@ const DIVERGING_CHROME = {
     barPct: '100%',
     showValues: true,
     showReference: true,
+    paper: true,
   },
   rail: {
     gap: 3,
@@ -783,6 +808,7 @@ const DIVERGING_CHROME = {
     barPct: '100%',
     showValues: false,
     showReference: false,
+    paper: false,
   },
 } as const
 
@@ -865,7 +891,13 @@ function WingBar({ slot, grow, c, color, barPx, liveScale, isLive, testID }: Win
       />
     )
   }
-  const barStyle: ViewStyle = { width: c.barPct, height: barPx, backgroundColor: color, ...r }
+  const barStyle: ViewStyle = {
+    width: c.barPct,
+    height: barPx,
+    backgroundColor: color,
+    ...r,
+    ...(c.paper ? HERO_BAR_PAPER : null),
+  }
   return isLive ? (
     <Animated.View style={[barStyle, { transform: [{ scale: liveScale }] }]} testID={testID} />
   ) : (

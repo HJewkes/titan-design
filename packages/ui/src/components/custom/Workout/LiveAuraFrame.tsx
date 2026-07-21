@@ -21,8 +21,56 @@ export interface LiveAuraFrameProps extends ViewProps {
    * Defaults to true.
    */
   pulse?: boolean
+  /**
+   * Dual (bilateral) SPLIT aura: one radial glow anchored at the panel CENTRE, its
+   * TOP half colored by `split.top`'s category and its BOTTOM half by `split.bottom`'s
+   * — matching the diverging dual chart (LEFT up / RIGHT down). When set it SUPERSEDES
+   * the single-category flood. Single-category use ({@link category} alone) is unchanged.
+   */
+  split?: { top: LiveAuraCategory; bottom: LiveAuraCategory }
   className?: string
   children?: React.ReactNode
+}
+
+/**
+ * One half of the split (dual) aura: a half-height overlay whose radial gradient is
+ * anchored on the panel's CENTRE line (the shared boundary), so the two halves read
+ * as a single radial glow emanating from the centre, split top/bottom by L/R color.
+ */
+function SplitFloodHalf({
+  half,
+  category,
+  pulse,
+}: {
+  half: 'top' | 'bottom'
+  category: LiveAuraCategory
+  pulse: boolean
+}) {
+  const color = liveAuraColor(category)
+  if (!color) return null
+  const tint = alpha(color, floodOpacity[category])
+  // Anchor the radial at this half's inner edge (the panel centre): bottom-centre for the
+  // top half, top-centre for the bottom half — the glow is strongest at the centre seam.
+  const at = half === 'top' ? '50% 100%' : '50% 0%'
+  const style = {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    height: '50%',
+    ...(half === 'top' ? { top: 0 } : { bottom: 0 }),
+    ...(Platform.OS === 'web'
+      ? { backgroundImage: `radial-gradient(120% 150% at ${at}, ${tint}, transparent 72%)` }
+      : { backgroundColor: tint }),
+  } as ViewStyle
+  return (
+    <View
+      testID={`live-aura-flood-${half}`}
+      accessibilityElementsHidden
+      pointerEvents="none"
+      className={category === 'stop' && pulse ? 'animate-pulse' : undefined}
+      style={style}
+    />
+  )
 }
 
 const categoryToken: Record<LiveAuraCategory, 'status-warning' | 'status-error' | null> = {
@@ -53,6 +101,7 @@ export function liveAuraColor(category: LiveAuraCategory): string | null {
 export function LiveAuraFrame({
   category,
   pulse = true,
+  split,
   className,
   children,
   style,
@@ -91,14 +140,21 @@ export function LiveAuraFrame({
       ]}
       {...props}
     >
-      {color && (
-        <View
-          testID="live-aura-flood"
-          accessibilityElementsHidden
-          pointerEvents="none"
-          className={category === 'stop' && pulse ? 'animate-pulse' : undefined}
-          style={floodStyle}
-        />
+      {split ? (
+        <>
+          <SplitFloodHalf half="top" category={split.top} pulse={pulse} />
+          <SplitFloodHalf half="bottom" category={split.bottom} pulse={pulse} />
+        </>
+      ) : (
+        color && (
+          <View
+            testID="live-aura-flood"
+            accessibilityElementsHidden
+            pointerEvents="none"
+            className={category === 'stop' && pulse ? 'animate-pulse' : undefined}
+            style={floodStyle}
+          />
+        )
       )}
       {children}
     </View>

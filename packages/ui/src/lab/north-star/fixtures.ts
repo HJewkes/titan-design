@@ -206,7 +206,10 @@ export function deriveDualModel(base: DashboardModel = dashboardFixture): {
 } {
   // Left is the dominant side — the base fixture verbatim.
   const left: DashboardModel = base
-  // Right lags: ~8% slower per-rep concentric velocity, +7 pts velocity loss, ~6% less force.
+  // Right lags: ~8% slower per-rep concentric velocity, +9 pts velocity loss, ~6% less force.
+  // The +9 pushes the right side PAST the VL30 stop threshold while the left stays at
+  // threshold — so the dual split aura reads as two distinct L/R colors (amber top / red
+  // bottom), not one flat wash.
   const scale = (v: number) => Number((v * 0.92).toFixed(3))
   const right: DashboardModel = {
     session: base.session,
@@ -215,7 +218,7 @@ export function deriveDualModel(base: DashboardModel = dashboardFixture): {
       velocity: scale(base.live.velocity),
       force: Math.round(base.live.force * 0.94),
       peakForce: Math.round(base.live.peakForce * 0.94),
-      velocityLossPct: base.live.velocityLossPct + 7,
+      velocityLossPct: base.live.velocityLossPct + 9,
       repVelocities: base.live.repVelocities.map(scale),
       lastRep: {
         vCon: scale(base.live.lastRep.vCon),

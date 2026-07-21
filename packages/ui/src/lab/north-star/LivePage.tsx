@@ -60,8 +60,9 @@ export function LivePage({ variant = 'live', model = dashboardFixture }: LivePag
       {/* Panel floors at ~phone width so the live view stops collapsing; rail-aware
           breakpoints below this are a later pass. */}
       <View className="flex-1" style={{ minWidth: PANEL_MIN_WIDTH }}>
-        {/* workout title + targets — page-level, always visible, independent of single/dual. */}
-        <ExerciseHeader session={model.session} />
+        {/* workout title + targets + the active exercise's collapsed per-set strip —
+            page-level, always visible, independent of single/dual. */}
+        <ExerciseHeader session={model.session} setStates={exercises[0]?.setStates} />
         <View className="flex-1">
           {variant === 'live-dual' ? (
             <DualLiveStage model={model} />
