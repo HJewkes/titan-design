@@ -30,6 +30,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ReactNode } from 'react'
 import { View, Text, type ViewStyle } from 'react-native'
 import { LiveAuraFrame, VelocityStrip } from '../../components'
+import { Tooltip } from '../../components/ui/tooltip/Tooltip'
 import { getSemanticColors } from '../../theme/tokens/semantic'
 import { primitiveColors, primitiveRamps } from '../../theme/tokens/primitives'
 import { WORKOUT_TOKENS } from '../../theme/workout-tokens'
@@ -249,9 +250,11 @@ function phaseRuns(samples: Sample[]): Array<{ phase: Phase; pts: Sample[] }> {
   return runs
 }
 
-function CombinedChart({ w = 760, h = 300, current = 7 }: { w?: number; h?: number; current?: number }) {
-  const padL = 40
-  const padR = 14
+function CombinedChart({ w = 760, h = 300, current = 7, compact = false }: { w?: number; h?: number; current?: number; compact?: boolean }) {
+  // `compact` (in the narrow card column) trims the L/R gutters and drops the CON/ECC
+  // side labels so the plot uses more of the width — geometry + bands still carry phase.
+  const padL = compact ? 12 : 40
+  const padR = compact ? 8 : 14
   const padTop = 26
   const padBot = 24
   const mid = padTop + (h - padTop - padBot) / 2
@@ -282,8 +285,8 @@ function CombinedChart({ w = 760, h = 300, current = 7 }: { w?: number; h?: numb
       ))}
       {/* zero axis (parchment) — concentric above, eccentric below. */}
       <line x1={padL} y1={mid} x2={w - padR} y2={mid} stroke={AXIS} strokeWidth={1} />
-      <text x={padL - 6} y={y(VMAX * 0.62)} textAnchor="end" fill={C['text-tertiary']} fontSize={8} fontFamily={FONT_MONO}>CON</text>
-      <text x={padL - 6} y={y(-VMAX * 0.55)} textAnchor="end" fill={C['text-tertiary']} fontSize={8} fontFamily={FONT_MONO}>ECC</text>
+      {!compact && <text x={padL - 6} y={y(VMAX * 0.62)} textAnchor="end" fill={C['text-tertiary']} fontSize={8} fontFamily={FONT_MONO}>CON</text>}
+      {!compact && <text x={padL - 6} y={y(-VMAX * 0.55)} textAnchor="end" fill={C['text-tertiary']} fontSize={8} fontFamily={FONT_MONO}>ECC</text>}
       {/* prior reps — faded grey ghosts (absolute time → the fan is the set's drift). */}
       {SETS.slice(0, current).map((samples, rep) => (
         <path
@@ -429,12 +432,14 @@ function computeFatigue(current: number): FatigueRead {
   const alarms = levels.filter((l) => l === 'alarm').length
   const warns = levels.filter((l) => l === 'warn').length
   let verdict: FatigueRead['verdict']
+  // NOTE: the verdict word/sub/thresholds are PLACEHOLDER — Workout Analytics will own
+  // the real aggregation. Kept behind this one function so the content swaps in cleanly.
   if (velLevel === 'alarm' && (romLevel === 'alarm' || tempoLevel === 'alarm'))
     verdict = { word: 'Form breaking down', sub: 'velocity gone + depth/tempo failing — end the set', tone: C['status-error'] }
   else if (velLevel === 'alarm') verdict = { word: 'Approaching failure', sub: 'bar speed gutted — 0–1 clean reps left', tone: C['status-error'] }
   else if (alarms > 0) verdict = { word: 'Form breaking down', sub: 'depth / tempo degrading — clean it up or rack', tone: C['status-error'] }
-  else if (warns > 0) verdict = { word: 'Watch fatigue', sub: 'quality slipping — hold the standard', tone: C['status-warning'] }
-  else verdict = { word: 'Dialed in', sub: 'holding the standard', tone: C['status-success'] }
+  else if (warns > 0) verdict = { word: 'Slowing', sub: 'quality slipping — hold the standard', tone: C['status-warning'] }
+  else verdict = { word: 'Good', sub: 'holding the standard', tone: C['status-success'] }
 
   return {
     velLoss: { level: velLevel, value: `${vl}%` },
@@ -444,81 +449,85 @@ function computeFatigue(current: number): FatigueRead {
   }
 }
 
-function StatusLight({
-  label,
-  level,
-  value,
-  layout = 'tile',
-}: {
-  label: string
-  level: Level
-  value: string
-  /** `tile` — square-ish cell (dot+label over value), for a horizontal row of three.
-   *  `bar` — full-width row (dot+label left, value right), for a stacked vertical column. */
-  layout?: 'tile' | 'bar'
-}) {
+const LEVEL_WORD: Record<Level, string> = { ok: 'ok', warn: 'watch', alarm: 'alarm' }
+
+/** One status DOT (ok / warn / alarm) with the metric detail on hover — the compact
+ *  upper-right cluster that replaces the stacked lights. */
+function DotLight({ label, level, value }: { label: string; level: Level; value: string }) {
   const tone = LEVEL_TONE[level]
-  const dot = <View style={{ width: 9, height: 9, borderRadius: 5, backgroundColor: tone, boxShadow: `0 0 8px ${alpha(tone, 0.7)}` } as ViewStyle} />
-  if (layout === 'bar') {
-    return (
-      <View style={[{ flexDirection: 'row', alignItems: 'center', gap: 8, borderRadius: 9, paddingVertical: 7, paddingHorizontal: 11 }, insetWell(primitiveColors.charcoal[900])]}>
-        {dot}
-        <Text style={[{ fontSize: 9, letterSpacing: 0.8, fontFamily: FONT_MONO, color: C['text-tertiary'] }, debossLabel]}>{label}</Text>
-        <View style={{ flex: 1 }} />
-        <Text style={{ fontSize: 15, fontWeight: '800', fontFamily: FONT_HEAD, color: tone }}>{value}</Text>
-      </View>
-    )
-  }
   return (
-    <View style={[{ flex: 1, borderRadius: 9, paddingVertical: 9, paddingHorizontal: 10, gap: 5 }, insetWell(primitiveColors.charcoal[900])]}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-        {dot}
-        <Text style={[{ fontSize: 8.5, letterSpacing: 0.8, fontFamily: FONT_MONO, color: C['text-tertiary'] }, debossLabel]}>{label}</Text>
-      </View>
-      <Text style={{ fontSize: 15, fontWeight: '800', fontFamily: FONT_HEAD, color: tone }}>{value}</Text>
+    <Tooltip label={`${label} · ${value} · ${LEVEL_WORD[level]}`} placement="bottom">
+      <View
+        accessibilityLabel={`${label}: ${value}, ${LEVEL_WORD[level]}`}
+        style={{ width: 13, height: 13, borderRadius: 7, backgroundColor: tone, boxShadow: `0 0 9px ${alpha(tone, 0.75)}` } as ViewStyle}
+      />
+    </Tooltip>
+  )
+}
+
+/** The always-on status line — the aggregated verdict, present in EVERY state (Good →
+ *  Slowing → Form breaking down), tone-coded. Verdict content is placeholder + swappable. */
+function StatusLine({ verdict }: { verdict: { word: string; sub: string; tone: string } }) {
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 9,
+        borderRadius: 10,
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        backgroundColor: alpha(verdict.tone, 0.14),
+        borderWidth: 1,
+        borderColor: alpha(verdict.tone, 0.45),
+      }}
+    >
+      <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: verdict.tone, boxShadow: `0 0 8px ${alpha(verdict.tone, 0.8)}` } as ViewStyle} />
+      <Text style={{ fontSize: 15, fontWeight: '900', fontFamily: FONT_HEAD, color: verdict.tone }}>{verdict.word}</Text>
+      <Text numberOfLines={1} style={{ flex: 1, fontSize: 11, fontWeight: '600', fontFamily: FONT_UI, color: C['text-secondary'] }}>
+        {verdict.sub}
+      </Text>
     </View>
   )
 }
 
 // =================================================================================
-// P2 — THE UNIFIED FATIGUE CARD (combined chart + ROM + lights + verdict).
-// Canonical orientation is a tall VERTICAL column that sits beside the hero and fills
-// its height: compact combined chart at the top, then ROM progression, then the three
-// stacked status lights, then the rolled-up verdict pinned at the bottom.
+// P2 — THE UNIFIED FATIGUE CARD. A tall VERTICAL column beside the hero:
+//   title (left) + three dot-lights (right, hover for detail)
+//   → always-on status line (Good → Slowing → Form breaking down)
+//   → the compact combined chart (reduced L/R padding)
+//   → ROM progression.
 // =================================================================================
 function FatigueCard({ width = 300, height, current = 7 }: { width?: number; height?: number; current?: number }) {
   const f = computeFatigue(current)
   const pad = 16
-  const chartW = width - pad * 2 - 20 // minus the inset-well's inner padding (10 each side)
+  const wellPadX = 4 // tight L/R gutter so the chart uses the column width
+  const chartW = width - pad * 2 - wellPadX * 2
   return (
-    <View style={[{ width, height, borderRadius: 14, padding: pad, gap: 10 }, paperSheet(primitiveColors.charcoal[800])]}>
-      <Text style={[{ fontSize: 10, letterSpacing: 1.5, fontFamily: FONT_MONO, color: C['text-tertiary'] }, debossLabel]}>FATIGUE</Text>
-      {/* centerpiece — the compact combined chart at the top of the column */}
-      <View style={[{ borderRadius: 12, padding: 10 }, insetWell(primitiveColors.charcoal[900])]}>
-        <CombinedChart w={chartW} h={144} current={current} />
+    <View style={[{ width, height, borderRadius: 14, padding: pad, gap: 11 }, paperSheet(primitiveColors.charcoal[800])]}>
+      {/* title (left) + the three status dots (right, hover for the metric detail) */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Text style={{ fontSize: 21, fontWeight: '800', fontFamily: FONT_HEAD, color: C['text-primary'] }}>Fatigue</Text>
+        <View style={{ flexDirection: 'row', gap: 11, alignItems: 'center' }}>
+          <DotLight label="Velocity loss" level={f.velLoss.level} value={f.velLoss.value} />
+          <DotLight label="ROM depth" level={f.rom.level} value={f.rom.value} />
+          <DotLight label="Tempo" level={f.tempo.level} value={f.tempo.value} />
+        </View>
+      </View>
+      {/* always-on aggregated status line (present in every state, tone-coded) */}
+      <StatusLine verdict={f.verdict} />
+      {/* centerpiece — the compact combined chart, reduced L/R padding */}
+      <View style={[{ borderRadius: 12, paddingVertical: 10, paddingHorizontal: wellPadX }, insetWell(primitiveColors.charcoal[900])]}>
+        <CombinedChart w={chartW} h={168} current={current} compact />
       </View>
       <TempoLegend compact />
       {/* ROM progression */}
       <View style={{ gap: 5 }}>
         <Text style={[{ fontSize: 9, letterSpacing: 1, fontFamily: FONT_MONO, color: C['text-tertiary'] }, debossLabel]}>ROM PROGRESSION</Text>
-        <RomProgression width={width - pad * 2} height={58} current={current} />
+        <RomProgression width={width - pad * 2} height={64} current={current} />
       </View>
-      {/* flexible spacer — absorbs slack so lights + verdict pin to the bottom of a tall card */}
-      <View style={{ flex: 1, minHeight: 6 }} />
-      {/* the three fatigue lights, stacked */}
-      <View style={{ gap: 5 }}>
-        <Text style={[{ fontSize: 9, letterSpacing: 1, fontFamily: FONT_MONO, color: C['text-tertiary'] }, debossLabel]}>FATIGUE LIGHTS</Text>
-        <View style={{ gap: 6 }}>
-          <StatusLight layout="bar" label="VELOCITY LOSS" level={f.velLoss.level} value={f.velLoss.value} />
-          <StatusLight layout="bar" label="ROM DEPTH" level={f.rom.level} value={f.rom.value} />
-          <StatusLight layout="bar" label="TEMPO" level={f.tempo.level} value={f.tempo.value} />
-        </View>
-      </View>
-      {/* the rolled-up verdict */}
-      <View style={{ borderRadius: 10, padding: 12, gap: 2, backgroundColor: alpha(f.verdict.tone, 0.12), borderWidth: 1, borderColor: alpha(f.verdict.tone, 0.4) }}>
-        <Text style={{ fontSize: 16, fontWeight: '900', fontFamily: FONT_HEAD, color: f.verdict.tone }}>{f.verdict.word}</Text>
-        <Text style={{ fontSize: 11, fontWeight: '600', fontFamily: FONT_UI, color: C['text-secondary'] }}>{f.verdict.sub}</Text>
-      </View>
+      {/* absorbs slack when the card is given a tall fixed height (beside the hero). */}
+      <View style={{ flex: 1, minHeight: 4 }} />
     </View>
   )
 }
@@ -585,7 +594,7 @@ function ExerciseHeaderLite({ current }: { current: number }) {
 }
 
 /** Panel body height — the hero and the fatigue card both fill this so their tops/bottoms align. */
-const PANEL_BODY_H = 544
+const PANEL_BODY_H = 476
 function LivePanelV2({ current = 7 }: { current?: number }) {
   const verdict = MEAN_VEL[current] / V_BEST < 0.7 ? 'stop' : MEAN_VEL[current] / V_BEST < 0.8 ? 'threshold' : 'productive'
   const heroH = PANEL_BODY_H - 26 // leaves room for the hero's own eyebrow above it
@@ -678,21 +687,21 @@ export const FatigueCard_: Story = {
       <View style={{ gap: 4 }}>
         <SectionTitle>Unified fatigue card — a vertical column that sits beside the hero</SectionTitle>
         <Caption>
-          A tall, narrow column: the compact combined chart at the top (the centerpiece), then a ROM-progression read (per-rep
-          depth vs the working range, cheats dropping into the red short-zone), then three stacked fatigue status lights —
-          velocity-loss · ROM · tempo, each aggregating its own dimension to ok / warn / alarm — and the rolled-up verdict
-          pinned at the bottom. Shown at two points in the set: rep 8 (spent — all three alarm) and rep 4 (the first cheat —
-          velocity still propped green while ROM + tempo already alarm).
+          A tall, narrow column: a bigger title with the three status DOTS in the upper-right (velocity-loss · ROM · tempo —
+          each ok / warn / alarm, the metric detail on hover), then the ALWAYS-ON status line (Good → Slowing → Form breaking
+          down, tone-coded and present in every state — its content is placeholder, to be driven by Workout Analytics), then
+          the compact combined chart, then the ROM-progression read. Shown across the spectrum: a GOOD early rep and the
+          BREAKING-DOWN late rep.
         </Caption>
       </View>
       <View style={{ flexDirection: 'row', gap: 20, alignItems: 'flex-start' }}>
         <View style={{ gap: 6 }}>
-          <Kicker>REP 8 — spent</Kicker>
-          <FatigueCard width={324} current={7} />
+          <Kicker>REP 3 — good (all three ok)</Kicker>
+          <FatigueCard width={324} current={2} />
         </View>
         <View style={{ gap: 6 }}>
-          <Kicker>REP 4 — first cheat (velocity propped, form already breaking)</Kicker>
-          <FatigueCard width={324} current={3} />
+          <Kicker>REP 8 — form breaking down (all three alarm)</Kicker>
+          <FatigueCard width={324} current={7} />
         </View>
       </View>
     </Page>
