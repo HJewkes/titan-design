@@ -426,13 +426,13 @@ const PEAK_HEADROOM = 1.06
 
 /**
  * The matte paper grain — the same `fractalNoise` tile the north-star `paperSheet` uses,
- * at a stronger ~0.13 opacity (vs the 0.04 surface grain) so the texture reads on a bar's
- * saturated zone color instead of washing out.
+ * at a stronger ~0.20 opacity (vs the 0.04 surface grain) so the texture reads clearly on a
+ * bar's saturated zone color instead of washing out.
  */
 const HERO_BAR_GRAIN =
   `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E` +
   `%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E` +
-  `%3Crect width='120' height='120' filter='url(%23n)' opacity='0.13'/%3E%3C/svg%3E")`
+  `%3Crect width='120' height='120' filter='url(%23n)' opacity='0.20'/%3E%3C/svg%3E")`
 
 /**
  * Exploratory PAPER / raised treatment for the hero velocity bars — the matte paper grain

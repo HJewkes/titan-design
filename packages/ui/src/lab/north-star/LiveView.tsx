@@ -430,75 +430,68 @@ export function LiveView({
  * The DUAL (bilateral) live stage — ONE diverging velocity chart for both voltras
  * (LEFT grows up, RIGHT grows down from a shared centre axis) instead of two stacked
  * single heroes with independent baselines. The exercise identity + targets stay in the
- * page {@link ExerciseHeader}; this layer carries the shared controls row (the prescribed
- * tempo + the more-fatigued side's alert) and the diverging hero. NOT a published component.
+ * page {@link ExerciseHeader}. The L/R fatigue signal is carried entirely by the SPLIT aura
+ * (top = LEFT color, bottom = RIGHT) — no separate alert cue. Two vertical tempo strips sit
+ * in the empty space past the bars, one per side, each driven by its side's live phase.
+ * NOT a published component.
  */
 export function DualLiveView({ left, right }: { left: DashboardModel; right: DashboardModel }) {
   const { session } = left
-  const lLoss = left.live.velocityLossPct
-  const rLoss = right.live.velocityLossPct
   // Split aura: TOP half colored by the LEFT side's verdict, BOTTOM half by the RIGHT's —
   // matching the diverging chart (L up / R down), one radial glow from the panel centre.
-  const leftVerdict = verdictFromLoss(lLoss)
-  const rightVerdict = verdictFromLoss(rLoss)
-  // The alert tracks the MORE-fatigued side (the safety signal), tagged with which side.
-  const worseSide: 'LEFT' | 'RIGHT' = rLoss >= lLoss ? 'RIGHT' : 'LEFT'
-  const worseLoss = Math.max(lLoss, rLoss)
-  const verdict = verdictFromLoss(worseLoss)
-  const activePhase = mapLivePhase(left.live.phase)
-  const message = `${worseSide} · VL${worseLoss} · approaching threshold — 1–2 productive reps left`
+  const leftVerdict = verdictFromLoss(left.live.velocityLossPct)
+  const rightVerdict = verdictFromLoss(right.live.velocityLossPct)
+  // Per-side live tempo phase — the top strip fills on LEFT's phase, the bottom on RIGHT's.
+  const leftPhase = mapLivePhase(left.live.phase)
+  const rightPhase = mapLivePhase(right.live.phase)
 
   const [heroH, setHeroH] = useState(0)
   const onHeroLayout = (e: LayoutChangeEvent) => setHeroH(e.nativeEvent.layout.height)
   const heroHeight = heroH > 0 ? heroH : 320
 
+  const tempoStrip = (phase: ReturnType<typeof mapLivePhase>, phaseElapsedMs: number) =>
+    session.tempo != null ? (
+      <TempoDisplay
+        tempo={session.tempo}
+        orientation="vertical"
+        fontSize={22}
+        showLabel={false}
+        showInfo={false}
+        live={phase ? { activePhase: phase, phaseElapsedMs } : undefined}
+      />
+    ) : null
+
   return (
     <LiveAuraFrame
-      category={verdict}
+      category={leftVerdict}
       split={{ top: leftVerdict, bottom: rightVerdict }}
       style={{ flex: 1, borderRadius: 0, borderWidth: 0 }}
     >
-      <View style={{ flex: 1, padding: 24, gap: 10 }}>
-        {/* Shared controls row — one prescribed tempo drives both cables; the alert reflects
-            whichever side is closer to threshold. */}
+      {/* the diverging dual hero fills the whole stage; the vertical tempo strips overlay the
+          empty right-hand space past the bars, split top (LEFT) / bottom (RIGHT). */}
+      <View style={{ flex: 1, padding: 24, position: 'relative' }} onLayout={onHeroLayout}>
+        <DualVelocityStrip
+          variant="hero"
+          left={{ velocities: left.live.repVelocities }}
+          right={{ velocities: right.live.repVelocities }}
+          liveRepIndex={left.live.repVelocities.length - 1}
+          targetReps={8}
+          height={heroHeight}
+          scale="peak"
+        />
+        {/* TOP-half tempo strip — LEFT voltra. */}
         <View
-          className="flex-row items-center"
-          style={{ gap: 16, justifyContent: session.tempo != null ? 'space-between' : 'flex-end' }}
+          pointerEvents="none"
+          style={{ position: 'absolute', right: 28, top: 24, height: '46%', justifyContent: 'center', alignItems: 'center' }}
         >
-          {session.tempo != null && (
-            <View
-              style={{
-                height: CONTROL_HEIGHT,
-                justifyContent: 'center',
-                alignItems: 'flex-start',
-                borderRadius: 9,
-                overflow: 'hidden',
-                ...insetWell(TEMPO_GROUND),
-              }}
-            >
-              <TempoDisplay
-                tempo={session.tempo}
-                fontSize={TEMPO_BASE_FONT}
-                live={activePhase ? { activePhase, phaseElapsedMs: left.live.phaseElapsedMs } : undefined}
-                showLabel={false}
-                showInfo={false}
-              />
-            </View>
-          )}
-          <AlertCue status={verdict} message={message} mode="full" />
+          {tempoStrip(leftPhase, left.live.phaseElapsedMs)}
         </View>
-
-        {/* the diverging dual hero fills the rest. */}
-        <View style={{ flex: 1 }} onLayout={onHeroLayout}>
-          <DualVelocityStrip
-            variant="hero"
-            left={{ velocities: left.live.repVelocities }}
-            right={{ velocities: right.live.repVelocities }}
-            liveRepIndex={left.live.repVelocities.length - 1}
-            targetReps={8}
-            height={heroHeight}
-            scale="peak"
-          />
+        {/* BOTTOM-half tempo strip — RIGHT voltra. */}
+        <View
+          pointerEvents="none"
+          style={{ position: 'absolute', right: 28, bottom: 24, height: '46%', justifyContent: 'center', alignItems: 'center' }}
+        >
+          {tempoStrip(rightPhase, right.live.phaseElapsedMs)}
         </View>
       </View>
     </LiveAuraFrame>

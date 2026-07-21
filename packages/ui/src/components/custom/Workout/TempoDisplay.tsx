@@ -36,6 +36,13 @@ export interface TempoDisplayProps extends ViewProps {
   size?: 'sm' | 'md'
   /** Override the digit font size (px). Defaults from `size` (9 sm / 11 md); raise for a wall read-out. */
   fontSize?: number
+  /**
+   * Layout direction of the digit–dash–digit lockup. `horizontal` (default) is the
+   * standard inline row inside its chrome box. `vertical` STACKS the same sequence into a
+   * column (number, dash, number, dash, …), one per line, and drops the box chrome
+   * (transparent) so it can sit directly on a surface — e.g. the dual live aura.
+   */
+  orientation?: 'horizontal' | 'vertical'
   /** Show the "TEMPO" caption before the values. Default true. */
   showLabel?: boolean
   /** Show info tooltip on press */
@@ -234,11 +241,13 @@ function LiveTempoRow({
   live,
   fontSize,
   readout,
+  orientation,
 }: {
   values: [number, number, number, number]
   live: TempoLiveState
   fontSize: number
   readout: TempoLiveReadout
+  orientation: 'horizontal' | 'vertical'
 }) {
   // Phases run in a fixed order within a rep, so the active phase's position tells us which
   // phases are already done (locked). When it wraps back to the first phase, the row resets.
@@ -251,7 +260,10 @@ function LiveTempoRow({
         const status: LiveCellStatus =
           activeIndex < 0 || i > activeIndex ? 'upcoming' : i < activeIndex ? 'done' : 'active'
         return (
-          <View key={phase.key} style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View
+            key={phase.key}
+            style={{ flexDirection: orientation === 'vertical' ? 'column' : 'row', alignItems: 'center' }}
+          >
             {i > 0 && <TempoSeparator color={phaseColors.dash} fontSize={fontSize} />}
             <LiveTempoCell
               value={values[i]}
@@ -277,10 +289,12 @@ export function TempoDisplay({
   showInfo = true,
   live,
   liveReadout = 'countdown',
+  orientation = 'horizontal',
   onPress,
   className,
   ...props
 }: TempoDisplayProps) {
+  const vertical = orientation === 'vertical'
   const [showTooltip, setShowTooltip] = useState(false)
   // Round exact (unrounded) tempo seconds to the 1-dp display granularity.
   const [eccentric, pauseBottom, concentric, pauseTop] = roundTempo(tempo)
@@ -302,16 +316,18 @@ export function TempoDisplay({
     }
   }, [onPress, showInfo])
 
+  // Vertical strips sit bare on a surface (the dual aura) — transparent, no box chrome.
+  const labelGap = Math.round(fontSize * 0.5)
   const content = (
     <View
       className={className}
       style={{
-        flexDirection: 'row',
+        flexDirection: vertical ? 'column' : 'row',
         alignItems: 'center',
-        backgroundColor: '#1C1C1C',
-        paddingHorizontal: chromePadX,
-        paddingVertical: chromePadY,
-        borderRadius: chromeRadius,
+        backgroundColor: vertical ? 'transparent' : '#1C1C1C',
+        paddingHorizontal: vertical ? 0 : chromePadX,
+        paddingVertical: vertical ? 0 : chromePadY,
+        borderRadius: vertical ? 0 : chromeRadius,
       }}
       {...props}
     >
@@ -325,19 +341,23 @@ export function TempoDisplay({
             color: live ? t['status-live-muted'] : TEXT_TERTIARY,
             letterSpacing: 0.5,
             textTransform: 'uppercase',
-            marginRight: Math.round(fontSize * 0.5),
+            ...(vertical ? { marginBottom: labelGap } : { marginRight: labelGap }),
           }}
         >
           TEMPO
         </Text>
       )}
-      <View style={{ flexDirection: 'row' }} testID="tempo-value">
+      <View
+        style={{ flexDirection: vertical ? 'column' : 'row', alignItems: 'center' }}
+        testID="tempo-value"
+      >
         {live ? (
           <LiveTempoRow
             values={[eccentric, pauseBottom, concentric, pauseTop]}
             live={live}
             fontSize={fontSize}
             readout={liveReadout}
+            orientation={orientation}
           />
         ) : (
           // Static prescription: the phase-coloured lockup (the same colours the live row rests at).
