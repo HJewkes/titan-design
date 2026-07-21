@@ -15,7 +15,7 @@
  */
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ReactNode } from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, type ViewStyle } from 'react-native'
 import { DualVelocityStrip, LiveAuraFrame } from '../../components'
 import type { TempoLivePhase } from '../../components/custom/Workout/TempoDisplay'
 import { getSemanticColors } from '../../theme/tokens/semantic'
@@ -256,6 +256,213 @@ function AmbientClockTempo({ side }: { side: 'L' | 'R' }) {
   )
 }
 
+// =============================================================================
+// ROUND 2 — refined set: paper-textured phase colors (all three) + semantic
+// hit/miss of target cadence (numerals + cadence bar) + a smaller ambient clock.
+// =============================================================================
+
+/** The same fractalNoise tile the north-star `paperSheet` uses, at a stronger opacity so the
+ *  matte texture actually reads on these small chips (the 0.04 surface grain washes out here). */
+const CHIP_GRAIN =
+  `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E` +
+  `%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E` +
+  `%3Crect width='120' height='120' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E")`
+
+/** A muted, PAPER-TEXTURED chip: darker tone + visible grain + a rim-light and soft inner
+ *  shade, so a phase / semantic hue reads as a matte plane that belongs on the warm dark hero. */
+const paperChip = (tone: string): ViewStyle =>
+  ({
+    backgroundColor: tone,
+    backgroundImage: CHIP_GRAIN,
+    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -2px 4px rgba(0,0,0,0.40)',
+  }) as unknown as ViewStyle
+
+// Phase-identity hues, RECONSIDERED as DARKER + paper-textured variants of the same
+// magenta(ecc)/cyan(con) so they cohere with the warm dark hero + aura instead of reading
+// as bright UI chips. Pauses stay a warm neutral. Active phase steps one shade brighter.
+const phaseTone: Record<TempoLivePhase, string> = {
+  eccentric: primitiveRamps.magenta[900],
+  pauseBottom: primitiveColors.charcoal[300],
+  concentric: primitiveRamps.cyan[900],
+  pauseTop: primitiveColors.charcoal[300],
+}
+const phaseToneActive: Record<TempoLivePhase, string> = {
+  eccentric: primitiveRamps.magenta[800],
+  pauseBottom: primitiveColors.charcoal[200],
+  concentric: primitiveRamps.cyan[800],
+  pauseTop: primitiveColors.charcoal[200],
+}
+
+// Semantic hit/miss of target cadence — also DARKER + paper-textured so the green/amber/red
+// belongs on the hero. on = ran on target · off = slightly off · far = well off.
+type ExecStatus = 'on' | 'off' | 'far'
+const execTone: Record<ExecStatus, string> = {
+  on: primitiveRamps.green[700],
+  off: primitiveRamps.amber[600],
+  far: primitiveRamps.red[700],
+}
+
+/** One phase's ACTUAL execution vs its TARGET duration (mocked, representative). */
+interface Exec {
+  key: TempoLivePhase
+  label: string
+  target: number
+  actual: number
+}
+// LEFT (dominant) executes cleanly; RIGHT (lagging) breaks down — rushes the eccentric and
+// the concentric — so the coach sees WHICH phases are failing, mirroring the split aura.
+const EXEC_L: Exec[] = [
+  { key: 'eccentric', label: 'ECC', target: 3.0, actual: 3.1 },
+  { key: 'pauseBottom', label: 'PAUSE', target: 1.0, actual: 1.0 },
+  { key: 'concentric', label: 'CON', target: 1.0, actual: 0.8 },
+  { key: 'pauseTop', label: 'HOLD', target: 0.0, actual: 0.0 },
+]
+const EXEC_R: Exec[] = [
+  { key: 'eccentric', label: 'ECC', target: 3.0, actual: 2.3 },
+  { key: 'pauseBottom', label: 'PAUSE', target: 1.0, actual: 1.4 },
+  { key: 'concentric', label: 'CON', target: 1.0, actual: 0.5 },
+  { key: 'pauseTop', label: 'HOLD', target: 0.0, actual: 0.0 },
+]
+const execStatus = (e: Exec): ExecStatus => {
+  const d = Math.abs(e.actual - e.target)
+  return d <= 0.15 ? 'on' : d <= 0.4 ? 'off' : 'far'
+}
+/** +1 = ran slow (over target, mark ABOVE the line) · −1 = rushed (under, mark BELOW). */
+const execDir = (e: Exec): number => Math.sign(e.actual - e.target)
+/** Deviation seconds mapped to a 0..1 magnitude (0.8s = a full-length mark). */
+const execMag = (e: Exec): number => Math.min(1, Math.abs(e.actual - e.target) / 0.8)
+
+/**
+ * The per-phase hit/miss mark: a paper-textured semantic block diverging from a centre
+ * TARGET line — up (green/amber/red) when the phase ran slow, down when it rushed; an
+ * on-target phase is a small green dot on the line. Length ∝ how far off it ran.
+ */
+function DeviationTick({ e, laneH }: { e: Exec; laneH: number }) {
+  const status = execStatus(e)
+  const half = laneH / 2
+  const barH = Math.max(3, execMag(e) * (half - 2))
+  const slow = execDir(e) > 0
+  return (
+    <View style={{ width: 12, height: laneH }}>
+      <View
+        style={{ position: 'absolute', left: 0, right: 0, top: half - 0.5, height: 1, backgroundColor: alpha(T['text-tertiary'], 0.6) }}
+      />
+      {status === 'on' ? (
+        <View style={[{ position: 'absolute', left: 2, top: half - 4, width: 8, height: 8, borderRadius: 4, overflow: 'hidden' }, paperChip(execTone.on)]} />
+      ) : (
+        <View
+          style={[
+            { position: 'absolute', left: 2, right: 2, height: barH, borderRadius: 2, overflow: 'hidden', ...(slow ? { bottom: half } : { top: half }) },
+            paperChip(execTone[status]),
+          ]}
+        />
+      )}
+    </View>
+  )
+}
+
+// --- Refined 1: HeroNumerals + hit/miss + paper phase colors -------------------
+function HeroNumeralsRefined({ exec }: { exec: Exec[] }) {
+  return (
+    <View style={{ gap: 5 }}>
+      {exec.map((e) => {
+        const active = e.key === ACTIVE_KEY
+        const tone = active ? phaseToneActive[e.key] : phaseTone[e.key]
+        const h = active ? 36 : 30
+        return (
+          <View key={e.key} style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
+            <View
+              style={[
+                { minWidth: 42, height: h, borderRadius: 8, paddingHorizontal: 8, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+                paperChip(tone),
+              ]}
+            >
+              <Text style={{ fontSize: active ? 22 : 18, fontWeight: '800', color: active ? T['text-primary'] : alpha(T['text-primary'], 0.72) }}>
+                {e.actual.toFixed(1)}
+              </Text>
+            </View>
+            <DeviationTick e={e} laneH={h} />
+          </View>
+        )
+      })}
+    </View>
+  )
+}
+
+// --- Refined 2: CadenceBar + hit/miss + paper phase colors ---------------------
+const CADENCE_H2 = 168
+function CadenceBarRefined({ exec }: { exec: Exec[] }) {
+  const weights = exec.map((e) => Math.max(e.target, 0.5))
+  const total = weights.reduce((a, b) => a + b, 0)
+  const segH = (i: number) => (weights[i] / total) * CADENCE_H2
+  return (
+    <View style={{ flexDirection: 'row', gap: 7, height: CADENCE_H2 }}>
+      {/* segmented bar — paper phase-hue segments sized ∝ TARGET seconds */}
+      <View style={{ width: 20 }}>
+        {exec.map((e, i) => {
+          const active = e.key === ACTIVE_KEY
+          const tone = active ? phaseToneActive[e.key] : phaseTone[e.key]
+          return (
+            <View
+              key={e.key}
+              style={[{ height: segH(i), marginTop: i ? 3 : 0, borderRadius: 4, overflow: 'hidden' }, paperChip(tone)]}
+            />
+          )
+        })}
+      </View>
+      {/* deviation rail — did each phase hit its target? */}
+      <View style={{ width: 12 }}>
+        {exec.map((e, i) => (
+          <View key={e.key} style={{ height: segH(i), marginTop: i ? 3 : 0 }}>
+            <DeviationTick e={e} laneH={segH(i)} />
+          </View>
+        ))}
+      </View>
+      {/* secondary actual-second labels */}
+      <View>
+        {exec.map((e, i) => {
+          const active = e.key === ACTIVE_KEY
+          return (
+            <View key={e.key} style={{ height: segH(i), marginTop: i ? 3 : 0, justifyContent: 'center' }}>
+              <Text style={{ color: active ? T['text-primary'] : T['text-tertiary'], fontSize: 10, fontWeight: '700', fontFamily: FONT_UI }}>
+                {e.actual.toFixed(1)}
+              </Text>
+            </View>
+          )
+        })}
+      </View>
+    </View>
+  )
+}
+
+// --- Refined 3: smaller AmbientClock + paper phase colors ----------------------
+function AmbientClockSmaller({ exec }: { exec: Exec[] }) {
+  const con = exec.find((e) => e.key === ACTIVE_KEY)!
+  return (
+    <View style={{ alignItems: 'center', gap: 5 }}>
+      <View style={[{ paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6, overflow: 'hidden' }, paperChip(phaseToneActive.concentric)]}>
+        <Text style={{ color: T['text-primary'], fontSize: 10, fontWeight: '800', letterSpacing: 1.5, fontFamily: FONT_UI }}>
+          {con.label}
+        </Text>
+      </View>
+      <Text style={{ color: T['text-primary'], fontSize: 30, lineHeight: 32, fontWeight: '800', fontFamily: FONT_HEAD }}>
+        {ACTIVE_COUNTDOWN}
+      </Text>
+      <Text style={{ color: T['text-tertiary'], fontSize: 11, fontWeight: '700', letterSpacing: 1.2, fontFamily: FONT_UI }}>
+        {roundTempo(TEMPO)
+          .map((n) => `${n}`)
+          .join(' · ')}
+      </Text>
+    </View>
+  )
+}
+
+/** Refined gutter renderer: LEFT uses the clean profile, RIGHT the breaking-down one. */
+const refinedTempo =
+  (Comp: (p: { exec: Exec[] }) => ReactNode) =>
+  (side: 'L' | 'R'): ReactNode =>
+    Comp({ exec: side === 'L' ? EXEC_L : EXEC_R })
+
 // --- Presentation scaffolding -------------------------------------------------
 function SectionTitle({ children }: { children: ReactNode }) {
   return <Text style={{ fontSize: 16, fontWeight: '800', fontFamily: FONT_HEAD, color: T['text-primary'] }}>{children}</Text>
@@ -369,6 +576,108 @@ export const Overview: Story = {
         <Panel width={560}>
           <Kicker>3 · AMBIENT CLOCK</Kicker>
           <MiniDualHero gutter={92} renderTempo={(side) => <AmbientClockTempo side={side} />} />
+        </Panel>
+      </View>
+    </Page>
+  ),
+}
+
+// =============================================================================
+// ROUND 2 — refined story exports
+// =============================================================================
+
+/** R1 — HeroNumerals refined: paper-textured phase hues + per-phase hit/miss of target. */
+export const HeroNumeralsRefinedStory: Story = {
+  name: '4 · Hero numerals — refined (hit/miss + paper)',
+  render: () => (
+    <Page>
+      <View style={{ gap: 4 }}>
+        <SectionTitle>Hero numerals — refined</SectionTitle>
+        <Caption>
+          Phase identity returns as color, but DARKER + paper-textured (muted magenta ecc / cyan con / warm-neutral pauses),
+          so the chips belong on the warm dark hero instead of reading as bright UI. Each numeral is the ACTUAL duration, and a
+          paper-textured semantic mark diverges from the target line per phase — up when the phase ran slow, down when it rushed,
+          a green dot when on target (green / amber / red = on / slightly off / well off). LEFT executes cleanly; RIGHT rushes
+          the eccentric + concentric, so a coach sees which phases are breaking down at a glance.
+        </Caption>
+      </View>
+      <Panel width={860}>
+        <Kicker>IN CONTEXT · dual hero · L clean / R rushing</Kicker>
+        <MiniDualHero gutter={74} renderTempo={refinedTempo((p) => <HeroNumeralsRefined {...p} />)} />
+      </Panel>
+    </Page>
+  ),
+}
+
+/** R2 — CadenceBar refined: paper phase-hue segments + a per-phase hit/miss deviation rail. */
+export const CadenceBarRefinedStory: Story = {
+  name: '5 · Cadence bar — refined (hit/miss + paper)',
+  render: () => (
+    <Page>
+      <View style={{ gap: 4 }}>
+        <SectionTitle>Cadence bar — refined</SectionTitle>
+        <Caption>
+          The segmented bar keeps its rhythm-with-the-velocity-bars form, now with paper-textured, darker phase hues sized ∝
+          each phase’s target seconds. A deviation rail beside it carries the semantic hit/miss — the same paper-textured
+          diverging marks (slow above the target line, rushed below) — so the bar shows the prescribed shape and the rail shows
+          how the actual execution diverged, per phase.
+        </Caption>
+      </View>
+      <Panel width={860}>
+        <Kicker>IN CONTEXT · dual hero · segments ∝ target · rail = actual vs target</Kicker>
+        <MiniDualHero gutter={78} renderTempo={refinedTempo((p) => <CadenceBarRefined {...p} />)} />
+      </Panel>
+    </Page>
+  ),
+}
+
+/** R3 — AmbientClock smaller: dialed-back countdown + a paper-textured phase-hue label. */
+export const AmbientClockSmallerStory: Story = {
+  name: '6 · Ambient clock — smaller + paper',
+  render: () => (
+    <Page>
+      <View style={{ gap: 4 }}>
+        <SectionTitle>Ambient clock — smaller</SectionTitle>
+        <Caption>
+          Still foregrounds the current phase, but the countdown is dialed back to a more restrained size so it stays hero
+          content without shouting. The phase label sits in a paper-textured phase-hue chip (muted cyan for concentric),
+          cohering with the warm hero; the full prescription stays small and quiet below.
+        </Caption>
+      </View>
+      <Panel width={860}>
+        <Kicker>IN CONTEXT · dual hero · restrained countdown</Kicker>
+        <MiniDualHero gutter={84} renderTempo={refinedTempo((p) => <AmbientClockSmaller {...p} />)} />
+      </Panel>
+    </Page>
+  ),
+}
+
+/** Refined overview — the three refined treatments tiled for comparison. */
+export const RefinedOverview: Story = {
+  name: 'Refined overview · three, retuned',
+  render: () => (
+    <Page>
+      <View style={{ gap: 4 }}>
+        <SectionTitle>Hero tempo — refined set</SectionTitle>
+        <Caption>
+          The three treatments retuned: paper-textured, darker phase hues on all of them (magenta ecc / cyan con), semantic
+          hit/miss of the target cadence on the numerals + cadence bar (paper-textured green / amber / red diverging marks), and
+          a smaller ambient clock. LEFT executes cleanly, RIGHT rushes — the tempo now tells the coach which phases fail, not
+          just the numbers.
+        </Caption>
+      </View>
+      <View style={{ flexDirection: 'row', gap: 20, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+        <Panel width={560}>
+          <Kicker>4 · HERO NUMERALS — REFINED</Kicker>
+          <MiniDualHero gutter={74} renderTempo={refinedTempo((p) => <HeroNumeralsRefined {...p} />)} />
+        </Panel>
+        <Panel width={560}>
+          <Kicker>5 · CADENCE BAR — REFINED</Kicker>
+          <MiniDualHero gutter={78} renderTempo={refinedTempo((p) => <CadenceBarRefined {...p} />)} />
+        </Panel>
+        <Panel width={560}>
+          <Kicker>6 · AMBIENT CLOCK — SMALLER</Kicker>
+          <MiniDualHero gutter={84} renderTempo={refinedTempo((p) => <AmbientClockSmaller {...p} />)} />
         </Panel>
       </View>
     </Page>
