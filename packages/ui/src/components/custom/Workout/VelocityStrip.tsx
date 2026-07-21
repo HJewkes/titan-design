@@ -197,6 +197,18 @@ function bandColor(band: VelocityZoneBandProp): string {
   return bandIdToEffortColor[band.id] ?? VEL_COLORS.green
 }
 
+/**
+ * The zone → bar-color resolver, single-sourced so every variant (and the dual
+ * diverging sibling) colors reps identically: profile-derived `zones` map through
+ * {@link bandColor}; the default (no-zones) path uses the built-in 4-color scale.
+ * Color is ALWAYS the velocity zone — never the voltra side.
+ */
+function makeBarColorFor(zones?: readonly VelocityZoneBandProp[]): (v: number) => string {
+  const hasZones = zones != null && zones.length > 0
+  return (v: number): string =>
+    hasZones ? bandColor(classifyBand(v, zones)!) : zoneHexMap[getVelocityZoneColor(v)]
+}
+
 function getLossStyle(loss: number): Record<string, string> | null {
   if (loss > 25) return { color: VEL_COLORS.red }
   if (loss > 20) return { color: VEL_COLORS.orange }
@@ -695,6 +707,362 @@ function HeroVelocityChart({
   )
 }
 
+// --- Dual (bilateral) diverging chart ----------------------------------------
+// The two-device (LEFT + RIGHT voltra) treatment. Instead of two stacked single
+// heroes with independent baselines, ONE diverging chart shares a horizontal centre
+// axis: LEFT reps grow UP, RIGHT reps grow DOWN, one mirrored pair per rep index. The
+// asymmetry (left-dominant / right-lagging) reads pre-attentively as the silhouette.
+// It reuses VelocityStrip's slot model ({@link buildSlots}/{@link VelocitySlot}), its
+// zone color scale ({@link makeBarColorFor}), the hero geometry constants, and the
+// live-rep entrance ({@link useLiveRepPop}) — side is POSITION only, never hue.
+
+/** One voltra's velocity stream — the SAME shape VelocityStrip accepts (one of these). */
+export interface DualVelocityStream {
+  /** Per-rep MEAN concentric velocity (m/s) for this side. */
+  velocities?: number[]
+  /** A structured set descriptor for this side (drives the typed slot vocabulary). */
+  set?: VelocitySet
+}
+
+export interface DualVelocityStripProps extends ViewProps {
+  /** LEFT voltra stream — drawn growing UP from the centre axis. */
+  left: DualVelocityStream
+  /** RIGHT voltra stream — drawn growing DOWN from the centre axis. */
+  right: DualVelocityStream
+  /**
+   * Optional velocity-zone bands (shape-compatible with WA's `VelocityZones.bands`),
+   * shared with {@link VelocityStrip}. Colors the reps by zone on BOTH sides; side is
+   * never encoded by hue. When omitted the built-in default scale is used.
+   */
+  zones?: readonly VelocityZoneBandProp[]
+  /**
+   * Planned rep count. Reps beyond a side's performed count draw as mirrored dashed
+   * todo stubs (same "3 of 8 done" read as the single hero), on both wings.
+   */
+  targetReps?: number
+  /** Index of the most-recently-completed rep; that mirrored pair animates in (hero only). */
+  liveRepIndex?: number
+  /**
+   * `hero` — the across-the-room wall scale: tall wings, per-rep m/s value labels, and
+   * a dashed running-best reference line per side. `rail` — the compact rail-expanded
+   * scale: the same diverging form, no labels / reference lines.
+   */
+  variant?: 'hero' | 'rail'
+  /**
+   * Bar-height scaling, shared across BOTH wings so the L/R asymmetry reads as bar
+   * length against one scale. `peak` (default) = the pair's max +headroom; `fixed` =
+   * a fixed velocity ceiling.
+   */
+  scale?: 'peak' | 'fixed'
+  /** Total plot height (px), split evenly into the up (L) and down (R) wings. */
+  height?: number
+  className?: string
+}
+
+/** Scale-dependent chrome for the diverging chart, reusing the hero geometry constants. */
+const DIVERGING_CHROME = {
+  hero: {
+    gap: HERO_BAR_GAP,
+    maxCol: HERO_BAR_MAX_WIDTH,
+    labelBand: HERO_LABEL_HEADROOM,
+    radius: HERO_BAR_RADIUS,
+    minBar: HERO_MIN_BAR_HEIGHT,
+    barPct: '64%',
+    showValues: true,
+    showReference: true,
+  },
+  rail: {
+    gap: 3,
+    maxCol: 26,
+    labelBand: 0,
+    radius: 2,
+    minBar: 3,
+    barPct: '82%',
+    showValues: false,
+    showReference: false,
+  },
+} as const
+
+/** Default `hero` diverging height (px) — matches the single hero. */
+const DUAL_HERO_HEIGHT = HERO_HEIGHT
+/** Default `rail` diverging height (px) — compact enough to sit inside a rail slot. */
+const DUAL_RAIL_HEIGHT = 96
+
+/** Resolve one side's stream to its done-velocity array + typed slot list (reusing buildSlots). */
+function resolveStream(
+  stream: DualVelocityStream,
+  targetReps?: number
+): { done: number[]; slots: VelocitySlot[] } {
+  if (stream.set) {
+    return { done: deriveDoneVelocities(stream.set), slots: buildSlots(stream.set) }
+  }
+  const done = stream.velocities ?? []
+  if (targetReps != null && targetReps > done.length) {
+    // Synthesize a straight set so the unperformed remainder renders as todo stubs.
+    return { done, slots: buildSlots({ type: 'straight', velocities: done, planned: targetReps }) }
+  }
+  const slots = done.map<VelocitySlot>((v, i) => ({
+    kind: 'rep',
+    velocity: v,
+    leadingGap: i === 0 ? 0 : REP_GAP,
+  }))
+  return { done, slots }
+}
+
+/** Round only the away-from-axis end of a wing bar (top for the up wing, bottom for down). */
+function wingRadius(grow: 'up' | 'down', radius: number): ViewStyle {
+  return grow === 'up'
+    ? { borderTopLeftRadius: radius, borderTopRightRadius: radius }
+    : { borderBottomLeftRadius: radius, borderBottomRightRadius: radius }
+}
+
+type DivergingChrome = (typeof DIVERGING_CHROME)[keyof typeof DIVERGING_CHROME]
+
+interface WingBarProps {
+  slot: VelocitySlot
+  grow: 'up' | 'down'
+  c: DivergingChrome
+  color: string
+  barPx: number
+  liveScale: Animated.Value
+  isLive: boolean
+  testID: string
+}
+
+/**
+ * One slot's bar for a wing: a filled zone-colored bar for a performed rep (the live
+ * rep carries the pop), a dashed charcoal stub for a planned `todo` rep, a solid cyan
+ * stub for a range's `variable` window, and a dashed cyan outline for the open `continue`.
+ * Rounded only on the away-from-axis end so the mirrored pair meets cleanly at the axis.
+ */
+function WingBar({ slot, grow, c, color, barPx, liveScale, isLive, testID }: WingBarProps) {
+  const r = wingRadius(grow, c.radius)
+  const stub = c.minBar * 2
+  if (slot.kind === 'todo') {
+    return (
+      <View
+        style={{ width: c.barPct, height: stub, borderWidth: 1, borderStyle: 'dashed', borderColor: HERO_PENDING_COLOR, ...r }}
+        testID={`${testID}-todo`}
+      />
+    )
+  }
+  if (slot.kind === 'variable') {
+    return (
+      <View
+        style={{ width: c.barPct, height: stub, backgroundColor: SET_STRIP_VARIABLE_COLOR, ...r }}
+        testID={`${testID}-variable`}
+      />
+    )
+  }
+  if (slot.kind === 'continue') {
+    return (
+      <View
+        style={{ width: c.barPct, height: stub, borderWidth: 1, borderStyle: 'dashed', borderColor: CONTINUE_OUTLINE, ...r }}
+        testID={`${testID}-continue`}
+      />
+    )
+  }
+  const barStyle: ViewStyle = { width: c.barPct, height: barPx, backgroundColor: color, ...r }
+  return isLive ? (
+    <Animated.View style={[barStyle, { transform: [{ scale: liveScale }] }]} testID={testID} />
+  ) : (
+    <View style={barStyle} testID={testID} />
+  )
+}
+
+/**
+ * The dual-voltra (bilateral) DIVERGING per-rep velocity chart. LEFT reps grow UP,
+ * RIGHT reps grow DOWN from one shared centre axis; one mirrored pair per rep index.
+ * Reuses VelocityStrip's slot vocabulary, zone colors, hero geometry, and live-rep pop.
+ * Single-voltra sets keep using {@link VelocityStrip} (`variant="hero"`) — unchanged.
+ */
+export function DualVelocityStrip({
+  left,
+  right,
+  zones,
+  targetReps,
+  liveRepIndex,
+  variant = 'hero',
+  scale = 'peak',
+  height,
+  className,
+  ...props
+}: DualVelocityStripProps) {
+  const c = DIVERGING_CHROME[variant]
+  const resolvedHeight = height ?? (variant === 'hero' ? DUAL_HERO_HEIGHT : DUAL_RAIL_HEIGHT)
+  const L = resolveStream(left, targetReps)
+  const R = resolveStream(right, targetReps)
+  const barColorFor = makeBarColorFor(zones)
+
+  // ONE shared scale across both wings so the L/R asymmetry reads as length, not two scales.
+  const maxVelocity = Math.max(...L.done, ...R.done, 0)
+  const scaleDenom = scaleDenominator(scale, maxVelocity)
+  const bestL = Math.max(...L.done, 0)
+  const bestR = Math.max(...R.done, 0)
+
+  // Live-rep entrance on the newest mirrored pair (one Animated.Value per side).
+  const liveVelL = liveRepIndex != null ? L.done[liveRepIndex] : undefined
+  const liveVelR = liveRepIndex != null ? R.done[liveRepIndex] : undefined
+  const isNewPeakL = liveVelL != null && bestL > 0 && liveVelL === bestL
+  const isNewPeakR = liveVelR != null && bestR > 0 && liveVelR === bestR
+  const liveScaleL = useLiveRepPop(variant === 'hero', liveRepIndex, liveVelL, isNewPeakL)
+  const liveScaleR = useLiveRepPop(variant === 'hero', liveRepIndex, liveVelR, isNewPeakR)
+
+  const [plotW, setPlotW] = useState(0)
+  const onPlotLayout = (e: LayoutChangeEvent) => setPlotW(e.nativeEvent.layout.width)
+
+  const plotHalf = resolvedHeight / 2
+  const maxBar = Math.max(0, plotHalf - c.labelBand)
+  const barPx = (velocity: number | undefined): number =>
+    velocity == null || scaleDenom <= 0
+      ? c.minBar
+      : Math.max(c.minBar, Math.min(1, velocity / scaleDenom) * maxBar)
+
+  const columns = Math.max(L.slots.length, R.slots.length)
+  const doneL = L.done.length
+  const doneR = R.done.length
+
+  // Reference lines (hero only) — the per-side running best, mirrored above / below the axis.
+  const refPxL = bestL > 0 && scaleDenom > 0 ? Math.min(maxBar, (bestL / scaleDenom) * maxBar) : 0
+  const refPxR = bestR > 0 && scaleDenom > 0 ? Math.min(maxBar, (bestR / scaleDenom) * maxBar) : 0
+
+  // When bars get thin, keep only the peak + live labels per side so they don't overlap.
+  const barWidth =
+    plotW > 0 && columns > 0
+      ? Math.min(c.maxCol, (plotW - c.gap * (columns - 1)) / columns)
+      : c.maxCol
+  const labelsCrowded = c.showValues && plotW > 0 && barWidth < HERO_LABEL_MIN_BAR_WIDTH
+  const gap = plotW === 0 ? c.gap : barWidth < 16 ? 2 : barWidth < 28 ? 4 : c.gap
+  const peakIndex = (done: number[]): number =>
+    done.length === 0 ? -1 : done.reduce((best, v, i) => (v > done[best] ? i : best), 0)
+  const peakL = peakIndex(L.done)
+  const peakR = peakIndex(R.done)
+  const showLabel = (i: number, peak: number): boolean =>
+    !labelsCrowded || i === peak || i === liveRepIndex
+
+  const label =
+    `Dual velocity chart, left ${doneL} of ${Math.max(doneL, targetReps ?? doneL)} reps, ` +
+    `right ${doneR} of ${Math.max(doneR, targetReps ?? doneR)} reps`
+  const { style: externalStyle, ...restProps } = props
+
+  return (
+    <View
+      className={className}
+      style={[{ height: resolvedHeight, position: 'relative' }, externalStyle]}
+      accessibilityRole="image"
+      accessibilityLabel={label}
+      testID="dual-velocity-strip"
+      {...restProps}
+    >
+      {/* Per-side running-best reference lines (hero) — how far each side has fallen from best. */}
+      {c.showReference && refPxL > 0 && (
+        <View
+          accessibilityElementsHidden
+          pointerEvents="none"
+          style={{ position: 'absolute', left: 0, right: 0, top: plotHalf - refPxL, borderTopWidth: 1, borderStyle: 'dashed', borderColor: HERO_REFERENCE_COLOR }}
+          testID="dual-velocity-reference-L"
+        />
+      )}
+      {c.showReference && refPxR > 0 && (
+        <View
+          accessibilityElementsHidden
+          pointerEvents="none"
+          style={{ position: 'absolute', left: 0, right: 0, top: plotHalf + refPxR, borderTopWidth: 1, borderStyle: 'dashed', borderColor: HERO_REFERENCE_COLOR }}
+          testID="dual-velocity-reference-R"
+        />
+      )}
+
+      {/* The centre axis — same weight/color as the single hero's baseline (charcoal, 2px). */}
+      <View
+        accessibilityElementsHidden
+        pointerEvents="none"
+        style={{ position: 'absolute', left: 0, right: 0, top: plotHalf - 1, height: 2, backgroundColor: HERO_PENDING_COLOR }}
+        testID="dual-velocity-axis"
+      />
+
+      {/* Small L ▲ / R ▼ side tags flush to the axis — side is position, reinforced by a tag. */}
+      <Text
+        className="text-text-tertiary"
+        accessibilityElementsHidden
+        style={{ position: 'absolute', left: 0, top: plotHalf - c.labelBand - 15, fontSize: variant === 'hero' ? 12 : 9, fontWeight: '800', letterSpacing: 0.5 }}
+      >
+        L ▲
+      </Text>
+      <Text
+        className="text-text-tertiary"
+        accessibilityElementsHidden
+        style={{ position: 'absolute', left: 0, top: plotHalf + c.labelBand + 3, fontSize: variant === 'hero' ? 12 : 9, fontWeight: '800', letterSpacing: 0.5 }}
+      >
+        R ▼
+      </Text>
+
+      {/* Mirrored per-rep columns. */}
+      <View
+        onLayout={onPlotLayout}
+        style={{ flexDirection: 'row', gap, height: '100%', alignItems: 'stretch' }}
+      >
+        {Array.from({ length: columns }, (_, i) => {
+          const lSlot = L.slots[i]
+          const rSlot = R.slots[i]
+          return (
+            <View key={i} accessibilityElementsHidden style={{ flex: 1, maxWidth: c.maxCol, height: '100%' }}>
+              {/* Up wing — LEFT. */}
+              <View style={{ height: plotHalf, justifyContent: 'flex-end', alignItems: 'center' }}>
+                {c.showValues && (
+                  <View style={{ height: c.labelBand, justifyContent: 'flex-end' }}>
+                    {lSlot?.kind === 'rep' && showLabel(i, peakL) && (
+                      <Text className="text-text-primary" style={{ fontSize: 12, fontWeight: '800' }} testID={`dual-velocity-label-L-${i}`}>
+                        {formatVelocity(lSlot.velocity ?? 0)}
+                      </Text>
+                    )}
+                  </View>
+                )}
+                {lSlot && (
+                  <WingBar
+                    slot={lSlot}
+                    grow="up"
+                    c={c}
+                    color={barColorFor(lSlot.velocity ?? 0)}
+                    barPx={barPx(lSlot.velocity)}
+                    liveScale={liveScaleL}
+                    isLive={i === liveRepIndex && lSlot.kind === 'rep'}
+                    testID={`dual-velocity-bar-L-${i}`}
+                  />
+                )}
+              </View>
+
+              {/* Down wing — RIGHT. */}
+              <View style={{ height: plotHalf, justifyContent: 'flex-start', alignItems: 'center' }}>
+                {rSlot && (
+                  <WingBar
+                    slot={rSlot}
+                    grow="down"
+                    c={c}
+                    color={barColorFor(rSlot.velocity ?? 0)}
+                    barPx={barPx(rSlot.velocity)}
+                    liveScale={liveScaleR}
+                    isLive={i === liveRepIndex && rSlot.kind === 'rep'}
+                    testID={`dual-velocity-bar-R-${i}`}
+                  />
+                )}
+                {c.showValues && (
+                  <View style={{ height: c.labelBand, justifyContent: 'flex-start' }}>
+                    {rSlot?.kind === 'rep' && showLabel(i, peakR) && (
+                      <Text className="text-text-primary" style={{ fontSize: 12, fontWeight: '800' }} testID={`dual-velocity-label-R-${i}`}>
+                        {formatVelocity(rSlot.velocity ?? 0)}
+                      </Text>
+                    )}
+                  </View>
+                )}
+              </View>
+            </View>
+          )
+        })}
+      </View>
+    </View>
+  )
+}
+
 export function VelocityStrip({
   velocities,
   set,
@@ -734,8 +1102,7 @@ export function VelocityStrip({
   const scaleDenom = scaleDenominator(scale, maxVelocity)
 
   const hasZones = zones != null && zones.length > 0
-  const barColorFor = (v: number): string =>
-    hasZones ? bandColor(classifyBand(v, zones)!) : zoneHexMap[getVelocityZoneColor(v)]
+  const barColorFor = makeBarColorFor(zones)
   const slotColor = (slot: VelocitySlot): string => {
     if (slot.kind === 'rep') return barColorFor(slot.velocity ?? 0)
     if (slot.kind === 'todo') return TODO_COLOR

@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { ScrollView, View } from 'react-native'
+import { View } from 'react-native'
 import { SessionRail } from '../../components'
-import { ExerciseHeader, LiveView } from './LiveView'
+import { ExerciseHeader, LiveView, DualLiveView } from './LiveView'
 import { RestView } from './RestView'
 import {
   dashboardFixture,
@@ -27,9 +27,9 @@ export interface LivePageProps {
  * children slot): the persistent {@link SessionRail} context beside a swappable stage
  * ({@link LiveView} mid-set / {@link RestView} between sets).
  *
- * `live-dual` renders a dual-mode (bilateral) exercise as TWO stacked {@link LiveView}
- * layers — one per voltra (left/right) — the v1 treatment for two-device sets. A
- * unified split-bar view is a later exploration.
+ * `live-dual` renders a dual-mode (bilateral) exercise as ONE {@link DualLiveView} — a
+ * diverging velocity chart with a shared centre axis (LEFT grows up, RIGHT grows down),
+ * so the left/right asymmetry reads as a single silhouette instead of two stacked heroes.
  *
  * NOT a published component — lab-scoped composition of production primitives only.
  * The rail footer pace read-out is intentionally OMITTED (NO-DATA — no store field yet).
@@ -79,23 +79,11 @@ export function LivePage({ variant = 'live', model = dashboardFixture }: LivePag
 }
 
 /**
- * Dual-mode stage: two stacked live layers, one per voltra (left dominant, right lags).
- *
- * The stage SCROLLS so two full live read-outs never clip on a height-restricted wall.
- * Each layer also compresses its height-drivers (shorter hero, tighter gaps — see
- * {@link LiveView}'s `side`/`dual` handling) so a tall wall fits both with little or no
- * scroll; a trimmed-per-layer treatment is a later option if scrolling proves awkward.
+ * Dual-mode stage: ONE diverging live layer for both voltras (left dominant, right lags).
+ * The two per-voltra streams share a centre axis — LEFT reps grow up, RIGHT grow down — so
+ * the whole bilateral set reads in one hero's vertical space instead of two stacked heroes.
  */
 function DualLiveStage({ model }: { model: DashboardModel }) {
   const { left, right } = deriveDualModel(model)
-  return (
-    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1 }}>
-      <View style={{ flex: 1, minHeight: 340 }}>
-        <LiveView model={left} side="left" />
-      </View>
-      <View style={{ flex: 1, minHeight: 340 }}>
-        <LiveView model={right} side="right" />
-      </View>
-    </ScrollView>
-  )
+  return <DualLiveView left={left} right={right} />
 }
