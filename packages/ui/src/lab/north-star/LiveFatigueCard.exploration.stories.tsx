@@ -1,0 +1,713 @@
+// Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
+/**
+ * `Lab/North Star/Live Fatigue Card` — DESIGN EXPLORATION (not shipped).
+ *
+ * The redesigned LIVE PANEL for the wall dashboard. It is two things:
+ *   1. the velocity HERO (primary) — the shipped `VelocityStrip` hero with the
+ *      velocity-loss threshold BANDS layered behind the bars (P3);
+ *   2. a secondary UNIFIED FATIGUE CARD (P2) that replaces the old separate
+ *      stop-set-decision + fatigue-vector cards with ONE card carrying:
+ *        • the novel combined GHOST-TRAIL + PHASE-ANNOTATED current-rep chart (P1),
+ *        • a compact ROM-progression read, and
+ *        • three fatigue status lights (velocity-loss · ROM · tempo) + a verdict.
+ *
+ * CHANNEL DISCIPLINE — three questions, three deliberately distinct color languages:
+ *   • The HERO owns the one saturated VELOCITY-ZONE hue (green→red ramp, by m/s).
+ *   • The COMBINED CHART owns a diverging TEMPO-ADHERENCE color: warm when a phase
+ *     runs FASTER than its prescribed tempo (rushing), cool when SLOWER (lagging),
+ *     neutral parchment when on-tempo — with a per-phase base tone so phase identity
+ *     and tempo adherence ride the ONE line color together. Phase is reinforced by
+ *     geometry (eccentric below the zero axis, concentric above) + the target-tempo
+ *     bands behind the line.
+ *   • ROM is neutral PARCHMENT geometry; the status lights use status tones only.
+ *
+ * Mocked realistically: a fatiguing 8-rep cable press taken deep — velocity decays,
+ * ROM shrinks, tempo degrades, and reps 4 & 7 are cheats (dropped/fast eccentric +
+ * cut ROM, speed propped). Units honest: velocity m/s, load lb, time s. Nothing here
+ * modifies a shipped component; the hero CONSUMES the shipped VelocityStrip.
+ */
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import type { ReactNode } from 'react'
+import { View, Text, type ViewStyle } from 'react-native'
+import { LiveAuraFrame, VelocityStrip } from '../../components'
+import { getSemanticColors } from '../../theme/tokens/semantic'
+import { primitiveColors, primitiveRamps } from '../../theme/tokens/primitives'
+import { WORKOUT_TOKENS } from '../../theme/workout-tokens'
+import { alpha } from '../../utils/colors'
+import { formatVelocity } from '../../utils/workout-format'
+import { paperSheet, insetWell, debossLabel } from './surfaces'
+
+const C = getSemanticColors('dark')
+const PAGE_BG = primitiveColors.charcoal[900]
+const PANEL_BG = primitiveColors.charcoal[800]
+const FONT_HEAD = '"Space Grotesk", sans-serif'
+const FONT_UI = '"Nunito Sans", sans-serif'
+const FONT_MONO = 'monospace'
+
+// VELOCITY-ZONE ramp (the hero's one saturated hue), mirrors the shipped strip.
+const S = WORKOUT_TOKENS.scale
+function velColor(ms: number): string {
+  if (ms >= 1.0) return S.green
+  if (ms >= 0.75) return S.yellow
+  if (ms >= 0.5) return S.orange
+  return S.red
+}
+// Neutral geometry — parchment / steel. Never a hue.
+const PARCH = C['text-primary']
+const AXIS = alpha(C['text-primary'], 0.16)
+const GRID = alpha(C['text-primary'], 0.08)
+const ROM_STD_MM = 900 // full working range
+
+// =================================================================================
+// Mock — a fatiguing 8-rep cable press (ported from the CurvesPerRep exploration).
+// =================================================================================
+interface RepSpec {
+  romMm: number
+  eccMs: number
+  pBMs: number
+  conMs: number
+  pTMs: number
+  eccControl: number // 1 = controlled lowering, 0 = dropped / fast
+  conPower: number // 1 = explosive, 0 = grinding
+  loadLb: number
+  note: string
+}
+const SPECS: RepSpec[] = [
+  { romMm: 900, eccMs: 2600, pBMs: 420, conMs: 950, pTMs: 300, eccControl: 0.95, conPower: 0.9, loadLb: 62, note: 'textbook' },
+  { romMm: 895, eccMs: 2650, pBMs: 380, conMs: 1000, pTMs: 250, eccControl: 0.94, conPower: 0.86, loadLb: 62, note: 'textbook' },
+  { romMm: 880, eccMs: 2500, pBMs: 340, conMs: 1100, pTMs: 160, eccControl: 0.9, conPower: 0.78, loadLb: 62, note: 'slight slow' },
+  { romMm: 715, eccMs: 1300, pBMs: 120, conMs: 900, pTMs: 90, eccControl: 0.34, conPower: 0.82, loadLb: 62, note: 'CHEAT — dropped ecc + cut ROM, speed propped' },
+  { romMm: 840, eccMs: 2300, pBMs: 300, conMs: 1500, pTMs: 90, eccControl: 0.85, conPower: 0.44, loadLb: 62, note: 'honest grind — control intact' },
+  { romMm: 800, eccMs: 2000, pBMs: 240, conMs: 1750, pTMs: 80, eccControl: 0.68, conPower: 0.34, loadLb: 62, note: 'grinding' },
+  { romMm: 645, eccMs: 1200, pBMs: 100, conMs: 1650, pTMs: 70, eccControl: 0.3, conPower: 0.4, loadLb: 62, note: 'CHEAT — dropped ecc, gutted ROM' },
+  { romMm: 600, eccMs: 1250, pBMs: 70, conMs: 2300, pTMs: 60, eccControl: 0.34, conPower: 0.24, loadLb: 62, note: 'spent — short + long grind' },
+]
+
+/** The PRESCRIBED tempo (ms per phase) — the target the line color is judged against. */
+const TARGET = { ecc: 2600, pauseBottom: 400, con: 950, pauseTop: 280 }
+const TARGET_TOTAL = TARGET.ecc + TARGET.pauseBottom + TARGET.con + TARGET.pauseTop
+
+type Phase = 'ecc' | 'pauseBottom' | 'con' | 'pauseTop'
+interface Sample {
+  t: number
+  vel: number // m/s signed (con +, ecc −)
+  phase: Phase
+}
+function specTotal(s: RepSpec): number {
+  return s.eccMs + s.pBMs + s.conMs + s.pTMs
+}
+function hashNoise(i: number): number {
+  const x = Math.sin(i * 127.1 + 11.7) * 43758.5453
+  return x - Math.floor(x)
+}
+function eccVelMm(u: number, s: RepSpec): number {
+  const mean = s.romMm / (s.eccMs / 1000)
+  const peak = mean * (Math.PI / 2)
+  const skew = 0.5 - (1 - s.eccControl) * 0.22
+  const sharp = 1 + (1 - s.eccControl) * 1.3
+  const hump = Math.pow(Math.sin(Math.PI * Math.pow(u, skew)), sharp)
+  return peak * hump * (1 + (1 - s.eccControl) * 0.7)
+}
+function conVelMm(u: number, s: RepSpec): number {
+  const mean = s.romMm / (s.conMs / 1000)
+  const peak = mean * (Math.PI / 2)
+  const skew = 0.5 - s.conPower * 0.18
+  const stick = (1 - s.conPower) * 0.32 * Math.exp(-Math.pow((u - 0.46) / 0.16, 2))
+  const shape = Math.max(0.02, Math.sin(Math.PI * Math.pow(u, skew)) - stick)
+  return peak * shape * (0.72 + s.conPower * 0.5)
+}
+function genSamples(s: RepSpec): Sample[] {
+  const segs: Array<{ phase: Phase; dur: number }> = [
+    { phase: 'ecc', dur: s.eccMs },
+    { phase: 'pauseBottom', dur: s.pBMs },
+    { phase: 'con', dur: s.conMs },
+    { phase: 'pauseTop', dur: s.pTMs },
+  ]
+  const total = specTotal(s)
+  const dt = 1000 / 11
+  const out: Sample[] = []
+  for (let t = 0; t <= total + 1; t += dt) {
+    let acc = 0
+    let phase: Phase = 'pauseTop'
+    let u = 0
+    for (let k = 0; k < segs.length; k++) {
+      if (t < acc + segs[k].dur || k === segs.length - 1) {
+        phase = segs[k].phase
+        u = Math.min(1, Math.max(0, (t - acc) / Math.max(segs[k].dur, 1)))
+        break
+      }
+      acc += segs[k].dur
+    }
+    let velMm = 0
+    if (phase === 'ecc') velMm = -eccVelMm(u, s)
+    else if (phase === 'con') velMm = conVelMm(u, s)
+    velMm *= 1 + (hashNoise(out.length) - 0.5) * 0.05
+    out.push({ t, vel: velMm / 1000, phase })
+  }
+  return out
+}
+
+const SETS: Sample[][] = SPECS.map(genSamples)
+const TOTALS: number[] = SPECS.map(specTotal)
+/** Per-rep MEAN concentric velocity (m/s) — mm/ms == m/s — the hero's + VL's metric. */
+const MEAN_VEL: number[] = SPECS.map((s) => s.romMm / s.conMs)
+const V_BEST = Math.max(...MEAN_VEL)
+const VMAX = Math.max(...SETS.flat().map((s) => Math.abs(s.vel))) * 1.08
+const AXIS_MAX_T = Math.max(...TOTALS) * 1.04 // absolute time axis, shared by every rep
+const ROM_PCT: number[] = SPECS.map((s) => s.romMm / ROM_STD_MM)
+
+// =================================================================================
+// Tempo adherence → the ONE line color of the combined chart.
+// Per phase: how the rep's ACTUAL duration compares to the PRESCRIBED tempo.
+//   adh > 0  → phase ran FASTER than target (rushing)  → warm
+//   adh < 0  → phase ran SLOWER than target (lagging)  → cool
+//   adh ≈ 0  → on tempo → the phase's neutral base tone
+// =================================================================================
+const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v))
+function phaseAdherence(s: RepSpec): Record<Phase, number> {
+  const ratio = (target: number, actual: number) => clamp(target / Math.max(actual, 1) - 1, -1, 1)
+  return {
+    ecc: ratio(TARGET.ecc, s.eccMs),
+    pauseBottom: ratio(TARGET.pauseBottom, s.pBMs),
+    con: ratio(TARGET.con, s.conMs),
+    pauseTop: ratio(TARGET.pauseTop, s.pTMs),
+  }
+}
+const ADH: Record<Phase, number>[] = SPECS.map(phaseAdherence)
+
+// Phase base tones (on-tempo): distinguished by lightness/warmth so phase reads even
+// at adherence 0 — cool steel for the lowering, warm parchment for the drive, dim for holds.
+const PHASE_BASE: Record<Phase, string> = {
+  ecc: '#93A4B0',
+  pauseBottom: '#5B646E',
+  con: '#C7BBA4',
+  pauseTop: '#5B646E',
+}
+const RUSH = '#E8913C' // warm — faster than prescribed
+const LAG = '#3FA7C4' // cool — slower than prescribed (grinding)
+
+function hexToRgb(hex: string): [number, number, number] {
+  const h = hex.replace('#', '')
+  const f = h.length === 3 ? h.split('').map((c) => c + c).join('') : h
+  return [parseInt(f.slice(0, 2), 16), parseInt(f.slice(2, 4), 16), parseInt(f.slice(4, 6), 16)]
+}
+function mixHex(a: string, b: string, t: number): string {
+  const [ar, ag, ab] = hexToRgb(a)
+  const [br, bg, bb] = hexToRgb(b)
+  const m = (x: number, y: number) => Math.round(x + (y - x) * t)
+  return `#${[m(ar, br), m(ag, bg), m(ab, bb)].map((v) => v.toString(16).padStart(2, '0')).join('')}`
+}
+/** The two-birds line color: phase base tone shoved warm (rush) or cool (lag) by adherence. */
+function lineColor(phase: Phase, adh: number): string {
+  const base = PHASE_BASE[phase]
+  return adh >= 0 ? mixHex(base, RUSH, Math.min(1, adh) * 0.82) : mixHex(base, LAG, Math.min(1, -adh) * 0.82)
+}
+
+// --- SVG smoothing ---------------------------------------------------------------
+type Pt = [number, number]
+function smoothPath(pts: Pt[]): string {
+  if (pts.length < 2) return pts.length ? `M ${pts[0][0]} ${pts[0][1]}` : ''
+  let d = `M ${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] ?? pts[i]
+    const p1 = pts[i]
+    const p2 = pts[i + 1]
+    const p3 = pts[i + 2] ?? p2
+    const c1x = p1[0] + (p2[0] - p0[0]) / 6
+    const c1y = p1[1] + (p2[1] - p0[1]) / 6
+    const c2x = p2[0] - (p3[0] - p1[0]) / 6
+    const c2y = p2[1] - (p3[1] - p1[1]) / 6
+    d += ` C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`
+  }
+  return d
+}
+
+// =================================================================================
+// P1 — COMBINED CHART: ghost trail + target-tempo bands + tempo-colored current rep.
+// =================================================================================
+const PHASE_LABEL: Record<Phase, string> = { ecc: 'ECC', pauseBottom: 'PAUSE', con: 'CON', pauseTop: 'HOLD' }
+function targetSpans(): Array<{ phase: Phase; t0: number; t1: number }> {
+  const b = [0, TARGET.ecc, TARGET.ecc + TARGET.pauseBottom, TARGET.ecc + TARGET.pauseBottom + TARGET.con, TARGET_TOTAL]
+  return [
+    { phase: 'ecc', t0: b[0], t1: b[1] },
+    { phase: 'pauseBottom', t0: b[1], t1: b[2] },
+    { phase: 'con', t0: b[2], t1: b[3] },
+    { phase: 'pauseTop', t0: b[3], t1: b[4] },
+  ]
+}
+/** Split one rep's samples into contiguous per-phase runs (shared boundary point → no gap). */
+function phaseRuns(samples: Sample[]): Array<{ phase: Phase; pts: Sample[] }> {
+  const runs: Array<{ phase: Phase; pts: Sample[] }> = []
+  samples.forEach((s, i) => {
+    const last = runs[runs.length - 1]
+    if (!last || last.phase !== s.phase) {
+      if (last) last.pts.push(s) // bridge the seam
+      runs.push({ phase: s.phase, pts: [s] })
+    } else last.pts.push(s)
+    void i
+  })
+  return runs
+}
+
+function CombinedChart({ w = 760, h = 300, current = 7 }: { w?: number; h?: number; current?: number }) {
+  const padL = 40
+  const padR = 14
+  const padTop = 26
+  const padBot = 24
+  const mid = padTop + (h - padTop - padBot) / 2
+  const half = (h - padTop - padBot) / 2
+  const x = (t: number) => padL + (t / AXIS_MAX_T) * (w - padL - padR)
+  const y = (v: number) => mid - (v / VMAX) * half
+  const cur = SETS[current]
+  const adh = ADH[current]
+  const peakS = cur.reduce((a, b) => (b.vel > a.vel ? b : a), cur[0])
+  const bandTone: Record<Phase, string> = {
+    ecc: alpha(PARCH, 0.05),
+    pauseBottom: alpha('#000000', 0.24),
+    con: alpha(PARCH, 0.08),
+    pauseTop: alpha('#000000', 0.24),
+  }
+  return (
+    <svg width={w} height={h}>
+      {/* target-tempo bands — the PRESCRIBED phase regions behind the curve. */}
+      {targetSpans().map((p, i) => (
+        <g key={i}>
+          <rect x={x(p.t0)} y={padTop} width={Math.max(0, x(p.t1) - x(p.t0))} height={h - padTop - padBot} fill={bandTone[p.phase]} />
+          {x(p.t1) - x(p.t0) > 16 && (
+            <text x={(x(p.t0) + x(p.t1)) / 2} y={padTop - 8} textAnchor="middle" fill={C['text-tertiary']} fontSize={8} fontWeight={800} letterSpacing={1} fontFamily={FONT_UI}>
+              {PHASE_LABEL[p.phase]}
+            </text>
+          )}
+        </g>
+      ))}
+      {/* zero axis (parchment) — concentric above, eccentric below. */}
+      <line x1={padL} y1={mid} x2={w - padR} y2={mid} stroke={AXIS} strokeWidth={1} />
+      <text x={padL - 6} y={y(VMAX * 0.62)} textAnchor="end" fill={C['text-tertiary']} fontSize={8} fontFamily={FONT_MONO}>CON</text>
+      <text x={padL - 6} y={y(-VMAX * 0.55)} textAnchor="end" fill={C['text-tertiary']} fontSize={8} fontFamily={FONT_MONO}>ECC</text>
+      {/* prior reps — faded grey ghosts (absolute time → the fan is the set's drift). */}
+      {SETS.slice(0, current).map((samples, rep) => (
+        <path
+          key={rep}
+          d={smoothPath(samples.map((s) => [x(s.t), y(s.vel)]))}
+          fill="none"
+          stroke={alpha(PARCH, 0.1 + rep * 0.015)}
+          strokeWidth={1.5}
+          strokeLinejoin="round"
+        />
+      ))}
+      {/* current rep — one line, colored per phase by tempo adherence (the two-birds channel). */}
+      {phaseRuns(cur).map((run, i) => (
+        <path
+          key={i}
+          d={smoothPath(run.pts.map((s) => [x(s.t), y(s.vel)]))}
+          fill="none"
+          stroke={lineColor(run.phase, adh[run.phase])}
+          strokeWidth={3.5}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
+      ))}
+      {/* peak concentric marker — ties back to the velocity hero. */}
+      <circle cx={x(peakS.t)} cy={y(peakS.vel)} r={4} fill={lineColor('con', adh.con)} stroke={PANEL_BG} strokeWidth={1.5} />
+      <text x={x(peakS.t) + 7} y={y(peakS.vel) - 6} fill={C['text-primary']} fontSize={11} fontWeight={800} fontFamily={FONT_UI}>
+        peak {peakS.vel.toFixed(2)} m/s
+      </text>
+      {/* "now" head on the current rep. */}
+      <text x={x(cur[cur.length - 1].t)} y={mid + half + 16} textAnchor="end" fill={C['text-tertiary']} fontSize={9} fontFamily={FONT_MONO}>
+        rep {current + 1} (now) · {(TOTALS[current] / 1000).toFixed(1)}s
+      </text>
+      <text x={padL} y={mid + half + 16} fill={C['text-tertiary']} fontSize={9} fontFamily={FONT_MONO}>time →</text>
+    </svg>
+  )
+}
+
+/** The combined chart's color legend — phase reads by position + bands; tone reads tempo. */
+function TempoLegend() {
+  return (
+    <View style={{ flexDirection: 'row', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+        <View style={{ flexDirection: 'row' }}>
+          {[LAG, mixHex(PHASE_BASE.con, LAG, 0.4), PHASE_BASE.con, mixHex(PHASE_BASE.con, RUSH, 0.4), RUSH].map((c, i) => (
+            <View key={i} style={{ width: 16, height: 8, backgroundColor: c }} />
+          ))}
+        </View>
+        <Text style={{ color: C['text-secondary'], fontSize: 10, fontWeight: '700', fontFamily: FONT_UI }}>
+          lagging ← on-tempo → rushing
+        </Text>
+      </View>
+      <Text style={{ color: C['text-tertiary'], fontSize: 10, fontFamily: FONT_UI }}>
+        phase by position (ecc below · con above) + shaded target-tempo bands
+      </Text>
+    </View>
+  )
+}
+
+// =================================================================================
+// P2 — ROM PROGRESSION: per-rep depth vs the working standard, neutral parchment.
+// =================================================================================
+function RomProgression({ width = 300, height = 82, current = 7 }: { width?: number; height?: number; current?: number }) {
+  const shortThresh = 0.85 // below this = a short rep
+  const plotH = height - 18
+  const n = current + 1
+  const barW = (width - (n - 1) * 4) / n
+  const stdY = (1 - 1) * plotH // standard at top
+  void stdY
+  return (
+    <View style={{ width, gap: 4 }}>
+      <View style={{ height, position: 'relative', flexDirection: 'row', alignItems: 'flex-end', gap: 4 }}>
+        {/* short-rep zone (below the standard threshold). */}
+        <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: shortThresh * plotH, backgroundColor: alpha(C['status-error'], 0.06) }} />
+        {/* working-standard line (100%). */}
+        <View style={{ position: 'absolute', left: 0, right: 0, top: 0, borderTopWidth: 1, borderStyle: 'dashed', borderColor: alpha(PARCH, 0.45) }} />
+        <View style={{ position: 'absolute', left: 0, right: 0, top: (1 - shortThresh) * plotH, borderTopWidth: 1, borderStyle: 'dashed', borderColor: alpha(C['status-error'], 0.4) }} />
+        {ROM_PCT.slice(0, n).map((r, i) => {
+          const short = r < shortThresh
+          return (
+            <View key={i} style={{ width: barW, alignItems: 'center', justifyContent: 'flex-end', height: plotH }}>
+              <View
+                style={{
+                  width: '78%',
+                  height: Math.max(3, r * plotH),
+                  borderTopLeftRadius: 3,
+                  borderTopRightRadius: 3,
+                  backgroundColor: short ? alpha(C['status-error'], 0.55) : alpha(PARCH, 0.5),
+                  ...(i === current ? { backgroundColor: short ? C['status-error'] : alpha(PARCH, 0.8) } : null),
+                } as ViewStyle}
+              />
+            </View>
+          )
+        })}
+      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Text style={{ color: C['text-tertiary'], fontSize: 9, fontFamily: FONT_MONO }}>depth vs working range</Text>
+        <Text style={{ color: C['text-tertiary'], fontSize: 9, fontFamily: FONT_MONO }}>now {Math.round(ROM_PCT[current] * 100)}%</Text>
+      </View>
+    </View>
+  )
+}
+
+// =================================================================================
+// P2 — THREE FATIGUE STATUS LIGHTS + the aggregated verdict.
+// =================================================================================
+type Level = 'ok' | 'warn' | 'alarm'
+const LEVEL_TONE: Record<Level, string> = {
+  ok: C['status-success'],
+  warn: C['status-warning'],
+  alarm: C['status-error'],
+}
+function bandLevel(v: number, warn: number, alarm: number): Level {
+  return v >= alarm ? 'alarm' : v >= warn ? 'warn' : 'ok'
+}
+interface FatigueRead {
+  velLoss: { level: Level; value: string }
+  rom: { level: Level; value: string }
+  tempo: { level: Level; value: string }
+  verdict: { word: string; sub: string; tone: string }
+}
+function computeFatigue(current: number): FatigueRead {
+  const vl = Math.round((1 - MEAN_VEL[current] / V_BEST) * 100)
+  const velLevel = bandLevel(vl, 20, 30)
+  const depth = Math.round(ROM_PCT[current] * 100)
+  const romLevel: Level = depth < 80 ? 'alarm' : depth < 90 ? 'warn' : 'ok'
+  const a = ADH[current]
+  const tempoDev = Math.max(Math.abs(a.ecc), Math.abs(a.con)) // worst move-phase deviation
+  const tempoLevel = bandLevel(tempoDev, 0.35, 0.6)
+  const tempoWord = a.ecc > 0.35 ? 'ecc rushed' : a.con < -0.35 ? 'con grind' : 'on tempo'
+
+  const levels = [velLevel, romLevel, tempoLevel]
+  const alarms = levels.filter((l) => l === 'alarm').length
+  const warns = levels.filter((l) => l === 'warn').length
+  let verdict: FatigueRead['verdict']
+  if (velLevel === 'alarm' && (romLevel === 'alarm' || tempoLevel === 'alarm'))
+    verdict = { word: 'Form breaking down', sub: 'velocity gone + depth/tempo failing — end the set', tone: C['status-error'] }
+  else if (velLevel === 'alarm') verdict = { word: 'Approaching failure', sub: 'bar speed gutted — 0–1 clean reps left', tone: C['status-error'] }
+  else if (alarms > 0) verdict = { word: 'Form breaking down', sub: 'depth / tempo degrading — clean it up or rack', tone: C['status-error'] }
+  else if (warns > 0) verdict = { word: 'Watch fatigue', sub: 'quality slipping — hold the standard', tone: C['status-warning'] }
+  else verdict = { word: 'Dialed in', sub: 'holding the standard', tone: C['status-success'] }
+
+  return {
+    velLoss: { level: velLevel, value: `${vl}%` },
+    rom: { level: romLevel, value: `${depth}%` },
+    tempo: { level: tempoLevel, value: tempoWord },
+    verdict,
+  }
+}
+
+function StatusLight({ label, level, value }: { label: string; level: Level; value: string }) {
+  const tone = LEVEL_TONE[level]
+  return (
+    <View style={[{ flex: 1, borderRadius: 9, paddingVertical: 9, paddingHorizontal: 10, gap: 5 }, insetWell(primitiveColors.charcoal[900])]}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+        <View style={{ width: 9, height: 9, borderRadius: 5, backgroundColor: tone, boxShadow: `0 0 8px ${alpha(tone, 0.7)}` } as ViewStyle} />
+        <Text style={[{ fontSize: 8.5, letterSpacing: 0.8, fontFamily: FONT_MONO, color: C['text-tertiary'] }, debossLabel]}>{label}</Text>
+      </View>
+      <Text style={{ fontSize: 15, fontWeight: '800', fontFamily: FONT_HEAD, color: tone }}>{value}</Text>
+    </View>
+  )
+}
+
+// =================================================================================
+// P2 — THE UNIFIED FATIGUE CARD (combined chart + ROM + lights + verdict).
+// =================================================================================
+function FatigueCard({ width = 900, current = 7 }: { width?: number; current?: number }) {
+  const f = computeFatigue(current)
+  const chartW = Math.round(width * 0.56)
+  const sideW = width - chartW - 20 - 36 // gap + card padding
+  return (
+    <View style={[{ width, borderRadius: 14, padding: 18, gap: 14 }, paperSheet(primitiveColors.charcoal[800])]}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Text style={[{ fontSize: 10, letterSpacing: 1.5, fontFamily: FONT_MONO, color: C['text-tertiary'] }, debossLabel]}>FATIGUE</Text>
+        <View style={{ alignItems: 'flex-end' }}>
+          <Text style={{ fontSize: 17, fontWeight: '900', fontFamily: FONT_HEAD, color: f.verdict.tone }}>{f.verdict.word}</Text>
+          <Text style={{ fontSize: 11, fontWeight: '600', fontFamily: FONT_UI, color: C['text-secondary'] }}>{f.verdict.sub}</Text>
+        </View>
+      </View>
+      <View style={{ flexDirection: 'row', gap: 20, alignItems: 'stretch' }}>
+        {/* centerpiece — the combined chart */}
+        <View style={{ gap: 8 }}>
+          <View style={[{ borderRadius: 12, padding: 10 }, insetWell(primitiveColors.charcoal[900])]}>
+            <CombinedChart w={chartW - 20} h={228} current={current} />
+          </View>
+          <TempoLegend />
+        </View>
+        {/* right column — ROM progression + the three lights */}
+        <View style={{ width: sideW, gap: 12, justifyContent: 'space-between' }}>
+          <View style={{ gap: 6 }}>
+            <Text style={[{ fontSize: 9, letterSpacing: 1, fontFamily: FONT_MONO, color: C['text-tertiary'] }, debossLabel]}>ROM PROGRESSION</Text>
+            <RomProgression width={sideW} height={92} current={current} />
+          </View>
+          <View style={{ gap: 6 }}>
+            <Text style={[{ fontSize: 9, letterSpacing: 1, fontFamily: FONT_MONO, color: C['text-tertiary'] }, debossLabel]}>FATIGUE LIGHTS</Text>
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              <StatusLight label="VEL LOSS" level={f.velLoss.level} value={f.velLoss.value} />
+              <StatusLight label="ROM" level={f.rom.level} value={f.rom.value} />
+              <StatusLight label="TEMPO" level={f.tempo.level} value={f.tempo.value} />
+            </View>
+          </View>
+        </View>
+      </View>
+    </View>
+  )
+}
+
+// =================================================================================
+// P3 — HERO velocity chart with the VL threshold BANDS layered behind the bars.
+// Wraps the SHIPPED VelocityStrip hero and overlays VL20 / VL30 bands aligned to the
+// same peak scale (denominator = max·PEAK_HEADROOM, label headroom reserved above).
+// =================================================================================
+const PEAK_HEADROOM = 1.06 // must match VelocityStrip's hero constant
+const HERO_LABEL_HEADROOM = 20 // must match VelocityStrip's hero constant
+function HeroWithVlBands({ width = 760, height = 300, current = 7 }: { width?: number; height?: number; current?: number }) {
+  const velocities = MEAN_VEL.slice(0, current + 1)
+  const best = Math.max(...velocities)
+  const denom = best * PEAK_HEADROOM
+  const plotH = height - HERO_LABEL_HEADROOM
+  const yOf = (v: number) => (v / denom) * plotH // px UP from the baseline
+  const vl20 = best * 0.8
+  const vl30 = best * 0.7
+  const band = (loV: number, hiV: number, col: string) => (
+    <View style={{ position: 'absolute', left: 0, right: 0, bottom: yOf(loV), height: Math.max(0, yOf(hiV) - yOf(loV)), backgroundColor: col }} />
+  )
+  const thresh = (v: number, col: string, label: string) => (
+    <View style={{ position: 'absolute', left: 0, right: 0, bottom: yOf(v) }}>
+      <View style={{ borderTopWidth: 1, borderStyle: 'dashed', borderColor: col }} />
+      <Text style={{ position: 'absolute', right: 2, top: -13, fontSize: 9, fontWeight: '800', fontFamily: FONT_MONO, color: col }}>{label}</Text>
+    </View>
+  )
+  return (
+    <View style={{ width, height }}>
+      {/* VL decision bands + thresholds, behind the bars, on the hero's own scale. */}
+      <View pointerEvents="none" style={{ position: 'absolute', left: 0, right: 0, bottom: 0, top: 0 }}>
+        {band(0, vl30, alpha(C['status-error'], 0.09))}
+        {band(vl30, vl20, alpha(C['status-warning'], 0.08))}
+        {thresh(vl20, alpha(C['status-warning'], 0.75), 'VL 20%')}
+        {thresh(vl30, alpha(C['status-error'], 0.75), 'VL 30%')}
+      </View>
+      <VelocityStrip
+        variant="hero"
+        velocities={velocities}
+        liveRepIndex={velocities.length - 1}
+        targetReps={8}
+        height={height}
+        scale="peak"
+      />
+    </View>
+  )
+}
+
+// =================================================================================
+// LivePanelV2 — the composition: hero (primary) + fatigue card (secondary).
+// =================================================================================
+function ExerciseHeaderLite({ current }: { current: number }) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', paddingHorizontal: 24, paddingTop: 18, paddingBottom: 14, borderBottomWidth: 1, borderColor: alpha(PARCH, 0.08) }}>
+      <View style={{ gap: 2 }}>
+        <Text style={{ fontSize: 28, fontWeight: '700', fontFamily: FONT_HEAD, color: C['text-primary'] }}>Cable Chest Press</Text>
+        <Text style={{ fontSize: 13, fontWeight: '600', fontFamily: FONT_UI, color: C['text-secondary'] }}>Push A · Hypertrophy · 62 lb × 8 · tempo 2.6·0.4·0.95·0.28</Text>
+      </View>
+      <Text style={{ fontSize: 13, fontWeight: '800', fontFamily: FONT_MONO, color: C['text-tertiary'] }}>SET 3 · REP {current + 1} / 8</Text>
+    </View>
+  )
+}
+
+function LivePanelV2({ current = 7 }: { current?: number }) {
+  const verdict = MEAN_VEL[current] / V_BEST < 0.7 ? 'stop' : MEAN_VEL[current] / V_BEST < 0.8 ? 'threshold' : 'productive'
+  return (
+    <LiveAuraFrame category={verdict} style={{ flex: 1, borderRadius: 0, borderWidth: 0 }}>
+      <View style={{ flex: 1 }}>
+        <ExerciseHeaderLite current={current} />
+        <View style={{ padding: 24, gap: 18 }}>
+          {/* PRIMARY — the velocity hero with VL bands. */}
+          <View style={{ gap: 8 }}>
+            <Text style={[{ fontSize: 9, letterSpacing: 1.2, fontFamily: FONT_MONO, color: C['text-tertiary'] }, debossLabel]}>VELOCITY · this set</Text>
+            <HeroWithVlBands width={1180} height={300} current={current} />
+          </View>
+          {/* SECONDARY — the unified fatigue card. */}
+          <FatigueCard width={1180} current={current} />
+        </View>
+      </View>
+    </LiveAuraFrame>
+  )
+}
+
+// --- Scaffolding -----------------------------------------------------------------
+function Page({ children }: { children: ReactNode }) {
+  return <View style={{ padding: 28, backgroundColor: PAGE_BG, minHeight: '100%', gap: 24 }}>{children}</View>
+}
+function SectionTitle({ children }: { children: ReactNode }) {
+  return <Text style={{ fontSize: 16, fontWeight: '800', fontFamily: FONT_HEAD, color: C['text-primary'] }}>{children}</Text>
+}
+function Caption({ children }: { children: ReactNode }) {
+  return <Text style={{ fontSize: 12, fontFamily: FONT_UI, color: C['text-secondary'], maxWidth: 860, lineHeight: 18 }}>{children}</Text>
+}
+function Kicker({ children }: { children: ReactNode }) {
+  return <Text style={[{ fontSize: 9, letterSpacing: 1, fontFamily: FONT_MONO, color: C['text-tertiary'] }, debossLabel]}>{children}</Text>
+}
+function Panel({ children, width }: { children: ReactNode; width?: number }) {
+  return <View style={{ width, backgroundColor: PANEL_BG, borderRadius: 12, padding: 20, gap: 14 }}>{children}</View>
+}
+
+const meta: Meta = {
+  title: 'Lab/North Star/Live Fatigue Card',
+  parameters: { layout: 'fullscreen' },
+}
+export default meta
+type Story = StoryObj
+
+/** P1 — the combined ghost-trail + phase/tempo-colored current-rep chart, standalone. */
+export const CombinedChart_: Story = {
+  name: 'P1 · Combined chart',
+  render: () => (
+    <Page>
+      <View style={{ gap: 4 }}>
+        <SectionTitle>Combined chart — ghost trail + target-tempo bands + tempo-colored rep</SectionTitle>
+        <Caption>
+          The novel centerpiece of the fatigue card. Every prior rep is a faded grey ghost on one absolute-time axis (the
+          fan IS the set&apos;s timing drift); the CURRENT rep is the solid line. Behind it, the four shaded bands are the
+          PRESCRIBED tempo&apos;s phase regions. The current line carries ONE color that reads two things at once: phase (by
+          position — eccentric dips below the zero axis, concentric rises above, reinforced by the bands) AND tempo adherence
+          (warm where the phase ran FASTER than prescribed — rushing; cool where SLOWER — lagging/grinding; neutral parchment
+          on-tempo). The peak concentric velocity is marked, tying the read back to the velocity hero.
+        </Caption>
+      </View>
+      <Panel width={860}>
+        <Kicker>8-REP CABLE PRESS · rep 8 current · reps 1–7 ghosts · absolute time · line color = phase + tempo</Kicker>
+        <View style={[{ borderRadius: 12, padding: 14 }, insetWell(primitiveColors.charcoal[900])]}>
+          <CombinedChart w={800} h={320} current={7} />
+        </View>
+        <TempoLegend />
+      </Panel>
+      <Panel width={860}>
+        <Kicker>EARLY REP (rep 3, on-tempo) vs LATE REP (rep 8, dropped ecc + long con grind)</Kicker>
+        <View style={{ flexDirection: 'row', gap: 14, flexWrap: 'wrap' }}>
+          <View style={[{ borderRadius: 12, padding: 10 }, insetWell(primitiveColors.charcoal[900])]}>
+            <CombinedChart w={390} h={220} current={2} />
+          </View>
+          <View style={[{ borderRadius: 12, padding: 10 }, insetWell(primitiveColors.charcoal[900])]}>
+            <CombinedChart w={390} h={220} current={7} />
+          </View>
+        </View>
+      </Panel>
+    </Page>
+  ),
+}
+
+/** P2 — the unified fatigue card. */
+export const FatigueCard_: Story = {
+  name: 'P2 · Fatigue card',
+  render: () => (
+    <Page>
+      <View style={{ gap: 4 }}>
+        <SectionTitle>Unified fatigue card — one card replaces stop-set + fatigue-vector</SectionTitle>
+        <Caption>
+          The combined chart is the centerpiece; a compact ROM-progression read (per-rep depth vs the working range, cheats
+          dropping into the red short-zone) sits beside it, and three fatigue status lights — velocity-loss · ROM · tempo —
+          each aggregate their own dimension to ok / warn / alarm. The card rolls all three into one verdict: velocity gone
+          AND depth/tempo failing reads &quot;form breaking down — end the set.&quot; One robust card, the styling quality of
+          the old stop-set decision.
+        </Caption>
+      </View>
+      <FatigueCard width={940} current={7} />
+      <View style={{ gap: 4 }}>
+        <Kicker>EARLIER IN THE SET (rep 4 — the first cheat: fast dropped eccentric + cut ROM, velocity still propped)</Kicker>
+        <FatigueCard width={940} current={3} />
+      </View>
+    </Page>
+  ),
+}
+
+/** P3 — the hero with VL bands layered in. */
+export const HeroWithVlBands_: Story = {
+  name: 'P3 · Hero + VL bands',
+  render: () => (
+    <Page>
+      <View style={{ gap: 4 }}>
+        <SectionTitle>Velocity hero with velocity-loss bands layered in</SectionTitle>
+        <Caption>
+          The shipped VelocityStrip hero (the primary live chart, the one saturated velocity-zone hue), enhanced with the VL
+          20% / VL 30% threshold lines and the warn / alarm decision bands behind the bars — on the hero&apos;s own peak
+          scale, so a bar crossing into the amber then red band reads as &quot;these are your last effective reps&quot; in the
+          hero itself. That is why the fatigue card carries no separate VL% chart: velocity loss lives here, in the hero.
+        </Caption>
+      </View>
+      <Panel width={860}>
+        <Kicker>8-REP SET · bars = per-rep mean concentric velocity · bands = VL decision zones</Kicker>
+        <View style={[{ borderRadius: 12, padding: 16 }, insetWell(primitiveColors.charcoal[900])]}>
+          <HeroWithVlBands width={800} height={320} current={7} />
+        </View>
+      </Panel>
+    </Page>
+  ),
+}
+
+/** The full live panel composition. */
+export const LivePanelV2_: Story = {
+  name: 'Live panel v2 (composition)',
+  render: () => <LivePanelV2 current={7} />,
+}
+
+/** Overview — the pieces in priority order. */
+export const Overview: Story = {
+  name: 'Overview',
+  render: () => (
+    <Page>
+      <View style={{ gap: 4 }}>
+        <SectionTitle>Live fatigue card — the redesigned live panel</SectionTitle>
+        <Caption>
+          The live panel = the velocity HERO (primary, with VL bands) + a secondary UNIFIED FATIGUE CARD whose centerpiece is
+          the combined ghost-trail + tempo-colored current-rep chart, with a ROM-progression read and three fatigue lights.
+          Three questions, three color languages: the hero owns the velocity-zone hue, the combined chart owns the diverging
+          tempo-adherence color, ROM stays parchment.
+        </Caption>
+      </View>
+      <Panel width={860}>
+        <Kicker>P3 · HERO + VL BANDS (primary)</Kicker>
+        <View style={[{ borderRadius: 12, padding: 16 }, insetWell(primitiveColors.charcoal[900])]}>
+          <HeroWithVlBands width={800} height={280} current={7} />
+        </View>
+      </Panel>
+      <Kicker>P2 · UNIFIED FATIGUE CARD (secondary) — centerpiece = P1 combined chart</Kicker>
+      <FatigueCard width={940} current={7} />
+    </Page>
+  ),
+}
