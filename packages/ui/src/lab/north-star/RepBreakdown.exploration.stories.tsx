@@ -619,7 +619,16 @@ export const Overview: Story = {
 //     never alarmed.
 // (Velocity here = concentric velocity; ROM + tempo compose INTO it — velocity =
 // distance/time — so they aren't fully independent, which Direction B leans on.)
-const STD_ROM = 0.95 // the working-ROM standard a cut rep falls short of
+// The working-ROM STANDARD is PEAK ROM across the set — peak-relative, exactly like peak
+// velocity — with the first + last reps TRIMMED to drop setup / failure artifacts (a
+// feeling-out first rep or a collapsed last rep shouldn't define the standard). Derived
+// from the set, never a fixed constant; SHALLOW is measured against it.
+function romStandard(reps: Rep[]): number {
+  const roms = reps.map((r) => r.rom)
+  const core = roms.length > 2 ? roms.slice(1, -1) : roms
+  return Math.max(...core)
+}
+const STD_ROM = romStandard(SET) // 0.97 on this set (peak of the trimmed core)
 
 type Sev = 'ok' | 'mild' | 'severe'
 const SEV_RANK: Record<Sev, number> = { ok: 0, mild: 1, severe: 2 }
@@ -980,6 +989,117 @@ export const OverviewR2: Story = {
           </View>
         </Panel>
       </View>
+    </Page>
+  ),
+}
+
+// =================================================================================
+// ROUND 3 — WARNINGS + DEPTH-PIP HYBRID (the sweet spot)
+// =================================================================================
+// Clean velocity bar stays the PRIMARY read and keeps its baseline flat ON THE AXIS.
+//   • ROM is now AMBIENT — a small neutral parchment "depth pip" beside each bar quietly
+//     drains vs the peak-trimmed standard as depth shrinks (a slow fatigue signal, no hue).
+//   • CONTROL (fast eccentric, severe) + GRIND (slow concentric, mild) stay FIRE-ONLY —
+//     lightweight directional flags that FLOAT above each bar in the headroom (never below,
+//     so they can't lift the bar off the axis). SHALLOW still fires when depth is genuinely cut.
+const HY_H = 300
+const PIP_H = 58
+const PIP_W = 7
+
+/** The always-on ROM depth pip — a small neutral parchment gauge that drains vs the standard. */
+function DepthPip({ r }: { r: Rep }) {
+  const frac = Math.min(1, r.rom / STD_ROM)
+  return (
+    <View style={{ alignItems: 'center', gap: 3 }}>
+      <Text style={{ color: ROM_LINE, fontSize: 8, fontWeight: '700', fontFamily: FONT_MONO }}>{Math.round(r.rom * 100)}</Text>
+      <View style={{ width: PIP_W, height: PIP_H, borderRadius: 3, backgroundColor: ROM_GHOST, justifyContent: 'flex-end', overflow: 'hidden' }}>
+        <View style={[{ width: '100%', height: `${frac * 100}%`, backgroundColor: ROM_FILL }, grain]} />
+      </View>
+    </View>
+  )
+}
+
+/** A LIGHT directional flag — a dot + short label, no heavy border; floats in the headroom. */
+function MiniFlag({ w }: { w: Warn }) {
+  const col = sevColor(w.sev)
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3, paddingVertical: 1, paddingHorizontal: 4, borderRadius: 3, backgroundColor: alpha(col, 0.14) }}>
+      <View style={{ width: 5, height: 5, borderRadius: 3, backgroundColor: col }} />
+      <Text style={{ color: col, fontSize: 8.5, fontWeight: '800', letterSpacing: 0.3, fontFamily: FONT_UI }}>{w.label}</Text>
+    </View>
+  )
+}
+
+/** One rep column: light flags float above, value label, then the primary bar (ON AXIS) + depth pip. */
+function HybridColumn({ r }: { r: Rep }) {
+  const barH = Math.max(6, (r.v / MAX_V) * (HY_H - 108))
+  const warns = repWarnings(r)
+  return (
+    <View style={{ flex: 1, height: '100%', alignItems: 'center', justifyContent: 'flex-end' }}>
+      <View style={{ alignItems: 'center', gap: 2, marginBottom: 5 }}>
+        {warns.map((w, i) => <MiniFlag key={i} w={w} />)}
+      </View>
+      <Text style={{ color: C['text-primary'], fontSize: 12, fontWeight: '800', marginBottom: 3 }}>{formatVelocity(r.v)}</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 5 }}>
+        <View
+          style={[
+            { width: 34, height: barH, borderTopLeftRadius: 5, borderTopRightRadius: 5, backgroundColor: velColor(r.v), boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.22), 0 6px 14px rgba(0,0,0,0.45)' } as unknown as ViewStyle,
+            grain,
+          ]}
+        />
+        <DepthPip r={r} />
+      </View>
+    </View>
+  )
+}
+
+/** Legend line for the hybrid — the depth pip + the fire-only flags. */
+function HybridLegend() {
+  return (
+    <View style={{ flexDirection: 'row', gap: 16, flexWrap: 'wrap', alignItems: 'center' }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+        <View style={{ width: 6, height: 16, borderRadius: 2, backgroundColor: ROM_GHOST, justifyContent: 'flex-end', overflow: 'hidden' }}>
+          <View style={{ width: '100%', height: '65%', backgroundColor: ROM_FILL }} />
+        </View>
+        <Text style={{ color: C['text-secondary'], fontSize: 11, fontWeight: '700', fontFamily: FONT_UI }}>depth pip — ROM vs peak-trimmed standard (ambient, drains with fatigue)</Text>
+      </View>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+        <View style={{ width: 5, height: 5, borderRadius: 3, backgroundColor: OFF_STOP }} />
+        <Text style={{ color: C['text-secondary'], fontSize: 11, fontWeight: '700', fontFamily: FONT_UI }}>CONTROL / SHALLOW (severe)</Text>
+      </View>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+        <View style={{ width: 5, height: 5, borderRadius: 3, backgroundColor: OFF_WARN }} />
+        <Text style={{ color: C['text-secondary'], fontSize: 11, fontWeight: '700', fontFamily: FONT_UI }}>GRIND (mild)</Text>
+      </View>
+    </View>
+  )
+}
+
+/** R3 — the WARNINGS + DEPTH-PIP hybrid: clean bar primary, ROM ambient, control/grind fire-only. */
+export const WarningsDepthHybrid: Story = {
+  name: 'R3 · Warnings + depth pip',
+  render: () => (
+    <Page>
+      <View style={{ gap: 4 }}>
+        <SectionTitle>Warnings + depth pip — the sweet spot</SectionTitle>
+        <Caption>
+          The clean velocity bar stays the primary read, baseline flat ON THE AXIS. ROM goes AMBIENT — a small neutral
+          parchment "depth pip" beside each bar quietly drains against the peak-trimmed working standard, so you watch depth
+          shrink as a slow fatigue signal without a saturated channel. Control and grind stay FIRE-ONLY: lightweight
+          directional flags FLOAT above each bar in the headroom (never below — so they can't push a bar off the axis). A
+          dropped eccentric → red CONTROL (severe); a grinding concentric → amber GRIND (mild); genuinely cut depth → red
+          SHALLOW. Explosive concentric, a slow eccentric, and a slightly-long ROM stay silent. Reps 4 & 7 light up; the
+          honest-fatigue rep 5 shows a single calm amber GRIND with its depth pip already dipping; the early reps are quiet.
+        </Caption>
+        <HybridLegend />
+      </View>
+      <Panel width={900}>
+        <Kicker>8-REP CABLE PRESS · velocity bar = primary (on axis) · ROM pip = ambient · flags = fire-only, floated</Kicker>
+        <View style={[{ height: HY_H, borderRadius: 10, padding: 12, paddingBottom: 0, borderBottomWidth: 2, borderBottomColor: ROM_LINE, flexDirection: 'row', alignItems: 'flex-end', gap: 6 }, well]}>
+          {SET.map((r, i) => <HybridColumn key={i} r={r} />)}
+        </View>
+        <RepTicks count={SET.length} />
+      </Panel>
     </Page>
   ),
 }
