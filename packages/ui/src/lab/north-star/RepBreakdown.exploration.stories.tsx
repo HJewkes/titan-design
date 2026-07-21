@@ -605,3 +605,381 @@ export const Overview: Story = {
     </Page>
   ),
 }
+
+// =================================================================================
+// ROUND 2 — DIRECTIONAL form semantics + three new directions
+// =================================================================================
+// Form breakdown is DIRECTIONAL, not a symmetric "on/off target" deviation. We only
+// ever raise a signal on the genuinely-bad side, with a severity:
+//   • CONCENTRIC — faster = explosive = GOOD (never flag). Slower = GRINDING = a MILD
+//     fatigue signal (never "severe").
+//   • ECCENTRIC  — slower = milking the stretch = GOOD (never flag). Faster = LOSS OF
+//     CONTROL = a SEVERE breakdown (worse than grinding).
+//   • ROM        — cut short of the working standard = BAD. A bit LONG = neutral/"weird",
+//     never alarmed.
+// (Velocity here = concentric velocity; ROM + tempo compose INTO it — velocity =
+// distance/time — so they aren't fully independent, which Direction B leans on.)
+const STD_ROM = 0.95 // the working-ROM standard a cut rep falls short of
+
+type Sev = 'ok' | 'mild' | 'severe'
+const SEV_RANK: Record<Sev, number> = { ok: 0, mild: 1, severe: 2 }
+function sevColor(s: Sev): string {
+  return s === 'severe' ? OFF_STOP : s === 'mild' ? OFF_WARN : CAD_NEUTRAL
+}
+/** Eccentric CONTROL — only a faster-than-target eccentric is bad (dropped = loss of control). */
+function eccControl(r: Rep): Sev {
+  const rushed = (TARGET.ecc - r.ecc) / TARGET.ecc
+  // Only a MEANINGFULLY dropped eccentric flags: an honest ~20%-shorter lowering (still
+  // under control) stays silent; a big drop is loss of control (severe).
+  return rushed > 0.45 ? 'severe' : rushed > 0.28 ? 'mild' : 'ok'
+}
+/** Concentric GRIND — only a slower-than-target concentric signals, and it caps at MILD (fatigue, not failure). */
+function concGrind(r: Rep): Sev {
+  const grind = (r.con - TARGET.con) / TARGET.con
+  return grind > 0.35 ? 'mild' : 'ok'
+}
+/** ROM SHALLOW — only falling short of the standard is bad; a bit long is neutral. */
+function romShallow(r: Rep): Sev {
+  const short = (STD_ROM - r.rom) / STD_ROM
+  return short > 0.15 ? 'severe' : short > 0.08 ? 'mild' : 'ok'
+}
+function worstSev(r: Rep): Sev {
+  return [eccControl(r), concGrind(r), romShallow(r)].reduce<Sev>((w, s) => (SEV_RANK[s] > SEV_RANK[w] ? s : w), 'ok')
+}
+interface Warn {
+  label: string
+  note: string
+  sev: Sev
+}
+/** The directional warnings for a rep — ONLY the genuinely-bad ones, each with a severity. */
+function repWarnings(r: Rep): Warn[] {
+  const out: Warn[] = []
+  const ecc = eccControl(r)
+  if (ecc !== 'ok') out.push({ label: 'CONTROL', note: 'fast eccentric', sev: ecc })
+  const rom = romShallow(r)
+  if (rom !== 'ok') out.push({ label: 'SHALLOW', note: `${Math.round(r.rom * 100)}% ROM`, sev: rom })
+  const grind = concGrind(r)
+  if (grind !== 'ok') out.push({ label: 'GRIND', note: 'slow concentric', sev: grind })
+  return out.sort((a, b) => SEV_RANK[b.sev] - SEV_RANK[a.sev])
+}
+function verdictWord(r: Rep): string {
+  const w = repWarnings(r)
+  return w.length ? w[0].label : 'CLEAN'
+}
+
+// --- Direction A (refined) — Composite column with directional semantics ----------
+// height = concentric velocity (hue) · width = ROM inside a dashed STANDARD-ROM frame
+// (narrow = shallow) · cap = eccentric control (clean when slow/on-target, red broken
+// when DROPPED) · thin amber base sliver = grinding concentric. Good/neutral directions
+// raise nothing — so a healthy-but-tiring rep looks calm, a cheat rep shouts.
+const A2_H = 250
+function BrokenCap({ w, color }: { w: number; color: string }) {
+  return (
+    <View
+      style={{ width: `${w * 100}%`, height: 8, borderTopLeftRadius: 5, borderTopRightRadius: 5, borderWidth: 1.5, borderBottomWidth: 0, borderStyle: 'dashed', borderColor: color }}
+    />
+  )
+}
+function RefinedColumn({ r }: { r: Rep }) {
+  const barH = Math.max(8, (r.v / MAX_V) * (A2_H - 42))
+  const ecc = eccControl(r)
+  const grind = concGrind(r)
+  const rom = romShallow(r)
+  const romW = Math.min(1, r.rom / STD_ROM)
+  const worst = worstSev(r)
+  const col = velColor(r.v)
+  return (
+    <View style={{ flex: 1, alignItems: 'center' }}>
+      <View style={{ height: 14, justifyContent: 'center' }}>
+        {worst !== 'ok' && <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: sevColor(worst) }} />}
+      </View>
+      <Text style={{ color: C['text-primary'], fontSize: 13, fontWeight: '800', marginBottom: 3 }}>{formatVelocity(r.v)}</Text>
+      {/* dashed standard-ROM frame — a bar narrower than the frame is SHALLOW */}
+      <View
+        style={{
+          width: '86%',
+          height: barH,
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          borderWidth: 1,
+          borderStyle: 'dashed',
+          borderRadius: 6,
+          borderColor: rom !== 'ok' ? alpha(sevColor(rom), 0.6) : ROM_GHOST,
+        }}
+      >
+        {/* eccentric-control cap */}
+        {ecc === 'severe' ? (
+          <BrokenCap w={romW} color={OFF_STOP} />
+        ) : ecc === 'mild' ? (
+          <View style={{ width: `${romW * 100}%`, height: 7, borderTopLeftRadius: 5, borderTopRightRadius: 5, backgroundColor: OFF_WARN }} />
+        ) : (
+          <View style={[{ width: `${romW * 100}%`, height: 7, borderTopLeftRadius: 5, borderTopRightRadius: 5, backgroundColor: alpha(col, 0.9) }, grain]} />
+        )}
+        {/* velocity bar, width ∝ ROM/standard, with a grind sliver at its base */}
+        <View style={[{ width: `${romW * 100}%`, flex: 1, backgroundColor: col, boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.22)' } as unknown as ViewStyle, grain]}>
+          {grind !== 'ok' && <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 5, backgroundColor: OFF_WARN }} />}
+        </View>
+      </View>
+      <Text style={{ color: worst === 'severe' ? OFF_STOP : worst === 'mild' ? OFF_WARN : alpha(C['status-success'], 0.9), fontSize: 9, fontWeight: '800', marginTop: 5, letterSpacing: 0.5, fontFamily: FONT_UI }}>
+        {verdictWord(r)}
+      </Text>
+    </View>
+  )
+}
+
+// --- Direction B — per-rep VELOCITY-over-time curve (whole-rep shape) --------------
+// One continuous velocity-vs-time curve per rep, small-multipled with cell WIDTH ∝ the
+// rep's real duration (a grind visibly stretches). Below the centerline = ECCENTRIC
+// descent (neutral parchment); above = CONCENTRIC ascent (velocity hue). Each lobe's
+// AREA is distance = ROM, so a short rep is a small curve. Fatigue deforms the shape:
+// the wide low eccentric hump collapses into a tall narrow SPIKE (loss of control), the
+// concentric flattens + lengthens (grind), the whole curve shrinks (cut depth).
+const PX_PER_SEC = 18
+const B_H = 160
+const B_HALF = B_H / 2
+function repDuration(r: Rep): number {
+  return r.ecc + r.pB + r.con + r.pT
+}
+/** Signed velocity at absolute time t in the rep: concentric +, eccentric −. */
+function velAt(r: Rep, t: number): number {
+  const { ecc, pB, con } = r
+  if (t < ecc) {
+    const u = ecc > 0 ? t / ecc : 0
+    const peak = (r.rom / Math.max(ecc, 0.3)) * 1.15 // fast drop (small ecc) spikes tall
+    return -peak * Math.sin(Math.PI * u)
+  }
+  if (t < ecc + pB) return 0
+  const tc = t - ecc - pB
+  if (tc < con) {
+    const u = con > 0 ? tc / con : 0
+    const shape = Math.sin(Math.PI * Math.pow(u, 0.65)) // skews the peak early (explosive); a long con reads flat + late
+    return r.v * 1.7 * shape
+  }
+  return 0
+}
+const B_MAXMAG = Math.max(...SET.map((r) => Math.max((r.rom / Math.max(r.ecc, 0.3)) * 1.15, r.v * 1.7)))
+function RepCurve({ r, idx }: { r: Rep; idx: number }) {
+  const T = repDuration(r)
+  const w = Math.max(36, T * PX_PER_SEC)
+  const n = Math.max(10, Math.round(w / 3))
+  const strips = Array.from({ length: n }, (_, i) => velAt(r, (i / (n - 1)) * T))
+  const col = velColor(r.v)
+  const worst = worstSev(r)
+  return (
+    <View style={{ width: w, alignItems: 'center' }}>
+      <Text style={{ color: C['text-primary'], fontSize: 12, fontWeight: '800', marginBottom: 2 }}>{formatVelocity(r.v)}</Text>
+      <View style={[{ width: '100%', height: B_H, borderRadius: 8, overflow: 'hidden' }, well]}>
+        <View style={{ position: 'absolute', left: 0, right: 0, top: B_HALF, height: 1, backgroundColor: alpha(C['text-primary'], 0.18) }} />
+        {/* phase boundaries */}
+        <View style={{ position: 'absolute', top: 0, bottom: 0, left: `${(r.ecc / T) * 100}%`, width: 1, backgroundColor: alpha(C['text-primary'], 0.1) }} />
+        <View style={{ position: 'absolute', top: 0, bottom: 0, left: `${((r.ecc + r.pB) / T) * 100}%`, width: 1, backgroundColor: alpha(C['text-primary'], 0.1) }} />
+        <View style={{ flexDirection: 'row', height: '100%', alignItems: 'stretch' }}>
+          {strips.map((v, i) => {
+            const mag = Math.min(1, Math.abs(v) / B_MAXMAG) * (B_HALF - 6)
+            return (
+              <View key={i} style={{ flex: 1, height: '100%' }}>
+                <View style={{ height: B_HALF, justifyContent: 'flex-end' }}>
+                  {v > 0 && <View style={[{ height: mag, backgroundColor: alpha(col, 0.92) }, grain]} />}
+                </View>
+                <View style={{ height: B_HALF, justifyContent: 'flex-start' }}>
+                  {v < 0 && <View style={{ height: mag, backgroundColor: ROM_FILL }} />}
+                </View>
+              </View>
+            )
+          })}
+        </View>
+        {worst !== 'ok' && <View style={{ position: 'absolute', top: 6, right: 6, width: 9, height: 9, borderRadius: 5, backgroundColor: sevColor(worst) }} />}
+      </View>
+      <Text style={{ color: ROM_LINE, fontSize: 10, fontWeight: '700', marginTop: 3, fontFamily: FONT_MONO }}>{Math.round(r.rom * 100)}% · rep {idx + 1}</Text>
+    </View>
+  )
+}
+
+// --- Direction C — WARNINGS model (clean velocity bar + directional flags) ---------
+// Keep ONE uncluttered velocity bar as the primary read; don't encode every deviation
+// as a channel. Fire a discrete flag ONLY when something is actually wrong, on the bad
+// direction, with severity. A clean rep just reads ✓.
+const C2_VEL_H = 156
+function WarnChip({ w }: { w: Warn }) {
+  const col = sevColor(w.sev)
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 2, paddingHorizontal: 6, borderRadius: 5, backgroundColor: alpha(col, 0.16), borderWidth: 1, borderColor: alpha(col, w.sev === 'severe' ? 0.7 : 0.45) }}>
+      <Text style={{ color: col, fontSize: 9, fontWeight: '900' }}>{w.sev === 'severe' ? '⚠' : '•'}</Text>
+      <Text style={{ color: col, fontSize: 9, fontWeight: '800', letterSpacing: 0.5, fontFamily: FONT_UI }}>{w.label}</Text>
+    </View>
+  )
+}
+function WarningsPanel() {
+  return (
+    <View style={{ gap: 8 }}>
+      <View style={[{ flexDirection: 'row', alignItems: 'flex-end', gap: 10, height: C2_VEL_H, borderRadius: 10, padding: 12 }, well]}>
+        {SET.map((r, i) => (
+          <View key={i} style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+            <Text style={{ color: C['text-primary'], fontSize: 12, fontWeight: '800', marginBottom: 3 }}>{formatVelocity(r.v)}</Text>
+            <View
+              style={[
+                { width: '70%', height: Math.max(6, (r.v / MAX_V) * (C2_VEL_H - 48)), borderTopLeftRadius: 5, borderTopRightRadius: 5, backgroundColor: velColor(r.v), boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.22), 0 6px 14px rgba(0,0,0,0.45)' } as unknown as ViewStyle,
+                grain,
+              ]}
+            />
+          </View>
+        ))}
+      </View>
+      <View style={{ flexDirection: 'row', gap: 10 }}>
+        {SET.map((r, i) => {
+          const w = repWarnings(r)
+          return (
+            <View key={i} style={{ flex: 1, alignItems: 'center', gap: 3, minHeight: 54 }}>
+              {w.length === 0 ? (
+                <Text style={{ color: alpha(C['status-success'], 0.95), fontSize: 10, fontWeight: '800', fontFamily: FONT_UI }}>✓ clean</Text>
+              ) : (
+                w.map((x, j) => <WarnChip key={j} w={x} />)
+              )}
+            </View>
+          )
+        })}
+      </View>
+      <RepTicks count={SET.length} />
+    </View>
+  )
+}
+
+/** The directional-semantics legend shared by all Round-2 stories. */
+function DirectionalLegend() {
+  const chip = (col: string, icon: string, label: string) => (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+      <View style={{ width: 16, height: 16, borderRadius: 4, alignItems: 'center', justifyContent: 'center', backgroundColor: alpha(col, 0.16), borderWidth: 1, borderColor: alpha(col, 0.5) }}>
+        <Text style={{ color: col, fontSize: 9, fontWeight: '900' }}>{icon}</Text>
+      </View>
+      <Text style={{ color: C['text-secondary'], fontSize: 11, fontWeight: '700', fontFamily: FONT_UI }}>{label}</Text>
+    </View>
+  )
+  return (
+    <View style={{ flexDirection: 'row', gap: 16, flexWrap: 'wrap', alignItems: 'center' }}>
+      {chip(OFF_STOP, '⚠', 'CONTROL — fast eccentric (severe)')}
+      {chip(OFF_STOP, '⚠', 'SHALLOW — ROM cut short (bad)')}
+      {chip(OFF_WARN, '•', 'GRIND — slow concentric (mild)')}
+      <Text style={{ color: C['text-tertiary'], fontSize: 11, fontStyle: 'italic', fontFamily: FONT_UI }}>
+        explosive concentric · slow eccentric · slightly-long ROM → not flagged
+      </Text>
+    </View>
+  )
+}
+
+/** R2·A — Composite column re-cut with directional (bad-direction-only) semantics. */
+export const RefinedComposite: Story = {
+  name: 'R2 · 1 · Composite (directional)',
+  render: () => (
+    <Page>
+      <View style={{ gap: 4 }}>
+        <SectionTitle>Composite column, refined — directional form semantics</SectionTitle>
+        <Caption>
+          The closest Round-1 encoding, re-cut so signals fire ONLY on the genuinely-bad direction. HEIGHT is concentric
+          velocity (hue). WIDTH is ROM inside a dashed STANDARD-ROM frame — a bar that fills the frame is at depth; a narrow
+          bar inside it is SHALLOW (bad). The CAP is eccentric control: a clean textured cap when the lowering is controlled
+          or slow (good), a red BROKEN cap when the eccentric is dropped (loss of control — severe). A thin amber base sliver
+          = a grinding concentric (mild fatigue). Explosive concentric, a slow eccentric, and a slightly-long ROM raise
+          NOTHING. Reps 4 & 7 (skinny + red broken cap) shout; the honest-fatigue rep 5 shows only the calm amber grind.
+        </Caption>
+        <DirectionalLegend />
+      </View>
+      <Panel width={900}>
+        <Kicker>8-REP CABLE PRESS · height=velocity · width=ROM/std · cap=eccentric · base=grind</Kicker>
+        <View style={[{ borderRadius: 10, padding: 12 }, well]}>
+          <Row h={A2_H}>{SET.map((r, i) => <RefinedColumn key={i} r={r} />)}</Row>
+          <RepTicks count={SET.length} />
+        </View>
+      </Panel>
+    </Page>
+  ),
+}
+
+/** R2·B — per-rep velocity-vs-time curve; the whole rep shape, area≈ROM. */
+export const VelocityCurves: Story = {
+  name: 'R2 · 2 · Velocity curves',
+  render: () => (
+    <Page>
+      <View style={{ gap: 4 }}>
+        <SectionTitle>Velocity curves — the whole shape of every rep</SectionTitle>
+        <Caption>
+          One velocity-vs-time curve per rep, as small multiples (cell WIDTH ∝ the rep's real duration, so a grinding rep
+          visibly stretches). Below the centerline is the ECCENTRIC descent (neutral parchment); above is the CONCENTRIC
+          ascent (velocity hue). Each lobe's AREA is the distance travelled — i.e. ROM — so a short rep is a small curve.
+          Fatigue deforms the shape: the controlled early eccentric (a wide low hump) collapses into a tall narrow SPIKE
+          (dropped — loss of control), the concentric flattens and lengthens (grind), and the whole curve shrinks as depth
+          is cut. Reps 4 & 7 show the tell — a fast eccentric spike over a small concentric lobe.
+        </Caption>
+        <DirectionalLegend />
+      </View>
+      <Panel width={900}>
+        <Kicker>8-REP CABLE PRESS · x=time (to scale) · up=concentric · down=eccentric · area≈ROM</Kicker>
+        <View style={[{ borderRadius: 10, padding: 14, flexDirection: 'row', gap: 10, alignItems: 'flex-start', flexWrap: 'wrap' }, well]}>
+          {SET.map((r, i) => <RepCurve key={i} r={r} idx={i} />)}
+        </View>
+      </Panel>
+    </Page>
+  ),
+}
+
+/** R2·C — clean velocity bar stays primary; ROM/tempo become directional warning flags. */
+export const WarningsModel: Story = {
+  name: 'R2 · 3 · Warnings model',
+  render: () => (
+    <Page>
+      <View style={{ gap: 4 }}>
+        <SectionTitle>Warnings model — velocity stays primary, problems become directional flags</SectionTitle>
+        <Caption>
+          The cleanest hypothesis: keep ONE uncluttered velocity bar as the main read, and don't encode every deviation as a
+          channel. Instead raise a discrete WARNING only when something is actually wrong — on the bad direction, with
+          severity. A dropped eccentric → red ⚠ CONTROL (severe). A cut ROM → red ⚠ SHALLOW (bad). A grinding concentric →
+          amber • GRIND (mild fatigue). Explosive concentric, a slow controlled eccentric, and a slightly-long ROM stay
+          silent — a clean rep just reads ✓. Reps 4 & 7 light up red; the honest-fatigue rep 5 shows one calm amber grind;
+          the early reps are silent.
+        </Caption>
+        <DirectionalLegend />
+      </View>
+      <Panel width={900}>
+        <Kicker>8-REP CABLE PRESS · velocity bar = primary · flags = directional + severity</Kicker>
+        <WarningsPanel />
+      </Panel>
+    </Page>
+  ),
+}
+
+/** R2 Overview — the three new directions tiled on the same fatiguing set. */
+export const OverviewR2: Story = {
+  name: 'R2 · Overview · new directions',
+  render: () => (
+    <Page>
+      <View style={{ gap: 4 }}>
+        <SectionTitle>Round 2 — three new directions, one fatiguing set</SectionTitle>
+        <Caption>
+          Directional semantics throughout: only a FAST eccentric (loss of control, severe), a SLOW concentric (grind,
+          mild), and a SHORT ROM (shallow, bad) ever raise a signal — the good/neutral directions stay quiet. Composite
+          (refined) bakes the signals into one bar; Velocity curves show each rep's whole shape (area≈ROM); Warnings keeps a
+          clean velocity bar and surfaces only genuine, severity-ranked problems.
+        </Caption>
+        <DirectionalLegend />
+      </View>
+      <View style={{ flexDirection: 'column', gap: 20 }}>
+        <Panel width={900}>
+          <Kicker>3 · WARNINGS MODEL — clean bar + directional flags</Kicker>
+          <WarningsPanel />
+        </Panel>
+        <Panel width={900}>
+          <Kicker>2 · VELOCITY CURVES — whole-rep shape · area≈ROM</Kicker>
+          <View style={[{ borderRadius: 10, padding: 12, flexDirection: 'row', gap: 8, flexWrap: 'wrap', alignItems: 'flex-start' }, well]}>
+            {SET.map((r, i) => <RepCurve key={i} r={r} idx={i} />)}
+          </View>
+        </Panel>
+        <Panel width={900}>
+          <Kicker>1 · COMPOSITE (DIRECTIONAL) — height/width/cap/base</Kicker>
+          <View style={[{ borderRadius: 10, padding: 10 }, well]}>
+            <Row h={220}>{SET.map((r, i) => <RefinedColumn key={i} r={r} />)}</Row>
+            <RepTicks count={SET.length} />
+          </View>
+        </Panel>
+      </View>
+    </Page>
+  ),
+}
