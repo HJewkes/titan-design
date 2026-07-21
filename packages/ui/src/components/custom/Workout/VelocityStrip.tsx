@@ -759,6 +759,9 @@ export interface DualVelocityStripProps extends ViewProps {
   className?: string
 }
 
+// Bars fill the full column width (barPct '100%'); the ONLY inter-bar whitespace is the
+// column `gap`, exactly like the single VelocityStrip hero — so a dual chart's rep columns
+// sit at the same density as a single one (only the up/down mirroring differs).
 /** Scale-dependent chrome for the diverging chart, reusing the hero geometry constants. */
 const DIVERGING_CHROME = {
   hero: {
@@ -767,7 +770,7 @@ const DIVERGING_CHROME = {
     labelBand: HERO_LABEL_HEADROOM,
     radius: HERO_BAR_RADIUS,
     minBar: HERO_MIN_BAR_HEIGHT,
-    barPct: '64%',
+    barPct: '100%',
     showValues: true,
     showReference: true,
   },
@@ -777,7 +780,7 @@ const DIVERGING_CHROME = {
     labelBand: 0,
     radius: 2,
     minBar: 3,
-    barPct: '82%',
+    barPct: '100%',
     showValues: false,
     showReference: false,
   },
@@ -871,6 +874,54 @@ function WingBar({ slot, grow, c, color, barPx, liveScale, isLive, testID }: Win
 }
 
 /**
+ * The vertical voltra-name rail down the chart's left edge — the same rotated-label
+ * treatment the single dual live view uses, split into an upper (LEFT, over the up
+ * wing) and lower (RIGHT, over the down wing) half so the side reads without any tag
+ * overlapping the bars near the axis. `rail` scale shrinks to a single-letter gutter.
+ */
+function DivergingSideRail({ plotHalf, variant }: { plotHalf: number; variant: 'hero' | 'rail' }) {
+  if (variant === 'rail') {
+    return (
+      <View style={{ width: 14 }} accessibilityElementsHidden>
+        <View style={{ height: plotHalf, alignItems: 'center', justifyContent: 'center' }}>
+          <Text className="text-text-tertiary" style={{ fontSize: 9, fontWeight: '800', letterSpacing: 0.5 }}>
+            L
+          </Text>
+        </View>
+        <View style={{ height: plotHalf, alignItems: 'center', justifyContent: 'center' }}>
+          <Text className="text-text-tertiary" style={{ fontSize: 9, fontWeight: '800', letterSpacing: 0.5 }}>
+            R
+          </Text>
+        </View>
+      </View>
+    )
+  }
+  // Fixed-width holds the full rotated label so it doesn't clip to the strip before rotation.
+  const rotated = {
+    width: 150,
+    textAlign: 'center' as const,
+    fontSize: 11,
+    fontWeight: '700' as const,
+    letterSpacing: 3,
+    transform: [{ rotate: '-90deg' }],
+  }
+  return (
+    <View className="border-border" style={{ width: 34, borderRightWidth: 1 }} accessibilityElementsHidden>
+      <View style={{ height: plotHalf, alignItems: 'center', justifyContent: 'center' }}>
+        <Text className="text-text-tertiary" style={rotated}>
+          LEFT VOLTRA
+        </Text>
+      </View>
+      <View style={{ height: plotHalf, alignItems: 'center', justifyContent: 'center' }}>
+        <Text className="text-text-tertiary" style={rotated}>
+          RIGHT VOLTRA
+        </Text>
+      </View>
+    </View>
+  )
+}
+
+/**
  * The dual-voltra (bilateral) DIVERGING per-rep velocity chart. LEFT reps grow UP,
  * RIGHT reps grow DOWN from one shared centre axis; one mirrored pair per rep index.
  * Reuses VelocityStrip's slot vocabulary, zone colors, hero geometry, and live-rep pop.
@@ -948,12 +999,16 @@ export function DualVelocityStrip({
   return (
     <View
       className={className}
-      style={[{ height: resolvedHeight, position: 'relative' }, externalStyle]}
+      style={[{ height: resolvedHeight, flexDirection: 'row' }, externalStyle]}
       accessibilityRole="image"
       accessibilityLabel={label}
       testID="dual-velocity-strip"
       {...restProps}
     >
+      {/* Vertical LEFT / RIGHT voltra labels down the left edge (never overlap the bars). */}
+      <DivergingSideRail plotHalf={plotHalf} variant={variant} />
+
+      <View style={{ flex: 1, position: 'relative' }}>
       {/* Per-side running-best reference lines (hero) — how far each side has fallen from best. */}
       {c.showReference && refPxL > 0 && (
         <View
@@ -971,30 +1026,6 @@ export function DualVelocityStrip({
           testID="dual-velocity-reference-R"
         />
       )}
-
-      {/* The centre axis — same weight/color as the single hero's baseline (charcoal, 2px). */}
-      <View
-        accessibilityElementsHidden
-        pointerEvents="none"
-        style={{ position: 'absolute', left: 0, right: 0, top: plotHalf - 1, height: 2, backgroundColor: HERO_PENDING_COLOR }}
-        testID="dual-velocity-axis"
-      />
-
-      {/* Small L ▲ / R ▼ side tags flush to the axis — side is position, reinforced by a tag. */}
-      <Text
-        className="text-text-tertiary"
-        accessibilityElementsHidden
-        style={{ position: 'absolute', left: 0, top: plotHalf - c.labelBand - 15, fontSize: variant === 'hero' ? 12 : 9, fontWeight: '800', letterSpacing: 0.5 }}
-      >
-        L ▲
-      </Text>
-      <Text
-        className="text-text-tertiary"
-        accessibilityElementsHidden
-        style={{ position: 'absolute', left: 0, top: plotHalf + c.labelBand + 3, fontSize: variant === 'hero' ? 12 : 9, fontWeight: '800', letterSpacing: 0.5 }}
-      >
-        R ▼
-      </Text>
 
       {/* Mirrored per-rep columns. */}
       <View
@@ -1058,6 +1089,17 @@ export function DualVelocityStrip({
             </View>
           )
         })}
+      </View>
+
+      {/* The centre axis — same weight/color as the single hero's baseline (charcoal, 2px).
+          Rendered LAST so it sits ON TOP of the bars, visually splitting each rep's up (L)
+          and down (R) halves into two distinct bars meeting at the axis. */}
+      <View
+        accessibilityElementsHidden
+        pointerEvents="none"
+        style={{ position: 'absolute', left: 0, right: 0, top: plotHalf - 1, height: 2, backgroundColor: HERO_PENDING_COLOR }}
+        testID="dual-velocity-axis"
+      />
       </View>
     </View>
   )
