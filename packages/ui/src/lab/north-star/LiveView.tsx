@@ -426,6 +426,9 @@ export function LiveView({
   )
 }
 
+/** Reserved right-hand column (px) holding the two vertical tempo strips, clear of the chart. */
+const DUAL_TEMPO_GUTTER = 88
+
 /**
  * The DUAL (bilateral) live stage — ONE diverging velocity chart for both voltras
  * (LEFT grows up, RIGHT grows down from a shared centre axis) instead of two stacked
@@ -467,32 +470,35 @@ export function DualLiveView({ left, right }: { left: DashboardModel; right: Das
       split={{ top: leftVerdict, bottom: rightVerdict }}
       style={{ flex: 1, borderRadius: 0, borderWidth: 0 }}
     >
-      {/* the diverging dual hero fills the whole stage; the vertical tempo strips overlay the
-          empty right-hand space past the bars, split top (LEFT) / bottom (RIGHT). */}
-      <View style={{ flex: 1, padding: 24, position: 'relative' }} onLayout={onHeroLayout}>
-        <DualVelocityStrip
-          variant="hero"
-          left={{ velocities: left.live.repVelocities }}
-          right={{ velocities: right.live.repVelocities }}
-          liveRepIndex={left.live.repVelocities.length - 1}
-          targetReps={8}
-          height={heroHeight}
-          scale="peak"
-        />
-        {/* TOP-half tempo strip — LEFT voltra. */}
-        <View
-          pointerEvents="none"
-          style={{ position: 'absolute', right: 28, top: 24, height: '46%', justifyContent: 'center', alignItems: 'center' }}
-        >
-          {tempoStrip(leftPhase, left.live.phaseElapsedMs)}
+      {/* [ diverging chart (flex) ][ fixed tempo gutter ] — the chart lays out within its
+          REDUCED width so its bars / stubs / reference lines / centre axis end BEFORE the
+          tempo strips (no overlap). Symmetric row padding keeps the chart vertically centred,
+          so its centre axis (chart height / 2) lands on the aura's 50% split line — and the
+          gutter's top/bottom halves meet on that same line, aligning the L/R tempo strips. */}
+      <View style={{ flex: 1, flexDirection: 'row', padding: 24, gap: 10 }}>
+        <View style={{ flex: 1, position: 'relative' }} onLayout={onHeroLayout}>
+          <DualVelocityStrip
+            variant="hero"
+            left={{ velocities: left.live.repVelocities }}
+            right={{ velocities: right.live.repVelocities }}
+            liveRepIndex={left.live.repVelocities.length - 1}
+            targetReps={8}
+            height={heroHeight}
+            scale="peak"
+          />
         </View>
-        {/* BOTTOM-half tempo strip — RIGHT voltra. */}
-        <View
-          pointerEvents="none"
-          style={{ position: 'absolute', right: 28, bottom: 24, height: '46%', justifyContent: 'center', alignItems: 'center' }}
-        >
-          {tempoStrip(rightPhase, right.live.phaseElapsedMs)}
-        </View>
+        {session.tempo != null && (
+          <View style={{ width: DUAL_TEMPO_GUTTER }} pointerEvents="none">
+            {/* TOP half — LEFT voltra tempo (aligned to the up wing). */}
+            <View style={{ height: '50%', justifyContent: 'center', alignItems: 'center' }}>
+              {tempoStrip(leftPhase, left.live.phaseElapsedMs)}
+            </View>
+            {/* BOTTOM half — RIGHT voltra tempo (aligned to the down wing). */}
+            <View style={{ height: '50%', justifyContent: 'center', alignItems: 'center' }}>
+              {tempoStrip(rightPhase, right.live.phaseElapsedMs)}
+            </View>
+          </View>
+        )}
       </View>
     </LiveAuraFrame>
   )
