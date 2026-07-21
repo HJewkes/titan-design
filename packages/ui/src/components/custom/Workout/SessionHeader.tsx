@@ -8,10 +8,11 @@ import { MetricTiles, type MetricTileData } from './MetricTiles'
 import { ScheduleTiles } from './ScheduleTiles'
 import { paceTone, paceToneColor } from './paceTone'
 
-// The header shares the SideNav's `background-base` (charcoal 900, #101010) so the nav and
-// the rail header read as ONE continuous dark plane on the left — the sunk exercise list
-// sits raised off it. A `<Surface level="background">` owns that plane so the header no
-// longer hand-sets it, and its title/label text resolve on-surface colours from context.
+// The header sits FLAT on the rail's content plane — it is workout content, not shell
+// chrome, so it no longer paints a distinct dark plane. The `<Surface>` wrapper is kept
+// only for its on-surface colour CONTEXT (title/label text resolve their colour from it);
+// its background is dropped to transparent. Separation from the exercise list below comes
+// from a partial hairline (drawn by SessionRail), not a surface step.
 
 // The chunked pace bar matches the SetStrip language but sits tighter than the default
 // SetStrip gap (5) — the locked design uses a 3px gap and a 9px track.
@@ -84,8 +85,14 @@ export function SessionHeader({
     <Surface
       level="background"
       className={className}
+      // Content, not chrome: the heading sits FLAT on the rail's content plane —
+      // no distinct dark plane fill. Keep the Surface for its on-surface colour
+      // context; the transparent bg (applied via the prop `style`, which wins over
+      // Surface's computed background) drops the plane. Separation from the list
+      // below is a partial hairline drawn by SessionRail, not a surface step.
       style={[
         {
+          backgroundColor: 'transparent',
           paddingTop: 11,
           paddingRight: 12,
           paddingBottom: 12,

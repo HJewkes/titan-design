@@ -1,7 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { neumorphicShadows } from '../../../theme/shadows'
 import { Surface } from '../../ui/surface'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
 import { SessionHeader } from './SessionHeader'
@@ -9,14 +8,13 @@ import type { MetricTileData } from './MetricTiles'
 import type { SetStripSet } from './SetStrip'
 import type { ExerciseIndicatorKind } from './ExerciseIndicator'
 
-// Charcoal-ramp surfaces (the locked S3 shell shades): the nav + the heading plane read as
-// ONE dark plane (charcoal 900, #101010, owned by SessionHeader's `<Surface level="background">`).
-// The exercise list is a LIGHTER inset panel — `<Surface level="elevated">` (charcoal 600,
-// #191919) — recessed via its inner shadow yet paler than the header, so the transparent
-// exercise headings on it never blend into the header plane. Surface owns both backgrounds,
-// so the rail no longer hand-sets them.
-// Row divider — the self-normalizing alpha-white hairline token (reads constant on any plane).
-const DIVIDER = getSemanticColors('dark')['border-subtle']
+// The rail is workout CONTENT, not shell chrome: it sits FLAT on the content plane it's
+// dropped into (no distinct surface fill, no neumorphic depth). Separation is carried by
+// hairlines, not surface steps — a FULL vertical hairline on the right edge parts the rail
+// from the stage beside it, and a PARTIAL (inset) horizontal hairline parts the heading
+// from the exercise list. Both use the self-normalizing alpha-white hairline token, which
+// reads constant on any plane. Per-row dividers use the same token.
+const HAIRLINE = getSemanticColors('dark')['border-subtle']
 
 const DEFAULT_WIDTH = 246
 
@@ -66,10 +64,11 @@ export interface SessionRailProps extends ViewProps {
 }
 
 /**
- * The live-workout session rail: a flat raised {@link SessionHeader} glance (title,
- * stat tiles, chunked pace bar) over a sunk, inset list of {@link ExerciseCardHeading}
- * exercise headings. The header's plan (chunk widths ∝ sets) is derived from `exercises`.
- * Presentational — driven entirely by props.
+ * The live-workout session rail: a {@link SessionHeader} glance (title, stat tiles,
+ * chunked pace bar) over a list of {@link ExerciseCardHeading} exercise headings, all
+ * flat on the content plane and parted by hairlines (content, not chrome). The header's
+ * plan (chunk widths ∝ sets) is derived from `exercises`. Presentational — driven
+ * entirely by props.
  */
 export function SessionRail({
   title,
@@ -91,7 +90,18 @@ export function SessionRail({
     <Surface
       level="elevated"
       className={className}
-      style={[{ width, flexDirection: 'column' }, style]}
+      // Flat on the content plane (transparent), with the FULL vertical hairline on the
+      // right edge parting the rail from the stage beside it.
+      style={[
+        {
+          width,
+          flexDirection: 'column',
+          backgroundColor: 'transparent',
+          borderRightWidth: 1,
+          borderRightColor: HAIRLINE,
+        },
+        style,
+      ]}
       testID="session-rail"
       {...props}
     >
@@ -106,9 +116,14 @@ export function SessionRail({
         next={next}
       />
 
+      {/* PARTIAL horizontal hairline — inset from the edges so it parts heading from list
+          without running into the rail's outer vertical hairline. */}
+      <View style={{ height: 1, marginHorizontal: 12, backgroundColor: HAIRLINE }} />
+
       <Surface
         level="elevated"
-        style={[{ flex: 1 }, neumorphicShadows.charcoal.pressed.subtle]}
+        // Flat, no neumorphic depth — the list is content on the same plane as the heading.
+        style={[{ flex: 1, backgroundColor: 'transparent' }]}
         testID="session-rail-list"
       >
         {exercises.map((ex, i) => (
@@ -116,7 +131,7 @@ export function SessionRail({
             key={ex.id ?? i}
             style={{
               borderBottomWidth: i < exercises.length - 1 ? 1 : 0,
-              borderBottomColor: DIVIDER,
+              borderBottomColor: HAIRLINE,
             }}
           >
             <ExerciseCardHeading
