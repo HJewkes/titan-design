@@ -257,6 +257,7 @@ function CombinedChart({
   compact = false,
   revealed = true,
   axisCaptions = true,
+  phaseMarks = 'bands',
 }: {
   w?: number
   h?: number
@@ -269,6 +270,10 @@ function CombinedChart({
   /** The "time →" / "rep N (now)" bottom captions. Off in the spark variant (even when
    *  revealed) so the hover legend overlay has the bottom edge to itself. */
   axisCaptions?: boolean
+  /** How the prescribed phases read behind the curve: `bands` = full-height shaded washes;
+   *  `segments` = thin color-coded line segments along the BASE (lighter). ECC/CON labelled
+   *  (on hover), pause/hold unlabelled; the hold segment only when the prescribed hold > 0. */
+  phaseMarks?: 'bands' | 'segments'
 }) {
   // `compact` (in the narrow card column) trims the L/R gutters and drops the CON/ECC
   // side labels so the plot uses more of the width — geometry + bands still carry phase.
@@ -289,19 +294,44 @@ function CombinedChart({
     con: alpha(PARCH, 0.08),
     pauseTop: alpha('#000000', 0.24),
   }
+  // Segment marks: thin phase-colored lines along the base. ecc = steel, con = parchment
+  // (the phase base tones), pauses dim/neutral.
+  const markColor: Record<Phase, string> = {
+    ecc: PHASE_BASE.ecc,
+    pauseBottom: alpha(PARCH, 0.3),
+    con: PHASE_BASE.con,
+    pauseTop: alpha(PARCH, 0.3),
+  }
+  const segY = h - padBot + 11 // in the bottom margin, below the curve
   return (
     <svg width={w} height={h}>
-      {/* target-tempo bands — the PRESCRIBED phase regions behind the curve. */}
-      {targetSpans().map((p, i) => (
-        <g key={i}>
-          <rect x={x(p.t0)} y={padTop} width={Math.max(0, x(p.t1) - x(p.t0))} height={h - padTop - padBot} fill={bandTone[p.phase]} />
-          {revealed && x(p.t1) - x(p.t0) > 16 && (
-            <text x={(x(p.t0) + x(p.t1)) / 2} y={padTop - 8} textAnchor="middle" fill={C['text-tertiary']} fontSize={8} fontWeight={800} letterSpacing={1} fontFamily={FONT_UI}>
-              {PHASE_LABEL[p.phase]}
-            </text>
-          )}
-        </g>
-      ))}
+      {/* PRESCRIBED phases behind the curve — full-height bands OR thin base segments. */}
+      {phaseMarks === 'bands'
+        ? targetSpans().map((p, i) => (
+            <g key={i}>
+              <rect x={x(p.t0)} y={padTop} width={Math.max(0, x(p.t1) - x(p.t0))} height={h - padTop - padBot} fill={bandTone[p.phase]} />
+              {revealed && x(p.t1) - x(p.t0) > 16 && (
+                <text x={(x(p.t0) + x(p.t1)) / 2} y={padTop - 8} textAnchor="middle" fill={C['text-tertiary']} fontSize={8} fontWeight={800} letterSpacing={1} fontFamily={FONT_UI}>
+                  {PHASE_LABEL[p.phase]}
+                </text>
+              )}
+            </g>
+          ))
+        : targetSpans().map((p, i) => {
+            if (p.phase === 'pauseTop' && TARGET.pauseTop <= 0) return null // no hold segment without a prescribed hold
+            const segW = Math.max(0, x(p.t1) - x(p.t0) - 2)
+            const label = p.phase === 'ecc' ? 'ECC' : p.phase === 'con' ? 'CON' : null
+            return (
+              <g key={i}>
+                <rect x={x(p.t0) + 1} y={segY} width={segW} height={3} rx={1.5} fill={markColor[p.phase]} />
+                {revealed && label && segW > 14 && (
+                  <text x={(x(p.t0) + x(p.t1)) / 2} y={segY - 4} textAnchor="middle" fill={C['text-tertiary']} fontSize={8} fontWeight={800} letterSpacing={1} fontFamily={FONT_UI}>
+                    {label}
+                  </text>
+                )}
+              </g>
+            )
+          })}
       {/* zero axis (parchment) — concentric above, eccentric below. */}
       <line x1={padL} y1={mid} x2={w - padR} y2={mid} stroke={AXIS} strokeWidth={1} />
       {!compact && revealed && <text x={padL - 6} y={y(VMAX * 0.62)} textAnchor="end" fill={C['text-tertiary']} fontSize={8} fontFamily={FONT_MONO}>CON</text>}
@@ -381,23 +411,24 @@ function TempoLegend({ compact = false }: { compact?: boolean }) {
 
 /**
  * The STRIPPED sparkline variant — resting, it's just the shapes + color: the ghost trails,
- * the tempo-colored current line, and the faint phase washes, sitting BARE in the card (no
- * inset frame, no labels, no legend, no peak marker). ON HOVER it blooms into the full
- * annotated {@link CombinedChart} — the inset well frame paints in, the phase labels + peak
- * marker + time labels return, and the tempo legend overlays. `forceRevealed` pins the
- * revealed state (for screenshots). The SVG geometry is identical in both states, so the
- * line never shifts — only chrome fades in.
+ * the tempo-colored current line, and the base phase segments, sitting BARE in the card (no
+ * frame, no labels, no legend, no peak marker). ON HOVER the ANNOTATIONS fade in — the phase
+ * labels + peak marker return and the tempo legend overlays — but the chart stays FRAMELESS
+ * in both states (no inset box). `forceRevealed` pins the revealed state (for screenshots).
+ * The SVG geometry is identical, so the line never shifts — only annotations fade in.
  */
 function SparkCombinedChart({
   w,
   h = 168,
   current = 7,
   forceRevealed,
+  phaseMarks = 'segments',
 }: {
   w: number
   h?: number
   current?: number
   forceRevealed?: boolean
+  phaseMarks?: 'bands' | 'segments'
 }) {
   const [hovered, setHovered] = useState(false)
   const revealed = forceRevealed ?? hovered
@@ -405,13 +436,10 @@ function SparkCombinedChart({
     <Pressable
       onHoverIn={() => setHovered(true)}
       onHoverOut={() => setHovered(false)}
-      style={[
-        { borderRadius: 12, paddingVertical: 8, paddingHorizontal: 4 },
-        // The inset-well frame only paints when revealed; padding is constant so nothing reflows.
-        revealed ? insetWell(primitiveColors.charcoal[900]) : null,
-      ]}
+      // Frameless in BOTH states — only the annotations fade in on hover, never a box.
+      style={{ paddingHorizontal: 4 }}
     >
-      <CombinedChart w={w} h={h} current={current} compact revealed={revealed} axisCaptions={false} />
+      <CombinedChart w={w} h={h} current={current} compact revealed={revealed} axisCaptions={false} phaseMarks={phaseMarks} />
       {/* the divergent tempo legend — overlaid at the bottom on hover, so the card below never shifts. */}
       {revealed && (
         <View
@@ -507,10 +535,27 @@ const LEVEL_TONE: Record<Level, string> = {
 function bandLevel(v: number, warn: number, alarm: number): Level {
   return v >= alarm ? 'alarm' : v >= warn ? 'warn' : 'ok'
 }
+/**
+ * Mock per-rep RPE estimate (WA's `estimateSetRpe`, ~1–10, null under 2 reps). Rises through
+ * the fatiguing set; the cheat rep 4 dips (propped, felt easier) before the grind. Rep 8 = 10
+ * (failure). Placeholder — the real value comes from Workout Analytics' view-model.
+ */
+const MOCK_RPE: Array<number | null> = [null, 6.5, 7.5, 7, 8.5, 9, 9.5, 10]
+function fmtRpe(rpe: number): string {
+  return rpe % 1 === 0 ? `${rpe}` : rpe.toFixed(1)
+}
+/** RPE → the explanatory reps-in-reserve line under the hero number. */
+function rpeSub(rpe: number): string {
+  const rir = Math.max(0, Math.round(10 - rpe))
+  return rir <= 0 ? 'at failure — end the set' : `~${rir} rep${rir === 1 ? '' : 's'} in reserve`
+}
+
 interface FatigueRead {
   velLoss: { level: Level; value: string }
   /** The raw velocity-loss %, for the metric-led verdict hero (à la StopSetDecision). */
   velLossPct: number
+  /** Mock RPE estimate (null under 2 reps) — the lead number of the hero. */
+  rpe: number | null
   rom: { level: Level; value: string }
   tempo: { level: Level; value: string }
   verdict: { word: string; sub: string; tone: string }
@@ -541,6 +586,7 @@ function computeFatigue(current: number): FatigueRead {
   return {
     velLoss: { level: velLevel, value: `${vl}%` },
     velLossPct: vl,
+    rpe: MOCK_RPE[current] ?? null,
     rom: { level: romLevel, value: `${depth}%` },
     tempo: { level: tempoLevel, value: tempoWord },
     verdict,
@@ -577,24 +623,25 @@ function WhyRow({ f }: { f: FatigueRead }) {
  * tone-colored headline integrated straight into the card (no nested box/border), a short
  * supporting line, and the three "why" dots beneath. Two modes to compare:
  *   `word`   — verdict-word-led (the aggregated state is the headline).
- *   `metric` — a lead METRIC (velocity-loss %) as the big number + the verdict word beside
- *              it, mirroring the stop-set "37% / Approaching failure" hero.
- * Verdict content is placeholder — Workout Analytics will own it.
+ *   `metric` — a lead RPE ESTIMATE as the big number + the tone verdict word, with the
+ *              supporting line explaining the RPE (reps in reserve / proximity to failure),
+ *              mirroring the stop-set "37% / Approaching failure" hero idiom.
+ * Verdict + RPE content is placeholder — Workout Analytics will own it.
  */
 function VerdictHero({ f, mode = 'word' }: { f: FatigueRead; mode?: 'word' | 'metric' }) {
   const tone = f.verdict.tone
+  const rpeLed = mode === 'metric' && f.rpe != null
   return (
     <View style={{ gap: 8 }}>
       <Text style={[{ fontSize: 9, letterSpacing: 1.5, fontFamily: FONT_MONO, color: C['text-tertiary'] }, debossLabel]}>FATIGUE</Text>
-      {mode === 'metric' ? (
+      {rpeLed ? (
         <View style={{ gap: 2 }}>
           <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 6 }}>
-            <Text style={{ fontSize: 46, fontWeight: '900', fontFamily: FONT_HEAD, color: tone, lineHeight: 46 }}>{f.velLossPct}</Text>
-            <Text style={{ fontSize: 20, fontWeight: '800', color: tone, marginBottom: 5 }}>%</Text>
-            <Text style={{ fontSize: 11, fontWeight: '700', color: C['text-tertiary'], marginBottom: 8, fontFamily: FONT_UI }}>velocity loss</Text>
+            <Text style={{ fontSize: 46, fontWeight: '900', fontFamily: FONT_HEAD, color: tone, lineHeight: 46 }}>{fmtRpe(f.rpe as number)}</Text>
+            <Text style={{ fontSize: 15, fontWeight: '800', color: tone, marginBottom: 6, fontFamily: FONT_HEAD }}>RPE</Text>
           </View>
           <Text style={{ fontSize: 17, fontWeight: '800', fontFamily: FONT_HEAD, color: tone }}>{f.verdict.word}</Text>
-          <Text style={{ fontSize: 12, fontWeight: '600', fontFamily: FONT_UI, color: C['text-secondary'] }}>{f.verdict.sub}</Text>
+          <Text style={{ fontSize: 12, fontWeight: '600', fontFamily: FONT_UI, color: C['text-secondary'] }}>{rpeSub(f.rpe as number)}</Text>
         </View>
       ) : (
         <View style={{ gap: 3 }}>
@@ -613,35 +660,46 @@ function VerdictHero({ f, mode = 'word' }: { f: FatigueRead; mode?: 'word' | 'me
 //   → compact ghost SPARK (hover to bloom)
 //   → compact ROM SPARK (hover to bloom).
 // =================================================================================
+/** Estimated verdict-hero heights (px) per mode — used to distribute a fixed card height. */
+const HERO_EST: Record<'word' | 'metric', number> = { word: 96, metric: 132 }
 function FatigueCard({
   width = 300,
   height,
   current = 7,
-  heroMode = 'word',
+  heroMode = 'metric',
   revealChart,
 }: {
   width?: number
   height?: number
   current?: number
-  /** Verdict-hero treatment: `word` (verdict-word-led) or `metric` (VL% lead, stop-set idiom). */
+  /** Verdict-hero treatment: `metric` (RPE lead, stop-set idiom, default) or `word` (verdict-word-led). */
   heroMode?: 'word' | 'metric'
   /** Force both spark charts into their revealed (hover) state — for static screenshots. */
   revealChart?: boolean
 }) {
   const f = computeFatigue(current)
-  const pad = 18
+  // Responsive: when the card has a fixed height, the padding + inter-section gap + the ghost
+  // chart all scale with it, so the content distributes to FILL the height (bigger chart +
+  // more generous spacing when there's room) rather than a cramped top over a dead spacer.
+  const hasH = height != null
+  const pad = hasH ? Math.round(clamp((height as number) * 0.042, 16, 26)) : 18
+  const gap = hasH ? Math.round(clamp((height as number) * 0.04, 13, 26)) : 16
+  const romEst = 40
   const wellPadX = 4 // the ghost spark carries this L/R gutter internally
   const chartW = width - pad * 2 - wellPadX * 2
+  // Ghost chart grows to consume the height the hero + ROM + gaps leave (min floor so it never
+  // collapses); a tiny spacer absorbs estimate slack + the ROM hover caption reflow.
+  const chartH = hasH ? Math.max(150, (height as number) - pad * 2 - HERO_EST[heroMode] - romEst - gap * 3) : 154
   return (
-    <View style={[{ width, height, borderRadius: 14, padding: pad, gap: 16 }, paperSheet(primitiveColors.charcoal[800])]}>
+    <View style={[{ width, height, borderRadius: 14, padding: pad, gap }, paperSheet(primitiveColors.charcoal[800])]}>
       {/* the verdict as the card's hero — the instant read. */}
       <VerdictHero f={f} mode={heroMode} />
-      {/* compact ghost spark — hover blooms it into the annotated chart. */}
-      <SparkCombinedChart w={chartW} h={150} current={current} forceRevealed={revealChart} />
+      {/* ghost spark — grows with the card height; hover blooms it (frameless). */}
+      <SparkCombinedChart w={chartW} h={chartH} current={current} forceRevealed={revealChart} />
       {/* compact ROM spark — hover brings the labels + reference lines back. */}
       <RomSpark width={width - pad * 2} current={current} forceRevealed={revealChart} />
-      {/* absorbs slack when the card is given a tall fixed height (beside the hero). */}
-      <View style={{ flex: 1, minHeight: 4 }} />
+      {/* absorbs estimate slack + the ROM hover caption when the card has a tall fixed height. */}
+      <View style={{ flex: 1, minHeight: 2 }} />
     </View>
   )
 }
@@ -708,7 +766,7 @@ function ExerciseHeaderLite({ current }: { current: number }) {
 }
 
 /** Panel body height — the hero and the fatigue card both fill this so their tops/bottoms align. */
-const PANEL_BODY_H = 476
+const PANEL_BODY_H = 508
 function LivePanelV2({ current = 7 }: { current?: number }) {
   const verdict = MEAN_VEL[current] / V_BEST < 0.7 ? 'stop' : MEAN_VEL[current] / V_BEST < 0.8 ? 'threshold' : 'productive'
   const heroH = PANEL_BODY_H - 26 // leaves room for the hero's own eyebrow above it
@@ -806,11 +864,11 @@ export const SparkChart: Story = {
           <SectionTitle>Spark variants — glance at rest, detail on hover</SectionTitle>
           <Caption>
             Both secondary reads are DEMOTED to sparklines: at rest they&apos;re just the shapes + color (the ghost trails +
-            tempo-colored line + faint phase washes; the silver/red ROM bars) with no frame, labels, legend, peak marker or
-            captions. On HOVER each blooms back into its annotated self — the ghost spark paints its inset frame + phase labels
-            + peak marker + tempo legend; the ROM spark paints its working-standard / short-threshold reference lines + the
-            &quot;depth vs working range / now X%&quot; caption. Geometry is identical between states, so nothing shifts. (Left
-            column = resting, hover live in Storybook; right column = the revealed state forced for the screenshot.)
+            tempo-colored line + base phase segments; the silver/red ROM bars) with no frame, labels, legend, peak marker or
+            captions. On HOVER only the ANNOTATIONS fade in — the ghost spark stays FRAMELESS (no box) and adds its phase
+            labels + peak marker + tempo legend; the ROM spark paints its working-standard / short-threshold reference lines +
+            the &quot;depth vs working range / now X%&quot; caption. Geometry is identical between states, so nothing shifts.
+            (Left column = resting, hover live in Storybook; right column = the revealed state forced for the screenshot.)
           </Caption>
         </View>
         <View style={{ flexDirection: 'row', gap: 24, alignItems: 'flex-start' }}>
@@ -857,14 +915,47 @@ export const VerdictHero_: Story = {
           <Caption>
             The aggregated verdict promoted to the card&apos;s focal read, in the StopSetDecision idiom — a big tone-colored
             headline integrated into the card (no nested alert box), a short supporting line, and the three &quot;why&quot;
-            dots (velocity-loss · ROM · tempo) beneath it, metric on hover. LEFT is verdict-word-led; RIGHT leads with the
-            velocity-loss % as the big number and the verdict word beside it (à la stop-set &quot;37% / Approaching failure&quot;).
-            Each shown breaking-down (rep 8) over good (rep 3).
+            dots (velocity-loss · ROM · tempo) beneath it, metric on hover. RIGHT (the default) leads with the RPE ESTIMATE as
+            the big number, the tone verdict word, and a supporting line explaining the RPE (reps in reserve / proximity to
+            failure). LEFT is the verdict-word-led alternative. Each shown breaking-down (rep 8, RPE 10) over good (rep 3, RPE 7.5).
           </Caption>
         </View>
         <View style={{ flexDirection: 'row', gap: 28, alignItems: 'flex-start' }}>
           {col('word', 'OPTION A — verdict-word-led', 'The aggregated state IS the headline.')}
-          {col('metric', 'OPTION B — VL%-led (stop-set idiom)', 'A lead metric (velocity loss) + the verdict word.')}
+          {col('metric', 'OPTION B — RPE-led (default, stop-set idiom)', 'A lead RPE number + verdict word + reps-in-reserve.')}
+        </View>
+      </Page>
+    )
+  },
+}
+
+/** P1c — phase marks: the current full-height BANDS vs the new base line-SEGMENTS. */
+export const PhaseMarks: Story = {
+  name: 'P1c · Phase marks (bands vs segments)',
+  render: () => {
+    const cell = (label: string, marks: 'bands' | 'segments') => (
+      <View style={{ gap: 8 }}>
+        <Kicker>{label}</Kicker>
+        <View style={{ width: 440, backgroundColor: PANEL_BG, borderRadius: 12, padding: 16 }}>
+          <CombinedChart w={408} h={230} current={7} compact revealed axisCaptions={false} phaseMarks={marks} />
+        </View>
+      </View>
+    )
+    return (
+      <Page>
+        <View style={{ gap: 4 }}>
+          <SectionTitle>Phase marks — full-height bands vs base line-segments</SectionTitle>
+          <Caption>
+            The prescribed ecc / pause / con / hold regions drawn two ways, to judge. LEFT = the current full-height shaded
+            BANDS (heavier — the phase floods the whole plot). RIGHT = thin color-coded line SEGMENTS along the base, one per
+            phase sized to its prescribed time extent (ecc = steel, con = parchment, the pauses dim), only ECC + CON labelled,
+            the hold segment present only when the prescribed hold &gt; 0. The segment version is wired into the card as the
+            new default. Both shown revealed; at rest the labels drop and only the marks + line remain.
+          </Caption>
+        </View>
+        <View style={{ flexDirection: 'row', gap: 24, alignItems: 'flex-start' }}>
+          {cell('BANDS — current (full-height washes)', 'bands')}
+          {cell('SEGMENTS — new (base line marks)', 'segments')}
         </View>
       </Page>
     )
