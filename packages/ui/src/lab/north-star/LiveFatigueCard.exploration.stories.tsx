@@ -29,7 +29,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { type ReactNode, useState } from 'react'
 import { View, Text, Pressable, type ViewStyle } from 'react-native'
-import { LiveAuraFrame, VelocityStrip } from '../../components'
+import { LiveAuraFrame, VelocityStrip, TempoDisplay } from '../../components'
 import { Tooltip } from '../../components/ui/tooltip/Tooltip'
 import { getSemanticColors } from '../../theme/tokens/semantic'
 import { primitiveColors, primitiveRamps } from '../../theme/tokens/primitives'
@@ -87,6 +87,8 @@ const SPECS: RepSpec[] = [
 /** The PRESCRIBED tempo (ms per phase) — the target the line color is judged against. */
 const TARGET = { ecc: 2600, pauseBottom: 400, con: 950, pauseTop: 280 }
 const TARGET_TOTAL = TARGET.ecc + TARGET.pauseBottom + TARGET.con + TARGET.pauseTop
+/** The prescribed tempo as the [ecc, pauseBottom, con, pauseTop] seconds tuple TempoDisplay renders. */
+const TEMPO_TUPLE: [number, number, number, number] = [TARGET.ecc / 1000, TARGET.pauseBottom / 1000, TARGET.con / 1000, TARGET.pauseTop / 1000]
 
 type Phase = 'ecc' | 'pauseBottom' | 'con' | 'pauseTop'
 interface Sample {
@@ -153,7 +155,11 @@ const TOTALS: number[] = SPECS.map(specTotal)
 /** Per-rep MEAN concentric velocity (m/s) — mm/ms == m/s — the hero's + VL's metric. */
 const MEAN_VEL: number[] = SPECS.map((s) => s.romMm / s.conMs)
 const V_BEST = Math.max(...MEAN_VEL)
-const VMAX = Math.max(...SETS.flat().map((s) => Math.abs(s.vel))) * 1.08
+// ASYMMETRIC velocity extents — concentric (above the axis) and eccentric (below) each get
+// their own scale + tightened to the real data + a hair of headroom, so the curves fill the
+// plot instead of floating (the con peaks reach much higher than the ecc dips otherwise).
+const VMAX_UP = Math.max(0.01, ...SETS.flat().map((s) => s.vel)) * 1.04
+const VMAX_DOWN = Math.max(0.01, ...SETS.flat().map((s) => -s.vel)) * 1.04
 const AXIS_MAX_T = Math.max(...TOTALS) * 1.04 // absolute time axis, shared by every rep
 const ROM_PCT: number[] = SPECS.map((s) => s.romMm / ROM_STD_MM)
 
@@ -176,14 +182,6 @@ function phaseAdherence(s: RepSpec): Record<Phase, number> {
 }
 const ADH: Record<Phase, number>[] = SPECS.map(phaseAdherence)
 
-// Phase base tones — now used only for the AXIS phase segments (phase identity): cool steel
-// for the lowering, warm parchment for the drive, dim for the pauses/hold.
-const PHASE_BASE: Record<Phase, string> = {
-  ecc: '#93A4B0',
-  pauseBottom: '#5B646E',
-  con: '#C7BBA4',
-  pauseTop: '#5B646E',
-}
 // GREEN-ON-TRACK diverging palette for the current-rep line — the same semantic StatusDot
 // uses (on-track = status-success green, deviation = status-warning amber, off = status-error
 // red). The line reads GREEN when a phase is on its prescribed tempo and warms toward amber →
@@ -285,12 +283,18 @@ function CombinedChart({
   // side labels so the plot uses more of the width — geometry + bands still carry phase.
   const padL = compact ? 12 : 40
   const padR = compact ? 8 : 14
-  const padTop = 26
-  const padBot = 24
-  const mid = padTop + (h - padTop - padBot) / 2
-  const half = (h - padTop - padBot) / 2
+  // Compact charts drop the top phase-label band + bottom axis captions, so the vertical
+  // margins tighten right down — the curves fill the height instead of floating.
+  const padTop = compact ? 10 : 26
+  const padBot = compact ? 12 : 24
+  // Split the plot at the zero axis proportional to the up/down data extents, so BOTH the
+  // concentric (up) and eccentric (down) lobes fill their half rather than floating.
+  const plotH = h - padTop - padBot
+  const upH = plotH * (VMAX_UP / (VMAX_UP + VMAX_DOWN))
+  const downH = plotH - upH
+  const mid = padTop + upH
   const x = (t: number) => padL + (t / AXIS_MAX_T) * (w - padL - padR)
-  const y = (v: number) => mid - (v / VMAX) * half
+  const y = (v: number) => (v >= 0 ? mid - (v / VMAX_UP) * upH : mid + (-v / VMAX_DOWN) * downH)
   const cur = SETS[current]
   const adh = ADH[current]
   const peakS = cur.reduce((a, b) => (b.vel > a.vel ? b : a), cur[0])
@@ -300,12 +304,13 @@ function CombinedChart({
     con: alpha(PARCH, 0.08),
     pauseTop: alpha('#000000', 0.24),
   }
-  // The AXIS phase colors — ecc = steel, con = parchment (phase base tones), pauses dim.
+  // The AXIS phase colors — the TempoDisplay phase-IDENTITY language: ecc = magenta,
+  // con = cyan-blue, pauses neutral grey (matches the tempo bar / rail tempo readout).
   const markColor: Record<Phase, string> = {
-    ecc: PHASE_BASE.ecc,
-    pauseBottom: alpha(PARCH, 0.34),
-    con: PHASE_BASE.con,
-    pauseTop: alpha(PARCH, 0.34),
+    ecc: primitiveRamps.magenta[400],
+    pauseBottom: alpha('#6B7280', 0.85),
+    con: primitiveRamps.cyan[300],
+    pauseTop: alpha('#6B7280', 0.85),
   }
   return (
     <svg width={w} height={h}>
@@ -342,8 +347,8 @@ function CombinedChart({
             </g>
           )
         })}
-      {!compact && revealed && <text x={padL - 6} y={y(VMAX * 0.62)} textAnchor="end" fill={C['text-tertiary']} fontSize={8} fontFamily={FONT_MONO}>CON</text>}
-      {!compact && revealed && <text x={padL - 6} y={y(-VMAX * 0.55)} textAnchor="end" fill={C['text-tertiary']} fontSize={8} fontFamily={FONT_MONO}>ECC</text>}
+      {!compact && revealed && <text x={padL - 6} y={y(VMAX_UP * 0.62)} textAnchor="end" fill={C['text-tertiary']} fontSize={8} fontFamily={FONT_MONO}>CON</text>}
+      {!compact && revealed && <text x={padL - 6} y={y(-VMAX_DOWN * 0.55)} textAnchor="end" fill={C['text-tertiary']} fontSize={8} fontFamily={FONT_MONO}>ECC</text>}
       {/* prior reps — faded grey ghosts (absolute time → the fan is the set's drift). */}
       {SETS.slice(0, current).map((samples, rep) => (
         <path
@@ -377,11 +382,11 @@ function CombinedChart({
       )}
       {/* "now" caption — pinned bottom-right so it never collides with the "time →" label. */}
       {revealed && axisCaptions && (
-        <text x={w - padR} y={mid + half + 16} textAnchor="end" fill={C['text-tertiary']} fontSize={9} fontFamily={FONT_MONO}>
+        <text x={w - padR} y={h - padBot + 16} textAnchor="end" fill={C['text-tertiary']} fontSize={9} fontFamily={FONT_MONO}>
           rep {current + 1} (now) · {(TOTALS[current] / 1000).toFixed(1)}s
         </text>
       )}
-      {revealed && axisCaptions && <text x={padL} y={mid + half + 16} fill={C['text-tertiary']} fontSize={9} fontFamily={FONT_MONO}>time →</text>}
+      {revealed && axisCaptions && <text x={padL} y={h - padBot + 16} fill={C['text-tertiary']} fontSize={9} fontFamily={FONT_MONO}>time →</text>}
     </svg>
   )
 }
@@ -417,6 +422,16 @@ function SparkCombinedChart({
       style={{ paddingHorizontal: 4 }}
     >
       <CombinedChart w={w} h={h} current={current} compact revealed={revealed} axisCaptions={false} phaseMarks={phaseMarks} />
+      {/* on hover: the compact prescribed-tempo notation (the shipped TempoDisplay "little guy"
+          from the rail), overlaid top-left so nothing reflows. */}
+      {revealed && (
+        <View
+          pointerEvents="none"
+          style={{ position: 'absolute', top: 4, left: 8, borderRadius: 6, paddingHorizontal: 6, paddingVertical: 3, backgroundColor: alpha(primitiveColors.charcoal[900], 0.82) }}
+        >
+          <TempoDisplay tempo={TEMPO_TUPLE} size="sm" showLabel={false} showInfo={false} />
+        </View>
+      )}
     </Pressable>
   )
 }
@@ -462,26 +477,19 @@ function RomStrip({ width, height, current, revealed }: { width: number; height:
 }
 
 /**
- * The ROM section — ALWAYS labeled (no hover toggle): a small hero of the current depth %
- * (tone-coded ok / warn / alarm) leading the compact silver/red bar strip, which always shows
- * its working-standard + short-threshold reference lines. Unobtrusive enough to stay on.
+ * The ROM section — the older labeled silver/red PROGRESSION (restored): the silver/red bar
+ * strip with its working-standard + short-threshold reference lines and the normal
+ * "depth vs working range · now X%" caption, ALWAYS shown (no hover toggle, no number hero).
  */
 function RomSection({ width, current = 7 }: { width: number; current?: number }) {
   const depth = Math.round(ROM_PCT[current] * 100)
-  const tone = depth < 80 ? C['status-error'] : depth < 90 ? C['status-warning'] : C['status-success']
   return (
-    <View style={{ gap: 7 }}>
-      <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }}>
-        <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 7 }}>
-          <Text style={{ fontSize: 28, fontWeight: '900', fontFamily: FONT_HEAD, color: tone, lineHeight: 28 }}>
-            {depth}
-            <Text style={{ fontSize: 15, fontWeight: '800' }}>%</Text>
-          </Text>
-          <Text style={{ fontSize: 11, fontWeight: '700', color: C['text-tertiary'], fontFamily: FONT_UI, marginBottom: 3 }}>ROM depth</Text>
-        </View>
-        <Text style={{ fontSize: 9, color: C['text-tertiary'], fontFamily: FONT_MONO }}>vs working range</Text>
+    <View style={{ gap: 5 }}>
+      <RomStrip width={width} height={38} current={current} revealed />
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Text style={{ fontSize: 9, color: C['text-tertiary'], fontFamily: FONT_MONO }}>ROM · depth vs working range</Text>
+        <Text style={{ fontSize: 9, color: C['text-tertiary'], fontFamily: FONT_MONO }}>now {depth}%</Text>
       </View>
-      <RomStrip width={width} height={36} current={current} revealed />
     </View>
   )
 }
@@ -600,9 +608,9 @@ function VerdictHero({ f, mode = 'word' }: { f: FatigueRead; mode?: 'word' | 'me
       <Text style={[{ fontSize: 9, letterSpacing: 1.5, fontFamily: FONT_MONO, color: C['text-tertiary'] }, debossLabel]}>FATIGUE</Text>
       {rpeLed ? (
         <View style={{ gap: 2 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 6 }}>
-            <Text style={{ fontSize: 46, fontWeight: '900', fontFamily: FONT_HEAD, color: tone, lineHeight: 46 }}>{fmtRpe(f.rpe as number)}</Text>
-            <Text style={{ fontSize: 15, fontWeight: '800', color: tone, marginBottom: 6, fontFamily: FONT_HEAD }}>RPE</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 7 }}>
+            <Text style={{ fontSize: 62, fontWeight: '900', fontFamily: FONT_HEAD, color: tone, lineHeight: 60 }}>{fmtRpe(f.rpe as number)}</Text>
+            <Text style={{ fontSize: 18, fontWeight: '800', color: tone, marginBottom: 9, fontFamily: FONT_HEAD }}>RPE</Text>
           </View>
           <Text style={{ fontSize: 17, fontWeight: '800', fontFamily: FONT_HEAD, color: tone }}>{f.verdict.word}</Text>
           <Text style={{ fontSize: 12, fontWeight: '600', fontFamily: FONT_UI, color: C['text-secondary'] }}>{rpeSub(f.rpe as number)}</Text>
@@ -619,15 +627,15 @@ function VerdictHero({ f, mode = 'word' }: { f: FatigueRead; mode?: 'word' | 'me
 
 // =================================================================================
 // P2 — THE UNIFIED FATIGUE CARD. One focal read, everything else quiet / on-demand:
-//   VERDICT HERO (big tone-colored RPE, integrated)
-//   → 3 "why" dots (evenly spread across the width)
-//   → ROM section (small depth-% hero + always-labeled bar strip)
-//   → ghost SPARK LAST (green-on-track line + phase-colored axis; hover to bloom).
+//   VERDICT HERO (large tone-colored RPE, integrated)
+//   → 3 "why" dots (left-aligned)
+//   → ROM section (labeled silver/red progression, always on)
+//   → ghost SPARK LAST (green-on-track line + tempo-colored axis; hover to bloom).
 // =================================================================================
 /** Estimated fixed-section heights (px) — used to distribute the remainder to the ghost chart. */
-const HERO_EST: Record<'word' | 'metric', number> = { word: 66, metric: 104 }
+const HERO_EST: Record<'word' | 'metric', number> = { word: 66, metric: 122 }
 const WHY_EST = 18
-const ROM_EST = 66
+const ROM_EST = 60
 function FatigueCard({
   width = 300,
   height,
@@ -659,9 +667,9 @@ function FatigueCard({
     <View style={[{ width, height, borderRadius: 14, padding: pad, gap }, paperSheet(primitiveColors.charcoal[800])]}>
       {/* verdict hero — the instant read. */}
       <VerdictHero f={f} mode={heroMode} />
-      {/* the three fatigue dots, evenly spread across the width. */}
-      <WhyRow f={f} spread />
-      {/* ROM — always-labeled depth-% hero + bar strip. */}
+      {/* the three fatigue dots, left-aligned. */}
+      <WhyRow f={f} />
+      {/* ROM — the labeled silver/red progression (always on). */}
       <RomSection width={width - pad * 2} current={current} />
       {/* ghost spark LAST — grows with the card height; hover blooms it (frameless). */}
       <SparkCombinedChart w={chartW} h={chartH} current={current} forceRevealed={revealChart} />
@@ -830,10 +838,11 @@ export const SparkChart: Story = {
           <Caption>
             The ghost chart DEMOTED to a sparkline: at rest it&apos;s just the shapes + color — the faded ghost trails, the
             GREEN-ON-TRACK current line (green on-tempo, warming amber → red as a phase rushes/lags), and the phase-colored
-            AXIS (the zero axis itself is the phase mark — ecc steel, con parchment, pauses dim) — with no frame, labels or
-            peak marker. On HOVER only the ANNOTATIONS fade in (the ECC/CON axis labels + the peak marker); the chart stays
-            FRAMELESS (no box, no legend — the green read is self-explanatory). Geometry is identical, so nothing shifts.
-            (Left = resting, hover live in Storybook; right = the revealed state forced for the screenshot.)
+            AXIS (the zero axis itself is the phase mark, in the TempoDisplay phase-identity language — ecc magenta, con
+            cyan-blue, pauses grey) — with no frame, labels or peak marker. On HOVER the ANNOTATIONS fade in: the ECC/CON axis
+            labels, the peak marker, and the compact prescribed-tempo notation (the shipped TempoDisplay from the rail),
+            overlaid top-left. The chart stays FRAMELESS (no box). Geometry is identical, so nothing shifts. (Left = resting,
+            hover live in Storybook; right = the revealed state forced for the screenshot.)
           </Caption>
         </View>
         <View style={{ flexDirection: 'row', gap: 24, alignItems: 'flex-start' }}>
@@ -903,7 +912,8 @@ export const PhaseMarks: Story = {
           <Caption>
             The prescribed ecc / pause / con / hold regions drawn two ways, to judge. LEFT = full-height shaded BANDS (heavier
             — the phase floods the whole plot). RIGHT = the zero AXIS itself color-coded by phase along its length, each
-            segment sized to that phase&apos;s prescribed time extent (ecc = steel, con = parchment, pauses dim), only ECC +
+            segment sized to that phase&apos;s prescribed time extent (ecc = magenta, con = cyan-blue, pauses grey — the
+            TempoDisplay phase-identity language), only ECC +
             CON labelled, the hold segment present only when the prescribed hold &gt; 0. The axis version is wired into the
             card as the new default. Both shown revealed; at rest the labels drop and only the marks + line remain. (Note the
             current line here is the new GREEN-ON-TRACK palette — green on-tempo, amber/red off.)
@@ -926,9 +936,9 @@ export const FatigueCard_: Story = {
       <View style={{ gap: 4 }}>
         <SectionTitle>Unified fatigue card — a vertical column that sits beside the hero</SectionTitle>
         <Caption>
-          One focal read, everything else quiet, reordered: the RPE VERDICT hero → the three &quot;why&quot; dots spread
-          evenly across the width → the ROM read (a small depth-% hero + always-labeled silver/red strip) → the ghost chart
-          LAST, demoted to a bare sparkline (green-on-track line + phase-colored axis) that blooms its annotations on hover.
+          One focal read, everything else quiet: a LARGE RPE verdict hero → the three &quot;why&quot; dots (left-aligned) →
+          the labeled silver/red ROM progression (bars + reference lines + &quot;now X%&quot; caption, always on) → the ghost
+          chart LAST, a bare sparkline (green-on-track line + tempo-colored axis) that blooms its annotations on hover.
           Shown across the spectrum: a GOOD early rep and the BREAKING-DOWN late rep. (Verdict content is placeholder, to be
           driven by Workout Analytics.)
         </Caption>
