@@ -29,13 +29,13 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { type ReactNode, useState } from 'react'
 import { View, Text, Pressable, type ViewStyle } from 'react-native'
-import { LiveAuraFrame, VelocityStrip, TempoDisplay } from '../../components'
+import { LiveAuraFrame, VelocityStrip } from '../../components'
 import { Tooltip } from '../../components/ui/tooltip/Tooltip'
 import { getSemanticColors } from '../../theme/tokens/semantic'
 import { primitiveColors, primitiveRamps } from '../../theme/tokens/primitives'
 import { WORKOUT_TOKENS } from '../../theme/workout-tokens'
 import { alpha } from '../../utils/colors'
-import { formatVelocity } from '../../utils/workout-format'
+import { formatVelocity, roundTempo } from '../../utils/workout-format'
 import { paperSheet, insetWell, debossLabel } from './surfaces'
 
 const C = getSemanticColors('dark')
@@ -304,13 +304,14 @@ function CombinedChart({
     con: alpha(PARCH, 0.08),
     pauseTop: alpha('#000000', 0.24),
   }
-  // The AXIS phase colors — the TempoDisplay phase-IDENTITY language: ecc = magenta,
-  // con = cyan-blue, pauses neutral grey (matches the tempo bar / rail tempo readout).
+  // The AXIS phase colors — the DARKER, muted tempo phase tones (the HeroTempo cadence-bar
+  // refinement: magenta/cyan [800]s + neutral pauses), so the axis reads as a quiet phase
+  // reference rather than competing with the colored current line sitting on it.
   const markColor: Record<Phase, string> = {
-    ecc: primitiveRamps.magenta[400],
-    pauseBottom: alpha('#6B7280', 0.85),
-    con: primitiveRamps.cyan[300],
-    pauseTop: alpha('#6B7280', 0.85),
+    ecc: primitiveRamps.magenta[800],
+    pauseBottom: primitiveColors.charcoal[300],
+    con: primitiveRamps.cyan[800],
+    pauseTop: primitiveColors.charcoal[300],
   }
   return (
     <svg width={w} height={h}>
@@ -360,6 +361,19 @@ function CombinedChart({
           strokeLinejoin="round"
         />
       ))}
+      {/* current rep — SHADOW/HALO underlay first: a soft dark, slightly wider stroke of the
+          same path, so the featured line separates from the grey ghost fan + the colored axis. */}
+      {phaseRuns(cur).map((run, i) => (
+        <path
+          key={`sh${i}`}
+          d={smoothPath(run.pts.map((s) => [x(s.t), y(s.vel)]))}
+          fill="none"
+          stroke={alpha('#000000', 0.55)}
+          strokeWidth={7}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
+      ))}
       {/* current rep — one line, colored GREEN when on-tempo, warming amber → red as each
           phase deviates (the green-on-track read). */}
       {phaseRuns(cur).map((run, i) => (
@@ -399,6 +413,23 @@ function CombinedChart({
  * legend). `forceRevealed` pins the revealed state (for screenshots). The SVG geometry is
  * identical, so the line never shifts — only annotations fade in.
  */
+/** A bare inline tempo tuple — the colored digits + grey dashes ONLY (no cell boxes / backing),
+ *  matching the rail readout's magenta-ecc / cyan-con digit coloring. Transparent. */
+function MiniTempoTuple() {
+  const digits = roundTempo(TEMPO_TUPLE)
+  const digitColor = [primitiveRamps.magenta[400], '#6B7280', primitiveRamps.cyan[300], '#6B7280'] // ecc · pause · con · hold
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      {digits.map((n, i) => (
+        <View key={i} style={{ flexDirection: 'row', alignItems: 'center' }}>
+          {i > 0 && <Text style={{ color: '#6B7280', fontSize: 11, fontWeight: '700', fontFamily: 'Inter, sans-serif', marginHorizontal: 3 }}>-</Text>}
+          <Text style={{ color: digitColor[i], fontSize: 11, fontWeight: '800', fontFamily: 'Inter, sans-serif' }}>{n}</Text>
+        </View>
+      ))}
+    </View>
+  )
+}
+
 function SparkCombinedChart({
   w,
   h = 168,
@@ -422,14 +453,11 @@ function SparkCombinedChart({
       style={{ paddingHorizontal: 4 }}
     >
       <CombinedChart w={w} h={h} current={current} compact revealed={revealed} axisCaptions={false} phaseMarks={phaseMarks} />
-      {/* on hover: the compact prescribed-tempo notation (the shipped TempoDisplay "little guy"
-          from the rail), overlaid top-left so nothing reflows. */}
+      {/* on hover: the bare prescribed-tempo tuple (colored digits + dashes only, no backing),
+          overlaid top-left so nothing reflows. */}
       {revealed && (
-        <View
-          pointerEvents="none"
-          style={{ position: 'absolute', top: 4, left: 8, borderRadius: 6, paddingHorizontal: 6, paddingVertical: 3, backgroundColor: alpha(primitiveColors.charcoal[900], 0.82) }}
-        >
-          <TempoDisplay tempo={TEMPO_TUPLE} size="sm" showLabel={false} showInfo={false} />
+        <View pointerEvents="none" style={{ position: 'absolute', top: 4, left: 8 }}>
+          <MiniTempoTuple />
         </View>
       )}
     </Pressable>
@@ -627,21 +655,19 @@ function VerdictHero({ f, mode = 'word' }: { f: FatigueRead; mode?: 'word' | 'me
 
 // =================================================================================
 // P2 — THE UNIFIED FATIGUE CARD. One focal read, everything else quiet / on-demand:
-//   VERDICT HERO (large tone-colored RPE, integrated)
-//   → 3 "why" dots (left-aligned)
-//   → ROM section (labeled silver/red progression, always on)
-//   → ghost SPARK LAST (green-on-track line + tempo-colored axis; hover to bloom).
+//   VERDICT HERO (large tone-colored RPE) + 3 "why" dots — grouped at top
+//   → flexible space → ROM section (labeled silver/red progression, always on)
+//   → flexible space → ghost SPARK (green-on-track line + tempo-colored axis; hover to bloom).
+// The two flexible spacers split the leftover height, so the sections spread evenly through
+// the card instead of bunching at the top.
 // =================================================================================
-/** Estimated fixed-section heights (px) — used to distribute the remainder to the ghost chart. */
-const HERO_EST: Record<'word' | 'metric', number> = { word: 66, metric: 122 }
-const WHY_EST = 18
-const ROM_EST = 60
 function FatigueCard({
   width = 300,
   height,
   current = 7,
   heroMode = 'metric',
   revealChart,
+  fatigue,
 }: {
   width?: number
   height?: number
@@ -650,31 +676,33 @@ function FatigueCard({
   heroMode?: 'word' | 'metric'
   /** Force the ghost spark into its revealed (hover) state — for static screenshots. */
   revealChart?: boolean
+  /** Override the derived fatigue read (for the state-variants showcase). */
+  fatigue?: FatigueRead
 }) {
-  const f = computeFatigue(current)
-  // Responsive: when the card has a fixed height, the padding + inter-section gap + the ghost
-  // chart (the LAST section) all scale with it, so content distributes to FILL the height
-  // (bigger chart + more generous spacing) rather than a cramped top over a dead spacer.
+  const f = fatigue ?? computeFatigue(current)
   const hasH = height != null
   const pad = hasH ? Math.round(clamp((height as number) * 0.042, 16, 26)) : 18
-  const gap = hasH ? Math.round(clamp((height as number) * 0.04, 14, 26)) : 16
   const wellPadX = 4 // the ghost spark carries this L/R gutter internally
   const chartW = width - pad * 2 - wellPadX * 2
-  const chartH = hasH
-    ? Math.max(150, (height as number) - pad * 2 - HERO_EST[heroMode] - WHY_EST - ROM_EST - gap * 4)
-    : 172
+  // The ghost chart is a fixed (responsive) size; the leftover height goes to the two flexible
+  // spacers so the sections distribute rather than bunch. Floors keep spacing in natural mode.
+  const chartH = hasH ? Math.round(clamp((height as number) * 0.4, 168, 240)) : 172
+  const topGap = hasH ? Math.round(clamp((height as number) * 0.026, 10, 16)) : 12
   return (
-    <View style={[{ width, height, borderRadius: 14, padding: pad, gap }, paperSheet(primitiveColors.charcoal[800])]}>
-      {/* verdict hero — the instant read. */}
-      <VerdictHero f={f} mode={heroMode} />
-      {/* the three fatigue dots, left-aligned. */}
-      <WhyRow f={f} />
+    <View style={[{ width, height, borderRadius: 14, padding: pad }, paperSheet(primitiveColors.charcoal[800])]}>
+      {/* top group — verdict hero + the three "why" dots, tight together. */}
+      <View style={{ gap: topGap }}>
+        <VerdictHero f={f} mode={heroMode} />
+        <WhyRow f={f} />
+      </View>
+      {/* flexible breathing room (dots ↔ ROM). */}
+      <View style={{ flex: 1, minHeight: 18 }} />
       {/* ROM — the labeled silver/red progression (always on). */}
       <RomSection width={width - pad * 2} current={current} />
-      {/* ghost spark LAST — grows with the card height; hover blooms it (frameless). */}
+      {/* flexible breathing room (ROM ↔ ghost). */}
+      <View style={{ flex: 1, minHeight: 18 }} />
+      {/* ghost spark — green-on-track line + tempo axis; hover blooms it (frameless). */}
       <SparkCombinedChart w={chartW} h={chartH} current={current} forceRevealed={revealChart} />
-      {/* absorbs estimate slack so the ghost never overflows a tall fixed-height card. */}
-      <View style={{ flex: 1, minHeight: 0 }} />
     </View>
   )
 }
@@ -742,11 +770,25 @@ function ExerciseHeaderLite({ current }: { current: number }) {
 
 /** Panel body height — the hero and the fatigue card both fill this so their tops/bottoms align. */
 const PANEL_BODY_H = 508
-function LivePanelV2({ current = 7 }: { current?: number }) {
-  const verdict = MEAN_VEL[current] / V_BEST < 0.7 ? 'stop' : MEAN_VEL[current] / V_BEST < 0.8 ? 'threshold' : 'productive'
+/** Full panel height (header + body) — fixed so panels stack in the state-variants story. */
+const PANEL_H = PANEL_BODY_H + 128
+type AuraCategory = 'productive' | 'threshold' | 'stop'
+function LivePanelV2({
+  current = 7,
+  fatigue,
+  aura,
+}: {
+  current?: number
+  /** Override the derived fatigue read (for the state-variants showcase). */
+  fatigue?: FatigueRead
+  /** Aura flood category; defaults to a velocity-derived guess. */
+  aura?: AuraCategory
+}) {
+  const category: AuraCategory =
+    aura ?? (MEAN_VEL[current] / V_BEST < 0.7 ? 'stop' : MEAN_VEL[current] / V_BEST < 0.8 ? 'threshold' : 'productive')
   const heroH = PANEL_BODY_H - 26 // leaves room for the hero's own eyebrow above it
   return (
-    <LiveAuraFrame category={verdict} style={{ flex: 1, borderRadius: 0, borderWidth: 0 }}>
+    <LiveAuraFrame category={category} style={{ height: PANEL_H, borderRadius: 0, borderWidth: 0 }}>
       <View style={{ flex: 1 }}>
         <ExerciseHeaderLite current={current} />
         {/* hero (~75%) beside the vertical fatigue card (~25%), both filling the body height. */}
@@ -757,12 +799,49 @@ function LivePanelV2({ current = 7 }: { current?: number }) {
             <HeroWithVlBands height={heroH} current={current} />
           </View>
           {/* SECONDARY — the vertical fatigue card at a fixed narrow width (~25% of the panel). */}
-          <FatigueCard width={318} height={PANEL_BODY_H} current={current} />
+          <FatigueCard width={318} height={PANEL_BODY_H} current={current} fatigue={fatigue} />
         </View>
       </View>
     </LiveAuraFrame>
   )
 }
+
+/** The four fatigue-verdict states with plausible mock reads, for the state-variants story. */
+function mkRead(
+  rpe: number,
+  verdict: { word: string; sub: string; tone: string },
+  vel: { level: Level; value: string },
+  rom: { level: Level; value: string },
+  tempo: { level: Level; value: string }
+): FatigueRead {
+  return { velLoss: vel, velLossPct: parseInt(vel.value, 10) || 0, rpe, rom, tempo, verdict }
+}
+const FATIGUE_STATES: Array<{ name: string; current: number; aura: AuraCategory; read: FatigueRead }> = [
+  {
+    name: 'GOOD · early set',
+    current: 1,
+    aura: 'productive',
+    read: mkRead(6, { word: 'Good', sub: 'holding the standard', tone: C['status-success'] }, { level: 'ok', value: '5%' }, { level: 'ok', value: '99%' }, { level: 'ok', value: 'on tempo' }),
+  },
+  {
+    name: 'SLOWING · mid set, bar speed dropping',
+    current: 2,
+    aura: 'threshold',
+    read: mkRead(7.5, { word: 'Slowing', sub: 'bar speed dropping — quality slipping', tone: C['status-warning'] }, { level: 'warn', value: '24%' }, { level: 'ok', value: '98%' }, { level: 'ok', value: 'on tempo' }),
+  },
+  {
+    name: 'GRINDING · deep velocity loss, clean form',
+    current: 5,
+    aura: 'threshold',
+    read: mkRead(9, { word: 'Grinding', sub: 'deep bar-speed loss — form still clean', tone: C['status-warning'] }, { level: 'alarm', value: '38%' }, { level: 'ok', value: '89%' }, { level: 'ok', value: 'controlled' }),
+  },
+  {
+    name: 'FORM BREAKING DOWN · late / cheat rep',
+    current: 7,
+    aura: 'stop',
+    read: mkRead(10, { word: 'Form breaking down', sub: 'velocity gone + depth/tempo failing — end the set', tone: C['status-error'] }, { level: 'alarm', value: '72%' }, { level: 'alarm', value: '67%' }, { level: 'alarm', value: 'ecc rushed' }),
+  },
+]
 
 // --- Scaffolding -----------------------------------------------------------------
 function Page({ children }: { children: ReactNode }) {
@@ -840,8 +919,9 @@ export const SparkChart: Story = {
             GREEN-ON-TRACK current line (green on-tempo, warming amber → red as a phase rushes/lags), and the phase-colored
             AXIS (the zero axis itself is the phase mark, in the TempoDisplay phase-identity language — ecc magenta, con
             cyan-blue, pauses grey) — with no frame, labels or peak marker. On HOVER the ANNOTATIONS fade in: the ECC/CON axis
-            labels, the peak marker, and the compact prescribed-tempo notation (the shipped TempoDisplay from the rail),
-            overlaid top-left. The chart stays FRAMELESS (no box). Geometry is identical, so nothing shifts. (Left = resting,
+            labels, the peak marker, and the compact prescribed-tempo tuple (bare colored digits + dashes — magenta ecc /
+            cyan con, no backing), overlaid top-left. The chart stays FRAMELESS (no box). Geometry is identical, so nothing
+            shifts. (Left = resting,
             hover live in Storybook; right = the revealed state forced for the screenshot.)
           </Caption>
         </View>
@@ -985,6 +1065,31 @@ export const HeroWithVlBands_: Story = {
 export const LivePanelV2_: Story = {
   name: 'Live panel v2 (composition)',
   render: () => <LivePanelV2 current={7} />,
+}
+
+/** Live-view state variants — the whole system across the verdict spectrum. */
+export const LiveStates: Story = {
+  name: 'Live states (Good → Breaking down)',
+  render: () => (
+    <View style={{ backgroundColor: PAGE_BG }}>
+      <View style={{ padding: 28, paddingBottom: 8, gap: 4 }}>
+        <SectionTitle>Live-view states — the system across the fatigue spectrum</SectionTitle>
+        <Caption>
+          The live panel (velocity hero + fatigue card) rendered per verdict state, with plausible mock data driving the whole
+          system — RPE, the three status dots, the green-on-track ghost line, and the ROM progression all respond together.
+          GOOD (early, low RPE, all-green dots + green line, full ROM) → SLOWING (mid-set, VEL dot amber, RPE mid) → GRINDING
+          (deep velocity loss but clean form — VEL alarm, ROM/tempo ok, RPE high) → FORM BREAKING DOWN (late/cheat rep — red,
+          dropped-ecc red line, cut ROM). Aura flood tracks the state.
+        </Caption>
+      </View>
+      {FATIGUE_STATES.map((s) => (
+        <View key={s.name} style={{ gap: 6, paddingHorizontal: 28, paddingBottom: 22 }}>
+          <Kicker>{s.name}</Kicker>
+          <LivePanelV2 current={s.current} fatigue={s.read} aura={s.aura} />
+        </View>
+      ))}
+    </View>
+  ),
 }
 
 /** Overview — the pieces in priority order. */
