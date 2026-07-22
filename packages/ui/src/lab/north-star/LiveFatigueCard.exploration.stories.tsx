@@ -27,8 +27,8 @@
  * modifies a shipped component; the hero CONSUMES the shipped VelocityStrip.
  */
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import type { ReactNode } from 'react'
-import { View, Text, type ViewStyle } from 'react-native'
+import { type ReactNode, useState } from 'react'
+import { View, Text, Pressable, type ViewStyle } from 'react-native'
 import { LiveAuraFrame, VelocityStrip } from '../../components'
 import { Tooltip } from '../../components/ui/tooltip/Tooltip'
 import { getSemanticColors } from '../../theme/tokens/semantic'
@@ -250,7 +250,26 @@ function phaseRuns(samples: Sample[]): Array<{ phase: Phase; pts: Sample[] }> {
   return runs
 }
 
-function CombinedChart({ w = 760, h = 300, current = 7, compact = false }: { w?: number; h?: number; current?: number; compact?: boolean }) {
+function CombinedChart({
+  w = 760,
+  h = 300,
+  current = 7,
+  compact = false,
+  revealed = true,
+  axisCaptions = true,
+}: {
+  w?: number
+  h?: number
+  current?: number
+  compact?: boolean
+  /** When false (the resting SPARK state), all TEXT chrome + the peak marker are dropped —
+   *  only the ghost trails, the tempo-colored current line, the faint phase washes and the
+   *  zero axis remain. `true` restores the full annotated view (used on hover). */
+  revealed?: boolean
+  /** The "time →" / "rep N (now)" bottom captions. Off in the spark variant (even when
+   *  revealed) so the hover legend overlay has the bottom edge to itself. */
+  axisCaptions?: boolean
+}) {
   // `compact` (in the narrow card column) trims the L/R gutters and drops the CON/ECC
   // side labels so the plot uses more of the width — geometry + bands still carry phase.
   const padL = compact ? 12 : 40
@@ -276,7 +295,7 @@ function CombinedChart({ w = 760, h = 300, current = 7, compact = false }: { w?:
       {targetSpans().map((p, i) => (
         <g key={i}>
           <rect x={x(p.t0)} y={padTop} width={Math.max(0, x(p.t1) - x(p.t0))} height={h - padTop - padBot} fill={bandTone[p.phase]} />
-          {x(p.t1) - x(p.t0) > 16 && (
+          {revealed && x(p.t1) - x(p.t0) > 16 && (
             <text x={(x(p.t0) + x(p.t1)) / 2} y={padTop - 8} textAnchor="middle" fill={C['text-tertiary']} fontSize={8} fontWeight={800} letterSpacing={1} fontFamily={FONT_UI}>
               {PHASE_LABEL[p.phase]}
             </text>
@@ -285,8 +304,8 @@ function CombinedChart({ w = 760, h = 300, current = 7, compact = false }: { w?:
       ))}
       {/* zero axis (parchment) — concentric above, eccentric below. */}
       <line x1={padL} y1={mid} x2={w - padR} y2={mid} stroke={AXIS} strokeWidth={1} />
-      {!compact && <text x={padL - 6} y={y(VMAX * 0.62)} textAnchor="end" fill={C['text-tertiary']} fontSize={8} fontFamily={FONT_MONO}>CON</text>}
-      {!compact && <text x={padL - 6} y={y(-VMAX * 0.55)} textAnchor="end" fill={C['text-tertiary']} fontSize={8} fontFamily={FONT_MONO}>ECC</text>}
+      {!compact && revealed && <text x={padL - 6} y={y(VMAX * 0.62)} textAnchor="end" fill={C['text-tertiary']} fontSize={8} fontFamily={FONT_MONO}>CON</text>}
+      {!compact && revealed && <text x={padL - 6} y={y(-VMAX * 0.55)} textAnchor="end" fill={C['text-tertiary']} fontSize={8} fontFamily={FONT_MONO}>ECC</text>}
       {/* prior reps — faded grey ghosts (absolute time → the fan is the set's drift). */}
       {SETS.slice(0, current).map((samples, rep) => (
         <path
@@ -310,16 +329,20 @@ function CombinedChart({ w = 760, h = 300, current = 7, compact = false }: { w?:
           strokeLinecap="round"
         />
       ))}
-      {/* peak concentric marker — ties back to the velocity hero. */}
-      <circle cx={x(peakS.t)} cy={y(peakS.vel)} r={4} fill={lineColor('con', adh.con)} stroke={PANEL_BG} strokeWidth={1.5} />
-      <text x={x(peakS.t) + 7} y={y(peakS.vel) - 6} fill={C['text-primary']} fontSize={11} fontWeight={800} fontFamily={FONT_UI}>
-        peak {peakS.vel.toFixed(2)} m/s
-      </text>
+      {/* peak concentric marker — ties back to the velocity hero (annotated view only). */}
+      {revealed && <circle cx={x(peakS.t)} cy={y(peakS.vel)} r={4} fill={lineColor('con', adh.con)} stroke={PANEL_BG} strokeWidth={1.5} />}
+      {revealed && (
+        <text x={x(peakS.t) + 7} y={y(peakS.vel) - 6} fill={C['text-primary']} fontSize={11} fontWeight={800} fontFamily={FONT_UI}>
+          peak {peakS.vel.toFixed(2)} m/s
+        </text>
+      )}
       {/* "now" caption — pinned bottom-right so it never collides with the "time →" label. */}
-      <text x={w - padR} y={mid + half + 16} textAnchor="end" fill={C['text-tertiary']} fontSize={9} fontFamily={FONT_MONO}>
-        rep {current + 1} (now) · {(TOTALS[current] / 1000).toFixed(1)}s
-      </text>
-      <text x={padL} y={mid + half + 16} fill={C['text-tertiary']} fontSize={9} fontFamily={FONT_MONO}>time →</text>
+      {revealed && axisCaptions && (
+        <text x={w - padR} y={mid + half + 16} textAnchor="end" fill={C['text-tertiary']} fontSize={9} fontFamily={FONT_MONO}>
+          rep {current + 1} (now) · {(TOTALS[current] / 1000).toFixed(1)}s
+        </text>
+      )}
+      {revealed && axisCaptions && <text x={padL} y={mid + half + 16} fill={C['text-tertiary']} fontSize={9} fontFamily={FONT_MONO}>time →</text>}
     </svg>
   )
 }
@@ -356,47 +379,119 @@ function TempoLegend({ compact = false }: { compact?: boolean }) {
   )
 }
 
+/**
+ * The STRIPPED sparkline variant — resting, it's just the shapes + color: the ghost trails,
+ * the tempo-colored current line, and the faint phase washes, sitting BARE in the card (no
+ * inset frame, no labels, no legend, no peak marker). ON HOVER it blooms into the full
+ * annotated {@link CombinedChart} — the inset well frame paints in, the phase labels + peak
+ * marker + time labels return, and the tempo legend overlays. `forceRevealed` pins the
+ * revealed state (for screenshots). The SVG geometry is identical in both states, so the
+ * line never shifts — only chrome fades in.
+ */
+function SparkCombinedChart({
+  w,
+  h = 168,
+  current = 7,
+  forceRevealed,
+}: {
+  w: number
+  h?: number
+  current?: number
+  forceRevealed?: boolean
+}) {
+  const [hovered, setHovered] = useState(false)
+  const revealed = forceRevealed ?? hovered
+  return (
+    <Pressable
+      onHoverIn={() => setHovered(true)}
+      onHoverOut={() => setHovered(false)}
+      style={[
+        { borderRadius: 12, paddingVertical: 8, paddingHorizontal: 4 },
+        // The inset-well frame only paints when revealed; padding is constant so nothing reflows.
+        revealed ? insetWell(primitiveColors.charcoal[900]) : null,
+      ]}
+    >
+      <CombinedChart w={w} h={h} current={current} compact revealed={revealed} axisCaptions={false} />
+      {/* the divergent tempo legend — overlaid at the bottom on hover, so the card below never shifts. */}
+      {revealed && (
+        <View
+          pointerEvents="none"
+          style={{
+            position: 'absolute',
+            left: 8,
+            bottom: 6,
+            borderRadius: 6,
+            paddingHorizontal: 6,
+            paddingVertical: 3,
+            backgroundColor: alpha(primitiveColors.charcoal[900], 0.82),
+          }}
+        >
+          <TempoLegend compact />
+        </View>
+      )}
+    </Pressable>
+  )
+}
+
 // =================================================================================
 // P2 — ROM PROGRESSION: per-rep depth vs the working standard, neutral parchment.
 // =================================================================================
-function RomProgression({ width = 300, height = 82, current = 7 }: { width?: number; height?: number; current?: number }) {
-  const shortThresh = 0.85 // below this = a short rep
-  const plotH = height - 18
+const ROM_SHORT_THRESH = 0.85 // below the working standard = a short rep
+
+/**
+ * The compact ROM bar strip — the silver/red language (parchment-neutral bars, red for a
+ * SHORT rep, current rep emphasised), sized like the collapsed velocity strip. When
+ * `revealed` it also paints the working-standard + short-threshold reference lines and the
+ * faint red short-zone; resting, the bars alone carry it at a glance.
+ */
+function RomStrip({ width, height, current, revealed }: { width: number; height: number; current: number; revealed: boolean }) {
   const n = current + 1
-  const barW = (width - (n - 1) * 4) / n
-  const stdY = (1 - 1) * plotH // standard at top
-  void stdY
+  const barW = (width - (n - 1) * 3) / n
   return (
-    <View style={{ width, gap: 4 }}>
-      <View style={{ height, position: 'relative', flexDirection: 'row', alignItems: 'flex-end', gap: 4 }}>
-        {/* short-rep zone (below the standard threshold). */}
-        <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: shortThresh * plotH, backgroundColor: alpha(C['status-error'], 0.06) }} />
-        {/* working-standard line (100%). */}
-        <View style={{ position: 'absolute', left: 0, right: 0, top: 0, borderTopWidth: 1, borderStyle: 'dashed', borderColor: alpha(PARCH, 0.45) }} />
-        <View style={{ position: 'absolute', left: 0, right: 0, top: (1 - shortThresh) * plotH, borderTopWidth: 1, borderStyle: 'dashed', borderColor: alpha(C['status-error'], 0.4) }} />
-        {ROM_PCT.slice(0, n).map((r, i) => {
-          const short = r < shortThresh
-          return (
-            <View key={i} style={{ width: barW, alignItems: 'center', justifyContent: 'flex-end', height: plotH }}>
-              <View
-                style={{
-                  width: '78%',
-                  height: Math.max(3, r * plotH),
-                  borderTopLeftRadius: 3,
-                  borderTopRightRadius: 3,
-                  backgroundColor: short ? alpha(C['status-error'], 0.55) : alpha(PARCH, 0.5),
-                  ...(i === current ? { backgroundColor: short ? C['status-error'] : alpha(PARCH, 0.8) } : null),
-                } as ViewStyle}
-              />
-            </View>
-          )
-        })}
-      </View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text style={{ color: C['text-tertiary'], fontSize: 9, fontFamily: FONT_MONO }}>depth vs working range</Text>
-        <Text style={{ color: C['text-tertiary'], fontSize: 9, fontFamily: FONT_MONO }}>now {Math.round(ROM_PCT[current] * 100)}%</Text>
-      </View>
+    <View style={{ width, height, position: 'relative', flexDirection: 'row', alignItems: 'flex-end', gap: 3 }}>
+      {revealed && <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: ROM_SHORT_THRESH * height, backgroundColor: alpha(C['status-error'], 0.06) }} />}
+      {revealed && <View style={{ position: 'absolute', left: 0, right: 0, top: 0, borderTopWidth: 1, borderStyle: 'dashed', borderColor: alpha(PARCH, 0.4) }} />}
+      {revealed && <View style={{ position: 'absolute', left: 0, right: 0, top: (1 - ROM_SHORT_THRESH) * height, borderTopWidth: 1, borderStyle: 'dashed', borderColor: alpha(C['status-error'], 0.4) }} />}
+      {ROM_PCT.slice(0, n).map((r, i) => {
+        const short = r < ROM_SHORT_THRESH
+        return (
+          <View key={i} style={{ width: barW, alignItems: 'center', justifyContent: 'flex-end', height }}>
+            <View
+              style={{
+                width: '80%',
+                height: Math.max(3, r * height),
+                borderTopLeftRadius: 2,
+                borderTopRightRadius: 2,
+                backgroundColor: short ? alpha(C['status-error'], 0.55) : alpha(PARCH, 0.5),
+                ...(i === current ? { backgroundColor: short ? C['status-error'] : alpha(PARCH, 0.85) } : null),
+              } as ViewStyle}
+            />
+          </View>
+        )
+      })}
     </View>
+  )
+}
+
+/**
+ * The STRIPPED ROM spark — resting, just the compact silver/red bar strip (no eyebrow, no
+ * "depth vs working range / now X%" caption). ON HOVER the reference lines paint in and the
+ * label caption overlays at the bottom — the same rest→bloom pattern as the ghost spark.
+ */
+function RomSpark({ width, current = 7, forceRevealed }: { width: number; current?: number; forceRevealed?: boolean }) {
+  const [hovered, setHovered] = useState(false)
+  const revealed = forceRevealed ?? hovered
+  return (
+    <Pressable onHoverIn={() => setHovered(true)} onHoverOut={() => setHovered(false)} style={{ gap: 4 }}>
+      <RomStrip width={width} height={38} current={current} revealed={revealed} />
+      {/* caption reflows in below the strip on hover (absorbed by the card's bottom spacer). */}
+      {revealed && (
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Text style={{ color: C['text-tertiary'], fontSize: 9, fontFamily: FONT_MONO }}>ROM · depth vs working range</Text>
+          <Text style={{ color: C['text-tertiary'], fontSize: 9, fontFamily: FONT_MONO }}>now {Math.round(ROM_PCT[current] * 100)}%</Text>
+        </View>
+      )}
+    </Pressable>
   )
 }
 
@@ -414,6 +509,8 @@ function bandLevel(v: number, warn: number, alarm: number): Level {
 }
 interface FatigueRead {
   velLoss: { level: Level; value: string }
+  /** The raw velocity-loss %, for the metric-led verdict hero (à la StopSetDecision). */
+  velLossPct: number
   rom: { level: Level; value: string }
   tempo: { level: Level; value: string }
   verdict: { word: string; sub: string; tone: string }
@@ -443,6 +540,7 @@ function computeFatigue(current: number): FatigueRead {
 
   return {
     velLoss: { level: velLevel, value: `${vl}%` },
+    velLossPct: vl,
     rom: { level: romLevel, value: `${depth}%` },
     tempo: { level: tempoLevel, value: tempoWord },
     verdict,
@@ -451,81 +549,97 @@ function computeFatigue(current: number): FatigueRead {
 
 const LEVEL_WORD: Record<Level, string> = { ok: 'ok', warn: 'watch', alarm: 'alarm' }
 
-/** One status DOT (ok / warn / alarm) with the metric detail on hover — the compact
- *  upper-right cluster that replaces the stacked lights. */
-function DotLight({ label, level, value }: { label: string; level: Level; value: string }) {
+/** One "why" indicator behind the verdict — a tone dot + a tiny label; the metric value is
+ *  on hover. The three of these are the supporting reason for the verdict headline. */
+function WhyDot({ label, level, detail }: { label: string; level: Level; detail: string }) {
   const tone = LEVEL_TONE[level]
   return (
-    <Tooltip label={`${label} · ${value} · ${LEVEL_WORD[level]}`} placement="bottom">
-      <View
-        accessibilityLabel={`${label}: ${value}, ${LEVEL_WORD[level]}`}
-        style={{ width: 13, height: 13, borderRadius: 7, backgroundColor: tone, boxShadow: `0 0 9px ${alpha(tone, 0.75)}` } as ViewStyle}
-      />
+    <Tooltip label={`${detail} · ${LEVEL_WORD[level]}`} placement="bottom">
+      <View accessibilityLabel={`${detail}, ${LEVEL_WORD[level]}`} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+        <View style={{ width: 9, height: 9, borderRadius: 5, backgroundColor: tone, boxShadow: `0 0 8px ${alpha(tone, 0.7)}` } as ViewStyle} />
+        <Text style={[{ fontSize: 9, letterSpacing: 0.6, fontFamily: FONT_MONO, color: C['text-tertiary'] }, debossLabel]}>{label}</Text>
+      </View>
     </Tooltip>
   )
 }
-
-/** The always-on status line — the aggregated verdict, present in EVERY state (Good →
- *  Slowing → Form breaking down), tone-coded. Verdict content is placeholder + swappable. */
-function StatusLine({ verdict }: { verdict: { word: string; sub: string; tone: string } }) {
+function WhyRow({ f }: { f: FatigueRead }) {
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 9,
-        borderRadius: 10,
-        paddingVertical: 8,
-        paddingHorizontal: 12,
-        backgroundColor: alpha(verdict.tone, 0.14),
-        borderWidth: 1,
-        borderColor: alpha(verdict.tone, 0.45),
-      }}
-    >
-      <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: verdict.tone, boxShadow: `0 0 8px ${alpha(verdict.tone, 0.8)}` } as ViewStyle} />
-      <Text style={{ fontSize: 15, fontWeight: '900', fontFamily: FONT_HEAD, color: verdict.tone }}>{verdict.word}</Text>
-      <Text numberOfLines={1} style={{ flex: 1, fontSize: 11, fontWeight: '600', fontFamily: FONT_UI, color: C['text-secondary'] }}>
-        {verdict.sub}
-      </Text>
+    <View style={{ flexDirection: 'row', gap: 16, alignItems: 'center' }}>
+      <WhyDot label="VEL" level={f.velLoss.level} detail={`Velocity loss ${f.velLoss.value}`} />
+      <WhyDot label="ROM" level={f.rom.level} detail={`ROM depth ${f.rom.value}`} />
+      <WhyDot label="TEMPO" level={f.tempo.level} detail={`Tempo ${f.tempo.value}`} />
+    </View>
+  )
+}
+
+/**
+ * The VERDICT AS HERO — the card's single focal read, in the StopSetDecision idiom: a big
+ * tone-colored headline integrated straight into the card (no nested box/border), a short
+ * supporting line, and the three "why" dots beneath. Two modes to compare:
+ *   `word`   — verdict-word-led (the aggregated state is the headline).
+ *   `metric` — a lead METRIC (velocity-loss %) as the big number + the verdict word beside
+ *              it, mirroring the stop-set "37% / Approaching failure" hero.
+ * Verdict content is placeholder — Workout Analytics will own it.
+ */
+function VerdictHero({ f, mode = 'word' }: { f: FatigueRead; mode?: 'word' | 'metric' }) {
+  const tone = f.verdict.tone
+  return (
+    <View style={{ gap: 8 }}>
+      <Text style={[{ fontSize: 9, letterSpacing: 1.5, fontFamily: FONT_MONO, color: C['text-tertiary'] }, debossLabel]}>FATIGUE</Text>
+      {mode === 'metric' ? (
+        <View style={{ gap: 2 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 6 }}>
+            <Text style={{ fontSize: 46, fontWeight: '900', fontFamily: FONT_HEAD, color: tone, lineHeight: 46 }}>{f.velLossPct}</Text>
+            <Text style={{ fontSize: 20, fontWeight: '800', color: tone, marginBottom: 5 }}>%</Text>
+            <Text style={{ fontSize: 11, fontWeight: '700', color: C['text-tertiary'], marginBottom: 8, fontFamily: FONT_UI }}>velocity loss</Text>
+          </View>
+          <Text style={{ fontSize: 17, fontWeight: '800', fontFamily: FONT_HEAD, color: tone }}>{f.verdict.word}</Text>
+          <Text style={{ fontSize: 12, fontWeight: '600', fontFamily: FONT_UI, color: C['text-secondary'] }}>{f.verdict.sub}</Text>
+        </View>
+      ) : (
+        <View style={{ gap: 3 }}>
+          <Text style={{ fontSize: 26, fontWeight: '900', fontFamily: FONT_HEAD, color: tone, lineHeight: 28 }}>{f.verdict.word}</Text>
+          <Text style={{ fontSize: 12, fontWeight: '600', fontFamily: FONT_UI, color: C['text-secondary'] }}>{f.verdict.sub}</Text>
+        </View>
+      )}
+      <WhyRow f={f} />
     </View>
   )
 }
 
 // =================================================================================
-// P2 — THE UNIFIED FATIGUE CARD. A tall VERTICAL column beside the hero:
-//   title (left) + three dot-lights (right, hover for detail)
-//   → always-on status line (Good → Slowing → Form breaking down)
-//   → the compact combined chart (reduced L/R padding)
-//   → ROM progression.
+// P2 — THE UNIFIED FATIGUE CARD. One focal read, everything else quiet / on-demand:
+//   VERDICT HERO (big tone-colored, integrated) + 3 "why" dots
+//   → compact ghost SPARK (hover to bloom)
+//   → compact ROM SPARK (hover to bloom).
 // =================================================================================
-function FatigueCard({ width = 300, height, current = 7 }: { width?: number; height?: number; current?: number }) {
+function FatigueCard({
+  width = 300,
+  height,
+  current = 7,
+  heroMode = 'word',
+  revealChart,
+}: {
+  width?: number
+  height?: number
+  current?: number
+  /** Verdict-hero treatment: `word` (verdict-word-led) or `metric` (VL% lead, stop-set idiom). */
+  heroMode?: 'word' | 'metric'
+  /** Force both spark charts into their revealed (hover) state — for static screenshots. */
+  revealChart?: boolean
+}) {
   const f = computeFatigue(current)
-  const pad = 16
-  const wellPadX = 4 // tight L/R gutter so the chart uses the column width
+  const pad = 18
+  const wellPadX = 4 // the ghost spark carries this L/R gutter internally
   const chartW = width - pad * 2 - wellPadX * 2
   return (
-    <View style={[{ width, height, borderRadius: 14, padding: pad, gap: 11 }, paperSheet(primitiveColors.charcoal[800])]}>
-      {/* title (left) + the three status dots (right, hover for the metric detail) */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Text style={{ fontSize: 21, fontWeight: '800', fontFamily: FONT_HEAD, color: C['text-primary'] }}>Fatigue</Text>
-        <View style={{ flexDirection: 'row', gap: 11, alignItems: 'center' }}>
-          <DotLight label="Velocity loss" level={f.velLoss.level} value={f.velLoss.value} />
-          <DotLight label="ROM depth" level={f.rom.level} value={f.rom.value} />
-          <DotLight label="Tempo" level={f.tempo.level} value={f.tempo.value} />
-        </View>
-      </View>
-      {/* always-on aggregated status line (present in every state, tone-coded) */}
-      <StatusLine verdict={f.verdict} />
-      {/* centerpiece — the compact combined chart, reduced L/R padding */}
-      <View style={[{ borderRadius: 12, paddingVertical: 10, paddingHorizontal: wellPadX }, insetWell(primitiveColors.charcoal[900])]}>
-        <CombinedChart w={chartW} h={168} current={current} compact />
-      </View>
-      <TempoLegend compact />
-      {/* ROM progression */}
-      <View style={{ gap: 5 }}>
-        <Text style={[{ fontSize: 9, letterSpacing: 1, fontFamily: FONT_MONO, color: C['text-tertiary'] }, debossLabel]}>ROM PROGRESSION</Text>
-        <RomProgression width={width - pad * 2} height={64} current={current} />
-      </View>
+    <View style={[{ width, height, borderRadius: 14, padding: pad, gap: 16 }, paperSheet(primitiveColors.charcoal[800])]}>
+      {/* the verdict as the card's hero — the instant read. */}
+      <VerdictHero f={f} mode={heroMode} />
+      {/* compact ghost spark — hover blooms it into the annotated chart. */}
+      <SparkCombinedChart w={chartW} h={150} current={current} forceRevealed={revealChart} />
+      {/* compact ROM spark — hover brings the labels + reference lines back. */}
+      <RomSpark width={width - pad * 2} current={current} forceRevealed={revealChart} />
       {/* absorbs slack when the card is given a tall fixed height (beside the hero). */}
       <View style={{ flex: 1, minHeight: 4 }} />
     </View>
@@ -679,6 +793,84 @@ export const CombinedChart_: Story = {
   ),
 }
 
+/** P1b — the stripped spark variants (ghost + ROM), resting vs their hover (revealed) state. */
+export const SparkChart: Story = {
+  name: 'P1b · Sparks (rest vs hover)',
+  render: () => {
+    const box = (child: ReactNode) => (
+      <View style={{ width: 380, backgroundColor: PANEL_BG, borderRadius: 12, padding: 16, gap: 14 }}>{child}</View>
+    )
+    return (
+      <Page>
+        <View style={{ gap: 4 }}>
+          <SectionTitle>Spark variants — glance at rest, detail on hover</SectionTitle>
+          <Caption>
+            Both secondary reads are DEMOTED to sparklines: at rest they&apos;re just the shapes + color (the ghost trails +
+            tempo-colored line + faint phase washes; the silver/red ROM bars) with no frame, labels, legend, peak marker or
+            captions. On HOVER each blooms back into its annotated self — the ghost spark paints its inset frame + phase labels
+            + peak marker + tempo legend; the ROM spark paints its working-standard / short-threshold reference lines + the
+            &quot;depth vs working range / now X%&quot; caption. Geometry is identical between states, so nothing shifts. (Left
+            column = resting, hover live in Storybook; right column = the revealed state forced for the screenshot.)
+          </Caption>
+        </View>
+        <View style={{ flexDirection: 'row', gap: 24, alignItems: 'flex-start' }}>
+          <View style={{ gap: 8 }}>
+            <Kicker>RESTING — bare sparklines (hover me)</Kicker>
+            {box(
+              <>
+                <SparkCombinedChart w={348} h={180} current={7} forceRevealed={false} />
+                <RomSpark width={348} current={7} forceRevealed={false} />
+              </>
+            )}
+          </View>
+          <View style={{ gap: 8 }}>
+            <Kicker>HOVER — full annotated view</Kicker>
+            {box(
+              <>
+                <SparkCombinedChart w={348} h={180} current={7} forceRevealed />
+                <RomSpark width={348} current={7} forceRevealed />
+              </>
+            )}
+          </View>
+        </View>
+      </Page>
+    )
+  },
+}
+
+/** P2a — the verdict-as-hero, word-led vs metric-led, compared across states. */
+export const VerdictHero_: Story = {
+  name: 'P2a · Verdict hero (options)',
+  render: () => {
+    const col = (mode: 'word' | 'metric', title: string, note: string) => (
+      <View style={{ gap: 8, width: 340 }}>
+        <Kicker>{title}</Kicker>
+        <Caption>{note}</Caption>
+        <FatigueCard width={340} heroMode={mode} current={7} />
+        <FatigueCard width={340} heroMode={mode} current={2} />
+      </View>
+    )
+    return (
+      <Page>
+        <View style={{ gap: 4 }}>
+          <SectionTitle>Verdict as hero — two treatments to compare</SectionTitle>
+          <Caption>
+            The aggregated verdict promoted to the card&apos;s focal read, in the StopSetDecision idiom — a big tone-colored
+            headline integrated into the card (no nested alert box), a short supporting line, and the three &quot;why&quot;
+            dots (velocity-loss · ROM · tempo) beneath it, metric on hover. LEFT is verdict-word-led; RIGHT leads with the
+            velocity-loss % as the big number and the verdict word beside it (à la stop-set &quot;37% / Approaching failure&quot;).
+            Each shown breaking-down (rep 8) over good (rep 3).
+          </Caption>
+        </View>
+        <View style={{ flexDirection: 'row', gap: 28, alignItems: 'flex-start' }}>
+          {col('word', 'OPTION A — verdict-word-led', 'The aggregated state IS the headline.')}
+          {col('metric', 'OPTION B — VL%-led (stop-set idiom)', 'A lead metric (velocity loss) + the verdict word.')}
+        </View>
+      </Page>
+    )
+  },
+}
+
 /** P2 — the unified fatigue card. */
 export const FatigueCard_: Story = {
   name: 'P2 · Fatigue card',
@@ -687,11 +879,11 @@ export const FatigueCard_: Story = {
       <View style={{ gap: 4 }}>
         <SectionTitle>Unified fatigue card — a vertical column that sits beside the hero</SectionTitle>
         <Caption>
-          A tall, narrow column: a bigger title with the three status DOTS in the upper-right (velocity-loss · ROM · tempo —
-          each ok / warn / alarm, the metric detail on hover), then the ALWAYS-ON status line (Good → Slowing → Form breaking
-          down, tone-coded and present in every state — its content is placeholder, to be driven by Workout Analytics), then
-          the compact combined chart, then the ROM-progression read. Shown across the spectrum: a GOOD early rep and the
-          BREAKING-DOWN late rep.
+          One focal read, everything else quiet: the VERDICT is the card&apos;s hero (a big tone-colored headline integrated
+          into the card, with the three &quot;why&quot; dots beneath — metric on hover), then the ghost chart DEMOTED to a
+          bare sparkline, then the ROM read demoted to a compact silver/red spark. Both sparklines bloom into their annotated
+          selves on hover. Shown across the spectrum: a GOOD early rep and the BREAKING-DOWN late rep. (Verdict content is
+          placeholder, to be driven by Workout Analytics.)
         </Caption>
       </View>
       <View style={{ flexDirection: 'row', gap: 20, alignItems: 'flex-start' }}>
