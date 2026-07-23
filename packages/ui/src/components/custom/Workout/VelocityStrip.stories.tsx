@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'
-import { View, Text } from 'react-native'
+import { View, Text, Pressable } from 'react-native'
 import { VelocityStrip } from './VelocityStrip'
 
 const meta: Meta<typeof VelocityStrip> = {
@@ -21,7 +21,12 @@ const meta: Meta<typeof VelocityStrip> = {
           'or `fixed` (a fixed ceiling, cross-set-comparable — recommended for the live `hero` so bar ' +
           'heights never reflow as reps land). Feed either `velocities` or a `set` ' +
           'descriptor (set-type aware — see the ' +
-          '[modalities](?path=/docs/workout-dataviz-velocitystrip-modalities--docs) sheet).',
+          '[modalities](?path=/docs/workout-dataviz-velocitystrip-modalities--docs) sheet). ' +
+          '`barColor` picks the bar-fill scale: `zone` (default) is the absolute velocity-zone ' +
+          "scale above; `loss` colors each bar by its velocity LOSS from the set's own best " +
+          '(the VL10/VL20/VL30 bands FatigueMeter uses), so a fatiguing set reads green-to-red ' +
+          'by loss regardless of its absolute speed. The newest `liveRepIndex` bar grows up ' +
+          'from the baseline as it enters (a new set peak overshoots slightly then settles).',
       },
     },
   },
@@ -55,6 +60,12 @@ const meta: Meta<typeof VelocityStrip> = {
       control: 'inline-radio',
       options: ['peak', 'fixed'],
       description: 'expanded bar scaling: peak (set max) or fixed (cross-set ceiling)',
+    },
+    barColor: {
+      control: 'inline-radio',
+      options: ['zone', 'loss'],
+      description:
+        "bar-fill scale: zone (default, absolute velocity) or loss (relative to set's own best)",
     },
     liveRepIndex: {
       control: 'number',
@@ -328,4 +339,97 @@ export const Profiles: Story = {
       </View>
     )
   },
+}
+
+// --- barColor="loss" (fatigue hero enhancement) ------------------------------
+// The absolute zone scale pins a bar red once velocity drops below 0.5 m/s
+// regardless of how the SET itself is trending. `barColor="loss"` recolors each
+// bar by its own velocity loss from the set's best, so a fatiguing set reads
+// green→red purely by drop-off — what the fatigue hero wants. Wiring the hero
+// to pass this prop is a follow-up on the fatigue-hero branch; this only ships
+// the prop + demo.
+
+const fatigueDecline = [0.95, 0.86, 0.77, 0.68, 0.58, 0.4]
+
+/** Hero wall treatment, loss-relative coloring: green→red by drop-off from this set's own best. */
+export const LossColoringFatiguingSet: Story = {
+  args: {
+    velocities: fatigueDecline,
+    variant: 'hero',
+    targetReps: 8,
+    barColor: 'loss',
+    scale: 'fixed',
+  },
+  decorators: [heroDecorator],
+}
+
+/**
+ * Same declining set, `zone` vs `loss` side by side. Under `zone` the first three
+ * reps are all bunched yellow (they're all comfortably within the ≥0.75 m/s band,
+ * masking that the set is already fatiguing) and only the very last rep — once it
+ * finally crosses the 0.5 m/s floor — reads red. Under `loss` every rep's own
+ * drop-off from this set's best is visible immediately: a clean green→gold→
+ * orange→red progression that tracks the VL10/20/30 thresholds directly.
+ */
+export const LossVsZoneComparison: Story = {
+  render: () => (
+    <View style={{ gap: 20, padding: 20, width: 340, backgroundColor: '#0E0E0E' }}>
+      <View style={{ gap: 6 }}>
+        <Text style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, color: '#9CA3AF' }}>
+          barColor=&quot;zone&quot; — absolute velocity (bunches yellow, late red)
+        </Text>
+        <VelocityStrip velocities={fatigueDecline} variant="mini" barColor="zone" />
+      </View>
+      <View style={{ gap: 6 }}>
+        <Text style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, color: '#9CA3AF' }}>
+          barColor=&quot;loss&quot; — relative to this set&apos;s own best (VL10/20/30 bands)
+        </Text>
+        <VelocityStrip velocities={fatigueDecline} variant="mini" barColor="loss" />
+      </View>
+    </View>
+  ),
+}
+
+// --- Grow-from-bottom live entrance -------------------------------------------
+// The newest `liveRepIndex` bar grows up from the baseline (0 → full height) as it
+// enters, instead of the old drop-in/pop. A new set peak overshoots slightly past
+// full height then settles — a small bounce that reads as "that one's a PR".
+
+const growBtn = {
+  paddingVertical: 8,
+  paddingHorizontal: 14,
+  borderRadius: 6,
+  backgroundColor: '#1F2937',
+} as const
+const growBtnText = { color: '#E5E7EB', fontSize: 12, fontWeight: '700' as const }
+
+function GrowFromBottomDemo() {
+  const [reps, setReps] = useState<number[]>([0.7, 0.82])
+  const addRep = (velocity: number) => setReps((r) => [...r, velocity])
+  return (
+    <View style={{ width: 420, padding: 20, gap: 14, backgroundColor: '#0E0E0E' }}>
+      <View style={{ flexDirection: 'row', gap: 8 }}>
+        <Pressable onPress={() => addRep(0.6 + Math.random() * 0.15)} style={growBtn}>
+          <Text style={growBtnText}>Add rep (grows from baseline)</Text>
+        </Pressable>
+        <Pressable onPress={() => addRep(0.95)} style={growBtn}>
+          <Text style={growBtnText}>Add PR rep (grow + overshoot bounce)</Text>
+        </Pressable>
+        <Pressable onPress={() => setReps([0.7, 0.82])} style={growBtn}>
+          <Text style={growBtnText}>Reset</Text>
+        </Pressable>
+      </View>
+      <VelocityStrip
+        velocities={reps}
+        variant="expanded"
+        liveRepIndex={reps.length - 1}
+        scale="fixed"
+      />
+    </View>
+  )
+}
+
+/** Click "Add rep" to watch the newest bar grow up from the baseline; "Add PR rep" shows the overshoot-and-settle bounce on a new set peak. */
+export const LiveGrowFromBottom: Story = {
+  render: () => <GrowFromBottomDemo />,
 }

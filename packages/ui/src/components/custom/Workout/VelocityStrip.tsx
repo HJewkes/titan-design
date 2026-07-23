@@ -66,10 +66,22 @@ export interface VelocityStripProps extends ViewProps {
    */
   zones?: readonly VelocityZoneBandProp[]
   /**
-   * Live mode: index of the most-recently-completed rep. That bar animates in
-   * with a "pop"; if it is also the current set peak (a new best), it "bounces"
-   * instead. Only the latest bar animates. Honors `prefers-reduced-motion`.
-   * Framed `expanded` chart only (interactive tap-to-expand use).
+   * Bar-fill coloring mode. `zone` (default) — the current behavior: color from the
+   * absolute velocity-zone scale ({@link zones} when provided, else the built-in
+   * ≥1.0/≥0.75/≥0.5 default). `loss` — color each performed bar by its velocity LOSS
+   * from the set's OWN best (see {@link getVelocityLossColor}), so a fatiguing set
+   * reads green→red by loss regardless of its absolute speed. `loss` ignores
+   * {@link zones} (it is a wholly separate scale); `todo`/`variable`/`continue`
+   * slots are unaffected either way.
+   */
+  barColor?: 'zone' | 'loss'
+  /**
+   * Live mode: index of the most-recently-completed rep. That bar GROWS UP FROM
+   * THE BASELINE to its full height as it enters, tracking the rep as it lands;
+   * if it is also the current set peak (a new best) the growth slightly
+   * overshoots then settles, reading as a small bounce. Only the latest bar
+   * animates. Honors `prefers-reduced-motion`. Framed `expanded` chart and
+   * `hero` only (interactive tap-to-expand use).
    */
   liveRepIndex?: number
   /**
@@ -180,6 +192,44 @@ export function calculateMeanVelocity(velocities: number[]): number {
   if (velocities.length === 0) return 0
   const sum = velocities.reduce((acc, v) => acc + v, 0)
   return sum / velocities.length
+}
+
+/**
+ * Velocity-loss band thresholds (loss %), the same VL10/VL20/VL30 coaching cues
+ * FatigueMeter's default thresholds use — kept in sync so a `barColor="loss"`
+ * strip and a fatigue hero's VL20/VL30 reference bands agree on where amber/red start.
+ */
+const VL_LOSS_THRESHOLDS: readonly [number, number, number] = [10, 20, 30]
+
+/**
+ * Map a per-rep velocity LOSS (%, from the set's own best — see {@link
+ * velocityLossForRep}) onto the same green→gold→orange→red scale as the absolute
+ * zone scale ({@link VEL_COLORS}), banded at the {@link VL_LOSS_THRESHOLDS}
+ * VL10/VL20/VL30 cues. Past VL20 reads orange ("past VL20 = amber" in coaching
+ * terms — this scale's amber/gold band is the yellow stop, orange is the VL20+
+ * band), past VL30 reads red, so a fatiguing set reads green→red by LOSS
+ * regardless of how slow its absolute velocity is.
+ */
+export function getVelocityLossColor(lossPct: number): string {
+  const [t1, t2, t3] = VL_LOSS_THRESHOLDS
+  if (lossPct < t1) return VEL_COLORS.green
+  if (lossPct < t2) return VEL_COLORS.yellow
+  if (lossPct < t3) return VEL_COLORS.orange
+  return VEL_COLORS.red
+}
+
+/**
+ * A single rep's velocity loss (%) relative to the set's own best rep, clamped to
+ * ≥ 0 (a best-so-far rep, or a set with no positive best, reports 0 loss — green).
+ * Rounded (matching {@link calculateVelocityLoss}'s convention) so a rep that is
+ * arithmetically the set's best — or lands exactly on a VL threshold — doesn't drift
+ * across a color-band boundary on floating-point noise (e.g. `1.0 − 0.9` ≈ `0.0999…998`).
+ * Feeds `barColor="loss"` bar coloring; distinct from {@link calculateVelocityLoss},
+ * which reports only the set's FINAL loss (last rep vs best) as a single summary number.
+ */
+function velocityLossForRep(velocity: number, best: number): number {
+  if (best <= 0) return 0
+  return Math.max(0, Math.round(((best - velocity) / best) * 100))
 }
 
 /** Classify a velocity into its band (slow → fast, min inclusive / max exclusive). */
@@ -445,55 +495,66 @@ function usePrefersReducedMotion(): boolean {
 
 const ANIMATION_DURATION = 400
 const ANIMATION_EASING = Easing.bezier(0.22, 1, 0.36, 1)
-const POP_EASING = Easing.bezier(0.34, 1.56, 0.64, 1)
+/**
+ * Growth-factor overshoot for a new-peak bar: it grows past its full height then
+ * settles back to 1 (a small bounce), rather than the plain 0→1 grow every other
+ * bar gets. Modest (12%) since it stretches actual bar HEIGHT, not a uniform scale
+ * — a large overshoot here reads as a much bigger jump than the same factor did
+ * against the old whole-bar scale pop.
+ */
+const PEAK_OVERSHOOT = 1.12
 
 /**
- * The newest-rep entrance shared by the framed `expanded` chart and `hero`: a
- * bounce when the rep is a new set peak, a pop otherwise. Honors reduced motion.
- * Returns the scale `Animated.Value` for the live bar; inert while `active` is
+ * The newest-rep entrance shared by the framed `expanded` chart and `hero`: the bar
+ * GROWS UP FROM THE BASELINE (0 → full height), reading as though it's tracking the
+ * rep as it lands. A new set peak overshoots past full height then settles (a small
+ * bounce) instead of the plain grow. Honors reduced motion (jumps straight to full
+ * height, no animation). Returns a 0→1(+overshoot) growth-factor `Animated.Value`;
+ * callers interpolate it against their own target height. Inert while `active` is
  * false or no live rep is present.
  */
-function useLiveRepPop(
+function useLiveRepGrowth(
   active: boolean,
   liveRepIndex: number | undefined,
   liveVelocity: number | undefined,
   isNewPeak: boolean
 ): Animated.Value {
   const prefersReducedMotion = usePrefersReducedMotion()
-  const [liveScale] = useState(() => new Animated.Value(1))
+  const [liveGrowth] = useState(() => new Animated.Value(1))
   useEffect(() => {
     if (!active || liveRepIndex == null || liveVelocity == null) return
     if (prefersReducedMotion) {
-      liveScale.setValue(1)
+      liveGrowth.setValue(1)
       return
     }
+    liveGrowth.setValue(0)
     if (isNewPeak) {
-      liveScale.setValue(1)
       Animated.sequence([
-        Animated.timing(liveScale, {
-          toValue: 1.25,
-          duration: 150,
+        Animated.timing(liveGrowth, {
+          toValue: PEAK_OVERSHOOT,
+          duration: 220,
           easing: Easing.out(Easing.quad),
-          useNativeDriver: true,
+          useNativeDriver: false,
         }),
-        Animated.spring(liveScale, {
+        Animated.spring(liveGrowth, {
           toValue: 1,
-          friction: 3,
+          friction: 5,
           tension: 140,
-          useNativeDriver: true,
+          useNativeDriver: false,
         }),
       ]).start()
     } else {
-      liveScale.setValue(0.8)
-      Animated.timing(liveScale, {
+      // Plain entrance: a clean ease-out grow with no overshoot (ANIMATION_EASING has
+      // no control point above y=1) — it reads as tracking the rep, not bouncing.
+      Animated.timing(liveGrowth, {
         toValue: 1,
         duration: 300,
-        easing: POP_EASING,
-        useNativeDriver: true,
+        easing: ANIMATION_EASING,
+        useNativeDriver: false,
       }).start()
     }
-  }, [active, liveRepIndex, liveVelocity, isNewPeak, prefersReducedMotion, liveScale])
-  return liveScale
+  }, [active, liveRepIndex, liveVelocity, isNewPeak, prefersReducedMotion, liveGrowth])
+  return liveGrowth
 }
 
 interface HeroVelocityChartProps {
@@ -517,7 +578,7 @@ interface HeroVelocityChartProps {
  * The `hero` render: the across-the-room, single-set wall treatment. Tall bars +
  * a per-bar value label + a dashed running-best reference line + dashed placeholders
  * for the reps still to come. Reuses {@link barColorFor} (zone scale) and the
- * {@link useLiveRepPop} entrance so it stays consistent with the framed chart.
+ * {@link useLiveRepGrowth} entrance so it stays consistent with the framed chart.
  */
 function HeroVelocityChart({
   doneVelocities,
@@ -532,7 +593,7 @@ function HeroVelocityChart({
   viewProps,
 }: HeroVelocityChartProps) {
   const liveVelocity = liveRepIndex != null ? doneVelocities[liveRepIndex] : undefined
-  const liveScale = useLiveRepPop(true, liveRepIndex, liveVelocity, isNewPeak)
+  const liveGrowth = useLiveRepGrowth(true, liveRepIndex, liveVelocity, isNewPeak)
 
   // Measure the plot so per-bar value labels can thin on a narrow chart (they collide once
   // bars get thin). Width 0 (unmeasured) → show all, so test/server renders are unchanged.
@@ -560,12 +621,8 @@ function HeroVelocityChart({
       : HERO_BAR_MAX_WIDTH
   const labelsCrowded = plotW > 0 && barWidth < HERO_LABEL_MIN_BAR_WIDTH
   // Step the inter-bar gap down with the bars so the gaps never dwarf the bars themselves.
-  const heroGap =
-    plotW === 0 ? HERO_BAR_GAP : barWidth < 16 ? 2 : barWidth < 28 ? 4 : HERO_BAR_GAP
-  const peakIndex = doneVelocities.reduce(
-    (best, v, i) => (v > doneVelocities[best] ? i : best),
-    0,
-  )
+  const heroGap = plotW === 0 ? HERO_BAR_GAP : barWidth < 16 ? 2 : barWidth < 28 ? 4 : HERO_BAR_GAP
+  const peakIndex = doneVelocities.reduce((best, v, i) => (v > doneVelocities[best] ? i : best), 0)
   const showBarLabel = (i: number): boolean =>
     !labelsCrowded || i === peakIndex || i === liveRepIndex
 
@@ -648,16 +705,21 @@ function HeroVelocityChart({
                 </Text>
               )}
               <Animated.View
-                style={[
-                  {
-                    width: '100%',
-                    height: barHeight(velocity),
-                    borderTopLeftRadius: HERO_BAR_RADIUS,
-                    borderTopRightRadius: HERO_BAR_RADIUS,
-                    backgroundColor: barColorFor(velocity),
-                  },
-                  isLive ? { transform: [{ scale: liveScale }] } : null,
-                ]}
+                style={{
+                  width: '100%',
+                  // Live bar grows up from the baseline to its target height; every
+                  // other bar (and the live bar's own final frame) sits at its plain
+                  // computed height. Only the live index reads the animated value.
+                  height: isLive
+                    ? liveGrowth.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, barHeight(velocity)],
+                      })
+                    : barHeight(velocity),
+                  borderTopLeftRadius: HERO_BAR_RADIUS,
+                  borderTopRightRadius: HERO_BAR_RADIUS,
+                  backgroundColor: barColorFor(velocity),
+                }}
                 testID={`velocity-bar-${i}`}
               />
             </View>
@@ -699,6 +761,7 @@ export function VelocityStrip({
   velocities,
   set,
   zones,
+  barColor = 'zone',
   liveRepIndex,
   expanded = true,
   onToggle,
@@ -734,8 +797,10 @@ export function VelocityStrip({
   const scaleDenom = scaleDenominator(scale, maxVelocity)
 
   const hasZones = zones != null && zones.length > 0
-  const barColorFor = (v: number): string =>
-    hasZones ? bandColor(classifyBand(v, zones)!) : zoneHexMap[getVelocityZoneColor(v)]
+  const barColorFor = (v: number): string => {
+    if (barColor === 'loss') return getVelocityLossColor(velocityLossForRep(v, maxVelocity))
+    return hasZones ? bandColor(classifyBand(v, zones)!) : zoneHexMap[getVelocityZoneColor(v)]
+  }
   const slotColor = (slot: VelocitySlot): string => {
     if (slot.kind === 'rep') return barColorFor(slot.velocity ?? 0)
     if (slot.kind === 'todo') return TODO_COLOR
@@ -752,7 +817,7 @@ export function VelocityStrip({
   // Newest-rep animation: pop for a normal rep, bounce when it sets a new peak.
   const liveVelocity = liveRepIndex != null ? doneVelocities[liveRepIndex] : undefined
   const isNewPeak = liveVelocity != null && maxVelocity > 0 && liveVelocity === maxVelocity
-  const liveScale = useLiveRepPop(
+  const liveGrowth = useLiveRepGrowth(
     variant === 'expanded' && framed,
     liveRepIndex,
     liveVelocity,
@@ -1001,9 +1066,20 @@ export function VelocityStrip({
                     backgroundColor: barBackground,
                   }
 
+              // Live bar grows up from the baseline to its own target height (barStyle's
+              // static height, overridden here with the animated growth-factor readout);
+              // every other bar sits at its plain computed height straight away.
               const barInner = isLive ? (
                 <Animated.View
-                  style={[barStyle, { transform: [{ scale: liveScale }] }]}
+                  style={[
+                    barStyle,
+                    {
+                      height: liveGrowth.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: ['0%', `${barHeightPct}%`],
+                      }),
+                    },
+                  ]}
                   testID={`velocity-bar-${i}`}
                   accessibilityRole="image"
                   accessibilityLabel={`Rep ${i + 1}: ${formatVelocity(v)} meters per second${liveLabelSuffix}`}
