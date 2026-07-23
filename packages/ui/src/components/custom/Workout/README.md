@@ -13,8 +13,8 @@ DeviationBar · IntensityBar · WorkoutPill · MuscleGroupChip · Sparkline ·
 SupersetWrapper · InputBar · MetricCell · SetsRepsLoad · ExerciseIndicator · SetBar
 
 **Molecules** — compose atoms, own a little local state:
-VelocityStrip · SetRow · TempoDisplay · RestTimer · MesoProgressBar · WeekRow ·
-WorkoutCard · SetStrip · ExerciseHeading · ExerciseCardHeading
+VelocityStrip · DualVelocityStrip · SetRow · TempoDisplay · RestTimer · MesoProgressBar ·
+WeekRow · WorkoutCard · SetStrip · ExerciseHeading · ExerciseCardHeading
 
 **Organisms** — full features, often with their own data contract:
 ExerciseCard · SessionRail · MesoCard · MesoStatusCard · PrHistoryModal ·
@@ -153,6 +153,38 @@ type props without pulling the dependency.
   narrows the rest — currently snaps; smooth overflow reflow is a deferred
   follow-up). Documented by the `HeroPlayground` / `Hero*` stories on the wall
   background.
+- **DualVelocityStrip** (molecule) — the two-device (LEFT + RIGHT voltra) **diverging**
+  wall/rail chart. `composes ↓` the `VelocityStrip` machinery in the same file
+  (`buildSlots`/`VelocitySlot` slot model, the `makeBarColorFor` zone scale, the hero
+  geometry constants, the shared `useLiveRepPop` entrance, and the extracted
+  `DashedReferenceLine`) rather than restating it. `used-by ↑` the north-star dual-voltra
+  live page (organism chrome). ONE diverging chart shares a horizontal centre axis: LEFT
+  reps grow **up**, RIGHT reps grow **down**, one mirrored pair per rep index, so the L/R
+  asymmetry reads pre-attentively as the silhouette. **Side is POSITION only, never hue** —
+  both wings colour reps by velocity zone through the same resolver as the single strip.
+  Each side takes a `DualVelocityStream` (`velocities` OR a structured `set` — the same
+  shapes `VelocityStrip` accepts). Two scales: `hero` (tall wings, per-rep m/s labels,
+  a dashed running-best reference line per side) and `rail` (compact — no labels /
+  reference lines). **Rep-index alignment is the invariant:** column *i* is rep *i* on
+  both sides, so the set-type slot *kinds* carry through (rep / todo / variable / continue,
+  coloured as in the single strip) but the wide-notch chunk **gaps** (drop / myo / cluster
+  boundaries) are intentionally NOT rendered — per-side horizontal gaps would break the
+  mirrored L↔R column alignment. Single-voltra sets keep using `VelocityStrip`
+  `variant="hero"`. Documented by the `Playground` / `Hero*` / `Rail` stories on the wall
+  background (`Workout/DataViz/DualVelocityStrip`).
+
+  **Reuse audit — `DashedReferenceLine` (in-file today, top-level follow-up).** The dashed
+  running-best line was hand-rolled three times inside `VelocityStrip.tsx` (the single
+  `hero`, plus the dual's L and R wings); it is now one in-file `DashedReferenceLine`
+  (`anchor: 'top' | 'bottom'`, pixel `offset`, `testID`) those three sites share. A FOURTH
+  consumer exists across files — `Sparkline`'s `referenceLines` prop renders the same dashed
+  overlay (with an added opacity, an optional label, and a data-domain→Y projection), and two
+  Lab specimens duplicate it again. Promoting `DashedReferenceLine` to a **top-level
+  `ReferenceLine` overlay primitive** and migrating `Sparkline` (keeping its label/opacity
+  options as props) is the ≥2-consumer extraction the DoD favours — deliberately deferred to
+  a follow-up so the hero PR stays focused (the cross-file migration touches `Sparkline`'s
+  test surface and the Lab specimens, which are out of this branch's scope). Proposed API:
+  `<ReferenceLine anchor offset color dashed opacity? label? testID />`.
 - **RestTimer `ring` variant** — the across-the-room **wall** rest treatment (the
   north-star rest page). Built as a **three-tier decomposition** (not a one-off):
   `CircularProgress` (atom, gained a **`children`** center slot + a **`fill`**
