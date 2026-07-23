@@ -66,11 +66,12 @@ type props without pulling the dependency.
      needs the same yellow/green/red "time-to-target" tone (a coach card, a rep-tempo
      summary). It is pure logic, trivially portable.
   3. **`LiveTempoRow` → a `TempoLiveRow` molecule** — only if a consumer wants the running
-     row *without* the chip chrome (label/background/padding). Until then the chrome and the
+     row _without_ the chip chrome (label/background/padding). Until then the chrome and the
      row belong together as one component with a `live` prop, not two.
 
   Not worth splitting today (speculative extraction the workflow warns against); this note
   is the trigger list for when it stops being speculative.
+
 - **S3 session-rail family** — `SessionRail` (organism) composes the standalone
   `ExerciseCardHeading` molecule per exercise, which composes an `ExerciseHeading`
   info block + a `SetStrip`:
@@ -96,7 +97,7 @@ type props without pulling the dependency.
   vs. variable-todo cyan), `drop` (one set, sub-loads split by 2px notches), `myo`
   (done rest-pause — activation + clusters split by 3px cluster gaps), and
   `myo-upcoming` (planned myo, length unknown — grey activation + a fading, right-open
-  cyan "clusters-to-failure" trail). The chunk-size *pattern* carries set-type identity:
+  cyan "clusters-to-failure" trail). The chunk-size _pattern_ carries set-type identity:
   **butted reps (0) < notch (2px) < cluster gap (3px) < set gap (5px)**. `cyan-900`
   (`SET_STRIP_VARIABLE_COLOR`) is the shared "variable / unknown / opportunity" pin.
   `SegmentedBar` carries these via additive `leadingGap` (per-segment left margin) and
@@ -113,6 +114,22 @@ type props without pulling the dependency.
   **Composes** link down the tree — matching the S1/S2 shell families. (The component
   files stay flat on disk in `custom/Workout/`; only the story `title`s build the tree.)
 
+- **`DualSessionRail` — dual-Voltra composition (not a new organism)** — a
+  dual-bench session drives TWO Voltra devices at once (e.g. Left Arm / Right
+  Arm), each with its own exercise list, set progress and set markers.
+  `SessionRail` itself stays single-device (unchanged); `DualSessionRail` is a
+  thin composition of two `SessionRail` columns side by side, separated by the
+  same charcoal-300 hairline the rail uses between exercise rows. Each
+  `DualSessionRailSlot` carries its own `label` (rendered as that column's
+  title), `exercises`, `setsDone`, and `metrics` — devices progress
+  independently. Only the session clock (`elapsedMs`/`budgetMs`/`running`/
+  `next`) is shared, since both devices run against the same wall clock. No new
+  set-marker vocabulary: `SetStrip`/`SetBar`/`SetStripSet` are untouched, so
+  `done`/`active`/`todo`/`range`/`drop`/`myo`/`myo-upcoming` render identically
+  in each column. Each `SessionRail` instance is given a per-slot `testID`
+  (`dual-session-rail-slot-0`/`-1`, via `SessionRail`'s inherited `ViewProps`
+  passthrough — no `SessionRail` code change needed) so slots stay queryable in
+  tests. Story: `Shell/SessionRail/DualSessionRail`.
 - **VelocityStrip set-type modes (`set` prop)** — beyond the flat `velocities`
   array (unchanged, still the source of truth for `SetRow` / `ExerciseCard`), the
   strip accepts an optional structured `VelocitySet` descriptor and renders the
@@ -133,7 +150,7 @@ type props without pulling the dependency.
   active-set spotlight (velocity-height done reps + short grey stubs) and renders
   the advanced types as a short mini-style encoding. Every modality is documented
   with a copy-paste `set` config in **`Workout/DataViz/VelocityStrip/Set
-  Modalities`** (each card carries a `Collapse` accordion; promoted from the
+Modalities`** (each card carries a `Collapse` accordion; promoted from the
   now-deleted `S3SetModalities` Lab specimen).
 - **VelocityStrip `hero` variant** — the across-the-room, single-set **wall**
   treatment (the north-star live page's velocity hero). Tall bars (default 220px
@@ -147,7 +164,7 @@ type props without pulling the dependency.
   left-packed) with a caller-set fixed height; the eyebrow/section title is
   organism chrome, not part of the primitive. **Live-update model:** the plan's
   slots are pre-allocated (`max(done, target)` columns), so a landing rep converts
-  placeholder→bar in the *same* slot with a pop — no reflow within the plan; pair
+  placeholder→bar in the _same_ slot with a pop — no reflow within the plan; pair
   with `scale="fixed"` so heights never rescale either. The one reflow case is
   set-expansion **beyond** `targetReps` (AMRAP overflow adds a column and flex-
   narrows the rest — currently snaps; smooth overflow reflow is a deferred
@@ -174,7 +191,7 @@ type props without pulling the dependency.
   dashboard scale, added as the idiomatic titan `size` union (a JS number-map per
   component; **`default` values are byte-identical** to before, so existing consumers are
   untouched). **ZoneTrack** (the shared gauge primitive) gained `size` that scales track,
-  needle, tick lines and tick labels together; its *other* consumers (TrainingLoadGauge,
+  needle, tick lines and tick labels together; its _other_ consumers (TrainingLoadGauge,
   RpeCalibration) default to `default` and are unaffected. **FatigueMeter** passes `size`
   through and lets `trackHeight` flow from it. `Wall*` / `WallDensity` stories on the wall
   background. (**TempoBar** was retired here — the standalone active-tempo bar is superseded
@@ -187,17 +204,17 @@ type props without pulling the dependency.
   per exercise, six distinct kinds over four tier colors (bound to titan status
   tokens, read as literal hex via `getSemanticColors('dark')`, not `resolveColor`,
   so tests can assert them). Glyph = the specific signal; color = the severity tier. Chips are
-  outlined (border + glyph, no fill) so they never collide with the *filled*
+  outlined (border + glyph, no fill) so they never collide with the _filled_
   velocity strip, and static (no pulse — they are chrome). Precedence, high → low:
 
-  | # | kind | tier | glyph (mirrors lucide) |
-  |---|------|------|------------------------|
-  | 1 | `imbalance` | danger (`status-error`) | `Scale` |
-  | 2 | `overshoot` | danger (`status-error`) | `AlertTriangle` |
-  | 3 | `velocity-loss` | warning (`status-warning`) | `TrendingDown` |
-  | 4 | `missed-reps` | warning (`status-warning`) | `CircleSlash` |
-  | 5 | `pr` | success (`status-success`) | `Award` |
-  | 6 | `info` | info (`status-info`) | `Info` |
+  | #   | kind            | tier                       | glyph (mirrors lucide) |
+  | --- | --------------- | -------------------------- | ---------------------- |
+  | 1   | `imbalance`     | danger (`status-error`)    | `Scale`                |
+  | 2   | `overshoot`     | danger (`status-error`)    | `AlertTriangle`        |
+  | 3   | `velocity-loss` | warning (`status-warning`) | `TrendingDown`         |
+  | 4   | `missed-reps`   | warning (`status-warning`) | `CircleSlash`          |
+  | 5   | `pr`            | success (`status-success`) | `Award`                |
+  | 6   | `info`          | info (`status-info`)       | `Info`                 |
 
   `resolveIndicator(candidates)` collapses the active signals to the single
   highest-precedence kind to show (`undefined` when none). Alerts outrank `pr`. The
