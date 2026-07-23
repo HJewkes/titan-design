@@ -163,9 +163,14 @@ type props without pulling the dependency.
   asymmetry reads pre-attentively as the silhouette. **Side is POSITION only, never hue** —
   both wings colour reps by velocity zone through the same resolver as the single strip.
   Each side takes a `DualVelocityStream` (`velocities` OR a structured `set` — the same
-  shapes `VelocityStrip` accepts). Two scales: `hero` (tall wings, per-rep m/s labels,
-  a dashed running-best reference line per side) and `rail` (compact — no labels /
-  reference lines). **Rep-index alignment is the invariant:** column *i* is rep *i* on
+  shapes `VelocityStrip` accepts — plus an optional `label`). The **vertical edge label is
+  data**: each side renders its `DualVelocityStream.label` (a slot name, e.g. "Left Arm"),
+  NOT a hardcoded LEFT/RIGHT — a side with no `label` (or an empty one) renders no tag, and
+  when neither side carries one the gutter is omitted entirely. The label keeps the prior
+  vertical (rotated) orientation so it never overlaps the bars. Two scales: `hero` (tall
+  wings, per-rep m/s velocity labels, a dashed running-best reference line per side) and
+  `rail` (compact — no velocity labels / reference lines, slot names in a narrow gutter).
+  **Rep-index alignment is the invariant:** column *i* is rep *i* on
   both sides, so the set-type slot *kinds* carry through (rep / todo / variable / continue,
   coloured as in the single strip) but the wide-notch chunk **gaps** (drop / myo / cluster
   boundaries) are intentionally NOT rendered — per-side horizontal gaps would break the
