@@ -1007,11 +1007,14 @@ function DivergingSideRail({
   const textStyle = {
     maxWidth: '100%' as const,
     textAlign: 'center' as const,
-    // Rail wing is short (~48px): drop to 8px + no tracking so an 8–10 char slot name
-    // ("Right Arm") fits the wing fully. Hero has the room for the airier 11px/tracked read.
-    fontSize: isRail ? 8 : 11,
+    // Rail wing is short (~48px): drop to 7px + no tracking so an 8–10 char slot name
+    // ("RIGHT ARM") fits the wing fully once uppercased. Hero has room for the airier
+    // 11px/tracked read. Small-caps/eyebrow treatment: the DATA keeps its casing ("Left
+    // Arm"), the component renders it UPPERCASE — matching titan's label tag convention.
+    fontSize: isRail ? 7 : 11,
     fontWeight: '700' as const,
     letterSpacing: isRail ? 0 : 3,
+    textTransform: 'uppercase' as const,
   }
   const renderHalf = (label: string | undefined, testID: string) => (
     <View style={{ height: plotHalf, alignItems: 'center', justifyContent: 'center' }}>
