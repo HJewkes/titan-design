@@ -17,10 +17,11 @@ const meta: Meta<typeof GhostSpark> = {
     docs: {
       description: {
         component:
-          'Per-rep velocity-time sparkline: current rep solid over faded ghosts, phase-coloured zero ' +
-          'axis (ecc magenta / con cyan), control-aware silver/red line tint (silver when controlled, ' +
-          'dimming with tempo drift; shades of red on collapse), and the tempo tuple embedded (revealed on hover). ' +
-          '`forceRevealed` pins the annotated state.',
+          'Per-rep velocity-time sparkline on the band model (coherent with the dual ghost-line): a wide ' +
+          'phase-coloured band at the bottom (ecc magenta / con cyan, ECC/CON labelled inside) with the ' +
+          'velocity blooming UP from it — current rep solid over faded ghosts, control-aware silver/red line ' +
+          'tint (silver when controlled, dimming with tempo drift; shades of red on collapse), and the tempo ' +
+          'tuple embedded (revealed on hover). `forceRevealed` pins the annotated state.',
       },
     },
   },

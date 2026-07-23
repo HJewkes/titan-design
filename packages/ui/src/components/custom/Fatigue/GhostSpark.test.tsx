@@ -60,4 +60,41 @@ describe('GhostSpark', () => {
     // 7 ghosts + 2 current (halo + tint) = 9 paths for an 8-rep set.
     expect(container.querySelectorAll('path')).toHaveLength(9)
   })
+
+  it('draws the wide phase band (rects) for the current rep phase runs', () => {
+    const { container } = render(
+      <GhostSpark
+        curves={model.velocityCurves}
+        tempoSeconds={model.tempoSeconds}
+        width={360}
+        height={180}
+      />
+    )
+    // one band rect per phase segment (ecc / pause / con / hold ⇒ ≥ 2).
+    expect(container.querySelectorAll('rect').length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('hides the ECC/CON band labels at rest, shows them when revealed', () => {
+    const { rerender } = render(
+      <GhostSpark
+        curves={model.velocityCurves}
+        tempoSeconds={model.tempoSeconds}
+        width={360}
+        height={180}
+      />
+    )
+    expect(screen.queryByText('ECC')).not.toBeInTheDocument()
+    expect(screen.queryByText('CON')).not.toBeInTheDocument()
+    rerender(
+      <GhostSpark
+        curves={model.velocityCurves}
+        tempoSeconds={model.tempoSeconds}
+        width={360}
+        height={180}
+        forceRevealed
+      />
+    )
+    expect(screen.getByText('ECC')).toBeInTheDocument()
+    expect(screen.getByText('CON')).toBeInTheDocument()
+  })
 })

@@ -30,7 +30,7 @@ export const STATE_LABEL: Record<FatigueVerdictState, string> = {
 }
 
 /**
- * The phase-identity colours for the ghost-spark zero-axis — the TempoDisplay
+ * The phase-identity colours for the ghost-spark phase BAND — the TempoDisplay
  * language: eccentric magenta, concentric cyan, idle (pause/hold) a muted grey.
  */
 export const PHASE_AXIS_COLOR: Record<SamplePhase, string> = {
