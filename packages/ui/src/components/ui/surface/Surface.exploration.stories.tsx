@@ -2,32 +2,15 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import {
   TEXT,
-  RAMPS,
   categoricalPalette,
   primitiveRamps,
-  getSemanticColors,
-  noise,
   shift,
-  SampleCard,
   PAPER,
   paperFill,
   DESK_BG,
   PaperSheet,
   PaperSwatchRow,
-  PALETTES,
-  warmTint,
-  PaperCollage,
-  PAPER_TONES,
-  PAPER_DESK,
-  PAPER_ACCENT,
-  RampBar,
-  PAPER_SUBTITLE,
-  CURVE_AT_SCALE,
-  Lockup,
   deriveSurfaceRamp,
-  TopBarDemo,
-  FrameDemo,
-  recessShadow,
 } from './surface-lab-shared'
 
 // ===========================================================================
@@ -48,12 +31,11 @@ import {
 //
 // Option-COMPARISON stories that led to these decisions have moved to
 // `Surface.archive.stories.tsx` (Lab/Archive/Surface): Ramps, SeparationTreatments,
-// TextureOptions, NeutralVsWarm, WarmthCurves, AtScaleComparison, AlphaLayering.
+// TextureOptions, NeutralVsWarm, WarmthCurves, AtScaleComparison, AlphaLayering,
+// SkeuomorphicCard, WarmthCurvesAtScale, PaperModels, TopBarTreatments, FrameRecess.
 //
-// The stories below marked "(unreviewed)" were NOT explicitly called out as
-// final-vs-archive in the consolidation brief — kept here (not archived) per
-// "never bury something aligned"; flag for a human pass to confirm final vs.
-// archive-worthy.
+// This story file now holds ONLY the three locked North Star §1 stories:
+// SurfaceRampSystem (the derivation), LayeredPaper, PaperWithBrand.
 // ===========================================================================
 
 const meta: Meta = {
@@ -126,8 +108,8 @@ export const LayeredPaper: Story = {
     <View style={{ ...DESK_BG, padding: 40, gap: 44 }}>
       {/* hero collage — overlapping matte sheets, slight offset + rotation */}
       <View style={{ height: 260, width: 560, position: 'relative' }}>
-        <PaperSheet tone={PAPER.charcoalLo} w={250} h={170} left={0} top={44} rotate={-3} />
-        <PaperSheet tone={PAPER.warm} w={260} h={190} left={110} top={0} rotate={2}>
+        <PaperSheet tone={PAPER.base} w={250} h={170} left={0} top={44} rotate={-3} />
+        <PaperSheet tone={PAPER.elevated} w={260} h={190} left={110} top={0} rotate={2}>
           <Text style={{ color: TEXT.tertiary, fontSize: 9, fontWeight: '700', letterSpacing: 1 }}>
             LIVE
           </Text>
@@ -136,7 +118,7 @@ export const LayeredPaper: Story = {
           </Text>
           <Text style={{ color: '#C9C2B8', fontSize: 12 }}>set 2 · 8 reps · 0.42 m/s</Text>
         </PaperSheet>
-        <PaperSheet tone={PAPER.orange} w={150} h={110} left={322} top={72} rotate={-1}>
+        <PaperSheet tone={PAPER.accent} w={150} h={110} left={322} top={72} rotate={-1}>
           <Text style={{ color: '#FCE9D8', fontSize: 9, fontWeight: '700', letterSpacing: 1 }}>
             LOAD
           </Text>
@@ -148,7 +130,7 @@ export const LayeredPaper: Story = {
       {/* matte paper-tone palette */}
       <View style={{ gap: 8 }}>
         <Text style={{ color: TEXT.tertiary, fontSize: 10, fontWeight: '700', letterSpacing: 1 }}>
-          MATTE PAPER TONES · grain + rim + contact shadow
+          MATTE PAPER TONES · derived ramp + brand accent, grain + rim + contact shadow
         </Text>
         <View style={{ flexDirection: 'row', gap: 14 }}>
           {Object.entries(PAPER).map(([name, tone]) => (
@@ -220,134 +202,6 @@ export const PaperWithBrand: Story = {
             <Text style={{ color: 'rgba(255,255,255,0.85)', fontSize: 11 }}>lbs · +5</Text>
           </PaperSheet>
         </View>
-      </View>
-    )
-  },
-}
-
-// --- Below: kept in North Star but NOT explicitly triaged in the consolidation
-// brief as final-vs-archive. Conservative call: keep visible, flag "(unreviewed)".
-
-// Each depth cue ISOLATED (gradient / rim / grain), then the FULL stack. NOTE:
-// the FULL variant's rim+ambient-shadow recipe predates the "shadows demoted to
-// floating overlays" decision — likely superseded, kept visible pending review.
-export const SkeuomorphicCard: Story = {
-  name: 'P1 · Skeuomorphic card cues (unreviewed)',
-  render: () => {
-    const base = RAMPS[0].planes[2] // neutral · elevated
-    const variants: { v: 'flat' | 'gradient' | 'rim' | 'grain' | 'full'; label: string }[] = [
-      { v: 'flat', label: 'FLAT — solid fill' },
-      { v: 'gradient', label: 'GRADIENT — fill only' },
-      { v: 'rim', label: 'RIM — top highlight only' },
-      { v: 'grain', label: 'GRAIN — texture only' },
-      { v: 'full', label: 'FULL — gradient + rim + grain' },
-    ]
-    return (
-      <View
-        style={{
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          gap: 20,
-          backgroundColor: RAMPS[0].planes[0],
-          padding: 32,
-        }}
-      >
-        {variants.map(({ v, label }) => (
-          <SampleCard key={v} base={base} variant={v} label={label} />
-        ))}
-      </View>
-    )
-  },
-}
-
-// WARMTH CURVES × AT SCALE (paper) — the two curves rendered as the full paper
-// lockup. Unreviewed: overlaps with the locked tapered-warmth decision but wasn't
-// named explicitly in the brief as final or archive-worthy.
-export const WarmthCurvesAtScale: Story = {
-  name: 'Warmth curves at scale (unreviewed)',
-  render: () => (
-    <View style={{ backgroundColor: '#000', padding: 32, gap: 26 }}>
-      {CURVE_AT_SCALE.map((c) => (
-        <View key={c.name} style={{ gap: 10 }}>
-          <Text style={{ color: TEXT.primary, fontSize: 13, fontWeight: '700' }}>{c.name}</Text>
-          <Lockup skin={c.skin} />
-        </View>
-      ))}
-    </View>
-  ),
-}
-
-// The layered-paper accent across the 3 palette finalists, as tone strips +
-// collage. Unreviewed: adjacent to LayeredPaper/PaperWithBrand (final) but shows
-// the neutral/warm-subtle options rather than only the locked choice.
-export const PaperModels: Story = {
-  name: 'Paper models · 3 palettes (unreviewed)',
-  render: () => (
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 40, backgroundColor: '#141414', padding: 40 }}>
-      {PALETTES.map((pal) => {
-        const t = (tone: string) => warmTint(tone, pal.w)
-        const collage = [t(PAPER_TONES.light), t(PAPER_TONES.back)] // front (hero) + back sheet
-        const strip = [PAPER_TONES.back, PAPER_TONES.mid, PAPER_TONES.light, PAPER_TONES.lighter].map(t)
-        return (
-          <View key={pal.name} style={{ gap: 12 }}>
-            <Text style={{ color: TEXT.primary, fontSize: 13, fontWeight: '700' }}>
-              {pal.name.toUpperCase()} PAPER · {PAPER_SUBTITLE[pal.name]}
-            </Text>
-            <PaperCollage tones={collage} desk={t(PAPER_DESK)} accent={PAPER_ACCENT} />
-            <RampBar name="tones" planes={strip} />
-          </View>
-        )
-      })}
-    </View>
-  ),
-}
-
-// TOP-BAR TREATMENTS — a later exploration thread (shell bezel / top-bar chrome),
-// not one of the four §-locked decisions. Unreviewed: kept visible, not archived.
-export const TopBarTreatments: Story = {
-  name: 'Top-bar treatments (unreviewed)',
-  render: () => {
-    const c = getSemanticColors('dark')
-    const shell = c['background-base']
-    const GRAIN = noise(0.05)
-    const sheen = (a: number) => `linear-gradient(180deg, rgba(255,255,255,${a}), transparent 55%)`
-    const bar = (a: number, grain: boolean) => ({
-      backgroundColor: shell,
-      backgroundImage: grain ? (a ? `${GRAIN}, ${sheen(a)}` : GRAIN) : sheen(a),
-    })
-    return (
-      <View style={{ backgroundColor: '#000', padding: 32, gap: 18 }}>
-        <TopBarDemo label="Flat shell — no gradient, no texture (baseline)" barStyle={{ backgroundColor: shell }} />
-        <TopBarDemo label="Sheen α.03 (whisper) — no grain" barStyle={bar(0.03, false)} />
-        <TopBarDemo label="Sheen α.05 (very subtle) — no grain" barStyle={bar(0.05, false)} />
-        <TopBarDemo label="Paper GRAIN only (α.05) — texture, no sheen" barStyle={bar(0, true)} />
-        <TopBarDemo label="GRAIN + sheen α.03 — texture + a whisper of bezel light" barStyle={bar(0.03, true)} />
-        <TopBarDemo label="GRAIN + sheen α.05" barStyle={bar(0.05, true)} />
-      </View>
-    )
-  },
-}
-
-// FRAME + RECESSED CONTENT — the content well recessed into a bezel frame via an
-// inner shadow. Later exploration thread, not one of the four locked decisions.
-// Unreviewed: kept visible, not archived.
-export const FrameRecess: Story = {
-  name: 'Frame + recessed content (unreviewed)',
-  render: () => {
-    const row = (label: string, shadow: string) => (
-      <FrameDemo
-        label={label}
-        bezel="#100D0A"
-        contentStyle={{ boxShadow: shadow } as object}
-        grain
-        hairlines="all"
-      />
-    )
-    return (
-      <View style={{ backgroundColor: '#000', padding: 32, gap: 18 }}>
-        {row('1-deep · SOFT/WIDE (o10 b16) α.90 — all hairlines, no rim', recessShadow(10, 16, -8, 0.9, 0.68, 0))}
-        {row('2-deep · GENTLE (o8 b12) α.90 — all hairlines, no rim', recessShadow(8, 12, -7, 0.9, 0.68, 0))}
-        {row('4 · CRISP+DEEPER (o6 b7) α.90 — all hairlines, no rim', recessShadow(6, 7, -4, 0.9, 0.68, 0))}
       </View>
     )
   },

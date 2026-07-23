@@ -24,13 +24,23 @@ import {
   paperSkin,
   Lockup,
   AlphaStrip,
+  SampleCard,
+  CURVE_AT_SCALE,
+  warmTint,
+  PAPER_SUBTITLE,
+  getSemanticColors,
+  TopBarDemo,
+  FrameDemo,
+  recessShadow,
 } from './surface-lab-shared'
 
 // ===========================================================================
 // ARCHIVE · SURFACE — decision-COMPARISON stories that led to the locked Surface
 // System direction (see `Lab/North Star/1 · Surface System` /
 // `Surface.exploration.stories.tsx`). These are the OPTIONS considered, not the
-// final pick — kept for provenance, not for active reference.
+// final pick — kept for provenance, not for active reference. Includes
+// SkeuomorphicCard, WarmthCurvesAtScale, PaperModels, TopBarTreatments, and
+// FrameRecess — later exploration threads moved here from North Star §1.
 // See `coordination/design-explorations/surface-system-north-star.md`.
 // ===========================================================================
 
@@ -236,4 +246,126 @@ export const AlphaLayering: Story = {
       <AlphaStrip label="Opaque hand-picked warm ramp — full temperature control (no overlay) ✓" opaque={WARM_MEDIUM} />
     </View>
   ),
+}
+
+// Each depth cue ISOLATED (gradient / rim / grain), then the FULL stack. NOTE:
+// the FULL variant's rim+ambient-shadow recipe predates the "shadows demoted to
+// floating overlays" decision — superseded by the alpha-hairline separation call.
+export const SkeuomorphicCard: Story = {
+  name: 'P1 · Skeuomorphic card cues',
+  render: () => {
+    const base = RAMPS[0].planes[2] // neutral · elevated
+    const variants: { v: 'flat' | 'gradient' | 'rim' | 'grain' | 'full'; label: string }[] = [
+      { v: 'flat', label: 'FLAT — solid fill' },
+      { v: 'gradient', label: 'GRADIENT — fill only' },
+      { v: 'rim', label: 'RIM — top highlight only' },
+      { v: 'grain', label: 'GRAIN — texture only' },
+      { v: 'full', label: 'FULL — gradient + rim + grain' },
+    ]
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          gap: 20,
+          backgroundColor: RAMPS[0].planes[0],
+          padding: 32,
+        }}
+      >
+        {variants.map(({ v, label }) => (
+          <SampleCard key={v} base={base} variant={v} label={label} />
+        ))}
+      </View>
+    )
+  },
+}
+
+// WARMTH CURVES × AT SCALE (paper) — the two curves rendered as the full paper
+// lockup. Superseded by the locked tapered-warmth decision (see SurfaceRampSystem).
+export const WarmthCurvesAtScale: Story = {
+  name: 'Warmth curves at scale',
+  render: () => (
+    <View style={{ backgroundColor: '#000', padding: 32, gap: 26 }}>
+      {CURVE_AT_SCALE.map((c) => (
+        <View key={c.name} style={{ gap: 10 }}>
+          <Text style={{ color: TEXT.primary, fontSize: 13, fontWeight: '700' }}>{c.name}</Text>
+          <Lockup skin={c.skin} />
+        </View>
+      ))}
+    </View>
+  ),
+}
+
+// The layered-paper accent across the 3 palette finalists, as tone strips +
+// collage. Superseded by the locked choice (see LayeredPaper / PaperWithBrand).
+export const PaperModels: Story = {
+  name: 'Paper models · 3 palettes',
+  render: () => (
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 40, backgroundColor: '#141414', padding: 40 }}>
+      {PALETTES.map((pal) => {
+        const t = (tone: string) => warmTint(tone, pal.w)
+        const collage = [t(PAPER_TONES.light), t(PAPER_TONES.back)] // front (hero) + back sheet
+        const strip = [PAPER_TONES.back, PAPER_TONES.mid, PAPER_TONES.light, PAPER_TONES.lighter].map(t)
+        return (
+          <View key={pal.name} style={{ gap: 12 }}>
+            <Text style={{ color: TEXT.primary, fontSize: 13, fontWeight: '700' }}>
+              {pal.name.toUpperCase()} PAPER · {PAPER_SUBTITLE[pal.name]}
+            </Text>
+            <PaperCollage tones={collage} desk={t(PAPER_DESK)} accent={PAPER_ACCENT} />
+            <RampBar name="tones" planes={strip} />
+          </View>
+        )
+      })}
+    </View>
+  ),
+}
+
+// TOP-BAR TREATMENTS — a later exploration thread (shell bezel / top-bar chrome),
+// not one of the four §-locked decisions.
+export const TopBarTreatments: Story = {
+  name: 'Top-bar treatments',
+  render: () => {
+    const c = getSemanticColors('dark')
+    const shell = c['background-base']
+    const GRAIN = noise(0.05)
+    const sheen = (a: number) => `linear-gradient(180deg, rgba(255,255,255,${a}), transparent 55%)`
+    const bar = (a: number, grain: boolean) => ({
+      backgroundColor: shell,
+      backgroundImage: grain ? (a ? `${GRAIN}, ${sheen(a)}` : GRAIN) : sheen(a),
+    })
+    return (
+      <View style={{ backgroundColor: '#000', padding: 32, gap: 18 }}>
+        <TopBarDemo label="Flat shell — no gradient, no texture (baseline)" barStyle={{ backgroundColor: shell }} />
+        <TopBarDemo label="Sheen α.03 (whisper) — no grain" barStyle={bar(0.03, false)} />
+        <TopBarDemo label="Sheen α.05 (very subtle) — no grain" barStyle={bar(0.05, false)} />
+        <TopBarDemo label="Paper GRAIN only (α.05) — texture, no sheen" barStyle={bar(0, true)} />
+        <TopBarDemo label="GRAIN + sheen α.03 — texture + a whisper of bezel light" barStyle={bar(0.03, true)} />
+        <TopBarDemo label="GRAIN + sheen α.05" barStyle={bar(0.05, true)} />
+      </View>
+    )
+  },
+}
+
+// FRAME + RECESSED CONTENT — the content well recessed into a bezel frame via an
+// inner shadow. Later exploration thread, not one of the four locked decisions.
+export const FrameRecess: Story = {
+  name: 'Frame + recessed content',
+  render: () => {
+    const row = (label: string, shadow: string) => (
+      <FrameDemo
+        label={label}
+        bezel="#100D0A"
+        contentStyle={{ boxShadow: shadow } as object}
+        grain
+        hairlines="all"
+      />
+    )
+    return (
+      <View style={{ backgroundColor: '#000', padding: 32, gap: 18 }}>
+        {row('1-deep · SOFT/WIDE (o10 b16) α.90 — all hairlines, no rim', recessShadow(10, 16, -8, 0.9, 0.68, 0))}
+        {row('2-deep · GENTLE (o8 b12) α.90 — all hairlines, no rim', recessShadow(8, 12, -7, 0.9, 0.68, 0))}
+        {row('4 · CRISP+DEEPER (o6 b7) α.90 — all hairlines, no rim', recessShadow(6, 7, -4, 0.9, 0.68, 0))}
+      </View>
+    )
+  },
 }

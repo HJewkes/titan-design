@@ -353,13 +353,17 @@ export function SampleCard({
 // (so the shadow reads) with a warm bias + a brand-orange accent sheet.
 // ===========================================================================
 
+// LOCKED: neutral paper sheets pull straight from the derived surface ramp
+// (base/elevated/raised — see `deriveSurfaceRamp` below); the accent sheet is
+// the categorical DARK variant's brand orange (-600 on paper surfaces, -400
+// reserved for text/accents/glow). Function declarations hoist, so calling
+// `deriveSurfaceRamp()` here (defined further down this file) is safe.
+const rampPlane = (name: string): string => deriveSurfaceRamp().find((p) => p.name === name)!.hex
 export const PAPER: Record<string, string> = {
-  charcoal: '#2A2723',
-  charcoalLo: '#221F1B',
-  warm: '#332D26',
-  orange: '#7A3B16',
-  teal: '#1F3A38',
-  mustard: '#4A3A16',
+  base: rampPlane('base'),
+  elevated: rampPlane('elevated'),
+  raised: rampPlane('raised'),
+  accent: primitiveRamps.orange[600], // #B94A00 — brand orange -600
 }
 export const PAPER_SHADOW = 'inset 0 1px 0 rgba(255,255,255,0.13), 0 5px 14px rgba(0,0,0,0.55)'
 export function paperFill(tone: string): object {
