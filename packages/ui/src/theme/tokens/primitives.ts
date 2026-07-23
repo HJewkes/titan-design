@@ -85,6 +85,30 @@ export const primitiveColors = {
 } as const
 
 /**
+ * Surface ramp — dark mode (TD-surface-tokens, S-1)
+ *
+ * Warm-tapered, DERIVED ramp — NOT hand-picked. Shipped verbatim as the output of
+ * `deriveSurfaceRamp(shellL=9, steps=[4.5,2.5,2,1.5], rbShadow=6, rbHilite=1.5)`
+ * (see `packages/ui/src/components/ui/surface/surface-lab-shared.tsx` on branch
+ * `feat/TD-unified-lab`, story `Lab/Surface Exploration -> Surface Ramp System`).
+ * Lightness is CIELAB L* off the shell, with DIMINISHING steps (4.5/2.5/2/1.5) —
+ * the frame->content jump is biggest, each plane above adds less. Warmth (R-B)
+ * tapers 6 -> 1.5 from frame to hero so bright content planes stay near-neutral.
+ * Kept separate from the `charcoal` scale above (which several existing
+ * components reference directly for unrelated shadow/track tints) so this
+ * change is additive and doesn't ripple into those consumers.
+ * See coordination/design-explorations/surface-system-north-star.md.
+ */
+export const surfaceRampDark = {
+  inset: '#13100D',      // L*4.5  — sub-shell well / pressed
+  background: '#1C1916', // L*9    — shell / frame
+  base: '#252321',       // L*13.5 — main content plane
+  elevated: '#2A2827',   // L*16   — nav / rail
+  raised: '#2D2C2B',     // L*18   — cards
+  overlay: '#302F2E',    // L*19.5 — hero / popover
+} as const
+
+/**
  * Derived tonal ramps (TD-05.09 color foundations)
  *
  * Seven OKLCH-generated hue ramps, 11 perceptual lightness steps each (50 -> 950).

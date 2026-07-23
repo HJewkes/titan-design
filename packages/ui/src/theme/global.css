@@ -94,15 +94,18 @@
     --color-text-link: #828DF8;
     --color-text-link-hover: #60A5FA;
 
-    --color-surface-base: #161616;
-    --color-surface-elevated: #191919;
-    --color-surface-raised: #1C1C1C;
-    --color-surface-overlay: #191919;
-    --color-surface-input: #191919;
+    /* Surface ramp — warm-tapered DERIVED, shipped verbatim from deriveSurfaceRamp()
+       (TD-surface-tokens, S-1). surface-overlay and surface-elevated are now
+       distinct (were both #191919); see surfaceRampDark in tokens/primitives.ts. */
+    --color-surface-base: #252321;
+    --color-surface-elevated: #2A2827;
+    --color-surface-raised: #2D2C2B;
+    --color-surface-overlay: #302F2E;
+    --color-surface-input: #2A2827;
 
-    --color-background-base: #101010;
-    --color-background-default: #161616;
-    --color-background-subtle: #1C1C1C;
+    --color-background-base: #1C1916;
+    --color-background-default: #252321;
+    --color-background-subtle: #2A2827;
 
     --color-border-default: #1F1F1F;
     --color-border-subtle: #1C1C1C;
@@ -112,6 +115,11 @@
     --color-border-input-hover: #6B7280;
     --color-border-input-focus: #828DF8;
     --color-border-input-error: #EF4444;
+
+    /* Alpha hairline separators — self-normalizing on any plane (§4/S-2) */
+    --color-hairline-subtle: rgba(255, 255, 255, 0.06);
+    --color-hairline-default: rgba(255, 255, 255, 0.09);
+    --color-hairline-strong: rgba(255, 255, 255, 0.14);
 
     --color-interactive-hover: rgba(255, 255, 255, 0.04);
     --color-interactive-focus: rgba(255, 255, 255, 0.12);
@@ -249,6 +257,12 @@
     --color-border-input-hover: #9CA3AF;
     --color-border-input-focus: #5048E5;
     --color-border-input-error: #D14343;
+
+    /* Alpha hairline separators — mirrors the dark-mode white-alpha family,
+       composited toward black on light surfaces (§4/S-2). */
+    --color-hairline-subtle: rgba(0, 0, 0, 0.06);
+    --color-hairline-default: rgba(0, 0, 0, 0.09);
+    --color-hairline-strong: rgba(0, 0, 0, 0.14);
 
     --color-interactive-hover: rgba(55, 65, 81, 0.04);
     --color-interactive-focus: rgba(55, 65, 81, 0.12);

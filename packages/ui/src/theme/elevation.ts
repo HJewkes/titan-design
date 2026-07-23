@@ -457,14 +457,14 @@ export function getElevationShadow(
  *   - This allows raised elevations to be lighter (closer to white)
  * 
  * **Dark Mode**: Need lighter base to allow sufficient lightening
- *   - Use `#191919` (charcoal[600]) - allows lightening to `#2A2A2A` at max elevation
- * 
+ *   - Use `surface-elevated` (#2A2827, TD-surface-tokens ramp) - allows further lightening
+ *
  * Can be overridden to use custom base colors for special cases.
  */
 export function getBaseSurfaceColor(theme: 'light' | 'dark'): string {
   // Use semantic token values so elevation colors stay in sync with the token pipeline.
   // Light mode: surface-raised (#F3F4F6 / neutral[100]) - NOT white, so we can lighten it
-  // Dark mode: surface-elevated (#191919 / charcoal[600]) - allows sufficient lightening
+  // Dark mode: surface-elevated (#2A2827, TD-surface-tokens ramp) - allows sufficient lightening
 
   return theme === 'light'
     ? semanticColorsLight['surface-raised']

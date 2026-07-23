@@ -163,6 +163,12 @@ module.exports = {
             text: 'var(--color-interactive-disabled-text)',
           },
         },
+        // Alpha hairline separators (surface-independent — §4/S-2)
+        hairline: {
+          subtle: 'var(--color-hairline-subtle)',
+          DEFAULT: 'var(--color-hairline-default)',
+          strong: 'var(--color-hairline-strong)',
+        },
         // Divider
         divider: 'var(--color-divider)',
         // Avatar

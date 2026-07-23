@@ -150,6 +150,10 @@ export const lightThemeCSSVars = {
   '--color-border-input-focus': semanticColorsLight['border-input-focus'],
   '--color-border-input-error': semanticColorsLight['border-input-error'],
 
+  '--color-hairline-subtle': semanticColorsLight['hairline-subtle'],
+  '--color-hairline-default': semanticColorsLight['hairline-default'],
+  '--color-hairline-strong': semanticColorsLight['hairline-strong'],
+
   '--color-interactive-disabled-text': semanticColorsLight['interactive-disabled-text'],
 
   '--color-avatar-background': semanticColorsLight['avatar-background'],
@@ -270,6 +274,10 @@ export const darkThemeCSSVars = {
   '--color-border-input-hover': semanticColorsDark['border-input-hover'],
   '--color-border-input-focus': semanticColorsDark['border-input-focus'],
   '--color-border-input-error': semanticColorsDark['border-input-error'],
+
+  '--color-hairline-subtle': semanticColorsDark['hairline-subtle'],
+  '--color-hairline-default': semanticColorsDark['hairline-default'],
+  '--color-hairline-strong': semanticColorsDark['hairline-strong'],
 
   '--color-interactive-disabled-text': semanticColorsDark['interactive-disabled-text'],
 
