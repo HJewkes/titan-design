@@ -62,6 +62,61 @@ describe('DualVelocityStrip structure', () => {
   })
 })
 
+describe('DualVelocityStrip side labels', () => {
+  it('renders each side’s slot name from its stream label (no hardcoded LEFT/RIGHT)', () => {
+    render(
+      <DualVelocityStrip
+        left={{ velocities: [0.9], label: 'Left Arm' }}
+        right={{ velocities: [0.8], label: 'Right Arm' }}
+      />
+    )
+    expect(screen.getByTestId('dual-velocity-side-label-L')).toHaveTextContent('Left Arm')
+    expect(screen.getByTestId('dual-velocity-side-label-R')).toHaveTextContent('Right Arm')
+    // The retired hardcoded copy is gone.
+    expect(screen.queryByText('LEFT VOLTRA')).not.toBeInTheDocument()
+    expect(screen.queryByText('RIGHT VOLTRA')).not.toBeInTheDocument()
+  })
+
+  it('omits a side’s label when its stream has no label (no left/right fallback)', () => {
+    render(
+      <DualVelocityStrip
+        left={{ velocities: [0.9], label: 'Left Arm' }}
+        right={{ velocities: [0.8] }}
+      />
+    )
+    expect(screen.getByTestId('dual-velocity-side-label-L')).toBeInTheDocument()
+    expect(screen.queryByTestId('dual-velocity-side-label-R')).not.toBeInTheDocument()
+  })
+
+  it('renders no side label when neither stream carries one', () => {
+    render(<DualVelocityStrip left={{ velocities: [0.9] }} right={{ velocities: [0.8] }} />)
+    expect(screen.queryByTestId('dual-velocity-side-label-L')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('dual-velocity-side-label-R')).not.toBeInTheDocument()
+  })
+
+  it('treats an empty-string label as absent', () => {
+    render(
+      <DualVelocityStrip
+        left={{ velocities: [0.9], label: '' }}
+        right={{ velocities: [0.8], label: '' }}
+      />
+    )
+    expect(screen.queryByTestId('dual-velocity-side-label-L')).not.toBeInTheDocument()
+  })
+
+  it('renders slot names at rail scale too', () => {
+    render(
+      <DualVelocityStrip
+        left={{ velocities: [0.9], label: 'Left Arm' }}
+        right={{ velocities: [0.8], label: 'Right Arm' }}
+        variant="rail"
+      />
+    )
+    expect(screen.getByTestId('dual-velocity-side-label-L')).toHaveTextContent('Left Arm')
+    expect(screen.getByTestId('dual-velocity-side-label-R')).toHaveTextContent('Right Arm')
+  })
+})
+
 describe('DualVelocityStrip diverging orientation', () => {
   // LEFT reps grow UP → rounded on the TOP (away-from-axis) end; RIGHT reps grow DOWN →
   // rounded on the BOTTOM. The mirrored radius is how the diverging silhouette reads.

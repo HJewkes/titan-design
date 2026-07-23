@@ -70,8 +70,16 @@ const meta: Meta<typeof DualVelocityStrip> = {
       control: { type: 'number', min: 60, max: 260, step: 4 },
       description: 'total plot height (px), split evenly into the up (L) and down (R) wings',
     },
-    left: { control: 'object', description: 'LEFT voltra stream (grows up)' },
-    right: { control: 'object', description: 'RIGHT voltra stream (grows down)' },
+    left: {
+      control: 'object',
+      description:
+        'Up-wing stream — `{ velocities | set, label }`. Edit `label` here to change the slot name.',
+    },
+    right: {
+      control: 'object',
+      description:
+        'Down-wing stream — `{ velocities | set, label }`. Edit `label` here to change the slot name.',
+    },
     zones: { control: false, description: 'Velocity-zone bands (WA); default scale when absent' },
   },
 }
@@ -80,14 +88,18 @@ export default meta
 type Story = StoryObj<typeof DualVelocityStrip>
 
 // A left-dominant / right-lagging pair — the asymmetry the diverging form exists to show.
+// Slot names ("Left Arm" / "Right Arm") are EXAMPLE data supplied per side via `label`;
+// they are not baked into the component — swap them freely in the controls.
 const leftStrong = [0.92, 0.9, 0.88, 0.85, 0.82, 0.79]
 const rightWeak = [0.83, 0.79, 0.74, 0.68, 0.61, 0.54]
+const LEFT_SLOT = 'Left Arm'
+const RIGHT_SLOT = 'Right Arm'
 
-/** Controls-driven: flip `variant` / `scale` / `targetReps` / `liveRepIndex` / `height` and edit the streams. */
+/** Controls-driven: flip `variant` / `scale` / `targetReps` / `liveRepIndex` / `height`; edit each stream's `label` + data. */
 export const Playground: Story = {
   args: {
-    left: { velocities: leftStrong },
-    right: { velocities: rightWeak },
+    left: { velocities: leftStrong, label: LEFT_SLOT },
+    right: { velocities: rightWeak, label: RIGHT_SLOT },
     variant: 'hero',
     scale: 'peak',
     targetReps: 6,
@@ -96,11 +108,11 @@ export const Playground: Story = {
   decorators: [wallDecorator],
 }
 
-/** Both sides complete — the left-dominant / right-lagging silhouette at wall scale. */
+/** Both sides complete — the dominant / lagging silhouette at wall scale, named by slot. */
 export const HeroBothDone: Story = {
   args: {
-    left: { velocities: leftStrong },
-    right: { velocities: rightWeak },
+    left: { velocities: leftStrong, label: LEFT_SLOT },
+    right: { velocities: rightWeak, label: RIGHT_SLOT },
     variant: 'hero',
     scale: 'peak',
     targetReps: 6,
@@ -108,11 +120,11 @@ export const HeroBothDone: Story = {
   decorators: [wallDecorator],
 }
 
-/** In-progress / live: 4 of 8 done, the newest RIGHT pair popping, 4 dashed reps still to come per side. */
+/** In-progress / live: 4 of 8 done, the newest down-wing pair popping, 4 dashed reps still to come per side. */
 export const HeroInProgress: Story = {
   args: {
-    left: { velocities: [0.9, 0.88, 0.86, 0.84] },
-    right: { velocities: [0.82, 0.78, 0.73, 0.67] },
+    left: { velocities: [0.9, 0.88, 0.86, 0.84], label: LEFT_SLOT },
+    right: { velocities: [0.82, 0.78, 0.73, 0.67], label: RIGHT_SLOT },
     variant: 'hero',
     scale: 'fixed',
     targetReps: 8,
@@ -121,11 +133,11 @@ export const HeroInProgress: Story = {
   decorators: [wallDecorator],
 }
 
-/** Planned but unstarted: no reps performed — both wings render as mirrored dashed todo stubs. */
+/** Planned but unstarted: no reps performed — both wings render as mirrored dashed todo stubs (slot names still shown). */
 export const HeroPlanned: Story = {
   args: {
-    left: { velocities: [] },
-    right: { velocities: [] },
+    left: { velocities: [], label: LEFT_SLOT },
+    right: { velocities: [], label: RIGHT_SLOT },
     variant: 'hero',
     scale: 'fixed',
     targetReps: 6,
@@ -133,11 +145,11 @@ export const HeroPlanned: Story = {
   decorators: [wallDecorator],
 }
 
-/** Compact rail scale — the same diverging form, no value labels or reference lines. */
+/** Compact rail scale — the same diverging form, no value labels or reference lines (slot names in a narrow gutter). */
 export const Rail: Story = {
   args: {
-    left: { velocities: leftStrong },
-    right: { velocities: rightWeak },
+    left: { velocities: leftStrong, label: LEFT_SLOT },
+    right: { velocities: rightWeak, label: RIGHT_SLOT },
     variant: 'rail',
     targetReps: 6,
   },
@@ -151,13 +163,16 @@ export const Rail: Story = {
 }
 
 /**
- * Set-type variants — LEFT runs a `range` (committed reps → a cyan variable window) while RIGHT runs
- * an `amrap` (done reps → a trailing cyan "continue"). Both draw through the shared slot vocabulary.
+ * Set-type variants — the up wing runs a `range` (committed reps → a cyan variable window) while the down
+ * wing runs an `amrap` (done reps → a trailing cyan "continue"). Both draw through the shared slot vocabulary.
  */
 export const HeroSetTypes: Story = {
   args: {
-    left: { set: { type: 'range', velocities: [0.9, 0.87, 0.84, 0.8], floor: 6, max: 8 } },
-    right: { set: { type: 'amrap', velocities: [0.82, 0.78, 0.73, 0.67, 0.6] } },
+    left: {
+      set: { type: 'range', velocities: [0.9, 0.87, 0.84, 0.8], floor: 6, max: 8 },
+      label: LEFT_SLOT,
+    },
+    right: { set: { type: 'amrap', velocities: [0.82, 0.78, 0.73, 0.67, 0.6] }, label: RIGHT_SLOT },
     variant: 'hero',
     scale: 'fixed',
   },
@@ -165,10 +180,10 @@ export const HeroSetTypes: Story = {
 }
 
 /**
- * A `myo` (rest-pause) set on the LEFT — activation + clusters + (`open`) a trailing cyan continue —
- * mirrored against a straight RIGHT set. Every activation/cluster rep and the continue draw through the
+ * A `myo` (rest-pause) set on the up wing — activation + clusters + (`open`) a trailing cyan continue —
+ * mirrored against a straight down-wing set. Every activation/cluster rep and the continue draw through the
  * shared slot vocabulary; note the dual aligns by rep index, so the wide-notch chunk GAPS the single
- * strip draws are intentionally dropped here (per-side gaps would break the mirrored L↔R alignment).
+ * strip draws are intentionally dropped here (per-side gaps would break the mirrored up↔down alignment).
  */
 export const HeroMyoReps: Story = {
   args: {
@@ -182,8 +197,9 @@ export const HeroMyoReps: Story = {
         ],
         open: true,
       },
+      label: LEFT_SLOT,
     },
-    right: { velocities: [0.9, 0.86, 0.82, 0.78, 0.74, 0.7, 0.66] },
+    right: { velocities: [0.9, 0.86, 0.82, 0.78, 0.74, 0.7, 0.66], label: RIGHT_SLOT },
     variant: 'hero',
     scale: 'fixed',
   },
@@ -200,8 +216,8 @@ export const HeroResponsive: Story = {
             {w}px
           </Text>
           <DualVelocityStrip
-            left={{ velocities: leftStrong }}
-            right={{ velocities: rightWeak }}
+            left={{ velocities: leftStrong, label: LEFT_SLOT }}
+            right={{ velocities: rightWeak, label: RIGHT_SLOT }}
             variant="hero"
             scale="fixed"
             targetReps={6}
