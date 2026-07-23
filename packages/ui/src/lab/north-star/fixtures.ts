@@ -1,5 +1,5 @@
 /**
- * Fixtures for the `Lab/North Star/Live Wall Dashboard` specimen.
+ * Fixtures for the `Lab/North Star/2 · Shell · Rail · Content` specimen.
  *
  * Shapes deliberately MIRROR the voltras-mcp dashboard store read-models so a later
  * provisional wiring is a mechanical field map, not a reshape:

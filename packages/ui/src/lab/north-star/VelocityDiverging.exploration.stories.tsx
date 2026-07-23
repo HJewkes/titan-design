@@ -1,6 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 /**
- * `Lab/North Star/Velocity Diverging` — DESIGN EXPLORATION (not a shipped component).
+ * `Lab/North Star/3 · Diverging Bars` — DESIGN EXPLORATION (not a shipped component).
  *
  * ONE cohesive DUAL-VOLTRA (bilateral) velocity language, built on DIVERGING, shown at
  * every scale so single→dual and hero↔rail all read as the same system:
@@ -284,7 +284,7 @@ const RAIL_CONTENT = RAIL_WIDTH - 24
 // --- Stories ------------------------------------------------------------------
 
 const meta: Meta = {
-  title: 'Lab/North Star/Velocity Diverging',
+  title: 'Lab/North Star/3 · Diverging Bars',
   parameters: { layout: 'fullscreen' },
 }
 export default meta

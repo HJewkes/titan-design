@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 /**
- * `Lab/North Star/Grinding Line` — DESIGN EXPLORATION (not shipped).
+ * `Lab/Archive/Grinding Line` — DESIGN EXPLORATION (not shipped). ARCHIVED: superseded
+ * exploration, kept for provenance — not the aligned North Star direction.
  *
  * A DECISION story. The ghost-spark chart in `LiveFatigueCard.exploration` tints the
  * current rep's line GREEN when on prescribed tempo, warming amber → red by how far the
@@ -33,7 +34,7 @@ import { View, Text } from 'react-native'
 import { getSemanticColors } from '../../theme/tokens/semantic'
 import { primitiveColors, primitiveRamps } from '../../theme/tokens/primitives'
 import { alpha } from '../../utils/colors'
-import { paperSheet, insetWell, debossLabel } from './surfaces'
+import { paperSheet, insetWell, debossLabel } from '../north-star/surfaces'
 
 const C = getSemanticColors('dark')
 const PAGE_BG = primitiveColors.charcoal[900]
@@ -516,7 +517,7 @@ function Page({ children }: { children: ReactNode }) {
 }
 
 const meta: Meta = {
-  title: 'Lab/North Star/Grinding Line',
+  title: 'Lab/Archive/Grinding Line',
   parameters: { layout: 'fullscreen' },
 }
 export default meta

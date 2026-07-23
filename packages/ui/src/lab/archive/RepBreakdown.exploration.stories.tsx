@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 /**
- * `Lab/North Star/Rep Breakdown` — DESIGN EXPLORATION (not shipped).
+ * `Lab/Archive/Rep Breakdown` — DESIGN EXPLORATION (not shipped). ARCHIVED: superseded
+ * exploration, kept for provenance — not the aligned North Star direction.
  *
  * The shipped diverging velocity chart shows ONE dimension per rep — how fast the
  * concentric moved. But a single cable rep has THREE measurable dimensions that
@@ -446,7 +447,7 @@ function Row({ children, h, align = 'flex-end' }: { children: ReactNode; h: numb
 }
 
 const meta: Meta = {
-  title: 'Lab/North Star/Rep Breakdown',
+  title: 'Lab/Archive/Rep Breakdown',
   parameters: { layout: 'fullscreen' },
 }
 export default meta

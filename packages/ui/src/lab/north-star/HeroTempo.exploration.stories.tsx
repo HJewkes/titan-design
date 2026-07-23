@@ -1,6 +1,8 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 /**
- * `Lab/North Star/Hero Tempo` — DESIGN EXPLORATION (not shipped).
+ * `Lab/Open Decisions/Hero Tempo` — DESIGN EXPLORATION (not shipped). OPEN: the
+ * tempo-treatment pick (hero numerals vs cadence bar vs ambient clock) was never made —
+ * not part of the aligned North Star direction, not superseded either.
  *
  * The shipped dual live view puts the prescribed tempo in the right-hand gutter as a
  * vertical `TempoDisplay` — but its magenta/cyan phase-identity chips + compact mono
@@ -468,7 +470,7 @@ function Page({ children }: { children: ReactNode }) {
 }
 
 const meta: Meta = {
-  title: 'Lab/North Star/Hero Tempo',
+  title: 'Lab/Open Decisions/Hero Tempo',
   parameters: { layout: 'fullscreen' },
 }
 export default meta

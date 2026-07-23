@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 /**
- * `Lab/North Star/Curves Set Level` — DESIGN EXPLORATION (not shipped).
+ * `Lab/Archive/Curves/Set Level` — DESIGN EXPLORATION (not shipped). ARCHIVED: superseded
+ * exploration, kept for provenance — not the aligned North Star direction.
  *
  * The live wall answers "how is THIS rep going". This surface is its REVIEW / ANALYSIS
  * counterpart: the set- and session-level reads a lifter (or coach) looks at BETWEEN
@@ -32,7 +33,7 @@ import { primitiveColors } from '../../theme/tokens/primitives'
 import { WORKOUT_TOKENS } from '../../theme/workout-tokens'
 import { alpha } from '../../utils/colors'
 import { formatVelocity } from '../../utils/workout-format'
-import { paperSheet, insetWell, debossLabel } from './surfaces'
+import { paperSheet, insetWell, debossLabel } from '../north-star/surfaces'
 
 const C = getSemanticColors('dark')
 const PAGE_BG = primitiveColors.charcoal[900]
@@ -492,7 +493,7 @@ function LiveToReviewBanner() {
 // Stories
 // =================================================================================
 const meta: Meta = {
-  title: 'Lab/North Star/Curves Set Level',
+  title: 'Lab/Archive/Curves/Set Level',
   parameters: { layout: 'fullscreen' },
 }
 export default meta

@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 /**
- * `Lab/North Star/Curves Per Rep` — DESIGN EXPLORATION (not shipped).
+ * `Lab/Archive/Curves/Per Rep` — DESIGN EXPLORATION (not shipped). ARCHIVED: superseded
+ * exploration, kept for provenance — not the aligned North Star direction.
  *
  * Grounded in the signals audit: the per-sample stream (time, position, velocity, force,
  * phase) is persisted per rep at ~11 Hz. These specimens render PROPER SMOOTH per-rep
@@ -24,7 +25,7 @@ import { getSemanticColors } from '../../theme/tokens/semantic'
 import { primitiveColors } from '../../theme/tokens/primitives'
 import { WORKOUT_TOKENS } from '../../theme/workout-tokens'
 import { alpha } from '../../utils/colors'
-import { insetWell } from './surfaces'
+import { insetWell } from '../north-star/surfaces'
 
 const C = getSemanticColors('dark')
 const PAGE_BG = primitiveColors.charcoal[900]
@@ -416,7 +417,7 @@ function Page({ children }: { children: ReactNode }) {
 }
 
 const meta: Meta = {
-  title: 'Lab/North Star/Curves Per Rep',
+  title: 'Lab/Archive/Curves/Per Rep',
   parameters: { layout: 'fullscreen' },
 }
 export default meta

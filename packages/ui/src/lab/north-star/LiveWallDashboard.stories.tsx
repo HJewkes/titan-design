@@ -15,7 +15,7 @@ const noTempoModel = {
 }
 
 /**
- * `Lab/North Star/Live Wall Dashboard` — the north-star wall-dashboard specimen.
+ * `Lab/North Star/2 · Shell · Rail · Content` — the north-star wall-dashboard specimen.
  *
  * A LAB specimen: it COMPOSES existing production components ({@link DashboardShell}
  * around a lab-scoped `LivePage`) into the target surface. It is NOT a published
@@ -37,7 +37,7 @@ interface WallArgs {
 }
 
 const meta: Meta<WallArgs> = {
-  title: 'Lab/North Star/Live Wall Dashboard',
+  title: 'Lab/North Star/2 · Shell · Rail · Content',
   args: { variant: 'live', tempo: true },
   argTypes: {
     variant: { control: 'inline-radio', options: ['live', 'live-dual', 'rest'] },
