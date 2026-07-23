@@ -22,6 +22,9 @@ import { WeightBadge } from './WeightBadge'
 import { PrBadge } from './PrBadge'
 import { PlaceholderStrip } from './PlaceholderStrip'
 import { SupersetWrapper } from './SupersetWrapper'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+
+const t = getSemanticColors('dark')
 
 // ----------------------------------------------------------------------------- gallery scaffold
 class Boundary extends Component<{ children: ReactNode }, { err: string | null }> {
@@ -364,10 +367,10 @@ export const AllRows: Story = {
         </Cell>
         <Cell name="SupersetWrapper" entity="grouping bracket" expand="no">
           <SupersetWrapper label="SS1" color="#FF7900">
-            <View style={{ padding: 10, backgroundColor: '#1C1C1C', borderRadius: 8 }}>
+            <View style={{ padding: 10, backgroundColor: t['surface-raised'], borderRadius: 8 }}>
               <Text style={{ color: '#F3F4F6' }}>Exercise A</Text>
             </View>
-            <View style={{ padding: 10, backgroundColor: '#1C1C1C', borderRadius: 8 }}>
+            <View style={{ padding: 10, backgroundColor: t['surface-raised'], borderRadius: 8 }}>
               <Text style={{ color: '#F3F4F6' }}>Exercise B</Text>
             </View>
           </SupersetWrapper>

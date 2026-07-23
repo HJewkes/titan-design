@@ -23,8 +23,8 @@ const t = getSemanticColors('dark')
 const CARD_SHADOW = neumorphicShadows.charcoal.raised.medium
 /** One row height for the tempo + alert cards, so they line up regardless of tempo font size. */
 const CONTROL_HEIGHT = 34
-/** The tempo card ground — mirrors TempoDisplay's own charcoal so a shorter inner pill reads seamless. */
-const TEMPO_GROUND = '#1C1C1C'
+/** The tempo card ground — mirrors TempoDisplay's own surface-raised so a shorter inner pill reads seamless. */
+const TEMPO_GROUND = t['surface-raised']
 
 /** Clamped linear interpolation of `v` between `vLo..vHi` as `w` runs `wLo..wHi`. */
 function clampLerp(w: number, wLo: number, wHi: number, vLo: number, vHi: number): number {

@@ -8,8 +8,8 @@ import { MetricTiles, type MetricTileData } from './MetricTiles'
 import { ScheduleTiles } from './ScheduleTiles'
 import { paceTone, paceToneColor } from './paceTone'
 
-// The header shares the SideNav's `background-base` (charcoal 900, #101010) so the nav and
-// the rail header read as ONE continuous dark plane on the left — the sunk exercise list
+// The header shares the SideNav's `background-base` (warm-tapered ramp shell, #1C1916) so the
+// nav and the rail header read as ONE continuous dark plane on the left — the sunk exercise list
 // sits raised off it. A `<Surface level="background">` owns that plane so the header no
 // longer hand-sets it, and its title/label text resolve on-surface colours from context.
 

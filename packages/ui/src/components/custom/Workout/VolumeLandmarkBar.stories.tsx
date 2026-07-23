@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 import { VolumeLandmarkBar } from './VolumeLandmarkBar'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+
+const t = getSemanticColors('dark')
 
 const meta: Meta<typeof VolumeLandmarkBar> = {
   title: 'Workout/DataViz/VolumeLandmarkBar',
@@ -28,7 +31,7 @@ const meta: Meta<typeof VolumeLandmarkBar> = {
   },
   decorators: [
     (Story) => (
-      <View style={{ padding: 24, paddingBottom: 40, backgroundColor: '#101010' }}>
+      <View style={{ padding: 24, paddingBottom: 40, backgroundColor: t['background-base'] }}>
         <Story />
       </View>
     ),

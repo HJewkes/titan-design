@@ -9,13 +9,13 @@ import type { MetricTileData } from './MetricTiles'
 import type { SetStripSet } from './SetStrip'
 import type { ExerciseIndicatorKind } from './ExerciseIndicator'
 
-// Charcoal-ramp surfaces (the locked S3 shell shades): the nav + the heading plane read as
-// ONE dark plane (charcoal 900, #101010, owned by SessionHeader's `<Surface level="background">`).
-// The exercise list is a LIGHTER inset panel — `<Surface level="elevated">` (charcoal 600,
-// #191919) — recessed via its inner shadow yet paler than the header, so the transparent
+// Warm-tapered ramp surfaces (the locked S3 shell shades): the nav + the heading plane read as
+// ONE dark plane (background shell, #1C1916, owned by SessionHeader's `<Surface level="background">`).
+// The exercise list is a LIGHTER inset panel — `<Surface level="elevated">` (#2A2827) —
+// recessed via its inner shadow yet paler than the header, so the transparent
 // exercise headings on it never blend into the header plane. Surface owns both backgrounds,
 // so the rail no longer hand-sets them.
-const DIVIDER = primitiveColors.charcoal[300] // #2C2C2C — row divider (raised to read on #191919)
+const DIVIDER = primitiveColors.charcoal[300] // #2C2C2C — row divider (raised to read on surface-elevated #2A2827)
 
 const DEFAULT_WIDTH = 246
 

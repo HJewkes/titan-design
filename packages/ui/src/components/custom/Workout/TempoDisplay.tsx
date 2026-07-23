@@ -84,11 +84,7 @@ function activeNumberTone(elapsedMs: number, targetMs: number | null): string {
 }
 
 /** The active number: `countup` elapsed (→ target) or `countdown` remaining (→ 0.0, then −). */
-function liveReadoutText(
-  elapsedMs: number,
-  targetMs: number,
-  readout: TempoLiveReadout,
-): string {
+function liveReadoutText(elapsedMs: number, targetMs: number, readout: TempoLiveReadout): string {
   const seconds = readout === 'countup' ? elapsedMs / 1000 : (targetMs - elapsedMs) / 1000
   return seconds.toFixed(1)
 }
@@ -308,7 +304,7 @@ export function TempoDisplay({
       style={{
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#1C1C1C',
+        backgroundColor: t['surface-raised'],
         paddingHorizontal: chromePadX,
         paddingVertical: chromePadY,
         borderRadius: chromeRadius,
@@ -378,7 +374,7 @@ export function TempoDisplay({
         >
           <View
             style={{
-              backgroundColor: '#191919',
+              backgroundColor: t['surface-overlay'],
               borderRadius: 6,
               paddingVertical: 8,
               paddingHorizontal: 12,
