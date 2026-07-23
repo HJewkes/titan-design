@@ -998,45 +998,42 @@ function DivergingSideRail({
 }) {
   if (!leftLabel && !rightLabel) return null
   const isRail = variant === 'rail'
-  // Fixed-width holds the full rotated label so it doesn't clip to the strip before rotation.
-  const rotated = {
-    width: isRail ? 90 : 150,
+  // The rotated label runs along the chart's VERTICAL extent, so its length budget is the
+  // WING HEIGHT (plotHalf), not the narrow gutter. The rotate lives on a wrapper sized to
+  // plotHalf so `numberOfLines` (RNW → max-width:100%) resolves against that tall dimension,
+  // not the gutter — otherwise a multi-char slot name clips to ~2 chars. Ellipsis therefore
+  // only kicks in when a name genuinely exceeds the wing (long names at rail scale).
+  const labelLength = Math.max(0, plotHalf - (isRail ? 0 : 6))
+  const textStyle = {
+    maxWidth: '100%' as const,
     textAlign: 'center' as const,
-    fontSize: isRail ? 9 : 11,
+    // Rail wing is short (~48px): drop to 8px + no tracking so an 8–10 char slot name
+    // ("Right Arm") fits the wing fully. Hero has the room for the airier 11px/tracked read.
+    fontSize: isRail ? 8 : 11,
     fontWeight: '700' as const,
-    letterSpacing: isRail ? 1 : 3,
-    transform: [{ rotate: '-90deg' as const }],
+    letterSpacing: isRail ? 0 : 3,
   }
+  const renderHalf = (label: string | undefined, testID: string) => (
+    <View style={{ height: plotHalf, alignItems: 'center', justifyContent: 'center' }}>
+      {label ? (
+        <View
+          style={{ width: labelLength, alignItems: 'center', transform: [{ rotate: '-90deg' }] }}
+        >
+          <Text className="text-text-tertiary" style={textStyle} numberOfLines={1} testID={testID}>
+            {label}
+          </Text>
+        </View>
+      ) : null}
+    </View>
+  )
   return (
     <View
       className={isRail ? undefined : 'border-border'}
       style={{ width: isRail ? 18 : 34, borderRightWidth: isRail ? 0 : 1 }}
       accessibilityElementsHidden
     >
-      <View style={{ height: plotHalf, alignItems: 'center', justifyContent: 'center' }}>
-        {leftLabel ? (
-          <Text
-            className="text-text-tertiary"
-            style={rotated}
-            numberOfLines={1}
-            testID="dual-velocity-side-label-L"
-          >
-            {leftLabel}
-          </Text>
-        ) : null}
-      </View>
-      <View style={{ height: plotHalf, alignItems: 'center', justifyContent: 'center' }}>
-        {rightLabel ? (
-          <Text
-            className="text-text-tertiary"
-            style={rotated}
-            numberOfLines={1}
-            testID="dual-velocity-side-label-R"
-          >
-            {rightLabel}
-          </Text>
-        ) : null}
-      </View>
+      {renderHalf(leftLabel, 'dual-velocity-side-label-L')}
+      {renderHalf(rightLabel, 'dual-velocity-side-label-R')}
     </View>
   )
 }
@@ -1125,7 +1122,8 @@ export function DualVelocityStrip({
       testID="dual-velocity-strip"
       {...restProps}
     >
-      {/* Vertical LEFT / RIGHT voltra labels down the left edge (never overlap the bars). */}
+      {/* Vertical per-side slot-name labels down the left edge, from each stream's `label`
+          (data, not a hardcoded side) — rotated so they never overlap the bars. */}
       <DivergingSideRail
         plotHalf={plotHalf}
         variant={variant}
