@@ -340,8 +340,9 @@ function CombinedChart({
             <g key={i}>
               <rect x={x(p.t0) + 0.75} y={mid - 1.5} width={segW} height={3} rx={1.5} fill={markColor[p.phase]} />
               {revealed && label && x(p.t1) - x(p.t0) > 14 && (
-                // ECC labels below the axis (its lobe), CON above — each in its own half.
-                <text x={(x(p.t0) + x(p.t1)) / 2} y={p.phase === 'con' ? mid - 6 : mid + 13} textAnchor="middle" fill={C['text-tertiary']} fontSize={8} fontWeight={800} letterSpacing={1} fontFamily={FONT_UI}>
+                // Label sits OPPOSITE its line so it stays clear of the curve: ECC (line below
+                // the axis) labels ABOVE; CON (line above) labels BELOW.
+                <text x={(x(p.t0) + x(p.t1)) / 2} y={p.phase === 'con' ? mid + 14 : mid - 7} textAnchor="middle" fill={C['text-tertiary']} fontSize={8} fontWeight={800} letterSpacing={1} fontFamily={FONT_UI}>
                   {label}
                 </text>
               )}
