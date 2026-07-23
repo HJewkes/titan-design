@@ -1,9 +1,10 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 /**
- * RomProgressionChart — the per-rep depth progression: silver bars that turn amber
- * (below the working range) then red (below the short threshold), with dashed
- * working-standard + short-threshold reference lines and a faint red short-zone. The
- * current (last) rep is emphasised. Labelled "depth vs working range · now N%".
+ * RomProgressionChart — the per-rep depth progression on the shared silver/red scheme:
+ * silver bars at-or-above the working range, light red below it, deep red below the
+ * short threshold — with dashed working-standard (silver) + short-threshold (red)
+ * reference lines and a faint red short-zone. The current (last) rep is emphasised.
+ * Labelled "depth vs working range · now N%".
  *
  * Data-driven from absolute metres: bars scale to the tallest of {bars, working
  * standard} with headroom, so the working line always sits on-chart. When no working
@@ -13,11 +14,10 @@
 import { View, Text, type ViewStyle } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { alpha } from '../../../utils/colors'
-import { FONT_MONO } from './fatigue-tokens'
+import { FONT_MONO, SILVER, RED_LIGHT, RED_DEEP } from './fatigue-tokens'
 import type { RepRomPoint } from './fatigue-model'
 
 const t = getSemanticColors('dark')
-const SILVER = t['text-primary']
 
 export interface RomProgressionChartProps {
   /** Per-rep ROM points (metres), ordered by rep. */
@@ -32,10 +32,10 @@ export interface RomProgressionChartProps {
   maxReps?: number
 }
 
-/** A per-rep bar's colour: red below short, amber below working, else silver. */
+/** A per-rep bar's colour (silver/red): deep red below short, light red below working, else silver. */
 function barColor(romM: number, working: number | null, short: number | null): string {
-  if (short != null && romM < short) return t['status-error']
-  if (working != null && romM < working) return t['status-warning']
+  if (short != null && romM < short) return RED_DEEP
+  if (working != null && romM < working) return RED_LIGHT
   return SILVER
 }
 
@@ -78,7 +78,7 @@ export function RomProgressionChart({
               right: 0,
               bottom: 0,
               height: yUp(shortThresholdM),
-              backgroundColor: alpha(t['status-error'], 0.06),
+              backgroundColor: alpha(RED_DEEP, 0.06),
             }}
           />
         )}
@@ -106,7 +106,7 @@ export function RomProgressionChart({
               bottom: yUp(shortThresholdM),
               borderTopWidth: 1,
               borderStyle: 'dashed',
-              borderColor: alpha(t['status-error'], 0.4),
+              borderColor: alpha(RED_DEEP, 0.4),
             }}
           />
         )}

@@ -18,6 +18,10 @@ export {
   TONE_COLOR,
   STATE_LABEL,
   GRIND_THRESHOLD,
+  SILVER,
+  RED_LIGHT,
+  RED_MID,
+  RED_DEEP,
 } from './fatigue-tokens'
 export type {
   LiveFatigueModel,

@@ -47,13 +47,20 @@ export const TEMPO_DIGIT_COLOR: [string, string, string, string] = [
   primitiveColors.charcoal[400],
 ]
 
-// --- ghost-spark line tint (green-intensity, control-aware) ---------------------
-/** Below this grind signature the rep is "controlled" → green; at/above it warms. */
+// --- shared silver/red scheme (ROM chart + ghost-spark line) --------------------
+// One source of truth for the two quality readouts: SILVER when the rep is right,
+// SHADES OF RED when there's an issue. No greens, no ambers — those languages belong
+// to the verdict tones / velocity-loss bands, not here.
+/** On-track / at-or-above-working. */
+export const SILVER = '#C4C8D0'
+export const RED_LIGHT = primitiveRamps.red[400]
+export const RED_MID = primitiveRamps.red[600]
+export const RED_DEEP = primitiveRamps.red[800]
+
+/** Below this grind signature the rep is "controlled" → silver; at/above it goes red. */
 export const GRIND_THRESHOLD = 0.35
-const GREEN_BRIGHT = t['status-success']
-const GREEN_DEEP = primitiveRamps.green[600]
-const AMBER = t['status-warning']
-const RED = t['status-error']
+/** A quiet grey the controlled line dims toward as it drifts (never a colour). */
+const DRIFT_GREY = primitiveColors.charcoal[500]
 
 export function clamp01(v: number): number {
   return Math.min(1, Math.max(0, v))
@@ -82,19 +89,21 @@ export function mixHex(a: string, b: string, ratio: number): string {
 }
 
 /**
- * The ghost-spark current-line tint from the two control-aware signals.
+ * The ghost-spark current-line tint from the two control-aware signals — silver/red.
  *
- * A CONTROLLED rep (`grindSignature < GRIND_THRESHOLD`) stays GREEN — brightest at
- * `tempoDeviation` 0, deepening (hue held) toward 1, so "slow but smooth" reads as a
- * deeper green, never a warning. A COLLAPSING rep warms hue amber (at the threshold)
- * → red (at 1.0) by `grindSignature`.
+ * A CONTROLLED rep (`grindSignature < GRIND_THRESHOLD`) stays SILVER, dimming a touch
+ * toward a quiet grey by `tempoDeviation` — a "drifting but not failing" cue that never
+ * becomes a colour. A COLLAPSING rep (at/above the threshold) goes through SHADES OF RED
+ * by severity: light → mid → deep as the collapse deepens.
  */
 export function ghostLineColor(tempoDeviation: number | null, grindSignature: number): string {
   if (grindSignature >= GRIND_THRESHOLD) {
-    const severity = (grindSignature - GRIND_THRESHOLD) / (1 - GRIND_THRESHOLD)
-    return mixHex(AMBER, RED, severity)
+    const severity = clamp01((grindSignature - GRIND_THRESHOLD) / (1 - GRIND_THRESHOLD))
+    return severity < 0.5
+      ? mixHex(RED_LIGHT, RED_MID, severity * 2)
+      : mixHex(RED_MID, RED_DEEP, (severity - 0.5) * 2)
   }
-  return mixHex(GREEN_BRIGHT, GREEN_DEEP, tempoDeviation ?? 0)
+  return mixHex(SILVER, DRIFT_GREY, (tempoDeviation ?? 0) * 0.55)
 }
 
 /** Verdict state → the {@link LiveAuraFrame} coaching-flood category. */

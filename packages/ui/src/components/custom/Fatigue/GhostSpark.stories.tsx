@@ -18,8 +18,8 @@ const meta: Meta<typeof GhostSpark> = {
       description: {
         component:
           'Per-rep velocity-time sparkline: current rep solid over faded ghosts, phase-coloured zero ' +
-          'axis (ecc magenta / con cyan), control-aware line tint (green deepening with tempo deviation; ' +
-          'warming amber→red on collapse), and the tempo tuple embedded (revealed on hover). ' +
+          'axis (ecc magenta / con cyan), control-aware silver/red line tint (silver when controlled, ' +
+          'dimming with tempo drift; shades of red on collapse), and the tempo tuple embedded (revealed on hover). ' +
           '`forceRevealed` pins the annotated state.',
       },
     },
@@ -93,7 +93,7 @@ export const RestVsHover: Story = {
   ),
 }
 
-/** The line tint across the set — early controlled reps stay green, late reps warm amber→red. */
+/** The line tint across the set — early controlled reps stay silver, late reps go through shades of red. */
 export const ControlAwareTint: Story = {
   render: () => (
     <View

@@ -5,8 +5,9 @@
  * drift). The zero axis is the PHASE MARK: coloured per the current rep's phase runs
  * (eccentric magenta / concentric cyan / idle grey), each sized to its time extent.
  *
- * The current line's TINT is control-aware (see {@link ghostLineColor}): a controlled
- * rep stays green (deepening with tempo deviation), a collapsing rep warms amber→red.
+ * The current line's TINT is control-aware silver/red (see {@link ghostLineColor}): a
+ * controlled rep stays silver (dimming slightly with tempo drift), a collapsing rep goes
+ * through shades of red.
  *
  * At rest it's a bare sparkline. On HOVER the annotations bloom — the ECC/CON axis
  * labels, the concentric-peak marker, and the current-rep TEMPO tuple (colored digits,

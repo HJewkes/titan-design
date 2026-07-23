@@ -19,7 +19,7 @@ LiveFatiguePanel              ← the composition (Live panel v2)
    ├─ FatigueLights           (VEL/ROM/TEMPO "why" dots)
    │  ├─ StatusDot            (Workout/ — the dot primitive, glow)
    │  └─ Tooltip              (ui/tooltip — hover detail)
-   ├─ RomProgressionChart     (per-rep silver/amber/red depth bars + reference lines)
+   ├─ RomProgressionChart     (per-rep silver/red depth bars + reference lines)
    ├─ GhostSpark              (per-rep velocity-time sparkline; tempo EMBEDDED)
    └─ Surface                 (ui/surface — the raised/paper-accent card ground)
 ```
@@ -53,9 +53,14 @@ The reusable pure helpers (`ghostLineColor`, `auraForVerdict`, `mixHex`) live in
 
 - **Velocity hero = loss-relative** — VL20/VL30 decision bands (not absolute velocity
   zones). See *deferred* below for the bar-fill recolour.
-- **Ghost line tint = green-intensity, control-aware** — a controlled rep stays green,
-  deepening (hue held) with `tempoDeviation`; a collapsing rep (`grindSignature ≥ 0.35`)
-  warms amber→red. Slow-but-smooth stays green; only a stall warms. (`ghostLineColor`.)
+- **ROM chart + ghost line = ONE silver/red scheme** — silver when right, only SHADES OF
+  RED when there's an issue (no greens, no ambers). Shared constants `SILVER` /
+  `RED_LIGHT|MID|DEEP` live in `fatigue-tokens.ts`; both consumers import them. The ghost
+  line (`ghostLineColor`): controlled rep stays silver, dimming toward grey with
+  `tempoDeviation` (a drift cue, never a colour); a collapsing rep (`grindSignature ≥ 0.35`)
+  runs light→mid→deep red by severity. ROM bars: silver at/above working, light red below
+  working, deep red below the short threshold. (The verdict tones and the velocity-loss
+  VL20/VL30 bands are a SEPARATE language — unchanged.)
 - **RPE only** — no reps-in-reserve line; the number + verdict word carry exertion state.
 - **No separate top alert** — the card covers exertion state.
 - **Tempo embedded in the ghost-spark** (mini-tempo digits on hover) — there is no

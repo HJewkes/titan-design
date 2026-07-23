@@ -16,7 +16,7 @@ const meta: Meta<typeof RomProgressionChart> = {
     docs: {
       description: {
         component:
-          'Per-rep depth bars (silver → amber below working range → red below the short threshold), ' +
+          'Per-rep depth bars (silver at/above working → light red below working range → deep red below the short threshold), ' +
           'with dashed working-standard + short-threshold reference lines and a faint red short-zone. ' +
           'Data-driven from absolute metres; labelled "depth vs working range · now N%".',
       },

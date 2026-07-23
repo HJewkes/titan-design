@@ -1,8 +1,15 @@
 import { describe, it, expect } from 'vitest'
-import { ghostLineColor, auraForVerdict, mixHex, clamp01, GRIND_THRESHOLD } from './fatigue-tokens'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
-
-const t = getSemanticColors('dark')
+import {
+  ghostLineColor,
+  auraForVerdict,
+  mixHex,
+  clamp01,
+  GRIND_THRESHOLD,
+  SILVER,
+  RED_LIGHT,
+  RED_MID,
+  RED_DEEP,
+} from './fatigue-tokens'
 
 describe('clamp01', () => {
   it('clamps to [0,1]', () => {
@@ -25,23 +32,30 @@ describe('mixHex', () => {
   })
 })
 
-describe('ghostLineColor (control-aware)', () => {
-  it('a controlled, on-tempo rep is bright green', () => {
-    expect(ghostLineColor(0, 0.1).toLowerCase()).toBe(t['status-success'].toLowerCase())
+describe('ghostLineColor (control-aware silver/red)', () => {
+  const reds = [RED_LIGHT, RED_MID, RED_DEEP].map((c) => c.toLowerCase())
+
+  it('a controlled, on-tempo rep is silver', () => {
+    expect(ghostLineColor(0, 0.1).toLowerCase()).toBe(SILVER.toLowerCase())
   })
-  it('a controlled but slow rep deepens the green (still not the warning colour)', () => {
-    const deep = ghostLineColor(1, 0.1)
-    expect(deep.toLowerCase()).not.toBe(t['status-success'].toLowerCase())
-    expect(deep.toLowerCase()).not.toBe(t['status-warning'].toLowerCase())
+  it('a controlled but drifting rep dims toward grey — never a red', () => {
+    const drift = ghostLineColor(1, 0.1).toLowerCase()
+    expect(drift).not.toBe(SILVER.toLowerCase())
+    expect(reds).not.toContain(drift)
   })
-  it('null tempo deviation is treated as on-tempo (bright green)', () => {
-    expect(ghostLineColor(null, 0.1).toLowerCase()).toBe(t['status-success'].toLowerCase())
+  it('null tempo deviation is treated as on-tempo (silver)', () => {
+    expect(ghostLineColor(null, 0.1).toLowerCase()).toBe(SILVER.toLowerCase())
   })
-  it('at the grind threshold it warms to amber', () => {
-    expect(ghostLineColor(0, GRIND_THRESHOLD).toLowerCase()).toBe(t['status-warning'].toLowerCase())
+  it('at the grind threshold it is light red', () => {
+    expect(ghostLineColor(0, GRIND_THRESHOLD).toLowerCase()).toBe(RED_LIGHT.toLowerCase())
   })
-  it('a full collapse is red', () => {
-    expect(ghostLineColor(0, 1).toLowerCase()).toBe(t['status-error'].toLowerCase())
+  it('the mid-severity collapse is mid red', () => {
+    // severity 0.5 ⇒ grind = threshold + 0.5·(1−threshold)
+    const grind = GRIND_THRESHOLD + 0.5 * (1 - GRIND_THRESHOLD)
+    expect(ghostLineColor(0, grind).toLowerCase()).toBe(RED_MID.toLowerCase())
+  })
+  it('a full collapse is deep red', () => {
+    expect(ghostLineColor(0, 1).toLowerCase()).toBe(RED_DEEP.toLowerCase())
   })
 })
 
