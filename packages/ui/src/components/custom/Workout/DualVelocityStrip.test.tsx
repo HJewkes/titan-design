@@ -70,11 +70,28 @@ describe('DualVelocityStrip side labels', () => {
         right={{ velocities: [0.8], label: 'Right Arm' }}
       />
     )
+    // The DATA keeps its casing (textContent is the original string); the label is
+    // uppercased visually via the small-caps/eyebrow `textTransform`, not by mutating text.
     expect(screen.getByTestId('dual-velocity-side-label-L')).toHaveTextContent('Left Arm')
     expect(screen.getByTestId('dual-velocity-side-label-R')).toHaveTextContent('Right Arm')
     // The retired hardcoded copy is gone.
     expect(screen.queryByText('LEFT VOLTRA')).not.toBeInTheDocument()
     expect(screen.queryByText('RIGHT VOLTRA')).not.toBeInTheDocument()
+  })
+
+  it('renders the slot name in the uppercase small-caps label treatment', () => {
+    render(
+      <DualVelocityStrip
+        left={{ velocities: [0.9], label: 'Left Arm' }}
+        right={{ velocities: [0.8], label: 'Right Arm' }}
+      />
+    )
+    expect(screen.getByTestId('dual-velocity-side-label-L')).toHaveStyle({
+      textTransform: 'uppercase',
+    })
+    expect(screen.getByTestId('dual-velocity-side-label-R')).toHaveStyle({
+      textTransform: 'uppercase',
+    })
   })
 
   it('omits a side’s label when its stream has no label (no left/right fallback)', () => {
