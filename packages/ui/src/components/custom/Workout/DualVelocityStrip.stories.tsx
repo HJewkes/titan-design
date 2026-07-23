@@ -18,7 +18,7 @@ const wallDecorator: Decorator = (Story) => (
         marginBottom: 12,
       }}
     >
-      CONCENTRIC VELOCITY · L / R VOLTRA · THIS SET · (organism chrome — not the component)
+      CONCENTRIC VELOCITY · PER SLOT · THIS SET · (organism chrome — not the component)
     </Text>
     <Story />
   </View>
@@ -34,14 +34,16 @@ const meta: Meta<typeof DualVelocityStrip> = {
         component:
           '**Composes** the [VelocityStrip](?path=/docs/workout-dataviz-velocitystrip--docs) machinery ' +
           '(slot model, zone colour scale, hero geometry, and the shared live-rep pop) into the ' +
-          'two-device diverging wall chart. LEFT voltra reps grow **UP** and RIGHT reps grow **DOWN** ' +
-          'from one shared centre axis — one mirrored pair per rep index — so the L/R asymmetry reads ' +
-          'pre-attentively as the silhouette. **Side is POSITION only, never hue**: both wings colour ' +
-          'reps by velocity zone. Each side takes a `DualVelocityStream` (`velocities` OR a structured ' +
-          '`set`), the same shapes `VelocityStrip` accepts. Two scales: `hero` (across-the-room wall — ' +
+          'two-slot diverging wall chart. The up-wing stream grows **UP** and the down-wing stream ' +
+          'grows **DOWN** from one shared centre axis — one mirrored pair per rep index — so the ' +
+          'asymmetry reads pre-attentively as the silhouette. **Side is POSITION only, never hue**: ' +
+          'both wings colour reps by velocity zone. Each side takes a `DualVelocityStream` ' +
+          '(`velocities` OR a structured `set`, the same shapes `VelocityStrip` accepts, plus an ' +
+          'optional `label`). The vertical edge label is DATA — each side renders its `label` slot ' +
+          'name (e.g. "Left Arm"), not a hardcoded side. Two scales: `hero` (across-the-room wall — ' +
           'tall wings, per-rep m/s labels, a dashed running-best reference line per side) and `rail` ' +
-          '(compact rail-expanded — same diverging form, no labels or reference lines). Single-voltra ' +
-          'sets keep using `VelocityStrip variant="hero"`.',
+          '(compact rail-expanded — same diverging form, no velocity labels or reference lines). ' +
+          'Single-slot sets keep using `VelocityStrip variant="hero"`.',
       },
     },
   },
