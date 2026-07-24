@@ -595,6 +595,61 @@ function usePrefersReducedMotion(): boolean {
 
 const ANIMATION_DURATION = 400
 const ANIMATION_EASING = Easing.bezier(0.22, 1, 0.36, 1)
+// Scale-pop easing for the diverging dual-hero WINGS, which still use the
+// whole-bar scale entrance ({@link useLiveRepPop}). The single hero uses the
+// grow-from-bottom entrance ({@link useLiveRepGrowth}); reconciling the dual
+// wings to grow-from-bottom is an open Phase C review question.
+const POP_EASING = Easing.bezier(0.34, 1.56, 0.64, 1)
+
+/**
+ * Scale-pop entrance for a live rep bar: a bounce when the rep is a new set peak,
+ * a pop otherwise. Honors reduced motion. Returns the scale `Animated.Value` for
+ * the live bar; inert while `active` is false or no live rep is present. Retained
+ * for the diverging dual-hero wings (see {@link useLiveRepGrowth} for the single
+ * hero's grow-from-bottom entrance).
+ */
+function useLiveRepPop(
+  active: boolean,
+  liveRepIndex: number | undefined,
+  liveVelocity: number | undefined,
+  isNewPeak: boolean
+): Animated.Value {
+  const prefersReducedMotion = usePrefersReducedMotion()
+  const [liveScale] = useState(() => new Animated.Value(1))
+  useEffect(() => {
+    if (!active || liveRepIndex == null || liveVelocity == null) return
+    if (prefersReducedMotion) {
+      liveScale.setValue(1)
+      return
+    }
+    if (isNewPeak) {
+      liveScale.setValue(1)
+      Animated.sequence([
+        Animated.timing(liveScale, {
+          toValue: 1.25,
+          duration: 150,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.spring(liveScale, {
+          toValue: 1,
+          friction: 3,
+          tension: 140,
+          useNativeDriver: true,
+        }),
+      ]).start()
+    } else {
+      liveScale.setValue(0.8)
+      Animated.timing(liveScale, {
+        toValue: 1,
+        duration: 300,
+        easing: POP_EASING,
+        useNativeDriver: true,
+      }).start()
+    }
+  }, [active, liveRepIndex, liveVelocity, isNewPeak, prefersReducedMotion, liveScale])
+  return liveScale
+}
 /**
  * Growth-factor overshoot for a new-peak bar: it grows past its full height then
  * settles back to 1 (a small bounce), rather than the plain 0→1 grow every other
