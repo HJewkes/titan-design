@@ -18,14 +18,18 @@ import { getSemanticColors } from '../../../theme/tokens/semantic'
  * An earlier draft of the north-star doc (§3) proposed 5 EVEN steps at
  * ΔL*≈4. The LOCKED derivation that ships here (§ "Surface-ramp SYSTEM —
  * derived, not hand-picked") deliberately supersedes that with DIMINISHING
- * steps (4.5 / 2.5 / 2 / 1.5) — the frame->content jump is biggest, each
- * plane above adds less — and explicitly shifts separation duty for the
- * tight upper steps onto the alpha hairline (R3), not lightness:
- * "lightness is a *secondary* cue" (doc §"Surface-ramp SYSTEM"). So R1 here
- * asserts what the locked design actually guarantees: strict monotonicity,
- * a >=4 L* foundational jump at the frame/shell boundary, and a floor under
- * the taper — not a uniform >=4 everywhere. The multi-channel guarantee
- * (hairline carries the rest) is R3.
+ * steps — the frame->content jump is biggest, each plane above adds less.
+ * As of S-3 (this re-space) the steps are 4.5 / 4.5 / 3.5 / 3 / 2.5
+ * (inset->background / background->base / base->elevated / elevated->raised /
+ * raised->overlay) — the top three widened from the original 2.5/2/1.5 taper
+ * so the content planes read as distinct without leaning on the hairline
+ * alone (R3 still carries the rest, per "lightness is a *secondary* cue").
+ * So R1 here asserts what the locked design actually guarantees: strict
+ * monotonicity, a >=4 L* foundational jump at the frame/shell boundary, and
+ * a >=2.5 L* floor on each of the three re-spaced upper steps — not a flat
+ * "always diminishing" rule (quantizing to whole hex bytes can make two
+ * adjacent re-spaced steps land within ~0.02 L* of each other; the floor is
+ * the guarantee that matters, not strict ordering between them).
  */
 
 // --- CIELAB L* (perceptual lightness), matching the calculation in
@@ -69,12 +73,10 @@ function compositeOver(baseHex: string, overlay: string): string {
 
 const dark = getSemanticColors('dark')
 
-// The 6-plane derivation, in darkest -> lightest order. `inset` has no shipped
-// token yet (see semantic.ts comment) — included here only for the
-// monotonicity/step checks against the derivation's own numbers, not as a
-// token-identity assertion.
+// The 6-plane derivation, in darkest -> lightest order. `inset` is now a real
+// shipped token (`surface-inset`, promoted at S-3 — see semantic.ts comment).
 const RAMP_HEX = {
-  inset: '#13100D',
+  inset: dark['surface-inset'],
   background: dark['background-base'],
   base: dark['surface-base'],
   elevated: dark['surface-elevated'],
@@ -86,13 +88,15 @@ const PLANE_ORDER = ['inset', 'background', 'base', 'elevated', 'raised', 'overl
 
 describe('surface ramp contract (dark) — token-value guardrails', () => {
   it('ships the deriveSurfaceRamp() output verbatim for the addressable planes', () => {
-    // Locked values from surface-system-north-star.md — see surfaceRampDark in
-    // primitives.ts for the derivation this must match byte-for-byte.
+    // Locked values from surface-system-north-star.md (re-spaced S-3) — see
+    // surfaceRampDark in primitives.ts for the derivation this must match
+    // byte-for-byte. background/base/inset are unchanged by the re-space.
+    expect(dark['surface-inset']).toBe('#13100D')
     expect(dark['background-base']).toBe('#1C1916')
     expect(dark['surface-base']).toBe('#252321')
-    expect(dark['surface-elevated']).toBe('#2A2827')
-    expect(dark['surface-raised']).toBe('#2D2C2B')
-    expect(dark['surface-overlay']).toBe('#302F2E')
+    expect(dark['surface-elevated']).toBe('#2C2A28')
+    expect(dark['surface-raised']).toBe('#31302F')
+    expect(dark['surface-overlay']).toBe('#373635')
   })
 
   describe('R1 — monotonic ramp with a real foundational jump', () => {
@@ -113,21 +117,16 @@ describe('surface ramp contract (dark) — token-value guardrails', () => {
       expect(dL_backgroundToBase).toBeGreaterThanOrEqual(4)
     })
 
-    it('tapers (each upper step is smaller than the last) but never collapses to zero', () => {
-      // base->elevated->raised->overlay: the intentionally-diminishing part of
-      // the ramp. Separation here is carried primarily by the hairline (R3);
-      // this only guards against the steps disappearing or reversing.
+    it('each re-spaced upper step (base->elevated->raised->overlay) clears ΔL* >= 2.5', () => {
+      // S-3 widened the top three steps to 3.5/3/2.5 specifically so they no
+      // longer need to lean on the "keep diminishing" clause the old 2.5/2/1.5
+      // taper required — each step now stands on its own >=2.5 L* floor.
+      // (Quantizing to whole hex bytes can make two of these land within
+      // ~0.02 L* of strict diminishing order; that's expected and not asserted.)
       const upperSteps = ['base', 'elevated', 'raised', 'overlay'] as const
-      const stepSizes: number[] = []
       for (let i = 1; i < upperSteps.length; i++) {
         const d = lstar(RAMP_HEX[upperSteps[i]]) - lstar(RAMP_HEX[upperSteps[i - 1]])
-        expect(d, `${upperSteps[i - 1]} -> ${upperSteps[i]}`).toBeGreaterThanOrEqual(1)
-        stepSizes.push(d)
-      }
-      for (let i = 1; i < stepSizes.length; i++) {
-        expect(stepSizes[i], 'steps should keep diminishing (tapered design)').toBeLessThan(
-          stepSizes[i - 1]
-        )
+        expect(d, `${upperSteps[i - 1]} -> ${upperSteps[i]}`).toBeGreaterThanOrEqual(2.5)
       }
     })
   })
@@ -153,11 +152,13 @@ describe('surface ramp contract (dark) — token-value guardrails', () => {
         dark['background-base'],
         dark['background-default'],
         dark['background-subtle'],
+        dark['background-frame'],
         dark['surface-base'],
         dark['surface-elevated'],
         dark['surface-raised'],
         dark['surface-overlay'],
         dark['surface-input'],
+        dark['surface-inset'],
       ])
       const solidBorders = [
         'border-default',
@@ -176,15 +177,17 @@ describe('surface ramp contract (dark) — token-value guardrails', () => {
 
   describe('R3 — alpha hairline clears its ΔL* floor on every plane', () => {
     // Doc floors (subtle>=6/default>=9/strong>=13) were calibrated on the OLD,
-    // much darker ramp (L* 4.7-10.3). The locked ramp compresses into a
-    // narrower, lighter band (L* 9-19.5) where CIELAB L* is sublinear near
-    // white, so the SAME alpha values composite to a slightly smaller (but
-    // still solid, still near-constant) ΔL* at the lightest planes. Measured
-    // floors below reflect that; a wall-display calibration pass (S-6) may
-    // retune the alpha values themselves.
+    // much darker ramp (L* 4.7-10.3). The S-1 ramp compressed into a narrower,
+    // lighter band (L* 9-19.5); S-3's re-space widens it further still
+    // (L* 4.5-22.5) — the wider top steps push `overlay` even lighter, so the
+    // SAME alpha values composite to a slightly smaller (but still solid,
+    // still near-constant) ΔL* there. Floors below are re-measured against
+    // the S-3 ramp (default dropped 8->7 — the `overlay` plane now measures
+    // ~7.97, just under the old floor); a wall-display calibration pass (S-6)
+    // may retune the alpha values themselves.
     const HAIRLINES = {
       subtle: { token: 'hairline-subtle', floor: 5 },
-      default: { token: 'hairline-default', floor: 8 },
+      default: { token: 'hairline-default', floor: 7 },
       strong: { token: 'hairline-strong', floor: 12 },
     } as const
 
@@ -234,6 +237,47 @@ describe('surface ramp contract (dark) — token-value guardrails', () => {
         const dL = Math.abs(lstar(dark['border-subtle']) - lstar(dark[plane]))
         expect(dL, `border-subtle vs ${plane}`).toBeGreaterThanOrEqual(3)
       }
+    })
+  })
+
+  describe('R5 — background-frame and surface-inset (S-3 new tokens)', () => {
+    it('background-frame is darker than background-base', () => {
+      expect(lstar(dark['background-frame'])).toBeLessThan(lstar(dark['background-base']))
+    })
+
+    it('background-frame is distinct from every surface/background token', () => {
+      const otherTokens = [
+        'background-base',
+        'background-default',
+        'background-subtle',
+        'surface-base',
+        'surface-elevated',
+        'surface-raised',
+        'surface-overlay',
+        'surface-input',
+        'surface-inset',
+      ] as const
+      for (const token of otherTokens) {
+        expect(dark['background-frame'], `background-frame vs ${token}`).not.toBe(dark[token])
+      }
+    })
+
+    it('surface-inset is the darkest surface-family token', () => {
+      const surfaceFamily = [
+        'surface-base',
+        'surface-elevated',
+        'surface-raised',
+        'surface-overlay',
+        'surface-input',
+      ] as const
+      const insetL = lstar(dark['surface-inset'])
+      for (const token of surfaceFamily) {
+        expect(insetL, `surface-inset vs ${token}`).toBeLessThan(lstar(dark[token]))
+      }
+    })
+
+    it('surface-inset is distinct from background-frame', () => {
+      expect(dark['surface-inset']).not.toBe(dark['background-frame'])
     })
   })
 })

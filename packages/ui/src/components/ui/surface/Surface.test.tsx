@@ -71,7 +71,8 @@ describe('Surface (card model)', () => {
   it('paints the default flat dark card surface', () => {
     render(<Surface testID="s" />)
     // elevation 0 → base surface (surface-elevated) with no lightening.
-    expect(screen.getByTestId('s')).toHaveStyle({ backgroundColor: '#2A2827' })
+    // TD-surface-tokens S-3 re-space: was #2A2827.
+    expect(screen.getByTestId('s')).toHaveStyle({ backgroundColor: '#2C2A28' })
   })
 
   describe('accessibility', () => {
@@ -91,8 +92,8 @@ describe('Surface (named plane)', () => {
   it.each([
     ['background', '#1C1916'],
     ['base', '#252321'],
-    ['elevated', '#2A2827'],
-    ['raised', '#2D2C2B'],
+    ['elevated', '#2C2A28'],
+    ['raised', '#31302F'],
   ] as const)('maps level %s to the surface-ramp token %s', (level, hex) => {
     render(<Surface level={level} testID="s" />)
     expect(screen.getByTestId('s')).toHaveStyle({ backgroundColor: hex })
@@ -152,7 +153,7 @@ describe('Surface on-surface colour context', () => {
 
 describe('surface colour helpers', () => {
   it('surfaceBackground returns literal hex per level + mode', () => {
-    expect(surfaceBackground('elevated', 'dark')).toBe('#2A2827')
+    expect(surfaceBackground('elevated', 'dark')).toBe('#2C2A28')
     expect(surfaceBackground('background', 'dark')).toBe('#1C1916')
     expect(surfaceBackground('base', 'light')).toBe('#FFFFFF')
   })

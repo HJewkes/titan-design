@@ -17,7 +17,13 @@
  * - interactive-* : Hover/focus/active/disabled states
  */
 
-import { primitiveColors as p, primitiveRamps as ramp, discreteRainbow, surfaceRampDark as surf } from './primitives'
+import {
+  primitiveColors as p,
+  primitiveRamps as ramp,
+  discreteRainbow,
+  surfaceRampDark as surf,
+  backgroundFrameDark,
+} from './primitives'
 
 // Light mode semantic colors (default)
 export const semanticColorsLight = {
@@ -120,11 +126,20 @@ export const semanticColorsLight = {
   'surface-raised': p.neutral[100],           // light gray for raised cards
   'surface-overlay': p.white,
   'surface-input': p.neutral[50],             // Input field background (filled variant)
+  // Deepest pressed pit (TD-surface-tokens, S-3) — light-mode counterpart of
+  // the dark ramp's `inset` plane; a placeholder pairing, not part of the
+  // dark-ramp investigation (surface.contract.test.ts is dark-mode only).
+  'surface-inset': p.neutral[300],
 
   // Background colors (background-*)
   'background-base': '#EBEBEB',
   'background-default': p.white,
   'background-subtle': p.neutral[50],
+  // Frame/bezel chrome (TD-surface-tokens, S-3) — top bar + side nav shell,
+  // one step below `background-base` (darker still than `surface-inset`
+  // above, mirroring the dark-mode ordering). Placeholder pairing for light
+  // mode (see dark-mode note on `surface-inset` above).
+  'background-frame': p.neutral[400],
 
   // Border colors (border-*)
   'border-default': '#E8E9EB',
@@ -254,25 +269,31 @@ export const semanticColorsDark = {
   'text-link-hover': p.blue[400],
 
   // Surface colors - dark backgrounds — warm-tapered DERIVED ramp (TD-surface-tokens,
-  // S-1). Shipped verbatim from `deriveSurfaceRamp()` — see `surfaceRampDark` in
-  // primitives.ts for the full derivation note. `surface-overlay` and `surface-elevated`
-  // are now distinct (were both #191919); `surface-input` tracks one plane above
-  // `surface-base`, same relative position as before the remap. `background-base`
-  // backs `Surface level="background"` (SurfaceContext.SURFACE_LEVEL_TOKEN), so it
-  // takes the ramp's `background` (shell/frame) role, NOT `inset` — the ramp's
-  // deepest `inset` plane (#13100D, sub-shell well/pressed) has no shipped token
-  // yet; there's no `SurfaceLevel` member for it today (follow-up, alongside the
-  // elevation.ts -1/-2 pressed levels — see report).
+  // S-1, re-spaced S-3). Shipped verbatim from `deriveSurfaceRamp()` — see
+  // `surfaceRampDark` in primitives.ts for the full derivation note. `surface-overlay`
+  // and `surface-elevated` are distinct (were both #191919 pre-S-1); `surface-input`
+  // tracks one plane above `surface-base`, same relative position as before the remap.
+  // `background-base` backs `Surface level="background"` (SurfaceContext.SURFACE_LEVEL_TOKEN),
+  // so it takes the ramp's `background` (shell/frame) role, NOT `inset`. The ramp's
+  // deepest `inset` plane is now promoted to `surface-inset` below (S-3) — still no
+  // `SurfaceLevel` member for it (follow-up, alongside the elevation.ts -1/-2 pressed
+  // levels — parallel workstream, not this branch).
   'surface-base': surf.base,               // main surface        (#252321, L*13.5)
-  'surface-elevated': surf.elevated,       // elevated surface     (#2A2827, L*16 — nav/rail)
-  'surface-raised': surf.raised,           // raised surface       (#2D2C2B, L*18 — cards)
-  'surface-overlay': surf.overlay,         // overlay surface      (#302F2E, L*19.5 — hero/popover)
-  'surface-input': surf.elevated,          // input surface        (#2A2827 — one plane above base)
+  'surface-elevated': surf.elevated,       // elevated surface     (#2C2A28, L*17   — nav/rail)
+  'surface-raised': surf.raised,           // raised surface       (#31302F, L*20   — cards)
+  'surface-overlay': surf.overlay,         // overlay surface      (#373635, L*22.5 — hero/popover)
+  'surface-input': surf.elevated,          // input surface        (#2C2A28 — one plane above base)
+  'surface-inset': surf.inset,             // deepest pressed pit  (#13100D, L*4.5  — sub-shell well)
 
   // Background colors — same ramp, the frame/shell end of it.
   'background-base': surf.background,      // shell / frame        (#1C1916, L*9 — Surface level="background")
   'background-default': surf.base,         // main background      (#252321, L*13.5 — matches surface-base)
-  'background-subtle': surf.elevated,      // subtle background    (#2A2827, L*16 — matches surface-elevated)
+  'background-subtle': surf.elevated,      // subtle background    (#2C2A28, L*17 — matches surface-elevated)
+  // Frame/bezel chrome (S-3) — the top bar + side nav shell; one step BELOW
+  // `background-base`, darker even than `surface-inset` — it exits the content
+  // ramp entirely rather than sitting in it. See `backgroundFrameDark` in
+  // primitives.ts.
+  'background-frame': backgroundFrameDark, // frame / bezel        (#100D0A, L*3.79)
 
   // Border colors — `border-subtle` (#1C1C1C) previously collided with
   // `surface-raised` (also #1C1C1C, an invisible border on raised cards). The

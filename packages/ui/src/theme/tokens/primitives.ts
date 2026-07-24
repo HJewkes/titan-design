@@ -85,15 +85,21 @@ export const primitiveColors = {
 } as const
 
 /**
- * Surface ramp — dark mode (TD-surface-tokens, S-1)
+ * Surface ramp — dark mode (TD-surface-tokens, S-1, re-spaced S-3)
  *
  * Warm-tapered, DERIVED ramp — NOT hand-picked. Shipped verbatim as the output of
- * `deriveSurfaceRamp(shellL=9, steps=[4.5,2.5,2,1.5], rbShadow=6, rbHilite=1.5)`
+ * `deriveSurfaceRamp(shellL=9, steps=[4.5,3.5,3,2.5], rbShadow=6, rbHilite=1.5)`
  * (see `packages/ui/src/components/ui/surface/surface-lab-shared.tsx` on branch
- * `feat/TD-unified-lab`, story `Lab/Surface Exploration -> Surface Ramp System`).
- * Lightness is CIELAB L* off the shell, with DIMINISHING steps (4.5/2.5/2/1.5) —
- * the frame->content jump is biggest, each plane above adds less. Warmth (R-B)
- * tapers 6 -> 1.5 from frame to hero so bright content planes stay near-neutral.
+ * `feat/TD-unified-lab`, story `Lab/Surface Exploration -> Surface Ramp System`
+ * — that lab default is `[4.5,2.5,2,1.5]` as of this writing and should be
+ * updated to match on that branch, follow-up, not done here).
+ * Lightness is CIELAB L* off the shell, with DIMINISHING steps (4.5/3.5/3/2.5) —
+ * the frame->content jump is biggest, each plane above adds less, but the top
+ * three planes (elevated/raised/overlay) were re-spaced WIDER (S-3) than the
+ * original 2.5/2/1.5 taper so they read as distinct planes without leaning on
+ * the hairline alone. `background`/`base`/`inset` are unchanged by the re-space.
+ * Warmth (R-B) tapers 6 -> 1.5 from frame to hero so bright content planes stay
+ * near-neutral.
  * Kept separate from the `charcoal` scale above (which several existing
  * components reference directly for unrelated shadow/track tints) so this
  * change is additive and doesn't ripple into those consumers.
@@ -103,10 +109,20 @@ export const surfaceRampDark = {
   inset: '#13100D',      // L*4.5  — sub-shell well / pressed
   background: '#1C1916', // L*9    — shell / frame
   base: '#252321',       // L*13.5 — main content plane
-  elevated: '#2A2827',   // L*16   — nav / rail
-  raised: '#2D2C2B',     // L*18   — cards
-  overlay: '#302F2E',    // L*19.5 — hero / popover
+  elevated: '#2C2A28',   // L*17   — nav / rail
+  raised: '#31302F',     // L*20   — cards
+  overlay: '#373635',    // L*22.5 — hero / popover
 } as const
+
+/**
+ * Frame/bezel primitive — dark mode (TD-surface-tokens, S-3)
+ *
+ * The chrome that "exits the content ramp" entirely: the top bar + side nav
+ * shell. Sits ONE STEP BELOW `surfaceRampDark.background` (L*9), darker even
+ * than `surfaceRampDark.inset` (L*4.5) — it isn't a plane IN the ramp, it's
+ * the bezel the ramp sits inside. Literal, not `deriveSurfaceRamp()` output.
+ */
+export const backgroundFrameDark = '#100D0A' // L*3.79
 
 /**
  * Derived tonal ramps (TD-05.09 color foundations)

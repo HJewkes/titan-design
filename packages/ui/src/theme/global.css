@@ -95,17 +95,24 @@
     --color-text-link-hover: #60A5FA;
 
     /* Surface ramp — warm-tapered DERIVED, shipped verbatim from deriveSurfaceRamp()
-       (TD-surface-tokens, S-1). surface-overlay and surface-elevated are now
-       distinct (were both #191919); see surfaceRampDark in tokens/primitives.ts. */
+       (TD-surface-tokens, S-1, re-spaced S-3). surface-overlay and surface-elevated
+       are distinct (were both #191919 pre-S-1); see surfaceRampDark in
+       tokens/primitives.ts. surface-inset is the ramp's floor, promoted to a real
+       token at S-3 (was unwired). */
     --color-surface-base: #252321;
-    --color-surface-elevated: #2A2827;
-    --color-surface-raised: #2D2C2B;
-    --color-surface-overlay: #302F2E;
-    --color-surface-input: #2A2827;
+    --color-surface-elevated: #2C2A28;
+    --color-surface-raised: #31302F;
+    --color-surface-overlay: #373635;
+    --color-surface-input: #2C2A28;
+    --color-surface-inset: #13100D;
 
     --color-background-base: #1C1916;
     --color-background-default: #252321;
-    --color-background-subtle: #2A2827;
+    --color-background-subtle: #2C2A28;
+    /* Frame/bezel chrome (S-3) — top bar + side nav shell, one step below
+       background-base, darker even than surface-inset. See backgroundFrameDark
+       in tokens/primitives.ts. */
+    --color-background-frame: #100D0A;
 
     --color-border-default: #1F1F1F;
     --color-border-subtle: #1C1C1C;
@@ -244,10 +251,15 @@
     --color-surface-raised: #F3F4F6;
     --color-surface-overlay: #FFFFFF;
     --color-surface-input: #FAFAFA;
+    /* Placeholder pairing (S-3) — light-mode counterpart of the dark ramp's
+       inset plane; not part of the dark-ramp investigation. */
+    --color-surface-inset: #D1D5DB;
 
     --color-background-base: #EBEBEB;
     --color-background-default: #FFFFFF;
     --color-background-subtle: #FAFAFA;
+    /* Placeholder pairing (S-3) — see --color-surface-inset note above. */
+    --color-background-frame: #9CA3AF;
 
     --color-border-default: #E8E9EB;
     --color-border-subtle: #F3F4F6;

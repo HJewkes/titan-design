@@ -119,12 +119,14 @@ module.exports = {
           raised: 'var(--color-surface-raised)',
           overlay: 'var(--color-surface-overlay)',
           input: 'var(--color-surface-input)',
+          inset: 'var(--color-surface-inset)',
         },
         // Background colors
         background: {
           base: 'var(--color-background-base)',
           DEFAULT: 'var(--color-background-default)',
           subtle: 'var(--color-background-subtle)',
+          frame: 'var(--color-background-frame)',
         },
         // Text colors
         text: {
