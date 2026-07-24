@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react'
-import { View, type ViewProps } from 'react-native'
+import { View, type ViewProps, type ViewStyle } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { type ThemeMode } from '../../../theme/tokens/semantic'
 import {
   type ElevationLevel,
   getElevationSurface,
   getElevationShadow,
+  getPressedRecessShadow,
   getBaseSurfaceColor,
   type GlowIntensity,
   getGlowShadow,
@@ -13,6 +14,7 @@ import {
 import {
   SurfaceContext,
   surfaceBackground,
+  pressedLevel,
   useSurface,
   type SurfaceContextValue,
   type SurfaceLevel,
@@ -32,6 +34,14 @@ export interface SurfaceProps extends ViewProps {
    * plane reads full-bleed. Composable with `elevation`'s glow.
    */
   level?: SurfaceLevel
+  /**
+   * Sunken "well": render ONE ramp step DOWN from the parent surface's level —
+   * the symmetric twin of a raised surface stepping up — and add an inner-shadow
+   * recess so the surface reads pressed (darker fill + inset shadow). Relative to
+   * the enclosing Surface's level (not this surface's own `level`), and clamped
+   * at the ramp's `inset` floor so it never underflows. One level of depth only.
+   */
+  pressed?: boolean
   glowColor?: string
   glowIntensity?: GlowIntensity
   /**
@@ -59,6 +69,7 @@ export interface SurfaceProps extends ViewProps {
 export function Surface({
   elevation = 0,
   level,
+  pressed = false,
   glowColor,
   glowIntensity,
   theme,
@@ -72,18 +83,35 @@ export function Surface({
   const mode = theme ?? inherited.mode
   const isPlane = level != null
 
+  // Three grounded ways to own a background, in precedence order:
+  //  - pressed: a well ONE ramp step DOWN from the parent level (relative),
+  //    with an inner-shadow recess — clamps at the `inset` floor.
+  //  - level (named plane): a flat charcoal plane straight from a token.
+  //  - elevation (numeric): the raised-card model — lighten-from-base + shadow.
   const baseColor = getBaseSurfaceColor(mode)
-  const backgroundColor = isPlane
-    ? surfaceBackground(level, mode)
-    : getElevationSurface(baseColor, elevation, mode)
-  // Planes own a flat full-bleed background; the card model keeps its depth shadow.
-  const shadowStyle = isPlane ? {} : getElevationShadow(baseColor, elevation, mode)
+  const resolvedLevel = pressed ? pressedLevel(inherited.level) : (level ?? inherited.level)
+
+  let backgroundColor: string
+  let shadowStyle: ViewStyle
+  if (pressed) {
+    backgroundColor = surfaceBackground(resolvedLevel, mode)
+    shadowStyle = getPressedRecessShadow(backgroundColor, mode)
+  } else if (isPlane) {
+    backgroundColor = surfaceBackground(level, mode)
+    // Planes own a flat full-bleed background — no depth shadow.
+    shadowStyle = {}
+  } else {
+    backgroundColor = getElevationSurface(baseColor, elevation, mode)
+    shadowStyle = getElevationShadow(baseColor, elevation, mode)
+  }
+
   const glowStyle = glowColor ? getGlowShadow(glowColor, glowIntensity) : {}
-  const applyRounded = rounded ?? !isPlane
+  // A pressed well and the card model round by default; a flat plane doesn't.
+  const applyRounded = rounded ?? (pressed || !isPlane)
 
   const value = useMemo<SurfaceContextValue>(
-    () => ({ mode, level: level ?? inherited.level }),
-    [mode, level, inherited.level]
+    () => ({ mode, level: resolvedLevel }),
+    [mode, resolvedLevel]
   )
 
   return (
