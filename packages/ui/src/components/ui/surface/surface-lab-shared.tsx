@@ -734,7 +734,12 @@ export interface SurfacePlane {
 }
 export function deriveSurfaceRamp(
   shellL = 9,
-  steps = [4.5, 2.5, 2, 1.5],
+  // S-3 re-space (shipped in @titan-design/react-ui@0.10.0): the top three steps
+  // were widened from the original 2.5/2/1.5 taper — elevated/raised/overlay were
+  // sub-JND and read as one plane. These defaults now reproduce the SHIPPED tokens
+  // exactly: inset #13100D (L*4.5) · background #1C1916 (L*9) · base #252321 (L*13.5)
+  // · elevated #2C2A28 (L*17) · raised #31302F (L*20) · overlay #373635 (L*22.5).
+  steps = [4.5, 3.5, 3, 2.5],
   rbShadow = 6,
   rbHilite = 1.5
 ): SurfacePlane[] {
