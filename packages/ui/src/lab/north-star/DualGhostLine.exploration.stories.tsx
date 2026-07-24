@@ -24,12 +24,12 @@
  *     (the fatiguing arm's concentric genuinely ran longer) is compressed away — it
  *     shows up only as a change in line shape, not axis width.
  *
- * Both candidates reuse the LOCKED "Grinding line" line-tint rule verbatim: TWO per-rep
- * signals — `tempoDeviation` (0..1) sets GREEN INTENSITY (bright green on-tempo → deep
- * green well-off-tempo, hue held); `grindSignature` (0..1, mid-concentric velocity
- * collapse) warms the HUE amber(>=0.35)→red only on an actual collapse. The eccentric is
- * always drawn on-track green (a controlled lowering); only the concentric carries the
- * tint decision.
+ * Both candidates reuse the LOCKED silver→red line-tint rule verbatim (the shared
+ * `ghostLineColor` from `fatigue-tokens`): TWO per-rep signals — a controlled rep reads
+ * SILVER, dimming slightly toward a quiet grey as `tempoDeviation` (0..1) grows; once
+ * `grindSignature` (0..1, mid-concentric velocity collapse) crosses the threshold the line
+ * warms through SHADES OF RED by severity. The eccentric is always drawn on-track silver
+ * (a controlled lowering); only the concentric carries the tint decision.
  */
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ReactNode } from 'react'
@@ -38,6 +38,11 @@ import { View, Text } from 'react-native'
 import { getSemanticColors } from '../../theme/tokens/semantic'
 import { primitiveColors, primitiveRamps } from '../../theme/tokens/primitives'
 import { alpha } from '../../utils/colors'
+import {
+  SILVER,
+  GRIND_THRESHOLD,
+  ghostLineColor,
+} from '../../components/custom/Fatigue/fatigue-tokens'
 
 const C = getSemanticColors('dark')
 const PAGE_BG = primitiveColors.charcoal[900]
@@ -48,9 +53,8 @@ const FONT_MONO = 'monospace'
 
 const PARCH = C['text-primary']
 const AXIS = alpha(C['text-primary'], 0.16)
-const ON_TRACK = C['status-success']
-const DEVIATION = C['status-warning']
-const OFF_TRACK = C['status-error']
+/** The controlled / on-track tone for eccentric + non-concentric runs — silver, not green. */
+const ON_TRACK = SILVER
 
 // =================================================================================
 // Composition-level surface helpers — inlined from the north-star `surfaces.ts`
@@ -58,13 +62,7 @@ const OFF_TRACK = C['status-error']
 // =================================================================================
 function perceivedLuminance(hex: string): number {
   const h = hex.replace('#', '')
-  const full =
-    h.length === 3
-      ? h
-          .split('')
-          .map((ch) => ch + ch)
-          .join('')
-      : h
+  const full = h.length === 3 ? h.split('').map((ch) => ch + ch).join('') : h
   const r = parseInt(full.slice(0, 2), 16)
   const g = parseInt(full.slice(2, 4), 16)
   const b = parseInt(full.slice(4, 6), 16)
@@ -102,8 +100,8 @@ const debossLabel: TextStyle = {
 // Mock dual-device data — two devices, each a real per-sample rep curve (controlled
 // eccentric shared, concentric differs), plus a few faded prior "ghost" reps. The
 // RIGHT arm is the more-fatigued device: its concentric runs longer AND collapses
-// through a sticking point (crosses the grind threshold → warms amber/red); the LEFT
-// arm stays on-tempo (bright green) so the asymmetry between devices is unambiguous.
+// through a sticking point (crosses the grind threshold → warms through shades of red);
+// the LEFT arm stays on-tempo (silver) so the asymmetry between devices is unambiguous.
 // =================================================================================
 type Phase = 'ecc' | 'pauseBottom' | 'con' | 'pauseTop'
 interface Sample {
@@ -202,10 +200,7 @@ function genSamples(s: DeviceSpec, seed = 0): Sample[] {
   return out
 }
 
-const CURRENT: Record<string, Sample[]> = {
-  left: genSamples(LEFT_ARM),
-  right: genSamples(RIGHT_ARM),
-}
+const CURRENT: Record<string, Sample[]> = { left: genSamples(LEFT_ARM), right: genSamples(RIGHT_ARM) }
 const TOTAL_MS: Record<string, number> = {
   left: LEFT_ARM.eccMs + LEFT_ARM.pBMs + LEFT_ARM.conMs + LEFT_ARM.pTMs,
   right: RIGHT_ARM.eccMs + RIGHT_ARM.pBMs + RIGHT_ARM.conMs + RIGHT_ARM.pTMs,
@@ -215,12 +210,7 @@ const TOTAL_MS: Record<string, number> = {
 // set in), so the current (fatigued) rep visibly regresses from its own ghost fan.
 const GHOSTS_LEFT: Sample[][] = [0, 1, 2].map((g) =>
   genSamples(
-    {
-      ...LEFT_ARM,
-      conMs: 780 - g * 90,
-      conVel: (u) =>
-        (1.0 - g * 0.05) * clamp01(u / (0.15 + g * 0.03)) * (1 - 0.82 * smoothstep(0.8, 1.0, u)),
-    },
+    { ...LEFT_ARM, conMs: 780 - g * 90, conVel: (u) => (1.0 - g * 0.05) * clamp01(u / (0.15 + g * 0.03)) * (1 - 0.82 * smoothstep(0.8, 1.0, u)) },
     g + 1
   )
 )
@@ -229,8 +219,7 @@ const GHOSTS_RIGHT: Sample[][] = [0, 1, 2].map((g) =>
     {
       ...RIGHT_ARM,
       conMs: 1050 + g * 120,
-      conVel: (u) =>
-        0.95 * clamp01(u / 0.14) * (1 - 0.6 * smoothstep(0.82, 1.0, u)) * (1 - g * 0.08),
+      conVel: (u) => 0.95 * clamp01(u / 0.14) * (1 - 0.6 * smoothstep(0.82, 1.0, u)) * (1 - g * 0.08),
     },
     g + 4
   )
@@ -238,26 +227,10 @@ const GHOSTS_RIGHT: Sample[][] = [0, 1, 2].map((g) =>
 const GHOSTS: Record<string, Sample[][]> = { left: GHOSTS_LEFT, right: GHOSTS_RIGHT }
 
 // =================================================================================
-// The LOCKED "Grinding line" tint rule (verbatim from `GrindingLine.exploration`):
-// tempoDeviation sets green INTENSITY (hue held), grindSignature warms the HUE.
+// The LOCKED silver→red tint rule — the SHARED `ghostLineColor` from `fatigue-tokens`:
+// a controlled rep reads SILVER (dimming slightly toward a quiet grey with tempo drift),
+// a collapsing rep warms through SHADES OF RED by severity. No green, no amber.
 // =================================================================================
-function hexToRgb(hex: string): [number, number, number] {
-  const h = hex.replace('#', '')
-  const f =
-    h.length === 3
-      ? h
-          .split('')
-          .map((c) => c + c)
-          .join('')
-      : h
-  return [parseInt(f.slice(0, 2), 16), parseInt(f.slice(2, 4), 16), parseInt(f.slice(4, 6), 16)]
-}
-function mixHex(a: string, b: string, t: number): string {
-  const [ar, ag, ab] = hexToRgb(a)
-  const [br, bg, bb] = hexToRgb(b)
-  const m = (x: number, y: number) => Math.round(x + (y - x) * t)
-  return `#${[m(ar, br), m(ag, bg), m(ab, bb)].map((v) => v.toString(16).padStart(2, '0')).join('')}`
-}
 /** How far the concentric DURATION overran the prescribed tempo (0..1). */
 function tempoDeviation(s: DeviceSpec): number {
   return clamp01((s.conMs / PRESCRIBED_CON_MS - 1) / 1.3)
@@ -277,35 +250,17 @@ function grindSignature(s: DeviceSpec): number {
   if (peak <= 0) return 0
   return clamp01((peak - minMid) / peak)
 }
-const GRIND_THRESHOLD = 0.35
-const GREEN_RAMP = [
-  primitiveRamps.green[200],
-  primitiveRamps.green[300],
-  primitiveRamps.green[400],
-  primitiveRamps.green[500],
-  primitiveRamps.green[600],
-  primitiveRamps.green[700],
-]
-function greenByDeviation(dev: number): string {
-  const p = clamp01(dev / 0.5) * (GREEN_RAMP.length - 1)
-  const i = Math.min(GREEN_RAMP.length - 2, Math.floor(p))
-  return mixHex(GREEN_RAMP[i], GREEN_RAMP[i + 1], p - i)
-}
-function warmByCollapse(grind: number): string {
-  const t = clamp01((grind - GRIND_THRESHOLD) / (1 - GRIND_THRESHOLD))
-  return mixHex(DEVIATION, OFF_TRACK, t)
-}
 function isBreakdown(s: DeviceSpec): boolean {
   return grindSignature(s) >= GRIND_THRESHOLD
 }
-/** The concentric line tint for a device's current rep under the LOCKED rule. */
+/** The concentric line tint for a device's current rep — the LOCKED silver→red rule. */
 function conTone(s: DeviceSpec): string {
-  return isBreakdown(s) ? warmByCollapse(grindSignature(s)) : greenByDeviation(tempoDeviation(s))
+  return ghostLineColor(tempoDeviation(s), grindSignature(s))
 }
 function verdictWord(s: DeviceSpec): string {
   if (isBreakdown(s)) return grindSignature(s) < 0.6 ? 'collapse → warn' : 'collapse → alarm'
   const dev = tempoDeviation(s)
-  return dev < 0.12 ? 'on-tempo · bright' : 'controlled · deeper green'
+  return dev < 0.12 ? 'on-tempo · silver' : 'controlled · dimmer silver'
 }
 
 // --- SVG smoothing + phase-run splitting (lifted from the LiveFatigueCard specimen) ---
@@ -344,13 +299,7 @@ const AXIS_TONE: Record<Phase, string> = {
   pauseTop: primitiveColors.charcoal[300],
 }
 function phaseSpans(s: DeviceSpec): Array<{ phase: Phase; t0: number; t1: number }> {
-  const b = [
-    0,
-    s.eccMs,
-    s.eccMs + s.pBMs,
-    s.eccMs + s.pBMs + s.conMs,
-    s.eccMs + s.pBMs + s.conMs + s.pTMs,
-  ]
+  const b = [0, s.eccMs, s.eccMs + s.pBMs, s.eccMs + s.pBMs + s.conMs, s.eccMs + s.pBMs + s.conMs + s.pTMs]
   return [
     { phase: 'ecc', t0: b[0], t1: b[1] },
     { phase: 'pauseBottom', t0: b[1], t1: b[2] },
@@ -361,12 +310,7 @@ function phaseSpans(s: DeviceSpec): Array<{ phase: Phase; t0: number; t1: number
 
 // Shared plot scales across BOTH devices (current rep + all ghosts) so the two charts
 // (Option A) or the two blooms (Option B) are directly, honestly comparable.
-const ALL_SAMPLES = [
-  ...CURRENT.left,
-  ...CURRENT.right,
-  ...GHOSTS_LEFT.flat(),
-  ...GHOSTS_RIGHT.flat(),
-]
+const ALL_SAMPLES = [...CURRENT.left, ...CURRENT.right, ...GHOSTS_LEFT.flat(), ...GHOSTS_RIGHT.flat()]
 const VMAX_UP = Math.max(0.01, ...ALL_SAMPLES.map((s) => s.vel)) * 1.06
 const VMAX_DOWN = Math.max(0.01, ...ALL_SAMPLES.map((s) => -s.vel)) * 1.06
 const VMAX_MAG = Math.max(VMAX_UP, VMAX_DOWN)
@@ -400,14 +344,7 @@ function GhostSparkSolo({ device, w, h }: { device: DeviceSpec; w: number; h: nu
         const label = p.phase === 'ecc' ? 'ECC' : p.phase === 'con' ? 'CON' : null
         return (
           <g key={i}>
-            <rect
-              x={x(p.t0) + 0.75}
-              y={mid - 1.5}
-              width={segW}
-              height={3}
-              rx={1.5}
-              fill={AXIS_TONE[p.phase]}
-            />
+            <rect x={x(p.t0) + 0.75} y={mid - 1.5} width={segW} height={3} rx={1.5} fill={AXIS_TONE[p.phase]} />
             {label && x(p.t1) - x(p.t0) > 16 && (
               <text
                 x={(x(p.t0) + x(p.t1)) / 2}
@@ -458,14 +395,7 @@ function GhostSparkSolo({ device, w, h }: { device: DeviceSpec; w: number; h: nu
           strokeLinecap="round"
         />
       ))}
-      <circle
-        cx={x(peakS.t)}
-        cy={y(peakS.vel)}
-        r={3.5}
-        fill={conColor}
-        stroke={PANEL_BG}
-        strokeWidth={1.5}
-      />
+      <circle cx={x(peakS.t)} cy={y(peakS.vel)} r={3.5} fill={conColor} stroke={PANEL_BG} strokeWidth={1.5} />
     </svg>
   )
 }
@@ -517,34 +447,16 @@ function MirroredDual({ w, h }: { w: number; h: number }) {
   const rightColor = conTone(RIGHT_ARM)
 
   const path = (samples: Sample[], device: DeviceSpec, dir: 'up' | 'down') =>
-    smoothPath(
-      samples.map((s) => [
-        x(normalizedU(s, device)),
-        dir === 'up' ? yUp(Math.abs(s.vel)) : yDown(Math.abs(s.vel)),
-      ])
-    )
+    smoothPath(samples.map((s) => [x(normalizedU(s, device)), dir === 'up' ? yUp(Math.abs(s.vel)) : yDown(Math.abs(s.vel))]))
 
   const leftPeak = leftCur.reduce((acc, s) => (s.vel > acc.vel ? s : acc), leftCur[0])
   const rightPeak = rightCur.reduce((acc, s) => (s.vel > acc.vel ? s : acc), rightCur[0])
 
   /** Current-rep phase runs for a device, pre-rendered to path `d` + tint once. */
-  const runsFor = (
-    samples: Sample[],
-    device: DeviceSpec,
-    dir: 'up' | 'down',
-    color: (phase: Phase) => string
-  ) =>
-    phaseRuns(samples).map((run, i) => ({
-      key: i,
-      d: path(run.pts, device, dir),
-      color: color(run.phase),
-    }))
-  const leftRuns = runsFor(leftCur, LEFT_ARM, 'up', (phase) =>
-    phase === 'con' ? leftColor : ON_TRACK
-  )
-  const rightRuns = runsFor(rightCur, RIGHT_ARM, 'down', (phase) =>
-    phase === 'con' ? rightColor : ON_TRACK
-  )
+  const runsFor = (samples: Sample[], device: DeviceSpec, dir: 'up' | 'down', color: (phase: Phase) => string) =>
+    phaseRuns(samples).map((run, i) => ({ key: i, d: path(run.pts, device, dir), color: color(run.phase) }))
+  const leftRuns = runsFor(leftCur, LEFT_ARM, 'up', (phase) => (phase === 'con' ? leftColor : ON_TRACK))
+  const rightRuns = runsFor(rightCur, RIGHT_ARM, 'down', (phase) => (phase === 'con' ? rightColor : ON_TRACK))
 
   return (
     <svg width={w} height={h}>
@@ -552,127 +464,41 @@ function MirroredDual({ w, h }: { w: number; h: number }) {
       {(Object.keys(TEMPLATE_BOUNDS) as Phase[]).map((phase) => {
         const [b0, b1] = TEMPLATE_BOUNDS[phase]
         const segW = Math.max(0, x(b1) - x(b0) - 1.5)
-        return (
-          <rect
-            key={phase}
-            x={x(b0) + 0.75}
-            y={mid - 1.75}
-            width={segW}
-            height={3.5}
-            rx={1.75}
-            fill={AXIS_TONE[phase]}
-          />
-        )
+        return <rect key={phase} x={x(b0) + 0.75} y={mid - 1.75} width={segW} height={3.5} rx={1.75} fill={AXIS_TONE[phase]} />
       })}
       <line x1={padL} y1={mid} x2={w - padR} y2={mid} stroke={AXIS} strokeWidth={1} />
 
       {/* faded ghost fans, both directions. */}
       {GHOSTS_LEFT.map((samples, g) => (
-        <path
-          key={`ghl${g}`}
-          d={path(samples, LEFT_ARM, 'up')}
-          fill="none"
-          stroke={alpha(PARCH, 0.1 + g * 0.02)}
-          strokeWidth={1.5}
-          strokeLinejoin="round"
-        />
+        <path key={`ghl${g}`} d={path(samples, LEFT_ARM, 'up')} fill="none" stroke={alpha(PARCH, 0.1 + g * 0.02)} strokeWidth={1.5} strokeLinejoin="round" />
       ))}
       {GHOSTS_RIGHT.map((samples, g) => (
-        <path
-          key={`ghr${g}`}
-          d={path(samples, RIGHT_ARM, 'down')}
-          fill="none"
-          stroke={alpha(PARCH, 0.1 + g * 0.02)}
-          strokeWidth={1.5}
-          strokeLinejoin="round"
-        />
+        <path key={`ghr${g}`} d={path(samples, RIGHT_ARM, 'down')} fill="none" stroke={alpha(PARCH, 0.1 + g * 0.02)} strokeWidth={1.5} strokeLinejoin="round" />
       ))}
 
-      {/* current reps — dark halo underlay, then tinted line. Ecc stays on-track green;
+      {/* current reps — dark halo underlay, then tinted line. Ecc stays on-track silver;
           con carries the device's LOCKED-rule tint. */}
       {leftRuns.map((r) => (
-        <path
-          key={`shl${r.key}`}
-          d={r.d}
-          fill="none"
-          stroke={alpha('#000000', 0.55)}
-          strokeWidth={7}
-          strokeLinejoin="round"
-          strokeLinecap="round"
-        />
+        <path key={`shl${r.key}`} d={r.d} fill="none" stroke={alpha('#000000', 0.55)} strokeWidth={7} strokeLinejoin="round" strokeLinecap="round" />
       ))}
       {rightRuns.map((r) => (
-        <path
-          key={`shr${r.key}`}
-          d={r.d}
-          fill="none"
-          stroke={alpha('#000000', 0.55)}
-          strokeWidth={7}
-          strokeLinejoin="round"
-          strokeLinecap="round"
-        />
+        <path key={`shr${r.key}`} d={r.d} fill="none" stroke={alpha('#000000', 0.55)} strokeWidth={7} strokeLinejoin="round" strokeLinecap="round" />
       ))}
       {leftRuns.map((r) => (
-        <path
-          key={`l${r.key}`}
-          d={r.d}
-          fill="none"
-          stroke={r.color}
-          strokeWidth={3.5}
-          strokeLinejoin="round"
-          strokeLinecap="round"
-        />
+        <path key={`l${r.key}`} d={r.d} fill="none" stroke={r.color} strokeWidth={3.5} strokeLinejoin="round" strokeLinecap="round" />
       ))}
       {rightRuns.map((r) => (
-        <path
-          key={`r${r.key}`}
-          d={r.d}
-          fill="none"
-          stroke={r.color}
-          strokeWidth={3.5}
-          strokeLinejoin="round"
-          strokeLinecap="round"
-        />
+        <path key={`r${r.key}`} d={r.d} fill="none" stroke={r.color} strokeWidth={3.5} strokeLinejoin="round" strokeLinecap="round" />
       ))}
 
-      <circle
-        cx={x(normalizedU(leftPeak, LEFT_ARM))}
-        cy={yUp(Math.abs(leftPeak.vel))}
-        r={3.5}
-        fill={leftColor}
-        stroke={PANEL_BG}
-        strokeWidth={1.5}
-      />
-      <circle
-        cx={x(normalizedU(rightPeak, RIGHT_ARM))}
-        cy={yDown(Math.abs(rightPeak.vel))}
-        r={3.5}
-        fill={rightColor}
-        stroke={PANEL_BG}
-        strokeWidth={1.5}
-      />
+      <circle cx={x(normalizedU(leftPeak, LEFT_ARM))} cy={yUp(Math.abs(leftPeak.vel))} r={3.5} fill={leftColor} stroke={PANEL_BG} strokeWidth={1.5} />
+      <circle cx={x(normalizedU(rightPeak, RIGHT_ARM))} cy={yDown(Math.abs(rightPeak.vel))} r={3.5} fill={rightColor} stroke={PANEL_BG} strokeWidth={1.5} />
 
       {/* device-identity labels — up/down now carries DEVICE, not phase. */}
-      <text
-        x={padL}
-        y={padTop - 9}
-        fontSize={9}
-        fontWeight={800}
-        letterSpacing={1}
-        fontFamily={FONT_UI}
-        fill={C['text-tertiary']}
-      >
+      <text x={padL} y={padTop - 9} fontSize={9} fontWeight={800} letterSpacing={1} fontFamily={FONT_UI} fill={C['text-tertiary']}>
         LEFT ARM
       </text>
-      <text
-        x={padL}
-        y={h - padBot + 15}
-        fontSize={9}
-        fontWeight={800}
-        letterSpacing={1}
-        fontFamily={FONT_UI}
-        fill={C['text-tertiary']}
-      >
+      <text x={padL} y={h - padBot + 15} fontSize={9} fontWeight={800} letterSpacing={1} fontFamily={FONT_UI} fill={C['text-tertiary']}>
         RIGHT ARM
       </text>
     </svg>
@@ -688,29 +514,7 @@ function MirroredDual({ w, h }: { w: number; h: number }) {
 // =================================================================================
 const BAND_H = 16
 const BAND_GAP = 4
-const SILVER = '#C4C8D0'
-const RED_RAMP = [primitiveRamps.red[400], primitiveRamps.red[600], primitiveRamps.red[800]]
-/** Severity as SHADES OF RED (no amber) — the ROM chart's silver/red scheme, extended. */
-function redBySeverity(grind: number): string {
-  const t = clamp01((grind - GRIND_THRESHOLD) / (1 - GRIND_THRESHOLD))
-  const p = t * (RED_RAMP.length - 1)
-  const i = Math.min(RED_RAMP.length - 2, Math.floor(p))
-  return mixHex(RED_RAMP[i], RED_RAMP[i + 1], p - i)
-}
-/** Silver-default tint: an on-track line reads bright SILVER (matching the ROM chart);
- *  an issue takes SHADES OF RED by severity — no green, no amber, one silver/red scheme. */
-function conToneSilver(s: DeviceSpec): string {
-  return isBreakdown(s) ? redBySeverity(grindSignature(s)) : SILVER
-}
-function MirroredDualBand({
-  w,
-  h,
-  mode = 'green',
-}: {
-  w: number
-  h: number
-  mode?: 'green' | 'silver'
-}) {
+function MirroredDualBand({ w, h }: { w: number; h: number }) {
   const padL = 14
   const padR = 14
   const padTop = 22
@@ -731,38 +535,18 @@ function MirroredDualBand({
 
   const leftCur = CURRENT.left
   const rightCur = CURRENT.right
-  const tone = (s: DeviceSpec) => (mode === 'silver' ? conToneSilver(s) : conTone(s))
-  const onTrackTone = mode === 'silver' ? SILVER : ON_TRACK
-  const leftColor = tone(LEFT_ARM)
-  const rightColor = tone(RIGHT_ARM)
+  const leftColor = conTone(LEFT_ARM)
+  const rightColor = conTone(RIGHT_ARM)
 
   const path = (samples: Sample[], device: DeviceSpec, dir: 'up' | 'down') =>
-    smoothPath(
-      samples.map((s) => [
-        x(normalizedU(s, device)),
-        dir === 'up' ? yUp(Math.abs(s.vel)) : yDown(Math.abs(s.vel)),
-      ])
-    )
+    smoothPath(samples.map((s) => [x(normalizedU(s, device)), dir === 'up' ? yUp(Math.abs(s.vel)) : yDown(Math.abs(s.vel))]))
 
   const leftPeak = leftCur.reduce((acc, s) => (s.vel > acc.vel ? s : acc), leftCur[0])
   const rightPeak = rightCur.reduce((acc, s) => (s.vel > acc.vel ? s : acc), rightCur[0])
-  const runsFor = (
-    samples: Sample[],
-    device: DeviceSpec,
-    dir: 'up' | 'down',
-    color: (phase: Phase) => string
-  ) =>
-    phaseRuns(samples).map((run, i) => ({
-      key: i,
-      d: path(run.pts, device, dir),
-      color: color(run.phase),
-    }))
-  const leftRuns = runsFor(leftCur, LEFT_ARM, 'up', (phase) =>
-    phase === 'con' ? leftColor : onTrackTone
-  )
-  const rightRuns = runsFor(rightCur, RIGHT_ARM, 'down', (phase) =>
-    phase === 'con' ? rightColor : onTrackTone
-  )
+  const runsFor = (samples: Sample[], device: DeviceSpec, dir: 'up' | 'down', color: (phase: Phase) => string) =>
+    phaseRuns(samples).map((run, i) => ({ key: i, d: path(run.pts, device, dir), color: color(run.phase) }))
+  const leftRuns = runsFor(leftCur, LEFT_ARM, 'up', (phase) => (phase === 'con' ? leftColor : ON_TRACK))
+  const rightRuns = runsFor(rightCur, RIGHT_ARM, 'down', (phase) => (phase === 'con' ? rightColor : ON_TRACK))
 
   return (
     <svg width={w} height={h}>
@@ -792,122 +576,37 @@ function MirroredDualBand({
           </g>
         )
       })}
-      <rect
-        x={padL}
-        y={bandTop}
-        width={w - padL - padR}
-        height={BAND_H}
-        rx={4}
-        fill="none"
-        stroke={alpha('#000000', 0.3)}
-        strokeWidth={1}
-      />
+      <rect x={padL} y={bandTop} width={w - padL - padR} height={BAND_H} rx={4} fill="none" stroke={alpha('#000000', 0.3)} strokeWidth={1} />
 
       {/* faded ghost fans, offset off the band, both directions. */}
       {GHOSTS_LEFT.map((samples, g) => (
-        <path
-          key={`ghl${g}`}
-          d={path(samples, LEFT_ARM, 'up')}
-          fill="none"
-          stroke={alpha(PARCH, 0.1 + g * 0.02)}
-          strokeWidth={1.5}
-          strokeLinejoin="round"
-        />
+        <path key={`ghl${g}`} d={path(samples, LEFT_ARM, 'up')} fill="none" stroke={alpha(PARCH, 0.1 + g * 0.02)} strokeWidth={1.5} strokeLinejoin="round" />
       ))}
       {GHOSTS_RIGHT.map((samples, g) => (
-        <path
-          key={`ghr${g}`}
-          d={path(samples, RIGHT_ARM, 'down')}
-          fill="none"
-          stroke={alpha(PARCH, 0.1 + g * 0.02)}
-          strokeWidth={1.5}
-          strokeLinejoin="round"
-        />
+        <path key={`ghr${g}`} d={path(samples, RIGHT_ARM, 'down')} fill="none" stroke={alpha(PARCH, 0.1 + g * 0.02)} strokeWidth={1.5} strokeLinejoin="round" />
       ))}
 
       {/* current reps — halo underlay then tinted line. */}
       {leftRuns.map((r) => (
-        <path
-          key={`shl${r.key}`}
-          d={r.d}
-          fill="none"
-          stroke={alpha('#000000', 0.55)}
-          strokeWidth={7}
-          strokeLinejoin="round"
-          strokeLinecap="round"
-        />
+        <path key={`shl${r.key}`} d={r.d} fill="none" stroke={alpha('#000000', 0.55)} strokeWidth={7} strokeLinejoin="round" strokeLinecap="round" />
       ))}
       {rightRuns.map((r) => (
-        <path
-          key={`shr${r.key}`}
-          d={r.d}
-          fill="none"
-          stroke={alpha('#000000', 0.55)}
-          strokeWidth={7}
-          strokeLinejoin="round"
-          strokeLinecap="round"
-        />
+        <path key={`shr${r.key}`} d={r.d} fill="none" stroke={alpha('#000000', 0.55)} strokeWidth={7} strokeLinejoin="round" strokeLinecap="round" />
       ))}
       {leftRuns.map((r) => (
-        <path
-          key={`l${r.key}`}
-          d={r.d}
-          fill="none"
-          stroke={r.color}
-          strokeWidth={3.5}
-          strokeLinejoin="round"
-          strokeLinecap="round"
-        />
+        <path key={`l${r.key}`} d={r.d} fill="none" stroke={r.color} strokeWidth={3.5} strokeLinejoin="round" strokeLinecap="round" />
       ))}
       {rightRuns.map((r) => (
-        <path
-          key={`r${r.key}`}
-          d={r.d}
-          fill="none"
-          stroke={r.color}
-          strokeWidth={3.5}
-          strokeLinejoin="round"
-          strokeLinecap="round"
-        />
+        <path key={`r${r.key}`} d={r.d} fill="none" stroke={r.color} strokeWidth={3.5} strokeLinejoin="round" strokeLinecap="round" />
       ))}
 
-      <circle
-        cx={x(normalizedU(leftPeak, LEFT_ARM))}
-        cy={yUp(Math.abs(leftPeak.vel))}
-        r={3.5}
-        fill={leftColor}
-        stroke={PANEL_BG}
-        strokeWidth={1.5}
-      />
-      <circle
-        cx={x(normalizedU(rightPeak, RIGHT_ARM))}
-        cy={yDown(Math.abs(rightPeak.vel))}
-        r={3.5}
-        fill={rightColor}
-        stroke={PANEL_BG}
-        strokeWidth={1.5}
-      />
+      <circle cx={x(normalizedU(leftPeak, LEFT_ARM))} cy={yUp(Math.abs(leftPeak.vel))} r={3.5} fill={leftColor} stroke={PANEL_BG} strokeWidth={1.5} />
+      <circle cx={x(normalizedU(rightPeak, RIGHT_ARM))} cy={yDown(Math.abs(rightPeak.vel))} r={3.5} fill={rightColor} stroke={PANEL_BG} strokeWidth={1.5} />
 
-      <text
-        x={padL}
-        y={padTop - 9}
-        fontSize={9}
-        fontWeight={800}
-        letterSpacing={1}
-        fontFamily={FONT_UI}
-        fill={C['text-tertiary']}
-      >
+      <text x={padL} y={padTop - 9} fontSize={9} fontWeight={800} letterSpacing={1} fontFamily={FONT_UI} fill={C['text-tertiary']}>
         LEFT ARM
       </text>
-      <text
-        x={padL}
-        y={h - padBot + 15}
-        fontSize={9}
-        fontWeight={800}
-        letterSpacing={1}
-        fontFamily={FONT_UI}
-        fill={C['text-tertiary']}
-      >
+      <text x={padL} y={h - padBot + 15} fontSize={9} fontWeight={800} letterSpacing={1} fontFamily={FONT_UI} fill={C['text-tertiary']}>
         RIGHT ARM
       </text>
     </svg>
@@ -928,20 +627,9 @@ function DeviceLegendRow({ device }: { device: DeviceSpec }) {
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
         <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: tone }} />
-        <Text
-          style={{
-            fontSize: 11,
-            fontWeight: '800',
-            fontFamily: FONT_HEAD,
-            color: C['text-primary'],
-          }}
-        >
-          {device.label}
-        </Text>
+        <Text style={{ fontSize: 11, fontWeight: '800', fontFamily: FONT_HEAD, color: C['text-primary'] }}>{device.label}</Text>
       </View>
-      <Text style={{ fontSize: 8.5, fontFamily: FONT_MONO, color: tone, fontWeight: '700' }}>
-        {verdictWord(device)}
-      </Text>
+      <Text style={{ fontSize: 8.5, fontFamily: FONT_MONO, color: tone, fontWeight: '700' }}>{verdictWord(device)}</Text>
     </View>
   )
 }
@@ -952,44 +640,21 @@ function OptionCardA() {
   const chartW = (innerW - gap) / 2
   const chartH = 168
   return (
-    <View
-      style={[
-        { width: CARD_W, borderRadius: 14, padding: CARD_PAD, gap: 10 },
-        paperSheet(PANEL_BG),
-      ]}
-    >
-      <Text
-        style={[
-          { fontSize: 9, letterSpacing: 1.4, fontFamily: FONT_MONO, color: C['text-tertiary'] },
-          debossLabel,
-        ]}
-      >
-        OPTION A · SIDE BY SIDE
-      </Text>
+    <View style={[{ width: CARD_W, borderRadius: 14, padding: CARD_PAD, gap: 10 }, paperSheet(PANEL_BG)]}>
+      <Text style={[{ fontSize: 9, letterSpacing: 1.4, fontFamily: FONT_MONO, color: C['text-tertiary'] }, debossLabel]}>OPTION A · SIDE BY SIDE</Text>
       <View style={{ flexDirection: 'row', gap }}>
         {DEVICES.map((d) => (
           <View key={d.key} style={{ width: chartW, gap: 4 }}>
             <DeviceLegendRow device={d} />
-            <View
-              style={[{ borderRadius: 8, padding: 4 }, insetWell(primitiveColors.charcoal[900])]}
-            >
+            <View style={[{ borderRadius: 8, padding: 4 }, insetWell(primitiveColors.charcoal[900])]}>
               <GhostSparkSolo device={d} w={chartW - 8} h={chartH} />
             </View>
           </View>
         ))}
       </View>
-      <Text
-        style={{
-          fontSize: 10,
-          fontFamily: FONT_UI,
-          color: C['text-secondary'],
-          lineHeight: 14,
-          fontStyle: 'italic',
-        }}
-      >
-        Each chart keeps its own full phase axis (ECC above · CON below) — legible per arm.
-        Trade-off: at real card width, two charts halve to ~{Math.round(chartW)}px each — peak
-        markers and axis labels crowd the narrow column.
+      <Text style={{ fontSize: 10, fontFamily: FONT_UI, color: C['text-secondary'], lineHeight: 14, fontStyle: 'italic' }}>
+        Each chart keeps its own full phase axis (ECC above · CON below) — legible per arm. Trade-off: at real card width, two
+        charts halve to ~{Math.round(chartW)}px each — peak markers and axis labels crowd the narrow column.
       </Text>
     </View>
   )
@@ -999,18 +664,8 @@ function OptionCardB() {
   const innerW = CARD_W - CARD_PAD * 2
   const chartH = 232
   return (
-    <View
-      style={[
-        { width: CARD_W, borderRadius: 14, padding: CARD_PAD, gap: 10 },
-        paperSheet(PANEL_BG),
-      ]}
-    >
-      <Text
-        style={[
-          { fontSize: 9, letterSpacing: 1.4, fontFamily: FONT_MONO, color: C['text-tertiary'] },
-          debossLabel,
-        ]}
-      >
+    <View style={[{ width: CARD_W, borderRadius: 14, padding: CARD_PAD, gap: 10 }, paperSheet(PANEL_BG)]}>
+      <Text style={[{ fontSize: 9, letterSpacing: 1.4, fontFamily: FONT_MONO, color: C['text-tertiary'] }, debossLabel]}>
         OPTION B · TOP/BOTTOM MIRRORED
       </Text>
       <View style={{ flexDirection: 'row', gap: 14 }}>
@@ -1020,20 +675,11 @@ function OptionCardB() {
       <View style={[{ borderRadius: 8, padding: 4 }, insetWell(primitiveColors.charcoal[900])]}>
         <MirroredDual w={innerW - 8} h={chartH} />
       </View>
-      <Text
-        style={{
-          fontSize: 10,
-          fontFamily: FONT_UI,
-          color: C['text-secondary'],
-          lineHeight: 14,
-          fontStyle: 'italic',
-        }}
-      >
-        One shared spine reclaims full chart width per device (mirrored up/down) — no split-width
-        penalty. Trade-off: phase can no longer sit above/below (both halves are spent on device
-        identity), so it rides axis-segment COLOR alone, no ECC/CON text; and the spine is
-        phase-normalized, so Right Arm&apos;s concentric genuinely running ~79% longer (1700ms vs
-        950ms) shows only as line shape, not a wider axis segment.
+      <Text style={{ fontSize: 10, fontFamily: FONT_UI, color: C['text-secondary'], lineHeight: 14, fontStyle: 'italic' }}>
+        One shared spine reclaims full chart width per device (mirrored up/down) — no split-width penalty. Trade-off: phase can no
+        longer sit above/below (both halves are spent on device identity), so it rides axis-segment COLOR alone, no ECC/CON text;
+        and the spine is phase-normalized, so Right Arm&apos;s concentric genuinely running ~79% longer (1700ms vs 950ms) shows
+        only as line shape, not a wider axis segment.
       </Text>
     </View>
   )
@@ -1043,18 +689,8 @@ function OptionCardB2() {
   const innerW = CARD_W - CARD_PAD * 2
   const chartH = 232
   return (
-    <View
-      style={[
-        { width: CARD_W, borderRadius: 14, padding: CARD_PAD, gap: 10 },
-        paperSheet(PANEL_BG),
-      ]}
-    >
-      <Text
-        style={[
-          { fontSize: 9, letterSpacing: 1.4, fontFamily: FONT_MONO, color: C['text-tertiary'] },
-          debossLabel,
-        ]}
-      >
+    <View style={[{ width: CARD_W, borderRadius: 14, padding: CARD_PAD, gap: 10 }, paperSheet(PANEL_BG)]}>
+      <Text style={[{ fontSize: 9, letterSpacing: 1.4, fontFamily: FONT_MONO, color: C['text-tertiary'] }, debossLabel]}>
         OPTION B2 · MIRRORED + AXIS BAND
       </Text>
       <View style={{ flexDirection: 'row', gap: 14 }}>
@@ -1064,62 +700,10 @@ function OptionCardB2() {
       <View style={[{ borderRadius: 8, padding: 4 }, insetWell(primitiveColors.charcoal[900])]}>
         <MirroredDualBand w={innerW - 8} h={chartH} />
       </View>
-      <Text
-        style={{
-          fontSize: 10,
-          fontFamily: FONT_UI,
-          color: C['text-secondary'],
-          lineHeight: 14,
-          fontStyle: 'italic',
-        }}
-      >
-        The axis widens into a phase-colored BAND — it carries the ECC/CON labels INSIDE it
-        (recovering the phase text plain mirrored loses) and doubles as a gutter: both blooms are
-        offset off its edges, so the two lines never touch the axis or overlap. Phase timing becomes
-        the most legible element; each device reads as one clean stroke.
-      </Text>
-    </View>
-  )
-}
-
-function OptionCardB3() {
-  const innerW = CARD_W - CARD_PAD * 2
-  const chartH = 232
-  return (
-    <View
-      style={[
-        { width: CARD_W, borderRadius: 14, padding: CARD_PAD, gap: 10 },
-        paperSheet(PANEL_BG),
-      ]}
-    >
-      <Text
-        style={[
-          { fontSize: 9, letterSpacing: 1.4, fontFamily: FONT_MONO, color: C['text-tertiary'] },
-          debossLabel,
-        ]}
-      >
-        OPTION B3 · BAND + SILVER LINE
-      </Text>
-      <View style={{ flexDirection: 'row', gap: 14 }}>
-        <DeviceLegendRow device={LEFT_ARM} />
-        <DeviceLegendRow device={RIGHT_ARM} />
-      </View>
-      <View style={[{ borderRadius: 8, padding: 4 }, insetWell(primitiveColors.charcoal[900])]}>
-        <MirroredDualBand w={innerW - 8} h={chartH} mode="silver" />
-      </View>
-      <Text
-        style={{
-          fontSize: 10,
-          fontFamily: FONT_UI,
-          color: C['text-secondary'],
-          lineHeight: 14,
-          fontStyle: 'italic',
-        }}
-      >
-        Same trimmed band, but the on-track line reads bright SILVER (matching the ROM chart)
-        instead of green — it only takes color when there&apos;s an issue to flag: Left Arm stays
-        silver (fine), Right Arm warms amber/red through the grind. Quieter until something needs
-        attention.
+      <Text style={{ fontSize: 10, fontFamily: FONT_UI, color: C['text-secondary'], lineHeight: 14, fontStyle: 'italic' }}>
+        The axis widens into a phase-colored BAND — it carries the ECC/CON labels INSIDE it (recovering the phase text plain mirrored
+        loses) and doubles as a gutter: both blooms are offset off its edges, so the two lines never touch the axis or overlap. Phase
+        timing becomes the most legible element; each device reads as one clean stroke.
       </Text>
     </View>
   )
@@ -1127,11 +711,7 @@ function OptionCardB3() {
 
 // --- Scaffolding -----------------------------------------------------------------
 function Page({ children }: { children: ReactNode }) {
-  return (
-    <View style={{ padding: 28, backgroundColor: PAGE_BG, minHeight: '100%', gap: 22 }}>
-      {children}
-    </View>
-  )
+  return <View style={{ padding: 28, backgroundColor: PAGE_BG, minHeight: '100%', gap: 22 }}>{children}</View>
 }
 
 const meta: Meta = {
@@ -1148,40 +728,24 @@ export const SideBySideVsMirrored: Story = {
   render: () => (
     <Page>
       <View style={{ gap: 6, maxWidth: 920 }}>
-        <Text
-          style={[
-            { fontSize: 9, letterSpacing: 1.4, fontFamily: FONT_MONO, color: C['text-tertiary'] },
-            debossLabel,
-          ]}
-        >
+        <Text style={[{ fontSize: 9, letterSpacing: 1.4, fontFamily: FONT_MONO, color: C['text-tertiary'] }, debossLabel]}>
           DUAL-VOLTRA GHOST-SPARK · LAYOUT DECISION
         </Text>
-        <Text
-          style={{
-            fontSize: 22,
-            fontWeight: '900',
-            fontFamily: FONT_HEAD,
-            color: C['text-primary'],
-          }}
-        >
+        <Text style={{ fontSize: 22, fontWeight: '900', fontFamily: FONT_HEAD, color: C['text-primary'] }}>
           Two devices, one fatigue card — where does the second ghost-spark go?
         </Text>
-        <Text
-          style={{ fontSize: 13, fontFamily: FONT_UI, color: C['text-secondary'], lineHeight: 19 }}
-        >
-          Same mock dual set both columns: Left Arm on-tempo (bright green), Right Arm fatiguing —
-          concentric drifting long and sticking through a mid-rep collapse (grind signature crosses
-          the amber/red threshold). Both candidates apply the LOCKED tint rule verbatim (tempo
-          deviation → green intensity, grind signature → hue). Rendered at the established ~330px
-          card-column width so the real trade-off — cramped detail vs. lost phase labels — reads
-          honestly, not idealized.
+        <Text style={{ fontSize: 13, fontFamily: FONT_UI, color: C['text-secondary'], lineHeight: 19 }}>
+          Same mock dual set both columns: Left Arm on-tempo (silver), Right Arm fatiguing — concentric drifting long and
+          sticking through a mid-rep collapse (grind signature crosses the red threshold). Both candidates apply the LOCKED
+          silver→red tint rule verbatim (tempo deviation dims the silver, grind signature warms it through shades of red).
+          Rendered at the established ~330px card-column width so the real trade-off — cramped detail vs. lost phase labels —
+          reads honestly, not idealized.
         </Text>
       </View>
       <View style={{ flexDirection: 'row', gap: 24, alignItems: 'flex-start', flexWrap: 'wrap' }}>
         <OptionCardA />
         <OptionCardB />
         <OptionCardB2 />
-        <OptionCardB3 />
       </View>
     </Page>
   ),
