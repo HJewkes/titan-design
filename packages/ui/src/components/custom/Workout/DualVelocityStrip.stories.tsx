@@ -255,14 +255,14 @@ interface BoardRow {
 const BOARD: BoardRow[] = [
   {
     type: 'straight',
-    note: 'done reps + dashed to-do remainder to the planned count',
+    note: 'done reps + solid to-do remainder to the planned count',
     single: { type: 'straight', velocities: [0.9, 0.86, 0.82, 0.78], planned: 6 },
     left: { type: 'straight', velocities: [0.9, 0.86, 0.82, 0.78], planned: 6 },
     right: { type: 'straight', velocities: [0.84, 0.78], planned: 4 },
   },
   {
     type: 'range',
-    note: 'committed rep bars + dashed floor + the cyan variable window (floor..max)',
+    note: 'committed rep bars + solid floor + the cyan variable window (floor..max)',
     single: { type: 'range', velocities: [0.9, 0.86, 0.82, 0.8], floor: 6, max: 8 },
     left: { type: 'range', velocities: [0.9, 0.86, 0.82, 0.8], floor: 6, max: 8 },
     right: { type: 'range', velocities: [0.83, 0.78, 0.72], floor: 4, max: 6 },
@@ -331,7 +331,7 @@ const BOARD: BoardRow[] = [
   },
   {
     type: 'cluster',
-    note: 'fixed count grouped by WIDE intra-rest gaps + dashed planned remainder',
+    note: 'fixed count grouped by WIDE intra-rest gaps + solid planned remainder',
     single: { type: 'cluster', velocities: [0.9, 0.86, 0.82, 0.78, 0.74], groupSize: 2, planned: 8 },
     left: { type: 'cluster', velocities: [0.9, 0.86, 0.82, 0.78, 0.74], groupSize: 2, planned: 8 },
     right: { type: 'cluster', velocities: [0.85, 0.8], groupSize: 2, planned: 6 },

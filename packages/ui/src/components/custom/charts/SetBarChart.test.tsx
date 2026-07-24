@@ -107,27 +107,21 @@ describe('SetBarChart minColumns padding', () => {
 })
 
 describe('SetBarChart todoVariant', () => {
-  it('solid draws a filled to-do section (no dashed border)', () => {
+  it('solid (default) draws a filled to-do section (no dashed border)', () => {
     render(
-      <SetBarChart
-        slots={reps([0.9])}
-        colorFor={silver}
-        height={200}
-        targetReps={2}
-        todoVariant="solid"
-        testIDPrefix="t"
-      />
+      <SetBarChart slots={reps([0.9])} colorFor={silver} height={200} targetReps={2} testIDPrefix="t" />
     )
     expect(screen.getByTestId('t-slot-todo')).not.toHaveStyle({ borderTopStyle: 'dashed' })
   })
 
-  it('dashed (default) draws a dashed outline to-do stub', () => {
+  it('dashed draws a dashed outline to-do stub (ROM keeps this)', () => {
     render(
       <SetBarChart
         slots={reps([0.9])}
         colorFor={silver}
         height={200}
         targetReps={2}
+        todoVariant="dashed"
         testIDPrefix="t"
       />
     )

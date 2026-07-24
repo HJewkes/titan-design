@@ -190,7 +190,7 @@ describe('DualVelocityStrip reference lines', () => {
 })
 
 describe('DualVelocityStrip planned stubs', () => {
-  it('draws a mirrored dashed todo stub per unperformed rep on both sides', () => {
+  it('draws a mirrored todo stub per unperformed rep on both sides', () => {
     render(
       <DualVelocityStrip
         left={{ velocities: [0.9, 0.85] }}
@@ -203,7 +203,7 @@ describe('DualVelocityStrip planned stubs', () => {
     expect(wingDown().queryAllByTestId('velocity-slot-todo')).toHaveLength(3)
   })
 
-  it('renders the planned stub as a dashed outline', () => {
+  it('renders the planned stub as the solid to-do section (inherited hero styling, not dashed)', () => {
     render(
       <DualVelocityStrip
         left={{ velocities: [0.9] }}
@@ -212,8 +212,9 @@ describe('DualVelocityStrip planned stubs', () => {
       />
     )
     const stub = wingUp().getAllByTestId('velocity-slot-todo')[0]
-    expect(stub).toHaveStyle({ borderTopStyle: 'dashed' })
-    expect(stub).toHaveStyle({ borderTopWidth: '1px' })
+    // The hero (and the dual composing it) now use a solid surface-relative section, not a
+    // dashed outline. ROM is the only consumer that keeps the dashed stub.
+    expect(stub).not.toHaveStyle({ borderTopStyle: 'dashed' })
   })
 
   it('draws no stubs when the target is met', () => {

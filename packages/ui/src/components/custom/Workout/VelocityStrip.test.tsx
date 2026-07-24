@@ -665,7 +665,7 @@ describe('VelocityStrip hero variant', () => {
     expect(screen.getByTestId('velocity-label-0')).toHaveTextContent('0.90')
   })
 
-  it('draws a dashed placeholder for each rep still to come (target − done)', () => {
+  it('draws a to-do placeholder for each rep still to come (target − done)', () => {
     render(<VelocityStrip velocities={heroSet} variant="hero" targetReps={8} />)
     expect(screen.getAllByTestId('velocity-slot-todo')).toHaveLength(4)
   })

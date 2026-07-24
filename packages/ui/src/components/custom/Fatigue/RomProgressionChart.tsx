@@ -132,6 +132,7 @@ export function RomProgressionChart({
         scaleMax={scaleMax}
         barRadius={2}
         hideBaseline
+        todoVariant="dashed"
         targetReps={plannedReps}
         renderReference={(g) => romReferenceOverlay(g, workingStandardM, shortThresholdM)}
         testIDPrefix="rom"

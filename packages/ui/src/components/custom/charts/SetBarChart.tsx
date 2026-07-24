@@ -103,27 +103,19 @@ export interface SetBarChartProps {
   targetReps?: number
   /** Top-corner radius on the bars (px). Default 5. */
   barRadius?: number
-  /** Draw a per-bar value label above each rep bar. Default false. */
+  /**
+   * Draw a per-rep value label. Default false. When on, every label pins to one aligned row at the
+   * plot TOP (not offset per bar height) in the muted on-surface-secondary tone.
+   */
   showValueLabels?: boolean
   /** Format a rep value for its label. Default `String`. */
   formatValue?: (value: number) => string
   /**
-   * To-do placeholder treatment (convergence probe). `dashed` (default) — a dashed outline stub (the
-   * hero language). `solid` — a solid surface-relative section in the same tone the expanded strip's
-   * to-do uses (the surface plane blended toward the on-surface neutral).
+   * To-do placeholder treatment. `solid` (default) — a solid surface-relative section (the plane
+   * blended toward the on-surface neutral). `dashed` — a dashed outline stub. Exists so ROM can keep
+   * its dashed to-do while the hero (and the dual that composes it) take the solid section.
    */
-  todoVariant?: 'dashed' | 'solid'
-  /**
-   * Value-label placement (convergence probe). `above-bar` (default) — each label sits directly above
-   * its own bar (offset per bar height, the hero language). `top` — all labels pin to one aligned top
-   * row (the expanded language).
-   */
-  labelPlacement?: 'above-bar' | 'top'
-  /**
-   * Value-label tone (convergence probe). `primary` (default) — white/on-surface primary (the hero).
-   * `muted` — the faded on-surface secondary the expanded strip uses.
-   */
-  labelTone?: 'primary' | 'muted'
+  todoVariant?: 'solid' | 'dashed'
   /**
    * Pad the rendered columns to at least this many with placeholder to-do cells. The diverging dual
    * passes the union column count of both wings so bars line up top↔bottom across the centre axis.
@@ -201,9 +193,7 @@ export function SetBarChart({
   barRadius = DEFAULT_BAR_RADIUS,
   showValueLabels = false,
   formatValue = String,
-  todoVariant = 'dashed',
-  labelPlacement = 'above-bar',
-  labelTone = 'primary',
+  todoVariant = 'solid',
   minColumns,
   renderReference,
   hideBaseline = false,
@@ -331,25 +321,18 @@ export function SetBarChart({
           const value = slot.value ?? 0
           const isLive = liveRepIndex === repIndex
           const color = colorFor(value)
-          // `top` placement pins every label to one aligned row at the plot top (the expanded
-          // language); `above-bar` (default) floats each label directly above its own bar.
-          const labelStyle: ViewStyle =
-            labelPlacement === 'top'
-              ? { position: 'absolute', top: 0, left: 0, right: 0, alignItems: 'center' }
-              : {}
           return (
             <View key={i} accessibilityElementsHidden style={column}>
               {showValueLabels && showBarLabel(repIndex) && (
-                <View style={labelStyle} pointerEvents="none">
+                // Every label pins to one aligned row at the plot TOP (absolute), in the muted
+                // on-surface-secondary tone — not offset per bar height.
+                <View
+                  style={{ position: 'absolute', top: 0, left: 0, right: 0, alignItems: 'center' }}
+                  pointerEvents="none"
+                >
                   <Text
-                    className={labelTone === 'muted' ? 'text-text-secondary' : 'text-text-primary'}
-                    style={[
-                      labelTone === 'muted'
-                        ? { fontSize: 9, fontWeight: '600' }
-                        : { fontSize: 12, fontWeight: '800' },
-                      labelPlacement === 'above-bar' ? { marginBottom: 4 } : null,
-                      flipStyle,
-                    ]}
+                    className="text-text-secondary"
+                    style={[{ fontSize: 12, fontWeight: '700' }, flipStyle]}
                     testID={`${testIDPrefix}-label-${repIndex}`}
                   >
                     {formatValue(value)}
