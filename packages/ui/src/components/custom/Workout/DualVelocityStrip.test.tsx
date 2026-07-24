@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { DualVelocityStrip } from './VelocityStrip'
 
@@ -8,12 +8,17 @@ import { DualVelocityStrip } from './VelocityStrip'
 const GREEN = '#2ED573' // speed / ≥1.0
 const RED = '#D14343' // maximalStrength / <0.5
 const DISTINCT_RED = '#A4221C' // grinding (5th band, no collapse)
-const VARIABLE_CYAN = '#0B3149' // range variable window
-const CONTINUE_OUTLINE = '#22465F' // amrap / open-myo continue
 
-const barsMatching = (re: RegExp) => screen.queryAllByTestId(re)
-const LEFT_BARS = /^dual-velocity-bar-L-\d+$/
-const RIGHT_BARS = /^dual-velocity-bar-R-\d+$/
+// The `hero` variant COMPOSES two single VelocityStrip heroes, one per wing, wrapped in
+// `dual-velocity-wing-up` / `-down` so a test can scope to one side. Inside each wing the
+// composed hero emits the SINGLE-strip testIDs: `velocity-bar-N`, `velocity-label-N`,
+// `velocity-slot-todo`, `velocity-hero-reference`. The `rail` variant is a lean dedicated
+// renderer that keeps the `dual-velocity-bar-L/R-N` testIDs.
+const HERO_BARS = /^velocity-bar-\d+$/
+const RAIL_LEFT_BARS = /^dual-velocity-bar-L-\d+$/
+const RAIL_RIGHT_BARS = /^dual-velocity-bar-R-\d+$/
+const wingUp = () => within(screen.getByTestId('dual-velocity-wing-up'))
+const wingDown = () => within(screen.getByTestId('dual-velocity-wing-down'))
 
 // WA-shaped 5-band zone set (compound movement-class defaults, mean m/s).
 const compoundBands = [
@@ -24,22 +29,27 @@ const compoundBands = [
   { id: 'speed', label: 'Speed', min: 1.0, max: null },
 ] as const
 
-describe('DualVelocityStrip structure', () => {
-  it('renders one bar per performed rep on each side (columns = max of the two)', () => {
+describe('DualVelocityStrip composition', () => {
+  it('composes an up wing and a down wing sharing one centre axis', () => {
+    render(<DualVelocityStrip left={{ velocities: [0.9] }} right={{ velocities: [0.8] }} />)
+    expect(screen.getByTestId('dual-velocity-strip')).toBeInTheDocument()
+    expect(screen.getByTestId('dual-velocity-wing-up')).toBeInTheDocument()
+    expect(screen.getByTestId('dual-velocity-wing-down')).toBeInTheDocument()
+    // Exactly two composed single-strip heroes, one per wing.
+    expect(screen.getAllByTestId('velocity-strip-hero')).toHaveLength(2)
+    // ONE shared axis where the wings meet (not two abutting baselines).
+    expect(screen.getByTestId('dual-velocity-axis')).toBeInTheDocument()
+  })
+
+  it('renders one bar per performed rep on each side (each wing scoped independently)', () => {
     render(
       <DualVelocityStrip
         left={{ velocities: [0.9, 0.85, 0.8] }}
         right={{ velocities: [0.82, 0.74] }}
       />
     )
-    expect(screen.getByTestId('dual-velocity-strip')).toBeInTheDocument()
-    expect(barsMatching(LEFT_BARS)).toHaveLength(3)
-    expect(barsMatching(RIGHT_BARS)).toHaveLength(2)
-  })
-
-  it('renders the shared centre axis splitting the two wings', () => {
-    render(<DualVelocityStrip left={{ velocities: [0.9] }} right={{ velocities: [0.8] }} />)
-    expect(screen.getByTestId('dual-velocity-axis')).toBeInTheDocument()
+    expect(wingUp().queryAllByTestId(HERO_BARS)).toHaveLength(3)
+    expect(wingDown().queryAllByTestId(HERO_BARS)).toHaveLength(2)
   })
 
   it('summarizes both sides’ reps done vs target in the container accessibility label', () => {
@@ -57,8 +67,8 @@ describe('DualVelocityStrip structure', () => {
 
   it('shows a per-rep value label per side at hero scale', () => {
     render(<DualVelocityStrip left={{ velocities: [0.9] }} right={{ velocities: [0.82] }} />)
-    expect(screen.getByTestId('dual-velocity-label-L-0')).toHaveTextContent('0.90')
-    expect(screen.getByTestId('dual-velocity-label-R-0')).toHaveTextContent('0.82')
+    expect(wingUp().getByTestId('velocity-label-0')).toHaveTextContent('0.90')
+    expect(wingDown().getByTestId('velocity-label-0')).toHaveTextContent('0.82')
   })
 })
 
@@ -135,16 +145,16 @@ describe('DualVelocityStrip side labels', () => {
 })
 
 describe('DualVelocityStrip diverging orientation', () => {
-  // LEFT reps grow UP → rounded on the TOP (away-from-axis) end; RIGHT reps grow DOWN →
-  // rounded on the BOTTOM. The mirrored radius is how the diverging silhouette reads.
-  it('rounds the LEFT (up) bar on top and the RIGHT (down) bar on the bottom', () => {
+  // The up wing grows upright; the down wing is the SAME hero vertically mirrored (a scaleY(-1)
+  // on the whole plot, NOT swapped radii — so both bars keep their DOM top-radius). The mirror is
+  // observable via the down wing counter-flipping its value text to stay upright.
+  it('grows the up wing upright and the down wing mirrored', () => {
     render(<DualVelocityStrip left={{ velocities: [0.9] }} right={{ velocities: [0.8] }} />)
-    const leftBar = screen.getByTestId('dual-velocity-bar-L-0')
-    const rightBar = screen.getByTestId('dual-velocity-bar-R-0')
-    expect(leftBar).toHaveStyle({ borderTopLeftRadius: '5px' })
-    expect(leftBar).not.toHaveStyle({ borderBottomLeftRadius: '5px' })
-    expect(rightBar).toHaveStyle({ borderBottomLeftRadius: '5px' })
-    expect(rightBar).not.toHaveStyle({ borderTopLeftRadius: '5px' })
+    expect(wingUp().getByTestId('velocity-bar-0')).toHaveStyle({ borderTopLeftRadius: '5px' })
+    // Up text upright (no transform); down text counter-flipped (has a transform) — proof the
+    // down wing is the mirrored orientation.
+    expect(wingUp().getByTestId('velocity-label-0').style.transform).toBeFalsy()
+    expect(wingDown().getByTestId('velocity-label-0').style.transform).toBeTruthy()
   })
 })
 
@@ -157,11 +167,11 @@ describe('DualVelocityStrip reference lines', () => {
         variant="hero"
       />
     )
-    expect(screen.getByTestId('dual-velocity-reference-L')).toBeInTheDocument()
-    expect(screen.getByTestId('dual-velocity-reference-R')).toBeInTheDocument()
+    expect(wingUp().getByTestId('velocity-hero-reference')).toBeInTheDocument()
+    expect(wingDown().getByTestId('velocity-hero-reference')).toBeInTheDocument()
   })
 
-  it('omits both reference lines at rail scale', () => {
+  it('omits reference lines at rail scale', () => {
     render(
       <DualVelocityStrip
         left={{ velocities: [0.9, 0.85] }}
@@ -169,14 +179,13 @@ describe('DualVelocityStrip reference lines', () => {
         variant="rail"
       />
     )
-    expect(screen.queryByTestId('dual-velocity-reference-L')).not.toBeInTheDocument()
-    expect(screen.queryByTestId('dual-velocity-reference-R')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('velocity-hero-reference')).not.toBeInTheDocument()
   })
 
   it('omits a side’s reference line when that side has no positive velocity', () => {
     render(<DualVelocityStrip left={{ velocities: [0.9] }} right={{ velocities: [] }} />)
-    expect(screen.getByTestId('dual-velocity-reference-L')).toBeInTheDocument()
-    expect(screen.queryByTestId('dual-velocity-reference-R')).not.toBeInTheDocument()
+    expect(wingUp().getByTestId('velocity-hero-reference')).toBeInTheDocument()
+    expect(wingDown().queryByTestId('velocity-hero-reference')).not.toBeInTheDocument()
   })
 })
 
@@ -190,8 +199,8 @@ describe('DualVelocityStrip planned stubs', () => {
       />
     )
     // left: 4 - 2 = 2 stubs; right: 4 - 1 = 3 stubs.
-    expect(screen.queryAllByTestId(/^dual-velocity-bar-L-\d+-todo$/)).toHaveLength(2)
-    expect(screen.queryAllByTestId(/^dual-velocity-bar-R-\d+-todo$/)).toHaveLength(3)
+    expect(wingUp().queryAllByTestId('velocity-slot-todo')).toHaveLength(2)
+    expect(wingDown().queryAllByTestId('velocity-slot-todo')).toHaveLength(3)
   })
 
   it('renders the planned stub as a dashed outline', () => {
@@ -202,7 +211,7 @@ describe('DualVelocityStrip planned stubs', () => {
         targetReps={2}
       />
     )
-    const stub = screen.getByTestId('dual-velocity-bar-L-1-todo')
+    const stub = wingUp().getAllByTestId('velocity-slot-todo')[0]
     expect(stub).toHaveStyle({ borderTopStyle: 'dashed' })
     expect(stub).toHaveStyle({ borderTopWidth: '1px' })
   })
@@ -215,67 +224,83 @@ describe('DualVelocityStrip planned stubs', () => {
         targetReps={2}
       />
     )
-    expect(screen.queryByTestId(/^dual-velocity-bar-[LR]-\d+-todo$/)).not.toBeInTheDocument()
+    expect(screen.queryByTestId('velocity-slot-todo')).not.toBeInTheDocument()
   })
 
   it('renders both wings entirely as stubs for a planned-but-unstarted set', () => {
     render(
       <DualVelocityStrip left={{ velocities: [] }} right={{ velocities: [] }} targetReps={3} />
     )
-    expect(screen.queryAllByTestId(/^dual-velocity-bar-L-\d+-todo$/)).toHaveLength(3)
-    expect(barsMatching(LEFT_BARS)).toHaveLength(0)
+    expect(wingUp().queryAllByTestId('velocity-slot-todo')).toHaveLength(3)
+    expect(wingUp().queryAllByTestId(HERO_BARS)).toHaveLength(0)
   })
 })
 
 describe('DualVelocityStrip colour mapping', () => {
-  it('colours reps from the default effort scale (side is position, not hue)', () => {
-    render(<DualVelocityStrip left={{ velocities: [1.1] }} right={{ velocities: [0.4] }} />)
-    expect(screen.getByTestId('dual-velocity-bar-L-0')).toHaveStyle({ backgroundColor: GREEN })
-    expect(screen.getByTestId('dual-velocity-bar-R-0')).toHaveStyle({ backgroundColor: RED })
+  it('zone mode colours reps from the absolute effort scale (side is position, not hue)', () => {
+    render(
+      <DualVelocityStrip
+        left={{ velocities: [1.1] }}
+        right={{ velocities: [0.4] }}
+        barColor="zone"
+      />
+    )
+    expect(wingUp().getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: GREEN })
+    expect(wingDown().getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: RED })
   })
 
-  it('colours both sides from supplied zone bands, with distinct 5-band reds', () => {
+  it('zone mode colours both sides from supplied bands, with distinct 5-band reds', () => {
     render(
       <DualVelocityStrip
         left={{ velocities: [1.1, 0.45] }}
         right={{ velocities: [0.2] }}
         zones={compoundBands}
+        barColor="zone"
       />
     )
-    expect(screen.getByTestId('dual-velocity-bar-L-0')).toHaveStyle({ backgroundColor: GREEN })
-    expect(screen.getByTestId('dual-velocity-bar-L-1')).toHaveStyle({ backgroundColor: RED })
-    expect(screen.getByTestId('dual-velocity-bar-R-0')).toHaveStyle({
-      backgroundColor: DISTINCT_RED,
-    })
+    expect(wingUp().getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: GREEN })
+    expect(wingUp().getByTestId('velocity-bar-1')).toHaveStyle({ backgroundColor: RED })
+    expect(wingDown().getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: DISTINCT_RED })
+  })
+
+  it('loss mode (default) colours each wing off its OWN best — per-wing fatigue, shared height', () => {
+    // Left ends on its own best (loss 0 → green); right drops hard from its own best (→ red).
+    // The shared height scale must NOT bleed the stronger arm's best into the weaker arm's colour.
+    render(
+      <DualVelocityStrip left={{ velocities: [0.9, 0.9] }} right={{ velocities: [0.9, 0.5] }} />
+    )
+    expect(wingUp().getByTestId('velocity-bar-1')).toHaveStyle({ backgroundColor: GREEN })
+    expect(wingDown().getByTestId('velocity-bar-1')).toHaveStyle({ backgroundColor: RED })
   })
 })
 
-describe('DualVelocityStrip set-type slots', () => {
-  it('range: renders a cyan variable window past the committed reps', () => {
+describe('DualVelocityStrip set-type streams (flattened into the composed hero)', () => {
+  // The composed hero is a FLAT velocity chart, so a `set` descriptor flattens to its performed
+  // reps + planned todo stubs; the set-type slot WINDOWS (cyan variable / continue) are not drawn
+  // on the dual hero (they are a single-mini/expanded concern). Bars are still per rep.
+  it('range set: renders the committed reps as bars (variable window omitted)', () => {
     render(
       <DualVelocityStrip
         left={{ set: { type: 'range', velocities: [0.9, 0.85], floor: 3, max: 5 } }}
         right={{ velocities: [0.8] }}
       />
     )
-    const variables = screen.getAllByTestId(/^dual-velocity-bar-L-\d+-variable$/)
-    expect(variables.length).toBeGreaterThan(0)
-    expect(variables[0]).toHaveStyle({ backgroundColor: VARIABLE_CYAN })
+    expect(wingUp().queryAllByTestId(HERO_BARS)).toHaveLength(2)
+    expect(screen.queryByTestId(/-variable$/)).not.toBeInTheDocument()
   })
 
-  it('amrap: renders a trailing dashed cyan continue slot', () => {
+  it('amrap set: renders performed reps as bars (continue slot omitted)', () => {
     render(
       <DualVelocityStrip
         left={{ set: { type: 'amrap', velocities: [0.9, 0.85] } }}
         right={{ velocities: [0.8] }}
       />
     )
-    const cont = screen.getByTestId(/^dual-velocity-bar-L-\d+-continue$/)
-    expect(cont).toHaveStyle({ borderTopStyle: 'dashed' })
-    expect(cont).toHaveStyle({ borderTopColor: CONTINUE_OUTLINE })
+    expect(wingUp().queryAllByTestId(HERO_BARS)).toHaveLength(2)
+    expect(screen.queryByTestId(/-continue$/)).not.toBeInTheDocument()
   })
 
-  it('myo: renders each activation/cluster rep as a bar plus an open continue slot', () => {
+  it('myo set: flattens activation + clusters to one bar per rep', () => {
     render(
       <DualVelocityStrip
         left={{
@@ -292,9 +317,8 @@ describe('DualVelocityStrip set-type slots', () => {
         right={{ velocities: [0.8] }}
       />
     )
-    // 3 activation + 2 + 2 cluster reps = 7 filled bars, then a continue slot.
-    expect(barsMatching(LEFT_BARS)).toHaveLength(7)
-    expect(screen.getByTestId(/^dual-velocity-bar-L-\d+-continue$/)).toBeInTheDocument()
+    // 3 activation + 2 + 2 cluster reps = 7 filled bars.
+    expect(wingUp().queryAllByTestId(HERO_BARS)).toHaveLength(7)
   })
 })
 
@@ -314,8 +338,8 @@ describe('DualVelocityStrip live mode', () => {
         liveRepIndex={2}
       />
     )
-    expect(screen.getByTestId('dual-velocity-bar-L-2')).toBeInTheDocument()
-    expect(screen.getByTestId('dual-velocity-bar-R-2')).toBeInTheDocument()
+    expect(wingUp().getByTestId('velocity-bar-2')).toBeInTheDocument()
+    expect(wingDown().getByTestId('velocity-bar-2')).toBeInTheDocument()
   })
 
   it('renders stably with prefers-reduced-motion set', () => {
@@ -331,12 +355,12 @@ describe('DualVelocityStrip live mode', () => {
         liveRepIndex={0}
       />
     )
-    expect(screen.getByTestId('dual-velocity-bar-L-0')).toBeInTheDocument()
+    expect(wingUp().getByTestId('velocity-bar-0')).toBeInTheDocument()
   })
 })
 
 describe('DualVelocityStrip rail variant', () => {
-  it('renders bars but no value labels or reference lines', () => {
+  it('renders compact bars but no value labels or reference lines', () => {
     render(
       <DualVelocityStrip
         left={{ velocities: [0.9, 0.85] }}
@@ -344,9 +368,37 @@ describe('DualVelocityStrip rail variant', () => {
         variant="rail"
       />
     )
-    expect(barsMatching(LEFT_BARS)).toHaveLength(2)
-    expect(screen.queryByTestId('dual-velocity-label-L-0')).not.toBeInTheDocument()
-    expect(screen.queryByTestId('dual-velocity-reference-L')).not.toBeInTheDocument()
+    expect(screen.queryAllByTestId(RAIL_LEFT_BARS)).toHaveLength(2)
+    expect(screen.queryAllByTestId(RAIL_RIGHT_BARS)).toHaveLength(2)
+    expect(screen.queryByTestId(/^velocity-label-\d+$/)).not.toBeInTheDocument()
+    expect(screen.queryByTestId('velocity-hero-reference')).not.toBeInTheDocument()
+  })
+
+  it('draws mirrored dashed todo stubs for unperformed reps', () => {
+    render(
+      <DualVelocityStrip
+        left={{ velocities: [0.9] }}
+        right={{ velocities: [0.8] }}
+        variant="rail"
+        targetReps={2}
+      />
+    )
+    expect(screen.queryAllByTestId(/^dual-velocity-bar-L-\d+-todo$/)).toHaveLength(1)
+    expect(screen.queryAllByTestId(/^dual-velocity-bar-R-\d+-todo$/)).toHaveLength(1)
+  })
+
+  it('rounds the up (L) bar on top and the down (R) bar on the bottom', () => {
+    render(
+      <DualVelocityStrip
+        left={{ velocities: [0.9] }}
+        right={{ velocities: [0.8] }}
+        variant="rail"
+      />
+    )
+    expect(screen.getByTestId('dual-velocity-bar-L-0')).toHaveStyle({ borderTopLeftRadius: '2px' })
+    expect(screen.getByTestId('dual-velocity-bar-R-0')).toHaveStyle({
+      borderBottomLeftRadius: '2px',
+    })
   })
 })
 
