@@ -454,10 +454,33 @@ export function sideLabelFontSize(height: number): number {
 }
 
 /**
+ * Below this vertical extent (px) the side label collapses to initials rather than shrink further —
+ * set near where the floor-font (7px) name stops fitting, so the compact `rail` (~48px) still shows
+ * full names and only a genuinely tiny chart degrades.
+ */
+export const SIDE_LABEL_INITIALS_BELOW = 44
+
+/**
+ * The side-label text for the available vertical `extent`: the full name when there's room, else it
+ * degrades to INITIALS — the first letter of each word ("Left Arm" → "L A", "Left" → "L", "Right" →
+ * "R") — so a slot name stays legible at tiny chart heights instead of shrinking into a smear.
+ */
+export function sideLabelText(label: string, extent: number): string {
+  if (extent >= SIDE_LABEL_INITIALS_BELOW) return label
+  return label
+    .trim()
+    .split(/\s+/)
+    .map((word) => word.charAt(0))
+    .join(' ')
+    .toUpperCase()
+}
+
+/**
  * The rotated vertical stream/slot-name gutter down the chart's left edge (e.g. "LEFT ARM"). The
  * rotate lives on a wrapper sized to `height` so `numberOfLines` resolves against the tall vertical
  * extent, not the narrow gutter — a long name ellipsizes only when it genuinely exceeds the chart.
- * Font size scales with `height` ({@link sideLabelFontSize}) so it fits without truncation.
+ * Font size scales with `height` ({@link sideLabelFontSize}); below {@link SIDE_LABEL_INITIALS_BELOW}
+ * the text collapses to initials ({@link sideLabelText}) rather than shrink into illegibility.
  */
 function SideLabel({ label, height }: { label: string; height: number }) {
   const fontSize = sideLabelFontSize(height)
@@ -481,7 +504,7 @@ function SideLabel({ label, height }: { label: string; height: number }) {
           }}
           testID="setbar-side-label"
         >
-          {label}
+          {sideLabelText(label, height)}
         </Text>
       </View>
     </View>

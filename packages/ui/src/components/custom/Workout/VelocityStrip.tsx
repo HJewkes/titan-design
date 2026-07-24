@@ -15,6 +15,7 @@ import {
   type SetBarGeometry,
   scaleDenominator,
   sideLabelFontSize,
+  sideLabelText,
   PEAK_HEADROOM,
   SET_BAR_DEFAULT_HEIGHT,
 } from '../charts/SetBarChart'
@@ -527,6 +528,8 @@ function DashedReferenceLine({
 }
 
 const BAND_LABEL_FONT = 'monospace'
+/** Below this plot height (px) the VL20/VL30 labels are DROPPED (lines + washes stay) rather than shrunk. */
+const VL_LABEL_MIN_PLOT = 55
 const VL_SEMANTIC = getSemanticColors('dark')
 
 /** Linear-blend two #RRGGBB hexes (`t`=0 → a, 1 → b). Used for the surface-relative to-do tone. */
@@ -574,8 +577,10 @@ export function VelocityLossBands({
   const vl20 = best * 0.8
   const vl30 = best * 0.7
   // The VL20 / VL30 lines sit ~0.09·plotHeight apart, so on a short chart their labels crowd. Scale
-  // the label font (and its vertical padding) to the plot height to keep them from overlapping.
-  const vlFont = Math.round(Math.max(6, Math.min(9, plotHeight * 0.055)))
+  // the label font to the plot height; below VL_LABEL_MIN_PLOT DROP the labels entirely (keep the
+  // dashed lines + washes) rather than shrink them into an illegible smear.
+  const vlFont = Math.round(Math.max(7, Math.min(9, plotHeight * 0.05)))
+  const showLabels = plotHeight >= VL_LABEL_MIN_PLOT
   const band = (loV: number, hiV: number, color: string) => (
     <View
       style={{
@@ -588,9 +593,9 @@ export function VelocityLossBands({
       }}
     />
   )
-  // The label sits ~90% along the threshold, with the dashed line breaking around it
-  // (a long segment before + a short stub after) — cohesive, near the quiet right end
-  // where a declining set has room, and it can't clip the plot edge or cross a bar.
+  // The label sits ~90% along the threshold, with the dashed line breaking around it (a long segment
+  // before + a short stub after) — near the quiet right end where a declining set has room. Below the
+  // label threshold the line spans full width with no text.
   const threshold = (v: number, color: string, label: string) => (
     <View
       style={{
@@ -607,19 +612,23 @@ export function VelocityLossBands({
       }}
     >
       <View style={{ flex: 9, borderTopWidth: 1, borderStyle: 'dashed', borderColor: color }} />
-      <Text
-        style={{
-          marginHorizontal: 6,
-          fontSize: vlFont,
-          fontWeight: '800',
-          fontFamily: BAND_LABEL_FONT,
-          color,
-          ...(flip ? { transform: [{ scaleY: -1 as number }] } : null),
-        }}
-      >
-        {label}
-      </Text>
-      <View style={{ flex: 1, borderTopWidth: 1, borderStyle: 'dashed', borderColor: color }} />
+      {showLabels ? (
+        <>
+          <Text
+            style={{
+              marginHorizontal: 6,
+              fontSize: vlFont,
+              fontWeight: '800',
+              fontFamily: BAND_LABEL_FONT,
+              color,
+              ...(flip ? { transform: [{ scaleY: -1 as number }] } : null),
+            }}
+          >
+            {label}
+          </Text>
+          <View style={{ flex: 1, borderTopWidth: 1, borderStyle: 'dashed', borderColor: color }} />
+        </>
+      ) : null}
     </View>
   )
   return (
@@ -870,7 +879,7 @@ function DivergingSideRail({
           style={{ width: labelLength, alignItems: 'center', transform: [{ rotate: '-90deg' }] }}
         >
           <Text className="text-text-tertiary" style={textStyle} numberOfLines={1} testID={testID}>
-            {label}
+            {sideLabelText(label, plotHalf)}
           </Text>
         </View>
       ) : null}

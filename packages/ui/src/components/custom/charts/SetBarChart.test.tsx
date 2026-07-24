@@ -1,10 +1,25 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { SetBarChart, type SetSlot } from './SetBarChart'
+import { SetBarChart, sideLabelText, type SetSlot } from './SetBarChart'
 
 const reps = (values: number[]): SetSlot[] => values.map((v) => ({ kind: 'rep', value: v }))
 const silver = () => '#C7CBD1'
+
+describe('sideLabelText', () => {
+  it('keeps the full name when the vertical extent has room', () => {
+    expect(sideLabelText('Left Arm', 200)).toBe('Left Arm')
+  })
+
+  it('collapses a single-word name to its initial below the threshold', () => {
+    expect(sideLabelText('Left', 40)).toBe('L')
+    expect(sideLabelText('Right', 40)).toBe('R')
+  })
+
+  it('collapses a multi-word name to per-word initials below the threshold', () => {
+    expect(sideLabelText('Left Arm', 40)).toBe('L A')
+  })
+})
 
 describe('SetBarChart bars', () => {
   it('renders one bar per rep slot with the prefixed testID', () => {

@@ -428,3 +428,20 @@ export const HeroSmallHeightLabels: Story = {
   },
   decorators: [wallDecorator],
 }
+
+/**
+ * Very small height — graceful text degradation. Below the thresholds the VL20 / VL30 labels DROP
+ * entirely (the dashed lines + washes stay) and the per-side slot names COLLAPSE to initials, so
+ * single-word "Left" / "Right" read as "L" / "R" (a multi-word name would show its initials, e.g.
+ * "L A"). No shrinking into an illegible smear.
+ */
+export const HeroTinyHeight: Story = {
+  args: {
+    left: { velocities: [0.96, 0.9, 0.83, 0.72], label: 'Left' },
+    right: { velocities: [0.9, 0.82, 0.71, 0.6], label: 'Right' },
+    variant: 'hero',
+    scale: 'fixed',
+    height: 72,
+  },
+  decorators: [wallDecorator],
+}
