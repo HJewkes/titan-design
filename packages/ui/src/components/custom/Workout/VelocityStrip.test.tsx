@@ -7,6 +7,7 @@ import {
   getVelocityZoneName,
   calculateVelocityLoss,
   calculateMeanVelocity,
+  getVelocityLossColor,
 } from './VelocityStrip'
 
 const sampleVelocities = [1.1, 0.95, 0.82, 0.68, 0.45]
@@ -213,6 +214,94 @@ describe('calculateMeanVelocity', () => {
 
   it('returns 0 for empty array', () => {
     expect(calculateMeanVelocity([])).toBe(0)
+  })
+})
+
+// Literal hex for the four VL-band tones (green-300 / amber-300 / orange-400 / red-600),
+// the SAME stops FatigueMeter's VL10/VL20/VL30 default thresholds use.
+const VL_GREEN = '#2ED573'
+const VL_YELLOW = '#F9B415'
+const VL_ORANGE = '#FF7900'
+const VL_RED = '#D14343'
+
+describe('getVelocityLossColor', () => {
+  it('reads green below the VL10 threshold', () => {
+    expect(getVelocityLossColor(0)).toBe(VL_GREEN)
+    expect(getVelocityLossColor(9.9)).toBe(VL_GREEN)
+  })
+
+  it('reads gold/amber from VL10 up to (not including) VL20', () => {
+    expect(getVelocityLossColor(10)).toBe(VL_YELLOW)
+    expect(getVelocityLossColor(19.9)).toBe(VL_YELLOW)
+  })
+
+  it('reads orange from VL20 up to (not including) VL30', () => {
+    expect(getVelocityLossColor(20)).toBe(VL_ORANGE)
+    expect(getVelocityLossColor(29.9)).toBe(VL_ORANGE)
+  })
+
+  it('reads red at and past VL30', () => {
+    expect(getVelocityLossColor(30)).toBe(VL_RED)
+    expect(getVelocityLossColor(100)).toBe(VL_RED)
+  })
+})
+
+describe('VelocityStrip barColor prop', () => {
+  // Best rep is 1.0 m/s, so per-rep loss lands exactly on the VL10/20/30 boundaries:
+  // 0%, 10%, 20%, 30% loss — one rep in each band.
+  const decliningSet = [1.0, 0.9, 0.8, 0.7]
+
+  it('defaults to zone coloring (unchanged from prior releases)', () => {
+    render(<VelocityStrip velocities={decliningSet} variant="mini" />)
+    // Absolute zone scale: 1.0 -> green, 0.9 & 0.8 -> yellow (both >= 0.75), 0.7 -> orange.
+    expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: '#2ED573' })
+    expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ backgroundColor: VL_YELLOW })
+    expect(screen.getByTestId('velocity-bar-2')).toHaveStyle({ backgroundColor: VL_YELLOW })
+    expect(screen.getByTestId('velocity-bar-3')).toHaveStyle({ backgroundColor: VL_ORANGE })
+  })
+
+  it('explicit barColor="zone" matches the default', () => {
+    render(<VelocityStrip velocities={decliningSet} variant="mini" barColor="zone" />)
+    expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ backgroundColor: VL_YELLOW })
+  })
+
+  it('barColor="loss" colors each bar green→red by loss from the set\'s own best', () => {
+    render(<VelocityStrip velocities={decliningSet} variant="mini" barColor="loss" />)
+    expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: VL_GREEN })
+    expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ backgroundColor: VL_YELLOW })
+    expect(screen.getByTestId('velocity-bar-2')).toHaveStyle({ backgroundColor: VL_ORANGE })
+    expect(screen.getByTestId('velocity-bar-3')).toHaveStyle({ backgroundColor: VL_RED })
+  })
+
+  it('barColor="loss" reads a slow-but-still-best rep as green (loss-relative, not absolute)', () => {
+    // 0.3 m/s would be "vel-red" under the absolute zone scale, but as the set's
+    // (single) best rep its loss is 0 — loss-relative coloring reads it green.
+    render(<VelocityStrip velocities={[0.3]} variant="mini" barColor="loss" />)
+    expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: VL_GREEN })
+  })
+
+  it('barColor="loss" ignores a supplied zones prop (it is a separate scale)', () => {
+    render(
+      <VelocityStrip
+        velocities={decliningSet}
+        variant="mini"
+        barColor="loss"
+        zones={compoundBands}
+      />
+    )
+    expect(screen.getByTestId('velocity-bar-3')).toHaveStyle({ backgroundColor: VL_RED })
+  })
+
+  it('barColor="loss" guards all-zero velocities to green (no NaN/best<=0)', () => {
+    render(<VelocityStrip velocities={[0, 0, 0]} variant="mini" barColor="loss" />)
+    expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: VL_GREEN })
+    expect(screen.getByTestId('velocity-bar-2')).toHaveStyle({ backgroundColor: VL_GREEN })
+  })
+
+  it('renders no bars (and does not crash) for an empty velocities array', () => {
+    render(<VelocityStrip velocities={[]} variant="mini" barColor="loss" />)
+    expect(screen.getByTestId('velocity-strip-mini')).toBeInTheDocument()
+    expect(screen.queryAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(0)
   })
 })
 
