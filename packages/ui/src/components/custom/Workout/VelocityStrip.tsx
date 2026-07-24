@@ -12,6 +12,9 @@ import {
 } from 'react-native'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { primitiveColors, primitiveRamps, sequentialEffort } from '../../../theme/tokens/primitives'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { useOnSurfaceColor } from '../../ui/surface/SurfaceContext'
+import { alpha } from '../../../utils/colors'
 import { formatVelocity } from '../../../utils/workout-format'
 import { SET_STRIP_VARIABLE_COLOR } from './SetStrip'
 
@@ -66,15 +69,21 @@ export interface VelocityStripProps extends ViewProps {
    */
   zones?: readonly VelocityZoneBandProp[]
   /**
-   * Bar-fill coloring mode. `zone` (default) — the current behavior: color from the
-   * absolute velocity-zone scale ({@link zones} when provided, else the built-in
-   * ≥1.0/≥0.75/≥0.5 default). `loss` — color each performed bar by its velocity LOSS
-   * from the set's OWN best (see {@link getVelocityLossColor}), so a fatiguing set
-   * reads green→red by loss regardless of its absolute speed. `loss` ignores
-   * {@link zones} (it is a wholly separate scale); `todo`/`variable`/`continue`
-   * slots are unaffected either way.
+   * Bar-fill coloring mode. `loss` (DEFAULT) — color each performed bar by its
+   * velocity LOSS from the set's OWN best (see {@link getVelocityLossColor}), so a
+   * fatiguing set reads green→red by loss regardless of its absolute speed; ignores
+   * {@link zones} (it is a wholly separate scale). `zone` — color from the absolute
+   * velocity-zone scale ({@link zones} when provided, else the built-in
+   * ≥1.0/≥0.75/≥0.5 default). `todo`/`variable`/`continue` slots are unaffected either way.
    */
   barColor?: 'zone' | 'loss'
+  /**
+   * `hero` only: draw the VL20 / VL30 velocity-loss decision bands behind the bars
+   * (see {@link VelocityLossBands}). Defaults to on when {@link barColor} is `loss`
+   * (the default), off for `zone` — the bands and the loss bar-fill are the two
+   * halves of the same loss-relative language.
+   */
+  showLossBands?: boolean
   /**
    * Live mode: index of the most-recently-completed rep. That bar GROWS UP FROM
    * THE BASELINE to its full height as it enters, tracking the rep as it lands;
@@ -310,8 +319,6 @@ const REP_GAP = 2
  */
 const WIDE_GAP = 8
 
-/** Grey fill for planned-but-unperformed reps (charcoal placeholder, literal hex). */
-const TODO_COLOR = primitiveColors.charcoal[300]
 /** The thin cyan-800 outline on the open-ended "continue" slot — reads as "keep going". */
 const CONTINUE_OUTLINE = primitiveRamps.cyan[800]
 
@@ -567,6 +574,80 @@ function DashedReferenceLine({
   )
 }
 
+const BAND_LABEL_FONT = 'monospace'
+const VL_SEMANTIC = getSemanticColors('dark')
+
+/**
+ * Velocity-LOSS decision bands for the `hero` variant: the VL20 / VL30 coaching
+ * cues (off the running best) drawn as absolutely-positioned bands + dashed
+ * threshold lines BEHIND the bars, on the hero's own peak scale so a bar dropping
+ * into the amber → red band reads as "these are your last effective reps". Shared
+ * by the single hero, the diverging dual wings, and {@link VelocityHero}; render
+ * it as the first child of the bottom-anchored plot container.
+ *
+ * `best` is the running-best velocity (the peak the loss is measured from);
+ * `scaleDenom` / `plotHeight` are the hero chart's bar-scaling geometry — a
+ * velocity `v` sits `(v / scaleDenom) * plotHeight` px up from the baseline,
+ * matching {@link HeroVelocityChart}'s `barHeight`.
+ */
+export function VelocityLossBands({
+  best,
+  scaleDenom,
+  plotHeight,
+}: {
+  best: number
+  scaleDenom: number
+  plotHeight: number
+}) {
+  if (best <= 0 || scaleDenom <= 0 || plotHeight <= 0) return null
+  const yOf = (v: number): number => (v / scaleDenom) * plotHeight
+  const vl20 = best * 0.8
+  const vl30 = best * 0.7
+  const band = (loV: number, hiV: number, color: string) => (
+    <View
+      style={{
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: yOf(loV),
+        height: Math.max(0, yOf(hiV) - yOf(loV)),
+        backgroundColor: color,
+      }}
+    />
+  )
+  const threshold = (v: number, color: string, label: string) => (
+    <View style={{ position: 'absolute', left: 0, right: 0, bottom: yOf(v) }}>
+      <View style={{ borderTopWidth: 1, borderStyle: 'dashed', borderColor: color }} />
+      <Text
+        style={{
+          position: 'absolute',
+          right: 2,
+          top: -13,
+          fontSize: 9,
+          fontWeight: '800',
+          fontFamily: BAND_LABEL_FONT,
+          color,
+        }}
+      >
+        {label}
+      </Text>
+    </View>
+  )
+  return (
+    <View
+      accessibilityElementsHidden
+      pointerEvents="none"
+      style={{ position: 'absolute', left: 0, right: 0, bottom: 0, top: 0 }}
+      testID="velocity-loss-bands"
+    >
+      {band(0, vl30, alpha(VL_SEMANTIC['status-error'], 0.09))}
+      {band(vl30, vl20, alpha(VL_SEMANTIC['status-warning'], 0.08))}
+      {threshold(vl20, alpha(VL_SEMANTIC['status-warning'], 0.75), 'VL 20%')}
+      {threshold(vl30, alpha(VL_SEMANTIC['status-error'], 0.75), 'VL 30%')}
+    </View>
+  )
+}
+
 /** Bare-strip bar height (px): velocity-scaled for a performed rep, a short stub otherwise. */
 function bareSlotHeight(slot: VelocitySlot, height: number, denom: number): number {
   if (slot.kind !== 'rep' || denom <= 0) return BARE_STUB_HEIGHT
@@ -595,61 +676,7 @@ function usePrefersReducedMotion(): boolean {
 
 const ANIMATION_DURATION = 400
 const ANIMATION_EASING = Easing.bezier(0.22, 1, 0.36, 1)
-// Scale-pop easing for the diverging dual-hero WINGS, which still use the
-// whole-bar scale entrance ({@link useLiveRepPop}). The single hero uses the
-// grow-from-bottom entrance ({@link useLiveRepGrowth}); reconciling the dual
-// wings to grow-from-bottom is an open Phase C review question.
-const POP_EASING = Easing.bezier(0.34, 1.56, 0.64, 1)
 
-/**
- * Scale-pop entrance for a live rep bar: a bounce when the rep is a new set peak,
- * a pop otherwise. Honors reduced motion. Returns the scale `Animated.Value` for
- * the live bar; inert while `active` is false or no live rep is present. Retained
- * for the diverging dual-hero wings (see {@link useLiveRepGrowth} for the single
- * hero's grow-from-bottom entrance).
- */
-function useLiveRepPop(
-  active: boolean,
-  liveRepIndex: number | undefined,
-  liveVelocity: number | undefined,
-  isNewPeak: boolean
-): Animated.Value {
-  const prefersReducedMotion = usePrefersReducedMotion()
-  const [liveScale] = useState(() => new Animated.Value(1))
-  useEffect(() => {
-    if (!active || liveRepIndex == null || liveVelocity == null) return
-    if (prefersReducedMotion) {
-      liveScale.setValue(1)
-      return
-    }
-    if (isNewPeak) {
-      liveScale.setValue(1)
-      Animated.sequence([
-        Animated.timing(liveScale, {
-          toValue: 1.25,
-          duration: 150,
-          easing: Easing.out(Easing.quad),
-          useNativeDriver: true,
-        }),
-        Animated.spring(liveScale, {
-          toValue: 1,
-          friction: 3,
-          tension: 140,
-          useNativeDriver: true,
-        }),
-      ]).start()
-    } else {
-      liveScale.setValue(0.8)
-      Animated.timing(liveScale, {
-        toValue: 1,
-        duration: 300,
-        easing: POP_EASING,
-        useNativeDriver: true,
-      }).start()
-    }
-  }, [active, liveRepIndex, liveVelocity, isNewPeak, prefersReducedMotion, liveScale])
-  return liveScale
-}
 /**
  * Growth-factor overshoot for a new-peak bar: it grows past its full height then
  * settles back to 1 (a small bounce), rather than the plain 0→1 grow every other
@@ -725,6 +752,8 @@ interface HeroVelocityChartProps {
   isNewPeak: boolean
   targetReps?: number
   height: number
+  /** Draw the VL20/VL30 velocity-loss decision bands behind the bars. */
+  showLossBands: boolean
   className?: string
   viewProps: ViewProps
 }
@@ -744,11 +773,16 @@ function HeroVelocityChart({
   isNewPeak,
   targetReps,
   height,
+  showLossBands,
   className,
   viewProps,
 }: HeroVelocityChartProps) {
   const liveVelocity = liveRepIndex != null ? doneVelocities[liveRepIndex] : undefined
   const liveGrowth = useLiveRepGrowth(true, liveRepIndex, liveVelocity, isNewPeak)
+  // Planned/to-do reps + the baseline draw in a SURFACE-relative neutral (on-surface
+  // tertiary) so they stay legible on every plane, instead of a fixed charcoal that
+  // washes out on the frame or over-contrasts on a raised card.
+  const placeholderColor = useOnSurfaceColor('tertiary')
 
   // Measure the plot so per-bar value labels can thin on a narrow chart (they collide once
   // bars get thin). Width 0 (unmeasured) → show all, so test/server renders are unchanged.
@@ -808,9 +842,17 @@ function HeroVelocityChart({
           gap: heroGap,
           position: 'relative',
           borderBottomWidth: 2,
-          borderBottomColor: HERO_PENDING_COLOR,
+          borderBottomColor: placeholderColor,
         }}
       >
+        {showLossBands && (
+          <VelocityLossBands
+            best={referenceVelocity}
+            scaleDenom={scaleDenom}
+            plotHeight={plotHeight}
+          />
+        )}
+
         {/*
          * Running-best reference line. Deliberately unlabeled: it sits at the tallest
          * bar's top, and that bar already displays its velocity as its own value label,
@@ -893,7 +935,7 @@ function HeroVelocityChart({
                 height: HERO_MIN_BAR_HEIGHT * 3,
                 borderWidth: 1,
                 borderStyle: 'dashed',
-                borderColor: HERO_PENDING_COLOR,
+                borderColor: placeholderColor,
                 borderTopLeftRadius: HERO_BAR_RADIUS,
                 borderTopRightRadius: HERO_BAR_RADIUS,
               }}
@@ -913,7 +955,7 @@ function HeroVelocityChart({
 // asymmetry (left-dominant / right-lagging) reads pre-attentively as the silhouette.
 // It reuses VelocityStrip's slot model ({@link buildSlots}/{@link VelocitySlot}), its
 // zone color scale ({@link makeBarColorFor}), the hero geometry constants, and the
-// live-rep entrance ({@link useLiveRepPop}) — side is POSITION only, never hue.
+// live-rep entrance ({@link useLiveRepGrowth}) — side is POSITION only, never hue.
 
 /** One voltra's velocity stream — the SAME shape VelocityStrip accepts (one of these). */
 export interface DualVelocityStream {
@@ -940,6 +982,13 @@ export interface DualVelocityStripProps extends ViewProps {
    * never encoded by hue. When omitted the built-in default scale is used.
    */
   zones?: readonly VelocityZoneBandProp[]
+  /**
+   * Bar-fill coloring mode, matching {@link VelocityStrip}. `loss` (DEFAULT) — each
+   * wing colors by its velocity LOSS from THAT arm's own best (per-wing, since arms
+   * fatigue independently). `zone` — the shared absolute zone scale. Side is never
+   * encoded by hue either way.
+   */
+  barColor?: 'zone' | 'loss'
   /**
    * Planned rep count. Reps beyond a side's performed count draw as mirrored dashed
    * todo stubs (same "3 of 8 done" read as the single hero), on both wings.
@@ -1034,18 +1083,19 @@ interface WingBarProps {
   c: DivergingChrome
   color: string
   barPx: number
-  liveScale: Animated.Value
+  liveGrowth: Animated.Value
   isLive: boolean
   testID: string
 }
 
 /**
- * One slot's bar for a wing: a filled zone-colored bar for a performed rep (the live
- * rep carries the pop), a dashed charcoal stub for a planned `todo` rep, a solid cyan
- * stub for a range's `variable` window, and a dashed cyan outline for the open `continue`.
- * Rounded only on the away-from-axis end so the mirrored pair meets cleanly at the axis.
+ * One slot's bar for a wing: a filled loss/zone-colored bar for a performed rep (the
+ * live rep GROWS from the centre axis via {@link useLiveRepGrowth}, matching the single
+ * hero), a dashed charcoal stub for a planned `todo` rep, a solid cyan stub for a range's
+ * `variable` window, and a dashed cyan outline for the open `continue`. Rounded only on
+ * the away-from-axis end so the mirrored pair meets cleanly at the axis.
  */
-function WingBar({ slot, grow, c, color, barPx, liveScale, isLive, testID }: WingBarProps) {
+function WingBar({ slot, grow, c, color, barPx, liveGrowth, isLive, testID }: WingBarProps) {
   const r = wingRadius(grow, c.radius)
   const stub = c.minBar * 2
   if (slot.kind === 'todo') {
@@ -1094,7 +1144,13 @@ function WingBar({ slot, grow, c, color, barPx, liveScale, isLive, testID }: Win
     ...(c.paper ? heroBarPaper(color) : null),
   }
   return isLive ? (
-    <Animated.View style={[barStyle, { transform: [{ scale: liveScale }] }]} testID={testID} />
+    <Animated.View
+      style={[
+        barStyle,
+        { height: liveGrowth.interpolate({ inputRange: [0, 1], outputRange: [0, barPx] }) },
+      ]}
+      testID={testID}
+    />
   ) : (
     <View style={barStyle} testID={testID} />
   )
@@ -1174,6 +1230,7 @@ export function DualVelocityStrip({
   left,
   right,
   zones,
+  barColor = 'loss',
   targetReps,
   liveRepIndex,
   variant = 'hero',
@@ -1186,7 +1243,7 @@ export function DualVelocityStrip({
   const resolvedHeight = height ?? (variant === 'hero' ? DUAL_HERO_HEIGHT : DUAL_RAIL_HEIGHT)
   const L = resolveStream(left, targetReps)
   const R = resolveStream(right, targetReps)
-  const barColorFor = makeBarColorFor(zones)
+  const zoneColorFor = makeBarColorFor(zones)
 
   // ONE shared scale across both wings so the L/R asymmetry reads as length, not two scales.
   const maxVelocity = Math.max(...L.done, ...R.done, 0)
@@ -1194,13 +1251,18 @@ export function DualVelocityStrip({
   const bestL = Math.max(...L.done, 0)
   const bestR = Math.max(...R.done, 0)
 
+  // Loss coloring is per-WING (each arm fatigues off its OWN best); `zone` falls
+  // through to the shared absolute scale. Mirrors the single hero's barColorFor.
+  const barColorForSide = (v: number, best: number): string =>
+    barColor === 'loss' ? getVelocityLossColor(velocityLossForRep(v, best)) : zoneColorFor(v)
+
   // Live-rep entrance on the newest mirrored pair (one Animated.Value per side).
   const liveVelL = liveRepIndex != null ? L.done[liveRepIndex] : undefined
   const liveVelR = liveRepIndex != null ? R.done[liveRepIndex] : undefined
   const isNewPeakL = liveVelL != null && bestL > 0 && liveVelL === bestL
   const isNewPeakR = liveVelR != null && bestR > 0 && liveVelR === bestR
-  const liveScaleL = useLiveRepPop(variant === 'hero', liveRepIndex, liveVelL, isNewPeakL)
-  const liveScaleR = useLiveRepPop(variant === 'hero', liveRepIndex, liveVelR, isNewPeakR)
+  const liveGrowthL = useLiveRepGrowth(variant === 'hero', liveRepIndex, liveVelL, isNewPeakL)
+  const liveGrowthR = useLiveRepGrowth(variant === 'hero', liveRepIndex, liveVelR, isNewPeakR)
 
   const [plotW, setPlotW] = useState(0)
   const onPlotLayout = (e: LayoutChangeEvent) => setPlotW(e.nativeEvent.layout.width)
@@ -1310,9 +1372,9 @@ export function DualVelocityStrip({
                       slot={lSlot}
                       grow="up"
                       c={c}
-                      color={barColorFor(lSlot.velocity ?? 0)}
+                      color={barColorForSide(lSlot.velocity ?? 0, bestL)}
                       barPx={barPx(lSlot.velocity)}
-                      liveScale={liveScaleL}
+                      liveGrowth={liveGrowthL}
                       isLive={i === liveRepIndex && lSlot.kind === 'rep'}
                       testID={`dual-velocity-bar-L-${i}`}
                     />
@@ -1328,9 +1390,9 @@ export function DualVelocityStrip({
                       slot={rSlot}
                       grow="down"
                       c={c}
-                      color={barColorFor(rSlot.velocity ?? 0)}
+                      color={barColorForSide(rSlot.velocity ?? 0, bestR)}
                       barPx={barPx(rSlot.velocity)}
-                      liveScale={liveScaleR}
+                      liveGrowth={liveGrowthR}
                       isLive={i === liveRepIndex && rSlot.kind === 'rep'}
                       testID={`dual-velocity-bar-R-${i}`}
                     />
@@ -1379,7 +1441,8 @@ export function VelocityStrip({
   velocities,
   set,
   zones,
-  barColor = 'zone',
+  barColor = 'loss',
+  showLossBands,
   liveRepIndex,
   expanded = true,
   onToggle,
@@ -1393,6 +1456,9 @@ export function VelocityStrip({
   className,
   ...props
 }: VelocityStripProps) {
+  // Bands default on with the loss bar-fill (the two halves of the loss language),
+  // off for the absolute zone scale; an explicit prop always wins.
+  const lossBandsOn = showLossBands ?? barColor === 'loss'
   // A `set` descriptor derives its own done-velocity array; the legacy
   // `velocities` path stays the source of truth otherwise. Every summary calc
   // (mean / loss / zone) runs on this one array so the info row works either way.
@@ -1421,9 +1487,12 @@ export function VelocityStrip({
   const zoneColorFor = makeBarColorFor(zones)
   const barColorFor = (v: number): string =>
     barColor === 'loss' ? getVelocityLossColor(velocityLossForRep(v, maxVelocity)) : zoneColorFor(v)
+  // Planned/to-do reps draw in a SURFACE-relative neutral (on-surface tertiary at a
+  // quiet alpha) so an empty slot stays legible on every plane, not a fixed charcoal.
+  const placeholderColor = useOnSurfaceColor('tertiary')
   const slotColor = (slot: VelocitySlot): string => {
     if (slot.kind === 'rep') return barColorFor(slot.velocity ?? 0)
-    if (slot.kind === 'todo') return TODO_COLOR
+    if (slot.kind === 'todo') return alpha(placeholderColor, 0.5)
     return SET_STRIP_VARIABLE_COLOR
   }
   const meanZone = hasZones
@@ -1489,6 +1558,7 @@ export function VelocityStrip({
         isNewPeak={isNewPeak}
         targetReps={targetReps}
         height={heroHeight}
+        showLossBands={lossBandsOn}
         className={className}
         viewProps={props}
       />

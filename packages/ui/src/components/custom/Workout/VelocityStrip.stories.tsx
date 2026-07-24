@@ -2,6 +2,8 @@ import { useState } from 'react'
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text, Pressable } from 'react-native'
 import { VelocityStrip } from './VelocityStrip'
+import { Surface } from '../../ui/surface/Surface'
+import type { SurfaceLevel } from '../../ui/surface/SurfaceContext'
 
 const meta: Meta<typeof VelocityStrip> = {
   title: 'Workout/DataViz/VelocityStrip',
@@ -432,4 +434,38 @@ function GrowFromBottomDemo() {
 /** Click "Add rep" to watch the newest bar grow up from the baseline; "Add PR rep" shows the overshoot-and-settle bounce on a new set peak. */
 export const LiveGrowFromBottom: Story = {
   render: () => <GrowFromBottomDemo />,
+}
+
+// --- Surface-relative placeholders -------------------------------------------
+// Planned/to-do reps (dashed hero stubs, grey mini/expanded slots) + the baseline
+// now derive from the on-surface `tertiary` neutral via the Surface context, so an
+// empty slot stays legible on EVERY plane instead of a fixed charcoal that washes
+// out on the frame or over-contrasts on a raised card.
+
+/** The same 4-of-8 mid-set on each surface plane — the placeholders track the surface, staying visible on all of them. */
+export const PlaceholderAcrossSurfaces: Story = {
+  render: () => {
+    const planes: SurfaceLevel[] = ['background', 'base', 'elevated', 'raised', 'overlay']
+    return (
+      <View style={{ gap: 16, padding: 20, backgroundColor: '#100D0A' }}>
+        {planes.map((level) => (
+          <Surface key={level} level={level} rounded>
+            <View style={{ padding: 16, width: 460 }}>
+              <Text style={{ color: '#9CA3AF', fontSize: 10, fontWeight: '700', marginBottom: 8 }}>
+                {level.toUpperCase()}
+              </Text>
+              <VelocityStrip
+                velocities={heroMidSet}
+                variant="hero"
+                targetReps={8}
+                liveRepIndex={3}
+                scale="fixed"
+                height={140}
+              />
+            </View>
+          </Surface>
+        ))}
+      </View>
+    )
+  },
 }
