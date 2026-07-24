@@ -528,8 +528,12 @@ function DashedReferenceLine({
 }
 
 const BAND_LABEL_FONT = 'monospace'
-/** Below this plot height (px) the VL20/VL30 labels are DROPPED (lines + washes stay) rather than shrunk. */
-const VL_LABEL_MIN_PLOT = 55
+/**
+ * Below this plot height (px) the VL20/VL30 labels are DROPPED entirely (the dashed lines + washes
+ * stay) rather than shrunk into an overlapping smear. Tuned so a 120px dual (≈41px plot/wing) and the
+ * cramped mid-small range drop, while the accepted board scale (≈76px plot/wing) keeps its labels.
+ */
+const VL_LABEL_MIN_PLOT = 65
 const VL_SEMANTIC = getSemanticColors('dark')
 
 /** Linear-blend two #RRGGBB hexes (`t`=0 → a, 1 → b). Used for the surface-relative to-do tone. */
@@ -879,7 +883,9 @@ function DivergingSideRail({
           style={{ width: labelLength, alignItems: 'center', transform: [{ rotate: '-90deg' }] }}
         >
           <Text className="text-text-tertiary" style={textStyle} numberOfLines={1} testID={testID}>
-            {sideLabelText(label, plotHalf)}
+            {/* Hero wings collapse to initials at small heights; the compact rail keeps its own
+                tuned 7px full-name treatment (its short wing is designed for it). */}
+            {isRail ? label : sideLabelText(label, plotHalf)}
           </Text>
         </View>
       ) : null}

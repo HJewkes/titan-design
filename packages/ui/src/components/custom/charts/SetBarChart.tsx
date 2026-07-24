@@ -454,11 +454,11 @@ export function sideLabelFontSize(height: number): number {
 }
 
 /**
- * Below this vertical extent (px) the side label collapses to initials rather than shrink further —
- * set near where the floor-font (7px) name stops fitting, so the compact `rail` (~48px) still shows
- * full names and only a genuinely tiny chart degrades.
+ * Below this vertical extent (px) the side label collapses to initials rather than shrink further.
+ * A 120px dual (60px per wing) sits below this, so its wings degrade to "L" / "R"; the compact `rail`
+ * is exempted at its call site (it keeps its own tuned full-name treatment).
  */
-export const SIDE_LABEL_INITIALS_BELOW = 44
+export const SIDE_LABEL_INITIALS_BELOW = 70
 
 /**
  * The side-label text for the available vertical `extent`: the full name when there's room, else it

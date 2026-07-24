@@ -415,13 +415,14 @@ export const HeroSymmetricEmpties: Story = {
 }
 
 /**
- * Small chart height — the responsive labels. At ~110px the per-side slot names and the VL20 / VL30
- * band labels scale their font down so the names don't truncate and the two VL labels don't collide.
+ * Small chart height (120px) — the responsive labels DEGRADE: the per-side slot names collapse to
+ * initials ("Left"/"Right" → "L"/"R") and the VL20 / VL30 band labels drop entirely (the dashed
+ * lines + washes stay). Single-word labels here so the collapse reads as clean L / R.
  */
 export const HeroSmallHeightLabels: Story = {
   args: {
-    left: { velocities: [0.96, 0.9, 0.83, 0.72], label: LEFT_SLOT },
-    right: { velocities: [0.9, 0.82, 0.71, 0.6], label: RIGHT_SLOT },
+    left: { velocities: [0.96, 0.9, 0.83, 0.72], label: 'Left' },
+    right: { velocities: [0.9, 0.82, 0.71, 0.6], label: 'Right' },
     variant: 'hero',
     scale: 'fixed',
     height: 120,
