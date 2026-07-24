@@ -133,6 +133,8 @@ function RowStrip({ set }: { set: SetRowProps }) {
         showInfo={false}
         height={24}
         scale="fixed"
+        // Grow the newest rep from the baseline as it lands (the live-set spotlight).
+        liveRepIndex={set.velocities.length - 1}
         set={{ type: 'straight', velocities: set.velocities, planned: set.target.reps }}
         zones={zones}
       />

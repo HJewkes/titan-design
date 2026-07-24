@@ -13,7 +13,7 @@ import {
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { primitiveColors, primitiveRamps, sequentialEffort } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { useOnSurfaceColor } from '../../ui/surface/SurfaceContext'
+import { useOnSurfaceColor, useSurface, surfaceBackground } from '../../ui/surface/SurfaceContext'
 import { alpha } from '../../../utils/colors'
 import { formatVelocity } from '../../../utils/workout-format'
 import { SET_STRIP_VARIABLE_COLOR } from './SetStrip'
@@ -576,6 +576,21 @@ function DashedReferenceLine({
 
 const BAND_LABEL_FONT = 'monospace'
 const VL_SEMANTIC = getSemanticColors('dark')
+
+/** Linear-blend two #RRGGBB hexes (`t`=0 → a, 1 → b). Used for the surface-relative to-do tone. */
+function mixHex(a: string, b: string, t: number): string {
+  const parse = (h: string): [number, number, number] => {
+    const s = h.replace('#', '')
+    return [parseInt(s.slice(0, 2), 16), parseInt(s.slice(2, 4), 16), parseInt(s.slice(4, 6), 16)]
+  }
+  const [ar, ag, ab] = parse(a)
+  const [br, bg, bb] = parse(b)
+  const ch = (x: number, y: number): string =>
+    Math.round(x + (y - x) * t)
+      .toString(16)
+      .padStart(2, '0')
+  return `#${ch(ar, br)}${ch(ag, bg)}${ch(ab, bb)}`
+}
 
 /**
  * Velocity-LOSS decision bands for the `hero` variant: the VL20 / VL30 coaching
@@ -1487,12 +1502,16 @@ export function VelocityStrip({
   const zoneColorFor = makeBarColorFor(zones)
   const barColorFor = (v: number): string =>
     barColor === 'loss' ? getVelocityLossColor(velocityLossForRep(v, maxVelocity)) : zoneColorFor(v)
-  // Planned/to-do reps draw in a SURFACE-relative neutral (on-surface tertiary at a
-  // quiet alpha) so an empty slot stays legible on every plane, not a fixed charcoal.
-  const placeholderColor = useOnSurfaceColor('tertiary')
+  // Planned/to-do reps take a SURFACE-RELATIVE tone: the surface plane blended toward
+  // the on-surface neutral by a constant amount, so an empty slot holds ~constant
+  // contrast on EVERY plane (the inset/pressed relative model). This is the pattern we
+  // want surface-wide — it's also what makes a future light-mode redesign fall out.
+  const onSurfaceTertiary = useOnSurfaceColor('tertiary')
+  const surface = useSurface()
+  const todoColor = mixHex(surfaceBackground(surface.level, surface.mode), onSurfaceTertiary, 0.55)
   const slotColor = (slot: VelocitySlot): string => {
     if (slot.kind === 'rep') return barColorFor(slot.velocity ?? 0)
-    if (slot.kind === 'todo') return alpha(placeholderColor, 0.5)
+    if (slot.kind === 'todo') return todoColor
     return SET_STRIP_VARIABLE_COLOR
   }
   const meanZone = hasZones
@@ -1624,27 +1643,44 @@ export function VelocityStrip({
         testID="velocity-strip-compact"
         {...restProps}
       >
-        {slots.map((slot, i) => (
-          <View
-            key={i}
-            style={{
-              flex: 1,
-              minWidth: 4,
-              height: bareSlotHeight(slot, height, scaleDenom),
-              // Top-rounded to match the framed chart's bars (the "rounded tops from
-              // the numbers one"); square bottoms since bars sit on the baseline.
-              borderTopLeftRadius: 2,
-              borderTopRightRadius: 2,
-              backgroundColor: slotColor(slot),
-              marginLeft: Math.max(0, slot.leadingGap - REP_GAP),
-              ...(slot.kind === 'continue'
-                ? { borderWidth: 1, borderColor: CONTINUE_OUTLINE }
-                : {}),
-            }}
-            accessibilityElementsHidden
-            testID={slot.kind === 'rep' ? `velocity-bar-${i}` : `velocity-slot-${slot.kind}`}
-          />
-        ))}
+        {slots.map((slot, i) => {
+          const barH = bareSlotHeight(slot, height, scaleDenom)
+          const isLive = i === liveRepIndex && slot.kind === 'rep'
+          const barStyle: ViewStyle = {
+            flex: 1,
+            minWidth: 4,
+            height: barH,
+            // Top-rounded to match the framed chart's bars (the "rounded tops from
+            // the numbers one"); square bottoms since bars sit on the baseline.
+            borderTopLeftRadius: 2,
+            borderTopRightRadius: 2,
+            backgroundColor: slotColor(slot),
+            marginLeft: Math.max(0, slot.leadingGap - REP_GAP),
+            // Performed reps carry the same paper treatment as the hero (grain +
+            // rim-light + contact shadow) so the spotlight strip reads as one material.
+            ...(slot.kind === 'rep' ? heroBarPaper(slotColor(slot)) : null),
+            ...(slot.kind === 'continue'
+              ? { borderWidth: 1, borderColor: CONTINUE_OUTLINE }
+              : {}),
+          }
+          const barTestID =
+            slot.kind === 'rep' ? `velocity-bar-${i}` : `velocity-slot-${slot.kind}`
+          // The newest rep grows up from the baseline as it lands (matching the framed
+          // chart + hero); a new set peak overshoots then settles.
+          return isLive ? (
+            <Animated.View
+              key={i}
+              style={[
+                barStyle,
+                { height: liveGrowth.interpolate({ inputRange: [0, 1], outputRange: [0, barH] }) },
+              ]}
+              accessibilityElementsHidden
+              testID={barTestID}
+            />
+          ) : (
+            <View key={i} style={barStyle} accessibilityElementsHidden testID={barTestID} />
+          )
+        })}
       </View>
     )
   }
@@ -1687,6 +1723,7 @@ export function VelocityStrip({
               borderTopLeftRadius: 2,
               borderTopRightRadius: 2,
               backgroundColor: slotColor(slot),
+              ...(isStraightRep ? heroBarPaper(slotColor(slot)) : null),
               ...(slot.kind === 'continue'
                 ? { borderWidth: 1, borderColor: CONTINUE_OUTLINE }
                 : {}),
@@ -1746,6 +1783,9 @@ export function VelocityStrip({
                     borderTopLeftRadius: 2,
                     borderTopRightRadius: 2,
                     backgroundColor: barBackground,
+                    // Framed chart bars carry the hero's paper treatment too, so the
+                    // framed / bare / hero treatments read as one material family.
+                    ...heroBarPaper(barBackground),
                   }
                 : {
                     minHeight: '100%' as unknown as number,

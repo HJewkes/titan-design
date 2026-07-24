@@ -442,25 +442,32 @@ export const LiveGrowFromBottom: Story = {
 // empty slot stays legible on EVERY plane instead of a fixed charcoal that washes
 // out on the frame or over-contrasts on a raised card.
 
-/** The same 4-of-8 mid-set on each surface plane — the placeholders track the surface, staying visible on all of them. */
+/**
+ * The real concern: the grey PLANNED / TO-DO slots (a 4-of-8 straight set — 4 done reps
+ * + 4 to-do) in the mini and bare-expanded strips, on each surface plane. The to-do slots
+ * derive from the on-surface neutral so they stay legible on every plane instead of a fixed
+ * charcoal that washes out on a raised card or vanishes on the frame.
+ */
 export const PlaceholderAcrossSurfaces: Story = {
   render: () => {
     const planes: SurfaceLevel[] = ['background', 'base', 'elevated', 'raised', 'overlay']
+    const straight4of8 = { type: 'straight' as const, velocities: [0.9, 0.85, 0.8, 0.74], planned: 8 }
     return (
-      <View style={{ gap: 16, padding: 20, backgroundColor: '#100D0A' }}>
+      <View style={{ gap: 12, padding: 20, backgroundColor: '#100D0A' }}>
         {planes.map((level) => (
           <Surface key={level} level={level} rounded>
-            <View style={{ padding: 16, width: 460 }}>
-              <Text style={{ color: '#9CA3AF', fontSize: 10, fontWeight: '700', marginBottom: 8 }}>
+            <View style={{ padding: 14, width: 340, gap: 8 }}>
+              <Text style={{ color: '#9CA3AF', fontSize: 9, fontWeight: '700' }}>
                 {level.toUpperCase()}
               </Text>
+              <VelocityStrip variant="mini" set={straight4of8} />
               <VelocityStrip
-                velocities={heroMidSet}
-                variant="hero"
-                targetReps={8}
-                liveRepIndex={3}
+                variant="expanded"
+                showNumbers={false}
+                showInfo={false}
+                height={24}
                 scale="fixed"
-                height={140}
+                set={straight4of8}
               />
             </View>
           </Surface>
