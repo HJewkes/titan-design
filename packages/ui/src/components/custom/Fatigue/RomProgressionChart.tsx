@@ -6,15 +6,18 @@
  * reference lines and a faint red short-zone. Every rep reads at full colour.
  * Labelled "depth vs working range · now N%".
  *
- * Data-driven from absolute metres: bars scale to the tallest of {bars, working
- * standard} with headroom, so the working line always sits on-chart. When no working
- * standard is established yet (< 3 reps) the reference lines drop and every bar reads
- * silver — the bars alone carry the shape.
+ * Composes the shared {@link SetBarChart}: SetBarChart owns the geometry (value→height
+ * scaling, the plot-width-driven adaptive bar width / gap — the same rhythm as the velocity
+ * hero) and paints the reference overlay this chart hands it. When `plannedReps` exceeds the
+ * performed count the remaining reps draw as dashed to-do placeholders (the velocity "N of M"
+ * read). Bars scale to the tallest of {bars, working standard, short threshold} so the
+ * reference lines always sit on-chart; when no working standard is established yet (< 3 reps)
+ * the lines drop and every bar reads silver — the bars alone carry the shape.
  */
-import { View, Text, type ViewStyle } from 'react-native'
+import { View, Text } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { barPaper } from '../../../theme/bar-paper'
 import { alpha } from '../../../utils/colors'
+import { SetBarChart, type SetSlot, type SetBarGeometry } from '../charts/SetBarChart'
 import { FONT_MONO, SILVER, RED_LIGHT, RED_DEEP } from './fatigue-tokens'
 import type { RepRomPoint } from './fatigue-model'
 
@@ -31,6 +34,11 @@ export interface RomProgressionChartProps {
   barHeight?: number
   /** Keep the chart to a legible recent tail. Default 12. */
   maxReps?: number
+  /**
+   * Planned rep count. Reps beyond the performed count draw as dashed to-do placeholders (the
+   * velocity "3 of 8 done" read). Ignored when absent or ≤ the performed-rep count.
+   */
+  plannedReps?: number
 }
 
 /** A per-rep bar's colour (silver/red): deep red below short, light red below working, else silver. */
@@ -40,107 +48,94 @@ function barColor(romM: number, working: number | null, short: number | null): s
   return SILVER
 }
 
+/** The dashed working-standard + short-threshold lines and the faint short-zone fill, painted from chart geometry. */
+function romReferenceOverlay(
+  g: SetBarGeometry,
+  workingStandardM: number | null,
+  shortThresholdM: number | null
+) {
+  return (
+    <>
+      {shortThresholdM != null && (
+        <View
+          pointerEvents="none"
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: g.yOf(shortThresholdM),
+            backgroundColor: alpha(RED_DEEP, 0.06),
+          }}
+        />
+      )}
+      {workingStandardM != null && (
+        <View
+          pointerEvents="none"
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: g.yOf(workingStandardM),
+            borderTopWidth: 1,
+            borderStyle: 'dashed',
+            borderColor: alpha(SILVER, 0.4),
+          }}
+        />
+      )}
+      {shortThresholdM != null && (
+        <View
+          pointerEvents="none"
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: g.yOf(shortThresholdM),
+            borderTopWidth: 1,
+            borderStyle: 'dashed',
+            borderColor: alpha(RED_DEEP, 0.4),
+          }}
+        />
+      )}
+    </>
+  )
+}
+
 export function RomProgressionChart({
   points,
   workingStandardM,
   shortThresholdM,
   barHeight = 44,
   maxReps = 12,
+  plannedReps,
 }: RomProgressionChartProps) {
   const shown = points.slice(-maxReps)
   const lastIndex = shown.length - 1
-  const denom = Math.max(0.01, ...shown.map((p) => p.romM), workingStandardM ?? 0) * 1.1
-  // px UP from the baseline for a metre value.
-  const yUp = (m: number) => (m / denom) * barHeight
   const current = shown[lastIndex]?.romM ?? 0
   const nowPct =
     workingStandardM != null
       ? Math.round((current / workingStandardM) * 100)
       : Math.round((current / Math.max(0.01, ...shown.map((p) => p.romM))) * 100)
 
+  const slots: SetSlot[] = shown.map((p) => ({ kind: 'rep', value: p.romM }))
+  // Scale to the tallest of {bars, working, short} so the reference lines always sit on-chart
+  // (SetBarChart's own peak scale reads only the bar values). `0` → let SetBarChart use peak.
+  const scaleMax =
+    Math.max(...shown.map((p) => p.romM), workingStandardM ?? 0, shortThresholdM ?? 0) || undefined
+
   return (
     <View style={{ gap: 5 }} testID="rom-progression">
-      <View
-        style={{
-          height: barHeight,
-          position: 'relative',
-          flexDirection: 'row',
-          alignItems: 'flex-end',
-          gap: 3,
-        }}
-      >
-        {/* short-zone faint fill + the two dashed reference lines. */}
-        {shortThresholdM != null && (
-          <View
-            pointerEvents="none"
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              bottom: 0,
-              height: yUp(shortThresholdM),
-              backgroundColor: alpha(RED_DEEP, 0.06),
-            }}
-          />
-        )}
-        {workingStandardM != null && (
-          <View
-            pointerEvents="none"
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              bottom: yUp(workingStandardM),
-              borderTopWidth: 1,
-              borderStyle: 'dashed',
-              borderColor: alpha(SILVER, 0.4),
-            }}
-          />
-        )}
-        {shortThresholdM != null && (
-          <View
-            pointerEvents="none"
-            style={{
-              position: 'absolute',
-              left: 0,
-              right: 0,
-              bottom: yUp(shortThresholdM),
-              borderTopWidth: 1,
-              borderStyle: 'dashed',
-              borderColor: alpha(RED_DEEP, 0.4),
-            }}
-          />
-        )}
-        {shown.map((p) => {
-          const color = barColor(p.romM, workingStandardM, shortThresholdM)
-          return (
-            <View
-              key={p.repNumber}
-              style={{
-                flex: 1,
-                minWidth: 6,
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-                height: barHeight,
-              }}
-            >
-              <View
-                style={
-                  {
-                    width: '80%',
-                    height: Math.max(3, yUp(p.romM)),
-                    borderTopLeftRadius: 2,
-                    borderTopRightRadius: 2,
-                    backgroundColor: color,
-                    // Same shared paper treatment as the velocity bars — one material.
-                    ...barPaper(color),
-                  } as ViewStyle
-                }
-              />
-            </View>
-          )
-        })}
-      </View>
+      <SetBarChart
+        slots={slots}
+        colorFor={(romM) => barColor(romM, workingStandardM, shortThresholdM)}
+        height={barHeight}
+        scaleMax={scaleMax}
+        barRadius={2}
+        hideBaseline
+        targetReps={plannedReps}
+        renderReference={(g) => romReferenceOverlay(g, workingStandardM, shortThresholdM)}
+        testIDPrefix="rom"
+      />
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <Text style={{ fontSize: 9, color: t['text-tertiary'], fontFamily: FONT_MONO }}>
           ROM · depth vs working range

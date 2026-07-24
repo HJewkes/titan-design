@@ -43,10 +43,17 @@ function barGrain(color: string): string {
  * Paper/raised treatment for a colored bar of the given `color`: brightness-scaled
  * matte grain + a crisp top rim-light + a defined contact shadow. Spread onto a bar's
  * style. Presentation-only; scoped to filled bars (not shared strips/dividers).
+ *
+ * `flip` = a vertically-mirrored (`scaleY(-1)`) plot — a `down` wing of the diverging
+ * chart. The contact shadow's y-offset is pre-inverted so the mirror lands it pointing
+ * AWAY from the shared axis (not up across it), and the top rim-light is DROPPED (mirrored
+ * it would sit on the axis edge and read wrong; grain + shadow alone carry the material).
  */
-export function barPaper(color: string): ViewStyle {
+export function barPaper(color: string, flip = false): ViewStyle {
   return {
     backgroundImage: barGrain(color),
-    boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.22), 0 6px 16px rgba(0,0,0,0.45)',
+    boxShadow: flip
+      ? '0 -6px 16px rgba(0,0,0,0.45)'
+      : 'inset 0 1.5px 0 rgba(255,255,255,0.22), 0 6px 16px rgba(0,0,0,0.45)',
   } as unknown as ViewStyle
 }

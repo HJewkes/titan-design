@@ -37,13 +37,13 @@ const meta: Meta<typeof DualVelocityStrip> = {
           'hero, sharing ONE height scale (`scaleMax`) and meeting at one shared centre axis. Because ' +
           'it composes the single hero, every hero improvement — paper, VL20/VL30 loss bands, ' +
           'grow-from-bottom, the running-best reference, surface-relative placeholders, per-side loss ' +
-          'coloring — reaches the dual for free. The up-wing stream grows **UP** and the down-wing ' +
-          'stream grows **DOWN**, so the asymmetry reads pre-attentively as the silhouette. A stronger ' +
-          'arm reads **TALLER** (shared height scale) while each wing still colors by its OWN best. ' +
-          '**Side is POSITION only, never hue.** Each side takes a `DualVelocityStream` (`velocities` ' +
-          'OR a structured `set`, plus an optional `label`); a `set` **flattens** to its performed ' +
-          'reps for the flat hero (the per-set-type slot WINDOWS — cyan variable / continue — are a ' +
-          'single-strip mini/expanded feature, not drawn on the dual hero). The vertical edge label is ' +
+          'coloring, **the set-type slot windows** — reaches the dual for free. The up-wing stream ' +
+          'grows **UP** and the down-wing stream grows **DOWN**, so the asymmetry reads pre-attentively ' +
+          'as the silhouette. A stronger arm reads **TALLER** (shared height scale) while each wing still ' +
+          'colors by its OWN best. **Side is POSITION only, never hue.** Each side takes a ' +
+          '`DualVelocityStream` (`velocities` OR a structured `set`, plus an optional `label`); a `set` ' +
+          'passes straight into its wing, so its set-type **windows render** — the range cyan variable ' +
+          'window, the AMRAP/myo "continue", the drop/myo chunk-notch gaps. The vertical edge label is ' +
           'DATA — each side renders its `label` slot name (e.g. "Left Arm"), not a hardcoded side. Two ' +
           'scales: `hero` (across-the-room wall) and `rail` (a lean compact dedicated renderer — same ' +
           'diverging form, no labels / reference lines / paper). Single-slot sets keep using ' +
@@ -169,10 +169,10 @@ export const Rail: Story = {
 }
 
 /**
- * Set-type streams — the up wing takes a `range` set, the down wing an `amrap` set. On the dual hero
- * both **flatten to their performed reps** (the composed hero is a flat velocity chart), so the range's
- * cyan variable window and the amrap's trailing "continue" slot are NOT drawn here — those per-set-type
- * windows live in the single-strip mini / expanded variants. The dual still colors per-side by loss.
+ * Set-type streams — the up wing takes a `range` set, the down wing an `amrap` set. Each side's `set`
+ * passes into its composed hero, so the set-type **windows render**: the range's cyan variable window
+ * (`floor..max`) on the up wing, the amrap's trailing cyan-outline "continue" on the down wing. The
+ * dual still colors per-side by loss — the windows are position, not hue.
  */
 export const HeroSetTypes: Story = {
   args: {
@@ -189,9 +189,9 @@ export const HeroSetTypes: Story = {
 
 /**
  * A `myo` (rest-pause) set on the up wing — activation + clusters — mirrored against a straight down-wing
- * set. On the dual hero the myo set **flattens to one bar per performed rep** (activation + all cluster
- * reps); the chunk-notch gaps and the open "continue" slot are single-strip features and are not drawn on
- * the composed flat hero. The mirrored up↔down alignment stays clean because every rep is a plain bar.
+ * set. The myo set renders one bar per performed rep (activation + all cluster reps), the WIDE chunk-notch
+ * gaps that split each cluster, and — since `open` is set — the trailing cyan-outline "continue" window.
+ * The mirrored up↔down alignment stays clean because the chunk gaps sit between rep columns.
  */
 export const HeroMyoReps: Story = {
   args: {
@@ -281,12 +281,10 @@ function CoverageRow({
 
 /**
  * Set-type coverage — the 7 `SetStripSet` rail types (SetBar.tsx: done · active · todo · range ·
- * drop · myo · myo-upcoming) mapped onto the diverging hero via `DualVelocityStream.set`. Because
- * the dual hero COMPOSES the flat single hero, **every set type flattens to one bar per performed
- * rep + dashed todo stubs**: the set-type slot WINDOWS (range's cyan variable window, amrap/myo's
- * "continue") and the drop/myo chunk-notch GAPS are single-strip (mini / expanded) features and are
- * not drawn here. So the rows differ by their rep VALUES + colours (per-side loss), not by any
- * set-type chrome. Shown honestly, not editorialised.
+ * drop · myo · myo-upcoming) mapped onto the diverging hero via `DualVelocityStream.set`. Each side's
+ * `set` passes straight into its composed hero, so **every type renders its full vocabulary**: rep
+ * bars, dashed todo stubs, the range cyan variable window, the AMRAP/myo cyan-outline "continue", and
+ * the drop/myo WIDE chunk-notch gaps — mirrored across the shared axis, coloured per-side by loss.
  */
 export const SetTypeCoverage: Story = {
   render: () => (
@@ -323,7 +321,7 @@ export const SetTypeCoverage: Story = {
       />
       <CoverageRow
         type="range"
-        note="→ range: committed reps as bars (the cyan variable window is not drawn on the flat dual hero)"
+        note="→ range: committed reps as bars + the cyan variable window (floor..max)"
         left={{
           set: { type: 'range', velocities: [0.9, 0.86, 0.82, 0.8], floor: 6, max: 8 },
           label: LEFT_SLOT,
@@ -335,7 +333,7 @@ export const SetTypeCoverage: Story = {
       />
       <CoverageRow
         type="drop"
-        note="→ drop: flattens to one bar per rep (sub-load chunk-gap spacing is a single-strip feature)"
+        note="→ drop: one bar per rep with WIDE chunk-notch gaps splitting each sub-load"
         left={{
           set: {
             type: 'drop',
@@ -361,7 +359,7 @@ export const SetTypeCoverage: Story = {
       />
       <CoverageRow
         type="myo"
-        note="→ myo: activation + clusters flatten to one bar per rep (chunk gaps + open continue are single-strip features)"
+        note="→ myo: activation + clusters, WIDE chunk-notch gaps between clusters"
         left={{
           set: {
             type: 'myo',
@@ -387,7 +385,7 @@ export const SetTypeCoverage: Story = {
       />
       <CoverageRow
         type="myo-upcoming"
-        note="→ approximated as an open myo; flattens to its performed activation reps (a planned myo has no distinct flat-hero form)"
+        note="→ approximated as an open myo: performed activation reps + the trailing cyan-outline continue window"
         left={{
           set: { type: 'myo', activation: [0.84, 0.8, 0.76], clusters: [], open: true },
           label: LEFT_SLOT,

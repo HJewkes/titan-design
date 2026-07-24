@@ -1,0 +1,347 @@
+// Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
+/**
+ * SetBarChart — the generic per-rep value-height bar chart both the velocity hero and the
+ * ROM progression compose. It OWNS the chart geometry (value→height scaling, the shared
+ * `scaleMax` override, the plot-width-driven adaptive bar width / gap stepping / value-label
+ * thinning) and the shared bar language (paper treatment, grow-from-bottom live rep, up/down
+ * orientation, the set-type slot vocabulary). Everything domain-specific — bar COLOR, the
+ * reference overlay (velocity VL bands / ROM working+short lines) — is passed in, so an
+ * improvement to the chart (spacing, paper, live-grow) lands once for every consumer.
+ *
+ * VALUE-HEIGHT ONLY: the flat 3px `mini` strip stays its own thin strip in VelocityStrip.
+ */
+import { useState, type ReactNode } from 'react'
+import {
+  View,
+  Text,
+  Animated,
+  type ViewProps,
+  type ViewStyle,
+  type LayoutChangeEvent,
+} from 'react-native'
+import { primitiveRamps } from '../../../theme/tokens/primitives'
+import { barPaper } from '../../../theme/bar-paper'
+import { useOnSurfaceColor } from '../../ui/surface/SurfaceContext'
+import { useLiveRepGrowth } from './live-rep-growth'
+
+/** The cyan variable-window fill — the range set's `floor..max` window (shared with SetStrip). */
+const VARIABLE_FILL = primitiveRamps.cyan[900]
+/** The thin cyan-800 outline on the open-ended "continue" slot — reads as "keep going". */
+const CONTINUE_OUTLINE = primitiveRamps.cyan[800]
+
+/**
+ * One drawn cell of the chart. `rep` carries a `value` and draws a value-height bar;
+ * `todo` / `variable` / `continue` are the set-type window stubs (planned remainder, the
+ * range floor..max window, the AMRAP/myo open tail). `leadingGap` adds spacing BEFORE the
+ * cell beyond the uniform inter-bar gap — the WIDE chunk-notch that splits drop sub-loads /
+ * myo clusters / cluster intra-rests. Absent `leadingGap` = the ordinary rep gap.
+ */
+export interface SetSlot {
+  kind: 'rep' | 'todo' | 'variable' | 'continue'
+  value?: number
+  leadingGap?: number
+}
+
+/** The geometry SetBarChart hands a {@link SetBarChartProps.renderReference} overlay painter. */
+export interface SetBarGeometry {
+  /** The height-scaling denominator (a value `v` sits `yOf(v)` px up from the baseline). */
+  scaleDenom: number
+  /** The drawable plot height (px) — `height` minus the value-label headroom when labels show. */
+  plotHeight: number
+  /** px UP from the baseline for a value. */
+  yOf: (value: number) => number
+  /** The tallest performed value — the running-best reps are measured against. */
+  best: number
+  /** The plot is vertically mirrored (a `down` wing) — counter-flip any text in the overlay. */
+  flip: boolean
+}
+
+export interface SetBarChartProps {
+  /** Ordered cells — performed reps + any set-type window stubs. */
+  slots: SetSlot[]
+  /** value → bar fill color. Reps only; window stubs use the fixed set-type tones. */
+  colorFor: (value: number) => string
+  /** Plot height (px). Bars scale into this (minus the value-label headroom when labels show). */
+  height: number
+  /**
+   * Height scaling. `peak` (default) scales to the performed max (+headroom); `fixed` scales
+   * to a fixed velocity ceiling so heights read the same absolute value across sets. Overridden
+   * by {@link scaleMax}.
+   */
+  scale?: 'peak' | 'fixed'
+  /**
+   * OVERRIDE the height denominator with `scaleMax * headroom` (BAR HEIGHT ONLY; color + the
+   * reference `best` still read this chart's own values). The diverging dual passes the pair's
+   * shared max so a stronger side reads TALLER against one common scale.
+   */
+  scaleMax?: number
+  /** `up` (default) grows bars UP from a bottom baseline; `down` mirrors the plot (grows DOWN, text upright). */
+  orientation?: 'up' | 'down'
+  /** Index (into the rep slots) of the newest rep — that bar grows up from the baseline as it lands. */
+  liveRepIndex?: number
+  /** The live rep set a new peak — its entrance overshoots then settles (a small bounce). */
+  isNewPeak?: boolean
+  /**
+   * Append dashed todo placeholders so the chart reads "3 of N done". Ignored when the `slots`
+   * already run to (or past) this count — a caller that supplies its own todo slots omits this.
+   */
+  targetReps?: number
+  /** Top-corner radius on the bars (px). Default 5. */
+  barRadius?: number
+  /** Draw a per-bar value label above each rep bar. Default false. */
+  showValueLabels?: boolean
+  /** Format a rep value for its label. Default `String`. */
+  formatValue?: (value: number) => string
+  /** Paint a reference overlay (VL bands / working-standard lines) given the chart geometry. */
+  renderReference?: (geometry: SetBarGeometry) => ReactNode
+  /** Suppress the plot's own 2px baseline border (the dual draws ONE shared centre axis instead). */
+  hideBaseline?: boolean
+  /** Container testID. */
+  testID?: string
+  /** Prefix for the per-cell testIDs: `${prefix}-bar-N`, `${prefix}-label-N`, `${prefix}-slot-KIND`. Default `setbar`. */
+  testIDPrefix?: string
+  /** When set, the container reads as an `image` with this label; omit for a plain (unlabeled) plot. */
+  accessibilityLabel?: string
+  className?: string
+  /** Rest View props (style is merged onto the container). */
+  viewProps?: ViewProps
+}
+
+/** The `scale="fixed"` velocity ceiling (m/s) — a bar height reads the same absolute value across sets. */
+const FIXED_MAX_VALUE = 1.15
+/** Headroom above the peak bar: just enough to seat its value label without a big empty band on top. */
+export const PEAK_HEADROOM = 1.06
+
+/** The height-scaling denominator for `scale` at the given performed max (guarded ≥ 0 by callers). */
+export function scaleDenominator(scale: 'peak' | 'fixed', maxValue: number): number {
+  return scale === 'fixed' ? FIXED_MAX_VALUE : maxValue * PEAK_HEADROOM
+}
+
+// --- Hero geometry -----------------------------------------------------------
+/** Default plot height (px) — tall enough to read a set's shape across a room. */
+export const SET_BAR_DEFAULT_HEIGHT = 220
+/** Vertical band reserved above the tallest bar for its value label (px). */
+const LABEL_HEADROOM = 20
+/** Base gap between bars (px) — a group-notch-free even rhythm at wall scale. */
+const BASE_BAR_GAP = 8
+/** Cap on a single bar's width so a 2–3 rep set doesn't render slab-wide bars (px). */
+const BAR_MAX_WIDTH = 120
+/** Below this per-bar width the value labels collide, so all but the peak + live rep are dropped. */
+const LABEL_MIN_BAR_WIDTH = 30
+/** Default top-corner radius on bars (px). */
+const DEFAULT_BAR_RADIUS = 5
+/** Minimum drawn height of a performed bar (px) — a near-zero rep still reads as a rep. */
+const MIN_BAR_HEIGHT = 4
+/** The stub height for a window cell (todo / variable / continue) — reads as a placeholder. */
+const STUB_HEIGHT = MIN_BAR_HEIGHT * 3
+/** The ordinary rep gap the per-slot `leadingGap` is measured against (extra margin = leadingGap − this). */
+const REP_GAP = 2
+
+/** Is this cell a performed rep (carries a value)? */
+function isRep(slot: SetSlot): boolean {
+  return slot.kind === 'rep'
+}
+
+/**
+ * The performed-rep index for each cell (`-1` for a window stub) — reps are contiguous from 0 in
+ * every set type, so this maps `liveRepIndex` / peak / label-thinning (rep-indexed) onto cells.
+ */
+function repIndexByCell(cells: SetSlot[]): number[] {
+  let count = 0
+  return cells.map((slot) => (isRep(slot) ? count++ : -1))
+}
+
+export function SetBarChart({
+  slots,
+  colorFor,
+  height,
+  scale = 'peak',
+  scaleMax,
+  orientation = 'up',
+  liveRepIndex,
+  isNewPeak = false,
+  targetReps,
+  barRadius = DEFAULT_BAR_RADIUS,
+  showValueLabels = false,
+  formatValue = String,
+  renderReference,
+  hideBaseline = false,
+  testID,
+  testIDPrefix = 'setbar',
+  accessibilityLabel,
+  className,
+  viewProps = {},
+}: SetBarChartProps) {
+  // Append dashed todo placeholders up to `targetReps` (a caller that builds its own todo
+  // slots omits `targetReps`, so this only fills the plain performed-reps case).
+  const todosToAdd = Math.max(0, (targetReps ?? 0) - slots.length)
+  const cells: SetSlot[] =
+    todosToAdd > 0
+      ? [...slots, ...Array.from({ length: todosToAdd }, () => ({ kind: 'todo' as const }))]
+      : slots
+
+  const repValues = cells.filter(isRep).map((s) => s.value ?? 0)
+  const best = repValues.length > 0 ? Math.max(...repValues) : 0
+
+  // The whole plot mirrors for `down`; text nodes counter-flip so they read upright.
+  const flip = orientation === 'down'
+  const flipStyle = flip ? ({ transform: [{ scaleY: -1 as number }] } as const) : null
+
+  // Planned/to-do reps + the baseline draw in a SURFACE-relative neutral (on-surface tertiary)
+  // so they stay legible on every plane instead of a fixed charcoal.
+  const placeholderColor = useOnSurfaceColor('tertiary')
+
+  // `scaleMax` (the diverging dual's shared pair-max) overrides the height denominator so both
+  // sides share ONE height scale; color + the reference still read this chart's own values.
+  const scaleDenom =
+    scaleMax != null && scaleMax > 0 ? scaleMax * PEAK_HEADROOM : scaleDenominator(scale, best)
+
+  // Reserve a band above the tallest bar for its value label so a peak bar never clips.
+  const plotHeight = Math.max(0, height - (showValueLabels ? LABEL_HEADROOM : 0))
+  const yOf = (value: number): number => (scaleDenom > 0 ? (value / scaleDenom) * plotHeight : 0)
+  const barHeight = (value: number): number =>
+    scaleDenom > 0 ? Math.max(MIN_BAR_HEIGHT, Math.min(1, value / scaleDenom) * plotHeight) : MIN_BAR_HEIGHT
+
+  // Live-rep grow-from-bottom (rep index → cell index; reps are contiguous from 0 in every set type).
+  const liveValue =
+    liveRepIndex != null && liveRepIndex < repValues.length ? repValues[liveRepIndex] : undefined
+  const liveGrowth = useLiveRepGrowth(true, liveRepIndex, liveValue, isNewPeak)
+
+  // Measure the plot so per-bar value labels can thin on a narrow chart (they collide once bars
+  // get thin). Width 0 (unmeasured) → show all, so test/server renders are unchanged.
+  const [plotW, setPlotW] = useState(0)
+  const onPlotLayout = (e: LayoutChangeEvent) => setPlotW(e.nativeEvent.layout.width)
+
+  const totalCells = cells.length
+  const barWidth =
+    plotW > 0 && totalCells > 0
+      ? Math.min(BAR_MAX_WIDTH, (plotW - BASE_BAR_GAP * (totalCells - 1)) / totalCells)
+      : BAR_MAX_WIDTH
+  const labelsCrowded = plotW > 0 && barWidth < LABEL_MIN_BAR_WIDTH
+  // Step the inter-bar gap down with the bars so the gaps never dwarf the bars themselves.
+  const gap = plotW === 0 ? BASE_BAR_GAP : barWidth < 16 ? 2 : barWidth < 28 ? 4 : BASE_BAR_GAP
+
+  // Peak rep index (over rep values) — its label always survives label-thinning.
+  const peakRepIndex = repValues.reduce((b, v, i) => (v > repValues[b] ? i : b), 0)
+  const showBarLabel = (repIndex: number): boolean =>
+    !labelsCrowded || repIndex === peakRepIndex || repIndex === liveRepIndex
+
+  const geometry: SetBarGeometry = { scaleDenom, plotHeight, yOf, best, flip }
+
+  const { style: externalStyle, ...restProps } = viewProps
+  const a11y = accessibilityLabel != null ? { accessibilityRole: 'image' as const, accessibilityLabel } : {}
+
+  // Which performed rep each cell is (window stubs → -1) — for live-grow / peak / label thinning.
+  const repIndices = repIndexByCell(cells)
+
+  return (
+    <View className={className} style={[{ height }, externalStyle]} testID={testID} {...a11y} {...restProps}>
+      <View
+        onLayout={onPlotLayout}
+        style={{
+          flex: 1,
+          flexDirection: 'row',
+          alignItems: 'flex-end',
+          gap,
+          position: 'relative',
+          borderBottomWidth: hideBaseline ? 0 : 2,
+          borderBottomColor: placeholderColor,
+          ...flipStyle,
+        }}
+      >
+        {renderReference?.(geometry)}
+
+        {cells.map((slot, i) => {
+          const extraGap = Math.max(0, (slot.leadingGap ?? REP_GAP) - REP_GAP)
+          const column: ViewStyle = {
+            flex: 1,
+            maxWidth: BAR_MAX_WIDTH,
+            height: '100%',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            marginLeft: extraGap,
+          }
+
+          if (!isRep(slot)) {
+            return (
+              <View key={i} accessibilityElementsHidden style={column}>
+                {renderStub(slot.kind, barRadius, placeholderColor, testIDPrefix)}
+              </View>
+            )
+          }
+
+          const repIndex = repIndices[i]
+          const value = slot.value ?? 0
+          const isLive = liveRepIndex === repIndex
+          const color = colorFor(value)
+          return (
+            <View key={i} accessibilityElementsHidden style={column}>
+              {showValueLabels && showBarLabel(repIndex) && (
+                <Text
+                  className="text-text-primary"
+                  style={[{ fontSize: 12, fontWeight: '800', marginBottom: 4 }, flipStyle]}
+                  testID={`${testIDPrefix}-label-${repIndex}`}
+                >
+                  {formatValue(value)}
+                </Text>
+              )}
+              <Animated.View
+                style={[
+                  {
+                    width: '100%',
+                    height: isLive
+                      ? liveGrowth.interpolate({ inputRange: [0, 1], outputRange: [0, barHeight(value)] })
+                      : barHeight(value),
+                    borderTopLeftRadius: barRadius,
+                    borderTopRightRadius: barRadius,
+                    backgroundColor: color,
+                  },
+                  barPaper(color, flip),
+                ]}
+                testID={`${testIDPrefix}-bar-${repIndex}`}
+              />
+            </View>
+          )
+        })}
+      </View>
+    </View>
+  )
+}
+
+/** A window cell (planned / variable / continue) — a fixed-height stub in its set-type tone. */
+function renderStub(
+  kind: SetSlot['kind'],
+  barRadius: number,
+  placeholderColor: string,
+  testIDPrefix: string
+): ReactNode {
+  const base: ViewStyle = {
+    width: '100%',
+    height: STUB_HEIGHT,
+    borderTopLeftRadius: barRadius,
+    borderTopRightRadius: barRadius,
+  }
+  if (kind === 'variable') {
+    return (
+      <View
+        style={{ ...base, backgroundColor: VARIABLE_FILL }}
+        testID={`${testIDPrefix}-slot-variable`}
+      />
+    )
+  }
+  if (kind === 'continue') {
+    return (
+      <View
+        style={{ ...base, borderWidth: 1, borderColor: CONTINUE_OUTLINE }}
+        testID={`${testIDPrefix}-slot-continue`}
+      />
+    )
+  }
+  // todo — a dashed outline placeholder.
+  return (
+    <View
+      style={{ ...base, borderWidth: 1, borderStyle: 'dashed', borderColor: placeholderColor }}
+      testID={`${testIDPrefix}-slot-todo`}
+    />
+  )
+}

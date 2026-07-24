@@ -5,18 +5,26 @@ import {
   Text,
   Pressable,
   Animated,
-  Easing,
   type ViewProps,
   type ViewStyle,
-  type LayoutChangeEvent,
 } from 'react-native'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { primitiveColors, primitiveRamps, sequentialEffort } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { useOnSurfaceColor, useSurface, surfaceBackground } from '../../ui/surface/SurfaceContext'
 import { alpha } from '../../../utils/colors'
+import { barPaper } from '../../../theme/bar-paper'
 import { formatVelocity } from '../../../utils/workout-format'
 import { SET_STRIP_VARIABLE_COLOR } from './SetStrip'
+import {
+  SetBarChart,
+  type SetSlot,
+  type SetBarGeometry,
+  scaleDenominator,
+  PEAK_HEADROOM,
+  SET_BAR_DEFAULT_HEIGHT,
+} from '../charts/SetBarChart'
+import { useLiveRepGrowth, ANIMATION_EASING } from '../charts/live-rep-growth'
 
 /**
  * Structural velocity-zone band accepted from an upstream analytics source
@@ -463,100 +471,11 @@ const EXPANDED_ENCODED_PCT = 45
 
 /** Default framed `expanded` chart height (px). */
 const EXPANDED_HEIGHT = 60
-/**
- * The `scale="fixed"` velocity ceiling (m/s). `peak` scales to the set's own max
- * (+15% headroom); `fixed` uses this constant so a bar's height reads the same
- * absolute velocity across sets (the spotlight).
- */
-const FIXED_MAX_VELOCITY = 1.15
 /** Minimum bare-strip bar height (px) — a planned / variable / continue stub, or a near-zero rep. */
 const BARE_STUB_HEIGHT = 3
 
-// --- Hero variant ------------------------------------------------------------
-// The across-the-room, single-set wall treatment. Absorbs the R2 "HeroVelocityBars"
-// candidate into VelocityStrip: tall bars + per-bar value labels + a dashed
-// running-best reference line + dashed placeholders for the reps still to come.
-
-/** Default `hero` plot height (px) — tall enough to read a set's velocity shape across a room. */
-const HERO_HEIGHT = 220
-/** Vertical band reserved above the tallest bar for its value label (px). */
-const HERO_LABEL_HEADROOM = 20
-/** Gap between hero bars (px) — a group-notch-free even rhythm at wall scale. */
-const HERO_BAR_GAP = 8
-/** Cap on a single hero bar's width so a 2–3 rep set doesn't render slab-wide bars (px). */
-const HERO_BAR_MAX_WIDTH = 120
-/** Below this per-bar width the value labels collide, so all but the peak + live rep are dropped. */
-const HERO_LABEL_MIN_BAR_WIDTH = 30
-/** Top-corner radius on hero bars (px). */
-const HERO_BAR_RADIUS = 5
-/** Minimum drawn height of a performed hero bar (px) — a near-zero rep still reads as a rep. */
-const HERO_MIN_BAR_HEIGHT = 4
-/** The dashed running-best reference line + its label (the lightest charcoal step). */
+/** The dashed running-best reference line color (the lightest charcoal step). */
 const HERO_REFERENCE_COLOR = primitiveColors.charcoal[0]
-
-/**
- * Headroom above the peak bar: just enough to seat its value label without a big empty
- * band at the top (was 1.15 — too airy for the wall hero).
- */
-const PEAK_HEADROOM = 1.06
-
-/**
- * Grain opacity scaled by a color's perceived brightness — the SAME curve as the north-star
- * `surfaces.grainForTone` (mirrored here because a shipped component must not import lab code):
- * a bright bar keeps full texture, a darker bar carries proportionally less so the grain never
- * reads hot on a dark tone. Anchored so lum ≈ 0.13 → ≈ 0.06 and lum ≈ 0.58 → ≈ 0.20.
- */
-function grainOpacityForColor(hex: string): number {
-  const h = hex.replace('#', '')
-  const full =
-    h.length === 3
-      ? h
-          .split('')
-          .map((ch) => ch + ch)
-          .join('')
-      : h
-  const r = parseInt(full.slice(0, 2), 16)
-  const g = parseInt(full.slice(2, 4), 16)
-  const b = parseInt(full.slice(4, 6), 16)
-  if ([r, g, b].some(Number.isNaN)) return 0.14
-  const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255
-  return Math.min(0.24, Math.max(0.04, 0.02 + 0.31 * lum))
-}
-
-/** The matte paper grain tile (same fractalNoise as `paperSheet`), opacity brightness-scaled to `color`. */
-function heroBarGrain(color: string): string {
-  const op = grainOpacityForColor(color).toFixed(3)
-  return (
-    `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E` +
-    `%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E` +
-    `%3Crect width='120' height='120' filter='url(%23n)' opacity='${op}'/%3E%3C/svg%3E")`
-  )
-}
-
-/**
- * Exploratory PAPER / raised treatment for a hero velocity bar of the given zone `color` — a
- * brightness-scaled matte grain + a crisp top rim-light + a defined contact shadow (the
- * `paperSheet` surface language) that gives the colored bars dimensionality and texture. SCOPED
- * to the velocity hero bars (single hero + diverging dual wings); it never touches the shared
- * SegmentedBar / SetStrip. Back out: delete these helpers and the two `heroBarPaper(...)` spreads.
- */
-function heroBarPaper(color: string, flip = false): ViewStyle {
-  // `flip` = a `down` wing, whose plot is scaleY(-1)-mirrored. The contact shadow's
-  // y-offset is pre-inverted so the mirror lands it pointing AWAY from the shared axis
-  // (not up across it). The top rim-light is DROPPED on a flipped bar — mirrored it
-  // would sit on the axis edge and read wrong; the grain + shadow alone carry the material.
-  return {
-    backgroundImage: heroBarGrain(color),
-    boxShadow: flip
-      ? '0 -6px 16px rgba(0,0,0,0.45)'
-      : 'inset 0 1.5px 0 rgba(255,255,255,0.22), 0 6px 16px rgba(0,0,0,0.45)',
-  } as unknown as ViewStyle
-}
-
-/** The bar-height scaling denominator for the given `scale` (guarded ≥ 0 by callers). */
-function scaleDenominator(scale: 'peak' | 'fixed', maxVelocity: number): number {
-  return scale === 'fixed' ? FIXED_MAX_VELOCITY : maxVelocity * PEAK_HEADROOM
-}
 
 /**
  * A dashed running-best reference line spanning the plot width, absolutely positioned a
@@ -703,6 +622,32 @@ export function VelocityLossBands({
   )
 }
 
+/**
+ * The velocity hero's reference overlay, painted by {@link SetBarChart} via `renderReference` from
+ * the chart geometry: the VL20 / VL30 loss decision bands (when `showLossBands`) behind the bars,
+ * plus the dashed running-best line at the peak. Both measure off the chart's OWN `best` — the
+ * per-side loss language that survives the dual's shared height scale. Unlabeled by design (the peak
+ * bar already shows its value; the numeric best is in the chart's accessibility label).
+ */
+function velocityReferenceOverlay(g: SetBarGeometry, showLossBands: boolean) {
+  const referencePx = g.best > 0 && g.scaleDenom > 0 ? Math.min(g.plotHeight, g.yOf(g.best)) : 0
+  return (
+    <>
+      {showLossBands && (
+        <VelocityLossBands
+          best={g.best}
+          scaleDenom={g.scaleDenom}
+          plotHeight={g.plotHeight}
+          flip={g.flip}
+        />
+      )}
+      {referencePx > 0 && (
+        <DashedReferenceLine anchor="bottom" offset={referencePx} testID="velocity-hero-reference" />
+      )}
+    </>
+  )
+}
+
 /** Bare-strip bar height (px): velocity-scaled for a performed rep, a short stub otherwise. */
 function bareSlotHeight(slot: VelocitySlot, height: number, denom: number): number {
   if (slot.kind !== 'rep' || denom <= 0) return BARE_STUB_HEIGHT
@@ -710,318 +655,8 @@ function bareSlotHeight(slot: VelocitySlot, height: number, denom: number): numb
   return Math.max(BARE_STUB_HEIGHT, ratio * height)
 }
 
-function getReducedMotionPreference(): boolean {
-  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
-}
-
-/** Track the OS "reduce motion" preference; falls back to `false` (jsdom/SSR). */
-function usePrefersReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(getReducedMotionPreference)
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const handler = () => setReduced(mq.matches)
-    handler()
-    mq.addEventListener?.('change', handler)
-    return () => mq.removeEventListener?.('change', handler)
-  }, [])
-  return reduced
-}
-
+/** Framed expanded collapse-animation duration (ms). */
 const ANIMATION_DURATION = 400
-const ANIMATION_EASING = Easing.bezier(0.22, 1, 0.36, 1)
-
-/**
- * Growth-factor overshoot for a new-peak bar: it grows past its full height then
- * settles back to 1 (a small bounce), rather than the plain 0→1 grow every other
- * bar gets. Modest (12%) since it stretches actual bar HEIGHT, not a uniform scale
- * — a large overshoot here reads as a much bigger jump than the same factor did
- * against the old whole-bar scale pop.
- */
-const PEAK_OVERSHOOT = 1.12
-
-/**
- * The newest-rep entrance shared by the framed `expanded` chart and `hero`: the bar
- * GROWS UP FROM THE BASELINE (0 → full height), reading as though it's tracking the
- * rep as it lands. A new set peak overshoots past full height then settles (a small
- * bounce) instead of the plain grow. Honors reduced motion (jumps straight to full
- * height, no animation). Returns a 0→1(+overshoot) growth-factor `Animated.Value`;
- * callers interpolate it against their own target height. Inert while `active` is
- * false or no live rep is present.
- */
-function useLiveRepGrowth(
-  active: boolean,
-  liveRepIndex: number | undefined,
-  liveVelocity: number | undefined,
-  isNewPeak: boolean
-): Animated.Value {
-  const prefersReducedMotion = usePrefersReducedMotion()
-  const [liveGrowth] = useState(() => new Animated.Value(1))
-  useEffect(() => {
-    if (!active || liveRepIndex == null || liveVelocity == null) return
-    if (prefersReducedMotion) {
-      liveGrowth.setValue(1)
-      return
-    }
-    liveGrowth.setValue(0)
-    if (isNewPeak) {
-      Animated.sequence([
-        Animated.timing(liveGrowth, {
-          toValue: PEAK_OVERSHOOT,
-          duration: 220,
-          easing: Easing.out(Easing.quad),
-          useNativeDriver: false,
-        }),
-        Animated.spring(liveGrowth, {
-          toValue: 1,
-          friction: 5,
-          tension: 140,
-          useNativeDriver: false,
-        }),
-      ]).start()
-    } else {
-      // Plain entrance: a clean ease-out grow with no overshoot (ANIMATION_EASING has
-      // no control point above y=1) — it reads as tracking the rep, not bouncing.
-      Animated.timing(liveGrowth, {
-        toValue: 1,
-        duration: 300,
-        easing: ANIMATION_EASING,
-        useNativeDriver: false,
-      }).start()
-    }
-  }, [active, liveRepIndex, liveVelocity, isNewPeak, prefersReducedMotion, liveGrowth])
-  return liveGrowth
-}
-
-interface HeroVelocityChartProps {
-  /** Performed per-rep mean concentric velocities (m/s). */
-  doneVelocities: number[]
-  /** Zone → color resolver, shared with the other variants (single-sources the scale). */
-  barColorFor: (velocity: number) => string
-  /** Bar-height scaling denominator (`peak` set-max or `fixed` ceiling). */
-  scaleDenom: number
-  /** Running-best velocity (the set peak) — drives the dashed reference line. */
-  referenceVelocity: number
-  liveRepIndex?: number
-  isNewPeak: boolean
-  targetReps?: number
-  height: number
-  /** Draw the VL20/VL30 velocity-loss decision bands behind the bars. */
-  showLossBands: boolean
-  /**
-   * `up` (default) — bars grow UP from a bottom baseline. `down` — the whole plot is
-   * vertically mirrored (bars grow DOWN from a TOP baseline), with the text kept
-   * upright. This is the single primitive the diverging dual composes: an up chart on
-   * top + a down chart on the bottom, meeting at one shared axis.
-   */
-  orientation?: 'up' | 'down'
-  /**
-   * Suppress the plot's own 2px bottom baseline. The diverging dual composes an `up` and a `down`
-   * hero and draws ONE shared centre axis where they meet, so each composed wing hides its baseline
-   * to avoid a double-thick line at the axis.
-   */
-  hideBaseline?: boolean
-  className?: string
-  viewProps: ViewProps
-}
-
-/**
- * The `hero` render: the across-the-room, single-set wall treatment. Tall bars +
- * a per-bar value label + a dashed running-best reference line + dashed placeholders
- * for the reps still to come. Reuses {@link barColorFor} (zone scale) and the
- * {@link useLiveRepGrowth} entrance so it stays consistent with the framed chart.
- */
-function HeroVelocityChart({
-  doneVelocities,
-  barColorFor,
-  scaleDenom,
-  referenceVelocity,
-  liveRepIndex,
-  isNewPeak,
-  targetReps,
-  height,
-  showLossBands,
-  orientation = 'up',
-  hideBaseline = false,
-  className,
-  viewProps,
-}: HeroVelocityChartProps) {
-  // The whole plot mirrors for `down`; text nodes counter-flip so they read upright.
-  const flip = orientation === 'down'
-  const flipStyle = flip ? ({ transform: [{ scaleY: -1 as number }] } as const) : null
-  const liveVelocity = liveRepIndex != null ? doneVelocities[liveRepIndex] : undefined
-  const liveGrowth = useLiveRepGrowth(true, liveRepIndex, liveVelocity, isNewPeak)
-  // Planned/to-do reps + the baseline draw in a SURFACE-relative neutral (on-surface
-  // tertiary) so they stay legible on every plane, instead of a fixed charcoal that
-  // washes out on the frame or over-contrasts on a raised card.
-  const placeholderColor = useOnSurfaceColor('tertiary')
-
-  // Measure the plot so per-bar value labels can thin on a narrow chart (they collide once
-  // bars get thin). Width 0 (unmeasured) → show all, so test/server renders are unchanged.
-  const [plotW, setPlotW] = useState(0)
-  const onPlotLayout = (e: LayoutChangeEvent) => setPlotW(e.nativeEvent.layout.width)
-
-  // Reserve a band above the tallest bar for its value label so a peak bar never clips.
-  const plotHeight = Math.max(0, height - HERO_LABEL_HEADROOM)
-  const barHeight = (velocity: number): number =>
-    scaleDenom > 0
-      ? Math.max(HERO_MIN_BAR_HEIGHT, Math.min(1, velocity / scaleDenom) * plotHeight)
-      : HERO_MIN_BAR_HEIGHT
-
-  const pendingCount = Math.max(0, (targetReps ?? 0) - doneVelocities.length)
-  const referencePx =
-    referenceVelocity > 0 && scaleDenom > 0
-      ? Math.min(plotHeight, (referenceVelocity / scaleDenom) * plotHeight)
-      : 0
-
-  // When bars get too thin, keep only the peak + live-rep labels so the rest don't overlap.
-  const totalSlots = doneVelocities.length + pendingCount
-  const barWidth =
-    plotW > 0 && totalSlots > 0
-      ? Math.min(HERO_BAR_MAX_WIDTH, (plotW - HERO_BAR_GAP * (totalSlots - 1)) / totalSlots)
-      : HERO_BAR_MAX_WIDTH
-  const labelsCrowded = plotW > 0 && barWidth < HERO_LABEL_MIN_BAR_WIDTH
-  // Step the inter-bar gap down with the bars so the gaps never dwarf the bars themselves.
-  const heroGap = plotW === 0 ? HERO_BAR_GAP : barWidth < 16 ? 2 : barWidth < 28 ? 4 : HERO_BAR_GAP
-  const peakIndex = doneVelocities.reduce((best, v, i) => (v > doneVelocities[best] ? i : best), 0)
-  const showBarLabel = (i: number): boolean =>
-    !labelsCrowded || i === peakIndex || i === liveRepIndex
-
-  const repCount = doneVelocities.length
-  const total = Math.max(repCount, targetReps ?? repCount)
-  const label =
-    referenceVelocity > 0
-      ? `Velocity chart, ${repCount} of ${total} reps, best ${formatVelocity(referenceVelocity)} meters per second`
-      : `Velocity chart, ${repCount} of ${total} reps`
-
-  const { style: externalStyle, ...restProps } = viewProps
-
-  return (
-    <View
-      className={className}
-      style={[{ height }, externalStyle]}
-      accessibilityRole="image"
-      accessibilityLabel={label}
-      testID="velocity-strip-hero"
-      {...restProps}
-    >
-      <View
-        onLayout={onPlotLayout}
-        style={{
-          flex: 1,
-          flexDirection: 'row',
-          alignItems: 'flex-end',
-          gap: heroGap,
-          position: 'relative',
-          borderBottomWidth: hideBaseline ? 0 : 2,
-          borderBottomColor: placeholderColor,
-          ...flipStyle,
-        }}
-      >
-        {showLossBands && (
-          <VelocityLossBands
-            best={referenceVelocity}
-            scaleDenom={scaleDenom}
-            plotHeight={plotHeight}
-            flip={flip}
-          />
-        )}
-
-        {/*
-         * Running-best reference line. Deliberately unlabeled: it sits at the tallest
-         * bar's top, and that bar already displays its velocity as its own value label,
-         * so a "best X.XX" tag would duplicate it — and would collide with that label
-         * whenever the peak bar is on the same side (declines peak-left, ends-on-best
-         * peak-right). The line alone reads as "how far has velocity fallen from best".
-         * The numeric best is in the container's accessibility label.
-         */}
-        {referencePx > 0 && (
-          <DashedReferenceLine
-            anchor="bottom"
-            offset={referencePx}
-            testID="velocity-hero-reference"
-          />
-        )}
-
-        {doneVelocities.map((velocity, i) => {
-          const isLive = liveRepIndex === i
-          return (
-            <View
-              key={i}
-              accessibilityElementsHidden
-              style={{
-                flex: 1,
-                maxWidth: HERO_BAR_MAX_WIDTH,
-                height: '100%',
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-              }}
-            >
-              {showBarLabel(i) && (
-                <Text
-                  className="text-text-primary"
-                  style={[{ fontSize: 12, fontWeight: '800', marginBottom: 4 }, flipStyle]}
-                  testID={`velocity-label-${i}`}
-                >
-                  {formatVelocity(velocity)}
-                </Text>
-              )}
-              <Animated.View
-                style={[
-                  {
-                    width: '100%',
-                    // Live bar grows up from the baseline to its target height; every
-                    // other bar (and the live bar's own final frame) sits at its plain
-                    // computed height. Only the live index reads the animated value.
-                    height: isLive
-                      ? liveGrowth.interpolate({
-                          inputRange: [0, 1],
-                          outputRange: [0, barHeight(velocity)],
-                        })
-                      : barHeight(velocity),
-                    borderTopLeftRadius: HERO_BAR_RADIUS,
-                    borderTopRightRadius: HERO_BAR_RADIUS,
-                    backgroundColor: barColorFor(velocity),
-                  },
-                  heroBarPaper(barColorFor(velocity), flip),
-                ]}
-                testID={`velocity-bar-${i}`}
-              />
-            </View>
-          )
-        })}
-
-        {Array.from({ length: pendingCount }, (_, i) => (
-          <View
-            key={`pending-${i}`}
-            accessibilityElementsHidden
-            style={{
-              flex: 1,
-              maxWidth: HERO_BAR_MAX_WIDTH,
-              height: '100%',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-            }}
-          >
-            <View
-              style={{
-                width: '100%',
-                height: HERO_MIN_BAR_HEIGHT * 3,
-                borderWidth: 1,
-                borderStyle: 'dashed',
-                borderColor: placeholderColor,
-                borderTopLeftRadius: HERO_BAR_RADIUS,
-                borderTopRightRadius: HERO_BAR_RADIUS,
-              }}
-              testID="velocity-slot-todo"
-            />
-          </View>
-        ))}
-      </View>
-    </View>
-  )
-}
 
 // --- Dual (bilateral) diverging chart ----------------------------------------
 // The two-device (LEFT + RIGHT voltra) treatment. Instead of two stacked single
@@ -1089,7 +724,7 @@ export interface DualVelocityStripProps extends ViewProps {
 }
 
 /** Default `hero` diverging height (px) — matches the single hero. */
-const DUAL_HERO_HEIGHT = HERO_HEIGHT
+const DUAL_HERO_HEIGHT = SET_BAR_DEFAULT_HEIGHT
 /** Default `rail` diverging height (px) — compact enough to sit inside a rail slot. */
 const DUAL_RAIL_HEIGHT = 96
 
@@ -1182,6 +817,14 @@ function railSlots(done: number[], targetReps?: number): { velocity?: number }[]
 interface DualChartProps {
   leftDone: number[]
   rightDone: number[]
+  /**
+   * The raw per-side streams. The `hero` renderer passes each side's `set` (or `velocities`)
+   * straight through to its composed VelocityStrip hero so a side's set-type WINDOWS (the range
+   * cyan variable window, the AMRAP/myo "continue", drop/myo chunk-notch gaps) render on the dual
+   * — not just the flattened reps. The lean `rail` renderer ignores them (it only takes velocities).
+   */
+  leftStream?: DualVelocityStream
+  rightStream?: DualVelocityStream
   leftLabel?: string
   rightLabel?: string
   zones?: readonly VelocityZoneBandProp[]
@@ -1227,6 +870,8 @@ function DualCentreAxis({ plotHalf, color }: { plotHalf: number; color: string }
 function DualVelocityHero({
   leftDone,
   rightDone,
+  leftStream,
+  rightStream,
   leftLabel,
   rightLabel,
   zones,
@@ -1243,16 +888,18 @@ function DualVelocityHero({
   // ONE shared height scale across both wings so the L/R asymmetry reads as bar length, not two
   // scales; each composed strip still colors by its OWN loss and draws its OWN best reference.
   // `peak` shares the pair max via `scaleMax`; `fixed` shares the cross-set ceiling (both wings
-  // resolve the same `FIXED_MAX_VELOCITY`), so `scaleMax` is left off and `scale` carries it.
+  // resolve the same fixed ceiling), so `scaleMax` is left off and `scale` carries it.
   const sharedMax = Math.max(...leftDone, ...rightDone, 0)
   const axisColor = useOnSurfaceColor('tertiary')
   const { style: externalStyle, ...restProps } = viewProps
 
-  const wing = (orientation: 'up' | 'down', velocities: number[]) => (
+  // Pass the raw stream (its `set` descriptor when present, else its velocities) straight into the
+  // composed hero so a side's set-type WINDOWS render — the composed hero builds its own slots.
+  const wing = (orientation: 'up' | 'down', stream: DualVelocityStream | undefined, done: number[]) => (
     <VelocityStrip
       variant="hero"
       orientation={orientation}
-      velocities={velocities}
+      {...(stream?.set ? { set: stream.set } : { velocities: stream?.velocities ?? done })}
       scale={scale}
       scaleMax={scale === 'fixed' ? undefined : sharedMax}
       barColor={barColor}
@@ -1286,10 +933,10 @@ function DualVelocityHero({
         {/* The two composed heroes. Their own labels are redundant with the dual's summary label,
             so the wings are hidden from the a11y tree (testIDs still resolve for tests). */}
         <View accessibilityElementsHidden testID="dual-velocity-wing-up">
-          {wing('up', leftDone)}
+          {wing('up', leftStream, leftDone)}
         </View>
         <View accessibilityElementsHidden testID="dual-velocity-wing-down">
-          {wing('down', rightDone)}
+          {wing('down', rightStream, rightDone)}
         </View>
 
         <DualCentreAxis plotHalf={plotHalf} color={axisColor} />
@@ -1442,8 +1089,8 @@ export function DualVelocityStrip({
   ...props
 }: DualVelocityStripProps) {
   const resolvedHeight = height ?? (variant === 'hero' ? DUAL_HERO_HEIGHT : DUAL_RAIL_HEIGHT)
-  // Each side flattens a `set` descriptor to its performed reps (the hero composition is a flat
-  // velocity chart); the shared max + per-side best fall out of these arrays.
+  // The done arrays drive the shared max + per-side best + the summary counts; the raw streams
+  // flow to the hero wings so a side's set-type WINDOWS render (the `rail` renderer uses `*Done`).
   const leftDone = streamDone(left)
   const rightDone = streamDone(right)
 
@@ -1454,6 +1101,8 @@ export function DualVelocityStrip({
   const shared: DualChartProps = {
     leftDone,
     rightDone,
+    leftStream: left,
+    rightStream: right,
     leftLabel: left.label,
     rightLabel: right.label,
     zones,
@@ -1594,20 +1243,35 @@ export function VelocityStrip({
   if (variant === 'hero') {
     // Hero's plot is far taller than the expanded chart; apply its own default when
     // the caller left `height` at the shared 60px default.
-    const heroHeight = height === EXPANDED_HEIGHT ? HERO_HEIGHT : height
+    const heroHeight = height === EXPANDED_HEIGHT ? SET_BAR_DEFAULT_HEIGHT : height
+    // A `set` builds its own typed slots (rep / todo / variable / continue + chunk-notch gaps);
+    // the plain `velocities` path is bare rep slots + a `targetReps` todo remainder SetBarChart fills.
+    const heroSlots: SetSlot[] = set
+      ? buildSlots(set).map((s) => ({ kind: s.kind, value: s.velocity, leadingGap: s.leadingGap }))
+      : doneVelocities.map((v) => ({ kind: 'rep', value: v }))
+    const total = Math.max(repCount, targetReps ?? repCount)
+    const heroLabel =
+      maxVelocity > 0
+        ? `Velocity chart, ${repCount} of ${total} reps, best ${formatVelocity(maxVelocity)} meters per second`
+        : `Velocity chart, ${repCount} of ${total} reps`
     return (
-      <HeroVelocityChart
-        doneVelocities={doneVelocities}
-        barColorFor={barColorFor}
-        scaleDenom={scaleDenom}
-        referenceVelocity={maxVelocity}
+      <SetBarChart
+        slots={heroSlots}
+        colorFor={barColorFor}
+        height={heroHeight}
+        scale={scale}
+        scaleMax={scaleMax}
+        orientation={orientation}
         liveRepIndex={liveRepIndex}
         isNewPeak={isNewPeak}
-        targetReps={targetReps}
-        height={heroHeight}
-        showLossBands={lossBandsOn}
-        orientation={orientation}
+        targetReps={set ? undefined : targetReps}
+        showValueLabels
+        formatValue={formatVelocity}
+        renderReference={(g) => velocityReferenceOverlay(g, lossBandsOn)}
         hideBaseline={hideBaseline}
+        testID="velocity-strip-hero"
+        testIDPrefix="velocity"
+        accessibilityLabel={heroLabel}
         className={className}
         viewProps={props}
       />
@@ -1688,7 +1352,7 @@ export function VelocityStrip({
             marginLeft: Math.max(0, slot.leadingGap - REP_GAP),
             // Performed reps carry the same paper treatment as the hero (grain +
             // rim-light + contact shadow) so the spotlight strip reads as one material.
-            ...(slot.kind === 'rep' ? heroBarPaper(slotColor(slot)) : null),
+            ...(slot.kind === 'rep' ? barPaper(slotColor(slot)) : null),
             ...(slot.kind === 'continue'
               ? { borderWidth: 1, borderColor: CONTINUE_OUTLINE }
               : {}),
@@ -1753,7 +1417,7 @@ export function VelocityStrip({
               borderTopLeftRadius: 2,
               borderTopRightRadius: 2,
               backgroundColor: slotColor(slot),
-              ...(isStraightRep ? heroBarPaper(slotColor(slot)) : null),
+              ...(isStraightRep ? barPaper(slotColor(slot)) : null),
               ...(slot.kind === 'continue'
                 ? { borderWidth: 1, borderColor: CONTINUE_OUTLINE }
                 : {}),
@@ -1815,7 +1479,7 @@ export function VelocityStrip({
                     backgroundColor: barBackground,
                     // Framed chart bars carry the hero's paper treatment too, so the
                     // framed / bare / hero treatments read as one material family.
-                    ...heroBarPaper(barBackground),
+                    ...barPaper(barBackground),
                   }
                 : {
                     minHeight: '100%' as unknown as number,

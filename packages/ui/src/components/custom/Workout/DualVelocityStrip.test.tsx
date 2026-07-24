@@ -274,22 +274,23 @@ describe('DualVelocityStrip colour mapping', () => {
   })
 })
 
-describe('DualVelocityStrip set-type streams (flattened into the composed hero)', () => {
-  // The composed hero is a FLAT velocity chart, so a `set` descriptor flattens to its performed
-  // reps + planned todo stubs; the set-type slot WINDOWS (cyan variable / continue) are not drawn
-  // on the dual hero (they are a single-mini/expanded concern). Bars are still per rep.
-  it('range set: renders the committed reps as bars (variable window omitted)', () => {
+describe('DualVelocityStrip set-type streams (windows render on the composed hero)', () => {
+  // Each side passes its `set` descriptor straight into the composed hero, which builds its own
+  // typed slots — so the set-type WINDOWS (the range cyan variable window, the AMRAP/myo "continue")
+  // render on the dual, not just the flattened reps. This is the set-type vocabulary regained.
+  it('range set: renders the committed reps as bars AND the cyan variable window', () => {
     render(
       <DualVelocityStrip
         left={{ set: { type: 'range', velocities: [0.9, 0.85], floor: 3, max: 5 } }}
         right={{ velocities: [0.8] }}
       />
     )
+    // floor 3 / max 5, 2 done → 2 rep bars, 1 todo (i<floor), 2 variable (floor..max).
     expect(wingUp().queryAllByTestId(HERO_BARS)).toHaveLength(2)
-    expect(screen.queryByTestId(/-variable$/)).not.toBeInTheDocument()
+    expect(wingUp().queryAllByTestId('velocity-slot-variable')).toHaveLength(2)
   })
 
-  it('amrap set: renders performed reps as bars (continue slot omitted)', () => {
+  it('amrap set: renders performed reps as bars AND the trailing continue window', () => {
     render(
       <DualVelocityStrip
         left={{ set: { type: 'amrap', velocities: [0.9, 0.85] } }}
@@ -297,10 +298,10 @@ describe('DualVelocityStrip set-type streams (flattened into the composed hero)'
       />
     )
     expect(wingUp().queryAllByTestId(HERO_BARS)).toHaveLength(2)
-    expect(screen.queryByTestId(/-continue$/)).not.toBeInTheDocument()
+    expect(wingUp().getByTestId('velocity-slot-continue')).toBeInTheDocument()
   })
 
-  it('myo set: flattens activation + clusters to one bar per rep', () => {
+  it('myo set: activation + clusters render one bar per rep plus the open continue window', () => {
     render(
       <DualVelocityStrip
         left={{
@@ -317,8 +318,9 @@ describe('DualVelocityStrip set-type streams (flattened into the composed hero)'
         right={{ velocities: [0.8] }}
       />
     )
-    // 3 activation + 2 + 2 cluster reps = 7 filled bars.
+    // 3 activation + 2 + 2 cluster reps = 7 filled bars, plus the open "continue" window.
     expect(wingUp().queryAllByTestId(HERO_BARS)).toHaveLength(7)
+    expect(wingUp().getByTestId('velocity-slot-continue')).toBeInTheDocument()
   })
 })
 
