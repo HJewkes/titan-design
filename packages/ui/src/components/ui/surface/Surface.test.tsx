@@ -6,9 +6,12 @@ import { Surface } from './Surface'
 import {
   onSurfaceColors,
   surfaceBackground,
+  pressedLevel,
   useOnSurfaceColor,
+  useSurface,
   useSurfaceMode,
 } from './SurfaceContext'
+import { getPressedRecessShadow } from '../../../theme/elevation'
 
 // A descendant probe that renders the on-surface colour + mode it resolves from
 // context, so tests can assert what a nested consumer would actually paint.
@@ -110,6 +113,137 @@ describe('Surface (named plane)', () => {
   })
 })
 
+// A descendant probe that reports the surface LEVEL it resolves from context,
+// so tests can assert what a nested Surface publishes to its children.
+function LevelProbe({ label = 'lvl' }) {
+  const { level } = useSurface()
+  return <Text testID={label}>{level}</Text>
+}
+
+// CIELAB L* (perceptual lightness) — same calc as surface.contract.test, so the
+// "darker" assertions measure the metric the ramp was designed against.
+function lstar(hex: string): number {
+  const h = hex.replace('#', '')
+  const lin = [0, 2, 4]
+    .map((i) => parseInt(h.slice(i, i + 2), 16) / 255)
+    .map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4))
+  const y = 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2]
+  return y <= 0.008856 ? y * 903.3 : 116 * Math.cbrt(y) - 16
+}
+
+describe('Surface (pressed well)', () => {
+  it.each([
+    // TD-surface-tokens S-3 re-space: top steps widened (elevated #2C2A28,
+    // raised #31302F, overlay #373635); base/background unchanged.
+    ['overlay', '#373635', '#31302F'], // → raised
+    ['raised', '#31302F', '#2C2A28'], // → elevated
+    ['elevated', '#2C2A28', '#252321'], // → base
+    ['base', '#252321', '#1C1916'], // → background
+  ] as const)(
+    'in a %s parent renders one ramp step down (%s → %s), darker than its parent',
+    (parent, parentHex, pressedHex) => {
+      render(
+        <Surface level={parent}>
+          <Surface pressed testID="well" />
+        </Surface>
+      )
+      expect(screen.getByTestId('well')).toHaveStyle({ backgroundColor: pressedHex })
+      expect(lstar(pressedHex)).toBeLessThan(lstar(parentHex))
+    }
+  )
+
+  it('with no enclosing Surface (default base) presses to the background plane', () => {
+    render(<Surface pressed testID="well" />)
+    expect(screen.getByTestId('well')).toHaveStyle({ backgroundColor: '#1C1916' })
+  })
+
+  it('clamps at the inset floor: pressed directly in background does not underflow', () => {
+    render(
+      <Surface level="background">
+        <Surface pressed testID="well" />
+      </Surface>
+    )
+    // background (#1C1916) steps down to the inset floor (#13100D), the pit.
+    expect(screen.getByTestId('well')).toHaveStyle({ backgroundColor: '#13100D' })
+  })
+
+  it('does not step below the floor: pressed within a floor-pressed well stays at inset', () => {
+    render(
+      <Surface level="background">
+        <Surface pressed>
+          <Surface pressed testID="deeper" />
+        </Surface>
+      </Surface>
+    )
+    expect(screen.getByTestId('deeper')).toHaveStyle({ backgroundColor: '#13100D' })
+  })
+
+  it('publishes the stepped-down level to descendants so a nested press steps again', () => {
+    render(
+      <Surface level="raised">
+        <Surface pressed>
+          <LevelProbe label="lvl" />
+        </Surface>
+      </Surface>
+    )
+    // raised → elevated; descendants read the well's own level.
+    expect(screen.getByTestId('lvl')).toHaveTextContent('elevated')
+  })
+
+  it('adds an inner-shadow recess composed with the darker fill (web path)', () => {
+    render(
+      <Surface level="base">
+        <Surface pressed testID="well" />
+      </Surface>
+    )
+    const boxShadow = screen.getByTestId('well').style.boxShadow
+    expect(boxShadow).toContain('inset')
+  })
+
+  it('reads recessed via the darker fill alone when the shadow path is absent (no-shadow/native)', () => {
+    // The recess is carried by BOTH fill + shadow; strip the shadow and the fill
+    // still darkens one ramp step, so a pressed surface never becomes invisible.
+    render(
+      <Surface level="base">
+        <Surface pressed testID="well" style={{ boxShadow: undefined }} />
+      </Surface>
+    )
+    expect(screen.getByTestId('well')).toHaveStyle({ backgroundColor: '#1C1916' })
+    expect(lstar('#1C1916')).toBeLessThan(lstar('#252321'))
+  })
+
+  it('rounds the well by default and honours an explicit rounded override', () => {
+    render(
+      <Surface level="base">
+        <Surface pressed testID="rounded" />
+        <Surface pressed rounded={false} testID="flat" />
+      </Surface>
+    )
+    expect(screen.getByTestId('rounded')).toBeInTheDocument()
+    expect(screen.getByTestId('flat')).toBeInTheDocument()
+  })
+})
+
+describe('pressedLevel helper', () => {
+  it.each([
+    ['overlay', 'raised'],
+    ['raised', 'elevated'],
+    ['elevated', 'base'],
+    ['base', 'background'],
+    ['background', 'inset'],
+    ['inset', 'inset'],
+  ] as const)('steps %s down to %s (clamped at inset)', (parent, expected) => {
+    expect(pressedLevel(parent)).toBe(expected)
+  })
+})
+
+describe('getPressedRecessShadow', () => {
+  it('returns an inset recess tuned to the fill colour on the web path', () => {
+    const style = getPressedRecessShadow('#1C1916', 'dark') as { boxShadow?: string }
+    expect(style.boxShadow).toContain('inset')
+  })
+})
+
 describe('Surface on-surface colour context', () => {
   it('gives descendants literal-hex dark text colours', () => {
     render(
@@ -156,6 +290,10 @@ describe('surface colour helpers', () => {
     expect(surfaceBackground('elevated', 'dark')).toBe('#2C2A28')
     expect(surfaceBackground('background', 'dark')).toBe('#1C1916')
     expect(surfaceBackground('base', 'light')).toBe('#FFFFFF')
+  })
+
+  it('resolves the inset floor from the surfaceRampDark.inset primitive (no token yet)', () => {
+    expect(surfaceBackground('inset', 'dark')).toBe('#13100D')
   })
 
   it('onSurfaceColors returns the neutral text ramp as literal hex', () => {

@@ -15,8 +15,12 @@ const meta: Meta<typeof Surface> = {
     },
     level: {
       control: 'select',
-      options: ['background', 'base', 'elevated', 'raised', 'overlay'],
+      options: ['inset', 'background', 'base', 'elevated', 'raised', 'overlay'],
       description: 'Named charcoal plane (flat background from a semantic token)',
+    },
+    pressed: {
+      control: 'boolean',
+      description: 'Sunken well: one ramp step DOWN from the parent level + inner-shadow recess',
     },
     theme: {
       control: 'select',
@@ -95,6 +99,62 @@ export const NamedPlanes: Story = {
           <Text style={{ color: '#fff' }}>level=&quot;{level}&quot;</Text>
         </Surface>
       ))}
+    </View>
+  ),
+}
+
+// The pressed (sunken well) model: a `<Surface pressed>` renders ONE ramp step
+// DOWN from its parent's level — the symmetric twin of a raised surface stepping
+// up — plus an inner-shadow recess. It's RELATIVE: the same `pressed` well reads
+// as a consistent recess on every host plane (base → background, raised →
+// elevated, overlay → raised), not a single fixed black hole. It clamps at the
+// `inset` floor so a well in `background` bottoms out at the ramp's pit.
+function WellCard({ level }: { level: SurfaceLevel }) {
+  return (
+    <Surface level={level} style={{ padding: 16, gap: 12, flex: 1, borderRadius: 14 }}>
+      <Eyebrow>HOST · LEVEL = {level.toUpperCase()}</Eyebrow>
+      <Surface pressed style={{ padding: 16, gap: 4 }}>
+        <Eyebrow>PRESSED WELL</Eyebrow>
+        <OnSurfaceBody title="Sunken panel" sub="one step down + inner recess" />
+      </Surface>
+    </Surface>
+  )
+}
+
+export const PressedWells: Story = {
+  render: () => (
+    <Surface level="background" style={{ flexDirection: 'row', gap: 16, padding: 24 }}>
+      {(['base', 'raised', 'overlay'] as SurfaceLevel[]).map((level) => (
+        <WellCard key={level} level={level} />
+      ))}
+    </Surface>
+  ),
+}
+
+// Clamp + nesting — a well in `background` bottoms out at the inset floor
+// (#13100D), and pressing again inside it stays at the floor (no underflow),
+// while a well in a lighter plane still steps down normally.
+export const PressedClampAndNesting: Story = {
+  render: () => (
+    <View style={{ flexDirection: 'row', gap: 16, padding: 24 }}>
+      <Surface level="background" style={{ padding: 16, gap: 12, flex: 1, borderRadius: 14 }}>
+        <Eyebrow>HOST · LEVEL = BACKGROUND</Eyebrow>
+        <Surface pressed style={{ padding: 16, gap: 10 }}>
+          <Eyebrow>PRESSED → INSET FLOOR</Eyebrow>
+          <Surface pressed style={{ padding: 12 }}>
+            <Eyebrow>PRESSED AGAIN → CLAMPED</Eyebrow>
+          </Surface>
+        </Surface>
+      </Surface>
+      <Surface level="raised" style={{ padding: 16, gap: 12, flex: 1, borderRadius: 14 }}>
+        <Eyebrow>HOST · LEVEL = RAISED</Eyebrow>
+        <Surface pressed style={{ padding: 16, gap: 10 }}>
+          <Eyebrow>PRESSED → ELEVATED</Eyebrow>
+          <Surface pressed style={{ padding: 12 }}>
+            <Eyebrow>PRESSED AGAIN → BASE</Eyebrow>
+          </Surface>
+        </Surface>
+      </Surface>
     </View>
   ),
 }

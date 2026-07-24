@@ -6,6 +6,7 @@ export {
   useOnSurfaceColor,
   onSurfaceColors,
   surfaceBackground,
+  pressedLevel,
   SURFACE_LEVEL_TOKEN,
   type SurfaceLevel,
   type OnSurfaceRole,
