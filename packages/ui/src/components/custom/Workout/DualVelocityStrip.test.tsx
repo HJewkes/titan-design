@@ -190,7 +190,7 @@ describe('DualVelocityStrip reference lines', () => {
 })
 
 describe('DualVelocityStrip planned stubs', () => {
-  it('draws a mirrored todo stub per unperformed rep on both sides', () => {
+  it('index-locks the columns: the lagging side fills its un-logged rep column as empty, not shifted', () => {
     render(
       <DualVelocityStrip
         left={{ velocities: [0.9, 0.85] }}
@@ -198,9 +198,12 @@ describe('DualVelocityStrip planned stubs', () => {
         targetReps={4}
       />
     )
-    // left: 4 - 2 = 2 stubs; right: 4 - 1 = 3 stubs.
+    // 4 shared columns. left logs reps 0–1 → cols 2,3 planned todo. right logs rep 0 → col 1 is its
+    // un-logged rep column (EMPTY, index-locked under left's rep 1), cols 2,3 planned todo.
     expect(wingUp().queryAllByTestId('velocity-slot-todo')).toHaveLength(2)
-    expect(wingDown().queryAllByTestId('velocity-slot-todo')).toHaveLength(3)
+    expect(wingUp().queryAllByTestId('velocity-slot-empty')).toHaveLength(0)
+    expect(wingDown().queryAllByTestId('velocity-slot-todo')).toHaveLength(2)
+    expect(wingDown().queryAllByTestId('velocity-slot-empty')).toHaveLength(1)
   })
 
   it('renders the planned stub as the solid to-do section (inherited hero styling, not dashed)', () => {
@@ -234,6 +237,21 @@ describe('DualVelocityStrip planned stubs', () => {
     )
     expect(wingUp().queryAllByTestId('velocity-slot-todo')).toHaveLength(3)
     expect(wingUp().queryAllByTestId(HERO_BARS)).toHaveLength(0)
+  })
+
+  it('symmetric index-lock: left logs 5, right logs 3 → 5 columns, right cols 3–4 aligned empty', () => {
+    render(
+      <DualVelocityStrip
+        left={{ velocities: [0.9, 0.88, 0.86, 0.84, 0.82] }}
+        right={{ velocities: [0.85, 0.8, 0.75] }}
+      />
+    )
+    // Both wings render 5 columns. Left: 5 rep bars. Right: 3 rep bars + cols 3,4 EMPTY (under
+    // left's reps 3,4), no shift, no todo (no planned remainder).
+    expect(wingUp().queryAllByTestId(HERO_BARS)).toHaveLength(5)
+    expect(wingUp().queryAllByTestId('velocity-slot-empty')).toHaveLength(0)
+    expect(wingDown().queryAllByTestId(HERO_BARS)).toHaveLength(3)
+    expect(wingDown().queryAllByTestId('velocity-slot-empty')).toHaveLength(2)
   })
 })
 

@@ -47,12 +47,15 @@ const CONTINUE_OUTLINE = primitiveRamps.cyan[800]
 /**
  * One drawn cell of the chart. `rep` carries a `value` and draws a value-height bar;
  * `todo` / `variable` / `continue` are the set-type window stubs (planned remainder, the
- * range floor..max window, the AMRAP/myo open tail). `leadingGap` adds spacing BEFORE the
- * cell beyond the uniform inter-bar gap — the WIDE chunk-notch that splits drop sub-loads /
- * myo clusters / cluster intra-rests. Absent `leadingGap` = the ordinary rep gap.
+ * range floor..max window, the AMRAP/myo open tail); `empty` is a rep COLUMN a side didn't
+ * log — a faint constant-contrast placeholder that keeps the two diverging wings index-locked
+ * (a lagging side's missing rep sits at the SAME column index as the other side's rep).
+ * `leadingGap` adds spacing BEFORE the cell beyond the uniform inter-bar gap — the WIDE
+ * chunk-notch that splits drop sub-loads / myo clusters / cluster intra-rests. Absent
+ * `leadingGap` = the ordinary rep gap.
  */
 export interface SetSlot {
-  kind: 'rep' | 'todo' | 'variable' | 'continue'
+  kind: 'rep' | 'todo' | 'variable' | 'continue' | 'empty'
   value?: number
   leadingGap?: number
 }
@@ -131,6 +134,12 @@ export interface SetBarChartProps {
   testIDPrefix?: string
   /** When set, the container reads as an `image` with this label; omit for a plain (unlabeled) plot. */
   accessibilityLabel?: string
+  /**
+   * Optional stream / slot NAME (e.g. "Left Arm") rendered as a rotated vertical edge label down a
+   * left gutter — the same treatment the diverging dual gives each wing. Font size scales to `height`
+   * so it fits without truncation. Omitted → no gutter.
+   */
+  label?: string
   className?: string
   /** Rest View props (style is merged onto the container). */
   viewProps?: ViewProps
@@ -149,10 +158,14 @@ export function scaleDenominator(scale: 'peak' | 'fixed', maxValue: number): num
 // --- Hero geometry -----------------------------------------------------------
 /** Default plot height (px) — tall enough to read a set's shape across a room. */
 export const SET_BAR_DEFAULT_HEIGHT = 220
-/** Vertical band reserved above the tallest bar for its value label (px). */
-const LABEL_HEADROOM = 20
-/** Base gap between bars (px) — a group-notch-free even rhythm at wall scale. */
-const BASE_BAR_GAP = 8
+/** Value-label row height (px) — the only headroom reserved above the bars when labels show. */
+const LABEL_ROW_HEIGHT = 16
+/** Gap between the value-label row and the peak bar top (px). */
+const LABEL_GAP = 3
+/** Inter-bar gap as a fraction of bar width (proportional spacing). */
+const GAP_RATIO = 0.5
+/** Floor on the proportional inter-bar gap (px) — narrow plots tighten to ~expanded density. */
+const MIN_BAR_GAP = 2
 /** Cap on a single bar's width so a 2–3 rep set doesn't render slab-wide bars (px). */
 const BAR_MAX_WIDTH = 120
 /** Below this per-bar width the value labels collide, so all but the peak + live rep are dropped. */
@@ -161,8 +174,8 @@ const LABEL_MIN_BAR_WIDTH = 30
 const DEFAULT_BAR_RADIUS = 5
 /** Minimum drawn height of a performed bar (px) — a near-zero rep still reads as a rep. */
 const MIN_BAR_HEIGHT = 4
-/** The stub height for a window cell (todo / variable / continue) — reads as a placeholder. */
-const STUB_HEIGHT = MIN_BAR_HEIGHT * 3
+/** The stub height for a window cell (todo / variable / continue / empty) — a subtle placeholder. */
+const STUB_HEIGHT = 6
 /** The ordinary rep gap the per-slot `leadingGap` is measured against (extra margin = leadingGap − this). */
 const REP_GAP = 2
 
@@ -200,6 +213,7 @@ export function SetBarChart({
   testID,
   testIDPrefix = 'setbar',
   accessibilityLabel,
+  label,
   className,
   viewProps = {},
 }: SetBarChartProps) {
@@ -227,15 +241,19 @@ export function SetBarChart({
   // The expanded strip's solid to-do tone: the surface plane blended toward the neutral (the same
   // relative model), so a `todoVariant="solid"` section holds ~constant contrast on every plane.
   const surface = useSurface()
-  const solidTodoColor = mixHex(surfaceBackground(surface.level, surface.mode), placeholderColor, 0.55)
+  const surfaceBg = surfaceBackground(surface.level, surface.mode)
+  const solidTodoColor = mixHex(surfaceBg, placeholderColor, 0.55)
+  // An `empty` cell (a rep the diverging side didn't log) is fainter than a planned to-do.
+  const emptyColor = mixHex(surfaceBg, placeholderColor, 0.28)
 
   // `scaleMax` (the diverging dual's shared pair-max) overrides the height denominator so both
   // sides share ONE height scale; color + the reference still read this chart's own values.
   const scaleDenom =
     scaleMax != null && scaleMax > 0 ? scaleMax * PEAK_HEADROOM : scaleDenominator(scale, best)
 
-  // Reserve a band above the tallest bar for its value label so a peak bar never clips.
-  const plotHeight = Math.max(0, height - (showValueLabels ? LABEL_HEADROOM : 0))
+  // Reserve ONLY the value-label row (+ its gap to the peak bar) as headroom — not a fat fixed
+  // band — so the bars fill the plot and, at small heights, aren't over-stubbed.
+  const plotHeight = Math.max(0, height - (showValueLabels ? LABEL_ROW_HEIGHT + LABEL_GAP : 0))
   const yOf = (value: number): number => (scaleDenom > 0 ? (value / scaleDenom) * plotHeight : 0)
   const barHeight = (value: number): number =>
     scaleDenom > 0
@@ -252,14 +270,17 @@ export function SetBarChart({
   const [plotW, setPlotW] = useState(0)
   const onPlotLayout = (e: LayoutChangeEvent) => setPlotW(e.nativeEvent.layout.width)
 
+  // Inter-bar gap is PROPORTIONAL to bar width (gap ≈ GAP_RATIO·barWidth, floored at MIN_BAR_GAP).
+  // Solve N·bw + (N−1)·(GAP_RATIO·bw) = plotW → bw = plotW / (N + (N−1)·GAP_RATIO); the bars end up
+  // closer together than the old fixed wide gaps and tighten to ~expanded density on narrow plots.
   const totalCells = cells.length
-  const barWidth =
+  const rawBarWidth =
     plotW > 0 && totalCells > 0
-      ? Math.min(BAR_MAX_WIDTH, (plotW - BASE_BAR_GAP * (totalCells - 1)) / totalCells)
+      ? plotW / (totalCells + (totalCells - 1) * GAP_RATIO)
       : BAR_MAX_WIDTH
+  const barWidth = Math.min(BAR_MAX_WIDTH, rawBarWidth)
   const labelsCrowded = plotW > 0 && barWidth < LABEL_MIN_BAR_WIDTH
-  // Step the inter-bar gap down with the bars so the gaps never dwarf the bars themselves.
-  const gap = plotW === 0 ? BASE_BAR_GAP : barWidth < 16 ? 2 : barWidth < 28 ? 4 : BASE_BAR_GAP
+  const gap = plotW === 0 ? MIN_BAR_GAP : Math.max(MIN_BAR_GAP, GAP_RATIO * barWidth)
 
   // Peak rep index (over rep values) — its label always survives label-thinning.
   const peakRepIndex = repValues.reduce((b, v, i) => (v > repValues[b] ? i : b), 0)
@@ -278,11 +299,12 @@ export function SetBarChart({
   return (
     <View
       className={className}
-      style={[{ height }, externalStyle]}
+      style={[{ height, flexDirection: 'row' }, externalStyle]}
       testID={testID}
       {...a11y}
       {...restProps}
     >
+      {label ? <SideLabel label={label} height={height} /> : null}
       <View
         onLayout={onPlotLayout}
         style={{
@@ -312,7 +334,15 @@ export function SetBarChart({
           if (!isRep(slot)) {
             return (
               <View key={i} accessibilityElementsHidden style={column}>
-                {renderStub(slot.kind, barRadius, placeholderColor, testIDPrefix, todoVariant, solidTodoColor)}
+                {renderStub(
+                  slot.kind,
+                  barRadius,
+                  placeholderColor,
+                  testIDPrefix,
+                  todoVariant,
+                  solidTodoColor,
+                  emptyColor
+                )}
               </View>
             )
           }
@@ -324,10 +354,16 @@ export function SetBarChart({
           return (
             <View key={i} accessibilityElementsHidden style={column}>
               {showValueLabels && showBarLabel(repIndex) && (
-                // Every label pins to one aligned row at the plot TOP (absolute), in the muted
-                // on-surface-secondary tone — not offset per bar height.
+                // All labels pin to one aligned row JUST ABOVE THE PEAK BAR (not the container top),
+                // in the muted on-surface-secondary tone — so the row hugs the bars, no floating void.
                 <View
-                  style={{ position: 'absolute', top: 0, left: 0, right: 0, alignItems: 'center' }}
+                  style={{
+                    position: 'absolute',
+                    bottom: barHeight(best) + LABEL_GAP,
+                    left: 0,
+                    right: 0,
+                    alignItems: 'center',
+                  }}
                   pointerEvents="none"
                 >
                   <Text
@@ -365,14 +401,15 @@ export function SetBarChart({
   )
 }
 
-/** A window cell (planned / variable / continue) — a fixed-height stub in its set-type tone. */
+/** A window cell (planned / variable / continue / empty) — a fixed-height stub in its set-type tone. */
 function renderStub(
   kind: SetSlot['kind'],
   barRadius: number,
   placeholderColor: string,
   testIDPrefix: string,
   todoVariant: 'dashed' | 'solid',
-  solidTodoColor: string
+  solidTodoColor: string,
+  emptyColor: string
 ): ReactNode {
   const base: ViewStyle = {
     width: '100%',
@@ -396,10 +433,57 @@ function renderStub(
       />
     )
   }
+  if (kind === 'empty') {
+    // A rep column the diverging side did NOT log — a faint constant-contrast section, quieter than
+    // a planned to-do (it's a hole in this side's data, index-locked to the other side's rep).
+    return (
+      <View style={{ ...base, backgroundColor: emptyColor }} testID={`${testIDPrefix}-slot-empty`} />
+    )
+  }
   // todo — a solid surface-relative section (expanded language) or a dashed outline (hero language).
   const todoStyle: ViewStyle =
     todoVariant === 'solid'
       ? { ...base, backgroundColor: solidTodoColor }
       : { ...base, borderWidth: 1, borderStyle: 'dashed', borderColor: placeholderColor }
   return <View style={todoStyle} testID={`${testIDPrefix}-slot-todo`} />
+}
+
+/** Side/stream-name label font size (px), scaled to chart height so a long name fits un-truncated. */
+export function sideLabelFontSize(height: number): number {
+  return Math.round(Math.max(7, Math.min(13, height * 0.06)))
+}
+
+/**
+ * The rotated vertical stream/slot-name gutter down the chart's left edge (e.g. "LEFT ARM"). The
+ * rotate lives on a wrapper sized to `height` so `numberOfLines` resolves against the tall vertical
+ * extent, not the narrow gutter — a long name ellipsizes only when it genuinely exceeds the chart.
+ * Font size scales with `height` ({@link sideLabelFontSize}) so it fits without truncation.
+ */
+function SideLabel({ label, height }: { label: string; height: number }) {
+  const fontSize = sideLabelFontSize(height)
+  const gutter = Math.max(16, fontSize + 8)
+  return (
+    <View
+      style={{ width: gutter, alignItems: 'center', justifyContent: 'center' }}
+      accessibilityElementsHidden
+    >
+      <View style={{ width: height, alignItems: 'center', transform: [{ rotate: '-90deg' }] }}>
+        <Text
+          className="text-text-tertiary"
+          numberOfLines={1}
+          style={{
+            maxWidth: '100%',
+            textAlign: 'center',
+            fontSize,
+            fontWeight: '700',
+            letterSpacing: fontSize >= 11 ? 2 : 0,
+            textTransform: 'uppercase',
+          }}
+          testID="setbar-side-label"
+        >
+          {label}
+        </Text>
+      </View>
+    </View>
+  )
 }

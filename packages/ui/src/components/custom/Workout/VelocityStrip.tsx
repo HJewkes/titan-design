@@ -14,6 +14,7 @@ import {
   type SetSlot,
   type SetBarGeometry,
   scaleDenominator,
+  sideLabelFontSize,
   PEAK_HEADROOM,
   SET_BAR_DEFAULT_HEIGHT,
 } from '../charts/SetBarChart'
@@ -107,11 +108,19 @@ export interface VelocityStripProps extends ViewProps {
    */
   hideBaseline?: boolean
   /**
-   * `hero` only (internal): pad the rendered columns to at least this many with placeholder to-do
-   * cells. The diverging dual passes the union column count of BOTH wings so bars line up
-   * column-for-column top↔bottom across the centre axis regardless of each side's own rep count.
+   * `hero` only (internal): the EXACT rendered column structure, overriding this strip's own
+   * slot-building. The diverging dual builds ONE index-locked structure shared by both wings (same
+   * rep indices, same WIDE-gap positions, same column count; a column a side didn't log renders
+   * `empty`) and passes it here so bars line up column-for-column across the centre axis. Bar
+   * height / color / the running-best reference still read this strip's own `velocities`.
    */
-  minColumns?: number
+  columnSlots?: SetSlot[]
+  /**
+   * `hero` only: an optional stream / slot NAME (e.g. "Left Arm"), rendered as a rotated vertical
+   * edge label down the chart's left gutter — the same treatment the diverging dual gives each wing,
+   * so a single hero and a dual read consistently. Omitted → no gutter.
+   */
+  label?: string
   /**
    * Live mode: index of the most-recently-completed rep. That bar GROWS UP FROM
    * THE BASELINE to its full height as it enters, tracking the rep as it lands;
@@ -463,8 +472,8 @@ function slotAccessibilityLabel(slot: VelocitySlot, index: number): string {
   }
 }
 
-/** Straight-set expanded stub height for a planned (todo) rep, as a % of the plot. */
-const EXPANDED_TODO_STUB_PCT = 16
+/** Straight-set expanded stub height for a planned (todo) rep, as a % of the plot (halved — subtler). */
+const EXPANDED_TODO_STUB_PCT = 8
 /** Expanded height for advanced set-types (drop / myo / cluster / range / amrap): a short mini-style bar. */
 const EXPANDED_ENCODED_PCT = 45
 
@@ -564,6 +573,9 @@ export function VelocityLossBands({
   const yOf = (v: number): number => (v / scaleDenom) * plotHeight
   const vl20 = best * 0.8
   const vl30 = best * 0.7
+  // The VL20 / VL30 lines sit ~0.09·plotHeight apart, so on a short chart their labels crowd. Scale
+  // the label font (and its vertical padding) to the plot height to keep them from overlapping.
+  const vlFont = Math.round(Math.max(6, Math.min(9, plotHeight * 0.055)))
   const band = (loV: number, hiV: number, color: string) => (
     <View
       style={{
@@ -598,7 +610,7 @@ export function VelocityLossBands({
       <Text
         style={{
           marginHorizontal: 6,
-          fontSize: 9,
+          fontSize: vlFont,
           fontWeight: '800',
           fontFamily: BAND_LABEL_FONT,
           color,
@@ -750,14 +762,65 @@ function streamDone(stream: DualVelocityStream): number[] {
   return stream.set ? deriveDoneVelocities(stream.set) : (stream.velocities ?? [])
 }
 
+/** A side's NATURAL slot list — its `set` slot vocabulary, or bare rep slots + a `targetReps` remainder. */
+function streamNaturalSlots(stream: DualVelocityStream, targetReps?: number): SetSlot[] {
+  if (stream.set) {
+    return buildSlots(stream.set).map((s) => ({
+      kind: s.kind,
+      value: s.velocity,
+      leadingGap: s.leadingGap,
+    }))
+  }
+  const reps: SetSlot[] = (stream.velocities ?? []).map((v, i) => ({
+    kind: 'rep',
+    value: v,
+    leadingGap: i === 0 ? 0 : REP_GAP,
+  }))
+  const pad = Math.max(0, (targetReps ?? 0) - reps.length)
+  return [...reps, ...Array.from({ length: pad }, () => ({ kind: 'todo' as const }))]
+}
+
 /**
- * A side's NATURAL column count — the number of cells its composed hero draws: a `set` resolves to
- * its full slot list (reps + todo + window cells), a plain stream to `max(done, targetReps)`. The
- * dual takes the union of both sides so it can pad the shorter wing and align bars across the axis.
+ * The window-kind precedence when merging two sides' cells at a column: a set-type window (variable /
+ * continue) that either side has wins; else if either logged (or plans) a rep there it's a REP column;
+ * else it's a shared to-do. So a lagging side's not-yet-logged rep column stays a REP column (rendered
+ * `empty` for that side), index-locked to the other side's rep — never shifted or re-spaced.
  */
-function streamColumns(stream: DualVelocityStream, targetReps?: number): number {
-  if (stream.set) return buildSlots(stream.set).length
-  return Math.max(stream.velocities?.length ?? 0, targetReps ?? 0)
+function mergeColumnKind(l: SetSlot | undefined, r: SetSlot | undefined): SetSlot['kind'] {
+  const kinds = [l?.kind, r?.kind]
+  if (kinds.includes('variable')) return 'variable'
+  if (kinds.includes('continue')) return 'continue'
+  if (kinds.includes('rep')) return 'rep'
+  return 'todo'
+}
+
+/** One side's cell at a merged column: its logged rep (with value), else `empty` for a rep column, else the shared window kind. */
+function sideColumnCell(slot: SetSlot | undefined, kind: SetSlot['kind'], leadingGap: number): SetSlot {
+  if (kind !== 'rep') return { kind, leadingGap }
+  return slot?.kind === 'rep'
+    ? { kind: 'rep', value: slot.value, leadingGap }
+    : { kind: 'empty', leadingGap }
+}
+
+/**
+ * Build ONE index-locked column structure shared by both diverging wings from their natural slot
+ * lists: same column count, same rep indices, same WIDE-gap positions. Each column resolves to a
+ * shared kind ({@link mergeColumnKind}); per side it's that side's rep value, or `empty` when the
+ * side hasn't logged that rep (assumes symmetric bilateral reps — both sides step together).
+ */
+function alignDualSlots(left: SetSlot[], right: SetSlot[]): { left: SetSlot[]; right: SetSlot[] } {
+  const n = Math.max(left.length, right.length)
+  const L: SetSlot[] = []
+  const R: SetSlot[] = []
+  for (let i = 0; i < n; i++) {
+    const lt = left[i]
+    const rt = right[i]
+    const kind = mergeColumnKind(lt, rt)
+    const gap = Math.max(lt?.leadingGap ?? REP_GAP, rt?.leadingGap ?? REP_GAP)
+    L.push(sideColumnCell(lt, kind, gap))
+    R.push(sideColumnCell(rt, kind, gap))
+  }
+  return { left: L, right: R }
 }
 
 /**
@@ -787,16 +850,17 @@ function DivergingSideRail({
   // not the gutter — otherwise a multi-char slot name clips to ~2 chars. Ellipsis therefore
   // only kicks in when a name genuinely exceeds the wing (long names at rail scale).
   const labelLength = Math.max(0, plotHalf - (isRail ? 0 : 6))
+  // Font scales to the WING height (plotHalf) so a slot name ("RIGHT ARM") fits the vertical extent
+  // without truncating at short chart heights — the same height-responsive rule the single hero uses.
+  const fontSize = isRail ? 7 : sideLabelFontSize(plotHalf)
   const textStyle = {
     maxWidth: '100%' as const,
     textAlign: 'center' as const,
-    // Rail wing is short (~48px): drop to 7px + no tracking so an 8–10 char slot name
-    // ("RIGHT ARM") fits the wing fully once uppercased. Hero has room for the airier
-    // 11px/tracked read. Small-caps/eyebrow treatment: the DATA keeps its casing ("Left
-    // Arm"), the component renders it UPPERCASE — matching titan's label tag convention.
-    fontSize: isRail ? 7 : 11,
+    // Small-caps/eyebrow treatment: the DATA keeps its casing ("Left Arm"), the component renders it
+    // UPPERCASE — matching titan's label tag convention. Tracking eases off as the font shrinks.
+    fontSize,
     fontWeight: '700' as const,
-    letterSpacing: isRail ? 0 : 3,
+    letterSpacing: isRail || fontSize < 10 ? 0 : 2,
     textTransform: 'uppercase' as const,
   }
   const renderHalf = (label: string | undefined, testID: string) => (
@@ -907,32 +971,28 @@ function DualVelocityHero({
   // `peak` shares the pair max via `scaleMax`; `fixed` shares the cross-set ceiling (both wings
   // resolve the same fixed ceiling), so `scaleMax` is left off and `scale` carries it.
   const sharedMax = Math.max(...leftDone, ...rightDone, 0)
-  // The union column count of both wings — each wing pads to this so bars line up column-for-column
-  // top↔bottom across the centre axis, regardless of one side having fewer reps or a shorter set.
-  const sharedColumns = Math.max(
-    leftStream ? streamColumns(leftStream, targetReps) : leftDone.length,
-    rightStream ? streamColumns(rightStream, targetReps) : rightDone.length
+  // ONE index-locked column structure shared by both wings: same rep indices, same WIDE-gap
+  // positions, same column count. A column a side didn't log renders `empty` there — so a lagging
+  // side's next rep lands at the SAME column index as the other side, never shifted or re-spaced.
+  const aligned = alignDualSlots(
+    leftStream ? streamNaturalSlots(leftStream, targetReps) : [],
+    rightStream ? streamNaturalSlots(rightStream, targetReps) : []
   )
   const axisColor = useOnSurfaceColor('tertiary')
   const { style: externalStyle, ...restProps } = viewProps
 
-  // Pass the raw stream (its `set` descriptor when present, else its velocities) straight into the
-  // composed hero so a side's set-type WINDOWS render — the composed hero builds its own slots.
-  const wing = (
-    orientation: 'up' | 'down',
-    stream: DualVelocityStream | undefined,
-    done: number[]
-  ) => (
+  // Each wing renders the SHARED aligned structure (`columnSlots`); its own `velocities` still drive
+  // bar height / per-side loss color / the running-best reference.
+  const wing = (orientation: 'up' | 'down', columns: SetSlot[], done: number[]) => (
     <VelocityStrip
       variant="hero"
       orientation={orientation}
-      {...(stream?.set ? { set: stream.set } : { velocities: stream?.velocities ?? done })}
+      velocities={done}
+      columnSlots={columns}
       scale={scale}
       scaleMax={scale === 'fixed' ? undefined : sharedMax}
       barColor={barColor}
       zones={zones}
-      targetReps={targetReps}
-      minColumns={sharedColumns}
       liveRepIndex={liveRepIndex}
       height={plotHalf}
       hideBaseline
@@ -961,10 +1021,10 @@ function DualVelocityHero({
         {/* The two composed heroes. Their own labels are redundant with the dual's summary label,
             so the wings are hidden from the a11y tree (testIDs still resolve for tests). */}
         <View accessibilityElementsHidden testID="dual-velocity-wing-up">
-          {wing('up', leftStream, leftDone)}
+          {wing('up', aligned.left, leftDone)}
         </View>
         <View accessibilityElementsHidden testID="dual-velocity-wing-down">
-          {wing('down', rightStream, rightDone)}
+          {wing('down', aligned.right, rightDone)}
         </View>
 
         <DualCentreAxis plotHalf={plotHalf} color={axisColor} />
@@ -1163,7 +1223,8 @@ export function VelocityStrip({
   orientation = 'up',
   scaleMax,
   hideBaseline,
-  minColumns,
+  columnSlots,
+  label,
   liveRepIndex,
   expanded = true,
   onToggle,
@@ -1276,14 +1337,19 @@ export function VelocityStrip({
   const miniLabel = set ? setAccessibilityLabel(set, repCount) : `Velocity strip, ${repCount} reps`
 
   if (variant === 'hero') {
-    // Hero's plot is far taller than the expanded chart; apply its own default when
-    // the caller left `height` at the shared 60px default.
-    const heroHeight = height === EXPANDED_HEIGHT ? SET_BAR_DEFAULT_HEIGHT : height
-    // A `set` builds its own typed slots (rep / todo / variable / continue + chunk-notch gaps);
-    // the plain `velocities` path is bare rep slots + a `targetReps` todo remainder SetBarChart fills.
-    const heroSlots: SetSlot[] = set
-      ? buildSlots(set).map((s) => ({ kind: s.kind, value: s.velocity, leadingGap: s.leadingGap }))
-      : doneVelocities.map((v) => ({ kind: 'rep', value: v }))
+    // Hero's plot is far taller than the expanded chart; apply its own default when the caller left
+    // `height` at the shared 60px default. The diverging dual (which passes `columnSlots`) sets an
+    // explicit per-wing height — exempt it, so a dual whose wing height happens to be 60px (a 120px
+    // dual) isn't mistaken for "unset" and blown up to 220.
+    const heroHeight =
+      height === EXPANDED_HEIGHT && columnSlots == null ? SET_BAR_DEFAULT_HEIGHT : height
+    // `columnSlots` (the diverging dual's shared index-locked structure) wins; else a `set` builds
+    // its own typed slots, and the plain `velocities` path is bare rep slots + a `targetReps` remainder.
+    const heroSlots: SetSlot[] =
+      columnSlots ??
+      (set
+        ? buildSlots(set).map((s) => ({ kind: s.kind, value: s.velocity, leadingGap: s.leadingGap }))
+        : doneVelocities.map((v) => ({ kind: 'rep', value: v })))
     const total = Math.max(repCount, targetReps ?? repCount)
     const heroLabel =
       maxVelocity > 0
@@ -1299,8 +1365,8 @@ export function VelocityStrip({
         orientation={orientation}
         liveRepIndex={liveRepIndex}
         isNewPeak={isNewPeak}
-        targetReps={set ? undefined : targetReps}
-        minColumns={minColumns}
+        targetReps={set || columnSlots ? undefined : targetReps}
+        label={label}
         showValueLabels
         formatValue={formatVelocity}
         renderReference={(g) => velocityReferenceOverlay(g, lossBandsOn)}

@@ -129,6 +129,19 @@ describe('SetBarChart todoVariant', () => {
   })
 })
 
+describe('SetBarChart empty columns', () => {
+  it('renders an empty cell for a rep column with no value (dual index-lock)', () => {
+    const slots: SetSlot[] = [
+      { kind: 'rep', value: 0.9 },
+      { kind: 'empty' },
+      { kind: 'rep', value: 0.8 },
+    ]
+    render(<SetBarChart slots={slots} colorFor={silver} height={200} testIDPrefix="t" />)
+    expect(screen.getAllByTestId(/^t-bar-\d+$/)).toHaveLength(2)
+    expect(screen.getByTestId('t-slot-empty')).toBeInTheDocument()
+  })
+})
+
 describe('SetBarChart set-type windows', () => {
   it('renders variable and continue window stubs from explicit slots', () => {
     const slots: SetSlot[] = [
@@ -160,8 +173,8 @@ describe('SetBarChart reference overlay', () => {
     )
     expect(captured).not.toBeNull()
     expect(captured!.best).toBeCloseTo(1.0)
-    // plotHeight = height - 20px value-label headroom when labels show.
-    expect(captured!.plotHeight).toBe(180)
+    // plotHeight = height − (label-row height 16 + label gap 3) when labels show.
+    expect(captured!.plotHeight).toBe(181)
   })
 })
 

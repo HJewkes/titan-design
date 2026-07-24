@@ -169,10 +169,10 @@ export const Rail: Story = {
 }
 
 /**
- * Set-type streams — the up wing takes a `range` set, the down wing an `amrap` set. Each side's `set`
- * passes into its composed hero, so the set-type **windows render**: the range's cyan variable window
- * (`floor..max`) on the up wing, the amrap's trailing cyan-outline "continue" on the down wing. The
- * dual still colors per-side by loss — the windows are position, not hue.
+ * Set-type windows on the dual — a `range` set on BOTH sides (same structure: floor 6, max 8), the
+ * right side one rep behind. The set-type windows render: the dashed floor + the cyan variable window
+ * (`floor..max`), index-locked across the axis; the right's un-logged rep shows as an empty cell under
+ * the left's. The dual colors per-side by loss — the windows are position, not hue.
  */
 export const HeroSetTypes: Story = {
   args: {
@@ -180,7 +180,10 @@ export const HeroSetTypes: Story = {
       set: { type: 'range', velocities: [0.9, 0.87, 0.84, 0.8], floor: 6, max: 8 },
       label: LEFT_SLOT,
     },
-    right: { set: { type: 'amrap', velocities: [0.82, 0.78, 0.73, 0.67, 0.6] }, label: RIGHT_SLOT },
+    right: {
+      set: { type: 'range', velocities: [0.84, 0.79, 0.73], floor: 6, max: 8 },
+      label: RIGHT_SLOT,
+    },
     variant: 'hero',
     scale: 'fixed',
   },
@@ -240,9 +243,10 @@ export const HeroResponsive: Story = {
 
 // --- Set-type board ---------------------------------------------------------
 // One row per set type, each shown as BOTH the single hero (VelocityStrip) and the
-// diverging dual (DualVelocityStrip). The dual uses ASYMMETRIC per-side data (fewer reps
-// / a shorter set on the right) to prove the structural-alignment fix: each wing pads to
-// the union column count, so bars line up column-for-column top<->bottom across the axis.
+// diverging dual (DualVelocityStrip). Per the symmetric index-lock model, BOTH sides of a dual
+// row share the SAME set type + structure (same planned / floor / max / chunk positions); they
+// differ ONLY in how many reps each side logged — the lagging (right) side's un-logged reps render
+// as EMPTY cells aligned under the left's, so every column is index-locked across the axis.
 
 interface BoardRow {
   type: string
@@ -258,14 +262,14 @@ const BOARD: BoardRow[] = [
     note: 'done reps + solid to-do remainder to the planned count',
     single: { type: 'straight', velocities: [0.9, 0.86, 0.82, 0.78], planned: 6 },
     left: { type: 'straight', velocities: [0.9, 0.86, 0.82, 0.78], planned: 6 },
-    right: { type: 'straight', velocities: [0.84, 0.78], planned: 4 },
+    right: { type: 'straight', velocities: [0.84, 0.79], planned: 6 },
   },
   {
     type: 'range',
     note: 'committed rep bars + solid floor + the cyan variable window (floor..max)',
     single: { type: 'range', velocities: [0.9, 0.86, 0.82, 0.8], floor: 6, max: 8 },
     left: { type: 'range', velocities: [0.9, 0.86, 0.82, 0.8], floor: 6, max: 8 },
-    right: { type: 'range', velocities: [0.83, 0.78, 0.72], floor: 4, max: 6 },
+    right: { type: 'range', velocities: [0.83, 0.78], floor: 6, max: 8 },
   },
   {
     type: 'amrap',
@@ -298,6 +302,7 @@ const BOARD: BoardRow[] = [
       subloads: [
         [0.88, 0.83],
         [0.75, 0.68],
+        [0.62],
       ],
     },
   },
@@ -324,8 +329,11 @@ const BOARD: BoardRow[] = [
     },
     right: {
       type: 'myo',
-      activation: [0.84, 0.79],
-      clusters: [[0.68, 0.62]],
+      activation: [0.84, 0.79, 0.74],
+      clusters: [
+        [0.68, 0.62],
+        [0.58],
+      ],
       open: true,
     },
   },
@@ -334,7 +342,7 @@ const BOARD: BoardRow[] = [
     note: 'fixed count grouped by WIDE intra-rest gaps + solid planned remainder',
     single: { type: 'cluster', velocities: [0.9, 0.86, 0.82, 0.78, 0.74], groupSize: 2, planned: 8 },
     left: { type: 'cluster', velocities: [0.9, 0.86, 0.82, 0.78, 0.74], groupSize: 2, planned: 8 },
-    right: { type: 'cluster', velocities: [0.85, 0.8], groupSize: 2, planned: 6 },
+    right: { type: 'cluster', velocities: [0.85, 0.8, 0.76], groupSize: 2, planned: 8 },
   },
 ]
 
@@ -360,9 +368,9 @@ function BoardBlock({ row }: { row: BoardRow }) {
       <Text style={{ color: '#5A5A5A', fontSize: 9, fontWeight: '700', letterSpacing: 1 }}>
         SINGLE HERO
       </Text>
-      <VelocityStrip variant="hero" set={row.single} scale="fixed" height={120} />
+      <VelocityStrip variant="hero" set={row.single} label="This Set" scale="fixed" height={120} />
       <Text style={{ color: '#5A5A5A', fontSize: 9, fontWeight: '700', letterSpacing: 1 }}>
-        DIVERGING DUAL · asymmetric sides, columns aligned
+        DIVERGING DUAL · symmetric structure, right side logs fewer → aligned empties
       </Text>
       <DualVelocityStrip
         left={{ set: row.left, label: LEFT_SLOT }}
@@ -377,9 +385,9 @@ function BoardBlock({ row }: { row: BoardRow }) {
 
 /**
  * Set-type board — every set type (straight / range / amrap / drop / myo / cluster) rendered as BOTH
- * the single hero and the diverging dual, sharing one bar language via SetBarChart. The dual rows use
- * asymmetric per-side data to show the structural-alignment fix: the shorter wing pads to the union
- * column count so bars line up across the centre axis. Replaces the earlier ad-hoc coverage grid.
+ * the single hero and the diverging dual, sharing one bar language via SetBarChart. Both sides of each
+ * dual row share ONE index-locked structure (same set params); the right side logs fewer reps, so its
+ * un-logged reps render as empty cells aligned under the left's. Replaces the earlier ad-hoc grid.
  */
 export const SetTypeCoverage: Story = {
   render: () => (
@@ -389,4 +397,34 @@ export const SetTypeCoverage: Story = {
       ))}
     </View>
   ),
+}
+
+/**
+ * Symmetric index-lock demo — left logs 5 reps, right logs 3, SAME structure. The dual renders 5
+ * aligned columns; the right side's reps 3–4 render as EMPTY cells directly under the left's reps
+ * 3–4 (index-locked, never shifted). The next rep a lagging side performs lands at its column.
+ */
+export const HeroSymmetricEmpties: Story = {
+  args: {
+    left: { velocities: [0.9, 0.88, 0.86, 0.84, 0.82], label: LEFT_SLOT },
+    right: { velocities: [0.85, 0.8, 0.75], label: RIGHT_SLOT },
+    variant: 'hero',
+    scale: 'fixed',
+  },
+  decorators: [wallDecorator],
+}
+
+/**
+ * Small chart height — the responsive labels. At ~110px the per-side slot names and the VL20 / VL30
+ * band labels scale their font down so the names don't truncate and the two VL labels don't collide.
+ */
+export const HeroSmallHeightLabels: Story = {
+  args: {
+    left: { velocities: [0.96, 0.9, 0.83, 0.72], label: LEFT_SLOT },
+    right: { velocities: [0.9, 0.82, 0.71, 0.6], label: RIGHT_SLOT },
+    variant: 'hero',
+    scale: 'fixed',
+    height: 120,
+  },
+  decorators: [wallDecorator],
 }

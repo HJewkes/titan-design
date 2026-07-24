@@ -508,3 +508,19 @@ export const PlaceholderAcrossSurfaces: Story = {
     )
   },
 }
+
+/**
+ * Single hero WITH a stream/slot-name label ("Left Arm") down the left gutter — the same rotated
+ * vertical edge label the diverging dual gives each wing, so a single hero and a dual read
+ * consistently. The label font scales to the chart height so it fits without truncation.
+ */
+export const HeroWithSlotLabel: Story = {
+  args: {
+    velocities: heroFatigue,
+    variant: 'hero',
+    label: 'Left Arm',
+    targetReps: 8,
+    scale: 'fixed',
+  },
+  decorators: [heroDecorator],
+}
