@@ -32,8 +32,8 @@ const HTML_CSS = `
     --brand-primary-subtle: rgba(255, 121, 0, 0.12);
     --brand-secondary: #307B9B;
     --bg-base: #101010;
-    --surface-elevated: #191919;
-    --surface-raised: #1C1C1C;
+    --surface-elevated: #2C2A28;
+    --surface-raised: #31302F;
     --text-primary: #F3F4F6;
     --text-secondary: #9CA3AF;
     --text-tertiary: #6B7280;

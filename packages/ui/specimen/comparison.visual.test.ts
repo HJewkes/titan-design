@@ -950,7 +950,7 @@ test.describe('HTML vs React Component Comparison', () => {
       const cs = window.getComputedStyle(el)
       return { backgroundColor: cs.backgroundColor, flexDirection: cs.flexDirection, alignItems: cs.alignItems }
     })
-    expect.soft(styles.backgroundColor, 'InputBar bg').toBe('rgb(25, 25, 25)')
+    expect.soft(styles.backgroundColor, 'InputBar bg').toBe('rgb(44, 42, 40)')
     expect.soft(styles.flexDirection, 'InputBar flexDirection').toBe('row')
     expect.soft(styles.alignItems, 'InputBar alignItems').toBe('center')
   })
@@ -966,7 +966,7 @@ test.describe('HTML vs React Component Comparison', () => {
       const cs = window.getComputedStyle(el)
       return { backgroundColor: cs.backgroundColor, paddingLeft: cs.paddingLeft, paddingRight: cs.paddingRight }
     })
-    expect.soft(styles.backgroundColor, 'RestTimer bg').toBe('rgb(28, 28, 28)')
+    expect.soft(styles.backgroundColor, 'RestTimer bg').toBe('rgb(49, 48, 47)')
     expect.soft(styles.paddingLeft, 'RestTimer paddingLeft').toBe('16px')
     expect.soft(styles.paddingRight, 'RestTimer paddingRight').toBe('16px')
   })
