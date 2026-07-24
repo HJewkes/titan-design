@@ -27,6 +27,9 @@ export {
   getVelocityZoneName,
   calculateVelocityLoss,
   calculateMeanVelocity,
+  DualVelocityStrip,
+  type DualVelocityStripProps,
+  type DualVelocityStream,
 } from './VelocityStrip'
 export { MuscleGroupChip, type MuscleGroupChipProps, type VolumeStatus } from './MuscleGroupChip'
 export { Sparkline, type SparklineProps } from './Sparkline'
