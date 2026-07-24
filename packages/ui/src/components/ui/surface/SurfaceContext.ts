@@ -11,10 +11,11 @@ import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semanti
 type ColorToken = keyof ReturnType<typeof getSemanticColors>
 
 /**
- * A Surface's depth on the dark charcoal ramp. Each level maps to an EXISTING
- * semantic surface/background token (already grounded in the charcoal ramp and
- * theme-aware) — Surface introduces no new hexes. Darkest → lightest:
- *   background (#101010) < base (#161616) < elevated (#191919) < raised (#1C1C1C)
+ * A Surface's depth on the dark surface ramp. Each level maps to an EXISTING
+ * semantic surface/background token (already grounded in the derived surface
+ * ramp — TD-surface-tokens S-1 — and theme-aware) — Surface introduces no new
+ * hexes. Darkest → lightest:
+ *   background (#1C1916) < base (#252321) < elevated (#2A2827) < raised (#2D2C2B) < overlay (#302F2E)
  */
 export type SurfaceLevel = 'background' | 'base' | 'elevated' | 'raised' | 'overlay'
 

@@ -17,7 +17,13 @@
  * - interactive-* : Hover/focus/active/disabled states
  */
 
-import { primitiveColors as p, primitiveRamps as ramp, discreteRainbow } from './primitives'
+import {
+  primitiveColors as p,
+  primitiveRamps as ramp,
+  discreteRainbow,
+  surfaceRampDark as surf,
+  backgroundFrameDark,
+} from './primitives'
 
 // Light mode semantic colors (default)
 export const semanticColorsLight = {
@@ -120,11 +126,20 @@ export const semanticColorsLight = {
   'surface-raised': p.neutral[100],           // light gray for raised cards
   'surface-overlay': p.white,
   'surface-input': p.neutral[50],             // Input field background (filled variant)
+  // Deepest pressed pit (TD-surface-tokens, S-3) — light-mode counterpart of
+  // the dark ramp's `inset` plane; a placeholder pairing, not part of the
+  // dark-ramp investigation (surface.contract.test.ts is dark-mode only).
+  'surface-inset': p.neutral[300],
 
   // Background colors (background-*)
   'background-base': '#EBEBEB',
   'background-default': p.white,
   'background-subtle': p.neutral[50],
+  // Frame/bezel chrome (TD-surface-tokens, S-3) — top bar + side nav shell,
+  // one step below `background-base` (darker still than `surface-inset`
+  // above, mirroring the dark-mode ordering). Placeholder pairing for light
+  // mode (see dark-mode note on `surface-inset` above).
+  'background-frame': p.neutral[400],
 
   // Border colors (border-*)
   'border-default': '#E8E9EB',
@@ -136,6 +151,12 @@ export const semanticColorsLight = {
   'border-input-hover': p.neutral[400],       // Input field border on hover
   'border-input-focus': p.blue[600],          // Input field border on focus
   'border-input-error': p.red[600],           // Input field border on error
+
+  // Alpha hairline separators (surface-independent — composite toward black on
+  // light surfaces, mirroring the dark-mode white-alpha family). See §4/S-2.
+  'hairline-subtle': 'rgba(0, 0, 0, 0.06)',
+  'hairline-default': 'rgba(0, 0, 0, 0.09)',
+  'hairline-strong': 'rgba(0, 0, 0, 0.14)',
 
   // Interactive states (interactive-*)
   'interactive-hover': 'rgba(55, 65, 81, 0.04)',
@@ -247,19 +268,38 @@ export const semanticColorsDark = {
   'text-link': '#828DF8',
   'text-link-hover': p.blue[400],
 
-  // Surface colors - dark backgrounds
-  'surface-base': p.charcoal[700],         // main surface
-  'surface-elevated': p.charcoal[600],     // elevated surface
-  'surface-raised': p.charcoal[500],       // raised surface
-  'surface-overlay': p.charcoal[600],      // overlay surface
-  'surface-input': p.charcoal[600],        // input surface
+  // Surface colors - dark backgrounds — warm-tapered DERIVED ramp (TD-surface-tokens,
+  // S-1, re-spaced S-3). Shipped verbatim from `deriveSurfaceRamp()` — see
+  // `surfaceRampDark` in primitives.ts for the full derivation note. `surface-overlay`
+  // and `surface-elevated` are distinct (were both #191919 pre-S-1); `surface-input`
+  // tracks one plane above `surface-base`, same relative position as before the remap.
+  // `background-base` backs `Surface level="background"` (SurfaceContext.SURFACE_LEVEL_TOKEN),
+  // so it takes the ramp's `background` (shell/frame) role, NOT `inset`. The ramp's
+  // deepest `inset` plane is now promoted to `surface-inset` below (S-3) — still no
+  // `SurfaceLevel` member for it (follow-up, alongside the elevation.ts -1/-2 pressed
+  // levels — parallel workstream, not this branch).
+  'surface-base': surf.base,               // main surface        (#252321, L*13.5)
+  'surface-elevated': surf.elevated,       // elevated surface     (#2C2A28, L*17   — nav/rail)
+  'surface-raised': surf.raised,           // raised surface       (#31302F, L*20   — cards)
+  'surface-overlay': surf.overlay,         // overlay surface      (#373635, L*22.5 — hero/popover)
+  'surface-input': surf.elevated,          // input surface        (#2C2A28 — one plane above base)
+  'surface-inset': surf.inset,             // deepest pressed pit  (#13100D, L*4.5  — sub-shell well)
 
-  // Background colors
-  'background-base': p.charcoal[900],      // darkest charcoal
-  'background-default': p.charcoal[700],    // main background
-  'background-subtle': p.charcoal[500],     // subtle background
+  // Background colors — same ramp, the frame/shell end of it.
+  'background-base': surf.background,      // shell / frame        (#1C1916, L*9 — Surface level="background")
+  'background-default': surf.base,         // main background      (#252321, L*13.5 — matches surface-base)
+  'background-subtle': surf.elevated,      // subtle background    (#2C2A28, L*17 — matches surface-elevated)
+  // Frame/bezel chrome (S-3) — the top bar + side nav shell; one step BELOW
+  // `background-base`, darker even than `surface-inset` — it exits the content
+  // ramp entirely rather than sitting in it. See `backgroundFrameDark` in
+  // primitives.ts.
+  'background-frame': backgroundFrameDark, // frame / bezel        (#100D0A, L*3.79)
 
-  // Border colors
+  // Border colors — `border-subtle` (#1C1C1C) previously collided with
+  // `surface-raised` (also #1C1C1C, an invisible border on raised cards). The
+  // re-spaced ramp above moved `surface-raised` to #2D2C2B, so this value is now
+  // distinct from every surface hex without needing to change it — see
+  // `surface.contract.test.ts` R2/R4.
   'border-default': p.charcoal[400],       // default border
   'border-subtle': p.charcoal[500],        // subtle border
   'border-strong': p.charcoal[300],        // strong border
@@ -269,6 +309,15 @@ export const semanticColorsDark = {
   'border-input-hover': p.neutral[500],
   'border-input-focus': '#828DF8',
   'border-input-error': p.red[500],
+
+  // Alpha hairline separators — the primary separation cue (§4/S-2). Self-
+  // normalizing: composites toward white by ~the same amount on ANY plane, so
+  // one family works at every elevation instead of per-surface border tokens.
+  // Shadows are demoted to floating-overlay use only (not shipped as a fill
+  // separator here — see elevation.ts, follow-up S-4).
+  'hairline-subtle': 'rgba(255, 255, 255, 0.06)',
+  'hairline-default': 'rgba(255, 255, 255, 0.09)',
+  'hairline-strong': 'rgba(255, 255, 255, 0.14)',
 
   // Interactive states
   'interactive-hover': 'rgba(255, 255, 255, 0.04)',
