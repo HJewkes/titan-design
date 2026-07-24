@@ -85,6 +85,13 @@ export interface VelocityStripProps extends ViewProps {
    */
   showLossBands?: boolean
   /**
+   * `hero` only: `up` (default) grows bars UP from a bottom baseline; `down` mirrors
+   * the whole plot (bars grow DOWN from a top baseline, text upright). The diverging
+   * dual is just an `up` hero over a `down` hero sharing one axis — so any hero
+   * improvement reaches the dual for free.
+   */
+  orientation?: 'up' | 'down'
+  /**
    * Live mode: index of the most-recently-completed rep. That bar GROWS UP FROM
    * THE BASELINE to its full height as it enters, tracking the rep as it lands;
    * if it is also the current set peak (a new best) the growth slightly
@@ -609,10 +616,13 @@ export function VelocityLossBands({
   best,
   scaleDenom,
   plotHeight,
+  flip = false,
 }: {
   best: number
   scaleDenom: number
   plotHeight: number
+  /** The parent plot is vertically mirrored (a `down` wing) — counter-flip the labels upright. */
+  flip?: boolean
 }) {
   if (best <= 0 || scaleDenom <= 0 || plotHeight <= 0) return null
   const yOf = (v: number): number => (v / scaleDenom) * plotHeight
@@ -630,22 +640,34 @@ export function VelocityLossBands({
       }}
     />
   )
+  // The label sits ~90% along the threshold, with the dashed line breaking around it
+  // (a long segment before + a short stub after) — cohesive, near the quiet right end
+  // where a declining set has room, and it can't clip the plot edge or cross a bar.
   const threshold = (v: number, color: string, label: string) => (
-    <View style={{ position: 'absolute', left: 0, right: 0, bottom: yOf(v) }}>
-      <View style={{ borderTopWidth: 1, borderStyle: 'dashed', borderColor: color }} />
+    <View
+      style={{
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: yOf(v),
+        flexDirection: 'row',
+        alignItems: 'center',
+      }}
+    >
+      <View style={{ flex: 9, borderTopWidth: 1, borderStyle: 'dashed', borderColor: color }} />
       <Text
         style={{
-          position: 'absolute',
-          right: 2,
-          top: -13,
+          marginHorizontal: 6,
           fontSize: 9,
           fontWeight: '800',
           fontFamily: BAND_LABEL_FONT,
           color,
+          ...(flip ? { transform: [{ scaleY: -1 as number }] } : null),
         }}
       >
         {label}
       </Text>
+      <View style={{ flex: 1, borderTopWidth: 1, borderStyle: 'dashed', borderColor: color }} />
     </View>
   )
   return (
@@ -769,6 +791,13 @@ interface HeroVelocityChartProps {
   height: number
   /** Draw the VL20/VL30 velocity-loss decision bands behind the bars. */
   showLossBands: boolean
+  /**
+   * `up` (default) — bars grow UP from a bottom baseline. `down` — the whole plot is
+   * vertically mirrored (bars grow DOWN from a TOP baseline), with the text kept
+   * upright. This is the single primitive the diverging dual composes: an up chart on
+   * top + a down chart on the bottom, meeting at one shared axis.
+   */
+  orientation?: 'up' | 'down'
   className?: string
   viewProps: ViewProps
 }
@@ -789,9 +818,13 @@ function HeroVelocityChart({
   targetReps,
   height,
   showLossBands,
+  orientation = 'up',
   className,
   viewProps,
 }: HeroVelocityChartProps) {
+  // The whole plot mirrors for `down`; text nodes counter-flip so they read upright.
+  const flip = orientation === 'down'
+  const flipStyle = flip ? ({ transform: [{ scaleY: -1 as number }] } as const) : null
   const liveVelocity = liveRepIndex != null ? doneVelocities[liveRepIndex] : undefined
   const liveGrowth = useLiveRepGrowth(true, liveRepIndex, liveVelocity, isNewPeak)
   // Planned/to-do reps + the baseline draw in a SURFACE-relative neutral (on-surface
@@ -858,6 +891,7 @@ function HeroVelocityChart({
           position: 'relative',
           borderBottomWidth: 2,
           borderBottomColor: placeholderColor,
+          ...flipStyle,
         }}
       >
         {showLossBands && (
@@ -865,6 +899,7 @@ function HeroVelocityChart({
             best={referenceVelocity}
             scaleDenom={scaleDenom}
             plotHeight={plotHeight}
+            flip={flip}
           />
         )}
 
@@ -901,7 +936,7 @@ function HeroVelocityChart({
               {showBarLabel(i) && (
                 <Text
                   className="text-text-primary"
-                  style={{ fontSize: 12, fontWeight: '800', marginBottom: 4 }}
+                  style={[{ fontSize: 12, fontWeight: '800', marginBottom: 4 }, flipStyle]}
                   testID={`velocity-label-${i}`}
                 >
                   {formatVelocity(velocity)}
@@ -1458,6 +1493,7 @@ export function VelocityStrip({
   zones,
   barColor = 'loss',
   showLossBands,
+  orientation = 'up',
   liveRepIndex,
   expanded = true,
   onToggle,
@@ -1578,6 +1614,7 @@ export function VelocityStrip({
         targetReps={targetReps}
         height={heroHeight}
         showLossBands={lossBandsOn}
+        orientation={orientation}
         className={className}
         viewProps={props}
       />

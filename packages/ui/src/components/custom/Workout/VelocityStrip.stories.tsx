@@ -436,6 +436,38 @@ export const LiveGrowFromBottom: Story = {
   render: () => <GrowFromBottomDemo />,
 }
 
+// --- Vertical flip (the dual-composition primitive) --------------------------
+// `orientation="down"` mirrors the whole hero (bars grow DOWN from a top baseline,
+// text upright). Stacking an `up` hero over a `down` hero sharing one axis IS the
+// diverging dual — so the dual is two composed VelocityStrips, not bespoke code.
+
+/** The same set rendered `up` then `down` — the two halves the diverging dual composes, meeting at a shared axis. */
+export const OrientationUpDown: Story = {
+  render: () => (
+    <View style={{ padding: 24, backgroundColor: '#0E0E0E', width: 560 }}>
+      <VelocityStrip
+        velocities={heroFatigue}
+        variant="hero"
+        orientation="up"
+        targetReps={8}
+        liveRepIndex={5}
+        scale="fixed"
+        height={150}
+      />
+      <View style={{ height: 2, backgroundColor: '#4B5563' }} />
+      <VelocityStrip
+        velocities={heroFatigue}
+        variant="hero"
+        orientation="down"
+        targetReps={8}
+        liveRepIndex={5}
+        scale="fixed"
+        height={150}
+      />
+    </View>
+  ),
+}
+
 // --- Surface-relative placeholders -------------------------------------------
 // Planned/to-do reps (dashed hero stubs, grey mini/expanded slots) + the baseline
 // now derive from the on-surface `tertiary` neutral via the Surface context, so an
