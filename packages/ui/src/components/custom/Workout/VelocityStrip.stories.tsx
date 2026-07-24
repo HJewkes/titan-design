@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text, Pressable } from 'react-native'
-import { VelocityStrip } from './VelocityStrip'
+import { VelocityStrip, getVelocityLossColor } from './VelocityStrip'
+import { SetBarChart, type SetSlot } from '../charts/SetBarChart'
+import { formatVelocity } from '../../../utils/workout-format'
 import { Surface } from '../../ui/surface/Surface'
 import type { SurfaceLevel } from '../../ui/surface/SurfaceContext'
 
@@ -507,4 +509,82 @@ export const PlaceholderAcrossSurfaces: Story = {
       </View>
     )
   },
+}
+
+// --- Hero ↔ Expanded convergence probe ---------------------------------------
+// The operator's question: is `expanded` just the `hero` at a smaller size with less
+// chrome? The only real divergences are the value-label treatment (hero = white,
+// offset above each bar; expanded = faded-grey, one aligned top row) and the to-do
+// treatment (hero = dashed outline; expanded = solid section). SetBarChart carries both
+// as presentational knobs — so this renders the SAME element (SetBarChart) wearing
+// expanded's clothes, next to the real expanded strip and the full hero, to judge.
+
+const CONVERGE_VELOCITIES = [1.05, 0.98, 0.9, 0.82]
+const CONVERGE_TARGET = 7
+
+/** value → loss color, off the set's own best (the `barColor="loss"` language, without importing internals). */
+function lossColorFor(velocities: number[]): (v: number) => string {
+  const best = Math.max(...velocities, 0)
+  return (v: number) =>
+    getVelocityLossColor(best > 0 ? Math.max(0, Math.round(((best - v) / best) * 100)) : 0)
+}
+
+function convergeSlots(velocities: number[]): SetSlot[] {
+  return velocities.map((v) => ({ kind: 'rep', value: v }))
+}
+
+function ConvergeRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <View style={{ gap: 6 }}>
+      <Text style={{ color: '#8A8A8A', fontSize: 11, fontWeight: '700', letterSpacing: 1 }}>
+        {label}
+      </Text>
+      {children}
+    </View>
+  )
+}
+
+/**
+ * Three stacked, same velocities: (a) the REAL expanded strip; (b) SetBarChart "dressed as
+ * expanded" — `todoVariant:'solid'` + `labelPlacement:'top'` + `labelTone:'muted'`, at expanded
+ * size, no VL bands, baseline hidden; (c) the full hero (SetBarChart defaults) for reference. If
+ * (a) and (b) read as the same element, hero + expanded are one component with different settings.
+ */
+export const HeroExpandedConvergence: Story = {
+  render: () => (
+    <View style={{ gap: 26, padding: 28, width: 520, backgroundColor: '#0E0E0E' }}>
+      <ConvergeRow label="(A) REAL EXPANDED STRIP · VelocityStrip variant=expanded">
+        <VelocityStrip velocities={CONVERGE_VELOCITIES} barColor="loss" />
+      </ConvergeRow>
+
+      <ConvergeRow label="(B) SETBARCHART DRESSED AS EXPANDED · solid to-do · top muted labels">
+        <SetBarChart
+          slots={convergeSlots(CONVERGE_VELOCITIES)}
+          colorFor={lossColorFor(CONVERGE_VELOCITIES)}
+          height={60}
+          targetReps={CONVERGE_TARGET}
+          showValueLabels
+          formatValue={formatVelocity}
+          todoVariant="solid"
+          labelPlacement="top"
+          labelTone="muted"
+          barRadius={2}
+          hideBaseline
+          testIDPrefix="converge-b"
+        />
+      </ConvergeRow>
+
+      <ConvergeRow label="(C) FULL HERO · SetBarChart defaults (dashed to-do · above-bar white labels)">
+        <SetBarChart
+          slots={convergeSlots(CONVERGE_VELOCITIES)}
+          colorFor={lossColorFor(CONVERGE_VELOCITIES)}
+          height={220}
+          targetReps={CONVERGE_TARGET}
+          showValueLabels
+          formatValue={formatVelocity}
+          testIDPrefix="converge-c"
+        />
+      </ConvergeRow>
+    </View>
+  ),
 }

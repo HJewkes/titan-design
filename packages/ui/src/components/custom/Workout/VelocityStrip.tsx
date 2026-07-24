@@ -1,13 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useEffect, useState } from 'react'
-import {
-  View,
-  Text,
-  Pressable,
-  Animated,
-  type ViewProps,
-  type ViewStyle,
-} from 'react-native'
+import { View, Text, Pressable, Animated, type ViewProps, type ViewStyle } from 'react-native'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { primitiveColors, primitiveRamps, sequentialEffort } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
@@ -113,6 +106,12 @@ export interface VelocityStripProps extends ViewProps {
    * single crisp line rather than two abutting baselines reading as a double-thick rule.
    */
   hideBaseline?: boolean
+  /**
+   * `hero` only (internal): pad the rendered columns to at least this many with placeholder to-do
+   * cells. The diverging dual passes the union column count of BOTH wings so bars line up
+   * column-for-column top↔bottom across the centre axis regardless of each side's own rep count.
+   */
+  minColumns?: number
   /**
    * Live mode: index of the most-recently-completed rep. That bar GROWS UP FROM
    * THE BASELINE to its full height as it enters, tracking the rep as it lands;
@@ -587,6 +586,10 @@ export function VelocityLossBands({
         left: 0,
         right: 0,
         bottom: yOf(v),
+        // Collapse to zero height so the dashed border lands EXACTLY on `yOf(v)` — the
+        // band edge — instead of floating up half a text-row (the label then centres on
+        // the line, breaking it). Matches DashedReferenceLine's bare-border anchoring.
+        height: 0,
         flexDirection: 'row',
         alignItems: 'center',
       }}
@@ -642,7 +645,11 @@ function velocityReferenceOverlay(g: SetBarGeometry, showLossBands: boolean) {
         />
       )}
       {referencePx > 0 && (
-        <DashedReferenceLine anchor="bottom" offset={referencePx} testID="velocity-hero-reference" />
+        <DashedReferenceLine
+          anchor="bottom"
+          offset={referencePx}
+          testID="velocity-hero-reference"
+        />
       )}
     </>
   )
@@ -741,6 +748,16 @@ const RAIL_MIN_BAR = 3
 /** One side's performed per-rep velocities — flattened from a `set` descriptor, or the raw array. */
 function streamDone(stream: DualVelocityStream): number[] {
   return stream.set ? deriveDoneVelocities(stream.set) : (stream.velocities ?? [])
+}
+
+/**
+ * A side's NATURAL column count — the number of cells its composed hero draws: a `set` resolves to
+ * its full slot list (reps + todo + window cells), a plain stream to `max(done, targetReps)`. The
+ * dual takes the union of both sides so it can pad the shorter wing and align bars across the axis.
+ */
+function streamColumns(stream: DualVelocityStream, targetReps?: number): number {
+  if (stream.set) return buildSlots(stream.set).length
+  return Math.max(stream.velocities?.length ?? 0, targetReps ?? 0)
 }
 
 /**
@@ -890,12 +907,22 @@ function DualVelocityHero({
   // `peak` shares the pair max via `scaleMax`; `fixed` shares the cross-set ceiling (both wings
   // resolve the same fixed ceiling), so `scaleMax` is left off and `scale` carries it.
   const sharedMax = Math.max(...leftDone, ...rightDone, 0)
+  // The union column count of both wings — each wing pads to this so bars line up column-for-column
+  // top↔bottom across the centre axis, regardless of one side having fewer reps or a shorter set.
+  const sharedColumns = Math.max(
+    leftStream ? streamColumns(leftStream, targetReps) : leftDone.length,
+    rightStream ? streamColumns(rightStream, targetReps) : rightDone.length
+  )
   const axisColor = useOnSurfaceColor('tertiary')
   const { style: externalStyle, ...restProps } = viewProps
 
   // Pass the raw stream (its `set` descriptor when present, else its velocities) straight into the
   // composed hero so a side's set-type WINDOWS render — the composed hero builds its own slots.
-  const wing = (orientation: 'up' | 'down', stream: DualVelocityStream | undefined, done: number[]) => (
+  const wing = (
+    orientation: 'up' | 'down',
+    stream: DualVelocityStream | undefined,
+    done: number[]
+  ) => (
     <VelocityStrip
       variant="hero"
       orientation={orientation}
@@ -905,6 +932,7 @@ function DualVelocityHero({
       barColor={barColor}
       zones={zones}
       targetReps={targetReps}
+      minColumns={sharedColumns}
       liveRepIndex={liveRepIndex}
       height={plotHalf}
       hideBaseline
@@ -1039,7 +1067,9 @@ function DualVelocityRail({
       />
 
       <View style={{ flex: 1, position: 'relative' }}>
-        <View style={{ flexDirection: 'row', gap: RAIL_GAP, height: '100%', alignItems: 'stretch' }}>
+        <View
+          style={{ flexDirection: 'row', gap: RAIL_GAP, height: '100%', alignItems: 'stretch' }}
+        >
           {Array.from({ length: columns }, (_, i) => {
             const lSlot = slotsL[i]
             const rSlot = slotsR[i]
@@ -1049,7 +1079,9 @@ function DualVelocityRail({
                 accessibilityElementsHidden
                 style={{ flex: 1, maxWidth: RAIL_MAX_COL, height: '100%' }}
               >
-                <View style={{ height: plotHalf, justifyContent: 'flex-end', alignItems: 'center' }}>
+                <View
+                  style={{ height: plotHalf, justifyContent: 'flex-end', alignItems: 'center' }}
+                >
                   {lSlot && railBar(lSlot, 'up', bestL, `dual-velocity-bar-L-${i}`)}
                 </View>
                 <View
@@ -1131,6 +1163,7 @@ export function VelocityStrip({
   orientation = 'up',
   scaleMax,
   hideBaseline,
+  minColumns,
   liveRepIndex,
   expanded = true,
   onToggle,
@@ -1170,7 +1203,9 @@ export function VelocityStrip({
   // wings share ONE height scale; loss coloring + the reference still read this strip's own
   // `maxVelocity`, so a per-side loss language survives the shared height scale.
   const scaleDenom =
-    scaleMax != null && scaleMax > 0 ? scaleMax * PEAK_HEADROOM : scaleDenominator(scale, maxVelocity)
+    scaleMax != null && scaleMax > 0
+      ? scaleMax * PEAK_HEADROOM
+      : scaleDenominator(scale, maxVelocity)
 
   const hasZones = zones != null && zones.length > 0
   // Single-sourced zone resolver (diverging-hero) wrapped with the loss-relative
@@ -1265,6 +1300,7 @@ export function VelocityStrip({
         liveRepIndex={liveRepIndex}
         isNewPeak={isNewPeak}
         targetReps={set ? undefined : targetReps}
+        minColumns={minColumns}
         showValueLabels
         formatValue={formatVelocity}
         renderReference={(g) => velocityReferenceOverlay(g, lossBandsOn)}
@@ -1353,12 +1389,9 @@ export function VelocityStrip({
             // Performed reps carry the same paper treatment as the hero (grain +
             // rim-light + contact shadow) so the spotlight strip reads as one material.
             ...(slot.kind === 'rep' ? barPaper(slotColor(slot)) : null),
-            ...(slot.kind === 'continue'
-              ? { borderWidth: 1, borderColor: CONTINUE_OUTLINE }
-              : {}),
+            ...(slot.kind === 'continue' ? { borderWidth: 1, borderColor: CONTINUE_OUTLINE } : {}),
           }
-          const barTestID =
-            slot.kind === 'rep' ? `velocity-bar-${i}` : `velocity-slot-${slot.kind}`
+          const barTestID = slot.kind === 'rep' ? `velocity-bar-${i}` : `velocity-slot-${slot.kind}`
           // The newest rep grows up from the baseline as it lands (matching the framed
           // chart + hero); a new set peak overshoots then settles.
           return isLive ? (

@@ -8,7 +8,9 @@ const silver = () => '#C7CBD1'
 
 describe('SetBarChart bars', () => {
   it('renders one bar per rep slot with the prefixed testID', () => {
-    render(<SetBarChart slots={reps([0.9, 0.8, 0.7])} colorFor={silver} height={200} testIDPrefix="t" />)
+    render(
+      <SetBarChart slots={reps([0.9, 0.8, 0.7])} colorFor={silver} height={200} testIDPrefix="t" />
+    )
     expect(screen.getAllByTestId(/^t-bar-\d+$/)).toHaveLength(3)
   })
 
@@ -47,7 +49,13 @@ describe('SetBarChart bars', () => {
 describe('SetBarChart todo placeholders', () => {
   it('appends dashed todo stubs up to targetReps', () => {
     render(
-      <SetBarChart slots={reps([0.9, 0.8])} colorFor={silver} height={200} targetReps={5} testIDPrefix="t" />
+      <SetBarChart
+        slots={reps([0.9, 0.8])}
+        colorFor={silver}
+        height={200}
+        targetReps={5}
+        testIDPrefix="t"
+      />
     )
     expect(screen.getAllByTestId(/^t-bar-\d+$/)).toHaveLength(2)
     expect(screen.getAllByTestId('t-slot-todo')).toHaveLength(3)
@@ -55,9 +63,75 @@ describe('SetBarChart todo placeholders', () => {
 
   it('appends no todo stubs when the slots already meet targetReps', () => {
     render(
-      <SetBarChart slots={reps([0.9, 0.8, 0.7])} colorFor={silver} height={200} targetReps={3} testIDPrefix="t" />
+      <SetBarChart
+        slots={reps([0.9, 0.8, 0.7])}
+        colorFor={silver}
+        height={200}
+        targetReps={3}
+        testIDPrefix="t"
+      />
     )
     expect(screen.queryByTestId('t-slot-todo')).not.toBeInTheDocument()
+  })
+})
+
+describe('SetBarChart minColumns padding', () => {
+  it('pads the rendered columns to minColumns with todo stubs (dual alignment)', () => {
+    render(
+      <SetBarChart
+        slots={reps([0.9, 0.8])}
+        colorFor={silver}
+        height={200}
+        minColumns={6}
+        testIDPrefix="t"
+      />
+    )
+    expect(screen.getAllByTestId(/^t-bar-\d+$/)).toHaveLength(2)
+    // 6 columns − 2 rep bars = 4 padded todo cells.
+    expect(screen.getAllByTestId('t-slot-todo')).toHaveLength(4)
+  })
+
+  it('does not shrink below the natural slot count when minColumns is smaller', () => {
+    render(
+      <SetBarChart
+        slots={reps([0.9, 0.8, 0.7])}
+        colorFor={silver}
+        height={200}
+        minColumns={1}
+        testIDPrefix="t"
+      />
+    )
+    expect(screen.getAllByTestId(/^t-bar-\d+$/)).toHaveLength(3)
+    expect(screen.queryByTestId('t-slot-todo')).not.toBeInTheDocument()
+  })
+})
+
+describe('SetBarChart todoVariant', () => {
+  it('solid draws a filled to-do section (no dashed border)', () => {
+    render(
+      <SetBarChart
+        slots={reps([0.9])}
+        colorFor={silver}
+        height={200}
+        targetReps={2}
+        todoVariant="solid"
+        testIDPrefix="t"
+      />
+    )
+    expect(screen.getByTestId('t-slot-todo')).not.toHaveStyle({ borderTopStyle: 'dashed' })
+  })
+
+  it('dashed (default) draws a dashed outline to-do stub', () => {
+    render(
+      <SetBarChart
+        slots={reps([0.9])}
+        colorFor={silver}
+        height={200}
+        targetReps={2}
+        testIDPrefix="t"
+      />
+    )
+    expect(screen.getByTestId('t-slot-todo')).toHaveStyle({ borderTopStyle: 'dashed' })
   })
 })
 

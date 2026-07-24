@@ -1,6 +1,6 @@
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
-import { DualVelocityStrip, type DualVelocityStream } from './VelocityStrip'
+import { DualVelocityStrip, VelocityStrip, type VelocitySet } from './VelocityStrip'
 
 /**
  * Wall-background frame for the dual hero stories — the north-star live page context.
@@ -238,163 +238,155 @@ export const HeroResponsive: Story = {
   ),
 }
 
-// --- Set-type coverage -------------------------------------------------------
-// One row per SetStripSet rail type (SetBar.tsx), mapped onto the diverging hero via
-// DualVelocityStream.set (the VelocitySet union). Honest rendering — the notes call out
-// where a type reads colour-only or has no first-class hero form.
+// --- Set-type board ---------------------------------------------------------
+// One row per set type, each shown as BOTH the single hero (VelocityStrip) and the
+// diverging dual (DualVelocityStrip). The dual uses ASYMMETRIC per-side data (fewer reps
+// / a shorter set on the right) to prove the structural-alignment fix: each wing pads to
+// the union column count, so bars line up column-for-column top<->bottom across the axis.
 
-/** One labelled coverage row: the rail type name + a one-line note on how it renders + the hero. */
-function CoverageRow({
-  type,
-  note,
-  left,
-  right,
-}: {
+interface BoardRow {
   type: string
   note: string
-  left: DualVelocityStream
-  right: DualVelocityStream
-}) {
+  single: VelocitySet
+  left: VelocitySet
+  right: VelocitySet
+}
+
+const BOARD: BoardRow[] = [
+  {
+    type: 'straight',
+    note: 'done reps + dashed to-do remainder to the planned count',
+    single: { type: 'straight', velocities: [0.9, 0.86, 0.82, 0.78], planned: 6 },
+    left: { type: 'straight', velocities: [0.9, 0.86, 0.82, 0.78], planned: 6 },
+    right: { type: 'straight', velocities: [0.84, 0.78], planned: 4 },
+  },
+  {
+    type: 'range',
+    note: 'committed rep bars + dashed floor + the cyan variable window (floor..max)',
+    single: { type: 'range', velocities: [0.9, 0.86, 0.82, 0.8], floor: 6, max: 8 },
+    left: { type: 'range', velocities: [0.9, 0.86, 0.82, 0.8], floor: 6, max: 8 },
+    right: { type: 'range', velocities: [0.83, 0.78, 0.72], floor: 4, max: 6 },
+  },
+  {
+    type: 'amrap',
+    note: 'performed reps + the trailing cyan-outline "continue" window',
+    single: { type: 'amrap', velocities: [0.9, 0.85, 0.8, 0.75] },
+    left: { type: 'amrap', velocities: [0.9, 0.85, 0.8, 0.75] },
+    right: { type: 'amrap', velocities: [0.82, 0.76] },
+  },
+  {
+    type: 'drop',
+    note: 'one bar per rep with WIDE chunk-notch gaps splitting each sub-load',
+    single: {
+      type: 'drop',
+      subloads: [
+        [0.95, 0.9],
+        [0.82, 0.76],
+        [0.7, 0.64],
+      ],
+    },
+    left: {
+      type: 'drop',
+      subloads: [
+        [0.95, 0.9],
+        [0.82, 0.76],
+        [0.7, 0.64],
+      ],
+    },
+    right: {
+      type: 'drop',
+      subloads: [
+        [0.88, 0.83],
+        [0.75, 0.68],
+      ],
+    },
+  },
+  {
+    type: 'myo',
+    note: 'activation + clusters, WIDE chunk-notch gaps + the open "continue"',
+    single: {
+      type: 'myo',
+      activation: [0.9, 0.85, 0.8],
+      clusters: [
+        [0.74, 0.68],
+        [0.64, 0.6],
+      ],
+      open: true,
+    },
+    left: {
+      type: 'myo',
+      activation: [0.9, 0.85, 0.8],
+      clusters: [
+        [0.74, 0.68],
+        [0.64, 0.6],
+      ],
+      open: true,
+    },
+    right: {
+      type: 'myo',
+      activation: [0.84, 0.79],
+      clusters: [[0.68, 0.62]],
+      open: true,
+    },
+  },
+  {
+    type: 'cluster',
+    note: 'fixed count grouped by WIDE intra-rest gaps + dashed planned remainder',
+    single: { type: 'cluster', velocities: [0.9, 0.86, 0.82, 0.78, 0.74], groupSize: 2, planned: 8 },
+    left: { type: 'cluster', velocities: [0.9, 0.86, 0.82, 0.78, 0.74], groupSize: 2, planned: 8 },
+    right: { type: 'cluster', velocities: [0.85, 0.8], groupSize: 2, planned: 6 },
+  },
+]
+
+function BoardBlock({ row }: { row: BoardRow }) {
   return (
-    <View style={{ gap: 6 }}>
+    <View style={{ gap: 8 }}>
       <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}>
         <Text
           style={{
             color: '#EDEDED',
-            fontSize: 12,
+            fontSize: 13,
             fontWeight: '800',
             letterSpacing: 1,
             textTransform: 'uppercase',
           }}
         >
-          {type}
+          {row.type}
         </Text>
         <Text style={{ color: '#8A8A8A', fontSize: 11, fontFamily: 'Inter, sans-serif' }}>
-          {note}
+          {row.note}
         </Text>
       </View>
-      {/* Tall enough (wing ~100px) that the uppercase "RIGHT ARM" slot label renders un-clipped. */}
-      <DualVelocityStrip left={left} right={right} variant="hero" scale="fixed" height={200} />
+      <Text style={{ color: '#5A5A5A', fontSize: 9, fontWeight: '700', letterSpacing: 1 }}>
+        SINGLE HERO
+      </Text>
+      <VelocityStrip variant="hero" set={row.single} scale="fixed" height={120} />
+      <Text style={{ color: '#5A5A5A', fontSize: 9, fontWeight: '700', letterSpacing: 1 }}>
+        DIVERGING DUAL · asymmetric sides, columns aligned
+      </Text>
+      <DualVelocityStrip
+        left={{ set: row.left, label: LEFT_SLOT }}
+        right={{ set: row.right, label: RIGHT_SLOT }}
+        variant="hero"
+        scale="fixed"
+        height={190}
+      />
     </View>
   )
 }
 
 /**
- * Set-type coverage — the 7 `SetStripSet` rail types (SetBar.tsx: done · active · todo · range ·
- * drop · myo · myo-upcoming) mapped onto the diverging hero via `DualVelocityStream.set`. Each side's
- * `set` passes straight into its composed hero, so **every type renders its full vocabulary**: rep
- * bars, dashed todo stubs, the range cyan variable window, the AMRAP/myo cyan-outline "continue", and
- * the drop/myo WIDE chunk-notch gaps — mirrored across the shared axis, coloured per-side by loss.
+ * Set-type board — every set type (straight / range / amrap / drop / myo / cluster) rendered as BOTH
+ * the single hero and the diverging dual, sharing one bar language via SetBarChart. The dual rows use
+ * asymmetric per-side data to show the structural-alignment fix: the shorter wing pads to the union
+ * column count so bars line up across the centre axis. Replaces the earlier ad-hoc coverage grid.
  */
 export const SetTypeCoverage: Story = {
   render: () => (
-    <View style={{ gap: 22, padding: 28, width: 660, backgroundColor: '#0E0E0E' }}>
-      <CoverageRow
-        type="done"
-        note="→ straight, all reps performed"
-        left={{
-          set: { type: 'straight', velocities: [0.9, 0.88, 0.86, 0.84, 0.82] },
-          label: LEFT_SLOT,
-        }}
-        right={{
-          set: { type: 'straight', velocities: [0.84, 0.8, 0.75, 0.69, 0.62] },
-          label: RIGHT_SLOT,
-        }}
-      />
-      <CoverageRow
-        type="active"
-        note="→ straight w/ planned > done: performed reps + dashed todo stubs for the remainder"
-        left={{
-          set: { type: 'straight', velocities: [0.9, 0.88, 0.86], planned: 6 },
-          label: LEFT_SLOT,
-        }}
-        right={{
-          set: { type: 'straight', velocities: [0.84, 0.79, 0.73], planned: 6 },
-          label: RIGHT_SLOT,
-        }}
-      />
-      <CoverageRow
-        type="todo"
-        note="→ straight, 0 done, planned N: all dashed todo stubs"
-        left={{ set: { type: 'straight', velocities: [], planned: 6 }, label: LEFT_SLOT }}
-        right={{ set: { type: 'straight', velocities: [], planned: 6 }, label: RIGHT_SLOT }}
-      />
-      <CoverageRow
-        type="range"
-        note="→ range: committed reps as bars + the cyan variable window (floor..max)"
-        left={{
-          set: { type: 'range', velocities: [0.9, 0.86, 0.82, 0.8], floor: 6, max: 8 },
-          label: LEFT_SLOT,
-        }}
-        right={{
-          set: { type: 'range', velocities: [0.83, 0.78, 0.72, 0.67], floor: 6, max: 8 },
-          label: RIGHT_SLOT,
-        }}
-      />
-      <CoverageRow
-        type="drop"
-        note="→ drop: one bar per rep with WIDE chunk-notch gaps splitting each sub-load"
-        left={{
-          set: {
-            type: 'drop',
-            subloads: [
-              [0.95, 0.9],
-              [0.82, 0.76],
-              [0.7, 0.64],
-            ],
-          },
-          label: LEFT_SLOT,
-        }}
-        right={{
-          set: {
-            type: 'drop',
-            subloads: [
-              [0.88, 0.83],
-              [0.75, 0.68],
-              [0.62, 0.55],
-            ],
-          },
-          label: RIGHT_SLOT,
-        }}
-      />
-      <CoverageRow
-        type="myo"
-        note="→ myo: activation + clusters, WIDE chunk-notch gaps between clusters"
-        left={{
-          set: {
-            type: 'myo',
-            activation: [0.9, 0.85, 0.8],
-            clusters: [
-              [0.74, 0.68],
-              [0.64, 0.6],
-            ],
-          },
-          label: LEFT_SLOT,
-        }}
-        right={{
-          set: {
-            type: 'myo',
-            activation: [0.84, 0.79, 0.74],
-            clusters: [
-              [0.68, 0.62],
-              [0.58, 0.54],
-            ],
-          },
-          label: RIGHT_SLOT,
-        }}
-      />
-      <CoverageRow
-        type="myo-upcoming"
-        note="→ approximated as an open myo: performed activation reps + the trailing cyan-outline continue window"
-        left={{
-          set: { type: 'myo', activation: [0.84, 0.8, 0.76], clusters: [], open: true },
-          label: LEFT_SLOT,
-        }}
-        right={{
-          set: { type: 'myo', activation: [0.8, 0.75, 0.7], clusters: [], open: true },
-          label: RIGHT_SLOT,
-        }}
-      />
+    <View style={{ gap: 30, padding: 28, width: 660, backgroundColor: '#0E0E0E' }}>
+      {BOARD.map((row) => (
+        <BoardBlock key={row.type} row={row} />
+      ))}
     </View>
   ),
 }

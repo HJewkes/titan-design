@@ -21,8 +21,23 @@ import {
 } from 'react-native'
 import { primitiveRamps } from '../../../theme/tokens/primitives'
 import { barPaper } from '../../../theme/bar-paper'
-import { useOnSurfaceColor } from '../../ui/surface/SurfaceContext'
+import { useOnSurfaceColor, useSurface, surfaceBackground } from '../../ui/surface/SurfaceContext'
 import { useLiveRepGrowth } from './live-rep-growth'
+
+/** Linear-blend two #RRGGBB hexes (`t`=0 → a, 1 → b) — the surface-relative solid to-do tone. */
+function mixHex(a: string, b: string, t: number): string {
+  const parse = (h: string): [number, number, number] => {
+    const s = h.replace('#', '')
+    return [parseInt(s.slice(0, 2), 16), parseInt(s.slice(2, 4), 16), parseInt(s.slice(4, 6), 16)]
+  }
+  const [ar, ag, ab] = parse(a)
+  const [br, bg, bb] = parse(b)
+  const ch = (x: number, y: number): string =>
+    Math.round(x + (y - x) * t)
+      .toString(16)
+      .padStart(2, '0')
+  return `#${ch(ar, br)}${ch(ag, bg)}${ch(ab, bb)}`
+}
 
 /** The cyan variable-window fill — the range set's `floor..max` window (shared with SetStrip). */
 const VARIABLE_FILL = primitiveRamps.cyan[900]
@@ -92,6 +107,28 @@ export interface SetBarChartProps {
   showValueLabels?: boolean
   /** Format a rep value for its label. Default `String`. */
   formatValue?: (value: number) => string
+  /**
+   * To-do placeholder treatment (convergence probe). `dashed` (default) — a dashed outline stub (the
+   * hero language). `solid` — a solid surface-relative section in the same tone the expanded strip's
+   * to-do uses (the surface plane blended toward the on-surface neutral).
+   */
+  todoVariant?: 'dashed' | 'solid'
+  /**
+   * Value-label placement (convergence probe). `above-bar` (default) — each label sits directly above
+   * its own bar (offset per bar height, the hero language). `top` — all labels pin to one aligned top
+   * row (the expanded language).
+   */
+  labelPlacement?: 'above-bar' | 'top'
+  /**
+   * Value-label tone (convergence probe). `primary` (default) — white/on-surface primary (the hero).
+   * `muted` — the faded on-surface secondary the expanded strip uses.
+   */
+  labelTone?: 'primary' | 'muted'
+  /**
+   * Pad the rendered columns to at least this many with placeholder to-do cells. The diverging dual
+   * passes the union column count of both wings so bars line up top↔bottom across the centre axis.
+   */
+  minColumns?: number
   /** Paint a reference overlay (VL bands / working-standard lines) given the chart geometry. */
   renderReference?: (geometry: SetBarGeometry) => ReactNode
   /** Suppress the plot's own 2px baseline border (the dual draws ONE shared centre axis instead). */
@@ -164,6 +201,10 @@ export function SetBarChart({
   barRadius = DEFAULT_BAR_RADIUS,
   showValueLabels = false,
   formatValue = String,
+  todoVariant = 'dashed',
+  labelPlacement = 'above-bar',
+  labelTone = 'primary',
+  minColumns,
   renderReference,
   hideBaseline = false,
   testID,
@@ -172,12 +213,15 @@ export function SetBarChart({
   className,
   viewProps = {},
 }: SetBarChartProps) {
-  // Append dashed todo placeholders up to `targetReps` (a caller that builds its own todo
-  // slots omits `targetReps`, so this only fills the plain performed-reps case).
-  const todosToAdd = Math.max(0, (targetReps ?? 0) - slots.length)
+  // Append todo placeholders up to `targetReps` (a caller that builds its own todo slots omits it),
+  // then pad to `minColumns` so a diverging wing aligns column-for-column with its sibling.
+  const targetPadded = Math.max(slots.length, targetReps ?? 0, minColumns ?? 0)
   const cells: SetSlot[] =
-    todosToAdd > 0
-      ? [...slots, ...Array.from({ length: todosToAdd }, () => ({ kind: 'todo' as const }))]
+    targetPadded > slots.length
+      ? [
+          ...slots,
+          ...Array.from({ length: targetPadded - slots.length }, () => ({ kind: 'todo' as const })),
+        ]
       : slots
 
   const repValues = cells.filter(isRep).map((s) => s.value ?? 0)
@@ -190,6 +234,10 @@ export function SetBarChart({
   // Planned/to-do reps + the baseline draw in a SURFACE-relative neutral (on-surface tertiary)
   // so they stay legible on every plane instead of a fixed charcoal.
   const placeholderColor = useOnSurfaceColor('tertiary')
+  // The expanded strip's solid to-do tone: the surface plane blended toward the neutral (the same
+  // relative model), so a `todoVariant="solid"` section holds ~constant contrast on every plane.
+  const surface = useSurface()
+  const solidTodoColor = mixHex(surfaceBackground(surface.level, surface.mode), placeholderColor, 0.55)
 
   // `scaleMax` (the diverging dual's shared pair-max) overrides the height denominator so both
   // sides share ONE height scale; color + the reference still read this chart's own values.
@@ -200,7 +248,9 @@ export function SetBarChart({
   const plotHeight = Math.max(0, height - (showValueLabels ? LABEL_HEADROOM : 0))
   const yOf = (value: number): number => (scaleDenom > 0 ? (value / scaleDenom) * plotHeight : 0)
   const barHeight = (value: number): number =>
-    scaleDenom > 0 ? Math.max(MIN_BAR_HEIGHT, Math.min(1, value / scaleDenom) * plotHeight) : MIN_BAR_HEIGHT
+    scaleDenom > 0
+      ? Math.max(MIN_BAR_HEIGHT, Math.min(1, value / scaleDenom) * plotHeight)
+      : MIN_BAR_HEIGHT
 
   // Live-rep grow-from-bottom (rep index → cell index; reps are contiguous from 0 in every set type).
   const liveValue =
@@ -229,13 +279,20 @@ export function SetBarChart({
   const geometry: SetBarGeometry = { scaleDenom, plotHeight, yOf, best, flip }
 
   const { style: externalStyle, ...restProps } = viewProps
-  const a11y = accessibilityLabel != null ? { accessibilityRole: 'image' as const, accessibilityLabel } : {}
+  const a11y =
+    accessibilityLabel != null ? { accessibilityRole: 'image' as const, accessibilityLabel } : {}
 
   // Which performed rep each cell is (window stubs → -1) — for live-grow / peak / label thinning.
   const repIndices = repIndexByCell(cells)
 
   return (
-    <View className={className} style={[{ height }, externalStyle]} testID={testID} {...a11y} {...restProps}>
+    <View
+      className={className}
+      style={[{ height }, externalStyle]}
+      testID={testID}
+      {...a11y}
+      {...restProps}
+    >
       <View
         onLayout={onPlotLayout}
         style={{
@@ -265,7 +322,7 @@ export function SetBarChart({
           if (!isRep(slot)) {
             return (
               <View key={i} accessibilityElementsHidden style={column}>
-                {renderStub(slot.kind, barRadius, placeholderColor, testIDPrefix)}
+                {renderStub(slot.kind, barRadius, placeholderColor, testIDPrefix, todoVariant, solidTodoColor)}
               </View>
             )
           }
@@ -274,23 +331,40 @@ export function SetBarChart({
           const value = slot.value ?? 0
           const isLive = liveRepIndex === repIndex
           const color = colorFor(value)
+          // `top` placement pins every label to one aligned row at the plot top (the expanded
+          // language); `above-bar` (default) floats each label directly above its own bar.
+          const labelStyle: ViewStyle =
+            labelPlacement === 'top'
+              ? { position: 'absolute', top: 0, left: 0, right: 0, alignItems: 'center' }
+              : {}
           return (
             <View key={i} accessibilityElementsHidden style={column}>
               {showValueLabels && showBarLabel(repIndex) && (
-                <Text
-                  className="text-text-primary"
-                  style={[{ fontSize: 12, fontWeight: '800', marginBottom: 4 }, flipStyle]}
-                  testID={`${testIDPrefix}-label-${repIndex}`}
-                >
-                  {formatValue(value)}
-                </Text>
+                <View style={labelStyle} pointerEvents="none">
+                  <Text
+                    className={labelTone === 'muted' ? 'text-text-secondary' : 'text-text-primary'}
+                    style={[
+                      labelTone === 'muted'
+                        ? { fontSize: 9, fontWeight: '600' }
+                        : { fontSize: 12, fontWeight: '800' },
+                      labelPlacement === 'above-bar' ? { marginBottom: 4 } : null,
+                      flipStyle,
+                    ]}
+                    testID={`${testIDPrefix}-label-${repIndex}`}
+                  >
+                    {formatValue(value)}
+                  </Text>
+                </View>
               )}
               <Animated.View
                 style={[
                   {
                     width: '100%',
                     height: isLive
-                      ? liveGrowth.interpolate({ inputRange: [0, 1], outputRange: [0, barHeight(value)] })
+                      ? liveGrowth.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [0, barHeight(value)],
+                        })
                       : barHeight(value),
                     borderTopLeftRadius: barRadius,
                     borderTopRightRadius: barRadius,
@@ -313,7 +387,9 @@ function renderStub(
   kind: SetSlot['kind'],
   barRadius: number,
   placeholderColor: string,
-  testIDPrefix: string
+  testIDPrefix: string,
+  todoVariant: 'dashed' | 'solid',
+  solidTodoColor: string
 ): ReactNode {
   const base: ViewStyle = {
     width: '100%',
@@ -337,11 +413,10 @@ function renderStub(
       />
     )
   }
-  // todo — a dashed outline placeholder.
-  return (
-    <View
-      style={{ ...base, borderWidth: 1, borderStyle: 'dashed', borderColor: placeholderColor }}
-      testID={`${testIDPrefix}-slot-todo`}
-    />
-  )
+  // todo — a solid surface-relative section (expanded language) or a dashed outline (hero language).
+  const todoStyle: ViewStyle =
+    todoVariant === 'solid'
+      ? { ...base, backgroundColor: solidTodoColor }
+      : { ...base, borderWidth: 1, borderStyle: 'dashed', borderColor: placeholderColor }
+  return <View style={todoStyle} testID={`${testIDPrefix}-slot-todo`} />
 }
