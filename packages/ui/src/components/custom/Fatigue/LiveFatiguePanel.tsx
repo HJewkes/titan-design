@@ -48,8 +48,6 @@ export interface LiveFatiguePanelProps {
   bodyHeight?: number
   /** Fixed fatigue-card column width. Default 318. */
   cardWidth?: number
-  /** Pin the ghost-spark revealed — for static screenshots. */
-  revealChart?: boolean
 }
 
 function ExerciseHeaderLite({ header }: { header: LiveFatiguePanelHeader }) {
@@ -113,7 +111,6 @@ export function LiveFatiguePanel({
   aura,
   bodyHeight = 508,
   cardWidth = 318,
-  revealChart,
 }: LiveFatiguePanelProps) {
   const category = aura ?? auraForVerdict(model.verdict?.state ?? null)
   const heroH = bodyHeight - 26 // leaves room for the hero's own eyebrow above it
@@ -146,12 +143,7 @@ export function LiveFatiguePanel({
             />
           </View>
           {/* SECONDARY — the vertical fatigue card. */}
-          <LiveFatigueCard
-            model={model}
-            width={cardWidth}
-            height={bodyHeight}
-            revealChart={revealChart}
-          />
+          <LiveFatigueCard model={model} width={cardWidth} height={bodyHeight} />
         </View>
       </View>
     </LiveAuraFrame>

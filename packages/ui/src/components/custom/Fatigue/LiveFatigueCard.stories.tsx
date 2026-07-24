@@ -24,7 +24,6 @@ const meta: Meta<typeof LiveFatigueCard> = {
   },
   argTypes: {
     width: { control: { type: 'number', min: 260, max: 420, step: 2 } },
-    revealChart: { control: 'boolean' },
   },
 }
 export default meta
@@ -36,9 +35,9 @@ const Frame = ({ children }: { children: React.ReactNode }) => (
   </View>
 )
 
-/** The default (form breaking down) card, ghost-spark revealed. */
+/** The default (form breaking down) card. */
 export const Default: Story = {
-  args: { model: FATIGUE_STATES[3].model, width: 318, height: 508, revealChart: true },
+  args: { model: FATIGUE_STATES[3].model, width: 318, height: 508 },
   render: (args) => (
     <Frame>
       <LiveFatigueCard {...args} />
@@ -70,7 +69,7 @@ export const States: Story = {
           >
             {s.name}
           </Text>
-          <LiveFatigueCard model={s.model} width={300} height={500} revealChart />
+          <LiveFatigueCard model={s.model} width={300} height={500} />
         </View>
       ))}
     </View>

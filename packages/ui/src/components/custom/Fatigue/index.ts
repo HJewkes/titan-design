@@ -12,7 +12,7 @@ export { FatigueLights, type FatigueLightsProps } from './FatigueLights'
 export { RomProgressionChart, type RomProgressionChartProps } from './RomProgressionChart'
 export { GhostSpark, type GhostSparkProps } from './GhostSpark'
 export { GhostBand, type GhostBandProps, BAND_H, BAND_GAP } from './GhostBand'
-export { GhostBloom, type GhostBloomProps, type Pt, smoothPath } from './GhostBloom'
+export { GhostBloom, type GhostBloomProps, type Pt, type BloomTreatment, smoothPath } from './GhostBloom'
 export { VelocityHero, type VelocityHeroProps } from './VelocityHero'
 export {
   ghostLineColor,

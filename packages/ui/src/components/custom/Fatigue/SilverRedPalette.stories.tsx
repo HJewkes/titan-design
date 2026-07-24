@@ -101,9 +101,9 @@ const CONTROL: SwatchDef[] = [
   { name: 'Silver', token: 'SILVER · neutral[300]', value: SILVER, note: 'On-track / at-or-above working.' },
   {
     name: 'Drift grey',
-    token: 'DRIFT_GREY · charcoal[500]',
+    token: 'DRIFT_GREY · neutral[600]',
     value: DRIFT_GREY,
-    note: 'The quiet grey the controlled line dims toward as tempo drifts — never a colour.',
+    note: 'The dim-silver grey the controlled line dims toward as tempo drifts — same neutral family as SILVER, never a colour.',
   },
 ]
 

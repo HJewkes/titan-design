@@ -27,14 +27,12 @@ export interface LiveFatigueCardProps {
   width?: number
   /** Card height in px — when set, the sections spread through the leftover height. */
   height?: number
-  /** Pin the ghost-spark into its revealed (annotated) state — for static screenshots. */
-  revealChart?: boolean
 }
 
 const PAD = 18
 const GHOST_GUTTER = 4 // GhostSpark carries this L/R padding internally
 
-export function LiveFatigueCard({ model, width = 318, height, revealChart }: LiveFatigueCardProps) {
+export function LiveFatigueCard({ model, width = 318, height }: LiveFatigueCardProps) {
   const chartW = width - PAD * 2 - GHOST_GUTTER * 2
   const chartH = height != null ? Math.round(Math.min(240, Math.max(168, height * 0.4))) : 172
   return (
@@ -66,13 +64,7 @@ export function LiveFatigueCard({ model, width = 318, height, revealChart }: Liv
 
       <View style={{ flex: 1, minHeight: 16 }} />
 
-      <GhostSpark
-        curves={model.velocityCurves}
-        tempoSeconds={model.tempoSeconds}
-        width={chartW}
-        height={chartH}
-        forceRevealed={revealChart}
-      />
+      <GhostSpark curves={model.velocityCurves} width={chartW} height={chartH} />
     </Surface>
   )
 }
