@@ -3,7 +3,7 @@
  * RomProgressionChart — the per-rep depth progression on the shared silver/red scheme:
  * silver bars at-or-above the working range, light red below it, deep red below the
  * short threshold — with dashed working-standard (silver) + short-threshold (red)
- * reference lines and a faint red short-zone. The current (last) rep is emphasised.
+ * reference lines and a faint red short-zone. Every rep reads at full colour.
  * Labelled "depth vs working range · now N%".
  *
  * Data-driven from absolute metres: bars scale to the tallest of {bars, working
@@ -111,10 +111,8 @@ export function RomProgressionChart({
             }}
           />
         )}
-        {shown.map((p, i) => {
-          const isCurrent = i === lastIndex
+        {shown.map((p) => {
           const color = barColor(p.romM, workingStandardM, shortThresholdM)
-          const barFill = isCurrent ? color : alpha(color, 0.5)
           return (
             <View
               key={p.repNumber}
@@ -133,9 +131,9 @@ export function RomProgressionChart({
                     height: Math.max(3, yUp(p.romM)),
                     borderTopLeftRadius: 2,
                     borderTopRightRadius: 2,
-                    backgroundColor: barFill,
+                    backgroundColor: color,
                     // Same shared paper treatment as the velocity bars — one material.
-                    ...barPaper(barFill),
+                    ...barPaper(color),
                   } as ViewStyle
                 }
               />
