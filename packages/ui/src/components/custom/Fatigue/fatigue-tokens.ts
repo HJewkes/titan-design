@@ -52,7 +52,7 @@ export const TEMPO_DIGIT_COLOR: [string, string, string, string] = [
 // SHADES OF RED when there's an issue. No greens, no ambers — those languages belong
 // to the verdict tones / velocity-loss bands, not here.
 /** On-track / at-or-above-working. */
-export const SILVER = '#C4C8D0'
+export const SILVER = primitiveColors.neutral[300]
 export const RED_LIGHT = primitiveRamps.red[400]
 export const RED_MID = primitiveRamps.red[600]
 export const RED_DEEP = primitiveRamps.red[800]
