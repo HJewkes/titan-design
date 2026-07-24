@@ -540,10 +540,16 @@ function heroBarGrain(color: string): string {
  * to the velocity hero bars (single hero + diverging dual wings); it never touches the shared
  * SegmentedBar / SetStrip. Back out: delete these helpers and the two `heroBarPaper(...)` spreads.
  */
-function heroBarPaper(color: string): ViewStyle {
+function heroBarPaper(color: string, flip = false): ViewStyle {
+  // `flip` = a `down` wing, whose plot is scaleY(-1)-mirrored. The contact shadow's
+  // y-offset is pre-inverted so the mirror lands it pointing AWAY from the shared axis
+  // (not up across it). The top rim-light is DROPPED on a flipped bar — mirrored it
+  // would sit on the axis edge and read wrong; the grain + shadow alone carry the material.
   return {
     backgroundImage: heroBarGrain(color),
-    boxShadow: 'inset 0 1.5px 0 rgba(255,255,255,0.22), 0 6px 16px rgba(0,0,0,0.45)',
+    boxShadow: flip
+      ? '0 -6px 16px rgba(0,0,0,0.45)'
+      : 'inset 0 1.5px 0 rgba(255,255,255,0.22), 0 6px 16px rgba(0,0,0,0.45)',
   } as unknown as ViewStyle
 }
 
@@ -978,7 +984,7 @@ function HeroVelocityChart({
                     borderTopRightRadius: HERO_BAR_RADIUS,
                     backgroundColor: barColorFor(velocity),
                   },
-                  heroBarPaper(barColorFor(velocity)),
+                  heroBarPaper(barColorFor(velocity), flip),
                 ]}
                 testID={`velocity-bar-${i}`}
               />
