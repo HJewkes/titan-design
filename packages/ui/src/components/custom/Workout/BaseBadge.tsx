@@ -1,6 +1,9 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useState, type ReactNode } from 'react'
 import { View, Pressable, Animated, type ViewProps } from 'react-native'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+
+const t = getSemanticColors('dark')
 
 export type BaseBadgeVariant = 'plain' | 'pr'
 export type BaseBadgeSize = 'sm' | 'md' | 'lg'
@@ -26,11 +29,8 @@ export const baseBadgeSizeConfig: Record<
   lg: { fontSize: 12, paddingH: 10, paddingV: 4, iconSize: 14 },
 }
 
-const variantColors: Record<
-  BaseBadgeVariant,
-  { backgroundColor: string; borderColor: string }
-> = {
-  plain: { backgroundColor: '#1C1C1C', borderColor: '#1F1F1F' },
+const variantColors: Record<BaseBadgeVariant, { backgroundColor: string; borderColor: string }> = {
+  plain: { backgroundColor: t['surface-raised'], borderColor: '#1F1F1F' },
   pr: {
     backgroundColor: 'rgba(255, 121, 0, 0.12)',
     borderColor: 'rgba(255, 121, 0, 0.3)',

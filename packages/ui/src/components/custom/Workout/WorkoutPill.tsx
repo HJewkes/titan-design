@@ -26,7 +26,7 @@ const statusBgColors: Record<WorkoutPillStatus, string> = {
   completed: 'rgba(46,213,115,0.15)',
   current: 'rgba(255,121,0,0.15)',
   next: 'transparent',
-  upcoming: '#1C1C1C',
+  upcoming: t['surface-raised'],
   missed: 'rgba(209,67,67,0.1)',
   deload: 'rgba(186,41,150,0.15)',
 }
@@ -72,7 +72,7 @@ function usePulse(enabled: boolean) {
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
         }),
-      ]),
+      ])
     )
     animation.start()
 
