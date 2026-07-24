@@ -13,6 +13,7 @@
  */
 import { View, Text, type ViewStyle } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { barPaper } from '../../../theme/bar-paper'
 import { alpha } from '../../../utils/colors'
 import { FONT_MONO, SILVER, RED_LIGHT, RED_DEEP } from './fatigue-tokens'
 import type { RepRomPoint } from './fatigue-model'
@@ -113,6 +114,7 @@ export function RomProgressionChart({
         {shown.map((p, i) => {
           const isCurrent = i === lastIndex
           const color = barColor(p.romM, workingStandardM, shortThresholdM)
+          const barFill = isCurrent ? color : alpha(color, 0.5)
           return (
             <View
               key={p.repNumber}
@@ -131,7 +133,9 @@ export function RomProgressionChart({
                     height: Math.max(3, yUp(p.romM)),
                     borderTopLeftRadius: 2,
                     borderTopRightRadius: 2,
-                    backgroundColor: isCurrent ? color : alpha(color, 0.5),
+                    backgroundColor: barFill,
+                    // Same shared paper treatment as the velocity bars — one material.
+                    ...barPaper(barFill),
                   } as ViewStyle
                 }
               />
