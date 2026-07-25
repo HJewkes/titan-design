@@ -650,17 +650,32 @@ function ComparisonPair({
       }}
     >
       <div style={{ flex: 1 }}>
-        <div style={{ fontSize: 9, color: '#6B7280', marginBottom: 6, fontFamily: 'Nunito Sans, sans-serif', textTransform: 'uppercase', letterSpacing: 0.8 }}>
+        <div
+          style={{
+            fontSize: 9,
+            color: '#6B7280',
+            marginBottom: 6,
+            fontFamily: 'Nunito Sans, sans-serif',
+            textTransform: 'uppercase',
+            letterSpacing: 0.8,
+          }}
+        >
           HTML -- {label}
         </div>
-        <div
-          className="html-version"
-          dangerouslySetInnerHTML={{ __html: htmlContent }}
-        />
+        <div className="html-version" dangerouslySetInnerHTML={{ __html: htmlContent }} />
       </div>
       <div style={{ width: 1, background: '#2C2C2C', alignSelf: 'stretch' }} />
       <div style={{ flex: 1 }}>
-        <div style={{ fontSize: 9, color: '#6B7280', marginBottom: 6, fontFamily: 'Nunito Sans, sans-serif', textTransform: 'uppercase', letterSpacing: 0.8 }}>
+        <div
+          style={{
+            fontSize: 9,
+            color: '#6B7280',
+            marginBottom: 6,
+            fontFamily: 'Nunito Sans, sans-serif',
+            textTransform: 'uppercase',
+            letterSpacing: 0.8,
+          }}
+        >
           React -- {label}
         </div>
         <div className="react-version" style={{ display: 'flex', alignItems: 'flex-start' }}>
@@ -673,15 +688,19 @@ function ComparisonPair({
 
 function SectionHeader({ title }: { title: string }) {
   return (
-    <h2 style={{
-      fontFamily: 'Space Grotesk, sans-serif',
-      fontSize: 18,
-      fontWeight: 700,
-      color: '#F3F4F6',
-      margin: '24px 0 12px',
-      paddingBottom: 8,
-      borderBottom: '1px solid #1F1F1F',
-    }}>{title}</h2>
+    <h2
+      style={{
+        fontFamily: 'Space Grotesk, sans-serif',
+        fontSize: 18,
+        fontWeight: 700,
+        color: '#F3F4F6',
+        margin: '24px 0 12px',
+        paddingBottom: 8,
+        borderBottom: '1px solid #1F1F1F',
+      }}
+    >
+      {title}
+    </h2>
   )
 }
 
@@ -706,12 +725,16 @@ function App() {
     <div className="html-scope" style={{ padding: '20px 32px', maxWidth: 1200 }}>
       <style dangerouslySetInnerHTML={{ __html: HTML_CSS }} />
 
-      <h1 style={{
-        fontFamily: 'Space Grotesk, sans-serif',
-        fontSize: 24,
-        fontWeight: 700,
-        marginBottom: 4,
-      }}>HTML vs React Comparison</h1>
+      <h1
+        style={{
+          fontFamily: 'Space Grotesk, sans-serif',
+          fontSize: 24,
+          fontWeight: 700,
+          marginBottom: 4,
+        }}
+      >
+        HTML vs React Comparison
+      </h1>
       <p style={{ color: '#9CA3AF', fontSize: 12, marginBottom: 24 }}>
         Side-by-side rendering of HTML ground truth (left) vs React components (right).
       </p>
@@ -805,40 +828,46 @@ function App() {
       {/* ── 3. StatusDot ── */}
       <SectionHeader title="3. StatusDot" />
 
-      {(['success', 'warning', 'error', 'neutral', 'on-track', 'deviation', 'future'] as const).map((variant) => {
-        const cssClass = variant
-        return (
-          <ComparisonPair
-            key={variant}
-            testId={`compare-status-dot-${variant}-md`}
-            label={`StatusDot ${variant} md`}
-            htmlContent={`<div class="status-dot md ${cssClass}"></div>`}
-          >
-            <StatusDot variant={variant} size="md" />
-          </ComparisonPair>
-        )
-      })}
+      {(['success', 'warning', 'error', 'neutral', 'on-track', 'deviation', 'future'] as const).map(
+        (variant) => {
+          const cssClass = variant
+          return (
+            <ComparisonPair
+              key={variant}
+              testId={`compare-status-dot-${variant}-md`}
+              label={`StatusDot ${variant} md`}
+              htmlContent={`<div class="status-dot md ${cssClass}"></div>`}
+            >
+              <StatusDot variant={variant} size="md" />
+            </ComparisonPair>
+          )
+        }
+      )}
 
-      {(['success', 'warning', 'error', 'neutral', 'on-track', 'deviation', 'future'] as const).map((variant) => {
-        const cssClass = variant
-        return (
-          <ComparisonPair
-            key={`sm-${variant}`}
-            testId={`compare-status-dot-${variant}-sm`}
-            label={`StatusDot ${variant} sm`}
-            htmlContent={`<div class="status-dot sm ${cssClass}"></div>`}
-          >
-            <StatusDot variant={variant} size="sm" />
-          </ComparisonPair>
-        )
-      })}
+      {(['success', 'warning', 'error', 'neutral', 'on-track', 'deviation', 'future'] as const).map(
+        (variant) => {
+          const cssClass = variant
+          return (
+            <ComparisonPair
+              key={`sm-${variant}`}
+              testId={`compare-status-dot-${variant}-sm`}
+              label={`StatusDot ${variant} sm`}
+              htmlContent={`<div class="status-dot sm ${cssClass}"></div>`}
+            >
+              <StatusDot variant={variant} size="sm" />
+            </ComparisonPair>
+          )
+        }
+      )}
 
       {/* ── 3b. StatusDot with icons ── */}
-      {([
-        { variant: 'success', icon: 'check', iconChar: '\u2713' },
-        { variant: 'warning', icon: 'exclamation', iconChar: '!' },
-        { variant: 'error', icon: 'dash', iconChar: '\u2014' },
-      ] as const).map(({ variant, icon, iconChar }) => (
+      {(
+        [
+          { variant: 'success', icon: 'check', iconChar: '\u2713' },
+          { variant: 'warning', icon: 'exclamation', iconChar: '!' },
+          { variant: 'error', icon: 'dash', iconChar: '\u2014' },
+        ] as const
+      ).map(({ variant, icon, iconChar }) => (
         <ComparisonPair
           key={`icon-${variant}`}
           testId={`compare-status-dot-${variant}-icon`}
@@ -880,32 +909,11 @@ function App() {
         <PlaceholderStrip mode="segmented" segments={3} width={200} />
       </ComparisonPair>
 
-      {/* ── 5. VelocityStrip (mini only for static comparison) ── */}
+      {/* ── 5. VelocityStrip ── */}
+      {/* The `mini` pairs were removed with the `mini` variant itself; `compact`
+          is now SetBarChart in flat mode, which the hand-written HTML GT no
+          longer describes. Colour mapping is unit-tested instead. */}
       <SectionHeader title="5. VelocityStrip" />
-
-      <ComparisonPair
-        testId="compare-velocity-mini-fast"
-        label="VelocityStrip mini (fast)"
-        htmlContent={`<div class="velocity-mini" style="width:200px"><div class="vel-bar green"></div><div class="vel-bar green"></div><div class="vel-bar green"></div><div class="vel-bar green"></div><div class="vel-bar green"></div></div>`}
-      >
-        <VelocityStrip velocities={[1.15, 1.12, 1.10, 1.08, 1.05]} variant="mini" style={{ width: 200 }} />
-      </ComparisonPair>
-
-      <ComparisonPair
-        testId="compare-velocity-mini-mixed"
-        label="VelocityStrip mini (mixed)"
-        htmlContent={`<div class="velocity-mini" style="width:200px"><div class="vel-bar yellow"></div><div class="vel-bar yellow"></div><div class="vel-bar orange"></div><div class="vel-bar orange"></div><div class="vel-bar orange"></div></div>`}
-      >
-        <VelocityStrip velocities={[0.82, 0.78, 0.74, 0.70, 0.66]} variant="mini" style={{ width: 200 }} />
-      </ComparisonPair>
-
-      <ComparisonPair
-        testId="compare-velocity-mini-grinding"
-        label="VelocityStrip mini (grinding)"
-        htmlContent={`<div class="velocity-mini" style="width:200px"><div class="vel-bar orange"></div><div class="vel-bar red"></div><div class="vel-bar red"></div><div class="vel-bar red"></div><div class="vel-bar red"></div></div>`}
-      >
-        <VelocityStrip velocities={[0.52, 0.48, 0.44, 0.41, 0.37]} variant="mini" style={{ width: 200 }} />
-      </ComparisonPair>
 
       {/* ── 5b. VelocityStrip expanded ── */}
       <ComparisonPair
@@ -913,7 +921,13 @@ function App() {
         label="VelocityStrip expanded"
         htmlContent={`<div style="display:flex;flex-direction:column;align-items:center;width:200px;height:60px;gap:2px;border-radius:6px;padding:16px 6px 24px;background:#1C1C1C;position:relative;overflow:visible"><div style="display:flex;flex-direction:row;flex:1;gap:2px;align-items:flex-end;width:100%"><div style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end"><div class="vel-bar green" style="height:87%;border-top-left-radius:2px;border-top-right-radius:2px"></div></div><div style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end"><div class="vel-bar green" style="height:80%;border-top-left-radius:2px;border-top-right-radius:2px"></div></div><div style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end"><div class="vel-bar green" style="height:74%;border-top-left-radius:2px;border-top-right-radius:2px"></div></div></div></div>`}
       >
-        <VelocityStrip velocities={[1.15, 1.06, 0.98]} variant="expanded" expanded showInfo={false} style={{ width: 200 }} />
+        <VelocityStrip
+          velocities={[1.15, 1.06, 0.98]}
+          variant="expanded"
+          expanded
+          showInfo={false}
+          style={{ width: 200 }}
+        />
       </ComparisonPair>
 
       {/* ── 6. TempoDisplay ── */}
@@ -1054,13 +1068,15 @@ function App() {
       {/* ── 10. MuscleGroupChip ── */}
       <SectionHeader title="10. MuscleGroupChip" />
 
-      {([
-        { vs: 'ontrack', name: 'Chest' },
-        { vs: 'target', name: 'Quads' },
-        { vs: 'behind', name: 'Calves' },
-        { vs: 'untrained', name: 'Abs' },
-        { vs: 'over', name: 'Back' },
-      ] as const).map(({ vs, name }) => (
+      {(
+        [
+          { vs: 'ontrack', name: 'Chest' },
+          { vs: 'target', name: 'Quads' },
+          { vs: 'behind', name: 'Calves' },
+          { vs: 'untrained', name: 'Abs' },
+          { vs: 'over', name: 'Back' },
+        ] as const
+      ).map(({ vs, name }) => (
         <ComparisonPair
           key={vs}
           testId={`compare-muscle-chip-${vs}`}
@@ -1090,7 +1106,12 @@ function App() {
         label="Sparkline with reference line"
         htmlContent={`<div class="sparkline-container" style="width:80px;height:30px;position:relative"></div>`}
       >
-        <Sparkline data={[10, 25, 15, 35, 20]} width={80} height={30} referenceLines={[{ value: 25, color: '#FFB020', dashed: true }]} />
+        <Sparkline
+          data={[10, 25, 15, 35, 20]}
+          width={80}
+          height={30}
+          referenceLines={[{ value: 25, color: '#FFB020', dashed: true }]}
+        />
       </ComparisonPair>
 
       <ComparisonPair
@@ -1117,7 +1138,12 @@ function App() {
         label="ExerciseCard upcoming"
         htmlContent={`<div class="exercise-card-upcoming"><div class="ec-row1"><span class="ec-name">Overhead Press</span><span class="ec-prescription">3\u00D78-12 @ RPE 8</span><span class="ec-prev-best">135 lbs \u00D7 10</span></div></div>`}
       >
-        <ExerciseCard name="Overhead Press" upcoming prescription="3×8-12 @ RPE 8" previousBest="135 lbs × 10" />
+        <ExerciseCard
+          name="Overhead Press"
+          upcoming
+          prescription="3×8-12 @ RPE 8"
+          previousBest="135 lbs × 10"
+        />
       </ComparisonPair>
 
       {/* ── 16. SupersetWrapper ── */}
@@ -1129,8 +1155,24 @@ function App() {
         htmlContent={`<div class="superset-wrapper-comparison"><span class="sw-label">SS</span><div class="sw-children"><div class="sw-placeholder"></div><div class="sw-placeholder"></div></div></div>`}
       >
         <SupersetWrapper>
-          <View style={{ height: 48, backgroundColor: '#1C1C1C', borderWidth: 1, borderColor: '#1F1F1F', borderRadius: 8 }} />
-          <View style={{ height: 48, backgroundColor: '#1C1C1C', borderWidth: 1, borderColor: '#1F1F1F', borderRadius: 8 }} />
+          <View
+            style={{
+              height: 48,
+              backgroundColor: '#1C1C1C',
+              borderWidth: 1,
+              borderColor: '#1F1F1F',
+              borderRadius: 8,
+            }}
+          />
+          <View
+            style={{
+              height: 48,
+              backgroundColor: '#1C1C1C',
+              borderWidth: 1,
+              borderColor: '#1F1F1F',
+              borderRadius: 8,
+            }}
+          />
         </SupersetWrapper>
       </ComparisonPair>
 
@@ -1142,7 +1184,19 @@ function App() {
         label="InputBar default"
         htmlContent={`<div class="input-bar-comparison"><div class="ib-info"><span class="ib-exercise">Bench Press</span><span class="ib-set">Set 3/4</span></div><div class="ib-fields"><span class="ib-field reps"></span><span class="ib-x">\u00D7</span><span class="ib-field weight"></span><span class="ib-unit">lbs</span></div><button class="ib-record">Record</button></div>`}
       >
-        <InputBar exerciseName="Bench Press" setNumber={3} totalSets={4} reps="" weight="" unit="lbs" onRepsChange={() => {}} onWeightChange={() => {}} onRecord={() => {}} canRecord={false} visible />
+        <InputBar
+          exerciseName="Bench Press"
+          setNumber={3}
+          totalSets={4}
+          reps=""
+          weight=""
+          unit="lbs"
+          onRepsChange={() => {}}
+          onWeightChange={() => {}}
+          onRecord={() => {}}
+          canRecord={false}
+          visible
+        />
       </ComparisonPair>
 
       {/* ── 14. RestTimer ── */}
@@ -1153,9 +1207,15 @@ function App() {
         label="RestTimer default"
         htmlContent={`<div class="rest-timer-comparison"><div class="rt-top"><div><div class="rt-label">REST</div><div class="rt-context">Next: Set 3 \u2014 40 lbs</div></div><div class="rt-time">2:00</div></div><div class="rt-bar"><div class="rt-bar-fill" style="width:20%"></div></div><div class="rt-actions"><button class="rt-btn rt-add">+30s</button><button class="rt-btn rt-skip">Skip</button></div></div>`}
       >
-        <RestTimer totalSeconds={150} elapsedMs={30000} onSkip={() => {}} onAddTime={() => {}} nextSetInfo="Next: Set 3 — 40 lbs" visible />
+        <RestTimer
+          totalSeconds={150}
+          elapsedMs={30000}
+          onSkip={() => {}}
+          onAddTime={() => {}}
+          nextSetInfo="Next: Set 3 — 40 lbs"
+          visible
+        />
       </ComparisonPair>
-
     </div>
   )
 }
