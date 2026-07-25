@@ -110,8 +110,14 @@ export interface SetBarChartProps {
    * floor to 2px regardless. Exposed mainly for a spacing-density comparison.
    */
   gapRatio?: number
-  /** Top-corner radius on the bars (px). Default 5. */
+  /** Corner radius on the bars (px). Default 5. */
   barRadius?: number
+  /**
+   * Which corners round. `top` (default) — the bolder top-rounded WALL HERO look. `all` — the thin
+   * radius-2 flat-bar language (the SegmentedBar pill), for rep-level compact + expanded in the
+   * rail / card / table so a compact↔expanded morph keeps a constant all-corners radius.
+   */
+  cornerStyle?: 'top' | 'all'
   /**
    * FLAT height mode (the `compact` resting form). Every rep bar renders at ONE uniform short height
    * ({@link FLAT_BAR_FRACTION} of the plot) instead of value-height — EVERYTHING else identical
@@ -253,6 +259,7 @@ export function SetBarChart({
   targetReps,
   gapRatio = GAP_RATIO,
   barRadius = DEFAULT_BAR_RADIUS,
+  cornerStyle = 'top',
   flat = false,
   showValueLabels: showValueLabelsProp = false,
   formatValue = String,
@@ -297,6 +304,11 @@ export function SetBarChart({
   const solidTodoColor = mixHex(surfaceBg, placeholderColor, 0.55)
   // An `empty` cell (a rep the diverging side didn't log) is fainter than a planned to-do.
   const emptyColor = mixHex(surfaceBg, placeholderColor, 0.28)
+  // `all` rounds every corner (the thin flat-bar pill); `top` keeps the bolder hero top-round.
+  const barCorners: ViewStyle =
+    cornerStyle === 'all'
+      ? { borderRadius: barRadius }
+      : { borderTopLeftRadius: barRadius, borderTopRightRadius: barRadius }
 
   // `scaleMax` (the diverging dual's shared pair-max) overrides the height denominator so both
   // sides share ONE height scale; color + the reference still read this chart's own values.
@@ -401,7 +413,9 @@ export function SetBarChart({
               <View key={i} accessibilityElementsHidden style={column}>
                 {renderStub(
                   slot.kind,
-                  barRadius,
+                  barCorners,
+                  // Flat (compact) stubs match the thin flat bar height; else the fixed short stub.
+                  flat ? flatBarHeight : STUB_HEIGHT,
                   placeholderColor,
                   testIDPrefix,
                   todoVariant,
@@ -456,13 +470,8 @@ export function SetBarChart({
               )}
               <Animated.View
                 style={[
-                  {
-                    width: '100%',
-                    height: barHeightStyle,
-                    borderTopLeftRadius: barRadius,
-                    borderTopRightRadius: barRadius,
-                    backgroundColor: color,
-                  },
+                  { width: '100%', height: barHeightStyle, backgroundColor: color },
+                  barCorners,
                   barPaper(color, flip),
                 ]}
                 testID={`${testIDPrefix}-bar-${repIndex}`}
@@ -479,7 +488,8 @@ export function SetBarChart({
 /** A window cell (planned / variable / continue / empty) — a fixed-height stub in its set-type tone. */
 function renderStub(
   kind: SetSlot['kind'],
-  barRadius: number,
+  barCorners: ViewStyle,
+  stubHeight: number,
   placeholderColor: string,
   testIDPrefix: string,
   todoVariant: 'dashed' | 'solid',
@@ -488,9 +498,8 @@ function renderStub(
 ): ReactNode {
   const base: ViewStyle = {
     width: '100%',
-    height: STUB_HEIGHT,
-    borderTopLeftRadius: barRadius,
-    borderTopRightRadius: barRadius,
+    height: stubHeight,
+    ...barCorners,
   }
   if (kind === 'variable') {
     return (

@@ -455,8 +455,8 @@ function setAccessibilityLabel(set: VelocitySet, repCount: number): string {
 
 /** Default framed `expanded` chart height (px). */
 const EXPANDED_HEIGHT = 60
-/** Default `compact` (flat resting strip) height (px) — short, same geometry as expanded/hero. */
-const COMPACT_HEIGHT = 28
+/** Default `compact` (flat resting strip) height (px) — a THIN radius-2 pill row, the resting glance. */
+const COMPACT_HEIGHT = 12
 
 /** The dashed running-best reference line color (the lightest charcoal step). */
 const HERO_REFERENCE_COLOR = primitiveColors.charcoal[0]
@@ -714,7 +714,7 @@ const DUAL_HERO_HEIGHT = SET_BAR_DEFAULT_HEIGHT
 /** Default `rail` diverging height (px) — compact enough to sit inside a rail slot. */
 const DUAL_RAIL_HEIGHT = 96
 /** Default `compact` diverging height (px) — two flat compact wings stacked at the shared axis. */
-const DUAL_COMPACT_HEIGHT = 56
+const DUAL_COMPACT_HEIGHT = 28
 
 // --- Rail geometry (the compact dedicated path) ------------------------------
 // The `hero` variant COMPOSES two single VelocityStrip heroes, so it inherits the
@@ -1289,6 +1289,8 @@ export function VelocityStrip({
         scaleMax={scaleMax}
         orientation={orientation}
         flat
+        barRadius={2}
+        cornerStyle="all"
         targetReps={set || columnSlots ? undefined : targetReps}
         label={label}
         hideBaseline={hideBaseline}
@@ -1319,6 +1321,8 @@ export function VelocityStrip({
         orientation={orientation}
         liveRepIndex={liveRepIndex}
         isNewPeak={isNewPeak}
+        barRadius={2}
+        cornerStyle="all"
         targetReps={set ? undefined : targetReps}
         label={label}
         hideBaseline={hideBaseline}
@@ -1408,6 +1412,7 @@ export function VelocityStrip({
         renderBarOverlay={renderFramedBarOverlay}
         targetReps={set ? undefined : targetReps}
         barRadius={2}
+        cornerStyle="all"
         hideBaseline
         testIDPrefix="velocity"
       />
