@@ -140,6 +140,20 @@ export interface SetBarChartProps {
   minColumns?: number
   /** Paint a reference overlay (VL bands / working-standard lines) given the chart geometry. */
   renderReference?: (geometry: SetBarGeometry) => ReactNode
+  /**
+   * Per-rep OVERLAY, rendered inside each rep column above the bar (for the framed `expanded`
+   * chrome to inject its per-bar m/s label + `onRepPress` pressable without duplicating bar
+   * rendering). When provided, SetBarChart suppresses its OWN value label (the overlay owns it) and
+   * the rep columns become interactive (not a11y-hidden).
+   */
+  renderBarOverlay?: (repIndex: number, value: number) => ReactNode
+  /**
+   * IN-PLACE expand animation: an `Animated.Value` 0→1 that morphs every rep bar between its FLAT
+   * (compact) height and its VALUE height, and fades the value labels in. The x-geometry stays fixed
+   * (widths / gaps / positions), so a compact↔expanded toggle animates only heights — no reflow.
+   * Overrides `flat` + the live-rep grow while animating.
+   */
+  expandProgress?: Animated.Value
   /** Suppress the plot's own 2px baseline border (the dual draws ONE shared centre axis instead). */
   hideBaseline?: boolean
   /** Container testID. */
@@ -245,6 +259,8 @@ export function SetBarChart({
   todoVariant = 'solid',
   minColumns,
   renderReference,
+  renderBarOverlay,
+  expandProgress,
   hideBaseline = false,
   testID,
   testIDPrefix = 'setbar',
@@ -294,12 +310,11 @@ export function SetBarChart({
   const plotHeight = Math.max(0, height - (showValueLabels ? LABEL_ROW_HEIGHT + LABEL_GAP : 0))
   const yOf = (value: number): number => (scaleDenom > 0 ? (value / scaleDenom) * plotHeight : 0)
   const flatBarHeight = Math.max(MIN_BAR_HEIGHT, FLAT_BAR_FRACTION * plotHeight)
-  const barHeight = (value: number): number =>
-    flat
-      ? flatBarHeight
-      : scaleDenom > 0
-        ? Math.max(MIN_BAR_HEIGHT, Math.min(1, value / scaleDenom) * plotHeight)
-        : MIN_BAR_HEIGHT
+  const valueBarHeight = (value: number): number =>
+    scaleDenom > 0
+      ? Math.max(MIN_BAR_HEIGHT, Math.min(1, value / scaleDenom) * plotHeight)
+      : MIN_BAR_HEIGHT
+  const barHeight = (value: number): number => (flat ? flatBarHeight : valueBarHeight(value))
 
   // Live-rep grow-from-bottom (rep index → cell index; reps are contiguous from 0 in every set type).
   const liveValue =
@@ -401,18 +416,32 @@ export function SetBarChart({
           const value = slot.value ?? 0
           const isLive = liveRepIndex === repIndex
           const color = colorFor(value)
+          // Bar height: `expandProgress` morphs flat↔value in place; else the live-rep grow; else static.
+          const barHeightStyle = expandProgress
+            ? expandProgress.interpolate({
+                inputRange: [0, 1],
+                outputRange: [flatBarHeight, valueBarHeight(value)],
+              })
+            : isLive
+              ? liveGrowth.interpolate({ inputRange: [0, 1], outputRange: [0, barHeight(value)] })
+              : barHeight(value)
+          // The wrapper's `renderBarOverlay` owns labels + press when present (so SetBarChart doesn't
+          // duplicate them); its own label shows otherwise, fading in with `expandProgress`.
+          const ownLabel = showValueLabels && !renderBarOverlay && showBarLabel(repIndex)
+          const labelBottom = (expandProgress ? valueBarHeight(best) : barHeight(best)) + LABEL_GAP
           return (
-            <View key={i} accessibilityElementsHidden style={column}>
-              {showValueLabels && showBarLabel(repIndex) && (
+            <View key={i} accessibilityElementsHidden={renderBarOverlay == null} style={column}>
+              {ownLabel && (
                 // All labels pin to one aligned row JUST ABOVE THE PEAK BAR (not the container top),
                 // in the muted on-surface-secondary tone — so the row hugs the bars, no floating void.
-                <View
+                <Animated.View
                   style={{
                     position: 'absolute',
-                    bottom: barHeight(best) + LABEL_GAP,
+                    bottom: labelBottom,
                     left: 0,
                     right: 0,
                     alignItems: 'center',
+                    ...(expandProgress ? { opacity: expandProgress } : null),
                   }}
                   pointerEvents="none"
                 >
@@ -423,18 +452,13 @@ export function SetBarChart({
                   >
                     {formatValue(value)}
                   </Text>
-                </View>
+                </Animated.View>
               )}
               <Animated.View
                 style={[
                   {
                     width: '100%',
-                    height: isLive
-                      ? liveGrowth.interpolate({
-                          inputRange: [0, 1],
-                          outputRange: [0, barHeight(value)],
-                        })
-                      : barHeight(value),
+                    height: barHeightStyle,
                     borderTopLeftRadius: barRadius,
                     borderTopRightRadius: barRadius,
                     backgroundColor: color,
@@ -443,6 +467,7 @@ export function SetBarChart({
                 ]}
                 testID={`${testIDPrefix}-bar-${repIndex}`}
               />
+              {renderBarOverlay?.(repIndex, value)}
             </View>
           )
         })}
