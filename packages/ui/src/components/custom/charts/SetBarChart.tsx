@@ -104,6 +104,12 @@ export interface SetBarChartProps {
    * already run to (or past) this count — a caller that supplies its own todo slots omits this.
    */
   targetReps?: number
+  /**
+   * Inter-bar gap as a fraction of bar width (gap ≈ gapRatio·barWidth, floored at 2px). Default
+   * {@link GAP_RATIO}. Lower = denser (toward the near-touching expanded density); narrow screens
+   * floor to 2px regardless. Exposed mainly for a spacing-density comparison.
+   */
+  gapRatio?: number
   /** Top-corner radius on the bars (px). Default 5. */
   barRadius?: number
   /**
@@ -203,6 +209,7 @@ export function SetBarChart({
   liveRepIndex,
   isNewPeak = false,
   targetReps,
+  gapRatio = GAP_RATIO,
   barRadius = DEFAULT_BAR_RADIUS,
   showValueLabels = false,
   formatValue = String,
@@ -270,17 +277,17 @@ export function SetBarChart({
   const [plotW, setPlotW] = useState(0)
   const onPlotLayout = (e: LayoutChangeEvent) => setPlotW(e.nativeEvent.layout.width)
 
-  // Inter-bar gap is PROPORTIONAL to bar width (gap ≈ GAP_RATIO·barWidth, floored at MIN_BAR_GAP).
-  // Solve N·bw + (N−1)·(GAP_RATIO·bw) = plotW → bw = plotW / (N + (N−1)·GAP_RATIO); the bars end up
-  // closer together than the old fixed wide gaps and tighten to ~expanded density on narrow plots.
+  // Inter-bar gap is PROPORTIONAL to bar width (gap ≈ gapRatio·barWidth, floored at MIN_BAR_GAP).
+  // Solve N·bw + (N−1)·(gapRatio·bw) = plotW → bw = plotW / (N + (N−1)·gapRatio); the bars tighten to
+  // ~expanded density on narrow plots (the floor) and the ratio sets how dense they read at wall scale.
   const totalCells = cells.length
   const rawBarWidth =
     plotW > 0 && totalCells > 0
-      ? plotW / (totalCells + (totalCells - 1) * GAP_RATIO)
+      ? plotW / (totalCells + (totalCells - 1) * gapRatio)
       : BAR_MAX_WIDTH
   const barWidth = Math.min(BAR_MAX_WIDTH, rawBarWidth)
   const labelsCrowded = plotW > 0 && barWidth < LABEL_MIN_BAR_WIDTH
-  const gap = plotW === 0 ? MIN_BAR_GAP : Math.max(MIN_BAR_GAP, GAP_RATIO * barWidth)
+  const gap = plotW === 0 ? MIN_BAR_GAP : Math.max(MIN_BAR_GAP, gapRatio * barWidth)
 
   // Peak rep index (over rep values) — its label always survives label-thinning.
   const peakRepIndex = repValues.reduce((b, v, i) => (v > repValues[b] ? i : b), 0)

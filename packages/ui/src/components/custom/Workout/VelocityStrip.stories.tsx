@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text, Pressable } from 'react-native'
-import { VelocityStrip } from './VelocityStrip'
+import { VelocityStrip, getVelocityLossColor } from './VelocityStrip'
+import { SetBarChart, type SetSlot } from '../charts/SetBarChart'
+import { formatVelocity } from '../../../utils/workout-format'
 import { Surface } from '../../ui/surface/Surface'
 import type { SurfaceLevel } from '../../ui/surface/SurfaceContext'
 
@@ -523,4 +525,55 @@ export const HeroWithSlotLabel: Story = {
     scale: 'fixed',
   },
   decorators: [heroDecorator],
+}
+
+// --- Spacing density comparison (picker) -------------------------------------
+// gap = gapRatio · barWidth, floored at 2px. Lower ratio = denser bars (toward the
+// near-touching expanded density); narrow screens floor to 2px regardless. Same
+// single-hero data across three ratios so the operator can pick the default.
+
+const DENSITY_VELOCITIES = [0.96, 0.91, 0.86, 0.8, 0.72, 0.61]
+const DENSITY_TARGET = 8
+
+function densityColorFor(velocities: number[]): (v: number) => string {
+  const best = Math.max(...velocities, 0)
+  return (v: number) =>
+    getVelocityLossColor(best > 0 ? Math.max(0, Math.round(((best - v) / best) * 100)) : 0)
+}
+
+function DensityPanel({ label, gapRatio }: { label: string; gapRatio: number }) {
+  const slots: SetSlot[] = DENSITY_VELOCITIES.map((v) => ({ kind: 'rep', value: v }))
+  return (
+    <View style={{ gap: 8 }}>
+      <Text style={{ color: '#8A8A8A', fontSize: 12, fontWeight: '800', letterSpacing: 1 }}>
+        {label}
+      </Text>
+      <SetBarChart
+        slots={slots}
+        colorFor={densityColorFor(DENSITY_VELOCITIES)}
+        height={200}
+        scale="fixed"
+        gapRatio={gapRatio}
+        targetReps={DENSITY_TARGET}
+        showValueLabels
+        formatValue={formatVelocity}
+        hideBaseline
+      />
+    </View>
+  )
+}
+
+/**
+ * Spacing density comparison — the SAME 6-done + 2-todo single-hero set at three gap ratios, so the
+ * operator can pick the default. All keep the 2px gap floor (narrow screens tighten to expanded
+ * density regardless); the ratio only sets how dense the bars read at wall scale.
+ */
+export const SpacingDensityCompare: Story = {
+  render: () => (
+    <View style={{ gap: 28, padding: 28, width: 620, backgroundColor: '#0E0E0E' }}>
+      <DensityPanel label="A — CURRENT · gapRatio 0.5 (airy)" gapRatio={0.5} />
+      <DensityPanel label="B — TIGHT · gapRatio 0.15 (~13px @ hero)" gapRatio={0.15} />
+      <DensityPanel label="C — DENSE · gapRatio 0.08 (~7px, near expanded)" gapRatio={0.08} />
+    </View>
+  ),
 }
