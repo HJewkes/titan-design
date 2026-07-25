@@ -34,17 +34,25 @@ import { View, Text } from 'react-native'
 import { getSemanticColors } from '../../theme/tokens/semantic'
 import { primitiveColors } from '../../theme/tokens/primitives'
 import { alpha } from '../../utils/colors'
+import { WORKOUT_TOKENS } from '../../theme/workout-tokens'
 import {
   SegmentedBar,
   type SegmentedBarSegment,
 } from '../../components/custom/Workout/SegmentedBar'
-import {
-  VelocityStrip,
-  DualVelocityStrip,
-  getVelocityZoneColor,
-} from '../../components/custom/Workout/VelocityStrip'
+import { VelocityStrip, DualVelocityStrip } from '../../components/custom/Workout/VelocityStrip'
 
 const C = getSemanticColors('dark')
+
+// Velocity → the canonical 4-band scale HEX (VelocityStrip's own thresholds). The exported
+// `getVelocityZoneColor` returns a TOKEN NAME that SetBarChart resolves internally; a
+// SegmentedBar takes a literal color, so resolve to hex here off the same source of truth.
+const VEL = WORKOUT_TOKENS.scale
+function velocityHex(v: number): string {
+  if (v >= 1.0) return VEL.green
+  if (v >= 0.75) return VEL.yellow
+  if (v >= 0.5) return VEL.orange
+  return VEL.red
+}
 const PAGE_BG = primitiveColors.charcoal[900]
 const PANEL_BG = primitiveColors.charcoal[800]
 const ROW_BG = primitiveColors.charcoal[850] ?? primitiveColors.charcoal[800]
@@ -58,7 +66,7 @@ const TODO_SEG = alpha(C['text-tertiary'], 0.28)
 /** A set-level segmented bar for a performed set: one color segment per rep (velocity zone). */
 function performedSegments(velocities: number[], liveIndex?: number): SegmentedBarSegment[] {
   return velocities.map((v, i) => ({
-    color: getVelocityZoneColor(v),
+    color: velocityHex(v),
     fill: 1,
     ...(i === liveIndex ? { pulse: true } : null),
   }))
@@ -180,6 +188,7 @@ function RailRow({ name, sets, meta }: { name: string; sets: SetFix[]; meta: str
         {sets.map((s, i) => (
           <View key={i} style={{ flex: 1 }}>
             <SegmentedBar
+              style={{ width: '100%' }}
               height={8}
               radius={2}
               gap={3}
@@ -255,12 +264,13 @@ function ExerciseTablePanel() {
     <Panel title="Back Squat" sub="5 × 5 · 185 lb · set-level header + rep-level rows">
       {/* SET-LEVEL header: one segment per SET, colored by that set's mean rep (planned = muted). */}
       <SegmentedBar
+        style={{ width: '100%' }}
         height={10}
         radius={2}
         gap={5}
         segments={SQUAT_SETS.map((s) =>
           s.velocities.length > 0
-            ? { color: getVelocityZoneColor(s.velocities[s.velocities.length - 1]), fill: 1 }
+            ? { color: velocityHex(s.velocities[s.velocities.length - 1]), fill: 1 }
             : { color: TODO_SEG, fill: 1 }
         )}
       />
@@ -327,8 +337,8 @@ function DualSetCell({ left, right }: { left: SetFix; right: SetFix }) {
       : plannedSegments(s.planned ?? 4)
   return (
     <View style={{ flex: 1, gap: 2 }}>
-      <SegmentedBar height={4} radius={2} gap={3} segments={seg(left)} />
-      <SegmentedBar height={4} radius={2} gap={3} segments={seg(right)} />
+      <SegmentedBar style={{ width: '100%' }} height={4} radius={2} gap={3} segments={seg(left)} />
+      <SegmentedBar style={{ width: '100%' }} height={4} radius={2} gap={3} segments={seg(right)} />
     </View>
   )
 }
