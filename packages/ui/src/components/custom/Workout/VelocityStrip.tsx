@@ -1180,9 +1180,7 @@ export function DualVelocityStrip({
   }
 
   if (variant === 'rail') return <DualVelocityRail {...shared} />
-  return (
-    <DualVelocityHero {...shared} liveRepIndex={liveRepIndex} flat={variant === 'compact'} />
-  )
+  return <DualVelocityHero {...shared} liveRepIndex={liveRepIndex} flat={variant === 'compact'} />
 }
 
 export function VelocityStrip({
@@ -1363,7 +1361,11 @@ export function VelocityStrip({
     const compactSlots: SetSlot[] =
       columnSlots ??
       (set
-        ? buildSlots(set).map((s) => ({ kind: s.kind, value: s.velocity, leadingGap: s.leadingGap }))
+        ? buildSlots(set).map((s) => ({
+            kind: s.kind,
+            value: s.velocity,
+            leadingGap: s.leadingGap,
+          }))
         : doneVelocities.map((v) => ({ kind: 'rep', value: v })))
     const compactHeight = height === EXPANDED_HEIGHT ? COMPACT_HEIGHT : height
     return (
