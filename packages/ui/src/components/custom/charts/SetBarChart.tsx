@@ -327,7 +327,12 @@ export function SetBarChart({
       {...a11y}
       {...restProps}
     >
-      {label ? <SideLabel label={label} height={height} /> : null}
+      {label ? (
+        <ChartSideRail
+          sections={[{ label, testID: `${testIDPrefix}-side-label` }]}
+          sectionExtent={height}
+        />
+      ) : null}
       <View
         onLayout={onPlotLayout}
         style={{
@@ -507,38 +512,75 @@ export function sideLabelText(label: string, extent: number): string {
     .toUpperCase()
 }
 
+/** One section of the shared {@link ChartSideRail} — a wing's rotated stream/slot-name label. */
+export interface SideRailSection {
+  label?: string
+  testID: string
+}
+
 /**
- * The rotated vertical stream/slot-name gutter down the chart's left edge (e.g. "LEFT ARM"). The
- * rotate lives on a wrapper sized to `height` so `numberOfLines` resolves against the tall vertical
- * extent, not the narrow gutter — a long name ellipsizes only when it genuinely exceeds the chart.
- * Font size scales with `height` ({@link sideLabelFontSize}); below {@link SIDE_LABEL_INITIALS_BELOW}
- * the text collapses to initials ({@link sideLabelText}) rather than shrink into illegibility.
+ * The ONE shared gutter/side-rail lockup used by BOTH the single hero and the diverging dual, so a
+ * single chart is pixel-identical to the dual's upper half — going dual only adds a lower section.
+ * A fixed-width gutter (34px hero / 18px rail) with the `border-border` right hairline (the vertical
+ * axis) and one rotated, height-responsive, initials-collapsing label per section (each `sectionExtent`
+ * tall). The single passes ONE section; the dual passes two (up + down wings). Rendered null when no
+ * section carries a label. The rotate lives on a wrapper sized to `sectionExtent` so `numberOfLines`
+ * resolves against the tall vertical extent — a long name only ellipsizes when it exceeds the section.
  */
-function SideLabel({ label, height }: { label: string; height: number }) {
-  const fontSize = sideLabelFontSize(height)
-  const gutter = Math.max(16, fontSize + 8)
+export function ChartSideRail({
+  sections,
+  sectionExtent,
+  variant = 'hero',
+}: {
+  sections: SideRailSection[]
+  sectionExtent: number
+  variant?: 'hero' | 'rail'
+}) {
+  if (!sections.some((s) => s.label)) return null
+  const isRail = variant === 'rail'
+  const labelLength = Math.max(0, sectionExtent - (isRail ? 0 : 6))
+  // Font scales to the SECTION (wing) height so a slot name fits without truncating; the compact rail
+  // keeps its own tuned 7px full-name treatment (hero + single collapse to initials at small heights).
+  const fontSize = isRail ? 7 : sideLabelFontSize(sectionExtent)
+  const textStyle = {
+    maxWidth: '100%' as const,
+    textAlign: 'center' as const,
+    fontSize,
+    fontWeight: '700' as const,
+    letterSpacing: isRail || fontSize < 10 ? 0 : 2,
+    textTransform: 'uppercase' as const,
+  }
   return (
     <View
-      style={{ width: gutter, alignItems: 'center', justifyContent: 'center' }}
+      className={isRail ? undefined : 'border-border'}
+      style={{ width: isRail ? 18 : 34, borderRightWidth: isRail ? 0 : 1 }}
       accessibilityElementsHidden
     >
-      <View style={{ width: height, alignItems: 'center', transform: [{ rotate: '-90deg' }] }}>
-        <Text
-          className="text-text-tertiary"
-          numberOfLines={1}
-          style={{
-            maxWidth: '100%',
-            textAlign: 'center',
-            fontSize,
-            fontWeight: '700',
-            letterSpacing: fontSize >= 11 ? 2 : 0,
-            textTransform: 'uppercase',
-          }}
-          testID="setbar-side-label"
+      {sections.map((s) => (
+        <View
+          key={s.testID}
+          style={{ height: sectionExtent, alignItems: 'center', justifyContent: 'center' }}
         >
-          {sideLabelText(label, height)}
-        </Text>
-      </View>
+          {s.label ? (
+            <View
+              style={{
+                width: labelLength,
+                alignItems: 'center',
+                transform: [{ rotate: '-90deg' }],
+              }}
+            >
+              <Text
+                className="text-text-tertiary"
+                style={textStyle}
+                numberOfLines={1}
+                testID={s.testID}
+              >
+                {isRail ? s.label : sideLabelText(s.label, sectionExtent)}
+              </Text>
+            </View>
+          ) : null}
+        </View>
+      ))}
     </View>
   )
 }

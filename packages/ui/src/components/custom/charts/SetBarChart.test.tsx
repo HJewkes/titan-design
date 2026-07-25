@@ -211,6 +211,40 @@ describe('SetBarChart reference overlay', () => {
   })
 })
 
+describe('SetBarChart shared side-rail (label gutter)', () => {
+  it('renders the rotated stream-name label when `label` is set', () => {
+    render(
+      <SetBarChart
+        slots={reps([0.9, 0.8])}
+        colorFor={silver}
+        height={200}
+        label="Left Arm"
+        testIDPrefix="t"
+      />
+    )
+    expect(screen.getByTestId('t-side-label')).toHaveTextContent('Left Arm')
+    expect(screen.getByTestId('t-side-label')).toHaveStyle({ textTransform: 'uppercase' })
+  })
+
+  it('omits the gutter when no `label` is given', () => {
+    render(<SetBarChart slots={reps([0.9, 0.8])} colorFor={silver} height={200} testIDPrefix="t" />)
+    expect(screen.queryByTestId('t-side-label')).not.toBeInTheDocument()
+  })
+
+  it('collapses the label to initials at a tiny height (same rule as the dual wings)', () => {
+    render(
+      <SetBarChart
+        slots={reps([0.9])}
+        colorFor={silver}
+        height={40}
+        label="Left"
+        testIDPrefix="t"
+      />
+    )
+    expect(screen.getByTestId('t-side-label')).toHaveTextContent('L')
+  })
+})
+
 describe('SetBarChart accessibility', () => {
   it('reads as an image with the supplied label', () => {
     render(

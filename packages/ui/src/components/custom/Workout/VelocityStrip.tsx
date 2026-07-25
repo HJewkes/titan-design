@@ -14,8 +14,7 @@ import {
   type SetSlot,
   type SetBarGeometry,
   scaleDenominator,
-  sideLabelFontSize,
-  sideLabelText,
+  ChartSideRail,
   PEAK_HEADROOM,
   SET_BAR_DEFAULT_HEIGHT,
 } from '../charts/SetBarChart'
@@ -842,73 +841,6 @@ function alignDualSlots(left: SetSlot[], right: SetSlot[]): { left: SetSlot[]; r
   return { left: L, right: R }
 }
 
-/**
- * The vertical per-side SLOT-NAME rail down the chart's left edge — the same rotated-label
- * treatment the single dual live view uses, split into an upper (up wing) and lower (down
- * wing) half so the name reads without any tag overlapping the bars near the axis. The label
- * TEXT is data — each side's `DualVelocityStream.label` (a slot name, e.g. "Left Arm"), NOT a
- * hardcoded side. A side with no label renders no tag; when neither side has one the rail is
- * omitted entirely (the chart just loses its gutter). `rail` scale uses a narrower gutter.
- */
-function DivergingSideRail({
-  plotHalf,
-  variant,
-  leftLabel,
-  rightLabel,
-}: {
-  plotHalf: number
-  variant: 'hero' | 'rail'
-  leftLabel?: string
-  rightLabel?: string
-}) {
-  if (!leftLabel && !rightLabel) return null
-  const isRail = variant === 'rail'
-  // The rotated label runs along the chart's VERTICAL extent, so its length budget is the
-  // WING HEIGHT (plotHalf), not the narrow gutter. The rotate lives on a wrapper sized to
-  // plotHalf so `numberOfLines` (RNW → max-width:100%) resolves against that tall dimension,
-  // not the gutter — otherwise a multi-char slot name clips to ~2 chars. Ellipsis therefore
-  // only kicks in when a name genuinely exceeds the wing (long names at rail scale).
-  const labelLength = Math.max(0, plotHalf - (isRail ? 0 : 6))
-  // Font scales to the WING height (plotHalf) so a slot name ("RIGHT ARM") fits the vertical extent
-  // without truncating at short chart heights — the same height-responsive rule the single hero uses.
-  const fontSize = isRail ? 7 : sideLabelFontSize(plotHalf)
-  const textStyle = {
-    maxWidth: '100%' as const,
-    textAlign: 'center' as const,
-    // Small-caps/eyebrow treatment: the DATA keeps its casing ("Left Arm"), the component renders it
-    // UPPERCASE — matching titan's label tag convention. Tracking eases off as the font shrinks.
-    fontSize,
-    fontWeight: '700' as const,
-    letterSpacing: isRail || fontSize < 10 ? 0 : 2,
-    textTransform: 'uppercase' as const,
-  }
-  const renderHalf = (label: string | undefined, testID: string) => (
-    <View style={{ height: plotHalf, alignItems: 'center', justifyContent: 'center' }}>
-      {label ? (
-        <View
-          style={{ width: labelLength, alignItems: 'center', transform: [{ rotate: '-90deg' }] }}
-        >
-          <Text className="text-text-tertiary" style={textStyle} numberOfLines={1} testID={testID}>
-            {/* Hero wings collapse to initials at small heights; the compact rail keeps its own
-                tuned 7px full-name treatment (its short wing is designed for it). */}
-            {isRail ? label : sideLabelText(label, plotHalf)}
-          </Text>
-        </View>
-      ) : null}
-    </View>
-  )
-  return (
-    <View
-      className={isRail ? undefined : 'border-border'}
-      style={{ width: isRail ? 18 : 34, borderRightWidth: isRail ? 0 : 1 }}
-      accessibilityElementsHidden
-    >
-      {renderHalf(leftLabel, 'dual-velocity-side-label-L')}
-      {renderHalf(rightLabel, 'dual-velocity-side-label-R')}
-    </View>
-  )
-}
-
 /** Rail slots: performed reps (carrying a velocity) followed by todo placeholders up to `targetReps`. */
 function railSlots(done: number[], targetReps?: number): { velocity?: number }[] {
   const total = Math.max(done.length, targetReps ?? done.length)
@@ -1029,13 +961,15 @@ function DualVelocityHero({
       testID="dual-velocity-strip"
       {...restProps}
     >
-      {/* Vertical per-side slot-name labels down the left edge, from each stream's `label`
-          (data, not a hardcoded side) — rotated so they never overlap the bars. */}
-      <DivergingSideRail
-        plotHalf={plotHalf}
+      {/* The SHARED gutter/side-rail (34px + right hairline axis) — one section per wing. A single
+          hero renders the same rail with ONE section, so it's pixel-identical to this upper half. */}
+      <ChartSideRail
+        sectionExtent={plotHalf}
         variant="hero"
-        leftLabel={leftLabel}
-        rightLabel={rightLabel}
+        sections={[
+          { label: leftLabel, testID: 'dual-velocity-side-label-L' },
+          { label: rightLabel, testID: 'dual-velocity-side-label-R' },
+        ]}
       />
 
       <View style={{ flex: 1, position: 'relative' }}>
@@ -1140,11 +1074,13 @@ function DualVelocityRail({
       testID="dual-velocity-strip"
       {...restProps}
     >
-      <DivergingSideRail
-        plotHalf={plotHalf}
+      <ChartSideRail
+        sectionExtent={plotHalf}
         variant="rail"
-        leftLabel={leftLabel}
-        rightLabel={rightLabel}
+        sections={[
+          { label: leftLabel, testID: 'dual-velocity-side-label-L' },
+          { label: rightLabel, testID: 'dual-velocity-side-label-R' },
+        ]}
       />
 
       <View style={{ flex: 1, position: 'relative' }}>
