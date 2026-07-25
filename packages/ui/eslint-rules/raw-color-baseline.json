@@ -83,6 +83,16 @@
     "#f3f4f6": 1,
     "rgba(": 4
   },
+  "src/components/custom/Workout/DualSessionRail.stories.tsx": {
+    "#101010": 1,
+    "#6b7280": 1
+  },
+  "src/components/custom/Workout/DualVelocityStrip.stories.tsx": {
+    "#141414": 1,
+    "#5a5a5a": 4,
+    "#8a8a8a": 1,
+    "#ededed": 1
+  },
   "src/components/custom/Workout/ExerciseCard.stories.tsx": {
     "#121212": 1
   },
@@ -291,9 +301,14 @@
     "#2a2a2e": 1
   },
   "src/components/custom/Workout/VelocityStrip.stories.tsx": {
-    "#0e0e0e": 2,
-    "#5a5a5a": 2,
-    "#9ca3af": 1
+    "#100d0a": 1,
+    "#1f2937": 1,
+    "#2c2a28": 1,
+    "#4b5563": 1,
+    "#5a5a5a": 4,
+    "#8a8a8a": 4,
+    "#9ca3af": 4,
+    "#e5e7eb": 1
   },
   "src/components/custom/Workout/WeekRow.tsx": {
     "rgba(": 2
@@ -461,6 +476,13 @@
   "src/components/ui/tooltip/Tooltip.tsx": {
     "bg-neutral-800": 1,
     "text-white": 1
+  },
+  "src/lab/north-star/DualGhostLine.exploration.stories.tsx": {
+    "#000000": 6,
+    "#c4c8d0": 1,
+    "green": 2,
+    "rgba(": 5,
+    "silver": 4
   },
   "src/lab/north-star/LiveWallDashboard.stories.tsx": {
     "#0e0e0e": 1

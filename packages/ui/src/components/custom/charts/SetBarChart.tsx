@@ -620,10 +620,7 @@ export function ChartSideRail({
     textTransform: 'uppercase' as const,
   }
   return (
-    <View
-      style={{ width: isRail ? 18 : 34 }}
-      accessibilityElementsHidden
-    >
+    <View style={{ width: isRail ? 18 : 34 }} accessibilityElementsHidden>
       {sections.map((s) => (
         <View
           key={s.testID}

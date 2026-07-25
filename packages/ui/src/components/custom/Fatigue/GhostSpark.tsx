@@ -21,6 +21,7 @@
  */
 import { useState } from 'react'
 import { View, Text, Pressable } from 'react-native'
+import { primitiveColors } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { alpha } from '../../../utils/colors'
 import { roundTempo } from '../../../utils/workout-format'
@@ -171,7 +172,7 @@ export function GhostSpark({
         <path
           d={smoothPath(curPts)}
           fill="none"
-          stroke={alpha('#000000', 0.55)}
+          stroke={alpha(primitiveColors.black, 0.55)}
           strokeWidth={7}
           strokeLinejoin="round"
           strokeLinecap="round"
