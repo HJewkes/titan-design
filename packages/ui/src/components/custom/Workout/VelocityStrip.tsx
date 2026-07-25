@@ -474,7 +474,9 @@ function slotAccessibilityLabel(slot: VelocitySlot, index: number): string {
 }
 
 /** Straight-set expanded stub height for a planned (todo) rep, as a % of the plot (halved — subtler). */
-const EXPANDED_TODO_STUB_PCT = 8
+const EXPANDED_TODO_STUB_PCT = 12
+/** Min px height for an expanded window stub so a % stub never collapses to a sliver at small heights. */
+const EXPANDED_TODO_STUB_MIN_PX = 7
 /** Expanded height for advanced set-types (drop / myo / cluster / range / amrap): a short mini-style bar. */
 const EXPANDED_ENCODED_PCT = 45
 
@@ -1527,7 +1529,8 @@ export function VelocityStrip({
           <View
             style={{
               height: `${heightPct}%`,
-              minHeight: 2,
+              // A performed rep can floor near-zero; a window stub floors taller so it never collapses.
+              minHeight: slot.kind === 'rep' ? 2 : EXPANDED_TODO_STUB_MIN_PX,
               borderTopLeftRadius: 2,
               borderTopRightRadius: 2,
               backgroundColor: slotColor(slot),

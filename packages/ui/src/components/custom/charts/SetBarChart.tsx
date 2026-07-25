@@ -174,8 +174,8 @@ const LABEL_MIN_BAR_WIDTH = 30
 const DEFAULT_BAR_RADIUS = 5
 /** Minimum drawn height of a performed bar (px) — a near-zero rep still reads as a rep. */
 const MIN_BAR_HEIGHT = 4
-/** The stub height for a window cell (todo / variable / continue / empty) — a subtle placeholder. */
-const STUB_HEIGHT = 6
+/** The stub height for a window cell (todo / variable / continue / empty) — a short, clear placeholder. */
+const STUB_HEIGHT = 9
 /** The ordinary rep gap the per-slot `leadingGap` is measured against (extra margin = leadingGap − this). */
 const REP_GAP = 2
 
