@@ -44,7 +44,12 @@ export const PlannedToDo: Story = {
       ].map((s) => (
         <View key={s.name} style={{ gap: 6, width: 320 }}>
           <Text
-            style={{ fontSize: 9, letterSpacing: 1, fontFamily: 'monospace', color: t['text-tertiary'] }}
+            style={{
+              fontSize: 9,
+              letterSpacing: 1,
+              fontFamily: 'monospace',
+              color: t['text-tertiary'],
+            }}
           >
             {s.name}
           </Text>

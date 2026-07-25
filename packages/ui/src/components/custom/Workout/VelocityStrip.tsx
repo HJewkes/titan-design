@@ -810,7 +810,11 @@ function mergeColumnKind(l: SetSlot | undefined, r: SetSlot | undefined): SetSlo
 }
 
 /** One side's cell at a merged column: its logged rep (with value), else `empty` for a rep column, else the shared window kind. */
-function sideColumnCell(slot: SetSlot | undefined, kind: SetSlot['kind'], leadingGap: number): SetSlot {
+function sideColumnCell(
+  slot: SetSlot | undefined,
+  kind: SetSlot['kind'],
+  leadingGap: number
+): SetSlot {
   if (kind !== 'rep') return { kind, leadingGap }
   return slot?.kind === 'rep'
     ? { kind: 'rep', value: slot.value, leadingGap }
@@ -1365,7 +1369,11 @@ export function VelocityStrip({
     const heroSlots: SetSlot[] =
       columnSlots ??
       (set
-        ? buildSlots(set).map((s) => ({ kind: s.kind, value: s.velocity, leadingGap: s.leadingGap }))
+        ? buildSlots(set).map((s) => ({
+            kind: s.kind,
+            value: s.velocity,
+            leadingGap: s.leadingGap,
+          }))
         : doneVelocities.map((v) => ({ kind: 'rep', value: v })))
     const total = Math.max(repCount, targetReps ?? repCount)
     const heroLabel =
