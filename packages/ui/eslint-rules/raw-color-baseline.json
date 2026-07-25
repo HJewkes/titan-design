@@ -87,12 +87,6 @@
     "#101010": 1,
     "#6b7280": 1
   },
-  "src/components/custom/Workout/DualVelocityStrip.stories.tsx": {
-    "#141414": 1,
-    "#5a5a5a": 4,
-    "#8a8a8a": 1,
-    "#ededed": 1
-  },
   "src/components/custom/Workout/ExerciseCard.stories.tsx": {
     "#121212": 1
   },
@@ -290,25 +284,6 @@
     "#2c2c2c": 2,
     "#6b7280": 1,
     "#9ca3af": 4
-  },
-  "src/components/custom/Workout/VelocityStrip.modalities.stories.tsx": {
-    "#0a0a0a": 1,
-    "#22465f": 1,
-    "#22d3ee": 1,
-    "#2a2a2e": 4
-  },
-  "src/components/custom/Workout/VelocityStrip.responsive.stories.tsx": {
-    "#2a2a2e": 1
-  },
-  "src/components/custom/Workout/VelocityStrip.stories.tsx": {
-    "#100d0a": 1,
-    "#1f2937": 1,
-    "#2c2a28": 1,
-    "#4b5563": 1,
-    "#5a5a5a": 4,
-    "#8a8a8a": 4,
-    "#9ca3af": 4,
-    "#e5e7eb": 1
   },
   "src/components/custom/Workout/WeekRow.tsx": {
     "rgba(": 2
