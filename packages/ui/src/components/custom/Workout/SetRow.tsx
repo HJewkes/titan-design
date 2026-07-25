@@ -120,7 +120,7 @@ function Cell({
   )
 }
 
-/** The per-row velocity strip: compact spotlight for the live set, flat mini otherwise. */
+/** The per-row velocity strip: the velocity-height `expanded` spotlight for the live set, the flat `compact` strip otherwise. */
 function RowStrip({ set }: { set: SetRowProps }) {
   const zones = set.velocityZones
   if (set.state === 'live') {
@@ -141,9 +141,13 @@ function RowStrip({ set }: { set: SetRowProps }) {
     )
   }
   const velocities = set.state === 'done' ? set.velocities : []
+  // Resting (done / todo) → the flat `compact` strip at the same 24px / geometry as the live
+  // spotlight, so a row reads consistently whether resting or active — only the bar HEIGHTS differ.
   return (
     <VelocityStrip
-      variant="mini"
+      variant="compact"
+      height={24}
+      hideBaseline
       set={{ type: 'straight', velocities, planned: plannedReps(set) }}
       zones={zones}
     />

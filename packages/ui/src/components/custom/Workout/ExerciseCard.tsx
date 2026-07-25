@@ -194,7 +194,9 @@ function CollapsedCard({
                 key={i}
                 velocities={velocities}
                 zones={velocityZones}
-                variant="mini"
+                variant="compact"
+                height={8}
+                hideBaseline
                 testID={`exercise-card-velocity-strip-${i}`}
               />
             ))}

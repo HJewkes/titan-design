@@ -141,7 +141,7 @@ function ConfigAccordion({ set, useWhen }: { set: VelocitySet; useWhen: string }
       <CollapseContent className="px-0">
         <View style={{ backgroundColor: '#0A0A0A', borderWidth: 1, borderColor: '#2A2A2E', borderRadius: 8, padding: 12, gap: 8 }}>
           <Text style={{ fontFamily: 'monospace', fontSize: 11, lineHeight: 17, color: T_SECONDARY }}>
-            {`<VelocityStrip\n  variant="mini"\n  ${formatSet(set).replace(/\n/g, '\n  ')}\n/>`}
+            {`<VelocityStrip\n  variant="compact"\n  ${formatSet(set).replace(/\n/g, '\n  ')}\n/>`}
           </Text>
           <Text style={{ fontFamily: INTER, fontSize: 12, color: T_TERTIARY, lineHeight: 17 }}>
             Use when: {useWhen}
@@ -172,7 +172,7 @@ function Card({ m }: { m: Modality }) {
       </View>
       <Text style={{ fontFamily: INTER, fontSize: 13, color: T_SECONDARY, lineHeight: 19 }}>{m.def}</Text>
       <View style={{ paddingVertical: 6 }}>
-        <VelocityStrip variant="mini" set={m.set} />
+        <VelocityStrip variant="compact" set={m.set} />
       </View>
       <View style={{ height: 1, backgroundColor: BORDER_SUBTLE }} />
       <ConfigAccordion set={m.set} useWhen={m.useWhen} />

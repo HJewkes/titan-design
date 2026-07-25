@@ -117,31 +117,31 @@ describe('VelocityStrip expanded (framed chart)', () => {
   })
 })
 
-describe('VelocityStrip mini variant', () => {
-  it('renders the flat mini strip', () => {
-    render(<VelocityStrip velocities={sampleVelocities} variant="mini" />)
-    expect(screen.getByTestId('velocity-strip-mini')).toBeInTheDocument()
+describe('VelocityStrip compact variant (flat resting strip)', () => {
+  it('renders the flat compact strip', () => {
+    render(<VelocityStrip velocities={sampleVelocities} variant="compact" />)
+    expect(screen.getByTestId('velocity-strip-compact')).toBeInTheDocument()
   })
 
   it('does not respond to press', () => {
-    render(<VelocityStrip velocities={sampleVelocities} variant="mini" onToggle={() => {}} />)
+    render(<VelocityStrip velocities={sampleVelocities} variant="compact" onToggle={() => {}} />)
     expect(screen.queryByTestId('velocity-strip-pressable')).not.toBeInTheDocument()
   })
 
   it('renders one bar per rep', () => {
-    render(<VelocityStrip velocities={sampleVelocities} variant="mini" />)
+    render(<VelocityStrip velocities={sampleVelocities} variant="compact" />)
     for (let i = 0; i < sampleVelocities.length; i++) {
       expect(screen.getByTestId(`velocity-bar-${i}`)).toBeInTheDocument()
     }
   })
 
   it('has no accessibility violations', async () => {
-    const { container } = render(<VelocityStrip velocities={sampleVelocities} variant="mini" />)
+    const { container } = render(<VelocityStrip velocities={sampleVelocities} variant="compact" />)
     expect(await axe(container)).toHaveNoViolations()
   })
 
-  it('does not apply live marking', () => {
-    render(<VelocityStrip velocities={sampleVelocities} liveRepIndex={0} variant="mini" />)
+  it('does not apply live marking (compact is the resting form)', () => {
+    render(<VelocityStrip velocities={sampleVelocities} liveRepIndex={0} variant="compact" />)
     expect(screen.queryByLabelText(/latest rep/)).not.toBeInTheDocument()
   })
 })
@@ -252,7 +252,7 @@ describe('VelocityStrip barColor prop', () => {
   const decliningSet = [1.0, 0.9, 0.8, 0.7]
 
   it('defaults to loss coloring (the landed default is barColor="loss")', () => {
-    render(<VelocityStrip velocities={decliningSet} variant="mini" />)
+    render(<VelocityStrip velocities={decliningSet} variant="compact" />)
     // Loss from the set's own best (1.0): 0% / 10% / 20% / 30% -> green / yellow / orange / red.
     expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: VL_GREEN })
     expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ backgroundColor: VL_YELLOW })
@@ -261,12 +261,12 @@ describe('VelocityStrip barColor prop', () => {
   })
 
   it('explicit barColor="zone" matches the default', () => {
-    render(<VelocityStrip velocities={decliningSet} variant="mini" barColor="zone" />)
+    render(<VelocityStrip velocities={decliningSet} variant="compact" barColor="zone" />)
     expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ backgroundColor: VL_YELLOW })
   })
 
   it('barColor="loss" colors each bar green→red by loss from the set\'s own best', () => {
-    render(<VelocityStrip velocities={decliningSet} variant="mini" barColor="loss" />)
+    render(<VelocityStrip velocities={decliningSet} variant="compact" barColor="loss" />)
     expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: VL_GREEN })
     expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ backgroundColor: VL_YELLOW })
     expect(screen.getByTestId('velocity-bar-2')).toHaveStyle({ backgroundColor: VL_ORANGE })
@@ -276,7 +276,7 @@ describe('VelocityStrip barColor prop', () => {
   it('barColor="loss" reads a slow-but-still-best rep as green (loss-relative, not absolute)', () => {
     // 0.3 m/s would be "vel-red" under the absolute zone scale, but as the set's
     // (single) best rep its loss is 0 — loss-relative coloring reads it green.
-    render(<VelocityStrip velocities={[0.3]} variant="mini" barColor="loss" />)
+    render(<VelocityStrip velocities={[0.3]} variant="compact" barColor="loss" />)
     expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: VL_GREEN })
   })
 
@@ -284,7 +284,7 @@ describe('VelocityStrip barColor prop', () => {
     render(
       <VelocityStrip
         velocities={decliningSet}
-        variant="mini"
+        variant="compact"
         barColor="loss"
         zones={compoundBands}
       />
@@ -293,14 +293,14 @@ describe('VelocityStrip barColor prop', () => {
   })
 
   it('barColor="loss" guards all-zero velocities to green (no NaN/best<=0)', () => {
-    render(<VelocityStrip velocities={[0, 0, 0]} variant="mini" barColor="loss" />)
+    render(<VelocityStrip velocities={[0, 0, 0]} variant="compact" barColor="loss" />)
     expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: VL_GREEN })
     expect(screen.getByTestId('velocity-bar-2')).toHaveStyle({ backgroundColor: VL_GREEN })
   })
 
   it('renders no bars (and does not crash) for an empty velocities array', () => {
-    render(<VelocityStrip velocities={[]} variant="mini" barColor="loss" />)
-    expect(screen.getByTestId('velocity-strip-mini')).toBeInTheDocument()
+    render(<VelocityStrip velocities={[]} variant="compact" barColor="loss" />)
+    expect(screen.getByTestId('velocity-strip-compact')).toBeInTheDocument()
     expect(screen.queryAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(0)
   })
 })
@@ -321,7 +321,7 @@ describe('VelocityStrip zones prop', () => {
       <VelocityStrip
         velocities={[1.1, 0.45]}
         zones={compoundBands}
-        variant="mini"
+        variant="compact"
         barColor="zone"
       />
     )
@@ -334,7 +334,7 @@ describe('VelocityStrip zones prop', () => {
       <VelocityStrip
         velocities={[0.45, 0.2]}
         zones={compoundBands}
-        variant="mini"
+        variant="compact"
         barColor="zone"
       />
     )
@@ -348,7 +348,7 @@ describe('VelocityStrip zones prop', () => {
   })
 
   it('falls back to the default scale when zones is absent', () => {
-    render(<VelocityStrip velocities={[1.1]} variant="mini" />)
+    render(<VelocityStrip velocities={[1.1]} variant="compact" />)
     expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: '#2ED573' })
   })
 })
@@ -398,16 +398,17 @@ describe('VelocityStrip all-zero velocities (NaN guard)', () => {
 const TODO_SOLID = '#4C4E55'
 const VARIABLE_CYAN = '#0B3149'
 const CONTINUE_OUTLINE = '#22465F'
-const CONTAINER_GAP_PX = '2px'
+// Per-slot margins for the bare `expanded` SPOTLIGHT strip (its own px renderer, not SetBarChart).
 const REP_SLOT_ML = '0px'
 const WIDE_SLOT_ML = '6px'
-
-describe('VelocityStrip set-type modes (mini)', () => {
-  it('straight: done reps colored + grey todo remainder to the planned count', () => {
+describe('VelocityStrip set-type modes (compact)', () => {
+  // compact composes SetBarChart, so the per-slot geometry (WIDE chunk-notch px, container gap) is
+  // covered in SetBarChart.test; here we verify VelocityStrip maps each set type to the right slots.
+  it('straight: done reps colored + solid todo remainder to the planned count', () => {
     render(
       <VelocityStrip
         set={{ type: 'straight', velocities: [1.1, 0.9, 0.8], planned: 5 }}
-        variant="mini"
+        variant="compact"
       />
     )
     expect(screen.getAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(3)
@@ -418,11 +419,11 @@ describe('VelocityStrip set-type modes (mini)', () => {
     })
   })
 
-  it('range: committed grey todo + a cyan variable window floor..max', () => {
+  it('range: committed reps + solid floor todo + a cyan variable window floor..max', () => {
     render(
       <VelocityStrip
         set={{ type: 'range', velocities: [1.1, 1.0, 0.9, 0.85, 0.8, 0.7], floor: 8, max: 12 }}
-        variant="mini"
+        variant="compact"
       />
     )
     expect(screen.getAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(6)
@@ -433,15 +434,15 @@ describe('VelocityStrip set-type modes (mini)', () => {
     })
   })
 
-  it('amrap: done reps + one trailing outlined cyan continue slot', () => {
-    render(<VelocityStrip set={{ type: 'amrap', velocities: [1.1, 1.0, 0.9] }} variant="mini" />)
+  it('amrap: done reps + one trailing cyan-outline continue slot', () => {
+    render(<VelocityStrip set={{ type: 'amrap', velocities: [1.1, 1.0, 0.9] }} variant="compact" />)
     expect(screen.getAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(3)
-    const cont = screen.getByTestId('velocity-slot-continue')
-    expect(cont).toHaveStyle({ backgroundColor: VARIABLE_CYAN })
-    expect(cont).toHaveStyle({ borderTopColor: CONTINUE_OUTLINE })
+    expect(screen.getByTestId('velocity-slot-continue')).toHaveStyle({
+      borderTopColor: CONTINUE_OUTLINE,
+    })
   })
 
-  it('drop: sub-loads split by a WIDE gap before each load after the first', () => {
+  it('drop: one bar per rep across the sub-loads', () => {
     render(
       <VelocityStrip
         set={{
@@ -452,17 +453,13 @@ describe('VelocityStrip set-type modes (mini)', () => {
             [0.6, 0.5],
           ],
         }}
-        variant="mini"
+        variant="compact"
       />
     )
     expect(screen.getAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(6)
-    expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ marginLeft: '0px' })
-    expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ marginLeft: REP_SLOT_ML })
-    expect(screen.getByTestId('velocity-bar-2')).toHaveStyle({ marginLeft: WIDE_SLOT_ML })
-    expect(screen.getByTestId('velocity-bar-4')).toHaveStyle({ marginLeft: WIDE_SLOT_ML })
   })
 
-  it('myo: activation + clusters split by WIDE gaps, open adds a cyan continue', () => {
+  it('myo: activation + clusters as reps, open adds a cyan continue', () => {
     render(
       <VelocityStrip
         set={{
@@ -474,16 +471,14 @@ describe('VelocityStrip set-type modes (mini)', () => {
           ],
           open: true,
         }}
-        variant="mini"
+        variant="compact"
       />
     )
     expect(screen.getAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(7)
-    expect(screen.getByTestId('velocity-bar-3')).toHaveStyle({ marginLeft: WIDE_SLOT_ML })
-    expect(screen.getByTestId('velocity-bar-5')).toHaveStyle({ marginLeft: WIDE_SLOT_ML })
     expect(screen.getByTestId('velocity-slot-continue')).toBeInTheDocument()
   })
 
-  it('cluster: fixed count grouped by WIDE intra-rest gaps, grey planned remainder', () => {
+  it('cluster: fixed count + solid planned remainder', () => {
     render(
       <VelocityStrip
         set={{
@@ -492,22 +487,19 @@ describe('VelocityStrip set-type modes (mini)', () => {
           groupSize: 2,
           planned: 8,
         }}
-        variant="mini"
+        variant="compact"
       />
     )
     expect(screen.getAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(5)
     expect(screen.getAllByTestId('velocity-slot-todo')).toHaveLength(3)
-    expect(screen.getByTestId('velocity-bar-2')).toHaveStyle({ marginLeft: WIDE_SLOT_ML })
-    expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ marginLeft: REP_SLOT_ML })
   })
 
-  it('back-compat: a velocities-only mini strip is unchanged (rep colors, rep gaps only)', () => {
-    render(<VelocityStrip velocities={sampleVelocities} variant="mini" />)
+  it('back-compat: a velocities-only compact strip renders rep bars, no todo', () => {
+    render(<VelocityStrip velocities={sampleVelocities} variant="compact" />)
     expect(screen.getAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(sampleVelocities.length)
     expect(screen.queryByTestId('velocity-slot-todo')).not.toBeInTheDocument()
-    expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ marginLeft: '0px' })
     expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: '#2ED573' })
-    expect(screen.getByTestId('velocity-strip-mini')).toHaveStyle({ gap: CONTAINER_GAP_PX })
+    expect(screen.getByTestId('velocity-strip-compact')).toBeInTheDocument()
   })
 
   it('derives the summary from a set descriptor (mean / loss info row)', () => {
@@ -516,14 +508,14 @@ describe('VelocityStrip set-type modes (mini)', () => {
   })
 
   it('labels the strip per set type', () => {
-    render(<VelocityStrip set={{ type: 'amrap', velocities: [1.0, 0.9] }} variant="mini" />)
+    render(<VelocityStrip set={{ type: 'amrap', velocities: [1.0, 0.9] }} variant="compact" />)
     expect(
       screen.getByLabelText('Velocity strip, AMRAP set, 2 reps and counting')
     ).toBeInTheDocument()
   })
 
   it('renders nothing when neither velocities nor set is provided', () => {
-    const { container } = render(<VelocityStrip variant="mini" />)
+    const { container } = render(<VelocityStrip variant="compact" />)
     expect(container.firstChild).toBeNull()
   })
 })
@@ -565,8 +557,8 @@ describe('VelocityStrip expanded bare strip (spotlight: numbers + info off)', ()
         set={{ type: 'straight', velocities: [1.0, 0.8], planned: 2 }}
       />
     )
-    expect(screen.getByTestId('velocity-strip-compact')).toBeInTheDocument()
-    expect(screen.queryByTestId('velocity-strip-mini')).not.toBeInTheDocument()
+    expect(screen.getByTestId('velocity-strip-spotlight')).toBeInTheDocument()
+    expect(screen.queryByTestId('velocity-strip-compact')).not.toBeInTheDocument()
     expect(screen.queryByTestId('velocity-strip')).not.toBeInTheDocument()
   })
 

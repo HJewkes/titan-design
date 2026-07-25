@@ -13,7 +13,7 @@ const meta: Meta<typeof VelocityStrip> = {
     docs: {
       description: {
         component:
-          'Per-rep velocity strip. Three variants: `mini` (a flat 3px static strip), `expanded` ' +
+          'Per-rep velocity strip. Three variants: `compact` (a flat resting strip — SetBarChart in flat mode), `expanded` ' +
           '(the velocity-HEIGHT bar chart, rounded tops), and `hero` (the across-the-room, single-set ' +
           'wall treatment — tall bars, per-bar value labels, a dashed running-best reference line, and ' +
           'dashed placeholders for the reps still to come via `targetReps`). The `expanded` chrome is ' +
@@ -35,7 +35,7 @@ const meta: Meta<typeof VelocityStrip> = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['mini', 'expanded', 'hero'],
+      options: ['compact', 'expanded', 'hero'],
       description: 'Display variant',
     },
     targetReps: {
@@ -110,7 +110,7 @@ export const Playground: Story = {
 
 /** The flat 3px static strip — the collapsed glance used in cards and rails. */
 export const Mini: Story = {
-  args: { velocities: mixedSet, variant: 'mini' },
+  args: { velocities: mixedSet, variant: 'compact' },
 }
 
 /** Framed chart with per-bar m/s labels + info row (numbers ON) — the rich readout. */
@@ -276,7 +276,7 @@ export const HeroResponsive: Story = {
 /** A structured set descriptor (a drop set): the mini variant carries the set-type gap/color encoding. */
 export const SetTypeMini: Story = {
   args: {
-    variant: 'mini',
+    variant: 'compact',
     set: {
       type: 'drop',
       subloads: [
@@ -335,7 +335,7 @@ export const Profiles: Story = {
               scale="fixed"
               set={{ type: 'straight', velocities, planned: velocities.length }}
             />
-            <VelocityStrip velocities={velocities} variant="mini" />
+            <VelocityStrip velocities={velocities} variant="compact" />
           </View>
         ))}
       </View>
@@ -380,13 +380,13 @@ export const LossVsZoneComparison: Story = {
         <Text style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, color: '#9CA3AF' }}>
           barColor=&quot;zone&quot; — absolute velocity (bunches yellow, late red)
         </Text>
-        <VelocityStrip velocities={fatigueDecline} variant="mini" barColor="zone" />
+        <VelocityStrip velocities={fatigueDecline} variant="compact" barColor="zone" />
       </View>
       <View style={{ gap: 6 }}>
         <Text style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, color: '#9CA3AF' }}>
           barColor=&quot;loss&quot; — relative to this set&apos;s own best (VL10/20/30 bands)
         </Text>
-        <VelocityStrip velocities={fatigueDecline} variant="mini" barColor="loss" />
+        <VelocityStrip velocities={fatigueDecline} variant="compact" barColor="loss" />
       </View>
     </View>
   ),
@@ -496,7 +496,7 @@ export const PlaceholderAcrossSurfaces: Story = {
               <Text style={{ color: '#9CA3AF', fontSize: 9, fontWeight: '700' }}>
                 {level.toUpperCase()}
               </Text>
-              <VelocityStrip variant="mini" set={straight4of8} />
+              <VelocityStrip variant="compact" set={straight4of8} />
               <VelocityStrip
                 variant="expanded"
                 showNumbers={false}

@@ -113,8 +113,16 @@ export interface SetBarChartProps {
   /** Top-corner radius on the bars (px). Default 5. */
   barRadius?: number
   /**
+   * FLAT height mode (the `compact` resting form). Every rep bar renders at ONE uniform short height
+   * ({@link FLAT_BAR_FRACTION} of the plot) instead of value-height — EVERYTHING else identical
+   * (colors, paper, the proportional spacing + chunk-notch, todo/variable/continue slots, gutter).
+   * Value labels are suppressed. Same x-positions/widths/gaps as value mode, so a compact↔expanded
+   * toggle only changes bar HEIGHTS in place (no horizontal reflow).
+   */
+  flat?: boolean
+  /**
    * Draw a per-rep value label. Default false. When on, every label pins to one aligned row at the
-   * plot TOP (not offset per bar height) in the muted on-surface-secondary tone.
+   * plot TOP (not offset per bar height) in the muted on-surface-secondary tone. Ignored in {@link flat} mode.
    */
   showValueLabels?: boolean
   /** Format a rep value for its label. Default `String`. */
@@ -198,6 +206,8 @@ const LABEL_MIN_BAR_WIDTH = 30
 const DEFAULT_BAR_RADIUS = 5
 /** Minimum drawn height of a performed bar (px) — a near-zero rep still reads as a rep. */
 const MIN_BAR_HEIGHT = 4
+/** In `flat` (compact) mode every rep bar is this fraction of the plot height — a uniform short bar. */
+const FLAT_BAR_FRACTION = 0.5
 /** The stub height for a window cell (todo / variable / continue / empty) — a short, clear placeholder. */
 const STUB_HEIGHT = 9
 /** The ordinary rep gap the per-slot `leadingGap` is measured against (extra margin = leadingGap − this). */
@@ -229,7 +239,8 @@ export function SetBarChart({
   targetReps,
   gapRatio = GAP_RATIO,
   barRadius = DEFAULT_BAR_RADIUS,
-  showValueLabels = false,
+  flat = false,
+  showValueLabels: showValueLabelsProp = false,
   formatValue = String,
   todoVariant = 'solid',
   minColumns,
@@ -276,14 +287,19 @@ export function SetBarChart({
   const scaleDenom =
     scaleMax != null && scaleMax > 0 ? scaleMax * PEAK_HEADROOM : scaleDenominator(scale, best)
 
+  // `flat` (compact) mode suppresses value labels and renders every rep at one uniform short height.
+  const showValueLabels = showValueLabelsProp && !flat
   // Reserve ONLY the value-label row (+ its gap to the peak bar) as headroom — not a fat fixed
   // band — so the bars fill the plot and, at small heights, aren't over-stubbed.
   const plotHeight = Math.max(0, height - (showValueLabels ? LABEL_ROW_HEIGHT + LABEL_GAP : 0))
   const yOf = (value: number): number => (scaleDenom > 0 ? (value / scaleDenom) * plotHeight : 0)
+  const flatBarHeight = Math.max(MIN_BAR_HEIGHT, FLAT_BAR_FRACTION * plotHeight)
   const barHeight = (value: number): number =>
-    scaleDenom > 0
-      ? Math.max(MIN_BAR_HEIGHT, Math.min(1, value / scaleDenom) * plotHeight)
-      : MIN_BAR_HEIGHT
+    flat
+      ? flatBarHeight
+      : scaleDenom > 0
+        ? Math.max(MIN_BAR_HEIGHT, Math.min(1, value / scaleDenom) * plotHeight)
+        : MIN_BAR_HEIGHT
 
   // Live-rep grow-from-bottom (rep index → cell index; reps are contiguous from 0 in every set type).
   const liveValue =

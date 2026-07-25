@@ -80,7 +80,7 @@ function WidthRow({ set, width }: { set: VelocitySet; width: number }) {
         {width}px
       </Text>
       <View style={{ width }}>
-        <VelocityStrip variant="mini" set={set} style={{ height: PREVIEW_HEIGHT }} />
+        <VelocityStrip variant="compact" set={set} style={{ height: PREVIEW_HEIGHT }} />
       </View>
     </View>
   )

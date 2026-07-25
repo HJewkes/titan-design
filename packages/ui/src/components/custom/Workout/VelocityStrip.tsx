@@ -139,16 +139,17 @@ export interface VelocityStripProps extends ViewProps {
   onToggle?: () => void
   onRepPress?: (index: number, velocity: number) => void
   /**
-   * `mini` — a flat 3px static strip (set-type aware). `expanded` — the velocity-
-   * HEIGHT bar chart (rounded tops), whose chrome is prop-driven: with
-   * {@link showNumbers} or {@link showInfo} on it's the framed chart (raised surface,
-   * padding, per-bar m/s labels, mean/loss info row, interactive collapse); with both
-   * off it's a bare strip — the active-set "spotlight" of {@link ExerciseCard}. `hero`
-   * — the across-the-room, single-set wall treatment: tall bars, a per-bar m/s value
-   * label, a dashed running-best reference line, and dashed placeholders for the reps
-   * still to come (see {@link targetReps}). Reuses the zone scale and the live-rep pop.
+   * `compact` — the flat resting strip: {@link SetBarChart} in FLAT mode (uniform short bars, no
+   * value labels), sharing hero's exact geometry (colors, paper, spacing, chunk-notch, slots, gutter).
+   * `expanded` — the velocity-HEIGHT bar chart (rounded tops), whose chrome is prop-driven: with
+   * {@link showNumbers} or {@link showInfo} on it's the framed chart (raised surface, padding, per-bar
+   * m/s labels, mean/loss info row, interactive collapse); with both off it's a bare strip — the
+   * active-set "spotlight" of {@link ExerciseCard}. `hero` — the across-the-room, single-set wall
+   * treatment: tall bars, a per-bar m/s value label, a dashed running-best reference line, and dashed
+   * placeholders for the reps still to come (see {@link targetReps}). All three share SetBarChart, so
+   * bars align across compact / expanded / hero.
    */
-  variant?: 'mini' | 'expanded' | 'hero'
+  variant?: 'compact' | 'expanded' | 'hero'
   /** `expanded` / `hero` plot height in px (bars scale to this). Default 60 (`expanded`) / 220 (`hero`). */
   height?: number
   /**
@@ -481,6 +482,8 @@ const EXPANDED_ENCODED_PCT = 45
 
 /** Default framed `expanded` chart height (px). */
 const EXPANDED_HEIGHT = 60
+/** Default `compact` (flat resting strip) height (px) — short, same geometry as expanded/hero. */
+const COMPACT_HEIGHT = 28
 /** Minimum bare-strip bar height (px) — a planned / variable / continue stub, or a near-zero rep. */
 const BARE_STUB_HEIGHT = 3
 
@@ -1341,51 +1344,39 @@ export function VelocityStrip({
     )
   }
 
-  if (variant === 'mini') {
-    const { style: externalStyle, ...restProps } = props
-    // The container keeps the uniform REP_GAP (so a no-`set` strip is byte-identical
-    // to prior releases and holds HTML-parity); per-slot `marginLeft` carries only
-    // the EXTRA spacing for the WIDE notch that chunks drop / myo / cluster sets.
+  if (variant === 'compact') {
+    // `compact` = the flat resting form: SetBarChart in FLAT mode (uniform short bars, no value
+    // labels), sharing hero's geometry — same colors, paper, 0.08 spacing, proportional chunk-notch,
+    // todo/variable/continue slots, and gutter — so a compact↔expanded toggle only changes bar HEIGHT.
+    const compactSlots: SetSlot[] = set
+      ? buildSlots(set).map((s) => ({ kind: s.kind, value: s.velocity, leadingGap: s.leadingGap }))
+      : doneVelocities.map((v) => ({ kind: 'rep', value: v }))
+    const compactHeight = height === EXPANDED_HEIGHT ? COMPACT_HEIGHT : height
     return (
-      <View
-        className={className}
-        style={[
-          { flexDirection: 'row', height: 3, gap: REP_GAP, borderRadius: 2, overflow: 'hidden' },
-          externalStyle,
-        ]}
-        accessibilityRole="image"
+      <SetBarChart
+        slots={compactSlots}
+        colorFor={barColorFor}
+        height={compactHeight}
+        scale={scale}
+        scaleMax={scaleMax}
+        orientation={orientation}
+        flat
+        targetReps={set ? undefined : targetReps}
+        label={label}
+        hideBaseline={hideBaseline}
+        testID="velocity-strip-compact"
+        testIDPrefix="velocity"
         accessibilityLabel={miniLabel}
-        testID="velocity-strip-mini"
-        {...restProps}
-      >
-        {slots.map((slot, i) => (
-          <View
-            key={i}
-            style={{
-              flex: 1,
-              backgroundColor: slotColor(slot),
-              borderRadius: 1,
-              minWidth: 4,
-              height: '100%' as unknown as number,
-              // The container's uniform 2px gap covers rep spacing; a wide slot adds
-              // only the EXTRA (WIDE_GAP − REP_GAP) so the notch totals WIDE_GAP.
-              marginLeft: Math.max(0, slot.leadingGap - REP_GAP),
-              ...(slot.kind === 'continue'
-                ? { borderWidth: 1, borderColor: CONTINUE_OUTLINE }
-                : {}),
-            }}
-            accessibilityElementsHidden
-            testID={slot.kind === 'rep' ? `velocity-bar-${i}` : `velocity-slot-${slot.kind}`}
-          />
-        ))}
-      </View>
+        className={className}
+        viewProps={props}
+      />
     )
   }
 
   // Bare `expanded` strip (both chrome flags off): the velocity-HEIGHT spotlight —
   // px bar heights, no raised box / labels / info row / animation. Set-type gaps carry
-  // over from the slot model exactly as in `mini` (container REP_GAP + per-slot extra
-  // for a WIDE notch); planned / variable / continue slots draw as stubs.
+  // over from the slot model (container REP_GAP + per-slot extra for a WIDE notch);
+  // planned / variable / continue slots draw as stubs.
   if (!framed) {
     const { style: externalStyle, ...restProps } = props
     return (
@@ -1397,7 +1388,7 @@ export function VelocityStrip({
         ]}
         accessibilityRole="image"
         accessibilityLabel={miniLabel}
-        testID="velocity-strip-compact"
+        testID="velocity-strip-spotlight"
         {...restProps}
       >
         {slots.map((slot, i) => {
