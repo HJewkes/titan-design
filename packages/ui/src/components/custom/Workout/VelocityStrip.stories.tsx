@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'
-import { View, Text, Pressable } from 'react-native'
-import { VelocityStrip } from './VelocityStrip'
+import { View, Text, Pressable, Animated } from 'react-native'
+import { VelocityStrip, getVelocityLossColor } from './VelocityStrip'
+import { SetBarChart, type SetSlot } from '../charts/SetBarChart'
+import { formatVelocity } from '../../../utils/workout-format'
 import { Surface } from '../../ui/surface/Surface'
 import type { SurfaceLevel } from '../../ui/surface/SurfaceContext'
 
@@ -619,4 +621,62 @@ export const CompactExpandedInPlace: Story = {
       </View>
     )
   },
+}
+
+// --- Expand-progress interpolation frames ------------------------------------
+// SetBarChart's `expandProgress` (0=flat compact → 1=value expanded) morphs each bar's HEIGHT in
+// place; the x-geometry (widths / gaps / chunk-notches / positions) is FIXED. Three static frames
+// at progress 0 / 0.5 / 1 — same drop set, same width — show the mid-morph: bars are half-way
+// between flat and value at 0.5, columns unmoved.
+
+const PROGRESS_VELOCITIES = [1.0, 0.95, 0.85, 0.8, 0.7, 0.62]
+
+function progressColorFor(velocities: number[]): (v: number) => string {
+  const best = Math.max(...velocities, 0)
+  return (v: number) =>
+    getVelocityLossColor(best > 0 ? Math.max(0, Math.round(((best - v) / best) * 100)) : 0)
+}
+
+function ProgressFrame({ label, value }: { label: string; value: number }) {
+  const [progress] = useState(() => new Animated.Value(value))
+  const slots: SetSlot[] = [
+    { kind: 'rep', value: 1.0 },
+    { kind: 'rep', value: 0.95 },
+    { kind: 'rep', value: 0.85, leadingGap: 8 },
+    { kind: 'rep', value: 0.8 },
+    { kind: 'rep', value: 0.7, leadingGap: 8 },
+    { kind: 'rep', value: 0.62 },
+  ]
+  return (
+    <View style={{ gap: 6 }}>
+      <Text style={{ color: '#8A8A8A', fontSize: 11, fontWeight: '700', letterSpacing: 1 }}>
+        {label}
+      </Text>
+      <SetBarChart
+        slots={slots}
+        colorFor={progressColorFor(PROGRESS_VELOCITIES)}
+        height={72}
+        scale="fixed"
+        expandProgress={progress}
+        showValueLabels
+        formatValue={formatVelocity}
+        hideBaseline
+      />
+    </View>
+  )
+}
+
+/**
+ * `expandProgress` interpolation — three static frames (0 = flat/compact, 0.5 = mid-morph, 1 =
+ * value/expanded) of the SAME set at the SAME width. Bars are half-height at 0.5; the columns /
+ * gaps / chunk-notches never move, proving the collapse animates HEIGHTS in place (no reflow).
+ */
+export const ExpandProgressFrames: Story = {
+  render: () => (
+    <View style={{ width: 360, padding: 20, gap: 18, backgroundColor: '#0E0E0E' }}>
+      <ProgressFrame label="expandProgress = 0 (flat / compact)" value={0} />
+      <ProgressFrame label="expandProgress = 0.5 (mid-morph)" value={0.5} />
+      <ProgressFrame label="expandProgress = 1 (value / expanded)" value={1} />
+    </View>
+  ),
 }
