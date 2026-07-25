@@ -2,23 +2,20 @@
 import { useEffect, useState } from 'react'
 import { View, Text, Pressable, Animated, type ViewProps, type ViewStyle } from 'react-native'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
-import { primitiveColors, primitiveRamps, sequentialEffort } from '../../../theme/tokens/primitives'
+import { primitiveColors, sequentialEffort } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { useOnSurfaceColor, useSurface, surfaceBackground } from '../../ui/surface/SurfaceContext'
+import { useOnSurfaceColor } from '../../ui/surface/SurfaceContext'
 import { alpha } from '../../../utils/colors'
-import { barPaper } from '../../../theme/bar-paper'
 import { formatVelocity } from '../../../utils/workout-format'
-import { SET_STRIP_VARIABLE_COLOR } from './SetStrip'
 import {
   SetBarChart,
   type SetSlot,
   type SetBarGeometry,
   scaleDenominator,
   ChartSideRail,
-  PEAK_HEADROOM,
   SET_BAR_DEFAULT_HEIGHT,
 } from '../charts/SetBarChart'
-import { useLiveRepGrowth, ANIMATION_EASING } from '../charts/live-rep-growth'
+import { ANIMATION_EASING } from '../charts/live-rep-growth'
 
 /**
  * Structural velocity-zone band accepted from an upstream analytics source
@@ -357,9 +354,6 @@ const REP_GAP = 2
  */
 const WIDE_GAP = 8
 
-/** The thin cyan-800 outline on the open-ended "continue" slot — reads as "keep going". */
-const CONTINUE_OUTLINE = primitiveRamps.cyan[800]
-
 /** The done-velocity array a set contributes to the mean / loss / zone summary. */
 function deriveDoneVelocities(set: VelocitySet): number[] {
   switch (set.type) {
@@ -459,27 +453,6 @@ function setAccessibilityLabel(set: VelocitySet, repCount: number): string {
   }
 }
 
-/** Per-slot accessibility label for the expanded set-type bars. */
-function slotAccessibilityLabel(slot: VelocitySlot, index: number): string {
-  switch (slot.kind) {
-    case 'rep':
-      return `Rep ${index + 1}: ${formatVelocity(slot.velocity ?? 0)} meters per second`
-    case 'todo':
-      return `Rep ${index + 1}: planned`
-    case 'variable':
-      return `Rep ${index + 1}: variable`
-    case 'continue':
-      return 'Keep going'
-  }
-}
-
-/** Straight-set expanded stub height for a planned (todo) rep, as a % of the plot (halved — subtler). */
-const EXPANDED_TODO_STUB_PCT = 12
-/** Min px height for an expanded window stub so a % stub never collapses to a sliver at small heights. */
-const EXPANDED_TODO_STUB_MIN_PX = 7
-/** Expanded height for advanced set-types (drop / myo / cluster / range / amrap): a short mini-style bar. */
-const EXPANDED_ENCODED_PCT = 45
-
 /** Default framed `expanded` chart height (px). */
 const EXPANDED_HEIGHT = 60
 /** Default `compact` (flat resting strip) height (px) — short, same geometry as expanded/hero. */
@@ -537,21 +510,6 @@ const BAND_LABEL_FONT = 'monospace'
  */
 const VL_LABEL_MIN_PLOT = 65
 const VL_SEMANTIC = getSemanticColors('dark')
-
-/** Linear-blend two #RRGGBB hexes (`t`=0 → a, 1 → b). Used for the surface-relative to-do tone. */
-function mixHex(a: string, b: string, t: number): string {
-  const parse = (h: string): [number, number, number] => {
-    const s = h.replace('#', '')
-    return [parseInt(s.slice(0, 2), 16), parseInt(s.slice(2, 4), 16), parseInt(s.slice(4, 6), 16)]
-  }
-  const [ar, ag, ab] = parse(a)
-  const [br, bg, bb] = parse(b)
-  const ch = (x: number, y: number): string =>
-    Math.round(x + (y - x) * t)
-      .toString(16)
-      .padStart(2, '0')
-  return `#${ch(ar, br)}${ch(ag, bg)}${ch(ab, bb)}`
-}
 
 /**
  * Velocity-LOSS decision bands for the `hero` variant: the VL20 / VL30 coaching
@@ -1205,13 +1163,6 @@ export function VelocityStrip({
   // `velocities` path stays the source of truth otherwise. Every summary calc
   // (mean / loss / zone) runs on this one array so the info row works either way.
   const doneVelocities = set ? deriveDoneVelocities(set) : (velocities ?? [])
-  const slots: VelocitySlot[] = set
-    ? buildSlots(set)
-    : doneVelocities.map((v, i) => ({
-        kind: 'rep',
-        velocity: v,
-        leadingGap: i === 0 ? 0 : REP_GAP,
-      }))
 
   const maxVelocity = Math.max(...doneVelocities, 0)
   const meanVelocity = calculateMeanVelocity(doneVelocities)
@@ -1220,65 +1171,35 @@ export function VelocityStrip({
   // The framed chart (raised box, labels, info) vs the bare spotlight strip is the
   // only fork in the `expanded` variant — keyed by whether any chrome is requested.
   const framed = showNumbers || showInfo
-  // `scaleMax` (the diverging dual's shared pair-max) overrides the height denominator so both
-  // wings share ONE height scale; loss coloring + the reference still read this strip's own
-  // `maxVelocity`, so a per-side loss language survives the shared height scale.
-  const scaleDenom =
-    scaleMax != null && scaleMax > 0
-      ? scaleMax * PEAK_HEADROOM
-      : scaleDenominator(scale, maxVelocity)
 
   const hasZones = zones != null && zones.length > 0
-  // Single-sourced zone resolver (diverging-hero) wrapped with the loss-relative
-  // mode (velocitystrip-loss): `barColor="loss"` colors each rep by its velocity
-  // loss from the set's own best, else fall through to the shared zone scale.
+  // Single-sourced zone resolver (diverging-hero) wrapped with the loss-relative mode: `barColor="loss"`
+  // colors each rep by its velocity loss from the set's own best, else the shared zone scale. Every
+  // variant hands this `colorFor` to SetBarChart, so all variants color identically.
   const zoneColorFor = makeBarColorFor(zones)
   const barColorFor = (v: number): string =>
     barColor === 'loss' ? getVelocityLossColor(velocityLossForRep(v, maxVelocity)) : zoneColorFor(v)
-  // Planned/to-do reps take a SURFACE-RELATIVE tone: the surface plane blended toward
-  // the on-surface neutral by a constant amount, so an empty slot holds ~constant
-  // contrast on EVERY plane (the inset/pressed relative model). This is the pattern we
-  // want surface-wide — it's also what makes a future light-mode redesign fall out.
-  const onSurfaceTertiary = useOnSurfaceColor('tertiary')
-  const surface = useSurface()
-  const todoColor = mixHex(surfaceBackground(surface.level, surface.mode), onSurfaceTertiary, 0.55)
-  const slotColor = (slot: VelocitySlot): string => {
-    if (slot.kind === 'rep') return barColorFor(slot.velocity ?? 0)
-    if (slot.kind === 'todo') return todoColor
-    return SET_STRIP_VARIABLE_COLOR
-  }
   const meanZone = hasZones
     ? (classifyBand(meanVelocity, zones)?.label ?? '')
     : getVelocityZoneName(meanVelocity)
 
-  const [heightAnim] = useState(() => new Animated.Value(expanded ? height : 3))
-  const [labelOpacity] = useState(() => new Animated.Value(expanded ? 1 : 0))
+  // The framed collapse is now an IN-PLACE bar-height morph: `expandProgress` (0 collapsed → 1 open)
+  // drives SetBarChart's bars flat↔value (no reflow), replacing the old collapse-to-3px height anim.
+  // `infoOpacity` fades the info row; the per-bar labels fade with `expandProgress` in the overlay.
+  const [expandProgress] = useState(() => new Animated.Value(expanded ? 1 : 0))
   const [infoOpacity] = useState(() => new Animated.Value(expanded ? 1 : 0))
 
   // Newest-rep animation: pop for a normal rep, bounce when it sets a new peak.
   const liveVelocity = liveRepIndex != null ? doneVelocities[liveRepIndex] : undefined
   const isNewPeak = liveVelocity != null && maxVelocity > 0 && liveVelocity === maxVelocity
-  const liveGrowth = useLiveRepGrowth(
-    variant === 'expanded' && framed,
-    liveRepIndex,
-    liveVelocity,
-    isNewPeak
-  )
 
   useEffect(() => {
     if (variant !== 'expanded' || !framed) return
-
     Animated.parallel([
-      Animated.timing(heightAnim, {
-        toValue: expanded ? height : 3,
+      Animated.timing(expandProgress, {
+        toValue: expanded ? 1 : 0,
         duration: ANIMATION_DURATION,
         easing: ANIMATION_EASING,
-        useNativeDriver: false,
-      }),
-      Animated.timing(labelOpacity, {
-        toValue: expanded ? 1 : 0,
-        duration: 300,
-        delay: expanded ? 150 : 0,
         useNativeDriver: false,
       }),
       Animated.timing(infoOpacity, {
@@ -1288,7 +1209,7 @@ export function VelocityStrip({
         useNativeDriver: false,
       }),
     ]).start()
-  }, [expanded, variant, framed, height, heightAnim, labelOpacity, infoOpacity])
+  }, [expanded, variant, framed, expandProgress, infoOpacity])
 
   // Nothing to draw: neither a legacy velocity array nor a set descriptor.
   if (set == null && velocities == null) return null
@@ -1417,220 +1338,99 @@ export function VelocityStrip({
   const hasInteractiveContainer = onToggle != null
   const hasInteractiveReps = onRepPress != null && expanded
 
-  // Expanded set-type bars: `straight` is the active-set spotlight (velocity-height
-  // done reps + short grey planned stubs); the advanced types render as a short,
-  // mini-style encoding (the gaps + colors carry identity, height is uniform).
-  const setBars =
-    set != null &&
-    slots.map((slot, i) => {
-      const isStraightRep = set.type === 'straight' && slot.kind === 'rep'
-      const heightPct = isStraightRep
-        ? scaleDenom > 0
-          ? Math.round(((slot.velocity ?? 0) / scaleDenom) * 100)
-          : 0
-        : set.type === 'straight'
-          ? EXPANDED_TODO_STUB_PCT
-          : EXPANDED_ENCODED_PCT
-      return (
-        <View
-          key={i}
-          style={{
-            flex: 1,
-            height: '100%',
-            justifyContent: 'flex-end',
-            marginLeft: slot.leadingGap,
-          }}
-        >
-          <View
-            style={{
-              height: `${heightPct}%`,
-              // A performed rep can floor near-zero; a window stub floors taller so it never collapses.
-              minHeight: slot.kind === 'rep' ? 2 : EXPANDED_TODO_STUB_MIN_PX,
-              borderTopLeftRadius: 2,
-              borderTopRightRadius: 2,
-              backgroundColor: slotColor(slot),
-              ...(isStraightRep ? barPaper(slotColor(slot)) : null),
-              ...(slot.kind === 'continue'
-                ? { borderWidth: 1, borderColor: CONTINUE_OUTLINE }
-                : {}),
-            }}
-            testID={slot.kind === 'rep' ? `velocity-bar-${i}` : `velocity-slot-${slot.kind}`}
-            accessibilityRole="image"
-            accessibilityLabel={slotAccessibilityLabel(slot, i)}
-          />
-        </View>
-      )
-    })
+  const framedSlots: SetSlot[] = set
+    ? buildSlots(set).map((sl) => ({
+        kind: sl.kind,
+        value: sl.velocity,
+        leadingGap: sl.leadingGap,
+      }))
+    : doneVelocities.map((v) => ({ kind: 'rep', value: v }))
 
+  // Per-bar overlay handed to SetBarChart so the framed chart keeps its m/s label (fading with the
+  // expand) + its onRepPress hit-target WITHOUT re-rolling bars — one bar-rendering path remains.
+  const needsBarOverlay = showNumbers || onRepPress != null
+  const renderFramedBarOverlay = needsBarOverlay
+    ? (repIndex: number, value: number) => (
+        <>
+          {showNumbers && (
+            <Animated.View
+              style={{
+                opacity: expandProgress,
+                position: 'absolute',
+                top: -13,
+                left: 0,
+                right: 0,
+                alignItems: 'center',
+              }}
+              accessibilityElementsHidden
+              pointerEvents="none"
+            >
+              <Text
+                className="text-text-secondary"
+                style={{ fontSize: 8, fontWeight: '600' }}
+                testID={`velocity-label-${repIndex}`}
+              >
+                {formatVelocity(value)}
+              </Text>
+            </Animated.View>
+          )}
+          {onRepPress && expanded && (
+            <Pressable
+              style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }}
+              onPress={() => onRepPress(repIndex, value)}
+              accessibilityRole="button"
+              accessibilityLabel={`Rep ${repIndex + 1}: ${formatVelocity(value)} meters per second, tap for details`}
+              testID={`velocity-bar-pressable-${repIndex}`}
+            />
+          )}
+        </>
+      )
+    : undefined
+
+  // The framed chrome is a WRAPPER (raised box + info row + tap-to-collapse) around ONE SetBarChart
+  // in value mode; the collapse is the in-place `expandProgress` bar-height morph, not a height strip.
   const stripContent = (
     <Animated.View
-      className={[className, expanded ? 'bg-surface-raised' : 'bg-transparent']
-        .filter(Boolean)
-        .join(' ')}
-      style={[
-        {
-          height: heightAnim,
-          width: '100%',
-          gap: 2,
-          borderRadius: expanded ? 6 : 2,
-          paddingTop: expanded ? 16 : 0,
-          paddingBottom: expanded ? 24 : 0,
-          // No horizontal inset — the framed chart's bars span full width, matching
-          // the bare spotlight and mini. Numbers/info sit in the vertical padding.
-          paddingHorizontal: 0,
-          paddingVertical: expanded ? undefined : 8,
-          overflow: expanded ? 'visible' : 'hidden',
-        },
-      ]}
+      className={[className, 'bg-surface-raised'].filter(Boolean).join(' ')}
+      style={{ width: '100%', borderRadius: 6, paddingTop: 16, paddingBottom: showInfo ? 8 : 4 }}
       accessibilityRole={hasInteractiveContainer || hasInteractiveReps ? 'none' : 'button'}
       accessibilityLabel={hasInteractiveContainer || hasInteractiveReps ? undefined : stripLabel}
       testID="velocity-strip"
       {...props}
     >
-      <View style={{ flexDirection: 'row', flex: 1, gap: set ? 0 : 2, alignItems: 'flex-end' }}>
-        {set
-          ? setBars
-          : doneVelocities.map((v, i) => {
-              const barBackground = barColorFor(v)
-              // Guard all-zero velocities (idle / pre-rep): a 0 denominator makes
-              // this 0 / 0 === NaN and emits height:'NaN%'. Flatten the bars instead.
-              const barHeightPct = scaleDenom > 0 ? Math.round((v / scaleDenom) * 100) : 0
-              const isLive = liveRepIndex === i
-              const liveLabelSuffix = isLive
-                ? isNewPeak
-                  ? ', latest rep, new set peak'
-                  : ', latest rep'
-                : ''
-
-              const barStyle: ViewStyle = expanded
-                ? {
-                    height: `${barHeightPct}%`,
-                    minHeight: 2,
-                    borderTopLeftRadius: 2,
-                    borderTopRightRadius: 2,
-                    backgroundColor: barBackground,
-                    // Framed chart bars carry the hero's paper treatment too, so the
-                    // framed / bare / hero treatments read as one material family.
-                    ...barPaper(barBackground),
-                  }
-                : {
-                    minHeight: '100%' as unknown as number,
-                    borderTopLeftRadius: 2,
-                    borderTopRightRadius: 2,
-                    borderBottomLeftRadius: 0,
-                    borderBottomRightRadius: 0,
-                    backgroundColor: barBackground,
-                  }
-
-              // Live bar grows up from the baseline to its own target height (barStyle's
-              // static height, overridden here with the animated growth-factor readout);
-              // every other bar sits at its plain computed height straight away.
-              const barInner = isLive ? (
-                <Animated.View
-                  style={[
-                    barStyle,
-                    {
-                      height: liveGrowth.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: ['0%', `${barHeightPct}%`],
-                      }),
-                    },
-                  ]}
-                  testID={`velocity-bar-${i}`}
-                  accessibilityRole="image"
-                  accessibilityLabel={`Rep ${i + 1}: ${formatVelocity(v)} meters per second${liveLabelSuffix}`}
-                />
-              ) : (
-                <View
-                  style={barStyle}
-                  testID={`velocity-bar-${i}`}
-                  accessibilityRole="image"
-                  accessibilityLabel={`Rep ${i + 1}: ${formatVelocity(v)} meters per second`}
-                />
-              )
-
-              const bar = (
-                <View
-                  key={i}
-                  style={{
-                    flex: 1,
-                    height: '100%',
-                    justifyContent: 'flex-end',
-                    position: 'relative',
-                  }}
-                >
-                  {expanded && showNumbers && (
-                    <Animated.View
-                      style={{
-                        opacity: labelOpacity,
-                        alignItems: 'center',
-                        position: 'absolute',
-                        top: -13,
-                        left: 0,
-                        right: 0,
-                      }}
-                      accessibilityElementsHidden
-                    >
-                      <Text
-                        className="text-text-secondary"
-                        style={{ fontSize: 8, fontWeight: '600' }}
-                        testID={`velocity-label-${i}`}
-                      >
-                        {formatVelocity(v)}
-                      </Text>
-                    </Animated.View>
-                  )}
-                  {barInner}
-                </View>
-              )
-
-              if (onRepPress && expanded) {
-                return (
-                  <Pressable
-                    key={i}
-                    style={{ flex: 1, height: '100%' }}
-                    onPress={() => onRepPress(i, v)}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Rep ${i + 1}: ${formatVelocity(v)} meters per second, tap for details`}
-                    testID={`velocity-bar-pressable-${i}`}
-                  >
-                    {bar}
-                  </Pressable>
-                )
-              }
-
-              return bar
-            })}
-      </View>
+      <SetBarChart
+        slots={framedSlots}
+        colorFor={barColorFor}
+        height={height}
+        scale={scale}
+        scaleMax={scaleMax}
+        expandProgress={expandProgress}
+        renderBarOverlay={renderFramedBarOverlay}
+        targetReps={set ? undefined : targetReps}
+        barRadius={2}
+        hideBaseline
+        testIDPrefix="velocity"
+      />
       {expanded && showInfo && (
         <Animated.View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
             opacity: infoOpacity,
-            position: 'absolute',
-            bottom: 4,
-            left: 6,
-            right: 6,
+            marginTop: 6,
+            paddingHorizontal: 6,
           }}
           testID="velocity-info-row"
         >
           <Text
             className="text-text-secondary"
-            style={{
-              fontSize: 10,
-              fontFamily: 'Inter, sans-serif',
-            }}
+            style={{ fontSize: 10, fontFamily: 'Inter, sans-serif' }}
           >
             {meanZone} {'·'} {formatVelocity(meanVelocity)} m/s
           </Text>
           <Text
             className="text-text-secondary"
-            style={{
-              fontSize: 10,
-              fontFamily: 'Inter, sans-serif',
-              ...getLossStyle(loss),
-            }}
+            style={{ fontSize: 10, fontFamily: 'Inter, sans-serif', ...getLossStyle(loss) }}
           >
             Loss: {loss}%
           </Text>
