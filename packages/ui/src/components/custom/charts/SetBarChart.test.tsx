@@ -1,10 +1,22 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { SetBarChart, sideLabelText, type SetSlot } from './SetBarChart'
+import { SetBarChart, sideLabelText, valueLabelFontSize, type SetSlot } from './SetBarChart'
 
 const reps = (values: number[]): SetSlot[] => values.map((v) => ({ kind: 'rep', value: v }))
 const silver = () => '#C7CBD1'
+
+describe('valueLabelFontSize', () => {
+  it('reads the full 12px at the standard single-hero (220) and dual-wing (110) scales', () => {
+    expect(valueLabelFontSize(220)).toBe(12)
+    expect(valueLabelFontSize(110)).toBe(12)
+  })
+
+  it('floors at 8px on tiny charts (a 72px dual → 36px wing)', () => {
+    expect(valueLabelFontSize(36)).toBe(8)
+    expect(valueLabelFontSize(60)).toBe(8)
+  })
+})
 
 describe('sideLabelText', () => {
   it('keeps the full name when the vertical extent has room', () => {

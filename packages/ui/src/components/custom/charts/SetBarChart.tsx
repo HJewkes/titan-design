@@ -161,6 +161,15 @@ export function scaleDenominator(scale: 'peak' | 'fixed', maxValue: number): num
   return scale === 'fixed' ? FIXED_MAX_VALUE : maxValue * PEAK_HEADROOM
 }
 
+/**
+ * The per-bar value-label font size (px), scaled to chart `height` (floored at 8) so the numbers stay
+ * proportionate to the bars at small heights instead of reading oversized. Hits the full 12px at the
+ * standard single-hero (220px) and dual-wing (~110px) scales; shrinks toward the floor on tiny charts.
+ */
+export function valueLabelFontSize(height: number): number {
+  return Math.round(Math.max(8, Math.min(12, height * 0.11)))
+}
+
 // --- Hero geometry -----------------------------------------------------------
 /** Default plot height (px) — tall enough to read a set's shape across a room. */
 export const SET_BAR_DEFAULT_HEIGHT = 220
@@ -373,7 +382,7 @@ export function SetBarChart({
                 >
                   <Text
                     className="text-text-secondary"
-                    style={[{ fontSize: 12, fontWeight: '700' }, flipStyle]}
+                    style={[{ fontSize: valueLabelFontSize(height), fontWeight: '700' }, flipStyle]}
                     testID={`${testIDPrefix}-label-${repIndex}`}
                   >
                     {formatValue(value)}
