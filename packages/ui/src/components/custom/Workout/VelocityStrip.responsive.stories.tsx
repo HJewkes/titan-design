@@ -54,7 +54,14 @@ const CONFIGS: Config[] = [
   {
     name: 'Drop · 3 loads',
     detail: '3 groups (5 / 3 / 2) · 2 notches',
-    set: { type: 'drop', subloads: [[G, A, O, O, R], [A, O, R], [O, R]] },
+    set: {
+      type: 'drop',
+      subloads: [
+        [G, A, O, O, R],
+        [A, O, R],
+        [O, R],
+      ],
+    },
   },
   {
     name: 'Cluster · groups of 2',
@@ -69,18 +76,28 @@ const CONFIGS: Config[] = [
   {
     name: 'Myo · open',
     detail: 'activation + 2 clusters · 2 notches + cyan tail',
-    set: { type: 'myo', activation: [G, A, A, O, O, R], clusters: [[A, O, R], [O, R]], open: true },
+    set: {
+      type: 'myo',
+      activation: [G, A, A, O, O, R],
+      clusters: [
+        [A, O, R],
+        [O, R],
+      ],
+      open: true,
+    },
   },
 ]
 
 function WidthRow({ set, width }: { set: VelocitySet; width: number }) {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-      <Text style={{ fontFamily: MONO, fontSize: 10, color: T_TERTIARY, width: 44, textAlign: 'right' }}>
+      <Text
+        style={{ fontFamily: MONO, fontSize: 10, color: T_TERTIARY, width: 44, textAlign: 'right' }}
+      >
         {width}px
       </Text>
       <View style={{ width }}>
-        <VelocityStrip variant="mini" set={set} style={{ height: PREVIEW_HEIGHT }} />
+        <VelocityStrip variant="compact" set={set} style={{ height: PREVIEW_HEIGHT }} />
       </View>
     </View>
   )
@@ -100,7 +117,9 @@ function ConfigPanel({ c }: { c: Config }) {
       }}
     >
       <View style={{ gap: 3 }}>
-        <Text style={{ fontFamily: INTER, fontSize: 15, fontWeight: '700', color: T_PRIMARY }}>{c.name}</Text>
+        <Text style={{ fontFamily: INTER, fontSize: 15, fontWeight: '700', color: T_PRIMARY }}>
+          {c.name}
+        </Text>
         <Text style={{ fontFamily: INTER, fontSize: 12, color: T_TERTIARY }}>{c.detail}</Text>
       </View>
       <View style={{ height: 1, backgroundColor: BORDER_SUBTLE }} />
@@ -133,12 +152,21 @@ export const NotchAcrossWidths: Story = {
         ))}
       </View>
 
-      <Text style={{ fontFamily: INTER, fontSize: 12.5, color: T_SECONDARY, lineHeight: 19, maxWidth: 760, marginTop: 4 }}>
-        Reading the ladder: the notch holds at 8px everywhere, so at rail scale it is a clear group break
-        (4× the rep gap) and at wall scale it stays a tidy break rather than a canyon. Watch the dense
-        cluster (groups of 3, 15 reps): even where the bars are thin, the 8px notch separates groups without
-        a proportional gap swallowing the strip at large sizes. The single knob is WIDE_GAP in
-        VelocityStrip.tsx.
+      <Text
+        style={{
+          fontFamily: INTER,
+          fontSize: 12.5,
+          color: T_SECONDARY,
+          lineHeight: 19,
+          maxWidth: 760,
+          marginTop: 4,
+        }}
+      >
+        Reading the ladder: the notch holds at 8px everywhere, so at rail scale it is a clear group
+        break (4× the rep gap) and at wall scale it stays a tidy break rather than a canyon. Watch
+        the dense cluster (groups of 3, 15 reps): even where the bars are thin, the 8px notch
+        separates groups without a proportional gap swallowing the strip at large sizes. The single
+        knob is WIDE_GAP in VelocityStrip.tsx.
       </Text>
     </Page>
   ),

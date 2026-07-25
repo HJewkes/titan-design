@@ -93,7 +93,14 @@ const MODS: Modality[] = [
     tags: ['load drops', 'open-ended'],
     def: 'Reps to failure at a load, then DROP the load (no rest) and continue — 1–3 drops. Sub-loads split by a WIDE notch gap.',
     useWhen: 'Extending a set past failure by shedding load — the notch marks each weight drop.',
-    set: { type: 'drop', subloads: [[G, A, O, O, R], [A, O, R], [O, R]] },
+    set: {
+      type: 'drop',
+      subloads: [
+        [G, A, O, O, R],
+        [A, O, R],
+        [O, R],
+      ],
+    },
   },
   {
     name: 'Myo-reps',
@@ -101,14 +108,23 @@ const MODS: Modality[] = [
     tags: ['clusters', 'open-ended'],
     def: 'Activation set to near-failure, then rest-pause mini-clusters at the SAME load until a cluster fails. Open tail → cyan continue.',
     useWhen: 'High-density hypertrophy: one activation set milked for extra clusters.',
-    set: { type: 'myo', activation: [G, A, A, O, O, R], clusters: [[A, O, R], [O, R]], open: true },
+    set: {
+      type: 'myo',
+      activation: [G, A, A, O, O, R],
+      clusters: [
+        [A, O, R],
+        [O, R],
+      ],
+      open: true,
+    },
   },
   {
     name: 'Cluster set',
     alias: 'intra-set rest',
     tags: ['fixed reps', 'intra-rest'],
     def: 'A fixed rep count at a HIGH load, broken by short intra-set rests so every rep stays fast — power, not failure. Fixed count → no cyan tail.',
-    useWhen: 'Strength/power work where each rep must stay fast; rests are planned, count is fixed.',
+    useWhen:
+      'Strength/power work where each rep must stay fast; rests are planned, count is fixed.',
     set: { type: 'cluster', velocities: [G, G, G, A, G, G, A, G], groupSize: 2, planned: 10 },
   },
 ]
@@ -134,14 +150,33 @@ function ConfigAccordion({ set, useWhen }: { set: VelocitySet; useWhen: string }
   return (
     <Collapse>
       <CollapseButton className="px-0 py-2 rounded-none">
-        <Text style={{ fontFamily: INTER, fontSize: 11, fontWeight: '700', letterSpacing: 0.4, color: CYAN_TEXT }}>
+        <Text
+          style={{
+            fontFamily: INTER,
+            fontSize: 11,
+            fontWeight: '700',
+            letterSpacing: 0.4,
+            color: CYAN_TEXT,
+          }}
+        >
           How to configure this view
         </Text>
       </CollapseButton>
       <CollapseContent className="px-0">
-        <View style={{ backgroundColor: '#0A0A0A', borderWidth: 1, borderColor: '#2A2A2E', borderRadius: 8, padding: 12, gap: 8 }}>
-          <Text style={{ fontFamily: 'monospace', fontSize: 11, lineHeight: 17, color: T_SECONDARY }}>
-            {`<VelocityStrip\n  variant="mini"\n  ${formatSet(set).replace(/\n/g, '\n  ')}\n/>`}
+        <View
+          style={{
+            backgroundColor: '#0A0A0A',
+            borderWidth: 1,
+            borderColor: '#2A2A2E',
+            borderRadius: 8,
+            padding: 12,
+            gap: 8,
+          }}
+        >
+          <Text
+            style={{ fontFamily: 'monospace', fontSize: 11, lineHeight: 17, color: T_SECONDARY }}
+          >
+            {`<VelocityStrip\n  variant="compact"\n  ${formatSet(set).replace(/\n/g, '\n  ')}\n/>`}
           </Text>
           <Text style={{ fontFamily: INTER, fontSize: 12, color: T_TERTIARY, lineHeight: 17 }}>
             Use when: {useWhen}
@@ -154,10 +189,29 @@ function ConfigAccordion({ set, useWhen }: { set: VelocitySet; useWhen: string }
 
 function Card({ m }: { m: Modality }) {
   return (
-    <View style={{ backgroundColor: INSET, borderWidth: 1, borderColor: '#2A2A2E', borderRadius: 12, padding: 18, gap: 12, width: 460 }}>
-      <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
+    <View
+      style={{
+        backgroundColor: INSET,
+        borderWidth: 1,
+        borderColor: '#2A2A2E',
+        borderRadius: 12,
+        padding: 18,
+        gap: 12,
+        width: 460,
+      }}
+    >
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'baseline',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: 8,
+        }}
+      >
         <Text style={{ fontFamily: INTER, fontSize: 16, fontWeight: '700', color: T_PRIMARY }}>
-          {m.name} <Text style={{ fontSize: 12, fontWeight: '500', color: T_TERTIARY }}>{m.alias}</Text>
+          {m.name}{' '}
+          <Text style={{ fontSize: 12, fontWeight: '500', color: T_TERTIARY }}>{m.alias}</Text>
         </Text>
         <View style={{ flexDirection: 'row', gap: 6 }}>
           {m.tags.map((t) => {
@@ -170,9 +224,11 @@ function Card({ m }: { m: Modality }) {
           })}
         </View>
       </View>
-      <Text style={{ fontFamily: INTER, fontSize: 13, color: T_SECONDARY, lineHeight: 19 }}>{m.def}</Text>
+      <Text style={{ fontFamily: INTER, fontSize: 13, color: T_SECONDARY, lineHeight: 19 }}>
+        {m.def}
+      </Text>
       <View style={{ paddingVertical: 6 }}>
-        <VelocityStrip variant="mini" set={m.set} />
+        <VelocityStrip variant="compact" set={m.set} />
       </View>
       <View style={{ height: 1, backgroundColor: BORDER_SUBTLE }} />
       <ConfigAccordion set={m.set} useWhen={m.useWhen} />
@@ -182,10 +238,36 @@ function Card({ m }: { m: Modality }) {
 
 function Principle({ k, title, body }: { k: string; title: string; body: string }) {
   return (
-    <View style={{ flex: 1, backgroundColor: INSET, borderWidth: 1, borderColor: '#2A2A2E', borderRadius: 10, padding: 16, gap: 7, minWidth: 220 }}>
-      <Text style={{ fontFamily: INTER, fontSize: 10, fontWeight: '600', letterSpacing: 1.2, textTransform: 'uppercase', color: CYAN_TEXT }}>{k}</Text>
-      <Text style={{ fontFamily: INTER, fontSize: 14, fontWeight: '600', color: T_PRIMARY }}>{title}</Text>
-      <Text style={{ fontFamily: INTER, fontSize: 12.5, color: T_SECONDARY, lineHeight: 18 }}>{body}</Text>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: INSET,
+        borderWidth: 1,
+        borderColor: '#2A2A2E',
+        borderRadius: 10,
+        padding: 16,
+        gap: 7,
+        minWidth: 220,
+      }}
+    >
+      <Text
+        style={{
+          fontFamily: INTER,
+          fontSize: 10,
+          fontWeight: '600',
+          letterSpacing: 1.2,
+          textTransform: 'uppercase',
+          color: CYAN_TEXT,
+        }}
+      >
+        {k}
+      </Text>
+      <Text style={{ fontFamily: INTER, fontSize: 14, fontWeight: '600', color: T_PRIMARY }}>
+        {title}
+      </Text>
+      <Text style={{ fontFamily: INTER, fontSize: 12.5, color: T_SECONDARY, lineHeight: 18 }}>
+        {body}
+      </Text>
     </View>
   )
 }
@@ -193,7 +275,15 @@ function Principle({ k, title, body }: { k: string; title: string; body: string 
 function Swatch({ color, label, outlined }: { color: string; label: string; outlined?: boolean }) {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
-      <View style={{ width: 22, height: 10, borderRadius: 2, backgroundColor: color, ...(outlined ? { borderWidth: 1, borderColor: VAR_EDGE } : {}) }} />
+      <View
+        style={{
+          width: 22,
+          height: 10,
+          borderRadius: 2,
+          backgroundColor: color,
+          ...(outlined ? { borderWidth: 1, borderColor: VAR_EDGE } : {}),
+        }}
+      />
       <Text style={{ fontFamily: INTER, fontSize: 12, color: T_SECONDARY }}>{label}</Text>
     </View>
   )
@@ -214,12 +304,32 @@ export const StripVocabulary: Story = {
       note="Every per-rep strength set-type, rendered by the real VelocityStrip via its `set` prop. One strip model: defaults to the target rep count (grey slots) · overshoot grows the strip · open-ended sets (AMRAP · the myo tail) carry a persistent cyan 'continue' slot. Real velocity colours + the cyan variable token. Open each card's accordion for the exact `set` configuration and a 'use when' note."
     >
       <View style={{ flexDirection: 'row', gap: 14, flexWrap: 'wrap', maxWidth: 940 }}>
-        <Principle k="default" title="Target reps as slots" body="A set opens as N grey placeholder slots — the prescribed count. Each done rep fills its slot with its velocity colour." />
-        <Principle k="overshoot" title="Extra reps grow it" body="Beat the prescription and the strip keeps adding slots. The plan is a floor to draw against, not a cap." />
-        <Principle k="open-ended" title="A cyan continue tail" body="AMRAP and the myo tail carry a persistent cyan slot; new reps insert before it — it argues 'there's more'." />
+        <Principle
+          k="default"
+          title="Target reps as slots"
+          body="A set opens as N grey placeholder slots — the prescribed count. Each done rep fills its slot with its velocity colour."
+        />
+        <Principle
+          k="overshoot"
+          title="Extra reps grow it"
+          body="Beat the prescription and the strip keeps adding slots. The plan is a floor to draw against, not a cap."
+        />
+        <Principle
+          k="open-ended"
+          title="A cyan continue tail"
+          body="AMRAP and the myo tail carry a persistent cyan slot; new reps insert before it — it argues 'there's more'."
+        />
       </View>
 
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 14, alignItems: 'center', marginTop: 4 }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          gap: 14,
+          alignItems: 'center',
+          marginTop: 4,
+        }}
+      >
         <Swatch color={velColor(G)} label="fastest" />
         <Swatch color={velColor(A)} label="fast" />
         <Swatch color={velColor(O)} label="moderate" />
@@ -247,7 +357,10 @@ export const ActiveSetExpanded: Story = {
       note="The expanded VelocityStrip for a live straight set: done reps as velocity-height bars, the planned remainder as short grey stubs, and the mean · loss summary derived from the done reps."
     >
       <View style={{ width: 520, gap: 10 }}>
-        <VelocityStrip set={{ type: 'straight', velocities: [1.12, 1.05, 0.98, 0.9, 0.82, 0.7], planned: 10 }} expanded />
+        <VelocityStrip
+          set={{ type: 'straight', velocities: [1.12, 1.05, 0.98, 0.9, 0.82, 0.7], planned: 10 }}
+          expanded
+        />
       </View>
     </Page>
   ),

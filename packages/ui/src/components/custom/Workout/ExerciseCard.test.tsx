@@ -49,7 +49,7 @@ describe('ExerciseCard', () => {
       expect(screen.getByTestId('pr-badge-star')).toBeInTheDocument()
     })
 
-    it('renders mini velocity strips for logged sets', () => {
+    it('renders compact velocity strips for logged sets', () => {
       render(
         <ExerciseCard
           {...baseCollapsedProps}
@@ -158,10 +158,10 @@ describe('ExerciseCard', () => {
       expect(within(rows[2]).getByText('3')).toHaveStyle({ color: T_MUTED })
     })
 
-    it('uses the compact velocity-height spotlight for the live set and mini elsewhere', () => {
+    it('uses the velocity-height spotlight for the live set and the flat compact strip elsewhere', () => {
       render(<ExerciseCard {...expandedProps} />)
-      expect(screen.getAllByTestId('velocity-strip-compact')).toHaveLength(1)
-      expect(screen.getAllByTestId('velocity-strip-mini')).toHaveLength(2)
+      expect(screen.getAllByTestId('velocity-strip-spotlight')).toHaveLength(1)
+      expect(screen.getAllByTestId('velocity-strip-compact')).toHaveLength(2)
     })
 
     it('renders the TempoDisplay in the header when tempo provided', () => {

@@ -386,7 +386,13 @@ function VbtBreakdown({
               {set.label}
             </Text>
             <View className="flex-1" style={{ height: 8, justifyContent: 'center' }}>
-              <VelocityStrip velocities={set.velocities} zones={zones} variant="mini" />
+              <VelocityStrip
+                velocities={set.velocities}
+                zones={zones}
+                variant="compact"
+                height={8}
+                hideBaseline
+              />
             </View>
             <Text
               className="text-text-tertiary"

@@ -55,9 +55,9 @@ describe('SetRow', () => {
       expect(screen.getByText('8')).toHaveStyle({ color: T_MUTED })
     })
 
-    it('renders a flat mini strip (done reps, no todo stubs)', () => {
+    it('renders the flat compact strip (done reps, no todo stubs)', () => {
       render(<SetRow {...doneRow} />)
-      expect(screen.getByTestId('velocity-strip-mini')).toBeInTheDocument()
+      expect(screen.getByTestId('velocity-strip-compact')).toBeInTheDocument()
       expect(screen.getAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(3)
       expect(screen.queryByTestId('velocity-slot-todo')).not.toBeInTheDocument()
     })
@@ -76,9 +76,9 @@ describe('SetRow', () => {
       expect(screen.getByText('2')).toHaveStyle({ color: T_ACTIVE })
     })
 
-    it('renders the compact velocity-height spotlight strip', () => {
+    it('renders the velocity-height spotlight strip', () => {
       render(<SetRow {...liveRow} />)
-      expect(screen.getByTestId('velocity-strip-compact')).toBeInTheDocument()
+      expect(screen.getByTestId('velocity-strip-spotlight')).toBeInTheDocument()
       // 2 performed reps + grey stubs to the target (10).
       expect(screen.getAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(2)
       expect(screen.getAllByTestId('velocity-slot-todo')).toHaveLength(8)
@@ -93,10 +93,10 @@ describe('SetRow', () => {
       expect(screen.getByTestId('set-row-rpe')).toHaveTextContent('—')
     })
 
-    it('is muted and renders an all-grey mini stub strip', () => {
+    it('is muted and renders an all-grey compact stub strip', () => {
       render(<SetRow {...todoRow} />)
       expect(screen.getByText('3')).toHaveStyle({ color: T_MUTED })
-      expect(screen.getByTestId('velocity-strip-mini')).toBeInTheDocument()
+      expect(screen.getByTestId('velocity-strip-compact')).toBeInTheDocument()
       expect(screen.getAllByTestId('velocity-slot-todo')).toHaveLength(10)
       expect(screen.queryByTestId(/^velocity-bar-\d+$/)).not.toBeInTheDocument()
     })
