@@ -251,13 +251,13 @@ describe('VelocityStrip barColor prop', () => {
   // 0%, 10%, 20%, 30% loss — one rep in each band.
   const decliningSet = [1.0, 0.9, 0.8, 0.7]
 
-  it('defaults to zone coloring (unchanged from prior releases)', () => {
+  it('defaults to loss coloring (the landed default is barColor="loss")', () => {
     render(<VelocityStrip velocities={decliningSet} variant="mini" />)
-    // Absolute zone scale: 1.0 -> green, 0.9 & 0.8 -> yellow (both >= 0.75), 0.7 -> orange.
-    expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: '#2ED573' })
+    // Loss from the set's own best (1.0): 0% / 10% / 20% / 30% -> green / yellow / orange / red.
+    expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: VL_GREEN })
     expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ backgroundColor: VL_YELLOW })
-    expect(screen.getByTestId('velocity-bar-2')).toHaveStyle({ backgroundColor: VL_YELLOW })
-    expect(screen.getByTestId('velocity-bar-3')).toHaveStyle({ backgroundColor: VL_ORANGE })
+    expect(screen.getByTestId('velocity-bar-2')).toHaveStyle({ backgroundColor: VL_ORANGE })
+    expect(screen.getByTestId('velocity-bar-3')).toHaveStyle({ backgroundColor: VL_RED })
   })
 
   it('explicit barColor="zone" matches the default', () => {
@@ -315,14 +315,29 @@ const compoundBands = [
 ] as const
 
 describe('VelocityStrip zones prop', () => {
+  // The band mapping is the `zone` scale; the landed default is `loss`, so these pass `barColor="zone"`.
   it('colors bars from the supplied bands (mini)', () => {
-    render(<VelocityStrip velocities={[1.1, 0.45]} zones={compoundBands} variant="mini" />)
+    render(
+      <VelocityStrip
+        velocities={[1.1, 0.45]}
+        zones={compoundBands}
+        variant="mini"
+        barColor="zone"
+      />
+    )
     expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: '#2ED573' })
     expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ backgroundColor: '#D14343' })
   })
 
   it('gives grinding and maximalStrength DISTINCT reds (5-band, no collapse)', () => {
-    render(<VelocityStrip velocities={[0.45, 0.2]} zones={compoundBands} variant="mini" />)
+    render(
+      <VelocityStrip
+        velocities={[0.45, 0.2]}
+        zones={compoundBands}
+        variant="mini"
+        barColor="zone"
+      />
+    )
     expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: '#D14343' })
     expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ backgroundColor: '#A4221C' })
   })
@@ -378,7 +393,9 @@ describe('VelocityStrip all-zero velocities (NaN guard)', () => {
 })
 
 // Literal-hex slot colors (must match the component's tokens exactly).
-const TODO_GREY = '#2C2C2C'
+// TODO_SOLID = the LANDED surface-relative solid to-do tone (base/dark plane blended toward the
+// on-surface neutral) — replaced the old fixed charcoal #2C2C2C. Solid fill, not a dashed outline.
+const TODO_SOLID = '#4C4E55'
 const VARIABLE_CYAN = '#0B3149'
 const CONTINUE_OUTLINE = '#22465F'
 const CONTAINER_GAP_PX = '2px'
@@ -397,7 +414,7 @@ describe('VelocityStrip set-type modes (mini)', () => {
     expect(screen.getAllByTestId('velocity-slot-todo')).toHaveLength(2)
     expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: '#2ED573' })
     expect(screen.getAllByTestId('velocity-slot-todo')[0]).toHaveStyle({
-      backgroundColor: TODO_GREY,
+      backgroundColor: TODO_SOLID,
     })
   })
 
@@ -517,7 +534,7 @@ describe('VelocityStrip set-type modes (expanded framed)', () => {
     expect(screen.getAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(2)
     expect(screen.getAllByTestId('velocity-slot-todo')).toHaveLength(2)
     expect(screen.getAllByTestId('velocity-slot-todo')[0]).toHaveStyle({
-      backgroundColor: TODO_GREY,
+      backgroundColor: TODO_SOLID,
     })
   })
 
@@ -589,7 +606,7 @@ describe('VelocityStrip expanded bare strip (spotlight: numbers + info off)', ()
     expect(screen.getAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(1)
     const stubs = screen.getAllByTestId('velocity-slot-todo')
     expect(stubs).toHaveLength(2)
-    expect(stubs[0]).toHaveStyle({ height: '3px', backgroundColor: TODO_GREY })
+    expect(stubs[0]).toHaveStyle({ height: '3px', backgroundColor: TODO_SOLID })
   })
 
   it('colors performed reps from the default effort scale', () => {

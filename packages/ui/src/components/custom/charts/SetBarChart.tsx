@@ -168,8 +168,8 @@ export const SET_BAR_DEFAULT_HEIGHT = 220
 const LABEL_ROW_HEIGHT = 16
 /** Gap between the value-label row and the peak bar top (px). */
 const LABEL_GAP = 3
-/** Inter-bar gap as a fraction of bar width (proportional spacing). */
-const GAP_RATIO = 0.5
+/** Inter-bar gap as a fraction of bar width — the locked dense default (near expanded density). */
+const GAP_RATIO = 0.08
 /** Floor on the proportional inter-bar gap (px) — narrow plots tighten to ~expanded density. */
 const MIN_BAR_GAP = 2
 /** Cap on a single bar's width so a 2–3 rep set doesn't render slab-wide bars (px). */
@@ -282,9 +282,7 @@ export function SetBarChart({
   // ~expanded density on narrow plots (the floor) and the ratio sets how dense they read at wall scale.
   const totalCells = cells.length
   const rawBarWidth =
-    plotW > 0 && totalCells > 0
-      ? plotW / (totalCells + (totalCells - 1) * gapRatio)
-      : BAR_MAX_WIDTH
+    plotW > 0 && totalCells > 0 ? plotW / (totalCells + (totalCells - 1) * gapRatio) : BAR_MAX_WIDTH
   const barWidth = Math.min(BAR_MAX_WIDTH, rawBarWidth)
   const labelsCrowded = plotW > 0 && barWidth < LABEL_MIN_BAR_WIDTH
   const gap = plotW === 0 ? MIN_BAR_GAP : Math.max(MIN_BAR_GAP, gapRatio * barWidth)
@@ -444,7 +442,10 @@ function renderStub(
     // A rep column the diverging side did NOT log — a faint constant-contrast section, quieter than
     // a planned to-do (it's a hole in this side's data, index-locked to the other side's rep).
     return (
-      <View style={{ ...base, backgroundColor: emptyColor }} testID={`${testIDPrefix}-slot-empty`} />
+      <View
+        style={{ ...base, backgroundColor: emptyColor }}
+        testID={`${testIDPrefix}-slot-empty`}
+      />
     )
   }
   // todo — a solid surface-relative section (expanded language) or a dashed outline (hero language).

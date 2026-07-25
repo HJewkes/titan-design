@@ -299,11 +299,7 @@ const BOARD: BoardRow[] = [
     },
     right: {
       type: 'drop',
-      subloads: [
-        [0.88, 0.83],
-        [0.75, 0.68],
-        [0.62],
-      ],
+      subloads: [[0.88, 0.83], [0.75, 0.68], [0.62]],
     },
   },
   {
@@ -330,17 +326,19 @@ const BOARD: BoardRow[] = [
     right: {
       type: 'myo',
       activation: [0.84, 0.79, 0.74],
-      clusters: [
-        [0.68, 0.62],
-        [0.58],
-      ],
+      clusters: [[0.68, 0.62], [0.58]],
       open: true,
     },
   },
   {
     type: 'cluster',
     note: 'fixed count grouped by WIDE intra-rest gaps + solid planned remainder',
-    single: { type: 'cluster', velocities: [0.9, 0.86, 0.82, 0.78, 0.74], groupSize: 2, planned: 8 },
+    single: {
+      type: 'cluster',
+      velocities: [0.9, 0.86, 0.82, 0.78, 0.74],
+      groupSize: 2,
+      planned: 8,
+    },
     left: { type: 'cluster', velocities: [0.9, 0.86, 0.82, 0.78, 0.74], groupSize: 2, planned: 8 },
     right: { type: 'cluster', velocities: [0.85, 0.8, 0.76], groupSize: 2, planned: 8 },
   },

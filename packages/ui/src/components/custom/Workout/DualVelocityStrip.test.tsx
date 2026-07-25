@@ -41,6 +41,18 @@ describe('DualVelocityStrip composition', () => {
     expect(screen.getByTestId('dual-velocity-axis')).toBeInTheDocument()
   })
 
+  it('a 120px dual sizes each wing at 60px — NOT ballooned to 220 by the hero height sentinel', () => {
+    // Regression: the single hero bumps an unset height (the 60px expanded default) to 220. A 120px
+    // dual gives each wing exactly 60px, which collided with that sentinel and blew the wings up to
+    // 220 (bars overflowing). The columnSlots (dual) path is exempt, so each wing renders at 60px.
+    render(
+      <DualVelocityStrip left={{ velocities: [0.9] }} right={{ velocities: [0.8] }} height={120} />
+    )
+    for (const wing of screen.getAllByTestId('velocity-strip-hero')) {
+      expect(wing).toHaveStyle({ height: '60px' })
+    }
+  })
+
   it('renders one bar per performed rep on each side (each wing scoped independently)', () => {
     render(
       <DualVelocityStrip
