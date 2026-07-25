@@ -484,8 +484,6 @@ const EXPANDED_ENCODED_PCT = 45
 const EXPANDED_HEIGHT = 60
 /** Default `compact` (flat resting strip) height (px) — short, same geometry as expanded/hero. */
 const COMPACT_HEIGHT = 28
-/** Minimum bare-strip bar height (px) — a planned / variable / continue stub, or a near-zero rep. */
-const BARE_STUB_HEIGHT = 3
 
 /** The dashed running-best reference line color (the lightest charcoal step). */
 const HERO_REFERENCE_COLOR = primitiveColors.charcoal[0]
@@ -682,13 +680,6 @@ function velocityReferenceOverlay(g: SetBarGeometry, showLossBands: boolean) {
       )}
     </>
   )
-}
-
-/** Bare-strip bar height (px): velocity-scaled for a performed rep, a short stub otherwise. */
-function bareSlotHeight(slot: VelocitySlot, height: number, denom: number): number {
-  if (slot.kind !== 'rep' || denom <= 0) return BARE_STUB_HEIGHT
-  const ratio = Math.min(1, (slot.velocity ?? 0) / denom)
-  return Math.max(BARE_STUB_HEIGHT, ratio * height)
 }
 
 /** Framed expanded collapse-animation duration (ms). */
@@ -1389,60 +1380,33 @@ export function VelocityStrip({
     )
   }
 
-  // Bare `expanded` strip (both chrome flags off): the velocity-HEIGHT spotlight —
-  // px bar heights, no raised box / labels / info row / animation. Set-type gaps carry
-  // over from the slot model (container REP_GAP + per-slot extra for a WIDE notch);
-  // planned / variable / continue slots draw as stubs.
+  // Bare `expanded` strip (both chrome flags off): the velocity-HEIGHT spotlight — now
+  // FOLDED onto SetBarChart (value mode, no labels), so its bars share the SAME geometry
+  // (widths / gaps / chunk-notch / slots / paper) as compact + hero. Only the height-mode
+  // (value here, flat in compact) differs, so a compact↔spotlight toggle never reflows.
   if (!framed) {
-    const { style: externalStyle, ...restProps } = props
+    const spotlightSlots: SetSlot[] = set
+      ? buildSlots(set).map((s) => ({ kind: s.kind, value: s.velocity, leadingGap: s.leadingGap }))
+      : doneVelocities.map((v) => ({ kind: 'rep', value: v }))
     return (
-      <View
-        className={className}
-        style={[
-          { flexDirection: 'row', height, gap: REP_GAP, alignItems: 'flex-end' },
-          externalStyle,
-        ]}
-        accessibilityRole="image"
-        accessibilityLabel={miniLabel}
+      <SetBarChart
+        slots={spotlightSlots}
+        colorFor={barColorFor}
+        height={height}
+        scale={scale}
+        scaleMax={scaleMax}
+        orientation={orientation}
+        liveRepIndex={liveRepIndex}
+        isNewPeak={isNewPeak}
+        targetReps={set ? undefined : targetReps}
+        label={label}
+        hideBaseline={hideBaseline}
         testID="velocity-strip-spotlight"
-        {...restProps}
-      >
-        {slots.map((slot, i) => {
-          const barH = bareSlotHeight(slot, height, scaleDenom)
-          const isLive = i === liveRepIndex && slot.kind === 'rep'
-          const barStyle: ViewStyle = {
-            flex: 1,
-            minWidth: 4,
-            height: barH,
-            // Top-rounded to match the framed chart's bars (the "rounded tops from
-            // the numbers one"); square bottoms since bars sit on the baseline.
-            borderTopLeftRadius: 2,
-            borderTopRightRadius: 2,
-            backgroundColor: slotColor(slot),
-            marginLeft: Math.max(0, slot.leadingGap - REP_GAP),
-            // Performed reps carry the same paper treatment as the hero (grain +
-            // rim-light + contact shadow) so the spotlight strip reads as one material.
-            ...(slot.kind === 'rep' ? barPaper(slotColor(slot)) : null),
-            ...(slot.kind === 'continue' ? { borderWidth: 1, borderColor: CONTINUE_OUTLINE } : {}),
-          }
-          const barTestID = slot.kind === 'rep' ? `velocity-bar-${i}` : `velocity-slot-${slot.kind}`
-          // The newest rep grows up from the baseline as it lands (matching the framed
-          // chart + hero); a new set peak overshoots then settles.
-          return isLive ? (
-            <Animated.View
-              key={i}
-              style={[
-                barStyle,
-                { height: liveGrowth.interpolate({ inputRange: [0, 1], outputRange: [0, barH] }) },
-              ]}
-              accessibilityElementsHidden
-              testID={barTestID}
-            />
-          ) : (
-            <View key={i} style={barStyle} accessibilityElementsHidden testID={barTestID} />
-          )
-        })}
-      </View>
+        testIDPrefix="velocity"
+        accessibilityLabel={miniLabel}
+        className={className}
+        viewProps={props}
+      />
     )
   }
 

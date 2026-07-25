@@ -398,9 +398,6 @@ describe('VelocityStrip all-zero velocities (NaN guard)', () => {
 const TODO_SOLID = '#4C4E55'
 const VARIABLE_CYAN = '#0B3149'
 const CONTINUE_OUTLINE = '#22465F'
-// Per-slot margins for the bare `expanded` SPOTLIGHT strip (its own px renderer, not SetBarChart).
-const REP_SLOT_ML = '0px'
-const WIDE_SLOT_ML = '6px'
 describe('VelocityStrip set-type modes (compact)', () => {
   // compact composes SetBarChart, so the per-slot geometry (WIDE chunk-notch px, container gap) is
   // covered in SetBarChart.test; here we verify VelocityStrip maps each set type to the right slots.
@@ -598,7 +595,8 @@ describe('VelocityStrip expanded bare strip (spotlight: numbers + info off)', ()
     expect(screen.getAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(1)
     const stubs = screen.getAllByTestId('velocity-slot-todo')
     expect(stubs).toHaveLength(2)
-    expect(stubs[0]).toHaveStyle({ height: '3px', backgroundColor: TODO_SOLID })
+    // Folded onto SetBarChart: the solid to-do stub is the shared 9px height + surface-relative tone.
+    expect(stubs[0]).toHaveStyle({ height: '9px', backgroundColor: TODO_SOLID })
   })
 
   it('colors performed reps from the default effort scale', () => {
@@ -612,7 +610,7 @@ describe('VelocityStrip expanded bare strip (spotlight: numbers + info off)', ()
     expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ backgroundColor: '#D14343' })
   })
 
-  it('carries the set-type WIDE-gap chunk encoding (drop sub-loads)', () => {
+  it('carries the set-type chunk encoding (drop sub-loads) as one bar per rep', () => {
     render(
       <VelocityStrip
         {...bareProps}
@@ -625,8 +623,9 @@ describe('VelocityStrip expanded bare strip (spotlight: numbers + info off)', ()
         }}
       />
     )
-    expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ marginLeft: REP_SLOT_ML })
-    expect(screen.getByTestId('velocity-bar-2')).toHaveStyle({ marginLeft: WIDE_SLOT_ML })
+    // Folded onto SetBarChart: 4 rep bars; the WIDE chunk-notch (now a proportional column margin)
+    // is covered in SetBarChart.test.
+    expect(screen.getAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(4)
   })
 
   it('has no chrome: no per-bar labels, no info row, no pressable', () => {
