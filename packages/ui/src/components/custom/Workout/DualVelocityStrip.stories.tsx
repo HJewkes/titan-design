@@ -444,3 +444,18 @@ export const HeroTinyHeight: Story = {
   },
   decorators: [wallDecorator],
 }
+
+/**
+ * Dual COMPACT — the flat resting form of the diverging dual: two flat compact wings (uniform bars,
+ * no value labels) sharing the same aligned structure, gutter, and centre axis as the hero. Going
+ * from compact to hero only changes the bar HEIGHTS + adds labels — the columns stay put.
+ */
+export const CompactDual: Story = {
+  args: {
+    left: { velocities: [0.92, 0.9, 0.88, 0.85], label: 'Left Arm' },
+    right: { velocities: [0.85, 0.8, 0.74], label: 'Right Arm' },
+    variant: 'compact',
+    scale: 'fixed',
+  },
+  decorators: [wallDecorator],
+}

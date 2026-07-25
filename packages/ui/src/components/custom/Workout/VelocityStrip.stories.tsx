@@ -108,9 +108,42 @@ export const Playground: Story = {
   ],
 }
 
-/** The flat 3px static strip — the collapsed glance used in cards and rails. */
-export const Mini: Story = {
-  args: { velocities: mixedSet, variant: 'compact' },
+/**
+ * The flat `compact` resting strip (SetBarChart in flat mode) — uniform short bars, no labels, same
+ * geometry as expanded/hero. The resting glance used in the SetRow table + cards.
+ */
+export const Compact: Story = {
+  args: { velocities: mixedSet, variant: 'compact', height: 28 },
+  decorators: [
+    (Story) => (
+      <View style={{ width: 320, padding: 20, backgroundColor: '#0E0E0E' }}>
+        <Story />
+      </View>
+    ),
+  ],
+}
+
+/** The flat `compact` strip fed a drop set — the chunk-notch separates the sub-loads even when flat. */
+export const CompactDropSet: Story = {
+  args: {
+    variant: 'compact',
+    height: 28,
+    set: {
+      type: 'drop',
+      subloads: [
+        [1.0, 0.95],
+        [0.85, 0.8],
+        [0.7, 0.62],
+      ],
+    },
+  },
+  decorators: [
+    (Story) => (
+      <View style={{ width: 320, padding: 20, backgroundColor: '#0E0E0E' }}>
+        <Story />
+      </View>
+    ),
+  ],
 }
 
 /** Framed chart with per-bar m/s labels + info row (numbers ON) — the rich readout. */

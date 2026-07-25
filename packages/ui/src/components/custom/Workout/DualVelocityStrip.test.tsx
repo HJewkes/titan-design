@@ -392,6 +392,38 @@ describe('DualVelocityStrip live mode', () => {
   })
 })
 
+describe('DualVelocityStrip compact variant (flat)', () => {
+  it('composes two flat compact wings with the shared gutter + axis, no value labels', () => {
+    render(
+      <DualVelocityStrip
+        left={{ velocities: [0.9, 0.85, 0.8], label: 'Left Arm' }}
+        right={{ velocities: [0.82, 0.74], label: 'Right Arm' }}
+        variant="compact"
+      />
+    )
+    // Two composed compact strips (one per wing), each emitting the single-strip bar testIDs.
+    expect(screen.getAllByTestId('velocity-strip-compact')).toHaveLength(2)
+    expect(wingUp().queryAllByTestId(HERO_BARS)).toHaveLength(3)
+    expect(wingDown().queryAllByTestId(HERO_BARS)).toHaveLength(2)
+    // Flat form: no per-bar value labels, one shared centre axis + side labels.
+    expect(screen.queryByTestId(/^velocity-label-\d+$/)).not.toBeInTheDocument()
+    expect(screen.getByTestId('dual-velocity-axis')).toBeInTheDocument()
+    // At the compact 28px/wing extent the side label collapses to initials.
+    expect(screen.getByTestId('dual-velocity-side-label-L')).toHaveTextContent('L A')
+  })
+
+  it('keeps the wings index-locked (a lagging side renders empty columns)', () => {
+    render(
+      <DualVelocityStrip
+        left={{ velocities: [0.9, 0.88, 0.86, 0.84] }}
+        right={{ velocities: [0.85, 0.8] }}
+        variant="compact"
+      />
+    )
+    expect(wingDown().queryAllByTestId('velocity-slot-empty')).toHaveLength(2)
+  })
+})
+
 describe('DualVelocityStrip rail variant', () => {
   it('renders compact bars but no value labels or reference lines', () => {
     render(

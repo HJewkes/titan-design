@@ -743,11 +743,12 @@ export interface DualVelocityStripProps extends ViewProps {
   /** Index of the most-recently-completed rep; that mirrored pair animates in (hero only). */
   liveRepIndex?: number
   /**
-   * `hero` — the across-the-room wall scale: tall wings, per-rep m/s value labels, and
-   * a dashed running-best reference line per side. `rail` — the compact rail-expanded
-   * scale: the same diverging form, no labels / reference lines.
+   * `hero` — the across-the-room wall scale: tall wings, per-rep m/s value labels, and a dashed
+   * running-best reference line per side. `compact` — the flat resting form: dual-hero but flat +
+   * no labels (both wings are the `compact` VelocityStrip variant), same aligned structure + shared
+   * gutter + axis. `rail` — the compact rail-expanded lean renderer, no labels / reference lines.
    */
-  variant?: 'hero' | 'rail'
+  variant?: 'hero' | 'compact' | 'rail'
   /**
    * Bar-height scaling, shared across BOTH wings so the L/R asymmetry reads as bar
    * length against one scale. `peak` (default) = the pair's max +headroom; `fixed` =
@@ -763,6 +764,8 @@ export interface DualVelocityStripProps extends ViewProps {
 const DUAL_HERO_HEIGHT = SET_BAR_DEFAULT_HEIGHT
 /** Default `rail` diverging height (px) — compact enough to sit inside a rail slot. */
 const DUAL_RAIL_HEIGHT = 96
+/** Default `compact` diverging height (px) — two flat compact wings stacked at the shared axis. */
+const DUAL_COMPACT_HEIGHT = 56
 
 // --- Rail geometry (the compact dedicated path) ------------------------------
 // The `hero` variant COMPOSES two single VelocityStrip heroes, so it inherits the
@@ -920,7 +923,8 @@ function DualVelocityHero({
   className,
   label,
   viewProps,
-}: DualChartProps & { liveRepIndex?: number }) {
+  flat = false,
+}: DualChartProps & { liveRepIndex?: number; flat?: boolean }) {
   const plotHalf = height / 2
   // ONE shared height scale across both wings so the L/R asymmetry reads as bar length, not two
   // scales; each composed strip still colors by its OWN loss and draws its OWN best reference.
@@ -939,9 +943,11 @@ function DualVelocityHero({
 
   // Each wing renders the SHARED aligned structure (`columnSlots`); its own `velocities` still drive
   // bar height / per-side loss color / the running-best reference.
+  // `flat` → the dual-COMPACT: each wing is the flat `compact` variant (uniform bars, no value
+  // labels / VL bands); otherwise the value-height `hero`. Same aligned structure + shared axis either way.
   const wing = (orientation: 'up' | 'down', columns: SetSlot[], done: number[]) => (
     <VelocityStrip
-      variant="hero"
+      variant={flat ? 'compact' : 'hero'}
       orientation={orientation}
       velocities={done}
       columnSlots={columns}
@@ -949,7 +955,7 @@ function DualVelocityHero({
       scaleMax={scale === 'fixed' ? undefined : sharedMax}
       barColor={barColor}
       zones={zones}
-      liveRepIndex={liveRepIndex}
+      liveRepIndex={flat ? undefined : liveRepIndex}
       height={plotHalf}
       hideBaseline
     />
@@ -1140,7 +1146,13 @@ export function DualVelocityStrip({
   className,
   ...props
 }: DualVelocityStripProps) {
-  const resolvedHeight = height ?? (variant === 'hero' ? DUAL_HERO_HEIGHT : DUAL_RAIL_HEIGHT)
+  const resolvedHeight =
+    height ??
+    (variant === 'hero'
+      ? DUAL_HERO_HEIGHT
+      : variant === 'compact'
+        ? DUAL_COMPACT_HEIGHT
+        : DUAL_RAIL_HEIGHT)
   // The done arrays drive the shared max + per-side best + the summary counts; the raw streams
   // flow to the hero wings so a side's set-type WINDOWS render (the `rail` renderer uses `*Done`).
   const leftDone = streamDone(left)
@@ -1167,10 +1179,9 @@ export function DualVelocityStrip({
     viewProps: props,
   }
 
-  return variant === 'rail' ? (
-    <DualVelocityRail {...shared} />
-  ) : (
-    <DualVelocityHero {...shared} liveRepIndex={liveRepIndex} />
+  if (variant === 'rail') return <DualVelocityRail {...shared} />
+  return (
+    <DualVelocityHero {...shared} liveRepIndex={liveRepIndex} flat={variant === 'compact'} />
   )
 }
 
@@ -1348,9 +1359,12 @@ export function VelocityStrip({
     // `compact` = the flat resting form: SetBarChart in FLAT mode (uniform short bars, no value
     // labels), sharing hero's geometry — same colors, paper, 0.08 spacing, proportional chunk-notch,
     // todo/variable/continue slots, and gutter — so a compact↔expanded toggle only changes bar HEIGHT.
-    const compactSlots: SetSlot[] = set
-      ? buildSlots(set).map((s) => ({ kind: s.kind, value: s.velocity, leadingGap: s.leadingGap }))
-      : doneVelocities.map((v) => ({ kind: 'rep', value: v }))
+    // `columnSlots` (the diverging dual-compact's shared index-locked structure) wins, like the hero.
+    const compactSlots: SetSlot[] =
+      columnSlots ??
+      (set
+        ? buildSlots(set).map((s) => ({ kind: s.kind, value: s.velocity, leadingGap: s.leadingGap }))
+        : doneVelocities.map((v) => ({ kind: 'rep', value: v })))
     const compactHeight = height === EXPANDED_HEIGHT ? COMPACT_HEIGHT : height
     return (
       <SetBarChart
@@ -1361,7 +1375,7 @@ export function VelocityStrip({
         scaleMax={scaleMax}
         orientation={orientation}
         flat
-        targetReps={set ? undefined : targetReps}
+        targetReps={set || columnSlots ? undefined : targetReps}
         label={label}
         hideBaseline={hideBaseline}
         testID="velocity-strip-compact"
