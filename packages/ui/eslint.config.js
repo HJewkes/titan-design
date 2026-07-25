@@ -3,6 +3,7 @@ const tseslint = require('typescript-eslint')
 const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
 const noDeviceInternals = require('./eslint-rules/no-device-internals')
+const noRawColor = require('./eslint-rules/no-raw-color')
 
 module.exports = tseslint.config(
   // Global ignores
@@ -80,10 +81,46 @@ module.exports = tseslint.config(
   {
     files: ['src/**/*.{ts,tsx}'],
     plugins: {
-      titan: { rules: { 'no-device-internals': noDeviceInternals } },
+      // The whole `titan` plugin is declared here — a flat config may only
+      // define a plugin name once, so rules scoped differently (see no-raw-color
+      // below) are enabled in their own block without re-declaring `plugins`.
+      titan: {
+        rules: {
+          'no-device-internals': noDeviceInternals,
+          'no-raw-color': noRawColor,
+        },
+      },
     },
     rules: {
       'titan/no-device-internals': 'error',
+    },
+  },
+
+  // Colour has one source of truth: the ramps, and the semantic tokens that
+  // reference them. A raw colour in a component can't theme, can't be audited
+  // for contrast/CVD, and won't move when the ramps are re-spaced — the v0.10.0
+  // surface work re-spaced the dark ramp and left every hardcoded colour behind.
+  //
+  // Errors, but RATCHETED: each file's existing count is recorded in
+  // raw-color-baseline.json and only occurrences beyond it fail. New colour is
+  // blocked immediately; the backlog burns down file by file. A rule that failed
+  // on all ~250 existing violations would just get switched off.
+  //
+  // src/theme/** is exempt — it IS the colour system.
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: [
+      // The colour system itself.
+      'src/theme/**',
+      // Colour maths (parsing/blending) legitimately handles literal values.
+      'src/utils/colors.ts',
+      // Tests assert against literal hex on purpose: under the RNW vitest alias
+      // a token reference resolves to `var(...)`, which breaks toHaveStyle. A
+      // literal is the correct assertion, not debt.
+      'src/**/*.test.{ts,tsx}',
+    ],
+    rules: {
+      'titan/no-raw-color': 'error',
     },
   },
 
