@@ -181,6 +181,15 @@ const LABEL_GAP = 3
 const GAP_RATIO = 0.08
 /** Floor on the proportional inter-bar gap (px) — narrow plots tighten to ~expanded density. */
 const MIN_BAR_GAP = 2
+/**
+ * The EXTRA margin at a chunk boundary (drop sub-load / myo cluster / cluster intra-rest), as a
+ * fraction of bar width — proportional so it scales with the dense spacing and reads as a clear
+ * cluster break (total boundary gap ≈ this + the normal gapRatio ≈ ⅓ of a bar). Floored so small
+ * charts still separate clusters.
+ */
+const CHUNK_NOTCH_RATIO = 0.25
+/** Floor on the chunk-boundary extra margin (px). */
+const CHUNK_NOTCH_MIN_PX = 10
 /** Cap on a single bar's width so a 2–3 rep set doesn't render slab-wide bars (px). */
 const BAR_MAX_WIDTH = 120
 /** Below this per-bar width the value labels collide, so all but the peak + live rep are dropped. */
@@ -335,7 +344,13 @@ export function SetBarChart({
         {renderReference?.(geometry)}
 
         {cells.map((slot, i) => {
-          const extraGap = Math.max(0, (slot.leadingGap ?? REP_GAP) - REP_GAP)
+          // A chunk boundary (leadingGap > the ordinary rep gap) gets extra margin PROPORTIONAL to
+          // bar width (floored) so the cluster break scales with the dense spacing and stays clear;
+          // ordinary cells add nothing beyond the container's flex gap.
+          const isChunkBoundary = (slot.leadingGap ?? REP_GAP) > REP_GAP
+          const extraGap = isChunkBoundary
+            ? Math.max(CHUNK_NOTCH_MIN_PX, CHUNK_NOTCH_RATIO * barWidth)
+            : 0
           const column: ViewStyle = {
             flex: 1,
             maxWidth: BAR_MAX_WIDTH,

@@ -528,3 +528,24 @@ export const HeroWithSlotLabel: Story = {
   },
   decorators: [heroDecorator],
 }
+
+/**
+ * Standalone DROP-set hero — three sub-loads, each separated by the WIDE chunk-notch. The notch is
+ * now PROPORTIONAL to bar width (≈¼ of a bar extra, ≈⅓ of a bar total), so against the dense 0.08
+ * rep spacing the cluster breaks read clearly — you can tell the three loads apart at a glance.
+ */
+export const HeroDropClusters: Story = {
+  args: {
+    variant: 'hero',
+    scale: 'fixed',
+    set: {
+      type: 'drop',
+      subloads: [
+        [0.95, 0.92, 0.88],
+        [0.82, 0.78, 0.74],
+        [0.68, 0.62, 0.55],
+      ],
+    },
+  },
+  decorators: [heroDecorator],
+}
