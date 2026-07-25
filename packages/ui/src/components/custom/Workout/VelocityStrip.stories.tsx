@@ -582,3 +582,41 @@ export const HeroDropClusters: Story = {
   },
   decorators: [heroDecorator],
 }
+
+/**
+ * Compact ↔ expanded IN PLACE — the SAME drop set as a flat `compact` strip (top) and the
+ * value-height `expanded` spotlight (bottom), at the SAME width. Both compose SetBarChart, so the
+ * bars sit in IDENTICAL x-positions / widths / gaps / chunk-notches — the toggle only changes bar
+ * HEIGHTS (flat ↔ velocity), never the horizontal layout (no reflow).
+ */
+export const CompactExpandedInPlace: Story = {
+  render: () => {
+    const set = {
+      type: 'drop' as const,
+      subloads: [
+        [1.0, 0.95],
+        [0.85, 0.8],
+        [0.7, 0.62],
+      ],
+    }
+    return (
+      <View style={{ width: 340, padding: 20, gap: 16, backgroundColor: '#0E0E0E' }}>
+        <Text style={{ color: '#8A8A8A', fontSize: 11, fontWeight: '700', letterSpacing: 1 }}>
+          COMPACT (flat)
+        </Text>
+        <VelocityStrip variant="compact" height={28} set={set} scale="fixed" />
+        <Text style={{ color: '#8A8A8A', fontSize: 11, fontWeight: '700', letterSpacing: 1 }}>
+          EXPANDED (value-height spotlight)
+        </Text>
+        <VelocityStrip
+          variant="expanded"
+          showNumbers={false}
+          showInfo={false}
+          height={60}
+          set={set}
+          scale="fixed"
+        />
+      </View>
+    )
+  },
+}
