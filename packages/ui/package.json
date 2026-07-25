@@ -72,7 +72,8 @@
     "test:visual:tokens": "playwright test --config playwright.tokens.config.ts",
     "test:visual:stories": "playwright test stories.spec.ts",
     "test:visual:stories:update": "playwright test stories.spec.ts --update-snapshots",
-    "prepublishOnly": "tsup && vitest --run"
+    "prepublishOnly": "tsup && vitest --run",
+    "lint:colors:baseline": "node scripts/update-raw-color-baseline.mjs"
   },
   "peerDependencies": {
     "nativewind": "^4.2.1",

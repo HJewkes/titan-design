@@ -11,7 +11,10 @@ import {
   sequentialEffort,
   bestTextColor,
 } from './tokens/primitives'
+import { WORKOUT_TOKENS } from './workout-tokens'
 import { getSemanticColors } from './tokens/semantic'
+import { WORKOUT_PILL_DELOAD } from './extracted-colors-dataviz'
+import { SPINNER_PRIMARY } from './extracted-colors-ui'
 
 const t = getSemanticColors('dark')
 
@@ -130,16 +133,19 @@ const RAMP_NAMES: Array<[keyof typeof primitiveRamps, string]> = [
   ['magenta', 'Magenta'],
 ]
 
+// Sourced from the real semantic-token layer (not re-derived) so the story can't
+// silently desync if semantic.ts changes. deload/spinner come from the same
+// extracted-colors modules the components consume.
 const SEM = {
-  success: primitiveRamps.green[300],
-  warning: primitiveRamps.amber[300],
-  error: primitiveRamps.red[600],
-  info: primitiveRamps.blue[500],
-  deload: primitiveRamps.magenta[600],
-  brand: primitiveRamps.orange[400],
-  brandDark: primitiveRamps.orange[600],
-  brandSecondary: primitiveRamps.cyan[600],
-  spinner: primitiveRamps.cyan[600],
+  success: t['status-success'],
+  warning: t['status-warning'],
+  error: t['status-error'],
+  info: t['status-info'],
+  deload: WORKOUT_PILL_DELOAD,
+  brand: t['brand-primary'],
+  brandDark: t['brand-primary-dark'],
+  brandSecondary: t['brand-secondary'],
+  spinner: SPINNER_PRIMARY,
   neutral: primitiveColors.neutral[500],
 } as const
 
@@ -393,15 +399,11 @@ export const Overview: StoryObj = {
             ))}
           </View>
         </Demo>
-        {/* VelocityStrip / RPE — effort sub-sample */}
+        {/* VelocityStrip / RPE — the real 4-band production scale (WORKOUT_TOKENS.scale,
+            sequentialEffort indices [0,2,3,4] → red-600, NOT red-700). */}
         <Demo label="VelocityStrip · RPE">
           <View style={{ flexDirection: 'row', gap: 3 }}>
-            {[
-              sequentialEffort[0],
-              sequentialEffort[2],
-              sequentialEffort[3],
-              sequentialEffort[5],
-            ].map((hex, i) => (
+            {Object.values(WORKOUT_TOKENS.scale).map((hex, i) => (
               <View
                 key={i}
                 style={{
