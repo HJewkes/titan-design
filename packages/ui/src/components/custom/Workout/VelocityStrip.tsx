@@ -14,7 +14,10 @@ import {
   scaleDenominator,
   ChartSideRail,
   SET_BAR_DEFAULT_HEIGHT,
+  BAR_MAX_WIDTH,
+  computeBarLayout,
 } from '../charts/SetBarChart'
+import type { LayoutChangeEvent } from 'react-native'
 import { ANIMATION_EASING } from '../charts/live-rep-growth'
 
 /**
@@ -456,7 +459,7 @@ function setAccessibilityLabel(set: VelocitySet, repCount: number): string {
 /** Default framed `expanded` chart height (px). */
 const EXPANDED_HEIGHT = 60
 /** Default `compact` (flat resting strip) height (px) — a THIN radius-2 pill row, the resting glance. */
-const COMPACT_HEIGHT = 12
+const COMPACT_HEIGHT = 8
 
 /** The dashed running-best reference line color (the lightest charcoal step). */
 const HERO_REFERENCE_COLOR = primitiveColors.charcoal[0]
@@ -713,18 +716,22 @@ export interface DualVelocityStripProps extends ViewProps {
 const DUAL_HERO_HEIGHT = SET_BAR_DEFAULT_HEIGHT
 /** Default `rail` diverging height (px) — compact enough to sit inside a rail slot. */
 const DUAL_RAIL_HEIGHT = 96
-/** Default `compact` diverging height (px) — two flat compact wings stacked at the shared axis. */
-const DUAL_COMPACT_HEIGHT = 28
+/** Default `compact` diverging height (px) — two 5px rounded L/R sub-segments + the 1.5px fold gap. */
+const DUAL_COMPACT_HEIGHT = 11.5
 
 // --- Rail geometry (the compact dedicated path) ------------------------------
 // The `hero` variant COMPOSES two single VelocityStrip heroes, so it inherits the
 // hero geometry for free. The `rail` variant is far smaller than a hero (no value
 // labels, reference lines, paper, or label headroom), so composing the hero would
 // drag all of that in; it keeps a lean dedicated renderer at these compact metrics.
-const RAIL_GAP = 3
-const RAIL_MAX_COL = 26
 const RAIL_RADIUS = 2
 const RAIL_MIN_BAR = 3
+/** The vertical gap between the up/down wings on the axis-less rail (value-height dual-expanded). */
+const DUAL_WING_GAP = 2
+/** The centre gap (px) splitting the folded compact dual's L (top) and R (bottom) halves — a gap, no line. */
+const COMPACT_FOLD_GAP = 1.5
+/** Each folded-compact sub-segment's height (px) — a rounded pill per side, above/below the fold gap. */
+const COMPACT_FOLD_HALF = 5
 
 /** One side's performed per-rep velocities — flattened from a `set` descriptor, or the raw array. */
 function streamDone(stream: DualVelocityStream): number[] {
@@ -827,25 +834,6 @@ interface DualChartProps {
   viewProps: ViewProps
 }
 
-/** The centre axis — the single hero's baseline tone (surface-relative), drawn once where the wings meet. */
-function DualCentreAxis({ plotHalf, color }: { plotHalf: number; color: string }) {
-  return (
-    <View
-      accessibilityElementsHidden
-      style={{
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: plotHalf - 1,
-        height: 2,
-        backgroundColor: color,
-        pointerEvents: 'none',
-      }}
-      testID="dual-velocity-axis"
-    />
-  )
-}
-
 /**
  * The `hero` diverging chart — COMPOSED from two single {@link VelocityStrip} heroes: an `up` hero
  * over a `down` (vertically-mirrored) hero, sharing ONE height scale via {@link
@@ -872,9 +860,9 @@ function DualVelocityHero({
   className,
   label,
   viewProps,
-  flat = false,
-}: DualChartProps & { liveRepIndex?: number; flat?: boolean }) {
-  const plotHalf = height / 2
+}: DualChartProps & { liveRepIndex?: number }) {
+  // The two wings are separated by the SAME small gap as the expanded/rail dual (no centre-axis rule).
+  const plotHalf = (height - DUAL_WING_GAP) / 2
   // ONE shared height scale across both wings so the L/R asymmetry reads as bar length, not two
   // scales; each composed strip still colors by its OWN loss and draws its OWN best reference.
   // `peak` shares the pair max via `scaleMax`; `fixed` shares the cross-set ceiling (both wings
@@ -887,16 +875,13 @@ function DualVelocityHero({
     leftStream ? streamNaturalSlots(leftStream, targetReps) : [],
     rightStream ? streamNaturalSlots(rightStream, targetReps) : []
   )
-  const axisColor = useOnSurfaceColor('tertiary')
   const { style: externalStyle, ...restProps } = viewProps
 
   // Each wing renders the SHARED aligned structure (`columnSlots`); its own `velocities` still drive
   // bar height / per-side loss color / the running-best reference.
-  // `flat` → the dual-COMPACT: each wing is the flat `compact` variant (uniform bars, no value
-  // labels / VL bands); otherwise the value-height `hero`. Same aligned structure + shared axis either way.
   const wing = (orientation: 'up' | 'down', columns: SetSlot[], done: number[]) => (
     <VelocityStrip
-      variant={flat ? 'compact' : 'hero'}
+      variant="hero"
       orientation={orientation}
       velocities={done}
       columnSlots={columns}
@@ -904,7 +889,7 @@ function DualVelocityHero({
       scaleMax={scale === 'fixed' ? undefined : sharedMax}
       barColor={barColor}
       zones={zones}
-      liveRepIndex={flat ? undefined : liveRepIndex}
+      liveRepIndex={liveRepIndex}
       height={plotHalf}
       hideBaseline
     />
@@ -919,8 +904,8 @@ function DualVelocityHero({
       testID="dual-velocity-strip"
       {...restProps}
     >
-      {/* The SHARED gutter/side-rail (34px + right hairline axis) — one section per wing. A single
-          hero renders the same rail with ONE section, so it's pixel-identical to this upper half. */}
+      {/* The SHARED gutter/side-rail (34px, no hairline) — one section per wing. A single hero renders
+          the same rail with ONE section, so it's pixel-identical to this upper half. */}
       <ChartSideRail
         sectionExtent={plotHalf}
         variant="hero"
@@ -930,17 +915,15 @@ function DualVelocityHero({
         ]}
       />
 
-      <View style={{ flex: 1, position: 'relative' }}>
-        {/* The two composed heroes. Their own labels are redundant with the dual's summary label,
-            so the wings are hidden from the a11y tree (testIDs still resolve for tests). */}
+      {/* The two composed heroes, separated by the shared wing gap (no centre-axis rule). Their own
+          labels are redundant with the dual's summary label, so the wings are a11y-hidden. */}
+      <View style={{ flex: 1, gap: DUAL_WING_GAP }}>
         <View accessibilityElementsHidden testID="dual-velocity-wing-up">
           {wing('up', aligned.left, leftDone)}
         </View>
         <View accessibilityElementsHidden testID="dual-velocity-wing-down">
           {wing('down', aligned.right, rightDone)}
         </View>
-
-        <DualCentreAxis plotHalf={plotHalf} color={axisColor} />
       </View>
     </View>
   )
@@ -957,8 +940,6 @@ function DualVelocityHero({
 function DualVelocityRail({
   leftDone,
   rightDone,
-  leftLabel,
-  rightLabel,
   zones,
   barColor,
   scale,
@@ -968,7 +949,9 @@ function DualVelocityRail({
   label,
   viewProps,
 }: DualChartProps) {
-  const plotHalf = height / 2
+  // Rail (= the lean dual-expanded) drops the centre axis, the gutter/vertical-axis, and the side
+  // labels; the two wings read as separate rows via a small vertical gap instead.
+  const plotHalf = (height - DUAL_WING_GAP) / 2
   const sharedMax = Math.max(...leftDone, ...rightDone, 0)
   const scaleDenom = scaleDenominator(scale, sharedMax)
   const bestL = Math.max(...leftDone, 0)
@@ -983,6 +966,10 @@ function DualVelocityRail({
   const slotsL = railSlots(leftDone, targetReps)
   const slotsR = railSlots(rightDone, targetReps)
   const columns = Math.max(slotsL.length, slotsR.length)
+  // Share the single chart's adaptive column geometry so the rail's bars land at the SAME widths +
+  // gaps as the single expanded / hero (one shared layout via computeBarLayout).
+  const [plotW, setPlotW] = useState(0)
+  const { gap } = computeBarLayout(plotW, columns)
   const { style: externalStyle, ...restProps } = viewProps
 
   const railBar = (
@@ -1030,21 +1017,11 @@ function DualVelocityRail({
       accessibilityRole="image"
       accessibilityLabel={label}
       testID="dual-velocity-strip"
+      onLayout={(e: LayoutChangeEvent) => setPlotW(e.nativeEvent.layout.width)}
       {...restProps}
     >
-      <ChartSideRail
-        sectionExtent={plotHalf}
-        variant="rail"
-        sections={[
-          { label: leftLabel, testID: 'dual-velocity-side-label-L' },
-          { label: rightLabel, testID: 'dual-velocity-side-label-R' },
-        ]}
-      />
-
-      <View style={{ flex: 1, position: 'relative' }}>
-        <View
-          style={{ flexDirection: 'row', gap: RAIL_GAP, height: '100%', alignItems: 'stretch' }}
-        >
+      <View style={{ flex: 1 }}>
+        <View style={{ flexDirection: 'row', gap, height: '100%', alignItems: 'stretch' }}>
           {Array.from({ length: columns }, (_, i) => {
             const lSlot = slotsL[i]
             const rSlot = slotsR[i]
@@ -1052,7 +1029,7 @@ function DualVelocityRail({
               <View
                 key={i}
                 accessibilityElementsHidden
-                style={{ flex: 1, maxWidth: RAIL_MAX_COL, height: '100%' }}
+                style={{ flex: 1, maxWidth: BAR_MAX_WIDTH, height: '100%', gap: DUAL_WING_GAP }}
               >
                 <View
                   style={{ height: plotHalf, justifyContent: 'flex-end', alignItems: 'center' }}
@@ -1068,9 +1045,88 @@ function DualVelocityRail({
             )
           })}
         </View>
-
-        <DualCentreAxis plotHalf={plotHalf} color={placeholder} />
       </View>
+    </View>
+  )
+}
+
+/**
+ * The `compact` diverging chart — the resting dual FOLDED into ONE 8px strip. Because the compact
+ * bars are flat (colour-encoded, not height-encoded), the diverging pair need not stack into two
+ * rows: each rep column splits at the centre into an L (top) and R (bottom) flat half (≈3.25px each,
+ * a {@link COMPACT_FOLD_GAP}px gap between — a gap, not a line), so the pair occupies the SAME 8px as
+ * the single compact — the per-rep analogue of the north-star stacked-halves. Index-locked (a lagging
+ * side's un-logged reps render as faint empties); no gutter / labels / axis (no room at 8px). The
+ * value-height diverging (where bar length must encode velocity) lives in `hero` / `rail`.
+ */
+function DualVelocityCompactStrip({
+  leftDone,
+  rightDone,
+  zones,
+  barColor,
+  targetReps,
+  height,
+  className,
+  label,
+  viewProps,
+}: DualChartProps) {
+  // Each side is a fixed-height rounded sub-segment (a little pill), stacked above/below the fold gap.
+  const half = COMPACT_FOLD_HALF
+  const zoneColorFor = makeBarColorFor(zones)
+  const bestL = Math.max(...leftDone, 0)
+  const bestR = Math.max(...rightDone, 0)
+  const colorFor = (v: number, best: number): string =>
+    barColor === 'loss' ? getVelocityLossColor(velocityLossForRep(v, best)) : zoneColorFor(v)
+  const emptyColor = useOnSurfaceColor('tertiary')
+  const slotsL = railSlots(leftDone, targetReps)
+  const slotsR = railSlots(rightDone, targetReps)
+  const columns = Math.max(slotsL.length, slotsR.length)
+  // Measure the plot so the columns land at the SAME widths + gaps as the single chart (one shared
+  // geometry via computeBarLayout) — width 0 (unmeasured) falls back to the layout's own default.
+  const [plotW, setPlotW] = useState(0)
+  const { gap } = computeBarLayout(plotW, columns)
+  const { style: externalStyle, ...restProps } = viewProps
+
+  const foldHalf = (slot: { velocity?: number } | undefined, best: number, testID: string) => {
+    // Each sub-segment is a self-contained rounded pill (all corners), not a shared top/bottom cap.
+    const radius = { borderRadius: RAIL_RADIUS }
+    const v = slot?.velocity
+    if (v == null) {
+      return (
+        <View
+          style={{ height: half, backgroundColor: emptyColor, opacity: 0.35, ...radius }}
+          testID={`${testID}-empty`}
+        />
+      )
+    }
+    return (
+      <View
+        style={{ height: half, backgroundColor: colorFor(v, best), ...radius }}
+        testID={testID}
+      />
+    )
+  }
+
+  return (
+    <View
+      className={className}
+      style={[{ height, flexDirection: 'row', gap, alignItems: 'stretch' }, externalStyle]}
+      accessibilityRole="image"
+      accessibilityLabel={label}
+      testID="dual-velocity-strip"
+      onLayout={(e: LayoutChangeEvent) => setPlotW(e.nativeEvent.layout.width)}
+      {...restProps}
+    >
+      {Array.from({ length: columns }, (_, i) => (
+        <View
+          key={i}
+          accessibilityElementsHidden
+          style={{ flex: 1, maxWidth: BAR_MAX_WIDTH, gap: COMPACT_FOLD_GAP }}
+        >
+          {foldHalf(slotsL[i], bestL, `dual-velocity-bar-L-${i}`)}
+          {foldHalf(slotsR[i], bestR, `dual-velocity-bar-R-${i}`)}
+        </View>
+      ))}
     </View>
   )
 }
@@ -1079,8 +1135,9 @@ function DualVelocityRail({
  * The dual-voltra (bilateral) DIVERGING per-rep velocity chart. The up-wing stream grows UP, the
  * down-wing stream grows DOWN from one shared centre axis. The `hero` variant COMPOSES two single
  * {@link VelocityStrip} heroes (see {@link DualVelocityHero}) so any hero improvement reaches the
- * dual for free; `rail` uses a lean compact renderer ({@link DualVelocityRail}). Single-voltra sets
- * keep using {@link VelocityStrip} (`variant="hero"`) — unchanged.
+ * dual for free; `rail` uses a lean value-height renderer ({@link DualVelocityRail}); `compact` folds
+ * the pair into one 8px strip ({@link DualVelocityCompactStrip}). Single-voltra sets keep using
+ * {@link VelocityStrip} (`variant="hero"`) — unchanged.
  */
 export function DualVelocityStrip({
   left,
@@ -1129,7 +1186,8 @@ export function DualVelocityStrip({
   }
 
   if (variant === 'rail') return <DualVelocityRail {...shared} />
-  return <DualVelocityHero {...shared} liveRepIndex={liveRepIndex} flat={variant === 'compact'} />
+  if (variant === 'compact') return <DualVelocityCompactStrip {...shared} />
+  return <DualVelocityHero {...shared} liveRepIndex={liveRepIndex} />
 }
 
 export function VelocityStrip({
@@ -1255,7 +1313,7 @@ export function VelocityStrip({
         showValueLabels
         formatValue={formatVelocity}
         renderReference={(g) => velocityReferenceOverlay(g, lossBandsOn)}
-        hideBaseline={hideBaseline}
+        hideBaseline
         testID="velocity-strip-hero"
         testIDPrefix="velocity"
         accessibilityLabel={heroLabel}
@@ -1293,7 +1351,7 @@ export function VelocityStrip({
         cornerStyle="all"
         targetReps={set || columnSlots ? undefined : targetReps}
         label={label}
-        hideBaseline={hideBaseline}
+        hideBaseline
         testID="velocity-strip-compact"
         testIDPrefix="velocity"
         accessibilityLabel={miniLabel}
@@ -1322,10 +1380,10 @@ export function VelocityStrip({
         liveRepIndex={liveRepIndex}
         isNewPeak={isNewPeak}
         barRadius={2}
-        cornerStyle="all"
+        cornerStyle="top"
         targetReps={set ? undefined : targetReps}
         label={label}
-        hideBaseline={hideBaseline}
+        hideBaseline
         testID="velocity-strip-spotlight"
         testIDPrefix="velocity"
         accessibilityLabel={miniLabel}
@@ -1412,7 +1470,7 @@ export function VelocityStrip({
         renderBarOverlay={renderFramedBarOverlay}
         targetReps={set ? undefined : targetReps}
         barRadius={2}
-        cornerStyle="all"
+        cornerStyle="top"
         hideBaseline
         testIDPrefix="velocity"
       />

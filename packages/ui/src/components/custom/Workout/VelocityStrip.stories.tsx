@@ -1,7 +1,12 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text, Pressable, Animated } from 'react-native'
-import { VelocityStrip, getVelocityLossColor } from './VelocityStrip'
+import { VelocityStrip, DualVelocityStrip, getVelocityLossColor } from './VelocityStrip'
+import { velColor } from './setHeadingKit'
+import { surfaceRampDark } from '../../../theme/tokens/primitives'
+
+/** The real dark surface-background plane — the stories sit on the actual token, not an ad-hoc grey. */
+const SURFACE_BG = surfaceRampDark.background
 import { SetBarChart, type SetSlot } from '../charts/SetBarChart'
 import { formatVelocity } from '../../../utils/workout-format'
 import { Surface } from '../../ui/surface/Surface'
@@ -110,6 +115,171 @@ export const Playground: Story = {
   ],
 }
 
+// --- All-views alignment matrix (the reorg centerpiece) ----------------------
+// ONE dataset shown across all three views (compact / expanded / hero), each in its
+// SINGLE and its DUAL (diverging) form. The whole SetBarChart fold exists so these
+// share ONE geometry — this is the story that catches drift at a glance. Single = one
+// slot; dual = that slot + a lagging second slot (so the index-lock reads too).
+
+const AV_ONE = [0.95, 0.9, 0.86, 0.8, 0.72]
+const AV_L = { velocities: [0.95, 0.9, 0.86, 0.8, 0.72], label: 'Left' }
+const AV_R = { velocities: [0.9, 0.83, 0.75, 0.66], label: 'Right' }
+
+const AV_VIEWS: { view: 'compact' | 'expanded' | 'hero'; sH: number; dH: number; note: string }[] =
+  [
+    { view: 'compact', sH: 11.5, dH: 11.5, note: 'single fills · dual folds to rounded L/R pills' },
+    { view: 'expanded', sH: 60, dH: 64, note: 'value-height bars' },
+    { view: 'hero', sH: 180, dH: 200, note: 'wall treatment' },
+  ]
+// The hero reserves a slot-label gutter (34px); compact/expanded are gutter-less in production. Indent
+// them here so every row's bars line up under the hero's for a clean comparison (matrix-only).
+const AV_GUTTER = 34
+
+function AVLabel({ text }: { text: string }) {
+  return (
+    <Text
+      style={{
+        color: '#8A8A8A',
+        fontSize: 10,
+        fontWeight: '700',
+        letterSpacing: 1,
+        textTransform: 'uppercase',
+      }}
+    >
+      {text}
+    </Text>
+  )
+}
+
+/**
+ * All Views — the single × dual alignment matrix. Rows = the three views (compact / expanded /
+ * hero); columns = single-slot vs diverging-dual. The dual `expanded` cell uses the lean `rail`
+ * renderer (dual-expanded). This is the centerpiece: it proves the three views + their dual forms
+ * all read from one shared geometry.
+ */
+export const AllViews: Story = {
+  name: 'All Views · single × dual matrix',
+  render: () => (
+    <View style={{ padding: 24, backgroundColor: SURFACE_BG, gap: 26, width: 760 }}>
+      <View style={{ flexDirection: 'row', gap: 16 }}>
+        <View style={{ width: 92 }} />
+        <View style={{ flex: 1 }}>
+          <AVLabel text="Single slot" />
+        </View>
+        <View style={{ flex: 1 }}>
+          <AVLabel text="Dual · diverging" />
+        </View>
+      </View>
+      <Text style={{ color: '#5A5A5A', fontSize: 10, lineHeight: 15 }}>
+        The SAME set across every row — compact is the flattened expanded (identical bar
+        x-positions, only the heights change). Shown at actual size.
+      </Text>
+      {AV_VIEWS.map(({ view, sH, dH, note }) => (
+        <View key={view} style={{ flexDirection: 'row', gap: 16, alignItems: 'center' }}>
+          <View style={{ width: 92, gap: 3 }}>
+            <AVLabel text={view} />
+            <Text style={{ color: '#5A5A5A', fontSize: 9 }}>{note}</Text>
+          </View>
+          <View style={{ flex: 1, paddingLeft: view === 'hero' ? 0 : AV_GUTTER }}>
+            <VelocityStrip
+              velocities={AV_ONE}
+              variant={view}
+              height={sH}
+              scale="peak"
+              {...(view === 'hero' ? { label: 'Set' } : {})}
+              {...(view === 'expanded' ? { showNumbers: false, showInfo: false } : {})}
+            />
+          </View>
+          <View style={{ flex: 1, paddingLeft: view === 'hero' ? 0 : AV_GUTTER }}>
+            <DualVelocityStrip
+              left={AV_L}
+              right={AV_R}
+              variant={view === 'expanded' ? 'rail' : view}
+              height={dH}
+              scale="peak"
+            />
+          </View>
+        </View>
+      ))}
+    </View>
+  ),
+}
+
+// --- Compact-dual sizing study: does the diverging need 2×? ------------------
+// At the flat RESTING scale bars are color-encoded, not height-encoded, so the diverging pair can
+// share ONE 8px strip by splitting each rep column at the centre (L top-half / R bottom-half) — the
+// north-star stacked-halves model with per-rep solid bars. The 2× (two full rows) is only forced for
+// the value-height EXPANDED dual. This study renders both so the 4px-half legibility can be judged.
+
+const CD_L = [0.95, 0.9, 0.86, 0.8, 0.72]
+const CD_R = [0.9, 0.83, 0.75, 0.66] // lagging — 5th column empty
+
+function CDcol({ children }: { children: ReactNode }) {
+  return <View style={{ flex: 1, maxWidth: 26, gap: 1 }}>{children}</View>
+}
+function CDbar({ v, edge }: { v?: number; edge: 'top' | 'bottom' | 'full' }) {
+  const radius =
+    edge === 'full'
+      ? { borderRadius: 2 }
+      : edge === 'top'
+        ? { borderTopLeftRadius: 2, borderTopRightRadius: 2 }
+        : { borderBottomLeftRadius: 2, borderBottomRightRadius: 2 }
+  const h = edge === 'full' ? 8 : 4
+  return (
+    <View
+      style={{
+        height: h,
+        backgroundColor: v == null ? '#2C2A28' : velColor(v),
+        ...radius,
+      }}
+    />
+  )
+}
+function CDrow({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <View style={{ gap: 6 }}>
+      <AVLabel text={label} />
+      <View style={{ flexDirection: 'row', gap: 3, width: 200 }}>{children}</View>
+    </View>
+  )
+}
+
+/**
+ * Compact-dual sizing study — the single 8px strip, the diverging folded into the SAME 8px (L
+ * top-half / R bottom-half per rep, 4px each), and the 2× two-row version, so the 4px-half
+ * legibility can be judged against the "does it have to be 2×?" question.
+ */
+export const CompactDualSizingStudy: Story = {
+  render: () => (
+    <View style={{ padding: 24, backgroundColor: SURFACE_BG, gap: 22, width: 260 }}>
+      <CDrow label="Single · 8px">
+        {CD_L.map((v, i) => (
+          <CDcol key={i}>
+            <CDbar v={v} edge="full" />
+          </CDcol>
+        ))}
+      </CDrow>
+      <CDrow label="Dual · folded into 8px (4px halves)">
+        {CD_L.map((v, i) => (
+          <CDcol key={i}>
+            <CDbar v={v} edge="top" />
+            <CDbar v={CD_R[i]} edge="bottom" />
+          </CDcol>
+        ))}
+      </CDrow>
+      <CDrow label="Dual · 2× (two 8px rows)">
+        {CD_L.map((v, i) => (
+          <CDcol key={i}>
+            <CDbar v={v} edge="full" />
+            <View style={{ height: 5 }} />
+            <CDbar v={CD_R[i]} edge="full" />
+          </CDcol>
+        ))}
+      </CDrow>
+    </View>
+  ),
+}
+
 /**
  * The flat `compact` resting strip (SetBarChart in flat mode) — uniform short bars, no labels, same
  * geometry as expanded/hero. The resting glance used in the SetRow table + cards.
@@ -118,7 +288,7 @@ export const Compact: Story = {
   args: { velocities: mixedSet, variant: 'compact', height: 28 },
   decorators: [
     (Story) => (
-      <View style={{ width: 320, padding: 20, backgroundColor: '#0E0E0E' }}>
+      <View style={{ width: 320, padding: 20, backgroundColor: SURFACE_BG }}>
         <Story />
       </View>
     ),
@@ -141,7 +311,7 @@ export const CompactDropSet: Story = {
   },
   decorators: [
     (Story) => (
-      <View style={{ width: 320, padding: 20, backgroundColor: '#0E0E0E' }}>
+      <View style={{ width: 320, padding: 20, backgroundColor: SURFACE_BG }}>
         <Story />
       </View>
     ),
@@ -183,7 +353,7 @@ export const ExpandedBareSpotlight: Story = {
  * itself renders no title.
  */
 const heroDecorator: Decorator = (Story) => (
-  <View style={{ width: 560, padding: 28, backgroundColor: '#0E0E0E' }}>
+  <View style={{ width: 560, padding: 28, backgroundColor: SURFACE_BG }}>
     <Text
       style={{
         color: '#5A5A5A',
@@ -288,7 +458,7 @@ export const HeroComplete: Story = {
 /** The same set at three container widths — the hero is width-fluid (flex bars, capped width, fixed height). */
 export const HeroResponsive: Story = {
   render: () => (
-    <View style={{ gap: 24, padding: 24, backgroundColor: '#0E0E0E' }}>
+    <View style={{ gap: 24, padding: 24, backgroundColor: SURFACE_BG }}>
       {[360, 560, 900].map((w) => (
         <View key={w} style={{ width: w }}>
           <Text style={{ color: '#5A5A5A', fontSize: 10, fontWeight: '700', marginBottom: 8 }}>
@@ -410,7 +580,7 @@ export const LossColoringFatiguingSet: Story = {
  */
 export const LossVsZoneComparison: Story = {
   render: () => (
-    <View style={{ gap: 20, padding: 20, width: 340, backgroundColor: '#0E0E0E' }}>
+    <View style={{ gap: 20, padding: 20, width: 340, backgroundColor: SURFACE_BG }}>
       <View style={{ gap: 6 }}>
         <Text style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, color: '#9CA3AF' }}>
           barColor=&quot;zone&quot; — absolute velocity (bunches yellow, late red)
@@ -444,7 +614,7 @@ function GrowFromBottomDemo() {
   const [reps, setReps] = useState<number[]>([0.7, 0.82])
   const addRep = (velocity: number) => setReps((r) => [...r, velocity])
   return (
-    <View style={{ width: 420, padding: 20, gap: 14, backgroundColor: '#0E0E0E' }}>
+    <View style={{ width: 420, padding: 20, gap: 14, backgroundColor: SURFACE_BG }}>
       <View style={{ flexDirection: 'row', gap: 8 }}>
         <Pressable onPress={() => addRep(0.6 + Math.random() * 0.15)} style={growBtn}>
           <Text style={growBtnText}>Add rep (grows from baseline)</Text>
@@ -479,7 +649,7 @@ export const LiveGrowFromBottom: Story = {
 /** The same set rendered `up` then `down` — the two halves the diverging dual composes, meeting at a shared axis. */
 export const OrientationUpDown: Story = {
   render: () => (
-    <View style={{ padding: 24, backgroundColor: '#0E0E0E', width: 560 }}>
+    <View style={{ padding: 24, backgroundColor: SURFACE_BG, width: 560 }}>
       <VelocityStrip
         velocities={heroFatigue}
         variant="hero"
@@ -602,7 +772,7 @@ export const CompactExpandedInPlace: Story = {
       ],
     }
     return (
-      <View style={{ width: 340, padding: 20, gap: 16, backgroundColor: '#0E0E0E' }}>
+      <View style={{ width: 340, padding: 20, gap: 16, backgroundColor: SURFACE_BG }}>
         <Text style={{ color: '#8A8A8A', fontSize: 11, fontWeight: '700', letterSpacing: 1 }}>
           COMPACT (flat)
         </Text>
@@ -673,7 +843,7 @@ function ProgressFrame({ label, value }: { label: string; value: number }) {
  */
 export const ExpandProgressFrames: Story = {
   render: () => (
-    <View style={{ width: 360, padding: 20, gap: 18, backgroundColor: '#0E0E0E' }}>
+    <View style={{ width: 360, padding: 20, gap: 18, backgroundColor: SURFACE_BG }}>
       <ProgressFrame label="expandProgress = 0 (flat / compact)" value={0} />
       <ProgressFrame label="expandProgress = 0.5 (mid-morph)" value={0.5} />
       <ProgressFrame label="expandProgress = 1 (value / expanded)" value={1} />

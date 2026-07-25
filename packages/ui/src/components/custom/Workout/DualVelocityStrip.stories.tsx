@@ -1,6 +1,10 @@
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { DualVelocityStrip, VelocityStrip, type VelocitySet } from './VelocityStrip'
+import { surfaceRampDark } from '../../../theme/tokens/primitives'
+
+/** The real dark surface-background plane — the stories sit on the actual token, not an ad-hoc grey. */
+const SURFACE_BG = surfaceRampDark.background
 
 /**
  * Wall-background frame for the dual hero stories — the north-star live page context.
@@ -8,7 +12,7 @@ import { DualVelocityStrip, VelocityStrip, type VelocitySet } from './VelocitySt
  * it sits here only to show the diverging chart the way it will live on the wall.
  */
 const wallDecorator: Decorator = (Story) => (
-  <View style={{ width: 620, padding: 28, backgroundColor: '#0E0E0E' }}>
+  <View style={{ width: 620, padding: 28, backgroundColor: SURFACE_BG }}>
     <Text
       style={{
         color: '#5A5A5A',
@@ -220,7 +224,7 @@ export const HeroMyoReps: Story = {
 /** The same asymmetric pair at three container widths — the dual chart is width-fluid (flex columns, fixed height). */
 export const HeroResponsive: Story = {
   render: () => (
-    <View style={{ gap: 24, padding: 24, backgroundColor: '#0E0E0E' }}>
+    <View style={{ gap: 24, padding: 24, backgroundColor: SURFACE_BG }}>
       {[380, 560, 900].map((w) => (
         <View key={w} style={{ width: w }}>
           <Text style={{ color: '#5A5A5A', fontSize: 10, fontWeight: '700', marginBottom: 8 }}>
@@ -389,7 +393,7 @@ function BoardBlock({ row }: { row: BoardRow }) {
  */
 export const SetTypeCoverage: Story = {
   render: () => (
-    <View style={{ gap: 30, padding: 28, width: 660, backgroundColor: '#0E0E0E' }}>
+    <View style={{ gap: 30, padding: 28, width: 660, backgroundColor: SURFACE_BG }}>
       {BOARD.map((row) => (
         <BoardBlock key={row.type} row={row} />
       ))}

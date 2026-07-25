@@ -141,12 +141,13 @@ function RowStrip({ set }: { set: SetRowProps }) {
     )
   }
   const velocities = set.state === 'done' ? set.velocities : []
-  // Resting (done / todo) → the flat `compact` strip at the same 24px / geometry as the live
-  // spotlight, so a row reads consistently whether resting or active — only the bar HEIGHTS differ.
+  // Resting (done / todo) → the flat `compact` strip at the 8px SegmentedBar flat-bar language (the
+  // static compact bar fills its plot), so the resting per-rep strip matches the set-level segmented
+  // bars used elsewhere; the live spotlight above stays taller (24px).
   return (
     <VelocityStrip
       variant="compact"
-      height={24}
+      height={8}
       hideBaseline
       set={{ type: 'straight', velocities, planned: plannedReps(set) }}
       zones={zones}

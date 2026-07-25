@@ -30,26 +30,27 @@ const compoundBands = [
 ] as const
 
 describe('DualVelocityStrip composition', () => {
-  it('composes an up wing and a down wing sharing one centre axis', () => {
+  it('composes an up wing and a down wing separated by the shared wing gap (no centre axis)', () => {
     render(<DualVelocityStrip left={{ velocities: [0.9] }} right={{ velocities: [0.8] }} />)
     expect(screen.getByTestId('dual-velocity-strip')).toBeInTheDocument()
     expect(screen.getByTestId('dual-velocity-wing-up')).toBeInTheDocument()
     expect(screen.getByTestId('dual-velocity-wing-down')).toBeInTheDocument()
     // Exactly two composed single-strip heroes, one per wing.
     expect(screen.getAllByTestId('velocity-strip-hero')).toHaveLength(2)
-    // ONE shared axis where the wings meet (not two abutting baselines).
-    expect(screen.getByTestId('dual-velocity-axis')).toBeInTheDocument()
+    // No centre-axis rule any more — the wings read as one lockup via the gap between them.
+    expect(screen.queryByTestId('dual-velocity-axis')).not.toBeInTheDocument()
   })
 
-  it('a 120px dual sizes each wing at 60px — NOT ballooned to 220 by the hero height sentinel', () => {
+  it('a 120px dual sizes each wing at ~59px — NOT ballooned to 220 by the hero height sentinel', () => {
     // Regression: the single hero bumps an unset height (the 60px expanded default) to 220. A 120px
-    // dual gives each wing exactly 60px, which collided with that sentinel and blew the wings up to
-    // 220 (bars overflowing). The columnSlots (dual) path is exempt, so each wing renders at 60px.
+    // dual splits into two wings of (120 − wing gap) / 2 = 59px, which — before the fix — collided
+    // with that sentinel and blew the wings up to 220 (bars overflowing). The columnSlots (dual) path
+    // is exempt, so each wing renders at the split height, not 220.
     render(
       <DualVelocityStrip left={{ velocities: [0.9] }} right={{ velocities: [0.8] }} height={120} />
     )
     for (const wing of screen.getAllByTestId('velocity-strip-hero')) {
-      expect(wing).toHaveStyle({ height: '60px' })
+      expect(wing).toHaveStyle({ height: '59px' })
     }
   })
 
@@ -143,7 +144,7 @@ describe('DualVelocityStrip side labels', () => {
     expect(screen.queryByTestId('dual-velocity-side-label-L')).not.toBeInTheDocument()
   })
 
-  it('renders slot names at rail scale too', () => {
+  it('drops the gutter/slot labels AND the centre axis at rail scale (the lean dual-expanded)', () => {
     render(
       <DualVelocityStrip
         left={{ velocities: [0.9], label: 'Left Arm' }}
@@ -151,8 +152,11 @@ describe('DualVelocityStrip side labels', () => {
         variant="rail"
       />
     )
-    expect(screen.getByTestId('dual-velocity-side-label-L')).toHaveTextContent('Left Arm')
-    expect(screen.getByTestId('dual-velocity-side-label-R')).toHaveTextContent('Right Arm')
+    // Rail = the lean dual-expanded: no gutter/vertical-axis + no slot labels (the two wings read as
+    // separate rows via the vertical gap), and no centre axis — only the bolder hero keeps those.
+    expect(screen.queryByTestId('dual-velocity-side-label-L')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('dual-velocity-side-label-R')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('dual-velocity-axis')).not.toBeInTheDocument()
   })
 })
 
@@ -392,8 +396,8 @@ describe('DualVelocityStrip live mode', () => {
   })
 })
 
-describe('DualVelocityStrip compact variant (flat)', () => {
-  it('composes two flat compact wings with the shared gutter + axis, no value labels', () => {
+describe('DualVelocityStrip compact variant (folded 8px)', () => {
+  it('folds the diverging pair into one strip — L top-half + R bottom-half per rep, no gutter/labels/axis', () => {
     render(
       <DualVelocityStrip
         left={{ velocities: [0.9, 0.85, 0.8], label: 'Left Arm' }}
@@ -401,18 +405,19 @@ describe('DualVelocityStrip compact variant (flat)', () => {
         variant="compact"
       />
     )
-    // Two composed compact strips (one per wing), each emitting the single-strip bar testIDs.
-    expect(screen.getAllByTestId('velocity-strip-compact')).toHaveLength(2)
-    expect(wingUp().queryAllByTestId(HERO_BARS)).toHaveLength(3)
-    expect(wingDown().queryAllByTestId(HERO_BARS)).toHaveLength(2)
-    // Flat form: no per-bar value labels, one shared centre axis + side labels.
+    // One folded strip (NOT two composed wings): each rep column has an L top-half + R bottom-half.
+    expect(screen.queryAllByTestId('velocity-strip-compact')).toHaveLength(0)
+    expect(screen.getByTestId('dual-velocity-bar-L-0')).toBeInTheDocument()
+    expect(screen.getByTestId('dual-velocity-bar-L-2')).toBeInTheDocument()
+    expect(screen.getByTestId('dual-velocity-bar-R-0')).toBeInTheDocument()
+    expect(screen.getByTestId('dual-velocity-bar-R-1')).toBeInTheDocument()
+    // Folded 8px leaves no room for chrome: no gutter/slot labels, no centre axis, no value labels.
+    expect(screen.queryByTestId('dual-velocity-side-label-L')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('dual-velocity-axis')).not.toBeInTheDocument()
     expect(screen.queryByTestId(/^velocity-label-\d+$/)).not.toBeInTheDocument()
-    expect(screen.getByTestId('dual-velocity-axis')).toBeInTheDocument()
-    // At the compact 28px/wing extent the side label collapses to initials.
-    expect(screen.getByTestId('dual-velocity-side-label-L')).toHaveTextContent('L A')
   })
 
-  it('keeps the wings index-locked (a lagging side renders empty columns)', () => {
+  it('index-locks — a lagging side’s un-logged reps render as faint empties at the same columns', () => {
     render(
       <DualVelocityStrip
         left={{ velocities: [0.9, 0.88, 0.86, 0.84] }}
@@ -420,7 +425,10 @@ describe('DualVelocityStrip compact variant (flat)', () => {
         variant="compact"
       />
     )
-    expect(wingDown().queryAllByTestId('velocity-slot-empty')).toHaveLength(2)
+    // 4 columns; the right side logged 2, so its columns 2 & 3 are empty (index-locked under the left).
+    expect(screen.getByTestId('dual-velocity-bar-R-1')).toBeInTheDocument()
+    expect(screen.getByTestId('dual-velocity-bar-R-2-empty')).toBeInTheDocument()
+    expect(screen.getByTestId('dual-velocity-bar-R-3-empty')).toBeInTheDocument()
   })
 })
 

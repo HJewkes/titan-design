@@ -182,7 +182,7 @@ export interface SetBarChartProps {
 /** The `scale="fixed"` velocity ceiling (m/s) — a bar height reads the same absolute value across sets. */
 const FIXED_MAX_VALUE = 1.15
 /** Headroom above the peak bar: just enough to seat its value label without a big empty band on top. */
-export const PEAK_HEADROOM = 1.06
+export const PEAK_HEADROOM = 1.03
 
 /** The height-scaling denominator for `scale` at the given performed max (guarded ≥ 0 by callers). */
 export function scaleDenominator(scale: 'peak' | 'fixed', maxValue: number): number {
@@ -206,7 +206,7 @@ const LABEL_ROW_HEIGHT = 16
 /** Gap between the value-label row and the peak bar top (px). */
 const LABEL_GAP = 3
 /** Inter-bar gap as a fraction of bar width — the locked dense default (near expanded density). */
-const GAP_RATIO = 0.08
+export const GAP_RATIO = 0.08
 /** Floor on the proportional inter-bar gap (px) — narrow plots tighten to ~expanded density. */
 const MIN_BAR_GAP = 2
 /**
@@ -219,7 +219,7 @@ const CHUNK_NOTCH_RATIO = 0.25
 /** Floor on the chunk-boundary extra margin (px). */
 const CHUNK_NOTCH_MIN_PX = 10
 /** Cap on a single bar's width so a 2–3 rep set doesn't render slab-wide bars (px). */
-const BAR_MAX_WIDTH = 120
+export const BAR_MAX_WIDTH = 120
 /** Below this per-bar width the value labels collide, so all but the peak + live rep are dropped. */
 const LABEL_MIN_BAR_WIDTH = 30
 /** Default top-corner radius on bars (px). */
@@ -232,6 +232,24 @@ const FLAT_BAR_FRACTION = 0.5
 const STUB_HEIGHT = 9
 /** The ordinary rep gap the per-slot `leadingGap` is measured against (extra margin = leadingGap − this). */
 const REP_GAP = 2
+
+/**
+ * The shared adaptive bar layout — solve `N·bw + (N−1)·(gapRatio·bw) = plotWidth` for the per-bar
+ * width (capped at {@link BAR_MAX_WIDTH}) and the proportional inter-bar gap (floored at MIN_BAR_GAP).
+ * SetBarChart uses this for its own bars; the diverging compact/rail renderers call it too, so their
+ * columns land at the SAME x-positions and widths as the single chart — one shared geometry.
+ */
+export function computeBarLayout(
+  plotWidth: number,
+  count: number,
+  gapRatio: number = GAP_RATIO
+): { barWidth: number; gap: number } {
+  const rawBarWidth =
+    plotWidth > 0 && count > 0 ? plotWidth / (count + (count - 1) * gapRatio) : BAR_MAX_WIDTH
+  const barWidth = Math.min(BAR_MAX_WIDTH, rawBarWidth)
+  const gap = plotWidth === 0 ? MIN_BAR_GAP : Math.max(MIN_BAR_GAP, gapRatio * barWidth)
+  return { barWidth, gap }
+}
 
 /** Is this cell a performed rep (carries a value)? */
 function isRep(slot: SetSlot): boolean {
@@ -321,12 +339,16 @@ export function SetBarChart({
   // band — so the bars fill the plot and, at small heights, aren't over-stubbed.
   const plotHeight = Math.max(0, height - (showValueLabels ? LABEL_ROW_HEIGHT + LABEL_GAP : 0))
   const yOf = (value: number): number => (scaleDenom > 0 ? (value / scaleDenom) * plotHeight : 0)
+  // The `expandProgress` morph starts from a PARTIAL flat height (bars visibly grow to their value);
+  // a STATIC compact strip instead FILLS its plot — an 8px plot → an 8px bar, the SegmentedBar model —
+  // so a resting strip is sized by its container, not left half-empty.
   const flatBarHeight = Math.max(MIN_BAR_HEIGHT, FLAT_BAR_FRACTION * plotHeight)
+  const compactBarHeight = Math.max(MIN_BAR_HEIGHT, plotHeight)
   const valueBarHeight = (value: number): number =>
     scaleDenom > 0
       ? Math.max(MIN_BAR_HEIGHT, Math.min(1, value / scaleDenom) * plotHeight)
       : MIN_BAR_HEIGHT
-  const barHeight = (value: number): number => (flat ? flatBarHeight : valueBarHeight(value))
+  const barHeight = (value: number): number => (flat ? compactBarHeight : valueBarHeight(value))
 
   // Live-rep grow-from-bottom (rep index → cell index; reps are contiguous from 0 in every set type).
   const liveValue =
@@ -342,11 +364,8 @@ export function SetBarChart({
   // Solve N·bw + (N−1)·(gapRatio·bw) = plotW → bw = plotW / (N + (N−1)·gapRatio); the bars tighten to
   // ~expanded density on narrow plots (the floor) and the ratio sets how dense they read at wall scale.
   const totalCells = cells.length
-  const rawBarWidth =
-    plotW > 0 && totalCells > 0 ? plotW / (totalCells + (totalCells - 1) * gapRatio) : BAR_MAX_WIDTH
-  const barWidth = Math.min(BAR_MAX_WIDTH, rawBarWidth)
+  const { barWidth, gap } = computeBarLayout(plotW, totalCells, gapRatio)
   const labelsCrowded = plotW > 0 && barWidth < LABEL_MIN_BAR_WIDTH
-  const gap = plotW === 0 ? MIN_BAR_GAP : Math.max(MIN_BAR_GAP, gapRatio * barWidth)
 
   // Peak rep index (over rep values) — its label always survives label-thinning.
   const peakRepIndex = repValues.reduce((b, v, i) => (v > repValues[b] ? i : b), 0)
@@ -414,8 +433,8 @@ export function SetBarChart({
                 {renderStub(
                   slot.kind,
                   barCorners,
-                  // Flat (compact) stubs match the thin flat bar height; else the fixed short stub.
-                  flat ? flatBarHeight : STUB_HEIGHT,
+                  // Flat (compact) stubs fill the plot like the compact bars; else the fixed short stub.
+                  flat ? compactBarHeight : STUB_HEIGHT,
                   placeholderColor,
                   testIDPrefix,
                   todoVariant,
@@ -602,8 +621,7 @@ export function ChartSideRail({
   }
   return (
     <View
-      className={isRail ? undefined : 'border-border'}
-      style={{ width: isRail ? 18 : 34, borderRightWidth: isRail ? 0 : 1 }}
+      style={{ width: isRail ? 18 : 34 }}
       accessibilityElementsHidden
     >
       {sections.map((s) => (
