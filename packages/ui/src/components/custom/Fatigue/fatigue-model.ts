@@ -103,6 +103,12 @@ export interface LiveFatigueModel {
   verdict: FatigueVerdict | null
   /** ROM progression: per-rep ROM points (metres), ordered by rep. */
   romProgression: RepRomPoint[]
+  /**
+   * Planned rep count from the prescription — the ROM chart draws the remainder as dashed
+   * to-do placeholders (the "N of M done" read). Absent/`undefined` when no plan is attached:
+   * there is genuinely no target then, and the gap must read as a gap — never defaulted.
+   */
+  plannedReps?: number
   /** Working-range standard the ROM chart draws its reference line at (metres). `null` until ≥ 3 reps. */
   romWorkingStandardM: number | null
   /** Short-threshold line (metres) = 0.75 × working standard. `null` until the standard exists. */

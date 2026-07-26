@@ -79,6 +79,35 @@ export const States: Story = {
   ),
 }
 
+/**
+ * Mid-set WITH a plan attached — 3 of 10 done, so the ROM chart draws the remaining 7 reps as
+ * dashed to-do placeholders. `plannedReps` rides the model straight through to
+ * `RomProgressionChart`.
+ */
+export const WithPlannedReps: Story = {
+  render: () => (
+    <Frame>
+      <LiveFatigueCard
+        model={{ ...FATIGUE_STATES[1].model, plannedReps: 10 }}
+        width={318}
+        height={508}
+      />
+    </Frame>
+  ),
+}
+
+/**
+ * The SAME mid-set model with NO plan attached (`plannedReps` undefined) — no target exists, so
+ * the chart shows the performed reps only. The gap reads as a gap; nothing is defaulted in.
+ */
+export const WithoutPlannedReps: Story = {
+  render: () => (
+    <Frame>
+      <LiveFatigueCard model={FATIGUE_STATES[1].model} width={318} height={508} />
+    </Frame>
+  ),
+}
+
 /** Warming up — a cold-start set (< 2 reps): neutral verdict, em-dash RPE, no reference lines. */
 export const WarmingUp: Story = {
   render: () => (

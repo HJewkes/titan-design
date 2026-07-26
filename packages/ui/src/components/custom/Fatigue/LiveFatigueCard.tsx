@@ -70,6 +70,7 @@ export function LiveFatigueCard({ model, width = 318, height }: LiveFatigueCardP
         points={model.romProgression}
         workingStandardM={model.romWorkingStandardM}
         shortThresholdM={model.romShortThresholdM}
+        plannedReps={model.plannedReps}
       />
 
       <View style={{ flex: 1, minHeight: 16 }} />
