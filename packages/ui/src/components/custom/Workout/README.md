@@ -114,22 +114,14 @@ type props without pulling the dependency.
   **Composes** link down the tree — matching the S1/S2 shell families. (The component
   files stay flat on disk in `custom/Workout/`; only the story `title`s build the tree.)
 
-- **`DualSessionRail` — dual-Voltra composition (not a new organism)** — a
-  dual-bench session drives TWO Voltra devices at once (e.g. Left Arm / Right
-  Arm), each with its own exercise list, set progress and set markers.
-  `SessionRail` itself stays single-device (unchanged); `DualSessionRail` is a
-  thin composition of two `SessionRail` columns side by side, separated by the
-  same charcoal-300 hairline the rail uses between exercise rows. Each
-  `DualSessionRailSlot` carries its own `label` (rendered as that column's
-  title), `exercises`, `setsDone`, and `metrics` — devices progress
-  independently. Only the session clock (`elapsedMs`/`budgetMs`/`running`/
-  `next`) is shared, since both devices run against the same wall clock. No new
-  set-marker vocabulary: `SetStrip`/`SetBar`/`SetStripSet` are untouched, so
-  `done`/`active`/`todo`/`range`/`drop`/`myo`/`myo-upcoming` render identically
-  in each column. Each `SessionRail` instance is given a per-slot `testID`
-  (`dual-session-rail-slot-0`/`-1`, via `SessionRail`'s inherited `ViewProps`
-  passthrough — no `SessionRail` code change needed) so slots stay queryable in
-  tests. Story: `Shell/SessionRail/DualSessionRail`.
+- **Dual at the RAIL level — rejected, removed** — `DualSessionRail` (two
+  `SessionRail` columns side by side) was explored and rejected: bilateral
+  asymmetry is a property of how a SET was performed, not of the session's
+  structure, so the rail stays single and consistent and the dual distinction is
+  surfaced per-set/per-rep instead (`DualVelocityStrip`). Deleted 2026-07-26 —
+  see `packages/ui/REJECTED.md` for the full reasoning. Do not reintroduce a
+  rail-level split without reading it first.
+
 - **VelocityStrip set-type modes (`set` prop)** — beyond the flat `velocities`
   array (unchanged, still the source of truth for `SetRow` / `ExerciseCard`), the
   strip accepts an optional structured `VelocitySet` descriptor and renders the

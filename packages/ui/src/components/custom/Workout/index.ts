@@ -73,11 +73,6 @@ export {
   type SessionHeaderPlanEntry,
 } from './SessionHeader'
 export { SessionRail, type SessionRailProps, type SessionRailExercise } from './SessionRail'
-export {
-  DualSessionRail,
-  type DualSessionRailProps,
-  type DualSessionRailSlot,
-} from './DualSessionRail'
 export { SupersetWrapper, type SupersetWrapperProps } from './SupersetWrapper'
 export {
   MesoProgressBar,
