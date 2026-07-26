@@ -40,7 +40,9 @@ const box = (child: React.ReactNode) => (
 const cur = FATIGUE_STATES[3].model // the full 8-rep set
 
 const label = (s: string) => (
-  <Text style={{ fontSize: 9, letterSpacing: 1, fontFamily: 'monospace', color: t['text-tertiary'] }}>
+  <Text
+    style={{ fontSize: 9, letterSpacing: 1, fontFamily: 'monospace', color: t['text-tertiary'] }}
+  >
     {s}
   </Text>
 )
@@ -58,7 +60,15 @@ export const Default: Story = {
 /** The line tint across the set — early controlled reps stay silver, late reps go through shades of red. */
 export const ControlAwareTint: Story = {
   render: () => (
-    <View style={{ backgroundColor: PAGE_BG, padding: 28, flexDirection: 'row', gap: 24, flexWrap: 'wrap' }}>
+    <View
+      style={{
+        backgroundColor: PAGE_BG,
+        padding: 28,
+        flexDirection: 'row',
+        gap: 24,
+        flexWrap: 'wrap',
+      }}
+    >
       {FATIGUE_STATES.map((s) => (
         <View key={s.name} style={{ gap: 8 }}>
           {label(s.name)}
@@ -83,19 +93,29 @@ function TreatmentDemo({ treatment }: { treatment: BloomTreatment }) {
   const c = curves[curves.length - 1]
   const allSamples = curves.flatMap((cc) => cc.samples)
   const vmax = Math.max(0.01, ...allSamples.map((s) => s.velocityMps)) * 1.06
-  const axisMaxT = Math.max(1, ...curves.map((cc) => cc.samples[cc.samples.length - 1]?.tMs ?? 0)) * 1.04
+  const axisMaxT =
+    Math.max(1, ...curves.map((cc) => cc.samples[cc.samples.length - 1]?.tMs ?? 0)) * 1.04
   const bandTop = h - padBot - BAND_H
   const baseline = bandTop - BAND_GAP
   const plotH = Math.max(1, baseline - padTop)
   const x = (ms: number) => padL + (ms / axisMaxT) * (w - padL - padR)
   const magOf = (v: number) => clamp01(v / vmax) * plotH
   const curPts: Pt[] = c.samples.map((s) => [x(s.tMs), magOf(s.velocityMps)])
-  const ghostPts: Pt[][] = curves.slice(0, -1).map((cc) => cc.samples.map((s): Pt => [x(s.tMs), magOf(s.velocityMps)]))
+  const ghostPts: Pt[][] = curves
+    .slice(0, -1)
+    .map((cc) => cc.samples.map((s): Pt => [x(s.tMs), magOf(s.velocityMps)]))
   const tint = ghostLineColor(c.tempoDeviation, c.grindSignature)
   return (
     <View style={{ width: w, backgroundColor: PANEL_BG, borderRadius: 12, padding: 16 }}>
       <svg width={w} height={h}>
-        <GhostBloom current={curPts} ghosts={ghostPts} tint={tint} baseline={baseline} orientation="up" treatment={treatment} />
+        <GhostBloom
+          current={curPts}
+          ghosts={ghostPts}
+          tint={tint}
+          baseline={baseline}
+          orientation="up"
+          treatment={treatment}
+        />
         <GhostBand segments={c.phaseSegments} x={x} top={bandTop} showLabels />
       </svg>
     </View>

@@ -26,13 +26,7 @@ import { getSemanticColors } from '../../theme/tokens/semantic'
 import { primitiveColors } from '../../theme/tokens/primitives'
 import { alpha } from '../../utils/colors'
 import { GRIND_THRESHOLD, ghostLineColor } from '../../components/custom/Fatigue/fatigue-tokens'
-import {
-  GhostBand,
-  GhostBloom,
-  BAND_H,
-  BAND_GAP,
-  type Pt,
-} from '../../components/custom/Fatigue'
+import { GhostBand, GhostBloom, BAND_H, BAND_GAP, type Pt } from '../../components/custom/Fatigue'
 import type { PhaseSegment } from '../../components/custom/Fatigue'
 
 const C = getSemanticColors('dark')
@@ -50,7 +44,13 @@ const PARCH = C['text-primary']
 // =================================================================================
 function perceivedLuminance(hex: string): number {
   const h = hex.replace('#', '')
-  const full = h.length === 3 ? h.split('').map((ch) => ch + ch).join('') : h
+  const full =
+    h.length === 3
+      ? h
+          .split('')
+          .map((ch) => ch + ch)
+          .join('')
+      : h
   const r = parseInt(full.slice(0, 2), 16)
   const g = parseInt(full.slice(2, 4), 16)
   const b = parseInt(full.slice(4, 6), 16)
@@ -187,13 +187,21 @@ function genSamples(s: DeviceSpec, seed = 0): Sample[] {
   return out
 }
 
-const CURRENT: Record<string, Sample[]> = { left: genSamples(LEFT_ARM), right: genSamples(RIGHT_ARM) }
+const CURRENT: Record<string, Sample[]> = {
+  left: genSamples(LEFT_ARM),
+  right: genSamples(RIGHT_ARM),
+}
 // Faded prior "ghost" reps per device — LEFT stays steady across its set; RIGHT's
 // ghosts are progressively healthier (its earlier reps, before the sticking point
 // set in), so the current (fatigued) rep visibly regresses from its own ghost fan.
 const GHOSTS_LEFT: Sample[][] = [0, 1, 2].map((g) =>
   genSamples(
-    { ...LEFT_ARM, conMs: 780 - g * 90, conVel: (u) => (1.0 - g * 0.05) * clamp01(u / (0.15 + g * 0.03)) * (1 - 0.82 * smoothstep(0.8, 1.0, u)) },
+    {
+      ...LEFT_ARM,
+      conMs: 780 - g * 90,
+      conVel: (u) =>
+        (1.0 - g * 0.05) * clamp01(u / (0.15 + g * 0.03)) * (1 - 0.82 * smoothstep(0.8, 1.0, u)),
+    },
     g + 1
   )
 )
@@ -202,7 +210,8 @@ const GHOSTS_RIGHT: Sample[][] = [0, 1, 2].map((g) =>
     {
       ...RIGHT_ARM,
       conMs: 1050 + g * 120,
-      conVel: (u) => 0.95 * clamp01(u / 0.14) * (1 - 0.6 * smoothstep(0.82, 1.0, u)) * (1 - g * 0.08),
+      conVel: (u) =>
+        0.95 * clamp01(u / 0.14) * (1 - 0.6 * smoothstep(0.82, 1.0, u)) * (1 - g * 0.08),
     },
     g + 4
   )
@@ -258,7 +267,13 @@ const TEMPLATE_BOUNDS: Record<Phase, [number, number]> = (() => {
   return { ecc: [0, b1], pauseBottom: [b1, b2], con: [b2, b3], pauseTop: [b3, 1] }
 })()
 function phaseSpans(s: DeviceSpec): Array<{ phase: Phase; t0: number; t1: number }> {
-  const b = [0, s.eccMs, s.eccMs + s.pBMs, s.eccMs + s.pBMs + s.conMs, s.eccMs + s.pBMs + s.conMs + s.pTMs]
+  const b = [
+    0,
+    s.eccMs,
+    s.eccMs + s.pBMs,
+    s.eccMs + s.pBMs + s.conMs,
+    s.eccMs + s.pBMs + s.conMs + s.pTMs,
+  ]
   return [
     { phase: 'ecc', t0: b[0], t1: b[1] },
     { phase: 'pauseBottom', t0: b[1], t1: b[2] },
@@ -285,7 +300,12 @@ const SHARED_SEGMENTS: PhaseSegment[] = (Object.keys(TEMPLATE_BOUNDS) as Phase[]
 
 // Shared magnitude scale across BOTH devices (current + ghosts) so the two blooms are
 // directly, honestly comparable.
-const ALL_SAMPLES = [...CURRENT.left, ...CURRENT.right, ...GHOSTS_LEFT.flat(), ...GHOSTS_RIGHT.flat()]
+const ALL_SAMPLES = [
+  ...CURRENT.left,
+  ...CURRENT.right,
+  ...GHOSTS_LEFT.flat(),
+  ...GHOSTS_RIGHT.flat(),
+]
 const VMAX_MAG = Math.max(0.01, ...ALL_SAMPLES.map((s) => Math.abs(s.vel))) * 1.06
 
 // =================================================================================
@@ -322,17 +342,60 @@ function MirroredDualBand({ w, h }: { w: number; h: number }) {
   return (
     <svg width={w} height={h}>
       {/* LEFT device blooms UP, RIGHT blooms DOWN — same GhostBloom, one prop flipped. */}
-      <GhostBloom current={leftCur} ghosts={leftGhosts} tint={conTone(LEFT_ARM)} baseline={baseUp} orientation="up" />
-      <GhostBloom current={rightCur} ghosts={rightGhosts} tint={conTone(RIGHT_ARM)} baseline={baseDown} orientation="down" />
+      <GhostBloom
+        current={leftCur}
+        ghosts={leftGhosts}
+        tint={conTone(LEFT_ARM)}
+        baseline={baseUp}
+        orientation="up"
+      />
+      <GhostBloom
+        current={rightCur}
+        ghosts={rightGhosts}
+        tint={conTone(RIGHT_ARM)}
+        baseline={baseDown}
+        orientation="down"
+      />
 
       {/* the single shared phase-colored band, on top — ECC/CON labelled inside. */}
-      <GhostBand segments={SHARED_SEGMENTS} x={x} top={bandTop} showLabels labelColor={alpha(PARCH, 0.92)} />
-      <rect x={padL} y={bandTop} width={w - padL - padR} height={BAND_H} rx={4} fill="none" stroke={alpha('#000000', 0.3)} strokeWidth={1} />
+      <GhostBand
+        segments={SHARED_SEGMENTS}
+        x={x}
+        top={bandTop}
+        showLabels
+        labelColor={alpha(PARCH, 0.92)}
+      />
+      <rect
+        x={padL}
+        y={bandTop}
+        width={w - padL - padR}
+        height={BAND_H}
+        rx={4}
+        fill="none"
+        stroke={alpha('#000000', 0.3)}
+        strokeWidth={1}
+      />
 
-      <text x={padL} y={padTop - 9} fontSize={9} fontWeight={800} letterSpacing={1} fontFamily={FONT_UI} fill={C['text-tertiary']}>
+      <text
+        x={padL}
+        y={padTop - 9}
+        fontSize={9}
+        fontWeight={800}
+        letterSpacing={1}
+        fontFamily={FONT_UI}
+        fill={C['text-tertiary']}
+      >
         LEFT ARM
       </text>
-      <text x={padL} y={h - padBot + 15} fontSize={9} fontWeight={800} letterSpacing={1} fontFamily={FONT_UI} fill={C['text-tertiary']}>
+      <text
+        x={padL}
+        y={h - padBot + 15}
+        fontSize={9}
+        fontWeight={800}
+        letterSpacing={1}
+        fontFamily={FONT_UI}
+        fill={C['text-tertiary']}
+      >
         RIGHT ARM
       </text>
     </svg>
@@ -349,9 +412,20 @@ function DeviceLegendRow({ device }: { device: DeviceSpec }) {
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
         <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: tone }} />
-        <Text style={{ fontSize: 11, fontWeight: '800', fontFamily: FONT_HEAD, color: C['text-primary'] }}>{device.label}</Text>
+        <Text
+          style={{
+            fontSize: 11,
+            fontWeight: '800',
+            fontFamily: FONT_HEAD,
+            color: C['text-primary'],
+          }}
+        >
+          {device.label}
+        </Text>
       </View>
-      <Text style={{ fontSize: 8.5, fontFamily: FONT_MONO, color: tone, fontWeight: '700' }}>{verdictWord(device)}</Text>
+      <Text style={{ fontSize: 8.5, fontFamily: FONT_MONO, color: tone, fontWeight: '700' }}>
+        {verdictWord(device)}
+      </Text>
     </View>
   )
 }
@@ -360,8 +434,18 @@ function DualGhostCard() {
   const innerW = CARD_W - CARD_PAD * 2
   const chartH = 232
   return (
-    <View style={[{ width: CARD_W, borderRadius: 14, padding: CARD_PAD, gap: 10 }, paperSheet(PANEL_BG)]}>
-      <Text style={[{ fontSize: 9, letterSpacing: 1.4, fontFamily: FONT_MONO, color: C['text-tertiary'] }, debossLabel]}>
+    <View
+      style={[
+        { width: CARD_W, borderRadius: 14, padding: CARD_PAD, gap: 10 },
+        paperSheet(PANEL_BG),
+      ]}
+    >
+      <Text
+        style={[
+          { fontSize: 9, letterSpacing: 1.4, fontFamily: FONT_MONO, color: C['text-tertiary'] },
+          debossLabel,
+        ]}
+      >
         DUAL · TOP/BOTTOM MIRRORED · GhostBand + 2×GhostBloom
       </Text>
       <View style={{ flexDirection: 'row', gap: 14 }}>
@@ -371,11 +455,20 @@ function DualGhostCard() {
       <View style={[{ borderRadius: 8, padding: 4 }, insetWell(primitiveColors.charcoal[900])]}>
         <MirroredDualBand w={innerW - 8} h={chartH} />
       </View>
-      <Text style={{ fontSize: 10, fontFamily: FONT_UI, color: C['text-secondary'], lineHeight: 14, fontStyle: 'italic' }}>
-        Two `GhostBloom`s sharing one `GhostBand` axis — the LEFT blooms up, the RIGHT is the same bloom with
-        `orientation=&quot;down&quot;`. No bespoke dual code: the paper line ground and the silver→red tint come straight from the
-        shared primitive, so any single-spark improvement lands here too. Left Arm stays silver; Right Arm warms through
-        shades of red as its concentric collapses.
+      <Text
+        style={{
+          fontSize: 10,
+          fontFamily: FONT_UI,
+          color: C['text-secondary'],
+          lineHeight: 14,
+          fontStyle: 'italic',
+        }}
+      >
+        Two `GhostBloom`s sharing one `GhostBand` axis — the LEFT blooms up, the RIGHT is the same
+        bloom with `orientation=&quot;down&quot;`. No bespoke dual code: the paper line ground and
+        the silver→red tint come straight from the shared primitive, so any single-spark improvement
+        lands here too. Left Arm stays silver; Right Arm warms through shades of red as its
+        concentric collapses.
       </Text>
     </View>
   )
@@ -383,7 +476,11 @@ function DualGhostCard() {
 
 // --- Scaffolding -----------------------------------------------------------------
 function Page({ children }: { children: ReactNode }) {
-  return <View style={{ padding: 28, backgroundColor: PAGE_BG, minHeight: '100%', gap: 22 }}>{children}</View>
+  return (
+    <View style={{ padding: 28, backgroundColor: PAGE_BG, minHeight: '100%', gap: 22 }}>
+      {children}
+    </View>
+  )
 }
 
 const meta: Meta = {
@@ -400,16 +497,31 @@ export const MirroredDual: Story = {
   render: () => (
     <Page>
       <View style={{ gap: 6, maxWidth: 920 }}>
-        <Text style={[{ fontSize: 9, letterSpacing: 1.4, fontFamily: FONT_MONO, color: C['text-tertiary'] }, debossLabel]}>
+        <Text
+          style={[
+            { fontSize: 9, letterSpacing: 1.4, fontFamily: FONT_MONO, color: C['text-tertiary'] },
+            debossLabel,
+          ]}
+        >
           DUAL-VOLTRA GHOST-SPARK · COMPOSED ON SHARED PRIMITIVES
         </Text>
-        <Text style={{ fontSize: 22, fontWeight: '900', fontFamily: FONT_HEAD, color: C['text-primary'] }}>
+        <Text
+          style={{
+            fontSize: 22,
+            fontWeight: '900',
+            fontFamily: FONT_HEAD,
+            color: C['text-primary'],
+          }}
+        >
           One axis, two blooms — the dual is a flip of the single
         </Text>
-        <Text style={{ fontSize: 13, fontFamily: FONT_UI, color: C['text-secondary'], lineHeight: 19 }}>
-          Mock dual set: Left Arm on-tempo (silver), Right Arm fatiguing — concentric drifting long and sticking through a
-          mid-rep collapse (grind signature crosses the red threshold). Built exactly like the single GhostSpark: a shared
-          `GhostBand` for phase + two `GhostBloom`s for the lines, the bottom one flipped `orientation=&quot;down&quot;`.
+        <Text
+          style={{ fontSize: 13, fontFamily: FONT_UI, color: C['text-secondary'], lineHeight: 19 }}
+        >
+          Mock dual set: Left Arm on-tempo (silver), Right Arm fatiguing — concentric drifting long
+          and sticking through a mid-rep collapse (grind signature crosses the red threshold). Built
+          exactly like the single GhostSpark: a shared `GhostBand` for phase + two `GhostBloom`s for
+          the lines, the bottom one flipped `orientation=&quot;down&quot;`.
         </Text>
       </View>
       <View style={{ flexDirection: 'row', gap: 24, alignItems: 'flex-start', flexWrap: 'wrap' }}>

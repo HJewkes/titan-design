@@ -12,6 +12,7 @@
  * one-prop flip, not a second component.
  */
 import { useId } from 'react'
+import { primitiveColors } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { alpha } from '../../../utils/colors'
 
@@ -127,7 +128,7 @@ export function GhostBloom({
         <path
           d={curD}
           fill="none"
-          stroke={alpha('#000000', 0.3)}
+          stroke={alpha(primitiveColors.black, 0.3)}
           strokeWidth={lineWidth + 3}
           strokeLinejoin="round"
           strokeLinecap="round"
@@ -138,7 +139,7 @@ export function GhostBloom({
         <path
           d={curD}
           fill="none"
-          stroke={alpha('#000000', 0.33)}
+          stroke={alpha(primitiveColors.black, 0.33)}
           strokeWidth={lineWidth + 0.5}
           strokeLinejoin="round"
           strokeLinecap="round"
@@ -162,7 +163,7 @@ export function GhostBloom({
         <path
           d={curD}
           fill="none"
-          stroke={alpha('#FFFFFF', 0.28)}
+          stroke={alpha(primitiveColors.white, 0.28)}
           strokeWidth={1.1}
           strokeLinejoin="round"
           strokeLinecap="round"

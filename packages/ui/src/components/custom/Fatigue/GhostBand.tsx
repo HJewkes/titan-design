@@ -48,8 +48,7 @@ export function GhostBand({
       {segments.map((seg, i) => {
         const segW = x(seg.endMs) - x(seg.startMs)
         if (segW <= 0) return null
-        const label =
-          seg.phase === 'eccentric' ? 'ECC' : seg.phase === 'concentric' ? 'CON' : null
+        const label = seg.phase === 'eccentric' ? 'ECC' : seg.phase === 'concentric' ? 'CON' : null
         return (
           <g key={i}>
             <rect

@@ -9,6 +9,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { primitiveColors } from '../../../theme/tokens/primitives'
+import { alpha } from '../../../utils/colors'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import {
   SILVER,
@@ -61,19 +62,30 @@ function Swatch({ def }: { def: SwatchDef }) {
           borderRadius: 10,
           backgroundColor: def.value,
           borderWidth: 1,
-          borderColor: 'rgba(255,255,255,0.08)',
+          borderColor: alpha(primitiveColors.white, 0.08),
         }}
       />
       <View style={{ gap: 2 }}>
-        <Text style={{ fontSize: 12, fontWeight: '800', fontFamily: FONT_HEAD, color: t['text-primary'] }}>
+        <Text
+          style={{
+            fontSize: 12,
+            fontWeight: '800',
+            fontFamily: FONT_HEAD,
+            color: t['text-primary'],
+          }}
+        >
           {def.name}
         </Text>
-        <Text style={{ fontSize: 10, fontFamily: FONT_MONO, color: t['text-tertiary'] }}>{def.token}</Text>
+        <Text style={{ fontSize: 10, fontFamily: FONT_MONO, color: t['text-tertiary'] }}>
+          {def.token}
+        </Text>
         <Text style={{ fontSize: 11, fontFamily: FONT_MONO, color: t['text-secondary'] }}>
           {def.value.toUpperCase()}
         </Text>
         {def.note && (
-          <Text style={{ fontSize: 10, fontFamily: FONT_UI, color: t['text-tertiary'], lineHeight: 13 }}>
+          <Text
+            style={{ fontSize: 10, fontFamily: FONT_UI, color: t['text-tertiary'], lineHeight: 13 }}
+          >
             {def.note}
           </Text>
         )}
@@ -85,7 +97,14 @@ function Swatch({ def }: { def: SwatchDef }) {
 function SwatchGroup({ label, defs }: { label: string; defs: SwatchDef[] }) {
   return (
     <View style={{ gap: 12 }}>
-      <Text style={{ fontSize: 9, letterSpacing: 1.4, fontFamily: FONT_MONO, color: t['text-tertiary'] }}>
+      <Text
+        style={{
+          fontSize: 9,
+          letterSpacing: 1.4,
+          fontFamily: FONT_MONO,
+          color: t['text-tertiary'],
+        }}
+      >
         {label}
       </Text>
       <View style={{ flexDirection: 'row', gap: 16, flexWrap: 'wrap' }}>
@@ -98,7 +117,13 @@ function SwatchGroup({ label, defs }: { label: string; defs: SwatchDef[] }) {
 }
 
 const CONTROL: SwatchDef[] = [
-  { name: 'Silver', token: 'SILVER · neutral[300]', value: SILVER, note: 'On-track / at-or-above working.' },
+  // eslint-disable-next-line titan/no-raw-color -- 'Silver' is the token's display name, not a CSS colour
+  {
+    name: 'Silver',
+    token: 'SILVER · neutral[300]',
+    value: SILVER,
+    note: 'On-track / at-or-above working.',
+  },
   {
     name: 'Drift grey',
     token: 'DRIFT_GREY · neutral[600]',
@@ -108,15 +133,38 @@ const CONTROL: SwatchDef[] = [
 ]
 
 const COLLAPSE: SwatchDef[] = [
-  { name: 'Red light', token: 'RED_LIGHT · red[400]', value: RED_LIGHT, note: 'First flag — collapse just crossed the grind threshold.' },
+  {
+    name: 'Red light',
+    token: 'RED_LIGHT · red[400]',
+    value: RED_LIGHT,
+    note: 'First flag — collapse just crossed the grind threshold.',
+  },
   { name: 'Red mid', token: 'RED_MID · red[600]', value: RED_MID, note: 'Sustained collapse.' },
-  { name: 'Red deep', token: 'RED_DEEP · red[800]', value: RED_DEEP, note: 'Full collapse — form breaking down.' },
+  {
+    name: 'Red deep',
+    token: 'RED_DEEP · red[800]',
+    value: RED_DEEP,
+    note: 'Full collapse — form breaking down.',
+  },
 ]
 
 const PHASE_AXIS: SwatchDef[] = [
-  { name: 'Eccentric', token: 'PHASE_AXIS_COLOR.eccentric · magenta[800]', value: PHASE_AXIS_COLOR.eccentric },
-  { name: 'Concentric', token: 'PHASE_AXIS_COLOR.concentric · cyan[800]', value: PHASE_AXIS_COLOR.concentric },
-  { name: 'Idle', token: 'PHASE_AXIS_COLOR.idle · charcoal[300]', value: PHASE_AXIS_COLOR.idle, note: 'Pauses / holds on the phase band.' },
+  {
+    name: 'Eccentric',
+    token: 'PHASE_AXIS_COLOR.eccentric · magenta[800]',
+    value: PHASE_AXIS_COLOR.eccentric,
+  },
+  {
+    name: 'Concentric',
+    token: 'PHASE_AXIS_COLOR.concentric · cyan[800]',
+    value: PHASE_AXIS_COLOR.concentric,
+  },
+  {
+    name: 'Idle',
+    token: 'PHASE_AXIS_COLOR.idle · charcoal[300]',
+    value: PHASE_AXIS_COLOR.idle,
+    note: 'Pauses / holds on the phase band.',
+  },
 ]
 
 export const Palette: Story = {
@@ -124,17 +172,34 @@ export const Palette: Story = {
   render: () => (
     <View style={{ padding: 32, backgroundColor: PAGE_BG, minHeight: '100%', gap: 28 }}>
       <View style={{ gap: 8, maxWidth: 720 }}>
-        <Text style={{ fontSize: 9, letterSpacing: 1.4, fontFamily: FONT_MONO, color: t['text-tertiary'] }}>
+        <Text
+          style={{
+            fontSize: 9,
+            letterSpacing: 1.4,
+            fontFamily: FONT_MONO,
+            color: t['text-tertiary'],
+          }}
+        >
           LIVE-FATIGUE · QUALITY COLOUR LANGUAGE
         </Text>
-        <Text style={{ fontSize: 24, fontWeight: '900', fontFamily: FONT_HEAD, color: t['text-primary'] }}>
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: '900',
+            fontFamily: FONT_HEAD,
+            color: t['text-primary'],
+          }}
+        >
           Silver → Red
         </Text>
-        <Text style={{ fontSize: 13, fontFamily: FONT_UI, color: t['text-secondary'], lineHeight: 19 }}>
-          One language for every quality readout in the family: SILVER when the rep is right (dimming toward
-          DRIFT_GREY with tempo drift), SHADES OF RED when something&apos;s wrong — by severity. No greens, no
-          ambers; those belong to the verdict tones and velocity-loss bands, not here. The phase-axis tones
-          below colour the ghost band (they carry movement phase, not quality).
+        <Text
+          style={{ fontSize: 13, fontFamily: FONT_UI, color: t['text-secondary'], lineHeight: 19 }}
+        >
+          One language for every quality readout in the family: SILVER when the rep is right
+          (dimming toward DRIFT_GREY with tempo drift), SHADES OF RED when something&apos;s wrong —
+          by severity. No greens, no ambers; those belong to the verdict tones and velocity-loss
+          bands, not here. The phase-axis tones below colour the ghost band (they carry movement
+          phase, not quality).
         </Text>
       </View>
 
@@ -144,9 +209,17 @@ export const Palette: Story = {
         <SwatchGroup label="PHASE AXIS — ghost band tones" defs={PHASE_AXIS} />
       </View>
 
-      <Text style={{ fontSize: 11, fontFamily: FONT_UI, color: t['text-tertiary'], fontStyle: 'italic' }}>
+      <Text
+        style={{
+          fontSize: 11,
+          fontFamily: FONT_UI,
+          color: t['text-tertiary'],
+          fontStyle: 'italic',
+        }}
+      >
         Used by: RomProgressionChart, GhostSpark, DualGhostLine (dual ghost-line). Source of truth:
-        `fatigue-tokens.ts` (SILVER, DRIFT_GREY, RED_LIGHT/MID/DEEP, PHASE_AXIS_COLOR, `ghostLineColor`).
+        `fatigue-tokens.ts` (SILVER, DRIFT_GREY, RED_LIGHT/MID/DEEP, PHASE_AXIS_COLOR,
+        `ghostLineColor`).
       </Text>
     </View>
   ),
