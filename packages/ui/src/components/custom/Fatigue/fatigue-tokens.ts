@@ -45,14 +45,6 @@ export const PHASE_AXIS_COLOR: Record<SamplePhase, string> = {
   idle: primitiveColors.charcoal[200],
 }
 
-/** Mini-tempo digit colours `[ecc, pauseBottom, con, pauseTop]` — ecc magenta / con cyan / pauses grey. */
-export const TEMPO_DIGIT_COLOR: [string, string, string, string] = [
-  primitiveRamps.magenta[400],
-  primitiveColors.charcoal[400],
-  primitiveRamps.cyan[300],
-  primitiveColors.charcoal[400],
-]
-
 // --- shared silver/red scheme (ROM chart + ghost-spark line) --------------------
 // One source of truth for the two quality readouts: SILVER when the rep is right,
 // SHADES OF RED when there's an issue. No greens, no ambers — those languages belong

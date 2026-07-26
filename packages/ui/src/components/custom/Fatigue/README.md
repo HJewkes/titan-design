@@ -64,8 +64,8 @@ The reusable pure helpers (`ghostLineColor`, `auraForVerdict`, `mixHex`) live in
   VL20/VL30 bands are a SEPARATE language — unchanged.)
 - **RPE only** — no reps-in-reserve line; the number + verdict word carry exertion state.
 - **No separate top alert** — the card covers exertion state.
-- **Tempo embedded in the ghost-spark** (mini-tempo digits on hover) — there is no
-  standalone hero-tempo component.
+- **Tempo carried by the ghost-spark phase BAND** (`PHASE_AXIS_COLOR`) — no mini-tempo
+  digits, and no standalone hero-tempo component.
 
 ## Data plan / follow-ups
 
