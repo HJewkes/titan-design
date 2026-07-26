@@ -4,7 +4,7 @@
  * silver bars at-or-above the working range, light red below it, deep red below the
  * short threshold — with dashed working-standard (silver) + short-threshold (red)
  * reference lines and a faint red short-zone. Every rep reads at full colour.
- * Labelled "depth vs working range · now N%".
+ * The bars carry the whole read — no caption strip (the card's own hierarchy names it).
  *
  * Composes the shared {@link SetBarChart}: SetBarChart owns the geometry (value→height
  * scaling, the plot-width-driven adaptive bar width / gap — the same rhythm as the velocity
@@ -14,14 +14,11 @@
  * reference lines always sit on-chart; when no working standard is established yet (< 3 reps)
  * the lines drop and every bar reads silver — the bars alone carry the shape.
  */
-import { View, Text } from 'react-native'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { View } from 'react-native'
 import { alpha } from '../../../utils/colors'
 import { SetBarChart, type SetSlot, type SetBarGeometry } from '../charts/SetBarChart'
-import { FONT_MONO, SILVER, RED_LIGHT, RED_DEEP } from './fatigue-tokens'
+import { SILVER, RED_LIGHT, RED_DEEP } from './fatigue-tokens'
 import type { RepRomPoint } from './fatigue-model'
-
-const t = getSemanticColors('dark')
 
 export interface RomProgressionChartProps {
   /** Per-rep ROM points (metres), ordered by rep. */
@@ -30,7 +27,7 @@ export interface RomProgressionChartProps {
   workingStandardM: number | null
   /** Short threshold (metres) — the red dashed line + short-zone. `null` = not yet established. */
   shortThresholdM: number | null
-  /** Height of the bar plot in px (the caption row sits below it). Default 44. */
+  /** Height of the bar plot in px. Default 44. */
   barHeight?: number
   /** Keep the chart to a legible recent tail. Default 12. */
   maxReps?: number
@@ -110,13 +107,6 @@ export function RomProgressionChart({
   plannedReps,
 }: RomProgressionChartProps) {
   const shown = points.slice(-maxReps)
-  const lastIndex = shown.length - 1
-  const current = shown[lastIndex]?.romM ?? 0
-  const nowPct =
-    workingStandardM != null
-      ? Math.round((current / workingStandardM) * 100)
-      : Math.round((current / Math.max(0.01, ...shown.map((p) => p.romM))) * 100)
-
   const slots: SetSlot[] = shown.map((p) => ({ kind: 'rep', value: p.romM }))
   // Scale to the tallest of {bars, working, short} so the reference lines always sit on-chart
   // (SetBarChart's own peak scale reads only the bar values). `0` → let SetBarChart use peak.
@@ -124,7 +114,7 @@ export function RomProgressionChart({
     Math.max(...shown.map((p) => p.romM), workingStandardM ?? 0, shortThresholdM ?? 0) || undefined
 
   return (
-    <View style={{ gap: 5 }} testID="rom-progression">
+    <View testID="rom-progression">
       <SetBarChart
         slots={slots}
         colorFor={(romM) => barColor(romM, workingStandardM, shortThresholdM)}
@@ -137,14 +127,6 @@ export function RomProgressionChart({
         renderReference={(g) => romReferenceOverlay(g, workingStandardM, shortThresholdM)}
         testIDPrefix="rom"
       />
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text style={{ fontSize: 9, color: t['text-tertiary'], fontFamily: FONT_MONO }}>
-          ROM · depth vs working range
-        </Text>
-        <Text style={{ fontSize: 9, color: t['text-tertiary'], fontFamily: FONT_MONO }}>
-          now {nowPct}%
-        </Text>
-      </View>
     </View>
   )
 }

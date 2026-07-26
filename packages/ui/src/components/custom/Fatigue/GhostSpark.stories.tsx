@@ -7,6 +7,7 @@ import { ghostLineColor, clamp01 } from './fatigue-tokens'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { FATIGUE_STATES } from './fatigue-mock'
+import type { PhaseSegment } from './fatigue-model'
 
 const PANEL_BG = primitiveColors.charcoal[800]
 const PAGE_BG = primitiveColors.charcoal[900]
@@ -150,4 +151,36 @@ export const LineTreatmentSoft: Story = {
       <TreatmentDemo treatment="soft" />
     </View>
   ),
+}
+
+/**
+ * A rep with REAL pauses (the sample-derived mock collapses its pauses to zero width, so
+ * the idle tone never shows there). Segments are handed in with SEAMS between the runs —
+ * the shape the model actually produces — to prove the band closes them: one contiguous
+ * strip, boundaries on the phase transitions, the pause reading as band material.
+ */
+const PAUSED_SEGMENTS: PhaseSegment[] = [
+  { phase: 'eccentric', startMs: 0, endMs: 2100 },
+  { phase: 'idle', startMs: 2190, endMs: 2900 },
+  { phase: 'concentric', startMs: 2990, endMs: 4050 },
+  { phase: 'idle', startMs: 4140, endMs: 4600 },
+]
+
+export const PausedRepBand: Story = {
+  render: () => {
+    const w = 360
+    const h = 60
+    const bandTop = 22
+    const x = (ms: number) => 12 + (ms / 4800) * (w - 20)
+    return (
+      <View style={{ backgroundColor: PAGE_BG, padding: 28, gap: 8, alignItems: 'flex-start' }}>
+        {label('PHASE BAND · REP WITH REAL PAUSES (bottom hold + top hold)')}
+        <View style={{ width: w, backgroundColor: PANEL_BG, borderRadius: 12, padding: 16 }}>
+          <svg width={w} height={h}>
+            <GhostBand segments={PAUSED_SEGMENTS} x={x} top={bandTop} showLabels />
+          </svg>
+        </View>
+      </View>
+    )
+  },
 }

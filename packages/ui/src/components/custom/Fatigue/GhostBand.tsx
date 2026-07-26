@@ -8,6 +8,7 @@
  * It is a pure SVG group: the caller owns the x-scale (`x`) and the band's vertical
  * placement (`top`), so the same band serves a bottom-pinned single or a centred dual.
  */
+import { useId } from 'react'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { FONT_UI, PHASE_AXIS_COLOR } from './fatigue-tokens'
 import type { PhaseSegment } from './fatigue-model'
@@ -34,7 +35,15 @@ export interface GhostBandProps {
   labelColor?: string
 }
 
-/** The phase-coloured axis band — one rounded rect per phase run, ECC/CON labelled inside. */
+/**
+ * The phase-coloured axis band — ONE contiguous strip whose internal boundaries land
+ * exactly on the sparkline's phase transitions.
+ *
+ * Contiguity is structural, not incidental: the band is a single rounded silhouette
+ * (clipped), floored with the idle tone across its whole time extent, and each phase run
+ * paints SQUARE inside that clip, extended to the next run's start. No per-segment inset
+ * and no per-segment rounding — those read as gaps between sections.
+ */
 export function GhostBand({
   segments,
   x,
@@ -43,40 +52,69 @@ export function GhostBand({
   showLabels = false,
   labelColor = t['text-primary'],
 }: GhostBandProps) {
+  const rawId = useId()
+  const clipId = `ghost-band-${rawId.replace(/[^a-zA-Z0-9]/g, '')}`
+
+  const drawn = segments.filter((seg) => x(seg.endMs) - x(seg.startMs) > 0)
+  if (drawn.length === 0) return null
+
+  const bandLeft = x(drawn[0].startMs)
+  const bandRight = x(drawn[drawn.length - 1].endMs)
+  const bandW = bandRight - bandLeft
+  if (bandW <= 0) return null
+
   return (
-    <>
-      {segments.map((seg, i) => {
-        const segW = x(seg.endMs) - x(seg.startMs)
-        if (segW <= 0) return null
-        const label = seg.phase === 'eccentric' ? 'ECC' : seg.phase === 'concentric' ? 'CON' : null
-        return (
-          <g key={i}>
-            <rect
-              x={x(seg.startMs)}
-              y={top}
-              width={Math.max(0, segW - 1)}
-              height={height}
-              rx={2}
-              fill={PHASE_AXIS_COLOR[seg.phase]}
-            />
-            {showLabels && label && segW > 20 && (
-              <text
-                x={(x(seg.startMs) + x(seg.endMs)) / 2}
-                y={top + height / 2}
-                textAnchor="middle"
-                dominantBaseline="central"
-                fill={labelColor}
-                fontSize={8}
-                fontWeight={800}
-                letterSpacing={1}
-                fontFamily={FONT_UI}
-              >
-                {label}
-              </text>
-            )}
-          </g>
-        )
-      })}
-    </>
+    <g>
+      <defs>
+        <clipPath id={clipId}>
+          <rect x={bandLeft} y={top} width={bandW} height={height} rx={2} />
+        </clipPath>
+      </defs>
+      <g clipPath={`url(#${clipId})`}>
+        {/* the strip floor — the idle tone spans the rep so a pause is band, not a hole. */}
+        <rect
+          x={bandLeft}
+          y={top}
+          width={bandW}
+          height={height}
+          fill={PHASE_AXIS_COLOR.idle}
+          data-testid="ghost-band-floor"
+        />
+        {drawn.map((seg, i) => {
+          const left = x(seg.startMs)
+          // Butt each run against the next run's start (not its own end) so rounding
+          // between the two can never open a seam; the last run runs to the band edge.
+          const right = i === drawn.length - 1 ? bandRight : x(drawn[i + 1].startMs)
+          const segW = Math.max(0, right - left)
+          const label = seg.phase === 'eccentric' ? 'ECC' : seg.phase === 'concentric' ? 'CON' : null
+          return (
+            <g key={i}>
+              <rect
+                x={left}
+                y={top}
+                width={segW}
+                height={height}
+                fill={PHASE_AXIS_COLOR[seg.phase]}
+              />
+              {showLabels && label && segW > 20 && (
+                <text
+                  x={left + segW / 2}
+                  y={top + height / 2}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  fill={labelColor}
+                  fontSize={8}
+                  fontWeight={800}
+                  letterSpacing={1}
+                  fontFamily={FONT_UI}
+                >
+                  {label}
+                </text>
+              )}
+            </g>
+          )
+        })}
+      </g>
+    </g>
   )
 }
