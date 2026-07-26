@@ -21,7 +21,7 @@ LiveFatiguePanel              ← the composition (Live panel v2)
    │  └─ Tooltip              (ui/tooltip — hover detail)
    ├─ RomProgressionChart     (per-rep silver/red depth bars + reference lines)
    ├─ GhostSpark              (per-rep velocity-time sparkline; tempo EMBEDDED)
-   └─ Surface                 (ui/surface — the raised/paper-accent card ground)
+   └─ Surface                 (ui/surface — the base-plane, paper-accented card ground)
 ```
 
 ## Tier map
@@ -38,8 +38,9 @@ LiveFatiguePanel              ← the composition (Live panel v2)
 - **`VelocityStrip`** (Workout/) — the hero reuses it verbatim; `VelocityHero` only adds
   the loss-relative VL20/VL30 band overlay on the strip's own peak scale.
 - **`LiveAuraFrame`** (Workout/) — the coaching flood.
-- **`Surface`** (ui/surface/) — the card ground (`level="raised"`); no hardcoded surface
-  hex, so the family inherits the surface-ramp / paper-accent refresh when it lands.
+- **`Surface`** (ui/surface/) — the card ground (`level="base"`, one step above the
+  `background` shell), separated by the alpha `hairline-default` edge and finished with
+  the shared `barPaper` accent; no hardcoded surface hex.
 - **Tokens** — colours come from `getSemanticColors` / `primitiveRamps`; formatting from
   `roundTempo`. No literal surface/status hex constants.
 

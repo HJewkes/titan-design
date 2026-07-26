@@ -5,13 +5,22 @@
  * (tempo embedded), the last two spread through the leftover height. Consumes ONE
  * {@link LiveFatigueModel}.
  *
- * The card grounds on a {@link Surface} `raised` plane (the paper-accent hero surface)
- * — it never hardcodes a surface hex, so it inherits the surface-ramp / paper-accent
- * refresh when that ships.
+ * SURFACE (TD-07.08). The card grounds on the `base` plane — ONE step above the
+ * `background` shell the live stage paints, per the surface north-star's pairing matrix
+ * (a card is parent+1; `raised`/`overlay` skip levels and read hot against the near-black
+ * frame). Separation is carried by the alpha `hairline-default` edge, not by lightness —
+ * the north-star's primary cue, self-normalising on any plane.
+ *
+ * PAPER. The live card is one of the designated hero surfaces, so it takes the paper
+ * accent DELIBERATELY: the shared {@link barPaper} treatment (brightness-scaled matte
+ * grain + crisp top rim-light + soft contact shadow) — the same material the ROM /
+ * velocity bars are made of, now carrying the sheet they sit on. Token-sourced fill, no
+ * hardcoded surface hex.
  */
 import { View } from 'react-native'
 import { Surface } from '../../ui/surface/Surface'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { barPaper } from '../../../theme/bar-paper'
 import { VerdictHero } from './VerdictHero'
 import { FatigueLights } from './FatigueLights'
 import { RomProgressionChart } from './RomProgressionChart'
@@ -37,7 +46,7 @@ export function LiveFatigueCard({ model, width = 318, height }: LiveFatigueCardP
   const chartH = height != null ? Math.round(Math.min(240, Math.max(168, height * 0.4))) : 172
   return (
     <Surface
-      level="raised"
+      level="base"
       testID="live-fatigue-card"
       style={{
         width,
@@ -45,7 +54,8 @@ export function LiveFatigueCard({ model, width = 318, height }: LiveFatigueCardP
         borderRadius: 14,
         padding: PAD,
         borderWidth: 1,
-        borderColor: t['border-default'],
+        borderColor: t['hairline-default'],
+        ...barPaper(t['surface-base']),
       }}
     >
       {/* top group — verdict hero + the three why-lights, tight together. */}
