@@ -38,7 +38,6 @@ export const LivePanelV2: Story = {
         model={FATIGUE_STATES[3].model}
         velocity={{ velocities: MOCK_MEAN_VELOCITIES, targetReps: 8 }}
         header={MOCK_HEADER}
-        revealChart
       />
     </View>
   ),
@@ -88,7 +87,6 @@ export const LiveStates: Story = {
                 liveRepIndex: liveRep,
               }}
               header={{ ...MOCK_HEADER, meta: `SET 3 · REP ${s.current + 1} / 8` }}
-              revealChart
             />
           </View>
         )

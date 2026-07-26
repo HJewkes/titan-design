@@ -59,8 +59,10 @@ export const RED_DEEP = primitiveRamps.red[800]
 
 /** Below this grind signature the rep is "controlled" → silver; at/above it goes red. */
 export const GRIND_THRESHOLD = 0.35
-/** A quiet grey the controlled line dims toward as it drifts (never a colour). */
-const DRIFT_GREY = primitiveColors.charcoal[500]
+/** A quiet grey the controlled line dims toward as it drifts (never a colour): a dimmed
+ *  cool grey in the SAME neutral family as SILVER, so a fully-drifted line reads dim-silver
+ *  rather than sinking toward black. Shared with the ROM chart. */
+export const DRIFT_GREY = primitiveColors.neutral[600]
 
 export function clamp01(v: number): number {
   return Math.min(1, Math.max(0, v))
