@@ -178,6 +178,34 @@ export const AllViews: Story = {
 const decay = (n: number, start: number, span = 0.4): number[] =>
   Array.from({ length: n }, (_, r) => +(start - (span * r) / Math.max(1, n - 1)).toFixed(3))
 
+/**
+ * The current exercise's set table. This is where BOTH strip views ship: a
+ * `done` row carries the flat compact strip, the `live` row carries the
+ * velocity-height spotlight, and `todo` rows carry a grey stub.
+ */
+const CURRENT_SETS: SetRowProps[] = [
+  {
+    state: 'done',
+    setNumber: 1,
+    unit: 'lbs',
+    reps: 10,
+    weight: 90,
+    rpe: 7,
+    velocities: decay(10, 0.72),
+  },
+  {
+    state: 'live',
+    setNumber: 2,
+    unit: 'lbs',
+    target: { reps: 10, weight: 90 },
+    reps: 5,
+    weight: 90,
+    velocities: decay(5, 0.62),
+    liveRepIndex: 4,
+  },
+  { state: 'todo', setNumber: 3, unit: 'lbs', target: { reps: 10, weight: 90 }, planned: 10 },
+]
+
 /** A live session, mid-workout: two done, one active, one still upcoming. */
 const RAIL_SESSION: SessionRailExercise[] = [
   {
@@ -209,6 +237,7 @@ const RAIL_SESSION: SessionRailExercise[] = [
       { status: 'active', velocities: decay(5, 0.62), planned: 10 },
       { status: 'todo', planned: 10 },
     ],
+    sets: CURRENT_SETS,
   },
   {
     name: 'Standing Calf Raise',
@@ -217,34 +246,6 @@ const RAIL_SESSION: SessionRailExercise[] = [
     upcoming: true,
     setStates: [1, 2, 3, 4, 5].map(() => ({ status: 'todo' as const, planned: 20 })),
   },
-]
-
-/**
- * The current exercise's set table. This is where BOTH strip views ship: a
- * `done` row carries the flat compact strip, the `live` row carries the
- * velocity-height spotlight, and `todo` rows carry a grey stub.
- */
-const CURRENT_SETS: SetRowProps[] = [
-  {
-    state: 'done',
-    setNumber: 1,
-    unit: 'lbs',
-    reps: 10,
-    weight: 90,
-    rpe: 7,
-    velocities: decay(10, 0.72),
-  },
-  {
-    state: 'live',
-    setNumber: 2,
-    unit: 'lbs',
-    target: { reps: 10, weight: 90 },
-    reps: 5,
-    weight: 90,
-    velocities: decay(5, 0.62),
-    liveRepIndex: 4,
-  },
-  { state: 'todo', setNumber: 3, unit: 'lbs', target: { reps: 10, weight: 90 }, planned: 10 },
 ]
 
 /**
@@ -265,7 +266,7 @@ const CURRENT_SETS: SetRowProps[] = [
  * radius or gap between the rail and the table.
  */
 export const InContext: Story = {
-  name: 'In Context · session rail + expanded exercise',
+  name: 'In Context · session rail',
   parameters: { layout: 'fullscreen' },
   render: () => (
     <View style={{ flexDirection: 'row', backgroundColor: SURFACE_BG, minHeight: 640 }}>
@@ -273,6 +274,8 @@ export const InContext: Story = {
         title="Pull A · Intensification"
         exercises={RAIL_SESSION}
         stripHeight={8}
+        width={560}
+        expandedIndex={2}
         setsDone={7.2}
         elapsedMs={(42 * 60 + 18) * 1000}
         budgetMs={60 * 60 * 1000}
@@ -283,28 +286,14 @@ export const InContext: Story = {
         ]}
       />
 
-      {/* The card is width-constrained rather than full-bleed: the set table's
-          columns are fixed-width, so letting it stretch to a wide viewport
-          strands the per-row strips away from their row. 620px is the kind of
-          column the dashboard actually gives it. */}
-      <View style={{ padding: 28, gap: 18, width: 620 }}>
-        <View style={{ gap: 3 }}>
-          <ViewLabel text="current exercise · expanded" />
-          <Note>
-            The rail draws SET-level bars. The table below is the same sets rep by rep: done rows
-            carry the flat compact strip, the live row the velocity-height spotlight.
-          </Note>
-        </View>
-
-        <ExerciseCard
-          name="Cable Chest Press"
-          expanded
-          summary={{ sets: 3, reps: 10, weight: 90, unit: 'lbs' }}
-          tempo={[2, 1, 2, 0]}
-          setVelocities={[decay(10, 0.72), decay(5, 0.62)]}
-          totalPlannedSets={3}
-          sets={CURRENT_SETS}
-        />
+      <View style={{ flex: 1, padding: 28, gap: 6 }}>
+        <ViewLabel text="reading the rail" />
+        <Note>
+          Collapsed rows draw SET-level bars — one per set, segmented per rep, at the same 8px
+          flat-bar language. The expanded row is the same exercise rep by rep: its `done` rows carry
+          the compact strip, the `live` row the velocity-height spotlight, `todo` rows a grey stub.
+          A zoom, not a repeat.
+        </Note>
       </View>
     </View>
   ),
