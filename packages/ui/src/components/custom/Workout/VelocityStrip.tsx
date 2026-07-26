@@ -4,21 +4,15 @@ import { View, Text, Pressable, Animated, type ViewProps, type ViewStyle } from 
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { primitiveColors, sequentialEffort } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { useOnSurfaceColor } from '../../ui/surface/SurfaceContext'
 import { alpha } from '../../../utils/colors'
 import { formatVelocity } from '../../../utils/workout-format'
 import {
   SetBarChart,
   type SetSlot,
-  VARIABLE_FILL,
-  CONTINUE_OUTLINE,
   type SetBarGeometry,
   ChartSideRail,
   SET_BAR_DEFAULT_HEIGHT,
-  BAR_MAX_WIDTH,
-  computeBarLayout,
 } from '../charts/SetBarChart'
-import type { LayoutChangeEvent } from 'react-native'
 import { ANIMATION_EASING } from '../charts/live-rep-growth'
 
 /**
@@ -725,7 +719,6 @@ const DUAL_COMPACT_HEIGHT = 11.5
 // hero geometry for free. The `rail` variant is far smaller than a hero (no value
 // labels, reference lines, paper, or label headroom), so composing the hero would
 // drag all of that in; it keeps a lean dedicated renderer at these compact metrics.
-const RAIL_RADIUS = 2
 /** The vertical gap between the up/down wings on the axis-less rail (value-height dual-expanded). */
 const DUAL_WING_GAP = 2
 /** The centre gap (px) splitting the folded compact dual's L (top) and R (bottom) halves — a gap, no line. */
@@ -1023,107 +1016,46 @@ function DualVelocityCompactStrip({
   label,
   viewProps,
 }: DualChartProps) {
-  // Each side is a fixed-height rounded sub-segment (a little pill), stacked above/below the fold gap.
-  const half = COMPACT_FOLD_HALF
-  const zoneColorFor = makeBarColorFor(zones)
-  const bestL = Math.max(...leftDone, 0)
-  const bestR = Math.max(...rightDone, 0)
-  const colorFor = (v: number, best: number): string =>
-    barColor === 'loss' ? getVelocityLossColor(velocityLossForRep(v, best)) : zoneColorFor(v)
-  const emptyColor = useOnSurfaceColor('tertiary')
-  // The SAME index-locked structure the hero and rail build, so compact carries the set-type
-  // vocabulary (to-do remainder, the range variable window, the AMRAP continue window, drop
-  // chunk-notch gaps) and aligns a lagging side's un-logged reps as empties under their partner.
-  // The previous `railSlots` flattened both sides to bare velocities, which dropped every window
-  // and let each side compute its own column count.
+  // COMPOSED, like the hero and rail: two `compact` strips at COMPACT_FOLD_HALF each, separated by
+  // COMPACT_FOLD_GAP (5 + 1.5 + 5 = DUAL_COMPACT_HEIGHT exactly). Because a compact bar FILLS its
+  // plot, each column reads as an L top pill over an R bottom pill — the folded design, but drawn
+  // by the same SetBarChart the single uses. Composing rather than hand-rolling is what makes the
+  // set-type vocabulary (to-do, the cyan variable/continue windows, drop chunk-notch) and the
+  // index-locked empty arrive for free, and keeps them from drifting apart later.
+  const half = height === DUAL_COMPACT_HEIGHT ? COMPACT_FOLD_HALF : (height - COMPACT_FOLD_GAP) / 2
   const aligned = alignDualSlots(
     leftStream ? streamNaturalSlots(leftStream, targetReps) : [],
     rightStream ? streamNaturalSlots(rightStream, targetReps) : []
   )
-  const slotsL = aligned.left
-  const slotsR = aligned.right
-  const columns = Math.max(slotsL.length, slotsR.length)
-  // Measure the plot so the columns land at the SAME widths + gaps as the single chart (one shared
-  // geometry via computeBarLayout) — width 0 (unmeasured) falls back to the layout's own default.
-  const [plotW, setPlotW] = useState(0)
-  const { gap } = computeBarLayout(plotW, columns)
   const { style: externalStyle, ...restProps } = viewProps
 
-  const foldHalf = (slot: SetSlot | undefined, best: number, testID: string) => {
-    // Each sub-segment is a self-contained rounded pill (all corners), not a shared top/bottom cap.
-    const radius = { borderRadius: RAIL_RADIUS }
-    const v = slot?.value
-
-    // A logged rep: solid, coloured by this side's own loss/zone.
-    if (slot?.kind === 'rep' && v != null) {
-      return (
-        <View
-          style={{ height: half, backgroundColor: colorFor(v, best), ...radius }}
-          testID={testID}
-        />
-      )
-    }
-
-    // The planned remainder — a solid muted pill, matching the single compact's to-do treatment.
-    if (slot?.kind === 'todo') {
-      return (
-        <View
-          style={{ height: half, backgroundColor: emptyColor, opacity: 0.55, ...radius }}
-          testID={`${testID}-todo`}
-        />
-      )
-    }
-
-    // The REPEATABLE windows — a range's variable band and an AMRAP/myo "continue" tail. Same CYAN
-    // vocabulary as the single (variable fills, continue outlines) so the two views name the same
-    // thing the same way; only the scale differs.
-    if (slot?.kind === 'variable') {
-      return (
-        <View
-          style={{ height: half, backgroundColor: VARIABLE_FILL, ...radius }}
-          testID={`${testID}-variable`}
-        />
-      )
-    }
-    if (slot?.kind === 'continue') {
-      return (
-        <View
-          style={{ height: half, borderWidth: 1, borderColor: CONTINUE_OUTLINE, ...radius }}
-          testID={`${testID}-continue`}
-        />
-      )
-    }
-
-    // An index-locked gap: this side has not logged the column its partner has. Fainter than a
-    // to-do — a rep that is MISSING, not one that is merely planned.
-    return (
-      <View
-        style={{ height: half, backgroundColor: emptyColor, opacity: 0.28, ...radius }}
-        testID={`${testID}-empty`}
-      />
-    )
-  }
+  const wing = (orientation: 'up' | 'down', columns: SetSlot[], done: number[]) => (
+    <VelocityStrip
+      variant="compact"
+      orientation={orientation}
+      velocities={done}
+      columnSlots={columns}
+      barColor={barColor}
+      zones={zones}
+      height={half}
+    />
+  )
 
   return (
     <View
       className={className}
-      style={[{ height, flexDirection: 'row', gap, alignItems: 'stretch' }, externalStyle]}
+      style={[{ height, flexDirection: 'column', gap: COMPACT_FOLD_GAP }, externalStyle]}
       accessibilityRole="image"
       accessibilityLabel={label}
       testID="dual-velocity-strip"
-      onLayout={(e: LayoutChangeEvent) => setPlotW(e.nativeEvent.layout.width)}
       {...restProps}
     >
-      {Array.from({ length: columns }, (_, i) => (
-        <View
-          key={i}
-          accessibilityElementsHidden
-          style={{ flex: 1, maxWidth: BAR_MAX_WIDTH, gap: COMPACT_FOLD_GAP }}
-        >
-          {foldHalf(slotsL[i], bestL, `dual-velocity-bar-L-${i}`)}
-          {foldHalf(slotsR[i], bestR, `dual-velocity-bar-R-${i}`)}
-        </View>
-      ))}
+      <View accessibilityElementsHidden testID="dual-velocity-wing-up">
+        {wing('up', aligned.left, leftDone)}
+      </View>
+      <View accessibilityElementsHidden testID="dual-velocity-wing-down">
+        {wing('down', aligned.right, rightDone)}
+      </View>
     </View>
   )
 }
