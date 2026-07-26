@@ -11,21 +11,10 @@ const points: RepRomPoint[] = [
 ]
 
 describe('RomProgressionChart', () => {
-  it('renders the caption', () => {
+  it('renders no caption strip — the bars carry the read alone', () => {
     render(<RomProgressionChart points={points} workingStandardM={0.88} shortThresholdM={0.66} />)
-    expect(screen.getByText('ROM · depth vs working range')).toBeInTheDocument()
-  })
-
-  it('computes now% against the working standard', () => {
-    render(<RomProgressionChart points={points} workingStandardM={0.9} shortThresholdM={0.675} />)
-    // current rom 0.72 / working 0.9 = 80%
-    expect(screen.getByText('now 80%')).toBeInTheDocument()
-  })
-
-  it('falls back to the tallest bar when no working standard is established', () => {
-    render(<RomProgressionChart points={points} workingStandardM={null} shortThresholdM={null} />)
-    // current rom 0.72 / max 0.9 = 80%
-    expect(screen.getByText('now 80%')).toBeInTheDocument()
+    expect(screen.queryByText(/depth vs working range/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/^now /)).not.toBeInTheDocument()
   })
 
   it('renders the chart container', () => {
