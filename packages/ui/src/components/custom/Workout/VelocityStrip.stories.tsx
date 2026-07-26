@@ -1,11 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
 import { VelocityStrip, DualVelocityStrip } from './VelocityStrip'
+import { SessionRail, type SessionRailExercise } from './SessionRail'
+import { ExerciseCard } from './ExerciseCard'
+import type { SetRowProps } from './SetRow'
 import {
   Sheet,
   Note,
   ViewLabel,
-  VIEW_LABEL,
   SURFACE_BG,
   VIEW_HEIGHT,
   dualVariantFor,
@@ -171,65 +173,139 @@ export const AllViews: Story = {
   ),
 }
 
-// ── In context · the session-rail lockup ────────────────────────────────────
+// ── In context · the real session rail + expanded exercise ──────────────────
 
-const RAIL_SETS = [
-  { label: 'Set 1', velocities: [0.98, 0.95, 0.92, 0.9, 0.88] },
-  { label: 'Set 2', velocities: [0.95, 0.9, 0.86, 0.8, 0.72] },
-  { label: 'Set 3', velocities: [0.9, 0.84, 0.76, 0.66] },
+const decay = (n: number, start: number, span = 0.4): number[] =>
+  Array.from({ length: n }, (_, r) => +(start - (span * r) / Math.max(1, n - 1)).toFixed(3))
+
+/** A live session, mid-workout: two done, one active, one still upcoming. */
+const RAIL_SESSION: SessionRailExercise[] = [
+  {
+    name: 'Seated Cable Row',
+    summary: { sets: 5, reps: 8, weight: 145, unit: 'lbs' },
+    tempo: [3, 1, 2, 0],
+    indicator: 'pr',
+    setStates: [1.0, 0.9, 0.8, 0.7, 0.6].map((v) => ({
+      status: 'done' as const,
+      velocities: decay(8, v),
+    })),
+  },
+  {
+    name: 'Incline DB Press',
+    summary: { sets: 3, reps: 8, weight: 70, unit: 'lbs' },
+    tempo: [3, 0, 3, 0],
+    setStates: [0.72, 0.62, 0.54].map((v) => ({
+      status: 'done' as const,
+      velocities: decay(8, v),
+    })),
+  },
+  {
+    name: 'Cable Chest Press',
+    summary: { sets: 3, reps: 10, weight: 90, unit: 'lbs' },
+    tempo: [2, 1, 2, 0],
+    indicator: 'info',
+    setStates: [
+      { status: 'done', velocities: decay(10, 0.72) },
+      { status: 'active', velocities: decay(5, 0.62), planned: 10 },
+      { status: 'todo', planned: 10 },
+    ],
+  },
+  {
+    name: 'Standing Calf Raise',
+    summary: { sets: 5, reps: 20, weight: 25, unit: 'lbs' },
+    tempo: [2, 1, 2, 0],
+    upcoming: true,
+    setStates: [1, 2, 3, 4, 5].map(() => ({ status: 'todo' as const, planned: 20 })),
+  },
 ]
 
 /**
- * The strip where it actually lives: a session rail of completed sets, each a
- * resting compact strip, with the active set opened to expanded beneath them.
+ * The current exercise's set table. This is where BOTH strip views ship: a
+ * `done` row carries the flat compact strip, the `live` row carries the
+ * velocity-height spotlight, and `todo` rows carry a grey stub.
+ */
+const CURRENT_SETS: SetRowProps[] = [
+  {
+    state: 'done',
+    setNumber: 1,
+    unit: 'lbs',
+    reps: 10,
+    weight: 90,
+    rpe: 7,
+    velocities: decay(10, 0.72),
+  },
+  {
+    state: 'live',
+    setNumber: 2,
+    unit: 'lbs',
+    target: { reps: 10, weight: 90 },
+    reps: 5,
+    weight: 90,
+    velocities: decay(5, 0.62),
+    liveRepIndex: 4,
+  },
+  { state: 'todo', setNumber: 3, unit: 'lbs', target: { reps: 10, weight: 90 }, planned: 10 },
+]
+
+/**
+ * The strip in the place it actually ships, at production size, using the real
+ * components — no mock rows.
  *
- * The point of the lockup is the shared geometry: for a given rep COUNT, the
- * active expanded set lands its columns at the same x-positions as the resting
- * rows above it, because both go through the same bar-layout maths. Sets with a
- * different rep count get proportionally wider bars — that is the layout
- * working, not drift. If the maths ever fork, this is the story where it shows
- * up as a stagger between two rows that have the same number of reps.
+ * Left: `SessionRail`, which draws SET-level bars (`SetStrip`, `stripHeight={8}`)
+ * — one bar per set, segmented per rep. Right: the current exercise opened as an
+ * `ExerciseCard`, whose set table is where BOTH strip views live in production —
+ * a `done` row renders `compact`, the `live` row renders the velocity-height
+ * spotlight (`expanded` at h=24), and a `todo` row renders a grey stub.
+ *
+ * That composition is the honest answer to "where does this component appear":
+ * the SPA renders `ExerciseCard` in its hero panel and rest view, so compact
+ * ships through this table rather than through any direct call site. Reading
+ * left to right is a zoom — set-level bars, then the same sets rep by rep — and
+ * a fork in the flat-bar language shows up here as a mismatch in bar height,
+ * radius or gap between the rail and the table.
  */
 export const InContext: Story = {
-  name: 'In Context · session rail lockup',
+  name: 'In Context · session rail + expanded exercise',
+  parameters: { layout: 'fullscreen' },
   render: () => (
-    <Sheet width={520}>
-      <View style={{ gap: 3 }}>
-        <ViewLabel text="In context" />
-        <Note>
-          Completed sets at rest, the active set expanded below. Sets with the SAME rep count land
-          their columns at identical x-positions across both views — sets 1, 2 and 4 line up; set 3
-          logged four reps, so its bars are correspondingly wider. The layout adapts to rep count,
-          and only to rep count.
-        </Note>
-      </View>
+    <View style={{ flexDirection: 'row', backgroundColor: SURFACE_BG, minHeight: 640 }}>
+      <SessionRail
+        title="Pull A · Intensification"
+        exercises={RAIL_SESSION}
+        stripHeight={8}
+        setsDone={7.2}
+        elapsedMs={(42 * 60 + 18) * 1000}
+        budgetMs={60 * 60 * 1000}
+        metrics={[
+          { label: 'Volume', value: '76%' },
+          { label: 'Load', value: '7.3k' },
+          { label: 'Fatigue', value: 'MOD' },
+        ]}
+      />
 
-      <View style={{ gap: 12 }}>
-        {RAIL_SETS.map((s) => (
-          <View key={s.label} style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
-            <Text style={{ color: VIEW_LABEL, fontSize: 11, width: 46 }}>{s.label}</Text>
-            <View style={{ flex: 1 }}>
-              <VelocityStrip velocities={s.velocities} variant="compact" height={11.5} />
-            </View>
-          </View>
-        ))}
-      </View>
-
-      <View style={{ flexDirection: 'row', gap: 14 }}>
-        <Text style={{ color: VIEW_LABEL, fontSize: 11, width: 46 }}>Set 4</Text>
-        <View style={{ flex: 1 }}>
-          <VelocityStrip
-            velocities={[0.88, 0.83, 0.78]}
-            variant="expanded"
-            height={60}
-            scale="fixed"
-            targetReps={5}
-            liveRepIndex={2}
-            showNumbers={false}
-            showInfo={false}
-          />
+      {/* The card is width-constrained rather than full-bleed: the set table's
+          columns are fixed-width, so letting it stretch to a wide viewport
+          strands the per-row strips away from their row. 620px is the kind of
+          column the dashboard actually gives it. */}
+      <View style={{ padding: 28, gap: 18, width: 620 }}>
+        <View style={{ gap: 3 }}>
+          <ViewLabel text="current exercise · expanded" />
+          <Note>
+            The rail draws SET-level bars. The table below is the same sets rep by rep: done rows
+            carry the flat compact strip, the live row the velocity-height spotlight.
+          </Note>
         </View>
+
+        <ExerciseCard
+          name="Cable Chest Press"
+          expanded
+          summary={{ sets: 3, reps: 10, weight: 90, unit: 'lbs' }}
+          tempo={[2, 1, 2, 0]}
+          setVelocities={[decay(10, 0.72), decay(5, 0.62)]}
+          totalPlannedSets={3}
+          sets={CURRENT_SETS}
+        />
       </View>
-    </Sheet>
+    </View>
   ),
 }
