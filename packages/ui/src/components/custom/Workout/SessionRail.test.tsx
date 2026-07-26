@@ -76,6 +76,49 @@ describe('SessionRail', () => {
     expect(onExercisePress).toHaveBeenCalledWith(exercises[1], 1)
   })
 
+  describe('expandedIndex', () => {
+    const withSets: SessionRailExercise[] = exercises.map((ex, i) =>
+      i === 1
+        ? {
+            ...ex,
+            sets: [
+              {
+                state: 'done' as const,
+                setNumber: 1,
+                unit: 'lbs' as const,
+                reps: 10,
+                weight: 90,
+                velocities: [0.72, 0.66],
+              },
+            ],
+          }
+        : ex
+    )
+
+    it('renders the named exercise expanded in place, leaving the others collapsed', () => {
+      render(<SessionRail {...baseProps} exercises={withSets} expandedIndex={1} />)
+      // The expanded row reveals the set table; the collapsed ones do not.
+      expect(screen.getByText('SET')).toBeInTheDocument()
+      expect(screen.getByText('RPE')).toBeInTheDocument()
+      // Every exercise still has a row.
+      expect(screen.getByText('Seated Cable Row')).toBeInTheDocument()
+      expect(screen.getByText('Cable Chest Press')).toBeInTheDocument()
+      expect(screen.getByText('Face Pull')).toBeInTheDocument()
+    })
+
+    it('stays collapsed when the named exercise has no sets', () => {
+      // Guards the real case: an exercise whose sets have not loaded yet must not
+      // expand into an empty table.
+      render(<SessionRail {...baseProps} expandedIndex={1} />)
+      expect(screen.queryByText('SET')).not.toBeInTheDocument()
+    })
+
+    it('leaves every row collapsed when expandedIndex is omitted', () => {
+      render(<SessionRail {...baseProps} exercises={withSets} />)
+      expect(screen.queryByText('SET')).not.toBeInTheDocument()
+    })
+  })
+
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const { container } = render(<SessionRail {...baseProps} />)
