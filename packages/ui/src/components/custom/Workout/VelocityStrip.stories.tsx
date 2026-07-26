@@ -2,10 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 import { VelocityStrip, DualVelocityStrip } from './VelocityStrip'
 import { SessionRail, type SessionRailExercise } from './SessionRail'
-import { ExerciseCard } from './ExerciseCard'
 import type { SetRowProps } from './SetRow'
 import {
-  Sheet,
   Note,
   ViewLabel,
   SURFACE_BG,

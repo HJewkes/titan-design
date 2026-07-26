@@ -40,9 +40,9 @@ function mixHex(a: string, b: string, t: number): string {
 }
 
 /** The cyan variable-window fill — the range set's `floor..max` window (shared with SetStrip). */
-const VARIABLE_FILL = primitiveRamps.cyan[900]
+export const VARIABLE_FILL = primitiveRamps.cyan[900]
 /** The thin cyan-800 outline on the open-ended "continue" slot — reads as "keep going". */
-const CONTINUE_OUTLINE = primitiveRamps.cyan[800]
+export const CONTINUE_OUTLINE = primitiveRamps.cyan[800]
 
 /**
  * One drawn cell of the chart. `rep` carries a `value` and draws a value-height bar;

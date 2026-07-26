@@ -5,6 +5,7 @@ import {
   Note,
   ScenarioPair,
   SetTypeBoard,
+  RepTypeBoard,
   REP_SET,
   REP_SET_LAGGING,
   FATIGUE_SET,
@@ -87,10 +88,24 @@ export const EmptyColdBoot: Story = {
   render: () => (
     <Sheet>
       <Note>
-        Before the first rep lands. The strip holds its footprint rather than collapsing, so a row
-        does not reflow the moment a set starts.
+        Before the first rep lands. A planned set draws its upcoming reps, so the strip holds both
+        its footprint AND its column count — nothing reflows when rep one arrives.
       </Note>
-      <ScenarioPair view="compact" title="Zero reps" single={[]} left={[]} right={[]} />
+      <ScenarioPair
+        view="compact"
+        title="Cold boot · 6 planned, none logged"
+        singleSet={{ type: 'straight', velocities: [], planned: 6 }}
+        leftSet={{ type: 'straight', velocities: [], planned: 6 }}
+        rightSet={{ type: 'straight', velocities: [], planned: 6 }}
+      />
+      <ScenarioPair
+        view="compact"
+        title="Truly empty · no plan to draw"
+        note="No planned count either — the only case where there is nothing to hold."
+        single={[]}
+        left={[]}
+        right={[]}
+      />
     </Sheet>
   ),
 }
@@ -106,7 +121,31 @@ export const DualLaggingSide: Story = {
       </Note>
       <ScenarioPair
         view="compact"
-        title="Lagging right"
+        title="Equal counts · the common case"
+        note="Both slots logged the same reps. This is what most of a session looks like."
+        single={REP_SET}
+        left={REP_SET}
+        right={[0.93, 0.88, 0.84, 0.78, 0.7]}
+      />
+      <ScenarioPair
+        view="compact"
+        title="Missed rep · lower slot"
+        note="Rep 3 missing from the LOWER slot — its column holds as a faint empty."
+        single={REP_SET}
+        left={REP_SET}
+        right={[0.93, 0.88, 0.78, 0.7]}
+      />
+      <ScenarioPair
+        view="compact"
+        title="Missed rep · upper slot"
+        note="The mirror: the UPPER slot is short a rep."
+        single={REP_SET}
+        left={[0.95, 0.9, 0.8, 0.72]}
+        right={[0.93, 0.88, 0.84, 0.78, 0.7]}
+      />
+      <ScenarioPair
+        view="compact"
+        title="One slot well behind"
         single={REP_SET}
         left={REP_SET}
         right={REP_SET_LAGGING.slice(0, 2)}
@@ -134,6 +173,19 @@ export const Responsive: Story = {
           right={REP_SET_LAGGING}
         />
       ))}
+    </Sheet>
+  ),
+}
+
+export const RepTypes: Story = {
+  name: 'Rep Types',
+  render: () => (
+    <Sheet>
+      <Note>
+        Every state a rep column can be in at resting scale. Colour is the only channel compact has,
+        so a state that needs height to read must find another way here.
+      </Note>
+      <RepTypeBoard view="compact" />
     </Sheet>
   ),
 }

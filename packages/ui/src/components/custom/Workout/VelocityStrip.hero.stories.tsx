@@ -1,12 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
-import { VelocityStrip } from './VelocityStrip'
+import { VelocityStrip, DualVelocityStrip } from './VelocityStrip'
 import {
   Sheet,
   Note,
   ViewLabel,
   ScenarioPair,
   SetTypeBoard,
+  RepTypeBoard,
   REP_SET,
   REP_SET_LAGGING,
   FATIGUE_SET,
@@ -150,18 +151,64 @@ export const DualLaggingSide: Story = {
 export const Responsive: Story = {
   name: 'Responsive',
   render: () => (
-    <Sheet width={700}>
+    <Sheet width={760}>
       <Note>
-        Height ladder. As the plot shrinks the labels degrade in order: per-bar values drop, slot
-        names collapse to L / R initials, then the VL band labels go — the dashed lines and washes
-        always stay.
+        HEIGHT first. The side labels are sized to the WING, not the chart, so the collapse
+        threshold is per-wing: below 70px of wing extent a slot name degrades to its initial. A dual
+        splits its height into two wings, so the ladder below crosses that boundary between 160 and
+        120 — at 120 the names are &quot;L&quot; / &quot;R&quot;. Dashed VL lines and washes always
+        survive; only their labels go.
       </Note>
-      {[220, 160, 120, 84].map((h) => (
+      {[220, 160, 140, 120, 90].map((h) => (
         <View key={h} style={{ gap: 8 }}>
-          <ViewLabel text={`${h}px`} />
-          <VelocityStrip velocities={REP_SET} variant="hero" label="Set" height={h} scale="fixed" />
+          <ViewLabel text={`${h}px · wings ${Math.round((h - 2) / 2)}px each`} />
+          <DualVelocityStrip
+            left={{ velocities: REP_SET, label: 'Left' }}
+            right={{ velocities: REP_SET_LAGGING, label: 'Right' }}
+            variant="hero"
+            height={h}
+            scale="fixed"
+          />
         </View>
       ))}
+
+      <Note>
+        Then WIDTH. Bars and gaps come from the shared layout maths, so they thin together rather
+        than the gaps collapsing first; the per-bar value labels drop out once a column can no
+        longer seat one.
+      </Note>
+      {[700, 460, 300, 190].map((w) => (
+        <View key={w} style={{ gap: 8, width: w }}>
+          <ViewLabel text={`${w}px`} />
+          <VelocityStrip
+            velocities={REP_SET}
+            variant="hero"
+            label="Set"
+            height={180}
+            scale="fixed"
+          />
+          <DualVelocityStrip
+            left={{ velocities: REP_SET, label: 'Left' }}
+            right={{ velocities: REP_SET_LAGGING, label: 'Right' }}
+            variant="hero"
+            height={200}
+            scale="fixed"
+          />
+        </View>
+      ))}
+    </Sheet>
+  ),
+}
+
+export const RepTypes: Story = {
+  name: 'Rep Types',
+  render: () => (
+    <Sheet width={700}>
+      <Note>
+        Every state a rep column can be in at wall scale — where there is room for all of it to be
+        unambiguous, and therefore the reference the smaller views are judged against.
+      </Note>
+      <RepTypeBoard view="hero" />
     </Sheet>
   ),
 }

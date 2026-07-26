@@ -10,6 +10,8 @@ import { formatVelocity } from '../../../utils/workout-format'
 import {
   SetBarChart,
   type SetSlot,
+  VARIABLE_FILL,
+  CONTINUE_OUTLINE,
   type SetBarGeometry,
   ChartSideRail,
   SET_BAR_DEFAULT_HEIGHT,
@@ -1072,20 +1074,22 @@ function DualVelocityCompactStrip({
       )
     }
 
-    // The REPEATABLE windows — a range's variable band and an AMRAP/myo "continue" tail. Outlined
-    // rather than filled, so a rep that MIGHT happen never reads as one that did. At 5px there is
-    // no room for the single's cyan dashes, so the outline carries it.
-    if (slot?.kind === 'variable' || slot?.kind === 'continue') {
+    // The REPEATABLE windows — a range's variable band and an AMRAP/myo "continue" tail. Same CYAN
+    // vocabulary as the single (variable fills, continue outlines) so the two views name the same
+    // thing the same way; only the scale differs.
+    if (slot?.kind === 'variable') {
       return (
         <View
-          style={{
-            height: half,
-            borderWidth: 1,
-            borderColor: emptyColor,
-            opacity: 0.75,
-            ...radius,
-          }}
-          testID={`${testID}-${slot.kind}`}
+          style={{ height: half, backgroundColor: VARIABLE_FILL, ...radius }}
+          testID={`${testID}-variable`}
+        />
+      )
+    }
+    if (slot?.kind === 'continue') {
+      return (
+        <View
+          style={{ height: half, borderWidth: 1, borderColor: CONTINUE_OUTLINE, ...radius }}
+          testID={`${testID}-continue`}
         />
       )
     }

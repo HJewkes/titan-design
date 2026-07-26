@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
-import { VelocityStrip } from './VelocityStrip'
+import { View, Pressable } from 'react-native'
+import { VelocityStrip, DualVelocityStrip } from './VelocityStrip'
 import {
   Sheet,
   Note,
   ViewLabel,
   ScenarioPair,
   SetTypeBoard,
+  RepTypeBoard,
   REP_SET,
   REP_SET_LAGGING,
   FATIGUE_SET,
@@ -116,8 +117,24 @@ export const EmptyColdBoot: Story = {
   name: 'Empty / Cold Boot',
   render: () => (
     <Sheet>
-      <Note>Pre-first-rep: the plot holds its height so the card does not jump on rep one.</Note>
-      <ScenarioPair view="expanded" title="Zero reps" single={[]} left={[]} right={[]} />
+      <Note>
+        Pre-first-rep. A planned set draws its upcoming reps as placeholders, so the plot holds its
+        height AND its columns — the card does not jump, and the bars do not re-space, on rep one.
+      </Note>
+      <ScenarioPair
+        view="expanded"
+        title="Cold boot · 6 planned, none logged"
+        singleSet={{ type: 'straight', velocities: [], planned: 6 }}
+        leftSet={{ type: 'straight', velocities: [], planned: 6 }}
+        rightSet={{ type: 'straight', velocities: [], planned: 6 }}
+      />
+      <ScenarioPair
+        view="expanded"
+        title="Truly empty · no plan to draw"
+        single={[]}
+        left={[]}
+        right={[]}
+      />
     </Sheet>
   ),
 }
@@ -145,7 +162,9 @@ export const Responsive: Story = {
   name: 'Responsive',
   render: () => (
     <Sheet width={520}>
-      <Note>Width ladder — bars and gaps scale together from the shared layout maths.</Note>
+      <Note>
+        Two ladders. WIDTH first — bars and gaps scale together from the shared layout maths.
+      </Note>
       {[440, 300, 180, 110].map((w) => (
         <ScenarioPair
           key={w}
@@ -156,6 +175,32 @@ export const Responsive: Story = {
           left={REP_SET}
           right={REP_SET_LAGGING}
         />
+      ))}
+
+      <Note>
+        Then HEIGHT. The expanded plot compresses toward the compact language as it shrinks — at the
+        bottom of the ladder it is effectively the resting strip, which is what makes the
+        compact↔expanded toggle a morph rather than a swap.
+      </Note>
+      {[80, 60, 40, 24, 12].map((h) => (
+        <View key={h} style={{ gap: 8 }}>
+          <ViewLabel text={`${h}px`} />
+          <VelocityStrip
+            velocities={REP_SET}
+            variant="expanded"
+            height={h}
+            scale="fixed"
+            showNumbers={false}
+            showInfo={false}
+          />
+          <DualVelocityStrip
+            left={{ velocities: REP_SET, label: 'Left' }}
+            right={{ velocities: REP_SET_LAGGING, label: 'Right' }}
+            variant="rail"
+            height={h}
+            scale="fixed"
+          />
+        </View>
       ))}
     </Sheet>
   ),
@@ -203,26 +248,49 @@ export const FramedChrome: Story = {
   ),
 }
 
-function TapToExpand() {
+function TapToToggle() {
   const [open, setOpen] = useState(false)
   return (
-    <VelocityStrip
-      velocities={REP_SET}
-      variant="expanded"
-      expanded={open}
-      onToggle={() => setOpen((v) => !v)}
-      showNumbers
-      showInfo
-    />
+    <Pressable onPress={() => setOpen((v) => !v)} accessibilityRole="button">
+      <VelocityStrip
+        velocities={REP_SET}
+        variant={open ? 'expanded' : 'compact'}
+        height={open ? 60 : 8}
+        scale="fixed"
+        showNumbers={false}
+        showInfo={false}
+      />
+    </Pressable>
   )
 }
 
 export const Interactive: Story = {
-  name: 'Interactive · tap to expand',
+  name: 'Interactive · compact ↔ expanded',
   render: () => (
     <Sheet width={420}>
-      <Note>Tap the chart to toggle the framed chart open and closed.</Note>
-      <TapToExpand />
+      <Note>
+        Tap to toggle between the resting compact strip and the value-height expanded one. Because
+        both go through the same geometry, only the bar HEIGHTS change — the columns never move, so
+        the transition reads as a morph rather than a swap.
+      </Note>
+      <TapToToggle />
+      <Note>
+        Compact sits at its real 8px resting height here, not a padded stand-in — the toggle is only
+        honest if the closed state is the size it ships at.
+      </Note>
+    </Sheet>
+  ),
+}
+
+export const RepTypes: Story = {
+  name: 'Rep Types',
+  render: () => (
+    <Sheet>
+      <Note>
+        Every state a rep column can be in at value height. Here height and colour agree, which is
+        the reference the compact view is judged against.
+      </Note>
+      <RepTypeBoard view="expanded" />
     </Sheet>
   ),
 }
