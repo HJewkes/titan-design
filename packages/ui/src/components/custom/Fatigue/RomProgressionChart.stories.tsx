@@ -18,7 +18,7 @@ const meta: Meta<typeof RomProgressionChart> = {
         component:
           'Per-rep depth bars (silver at/above working → light red below working range → deep red below the short threshold), ' +
           'with dashed working-standard + short-threshold reference lines and a faint red short-zone. ' +
-          'Data-driven from absolute metres; labelled "depth vs working range · now N%". ' +
+          'Data-driven from absolute metres; the bars carry the read alone (no caption strip). ' +
           'Composes the shared **SetBarChart** — same adaptive bar spacing as the velocity hero, and an optional ' +
           '`plannedReps` draws the remaining reps as dashed to-do placeholders (the "N of M done" read).',
       },
