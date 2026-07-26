@@ -54,7 +54,7 @@ function Light({
             fontSize: 9,
             letterSpacing: 0.6,
             fontFamily: FONT_MONO,
-            color: t['text-tertiary'],
+            color: t['text-secondary'],
           }}
         >
           {label}
