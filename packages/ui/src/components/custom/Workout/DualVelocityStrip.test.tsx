@@ -441,13 +441,18 @@ describe('DualVelocityStrip rail variant', () => {
         variant="rail"
       />
     )
-    expect(screen.queryAllByTestId(RAIL_LEFT_BARS)).toHaveLength(2)
-    expect(screen.queryAllByTestId(RAIL_RIGHT_BARS)).toHaveLength(2)
+    // The rail is now COMPOSED from two bare `expanded` strips, so each wing emits the shared
+    // SetBarChart testIDs rather than the old bespoke `dual-velocity-bar-*` ones. Query per wing.
+    const up = within(screen.getByTestId('dual-velocity-wing-up'))
+    const down = within(screen.getByTestId('dual-velocity-wing-down'))
+    expect(up.queryAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(2)
+    expect(down.queryAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(2)
+    // Still lean: no per-bar value labels, no running-best reference line.
     expect(screen.queryByTestId(/^velocity-label-\d+$/)).not.toBeInTheDocument()
     expect(screen.queryByTestId('velocity-hero-reference')).not.toBeInTheDocument()
   })
 
-  it('draws mirrored dashed todo stubs for unperformed reps', () => {
+  it('draws a to-do slot on each wing for the unperformed remainder', () => {
     render(
       <DualVelocityStrip
         left={{ velocities: [0.9] }}
@@ -456,22 +461,43 @@ describe('DualVelocityStrip rail variant', () => {
         targetReps={2}
       />
     )
-    expect(screen.queryAllByTestId(/^dual-velocity-bar-L-\d+-todo$/)).toHaveLength(1)
-    expect(screen.queryAllByTestId(/^dual-velocity-bar-R-\d+-todo$/)).toHaveLength(1)
+    const up = within(screen.getByTestId('dual-velocity-wing-up'))
+    const down = within(screen.getByTestId('dual-velocity-wing-down'))
+    expect(up.queryAllByTestId('velocity-slot-todo')).toHaveLength(1)
+    expect(down.queryAllByTestId('velocity-slot-todo')).toHaveLength(1)
   })
 
-  it('rounds the up (L) bar on top and the down (R) bar on the bottom', () => {
+  it('index-locks a lagging side, giving it an aligned empty rather than fewer bars', () => {
+    // The defect this replaces: each side built its own columns, so a lagging side simply
+    // rendered FEWER bars and its remaining reps slid left out of alignment.
     render(
       <DualVelocityStrip
-        left={{ velocities: [0.9] }}
-        right={{ velocities: [0.8] }}
+        left={{ velocities: [0.9, 0.86, 0.82] }}
+        right={{ velocities: [0.85, 0.8] }}
         variant="rail"
       />
     )
-    expect(screen.getByTestId('dual-velocity-bar-L-0')).toHaveStyle({ borderTopLeftRadius: '2px' })
-    expect(screen.getByTestId('dual-velocity-bar-R-0')).toHaveStyle({
-      borderBottomLeftRadius: '2px',
-    })
+    const up = within(screen.getByTestId('dual-velocity-wing-up'))
+    const down = within(screen.getByTestId('dual-velocity-wing-down'))
+    expect(up.queryAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(3)
+    // The lagging side keeps three COLUMNS — two bars plus an aligned empty.
+    expect(down.queryAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(2)
+    expect(down.queryAllByTestId('velocity-slot-empty')).toHaveLength(1)
+  })
+
+  it('carries set-type windows onto both wings', () => {
+    // The bespoke rail flattened to velocities, so a range's variable window never rendered.
+    render(
+      <DualVelocityStrip
+        left={{ set: { type: 'range', velocities: [0.9, 0.86], floor: 3, max: 4 } }}
+        right={{ set: { type: 'range', velocities: [0.85, 0.8], floor: 3, max: 4 } }}
+        variant="rail"
+      />
+    )
+    const up = within(screen.getByTestId('dual-velocity-wing-up'))
+    const down = within(screen.getByTestId('dual-velocity-wing-down'))
+    expect(up.queryAllByTestId('velocity-slot-variable').length).toBeGreaterThan(0)
+    expect(down.queryAllByTestId('velocity-slot-variable').length).toBeGreaterThan(0)
   })
 })
 
