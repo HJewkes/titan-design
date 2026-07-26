@@ -32,11 +32,17 @@ export const STATE_LABEL: Record<FatigueVerdictState, string> = {
 /**
  * The phase-identity colours for the ghost-spark phase BAND — the TempoDisplay
  * language: eccentric magenta, concentric cyan, idle (pause/hold) a muted grey.
+ *
+ * The idle grey has to read as BAND MATERIAL (a pause the lifter held), not as a
+ * hole in the strip: at charcoal[300] it sat inside the surface-ramp's own value
+ * range (`surface-raised` #31302F) so a short pause between ECC and CON read as a
+ * gap. charcoal[200] clears every content plane while staying quieter than the two
+ * saturated phase tones, so the band reads contiguous and the phases still lead.
  */
 export const PHASE_AXIS_COLOR: Record<SamplePhase, string> = {
   eccentric: primitiveRamps.magenta[800],
   concentric: primitiveRamps.cyan[800],
-  idle: primitiveColors.charcoal[300],
+  idle: primitiveColors.charcoal[200],
 }
 
 /** Mini-tempo digit colours `[ecc, pauseBottom, con, pauseTop]` — ecc magenta / con cyan / pauses grey. */
