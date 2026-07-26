@@ -117,8 +117,8 @@ function SwatchGroup({ label, defs }: { label: string; defs: SwatchDef[] }) {
 }
 
 const CONTROL: SwatchDef[] = [
-  // eslint-disable-next-line titan/no-raw-color -- 'Silver' is the token's display name, not a CSS colour
   {
+    // eslint-disable-next-line titan/no-raw-color -- 'Silver' is the token's display name, not a CSS colour
     name: 'Silver',
     token: 'SILVER · neutral[300]',
     value: SILVER,
