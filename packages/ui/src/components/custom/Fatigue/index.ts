@@ -11,6 +11,7 @@ export { VerdictHero, type VerdictHeroProps } from './VerdictHero'
 export { FatigueLights, type FatigueLightsProps } from './FatigueLights'
 export { RomProgressionChart, type RomProgressionChartProps } from './RomProgressionChart'
 export { GhostSpark, type GhostSparkProps } from './GhostSpark'
+export { DualGhostSpark, type DualGhostSparkProps, mergePhaseSegments } from './DualGhostSpark'
 export { GhostBand, type GhostBandProps, BAND_H, BAND_GAP } from './GhostBand'
 export {
   GhostBloom,
