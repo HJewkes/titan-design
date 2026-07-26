@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { LiveFatigueCard } from './LiveFatigueCard'
-import { primitiveColors } from '../../../theme/tokens/primitives'
+import { Surface } from '../../ui/surface/Surface'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { FATIGUE_STATES, WARMING_UP_MODEL } from './fatigue-mock'
 
-const PAGE_BG = primitiveColors.charcoal[900]
 const t = getSemanticColors('dark')
 
 const meta: Meta<typeof LiveFatigueCard> = {
@@ -18,7 +17,10 @@ const meta: Meta<typeof LiveFatigueCard> = {
         component:
           'The vertical live fatigue card — consumes one `LiveFatigueModel`. Composes `VerdictHero` ' +
           '(RPE + verdict word) · `FatigueLights` (VEL/ROM/TEMPO dots) · `RomProgressionChart` · ' +
-          '`GhostSpark` (tempo embedded), grounded on a `Surface` raised plane.',
+          '`GhostSpark` (tempo embedded). Grounded on the `Surface` **base** plane — one step ' +
+          'above the `background` shell the live stage paints — separated by the alpha ' +
+          '`hairline-default` edge and finished with the shared **paper** accent (matte grain + ' +
+          'top rim-light + contact shadow), the hero-surface treatment from the surface north-star.',
       },
     },
   },
@@ -29,10 +31,11 @@ const meta: Meta<typeof LiveFatigueCard> = {
 export default meta
 type Story = StoryObj<typeof LiveFatigueCard>
 
+/** The live stage the card actually sits on — the `background` shell plane, not a raw hex. */
 const Frame = ({ children }: { children: React.ReactNode }) => (
-  <View style={{ backgroundColor: PAGE_BG, padding: 28, alignItems: 'flex-start' }}>
+  <Surface level="background" style={{ padding: 28, alignItems: 'flex-start' }}>
     {children}
-  </View>
+  </Surface>
 )
 
 /** The default (form breaking down) card. */
@@ -48,9 +51,9 @@ export const Default: Story = {
 /** The four verdict states side by side — the whole spectrum. */
 export const States: Story = {
   render: () => (
-    <View
+    <Surface
+      level="background"
       style={{
-        backgroundColor: PAGE_BG,
         padding: 28,
         flexDirection: 'row',
         gap: 20,
@@ -72,7 +75,7 @@ export const States: Story = {
           <LiveFatigueCard model={s.model} width={300} height={500} />
         </View>
       ))}
-    </View>
+    </Surface>
   ),
 }
 
