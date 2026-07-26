@@ -20,7 +20,6 @@
  * (`lab/north-star/DualGhostLine.exploration.stories.tsx`): centred band + silver line.
  */
 import { View } from 'react-native'
-import { primitiveColors } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { alpha } from '../../../utils/colors'
 import { FONT_UI, ghostLineColor, clamp01 } from './fatigue-tokens'
@@ -172,17 +171,6 @@ export function DualGhostSpark({
           showLabels
           labelColor={alpha(t['text-primary'], 0.92)}
         />
-        <rect
-          x={padL}
-          y={bandTop}
-          width={w - padL - padR}
-          height={BAND_H}
-          rx={4}
-          fill="none"
-          stroke={alpha(primitiveColors.black, 0.3)}
-          strokeWidth={1}
-        />
-
         {showDeviceLabels && (
           <>
             <text

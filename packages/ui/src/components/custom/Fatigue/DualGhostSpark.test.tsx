@@ -82,6 +82,15 @@ describe('DualGhostSpark', () => {
     expect(xMax(wingLine(container, 'right'))).toBeLessThan(xMax(wingLine(container, 'left')) * 0.7)
   })
 
+  it('draws no band furniture past the end of the phase runs', () => {
+    const { container } = renderDual(CURVES, CURVES)
+    const right = (r: Element) =>
+      Number(r.getAttribute('x') ?? 0) + Number(r.getAttribute('width') ?? 0)
+    const floor = container.querySelector('[data-testid="ghost-band-floor"]')!
+    const rects = Array.from(container.querySelectorAll('rect'))
+    expect(Math.max(...rects.map(right))).toBeCloseTo(right(floor), 1)
+  })
+
   it('renders an empty box when neither device has reps', () => {
     const { container } = renderDual([], [])
     expect(screen.getByTestId('dual-ghost-spark')).toBeInTheDocument()
