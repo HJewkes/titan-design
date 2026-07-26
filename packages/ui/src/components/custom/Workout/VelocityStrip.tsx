@@ -649,6 +649,15 @@ const ANIMATION_DURATION = 400
 // It reuses VelocityStrip's slot model ({@link buildSlots}/{@link VelocitySlot}), its
 // zone color scale ({@link makeBarColorFor}), the hero geometry constants, and the
 // live-rep entrance ({@link useLiveRepGrowth}) — side is POSITION only, never hue.
+//
+// LIVE-REP ENTRANCE — do NOT re-add a dual-only one. The dual used to hand-roll its wing bars and
+// drive them from its own scale-pop hook, so the newest-rep animation existed TWICE and the two
+// copies drifted. Composing single strips retired that hook: `liveRepIndex` is now an ordinary
+// prop on each wing, so both wings animate through the same code path as a single hero and an
+// entrance that fires on one wing only is not expressible. Whether the wings should POP (a
+// whole-bar scale) rather than GROW from the axis is a live design question — but it belongs in
+// SetBarChart's shared entrance, applied to the single hero and the wings together. Reintroducing
+// it here would rebuild exactly the divergence this composition removed.
 
 /** One voltra's velocity stream — the SAME shape VelocityStrip accepts (one of these). */
 export interface DualVelocityStream {

@@ -1,7 +1,44 @@
-import { describe, it, expect, vi, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { DualVelocityStrip } from './VelocityStrip'
+
+/**
+ * The newest-rep entrance is an `Animated` value applied IMPERATIVELY, so jsdom never reflects it:
+ * a live bar's inline height sits at its static value for the whole animation, and driving
+ * requestAnimationFrame does not change that. The shared hook is therefore the only observable
+ * seam for "did the entrance actually arm on this wing".
+ *
+ * The spy PASSES THROUGH to the real implementation, so every other test in this file renders
+ * exactly as it would unmocked; it only records the arguments each composed strip armed with.
+ */
+const liveEntranceCalls = vi.hoisted(
+  () => [] as Array<[boolean, number | undefined, number | undefined, boolean]>
+)
+
+vi.mock('../charts/live-rep-growth', async () => {
+  const actual =
+    await vi.importActual<typeof import('../charts/live-rep-growth')>('../charts/live-rep-growth')
+  return {
+    ...actual,
+    useLiveRepGrowth: (
+      active: boolean,
+      liveRepIndex: number | undefined,
+      liveVelocity: number | undefined,
+      isNewPeak: boolean
+    ) => {
+      liveEntranceCalls.push([active, liveRepIndex, liveVelocity, isNewPeak])
+      return actual.useLiveRepGrowth(active, liveRepIndex, liveVelocity, isNewPeak)
+    },
+  }
+})
+
+/**
+ * The entrance each composed wing armed with, in render order (up wing, then down wing).
+ * `velocity: undefined` means the wing resolved no live rep, so its entrance stays inert.
+ */
+const wingEntrances = () =>
+  liveEntranceCalls.map(([, index, velocity, isNewPeak]) => ({ index, velocity, isNewPeak }))
 
 // Literal-hex zone colours (must match the component's tokens exactly — same as the
 // single-strip suite): the default effort scale and the WA 5-band mapping.
@@ -361,9 +398,113 @@ describe('DualVelocityStrip set-type streams (windows render on the composed her
 
 describe('DualVelocityStrip live mode', () => {
   const originalMatchMedia = window.matchMedia
+  beforeEach(() => {
+    liveEntranceCalls.length = 0
+  })
   afterEach(() => {
     if (originalMatchMedia) window.matchMedia = originalMatchMedia
     else delete (window as { matchMedia?: unknown }).matchMedia
+  })
+
+  // The newest rep must animate in on BOTH wings. Before the dual composed real VelocityStrips it
+  // hand-rolled its own wing bars and drove them from a dual-only entrance hook, so the animation
+  // was a second implementation that could — and did — drift from the single strip's. Now both
+  // wings ARE single strips, and `liveRepIndex` reaches them through the ordinary composed prop:
+  // an entrance that fires on one wing only is no longer expressible.
+  it('arms the newest-rep entrance on BOTH wings, each with its OWN live velocity', () => {
+    render(
+      <DualVelocityStrip
+        left={{ velocities: [0.9, 0.85, 0.8] }}
+        right={{ velocities: [0.82, 0.78, 0.7] }}
+        variant="hero"
+        liveRepIndex={2}
+      />
+    )
+    expect(wingEntrances()).toEqual([
+      { index: 2, velocity: 0.8, isNewPeak: false },
+      { index: 2, velocity: 0.7, isNewPeak: false },
+    ])
+  })
+
+  it('flags a new set peak PER WING — a peak on one side never speaks for the other', () => {
+    // Up wing climbs to its best on rep 2; down wing declines from its best. The peak bounce is
+    // the loud half of the entrance, so a shared flag would fire it on a wing that got slower.
+    render(
+      <DualVelocityStrip
+        left={{ velocities: [0.7, 0.8, 0.9] }}
+        right={{ velocities: [0.9, 0.8, 0.7] }}
+        variant="hero"
+        liveRepIndex={2}
+      />
+    )
+    expect(wingEntrances()).toEqual([
+      { index: 2, velocity: 0.9, isNewPeak: true },
+      { index: 2, velocity: 0.7, isNewPeak: false },
+    ])
+  })
+
+  it('keeps a LAGGING wing inert while the leading wing still animates', () => {
+    // The lagging side holds an index-locked empty at that column, so it has no rep to animate —
+    // but that must not disarm its partner's entrance.
+    render(
+      <DualVelocityStrip
+        left={{ velocities: [0.9, 0.85, 0.8] }}
+        right={{ velocities: [0.82, 0.78] }}
+        variant="hero"
+        liveRepIndex={2}
+      />
+    )
+    expect(wingEntrances()).toEqual([
+      { index: 2, velocity: 0.8, isNewPeak: false },
+      { index: 2, velocity: undefined, isNewPeak: false },
+    ])
+  })
+
+  it('reaches both wings through a set descriptor, past its set-type windows', () => {
+    // A `range` set puts cyan variable-window stubs after the performed reps. Rep indices are
+    // counted over rep cells only, so the window must not shift which bar the entrance lands on.
+    render(
+      <DualVelocityStrip
+        left={{ set: { type: 'range', velocities: [0.9, 0.85, 0.8], floor: 4, max: 6 } }}
+        right={{ set: { type: 'range', velocities: [0.8, 0.75, 0.7], floor: 4, max: 6 } }}
+        variant="hero"
+        liveRepIndex={2}
+      />
+    )
+    expect(wingEntrances()).toEqual([
+      { index: 2, velocity: 0.8, isNewPeak: false },
+      { index: 2, velocity: 0.7, isNewPeak: false },
+    ])
+  })
+
+  it('arms both wings at rail scale too — its wings are composed strips as well', () => {
+    render(
+      <DualVelocityStrip
+        left={{ velocities: [0.9, 0.85, 0.8] }}
+        right={{ velocities: [0.82, 0.78, 0.7] }}
+        variant="rail"
+        liveRepIndex={2}
+      />
+    )
+    expect(wingEntrances()).toEqual([
+      { index: 2, velocity: 0.8, isNewPeak: false },
+      { index: 2, velocity: 0.7, isNewPeak: false },
+    ])
+  })
+
+  it('leaves the folded compact dual inert — flat bars have no height to animate', () => {
+    render(
+      <DualVelocityStrip
+        left={{ velocities: [0.9, 0.8] }}
+        right={{ velocities: [0.8, 0.7] }}
+        variant="compact"
+        liveRepIndex={1}
+      />
+    )
+    expect(wingEntrances()).toEqual([
+      { index: undefined, velocity: undefined, isNewPeak: false },
+      { index: undefined, velocity: undefined, isNewPeak: false },
+    ])
   })
 
   it('renders the live mirrored pair at the given index (hero)', () => {
