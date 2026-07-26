@@ -4,6 +4,8 @@ import { primitiveColors } from '../../../theme/tokens/primitives'
 import { neumorphicShadows } from '../../../theme/shadows'
 import { Surface } from '../../ui/surface'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
+import { ExerciseCard } from './ExerciseCard'
+import type { SetRowProps } from './SetRow'
 import { SessionHeader } from './SessionHeader'
 import type { MetricTileData } from './MetricTiles'
 import type { SetStripSet } from './SetStrip'
@@ -38,6 +40,12 @@ export interface SessionRailExercise {
   setStates: SetStripSet[]
   /** Dim the row as a not-yet-reached exercise. */
   upcoming?: boolean
+  /**
+   * Per-set rows for the expanded body. Only read when this row is the one named
+   * by `expandedIndex` — a rail row without them can never expand, which is the
+   * correct behaviour for an exercise whose sets aren't loaded.
+   */
+  sets?: SetRowProps[]
 }
 
 export interface SessionRailProps extends ViewProps {
@@ -60,6 +68,16 @@ export interface SessionRailProps extends ViewProps {
   stripHeight?: number
   /** Rail width in px. Default 246. */
   width?: number
+  /**
+   * Index of the exercise to render EXPANDED in place — its set table opens
+   * inside the rail rather than in a separate pane. The row still draws the same
+   * `ExerciseCardHeading` (an `ExerciseCard` composes one), so an expanded row
+   * differs from a collapsed one only by the revealed body.
+   *
+   * Ignored when the named exercise has no `sets`. Omit for an all-collapsed
+   * rail, which is the prior behaviour.
+   */
+  expandedIndex?: number
   onExercisePress?: (exercise: SessionRailExercise, index: number) => void
   className?: string
 }
@@ -81,6 +99,7 @@ export function SessionRail({
   next,
   stripHeight = 8,
   width = DEFAULT_WIDTH,
+  expandedIndex,
   onExercisePress,
   className,
   style,
@@ -118,19 +137,37 @@ export function SessionRail({
               borderBottomColor: DIVIDER,
             }}
           >
-            <ExerciseCardHeading
-              name={ex.name}
-              sets={ex.summary.sets}
-              reps={ex.summary.reps}
-              load={ex.summary.weight}
-              unit={ex.summary.unit}
-              tempo={ex.tempo}
-              indicator={ex.indicator}
-              setStates={ex.setStates}
-              stripHeight={stripHeight}
-              dimmed={ex.upcoming}
-              onPress={() => onExercisePress?.(ex, i)}
-            />
+            {i === expandedIndex && ex.sets ? (
+              <ExerciseCard
+                name={ex.name}
+                expanded
+                summary={{
+                  sets: ex.summary.sets,
+                  reps: ex.summary.reps,
+                  // ExerciseCard's summary takes a numeric load; a string load is
+                  // an unset/discovery weight, which has no expanded form yet.
+                  weight: typeof ex.summary.weight === 'number' ? ex.summary.weight : 0,
+                  unit: ex.summary.unit,
+                }}
+                tempo={ex.tempo}
+                sets={ex.sets}
+                onExpandedChange={() => onExercisePress?.(ex, i)}
+              />
+            ) : (
+              <ExerciseCardHeading
+                name={ex.name}
+                sets={ex.summary.sets}
+                reps={ex.summary.reps}
+                load={ex.summary.weight}
+                unit={ex.summary.unit}
+                tempo={ex.tempo}
+                indicator={ex.indicator}
+                setStates={ex.setStates}
+                stripHeight={stripHeight}
+                dimmed={ex.upcoming}
+                onPress={() => onExercisePress?.(ex, i)}
+              />
+            )}
           </View>
         ))}
       </Surface>
