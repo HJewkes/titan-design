@@ -146,12 +146,19 @@ function workingStandard(current: number): number | null {
  */
 export function buildMockModel(
   current: number,
-  overrides?: { rpe?: number | null; verdict?: FatigueVerdict | null }
+  overrides?: {
+    rpe?: number | null
+    verdict?: FatigueVerdict | null
+    /** Override the plan. Pass `undefined` explicitly for the no-plan-attached case. */
+    plannedReps?: number
+  }
 ): LiveFatigueModel {
   const spec = SPECS[current]
   const working = workingStandard(current)
   const rpe = overrides && 'rpe' in overrides ? (overrides.rpe ?? null) : (RPE[current] ?? null)
   const verdict = overrides && 'verdict' in overrides ? (overrides.verdict ?? null) : null
+  const plannedReps =
+    overrides && 'plannedReps' in overrides ? overrides.plannedReps : MOCK_PLANNED_REPS
   return {
     rpe,
     repsInReserve: rpe == null ? null : Math.max(0, Math.round(10 - rpe)),
@@ -160,6 +167,7 @@ export function buildMockModel(
       repNumber: i + 1,
       romM: s.romMm / 1000,
     })),
+    plannedReps,
     romWorkingStandardM: working,
     romShortThresholdM: working != null ? working * 0.75 : null,
     velocityCurves: CURVES.slice(0, current + 1),
@@ -168,8 +176,48 @@ export function buildMockModel(
   }
 }
 
+/**
+ * The WHOLE panel's input for a set truncated at `current` — model, velocity and header
+ * from one rep count and one truncation point.
+ *
+ * The panel feeds two components that each draw their own upcoming-rep remainder, so
+ * assembling their props separately is how the two halves drift apart. Build both here
+ * or they will disagree again.
+ */
+export function buildMockPanelState(
+  current: number,
+  overrides?: { rpe?: number | null; verdict?: FatigueVerdict | null }
+): {
+  model: LiveFatigueModel
+  velocity: { velocities: number[]; targetReps: number; liveRepIndex: number }
+  header: typeof MOCK_HEADER
+} {
+  const model = buildMockModel(current, overrides)
+  return {
+    model,
+    velocity: {
+      // Same truncation as the model's romProgression / velocityCurves.
+      velocities: MOCK_MEAN_VELOCITIES.slice(0, current + 1),
+      targetReps: MOCK_PLANNED_REPS,
+      liveRepIndex: current,
+    },
+    header: { ...MOCK_HEADER, meta: `SET 3 · REP ${current + 1} / ${MOCK_PLANNED_REPS}` },
+  }
+}
+
 /** Per-rep MEAN concentric velocity (m/s) for the velocity hero (mm/ms == m/s). */
 export const MOCK_MEAN_VELOCITIES: number[] = SPECS.map((s) => s.romMm / s.conMs)
+
+/**
+ * The prescribed rep count for the mock set — ONE number for the whole family.
+ *
+ * The fatigue card's ROM chart and the velocity hero beside it both draw an
+ * upcoming-rep remainder, from `plannedReps` and `targetReps` respectively. Those
+ * are separate props on separate components, so a story that hardcodes one and
+ * leaves the other unset puts two different rep counts side by side on one panel.
+ * Derive both from here.
+ */
+export const MOCK_PLANNED_REPS = SPECS.length
 
 const V = (
   state: FatigueVerdict['state'],
@@ -215,6 +263,6 @@ export const WARMING_UP_MODEL: LiveFatigueModel = buildMockModel(0, { rpe: null,
 
 export const MOCK_HEADER = {
   title: 'Cable Chest Press',
-  subtitle: 'Push A · Hypertrophy · 62 lb × 8 · tempo 2.6·0.4·0.95·0.28',
-  meta: 'SET 3 · REP 8 / 8',
+  subtitle: `Push A · Hypertrophy · 62 lb × ${MOCK_PLANNED_REPS} · tempo 2.6·0.4·0.95·0.28`,
+  meta: `SET 3 · REP ${MOCK_PLANNED_REPS} / ${MOCK_PLANNED_REPS}`,
 }
