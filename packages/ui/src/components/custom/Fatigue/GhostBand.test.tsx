@@ -194,4 +194,27 @@ describe('GhostBand', () => {
     const c = band(onPace, { showLabels: true })
     expect(labelsOf(c).every((l) => l.fill === t['text-primary'])).toBe(true)
   })
+
+  // --- the well ---------------------------------------------------------------
+
+  it('recesses every run, so an unearned remainder reads as empty channel', () => {
+    const c = band(onPace, { targetTempoSeconds: TEMPO })
+    expect(c.querySelectorAll('[data-testid="ghost-band-well"]')).toHaveLength(onPace.length)
+  })
+
+  it('sits the well UNDER the fill — a filled run hides its own recess', () => {
+    const c = band(onPace, { targetTempoSeconds: TEMPO })
+    const order = Array.from(c.querySelectorAll('g[clip-path] > g > rect')).map((r) =>
+      r.getAttribute('data-testid')
+    )
+    expect(order.slice(0, 3)).toEqual(['ghost-band-base', 'ghost-band-well', 'ghost-band-fill'])
+  })
+
+  it('spans the well across the whole run, not just the unfilled part', () => {
+    // Recessing only the exposed remainder would step in tone at the fill's edge.
+    const fast: PhaseSegment[] = [{ phase: 'eccentric', startMs: 0, endMs: 1300 }]
+    const c = band(fast, { targetTempoSeconds: TEMPO })
+    const well = geom(c.querySelector('[data-testid="ghost-band-well"]')!)
+    expect(well.width).toBeCloseTo(basesOf(c)[0].width, 5)
+  })
 })

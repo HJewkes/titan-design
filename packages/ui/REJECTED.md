@@ -120,3 +120,28 @@ reads more like a hold: a held position is an absence of movement, not an event.
 
 **What survives both:** the `hold` SamplePhase split itself, which is still
 load-bearing — it is what lets a hold carry a label, a target and a fill at all.
+
+### Raised paper fill on the band (2026-07-27)
+
+**What it was:** the pacing fill carrying the system's paper material — matte
+`feTurbulence` grain, a top rim-light, and a contact shadow cast past its leading
+edge into the well — so the fill read as a physical block that had travelled.
+
+**Why it lost — the payoff is scale-dependent and the two lockups disagreed.**
+Rendered in the real `LiveFatigueCard`, at `BAND_H` 16 px in a ~280 px band, it was
+indistinguishable from flat: the well's falloff and the rim-light each had about two
+pixels to work in, on a strip at the bottom of a tall card. In the mirrored dual, at
+720 px wide, it read clearly — but that is exactly where the band sits BETWEEN the
+two wings, so making it tactile set it competing with the traces it exists to
+support. A treatment that is invisible where it is cheap and risky where it is
+visible is not worth the code.
+
+**Chosen instead:** the inset WELL alone, unconditionally. It costs one gradient,
+survives at 16 px, and delivers the part that actually mattered — the unearned
+remainder reading as empty channel rather than a darker shade of the phase. No prop:
+where nothing is prescribed the fill covers the run and the recess is hidden anyway.
+
+**Worth keeping in mind:** `barPaper` (`theme/bar-paper.ts`) is CSS
+`boxShadow`/`backgroundImage` for RN Views and does NOT apply to the band, which is
+pure SVG. Any future material work there has to be re-expressed as SVG defs — that
+translation cost is real and was part of why this did not pay for itself.

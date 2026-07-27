@@ -19,9 +19,14 @@
  *
  * The two encodings read together: a slow phase is a WIDE run filled to the brim with an
  * error-toned label; a fast phase is a NARROW run only partly filled, warning-toned.
+ *
+ * Every run is recessed into a WELL, so the part not yet earned reads as empty channel
+ * rather than as a darker shade of the phase. The well needs no flag: where nothing is
+ * prescribed the fill covers the whole run and the recess is hidden behind it.
  */
 import { useId } from 'react'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { primitiveColors } from '../../../theme/tokens/primitives'
 import { FONT_UI, PHASE_AXIS_COLOR, PHASE_AXIS_BASE_COLOR } from './fatigue-tokens'
 import { phaseFillFraction, pacingTone, phaseTargetsMs, type TempoTuple } from './tempo-pacing'
 import type { PhaseSegment } from './fatigue-model'
@@ -43,6 +48,11 @@ const PHASE_LABEL: Partial<Record<PhaseSegment['phase'], string>> = {
 /** Label glyph advance at fontSize 8 + letterSpacing 1, plus a little side padding. */
 const LABEL_CH_PX = 7
 const LABEL_PAD_PX = 6
+
+/** The well shades toward black so it recesses every phase tone identically. */
+const WELL_SHADE = primitiveColors.black
+/** The faint light line on the well's floor — the far lip catching light. */
+const WELL_FLOOR_LIGHT = primitiveColors.white
 
 /**
  * Does `label` fit inside a run `segW` px wide? Sized per WORD, not a flat floor — a flat
@@ -97,7 +107,9 @@ export function GhostBand({
   targetTempoSeconds = null,
 }: GhostBandProps) {
   const rawId = useId()
-  const clipId = `ghost-band-${rawId.replace(/[^a-zA-Z0-9]/g, '')}`
+  const safeId = rawId.replace(/[^a-zA-Z0-9]/g, '')
+  const clipId = `ghost-band-${safeId}`
+  const wellId = `ghost-band-well-${safeId}`
 
   const drawn = segments.filter((seg) => x(seg.endMs) - x(seg.startMs) > 0)
   if (drawn.length === 0) return null
@@ -139,6 +151,14 @@ export function GhostBand({
         <clipPath id={clipId}>
           <rect x={bandLeft} y={top} width={bandW} height={height} rx={2} />
         </clipPath>
+        {/* The WELL — dark under the top lip, falling off fast, with a faint light line on
+            the floor. SVG has no `inset` box-shadow, so a recess is a gradient. */}
+        <linearGradient id={wellId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={WELL_SHADE} stopOpacity={0.6} />
+          <stop offset="42%" stopColor={WELL_SHADE} stopOpacity={0.12} />
+          <stop offset="88%" stopColor={WELL_SHADE} stopOpacity={0.02} />
+          <stop offset="100%" stopColor={WELL_FLOOR_LIGHT} stopOpacity={0.07} />
+        </linearGradient>
       </defs>
       <g clipPath={`url(#${clipId})`}>
         {/* the strip floor — the idle tone spans the rep so a pause is band, not a hole. */}
@@ -162,6 +182,14 @@ export function GhostBand({
               height={height}
               fill={PHASE_AXIS_BASE_COLOR[run.phase]}
               data-testid="ghost-band-base"
+            />
+            <rect
+              x={run.left}
+              y={top}
+              width={run.width}
+              height={height}
+              fill={`url(#${wellId})`}
+              data-testid="ghost-band-well"
             />
             <rect
               x={run.left}
