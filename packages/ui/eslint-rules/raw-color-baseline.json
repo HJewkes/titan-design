@@ -449,11 +449,8 @@
     "text-white": 1
   },
   "src/lab/north-star/DualGhostLine.exploration.stories.tsx": {
-    "#000000": 6,
-    "#c4c8d0": 1,
-    "green": 2,
-    "rgba(": 5,
-    "silver": 4
+    "#000000": 1,
+    "rgba(": 5
   },
   "src/lab/north-star/LiveWallDashboard.stories.tsx": {
     "#0e0e0e": 1
