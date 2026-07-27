@@ -79,24 +79,31 @@ export const PHASE_AXIS_BASE_COLOR: Record<SamplePhase, string> = {
 /**
  * Pacing tones for a label sitting INSIDE the band — ahead / on pace / over.
  *
- * These deliberately do NOT use the `status-*` semantic tokens. Those are tuned for text
- * on a neutral surface; here the text sits on a saturated phase fill, and `status-error`
- * (red[600]) measures **1.88:1** on the hold fill — below even the large-text floor. The
- * whole family therefore drops to ramp step **200**, the lightest step at which all three
- * clear 4.5:1 against every background the band can put behind them:
+ * Only ECC and CON carry labels, so the backgrounds these must survive are the eccentric
+ * and concentric fills and their muted bases. The binding one is the CONCENTRIC FILL
+ * (cyan[800]) — a mid-dark blue, so a legible tone on it has to stay fairly light.
  *
- *   worst-case contrast, over {ecc, con, hold, idle} × {fill, base}
- *     red[200]    5.63     (was red[600]   1.88 — failed everywhere)
- *     amber[200]  6.01     (was amber[300] 4.73 — passed)
- *     green[200]  6.17     (was green[300] 4.45 — marginally failed)
+ * Ramp step **300** is the DEEPEST step at which all three clear 4.5:1:
  *
- * One step across all three keeps them reading as one family. `PACING_TONE_MIN_CONTRAST`
- * is asserted in `tempo-pacing.test.ts`, so a future ramp edit cannot quietly regress this.
+ *   worst-case contrast over {ecc, con} × {fill, base}   (worst is always conFill)
+ *     red[300]    4.91      red[400] = 3.59 — fails
+ *     amber[300]  5.48      amber[400] = 3.76 — fails
+ *     green[300]  5.16      green[400] = 4.15 — fails
+ *
+ * `over` cannot go deeper than this without losing legibility, which is a property of
+ * small light-on-dark text rather than a choice: the 3:1 large-text allowance needs ~18.7px
+ * bold and these labels are 8px. `status-error` (red[600]) measures 2.18:1 here.
+ *
+ * `ahead` and `onPace` land back on exactly the `status-warning` / `status-success` values;
+ * only `over` has to deviate from the semantic token.
+ *
+ * `PACING_TONE_MIN_CONTRAST` is asserted in `tempo-pacing.test.ts`, so a future ramp edit
+ * cannot quietly regress this.
  */
 export const PACING_TONE = {
-  ahead: primitiveRamps.amber[200],
-  onPace: primitiveRamps.green[200],
-  over: primitiveRamps.red[200],
+  ahead: primitiveRamps.amber[300],
+  onPace: primitiveRamps.green[300],
+  over: primitiveRamps.red[300],
 } as const
 
 /** The floor every {@link PACING_TONE} must clear against any band background. */

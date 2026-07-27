@@ -38,11 +38,18 @@ export const BAND_H = 16
 /** Gap between the band's near edge and a bloom's baseline. */
 export const BAND_GAP = 4
 
-/** Phase → the word rendered inside its run. `idle` stays unnamed: dead time has no name. */
+/**
+ * Phase → the word rendered inside its run.
+ *
+ * Only the two MOVEMENT phases are named. `idle` never was — dead time has no name — and
+ * `hold` is deliberately unlabelled too: holds are the narrowest runs on the band, so the
+ * word was dropping out at exactly the sizes it mattered, and the runs it did fit were
+ * spending their whole width on it. A hold is legible without the word, from its tone,
+ * its position between the movement phases, and the fact that it fills.
+ */
 const PHASE_LABEL: Partial<Record<PhaseSegment['phase'], string>> = {
   eccentric: 'ECC',
   concentric: 'CON',
-  hold: 'HOLD',
 }
 
 /** Label glyph advance at fontSize 8 + letterSpacing 1, plus a little side padding. */

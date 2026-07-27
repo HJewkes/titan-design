@@ -7,6 +7,7 @@ import {
   PHASE_AXIS_BASE_COLOR,
 } from './fatigue-tokens'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { primitiveRamps } from '../../../theme/tokens/primitives'
 import type { SamplePhase } from './fatigue-model'
 
 const t = getSemanticColors('dark')
@@ -62,13 +63,17 @@ describe('pacingTone', () => {
 })
 
 describe('pacing tone legibility', () => {
-  // The label sits INSIDE the band, so every phase fill AND every muted base is a possible
-  // backdrop. `status-error` (red[600]) measured 1.88:1 on the hold fill — this is the guard
-  // that stopped that shipping, and that stops a ramp edit reintroducing it.
-  const backgrounds = Object.entries({ ...PHASE_AXIS_COLOR, ...PHASE_AXIS_BASE_COLOR })
+  // Only ECC and CON are labelled, so only those runs can put a colour behind a pacing
+  // tone — each over its fill and its muted base. `GhostBand.test.tsx` pins the fact that
+  // hold and idle stay unlabelled, which is what keeps this narrower set honest.
+  const LABELLED: SamplePhase[] = ['eccentric', 'concentric']
+  const backgrounds = LABELLED.flatMap((p) => [
+    [`${p} fill`, PHASE_AXIS_COLOR[p]] as const,
+    [`${p} base`, PHASE_AXIS_BASE_COLOR[p]] as const,
+  ])
 
   for (const [toneName, tone] of Object.entries(PACING_TONE)) {
-    it(`keeps '${toneName}' legible on every band background`, () => {
+    it(`keeps '${toneName}' legible on every background a label can sit on`, () => {
       for (const [bgName, bg] of backgrounds) {
         const ratio = contrastRatio(tone, bg)
         expect(
@@ -80,10 +85,34 @@ describe('pacing tone legibility', () => {
   }
 
   it('rejects the status-error token the band used to borrow', () => {
-    // Proves the guard above has teeth rather than passing by luck.
-    expect(contrastRatio(t['status-error'], PHASE_AXIS_COLOR.hold)).toBeLessThan(
+    // Proves the guard has teeth rather than passing by luck: red[600] on the concentric
+    // fill is 2.18:1, which is what made the label unreadable in the first place.
+    expect(contrastRatio(t['status-error'], PHASE_AXIS_COLOR.concentric)).toBeLessThan(
       PACING_TONE_MIN_CONTRAST
     )
+  })
+
+  it('sits at the DEEPEST ramp step that still clears the floor', () => {
+    // Guards the other direction — the tones should be as saturated as legibility allows,
+    // so a "make it lighter" edit has to justify itself. Derived from the ramp rather than
+    // hardcoded, so it catches a change in EITHER direction.
+    const STEPS = [100, 200, 300, 400, 500, 600, 700, 800, 900] as const
+    const worstOf = (c: string): number =>
+      Math.min(...backgrounds.map(([, bg]) => contrastRatio(c, bg)))
+
+    const cases = [
+      ['ahead', PACING_TONE.ahead, primitiveRamps.amber],
+      ['onPace', PACING_TONE.onPace, primitiveRamps.green],
+      ['over', PACING_TONE.over, primitiveRamps.red],
+    ] as const
+
+    for (const [name, configured, ramp] of cases) {
+      const deepestPassing = STEPS.filter((s) => worstOf(ramp[s]) >= PACING_TONE_MIN_CONTRAST).pop()
+      expect(
+        configured,
+        `${name}: deepest step clearing ${PACING_TONE_MIN_CONTRAST}:1 is ${deepestPassing}`
+      ).toBe(ramp[deepestPassing!])
+    }
   })
 })
 

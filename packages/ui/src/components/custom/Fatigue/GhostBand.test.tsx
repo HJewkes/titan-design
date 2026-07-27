@@ -95,39 +95,33 @@ describe('GhostBand', () => {
     expect(PHASE_AXIS_BASE_COLOR.hold).not.toBe(PHASE_AXIS_COLOR.idle)
   })
 
-  it('labels a hold run wide enough to hold the word', () => {
+  it('labels ONLY the movement phases — hold and idle stay unnamed', () => {
+    // The pacing-tone contrast floor is measured against ECC/CON backgrounds only, so this
+    // exclusion is what keeps that narrower set honest. Widening it here needs the tones
+    // re-measured against whatever new background can sit behind a label.
     const c = band(
       [
         { phase: 'eccentric', startMs: 0, endMs: 1000 },
         { phase: 'hold', startMs: 1000, endMs: 1500 },
         { phase: 'concentric', startMs: 1500, endMs: 3000 },
+        { phase: 'idle', startMs: 3000, endMs: 4000 },
       ],
       { showLabels: true }
     )
-    expect(labelsOf(c).map((l) => l.text)).toEqual(['ECC', 'HOLD', 'CON'])
+    expect(labelsOf(c).map((l) => l.text)).toEqual(['ECC', 'CON'])
   })
 
   it('DROPS a label that will not fit rather than clipping it', () => {
-    // A 300 ms hold is ~22 px here — over the old flat 20 px floor, which rendered a
-    // 'HOLD' that ran past its own run and clipped to 'HOL'.
+    // A 300 ms concentric is ~22 px here — over the old flat 20 px floor, which rendered a
+    // word that ran past its own run and clipped.
     const c = band(
       [
         { phase: 'eccentric', startMs: 0, endMs: 1000 },
-        { phase: 'hold', startMs: 1000, endMs: 1300 },
-        { phase: 'concentric', startMs: 1300, endMs: 3000 },
+        { phase: 'concentric', startMs: 1000, endMs: 1300 },
       ],
       { showLabels: true }
     )
-    const labels = labelsOf(c).map((l) => l.text)
-    expect(labels).not.toContain('HOLD')
-    expect(labels).toEqual(['ECC', 'CON'])
-  })
-
-  it('never labels idle — dead time has no name', () => {
-    expect(labelsOf(band(segments, { showLabels: true })).map((l) => l.text)).toEqual([
-      'ECC',
-      'CON',
-    ])
+    expect(labelsOf(c).map((l) => l.text)).toEqual(['ECC'])
   })
 
   it('rounds the band once, as a clip — never per run', () => {
@@ -176,18 +170,21 @@ describe('GhostBand', () => {
     expect(fillsOf(c)[0].fill).toBe(PHASE_AXIS_COLOR.eccentric)
   })
 
-  it('tones each label by its own pacing — ahead warns, on-pace succeeds, over errors', () => {
+  it('tones each label by its OWN pacing, independently', () => {
     const mixed: PhaseSegment[] = [
       { phase: 'eccentric', startMs: 0, endMs: 1000 }, // 1.0s vs 2.6s → ahead
-      { phase: 'concentric', startMs: 1000, endMs: 1950 }, // 0.95s vs 0.95s → on pace
-      { phase: 'hold', startMs: 1950, endMs: 3950 }, // 2.0s vs 0.28s → over
+      { phase: 'concentric', startMs: 1000, endMs: 4000 }, // 3.0s vs 0.95s → over
     ]
     const c = band(mixed, { targetTempoSeconds: TEMPO, showLabels: true })
     expect(labelsOf(c)).toEqual([
       { text: 'ECC', fill: PACING_TONE.ahead },
-      { text: 'CON', fill: PACING_TONE.onPace },
-      { text: 'HOLD', fill: PACING_TONE.over },
+      { text: 'CON', fill: PACING_TONE.over },
     ])
+  })
+
+  it('tones a label ON PACE when the phase hits its target', () => {
+    const c = band(onPace, { targetTempoSeconds: TEMPO, showLabels: true })
+    expect(labelsOf(c).map((l) => l.fill)).toEqual([PACING_TONE.onPace, PACING_TONE.onPace])
   })
 
   it('keeps labels plain when nothing is prescribed to pace against', () => {
