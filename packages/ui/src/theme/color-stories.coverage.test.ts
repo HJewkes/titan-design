@@ -24,12 +24,14 @@ import { semanticColorsDark } from './tokens/semantic'
  *  2. COVERAGE — every other semantic token is named somewhere in the color
  *     stories, so a new token cannot ship without a swatch.
  *
- * The story files are read as TEXT, never imported: they pull in react-native
- * and nativewind, which throw under the node test environment.
+ * The story file is read as TEXT, never imported: it pulls in react-native and
+ * nativewind, which throw under the node test environment. (It is also outside
+ * the `stories-smoke` glob, which only composes `components/**` — so this text
+ * guard is the only automated check on the color stories.)
  */
 
 const themeDir = path.dirname(fileURLToPath(import.meta.url))
-const storySources = ['Colors.stories.tsx', 'ColorSystem.stories.tsx']
+const storySources = ['Colors.stories.tsx']
   .map((f) => readFileSync(path.join(themeDir, f), 'utf8'))
   .join('\n')
 
@@ -46,7 +48,6 @@ const DOCUMENTED_ELSEWHERE: Record<string, string> = {
   on: 'Components/Atoms/Surface — OnSurfaceText (paired with their surface)',
   interactive: 'Components/* (state colors are shown on the components themselves)',
   avatar: 'Components/Atoms/Avatar',
-  divider: 'Foundations/Color/Palette — BorderColors (border-* family)',
 }
 
 const isSurfaceToken = (name: string) => /^(surface|background)-/.test(name)
