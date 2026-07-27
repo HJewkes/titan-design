@@ -434,6 +434,15 @@ export const FatigueRomPalette: StoryObj = {
         />
         <FatigueRampStrip title="collapsing — light → mid → deep" stops={GHOST_COLLAPSING} />
       </View>
+
+      <Text className="text-text-secondary text-xs mt-8">
+        <Text className="font-semibold text-text-primary">Open question (TD-07.14):</Text>{' '}
+        DRIFT_GREY is `neutral[600]` #4B5563, and the unified warm grey ramp assigns it no
+        destination — the 15-row fold maps the other greys but skips this one. It needs an
+        assignment before that migration lands. Note that the recovered spec records DRIFT_GREY as
+        `charcoal[500]` #1C1C1C; that is stale, `fatigue-tokens.ts` on main reads `neutral[600]`,
+        which puts it in the expensive half of the fold rather than the cheap one.
+      </Text>
     </View>
   ),
 }
@@ -503,8 +512,10 @@ export const StatusColors: StoryObj = {
       <SectionIntro>
         Status roles and their modifiers. <Text className="font-semibold">status-error-vivid</Text>{' '}
         is a separate, higher-chroma role (not a modifier of status-error) reserved for
-        destructive emphasis — it is the one status family sourced from the redVivid support
-        scale rather than the OKLCH ramps.
+        destructive emphasis. It is the one status family still sourced from the redVivid support
+        scale rather than the OKLCH ramps, and it is on its way out: under TD-07.14 redVivid
+        retires, status-error-vivid collapses onto status-error&apos;s red[600], and the
+        Indicator&apos;s emphasis moves to a glow derived from red[500].
       </SectionIntro>
       <VariantMatrix
         bases={[
@@ -560,11 +571,14 @@ export const TextAndBorderColors: StoryObj = {
     <View style={{ padding: 24 }}>
       <Text className="text-2xl font-bold text-text-primary mb-2">Text & Border Colors</Text>
       <SectionIntro>
-        The dark-mode text and border roles. The border family is the charcoal grey ramp assigned
-        to line-work; text-tertiary and the link colors come from the neutral and blue support
-        scales. Prefer <Text className="font-semibold">useOnSurfaceColor</Text> for text sitting
-        on a <Text className="font-semibold">&lt;Surface&gt;</Text> — it picks the right text role
-        for the plane instead of hardcoding one.
+        The dark-mode text and border roles. Today the border family is the charcoal grey ramp
+        assigned to line-work, and text-tertiary and the link colors come from the neutral and
+        blue support scales — all three of which are pending migration (TD-07.14): the greys fold
+        into one warm grey ramp and the links move to the OKLCH blue. These are the roles that
+        will move most, because the mid-grey text steps shift furthest. Prefer{' '}
+        <Text className="font-semibold">useOnSurfaceColor</Text> for text sitting on a{' '}
+        <Text className="font-semibold">&lt;Surface&gt;</Text> — it picks the right text role for
+        the plane instead of hardcoding one, which is also what makes the migration survivable.
       </SectionIntro>
 
       <SectionTitle>Text</SectionTitle>
