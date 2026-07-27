@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { render } from '@testing-library/react'
-import { GhostBand, BAND_H } from './GhostBand'
+import { GhostBand, BAND_H, type GhostBandProps } from './GhostBand'
 import { PHASE_AXIS_COLOR } from './fatigue-tokens'
 import type { PhaseSegment } from './fatigue-model'
 
@@ -13,10 +13,10 @@ const segments: PhaseSegment[] = [
 
 const x = (ms: number) => 12 + (ms / 4000) * 300
 
-const band = (segs: PhaseSegment[] = segments) =>
+const band = (segs: PhaseSegment[] = segments, props: Partial<GhostBandProps> = {}) =>
   render(
     <svg>
-      <GhostBand segments={segs} x={x} top={0} height={BAND_H} />
+      <GhostBand segments={segs} x={x} top={0} height={BAND_H} {...props} />
     </svg>
   ).container
 
@@ -60,6 +60,70 @@ describe('GhostBand', () => {
   it('renders nothing when every run is zero-width', () => {
     const c = band([{ phase: 'idle', startMs: 500, endMs: 500 }])
     expect(c.querySelectorAll('rect')).toHaveLength(0)
+  })
+
+  it('paints a hold in the amber hold tone — a deliberate hold is not idle dead time', () => {
+    const runs = runsOf(
+      band([
+        { phase: 'eccentric', startMs: 0, endMs: 1000 },
+        { phase: 'hold', startMs: 1000, endMs: 1500 },
+        { phase: 'concentric', startMs: 1500, endMs: 3000 },
+      ])
+    )
+    expect(runs[1].fill).toBe(PHASE_AXIS_COLOR.hold)
+    expect(runs[1].fill).not.toBe(PHASE_AXIS_COLOR.idle)
+  })
+
+  it('labels a hold run wide enough to hold the word', () => {
+    const c = band(
+      [
+        { phase: 'eccentric', startMs: 0, endMs: 1000 },
+        { phase: 'hold', startMs: 1000, endMs: 1500 },
+        { phase: 'concentric', startMs: 1500, endMs: 3000 },
+      ],
+      { showLabels: true }
+    )
+    expect(Array.from(c.querySelectorAll('text')).map((t) => t.textContent)).toEqual([
+      'ECC',
+      'HOLD',
+      'CON',
+    ])
+  })
+
+  it('DROPS a label that will not fit rather than clipping it', () => {
+    // A 300 ms hold is ~22 px here — over the old flat 20 px floor, which rendered a
+    // 'HOLD' that ran past its own run and clipped to 'HOL'.
+    const c = band(
+      [
+        { phase: 'eccentric', startMs: 0, endMs: 1000 },
+        { phase: 'hold', startMs: 1000, endMs: 1300 },
+        { phase: 'concentric', startMs: 1300, endMs: 3000 },
+      ],
+      { showLabels: true }
+    )
+    const labels = Array.from(c.querySelectorAll('text')).map((t) => t.textContent)
+    expect(labels).not.toContain('HOLD')
+    expect(labels).toEqual(['ECC', 'CON'])
+  })
+
+  it('never labels idle — dead time has no name', () => {
+    const c = band(segments, { showLabels: true })
+    expect(Array.from(c.querySelectorAll('text')).map((t) => t.textContent)).toEqual(['ECC', 'CON'])
+  })
+
+  it('draws NO progress ramp by default', () => {
+    expect(band().querySelector('[data-testid="ghost-band-ramp"]')).toBeNull()
+  })
+
+  it('ramps ONCE across the whole band — a per-run ramp would step dark at every seam', () => {
+    const c = band(segments, { progressRamp: true })
+    const ramps = c.querySelectorAll('[data-testid="ghost-band-ramp"]')
+    expect(ramps).toHaveLength(1)
+    // Spans the full strip, so no interior boundary can restart the gradient.
+    const floor = floorOf(c)
+    expect(geom(ramps[0]).x).toBeCloseTo(floor.x, 5)
+    expect(geom(ramps[0]).width).toBeCloseTo(floor.width, 5)
+    expect(c.querySelectorAll('linearGradient')).toHaveLength(1)
   })
 
   it('rounds the band once, as a clip — never per run', () => {

@@ -18,8 +18,15 @@ export type DimensionTone = 'ok' | 'warn' | 'alarm'
 /** Aggregated verdict state (drives the hero word). Mirrors WA's `FatigueVerdictState`. */
 export type FatigueVerdictState = 'good' | 'slowing' | 'grinding' | 'form-breakdown'
 
-/** Movement phase of one per-sample point — colours the ghost-spark zero-axis. */
-export type SamplePhase = 'concentric' | 'eccentric' | 'idle'
+/**
+ * Movement phase of one per-sample point — colours the ghost-spark zero-axis.
+ *
+ * `hold` is a DELIBERATE pause under load (WA's `MovementPhase.HOLD`) — the bottom/top
+ * holds a tempo prescription asks for. `idle` is undirected dead time. They were folded
+ * together until the band needed to name a hold; keep them apart, because "the lifter held
+ * the bottom for 400 ms" and "nothing happened" are different facts.
+ */
+export type SamplePhase = 'concentric' | 'eccentric' | 'hold' | 'idle'
 
 /** One per-sample point of a rep's velocity-time curve. */
 export interface VelocitySample {

@@ -46,11 +46,13 @@ export const TARGET_TEMPO_SECONDS: [number, number, number, number] = [
 ]
 
 type LabPhase = 'ecc' | 'pauseBottom' | 'con' | 'pauseTop'
+// Both prescribed pauses are HOLDS (deliberate, under load), not idle dead time — the
+// lab's tempo prescribes them, so the band names them.
 const LAB_TO_MODEL: Record<LabPhase, SamplePhase> = {
   ecc: 'eccentric',
-  pauseBottom: 'idle',
+  pauseBottom: 'hold',
   con: 'concentric',
-  pauseTop: 'idle',
+  pauseTop: 'hold',
 }
 
 function clamp(v: number, lo: number, hi: number): number {
