@@ -1,0 +1,1921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Voltras — Workout Atom Components</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand-primary: #FF7900;
+    --brand-primary-light: #FF9630;
+    --brand-primary-subtle: rgba(255, 121, 0, 0.12);
+    --brand-secondary: #406D87;
+    --bg-base: #101010;
+    --surface-elevated: #191919;
+    --surface-raised: #1C1C1C;
+    --text-primary: #F3F4F6;
+    --text-secondary: #9CA3AF;
+    --text-tertiary: #6B7280;
+    --border-default: #1F1F1F;
+    --border-strong: #2C2C2C;
+    --status-success: #14B8A6;
+    --status-error: #D14343;
+    --status-warning: #FFB020;
+    --result-improve: #4caf50;
+    --result-degrade: #ef5350;
+    --vel-red: #ff4757;
+    --vel-orange: #ffa502;
+    --vel-yellow: #ffd43b;
+    --vel-green: #2ed573;
+
+    --font-heading: 'Space Grotesk', sans-serif;
+    --font-ui: 'Nunito Sans', sans-serif;
+    --font-body: 'Inter', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-base);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* Layout */
+  .page { display: flex; min-height: 100vh; }
+
+  .sidebar {
+    position: sticky;
+    top: 0;
+    width: 220px;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--surface-elevated);
+    border-right: 1px solid var(--border-default);
+    padding: 20px 0;
+    flex-shrink: 0;
+  }
+
+  .sidebar h1 {
+    font-family: var(--font-heading);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--brand-primary);
+    padding: 0 16px 12px;
+    border-bottom: 1px solid var(--border-default);
+    margin-bottom: 8px;
+  }
+
+  .sidebar-subtitle {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 12px 16px 4px;
+    font-family: var(--font-ui);
+  }
+
+  .sidebar a {
+    display: block;
+    padding: 6px 16px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 12px;
+    font-family: var(--font-ui);
+    transition: background 0.15s, color 0.15s;
+    border-left: 2px solid transparent;
+  }
+
+  .sidebar a:hover {
+    background: rgba(255,255,255,0.04);
+    color: var(--text-primary);
+  }
+
+  .sidebar a.active {
+    color: var(--brand-primary);
+    border-left-color: var(--brand-primary);
+    background: var(--brand-primary-subtle);
+  }
+
+  .main {
+    flex: 1;
+    padding: 32px 40px;
+    max-width: 900px;
+  }
+
+  .page-header {
+    margin-bottom: 40px;
+    border-bottom: 1px solid var(--border-default);
+    padding-bottom: 20px;
+  }
+
+  .page-header h1 {
+    font-family: var(--font-heading);
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .page-header p {
+    color: var(--text-secondary);
+    font-size: 13px;
+  }
+
+  /* Component sections */
+  .component-section {
+    margin-bottom: 48px;
+    scroll-margin-top: 20px;
+  }
+
+  .component-title {
+    font-family: var(--font-heading);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .component-desc {
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+
+  .variant-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .variant {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: 8px;
+    padding: 12px 16px;
+    min-width: 120px;
+  }
+
+  .variant-demo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .variant-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  /* Props table */
+  .props-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    margin-top: 12px;
+  }
+
+  .props-table th {
+    text-align: left;
+    padding: 4px 8px;
+    color: var(--text-tertiary);
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border-default);
+  }
+
+  .props-table td {
+    padding: 4px 8px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-default);
+    font-family: var(--font-ui);
+  }
+
+  .props-table code {
+    background: var(--surface-raised);
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 10px;
+    color: var(--brand-primary-light);
+  }
+
+  /* =============================================
+     COMPONENT STYLES
+     ============================================= */
+
+  /* 1. E1rmBadge */
+  .e1rm-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: var(--surface-raised);
+    border: 1px solid var(--border-default);
+    border-radius: 2px;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+  .e1rm-icon {
+    display: inline-flex;
+    align-items: center;
+    margin-top: -1px;
+  }
+  .e1rm-icon svg {
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    display: block;
+  }
+  .e1rm-badge.sm .e1rm-icon svg { width: 10px; height: 10px; }
+  .e1rm-badge.md .e1rm-icon svg { width: 12px; height: 12px; }
+  .e1rm-badge.lg .e1rm-icon svg { width: 14px; height: 14px; }
+  .e1rm-badge.sm { font-size: 9px; padding: 2px 6px; }
+  .e1rm-badge.md { font-size: 10px; padding: 2px 8px; }
+  .e1rm-badge.lg { font-size: 12px; padding: 4px 10px; }
+  .e1rm-badge.pr {
+    background: var(--brand-primary-subtle);
+    border-color: rgba(255, 121, 0, 0.3);
+    color: var(--brand-primary);
+  }
+  .e1rm-delta {
+    margin-left: 4px;
+  }
+  .e1rm-delta.positive { color: var(--result-improve); }
+  .e1rm-delta.negative { color: var(--result-degrade); }
+
+  /* 2. PrBadge */
+  .pr-badge {
+    display: inline-flex;
+    align-items: center;
+    background: var(--brand-primary-subtle);
+    border: 1px solid rgba(255, 121, 0, 0.3);
+    border-radius: 2px;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--brand-primary);
+    font-family: var(--font-body);
+  }
+  .pr-badge-compact {
+    display: inline-flex;
+    color: var(--brand-primary);
+    font-size: 13px;
+  }
+  @keyframes prPop {
+    0% { transform: scale(0.8); opacity: 0; }
+    60% { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .pr-animate {
+    animation: prPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    opacity: 0;
+  }
+
+  /* 3. StatusDot */
+  .status-dot {
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .status-dot.sm { width: 8px; height: 8px; }
+  .status-dot.md { width: 18px; height: 18px; }
+  .status-dot.success { background: var(--status-success); }
+  .status-dot.warning { background: var(--status-warning); }
+  .status-dot.error { background: var(--status-error); }
+  .status-dot.neutral { background: var(--text-tertiary); }
+  .status-dot.on-track {
+    background: rgba(20,184,166,0.15);
+    border: 1px solid rgba(20,184,166,0.3);
+  }
+  .status-dot.deviation {
+    background: rgba(245,158,11,0.15);
+    border: 1px solid rgba(245,158,11,0.25);
+  }
+  .status-dot.future {
+    background: rgba(107,114,128,0.1);
+    border: 1px dashed rgba(107,114,128,0.2);
+  }
+  .status-dot .dot-icon {
+    font-size: 11px;
+    line-height: 1;
+    font-weight: 900;
+  }
+  /* Solid light bg dots: dark color-matched icons for contrast */
+  .status-dot.success .dot-icon { color: #0A5C52; }
+  .status-dot.warning .dot-icon { color: #6B4000; }
+  .status-dot.error .dot-icon { color: #5C1A1A; }
+  /* Dark/transparent bg dots: light color-matched icons */
+  .status-dot.neutral .dot-icon { color: #D1D5DB; }
+  .status-dot.on-track .dot-icon { color: var(--status-success); }
+  .status-dot.deviation .dot-icon { color: var(--status-warning); }
+  .status-dot.future .dot-icon { color: var(--text-tertiary); }
+  .status-dot-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .status-dot-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-family: var(--font-body);
+  }
+  .glow-success { box-shadow: 0 0 4px rgba(20,184,166,0.4); }
+  .glow-warning { box-shadow: 0 0 4px rgba(245,158,11,0.4); }
+  .glow-error { box-shadow: 0 0 4px rgba(239,68,68,0.4); }
+
+  /* 4. PlaceholderStrip */
+  .placeholder-strip-single {
+    height: 3px;
+    background: #3A3A3A;
+    border-radius: 2px;
+    opacity: 0.5;
+  }
+  .placeholder-strip-segmented {
+    display: flex;
+    gap: 2px;
+    height: 3px;
+    opacity: 0.5;
+  }
+  .placeholder-segment {
+    flex: 1;
+    height: 3px;
+    background: #3A3A3A;
+    border-radius: 1px;
+    min-width: 4px;
+  }
+
+  /* 5. VelocityStrip */
+  .velocity-strip-collapsed {
+    display: flex;
+    gap: 2px;
+    border-radius: 2px;
+    cursor: pointer;
+    padding: 8px 0;
+    width: 100%;
+  }
+  .velocity-strip-collapsed .vel-bar {
+    flex: 1;
+    height: 3px;
+    border-radius: 1px;
+    min-width: 4px;
+  }
+  .velocity-strip-expanded {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface-raised);
+    border-radius: 6px;
+    padding: 16px 8px 24px;
+    height: 80px;
+    cursor: pointer;
+    width: 100%;
+  }
+  .velocity-strip-expanded .bars-row {
+    display: flex;
+    gap: 2px;
+    flex: 1;
+    align-items: flex-end;
+  }
+  .velocity-strip-expanded .vel-bar-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+    cursor: pointer;
+    position: relative;
+  }
+  .velocity-strip-expanded .vel-bar-label {
+    font-size: 7px;
+    color: var(--text-secondary);
+    font-family: var(--font-ui);
+    margin-bottom: 2px;
+    text-align: center;
+  }
+  .velocity-strip-expanded .vel-bar {
+    width: 100%;
+    border-radius: 2px 2px 0 0;
+    min-height: 2px;
+    transition: filter 0.15s;
+  }
+  .velocity-strip-expanded .vel-bar-wrapper:hover .vel-bar {
+    filter: brightness(1.2);
+  }
+  .velocity-info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 4px 0;
+    font-size: 9px;
+    font-family: var(--font-ui);
+    max-width: 320px;
+    gap: 12px;
+  }
+  .velocity-info-zone { color: var(--text-secondary); white-space: nowrap; }
+  .velocity-info-loss { color: var(--text-secondary); white-space: nowrap; }
+  .velocity-info-loss.high { color: var(--vel-orange); }
+  .velocity-info-loss.extreme { color: var(--vel-red); }
+
+  .velocity-mini {
+    display: flex;
+    gap: 2px;
+    height: 3px;
+    border-radius: 2px;
+    width: 100%;
+  }
+  .velocity-mini .vel-bar { flex: 1; border-radius: 1px; min-width: 4px; }
+
+  /* VelocityStrip transition */
+  .velocity-strip-transition {
+    display: flex;
+    gap: 2px;
+    width: 100%;
+    padding: 8px 0;
+    height: 3px;
+    box-sizing: content-box;
+    cursor: pointer;
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+    transition: height 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                padding 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                background 0.3s;
+    align-items: flex-end;
+  }
+  .velocity-strip-transition.expanded {
+    height: 60px;
+    padding: 16px 6px 24px;
+    background: var(--surface-raised);
+    border-radius: 6px;
+    overflow: visible;
+  }
+  .velocity-strip-transition .vbar {
+    flex: 1;
+    border-radius: 2px 2px 0 0;
+    min-height: 100%;
+    transition: min-height 0.4s cubic-bezier(0.22, 1, 0.36, 1), height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
+  }
+  .velocity-strip-transition.expanded .vbar {
+    min-height: 0;
+  }
+  .velocity-strip-transition .vbar-label {
+    position: absolute;
+    top: -13px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Inter', sans-serif;
+    font-size: 8px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s 0.15s;
+  }
+  .velocity-strip-transition.expanded .vbar-label { opacity: 1; }
+  .velocity-strip-transition .vel-info-row {
+    position: absolute;
+    bottom: 4px;
+    left: 6px;
+    right: 6px;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    opacity: 0;
+    transition: opacity 0.3s 0.2s;
+  }
+  .velocity-strip-transition.expanded .vel-info-row { opacity: 1; }
+
+  .velocity-strip-transition.mini {
+    padding: 0;
+    cursor: default;
+    height: 3px;
+  }
+  .velocity-strip-transition.mini .vbar {
+    min-height: 100%;
+    border-radius: 1px;
+  }
+
+  .vel-bar.green { background: var(--vel-green); }
+  .vel-bar.yellow { background: var(--vel-yellow); }
+  .vel-bar.orange { background: var(--vel-orange); }
+  .vel-bar.red { background: var(--vel-red); }
+
+  .rep-tooltip {
+    position: absolute;
+    top: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-strong);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 9px;
+    font-family: var(--font-ui);
+    color: var(--text-primary);
+    white-space: nowrap;
+    pointer-events: none;
+    display: none;
+    z-index: 10;
+  }
+  .vel-bar-wrapper.show-tooltip .rep-tooltip { display: block; }
+
+  /* 6. TempoDisplay */
+  .tempo-display {
+    display: inline-flex;
+    align-items: center;
+    background: var(--surface-raised);
+    border-radius: 2px;
+    font-family: var(--font-ui);
+    position: relative;
+    cursor: pointer;
+  }
+  .tempo-display.md { padding: 2px 8px; }
+  .tempo-display.sm { padding: 2px 6px; }
+  .tempo-value {
+    font-weight: 600;
+    letter-spacing: 2px;
+  }
+  .tempo-display.md .tempo-value { font-size: 11px; }
+  .tempo-display.sm .tempo-value { font-size: 9px; }
+  .tempo-value.mono { color: #9CA3AF; }
+  .tempo-colored .t-con { color: var(--brand-primary); }
+  .tempo-colored .t-hold { color: #2196F3; }
+  .tempo-colored .t-ecc { color: var(--status-success); }
+  .tempo-colored .t-idle { color: var(--text-secondary); }
+  .tempo-colored .t-dash { color: var(--text-secondary); }
+  .tempo-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 10px;
+    font-family: var(--font-ui);
+    color: var(--text-secondary);
+    white-space: nowrap;
+    display: none;
+    z-index: 20;
+    line-height: 1.6;
+  }
+  .tempo-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--border-strong);
+  }
+  .tempo-display.show-tempo-tooltip .tempo-tooltip { display: block; }
+
+  /* 7. DeviationBar */
+  .deviation-bar {
+    position: relative;
+    height: 10px;
+    display: flex;
+    align-items: center;
+  }
+  .deviation-track {
+    width: 100%;
+    height: 4px;
+    background: #333333;
+    border-radius: 100px;
+  }
+  .deviation-dot {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    top: 2px;
+  }
+  .deviation-dot.success { background: var(--status-success); }
+  .deviation-dot.neutral { background: var(--text-tertiary); }
+  .deviation-dot.warning { background: var(--status-warning); }
+  .deviation-dot.error { background: var(--status-error); }
+
+  /* 8. IntensityBar */
+  .intensity-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .intensity-track {
+    width: 6px;
+    background: #333333;
+    border-radius: 3px;
+    overflow: visible;
+    position: relative;
+  }
+  .intensity-fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 3px;
+    transition: height 0.3s ease;
+    z-index: 2;
+  }
+  /* 0-75%: solid teal */
+  .intensity-fill.building { background: var(--status-success); }
+  /* 75-95%: solid amber */
+  .intensity-fill.approaching { background: var(--status-warning); }
+  /* 95-100%: gradient reward (amber → orange → red) */
+  .intensity-fill.target {
+    background: linear-gradient(to top, var(--status-warning) 0%, var(--brand-primary) 50%, var(--status-error) 100%);
+  }
+  /* Over 100%: reds that darken with overexertion */
+  .intensity-fill.over-1 { background: var(--status-error); height: 100% !important; }
+  .intensity-fill.over-2 { background: #A62626; height: 100% !important; }
+  .intensity-fill.over-3 { background: #7A1C1C; height: 100% !important; }
+  /* Subtle blue glow on the fill when within +/-2% of a set target */
+  .intensity-fill.at-target {
+    box-shadow: 0 0 5px 1px rgba(33, 150, 243, 0.35), 0 0 10px 3px rgba(33, 150, 243, 0.15);
+  }
+  /* The overflow bulge — seamless with the bar color */
+  .intensity-bulge {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    z-index: 1;
+  }
+  .intensity-bulge.over-1 { background: var(--status-error); }
+  .intensity-bulge.over-2 { background: #A62626; animation: bulge-glow 2s ease-in-out infinite; }
+  .intensity-bulge.over-3 { background: #7A1C1C; animation: bulge-glow 1.5s ease-in-out infinite; }
+  @keyframes bulge-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(209, 67, 67, 0); }
+    50% { box-shadow: 0 0 3px 1px rgba(209, 67, 67, 0.25); }
+  }
+  /* Target line — muted blue */
+  .intensity-line-target {
+    position: absolute;
+    left: -3px;
+    right: -3px;
+    height: 1.5px;
+    background: rgba(33, 150, 243, 0.5);
+    z-index: 4;
+  }
+  .intensity-label {
+    font-size: 8px;
+    color: var(--text-tertiary);
+    font-family: var(--font-ui);
+    margin-top: 6px;
+  }
+
+  /* 9. WorkoutPill */
+  .workout-pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: var(--font-ui);
+  }
+  .workout-pill.completed {
+    background: rgba(20,184,166,0.15);
+    border: 1px solid rgba(20,184,166,0.3);
+    color: var(--status-success);
+  }
+  .workout-pill.active {
+    background: rgba(255,121,0,0.15);
+    border: 1px solid rgba(255,121,0,0.3);
+    color: var(--brand-primary);
+  }
+  .workout-pill.next {
+    background: transparent;
+    border: 1px solid rgba(255,121,0,0.4);
+    color: var(--brand-primary);
+  }
+  .workout-pill.upcoming {
+    background: var(--surface-raised);
+    border: 1px solid var(--border-default);
+    color: var(--text-tertiary);
+  }
+  .workout-pill.missed {
+    background: rgba(209,67,67,0.1);
+    border: 1px solid rgba(209,67,67,0.25);
+    color: rgba(209,67,67,0.7);
+  }
+  @keyframes pillPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+  .workout-pill.pulse { animation: pillPulse 2s ease-in-out infinite; }
+
+  /* 10. MuscleGroupChip */
+  .muscle-chip {
+    display: inline-flex;
+    align-items: center;
+    background: var(--surface-raised);
+    border: 1px solid var(--border-default);
+    border-radius: 100px;
+    padding: 2px 8px;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-family: var(--font-ui);
+  }
+  .muscle-chip-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-right: 6px;
+    flex-shrink: 0;
+  }
+  .muscle-chip-dot.ontrack { background: var(--status-success); }
+  .muscle-chip-dot.target { background: var(--brand-primary); }
+  .muscle-chip-dot.behind { background: var(--brand-secondary); }
+  .muscle-chip-dot.untrained { background: var(--border-strong); }
+  .muscle-chip-dot.over { background: var(--status-error); }
+
+  /* 11. Sparkline (SVG-based for HTML) */
+  .sparkline-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* Utility */
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border-default);
+    margin: 0 0 48px;
+  }
+
+  /* Replay button */
+  .replay-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--surface-raised);
+    border: 1px solid var(--border-strong);
+    border-radius: 4px;
+    color: var(--text-tertiary);
+    font-size: 9px;
+    font-family: var(--font-ui);
+    padding: 2px 8px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+    margin-left: 8px;
+  }
+  .replay-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--text-tertiary);
+  }
+
+  /* Component note */
+  .component-note {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-family: var(--font-ui);
+    font-style: italic;
+    margin-top: 8px;
+    padding: 8px 12px;
+    border-left: 2px solid var(--border-strong);
+    background: rgba(255,255,255,0.02);
+  }
+
+  /* Variant label wrapping */
+  .variant-label {
+    display: block;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-tertiary);
+    margin-bottom: 8px;
+    font-family: var(--font-ui);
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+
+  @media (max-width: 700px) {
+    .sidebar { display: none; }
+    .main { padding: 20px 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Sidebar navigation -->
+  <nav class="sidebar">
+    <h1>Workout Atoms</h1>
+    <div class="sidebar-subtitle">Components (11)</div>
+    <a href="#e1rm-badge">1. E1rmBadge</a>
+    <a href="#pr-badge">2. PrBadge</a>
+    <a href="#status-dot">3. StatusDot</a>
+    <a href="#placeholder-strip">4. PlaceholderStrip</a>
+    <a href="#velocity-strip">5. VelocityStrip</a>
+    <a href="#tempo-display">6. TempoDisplay</a>
+    <a href="#deviation-bar">7. DeviationBar</a>
+    <a href="#intensity-bar">8. IntensityBar</a>
+    <a href="#workout-pill">9. WorkoutPill</a>
+    <a href="#muscle-group-chip">10. MuscleGroupChip</a>
+    <a href="#sparkline">11. Sparkline</a>
+  </nav>
+
+  <!-- Main content -->
+  <div class="main">
+    <div class="page-header">
+      <h1>Workout Atom Components</h1>
+      <p>Visual reference for all 11 workout atoms from <code style="color:var(--brand-primary-light)">@titan-design/react-ui</code>. Compare against the React implementations in Storybook.</p>
+    </div>
+
+    <!-- ==================== 1. E1rmBadge ==================== -->
+    <section class="component-section" id="e1rm-badge">
+      <h2 class="component-title">E1rmBadge</h2>
+      <p class="component-desc">Squared-off pill showing estimated 1RM. Right-aligned, tappable for PR history.</p>
+
+      <div class="variant-grid">
+        <div class="variant">
+          <span class="variant-label">With crown icon (default)</span>
+          <div class="variant-demo" style="gap:12px">
+            <div class="e1rm-badge sm"><span class="e1rm-icon"><svg viewBox="0 2 24 20"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7z"/><path d="M4 18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2"/></svg></span>217 lbs</div>
+            <div class="e1rm-badge md"><span class="e1rm-icon"><svg viewBox="0 2 24 20"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7z"/><path d="M4 18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2"/></svg></span>217 lbs</div>
+            <div class="e1rm-badge lg"><span class="e1rm-icon"><svg viewBox="0 2 24 20"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7z"/><path d="M4 18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2"/></svg></span>217 lbs</div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">Without icon</span>
+          <div class="variant-demo" style="gap:12px">
+            <div class="e1rm-badge sm">217 lbs</div>
+            <div class="e1rm-badge md">217 lbs</div>
+            <div class="e1rm-badge lg">217 lbs</div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">PR state (with star)</span>
+          <div class="variant-demo" style="gap:12px">
+            <div class="e1rm-badge sm pr"><span class="e1rm-icon"><svg viewBox="0 2 24 20"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7z"/><path d="M4 18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2"/></svg></span>&#9733; 217 lbs</div>
+            <div class="e1rm-badge md pr"><span class="e1rm-icon"><svg viewBox="0 2 24 20"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7z"/><path d="M4 18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2"/></svg></span>&#9733; 217 lbs</div>
+            <div class="e1rm-badge lg pr"><span class="e1rm-icon"><svg viewBox="0 2 24 20"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7z"/><path d="M4 18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2"/></svg></span>&#9733; 217 lbs</div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">With delta</span>
+          <div class="variant-demo" style="gap:12px">
+            <div class="e1rm-badge md"><span class="e1rm-icon"><svg viewBox="0 2 24 20"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7z"/><path d="M4 18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2"/></svg></span>217 lbs <span class="e1rm-delta positive">+3%</span></div>
+            <div class="e1rm-badge md"><span class="e1rm-icon"><svg viewBox="0 2 24 20"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7z"/><path d="M4 18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2"/></svg></span>217 lbs <span class="e1rm-delta negative">-2%</span></div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">PR + delta (full badge)</span>
+          <div class="variant-demo">
+            <div class="e1rm-badge lg pr"><span class="e1rm-icon"><svg viewBox="0 2 24 20"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7z"/><path d="M4 18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2"/></svg></span>&#9733; 217 lbs <span class="e1rm-delta positive">+3%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <table class="props-table">
+        <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>value</code></td><td><code>number</code></td><td>-</td><td>e1RM value</td></tr>
+          <tr><td><code>unit</code></td><td><code>'lbs' | 'kg'</code></td><td><code>'lbs'</code></td><td>Weight unit</td></tr>
+          <tr><td><code>showIcon</code></td><td><code>boolean</code></td><td><code>true</code></td><td>Show crown icon (Lucide Crown)</td></tr>
+          <tr><td><code>isPr</code></td><td><code>boolean</code></td><td><code>false</code></td><td>PR state (orange bg, star, matches PrBadge styling)</td></tr>
+          <tr><td><code>delta</code></td><td><code>number</code></td><td>-</td><td>% change from previous mesocycle</td></tr>
+          <tr><td><code>size</code></td><td><code>'sm' | 'md' | 'lg'</code></td><td><code>'md'</code></td><td>Size variant</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ==================== 2. PrBadge ==================== -->
+    <section class="component-section" id="pr-badge">
+      <h2 class="component-title">PrBadge <button class="replay-btn" onclick="replayAnimation(this, '.pr-animate')">&#8635; Replay</button></h2>
+      <p class="component-desc">Star badge indicating a personal record. Pop-in animation on mount.</p>
+
+      <div class="variant-grid">
+        <div class="variant">
+          <span class="variant-label">Default (e1rm)</span>
+          <div class="variant-demo">
+            <div class="pr-badge pr-animate" style="animation-delay: 0s">&#9733; PR e1RM</div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">Reps type</span>
+          <div class="variant-demo">
+            <div class="pr-badge pr-animate" style="animation-delay: 0.15s">&#9733; PR Reps</div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">Volume type</span>
+          <div class="variant-demo">
+            <div class="pr-badge pr-animate" style="animation-delay: 0.3s">&#9733; PR Volume</div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">Weight type</span>
+          <div class="variant-demo">
+            <div class="pr-badge pr-animate" style="animation-delay: 0.45s">&#9733; PR Weight</div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">Velocity type</span>
+          <div class="variant-demo">
+            <div class="pr-badge pr-animate" style="animation-delay: 0.6s">&#9733; PR Velocity</div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">Compact (star only)</span>
+          <div class="variant-demo">
+            <span class="pr-badge-compact pr-animate" style="animation-delay: 0.75s">&#9733;</span>
+          </div>
+        </div>
+      </div>
+
+      <table class="props-table">
+        <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>type</code></td><td><code>'e1rm' | 'weight' | 'reps' | 'volume' | 'velocity'</code></td><td><code>'e1rm'</code></td><td>PR type (auto-generates label)</td></tr>
+          <tr><td><code>compact</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Star icon only</td></tr>
+          <tr><td><code>animate</code></td><td><code>boolean</code></td><td><code>true</code></td><td>Pop-in animation on mount</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ==================== 3. StatusDot ==================== -->
+    <section class="component-section" id="status-dot">
+      <h2 class="component-title">StatusDot</h2>
+      <p class="component-desc">Semantic status indicator with 7 variants, 2 sizes, optional icon and label.</p>
+
+      <div class="variant-grid">
+        <div class="variant" style="min-width: 300px">
+          <span class="variant-label">All variants (sm)</span>
+          <div class="variant-demo" style="gap:12px">
+            <div class="status-dot-row"><div class="status-dot sm success"></div><span class="status-dot-label" style="font-size:10px">success</span></div>
+            <div class="status-dot-row"><div class="status-dot sm warning"></div><span class="status-dot-label" style="font-size:10px">warning</span></div>
+            <div class="status-dot-row"><div class="status-dot sm error"></div><span class="status-dot-label" style="font-size:10px">error</span></div>
+            <div class="status-dot-row"><div class="status-dot sm neutral"></div><span class="status-dot-label" style="font-size:10px">neutral</span></div>
+            <div class="status-dot-row"><div class="status-dot sm on-track"></div><span class="status-dot-label" style="font-size:10px">on-track</span></div>
+            <div class="status-dot-row"><div class="status-dot sm deviation"></div><span class="status-dot-label" style="font-size:10px">deviation</span></div>
+            <div class="status-dot-row"><div class="status-dot sm future"></div><span class="status-dot-label" style="font-size:10px">future</span></div>
+          </div>
+        </div>
+
+        <div class="variant" style="min-width: 350px">
+          <span class="variant-label">All variants (md) with icons</span>
+          <div class="variant-demo" style="gap:12px">
+            <div class="status-dot md success"><span class="dot-icon">&#10003;</span></div>
+            <div class="status-dot md warning"><span class="dot-icon">!</span></div>
+            <div class="status-dot md error"><span class="dot-icon">!</span></div>
+            <div class="status-dot md neutral"><span class="dot-icon">&mdash;</span></div>
+            <div class="status-dot md on-track"><span class="dot-icon">&#10003;</span></div>
+            <div class="status-dot md deviation"><span class="dot-icon">!</span></div>
+            <div class="status-dot md future"><span class="dot-icon">&mdash;</span></div>
+          </div>
+        </div>
+
+        <div class="variant" style="min-width: 350px">
+          <span class="variant-label">md without icons</span>
+          <div class="variant-demo" style="gap:12px">
+            <div class="status-dot md success"></div>
+            <div class="status-dot md warning"></div>
+            <div class="status-dot md error"></div>
+            <div class="status-dot md neutral"></div>
+            <div class="status-dot md on-track"></div>
+            <div class="status-dot md deviation"></div>
+            <div class="status-dot md future"></div>
+          </div>
+        </div>
+
+        <div class="variant" style="min-width: 350px">
+          <span class="variant-label">With labels</span>
+          <div class="variant-demo" style="gap: 16px">
+            <div class="status-dot-row"><div class="status-dot sm success glow-success"></div><span class="status-dot-label">Strong</span></div>
+            <div class="status-dot-row"><div class="status-dot sm warning glow-warning"></div><span class="status-dot-label">Deviation</span></div>
+            <div class="status-dot-row"><div class="status-dot sm error glow-error"></div><span class="status-dot-label">Failed</span></div>
+            <div class="status-dot-row"><div class="status-dot sm neutral"></div><span class="status-dot-label">Rest</span></div>
+            <div class="status-dot-row"><div class="status-dot sm on-track"></div><span class="status-dot-label">On Track</span></div>
+            <div class="status-dot-row"><div class="status-dot sm deviation"></div><span class="status-dot-label">Adjusting</span></div>
+            <div class="status-dot-row"><div class="status-dot sm future"></div><span class="status-dot-label">Future</span></div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">With glow</span>
+          <div class="variant-demo" style="gap:12px">
+            <div class="status-dot md success glow-success"><span class="dot-icon">&#10003;</span></div>
+            <div class="status-dot md warning glow-warning"><span class="dot-icon">!</span></div>
+            <div class="status-dot md error glow-error"><span class="dot-icon">!</span></div>
+          </div>
+        </div>
+      </div>
+
+      <table class="props-table">
+        <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>variant</code></td><td><code>'success' | 'warning' | 'error' | 'neutral' | 'on-track' | 'deviation' | 'future'</code></td><td>-</td><td>Status type (solid or ring)</td></tr>
+          <tr><td><code>icon</code></td><td><code>'check' | 'exclamation' | 'dash'</code></td><td>-</td><td>Icon inside dot (md only)</td></tr>
+          <tr><td><code>size</code></td><td><code>'sm' | 'md'</code></td><td><code>'sm'</code></td><td>8px or 18px</td></tr>
+          <tr><td><code>glow</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Colored glow effect</td></tr>
+          <tr><td><code>label</code></td><td><code>string</code></td><td>-</td><td>Text label next to dot</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ==================== 4. PlaceholderStrip ==================== -->
+    <section class="component-section" id="placeholder-strip">
+      <h2 class="component-title">PlaceholderStrip</h2>
+      <p class="component-desc">Dashed placeholder for planned but not-yet-completed sets. Pairs with VelocityStrip.</p>
+
+      <div class="variant-grid">
+        <div class="variant" style="min-width: 260px">
+          <span class="variant-label">Single (full width)</span>
+          <div class="variant-demo">
+            <div class="placeholder-strip-single" style="width:100%"></div>
+          </div>
+        </div>
+
+        <div class="variant" style="min-width: 260px">
+          <span class="variant-label">Segmented (3 segments)</span>
+          <div class="variant-demo">
+            <div class="placeholder-strip-segmented" style="width:100%">
+              <div class="placeholder-segment"></div>
+              <div class="placeholder-segment"></div>
+              <div class="placeholder-segment"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="variant" style="min-width: 260px">
+          <span class="variant-label">Segmented (6 segments)</span>
+          <div class="variant-demo">
+            <div class="placeholder-strip-segmented" style="width:100%">
+              <div class="placeholder-segment"></div>
+              <div class="placeholder-segment"></div>
+              <div class="placeholder-segment"></div>
+              <div class="placeholder-segment"></div>
+              <div class="placeholder-segment"></div>
+              <div class="placeholder-segment"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="variant" style="min-width: 260px">
+          <span class="variant-label">Paired with VelocityStrip</span>
+          <div class="variant-demo" style="flex-direction: column; gap: 6px; width: 100%">
+            <div class="velocity-mini" style="width:100%">
+              <div class="vel-bar green"></div>
+              <div class="vel-bar green"></div>
+              <div class="vel-bar yellow"></div>
+              <div class="vel-bar yellow"></div>
+              <div class="vel-bar orange"></div>
+            </div>
+            <div class="placeholder-strip-segmented" style="width:100%">
+              <div class="placeholder-segment"></div>
+              <div class="placeholder-segment"></div>
+              <div class="placeholder-segment"></div>
+              <div class="placeholder-segment"></div>
+              <div class="placeholder-segment"></div>
+            </div>
+            <div class="placeholder-strip-single" style="width:100%"></div>
+          </div>
+        </div>
+      </div>
+
+      <table class="props-table">
+        <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>mode</code></td><td><code>'single' | 'segmented'</code></td><td><code>'single'</code></td><td>Dashed line vs segmented mini-strip</td></tr>
+          <tr><td><code>segments</code></td><td><code>number</code></td><td><code>3</code></td><td>Number of segments (segmented mode)</td></tr>
+          <tr><td><code>width</code></td><td><code>number | string</code></td><td>flex: 1</td><td>Explicit width</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ==================== 5. VelocityStrip ==================== -->
+    <section class="component-section" id="velocity-strip">
+      <h2 class="component-title">VelocityStrip</h2>
+      <p class="component-desc">THE signature interaction. Per-rep velocity visualization that expands from 3px strip to 60px bar chart on tap.</p>
+
+      <div class="variant-grid">
+        <div class="variant" style="min-width: 280px">
+          <span class="variant-label">Fast set — click to toggle</span>
+          <div class="variant-demo" style="width:100%">
+            <div class="velocity-strip-transition" data-velocities="1.15,1.12,1.10,1.08,1.05" onclick="toggleStripTransition(this)"></div>
+          </div>
+        </div>
+
+        <div class="variant" style="min-width: 280px">
+          <span class="variant-label">Moderate set — click to toggle</span>
+          <div class="variant-demo" style="width:100%">
+            <div class="velocity-strip-transition" data-velocities="0.82,0.78,0.74,0.70,0.66" onclick="toggleStripTransition(this)"></div>
+          </div>
+        </div>
+
+        <div class="variant" style="min-width: 280px">
+          <span class="variant-label">Grinding set — click to toggle</span>
+          <div class="variant-demo" style="width:100%">
+            <div class="velocity-strip-transition" data-velocities="0.52,0.48,0.44,0.41,0.37" onclick="toggleStripTransition(this)"></div>
+          </div>
+        </div>
+
+        <div class="variant" style="min-width: 280px">
+          <span class="variant-label">Pre-expanded (starts open)</span>
+          <div class="variant-demo" style="width:100%">
+            <div class="velocity-strip-transition expanded" data-velocities="0.62,0.60,0.58,0.56,0.54,0.52" data-start-expanded="true" onclick="toggleStripTransition(this)"></div>
+          </div>
+        </div>
+
+        <div class="variant" style="min-width: 400px">
+          <span class="variant-label">Mini (non-interactive) — 3 sets side by side</span>
+          <div class="variant-demo" style="width:100%; gap:16px">
+            <div style="flex:1; display:flex; flex-direction:column; gap:4px">
+              <span style="font-size:9px;color:var(--text-tertiary);font-family:var(--font-ui)">Set 1</span>
+              <div class="velocity-strip-transition mini" data-velocities="1.15,1.12,1.10,1.08,1.05"></div>
+            </div>
+            <div style="flex:1; display:flex; flex-direction:column; gap:4px">
+              <span style="font-size:9px;color:var(--text-tertiary);font-family:var(--font-ui)">Set 2</span>
+              <div class="velocity-strip-transition mini" data-velocities="0.82,0.78,0.74,0.70,0.66"></div>
+            </div>
+            <div style="flex:1; display:flex; flex-direction:column; gap:4px">
+              <span style="font-size:9px;color:var(--text-tertiary);font-family:var(--font-ui)">Set 3</span>
+              <div class="velocity-strip-transition mini" data-velocities="0.52,0.48,0.44,0.41,0.37"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <table class="props-table">
+        <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>velocities</code></td><td><code>number[]</code></td><td>-</td><td>Per-rep velocity values (m/s)</td></tr>
+          <tr><td><code>expanded</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Show expanded bar chart</td></tr>
+          <tr><td><code>variant</code></td><td><code>'full' | 'mini'</code></td><td><code>'full'</code></td><td>Full interactive or mini non-interactive</td></tr>
+          <tr><td><code>showInfo</code></td><td><code>boolean</code></td><td><code>true</code></td><td>Show zone/mean/loss info row when expanded</td></tr>
+          <tr><td><code>onToggle</code></td><td><code>() => void</code></td><td>-</td><td>Expand/collapse callback</td></tr>
+          <tr><td><code>onRepPress</code></td><td><code>(index, velocity) => void</code></td><td>-</td><td>Individual bar tap callback</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ==================== 6. TempoDisplay ==================== -->
+    <section class="component-section" id="tempo-display">
+      <h2 class="component-title">TempoDisplay</h2>
+      <p class="component-desc">Tempo prescription display: concentric-hold-eccentric-idle. Click any tempo to see phase breakdown.</p>
+
+      <div class="variant-grid">
+        <div class="variant">
+          <span class="variant-label">Colored — Standard (md)</span>
+          <div class="variant-demo">
+            <div class="tempo-display md tempo-colored" onclick="toggleTempoTooltip(this)" data-tempo="1-1-3-0"><span class="tempo-value"><span class="t-con">1</span><span class="t-dash">-</span><span class="t-hold">1</span><span class="t-dash">-</span><span class="t-ecc">3</span><span class="t-dash">-</span><span class="t-idle">0</span></span><div class="tempo-tooltip">Concentric: 1s<br>Hold: 1s<br>Eccentric: 3s<br>Idle: 0s</div></div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">Mono — Standard (md)</span>
+          <div class="variant-demo">
+            <div class="tempo-display md" onclick="toggleTempoTooltip(this)" data-tempo="1-1-3-0"><span class="tempo-value mono">1-1-3-0</span><div class="tempo-tooltip">Concentric: 1s<br>Hold: 1s<br>Eccentric: 3s<br>Idle: 0s</div></div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">Colored — Explosive (md)</span>
+          <div class="variant-demo">
+            <div class="tempo-display md tempo-colored" onclick="toggleTempoTooltip(this)" data-tempo="1-0-1-0"><span class="tempo-value"><span class="t-con">1</span><span class="t-dash">-</span><span class="t-hold">0</span><span class="t-dash">-</span><span class="t-ecc">1</span><span class="t-dash">-</span><span class="t-idle">0</span></span><div class="tempo-tooltip">Concentric: 1s<br>Hold: 0s<br>Eccentric: 1s<br>Idle: 0s</div></div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">Mono — Explosive (md)</span>
+          <div class="variant-demo">
+            <div class="tempo-display md" onclick="toggleTempoTooltip(this)" data-tempo="1-0-1-0"><span class="tempo-value mono">1-0-1-0</span><div class="tempo-tooltip">Concentric: 1s<br>Hold: 0s<br>Eccentric: 1s<br>Idle: 0s</div></div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">Colored — Slow eccentric (md)</span>
+          <div class="variant-demo">
+            <div class="tempo-display md tempo-colored" onclick="toggleTempoTooltip(this)" data-tempo="1-2-5-1"><span class="tempo-value"><span class="t-con">1</span><span class="t-dash">-</span><span class="t-hold">2</span><span class="t-dash">-</span><span class="t-ecc">5</span><span class="t-dash">-</span><span class="t-idle">1</span></span><div class="tempo-tooltip">Concentric: 1s<br>Hold: 2s<br>Eccentric: 5s<br>Idle: 1s</div></div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">Mono — Slow eccentric (md)</span>
+          <div class="variant-demo">
+            <div class="tempo-display md" onclick="toggleTempoTooltip(this)" data-tempo="1-2-5-1"><span class="tempo-value mono">1-2-5-1</span><div class="tempo-tooltip">Concentric: 1s<br>Hold: 2s<br>Eccentric: 5s<br>Idle: 1s</div></div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">Colored (sm)</span>
+          <div class="variant-demo" style="gap:12px">
+            <div class="tempo-display sm tempo-colored" onclick="toggleTempoTooltip(this)" data-tempo="1-1-3-0"><span class="tempo-value"><span class="t-con">1</span><span class="t-dash">-</span><span class="t-hold">1</span><span class="t-dash">-</span><span class="t-ecc">3</span><span class="t-dash">-</span><span class="t-idle">0</span></span><div class="tempo-tooltip">Concentric: 1s<br>Hold: 1s<br>Eccentric: 3s<br>Idle: 0s</div></div>
+            <div class="tempo-display sm tempo-colored" onclick="toggleTempoTooltip(this)" data-tempo="1-0-1-0"><span class="tempo-value"><span class="t-con">1</span><span class="t-dash">-</span><span class="t-hold">0</span><span class="t-dash">-</span><span class="t-ecc">1</span><span class="t-dash">-</span><span class="t-idle">0</span></span><div class="tempo-tooltip">Concentric: 1s<br>Hold: 0s<br>Eccentric: 1s<br>Idle: 0s</div></div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">Mono (sm)</span>
+          <div class="variant-demo" style="gap:12px">
+            <div class="tempo-display sm" onclick="toggleTempoTooltip(this)" data-tempo="1-1-3-0"><span class="tempo-value mono">1-1-3-0</span><div class="tempo-tooltip">Concentric: 1s<br>Hold: 1s<br>Eccentric: 3s<br>Idle: 0s</div></div>
+            <div class="tempo-display sm" onclick="toggleTempoTooltip(this)" data-tempo="1-0-1-0"><span class="tempo-value mono">1-0-1-0</span><div class="tempo-tooltip">Concentric: 1s<br>Hold: 0s<br>Eccentric: 1s<br>Idle: 0s</div></div>
+          </div>
+        </div>
+      </div>
+
+      <table class="props-table">
+        <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>concentric</code></td><td><code>number</code></td><td>-</td><td>Concentric phase duration (seconds)</td></tr>
+          <tr><td><code>hold</code></td><td><code>number</code></td><td>-</td><td>Hold at top (seconds)</td></tr>
+          <tr><td><code>eccentric</code></td><td><code>number</code></td><td>-</td><td>Eccentric phase duration (seconds)</td></tr>
+          <tr><td><code>idle</code></td><td><code>number</code></td><td>-</td><td>Idle between reps (seconds)</td></tr>
+          <tr><td><code>size</code></td><td><code>'sm' | 'md'</code></td><td><code>'md'</code></td><td>Size variant (sm = smaller text)</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ==================== 7. DeviationBar ==================== -->
+    <section class="component-section" id="deviation-bar">
+      <h2 class="component-title">DeviationBar</h2>
+      <p class="component-desc">Session deviation indicator. Dot slides from -1 (lighter) to +1 (harder) on a track.</p>
+
+      <div class="variant-grid">
+        <div class="variant" style="min-width: 500px">
+          <span class="variant-label">Full range: -1.0 to +1.0</span>
+          <div class="variant-demo" style="flex-direction: column; width:100%">
+            <div style="display:grid; grid-template-columns:repeat(9, 56px); gap:8px; align-items:start">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:4px">
+                <div class="deviation-bar" style="width:40px">
+                  <div class="deviation-track"></div>
+                  <div class="deviation-dot success" style="left:0px"></div>
+                </div>
+                <span style="font-size:8px;color:var(--text-tertiary);font-family:var(--font-ui)">-1.0</span>
+                <span style="font-size:7px;color:var(--text-secondary);font-family:var(--font-ui)">Much lighter</span>
+              </div>
+              <div style="display:flex; flex-direction:column; align-items:center; gap:4px">
+                <div class="deviation-bar" style="width:40px">
+                  <div class="deviation-track"></div>
+                  <div class="deviation-dot success" style="left:5px"></div>
+                </div>
+                <span style="font-size:8px;color:var(--text-tertiary);font-family:var(--font-ui)">-0.75</span>
+                <span style="font-size:7px;color:var(--text-secondary);font-family:var(--font-ui)">Lighter</span>
+              </div>
+              <div style="display:flex; flex-direction:column; align-items:center; gap:4px">
+                <div class="deviation-bar" style="width:40px">
+                  <div class="deviation-track"></div>
+                  <div class="deviation-dot success" style="left:10px"></div>
+                </div>
+                <span style="font-size:8px;color:var(--text-tertiary);font-family:var(--font-ui)">-0.5</span>
+              </div>
+              <div style="display:flex; flex-direction:column; align-items:center; gap:4px">
+                <div class="deviation-bar" style="width:40px">
+                  <div class="deviation-track"></div>
+                  <div class="deviation-dot neutral" style="left:14px"></div>
+                </div>
+                <span style="font-size:8px;color:var(--text-tertiary);font-family:var(--font-ui)">-0.25</span>
+              </div>
+              <div style="display:flex; flex-direction:column; align-items:center; gap:4px">
+                <div class="deviation-bar" style="width:40px">
+                  <div class="deviation-track"></div>
+                  <div class="deviation-dot neutral" style="left:17px"></div>
+                </div>
+                <span style="font-size:8px;color:var(--text-tertiary);font-family:var(--font-ui)">0</span>
+                <span style="font-size:7px;color:var(--text-secondary);font-family:var(--font-ui)">On track</span>
+              </div>
+              <div style="display:flex; flex-direction:column; align-items:center; gap:4px">
+                <div class="deviation-bar" style="width:40px">
+                  <div class="deviation-track"></div>
+                  <div class="deviation-dot neutral" style="left:22px"></div>
+                </div>
+                <span style="font-size:8px;color:var(--text-tertiary);font-family:var(--font-ui)">+0.25</span>
+              </div>
+              <div style="display:flex; flex-direction:column; align-items:center; gap:4px">
+                <div class="deviation-bar" style="width:40px">
+                  <div class="deviation-track"></div>
+                  <div class="deviation-dot warning" style="left:27px"></div>
+                </div>
+                <span style="font-size:8px;color:var(--text-tertiary);font-family:var(--font-ui)">+0.5</span>
+                <span style="font-size:7px;color:var(--text-secondary);font-family:var(--font-ui)">Harder</span>
+              </div>
+              <div style="display:flex; flex-direction:column; align-items:center; gap:4px">
+                <div class="deviation-bar" style="width:40px">
+                  <div class="deviation-track"></div>
+                  <div class="deviation-dot warning" style="left:31px"></div>
+                </div>
+                <span style="font-size:8px;color:var(--text-tertiary);font-family:var(--font-ui)">+0.75</span>
+              </div>
+              <div style="display:flex; flex-direction:column; align-items:center; gap:4px">
+                <div class="deviation-bar" style="width:40px">
+                  <div class="deviation-track"></div>
+                  <div class="deviation-dot error" style="left:34px"></div>
+                </div>
+                <span style="font-size:8px;color:var(--text-tertiary);font-family:var(--font-ui)">+1.0</span>
+                <span style="font-size:7px;color:var(--text-secondary);font-family:var(--font-ui)">Much harder</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <table class="props-table">
+        <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>deviation</code></td><td><code>number</code></td><td>-</td><td>-1 to +1 deviation value</td></tr>
+          <tr><td><code>width</code></td><td><code>number</code></td><td><code>40</code></td><td>Track width in px</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ==================== 8. IntensityBar ==================== -->
+    <section class="component-section" id="intensity-bar">
+      <h2 class="component-title">IntensityBar</h2>
+      <p class="component-desc">Vertical fill bar showing 0-130%+ of target. Solid zone colors below 100%, the gradient reward at 100%, deepening reds beyond target.</p>
+
+      <div class="variant-grid">
+        <div class="variant" style="min-width: 520px">
+          <span class="variant-label">Progression: 20% to 130%</span>
+          <div class="variant-demo" style="gap:28px; align-items: flex-end; padding-top: 16px">
+            <!-- 20%: teal -->
+            <div class="intensity-bar">
+              <div class="intensity-track" style="height:36px">
+                <div class="intensity-fill building" style="height:20%"></div>
+              </div>
+              <span class="intensity-label">20%</span>
+            </div>
+            <!-- 50%: teal -->
+            <div class="intensity-bar">
+              <div class="intensity-track" style="height:36px">
+                <div class="intensity-fill building" style="height:50%"></div>
+              </div>
+              <span class="intensity-label">50%</span>
+            </div>
+            <!-- 75%: amber -->
+            <div class="intensity-bar">
+              <div class="intensity-track" style="height:36px">
+                <div class="intensity-fill approaching" style="height:75%"></div>
+              </div>
+              <span class="intensity-label">75%</span>
+            </div>
+            <!-- 95%: gradient -->
+            <div class="intensity-bar">
+              <div class="intensity-track" style="height:36px">
+                <div class="intensity-fill target" style="height:95%"></div>
+              </div>
+              <span class="intensity-label">95%</span>
+            </div>
+            <!-- 100%: gradient fills completely -->
+            <div class="intensity-bar">
+              <div class="intensity-track" style="height:36px">
+                <div class="intensity-fill target" style="height:100%"></div>
+              </div>
+              <span class="intensity-label">100%</span>
+            </div>
+            <!-- 110%: red + small bulge -->
+            <div class="intensity-bar">
+              <div class="intensity-track" style="height:36px">
+                <div class="intensity-fill over-1" style="height:100%"></div>
+                <div class="intensity-bulge over-1" style="width:8px; height:8px"></div>
+              </div>
+              <span class="intensity-label">110%</span>
+            </div>
+            <!-- 120%: darker red + medium bulge -->
+            <div class="intensity-bar">
+              <div class="intensity-track" style="height:36px">
+                <div class="intensity-fill over-2" style="height:100%"></div>
+                <div class="intensity-bulge over-2" style="width:10px; height:10px"></div>
+              </div>
+              <span class="intensity-label">120%</span>
+            </div>
+            <!-- 130%: darkest red + max bulge -->
+            <div class="intensity-bar">
+              <div class="intensity-track" style="height:36px">
+                <div class="intensity-fill over-3" style="height:100%"></div>
+                <div class="intensity-bulge over-3" style="width:11px; height:11px"></div>
+              </div>
+              <span class="intensity-label">130%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="variant" style="min-width: 300px">
+          <span class="variant-label">With target at 50% — blue glow when within ±2%</span>
+          <div class="variant-demo" style="gap:28px; align-items: flex-end">
+            <div class="intensity-bar">
+              <div class="intensity-track" style="height:36px">
+                <div class="intensity-fill building" style="height:30%"></div>
+                <div class="intensity-line-target" style="bottom:50%"></div>
+              </div>
+              <span class="intensity-label">30%</span>
+            </div>
+            <div class="intensity-bar">
+              <div class="intensity-track" style="height:36px">
+                <div class="intensity-fill building at-target" style="height:50%"></div>
+                <div class="intensity-line-target" style="bottom:50%"></div>
+              </div>
+              <span class="intensity-label">50% ✓</span>
+            </div>
+            <div class="intensity-bar">
+              <div class="intensity-track" style="height:36px">
+                <div class="intensity-fill hot" style="height:70%"></div>
+                <div class="intensity-line-target" style="bottom:50%"></div>
+              </div>
+              <span class="intensity-label">70%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">Compact (no labels)</span>
+          <div class="variant-demo" style="gap:12px; align-items: flex-end; padding-top: 12px">
+            <div class="intensity-bar">
+              <div class="intensity-track" style="height:24px">
+                <div class="intensity-fill building" style="height:25%"></div>
+              </div>
+            </div>
+            <div class="intensity-bar">
+              <div class="intensity-track" style="height:24px">
+                <div class="intensity-fill approaching" style="height:60%"></div>
+              </div>
+            </div>
+            <div class="intensity-bar">
+              <div class="intensity-track" style="height:24px">
+                <div class="intensity-fill target" style="height:100%"></div>
+              </div>
+            </div>
+            <div class="intensity-bar">
+              <div class="intensity-track" style="height:24px">
+                <div class="intensity-fill over-1" style="height:100%"></div>
+                <div class="intensity-bulge over-1" style="width:8px; height:8px"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <table class="props-table">
+        <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>level</code></td><td><code>number</code></td><td>-</td><td>0-1.2 intensity value (1.0 = 100% target)</td></tr>
+          <tr><td><code>threshold</code></td><td><code>number</code></td><td><code>1.0</code></td><td>Target line position (100% of target)</td></tr>
+          <tr><td><code>height</code></td><td><code>number</code></td><td><code>24</code></td><td>Bar height in px</td></tr>
+          <tr><td><code>showLabel</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Show percentage label below</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ==================== 9. WorkoutPill ==================== -->
+    <section class="component-section" id="workout-pill">
+      <h2 class="component-title">WorkoutPill <button class="replay-btn" onclick="replayAnimation(this, '.workout-pill.pulse')">&#8635; Replay</button></h2>
+      <p class="component-desc">Workout session pill with status indication. Only the active pill pulses.</p>
+
+      <div class="variant-grid">
+        <div class="variant" style="min-width: 500px">
+          <span class="variant-label">All statuses</span>
+          <div class="variant-demo" style="gap:10px">
+            <div class="workout-pill completed">&#10003; Upper A</div>
+            <div class="workout-pill active pulse">Lower A</div>
+            <div class="workout-pill next">Upper B</div>
+            <div class="workout-pill upcoming">Lower B</div>
+            <div class="workout-pill missed">&mdash; Core C</div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">Completed</span>
+          <div class="variant-demo">
+            <div class="workout-pill completed">&#10003; Upper A</div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">Active (with pulse)</span>
+          <div class="variant-demo">
+            <div class="workout-pill active pulse">Lower A</div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">Active (no pulse)</span>
+          <div class="variant-demo">
+            <div class="workout-pill active">Lower A</div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">Next (with pulse)</span>
+          <div class="variant-demo">
+            <div class="workout-pill next pulse">Upper B</div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">Next (no pulse)</span>
+          <div class="variant-demo">
+            <div class="workout-pill next">Upper B</div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">Upcoming (dim)</span>
+          <div class="variant-demo">
+            <div class="workout-pill upcoming">Lower B</div>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">Missed</span>
+          <div class="variant-demo">
+            <div class="workout-pill missed">&mdash; Core C</div>
+          </div>
+        </div>
+      </div>
+      <p class="component-note">Pulse is a prop, not tied to status. Only one pill should pulse at a time.</p>
+
+      <table class="props-table">
+        <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>name</code></td><td><code>string</code></td><td>-</td><td>Workout name</td></tr>
+          <tr><td><code>status</code></td><td><code>'completed' | 'active' | 'next' | 'upcoming' | 'missed'</code></td><td>-</td><td>Current status</td></tr>
+          <tr><td><code>pulse</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Pulse animation (independent of status)</td></tr>
+          <tr><td><code>onPress</code></td><td><code>() => void</code></td><td>-</td><td>Tap handler</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ==================== 10. MuscleGroupChip ==================== -->
+    <section class="component-section" id="muscle-group-chip">
+      <h2 class="component-title">MuscleGroupChip</h2>
+      <p class="component-desc">Compact chip showing muscle group with volume status dot.</p>
+
+      <div class="variant-grid">
+        <div class="variant" style="min-width: 420px">
+          <span class="variant-label">All volume statuses</span>
+          <div class="variant-demo" style="gap:8px; flex-wrap:wrap">
+            <div class="muscle-chip"><div class="muscle-chip-dot ontrack"></div>Chest</div>
+            <div class="muscle-chip"><div class="muscle-chip-dot target"></div>Quads</div>
+            <div class="muscle-chip"><div class="muscle-chip-dot behind"></div>Calves</div>
+            <div class="muscle-chip"><div class="muscle-chip-dot untrained"></div>Abs</div>
+            <div class="muscle-chip"><div class="muscle-chip-dot over"></div>Back</div>
+          </div>
+        </div>
+
+        <div class="variant" style="min-width: 300px">
+          <span class="variant-label">Color legend</span>
+          <div class="variant-demo" style="gap: 12px; flex-direction: column">
+            <div style="display:flex;align-items:center;gap:8px"><div class="muscle-chip-dot ontrack" style="width:6px;height:6px;border-radius:50%;flex-shrink:0"></div><span style="font-size:10px;color:var(--text-secondary);font-family:var(--font-ui)">ontrack — on-target volume</span></div>
+            <div style="display:flex;align-items:center;gap:8px"><div class="muscle-chip-dot target" style="width:6px;height:6px;border-radius:50%;flex-shrink:0"></div><span style="font-size:10px;color:var(--text-secondary);font-family:var(--font-ui)">target — at target</span></div>
+            <div style="display:flex;align-items:center;gap:8px"><div class="muscle-chip-dot behind" style="width:6px;height:6px;border-radius:50%;flex-shrink:0"></div><span style="font-size:10px;color:var(--text-secondary);font-family:var(--font-ui)">behind — below threshold</span></div>
+            <div style="display:flex;align-items:center;gap:8px"><div class="muscle-chip-dot untrained" style="width:6px;height:6px;border-radius:50%;flex-shrink:0"></div><span style="font-size:10px;color:var(--text-secondary);font-family:var(--font-ui)">untrained — no sets logged</span></div>
+            <div style="display:flex;align-items:center;gap:8px"><div class="muscle-chip-dot over" style="width:6px;height:6px;border-radius:50%;flex-shrink:0"></div><span style="font-size:10px;color:var(--text-secondary);font-family:var(--font-ui)">over — exceeding MRV</span></div>
+          </div>
+        </div>
+      </div>
+
+      <table class="props-table">
+        <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>name</code></td><td><code>string</code></td><td>-</td><td>Muscle group name</td></tr>
+          <tr><td><code>volumeStatus</code></td><td><code>'untrained' | 'behind' | 'ontrack' | 'target' | 'over'</code></td><td>-</td><td>Volume status for dot color</td></tr>
+          <tr><td><code>onPress</code></td><td><code>() => void</code></td><td>-</td><td>Tap handler</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ==================== 11. Sparkline ==================== -->
+    <section class="component-section" id="sparkline">
+      <h2 class="component-title">Sparkline</h2>
+      <p class="component-desc">Compact inline chart for trend visualization. SVG-based line with optional reference lines and highlighted endpoints.</p>
+
+      <div class="variant-grid">
+        <div class="variant">
+          <span class="variant-label">Ascending (weight progression)</span>
+          <div class="variant-demo">
+            <svg width="80" height="30" class="sparkline-svg">
+              <line x1="0" y1="30" x2="20" y2="22.5" stroke="#ff7900" stroke-width="1.5"/>
+              <line x1="20" y1="22.5" x2="40" y2="15" stroke="#ff7900" stroke-width="1.5"/>
+              <line x1="40" y1="15" x2="60" y2="7.5" stroke="#ff7900" stroke-width="1.5"/>
+              <line x1="60" y1="7.5" x2="80" y2="0" stroke="#ff7900" stroke-width="1.5"/>
+              <circle cx="80" cy="0" r="3" fill="#ff7900"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">U-curve (deload recovery)</span>
+          <div class="variant-demo">
+            <svg width="80" height="30" class="sparkline-svg">
+              <line x1="0" y1="0" x2="20" y2="14" stroke="#ff7900" stroke-width="1.5"/>
+              <line x1="20" y1="14" x2="40" y2="24" stroke="#ff7900" stroke-width="1.5"/>
+              <line x1="40" y1="24" x2="60" y2="14" stroke="#ff7900" stroke-width="1.5"/>
+              <line x1="60" y1="14" x2="80" y2="0" stroke="#ff7900" stroke-width="1.5"/>
+              <circle cx="80" cy="0" r="3" fill="#ff7900"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">Plateau</span>
+          <div class="variant-demo">
+            <svg width="80" height="30" class="sparkline-svg">
+              <line x1="0" y1="15" x2="20" y2="15" stroke="#ff7900" stroke-width="1.5"/>
+              <line x1="20" y1="15" x2="40" y2="0" stroke="#ff7900" stroke-width="1.5"/>
+              <line x1="40" y1="0" x2="60" y2="15" stroke="#ff7900" stroke-width="1.5"/>
+              <line x1="60" y1="15" x2="80" y2="15" stroke="#ff7900" stroke-width="1.5"/>
+              <circle cx="80" cy="15" r="3" fill="#ff7900"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="variant" style="min-width: 200px">
+          <span class="variant-label">With reference lines (MEV / MRV)</span>
+          <div class="variant-demo">
+            <svg width="120" height="40" class="sparkline-svg">
+              <!-- MEV reference line -->
+              <line x1="0" y1="30" x2="120" y2="30" stroke="var(--status-success)" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
+              <text x="122" y="33" fill="var(--status-success)" font-size="7" font-family="var(--font-ui)" opacity="0.8">MEV</text>
+              <!-- MRV reference line -->
+              <line x1="0" y1="8" x2="120" y2="8" stroke="var(--status-error)" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
+              <text x="122" y="11" fill="var(--status-error)" font-size="7" font-family="var(--font-ui)" opacity="0.8">MRV</text>
+              <!-- Data line ascending through zone -->
+              <line x1="0" y1="34" x2="24" y2="28" stroke="#ff7900" stroke-width="1.5"/>
+              <line x1="24" y1="28" x2="48" y2="22" stroke="#ff7900" stroke-width="1.5"/>
+              <line x1="48" y1="22" x2="72" y2="16" stroke="#ff7900" stroke-width="1.5"/>
+              <line x1="72" y1="16" x2="96" y2="12" stroke="#ff7900" stroke-width="1.5"/>
+              <line x1="96" y1="12" x2="120" y2="10" stroke="#ff7900" stroke-width="1.5"/>
+              <!-- Dots -->
+              <circle cx="0" cy="34" r="1.5" fill="#ff7900"/>
+              <circle cx="24" cy="28" r="1.5" fill="#ff7900"/>
+              <circle cx="48" cy="22" r="1.5" fill="#ff7900"/>
+              <circle cx="72" cy="16" r="1.5" fill="#ff7900"/>
+              <circle cx="96" cy="12" r="1.5" fill="#ff7900"/>
+              <circle cx="120" cy="10" r="3" fill="#ff7900"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="variant">
+          <span class="variant-label">With all dots</span>
+          <div class="variant-demo">
+            <svg width="80" height="30" class="sparkline-svg">
+              <line x1="0" y1="30" x2="20" y2="22.5" stroke="#ff7900" stroke-width="1.5"/>
+              <line x1="20" y1="22.5" x2="40" y2="15" stroke="#ff7900" stroke-width="1.5"/>
+              <line x1="40" y1="15" x2="60" y2="7.5" stroke="#ff7900" stroke-width="1.5"/>
+              <line x1="60" y1="7.5" x2="80" y2="0" stroke="#ff7900" stroke-width="1.5"/>
+              <circle cx="0" cy="30" r="1.5" fill="#ff7900"/>
+              <circle cx="20" cy="22.5" r="1.5" fill="#ff7900"/>
+              <circle cx="40" cy="15" r="1.5" fill="#ff7900"/>
+              <circle cx="60" cy="7.5" r="1.5" fill="#ff7900"/>
+              <circle cx="80" cy="0" r="3" fill="#ff7900"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <table class="props-table">
+        <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>data</code></td><td><code>number[]</code></td><td>-</td><td>Data points</td></tr>
+          <tr><td><code>width</code></td><td><code>number</code></td><td><code>80</code></td><td>SVG width</td></tr>
+          <tr><td><code>height</code></td><td><code>number</code></td><td><code>30</code></td><td>SVG height</td></tr>
+          <tr><td><code>color</code></td><td><code>string</code></td><td><code>'#ff7900'</code></td><td>Line color</td></tr>
+          <tr><td><code>showDots</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Show data point dots</td></tr>
+          <tr><td><code>highlightLast</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Larger dot on last point</td></tr>
+          <tr><td><code>referenceLines</code></td><td><code>Array&lt;{value, color, dashed?}&gt;</code></td><td>-</td><td>Horizontal reference lines</td></tr>
+        </tbody>
+      </table>
+      <p class="component-note">Sparkline with reference lines is a key reusable pattern — use for volume tracking (MEV/MRV lines), weight progression, and mesocycle visualization.</p>
+    </section>
+
+  </div><!-- /main -->
+</div><!-- /page -->
+
+<script>
+// VelocityStrip interactive expand/collapse
+function getZoneColor(v) {
+  if (v >= 1.0) return 'green';
+  if (v >= 0.75) return 'yellow';
+  if (v >= 0.5) return 'orange';
+  return 'red';
+}
+
+function getZoneName(v) {
+  if (v >= 1.0) return 'Speed';
+  if (v >= 0.75) return 'Power';
+  if (v >= 0.5) return 'Strength-Speed';
+  return 'Strength';
+}
+
+function toggleStrip(el) {
+  const velocitiesStr = el.getAttribute('data-velocities');
+  if (!velocitiesStr) return;
+  const velocities = velocitiesStr.split(',').map(Number);
+  const parent = el.parentElement;
+  const isCollapsed = el.classList.contains('velocity-strip-collapsed');
+
+  if (isCollapsed) {
+    const maxV = Math.max(...velocities);
+    const mean = velocities.reduce((a, b) => a + b, 0) / velocities.length;
+    const loss = Math.round(((velocities[0] - velocities[velocities.length - 1]) / velocities[0]) * 100);
+    const zoneName = getZoneName(mean);
+    let lossClass = '';
+    if (loss > 25) lossClass = 'extreme';
+    else if (loss > 20) lossClass = 'high';
+
+    let html = '<div class="velocity-strip-expanded" data-velocities="' + velocitiesStr + '" onclick="toggleStrip(this)">';
+    html += '<div class="bars-row">';
+    velocities.forEach(function(v, i) {
+      const pct = Math.round((v / (maxV * 1.15)) * 100);
+      const color = getZoneColor(v);
+      html += '<div class="vel-bar-wrapper" onclick="event.stopPropagation(); showTooltip(this)">';
+      html += '<span class="vel-bar-label">' + v.toFixed(2) + '</span>';
+      html += '<div class="vel-bar ' + color + '" style="height:' + pct + '%"></div>';
+      html += '<div class="rep-tooltip">Rep ' + (i + 1) + ': ' + v.toFixed(2) + ' m/s</div>';
+      html += '</div>';
+    });
+    html += '</div></div>';
+    html += '<div class="velocity-info-row">';
+    html += '<span class="velocity-info-zone">' + zoneName + ' &middot; ' + mean.toFixed(2) + ' m/s</span>';
+    html += '<span class="velocity-info-loss ' + lossClass + '">Loss: ' + loss + '%</span>';
+    html += '</div>';
+    parent.innerHTML = html;
+  } else {
+    const vels = velocities;
+    let html = '<div class="velocity-strip-collapsed" data-velocities="' + velocitiesStr + '" onclick="toggleStrip(this)">';
+    vels.forEach(function(v) {
+      html += '<div class="vel-bar ' + getZoneColor(v) + '"></div>';
+    });
+    html += '</div>';
+    parent.innerHTML = html;
+  }
+}
+
+function showTooltip(el) {
+  // Clear all other tooltips
+  document.querySelectorAll('.vel-bar-wrapper.show-tooltip').forEach(function(w) {
+    w.classList.remove('show-tooltip');
+  });
+  el.classList.toggle('show-tooltip');
+}
+
+// Close tooltips on outside click
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.vel-bar-wrapper')) {
+    document.querySelectorAll('.vel-bar-wrapper.show-tooltip').forEach(function(w) {
+      w.classList.remove('show-tooltip');
+    });
+  }
+  if (!e.target.closest('.tempo-display')) {
+    document.querySelectorAll('.tempo-display.show-tempo-tooltip').forEach(function(t) {
+      t.classList.remove('show-tempo-tooltip');
+    });
+  }
+});
+
+// TempoDisplay tooltip toggle
+function toggleTempoTooltip(el) {
+  var wasOpen = el.classList.contains('show-tempo-tooltip');
+  document.querySelectorAll('.tempo-display.show-tempo-tooltip').forEach(function(t) {
+    t.classList.remove('show-tempo-tooltip');
+  });
+  if (!wasOpen) {
+    el.classList.add('show-tempo-tooltip');
+  }
+}
+
+// Replay animation: clone elements to retrigger CSS animation
+function replayAnimation(btn, selector) {
+  var section = btn.closest('.component-section');
+  var els = section.querySelectorAll(selector);
+  els.forEach(function(el) {
+    var parent = el.parentNode;
+    var clone = el.cloneNode(true);
+    parent.replaceChild(clone, el);
+  });
+}
+
+// Sidebar active state on scroll
+var sections = document.querySelectorAll('.component-section');
+var sidebarLinks = document.querySelectorAll('.sidebar a');
+
+function updateActiveLink() {
+  var current = '';
+  var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  sections.forEach(function(section) {
+    var rect = section.getBoundingClientRect();
+    if (rect.top <= 120) {
+      current = section.id;
+    }
+  });
+  if (!current && sections.length > 0) {
+    current = sections[0].id;
+  }
+  sidebarLinks.forEach(function(link) {
+    link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+  });
+}
+
+window.addEventListener('scroll', updateActiveLink, { passive: true });
+updateActiveLink();
+
+// VelocityStrip transition demo
+function getZoneName(v) {
+  if (v >= 1.0) return 'Speed';
+  if (v >= 0.75) return 'Power';
+  if (v >= 0.50) return 'Str-Speed';
+  return 'Strength';
+}
+
+function initTransitionStrip() {
+  document.querySelectorAll('.velocity-strip-transition').forEach(function(el) {
+    var vels = el.dataset.velocities.split(',').map(Number);
+    var maxV = Math.max.apply(null, vels) * 1.15;
+    var isMini = el.classList.contains('mini');
+    var html = '';
+    vels.forEach(function(v) {
+      var color = getZoneColor(v);
+      var pct = (v / maxV * 100).toFixed(0);
+      html += '<div class="vbar" style="background:var(--vel-' + color + ')" data-height="' + pct + '%">';
+      if (!isMini) html += '<span class="vbar-label">' + v.toFixed(2) + '</span>';
+      html += '</div>';
+    });
+    if (!isMini) {
+      var mean = vels.reduce(function(a,b){return a+b}, 0) / vels.length;
+      var loss = ((vels[0] - vels[vels.length-1]) / vels[0] * 100).toFixed(0);
+      html += '<div class="vel-info-row"><span style="color:var(--vel-' + getZoneColor(mean) + ')">' + getZoneName(mean) + ' \u00b7 ' + mean.toFixed(2) + ' m/s</span><span style="color:' + (loss > 25 ? 'var(--vel-red)' : 'var(--text-secondary)') + '">Loss: ' + loss + '%</span></div>';
+    }
+    el.innerHTML = html;
+    // If pre-expanded, set bar heights immediately
+    if (el.dataset.startExpanded === 'true') {
+      el.querySelectorAll('.vbar').forEach(function(bar) {
+        bar.style.height = bar.dataset.height;
+      });
+    }
+    // Mini strips: remove onclick
+    if (isMini) {
+      el.removeAttribute('onclick');
+      el.style.cursor = 'default';
+    }
+  });
+}
+
+function toggleStripTransition(el) {
+  var isExpanded = el.classList.contains('expanded');
+  if (isExpanded) {
+    el.querySelectorAll('.vbar').forEach(function(bar) { bar.style.height = ''; });
+    el.classList.remove('expanded');
+  } else {
+    el.classList.add('expanded');
+    requestAnimationFrame(function() {
+      el.querySelectorAll('.vbar').forEach(function(bar) {
+        bar.style.height = bar.dataset.height;
+      });
+    });
+  }
+}
+
+initTransitionStrip();
+</script>
+</body>
+</html>
