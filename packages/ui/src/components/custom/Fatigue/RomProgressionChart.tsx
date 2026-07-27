@@ -9,8 +9,9 @@
  * Composes the shared {@link SetBarChart}: SetBarChart owns the geometry (value→height
  * scaling, the plot-width-driven adaptive bar width / gap — the same rhythm as the velocity
  * hero) and paints the reference overlay this chart hands it. When `plannedReps` exceeds the
- * performed count the remaining reps draw as dashed to-do placeholders (the velocity "N of M"
- * read). Bars scale to the tallest of {bars, working standard, short threshold} so the
+ * performed count the remaining reps draw as SetBarChart's default solid to-do sections — the
+ * same upcoming-rep treatment the velocity strip uses, so "3 of 8 done" reads identically in
+ * both charts. Bars scale to the tallest of {bars, working standard, short threshold} so the
  * reference lines always sit on-chart; when no working standard is established yet (< 3 reps)
  * the lines drop and every bar reads silver — the bars alone carry the shape.
  */
@@ -32,8 +33,8 @@ export interface RomProgressionChartProps {
   /** Keep the chart to a legible recent tail. Default 12. */
   maxReps?: number
   /**
-   * Planned rep count. Reps beyond the performed count draw as dashed to-do placeholders (the
-   * velocity "3 of 8 done" read). Ignored when absent or ≤ the performed-rep count.
+   * Planned rep count. Reps beyond the performed count draw as solid to-do sections — the
+   * velocity strip's "3 of 8 done" read. Ignored when absent or ≤ the performed-rep count.
    */
   plannedReps?: number
 }
@@ -122,7 +123,6 @@ export function RomProgressionChart({
         scaleMax={scaleMax}
         barRadius={2}
         hideBaseline
-        todoVariant="dashed"
         targetReps={plannedReps}
         renderReference={(g) => romReferenceOverlay(g, workingStandardM, shortThresholdM)}
         testIDPrefix="rom"
