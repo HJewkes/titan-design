@@ -21,13 +21,19 @@ LiveFatiguePanel              ← the composition (Live panel v2)
    │  └─ Tooltip              (ui/tooltip — hover detail)
    ├─ RomProgressionChart     (per-rep silver/red depth bars + reference lines)
    ├─ GhostSpark              (per-rep velocity-time sparkline; tempo EMBEDDED)
+   │  ├─ GhostBand            (the phase-coloured axis band — ECC/CON labelled inside)
+   │  └─ GhostBloom           (the ghost fan + silver→red current line; orientation up/down)
+   ├─ DualGhostSpark          (dual-Voltra: ONE GhostBand + TWO mirrored GhostBlooms)
+   │  ├─ GhostBand            (the SAME band, centred, shared by both devices)
+   │  └─ GhostBloom ×2        (left up / right down — a one-prop flip, one shared scale)
    └─ Surface                 (ui/surface — the base-plane, paper-accented card ground)
 ```
 
 ## Tier map
 
-**Atoms** — `VerdictHero` · `FatigueLights` · `RomProgressionChart` · `GhostSpark`
-**Molecules** — `VelocityHero` (VelocityStrip + VL bands)
+**Atoms** — `VerdictHero` · `FatigueLights` · `RomProgressionChart` · `GhostBand` · `GhostBloom`
+**Molecules** — `VelocityHero` (VelocityStrip + VL bands) · `GhostSpark` (band + one bloom) ·
+`DualGhostSpark` (one band + two mirrored blooms)
 **Organisms** — `LiveFatigueCard` (the card, one data contract) · `LiveFatiguePanel` (hero + card + aura)
 
 ## Reuse audit — composed, not hand-rolled
@@ -41,6 +47,9 @@ LiveFatiguePanel              ← the composition (Live panel v2)
 - **`Surface`** (ui/surface/) — the card ground (`level="base"`, one step above the
   `background` shell), separated by the alpha `hairline-default` edge and finished with
   the shared `barPaper` accent; no hardcoded surface hex.
+- **`GhostBand` / `GhostBloom`** — the single `GhostSpark` and the dual `DualGhostSpark`
+  compose the SAME band + bloom; the dual is the bloom with `orientation="down"`, not a
+  second renderer. No forked path / band / tint code, so a bloom improvement reaches both.
 - **Tokens** — colours come from `getSemanticColors` / `primitiveRamps`; formatting from
   `roundTempo`. No literal surface/status hex constants.
 
@@ -53,7 +62,7 @@ The reusable pure helpers (`ghostLineColor`, `auraForVerdict`, `mixHex`) live in
 ## Locked design calls (applied)
 
 - **Velocity hero = loss-relative** — VL20/VL30 decision bands (not absolute velocity
-  zones). See *deferred* below for the bar-fill recolour.
+  zones). See _deferred_ below for the bar-fill recolour.
 - **ROM chart + ghost line = ONE silver/red scheme** — silver when right, only SHADES OF
   RED when there's an issue (no greens, no ambers). Shared constants `SILVER` /
   `RED_LIGHT|MID|DEEP` live in `fatigue-tokens.ts`; both consumers import them. The ghost
