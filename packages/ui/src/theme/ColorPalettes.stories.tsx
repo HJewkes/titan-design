@@ -1,9 +1,7 @@
-import type { ReactNode } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import {
   primitiveColors,
-  primitiveRamps,
   surfaceRampDark,
   backgroundFrameDark,
   categoricalPalette,
@@ -14,7 +12,7 @@ import {
   discreteRainbow,
   bestTextColor,
 } from './tokens/primitives'
-import { semanticColorsLight, semanticColorsDark, getSemanticColors } from './tokens/semantic'
+import { semanticColorsLight, semanticColorsDark } from './tokens/semantic'
 import { WORKOUT_TOKENS } from './workout-tokens'
 import { WORKOUT_PILL_DELOAD } from './extracted-colors-dataviz'
 import { SPINNER_PRIMARY } from './extracted-colors-ui'
@@ -27,186 +25,29 @@ import {
   GRIND_THRESHOLD,
   ghostLineColor,
 } from '../components/custom/Fatigue/fatigue-tokens'
+import { SWATCH_BORDER, SectionIntro, SectionTitle, ColorSwatch, Demo } from './color-story-kit'
 
 /**
- * Foundations/Color — the documentation of record for the token layer.
+ * Foundations/Color/Palettes — the organisations of the primitives into meaning.
  *
- * ORDER IS THE ARGUMENT. The stories run canonical-first: the OKLCH tonal ramps
- * (the single source of truth for every chromatic hex) and the v0.10.0 surface
- * ramp lead; the derived scales follow; the semantic roles that reference them
- * come next; superseded material (the pre-ramp `primitiveColors`, the Paul-Tol
- * rainbow) sits at the bottom, labelled. Storybook sorts the sidebar
- * alphabetically, so each story carries a numbered `name` to hold that order.
+ * The raw scales and their accessibility validation live in the sibling
+ * `Foundations/Color/Primitives`. Everything here is an ASSIGNMENT: a depth
+ * ladder, a qualitative series, an ordered magnitude scale, a semantic role.
+ * Ordered so the assignments that the most surfaces depend on come first.
  *
- * `color-stories.coverage.test.ts` reads this file as text and fails if a
- * semantic token ships without a swatch here, or if a surface token lands off
- * the ramp.
+ * `color-stories.coverage.test.ts` reads this file as text (together with the
+ * Primitives story) and fails if a semantic token ships without a swatch, or
+ * if a surface token lands off the ramp.
  */
 const meta: Meta = {
-  title: 'Foundations/Color/Palette',
+  title: 'Foundations/Color/Palettes',
   tags: ['autodocs'],
 }
 
 export default meta
 
-const t = getSemanticColors('dark')
-
-/**
- * Hairline around every swatch, so a swatch whose fill matches the page still
- * reads as one. Sourced from the token layer rather than a literal — the color
- * stories should not be where raw hexes creep back in.
- */
-const SWATCH_BORDER = semanticColorsDark['border-default']
-
-// ---------------------------------------------------------------------------
-// shared swatch primitives
-// ---------------------------------------------------------------------------
-
-function SectionIntro({ children }: { children: ReactNode }) {
-  return <Text className="text-text-secondary mb-6">{children}</Text>
-}
-
-function SectionTitle({ children }: { children: string }) {
-  return <Text className="text-lg font-bold text-text-primary mb-3 mt-2">{children}</Text>
-}
-
-interface ColorSwatchProps {
-  name: string
-  value: string
-}
-
-function ColorSwatch({ name, value }: ColorSwatchProps) {
-  const displayValue = value.startsWith('rgba') ? value : value.toUpperCase()
-
-  return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-      <View
-        style={{
-          width: 48,
-          height: 48,
-          borderRadius: 8,
-          backgroundColor: value,
-          borderWidth: 1,
-          borderColor: SWATCH_BORDER,
-        }}
-      />
-      <View>
-        <Text className="font-semibold text-text-primary text-sm">{name}</Text>
-        <Text className="text-text-secondary text-xs">{displayValue}</Text>
-      </View>
-    </View>
-  )
-}
-
-function ColorScale({ name, colors }: { name: string; colors: Record<string | number, string> }) {
-  return (
-    <View style={{ marginBottom: 32 }}>
-      <Text className="text-lg font-bold text-text-primary mb-3">{name}</Text>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-        {Object.entries(colors).map(([shade, color]) => (
-          <View key={shade} style={{ alignItems: 'center' }}>
-            <View
-              style={{
-                width: 64,
-                height: 64,
-                borderRadius: 8,
-                backgroundColor: color,
-                borderWidth: 1,
-                borderColor: SWATCH_BORDER,
-              }}
-            />
-            <Text className="text-text-secondary text-xs mt-1">{shade}</Text>
-          </View>
-        ))}
-      </View>
-    </View>
-  )
-}
-
-function Demo({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <View style={{ padding: 10, backgroundColor: t['surface-raised'], borderRadius: 8 }}>
-      <Text className="text-text-secondary" style={{ fontSize: 9, marginBottom: 6 }}>
-        {label}
-      </Text>
-      {children}
-    </View>
-  )
-}
-
 // ============================================================================
-// 1. Tonal ramps — the source of truth
-// ============================================================================
-
-const RAMP_STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950] as const
-
-const RAMP_NAMES: Array<[keyof typeof primitiveRamps, string]> = [
-  ['red', 'Red'],
-  ['orange', 'Orange'],
-  ['amber', 'Amber'],
-  ['green', 'Green'],
-  ['cyan', 'Cyan'],
-  ['blue', 'Blue'],
-  ['magenta', 'Magenta'],
-]
-
-/** One hue: a labelled row of all 11 perceptual steps, with the hex under each. */
-function RampRow({ name, ramp }: { name: string; ramp: Record<number, string> }) {
-  return (
-    <View style={{ marginBottom: 14 }}>
-      <Text className="font-semibold text-text-primary text-sm mb-1">{name}</Text>
-      <View style={{ flexDirection: 'row', gap: 4 }}>
-        {RAMP_STEPS.map((step) => (
-          <View key={step} style={{ alignItems: 'center', width: 62 }}>
-            <View
-              style={{
-                width: 62,
-                height: 46,
-                borderRadius: 6,
-                backgroundColor: ramp[step],
-                borderWidth: 1,
-                borderColor: SWATCH_BORDER,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Text style={{ color: bestTextColor(ramp[step]), fontSize: 10, fontWeight: '700' }}>
-                {step}
-              </Text>
-            </View>
-            <Text className="text-text-tertiary" style={{ fontSize: 8, marginTop: 2 }}>
-              {ramp[step].toUpperCase()}
-            </Text>
-          </View>
-        ))}
-      </View>
-    </View>
-  )
-}
-
-export const TonalRamps: StoryObj = {
-  name: '1. Tonal Ramps — Source of Truth',
-  render: () => (
-    <View style={{ padding: 24 }}>
-      <Text className="text-2xl font-bold text-text-primary mb-2">Tonal Ramps</Text>
-      <SectionIntro>
-        Seven OKLCH-generated hue ramps, 11 perceptual steps each (50 → 950), built with
-        hue-torsion and a chroma arc anchored through the brand/semantic hexes. These are the{' '}
-        <Text className="font-semibold">single source of truth for every chromatic hex</Text> in
-        titan — the categorical, diverging, effort and fatigue palettes below are all references
-        into these steps rather than duplicated values, so re-tuning a ramp moves them together.
-        Amber absorbs the former yellow (lemon → warm body) and cyan absorbs the former steel.
-      </SectionIntro>
-
-      {RAMP_NAMES.map(([key, name]) => (
-        <RampRow key={key} name={name} ramp={primitiveRamps[key]} />
-      ))}
-    </View>
-  ),
-}
-
-// ============================================================================
-// 2. Surface ramp — canonical (v0.10.0)
+// 1. Surface ramp
 // ============================================================================
 
 /**
@@ -265,17 +106,17 @@ function SurfacePlaneRow({ hex, lStar, role }: { hex: string; lStar: number; rol
 }
 
 export const SurfaceRamp: StoryObj = {
-  name: '2. Surface Ramp (Dark) — Canonical',
+  name: '1. Surface Ramp (Dark)',
   render: () => (
     <View style={{ padding: 24 }}>
       <Text className="text-2xl font-bold text-text-primary mb-2">Surface Ramp (Dark Mode)</Text>
       <SectionIntro>
-        The v0.10.0 surface foundation. Depth is an{' '}
-        <Text className="font-semibold">ordered ramp</Text>, not a set of unrelated fills — planes
-        are spaced by perceptual lightness (L*) on a diminishing taper, so &quot;one step up&quot;
-        is the same visual distance anywhere in the stack. Listed darkest first. Several semantic
-        tokens deliberately share a plane (shown per row); that aliasing is what lets a component
-        say what it <Text className="italic">is</Text> rather than how deep it sits.
+        The v0.10.0 surface foundation, and the assignment the most surfaces depend on. Depth is
+        an <Text className="font-semibold">ordered ramp</Text>, not a set of unrelated fills —
+        planes are spaced by perceptual lightness (L*) on a diminishing taper, so &quot;one step
+        up&quot; is the same visual distance anywhere in the stack. Listed darkest first. Several
+        semantic tokens deliberately share a plane (shown per row); that aliasing is what lets a
+        component say what it <Text className="italic">is</Text> rather than how deep it sits.
       </SectionIntro>
 
       <View style={{ gap: 14 }}>
@@ -285,19 +126,20 @@ export const SurfaceRamp: StoryObj = {
       </View>
 
       <Text className="text-text-secondary text-xs mt-8">
-        To apply these at runtime use{' '}
-        <Text className="font-semibold text-text-primary">&lt;Surface level&gt;</Text> and{' '}
-        <Text className="font-semibold text-text-primary">useOnSurfaceColor</Text> rather than
+        This ramp is derived, not hand-picked, which is why it sits here rather than with the raw
+        scales — the greys it is built from are in Foundations/Color/Primitives. To apply it at
+        runtime use <Text className="font-semibold text-text-primary">&lt;Surface level&gt;</Text>{' '}
+        and <Text className="font-semibold text-text-primary">useOnSurfaceColor</Text> rather than
         reading tokens directly — see Components/Atoms/Surface. Shadow and glow treatments layered
-        on top of these planes are in Foundations/Shadows; the legacy numeric elevation scale is in
-        Foundations/Elevation. The pre-ramp `charcoal` scale (story 13) is superseded by this ramp.
+        on top of these planes are in Foundations/Shadows; the legacy numeric elevation scale is
+        in Foundations/Elevation.
       </Text>
     </View>
   ),
 }
 
 // ============================================================================
-// 3. Categorical palette
+// 2. Categorical palette
 // ============================================================================
 
 function CategoricalRow({ name, colors }: { name: string; colors: readonly string[] }) {
@@ -337,15 +179,15 @@ function CategoricalRow({ name, colors }: { name: string; colors: readonly strin
 }
 
 export const CategoricalPalette: StoryObj = {
-  name: '3. Categorical Palette',
+  name: '2. Categorical Palette',
   render: () => (
     <View style={{ padding: 24 }}>
       <Text className="text-2xl font-bold text-text-primary mb-2">Categorical Palette</Text>
       <SectionIntro>
         Seven hues in one canonical order —{' '}
         <Text className="font-semibold">blue → magenta → red → orange → green → cyan → amber</Text>{' '}
-        — expressed as references into the tonal ramps above. The sequence is nested-stable: a
-        chart with N series takes the first N colors and a series&apos; index does not shift as N
+        — expressed as references into the tonal ramps. The sequence is nested-stable: a chart
+        with N series takes the first N colors and a series&apos; index does not shift as N
         changes. The worst-case deuteranopia/protanopia ΔE floor of 8 holds through the first{' '}
         {CATEGORICAL_CVD_SAFE_MAX} (
         <Text className="font-semibold">CATEGORICAL_CVD_SAFE_MAX</Text>); the 7th is extended and
@@ -362,135 +204,21 @@ export const CategoricalPalette: StoryObj = {
       <Text className="text-text-secondary text-xs">
         Read a series color with{' '}
         <Text className="font-semibold text-text-primary">getCategoricalColor(index, variant)</Text>{' '}
-        rather than indexing the array — it wraps past the end.
+        rather than indexing the array — it wraps past the end. The contrast and colorblind
+        validation for this palette is in Foundations/Color/Primitives → Accessibility.
       </Text>
     </View>
   ),
 }
 
 // ============================================================================
-// 4. Categorical accessibility
-// ============================================================================
-
-// --- color math (self-contained; drives the accessibility panel) ---
-const hexToRgb = (hex: string): [number, number, number] => {
-  const h = hex.replace('#', '')
-  return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16) / 255) as [number, number, number]
-}
-const toHex = (v: number) =>
-  Math.round(Math.min(1, Math.max(0, v)) * 255)
-    .toString(16)
-    .padStart(2, '0')
-const lin = (c: number) => (c >= 0.04045 ? ((c + 0.055) / 1.055) ** 2.4 : c / 12.92)
-const gamma = (c: number) =>
-  c >= 0.0031308 ? 1.055 * Math.max(0, c) ** (1 / 2.4) - 0.055 : 12.92 * c
-const relLum = (hex: string) => {
-  const [r, g, b] = hexToRgb(hex).map(lin)
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b
-}
-const contrast = (a: string, b: string) => {
-  const [l1, l2] = [relLum(a), relLum(b)].sort((x, y) => y - x)
-  return (l1 + 0.05) / (l2 + 0.05)
-}
-// Machado-2009 dichromacy simulation (severity 1.0)
-const CVD = {
-  deuteranopia: [
-    0.367322, 0.860646, -0.227968, 0.280085, 0.672501, 0.047413, -0.01182, 0.04294, 0.968881,
-  ],
-  protanopia: [
-    0.152286, 1.052583, -0.204868, 0.114503, 0.786281, 0.099216, -0.003882, -0.048116, 1.051998,
-  ],
-} as const
-const simulate = (M: readonly number[], hex: string) => {
-  const [r, g, b] = hexToRgb(hex).map(lin)
-  const out = [
-    M[0] * r + M[1] * g + M[2] * b,
-    M[3] * r + M[4] * g + M[5] * b,
-    M[6] * r + M[7] * g + M[8] * b,
-  ].map(gamma)
-  return '#' + out.map(toHex).join('')
-}
-
-export const CategoricalAccessibility: StoryObj = {
-  name: '4. Categorical Accessibility — Contrast + CVD',
-  render: () => (
-    <View style={{ padding: 24 }}>
-      <Text className="text-2xl font-bold text-text-primary mb-2">Categorical Accessibility</Text>
-      <SectionIntro>
-        In-place text contrast and colorblind simulation for the categorical series. Converging
-        strips across two swatches signal a collision for that viewer; all pairs hold ΔE ≥ 8
-        through the first {CATEGORICAL_CVD_SAFE_MAX}.
-      </SectionIntro>
-
-      {(['default', 'dark'] as const).map((variant) => {
-        const colors = categoricalPalette[variant]
-        const textColor = variant === 'dark' ? primitiveColors.white : primitiveColors.black
-        return (
-          <View key={variant} style={{ marginBottom: 22 }}>
-            <Text
-              className="text-lg font-bold text-text-primary mb-2"
-              style={{ textTransform: 'capitalize' }}
-            >
-              {variant}
-            </Text>
-            {/* swatches with in-place text + contrast ratio */}
-            <View style={{ flexDirection: 'row', gap: 6, marginBottom: 6 }}>
-              {colors.map((hex, i) => (
-                <View key={i} style={{ alignItems: 'center' }}>
-                  <View
-                    style={{
-                      width: 56,
-                      height: 40,
-                      borderRadius: 6,
-                      backgroundColor: hex,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Text style={{ color: textColor, fontSize: 11, fontWeight: '700' }}>Aa</Text>
-                  </View>
-                  <Text className="text-text-secondary" style={{ fontSize: 8, marginTop: 2 }}>
-                    {contrast(hex, textColor).toFixed(1)}:1
-                  </Text>
-                </View>
-              ))}
-            </View>
-            {/* CVD simulation strips */}
-            {(['deuteranopia', 'protanopia'] as const).map((mode) => (
-              <View key={mode} style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3 }}>
-                <Text className="text-text-secondary" style={{ fontSize: 9, width: 96 }}>
-                  {mode}
-                </Text>
-                <View style={{ flexDirection: 'row', gap: 6 }}>
-                  {colors.map((hex, i) => (
-                    <View
-                      key={i}
-                      style={{
-                        width: 56,
-                        height: 14,
-                        borderRadius: 3,
-                        backgroundColor: simulate(CVD[mode], hex),
-                      }}
-                    />
-                  ))}
-                </View>
-              </View>
-            ))}
-          </View>
-        )
-      })}
-    </View>
-  ),
-}
-
-// ============================================================================
-// 5. Diverging scale
+// 3. Diverging scale
 // ============================================================================
 
 const DIVERGING_LABELS = ['under', 'maintenance', 'optimal', 'approaching', 'over'] as const
 
 export const DivergingScale: StoryObj = {
-  name: '5. Diverging Scale — Training Status',
+  name: '3. Diverging Scale — Training Status',
   render: () => (
     <View style={{ padding: 24 }}>
       <Text className="text-2xl font-bold text-text-primary mb-2">Diverging Scale</Text>
@@ -531,11 +259,11 @@ export const DivergingScale: StoryObj = {
 }
 
 // ============================================================================
-// 6. Sequential effort scale
+// 4. Sequential effort scale
 // ============================================================================
 
 export const SequentialEffortScale: StoryObj = {
-  name: '6. Sequential Effort Scale',
+  name: '4. Sequential Effort Scale',
   render: () => (
     <View style={{ padding: 24 }}>
       <Text className="text-2xl font-bold text-text-primary mb-2">Sequential Effort Scale</Text>
@@ -594,7 +322,7 @@ export const SequentialEffortScale: StoryObj = {
 }
 
 // ============================================================================
-// 7. Fatigue / ROM palette — silver → red
+// 5. Fatigue / ROM palette — silver → red
 // ============================================================================
 
 /**
@@ -654,7 +382,7 @@ function FatigueRampStrip({
 }
 
 export const FatigueRomPalette: StoryObj = {
-  name: '7. Fatigue / ROM Palette — Silver → Red',
+  name: '5. Fatigue / ROM Palette — Silver → Red',
   render: () => (
     <View style={{ padding: 24 }}>
       <Text className="text-2xl font-bold text-text-primary mb-2">Fatigue / ROM Palette</Text>
@@ -664,7 +392,7 @@ export const FatigueRomPalette: StoryObj = {
         </Text>{' '}
         One scheme shared by the two live-quality readouts — the ROM progression bars and the
         ghost-spark current line. Deliberately no greens and no ambers: those languages belong to
-        the verdict tones and the velocity-loss bands (stories 5 and 6), and reusing them here
+        the verdict tones and the velocity-loss bands (stories 3 and 4), and reusing them here
         would make &quot;fine&quot; and &quot;fast&quot; look like the same claim. Every stop is a
         reference into the tonal ramps.
       </SectionIntro>
@@ -694,13 +422,16 @@ export const FatigueRomPalette: StoryObj = {
 
       <SectionTitle>ghostLineColor() — the shipped mix, sampled</SectionTitle>
       <Text className="text-text-secondary text-xs mb-3">
-        A controlled rep (grind signature below GRIND_THRESHOLD ={' '}
-        {GRIND_THRESHOLD}) stays in the silver family, dimming toward DRIFT_GREY with tempo
-        deviation — a &quot;drifting but not failing&quot; cue that never becomes a color. At or
-        above the threshold the line runs light → mid → deep by severity.
+        A controlled rep (grind signature below GRIND_THRESHOLD = {GRIND_THRESHOLD}) stays in the
+        silver family, dimming toward DRIFT_GREY with tempo deviation — a &quot;drifting but not
+        failing&quot; cue that never becomes a color. At or above the threshold the line runs
+        light → mid → deep by severity.
       </Text>
       <View style={{ flexDirection: 'row', gap: 32 }}>
-        <FatigueRampStrip title="controlled — silver dimming toward drift" stops={GHOST_CONTROLLED} />
+        <FatigueRampStrip
+          title="controlled — silver dimming toward drift"
+          stops={GHOST_CONTROLLED}
+        />
         <FatigueRampStrip title="collapsing — light → mid → deep" stops={GHOST_COLLAPSING} />
       </View>
     </View>
@@ -708,7 +439,7 @@ export const FatigueRomPalette: StoryObj = {
 }
 
 // ============================================================================
-// 8–11. Semantic roles
+// 6–9. Semantic roles
 // ============================================================================
 
 /**
@@ -765,14 +496,15 @@ function VariantMatrix({
 }
 
 export const StatusColors: StoryObj = {
-  name: '8. Status Colors',
+  name: '6. Status Colors',
   render: () => (
     <View style={{ padding: 24 }}>
       <Text className="text-2xl font-bold text-text-primary mb-2">Status Colors</Text>
       <SectionIntro>
         Status roles and their modifiers. <Text className="font-semibold">status-error-vivid</Text>{' '}
         is a separate, higher-chroma role (not a modifier of status-error) reserved for
-        destructive emphasis.
+        destructive emphasis — it is the one status family sourced from the redVivid support
+        scale rather than the OKLCH ramps.
       </SectionIntro>
       <VariantMatrix
         bases={[
@@ -790,7 +522,7 @@ export const StatusColors: StoryObj = {
 }
 
 export const BrandColors: StoryObj = {
-  name: '9. Brand Colors',
+  name: '7. Brand Colors',
   render: () => (
     <View style={{ padding: 24 }}>
       <Text className="text-2xl font-bold text-text-primary mb-2">Brand Colors</Text>
@@ -805,7 +537,7 @@ export const BrandColors: StoryObj = {
 }
 
 export const ResultColors: StoryObj = {
-  name: '10. Result / Outcome Colors',
+  name: '8. Result / Outcome Colors',
   render: () => (
     <View style={{ padding: 24 }}>
       <Text className="text-2xl font-bold text-text-primary mb-2">Result / Outcome Colors</Text>
@@ -823,15 +555,16 @@ export const ResultColors: StoryObj = {
 }
 
 export const TextAndBorderColors: StoryObj = {
-  name: '11. Text & Border Colors (Dark)',
+  name: '9. Text & Border Colors (Dark)',
   render: () => (
     <View style={{ padding: 24 }}>
       <Text className="text-2xl font-bold text-text-primary mb-2">Text & Border Colors</Text>
       <SectionIntro>
-        The dark-mode text and border roles. Prefer{' '}
-        <Text className="font-semibold">useOnSurfaceColor</Text> for text sitting on a{' '}
-        <Text className="font-semibold">&lt;Surface&gt;</Text> — it picks the right text role for
-        the plane instead of hardcoding one.
+        The dark-mode text and border roles. The border family is the charcoal grey ramp assigned
+        to line-work; text-tertiary and the link colors come from the neutral and blue support
+        scales. Prefer <Text className="font-semibold">useOnSurfaceColor</Text> for text sitting
+        on a <Text className="font-semibold">&lt;Surface&gt;</Text> — it picks the right text role
+        for the plane instead of hardcoding one.
       </SectionIntro>
 
       <SectionTitle>Text</SectionTitle>
@@ -863,33 +596,33 @@ export const TextAndBorderColors: StoryObj = {
 }
 
 // ============================================================================
-// 12. Component examples — the roles in use
+// 10. Roles in use
 // ============================================================================
 
 // Sourced from the real semantic-token layer (not re-derived) so the story can't
 // silently desync if semantic.ts changes. deload/spinner come from the same
 // extracted-colors modules the components consume.
 const SEM = {
-  success: t['status-success'],
-  warning: t['status-warning'],
-  error: t['status-error'],
-  info: t['status-info'],
+  success: semanticColorsDark['status-success'],
+  warning: semanticColorsDark['status-warning'],
+  error: semanticColorsDark['status-error'],
+  info: semanticColorsDark['status-info'],
   deload: WORKOUT_PILL_DELOAD,
-  brand: t['brand-primary'],
-  brandDark: t['brand-primary-dark'],
-  brandSecondary: t['brand-secondary'],
+  brand: semanticColorsDark['brand-primary'],
+  brandDark: semanticColorsDark['brand-primary-dark'],
+  brandSecondary: semanticColorsDark['brand-secondary'],
   spinner: SPINNER_PRIMARY,
   neutral: primitiveColors.neutral[500],
 } as const
 
-export const ComponentExamples: StoryObj = {
-  name: '12. Component Examples — Roles in Use',
+export const RolesInUse: StoryObj = {
+  name: '10. Roles in Use — Component Examples',
   render: () => (
     <View style={{ padding: 24 }}>
-      <Text className="text-2xl font-bold text-text-primary mb-2">Component Examples</Text>
+      <Text className="text-2xl font-bold text-text-primary mb-2">Roles in Use</Text>
       <SectionIntro>
-        The same palettes as they land in shipped components — which scale a surface reaches for is
-        as much of the system as the values themselves.
+        The same palettes as they land in shipped components — which palette a surface reaches for
+        is as much of the system as the values themselves.
       </SectionIntro>
 
       <View style={{ flexDirection: 'row', gap: 20, flexWrap: 'wrap', alignItems: 'flex-start' }}>
@@ -1062,67 +795,30 @@ export const ComponentExamples: StoryObj = {
 }
 
 // ============================================================================
-// 13–14. Legacy — superseded, kept only to document still-defined tokens
+// 11. Data-viz rainbow — superseded assignment, tokens still defined
 // ============================================================================
 
 /**
- * LEGACY — superseded by {@link primitiveRamps} (chromatic) and
- * {@link surfaceRampDark} (achromatic dark planes).
- *
- * `primitiveColors.blue`/`red`/`redVivid` predate the OKLCH ramps and are NOT
- * the source of truth for any chromatic hex; `charcoal` predates the surface
- * ramp. `neutral` is the exception — it is still live (it backs `text-tertiary`,
- * several borders, and the fatigue palette's silver/drift pair) and is shown
- * here for that reason, not as legacy.
- */
-export const LegacyPrimitives: StoryObj = {
-  name: '13. Legacy Primitives',
-  render: () => (
-    <View style={{ padding: 24 }}>
-      <Text className="text-2xl font-bold text-text-primary mb-2">Primitive Colors — Legacy</Text>
-      <SectionIntro>
-        <Text className="font-semibold">Superseded.</Text> These pre-date the OKLCH tonal ramps
-        (story 1) and the surface ramp (story 2), which are the source of truth for chromatic
-        hexes and dark planes respectively. Do not reach for them in new work —{' '}
-        <Text className="font-semibold">blue-500 #3B82F6</Text> and{' '}
-        <Text className="font-semibold">red-500 #EF4444</Text> in particular are the old
-        Tailwind-derived values, not the shipped brand hues, and{' '}
-        <Text className="font-semibold">charcoal</Text> is superseded by the surface ramp
-        (components still referencing it directly are a tracked migration).{' '}
-        <Text className="font-semibold">Neutral</Text> is the one live scale here: it backs
-        text-tertiary, several borders, and the fatigue silver/drift pair.
-      </SectionIntro>
-
-      <ColorScale name="Neutral — still live" colors={primitiveColors.neutral} />
-      <ColorScale name="Charcoal — superseded by the surface ramp" colors={primitiveColors.charcoal} />
-      <ColorScale name="Blue — superseded by primitiveRamps.blue" colors={primitiveColors.blue} />
-      <ColorScale name="Red — superseded by primitiveRamps.red" colors={primitiveColors.red} />
-      <ColorScale
-        name="Red Vivid — superseded by primitiveRamps.red"
-        colors={primitiveColors.redVivid}
-      />
-    </View>
-  ),
-}
-
-/**
- * LEGACY — superseded. The Paul-Tol `discreteRainbow` scale behind the `data-1..10`
- * tokens is no longer used by any component; charts and qualitative series now use
- * the {@link CategoricalPalette} (CVD-safe, nested-stable). Kept only to document the
- * still-defined `--color-data-N` tokens.
+ * SUPERSEDED ASSIGNMENT — kept because the `data-1..10` semantic tokens are
+ * still defined and still emit `--color-data-N` CSS vars, and an undocumented
+ * shipped token is exactly what `color-stories.coverage.test.ts` exists to
+ * prevent. This is not a legacy PRIMITIVE shelf — it is a live token family
+ * whose assignment has been replaced by {@link CategoricalPalette} for all new
+ * work. Retiring the `data-N` tokens would let this story go.
  */
 export const LegacyDataVisualizationColors: StoryObj = {
-  name: '14. Legacy Data Visualization (Rainbow)',
+  name: '11. Data Visualization (Superseded)',
   render: () => (
     <View style={{ padding: 24 }}>
       <Text className="text-2xl font-bold text-text-primary mb-2">
-        Data Visualization Colors — Legacy
+        Data Visualization — Superseded
       </Text>
       <SectionIntro>
-        <Text className="font-semibold">Superseded.</Text> Paul Tol&apos;s discrete-rainbow scale
-        behind the `data-1..10` tokens — no longer used by any component. Use the Categorical
-        Palette (story 3) for charts and qualitative series; this is retained only to document the
-        still-defined tokens.
+        <Text className="font-semibold">Do not use for new work.</Text> Paul Tol&apos;s
+        discrete-rainbow scale behind the `data-1..10` tokens — no longer consumed by any
+        component. Use the Categorical Palette (story 2) for charts and qualitative series. This
+        story exists because the tokens are still shipped, and a shipped token without a swatch is
+        the drift the coverage test guards against; it goes away when the tokens do.
       </SectionIntro>
 
       <View style={{ gap: 16 }}>

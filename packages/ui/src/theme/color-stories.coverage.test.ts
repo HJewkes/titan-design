@@ -24,14 +24,19 @@ import { semanticColorsDark } from './tokens/semantic'
  *  2. COVERAGE — every other semantic token is named somewhere in the color
  *     stories, so a new token cannot ship without a swatch.
  *
- * The story file is read as TEXT, never imported: it pulls in react-native and
- * nativewind, which throw under the node test environment. (It is also outside
- * the `stories-smoke` glob, which only composes `components/**` — so this text
- * guard is the only automated check on the color stories.)
+ * The story files are read as TEXT, never imported: they pull in react-native
+ * and nativewind, which throw under the node test environment. (They are also
+ * outside the `stories-smoke` glob, which only composes `components/**` — so
+ * this text guard is the only automated check on the color stories.)
+ *
+ * Both halves of Foundations/Color are scanned as one corpus: `Primitives`
+ * documents the raw scales, `Palettes` the assignments of them. A token is
+ * covered if EITHER names it — which is right, because the sidebar split is an
+ * organising choice and coverage is about the token having a swatch at all.
  */
 
 const themeDir = path.dirname(fileURLToPath(import.meta.url))
-const storySources = ['Colors.stories.tsx']
+const storySources = ['ColorPrimitives.stories.tsx', 'ColorPalettes.stories.tsx']
   .map((f) => readFileSync(path.join(themeDir, f), 'utf8'))
   .join('\n')
 
@@ -52,7 +57,7 @@ const DOCUMENTED_ELSEWHERE: Record<string, string> = {
 
 const isSurfaceToken = (name: string) => /^(surface|background)-/.test(name)
 
-/** Must mirror VARIANT_SUFFIXES in Colors.stories.tsx (asserted below). */
+/** Must mirror VARIANT_SUFFIXES in ColorPalettes.stories.tsx (asserted below). */
 const VARIANT_SUFFIXES = ['light', 'dark', 'subtle', 'hover', 'active', 'muted'] as const
 
 describe('Foundations/Color story coverage', () => {
@@ -66,7 +71,7 @@ describe('Foundations/Color story coverage', () => {
       offRamp,
       'surface/background tokens whose value is not a step of surfaceRampDark ' +
         '(or the backgroundFrameDark bezel). Either fold the value into the ramp, ' +
-        'or add the plane to SURFACE_PLANES in Colors.stories.tsx and document why ' +
+        'or add the plane to SURFACE_PLANES in ColorPalettes.stories.tsx and document why ' +
         'it sits outside the ramp.'
     ).toEqual([])
   })
@@ -75,7 +80,7 @@ describe('Foundations/Color story coverage', () => {
     // The coverage rule below depends on this list matching the one the story
     // renders from; if they drift, coverage silently over- or under-reports.
     const declared = storySources.match(/const VARIANT_SUFFIXES = \[([^\]]*)\]/)
-    expect(declared, 'VARIANT_SUFFIXES not found in Colors.stories.tsx').not.toBeNull()
+    expect(declared, 'VARIANT_SUFFIXES not found in ColorPalettes.stories.tsx').not.toBeNull()
     const fromStory = [...declared![1].matchAll(/'([a-z]+)'/g)].map((m) => m[1])
     expect(fromStory).toEqual([...VARIANT_SUFFIXES])
   })
