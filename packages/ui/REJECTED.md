@@ -77,3 +77,46 @@ dark at the rep's start → full tone at the leading edge. Contiguity survives
 because there are no interior gradient restarts, and it still reads as "this rep
 has been building". Holds became their own `hold` phase in amber, which is what
 actually made a hold legible — not the fill.
+
+---
+
+## The whole-band progress ramp, and amber holds (2026-07-27, superseded same day)
+
+Both of these shipped in `fc46330` and were replaced hours later by phase pacing.
+Recording them because the _reasons_ they lost are the useful part.
+
+### The gradient ramp
+
+**What it was:** one dark→full gradient across the whole band, so the rep's start
+sat back and the leading edge read at full tone.
+
+**Why it lost:** it encoded progress as _shading over the extent already drawn_,
+which is a second encoding of something the band's WIDTH already says. It also
+could not answer "how am I doing against the prescription", because it had no
+notion of a target — it only ever showed how far the rep had got, not whether
+that was fast or slow.
+
+**Chosen instead:** per-phase pacing. Each run paints a muted base with a fill
+earned against its own prescribed duration (`elapsed / target`, capped), and the
+label takes the pacing tone. Same "fills left to right" instinct, but measured
+against something.
+
+### Amber holds
+
+**What it was:** `hold` as its own phase hue, amber, to separate a deliberate hold
+from idle dead time.
+
+**Why it lost — a genuine conflict, not a taste call.** The pacing tone uses
+warning-**amber** for "ahead of target". A phase painted amber therefore collides
+with the semantic signal drawn on top of it. `TempoDisplay` had already written the
+governing rule down: phase hues are "deliberately NON-semantic ... so the phase hue
+never collides with the semantic pacing tones". Amber holds violated it; we just
+hadn't added the pacing tones yet, so nothing collided until they arrived.
+
+**Chosen instead:** hold returns to the grey family, separated from idle by VALUE
+(unfilled `charcoal[300]` < idle `charcoal[200]` < filled `charcoal[100]`), by the
+`HOLD` label, and by the fact that a hold PACES while idle never fills. Grey also
+reads more like a hold: a held position is an absence of movement, not an event.
+
+**What survives both:** the `hold` SamplePhase split itself, which is still
+load-bearing — it is what lets a hold carry a label, a target and a fill at all.

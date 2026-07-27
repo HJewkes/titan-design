@@ -1,8 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import { render } from '@testing-library/react'
 import { GhostBand, BAND_H, type GhostBandProps } from './GhostBand'
-import { PHASE_AXIS_COLOR } from './fatigue-tokens'
+import { PHASE_AXIS_COLOR, PHASE_AXIS_BASE_COLOR } from './fatigue-tokens'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import type { PhaseSegment } from './fatigue-model'
+
+const t = getSemanticColors('dark')
 
 /** Phase runs with SEAMS between them — the shape the sample-derived model actually produces. */
 const segments: PhaseSegment[] = [
@@ -28,13 +31,29 @@ const geom = (r: Element) => ({
 
 /** The strip floor — the one rect sitting directly in the clipped group. */
 const floorOf = (c: HTMLElement) => geom(c.querySelector('g[clip-path] > rect')!)
-/** The phase runs — one rect per run, each in its own group. */
-const runsOf = (c: HTMLElement) =>
-  Array.from(c.querySelectorAll('g[clip-path] > g > rect')).map(geom)
+/** Per-run BASE rects — these carry the run's true geometry (full width). */
+const basesOf = (c: HTMLElement) =>
+  Array.from(c.querySelectorAll('[data-testid="ghost-band-base"]')).map(geom)
+/** Per-run FILL rects — width is the share of the run earned against target. */
+const fillsOf = (c: HTMLElement) =>
+  Array.from(c.querySelectorAll('[data-testid="ghost-band-fill"]')).map(geom)
+const labelsOf = (c: HTMLElement) =>
+  Array.from(c.querySelectorAll('text')).map((n) => ({
+    text: n.textContent,
+    fill: n.getAttribute('fill'),
+  }))
+
+/** A rep whose phases each run EXACTLY their prescribed duration. */
+const onPace: PhaseSegment[] = [
+  { phase: 'eccentric', startMs: 0, endMs: 2600 },
+  { phase: 'hold', startMs: 2600, endMs: 3000 },
+  { phase: 'concentric', startMs: 3000, endMs: 3950 },
+]
+const TEMPO: [number, number, number, number] = [2.6, 0.4, 0.95, 0.28]
 
 describe('GhostBand', () => {
   it('draws a contiguous strip — each run butts against the next with no gap', () => {
-    const runs = runsOf(band())
+    const runs = basesOf(band())
     runs.forEach((r, i) => {
       const next = runs[i + 1]
       if (next) expect(r.x + r.width).toBeCloseTo(next.x, 5)
@@ -49,8 +68,7 @@ describe('GhostBand', () => {
   })
 
   it('paints the pause run in the idle tone', () => {
-    const runs = runsOf(band())
-    expect(runs.map((r) => r.fill)).toEqual([
+    expect(fillsOf(band()).map((r) => r.fill)).toEqual([
       PHASE_AXIS_COLOR.eccentric,
       PHASE_AXIS_COLOR.idle,
       PHASE_AXIS_COLOR.concentric,
@@ -62,8 +80,8 @@ describe('GhostBand', () => {
     expect(c.querySelectorAll('rect')).toHaveLength(0)
   })
 
-  it('paints a hold in the amber hold tone — a deliberate hold is not idle dead time', () => {
-    const runs = runsOf(
+  it('separates a hold from idle by VALUE, so a narrow hold still reads as a hold', () => {
+    const runs = fillsOf(
       band([
         { phase: 'eccentric', startMs: 0, endMs: 1000 },
         { phase: 'hold', startMs: 1000, endMs: 1500 },
@@ -72,6 +90,9 @@ describe('GhostBand', () => {
     )
     expect(runs[1].fill).toBe(PHASE_AXIS_COLOR.hold)
     expect(runs[1].fill).not.toBe(PHASE_AXIS_COLOR.idle)
+    // A filled hold sits BRIGHTER than idle, an unfilled one darker — never the same.
+    expect(PHASE_AXIS_COLOR.hold).not.toBe(PHASE_AXIS_BASE_COLOR.hold)
+    expect(PHASE_AXIS_BASE_COLOR.hold).not.toBe(PHASE_AXIS_COLOR.idle)
   })
 
   it('labels a hold run wide enough to hold the word', () => {
@@ -83,11 +104,7 @@ describe('GhostBand', () => {
       ],
       { showLabels: true }
     )
-    expect(Array.from(c.querySelectorAll('text')).map((t) => t.textContent)).toEqual([
-      'ECC',
-      'HOLD',
-      'CON',
-    ])
+    expect(labelsOf(c).map((l) => l.text)).toEqual(['ECC', 'HOLD', 'CON'])
   })
 
   it('DROPS a label that will not fit rather than clipping it', () => {
@@ -101,29 +118,16 @@ describe('GhostBand', () => {
       ],
       { showLabels: true }
     )
-    const labels = Array.from(c.querySelectorAll('text')).map((t) => t.textContent)
+    const labels = labelsOf(c).map((l) => l.text)
     expect(labels).not.toContain('HOLD')
     expect(labels).toEqual(['ECC', 'CON'])
   })
 
   it('never labels idle — dead time has no name', () => {
-    const c = band(segments, { showLabels: true })
-    expect(Array.from(c.querySelectorAll('text')).map((t) => t.textContent)).toEqual(['ECC', 'CON'])
-  })
-
-  it('draws NO progress ramp by default', () => {
-    expect(band().querySelector('[data-testid="ghost-band-ramp"]')).toBeNull()
-  })
-
-  it('ramps ONCE across the whole band — a per-run ramp would step dark at every seam', () => {
-    const c = band(segments, { progressRamp: true })
-    const ramps = c.querySelectorAll('[data-testid="ghost-band-ramp"]')
-    expect(ramps).toHaveLength(1)
-    // Spans the full strip, so no interior boundary can restart the gradient.
-    const floor = floorOf(c)
-    expect(geom(ramps[0]).x).toBeCloseTo(floor.x, 5)
-    expect(geom(ramps[0]).width).toBeCloseTo(floor.width, 5)
-    expect(c.querySelectorAll('linearGradient')).toHaveLength(1)
+    expect(labelsOf(band(segments, { showLabels: true })).map((l) => l.text)).toEqual([
+      'ECC',
+      'CON',
+    ])
   })
 
   it('rounds the band once, as a clip — never per run', () => {
@@ -131,5 +135,63 @@ describe('GhostBand', () => {
     expect(c.querySelector('clipPath rect')?.getAttribute('rx')).toBe('2')
     const runRects = Array.from(c.querySelectorAll('g[clip-path] > g > rect'))
     expect(runRects.every((r) => r.getAttribute('rx') == null)).toBe(true)
+  })
+
+  // --- pacing -----------------------------------------------------------------
+
+  it('fills every run completely when no tempo is prescribed', () => {
+    const bases = basesOf(band())
+    fillsOf(band()).forEach((f, i) => expect(f.width).toBeCloseTo(bases[i].width, 5))
+  })
+
+  it('leaves the geometry alone when pacing turns on — only the FILL changes', () => {
+    const flat = basesOf(band(onPace))
+    const paced = basesOf(band(onPace, { targetTempoSeconds: TEMPO }))
+    expect(paced).toEqual(flat)
+  })
+
+  it('fills a run that hit its target to the brim', () => {
+    const c = band(onPace, { targetTempoSeconds: TEMPO })
+    const bases = basesOf(c)
+    fillsOf(c).forEach((f, i) => expect(f.width).toBeCloseTo(bases[i].width, 5))
+  })
+
+  it('leaves a FAST phase partly unfilled — the base shows through', () => {
+    // A 1.3 s eccentric against a 2.6 s target is exactly half paced.
+    const fast: PhaseSegment[] = [{ phase: 'eccentric', startMs: 0, endMs: 1300 }]
+    const c = band(fast, { targetTempoSeconds: TEMPO })
+    expect(fillsOf(c)[0].width).toBeCloseTo(basesOf(c)[0].width * 0.5, 5)
+  })
+
+  it('CAPS a slow phase at its own run width rather than overflowing', () => {
+    const slow: PhaseSegment[] = [{ phase: 'eccentric', startMs: 0, endMs: 9000 }]
+    const c = band(slow, { targetTempoSeconds: TEMPO })
+    expect(fillsOf(c)[0].width).toBeCloseTo(basesOf(c)[0].width, 5)
+  })
+
+  it('paints the muted base UNDER the fill so an unfilled remainder is still band', () => {
+    const fast: PhaseSegment[] = [{ phase: 'eccentric', startMs: 0, endMs: 1300 }]
+    const c = band(fast, { targetTempoSeconds: TEMPO })
+    expect(basesOf(c)[0].fill).toBe(PHASE_AXIS_BASE_COLOR.eccentric)
+    expect(fillsOf(c)[0].fill).toBe(PHASE_AXIS_COLOR.eccentric)
+  })
+
+  it('tones each label by its own pacing — ahead warns, on-pace succeeds, over errors', () => {
+    const mixed: PhaseSegment[] = [
+      { phase: 'eccentric', startMs: 0, endMs: 1000 }, // 1.0s vs 2.6s → ahead
+      { phase: 'concentric', startMs: 1000, endMs: 1950 }, // 0.95s vs 0.95s → on pace
+      { phase: 'hold', startMs: 1950, endMs: 3950 }, // 2.0s vs 0.28s → over
+    ]
+    const c = band(mixed, { targetTempoSeconds: TEMPO, showLabels: true })
+    expect(labelsOf(c)).toEqual([
+      { text: 'ECC', fill: t['status-warning'] },
+      { text: 'CON', fill: t['status-success'] },
+      { text: 'HOLD', fill: t['status-error'] },
+    ])
+  })
+
+  it('keeps labels plain when nothing is prescribed to pace against', () => {
+    const c = band(onPace, { showLabels: true })
+    expect(labelsOf(c).every((l) => l.fill === t['text-primary'])).toBe(true)
   })
 })

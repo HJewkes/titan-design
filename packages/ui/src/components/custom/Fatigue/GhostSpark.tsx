@@ -4,8 +4,10 @@
  * the mirrored dual: single = one bloom + band; dual = two blooms sharing one band).
  *
  * A WIDE phase-coloured AXIS BAND ({@link GhostBand}) sits at the BOTTOM, filled per the
- * current rep's phase runs (eccentric magenta / concentric cyan / hold amber / idle grey),
- * each sized to its time extent, with the ECC / HOLD / CON labels shown INSIDE it. Velocity is
+ * current rep's phase runs (eccentric magenta / concentric cyan / hold and idle grey),
+ * each sized to its ACTUAL time extent, with the ECC / HOLD / CON labels shown INSIDE it.
+ * Given `targetTempoSeconds` the runs also PACE — muted base, fill earned against the
+ * prescribed phase duration, label toned ahead/on-pace/over. Velocity is
  * drawn as MAGNITUDE blooming UP from just above the band ({@link GhostBloom}) — the current
  * rep SOLID over faded grey GHOSTS of the prior reps. Phase is carried by the band colour
  * beneath the line (no ecc-below / con-above split), so single and dual read the same.
@@ -19,6 +21,7 @@ import { View } from 'react-native'
 import { ghostLineColor, clamp01 } from './fatigue-tokens'
 import { GhostBand, BAND_H, BAND_GAP } from './GhostBand'
 import { GhostBloom, type Pt } from './GhostBloom'
+import type { TempoTuple } from './tempo-pacing'
 import type { RepVelocityCurve } from './fatigue-model'
 
 export interface GhostSparkProps {
@@ -28,13 +31,19 @@ export interface GhostSparkProps {
   /** Plot height in px. Default 172. */
   height?: number
   /**
-   * Shade the phase band with one dark→full ramp so it doubles as a progress bar for the
-   * rep in flight. Default on — see {@link GhostBand.progressRamp}.
+   * Prescribed tempo `[ecc, pauseBottom, con, pauseTop]` seconds — turns on the band's
+   * phase PACING (muted base + earned fill, pacing-toned labels). Omit when nothing was
+   * prescribed: the band then paints flat, which is the honest read.
    */
-  progressRamp?: boolean
+  targetTempoSeconds?: TempoTuple | null
 }
 
-export function GhostSpark({ curves, width, height = 172, progressRamp = true }: GhostSparkProps) {
+export function GhostSpark({
+  curves,
+  width,
+  height = 172,
+  targetTempoSeconds = null,
+}: GhostSparkProps) {
   const w = width
   const h = height
   const padL = 12
@@ -86,7 +95,7 @@ export function GhostSpark({ curves, width, height = 172, progressRamp = true }:
           x={x}
           top={bandTop}
           showLabels
-          progressRamp={progressRamp}
+          targetTempoSeconds={targetTempoSeconds}
         />
       </svg>
     </View>
