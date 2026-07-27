@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>S1 — Top bar specimen + decomposition · Voltras wall dashboard</title>
+<style>
+  :root{
+    --bg:#0b0c0e; --surface:#16181c; --surface2:#1c1f24; --text:#e9eaec; --muted:#9aa0a8; --dim:#5f646c;
+    --border:#212429; --border-strong:#3a3e45; --brand:#ff7900; --brand-soft:rgba(255,121,0,.14);
+    --green:#2ed573; --amber:#ffa502; --blue:#3aa0ff; --red:#ff4757;
+    --exist:#2ed573; --extend:#ffa502; --new:#3aa0ff;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);padding:28px 22px 80px;line-height:1.5}
+  h1{font-size:18px;font-weight:800;letter-spacing:.3px;margin:0 0 4px}
+  .lede{color:var(--muted);font-size:13px;margin:0 0 8px;max-width:860px}
+  .locked{font-family:var(--mono);font-size:11px;color:var(--dim);margin:0 0 24px;max-width:880px}
+  .locked b{color:var(--green)}
+  h2{font-size:13px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--brand);margin:40px 0 4px;border-top:1px solid var(--border);padding-top:22px}
+  h2.nb{border:0;padding-top:0;margin-top:30px}
+  .qnote{color:var(--dim);font-size:12px;margin:0 0 14px;font-family:var(--mono)}
+  .row{margin:0 0 12px}
+  .rowlbl{font-family:var(--mono);font-size:11px;color:var(--muted);margin:0 0 5px;letter-spacing:.3px}
+  .frame{border:1px solid var(--border-strong);border-radius:8px;overflow:visible;max-width:100%;position:relative}
+  .scrollx{overflow-x:auto}
+  .caption{color:var(--dim);font-size:11px;font-family:var(--mono);margin:6px 0 0;max-width:880px}
+
+  /* ---- top bar ---- */
+  .topbar{height:46px;display:flex;align-items:center;gap:14px;padding:0 16px;
+    background:linear-gradient(180deg,#141519,#101113);border-bottom:1px solid var(--border);border-radius:7px}
+  .brand{font-weight:800;letter-spacing:1.5px;font-size:12px;color:var(--text);display:flex;align-items:center;gap:7px;white-space:nowrap}
+  .brand .mk{color:var(--brand);font-size:14px}
+  .brand .dim{font-weight:600;letter-spacing:.4px;color:var(--dim);font-size:10px}
+  .cluster{display:flex;align-items:center;gap:12px;margin-left:auto;font-family:var(--mono);font-size:11px;white-space:nowrap}
+  .divider{width:1px;height:16px;background:var(--border-strong)}
+  .state{display:flex;align-items:center;gap:8px;font-weight:700;letter-spacing:.5px;color:var(--text)}
+  .state.idle{color:var(--muted);font-weight:600}
+  .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(46,213,115,.6);animation:pulse 1.6s infinite}
+  .pulse.off{background:var(--dim);animation:none;box-shadow:none}
+  .pulse.amber{background:var(--amber);animation:none;box-shadow:none}   /* rest = solid, no pulse */
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(46,213,115,.55)}70%{box-shadow:0 0 0 7px rgba(46,213,115,0)}100%{box-shadow:0 0 0 0 rgba(46,213,115,0)}}
+  .clock{color:var(--muted);min-width:38px;text-align:right}
+
+  /* device glyph — stroked bluetooth, no button box (glyph only; hover-only affordance) */
+  .dev{display:flex;align-items:center;justify-content:center;width:26px;height:28px;border-radius:7px;cursor:pointer;
+    color:var(--green);transition:background .15s;position:relative}
+  .dev:hover{background:rgba(255,255,255,.06)}
+  .dev.amber{color:var(--amber)} .dev.red{color:var(--red)}
+  .dev svg{width:18px;height:18px;display:block}
+  .dev .badge{position:absolute;top:-2px;right:-1px;width:9px;height:9px;border-radius:50%;background:var(--red);border:2px solid #101113}
+
+  /* device dropdown */
+  .devmenu{position:absolute;top:42px;right:8px;width:326px;background:var(--surface);border:1px solid var(--border-strong);
+    border-radius:10px;box-shadow:0 16px 40px rgba(0,0,0,.55);padding:7px;z-index:40;display:none}
+  .devmenu.show{display:block}
+  .devmenu .mh{font-family:var(--mono);font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:var(--dim);padding:6px 8px 8px}
+  .devrow{display:grid;grid-template-columns:16px 1fr auto;gap:10px;align-items:center;padding:9px 8px;border-radius:7px}
+  .devrow:hover{background:rgba(255,255,255,.04)}
+  .devrow + .devrow{border-top:1px solid var(--border)}
+  .ds{width:9px;height:9px;border-radius:50%}
+  .ds.g{background:var(--green)} .ds.b{background:var(--blue)} .ds.o{background:var(--dim)}
+  .dnick{font-weight:700;font-size:12px;color:var(--text)}
+  .did{font-family:var(--mono);font-size:10px;color:var(--dim)}
+  .dstate{font-family:var(--mono);font-size:10px;text-align:right;white-space:nowrap}
+  .dstate.g{color:var(--green)} .dstate.b{color:var(--blue)}
+  .dslot{display:inline-block;font-family:var(--mono);font-size:8px;letter-spacing:.5px;color:var(--dim);border:1px solid var(--border-strong);border-radius:4px;padding:1px 4px;margin-left:6px}
+  .harness{font-family:var(--mono);font-size:10px;color:var(--dim);border:1px dashed var(--border-strong);border-radius:6px;padding:8px 10px;margin-top:12px;max-width:880px}
+
+  /* ---- decomposition section ---- */
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;margin:0 0 16px}
+  .lg{display:flex;align-items:center;gap:6px;color:var(--muted)}
+  .chip{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.4px;
+    padding:2px 7px;border-radius:5px;border:1px solid}
+  .chip.exist{color:var(--exist);border-color:rgba(46,213,115,.45)}
+  .chip.extend{color:var(--extend);border-color:rgba(255,165,2,.45)}
+  .chip.new{color:var(--new);border-color:rgba(58,160,255,.45)}
+  table{border-collapse:collapse;width:100%;max-width:960px;font-size:12px;margin-top:4px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{font-family:var(--mono);font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--dim);font-weight:600}
+  td .nm{font-weight:700;color:var(--text)}
+  td .tier{font-family:var(--mono);font-size:10px;color:var(--dim)}
+  td.map{font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .tree{font-family:var(--mono);font-size:12px;line-height:1.9;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:16px 18px;max-width:960px}
+  .tree .n{color:var(--text);font-weight:700}
+  .tree .e{color:var(--exist)} .tree .x{color:var(--extend)} .tree .w{color:var(--new)}
+  .catches{max-width:960px;margin-top:14px}
+  .catches li{margin:0 0 8px;color:var(--muted);font-size:13px}
+  .catches b{color:var(--text)}
+</style>
+</head>
+<body>
+  <h1>S1 · Top bar — <span style="color:var(--brand)">resolved v3</span> + decomposition</h1>
+  <p class="lede">Glyph made more legible (stroked, larger, chipped). Below the specimen: the <b>component
+  decomposition</b> — how S1 breaks into titan atoms/molecules, tagged existing / extend / net-new, so we reuse
+  the library and catch any reinvention.</p>
+  <p class="locked">APPLIED: order <b>state·device·time</b> · 24h · rest <b>amber</b> · <b>LIVE</b> ·
+  device glyph legibility fix · dropdown w/ slots kept.</p>
+
+  <!-- ============ SPECIMEN ============ -->
+  <h2 class="nb">1 · Resolved bar — all states</h2>
+  <div class="row"><div class="rowlbl">Live · set active — click the device glyph ▾</div>
+    <div class="frame"><div class="topbar">
+      <div class="brand"><span class="mk">◇</span> VOLTRAS <span class="dim">/ wall dashboard</span></div>
+      <div class="cluster">
+        <div class="state"><span class="pulse"></span>LIVE</div><div class="divider"></div>
+        <div class="dev" onclick="toggleDev(event)" title="devices">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M7 7 17 17 12 22 12 2 17 7 7 17"/></svg>
+        </div><div class="divider"></div>
+        <div class="clock">16:12</div>
+      </div>
+      <div class="devmenu" id="devMenu">
+        <div class="mh">Devices — 2 bound · 1 available</div>
+        <div class="devrow"><span class="ds g"></span>
+          <span><span class="dnick">Left Cable</span><span class="dslot">SLOT L</span><br><span class="did">Voltra-A3F2</span></span>
+          <span class="dstate g">connected</span></div>
+        <div class="devrow"><span class="ds g"></span>
+          <span><span class="dnick">Right Cable</span><span class="dslot">SLOT R</span><br><span class="did">Voltra-9B1C</span></span>
+          <span class="dstate g">connected</span></div>
+        <div class="devrow"><span class="ds b"></span>
+          <span><span class="dnick" style="color:var(--muted)">Spare</span><span class="dslot">unbound</span><br><span class="did">Voltra-77E0</span></span>
+          <span class="dstate b">available</span></div>
+      </div>
+    </div></div></div>
+
+  <div class="row"><div class="rowlbl">Rest &nbsp;·&nbsp; Idle &nbsp;·&nbsp; Device-lost (red glyph + badge, state stays LIVE)</div>
+    <div class="frame" style="border:0;display:flex;flex-direction:column;gap:8px">
+      <div class="topbar" style="border:1px solid var(--border-strong)">
+        <div class="brand"><span class="mk">◇</span> VOLTRAS <span class="dim">/ wall dashboard</span></div>
+        <div class="cluster"><div class="state"><span class="pulse amber"></span>REST</div><div class="divider"></div>
+          <div class="dev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M7 7 17 17 12 22 12 2 17 7 7 17"/></svg></div>
+          <div class="divider"></div><div class="clock">16:14</div></div>
+      </div>
+      <div class="topbar" style="border:1px solid var(--border-strong)">
+        <div class="brand"><span class="mk">◇</span> VOLTRAS <span class="dim">/ wall dashboard</span></div>
+        <div class="cluster"><div class="state idle"><span class="pulse off"></span>IDLE</div><div class="divider"></div>
+          <div class="dev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M7 7 17 17 12 22 12 2 17 7 7 17"/></svg></div>
+          <div class="divider"></div><div class="clock">16:31</div></div>
+      </div>
+      <div class="topbar" style="border:1px solid var(--border-strong)">
+        <div class="brand"><span class="mk">◇</span> VOLTRAS <span class="dim">/ wall dashboard</span></div>
+        <div class="cluster"><div class="state"><span class="pulse"></span>LIVE</div><div class="divider"></div>
+          <div class="dev red"><span class="badge"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M7 7 17 17 12 22 12 2 17 7 7 17"/></svg></div>
+          <div class="divider"></div><div class="clock">16:12</div></div>
+      </div>
+    </div></div>
+  <div class="harness">HARNESS-ONLY (not shipped): ▤ top-nav variant toggle · transport annotation (· 11Hz SSE / poll 500ms).</div>
+
+  <h2>2 · Responsive (resolved)</h2>
+  <div class="scrollx">
+    <div class="row"><div class="rowlbl">wall 1280 → tablet 820 (subheading drop) → phone 390 (clock drop)</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="frame" style="width:1280px"><div class="topbar"><div class="brand"><span class="mk">◇</span> VOLTRAS <span class="dim">/ wall dashboard</span></div><div class="cluster"><div class="state"><span class="pulse"></span>LIVE</div><div class="divider"></div><div class="dev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M7 7 17 17 12 22 12 2 17 7 7 17"/></svg></div><div class="divider"></div><div class="clock">16:12</div></div></div></div>
+        <div class="frame" style="width:820px"><div class="topbar"><div class="brand"><span class="mk">◇</span> VOLTRAS</div><div class="cluster"><div class="state"><span class="pulse"></span>LIVE</div><div class="divider"></div><div class="dev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M7 7 17 17 12 22 12 2 17 7 7 17"/></svg></div><div class="divider"></div><div class="clock">16:12</div></div></div></div>
+        <div class="frame" style="width:390px"><div class="topbar"><div class="brand"><span class="mk">◇</span> VOLTRAS</div><div class="cluster"><div class="state"><span class="pulse"></span>LIVE</div><div class="divider"></div><div class="dev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M7 7 17 17 12 22 12 2 17 7 7 17"/></svg></div></div></div></div>
+      </div></div>
+  </div>
+
+  <!-- ============ DECOMPOSITION ============ -->
+  <h2>3 · Component decomposition — into titan atoms / molecules</h2>
+  <div class="legend">
+    <span class="lg"><span class="chip exist">✅ EXISTS</span> reuse titan as-is</span>
+    <span class="lg"><span class="chip extend">✎ EXTEND</span> add a prop/variant to an existing atom</span>
+    <span class="lg"><span class="chip new">⊕ NET-NEW</span> new titan component</span>
+  </div>
+
+  <div class="tree">
+<span class="n">TopBar</span> <span class="w">⊕ organism (shell region)</span> — 46px flex container + responsive collapse
+├─ <span class="n">BrandLockup</span> <span class="w">⊕ molecule</span> — ◇ mark + VOLTRAS wordmark + subheading (bespoke brand)
+├─ <span class="e">Divider</span> <span class="e">✅ ui/divider</span> (vertical) ×2
+├─ <span class="n">SessionStatePill</span> <span class="w">⊕ molecule</span>  ← this IS the ledger's planned StatusPill (Family C)
+│   ├─ <span class="x">Indicator</span> <span class="x">✎ ui/indicator</span> — add <b>pulse</b> prop (green/amber/off)
+│   └─ Text (LIVE / REST / IDLE)
+├─ <span class="n">DeviceIndicator</span> <span class="w">⊕ molecule</span> — tappable, color-coded, opens the menu
+│   ├─ <span class="e">ToolbarButton / IconBox</span> <span class="e">✅ ui</span> (the chip/target)
+│   ├─ <span class="w">BluetoothIcon</span> <span class="w">⊕ icon</span> — add to titan icon set
+│   └─ <span class="e">Badge</span> <span class="e">✅ ui/badge</span> — the red alert dot (device-lost)
+├─ <span class="n">DeviceMenu</span> <span class="w">⊕ organism</span>
+│   ├─ <span class="e">Menu + Popover</span> <span class="e">✅ ui/menu, ui/popover</span> (anchor + surface)
+│   └─ <span class="n">DeviceRow</span> <span class="w">⊕ molecule</span> ×N
+│       ├─ <span class="e">ListItem / DataRow</span> <span class="e">✅ ui</span> (row frame)
+│       ├─ <span class="e">Indicator</span> <span class="e">✅</span> (per-device status dot)
+│       ├─ <span class="e">Pill</span> <span class="e">✅ ui/pill</span> — slot badge (SLOT L / unbound)
+│       └─ Text (nickname · id)
+└─ Clock — <span class="dim">NOT a component: Text + 24h-format util (over-decomposition)</span>
+  </div>
+
+  <table>
+    <tr><th>Part</th><th>Tier</th><th>titan</th><th>Build note</th></tr>
+    <tr><td><span class="nm">TopBar</span></td><td class="tier">organism / shell</td><td><span class="chip new">⊕ new</span></td><td class="map">container + responsive collapse (Stack ✅ for layout)</td></tr>
+    <tr><td><span class="nm">BrandLockup</span></td><td class="tier">molecule</td><td><span class="chip new">⊕ new</span></td><td class="map">bespoke; tiny. mark+wordmark+subheading</td></tr>
+    <tr><td><span class="nm">SessionStatePill</span></td><td class="tier">molecule</td><td><span class="chip new">⊕ new</span></td><td class="map">= <b>StatusPill</b> (Family C, ledger) — build once, shared</td></tr>
+    <tr><td><span class="nm">Indicator</span> (the dot)</td><td class="tier">atom</td><td><span class="chip extend">✎ extend</span></td><td class="map">ui/indicator — add <b>pulse</b> prop; used by state dot + device rows</td></tr>
+    <tr><td><span class="nm">DeviceIndicator</span></td><td class="tier">molecule</td><td><span class="chip new">⊕ new</span></td><td class="map">ToolbarButton/IconBox ✅ + BluetoothIcon ⊕ + Badge ✅</td></tr>
+    <tr><td><span class="nm">BluetoothIcon</span></td><td class="tier">atom (icon)</td><td><span class="chip new">⊕ new</span></td><td class="map">add to titan icon set (Workout/icons.tsx or shared)</td></tr>
+    <tr><td><span class="nm">DeviceMenu</span></td><td class="tier">organism</td><td><span class="chip new">⊕ new</span></td><td class="map">Menu ✅ + Popover ✅ + DeviceRow[]; wires slot_bindings</td></tr>
+    <tr><td><span class="nm">DeviceRow</span></td><td class="tier">molecule</td><td><span class="chip new">⊕ new</span></td><td class="map">ListItem/DataRow ✅ + Indicator ✅ + Pill ✅ + Text</td></tr>
+    <tr><td><span class="nm">SlotBadge</span></td><td class="tier">atom</td><td><span class="chip exist">✅ reuse</span></td><td class="map"><b>Pill</b> — do NOT make a new atom</td></tr>
+    <tr><td><span class="nm">Divider</span></td><td class="tier">atom</td><td><span class="chip exist">✅ reuse</span></td><td class="map">ui/divider vertical — do NOT hand-roll a div</td></tr>
+    <tr><td><span class="nm">Badge</span></td><td class="tier">atom</td><td><span class="chip exist">✅ reuse</span></td><td class="map">ui/badge — alert dot on the glyph</td></tr>
+    <tr><td><span class="nm">Clock</span></td><td class="tier">—</td><td><span class="chip" style="color:var(--dim);border-color:var(--border-strong)">skip</span></td><td class="map">Text + format util, not a component</td></tr>
+  </table>
+
+  <ul class="catches">
+    <li><b>Reuse the dot atom — don't hand-roll.</b> Every status dot here (session state, device rows, alert) is <b>Indicator</b> (ui). The specimen's raw CSS dots would be a deviation. Only the <b>pulse</b> animation is new → add it as an Indicator prop, not a bespoke keyframe per use.</li>
+    <li><b>StatusDot (workout) vs Indicator (ui) overlap.</b> Two dot primitives exist. Pick <b>Indicator</b> for generic status (color+size+glow+ring); StatusDot stays the workout-semantic one (on-track/deviation/future + check/dash icons). Flag for a possible future consolidation.</li>
+    <li><b>SessionStatePill == the planned StatusPill</b> (ledger Family C). Same component — build it here, reuse in the Live view header. Cross-link, don't fork.</li>
+    <li><b>Device menu = Menu + Popover</b>, device row = <b>ListItem/DataRow</b>, slot badge = <b>Pill</b> — all reuse. Only the composition + BLE data wiring is new.</li>
+    <li><b>Clock is over-decomposition</b> — it's Text + a 24h format util, not a titan component.</li>
+    <li><b>Net-new to actually build:</b> TopBar, BrandLockup, SessionStatePill(=StatusPill), DeviceIndicator, DeviceMenu, DeviceRow, BluetoothIcon, + Indicator <b>pulse</b> prop. Everything else is reuse.</li>
+  </ul>
+
+<script>
+  function toggleDev(e){ e.stopPropagation(); document.getElementById('devMenu').classList.toggle('show'); }
+  document.addEventListener('click',()=>document.getElementById('devMenu').classList.remove('show'));
+</script>
+</body>
+</html>

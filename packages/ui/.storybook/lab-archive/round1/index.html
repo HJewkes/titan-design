@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voltras Dashboard — Round-1 Design Exploration</title>
+<style>
+  :root{
+    --bg:#0d0d0d; --surface:#161616; --surface2:#1c1c1c; --border:#2a2a2a;
+    --text:#f3f4f6; --muted:#8d95a3; --brand:#FF7900; --steel:#406D87;
+    --teal:#14B8A6; --amber:#FFB020; --red:#D14343; --sky:#2196F3;
+    --green:#2ed573;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:'Nunito Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    line-height:1.5;padding:0 0 80px}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+  header{border-bottom:1px solid var(--border);padding:34px 0 26px;margin-bottom:34px;
+    background:linear-gradient(180deg,rgba(255,121,0,0.05),transparent)}
+  .kicker{color:var(--brand);font-weight:800;letter-spacing:.14em;font-size:12px;text-transform:uppercase}
+  h1{margin:8px 0 6px;font-size:30px;font-weight:800;letter-spacing:-.01em}
+  .sub{color:var(--muted);font-size:15px;max-width:760px}
+  h2{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+    margin:40px 0 16px;border-bottom:1px solid var(--border);padding-bottom:8px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 18px 16px;
+    text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:9px;transition:.15s;position:relative;overflow:hidden}
+  .card:hover{border-color:var(--brand);background:var(--surface2);transform:translateY(-2px)}
+  .card .tag{position:absolute;top:14px;right:14px;font-size:10px;font-weight:800;letter-spacing:.06em;
+    text-transform:uppercase;padding:3px 8px;border-radius:20px}
+  .tag.live{background:rgba(46,213,115,.14);color:var(--green)}
+  .tag.hist{background:rgba(33,150,243,.14);color:var(--sky)}
+  .card h3{margin:2px 0 0;font-size:17px;font-weight:800;padding-right:60px}
+  .card .meta{color:var(--muted);font-size:12.5px}
+  .card .variants{font-size:13px;color:#c7ccd4}
+  .card .foot{margin-top:6px;font-size:12px;color:var(--brand);font-weight:700}
+  .card .aux{margin-top:2px;font-size:11.5px;color:var(--muted)}
+  .card .aux a{color:var(--muted);text-decoration:underline}
+  .decisions{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:6px 22px}
+  .decisions details{border-bottom:1px solid var(--border);padding:14px 0}
+  .decisions details:last-child{border-bottom:none}
+  .decisions summary{cursor:pointer;font-weight:800;font-size:15px;list-style:none;display:flex;gap:10px;align-items:baseline}
+  .decisions summary::-webkit-details-marker{display:none}
+  .decisions summary .pill{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+    padding:2px 8px;border-radius:20px;background:rgba(255,176,32,.14);color:var(--amber);flex-shrink:0}
+  .decisions summary .pill.high{background:rgba(209,67,67,.16);color:var(--red)}
+  .decisions p{color:#c7ccd4;font-size:13.5px;margin:10px 0 2px;padding-left:2px}
+  .decisions code{background:#000;padding:1px 6px;border-radius:4px;font-size:12px;color:#e8b98a}
+  .note{color:var(--muted);font-size:13px;margin:14px 0 0}
+  .links a{color:var(--sky);text-decoration:none;font-weight:700;font-size:13.5px}
+  .links a:hover{text-decoration:underline}
+  .legend{display:flex;gap:16px;margin-top:12px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .dot{width:9px;height:9px;border-radius:50%}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="kicker">Phase 3 · Round 1 · 2026-07-06</div>
+  <h1>Voltras Dashboard — Design Exploration</h1>
+  <p class="sub">Six component areas, each explored as 3–4 distinct design directions rendered with
+  real-WA-shaped synthetic data. Open a gallery, compare the variants, and mark up what to pursue —
+  Round 2 converges. Each card also links its written brief (rationale + tradeoff questions) and data contract.</p>
+  <div class="legend">
+    <span><span class="dot" style="background:var(--green)"></span>live / streaming (SSE-aware)</span>
+    <span><span class="dot" style="background:var(--sky)"></span>history / session-end fed</span>
+  </div>
+</div></header>
+
+<div class="wrap">
+  <h2>The galleries</h2>
+  <div class="grid">
+
+    <a class="card" href="./load-velocity-profile/gallery.html">
+      <span class="tag hist">history</span>
+      <h3>Load-Velocity Profile</h3>
+      <div class="meta">Load × mean-velocity scatter · regression · e1RM intercept · Wk1-vs-current shift</div>
+      <div class="variants">V1 classic scatter+refit · V2 confidence band (e1RM as range) · V3 glanceable big-number · V4 coaching-annotated shift</div>
+      <div class="foot">Open gallery →</div>
+      <div class="aux"><a href="./load-velocity-profile/brief.md">brief</a> · <a href="./load-velocity-profile/data-contract.md">data</a></div>
+    </a>
+
+    <a class="card" href="./session-velocity-timeline/gallery.html">
+      <span class="tag hist">history</span>
+      <h3>Session Velocity Timeline</h3>
+      <div class="meta">Mean-velocity-per-set across the whole session · target band · warn markers</div>
+      <div class="variants">V1 line + target band · V2 per-exercise small-multiples · V3 zone dot-plot · V4 sparkline rows</div>
+      <div class="foot">Open gallery →</div>
+      <div class="aux"><a href="./session-velocity-timeline/brief.md">brief</a> · <a href="./session-velocity-timeline/data-contract.md">data</a></div>
+    </a>
+
+    <a class="card" href="./session-debrief/gallery.html">
+      <span class="tag hist">session-end</span>
+      <h3>Session-Complete Debrief</h3>
+      <div class="meta">A–F velocity grade + "What Went Well / Watch Out" coach cards · terminal takeover state</div>
+      <div class="variants">V1 grade ring + coach cards · V2 scorecard grid · V3 timeline + insights · V4 minimal verdict</div>
+      <div class="foot">Open gallery →</div>
+      <div class="aux"><a href="./session-debrief/brief.md">brief</a> · <a href="./session-debrief/data-contract.md">data</a></div>
+    </a>
+
+    <a class="card" href="./live-fatigue-autoreg/gallery.html">
+      <span class="tag live">live</span>
+      <h3>Live Fatigue / Auto-Regulation</h3>
+      <div class="meta">Session-fatigue gauge · junk-volume alert · between-set load suggestion</div>
+      <div class="variants">V1 radial gauge · V2 zoned meter · V3 alert-forward card · V4 coach panel (SSE vs poll side-by-side)</div>
+      <div class="foot">Open gallery →</div>
+      <div class="aux"><a href="./live-fatigue-autoreg/brief.md">brief</a> · <a href="./live-fatigue-autoreg/data-contract.md">data</a></div>
+    </a>
+
+    <a class="card" href="./live-tempo-feedback/gallery.html">
+      <span class="tag live">live</span>
+      <h3>Live Tempo & Realtime Feedback</h3>
+      <div class="meta">CON→HOLD→ECC live phase-fill + per-rep velocity/cadence · designed for the SSE stream</div>
+      <div class="variants">V1 segmented phase-fill · V2 circular tempo ring · V3 dual velocity+tempo · V4 metronome/pendulum</div>
+      <div class="foot">Open gallery →</div>
+      <div class="aux"><a href="./live-tempo-feedback/brief.md">brief</a> · <a href="./live-tempo-feedback/data-contract.md">data</a></div>
+    </a>
+
+    <a class="card" href="./rep-quality-rpe/gallery.html">
+      <span class="tag hist">set-end</span>
+      <h3>Rep-Quality Waterfall + RPE Calibration</h3>
+      <div class="meta">Per-rep velocity-loss waterfall (E1) + reported-vs-velocity RPE calibration (E2)</div>
+      <div class="variants">E1: waterfall bridge · zone bars+flag lane · set-ridge · E2: dumbbell · verdict card · calibration gauge</div>
+      <div class="foot">Open gallery →</div>
+      <div class="aux"><a href="./rep-quality-rpe/brief.md">brief</a> · <a href="./rep-quality-rpe/data-contract.md">data</a></div>
+    </a>
+
+  </div>
+
+  <h2>Cross-cutting decisions the exploration surfaced</h2>
+  <p class="note">These came up repeatedly across galleries as agents grounded designs in the real WA source.
+  They're app-wide calls worth settling before Round 2 productionizes anything.</p>
+  <div class="decisions">
+    <details open>
+      <summary><span class="pill" style="background:rgba(46,213,115,.16);color:var(--green)">decided → WA-02.04</span>Velocity-zone thresholds — WA owns them, passes to UI</summary>
+      <p><strong>Decision (operator):</strong> velocity zones are a derived property of the athlete + lift
+      (they vary by exercise and by the user's individual VBT/LV profile), so <strong>WA owns the thresholds
+      and passes resolved zones to the UI as data</strong> — the UI stops hardcoding either the titan
+      <code>1.0/0.75/0.50</code> or WA <code>0.75/0.50/0.30</code> scale. Colors stay in the UI; WA returns
+      numeric bands + zone identity, derived from the per-exercise LV profile when available with
+      per-movement-class defaults otherwise. Values + API shape are a WA research item (in progress) →
+      <strong>WA-02.04</strong>. Round-2 designs color by <em>injected</em> zones, not constants.</p>
+    </details>
+    <details>
+      <summary><span class="pill">confirm</span>Velocity-loss definition: min/max vs first-to-last</summary>
+      <p>The operator prototype (<code>exercise-detail.html</code>) computes loss as min/max within the set;
+      titan's production <code>VelocityStrip.calculateVelocityLoss</code> and WA's <code>getSetVelocityLossPct</code>
+      both use first-to-last <code>(V1−Vlast)/V1</code>. Galleries followed titan/WA — confirm that's canonical.</p>
+    </details>
+    <details>
+      <summary><span class="pill">build</span>Session debrief is a composition layer that doesn't exist in WA yet</summary>
+      <p><code>assembleSessionDebrief</code>, any A–F grade, coach-card generation, and multi-type PR detection
+      are <em>not</em> in workout-analytics — it's a pure analytics lib. The only PR logic is e1RM-only
+      <code>isNewE1RM(current, historyBest)</code>. The debrief (and its grade rollup + insight rules) is new
+      composition work, likely in voltras-mcp, on top of <code>computeSessionFatigue</code> + readiness/velocity zones.</p>
+    </details>
+    <details>
+      <summary><span class="pill">note</span>Auto-regulation function names + fatigue scale</summary>
+      <p><code>computeAutoRegulation</code> doesn't exist — the real load-suggestion output is
+      <code>computeReadinessAdjustments → ReadinessAdjustments</code>. WA fatigue scores are <code>0–1</code>
+      ratios (the <code>0–100 FatigueIndex</code> is deprecated); junk-volume is the boolean
+      <code>SessionFatigueEstimate.isJunkVolume</code> (<code>velocityRecoveryPct&lt;75 &amp;&amp; avgVelLoss&gt;40</code>).</p>
+    </details>
+    <details>
+      <summary><span class="pill">note</span>No <code>targetVelocity</code> in WA — target bands are a plan-layer input</summary>
+      <p>WA is explicit that consumers pass their own thresholds. The session-timeline / tempo target bands
+      must be fed from the plan layer, not derived from WA. Decide where the target lives.</p>
+    </details>
+  </div>
+
+  <h2>Related</h2>
+  <p class="links">
+    <a href="../../integration-plans/dashboard-realtime-transport-2026-07-06.md">→ SSE realtime-transport design doc</a>
+    &nbsp;·&nbsp;
+    <a href="../../contract-audits/dashboard-ui-value-survey-2026-07-06.md">→ Current UI gap audit (2026-07-06)</a>
+    &nbsp;·&nbsp; ticket <strong>VMCP-01.59</strong> filed (SSE live-telemetry stream)
+  </p>
+  <p class="note">The live components (fatigue, tempo) are designed assuming the SSE stream (VMCP-01.59)
+  lands — frame rate is ~11 Hz, directly paintable with RAF interpolation; desk-testable via replay.
+  They degrade to the 500ms poll where noted in each brief.</p>
+</div>
+</body>
+</html>

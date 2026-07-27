@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Voltras — Active Workout</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand-primary: #FF7900;
+    --brand-primary-light: #FF9630;
+    --brand-primary-dark: #D0620C;
+    --brand-primary-subtle: rgba(255, 121, 0, 0.12);
+    --brand-secondary: #406D87;
+
+    --bg-base: #101010;
+    --bg-default: #161616;
+    --bg-subtle: #1C1C1C;
+    --surface-base: #161616;
+    --surface-elevated: #191919;
+    --surface-raised: #1C1C1C;
+
+    --text-primary: #F3F4F6;
+    --text-secondary: #9CA3AF;
+    --text-tertiary: #6B7280;
+    --text-disabled: rgba(255,255,255,0.38);
+
+    --border-default: #1F1F1F;
+    --border-subtle: #1C1C1C;
+    --border-strong: #2C2C2C;
+
+    --status-success: #14B8A6;
+    --status-error: #D14343;
+    --status-warning: #FFB020;
+    --status-info: #2196F3;
+
+    --result-improve: #4caf50;
+    --result-degrade: #ef5350;
+
+    --interactive-hover: rgba(255,255,255,0.04);
+    --interactive-active: rgba(255,255,255,0.16);
+
+    --divider: #1F1F1F;
+
+    --vel-red: #ff4757;
+    --vel-orange: #ffa502;
+    --vel-yellow: #ffd43b;
+    --vel-green: #2ed573;
+
+    --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-body: 'Nunito Sans', sans-serif;
+    --font-heading: 'Space Grotesk', sans-serif;
+
+    --radius: 12px;
+    --radius-default: 8px;
+    --radius-sm: 4px;
+
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --duration: 250ms;
+
+    --shadow-card: 0px 4px 6px rgba(100, 116, 139, 0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg-base);
+    color: var(--text-primary);
+    max-width: 375px;
+    margin: 0 auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  /* Workout Header */
+  .workout-header {
+    padding: 16px 16px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .workout-title {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .workout-meta {
+    display: flex;
+    gap: 16px;
+    font-family: var(--font-ui);
+    font-size: 12px;
+    color: var(--text-secondary);
+    align-items: center;
+  }
+  .workout-meta span { display: flex; align-items: center; gap: 4px; }
+  .workout-meta .dot {
+    width: 6px; height: 6px;
+    background: var(--status-success);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* Unit Toggle */
+  .unit-toggle {
+    display: flex;
+    background: var(--surface-raised);
+    border-radius: 4px;
+    border: 1px solid var(--border-default);
+    overflow: hidden;
+  }
+  .unit-btn {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border: none;
+    background: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: all var(--duration);
+  }
+  .unit-btn.active {
+    background: var(--brand-primary);
+    color: white;
+  }
+
+  /* Exercise Card */
+  .exercise-card {
+    margin: 0 12px 8px;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+    box-shadow: var(--shadow-card);
+    transition: all var(--duration) var(--ease-out);
+  }
+  .exercise-card.superset-a {
+    margin-bottom: 2px;
+    border-radius: var(--radius) var(--radius) var(--radius-default) var(--radius-default);
+  }
+  .exercise-card.superset-b {
+    margin-top: 0;
+    border-radius: var(--radius-default) var(--radius-default) var(--radius) var(--radius);
+  }
+  .superset-label {
+    position: absolute;
+    top: 0;
+    left: -3px;
+    color: var(--bg-base);
+    font-family: var(--font-ui);
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 0 0 4px 0;
+    letter-spacing: 0.5px;
+    z-index: 2;
+  }
+
+  /* Collapsed Exercise Card */
+  .exercise-card.collapsed {
+    padding: 12px 14px;
+    cursor: pointer;
+  }
+  .exercise-card.collapsed:active {
+    background: var(--surface-raised);
+  }
+  .exercise-collapsed-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .exercise-collapsed-name {
+    font-family: var(--font-heading);
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .exercise-collapsed-summary {
+    font-family: var(--font-ui);
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .exercise-collapsed-e1rm {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--brand-primary);
+    white-space: nowrap;
+  }
+  .exercise-collapsed-pr {
+    color: var(--brand-primary);
+    font-size: 13px;
+  }
+  .collapsed-strips {
+    display: flex;
+    gap: 4px;
+    margin-top: 6px;
+    padding: 0 2px;
+  }
+  .collapsed-strip {
+    flex: 1;
+    height: 3px;
+    border-radius: 1px;
+    display: flex;
+    gap: 1px;
+  }
+  .collapsed-strip-bar {
+    flex: 1;
+    height: 100%;
+    border-radius: 1px;
+  }
+  .collapsed-strip.placeholder {
+    border: 1px dashed #4A4A4A;
+    background: none;
+    opacity: 0.6;
+  }
+
+  /* Upcoming Exercise Card */
+  .exercise-card.upcoming {
+    padding: 14px;
+    opacity: 0.6;
+  }
+  .exercise-upcoming-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .exercise-upcoming-name {
+    font-family: var(--font-heading);
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .exercise-upcoming-prescription {
+    font-family: var(--font-ui);
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .exercise-upcoming-prev {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  /* Expanded card header */
+  .exercise-expanded-header {
+    padding: 12px 14px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    border-bottom: 1px solid var(--border-default);
+    transition: background var(--duration);
+  }
+  .exercise-expanded-header:active {
+    background: var(--interactive-hover);
+  }
+  .exercise-expanded-header-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .exercise-header {
+    padding: 14px 14px 4px;
+  }
+  .exercise-name-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .exercise-badges {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .e1rm-badge {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--surface-raised);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border-default);
+  }
+  .pr-badge {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--brand-primary);
+    background: var(--brand-primary-subtle);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 121, 0, 0.3);
+    animation: pr-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes pr-pop {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .exercise-name {
+    font-family: var(--font-heading);
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  /* Tempo Display */
+  .tempo-display {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 4px;
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    background: var(--surface-raised);
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+  }
+  .tempo-label {
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    margin-right: 6px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* Expanded content wrapper */
+  .exercise-expanded-content {
+    overflow: hidden;
+    transition: max-height 0.4s var(--ease-out), opacity 0.3s;
+  }
+
+  /* Set Table */
+  .set-table {
+    width: 100%;
+    padding: 0 6px;
+  }
+  .set-table-header {
+    display: flex;
+    padding: 8px 8px 4px;
+    font-family: var(--font-ui);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-tertiary);
+  }
+  .set-row {
+    display: flex;
+    align-items: center;
+    padding: 7px 8px;
+    border-radius: var(--radius-default);
+    transition: background var(--duration) var(--ease-out);
+    position: relative;
+  }
+  .set-row:active { background: var(--interactive-hover); }
+  .set-row.completed { opacity: 0.55; }
+
+  .set-row.next-set {
+    background: rgba(255, 121, 0, 0.06);
+    border: 1px solid rgba(255, 121, 0, 0.15);
+  }
+
+  .col-set { width: 36px; text-align: center; }
+  .col-prev { flex: 1; color: var(--text-secondary); font-size: 12px; }
+  .col-reps { width: 44px; text-align: center; }
+  .col-weight { width: 56px; text-align: center; }
+  .col-rpe { width: 36px; text-align: center; }
+
+  .set-num {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+  .set-type {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--vel-orange);
+    background: rgba(255, 165, 2, 0.12);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .set-input {
+    background: var(--surface-raised);
+    border: 1px solid var(--border-default);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    padding: 5px 2px;
+    width: 44px;
+    transition: border-color var(--duration);
+  }
+  .set-input:focus {
+    outline: none;
+    border-color: var(--brand-primary);
+  }
+  .set-input.reps-input { width: 36px; }
+
+  .rpe-input {
+    background: var(--surface-raised);
+    border: 1px solid var(--border-default);
+    border-radius: 6px;
+    color: var(--brand-primary);
+    font-family: var(--font-ui);
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    padding: 4px 2px;
+    width: 32px;
+  }
+  .rpe-input:focus {
+    outline: none;
+    border-color: var(--brand-primary);
+  }
+
+  /* Set value (completed exercises) */
+  .set-value {
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .rpe-value { color: var(--brand-primary); font-size: 12px; }
+  .set-target {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    color: var(--text-tertiary);
+    font-style: italic;
+  }
+
+  .add-set-btn {
+    display: block;
+    width: calc(100% - 16px);
+    margin: 4px 8px 10px;
+    padding: 8px 20px;
+    background: none;
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-default);
+    color: var(--text-secondary);
+    font-family: var(--font-ui);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--duration) var(--ease-out);
+  }
+  .add-set-btn:hover {
+    border-color: var(--brand-primary);
+    color: var(--brand-primary);
+    background: var(--brand-primary-subtle);
+  }
+
+  /* Velocity Bars (strip that grows into bar chart) */
+  .vel-bars-b {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    margin: 0 8px;
+    padding: 10px 0;
+    height: 3px;
+    box-sizing: content-box;
+    cursor: pointer;
+    transition: height 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                padding 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                margin 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                background 0.3s;
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+  .vel-bars-b.expanded {
+    height: 60px;
+    padding: 16px 6px 24px;
+    margin: 4px 8px 4px;
+    border-radius: 6px;
+    background: var(--surface-raised);
+    overflow: visible;
+  }
+  .vel-bars-b .vbar {
+    flex: 1;
+    border-radius: 2px 2px 0 0;
+    min-height: 100%;
+    transition: min-height 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
+    cursor: pointer;
+  }
+  .vel-bars-b.expanded .vbar {
+    min-height: 0;
+  }
+  .vel-bars-b .vbar-label {
+    position: absolute;
+    top: -13px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-ui);
+    font-size: 7px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s 0.15s;
+  }
+  .vel-bars-b.expanded .vbar-label {
+    opacity: 1;
+  }
+  .vel-bars-b .vel-info {
+    position: absolute;
+    bottom: 4px;
+    left: 6px;
+    right: 6px;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-ui);
+    font-size: 10px;
+    opacity: 0;
+    transition: opacity 0.3s 0.2s;
+    pointer-events: none;
+  }
+  .vel-bars-b.expanded .vel-info {
+    opacity: 1;
+  }
+
+  /* Rep tooltip */
+  .rep-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-default);
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-family: var(--font-ui);
+    font-size: 10px;
+    color: var(--text-primary);
+    white-space: nowrap;
+    z-index: 100;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    animation: tooltip-in 0.2s var(--ease-out);
+  }
+  .rep-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--border-strong);
+  }
+  @keyframes tooltip-in {
+    from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+
+  /* Rest Timer */
+  .rest-timer {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 375px;
+    max-width: 100%;
+    background: var(--surface-raised);
+    border-top: 1px solid var(--border-default);
+    padding: 12px 16px;
+    z-index: 90;
+    transition: transform 0.3s var(--ease-out);
+  }
+  .rest-timer.hidden {
+    transform: translate(-50%, 100%);
+  }
+  .rest-timer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .rest-timer-label {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+  .rest-timer-context {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-top: 2px;
+  }
+  .rest-timer-time {
+    font-family: var(--font-heading);
+    font-size: 28px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.5px;
+  }
+  .rest-timer-actions {
+    display: flex;
+    gap: 8px;
+  }
+  .rest-timer-btn {
+    padding: 8px 20px;
+    border-radius: var(--radius-default);
+    border: none;
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .rest-timer-skip {
+    background: var(--brand-primary-subtle);
+    color: var(--brand-primary);
+  }
+  .rest-timer-add {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-secondary);
+  }
+  .rest-bar {
+    height: 3px;
+    background: var(--border-default);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .rest-bar-fill {
+    height: 100%;
+    background: var(--brand-primary);
+    border-radius: 2px;
+    transition: width 1s linear;
+  }
+
+  /* Input Bar */
+  .input-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 375px;
+    background: var(--surface-elevated);
+    border-top: 1px solid var(--border-default);
+    padding: 10px 16px 12px;
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .input-bar.hidden { transform: translate(-50%, 100%); }
+  .input-bar-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 80px;
+  }
+  .input-bar-exercise {
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .input-bar-set {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    color: var(--text-tertiary);
+  }
+  .input-bar-fields {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+  }
+  .input-bar-field {
+    background: var(--surface-raised);
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    padding: 8px 4px;
+    width: 52px;
+  }
+  .input-bar-field:focus {
+    outline: none;
+    border-color: var(--brand-primary);
+  }
+  .input-bar-x {
+    font-family: var(--font-ui);
+    font-size: 14px;
+    color: var(--text-tertiary);
+  }
+  .input-bar-unit {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+  .input-bar-record {
+    background: var(--brand-primary);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .input-bar-record:active { opacity: 0.8; }
+
+  .bottom-spacer { height: 80px; }
+
+  .workout-scroll {
+    padding-bottom: 16px;
+  }
+
+  .finish-btn {
+    display: block;
+    width: calc(100% - 32px);
+    margin: 12px 16px;
+    padding: 14px;
+    background: var(--brand-primary);
+    border: none;
+    border-radius: var(--radius-default);
+    color: white;
+    font-family: var(--font-ui);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    transition: opacity var(--duration);
+  }
+  .finish-btn:active { opacity: 0.8; }
+
+  /* Expand/collapse chevron */
+  .chevron {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid var(--text-tertiary);
+    transition: transform 0.3s var(--ease-out);
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+  .exercise-card:not(.collapsed) .chevron {
+    transform: rotate(180deg);
+  }
+</style>
+</head>
+<body>
+
+<div class="workout-header">
+  <div class="workout-title">Push Day</div>
+  <div class="workout-meta">
+    <span><span class="dot"></span> <span class="elapsed-time">14:32</span></span>
+    <span class="total-volume">Vol: 6,261 lbs</span>
+    <div class="unit-toggle">
+      <button class="unit-btn active" onclick="setUnit('lbs')">LBS</button>
+      <button class="unit-btn" onclick="setUnit('kg')">KG</button>
+    </div>
+  </div>
+</div>
+
+<div class="workout-scroll" id="workout-scroll">
+  <!-- Cards rendered by JS -->
+</div>
+<div class="bottom-spacer"></div>
+
+<!-- Rest Timer -->
+<div class="rest-timer hidden" id="rest-timer">
+  <div class="rest-timer-top">
+    <div>
+      <div class="rest-timer-label">Rest Timer</div>
+      <div class="rest-timer-context" id="rest-context">Next: Set 3 — 40 lbs</div>
+      <div class="rest-timer-time" id="rest-time">2:30</div>
+    </div>
+    <div class="rest-timer-actions">
+      <button class="rest-timer-btn rest-timer-add" onclick="addRestTime(30)">+30s</button>
+      <button class="rest-timer-btn rest-timer-skip" onclick="skipRest()">Skip</button>
+    </div>
+  </div>
+  <div class="rest-bar">
+    <div class="rest-bar-fill" id="rest-bar-fill" style="width: 100%"></div>
+  </div>
+</div>
+
+<!-- Input Bar -->
+<div class="input-bar hidden" id="input-bar">
+  <div class="input-bar-info">
+    <span class="input-bar-exercise" id="input-bar-exercise">Cable Flyes</span>
+    <span class="input-bar-set" id="input-bar-set">Set 3 of 4</span>
+  </div>
+  <div class="input-bar-fields">
+    <input class="input-bar-field" type="text" inputmode="numeric" placeholder="Reps" id="input-reps">
+    <span class="input-bar-x">&times;</span>
+    <input class="input-bar-field" type="text" inputmode="numeric" placeholder="Load" id="input-load">
+    <span class="input-bar-unit">lbs</span>
+  </div>
+  <button class="input-bar-record" id="record-btn" onclick="recordSet()">Record</button>
+</div>
+
+<script>
+  // ==================== DATA ====================
+  const workoutData = {
+    name: 'Push Day',
+    exercises: [
+      {
+        id: 'bench',
+        name: 'Bench Press',
+        tempo: { ecc: 3, pauseBot: 1, con: 1, pauseTop: 0 },
+        superset: 'SS',
+        supersetColor: '#FF7900',
+        supersetPos: 'a',
+        status: 'completed',
+        e1rm: 217,
+        isPR: true,
+        summary: '3\u00d76 @ 175',
+        sets: [
+          { type: 'W', prev: '10 \u00d7 85', weight: 85, reps: 10, rpe: null, completed: true, vel: { reps: [1.15,1.14,1.12,1.10,1.09,1.08,1.06,1.05,1.03,1.01], mean: 1.12, loss: 12, zone: 'speed' }},
+          { type: 'W', prev: '5 \u00d7 135', weight: 135, reps: 5, rpe: null, completed: true, vel: { reps: [0.86,0.84,0.82,0.80,0.78], mean: 0.82, loss: 9, zone: 'power' }},
+          { num: 1, prev: '6 \u00d7 175', weight: 175, reps: 6, rpe: 7, completed: true, vel: { reps: [0.62,0.60,0.58,0.56,0.54,0.52], mean: 0.57, loss: 16, zone: 'str-spd' }},
+          { num: 2, prev: '5 \u00d7 175', weight: 175, reps: 6, rpe: 8, completed: true, vel: { reps: [0.58,0.56,0.54,0.52,0.49,0.47], mean: 0.53, loss: 19, zone: 'str-spd' }},
+          { num: 3, prev: '5 \u00d7 175', weight: 175, reps: 6, rpe: 9, completed: true, vel: { reps: [0.52,0.48,0.44,0.41,0.39,0.37], mean: 0.44, loss: 28, zone: 'strength' }},
+        ]
+      },
+      {
+        id: 'incline',
+        name: 'Incline DB Press',
+        tempo: { ecc: 2, pauseBot: 0, con: 1, pauseTop: 0 },
+        superset: 'SS',
+        supersetColor: '#FF7900',
+        supersetPos: 'b',
+        status: 'completed',
+        e1rm: 82,
+        isPR: false,
+        summary: '3\u00d710 @ 60',
+        sets: [
+          { num: 1, prev: '10 \u00d7 60', weight: 60, reps: 10, rpe: 7.5, completed: true, vel: { reps: [0.82,0.80,0.78,0.76,0.74,0.72,0.70,0.69,0.67,0.65], mean: 0.73, loss: 21, zone: 'str-spd' }},
+          { num: 2, prev: '9 \u00d7 60', weight: 60, reps: 9, rpe: 8.5, completed: true, vel: { reps: [0.78,0.75,0.72,0.70,0.68,0.65,0.63,0.61,0.58], mean: 0.68, loss: 26, zone: 'str-spd' }},
+          { num: 3, prev: '8 \u00d7 60', weight: 60, reps: 8, rpe: 9, completed: true, vel: { reps: [0.74,0.71,0.68,0.65,0.62,0.59,0.56,0.54], mean: 0.64, loss: 24, zone: 'str-spd' }},
+        ]
+      },
+      {
+        id: 'flyes',
+        name: 'Cable Flyes',
+        tempo: { ecc: 3, pauseBot: 1, con: 2, pauseTop: 1 },
+        superset: null,
+        status: 'active',
+        e1rm: 58,
+        isPR: false,
+        summary: '2\u00d712 @ 40',
+        plannedSets: 4,
+        sets: [
+          { num: 1, prev: '12 \u00d7 40', weight: 40, reps: 12, rpe: 6, completed: true, vel: { reps: [0.95,0.93,0.91,0.89,0.87,0.85,0.83,0.81,0.79,0.77,0.75,0.73], mean: 0.84, loss: 23, zone: 'power' }},
+          { num: 2, prev: '11 \u00d7 40', weight: 40, reps: 11, rpe: 7, completed: true, vel: { reps: [0.91,0.88,0.86,0.83,0.81,0.78,0.76,0.73,0.71,0.68,0.66], mean: 0.78, loss: 27, zone: 'power' }},
+          { num: 3, prev: '10 \u00d7 40', weight: 40, reps: null, rpe: null, completed: false, vel: null },
+          { num: 4, prev: null, weight: 40, reps: null, rpe: null, completed: false, vel: null },
+        ]
+      },
+      {
+        id: 'pecdeck',
+        name: 'Pec Deck',
+        tempo: { ecc: 2, pauseBot: 1, con: 2, pauseTop: 0 },
+        superset: null,
+        status: 'upcoming',
+        prescription: '4\u00d712 @ RPE 7',
+        prevBest: '12 \u00d7 130',
+        sets: []
+      }
+    ]
+  };
+
+  let currentUnit = 'lbs';
+  const LBS_TO_KG = 0.453592;
+
+  // Track which exercise/set the input bar targets
+  let inputBarExId = null;
+  let inputBarSetIdx = null;
+
+  // ==================== VELOCITY HELPERS ====================
+  function velZoneColor(v) {
+    if (v < 0.5) return '#ff4757';
+    if (v < 0.75) return '#ffa502';
+    if (v < 1.0) return '#ffd43b';
+    return '#2ed573';
+  }
+
+  function velZoneName(zone) {
+    const names = { strength: 'Strength', 'str-spd': 'Str-Speed', power: 'Power', speed: 'Speed' };
+    return names[zone] || zone;
+  }
+
+  function zoneColorVar(zone) {
+    const map = { strength: 'var(--vel-red)', 'str-spd': 'var(--vel-orange)', power: 'var(--vel-yellow)', speed: 'var(--vel-green)' };
+    return map[zone] || 'var(--text-secondary)';
+  }
+
+  // ==================== RENDER ====================
+  function renderWorkout() {
+    const scroll = document.getElementById('workout-scroll');
+    scroll.innerHTML = '';
+
+    workoutData.exercises.forEach(ex => {
+      if (ex.status === 'completed') {
+        scroll.appendChild(renderCollapsedCard(ex));
+      } else if (ex.status === 'active') {
+        scroll.appendChild(renderExpandedCard(ex));
+      } else if (ex.status === 'upcoming') {
+        scroll.appendChild(renderUpcomingCard(ex));
+      }
+    });
+
+    const finishBtn = document.createElement('button');
+    finishBtn.className = 'finish-btn';
+    finishBtn.textContent = 'Finish Workout';
+    scroll.appendChild(finishBtn);
+
+    // Show input bar for active exercise
+    updateInputBar();
+  }
+
+  function convertWeight(lbs) {
+    if (currentUnit === 'kg') return Math.round(lbs * LBS_TO_KG);
+    return lbs;
+  }
+
+  function weightUnit() {
+    return currentUnit === 'kg' ? 'kg' : 'lbs';
+  }
+
+  function renderTempoDisplay(tempo) {
+    if (!tempo) return '';
+    let html = '<div class="tempo-display">';
+    html += '<span class="tempo-label">Tempo</span>';
+    html += tempo.ecc + '-' + tempo.pauseBot + '-' + tempo.con + '-' + tempo.pauseTop;
+    html += '</div>';
+    return html;
+  }
+
+  // ---- Collapsed Card ----
+  function renderCollapsedCard(ex) {
+    const card = document.createElement('div');
+    card.className = 'exercise-card collapsed';
+    card.dataset.exerciseId = ex.id;
+
+    if (ex.supersetPos === 'a') card.classList.add('superset-a');
+    if (ex.supersetPos === 'b') card.classList.add('superset-b');
+    if (ex.supersetColor) card.style.borderLeft = '3px solid ' + ex.supersetColor;
+
+    let html = '';
+    if (ex.superset) html += '<span class="superset-label" style="background:' + ex.supersetColor + '">' + ex.superset + '</span>';
+
+    html += '<div class="exercise-collapsed-row">';
+    html += '<span class="exercise-collapsed-name">' + ex.name + '</span>';
+    html += '<span class="exercise-collapsed-summary">' + ex.summary + ' ' + weightUnit() + '</span>';
+    html += '<span class="exercise-collapsed-e1rm">e1RM ' + convertWeight(ex.e1rm) + '</span>';
+    if (ex.isPR) html += ' <span class="exercise-collapsed-pr">\u2605</span>';
+    html += '<span class="chevron"></span>';
+    html += '</div>';
+
+    // Mini velocity strips (completed = colored, planned = dashed placeholder)
+    html += '<div class="collapsed-strips">';
+    const totalPlanned = ex.plannedSets || ex.sets.length;
+    ex.sets.forEach(set => {
+      if (set.vel) {
+        html += '<div class="collapsed-strip">';
+        set.vel.reps.forEach(v => {
+          html += '<div class="collapsed-strip-bar" style="background:' + velZoneColor(v) + '"></div>';
+        });
+        html += '</div>';
+      } else {
+        html += '<div class="collapsed-strip placeholder"></div>';
+      }
+    });
+    // If plannedSets exceeds actual sets array length, add extra placeholders
+    for (let i = ex.sets.length; i < totalPlanned; i++) {
+      html += '<div class="collapsed-strip placeholder"></div>';
+    }
+    html += '</div>';
+
+    card.innerHTML = html;
+    card.addEventListener('click', () => expandCollapsedCard(ex.id));
+    return card;
+  }
+
+  // ---- Expanded Card (for completed exercises re-expanded, or active) ----
+  function renderExpandedCard(ex) {
+    const card = document.createElement('div');
+    card.className = 'exercise-card';
+    card.dataset.exerciseId = ex.id;
+
+    if (ex.supersetPos === 'a') card.classList.add('superset-a');
+    if (ex.supersetPos === 'b') card.classList.add('superset-b');
+    if (ex.supersetColor) card.style.borderLeft = '3px solid ' + ex.supersetColor;
+
+    const isCompleted = ex.status === 'completed';
+    const isActive = ex.status === 'active';
+
+    let html = '';
+    if (ex.superset) html += '<span class="superset-label" style="background:' + ex.supersetColor + '">' + ex.superset + '</span>';
+
+    // Header row
+    html += '<div class="exercise-expanded-header" onclick="collapseCard(\'' + ex.id + '\')">';
+    html += '<div class="exercise-expanded-header-row">';
+    html += '<span class="exercise-collapsed-name">' + ex.name + '</span>';
+    if (ex.e1rm) {
+      html += '<span class="exercise-collapsed-e1rm">e1RM ' + convertWeight(ex.e1rm) + '</span>';
+      if (ex.isPR) html += ' <span class="exercise-collapsed-pr">\u2605</span>';
+    }
+    html += '<span class="chevron"></span>';
+    html += '</div>';
+    if (ex.tempo) html += renderTempoDisplay(ex.tempo);
+    html += '</div>';
+
+    // Expanded content: set table
+    html += '<div class="exercise-expanded-content">';
+    html += '<div class="set-table">';
+    html += '<div class="set-table-header">';
+    html += '<div class="col-set">Set</div>';
+    html += '<div class="col-prev">Prev</div>';
+    html += '<div class="col-reps">Reps</div>';
+    html += '<div class="col-weight">' + weightUnit().toUpperCase() + '</div>';
+    html += '<div class="col-rpe">RPE</div>';
+    html += '</div>';
+
+    const firstIncomplete = ex.sets.findIndex(s => !s.completed);
+
+    ex.sets.forEach((set, i) => {
+      const isNext = (i === firstIncomplete);
+      const rowClass = 'set-row' + (set.completed ? ' completed' : '') + (isNext ? ' next-set' : '');
+      html += '<div class="' + rowClass + '" data-exercise="' + ex.id + '" data-set-idx="' + i + '">';
+
+      // Set number column
+      if (set.type === 'W') {
+        html += '<div class="col-set"><span class="set-type">W</span></div>';
+      } else {
+        html += '<div class="col-set"><span class="set-num">' + set.num + '</span></div>';
+      }
+
+      // Previous
+      html += '<div class="col-prev">' + (set.prev || '\u2014') + '</div>';
+
+      if (set.completed) {
+        // Completed sets: plain text values
+        html += '<div class="col-reps"><span class="set-value">' + set.reps + '</span></div>';
+        html += '<div class="col-weight"><span class="set-value">' + convertWeight(set.weight) + '</span></div>';
+        if (set.type === 'W') {
+          html += '<div class="col-rpe"><span style="color:var(--text-tertiary);font-family:var(--font-ui);font-size:12px">\u2014</span></div>';
+        } else {
+          html += '<div class="col-rpe"><span class="set-value rpe-value">' + (set.rpe || '\u2014') + '</span></div>';
+        }
+      } else if (isActive) {
+        // Active exercise, incomplete sets: show targets as muted italic
+        const targetReps = set.prev ? set.prev.split(' \u00d7 ')[0] : '\u2014';
+        html += '<div class="col-reps"><span class="set-target">' + targetReps + '</span></div>';
+        html += '<div class="col-weight"><span class="set-target">' + convertWeight(set.weight) + '</span></div>';
+        html += '<div class="col-rpe"><span class="set-target">\u2014</span></div>';
+      } else {
+        // Fallback (shouldn't happen for completed exercises)
+        html += '<div class="col-reps"><span class="set-target">\u2014</span></div>';
+        html += '<div class="col-weight"><span class="set-target">' + convertWeight(set.weight) + '</span></div>';
+        html += '<div class="col-rpe"><span class="set-target">\u2014</span></div>';
+      }
+
+      html += '</div>';
+
+      // Velocity strip
+      if (set.vel) {
+        html += '<div class="vel-bars-b" data-vel=\'' + JSON.stringify(set.vel) + '\' onclick="toggleVelBars(this)"></div>';
+      }
+    });
+
+    html += '</div>';
+    if (isActive) {
+      html += '<button class="add-set-btn" onclick="addSet(\'' + ex.id + '\')">+ Add Set</button>';
+    }
+    html += '</div>';
+
+    card.innerHTML = html;
+
+    // Initialize velocity bars after DOM insertion
+    requestAnimationFrame(() => {
+      card.querySelectorAll('.vel-bars-b').forEach(el => initSingleVelBars(el));
+    });
+
+    return card;
+  }
+
+  // ---- Upcoming Card ----
+  function renderUpcomingCard(ex) {
+    const card = document.createElement('div');
+    card.className = 'exercise-card upcoming';
+    card.dataset.exerciseId = ex.id;
+
+    let html = '<div class="exercise-upcoming-row">';
+    html += '<span class="exercise-upcoming-name">' + ex.name + '</span>';
+    html += '<span class="exercise-upcoming-prescription">' + ex.prescription + '</span>';
+    const prevWeight = ex.prevBest ? ex.prevBest.split(' \u00d7 ')[1] : '0';
+    html += '<span class="exercise-upcoming-prev">' + convertWeight(parseInt(prevWeight)) + ' ' + weightUnit() + ' prev</span>';
+    html += '</div>';
+
+    // Placeholder strips for planned sets
+    const planned = parseInt(ex.prescription) || 4;
+    html += '<div class="collapsed-strips">';
+    for (let i = 0; i < planned; i++) {
+      html += '<div class="collapsed-strip placeholder"></div>';
+    }
+    html += '</div>';
+
+    card.innerHTML = html;
+    return card;
+  }
+
+  // ==================== EXPAND / COLLAPSE ====================
+  function expandCollapsedCard(exId) {
+    const ex = workoutData.exercises.find(e => e.id === exId);
+    const oldCard = document.querySelector('[data-exercise-id="' + exId + '"]');
+    if (!oldCard) return;
+
+    const newCard = renderExpandedCard(ex);
+    oldCard.replaceWith(newCard);
+  }
+
+  function collapseCard(exId) {
+    const ex = workoutData.exercises.find(e => e.id === exId);
+    if (!ex) return;
+
+    const oldCard = document.querySelector('[data-exercise-id="' + exId + '"]');
+    if (!oldCard) return;
+
+    const newCard = renderCollapsedCard(ex);
+    oldCard.replaceWith(newCard);
+  }
+
+  // ==================== INPUT BAR ====================
+  function updateInputBar() {
+    const activeEx = workoutData.exercises.find(e => e.status === 'active');
+    const inputBar = document.getElementById('input-bar');
+    const restTimer = document.getElementById('rest-timer');
+
+    if (!activeEx) {
+      inputBar.classList.add('hidden');
+      return;
+    }
+
+    const nextIdx = activeEx.sets.findIndex(s => !s.completed);
+    if (nextIdx < 0) {
+      inputBar.classList.add('hidden');
+      return;
+    }
+
+    // Don't show input bar if rest timer is visible
+    if (!restTimer.classList.contains('hidden')) {
+      inputBar.classList.add('hidden');
+      return;
+    }
+
+    const set = activeEx.sets[nextIdx];
+    inputBarExId = activeEx.id;
+    inputBarSetIdx = nextIdx;
+
+    document.getElementById('input-bar-exercise').textContent = activeEx.name;
+    document.getElementById('input-bar-set').textContent = 'Set ' + (set.num || 'W') + ' of ' + activeEx.sets.filter(s => !s.type).length;
+
+    // Pre-fill with target values
+    const targetReps = set.prev ? set.prev.split(' \u00d7 ')[0] : '';
+    document.getElementById('input-reps').value = targetReps;
+    document.getElementById('input-load').value = convertWeight(set.weight);
+
+    // Update unit label
+    inputBar.querySelector('.input-bar-unit').textContent = weightUnit();
+
+    inputBar.classList.remove('hidden');
+  }
+
+  function recordSet() {
+    if (!inputBarExId || inputBarSetIdx === null) return;
+
+    const ex = workoutData.exercises.find(e => e.id === inputBarExId);
+    const set = ex.sets[inputBarSetIdx];
+
+    const repsVal = parseInt(document.getElementById('input-reps').value);
+    const loadVal = parseInt(document.getElementById('input-load').value);
+
+    if (!repsVal || !loadVal) return;
+
+    set.reps = repsVal;
+    set.weight = currentUnit === 'kg' ? Math.round(loadVal / LBS_TO_KG) : loadVal;
+    set.vel = simulateVelocity(inputBarExId, inputBarSetIdx);
+    set.completed = true;
+
+    // Re-render the active card to show the completed set
+    const oldCard = document.querySelector('[data-exercise-id="' + inputBarExId + '"]');
+    if (oldCard) {
+      const newCard = renderExpandedCard(ex);
+      oldCard.replaceWith(newCard);
+    }
+
+    // Update summary
+    const completedWorking = ex.sets.filter(s => !s.type && s.completed);
+    if (completedWorking.length > 0) {
+      const maxSet = completedWorking.reduce((best, s) => s.weight > best.weight ? s : best, completedWorking[0]);
+      ex.summary = completedWorking.length + '\u00d7' + maxSet.reps + ' @ ' + maxSet.weight;
+    }
+
+    // Check if all sets complete
+    const allDone = ex.sets.every(s => s.completed);
+    if (allDone) {
+      ex.status = 'completed';
+      document.getElementById('input-bar').classList.add('hidden');
+      document.getElementById('rest-context').textContent = 'Exercise complete';
+      showRestTimer();
+      setTimeout(() => {
+        collapseCard(inputBarExId);
+      }, 600);
+      return;
+    }
+
+    // Show rest timer, hide input bar
+    const nextIdx = ex.sets.findIndex(s => !s.completed);
+    const nextSet = nextIdx >= 0 ? ex.sets[nextIdx] : null;
+    if (nextSet) {
+      document.getElementById('rest-context').textContent = 'Next: Set ' + (nextSet.num || 'W') + ' \u2014 ' + convertWeight(nextSet.weight) + ' ' + weightUnit();
+    }
+    document.getElementById('input-bar').classList.add('hidden');
+    showRestTimer();
+  }
+
+  function simulateVelocity(exercise, setIdx) {
+    const profiles = {
+      bench: { base: 0.48, decay: 0.03, reps: 5 },
+      incline: { base: 0.72, decay: 0.04, reps: 8 },
+      flyes: { base: 0.88, decay: 0.02, reps: 10 },
+      pecdeck: { base: 0.80, decay: 0.03, reps: 12 }
+    };
+    const p = profiles[exercise] || profiles.flyes;
+    const fatigueOffset = setIdx * 0.04;
+    const reps = [];
+    const numReps = p.reps + Math.floor(Math.random() * 3) - 1;
+    for (let i = 0; i < numReps; i++) {
+      reps.push(+(p.base - fatigueOffset - i * p.decay + (Math.random() * 0.02 - 0.01)).toFixed(2));
+    }
+    const mean = +(reps.reduce((a, b) => a + b) / reps.length).toFixed(2);
+    const loss = Math.round(((reps[0] - reps[reps.length - 1]) / reps[0]) * 100);
+    let zone = 'speed';
+    if (mean < 0.5) zone = 'strength';
+    else if (mean < 0.75) zone = 'str-spd';
+    else if (mean < 1.0) zone = 'power';
+    return { reps, mean, loss, zone };
+  }
+
+  // ==================== ADD SET ====================
+  function addSet(exId) {
+    const ex = workoutData.exercises.find(e => e.id === exId);
+    const lastSet = ex.sets[ex.sets.length - 1];
+    const newNum = (lastSet.num || 0) + 1;
+    ex.sets.push({
+      num: newNum,
+      prev: null,
+      weight: lastSet.weight,
+      reps: null,
+      rpe: null,
+      completed: false,
+      vel: null
+    });
+    // Re-render
+    const oldCard = document.querySelector('[data-exercise-id="' + exId + '"]');
+    const newCard = renderExpandedCard(ex);
+    oldCard.replaceWith(newCard);
+    updateInputBar();
+  }
+
+  // ==================== VELOCITY BARS ====================
+  function initSingleVelBars(container) {
+    const data = JSON.parse(container.dataset.vel);
+    const maxVel = Math.max(...data.reps) * 1.15;
+    container.innerHTML = '';
+
+    data.reps.forEach((v, i) => {
+      const bar = document.createElement('div');
+      bar.className = 'vbar';
+      bar.style.background = velZoneColor(v);
+      bar.dataset.height = ((v / maxVel) * 100) + '%';
+      bar.dataset.repIdx = i;
+      bar.dataset.vel = v.toFixed(2);
+
+      const label = document.createElement('span');
+      label.className = 'vbar-label';
+      label.textContent = v.toFixed(2);
+      bar.appendChild(label);
+
+      // Rep tap handler for Level 3 tooltip
+      bar.addEventListener('click', (e) => {
+        if (!container.classList.contains('expanded')) return;
+        e.stopPropagation();
+        showRepTooltip(bar, i, v, data);
+      });
+
+      container.appendChild(bar);
+    });
+
+    const lossColor = data.loss > 25 ? 'var(--vel-red)' : data.loss > 20 ? 'var(--vel-orange)' : 'var(--text-secondary)';
+    const info = document.createElement('div');
+    info.className = 'vel-info';
+    info.innerHTML = '<span style="color:' + zoneColorVar(data.zone) + '">' + velZoneName(data.zone) + ' \u00b7 ' + data.mean.toFixed(2) + ' m/s</span><span style="color:' + lossColor + '">Loss: ' + data.loss + '%</span>';
+    container.appendChild(info);
+  }
+
+  function toggleVelBars(container) {
+    // Remove any existing tooltips
+    document.querySelectorAll('.rep-tooltip').forEach(t => t.remove());
+
+    const isExpanded = container.classList.contains('expanded');
+
+    if (isExpanded) {
+      container.querySelectorAll('.vbar').forEach(bar => {
+        bar.style.height = '';
+      });
+      container.classList.remove('expanded');
+    } else {
+      container.classList.add('expanded');
+      requestAnimationFrame(() => {
+        container.querySelectorAll('.vbar').forEach(bar => {
+          bar.style.height = bar.dataset.height;
+        });
+      });
+    }
+  }
+
+  // ==================== LEVEL 3: REP TOOLTIP ====================
+  function showRepTooltip(bar, repIdx, velocity, setData) {
+    // Remove existing tooltips
+    document.querySelectorAll('.rep-tooltip').forEach(t => t.remove());
+
+    const conTime = (0.8 + Math.random() * 0.6).toFixed(1);
+    const eccTime = (0.6 + Math.random() * 0.5).toFixed(1);
+    const repNum = repIdx + 1;
+
+    const tooltip = document.createElement('div');
+    tooltip.className = 'rep-tooltip';
+    tooltip.innerHTML = 'Rep ' + repNum + ': <strong>' + velocity.toFixed(2) + ' m/s</strong><br>' + conTime + 's con, ' + eccTime + 's ecc';
+    bar.appendChild(tooltip);
+
+    // Auto-dismiss after 2.5s
+    setTimeout(() => {
+      if (tooltip.parentNode) tooltip.remove();
+    }, 2500);
+  }
+
+  // ==================== REST TIMER ====================
+  let restTotal = 150;
+  let restRemaining = 150;
+  let restInterval = null;
+
+  function showRestTimer() {
+    restRemaining = restTotal = 150;
+    const timer = document.getElementById('rest-timer');
+    timer.classList.remove('hidden');
+    document.getElementById('input-bar').classList.add('hidden');
+    updateRestDisplay();
+
+    if (restInterval) clearInterval(restInterval);
+    restInterval = setInterval(() => {
+      restRemaining--;
+      if (restRemaining <= 0) {
+        skipRest();
+        return;
+      }
+      updateRestDisplay();
+    }, 1000);
+  }
+
+  function updateRestDisplay() {
+    const m = Math.floor(restRemaining / 60);
+    const s = restRemaining % 60;
+    document.getElementById('rest-time').textContent = m + ':' + String(s).padStart(2, '0');
+    const pct = (restRemaining / restTotal) * 100;
+    document.getElementById('rest-bar-fill').style.width = pct + '%';
+  }
+
+  function skipRest() {
+    if (restInterval) clearInterval(restInterval);
+    document.getElementById('rest-timer').classList.add('hidden');
+    // Show input bar for next set
+    updateInputBar();
+  }
+
+  function addRestTime(secs) {
+    restRemaining += secs;
+    restTotal += secs;
+    updateRestDisplay();
+  }
+
+  // ==================== ELAPSED TIME ====================
+  let elapsedSeconds = 14 * 60 + 32;
+  function updateElapsed() {
+    elapsedSeconds++;
+    const m = Math.floor(elapsedSeconds / 60);
+    const s = elapsedSeconds % 60;
+    document.querySelectorAll('.elapsed-time').forEach(el => {
+      el.textContent = m + ':' + String(s).padStart(2, '0');
+    });
+  }
+  setInterval(updateElapsed, 1000);
+
+  // ==================== UNIT TOGGLE ====================
+  function setUnit(unit) {
+    currentUnit = unit;
+    document.querySelectorAll('.unit-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.textContent.toLowerCase() === unit);
+    });
+    renderWorkout();
+  }
+
+  // ==================== INIT ====================
+  renderWorkout();
+  setTimeout(showRestTimer, 800);
+
+  // Dismiss tooltips on outside click
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.vbar')) {
+      document.querySelectorAll('.rep-tooltip').forEach(t => t.remove());
+    }
+  });
+</script>
+
+</body>
+</html>

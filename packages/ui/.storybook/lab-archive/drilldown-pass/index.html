@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Drill-Down Pass — Navigation Directions</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; margin: 0; }
+  body { background:#101010; color:#F3F4F6; font-family:system-ui,-apple-system,sans-serif; padding:32px; }
+  h1 { font-size:22px; letter-spacing:.02em; }
+  .sub { color:#8D95A3; margin:6px 0 28px; font-size:14px; max-width:70ch; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:16px; }
+  a.card { display:block; background:#191919; border:1px solid #2C2C2C; border-radius:12px; padding:20px;
+           text-decoration:none; color:inherit; transition:border-color .15s; }
+  a.card:hover { border-color:#FF7900; }
+  .tag { font-family:ui-monospace,monospace; font-size:11px; color:#FF7900; letter-spacing:.08em; }
+  h2 { font-size:16px; margin:6px 0 8px; }
+  p { font-size:13px; color:#9CA3AF; line-height:1.5; }
+  .sig { margin-top:10px; font-size:12px; color:#14B8A6; }
+  .foot { margin-top:28px; font-size:12px; color:#6B7280; }
+  .foot a { color:#8D95A3; }
+</style>
+</head>
+<body>
+<h1>Drill-Down Pass — Tablet Navigation Directions (2026-07-06)</h1>
+<p class="sub">Four spatial/interaction models for the wall-tablet dashboard, each hosting the same settled
+content hierarchy (session → set → per-rep bars → rep) and converged Round-1 components. Every gallery is
+self-contained, dark-theme, 1280×800-first, with a genuinely animated live set. Spec:
+<code>DIRECTIONS.md</code>; per-direction thesis + tradeoffs in each <code>brief.md</code>.</p>
+<a class="card" href="r2-synthesis/gallery.html" style="border-color:#FF7900;background:#1c1710;margin-bottom:20px;display:block">
+  <div class="tag">ROUND-2 · CONVERGED SYNTHESIS</div>
+  <h2>One converged shell — no variants</h2>
+  <p>Implements the FEEDBACK converged navigation contract: C's header + left categorical nav (Live/Review/Program/Body),
+     a persistent session rail with B's expandable items + set-progress (context-swaps live↔historical), C's live view
+     re-composed to breathe (mean-concentric headline per WA-D02, B's immediate-reset tempo, C's fatigue bar + A's aura +
+     cue-flags), B×C reconciled rest card, C per-rep tap-in + historical-tempo exploration in Review, D's pinned live
+     strip + drill drawers, and D's Session Pace in the rail. Program/Body are framed stubs.</p>
+  <div class="sig">Live + Rest + Review fully designed · Program + Body framed stubs · see r2-synthesis/brief.md</div>
+</a>
+<div class="grid">
+  <a class="card" href="a-stage-rail/gallery.html">
+    <div class="tag">DIRECTION A</div>
+    <h2>Persistent rail + focus stage</h2>
+    <p>288px always-visible session skeleton (every exercise × set, live position marker) anchors the wall;
+       one large stage re-targets between levels in place with a 150ms crossfade — never a page slide.
+       Rail keeps a mini live-pill during drills; ~9s idle auto-returns the stage to live.</p>
+    <div class="sig">Signature: you never lose your place — the rail is the map and the back button.</div>
+  </a>
+  <a class="card" href="b-expand-canvas/gallery.html">
+    <div class="tag">DIRECTION B</div>
+    <h2>One canvas, expand in place</h2>
+    <p>No navigation at all: a fixed-column masonry canvas where levels grow inside the cards that own them
+       (card → set table → strip → bars → rep tooltip), the active-workout ladder at wall scale. Sticky
+       color-flooded hero lane keeps live primacy; expansion only ever pushes down-column.</p>
+    <div class="sig">Signature: one transition vocabulary — everything is the strip-to-bars ease at different scales.</div>
+  </a>
+  <a class="card" href="c-miller-columns/gallery.html">
+    <div class="tag">DIRECTION C</div>
+    <h2>Master/detail columns</h2>
+    <p>Adjacent levels get adjacent columns; drilling slides a child column in while ancestors compress to
+       86px clickable spines — context never leaves the screen, and level-skips animate through the
+       intervening columns so distance stays legible. Pinned anchors (hero, body map) never compress.</p>
+    <div class="sig">Signature: passive and interactive are the same widget — columns collapse to a single live hero and re-expand.</div>
+  </a>
+  <a class="card" href="d-glance-overlay/gallery.html">
+    <div class="tag">DIRECTION D</div>
+    <h2>Immutable glance + overlay drill</h2>
+    <p>The passive layout never changes — every drill is an overlay over a spotlight scrim that keeps the
+       live hero readable, with a persistent live strip pinned above it. Lineage drills replace within one
+       breadcrumbed panel; lateral peeks stack one side-sheet. Idle timeout self-heals to pure glance.</p>
+    <div class="sig">Signature: the across-the-room contract is sacred — same pixels all session.</div>
+  </a>
+</div>
+<p class="foot">Compare against the anti-pattern: <a href="../../../../voltras/docs/prototypes/program-planning.html">program-planning.html</a>
+(push-stack full-page slides) and the precedent: <a href="../../../../voltras/docs/prototypes/training-status.html">training-status.html</a>
+(glance-first + detail panel). Round-1 component galleries: <a href="../round1/index.html">round1/index.html</a>.</p>
+</body>
+</html>

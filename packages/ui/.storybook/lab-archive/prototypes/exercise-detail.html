@@ -1,0 +1,2421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Exercise Detail — Bench Press</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --brand-primary: #FF7900;
+  --brand-primary-light: #FF9630;
+  --brand-primary-dark: #D0620C;
+  --brand-primary-subtle: rgba(255, 121, 0, 0.12);
+  --brand-secondary: #406D87;
+  --bg-base: #101010;
+  --bg-default: #161616;
+  --surface-elevated: #191919;
+  --surface-raised: #1C1C1C;
+  --text-primary: #F3F4F6;
+  --text-secondary: #9CA3AF;
+  --text-tertiary: #6B7280;
+  --border-default: #1F1F1F;
+  --border-strong: #2C2C2C;
+  --status-success: #14B8A6;
+  --status-error: #D14343;
+  --status-warning: #FFB020;
+  --divider: #1F1F1F;
+  --result-improve: #4caf50;
+  --result-degrade: #ef5350;
+  --vel-red: #ff4757;
+  --vel-orange: #ffa502;
+  --vel-yellow: #ffd43b;
+  --vel-green: #2ed573;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration: 250ms;
+
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body: 'Nunito Sans', sans-serif;
+  --font-heading: 'Space Grotesk', sans-serif;
+  --radius: 12px;
+  --radius-default: 8px;
+  --radius-sm: 4px;
+  --shadow-card: 0px 4px 6px rgba(100, 116, 139, 0.12);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Nunito Sans', sans-serif;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  max-width: 375px;
+  margin: 0 auto;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ========================================
+   Sticky Header
+   ======================================== */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(16, 16, 16, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-default);
+  padding: 12px 16px 0;
+}
+.header-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.back-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background var(--duration) var(--ease-out);
+}
+.back-btn:active { background: var(--surface-raised); }
+
+.header-info { flex: 1; min-width: 0; }
+.header-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.header-e1rm {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--brand-primary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.header-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+.tag {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: 100px;
+  background: var(--surface-raised);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-default);
+}
+.tag.muscle { background: rgba(64, 109, 135, 0.15); color: var(--brand-secondary); border-color: rgba(64, 109, 135, 0.3); }
+.tag.equipment { background: var(--brand-primary-subtle); color: var(--brand-primary-light); border-color: rgba(255, 121, 0, 0.2); }
+
+/* ========================================
+   Tab Bar
+   ======================================== */
+.tab-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: none;
+}
+.tab-btn {
+  flex: 1;
+  padding: 10px 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color var(--duration) var(--ease-out), border-color var(--duration) var(--ease-out);
+  text-align: center;
+}
+.tab-btn.active {
+  color: var(--brand-primary);
+  border-bottom-color: var(--brand-primary);
+}
+.tab-btn:not(.active):hover {
+  color: var(--text-secondary);
+}
+
+/* ========================================
+   Tab Content
+   ======================================== */
+.tab-content {
+  display: none;
+  padding: 16px;
+  padding-bottom: 40px;
+}
+.tab-content.active {
+  display: block;
+}
+
+/* ========================================
+   Cards
+   ======================================== */
+.card {
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.section-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-tertiary);
+  margin-bottom: 10px;
+}
+
+/* ========================================
+   Strength Trend Card (Hero)
+   ======================================== */
+.trend-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+.trend-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--status-success);
+  background: rgba(20, 184, 166, 0.1);
+  border: 1px solid rgba(20, 184, 166, 0.2);
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  margin-top: 8px;
+}
+.chart-container canvas {
+  width: 100%;
+  display: block;
+}
+
+.chart-tooltip {
+  position: absolute;
+  background: rgba(28, 28, 28, 0.95);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 8px 10px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 150ms ease;
+  z-index: 10;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.chart-tooltip.visible { opacity: 1; }
+.chart-tooltip .tip-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-bottom: 2px;
+}
+.chart-tooltip .tip-value {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  color: var(--text-tertiary);
+}
+.legend-line {
+  width: 16px;
+  height: 2px;
+  border-radius: 1px;
+}
+.legend-line.dashed {
+  background: repeating-linear-gradient(90deg, var(--text-tertiary) 0 4px, transparent 4px 8px);
+}
+.legend-star {
+  color: var(--status-warning);
+  font-size: 12px;
+  line-height: 1;
+}
+
+/* ========================================
+   Mesocycle Status Card
+   ======================================== */
+.meso-card {
+  background: linear-gradient(135deg, var(--surface-elevated) 0%, rgba(25, 25, 25, 0.95) 100%);
+  border: 1px solid var(--brand-primary-dark);
+  position: relative;
+  overflow: hidden;
+}
+.meso-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--brand-primary-dark), var(--brand-primary), var(--brand-primary-light));
+}
+.meso-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+.meso-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+}
+.meso-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 100px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.status-badge.warning {
+  background: rgba(255, 176, 32, 0.12);
+  color: var(--status-warning);
+  border: 1px solid rgba(255, 176, 32, 0.25);
+}
+.status-badge.success {
+  background: rgba(20, 184, 166, 0.12);
+  color: var(--status-success);
+  border: 1px solid rgba(20, 184, 166, 0.25);
+}
+
+.meso-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.meso-cell {
+  padding: 8px 10px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 8px;
+  border: 1px solid var(--divider);
+}
+.meso-cell-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 3px;
+}
+.meso-cell-value {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.coaching-box {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: rgba(255, 176, 32, 0.06);
+  border: 1px solid rgba(255, 176, 32, 0.15);
+  border-radius: 8px;
+}
+.coaching-box p {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+.coaching-box strong { color: var(--text-primary); font-weight: 600; }
+
+.next-target {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: rgba(20, 184, 166, 0.06);
+  border: 1px solid rgba(20, 184, 166, 0.15);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.next-target .icon { font-size: 14px; flex-shrink: 0; }
+.next-target .text {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--status-success);
+}
+.next-target .text strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+/* ========================================
+   Mesocycle Progression Table
+   ======================================== */
+.prog-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.prog-table th {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-tertiary);
+  padding: 8px 6px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-strong);
+}
+.prog-table td {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  padding: 10px 6px;
+  border-bottom: 1px solid var(--divider);
+  color: var(--text-secondary);
+  vertical-align: middle;
+}
+.prog-table tr.current td {
+  color: var(--text-primary);
+  background: rgba(255, 121, 0, 0.04);
+  font-weight: 600;
+}
+.prog-table tr.future td {
+  color: var(--text-tertiary);
+  opacity: 0.6;
+}
+.prog-table .check { color: var(--result-improve); }
+.prog-table .warn { color: var(--status-warning); }
+.prog-table .dash { color: var(--text-tertiary); }
+.prog-table td:first-child { font-weight: 600; }
+.prog-week-marker {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand-primary);
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+/* Week header row */
+.prog-table tr.week-header td {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-primary);
+  background: rgba(255,255,255,0.02);
+  border-bottom: 1px solid var(--border-strong);
+  padding: 8px 6px;
+}
+.prog-table tr.week-header.current-week td {
+  background: rgba(255, 121, 0, 0.06);
+}
+
+/* Week summary pills */
+.week-vol-pill {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  margin-left: 8px;
+}
+.week-rpe-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+.week-rpe-dot.green { background: var(--result-improve); box-shadow: 0 0 4px rgba(76,175,80,0.4); }
+.week-rpe-dot.amber { background: var(--status-warning); box-shadow: 0 0 4px rgba(255,176,32,0.4); }
+.week-rpe-dot.red { background: var(--status-error); box-shadow: 0 0 4px rgba(209,67,67,0.4); }
+
+/* Session row within week */
+.prog-table tr.session-row td {
+  padding-left: 16px;
+}
+.prog-table tr.session-row td:first-child {
+  font-weight: 500;
+  font-size: 11px;
+}
+
+/* Sets this week pill */
+.sets-pill {
+  display: inline-block;
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-default);
+  padding: 1px 6px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+
+/* Mini deviation bar */
+.deviation-bar {
+  display: inline-flex;
+  align-items: center;
+  width: 40px;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, rgba(20,184,166,0.25) 0%, rgba(107,114,128,0.15) 50%, rgba(255,176,32,0.25) 100%);
+  position: relative;
+  vertical-align: middle;
+}
+.deviation-bar .dev-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border: 1.5px solid var(--text-primary);
+  box-shadow: 0 0 4px rgba(0,0,0,0.5);
+}
+
+/* Expandable row */
+.prog-table tr.expandable { cursor: pointer; }
+.prog-table tr.expandable:active td { background: rgba(255,255,255,0.02); }
+.prog-expand-row td {
+  padding: 0 !important;
+  border-bottom: 1px solid var(--divider);
+}
+.prog-expand-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 400ms var(--ease-out), padding 250ms var(--ease-out), opacity 250ms var(--ease-out);
+  padding: 0 6px;
+  opacity: 0;
+}
+.prog-expand-content.open {
+  max-height: 800px;
+  padding: 8px 6px;
+  opacity: 1;
+}
+
+/* Status dots for progression table */
+.status-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+}
+.status-dot.on-track {
+  background: rgba(76,175,80,0.15);
+  color: var(--result-improve);
+  border: 1px solid rgba(76,175,80,0.3);
+}
+.status-dot.deviation {
+  background: rgba(255,176,32,0.12);
+  color: var(--status-warning);
+  border: 1px solid rgba(255,176,32,0.25);
+}
+.status-dot.future {
+  background: rgba(107,114,128,0.1);
+  color: var(--text-tertiary);
+  border: 1px solid rgba(107,114,128,0.2);
+}
+
+/* Mesocycle gauges */
+.meso-gauge-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+}
+.meso-gauge {
+  position: relative;
+}
+.meso-gauge-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+.meso-gauge-track {
+  position: relative;
+  height: 8px;
+  border-radius: 4px;
+  overflow: visible;
+}
+.meso-gauge-bg {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--status-success) 0%, rgba(107,114,128,0.25) 50%, var(--status-warning) 100%);
+  opacity: 0.25;
+}
+.meso-gauge-marker {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid var(--text-primary);
+  box-shadow: 0 0 6px rgba(0,0,0,0.5);
+  z-index: 2;
+}
+.meso-gauge-center {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: rgba(255,255,255,0.15);
+}
+.meso-info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border-strong);
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  margin-left: 6px;
+  transition: color var(--duration) var(--ease-out), border-color var(--duration) var(--ease-out);
+}
+.meso-info-icon:hover {
+  color: var(--text-secondary);
+  border-color: var(--text-tertiary);
+}
+.meso-info-tooltip {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 10px 12px;
+  z-index: 20;
+  max-width: 280px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+.meso-info-tooltip.visible { display: block; }
+.meso-info-tooltip p {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+.meso-info-tooltip strong { color: var(--text-primary); font-weight: 600; }
+.pr-inline-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  color: var(--status-warning);
+  margin-left: 4px;
+}
+
+/* ========================================
+   PR Expandable (bottom of Progress tab)
+   ======================================== */
+.pr-expandable-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 12px 16px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  transition: border-color var(--duration) var(--ease-out);
+}
+.pr-expandable-header:active {
+  border-color: var(--border-strong);
+}
+.pr-expandable-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pr-expandable-chevron {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  transition: transform 200ms var(--ease-out);
+}
+.pr-expandable-chevron.open {
+  transform: rotate(90deg);
+}
+.pr-expandable-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 300ms var(--ease-out);
+}
+.pr-expandable-body.open {
+  max-height: 400px;
+}
+.pr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 0 0;
+}
+.pr-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--surface-raised);
+  border-radius: 8px;
+  border: 1px solid var(--border-default);
+}
+.pr-row.recent {
+  border-color: rgba(255, 176, 32, 0.3);
+  box-shadow: 0 0 12px rgba(255, 176, 32, 0.06);
+}
+.pr-icon { font-size: 16px; flex-shrink: 0; }
+.pr-info { flex: 1; }
+.pr-type {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.pr-value {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.pr-date {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-align: right;
+}
+
+/* ========================================
+   History Tab - Mesocycle Headers
+   ======================================== */
+.history-meso-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px 12px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  margin-bottom: 8px;
+  transition: border-color var(--duration) var(--ease-out);
+}
+.history-meso-header:active {
+  border-color: var(--border-strong);
+}
+.history-meso-header.dimmed {
+  opacity: 0.6;
+}
+.history-meso-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+}
+.history-meso-date {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-default);
+  padding: 2px 8px;
+  border-radius: 100px;
+  margin-left: 8px;
+}
+.history-meso-chevron {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  transition: transform 200ms var(--ease-out);
+}
+.history-meso-chevron.open {
+  transform: rotate(90deg);
+}
+.history-meso-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 400ms var(--ease-out);
+}
+.history-meso-body.open {
+  max-height: 5000px;
+}
+
+/* ========================================
+   Advanced Tab
+   ======================================== */
+.adv-section-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-tertiary);
+  margin-bottom: 10px;
+  margin-top: 4px;
+}
+.profile-shift {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--status-success);
+  margin-top: 8px;
+}
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+/* ========================================
+   Velocity Trend Table
+   ======================================== */
+.vel-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.vel-table th {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--text-tertiary);
+  padding: 8px 6px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-strong);
+}
+.vel-table td {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--divider);
+  color: var(--text-secondary);
+}
+
+/* Velocity waterfall */
+.velocity-waterfall {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 40px;
+  margin-top: 8px;
+}
+.waterfall-bar {
+  flex: 1;
+  border-radius: 2px 2px 0 0;
+  min-width: 6px;
+  position: relative;
+}
+.waterfall-label {
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Inter', sans-serif;
+  font-size: 8px;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+/* RPE vs velocity */
+.rpe-vel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.rpe-vel-cell {
+  padding: 10px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 8px;
+  border: 1px solid var(--divider);
+  text-align: center;
+}
+.rpe-vel-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.rpe-vel-value {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+}
+.rpe-vel-note {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+.adv-disclaimer {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-align: center;
+  padding: 12px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+/* ========================================
+   Unified Exercise Card (shared with active-workout)
+   ======================================== */
+.exercise-card {
+  background: var(--surface-raised);
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+.exercise-header {
+  padding: 12px 12px 4px;
+}
+.exercise-name-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.exercise-badges {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.e1rm-badge {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--surface-raised);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-default);
+}
+.pr-badge {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--brand-primary);
+  background: var(--brand-primary-subtle);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 121, 0, 0.3);
+}
+.exercise-name {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.exercise-note {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Set Table */
+.set-table {
+  width: 100%;
+  padding: 0 6px;
+}
+.set-table-header {
+  display: flex;
+  padding: 8px 8px 4px;
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-tertiary);
+}
+.set-row {
+  display: flex;
+  align-items: center;
+  padding: 7px 8px;
+  border-radius: var(--radius-default);
+  transition: background var(--duration) var(--ease-out);
+  position: relative;
+}
+.col-set { width: 36px; text-align: center; }
+.col-prev { flex: 1; color: var(--text-secondary); font-size: 12px; }
+.col-weight { width: 56px; text-align: center; }
+.col-reps { width: 44px; text-align: center; }
+.col-rpe { width: 36px; text-align: center; }
+.col-done { width: 36px; text-align: center; }
+
+.set-num {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.set-type {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--vel-orange);
+  background: rgba(255, 165, 2, 0.12);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+.set-input {
+  background: var(--surface-raised);
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  padding: 5px 2px;
+  width: 44px;
+}
+.set-input.reps-input { width: 36px; }
+
+.rpe-input {
+  background: var(--surface-raised);
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  color: var(--brand-primary);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  padding: 4px 2px;
+  width: 32px;
+}
+
+/* History mode overrides */
+.exercise-card.history-mode .col-done { display: none; }
+.exercise-card.history-mode .set-input,
+.exercise-card.history-mode .rpe-input {
+  background: transparent;
+  border-color: transparent;
+}
+.exercise-card.history-mode .set-row {
+  opacity: 0.8;
+}
+
+/* Velocity Bars (strip that grows into bar chart) */
+.vel-bars-b {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  margin: 0 8px;
+  padding: 10px 0;
+  height: 3px;
+  box-sizing: content-box;
+  cursor: pointer;
+  transition: height 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              padding 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              margin 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              background 0.3s;
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+.vel-bars-b.expanded {
+  height: 60px;
+  padding: 16px 6px 24px;
+  margin: 4px 8px 4px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.03);
+  overflow: visible;
+}
+.vel-bars-b .vbar {
+  flex: 1;
+  border-radius: 2px 2px 0 0;
+  min-height: 100%;
+  transition: min-height 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  position: relative;
+}
+.vel-bars-b.expanded .vbar {
+  min-height: 0;
+}
+.vel-bars-b .vbar-label {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-ui);
+  font-size: 7px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s 0.15s;
+}
+.vel-bars-b.expanded .vbar-label {
+  opacity: 1;
+}
+.vel-bars-b .vel-info {
+  position: absolute;
+  bottom: 4px;
+  left: 6px;
+  right: 6px;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-ui);
+  font-size: 10px;
+  opacity: 0;
+  transition: opacity 0.3s 0.2s;
+  pointer-events: none;
+}
+.vel-bars-b.expanded .vel-info {
+  opacity: 1;
+}
+
+/* Session footer (history mode) */
+.session-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-top: 1px solid var(--border-default);
+}
+.session-quality {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+}
+.quality-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.quality-dot.strong { background: var(--status-success); box-shadow: 0 0 4px rgba(20,184,166,0.4); }
+.quality-dot.moderate { background: var(--status-warning); box-shadow: 0 0 4px rgba(255,176,32,0.4); }
+.quality-dot.tough { background: var(--status-error); box-shadow: 0 0 4px rgba(209,67,67,0.4); }
+.session-footer .e1rm-badge {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--brand-primary);
+  background: var(--brand-primary-subtle);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 121, 0, 0.3);
+}
+</style>
+</head>
+<body>
+
+<!-- ========================================
+     Sticky Header + Tab Bar
+     ======================================== -->
+<div class="header">
+  <div class="header-top">
+    <button class="back-btn" aria-label="Go back">&larr;</button>
+    <div class="header-info">
+      <div class="header-title">Bench Press</div>
+      <div class="header-tags">
+        <span class="tag muscle">Chest</span>
+        <span class="tag muscle">Shoulders</span>
+        <span class="tag muscle">Triceps</span>
+        <span class="tag equipment">Barbell</span>
+      </div>
+    </div>
+    <div class="header-e1rm">217 <span style="font-size:13px;font-weight:600;color:var(--text-secondary)">lbs</span></div>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="progress">Progress</button>
+    <button class="tab-btn" data-tab="history">History</button>
+    <button class="tab-btn" data-tab="advanced">Advanced</button>
+  </div>
+</div>
+
+<!-- ========================================
+     TAB: Progress
+     ======================================== -->
+<div class="tab-content active" id="tab-progress">
+
+  <!-- 1. Strength Trend Card -->
+  <div class="section-label">Strength Trend</div>
+  <div class="card">
+    <div class="chart-container" id="trendChartContainer">
+      <canvas id="trendChart"></canvas>
+      <div class="chart-tooltip" id="trendTooltip">
+        <div class="tip-label" id="trendTipLabel"></div>
+        <div class="tip-value" id="trendTipValue"></div>
+      </div>
+    </div>
+    <div class="trend-summary">
+      <span class="trend-badge">&#9650; +6 lbs above plan</span>
+    </div>
+    <div class="chart-legend">
+      <div class="legend-item"><div class="legend-line" style="background:var(--brand-primary);height:3px"></div> e1RM</div>
+      <div class="legend-item"><div class="legend-line dashed"></div> Plan</div>
+      <div class="legend-item"><span class="legend-star">&#9733;</span> PR</div>
+    </div>
+  </div>
+
+  <!-- 2. Mesocycle Status Card -->
+  <div class="section-label">Current Mesocycle</div>
+  <div class="card meso-card">
+    <div class="meso-header-row">
+      <div>
+        <div class="meso-title">Hypertrophy Block 1</div>
+        <div class="meso-subtitle">Week 3 of 5 &middot; 2 RIR</div>
+      </div>
+      <div style="display:flex;align-items:center;position:relative">
+        <span class="status-badge warning">&#9888; HARDER THAN PLANNED</span>
+        <span class="meso-info-icon" id="mesoInfoToggle">i</span>
+        <div class="meso-info-tooltip" id="mesoInfoTooltip">
+          <p>RPE 9 at <strong>2 RIR target</strong> suggests this load is above plan. Your estimated strength has increased &mdash; consider maintaining <strong>175 lbs</strong> but targeting <strong>8+ reps</strong> next session.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="meso-grid">
+      <div class="meso-cell">
+        <div class="meso-cell-label">Rx</div>
+        <div class="meso-cell-value">3&times;8-12 @ 2RIR</div>
+      </div>
+      <div class="meso-cell">
+        <div class="meso-cell-label">Actual</div>
+        <div class="meso-cell-value">3&times;6 @ 175 <span style="font-size:11px;color:var(--status-warning)">RPE 9</span></div>
+      </div>
+    </div>
+
+    <div class="meso-gauge-container">
+      <div class="meso-gauge">
+        <div class="meso-gauge-label">
+          <span>Lighter</span>
+          <span style="font-weight:600;color:var(--text-secondary)">Intensity</span>
+          <span>Harder</span>
+        </div>
+        <div class="meso-gauge-track">
+          <div class="meso-gauge-bg"></div>
+          <div class="meso-gauge-center"></div>
+          <div class="meso-gauge-marker" style="left:72%;background:var(--status-warning)"></div>
+        </div>
+      </div>
+      <div class="meso-gauge">
+        <div class="meso-gauge-label">
+          <span>Under</span>
+          <span style="font-weight:600;color:var(--text-secondary)">Volume</span>
+          <span>Over</span>
+        </div>
+        <div class="meso-gauge-track">
+          <div class="meso-gauge-bg"></div>
+          <div class="meso-gauge-center"></div>
+          <div class="meso-gauge-marker" style="left:42%;background:var(--status-success)"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="next-target" style="margin-top:12px">
+      <span class="icon">&#9654;</span>
+      <span class="text">Next: <strong>3&times;8-12 @ 170-175 lbs</strong></span>
+    </div>
+  </div>
+
+  <!-- 3. Mesocycle Progression Table -->
+  <div class="section-label">Week-by-Week Progression</div>
+  <div class="card" style="padding:10px;overflow-x:auto">
+    <table class="prog-table" id="progTable">
+      <thead>
+        <tr>
+          <th>Session</th>
+          <th>Rx</th>
+          <th>Result</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="progTableBody">
+        <!-- Populated by JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 4. Personal Records (expandable) -->
+  <div style="margin-top:4px">
+    <div class="pr-expandable-header" id="prToggle">
+      <div class="pr-expandable-title">&#127942; Personal Records <span style="font-size:11px;color:var(--text-tertiary);font-weight:500;margin-left:4px">5 records</span></div>
+      <span class="pr-expandable-chevron" id="prChevron">&#8250;</span>
+    </div>
+    <div class="pr-expandable-body" id="prBody">
+      <div class="pr-list" id="prList"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ========================================
+     TAB: History
+     ======================================== -->
+<div class="tab-content" id="tab-history">
+  <div class="section-label">All Sessions</div>
+  <div id="historyList"></div>
+</div>
+
+<!-- ========================================
+     TAB: Advanced (VBT Data)
+     ======================================== -->
+<div class="tab-content" id="tab-advanced">
+
+  <div class="adv-disclaimer">&#9881; Advanced velocity data for power users. These metrics drive the calculations shown on the Progress tab.</div>
+
+  <!-- Load-Velocity Profile -->
+  <div class="adv-section-title">Load-Velocity Profile</div>
+  <div class="card">
+    <div class="chart-container" id="lvChartContainer">
+      <canvas id="lvChart"></canvas>
+      <div class="chart-tooltip" id="lvTooltip">
+        <div class="tip-label" id="lvTipLabel"></div>
+        <div class="tip-value" id="lvTipValue"></div>
+      </div>
+    </div>
+    <div class="profile-shift">&#9650; Profile shifted +3% since Week 1</div>
+    <div class="chart-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--brand-primary)"></div> Current (Wk 3)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--text-tertiary);opacity:0.5"></div> Week 1</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--vel-green);width:6px;height:6px"></div> e1RM 217 lbs</div>
+    </div>
+  </div>
+
+  <!-- Velocity Trend -->
+  <div class="adv-section-title">Velocity Trend by Session</div>
+  <div class="card" style="padding:10px;overflow-x:auto">
+    <table class="vel-table">
+      <thead>
+        <tr>
+          <th>Session</th>
+          <th>Load</th>
+          <th>Mean Vel</th>
+          <th>Vel Loss</th>
+          <th>Zone</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="color:var(--text-primary);font-weight:600">Wk3 Upper B</td>
+          <td>135</td>
+          <td style="color:var(--vel-orange)">0.63</td>
+          <td>25%</td>
+          <td><span style="color:var(--vel-orange)">STR-SPD</span></td>
+        </tr>
+        <tr>
+          <td style="color:var(--text-primary);font-weight:600">Wk3 Upper A</td>
+          <td>175</td>
+          <td style="color:var(--vel-red)">0.44</td>
+          <td style="color:var(--status-error)">28%</td>
+          <td><span style="color:var(--vel-red)">STR</span></td>
+        </tr>
+        <tr>
+          <td>Wk2 Upper B</td>
+          <td>130</td>
+          <td style="color:var(--vel-orange)">0.71</td>
+          <td>27%</td>
+          <td><span style="color:var(--vel-orange)">STR-SPD</span></td>
+        </tr>
+        <tr>
+          <td>Wk2 Upper A</td>
+          <td>165</td>
+          <td style="color:var(--vel-orange)">0.51</td>
+          <td>28%</td>
+          <td><span style="color:var(--vel-orange)">STR-SPD</span></td>
+        </tr>
+        <tr>
+          <td>Wk1 Upper B</td>
+          <td>120</td>
+          <td style="color:var(--vel-orange)">0.71</td>
+          <td>27%</td>
+          <td><span style="color:var(--vel-orange)">STR-SPD</span></td>
+        </tr>
+        <tr>
+          <td>Wk1 Upper A</td>
+          <td>155</td>
+          <td style="color:var(--vel-orange)">0.59</td>
+          <td>25%</td>
+          <td><span style="color:var(--vel-orange)">STR-SPD</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Rep-by-Rep Waterfall (latest session) -->
+  <div class="adv-section-title">Rep-by-Rep Velocity &mdash; Latest Session</div>
+  <div class="card">
+    <div style="font-family:Inter;font-size:11px;color:var(--text-tertiary);margin-bottom:6px">175 lbs &middot; Mon Mar 10 &middot; 3&times;6</div>
+    <div class="velocity-waterfall" id="waterfallChart"></div>
+    <div style="height:18px"></div>
+  </div>
+
+  <!-- RPE vs Velocity Correlation -->
+  <div class="adv-section-title">RPE vs Velocity Correlation</div>
+  <div class="card">
+    <div class="rpe-vel-grid">
+      <div class="rpe-vel-cell">
+        <div class="rpe-vel-label">Reported RPE</div>
+        <div class="rpe-vel-value" style="color:var(--status-warning)">9.0</div>
+        <div class="rpe-vel-note">Subjective</div>
+      </div>
+      <div class="rpe-vel-cell">
+        <div class="rpe-vel-label">Velocity-Based RPE</div>
+        <div class="rpe-vel-value" style="color:var(--status-error)">9.3</div>
+        <div class="rpe-vel-note">Objective</div>
+      </div>
+      <div class="rpe-vel-cell">
+        <div class="rpe-vel-label">Calibration</div>
+        <div class="rpe-vel-value" style="color:var(--status-success)">Good</div>
+        <div class="rpe-vel-note">&plusmn;0.3 variance</div>
+      </div>
+      <div class="rpe-vel-cell">
+        <div class="rpe-vel-label">Fatigue Signal</div>
+        <div class="rpe-vel-value" style="color:var(--status-warning)">High</div>
+        <div class="rpe-vel-note">28% vel loss</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;font-family:Inter;font-size:11px;color:var(--text-tertiary);line-height:1.5">
+      Your RPE calibration is accurate (within 0.5 of velocity-estimated RPE). The high velocity loss (28%) indicates significant fatigue accumulation across sets.
+    </div>
+  </div>
+
+</div>
+
+<!-- ========================================
+     JavaScript
+     ======================================== -->
+<script>
+// =========================================================
+//  Utility: DPR-aware canvas setup
+// =========================================================
+function setupCanvas(canvas, w, h) {
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  return ctx;
+}
+
+// =========================================================
+//  Tab switching
+// =========================================================
+const tabBtns = document.querySelectorAll('.tab-btn');
+const tabContents = document.querySelectorAll('.tab-content');
+let advancedInitialized = false;
+let historyInitialized = false;
+
+tabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.tab;
+    tabBtns.forEach(b => b.classList.remove('active'));
+    tabContents.forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + target).classList.add('active');
+
+    if (target === 'advanced' && !advancedInitialized) {
+      advancedInitialized = true;
+      requestAnimationFrame(() => {
+        drawLVChart();
+        drawWaterfall();
+      });
+    }
+    if (target === 'history' && !historyInitialized) {
+      historyInitialized = true;
+      requestAnimationFrame(() => {
+        initVelBars(document.getElementById('tab-history'));
+      });
+    }
+  });
+});
+
+// =========================================================
+//  Velocity zone helpers (shared with active-workout)
+// =========================================================
+function velZoneColor(v) {
+  if (v < 0.5) return '#ff4757';
+  if (v < 0.75) return '#ffa502';
+  if (v < 1.0) return '#ffd43b';
+  return '#2ed573';
+}
+
+function velZoneName(zone) {
+  const names = { strength: 'Strength', 'str-spd': 'Strength-Speed', power: 'Power', speed: 'Speed' };
+  return names[zone] || zone;
+}
+
+// =========================================================
+//  Velocity bars init and toggle (shared with active-workout)
+// =========================================================
+function initSingleVelBars(container) {
+  const data = JSON.parse(container.dataset.vel);
+  const maxVel = Math.max(...data.reps) * 1.15;
+  container.innerHTML = '';
+
+  data.reps.forEach((v, i) => {
+    const bar = document.createElement('div');
+    bar.className = 'vbar';
+    bar.style.background = velZoneColor(v);
+    bar.dataset.height = ((v / maxVel) * 100) + '%';
+
+    const label = document.createElement('span');
+    label.className = 'vbar-label';
+    label.textContent = v.toFixed(2);
+    bar.appendChild(label);
+
+    container.appendChild(bar);
+  });
+
+  const zoneColorMap = { strength: 'var(--vel-red)', 'str-spd': 'var(--vel-orange)', power: 'var(--vel-yellow)', speed: 'var(--vel-green)' };
+  const lossColor = data.loss > 25 ? 'var(--vel-red)' : data.loss > 20 ? 'var(--vel-orange)' : 'var(--text-secondary)';
+  const info = document.createElement('div');
+  info.className = 'vel-info';
+  info.innerHTML = '<span style="color:' + zoneColorMap[data.zone] + '">' + velZoneName(data.zone) + ' \u00b7 ' + data.mean.toFixed(2) + ' m/s</span><span style="color:' + lossColor + '">Loss: ' + data.loss + '%</span>';
+  container.appendChild(info);
+}
+
+function initVelBars(scope) {
+  const root = scope || document;
+  root.querySelectorAll('.vel-bars-b').forEach(container => {
+    if (container.children.length === 0) {
+      initSingleVelBars(container);
+    }
+  });
+}
+
+function toggleVelBars(container) {
+  const isExpanded = container.classList.contains('expanded');
+
+  if (isExpanded) {
+    container.querySelectorAll('.vbar').forEach(bar => {
+      bar.style.height = '';
+    });
+    container.classList.remove('expanded');
+  } else {
+    container.classList.add('expanded');
+    requestAnimationFrame(() => {
+      container.querySelectorAll('.vbar').forEach(bar => {
+        bar.style.height = bar.dataset.height;
+      });
+    });
+  }
+}
+
+// =========================================================
+//  Deviation bar helper
+// =========================================================
+function buildDeviationBar(deviation) {
+  // deviation: -1 (much lighter) to +1 (much harder), 0 = on track
+  const pct = Math.max(0, Math.min(100, 50 + deviation * 50));
+  let dotColor;
+  if (deviation < -0.15) dotColor = 'var(--status-success)';
+  else if (deviation > 0.15) dotColor = 'var(--status-warning)';
+  else dotColor = 'var(--text-secondary)';
+  return '<span class="deviation-bar"><span class="dev-dot" style="left:' + pct + '%;background:' + dotColor + '"></span></span>';
+}
+
+// =========================================================
+//  Shared session data for Progress + History
+// =========================================================
+const sessionData = {
+  // Week 1
+  'w1a': {
+    id: 'w1a', week: 1, date: 'Mon Feb 17', workout: 'Upper A',
+    summary: '3x10 @ 155', e1rm: 205, avgRpe: 6,
+    deviation: -0.3, // lighter than planned
+    weekSetsAfter: 3, weekSetsPlanned: 10,
+    quality: 'strong', qualityLabel: 'Strong', qualityColor: 'var(--status-success)',
+    sets: [
+      { num: 1, prev: '\u2014', weight: 155, reps: 10, rpe: 5.5, vel: { reps: [0.68, 0.66, 0.64, 0.62, 0.60, 0.58, 0.56, 0.55, 0.53, 0.51], mean: 0.59, loss: 25, zone: 'str-spd' } },
+      { num: 2, prev: '\u2014', weight: 155, reps: 10, rpe: 6, vel: { reps: [0.68, 0.66, 0.64, 0.62, 0.60, 0.58, 0.56, 0.55, 0.53, 0.51], mean: 0.59, loss: 25, zone: 'str-spd' } },
+      { num: 3, prev: '\u2014', weight: 155, reps: 10, rpe: 6.5, vel: { reps: [0.68, 0.66, 0.64, 0.62, 0.60, 0.58, 0.56, 0.55, 0.53, 0.51], mean: 0.59, loss: 25, zone: 'str-spd' } }
+    ]
+  },
+  'w1b': {
+    id: 'w1b', week: 1, date: 'Thu Feb 20', workout: 'Upper B',
+    summary: '3x12 @ 120', e1rm: 178, avgRpe: 5.8,
+    deviation: -0.35,
+    weekSetsAfter: 6, weekSetsPlanned: 10,
+    quality: 'strong', qualityLabel: 'Strong', qualityColor: 'var(--status-success)',
+    sets: [
+      { num: 1, prev: '\u2014', weight: 120, reps: 12, rpe: 5.5, vel: { reps: [0.80, 0.78, 0.76, 0.74, 0.72, 0.70, 0.68, 0.66, 0.64, 0.62, 0.60, 0.58], mean: 0.71, loss: 27, zone: 'str-spd' } },
+      { num: 2, prev: '\u2014', weight: 120, reps: 12, rpe: 6, vel: { reps: [0.80, 0.78, 0.76, 0.74, 0.72, 0.70, 0.68, 0.66, 0.64, 0.62, 0.60, 0.58], mean: 0.71, loss: 27, zone: 'str-spd' } },
+      { num: 3, prev: '\u2014', weight: 120, reps: 12, rpe: 6, vel: { reps: [0.80, 0.78, 0.76, 0.74, 0.72, 0.70, 0.68, 0.66, 0.64, 0.62, 0.60, 0.58], mean: 0.71, loss: 27, zone: 'str-spd' } }
+    ]
+  },
+  // Week 2
+  'w2a': {
+    id: 'w2a', week: 2, date: 'Mon Mar 3', workout: 'Upper A',
+    summary: '3x9 @ 165', e1rm: 210, avgRpe: 7.5,
+    deviation: 0.05,
+    weekSetsAfter: 3, weekSetsPlanned: 10,
+    quality: 'strong', qualityLabel: 'Strong', qualityColor: 'var(--status-success)',
+    sets: [
+      { num: 1, prev: '155x10', weight: 165, reps: 9, rpe: 7, vel: { reps: [0.60, 0.58, 0.55, 0.53, 0.51, 0.49, 0.47, 0.45, 0.43], mean: 0.51, loss: 28, zone: 'str-spd' } },
+      { num: 2, prev: '155x10', weight: 165, reps: 9, rpe: 7.5, vel: { reps: [0.60, 0.58, 0.55, 0.53, 0.51, 0.49, 0.47, 0.45, 0.43], mean: 0.51, loss: 28, zone: 'str-spd' } },
+      { num: 3, prev: '155x10', weight: 165, reps: 8, rpe: 8, vel: { reps: [0.60, 0.58, 0.55, 0.53, 0.51, 0.49, 0.47, 0.45, 0.43], mean: 0.51, loss: 28, zone: 'str-spd' } }
+    ]
+  },
+  'w2b': {
+    id: 'w2b', week: 2, date: 'Thu Mar 6', workout: 'Upper B',
+    summary: '3x12 @ 130', e1rm: 192, avgRpe: 6.3,
+    deviation: -0.15,
+    weekSetsAfter: 6, weekSetsPlanned: 10,
+    quality: 'strong', qualityLabel: 'Strong', qualityColor: 'var(--status-success)',
+    sets: [
+      { num: 1, prev: '120x12', weight: 130, reps: 12, rpe: 6, vel: { reps: [0.78, 0.76, 0.74, 0.72, 0.70, 0.68, 0.66, 0.64, 0.62, 0.60, 0.58, 0.56], mean: 0.69, loss: 28, zone: 'str-spd' } },
+      { num: 2, prev: '120x12', weight: 130, reps: 12, rpe: 6.5, vel: { reps: [0.78, 0.76, 0.74, 0.72, 0.70, 0.68, 0.66, 0.64, 0.62, 0.60, 0.58, 0.56], mean: 0.69, loss: 28, zone: 'str-spd' } },
+      { num: 3, prev: '120x12', weight: 130, reps: 12, rpe: 6.5, vel: { reps: [0.78, 0.76, 0.74, 0.72, 0.70, 0.68, 0.66, 0.64, 0.62, 0.60, 0.58, 0.56], mean: 0.69, loss: 28, zone: 'str-spd' } }
+    ]
+  },
+  // Week 3
+  'w3a': {
+    id: 'w3a', week: 3, date: 'Mon Mar 10', workout: 'Upper A',
+    summary: '3x6 @ 175', e1rm: 217, avgRpe: 9, pr: true,
+    deviation: 0.45,
+    weekSetsAfter: 3, weekSetsPlanned: 10,
+    quality: 'tough', qualityLabel: 'Tough', qualityColor: 'var(--status-error)',
+    sets: [
+      { num: 1, prev: '165x9', weight: 175, reps: 6, rpe: 8.5, vel: { reps: [0.52, 0.48, 0.44, 0.41, 0.39, 0.37], mean: 0.44, loss: 28, zone: 'strength' } },
+      { num: 2, prev: '165x9', weight: 175, reps: 6, rpe: 9, vel: { reps: [0.52, 0.48, 0.44, 0.41, 0.39, 0.37], mean: 0.44, loss: 28, zone: 'strength' } },
+      { num: 3, prev: '165x8', weight: 175, reps: 5, rpe: 9.5, vel: { reps: [0.52, 0.48, 0.44, 0.41, 0.39, 0.37], mean: 0.44, loss: 28, zone: 'strength' } }
+    ]
+  },
+  'w3b': {
+    id: 'w3b', week: 3, date: 'Thu Mar 13', workout: 'Upper B',
+    summary: '4x10 @ 135', e1rm: 198, avgRpe: 6.6,
+    deviation: -0.05,
+    weekSetsAfter: 7, weekSetsPlanned: 10,
+    quality: 'strong', qualityLabel: 'On Track', qualityColor: 'var(--status-success)',
+    sets: [
+      { num: 1, prev: '130x12', weight: 135, reps: 10, rpe: 6, vel: { reps: [0.72, 0.70, 0.68, 0.66, 0.64, 0.62, 0.60, 0.58, 0.56, 0.54], mean: 0.63, loss: 25, zone: 'str-spd' } },
+      { num: 2, prev: '130x12', weight: 135, reps: 10, rpe: 6.5, vel: { reps: [0.72, 0.70, 0.68, 0.66, 0.64, 0.62, 0.60, 0.58, 0.56, 0.54], mean: 0.63, loss: 25, zone: 'str-spd' } },
+      { num: 3, prev: '130x12', weight: 135, reps: 10, rpe: 6.5, vel: { reps: [0.72, 0.70, 0.68, 0.66, 0.64, 0.62, 0.60, 0.58, 0.56, 0.54], mean: 0.63, loss: 25, zone: 'str-spd' } },
+      { num: 4, prev: '130x12', weight: 135, reps: 10, rpe: 7, vel: { reps: [0.72, 0.70, 0.68, 0.66, 0.64, 0.62, 0.60, 0.58, 0.56, 0.54], mean: 0.63, loss: 25, zone: 'str-spd' } }
+    ]
+  }
+};
+
+// Week definitions for both tabs
+const weekDefs = [
+  { num: 1, rx: '3x10-12 @ 4 RIR', sessions: ['w1a', 'w1b'], totalSets: 6, plannedSets: 10, current: false },
+  { num: 2, rx: '3x8-10 @ 3 RIR', sessions: ['w2a', 'w2b'], totalSets: 6, plannedSets: 10, current: false },
+  { num: 3, rx: '3x8-10 @ 2 RIR', sessions: ['w3a', 'w3b'], totalSets: 7, plannedSets: 10, current: true }
+];
+
+// =========================================================
+//  Build unified expanded card from session data
+// =========================================================
+function buildExpandedCard(sessionId) {
+  const data = sessionData[sessionId];
+  if (!data) return '';
+
+  let html = '<div class="exercise-card history-mode">';
+
+  html += '<div class="exercise-header">';
+  html += '<div class="exercise-name-row">';
+  html += '<div>';
+  html += '<div class="exercise-name">' + data.date + '</div>';
+  html += '<div class="exercise-note">' + data.workout + '</div>';
+  html += '</div>';
+  html += '<div class="exercise-badges">';
+  html += '<span class="e1rm-badge">e1RM: ' + data.e1rm + ' lbs</span>';
+  if (data.pr) {
+    html += '<span class="pr-badge">&#9733; PR</span>';
+  }
+  html += '</div>';
+  html += '</div>';
+  html += '</div>';
+
+  html += '<div class="set-table">';
+  html += '<div class="set-table-header">';
+  html += '<div class="col-set">Set</div>';
+  html += '<div class="col-prev">Prev</div>';
+  html += '<div class="col-weight">LBS</div>';
+  html += '<div class="col-reps">Reps</div>';
+  html += '<div class="col-rpe">RPE</div>';
+  html += '<div class="col-done"></div>';
+  html += '</div>';
+
+  data.sets.forEach(set => {
+    html += '<div class="set-row">';
+    html += '<div class="col-set"><span class="set-num">' + set.num + '</span></div>';
+    html += '<div class="col-prev">' + set.prev + '</div>';
+    html += '<div class="col-weight"><input class="set-input" type="text" value="' + set.weight + '" readonly></div>';
+    html += '<div class="col-reps"><input class="set-input reps-input" type="text" value="' + set.reps + '" readonly></div>';
+    html += '<div class="col-rpe"><input class="rpe-input" type="text" value="' + set.rpe + '" readonly></div>';
+    html += '<div class="col-done"></div>';
+    html += '</div>';
+
+    html += '<div class="vel-bars-b" data-vel=\'' + JSON.stringify(set.vel) + '\' onclick="toggleVelBars(this)"></div>';
+  });
+
+  html += '</div>';
+
+  html += '<div class="session-footer">';
+  html += '<span class="session-quality"><span class="quality-dot ' + data.quality + '"></span><span style="color:' + data.qualityColor + '">' + data.qualityLabel + '</span></span>';
+  html += '<span class="e1rm-badge">e1RM ' + data.e1rm + '</span>';
+  html += '</div>';
+
+  html += '</div>';
+  return html;
+}
+
+// =========================================================
+//  RPE color helper
+// =========================================================
+function rpeColorClass(avgRpe) {
+  if (avgRpe >= 9) return 'red';
+  if (avgRpe >= 7) return 'amber';
+  return 'green';
+}
+
+// =========================================================
+//  Progress tab: Build multi-session progression table
+// =========================================================
+(function buildProgTable() {
+  const tbody = document.getElementById('progTableBody');
+  let html = '';
+
+  weekDefs.forEach(week => {
+    const avgRpes = week.sessions.map(sid => sessionData[sid].avgRpe);
+    const weekAvgRpe = avgRpes.reduce((a, b) => a + b, 0) / avgRpes.length;
+    const rpeClass = rpeColorClass(weekAvgRpe);
+    const isCurrent = week.current;
+
+    // Week header row
+    html += '<tr class="week-header' + (isCurrent ? ' current-week' : '') + '">';
+    html += '<td colspan="4">';
+    if (isCurrent) html += '<span class="prog-week-marker"></span>';
+    html += 'Week ' + week.num;
+    html += '<span class="week-vol-pill">' + week.totalSets + ' / ' + week.plannedSets + ' sets</span>';
+    html += '<span class="week-rpe-dot ' + rpeClass + '" title="Avg RPE ' + weekAvgRpe.toFixed(1) + '"></span>';
+    html += '<span style="font-size:10px;color:var(--text-tertiary);margin-left:4px">' + week.rx + '</span>';
+    html += '</td>';
+    html += '</tr>';
+
+    // Session rows
+    week.sessions.forEach(sid => {
+      const s = sessionData[sid];
+      const prBadge = s.pr ? ' <span class="pr-inline-badge">&#9733;</span>' : '';
+
+      html += '<tr class="expandable session-row' + (isCurrent ? ' current' : '') + '" data-session="' + sid + '">';
+      html += '<td>' + s.date.split(' ').slice(0, 2).join(' ') + ' <span style="color:var(--text-tertiary);font-weight:400;font-size:10px">' + s.workout + '</span></td>';
+      html += '<td>' + s.summary + '</td>';
+      html += '<td>' + buildDeviationBar(s.deviation) + ' <span style="font-size:11px;color:var(--text-tertiary)">RPE ' + s.avgRpe + '</span>' + prBadge + ' <span class="sets-pill">' + s.weekSetsAfter + '/' + s.weekSetsPlanned + '</span></td>';
+      html += '<td style="text-align:right;color:var(--text-tertiary);font-size:14px">&#8250;</td>';
+      html += '</tr>';
+
+      html += '<tr class="prog-expand-row" data-expand="' + sid + '">';
+      html += '<td colspan="4">';
+      html += '<div class="prog-expand-content" id="expand-' + sid + '"></div>';
+      html += '</td>';
+      html += '</tr>';
+    });
+  });
+
+  // Future weeks
+  html += '<tr class="future"><td colspan="2">Week 4 <span style="font-size:10px;color:var(--text-tertiary);margin-left:4px">3x6-8 @ 1 RIR</span></td><td><span class="status-dot future">&mdash;</span></td><td></td></tr>';
+  html += '<tr class="future"><td colspan="2">Week 5 <span style="font-size:10px;color:var(--text-tertiary);margin-left:4px">2x8 deload</span></td><td><span class="status-dot future">&mdash;</span></td><td></td></tr>';
+
+  tbody.innerHTML = html;
+
+  // Populate expand containers
+  Object.keys(sessionData).forEach(sid => {
+    const container = document.getElementById('expand-' + sid);
+    if (container) {
+      container.innerHTML = buildExpandedCard(sid);
+    }
+  });
+
+  // Init velocity bars
+  initVelBars(document.getElementById('tab-progress'));
+
+  // Row expansion
+  document.querySelectorAll('#progTable tr.expandable').forEach(row => {
+    row.addEventListener('click', () => {
+      const sid = row.dataset.session;
+      const panel = document.getElementById('expand-' + sid);
+      if (!panel) return;
+      const isOpen = panel.classList.contains('open');
+
+      document.querySelectorAll('#progTable .prog-expand-content').forEach(p => p.classList.remove('open'));
+
+      if (!isOpen) {
+        panel.classList.add('open');
+        panel.querySelectorAll('.vel-bars-b').forEach(el => {
+          if (el.children.length === 0) initSingleVelBars(el);
+        });
+      }
+    });
+  });
+})();
+
+// =========================================================
+//  Mesocycle info tooltip toggle
+// =========================================================
+const mesoInfoToggle = document.getElementById('mesoInfoToggle');
+const mesoInfoTooltip = document.getElementById('mesoInfoTooltip');
+if (mesoInfoToggle) {
+  mesoInfoToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    mesoInfoTooltip.classList.toggle('visible');
+  });
+  document.addEventListener('click', () => mesoInfoTooltip.classList.remove('visible'));
+}
+
+// =========================================================
+//  PR expandable
+// =========================================================
+const prToggle = document.getElementById('prToggle');
+const prBody = document.getElementById('prBody');
+const prChevron = document.getElementById('prChevron');
+
+prToggle.addEventListener('click', () => {
+  prBody.classList.toggle('open');
+  prChevron.classList.toggle('open');
+});
+
+// =========================================================
+//  Render PRs
+// =========================================================
+(function renderPRs() {
+  const prs = [
+    { type: 'Estimated 1RM', value: '217 lbs', date: 'Mar 10', recent: true },
+    { type: 'Best Set (wt x reps)', value: '175 x 6', date: 'Mar 10', recent: true },
+    { type: 'Highest Weight', value: '195 lbs x 1', date: 'Feb 25', recent: false },
+    { type: 'Best Volume (session)', value: '3,150 lbs', date: 'Mar 3', recent: false },
+    { type: 'Most Reps at 155 lbs', value: '10 reps', date: 'Feb 17', recent: false },
+  ];
+
+  const container = document.getElementById('prList');
+  prs.forEach(pr => {
+    const row = document.createElement('div');
+    row.className = 'pr-row' + (pr.recent ? ' recent' : '');
+    row.innerHTML = `
+      <div class="pr-icon">${pr.recent ? '&#127942;' : '&#127941;'}</div>
+      <div class="pr-info">
+        <div class="pr-type">${pr.type}</div>
+        <div class="pr-value">${pr.value}</div>
+      </div>
+      <div class="pr-date">${pr.date}</div>
+    `;
+    container.appendChild(row);
+  });
+})();
+
+// =========================================================
+//  Strength Trend Chart (e1RM over mesocycle + PRs)
+// =========================================================
+(function drawTrendChart() {
+  const container = document.getElementById('trendChartContainer');
+  const canvas = document.getElementById('trendChart');
+  const cw = container.clientWidth;
+  const ch = 210;
+  const ctx = setupCanvas(canvas, cw, ch);
+
+  const pad = { top: 24, right: 24, bottom: 36, left: 42 };
+  const pw = cw - pad.left - pad.right;
+  const ph = ch - pad.top - pad.bottom;
+
+  const weeks = [1, 2, 3, 4, 5];
+  const actual = [205, 210, 217];
+  const plan = [205, 208, 211, 215, null];
+  const prWeeks = [2];
+
+  const yMin = 195, yMax = 225;
+
+  function xPx(i) { return pad.left + i / (weeks.length - 1) * pw; }
+  function yPx(v) { return pad.top + (1 - (v - yMin) / (yMax - yMin)) * ph; }
+
+  // Grid
+  ctx.strokeStyle = 'rgba(31,31,31,0.6)';
+  ctx.lineWidth = 0.5;
+  for (let y = 200; y <= 220; y += 5) {
+    ctx.beginPath(); ctx.moveTo(pad.left, yPx(y)); ctx.lineTo(pad.left + pw, yPx(y)); ctx.stroke();
+  }
+
+  // Y labels
+  ctx.fillStyle = 'rgba(107,114,128,0.7)';
+  ctx.font = '500 10px Inter';
+  ctx.textAlign = 'right';
+  for (let y = 200; y <= 220; y += 5) ctx.fillText(y, pad.left - 6, yPx(y) + 4);
+
+  // X labels
+  ctx.textAlign = 'center';
+  weeks.forEach((w, i) => {
+    ctx.fillStyle = i < actual.length ? 'rgba(156,163,175,0.8)' : 'rgba(107,114,128,0.4)';
+    ctx.fillText('Wk ' + w, xPx(i), ch - 8);
+  });
+
+  // Plan line (dashed)
+  ctx.save();
+  ctx.strokeStyle = 'rgba(107,114,128,0.5)';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([5, 4]);
+  ctx.beginPath();
+  plan.forEach((v, i) => {
+    if (v === null) return;
+    if (i === 0) ctx.moveTo(xPx(i), yPx(v));
+    else ctx.lineTo(xPx(i), yPx(v));
+  });
+  ctx.stroke();
+  ctx.restore();
+
+  // Plan dots
+  plan.forEach((v, i) => {
+    if (v === null) return;
+    ctx.beginPath();
+    ctx.arc(xPx(i), yPx(v), 3, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(107,114,128,0.4)';
+    ctx.fill();
+  });
+
+  // Actual line
+  ctx.strokeStyle = '#FF7900';
+  ctx.lineWidth = 2.5;
+  ctx.setLineDash([]);
+  ctx.beginPath();
+  actual.forEach((v, i) => {
+    if (i === 0) ctx.moveTo(xPx(i), yPx(v));
+    else ctx.lineTo(xPx(i), yPx(v));
+  });
+  ctx.stroke();
+
+  // Actual dots
+  actual.forEach((v, i) => {
+    ctx.beginPath();
+    ctx.arc(xPx(i), yPx(v), i === actual.length - 1 ? 6 : 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#FF7900';
+    ctx.fill();
+    if (i === actual.length - 1) {
+      ctx.beginPath();
+      ctx.arc(xPx(i), yPx(v), 10, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255,121,0,0.3)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+  });
+
+  // PR star markers
+  prWeeks.forEach(i => {
+    const v = actual[i];
+    const sx = xPx(i);
+    const sy = yPx(v) - 18;
+    ctx.save();
+    ctx.shadowColor = 'rgba(255, 176, 32, 0.6)';
+    ctx.shadowBlur = 12;
+    ctx.fillStyle = '#FFB020';
+    ctx.font = '20px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('\u2605', sx, sy);
+    ctx.shadowBlur = 0;
+    ctx.fillText('\u2605', sx, sy);
+    ctx.restore();
+  });
+
+  // "+6 lbs vs plan" annotation
+  const lastActual = actual[actual.length - 1];
+  const lastPlan = plan[actual.length - 1];
+  const xi = actual.length - 1;
+  ctx.save();
+  ctx.strokeStyle = 'rgba(20,184,166,0.6)';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([3, 3]);
+  ctx.beginPath();
+  ctx.moveTo(xPx(xi) + 14, yPx(lastActual));
+  ctx.lineTo(xPx(xi) + 14, yPx(lastPlan));
+  ctx.stroke();
+  const badgeMidY = yPx((lastActual + lastPlan) / 2);
+  ctx.fillStyle = 'rgba(20,184,166,0.12)';
+  const badgeText = '+6 lbs';
+  ctx.font = '700 10px Inter';
+  const tw = ctx.measureText(badgeText).width;
+  const bx = xPx(xi) + 16, by = badgeMidY - 8, bw = tw + 10, bh = 16, br = 4;
+  ctx.beginPath();
+  ctx.moveTo(bx + br, by);
+  ctx.lineTo(bx + bw - br, by);
+  ctx.quadraticCurveTo(bx + bw, by, bx + bw, by + br);
+  ctx.lineTo(bx + bw, by + bh - br);
+  ctx.quadraticCurveTo(bx + bw, by + bh, bx + bw - br, by + bh);
+  ctx.lineTo(bx + br, by + bh);
+  ctx.quadraticCurveTo(bx, by + bh, bx, by + bh - br);
+  ctx.lineTo(bx, by + br);
+  ctx.quadraticCurveTo(bx, by, bx + br, by);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(20,184,166,0.3)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([]);
+  ctx.stroke();
+  ctx.fillStyle = '#14B8A6';
+  ctx.textAlign = 'left';
+  ctx.fillText(badgeText, xPx(xi) + 21, badgeMidY + 4);
+  ctx.restore();
+
+  // Current value label
+  ctx.save();
+  ctx.fillStyle = '#FF7900';
+  ctx.font = '700 12px Inter';
+  ctx.textAlign = 'left';
+  ctx.fillText('217', xPx(xi) + 14, yPx(lastActual) + 4);
+  ctx.restore();
+
+  // Tooltip
+  const tooltip = document.getElementById('trendTooltip');
+  const tipLabel = document.getElementById('trendTipLabel');
+  const tipValue = document.getElementById('trendTipValue');
+
+  function handleTrend(e) {
+    const rect = canvas.getBoundingClientRect();
+    const cx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    const cy = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+
+    let closest = null, minD = 30, ci = -1;
+    actual.forEach((v, i) => {
+      const dx = cx - xPx(i), dy = cy - yPx(v);
+      const d = Math.sqrt(dx * dx + dy * dy);
+      if (d < minD) { minD = d; closest = v; ci = i; }
+    });
+    if (closest !== null) {
+      const isPR = prWeeks.includes(ci);
+      tipLabel.textContent = 'Week ' + (ci + 1) + (isPR ? ' \u2605 PR' : '');
+      tipValue.textContent = closest + ' lbs (plan: ' + plan[ci] + ')';
+      tooltip.style.left = Math.min(xPx(ci) + 12, cw - 150) + 'px';
+      tooltip.style.top = (yPx(closest) - 44) + 'px';
+      tooltip.classList.add('visible');
+    } else {
+      tooltip.classList.remove('visible');
+    }
+  }
+  canvas.addEventListener('mousemove', handleTrend);
+  canvas.addEventListener('touchstart', handleTrend, { passive: true });
+  canvas.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
+  canvas.addEventListener('touchend', () => setTimeout(() => tooltip.classList.remove('visible'), 1500));
+})();
+
+// =========================================================
+//  History Tab — Unified expandable rows grouped by mesocycle
+// =========================================================
+(function renderHistory() {
+  const container = document.getElementById('historyList');
+
+  const mesocycles = [
+    {
+      name: 'Hypertrophy Block 1',
+      dateRange: 'Feb 17 - Mar 21',
+      current: true,
+      weeks: [
+        { num: 3, sessions: ['w3b', 'w3a'], totalSets: 7, plannedSets: 10, current: true },
+        { num: 2, sessions: ['w2b', 'w2a'], totalSets: 6, plannedSets: 10, current: false },
+        { num: 1, sessions: ['w1b', 'w1a'], totalSets: 6, plannedSets: 10, current: false }
+      ]
+    },
+    {
+      name: 'Strength Block 2',
+      dateRange: 'Jan 6 - Feb 14',
+      current: false,
+      weeks: [
+        { num: 4, sessions: [], totalSets: 4, plannedSets: 8, current: false },
+        { num: 3, sessions: [], totalSets: 6, plannedSets: 8, current: false }
+      ]
+    }
+  ];
+
+  let expandCounter = 0;
+
+  mesocycles.forEach((meso, mi) => {
+    // Mesocycle header
+    const mesoHeaderId = 'histMeso-' + mi;
+    const mesoBodyId = 'histMesoBody-' + mi;
+    const chevronId = 'histMesoChev-' + mi;
+
+    const headerDiv = document.createElement('div');
+    headerDiv.className = 'history-meso-header' + (meso.current ? '' : ' dimmed');
+    headerDiv.id = mesoHeaderId;
+    headerDiv.innerHTML = '<div style="display:flex;align-items:center">' +
+      '<span class="history-meso-title">' + meso.name + '</span>' +
+      (meso.current ? ' <span style="font-size:10px;color:var(--brand-primary);margin-left:6px;font-weight:600">current</span>' : '') +
+      '<span class="history-meso-date">' + meso.dateRange + '</span>' +
+      '</div>' +
+      '<span class="history-meso-chevron' + (meso.current ? ' open' : '') + '" id="' + chevronId + '">&#8250;</span>';
+    container.appendChild(headerDiv);
+
+    const bodyDiv = document.createElement('div');
+    bodyDiv.className = 'history-meso-body' + (meso.current ? ' open' : '');
+    bodyDiv.id = mesoBodyId;
+
+    if (meso.weeks.some(w => w.sessions.length > 0)) {
+      const tableCard = document.createElement('div');
+      tableCard.className = 'card';
+      tableCard.style.padding = '10px';
+      tableCard.style.overflow = 'auto';
+      tableCard.style.marginBottom = '12px';
+
+      let tableHtml = '<table class="prog-table"><thead><tr><th>Session</th><th>Result</th><th></th><th></th></tr></thead><tbody>';
+
+      meso.weeks.forEach(week => {
+        const weekSessions = week.sessions.map(sid => sessionData[sid]).filter(Boolean);
+        if (weekSessions.length === 0) return;
+
+        const avgRpes = weekSessions.map(s => s.avgRpe);
+        const weekAvgRpe = avgRpes.reduce((a, b) => a + b, 0) / avgRpes.length;
+        const rpeClass = rpeColorClass(weekAvgRpe);
+
+        tableHtml += '<tr class="week-header' + (week.current ? ' current-week' : '') + '">';
+        tableHtml += '<td colspan="4">';
+        if (week.current) tableHtml += '<span class="prog-week-marker"></span>';
+        tableHtml += 'Week ' + week.num;
+        tableHtml += '<span class="week-vol-pill">' + week.totalSets + ' / ' + week.plannedSets + ' sets</span>';
+        tableHtml += '<span class="week-rpe-dot ' + rpeClass + '" title="Avg RPE ' + weekAvgRpe.toFixed(1) + '"></span>';
+        tableHtml += '</td>';
+        tableHtml += '</tr>';
+
+        weekSessions.forEach(s => {
+          const expId = 'hist-expand-' + (expandCounter++);
+          const prBadge = s.pr ? ' <span class="pr-inline-badge">&#9733;</span>' : '';
+
+          tableHtml += '<tr class="expandable session-row' + (week.current ? ' current' : '') + '" data-hist-expand="' + expId + '">';
+          tableHtml += '<td>' + s.date + ' <span style="color:var(--text-tertiary);font-weight:400;font-size:10px">' + s.workout + '</span></td>';
+          tableHtml += '<td>' + buildDeviationBar(s.deviation) + ' ' + s.summary + ' <span style="font-size:11px;color:var(--text-tertiary)">RPE ' + s.avgRpe + '</span>' + prBadge + ' <span class="sets-pill">' + s.weekSetsAfter + '/' + s.weekSetsPlanned + '</span></td>';
+          tableHtml += '<td></td>';
+          tableHtml += '<td style="text-align:right;color:var(--text-tertiary);font-size:14px">&#8250;</td>';
+          tableHtml += '</tr>';
+
+          tableHtml += '<tr class="prog-expand-row">';
+          tableHtml += '<td colspan="4">';
+          tableHtml += '<div class="prog-expand-content" id="' + expId + '">' + buildExpandedCard(s.id) + '</div>';
+          tableHtml += '</td>';
+          tableHtml += '</tr>';
+        });
+      });
+
+      tableHtml += '</tbody></table>';
+      tableCard.innerHTML = tableHtml;
+      bodyDiv.appendChild(tableCard);
+    } else {
+      const placeholder = document.createElement('div');
+      placeholder.style.cssText = 'font-family:Inter;font-size:12px;color:var(--text-tertiary);padding:12px;text-align:center;margin-bottom:12px';
+      placeholder.textContent = 'Show more sessions...';
+      placeholder.style.cursor = 'pointer';
+      bodyDiv.appendChild(placeholder);
+    }
+
+    container.appendChild(bodyDiv);
+
+    // Toggle mesocycle collapse
+    headerDiv.addEventListener('click', () => {
+      bodyDiv.classList.toggle('open');
+      document.getElementById(chevronId).classList.toggle('open');
+    });
+  });
+
+  // History row expansion
+  document.querySelectorAll('#tab-history tr.expandable').forEach(row => {
+    row.addEventListener('click', () => {
+      const expId = row.dataset.histExpand;
+      const panel = document.getElementById(expId);
+      if (!panel) return;
+      const isOpen = panel.classList.contains('open');
+
+      document.querySelectorAll('#tab-history .prog-expand-content').forEach(p => p.classList.remove('open'));
+
+      if (!isOpen) {
+        panel.classList.add('open');
+        panel.querySelectorAll('.vel-bars-b').forEach(el => {
+          if (el.children.length === 0) initSingleVelBars(el);
+        });
+      }
+    });
+  });
+})();
+
+// =========================================================
+//  Advanced: Load-Velocity Profile (Load on Y, Velocity on X)
+// =========================================================
+function drawLVChart() {
+  const container = document.getElementById('lvChartContainer');
+  const canvas = document.getElementById('lvChart');
+  const cw = container.clientWidth;
+  const ch = 280;
+  const ctx = setupCanvas(canvas, cw, ch);
+
+  const pad = { top: 16, right: 16, bottom: 36, left: 42 };
+  const pw = cw - pad.left - pad.right;
+  const ph = ch - pad.top - pad.bottom;
+
+  const xMin = 0, xMax = 1.4;
+  const yMin = 0, yMax = 230;
+
+  function xPx(v) { return pad.left + (v - xMin) / (xMax - xMin) * pw; }
+  function yPx(v) { return pad.top + (1 - (v - yMin) / (yMax - yMin)) * ph; }
+
+  // Grid
+  ctx.strokeStyle = 'rgba(31,31,31,0.6)';
+  ctx.lineWidth = 0.5;
+  for (let y = 50; y <= 200; y += 50) {
+    ctx.beginPath(); ctx.moveTo(pad.left, yPx(y)); ctx.lineTo(pad.left + pw, yPx(y)); ctx.stroke();
+  }
+  for (let x = 0.2; x <= 1.2; x += 0.2) {
+    ctx.beginPath(); ctx.moveTo(xPx(x), pad.top); ctx.lineTo(xPx(x), pad.top + ph); ctx.stroke();
+  }
+
+  // Y-axis labels
+  ctx.fillStyle = 'rgba(107,114,128,0.7)';
+  ctx.font = '500 10px Inter';
+  ctx.textAlign = 'right';
+  for (let y = 50; y <= 200; y += 50) ctx.fillText(y, pad.left - 6, yPx(y) + 4);
+
+  // X-axis labels
+  ctx.textAlign = 'center';
+  for (let x = 0.2; x <= 1.2; x += 0.2) ctx.fillText(x.toFixed(1), xPx(x), ch - 6);
+
+  // Axis titles
+  ctx.fillStyle = 'rgba(107,114,128,0.5)';
+  ctx.font = '500 9px Inter';
+  ctx.textAlign = 'center';
+  ctx.fillText('Velocity (m/s)', pad.left + pw / 2, ch - 0);
+  ctx.save();
+  ctx.translate(10, pad.top + ph / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('Load (lbs)', 0, 0);
+  ctx.restore();
+
+  // Data
+  const current = [
+    { load: 45, vel: 1.25 }, { load: 85, vel: 1.05 },
+    { load: 115, vel: 0.88 }, { load: 135, vel: 0.72 },
+    { load: 155, vel: 0.58 }, { load: 175, vel: 0.44 },
+    { load: 195, vel: 0.30 }, { load: 205, vel: 0.22 }
+  ];
+  const week1 = [
+    { load: 45, vel: 1.22 }, { load: 85, vel: 1.00 },
+    { load: 115, vel: 0.84 }, { load: 135, vel: 0.68 },
+    { load: 155, vel: 0.54 }, { load: 175, vel: 0.40 },
+    { load: 195, vel: 0.26 }, { load: 200, vel: 0.20 }
+  ];
+
+  function linReg(pts) {
+    const n = pts.length;
+    let sx = 0, sy = 0, sxx = 0, sxy = 0;
+    pts.forEach(p => { sx += p.vel; sy += p.load; sxx += p.vel * p.vel; sxy += p.vel * p.load; });
+    const m = (n * sxy - sx * sy) / (n * sxx - sx * sx);
+    const b = (sy - m * sx) / n;
+    return { m, b };
+  }
+
+  function drawProfile(pts, color, dotR, dashed, alpha) {
+    const reg = linReg(pts);
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    if (dashed) ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    const v0 = 0.1, v1 = 1.35;
+    ctx.moveTo(xPx(v0), yPx(reg.m * v0 + reg.b));
+    ctx.lineTo(xPx(v1), yPx(reg.m * v1 + reg.b));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    pts.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(xPx(p.vel), yPx(p.load), dotR, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+    });
+    ctx.restore();
+    return reg;
+  }
+
+  drawProfile(week1, '#6B7280', 3, true, 0.35);
+  const reg = drawProfile(current, '#FF7900', 5, false, 1);
+
+  // e1RM marker
+  const mvt = 0.17;
+  const e1rmLoad = reg.m * mvt + reg.b;
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(xPx(mvt), yPx(e1rmLoad), 6, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(46,213,115,0.2)';
+  ctx.fill();
+  ctx.strokeStyle = '#2ed573';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.fillStyle = '#2ed573';
+  ctx.font = '600 11px Inter';
+  ctx.textAlign = 'left';
+  ctx.fillText('e1RM: 217', xPx(mvt) + 10, yPx(e1rmLoad) - 4);
+  ctx.restore();
+
+  // MVT dashed vertical line
+  ctx.save();
+  ctx.strokeStyle = 'rgba(46,213,115,0.3)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(xPx(mvt), pad.top);
+  ctx.lineTo(xPx(mvt), pad.top + ph);
+  ctx.stroke();
+  ctx.restore();
+
+  // Tooltip
+  const tooltip = document.getElementById('lvTooltip');
+  const tipLabel = document.getElementById('lvTipLabel');
+  const tipValue = document.getElementById('lvTipValue');
+
+  function handleLV(e) {
+    const rect = canvas.getBoundingClientRect();
+    const cx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    const cy = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+
+    let closest = null, minD = 30;
+    current.forEach(p => {
+      const dx = cx - xPx(p.vel), dy = cy - yPx(p.load);
+      const d = Math.sqrt(dx * dx + dy * dy);
+      if (d < minD) { minD = d; closest = p; }
+    });
+    if (closest) {
+      tipLabel.textContent = 'Week 3 Session';
+      tipValue.textContent = closest.load + ' lbs @ ' + closest.vel.toFixed(2) + ' m/s';
+      tooltip.style.left = Math.min(xPx(closest.vel) + 12, cw - 150) + 'px';
+      tooltip.style.top = (yPx(closest.load) - 44) + 'px';
+      tooltip.classList.add('visible');
+    } else {
+      tooltip.classList.remove('visible');
+    }
+  }
+  canvas.addEventListener('mousemove', handleLV);
+  canvas.addEventListener('touchstart', handleLV, { passive: true });
+  canvas.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
+  canvas.addEventListener('touchend', () => setTimeout(() => tooltip.classList.remove('visible'), 1500));
+}
+
+// =========================================================
+//  Advanced: Rep-by-Rep Waterfall
+// =========================================================
+function drawWaterfall() {
+  const reps = [
+    { v: 0.52, set: 1 }, { v: 0.48, set: 1 }, { v: 0.44, set: 1 },
+    { v: 0.41, set: 1 }, { v: 0.38, set: 1 }, { v: 0.36, set: 1 },
+    { v: 0.50, set: 2 }, { v: 0.46, set: 2 }, { v: 0.42, set: 2 },
+    { v: 0.39, set: 2 }, { v: 0.36, set: 2 }, { v: 0.34, set: 2 },
+    { v: 0.48, set: 3 }, { v: 0.44, set: 3 }, { v: 0.40, set: 3 },
+    { v: 0.37, set: 3 }, { v: 0.34, set: 3 },
+  ];
+
+  const maxV = Math.max(...reps.map(r => r.v));
+  const container = document.getElementById('waterfallChart');
+
+  function barColor(v) {
+    if (v < 0.35) return '#ff4757';
+    if (v < 0.42) return '#ffa502';
+    if (v < 0.50) return '#ffd43b';
+    return '#2ed573';
+  }
+
+  let lastSet = 0;
+  reps.forEach((r, i) => {
+    if (r.set !== lastSet && lastSet !== 0) {
+      const gap = document.createElement('div');
+      gap.style.width = '4px';
+      gap.style.flexShrink = '0';
+      container.appendChild(gap);
+    }
+    lastSet = r.set;
+
+    const bar = document.createElement('div');
+    bar.className = 'waterfall-bar';
+    const h = Math.round((r.v / maxV) * 40);
+    bar.style.height = h + 'px';
+    bar.style.background = barColor(r.v);
+    container.appendChild(bar);
+  });
+}
+</script>
+</body>
+</html>

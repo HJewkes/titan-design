@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280, initial-scale=1.0">
+<title>Voltras Wall — R2 Synthesis · Converged Drill-Down</title>
+<style>
+  :root{
+    --bg:#0c0d0f; --stage:#0f1012; --surface:#17181c; --raised:#1e2025; --spine:#131418;
+    --border:#24262d; --border-strong:#31343d; --hover:rgba(255,255,255,.04);
+    --text:#E8EAED; --muted:#8D95A3; --dim:#5b616d;
+    --brand:#FF7900; --brand-soft:rgba(255,121,0,.14); --steel:#406D87;
+    --teal:#14B8A6; --red:#D14343; --amber:#FFB020; --sky:#2196F3;
+    --v-green:#2ed573; --v-yellow:#ffd43b; --v-orange:#ffa502; --v-red:#ff4757;
+    --heat-under:#4A90D9; --heat-maint:#F5C842; --heat-prod:#4CAF50; --heat-appr:#FFA502; --heat-over:#FF6B35;
+    --ease:cubic-bezier(.22,1,.36,1);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{background:#000;color:var(--text);font-family:var(--sans)}
+  body{display:flex;flex-direction:column;align-items:center;padding:16px;-webkit-font-smoothing:antialiased}
+  .caption{font-size:10px;color:#3a3d44;font-family:var(--mono);letter-spacing:.4px;margin-bottom:6px;align-self:flex-start}
+  .demobar{width:1280px;display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;align-items:center}
+  .dchip{font-size:11px;font-weight:700;color:var(--muted);background:#141519;border:1px solid var(--border-strong);
+    padding:5px 11px;border-radius:20px;cursor:pointer;white-space:nowrap;transition:all .2s}
+  .dchip:hover{color:var(--text);border-color:#454954}
+  .dchip.on{color:#111;background:var(--brand);border-color:var(--brand)}
+  .dchip.util{border-style:dashed}
+  .demobar .sp{flex:1}
+
+  .device{width:1280px;height:800px;background:var(--bg);border:1px solid var(--border);border-radius:14px;
+    overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.6);position:relative}
+
+  /* ---- topbar (C's header element, kept verbatim in spirit) ---- */
+  .topbar{height:46px;flex:0 0 46px;display:flex;align-items:center;gap:14px;padding:0 14px;
+    background:linear-gradient(180deg,#141519,#101113);border-bottom:1px solid var(--border);z-index:70}
+  .brand{font-weight:800;letter-spacing:1.5px;font-size:12px;color:var(--text);display:flex;align-items:center;gap:7px;white-space:nowrap}
+  .brand .mk{color:var(--brand);font-size:14px}
+  .brand .dim{font-weight:600;letter-spacing:.4px;color:var(--dim);font-size:10px}
+  .topstatus{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap;margin-left:auto}
+  .topsub{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.3px}
+  .pulse{width:8px;height:8px;border-radius:50%;background:var(--v-green);box-shadow:0 0 0 0 rgba(46,213,115,.6);animation:pulse 1.6s infinite}
+  .pulse.off{background:var(--dim);animation:none;box-shadow:none}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(46,213,115,.55)}70%{box-shadow:0 0 0 7px rgba(46,213,115,0)}100%{box-shadow:0 0 0 0 rgba(46,213,115,0)}}
+  .topnavbtn{font-size:10px;font-weight:700;color:var(--dim);border:1px solid var(--border-strong);border-radius:6px;
+    padding:4px 9px;cursor:pointer;font-family:var(--mono);letter-spacing:.4px;transition:.15s}
+  .topnavbtn:hover{color:var(--muted);border-color:#454954}
+
+  /* ---- body: NAV | RAIL | MAIN ---- */
+  .body{flex:1;display:flex;min-height:0;position:relative}
+  .nav{width:60px;flex:0 0 60px;background:#0a0b0d;border-right:1px solid var(--border);
+    display:flex;flex-direction:column;align-items:center;padding-top:10px;gap:4px;z-index:50}
+  .navbtn{width:46px;height:46px;border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:3px;cursor:pointer;color:var(--dim);transition:all .2s;font-size:8px;font-weight:700;letter-spacing:.3px}
+  .navbtn:hover{background:var(--hover);color:var(--muted)}
+  .navbtn.on{background:var(--brand-soft);color:var(--brand)}
+  .navbtn svg{width:20px;height:20px}
+
+  /* ---- persistent session rail (A's role, B's contents) ---- */
+  .rail{width:246px;flex:0 0 246px;background:var(--spine);border-right:1px solid var(--border);
+    display:flex;flex-direction:column;min-height:0;z-index:40}
+  .railhead{padding:11px 13px 9px;border-bottom:1px solid var(--border)}
+  .railctx{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--dim);display:flex;align-items:center;gap:5px}
+  .railctx .d{width:6px;height:6px;border-radius:50%;background:var(--v-green)}
+  .railctx.hist .d{background:var(--sky)}
+  .railtitle{font-size:14px;font-weight:800;margin-top:3px;letter-spacing:-.2px}
+  .railmeta{font-size:10px;color:var(--muted);margin-top:2px;font-family:var(--mono)}
+  .railscroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:6px 8px}
+  .railscroll::-webkit-scrollbar{width:6px}.railscroll::-webkit-scrollbar-thumb{background:#2a2d34;border-radius:3px}
+
+  /* B-style expandable workout items */
+  .rex{border-radius:9px;margin-bottom:3px;border:1px solid transparent;transition:background .15s}
+  .rex.active{background:var(--brand-soft);border-color:rgba(255,121,0,.28)}
+  .rex.sel{background:var(--brand-soft);box-shadow:inset 3px 0 0 var(--brand)}
+  .rexhead{padding:8px 9px;cursor:pointer;display:flex;flex-direction:column;gap:6px;border-radius:9px;transition:background .15s}
+  .rexhead:hover{background:var(--hover)}
+  .rextop{display:flex;align-items:center;gap:6px}
+  .rexidx{font-family:var(--mono);font-size:10px;color:var(--dim);width:13px;flex:0 0 auto}
+  .rexname{font-size:12px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rextag{font-size:8px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px;color:var(--v-green)}
+  .rexe1{font-family:var(--mono);font-size:10px;color:var(--dim)}
+  .rexchev{width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid var(--dim);transition:transform .3s var(--ease)}
+  .rex.open .rexchev{transform:rotate(180deg)}
+  /* set-tick progress row (set progress moved OUT of live view) */
+  .rticks{display:flex;gap:3px;padding-left:19px}
+  .rtick{flex:1;height:15px;border-radius:3px;background:#22252c;position:relative;cursor:pointer;overflow:hidden;transition:transform .12s}
+  .rtick:hover{transform:translateY(-1px)}
+  .rtick .rf{position:absolute;left:0;right:0;bottom:0;border-radius:3px}
+  .rtick.up{background:none;border:1px dashed #3a3d44;opacity:.5}
+  .rtick.live{box-shadow:0 0 0 2px var(--brand),0 0 10px rgba(255,121,0,.5);animation:tickpulse 1.6s infinite}
+  .rtick.selset{box-shadow:0 0 0 2px var(--text)}
+  @keyframes tickpulse{0%,100%{box-shadow:0 0 0 2px var(--brand),0 0 3px rgba(255,121,0,.3)}50%{box-shadow:0 0 0 2px var(--brand),0 0 14px rgba(255,121,0,.7)}}
+  .rtlbl{position:absolute;top:1px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:7px;color:rgba(255,255,255,.6);z-index:2}
+  /* expandable set rows */
+  .rexbody{max-height:0;overflow:hidden;transition:max-height .4s var(--ease),opacity .3s;opacity:.4}
+  .rex.open .rexbody{opacity:1}
+  .rsrow{display:flex;align-items:center;gap:7px;padding:6px 9px 6px 22px;cursor:pointer;font-family:var(--mono);font-size:11px;border-radius:7px;transition:background .15s}
+  .rsrow:hover{background:var(--hover)} .rsrow.sel{background:rgba(255,121,0,.1)}
+  .rsrow .sn{color:var(--muted);width:30px}
+  .rsrow .sv{font-weight:800} .rsrow .sl{margin-left:auto;font-size:10px}
+  .rsrow.livenow{color:var(--v-green)}
+
+  /* Session Pace element (D) — rail footer, session-scoped home */
+  .pace{border-top:1px solid var(--border);padding:11px 13px;background:linear-gradient(180deg,#141519,#101113)}
+  .pacehead{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .pacetitle{font-size:10px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--brand)}
+  .pacetoggle{font-size:8px;font-family:var(--mono);color:var(--dim);border:1px solid var(--border-strong);border-radius:5px;padding:2px 5px;cursor:pointer;letter-spacing:.3px}
+  .pacetoggle:hover{color:var(--muted)}
+  .pacetime{display:flex;align-items:baseline;gap:6px;font-family:var(--mono)}
+  .pacetime .big{font-size:20px;font-weight:800;letter-spacing:-.5px}
+  .pacetime .of{font-size:11px;color:var(--muted)}
+  .pacebar{height:6px;border-radius:3px;background:#22252c;margin:7px 0 3px;overflow:hidden;position:relative}
+  .pacebar .pf{position:absolute;left:0;top:0;bottom:0;border-radius:3px}
+  .pacebar .budget{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--text);opacity:.7}
+  .pacemetrics{display:flex;gap:4px;margin:8px 0}
+  .pm{flex:1;text-align:center;background:var(--raised);border-radius:7px;padding:6px 3px}
+  .pm .k{font-size:8px;text-transform:uppercase;letter-spacing:.4px;color:var(--dim);font-weight:800}
+  .pm .v{font-family:var(--mono);font-size:13px;font-weight:800;margin-top:2px}
+  .pacesuggest{font-size:10.5px;line-height:1.4;border-radius:8px;padding:8px 9px;display:flex;gap:7px;align-items:flex-start}
+  .pacesuggest.behind{background:rgba(255,176,32,.12);border:1px solid rgba(255,176,32,.35);color:var(--amber)}
+  .pacesuggest.ahead{background:rgba(46,213,115,.1);border:1px solid rgba(46,213,115,.3);color:var(--v-green)}
+  .pacesuggest .ic{flex:0 0 auto;font-size:12px}
+  .pacesuggest b{color:var(--text)}
+
+  /* ---- MAIN STAGE ---- */
+  .stage{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--stage);position:relative}
+  /* pinned live strip (D) — appears when a set runs and user is NOT on Live */
+  .livestrip{flex:0 0 0;height:0;overflow:hidden;display:flex;align-items:center;
+    background:linear-gradient(90deg,#141519,#101113);border-bottom:1px solid var(--border-strong);
+    transition:height .3s var(--ease),flex-basis .3s var(--ease);z-index:30}
+  .livestrip.show{height:44px;flex:0 0 44px}
+  .ls-seg{display:flex;align-items:center;gap:7px;padding:0 15px;height:100%;border-right:1px solid var(--border);white-space:nowrap}
+  .ls-live{background:var(--brand-soft);cursor:pointer}
+  .ls-dot{width:8px;height:8px;border-radius:50%;background:var(--v-green);box-shadow:0 0 8px currentColor}
+  .ls-k{font-size:9px;font-weight:800;letter-spacing:.8px;color:var(--dim);text-transform:uppercase}
+  .ls-v{font-family:var(--mono);font-size:14px;font-weight:800;color:var(--text)}
+  .ls-v.brand{color:var(--brand)}
+  .ls-mini{display:flex;align-items:flex-end;gap:2px;height:20px}
+  .ls-mini i{width:4px;border-radius:1px;display:block;min-height:2px}
+  .ls-label{margin-left:auto;padding:0 15px;font-family:var(--mono);font-size:9px;letter-spacing:.6px;color:var(--dim);text-align:right;line-height:1.3}
+  .ls-return{padding:0 14px;font-size:10px;font-weight:800;color:var(--brand);cursor:pointer;letter-spacing:.4px}
+
+  .crumb{height:34px;flex:0 0 34px;display:flex;align-items:center;gap:6px;padding:0 16px;border-bottom:1px solid var(--border);
+    font-size:11px;color:var(--muted);overflow:hidden}
+  .crumb .c{cursor:pointer;transition:color .15s;white-space:nowrap;font-weight:600}
+  .crumb .c:hover{color:var(--text)}
+  .crumb .c.cur{color:var(--text);cursor:default}
+  .crumb .sep{color:var(--dim);font-size:10px}
+  .crumb .tag{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:.5px;text-transform:uppercase}
+  .stagebody{flex:1;min-height:0;position:relative;overflow:hidden}
+
+  /* background aura (A) — general fatigue flood over the whole stage, layered under content */
+  .aura{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:0;transition:opacity .5s;
+    background:radial-gradient(130% 95% at 50% 0%,rgba(255,176,32,.12),transparent 62%)}
+  .aura.amber{opacity:1}
+  .aura.red{opacity:1;background:radial-gradient(130% 95% at 50% 0%,rgba(255,71,87,.18),transparent 62%);animation:auraPulse 1.3s infinite}
+  @keyframes auraPulse{0%,100%{opacity:.6}50%{opacity:1}}
+
+  /* ---- LIVE HERO (C base, metric-reordered, B tempo, C fatigue + A aura + cue) ---- */
+  .hero{height:100%;display:flex;flex-direction:column;padding:18px 26px;position:relative;z-index:1}
+  .herohead{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px}
+  /* metric priority: (1) what we're doing (2) weight+reps (3) sets (4) status */
+  .heroname{font-size:32px;font-weight:800;letter-spacing:-.6px;line-height:1}
+  .herowr{display:flex;gap:16px;align-items:baseline;margin-top:6px;font-family:var(--mono)}
+  .herowr .m{font-size:22px;font-weight:800} .herowr .m .u{font-size:12px;color:var(--muted);font-weight:700}
+  .herowr .sub{font-size:12px;color:var(--muted)}
+  .herostatus{text-align:right}
+  .statuspill{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:800;letter-spacing:.3px;
+    padding:7px 13px;border-radius:9px;background:rgba(46,213,115,.13);border:1px solid rgba(46,213,115,.35);color:var(--v-green)}
+  .statuspill.amber{background:rgba(255,176,32,.14);border-color:rgba(255,176,32,.4);color:var(--amber)}
+  .statuspill.red{background:rgba(255,71,87,.16);border-color:rgba(255,71,87,.45);color:var(--v-red)}
+  .statuspill .d{width:9px;height:9px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor}
+  .herosetctx{font-family:var(--mono);font-size:11px;color:var(--dim);margin-top:6px}
+
+  .heromid{flex:1;display:flex;gap:26px;min-height:0;margin-top:10px}
+  .heroleft{flex:1.7;display:flex;flex-direction:column;min-width:0}
+  .heroright{flex:1;display:flex;flex-direction:column;gap:13px;min-width:0}
+  .herolabel{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-bottom:7px;display:flex;justify-content:space-between}
+  /* per-rep velocity bars — THE one live velocity component, owns peak bounce, latest-bar-only pop */
+  .herobars{flex:1;display:flex;align-items:flex-end;gap:8px;padding:26px 6px 6px;position:relative;border-bottom:2px solid var(--border-strong)}
+  .herobar{flex:1;max-width:60px;border-radius:5px 5px 0 0;min-height:4px;position:relative;transform-origin:bottom;transition:height .25s var(--ease)}
+  .herobar .lab{position:absolute;top:-19px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:12px;font-weight:800;color:var(--text)}
+  .herobar.pop{animation:barpop .42s var(--ease)}
+  @keyframes barpop{0%{transform:scaleY(.55)}60%{transform:scaleY(1.07)}100%{transform:scaleY(1)}}
+  .herobar.pending{background:repeating-linear-gradient(90deg,#1c1e23,#1c1e23 4px,transparent 4px,transparent 8px)!important;border:1px dashed #33363d;min-height:6px;height:6px}
+  .heroref{position:absolute;left:6px;right:6px;border-top:1px dashed rgba(232,234,237,.4);pointer-events:none}
+  .heroref .rl{position:absolute;right:2px;top:-10px;font-family:var(--mono);font-size:8px;color:var(--muted)}
+  /* de-emphasized velocity numbers (they live in the chart) */
+  .herovel{display:flex;gap:22px;margin-top:9px;align-items:baseline}
+  .hv{display:flex;flex-direction:column;gap:1px}
+  .hv .k{font-size:9px;text-transform:uppercase;letter-spacing:.7px;color:var(--dim);font-weight:800}
+  .hv .v{font-family:var(--mono);font-size:24px;font-weight:800}
+  .hv.small .v{font-size:15px;color:var(--muted)}
+  .hv .u{font-size:10px;color:var(--muted)}
+
+  /* tempo (B, phase-fill, resets immediately at rep boundary) */
+  .tempo-track{display:flex;gap:3px;height:22px}
+  .tseg{position:relative;flex:1;border-radius:5px;background:#1c1e23;overflow:hidden;border:1px solid var(--border)}
+  .tseg .tfill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:4px}
+  .tseg .tcap{position:absolute;left:7px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:9px;color:var(--muted);z-index:2;letter-spacing:.4px}
+  .tempolabs{display:flex;margin-top:4px;font-family:var(--mono);font-size:9px;color:var(--dim)}
+  .tempolabs div{text-align:center}
+
+  /* fatigue — C's bar primary (needle) + aura driven from here */
+  .fmeter{position:relative;height:14px;border-radius:7px;overflow:hidden;
+    background:linear-gradient(90deg,var(--v-green) 0%,var(--v-green) 45%,var(--v-yellow) 55%,var(--v-yellow) 66%,var(--v-orange) 72%,var(--v-red) 88%,var(--v-red) 100%)}
+  .fneedle{position:absolute;top:-3px;width:4px;height:20px;background:#fff;border-radius:2px;box-shadow:0 0 5px rgba(255,255,255,.6);transition:left .5s var(--ease)}
+  .fscale{display:flex;justify-content:space-between;margin-top:4px;font-family:var(--mono);font-size:8px;color:var(--dim)}
+  .fnote{font-size:9px;color:var(--dim);margin-top:5px;font-style:italic}
+  /* conditional cue-flag (A) — trigger-only */
+  .herocue{border-radius:10px;padding:11px 13px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:9px;
+    opacity:0;max-height:0;overflow:hidden;transition:all .35s}
+  .herocue.show{opacity:1;max-height:80px}
+  .herocue.amber{background:rgba(255,176,32,.14);border:1px solid rgba(255,176,32,.4);color:var(--amber)}
+  .herocue.red{background:rgba(255,71,87,.16);border:1px solid rgba(255,71,87,.45);color:var(--v-red)}
+
+  /* ---- REST (B rest card layout × C timer + next-set context) ---- */
+  .restwrap{height:100%;display:flex;padding:24px 28px;gap:26px;position:relative;z-index:1}
+  .restleft{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+  .restring{position:relative;width:210px;height:210px}
+  .restring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .restring .num .t{font-family:var(--mono);font-size:54px;font-weight:800;letter-spacing:-2px}
+  .restring .num .k{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:800}
+  .restsub{font-size:12px;color:var(--muted);font-family:var(--mono)}
+  .restright{flex:1.15;display:flex;flex-direction:column;gap:13px;justify-content:center}
+  /* B's last-set card layout */
+  .lastset{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:14px}
+  .lastset .cat{font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--teal)}
+  .lastset .line{font-size:14px;font-weight:700;margin-top:5px;line-height:1.35}
+  .lastset .sub{font-size:11px;color:var(--muted);margin-top:5px;font-family:var(--mono)}
+  .summrow{display:flex;gap:8px;margin-top:12px}
+  .summcell{flex:1;text-align:center;background:var(--raised);border-radius:9px;padding:8px 4px}
+  .summcell .k{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--dim);font-weight:800}
+  .summcell .v{font-family:var(--mono);font-size:16px;font-weight:800;margin-top:2px}
+  /* C's next-set context — rest phase only */
+  .nextset{background:linear-gradient(135deg,rgba(255,121,0,.14),rgba(64,109,135,.1));border:1px solid rgba(255,121,0,.3);border-radius:13px;padding:14px}
+  .nextset .k{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--brand)}
+  .nextset .big{font-size:21px;font-weight:800;margin-top:4px;font-family:var(--mono)}
+  .nextset .sub{font-size:11px;color:var(--muted);margin-top:4px}
+
+  /* ---- REVIEW columns (C engine, kept) ---- */
+  .cols{display:flex;height:100%;overflow:hidden;position:relative;z-index:1}
+  .col{position:relative;height:100%;flex:0 0 auto;overflow:hidden;background:var(--stage);border-right:1px solid var(--border);
+    transition:width .42s var(--ease),flex-basis .42s var(--ease),transform .4s var(--ease),opacity .3s var(--ease)}
+  .col.full{width:238px} .col.wide{width:284px} .col.spine{width:84px;background:var(--spine)}
+  .col.focus{flex:1 1 auto;min-width:360px;width:auto;background:linear-gradient(180deg,#101215,#0d0e11)}
+  .col.spawning{transform:translateX(60px);opacity:0}
+  .col.leaving{transform:translateX(70px);opacity:0;width:0!important;min-width:0!important;flex:0 0 0!important;border:none}
+  .colinner{height:100%;overflow-y:auto;overflow-x:hidden}
+  .colinner::-webkit-scrollbar{width:6px}.colinner::-webkit-scrollbar-thumb{background:#2a2d34;border-radius:3px}
+  .colhead{padding:12px 14px 9px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--stage);z-index:2}
+  .col.focus .colhead{background:#0f1114}
+  .colhead .lvl{font-size:9px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim)}
+  .colhead .ttl{font-size:15px;font-weight:800;margin-top:2px;letter-spacing:-.2px}
+  .colhead .sub{font-size:11px;color:var(--muted);margin-top:2px;font-family:var(--mono)}
+  .spineinner{height:100%;display:flex;flex-direction:column;padding:10px 0;cursor:pointer}
+  .spinelabel{writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin:6px auto 8px;white-space:nowrap}
+  .spinesel{font-size:10px;font-weight:800;color:var(--brand);text-align:center;padding:0 6px;line-height:1.15;margin-bottom:8px}
+  .spinedots{display:flex;flex-direction:column;gap:5px;align-items:center;padding:0 8px;flex:1}
+  .spinedot{width:100%;height:7px;border-radius:3px;background:#22252c;transition:background .2s}
+  .spinedot:hover{background:#31343d} .spinedot.on{background:var(--brand)}
+  .spinehint{font-size:8px;color:var(--dim);text-align:center;margin-top:6px}
+  .setrow{display:flex;align-items:center;padding:10px 13px;border-bottom:1px solid var(--border);cursor:pointer;gap:9px;transition:background .15s}
+  .setrow:hover{background:var(--hover)} .setrow.sel{background:var(--brand-soft);box-shadow:inset 3px 0 0 var(--brand)}
+  .setno{width:26px;height:26px;border-radius:7px;background:#20232a;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;font-weight:700;color:var(--muted);flex:0 0 auto}
+  .setrow.sel .setno{background:var(--brand);color:#111}
+  .setmid{flex:1;min-width:0} .setrxw{font-size:12px;font-weight:700} .setsub{font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:1px}
+  .setnum{text-align:right;flex:0 0 auto} .setmean{font-family:var(--mono);font-size:14px;font-weight:800} .setloss{font-family:var(--mono);font-size:10px;margin-top:1px}
+  .warn{color:var(--amber)} .bad{color:var(--v-red)} .ok{color:var(--muted)}
+  .rpepill{font-family:var(--mono);font-size:10px;color:var(--brand);flex:0 0 auto}
+  .pad{padding:14px 16px}
+  .bignum{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .bignum .v{font-family:var(--mono);font-size:36px;font-weight:800;letter-spacing:-1px;line-height:1}
+  .bignum .u{font-size:12px;color:var(--muted);font-weight:700}
+  .bignum .k{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.8px;font-weight:800;margin-bottom:2px}
+  .kv{display:flex;flex-direction:column;gap:2px} .kv .vv{font-family:var(--mono);font-size:16px;font-weight:800}
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:13px;margin:12px 16px}
+  .panel.tight{padding:11px 13px}
+  .ptitle{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .ptitle .t{font-size:11px;font-weight:800;letter-spacing:.4px;color:var(--text)} .ptitle .m{font-family:var(--mono);font-size:10px;color:var(--muted)}
+  .vbars{position:relative;display:flex;align-items:flex-end;gap:4px;height:116px;padding:16px 4px 4px;border-bottom:1px solid var(--border-strong)}
+  .vbar{flex:1;border-radius:3px 3px 0 0;min-height:3px;position:relative;cursor:pointer;transition:filter .15s;transform-origin:bottom}
+  .vbar:hover{filter:brightness(1.25)} .vbar.sel{outline:2px solid #fff;outline-offset:1px}
+  .vbar .lab{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:9px;font-weight:700;color:var(--muted);white-space:nowrap}
+  .refline{position:absolute;left:0;right:0;border-top:1px dashed;pointer-events:none}
+  .refline .rl{font-family:var(--mono);font-size:8px;padding:0 3px;position:absolute;right:2px;top:-9px;background:var(--surface)}
+  .qlane{display:flex;gap:4px;padding:7px 4px 2px} .qdot{flex:1;height:6px;border-radius:3px}
+  .qlabels{display:flex;gap:4px;padding:2px 4px} .qlabels div{flex:1;text-align:center;font-family:var(--mono);font-size:8px;color:var(--dim)}
+  /* historical per-rep tempo (exploration) */
+  .htempo{display:flex;gap:4px;padding:6px 4px 0}
+  .htcol{flex:1;display:flex;flex-direction:column;gap:2px;align-items:center}
+  .htbar{width:100%;height:34px;border-radius:3px;overflow:hidden;display:flex;flex-direction:column}
+  .htseg{width:100%}
+  .htlbl{font-family:var(--mono);font-size:7px;color:var(--dim)}
+  .repbig{text-align:center;padding:18px 0 8px}
+  .repbig .v{font-family:var(--mono);font-size:52px;font-weight:800;letter-spacing:-2px;line-height:1}
+  .repbig .u{font-size:13px;color:var(--muted);font-weight:700}
+  .repgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px}
+  .rcell{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px}
+  .rcell .k{font-size:9px;text-transform:uppercase;letter-spacing:.7px;color:var(--dim);font-weight:800}
+  .rcell .v{font-family:var(--mono);font-size:18px;font-weight:800;margin-top:3px} .rcell .s{font-size:10px;color:var(--muted);margin-top:1px}
+  .trend{width:100%;height:128px} .lvchart{width:100%;height:146px}
+  .progtbl{width:100%;border-collapse:collapse;font-size:11px}
+  .progtbl th{text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:var(--dim);padding:6px 8px;font-weight:800}
+  .progtbl td{padding:7px 8px;border-top:1px solid var(--border);font-family:var(--mono)}
+  .mesostat{display:flex;align-items:center;gap:12px} .ring{position:relative;width:54px;height:54px;flex:0 0 auto}
+  .nexttarget{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-top:10px;background:var(--brand-soft);border-radius:8px;padding:8px 10px}
+  .nexttarget b{color:var(--text)}
+
+  /* ---- STUB views (Program / Body) ---- */
+  .stub{height:100%;overflow-y:auto;padding:18px 22px;position:relative;z-index:1}
+  .stubhead{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
+  .stubhead h2{font-size:19px;font-weight:800;letter-spacing:-.3px}
+  .stubhead .tag{font-family:var(--mono);font-size:10px;color:var(--brand);border:1px solid rgba(255,121,0,.35);border-radius:5px;padding:2px 7px;letter-spacing:.4px}
+  .stubnote{font-size:12px;color:var(--muted);margin-bottom:16px;max-width:760px;line-height:1.5}
+  .stubgrid{display:grid;gap:14px}
+  .slot{border:1px dashed var(--border-strong);border-radius:12px;padding:14px;background:rgba(255,255,255,.012);position:relative}
+  .slot .sl-k{font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--dim)}
+  .slot .sl-t{font-size:14px;font-weight:800;margin-top:4px}
+  .slot .sl-d{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.5}
+  .slot .sl-src{font-family:var(--mono);font-size:9px;color:var(--brand);margin-top:8px;letter-spacing:.3px}
+  .slot.filled{border-style:solid;background:var(--surface)}
+  .bodyfig{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .bodyfig svg{width:100px;height:250px}
+  .bodyfig .cap{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--dim)}
+  .mregion{cursor:pointer;transition:opacity .15s,stroke-width .15s;stroke:#0c0d0f;stroke-width:1}
+  .mregion:hover,.mregion.on{stroke:#fff;stroke-width:2}
+  .bodylegend{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:8px}
+  .bl{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted)} .bl .sw{width:11px;height:11px;border-radius:3px}
+
+  /* ---- OVERLAY layer (D): scrim + right drawer sheet ---- */
+  .scrim{position:absolute;inset:0;z-index:80;opacity:0;pointer-events:none;transition:opacity .3s var(--ease);
+    background:rgba(6,7,9,.62)}
+  .scrim.show{opacity:1;pointer-events:auto}
+  .sheet{position:absolute;z-index:90;top:0;right:0;bottom:0;width:430px;background:var(--surface);
+    border-left:1px solid var(--border-strong);box-shadow:-20px 0 60px rgba(0,0,0,.5);
+    transform:translateX(100%);transition:transform .34s var(--ease);display:flex;flex-direction:column}
+  .sheet.show{transform:none}
+  .sheetbar{display:flex;align-items:center;gap:10px;padding:15px 18px;border-bottom:1px solid var(--border);flex-shrink:0}
+  .sheetbar .peek{font-family:var(--mono);font-size:9px;letter-spacing:1px;color:var(--dim);border:1px solid var(--border-strong);border-radius:4px;padding:3px 6px;text-transform:uppercase}
+  .sheetbar .sx{font-size:15px;font-weight:800}
+  .sheetclose{margin-left:auto;font-size:12px;color:var(--muted);cursor:pointer;padding:6px 10px;border-radius:6px}
+  .sheetclose:hover{background:#181a1f;color:var(--text)}
+  .sheetbody{flex:1;overflow-y:auto;padding:16px 18px}
+
+  /* top-nav variant mock (static, screenshot-style inset) */
+  .navmock{position:absolute;top:52px;right:14px;width:300px;background:var(--surface);border:1px solid var(--border-strong);
+    border-radius:11px;padding:12px;z-index:95;box-shadow:0 16px 50px rgba(0,0,0,.65);display:none}
+  .navmock.show{display:block}
+  .navmock h4{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-family:var(--mono);margin-bottom:9px;display:flex;justify-content:space-between}
+  .navmock h4 span{cursor:pointer;color:var(--dim)}
+  .nm-shot{border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--bg)}
+  .nm-top{height:30px;display:flex;align-items:center;gap:5px;padding:0 8px;background:linear-gradient(180deg,#141519,#101113);border-bottom:1px solid var(--border)}
+  .nm-top .mk{color:var(--brand);font-size:10px;font-weight:800}
+  .nm-tab{font-size:9px;font-weight:700;color:var(--dim);padding:3px 8px;border-radius:12px}
+  .nm-tab.on{background:var(--brand);color:#111}
+  .nm-lower{display:flex;height:60px}
+  .nm-rail{width:52px;border-right:1px solid var(--border);background:var(--spine)}
+  .nm-main{flex:1;padding:8px;display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--dim)}
+  .navmock p{font-size:10px;color:var(--muted);margin-top:9px;line-height:1.45}
+  .navmock p b{color:var(--text)}
+</style>
+</head>
+<body>
+<div class="caption">R2 SYNTHESIS · Converged drill-down · 1280×800 · self-contained · dark · Live+Rest+Review full / Program+Body stubs</div>
+<div class="demobar" id="demobar"></div>
+
+<div class="device">
+  <div class="topbar">
+    <div class="brand"><span class="mk">◇</span> VOLTRAS <span class="dim">/ wall dashboard</span></div>
+    <span class="topnavbtn" id="topnavToggle" onclick="toggleNavMock()">▤ top-nav variant</span>
+    <div class="topstatus" id="topstatus"></div>
+  </div>
+  <div class="body">
+    <div class="nav" id="nav"></div>
+    <div class="rail">
+      <div class="railhead">
+        <div class="railctx" id="railctx"></div>
+        <div class="railtitle" id="railtitle"></div>
+        <div class="railmeta" id="railmeta"></div>
+      </div>
+      <div class="railscroll" id="railscroll"></div>
+      <div class="pace" id="pace"></div>
+    </div>
+    <div class="stage">
+      <div class="livestrip" id="livestrip"></div>
+      <div class="crumb" id="crumb"></div>
+      <div class="stagebody" id="stagebody">
+        <div class="aura" id="aura"></div>
+      </div>
+    </div>
+    <!-- overlay layer -->
+    <div class="scrim" id="scrim" onclick="closeSheet()"></div>
+    <div class="sheet" id="sheet">
+      <div class="sheetbar"><span class="peek">DRILL-IN DRAWER</span><span class="sx" id="sheetTitle">—</span>
+        <span class="sheetclose" onclick="closeSheet()">✕ close</span></div>
+      <div class="sheetbody" id="sheetBody"></div>
+    </div>
+    <div class="navmock" id="navmock">
+      <h4>Alt: top-nav variant <span onclick="toggleNavMock()">✕</span></h4>
+      <div class="nm-shot">
+        <div class="nm-top"><span class="mk">◇ VOLTRAS</span>
+          <span class="nm-tab on">Live</span><span class="nm-tab">Review</span><span class="nm-tab">Program</span><span class="nm-tab">Body</span></div>
+        <div class="nm-lower"><div class="nm-rail"></div><div class="nm-main">session rail + main viewport</div></div>
+      </div>
+      <p><b>Tradeoff:</b> top tabs free the full height for the session rail and read faster left-to-right, but the wall is landscape — vertical nav real-estate is cheap and the left rail keeps Live one thumb-reach from the door. <b>Shipping default: left rail.</b></p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================ DATA (C's, kept) */
+function genSet(peak,n,shape){
+  const a=[];
+  for(let i=0;i<n;i++){
+    const t=n>1?i/(n-1):0; let v;
+    if(shape==='decay')      v=peak*(1-0.30*t);
+    else if(shape==='slow')  v=peak*(1-0.32*t)+(i===0?-0.045:i===1?-0.02:i===2?-0.005:0);
+    else if(shape==='gain')  v=peak*(0.84+0.17*t);
+    else if(shape==='erratic')v=peak*(1-0.24*t)+((i%2)?0.028:-0.028);
+    else v=peak*(1-0.26*t);
+    v+=(((i*37)%7)-3)*0.004;
+    a.push(Math.max(0.18,Math.round(v*100)/100));
+  }
+  return a;
+}
+const EX={
+  'cable-row':{name:'Seated Cable Row',wt:145,e1rm:205,pr:true,tempo:{con:900,hold:300,ecc:1500},cat:'Back',
+    sets:[{reps:8,rpe:7,peak:0.68,shape:'slow'},{reps:8,rpe:7.5,peak:0.66,shape:'decay'},
+          {reps:8,rpe:8,peak:0.63,shape:'decay'},{reps:8,rpe:8.5,peak:0.60,shape:'decay',live:true},
+          {reps:7,rpe:9.5,peak:0.57,shape:'erratic'}]},
+  'lat-pull':{name:'Lat Pulldown',wt:130,e1rm:188,tempo:{con:850,hold:200,ecc:1400},cat:'Back',
+    sets:[{reps:10,rpe:7,peak:0.78,shape:'decay'},{reps:10,rpe:8,peak:0.74,shape:'decay'},
+          {reps:9,rpe:8.5,peak:0.70,shape:'gain'},{reps:8,rpe:9,peak:0.66,shape:'decay'}]},
+  'cable-press':{name:'Cable Chest Press',wt:90,e1rm:150,tempo:{con:800,hold:200,ecc:1300},cat:'Chest',
+    sets:[{reps:10,rpe:7,peak:0.70,shape:'decay'},{reps:9,rpe:8,peak:0.66,shape:'decay'},
+          {reps:8,rpe:8.5,peak:0.62,shape:'erratic'},{reps:8,rpe:9,peak:0.58,shape:'gain'}]},
+  'cable-fly':{name:'Cable Fly',wt:45,e1rm:78,tempo:{con:1100,hold:400,ecc:1600},cat:'Chest',
+    sets:[{reps:12,rpe:6,peak:0.90,shape:'decay'},{reps:12,rpe:7,peak:0.86,shape:'decay'},{reps:11,rpe:8,peak:0.82,shape:'erratic'}]},
+  'face-pull':{name:'Face Pull',wt:35,e1rm:60,tempo:{con:900,hold:500,ecc:1200},cat:'Rear Delt',
+    sets:[{reps:15,rpe:6,peak:0.95,shape:'decay'},{reps:15,rpe:7,peak:0.90,shape:'decay'},{reps:14,rpe:8,peak:0.85,shape:'decay'}]},
+};
+const SESSION_ORDER=['cable-row','lat-pull','cable-press','cable-fly','face-pull'];
+for(const id in EX){EX[id].sets.forEach(s=>{s.reps_v=genSet(s.peak,s.reps,s.shape);});}
+
+const PROGRAM={name:'12-Week Hypertrophy',week:8,total:12};
+const BODY={
+  front:[{id:'chest',name:'Chest',status:'prod',sets:14,tgt:16,rec:82},{id:'delts-f',name:'Front Delts',status:'maint',sets:9,tgt:12,rec:78},
+    {id:'biceps',name:'Biceps',status:'appr',sets:11,tgt:10,rec:64},{id:'quads',name:'Quads',status:'prod',sets:13,tgt:14,rec:95},
+    {id:'abs',name:'Abs',status:'under',sets:4,tgt:8,rec:98}],
+  back:[{id:'lats',name:'Lats',status:'over',sets:19,tgt:16,rec:38},{id:'traps',name:'Traps',status:'prod',sets:12,tgt:14,rec:70},
+    {id:'rear-delt',name:'Rear Delts',status:'maint',sets:8,tgt:10,rec:66},{id:'hams',name:'Hamstrings',status:'prod',sets:11,tgt:12,rec:93},
+    {id:'glutes',name:'Glutes',status:'maint',sets:9,tgt:12,rec:90},{id:'calves',name:'Calves',status:'under',sets:4,tgt:8,rec:99}]};
+const HEAT={under:'#4A90D9',maint:'#F5C842',prod:'#4CAF50',appr:'#FFA502',over:'#FF6B35'};
+const HEATNAME={under:'Under target',maint:'Maintenance',prod:'Productive',appr:'Approaching',over:'Over target'};
+
+/* Session pace budget */
+const PACE={budget:60*60, elapsed:42*60+18, volDone:7340, volPlan:9600, fatigue:'moderate'};
+
+/* ============================================================ HELPERS (C's, kept) */
+const $=id=>document.getElementById(id);
+function velColor(v){return v<0.5?'#ff4757':v<0.75?'#ffa502':v<1.0?'#ffd43b':'#2ed573';}
+function mean(a){return a.reduce((s,x)=>s+x,0)/a.length;}
+function runBest(a){let m=0;return a.map(v=>(m=Math.max(m,v)));}
+function setLoss(a){const b=Math.max(...a);return Math.round((b-a[a.length-1])/b*100);}
+function f2(v){return v.toFixed(2);}
+function lossClass(l){return l>=25?'bad':l>=18?'warn':'ok';}
+function predRpe(loss){return 6.5+loss/6;}
+function mmss(s){const m=Math.floor(s/60);return m+':'+String(Math.floor(s%60)).padStart(2,'0');}
+
+/* ============================================================ STATE */
+let mode='live';                 // live | rest | review | program | body  (idle is a state of live)
+let sessionActive=true;          // false => Live shows idle wall
+let setRunning=false;            // live set streaming (drives pinned strip + aura off-Live)
+let liveSetProgress={rep:0,reps:[],best:0};  // shared with rail set-ticks + strip
+let sel={exercise:'cable-row',set:null,rep:null,analytics:false}; // review drill
+let railOpen={'cable-row':true}; // expandable rail items
+let paceAhead=false;             // pace demo toggle
+const LIVE_EX='cable-row', LIVE_SET_IDX=3, LIVE_TARGET=8, LIVE_EX_IDX=0;
+
+const NAV=[
+  ['live','Live',`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg>`],
+  ['review','Review',`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="16" rx="1"/><rect x="17" y="4" width="4" height="16" rx="1"/></svg>`],
+  ['program','Program',`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>`],
+  ['body','Body',`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="2.5"/><path d="M12 8v8M12 10l-5 2M12 10l5 2M12 16l-3 5M12 16l3 5"/></svg>`],
+];
+const DEMO=[
+  ['live','Live set'],['idle','Idle wall'],['rest','Rest'],['review','Review · drill'],['exercise','Exercise'],
+  ['program','Program'],['body','Body']];
+let activeDemo='live';
+
+function goDemo(key){
+  stopRest();
+  activeDemo=key;
+  if(key==='live'){mode='live';sessionActive=true;}
+  else if(key==='idle'){endLiveSet();mode='live';sessionActive=false;}
+  else if(key==='rest'){endLiveSet();mode='rest';sessionActive=true;}
+  else if(key==='review'){mode='review';sessionActive=true;sel={exercise:'cable-row',set:2,rep:null,analytics:false};}
+  else if(key==='exercise'){mode='review';sessionActive=true;sel={exercise:'cable-row',set:null,rep:null,analytics:true};}
+  else if(key==='program'){mode='program';}
+  else if(key==='body'){mode='body';bsel='lats';}
+  render();
+}
+function goNav(m){
+  stopRest();
+  mode=m;
+  if(m==='live'){activeDemo=sessionActive?'live':'idle';}
+  else if(m==='review'){activeDemo='review';if(!sel.exercise)sel={exercise:'cable-row',set:2,rep:null,analytics:false};}
+  else activeDemo=m;
+  render();
+}
+function toggleNavMock(){$('navmock').classList.toggle('show');}
+
+/* ============================================================ CHROME */
+function renderChrome(){
+  $('demobar').innerHTML=DEMO.map(([k,l])=>`<div class="dchip ${activeDemo===k?'on':''}" onclick="goDemo('${k}')">${l}</div>`).join('')
+    +`<div class="sp"></div><div class="dchip util" onclick="toggleNavMock()">top-nav mock</div>`;
+  $('nav').innerHTML=NAV.map(([k,l,ic])=>`<div class="navbtn ${mode===k?'on':''}" onclick="goNav('${k}')">${ic}<span>${l}</span></div>`).join('');
+  let st;
+  if(mode==='live'&&sessionActive)st=`<span class="pulse"></span>SET LIVE · 11Hz SSE`;
+  else if(mode==='live')st=`<span class="pulse off"></span>IDLE · no session`;
+  else if(mode==='rest')st=`<span class="pulse"></span>REST · next set queued`;
+  else st=`<span class="topsub">${setRunning?'set live · drilled away':'poll 500ms'}</span><span class="pulse ${setRunning?'':'off'}"></span>`;
+  $('topstatus').innerHTML=st;
+}
+function renderCrumb(items,tag){
+  $('crumb').innerHTML=items.map((it,i)=>{
+    const cur=i===items.length-1;
+    return (i?`<span class="sep">›</span>`:'')+`<span class="c ${cur?'cur':''}" ${it.act&&!cur?`onclick="${it.act}"`:''}>${it.label}</span>`;
+  }).join('')+`<span class="tag">${tag||''}</span>`;
+}
+
+/* ============================================================ SESSION RAIL (A role + B contents) */
+function railTickRow(id,liveMode){
+  const e=EX[id];const isLiveEx=liveMode&&id===LIVE_EX;
+  let h='';
+  for(let s=0;s<e.sets.length;s++){
+    const st=e.sets[s];
+    if(isLiveEx&&s>LIVE_SET_IDX){h+=`<div class="rtick up ${sel.set===s&&sel.exercise===id?'selset':''}" onclick="event.stopPropagation();railSet('${id}',${s})"></div>`;continue;}
+    if(isLiveEx&&s===LIVE_SET_IDX&&setRunning){
+      const pct=Math.round(liveSetProgress.rep/LIVE_TARGET*100);
+      h+=`<div class="rtick live" onclick="event.stopPropagation();railSet('${id}',${s})"><span class="rtlbl">${liveSetProgress.rep}/${LIVE_TARGET}</span><div class="rf" style="height:${pct}%;background:var(--brand)"></div></div>`;
+      continue;
+    }
+    const m=mean(st.reps_v),c=velColor(m);
+    const selc=(sel.exercise===id&&sel.set===s)?' selset':'';
+    h+=`<div class="rtick${selc}" onclick="event.stopPropagation();railSet('${id}',${s})"><span class="rtlbl">${f2(m)}</span><div class="rf" style="height:100%;background:${c};opacity:.85"></div></div>`;
+  }
+  return h;
+}
+function railSetRows(id){
+  const e=EX[id];
+  return e.sets.map((s,i)=>{
+    const m=mean(s.reps_v),loss=setLoss(s.reps_v);
+    const isLive=mode!=='review'&&id===LIVE_EX&&i===LIVE_SET_IDX&&setRunning;
+    if(mode!=='review'&&id===LIVE_EX&&i>LIVE_SET_IDX)
+      return `<div class="rsrow" style="opacity:.5"><span class="sn">S${i+1}</span><span>upcoming</span></div>`;
+    if(isLive)
+      return `<div class="rsrow livenow"><span class="sn">S${i+1}</span><span class="sv">${liveSetProgress.rep}/${LIVE_TARGET}</span><span class="sl">live</span></div>`;
+    const act=mode==='review'?`onclick="railSet('${id}',${i})"`:'';
+    return `<div class="rsrow ${sel.exercise===id&&sel.set===i?'sel':''}" ${act}>
+      <span class="sn">S${i+1}</span><span class="sv">${f2(m)}</span>
+      <span style="color:var(--muted)">${s.reps}×${e.wt}</span>
+      <span class="sl ${lossClass(loss)}">−${loss}%</span></div>`;
+  }).join('');
+}
+function renderRail(){
+  const hist=mode==='review';
+  $('railctx').className='railctx'+(hist?' hist':'');
+  $('railctx').innerHTML=`<span class="d"></span>${hist?'Reviewing · session Mar 11':(sessionActive?'Live session':'Last session')}`;
+  $('railtitle').textContent='Pull A · Intensification';
+  $('railmeta').textContent=hist?'22 sets · 48 min · complete':(sessionActive?`ex ${LIVE_EX_IDX+1}/5 · set ${LIVE_SET_IDX+1} live`:'ended 3 days ago');
+  const rows=SESSION_ORDER.map((id,ei)=>{
+    const e=EX[id];const open=railOpen[id];
+    const isLiveEx=mode!=='review'&&id===LIVE_EX;
+    const cls=['rex'];if(open)cls.push('open');if(isLiveEx&&setRunning)cls.push('active');if(sel.exercise===id&&hist)cls.push('sel');
+    const tag=isLiveEx&&setRunning?'<span class="rextag">live</span>':`<span class="rexe1">${e.e1rm||'—'} e1RM</span>`;
+    return `<div class="${cls.join(' ')}" data-id="${id}">
+      <div class="rexhead" onclick="toggleRail('${id}')">
+        <div class="rextop"><span class="rexidx">${ei+1}</span><span class="rexname">${e.name}</span>${tag}<span class="rexchev"></span></div>
+        <div class="rticks">${railTickRow(id,!hist)}</div>
+      </div>
+      <div class="rexbody" ${open?'style="max-height:400px"':''}>${railSetRows(id)}</div>
+    </div>`;
+  }).join('');
+  $('railscroll').innerHTML=rows;
+  renderPace();
+}
+function toggleRail(id){railOpen[id]=!railOpen[id];renderRail();}
+function railSet(id,s){
+  if(mode!=='review'){mode='review';activeDemo='review';}
+  sel={exercise:id,set:s,rep:null,analytics:false};
+  railOpen[id]=true;
+  render();
+}
+
+/* Session Pace (D) — session-scoped, lives in the persistent rail footer */
+function renderPace(){
+  const el=mode==='review'?PACE.elapsed:(sessionActive?PACE.elapsed:0);
+  const usedPct=Math.min(100,el/PACE.budget*100);
+  const volPct=Math.round(PACE.volDone/PACE.volPlan*100);
+  if(!sessionActive&&mode==='live'){
+    $('pace').innerHTML=`<div class="pacehead"><span class="pacetitle">Next session budget</span></div>
+      <div class="pacetime"><span class="big">~52:00</span><span class="of">planned · Lower B</span></div>
+      <div class="pacesuggest ahead"><span class="ic">◷</span><div>6 exercises · ~20 sets. Wall wakes to Live when the first set streams.</div></div>`;
+    return;
+  }
+  const behind=!paceAhead;
+  const suggest=behind
+    ? `<div class="pacesuggest behind"><span class="ic">▲</span><div><b>Behind pace</b> — ~9 min over budget at this rate. Drop <b>Face Pull</b> to 2 sets to finish on time.</div></div>`
+    : `<div class="pacesuggest ahead"><span class="ic">＋</span><div><b>Ahead of pace</b> — ~7 min of headroom. Room to add a <b>Cable Fly</b> drop-set or a back-off set on Row.</div></div>`;
+  $('pace').innerHTML=`
+    <div class="pacehead"><span class="pacetitle">Session Pace</span>
+      <span class="pacetoggle" onclick="togglePace()">${behind?'show ahead ▸':'show behind ▸'}</span></div>
+    <div class="pacetime"><span class="big">${mmss(el)}</span><span class="of">of ${mmss(PACE.budget)} budget</span></div>
+    <div class="pacebar"><div class="pf" style="width:${usedPct}%;background:${behind?'var(--amber)':'var(--v-green)'}"></div><div class="budget" style="left:100%"></div></div>
+    <div class="pacemetrics">
+      <div class="pm"><div class="k">Volume</div><div class="v">${volPct}%</div></div>
+      <div class="pm"><div class="k">Load</div><div class="v">${(PACE.volDone/1000).toFixed(1)}k</div></div>
+      <div class="pm"><div class="k">Fatigue</div><div class="v" style="color:var(--amber)">MOD</div></div>
+    </div>${suggest}`;
+}
+function togglePace(){paceAhead=!paceAhead;renderPace();}
+
+/* ============================================================ PINNED LIVE STRIP (D) */
+function updateStrip(){
+  const strip=$('livestrip');
+  const show=setRunning&&mode!=='live';
+  strip.classList.toggle('show',show);
+  if(!show){strip.innerHTML='';return;}
+  const a=liveSetProgress.reps,pk=a.length?Math.max(...a):0;
+  const mx=Math.max(0.75,...(a.length?a:[0.5]))*1.12;
+  const mini=a.map(v=>`<i style="height:${(v/mx*100).toFixed(0)}%;background:${velColor(v)}"></i>`).join('')||'<i style="height:10%;background:#333"></i>';
+  const mc=a.length?mean(a):0;
+  strip.innerHTML=`<div class="ls-seg ls-live" onclick="goNav('live')"><span class="ls-dot"></span><span class="ls-k">Live</span><span class="ls-v">Cable Row · set 4</span></div>
+    <div class="ls-seg"><span class="ls-k">Rep</span><span class="ls-v">${a.length}/${LIVE_TARGET}</span></div>
+    <div class="ls-seg"><span class="ls-k">Mean con</span><span class="ls-v brand">${f2(mc)}</span><span class="ls-k">m/s</span></div>
+    <div class="ls-seg"><span class="ls-k">Reps</span><div class="ls-mini">${mini}</div></div>
+    <div class="ls-label">SET STAYS READABLE<br>while you drill elsewhere</div>
+    <span class="ls-return" onclick="goNav('live')">return to Live ▸</span>`;
+}
+
+/* ============================================================ AURA (A) */
+function setAura(level){ // '', 'amber', 'red' — aura is a Live-view treatment only
+  const a=document.querySelector('#stagebody .aura');if(!a)return;
+  a.className='aura'+((level&&mode==='live')?' '+level:'');
+}
+
+/* ============================================================ LIVE HERO */
+let liveIV=null,restIV=null;
+function stopLiveSim(){if(liveIV){clearInterval(liveIV);liveIV=null;}}
+function endLiveSet(){stopLiveSim();setRunning=false;setAura('');}
+function stopRest(){if(restIV){clearInterval(restIV);restIV=null;}}
+
+function tempoBarHtml(t){
+  const seg=(c,cap,ms)=>`<div class="tseg"><div class="tfill" data-ph="${c}" style="background:${c==='con'?'#2ed573':c==='hold'?'#406D87':'#FF7900'}"></div><span class="tcap">${cap}</span></div>`;
+  return `<div class="tempo-track">${seg('con','CON',t.con)}${seg('hold','HOLD',t.hold)}${seg('ecc','ECC',t.ecc)}</div>
+    <div class="tempolabs"><div style="flex:${t.con}">${t.con}ms</div><div style="flex:${t.hold}">${t.hold}ms</div><div style="flex:${t.ecc}">${t.ecc}ms</div></div>`;
+}
+function heroSkeleton(){
+  const e=EX[LIVE_EX];
+  return `<div class="hero" id="hero">
+    <div class="herohead">
+      <div>
+        <div class="heroname">${e.name}</div>
+        <div class="herowr"><span class="m">${e.wt}<span class="u"> lb</span></span>
+          <span class="m" id="hReps">0<span class="u"> / ${LIVE_TARGET} reps</span></span>
+          <span class="sub">Set ${LIVE_SET_IDX+1} of 5</span></div>
+      </div>
+      <div class="herostatus">
+        <div class="statuspill" id="statuspill"><span class="d"></span><span id="statustext">Productive · in the band</span></div>
+        <div class="herosetctx">Pull A · Intensification wk3 · progress in rail ◂</div>
+      </div>
+    </div>
+    <div class="heromid">
+      <div class="heroleft">
+        <div class="herolabel"><span>Per-rep velocity · mean concentric (m/s)</span><span style="color:var(--dim)">latest bar pops</span></div>
+        <div class="herobars" id="herobars"></div>
+        <div class="herovel">
+          <div class="hv"><span class="k">Mean concentric</span><span><span class="v" id="hMean" style="color:#2ed573">—</span> <span class="u">m/s</span></span></div>
+          <div class="hv small"><span class="k">Peak (secondary)</span><span><span class="v" id="hPeak">—</span> <span class="u">m/s</span></span></div>
+          <div class="hv small"><span class="k">Full curve</span><span class="u" style="font-size:11px">→ charts on Review</span></div>
+        </div>
+      </div>
+      <div class="heroright">
+        <div><div class="herolabel">Live tempo · CON→HOLD→ECC</div>${tempoBarHtml(e.tempo)}</div>
+        <div><div class="herolabel"><span>Fatigue · auto-regulation</span><span id="fstate" style="color:var(--v-green)">productive</span></div>
+          <div class="fmeter"><div class="fneedle" id="fneedle" style="left:0%"></div></div>
+          <div class="fscale"><span>fresh</span><span>VL10</span><span>VL20</span><span>VL30</span><span>stop</span></div>
+          <div class="fnote">C's meter (primary) · aura + cue layered · B's meter is the compared-against alt</div></div>
+        <div class="herocue" id="herocue"></div>
+      </div>
+    </div>
+  </div>`;
+}
+function startLive(){
+  // render the hero DOM for the Live view; DON'T reset a set already in progress
+  $('stagebody').innerHTML='<div class="aura" id="aura"></div>'+heroSkeleton();
+  renderCrumb([{label:'Live set'}],'across-the-room · SSE 11Hz');
+  if(!setRunning){setRunning=true;liveSetProgress={rep:0,reps:[],best:0};}
+  paintHero(false);      // repaint whatever progress exists into the fresh hero
+  ensureLiveSim();
+}
+// keeps ticking even when the user has drilled AWAY from Live (rail + strip stay live)
+function ensureLiveSim(){
+  if(liveIV||!setRunning||!sessionActive)return;
+  const e=EX[LIVE_EX];
+  const cycle=['con','hold','ecc','commit','rest'];
+  const speed=2.4; // demo accel
+  const durs={con:e.tempo.con/speed,hold:e.tempo.hold/speed,ecc:e.tempo.ecc/speed,commit:80,rest:520};
+  let phaseIdx=0,acc=0;
+  liveIV=setInterval(()=>{
+    if(liveSetProgress.rep>=LIVE_TARGET){endSet();return;}
+    const ph=cycle[phaseIdx];acc+=60;
+    if(acc===60){ if(ph==='con'||ph==='hold'||ph==='ecc')fillTempo(ph,durs[ph]); if(ph==='rest')resetTempo(); }
+    if(ph==='commit'&&acc>=durs.commit){advanceRep();}
+    if(acc>=durs[ph]){acc=0;phaseIdx=(phaseIdx+1)%cycle.length;}
+  },60);
+}
+function fillTempo(ph,dur){
+  const f=document.querySelector(`#hero .tfill[data-ph="${ph}"]`);if(!f)return;
+  f.style.transition='none';f.style.width='0%';
+  requestAnimationFrame(()=>{f.style.transition=`width ${dur}ms linear`;f.style.width='100%';});
+}
+function resetTempo(){ // IMMEDIATE reset at rep boundary — no drain-out
+  document.querySelectorAll('#hero .tfill').forEach(f=>{f.style.transition='none';f.style.width='0%';});
+}
+function advanceRep(){
+  const i=liveSetProgress.rep;if(i>=LIVE_TARGET)return;
+  let v=0.61-0.026*i;if(i===3)v+=0.05;if(i===5)v-=0.015;v+=(((i*29)%5)-2)*0.006;v=Math.round(v*100)/100;
+  liveSetProgress.reps.push(v);liveSetProgress.rep++;liveSetProgress.best=Math.max(liveSetProgress.best,v);
+  paintHero(true);
+}
+// paint bars + stats + status/aura/cue from current liveSetProgress. popLast=true pops ONLY the latest bar.
+function paintHero(popLast){
+  const a=liveSetProgress.reps;
+  const bars=$('herobars');
+  if(a.length&&bars){
+    const best=liveSetProgress.best,scale=Math.max(best*1.1,0.2);
+    bars.innerHTML='';
+    const ref=document.createElement('div');ref.className='heroref';
+    ref.style.bottom=(best/scale*100*0.79+6)+'%';ref.innerHTML=`<span class="rl">best ${f2(best)}</span>`;bars.appendChild(ref);
+    a.forEach((val,k)=>{
+      const bar=document.createElement('div');
+      bar.className='herobar'+(popLast&&k===a.length-1?' pop':''); // ONLY latest bar pops
+      bar.style.height=(val/scale*100)+'%';bar.style.background=velColor(val);
+      bar.innerHTML=`<span class="lab">${f2(val)}</span>`;bars.appendChild(bar);
+    });
+    for(let k=a.length;k<LIVE_TARGET;k++){const b=document.createElement('div');b.className='herobar pending';bars.appendChild(b);}
+  }
+  const v=a.length?a[a.length-1]:0,best=liveSetProgress.best||0.001;
+  const mc=a.length?mean(a):0,loss=a.length?Math.round((best-v)/best*100):0;
+  if($('hReps'))$('hReps').innerHTML=liveSetProgress.rep+`<span class="u"> / ${LIVE_TARGET} reps</span>`;
+  if($('hMean')){$('hMean').textContent=a.length?f2(mc):'—';$('hMean').style.color=velColor(mc);}
+  if($('hPeak'))$('hPeak').textContent=a.length?f2(v*1.27):'—';
+  if($('fneedle'))$('fneedle').style.left=Math.min(98,loss/40*100)+'%';
+  const pill=$('statuspill'),stx=$('statustext'),cue=$('herocue'),fst=$('fstate');
+  if(pill){pill.classList.remove('amber','red');cue.classList.remove('show','amber','red');}
+  if(loss>=28){setAura('red');if(pill){pill.classList.add('red');stx.textContent='Stop · past VL20';fst.textContent='stop · VL '+loss+'%';fst.style.color='var(--v-red)';
+      cue.classList.add('show','red');cue.innerHTML='■ Velocity loss '+loss+'% — end the set now. Crossed −20% stop-line ('+f2(best*0.8)+' m/s).';}}
+  else if(loss>=20){setAura('amber');if(pill){pill.classList.add('amber');stx.textContent='Threshold · VL20 reached';fst.textContent='caution · VL '+loss+'%';fst.style.color='var(--amber)';
+      cue.classList.add('show','amber');cue.innerHTML='▲ VL20 · target reps met — final rep or end set.';}}
+  else{if(a.length)setAura('');if(stx){stx.textContent='Productive · in the band';fst.textContent='productive';fst.style.color='var(--v-green)';}}
+  renderRail();updateStrip();
+}
+function endSet(){
+  endLiveSet();
+  if(mode==='live'){setTimeout(()=>{if(mode==='live'){mode='rest';activeDemo='rest';render();}},600);}
+  else{renderRail();updateStrip();}
+}
+
+/* ---- REST (B card layout × C timer + next-set) ---- */
+function startRest(){
+  const e=EX[LIVE_EX],s=e.sets[LIVE_SET_IDX],reps=s.reps_v,m=mean(reps),loss=setLoss(reps),best=Math.max(...reps);
+  setAura('');
+  let t=90;
+  const draw=()=>{
+    const frac=t/90,circ=2*Math.PI*100;
+    $('stagebody').innerHTML=`<div class="aura"></div><div class="restwrap">
+      <div class="restleft"><div class="herolabel">Rest · next set in</div>
+        <div class="restring"><svg viewBox="0 0 220 220"><circle cx="110" cy="110" r="100" fill="none" stroke="#20232a" stroke-width="10"/>
+          <circle cx="110" cy="110" r="100" fill="none" stroke="#FF7900" stroke-width="10" stroke-linecap="round" stroke-dasharray="${circ}" stroke-dashoffset="${circ*(1-frac)}" transform="rotate(-90 110 110)"/></svg>
+          <div class="num"><div class="t">${t}</div><div class="k">seconds</div></div></div>
+        <div class="restsub">Set ${LIVE_SET_IDX+1} of 5 complete · 1 set remaining</div></div>
+      <div class="restright">
+        <div class="lastset"><div class="cat">Set ${LIVE_SET_IDX+1} verdict · rep-quality</div>
+          <div class="line">Solid work set — held above the VL20 line to the last rep.</div>
+          <div class="sub">Bar speed decayed smoothly · RPE ${s.rpe} matched predicted ${predRpe(loss).toFixed(1)}.</div>
+          <div class="summrow">
+            <div class="summcell"><div class="k">Reps</div><div class="v">${reps.length}</div></div>
+            <div class="summcell"><div class="k">Mean con</div><div class="v" style="color:${velColor(m)}">${f2(m)}</div></div>
+            <div class="summcell"><div class="k">Loss</div><div class="v ${lossClass(loss)}">−${loss}%</div></div>
+            <div class="summcell"><div class="k">Best</div><div class="v">${f2(best)}</div></div>
+            <div class="summcell"><div class="k">e1RM</div><div class="v" style="color:var(--brand)">${e.e1rm}</div></div></div></div>
+        <div class="nextset"><div class="k">▶ Next set · 5 of 5</div>
+          <div class="big">8 × ${e.wt} lb</div>
+          <div class="sub">Hold mean concentric ≥ 0.55 m/s · last set — push to a true RPE 9.5 · next-set info shown only during rest</div></div>
+      </div></div>`;
+  };
+  draw();renderCrumb([{label:'Rest phase'}],'rest-only next-set info');
+  stopRest();restIV=setInterval(()=>{t--;if(t<=0){t=90;}draw();},1000);
+}
+
+/* ============================================================ REVIEW COLUMNS (C engine, kept) */
+function reconcile(specs){
+  let cols=$('stagebody').querySelector('.cols');
+  if(!cols){const a=$('stagebody').querySelector('.aura');$('stagebody').innerHTML='';if(a)$('stagebody').appendChild(a);
+    const c=document.createElement('div');c.className='cols';$('stagebody').appendChild(c);cols=c;}
+  const have=new Map([...cols.children].map(c=>[c.dataset.key,c]));
+  const keys=new Set(specs.map(s=>s.key));
+  let li=0;
+  [...cols.children].forEach(c=>{if(!keys.has(c.dataset.key)){c.style.transitionDelay=(li*45)+'ms';li++;c.classList.add('leaving');setTimeout(()=>c.remove(),420);}});
+  specs.forEach(s=>{
+    let el=have.get(s.key);const isNew=!el;
+    if(!el){el=document.createElement('div');el.dataset.key=s.key;el.className='col spawning';cols.appendChild(el);}
+    el.innerHTML=`<div class="colinner">${s.html}</div>`;
+    el.classList.remove('spine','full','wide','focus');el.classList.add(s.cls);el.style.transitionDelay='';
+    if(isNew){requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.remove('spawning')));}
+    cols.appendChild(el);
+  });
+}
+function classFor(i,n){if(i===n-1)return 'focus';const depth=(n-1)-i;if(depth>=2)return 'spine';return 'full';}
+function spineHtml(level,selLabel,items,selId,act){
+  return `<div class="spineinner">
+    <div class="spinesel">${selLabel}</div>
+    <div class="spinedots">${items.map(it=>`<div class="spinedot ${it.id===selId?'on':''}" title="${it.label}" onclick="${act}('${it.id}')"></div>`).join('')}</div>
+    <div class="spinelabel">${level}</div><div class="spinehint">tap ▸</div></div>`;
+}
+function setListCol(exId){
+  const e=EX[exId];
+  const rows=e.sets.map((s,i)=>{
+    const m=mean(s.reps_v),loss=setLoss(s.reps_v);
+    return `<div class="setrow ${sel.set===i?'sel':''}" onclick="selSet(${i})">
+      <div class="setno">${i+1}</div>
+      <div class="setmid"><div class="setrxw">${s.reps} × ${e.wt} lb ${i===0&&e.pr?'<span class="rpepill" style="color:var(--v-yellow)">★PR</span>':''}</div>
+        <div class="setsub">${s.reps} reps · mean concentric</div></div>
+      <div class="rpepill">RPE ${s.rpe}</div>
+      <div class="setnum"><div class="setmean">${f2(m)}</div><div class="setloss ${lossClass(loss)}">−${loss}%</div></div>
+    </div>`;
+  }).join('');
+  return {level:'Set',title:e.name,sub:`mean concentric m/s · loss% per set`,html:rows,
+    items:e.sets.map((s,i)=>({id:String(i),label:'Set '+(i+1)})),selId:String(sel.set),act:'selSetId'};
+}
+function velBarsHtml(reps,best,clickable){
+  const scale=Math.max(best*1.06,0.2);const rb=runBest(reps);const stop=best*0.8;
+  const bars=reps.map((v,i)=>`<div class="vbar ${clickable&&sel.rep===i?'sel':''}" style="height:${v/scale*100}%;background:${velColor(v)}" ${clickable?`onclick="selRep(${i})"`:''}><span class="lab">${f2(v)}</span></div>`).join('');
+  const qdots=reps.map((v,i)=>{const drop=(rb[i]-v)/rb[i];const c=drop<0.10?'#2ed573':drop<0.20?'#ffb020':'#ff4757';return `<div class="qdot" style="background:${c}"></div>`;}).join('');
+  const stopPct=100-stop/scale*100,bestPct=100-best/scale*100;
+  return `<div class="vbars">
+      <div class="refline" style="top:${bestPct}%;border-color:rgba(232,234,237,.45)"><span class="rl" style="color:var(--muted)">best ${f2(best)}</span></div>
+      <div class="refline" style="top:${stopPct}%;border-color:rgba(255,71,87,.55)"><span class="rl" style="color:var(--v-red)">−20% stop</span></div>
+      ${bars}</div><div class="qlane">${qdots}</div>`;
+}
+/* EXPLORATION: historical per-rep tempo bar (per-rep CON/HOLD/ECC after the fact) */
+function histTempoHtml(reps,t){
+  const tot=t.con+t.hold+t.ecc;
+  const cols=reps.map((v,i)=>{
+    // eccentric drifts longer as fatigue accumulates (synthetic)
+    const drift=1+i*0.05;const con=t.con,hold=t.hold,ecc=Math.round(t.ecc*drift);const rt=con+hold+ecc;
+    return `<div class="htcol"><div class="htbar">
+      <div class="htseg" style="height:${con/rt*100}%;background:#2ed573"></div>
+      <div class="htseg" style="height:${hold/rt*100}%;background:#406D87"></div>
+      <div class="htseg" style="height:${ecc/rt*100}%;background:#FF7900"></div></div>
+      <div class="htlbl">r${i+1}</div></div>`;
+  }).join('');
+  return `<div class="htempo">${cols}</div>`;
+}
+function tempoHtml(t){
+  const seg=(ms,c,l)=>`<div class="tseg" style="flex:${ms};background:${c};border:none"><span class="tcap" style="color:#0c0d0f;position:static;transform:none">${l}</span></div>`;
+  return `<div class="tempo-track" style="height:24px">${seg(t.con,'#2ed573','CON')}${seg(t.hold,'#406D87','HOLD')}${seg(t.ecc,'#FF7900','ECC')}</div>`;
+}
+function rpeGaugeHtml(loss,actual){
+  const p=predRpe(loss);const lo=p-0.6,hi=p+0.6;const pos=x=>((x-6)/4)*100;
+  return `<div style="position:relative;height:30px"><div style="position:absolute;top:12px;left:0;right:0;height:5px;border-radius:3px;background:#22252c"></div>
+    <div style="position:absolute;top:10px;height:9px;border-radius:5px;background:rgba(33,150,243,.32);border:1px solid rgba(33,150,243,.5);left:${pos(lo)}%;width:${pos(hi)-pos(lo)}%"></div>
+    <div style="position:absolute;top:5px;width:3px;height:19px;background:var(--brand);border-radius:2px;left:${pos(actual)}%"></div>
+    <div style="display:flex;justify-content:space-between;position:absolute;bottom:-2px;left:0;right:0;font-family:var(--mono);font-size:8px;color:var(--dim)"><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div></div>`;
+}
+function setDetailCol(exId,si){
+  const e=EX[exId],s=e.sets[si],reps=s.reps_v;const m=mean(reps),best=Math.max(...reps),loss=setLoss(reps);
+  const html=`<div class="pad"><div class="bignum">
+      <div class="kv"><span class="k">mean concentric</span><span><span class="v" style="color:${velColor(m)}">${f2(m)}</span> <span class="u">m/s</span></span></div>
+      <div class="kv"><span class="k">vel loss</span><span class="vv ${lossClass(loss)}">−${loss}%</span></div>
+      <div class="kv"><span class="k">best rep</span><span class="vv">${f2(best)}</span></div>
+      <div class="kv"><span class="k">RPE</span><span class="vv" style="color:var(--brand)">${s.rpe}</span></div></div></div>
+    <div class="panel"><div class="ptitle"><span class="t">Per-rep velocity · tap a bar to drill</span><span class="m">${reps.length} reps · mean concentric</span></div>
+      ${velBarsHtml(reps,best,true)}<div class="qlabels">${reps.map((v,i)=>`<div>r${i+1}</div>`).join('')}</div></div>
+    <div class="panel tight"><div class="ptitle"><span class="t">Historical tempo · per-rep CON/HOLD/ECC</span><span class="m">EXPLORATION · ecc drift</span></div>
+      ${histTempoHtml(reps,e.tempo)}
+      <div style="font-size:10px;color:var(--dim);margin-top:6px;line-height:1.4">After-the-fact per-rep tempo — reveals eccentric lengthening as the set fatigues. Live tempo is a single phase bar; this is the review-only expansion.</div></div>
+    <div class="panel tight"><div class="ptitle"><span class="t">RPE calibration</span><span class="m">pred ${predRpe(loss).toFixed(1)} · actual ${s.rpe}</span></div>${rpeGaugeHtml(loss,s.rpe)}</div>`;
+  return {level:'Set detail',title:`${e.name} · Set ${si+1}`,sub:`${s.reps} × ${e.wt} lb`,html};
+}
+function repDetailCol(exId,si,ri){
+  const e=EX[exId],s=e.sets[si],reps=s.reps_v,v=reps[ri];const rb=runBest(reps)[ri];const drop=Math.round((rb-v)/rb*100);const t=e.tempo;
+  const html=`<div class="repbig"><span class="v" style="color:${velColor(v)}">${f2(v)}</span><div class="u">m/s mean concentric · Rep ${ri+1} of ${reps.length}</div></div>
+    <div class="repgrid">
+      <div class="rcell"><div class="k">Peak velocity</div><div class="v">${(v*1.28).toFixed(2)}</div><div class="s">m/s · mid-concentric</div></div>
+      <div class="rcell"><div class="k">Loss vs best</div><div class="v ${drop>=20?'bad':drop>=12?'warn':''}">−${drop}%</div><div class="s">ref best ${f2(rb)} m/s</div></div>
+      <div class="rcell"><div class="k">Con / Ecc</div><div class="v">${t.con} / ${t.ecc}</div><div class="s">ms · ${(t.ecc/t.con).toFixed(1)}:1 ratio</div></div>
+      <div class="rcell"><div class="k">Peak force</div><div class="v">${Math.round(e.wt*4.45*(1+v*0.4))}</div><div class="s">N · est. from load</div></div></div>
+    <div class="panel tight"><div class="ptitle"><span class="t">Tempo trace</span><span class="m">${t.con+t.hold+t.ecc}ms</span></div>${tempoHtml(t)}</div>
+    <div class="panel tight" style="color:var(--muted);font-size:12px;line-height:1.5">Rep ${ri+1} ${drop<10?'sat inside the productive band — clean bar-speed, no grind.':drop<20?'was below running-best but above the 20% stop line — fatigue accumulating.':'was past the 20% velocity-loss stop line — grinder, this is where the set should end.'}</div>`;
+  return {level:'Rep',title:`Rep ${ri+1}`,sub:`${e.name} · Set ${si+1}`,html};
+}
+function analyticsCol(exId){
+  const e=EX[exId];
+  const e1=[188,192,195,199,201,205];const labels=['W3','W4','W5','W6','W7','now'];
+  const w=300,h=128,pad=18,mx=Math.max(...e1)+4,mn=Math.min(...e1)-4;
+  const px=i=>pad+i/(e1.length-1)*(w-2*pad),py=v=>h-pad-(v-mn)/(mx-mn)*(h-2*pad);
+  const path=e1.map((v,i)=>`${i?'L':'M'}${px(i).toFixed(1)},${py(v).toFixed(1)}`).join(' ');
+  const dots=e1.map((v,i)=>`<circle cx="${px(i).toFixed(1)}" cy="${py(v).toFixed(1)}" r="${i===e1.length-1?4:3}" fill="${i===e1.length-1?'#FF7900':'#406D87'}"/>`).join('');
+  const xl=labels.map((l,i)=>`<text x="${px(i)}" y="${h-4}" fill="#5b616d" font-size="8" text-anchor="middle" font-family="monospace">${l}</text>`).join('');
+  const lv=[[135,0.82],[145,0.63],[160,0.48],[175,0.34]];const lvPrior=[[135,0.79],[145,0.60],[160,0.45],[175,0.30]];
+  const lw=300,lh=146,lp=24,lvx=v=>lp+(v-0.2)/(0.9-0.2)*(lw-2*lp),lvy=l=>lh-lp-(l-120)/(190-120)*(lh-2*lp);
+  const lvPath=vv=>vv.map((p,i)=>`${i?'L':'M'}${lvx(p[1]).toFixed(1)},${lvy(p[0]).toFixed(1)}`).join(' ');
+  const lvDots=(vv,c)=>vv.map(p=>`<circle cx="${lvx(p[1]).toFixed(1)}" cy="${lvy(p[0]).toFixed(1)}" r="3.5" fill="${c}"/>`).join('');
+  const html=`
+    <div class="panel"><div class="ptitle"><span class="t">Meso status · ${e.name}</span><span class="m">Intensification wk 3/5</span></div>
+      <div class="mesostat"><div class="ring"><svg viewBox="0 0 54 54"><circle cx="27" cy="27" r="22" fill="none" stroke="#22252c" stroke-width="6"/><circle cx="27" cy="27" r="22" fill="none" stroke="#14B8A6" stroke-width="6" stroke-linecap="round" stroke-dasharray="${2*Math.PI*22}" stroke-dashoffset="${2*Math.PI*22*(1-0.6)}" transform="rotate(-90 27 27)"/></svg><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:800">60%</div></div>
+        <div><div style="font-size:20px;font-weight:800;font-family:var(--mono)">${e.e1rm} <span style="font-size:12px;color:var(--v-green)">▲ +9</span></div>
+        <div style="font-size:11px;color:var(--muted)">est 1RM · +4.6% this meso · PR set 1</div></div></div>
+      <div class="nexttarget">▶ Next target &nbsp;<b>3×8–9 @ 150 lb</b> &nbsp;·&nbsp; hold mean concentric ≥ 0.58 m/s</div></div>
+    <div class="panel"><div class="ptitle"><span class="t">Strength trend · e1RM (line)</span><span class="m">across sessions</span></div>
+      <svg class="trend" viewBox="0 0 ${w} ${h}"><path d="${path}" fill="none" stroke="#FF7900" stroke-width="2"/>${dots}${xl}</svg></div>
+    <div class="panel"><div class="ptitle"><span class="t">Load–velocity profile</span><span class="m">▲ shift +3% vs wk1</span></div>
+      <svg class="lvchart" viewBox="0 0 ${lw} ${lh}"><path d="${lvPath(lvPrior)}" fill="none" stroke="#5b616d" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <path d="${lvPath(lv)}" fill="none" stroke="#2196F3" stroke-width="2"/>${lvDots(lvPrior,'#5b616d')}${lvDots(lv,'#2196F3')}
+        <text x="${lw/2}" y="${lh-4}" fill="#5b616d" font-size="8" text-anchor="middle" font-family="monospace">velocity → · load ↑</text></svg></div>`;
+  return {level:'Exercise',title:e.name,sub:'trend · LV profile · history',html};
+}
+function renderReview(){
+  const cols=[];
+  cols.push({b:setListCol(sel.exercise),kind:'set'});
+  if(sel.analytics){cols.push({b:analyticsCol(sel.exercise),kind:'an'});}
+  else{
+    if(sel.set!=null)cols.push({b:setDetailCol(sel.exercise,sel.set),kind:'sd'});
+    if(sel.set!=null&&sel.rep!=null)cols.push({b:repDetailCol(sel.exercise,sel.set,sel.rep),kind:'rep'});
+  }
+  const n=cols.length;const specs=[];
+  cols.forEach((c,i)=>{
+    const cls=classFor(i,n);let inner;
+    if(cls==='spine'&&c.b.items){const selLabel=c.kind==='set'?'Set '+(sel.set+1):c.b.title;inner=spineHtml(c.b.level,selLabel,c.b.items,c.b.selId,c.b.act);}
+    else inner=`<div class="colhead"><div class="lvl">${c.b.level}</div><div class="ttl">${c.b.title}</div><div class="sub">${c.b.sub}</div></div>${c.b.html}`;
+    specs.push({key:c.kind+':'+i,cls,html:inner});
+  });
+  reconcile(specs);
+  const cr=[{label:'Pull A · Mar 11',act:"drillReset()"},{label:EX[sel.exercise].name,act:"crumbTo('set')"}];
+  if(sel.analytics)cr.push({label:'Analytics'});
+  else{if(sel.set!=null)cr.push({label:'Set '+(sel.set+1),act:"crumbTo('sd')"});if(sel.rep!=null)cr.push({label:'Rep '+(sel.rep+1)});}
+  renderCrumb(cr,'session review · rail = same session, historical');
+}
+function drillReset(){sel.set=null;sel.rep=null;sel.analytics=false;renderReview();}
+function crumbTo(k){if(k==='set'){sel.set=null;sel.rep=null;sel.analytics=false;}else if(k==='sd'){sel.rep=null;}renderReview();}
+function selSet(i){sel.set=i;sel.rep=null;sel.analytics=false;renderReview();renderRail();}
+function selSetId(i){sel.set=parseInt(i);sel.rep=null;renderReview();renderRail();}
+function selRep(i){sel.rep=i;renderReview();}
+
+/* ============================================================ IDLE (state of Live) */
+function renderIdle(){
+  setRunning=false;setAura('');
+  const next='Push B';
+  $('stagebody').innerHTML=`<div class="aura"></div><div class="stub">
+    <div class="stubhead"><h2>Wall idle · between sessions</h2><span class="tag">LIVE tab · no active set</span></div>
+    <div class="stubnote">Idle is a state of the Live view, not its own tab. The wall shows next-workout, capacity trend and body state; it wakes to the live hero the moment the first set streams.</div>
+    <div class="stubgrid" style="grid-template-columns:1.3fr 1fr">
+      <div class="slot filled" style="grid-row:span 2"><div class="sl-k">Next workout</div><div class="sl-t">${next} · Thu</div>
+        <div class="sl-d">Cable Chest Press · Face Pull — ~14 sets · est 42 min. Auto-scaled −2 sets: Lats over-target & 38% recovered.</div>
+        <div class="sl-src">idle content · C idle-hero crib</div></div>
+      <div class="slot filled"><div class="sl-k">Capacity trend ▲ e1RM</div><div class="sl-t">Row 205 · Pulldown 188 · Press 150</div>
+        <div class="sl-d">All three lifts trending up this meso.</div></div>
+      <div class="slot filled"><div class="sl-k">Body state · recovery</div><div class="sl-t">Lats 38% · Quads 95% · Chest 82%</div>
+        <div class="sl-d">Session Pace element (rail) shows next-session budget when idle.</div></div>
+    </div></div>`;
+  renderCrumb([{label:'Idle wall'}],'no active session · state of Live');
+}
+
+/* ============================================================ PROGRAM STUB */
+function renderProgram(){
+  $('stagebody').innerHTML=`<div class="aura"></div><div class="stub">
+    <div class="stubhead"><h2>Program · 12-Week Hypertrophy</h2><span class="tag">STUB · framed skeleton</span></div>
+    <div class="stubnote">Block → Week → Workout, re-navigated with the same column grammar as Review. Not designed here — redesigned from the prior HTML program-planning cribs (operator: C's program view was "meh"). Layout + labeled slots below name what fills each region.</div>
+    <div class="stubgrid" style="grid-template-columns:200px 1fr 1fr">
+      <div class="slot" style="grid-row:span 3"><div class="sl-k">Column 1 · Blocks</div><div class="sl-t">Accumulation · Intensification · Realization</div>
+        <div class="sl-d">Meso list with status rings. Miller-column list lineage.</div><div class="sl-src">crib: program-planning.html block rail</div></div>
+      <div class="slot"><div class="sl-k">Column 2 · Weeks</div><div class="sl-t">Wks 6–10 · wk 3/5 current</div><div class="sl-d">Week list, deload flagged.</div><div class="sl-src">crib: program-planning week strip</div></div>
+      <div class="slot" style="grid-row:span 2"><div class="sl-k">Column 3 · Workout detail</div><div class="sl-t">Push B · Thu · exercises + planned loads</div>
+        <div class="sl-d">Focus column: exercise cards with target reps/load, progression suggestion, volume heatmap per muscle. Tap → drill to the same Review set-history for prior instances.</div>
+        <div class="sl-src">crib: program-planning.html cards + analytics-heatmap.html volume bands</div></div>
+      <div class="slot"><div class="sl-k">Overlay</div><div class="sl-t">Exercise-swap drawer (D)</div><div class="sl-d">Right-drawer to swap/edit — read-only preview here.</div><div class="sl-src">crib: D side-sheet</div></div>
+    </div>
+    <div style="margin-top:14px"><span class="dchip" onclick="openSheet('program')">▸ demo: open program drill-in drawer</span></div>
+  </div>`;
+  renderCrumb([{label:'Program'},{label:'Intensification'},{label:'Wk 3'}],'program · block→week→workout · STUB');
+}
+
+/* ============================================================ BODY STUB */
+let bsel='lats';
+function bodyFig(){
+  const F=BODY.front.reduce((o,m)=>(o[m.id]=m,o),{}),B=BODY.back.reduce((o,m)=>(o[m.id]=m,o),{});
+  const reg=(m,x,y,w,h,rx)=>`<rect class="mregion ${bsel===m.id?'on':''}" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx||4}" fill="${HEAT[m.status]}" onclick="selMuscle('${m.id}')"><title>${m.name}: ${HEATNAME[m.status]}</title></rect>`;
+  const front=`<svg viewBox="0 0 118 300"><circle cx="59" cy="22" r="13" fill="#20232a"/>
+    ${reg(F['delts-f'],28,38,20,16,8)}${reg(F['delts-f'],70,38,20,16,8)}${reg(F.chest,38,42,42,26,6)}
+    ${reg(F.biceps,26,58,16,30,7)}${reg(F.biceps,76,58,16,30,7)}${reg(F.abs,46,72,26,42,5)}
+    ${reg(F.quads,38,120,18,66,8)}${reg(F.quads,62,120,18,66,8)}</svg>`;
+  const back=`<svg viewBox="0 0 118 300"><circle cx="59" cy="22" r="13" fill="#20232a"/>
+    ${reg(B['rear-delt'],28,38,20,15,8)}${reg(B['rear-delt'],70,38,20,15,8)}${reg(B.traps,44,36,30,16,6)}${reg(B.lats,34,54,50,44,7)}
+    ${reg(B.glutes,40,104,38,24,7)}${reg(B.hams,38,132,18,52,8)}${reg(B.hams,62,132,18,52,8)}${reg(B.calves,40,192,16,42,7)}${reg(B.calves,62,192,16,42,7)}</svg>`;
+  return `<div style="display:flex;gap:10px"><div class="bodyfig">${front}<div class="cap">Front</div></div><div class="bodyfig">${back}<div class="cap">Back</div></div></div>
+    <div class="bodylegend">${Object.keys(HEAT).map(k=>`<div class="bl"><span class="sw" style="background:${HEAT[k]}"></span>${HEATNAME[k]}</div>`).join('')}</div>`;
+}
+function renderBody(){
+  $('stagebody').innerHTML=`<div class="aura"></div><div class="stub">
+    <div class="stubhead"><h2>Body · weekly volume &amp; recovery</h2><span class="tag">STUB · full-body render + drawer</span></div>
+    <div class="stubnote">Full-body side-by-side rendering (front/back, tinted by volume status) is real. The per-muscle content model — the gap in all four R1 designs — is <b>training-status.html's slide-up DETAIL PANEL</b>, delivered in D's side-drawer form using the body-map-hybrid card shell. Tap a muscle to open the drawer.</div>
+    <div class="stubgrid" style="grid-template-columns:auto 1fr">
+      <div class="slot filled">${bodyFig()}</div>
+      <div class="stubgrid">
+        <div class="slot"><div class="sl-k">Per-muscle drawer (D form)</div><div class="sl-t">training-status.html detail-panel content</div>
+          <div class="sl-d">Fills, in order: weekly-volume bar with MEV/MRV markers · mesocycle volume-trend sparkline · RIR/RPE intensity rows · contributing-exercises list (per-exercise sparklines) · "Upcoming" section.</div>
+          <div class="sl-src">crib: training-status.html slide-up detail panel × D side-drawer × body-map-hybrid card shell</div></div>
+        <div class="slot"><div class="sl-k">Volume vs MEV/MAV/MRV</div><div class="sl-t">Lats 19/16 over · Abs 4/8 under</div><div class="sl-d">Per-muscle band bar with MEV/MRV markers (the drawer's headline row).</div><div class="sl-src">crib: training-status.html volume bar + analytics-heatmap.html bands</div></div>
+        <div class="slot"><div class="sl-k">Recovery / readiness</div><div class="sl-t">Systemic + per-group readiness</div><div class="sl-d">Feeds idle body-state + Session Pace fatigue.</div><div class="sl-src">crib: training-status.html readiness</div></div>
+      </div>
+    </div></div>`;
+  renderCrumb([{label:'Body map'}],'training status · STUB');
+}
+function selMuscle(id){bsel=id;openSheet('muscle',id);document.querySelectorAll('.mregion').forEach(r=>r.classList.remove('on'));}
+
+/* ============================================================ OVERLAY (D): right drawer */
+function openSheet(kind,arg){
+  const sheet=$('sheet');let title='',body='';
+  if(kind==='muscle'){
+    const all=[...BODY.front,...BODY.back];const m=all.find(x=>x.id===arg)||all[0];
+    const mevPct=Math.max(6,Math.min(94,(m.tgt*0.55)/m.tgt*100)),mrvPct=94;
+    const volPct=Math.min(100,m.sets/m.tgt*100);
+    title=m.name;
+    body=`<div class="sl-src" style="margin-bottom:12px">STUB shell · content model = training-status.html slide-up detail panel (D drawer form). Rows below are the named fills.</div>
+      <div class="bignum"><div class="kv"><span class="k">weekly sets</span><span><span class="v" style="color:${HEAT[m.status]}">${m.sets}</span> <span class="u">/ ${m.tgt} MAV</span></span></div>
+      <div class="kv"><span class="k">status</span><span class="vv" style="color:${HEAT[m.status]};font-size:14px">${HEATNAME[m.status]}</span></div></div>
+      <div class="panel" style="margin:14px 0"><div class="ptitle"><span class="t">Weekly volume · MEV / MAV / MRV</span><span class="m">${Math.round(volPct)}%</span></div>
+        <div style="position:relative;height:16px;border-radius:8px;background:#22252c;overflow:hidden"><div style="height:100%;width:${volPct}%;background:${HEAT[m.status]}"></div></div>
+        <div style="position:relative;height:12px"><span style="position:absolute;left:${mevPct}%;top:0;font-family:var(--mono);font-size:8px;color:var(--dim)">MEV</span><span style="position:absolute;left:${mrvPct}%;top:0;font-family:var(--mono);font-size:8px;color:var(--dim)">MRV</span></div></div>
+      <div class="panel" style="margin:14px 0"><div class="ptitle"><span class="t">Mesocycle volume trend</span><span class="m">sparkline</span></div>
+        <svg viewBox="0 0 200 34" style="width:100%;height:34px"><polyline points="0,26 40,24 80,20 120,15 160,11 200,8" fill="none" stroke="${HEAT[m.status]}" stroke-width="2"/></svg></div>
+      <div class="panel" style="margin:14px 0"><div class="ptitle"><span class="t">Intensity · RIR / RPE</span></div>
+        <div style="font-family:var(--mono);font-size:12px;color:var(--muted);line-height:1.8">Avg RIR <b style="color:var(--text)">1.5</b> · Avg RPE <b style="color:var(--text)">8.4</b> · hardest set RPE 9.5</div></div>
+      <div class="panel" style="margin:14px 0"><div class="ptitle"><span class="t">Contributing exercises</span></div>
+        <div style="font-family:var(--mono);font-size:12px;color:var(--muted);line-height:1.6">
+          Seated Cable Row · 205 ▲ <svg viewBox="0 0 60 12" style="width:60px;height:12px;vertical-align:middle"><polyline points="0,10 15,8 30,7 45,4 60,3" fill="none" stroke="#2ed573" stroke-width="1.5"/></svg><br>
+          Lat Pulldown · 188 ▲ <svg viewBox="0 0 60 12" style="width:60px;height:12px;vertical-align:middle"><polyline points="0,9 15,8 30,6 45,5 60,4" fill="none" stroke="#2ed573" stroke-width="1.5"/></svg><br>
+          Face Pull · 60 → <svg viewBox="0 0 60 12" style="width:60px;height:12px;vertical-align:middle"><polyline points="0,7 15,7 30,8 45,7 60,7" fill="none" stroke="#8D95A3" stroke-width="1.5"/></svg></div></div>
+      <div class="panel" style="margin:14px 0"><div class="ptitle"><span class="t">Upcoming</span></div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5">${m.status==='over'?'Over MAV & '+m.rec+'% recovered — Pull B auto-scaled −2 sets to protect recovery.':m.status==='under'?'Under MEV — Push B adds 2 sets to reach the productive band.':'On plan — next hit in Pull B (Thu).'}</div></div>`;
+  } else {
+    title='Push B · Thu';
+    body=`<div style="font-family:var(--mono);font-size:12px;color:var(--muted);line-height:1.9">Cable Chest Press · 3×8 @ 90 lb<br>Face Pull · 3×15 @ 35 lb</div>
+      <div class="panel" style="margin:14px 0"><div class="ptitle"><span class="t">Progression suggestion</span></div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5">+2.5 lb on Press (mean concentric held ≥ target last week). Face Pull hold volume.</div></div>
+      <div class="sl-src">STUB — program drill-in drawer · read-only preview</div>`;
+  }
+  $('sheetTitle').textContent=title;$('sheetBody').innerHTML=body;
+  $('scrim').classList.add('show');sheet.classList.add('show');
+}
+function closeSheet(){$('scrim').classList.remove('show');$('sheet').classList.remove('show');}
+
+/* ============================================================ RENDER ROUTER */
+function render(){
+  renderChrome();stopRest();closeSheet();
+  if(mode==='live'&&sessionActive){startLive();}
+  else if(mode==='live'){endLiveSet();renderIdle();}
+  else if(mode==='rest'){startRest();}
+  else if(mode==='review'){renderReview();}
+  else if(mode==='program'){renderProgram();}
+  else if(mode==='body'){renderBody();}
+  ensureLiveSim();     // if a set is still streaming while drilled away, keep it live
+  renderRail();updateStrip();
+}
+render();
+</script>
+</body>
+</html>
