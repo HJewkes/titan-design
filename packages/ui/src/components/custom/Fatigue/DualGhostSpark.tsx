@@ -24,6 +24,7 @@ import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { alpha } from '../../../utils/colors'
 import { FONT_UI, ghostLineColor, clamp01 } from './fatigue-tokens'
 import { GhostBand, BAND_H, BAND_GAP } from './GhostBand'
+import type { TempoTuple } from './tempo-pacing'
 import { GhostBloom, type Pt } from './GhostBloom'
 import type { PhaseSegment, RepVelocityCurve } from './fatigue-model'
 
@@ -43,6 +44,8 @@ export interface DualGhostSparkProps {
   rightLabel?: string
   /** Reveal the device captions. Default `true`. */
   showDeviceLabels?: boolean
+  /** Prescribed tempo — turns on the shared band's phase pacing. */
+  targetTempoSeconds?: TempoTuple | null
 }
 
 /** The phase covering `ms`, or `null` where the side has no coverage. */
@@ -95,6 +98,7 @@ export function DualGhostSpark({
   leftLabel = 'LEFT',
   rightLabel = 'RIGHT',
   showDeviceLabels = true,
+  targetTempoSeconds = null,
 }: DualGhostSparkProps) {
   const w = width
   const h = height
@@ -170,6 +174,7 @@ export function DualGhostSpark({
           top={bandTop}
           showLabels
           labelColor={alpha(t['text-primary'], 0.92)}
+          targetTempoSeconds={targetTempoSeconds}
         />
         {showDeviceLabels && (
           <>

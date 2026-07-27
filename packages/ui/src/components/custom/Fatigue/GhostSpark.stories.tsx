@@ -159,9 +159,9 @@ export const LineTreatmentSoft: Story = {
  * the shape the model actually produces — to prove the band closes them: one contiguous
  * strip, boundaries on the phase transitions, the hold reading as band material.
  *
- * The two prescribed pauses are `hold` (deliberate, under load) and take the amber tone;
- * the trailing run is `idle` — undirected dead time after the rep — and stays grey. That
- * contrast is the point of the story: amber vs grey is hold vs nothing.
+ * The two prescribed pauses are `hold` (deliberate, under load); the trailing run is
+ * `idle` — undirected dead time after the rep. Both sit in the grey family, separated by
+ * VALUE and by the fact that a hold paces and idle never does.
  */
 const PAUSED_SEGMENTS: PhaseSegment[] = [
   { phase: 'eccentric', startMs: 0, endMs: 2100 },
@@ -171,26 +171,32 @@ const PAUSED_SEGMENTS: PhaseSegment[] = [
   { phase: 'idle', startMs: 4690, endMs: 5200 },
 ]
 
+/** Prescribed tempo for the paced variants — [ecc, pauseBottom, con, pauseTop] seconds. */
+const PAUSED_TARGET: [number, number, number, number] = [2.1, 0.7, 1.05, 0.45]
+
 export const PausedRepBand: Story = {
   render: () => {
     const w = 360
     const h = 60
     const bandTop = 22
     const x = (ms: number) => 12 + (ms / 5400) * (w - 20)
+    const Band = (props: { targetTempoSeconds?: [number, number, number, number] }) => (
+      <View style={{ width: w, backgroundColor: PANEL_BG, borderRadius: 12, padding: 16 }}>
+        <svg width={w} height={h}>
+          <GhostBand segments={PAUSED_SEGMENTS} x={x} top={bandTop} showLabels {...props} />
+        </svg>
+      </View>
+    )
     return (
       <View style={{ backgroundColor: PAGE_BG, padding: 28, gap: 16, alignItems: 'flex-start' }}>
-        {label('PHASE BAND · HOLDS (amber) VS TRAILING IDLE (grey) · FLAT')}
-        <View style={{ width: w, backgroundColor: PANEL_BG, borderRadius: 12, padding: 16 }}>
-          <svg width={w} height={h}>
-            <GhostBand segments={PAUSED_SEGMENTS} x={x} top={bandTop} showLabels />
-          </svg>
-        </View>
-        {label('SAME BAND · PROGRESS RAMP (one ramp, no interior steps)')}
-        <View style={{ width: w, backgroundColor: PANEL_BG, borderRadius: 12, padding: 16 }}>
-          <svg width={w} height={h}>
-            <GhostBand segments={PAUSED_SEGMENTS} x={x} top={bandTop} showLabels progressRamp />
-          </svg>
-        </View>
+        {label('FLAT · no tempo prescribed — nothing to pace against')}
+        <Band />
+        {label('PACED · every phase ON TARGET — fills to the brim, labels green')}
+        <Band targetTempoSeconds={PAUSED_TARGET} />
+        {label('PACED · target DOUBLED — every phase now reads early, half-filled, amber')}
+        <Band targetTempoSeconds={[4.2, 1.4, 2.1, 0.9]} />
+        {label('PACED · target HALVED — every phase overruns, capped full, labels red')}
+        <Band targetTempoSeconds={[1.05, 0.35, 0.52, 0.22]} />
       </View>
     )
   },

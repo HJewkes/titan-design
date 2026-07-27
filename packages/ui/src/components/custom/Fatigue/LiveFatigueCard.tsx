@@ -75,7 +75,12 @@ export function LiveFatigueCard({ model, width = 318, height }: LiveFatigueCardP
 
       <View style={{ flex: 1, minHeight: 16 }} />
 
-      <GhostSpark curves={model.velocityCurves} width={chartW} height={chartH} />
+      <GhostSpark
+        curves={model.velocityCurves}
+        width={chartW}
+        height={chartH}
+        targetTempoSeconds={model.targetTempoSeconds}
+      />
     </Surface>
   )
 }
