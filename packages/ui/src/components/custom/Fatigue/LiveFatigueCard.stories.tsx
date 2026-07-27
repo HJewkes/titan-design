@@ -3,7 +3,7 @@ import { View, Text } from 'react-native'
 import { LiveFatigueCard } from './LiveFatigueCard'
 import { Surface } from '../../ui/surface/Surface'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { FATIGUE_STATES, WARMING_UP_MODEL } from './fatigue-mock'
+import { FATIGUE_STATES, WARMING_UP_MODEL, buildMockModel } from './fatigue-mock'
 
 const t = getSemanticColors('dark')
 
@@ -80,30 +80,38 @@ export const States: Story = {
 }
 
 /**
- * Mid-set WITH a plan attached — 3 of 10 done, so the ROM chart draws the remaining 7 reps as
- * dashed to-do placeholders. `plannedReps` rides the model straight through to
- * `RomProgressionChart`.
+ * Mid-set WITH a plan attached — the ROM chart draws the remaining reps as solid to-do sections,
+ * the same upcoming-rep treatment the velocity strip uses. `plannedReps` rides the model straight
+ * through to `RomProgressionChart`, and comes from the mock's ONE rep count, so it agrees with
+ * the velocity side when the two sit together in the panel.
  */
 export const WithPlannedReps: Story = {
   render: () => (
     <Frame>
-      <LiveFatigueCard
-        model={{ ...FATIGUE_STATES[1].model, plannedReps: 10 }}
-        width={318}
-        height={508}
-      />
+      <LiveFatigueCard model={FATIGUE_STATES[1].model} width={318} height={508} />
     </Frame>
   ),
 }
 
 /**
- * The SAME mid-set model with NO plan attached (`plannedReps` undefined) — no target exists, so
- * the chart shows the performed reps only. The gap reads as a gap; nothing is defaulted in.
+ * The SAME mid-set model with NO plan attached — no target exists, so the chart shows the
+ * performed reps only. The gap reads as a gap; nothing is defaulted in.
+ *
+ * `plannedReps` is stripped EXPLICITLY rather than just left off: the mock now supplies it by
+ * default, so "no plan attached" has to be stated to stay true.
  */
 export const WithoutPlannedReps: Story = {
   render: () => (
     <Frame>
-      <LiveFatigueCard model={FATIGUE_STATES[1].model} width={318} height={508} />
+      <LiveFatigueCard
+        model={buildMockModel(FATIGUE_STATES[1].current, {
+          rpe: FATIGUE_STATES[1].model.rpe,
+          verdict: FATIGUE_STATES[1].model.verdict,
+          plannedReps: undefined,
+        })}
+        width={318}
+        height={508}
+      />
     </Frame>
   ),
 }
