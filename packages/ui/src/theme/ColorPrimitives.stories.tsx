@@ -3,10 +3,11 @@ import { View, Text } from 'react-native'
 import {
   primitiveColors,
   primitiveRamps,
+  surfaceRampDark,
+  backgroundFrameDark,
   categoricalPalette,
   CATEGORICAL_CVD_SAFE_MAX,
 } from './tokens/primitives'
-import { semanticColorsDark } from './tokens/semantic'
 import {
   SWATCH_BORDER,
   SectionIntro,
@@ -24,12 +25,18 @@ import {
  * organisations OF these scales — surfaces, categorical, status, brand,
  * fatigue and the rest — live in the sibling `Foundations/Color/Palettes`.
  *
- * There is deliberately no "legacy" section. Every scale here still has
- * unmigrated call sites in `semantic.ts`, so all of it is accurate for main
- * today — but the whole of `primitiveColors` (the greys and the support
- * chromatics) is slated for retirement into a unified warm grey ramp under
- * TD-07.14. A scale that is on its way out is documented with its destination,
- * not filed under a tombstone heading where nobody reads it.
+ * This page is a MENU: everything on it is something you may legitimately
+ * reach for today and that survives the migration ahead. The older
+ * `primitiveColors` scales — `charcoal`, `neutral`, `redVivid`, and the support
+ * `blue`/`red` — are deliberately NOT rendered here even though they still have
+ * call sites in `semantic.ts`, because TD-07.14 deletes them. A swatch on a
+ * menu is an invitation, and no annotation is loud enough to cancel that; the
+ * intro carries a one-line pointer instead, so a reader who comes looking for
+ * charcoal learns where it went rather than assuming an oversight.
+ *
+ * The semantic tokens those scales currently back are still documented, with
+ * swatches, in `Foundations/Color/Palettes` — which is what the coverage guard
+ * checks, and why removing the scale rows here costs no coverage.
  */
 const meta: Meta = {
   title: 'Foundations/Color/Primitives',
@@ -57,41 +64,22 @@ const KEYWORDS = [
   { name: 'black', value: primitiveColors.black },
 ] as const
 
-/** Where the pending-migration work is specified. Repeated in the per-scale notes. */
-const MIGRATION_SPEC = 'coordination/design-explorations/foundations/warm-grey-ramp/ (TD-07.14)'
-
 /**
- * The standing caveat over every `primitiveColors` scale below.
+ * The dark surface planes, darkest first — the greys you may actually pick.
  *
- * Deliberately at the top rather than per-swatch: the reader needs to know the
- * whole family is moving BEFORE they pick a step out of it, and a note attached
- * only to individual rows is one that gets skimmed past.
+ * Shown here as a ramp (values only) because a menu of raw scales with no greys
+ * on it would be a lie. The depth semantics, the L* spacing rationale and the
+ * per-plane semantic aliases live in the full `Foundations/Color/Palettes`
+ * surface story, and are deliberately not duplicated.
  */
-function MigrationNotice() {
-  return (
-    <View
-      style={{
-        borderLeftWidth: 3,
-        borderLeftColor: semanticColorsDark['status-warning'],
-        paddingLeft: 12,
-        paddingVertical: 8,
-        marginBottom: 24,
-      }}
-    >
-      <Text className="font-semibold text-text-primary text-sm mb-1">
-        Pending migration — do not build new work on primitiveColors
-      </Text>
-      <Text className="text-text-secondary text-xs">
-        The OKLCH ramps below are the destination. Everything under{' '}
-        <Text className="font-semibold">Grey ramps</Text> and{' '}
-        <Text className="font-semibold">Support chromatic scales</Text> comes from the older
-        `primitiveColors` family, which is slated to retire into a unified warm grey ramp plus the
-        OKLCH ramps. Those scales still have unmigrated call sites in `semantic.ts`, so the
-        swatches are accurate for main today — they are not yet deprecated, and they are not
-        endorsed either. Spec: {MIGRATION_SPEC}.
-      </Text>
-    </View>
-  )
+const SURFACE_STEPS: Record<string, string> = {
+  frame: backgroundFrameDark,
+  inset: surfaceRampDark.inset,
+  background: surfaceRampDark.background,
+  base: surfaceRampDark.base,
+  elevated: surfaceRampDark.elevated,
+  raised: surfaceRampDark.raised,
+  overlay: surfaceRampDark.overlay,
 }
 
 export const Ramps: StoryObj = {
@@ -103,10 +91,20 @@ export const Ramps: StoryObj = {
         Every raw colour value titan ships, as ordered scales. Nothing here carries meaning — a
         ramp step becomes a border or a status only when a semantic token or a palette references
         it, which is what{' '}
-        <Text className="font-semibold">Foundations/Color/Palettes</Text> documents.
+        <Text className="font-semibold">Foundations/Color/Palettes</Text> documents. Everything on
+        this page is current and safe to pick.
       </SectionIntro>
 
-      <MigrationNotice />
+      <Text className="text-text-tertiary text-xs mb-6">
+        Looking for <Text className="font-semibold">charcoal</Text>,{' '}
+        <Text className="font-semibold">neutral</Text>, <Text className="font-semibold">redVivid</Text>{' '}
+        or the support <Text className="font-semibold">blue</Text>/
+        <Text className="font-semibold">red</Text> scales? They are intentionally not shown — all
+        five retire into a unified warm grey ramp plus the OKLCH ramps under TD-07.14. They still
+        have call sites in `semantic.ts`, so the semantic tokens they back are real and documented
+        in Palettes; the raw scales are not on the menu because you should not be picking from
+        them. Spec: coordination/design-explorations/foundations/warm-grey-ramp/.
+      </Text>
 
       <SectionTitle>Chromatic — OKLCH tonal ramps</SectionTitle>
       <Text className="text-text-secondary text-xs mb-4">
@@ -121,44 +119,15 @@ export const Ramps: StoryObj = {
         <ScaleRow key={key} name={name} scale={primitiveRamps[key]} />
       ))}
 
-      <SectionTitle>Grey ramps — pending migration</SectionTitle>
+      <SectionTitle>Achromatic — the dark surface ramp</SectionTitle>
       <Text className="text-text-secondary text-xs mb-4">
-        Two cold, hand-authored achromatic scales (every step R=G=B). Both fold into the single
-        warm `grey` ramp under TD-07.14, which also absorbs the dark surface planes — so the
-        end state is one grey ramp, not three. Neither is the surface system today.
+        The greys. A derived depth ladder rather than a generated hue ramp — spaced by perceptual
+        lightness so one step is the same visual distance anywhere in the stack. Shown here as
+        values; the depth semantics and the semantic tokens aliasing each plane are in the
+        Palettes surface story, and are not repeated. Apply them with{' '}
+        <Text className="font-semibold">&lt;Surface level&gt;</Text>, not by reading a step.
       </Text>
-      <ScaleRow
-        name="Charcoal"
-        scale={primitiveColors.charcoal}
-        note="TODAY: backs the border family — border-default (400), border-subtle (500), border-strong (300), border-prominent (200), divider (400). Distinct from the dark SURFACE ramp, which is a separate derived depth ladder documented in Palettes. GOING: folds into the warm grey ramp; ΔE 1.6–3.8 per step, so borders and dividers barely move — the cheap half of the migration."
-      />
-      <ScaleRow
-        name="Neutral"
-        scale={primitiveColors.neutral}
-        note="TODAY: backs text-tertiary and the fatigue palette's silver (300) / drift-grey (600) pair. GOING: also folds into the warm grey ramp, but this is the EXPENSIVE half — neutral is markedly cool and its mid steps are the text/muted-text/input greys, so they shift visibly (ΔE 9.8 at 400, 11.7 at 600, 13.7 at 900). Deliberate, not an error."
-      />
-
-      <SectionTitle>Support chromatic scales — pending migration</SectionTitle>
-      <Text className="text-text-secondary text-xs mb-4">
-        Pre-date the OKLCH ramps and are still referenced directly by `semantic.ts` via the `p`
-        alias — which is why a search for `primitiveColors.blue` finds nothing and they look
-        unused. They are not endorsed; each has a named destination in the OKLCH ramps.
-      </Text>
-      <ScaleRow
-        name="Red Vivid"
-        scale={primitiveColors.redVivid}
-        note="TODAY: the whole status-error-vivid family — base (500), light (400), dark (700). GOING: retired outright. status-error-vivid collapses onto red[600] (= status-error), and the Indicator's emphasis moves to a glow shadow derived from red[500] rather than a second, higher-chroma red."
-      />
-      <ScaleRow
-        name="Blue (support)"
-        scale={primitiveColors.blue}
-        note="TODAY: text-link (600), text-link-hover (700 light / 400 dark), border-focus and border-input-focus (600). GOING: to primitiveRamps.blue — text-link (dark) to blue[500], border-focus and border-input-focus to blue[600]. The periwinkle #828DF8 link colour dies with it."
-      />
-      <ScaleRow
-        name="Red (support)"
-        scale={primitiveColors.red}
-        note="TODAY: border-input-error — 600 in light, 500 in dark. GOING: to primitiveRamps.red."
-      />
+      <ScaleRow name="Surface (dark)" scale={SURFACE_STEPS} />
 
       <SectionTitle>Keywords</SectionTitle>
       <Text className="text-text-secondary text-xs mb-4">
