@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render } from '@testing-library/react'
 import { GhostBand, BAND_H, type GhostBandProps } from './GhostBand'
-import { PHASE_AXIS_COLOR, PHASE_AXIS_BASE_COLOR } from './fatigue-tokens'
+import { PHASE_AXIS_COLOR, PHASE_AXIS_BASE_COLOR, PACING_TONE } from './fatigue-tokens'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import type { PhaseSegment } from './fatigue-model'
 
@@ -184,9 +184,9 @@ describe('GhostBand', () => {
     ]
     const c = band(mixed, { targetTempoSeconds: TEMPO, showLabels: true })
     expect(labelsOf(c)).toEqual([
-      { text: 'ECC', fill: t['status-warning'] },
-      { text: 'CON', fill: t['status-success'] },
-      { text: 'HOLD', fill: t['status-error'] },
+      { text: 'ECC', fill: PACING_TONE.ahead },
+      { text: 'CON', fill: PACING_TONE.onPace },
+      { text: 'HOLD', fill: PACING_TONE.over },
     ])
   })
 

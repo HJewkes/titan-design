@@ -76,6 +76,32 @@ export const PHASE_AXIS_BASE_COLOR: Record<SamplePhase, string> = {
   idle: primitiveColors.charcoal[200],
 }
 
+/**
+ * Pacing tones for a label sitting INSIDE the band — ahead / on pace / over.
+ *
+ * These deliberately do NOT use the `status-*` semantic tokens. Those are tuned for text
+ * on a neutral surface; here the text sits on a saturated phase fill, and `status-error`
+ * (red[600]) measures **1.88:1** on the hold fill — below even the large-text floor. The
+ * whole family therefore drops to ramp step **200**, the lightest step at which all three
+ * clear 4.5:1 against every background the band can put behind them:
+ *
+ *   worst-case contrast, over {ecc, con, hold, idle} × {fill, base}
+ *     red[200]    5.63     (was red[600]   1.88 — failed everywhere)
+ *     amber[200]  6.01     (was amber[300] 4.73 — passed)
+ *     green[200]  6.17     (was green[300] 4.45 — marginally failed)
+ *
+ * One step across all three keeps them reading as one family. `PACING_TONE_MIN_CONTRAST`
+ * is asserted in `tempo-pacing.test.ts`, so a future ramp edit cannot quietly regress this.
+ */
+export const PACING_TONE = {
+  ahead: primitiveRamps.amber[200],
+  onPace: primitiveRamps.green[200],
+  over: primitiveRamps.red[200],
+} as const
+
+/** The floor every {@link PACING_TONE} must clear against any band background. */
+export const PACING_TONE_MIN_CONTRAST = 4.5
+
 // --- shared silver/red scheme (ROM chart + ghost-spark line) --------------------
 // One source of truth for the two quality readouts: SILVER when the rep is right,
 // SHADES OF RED when there's an issue. No greens, no ambers — those languages belong

@@ -1,10 +1,30 @@
 import { describe, it, expect } from 'vitest'
 import { phaseFillFraction, pacingTone, phaseTargetsMs, ON_TARGET_MS } from './tempo-pacing'
+import {
+  PACING_TONE,
+  PACING_TONE_MIN_CONTRAST,
+  PHASE_AXIS_COLOR,
+  PHASE_AXIS_BASE_COLOR,
+} from './fatigue-tokens'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import type { SamplePhase } from './fatigue-model'
 
 const t = getSemanticColors('dark')
 const TEMPO: [number, number, number, number] = [2.6, 0.4, 0.95, 0.28]
+
+/** WCAG 2.1 relative luminance / contrast ratio. */
+function contrastRatio(a: string, b: string): number {
+  const lum = (hex: string): number => {
+    const h = hex.replace('#', '')
+    const chan = [0, 2, 4].map((i) => {
+      const c = parseInt(h.slice(i, i + 2), 16) / 255
+      return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)
+    })
+    return 0.2126 * chan[0] + 0.7152 * chan[1] + 0.0722 * chan[2]
+  }
+  const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x)
+  return (hi + 0.05) / (lo + 0.05)
+}
 
 describe('phaseFillFraction', () => {
   it('is the elapsed share of the target', () => {
@@ -22,22 +42,48 @@ describe('phaseFillFraction', () => {
 })
 
 describe('pacingTone', () => {
-  it('warns while still short of target', () => {
-    expect(pacingTone(500, 2000)).toBe(t['status-warning'])
+  it('reads AHEAD while still short of target', () => {
+    expect(pacingTone(500, 2000)).toBe(PACING_TONE.ahead)
   })
 
-  it('succeeds within the on-target window either side', () => {
-    expect(pacingTone(2000, 2000)).toBe(t['status-success'])
-    expect(pacingTone(2000 - ON_TARGET_MS, 2000)).toBe(t['status-success'])
-    expect(pacingTone(2000 + ON_TARGET_MS, 2000)).toBe(t['status-success'])
+  it('reads ON PACE within the on-target window either side', () => {
+    expect(pacingTone(2000, 2000)).toBe(PACING_TONE.onPace)
+    expect(pacingTone(2000 - ON_TARGET_MS, 2000)).toBe(PACING_TONE.onPace)
+    expect(pacingTone(2000 + ON_TARGET_MS, 2000)).toBe(PACING_TONE.onPace)
   })
 
-  it('errors once past the window', () => {
-    expect(pacingTone(2000 + ON_TARGET_MS + 1, 2000)).toBe(t['status-error'])
+  it('reads OVER once past the window', () => {
+    expect(pacingTone(2000 + ON_TARGET_MS + 1, 2000)).toBe(PACING_TONE.over)
   })
 
   it('stays neutral with no target', () => {
     expect(pacingTone(500, null)).toBe(t['text-primary'])
+  })
+})
+
+describe('pacing tone legibility', () => {
+  // The label sits INSIDE the band, so every phase fill AND every muted base is a possible
+  // backdrop. `status-error` (red[600]) measured 1.88:1 on the hold fill — this is the guard
+  // that stopped that shipping, and that stops a ramp edit reintroducing it.
+  const backgrounds = Object.entries({ ...PHASE_AXIS_COLOR, ...PHASE_AXIS_BASE_COLOR })
+
+  for (const [toneName, tone] of Object.entries(PACING_TONE)) {
+    it(`keeps '${toneName}' legible on every band background`, () => {
+      for (const [bgName, bg] of backgrounds) {
+        const ratio = contrastRatio(tone, bg)
+        expect(
+          ratio,
+          `${toneName} (${tone}) on ${bgName} (${bg}) = ${ratio.toFixed(2)}:1`
+        ).toBeGreaterThanOrEqual(PACING_TONE_MIN_CONTRAST)
+      }
+    })
+  }
+
+  it('rejects the status-error token the band used to borrow', () => {
+    // Proves the guard above has teeth rather than passing by luck.
+    expect(contrastRatio(t['status-error'], PHASE_AXIS_COLOR.hold)).toBeLessThan(
+      PACING_TONE_MIN_CONTRAST
+    )
   })
 })
 

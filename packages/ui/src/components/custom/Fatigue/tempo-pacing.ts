@@ -14,6 +14,7 @@
  * that introduced this file, so its rendering is untouched.
  */
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { PACING_TONE } from './fatigue-tokens'
 import type { SamplePhase } from './fatigue-model'
 
 const t = getSemanticColors('dark')
@@ -37,16 +38,19 @@ export function phaseFillFraction(elapsedMs: number, targetMs: number | null): n
 }
 
 /**
- * Pacing tone for a phase's LABEL: still short of target → warning; within ±100 ms →
- * success; past target → error. Keyed on time REMAINING, so it reads the same whether the
- * phase is in flight or finished.
+ * Pacing tone for a phase's LABEL: still short of target → ahead; within ±100 ms → on pace;
+ * past target → over. Keyed on time REMAINING, so it reads the same whether the phase is in
+ * flight or finished.
+ *
+ * Takes {@link PACING_TONE} rather than the `status-*` semantic tokens — the label sits on a
+ * saturated phase fill, where `status-error` measures 1.88:1. See the token's note.
  */
 export function pacingTone(elapsedMs: number, targetMs: number | null): string {
   if (targetMs == null || targetMs <= 0) return t['text-primary']
   const remainingMs = targetMs - elapsedMs
-  if (remainingMs > ON_TARGET_MS) return t['status-warning']
-  if (remainingMs >= -ON_TARGET_MS) return t['status-success']
-  return t['status-error']
+  if (remainingMs > ON_TARGET_MS) return PACING_TONE.ahead
+  if (remainingMs >= -ON_TARGET_MS) return PACING_TONE.onPace
+  return PACING_TONE.over
 }
 
 /**
