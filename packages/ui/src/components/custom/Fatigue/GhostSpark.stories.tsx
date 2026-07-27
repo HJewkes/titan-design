@@ -154,16 +154,21 @@ export const LineTreatmentSoft: Story = {
 }
 
 /**
- * A rep with REAL pauses (the sample-derived mock collapses its pauses to zero width, so
- * the idle tone never shows there). Segments are handed in with SEAMS between the runs —
+ * A rep with REAL holds (the sample-derived mock collapses its pauses to zero width, so
+ * the hold tone never shows there). Segments are handed in with SEAMS between the runs —
  * the shape the model actually produces — to prove the band closes them: one contiguous
- * strip, boundaries on the phase transitions, the pause reading as band material.
+ * strip, boundaries on the phase transitions, the hold reading as band material.
+ *
+ * The two prescribed pauses are `hold` (deliberate, under load) and take the amber tone;
+ * the trailing run is `idle` — undirected dead time after the rep — and stays grey. That
+ * contrast is the point of the story: amber vs grey is hold vs nothing.
  */
 const PAUSED_SEGMENTS: PhaseSegment[] = [
   { phase: 'eccentric', startMs: 0, endMs: 2100 },
-  { phase: 'idle', startMs: 2190, endMs: 2900 },
+  { phase: 'hold', startMs: 2190, endMs: 2900 },
   { phase: 'concentric', startMs: 2990, endMs: 4050 },
-  { phase: 'idle', startMs: 4140, endMs: 4600 },
+  { phase: 'hold', startMs: 4140, endMs: 4600 },
+  { phase: 'idle', startMs: 4690, endMs: 5200 },
 ]
 
 export const PausedRepBand: Story = {
@@ -171,13 +176,19 @@ export const PausedRepBand: Story = {
     const w = 360
     const h = 60
     const bandTop = 22
-    const x = (ms: number) => 12 + (ms / 4800) * (w - 20)
+    const x = (ms: number) => 12 + (ms / 5400) * (w - 20)
     return (
-      <View style={{ backgroundColor: PAGE_BG, padding: 28, gap: 8, alignItems: 'flex-start' }}>
-        {label('PHASE BAND · REP WITH REAL PAUSES (bottom hold + top hold)')}
+      <View style={{ backgroundColor: PAGE_BG, padding: 28, gap: 16, alignItems: 'flex-start' }}>
+        {label('PHASE BAND · HOLDS (amber) VS TRAILING IDLE (grey) · FLAT')}
         <View style={{ width: w, backgroundColor: PANEL_BG, borderRadius: 12, padding: 16 }}>
           <svg width={w} height={h}>
             <GhostBand segments={PAUSED_SEGMENTS} x={x} top={bandTop} showLabels />
+          </svg>
+        </View>
+        {label('SAME BAND · PROGRESS RAMP (one ramp, no interior steps)')}
+        <View style={{ width: w, backgroundColor: PANEL_BG, borderRadius: 12, padding: 16 }}>
+          <svg width={w} height={h}>
+            <GhostBand segments={PAUSED_SEGMENTS} x={x} top={bandTop} showLabels progressRamp />
           </svg>
         </View>
       </View>
