@@ -21,7 +21,7 @@ import { View } from 'react-native'
 import { ghostLineColor, clamp01 } from './fatigue-tokens'
 import { GhostBand, BAND_H, BAND_GAP } from './GhostBand'
 import { GhostBloom, type Pt } from './GhostBloom'
-import type { TempoTuple } from './tempo-pacing'
+import { prescribedSegments, type TempoTuple } from './tempo-pacing'
 import type { RepVelocityCurve } from './fatigue-model'
 
 export interface GhostSparkProps {
@@ -51,8 +51,31 @@ export function GhostSpark({
   const padTop = 10
   const padBot = 6
 
+  // Nothing performed yet. With a prescription there is still something true to draw: the
+  // SHAPE of the rep being asked for, laid out at its target durations and unfilled. An
+  // empty axis says "no data"; this says "here is the rep you are about to do".
   if (curves.length === 0) {
-    return <View testID="ghost-spark" style={{ width: w, height: h }} />
+    const prescribed = prescribedSegments(targetTempoSeconds)
+    if (prescribed.length === 0) {
+      return <View testID="ghost-spark" style={{ width: w, height: h }} />
+    }
+    const totalMs = prescribed[prescribed.length - 1].endMs
+    const bandTopEmpty = h - padBot - BAND_H
+    const xEmpty = (ms: number): number => padL + (ms / (totalMs * 1.04)) * (w - padL - padR)
+    return (
+      <View testID="ghost-spark" style={{ paddingHorizontal: 4 }}>
+        <svg width={w} height={h}>
+          <GhostBand
+            segments={prescribed}
+            x={xEmpty}
+            top={bandTopEmpty}
+            showLabels
+            targetTempoSeconds={targetTempoSeconds}
+            prescribed
+          />
+        </svg>
+      </View>
+    )
   }
 
   const cur = curves[curves.length - 1]

@@ -41,14 +41,16 @@ export function smoothPath(pts: Pt[]): string {
 }
 
 /**
- * The line's ground treatment. Adapts the bar "paper" language (grain + rim-light + soft
- * contact shadow) to a chart LINE — no hard black outline:
- * - `soft` — a soft, blurred, low-opacity dark shadow with no hard edge (the quiet default).
- * - `glow` — a soft blurred halo in the line's OWN tint (no black at all).
- * - `rimlight` — a thin lighter rim on the upper edge + a soft blurred contact shadow below
- *   (paper's inset highlight + drop shadow).
+ * The line's ground treatment: a soft, blurred, low-opacity dark shadow with no hard edge —
+ * the bar "paper" language adapted to a chart LINE, never a hard black outline.
+ *
+ * `glow` (a halo in the line's own tint) and `rimlight` (a lighter upper edge plus a dropped
+ * contact shadow) were explored alongside it and NOT chosen. They were removed rather than
+ * left as unreachable options: no component ever exposed the choice, so the only thing that
+ * could select them was the exploration story, and dead branches in a render path read as
+ * intent that no longer exists.
  */
-export type BloomTreatment = 'soft' | 'glow' | 'rimlight'
+const BLUR_STD_DEV = 2.6
 
 export interface GhostBloomProps {
   /** The current rep as `[x_px, magnitude_px]` points (magnitude ≥ 0 off the baseline). */
@@ -61,8 +63,6 @@ export interface GhostBloomProps {
   baseline: number
   /** Grow UP from the baseline (default) or DOWN — the mirrored-dual flip. */
   orientation?: 'up' | 'down'
-  /** The paper-inspired line ground treatment. Default `soft`. */
-  treatment?: BloomTreatment
   /** Per-ghost stroke colour by index; default fades the primary text token. */
   ghostStroke?: (index: number) => string
   /** Current-line stroke width, px. Default 3.5. */
@@ -76,7 +76,6 @@ export function GhostBloom({
   tint,
   baseline,
   orientation = 'up',
-  treatment = 'soft',
   ghostStroke = (i) => alpha(PARCH, 0.1 + i * 0.015),
   lineWidth = 3.5,
 }: GhostBloomProps) {
@@ -87,15 +86,12 @@ export function GhostBloom({
   const curD = smoothPath(toAbs(current))
   const ghostDs = ghosts.map((g) => smoothPath(toAbs(g)))
   // Rim-light sits on the side the line grows toward (its "top"); shadow falls the other way.
-  const rimDy = orientation === 'down' ? 1 : -1
-  const shadowDy = orientation === 'down' ? -2.2 : 2.2
-  const blurStdDev = treatment === 'glow' ? 3.4 : treatment === 'rimlight' ? 1.8 : 2.6
 
   return (
     <>
       <defs>
         <filter id={blurId} x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation={blurStdDev} />
+          <feGaussianBlur stdDeviation={BLUR_STD_DEV} />
         </filter>
       </defs>
 
@@ -112,41 +108,15 @@ export function GhostBloom({
       ))}
 
       {/* ground treatment — a paper-inspired line contact, never a hard black outline. */}
-      {treatment === 'glow' && (
-        <path
-          d={curD}
-          fill="none"
-          stroke={tint}
-          strokeWidth={lineWidth + 4}
-          strokeLinejoin="round"
-          strokeLinecap="round"
-          opacity={0.55}
-          filter={`url(#${blurId})`}
-        />
-      )}
-      {treatment === 'soft' && (
-        <path
-          d={curD}
-          fill="none"
-          stroke={alpha(primitiveColors.black, 0.3)}
-          strokeWidth={lineWidth + 3}
-          strokeLinejoin="round"
-          strokeLinecap="round"
-          filter={`url(#${blurId})`}
-        />
-      )}
-      {treatment === 'rimlight' && (
-        <path
-          d={curD}
-          fill="none"
-          stroke={alpha(primitiveColors.black, 0.33)}
-          strokeWidth={lineWidth + 0.5}
-          strokeLinejoin="round"
-          strokeLinecap="round"
-          filter={`url(#${blurId})`}
-          transform={`translate(0,${shadowDy})`}
-        />
-      )}
+      <path
+        d={curD}
+        fill="none"
+        stroke={alpha(primitiveColors.black, 0.3)}
+        strokeWidth={lineWidth + 3}
+        strokeLinejoin="round"
+        strokeLinecap="round"
+        filter={`url(#${blurId})`}
+      />
 
       {/* the crisp tinted line. */}
       <path
@@ -157,19 +127,6 @@ export function GhostBloom({
         strokeLinejoin="round"
         strokeLinecap="round"
       />
-
-      {/* rim-light: a thin lighter edge on the line's upper side (paper inset highlight). */}
-      {treatment === 'rimlight' && (
-        <path
-          d={curD}
-          fill="none"
-          stroke={alpha(primitiveColors.white, 0.28)}
-          strokeWidth={1.1}
-          strokeLinejoin="round"
-          strokeLinecap="round"
-          transform={`translate(0,${rimDy})`}
-        />
-      )}
     </>
   )
 }

@@ -28,7 +28,7 @@ const PANEL_BG = primitiveColors.charcoal[800]
 const t = getSemanticColors('dark')
 
 const meta: Meta = {
-  title: 'Workout/Fatigue/Silver-Red Palette',
+  title: 'Foundations/Color/Silver-Red Scheme',
   parameters: {
     layout: 'fullscreen',
     docs: {
