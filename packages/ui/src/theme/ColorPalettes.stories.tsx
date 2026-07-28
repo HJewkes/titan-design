@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
-import { surfaceRampDark, backgroundFrameDark, categoricalPalette, getCategoricalColor, CATEGORICAL_CVD_SAFE_MAX, divergingScale, sequentialEffort, discreteRainbow, bestTextColor, greyRamp } from './tokens/primitives'
+import { categoricalPalette, getCategoricalColor, CATEGORICAL_CVD_SAFE_MAX, divergingScale, sequentialEffort, discreteRainbow, bestTextColor, greyRamp } from './tokens/primitives'
 import { semanticColorsLight, semanticColorsDark } from './tokens/semantic'
 import { WORKOUT_TOKENS } from './workout-tokens'
 import { WORKOUT_PILL_DELOAD } from './extracted-colors-dataviz'
@@ -40,22 +40,24 @@ export default meta
 // ============================================================================
 
 /**
- * The dark surface ramp, darkest plane first.
+ * The dark surface planes, darkest first — the depth ladder.
  *
- * Order and `lStar` mirror `surfaceRampDark` in tokens/primitives.ts, plus the
- * out-of-ramp `backgroundFrameDark` bezel that sits below it. Written as an
- * explicit ordered list because object key order is not a contract and depth
- * order is the whole point of this story. `color-stories.coverage.test.ts`
- * asserts every ramp step appears here.
+ * Each plane is a STEP on `greyRamp` (TD-07.14); the `step` column is the whole
+ * point, because it is what lets a plane and a border be compared on one scale
+ * instead of two. Written as an explicit ordered list because object key order
+ * is not a contract and depth order is what this story is about.
+ * `color-stories.coverage.test.ts` asserts every plane appears here.
+ *
+ * The old `inset` plane is absent: it was retired, not renamed. See the ramp in
+ * `Foundations/Color/Primitives`.
  */
 const SURFACE_PLANES = [
-  { hex: backgroundFrameDark, lStar: 3.79, role: 'Frame / bezel — chrome outside the ramp' },
-  { hex: surfaceRampDark.inset, lStar: 4.5, role: 'Sub-shell well / pressed' },
-  { hex: surfaceRampDark.background, lStar: 9, role: 'Shell' },
-  { hex: surfaceRampDark.base, lStar: 13.5, role: 'Main content plane' },
-  { hex: surfaceRampDark.elevated, lStar: 17, role: 'Nav / rail' },
-  { hex: surfaceRampDark.raised, lStar: 20, role: 'Cards' },
-  { hex: surfaceRampDark.overlay, lStar: 22.5, role: 'Hero / popover' },
+  { step: 975, hex: greyRamp[975], lStar: 3.8, role: 'Frame / bezel — chrome the ramp sits inside' },
+  { step: 950, hex: greyRamp[950], lStar: 9, role: 'Shell' },
+  { step: 925, hex: greyRamp[925], lStar: 13.9, role: 'Main content plane' },
+  { step: 900, hex: greyRamp[900], lStar: 17.2, role: 'Nav / rail' },
+  { step: 875, hex: greyRamp[875], lStar: 19.9, role: 'Cards' },
+  { step: 850, hex: greyRamp[850], lStar: 22.7, role: 'Hero / popover' },
 ] as const
 
 /** Semantic tokens resolving to `hex`, derived at render so the mapping can't drift. */
@@ -66,7 +68,17 @@ function tokensResolvingTo(hex: string): string[] {
     .sort()
 }
 
-function SurfacePlaneRow({ hex, lStar, role }: { hex: string; lStar: number; role: string }) {
+function SurfacePlaneRow({
+  step,
+  hex,
+  lStar,
+  role,
+}: {
+  step: number
+  hex: string
+  lStar: number
+  role: string
+}) {
   const tokens = tokensResolvingTo(hex)
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
@@ -82,7 +94,8 @@ function SurfacePlaneRow({ hex, lStar, role }: { hex: string; lStar: number; rol
       />
       <View style={{ flex: 1 }}>
         <Text className="font-semibold text-text-primary text-sm">
-          {hex.toUpperCase()}{' '}
+          grey-{step}{' '}
+          <Text className="text-text-secondary text-xs font-normal">{hex.toUpperCase()}</Text>{' '}
           <Text className="text-text-tertiary text-xs font-normal">L*{lStar}</Text>
         </Text>
         <Text className="text-text-secondary text-xs">{role}</Text>
@@ -500,11 +513,12 @@ export const StatusColors: StoryObj = {
       <Text className="text-2xl font-bold text-text-primary mb-2">Status Colors</Text>
       <SectionIntro>
         Status roles and their modifiers. <Text className="font-semibold">status-error-vivid</Text>{' '}
-        is a separate, higher-chroma role (not a modifier of status-error) reserved for
-        destructive emphasis. It is the one status family still sourced from the redVivid support
-        scale rather than the OKLCH ramps, and it is on its way out: under TD-07.14 redVivid
-        retires, status-error-vivid collapses onto status-error&apos;s red[600], and the
-        Indicator&apos;s emphasis moves to a glow derived from red[500].
+        is a separate role (not a modifier of status-error) reserved for destructive
+        emphasis. It used to be the one status family sourced from the `redVivid` support scale
+        rather than the OKLCH ramps; TD-07.14 deleted that scale, so the family now resolves to
+        the same red[600]/[500]/[700] steps as status-error. The two are therefore identical in
+        value today — the role is kept distinct because emphasis is meant to come from a glow
+        derived from red[500], not from a second, higher-chroma red.
       </SectionIntro>
       <VariantMatrix
         bases={[

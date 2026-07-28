@@ -20,13 +20,13 @@ import type { ReactNode } from 'react'
 import type { Decorator } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { VelocityStrip, DualVelocityStrip, type VelocitySet } from './VelocityStrip'
-import { surfaceRampDark } from '../../../theme/tokens/primitives'
+import { greyRamp } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 const t = getSemanticColors('dark')
 
 /** The real dark surface-background plane — stories sit on the token, not an ad-hoc grey. */
-export const SURFACE_BG = surfaceRampDark.background
+export const SURFACE_BG = greyRamp[950]
 
 export const VIEW_LABEL = t['text-secondary']
 export const VIEW_NOTE = t['text-tertiary']

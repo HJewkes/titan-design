@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { surfaceRampDark, backgroundFrameDark } from './tokens/primitives'
+import { greyRamp, SURFACE_PLANE_STEPS } from './tokens/primitives'
 import { semanticColorsDark } from './tokens/semantic'
 
 /**
@@ -41,7 +41,9 @@ const storySources = ['ColorPrimitives.stories.tsx', 'ColorPalettes.stories.tsx'
   .join('\n')
 
 /** Every plane a surface/background token is allowed to land on. */
-const RAMP_PLANES = new Set<string>([...Object.values(surfaceRampDark), backgroundFrameDark])
+const RAMP_PLANES = new Set<string>(
+  Object.values(SURFACE_PLANE_STEPS).map((step) => greyRamp[step])
+)
 
 /**
  * Token families the color stories are NOT the documentation of record for,
@@ -69,9 +71,9 @@ describe('Foundations/Color story coverage', () => {
 
     expect(
       offRamp,
-      'surface/background tokens whose value is not a step of surfaceRampDark ' +
-        '(or the backgroundFrameDark bezel). Either fold the value into the ramp, ' +
-        'or add the plane to SURFACE_PLANES in ColorPalettes.stories.tsx and document why ' +
+      'surface/background tokens whose value is not one of the greyRamp steps ' +
+        'named in SURFACE_PLANE_STEPS. Either fold the value into the ramp, or add ' +
+        'the plane to SURFACE_PLANES in ColorPalettes.stories.tsx and document why ' +
         'it sits outside the ramp.'
     ).toEqual([])
   })
@@ -86,22 +88,15 @@ describe('Foundations/Color story coverage', () => {
   })
 
   it('the surface story renders every ramp plane', () => {
-    // SURFACE_PLANES is built from the ramp exports, so covering the exports
-    // is what proves no plane is missing from the rendered ladder.
-    const referenced = [
-      'surfaceRampDark.inset',
-      'surfaceRampDark.background',
-      'surfaceRampDark.base',
-      'surfaceRampDark.elevated',
-      'surfaceRampDark.raised',
-      'surfaceRampDark.overlay',
-      'backgroundFrameDark',
-    ]
-    const missing = referenced.filter((ref) => !storySources.includes(ref))
+    // Each plane is a greyRamp step now, so the ladder must reference the step
+    // rather than a named member of a separate ramp object.
+    const missing = Object.values(SURFACE_PLANE_STEPS)
+      .map((step) => `greyRamp[${step}]`)
+      .filter((ref) => !storySources.includes(ref))
 
     expect(missing, 'ramp planes absent from the SURFACE_PLANES ladder').toEqual([])
-    // Guard the count too: a step added to the ramp must gain a row.
-    expect(Object.keys(surfaceRampDark)).toHaveLength(6)
+    // Guard the count too: a plane added to the ramp must gain a row.
+    expect(Object.keys(SURFACE_PLANE_STEPS)).toHaveLength(6)
   })
 
   it('every other semantic token is named in a color story', () => {

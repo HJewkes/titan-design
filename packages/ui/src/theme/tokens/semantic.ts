@@ -17,14 +17,7 @@
  * - interactive-* : Hover/focus/active/disabled states
  */
 
-import {
-  primitiveColors as p,
-  primitiveRamps as ramp,
-  greyRamp,
-  discreteRainbow,
-  surfaceRampDark as surf,
-  backgroundFrameDark,
-} from './primitives'
+import { primitiveColors as p, primitiveRamps as ramp, greyRamp, discreteRainbow } from './primitives'
 
 /**
  * GREY MAPPING (TD-07.14) — how the old cool scales resolved onto `greyRamp`.
@@ -302,21 +295,20 @@ export const semanticColorsDark = {
   // `background-base` backs `Surface level="background"` (SurfaceContext.SURFACE_LEVEL_TOKEN),
   // so it takes the ramp's shell role. The deepest plane is `background-frame`,
   // which is also the `SurfaceLevel` floor a pressed surface clamps at.
-  'surface-base': surf.base,               // main surface        (#252321, L*13.5)
-  'surface-elevated': surf.elevated,       // elevated surface     (#2C2A28, L*17   — nav/rail)
-  'surface-raised': surf.raised,           // raised surface       (#31302F, L*20   — cards)
-  'surface-overlay': surf.overlay,         // overlay surface      (#373635, L*22.5 — hero/popover)
-  'surface-input': surf.elevated,          // input surface        (#2C2A28 — one plane above base)
+  'surface-base': greyRamp[925],           // main surface        (#252321, L*13.9)
+  'surface-elevated': greyRamp[900],       // elevated surface     (#2C2A28, L*17.2 — nav/rail)
+  'surface-raised': greyRamp[875],         // raised surface       (#31302F, L*19.9 — cards)
+  'surface-overlay': greyRamp[850],        // overlay surface      (#373635, L*22.7 — hero/popover)
+  'surface-input': greyRamp[900],          // input surface        (#2C2A28 — one plane above base)
 
   // Background colors — same ramp, the frame/shell end of it.
-  'background-base': surf.background,      // shell / frame        (#1C1916, L*9 — Surface level="background")
-  'background-default': surf.base,         // main background      (#252321, L*13.5 — matches surface-base)
-  'background-subtle': surf.elevated,      // subtle background    (#2C2A28, L*17 — matches surface-elevated)
-  // Frame/bezel chrome (S-3) — the top bar + side nav shell; one step BELOW
-  // `background-base`, darker even than `surface-inset` — it exits the content
-  // ramp entirely rather than sitting in it. See `backgroundFrameDark` in
-  // primitives.ts.
-  'background-frame': backgroundFrameDark, // frame / bezel        (#100D0A, L*3.79)
+  'background-base': greyRamp[950],        // shell                (#1C1916, L*9   — Surface level="background")
+  'background-default': greyRamp[925],     // main background      (#252321, L*13.9 — matches surface-base)
+  'background-subtle': greyRamp[900],      // subtle background    (#2C2A28, L*17.2 — matches surface-elevated)
+  // Frame/bezel chrome — the top bar + side nav shell, one step BELOW
+  // `background-base`. It used to be described as sitting OUTSIDE the ramp; it
+  // is simply the ramp's last step now, and the floor `<Surface pressed>` clamps at.
+  'background-frame': greyRamp[975],       // frame / bezel        (#100D0A, L*3.8)
 
   // Border colors — solid dark borders are RETIRED (TD-07.14). Not a preference — a structural
   // consequence of one ramp. Every step from 850 to 975 is now a surface plane,
