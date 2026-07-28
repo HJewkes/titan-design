@@ -36,6 +36,11 @@ const has = (f) => argv.includes(f)
 const FLAGS = ['--isolated', '--list', '--restart', '--reap', '--reap-all']
 const passthrough = argv.filter((a) => !FLAGS.includes(a))
 
+/**
+ * Best-effort shell out. Swallowing the error is deliberate: on a runner without `lsof`
+ * the inventory simply comes back empty and we fall through to launching normally, which
+ * is the safe degradation. A port policy must not be able to block CI.
+ */
 const sh = (cmd, args) => {
   try {
     return execFileSync(cmd, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })
@@ -215,6 +220,11 @@ if (has('--isolated')) {
     console.error(`\n  Refusing to kill it. Free the port, or use --isolated.\n`)
     process.exit(1)
   } else if (isOurs(holder) && !has('--restart')) {
+    // Exits 0 WITHOUT holding the foreground. Safe for `playwright.config.ts`, whose
+    // webServer sets `reuseExistingServer: true` and therefore never runs this command
+    // when 6006 is already serving. If that ever flips to false, this branch has to
+    // become a restart instead, or Playwright will wait forever for a server we did
+    // not start.
     console.log(`  Storybook for THIS package is already on ${LOCKED_PORT} (pid ${holder.pid}).`)
     console.log(`  http://127.0.0.1:${LOCKED_PORT}`)
     console.log(`\n  Use --restart to replace it, or --isolated for a second instance.\n`)
