@@ -62,9 +62,9 @@ export const audiobookPreset: ThemePreset = {
       'background-subtle': '#1a1d24',
 
       // Borders
-      'border-default': 'rgba(255, 255, 255, 0.06)',
-      'border-subtle': 'rgba(255, 255, 255, 0.03)',
-      'border-strong': '#2d323d',
+      'hairline-default': 'rgba(255, 255, 255, 0.06)',
+      'hairline-subtle': 'rgba(255, 255, 255, 0.03)',
+      'hairline-strong': '#2d323d',
       'border-focus': '#d4782a',
       'border-input': '#2d323d',
       'border-input-hover': '#454c5c',

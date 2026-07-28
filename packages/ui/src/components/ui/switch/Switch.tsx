@@ -63,7 +63,7 @@ export const Switch = forwardRef<View, SwitchProps>(function Switch(
       className={cn(
         'rounded-full p-0.5 transition-colors',
         styles.track,
-        isChecked ? 'bg-brand-primary' : 'bg-border-strong'
+        isChecked ? 'bg-brand-primary' : 'bg-hairline-strong'
       )}
     >
       <View

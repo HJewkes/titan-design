@@ -117,10 +117,10 @@ const sizeConfig: Record<RadioSize, { outer: string; inner: string; text: string
 }
 
 const colorStyles: Record<RadioColor, { checked: string; unchecked: string }> = {
-  primary: { checked: 'border-brand-primary bg-brand-primary', unchecked: 'border-border-strong' },
-  secondary: { checked: 'border-brand-secondary bg-brand-secondary', unchecked: 'border-border-strong' },
-  success: { checked: 'border-status-success bg-status-success', unchecked: 'border-border-strong' },
-  error: { checked: 'border-status-error bg-status-error', unchecked: 'border-border-strong' },
+  primary: { checked: 'border-brand-primary bg-brand-primary', unchecked: 'border-hairline-strong' },
+  secondary: { checked: 'border-brand-secondary bg-brand-secondary', unchecked: 'border-hairline-strong' },
+  success: { checked: 'border-status-success bg-status-success', unchecked: 'border-hairline-strong' },
+  error: { checked: 'border-status-error bg-status-error', unchecked: 'border-hairline-strong' },
 }
 
 /**

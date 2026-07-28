@@ -319,7 +319,7 @@ export const CompactMode: Story = {
             onPress={() => setIsCompact(!isCompact)}
           />
         </View>
-        <View className="h-px bg-border" />
+        <View className="h-px bg-hairline" />
         <ToolbarButtonGroup gap="sm">
           <ToolbarButton
             label="Filter"

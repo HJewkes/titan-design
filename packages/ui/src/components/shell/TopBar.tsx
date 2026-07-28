@@ -58,7 +58,7 @@ export function TopBar({
       // shared chrome gradient (web); solid bg-surface-elevated is the native fallback
       style={surfaceGradient.chrome() as object}
       className={cn(
-        'h-[46px] flex-row items-center gap-[14px] px-4 bg-surface-elevated border-b border-border',
+        'h-[46px] flex-row items-center gap-[14px] px-4 bg-surface-elevated border-b border-hairline',
         className
       )}
     >

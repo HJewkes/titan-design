@@ -590,7 +590,7 @@ export interface SideRailSection {
 /**
  * The ONE shared gutter/side-rail lockup used by BOTH the single hero and the diverging dual, so a
  * single chart is pixel-identical to the dual's upper half — going dual only adds a lower section.
- * A fixed-width gutter (34px hero / 18px rail) with the `border-border` right hairline (the vertical
+ * A fixed-width gutter (34px hero / 18px rail) with the `border-hairline` right hairline (the vertical
  * axis) and one rotated, height-responsive, initials-collapsing label per section (each `sectionExtent`
  * tall). The single passes ONE section; the dual passes two (up + down wings). Rendered null when no
  * section carries a label. The rotate lives on a wrapper sized to `sectionExtent` so `numberOfLines`

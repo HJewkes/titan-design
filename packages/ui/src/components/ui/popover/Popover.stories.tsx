@@ -152,12 +152,12 @@ export const WithFormContent: Story = {
           <Text className="text-text-secondary text-xs">
             Enter your new display name below.
           </Text>
-          <View className="bg-surface-input border border-border rounded-md px-3 py-2">
+          <View className="bg-surface-input border border-hairline rounded-md px-3 py-2">
             <Text className="text-text-secondary text-sm">John Doe</Text>
           </View>
           <View style={{ flexDirection: 'row', gap: 8, justifyContent: 'flex-end' }}>
             <PopoverCloseButton>
-              <View className="px-3 py-1.5 rounded-md bg-surface-elevated border border-border">
+              <View className="px-3 py-1.5 rounded-md bg-surface-elevated border border-hairline">
                 <Text className="text-text-primary text-sm">Cancel</Text>
               </View>
             </PopoverCloseButton>

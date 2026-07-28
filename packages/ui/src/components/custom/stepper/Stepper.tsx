@@ -91,7 +91,7 @@ function StepConnector({ index }: StepConnectorProps) {
       <View
         className={cn(
           'flex-1 h-0.5 mx-2',
-          isCompleted ? 'bg-brand-primary' : 'bg-border'
+          isCompleted ? 'bg-brand-primary' : 'bg-hairline'
         )}
       />
     )
@@ -101,7 +101,7 @@ function StepConnector({ index }: StepConnectorProps) {
     <View
       className={cn(
         'w-0.5 h-8 ml-4 my-1',
-        isCompleted ? 'bg-brand-primary' : 'bg-border'
+        isCompleted ? 'bg-brand-primary' : 'bg-hairline'
       )}
     />
   )
@@ -171,7 +171,7 @@ export function StepIndicator({
   const statusStyles: Record<StepStatus, string> = {
     completed: 'bg-brand-primary border-brand-primary',
     active: 'bg-brand-primary border-brand-primary',
-    upcoming: 'bg-surface-base border-border-strong',
+    upcoming: 'bg-surface-base border-hairline-strong',
     error: 'bg-status-error border-status-error',
   }
 

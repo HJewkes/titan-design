@@ -84,7 +84,7 @@ export function LiveAuraFrame({
           borderRadius: 10,
           backgroundColor: t['background-base'],
           borderWidth: 1,
-          borderColor: t['border-default'],
+          borderColor: t['hairline-default'],
         },
         style,
       ]}

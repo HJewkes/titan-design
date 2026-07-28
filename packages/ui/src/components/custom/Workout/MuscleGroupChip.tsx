@@ -37,7 +37,7 @@ export function MuscleGroupChip({
 
   const content = (
     <View
-      className={['bg-surface-raised border-border', className].filter(Boolean).join(' ')}
+      className={['bg-surface-raised border-hairline', className].filter(Boolean).join(' ')}
       style={{
         flexDirection: 'row',
         alignItems: 'center',

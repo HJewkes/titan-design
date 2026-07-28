@@ -48,7 +48,7 @@ function VerticalSlotLabel({ slot }: { slot: VoltraSlot }) {
   const { label } = SLOT_META[slot]
   return (
     <View
-      className="border-border"
+      className="border-hairline"
       style={{ width: 34, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1 }}
     >
       {/* Fixed width holds the full label before rotation (a bare rotate clips to the strip). */}
@@ -236,7 +236,7 @@ export function ExerciseHeader({ session }: { session: DashboardModel['session']
   return (
     <View
       onLayout={onLayout}
-      className="border-border"
+      className="border-hairline"
       style={{
         flexDirection: wrap ? 'column' : 'row',
         alignItems: wrap ? 'flex-start' : 'baseline',

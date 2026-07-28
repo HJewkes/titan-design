@@ -477,7 +477,7 @@ export function StrengthTrendChart({
           <View
             testID="strength-trend-chart-tooltip"
             accessibilityElementsHidden
-            className="bg-surface-elevated border-border-strong"
+            className="bg-surface-elevated border-hairline-strong"
             style={{
               position: 'absolute',
               left: Math.max(

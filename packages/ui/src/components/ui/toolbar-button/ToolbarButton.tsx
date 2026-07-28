@@ -232,7 +232,7 @@ export function ToolbarButton({
             <View
               className={cn(
                 'absolute z-50 top-full left-0 mt-1',
-                'rounded-lg shadow-lg border border-border',
+                'rounded-lg shadow-lg border border-hairline',
                 'min-w-[150px] overflow-hidden',
                 `bg-[${MENU_BG}]`
               )}

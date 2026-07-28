@@ -594,9 +594,9 @@ export const TextAndBorderColors: StoryObj = {
 
       <SectionTitle>Border</SectionTitle>
       <View style={{ gap: 16 }}>
-        <ColorSwatch name="border-default" value={semanticColorsDark['border-default']} />
-        <ColorSwatch name="border-subtle" value={semanticColorsDark['border-subtle']} />
-        <ColorSwatch name="border-strong" value={semanticColorsDark['border-strong']} />
+        <ColorSwatch name="hairline-default" value={semanticColorsDark['hairline-default']} />
+        <ColorSwatch name="hairline-subtle" value={semanticColorsDark['hairline-subtle']} />
+        <ColorSwatch name="hairline-strong" value={semanticColorsDark['hairline-strong']} />
         <ColorSwatch name="border-prominent" value={semanticColorsDark['border-prominent']} />
         <ColorSwatch name="border-focus" value={semanticColorsDark['border-focus']} />
         <ColorSwatch name="border-input" value={semanticColorsDark['border-input']} />

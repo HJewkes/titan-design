@@ -11,6 +11,7 @@ import {
   useSurface,
   useSurfaceMode,
 } from './SurfaceContext'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { getPressedRecessShadow } from '../../../theme/elevation'
 
 // A descendant probe that renders the on-surface colour + mode it resolves from
@@ -253,14 +254,15 @@ describe('Surface on-surface colour context', () => {
         <Probe role="tertiary" label="t" />
       </Surface>
     )
-    expect(screen.getByTestId('p')).toHaveStyle({ color: '#F3F4F6' })
-    expect(screen.getByTestId('s')).toHaveStyle({ color: '#9CA3AF' })
-    expect(screen.getByTestId('t')).toHaveStyle({ color: '#6B7280' })
+    const t = getSemanticColors('dark')
+    expect(screen.getByTestId('p')).toHaveStyle({ color: t['text-primary'] })
+    expect(screen.getByTestId('s')).toHaveStyle({ color: t['text-secondary'] })
+    expect(screen.getByTestId('t')).toHaveStyle({ color: t['text-tertiary'] })
   })
 
   it('resolves dark on-surface colours even with no enclosing Surface', () => {
     render(<Probe role="primary" label="p" />)
-    expect(screen.getByTestId('p')).toHaveStyle({ color: '#F3F4F6' })
+    expect(screen.getByTestId('p')).toHaveStyle({ color: getSemanticColors('dark')['text-primary'] })
   })
 
   it('flows an overridden theme to descendant text', () => {
@@ -296,11 +298,19 @@ describe('surface colour helpers', () => {
     expect(surfaceBackground('inset', 'dark')).toBe('#13100D')
   })
 
-  it('onSurfaceColors returns the neutral text ramp as literal hex', () => {
-    expect(onSurfaceColors('dark')).toEqual({
-      primary: '#F3F4F6',
-      secondary: '#9CA3AF',
-      tertiary: '#6B7280',
+  it('onSurfaceColors returns the text ramp as literal hex', () => {
+    const t = getSemanticColors('dark')
+    const got = onSurfaceColors('dark')
+    expect(got).toEqual({
+      primary: t['text-primary'],
+      secondary: t['text-secondary'],
+      tertiary: t['text-tertiary'],
     })
+    // The actual contract this test guards: LITERAL hex, never a var() — under
+    // the RNW alias resolveColor() returns 'var(--color-…)', which silently
+    // breaks any consumer doing colour maths on the result.
+    for (const [role, value] of Object.entries(got)) {
+      expect(value, role).toMatch(/^#[0-9A-F]{6}$/i)
+    }
   })
 })

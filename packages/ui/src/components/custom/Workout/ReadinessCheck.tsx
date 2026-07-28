@@ -116,7 +116,7 @@ function EmojiSlider({ factor }: EmojiSliderProps) {
               accessibilityLabel={`${factor.label} level ${level} of 5`}
               aria-checked={selected}
               testID="readiness-check-emoji"
-              className={selected ? undefined : 'border-border bg-surface-raised'}
+              className={selected ? undefined : 'border-hairline bg-surface-raised'}
               style={({ pressed }) => ({
                 flex: 1,
                 alignItems: 'center',
@@ -172,7 +172,7 @@ function WarmUpCard({ validation }: { validation: WarmUpValidation }) {
   const badge = WARMUP_BADGE[validation.status]
   return (
     <View
-      className="border-border bg-surface-raised"
+      className="border-hairline bg-surface-raised"
       style={{
         marginTop: 16,
         padding: 12,

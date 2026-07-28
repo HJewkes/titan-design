@@ -28,9 +28,9 @@ export interface ThemePresetColors {
   'background-base'?: string
   'background-default'?: string
   'background-subtle'?: string
-  'border-default'?: string
-  'border-subtle'?: string
-  'border-strong'?: string
+  'hairline-default'?: string
+  'hairline-subtle'?: string
+  'hairline-strong'?: string
   'border-focus'?: string
   'divider'?: string
   [key: `${string}`]: string | undefined

@@ -160,12 +160,9 @@ describe('surface ramp contract (dark) — token-value guardrails', () => {
         dark['surface-input'],
         dark['surface-inset'],
       ])
-      const solidBorders = [
-        'border-default',
-        'border-subtle',
-        'border-strong',
-        'border-prominent',
-      ] as const
+      // `border-prominent` is the only solid border left; the quiet three are
+      // alpha hairlines now and cannot equal a fill.
+      const solidBorders = ['border-prominent'] as const
       for (const token of solidBorders) {
         expect(
           surfaceHexes.has(dark[token]),
@@ -220,13 +217,12 @@ describe('surface ramp contract (dark) — token-value guardrails', () => {
     })
   })
 
-  describe('R4 — border-on-surface clears ΔL* >= 3 (fixes the invisible-hairline collision)', () => {
-    it('border-subtle is no longer invisible on surface-raised (the original bug)', () => {
-      const dL = Math.abs(lstar(dark['border-subtle']) - lstar(dark['surface-raised']))
-      expect(dL).toBeGreaterThanOrEqual(3)
-    })
-
-    it('border-subtle clears ΔL* >= 3 against base/elevated/raised/overlay', () => {
+  // R4 used to check that the solid `border-subtle` hex did not match the plane
+  // it sat on. Those solid borders are gone (TD-07.14) — separation is R3's
+  // alpha hairlines, which cannot collide with a plane by construction. What is
+  // left to guard is the one border still solid.
+  describe('R4 — border-prominent, the last solid border', () => {
+    it('clears ΔL* >= 3 on every content plane', () => {
       const planes = [
         'surface-base',
         'surface-elevated',
@@ -234,8 +230,8 @@ describe('surface ramp contract (dark) — token-value guardrails', () => {
         'surface-overlay',
       ] as const
       for (const plane of planes) {
-        const dL = Math.abs(lstar(dark['border-subtle']) - lstar(dark[plane]))
-        expect(dL, `border-subtle vs ${plane}`).toBeGreaterThanOrEqual(3)
+        const dL = Math.abs(lstar(dark['border-prominent']) - lstar(dark[plane]))
+        expect(dL, `border-prominent vs ${plane}`).toBeGreaterThanOrEqual(3)
       }
     })
   })
