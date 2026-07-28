@@ -81,16 +81,16 @@ export const NeumorphicShadows: Story = {
 
         <SubHeader>Raised (element floats above surface)</SubHeader>
         <View style={{ flexDirection: 'row', gap: 16, flexWrap: 'wrap' }}>
-          <ShadowBox label="Subtle" style={neumorphicShadows.charcoal.raised.subtle} />
-          <ShadowBox label="Medium" style={neumorphicShadows.charcoal.raised.medium} />
-          <ShadowBox label="Strong" style={neumorphicShadows.charcoal.raised.strong} />
+          <ShadowBox label="Subtle" style={neumorphicShadows.grey.raised.subtle} />
+          <ShadowBox label="Medium" style={neumorphicShadows.grey.raised.medium} />
+          <ShadowBox label="Strong" style={neumorphicShadows.grey.raised.strong} />
         </View>
 
         <SubHeader>Pressed (element pushed into surface)</SubHeader>
         <View style={{ flexDirection: 'row', gap: 16, flexWrap: 'wrap' }}>
-          <ShadowBox label="Subtle" style={neumorphicShadows.charcoal.pressed.subtle} />
-          <ShadowBox label="Medium" style={neumorphicShadows.charcoal.pressed.medium} />
-          <ShadowBox label="Strong" style={neumorphicShadows.charcoal.pressed.strong} />
+          <ShadowBox label="Subtle" style={neumorphicShadows.grey.pressed.subtle} />
+          <ShadowBox label="Medium" style={neumorphicShadows.grey.pressed.medium} />
+          <ShadowBox label="Strong" style={neumorphicShadows.grey.pressed.strong} />
         </View>
       </View>
 
@@ -100,8 +100,8 @@ export const NeumorphicShadows: Story = {
 {`import { neumorphicShadows } from '@titan-design/react-ui'
 
 // Apply to a View
-<View style={neumorphicShadows.charcoal.raised.subtle} />
-<View style={neumorphicShadows.charcoal.pressed.medium} />
+<View style={neumorphicShadows.grey.raised.subtle} />
+<View style={neumorphicShadows.grey.pressed.medium} />
 
 /* Raised - soft shadow + sharp rim light */
 box-shadow: 
@@ -139,15 +139,15 @@ export const IntensityLevels: Story = {
         <SubHeader>Raised Intensities</SubHeader>
         <View style={{ flexDirection: 'row', gap: 24, marginBottom: 24 }}>
           <View style={{ alignItems: 'center', gap: 8 }}>
-            <ShadowBox label="Subtle" style={neumorphicShadows.charcoal.raised.subtle} />
+            <ShadowBox label="Subtle" style={neumorphicShadows.grey.raised.subtle} />
             <Text className="text-text-secondary text-[10px]">1px / 2px blur</Text>
           </View>
           <View style={{ alignItems: 'center', gap: 8 }}>
-            <ShadowBox label="Medium" style={neumorphicShadows.charcoal.raised.medium} />
+            <ShadowBox label="Medium" style={neumorphicShadows.grey.raised.medium} />
             <Text className="text-text-secondary text-[10px]">2px / 4px blur</Text>
           </View>
           <View style={{ alignItems: 'center', gap: 8 }}>
-            <ShadowBox label="Strong" style={neumorphicShadows.charcoal.raised.strong} />
+            <ShadowBox label="Strong" style={neumorphicShadows.grey.raised.strong} />
             <Text className="text-text-secondary text-[10px]">2px / 5px blur</Text>
           </View>
         </View>
@@ -155,15 +155,15 @@ export const IntensityLevels: Story = {
         <SubHeader>Pressed Intensities (thin 1px rim highlight)</SubHeader>
         <View style={{ flexDirection: 'row', gap: 24 }}>
           <View style={{ alignItems: 'center', gap: 8 }}>
-            <ShadowBox label="Subtle" style={neumorphicShadows.charcoal.pressed.subtle} />
+            <ShadowBox label="Subtle" style={neumorphicShadows.grey.pressed.subtle} />
             <Text className="text-text-secondary text-[10px]">1px / 2px blur</Text>
           </View>
           <View style={{ alignItems: 'center', gap: 8 }}>
-            <ShadowBox label="Medium" style={neumorphicShadows.charcoal.pressed.medium} />
+            <ShadowBox label="Medium" style={neumorphicShadows.grey.pressed.medium} />
             <Text className="text-text-secondary text-[10px]">2px / 4px blur</Text>
           </View>
           <View style={{ alignItems: 'center', gap: 8 }}>
-            <ShadowBox label="Strong" style={neumorphicShadows.charcoal.pressed.strong} />
+            <ShadowBox label="Strong" style={neumorphicShadows.grey.pressed.strong} />
             <Text className="text-text-secondary text-[10px]">2px / 5px blur</Text>
           </View>
         </View>
@@ -181,7 +181,7 @@ export const IntensityLevels: Story = {
 
 // Interactive button using color math - adapts to any background brightness
 interface ColorMathButtonProps {
-  surface: 'charcoal' | 'neutralDark' | 'neutralLight'
+  surface: 'grey' | 'neutralDark' | 'neutralLight'
   bgColor: string
   textColor?: string
 }
@@ -237,7 +237,7 @@ function ColorMathButton({ surface, bgColor, textColor = '#fff' }: ColorMathButt
 export const SurfaceVariants: Story = {
   render: function Render() {
     // Show calculated hover colors for each surface
-    const charcoalHover = getHoverColors('#3C3C3C', 'medium')
+    const greyHover = getHoverColors('#3C3C3C', 'medium')
     const neutralDarkHover = getHoverColors('#374151', 'medium')
     const neutralLightHover = getHoverColors('#E5E7EB', 'medium')
     
@@ -254,11 +254,11 @@ export const SurfaceVariants: Story = {
         <View className="bg-surface-elevated p-6 rounded-xl mb-4">
           <Text className="text-text-secondary text-xs mb-2">Charcoal Surface (#2C2C2C)</Text>
           <Text className="text-text-secondary text-[10px] mb-4">
-            Hover: raised → {charcoalHover.raised}, pressed → {charcoalHover.pressed}
+            Hover: raised → {greyHover.raised}, pressed → {greyHover.pressed}
           </Text>
           <View style={{ flexDirection: 'row', gap: 16 }}>
-            <ColorMathButton surface="charcoal" bgColor="#3C3C3C" />
-            <ColorMathButton surface="charcoal" bgColor="#3C3C3C" />
+            <ColorMathButton surface="grey" bgColor="#3C3C3C" />
+            <ColorMathButton surface="grey" bgColor="#3C3C3C" />
           </View>
         </View>
 
@@ -326,15 +326,15 @@ export const HoverStates: Story = {
         <SubHeader>Raised → Raised Hover (medium intensity)</SubHeader>
         <View style={{ flexDirection: 'row', gap: 24, marginBottom: 24 }}>
           <View style={{ alignItems: 'center', gap: 8 }}>
-            <ShadowBox label="Raised" style={neumorphicShadows.charcoal.raised.medium} />
+            <ShadowBox label="Raised" style={neumorphicShadows.grey.raised.medium} />
             <Text className="text-text-secondary text-[10px]">Normal</Text>
           </View>
           <View style={{ alignItems: 'center', gap: 8 }}>
-            <ShadowBox label="Raised Hover" style={neumorphicShadows.charcoal.raisedHover.medium} />
+            <ShadowBox label="Raised Hover" style={neumorphicShadows.grey.raisedHover.medium} />
             <Text className="text-text-secondary text-[10px]">Hover</Text>
           </View>
           <View style={{ alignItems: 'center', gap: 8 }}>
-            <ShadowBox label="Flat" style={neumorphicShadows.charcoal.flat} />
+            <ShadowBox label="Flat" style={neumorphicShadows.grey.flat} />
             <Text className="text-text-secondary text-[10px]">Alt: Flat</Text>
           </View>
         </View>
@@ -342,15 +342,15 @@ export const HoverStates: Story = {
         <SubHeader>Pressed → Pressed Hover (medium intensity)</SubHeader>
         <View style={{ flexDirection: 'row', gap: 24, marginBottom: 24 }}>
           <View style={{ alignItems: 'center', gap: 8 }}>
-            <ShadowBox label="Pressed" style={neumorphicShadows.charcoal.pressed.medium} />
+            <ShadowBox label="Pressed" style={neumorphicShadows.grey.pressed.medium} />
             <Text className="text-text-secondary text-[10px]">Normal</Text>
           </View>
           <View style={{ alignItems: 'center', gap: 8 }}>
-            <ShadowBox label="Pressed Hover" style={neumorphicShadows.charcoal.pressedHover.medium} />
+            <ShadowBox label="Pressed Hover" style={neumorphicShadows.grey.pressedHover.medium} />
             <Text className="text-text-secondary text-[10px]">Hover</Text>
           </View>
           <View style={{ alignItems: 'center', gap: 8 }}>
-            <ShadowBox label="Flat" style={neumorphicShadows.charcoal.flat} />
+            <ShadowBox label="Flat" style={neumorphicShadows.grey.flat} />
             <Text className="text-text-secondary text-[10px]">Alt: Flat</Text>
           </View>
         </View>
@@ -358,26 +358,26 @@ export const HoverStates: Story = {
         <SubHeader>All Intensities - Raised Hover</SubHeader>
         <View style={{ flexDirection: 'row', gap: 16, marginBottom: 24 }}>
           <View style={{ alignItems: 'center', gap: 8 }}>
-            <ShadowBox label="Subtle" style={neumorphicShadows.charcoal.raisedHover.subtle} />
+            <ShadowBox label="Subtle" style={neumorphicShadows.grey.raisedHover.subtle} />
           </View>
           <View style={{ alignItems: 'center', gap: 8 }}>
-            <ShadowBox label="Medium" style={neumorphicShadows.charcoal.raisedHover.medium} />
+            <ShadowBox label="Medium" style={neumorphicShadows.grey.raisedHover.medium} />
           </View>
           <View style={{ alignItems: 'center', gap: 8 }}>
-            <ShadowBox label="Strong" style={neumorphicShadows.charcoal.raisedHover.strong} />
+            <ShadowBox label="Strong" style={neumorphicShadows.grey.raisedHover.strong} />
           </View>
         </View>
 
         <SubHeader>All Intensities - Pressed Hover</SubHeader>
         <View style={{ flexDirection: 'row', gap: 16 }}>
           <View style={{ alignItems: 'center', gap: 8 }}>
-            <ShadowBox label="Subtle" style={neumorphicShadows.charcoal.pressedHover.subtle} />
+            <ShadowBox label="Subtle" style={neumorphicShadows.grey.pressedHover.subtle} />
           </View>
           <View style={{ alignItems: 'center', gap: 8 }}>
-            <ShadowBox label="Medium" style={neumorphicShadows.charcoal.pressedHover.medium} />
+            <ShadowBox label="Medium" style={neumorphicShadows.grey.pressedHover.medium} />
           </View>
           <View style={{ alignItems: 'center', gap: 8 }}>
-            <ShadowBox label="Strong" style={neumorphicShadows.charcoal.pressedHover.strong} />
+            <ShadowBox label="Strong" style={neumorphicShadows.grey.pressedHover.strong} />
           </View>
         </View>
       </View>
@@ -434,12 +434,12 @@ export const InteractiveDemo: Story = {
       
       if (isActive) {
         return isHovered 
-          ? neumorphicShadows.charcoal.pressedHover[intensity]
-          : neumorphicShadows.charcoal.pressed[intensity]
+          ? neumorphicShadows.grey.pressedHover[intensity]
+          : neumorphicShadows.grey.pressed[intensity]
       }
       return isHovered 
-        ? neumorphicShadows.charcoal.raisedHover[intensity]
-        : neumorphicShadows.charcoal.raised[intensity]
+        ? neumorphicShadows.grey.raisedHover[intensity]
+        : neumorphicShadows.grey.raised[intensity]
     }
     
     const getBgColor = (intensity: ShadowIntensity) => {

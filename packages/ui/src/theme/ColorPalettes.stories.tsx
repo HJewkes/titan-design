@@ -1,17 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
-import {
-  primitiveColors,
-  surfaceRampDark,
-  backgroundFrameDark,
-  categoricalPalette,
-  getCategoricalColor,
-  CATEGORICAL_CVD_SAFE_MAX,
-  divergingScale,
-  sequentialEffort,
-  discreteRainbow,
-  bestTextColor,
-} from './tokens/primitives'
+import { surfaceRampDark, backgroundFrameDark, categoricalPalette, getCategoricalColor, CATEGORICAL_CVD_SAFE_MAX, divergingScale, sequentialEffort, discreteRainbow, bestTextColor, greyRamp } from './tokens/primitives'
 import { semanticColorsLight, semanticColorsDark } from './tokens/semantic'
 import { WORKOUT_TOKENS } from './workout-tokens'
 import { WORKOUT_PILL_DELOAD } from './extracted-colors-dataviz'
@@ -440,7 +429,7 @@ export const FatigueRomPalette: StoryObj = {
         DRIFT_GREY is `neutral[600]` #4B5563, and the unified warm grey ramp assigns it no
         destination — the 15-row fold maps the other greys but skips this one. It needs an
         assignment before that migration lands. Note that the recovered spec records DRIFT_GREY as
-        `charcoal[500]` #1C1C1C; that is stale, `fatigue-tokens.ts` on main reads `neutral[600]`,
+        `grey[500]` #1C1C1C; that is stale, `fatigue-tokens.ts` on main reads `neutral[600]`,
         which puts it in the expensive half of the fold rather than the cheap one.
       </Text>
     </View>
@@ -571,7 +560,7 @@ export const TextAndBorderColors: StoryObj = {
     <View style={{ padding: 24 }}>
       <Text className="text-2xl font-bold text-text-primary mb-2">Text & Border Colors</Text>
       <SectionIntro>
-        The dark-mode text and border roles. Today the border family is the charcoal grey ramp
+        The dark-mode text and border roles. Today the border family is the grey grey ramp
         assigned to line-work, and text-tertiary and the link colors come from the neutral and
         blue support scales — all three of which are pending migration (TD-07.14): the greys fold
         into one warm grey ramp and the links move to the OKLCH blue. These are the roles that
@@ -626,7 +615,7 @@ const SEM = {
   brandDark: semanticColorsDark['brand-primary-dark'],
   brandSecondary: semanticColorsDark['brand-secondary'],
   spinner: SPINNER_PRIMARY,
-  neutral: primitiveColors.neutral[500],
+  neutral: greyRamp[600],
 } as const
 
 export const RolesInUse: StoryObj = {

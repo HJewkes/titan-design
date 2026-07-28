@@ -313,7 +313,7 @@ export function SetBarChart({
   const flipStyle = flip ? ({ transform: [{ scaleY: -1 as number }] } as const) : null
 
   // Planned/to-do reps + the baseline draw in a SURFACE-relative neutral (on-surface tertiary)
-  // so they stay legible on every plane instead of a fixed charcoal.
+  // so they stay legible on every plane instead of a fixed grey.
   const placeholderColor = useOnSurfaceColor('tertiary')
   // The expanded strip's solid to-do tone: the surface plane blended toward the neutral (the same
   // relative model), so a `todoVariant="solid"` section holds ~constant contrast on every plane.

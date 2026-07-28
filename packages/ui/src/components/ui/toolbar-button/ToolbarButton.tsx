@@ -140,7 +140,7 @@ export function ToolbarButton({
       return styles.disabledBg
     }
     
-    const shadows = neumorphicShadows.charcoal
+    const shadows = neumorphicShadows.grey
     
     if (showActive) {
       // Active = pressed/sunken appearance

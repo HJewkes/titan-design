@@ -2,13 +2,13 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { GhostSpark } from './GhostSpark'
 import { GhostBand } from './GhostBand'
-import { primitiveColors } from '../../../theme/tokens/primitives'
+import { greyRamp } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { FATIGUE_STATES, TARGET_TEMPO_SECONDS } from './fatigue-mock'
 import type { PhaseSegment } from './fatigue-model'
 
-const PANEL_BG = primitiveColors.charcoal[800]
-const PAGE_BG = primitiveColors.charcoal[900]
+const PANEL_BG = greyRamp[950]
+const PAGE_BG = greyRamp[975]
 const t = getSemanticColors('dark')
 
 const meta: Meta<typeof GhostSpark> = {

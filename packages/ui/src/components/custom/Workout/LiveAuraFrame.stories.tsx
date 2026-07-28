@@ -82,7 +82,7 @@ const meta: Meta<typeof LiveAuraFrame> = {
     docs: {
       description: {
         component:
-          'Full-surface color-flood frame tied to a coaching category. Wraps content on a charcoal ' +
+          'Full-surface color-flood frame tied to a coaching category. Wraps content on a grey ' +
           'base and layers a radial wash — amber at threshold (VL20), red at stop (VL28+, pulsing) — ' +
           'derived from the semantic warning / error tokens via `alpha()`. Children pass through. ' +
           'Rendered here at live-screen size so the flood reads (it is meant to tint a whole panel, ' +

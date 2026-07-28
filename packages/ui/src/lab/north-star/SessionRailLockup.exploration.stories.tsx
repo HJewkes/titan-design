@@ -32,7 +32,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ReactNode } from 'react'
 import { View, Text } from 'react-native'
 import { getSemanticColors } from '../../theme/tokens/semantic'
-import { primitiveColors } from '../../theme/tokens/primitives'
+import { greyRamp } from '../../theme/tokens/primitives'
 import { alpha } from '../../utils/colors'
 import { WORKOUT_TOKENS } from '../../theme/workout-tokens'
 import {
@@ -53,9 +53,9 @@ function velocityHex(v: number): string {
   if (v >= 0.5) return VEL.orange
   return VEL.red
 }
-const PAGE_BG = primitiveColors.charcoal[900]
-const PANEL_BG = primitiveColors.charcoal[800]
-const ROW_BG = primitiveColors.charcoal[850] ?? primitiveColors.charcoal[800]
+const PAGE_BG = greyRamp[975]
+const PANEL_BG = greyRamp[950]
+const ROW_BG = greyRamp[850]
 const FONT_HEAD = '"Space Grotesk", sans-serif'
 const FONT_UI = '"Nunito Sans", sans-serif'
 const FONT_MONO = 'monospace'
@@ -112,7 +112,7 @@ function Panel({ title, sub, children }: { title: string; sub?: string; children
         gap: 12,
         width: 340,
         borderWidth: 1,
-        borderColor: alpha(primitiveColors.charcoal[0], 0.06),
+        borderColor: alpha(greyRamp[600], 0.06),
       }}
     >
       <View style={{ gap: 2 }}>
@@ -244,7 +244,7 @@ function TableRow({ setNo, load, children }: { setNo: string; load: string; chil
         gap: 10,
         paddingVertical: 7,
         borderTopWidth: 1,
-        borderTopColor: alpha(primitiveColors.charcoal[0], 0.06),
+        borderTopColor: alpha(greyRamp[600], 0.06),
       }}
     >
       <Text style={{ width: 18, fontFamily: FONT_MONO, fontSize: 11, color: C['text-secondary'] }}>

@@ -16,7 +16,7 @@ const meta: Meta<typeof Surface> = {
     level: {
       control: 'select',
       options: ['frame', 'background', 'base', 'elevated', 'raised', 'overlay'],
-      description: 'Named charcoal plane (flat background from a semantic token)',
+      description: 'Named grey plane (flat background from a semantic token)',
     },
     pressed: {
       control: 'boolean',
@@ -88,7 +88,7 @@ export const WithGlow: Story = {
   ),
 }
 
-// The named-plane model: flat, full-bleed charcoal planes straight from the
+// The named-plane model: flat, full-bleed grey planes straight from the
 // semantic surface tokens — reaching the darker nav/page shades the numeric
 // lighten model can't. These back the shell / rail / stage.
 export const NamedPlanes: Story = {

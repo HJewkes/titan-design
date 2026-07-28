@@ -28,7 +28,7 @@ export interface SurfaceProps extends ViewProps {
    */
   elevation?: ElevationLevel
   /**
-   * Named charcoal plane (shell / rail / stage). Sets the background directly
+   * Named grey plane (shell / rail / stage). Sets the background directly
    * from a semantic surface token — reaching the darker nav/page planes the
    * lighten model can't — and drops the default rounding + auto shadow so the
    * plane reads full-bleed. Composable with `elevation`'s glow.
@@ -61,7 +61,7 @@ export interface SurfaceProps extends ViewProps {
  * A container that OWNS its background and establishes an on-surface colour
  * context. Two grounded ways to pick the background:
  *  - `elevation` (numeric): the raised-card model — lighten-from-base + shadow.
- *  - `level` (named): a flat charcoal plane straight from a semantic token,
+ *  - `level` (named): a flat grey plane straight from a semantic token,
  *    for the shell / rail / stage backgrounds.
  * Either way, descendants read the surface via {@link useOnSurfaceColor} /
  * {@link useSurfaceMode} rather than hard-coding `getSemanticColors('dark')`.
@@ -86,7 +86,7 @@ export function Surface({
   // Three grounded ways to own a background, in precedence order:
   //  - pressed: a well ONE ramp step DOWN from the parent level (relative),
   //    with an inner-shadow recess — clamps at the `inset` floor.
-  //  - level (named plane): a flat charcoal plane straight from a token.
+  //  - level (named plane): a flat grey plane straight from a token.
   //  - elevation (numeric): the raised-card model — lighten-from-base + shadow.
   const baseColor = getBaseSurfaceColor(mode)
   const resolvedLevel = pressed ? pressedLevel(inherited.level) : (level ?? inherited.level)

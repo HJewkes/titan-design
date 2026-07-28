@@ -27,12 +27,12 @@ import {
  *
  * This page is a MENU: everything on it is something you may legitimately
  * reach for today and that survives the migration ahead. The older
- * `primitiveColors` scales — `charcoal`, `neutral`, `redVivid`, and the support
+ * `primitiveColors` scales — `grey`, `neutral`, `redVivid`, and the support
  * `blue`/`red` — are deliberately NOT rendered here even though they still have
  * call sites in `semantic.ts`, because TD-07.14 deletes them. A swatch on a
  * menu is an invitation, and no annotation is loud enough to cancel that; the
  * intro carries a one-line pointer instead, so a reader who comes looking for
- * charcoal learns where it went rather than assuming an oversight.
+ * grey learns where it went rather than assuming an oversight.
  *
  * The semantic tokens those scales currently back are still documented, with
  * swatches, in `Foundations/Color/Palettes` — which is what the coverage guard
@@ -96,7 +96,7 @@ export const Ramps: StoryObj = {
       </SectionIntro>
 
       <Text className="text-text-tertiary text-xs mb-6">
-        Looking for <Text className="font-semibold">charcoal</Text>,{' '}
+        Looking for <Text className="font-semibold">grey</Text>,{' '}
         <Text className="font-semibold">neutral</Text>, <Text className="font-semibold">redVivid</Text>{' '}
         or the support <Text className="font-semibold">blue</Text>/
         <Text className="font-semibold">red</Text> scales? They are intentionally not shown — all

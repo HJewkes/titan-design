@@ -49,7 +49,7 @@ export const audiobookPreset: ThemePreset = {
       'text-secondary': '#b5b3af',
       'text-tertiary': '#7a7875',
 
-      // Surfaces: warm charcoals (not pure gray)
+      // Surfaces: warm greys (not pure gray)
       'surface-base': '#101114',
       'surface-elevated': '#15171c',
       'surface-raised': '#1a1d24',

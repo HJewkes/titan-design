@@ -20,7 +20,7 @@ import { type DashboardModel, verdictFromLoss } from './fixtures'
 const t = getSemanticColors('dark')
 
 /** Raised-card elevation shared by the alert + tempo cards. */
-const CARD_SHADOW = neumorphicShadows.charcoal.raised.medium
+const CARD_SHADOW = neumorphicShadows.grey.raised.medium
 /** One row height for the tempo + alert cards, so they line up regardless of tempo font size. */
 const CONTROL_HEIGHT = 34
 /** The tempo card ground — mirrors TempoDisplay's own surface-raised so a shorter inner pill reads seamless. */
@@ -363,7 +363,7 @@ export function LiveView({
             style={{ gap: CONTROLS_GAP, justifyContent: hasTempo ? 'space-between' : 'flex-end' }}
           >
             {/* tempo card — locked to the alert's height (this view only); the inner TempoDisplay
-                shrinks its font but stays centred on the shared charcoal ground so it reads seamless. */}
+                shrinks its font but stays centred on the shared grey ground so it reads seamless. */}
             {session.tempo != null && (
               <View
                 onLayout={onTempoLayout}

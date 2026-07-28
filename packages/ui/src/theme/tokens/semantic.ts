@@ -29,13 +29,13 @@ import {
 /**
  * GREY MAPPING (TD-07.14) — how the old cool scales resolved onto `greyRamp`.
  *
- * Every grey below came off `charcoal` (pure R=G=B) or `neutral` (cool, R−B
+ * Every grey below came off `grey` (pure R=G=B) or `neutral` (cool, R−B
  * down to −26). They were snapped by NEAREST L*, not by matching step numbers,
- * because the two old scales were numbered incompatibly: `charcoal` ran
+ * because the two old scales were numbered incompatibly: `grey` ran
  * INVERTED and compressed (0 = #6E6E6E lightest, 900 = #101010 darkest), so
- * `charcoal[400]` and `greyRamp[400]` have nothing to do with each other.
+ * `grey[400]` and `greyRamp[400]` have nothing to do with each other.
  *
- *   charcoal 200→800  300→900  400→925  500→950
+ *   grey 200→800  300→900  400→925  500→950
  *   neutral   50→50   100→100  300→200  400→400  500→600  600→700  900→950
  *
  * Surfaces move ΔE 1.9–4.8 — at or near imperceptible. The TEXT roles move

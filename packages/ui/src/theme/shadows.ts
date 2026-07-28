@@ -192,8 +192,8 @@ export function isDark(hex: string): boolean {
  * - darker: deeper shadow for pressed/inset states
  */
 export const shadowColors = {
-  // For charcoal surfaces (~#2C2C2C to #3C3C3C)
-  charcoal: {
+  // For grey surfaces (~#2C2C2C to #3C3C3C)
+  grey: {
     dark: 'rgba(0, 0, 0, 0.5)',
     light: 'rgba(255, 255, 255, 0.12)', // brighter for crisp rim light
     darker: 'rgba(0, 0, 0, 0.6)',
@@ -233,7 +233,7 @@ const intensityConfig: Record<ShadowIntensity, ShadowConfig> = {
  * Uses a soft dark shadow (bottom-right) and a sharp rim light (top-left).
  */
 export function createRaisedShadow(
-  surface: ShadowSurface = 'charcoal',
+  surface: ShadowSurface = 'grey',
   intensity: ShadowIntensity = 'medium'
 ): ViewStyle {
   const colors = shadowColors[surface]
@@ -264,7 +264,7 @@ export function createRaisedShadow(
  * Uses a soft dark inset shadow (top-left) and a thin sharp rim light (bottom-right).
  */
 export function createPressedShadow(
-  surface: ShadowSurface = 'charcoal',
+  surface: ShadowSurface = 'grey',
   intensity: ShadowIntensity = 'medium'
 ): ViewStyle {
   const colors = shadowColors[surface]
@@ -306,7 +306,7 @@ export function createFlatShadow(): ViewStyle {
  * Reduces shadow depth but keeps a subtle rim light to maintain visual boundary.
  */
 export function createRaisedHoverShadow(
-  surface: ShadowSurface = 'charcoal',
+  surface: ShadowSurface = 'grey',
   intensity: ShadowIntensity = 'medium'
 ): ViewStyle {
   const colors = shadowColors[surface]
@@ -337,7 +337,7 @@ export function createRaisedHoverShadow(
  * Reduces shadow depth but keeps a subtle rim light to maintain visual boundary.
  */
 export function createPressedHoverShadow(
-  surface: ShadowSurface = 'charcoal',
+  surface: ShadowSurface = 'grey',
   intensity: ShadowIntensity = 'medium'
 ): ViewStyle {
   const colors = shadowColors[surface]
@@ -365,26 +365,26 @@ export function createPressedHoverShadow(
  */
 export const neumorphicShadows = {
   // Charcoal surface shadows (for dark toolbars, cards)
-  charcoal: {
+  grey: {
     raised: {
-      subtle: createRaisedShadow('charcoal', 'subtle'),
-      medium: createRaisedShadow('charcoal', 'medium'),
-      strong: createRaisedShadow('charcoal', 'strong'),
+      subtle: createRaisedShadow('grey', 'subtle'),
+      medium: createRaisedShadow('grey', 'medium'),
+      strong: createRaisedShadow('grey', 'strong'),
     },
     raisedHover: {
-      subtle: createRaisedHoverShadow('charcoal', 'subtle'),
-      medium: createRaisedHoverShadow('charcoal', 'medium'),
-      strong: createRaisedHoverShadow('charcoal', 'strong'),
+      subtle: createRaisedHoverShadow('grey', 'subtle'),
+      medium: createRaisedHoverShadow('grey', 'medium'),
+      strong: createRaisedHoverShadow('grey', 'strong'),
     },
     pressed: {
-      subtle: createPressedShadow('charcoal', 'subtle'),
-      medium: createPressedShadow('charcoal', 'medium'),
-      strong: createPressedShadow('charcoal', 'strong'),
+      subtle: createPressedShadow('grey', 'subtle'),
+      medium: createPressedShadow('grey', 'medium'),
+      strong: createPressedShadow('grey', 'strong'),
     },
     pressedHover: {
-      subtle: createPressedHoverShadow('charcoal', 'subtle'),
-      medium: createPressedHoverShadow('charcoal', 'medium'),
-      strong: createPressedHoverShadow('charcoal', 'strong'),
+      subtle: createPressedHoverShadow('grey', 'subtle'),
+      medium: createPressedHoverShadow('grey', 'medium'),
+      strong: createPressedHoverShadow('grey', 'strong'),
     },
     flat: createFlatShadow(),
   },

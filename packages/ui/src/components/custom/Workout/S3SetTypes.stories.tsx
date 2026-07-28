@@ -9,11 +9,11 @@
  */
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Fragment } from 'react'
-import { primitiveColors, primitiveRamps as ramp } from '../../../theme/tokens/primitives'
+import { primitiveRamps as ramp, greyRamp } from '../../../theme/tokens/primitives'
 import { GREY, RAIL_W, SET_GAP, T_PRIMARY, T_SECONDARY, T_TERTIARY, INSET, velColor, reps, Page, sectionTitle } from './setHeadingKit'
 
 // ---- variable-zone (floor→max) upcoming color — real ramp candidates (no invented hex)
-const VAR_GREY = primitiveColors.charcoal[200] // #3C3C3C — lighter charcoal (the paler-grey reference)
+const VAR_GREY = greyRamp[800] // #3C3C3C — lighter grey (the paler-grey reference)
 const VAR_BLUE_800 = ramp.blue[800] // #14407E — clearly blue, a touch brighter
 const VAR_BLUE_900 = ramp.blue[900] // #112C5A — dark muted navy, recessive
 const VAR_CYAN_900 = ramp.cyan[900] // #0B3149 — teal alt, sidesteps info-blue adjacency
@@ -115,7 +115,7 @@ function Sheet() {
         {/* 1. variable rep-range — real ramp candidates for the variable zone */}
         <Col label="1 · variable rep-range — LOCKED: cyan 900">
           {([
-            ['grey · charcoal 200', VAR_GREY],
+            ['grey · grey 200', VAR_GREY],
             ['blue 800 · #14407E', VAR_BLUE_800],
             ['blue 900 · #112C5A', VAR_BLUE_900],
             ['cyan 900 · #0B3149', VAR_CYAN_900],

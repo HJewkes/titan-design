@@ -8,7 +8,7 @@
  */
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
-import { primitiveColors } from '../../../theme/tokens/primitives'
+import { primitiveColors, greyRamp } from '../../../theme/tokens/primitives'
 import { alpha } from '../../../utils/colors'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import {
@@ -23,8 +23,8 @@ import {
   FONT_MONO,
 } from './fatigue-tokens'
 
-const PAGE_BG = primitiveColors.charcoal[900]
-const PANEL_BG = primitiveColors.charcoal[800]
+const PAGE_BG = greyRamp[975]
+const PANEL_BG = greyRamp[950]
 const t = getSemanticColors('dark')
 
 const meta: Meta = {
@@ -161,7 +161,7 @@ const PHASE_AXIS: SwatchDef[] = [
   },
   {
     name: 'Idle',
-    token: 'PHASE_AXIS_COLOR.idle · charcoal[300]',
+    token: 'PHASE_AXIS_COLOR.idle · grey[300]',
     value: PHASE_AXIS_COLOR.idle,
     note: 'Pauses / holds on the phase band.',
   },

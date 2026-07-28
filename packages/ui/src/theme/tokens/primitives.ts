@@ -64,7 +64,7 @@ export const primitiveColors = {
   },
 
   // Charcoal scale (dark backgrounds)
-  charcoal: {
+  grey: {
     0: '#6E6E6E',
     50: '#5D5D5D',
     100: '#4C4C4C',
@@ -100,7 +100,7 @@ export const primitiveColors = {
  * the hairline alone. `background`/`base`/`inset` are unchanged by the re-space.
  * Warmth (R-B) tapers 6 -> 1.5 from frame to hero so bright content planes stay
  * near-neutral.
- * Kept separate from the `charcoal` scale above (which several existing
+ * Kept separate from the `grey` scale above (which several existing
  * components reference directly for unrelated shadow/track tints) so this
  * change is additive and doesn't ripple into those consumers.
  * See coordination/design-explorations/surface-system-north-star.md.
@@ -131,7 +131,7 @@ export const backgroundFrameDark = '#100D0A' // L*3.79
  * preserve the generator, not just the hexes.
  *
  * The surface planes ARE steps here rather than a parallel object: `850` is
- * overlay, `975` is the bezel. That is the whole point of the ramp. `charcoal`,
+ * overlay, `975` is the bezel. That is the whole point of the ramp. `grey`,
  * `neutral`, `surfaceRampDark` and `backgroundFrameDark` all resolve into it,
  * which is why every plane step below is byte-identical to the value that
  * shipped in v0.10.0 — the surfaces do not move, only their names.
