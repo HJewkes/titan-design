@@ -114,9 +114,11 @@ export function grainForTone(baseColor: string): string {
  * because a low-contrast vertical gradient across a wide plane bands into visible
  * steps on an 8-bit panel, and a whisper of noise breaks the step edges up.
  *
- * Only worth applying where a gradient actually spans real width — {@link
- * paperSheet} already includes it via {@link tonalFill}. On a surface with no
- * gradient there is nothing to band, and this is dead weight.
+ * Only worth applying where a gradient actually spans real width. On a surface
+ * with no gradient there is nothing to band and this is dead weight — which is
+ * now the open question for {@link paperSheet} itself, since the gradient this
+ * existed to protect (`tonalFill`) is gone. VW-99 panel C4 decides it, on the
+ * wall, against a seeded positive control.
  */
 export function ditherTile(): string {
   return (
