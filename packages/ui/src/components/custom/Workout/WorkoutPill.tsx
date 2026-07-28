@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react'
 import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { WORKOUT_PILL_DELOAD } from '../../../theme/extracted-colors-dataviz'
+import { greyRamp } from '../../../theme/tokens/primitives'
+
+const HAIRLINE_DEFAULT = getSemanticColors('dark')['hairline-default']
 
 const t = getSemanticColors('dark')
 
@@ -35,7 +38,7 @@ const statusBorderStyles: Record<WorkoutPillStatus, Record<string, unknown>> = {
   completed: { borderWidth: 1, borderColor: 'rgba(46,213,115,0.3)' },
   current: { borderWidth: 1, borderColor: 'rgba(255,121,0,0.3)' },
   next: { borderWidth: 1, borderColor: 'rgba(255,121,0,0.4)' },
-  upcoming: { borderWidth: 1, borderColor: '#1F1F1F' },
+  upcoming: { borderWidth: 1, borderColor: HAIRLINE_DEFAULT },
   missed: { borderWidth: 1, borderColor: 'rgba(209,67,67,0.25)' },
   deload: { borderWidth: 1, borderColor: 'rgba(186,41,150,0.3)' },
 }
@@ -44,7 +47,7 @@ const textColors: Record<WorkoutPillStatus, string> = {
   completed: t['status-success'],
   current: t['brand-primary'],
   next: t['brand-primary'],
-  upcoming: '#6B7280',
+  upcoming: greyRamp[500],
   missed: 'rgba(209,67,67,0.7)',
   deload: WORKOUT_PILL_DELOAD,
 }

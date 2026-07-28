@@ -3,6 +3,11 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Text, View } from 'react-native'
 import { BaseBadge } from './BaseBadge'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+
+// Read from the token, not pinned: these used to be hand-copied hexes and
+// silently desynced when borders became alpha hairlines (TD-07.16).
+const T = getSemanticColors('dark')
 
 describe('BaseBadge', () => {
   it('renders children', () => {
@@ -12,7 +17,7 @@ describe('BaseBadge', () => {
 
   it('defaults to the plain variant border color', () => {
     render(<BaseBadge testID="bb"><Text>x</Text></BaseBadge>)
-    expect(screen.getByTestId('bb')).toHaveStyle({ borderTopColor: '#1F1F1F' })
+    expect(screen.getByTestId('bb')).toHaveStyle({ borderTopColor: T['hairline-default'] })
   })
 
   it('applies the pr variant border color', () => {

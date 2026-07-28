@@ -56,7 +56,6 @@
     "#ff7900": 4
   },
   "src/components/custom/Workout/BaseBadge.tsx": {
-    "#1f1f1f": 1,
     "rgba(": 2
   },
   "src/components/custom/Workout/BodyMap.tsx": {
@@ -79,8 +78,6 @@
     "rgba(": 3
   },
   "src/components/custom/Workout/DeviationBar.tsx": {
-    "#6b7280": 1,
-    "#f3f4f6": 1,
     "rgba(": 4
   },
   "src/components/custom/Workout/ExerciseCard.stories.tsx": {
@@ -118,7 +115,6 @@
     "#070707": 1
   },
   "src/components/custom/Workout/MesoCard.tsx": {
-    "#1f1f1f": 1,
     "rgba(": 2
   },
   "src/components/custom/Workout/MesoProgressBar.tsx": {
@@ -131,9 +127,6 @@
     "#131313": 1,
     "#6b7280": 4,
     "#f3f4f6": 4
-  },
-  "src/components/custom/Workout/MuscleGroupChip.tsx": {
-    "#2c2c2c": 2
   },
   "src/components/custom/Workout/PlaceholderStrip.stories.tsx": {
     "#2ed573": 1,
@@ -250,9 +243,6 @@
     "#0a5c52": 1,
     "#5c1a1a": 1,
     "#6b4000": 1,
-    "#6b7280": 2,
-    "#9ca3af": 1,
-    "#d1d5db": 1,
     "rgba(": 13
   },
   "src/components/custom/Workout/StrengthTrendChart.stories.tsx": {
@@ -278,16 +268,10 @@
   "src/components/custom/Workout/WeekRow.tsx": {
     "rgba(": 2
   },
-  "src/components/custom/Workout/WeightBadge.tsx": {
-    "#9ca3af": 1
-  },
   "src/components/custom/Workout/WorkoutCard.tsx": {
-    "#1f1f1f": 1,
     "rgba(": 1
   },
   "src/components/custom/Workout/WorkoutPill.tsx": {
-    "#1f1f1f": 1,
-    "#6b7280": 1,
     "rgba(": 10
   },
   "src/components/custom/Workout/ZoneTrack.stories.tsx": {

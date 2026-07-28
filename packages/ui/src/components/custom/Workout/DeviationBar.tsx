@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps, type ViewStyle } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { greyRamp } from '../../../theme/tokens/primitives'
 
 const t = getSemanticColors('dark')
 
@@ -13,7 +14,7 @@ export interface DeviationBarProps extends ViewProps {
 function getDotColor(deviation: number): string {
   const abs = Math.abs(deviation)
   if (deviation < -0.3) return t['status-success']
-  if (abs <= 0.3) return '#6B7280'
+  if (abs <= 0.3) return greyRamp[500]
   if (abs <= 0.7) return t['status-warning']
   return t['status-error']
 }
@@ -68,7 +69,7 @@ export function DeviationBar({
           height: dotSize,
           borderRadius: 9999,
           borderWidth: 1.5,
-          borderColor: '#F3F4F6',
+          borderColor: greyRamp[50],
           boxShadow: '0 0 4px rgba(0,0,0,0.5)',
           backgroundColor: getDotColor(clamped),
           left: Math.max(0, Math.min(dotPosition - dotSize / 2, resolvedWidth - dotSize)),
