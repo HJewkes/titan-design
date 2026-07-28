@@ -59,22 +59,32 @@ describe('depth calibration rig', () => {
     expect(screen.getAllByText(/FLAT \(decoy\)/)).toHaveLength(2)
   })
 
-  it('keeps a real gradient in the banding panel for the control to work', () => {
-    // Run 1 was VOID because nothing on the panel could band once the tonal fill
-    // turned out to be invisible. The control is the fix, and this is the
-    // property that makes it one: exactly one field carries a gradient, and it
-    // is not any of the shipped-material fields.
+  it('pairs the smooth banding control with a hand-quantised reference', () => {
+    // Run 1 was VOID because nothing could band. Run 2 then found the smooth
+    // control ALSO reading clean, which is ambiguous: a blind panel and a render
+    // path that simply does not band both look like "no steps". The hard-edged
+    // reference disambiguates them, so the panel needs BOTH gradients — and
+    // neither may be one of the shipped-material fields.
     const { container } = render(<Banding />)
-    const gradients = container.querySelectorAll('[style*="linear-gradient"]')
-    expect(gradients).toHaveLength(1)
+    expect(container.querySelectorAll('[style*="linear-gradient"]')).toHaveLength(2)
   })
 
-  it('seeds a positive control among the banding fields', () => {
+  it('labels the control and the reference distinctly, and only on reveal', () => {
     render(<Banding />)
-    expect(screen.queryByText(/CONTROL \(decoy\)/)).toBeNull()
+    expect(screen.queryByText(/CONTROL/)).toBeNull()
+    expect(screen.queryByText(/REFERENCE/)).toBeNull()
 
     fireEvent.click(screen.getByText('Reveal key'))
-    expect(screen.getAllByText(/CONTROL \(decoy\)/)).toHaveLength(1)
+    expect(screen.getAllByText(/CONTROL/)).toHaveLength(1)
+    expect(screen.getAllByText(/REFERENCE/)).toHaveLength(1)
+  })
+
+  it('seeds a no-floor-line decoy among the inset wells', () => {
+    render(<PaperMaterial />)
+    expect(screen.queryByText(/NONE \(decoy\)/)).toBeNull()
+
+    fireEvent.click(screen.getByText('Reveal key'))
+    expect(screen.getAllByText(/NONE \(decoy\)/)).toHaveLength(1)
   })
 
   it('seeds an identical pair among the tone-step pairs', () => {

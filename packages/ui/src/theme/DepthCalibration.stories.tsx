@@ -353,6 +353,24 @@ const PAPER_TONE = greyRamp[875]
  */
 const PAPER_SHEETS = ['flat', 'paper', 'flat'] as const
 
+/**
+ * ADDED IN RUN 2. `insetWell` is the other material TD-07.16 shipped, and it has
+ * never been on a panel. Run 2 flagged `paperSheet`'s rim-light as weak at .10 —
+ * and the well's floor light, which its own docstring calls "the load-bearing
+ * half", is at .04. That is below every hairline value the same run rejected as
+ * too faint, so it is very likely inert on the wall and nobody has looked.
+ *
+ * Forced choice rather than "can you see it": the SHIPPED value, a candidate,
+ * and a well with no floor line at all. Reporting a line on the decoy invalidates
+ * the row. Answering it here costs one glance and saves a whole extra sitting.
+ */
+const WELL_TONE = greyRamp[950]
+const WELL_FLOORS: { label: string; floorAlpha: number | null; answer: string }[] = [
+  { label: '1', floorAlpha: 0.12, answer: 'CANDIDATE — floor light raised to .12' },
+  { label: '2', floorAlpha: null, answer: 'NONE (decoy) — inner top shadow only, no floor line' },
+  { label: '3', floorAlpha: 0.04, answer: 'SHIPPED — floor light at .04' },
+]
+
 export const PaperMaterial: StoryObj = {
   name: 'C3 · Paper material — what is left after the fill',
   render: () => (
@@ -403,6 +421,35 @@ export const PaperMaterial: StoryObj = {
           <Text className="text-text-tertiary" style={{ fontSize: 12, marginTop: 8 }}>
             {revealed ? 'paperSheet() at hero width' : 'reads as: ______'}
           </Text>
+
+          <Text
+            className="text-text-secondary"
+            style={{ fontSize: 15, marginTop: 26, marginBottom: 10 }}
+          >
+            Inset wells — which of these have a light line along the FLOOR (bottom inner edge)?
+          </Text>
+          <View style={{ flexDirection: 'row', gap: 22 }}>
+            {WELL_FLOORS.map((w) => (
+              <View key={w.label} style={{ flex: 1 }}>
+                <View
+                  style={
+                    {
+                      height: 120,
+                      borderRadius: 10,
+                      backgroundColor: WELL_TONE,
+                      boxShadow: w.floorAlpha
+                        ? `inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,${w.floorAlpha})`
+                        : 'inset 0 2px 6px rgba(0,0,0,0.55)',
+                    } as Record<string, unknown>
+                  }
+                />
+                <Text className="text-text-tertiary" style={{ fontSize: 12, marginTop: 6 }}>
+                  {w.label}
+                  {revealed ? `  ·  ${w.answer}` : '  ·  floor line? ______'}
+                </Text>
+              </View>
+            ))}
+          </View>
 
           {revealed ? (
             <View style={{ marginTop: 14, maxWidth: 1000 }}>
@@ -482,6 +529,34 @@ const BAND_TONE = greyRamp[900]
  */
 const SHIPPED_PAPER = paperSheet(BAND_TONE) as Record<string, unknown>
 
+/**
+ * ADDED IN RUN 2, and it is the whole reason this panel is worth re-running.
+ *
+ * Run 2 reported NO banding anywhere — including on the control that was
+ * supposed to guarantee it. By the sheet that is another VOID, but "the control
+ * did not fire" has two very different causes and they demand opposite actions:
+ *
+ *   a. the panel/viewing setup cannot resolve banding  -> VOID, fix the setup
+ *   b. the render path genuinely does not band here    -> ditherTile is dead
+ *      (10-bit panel, or the browser dithers gradients itself)
+ *
+ * A smooth control cannot tell those apart, because both produce "no steps".
+ * So: the same tone span, quantised BY HAND into five hard-edged stripes. This
+ * is banding, drawn deliberately. C2 already proved hard tone edges at this
+ * spacing are visible on the wall, so if these stripes read and the smooth
+ * gradient beside them does not, cause (b) is established — the pipeline is not
+ * producing the artefact, and the mitigation for it is unearned.
+ */
+const BAND_STEPS = (() => {
+  const from = [0x2c, 0x2a, 0x28] // grey-900
+  const to = [0x31, 0x30, 0x2f] // grey-875
+  return Array.from({ length: 5 }, (_, i) => {
+    const t = i / 4
+    const ch = from.map((f, k) => Math.round(f + (to[k] - f) * t))
+    return `#${ch.map((v) => v.toString(16).padStart(2, '0')).join('')}`
+  })
+})()
+
 const BAND_FIELDS: { key: string; answer: string; style: Record<string, unknown> }[] = [
   {
     key: '1',
@@ -490,10 +565,21 @@ const BAND_FIELDS: { key: string; answer: string; style: Record<string, unknown>
   },
   {
     key: '2',
-    answer: 'CONTROL (decoy) — a bare grey-900 → grey-875 gradient, no dither, no grain',
+    answer: 'CONTROL — a bare grey-900 → grey-875 gradient, no dither, no grain',
     style: {
       backgroundColor: BAND_TONE,
       backgroundImage: `linear-gradient(180deg, ${greyRamp[900]} 0%, ${greyRamp[875]} 100%)`,
+    },
+  },
+  {
+    key: '2b',
+    answer:
+      'REFERENCE — hard-edged stripes, grey-900 → grey-875 in 5 steps. This is what banding LOOKS like.',
+    style: {
+      backgroundImage: `linear-gradient(180deg, ${BAND_STEPS.map(
+        (hex, i) =>
+          `${hex} ${(i / BAND_STEPS.length) * 100}%, ${hex} ${((i + 1) / BAND_STEPS.length) * 100}%`,
+      ).join(', ')})`,
     },
   },
   {
@@ -509,7 +595,7 @@ export const Banding: StoryObj = {
     <Panel
       title="C4 · Banding"
       task={
-        'Three wide fields. Look for horizontal STEPS — flat stripes with a visible edge between ' +
+        'Four wide fields. Look for horizontal STEPS — flat stripes with a visible edge between ' +
         'them, rather than a smooth fall. Say BANDS or SMOOTH for each. This is the one check that ' +
         'cannot be done anywhere but on the panel: banding is an 8-bit artefact of this display.'
       }
@@ -538,15 +624,22 @@ export const Banding: StoryObj = {
           {revealed ? (
             <View style={{ marginTop: 14, maxWidth: 1000 }}>
               <KeyLine>
-                {'READ FIELD 2 FIRST. It is the control and it must BAND. If it reads smooth, this ' +
-                  'panel is blind under these conditions and rows about fields 1 and 3 mean nothing ' +
-                  '— record VOID, do not record PASS. That is precisely how run 1 went wrong.'}
+                {'READ FIELDS 2 AND 2b FIRST — they decide whether the rest of the panel means ' +
+                  'anything. 2b is banding drawn by hand: the same tone span quantised into five ' +
+                  'hard-edged 1-level steps, which is exactly what the artefact looks like when it ' +
+                  'occurs. Sanity-check the setup (brightness, no browser zoom) before calling it.'}
               </KeyLine>
               <KeyLine>
-                {'Given a banding control: if field 3 bands and field 1 does not, the dither is ' +
-                  'earning its place — keep it. If NEITHER bands, there is no gradient left in the ' +
-                  'shipped material to protect and ditherTile comes out of paperSheet. That is a ' +
-                  'real result, not a null one, and it is the expected one now the fill is gone.'}
+                {'2b reads, 2 (smooth) does not -> this render path does not band: 10-bit panel, or ' +
+                  'the browser dithers gradients itself. 2b ALSO invisible -> the artefact is below ' +
+                  'threshold here at this tone span. Either way ditherTile buys nothing on this ' +
+                  'display and comes out of paperSheet — a real result, not a null one. The one ' +
+                  'caveat is that it is a claim about THIS panel; the same recipe on a phone is a ' +
+                  'separate question, and paperSheet is hero-surface-only for that reason.'}
+              </KeyLine>
+              <KeyLine>
+                {'If 2 DOES band: compare 1 (shipped) against 3 (no dither). 3 banding and 1 not is ' +
+                  'the dither earning its place — keep it.'}
               </KeyLine>
               <KeyLine>
                 {'If field 1 bands too, raise the 0.02α in ditherTile (materials.ts) until it stops; ' +

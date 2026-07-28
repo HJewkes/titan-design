@@ -1,24 +1,18 @@
 /**
  * Surface materials — the properties that make paper read as ONE material.
  *
- * These treatments are mostly invisible by design (a 0.02α dither, grain that is
- * a whisper at dark tones), which makes them exactly the kind of thing that can be
- * broken without anyone noticing until it looks subtly wrong on the wall. So the
+ * These treatments are subtle by design (grain is a whisper at dark tones, the
+ * rim is one pixel), which makes them exactly the kind of thing that can be
+ * broken without anyone noticing until it looks wrong on the wall. So the
  * numbers that define them are asserted rather than left as comments.
  *
- * The `tonal fill` block that used to lead this file went with `tonalFill` in
- * VW-99 — the wall run found the ΔL* 3 gradient indiscernible. See the
- * materials.ts module header.
+ * The `tonal fill` and `dither` blocks that used to lead this file went with
+ * `tonalFill` and `ditherTile` in VW-99: the wall found the ΔL* 3 gradient
+ * indiscernible, and then found that this render path does not band at all, so
+ * the anti-banding layer was mitigating nothing. See the materials.ts header.
  */
 import { describe, it, expect } from 'vitest'
-import {
-  grainOpacityForTone,
-  grainForTone,
-  ditherTile,
-  paperSheet,
-  insetWell,
-  barPaper,
-} from './materials'
+import { grainOpacityForTone, grainForTone, paperSheet, insetWell, barPaper } from './materials'
 import { greyRamp } from './tokens/primitives'
 
 const styleOf = (s: Record<string, unknown>) => s as { backgroundImage?: string; boxShadow?: string; backgroundColor?: string }
@@ -47,38 +41,18 @@ describe('grain', () => {
   })
 })
 
-describe('dither', () => {
-  /**
-   * Dither is anti-banding, not texture. If it ever climbs to grain strength it
-   * has stopped doing its job and started being visible noise.
-   */
-  it('stays under the visibility threshold, and under grain everywhere', () => {
-    const op = Number(ditherTile().match(/opacity='([\d.]+)'/)![1])
-    // An absolute ceiling, not a ratio to grain. Grain already bottoms out at
-    // 0.04 on the darkest plane, so "half of grain" would be a coincidence of
-    // that floor rather than a statement about dither. ~0.025 is the point
-    // where noise starts being seen rather than just breaking up a step edge.
-    expect(op).toBeGreaterThan(0)
-    expect(op).toBeLessThanOrEqual(0.025)
-    // And it must never out-weigh the texture it hides under.
-    for (const step of Object.keys(greyRamp).map(Number)) {
-      expect(op, `vs grain at grey-${step}`).toBeLessThan(
-        grainOpacityForTone(greyRamp[step as keyof typeof greyRamp])
-      )
-    }
-  })
-})
-
 describe('paperSheet', () => {
-  it('layers dither over grain, and carries no gradient', () => {
+  it('carries grain ALONE — no dither, no gradient', () => {
     const bg = styleOf(paperSheet(greyRamp[875])).backgroundImage!
     // Count data URIs, not 'url(' — each SVG tile contains a `filter='url(#n)'`
     // internally, so counting the token double-reports.
-    expect(bg.split('data:image/svg+xml').length - 1, 'expected both grain and dither').toBe(2)
-    // VW-99 removed the tonal fill: on the wall it could not be told from a flat
-    // sheet of the same tone, and the full material still read as a flat digital
-    // rectangle. Asserted rather than merely deleted, so re-adding a gradient is
-    // a deliberate act with a wall run behind it, not a quiet revert.
+    //
+    // Both of the layers this used to have were measured off the sheet in VW-99:
+    // the tonal fill was indiscernible from flat, and the dither was mitigating
+    // a banding artefact that a hand-drawn reference proved this render path
+    // does not produce. Asserted rather than merely deleted, so putting either
+    // back is a deliberate act with a wall run behind it, not a quiet revert.
+    expect(bg.split('data:image/svg+xml').length - 1, 'grain only, no dither tile').toBe(1)
     expect(bg, 'the tonal fill was removed in VW-99').not.toContain('linear-gradient')
   })
 
@@ -101,7 +75,7 @@ describe('insetWell', () => {
     // a darker rectangle. It is the light on the floor that says "below".
     const shadow = styleOf(insetWell(greyRamp[950])).boxShadow!
     expect(shadow).toContain('inset 0 2px')
-    expect(shadow, 'missing the bottom floor rim').toContain('inset 0 -1px 0 rgba(255,255,255')
+    expect(shadow, 'missing the bottom floor rim').toContain('inset 0 -1px 0 rgba(255,255,255,0.12)')
   })
 
   it('is entirely inset — a well must not cast outward', () => {

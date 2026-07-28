@@ -350,6 +350,12 @@ export const semanticColorsDark = {
   // `default` is the old `strong` — a value just confirmed legible on all four
   // planes. Spacing goes 1 : 1.56 : 2.33, against the original 1 : 1.5 : 2.33.
   //
+  // RUN 2 (VW-99): all three tiers were seen on all four planes — the retune
+  // worked — but `subtle` was still "a bit hard to read", so the whole family
+  // took a further +.01. That is a comfort margin on a passing row, not a fix
+  // for a failing one, which is why it is a flat offset: the 1 : 1.56 : 2.33
+  // spacing that the run validated is preserved rather than re-derived.
+  //
   // Keep these to TWO decimals. react-native-web quantises alpha to 8 bits, so
   // a 3-decimal value silently rounds on the way to the DOM (.135 renders as
   // .13) — the token would say one thing and paint another.
@@ -357,9 +363,9 @@ export const semanticColorsDark = {
   // DARK ONLY. The light family above composites toward BLACK on light planes,
   // which this run says nothing about — do not mirror these numbers into it
   // without its own verification.
-  'hairline-subtle': 'rgba(255, 255, 255, 0.09)',
-  'hairline-default': 'rgba(255, 255, 255, 0.14)',
-  'hairline-strong': 'rgba(255, 255, 255, 0.21)',
+  'hairline-subtle': 'rgba(255, 255, 255, 0.10)',
+  'hairline-default': 'rgba(255, 255, 255, 0.15)',
+  'hairline-strong': 'rgba(255, 255, 255, 0.22)',
 
   // Interactive states
   'interactive-hover': 'rgba(255, 255, 255, 0.04)',
