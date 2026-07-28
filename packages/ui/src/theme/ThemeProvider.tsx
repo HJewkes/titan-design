@@ -2,7 +2,7 @@
 //
 // Registers titan's semantic color tokens as runtime CSS variables via
 // nativewind's `vars()` so that className color tokens (`text-text-secondary`,
-// `bg-surface-raised`, `border-border`, …) resolve on NATIVE React Native — the
+// `bg-surface-raised`, `border-hairline`, …) resolve on NATIVE React Native — the
 // native equivalent of the `:root {}` block `global.css` provides on web.
 //
 // Why this exists: titan's Workout organisms reference semantic colors as CSS

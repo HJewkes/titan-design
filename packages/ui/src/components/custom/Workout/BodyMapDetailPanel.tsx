@@ -220,7 +220,7 @@ export function BodyMapDetailPanel({
           testID="body-map-detail-panel-handle"
         >
           <View
-            className="bg-border-strong"
+            className="bg-hairline-strong"
             style={{ width: 40, height: 4, borderRadius: 2 }}
             accessibilityElementsHidden
           />
@@ -380,7 +380,7 @@ export function BodyMapDetailPanel({
               {contributingExercises!.map((exercise, index) => (
                 <View
                   key={`${exercise.name}-${index}`}
-                  className="flex-row items-center justify-between bg-surface-raised border-border"
+                  className="flex-row items-center justify-between bg-surface-raised border-hairline"
                   style={{
                     gap: 10,
                     paddingVertical: 8,

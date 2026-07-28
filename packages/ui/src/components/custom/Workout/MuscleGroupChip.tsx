@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { greyRamp } from '../../../theme/tokens/primitives'
 
 const t = getSemanticColors('dark')
 
@@ -15,7 +16,7 @@ export interface MuscleGroupChipProps extends ViewProps {
 }
 
 const dotColorMap: Record<VolumeStatus, string> = {
-  untrained: '#2C2C2C',
+  untrained: greyRamp[900],
   behind: t['brand-secondary'],
   ontrack: t['status-success'],
   target: t['brand-primary'],
@@ -31,13 +32,13 @@ export function MuscleGroupChip({
 }: MuscleGroupChipProps) {
   const dotColor = volumeStatus
     ? dotColorMap[volumeStatus]
-    : '#2C2C2C'
+    : greyRamp[900]
 
   const statusLabel = volumeStatus ?? 'no status'
 
   const content = (
     <View
-      className={['bg-surface-raised border-border', className].filter(Boolean).join(' ')}
+      className={['bg-surface-raised border-hairline', className].filter(Boolean).join(' ')}
       style={{
         flexDirection: 'row',
         alignItems: 'center',

@@ -188,7 +188,7 @@ export const FormExample: Story = {
           <Radio value="yearly">Yearly (save 20%)</Radio>
         </RadioGroup>
         
-        <View className="pt-4 border-t border-border">
+        <View className="pt-4 border-t border-hairline">
           <Text className="text-sm text-text-secondary">
             Selected: {plan} plan, billed {billing}
           </Text>

@@ -145,7 +145,7 @@ export function Select<T extends string = string>({
             isInvalid
               ? 'border-border-input-error'
               : variant === 'filled'
-                ? 'border-border-subtle'
+                ? 'border-hairline-subtle'
                 : 'border-border-input',
             !isDisabled && !isInvalid && 'web:hover:border-border-input-hover',
             isOpen && 'border-border-input-focus',
@@ -187,7 +187,7 @@ export function Select<T extends string = string>({
             <View
               className={cn(
                 'absolute z-50 top-full left-0 right-0 mt-1',
-                'bg-surface-elevated rounded-md shadow-lg border border-border',
+                'bg-surface-elevated rounded-md shadow-lg border border-hairline',
                 'max-h-60 overflow-hidden'
               )}
             >
@@ -229,7 +229,7 @@ function SelectOption<T>({ option }: SelectOptionComponentProps<T>) {
         <View
           className={cn(
             'w-4 h-4 mr-3 rounded border',
-            selected ? 'bg-brand-primary border-brand-primary' : 'border-border-strong'
+            selected ? 'bg-brand-primary border-brand-primary' : 'border-hairline-strong'
           )}
         >
           {selected && <Text className="text-white text-xs text-center">✓</Text>}

@@ -3,6 +3,7 @@ import { render, screen, fireEvent, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ExerciseCard } from './ExerciseCard'
 import type { SetRowProps } from './SetRow'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 const baseCollapsedProps = {
   name: 'Bench Press',
@@ -86,9 +87,8 @@ describe('ExerciseCard', () => {
       sets: unifiedSets,
     }
 
-    // Literal-hex text treatments (dark theme neutral 100 / 400).
-    const T_ACTIVE = '#F3F4F6'
-    const T_MUTED = '#9CA3AF'
+    // Read from the tokens, not pinned (see SetRow.test.tsx).
+    const { 'text-primary': T_ACTIVE, 'text-secondary': T_MUTED } = getSemanticColors('dark')
 
     it('renders exercise name via the real ExerciseCardHeading header', () => {
       render(<ExerciseCard {...expandedProps} />)

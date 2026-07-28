@@ -31,14 +31,17 @@ const HTML_CSS = `
     --brand-primary-light: #FF9630;
     --brand-primary-subtle: rgba(255, 121, 0, 0.12);
     --brand-secondary: #307B9B;
-    --bg-base: #101010;
+    --bg-base: #100D0A;
     --surface-elevated: #2C2A28;
     --surface-raised: #31302F;
-    --text-primary: #F3F4F6;
-    --text-secondary: #9CA3AF;
-    --text-tertiary: #6B7280;
-    --border-default: #1F1F1F;
-    --border-strong: #2C2C2C;
+    --text-primary: #F9F6F3;
+    --text-secondary: #A29F9D;
+    --text-tertiary: #888684;
+    --border-default: rgba(255, 255, 255, 0.09);
+    --border-strong: rgba(255, 255, 255, 0.14);
+    /* A dim FILL for 'no data' dots. Used to borrow --border-strong; borders are
+       alpha now, so a fill needs its own solid ramp step. */
+    --dot-inactive: #2C2A28;
     --status-success: #2ED573;
     --status-error: #D14343;
     --status-warning: #F9B415;
@@ -367,7 +370,7 @@ const HTML_CSS = `
   .html-scope .muscle-chip-dot.ontrack { background: var(--status-success); }
   .html-scope .muscle-chip-dot.target { background: var(--brand-primary); }
   .html-scope .muscle-chip-dot.behind { background: var(--brand-secondary); }
-  .html-scope .muscle-chip-dot.untrained { background: var(--border-strong); }
+  .html-scope .muscle-chip-dot.untrained { background: var(--dot-inactive); }
   .html-scope .muscle-chip-dot.over { background: var(--status-error); }
 
   /* WorkoutPill deload */

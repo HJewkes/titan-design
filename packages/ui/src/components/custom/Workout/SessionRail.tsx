@@ -1,7 +1,8 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
-import { primitiveColors } from '../../../theme/tokens/primitives'
-import { neumorphicShadows } from '../../../theme/shadows'
+import { greyRamp } from '../../../theme/tokens/primitives'
+import { insetWell } from '../../../theme/materials'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { Surface } from '../../ui/surface'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
 import { ExerciseCard } from './ExerciseCard'
@@ -17,7 +18,9 @@ import type { ExerciseIndicatorKind } from './ExerciseIndicator'
 // recessed via its inner shadow yet paler than the header, so the transparent
 // exercise headings on it never blend into the header plane. Surface owns both backgrounds,
 // so the rail no longer hand-sets them.
-const DIVIDER = primitiveColors.charcoal[300] // #2C2C2C — row divider (raised to read on surface-elevated #2A2827)
+const SEMANTIC = getSemanticColors('dark')
+/** Row divider — one step up from the well it sits in so the line reads. */
+const DIVIDER = greyRamp[875]
 
 const DEFAULT_WIDTH = 246
 
@@ -124,9 +127,14 @@ export function SessionRail({
         next={next}
       />
 
+      {/* The list is a WELL cut into the rail: one plane down from the rail's
+          `elevated`, recessed by the shared inset material rather than by a
+          neumorphic pressed shadow (which had no room to read at this
+          lightness). `level` follows the well's tone so on-surface text
+          resolves against what is actually painted. */}
       <Surface
-        level="elevated"
-        style={[{ flex: 1 }, neumorphicShadows.charcoal.pressed.subtle]}
+        level="base"
+        style={[{ flex: 1 }, insetWell(SEMANTIC['surface-base'])]}
         testID="session-rail-list"
       >
         {exercises.map((ex, i) => (

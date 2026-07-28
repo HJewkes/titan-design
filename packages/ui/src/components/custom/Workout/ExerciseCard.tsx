@@ -220,7 +220,7 @@ function CollapsedCard({
 
 const DARK = getSemanticColors('dark')
 /** The header↔body seam. */
-const BODY_DIVIDER = DARK['border-subtle']
+const BODY_DIVIDER = DARK['hairline-subtle']
 
 /** Project the set rows onto the heading strip's per-set state (done / active / todo). */
 function deriveHeaderSetStates(sets: SetRowProps[]): SetStripSet[] {
@@ -262,7 +262,7 @@ function ExpandedCard({
 
   return (
     <View
-      className="bg-surface-elevated border-border"
+      className="bg-surface-elevated border-hairline"
       style={{
         borderWidth: 1,
         ...borderRadius,

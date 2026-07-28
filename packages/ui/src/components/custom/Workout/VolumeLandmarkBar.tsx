@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, Text, type ViewProps } from 'react-native'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
-import { primitiveColors } from '../../../theme/tokens/primitives'
+import { greyRamp } from '../../../theme/tokens/primitives'
 import { ZoneTrack } from './ZoneTrack'
 import { DataRow } from '../../ui/data-row/DataRow'
 import type { VolumeLandmarks } from './muscleTaxonomy'
@@ -11,9 +11,9 @@ import type { VolumeLandmarks } from './muscleTaxonomy'
 // BodyMap / MesoProgressBar so a muscle reads identically across the app.
 const HEAT = WORKOUT_TOKENS.heatmap
 
-// The muted, un-reached track colour — the same charcoal step ZoneTrack defaults
+// The muted, un-reached track colour — the same grey step ZoneTrack defaults
 // to, so the bar sits on the shared gauge-track surface.
-const NEUTRAL_TRACK = primitiveColors.charcoal[200]
+const NEUTRAL_TRACK = greyRamp[800]
 const MONO = 'monospace'
 
 export type VolumeZone = 'under' | 'maintenance' | 'productive' | 'approaching' | 'over'

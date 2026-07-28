@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { View, Text, type ViewProps, type DimensionValue, type LayoutChangeEvent } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { primitiveColors } from '../../../theme/tokens/primitives'
+import { primitiveColors, greyRamp } from '../../../theme/tokens/primitives'
 import { alpha } from '../../../utils/colors'
 import { Tooltip } from '../../ui/tooltip/Tooltip'
 
@@ -13,8 +13,8 @@ function glowShadow(color: string): string {
   return `0 0 5px 1px ${alpha(color, 0.3)}, 0 0 10px 3px ${alpha(color, 0.12)}`
 }
 
-/** Muted, un-reached track colour — a charcoal step, matches the IntensityBar track family. */
-const DEFAULT_TRACK_COLOR = primitiveColors.charcoal[200]
+/** Muted, un-reached track colour — a grey step, matches the IntensityBar track family. */
+const DEFAULT_TRACK_COLOR = greyRamp[800]
 /** Default needle / fill-marker colour. */
 const DEFAULT_MARKER_COLOR = primitiveColors.white
 /** Tick mark + tick label colour. */
@@ -139,7 +139,7 @@ export interface ZoneTrackProps extends ViewProps {
   trackHeight?: number
   /** How far a needle marker overhangs the track top + bottom, in px. Overrides the `size` default (6 default / 9 wall). */
   needleOverhang?: number
-  /** Muted colour of the track behind / beyond the fill. Default a charcoal step. */
+  /** Muted colour of the track behind / beyond the fill. Default a grey step. */
   trackColor?: string
   className?: string
 }

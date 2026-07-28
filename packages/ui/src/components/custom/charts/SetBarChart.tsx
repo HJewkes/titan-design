@@ -20,7 +20,7 @@ import {
   type LayoutChangeEvent,
 } from 'react-native'
 import { primitiveRamps } from '../../../theme/tokens/primitives'
-import { barPaper } from '../../../theme/bar-paper'
+import { barPaper } from '../../../theme/materials'
 import { useOnSurfaceColor, useSurface, surfaceBackground } from '../../ui/surface/SurfaceContext'
 import { useLiveRepGrowth } from './live-rep-growth'
 
@@ -313,7 +313,7 @@ export function SetBarChart({
   const flipStyle = flip ? ({ transform: [{ scaleY: -1 as number }] } as const) : null
 
   // Planned/to-do reps + the baseline draw in a SURFACE-relative neutral (on-surface tertiary)
-  // so they stay legible on every plane instead of a fixed charcoal.
+  // so they stay legible on every plane instead of a fixed grey.
   const placeholderColor = useOnSurfaceColor('tertiary')
   // The expanded strip's solid to-do tone: the surface plane blended toward the neutral (the same
   // relative model), so a `todoVariant="solid"` section holds ~constant contrast on every plane.
@@ -590,7 +590,7 @@ export interface SideRailSection {
 /**
  * The ONE shared gutter/side-rail lockup used by BOTH the single hero and the diverging dual, so a
  * single chart is pixel-identical to the dual's upper half — going dual only adds a lower section.
- * A fixed-width gutter (34px hero / 18px rail) with the `border-border` right hairline (the vertical
+ * A fixed-width gutter (34px hero / 18px rail) with the `border-hairline` right hairline (the vertical
  * axis) and one rotated, height-responsive, initials-collapsing label per section (each `sectionExtent`
  * tall). The single passes ONE section; the dual passes two (up + down wings). Rendered null when no
  * section carries a label. The rotate lives on a wrapper sized to `sectionExtent` so `numberOfLines`

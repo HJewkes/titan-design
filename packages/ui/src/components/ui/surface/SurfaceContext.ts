@@ -7,7 +7,6 @@
 // (no global.css, no nativewind) — the bug class this primitive retires.
 import { createContext, useContext } from 'react'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
-import { surfaceRampDark } from '../../../theme/tokens/primitives'
 
 type ColorToken = keyof ReturnType<typeof getSemanticColors>
 
@@ -18,32 +17,35 @@ type ColorToken = keyof ReturnType<typeof getSemanticColors>
  * no new hexes. Darkest → lightest:
  *   inset (#13100D) < background (#1C1916) < base (#252321) < elevated (#2A2827) < raised (#2D2C2B) < overlay (#302F2E)
  *
- * `inset` is the ramp's deepest pit — the sub-shell well. It's the floor a
- * `<Surface pressed>` clamps at (see {@link pressedLevel}); it has no shipped
- * semantic token yet, so {@link surfaceBackground} resolves it from the
- * `surface-inset` token when present, else the `surfaceRampDark.inset` primitive.
+ * `frame` is the bezel the ramp sits inside — the top bar / side nav chrome —
+ * and the floor a `<Surface pressed>` clamps at (see {@link pressedLevel}).
+ *
+ * It replaced a separate `inset` level in TD-07.14. That level was RETIRED, not
+ * renamed: at ΔE 1.10 from the frame it was an imperceptible duplicate, which is
+ * exactly why pressed (surface − 1) kept collapsing into it.
  */
-export type SurfaceLevel = 'inset' | 'background' | 'base' | 'elevated' | 'raised' | 'overlay'
+export type SurfaceLevel = 'frame' | 'background' | 'base' | 'elevated' | 'raised' | 'overlay'
 
 /** On-surface neutral text roles, resolved for the current surface + theme. */
 export type OnSurfaceRole = 'primary' | 'secondary' | 'tertiary'
 
-// Which semantic token backs each ADDRESSABLE level. Values live in `semantic.ts`
-// and stay in sync with the charcoal ramp — this map never carries literal hexes.
-// `inset` is intentionally absent: it has no shipped semantic token yet, so it's
-// resolved separately (token-or-primitive) in `surfaceBackground`.
+// Which semantic token backs each level. Values live in `semantic.ts` and stay
+// in sync with the grey ramp — this map never carries literal hexes. Every level
+// is present now: swapping `inset` (which had no token) for `frame` (which does)
+// is what made this a total map and removed `surfaceBackground`'s special case.
 export const SURFACE_LEVEL_TOKEN = {
+  frame: 'background-frame',
   background: 'background-base',
   base: 'surface-base',
   elevated: 'surface-elevated',
   raised: 'surface-raised',
   overlay: 'surface-overlay',
-} as const satisfies Record<Exclude<SurfaceLevel, 'inset'>, ColorToken>
+} as const satisfies Record<SurfaceLevel, ColorToken>
 
-// Darkest → lightest, INCLUDING the inset floor. A `<Surface pressed>` renders
-// one index DOWN from its parent's level and clamps at `inset` (index 0). Kept
-// in lockstep with the derived ramp and the surface.contract.test PLANE_ORDER.
-const PRESSED_RAMP = ['inset', 'background', 'base', 'elevated', 'raised', 'overlay'] as const
+// Darkest → lightest. A `<Surface pressed>` renders one index DOWN from its
+// parent's level and clamps at `frame` (index 0). Kept in lockstep with the grey
+// ramp and the surface.contract.test PLANE_ORDER.
+const PRESSED_RAMP = ['frame', 'background', 'base', 'elevated', 'raised', 'overlay'] as const
 
 const ON_SURFACE_TOKEN = {
   primary: 'text-primary',
@@ -94,29 +96,17 @@ export function useOnSurfaceColor(role: OnSurfaceRole = 'primary'): string {
   return getSemanticColors(useSurfaceMode())[ON_SURFACE_TOKEN[role]]
 }
 
-/**
- * The inset floor hex — the ramp's deepest pit that a pressed surface clamps at.
- * Prefers the `surface-inset` semantic token (theme-aware; being promoted in a
- * parallel token change) and falls back to the `surfaceRampDark.inset` primitive
- * (#13100D, dark-ramp only) until that token ships.
- */
-function insetFloor(mode: ThemeMode): string {
-  const colors = getSemanticColors(mode) as Record<string, string>
-  return colors['surface-inset'] ?? surfaceRampDark.inset
-}
-
 /** The background hex for a surface level under a theme mode (literal hex). */
 export function surfaceBackground(level: SurfaceLevel, mode: ThemeMode): string {
-  if (level === 'inset') return insetFloor(mode)
   return getSemanticColors(mode)[SURFACE_LEVEL_TOKEN[level]]
 }
 
 /**
  * The level a `<Surface pressed>` resolves to: its parent's level stepped one
  * index DOWN the ramp — the symmetric twin of a raised surface stepping up —
- * clamped at the `inset` floor so a pressed surface never underflows the pit.
+ * clamped at the `frame` floor so a pressed surface never underflows the bezel.
  *   overlay→raised, raised→elevated, elevated→base, base→background,
- *   background→inset, inset→inset (clamped).
+ *   background→frame, frame→frame (clamped).
  * Pressed exposes ONE level of depth only (no pressed-2).
  */
 export function pressedLevel(parent: SurfaceLevel): SurfaceLevel {

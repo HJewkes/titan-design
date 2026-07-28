@@ -230,7 +230,7 @@ export function CircularProgress({
             cy={center}
             r={radius}
             fill="none"
-            stroke="var(--color-border-default)"
+            stroke="var(--color-hairline-default)"
             strokeWidth={strokeWidth}
           />
           {/* Progress arc */}
@@ -325,7 +325,7 @@ export function ProgressSteps({
               className={cn(
                 'rounded-full',
                 dot,
-                index <= currentStep ? colorStyles[color] : 'bg-border-strong'
+                index <= currentStep ? colorStyles[color] : 'bg-hairline-strong'
               )}
             />
 
@@ -335,7 +335,7 @@ export function ProgressSteps({
                 className={cn(
                   'flex-1 mx-1',
                   connector,
-                  index < currentStep ? colorStyles[color] : 'bg-border-strong'
+                  index < currentStep ? colorStyles[color] : 'bg-hairline-strong'
                 )}
               />
             )}

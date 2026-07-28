@@ -30,7 +30,7 @@ export const baseBadgeSizeConfig: Record<
 }
 
 const variantColors: Record<BaseBadgeVariant, { backgroundColor: string; borderColor: string }> = {
-  plain: { backgroundColor: t['surface-raised'], borderColor: '#1F1F1F' },
+  plain: { backgroundColor: t['surface-raised'], borderColor: t['hairline-default'] },
   pr: {
     backgroundColor: 'rgba(255, 121, 0, 0.12)',
     borderColor: 'rgba(255, 121, 0, 0.3)',

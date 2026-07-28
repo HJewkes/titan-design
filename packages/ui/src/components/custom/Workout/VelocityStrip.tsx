@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { View, Text, Pressable, Animated, type ViewProps, type ViewStyle } from 'react-native'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
-import { primitiveColors, sequentialEffort } from '../../../theme/tokens/primitives'
+import { sequentialEffort, greyRamp } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { alpha } from '../../../utils/colors'
 import { formatVelocity } from '../../../utils/workout-format'
@@ -456,14 +456,14 @@ const EXPANDED_HEIGHT = 60
 /** Default `compact` (flat resting strip) height (px) — a THIN radius-2 pill row, the resting glance. */
 const COMPACT_HEIGHT = 8
 
-/** The dashed running-best reference line color (the lightest charcoal step). */
-const HERO_REFERENCE_COLOR = primitiveColors.charcoal[0]
+/** The dashed running-best reference line color (the lightest grey step). */
+const HERO_REFERENCE_COLOR = greyRamp[600]
 
 /**
  * A dashed running-best reference line spanning the plot width, absolutely positioned a
  * pixel `offset` from the given `anchor` edge. Shared by the single `hero` chart (anchored
  * to the baseline, `bottom`) and BOTH wings of the diverging dual chart (anchored to the
- * centre axis, `top`) so the three sites render one line treatment (charcoal-0, 1px dashed).
+ * centre axis, `top`) so the three sites render one line treatment (grey-0, 1px dashed).
  * Presentation-only + non-interactive — the numeric best lives in each chart's container
  * accessibility label, so the line itself is hidden from the a11y tree.
  *

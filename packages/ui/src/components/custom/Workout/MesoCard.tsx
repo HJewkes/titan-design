@@ -10,10 +10,12 @@ import {
   MESO_ACCENT_GRADIENT_LIGHT,
 } from '../../../theme/extracted-colors-dataviz'
 
+const HAIRLINE_DEFAULT = getSemanticColors('dark')['hairline-default']
+
 const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
 const BRAND_PRIMARY_DARK = MESO_ACCENT_GRADIENT_DARK
 const BRAND_PRIMARY_LIGHT = MESO_ACCENT_GRADIENT_LIGHT
-const BORDER_DEFAULT = '#1F1F1F'
+const BORDER_DEFAULT = HAIRLINE_DEFAULT
 
 /** Gradient stops for the 3px top accent: dark -> primary -> light. */
 const ACCENT_STOPS = [BRAND_PRIMARY_DARK, BRAND_PRIMARY, BRAND_PRIMARY_LIGHT]

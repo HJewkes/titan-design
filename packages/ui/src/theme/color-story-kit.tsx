@@ -22,7 +22,7 @@ import { semanticColorsDark } from './tokens/semantic'
  * reads as one. Sourced from the token layer rather than a literal — the color
  * stories should not be where raw hexes creep back in.
  */
-export const SWATCH_BORDER = semanticColorsDark['border-default']
+export const SWATCH_BORDER = semanticColorsDark['hairline-default']
 
 export function SectionIntro({ children }: { children: ReactNode }) {
   return <Text className="text-text-secondary mb-6">{children}</Text>

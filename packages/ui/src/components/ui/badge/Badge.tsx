@@ -25,7 +25,7 @@ export interface BadgeProps extends ViewProps {
 
 const variantColorStyles: Record<BadgeVariant, Record<BadgeColor, string>> = {
   solid: {
-    default: 'bg-border-strong text-text-inverse',
+    default: 'bg-hairline-strong text-text-inverse',
     primary: 'bg-brand-primary text-text-inverse',
     secondary: 'bg-brand-secondary text-text-inverse',
     success: 'bg-status-success text-text-inverse',
@@ -43,7 +43,7 @@ const variantColorStyles: Record<BadgeVariant, Record<BadgeColor, string>> = {
     info: 'bg-status-info-subtle text-status-info',
   },
   outline: {
-    default: 'border border-border-strong text-text-secondary',
+    default: 'border border-hairline-strong text-text-secondary',
     primary: 'border border-brand-primary text-brand-primary',
     secondary: 'border border-brand-secondary text-brand-secondary',
     success: 'border border-status-success text-status-success',

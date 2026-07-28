@@ -3,8 +3,8 @@ import { View, Text } from 'react-native'
 import {
   primitiveColors,
   primitiveRamps,
-  surfaceRampDark,
-  backgroundFrameDark,
+  greyRamp,
+  SURFACE_PLANE_STEPS,
   categoricalPalette,
   CATEGORICAL_CVD_SAFE_MAX,
 } from './tokens/primitives'
@@ -25,18 +25,12 @@ import {
  * organisations OF these scales — surfaces, categorical, status, brand,
  * fatigue and the rest — live in the sibling `Foundations/Color/Palettes`.
  *
- * This page is a MENU: everything on it is something you may legitimately
- * reach for today and that survives the migration ahead. The older
- * `primitiveColors` scales — `charcoal`, `neutral`, `redVivid`, and the support
- * `blue`/`red` — are deliberately NOT rendered here even though they still have
- * call sites in `semantic.ts`, because TD-07.14 deletes them. A swatch on a
- * menu is an invitation, and no annotation is loud enough to cancel that; the
- * intro carries a one-line pointer instead, so a reader who comes looking for
- * charcoal learns where it went rather than assuming an oversight.
- *
- * The semantic tokens those scales currently back are still documented, with
- * swatches, in `Foundations/Color/Palettes` — which is what the coverage guard
- * checks, and why removing the scale rows here costs no coverage.
+ * This page is a MENU: everything on it is something you may legitimately reach
+ * for. It is now also the complete list — TD-07.14 deleted the five older
+ * `primitiveColors` scales (`charcoal`, `neutral`, `redVivid`, and the support
+ * `blue`/`red`) rather than leaving them shelved, so there is no longer a
+ * category of "real but don't pick these". The greys folded into `greyRamp`
+ * below; the chromatics into the OKLCH `primitiveRamps`.
  */
 const meta: Meta = {
   title: 'Foundations/Color/Primitives',
@@ -64,22 +58,55 @@ const KEYWORDS = [
   { name: 'black', value: primitiveColors.black },
 ] as const
 
+/** Which surface plane each ramp step backs, for the annotation row. */
+const PLANE_BY_STEP: Record<number, string> = Object.fromEntries(
+  Object.entries(SURFACE_PLANE_STEPS).map(([plane, step]) => [step, plane])
+)
+
+/** Steps whose value is byte-identical to what shipped in v0.10.0. */
+const ANCHOR_STEPS = new Set<number>(Object.values(SURFACE_PLANE_STEPS))
+
+const GREY_STEPS = Object.keys(greyRamp).map(Number).sort((a, b) => a - b)
+
 /**
- * The dark surface planes, darkest first — the greys you may actually pick.
+ * The grey ramp, rendered as a numbered scale with its plane aliases.
  *
- * Shown here as a ramp (values only) because a menu of raw scales with no greys
- * on it would be a lie. The depth semantics, the L* spacing rationale and the
- * per-plane semantic aliases live in the full `Foundations/Color/Palettes`
- * surface story, and are deliberately not duplicated.
+ * This story used to show six unnumbered plane NAMES here, which was the visible
+ * symptom of the greys not actually being a ramp. The numbers are the content:
+ * they are what let a border, a plane and a text colour be compared on one scale.
  */
-const SURFACE_STEPS: Record<string, string> = {
-  frame: backgroundFrameDark,
-  inset: surfaceRampDark.inset,
-  background: surfaceRampDark.background,
-  base: surfaceRampDark.base,
-  elevated: surfaceRampDark.elevated,
-  raised: surfaceRampDark.raised,
-  overlay: surfaceRampDark.overlay,
+function GreyRampRow() {
+  return (
+    <View style={{ flexDirection: 'row', gap: 4, marginBottom: 4 }}>
+      {GREY_STEPS.map((step) => {
+        const hex = greyRamp[step as keyof typeof greyRamp]
+        const plane = PLANE_BY_STEP[step]
+        return (
+          <View key={step} style={{ flex: 1, alignItems: 'stretch' }}>
+            <View
+              style={{
+                height: 76,
+                borderRadius: 6,
+                backgroundColor: hex,
+                borderWidth: ANCHOR_STEPS.has(step) ? 1.5 : 1,
+                borderColor: ANCHOR_STEPS.has(step) ? '#FF7900' : SWATCH_BORDER,
+              }}
+            />
+            <Text className="text-text-primary" style={{ fontSize: 10, fontWeight: '600', marginTop: 3 }}>
+              {step}
+              {ANCHOR_STEPS.has(step) ? ' ★' : ''}
+            </Text>
+            <Text className="text-text-tertiary" style={{ fontSize: 8 }}>
+              {hex.toUpperCase()}
+            </Text>
+            {plane ? (
+              <Text style={{ fontSize: 8, color: '#FF9628', marginTop: 1 }}>{plane}</Text>
+            ) : null}
+          </View>
+        )
+      })}
+    </View>
+  )
 }
 
 export const Ramps: StoryObj = {
@@ -97,13 +124,14 @@ export const Ramps: StoryObj = {
 
       <Text className="text-text-tertiary text-xs mb-6">
         Looking for <Text className="font-semibold">charcoal</Text>,{' '}
-        <Text className="font-semibold">neutral</Text>, <Text className="font-semibold">redVivid</Text>{' '}
-        or the support <Text className="font-semibold">blue</Text>/
-        <Text className="font-semibold">red</Text> scales? They are intentionally not shown — all
-        five retire into a unified warm grey ramp plus the OKLCH ramps under TD-07.14. They still
-        have call sites in `semantic.ts`, so the semantic tokens they back are real and documented
-        in Palettes; the raw scales are not on the menu because you should not be picking from
-        them. Spec: coordination/design-explorations/foundations/warm-grey-ramp/.
+        <Text className="font-semibold">neutral</Text>,{' '}
+        <Text className="font-semibold">redVivid</Text> or the support{' '}
+        <Text className="font-semibold">blue</Text>/<Text className="font-semibold">red</Text>{' '}
+        scales? All five were DELETED in TD-07.14, not shelved. The two grey scales folded into
+        the warm ramp below — they were cold (neutral ran R−B down to −26) while the surfaces had
+        been warm since v0.10.0, and nothing ever reconciled the two. The chromatics moved to the
+        OKLCH ramps above. Spec and generator:
+        coordination/design-explorations/foundations/warm-grey-ramp/.
       </Text>
 
       <SectionTitle>Chromatic — OKLCH tonal ramps</SectionTitle>
@@ -119,15 +147,35 @@ export const Ramps: StoryObj = {
         <ScaleRow key={key} name={name} scale={primitiveRamps[key]} />
       ))}
 
-      <SectionTitle>Achromatic — the dark surface ramp</SectionTitle>
-      <Text className="text-text-secondary text-xs mb-4">
-        The greys. A derived depth ladder rather than a generated hue ramp — spaced by perceptual
-        lightness so one step is the same visual distance anywhere in the stack. Shown here as
-        values; the depth semantics and the semantic tokens aliasing each plane are in the
-        Palettes surface story, and are not repeated. Apply them with{' '}
-        <Text className="font-semibold">&lt;Surface level&gt;</Text>, not by reading a step.
+      <SectionTitle>Achromatic — the warm grey ramp</SectionTitle>
+      <Text className="text-text-secondary text-xs mb-3">
+        The ONE grey scale. Fifteen steps, warm at every one (R−B never below +2), spaced by
+        perceptual lightness so a step is the same visual distance anywhere in the stack. It
+        replaced three separate scales — a cold <Text className="font-semibold">charcoal</Text>, a
+        cold <Text className="font-semibold">neutral</Text>, and a standalone surface ramp — which
+        is why the surface planes appear here as ordinary numbered steps rather than as a parallel
+        set of names.
       </Text>
-      <ScaleRow name="Surface (dark)" scale={SURFACE_STEPS} />
+      <Text className="text-text-secondary text-xs mb-4">
+        Two things about the numbering, both deliberate.{' '}
+        <Text className="font-semibold">975</Text> sits past the end of the shared grid: the
+        canonical L* ladder — the median of the seven chromatic ramps — stops at L*10.3, which is
+        step 950, and the bezel is L*3.8. There was no number left for it.{' '}
+        <Text className="font-semibold">850</Text> and <Text className="font-semibold">875</Text>{' '}
+        are quarter-steps because overlay, raised and elevated sit only ~2.7 L* apart and all three
+        collide on 900 at normal resolution. There is deliberately no{' '}
+        <Text className="font-semibold">inset</Text>: at ΔE 1.10 from the frame it was an
+        imperceptible duplicate, which is why <Text className="font-semibold">&lt;Surface
+        pressed&gt;</Text> kept collapsing into it.
+      </Text>
+      <GreyRampRow />
+      <Text className="text-text-tertiary text-xs mb-4">
+        <Text style={{ color: '#FF9628' }}>★ / orange outline</Text> = a step that also names a
+        surface plane, byte-identical to the value that shipped in v0.10.0 — the surfaces did not
+        move, only their names. Reach for planes with{' '}
+        <Text className="font-semibold">&lt;Surface level&gt;</Text> rather than by reading a step;
+        the depth semantics and per-plane token aliases are in the Palettes surface story.
+      </Text>
 
       <SectionTitle>Keywords</SectionTitle>
       <Text className="text-text-secondary text-xs mb-4">

@@ -5,7 +5,7 @@
  * the family inherits the surface-ramp refresh when it lands.
  */
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { primitiveColors, primitiveRamps } from '../../../theme/tokens/primitives'
+import { primitiveRamps, greyRamp } from '../../../theme/tokens/primitives'
 import type { DimensionTone, FatigueVerdictState, SamplePhase } from './fatigue-model'
 
 const t = getSemanticColors('dark')
@@ -34,9 +34,9 @@ export const STATE_LABEL: Record<FatigueVerdictState, string> = {
  * language: eccentric magenta, concentric cyan, hold and idle in the grey family.
  *
  * The idle grey has to read as BAND MATERIAL (a pause the lifter held), not as a
- * hole in the strip: at charcoal[300] it sat inside the surface-ramp's own value
+ * hole in the strip: at grey[300] it sat inside the surface-ramp's own value
  * range (`surface-raised` #31302F) so a short pause between ECC and CON read as a
- * gap. charcoal[200] clears every content plane while staying quieter than the two
+ * gap. grey[200] clears every content plane while staying quieter than the two
  * saturated phase tones, so the band reads contiguous and the phases still lead.
  *
  * `hold` stays GREY rather than taking a hue of its own. It was briefly amber, which
@@ -48,17 +48,17 @@ export const STATE_LABEL: Record<FatigueVerdictState, string> = {
  *
  * Hold and idle are separated by VALUE rather than hue, plus the `HOLD` label and the
  * fact that a hold PACES (it has a prescribed duration) while idle never fills:
- *   unfilled hold  charcoal[300]  — darker than idle
- *   idle           charcoal[200]
- *   filled hold    charcoal[100]  — brighter than idle
+ *   unfilled hold  grey[300]  — darker than idle
+ *   idle           grey[200]
+ *   filled hold    grey[100]  — brighter than idle
  * so a hold reads apart from dead time at any fill level, including the narrow runs
  * where the label drops out.
  */
 export const PHASE_AXIS_COLOR: Record<SamplePhase, string> = {
   eccentric: primitiveRamps.magenta[800],
   concentric: primitiveRamps.cyan[800],
-  hold: primitiveColors.charcoal[100],
-  idle: primitiveColors.charcoal[200],
+  hold: greyRamp[700],
+  idle: greyRamp[800],
 }
 
 /**
@@ -72,8 +72,8 @@ export const PHASE_AXIS_COLOR: Record<SamplePhase, string> = {
 export const PHASE_AXIS_BASE_COLOR: Record<SamplePhase, string> = {
   eccentric: primitiveRamps.magenta[950],
   concentric: primitiveRamps.cyan[950],
-  hold: primitiveColors.charcoal[300],
-  idle: primitiveColors.charcoal[200],
+  hold: greyRamp[900],
+  idle: greyRamp[800],
 }
 
 /**
@@ -114,7 +114,7 @@ export const PACING_TONE_MIN_CONTRAST = 4.5
 // SHADES OF RED when there's an issue. No greens, no ambers — those languages belong
 // to the verdict tones / velocity-loss bands, not here.
 /** On-track / at-or-above-working. */
-export const SILVER = primitiveColors.neutral[300]
+export const SILVER = greyRamp[200]
 export const RED_LIGHT = primitiveRamps.red[400]
 export const RED_MID = primitiveRamps.red[600]
 export const RED_DEEP = primitiveRamps.red[800]
@@ -124,7 +124,7 @@ export const GRIND_THRESHOLD = 0.35
 /** A quiet grey the controlled line dims toward as it drifts (never a colour): a dimmed
  *  cool grey in the SAME neutral family as SILVER, so a fully-drifted line reads dim-silver
  *  rather than sinking toward black. Shared with the ROM chart. */
-export const DRIFT_GREY = primitiveColors.neutral[600]
+export const DRIFT_GREY = greyRamp[700]
 
 export function clamp01(v: number): number {
   return Math.min(1, Math.max(0, v))

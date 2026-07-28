@@ -119,7 +119,6 @@ module.exports = {
           raised: 'var(--color-surface-raised)',
           overlay: 'var(--color-surface-overlay)',
           input: 'var(--color-surface-input)',
-          inset: 'var(--color-surface-inset)',
         },
         // Background colors
         background: {
@@ -140,11 +139,9 @@ module.exports = {
             hover: 'var(--color-text-link-hover)',
           },
         },
-        // Border colors
+        // Border colors — DEFAULT/subtle/strong are RETIRED (TD-07.14); use the
+        // `hairline` family below for separation.
         border: {
-          DEFAULT: 'var(--color-border-default)',
-          subtle: 'var(--color-border-subtle)',
-          strong: 'var(--color-border-strong)',
           prominent: 'var(--color-border-prominent)',
           focus: 'var(--color-border-focus)',
           input: {

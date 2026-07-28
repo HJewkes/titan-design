@@ -45,10 +45,10 @@ export interface CardProps extends ViewProps {
 
 const variantStyles: Record<CardVariant, string> = {
   elevated: '', // Will be set dynamically via elevation system
-  outline: 'border-2 border-border-strong',  // Thicker border with stronger contrast
+  outline: 'border-2 border-hairline-strong',  // Thicker border with stronger contrast
   filled: '', // Will be set dynamically via elevation system
-  accent: 'border border-border',
-  subtle: 'border border-border-subtle',
+  accent: 'border border-hairline',
+  subtle: 'border border-hairline-subtle',
 }
 
 /**

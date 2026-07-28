@@ -11,6 +11,7 @@ import {
   useSurface,
   useSurfaceMode,
 } from './SurfaceContext'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { getPressedRecessShadow } from '../../../theme/elevation'
 
 // A descendant probe that renders the on-surface colour + mode it resolves from
@@ -157,17 +158,17 @@ describe('Surface (pressed well)', () => {
     expect(screen.getByTestId('well')).toHaveStyle({ backgroundColor: '#1C1916' })
   })
 
-  it('clamps at the inset floor: pressed directly in background does not underflow', () => {
+  it('clamps at the frame floor: pressed directly in background does not underflow', () => {
     render(
       <Surface level="background">
         <Surface pressed testID="well" />
       </Surface>
     )
-    // background (#1C1916) steps down to the inset floor (#13100D), the pit.
-    expect(screen.getByTestId('well')).toHaveStyle({ backgroundColor: '#13100D' })
+    // background (#1C1916) steps down to the frame floor (#100D0A), the bezel.
+    expect(screen.getByTestId('well')).toHaveStyle({ backgroundColor: '#100D0A' })
   })
 
-  it('does not step below the floor: pressed within a floor-pressed well stays at inset', () => {
+  it('does not step below the floor: pressed within a floor-pressed well stays at frame', () => {
     render(
       <Surface level="background">
         <Surface pressed>
@@ -175,7 +176,7 @@ describe('Surface (pressed well)', () => {
         </Surface>
       </Surface>
     )
-    expect(screen.getByTestId('deeper')).toHaveStyle({ backgroundColor: '#13100D' })
+    expect(screen.getByTestId('deeper')).toHaveStyle({ backgroundColor: '#100D0A' })
   })
 
   it('publishes the stepped-down level to descendants so a nested press steps again', () => {
@@ -230,9 +231,9 @@ describe('pressedLevel helper', () => {
     ['raised', 'elevated'],
     ['elevated', 'base'],
     ['base', 'background'],
-    ['background', 'inset'],
-    ['inset', 'inset'],
-  ] as const)('steps %s down to %s (clamped at inset)', (parent, expected) => {
+    ['background', 'frame'],
+    ['frame', 'frame'],
+  ] as const)('steps %s down to %s (clamped at frame)', (parent, expected) => {
     expect(pressedLevel(parent)).toBe(expected)
   })
 })
@@ -253,14 +254,15 @@ describe('Surface on-surface colour context', () => {
         <Probe role="tertiary" label="t" />
       </Surface>
     )
-    expect(screen.getByTestId('p')).toHaveStyle({ color: '#F3F4F6' })
-    expect(screen.getByTestId('s')).toHaveStyle({ color: '#9CA3AF' })
-    expect(screen.getByTestId('t')).toHaveStyle({ color: '#6B7280' })
+    const t = getSemanticColors('dark')
+    expect(screen.getByTestId('p')).toHaveStyle({ color: t['text-primary'] })
+    expect(screen.getByTestId('s')).toHaveStyle({ color: t['text-secondary'] })
+    expect(screen.getByTestId('t')).toHaveStyle({ color: t['text-tertiary'] })
   })
 
   it('resolves dark on-surface colours even with no enclosing Surface', () => {
     render(<Probe role="primary" label="p" />)
-    expect(screen.getByTestId('p')).toHaveStyle({ color: '#F3F4F6' })
+    expect(screen.getByTestId('p')).toHaveStyle({ color: getSemanticColors('dark')['text-primary'] })
   })
 
   it('flows an overridden theme to descendant text', () => {
@@ -292,15 +294,26 @@ describe('surface colour helpers', () => {
     expect(surfaceBackground('base', 'light')).toBe('#FFFFFF')
   })
 
-  it('resolves the inset floor from the surfaceRampDark.inset primitive (no token yet)', () => {
-    expect(surfaceBackground('inset', 'dark')).toBe('#13100D')
+  it('resolves the frame floor from its own semantic token', () => {
+    // The old `inset` level had no token and fell back to a primitive. `frame`
+    // has `background-frame`, which is what let SurfaceContext drop the special
+    // case in surfaceBackground().
+    expect(surfaceBackground('frame', 'dark')).toBe(getSemanticColors('dark')['background-frame'])
   })
 
-  it('onSurfaceColors returns the neutral text ramp as literal hex', () => {
-    expect(onSurfaceColors('dark')).toEqual({
-      primary: '#F3F4F6',
-      secondary: '#9CA3AF',
-      tertiary: '#6B7280',
+  it('onSurfaceColors returns the text ramp as literal hex', () => {
+    const t = getSemanticColors('dark')
+    const got = onSurfaceColors('dark')
+    expect(got).toEqual({
+      primary: t['text-primary'],
+      secondary: t['text-secondary'],
+      tertiary: t['text-tertiary'],
     })
+    // The actual contract this test guards: LITERAL hex, never a var() — under
+    // the RNW alias resolveColor() returns 'var(--color-…)', which silently
+    // breaks any consumer doing colour maths on the result.
+    for (const [role, value] of Object.entries(got)) {
+      expect(value, role).toMatch(/^#[0-9A-F]{6}$/i)
+    }
   })
 })

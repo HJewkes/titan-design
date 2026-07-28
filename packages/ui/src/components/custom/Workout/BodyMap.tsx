@@ -278,7 +278,7 @@ function ViewToggle({ view, onViewChange }: ViewToggleProps) {
               borderRadius: 9999,
               backgroundColor: active ? 'rgba(255,121,0,0.16)' : 'transparent',
               borderWidth: 1,
-              borderColor: active ? BRAND_PRIMARY : resolveColor('border-strong'),
+              borderColor: active ? BRAND_PRIMARY : resolveColor('hairline-strong'),
             }}
             testID={`body-map-toggle-${side}`}
           >
@@ -324,7 +324,7 @@ function MuscleButton({ entry, highlighted, onMusclePress }: MuscleButtonProps) 
         paddingVertical: 3,
         borderRadius: 9999,
         borderWidth: 1,
-        borderColor: highlighted ? BRAND_PRIMARY : resolveColor('border-default'),
+        borderColor: highlighted ? BRAND_PRIMARY : resolveColor('hairline-default'),
       }}
       testID={`body-map-muscle-${entry.key}`}
     >

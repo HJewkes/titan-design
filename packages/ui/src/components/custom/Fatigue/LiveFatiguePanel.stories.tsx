@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { LiveFatiguePanel } from './LiveFatiguePanel'
-import { primitiveColors } from '../../../theme/tokens/primitives'
+import { greyRamp } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { FATIGUE_STATES, buildMockPanelState } from './fatigue-mock'
 
-const PAGE_BG = primitiveColors.charcoal[900]
+const PAGE_BG = greyRamp[975]
 const t = getSemanticColors('dark')
 
 const meta: Meta<typeof LiveFatiguePanel> = {

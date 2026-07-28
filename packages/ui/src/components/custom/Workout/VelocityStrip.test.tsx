@@ -414,8 +414,11 @@ describe('VelocityStrip all-zero velocities (NaN guard)', () => {
 
 // Literal-hex slot colors (must match the component's tokens exactly).
 // TODO_SOLID = the LANDED surface-relative solid to-do tone (base/dark plane blended toward the
-// on-surface neutral) — replaced the old fixed charcoal #2C2C2C. Solid fill, not a dashed outline.
-const TODO_SOLID = '#4C4E55'
+// on-surface neutral) — replaced the old fixed grey #2C2C2C. Solid fill, not a dashed outline.
+// Pinned rather than recomputed on purpose: deriving it here would just mirror
+// SetBarChart's mixHex and stop catching a change to the blend itself.
+// = mixHex(grey-925, text-tertiary, 0.55); moved with the warm ramp (TD-07.14).
+const TODO_SOLID = '#5B5957'
 const VARIABLE_CYAN = '#0B3149'
 const CONTINUE_OUTLINE = '#22465F'
 describe('VelocityStrip set-type modes (compact)', () => {

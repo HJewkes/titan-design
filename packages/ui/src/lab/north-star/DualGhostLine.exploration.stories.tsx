@@ -23,15 +23,15 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ReactNode, TextStyle, ViewStyle } from 'react'
 import { View, Text } from 'react-native'
 import { getSemanticColors } from '../../theme/tokens/semantic'
-import { primitiveColors } from '../../theme/tokens/primitives'
+import { greyRamp } from '../../theme/tokens/primitives'
 import { alpha } from '../../utils/colors'
 import { GRIND_THRESHOLD, ghostLineColor } from '../../components/custom/Fatigue/fatigue-tokens'
 import { GhostBand, GhostBloom, BAND_H, BAND_GAP, type Pt } from '../../components/custom/Fatigue'
 import type { PhaseSegment } from '../../components/custom/Fatigue'
 
 const C = getSemanticColors('dark')
-const PAGE_BG = primitiveColors.charcoal[900]
-const PANEL_BG = primitiveColors.charcoal[800]
+const PAGE_BG = greyRamp[975]
+const PANEL_BG = greyRamp[950]
 const FONT_HEAD = '"Space Grotesk", sans-serif'
 const FONT_UI = '"Nunito Sans", sans-serif'
 const FONT_MONO = 'monospace'
@@ -452,7 +452,7 @@ function DualGhostCard() {
         <DeviceLegendRow device={LEFT_ARM} />
         <DeviceLegendRow device={RIGHT_ARM} />
       </View>
-      <View style={[{ borderRadius: 8, padding: 4 }, insetWell(primitiveColors.charcoal[900])]}>
+      <View style={[{ borderRadius: 8, padding: 4 }, insetWell(greyRamp[975])]}>
         <MirroredDualBand w={innerW - 8} h={chartH} />
       </View>
       <Text

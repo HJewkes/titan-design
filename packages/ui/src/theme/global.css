@@ -41,12 +41,12 @@
     --color-status-error-light: #E05254;
     --color-status-error-dark: #A4221C;
     --color-status-error-subtle: rgba(209, 67, 67, 0.12);
-    --color-status-error-vivid: #FF4757;
-    --color-status-error-vivid-light: #FF6070;
-    --color-status-error-vivid-dark: #C42539;
+    --color-status-error-vivid: #D14343;
+    --color-status-error-vivid-light: #E05254;
+    --color-status-error-vivid-dark: #A4221C;
     --color-status-error-vivid-subtle: rgba(255, 71, 87, 0.12);
     --color-status-error-vivid-rgb: 255, 71, 87;
-    --color-border-prominent: #3C3C3C;
+    --color-border-prominent: #424140;
     --color-status-warning: #F9B415;
     --color-status-warning-light: #FFD352;
     --color-status-warning-dark: #C27400;
@@ -69,7 +69,7 @@
     --color-result-degrade-dark: #b30000;
     --color-result-inconclusive: #9E9A97;
     --color-result-inconclusive-light: rgba(158, 154, 151, 0.16);
-    --color-result-neutral: #9CA3AF;
+    --color-result-neutral: #A29F9D;
 
     --color-on-result-improve: #FFFFFF;
     --color-on-result-degrade: #FFFFFF;
@@ -86,25 +86,24 @@
     --color-data-9: #CAACCB;
     --color-data-10: #EE8026;
 
-    --color-text-primary: #F3F4F6;
-    --color-text-secondary: #9CA3AF;
-    --color-text-tertiary: #6B7280;
+    --color-text-primary: #F9F6F3;
+    --color-text-secondary: #A29F9D;
+    --color-text-tertiary: #888684;
     --color-text-disabled: rgba(255, 255, 255, 0.38);
-    --color-text-inverse: #111827;
+    --color-text-inverse: #1C1916;
     --color-text-link: #828DF8;
-    --color-text-link-hover: #60A5FA;
+    --color-text-link-hover: #3CA8FF;
 
     /* Surface ramp — warm-tapered DERIVED, shipped verbatim from deriveSurfaceRamp()
        (TD-surface-tokens, S-1, re-spaced S-3). surface-overlay and surface-elevated
        are distinct (were both #191919 pre-S-1); see surfaceRampDark in
-       tokens/primitives.ts. surface-inset is the ramp's floor, promoted to a real
-       token at S-3 (was unwired). */
+       tokens/primitives.ts. The ramp's floor is background-frame; the old
+       surface-inset plane was retired in TD-07.14 (delta-E 1.10 from frame). */
     --color-surface-base: #252321;
     --color-surface-elevated: #2C2A28;
     --color-surface-raised: #31302F;
     --color-surface-overlay: #373635;
     --color-surface-input: #2C2A28;
-    --color-surface-inset: #13100D;
 
     --color-background-base: #1C1916;
     --color-background-default: #252321;
@@ -114,14 +113,11 @@
        in tokens/primitives.ts. */
     --color-background-frame: #100D0A;
 
-    --color-border-default: #1F1F1F;
-    --color-border-subtle: #1C1C1C;
-    --color-border-strong: #2C2C2C;
     --color-border-focus: #828DF8;
-    --color-border-input: #4B5563;
-    --color-border-input-hover: #6B7280;
+    --color-border-input: #5A5958;
+    --color-border-input-hover: #72716F;
     --color-border-input-focus: #828DF8;
-    --color-border-input-error: #EF4444;
+    --color-border-input-error: #E05254;
 
     /* Alpha hairline separators — self-normalizing on any plane (§4/S-2) */
     --color-hairline-subtle: rgba(255, 255, 255, 0.06);
@@ -135,9 +131,9 @@
     --color-interactive-disabled: rgba(255, 255, 255, 0.12);
     --color-interactive-disabled-text: rgba(255, 255, 255, 0.26);
 
-    --color-divider: #1F1F1F;
+    --color-divider: rgba(255, 255, 255, 0.09);
 
-    --color-avatar-background: #4B5563;
+    --color-avatar-background: #5A5958;
     --color-avatar-text: #FFFFFF;
 
     /* RGB decomposed values for glow shadows */
@@ -193,12 +189,12 @@
     --color-status-error-light: #E05254;
     --color-status-error-dark: #A4221C;
     --color-status-error-subtle: #FFF4F4;
-    --color-status-error-vivid: #FF4757;
-    --color-status-error-vivid-light: #FF6070;
-    --color-status-error-vivid-dark: #C42539;
+    --color-status-error-vivid: #D14343;
+    --color-status-error-vivid-light: #E05254;
+    --color-status-error-vivid-dark: #A4221C;
     --color-status-error-vivid-subtle: rgba(255, 71, 87, 0.12);
     --color-status-error-vivid-rgb: 255, 71, 87;
-    --color-border-prominent: #9CA3AF;
+    --color-border-prominent: #A29F9D;
     --color-status-warning: #F9B415;
     --color-status-warning-light: #FFD352;
     --color-status-warning-dark: #C27400;
@@ -221,7 +217,7 @@
     --color-result-degrade-dark: #b30000;
     --color-result-inconclusive: #9E9A97;
     --color-result-inconclusive-light: rgba(158, 154, 151, 0.12);
-    --color-result-neutral: #6B7280;
+    --color-result-neutral: #72716F;
 
     --color-on-result-improve: #FFFFFF;
     --color-on-result-degrade: #FFFFFF;
@@ -240,34 +236,28 @@
 
     --color-text-primary: #121828;
     --color-text-secondary: #65748B;
-    --color-text-tertiary: #9CA3AF;
+    --color-text-tertiary: #A29F9D;
     --color-text-disabled: rgba(55, 65, 81, 0.48);
     --color-text-inverse: #FFFFFF;
-    --color-text-link: #5048E5;
-    --color-text-link-hover: #3832A0;
+    --color-text-link: #1072CB;
+    --color-text-link-hover: #135AA8;
 
     --color-surface-base: #FFFFFF;
-    --color-surface-elevated: #FAFAFA;
-    --color-surface-raised: #F3F4F6;
+    --color-surface-elevated: #F9F6F3;
+    --color-surface-raised: #EDEAE7;
     --color-surface-overlay: #FFFFFF;
-    --color-surface-input: #FAFAFA;
-    /* Placeholder pairing (S-3) — light-mode counterpart of the dark ramp's
-       inset plane; not part of the dark-ramp investigation. */
-    --color-surface-inset: #D1D5DB;
+    --color-surface-input: #F9F6F3;
 
     --color-background-base: #EBEBEB;
     --color-background-default: #FFFFFF;
-    --color-background-subtle: #FAFAFA;
-    /* Placeholder pairing (S-3) — see --color-surface-inset note above. */
-    --color-background-frame: #9CA3AF;
+    --color-background-subtle: #F9F6F3;
+    /* Placeholder pairing — light mode is deferred. */
+    --color-background-frame: #A29F9D;
 
-    --color-border-default: #E8E9EB;
-    --color-border-subtle: #F3F4F6;
-    --color-border-strong: #D1D5DB;
-    --color-border-focus: #5048E5;
-    --color-border-input: #D1D5DB;
-    --color-border-input-hover: #9CA3AF;
-    --color-border-input-focus: #5048E5;
+    --color-border-focus: #1072CB;
+    --color-border-input: #D4D1CE;
+    --color-border-input-hover: #A29F9D;
+    --color-border-input-focus: #1072CB;
     --color-border-input-error: #D14343;
 
     /* Alpha hairline separators — mirrors the dark-mode white-alpha family,
@@ -285,7 +275,7 @@
 
     --color-divider: #E8E9EB;
 
-    --color-avatar-background: #6B7280;
+    --color-avatar-background: #72716F;
     --color-avatar-text: #FFFFFF;
 
     /* RGB decomposed values for glow shadows */
@@ -349,7 +339,7 @@
   }
 
   .scrollbar-styled::-webkit-scrollbar-thumb {
-    background: var(--color-border-strong);
+    background: var(--color-hairline-strong);
     border-radius: 4px;
   }
 
@@ -368,7 +358,7 @@
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: var(--color-border-strong);
+    background: var(--color-hairline-strong);
     border-radius: 2px;
   }
 
