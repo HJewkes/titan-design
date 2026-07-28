@@ -8,6 +8,7 @@
 // top for the native consumers that deliberately import it.
 export * from './tokens'
 export * from './config'
+export * from './materials'
 export * from './shadows'
 export * from './elevation'
 export * from './manifest'

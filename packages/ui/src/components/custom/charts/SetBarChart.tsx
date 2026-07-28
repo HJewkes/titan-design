@@ -20,7 +20,7 @@ import {
   type LayoutChangeEvent,
 } from 'react-native'
 import { primitiveRamps } from '../../../theme/tokens/primitives'
-import { barPaper } from '../../../theme/bar-paper'
+import { barPaper } from '../../../theme/materials'
 import { useOnSurfaceColor, useSurface, surfaceBackground } from '../../ui/surface/SurfaceContext'
 import { useLiveRepGrowth } from './live-rep-growth'
 

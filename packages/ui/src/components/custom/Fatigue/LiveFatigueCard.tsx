@@ -20,7 +20,7 @@
 import { View } from 'react-native'
 import { Surface } from '../../ui/surface/Surface'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { barPaper } from '../../../theme/bar-paper'
+import { barPaper } from '../../../theme/materials'
 import { VerdictHero } from './VerdictHero'
 import { FatigueLights } from './FatigueLights'
 import { RomProgressionChart } from './RomProgressionChart'
