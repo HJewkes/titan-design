@@ -158,17 +158,17 @@ describe('Surface (pressed well)', () => {
     expect(screen.getByTestId('well')).toHaveStyle({ backgroundColor: '#1C1916' })
   })
 
-  it('clamps at the inset floor: pressed directly in background does not underflow', () => {
+  it('clamps at the frame floor: pressed directly in background does not underflow', () => {
     render(
       <Surface level="background">
         <Surface pressed testID="well" />
       </Surface>
     )
-    // background (#1C1916) steps down to the inset floor (#13100D), the pit.
-    expect(screen.getByTestId('well')).toHaveStyle({ backgroundColor: '#13100D' })
+    // background (#1C1916) steps down to the frame floor (#100D0A), the bezel.
+    expect(screen.getByTestId('well')).toHaveStyle({ backgroundColor: '#100D0A' })
   })
 
-  it('does not step below the floor: pressed within a floor-pressed well stays at inset', () => {
+  it('does not step below the floor: pressed within a floor-pressed well stays at frame', () => {
     render(
       <Surface level="background">
         <Surface pressed>
@@ -176,7 +176,7 @@ describe('Surface (pressed well)', () => {
         </Surface>
       </Surface>
     )
-    expect(screen.getByTestId('deeper')).toHaveStyle({ backgroundColor: '#13100D' })
+    expect(screen.getByTestId('deeper')).toHaveStyle({ backgroundColor: '#100D0A' })
   })
 
   it('publishes the stepped-down level to descendants so a nested press steps again', () => {
@@ -231,9 +231,9 @@ describe('pressedLevel helper', () => {
     ['raised', 'elevated'],
     ['elevated', 'base'],
     ['base', 'background'],
-    ['background', 'inset'],
-    ['inset', 'inset'],
-  ] as const)('steps %s down to %s (clamped at inset)', (parent, expected) => {
+    ['background', 'frame'],
+    ['frame', 'frame'],
+  ] as const)('steps %s down to %s (clamped at frame)', (parent, expected) => {
     expect(pressedLevel(parent)).toBe(expected)
   })
 })
@@ -294,8 +294,11 @@ describe('surface colour helpers', () => {
     expect(surfaceBackground('base', 'light')).toBe('#FFFFFF')
   })
 
-  it('resolves the inset floor from the surfaceRampDark.inset primitive (no token yet)', () => {
-    expect(surfaceBackground('inset', 'dark')).toBe('#13100D')
+  it('resolves the frame floor from its own semantic token', () => {
+    // The old `inset` level had no token and fell back to a primitive. `frame`
+    // has `background-frame`, which is what let SurfaceContext drop the special
+    // case in surfaceBackground().
+    expect(surfaceBackground('frame', 'dark')).toBe(getSemanticColors('dark')['background-frame'])
   })
 
   it('onSurfaceColors returns the text ramp as literal hex', () => {

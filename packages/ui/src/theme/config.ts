@@ -77,7 +77,6 @@ export const lightThemeCSSVars = {
   '--color-surface-base': semanticColorsLight['surface-base'],
   '--color-surface-elevated': semanticColorsLight['surface-elevated'],
   '--color-surface-raised': semanticColorsLight['surface-raised'],
-  '--color-surface-inset': semanticColorsLight['surface-inset'],
 
   '--color-background-base': semanticColorsLight['background-base'],
   '--color-background-default': semanticColorsLight['background-default'],
@@ -201,7 +200,6 @@ export const darkThemeCSSVars = {
   '--color-surface-base': semanticColorsDark['surface-base'],
   '--color-surface-elevated': semanticColorsDark['surface-elevated'],
   '--color-surface-raised': semanticColorsDark['surface-raised'],
-  '--color-surface-inset': semanticColorsDark['surface-inset'],
 
   '--color-background-base': semanticColorsDark['background-base'],
   '--color-background-default': semanticColorsDark['background-default'],

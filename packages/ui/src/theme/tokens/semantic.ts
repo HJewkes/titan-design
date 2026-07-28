@@ -154,19 +154,13 @@ export const semanticColorsLight = {
   'surface-raised': greyRamp[100],           // light gray for raised cards
   'surface-overlay': p.white,
   'surface-input': greyRamp[50],             // Input field background (filled variant)
-  // Deepest pressed pit (TD-surface-tokens, S-3) — light-mode counterpart of
-  // the dark ramp's `inset` plane; a placeholder pairing, not part of the
-  // dark-ramp investigation (surface.contract.test.ts is dark-mode only).
-  'surface-inset': greyRamp[200],
 
   // Background colors (background-*)
   'background-base': '#EBEBEB',
   'background-default': p.white,
   'background-subtle': greyRamp[50],
-  // Frame/bezel chrome (TD-surface-tokens, S-3) — top bar + side nav shell,
-  // one step below `background-base` (darker still than `surface-inset`
-  // above, mirroring the dark-mode ordering). Placeholder pairing for light
-  // mode (see dark-mode note on `surface-inset` above).
+  // Frame/bezel chrome — top bar + side nav shell, one step below
+  // `background-base`. Placeholder pairing for light mode, which is deferred.
   'background-frame': greyRamp[400],
 
   // Border colors (border-*)
@@ -306,16 +300,13 @@ export const semanticColorsDark = {
   // and `surface-elevated` are distinct (were both #191919 pre-S-1); `surface-input`
   // tracks one plane above `surface-base`, same relative position as before the remap.
   // `background-base` backs `Surface level="background"` (SurfaceContext.SURFACE_LEVEL_TOKEN),
-  // so it takes the ramp's `background` (shell/frame) role, NOT `inset`. The ramp's
-  // deepest `inset` plane is now promoted to `surface-inset` below (S-3) — still no
-  // `SurfaceLevel` member for it (follow-up, alongside the elevation.ts -1/-2 pressed
-  // levels — parallel workstream, not this branch).
+  // so it takes the ramp's shell role. The deepest plane is `background-frame`,
+  // which is also the `SurfaceLevel` floor a pressed surface clamps at.
   'surface-base': surf.base,               // main surface        (#252321, L*13.5)
   'surface-elevated': surf.elevated,       // elevated surface     (#2C2A28, L*17   — nav/rail)
   'surface-raised': surf.raised,           // raised surface       (#31302F, L*20   — cards)
   'surface-overlay': surf.overlay,         // overlay surface      (#373635, L*22.5 — hero/popover)
   'surface-input': surf.elevated,          // input surface        (#2C2A28 — one plane above base)
-  'surface-inset': surf.inset,             // deepest pressed pit  (#13100D, L*4.5  — sub-shell well)
 
   // Background colors — same ramp, the frame/shell end of it.
   'background-base': surf.background,      // shell / frame        (#1C1916, L*9 — Surface level="background")

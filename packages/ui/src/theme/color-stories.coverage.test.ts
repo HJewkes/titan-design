@@ -11,7 +11,7 @@ import { semanticColorsDark } from './tokens/semantic'
  * The color stories are the documentation of record for the token layer, and
  * they have drifted twice: once when the categorical palette replaced the
  * Paul-Tol scale, and again when the v0.10.0 surface redesign added four
- * planes (`surface-inset`, `surface-overlay`, `background-frame`,
+ * planes (`surface-overlay`, `background-frame`,
  * `background-subtle`) that no story rendered. Both times the values stayed
  * correct while the *coverage* silently fell behind — which a screenshot test
  * cannot catch, because a story that was never written renders nothing.

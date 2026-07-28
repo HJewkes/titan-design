@@ -119,7 +119,6 @@ module.exports = {
           raised: 'var(--color-surface-raised)',
           overlay: 'var(--color-surface-overlay)',
           input: 'var(--color-surface-input)',
-          inset: 'var(--color-surface-inset)',
         },
         // Background colors
         background: {

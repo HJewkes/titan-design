@@ -20,7 +20,7 @@ import { getSemanticColors } from '../../../theme/tokens/semantic'
  * derived, not hand-picked") deliberately supersedes that with DIMINISHING
  * steps — the frame->content jump is biggest, each plane above adds less.
  * As of S-3 (this re-space) the steps are 4.5 / 4.5 / 3.5 / 3 / 2.5
- * (inset->background / background->base / base->elevated / elevated->raised /
+ * (frame->background / background->base / base->elevated / elevated->raised /
  * raised->overlay) — the top three widened from the original 2.5/2/1.5 taper
  * so the content planes read as distinct without leaning on the hairline
  * alone (R3 still carries the rest, per "lightness is a *secondary* cue").
@@ -73,10 +73,10 @@ function compositeOver(baseHex: string, overlay: string): string {
 
 const dark = getSemanticColors('dark')
 
-// The 6-plane derivation, in darkest -> lightest order. `inset` is now a real
-// shipped token (`surface-inset`, promoted at S-3 — see semantic.ts comment).
+// The 6-plane derivation, in darkest -> lightest order. The floor is `frame`;
+// the old `inset` plane was retired in TD-07.14 for being ΔE 1.10 from it.
 const RAMP_HEX = {
-  inset: dark['surface-inset'],
+  frame: dark['background-frame'],
   background: dark['background-base'],
   base: dark['surface-base'],
   elevated: dark['surface-elevated'],
@@ -84,14 +84,14 @@ const RAMP_HEX = {
   overlay: dark['surface-overlay'],
 } as const
 
-const PLANE_ORDER = ['inset', 'background', 'base', 'elevated', 'raised', 'overlay'] as const
+const PLANE_ORDER = ['frame', 'background', 'base', 'elevated', 'raised', 'overlay'] as const
 
 describe('surface ramp contract (dark) — token-value guardrails', () => {
   it('ships the deriveSurfaceRamp() output verbatim for the addressable planes', () => {
     // Locked values from surface-system-north-star.md (re-spaced S-3) — see
     // surfaceRampDark in primitives.ts for the derivation this must match
-    // byte-for-byte. background/base/inset are unchanged by the re-space.
-    expect(dark['surface-inset']).toBe('#13100D')
+    // byte-for-byte. background/base are unchanged by the re-space.
+    expect(dark['background-frame']).toBe('#100D0A')
     expect(dark['background-base']).toBe('#1C1916')
     expect(dark['surface-base']).toBe('#252321')
     expect(dark['surface-elevated']).toBe('#2C2A28')
@@ -110,8 +110,8 @@ describe('surface ramp contract (dark) — token-value guardrails', () => {
       }
     })
 
-    it('clears ΔL* >= 4 at the two foundational steps (inset->background, background->base)', () => {
-      const dL_insetToBackground = lstar(RAMP_HEX.background) - lstar(RAMP_HEX.inset)
+    it('clears ΔL* >= 4 at the two foundational steps (frame->background, background->base)', () => {
+      const dL_insetToBackground = lstar(RAMP_HEX.background) - lstar(RAMP_HEX.frame)
       const dL_backgroundToBase = lstar(RAMP_HEX.base) - lstar(RAMP_HEX.background)
       expect(dL_insetToBackground).toBeGreaterThanOrEqual(4)
       expect(dL_backgroundToBase).toBeGreaterThanOrEqual(4)
@@ -158,7 +158,6 @@ describe('surface ramp contract (dark) — token-value guardrails', () => {
         dark['surface-raised'],
         dark['surface-overlay'],
         dark['surface-input'],
-        dark['surface-inset'],
       ])
       // `border-prominent` is the only solid border left; the quiet three are
       // alpha hairlines now and cannot equal a fill.
@@ -201,7 +200,7 @@ describe('surface ramp contract (dark) — token-value guardrails', () => {
     }
 
     it('is near-constant (self-normalizing) across all planes: spread < 4 L* per tier', () => {
-      // Measured spread (inset..overlay): subtle ~1.6, default ~2.2, strong ~3.2 —
+      // Measured spread (frame..overlay): subtle ~1.6, default ~2.2, strong ~3.2 —
       // still far tighter than a solid border token (which swings ~5.6 -> 0
       // across this same ramp, see R4). "Near-constant" is relative to that,
       // not perfectly flat — alpha-over-white is sublinear in L* as the base
@@ -236,7 +235,7 @@ describe('surface ramp contract (dark) — token-value guardrails', () => {
     })
   })
 
-  describe('R5 — background-frame and surface-inset (S-3 new tokens)', () => {
+  describe('R5 — background-frame, the ramp floor', () => {
     it('background-frame is darker than background-base', () => {
       expect(lstar(dark['background-frame'])).toBeLessThan(lstar(dark['background-base']))
     })
@@ -251,14 +250,18 @@ describe('surface ramp contract (dark) — token-value guardrails', () => {
         'surface-raised',
         'surface-overlay',
         'surface-input',
-        'surface-inset',
       ] as const
       for (const token of otherTokens) {
         expect(dark['background-frame'], `background-frame vs ${token}`).not.toBe(dark[token])
       }
     })
 
-    it('surface-inset is the darkest surface-family token', () => {
+    // `surface-inset` used to sit between frame and background as the darkest
+    // surface-family token. TD-07.14 retired it: at delta-E 1.10 from the frame
+    // it was an imperceptible duplicate, which is why `<Surface pressed>`
+    // (surface - 1) kept collapsing into it. `frame` is the floor now, so the
+    // rule that matters is that nothing in the surface family goes below it.
+    it('background-frame is darker than every surface-family token', () => {
       const surfaceFamily = [
         'surface-base',
         'surface-elevated',
@@ -266,14 +269,10 @@ describe('surface ramp contract (dark) — token-value guardrails', () => {
         'surface-overlay',
         'surface-input',
       ] as const
-      const insetL = lstar(dark['surface-inset'])
+      const frameL = lstar(dark['background-frame'])
       for (const token of surfaceFamily) {
-        expect(insetL, `surface-inset vs ${token}`).toBeLessThan(lstar(dark[token]))
+        expect(frameL, `background-frame vs ${token}`).toBeLessThan(lstar(dark[token]))
       }
-    })
-
-    it('surface-inset is distinct from background-frame', () => {
-      expect(dark['surface-inset']).not.toBe(dark['background-frame'])
     })
   })
 })

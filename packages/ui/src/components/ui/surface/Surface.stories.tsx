@@ -15,7 +15,7 @@ const meta: Meta<typeof Surface> = {
     },
     level: {
       control: 'select',
-      options: ['inset', 'background', 'base', 'elevated', 'raised', 'overlay'],
+      options: ['frame', 'background', 'base', 'elevated', 'raised', 'overlay'],
       description: 'Named charcoal plane (flat background from a semantic token)',
     },
     pressed: {

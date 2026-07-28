@@ -97,14 +97,13 @@
     /* Surface ramp — warm-tapered DERIVED, shipped verbatim from deriveSurfaceRamp()
        (TD-surface-tokens, S-1, re-spaced S-3). surface-overlay and surface-elevated
        are distinct (were both #191919 pre-S-1); see surfaceRampDark in
-       tokens/primitives.ts. surface-inset is the ramp's floor, promoted to a real
-       token at S-3 (was unwired). */
+       tokens/primitives.ts. The ramp's floor is background-frame; the old
+       surface-inset plane was retired in TD-07.14 (delta-E 1.10 from frame). */
     --color-surface-base: #252321;
     --color-surface-elevated: #2C2A28;
     --color-surface-raised: #31302F;
     --color-surface-overlay: #373635;
     --color-surface-input: #2C2A28;
-    --color-surface-inset: #13100D;
 
     --color-background-base: #1C1916;
     --color-background-default: #252321;
@@ -248,14 +247,11 @@
     --color-surface-raised: #EDEAE7;
     --color-surface-overlay: #FFFFFF;
     --color-surface-input: #F9F6F3;
-    /* Placeholder pairing (S-3) — light-mode counterpart of the dark ramp's
-       inset plane; not part of the dark-ramp investigation. */
-    --color-surface-inset: #D4D1CE;
 
     --color-background-base: #EBEBEB;
     --color-background-default: #FFFFFF;
     --color-background-subtle: #F9F6F3;
-    /* Placeholder pairing (S-3) — see --color-surface-inset note above. */
+    /* Placeholder pairing — light mode is deferred. */
     --color-background-frame: #A29F9D;
 
     --color-border-focus: #1072CB;
