@@ -77,7 +77,7 @@
     "storybook:isolated": "node scripts/storybook-launch.mjs --isolated",
     "storybook:ports": "node scripts/storybook-launch.mjs --list",
     "storybook:reap": "node scripts/storybook-launch.mjs --reap --list",
-    "storybook:raw": "storybook dev -p 6006 --exact-port"
+    "storybook:reap:all": "node scripts/storybook-launch.mjs --reap=all --list"
   },
   "peerDependencies": {
     "nativewind": "^4.2.1",

@@ -12,8 +12,18 @@
  *   node scripts/storybook-launch.mjs --isolated   # a private port, for parallel work
  *   node scripts/storybook-launch.mjs --list       # inventory only, launch nothing
  *   node scripts/storybook-launch.mjs --restart    # replace our own server on the port
- *   node scripts/storybook-launch.mjs --reap       # kill ORPHANED servers, then launch
- *   node scripts/storybook-launch.mjs --reap-all   # also kill live foreign / duplicate ours
+ *
+ * Reaping is scoped, and the default is the only category that is unambiguously dead:
+ *
+ *   --reap                 orphans (default) — worktree deleted, process still running
+ *   --reap=orphans         the same, said explicitly
+ *   --reap=foreign         live servers rooted in ANOTHER tree — may be a parallel agent's
+ *   --reap=dupes           our own extra servers, off the locked port
+ *   --reap=all             orphans + foreign + dupes
+ *   --reap=foreign,dupes   any combination
+ *
+ * The locked port is never reaped (use `--restart`), and anything not identifiable as
+ * Storybook is never touched.
  *
  * Anything not understood is forwarded to `storybook dev`.
  */
@@ -34,7 +44,33 @@ const PKG_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const argv = process.argv.slice(2)
 const has = (f) => argv.includes(f)
 const FLAGS = ['--isolated', '--list', '--restart', '--reap', '--reap-all']
-const passthrough = argv.filter((a) => !FLAGS.includes(a))
+const isReapFlag = (a) => a === '--reap' || a === '--reap-all' || a.startsWith('--reap=')
+const passthrough = argv.filter((a) => !FLAGS.includes(a) && !isReapFlag(a))
+
+/** Reap categories requested, or `null` when reaping was not asked for at all. */
+function requestedScopes() {
+  const flag = argv.find(isReapFlag)
+  if (!flag) return null
+  if (flag === '--reap-all') return ['orphan', 'foreign', 'dupe']
+  if (flag === '--reap') return ['orphan'] // the default scope
+  const asked = flag.slice('--reap='.length).split(',').filter(Boolean)
+  if (asked.includes('all')) return ['orphan', 'foreign', 'dupe']
+  const map = {
+    orphans: 'orphan',
+    orphan: 'orphan',
+    foreign: 'foreign',
+    dupes: 'dupe',
+    dupe: 'dupe',
+  }
+  const scopes = asked.map((a) => map[a]).filter(Boolean)
+  const unknown = asked.filter((a) => !map[a] && a !== 'all')
+  if (unknown.length) {
+    console.error(`\n  Unknown reap scope: ${unknown.join(', ')}`)
+    console.error(`  Valid: orphans (default), foreign, dupes, all\n`)
+    process.exit(1)
+  }
+  return scopes.length ? scopes : ['orphan']
+}
 
 /**
  * Best-effort shell out. Swallowing the error is deliberate: on a runner without `lsof`
@@ -96,11 +132,24 @@ function inventory() {
 const isOurs = (entry) => entry.cwd != null && entry.cwd.startsWith(PKG_ROOT)
 
 /**
- * The server is still running but the tree it serves is GONE — a worktree was deleted
- * out from under it. Unambiguously dead, and the safe default for reaping: nobody can
- * be using it, and it is exactly what squats ports and poisons screenshots.
+ * Which reap scope an entry belongs to. These names are exactly the `--reap=` values, so
+ * the inventory reads as a map of what each option would kill.
+ *
+ *   other   not identifiable as Storybook — never touched
+ *   locked  ours, on the locked port — never reaped; use --restart
+ *   orphan  the tree it serves is GONE. Unambiguously dead: nobody can be using it, and
+ *           it is exactly what squats ports and poisons screenshots. The DEFAULT scope.
+ *   foreign live, rooted in another tree — may be a parallel agent's, so opt-in only
+ *   dupe    ours, off the locked port — probably a leftover --isolated, so opt-in only
  */
-const isOrphan = (entry) => entry.storybook && entry.cwd != null && !existsSync(entry.cwd)
+function category(entry) {
+  if (!entry.storybook) return 'other'
+  if (entry.cwd != null && !existsSync(entry.cwd)) return 'orphan'
+  if (isOurs(entry)) return entry.port === LOCKED_PORT ? 'locked' : 'dupe'
+  return 'foreign'
+}
+
+const isOrphan = (entry) => category(entry) === 'orphan'
 
 function printInventory(entries) {
   if (entries.length === 0) {
@@ -108,35 +157,41 @@ function printInventory(entries) {
     return
   }
   console.log(`\n  Listening in ${SCAN_RANGE[0]}-${SCAN_RANGE[1]}:\n`)
-  console.log('  PORT   PID     KIND        STATE     ROOT')
+  console.log('  PORT   PID     CATEGORY   ROOT')
   for (const e of entries) {
-    const kind = e.storybook ? (isOurs(e) ? 'storybook*' : 'storybook') : 'other'
-    const state = isOrphan(e) ? 'ORPHAN' : e.port === LOCKED_PORT ? 'locked' : 'live'
-    const root = e.cwd ?? '(unknown)'
     console.log(
-      `  ${String(e.port).padEnd(6)} ${String(e.pid).padEnd(7)} ${kind.padEnd(11)} ${state.padEnd(9)} ${root}`
+      `  ${String(e.port).padEnd(6)} ${String(e.pid).padEnd(7)} ${category(e).padEnd(10)} ${e.cwd ?? '(unknown)'}`
     )
   }
-  const orphans = entries.filter(isOrphan).length
-  console.log('\n  * = this package.  ORPHAN = its worktree no longer exists on disk.')
-  if (orphans) console.log(`  ${orphans} orphaned server(s) — clear with --reap.`)
+
+  const counts = entries.reduce((acc, e) => {
+    acc[category(e)] = (acc[category(e)] ?? 0) + 1
+    return acc
+  }, {})
+  console.log('\n  locked  = ours on the locked port     → --restart to replace')
+  console.log('  orphan  = its worktree is GONE        → --reap            (default)')
+  console.log('  foreign = another live tree           → --reap=foreign')
+  console.log('  dupe    = ours, off the locked port   → --reap=dupes')
+  console.log('  other   = not Storybook               → never touched')
+  const summary = ['orphan', 'foreign', 'dupe']
+    .filter((c) => counts[c])
+    .map((c) => `${counts[c]} ${c}`)
+    .join(', ')
+  if (summary) console.log(`\n  Reapable: ${summary}.  --reap=all clears every one of them.`)
   console.log('')
 }
 
-/** Kill the dead (and, with --reap-all, the merely redundant). Returns ports freed. */
-function reap(entries, all) {
-  const targets = entries.filter((e) => {
-    if (!e.storybook) return false // never touch what we cannot identify
-    if (isOrphan(e)) return true
-    if (!all) return false
-    return e.port !== LOCKED_PORT // --reap-all: every duplicate except the locked port
-  })
+/** Kill everything in the requested scopes. Returns the ports freed. */
+function reap(entries, scopes) {
+  const targets = entries.filter((e) => scopes.includes(category(e)))
   if (targets.length === 0) {
-    console.log('  Nothing to reap.\n')
+    console.log(`  Nothing to reap in scope: ${scopes.join(', ')}.\n`)
     return []
   }
+  console.log(`  Reaping scope: ${scopes.join(', ')}`)
   for (const e of targets) {
-    killPid(e.pid, isOrphan(e) ? `orphaned — ${e.cwd} is gone` : `duplicate on ${e.port}`)
+    const c = category(e)
+    killPid(e.pid, c === 'orphan' ? `orphan — ${e.cwd} is gone` : `${c} on ${e.port}`)
   }
   console.log('')
   return targets.map((e) => e.port)
@@ -192,8 +247,9 @@ let entries = inventory()
 printInventory(entries)
 
 // Reap BEFORE the --list exit, so `--reap --list` reaps and then shows the result.
-if (has('--reap') || has('--reap-all')) {
-  const freed = reap(entries, has('--reap-all'))
+const scopes = requestedScopes()
+if (scopes) {
+  const freed = reap(entries, scopes)
   if (freed.length > 0) {
     entries = inventory() // re-read: ports we just freed are now available
     console.log('  After reaping:')

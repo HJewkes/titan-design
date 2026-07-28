@@ -26,10 +26,28 @@ Port 6006 is **locked**. `pnpm storybook` runs a launcher that owns the policy:
 | ------------------------- | --------------------------------------------------------------------------------------------------------- |
 | `pnpm storybook`          | Locked port. Reuses ours; **kills a foreign server squatting 6006**; refuses if a non-Storybook holds it. |
 | `pnpm storybook:isolated` | A private port from 6100–6199. Use when you _expect_ to run beside another instance.                      |
-| `pnpm storybook:ports`    | Inventory only — what is listening, whose it is, what is orphaned.                                        |
-| `pnpm storybook:reap`     | Kill **orphaned** servers (worktree deleted, process still running), then re-list.                        |
-| `--reap-all`              | Also kill live foreign/duplicate servers. Not the default: it can kill a parallel agent's instance.       |
+| `pnpm storybook:ports`    | Inventory only — every server, categorised, with the flag that would clear it.                            |
+| `pnpm storybook:reap`     | Kill **orphans** (the default scope), then re-list.                                                       |
+| `pnpm storybook:reap:all` | Kill orphans + foreign + dupes.                                                                           |
 | `--restart`               | Replace our own server on the locked port.                                                                |
+
+`pnpm storybook:ports` categorises every server, and the categories **are** the reap
+scopes — so the inventory doubles as a menu of what each option would kill:
+
+| category  | meaning                               | cleared by         |
+| --------- | ------------------------------------- | ------------------ |
+| `locked`  | ours, on 6006                         | `--restart`        |
+| `orphan`  | its worktree no longer exists on disk | `--reap` (default) |
+| `foreign` | a live server rooted in another tree  | `--reap=foreign`   |
+| `dupe`    | ours, off the locked port             | `--reap=dupes`     |
+| `other`   | not identifiable as Storybook         | never touched      |
+
+Scopes combine: `--reap=foreign,dupes`. `--reap=all` is everything reapable.
+
+**Orphans are the default because they are the only category that is unambiguously
+dead** — nobody can be using a server whose tree has been deleted. A live `foreign`
+server may belong to a parallel agent, and a `dupe` may be a deliberate `--isolated`
+instance, so both are opt-in.
 
 Every launch passes `--exact-port`, so a port conflict is a **loud failure** instead of a
 silent move. Proof: on a busy port, `--exact-port` refuses to start; without it, Storybook
