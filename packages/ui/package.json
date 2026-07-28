@@ -58,7 +58,7 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\"",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
-    "storybook": "storybook dev -p 6006",
+    "storybook": "node scripts/storybook-launch.mjs",
     "build-storybook": "storybook build",
     "test:visual": "playwright test",
     "test:visual:update": "playwright test --update-snapshots",
@@ -73,7 +73,11 @@
     "test:visual:stories": "playwright test stories.spec.ts",
     "test:visual:stories:update": "playwright test stories.spec.ts --update-snapshots",
     "prepublishOnly": "tsup && vitest --run",
-    "lint:colors:baseline": "node scripts/update-raw-color-baseline.mjs"
+    "lint:colors:baseline": "node scripts/update-raw-color-baseline.mjs",
+    "storybook:isolated": "node scripts/storybook-launch.mjs --isolated",
+    "storybook:ports": "node scripts/storybook-launch.mjs --list",
+    "storybook:reap": "node scripts/storybook-launch.mjs --reap --list",
+    "storybook:reap:all": "node scripts/storybook-launch.mjs --reap=all --list"
   },
   "peerDependencies": {
     "nativewind": "^4.2.1",
