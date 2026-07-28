@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest'
-import { phaseFillFraction, pacingTone, phaseTargetsMs, ON_TARGET_MS } from './tempo-pacing'
+import {
+  phaseFillFraction,
+  pacingTone,
+  phaseTargetsMs,
+  prescribedSegments,
+  ON_TARGET_MS,
+} from './tempo-pacing'
 import {
   PACING_TONE,
   PACING_TONE_MIN_CONTRAST,
@@ -113,6 +119,37 @@ describe('pacing tone legibility', () => {
         `${name}: deepest step clearing ${PACING_TONE_MIN_CONTRAST}:1 is ${deepestPassing}`
       ).toBe(ramp[deepestPassing!])
     }
+  })
+})
+
+describe('prescribedSegments', () => {
+  it('lays the prescribed rep out end to end at its target durations', () => {
+    expect(prescribedSegments(TEMPO)).toEqual([
+      { phase: 'eccentric', startMs: 0, endMs: 2600 },
+      { phase: 'hold', startMs: 2600, endMs: 3000 },
+      { phase: 'concentric', startMs: 3000, endMs: 3950 },
+      { phase: 'hold', startMs: 3950, endMs: 4230 },
+    ])
+  })
+
+  it('drops zero-length phases rather than drawing slivers', () => {
+    const noHolds = prescribedSegments([3, 0, 2, 0])
+    expect(noHolds.map((s) => s.phase)).toEqual(['eccentric', 'concentric'])
+    // The concentric still starts where the eccentric ended — no gap from the dropped hold.
+    expect(noHolds[1].startMs).toBe(noHolds[0].endMs)
+  })
+
+  it('has nothing to describe without a prescription', () => {
+    expect(prescribedSegments(null)).toEqual([])
+  })
+
+  it('round-trips against phaseTargetsMs — every run matches its own target', () => {
+    const segs = prescribedSegments(TEMPO)
+    const targets = phaseTargetsMs(
+      segs.map((s) => s.phase),
+      TEMPO
+    )
+    segs.forEach((s, i) => expect(s.endMs - s.startMs).toBe(targets[i]))
   })
 })
 

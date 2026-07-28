@@ -3,7 +3,7 @@ import { View, Text } from 'react-native'
 import { DualGhostSpark } from './DualGhostSpark'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { buildMockModel } from './fatigue-mock'
+import { buildMockModel, TARGET_TEMPO_SECONDS } from './fatigue-mock'
 import { GRIND_THRESHOLD } from './fatigue-tokens'
 import type { RepVelocityCurve } from './fatigue-model'
 
@@ -133,7 +133,13 @@ export const Symmetric: Story = {
     page(
       panel(
         'SYMMETRIC · MATCHED DEVICES · BOTH SILVER',
-        <DualGhostSpark left={HEALTHY} right={HEALTHY} width={360} height={232} />
+        <DualGhostSpark
+          left={HEALTHY}
+          right={HEALTHY}
+          width={360}
+          height={232}
+          targetTempoSeconds={TARGET_TEMPO_SECONDS}
+        />
       )
     ),
 }
@@ -147,6 +153,7 @@ export const AsymmetricLeftRight: Story = {
       panel(
         'ASYMMETRIC · LEFT SILVER · RIGHT GRINDING RED',
         <DualGhostSpark
+          targetTempoSeconds={TARGET_TEMPO_SECONDS}
           left={HEALTHY}
           right={grinding(HEALTHY, 0.85)}
           width={360}
@@ -168,6 +175,7 @@ export const AsymmetricControlled: Story = {
       panel(
         'ASYMMETRIC · RIGHT AT ~55% VELOCITY · BOTH STILL SILVER',
         <DualGhostSpark
+          targetTempoSeconds={TARGET_TEMPO_SECONDS}
           left={HEALTHY}
           right={weaken(HEALTHY, 0.55)}
           width={360}
@@ -187,7 +195,13 @@ export const OneSideLagging: Story = {
     page(
       panel(
         'LAGGING · RIGHT STILL MID-REP · BOTH CONTROLLED',
-        <DualGhostSpark left={HEALTHY} right={lagging(HEALTHY, 0.6)} width={360} height={232} />
+        <DualGhostSpark
+          left={HEALTHY}
+          right={lagging(HEALTHY, 0.6)}
+          width={360}
+          height={232}
+          targetTempoSeconds={TARGET_TEMPO_SECONDS}
+        />
       )
     ),
 }
@@ -205,6 +219,7 @@ export const TintRange: Story = {
             {panel(
               `RIGHT GRIND ${grind.toFixed(2)} · ${grind < GRIND_THRESHOLD ? 'CONTROLLED · SILVER' : 'GRINDING · RED'}`,
               <DualGhostSpark
+                targetTempoSeconds={TARGET_TEMPO_SECONDS}
                 left={HEALTHY}
                 right={grinding(HEALTHY, grind)}
                 width={360}
@@ -230,7 +245,13 @@ export const Empty: Story = {
         )}
         {panel(
           'SINGLE-SIDED · ONLY THE LEFT DEVICE BOUND',
-          <DualGhostSpark left={HEALTHY} right={[]} width={360} height={232} />
+          <DualGhostSpark
+            left={HEALTHY}
+            right={[]}
+            width={360}
+            height={232}
+            targetTempoSeconds={TARGET_TEMPO_SECONDS}
+          />
         )}
       </>
     ),

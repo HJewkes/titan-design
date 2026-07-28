@@ -192,6 +192,24 @@ describe('GhostBand', () => {
     expect(labelsOf(c).every((l) => l.fill === t['text-primary'])).toBe(true)
   })
 
+  // --- prescribed (nothing performed yet) --------------------------------------
+
+  it('paints a PRESCRIBED rep entirely unfilled — nothing has been performed', () => {
+    const c = band(onPace, { targetTempoSeconds: TEMPO, prescribed: true })
+    fillsOf(c).forEach((f) => expect(f.width).toBe(0))
+  })
+
+  it('still draws the prescribed runs at full width, so the shape reads', () => {
+    const plain = basesOf(band(onPace, { targetTempoSeconds: TEMPO }))
+    const pre = basesOf(band(onPace, { targetTempoSeconds: TEMPO, prescribed: true }))
+    expect(pre).toEqual(plain)
+  })
+
+  it('keeps prescribed labels PLAIN — an unstarted rep is neither ahead nor behind', () => {
+    const c = band(onPace, { targetTempoSeconds: TEMPO, prescribed: true, showLabels: true })
+    expect(labelsOf(c).every((l) => l.fill === t['text-primary'])).toBe(true)
+  })
+
   // --- the well ---------------------------------------------------------------
 
   it('recesses every run, so an unearned remainder reads as empty channel', () => {

@@ -93,6 +93,14 @@ export interface GhostBandProps {
    * which is also the honest one when nothing was prescribed to pace against.
    */
   targetTempoSeconds?: TempoTuple | null
+  /**
+   * These runs are PRESCRIBED, not performed — the set has not started. Every run paints
+   * unfilled at its base tone with a plain label, because nothing has been paced yet.
+   *
+   * Used by the empty state, where the band shows the SHAPE of the rep that was asked for
+   * (from the target tempo) rather than an axis with nothing on it.
+   */
+  prescribed?: boolean
 }
 
 /**
@@ -112,6 +120,7 @@ export function GhostBand({
   showLabels = false,
   labelColor = t['text-primary'],
   targetTempoSeconds = null,
+  prescribed = false,
 }: GhostBandProps) {
   const rawId = useId()
   const safeId = rawId.replace(/[^a-zA-Z0-9]/g, '')
@@ -126,7 +135,7 @@ export function GhostBand({
   const bandW = bandRight - bandLeft
   if (bandW <= 0) return null
 
-  const pacing = targetTempoSeconds != null
+  const pacing = targetTempoSeconds != null && !prescribed
   // Each run's elapsed time IS its own duration — the in-flight run's `endMs` is already
   // "now" — so pacing needs no clock of its own.
   const targetsMs = phaseTargetsMs(
@@ -146,8 +155,9 @@ export function GhostBand({
       phase: seg.phase,
       left,
       width,
-      // No target (or no prescription at all) → the run reads complete rather than empty.
-      fillWidth: pacing ? width * phaseFillFraction(elapsedMs, targetMs) : width,
+      // Prescribed → nothing performed, so nothing filled. No target at all → the run reads
+      // complete rather than perpetually empty.
+      fillWidth: prescribed ? 0 : pacing ? width * phaseFillFraction(elapsedMs, targetMs) : width,
       labelTone: pacing ? pacingTone(elapsedMs, targetMs) : labelColor,
     }
   })

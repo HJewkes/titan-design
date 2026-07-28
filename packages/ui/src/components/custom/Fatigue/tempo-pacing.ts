@@ -15,7 +15,7 @@
  */
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { PACING_TONE } from './fatigue-tokens'
-import type { SamplePhase } from './fatigue-model'
+import type { SamplePhase, PhaseSegment } from './fatigue-model'
 
 const t = getSemanticColors('dark')
 
@@ -51,6 +51,34 @@ export function pacingTone(elapsedMs: number, targetMs: number | null): string {
   if (remainingMs > ON_TARGET_MS) return PACING_TONE.ahead
   if (remainingMs >= -ON_TARGET_MS) return PACING_TONE.onPace
   return PACING_TONE.over
+}
+
+/**
+ * The rep the prescription DESCRIBES, as phase runs — ecc, bottom hold, con, top hold, laid
+ * end to end at their target durations from t=0.
+ *
+ * This is the only place a band's geometry may come from the prescription rather than from
+ * actual samples, and it exists for exactly one case: nothing has been performed yet, so
+ * there is no actual time to lay out. Zero-length phases (a tempo with no holds) are
+ * dropped rather than drawn as slivers.
+ */
+export function prescribedSegments(tempo: TempoTuple | null): PhaseSegment[] {
+  if (tempo == null) return []
+  const [ecc, pauseBottom, con, pauseTop] = tempo
+  const order: Array<[SamplePhase, number]> = [
+    ['eccentric', ecc],
+    ['hold', pauseBottom],
+    ['concentric', con],
+    ['hold', pauseTop],
+  ]
+  const out: PhaseSegment[] = []
+  let t = 0
+  for (const [phase, seconds] of order) {
+    const ms = seconds * 1000
+    if (ms > 0) out.push({ phase, startMs: t, endMs: t + ms })
+    t += ms
+  }
+  return out
 }
 
 /**
