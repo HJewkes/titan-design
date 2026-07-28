@@ -125,6 +125,69 @@ export const surfaceRampDark = {
 export const backgroundFrameDark = '#100D0A' // L*3.79
 
 /**
+ * Unified warm-neutral grey ramp (TD-07.14)
+ *
+ * The ONE achromatic scale. Regenerate with `scripts/generate-grey-ramp.mjs` —
+ * preserve the generator, not just the hexes.
+ *
+ * The surface planes ARE steps here rather than a parallel object: `850` is
+ * overlay, `975` is the bezel. That is the whole point of the ramp. `charcoal`,
+ * `neutral`, `surfaceRampDark` and `backgroundFrameDark` all resolve into it,
+ * which is why every plane step below is byte-identical to the value that
+ * shipped in v0.10.0 — the surfaces do not move, only their names.
+ *
+ * TWO THINGS ABOUT THE NUMBERING, both deliberate and both previously re-derived
+ * from scratch more than once because they were never written down:
+ *
+ * 1. `975` sits BELOW the standard grid. `canonL` — the median L* of the seven
+ *    chromatic `primitiveRamps` at each step — ends at L*10.3, which is step
+ *    `950`. The bezel is L*3.8, darker than the grid's last rung, so there is
+ *    simply no step number left for it and `975` extends past the end.
+ * 2. `850`/`875` are quarter-steps because overlay/raised/elevated are only
+ *    ~2.7 L* apart and all three collide on `900` at normal resolution. `800`
+ *    is a generated bridge between `700` (L*37.9) and overlay (L*22.7) so the
+ *    spacing stays even across the join.
+ *
+ * There is no `inset`. It was retired, not renamed: at ΔE 1.10 from `975` it was
+ * an imperceptible duplicate of the frame, which is exactly why `<Surface pressed>`
+ * (surface − 1) kept collapsing into it. `975` is the floor.
+ *
+ * Spec, generator and the rejected v1/v2 cuts:
+ * coordination/design-explorations/foundations/warm-grey-ramp/
+ */
+export const greyRamp = {
+  50: '#F9F6F3', //  L*97.0  W6
+  100: '#EDEAE7', // L*92.8  W6
+  200: '#D4D1CE', // L*84.0  W6  — warm silver
+  300: '#BDBAB7', // L*75.7  W6
+  400: '#A29F9D', // L*65.7  W5
+  500: '#888684', // L*56.0  W4
+  600: '#72716F', // L*47.7  W3
+  700: '#5A5958', // L*37.9  W2
+  800: '#424140', // L*27.6  W2  — generated bridge
+  850: '#373635', // L*22.7  W2  — surface overlay
+  875: '#31302F', // L*19.9  W2  — surface raised
+  900: '#2C2A28', // L*17.2  W4  — surface elevated
+  925: '#252321', // L*13.9  W4  — surface base
+  950: '#1C1916', // L*9.0   W6  — background base / shell
+  975: '#100D0A', // L*3.8   W6  — background frame / bezel
+} as const
+
+/**
+ * The surface planes, as ramp steps — the mapping `<Surface level>` resolves through.
+ *
+ * Ordered darkest -> lightest, which is the order `pressedLevel()` walks.
+ */
+export const SURFACE_PLANE_STEPS = {
+  frame: 975,
+  background: 950,
+  base: 925,
+  elevated: 900,
+  raised: 875,
+  overlay: 850,
+} as const
+
+/**
  * Derived tonal ramps (TD-05.09 color foundations)
  *
  * Seven OKLCH-generated hue ramps, 11 perceptual lightness steps each (50 -> 950).
