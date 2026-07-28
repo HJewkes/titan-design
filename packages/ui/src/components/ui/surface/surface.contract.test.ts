@@ -181,10 +181,17 @@ describe('surface ramp contract (dark) — token-value guardrails', () => {
     // the S-3 ramp (default dropped 8->7 — the `overlay` plane now measures
     // ~7.97, just under the old floor); a wall-display calibration pass (S-6)
     // may retune the alpha values themselves.
+    //
+    // S-6 DID (VW-99). The alphas went up ×1.5 to .09/.135/.21: on the wall at
+    // ~3 m `subtle` rendered but was indiscernible, and `default` — which has had
+    // no solid-border fallback since TD-07.14 — went weak on the lightest plane.
+    // Floors below re-measured against the new alphas. Note new `subtle` now
+    // measures exactly where old `default` did (min 7.97), and the new `default`
+    // where old `strong` did (min 12.26) — each tier onto a measured-good rung.
     const HAIRLINES = {
-      subtle: { token: 'hairline-subtle', floor: 5 },
-      default: { token: 'hairline-default', floor: 7 },
-      strong: { token: 'hairline-strong', floor: 12 },
+      subtle: { token: 'hairline-subtle', floor: 7 },
+      default: { token: 'hairline-default', floor: 12 },
+      strong: { token: 'hairline-strong', floor: 18 },
     } as const
 
     for (const [name, { token, floor }] of Object.entries(HAIRLINES)) {
@@ -199,19 +206,30 @@ describe('surface ramp contract (dark) — token-value guardrails', () => {
       })
     }
 
-    it('is near-constant (self-normalizing) across all planes: spread < 4 L* per tier', () => {
-      // Measured spread (frame..overlay): subtle ~1.6, default ~2.2, strong ~3.2 —
-      // still far tighter than a solid border token (which swings ~5.6 -> 0
-      // across this same ramp, see R4). "Near-constant" is relative to that,
-      // not perfectly flat — alpha-over-white is sublinear in L* as the base
-      // lightens, which is exactly the R3 floor-vs-doc discrepancy noted above.
+    it('is near-constant (self-normalizing) across all planes: spread stays proportional', () => {
+      // Measured RELATIVE spread ((max-min)/min): subtle 0.27, default 0.29,
+      // strong 0.29 — and, importantly, those are the same figures the OLD
+      // .06/.09/.14 family produced (0.28 / 0.27 / 0.28). Self-normalization
+      // survived the S-6 retune untouched.
+      //
+      // This assertion used to be an ABSOLUTE `spread < 4 L*`, which was the
+      // wrong metric: absolute spread scales with the alpha, so ANY strengthening
+      // fails it no matter how well the property holds. The S-6 ×1.5 retune
+      // tripped it (strong 3.46 -> 5.29) purely arithmetically. A ratio is
+      // scale-invariant, which is what "self-normalizing" actually claims.
+      //
+      // Contrast a solid border token, which swings ~5.6 -> 0 across this same
+      // ramp (see R4): the point is not a tight absolute band, it is that no
+      // plane ever loses the cue. Alpha-over-white is sublinear in L* as the
+      // base lightens, which is the R3 floor-vs-doc discrepancy noted above.
       for (const { token } of Object.values(HAIRLINES)) {
         const hairlineColor = dark[token as keyof typeof dark]
         const deltas = PLANE_ORDER.map((plane) => {
           const planeHex = RAMP_HEX[plane]
           return lstar(compositeOver(planeHex, hairlineColor)) - lstar(planeHex)
         })
-        expect(Math.max(...deltas) - Math.min(...deltas)).toBeLessThan(4)
+        const min = Math.min(...deltas)
+        expect((Math.max(...deltas) - min) / min, `${token} relative spread`).toBeLessThan(0.35)
       }
     })
   })

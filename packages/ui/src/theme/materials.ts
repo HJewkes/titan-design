@@ -20,7 +20,28 @@
  * why every material here keeps `backgroundColor` load-bearing on its own. A
  * material must never be the only thing carrying meaning.
  *
- * See coordination/design-explorations/surface-system-north-star.md §4.
+ * ── THE TONAL FILL IS GONE (VW-99, S-6 wall calibration) ───────────────────
+ *
+ * `paperSheet` used to carry a vertical ΔL* 3 gradient, sized "just under seen
+ * as a gradient". On the wall panel at ~3 m it could not be told from a flat
+ * sheet of the same tone, and the full material still read as — the operator's
+ * words — "a flat digital rectangle". It failed its own stated purpose, which
+ * was precisely to stop that.
+ *
+ * Raising it was not available. The design ceiling is ~ΔL* 4 (past that it reads
+ * decorative, which the exploration rejected), and the same run showed why the
+ * headroom would not have helped: the 0.025 ELEVATION step — a comparable ΔL*
+ * — was called instantly, because it sits at a hard edge between two flat
+ * fields. The fill spread the same amount smoothly over ~300 px, where vision is
+ * genuinely poor. It is a spatial-frequency problem, not an amplitude one, so
+ * the band between "invisible" and "decorative" may simply not exist here.
+ *
+ * Kept: grain, rim-light, contact shadow. `ditherTile` is retained pending one
+ * re-run — it existed only to stop the FILL banding, so it is probably dead
+ * weight now, but "probably" is not a measurement.
+ *
+ * See coordination/design-explorations/surface-system-north-star.md §4 and
+ * coordination/validation-runbooks/VW-99-depth-wall-calibration.md.
  */
 import type { ViewStyle } from 'react-native'
 import { getSemanticColors } from './tokens/semantic'
@@ -48,50 +69,9 @@ function perceivedLuminance(hex: string): number {
   return (0.299 * r + 0.587 * g + 0.114 * b) / 255
 }
 
-const srgb2lin = (c8: number) => {
-  const s = c8 / 255
-  return s <= 0.04045 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4
-}
-const lin2srgb = (v: number) => (v <= 0.0031308 ? v * 12.92 : 1.055 * v ** (1 / 2.4) - 0.055)
-const clamp01 = (x: number) => Math.min(1, Math.max(0, x))
-const fLab = (t: number) => (t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116)
-const fInv = (t: number) => (t ** 3 > 0.008856 ? t ** 3 : (t - 16 / 116) / 7.787)
-
-/** CIELAB (D65) for a hex. Used so the tonal fill can be specified in ΔL*. */
-function hexToLab(hex: string): [number, number, number] {
-  const rgb = parseHex(hex)
-  if (!rgb) return [50, 0, 0]
-  const [r, g, b] = rgb.map(srgb2lin)
-  const X = (r * 0.4124564 + g * 0.3575761 + b * 0.1804375) / 0.95047
-  const Y = r * 0.2126729 + g * 0.7151522 + b * 0.072175
-  const Z = (r * 0.0193339 + g * 0.119192 + b * 0.9503041) / 1.08883
-  const [fx, fy, fz] = [fLab(X), fLab(Y), fLab(Z)]
-  return [116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz)]
-}
-
-function labToHex(L: number, a: number, b: number): string {
-  const fy = (L + 16) / 116
-  const [fx, fz] = [fy + a / 500, fy - b / 200]
-  const [X, Y, Z] = [0.95047 * fInv(fx), fInv(fy), 1.08883 * fInv(fz)]
-  const rgb = [
-    X * 3.2404542 - Y * 1.5371385 - Z * 0.4985314,
-    -X * 0.969266 + Y * 1.8760108 + Z * 0.041556,
-    X * 0.0556434 - Y * 0.2040259 + Z * 1.0572252,
-  ]
-  return (
-    '#' +
-    rgb
-      .map((v) => Math.round(clamp01(lin2srgb(clamp01(v))) * 255).toString(16).padStart(2, '0'))
-      .join('')
-      .toUpperCase()
-  )
-}
-
-/** Shift a colour by ΔL* in CIELAB, holding its hue and chroma. */
-function shiftL(hex: string, dL: number): string {
-  const [L, a, b] = hexToLab(hex)
-  return labToHex(Math.max(0, Math.min(100, L + dL)), a, b)
-}
+// The CIELAB conversion chain (srgb2lin/lin2srgb/fLab/fInv, hexToLab/labToHex,
+// shiftL) lived here so the tonal fill could be specified in ΔL*. It had no
+// other caller, so it went with the fill — see the module header.
 
 // ── grain ───────────────────────────────────────────────────────────────────
 
@@ -134,9 +114,11 @@ export function grainForTone(baseColor: string): string {
  * because a low-contrast vertical gradient across a wide plane bands into visible
  * steps on an 8-bit panel, and a whisper of noise breaks the step edges up.
  *
- * Only worth applying where a gradient actually spans real width — {@link
- * paperSheet} already includes it via {@link tonalFill}. On a surface with no
- * gradient there is nothing to band, and this is dead weight.
+ * Only worth applying where a gradient actually spans real width. On a surface
+ * with no gradient there is nothing to band and this is dead weight — which is
+ * now the open question for {@link paperSheet} itself, since the gradient this
+ * existed to protect (`tonalFill`) is gone. VW-99 panel C4 decides it, on the
+ * wall, against a seeded positive control.
  */
 export function ditherTile(): string {
   return (
@@ -146,23 +128,9 @@ export function ditherTile(): string {
   )
 }
 
-// ── tonal fill ──────────────────────────────────────────────────────────────
-
-/**
- * The tonal half of the paper recipe: a vertical top-lighter → bottom-darker
- * gradient across the fill, total span ΔL* ≤ 3.
- *
- * Three is deliberate and is close to a just-noticeable difference. The point is
- * not to be seen as a gradient — it is to stop a large plane reading as a flat
- * digital rectangle, by giving it the faint sense of light falling from above
- * that every physical sheet has. Push it past ~4 and it stops being material and
- * starts being a decorative gradient, which is the thing the exploration rejected.
- */
-export function tonalFill(tone: string): string {
-  const top = shiftL(tone, +1.5)
-  const bottom = shiftL(tone, -1.5)
-  return `linear-gradient(180deg, ${top} 0%, ${bottom} 100%)`
-}
+// `tonalFill` lived here until VW-99 measured it on the wall and found it
+// indiscernible. Deleted rather than left exported-but-unused; the reasoning is
+// in the module header, which is the part worth keeping.
 
 // ── the materials ───────────────────────────────────────────────────────────
 
@@ -182,8 +150,8 @@ export function tonalFill(tone: string): string {
 export function paperSheet(tone: string = c['surface-raised']): ViewStyle {
   return {
     backgroundColor: tone,
-    // Layered front-to-back: dither over grain over the tonal fill.
-    backgroundImage: `${ditherTile()}, ${grainForTone(tone)}, ${tonalFill(tone)}`,
+    // Layered front-to-back: dither over grain. No tonal fill — see VW-99 below.
+    backgroundImage: `${ditherTile()}, ${grainForTone(tone)}`,
     boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10), 0 8px 22px rgba(0,0,0,0.50)',
   } as unknown as ViewStyle
 }

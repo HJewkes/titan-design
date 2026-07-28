@@ -119,10 +119,13 @@
     --color-border-input-focus: #828DF8;
     --color-border-input-error: #E05254;
 
-    /* Alpha hairline separators — self-normalizing on any plane (§4/S-2) */
-    --color-hairline-subtle: rgba(255, 255, 255, 0.06);
-    --color-hairline-default: rgba(255, 255, 255, 0.09);
-    --color-hairline-strong: rgba(255, 255, 255, 0.14);
+    /* Alpha hairline separators — self-normalizing on any plane (§4/S-2).
+       Retuned on the wall (VW-99): each tier steps onto the previous tier's
+       measured-good value. Two decimals only — RNW quantises alpha to 8 bits.
+       Dark only; the light family below is unverified. */
+    --color-hairline-subtle: rgba(255, 255, 255, 0.09);
+    --color-hairline-default: rgba(255, 255, 255, 0.14);
+    --color-hairline-strong: rgba(255, 255, 255, 0.21);
 
     --color-interactive-hover: rgba(255, 255, 255, 0.04);
     --color-interactive-focus: rgba(255, 255, 255, 0.12);

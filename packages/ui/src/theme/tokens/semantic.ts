@@ -338,9 +338,28 @@ export const semanticColorsDark = {
   // one family works at every elevation instead of per-surface border tokens.
   // Shadows are demoted to floating-overlay use only (not shipped as a fill
   // separator here — see elevation.ts, follow-up S-4).
-  'hairline-subtle': 'rgba(255, 255, 255, 0.06)',
-  'hairline-default': 'rgba(255, 255, 255, 0.09)',
-  'hairline-strong': 'rgba(255, 255, 255, 0.14)',
+  //
+  // RETUNED on the wall (VW-99, S-6). The original .06/.09/.14 were set at a
+  // desk. On the panel at ~3 m `subtle` rendered but was indiscernible, and
+  // `default` — the load-bearing one, with no solid-border fallback since
+  // TD-07.14 — went weak on the lightest plane. `strong` read cleanly with room
+  // to spare, which is what made raising the whole family viable.
+  //
+  // Each tier steps up onto the next MEASURED-GOOD rung rather than an
+  // interpolated one: the new `subtle` is the old `default`, and the new
+  // `default` is the old `strong` — a value just confirmed legible on all four
+  // planes. Spacing goes 1 : 1.56 : 2.33, against the original 1 : 1.5 : 2.33.
+  //
+  // Keep these to TWO decimals. react-native-web quantises alpha to 8 bits, so
+  // a 3-decimal value silently rounds on the way to the DOM (.135 renders as
+  // .13) — the token would say one thing and paint another.
+  //
+  // DARK ONLY. The light family above composites toward BLACK on light planes,
+  // which this run says nothing about — do not mirror these numbers into it
+  // without its own verification.
+  'hairline-subtle': 'rgba(255, 255, 255, 0.09)',
+  'hairline-default': 'rgba(255, 255, 255, 0.14)',
+  'hairline-strong': 'rgba(255, 255, 255, 0.21)',
 
   // Interactive states
   'interactive-hover': 'rgba(255, 255, 255, 0.04)',

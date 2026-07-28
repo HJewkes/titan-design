@@ -1,62 +1,27 @@
 /**
  * Surface materials — the properties that make paper read as ONE material.
  *
- * These treatments are mostly invisible by design (a ΔL* 3 gradient, a 0.02α
- * dither), which makes them exactly the kind of thing that can be broken without
- * anyone noticing until it looks subtly wrong on the wall. So the numbers that
- * define them are asserted rather than left as comments.
+ * These treatments are mostly invisible by design (a 0.02α dither, grain that is
+ * a whisper at dark tones), which makes them exactly the kind of thing that can be
+ * broken without anyone noticing until it looks subtly wrong on the wall. So the
+ * numbers that define them are asserted rather than left as comments.
+ *
+ * The `tonal fill` block that used to lead this file went with `tonalFill` in
+ * VW-99 — the wall run found the ΔL* 3 gradient indiscernible. See the
+ * materials.ts module header.
  */
 import { describe, it, expect } from 'vitest'
 import {
   grainOpacityForTone,
   grainForTone,
   ditherTile,
-  tonalFill,
   paperSheet,
   insetWell,
   barPaper,
 } from './materials'
 import { greyRamp } from './tokens/primitives'
 
-const hex2rgb = (h: string): [number, number, number] => {
-  const n = parseInt(h.slice(1), 16)
-  return [(n >> 16) & 255, (n >> 8) & 255, n & 255]
-}
-const srgb2lin = (c: number) => {
-  const s = c / 255
-  return s <= 0.04045 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4
-}
-const f = (t: number) => (t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116)
-const Lstar = (hex: string) => {
-  const [r, g, b] = hex2rgb(hex).map(srgb2lin)
-  return 116 * f(r * 0.2126729 + g * 0.7151522 + b * 0.072175) - 16
-}
-
-const PLANES = [850, 875, 900, 925, 950, 975] as const
 const styleOf = (s: Record<string, unknown>) => s as { backgroundImage?: string; boxShadow?: string; backgroundColor?: string }
-
-describe('tonal fill', () => {
-  /**
-   * The whole point of the gradient is to sit just under "seen as a gradient".
-   * Past roughly ΔL* 4 it stops reading as light falling on a sheet and starts
-   * reading as decoration — the thing the surface exploration rejected.
-   */
-  it.each(PLANES)('spans no more than ΔL* 3 on grey-%s', (step) => {
-    const stops = tonalFill(greyRamp[step]).match(/#[0-9A-F]{6}/g)
-    expect(stops, 'gradient should declare two hex stops').toHaveLength(2)
-    const span = Math.abs(Lstar(stops![0]) - Lstar(stops![1]))
-    expect(span, `grey-${step} spans ΔL* ${span.toFixed(2)}`).toBeLessThanOrEqual(3.1)
-    // …and it must actually be there. A zero-span "gradient" is a flat fill
-    // wearing a costume, which is the failure mode a ceiling-only check misses.
-    expect(span, `grey-${step} has no perceptible span`).toBeGreaterThan(2)
-  })
-
-  it('runs lighter at the top, darker at the bottom', () => {
-    const stops = tonalFill(greyRamp[900]).match(/#[0-9A-F]{6}/g)!
-    expect(Lstar(stops[0])).toBeGreaterThan(Lstar(stops[1]))
-    expect(tonalFill(greyRamp[900])).toContain('180deg')
-  })
-})
 
 describe('grain', () => {
   it('scales opacity with the tone it sits on', () => {
@@ -105,16 +70,16 @@ describe('dither', () => {
 })
 
 describe('paperSheet', () => {
-  it('layers dither over grain over the tonal fill', () => {
+  it('layers dither over grain, and carries no gradient', () => {
     const bg = styleOf(paperSheet(greyRamp[875])).backgroundImage!
-    const gradientAt = bg.indexOf('linear-gradient')
-    expect(gradientAt, 'tonal fill missing').toBeGreaterThan(-1)
-    // Later entries in backgroundImage paint BEHIND earlier ones, so the fill
-    // must come last or it covers the texture it is supposed to sit under.
-    expect(bg.indexOf('url('), 'texture should precede the fill').toBeLessThan(gradientAt)
     // Count data URIs, not 'url(' — each SVG tile contains a `filter='url(#n)'`
     // internally, so counting the token double-reports.
     expect(bg.split('data:image/svg+xml').length - 1, 'expected both grain and dither').toBe(2)
+    // VW-99 removed the tonal fill: on the wall it could not be told from a flat
+    // sheet of the same tone, and the full material still read as a flat digital
+    // rectangle. Asserted rather than merely deleted, so re-adding a gradient is
+    // a deliberate act with a wall run behind it, not a quiet revert.
+    expect(bg, 'the tonal fill was removed in VW-99').not.toContain('linear-gradient')
   })
 
   it('keeps a solid backgroundColor so native does not fall through', () => {

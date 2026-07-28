@@ -4,7 +4,7 @@ import { View, Text, Pressable } from 'react-native'
 import { greyRamp } from './tokens/primitives'
 import { getSemanticColors } from './tokens/semantic'
 import { getBaseSurfaceColor, getElevationSurface, type ElevationLevel } from './elevation'
-import { tonalFill, grainForTone, ditherTile, paperSheet } from './materials'
+import { grainForTone, paperSheet } from './materials'
 
 /**
  * Foundations/Depth Calibration — the S-6 wall gate (VW-99).
@@ -331,51 +331,67 @@ export const ToneSteps: StoryObj = {
   ),
 }
 
-// ── C3 · tonal fill ─────────────────────────────────────────────────────────
+// ── C3 · paper material ─────────────────────────────────────────────────────
 
 const PAPER_TONE = greyRamp[875]
 
-export const TonalFill: StoryObj = {
-  name: 'C3 · Tonal fill — ΔL* 3, just under seen-as-a-gradient',
+/**
+ * REWRITTEN FOR RUN 2. Run 1 asked "is the tonal fill visible?" and the answer
+ * was no, so the fill was deleted — which left this panel with nothing to
+ * compare. The question that survives the deletion is broader and more useful:
+ * with the fill gone, does what REMAINS of the paper material read at all?
+ *
+ * `paperSheet` is now grain + dither + a top rim-light + a contact shadow. If
+ * that stack cannot be told from a flat `backgroundColor` at 3 m, it is three
+ * paint layers buying nothing and it should follow the fill out.
+ *
+ * The forced choice is odd-one-out with a genuine identical pair, rather than
+ * "can you see it" — the operator has to say WHICH and HOW, and "they are all
+ * the same" is an available, unembarrassing answer. That matters here more than
+ * on C1: grain lifts apparent lightness, so a two-way comparison can be won on
+ * a brightness cue without the material ever reading as a material.
+ */
+const PAPER_SHEETS = ['flat', 'paper', 'flat'] as const
+
+export const PaperMaterial: StoryObj = {
+  name: 'C3 · Paper material — what is left after the fill',
   render: () => (
     <Panel
-      title="C3 · Tonal fill"
+      title="C3 · Paper material"
       task={
-        'TOP: two sheets on the same tone — one carries the fill, one is flat. Which is which, or ' +
-        'are they identical? BOTTOM: the full shipped material. Does it read as a sheet with light ' +
-        'falling on it, or as a decorative gradient? Invisible and obvious are both failures.'
+        'TOP: three sheets on the same tone. Two are identical. Which one differs, and in what way ' +
+        '— lighter, textured, edged? "All three the same" is a real answer. BOTTOM: the same ' +
+        'material at hero size. Does it read as a sheet with light on it, as visible noise, or as ' +
+        'nothing at all?'
       }
     >
       {(revealed) => (
         <View>
-          {/*
-           * The forced choice is fill-vs-flat ONLY, and both sheets are tone-matched.
-           * An earlier version put paperSheet() in the same row — but grain raises
-           * apparent lightness, so the full recipe was picked out instantly on a cue
-           * that had nothing to do with the fill, and the question the panel exists
-           * to ask never got asked. The recipe is now judged separately, on its own
-           * question.
-           */}
           <View style={{ flexDirection: 'row', gap: 22 }}>
-            <Card
-              label="1"
-              revealed={revealed}
-              answer="tonalFill — the shipped ΔL* 3 gradient, no grain, no dither"
-              style={{ backgroundColor: PAPER_TONE, backgroundImage: tonalFill(PAPER_TONE) }}
-            />
-            <Card
-              label="2"
-              revealed={revealed}
-              answer="FLAT — backgroundColor alone"
-              style={{ backgroundColor: PAPER_TONE }}
-            />
+            {PAPER_SHEETS.map((kind, i) => (
+              <Card
+                key={i}
+                label={String(i + 1)}
+                revealed={revealed}
+                answer={
+                  kind === 'paper'
+                    ? 'paperSheet() — grain + dither + rim-light + contact shadow'
+                    : 'FLAT (decoy) — backgroundColor alone'
+                }
+                style={
+                  kind === 'paper'
+                    ? { ...(paperSheet(PAPER_TONE) as Record<string, unknown>) }
+                    : { backgroundColor: PAPER_TONE }
+                }
+              />
+            ))}
           </View>
 
           <Text
             className="text-text-secondary"
             style={{ fontSize: 15, marginTop: 26, marginBottom: 10 }}
           >
-            The full material, at hero size — paper, or decorative gradient?
+            The same material, at hero size — lit sheet, visible noise, or nothing?
           </Text>
           <View
             style={{
@@ -385,22 +401,26 @@ export const TonalFill: StoryObj = {
             }}
           />
           <Text className="text-text-tertiary" style={{ fontSize: 12, marginTop: 8 }}>
-            {revealed
-              ? 'paperSheet() — fill + grain + dither + top rim-light + contact shadow'
-              : 'reads as: ______'}
+            {revealed ? 'paperSheet() at hero width' : 'reads as: ______'}
           </Text>
 
           {revealed ? (
             <View style={{ marginTop: 14, maxWidth: 1000 }}>
               <KeyLine>
-                {'PASS: sheet 1 correctly called as the one with light on it, AND the hero sheet ' +
-                  'not described as a gradient. If 1 and 2 are indistinguishable, ΔL* 3 is below ' +
-                  'this panel and the fill is costing a paint for nothing.'}
+                {'Sheet 2 is the material; 1 and 3 are the identical decoy pair. PASS: 2 picked out, ' +
+                  'AND the hero sheet described as a surface rather than as noise. Invisible and ' +
+                  'obvious are both failures — the same two-sided bar the fill was held to.'}
               </KeyLine>
               <KeyLine>
-                {'Retune lever: the ±1.5 L* shift in `tonalFill` (materials.ts). The exploration ' +
-                  'rejected anything past ~4 total span as decorative, so ±2.0 is the ceiling — ' +
-                  'past that, drop the fill rather than push it.'}
+                {'Levers. Reads as NOTHING: the honest move is to drop grain and the dither from ' +
+                  'paperSheet and keep only the rim-light and contact shadow, which are edge cues ' +
+                  'and sit at a spatial frequency the wall demonstrably resolves — that is the ' +
+                  'lesson C2 taught and the fill failed. Reads as NOISE: lower the grain opacity in ' +
+                  'grainForTone (materials.ts) before touching its frequency.'}
+              </KeyLine>
+              <KeyLine>
+                {'If 1 and 3 were reported as different from each other, the run is invalid at this ' +
+                  'distance — they are byte-identical. Step back to 3 m and go again.'}
               </KeyLine>
             </View>
           ) : null}
@@ -436,68 +456,102 @@ function Card({
 
 const BAND_TONE = greyRamp[900]
 
+/**
+ * REWRITTEN FOR RUN 2, and this panel is why the rewrite could not be skipped.
+ *
+ * Run 1 compared dither-on against dither-off over the tonal fill. Neither field
+ * banded — but the fill was already established as invisible, so there was no
+ * gradient to band and the panel could not have failed. That is a VOID result,
+ * not a pass, and it is the exact failure mode a calibration rig exists to catch
+ * in itself.
+ *
+ * Two changes:
+ *
+ * 1. Both material fields are now the SHIPPED stack ± dither, derived from
+ *    `paperSheet` rather than reassembled by hand, so they cannot drift from
+ *    what actually ships.
+ * 2. A POSITIVE CONTROL is seeded: a bare low-contrast vertical gradient with no
+ *    dither and no grain, which on an 8-bit panel must band. If it does not, the
+ *    panel cannot detect banding under these viewing conditions and the row is
+ *    VOID AGAIN — now with evidence, instead of being mistaken for a pass.
+ *
+ * The control cannot be disguised as one of the material fields, and does not
+ * need to be: it is not part of a forced choice. Which field it is stays hidden
+ * with the rest of the key, so the operator still reports what they see rather
+ * than what they expect.
+ */
+const SHIPPED_PAPER = paperSheet(BAND_TONE) as Record<string, unknown>
+
+const BAND_FIELDS: { key: string; answer: string; style: Record<string, unknown> }[] = [
+  {
+    key: '1',
+    answer: 'the SHIPPED stack — dither over grain',
+    style: SHIPPED_PAPER,
+  },
+  {
+    key: '2',
+    answer: 'CONTROL (decoy) — a bare grey-900 → grey-875 gradient, no dither, no grain',
+    style: {
+      backgroundColor: BAND_TONE,
+      backgroundImage: `linear-gradient(180deg, ${greyRamp[900]} 0%, ${greyRamp[875]} 100%)`,
+    },
+  },
+  {
+    key: '3',
+    answer: 'the shipped stack MINUS the dither — grain alone',
+    style: { ...SHIPPED_PAPER, backgroundImage: grainForTone(BAND_TONE) },
+  },
+]
+
 export const Banding: StoryObj = {
   name: 'C4 · Banding — does the dither earn its place',
   render: () => (
     <Panel
       title="C4 · Banding"
       task={
-        'Two wide fields carrying the same gradient. Look for horizontal STEPS — flat stripes with ' +
-        'a visible edge between them, rather than a smooth fall. Which field bands, if either? ' +
-        'This is the one check that cannot be done anywhere but on the panel: banding is an 8-bit ' +
-        'artefact of this display.'
+        'Three wide fields. Look for horizontal STEPS — flat stripes with a visible edge between ' +
+        'them, rather than a smooth fall. Say BANDS or SMOOTH for each. This is the one check that ' +
+        'cannot be done anywhere but on the panel: banding is an 8-bit artefact of this display.'
       }
     >
       {(revealed) => (
         <View>
-          {/*
-           * BOTH fields carry grain; the ONLY difference is the dither layer.
-           * Grain also breaks up banding, so a grain-vs-no-grain comparison would
-           * confound which layer is doing the work — and grain is visible, which
-           * would give the answer away on a cue that is not the one under test.
-           */}
-          <View
-            style={
-              {
-                height: 260,
-                borderRadius: 8,
-                backgroundColor: BAND_TONE,
-                backgroundImage: `${grainForTone(BAND_TONE)}, ${tonalFill(BAND_TONE)}`,
-              } as Record<string, unknown>
-            }
-          />
-          <Text className="text-text-tertiary" style={{ fontSize: 12, marginTop: 6 }}>
-            {revealed ? 'Field 1 · NO dither — grain over the fill' : 'Field 1 · steps? ______'}
-          </Text>
-
-          <View
-            style={
-              {
-                height: 260,
-                borderRadius: 8,
-                marginTop: 20,
-                backgroundColor: BAND_TONE,
-                backgroundImage: `${ditherTile()}, ${grainForTone(BAND_TONE)}, ${tonalFill(BAND_TONE)}`,
-              } as Record<string, unknown>
-            }
-          />
-          <Text className="text-text-tertiary" style={{ fontSize: 12, marginTop: 6 }}>
-            {revealed
-              ? 'Field 2 · dither ADDED over the same grain + fill — the shipped stack'
-              : 'Field 2 · steps? ______'}
-          </Text>
+          {BAND_FIELDS.map((field) => (
+            <View key={field.key}>
+              <View
+                style={
+                  {
+                    height: 240,
+                    borderRadius: 8,
+                    marginTop: field.key === '1' ? 0 : 20,
+                    ...field.style,
+                  } as Record<string, unknown>
+                }
+              />
+              <Text className="text-text-tertiary" style={{ fontSize: 12, marginTop: 6 }}>
+                {`Field ${field.key}`}
+                {revealed ? `  ·  ${field.answer}` : '  ·  bands? ______'}
+              </Text>
+            </View>
+          ))}
 
           {revealed ? (
             <View style={{ marginTop: 14, maxWidth: 1000 }}>
               <KeyLine>
-                {'PASS: field 2 does not band. Field 1 banding is FINE — it is the reason dither ' +
-                  'exists, and it is the evidence the dither is doing work.'}
+                {'READ FIELD 2 FIRST. It is the control and it must BAND. If it reads smooth, this ' +
+                  'panel is blind under these conditions and rows about fields 1 and 3 mean nothing ' +
+                  '— record VOID, do not record PASS. That is precisely how run 1 went wrong.'}
               </KeyLine>
               <KeyLine>
-                {'If NEITHER bands, the dither is unearned on this panel and `ditherTile` can come ' +
-                  'out of paperSheet — that is a real result, not a null one. If BOTH band, raise ' +
-                  'the 0.02α in `ditherTile` (materials.ts) until it stops; past ~0.03 it stops ' +
-                  'being invisible and becomes texture, at which point it is grain, not dither.'}
+                {'Given a banding control: if field 3 bands and field 1 does not, the dither is ' +
+                  'earning its place — keep it. If NEITHER bands, there is no gradient left in the ' +
+                  'shipped material to protect and ditherTile comes out of paperSheet. That is a ' +
+                  'real result, not a null one, and it is the expected one now the fill is gone.'}
+              </KeyLine>
+              <KeyLine>
+                {'If field 1 bands too, raise the 0.02α in ditherTile (materials.ts) until it stops; ' +
+                  'past ~0.03 it stops being invisible and becomes texture, at which point it is ' +
+                  'grain, not dither.'}
               </KeyLine>
             </View>
           ) : null}
