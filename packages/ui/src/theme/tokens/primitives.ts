@@ -465,17 +465,6 @@ export const primitiveBorderRadius = {
   full: '9999px',
 } as const
 
-export const primitiveShadows = {
-  none: 'none',
-  sm: '0px 1px 2px rgba(100, 116, 139, 0.12)',
-  DEFAULT: '0px 1px 3px rgba(100, 116, 139, 0.12), 0px 1px 2px rgba(100, 116, 139, 0.24)',
-  md: '0px 4px 6px rgba(100, 116, 139, 0.12)',
-  lg: '0px 10px 15px rgba(100, 116, 139, 0.12)',
-  xl: '0px 20px 25px rgba(100, 116, 139, 0.12)',
-  '2xl': '0px 25px 50px rgba(100, 116, 139, 0.25)',
-  inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
-} as const
-
 export const primitiveBreakpoints = {
   xs: 0,
   sm: 600,
