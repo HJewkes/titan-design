@@ -36,9 +36,23 @@
  * genuinely poor. It is a spatial-frequency problem, not an amplitude one, so
  * the band between "invisible" and "decorative" may simply not exist here.
  *
- * Kept: grain, rim-light, contact shadow. `ditherTile` is retained pending one
- * re-run — it existed only to stop the FILL banding, so it is probably dead
- * weight now, but "probably" is not a measurement.
+ * ── AND THE DITHER WENT WITH IT (VW-99 run 2) ──────────────────────────────
+ *
+ * `ditherTile` was held back one run on the grounds that "probably dead weight"
+ * is not a measurement. Run 1 could not measure it: with the fill invisible
+ * there was no gradient to band, so the panel returned a guaranteed clean sheet.
+ *
+ * Run 2 settled it by adding a hand-quantised REFERENCE beside the smooth
+ * control — the same tone span drawn as five hard-edged 1-level steps, which is
+ * what the artefact looks like when it happens. The reference banded plainly and
+ * the smooth gradient did not. So the panel can resolve banding; this render
+ * path simply does not produce it. A mitigation for an artefact that does not
+ * occur is cost with no benefit, and it is gone.
+ *
+ * That is a claim about THIS display, which is the one the product ships on and
+ * the reason `paperSheet` is hero-surface-only. A phone is a separate question.
+ *
+ * Kept: grain, rim-light, contact shadow.
  *
  * See coordination/design-explorations/surface-system-north-star.md §4 and
  * coordination/validation-runbooks/VW-99-depth-wall-calibration.md.
@@ -106,37 +120,15 @@ export function grainForTone(baseColor: string): string {
   )
 }
 
-/**
- * A ~0.02α noise tile used purely as ANTI-BANDING dither.
- *
- * Distinct from {@link grainForTone} in intent and strength: grain is a visible
- * matte texture, this is below the threshold of being seen at all. It exists
- * because a low-contrast vertical gradient across a wide plane bands into visible
- * steps on an 8-bit panel, and a whisper of noise breaks the step edges up.
- *
- * Only worth applying where a gradient actually spans real width. On a surface
- * with no gradient there is nothing to band and this is dead weight — which is
- * now the open question for {@link paperSheet} itself, since the gradient this
- * existed to protect (`tonalFill`) is gone. VW-99 panel C4 decides it, on the
- * wall, against a seeded positive control.
- */
-export function ditherTile(): string {
-  return (
-    `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E` +
-    `%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E` +
-    `%3Crect width='140' height='140' filter='url(%23d)' opacity='0.02'/%3E%3C/svg%3E")`
-  )
-}
-
-// `tonalFill` lived here until VW-99 measured it on the wall and found it
-// indiscernible. Deleted rather than left exported-but-unused; the reasoning is
-// in the module header, which is the part worth keeping.
+// `tonalFill` and `ditherTile` both lived here until VW-99 measured them on the
+// wall. Deleted rather than left exported-but-unused; the reasoning is in the
+// module header, which is the part worth keeping.
 
 // ── the materials ───────────────────────────────────────────────────────────
 
 /**
- * A matte PAPER hero sheet: tonal fill + brightness-scaled grain + anti-banding
- * dither + a crisp top rim-light + one soft contact shadow.
+ * A matte PAPER hero sheet: brightness-scaled grain + a crisp top rim-light +
+ * one soft contact shadow.
  *
  * The contact shadow is the ONE place a drop-shadow is still correct on a dark
  * surface: it is large, soft, and describes a sheet lying on a plane rather than
@@ -145,14 +137,27 @@ export function ditherTile(): string {
  * Defaults to `surface-raised` so a same-toned card laid inside reads as one
  * continuous sheet rather than a seam.
  *
+ * THE RIM-LIGHT IS A HAIRLINE. Run 2 of VW-99 called it "weak at distance" on
+ * both the card and the hero sheet, and the reason is visible in the number: it
+ * was `rgba(255,255,255,0.10)`, a 1px white line on a dark plane — physically
+ * the same cue as `hairline-*`, but set BELOW `hairline-default`, which the same
+ * run had just had to raise twice. It is not a subtler species of edge, it was
+ * simply mistuned. Raised to `0.20`, between `hairline-default` and
+ * `hairline-strong`: this edge defines a hero surface, so it earns more than the
+ * default separator, and unlike a separator there is no fallback behind it.
+ *
+ * Deliberately NOT wired to the token, though the values now agree in spirit: a
+ * box-shadow rim and a border hairline are retuned by different evidence, and
+ * coupling them means a hairline run silently restyles every hero sheet.
+ *
  * HERO SURFACES ONLY, MUTED TONES ONLY — see the module header.
  */
 export function paperSheet(tone: string = c['surface-raised']): ViewStyle {
   return {
     backgroundColor: tone,
-    // Layered front-to-back: dither over grain. No tonal fill — see VW-99 below.
-    backgroundImage: `${ditherTile()}, ${grainForTone(tone)}`,
-    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10), 0 8px 22px rgba(0,0,0,0.50)',
+    // Grain alone. The dither went with the gradient it protected — see header.
+    backgroundImage: grainForTone(tone),
+    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.20), 0 8px 22px rgba(0,0,0,0.50)',
   } as unknown as ViewStyle
 }
 
@@ -165,6 +170,12 @@ export function paperSheet(tone: string = c['surface-raised']): ViewStyle {
  * the surface" — which is why the treatment survives at 16px where a full paper
  * treatment does not.
  *
+ * The floor light was `0.04` and is now `0.12`, chosen on the wall in VW-99 run
+ * 2 against a `.04`-vs-`.12`-vs-none forced choice. Worth recording that `.04`
+ * was NOT invisible — the no-line decoy was correctly rejected and both real
+ * values were seen, so this is a preference between two working values, not a
+ * rescue. The rim-light next door was a genuine miss; this one was only thin.
+ *
  * Note this is a MATERIAL, and independent of the surface LEVEL named `inset`
  * that was retired in TD-07.14. A well is something you apply; a level is
  * somewhere you sit.
@@ -172,7 +183,7 @@ export function paperSheet(tone: string = c['surface-raised']): ViewStyle {
 export function insetWell(tone: string = c['surface-input']): ViewStyle {
   return {
     backgroundColor: tone,
-    boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.04)',
+    boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12)',
   } as unknown as ViewStyle
 }
 

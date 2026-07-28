@@ -38,11 +38,11 @@ const HTML_CSS = `
     --text-secondary: #A29F9D;
     --text-tertiary: #888684;
     /* Mirrors hairline-default / hairline-strong in tokens/semantic.ts. Retuned
-       on the wall in VW-99 (.09/.14 -> .14/.21). This copy is hand-maintained,
-       so it drifts silently unless the parity layer catches it — which is
-       exactly what happened here. */
-    --border-default: rgba(255, 255, 255, 0.14);
-    --border-strong: rgba(255, 255, 255, 0.21);
+       on the wall in VW-99 across two runs (.09/.14 -> .14/.21 -> .15/.22).
+       This copy is hand-maintained, so it drifts silently unless the parity
+       layer catches it — which is exactly what happened the first time. */
+    --border-default: rgba(255, 255, 255, 0.15);
+    --border-strong: rgba(255, 255, 255, 0.22);
     /* A dim FILL for 'no data' dots. Used to borrow --border-strong; borders are
        alpha now, so a fill needs its own solid ramp step. */
     --dot-inactive: #2C2A28;
