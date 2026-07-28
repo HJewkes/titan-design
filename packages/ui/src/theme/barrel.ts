@@ -9,7 +9,7 @@
 export * from './tokens'
 export * from './config'
 export * from './materials'
-export * from './shadows'
+export * from './color-utils'
 export * from './elevation'
 export * from './manifest'
 export { resolveColor } from './resolve-color'
@@ -23,24 +23,16 @@ export type { ThemeProviderProps, ThemeProviderMode } from './ThemeProvider'
 export { getSemanticColors, type ThemeMode } from './tokens/semantic'
 export { getThemeCSSVars, gluestackConfig } from './config'
 export {
-  neumorphicShadows,
-  // Color math utilities (HSV-based)
+  hexToRgb,
+  rgbToHsv,
+  hsvToRgb,
+  rgbToHex,
   lighten,
   darken,
   getHoverColors,
   isDark,
-  hexToRgb,
-  rgbToHsv,
-  // Shadow creation functions
-  createRaisedShadow,
-  createRaisedHoverShadow,
-  createPressedShadow,
-  createPressedHoverShadow,
-  createFlatShadow,
-  shadowColors,
   type ShadowIntensity,
-  type ShadowSurface,
-} from './shadows'
+} from './color-utils'
 export {
   getElevationConfig,
   getElevationSurface,

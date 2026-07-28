@@ -22,7 +22,7 @@
  */
 
 import { Platform, type ViewStyle } from 'react-native'
-import { lighten, darken, hexToRgb, rgbToHsv, hsvToRgb, rgbToHex } from './shadows'
+import { lighten, darken, hexToRgb, rgbToHsv, hsvToRgb, rgbToHex } from './color-utils'
 import { semanticColorsLight, semanticColorsDark } from './tokens/semantic'
 
 export type ElevationLevel = -2 | -1 | 0 | 1 | 2 | 3 | 4 | 5
@@ -71,7 +71,13 @@ export const elevationSystem: Record<ElevationLevel, ElevationConfig> = {
   // Level 1: Subtle elevation (outline cards, subtle containers)
   [1]: {
     name: 'subtle',
-    colorAdjustment: 0.01,
+    // The whole ladder was re-spaced in TD-07.16. It used to run
+    // 0.01/0.02/0.04/0.06/0.08, where the first step was ~2 RGB values — under
+    // the perceptual floor, so level 1 existed in the type system and nowhere on
+    // screen. With drop-shadow now gated off below FLOATING_ELEVATION_MIN, TONE
+    // is the only thing separating 0-3, so every step has to actually land.
+    // Even 0.025 spacing, verified in elevation.test.ts as ΔL* > 1 per step.
+    colorAdjustment: 0.025,
     shadowIntensity: 'subtle',
     shadowStyle: 'raised',
     description: 'Subtle elevation (outline cards, subtle containers)',
@@ -80,7 +86,7 @@ export const elevationSystem: Record<ElevationLevel, ElevationConfig> = {
   // Level 2: Standard elevation (default cards, buttons)
   [2]: {
     name: 'standard',
-    colorAdjustment: 0.02,
+    colorAdjustment: 0.05,
     shadowIntensity: 'medium',
     shadowStyle: 'raised',
     description: 'Standard elevation (default cards, raised buttons)',
@@ -89,7 +95,7 @@ export const elevationSystem: Record<ElevationLevel, ElevationConfig> = {
   // Level 3: Prominent elevation (important cards, modals)
   [3]: {
     name: 'prominent',
-    colorAdjustment: 0.04,
+    colorAdjustment: 0.075,
     shadowIntensity: 'strong',
     shadowStyle: 'raised',
     description: 'Prominent elevation (important cards, modals, dropdowns)',
@@ -98,7 +104,7 @@ export const elevationSystem: Record<ElevationLevel, ElevationConfig> = {
   // Level 4: High elevation (overlays, popovers)
   [4]: {
     name: 'high',
-    colorAdjustment: 0.06,
+    colorAdjustment: 0.10,
     shadowIntensity: 'strong',
     shadowStyle: 'raised',
     description: 'High elevation (overlays, popovers, tooltips)',
@@ -107,7 +113,7 @@ export const elevationSystem: Record<ElevationLevel, ElevationConfig> = {
   // Level 5: Floating (toasts, floating action buttons)
   [5]: {
     name: 'floating',
-    colorAdjustment: 0.08,
+    colorAdjustment: 0.13,
     shadowIntensity: 'strong',
     shadowStyle: 'raised',
     description: 'Floating elevation (toasts, floating action buttons, highest z-index)',
@@ -425,6 +431,21 @@ function calculateElevationShadow(
  * @param isHovered - Whether element is hovered
  * @returns ViewStyle with shadow properties
  */
+/**
+ * The lowest elevation that still casts an outward shadow.
+ *
+ * On a near-black surface a drop-shadow is inert: at levels 1-3 the shadow is
+ * dark-on-dark and contributes nothing a viewer can see, while still costing a
+ * composite layer. Material dropped shadow-as-hierarchy for the same reason.
+ * Inline hierarchy is the hairline's job (`hairline-*`), which composites by a
+ * constant amount over any plane.
+ *
+ * At 4+ the element is genuinely FLOATING over a backdrop — menu, popover,
+ * toast — where a large soft shadow describes separation from the page rather
+ * than a rank in a stack. Those should also carry a hairline ring.
+ */
+export const FLOATING_ELEVATION_MIN: ElevationLevel = 4
+
 export function getElevationShadow(
   baseColor: string,
   level: ElevationLevel,
@@ -438,8 +459,13 @@ export function getElevationShadow(
     return elevationShadowCache.get(cacheKey)!
   }
 
-  // Calculate shadow
-  const result = calculateElevationShadow(baseColor, level, theme, isHovered)
+  // Calculate shadow. Outward drop-shadow is gated to FLOATING levels only —
+  // see FLOATING_ELEVATION_MIN. Inset levels keep theirs; a recess reads from
+  // the inner shadow, which is a different mechanism from a cast shadow.
+  const result =
+    level > 0 && level < FLOATING_ELEVATION_MIN
+      ? {}
+      : calculateElevationShadow(baseColor, level, theme, isHovered)
 
   // Cache result
   if (elevationShadowCache.size >= MAX_SHADOW_CACHE_SIZE) {

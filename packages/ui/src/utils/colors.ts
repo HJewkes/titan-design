@@ -5,7 +5,7 @@
  * color math for more perceptually consistent results across hues.
  */
 
-export { lighten, darken } from '../theme/shadows'
+export { lighten, darken } from '../theme/color-utils'
 
 export type StatusType = 'success' | 'error' | 'warning' | 'info'
 export type ResultType = 'improve' | 'degrade' | 'inconclusive' | 'neutral'

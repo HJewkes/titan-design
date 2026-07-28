@@ -14,13 +14,17 @@ import {
 import { Tooltip } from '../../components/ui/tooltip/Tooltip'
 import { getSemanticColors } from '../../theme/tokens/semantic'
 import { alpha } from '../../utils/colors'
-import { neumorphicShadows } from '../../theme/shadows'
+import { paperSheet } from '../../theme/materials'
 import { type DashboardModel, verdictFromLoss } from './fixtures'
 
 const t = getSemanticColors('dark')
 
-/** Raised-card elevation shared by the alert + tempo cards. */
-const CARD_SHADOW = neumorphicShadows.grey.raised.medium
+/**
+ * Hero-card material shared by the alert + tempo cards. Paper, not a raised
+ * neumorphic shadow — these are exactly the hero surfaces paper is scoped to,
+ * and the dual-opposing shadow it replaces was the ruled-out pattern.
+ */
+const CARD_SHADOW = paperSheet(t['surface-raised'])
 /** One row height for the tempo + alert cards, so they line up regardless of tempo font size. */
 const CONTROL_HEIGHT = 34
 /** The tempo card ground — mirrors TempoDisplay's own surface-raised so a shorter inner pill reads seamless. */
