@@ -10,7 +10,7 @@
  * lives here, next to the values, and `--check` runs in CI.
  *
  * Derived from the v3 generator in
- * coordination/design-explorations/foundations/warm-grey-ramp/grey-ramp-v3.mjs
+ * sources/design/foundations/warm-grey-ramp/grey-ramp-v3.mjs
  * (the exploration HTML report is dropped; the math is verbatim). The rejected
  * v1 and v2 cuts are preserved there too — check before "improving" this.
  */

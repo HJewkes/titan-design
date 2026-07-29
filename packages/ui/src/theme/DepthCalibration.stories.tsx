@@ -32,7 +32,7 @@ import { grainForTone, paperSheet } from './materials'
  * HOW TO RUN. On the wall panel, at demo brightness, at demo viewing distance
  * (~3 m), with the room lit the way it will be lit. Answer every panel BEFORE
  * touching Reveal. Record on the sheet:
- * `voltras-workspace/coordination/validation-runbooks/VW-99-depth-wall-calibration.md`
+ * `voltras-workspace/sources/runbooks/VW-99-depth-wall-calibration.md`
  */
 const meta: Meta = {
   title: 'Foundations/Depth Calibration',

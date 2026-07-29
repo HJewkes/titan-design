@@ -131,7 +131,7 @@ export const Ramps: StoryObj = {
         the warm ramp below — they were cold (neutral ran R−B down to −26) while the surfaces had
         been warm since v0.10.0, and nothing ever reconciled the two. The chromatics moved to the
         OKLCH ramps above. Spec and generator:
-        coordination/design-explorations/foundations/warm-grey-ramp/.
+        sources/design/foundations/warm-grey-ramp/.
       </Text>
 
       <SectionTitle>Chromatic — OKLCH tonal ramps</SectionTitle>
