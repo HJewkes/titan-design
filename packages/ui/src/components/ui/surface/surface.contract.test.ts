@@ -8,7 +8,7 @@ import { getSemanticColors } from '../../../theme/tokens/semantic'
  * palette locks its eligibility mask with a value-level test.
  *
  * Scope: DARK mode only. The north-star diagnosis
- * (coordination/design-explorations/surface-system-north-star.md) measured and
+ * (sources/design/surface-system-north-star.md) measured and
  * fixed the dark ramp specifically; light mode has its own latent collisions
  * (e.g. `surface-overlay` === `surface-base`, both `#FFFFFF`) that were never
  * part of this investigation — flagged as a follow-up, not silently patched

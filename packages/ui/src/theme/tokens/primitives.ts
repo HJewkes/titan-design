@@ -48,7 +48,7 @@ export const primitiveColors = {
  * (surface − 1) kept collapsing into it. `975` is the floor.
  *
  * Spec, generator and the rejected v1/v2 cuts:
- * coordination/design-explorations/foundations/warm-grey-ramp/
+ * sources/design/foundations/warm-grey-ramp/
  */
 export const greyRamp = {
   50: '#F9F6F3', //  L*97.0  W6
@@ -90,7 +90,7 @@ export const SURFACE_PLANE_STEPS = {
  * hexes. `pin` marks the step each ramp flows through its anchor.
  * This is the single source of truth for chromatic hexes — the categorical palette
  * below references these steps rather than duplicating values.
- * See coordination/design-explorations/foundations.
+ * See sources/design/foundations.
  */
 export const primitiveRamps = {
   red: {

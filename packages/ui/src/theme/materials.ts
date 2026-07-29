@@ -54,8 +54,8 @@
  *
  * Kept: grain, rim-light, contact shadow.
  *
- * See coordination/design-explorations/surface-system-north-star.md §4 and
- * coordination/validation-runbooks/VW-99-depth-wall-calibration.md.
+ * See sources/design/surface-system-north-star.md §4 and
+ * sources/runbooks/VW-99-depth-wall-calibration.md.
  */
 import type { ViewStyle } from 'react-native'
 import { getSemanticColors } from './tokens/semantic'

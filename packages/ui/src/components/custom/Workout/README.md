@@ -105,7 +105,7 @@ type props without pulling the dependency.
   `SetStrip`/`SetBar` colors are the real titan ramp pins (`primitiveRamps` red-600 /
   orange-400 / amber-300 / green-300); the rail surfaces bind to the charcoal ramp +
   a subtle neumorphic inset (`neumorphicShadows.charcoal.pressed.subtle`). The heading
-  design is locked in `coordination/.../S3-sessionrail/DECISIONS-ExerciseRow.md`; the
+  design is locked in `sources/design/shell/S3-sessionrail/DECISIONS-ExerciseRow.md`; the
   exploration specimens live under `Custom/Workout/Explorations/*` (do not repoint yet).
   In Storybook the family nests by composition under **`Shell/SessionRail/…`**
   (organism → `ExerciseCardHeading` → `ExerciseHeading` → its atoms/molecules →
