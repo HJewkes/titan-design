@@ -96,6 +96,23 @@ module.exports = tseslint.config(
     },
   },
 
+  // src/lab/** is exempt from no-device-internals. Lab holds specimen fixtures
+  // mined from real session transcripts, whose session UUIDs the rule reads as
+  // transport identifiers — a false positive: they are inert data in a scratch
+  // surface, never rendered as device internals. Lab is already excluded from
+  // what ships (package.json `files` carries `!src/lab`), so this doesn't weaken
+  // the guarantee for anything a consumer receives.
+  //
+  // Scoped as its own block rather than an `ignores` on the block above: that
+  // block is where the `titan` plugin is declared, and narrowing it would leave
+  // the plugin undefined for lab files, breaking the no-raw-color block below.
+  {
+    files: ['src/lab/**/*.{ts,tsx}'],
+    rules: {
+      'titan/no-device-internals': 'off',
+    },
+  },
+
   // Colour has one source of truth: the ramps, and the semantic tokens that
   // reference them. A raw colour in a component can't theme, can't be audited
   // for contrast/CVD, and won't move when the ramps are re-spaced — the v0.10.0
@@ -118,6 +135,10 @@ module.exports = tseslint.config(
       // a token reference resolves to `var(...)`, which breaks toHaveStyle. A
       // literal is the correct assertion, not debt.
       'src/**/*.test.{ts,tsx}',
+      // Lab specimen fixtures are mined from session transcripts: the hex that
+      // trips this rule sits inside prose `notes` strings, not styling. Same
+      // false positive as no-device-internals above, and lab never ships.
+      'src/lab/**',
     ],
     rules: {
       'titan/no-raw-color': 'error',
