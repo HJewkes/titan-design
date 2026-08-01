@@ -43,6 +43,12 @@
       "import": "./dist/theme/index.mjs",
       "require": "./dist/theme/index.js"
     },
+    "./theme/tokens": {
+      "react-native": "./src/theme/tokens/index.ts",
+      "types": "./dist/theme/tokens.d.ts",
+      "import": "./dist/theme/tokens.mjs",
+      "require": "./dist/theme/tokens.js"
+    },
     "./theme/global.css": "./src/theme/global.css",
     "./tailwind.config.js": "./tailwind.config.js"
   },
