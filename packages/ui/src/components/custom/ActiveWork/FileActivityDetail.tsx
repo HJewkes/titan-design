@@ -8,9 +8,24 @@ import { SparkBars } from '../charts'
 import { DateTime } from '../DateTime'
 import { Typography } from '../Typography'
 import { formatCompact, formatSignedCompact } from '../../../utils/number-format'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { Eyebrow } from './Eyebrow'
 import { FilePathLabel, splitPath } from './FilePathLabel'
 import { FILE_EVENT_COLOR, type FileActivity } from './FileActivityRow'
+
+const t = getSemanticColors('dark')
+
+/**
+ * Growth stats are *char deltas*, not read/write/edit events, so they take a
+ * grew/shrank vocabulary of their own rather than borrowing
+ * {@link FILE_EVENT_COLOR} — reusing the event palette here would read as a
+ * category it isn't.
+ */
+const GROWTH_COLOR = {
+  added: t['brand-primary'],
+  removed: t['status-error'],
+  neutral: t['text-primary'],
+} as const
 
 /** Another file that tends to change in the same session as this one. */
 export interface FileCoChange {
@@ -121,18 +136,14 @@ export function FileActivityDetail({ file, className }: FileActivityDetailProps)
           <GrowthStat
             label="Added"
             value={`+${formatCompact(file.charsAdded)}`}
-            color={FILE_EVENT_COLOR.writes}
+            color={GROWTH_COLOR.added}
           />
           <GrowthStat
             label="Removed"
             value={`-${formatCompact(file.charsRemoved)}`}
-            color={FILE_EVENT_COLOR.reads}
+            color={GROWTH_COLOR.removed}
           />
-          <GrowthStat
-            label="Sessions"
-            value={String(file.sessions)}
-            color={FILE_EVENT_COLOR.edits}
-          />
+          <GrowthStat label="Sessions" value={String(file.sessions)} color={GROWTH_COLOR.neutral} />
         </View>
       </View>
 

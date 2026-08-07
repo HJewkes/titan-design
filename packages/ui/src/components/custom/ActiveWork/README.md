@@ -37,16 +37,16 @@ FileHistoryExplorer .............. organism
 
 ## Dependency map
 
-| Component             | Tier     | Composes ↓                                                     | Used-by ↑                                                       |
-| --------------------- | -------- | -------------------------------------------------------------- | --------------------------------------------------------------- |
-| `PortfolioOverview`   | organism | Card, Metric, Eyebrow, InitiativeCard                          | app root (`Lab/ActiveWork/Portfolio Overview` specimen)         |
-| `InitiativeCard`      | card     | Card, Pill, StatusDot, SegmentedBar, Typography                | PortfolioOverview                                               |
-| `FileHistoryExplorer` | organism | Card, Tile, Divider, Eyebrow, FileActivityRow/Detail, CoChangeChip | app root (`Lab/ActiveWork/File History Explorer` specimen)  |
-| `FileActivityDetail`  | card     | Card, Tile, Pill, DataRow, DateTime, SparkBars, FilePathLabel, Eyebrow | FileHistoryExplorer                                     |
-| `FileActivityRow`     | row      | FilePathLabel, SparkBars, Typography                           | FileHistoryExplorer                                             |
-| `CoChangeChip`        | molecule | Card, Pill, FilePathLabel, Typography                          | FileHistoryExplorer                                             |
-| `FilePathLabel`       | molecule | Typography (`mono`)                                            | FileActivityRow, FileActivityDetail, CoChangeChip               |
-| `Eyebrow`             | molecule | Typography (`overline`)                                        | PortfolioOverview, FileHistoryExplorer, FileActivityDetail      |
+| Component             | Tier     | Composes ↓                                                             | Used-by ↑                                                  |
+| --------------------- | -------- | ---------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `PortfolioOverview`   | organism | Card, Metric, Eyebrow, InitiativeCard                                  | app root (`Lab/ActiveWork/Portfolio Overview` specimen)    |
+| `InitiativeCard`      | card     | Card, Pill, StatusDot, SegmentedBar, Typography                        | PortfolioOverview                                          |
+| `FileHistoryExplorer` | organism | Card, Tile, Divider, Eyebrow, FileActivityRow/Detail, CoChangeChip     | app root (`Lab/ActiveWork/File History Explorer` specimen) |
+| `FileActivityDetail`  | card     | Card, Tile, Pill, DataRow, DateTime, SparkBars, FilePathLabel, Eyebrow | FileHistoryExplorer                                        |
+| `FileActivityRow`     | row      | FilePathLabel, SparkBars, Typography                                   | FileHistoryExplorer                                        |
+| `CoChangeChip`        | molecule | Card, Pill, FilePathLabel, Typography                                  | FileHistoryExplorer                                        |
+| `FilePathLabel`       | molecule | Typography (`mono`)                                                    | FileActivityRow, FileActivityDetail, CoChangeChip          |
+| `Eyebrow`             | molecule | Typography (`overline`)                                                | PortfolioOverview, FileHistoryExplorer, FileActivityDetail |
 
 ## Shared substrates introduced here (reusable beyond this family)
 
@@ -69,18 +69,22 @@ FileHistoryExplorer .............. organism
 
 ## Reuse audit
 
-| Concern              | Uses                                              | Not                                                                     |
-| -------------------- | ------------------------------------------------- | ------------------------------------------------------------------------ |
-| status dot + label   | `StatusDot` (Workout family)                      | the original Lab specimen's hand-rolled `DotLabel` (deleted)            |
-| severity mix bar     | `SegmentedBar` (Workout family)                   | the original Lab specimen's hand-rolled `SeverityBar` (deleted)         |
-| bar sparkline        | `SparkBars` (new, `Components/Charts`)            | the specimen's hand-rolled `MiniBars` (deleted); `Sparkline` is a *line* mark, `SetBar`/`SetStrip` are workout-domain |
-| KPI stat boxes       | `Tile` (bare — it already carries `surface-raised`) | the specimen's redundant `Card variant="filled"` wrapper around `Tile` |
-| label ↔ value rows   | `DataRow` (label widened to `ReactNode`)          | a hand-rolled `flex-row justify-between`                                |
-| short dates          | `DateTime` `format="short"` + `fallback`          | the specimen's hand-rolled `shortDate` (deleted)                        |
-| compact numbers      | `formatCompact` / `formatSignedCompact` (new util) | the specimen's inline `compact` / `signedCompact` (deleted)             |
-| count badges         | `Pill` `variant="subtle"`                         | ad-hoc bordered `View`                                                  |
-| card chrome          | `Card` (`accent` / `outline` / `filled`)          | ad-hoc bordered `View`                                                  |
-| colors               | `getSemanticColors` / `greyRamp` tokens           | magic hex                                                               |
+| Concern            | Uses                                                | Not                                                                                                                   |
+| ------------------ | --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| status dot + label | `StatusDot` (Workout family)                        | the original Lab specimen's hand-rolled `DotLabel` (deleted)                                                          |
+| severity mix bar   | `SegmentedBar` (Workout family)                     | the original Lab specimen's hand-rolled `SeverityBar` (deleted)                                                       |
+| bar sparkline      | `SparkBars` (new, `Components/Charts`)              | the specimen's hand-rolled `MiniBars` (deleted); `Sparkline` is a _line_ mark, `SetBar`/`SetStrip` are workout-domain |
+| KPI stat boxes     | `Tile` (bare — it already carries `surface-raised`) | the specimen's redundant `Card variant="filled"` wrapper around `Tile`                                                |
+| label ↔ value rows | `DataRow` (label widened to `ReactNode`)            | a hand-rolled `flex-row justify-between`                                                                              |
+| short dates        | `DateTime` `format="short"` + `fallback`            | the specimen's hand-rolled `shortDate` (deleted)                                                                      |
+| compact numbers    | `formatCompact` / `formatSignedCompact` (new util)  | the specimen's inline `compact` / `signedCompact` (deleted)                                                           |
+| count badges       | `Pill` `variant="subtle"`                           | ad-hoc bordered `View`                                                                                                |
+| card chrome        | `Card` (`accent` / `outline` / `filled`)            | ad-hoc bordered `View`                                                                                                |
+| colors             | `getSemanticColors` / `greyRamp` tokens             | magic hex                                                                                                             |
+
+Two distinct colour vocabularies live in this family and must not be conflated: `FILE_EVENT_COLOR`
+(read / write / edit — _what kind of event_) and `GROWTH_COLOR` (added / removed / neutral — _char deltas_).
+Both are token-sourced. Reusing the event palette for growth stats reads as a category the numbers aren't.
 
 **Watch-list (known gaps):**
 
@@ -113,5 +117,6 @@ FileHistoryExplorer .............. organism
 - Fixtures: `file-history-fixture.ts` — a small hand-trimmed slice of a real mine with fixed values (no
   `Date.now()`, no randomness) so visual baselines stay deterministic.
 - Visual: not yet added to `tests/visual/stories.spec.ts` — see follow-up in the PR description.
-- Lint guardrails: no inline hex outside the token-sourced `SEVERITY_COLOR` / `FILE_EVENT_COLOR` maps; no
+- Lint guardrails: no inline hex outside the token-sourced `SEVERITY_COLOR` / `FILE_EVENT_COLOR` /
+  `GROWTH_COLOR` maps; no
   re-implemented status dot, segmented bar, or sparkline.
