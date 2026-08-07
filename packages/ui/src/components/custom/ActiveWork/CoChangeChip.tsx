@@ -26,17 +26,17 @@ export function CoChangeChip({ a, b, count, className }: CoChangeChipProps) {
   return (
     <Card
       variant="filled"
-      className={`gap-[4px] p-[10px] ${className ?? ''}`}
+      className={`gap-1 p-2.5 ${className ?? ''}`}
       accessibilityRole="text"
       accessibilityLabel={`${a} and ${b} changed together ${count} times`}
       testID="co-change-chip"
     >
-      <View className="flex-row items-center gap-[7px]">
-        <FilePathLabel path={a} size={11} baseOnly />
+      <View className="flex-row items-center gap-2">
+        <FilePathLabel path={a} size="sm" baseOnly />
         <Typography variant="caption" className="text-text-tertiary">
           ↔
         </Typography>
-        <FilePathLabel path={b} size={11} baseOnly />
+        <FilePathLabel path={b} size="sm" baseOnly />
         <Pill variant="subtle" color="primary" size="xs">
           {`${count}×`}
         </Pill>

@@ -1,9 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
-
-const t = getSemanticColors('dark')
+import { resolveColor } from '../../../theme/resolve-color'
 
 /** Shortest bar drawn, so an all-but-empty series still reads as a series. */
 const MIN_BAR_HEIGHT = 2
@@ -19,9 +17,9 @@ export interface SparkBarsProps extends Omit<ViewProps, 'accessibilityLabel'> {
   gap?: number
   /** Keep only the last N values — a sparkline is a recent-history glance, not an archive. */
   maxBars?: number
-  /** Fill for non-negative bars. Defaults to the brand primary. */
+  /** Fill for non-negative bars. Defaults to `result-improve`. */
   color?: string
-  /** Fill for negative bars. Defaults to the error token. */
+  /** Fill for negative bars. Defaults to `result-degrade`. */
   negativeColor?: string
   /** Screen-reader description. Defaults to a bar count. */
   label?: string
@@ -53,8 +51,10 @@ export function SparkBars({
   ...props
 }: SparkBarsProps) {
   const shown = values.slice(-maxBars)
-  const positiveFill = color ?? t['brand-primary']
-  const negativeFill = negativeColor ?? t['status-error']
+  // A per-period delta going up or down is `result-*` (a change in a measurement),
+  // not `status-*` (a thing being broken). See TOKENS.md §1.
+  const positiveFill = color ?? resolveColor('result-improve')
+  const negativeFill = negativeColor ?? resolveColor('result-degrade')
   // Scaling on magnitude keeps a -100 as tall as a +100; sign is carried by fill.
   const peak = Math.max(1, ...shown.map((v) => Math.abs(v)))
 

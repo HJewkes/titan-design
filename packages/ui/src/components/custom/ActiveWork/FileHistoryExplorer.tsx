@@ -88,27 +88,27 @@ export function FileHistoryExplorer({
   }
 
   return (
-    <View className={`gap-[14px] ${className ?? ''}`} testID="file-history-explorer" {...props}>
-      <View className="gap-[6px]">
-        <View className="flex-row flex-wrap gap-[10px]">
+    <View className={`gap-3.5 ${className ?? ''}`} testID="file-history-explorer" {...props}>
+      <View className="gap-1.5">
+        <View className="flex-row flex-wrap gap-2.5">
           {stats.map((s) => (
             <Tile key={s.label} label={s.label} value={s.value} className="min-w-[130px]" />
           ))}
         </View>
         {provenance ? (
-          <Typography variant="caption" className="text-[10.5px] text-text-tertiary">
+          <Typography variant="caption" className="text-xs text-text-tertiary">
             {provenance}
           </Typography>
         ) : null}
       </View>
 
-      <View className="flex-row gap-[14px]">
-        <Card variant="outline" className="w-[420px] p-[8px]">
-          <View className="px-[10px] pb-[6px] pt-[4px]">
+      <View className="flex-row gap-3.5">
+        <Card variant="outline" className="w-[420px] p-2">
+          <View className="px-2.5 pb-1.5 pt-1">
             <Eyebrow>Hottest files</Eyebrow>
           </View>
           <Divider />
-          <View className="pt-[4px]" role={LISTBOX_ROLE} aria-label="Hottest files">
+          <View className="pt-1" role={LISTBOX_ROLE} aria-label="Hottest files">
             {files.slice(0, maxRows).map((f) => (
               <FileActivityRow
                 key={f.path}
@@ -124,9 +124,9 @@ export function FileHistoryExplorer({
       </View>
 
       {coEdges.length ? (
-        <View className="gap-[8px]">
+        <View className="gap-2">
           <Eyebrow>Strongest co-changes across the repo</Eyebrow>
-          <View className="flex-row flex-wrap gap-[8px]">
+          <View className="flex-row flex-wrap gap-2">
             {coEdges.slice(0, maxCoEdges).map((e) => (
               <CoChangeChip key={`${e.a}|${e.b}`} a={e.a} b={e.b} count={e.count} />
             ))}

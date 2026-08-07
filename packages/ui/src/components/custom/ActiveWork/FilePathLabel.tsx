@@ -9,11 +9,19 @@ export function splitPath(path: string): { dir: string; base: string } {
   return i === -1 ? { dir: '', base: path } : { dir: path.slice(0, i + 1), base: path.slice(i + 1) }
 }
 
+/** Basename size on the type scale, with the directory one step quieter. */
+export type FilePathLabelSize = 'sm' | 'md'
+
+const SIZE_CLASS: Record<FilePathLabelSize, { base: string; dir: string }> = {
+  sm: { base: 'text-xs', dir: 'text-xs' },
+  md: { base: 'text-sm', dir: 'text-xs' },
+}
+
 export interface FilePathLabelProps extends ViewProps {
   /** A repo-relative path, e.g. `src/commands/open.ts`. */
   path: string
-  /** Font size of the basename in px; the directory renders 1.5px smaller. */
-  size?: number
+  /** `md` for standalone rows, `sm` for dense contexts like chips. */
+  size?: FilePathLabelSize
   /** Render only the basename, dropping the directory prefix. */
   baseOnly?: boolean
   className?: string
@@ -28,12 +36,13 @@ export interface FilePathLabelProps extends ViewProps {
  */
 export function FilePathLabel({
   path,
-  size = 12,
+  size = 'md',
   baseOnly = false,
   className,
   ...props
 }: FilePathLabelProps) {
   const { dir, base } = splitPath(path)
+  const cls = SIZE_CLASS[size]
 
   return (
     <View className={cn('flex-row items-center', className)} {...props}>
@@ -41,13 +50,12 @@ export function FilePathLabel({
         <Typography
           variant="mono"
           numberOfLines={1}
-          style={{ fontSize: size - 1.5 }}
-          className="shrink text-text-tertiary"
+          className={cn('shrink text-text-tertiary', cls.dir)}
         >
           {dir}
         </Typography>
       ) : null}
-      <Typography variant="mono" style={{ fontSize: size }} className="text-text-primary">
+      <Typography variant="mono" className={cn('text-text-primary', cls.base)}>
         {base}
       </Typography>
     </View>

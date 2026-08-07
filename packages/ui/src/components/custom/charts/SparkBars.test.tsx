@@ -2,15 +2,6 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { SparkBars } from './SparkBars'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
-
-const t = getSemanticColors('dark')
-
-/** rgb() is what jsdom reports back for a hex backgroundColor. */
-function hexToRgb(hex: string): string {
-  const n = parseInt(hex.replace('#', ''), 16)
-  return `rgb(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255})`
-}
 
 describe('SparkBars', () => {
   it('renders one bar per value', () => {
@@ -29,13 +20,15 @@ describe('SparkBars', () => {
     expect(screen.getByTestId('spark-bars')).toBeInTheDocument()
   })
 
-  it('tints negative bars with the error token and positive with brand', () => {
+  it('tints bars by sign with the result-* tokens', () => {
+    // Asserts the token, not its current value: resolveColor emits the CSS var on
+    // web, which is what keeps the chart theme-correct.
     render(<SparkBars values={[10, -10]} />)
     expect(screen.getByTestId('spark-bars-bar-0')).toHaveStyle({
-      backgroundColor: hexToRgb(t['brand-primary']),
+      backgroundColor: 'var(--color-result-improve)',
     })
     expect(screen.getByTestId('spark-bars-bar-1')).toHaveStyle({
-      backgroundColor: hexToRgb(t['status-error']),
+      backgroundColor: 'var(--color-result-degrade)',
     })
   })
 

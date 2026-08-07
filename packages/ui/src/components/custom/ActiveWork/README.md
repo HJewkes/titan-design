@@ -82,9 +82,26 @@ FileHistoryExplorer .............. organism
 | card chrome        | `Card` (`accent` / `outline` / `filled`)            | ad-hoc bordered `View`                                                                                                |
 | colors             | `getSemanticColors` / `greyRamp` tokens             | magic hex                                                                                                             |
 
-Two distinct colour vocabularies live in this family and must not be conflated: `FILE_EVENT_COLOR`
-(read / write / edit — _what kind of event_) and `GROWTH_COLOR` (added / removed / neutral — _char deltas_).
-Both are token-sourced. Reusing the event palette for growth stats reads as a category the numbers aren't.
+### Colour vocabularies
+
+Two live here and must not be conflated:
+
+- **`FILE_EVENT_COLOR`** — read / write / edit, i.e. _what kind of event_. Two variants ship:
+  `FILE_EVENT_COLOR_SEMANTIC` (default — colours by importance) and `FILE_EVENT_COLOR_CATEGORICAL`
+  (the canonical CVD-safe palette, taken in order). Overridable per component via `eventColors`.
+- **`GROWTH_COLOR`** — added / removed / neutral, i.e. _char deltas_. Uses `result-*`, because a file that
+  net-shrank was refactored, not broken. `status-error` would say something is wrong. See TOKENS.md §1.
+
+All colours resolve through `resolveColor(token)`, never `getSemanticColors('dark')` — the latter freezes
+to the dark hex and silently breaks light theme.
+
+### Token discipline
+
+This family is on the **token-pure** eslint list (`eslint.config.js`, error-level): no raw hex, no
+arbitrary spacing/radius/type values, no hardcoded inline `fontSize`, no `getSemanticColors` in a
+component. It was brought to zero violations when F1 was hardened — including retrofitting T1, which had
+carried 19 arbitrary values in from its specimen. Adding a family to that list is the last step of
+hardening it; see TOKENS.md §6.
 
 **Watch-list (known gaps):**
 
@@ -117,6 +134,5 @@ Both are token-sourced. Reusing the event palette for growth stats reads as a ca
 - Fixtures: `file-history-fixture.ts` — a small hand-trimmed slice of a real mine with fixed values (no
   `Date.now()`, no randomness) so visual baselines stay deterministic.
 - Visual: not yet added to `tests/visual/stories.spec.ts` — see follow-up in the PR description.
-- Lint guardrails: no inline hex outside the token-sourced `SEVERITY_COLOR` / `FILE_EVENT_COLOR` /
-  `GROWTH_COLOR` maps; no
+- Lint guardrails: the token-pure rule set above; no
   re-implemented status dot, segmented bar, or sparkline.

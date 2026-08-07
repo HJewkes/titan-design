@@ -8,23 +8,20 @@ import { SparkBars } from '../charts'
 import { DateTime } from '../DateTime'
 import { Typography } from '../Typography'
 import { formatCompact, formatSignedCompact } from '../../../utils/number-format'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { resolveColor } from '../../../theme/resolve-color'
 import { Eyebrow } from './Eyebrow'
 import { FilePathLabel, splitPath } from './FilePathLabel'
-import { FILE_EVENT_COLOR, type FileActivity } from './FileActivityRow'
-
-const t = getSemanticColors('dark')
+import { FILE_EVENT_COLOR, type FileEventColors, type FileActivity } from './FileActivityRow'
 
 /**
- * Growth stats are *char deltas*, not read/write/edit events, so they take a
- * grew/shrank vocabulary of their own rather than borrowing
- * {@link FILE_EVENT_COLOR} — reusing the event palette here would read as a
- * category it isn't.
+ * Growth stats are *char deltas* — a measurement moving up or down — so they take
+ * the `result-*` family, not `status-*` and not {@link FILE_EVENT_COLOR}. A file
+ * that net-shrank was refactored, not broken. See TOKENS.md §1.
  */
 const GROWTH_COLOR = {
-  added: t['brand-primary'],
-  removed: t['status-error'],
-  neutral: t['text-primary'],
+  added: resolveColor('result-improve'),
+  removed: resolveColor('result-degrade'),
+  neutral: resolveColor('result-neutral'),
 } as const
 
 /** Another file that tends to change in the same session as this one. */
@@ -48,14 +45,16 @@ export interface FileActivityDetailData extends FileActivity {
 
 export interface FileActivityDetailProps {
   file: FileActivityDetailData
+  /** Override the read/write/edit fills. Defaults to {@link FILE_EVENT_COLOR}. */
+  eventColors?: FileEventColors
   className?: string
 }
 
 function GrowthStat({ label, value, color }: { label: string; value: string; color: string }) {
   return (
-    <View className="flex-1 gap-[2px]">
+    <View className="flex-1 gap-0.5">
       <Eyebrow>{label}</Eyebrow>
-      <Typography variant="mono" style={{ fontSize: 18, color }} className="font-bold">
+      <Typography variant="mono" className="text-lg font-bold" style={{ color }}>
         {value}
       </Typography>
     </View>
@@ -71,58 +70,63 @@ function GrowthStat({ label, value, color }: { label: string; value: string; col
  * Composes Card / Tile / Pill / DataRow / DateTime plus {@link SparkBars},
  * {@link FilePathLabel} and {@link Eyebrow}.
  */
-export function FileActivityDetail({ file, className }: FileActivityDetailProps) {
+export function FileActivityDetail({
+  file,
+  eventColors = FILE_EVENT_COLOR,
+  className,
+}: FileActivityDetailProps) {
   const { dir, base } = splitPath(file.path)
   const grew = file.netGrowth >= 0
 
   return (
     <Card
       variant="outline"
-      className={`flex-1 gap-[16px] p-[18px] ${className ?? ''}`}
+      className={`flex-1 gap-4 p-4 ${className ?? ''}`}
       testID="file-activity-detail"
     >
-      <View className="gap-[3px]">
-        <Typography variant="mono" className="text-[11px] text-text-tertiary">
+      <View className="gap-1">
+        <Typography variant="mono" className="text-xs text-text-tertiary">
           {dir || './'}
         </Typography>
-        <Typography variant="mono" className="text-[16px] font-bold text-text-primary">
+        <Typography variant="mono" className="text-base font-bold text-text-primary">
           {base}
         </Typography>
-        <View className="flex-row items-center gap-[4px]">
-          <Typography variant="caption" className="text-[11px] text-text-tertiary">
+        <View className="flex-row items-center gap-1">
+          <Typography variant="caption" className="text-xs text-text-tertiary">
             {`${file.sessions} sessions · last touched `}
           </Typography>
           <DateTime
             value={file.lastTouched}
             format="short"
             fallback="—"
-            className="text-[11px] text-text-tertiary"
+            className="text-xs text-text-tertiary"
           />
-          <Typography variant="caption" className="text-[11px] text-text-tertiary">
+          <Typography variant="caption" className="text-xs text-text-tertiary">
             {' · first '}
           </Typography>
           <DateTime
             value={file.firstTouched}
             format="short"
             fallback="—"
-            className="text-[11px] text-text-tertiary"
+            className="text-xs text-text-tertiary"
           />
         </View>
       </View>
 
-      <View className="flex-row gap-[8px]">
-        <Tile label="Reads" value={String(file.reads)} valueColor={FILE_EVENT_COLOR.reads} />
-        <Tile label="Writes" value={String(file.writes)} valueColor={FILE_EVENT_COLOR.writes} />
-        <Tile label="Edits" value={String(file.edits)} valueColor={FILE_EVENT_COLOR.edits} />
+      <View className="flex-row gap-2">
+        <Tile label="Reads" value={String(file.reads)} valueColor={eventColors.reads} />
+        <Tile label="Writes" value={String(file.writes)} valueColor={eventColors.writes} />
+        <Tile label="Edits" value={String(file.edits)} valueColor={eventColors.edits} />
         <Tile label="Touches" value={String(file.touches)} />
       </View>
 
-      <View className="gap-[8px] rounded-[10px] border border-border-subtle p-[12px]">
+      <Card variant="outline" className="gap-2 rounded-lg p-3">
         <View className="flex-row items-center justify-between">
           <Eyebrow>Net change over sessions</Eyebrow>
           <Typography
             variant="mono"
-            className={`text-[13px] font-bold ${grew ? 'text-brand-primary' : 'text-status-error'}`}
+            className="text-sm font-bold"
+            style={{ color: grew ? GROWTH_COLOR.added : GROWTH_COLOR.removed }}
           >
             {`${formatSignedCompact(file.netGrowth)} ch`}
           </Typography>
@@ -132,7 +136,7 @@ export function FileActivityDetail({ file, className }: FileActivityDetailProps)
           height={34}
           label={`Per-session net char change for ${file.path}`}
         />
-        <View className="flex-row gap-[16px]">
+        <View className="flex-row gap-4">
           <GrowthStat
             label="Added"
             value={`+${formatCompact(file.charsAdded)}`}
@@ -145,17 +149,17 @@ export function FileActivityDetail({ file, className }: FileActivityDetailProps)
           />
           <GrowthStat label="Sessions" value={String(file.sessions)} color={GROWTH_COLOR.neutral} />
         </View>
-      </View>
+      </Card>
 
-      <View className="gap-[2px]">
+      <View className="gap-0.5">
         <Eyebrow>Changes together with</Eyebrow>
         {file.coChange.length ? (
           file.coChange.map((c) => (
             <DataRow
               key={c.path}
-              className="py-[3px]"
+              className="py-1"
               labelClassName="shrink"
-              label={<FilePathLabel path={c.path} size={11.5} />}
+              label={<FilePathLabel path={c.path} size="sm" />}
               value={
                 <Pill variant="subtle" color="primary" size="xs">
                   {`${c.count}×`}
@@ -164,7 +168,7 @@ export function FileActivityDetail({ file, className }: FileActivityDetailProps)
             />
           ))
         ) : (
-          <Typography variant="caption" className="text-[11px] text-text-tertiary">
+          <Typography variant="caption" className="text-xs text-text-tertiary">
             no co-changes recorded
           </Typography>
         )}

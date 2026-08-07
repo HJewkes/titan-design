@@ -35,15 +35,15 @@ describe('FilePathLabel', () => {
     expect(screen.getByText('open.ts')).toBeInTheDocument()
   })
 
-  it('sizes the directory smaller than the basename', () => {
-    render(<FilePathLabel path="src/open.ts" size={16} />)
-    // Read the raw attribute: jsdom truncates the fractional px in toHaveStyle.
-    const fontSize = (text: string) =>
-      Number(
-        /font-size:\s*([\d.]+)px/.exec(screen.getByText(text).getAttribute('style') ?? '')?.[1]
-      )
-    expect(fontSize('open.ts')).toBe(16)
-    expect(fontSize('src/')).toBeLessThan(fontSize('open.ts'))
+  // The dir/base size difference now comes from `text-xs` / `text-sm` classes, and
+  // nativewind does not compile classNames in the vitest env — so the rendered size
+  // is not observable here. Asserting it would mean asserting nothing. Left to
+  // visual regression (see the family README's testing follow-up); what remains
+  // testable is that both sizes render their parts.
+  it.each(['sm', 'md'] as const)('renders both parts at size %s', (size) => {
+    render(<FilePathLabel path="src/open.ts" size={size} />)
+    expect(screen.getByText('src/')).toBeInTheDocument()
+    expect(screen.getByText('open.ts')).toBeInTheDocument()
   })
 
   it('has no a11y violations', async () => {

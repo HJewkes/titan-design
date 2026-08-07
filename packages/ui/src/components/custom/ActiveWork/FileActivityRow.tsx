@@ -2,21 +2,40 @@
 import { View, Pressable } from 'react-native'
 import { SparkBars } from '../charts'
 import { Typography } from '../Typography'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { resolveColor } from '../../../theme/resolve-color'
+import { categoricalPalette } from '../../../theme/tokens/primitives'
 import { FilePathLabel } from './FilePathLabel'
 
-const t = getSemanticColors('dark')
+/** Fill per event kind, shared by the row's counts and the detail pane's tiles. */
+export interface FileEventColors {
+  reads: string
+  writes: string
+  edits: string
+}
 
 /**
- * The read / write / edit colour vocabulary, shared by the row's inline counts
- * and {@link FileActivityDetail}'s tiles so one kind of event is one colour
- * everywhere in the explorer.
+ * Reads/writes/edits read as *importance* rather than as peer categories: reads
+ * are cheap and quiet, writes are the consequential ones, edits sit between.
  */
-export const FILE_EVENT_COLOR = {
-  reads: t['text-tertiary'],
-  writes: t['brand-primary'],
-  edits: t['status-info'],
-} as const
+export const FILE_EVENT_COLOR_SEMANTIC: FileEventColors = {
+  reads: resolveColor('text-tertiary'),
+  writes: resolveColor('brand-primary'),
+  edits: resolveColor('status-info'),
+}
+
+/**
+ * The same three as *peer categories*, taken in order from the canonical
+ * CVD-safe palette (TOKENS.md §2) — systematic, but it drops the importance
+ * ordering the semantic variant carries.
+ */
+export const FILE_EVENT_COLOR_CATEGORICAL: FileEventColors = {
+  reads: categoricalPalette.default[0],
+  writes: categoricalPalette.default[1],
+  edits: categoricalPalette.default[2],
+}
+
+/** The family default. */
+export const FILE_EVENT_COLOR = FILE_EVENT_COLOR_SEMANTIC
 
 /** Per-file activity mined from session transcripts. */
 export interface FileActivity {
@@ -36,11 +55,13 @@ export interface FileActivityRowProps {
   /** Renders the selected treatment (raised fill + leading accent bar). */
   selected?: boolean
   onSelect?: () => void
+  /** Override the read/write/edit fills. Defaults to {@link FILE_EVENT_COLOR}. */
+  eventColors?: FileEventColors
 }
 
 function EventCount({ value, suffix, color }: { value: number; suffix: string; color: string }) {
   return (
-    <Typography variant="mono" style={{ fontSize: 11, color }}>
+    <Typography variant="mono" className="text-xs" style={{ color }}>
       {`${value}${suffix}`}
     </Typography>
   )
@@ -53,7 +74,12 @@ function EventCount({ value, suffix, color }: { value: number; suffix: string; c
  * Composes {@link FilePathLabel} and {@link SparkBars}. Used by
  * {@link FileHistoryExplorer}.
  */
-export function FileActivityRow({ file, selected = false, onSelect }: FileActivityRowProps) {
+export function FileActivityRow({
+  file,
+  selected = false,
+  onSelect,
+  eventColors = FILE_EVENT_COLOR,
+}: FileActivityRowProps) {
   return (
     <Pressable
       onPress={onSelect}
@@ -63,31 +89,29 @@ export function FileActivityRow({ file, selected = false, onSelect }: FileActivi
       aria-selected={selected}
       accessibilityLabel={`${file.path}, ${file.touches} touches`}
       testID="file-activity-row"
-      className={`relative gap-[6px] rounded-[8px] px-[12px] py-[9px] ${
-        selected ? 'bg-surface-raised' : ''
-      }`}
+      className={`relative gap-1.5 rounded-md px-3 py-2 ${selected ? 'bg-surface-raised' : ''}`}
     >
       {selected ? (
         <View
           testID="file-activity-row-accent"
-          className="absolute bottom-[8px] left-0 top-[8px] w-[3px] rounded-r-[3px] bg-brand-primary"
+          className="absolute bottom-2 left-0 top-2 w-[3px] rounded-r-[3px] bg-brand-primary"
         />
       ) : null}
 
-      <View className="flex-row items-center justify-between gap-[10px]">
+      <View className="flex-row items-center justify-between gap-2.5">
         <View className="shrink flex-row items-center">
           <FilePathLabel path={file.path} />
         </View>
-        <Typography variant="mono" className="text-[12px] font-bold text-text-secondary">
+        <Typography variant="mono" className="text-xs font-bold text-text-secondary">
           {String(file.touches)}
         </Typography>
       </View>
 
-      <View className="flex-row items-center justify-between gap-[10px]">
-        <View className="flex-row items-center gap-[7px]">
-          <EventCount value={file.reads} suffix="r" color={FILE_EVENT_COLOR.reads} />
-          <EventCount value={file.writes} suffix="w" color={FILE_EVENT_COLOR.writes} />
-          <EventCount value={file.edits} suffix="e" color={FILE_EVENT_COLOR.edits} />
+      <View className="flex-row items-center justify-between gap-2.5">
+        <View className="flex-row items-center gap-2">
+          <EventCount value={file.reads} suffix="r" color={eventColors.reads} />
+          <EventCount value={file.writes} suffix="w" color={eventColors.writes} />
+          <EventCount value={file.edits} suffix="e" color={eventColors.edits} />
         </View>
         <SparkBars
           values={file.timeline}

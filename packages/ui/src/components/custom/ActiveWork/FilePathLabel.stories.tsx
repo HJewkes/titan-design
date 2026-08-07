@@ -16,7 +16,7 @@ const meta: Meta<typeof FilePathLabel> = {
       },
     },
   },
-  args: { path: 'src/commands/_open-helpers.ts', size: 12, baseOnly: false },
+  args: { path: 'src/commands/_open-helpers.ts', size: 'md', baseOnly: false },
 }
 export default meta
 type Story = StoryObj<typeof FilePathLabel>
@@ -33,6 +33,7 @@ export const BaseOnly: Story = {
   args: { baseOnly: true },
 }
 
-export const Large: Story = {
-  args: { size: 16 },
+/** The dense variant, as used inside CoChangeChip and the co-change list. */
+export const Small: Story = {
+  args: { size: 'sm' },
 }

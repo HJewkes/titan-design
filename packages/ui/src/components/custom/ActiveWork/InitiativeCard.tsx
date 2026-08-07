@@ -5,10 +5,7 @@ import { Pill } from '../../ui/pill'
 import { StatusDot, type StatusDotVariant } from '../Workout/StatusDot'
 import { SegmentedBar, type SegmentedBarSegment } from '../Workout/SegmentedBar'
 import { Typography } from '../Typography'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { greyRamp } from '../../../theme/tokens/primitives'
-
-const t = getSemanticColors('dark')
+import { resolveColor } from '../../../theme/resolve-color'
 
 export type InitiativeState = 'focused' | 'backburner' | 'paused' | 'done'
 export type TaskSeverity = 'critical' | 'high' | 'medium' | 'low'
@@ -24,10 +21,12 @@ const STATE_META: Record<InitiativeState, { label: string; dot: StatusDotVariant
 /** Task severity → {@link SegmentedBar} segment fill color, most-to-least severe. */
 const SEVERITY_ORDER: TaskSeverity[] = ['critical', 'high', 'medium', 'low']
 const SEVERITY_COLOR: Record<TaskSeverity, string> = {
-  critical: t['status-error-vivid'],
-  high: t['status-error'],
-  medium: t['status-warning'],
-  low: greyRamp[500],
+  critical: resolveColor('status-error-vivid'),
+  high: resolveColor('status-error'),
+  medium: resolveColor('status-warning'),
+  // `text-tertiary` is greyRamp[500] in dark — identical to the original literal,
+  // and it adapts in light instead of freezing. See TOKENS.md §3.
+  low: resolveColor('text-tertiary'),
 }
 
 export interface InitiativeCardTopTask {
@@ -82,15 +81,15 @@ export function InitiativeCard({
     <Card
       variant={state === 'focused' ? 'accent' : 'outline'}
       accentColor={state === 'focused' ? 'var(--color-brand-primary)' : undefined}
-      className={`w-[326px] gap-[10px] p-[16px] ${className ?? ''}`}
+      className={`w-[326px] gap-2.5 p-4 ${className ?? ''}`}
       {...props}
     >
-      <View className="flex-row items-start justify-between gap-[8px]">
+      <View className="flex-row items-start justify-between gap-2">
         <View className="flex-1">
-          <Typography variant="subtitle2" className="text-[14px] font-bold text-text-primary">
+          <Typography variant="subtitle2" className="text-sm font-bold text-text-primary">
             {title}
           </Typography>
-          <Typography variant="caption" className="text-[11px] text-text-tertiary">
+          <Typography variant="caption" className="text-xs text-text-tertiary">
             {slug}
           </Typography>
         </View>
@@ -101,13 +100,13 @@ export function InitiativeCard({
         ) : null}
       </View>
 
-      <View className="flex-row items-center gap-[12px]">
+      <View className="flex-row items-center gap-3">
         <StatusDot variant={meta.dot} size="sm" label={meta.label} />
-        <Typography variant="mono" className="text-[12px] text-text-secondary">
+        <Typography variant="mono" className="text-xs text-text-secondary">
           {openCount} open
         </Typography>
         {shipTarget ? (
-          <Typography variant="caption" className="text-[11px] text-text-tertiary">
+          <Typography variant="caption" className="text-xs text-text-tertiary">
             {`ship ${shipTarget}`}
           </Typography>
         ) : null}
@@ -118,20 +117,20 @@ export function InitiativeCard({
       ) : null}
 
       {topTask ? (
-        <View className="flex-row items-center gap-[7px]">
-          <Typography variant="mono" className="text-[10.5px] text-brand-primary">
+        <View className="flex-row items-center gap-2">
+          <Typography variant="mono" className="text-xs text-brand-primary">
             {topTask.id}
           </Typography>
           <Typography
             variant="body2"
             numberOfLines={1}
-            className="flex-1 text-[12px] text-text-secondary"
+            className="flex-1 text-xs text-text-secondary"
           >
             {topTask.title}
           </Typography>
         </View>
       ) : (
-        <Typography variant="caption" className="text-[11px] text-text-tertiary">
+        <Typography variant="caption" className="text-xs text-text-tertiary">
           no open tasks
         </Typography>
       )}

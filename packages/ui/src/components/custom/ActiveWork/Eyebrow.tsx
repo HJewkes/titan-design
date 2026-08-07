@@ -18,10 +18,7 @@ export function Eyebrow({ children, className }: EyebrowProps) {
     <Typography
       variant="overline"
       color="inherit"
-      className={cn(
-        'text-[10px] font-semibold uppercase tracking-[0.6px] text-text-tertiary',
-        className
-      )}
+      className={cn('text-xs font-semibold uppercase tracking-wider text-text-tertiary', className)}
     >
       {children}
     </Typography>
