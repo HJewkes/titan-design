@@ -87,8 +87,10 @@ FileHistoryExplorer .............. organism
 Two live here and must not be conflated:
 
 - **`FILE_EVENT_COLOR`** — read / write / edit, i.e. _what kind of event_. Two variants ship:
-  `FILE_EVENT_COLOR_SEMANTIC` (default — colours by importance) and `FILE_EVENT_COLOR_CATEGORICAL`
-  (the canonical CVD-safe palette, taken in order). Overridable per component via `eventColors`.
+  `FILE_EVENT_COLOR_CATEGORICAL` (**the default** — the canonical CVD-safe palette taken in order, on the
+  grounds that the three kinds are peer categories) and `FILE_EVENT_COLOR_SEMANTIC` (the alternative —
+  colours by importance, greying reads out). Overridable per component via `eventColors`. Note the default
+  spends three of `CATEGORICAL_CVD_SAFE_MAX`: a view that also plots series must start from index 3.
 - **`GROWTH_COLOR`** — added / removed / neutral, i.e. _char deltas_. Uses `result-*`, because a file that
   net-shrank was refactored, not broken. `status-error` would say something is wrong. See TOKENS.md §1.
 

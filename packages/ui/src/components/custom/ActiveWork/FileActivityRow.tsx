@@ -25,8 +25,7 @@ export const FILE_EVENT_COLOR_SEMANTIC: FileEventColors = {
 
 /**
  * The same three as *peer categories*, taken in order from the canonical
- * CVD-safe palette (TOKENS.md §2) — systematic, but it drops the importance
- * ordering the semantic variant carries.
+ * CVD-safe palette (TOKENS.md §2).
  */
 export const FILE_EVENT_COLOR_CATEGORICAL: FileEventColors = {
   reads: categoricalPalette.default[0],
@@ -34,8 +33,13 @@ export const FILE_EVENT_COLOR_CATEGORICAL: FileEventColors = {
   edits: categoricalPalette.default[2],
 }
 
-/** The family default. */
-export const FILE_EVENT_COLOR = FILE_EVENT_COLOR_SEMANTIC
+/**
+ * The family default: the three event kinds are peer categories, so they take
+ * the canonical CVD-safe palette in order rather than a hand-picked triple.
+ * Costs three of `CATEGORICAL_CVD_SAFE_MAX` — a view that also plots series
+ * needs to start from index 3, or supply its own `eventColors`.
+ */
+export const FILE_EVENT_COLOR = FILE_EVENT_COLOR_CATEGORICAL
 
 /** Per-file activity mined from session transcripts. */
 export interface FileActivity {
