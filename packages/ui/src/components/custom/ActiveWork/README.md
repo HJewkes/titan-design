@@ -108,15 +108,16 @@ tokens"), **material** (`paperSheet` / `insetWell`, sparingly). Drop-shadow is n
 | Growth block (grouped stats) | `insetWell()` — its stated purpose is grouped/awaiting-data regions |
 | KPI tiles, co-change chips   | tone only (`Tile`'s `surface-raised`, `Card variant="filled"`)      |
 
-These were all `Card variant="outline"` first, which is `border-2 border-hairline-strong` — 2px at the
+These were all `Card variant="outline"` first, which was `border-2 border-hairline-strong` — 2px at the
 strongest hairline, the heaviest chrome the Card offers, on every surface at once. That is the
 "everything is a bordered box" look the depth model explicitly rejects.
 
-**Open question for the `Card` primitive itself** (not changed here): `variant="outline"` is `border-2` at
-`hairline-strong`, which reads as a defect — a "hairline" is 1px by definition, and the depth model has
-hairlines replacing solid borders. `subtle` and `accent` are already correctly 1px; `outline` is the
-outlier. Only three production components use it (`MesoCard`, `MesoStatusCard`, `ReadinessCheck`), so the
-blast radius is small — but restyling a shared primitive is a deliberate decision, not an AW-22 side effect.
+**The `Card` primitive was corrected too.** `variant="outline"` is now `border border-hairline-strong`.
+The 2px was a defect: a hairline is 1px by definition, and the system varies edge _contrast_
+(`hairline-subtle` / `hairline` / `hairline-strong`), not width — `materials.ts` fixed the same class of
+mistuned edge by raising an alpha rather than thickening a line. `subtle` and `accent` were already
+correctly 1px; `outline` was the outlier, and now sits on that same single axis. This restyles the three
+production consumers (`MesoCard`, `MesoStatusCard`, `ReadinessCheck`).
 
 ### Token discipline
 

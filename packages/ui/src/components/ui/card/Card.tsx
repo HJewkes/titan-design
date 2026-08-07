@@ -45,7 +45,7 @@ export interface CardProps extends ViewProps {
 
 const variantStyles: Record<CardVariant, string> = {
   elevated: '', // Will be set dynamically via elevation system
-  outline: 'border-2 border-hairline-strong',  // Thicker border with stronger contrast
+  outline: 'border border-hairline-strong',
   filled: '', // Will be set dynamically via elevation system
   accent: 'border border-hairline',
   subtle: 'border border-hairline-subtle',
@@ -162,7 +162,7 @@ export function Card({
     // Apply variant styles, but only use default border color if no custom borderColor
     variant === 'outline'
       ? borderColor
-        ? 'border-2'  // Just the border width, color via style
+        ? 'border'  // Just the border width, color via style
         : variantStyles[variant]  // Full variant styles including color
       : variantStyles[variant],
     // Remove Tailwind shadow classes - we're using elevation shadows via style prop
