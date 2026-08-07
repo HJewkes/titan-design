@@ -1,6 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
-import { categoricalPalette, getCategoricalColor, CATEGORICAL_CVD_SAFE_MAX, divergingScale, sequentialEffort, discreteRainbow, bestTextColor, greyRamp } from './tokens/primitives'
+import {
+  categoricalPalette,
+  getCategoricalColor,
+  CATEGORICAL_CVD_SAFE_MAX,
+  divergingScale,
+  sequentialEffort,
+  discreteRainbow,
+  bestTextColor,
+  greyRamp,
+} from './tokens/primitives'
 import { semanticColorsLight, semanticColorsDark } from './tokens/semantic'
 import { WORKOUT_TOKENS } from './workout-tokens'
 import { WORKOUT_PILL_DELOAD } from './extracted-colors-dataviz'
@@ -52,7 +61,12 @@ export default meta
  * `Foundations/Color/Primitives`.
  */
 const SURFACE_PLANES = [
-  { step: 975, hex: greyRamp[975], lStar: 3.8, role: 'Frame / bezel — chrome the ramp sits inside' },
+  {
+    step: 975,
+    hex: greyRamp[975],
+    lStar: 3.8,
+    role: 'Frame / bezel — chrome the ramp sits inside',
+  },
   { step: 950, hex: greyRamp[950], lStar: 9, role: 'Shell' },
   { step: 925, hex: greyRamp[925], lStar: 13.9, role: 'Main content plane' },
   { step: 900, hex: greyRamp[900], lStar: 17.2, role: 'Nav / rail' },
@@ -113,12 +127,12 @@ export const SurfaceRamp: StoryObj = {
     <View style={{ padding: 24 }}>
       <Text className="text-2xl font-bold text-text-primary mb-2">Surface Ramp (Dark Mode)</Text>
       <SectionIntro>
-        The v0.10.0 surface foundation, and the assignment the most surfaces depend on. Depth is
-        an <Text className="font-semibold">ordered ramp</Text>, not a set of unrelated fills —
-        planes are spaced by perceptual lightness (L*) on a diminishing taper, so &quot;one step
-        up&quot; is the same visual distance anywhere in the stack. Listed darkest first. Several
-        semantic tokens deliberately share a plane (shown per row); that aliasing is what lets a
-        component say what it <Text className="italic">is</Text> rather than how deep it sits.
+        The v0.10.0 surface foundation, and the assignment the most surfaces depend on. Depth is an{' '}
+        <Text className="font-semibold">ordered ramp</Text>, not a set of unrelated fills — planes
+        are spaced by perceptual lightness (L*) on a diminishing taper, so &quot;one step up&quot;
+        is the same visual distance anywhere in the stack. Listed darkest first. Several semantic
+        tokens deliberately share a plane (shown per row); that aliasing is what lets a component
+        say what it <Text className="italic">is</Text> rather than how deep it sits.
       </SectionIntro>
 
       <View style={{ gap: 14 }}>
@@ -133,8 +147,8 @@ export const SurfaceRamp: StoryObj = {
         runtime use <Text className="font-semibold text-text-primary">&lt;Surface level&gt;</Text>{' '}
         and <Text className="font-semibold text-text-primary">useOnSurfaceColor</Text> rather than
         reading tokens directly — see Components/Atoms/Surface. Shadow and glow treatments layered
-        on top of these planes are in Foundations/Shadows; the legacy numeric elevation scale is
-        in Foundations/Elevation.
+        on top of these planes are in Foundations/Shadows; tone, hairline, material and the
+        elevation levels are in Foundations/Depth.
       </Text>
     </View>
   ),
@@ -188,16 +202,14 @@ export const CategoricalPalette: StoryObj = {
       <SectionIntro>
         Seven hues in one canonical order —{' '}
         <Text className="font-semibold">blue → magenta → red → orange → green → cyan → amber</Text>{' '}
-        — expressed as references into the tonal ramps. The sequence is nested-stable: a chart
-        with N series takes the first N colors and a series&apos; index does not shift as N
-        changes. The worst-case deuteranopia/protanopia ΔE floor of 8 holds through the first{' '}
-        {CATEGORICAL_CVD_SAFE_MAX} (
-        <Text className="font-semibold">CATEGORICAL_CVD_SAFE_MAX</Text>); the 7th is extended and
-        wants a legend or a second encoding. Two variants ship:{' '}
+        — expressed as references into the tonal ramps. The sequence is nested-stable: a chart with
+        N series takes the first N colors and a series&apos; index does not shift as N changes. The
+        worst-case deuteranopia/protanopia ΔE floor of 8 holds through the first{' '}
+        {CATEGORICAL_CVD_SAFE_MAX} (<Text className="font-semibold">CATEGORICAL_CVD_SAFE_MAX</Text>
+        ); the 7th is extended and wants a legend or a second encoding. Two variants ship:{' '}
         <Text className="font-semibold">default</Text> (vivid, for neutral/light surfaces, legible
-        under black text) and <Text className="font-semibold">dark</Text> (deeper, for white text
-        on a filled swatch). A third &quot;light&quot; variant was dropped — `default` doubles as
-        it.
+        under black text) and <Text className="font-semibold">dark</Text> (deeper, for white text on
+        a filled swatch). A third &quot;light&quot; variant was dropped — `default` doubles as it.
       </SectionIntro>
 
       <CategoricalRow name="Default (black text)" colors={categoricalPalette.default} />
@@ -394,8 +406,8 @@ export const FatigueRomPalette: StoryObj = {
         </Text>{' '}
         One scheme shared by the two live-quality readouts — the ROM progression bars and the
         ghost-spark current line. Deliberately no greens and no ambers: those languages belong to
-        the verdict tones and the velocity-loss bands (stories 3 and 4), and reusing them here
-        would make &quot;fine&quot; and &quot;fast&quot; look like the same claim. Every stop is a
+        the verdict tones and the velocity-loss bands (stories 3 and 4), and reusing them here would
+        make &quot;fine&quot; and &quot;fast&quot; look like the same claim. Every stop is a
         reference into the tonal ramps.
       </SectionIntro>
 
@@ -426,8 +438,8 @@ export const FatigueRomPalette: StoryObj = {
       <Text className="text-text-secondary text-xs mb-3">
         A controlled rep (grind signature below GRIND_THRESHOLD = {GRIND_THRESHOLD}) stays in the
         silver family, dimming toward DRIFT_GREY with tempo deviation — a &quot;drifting but not
-        failing&quot; cue that never becomes a color. At or above the threshold the line runs
-        light → mid → deep by severity.
+        failing&quot; cue that never becomes a color. At or above the threshold the line runs light
+        → mid → deep by severity.
       </Text>
       <View style={{ flexDirection: 'row', gap: 32 }}>
         <FatigueRampStrip
@@ -442,8 +454,8 @@ export const FatigueRomPalette: StoryObj = {
         DRIFT_GREY is `neutral[600]` #4B5563, and the unified warm grey ramp assigns it no
         destination — the 15-row fold maps the other greys but skips this one. It needs an
         assignment before that migration lands. Note that the recovered spec records DRIFT_GREY as
-        `grey[500]` #1C1C1C; that is stale, `fatigue-tokens.ts` on main reads `neutral[600]`,
-        which puts it in the expensive half of the fold rather than the cheap one.
+        `grey[500]` #1C1C1C; that is stale, `fatigue-tokens.ts` on main reads `neutral[600]`, which
+        puts it in the expensive half of the fold rather than the cheap one.
       </Text>
     </View>
   ),
@@ -513,12 +525,12 @@ export const StatusColors: StoryObj = {
       <Text className="text-2xl font-bold text-text-primary mb-2">Status Colors</Text>
       <SectionIntro>
         Status roles and their modifiers. <Text className="font-semibold">status-error-vivid</Text>{' '}
-        is a separate role (not a modifier of status-error) reserved for destructive
-        emphasis. It used to be the one status family sourced from the `redVivid` support scale
-        rather than the OKLCH ramps; TD-07.14 deleted that scale, so the family now resolves to
-        the same red[600]/[500]/[700] steps as status-error. The two are therefore identical in
-        value today — the role is kept distinct because emphasis is meant to come from a glow
-        derived from red[500], not from a second, higher-chroma red.
+        is a separate role (not a modifier of status-error) reserved for destructive emphasis. It
+        used to be the one status family sourced from the `redVivid` support scale rather than the
+        OKLCH ramps; TD-07.14 deleted that scale, so the family now resolves to the same
+        red[600]/[500]/[700] steps as status-error. The two are therefore identical in value today —
+        the role is kept distinct because emphasis is meant to come from a glow derived from
+        red[500], not from a second, higher-chroma red.
       </SectionIntro>
       <VariantMatrix
         bases={[
@@ -557,8 +569,8 @@ export const ResultColors: StoryObj = {
       <Text className="text-2xl font-bold text-text-primary mb-2">Result / Outcome Colors</Text>
       <SectionIntro>
         Colors for indicating positive, negative, or neutral outcomes. Distinct from status: these
-        encode the <Text className="italic">direction of a change</Text> (did this get better?),
-        not a system state.
+        encode the <Text className="italic">direction of a change</Text> (did this get better?), not
+        a system state.
       </SectionIntro>
       <VariantMatrix
         bases={['result-improve', 'result-degrade', 'result-inconclusive', 'result-neutral']}
@@ -574,11 +586,11 @@ export const TextAndBorderColors: StoryObj = {
     <View style={{ padding: 24 }}>
       <Text className="text-2xl font-bold text-text-primary mb-2">Text & Border Colors</Text>
       <SectionIntro>
-        The dark-mode text and border roles. Today the border family is the grey grey ramp
-        assigned to line-work, and text-tertiary and the link colors come from the neutral and
-        blue support scales — all three of which are pending migration (TD-07.14): the greys fold
-        into one warm grey ramp and the links move to the OKLCH blue. These are the roles that
-        will move most, because the mid-grey text steps shift furthest. Prefer{' '}
+        The dark-mode text and border roles. Today the border family is the grey grey ramp assigned
+        to line-work, and text-tertiary and the link colors come from the neutral and blue support
+        scales — all three of which are pending migration (TD-07.14): the greys fold into one warm
+        grey ramp and the links move to the OKLCH blue. These are the roles that will move most,
+        because the mid-grey text steps shift furthest. Prefer{' '}
         <Text className="font-semibold">useOnSurfaceColor</Text> for text sitting on a{' '}
         <Text className="font-semibold">&lt;Surface&gt;</Text> — it picks the right text role for
         the plane instead of hardcoding one, which is also what makes the migration survivable.
@@ -782,7 +794,10 @@ export const RolesInUse: StoryObj = {
         <Demo label="IntensityBar · effort">
           <View style={{ flexDirection: 'row', gap: 2, width: 132 }}>
             {sequentialEffort.map((hex, i) => (
-              <View key={i} style={{ flex: 1, height: 20, backgroundColor: hex, borderRadius: 2 }} />
+              <View
+                key={i}
+                style={{ flex: 1, height: 20, backgroundColor: hex, borderRadius: 2 }}
+              />
             ))}
           </View>
         </Demo>
@@ -832,10 +847,10 @@ export const LegacyDataVisualizationColors: StoryObj = {
       </Text>
       <SectionIntro>
         <Text className="font-semibold">Do not use for new work.</Text> Paul Tol&apos;s
-        discrete-rainbow scale behind the `data-1..10` tokens — no longer consumed by any
-        component. Use the Categorical Palette (story 2) for charts and qualitative series. This
-        story exists because the tokens are still shipped, and a shipped token without a swatch is
-        the drift the coverage test guards against; it goes away when the tokens do.
+        discrete-rainbow scale behind the `data-1..10` tokens — no longer consumed by any component.
+        Use the Categorical Palette (story 2) for charts and qualitative series. This story exists
+        because the tokens are still shipped, and a shipped token without a swatch is the drift the
+        coverage test guards against; it goes away when the tokens do.
       </SectionIntro>
 
       <View style={{ gap: 16 }}>

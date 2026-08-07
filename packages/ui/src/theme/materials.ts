@@ -54,8 +54,10 @@
  *
  * Kept: grain, rim-light, contact shadow.
  *
- * See sources/design/surface-system-north-star.md §4 and
- * sources/runbooks/VW-99-depth-wall-calibration.md.
+ * See `sources/design/surface-system-north-star.md` §4 and
+ * `sources/runbooks/VW-99-depth-wall-calibration.md`. Those paths are relative to
+ * the `voltras-workspace` active-work initiative (`active-work open voltras-workspace`), not this repo —
+ * titan-design has no `sources/` directory, so they do not resolve from here.
  */
 import type { ViewStyle } from 'react-native'
 import { getSemanticColors } from './tokens/semantic'
@@ -66,7 +68,13 @@ const c = getSemanticColors('dark')
 
 function parseHex(hex: string): [number, number, number] | null {
   const h = hex.replace('#', '')
-  const full = h.length === 3 ? h.split('').map((ch) => ch + ch).join('') : h
+  const full =
+    h.length === 3
+      ? h
+          .split('')
+          .map((ch) => ch + ch)
+          .join('')
+      : h
   const rgb: [number, number, number] = [
     parseInt(full.slice(0, 2), 16),
     parseInt(full.slice(2, 4), 16),
