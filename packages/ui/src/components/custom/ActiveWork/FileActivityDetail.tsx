@@ -9,6 +9,7 @@ import { DateTime } from '../DateTime'
 import { Typography } from '../Typography'
 import { formatCompact, formatSignedCompact } from '../../../utils/number-format'
 import { resolveColor } from '../../../theme/resolve-color'
+import { insetWell } from '../../../theme/materials'
 import { Eyebrow } from './Eyebrow'
 import { FilePathLabel, splitPath } from './FilePathLabel'
 import { FILE_EVENT_COLOR, type FileEventColors, type FileActivity } from './FileActivityRow'
@@ -80,7 +81,7 @@ export function FileActivityDetail({
 
   return (
     <Card
-      variant="outline"
+      variant="subtle"
       className={`flex-1 gap-4 p-4 ${className ?? ''}`}
       testID="file-activity-detail"
     >
@@ -120,7 +121,7 @@ export function FileActivityDetail({
         <Tile label="Touches" value={String(file.touches)} />
       </View>
 
-      <Card variant="outline" className="gap-2 rounded-lg p-3">
+      <View className="gap-2 rounded-lg p-3" style={insetWell()}>
         <View className="flex-row items-center justify-between">
           <Eyebrow>Net change over sessions</Eyebrow>
           <Typography
@@ -149,7 +150,7 @@ export function FileActivityDetail({
           />
           <GrowthStat label="Sessions" value={String(file.sessions)} color={GROWTH_COLOR.neutral} />
         </View>
-      </Card>
+      </View>
 
       <View className="gap-0.5">
         <Eyebrow>Changes together with</Eyebrow>

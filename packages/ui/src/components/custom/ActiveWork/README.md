@@ -95,6 +95,29 @@ Two live here and must not be conflated:
 All colours resolve through `resolveColor(token)`, never `getSemanticColors('dark')` — the latter freezes
 to the dark hex and silently breaks light theme.
 
+### Surfaces and depth
+
+Follows _Foundations → Depth_ (the current model, fixed in TD-07.16), whose three mechanisms are, in
+reach-for order: **tone** (the grey ramp), **hairline** (1px alpha — "what replaced the solid dark border
+tokens"), **material** (`paperSheet` / `insetWell`, sparingly). Drop-shadow is not a mechanism below
+`FLOATING_ELEVATION_MIN`; nothing here floats, so nothing here casts one.
+
+| Surface                      | Treatment                                                           |
+| ---------------------------- | ------------------------------------------------------------------- |
+| List pane, detail pane       | `Card variant="subtle"` — a 1px hairline, content-level             |
+| Growth block (grouped stats) | `insetWell()` — its stated purpose is grouped/awaiting-data regions |
+| KPI tiles, co-change chips   | tone only (`Tile`'s `surface-raised`, `Card variant="filled"`)      |
+
+These were all `Card variant="outline"` first, which is `border-2 border-hairline-strong` — 2px at the
+strongest hairline, the heaviest chrome the Card offers, on every surface at once. That is the
+"everything is a bordered box" look the depth model explicitly rejects.
+
+**Open question for the `Card` primitive itself** (not changed here): `variant="outline"` is `border-2` at
+`hairline-strong`, which reads as a defect — a "hairline" is 1px by definition, and the depth model has
+hairlines replacing solid borders. `subtle` and `accent` are already correctly 1px; `outline` is the
+outlier. Only three production components use it (`MesoCard`, `MesoStatusCard`, `ReadinessCheck`), so the
+blast radius is small — but restyling a shared primitive is a deliberate decision, not an AW-22 side effect.
+
 ### Token discipline
 
 This family is on the **token-pure** eslint list (`eslint.config.js`, error-level): no raw hex, no
