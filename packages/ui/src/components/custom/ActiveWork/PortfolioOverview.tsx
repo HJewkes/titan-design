@@ -48,7 +48,7 @@ export function PortfolioOverview({
   ...props
 }: PortfolioOverviewProps) {
   return (
-    <View className={`gap-[20px] ${className ?? ''}`} {...props}>
+    <View className={`gap-5 ${className ?? ''}`} {...props}>
       <View>
         <Typography variant="h4" className="text-text-primary">
           {title}
@@ -60,18 +60,18 @@ export function PortfolioOverview({
         ) : null}
       </View>
 
-      <View className="flex-row flex-wrap gap-[12px]">
+      <View className="flex-row flex-wrap gap-3">
         {stats.map((stat) => (
-          <Card key={stat.label} variant="filled" className="min-w-[150px] flex-1 p-[16px]">
+          <Card key={stat.label} variant="filled" className="min-w-[150px] flex-1 p-4">
             <Metric value={stat.value} label={stat.label} />
           </Card>
         ))}
       </View>
 
       {sections.map((section) => (
-        <View key={section.heading} className="gap-[10px]">
+        <View key={section.heading} className="gap-2.5">
           <Eyebrow>{section.heading}</Eyebrow>
-          <View className="flex-row flex-wrap gap-[12px]">
+          <View className="flex-row flex-wrap gap-3">
             {section.items.map((item) => (
               <InitiativeCard key={item.slug} {...item} />
             ))}

@@ -200,5 +200,75 @@ module.exports = tseslint.config(
         },
       ],
     },
+  },
+
+  // Fully token-pure families: everything shell/icons enforces, plus the scale
+  // rules, at ERROR. These families were brought to zero violations when they were
+  // hardened, so the ratchet holds instead of accumulating warnings nobody reads.
+  //
+  // Adding a family here is the last step of hardening it — see TOKENS.md §6.
+  {
+    files: [
+      'src/components/custom/ActiveWork/**/*.{ts,tsx}',
+      'src/components/custom/charts/**/*.{ts,tsx}',
+    ],
+    ignores: ['**/*.stories.tsx', '**/*.test.tsx'],
+    rules: {
+      // Flat config replaces (not merges) this rule per file, so the gradient and
+      // hex selectors are repeated here rather than inherited.
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'Literal[value=/linear-gradient/]',
+          message:
+            'Use surfaceGradient / linearGradient from theme/gradients instead of an inline linear-gradient string.',
+        },
+        {
+          selector: 'TemplateElement[value.raw=/linear-gradient/]',
+          message:
+            'Use surfaceGradient / linearGradient from theme/gradients instead of an inline linear-gradient string.',
+        },
+        {
+          selector: 'Literal[value=/#[0-9a-fA-F]{3,8}\\b/]',
+          message:
+            'Avoid raw hex colors — use a semantic token (className `bg-*`/`text-*`, or `resolveColor(token)` for inline styles).',
+        },
+        {
+          selector: 'TemplateElement[value.raw=/#[0-9a-fA-F]{3,8}\\b/]',
+          message:
+            'Avoid raw hex colors — use a semantic token (className `bg-*`/`text-*`, or `resolveColor(token)` for inline styles).',
+        },
+        // Arbitrary spacing / radius / type values. `w-[420px]` and `min-w-[130px]`
+        // are deliberate layout geometry and stay allowed; the scale properties are
+        // where a specimen's hand-tuned pixels leak into the library.
+        {
+          selector:
+            'Literal[value=/\\b(p|px|py|pt|pb|pl|pr|m|mx|my|mt|mb|ml|mr|gap|gap-x|gap-y|text|rounded|space-x|space-y)-\\[[0-9.]+px\\]/]',
+          message:
+            'Arbitrary spacing/radius/type value — use the scale (gap-2, p-3, text-sm, rounded-md). See TOKENS.md §5.',
+        },
+        {
+          selector:
+            'TemplateElement[value.raw=/\\b(p|px|py|pt|pb|pl|pr|m|mx|my|mt|mb|ml|mr|gap|gap-x|gap-y|text|rounded|space-x|space-y)-\\[[0-9.]+px\\]/]',
+          message:
+            'Arbitrary spacing/radius/type value — use the scale (gap-2, p-3, text-sm, rounded-md). See TOKENS.md §5.',
+        },
+        // Hardcoded inline fontSize defeats the type scale and its paired
+        // line-height. Restricted to literals on purpose: a *computed* size
+        // (`fontSize: valueLabelFontSize(height)`) is chart geometry fitting text
+        // to its container, which no scale can express — that stays allowed.
+        {
+          selector: 'Property[key.name="fontSize"][value.type="Literal"]',
+          message:
+            'Hardcoded inline fontSize defeats the type scale — use a Typography variant or a text-* class. See TOKENS.md §4.',
+        },
+        // Freezes the value to dark-mode hex; resolveColor returns the CSS var on web.
+        {
+          selector: 'CallExpression[callee.name="getSemanticColors"]',
+          message:
+            'getSemanticColors() freezes to one theme — use resolveColor(token) in components. See TOKENS.md §3.',
+        },
+      ],
+    },
   }
 )
