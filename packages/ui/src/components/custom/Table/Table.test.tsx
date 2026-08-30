@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, renderHook, act } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import {
   Table,
@@ -12,6 +12,7 @@ import {
   TableEmptyState,
   TableSelectAllCell,
   TableSelectCell,
+  useTable,
 } from './Table'
 
 function renderBasicTable() {
@@ -554,5 +555,137 @@ describe('Table', () => {
       expect(screen.getByLabelText('Previous page')).toBeInTheDocument()
       expect(screen.getByLabelText('Next page')).toBeInTheDocument()
     })
+  })
+})
+
+describe('Table density', () => {
+  it('defaults to comfortable and accepts dense without changing structure', () => {
+    const { rerender } = render(
+      <Table>
+        <TableBody>
+          <TableRow>
+            <TableCell>Alice</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    )
+    expect(screen.getByRole('cell')).toBeInTheDocument()
+
+    rerender(
+      <Table density="dense">
+        <TableBody>
+          <TableRow>
+            <TableCell>Alice</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    )
+    // nativewind compiles className to style, so density is asserted through
+    // structure + a11y surviving rather than through class names.
+    expect(screen.getByRole('cell')).toBeInTheDocument()
+    expect(screen.getByText('Alice')).toBeInTheDocument()
+  })
+
+  it('keeps header cells sortable at dense density', () => {
+    const onSort = vi.fn()
+    render(
+      <Table density="dense" sortColumn="name" sortDirection="asc" onSort={onSort}>
+        <TableHeader>
+          <TableRow>
+            <TableHeaderCell sortKey="name">Name</TableHeaderCell>
+          </TableRow>
+        </TableHeader>
+      </Table>
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Sort by Name' }))
+    expect(onSort).toHaveBeenCalledWith('name')
+    expect(screen.getByRole('columnheader')).toHaveAttribute('aria-sort', 'ascending')
+  })
+})
+
+describe('useTable', () => {
+  // A type alias, not an interface: `useTable` constrains T to an index-signature
+  // shape, and only aliases get the implicit index signature that satisfies it.
+  type Row = {
+    id: string
+    rank: number
+    size?: number
+  }
+  const rows: Row[] = [
+    { id: 'b', rank: 2, size: 5 },
+    { id: 'a', rank: 3 },
+    { id: 'c', rank: 1, size: 2 },
+  ]
+
+  const ids = (data: Row[]) => data.map((r) => r.id)
+
+  it('returns data untouched until a direction is set', () => {
+    const { result } = renderHook(() => useTable<Row>({ data: rows, defaultSortColumn: 'rank' }))
+    expect(ids(result.current.sortedData)).toEqual(['b', 'a', 'c'])
+  })
+
+  it('sorts by raw field value when no comparator is supplied', () => {
+    const { result } = renderHook(() =>
+      useTable<Row>({ data: rows, defaultSortColumn: 'rank', defaultSortDirection: 'asc' })
+    )
+    expect(ids(result.current.sortedData)).toEqual(['c', 'b', 'a'])
+  })
+
+  it('ranks blank values last in BOTH directions', () => {
+    const asc = renderHook(() =>
+      useTable<Row>({ data: rows, defaultSortColumn: 'size', defaultSortDirection: 'asc' })
+    )
+    const desc = renderHook(() =>
+      useTable<Row>({ data: rows, defaultSortColumn: 'size', defaultSortDirection: 'desc' })
+    )
+    // `a` has no size; flipping direction must not promote it to the top.
+    expect(ids(asc.result.current.sortedData).at(-1)).toBe('a')
+    expect(ids(desc.result.current.sortedData).at(-1)).toBe('a')
+  })
+
+  it('uses a per-column comparator when one is supplied', () => {
+    const { result } = renderHook(() =>
+      useTable<Row>({
+        data: rows,
+        defaultSortColumn: 'id',
+        defaultSortDirection: 'asc',
+        // Reverse-alphabetical, to prove the comparator beats the field compare.
+        comparators: { id: (x, y) => y.id.localeCompare(x.id) },
+      })
+    )
+    expect(ids(result.current.sortedData)).toEqual(['c', 'b', 'a'])
+  })
+
+  it('inverts a comparator for desc rather than reversing the array', () => {
+    const { result } = renderHook(() =>
+      useTable<Row>({
+        data: rows,
+        defaultSortColumn: 'id',
+        defaultSortDirection: 'desc',
+        comparators: { id: (x, y) => y.id.localeCompare(x.id) },
+      })
+    )
+    expect(ids(result.current.sortedData)).toEqual(['a', 'b', 'c'])
+  })
+
+  it('leaves columns without a comparator on the default compare', () => {
+    const { result } = renderHook(() =>
+      useTable<Row>({
+        data: rows,
+        defaultSortColumn: 'rank',
+        defaultSortDirection: 'asc',
+        comparators: { id: (x, y) => y.id.localeCompare(x.id) },
+      })
+    )
+    expect(ids(result.current.sortedData)).toEqual(['c', 'b', 'a'])
+  })
+
+  it('toggles direction through handleSort on the same column', () => {
+    const { result } = renderHook(() =>
+      useTable<Row>({ data: rows, defaultSortColumn: 'rank', defaultSortDirection: 'asc' })
+    )
+    act(() => result.current.handleSort('rank'))
+    expect(result.current.sortDirection).toBe('desc')
+    expect(ids(result.current.sortedData)).toEqual(['a', 'b', 'c'])
   })
 })

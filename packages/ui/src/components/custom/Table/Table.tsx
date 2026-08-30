@@ -4,6 +4,19 @@ import { cn } from '../../../utils/cn'
 
 export type SortDirection = 'asc' | 'desc' | null
 
+/**
+ * Row height / cell padding axis. `comfortable` is the default reading density;
+ * `dense` is the scannable-grid density for tables whose job is to fit many rows
+ * on screen at once (a backlog, a log, an audit list).
+ */
+export type TableDensity = 'comfortable' | 'dense'
+
+/** Cell padding per density, shared by header cells and data cells so a row's two halves cannot drift. */
+const CELL_PADDING: Record<TableDensity, string> = {
+  comfortable: 'px-4 py-3',
+  dense: 'px-2 py-1',
+}
+
 interface TableContextType {
   sortColumn?: string
   sortDirection: SortDirection
@@ -13,6 +26,7 @@ interface TableContextType {
   onSelectAll?: (selected: boolean) => void
   selectable: boolean
   allRowIds: string[]
+  density: TableDensity
 }
 
 const TableContext = createContext<TableContextType>({
@@ -20,6 +34,7 @@ const TableContext = createContext<TableContextType>({
   selectedRows: new Set(),
   selectable: false,
   allRowIds: [],
+  density: 'comfortable',
 })
 
 export interface TableProps extends ViewProps {
@@ -43,6 +58,8 @@ export interface TableProps extends ViewProps {
   isLoading?: boolean
   /** Number of skeleton rows to show when loading */
   loadingRowCount?: number
+  /** Row height / cell padding. Defaults to `comfortable`. */
+  density?: TableDensity
   /** Additional className */
   className?: string
   children?: React.ReactNode
@@ -82,6 +99,7 @@ export function Table({
   rowIds = [],
   isLoading = false,
   loadingRowCount = 5,
+  density = 'comfortable',
   className,
   children,
   ...props
@@ -97,6 +115,7 @@ export function Table({
         onSelectAll,
         selectable,
         allRowIds: rowIds,
+        density,
       }}
     >
       <View className={cn('w-full', className)} {...props}>
@@ -209,7 +228,7 @@ export function TableHeaderCell({
   onPress,
   ...props
 }: TableHeaderCellProps) {
-  const { sortColumn, sortDirection, onSort } = useContext(TableContext)
+  const { sortColumn, sortDirection, onSort, density } = useContext(TableContext)
   const isSorted = sortKey && sortColumn === sortKey
   const isSortable = !!sortKey && !!onSort
   const ariaSort = isSorted
@@ -265,7 +284,8 @@ export function TableHeaderCell({
           accessibilityLabel={`Sort by ${children}`}
           onPress={handlePress}
           className={cn(
-            'flex-row items-center px-4 py-3',
+            'flex-row items-center',
+            CELL_PADDING[density],
             alignStyles[align],
             'web:hover:bg-interactive-hover active:bg-interactive-active',
             className
@@ -282,11 +302,7 @@ export function TableHeaderCell({
     <View
       role="columnheader"
       style={width ? { width } : { flex: 1 }}
-      className={cn(
-        'flex-row items-center px-4 py-3',
-        alignStyles[align],
-        className
-      )}
+      className={cn('flex-row items-center', CELL_PADDING[density], alignStyles[align], className)}
     >
       {content}
     </View>
@@ -313,6 +329,7 @@ export function TableCell({
   children,
   ...props
 }: TableCellProps) {
+  const { density } = useContext(TableContext)
   const alignStyles = {
     left: 'items-start',
     center: 'items-center',
@@ -323,15 +340,13 @@ export function TableCell({
     <View
       role="cell"
       style={width ? { width } : { flex: 1 }}
-      className={cn(
-        'justify-center px-4 py-3.5',
-        alignStyles[align],
-        className
-      )}
+      className={cn('justify-center', CELL_PADDING[density], alignStyles[align], className)}
       {...props}
     >
       {typeof children === 'string' ? (
-        <Text className="text-sm text-text-primary">{children}</Text>
+        <Text className={cn(density === 'dense' ? 'text-xs' : 'text-sm', 'text-text-primary')}>
+          {children}
+        </Text>
       ) : (
         children
       )}
@@ -463,11 +478,28 @@ export function TablePagination({
 
 // Helper hook for managing table state
 
+/**
+ * An ascending comparator for one column. Returning 0 lets the caller express a
+ * tie-break inside the same function; `useTable` inverts the result for `desc`
+ * rather than reversing the array, so ties keep their relative order both ways.
+ */
+export type TableComparator<T> = (a: T, b: T) => number
+
+const isBlank = (v: unknown): boolean => v === null || v === undefined
+
 export interface UseTableOptions<T> {
   data: T[]
   defaultPageSize?: number
   defaultSortColumn?: string
   defaultSortDirection?: SortDirection
+  /**
+   * Per-column ascending comparators, for columns whose order is not their raw
+   * field order — a severity ranked critical→low rather than alphabetically, a
+   * numeric field that should sort blanks last, a date read newest-first.
+   * Columns absent from the map fall back to the default field compare.
+   */
+  comparators?: Partial<Record<keyof T & string, TableComparator<T>>> &
+    Record<string, TableComparator<T> | undefined>
 }
 
 export interface UseTableReturn<T> {
@@ -502,6 +534,7 @@ export function useTable<T extends Record<string, any>>({
   defaultPageSize = 10,
   defaultSortColumn,
   defaultSortDirection = null,
+  comparators,
 }: UseTableOptions<T>): UseTableReturn<T> {
   const [page, setPage] = useState(0)
   const [pageSize, setPageSize] = useState(defaultPageSize)
@@ -511,18 +544,26 @@ export function useTable<T extends Record<string, any>>({
   const sortedData = useMemo(() => {
     if (!sortColumn || !sortDirection) return data
 
+    const custom = comparators?.[sortColumn]
+    // Invert rather than reverse: reversing an already-sorted array also flips
+    // tied rows, so equal values would shuffle every time direction changed.
+    const sign = sortDirection === 'asc' ? 1 : -1
+
+    if (custom) return [...data].sort((a, b) => sign * custom(a, b))
+
     return [...data].sort((a, b) => {
       const aVal = a[sortColumn]
       const bVal = b[sortColumn]
 
-      if (aVal === bVal) return 0
-      if (aVal === null || aVal === undefined) return 1
-      if (bVal === null || bVal === undefined) return -1
+      // Blanks rank last in BOTH directions — outside the sign, so a missing
+      // value never masquerades as the smallest one when the column flips.
+      const blanks = isBlank(aVal) ? (isBlank(bVal) ? 0 : 1) : isBlank(bVal) ? -1 : 0
+      if (blanks !== 0) return blanks
 
-      const comparison = aVal < bVal ? -1 : 1
-      return sortDirection === 'asc' ? comparison : -comparison
+      if (aVal === bVal) return 0
+      return sign * (aVal < bVal ? -1 : 1)
     })
-  }, [data, sortColumn, sortDirection])
+  }, [data, sortColumn, sortDirection, comparators])
 
   const paginatedData = useMemo(() => {
     const start = page * pageSize
