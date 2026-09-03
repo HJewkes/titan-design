@@ -147,10 +147,14 @@ export function deriveRailExercises(model: DashboardModel): SessionRailExercise[
   return [
     {
       id: 'chest-press',
+      // Active-row summary is PROGRESS, not a prescription (VW-68): sets banked + the one in
+      // progress, and the best (most reps) set so far — what has actually happened — rather
+      // than echoing the plan's `4 × 8`. The plan's target set count stays legible from the
+      // `todo` columns in the strip below.
       name: session.exerciseName,
       summary: {
-        sets: session.plannedSets,
-        reps: 8,
+        sets: session.completedSets.length + 1,
+        reps: Math.max(...session.completedSets.map((s) => s.repCount), live.repVelocities.length),
         weight: session.weightLbs,
         unit: session.unit,
       },
