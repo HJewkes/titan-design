@@ -39,7 +39,9 @@ describe('SetBar', () => {
   describe('range (variable rep-range)', () => {
     it('renders range-max segments; committed-todo grey, variable-todo cyan', () => {
       // floor 15, max 20, 12 done → 12 velocity fills · 3 grey (committed) · 5 cyan (variable)
-      render(<SetBar set={{ status: 'range', floor: 15, max: 20, doneVels: Array(12).fill(0.9) }} />)
+      render(
+        <SetBar set={{ status: 'range', floor: 15, max: 20, doneVels: Array(12).fill(0.9) }} />
+      )
       expect(screen.getAllByTestId('set-strip-fill')).toHaveLength(12)
       expect(screen.getAllByTestId('set-strip-empty')).toHaveLength(3)
       expect(screen.getAllByTestId('set-strip-variable')).toHaveLength(5)
@@ -47,7 +49,9 @@ describe('SetBar', () => {
 
     it('counts a done rep past the floor as a real velocity rep (not variable)', () => {
       // 17 done into the variable zone → 17 velocity fills, 3 cyan, 0 grey
-      render(<SetBar set={{ status: 'range', floor: 15, max: 20, doneVels: Array(17).fill(0.8) }} />)
+      render(
+        <SetBar set={{ status: 'range', floor: 15, max: 20, doneVels: Array(17).fill(0.8) }} />
+      )
       expect(screen.getAllByTestId('set-strip-fill')).toHaveLength(17)
       expect(screen.getAllByTestId('set-strip-variable')).toHaveLength(3)
       expect(screen.queryByTestId('set-strip-empty')).not.toBeInTheDocument()
@@ -64,7 +68,17 @@ describe('SetBar', () => {
 
   describe('drop set', () => {
     it('renders one fill per rep across sub-loads, split by 2px notches', () => {
-      render(<SetBar set={{ status: 'drop', subloads: [[0.85, 0.8, 0.7], [0.7, 0.6]] }} />)
+      render(
+        <SetBar
+          set={{
+            status: 'drop',
+            subloads: [
+              [0.85, 0.8, 0.7],
+              [0.7, 0.6],
+            ],
+          }}
+        />
+      )
       const fills = screen.getAllByTestId('set-strip-fill')
       expect(fills).toHaveLength(5)
       expect(slotOf(fills[0])).not.toHaveStyle({ marginLeft: '2px' }) // first sub-load butts the edge
@@ -74,7 +88,18 @@ describe('SetBar', () => {
 
   describe('myo-rep / rest-pause (done)', () => {
     it('renders activation + clusters, split by 3px cluster gaps', () => {
-      render(<SetBar set={{ status: 'myo', activation: [0.75, 0.7, 0.65], clusters: [[0.6, 0.55], [0.5, 0.45]] }} />)
+      render(
+        <SetBar
+          set={{
+            status: 'myo',
+            activation: [0.75, 0.7, 0.65],
+            clusters: [
+              [0.6, 0.55],
+              [0.5, 0.45],
+            ],
+          }}
+        />
+      )
       const fills = screen.getAllByTestId('set-strip-fill')
       expect(fills).toHaveLength(7)
       expect(slotOf(fills[3])).toHaveStyle({ marginLeft: '3px' }) // first cluster

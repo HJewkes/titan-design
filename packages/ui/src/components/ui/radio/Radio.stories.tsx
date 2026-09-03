@@ -60,12 +60,7 @@ export const Horizontal: Story = {
   render: function Render() {
     const [value, setValue] = useState<string | null>('monthly')
     return (
-      <RadioGroup
-        value={value}
-        onChange={setValue}
-        orientation="horizontal"
-        label="Billing Cycle"
-      >
+      <RadioGroup value={value} onChange={setValue} orientation="horizontal" label="Billing Cycle">
         <Radio value="monthly">Monthly</Radio>
         <Radio value="quarterly">Quarterly</Radio>
         <Radio value="yearly">Yearly</Radio>
@@ -79,7 +74,7 @@ export const AllSizes: Story = {
     const [small, setSmall] = useState<string | null>('a')
     const [medium, setMedium] = useState<string | null>('a')
     const [large, setLarge] = useState<string | null>('a')
-    
+
     return (
       <View className="gap-6">
         <View>
@@ -114,22 +109,46 @@ export const AllColors: Story = {
     const [secondary, setSecondary] = useState<string | null>('a')
     const [success, setSuccess] = useState<string | null>('a')
     const [error, setError] = useState<string | null>('a')
-    
+
     return (
       <View className="gap-6">
-        <RadioGroup value={primary} onChange={setPrimary} color="primary" orientation="horizontal" label="Primary">
+        <RadioGroup
+          value={primary}
+          onChange={setPrimary}
+          color="primary"
+          orientation="horizontal"
+          label="Primary"
+        >
           <Radio value="a">Option A</Radio>
           <Radio value="b">Option B</Radio>
         </RadioGroup>
-        <RadioGroup value={secondary} onChange={setSecondary} color="secondary" orientation="horizontal" label="Secondary">
+        <RadioGroup
+          value={secondary}
+          onChange={setSecondary}
+          color="secondary"
+          orientation="horizontal"
+          label="Secondary"
+        >
           <Radio value="a">Option A</Radio>
           <Radio value="b">Option B</Radio>
         </RadioGroup>
-        <RadioGroup value={success} onChange={setSuccess} color="success" orientation="horizontal" label="Success">
+        <RadioGroup
+          value={success}
+          onChange={setSuccess}
+          color="success"
+          orientation="horizontal"
+          label="Success"
+        >
           <Radio value="a">Option A</Radio>
           <Radio value="b">Option B</Radio>
         </RadioGroup>
-        <RadioGroup value={error} onChange={setError} color="error" orientation="horizontal" label="Error">
+        <RadioGroup
+          value={error}
+          onChange={setError}
+          color="error"
+          orientation="horizontal"
+          label="Error"
+        >
           <Radio value="a">Option A</Radio>
           <Radio value="b">Option B</Radio>
         </RadioGroup>
@@ -154,7 +173,9 @@ export const Disabled: Story = {
           <Text className="text-text-secondary text-sm mb-2">Individual option disabled</Text>
           <RadioGroup value={value} onChange={setValue}>
             <Radio value="option1">Option 1 (enabled)</Radio>
-            <Radio value="option2" isDisabled>Option 2 (disabled)</Radio>
+            <Radio value="option2" isDisabled>
+              Option 2 (disabled)
+            </Radio>
             <Radio value="option3">Option 3 (enabled)</Radio>
           </RadioGroup>
         </View>
@@ -167,27 +188,27 @@ export const FormExample: Story = {
   render: function Render() {
     const [plan, setPlan] = useState<string | null>('pro')
     const [billing, setBilling] = useState<string | null>('monthly')
-    
+
     return (
       <View className="gap-6 p-4 bg-surface-base rounded-lg max-w-md">
         <Text className="text-lg font-semibold text-text-primary">Subscription Settings</Text>
-        
+
         <RadioGroup value={plan} onChange={setPlan} label="Select Plan">
           <Radio value="free">Free - Basic features</Radio>
           <Radio value="pro">Pro - Advanced features</Radio>
           <Radio value="enterprise">Enterprise - Custom solutions</Radio>
         </RadioGroup>
-        
-        <RadioGroup 
-          value={billing} 
-          onChange={setBilling} 
+
+        <RadioGroup
+          value={billing}
+          onChange={setBilling}
           orientation="horizontal"
           label="Billing Frequency"
         >
           <Radio value="monthly">Monthly</Radio>
           <Radio value="yearly">Yearly (save 20%)</Radio>
         </RadioGroup>
-        
+
         <View className="pt-4 border-t border-hairline">
           <Text className="text-sm text-text-secondary">
             Selected: {plan} plan, billed {billing}

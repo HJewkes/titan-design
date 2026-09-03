@@ -35,34 +35,20 @@ export function EmptyState({
   ...props
 }: EmptyStateProps) {
   return (
-    <View
-      className={cn(
-        'items-center justify-center py-12 px-6',
-        className
-      )}
-      {...props}
-    >
+    <View className={cn('items-center justify-center py-12 px-6', className)} {...props}>
       {Icon && (
         <View className="mb-4 p-4 rounded-full bg-background-subtle">
           <Icon size={32} className="text-text-tertiary" />
         </View>
       )}
 
-      <Text className="text-lg font-semibold text-text-primary text-center mb-2">
-        {title}
-      </Text>
+      <Text className="text-lg font-semibold text-text-primary text-center mb-2">{title}</Text>
 
       {description && (
-        <Text className="text-sm text-text-secondary text-center max-w-xs mb-6">
-          {description}
-        </Text>
+        <Text className="text-sm text-text-secondary text-center max-w-xs mb-6">{description}</Text>
       )}
 
-      {action && (
-        <View className="mt-2">
-          {action}
-        </View>
-      )}
+      {action && <View className="mt-2">{action}</View>}
     </View>
   )
 }

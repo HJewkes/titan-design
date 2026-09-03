@@ -10,7 +10,16 @@ const meta: Meta<typeof Tooltip> = {
   argTypes: {
     placement: {
       control: 'select',
-      options: ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left', 'right'],
+      options: [
+        'top',
+        'top-start',
+        'top-end',
+        'bottom',
+        'bottom-start',
+        'bottom-end',
+        'left',
+        'right',
+      ],
     },
     hasArrow: { control: 'boolean' },
     isDisabled: { control: 'boolean' },
@@ -118,8 +127,8 @@ export const OnText: Story = {
         Hover over the{' '}
         <Tooltip label="This is helpful information">
           <Text className="text-brand-primary underline">underlined text</Text>
-        </Tooltip>
-        {' '}to see a tooltip.
+        </Tooltip>{' '}
+        to see a tooltip.
       </Text>
     </View>
   ),

@@ -12,7 +12,11 @@ import {
 } from './Sidebar'
 
 function MockIcon({ size, className }: { size?: number; className?: string }) {
-  return <span data-testid="mock-icon" data-size={size} className={className}>I</span>
+  return (
+    <span data-testid="mock-icon" data-size={size} className={className}>
+      I
+    </span>
+  )
 }
 
 function renderSidebar(props: Partial<React.ComponentProps<typeof Sidebar>> = {}) {

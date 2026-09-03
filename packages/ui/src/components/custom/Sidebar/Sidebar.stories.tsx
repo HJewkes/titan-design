@@ -46,27 +46,51 @@ type Story = StoryObj<typeof Sidebar>
 
 // Simple icon components for demos
 function HomeIcon({ size = 20, className }: { size?: number; className?: string }) {
-  return <Text style={{ fontSize: size }} className={className}>&#8962;</Text>
+  return (
+    <Text style={{ fontSize: size }} className={className}>
+      &#8962;
+    </Text>
+  )
 }
 
 function ChartIcon({ size = 20, className }: { size?: number; className?: string }) {
-  return <Text style={{ fontSize: size }} className={className}>&#9632;</Text>
+  return (
+    <Text style={{ fontSize: size }} className={className}>
+      &#9632;
+    </Text>
+  )
 }
 
 function UserIcon({ size = 20, className }: { size?: number; className?: string }) {
-  return <Text style={{ fontSize: size }} className={className}>&#9786;</Text>
+  return (
+    <Text style={{ fontSize: size }} className={className}>
+      &#9786;
+    </Text>
+  )
 }
 
 function GearIcon({ size = 20, className }: { size?: number; className?: string }) {
-  return <Text style={{ fontSize: size }} className={className}>&#9881;</Text>
+  return (
+    <Text style={{ fontSize: size }} className={className}>
+      &#9881;
+    </Text>
+  )
 }
 
 function MailIcon({ size = 20, className }: { size?: number; className?: string }) {
-  return <Text style={{ fontSize: size }} className={className}>&#9993;</Text>
+  return (
+    <Text style={{ fontSize: size }} className={className}>
+      &#9993;
+    </Text>
+  )
 }
 
 function FileIcon({ size = 20, className }: { size?: number; className?: string }) {
-  return <Text style={{ fontSize: size }} className={className}>&#128196;</Text>
+  return (
+    <Text style={{ fontSize: size }} className={className}>
+      &#128196;
+    </Text>
+  )
 }
 
 export const Default: Story = {

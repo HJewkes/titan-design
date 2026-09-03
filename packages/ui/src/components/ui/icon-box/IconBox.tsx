@@ -2,14 +2,7 @@ import React from 'react'
 import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 
-type IconBoxColor =
-  | 'primary'
-  | 'secondary'
-  | 'success'
-  | 'error'
-  | 'warning'
-  | 'info'
-  | 'neutral'
+type IconBoxColor = 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info' | 'neutral'
 
 type IconBoxSize = 'sm' | 'md' | 'lg'
 
@@ -47,10 +40,7 @@ export function IconBox({
   const sizes = sizeClasses[size]
 
   return (
-    <View
-      className={cn('items-center justify-center', colors.bg, sizes.box, className)}
-      {...props}
-    >
+    <View className={cn('items-center justify-center', colors.bg, sizes.box, className)} {...props}>
       <Icon size={sizes.iconSize} className={colors.icon} />
     </View>
   )

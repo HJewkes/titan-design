@@ -26,7 +26,10 @@ const meta: Meta<typeof TempoDisplay> = {
       description: 'Tempo values [eccentric, pauseBottom, concentric, pauseTop] in seconds',
     },
     size: { control: 'select', options: ['sm', 'md'], description: 'Size variant' },
-    fontSize: { control: { type: 'range', min: 9, max: 48, step: 1 }, description: 'Digit size (overrides `size`)' },
+    fontSize: {
+      control: { type: 'range', min: 9, max: 48, step: 1 },
+      description: 'Digit size (overrides `size`)',
+    },
     showLabel: { control: 'boolean', description: 'Show the TEMPO caption' },
     showInfo: { control: 'boolean', description: 'Show info tooltip on press' },
     live: {
@@ -273,21 +276,33 @@ export const ActiveTempoConditions: Story = {
           caption="Compact (14) · label off"
           tempo={TEMPO}
           fontSize={14}
-          live={{ activePhase: 'concentric', phaseElapsedMs: 900, completed: { eccentric: 3000, pauseBottom: 1000 } }}
+          live={{
+            activePhase: 'concentric',
+            phaseElapsedMs: 900,
+            completed: { eccentric: 3000, pauseBottom: 1000 },
+          }}
         />
         <Condition
           caption="Default (22) · label on"
           tempo={TEMPO}
           fontSize={22}
           showLabel
-          live={{ activePhase: 'concentric', phaseElapsedMs: 900, completed: { eccentric: 3000, pauseBottom: 1000 } }}
+          live={{
+            activePhase: 'concentric',
+            phaseElapsedMs: 900,
+            completed: { eccentric: 3000, pauseBottom: 1000 },
+          }}
         />
         <Condition
           caption="Wall (34) · label on"
           tempo={TEMPO}
           fontSize={34}
           showLabel
-          live={{ activePhase: 'concentric', phaseElapsedMs: 900, completed: { eccentric: 3000, pauseBottom: 1000 } }}
+          live={{
+            activePhase: 'concentric',
+            phaseElapsedMs: 900,
+            completed: { eccentric: 3000, pauseBottom: 1000 },
+          }}
         />
       </Section>
 

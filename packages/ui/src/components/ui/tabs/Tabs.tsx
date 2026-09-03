@@ -75,10 +75,7 @@ export function Tabs({
   return (
     <TabsContext.Provider value={{ activeIndex, setActiveIndex, variant, orientation }}>
       <View
-        className={cn(
-          orientation === 'vertical' ? 'flex-row' : 'flex-col',
-          className
-        )}
+        className={cn(orientation === 'vertical' ? 'flex-row' : 'flex-col', className)}
         {...props}
       >
         {children}
@@ -99,9 +96,7 @@ export function TabList({ children, className }: TabListProps) {
   const { variant, orientation } = useContext(TabsContext)
 
   const variantStyles = {
-    line: orientation === 'horizontal'
-      ? 'border-b border-hairline'
-      : 'border-r border-hairline',
+    line: orientation === 'horizontal' ? 'border-b border-hairline' : 'border-r border-hairline',
     enclosed: 'bg-surface-raised rounded-lg p-1',
     'soft-rounded': 'bg-surface-raised rounded-full p-1',
   }
@@ -151,12 +146,7 @@ export interface TabProps {
 /**
  * Individual tab button.
  */
-export function Tab({
-  index = 0,
-  isDisabled = false,
-  className,
-  children,
-}: TabProps) {
+export function Tab({ index = 0, isDisabled = false, className, children }: TabProps) {
   const { activeIndex, setActiveIndex, variant, orientation } = useContext(TabsContext)
   const isActive = activeIndex === index
 
@@ -178,9 +168,7 @@ export function Tab({
     ),
     'soft-rounded': cn(
       'px-4 py-2 rounded-full',
-      isActive
-        ? 'bg-brand-primary text-white'
-        : 'text-text-secondary web:hover:text-text-primary'
+      isActive ? 'bg-brand-primary text-white' : 'text-text-secondary web:hover:text-text-primary'
     ),
   }
 
@@ -245,9 +233,5 @@ export interface TabPanelProps {
  * Individual tab panel content.
  */
 export function TabPanel({ children, className }: TabPanelProps) {
-  return (
-    <View className={cn('py-4', className)}>
-      {children}
-    </View>
-  )
+  return <View className={cn('py-4', className)}>{children}</View>
 }

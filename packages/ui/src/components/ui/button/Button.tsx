@@ -78,27 +78,42 @@ export interface ButtonProps extends Omit<PressableProps, 'children'> {
 
 const variantStyles: Record<ButtonVariant, Record<ButtonColor, string>> = {
   solid: {
-    primary: 'bg-brand-primary active:bg-brand-primary-dark active:scale-[0.98] web:hover:bg-brand-primary-dark web:active:scale-[0.98]',
-    secondary: 'bg-brand-secondary active:bg-brand-secondary-dark active:scale-[0.98] web:hover:bg-brand-secondary-dark web:active:scale-[0.98]',
-    success: 'bg-status-success active:opacity-90 active:scale-[0.98] web:hover:opacity-90 web:active:scale-[0.98]',
-    error: 'bg-status-error active:opacity-90 active:scale-[0.98] web:hover:opacity-90 web:active:scale-[0.98]',
-    warning: 'bg-status-warning active:opacity-90 active:scale-[0.98] web:hover:opacity-90 web:active:scale-[0.98]',
+    primary:
+      'bg-brand-primary active:bg-brand-primary-dark active:scale-[0.98] web:hover:bg-brand-primary-dark web:active:scale-[0.98]',
+    secondary:
+      'bg-brand-secondary active:bg-brand-secondary-dark active:scale-[0.98] web:hover:bg-brand-secondary-dark web:active:scale-[0.98]',
+    success:
+      'bg-status-success active:opacity-90 active:scale-[0.98] web:hover:opacity-90 web:active:scale-[0.98]',
+    error:
+      'bg-status-error active:opacity-90 active:scale-[0.98] web:hover:opacity-90 web:active:scale-[0.98]',
+    warning:
+      'bg-status-warning active:opacity-90 active:scale-[0.98] web:hover:opacity-90 web:active:scale-[0.98]',
     info: 'bg-status-info active:opacity-90 active:scale-[0.98] web:hover:opacity-90 web:active:scale-[0.98]',
   },
   outline: {
-    primary: 'border-2 border-brand-primary bg-transparent active:bg-brand-primary-subtle active:scale-[0.98] web:hover:bg-brand-primary-subtle web:active:scale-[0.98]',
-    secondary: 'border-2 border-brand-secondary bg-transparent active:bg-brand-secondary-subtle active:scale-[0.98] web:hover:bg-brand-secondary-subtle web:active:scale-[0.98]',
-    success: 'border-2 border-status-success bg-transparent active:bg-status-success-subtle active:scale-[0.98] web:hover:bg-status-success-subtle web:active:scale-[0.98]',
-    error: 'border-2 border-status-error bg-transparent active:bg-status-error-subtle active:scale-[0.98] web:hover:bg-status-error-subtle web:active:scale-[0.98]',
-    warning: 'border-2 border-status-warning bg-transparent active:bg-status-warning-subtle active:scale-[0.98] web:hover:bg-status-warning-subtle web:active:scale-[0.98]',
+    primary:
+      'border-2 border-brand-primary bg-transparent active:bg-brand-primary-subtle active:scale-[0.98] web:hover:bg-brand-primary-subtle web:active:scale-[0.98]',
+    secondary:
+      'border-2 border-brand-secondary bg-transparent active:bg-brand-secondary-subtle active:scale-[0.98] web:hover:bg-brand-secondary-subtle web:active:scale-[0.98]',
+    success:
+      'border-2 border-status-success bg-transparent active:bg-status-success-subtle active:scale-[0.98] web:hover:bg-status-success-subtle web:active:scale-[0.98]',
+    error:
+      'border-2 border-status-error bg-transparent active:bg-status-error-subtle active:scale-[0.98] web:hover:bg-status-error-subtle web:active:scale-[0.98]',
+    warning:
+      'border-2 border-status-warning bg-transparent active:bg-status-warning-subtle active:scale-[0.98] web:hover:bg-status-warning-subtle web:active:scale-[0.98]',
     info: 'border-2 border-status-info bg-transparent active:bg-status-info-subtle active:scale-[0.98] web:hover:bg-status-info-subtle web:active:scale-[0.98]',
   },
   ghost: {
-    primary: 'bg-transparent active:bg-brand-primary-subtle active:scale-[0.98] web:hover:bg-brand-primary-subtle web:active:scale-[0.98]',
-    secondary: 'bg-transparent active:bg-brand-secondary-subtle active:scale-[0.98] web:hover:bg-brand-secondary-subtle web:active:scale-[0.98]',
-    success: 'bg-transparent active:bg-status-success-subtle active:scale-[0.98] web:hover:bg-status-success-subtle web:active:scale-[0.98]',
-    error: 'bg-transparent active:bg-status-error-subtle active:scale-[0.98] web:hover:bg-status-error-subtle web:active:scale-[0.98]',
-    warning: 'bg-transparent active:bg-status-warning-subtle active:scale-[0.98] web:hover:bg-status-warning-subtle web:active:scale-[0.98]',
+    primary:
+      'bg-transparent active:bg-brand-primary-subtle active:scale-[0.98] web:hover:bg-brand-primary-subtle web:active:scale-[0.98]',
+    secondary:
+      'bg-transparent active:bg-brand-secondary-subtle active:scale-[0.98] web:hover:bg-brand-secondary-subtle web:active:scale-[0.98]',
+    success:
+      'bg-transparent active:bg-status-success-subtle active:scale-[0.98] web:hover:bg-status-success-subtle web:active:scale-[0.98]',
+    error:
+      'bg-transparent active:bg-status-error-subtle active:scale-[0.98] web:hover:bg-status-error-subtle web:active:scale-[0.98]',
+    warning:
+      'bg-transparent active:bg-status-warning-subtle active:scale-[0.98] web:hover:bg-status-warning-subtle web:active:scale-[0.98]',
     info: 'bg-transparent active:bg-status-info-subtle active:scale-[0.98] web:hover:bg-status-info-subtle web:active:scale-[0.98]',
   },
   link: {
@@ -237,11 +252,7 @@ export const Button = forwardRef<View, ButtonProps>(function Button(
       )}
       {isLoading && loadingText ? (
         <Text
-          className={cn(
-            'font-semibold',
-            textSizeStyles[size],
-            textStyles[variant][color]
-          )}
+          className={cn('font-semibold', textSizeStyles[size], textStyles[variant][color])}
           style={{ color: textColorMap[variant][color] }}
         >
           {loadingText}
@@ -262,11 +273,7 @@ export interface ButtonTextProps {
  * Text component for Button. Use inside Button for consistent styling.
  */
 export function ButtonText({ children, className }: ButtonTextProps) {
-  return (
-    <Text className={cn('font-semibold text-inherit', className)}>
-      {children}
-    </Text>
-  )
+  return <Text className={cn('font-semibold text-inherit', className)}>{children}</Text>
 }
 
 export interface ButtonIconProps {

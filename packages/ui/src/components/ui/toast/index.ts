@@ -6,4 +6,3 @@ export type {
   ToastStatus,
   ToastPosition,
 } from './Toast'
-

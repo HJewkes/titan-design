@@ -33,7 +33,12 @@ interface SessionRec {
   turns: number
   prs: readonly number[]
 }
-interface PrRec { number: number; branch: string | null; merged: boolean; sessions: readonly string[] }
+interface PrRec {
+  number: number
+  branch: string | null
+  merged: boolean
+  sessions: readonly string[]
+}
 
 const S = sessionSignals as unknown as {
   repo: string
@@ -53,16 +58,28 @@ function ridingPrs(f: FileRec): PrRec[] {
   const fileSessions = new Set(f.sessions)
   const branchSet = new Set(f.branches)
   return S.prs
-    .filter((p) => (p.branch && branchSet.has(p.branch)) || p.sessions.some((sid) => fileSessions.has(sid)))
+    .filter(
+      (p) =>
+        (p.branch && branchSet.has(p.branch)) || p.sessions.some((sid) => fileSessions.has(sid))
+    )
     .slice(0, 8)
 }
 
 function rwe(f: { reads: number; writes: number; edits: number }) {
   return (
     <View className="flex-row items-center gap-[8px]">
-      <Typography variant="mono" className="text-[11px] text-text-tertiary">{`${f.reads}r`}</Typography>
-      <Typography variant="mono" className="text-[11px] text-brand-primary">{`${f.writes}w`}</Typography>
-      <Typography variant="mono" className="text-[11px] text-status-info">{`${f.edits}e`}</Typography>
+      <Typography
+        variant="mono"
+        className="text-[11px] text-text-tertiary"
+      >{`${f.reads}r`}</Typography>
+      <Typography
+        variant="mono"
+        className="text-[11px] text-brand-primary"
+      >{`${f.writes}w`}</Typography>
+      <Typography
+        variant="mono"
+        className="text-[11px] text-status-info"
+      >{`${f.edits}e`}</Typography>
     </View>
   )
 }
@@ -76,27 +93,54 @@ function FileRow({ f, active, onPress }: { f: FileRec; active: boolean; onPress:
       onPress={onPress}
       className={`relative rounded-[8px] px-[12px] py-[9px] ${active ? 'bg-surface-raised' : ''}`}
     >
-      {active ? <View className="absolute left-0 top-[8px] bottom-[8px] w-[3px] rounded-r-[3px] bg-brand-primary" /> : null}
+      {active ? (
+        <View className="absolute left-0 top-[8px] bottom-[8px] w-[3px] rounded-r-[3px] bg-brand-primary" />
+      ) : null}
       <View className="flex-row items-baseline justify-between gap-[8px]">
-        <Typography variant="mono" numberOfLines={1} className="flex-1 text-[12px] text-text-secondary">
-          {dir ? <Typography variant="mono" className="text-[12px] text-text-tertiary">{dir + '/'}</Typography> : null}
-          <Typography variant="mono" className="text-[12px] text-text-primary">{name}</Typography>
+        <Typography
+          variant="mono"
+          numberOfLines={1}
+          className="flex-1 text-[12px] text-text-secondary"
+        >
+          {dir ? (
+            <Typography variant="mono" className="text-[12px] text-text-tertiary">
+              {dir + '/'}
+            </Typography>
+          ) : null}
+          <Typography variant="mono" className="text-[12px] text-text-primary">
+            {name}
+          </Typography>
         </Typography>
-        <Typography variant="mono" className="text-[12px] text-text-primary">{f.touches}</Typography>
+        <Typography variant="mono" className="text-[12px] text-text-primary">
+          {f.touches}
+        </Typography>
       </View>
       <View className="mt-[3px] flex-row items-center justify-between">
         {rwe(f)}
-        <Typography variant="caption" className="text-[10px] text-text-tertiary">{`${f.sessions.length} sessions`}</Typography>
+        <Typography
+          variant="caption"
+          className="text-[10px] text-text-tertiary"
+        >{`${f.sessions.length} sessions`}</Typography>
       </View>
     </Pressable>
   )
 }
 
-function StatTile({ label, value, color = 'text-text-primary' }: { label: string; value: string; color?: string }) {
+function StatTile({
+  label,
+  value,
+  color = 'text-text-primary',
+}: {
+  label: string
+  value: string
+  color?: string
+}) {
   return (
     <Card variant="filled" className="min-w-[92px] flex-1 gap-[3px] px-[12px] py-[10px]">
       <Eyebrow>{label}</Eyebrow>
-      <Typography variant="mono" className={`text-[19px] font-bold ${color}`}>{value}</Typography>
+      <Typography variant="mono" className={`text-[19px] font-bold ${color}`}>
+        {value}
+      </Typography>
     </Card>
   )
 }
@@ -114,13 +158,21 @@ function BiographyRow({ sid, f, last }: { sid: string; f: FileRec; last: boolean
       </View>
       <View className="flex-1 pb-[14px]">
         <View className="flex-row items-baseline justify-between gap-[8px]">
-          <Typography variant="body2" numberOfLines={1} className="flex-1 text-[13px] text-text-primary">
+          <Typography
+            variant="body2"
+            numberOfLines={1}
+            className="flex-1 text-[13px] text-text-primary"
+          >
             {s?.aiTitle ?? shortId(sid)}
           </Typography>
-          <Typography variant="caption" className="text-[11px] text-text-tertiary">{shortDate(s?.lastTs)}</Typography>
+          <Typography variant="caption" className="text-[11px] text-text-tertiary">
+            {shortDate(s?.lastTs)}
+          </Typography>
         </View>
         <View className="mt-[3px] flex-row items-center gap-[8px]">
-          <Typography variant="mono" className="text-[10px] text-text-tertiary">{shortId(sid)}</Typography>
+          <Typography variant="mono" className="text-[10px] text-text-tertiary">
+            {shortId(sid)}
+          </Typography>
           {t ? (
             <Typography
               variant="mono"
@@ -130,7 +182,10 @@ function BiographyRow({ sid, f, last }: { sid: string; f: FileRec; last: boolean
             </Typography>
           ) : null}
           {s?.turns ? (
-            <Typography variant="caption" className="text-[10px] text-text-tertiary">{`${s.turns} turns`}</Typography>
+            <Typography
+              variant="caption"
+              className="text-[10px] text-text-tertiary"
+            >{`${s.turns} turns`}</Typography>
           ) : null}
           {t ? (
             <Pill variant="subtle" color="info" size="xs">
@@ -172,7 +227,9 @@ function FileBiography() {
         {/* biography detail */}
         <View className="flex-1 gap-[14px]">
           <View className="gap-[3px]">
-            <Typography variant="mono" className="text-[15px] font-bold text-text-primary">{f.path}</Typography>
+            <Typography variant="mono" className="text-[15px] font-bold text-text-primary">
+              {f.path}
+            </Typography>
             <Eyebrow>
               {`${f.touches} touches · ${f.sessions.length} sessions · ${shortDate(f.firstTouched)} → ${shortDate(f.lastTouched)}`}
             </Eyebrow>
@@ -187,7 +244,11 @@ function FileBiography() {
               value={signedCompact(f.netGrowth) + ' ch'}
               color={f.netGrowth >= 0 ? 'text-brand-primary' : 'text-status-error'}
             />
-            <StatTile label="Sessions" value={String(f.sessions.length)} color="text-text-primary" />
+            <StatTile
+              label="Sessions"
+              value={String(f.sessions.length)}
+              color="text-text-primary"
+            />
           </View>
 
           {/* branches + PRs it rode */}
@@ -198,7 +259,9 @@ function FileBiography() {
                   <Eyebrow>Branches</Eyebrow>
                   <View className="flex-1 flex-row flex-wrap gap-[6px]">
                     {f.branches.map((b) => (
-                      <Pill key={b} variant="outline" color="default" size="xs">{b}</Pill>
+                      <Pill key={b} variant="outline" color="default" size="xs">
+                        {b}
+                      </Pill>
                     ))}
                   </View>
                 </View>
@@ -208,7 +271,12 @@ function FileBiography() {
                   <Eyebrow>Rode PRs</Eyebrow>
                   <View className="flex-1 flex-row flex-wrap gap-[6px]">
                     {prs.map((p) => (
-                      <Pill key={p.number} variant="subtle" color={p.merged ? 'success' : 'primary'} size="xs">
+                      <Pill
+                        key={p.number}
+                        variant="subtle"
+                        color={p.merged ? 'success' : 'primary'}
+                        size="xs"
+                      >
                         {`#${p.number}`}
                       </Pill>
                     ))}
@@ -224,7 +292,11 @@ function FileBiography() {
               <Eyebrow>Changes together with</Eyebrow>
               {f.coChange.map((c) => (
                 <View key={c.path} className="flex-row items-center justify-between gap-[8px]">
-                  <Typography variant="mono" numberOfLines={1} className="flex-1 text-[12px] text-text-secondary">
+                  <Typography
+                    variant="mono"
+                    numberOfLines={1}
+                    className="flex-1 text-[12px] text-text-secondary"
+                  >
                     {c.path}
                   </Typography>
                   <Pill variant="subtle" color="primary" size="xs">{`${c.count}×`}</Pill>

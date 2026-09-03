@@ -47,7 +47,7 @@ describe('Treemap', () => {
 
   it('assigns fallback palette colors when omitted', () => {
     const { container } = render(
-      <Treemap data={[{ id: 'x', value: 1 }]} width={100} height={100} />,
+      <Treemap data={[{ id: 'x', value: 1 }]} width={100} height={100} />
     )
     expect(container.firstChild).toBeInTheDocument()
   })

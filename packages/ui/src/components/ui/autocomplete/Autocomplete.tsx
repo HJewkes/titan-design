@@ -1,5 +1,13 @@
 import React, { useState, useCallback, useMemo } from 'react'
-import { View, Text, TextInput, Pressable, ScrollView, type ViewProps, type TextInputProps } from 'react-native'
+import {
+  View,
+  Text,
+  TextInput,
+  Pressable,
+  ScrollView,
+  type ViewProps,
+  type TextInputProps,
+} from 'react-native'
 import { cn } from '../../../utils/cn'
 
 export interface AutocompleteOption<T = string> {
@@ -115,10 +123,7 @@ export function Autocomplete<T extends string = string>({
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
 
   // Get the label for the selected value
-  const selectedOption = useMemo(
-    () => options.find((o) => o.value === value),
-    [options, value]
-  )
+  const selectedOption = useMemo(() => options.find((o) => o.value === value), [options, value])
 
   // Filter options based on input
   const filteredOptions = useMemo(() => {
@@ -206,21 +211,14 @@ export function Autocomplete<T extends string = string>({
             onBlur={handleBlur}
             placeholder={placeholder}
             editable={!isDisabled}
-            className={cn(
-              'flex-1 px-3 py-2 text-text-primary',
-              'placeholder:text-text-tertiary'
-            )}
+            className={cn('flex-1 px-3 py-2 text-text-primary', 'placeholder:text-text-tertiary')}
             accessibilityLabel={label}
             {...inputProps}
           />
 
           {/* Clear button */}
           {isClearable && value && !isDisabled && (
-            <Pressable
-              onPress={handleClear}
-              className="p-2"
-              accessibilityLabel="Clear selection"
-            >
+            <Pressable onPress={handleClear} className="p-2" accessibilityLabel="Clear selection">
               <Text className="text-text-tertiary">×</Text>
             </Pressable>
           )}
@@ -252,16 +250,12 @@ export function Autocomplete<T extends string = string>({
 
               {/* Loading message */}
               {isLoading && (
-                <Text className="px-3 py-2 text-sm text-text-tertiary">
-                  {loadingText}
-                </Text>
+                <Text className="px-3 py-2 text-sm text-text-tertiary">{loadingText}</Text>
               )}
 
               {/* No results */}
               {showNoResults && (
-                <Text className="px-3 py-2 text-sm text-text-tertiary">
-                  {noOptionsText}
-                </Text>
+                <Text className="px-3 py-2 text-sm text-text-tertiary">{noOptionsText}</Text>
               )}
 
               {/* Options */}
@@ -319,10 +313,7 @@ export function Autocomplete<T extends string = string>({
       {/* Helper/Error text */}
       {(helperText || errorMessage) && (
         <Text
-          className={cn(
-            'text-xs mt-1',
-            isInvalid ? 'text-status-error' : 'text-text-tertiary'
-          )}
+          className={cn('text-xs mt-1', isInvalid ? 'text-status-error' : 'text-text-tertiary')}
         >
           {errorMessage || helperText}
         </Text>

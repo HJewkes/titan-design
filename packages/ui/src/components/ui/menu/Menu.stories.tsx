@@ -68,21 +68,15 @@ export const WithGroups: Story = {
 }
 
 function EditIcon({ size = 14 }: { size?: number }) {
-  return (
-    <Text style={{ fontSize: size, lineHeight: size }}>&#9998;</Text>
-  )
+  return <Text style={{ fontSize: size, lineHeight: size }}>&#9998;</Text>
 }
 
 function TrashIcon({ size = 14 }: { size?: number }) {
-  return (
-    <Text style={{ fontSize: size, lineHeight: size }}>&#128465;</Text>
-  )
+  return <Text style={{ fontSize: size, lineHeight: size }}>&#128465;</Text>
 }
 
 function CopyIcon({ size = 14 }: { size?: number }) {
-  return (
-    <Text style={{ fontSize: size, lineHeight: size }}>&#128203;</Text>
-  )
+  return <Text style={{ fontSize: size, lineHeight: size }}>&#128203;</Text>
 }
 
 export const WithIcons: Story = {
@@ -94,10 +88,16 @@ export const WithIcons: Story = {
         </Button>
       </MenuTrigger>
       <MenuList>
-        <MenuItem icon={<EditIcon />} onPress={() => {}}>Edit</MenuItem>
-        <MenuItem icon={<CopyIcon />} onPress={() => {}}>Duplicate</MenuItem>
+        <MenuItem icon={<EditIcon />} onPress={() => {}}>
+          Edit
+        </MenuItem>
+        <MenuItem icon={<CopyIcon />} onPress={() => {}}>
+          Duplicate
+        </MenuItem>
         <MenuDivider />
-        <MenuItem icon={<TrashIcon />} onPress={() => {}} isDestructive>Delete</MenuItem>
+        <MenuItem icon={<TrashIcon />} onPress={() => {}} isDestructive>
+          Delete
+        </MenuItem>
       </MenuList>
     </Menu>
   ),
@@ -115,7 +115,9 @@ export const DestructiveItem: Story = {
         <MenuItem onPress={() => {}}>Edit Profile</MenuItem>
         <MenuItem onPress={() => {}}>Change Password</MenuItem>
         <MenuDivider />
-        <MenuItem onPress={() => {}} isDestructive>Delete Account</MenuItem>
+        <MenuItem onPress={() => {}} isDestructive>
+          Delete Account
+        </MenuItem>
       </MenuList>
     </Menu>
   ),
@@ -152,11 +154,15 @@ export const DisabledItems: Story = {
       </MenuTrigger>
       <MenuList>
         <MenuItem onPress={() => {}}>Undo</MenuItem>
-        <MenuItem onPress={() => {}} isDisabled>Redo</MenuItem>
+        <MenuItem onPress={() => {}} isDisabled>
+          Redo
+        </MenuItem>
         <MenuDivider />
         <MenuItem onPress={() => {}}>Cut</MenuItem>
         <MenuItem onPress={() => {}}>Copy</MenuItem>
-        <MenuItem onPress={() => {}} isDisabled>Paste</MenuItem>
+        <MenuItem onPress={() => {}} isDisabled>
+          Paste
+        </MenuItem>
       </MenuList>
     </Menu>
   ),

@@ -173,7 +173,14 @@ export function BodyMapDetailPanel({
 
   return (
     <View
-      style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'flex-end' }}
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: 'flex-end',
+      }}
       testID="body-map-detail-panel-root"
     >
       <Animated.View
@@ -266,7 +273,9 @@ export function BodyMapDetailPanel({
               style={{ padding: 4, margin: -4 }}
               testID="body-map-detail-panel-close"
             >
-              <Text className="text-text-secondary" style={{ fontSize: 22, lineHeight: 22 }}>{'×'}</Text>
+              <Text className="text-text-secondary" style={{ fontSize: 22, lineHeight: 22 }}>
+                {'×'}
+              </Text>
             </Pressable>
           </View>
 
@@ -286,10 +295,16 @@ export function BodyMapDetailPanel({
               style={{ marginBottom: 6 }}
               accessibilityElementsHidden
             >
-              <Text className="text-text-tertiary" style={{ fontSize: 10, fontFamily: 'Inter, sans-serif', fontWeight: '600' }}>
+              <Text
+                className="text-text-tertiary"
+                style={{ fontSize: 10, fontFamily: 'Inter, sans-serif', fontWeight: '600' }}
+              >
                 {`MEV ${landmarks.mev}`}
               </Text>
-              <Text className="text-text-tertiary" style={{ fontSize: 10, fontFamily: 'Inter, sans-serif', fontWeight: '600' }}>
+              <Text
+                className="text-text-tertiary"
+                style={{ fontSize: 10, fontFamily: 'Inter, sans-serif', fontWeight: '600' }}
+              >
                 {`MRV ${landmarks.mrv}`}
               </Text>
             </View>
@@ -304,7 +319,9 @@ export function BodyMapDetailPanel({
               testID="body-map-detail-panel-volume-bar"
             >
               <View
-                style={{ height: 8, borderRadius: 4, backgroundImage: VOLUME_GRADIENT } as ViewStyle}
+                style={
+                  { height: 8, borderRadius: 4, backgroundImage: VOLUME_GRADIENT } as ViewStyle
+                }
                 accessibilityElementsHidden
               />
               <View
@@ -393,7 +410,12 @@ export function BodyMapDetailPanel({
                 >
                   <Text
                     className="text-text-primary"
-                    style={{ flex: 1, fontSize: 13, fontFamily: 'Inter, sans-serif', fontWeight: '600' }}
+                    style={{
+                      flex: 1,
+                      fontSize: 13,
+                      fontFamily: 'Inter, sans-serif',
+                      fontWeight: '600',
+                    }}
                     testID={`body-map-detail-panel-contributing-${index}-name`}
                   >
                     {exercise.name}
@@ -432,7 +454,12 @@ export function BodyMapDetailPanel({
                 >
                   <Text
                     className="text-text-primary"
-                    style={{ flex: 1, fontSize: 13, fontFamily: 'Inter, sans-serif', fontWeight: '600' }}
+                    style={{
+                      flex: 1,
+                      fontSize: 13,
+                      fontFamily: 'Inter, sans-serif',
+                      fontWeight: '600',
+                    }}
                     testID={`body-map-detail-panel-upcoming-${index}-name`}
                   >
                     {exercise.name}
@@ -465,7 +492,14 @@ export function BodyMapDetailPanel({
               }}
               testID="body-map-detail-panel-view-exercises"
             >
-              <Text style={{ fontSize: 13, fontFamily: 'Inter, sans-serif', fontWeight: '700', color: BRAND_PRIMARY }}>
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontFamily: 'Inter, sans-serif',
+                  fontWeight: '700',
+                  color: BRAND_PRIMARY,
+                }}
+              >
                 {'View exercises'}
               </Text>
             </Pressable>

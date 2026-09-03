@@ -26,9 +26,9 @@
  */
 export function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
   const cleaned = hex.replace('#', '')
-  
+
   let r: number, g: number, b: number
-  
+
   if (cleaned.length === 3) {
     r = parseInt(cleaned[0] + cleaned[0], 16)
     g = parseInt(cleaned[1] + cleaned[1], 16)
@@ -40,7 +40,7 @@ export function hexToRgb(hex: string): { r: number; g: number; b: number } | nul
   } else {
     return null
   }
-  
+
   return { r, g, b }
 }
 
@@ -51,17 +51,17 @@ export function rgbToHsv(r: number, g: number, b: number): { h: number; s: numbe
   const rNorm = r / 255
   const gNorm = g / 255
   const bNorm = b / 255
-  
+
   const max = Math.max(rNorm, gNorm, bNorm)
   const min = Math.min(rNorm, gNorm, bNorm)
   const delta = max - min
-  
+
   // Value
   const v = max
-  
+
   // Saturation
   const s = max === 0 ? 0 : delta / max
-  
+
   // Hue
   let h = 0
   if (delta !== 0) {
@@ -74,7 +74,7 @@ export function rgbToHsv(r: number, g: number, b: number): { h: number; s: numbe
     }
   }
   if (h < 0) h += 360
-  
+
   return { h, s, v }
 }
 
@@ -83,25 +83,37 @@ export function rgbToHsv(r: number, g: number, b: number): { h: number; s: numbe
  */
 export function hsvToRgb(h: number, s: number, v: number): { r: number; g: number; b: number } {
   const c = v * s
-  const x = c * (1 - Math.abs((h / 60) % 2 - 1))
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1))
   const m = v - c
-  
+
   let rPrime: number, gPrime: number, bPrime: number
 
   if (h >= 0 && h < 60) {
-    rPrime = c; gPrime = x; bPrime = 0
+    rPrime = c
+    gPrime = x
+    bPrime = 0
   } else if (h >= 60 && h < 120) {
-    rPrime = x; gPrime = c; bPrime = 0
+    rPrime = x
+    gPrime = c
+    bPrime = 0
   } else if (h >= 120 && h < 180) {
-    rPrime = 0; gPrime = c; bPrime = x
+    rPrime = 0
+    gPrime = c
+    bPrime = x
   } else if (h >= 180 && h < 240) {
-    rPrime = 0; gPrime = x; bPrime = c
+    rPrime = 0
+    gPrime = x
+    bPrime = c
   } else if (h >= 240 && h < 300) {
-    rPrime = x; gPrime = 0; bPrime = c
+    rPrime = x
+    gPrime = 0
+    bPrime = c
   } else {
-    rPrime = c; gPrime = 0; bPrime = x
+    rPrime = c
+    gPrime = 0
+    bPrime = x
   }
-  
+
   return {
     r: Math.round((rPrime + m) * 255),
     g: Math.round((gPrime + m) * 255),
@@ -122,34 +134,34 @@ export function rgbToHex(r: number, g: number, b: number): string {
 
 /**
  * Lighten a color by increasing its HSV Value component.
- * 
+ *
  * @param hex - The hex color to lighten
  * @param amount - Amount to increase V by (0-1)
  */
 export function lighten(hex: string, amount: number = 0.1): string {
   const rgb = hexToRgb(hex)
   if (!rgb) return hex
-  
+
   const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b)
   const newV = Math.min(1, hsv.v + amount)
-  
+
   const newRgb = hsvToRgb(hsv.h, hsv.s, newV)
   return rgbToHex(newRgb.r, newRgb.g, newRgb.b)
 }
 
 /**
  * Darken a color by decreasing its HSV Value component.
- * 
+ *
  * @param hex - The hex color to darken
  * @param amount - Amount to decrease V by (0-1)
  */
 export function darken(hex: string, amount: number = 0.1): string {
   const rgb = hexToRgb(hex)
   if (!rgb) return hex
-  
+
   const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b)
   const newV = Math.max(0, hsv.v - amount)
-  
+
   const newRgb = hsvToRgb(hsv.h, hsv.s, newV)
   return rgbToHex(newRgb.r, newRgb.g, newRgb.b)
 }
@@ -157,12 +169,12 @@ export function darken(hex: string, amount: number = 0.1): string {
 /**
  * Get hover colors for a button based on its background color.
  * Automatically adapts intensity based on the color's luminance.
- * 
+ *
  * @param bgColor - The button's background color (hex)
  * @param intensity - How strong the hover effect should be ('subtle' | 'medium' | 'strong')
  */
 export function getHoverColors(
-  bgColor: string, 
+  bgColor: string,
   intensity: 'subtle' | 'medium' | 'strong' = 'medium'
 ): { raised: string; pressed: string } {
   const amounts = {
@@ -170,12 +182,12 @@ export function getHoverColors(
     medium: 0.02,
     strong: 0.03,
   }
-  
+
   const amount = amounts[intensity]
-  
+
   return {
-    raised: lighten(bgColor, amount),  // Raised hover: lighten (lifting up)
-    pressed: darken(bgColor, amount),  // Pressed hover: darken (pressing down)
+    raised: lighten(bgColor, amount), // Raised hover: lighten (lifting up)
+    pressed: darken(bgColor, amount), // Pressed hover: darken (pressing down)
   }
 }
 

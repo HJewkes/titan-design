@@ -8,13 +8,7 @@ import { View, ScrollView, Pressable } from 'react-native'
 import { cn } from '../../utils/cn'
 import { Typography } from '../../components/custom/Typography'
 import { Indicator } from '../../components/ui/indicator'
-import {
-  ActivityIcon,
-  LayersIcon,
-  HistoryIcon,
-  AwardIcon,
-  ScaleIcon,
-} from '../../components/icons'
+import { ActivityIcon, LayersIcon, HistoryIcon, AwardIcon, ScaleIcon } from '../../components/icons'
 
 export type AwNavKey = 'overview' | 'tasks' | 'sessions' | 'initiative' | 'files'
 
@@ -36,7 +30,7 @@ function NavRow({ item, active }: { item: (typeof NAV)[number]; active: boolean 
       accessibilityLabel={label}
       className={cn(
         'relative h-[38px] flex-row items-center gap-[11px] rounded-[9px] pl-[14px] pr-[10px]',
-        active ? 'bg-surface-raised' : '',
+        active ? 'bg-surface-raised' : ''
       )}
     >
       {active ? (

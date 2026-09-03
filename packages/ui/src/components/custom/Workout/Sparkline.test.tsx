@@ -19,9 +19,7 @@ describe('Sparkline', () => {
   it('renders line segments between points', () => {
     render(<Sparkline data={sampleData} />)
     for (let i = 1; i < sampleData.length; i++) {
-      expect(
-        screen.getByTestId(`sparkline-segment-${i}`),
-      ).toBeInTheDocument()
+      expect(screen.getByTestId(`sparkline-segment-${i}`)).toBeInTheDocument()
     }
   })
 
@@ -40,9 +38,7 @@ describe('Sparkline', () => {
   it('highlights last dot when highlightLast is true', () => {
     render(<Sparkline data={sampleData} highlightLast />)
     const lastIndex = sampleData.length - 1
-    expect(
-      screen.getByTestId(`sparkline-dot-${lastIndex}`),
-    ).toBeInTheDocument()
+    expect(screen.getByTestId(`sparkline-dot-${lastIndex}`)).toBeInTheDocument()
     // Other dots should not be present (showDots is false)
     expect(screen.queryByTestId('sparkline-dot-0')).not.toBeInTheDocument()
   })
@@ -62,7 +58,7 @@ describe('Sparkline', () => {
           { value: 20, color: '#ff0000' },
           { value: 25, color: '#00ff00', dashed: true },
         ]}
-      />,
+      />
     )
     expect(screen.getByTestId('sparkline-reference-0')).toBeInTheDocument()
     expect(screen.getByTestId('sparkline-reference-1')).toBeInTheDocument()
@@ -70,9 +66,7 @@ describe('Sparkline', () => {
 
   it('does not render reference lines when not provided', () => {
     render(<Sparkline data={sampleData} />)
-    expect(
-      screen.queryByTestId('sparkline-reference-0'),
-    ).not.toBeInTheDocument()
+    expect(screen.queryByTestId('sparkline-reference-0')).not.toBeInTheDocument()
   })
 
   it('uses default dimensions', () => {
@@ -89,23 +83,17 @@ describe('Sparkline', () => {
 
   it('sets accessibility label', () => {
     render(<Sparkline data={sampleData} />)
-    expect(
-      screen.getByLabelText('Sparkline chart with 5 data points'),
-    ).toBeInTheDocument()
+    expect(screen.getByLabelText('Sparkline chart with 5 data points')).toBeInTheDocument()
   })
 
   it('sets empty accessibility label for no data', () => {
     render(<Sparkline data={[]} />)
-    expect(
-      screen.getByLabelText('Sparkline chart, no data'),
-    ).toBeInTheDocument()
+    expect(screen.getByLabelText('Sparkline chart, no data')).toBeInTheDocument()
   })
 
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
-      const { container } = render(
-        <Sparkline data={sampleData} showDots highlightLast />,
-      )
+      const { container } = render(<Sparkline data={sampleData} showDots highlightLast />)
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })

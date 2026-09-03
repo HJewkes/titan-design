@@ -93,10 +93,7 @@ export function PrBadge({
 
   if (animate) {
     return (
-      <Animated.View
-        style={{ transform: [{ scale }], opacity }}
-        testID="pr-badge-animated"
-      >
+      <Animated.View style={{ transform: [{ scale }], opacity }} testID="pr-badge-animated">
         {badge}
       </Animated.View>
     )

@@ -10,7 +10,16 @@ import {
 
 function UserIcon({ size = 20 }: { size?: number; className?: string }) {
   return (
-    <View style={{ width: size, height: size, borderRadius: size / 2, backgroundColor: '#6366f1', justifyContent: 'center', alignItems: 'center' }}>
+    <View
+      style={{
+        width: size,
+        height: size,
+        borderRadius: size / 2,
+        backgroundColor: '#6366f1',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
       <Text style={{ color: '#fff', fontSize: size * 0.5, fontWeight: '600' }}>U</Text>
     </View>
   )

@@ -84,11 +84,7 @@ export const Switch = forwardRef<View, SwitchProps>(function Switch(
       accessibilityRole="switch"
       accessibilityState={{ checked: isChecked, disabled: isDisabled }}
       accessibilityLabel={label}
-      className={cn(
-        'flex-row items-center gap-2',
-        isDisabled && 'opacity-50',
-        className
-      )}
+      className={cn('flex-row items-center gap-2', isDisabled && 'opacity-50', className)}
       {...props}
     >
       {label && labelPosition === 'left' && (

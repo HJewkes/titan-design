@@ -30,7 +30,14 @@ export const Default: Story = {
     width: 480,
     height: 340,
     diagonal: true,
-    axis: { xLabel: 'Instability (I)', yLabel: 'Abstractness (A)', xMin: 0, xMax: 1, yMin: 0, yMax: 1 },
+    axis: {
+      xLabel: 'Instability (I)',
+      yLabel: 'Abstractness (A)',
+      xMin: 0,
+      xMax: 1,
+      yMin: 0,
+      yMax: 1,
+    },
   },
 }
 
@@ -39,7 +46,14 @@ export const NoDiagonal: Story = {
     data: mainSequence,
     width: 480,
     height: 340,
-    axis: { xLabel: 'Instability (I)', yLabel: 'Abstractness (A)', xMin: 0, xMax: 1, yMin: 0, yMax: 1 },
+    axis: {
+      xLabel: 'Instability (I)',
+      yLabel: 'Abstractness (A)',
+      xMin: 0,
+      xMax: 1,
+      yMin: 0,
+      yMax: 1,
+    },
   },
 }
 
@@ -50,7 +64,14 @@ export const Selected: Story = {
     height: 340,
     diagonal: true,
     selectedId: 'utils',
-    axis: { xLabel: 'Instability (I)', yLabel: 'Abstractness (A)', xMin: 0, xMax: 1, yMin: 0, yMax: 1 },
+    axis: {
+      xLabel: 'Instability (I)',
+      yLabel: 'Abstractness (A)',
+      xMin: 0,
+      xMax: 1,
+      yMin: 0,
+      yMax: 1,
+    },
   },
 }
 
@@ -67,11 +88,21 @@ export const SinglePoint: Story = {
 /** An outlier far outside the main cluster, kept legible by an explicit domain. */
 export const Outlier: Story = {
   args: {
-    data: [...mainSequence, { id: 'legacy', x: 0.98, y: 0.98, r: 16, color: '#F83030', label: 'legacy.ts' }],
+    data: [
+      ...mainSequence,
+      { id: 'legacy', x: 0.98, y: 0.98, r: 16, color: '#F83030', label: 'legacy.ts' },
+    ],
     width: 480,
     height: 340,
     diagonal: true,
-    axis: { xLabel: 'Instability (I)', yLabel: 'Abstractness (A)', xMin: 0, xMax: 1, yMin: 0, yMax: 1 },
+    axis: {
+      xLabel: 'Instability (I)',
+      yLabel: 'Abstractness (A)',
+      xMin: 0,
+      xMax: 1,
+      yMin: 0,
+      yMax: 1,
+    },
   },
 }
 
@@ -80,6 +111,13 @@ export const Empty: Story = {
     data: [],
     width: 400,
     height: 300,
-    axis: { xLabel: 'Instability (I)', yLabel: 'Abstractness (A)', xMin: 0, xMax: 1, yMin: 0, yMax: 1 },
+    axis: {
+      xLabel: 'Instability (I)',
+      yLabel: 'Abstractness (A)',
+      xMin: 0,
+      xMax: 1,
+      yMin: 0,
+      yMax: 1,
+    },
   },
 }

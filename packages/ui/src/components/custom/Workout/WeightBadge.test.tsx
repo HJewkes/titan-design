@@ -47,18 +47,14 @@ describe('WeightBadge', () => {
   describe('reps (rep-max context)', () => {
     it('shows the estimated 1RM label when reps is omitted', () => {
       render(<WeightBadge value={315} unit="lbs" />)
-      expect(
-        screen.getByLabelText('Estimated one rep max: 315 lbs'),
-      ).toBeInTheDocument()
+      expect(screen.getByLabelText('Estimated one rep max: 315 lbs')).toBeInTheDocument()
       expect(screen.queryByTestId('weight-badge-repmax')).not.toBeInTheDocument()
     })
 
     it('shows the rep-max qualifier and label when reps is provided', () => {
       render(<WeightBadge value={275} unit="lbs" reps={5} />)
       expect(screen.getByTestId('weight-badge-repmax')).toHaveTextContent('5RM')
-      expect(
-        screen.getByLabelText('5 rep max: 275 lbs'),
-      ).toBeInTheDocument()
+      expect(screen.getByLabelText('5 rep max: 275 lbs')).toBeInTheDocument()
     })
   })
 
@@ -129,25 +125,19 @@ describe('WeightBadge', () => {
 
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
-      const { container } = render(
-        <WeightBadge value={225} isPr onPress={() => {}} />,
-      )
+      const { container } = render(<WeightBadge value={225} isPr onPress={() => {}} />)
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
 
     it('has no accessibility violations with delta', async () => {
-      const { container } = render(
-        <WeightBadge value={225} delta={3} onPress={() => {}} />,
-      )
+      const { container } = render(<WeightBadge value={225} delta={3} onPress={() => {}} />)
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
 
     it('has no accessibility violations as static badge', async () => {
-      const { container } = render(
-        <WeightBadge value={315} unit="kg" isPr delta={-2} />,
-      )
+      const { container } = render(<WeightBadge value={315} unit="kg" isPr delta={-2} />)
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
@@ -155,15 +145,13 @@ describe('WeightBadge', () => {
     it('includes delta in the e1RM accessibility label', () => {
       render(<WeightBadge value={225} delta={5} />)
       expect(
-        screen.getByLabelText('Estimated one rep max: 225 lbs, +5% change'),
+        screen.getByLabelText('Estimated one rep max: 225 lbs, +5% change')
       ).toBeInTheDocument()
     })
 
     it('includes delta in the rep-max accessibility label', () => {
       render(<WeightBadge value={275} reps={5} delta={-3} />)
-      expect(
-        screen.getByLabelText('5 rep max: 275 lbs, -3% change'),
-      ).toBeInTheDocument()
+      expect(screen.getByLabelText('5 rep max: 275 lbs, -3% change')).toBeInTheDocument()
     })
   })
 })

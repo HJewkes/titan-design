@@ -36,9 +36,7 @@ function SeverityBar({ sev }: { sev: Record<TaskSeverity, number> }) {
   return (
     <View className="h-[5px] flex-row overflow-hidden rounded-full bg-surface-overlay">
       {order.map((k) =>
-        sev[k] ? (
-          <View key={k} style={{ flexGrow: sev[k] }} className={bg[k]} />
-        ) : null,
+        sev[k] ? <View key={k} style={{ flexGrow: sev[k] }} className={bg[k]} /> : null
       )}
     </View>
   )
@@ -132,9 +130,11 @@ function Overview() {
       <View className="gap-[10px]">
         <Eyebrow>Focused · by rank</Eyebrow>
         <View className="flex-row flex-wrap gap-[12px]">
-          {[...focused].sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99)).map((i) => (
-            <InitiativeCard key={i.slug} init={i} />
-          ))}
+          {[...focused]
+            .sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99))
+            .map((i) => (
+              <InitiativeCard key={i.slug} init={i} />
+            ))}
         </View>
       </View>
 

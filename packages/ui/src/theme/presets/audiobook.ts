@@ -10,7 +10,7 @@ export const audiobookPreset: ThemePreset = {
   name: 'audiobook',
   description: 'Warm copper/patina theme with editorial typography',
   fontImport:
-    "https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+    'https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap',
   fonts: {
     sans: "'Outfit', 'Avenir', 'Avenir Next', system-ui, sans-serif",
     body: "'Outfit', 'Avenir', 'Avenir Next', system-ui, sans-serif",
@@ -77,7 +77,7 @@ export const audiobookPreset: ThemePreset = {
       'interactive-active': 'rgba(255, 255, 255, 0.16)',
       'interactive-selected': 'rgba(255, 255, 255, 0.08)',
 
-      'divider': 'rgba(255, 255, 255, 0.06)',
+      divider: 'rgba(255, 255, 255, 0.06)',
 
       // Glow RGB values for shadow utilities
       'brand-primary-rgb': '212, 120, 42',

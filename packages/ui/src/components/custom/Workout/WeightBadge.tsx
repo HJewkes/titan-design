@@ -12,8 +12,7 @@ import { greyRamp } from '../../../theme/tokens/primitives'
 
 export type WeightBadgeSize = BaseBadgeSize
 
-export interface WeightBadgeProps
-  extends Omit<BaseBadgeProps, 'variant' | 'icon' | 'children'> {
+export interface WeightBadgeProps extends Omit<BaseBadgeProps, 'variant' | 'icon' | 'children'> {
   value: number
   unit?: 'lbs' | 'kg'
   /**
@@ -51,8 +50,7 @@ export function WeightBadge({
   const iconColor = textColor
 
   const repMaxClause = reps != null ? `${reps} rep max` : 'Estimated one rep max'
-  const deltaLabel =
-    delta != null ? `, ${delta >= 0 ? '+' : ''}${delta}% change` : ''
+  const deltaLabel = delta != null ? `, ${delta >= 0 ? '+' : ''}${delta}% change` : ''
   const fullLabel = `${repMaxClause}: ${value} ${unit}${deltaLabel}`
 
   return (

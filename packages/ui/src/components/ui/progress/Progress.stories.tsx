@@ -131,11 +131,7 @@ export const Steps: Story = {
         color="success"
         labels={['Step 1', 'Step 2', 'Step 3', 'Step 4']}
       />
-      <ProgressSteps
-        currentStep={0}
-        totalSteps={5}
-        size="lg"
-      />
+      <ProgressSteps currentStep={0} totalSteps={5} size="lg" />
     </View>
   ),
 }
@@ -152,12 +148,7 @@ export const UsageExamples: Story = {
       {/* Storage quota */}
       <View className="p-4 bg-surface-elevated rounded-lg">
         <Text className="text-text-primary font-medium mb-3">Storage</Text>
-        <Progress
-          value={8.5}
-          max={10}
-          color="warning"
-          label="8.5 GB of 10 GB used"
-        />
+        <Progress value={8.5} max={10} color="warning" label="8.5 GB of 10 GB used" />
       </View>
 
       {/* Checkout steps */}

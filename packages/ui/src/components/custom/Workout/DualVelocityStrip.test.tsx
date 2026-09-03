@@ -17,8 +17,9 @@ const liveEntranceCalls = vi.hoisted(
 )
 
 vi.mock('../charts/live-rep-growth', async () => {
-  const actual =
-    await vi.importActual<typeof import('../charts/live-rep-growth')>('../charts/live-rep-growth')
+  const actual = await vi.importActual<typeof import('../charts/live-rep-growth')>(
+    '../charts/live-rep-growth'
+  )
   return {
     ...actual,
     useLiveRepGrowth: (

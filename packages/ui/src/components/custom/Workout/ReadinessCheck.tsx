@@ -71,7 +71,11 @@ const WARMUP_BADGE: Record<WarmUpStatus, { color: BadgeColor; label: string }> =
 }
 
 function emojiSet(factor: ReadinessFactor): readonly string[] {
-  return EMOJI_SETS[factor.id.toLowerCase()] ?? EMOJI_SETS[factor.label.toLowerCase()] ?? DEFAULT_EMOJI_SET
+  return (
+    EMOJI_SETS[factor.id.toLowerCase()] ??
+    EMOJI_SETS[factor.label.toLowerCase()] ??
+    DEFAULT_EMOJI_SET
+  )
 }
 
 /** Warm-up velocity phrasing. Deficit is % below the 14-day average, so a
@@ -158,7 +162,12 @@ function ScoreGauge({ score }: { score: number }) {
       }}
     >
       <Text
-        style={{ fontSize: 20, fontWeight: '700', fontFamily: '"Space Grotesk", sans-serif', color }}
+        style={{
+          fontSize: 20,
+          fontWeight: '700',
+          fontFamily: '"Space Grotesk", sans-serif',
+          color,
+        }}
         testID="readiness-check-score-value"
       >
         {score}
@@ -260,7 +269,14 @@ export function ReadinessCheck({
             opacity: pressed ? 0.8 : 1,
           })}
         >
-          <Text style={{ fontSize: 13, fontWeight: '700', fontFamily: 'Inter, sans-serif', color: '#FFFFFF' }}>
+          <Text
+            style={{
+              fontSize: 13,
+              fontWeight: '700',
+              fontFamily: 'Inter, sans-serif',
+              color: '#FFFFFF',
+            }}
+          >
             Start Workout
           </Text>
         </Pressable>

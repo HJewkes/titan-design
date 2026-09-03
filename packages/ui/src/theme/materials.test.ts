@@ -15,7 +15,8 @@ import { describe, it, expect } from 'vitest'
 import { grainOpacityForTone, grainForTone, paperSheet, insetWell, barPaper } from './materials'
 import { greyRamp } from './tokens/primitives'
 
-const styleOf = (s: Record<string, unknown>) => s as { backgroundImage?: string; boxShadow?: string; backgroundColor?: string }
+const styleOf = (s: Record<string, unknown>) =>
+  s as { backgroundImage?: string; boxShadow?: string; backgroundColor?: string }
 
 describe('grain', () => {
   it('scales opacity with the tone it sits on', () => {
@@ -75,7 +76,9 @@ describe('insetWell', () => {
     // a darker rectangle. It is the light on the floor that says "below".
     const shadow = styleOf(insetWell(greyRamp[950])).boxShadow!
     expect(shadow).toContain('inset 0 2px')
-    expect(shadow, 'missing the bottom floor rim').toContain('inset 0 -1px 0 rgba(255,255,255,0.12)')
+    expect(shadow, 'missing the bottom floor rim').toContain(
+      'inset 0 -1px 0 rgba(255,255,255,0.12)'
+    )
   })
 
   it('is entirely inset — a well must not cast outward', () => {

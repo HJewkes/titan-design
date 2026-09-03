@@ -1,5 +1,12 @@
 import React, { createContext, useContext } from 'react'
-import { Modal as RNModal, View, Text, Pressable, ScrollView, type ModalProps as RNModalProps } from 'react-native'
+import {
+  Modal as RNModal,
+  View,
+  Text,
+  Pressable,
+  ScrollView,
+  type ModalProps as RNModalProps,
+} from 'react-native'
 import { cn } from '../../../utils/cn'
 
 export type ModalSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
@@ -102,10 +109,7 @@ export function Modal({
         {...props}
       >
         {scrollBehavior === 'outside' ? (
-          <ScrollView
-            contentContainerStyle={{ flexGrow: 1 }}
-            keyboardShouldPersistTaps="handled"
-          >
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
             {backdropContent}
           </ScrollView>
         ) : (
@@ -155,7 +159,12 @@ export interface ModalHeaderProps {
  */
 export function ModalHeader({ children, className }: ModalHeaderProps) {
   return (
-    <View className={cn('flex-row items-center justify-between px-6 py-4 border-b border-divider', className)}>
+    <View
+      className={cn(
+        'flex-row items-center justify-between px-6 py-4 border-b border-divider',
+        className
+      )}
+    >
       {children}
     </View>
   )
@@ -230,11 +239,7 @@ export function ModalBody({ children, maxHeight, className }: ModalBodyProps) {
     )
   }
 
-  return (
-    <View className={cn('px-6 py-4', className)}>
-      {children}
-    </View>
-  )
+  return <View className={cn('px-6 py-4', className)}>{children}</View>
 }
 
 export interface ModalFooterProps {
@@ -247,7 +252,12 @@ export interface ModalFooterProps {
  */
 export function ModalFooter({ children, className }: ModalFooterProps) {
   return (
-    <View className={cn('flex-row items-center justify-end gap-2 px-6 py-4 border-t border-divider', className)}>
+    <View
+      className={cn(
+        'flex-row items-center justify-end gap-2 px-6 py-4 border-t border-divider',
+        className
+      )}
+    >
       {children}
     </View>
   )

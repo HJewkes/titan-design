@@ -70,10 +70,7 @@ export const Required: Story = {
 export const WithHelperText: Story = {
   render: () => (
     <View className="w-80">
-      <FormField
-        label="Username"
-        helperText="Choose a unique username between 3-20 characters"
-      >
+      <FormField label="Username" helperText="Choose a unique username between 3-20 characters">
         <SimpleInput placeholder="Enter username" />
       </FormField>
     </View>
@@ -83,11 +80,7 @@ export const WithHelperText: Story = {
 export const WithError: Story = {
   render: () => (
     <View className="w-80">
-      <FormField
-        label="Password"
-        isRequired
-        errorMessage="Password must be at least 8 characters"
-      >
+      <FormField label="Password" isRequired errorMessage="Password must be at least 8 characters">
         <SimpleInput placeholder="Enter password" isInvalid />
       </FormField>
     </View>
@@ -159,10 +152,7 @@ export const FormRowExample: Story = {
 export const FormSectionExample: Story = {
   render: () => (
     <View className="w-full max-w-lg">
-      <FormSection
-        title="Personal Information"
-        description="Please provide your personal details"
-      >
+      <FormSection title="Personal Information" description="Please provide your personal details">
         <FormRow>
           <FormField label="First Name" isRequired className="flex-1">
             <SimpleInput placeholder="John" />
@@ -240,11 +230,7 @@ export const ValidationStates: Story = {
         </View>
       </FormField>
 
-      <FormField
-        label="Invalid Input"
-        isRequired
-        errorMessage="Please enter a valid email address"
-      >
+      <FormField label="Invalid Input" isRequired errorMessage="Please enter a valid email address">
         <View className="border border-status-error rounded-md px-3 py-2 bg-surface-input">
           <Text className="text-text-primary">not-an-email</Text>
         </View>

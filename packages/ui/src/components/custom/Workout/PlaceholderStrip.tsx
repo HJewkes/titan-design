@@ -73,11 +73,7 @@ function SegmentedStrip({
   )
 }
 
-export function PlaceholderStrip({
-  mode = 'single',
-  segments,
-  ...props
-}: PlaceholderStripProps) {
+export function PlaceholderStrip({ mode = 'single', segments, ...props }: PlaceholderStripProps) {
   if (mode === 'segmented') {
     return <SegmentedStrip segments={segments} {...props} />
   }

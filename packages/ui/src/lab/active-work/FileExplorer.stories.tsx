@@ -119,7 +119,7 @@ function DetailPane({ f }: { f: FileMetric }) {
         </Typography>
         <Typography variant="caption" className="text-[11px] text-text-tertiary">
           {`${f.sessions} sessions · last touched ${shortDate(f.lastTouched)} · first ${shortDate(
-            f.firstTouched,
+            f.firstTouched
           )}`}
         </Typography>
       </View>

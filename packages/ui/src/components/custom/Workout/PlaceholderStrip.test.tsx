@@ -11,9 +11,7 @@ describe('PlaceholderStrip', () => {
 
   it('sets accessibility label', () => {
     render(<PlaceholderStrip />)
-    expect(
-      screen.getByLabelText('Planned set, not yet completed'),
-    ).toBeInTheDocument()
+    expect(screen.getByLabelText('Planned set, not yet completed')).toBeInTheDocument()
   })
 
   it('applies fixed width when provided', () => {
@@ -28,7 +26,7 @@ describe('PlaceholderStrip', () => {
         <PlaceholderStrip />
         <PlaceholderStrip />
         <PlaceholderStrip />
-      </>,
+      </>
     )
     const strips = screen.getAllByTestId('placeholder-strip')
     expect(strips).toHaveLength(3)
@@ -59,9 +57,7 @@ describe('PlaceholderStrip', () => {
 
     it('sets accessibility label in segmented mode', () => {
       render(<PlaceholderStrip mode="segmented" segments={3} />)
-      expect(
-        screen.getByLabelText('Planned set, not yet completed'),
-      ).toBeInTheDocument()
+      expect(screen.getByLabelText('Planned set, not yet completed')).toBeInTheDocument()
     })
   })
 
@@ -73,9 +69,7 @@ describe('PlaceholderStrip', () => {
     })
 
     it('has no accessibility violations in segmented mode', async () => {
-      const { container } = render(
-        <PlaceholderStrip mode="segmented" segments={4} />,
-      )
+      const { container } = render(<PlaceholderStrip mode="segmented" segments={4} />)
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })

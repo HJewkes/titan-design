@@ -1,14 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import {
-  Menu,
-  MenuTrigger,
-  MenuList,
-  MenuItem,
-  MenuDivider,
-  MenuGroup,
-} from './Menu'
+import { Menu, MenuTrigger, MenuList, MenuItem, MenuDivider, MenuGroup } from './Menu'
 
 describe('Menu', () => {
   it('renders trigger element', () => {
@@ -198,9 +191,7 @@ describe('Menu', () => {
             <button>Options</button>
           </MenuTrigger>
           <MenuList>
-            <MenuItem icon={<span data-testid="edit-icon">pencil</span>}>
-              Edit
-            </MenuItem>
+            <MenuItem icon={<span data-testid="edit-icon">pencil</span>}>Edit</MenuItem>
           </MenuList>
         </Menu>
       )

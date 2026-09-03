@@ -91,9 +91,7 @@ export function Select<T extends string = string>({
 
   const selectValue = (val: T) => {
     if (isMulti) {
-      const newValues = values.includes(val)
-        ? values.filter((v) => v !== val)
-        : [...values, val]
+      const newValues = values.includes(val) ? values.filter((v) => v !== val) : [...values, val]
       onChangeMulti?.(newValues)
     } else {
       onChange?.(val)
@@ -152,12 +150,7 @@ export function Select<T extends string = string>({
             isDisabled && 'opacity-50 cursor-not-allowed'
           )}
         >
-          <Text
-            className={cn(
-              'flex-1',
-              hasValue ? 'text-text-primary' : 'text-text-tertiary'
-            )}
-          >
+          <Text className={cn('flex-1', hasValue ? 'text-text-primary' : 'text-text-tertiary')}>
             {getDisplayValue()}
           </Text>
           <View className="flex-row items-center gap-2">
@@ -235,7 +228,12 @@ function SelectOption<T>({ option }: SelectOptionComponentProps<T>) {
           {selected && <Text className="text-white text-xs text-center">✓</Text>}
         </View>
       )}
-      <Text className={cn('text-sm', selected && !isMulti ? 'text-brand-primary font-medium' : 'text-text-primary')}>
+      <Text
+        className={cn(
+          'text-sm',
+          selected && !isMulti ? 'text-brand-primary font-medium' : 'text-text-primary'
+        )}
+      >
         {option.label}
       </Text>
     </Pressable>

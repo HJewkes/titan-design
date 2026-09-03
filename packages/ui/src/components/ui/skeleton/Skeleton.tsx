@@ -136,11 +136,7 @@ export interface SkeletonCircleProps {
 /**
  * Circle skeleton for avatars.
  */
-export function SkeletonCircle({
-  size = 40,
-  animation = 'pulse',
-  className,
-}: SkeletonCircleProps) {
+export function SkeletonCircle({ size = 40, animation = 'pulse', className }: SkeletonCircleProps) {
   return (
     <Skeleton
       variant="circle"
@@ -179,12 +175,7 @@ export function SkeletonCard({
   return (
     <View className={cn('rounded-lg overflow-hidden bg-surface-elevated', className)}>
       {hasImage && (
-        <Skeleton
-          variant="rect"
-          width="100%"
-          height={imageHeight}
-          animation={animation}
-        />
+        <Skeleton variant="rect" width="100%" height={imageHeight} animation={animation} />
       )}
       <View className="p-4 gap-3">
         <Skeleton variant="text" width="70%" animation={animation} />
@@ -218,9 +209,7 @@ export function SkeletonListItem({
 }: SkeletonListItemProps) {
   return (
     <View className={cn('flex-row items-center gap-3 p-3', className)}>
-      {hasAvatar && (
-        <SkeletonCircle size={avatarSize} animation={animation} />
-      )}
+      {hasAvatar && <SkeletonCircle size={avatarSize} animation={animation} />}
       <View className="flex-1">
         <SkeletonText lines={lines} animation={animation} />
       </View>

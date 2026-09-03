@@ -101,12 +101,7 @@ export const Disabled: Story = {
       </View>
       <View style={{ gap: 4 }}>
         <Text className="text-sm text-text-secondary">Disabled with value</Text>
-        <Select
-          value="banana"
-          onChange={() => {}}
-          options={basicOptions}
-          isDisabled
-        />
+        <Select value="banana" onChange={() => {}} options={basicOptions} isDisabled />
       </View>
     </View>
   ),
@@ -235,16 +230,11 @@ export const Controlled: Story = {
               </Text>
             </View>
           ))}
-          <Text
-            className="text-sm text-status-error underline"
-            onPress={() => setValue(null)}
-          >
+          <Text className="text-sm text-status-error underline" onPress={() => setValue(null)}>
             Clear
           </Text>
         </View>
-        <Text className="text-sm text-text-secondary">
-          Current value: {value ?? 'null'}
-        </Text>
+        <Text className="text-sm text-text-secondary">Current value: {value ?? 'null'}</Text>
       </View>
     )
   },

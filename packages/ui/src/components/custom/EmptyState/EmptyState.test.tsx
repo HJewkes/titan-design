@@ -4,7 +4,11 @@ import { axe } from 'jest-axe'
 import { EmptyState } from './EmptyState'
 
 function MockIcon({ size, className }: { size?: number; className?: string }) {
-  return <span data-testid="mock-icon" data-size={size} className={className}>Icon</span>
+  return (
+    <span data-testid="mock-icon" data-size={size} className={className}>
+      Icon
+    </span>
+  )
 }
 
 describe('EmptyState', () => {
@@ -14,12 +18,7 @@ describe('EmptyState', () => {
   })
 
   it('renders with description', () => {
-    render(
-      <EmptyState
-        title="No messages"
-        description="You don't have any messages yet."
-      />
-    )
+    render(<EmptyState title="No messages" description="You don't have any messages yet." />)
     expect(screen.getByText("You don't have any messages yet.")).toBeInTheDocument()
   })
 
@@ -45,12 +44,7 @@ describe('EmptyState', () => {
 
   it('renders action element', () => {
     const onPress = vi.fn()
-    render(
-      <EmptyState
-        title="No results"
-        action={<button onClick={onPress}>Create New</button>}
-      />
-    )
+    render(<EmptyState title="No results" action={<button onClick={onPress}>Create New</button>} />)
     const actionButton = screen.getByText('Create New')
     expect(actionButton).toBeInTheDocument()
 

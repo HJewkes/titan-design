@@ -99,18 +99,10 @@ export function Drawer({
   }
 
   return (
-    <Modal
-      visible={isOpen}
-      transparent
-      animationType="fade"
-      onRequestClose={onClose}
-    >
+    <Modal visible={isOpen} transparent animationType="fade" onRequestClose={onClose}>
       <View className="flex-1">
         {/* Backdrop */}
-        <Pressable
-          onPress={handleOverlayPress}
-          className="absolute inset-0 bg-black/50"
-        />
+        <Pressable onPress={handleOverlayPress} className="absolute inset-0 bg-black/50" />
 
         {/* Drawer Panel */}
         <View
@@ -126,11 +118,7 @@ export function Drawer({
           {/* Header */}
           {(title || showCloseButton) && (
             <View className="flex-row items-center justify-between px-4 py-3 border-b border-hairline">
-              {title && (
-                <Text className="text-lg font-semibold text-text-primary">
-                  {title}
-                </Text>
-              )}
+              {title && <Text className="text-lg font-semibold text-text-primary">{title}</Text>}
               {showCloseButton && (
                 <Pressable
                   onPress={onClose}
@@ -144,9 +132,7 @@ export function Drawer({
           )}
 
           {/* Content */}
-          <View className="flex-1">
-            {children}
-          </View>
+          <View className="flex-1">{children}</View>
         </View>
       </View>
     </Modal>
@@ -164,10 +150,7 @@ export interface DrawerHeaderProps extends ViewProps {
  */
 export function DrawerHeader({ className, children, ...props }: DrawerHeaderProps) {
   return (
-    <View
-      className={cn('px-4 py-3 border-b border-hairline', className)}
-      {...props}
-    >
+    <View className={cn('px-4 py-3 border-b border-hairline', className)} {...props}>
       {children}
     </View>
   )
@@ -187,10 +170,7 @@ export interface DrawerBodyProps extends ViewProps {
 export function DrawerBody({ scrollable = true, className, children, ...props }: DrawerBodyProps) {
   if (scrollable) {
     return (
-      <ScrollView
-        className={cn('flex-1 p-4', className)}
-        {...props}
-      >
+      <ScrollView className={cn('flex-1 p-4', className)} {...props}>
         {children}
       </ScrollView>
     )

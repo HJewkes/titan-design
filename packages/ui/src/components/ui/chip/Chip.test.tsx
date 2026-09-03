@@ -53,11 +53,7 @@ describe('Chip', () => {
   })
 
   it('renders leftElement', () => {
-    render(
-      <Chip leftElement={<span data-testid="icon">icon</span>}>
-        With Icon
-      </Chip>
-    )
+    render(<Chip leftElement={<span data-testid="icon">icon</span>}>With Icon</Chip>)
     expect(screen.getByTestId('icon')).toBeInTheDocument()
   })
 
@@ -71,7 +67,15 @@ describe('Chip', () => {
   })
 
   it('renders with all color options', () => {
-    const colors = ['default', 'primary', 'secondary', 'success', 'error', 'warning', 'info'] as const
+    const colors = [
+      'default',
+      'primary',
+      'secondary',
+      'success',
+      'error',
+      'warning',
+      'info',
+    ] as const
     colors.forEach((color) => {
       const { unmount } = render(<Chip color={color}>Test</Chip>)
       expect(screen.getByText('Test')).toBeInTheDocument()

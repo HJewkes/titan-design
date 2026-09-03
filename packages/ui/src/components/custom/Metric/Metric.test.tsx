@@ -60,9 +60,7 @@ describe('Metric', () => {
 
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
-      const { container } = render(
-        <Metric value="42" label="Reps" unit="reps" trend="up" />
-      )
+      const { container } = render(<Metric value="42" label="Reps" unit="reps" trend="up" />)
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })

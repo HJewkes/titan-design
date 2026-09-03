@@ -36,11 +36,7 @@ export function Breadcrumbs({
   if (maxItems && items.length > maxItems) {
     const firstItem = items[0]
     const lastItems = items.slice(-Math.floor(maxItems / 2))
-    displayItems = [
-      firstItem,
-      <BreadcrumbEllipsis key="ellipsis" />,
-      ...lastItems,
-    ]
+    displayItems = [firstItem, <BreadcrumbEllipsis key="ellipsis" />, ...lastItems]
   }
 
   return (
@@ -53,9 +49,7 @@ export function Breadcrumbs({
         <View key={index} className="flex-row items-center">
           {child}
           {index < displayItems.length - 1 && (
-            <Text className="mx-2 text-text-tertiary text-sm">
-              {separator}
-            </Text>
+            <Text className="mx-2 text-text-tertiary text-sm">{separator}</Text>
           )}
         </View>
       ))}
@@ -98,11 +92,7 @@ export function BreadcrumbItem({
   }
 
   return (
-    <Pressable
-      onPress={onPress}
-      accessibilityRole="link"
-      accessibilityHint={href}
-    >
+    <Pressable onPress={onPress} accessibilityRole="link" accessibilityHint={href}>
       <Text
         className={cn(
           'text-sm text-text-secondary',
@@ -121,7 +111,5 @@ export function BreadcrumbItem({
  * Ellipsis for collapsed breadcrumbs.
  */
 function BreadcrumbEllipsis() {
-  return (
-    <Text className="text-sm text-text-tertiary">...</Text>
-  )
+  return <Text className="text-sm text-text-tertiary">...</Text>
 }

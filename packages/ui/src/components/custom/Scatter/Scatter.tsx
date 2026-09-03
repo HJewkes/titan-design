@@ -86,8 +86,20 @@ function formatTick(v: number): string {
 
 /** A single straight segment drawn as one rotated View (SVG-free). */
 function LineSegment({
-  x1, y1, x2, y2, color, testID,
-}: { x1: number; y1: number; x2: number; y2: number; color: string; testID: string }) {
+  x1,
+  y1,
+  x2,
+  y2,
+  color,
+  testID,
+}: {
+  x1: number
+  y1: number
+  x2: number
+  y2: number
+  color: string
+  testID: string
+}) {
   const dx = x2 - x1
   const dy = y2 - y1
   const length = Math.sqrt(dx * dx + dy * dy)
@@ -132,8 +144,16 @@ export function Scatter({
 }: ScatterProps) {
   const innerW = Math.max(1, width - PLOT_LEFT - PLOT_RIGHT)
   const innerH = Math.max(1, height - PLOT_TOP - PLOT_BOTTOM)
-  const xd = domainOf(data.map((d) => d.x), axis.xMin, axis.xMax)
-  const yd = domainOf(data.map((d) => d.y), axis.yMin, axis.yMax)
+  const xd = domainOf(
+    data.map((d) => d.x),
+    axis.xMin,
+    axis.xMax
+  )
+  const yd = domainOf(
+    data.map((d) => d.y),
+    axis.yMin,
+    axis.yMax
+  )
 
   const toX = (x: number) => PLOT_LEFT + ((x - xd.min) / (xd.max - xd.min)) * innerW
   const toY = (y: number) => PLOT_TOP + (1 - (y - yd.min) / (yd.max - yd.min)) * innerH
@@ -164,9 +184,25 @@ export function Scatter({
               key={`y-${i}`}
               accessibilityElementsHidden
               testID="scatter-gridline-y"
-              style={{ position: 'absolute', left: PLOT_LEFT, width: innerW, top: y, height: 1, backgroundColor: GRID_LINE }}
+              style={{
+                position: 'absolute',
+                left: PLOT_LEFT,
+                width: innerW,
+                top: y,
+                height: 1,
+                backgroundColor: GRID_LINE,
+              }}
             >
-              <Text className="text-[9px] text-text-tertiary" style={{ position: 'absolute', left: -PLOT_LEFT, top: -6, width: PLOT_LEFT - 6, textAlign: 'right' }}>
+              <Text
+                className="text-[9px] text-text-tertiary"
+                style={{
+                  position: 'absolute',
+                  left: -PLOT_LEFT,
+                  top: -6,
+                  width: PLOT_LEFT - 6,
+                  textAlign: 'right',
+                }}
+              >
                 {formatTick(t)}
               </Text>
             </View>
@@ -179,9 +215,25 @@ export function Scatter({
               key={`x-${i}`}
               accessibilityElementsHidden
               testID="scatter-gridline-x"
-              style={{ position: 'absolute', top: PLOT_TOP, height: innerH, left: x, width: 1, backgroundColor: GRID_LINE }}
+              style={{
+                position: 'absolute',
+                top: PLOT_TOP,
+                height: innerH,
+                left: x,
+                width: 1,
+                backgroundColor: GRID_LINE,
+              }}
             >
-              <Text className="text-[9px] text-text-tertiary" style={{ position: 'absolute', top: innerH + 4, left: -16, width: 32, textAlign: 'center' }}>
+              <Text
+                className="text-[9px] text-text-tertiary"
+                style={{
+                  position: 'absolute',
+                  top: innerH + 4,
+                  left: -16,
+                  width: 32,
+                  textAlign: 'center',
+                }}
+              >
                 {formatTick(t)}
               </Text>
             </View>
@@ -189,8 +241,28 @@ export function Scatter({
         })}
 
         {/* Axis frame (left + bottom). */}
-        <View accessibilityElementsHidden style={{ position: 'absolute', left: PLOT_LEFT, top: PLOT_TOP, width: 1, height: innerH, backgroundColor: AXIS_LINE }} />
-        <View accessibilityElementsHidden style={{ position: 'absolute', left: PLOT_LEFT, top: PLOT_TOP + innerH, width: innerW, height: 1, backgroundColor: AXIS_LINE }} />
+        <View
+          accessibilityElementsHidden
+          style={{
+            position: 'absolute',
+            left: PLOT_LEFT,
+            top: PLOT_TOP,
+            width: 1,
+            height: innerH,
+            backgroundColor: AXIS_LINE,
+          }}
+        />
+        <View
+          accessibilityElementsHidden
+          style={{
+            position: 'absolute',
+            left: PLOT_LEFT,
+            top: PLOT_TOP + innerH,
+            width: innerW,
+            height: 1,
+            backgroundColor: AXIS_LINE,
+          }}
+        />
 
         {diagonal && (
           <LineSegment
@@ -204,19 +276,44 @@ export function Scatter({
         )}
 
         {axis.xLabel && (
-          <Text testID="scatter-x-label" className="text-[10px] font-semibold text-text-secondary" style={{ position: 'absolute', left: PLOT_LEFT, width: innerW, bottom: 2, textAlign: 'center' }}>
+          <Text
+            testID="scatter-x-label"
+            className="text-[10px] font-semibold text-text-secondary"
+            style={{
+              position: 'absolute',
+              left: PLOT_LEFT,
+              width: innerW,
+              bottom: 2,
+              textAlign: 'center',
+            }}
+          >
             {axis.xLabel}
           </Text>
         )}
         {axis.yLabel && (
-          <Text testID="scatter-y-label" className="text-[10px] font-semibold text-text-secondary" style={{ position: 'absolute', left: -innerH / 2 + 6, top: PLOT_TOP + innerH / 2, width: innerH, textAlign: 'center', transformOrigin: '50% 50%', transform: [{ rotate: '-90deg' }] }}>
+          <Text
+            testID="scatter-y-label"
+            className="text-[10px] font-semibold text-text-secondary"
+            style={{
+              position: 'absolute',
+              left: -innerH / 2 + 6,
+              top: PLOT_TOP + innerH / 2,
+              width: innerH,
+              textAlign: 'center',
+              transformOrigin: '50% 50%',
+              transform: [{ rotate: '-90deg' }],
+            }}
+          >
             {axis.yLabel}
           </Text>
         )}
       </View>
 
       {/* Interactive point overlay (kept out of the image-role canvas). */}
-      <View style={{ position: 'absolute', top: 0, left: 0, width, height }} testID="scatter-points">
+      <View
+        style={{ position: 'absolute', top: 0, left: 0, width, height }}
+        testID="scatter-points"
+      >
         {points.map((p) => {
           const selected = p.datum.id === selectedId
           const showLabel = p.datum.label && (selected || p.radius >= 10)
@@ -244,7 +341,12 @@ export function Scatter({
                 <Text
                   numberOfLines={1}
                   className="text-[9px] font-semibold text-text-primary"
-                  style={{ position: 'absolute', left: p.radius * 2 + 3, top: p.radius - 6, width: 80 }}
+                  style={{
+                    position: 'absolute',
+                    left: p.radius * 2 + 3,
+                    top: p.radius - 6,
+                    width: 80,
+                  }}
                 >
                   {p.datum.label}
                 </Text>

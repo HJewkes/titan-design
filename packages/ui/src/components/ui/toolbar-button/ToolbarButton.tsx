@@ -24,7 +24,7 @@ export interface ToolbarButtonProps extends ViewProps {
   label: string
   /** Icon component */
   icon?: React.ReactNode
-  /** 
+  /**
    * Whether the button is in active/selected state.
    * - `true`: pressed/active appearance (darker, white text, orange icon)
    * - `undefined`: pressed appearance (darker, white text/icon)
@@ -202,20 +202,19 @@ export function ToolbarButton({
         >
           {icon && (
             <View className="w-5 h-5 items-center justify-center">
-              {React.isValidElement(icon) 
+              {React.isValidElement(icon)
                 ? React.cloneElement(icon as React.ReactElement<any>, {
                     size: 20,
                     width: 20,
                     height: 20,
                     color: getIconColor(),
-                    style: { 
+                    style: {
                       color: getIconColor(),
                       width: 20,
                       height: 20,
                     },
                   })
-                : icon
-              }
+                : icon}
             </View>
           )}
           {showLabel && (
@@ -237,11 +236,7 @@ export function ToolbarButton({
         {menuContent && isOpen && (
           <>
             {/* Backdrop */}
-            <Pressable
-              onPress={handleClose}
-              style={StyleSheet.absoluteFill}
-              className="z-40"
-            />
+            <Pressable onPress={handleClose} style={StyleSheet.absoluteFill} className="z-40" />
             {/* Menu Content */}
             <View
               className={cn(

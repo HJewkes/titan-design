@@ -5,12 +5,8 @@ declare module 'jest-axe' {
   ): Promise<{ violations: unknown[] }>
 
   export const toHaveNoViolations: {
-    toHaveNoViolations(
-      results: { violations: unknown[] }
-    ): { pass: boolean; message(): string }
+    toHaveNoViolations(results: { violations: unknown[] }): { pass: boolean; message(): string }
   }
 
-  export function configureAxe(
-    options?: Record<string, unknown>
-  ): typeof axe
+  export function configureAxe(options?: Record<string, unknown>): typeof axe
 }

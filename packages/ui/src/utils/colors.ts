@@ -137,4 +137,3 @@ export function getLuminance(color: string): 'light' | 'dark' {
 export function getContrastText(backgroundColor: string): string {
   return getLuminance(backgroundColor) === 'light' ? '#000000' : '#FFFFFF'
 }
-

@@ -128,16 +128,14 @@ describe('WorkoutPill', () => {
     })
 
     it('has no accessibility violations as static pill', async () => {
-      const { container } = render(
-        <WorkoutPill name="Lower B" status="upcoming" />,
-      )
+      const { container } = render(<WorkoutPill name="Lower B" status="upcoming" />)
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
 
     it('has no accessibility violations for missed status', async () => {
       const { container } = render(
-        <WorkoutPill name="Rest Day" status="missed" onPress={() => {}} />,
+        <WorkoutPill name="Rest Day" status="missed" onPress={() => {}} />
       )
       const results = await axe(container)
       expect(results).toHaveNoViolations()
@@ -145,9 +143,7 @@ describe('WorkoutPill', () => {
 
     it('pressable has correct accessibility label', () => {
       render(<WorkoutPill name="Upper A" status="completed" onPress={() => {}} />)
-      expect(
-        screen.getByLabelText('Upper A workout, completed'),
-      ).toBeInTheDocument()
+      expect(screen.getByLabelText('Upper A workout, completed')).toBeInTheDocument()
     })
   })
 })

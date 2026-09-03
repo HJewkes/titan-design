@@ -64,11 +64,7 @@ describe('FormField', () => {
 
     it('shows error message instead of helper text when both are provided', () => {
       render(
-        <FormField
-          label="Email"
-          helperText="Enter a valid email"
-          errorMessage="Invalid email"
-        >
+        <FormField label="Email" helperText="Enter a valid email" errorMessage="Invalid email">
           <input />
         </FormField>
       )

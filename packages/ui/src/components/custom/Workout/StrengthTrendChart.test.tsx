@@ -44,9 +44,7 @@ describe('StrengthTrendChart', () => {
     it('renders the actual line as connecting segments', () => {
       render(<StrengthTrendChart {...baseProps} />)
       // Two segments connect three points.
-      expect(
-        screen.getAllByTestId('strength-trend-chart-actual-segment'),
-      ).toHaveLength(2)
+      expect(screen.getAllByTestId('strength-trend-chart-actual-segment')).toHaveLength(2)
     })
 
     it('renders subtle horizontal gridlines', () => {
@@ -73,26 +71,20 @@ describe('StrengthTrendChart', () => {
   describe('projection and meso boundaries', () => {
     it('renders dashed projection segments when projection is provided', () => {
       render(<StrengthTrendChart {...baseProps} projection={projection} />)
-      expect(
-        screen.getAllByTestId('strength-trend-chart-projection-segment'),
-      ).toHaveLength(1)
+      expect(screen.getAllByTestId('strength-trend-chart-projection-segment')).toHaveLength(1)
     })
 
     it('omits projection segments when none provided', () => {
       render(<StrengthTrendChart {...baseProps} />)
       expect(
-        screen.queryByTestId('strength-trend-chart-projection-segment'),
+        screen.queryByTestId('strength-trend-chart-projection-segment')
       ).not.toBeInTheDocument()
     })
 
     it('renders a boundary marker and axis label per meso boundary', () => {
       render(<StrengthTrendChart {...baseProps} mesoBoundaries={mesoBoundaries} />)
-      expect(
-        screen.getAllByTestId('strength-trend-chart-meso-boundary'),
-      ).toHaveLength(2)
-      expect(
-        screen.getAllByTestId('strength-trend-chart-axis-label'),
-      ).toHaveLength(2)
+      expect(screen.getAllByTestId('strength-trend-chart-meso-boundary')).toHaveLength(2)
+      expect(screen.getAllByTestId('strength-trend-chart-axis-label')).toHaveLength(2)
     })
   })
 
@@ -112,7 +104,7 @@ describe('StrengthTrendChart', () => {
             { date: '2026-03-03', e1rm: 248 },
             { date: '2026-03-17', e1rm: 235 },
           ]}
-        />,
+        />
       )
       const pill = screen.getByTestId('strength-trend-chart-trend-pill')
       expect(pill.textContent?.startsWith('-')).toBe(true)
@@ -128,7 +120,7 @@ describe('StrengthTrendChart', () => {
             { date: '2026-03-20', e1rm: 250 },
           ]}
           mesoBoundaries={[{ date: '2026-03-01', label: 'Peak' }]}
-        />,
+        />
       )
       // Only one point falls in the current meso, so the pill must not report
       // the whole-series jump (+25%) under the "this meso" label.
@@ -142,16 +134,12 @@ describe('StrengthTrendChart', () => {
       const onPointPress = vi.fn()
       render(<StrengthTrendChart {...baseProps} onPointPress={onPointPress} />)
       fireEvent.click(screen.getAllByTestId('strength-trend-chart-point')[1])
-      expect(onPointPress).toHaveBeenCalledWith(
-        expect.objectContaining({ e1rm: 228 }),
-      )
+      expect(onPointPress).toHaveBeenCalledWith(expect.objectContaining({ e1rm: 228 }))
     })
 
     it('shows a tooltip with value and unit after a point is tapped', () => {
       render(<StrengthTrendChart {...baseProps} />)
-      expect(
-        screen.queryByTestId('strength-trend-chart-tooltip'),
-      ).not.toBeInTheDocument()
+      expect(screen.queryByTestId('strength-trend-chart-tooltip')).not.toBeInTheDocument()
       fireEvent.click(screen.getAllByTestId('strength-trend-chart-point')[2])
       const tooltip = screen.getByTestId('strength-trend-chart-tooltip')
       expect(tooltip).toHaveTextContent('244 lbs')
@@ -161,22 +149,14 @@ describe('StrengthTrendChart', () => {
   describe('empty state', () => {
     it('renders an empty placeholder when there is no data', () => {
       render(<StrengthTrendChart {...baseProps} data={[]} />)
-      expect(
-        screen.getByTestId('strength-trend-chart-empty'),
-      ).toBeInTheDocument()
-      expect(
-        screen.queryByTestId('strength-trend-chart-canvas'),
-      ).not.toBeInTheDocument()
+      expect(screen.getByTestId('strength-trend-chart-empty')).toBeInTheDocument()
+      expect(screen.queryByTestId('strength-trend-chart-canvas')).not.toBeInTheDocument()
     })
 
     it('shows the placeholder when data is empty even if a projection exists', () => {
       render(<StrengthTrendChart {...baseProps} data={[]} projection={projection} />)
-      expect(
-        screen.getByTestId('strength-trend-chart-empty'),
-      ).toBeInTheDocument()
-      expect(
-        screen.queryByTestId('strength-trend-chart-canvas'),
-      ).not.toBeInTheDocument()
+      expect(screen.getByTestId('strength-trend-chart-empty')).toBeInTheDocument()
+      expect(screen.queryByTestId('strength-trend-chart-canvas')).not.toBeInTheDocument()
     })
   })
 
@@ -191,9 +171,7 @@ describe('StrengthTrendChart', () => {
 
     it('labels the empty state accessibly', () => {
       render(<StrengthTrendChart {...baseProps} data={[]} />)
-      expect(
-        screen.getByLabelText('Strength trend chart, no data'),
-      ).toBeInTheDocument()
+      expect(screen.getByLabelText('Strength trend chart, no data')).toBeInTheDocument()
     })
 
     it('has no accessibility violations', async () => {
@@ -209,7 +187,7 @@ describe('StrengthTrendChart', () => {
           mesoBoundaries={mesoBoundaries}
           onPointPress={vi.fn()}
           unit="kg"
-        />,
+        />
       )
       expect(await axe(container)).toHaveNoViolations()
     })

@@ -25,12 +25,7 @@ function getDeviationDescription(deviation: number): string {
   return 'on plan'
 }
 
-export function DeviationBar({
-  deviation,
-  width,
-  className,
-  ...props
-}: DeviationBarProps) {
+export function DeviationBar({ deviation, width, className, ...props }: DeviationBarProps) {
   const clamped = Math.max(-1, Math.min(1, deviation))
   const resolvedWidth = width ?? 40
   const dotPosition = ((clamped + 1) / 2) * resolvedWidth
@@ -42,7 +37,12 @@ export function DeviationBar({
   return (
     <View
       className={className}
-      style={{ flexDirection: 'row', alignItems: 'center', height: containerHeight, width: resolvedWidth }}
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: containerHeight,
+        width: resolvedWidth,
+      }}
       accessibilityRole="adjustable"
       accessibilityValue={{ min: -100, max: 100, now: valueNow }}
       accessibilityLabel={`Session deviation: ${getDeviationDescription(clamped)}`}
@@ -53,14 +53,16 @@ export function DeviationBar({
       {...props}
     >
       <View
-        style={{
-          height: trackHeight,
-          width: resolvedWidth,
-          borderRadius: 3,
-          // react-native-web renders backgroundImage at runtime; not in RN ViewStyle types
-          backgroundImage:
-            'linear-gradient(90deg, rgba(46,213,115,0.25) 0%, rgba(107,114,128,0.15) 50%, rgba(249,180,21,0.25) 100%)',
-        } as ViewStyle}
+        style={
+          {
+            height: trackHeight,
+            width: resolvedWidth,
+            borderRadius: 3,
+            // react-native-web renders backgroundImage at runtime; not in RN ViewStyle types
+            backgroundImage:
+              'linear-gradient(90deg, rgba(46,213,115,0.25) 0%, rgba(107,114,128,0.15) 50%, rgba(249,180,21,0.25) 100%)',
+          } as ViewStyle
+        }
       />
       <View
         style={{

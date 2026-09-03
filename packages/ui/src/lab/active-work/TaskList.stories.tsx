@@ -41,7 +41,13 @@ function comparator(key: SortKey): (a: AwTask, b: AwTask) => number {
 }
 
 /** Column layout — fixed widths keep the grid dense and aligned. */
-const COLS: { key: SortKey | 'tags'; label: string; w: string; align?: 'right'; sortable: boolean }[] = [
+const COLS: {
+  key: SortKey | 'tags'
+  label: string
+  w: string
+  align?: 'right'
+  sortable: boolean
+}[] = [
   { key: 'slug', label: 'Initiative', w: 'w-[132px]', sortable: true },
   { key: 'id', label: 'ID', w: 'w-[66px]', sortable: true },
   { key: 'title', label: 'Title', w: 'flex-1', sortable: true },
@@ -65,7 +71,9 @@ function HeaderCell({
 }) {
   const active = col.sortable && col.key === sortKey
   const body = (
-    <View className={`flex-row items-center gap-[3px] ${col.align === 'right' ? 'justify-end' : ''}`}>
+    <View
+      className={`flex-row items-center gap-[3px] ${col.align === 'right' ? 'justify-end' : ''}`}
+    >
       <Typography
         variant="overline"
         className={`text-[10px] font-semibold uppercase tracking-[0.5px] ${
@@ -114,12 +122,18 @@ function Row({ t }: { t: AwTask }) {
         </Typography>
       </View>
       <View className="w-[112px] px-[8px]">
-        {sev ? <DotLabel color={sev.dot} label={sev.label} /> : (
-          <Typography variant="caption" className="text-[11px] text-text-tertiary">—</Typography>
+        {sev ? (
+          <DotLabel color={sev.dot} label={sev.label} />
+        ) : (
+          <Typography variant="caption" className="text-[11px] text-text-tertiary">
+            —
+          </Typography>
         )}
       </View>
       <View className="w-[42px] items-end px-[8px]">
-        <Typography variant="mono" className="text-[11px] text-text-secondary">{t.priority}</Typography>
+        <Typography variant="mono" className="text-[11px] text-text-secondary">
+          {t.priority}
+        </Typography>
       </View>
       <View className="w-[42px] items-end px-[8px]">
         <Typography variant="mono" className="text-[11px] text-text-secondary">

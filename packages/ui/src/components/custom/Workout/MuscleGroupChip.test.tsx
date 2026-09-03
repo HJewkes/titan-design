@@ -16,16 +16,12 @@ describe('MuscleGroupChip', () => {
 
   it('sets accessibility label with name and status', () => {
     render(<MuscleGroupChip name="Back" volumeStatus="behind" />)
-    expect(
-      screen.getByLabelText('Back, volume status: behind'),
-    ).toBeInTheDocument()
+    expect(screen.getByLabelText('Back, volume status: behind')).toBeInTheDocument()
   })
 
   it('sets accessibility label with no status when omitted', () => {
     render(<MuscleGroupChip name="Biceps" />)
-    expect(
-      screen.getByLabelText('Biceps, volume status: no status'),
-    ).toBeInTheDocument()
+    expect(screen.getByLabelText('Biceps, volume status: no status')).toBeInTheDocument()
   })
 
   it('wraps in Pressable when onPress is provided', () => {
@@ -38,22 +34,12 @@ describe('MuscleGroupChip', () => {
 
   it('does not render Pressable when onPress is omitted', () => {
     render(<MuscleGroupChip name="Chest" />)
-    expect(
-      screen.queryByTestId('muscle-group-chip-pressable'),
-    ).not.toBeInTheDocument()
+    expect(screen.queryByTestId('muscle-group-chip-pressable')).not.toBeInTheDocument()
   })
 
   it('renders all volume status variants without error', () => {
-    const statuses = [
-      'untrained',
-      'behind',
-      'ontrack',
-      'target',
-      'over',
-    ] as const
-    const { rerender } = render(
-      <MuscleGroupChip name="Test" volumeStatus="untrained" />,
-    )
+    const statuses = ['untrained', 'behind', 'ontrack', 'target', 'over'] as const
+    const { rerender } = render(<MuscleGroupChip name="Test" volumeStatus="untrained" />)
     for (const status of statuses) {
       rerender(<MuscleGroupChip name="Test" volumeStatus={status} />)
       expect(screen.getByText('Test')).toBeInTheDocument()
@@ -63,28 +49,20 @@ describe('MuscleGroupChip', () => {
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const { container } = render(
-        <MuscleGroupChip
-          name="Chest"
-          volumeStatus="ontrack"
-          onPress={() => {}}
-        />,
+        <MuscleGroupChip name="Chest" volumeStatus="ontrack" onPress={() => {}} />
       )
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
 
     it('has no accessibility violations as static chip', async () => {
-      const { container } = render(
-        <MuscleGroupChip name="Quads" volumeStatus="behind" />,
-      )
+      const { container } = render(<MuscleGroupChip name="Quads" volumeStatus="behind" />)
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
 
     it('pressable has correct accessibility label', () => {
-      render(
-        <MuscleGroupChip name="Back" volumeStatus="target" onPress={() => {}} />,
-      )
+      render(<MuscleGroupChip name="Back" volumeStatus="target" onPress={() => {}} />)
       expect(screen.getByLabelText('Back, volume status: target')).toBeInTheDocument()
     })
   })

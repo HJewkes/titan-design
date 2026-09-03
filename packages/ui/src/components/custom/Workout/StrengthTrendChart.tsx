@@ -94,7 +94,7 @@ function buildGeometry(
   projection: StrengthTrendDataPoint[],
   boundaries: StrengthTrendChartMesoBoundary[],
   width: number,
-  height: number,
+  height: number
 ): Geometry {
   const values = [...data, ...projection].map((p) => p.e1rm)
   // Empty state keys off actual data only: a projection with no measured
@@ -128,10 +128,8 @@ function buildGeometry(
   const domainMax = yMax + padV
 
   const innerW = Math.max(1, width - PLOT_LEFT)
-  const toX = (time: number) =>
-    PLOT_LEFT + ((time - tMin) / (tMax - tMin)) * innerW
-  const toY = (value: number) =>
-    height - ((value - domainMin) / (domainMax - domainMin)) * height
+  const toX = (time: number) => PLOT_LEFT + ((time - tMin) / (tMax - tMin)) * innerW
+  const toY = (value: number) => height - ((value - domainMin) / (domainMax - domainMin)) * height
 
   const project = (points: StrengthTrendDataPoint[]): Coord[] =>
     points.map((point, index) => ({
@@ -141,9 +139,7 @@ function buildGeometry(
       index,
     }))
 
-  const tickValues = Array.from(
-    new Set([yMax, (yMin + yMax) / 2, yMin].map((v) => Math.round(v))),
-  )
+  const tickValues = Array.from(new Set([yMax, (yMin + yMax) / 2, yMin].map((v) => Math.round(v))))
   const gridLines = tickValues.map((v) => ({ y: toY(v), label: formatValue(v) }))
 
   return {
@@ -162,7 +158,7 @@ function buildGeometry(
 
 function computeTrend(
   data: StrengthTrendDataPoint[],
-  boundaries: StrengthTrendChartMesoBoundary[],
+  boundaries: StrengthTrendChartMesoBoundary[]
 ): { percent: number; positive: boolean } {
   if (data.length < 2) return { percent: 0, positive: true }
   let series = data
@@ -267,12 +263,9 @@ export function StrengthTrendChart({
 }: StrengthTrendChartProps) {
   const geometry = useMemo(
     () => buildGeometry(data, projection, mesoBoundaries, width, height),
-    [data, projection, mesoBoundaries, width, height],
+    [data, projection, mesoBoundaries, width, height]
   )
-  const trend = useMemo(
-    () => computeTrend(data, mesoBoundaries),
-    [data, mesoBoundaries],
-  )
+  const trend = useMemo(() => computeTrend(data, mesoBoundaries), [data, mesoBoundaries])
 
   const [reveal] = useState(() => new Animated.Value(animateOnMount ? 0 : 1))
   const [selected, setSelected] = useState<number | null>(null)
@@ -314,7 +307,10 @@ export function StrengthTrendChart({
             justifyContent: 'center',
           }}
         >
-          <Text className="text-text-tertiary" style={{ fontSize: 12, fontFamily: 'Inter, sans-serif' }}>
+          <Text
+            className="text-text-tertiary"
+            style={{ fontSize: 12, fontFamily: 'Inter, sans-serif' }}
+          >
             No strength data yet
           </Text>
         </View>
@@ -327,16 +323,10 @@ export function StrengthTrendChart({
     outputRange: [0, width],
   })
 
-  const selectedCoord =
-    selected != null ? geometry.actual[selected] : undefined
+  const selectedCoord = selected != null ? geometry.actual[selected] : undefined
 
   return (
-    <View
-      style={{ width }}
-      className={cn(className)}
-      testID="strength-trend-chart"
-      {...props}
-    >
+    <View style={{ width }} className={cn(className)} testID="strength-trend-chart" {...props}>
       <View style={{ width, height, position: 'relative' }}>
         {/* Labelled, non-interactive chart canvas (grid + lines + markers). */}
         <View
@@ -438,7 +428,7 @@ export function StrengthTrendChart({
               >
                 ★
               </Text>
-            ) : null,
+            ) : null
           )}
         </View>
 
@@ -482,7 +472,7 @@ export function StrengthTrendChart({
               position: 'absolute',
               left: Math.max(
                 0,
-                Math.min(width - TOOLTIP_WIDTH, selectedCoord.x - TOOLTIP_WIDTH / 2),
+                Math.min(width - TOOLTIP_WIDTH, selectedCoord.x - TOOLTIP_WIDTH / 2)
               ),
               top: Math.max(0, selectedCoord.y - 52),
               maxWidth: TOOLTIP_WIDTH,
@@ -529,7 +519,7 @@ export function StrengthTrendChart({
                     ? '+'
                     : '-'
                 }${Math.abs(
-                  selectedCoord.point.e1rm - geometry.actual[selected - 1].point.e1rm,
+                  selectedCoord.point.e1rm - geometry.actual[selected - 1].point.e1rm
                 ).toFixed(1)} ${unit}`}
               </Text>
             )}
@@ -598,8 +588,13 @@ export function StrengthTrendChart({
         testID="strength-trend-chart-legend"
       >
         <View className="flex-row items-center" style={{ gap: 5 }}>
-          <View style={{ width: 14, height: 2.5, borderRadius: 1.5, backgroundColor: BRAND_PRIMARY }} />
-          <Text className="text-text-secondary" style={{ fontSize: 10, fontFamily: 'Inter, sans-serif' }}>
+          <View
+            style={{ width: 14, height: 2.5, borderRadius: 1.5, backgroundColor: BRAND_PRIMARY }}
+          />
+          <Text
+            className="text-text-secondary"
+            style={{ fontSize: 10, fontFamily: 'Inter, sans-serif' }}
+          >
             Actual
           </Text>
         </View>
@@ -613,13 +608,19 @@ export function StrengthTrendChart({
               borderTopColor: PROJECTION_LINE_COLOR,
             }}
           />
-          <Text className="text-text-secondary" style={{ fontSize: 10, fontFamily: 'Inter, sans-serif' }}>
+          <Text
+            className="text-text-secondary"
+            style={{ fontSize: 10, fontFamily: 'Inter, sans-serif' }}
+          >
             Projected
           </Text>
         </View>
         <View className="flex-row items-center" style={{ gap: 5 }}>
           <Text style={{ fontSize: 12, color: STATUS_WARNING }}>★</Text>
-          <Text className="text-text-secondary" style={{ fontSize: 10, fontFamily: 'Inter, sans-serif' }}>
+          <Text
+            className="text-text-secondary"
+            style={{ fontSize: 10, fontFamily: 'Inter, sans-serif' }}
+          >
             PR
           </Text>
         </View>

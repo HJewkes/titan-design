@@ -65,9 +65,7 @@ export function Stepper({
             return (
               <>
                 {React.cloneElement(child as React.ReactElement<any>, { index })}
-                {index < React.Children.count(children) - 1 && (
-                  <StepConnector index={index} />
-                )}
+                {index < React.Children.count(children) - 1 && <StepConnector index={index} />}
               </>
             )
           }
@@ -88,22 +86,12 @@ function StepConnector({ index }: StepConnectorProps) {
 
   if (orientation === 'horizontal') {
     return (
-      <View
-        className={cn(
-          'flex-1 h-0.5 mx-2',
-          isCompleted ? 'bg-brand-primary' : 'bg-hairline'
-        )}
-      />
+      <View className={cn('flex-1 h-0.5 mx-2', isCompleted ? 'bg-brand-primary' : 'bg-hairline')} />
     )
   }
 
   return (
-    <View
-      className={cn(
-        'w-0.5 h-8 ml-4 my-1',
-        isCompleted ? 'bg-brand-primary' : 'bg-hairline'
-      )}
-    />
+    <View className={cn('w-0.5 h-8 ml-4 my-1', isCompleted ? 'bg-brand-primary' : 'bg-hairline')} />
   )
 }
 
@@ -123,10 +111,8 @@ export interface StepProps {
 export function Step({ index = 0, status, className, children }: StepProps) {
   const { activeStep, orientation } = useContext(StepperContext)
 
-  const derivedStatus: StepStatus = status || (
-    index < activeStep ? 'completed' :
-    index === activeStep ? 'active' : 'upcoming'
-  )
+  const derivedStatus: StepStatus =
+    status || (index < activeStep ? 'completed' : index === activeStep ? 'active' : 'upcoming')
 
   return (
     <View
@@ -216,10 +202,13 @@ export function StepLabel({ status = 'upcoming', className, children }: StepLabe
       className={cn(
         'text-sm font-medium',
         orientation === 'horizontal' ? 'mt-2' : 'ml-3',
-        status === 'active' ? 'text-text-primary' :
-        status === 'completed' ? 'text-brand-primary' :
-        status === 'error' ? 'text-status-error' :
-        'text-text-secondary',
+        status === 'active'
+          ? 'text-text-primary'
+          : status === 'completed'
+            ? 'text-brand-primary'
+            : status === 'error'
+              ? 'text-status-error'
+              : 'text-text-secondary',
         className
       )}
     >
@@ -242,9 +231,5 @@ export interface StepContentProps {
 export function StepContent({ status = 'upcoming', className, children }: StepContentProps) {
   if (status !== 'active') return null
 
-  return (
-    <View className={cn('ml-11 mt-2 pb-4', className)}>
-      {children}
-    </View>
-  )
+  return <View className={cn('ml-11 mt-2 pb-4', className)}>{children}</View>
 }

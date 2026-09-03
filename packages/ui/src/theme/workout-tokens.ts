@@ -48,8 +48,7 @@ export const WORKOUT_TOKENS = {
     over2: ramp.red[700],
     over3: ramp.red[800],
     targetLine: 'rgba(33, 150, 243, 0.5)',
-    atTargetGlow:
-      '0 0 5px 1px rgba(33, 150, 243, 0.35), 0 0 10px 3px rgba(33, 150, 243, 0.15)',
+    atTargetGlow: '0 0 5px 1px rgba(33, 150, 243, 0.35), 0 0 10px 3px rgba(33, 150, 243, 0.15)',
   },
 
   // Placeholder strip

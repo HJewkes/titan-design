@@ -3,7 +3,14 @@ import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 
 export type PillVariant = 'subtle' | 'outline'
-export type PillColor = 'default' | 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info'
+export type PillColor =
+  | 'default'
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'error'
+  | 'warning'
+  | 'info'
 export type PillSize = 'xs' | 'sm' | 'md'
 
 export interface PillProps extends ViewProps {
@@ -71,20 +78,12 @@ export function Pill({
     className
   )
 
-  const textClasses = cn(
-    'font-heading font-semibold',
-    sizeStyles[size].text,
-    'text-inherit'
-  )
+  const textClasses = cn('font-heading font-semibold', sizeStyles[size].text, 'text-inherit')
 
   const content = (
     <>
       {leftElement}
-      {typeof children === 'string' ? (
-        <Text className={textClasses}>{children}</Text>
-      ) : (
-        children
-      )}
+      {typeof children === 'string' ? <Text className={textClasses}>{children}</Text> : children}
     </>
   )
 

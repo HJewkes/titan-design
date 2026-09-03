@@ -18,11 +18,7 @@ export interface DividerProps extends ViewProps {
  * <Divider />
  * <Divider orientation="vertical" />
  */
-export function Divider({
-  orientation = 'horizontal',
-  className,
-  ...props
-}: DividerProps) {
+export function Divider({ orientation = 'horizontal', className, ...props }: DividerProps) {
   return (
     <View
       accessibilityRole="none"

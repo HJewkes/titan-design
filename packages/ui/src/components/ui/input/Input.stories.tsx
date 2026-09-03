@@ -161,10 +161,7 @@ function SearchIcon() {
 export const WithLeftElement: Story = {
   render: () => (
     <View style={{ gap: 16, width: 300 }}>
-      <Input
-        placeholder="Search..."
-        leftElement={<SearchIcon />}
-      />
+      <Input placeholder="Search..." leftElement={<SearchIcon />} />
     </View>
   ),
 }
@@ -181,12 +178,7 @@ export const FormExample: Story = {
         helperText="Must be at least 8 characters"
         isRequired
       />
-      <Input
-        label="Bio"
-        placeholder="Tell us about yourself..."
-        multiline
-        numberOfLines={3}
-      />
+      <Input label="Bio" placeholder="Tell us about yourself..." multiline numberOfLines={3} />
     </InputGroup>
   ),
 }

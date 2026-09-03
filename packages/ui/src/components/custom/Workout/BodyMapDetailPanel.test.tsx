@@ -13,9 +13,7 @@ const contributing: ContributingExercise[] = [
   { name: 'Cable Fly', sets: 3, contributionWeight: 0.75 },
 ]
 
-const upcoming: UpcomingExercise[] = [
-  { name: 'Dips', workoutName: 'Push B', sets: 3 },
-]
+const upcoming: UpcomingExercise[] = [{ name: 'Dips', workoutName: 'Push B', sets: 3 }]
 
 const baseProps = {
   muscleGroup: MuscleGroup.CHEST,
@@ -54,10 +52,10 @@ describe('BodyMapDetailPanel', () => {
       render(<BodyMapDetailPanel {...baseProps} />)
       expect(screen.getByTestId('body-map-detail-panel-handle')).toBeInTheDocument()
       expect(screen.getByTestId('body-map-detail-panel-status-badge')).toHaveTextContent(
-        'productive',
+        'productive'
       )
       expect(screen.getByTestId('body-map-detail-panel-last-trained')).toHaveTextContent(
-        'Last trained 2 days ago',
+        'Last trained 2 days ago'
       )
     })
 
@@ -101,13 +99,13 @@ describe('BodyMapDetailPanel', () => {
     it('renders contributing exercises with sets and contribution', () => {
       render(<BodyMapDetailPanel {...baseProps} />)
       expect(screen.getByTestId('body-map-detail-panel-contributing-0-name')).toHaveTextContent(
-        'Barbell Bench Press',
+        'Barbell Bench Press'
       )
       expect(screen.getByTestId('body-map-detail-panel-contributing-0-detail')).toHaveTextContent(
-        '4 sets · 100%',
+        '4 sets · 100%'
       )
       expect(screen.getByTestId('body-map-detail-panel-contributing-1-detail')).toHaveTextContent(
-        '3 sets · 75%',
+        '3 sets · 75%'
       )
     })
 
@@ -115,7 +113,7 @@ describe('BodyMapDetailPanel', () => {
       render(<BodyMapDetailPanel {...baseProps} />)
       expect(screen.getByTestId('body-map-detail-panel-upcoming-0-name')).toHaveTextContent('Dips')
       expect(screen.getByTestId('body-map-detail-panel-upcoming-0-detail')).toHaveTextContent(
-        'Push B · 3 sets',
+        'Push B · 3 sets'
       )
     })
 
@@ -131,7 +129,7 @@ describe('BodyMapDetailPanel', () => {
           contributingExercises={[]}
           upcomingExercises={[]}
           weeklyHistory={[]}
-        />,
+        />
       )
       expect(screen.getByTestId('body-map-detail-panel')).toBeInTheDocument()
       expect(screen.queryByTestId('body-map-detail-panel-contributing')).not.toBeInTheDocument()
@@ -190,9 +188,7 @@ describe('BodyMapDetailPanel', () => {
     })
 
     it('has no accessibility violations with full content', async () => {
-      const { container } = render(
-        <BodyMapDetailPanel {...baseProps} onViewExercises={vi.fn()} />,
-      )
+      const { container } = render(<BodyMapDetailPanel {...baseProps} onViewExercises={vi.fn()} />)
       expect(await axe(container)).toHaveNoViolations()
     })
 
@@ -200,7 +196,7 @@ describe('BodyMapDetailPanel', () => {
       const statuses = ['under', 'maintenance', 'productive', 'over'] as const
       for (const volumeStatus of statuses) {
         const { container, unmount } = render(
-          <BodyMapDetailPanel {...baseProps} volumeStatus={volumeStatus} />,
+          <BodyMapDetailPanel {...baseProps} volumeStatus={volumeStatus} />
         )
         expect(await axe(container)).toHaveNoViolations()
         unmount()
@@ -217,7 +213,7 @@ describe('BodyMapDetailPanel', () => {
           volumeStatus="maintenance"
           isOpen
           onClose={vi.fn()}
-        />,
+        />
       )
       expect(await axe(container)).toHaveNoViolations()
     })

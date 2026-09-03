@@ -70,9 +70,7 @@ function SideBySideShowcase() {
   return (
     <View className="gap-6 p-6 bg-background-default min-h-screen">
       <View className="gap-2">
-        <Text className="text-3xl font-bold text-text-primary font-heading">
-          Preset Showcase
-        </Text>
+        <Text className="text-3xl font-bold text-text-primary font-heading">Preset Showcase</Text>
         <Text className="text-text-secondary text-base">
           Toggle between presets to see how the entire design system adapts.
         </Text>
@@ -89,14 +87,14 @@ function SideBySideShowcase() {
           Subheading (font-heading)
         </Text>
         <Text className="text-base text-text-primary font-body">
-          Body text using font-body. The quick brown fox jumps over the lazy dog. This
-          demonstrates how paragraph text renders under the current preset.
+          Body text using font-body. The quick brown fox jumps over the lazy dog. This demonstrates
+          how paragraph text renders under the current preset.
         </Text>
         <Text className="text-sm text-text-secondary font-body">
           Secondary body text for captions and supporting content.
         </Text>
         <Text className="text-sm text-text-primary font-mono">
-          {'const monospace = \'font-mono rendering\''}
+          {"const monospace = 'font-mono rendering'"}
         </Text>
       </Section>
 
@@ -195,20 +193,40 @@ function SideBySideShowcase() {
       {/* Toasts */}
       <Section title="Toasts">
         <View className="gap-3">
-          <Toast title="Operation successful" description="Your changes have been saved." status="success" />
-          <Toast title="Something went wrong" description="Please try again later." status="error" />
+          <Toast
+            title="Operation successful"
+            description="Your changes have been saved."
+            status="success"
+          />
+          <Toast
+            title="Something went wrong"
+            description="Please try again later."
+            status="error"
+          />
           <Toast title="Heads up" description="This action cannot be undone." status="warning" />
-          <Toast title="New update available" description="Version 2.0 is ready to install." status="info" />
+          <Toast
+            title="New update available"
+            description="Version 2.0 is ready to install."
+            status="info"
+          />
         </View>
       </Section>
 
       {/* Status Colors */}
       <Section title="Status Colors">
         <View className="flex-row gap-3 flex-wrap">
-          <Badge color="success" size="lg">Success</Badge>
-          <Badge color="error" size="lg">Error</Badge>
-          <Badge color="warning" size="lg">Warning</Badge>
-          <Badge color="info" size="lg">Info</Badge>
+          <Badge color="success" size="lg">
+            Success
+          </Badge>
+          <Badge color="error" size="lg">
+            Error
+          </Badge>
+          <Badge color="warning" size="lg">
+            Warning
+          </Badge>
+          <Badge color="info" size="lg">
+            Info
+          </Badge>
         </View>
       </Section>
     </View>
@@ -225,9 +243,7 @@ function TypographyShowcase() {
   return (
     <View className="gap-6 p-6 bg-background-default min-h-screen">
       <View className="gap-2">
-        <Text className="text-3xl font-bold text-text-primary font-heading">
-          Typography
-        </Text>
+        <Text className="text-3xl font-bold text-text-primary font-heading">Typography</Text>
         <Text className="text-text-secondary text-base">
           How fonts and text styles change across presets.
         </Text>
@@ -252,9 +268,9 @@ function TypographyShowcase() {
 
       <Section title="Body Font (font-body)">
         <Text className="text-base text-text-primary font-body">
-          Regular body text. Design systems provide a shared language for product teams.
-          By codifying decisions into reusable components and tokens, teams move faster
-          while maintaining visual consistency across every surface.
+          Regular body text. Design systems provide a shared language for product teams. By
+          codifying decisions into reusable components and tokens, teams move faster while
+          maintaining visual consistency across every surface.
         </Text>
         <Text className="text-base font-semibold text-text-primary font-body">
           Bold body text. Emphasis and hierarchy within paragraph content.
@@ -263,8 +279,8 @@ function TypographyShowcase() {
           Italic body text. Used for quotations, citations, and emphasis.
         </Text>
         <Text className="text-sm text-text-secondary font-body">
-          Small / secondary text. Captions, labels, and supporting information
-          that supplements the main content without competing for attention.
+          Small / secondary text. Captions, labels, and supporting information that supplements the
+          main content without competing for attention.
         </Text>
         <Text className="text-xs text-text-tertiary font-body">
           Extra-small / tertiary text. Timestamps, metadata, fine print.
@@ -287,19 +303,14 @@ function TypographyShowcase() {
 
       <Section title="Mixed Typography">
         <Card className="p-5 gap-3">
-          <Text className="text-2xl font-bold text-text-primary font-heading">
-            Chapter One
-          </Text>
+          <Text className="text-2xl font-bold text-text-primary font-heading">Chapter One</Text>
           <Text className="text-base text-text-secondary font-body">
-            It was a bright cold day in April, and the clocks were striking thirteen.
-            Winston Smith, his chin nuzzled into his breast in an effort to escape the
-            vile wind, slipped quickly through the glass doors of Victory Mansions,
-            though not quickly enough to prevent a swirl of gritty dust from entering
-            along with him.
+            It was a bright cold day in April, and the clocks were striking thirteen. Winston Smith,
+            his chin nuzzled into his breast in an effort to escape the vile wind, slipped quickly
+            through the glass doors of Victory Mansions, though not quickly enough to prevent a
+            swirl of gritty dust from entering along with him.
           </Text>
-          <Text className="text-xs text-text-tertiary font-mono">
-            George Orwell, 1984
-          </Text>
+          <Text className="text-xs text-text-tertiary font-mono">George Orwell, 1984</Text>
         </Card>
       </Section>
     </View>
@@ -332,9 +343,7 @@ function ColorPaletteShowcase() {
   return (
     <View className="gap-6 p-6 bg-background-default min-h-screen">
       <View className="gap-2">
-        <Text className="text-3xl font-bold text-text-primary font-heading">
-          Color Palette
-        </Text>
+        <Text className="text-3xl font-bold text-text-primary font-heading">Color Palette</Text>
         <Text className="text-text-secondary text-base">
           Semantic color tokens rendered as swatches. Toggle presets to compare palettes.
         </Text>
@@ -347,13 +356,21 @@ function ColorPaletteShowcase() {
           <ColorSwatch label="brand-primary" className="bg-brand-primary" />
           <ColorSwatch label="brand-primary-light" className="bg-brand-primary-light" />
           <ColorSwatch label="brand-primary-dark" className="bg-brand-primary-dark" />
-          <ColorSwatch label="brand-primary-subtle" className="bg-brand-primary-subtle" textClass="text-text-primary" />
+          <ColorSwatch
+            label="brand-primary-subtle"
+            className="bg-brand-primary-subtle"
+            textClass="text-text-primary"
+          />
         </View>
         <View className="flex-row gap-3 flex-wrap mt-2">
           <ColorSwatch label="brand-secondary" className="bg-brand-secondary" />
           <ColorSwatch label="brand-secondary-light" className="bg-brand-secondary-light" />
           <ColorSwatch label="brand-secondary-dark" className="bg-brand-secondary-dark" />
-          <ColorSwatch label="brand-secondary-subtle" className="bg-brand-secondary-subtle" textClass="text-text-primary" />
+          <ColorSwatch
+            label="brand-secondary-subtle"
+            className="bg-brand-secondary-subtle"
+            textClass="text-text-primary"
+          />
         </View>
       </Section>
 
@@ -372,7 +389,9 @@ function ColorPaletteShowcase() {
             <Text className="text-xs font-mono font-medium text-text-primary">text-primary</Text>
           </View>
           <View className="rounded-lg p-3 min-w-[120px] min-h-[60px] justify-end bg-surface-elevated border border-hairline">
-            <Text className="text-xs font-mono font-medium text-text-secondary">text-secondary</Text>
+            <Text className="text-xs font-mono font-medium text-text-secondary">
+              text-secondary
+            </Text>
           </View>
           <View className="rounded-lg p-3 min-w-[120px] min-h-[60px] justify-end bg-surface-elevated border border-hairline">
             <Text className="text-xs font-mono font-medium text-text-tertiary">text-tertiary</Text>
@@ -382,26 +401,60 @@ function ColorPaletteShowcase() {
 
       <Section title="Surface Colors">
         <View className="flex-row gap-3 flex-wrap">
-          <ColorSwatch label="surface-base" className="bg-surface-base border border-hairline" textClass="text-text-primary" />
-          <ColorSwatch label="surface-elevated" className="bg-surface-elevated border border-hairline" textClass="text-text-primary" />
-          <ColorSwatch label="surface-raised" className="bg-surface-raised border border-hairline" textClass="text-text-primary" />
-          <ColorSwatch label="surface-overlay" className="bg-surface-overlay border border-hairline" textClass="text-text-primary" />
-          <ColorSwatch label="surface-input" className="bg-surface-input border border-hairline" textClass="text-text-primary" />
+          <ColorSwatch
+            label="surface-base"
+            className="bg-surface-base border border-hairline"
+            textClass="text-text-primary"
+          />
+          <ColorSwatch
+            label="surface-elevated"
+            className="bg-surface-elevated border border-hairline"
+            textClass="text-text-primary"
+          />
+          <ColorSwatch
+            label="surface-raised"
+            className="bg-surface-raised border border-hairline"
+            textClass="text-text-primary"
+          />
+          <ColorSwatch
+            label="surface-overlay"
+            className="bg-surface-overlay border border-hairline"
+            textClass="text-text-primary"
+          />
+          <ColorSwatch
+            label="surface-input"
+            className="bg-surface-input border border-hairline"
+            textClass="text-text-primary"
+          />
         </View>
       </Section>
 
       <Section title="Background Colors">
         <View className="flex-row gap-3 flex-wrap">
-          <ColorSwatch label="background-base" className="bg-background-base border border-hairline" textClass="text-text-primary" />
-          <ColorSwatch label="background-default" className="bg-background-default border border-hairline" textClass="text-text-primary" />
-          <ColorSwatch label="background-subtle" className="bg-background-subtle border border-hairline" textClass="text-text-primary" />
+          <ColorSwatch
+            label="background-base"
+            className="bg-background-base border border-hairline"
+            textClass="text-text-primary"
+          />
+          <ColorSwatch
+            label="background-default"
+            className="bg-background-default border border-hairline"
+            textClass="text-text-primary"
+          />
+          <ColorSwatch
+            label="background-subtle"
+            className="bg-background-subtle border border-hairline"
+            textClass="text-text-primary"
+          />
         </View>
       </Section>
 
       <Section title="Border Colors">
         <View className="flex-row gap-3 flex-wrap">
           <View className="rounded-lg p-3 min-w-[120px] min-h-[60px] justify-end bg-surface-base border-2 border-hairline-default">
-            <Text className="text-xs font-mono font-medium text-text-primary">hairline-default</Text>
+            <Text className="text-xs font-mono font-medium text-text-primary">
+              hairline-default
+            </Text>
           </View>
           <View className="rounded-lg p-3 min-w-[120px] min-h-[60px] justify-end bg-surface-base border-2 border-hairline-subtle">
             <Text className="text-xs font-mono font-medium text-text-primary">hairline-subtle</Text>

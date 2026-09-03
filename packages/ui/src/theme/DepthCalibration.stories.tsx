@@ -578,7 +578,7 @@ const BAND_FIELDS: { key: string; answer: string; style: Record<string, unknown>
     style: {
       backgroundImage: `linear-gradient(180deg, ${BAND_STEPS.map(
         (hex, i) =>
-          `${hex} ${(i / BAND_STEPS.length) * 100}%, ${hex} ${((i + 1) / BAND_STEPS.length) * 100}%`,
+          `${hex} ${(i / BAND_STEPS.length) * 100}%, ${hex} ${((i + 1) / BAND_STEPS.length) * 100}%`
       ).join(', ')})`,
     },
   },

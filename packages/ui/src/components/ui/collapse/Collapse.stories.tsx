@@ -79,8 +79,8 @@ export const AllowMultiple: Story = {
           <AccordionButton>Section Two</AccordionButton>
           <AccordionPanel>
             <Text className="text-text-secondary text-sm">
-              This section can be open alongside Section One. In single mode, opening a new
-              section would close any previously open one.
+              This section can be open alongside Section One. In single mode, opening a new section
+              would close any previously open one.
             </Text>
           </AccordionPanel>
         </AccordionItem>
@@ -121,9 +121,7 @@ export const DefaultOpen: Story = {
         <AccordionItem>
           <AccordionButton>Also Closed</AccordionButton>
           <AccordionPanel>
-            <Text className="text-text-secondary text-sm">
-              Another closed section.
-            </Text>
+            <Text className="text-text-secondary text-sm">Another closed section.</Text>
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
@@ -146,9 +144,7 @@ export const MultipleDefaultOpen: Story = {
         <AccordionItem>
           <AccordionButton>Second (Closed)</AccordionButton>
           <AccordionPanel>
-            <Text className="text-text-secondary text-sm">
-              This section starts closed.
-            </Text>
+            <Text className="text-text-secondary text-sm">This section starts closed.</Text>
           </AccordionPanel>
         </AccordionItem>
         <AccordionItem>
@@ -191,14 +187,18 @@ export const WithRichContent: Story = {
           <AccordionButton>Features Included</AccordionButton>
           <AccordionPanel>
             <View style={{ gap: 6 }}>
-              {['Unlimited projects', 'Custom domains', 'Priority support', 'API access', 'Team collaboration'].map(
-                (feature) => (
-                  <View key={feature} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                    <Text className="text-status-success text-sm">&#10003;</Text>
-                    <Text className="text-text-primary text-sm">{feature}</Text>
-                  </View>
-                )
-              )}
+              {[
+                'Unlimited projects',
+                'Custom domains',
+                'Priority support',
+                'API access',
+                'Team collaboration',
+              ].map((feature) => (
+                <View key={feature} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                  <Text className="text-status-success text-sm">&#10003;</Text>
+                  <Text className="text-text-primary text-sm">{feature}</Text>
+                </View>
+              ))}
             </View>
           </AccordionPanel>
         </AccordionItem>
@@ -213,7 +213,9 @@ export const WithRichContent: Story = {
                 </Text>
               </View>
               <View style={{ gap: 2 }}>
-                <Text className="text-text-primary text-sm font-medium">Is there a free trial?</Text>
+                <Text className="text-text-primary text-sm font-medium">
+                  Is there a free trial?
+                </Text>
                 <Text className="text-text-secondary text-sm">
                   We offer a 14-day free trial for all plans.
                 </Text>
@@ -291,9 +293,7 @@ export const CollapseControlled: Story = {
     const [isOpen, setIsOpen] = useState(false)
     return (
       <View style={{ width: 400, gap: 8 }}>
-        <Text className="text-sm text-text-secondary">
-          State: {isOpen ? 'Open' : 'Closed'}
-        </Text>
+        <Text className="text-sm text-text-secondary">State: {isOpen ? 'Open' : 'Closed'}</Text>
         <Collapse isOpen={isOpen} onToggle={setIsOpen}>
           <CollapseButton>
             <Text className="text-text-primary font-medium">Controlled Collapse</Text>
@@ -301,8 +301,8 @@ export const CollapseControlled: Story = {
           <CollapseContent>
             <View className="px-4 pb-3">
               <Text className="text-text-secondary text-sm">
-                This collapse is controlled externally. The isOpen prop and onToggle callback
-                manage state outside the component.
+                This collapse is controlled externally. The isOpen prop and onToggle callback manage
+                state outside the component.
               </Text>
             </View>
           </CollapseContent>

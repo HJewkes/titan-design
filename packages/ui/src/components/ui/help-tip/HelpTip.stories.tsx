@@ -115,7 +115,8 @@ export const AllPlacements: Story = {
 
 export const WithLongContent: Story = {
   args: {
-    content: 'This is a longer tooltip that contains more detailed information about the feature. It will wrap to multiple lines if needed, and you can customize the max width.',
+    content:
+      'This is a longer tooltip that contains more detailed information about the feature. It will wrap to multiple lines if needed, and you can customize the max width.',
     maxWidth: 300,
   },
 }
@@ -126,15 +127,9 @@ export const WithRichContent: Story = {
       content={
         <View className="gap-1">
           <Text className="text-sm font-semibold text-text-primary">API Rate Limits</Text>
-          <Text className="text-xs text-text-secondary">
-            • Free tier: 100 requests/hour
-          </Text>
-          <Text className="text-xs text-text-secondary">
-            • Pro tier: 1000 requests/hour
-          </Text>
-          <Text className="text-xs text-text-secondary">
-            • Enterprise: Unlimited
-          </Text>
+          <Text className="text-xs text-text-secondary">• Free tier: 100 requests/hour</Text>
+          <Text className="text-xs text-text-secondary">• Pro tier: 1000 requests/hour</Text>
+          <Text className="text-xs text-text-secondary">• Enterprise: Unlimited</Text>
         </View>
       }
       icon="info"
@@ -148,10 +143,7 @@ export const InlineWithLabel: Story = {
     <View className="gap-4">
       <View className="flex-row items-center gap-1">
         <Text className="text-sm font-medium text-text-primary">Email Address</Text>
-        <HelpTip
-          content="We'll never share your email with third parties."
-          size="sm"
-        />
+        <HelpTip content="We'll never share your email with third parties." size="sm" />
       </View>
 
       <View className="flex-row items-center gap-1">
@@ -178,10 +170,7 @@ export const InlineWithLabel: Story = {
 export const LabelWithHelpComponent: Story = {
   render: () => (
     <View className="gap-4">
-      <LabelWithHelp
-        label="Username"
-        helpContent="Choose a unique username for your account."
-      />
+      <LabelWithHelp label="Username" helpContent="Choose a unique username for your account." />
 
       <LabelWithHelp
         label="Email Address"

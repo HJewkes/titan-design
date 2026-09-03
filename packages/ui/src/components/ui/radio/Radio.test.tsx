@@ -68,7 +68,9 @@ describe('Radio', () => {
     render(
       <RadioGroup value="a" onChange={onChange}>
         <Radio value="a">A</Radio>
-        <Radio value="b" isDisabled>B</Radio>
+        <Radio value="b" isDisabled>
+          B
+        </Radio>
       </RadioGroup>
     )
     const radios = screen.getAllByRole('radio')
@@ -134,7 +136,9 @@ describe('Radio', () => {
   it('allows Radio to override group size and color', () => {
     render(
       <RadioGroup value="a" onChange={() => {}} size="sm" color="primary">
-        <Radio value="a" size="lg" color="error">A</Radio>
+        <Radio value="a" size="lg" color="error">
+          A
+        </Radio>
       </RadioGroup>
     )
     expect(screen.getByRole('radio')).toBeInTheDocument()

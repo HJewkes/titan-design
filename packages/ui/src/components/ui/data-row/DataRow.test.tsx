@@ -11,9 +11,7 @@ describe('DataRow', () => {
   })
 
   it('renders label and ReactNode value', () => {
-    render(
-      <DataRow label="Status" value={<span data-testid="custom-node">Active</span>} />
-    )
+    render(<DataRow label="Status" value={<span data-testid="custom-node">Active</span>} />)
     expect(screen.getByText('Status')).toBeInTheDocument()
     expect(screen.getByTestId('custom-node')).toBeInTheDocument()
     expect(screen.getByText('Active')).toBeInTheDocument()
@@ -34,24 +32,18 @@ describe('DataRow', () => {
   })
 
   it('applies custom className to root container', () => {
-    const { container } = render(
-      <DataRow label="Test" value="Value" className="bg-red-500" />
-    )
+    const { container } = render(<DataRow label="Test" value="Value" className="bg-red-500" />)
     const root = container.firstChild as HTMLElement
     expect(root).toBeInTheDocument()
   })
 
   it('applies valueClassName to string value', () => {
-    render(
-      <DataRow label="Test" value="Value" valueClassName="text-lg" />
-    )
+    render(<DataRow label="Test" value="Value" valueClassName="text-lg" />)
     expect(screen.getByText('Value')).toBeInTheDocument()
   })
 
   it('applies valueClassName to ReactNode wrapper', () => {
-    render(
-      <DataRow label="Test" value={<span>Node</span>} valueClassName="text-lg" />
-    )
+    render(<DataRow label="Test" value={<span>Node</span>} valueClassName="text-lg" />)
     expect(screen.getByText('Node')).toBeInTheDocument()
   })
 
@@ -68,9 +60,7 @@ describe('DataRow', () => {
     })
 
     it('has no accessibility violations with ReactNode value', async () => {
-      const { container } = render(
-        <DataRow label="Status" value={<span>Active</span>} />
-      )
+      const { container } = render(<DataRow label="Status" value={<span>Active</span>} />)
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })

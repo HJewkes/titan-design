@@ -81,12 +81,7 @@ describe('WeekRow', () => {
   describe('interaction', () => {
     it('invokes onPress for a pressable workout', () => {
       const onPress = vi.fn()
-      render(
-        <WeekRow
-          {...baseProps}
-          workouts={[{ name: 'Upper', status: 'current', onPress }]}
-        />,
-      )
+      render(<WeekRow {...baseProps} workouts={[{ name: 'Upper', status: 'current', onPress }]} />)
       fireEvent.click(screen.getByTestId('workout-pill-pressable'))
       expect(onPress).toHaveBeenCalledOnce()
     })
@@ -95,9 +90,7 @@ describe('WeekRow', () => {
   describe('accessibility', () => {
     it('has a descriptive accessibility label', () => {
       render(<WeekRow {...baseProps} />)
-      expect(
-        screen.getByLabelText('Week 1 of 4, 3 workouts'),
-      ).toBeInTheDocument()
+      expect(screen.getByLabelText('Week 1 of 4, 3 workouts')).toBeInTheDocument()
     })
 
     it('has no accessibility violations', async () => {
@@ -108,7 +101,7 @@ describe('WeekRow', () => {
 
     it('has no accessibility violations as a current deload week', async () => {
       const { container } = render(
-        <WeekRow {...baseProps} isCurrent isDeload intensityThreshold={0.8} />,
+        <WeekRow {...baseProps} isCurrent isDeload intensityThreshold={0.8} />
       )
       const results = await axe(container)
       expect(results).toHaveNoViolations()

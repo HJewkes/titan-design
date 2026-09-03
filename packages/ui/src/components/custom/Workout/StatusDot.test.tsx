@@ -128,7 +128,7 @@ describe('StatusDot', () => {
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const { container } = render(
-        <StatusDot variant="success" size="md" icon="check" label="On track" />,
+        <StatusDot variant="success" size="md" icon="check" label="On track" />
       )
       const results = await axe(container)
       expect(results).toHaveNoViolations()
@@ -136,7 +136,7 @@ describe('StatusDot', () => {
 
     it('has no accessibility violations for ring variants', async () => {
       const { container } = render(
-        <StatusDot variant="on-track" size="md" icon="check" label="On track" />,
+        <StatusDot variant="on-track" size="md" icon="check" label="On track" />
       )
       const results = await axe(container)
       expect(results).toHaveNoViolations()

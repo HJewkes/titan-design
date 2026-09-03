@@ -74,9 +74,7 @@ describe('MesoProgressBar', () => {
     })
 
     it('does not render a fill when current meso has no currentWeek', () => {
-      const noProgress: Meso[] = [
-        { id: 'c', name: 'Current', weekCount: 3, status: 'current' },
-      ]
+      const noProgress: Meso[] = [{ id: 'c', name: 'Current', weekCount: 3, status: 'current' }]
       render(<MesoProgressBar mesos={noProgress} activeMesoId={null} onMesoPress={vi.fn()} />)
       expect(screen.queryByTestId('meso-segment-fill-c')).not.toBeInTheDocument()
     })
@@ -132,7 +130,7 @@ describe('MesoProgressBar', () => {
 
     it('has no accessibility violations', async () => {
       const { container } = render(
-        <MesoProgressBar mesos={mesos} activeMesoId="m2" onMesoPress={vi.fn()} />,
+        <MesoProgressBar mesos={mesos} activeMesoId="m2" onMesoPress={vi.fn()} />
       )
       const results = await axe(container)
       expect(results).toHaveNoViolations()

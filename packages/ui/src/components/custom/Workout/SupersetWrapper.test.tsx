@@ -10,7 +10,7 @@ describe('SupersetWrapper', () => {
       render(
         <SupersetWrapper>
           <View />
-        </SupersetWrapper>,
+        </SupersetWrapper>
       )
       expect(screen.getByTestId('superset-label')).toHaveTextContent('SS')
     })
@@ -19,7 +19,7 @@ describe('SupersetWrapper', () => {
       render(
         <SupersetWrapper label="A1/A2">
           <View />
-        </SupersetWrapper>,
+        </SupersetWrapper>
       )
       expect(screen.getByTestId('superset-label')).toHaveTextContent('A1/A2')
     })
@@ -30,7 +30,7 @@ describe('SupersetWrapper', () => {
       render(
         <SupersetWrapper>
           <View />
-        </SupersetWrapper>,
+        </SupersetWrapper>
       )
       const wrapper = screen.getByTestId('superset-wrapper')
       expect(wrapper).toHaveStyle({ borderLeftColor: '#FF7900' })
@@ -43,7 +43,7 @@ describe('SupersetWrapper', () => {
       render(
         <SupersetWrapper color="#22C55E">
           <View />
-        </SupersetWrapper>,
+        </SupersetWrapper>
       )
       const wrapper = screen.getByTestId('superset-wrapper')
       expect(wrapper).toHaveStyle({ borderLeftColor: '#22C55E' })
@@ -59,7 +59,7 @@ describe('SupersetWrapper', () => {
         <SupersetWrapper>
           <Text testID="child-1">Exercise A</Text>
           <Text testID="child-2">Exercise B</Text>
-        </SupersetWrapper>,
+        </SupersetWrapper>
       )
       expect(screen.getByTestId('child-1')).toHaveTextContent('Exercise A')
       expect(screen.getByTestId('child-2')).toHaveTextContent('Exercise B')
@@ -71,7 +71,7 @@ describe('SupersetWrapper', () => {
       render(
         <SupersetWrapper>
           <View />
-        </SupersetWrapper>,
+        </SupersetWrapper>
       )
       expect(screen.getByRole('group')).toBeInTheDocument()
     })
@@ -80,7 +80,7 @@ describe('SupersetWrapper', () => {
       render(
         <SupersetWrapper>
           <View />
-        </SupersetWrapper>,
+        </SupersetWrapper>
       )
       expect(screen.getByLabelText('Superset: SS')).toBeInTheDocument()
     })
@@ -89,7 +89,7 @@ describe('SupersetWrapper', () => {
       render(
         <SupersetWrapper label="A1/A2">
           <View />
-        </SupersetWrapper>,
+        </SupersetWrapper>
       )
       expect(screen.getByLabelText('Superset: A1/A2')).toBeInTheDocument()
     })
@@ -99,7 +99,7 @@ describe('SupersetWrapper', () => {
         <SupersetWrapper>
           <Text>Exercise A</Text>
           <Text>Exercise B</Text>
-        </SupersetWrapper>,
+        </SupersetWrapper>
       )
       const results = await axe(container)
       expect(results).toHaveNoViolations()
@@ -111,7 +111,7 @@ describe('SupersetWrapper', () => {
       render(
         <SupersetWrapper>
           <View />
-        </SupersetWrapper>,
+        </SupersetWrapper>
       )
       const label = screen.getByTestId('superset-label')
       expect(label).toHaveStyle({ position: 'absolute' })
@@ -121,7 +121,7 @@ describe('SupersetWrapper', () => {
       render(
         <SupersetWrapper>
           <View />
-        </SupersetWrapper>,
+        </SupersetWrapper>
       )
       const label = screen.getByTestId('superset-label')
       expect(label).toHaveStyle({ top: '-1px', left: '-3px' })

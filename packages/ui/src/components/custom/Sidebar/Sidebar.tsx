@@ -1,5 +1,12 @@
 import React, { createContext, useContext } from 'react'
-import { View, Text, Pressable, ScrollView, type ViewProps, type PressableProps } from 'react-native'
+import {
+  View,
+  Text,
+  Pressable,
+  ScrollView,
+  type ViewProps,
+  type PressableProps,
+} from 'react-native'
 import { cn } from '../../../utils/cn'
 
 interface SidebarContextType {
@@ -85,9 +92,7 @@ export interface SidebarHeaderProps {
  */
 export function SidebarHeader({ children, className }: SidebarHeaderProps) {
   return (
-    <View className={cn('px-4 py-4 border-b border-hairline-subtle', className)}>
-      {children}
-    </View>
+    <View className={cn('px-4 py-4 border-b border-hairline-subtle', className)}>{children}</View>
   )
 }
 
@@ -101,10 +106,7 @@ export interface SidebarContentProps {
  */
 export function SidebarContent({ children, className }: SidebarContentProps) {
   return (
-    <ScrollView
-      className={cn('flex-1', className)}
-      showsVerticalScrollIndicator={false}
-    >
+    <ScrollView className={cn('flex-1', className)} showsVerticalScrollIndicator={false}>
       {children}
     </ScrollView>
   )
@@ -120,9 +122,7 @@ export interface SidebarFooterProps {
  */
 export function SidebarFooter({ children, className }: SidebarFooterProps) {
   return (
-    <View className={cn('px-2 py-4 border-t border-hairline-subtle', className)}>
-      {children}
-    </View>
+    <View className={cn('px-2 py-4 border-t border-hairline-subtle', className)}>{children}</View>
   )
 }
 
@@ -146,9 +146,7 @@ export function SidebarSection({ title, children, className }: SidebarSectionPro
           {title}
         </Text>
       )}
-      <View className="gap-0.5">
-        {children}
-      </View>
+      <View className="gap-0.5">{children}</View>
     </View>
   )
 }
@@ -209,12 +207,7 @@ export function SidebarItem({
       {...props}
     >
       {Icon && (
-        <Icon
-          size={20}
-          className={cn(
-            isActive ? 'text-brand-primary' : 'text-text-secondary'
-          )}
-        />
+        <Icon size={20} className={cn(isActive ? 'text-brand-primary' : 'text-text-secondary')} />
       )}
       {!isCollapsed && (
         <>
@@ -227,16 +220,8 @@ export function SidebarItem({
           >
             {label}
           </Text>
-          {badge && (
-            <View className="ml-auto">
-              {badge}
-            </View>
-          )}
-          {hasChildren && (
-            <Text className="text-text-tertiary ml-1">
-              {isExpanded ? '▼' : '▶'}
-            </Text>
-          )}
+          {badge && <View className="ml-auto">{badge}</View>}
+          {hasChildren && <Text className="text-text-tertiary ml-1">{isExpanded ? '▼' : '▶'}</Text>}
         </>
       )}
     </Pressable>
@@ -251,7 +236,5 @@ export interface SidebarDividerProps {
  * Divider between sidebar sections.
  */
 export function SidebarDivider({ className }: SidebarDividerProps) {
-  return (
-    <View className={cn('h-px mx-4 my-2 bg-hairline-subtle', className)} />
-  )
+  return <View className={cn('h-px mx-4 my-2 bg-hairline-subtle', className)} />
 }

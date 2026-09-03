@@ -56,14 +56,26 @@ export const AllVariants: Story = {
   render: () => (
     <View style={{ gap: 12 }}>
       <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
-        <BaseBadge size="sm"><Label>225 lbs</Label></BaseBadge>
-        <BaseBadge size="md"><Label>225 lbs</Label></BaseBadge>
-        <BaseBadge size="lg"><Label>225 lbs</Label></BaseBadge>
+        <BaseBadge size="sm">
+          <Label>225 lbs</Label>
+        </BaseBadge>
+        <BaseBadge size="md">
+          <Label>225 lbs</Label>
+        </BaseBadge>
+        <BaseBadge size="lg">
+          <Label>225 lbs</Label>
+        </BaseBadge>
       </View>
       <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
-        <BaseBadge variant="pr" size="sm"><Label color="#FF7900">PR</Label></BaseBadge>
-        <BaseBadge variant="pr" size="md"><Label color="#FF7900">PR</Label></BaseBadge>
-        <BaseBadge variant="pr" size="lg"><Label color="#FF7900">PR</Label></BaseBadge>
+        <BaseBadge variant="pr" size="sm">
+          <Label color="#FF7900">PR</Label>
+        </BaseBadge>
+        <BaseBadge variant="pr" size="md">
+          <Label color="#FF7900">PR</Label>
+        </BaseBadge>
+        <BaseBadge variant="pr" size="lg">
+          <Label color="#FF7900">PR</Label>
+        </BaseBadge>
       </View>
       <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
         <BaseBadge icon={<DumbbellIcon size={12} color="#9CA3AF" strokeWidth={2} />}>

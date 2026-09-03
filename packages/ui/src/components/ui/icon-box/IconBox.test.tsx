@@ -98,13 +98,7 @@ describe('IconBox', () => {
 
   it('renders with all props combined', () => {
     render(
-      <IconBox
-        icon={MockIcon}
-        color="success"
-        size="lg"
-        className="mt-2"
-        testID="full-icon-box"
-      />,
+      <IconBox icon={MockIcon} color="success" size="lg" className="mt-2" testID="full-icon-box" />
     )
     expect(screen.getByTestId('full-icon-box')).toBeInTheDocument()
     expect(screen.getByTestId('icon')).toHaveAttribute('data-size', '24')

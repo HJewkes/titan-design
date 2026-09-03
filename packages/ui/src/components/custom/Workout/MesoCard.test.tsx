@@ -39,15 +39,9 @@ describe('MesoCard', () => {
     it('renders name, goal badge, and sub-header', () => {
       render(<MesoCard {...baseProps} />)
       expect(screen.getByTestId('meso-card')).toBeInTheDocument()
-      expect(screen.getByTestId('meso-card-name')).toHaveTextContent(
-        'Accumulation',
-      )
-      expect(screen.getByTestId('meso-card-goal-badge')).toHaveTextContent(
-        'Hypertrophy',
-      )
-      expect(screen.getByTestId('meso-card-subheader')).toHaveTextContent(
-        'Upper/Lower · Weeks 1-4',
-      )
+      expect(screen.getByTestId('meso-card-name')).toHaveTextContent('Accumulation')
+      expect(screen.getByTestId('meso-card-goal-badge')).toHaveTextContent('Hypertrophy')
+      expect(screen.getByTestId('meso-card-subheader')).toHaveTextContent('Upper/Lower · Weeks 1-4')
     })
 
     it('renders the 3px gradient top accent', () => {
@@ -80,10 +74,7 @@ describe('MesoCard', () => {
     it('reflects expanded state via aria-expanded', () => {
       const onToggle = vi.fn()
       render(<MesoCard {...baseProps} onToggle={onToggle} expanded />)
-      expect(screen.getByTestId('meso-card-toggle')).toHaveAttribute(
-        'aria-expanded',
-        'true',
-      )
+      expect(screen.getByTestId('meso-card-toggle')).toHaveAttribute('aria-expanded', 'true')
     })
 
     it('renders a static container when not expandable', () => {
@@ -108,7 +99,7 @@ describe('MesoCard', () => {
             { group: 'back', percentage: 50 },
             { group: 'legs', percentage: 30 },
           ]}
-        />,
+        />
       )
       expect(screen.getByTestId('meso-card-heatmap')).toBeInTheDocument()
       expect(screen.getAllByTestId('meso-card-heatmap-cell')).toHaveLength(3)
@@ -132,9 +123,7 @@ describe('MesoCard', () => {
   describe('accessibility', () => {
     it('has an accessible label describing the meso', () => {
       render(<MesoCard {...baseProps} />)
-      expect(
-        screen.getByLabelText('Accumulation, Hypertrophy, Weeks 1-4'),
-      ).toBeInTheDocument()
+      expect(screen.getByLabelText('Accumulation, Hypertrophy, Weeks 1-4')).toBeInTheDocument()
     })
 
     it('exposes the label on the button when expandable', () => {
@@ -161,7 +150,7 @@ describe('MesoCard', () => {
             { group: 'chest', percentage: 80 },
             { group: 'back', percentage: 50 },
           ]}
-        />,
+        />
       )
       const results = await axe(container)
       expect(results).toHaveNoViolations()

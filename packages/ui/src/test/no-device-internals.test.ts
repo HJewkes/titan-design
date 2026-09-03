@@ -21,13 +21,13 @@ describe('no-device-internals', () => {
         // Dimension and ratio strings: the `\b` guard before `0x` means a digit
         // followed by `x` never reads as a hex literal. These exact strings
         // tripped an earlier, looser sweep.
-        { code: "// icons render at 20x20" },
-        { code: "// 200x400 intrinsic -> ~160x320 px" },
+        { code: '// icons render at 20x20' },
+        { code: '// 200x400 intrinsic -> ~160x320 px' },
         // SVG path coordinates — digit-only runs are not byte frames.
         { code: 'const d = "M12 2 22 12 12 22 2 12Z"' },
         { code: 'const d = "M7 7 17 17 12 22 12 2 17 7 7 17"' },
         // Timestamps — `-` and `:` are not byte separators.
-        { code: "// datetime // 2024-01-15 14:30" },
+        { code: '// datetime // 2024-01-15 14:30' },
         // "cascade" in its CSS sense is ordinary styling vocabulary.
         { code: "// RN doesn't cascade text color, so hand-color the text" },
         // Plain numbers and durations.

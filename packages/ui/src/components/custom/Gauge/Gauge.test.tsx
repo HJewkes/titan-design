@@ -50,7 +50,7 @@ describe('Gauge', () => {
           { value: 0, color: '#14B8A6' },
           { value: 50, color: '#D14343' },
         ]}
-      />,
+      />
     )
     expect(screen.getByTestId('gauge-value')).toHaveStyle({ color: '#14B8A6' })
   })

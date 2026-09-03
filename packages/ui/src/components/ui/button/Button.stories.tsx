@@ -158,12 +158,24 @@ export const AllColors: Story = {
   render: () => (
     <View style={{ gap: 8 }}>
       <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-        <Button color="primary"><ButtonText>Primary</ButtonText></Button>
-        <Button color="secondary"><ButtonText>Secondary</ButtonText></Button>
-        <Button color="success"><ButtonText>Success</ButtonText></Button>
-        <Button color="error"><ButtonText>Error</ButtonText></Button>
-        <Button color="warning"><ButtonText>Warning</ButtonText></Button>
-        <Button color="info"><ButtonText>Info</ButtonText></Button>
+        <Button color="primary">
+          <ButtonText>Primary</ButtonText>
+        </Button>
+        <Button color="secondary">
+          <ButtonText>Secondary</ButtonText>
+        </Button>
+        <Button color="success">
+          <ButtonText>Success</ButtonText>
+        </Button>
+        <Button color="error">
+          <ButtonText>Error</ButtonText>
+        </Button>
+        <Button color="warning">
+          <ButtonText>Warning</ButtonText>
+        </Button>
+        <Button color="info">
+          <ButtonText>Info</ButtonText>
+        </Button>
       </View>
     </View>
   ),
@@ -172,9 +184,15 @@ export const AllColors: Story = {
 export const AllSizes: Story = {
   render: () => (
     <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
-      <Button size="sm"><ButtonText>Small</ButtonText></Button>
-      <Button size="md"><ButtonText>Medium</ButtonText></Button>
-      <Button size="lg"><ButtonText>Large</ButtonText></Button>
+      <Button size="sm">
+        <ButtonText>Small</ButtonText>
+      </Button>
+      <Button size="md">
+        <ButtonText>Medium</ButtonText>
+      </Button>
+      <Button size="lg">
+        <ButtonText>Large</ButtonText>
+      </Button>
     </View>
   ),
 }
@@ -183,8 +201,24 @@ export const AllSizes: Story = {
 function PlusIcon({ size = 16 }: { size?: number }) {
   return (
     <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
-      <View style={{ position: 'absolute', width: size * 0.6, height: 2, backgroundColor: 'currentColor', borderRadius: 1 }} />
-      <View style={{ position: 'absolute', width: 2, height: size * 0.6, backgroundColor: 'currentColor', borderRadius: 1 }} />
+      <View
+        style={{
+          position: 'absolute',
+          width: size * 0.6,
+          height: 2,
+          backgroundColor: 'currentColor',
+          borderRadius: 1,
+        }}
+      />
+      <View
+        style={{
+          position: 'absolute',
+          width: 2,
+          height: size * 0.6,
+          backgroundColor: 'currentColor',
+          borderRadius: 1,
+        }}
+      />
     </View>
   )
 }

@@ -1,13 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import {
-  Stepper,
-  Step,
-  StepIndicator,
-  StepLabel,
-  StepContent,
-} from './Stepper'
+import { Stepper, Step, StepIndicator, StepLabel, StepContent } from './Stepper'
 
 function renderStepper(activeStep = 1) {
   return render(

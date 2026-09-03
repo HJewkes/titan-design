@@ -117,23 +117,17 @@ function getGaugeZoneColor(level: number): string {
 /** Splits `text` into nodes, bolding any segment that exactly matches a highlight. */
 function renderCoachingText(text: string, highlights?: string[]): ReactNode {
   if (!highlights || highlights.length === 0) return text
-  const escaped = highlights
-    .filter(Boolean)
-    .map((h) => h.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+  const escaped = highlights.filter(Boolean).map((h) => h.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
   if (escaped.length === 0) return text
   const regex = new RegExp(`(${escaped.join('|')})`, 'g')
   return text.split(regex).map((part, index) =>
     highlights.includes(part) ? (
-      <Text
-        key={`${part}-${index}`}
-        className="text-text-primary"
-        style={{ fontWeight: '700' }}
-      >
+      <Text key={`${part}-${index}`} className="text-text-primary" style={{ fontWeight: '700' }}>
         {part}
       </Text>
     ) : (
       <Fragment key={`t-${index}`}>{part}</Fragment>
-    ),
+    )
   )
 }
 
@@ -216,10 +210,7 @@ function Gauge({ gauge }: { gauge: MesoStatusGauge }) {
       aria-valuemax={100}
       testID="meso-status-card-gauge"
     >
-      <View
-        className="flex-row items-center justify-between"
-        accessibilityElementsHidden
-      >
+      <View className="flex-row items-center justify-between" accessibilityElementsHidden>
         <Text
           className="text-text-secondary"
           style={{
@@ -353,10 +344,7 @@ export function MesoStatusCard({
 
       <View style={{ padding: 14, gap: 14 }} testID="meso-status-card-body">
         <View testID="meso-status-card-header">
-          <View
-            className="flex-row items-center justify-between"
-            style={{ gap: 8 }}
-          >
+          <View className="flex-row items-center justify-between" style={{ gap: 8 }}>
             <Text
               className="text-text-primary"
               style={{
@@ -385,11 +373,7 @@ export function MesoStatusCard({
         </View>
 
         {metrics.length > 0 && (
-          <View
-            className="flex-row flex-wrap"
-            style={{ gap: 8 }}
-            testID="meso-status-card-metrics"
-          >
+          <View className="flex-row flex-wrap" style={{ gap: 8 }} testID="meso-status-card-metrics">
             {metrics.map((metric, index) => (
               <MetricCell key={`${metric.label}-${index}`} metric={metric} />
             ))}

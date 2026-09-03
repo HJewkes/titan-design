@@ -95,22 +95,12 @@ export function FormField({
       {/* Label Section */}
       {label && (
         <View
-          className={cn(
-            'flex-row items-center',
-            isHorizontal ? 'pt-2' : 'mb-1.5'
-          )}
+          className={cn('flex-row items-center', isHorizontal ? 'pt-2' : 'mb-1.5')}
           style={isHorizontal && labelWidth ? { width: labelWidth as number } : undefined}
         >
-          <Text
-            className={cn(
-              'font-medium text-text-primary',
-              labelSizeStyles[labelSize]
-            )}
-          >
+          <Text className={cn('font-medium text-text-primary', labelSizeStyles[labelSize])}>
             {label}
-            {isRequired && (
-              <Text className="text-status-error ml-0.5">*</Text>
-            )}
+            {isRequired && <Text className="text-status-error ml-0.5">*</Text>}
           </Text>
 
           {helpContent && (
@@ -147,10 +137,7 @@ export function FormField({
         {(helperText || errorMessage) && (
           <Text
             id={isInvalid ? errorId : helperId}
-            className={cn(
-              'text-xs mt-1.5',
-              isInvalid ? 'text-status-error' : 'text-text-tertiary'
-            )}
+            className={cn('text-xs mt-1.5', isInvalid ? 'text-status-error' : 'text-text-tertiary')}
           >
             {errorMessage || helperText}
           </Text>
@@ -199,22 +186,12 @@ export function FormSection({
     >
       {(title || description) && (
         <View className="mb-4">
-          {title && (
-            <Text className="text-lg font-semibold text-text-primary">
-              {title}
-            </Text>
-          )}
-          {description && (
-            <Text className="text-sm text-text-secondary mt-1">
-              {description}
-            </Text>
-          )}
+          {title && <Text className="text-lg font-semibold text-text-primary">{title}</Text>}
+          {description && <Text className="text-sm text-text-secondary mt-1">{description}</Text>}
         </View>
       )}
 
-      <View className="gap-4">
-        {children}
-      </View>
+      <View className="gap-4">{children}</View>
     </View>
   )
 }
@@ -243,12 +220,7 @@ const alignStyles = {
  *   <Button>Submit</Button>
  * </FormActions>
  */
-export function FormActions({
-  align = 'right',
-  className,
-  children,
-  ...props
-}: FormActionsProps) {
+export function FormActions({ align = 'right', className, children, ...props }: FormActionsProps) {
   return (
     <View
       className={cn(
@@ -291,17 +263,9 @@ const gapStyles = {
  *   </FormField>
  * </FormRow>
  */
-export function FormRow({
-  gap = 'md',
-  className,
-  children,
-  ...props
-}: FormRowProps) {
+export function FormRow({ gap = 'md', className, children, ...props }: FormRowProps) {
   return (
-    <View
-      className={cn('flex-row items-start', gapStyles[gap], className)}
-      {...props}
-    >
+    <View className={cn('flex-row items-start', gapStyles[gap], className)} {...props}>
       {children}
     </View>
   )

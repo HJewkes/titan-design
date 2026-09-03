@@ -30,7 +30,7 @@ export const Default: Story = {
 export const WithDescription: Story = {
   args: {
     title: 'No messages',
-    description: 'You don\'t have any messages yet. Start a conversation to see them here.',
+    description: "You don't have any messages yet. Start a conversation to see them here.",
   },
 }
 
@@ -56,7 +56,14 @@ function PlaceholderIcon({ size = 32, className }: { size?: number; className?: 
           alignItems: 'center',
         }}
       >
-        <View style={{ width: size * 0.3, height: 2, backgroundColor: 'var(--color-text-tertiary)', borderRadius: 1 }} />
+        <View
+          style={{
+            width: size * 0.3,
+            height: 2,
+            backgroundColor: 'var(--color-text-tertiary)',
+            borderRadius: 1,
+          }}
+        />
       </View>
     </View>
   )
@@ -73,12 +80,8 @@ export const WithIcon: Story = {
 // Simple action button for story demos
 function ActionButton() {
   return (
-    <View
-      className="bg-brand-primary px-4 py-2 rounded-md"
-    >
-      <Text className="text-white font-semibold text-sm">
-        Create New
-      </Text>
+    <View className="bg-brand-primary px-4 py-2 rounded-md">
+      <Text className="text-white font-semibold text-sm">Create New</Text>
     </View>
   )
 }

@@ -64,10 +64,7 @@ export function Spinner({
       className={cn('items-center justify-center', containerSizes[size], className)}
       {...props}
     >
-      <ActivityIndicator
-        size={sizeMap[size]}
-        color={colorMap[color]}
-      />
+      <ActivityIndicator size={sizeMap[size]} color={colorMap[color]} />
     </View>
   )
 }

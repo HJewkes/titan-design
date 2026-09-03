@@ -2,10 +2,7 @@
 import { View, Text, ScrollView, Pressable, type ViewProps } from 'react-native'
 import { Card } from '../../ui/card'
 import { ExerciseCard, type ExerciseCardProps } from './ExerciseCard'
-import {
-  MuscleGroupChip,
-  type VolumeStatus,
-} from './MuscleGroupChip'
+import { MuscleGroupChip, type VolumeStatus } from './MuscleGroupChip'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 const HAIRLINE_DEFAULT = getSemanticColors('dark')['hairline-default']
@@ -15,11 +12,7 @@ const t = getSemanticColors('dark')
 export type WorkoutStatus = 'completed' | 'today' | 'upcoming'
 
 /** Spec volume-status vocabulary; mapped to MuscleGroupChip's VolumeStatus internally. */
-export type WorkoutMuscleVolumeStatus =
-  | 'under'
-  | 'maintenance'
-  | 'productive'
-  | 'over'
+export type WorkoutMuscleVolumeStatus = 'under' | 'maintenance' | 'productive' | 'over'
 
 export interface WorkoutMuscleGroup {
   /** Muscle group identifier (free-form to match plan data). */
@@ -72,7 +65,7 @@ function formatStats(
   totalSets: number,
   totalVolume: number | undefined,
   unit: 'lbs' | 'kg',
-  duration: string | undefined,
+  duration: string | undefined
 ): string {
   const parts = [`${totalSets} sets`]
   if (totalVolume != null) parts.push(`${totalVolume} ${unit}`)
@@ -171,11 +164,7 @@ export function WorkoutCard({
             <MuscleGroupChip
               key={muscle.group}
               name={muscle.label}
-              volumeStatus={
-                muscle.volumeStatus
-                  ? volumeStatusMap[muscle.volumeStatus]
-                  : undefined
-              }
+              volumeStatus={muscle.volumeStatus ? volumeStatusMap[muscle.volumeStatus] : undefined}
             />
           ))}
         </ScrollView>

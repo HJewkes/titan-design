@@ -43,9 +43,15 @@ export const Default: Story = {
 export const AllColors: Story = {
   render: () => (
     <View style={{ flexDirection: 'row', gap: 16 }}>
-      <Link color="default" onPress={() => {}}>Default</Link>
-      <Link color="primary" onPress={() => {}}>Primary</Link>
-      <Link color="secondary" onPress={() => {}}>Secondary</Link>
+      <Link color="default" onPress={() => {}}>
+        Default
+      </Link>
+      <Link color="primary" onPress={() => {}}>
+        Primary
+      </Link>
+      <Link color="secondary" onPress={() => {}}>
+        Secondary
+      </Link>
     </View>
   ),
 }
@@ -53,9 +59,15 @@ export const AllColors: Story = {
 export const UnderlineStyles: Story = {
   render: () => (
     <View style={{ flexDirection: 'row', gap: 16 }}>
-      <Link underline="always" onPress={() => {}}>Always</Link>
-      <Link underline="hover" onPress={() => {}}>Hover</Link>
-      <Link underline="none" onPress={() => {}}>None</Link>
+      <Link underline="always" onPress={() => {}}>
+        Always
+      </Link>
+      <Link underline="hover" onPress={() => {}}>
+        Hover
+      </Link>
+      <Link underline="none" onPress={() => {}}>
+        None
+      </Link>
     </View>
   ),
 }

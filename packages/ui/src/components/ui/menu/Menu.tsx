@@ -175,12 +175,7 @@ export function MenuItem({
       )}
     >
       {icon && <View className="mr-3">{icon}</View>}
-      <Text
-        className={cn(
-          'text-sm',
-          isDestructive ? 'text-status-error' : 'text-text-primary'
-        )}
-      >
+      <Text className={cn('text-sm', isDestructive ? 'text-status-error' : 'text-text-primary')}>
         {children}
       </Text>
     </Pressable>

@@ -429,27 +429,13 @@ describe('Table', () => {
 
   describe('TablePagination', () => {
     it('renders pagination info', () => {
-      render(
-        <TablePagination
-          page={0}
-          pageSize={10}
-          totalItems={50}
-          onPageChange={vi.fn()}
-        />
-      )
+      render(<TablePagination page={0} pageSize={10} totalItems={50} onPageChange={vi.fn()} />)
       expect(screen.getByText('1-10 of 50')).toBeInTheDocument()
     })
 
     it('calls onPageChange when next is clicked', () => {
       const onPageChange = vi.fn()
-      render(
-        <TablePagination
-          page={0}
-          pageSize={10}
-          totalItems={50}
-          onPageChange={onPageChange}
-        />
-      )
+      render(<TablePagination page={0} pageSize={10} totalItems={50} onPageChange={onPageChange} />)
 
       fireEvent.click(screen.getByLabelText('Next page'))
       expect(onPageChange).toHaveBeenCalledWith(1)
@@ -457,41 +443,20 @@ describe('Table', () => {
 
     it('calls onPageChange when previous is clicked', () => {
       const onPageChange = vi.fn()
-      render(
-        <TablePagination
-          page={2}
-          pageSize={10}
-          totalItems={50}
-          onPageChange={onPageChange}
-        />
-      )
+      render(<TablePagination page={2} pageSize={10} totalItems={50} onPageChange={onPageChange} />)
 
       fireEvent.click(screen.getByLabelText('Previous page'))
       expect(onPageChange).toHaveBeenCalledWith(1)
     })
 
     it('disables previous button on first page', () => {
-      render(
-        <TablePagination
-          page={0}
-          pageSize={10}
-          totalItems={50}
-          onPageChange={vi.fn()}
-        />
-      )
+      render(<TablePagination page={0} pageSize={10} totalItems={50} onPageChange={vi.fn()} />)
       const prevButton = screen.getByLabelText('Previous page')
       expect(prevButton).toHaveAttribute('aria-disabled', 'true')
     })
 
     it('disables next button on last page', () => {
-      render(
-        <TablePagination
-          page={4}
-          pageSize={10}
-          totalItems={50}
-          onPageChange={vi.fn()}
-        />
-      )
+      render(<TablePagination page={4} pageSize={10} totalItems={50} onPageChange={vi.fn()} />)
       const nextButton = screen.getByLabelText('Next page')
       expect(nextButton).toHaveAttribute('aria-disabled', 'true')
     })
@@ -528,26 +493,12 @@ describe('Table', () => {
     })
 
     it('shows correct range for middle pages', () => {
-      render(
-        <TablePagination
-          page={2}
-          pageSize={10}
-          totalItems={50}
-          onPageChange={vi.fn()}
-        />
-      )
+      render(<TablePagination page={2} pageSize={10} totalItems={50} onPageChange={vi.fn()} />)
       expect(screen.getByText('21-30 of 50')).toBeInTheDocument()
     })
 
     it('shows correct range for last partial page', () => {
-      render(
-        <TablePagination
-          page={2}
-          pageSize={10}
-          totalItems={25}
-          onPageChange={vi.fn()}
-        />
-      )
+      render(<TablePagination page={2} pageSize={10} totalItems={25} onPageChange={vi.fn()} />)
       expect(screen.getByText('21-25 of 25')).toBeInTheDocument()
     })
   })
@@ -560,30 +511,18 @@ describe('Table', () => {
     })
 
     it('renders with custom title and description', () => {
-      render(
-        <TableEmptyState title="No users" description="Add users to see them here." />
-      )
+      render(<TableEmptyState title="No users" description="Add users to see them here." />)
       expect(screen.getByText('No users')).toBeInTheDocument()
       expect(screen.getByText('Add users to see them here.')).toBeInTheDocument()
     })
 
     it('renders with action element', () => {
-      render(
-        <TableEmptyState
-          title="No data"
-          action={<button>Add Item</button>}
-        />
-      )
+      render(<TableEmptyState title="No data" action={<button>Add Item</button>} />)
       expect(screen.getByText('Add Item')).toBeInTheDocument()
     })
 
     it('renders with custom icon', () => {
-      render(
-        <TableEmptyState
-          title="No data"
-          icon={<span data-testid="empty-icon">E</span>}
-        />
-      )
+      render(<TableEmptyState title="No data" icon={<span data-testid="empty-icon">E</span>} />)
       expect(screen.getByTestId('empty-icon')).toBeInTheDocument()
     })
   })
@@ -597,12 +536,7 @@ describe('Table', () => {
 
     it('has no accessibility violations for pagination', async () => {
       const { container } = render(
-        <TablePagination
-          page={0}
-          pageSize={10}
-          totalItems={50}
-          onPageChange={vi.fn()}
-        />
+        <TablePagination page={0} pageSize={10} totalItems={50} onPageChange={vi.fn()} />
       )
       const results = await axe(container)
       expect(results).toHaveNoViolations()
@@ -649,14 +583,7 @@ describe('Table', () => {
     })
 
     it('pagination buttons have accessible labels', () => {
-      render(
-        <TablePagination
-          page={1}
-          pageSize={10}
-          totalItems={50}
-          onPageChange={vi.fn()}
-        />
-      )
+      render(<TablePagination page={1} pageSize={10} totalItems={50} onPageChange={vi.fn()} />)
       expect(screen.getByLabelText('Previous page')).toBeInTheDocument()
       expect(screen.getByLabelText('Next page')).toBeInTheDocument()
     })

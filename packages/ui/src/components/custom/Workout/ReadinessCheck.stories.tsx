@@ -89,7 +89,7 @@ export const WithWarmUpCaution: Story = {
 
 function InteractiveReadinessCheck() {
   const [values, setValues] = useState<Record<string, number>>(
-    Object.fromEntries(FACTOR_SEED.map((f) => [f.id, f.value])),
+    Object.fromEntries(FACTOR_SEED.map((f) => [f.id, f.value]))
   )
 
   const factors: ReadinessFactor[] = FACTOR_SEED.map((f) => ({

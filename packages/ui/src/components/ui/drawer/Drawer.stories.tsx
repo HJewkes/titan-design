@@ -37,11 +37,7 @@ export const Default: Story = {
         <Button onPress={() => setIsOpen(true)}>
           <ButtonText>Open Drawer</ButtonText>
         </Button>
-        <Drawer
-          isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
-          title="Drawer Title"
-        >
+        <Drawer isOpen={isOpen} onClose={() => setIsOpen(false)} title="Drawer Title">
           <DrawerBody>
             <Text className="text-text-primary">
               This is the drawer content. You can put any content here.
@@ -124,7 +120,7 @@ export const AllSizes: Story = {
   render: function Render() {
     const [openSize, setOpenSize] = useState<string | null>(null)
     const sizes = ['sm', 'md', 'lg', 'xl'] as const
-    
+
     return (
       <View className="flex-row gap-2 flex-wrap">
         {sizes.map((size) => (
@@ -141,9 +137,7 @@ export const AllSizes: Story = {
             title={`${size.toUpperCase()} Drawer`}
           >
             <DrawerBody>
-              <Text className="text-text-primary">
-                This is a {size} size drawer.
-              </Text>
+              <Text className="text-text-primary">This is a {size} size drawer.</Text>
             </DrawerBody>
           </Drawer>
         ))}
@@ -160,12 +154,7 @@ export const WithFooter: Story = {
         <Button onPress={() => setIsOpen(true)}>
           <ButtonText>Open Form Drawer</ButtonText>
         </Button>
-        <Drawer
-          isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
-          title="Edit Profile"
-          size="lg"
-        >
+        <Drawer isOpen={isOpen} onClose={() => setIsOpen(false)} title="Edit Profile" size="lg">
           <DrawerBody>
             <View className="gap-4">
               <View>

@@ -40,19 +40,34 @@ type Story = StoryObj<typeof ToolbarButton>
 // These simulate MUI SvgIcon components at 20x20
 const SettingsIcon = ({ color }: { color?: string }) => (
   <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center' }}>
-    <Text className={color ? undefined : 'text-text-secondary'} style={{ fontSize: 16, ...(color ? { color } : {}) }}>⚙</Text>
+    <Text
+      className={color ? undefined : 'text-text-secondary'}
+      style={{ fontSize: 16, ...(color ? { color } : {}) }}
+    >
+      ⚙
+    </Text>
   </View>
 )
 
 const FilterIcon = ({ color }: { color?: string }) => (
   <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center' }}>
-    <Text className={color ? undefined : 'text-text-secondary'} style={{ fontSize: 16, ...(color ? { color } : {}) }}>⏣</Text>
+    <Text
+      className={color ? undefined : 'text-text-secondary'}
+      style={{ fontSize: 16, ...(color ? { color } : {}) }}
+    >
+      ⏣
+    </Text>
   </View>
 )
 
 const ViewIcon = ({ color }: { color?: string }) => (
   <View style={{ width: 20, height: 20, alignItems: 'center', justifyContent: 'center' }}>
-    <Text className={color ? undefined : 'text-text-secondary'} style={{ fontSize: 16, ...(color ? { color } : {}) }}>◉</Text>
+    <Text
+      className={color ? undefined : 'text-text-secondary'}
+      style={{ fontSize: 16, ...(color ? { color } : {}) }}
+    >
+      ◉
+    </Text>
   </View>
 )
 
@@ -72,30 +87,19 @@ export const ActiveVsInactive: Story = {
         <Text className="text-text-secondary text-xs mb-1">
           isActive=true - sunken/dark look, ORANGE icon, white text
         </Text>
-        <ToolbarButton 
-          label="Active (orange icon)" 
-          icon={<FilterIcon />} 
-          isActive={true}
-        />
+        <ToolbarButton label="Active (orange icon)" icon={<FilterIcon />} isActive={true} />
       </View>
       <View>
         <Text className="text-text-secondary text-xs mb-1">
           isActive=undefined - sunken/dark look, white icon (default state)
         </Text>
-        <ToolbarButton 
-          label="Default (white icon)" 
-          icon={<FilterIcon />}
-        />
+        <ToolbarButton label="Default (white icon)" icon={<FilterIcon />} />
       </View>
       <View>
         <Text className="text-text-secondary text-xs mb-1">
           isActive=false - elevated/light look, gray icon
         </Text>
-        <ToolbarButton 
-          label="Inactive (gray icon)" 
-          icon={<FilterIcon />} 
-          isActive={false}
-        />
+        <ToolbarButton label="Inactive (gray icon)" icon={<FilterIcon />} isActive={false} />
       </View>
     </View>
   ),
@@ -109,8 +113,8 @@ export const Interactive: Story = {
         <Text className="text-text-secondary text-xs">
           Click to toggle. When active=true, icon turns orange:
         </Text>
-        <ToolbarButton 
-          label="Toggle Me" 
+        <ToolbarButton
+          label="Toggle Me"
           icon={<SettingsIcon />}
           isActive={active}
           onPress={() => setActive(!active)}
@@ -130,24 +134,19 @@ export const IconOnly: Story = {
         Icon-only buttons. Active button has orange icon:
       </Text>
       <View style={{ flexDirection: 'row', gap: 8 }}>
-        <ToolbarButton 
-          label="Settings" 
-          icon={<SettingsIcon />} 
+        <ToolbarButton
+          label="Settings"
+          icon={<SettingsIcon />}
           showLabel={false}
           isActive={false}
         />
-        <ToolbarButton 
-          label="Filter (active)" 
-          icon={<FilterIcon />} 
-          showLabel={false} 
+        <ToolbarButton
+          label="Filter (active)"
+          icon={<FilterIcon />}
+          showLabel={false}
           isActive={true}
         />
-        <ToolbarButton 
-          label="View" 
-          icon={<ViewIcon />} 
-          showLabel={false}
-          isActive={false}
-        />
+        <ToolbarButton label="View" icon={<ViewIcon />} showLabel={false} isActive={false} />
       </View>
     </View>
   ),
@@ -166,15 +165,15 @@ export const Disabled: Story = {
         Note: Orange icon IS shown when isActive=true (matching original XP behavior)
       </Text>
       <View style={{ flexDirection: 'row', gap: 8 }}>
-        <ToolbarButton 
-          label="Disabled Active" 
-          icon={<SettingsIcon />} 
+        <ToolbarButton
+          label="Disabled Active"
+          icon={<SettingsIcon />}
           isActive={true}
           isDisabled={true}
         />
-        <ToolbarButton 
-          label="Disabled Inactive" 
-          icon={<SettingsIcon />} 
+        <ToolbarButton
+          label="Disabled Inactive"
+          icon={<SettingsIcon />}
           isActive={false}
           isDisabled={true}
         />
@@ -193,16 +192,8 @@ export const HoverStates: Story = {
         Active: #3C3C3C → #4C4C4C | Inactive: #6E6E6E → #5D5D5D | Shadows: removed
       </Text>
       <View style={{ flexDirection: 'row', gap: 8 }}>
-        <ToolbarButton 
-          label="Hover Me (Active)" 
-          icon={<SettingsIcon />}
-          isActive={true}
-        />
-        <ToolbarButton 
-          label="Hover Me (Inactive)" 
-          icon={<SettingsIcon />}
-          isActive={false}
-        />
+        <ToolbarButton label="Hover Me (Active)" icon={<SettingsIcon />} isActive={true} />
+        <ToolbarButton label="Hover Me (Inactive)" icon={<SettingsIcon />} isActive={false} />
       </View>
     </View>
   ),
@@ -217,9 +208,24 @@ export const WithMenu: Story = {
         isActive={false}
         menuContent={
           <View style={{ paddingVertical: 8 }}>
-            <Text className="text-text-primary" style={{ paddingHorizontal: 16, paddingVertical: 8 }}>Grid View</Text>
-            <Text className="text-text-primary" style={{ paddingHorizontal: 16, paddingVertical: 8 }}>List View</Text>
-            <Text className="text-text-primary" style={{ paddingHorizontal: 16, paddingVertical: 8 }}>Compact View</Text>
+            <Text
+              className="text-text-primary"
+              style={{ paddingHorizontal: 16, paddingVertical: 8 }}
+            >
+              Grid View
+            </Text>
+            <Text
+              className="text-text-primary"
+              style={{ paddingHorizontal: 16, paddingVertical: 8 }}
+            >
+              List View
+            </Text>
+            <Text
+              className="text-text-primary"
+              style={{ paddingHorizontal: 16, paddingVertical: 8 }}
+            >
+              Compact View
+            </Text>
           </View>
         }
       />
@@ -230,27 +236,27 @@ export const WithMenu: Story = {
 export const ButtonGroup: Story = {
   render: function Render() {
     const [activeIndex, setActiveIndex] = useState<number | null>(1)
-    
+
     return (
       <View style={{ gap: 16 }}>
         <Text className="text-text-secondary text-xs mb-1">
           Click to select (one active at a time):
         </Text>
         <ToolbarButtonGroup gap="sm">
-          <ToolbarButton 
-            label="Filter" 
+          <ToolbarButton
+            label="Filter"
             icon={<FilterIcon />}
             isActive={activeIndex === 0}
             onPress={() => setActiveIndex(activeIndex === 0 ? null : 0)}
           />
-          <ToolbarButton 
-            label="Settings" 
+          <ToolbarButton
+            label="Settings"
             icon={<SettingsIcon />}
             isActive={activeIndex === 1}
             onPress={() => setActiveIndex(activeIndex === 1 ? null : 1)}
           />
-          <ToolbarButton 
-            label="View" 
+          <ToolbarButton
+            label="View"
             icon={<ViewIcon />}
             isActive={activeIndex === 2}
             onPress={() => setActiveIndex(activeIndex === 2 ? null : 2)}
@@ -265,7 +271,7 @@ export const ToolbarExample: Story = {
   render: function Render() {
     const [filterActive, setFilterActive] = useState(true)
     const [settingsActive, setSettingsActive] = useState(false)
-    
+
     return (
       <View>
         <Text className="text-text-secondary text-xs mb-3">
@@ -290,8 +296,18 @@ export const ToolbarExample: Story = {
             isActive={false}
             menuContent={
               <View style={{ paddingVertical: 8 }}>
-                <Text className="text-text-primary" style={{ paddingHorizontal: 16, paddingVertical: 8 }}>Grid</Text>
-                <Text className="text-text-primary" style={{ paddingHorizontal: 16, paddingVertical: 8 }}>List</Text>
+                <Text
+                  className="text-text-primary"
+                  style={{ paddingHorizontal: 16, paddingVertical: 8 }}
+                >
+                  Grid
+                </Text>
+                <Text
+                  className="text-text-primary"
+                  style={{ paddingHorizontal: 16, paddingVertical: 8 }}
+                >
+                  List
+                </Text>
               </View>
             }
           />
@@ -304,7 +320,7 @@ export const ToolbarExample: Story = {
 export const CompactMode: Story = {
   render: function Render() {
     const [isCompact, setIsCompact] = useState(false)
-    
+
     return (
       <View style={{ gap: 16 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
@@ -333,12 +349,7 @@ export const CompactMode: Story = {
             showLabel={!isCompact}
             isActive={false}
           />
-          <ToolbarButton
-            label="View"
-            icon={<ViewIcon />}
-            showLabel={!isCompact}
-            isActive={false}
-          />
+          <ToolbarButton label="View" icon={<ViewIcon />} showLabel={!isCompact} isActive={false} />
         </ToolbarButtonGroup>
       </View>
     )
@@ -351,14 +362,24 @@ export const Variants: Story = {
       <View>
         <Text className="text-text-secondary text-xs mb-2">Neumorphic (with 3D inset shadows)</Text>
         <View style={{ flexDirection: 'row', gap: 8 }}>
-          <ToolbarButton label="Inactive" icon={<SettingsIcon />} variant="raised" isActive={false} />
+          <ToolbarButton
+            label="Inactive"
+            icon={<SettingsIcon />}
+            variant="raised"
+            isActive={false}
+          />
           <ToolbarButton label="Active" icon={<SettingsIcon />} variant="raised" isActive={true} />
         </View>
       </View>
       <View>
         <Text className="text-text-secondary text-xs mb-2">Flat (no shadows)</Text>
         <View style={{ flexDirection: 'row', gap: 8 }}>
-          <ToolbarButton label="Inactive" icon={<SettingsIcon />} variant="default" isActive={false} />
+          <ToolbarButton
+            label="Inactive"
+            icon={<SettingsIcon />}
+            variant="default"
+            isActive={false}
+          />
           <ToolbarButton label="Active" icon={<SettingsIcon />} variant="default" isActive={true} />
         </View>
       </View>

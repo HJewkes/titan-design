@@ -1,5 +1,12 @@
 import React, { createContext, useContext, useState, useMemo } from 'react'
-import { View, Text, Pressable, ScrollView, type ViewProps, type PressableProps } from 'react-native'
+import {
+  View,
+  Text,
+  Pressable,
+  ScrollView,
+  type ViewProps,
+  type PressableProps,
+} from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Tooltip } from '../../ui/tooltip'
 
@@ -132,11 +139,7 @@ export function Table({
           contentContainerStyle={SCROLL_CONTENT}
         >
           <View role="table" className="w-full min-w-full">
-            {isLoading ? (
-              <TableLoadingSkeleton rowCount={loadingRowCount} />
-            ) : (
-              children
-            )}
+            {isLoading ? <TableLoadingSkeleton rowCount={loadingRowCount} /> : children}
           </View>
         </ScrollView>
       </View>
@@ -154,10 +157,7 @@ export interface TableHeaderProps {
  */
 export function TableHeader({ children, className }: TableHeaderProps) {
   return (
-    <View
-      role="rowgroup"
-      className={cn('bg-background-subtle rounded-t-lg', className)}
-    >
+    <View role="rowgroup" className={cn('bg-background-subtle rounded-t-lg', className)}>
       {children}
     </View>
   )
@@ -308,11 +308,7 @@ export function TableHeaderCell({
     // columnheader cell wraps the sort button so it carries proper table
     // semantics (role + aria-sort) while the inner control keeps its button role.
     return (
-      <View
-        role="columnheader"
-        aria-sort={ariaSort}
-        style={width ? { width } : FLEX_CELL}
-      >
+      <View role="columnheader" aria-sort={ariaSort} style={width ? { width } : FLEX_CELL}>
         {withTooltip(
           <Pressable
             accessibilityRole="button"
@@ -447,9 +443,7 @@ export function TablePagination({
       )}
     >
       <View className="flex-row items-center gap-2">
-        <Text className="text-sm text-text-secondary">
-          Rows per page:
-        </Text>
+        <Text className="text-sm text-text-secondary">Rows per page:</Text>
         <View className="flex-row gap-1">
           {pageSizeOptions.map((size) => (
             <Pressable
@@ -611,9 +605,7 @@ export function useTable<T extends Record<string, any>>({
   const handleSort = (column: string) => {
     if (sortColumn === column) {
       // Cycle: asc -> desc -> null
-      setSortDirection((prev) =>
-        prev === 'asc' ? 'desc' : prev === 'desc' ? null : 'asc'
-      )
+      setSortDirection((prev) => (prev === 'asc' ? 'desc' : prev === 'desc' ? null : 'asc'))
     } else {
       setSortColumn(column)
       setSortDirection('asc')
@@ -668,14 +660,12 @@ export function TableSelectAllCell({ className }: TableSelectAllCellProps) {
           allSelected
             ? 'bg-brand-primary border-brand-primary'
             : someSelected
-            ? 'bg-brand-primary-subtle border-brand-primary'
-            : 'border-hairline-strong bg-transparent'
+              ? 'bg-brand-primary-subtle border-brand-primary'
+              : 'border-hairline-strong bg-transparent'
         )}
       >
         {(allSelected || someSelected) && (
-          <Text className="text-white text-xs font-bold">
-            {allSelected ? '✓' : '−'}
-          </Text>
+          <Text className="text-white text-xs font-bold">{allSelected ? '✓' : '−'}</Text>
         )}
       </Pressable>
     </View>
@@ -711,9 +701,7 @@ export function TableSelectCell({ rowId, className }: TableSelectCellProps) {
             : 'border-hairline-strong bg-transparent web:hover:border-brand-primary'
         )}
       >
-        {isSelected && (
-          <Text className="text-white text-xs font-bold">✓</Text>
-        )}
+        {isSelected && <Text className="text-white text-xs font-bold">✓</Text>}
       </Pressable>
     </View>
   )

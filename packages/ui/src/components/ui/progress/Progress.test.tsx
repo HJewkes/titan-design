@@ -154,11 +154,7 @@ describe('Progress', () => {
 
     it('renders labels', () => {
       render(
-        <ProgressSteps
-          currentStep={1}
-          totalSteps={3}
-          labels={['Step 1', 'Step 2', 'Step 3']}
-        />
+        <ProgressSteps currentStep={1} totalSteps={3} labels={['Step 1', 'Step 2', 'Step 3']} />
       )
       expect(screen.getByText('Step 1')).toBeInTheDocument()
       expect(screen.getByText('Step 2')).toBeInTheDocument()

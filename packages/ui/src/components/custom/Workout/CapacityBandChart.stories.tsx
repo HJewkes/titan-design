@@ -2,11 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { View, Text } from 'react-native'
 import { CapacityBandChart } from './CapacityBandChart'
-import type {
-  CapacityBandDataPoint,
-  CapacityBandProjection,
-  WorkoutDot,
-} from './CapacityBandChart'
+import type { CapacityBandDataPoint, CapacityBandProjection, WorkoutDot } from './CapacityBandChart'
 
 const band: CapacityBandDataPoint[] = [
   { date: '2026-06-01', bandLow: 40, bandHigh: 70 },
@@ -43,8 +39,14 @@ const meta: Meta<typeof CapacityBandChart> = {
   component: CapacityBandChart,
   tags: ['autodocs'],
   argTypes: {
-    width: { control: { type: 'range', min: 240, max: 480, step: 10 }, description: 'Chart width in px' },
-    height: { control: { type: 'range', min: 120, max: 280, step: 10 }, description: 'Chart height in px' },
+    width: {
+      control: { type: 'range', min: 240, max: 480, step: 10 },
+      description: 'Chart width in px',
+    },
+    height: {
+      control: { type: 'range', min: 120, max: 280, step: 10 },
+      description: 'Chart height in px',
+    },
     band: { description: 'Capacity band shape over time' },
     workouts: { description: 'Workout sessions plotted as load dots' },
     projection: { description: 'Optional dashed forward projection (training vs rest)' },
