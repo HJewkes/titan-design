@@ -2,7 +2,7 @@
  * S3 · Session Rail — SPECIMEN (rapid-prototype, not yet a hardened component).
  *
  * A faithful React port of the R2/C3 converged rail
- * (coordination/design-explorations/drilldown-pass/r2-synthesis/gallery.html), brought into
+ * (sources/design/drilldown-pass/r2-synthesis/gallery.html), brought into
  * titan Storybook so we can iterate with the token system + real titan components + side-by-side.
  * Raw hex lives here on purpose — it mirrors the gallery 1:1; tokenization happens at harden.
  *

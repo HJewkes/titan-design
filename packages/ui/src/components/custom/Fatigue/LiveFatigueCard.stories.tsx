@@ -1,0 +1,126 @@
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { View, Text } from 'react-native'
+import { LiveFatigueCard } from './LiveFatigueCard'
+import { Surface } from '../../ui/surface/Surface'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { FATIGUE_STATES, WARMING_UP_MODEL, buildMockModel } from './fatigue-mock'
+
+const t = getSemanticColors('dark')
+
+const meta: Meta<typeof LiveFatigueCard> = {
+  title: 'Workout/Fatigue/Live Fatigue Card',
+  component: LiveFatigueCard,
+  tags: ['autodocs'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          'The vertical live fatigue card — consumes one `LiveFatigueModel`. Composes `VerdictHero` ' +
+          '(RPE + verdict word) · `FatigueLights` (VEL/ROM/TEMPO dots) · `RomProgressionChart` · ' +
+          '`GhostSpark` (tempo embedded). Grounded on the `Surface` **base** plane — one step ' +
+          'above the `background` shell the live stage paints — separated by the alpha ' +
+          '`hairline-default` edge and finished with the shared **paper** accent (matte grain + ' +
+          'top rim-light + contact shadow), the hero-surface treatment from the surface north-star.',
+      },
+    },
+  },
+  argTypes: {
+    width: { control: { type: 'number', min: 260, max: 420, step: 2 } },
+  },
+}
+export default meta
+type Story = StoryObj<typeof LiveFatigueCard>
+
+/** The live stage the card actually sits on — the `background` shell plane, not a raw hex. */
+const Frame = ({ children }: { children: React.ReactNode }) => (
+  <Surface level="background" style={{ padding: 28, alignItems: 'flex-start' }}>
+    {children}
+  </Surface>
+)
+
+/** The default (form breaking down) card. */
+export const Default: Story = {
+  args: { model: FATIGUE_STATES[3].model, width: 318, height: 508 },
+  render: (args) => (
+    <Frame>
+      <LiveFatigueCard {...args} />
+    </Frame>
+  ),
+}
+
+/** The four verdict states side by side — the whole spectrum. */
+export const States: Story = {
+  render: () => (
+    <Surface
+      level="background"
+      style={{
+        padding: 28,
+        flexDirection: 'row',
+        gap: 20,
+        alignItems: 'flex-start',
+      }}
+    >
+      {FATIGUE_STATES.map((s) => (
+        <View key={s.name} style={{ gap: 8 }}>
+          <Text
+            style={{
+              fontSize: 9,
+              letterSpacing: 1,
+              fontFamily: 'monospace',
+              color: t['text-tertiary'],
+            }}
+          >
+            {s.name}
+          </Text>
+          <LiveFatigueCard model={s.model} width={300} height={500} />
+        </View>
+      ))}
+    </Surface>
+  ),
+}
+
+/**
+ * Mid-set WITH a plan attached — the ROM chart draws the remaining reps as solid to-do sections,
+ * the same upcoming-rep treatment the velocity strip uses. `plannedReps` rides the model straight
+ * through to `RomProgressionChart`, and comes from the mock's ONE rep count, so it agrees with
+ * the velocity side when the two sit together in the panel.
+ */
+export const WithPlannedReps: Story = {
+  render: () => (
+    <Frame>
+      <LiveFatigueCard model={FATIGUE_STATES[1].model} width={318} height={508} />
+    </Frame>
+  ),
+}
+
+/**
+ * The SAME mid-set model with NO plan attached — no target exists, so the chart shows the
+ * performed reps only. The gap reads as a gap; nothing is defaulted in.
+ *
+ * `plannedReps` is stripped EXPLICITLY rather than just left off: the mock now supplies it by
+ * default, so "no plan attached" has to be stated to stay true.
+ */
+export const WithoutPlannedReps: Story = {
+  render: () => (
+    <Frame>
+      <LiveFatigueCard
+        model={buildMockModel(FATIGUE_STATES[1].current, {
+          rpe: FATIGUE_STATES[1].model.rpe,
+          verdict: FATIGUE_STATES[1].model.verdict,
+          plannedReps: undefined,
+        })}
+        width={318}
+        height={508}
+      />
+    </Frame>
+  ),
+}
+
+/** Warming up — a cold-start set (< 2 reps): neutral verdict, em-dash RPE, no reference lines. */
+export const WarmingUp: Story = {
+  render: () => (
+    <Frame>
+      <LiveFatigueCard model={WARMING_UP_MODEL} width={318} height={508} />
+    </Frame>
+  ),
+}

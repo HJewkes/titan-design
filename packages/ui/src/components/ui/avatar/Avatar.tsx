@@ -67,7 +67,7 @@ export function Avatar({
       accessibilityLabel={alt || resolvedFallback || 'Avatar'}
       className={cn(
         'items-center justify-center rounded-full overflow-hidden',
-        !nameColor && 'bg-border-strong',
+        !nameColor && 'bg-hairline-strong',
         styles.container,
         className
       )}
@@ -102,7 +102,7 @@ const badgeColors: Record<string, string> = {
   success: 'bg-status-success',
   error: 'bg-status-error',
   warning: 'bg-status-warning',
-  default: 'bg-border-strong',
+  default: 'bg-hairline-strong',
 }
 
 /**

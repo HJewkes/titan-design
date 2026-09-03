@@ -64,7 +64,7 @@ export function Sidebar({
       <View
         style={{ width: currentWidth }}
         className={cn(
-          'h-full flex-col bg-surface-base border-r border-border transition-all duration-200',
+          'h-full flex-col bg-surface-base border-r border-hairline transition-all duration-200',
           className
         )}
         {...props}
@@ -85,7 +85,7 @@ export interface SidebarHeaderProps {
  */
 export function SidebarHeader({ children, className }: SidebarHeaderProps) {
   return (
-    <View className={cn('px-4 py-4 border-b border-border-subtle', className)}>
+    <View className={cn('px-4 py-4 border-b border-hairline-subtle', className)}>
       {children}
     </View>
   )
@@ -120,7 +120,7 @@ export interface SidebarFooterProps {
  */
 export function SidebarFooter({ children, className }: SidebarFooterProps) {
   return (
-    <View className={cn('px-2 py-4 border-t border-border-subtle', className)}>
+    <View className={cn('px-2 py-4 border-t border-hairline-subtle', className)}>
       {children}
     </View>
   )
@@ -252,6 +252,6 @@ export interface SidebarDividerProps {
  */
 export function SidebarDivider({ className }: SidebarDividerProps) {
   return (
-    <View className={cn('h-px mx-4 my-2 bg-border-subtle', className)} />
+    <View className={cn('h-px mx-4 my-2 bg-hairline-subtle', className)} />
   )
 }

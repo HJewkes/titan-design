@@ -1,13 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { primitiveRamps } from '../../../theme/tokens/primitives'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { SessionRail, type SessionRailExercise } from './SessionRail'
+
+const t = getSemanticColors('dark')
 
 /**
  * `SessionRail` (shell organism) — the live-workout exercise list: a flat raised
  * `SessionHeader` glance (title, stat tiles, chunked pace bar) over a sunk, inset list
  * of ExerciseCard rail headings. The header plan (chunk widths ∝ sets) is derived from
- * `exercises`. Surfaces bind to the charcoal ramp; the list depth is a subtle neumorphic
+ * `exercises`. Surfaces bind to the grey ramp; the list depth is a subtle neumorphic
  * inset. Driven entirely by props.
  */
 const meta: Meta<typeof SessionRail> = {
@@ -20,7 +23,7 @@ const meta: Meta<typeof SessionRail> = {
   },
   decorators: [
     (Story) => (
-      <View className="min-h-screen flex-row" style={{ backgroundColor: '#101010' }}>
+      <View className="min-h-screen flex-row" style={{ backgroundColor: t['background-base'] }}>
         <Story />
         <View className="flex-1 items-center justify-center">
           <Text style={{ color: '#6B7280', fontSize: 12 }}>main viewport</Text>
@@ -34,7 +37,7 @@ const meta: Meta<typeof SessionRail> = {
       description: {
         component:
           '**Organism** (shell S3). The live-workout exercise list: raised header glance over ' +
-          'a sunk inset list, subtle neumorphic depth (charcoal ramp + `neumorphicShadows`). ' +
+          'a sunk inset list, subtle neumorphic depth (grey ramp + `neumorphicShadows`). ' +
           'Composes ' +
           '[SessionHeader](?path=/docs/shell-sessionrail-sessionheader--docs) + ' +
           '[ExerciseCardHeading](?path=/docs/workout-exercisecardheading--docs) × N. ' +

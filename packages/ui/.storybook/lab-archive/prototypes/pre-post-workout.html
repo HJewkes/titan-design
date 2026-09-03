@@ -1,0 +1,1828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Voltras — Pre/Post Workout Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #101010;
+    --bg-default: #161616;
+    --bg-subtle: #1C1C1C;
+    --card: #191919;
+    --card-raised: #1C1C1C;
+    --card-border: #1F1F1F;
+    --border-strong: #2C2C2C;
+    --accent: #FF7900;
+    --accent-light: #FF9630;
+    --accent-dark: #D0620C;
+    --accent-subtle: rgba(255, 121, 0, 0.12);
+    --green: #14B8A6;
+    --amber: #FFB020;
+    --gold: #FF7900;
+    --red: #D14343;
+    --result-improve: #4caf50;
+    --result-degrade: #ef5350;
+    --muted: #6B7280;
+    --text-secondary: #9CA3AF;
+    --text: #F3F4F6;
+    --text-bright: #F3F4F6;
+    --interactive-hover: rgba(255,255,255,0.04);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0px 4px 6px rgba(100, 116, 139, 0.12);
+    --transition: 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    max-width: 375px;
+    margin: 0 auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ── Top Nav ── */
+  .top-nav {
+    display: flex;
+    background: var(--bg);
+    border-bottom: 1px solid var(--card-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .top-nav button {
+    flex: 1;
+    padding: 12px 4px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    transition: color var(--transition);
+  }
+  .top-nav button.active {
+    color: var(--accent);
+  }
+  .top-nav button.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 16px;
+    right: 16px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  /* ── Flow Container ── */
+  .flow-container {
+    position: relative;
+    overflow: hidden;
+  }
+  .flow {
+    display: none;
+  }
+  .flow.active {
+    display: block;
+    animation: fadeIn 0.25s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Sub-screen transitions ── */
+  .sub-screen-container {
+    position: relative;
+    overflow: hidden;
+  }
+  .sub-screen {
+    display: none;
+    padding: 20px 16px 100px;
+  }
+  .sub-screen.active {
+    display: block;
+    animation: slideIn 0.3s ease;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes slideInReverse {
+    from { opacity: 0; transform: translateX(-40px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ── Bottom Nav (sub-screen) ── */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 375px;
+    max-width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    background: linear-gradient(to top, var(--bg) 60%, transparent);
+    z-index: 50;
+  }
+  .bottom-nav button {
+    padding: 10px 24px;
+    border-radius: 24px;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+  }
+  .bottom-nav .btn-back {
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--card-border);
+  }
+  .bottom-nav .btn-next {
+    background: var(--accent);
+    color: #fff;
+  }
+  .bottom-nav .btn-next:active { transform: scale(0.96); }
+  .bottom-nav .dots {
+    display: flex;
+    gap: 6px;
+  }
+  .bottom-nav .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--muted);
+    transition: all var(--transition);
+  }
+  .bottom-nav .dot.active {
+    background: var(--accent);
+    width: 18px;
+    border-radius: 3px;
+  }
+
+  /* ── Common Components ── */
+  .screen-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+  }
+  .screen-subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow);
+  }
+
+  /* ═══════════════════════════════════════════
+     FLOW 1 — Pre-Workout Readiness
+     ═══════════════════════════════════════════ */
+
+  /* Screen 1a: Emoji Sliders */
+  .slider-group { margin-bottom: 24px; }
+  .slider-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .slider-label-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-bright);
+  }
+  .slider-label-value {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .emoji-track {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    padding: 8px 0;
+  }
+  .emoji-track::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    right: 12px;
+    height: 4px;
+    background: var(--card-border);
+    border-radius: 2px;
+    transform: translateY(-50%);
+    z-index: 0;
+  }
+  .emoji-option {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 1;
+    background: var(--card);
+    border: 2px solid var(--card-border);
+    transition: all var(--transition);
+    user-select: none;
+  }
+  .emoji-option.selected {
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: scale(1.15);
+    box-shadow: 0 0 20px rgba(255, 121, 0, 0.3);
+  }
+  .emoji-option:active { transform: scale(0.9); }
+  .emoji-hint {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+    padding: 0 4px;
+  }
+
+  /* Screen 1b: Readiness Score */
+  .score-ring-container {
+    display: flex;
+    justify-content: center;
+    margin: 24px 0;
+    position: relative;
+  }
+  .score-ring {
+    width: 180px;
+    height: 180px;
+    position: relative;
+  }
+  .score-ring svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+  .score-ring .bg-ring {
+    fill: none;
+    stroke: var(--card-border);
+    stroke-width: 8;
+  }
+  .score-ring .fg-ring {
+    fill: none;
+    stroke-width: 8;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s cubic-bezier(0.22, 1, 0.36, 1), stroke 0.5s;
+  }
+  .score-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .score-number {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--text-bright);
+    line-height: 1;
+  }
+  .score-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .readiness-level {
+    font-family: 'Space Grotesk', sans-serif;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .readiness-advice {
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 24px;
+    padding: 0 16px;
+    line-height: 1.5;
+  }
+  .workout-preview-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--card-border);
+  }
+  .workout-preview-item:last-child { border-bottom: none; }
+  .wpi-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-bright);
+  }
+  .wpi-detail {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .wpi-weight {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  /* Screen 1c: VBT Warm-Up */
+  .velocity-comparison {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 32px;
+    margin: 32px 0;
+  }
+  .velocity-bar-group { text-align: center; }
+  .velocity-bar {
+    width: 56px;
+    border-radius: 8px 8px 0 0;
+    margin: 0 auto 8px;
+    transition: height 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .velocity-bar-label {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .velocity-bar-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+  }
+  .adjustment-banner {
+    background: rgba(255, 176, 32, 0.1);
+    border: 1px solid rgba(255, 176, 32, 0.3);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  .adjustment-banner .icon { font-size: 20px; margin-bottom: 4px; }
+  .adjustment-banner .title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--amber);
+    margin-bottom: 4px;
+  }
+  .adjustment-banner .detail {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .action-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .action-buttons button {
+    flex: 1;
+    padding: 14px;
+    border-radius: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all var(--transition);
+  }
+  .action-buttons button:active { transform: scale(0.97); }
+  .btn-outline {
+    background: transparent;
+    border: 1.5px solid var(--card-border) !important;
+    color: var(--text);
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  /* ═══════════════════════════════════════════
+     FLOW 2 — Post-Workout Summary
+     ═══════════════════════════════════════════ */
+
+  /* Tab bar within Flow 2 */
+  .variant-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    background: var(--card);
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  .variant-tab {
+    flex: 1;
+    padding: 8px 4px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all var(--transition);
+  }
+  .variant-tab.active {
+    background: var(--accent);
+    color: #fff;
+  }
+  .variant-panel { display: none; }
+  .variant-panel.active {
+    display: block;
+    animation: fadeIn 0.25s ease;
+  }
+
+  /* Stats Row */
+  .stats-scroll {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+    margin-bottom: 20px;
+  }
+  .stats-scroll::-webkit-scrollbar { display: none; }
+  .stat-card {
+    flex: 0 0 auto;
+    min-width: 90px;
+    background: var(--card);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    text-align: center;
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow);
+  }
+  .stat-card .stat-icon { font-size: 18px; margin-bottom: 4px; }
+  .stat-card .stat-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-bright);
+  }
+  .stat-card .stat-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+
+  /* PR Badge */
+  .pr-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--accent-subtle);
+    color: var(--accent);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 20px;
+    margin-left: 6px;
+    box-shadow: 0 0 8px rgba(255, 121, 0, 0.2);
+  }
+
+  /* Exercise breakdown card */
+  .exercise-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 14px;
+    margin-bottom: 10px;
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow);
+  }
+  .exercise-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .exercise-card-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-bright);
+  }
+  .set-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .set-row:last-child { border-bottom: none; }
+  .set-row .set-num { color: var(--muted); width: 40px; }
+  .set-row .set-rw { color: var(--text); flex: 1; }
+  .set-row .set-vel { color: var(--accent); text-align: right; width: 70px; }
+  .set-row.velocity-warning .set-vel { color: var(--red); }
+
+  /* Star Rating */
+  .star-rating {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 16px 0;
+  }
+  .star-rating .star {
+    font-size: 32px;
+    cursor: pointer;
+    transition: all var(--transition);
+    filter: grayscale(1) brightness(0.4);
+  }
+  .star-rating .star.filled {
+    filter: saturate(1.2) hue-rotate(-15deg) brightness(1.1);
+    transform: scale(1.1);
+  }
+  .star-rating .star:active { transform: scale(0.85); }
+
+  /* Note input */
+  .note-input {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 14px;
+    padding: 12px;
+    resize: none;
+    font-family: inherit;
+    outline: none;
+    transition: border-color var(--transition);
+  }
+  .note-input:focus { border-color: var(--accent); }
+  .note-input::placeholder { color: var(--muted); }
+
+  /* ── Variant B: Velocity Story ── */
+  .grade-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 24px 0;
+  }
+  .grade-letter {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 72px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .grade-label {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* Simple canvas chart */
+  .chart-container {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow);
+  }
+  .chart-container canvas {
+    width: 100%;
+    height: 160px;
+  }
+  .chart-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* e1RM changes */
+  .erm-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--card-border);
+  }
+  .erm-card:last-child { border-bottom: none; }
+  .erm-exercise {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-bright);
+  }
+  .erm-change {
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .erm-change.positive { color: var(--result-improve); }
+  .erm-change.negative { color: var(--result-degrade); }
+  .erm-change.neutral { color: var(--muted); }
+
+  /* ── Variant C: Coach Feedback ── */
+  .coach-section {
+    margin-bottom: 20px;
+  }
+  .coach-section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .coach-section-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+  .coach-section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-bright);
+  }
+  .coach-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px 0;
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .coach-item .bullet {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* Feedback mini-scales */
+  .feedback-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--card-border);
+  }
+  .feedback-row:last-child { border-bottom: none; }
+  .feedback-row-label {
+    font-size: 14px;
+    color: var(--text-bright);
+  }
+  .feedback-pills {
+    display: flex;
+    gap: 4px;
+  }
+  .feedback-pill {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all var(--transition);
+  }
+  .feedback-pill.selected {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* Joint health thumbs */
+  .joint-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+  }
+  .joint-name { font-size: 13px; color: var(--text); }
+  .joint-thumbs { display: flex; gap: 8px; }
+  .thumb-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--card-border);
+    background: var(--card);
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition);
+  }
+  .thumb-btn.selected-good {
+    background: rgba(20, 184, 166, 0.2);
+    border-color: var(--green);
+  }
+  .thumb-btn.selected-bad {
+    background: rgba(209, 67, 67, 0.2);
+    border-color: var(--red);
+  }
+
+  /* ═══════════════════════════════════════════
+     FLOW 3 — Session History
+     ═══════════════════════════════════════════ */
+  .history-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    border: 1px solid var(--card-border);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all var(--transition);
+    box-shadow: var(--shadow);
+  }
+  .history-card:active { transform: scale(0.98); }
+  .history-card-header {
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .hc-left {}
+  .hc-date {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .hc-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-top: 2px;
+  }
+  .hc-meta {
+    display: flex;
+    gap: 12px;
+    margin-top: 6px;
+  }
+  .hc-meta span {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .hc-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+  .hc-pr-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: var(--accent-subtle);
+    color: var(--accent);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 20px;
+    box-shadow: 0 0 8px rgba(255, 121, 0, 0.2);
+  }
+  .velocity-quality {
+    display: flex;
+    gap: 2px;
+  }
+  .vq-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--card-border);
+  }
+  .vq-dot.filled { background: var(--green); }
+  .vq-dot.warn { background: var(--amber); }
+
+  .history-expanded {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .history-expanded.open {
+    max-height: 600px;
+  }
+  .history-expanded-inner {
+    padding: 0 16px 14px;
+    border-top: 1px solid var(--card-border);
+  }
+  .hex-exercise {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .hex-exercise:last-child { border-bottom: none; }
+  .hex-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+  }
+  .hex-sets {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .hex-velocity {
+    font-size: 12px;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+
+  /* ── Fun comparison banner ── */
+  .fun-comparison {
+    background: var(--accent-subtle);
+    border: 1px solid rgba(255, 121, 0, 0.15);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .fun-comparison .emoji { font-size: 28px; margin-bottom: 6px; }
+  .fun-comparison .text {
+    font-size: 14px;
+    color: var(--text-bright);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  /* ── Section label ── */
+  .section-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 10px;
+    margin-top: 20px;
+  }
+
+  /* ── Checkbox style toggle ── */
+  .share-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .share-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--card-border);
+    background: var(--card);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: all var(--transition);
+  }
+  .share-btn:active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(60px);
+    background: var(--accent);
+    color: #fff;
+    padding: 10px 24px;
+    border-radius: 24px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 200;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  /* ── Completed badge ── */
+  .completed-banner {
+    text-align: center;
+    padding: 32px 0 8px;
+  }
+  .completed-banner .checkmark {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(20, 184, 166, 0.15);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Top Navigation -->
+<nav class="top-nav">
+  <button class="active" onclick="switchFlow(0)">Readiness</button>
+  <button onclick="switchFlow(1)">Summary</button>
+  <button onclick="switchFlow(2)">History</button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════
+     FLOW 1 — Pre-Workout Readiness
+     ═══════════════════════════════════════════════ -->
+<div class="flow active" id="flow-0">
+  <div class="sub-screen-container">
+
+    <!-- Screen 1a: How Are You Feeling? -->
+    <div class="sub-screen active" id="screen-1a">
+      <div class="screen-title">How are you feeling?</div>
+      <div class="screen-subtitle">Rate each area to calculate your readiness.</div>
+
+      <div class="slider-group">
+        <div class="slider-label">
+          <span class="slider-label-text">Sleep Quality</span>
+          <span class="slider-label-value" id="sleep-val">3/5</span>
+        </div>
+        <div class="emoji-track" data-key="sleep">
+          <div class="emoji-option" data-value="1" onclick="selectEmoji(this)">😴</div>
+          <div class="emoji-option" data-value="2" onclick="selectEmoji(this)">😪</div>
+          <div class="emoji-option selected" data-value="3" onclick="selectEmoji(this)">😐</div>
+          <div class="emoji-option" data-value="4" onclick="selectEmoji(this)">🙂</div>
+          <div class="emoji-option" data-value="5" onclick="selectEmoji(this)">😊</div>
+        </div>
+        <div class="emoji-hint"><span>Terrible</span><span>Amazing</span></div>
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-label">
+          <span class="slider-label-text">Stress Level</span>
+          <span class="slider-label-value" id="stress-val">3/5</span>
+        </div>
+        <div class="emoji-track" data-key="stress">
+          <div class="emoji-option" data-value="1" onclick="selectEmoji(this)">😰</div>
+          <div class="emoji-option" data-value="2" onclick="selectEmoji(this)">😟</div>
+          <div class="emoji-option selected" data-value="3" onclick="selectEmoji(this)">😐</div>
+          <div class="emoji-option" data-value="4" onclick="selectEmoji(this)">😊</div>
+          <div class="emoji-option" data-value="5" onclick="selectEmoji(this)">😌</div>
+        </div>
+        <div class="emoji-hint"><span>Very stressed</span><span>Relaxed</span></div>
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-label">
+          <span class="slider-label-text">Muscle Soreness</span>
+          <span class="slider-label-value" id="soreness-val">3/5</span>
+        </div>
+        <div class="emoji-track" data-key="soreness">
+          <div class="emoji-option" data-value="1" onclick="selectEmoji(this)">🔥</div>
+          <div class="emoji-option" data-value="2" onclick="selectEmoji(this)">😣</div>
+          <div class="emoji-option selected" data-value="3" onclick="selectEmoji(this)">😐</div>
+          <div class="emoji-option" data-value="4" onclick="selectEmoji(this)">🙂</div>
+          <div class="emoji-option" data-value="5" onclick="selectEmoji(this)">💪</div>
+        </div>
+        <div class="emoji-hint"><span>Very sore</span><span>Fresh</span></div>
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-label">
+          <span class="slider-label-text">Energy / Motivation</span>
+          <span class="slider-label-value" id="energy-val">3/5</span>
+        </div>
+        <div class="emoji-track" data-key="energy">
+          <div class="emoji-option" data-value="1" onclick="selectEmoji(this)">🪫</div>
+          <div class="emoji-option" data-value="2" onclick="selectEmoji(this)">😑</div>
+          <div class="emoji-option selected" data-value="3" onclick="selectEmoji(this)">😐</div>
+          <div class="emoji-option" data-value="4" onclick="selectEmoji(this)">😃</div>
+          <div class="emoji-option" data-value="5" onclick="selectEmoji(this)">⚡</div>
+        </div>
+        <div class="emoji-hint"><span>Drained</span><span>Fired up</span></div>
+      </div>
+    </div>
+
+    <!-- Screen 1b: Readiness Score -->
+    <div class="sub-screen" id="screen-1b">
+      <div class="screen-title">Readiness Score</div>
+      <div class="screen-subtitle">Based on how you're feeling today.</div>
+
+      <div class="score-ring-container">
+        <div class="score-ring">
+          <svg viewBox="0 0 100 100">
+            <circle class="bg-ring" cx="50" cy="50" r="42"/>
+            <circle class="fg-ring" id="score-arc" cx="50" cy="50" r="42"
+              stroke-dasharray="263.9" stroke-dashoffset="263.9"/>
+          </svg>
+          <div class="score-value">
+            <div class="score-number" id="score-display">—</div>
+            <div class="score-label">out of 100</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="readiness-level" id="readiness-level">—</div>
+      <div class="readiness-advice" id="readiness-advice"></div>
+
+      <div class="section-label">Today's Workout Preview</div>
+      <div class="card">
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:var(--text-bright);margin-bottom:12px;">Upper Body A</div>
+        <div class="workout-preview-item">
+          <div><div class="wpi-name">Bench Press</div><div class="wpi-detail">4 x 5 reps</div></div>
+          <div class="wpi-weight" data-base="80">80 kg</div>
+        </div>
+        <div class="workout-preview-item">
+          <div><div class="wpi-name">Overhead Press</div><div class="wpi-detail">3 x 8 reps</div></div>
+          <div class="wpi-weight" data-base="50">50 kg</div>
+        </div>
+        <div class="workout-preview-item">
+          <div><div class="wpi-name">Barbell Row</div><div class="wpi-detail">4 x 8 reps</div></div>
+          <div class="wpi-weight" data-base="70">70 kg</div>
+        </div>
+        <div class="workout-preview-item">
+          <div><div class="wpi-name">Barbell Curl</div><div class="wpi-detail">3 x 12 reps</div></div>
+          <div class="wpi-weight" data-base="30">30 kg</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 1c: VBT Warm-Up Check -->
+    <div class="sub-screen" id="screen-1c">
+      <div class="screen-title">VBT Warm-Up Check</div>
+      <div class="screen-subtitle">Bench Press — warm-up set @ 60 kg x 5</div>
+
+      <div class="velocity-comparison">
+        <div class="velocity-bar-group">
+          <div class="velocity-bar-value">0.62</div>
+          <div class="velocity-bar" style="height:120px;background:var(--accent);opacity:0.7;"></div>
+          <div class="velocity-bar-label">Baseline<br>m/s</div>
+        </div>
+        <div class="velocity-bar-group">
+          <div class="velocity-bar-value" style="color:var(--amber)">0.60</div>
+          <div class="velocity-bar" style="height:116px;background:var(--amber);"></div>
+          <div class="velocity-bar-label">Today<br>m/s</div>
+        </div>
+      </div>
+
+      <div class="adjustment-banner">
+        <div class="icon">&#9888;&#65039;</div>
+        <div class="title">Warm-up velocity is 3% below baseline</div>
+        <div class="detail">Combined with your readiness score, we recommend reducing today's working loads by 5% to maintain quality reps.</div>
+      </div>
+
+      <div class="card">
+        <div style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:10px;">Adjusted Working Weights</div>
+        <div class="workout-preview-item">
+          <div><div class="wpi-name">Bench Press</div><div class="wpi-detail">4 x 5 reps</div></div>
+          <div><span style="text-decoration:line-through;color:var(--muted);font-size:12px;margin-right:6px;">80 kg</span><span class="wpi-weight">76 kg</span></div>
+        </div>
+        <div class="workout-preview-item">
+          <div><div class="wpi-name">Overhead Press</div><div class="wpi-detail">3 x 8 reps</div></div>
+          <div><span style="text-decoration:line-through;color:var(--muted);font-size:12px;margin-right:6px;">50 kg</span><span class="wpi-weight">47.5 kg</span></div>
+        </div>
+        <div class="workout-preview-item">
+          <div><div class="wpi-name">Barbell Row</div><div class="wpi-detail">4 x 8 reps</div></div>
+          <div><span style="text-decoration:line-through;color:var(--muted);font-size:12px;margin-right:6px;">70 kg</span><span class="wpi-weight">66.5 kg</span></div>
+        </div>
+        <div class="workout-preview-item">
+          <div><div class="wpi-name">Barbell Curl</div><div class="wpi-detail">3 x 12 reps</div></div>
+          <div><span style="text-decoration:line-through;color:var(--muted);font-size:12px;margin-right:6px;">30 kg</span><span class="wpi-weight">28.5 kg</span></div>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn-outline" onclick="showToast('Using original weights')">Override</button>
+        <button class="btn-primary" onclick="showToast('Adjusted weights applied!')">Accept</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom nav for readiness flow -->
+  <div class="bottom-nav" id="readiness-nav">
+    <button class="btn-back" onclick="readinessNav(-1)">&#8592; Back</button>
+    <div class="dots">
+      <div class="dot active"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    <button class="btn-next" onclick="readinessNav(1)">Next &#8594;</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     FLOW 2 — Post-Workout Summary
+     ═══════════════════════════════════════════════ -->
+<div class="flow" id="flow-1">
+  <div style="padding:20px 16px 100px;">
+
+    <div class="completed-banner">
+      <div class="checkmark">&#10003;</div>
+      <div class="screen-title">Workout Complete!</div>
+      <div class="screen-subtitle" style="margin-bottom:16px;">Upper Body A &mdash; Great session</div>
+    </div>
+
+    <div class="stats-scroll">
+      <div class="stat-card"><div class="stat-icon">&#9201;</div><div class="stat-value">58</div><div class="stat-label">Minutes</div></div>
+      <div class="stat-card"><div class="stat-icon">&#127947;</div><div class="stat-value">8,450</div><div class="stat-label">kg Volume</div></div>
+      <div class="stat-card"><div class="stat-icon">&#128200;</div><div class="stat-value">18</div><div class="stat-label">Sets</div></div>
+      <div class="stat-card"><div class="stat-icon">&#128170;</div><div class="stat-value">4</div><div class="stat-label">Exercises</div></div>
+      <div class="stat-card" style="border-color:rgba(255,121,0,0.3);"><div class="stat-icon">&#127942;</div><div class="stat-value" style="color:var(--accent);">2</div><div class="stat-label">PRs</div></div>
+    </div>
+
+    <div class="fun-comparison">
+      <div class="emoji">&#128024;</div>
+      <div class="text">You lifted 8,450 kg today &mdash;<br>that's heavier than a T-Rex!</div>
+    </div>
+
+    <!-- Variant Tabs -->
+    <div class="variant-tabs">
+      <button class="variant-tab active" onclick="switchVariant(0)">Stats Hero</button>
+      <button class="variant-tab" onclick="switchVariant(1)">Velocity</button>
+      <button class="variant-tab" onclick="switchVariant(2)">Coach</button>
+    </div>
+
+    <!-- ── Variant A: Stats Hero ── -->
+    <div class="variant-panel active" id="variant-0">
+      <div class="section-label">Exercise Breakdown</div>
+
+      <div class="exercise-card">
+        <div class="exercise-card-header">
+          <span class="exercise-card-name">Bench Press<span class="pr-badge">&#127942; PR</span></span>
+        </div>
+        <div class="set-row"><span class="set-num">Set 1</span><span class="set-rw">5 x 76 kg</span><span class="set-vel">0.58 m/s</span></div>
+        <div class="set-row"><span class="set-num">Set 2</span><span class="set-rw">5 x 76 kg</span><span class="set-vel">0.55 m/s</span></div>
+        <div class="set-row"><span class="set-num">Set 3</span><span class="set-rw">5 x 76 kg</span><span class="set-vel">0.50 m/s</span></div>
+        <div class="set-row velocity-warning"><span class="set-num">Set 4</span><span class="set-rw">5 x 76 kg</span><span class="set-vel">0.45 m/s &#9888;</span></div>
+      </div>
+
+      <div class="exercise-card">
+        <div class="exercise-card-header">
+          <span class="exercise-card-name">Overhead Press<span class="pr-badge">&#127942; PR</span></span>
+        </div>
+        <div class="set-row"><span class="set-num">Set 1</span><span class="set-rw">8 x 47.5 kg</span><span class="set-vel">0.52 m/s</span></div>
+        <div class="set-row"><span class="set-num">Set 2</span><span class="set-rw">8 x 47.5 kg</span><span class="set-vel">0.49 m/s</span></div>
+        <div class="set-row"><span class="set-num">Set 3</span><span class="set-rw">8 x 47.5 kg</span><span class="set-vel">0.46 m/s</span></div>
+      </div>
+
+      <div class="exercise-card">
+        <div class="exercise-card-header">
+          <span class="exercise-card-name">Barbell Row</span>
+        </div>
+        <div class="set-row"><span class="set-num">Set 1</span><span class="set-rw">8 x 66.5 kg</span><span class="set-vel">0.61 m/s</span></div>
+        <div class="set-row"><span class="set-num">Set 2</span><span class="set-rw">8 x 66.5 kg</span><span class="set-vel">0.58 m/s</span></div>
+        <div class="set-row"><span class="set-num">Set 3</span><span class="set-rw">8 x 66.5 kg</span><span class="set-vel">0.55 m/s</span></div>
+        <div class="set-row"><span class="set-num">Set 4</span><span class="set-rw">8 x 66.5 kg</span><span class="set-vel">0.53 m/s</span></div>
+      </div>
+
+      <div class="exercise-card">
+        <div class="exercise-card-header">
+          <span class="exercise-card-name">Barbell Curl</span>
+        </div>
+        <div class="set-row"><span class="set-num">Set 1</span><span class="set-rw">12 x 28.5 kg</span><span class="set-vel">0.62 m/s</span></div>
+        <div class="set-row"><span class="set-num">Set 2</span><span class="set-rw">12 x 28.5 kg</span><span class="set-vel">0.58 m/s</span></div>
+        <div class="set-row"><span class="set-num">Set 3</span><span class="set-rw">12 x 28.5 kg</span><span class="set-vel">0.54 m/s</span></div>
+      </div>
+
+      <div class="section-label">Rate Your Workout</div>
+      <div class="card" style="text-align:center;">
+        <div class="star-rating" id="stars-a">
+          <span class="star" data-v="1" onclick="rateStar('stars-a',1)">&#11088;</span>
+          <span class="star" data-v="2" onclick="rateStar('stars-a',2)">&#11088;</span>
+          <span class="star" data-v="3" onclick="rateStar('stars-a',3)">&#11088;</span>
+          <span class="star" data-v="4" onclick="rateStar('stars-a',4)">&#11088;</span>
+          <span class="star" data-v="5" onclick="rateStar('stars-a',5)">&#11088;</span>
+        </div>
+        <textarea class="note-input" rows="2" placeholder="Add a note (optional)..."></textarea>
+      </div>
+
+      <div class="share-row">
+        <button class="share-btn" onclick="showToast('Copied to clipboard!')">&#128203; Copy</button>
+        <button class="share-btn" onclick="showToast('Shared!')">&#128232; Share</button>
+        <button class="share-btn" onclick="showToast('Saved!')">&#128247; Image</button>
+      </div>
+    </div>
+
+    <!-- ── Variant B: Velocity Story ── -->
+    <div class="variant-panel" id="variant-1">
+      <div class="grade-badge">
+        <div class="grade-letter" style="color:var(--accent);">B+</div>
+        <div class="grade-label">Session Velocity Grade</div>
+      </div>
+      <div style="text-align:center;font-size:13px;color:var(--muted);margin-bottom:24px;">
+        14 of 18 sets met velocity targets. Avg loss: 12%.
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-title">Velocity Timeline (all sets)</div>
+        <canvas id="velocity-chart" height="160"></canvas>
+      </div>
+
+      <div class="section-label">e1RM Changes</div>
+      <div class="card">
+        <div class="erm-card">
+          <span class="erm-exercise">Bench Press</span>
+          <span class="erm-change positive">+2.5 kg &#8593;</span>
+        </div>
+        <div class="erm-card">
+          <span class="erm-exercise">Overhead Press</span>
+          <span class="erm-change positive">+1.0 kg &#8593;</span>
+        </div>
+        <div class="erm-card">
+          <span class="erm-exercise">Barbell Row</span>
+          <span class="erm-change neutral">&#8212; No change</span>
+        </div>
+        <div class="erm-card">
+          <span class="erm-exercise">Barbell Curl</span>
+          <span class="erm-change negative">-0.5 kg &#8595;</span>
+        </div>
+      </div>
+
+      <div class="card" style="background:rgba(20,184,166,0.08);border-color:rgba(20,184,166,0.2);">
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--green);margin-bottom:4px;">&#128200; Load-Velocity Profile Updated</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.4;">Your bench press e1RM improved from 95.0 kg to 97.5 kg. This is your best estimate in the last 4 weeks.</div>
+      </div>
+
+      <div class="card" style="margin-top:12px;">
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--text-bright);margin-bottom:4px;">Next Session Readiness</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.4;">Based on today's accumulated fatigue, you should be ready for your next session in <strong style="color:var(--accent);">~48 hours</strong>. Prioritize sleep tonight.</div>
+      </div>
+
+      <div class="section-label" style="margin-top:24px;">Quick Stats</div>
+      <div class="card">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div><div style="font-family:'Inter',sans-serif;font-size:11px;color:var(--muted);">Fastest Rep</div><div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--green);">0.62 m/s</div><div style="font-size:11px;color:var(--muted);">Curl set 1</div></div>
+          <div><div style="font-family:'Inter',sans-serif;font-size:11px;color:var(--muted);">Slowest Rep</div><div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--red);">0.45 m/s</div><div style="font-size:11px;color:var(--muted);">Bench set 4</div></div>
+          <div><div style="font-family:'Inter',sans-serif;font-size:11px;color:var(--muted);">Avg Velocity Loss</div><div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--amber);">12%</div></div>
+          <div><div style="font-family:'Inter',sans-serif;font-size:11px;color:var(--muted);">Sets Over Threshold</div><div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--red);">1</div><div style="font-size:11px;color:var(--muted);">Bench set 4 (28%)</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Variant C: Coach Feedback ── -->
+    <div class="variant-panel" id="variant-2">
+      <div class="coach-section">
+        <div class="coach-section-header">
+          <div class="coach-section-icon" style="background:rgba(20,184,166,0.15);">&#9989;</div>
+          <div class="coach-section-title">What Went Well</div>
+        </div>
+        <div class="card">
+          <div class="coach-item"><span class="bullet" style="color:#14B8A6;">&#9679;</span> New PR on Bench Press &mdash; e1RM up 2.5 kg to 97.5 kg</div>
+          <div class="coach-item"><span class="bullet" style="color:#14B8A6;">&#9679;</span> New PR on Overhead Press &mdash; completed all 3 x 8 at higher velocity</div>
+          <div class="coach-item"><span class="bullet" style="color:#14B8A6;">&#9679;</span> Consistent velocity on Barbell Rows (only 13% loss across 4 sets)</div>
+          <div class="coach-item"><span class="bullet" style="color:#14B8A6;">&#9679;</span> Smart load adjustment based on readiness &mdash; quality > ego</div>
+        </div>
+      </div>
+
+      <div class="coach-section">
+        <div class="coach-section-header">
+          <div class="coach-section-icon" style="background:rgba(255,176,32,0.15);">&#9888;&#65039;</div>
+          <div class="coach-section-title">Watch Out</div>
+        </div>
+        <div class="card">
+          <div class="coach-item"><span class="bullet" style="color:#FFB020;">&#9679;</span> Bench Press set 4 had 28% velocity loss &mdash; consider stopping at 3 sets next time</div>
+          <div class="coach-item"><span class="bullet" style="color:#FFB020;">&#9679;</span> Curl velocity dropped faster than usual &mdash; possible cumulative fatigue</div>
+        </div>
+      </div>
+
+      <div class="coach-section">
+        <div class="coach-section-header">
+          <div class="coach-section-icon" style="background:var(--accent-subtle);">&#128221;</div>
+          <div class="coach-section-title">Your Feedback</div>
+        </div>
+        <div class="card">
+          <div class="feedback-row">
+            <span class="feedback-row-label">Pump</span>
+            <div class="feedback-pills" data-group="pump">
+              <div class="feedback-pill" data-v="1" onclick="selectPill(this)">1</div>
+              <div class="feedback-pill" data-v="2" onclick="selectPill(this)">2</div>
+              <div class="feedback-pill" data-v="3" onclick="selectPill(this)">3</div>
+              <div class="feedback-pill" data-v="4" onclick="selectPill(this)">4</div>
+              <div class="feedback-pill" data-v="5" onclick="selectPill(this)">5</div>
+            </div>
+          </div>
+          <div class="feedback-row">
+            <span class="feedback-row-label">Soreness Prediction</span>
+            <div class="feedback-pills" data-group="soreness-pred">
+              <div class="feedback-pill" data-v="1" onclick="selectPill(this)">1</div>
+              <div class="feedback-pill" data-v="2" onclick="selectPill(this)">2</div>
+              <div class="feedback-pill" data-v="3" onclick="selectPill(this)">3</div>
+              <div class="feedback-pill" data-v="4" onclick="selectPill(this)">4</div>
+              <div class="feedback-pill" data-v="5" onclick="selectPill(this)">5</div>
+            </div>
+          </div>
+          <div class="feedback-row">
+            <span class="feedback-row-label">Effort</span>
+            <div class="feedback-pills" data-group="effort">
+              <div class="feedback-pill" data-v="1" onclick="selectPill(this)">1</div>
+              <div class="feedback-pill" data-v="2" onclick="selectPill(this)">2</div>
+              <div class="feedback-pill" data-v="3" onclick="selectPill(this)">3</div>
+              <div class="feedback-pill" data-v="4" onclick="selectPill(this)">4</div>
+              <div class="feedback-pill" data-v="5" onclick="selectPill(this)">5</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-label">Joint Health</div>
+        <div class="card">
+          <div class="joint-row">
+            <span class="joint-name">Shoulders</span>
+            <div class="joint-thumbs">
+              <button class="thumb-btn" onclick="selectJoint(this,'good')">&#128077;</button>
+              <button class="thumb-btn" onclick="selectJoint(this,'bad')">&#128078;</button>
+            </div>
+          </div>
+          <div class="joint-row">
+            <span class="joint-name">Elbows</span>
+            <div class="joint-thumbs">
+              <button class="thumb-btn" onclick="selectJoint(this,'good')">&#128077;</button>
+              <button class="thumb-btn" onclick="selectJoint(this,'bad')">&#128078;</button>
+            </div>
+          </div>
+          <div class="joint-row">
+            <span class="joint-name">Wrists</span>
+            <div class="joint-thumbs">
+              <button class="thumb-btn" onclick="selectJoint(this,'good')">&#128077;</button>
+              <button class="thumb-btn" onclick="selectJoint(this,'bad')">&#128078;</button>
+            </div>
+          </div>
+          <div class="joint-row">
+            <span class="joint-name">Lower Back</span>
+            <div class="joint-thumbs">
+              <button class="thumb-btn" onclick="selectJoint(this,'good')">&#128077;</button>
+              <button class="thumb-btn" onclick="selectJoint(this,'bad')">&#128078;</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-label">Notes</div>
+        <textarea class="note-input" rows="3" placeholder="Anything else your future self should know..."></textarea>
+
+        <div style="margin-top:16px;">
+          <button class="btn-primary" style="width:100%;padding:14px;border-radius:12px;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;border:none;cursor:pointer;" onclick="showToast('Feedback saved!')">Save Feedback</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     FLOW 3 — Session History
+     ═══════════════════════════════════════════════ -->
+<div class="flow" id="flow-2">
+  <div style="padding:20px 16px 40px;">
+    <div class="screen-title">Session History</div>
+    <div class="screen-subtitle">Tap a session to see details.</div>
+
+    <!-- Session 1 (today) -->
+    <div class="history-card" onclick="toggleHistory(this)">
+      <div class="history-card-header">
+        <div class="hc-left">
+          <div class="hc-date">Today &mdash; Mar 15</div>
+          <div class="hc-name">Upper Body A</div>
+          <div class="hc-meta">
+            <span>58 min</span>
+            <span>8,450 kg</span>
+            <span>18 sets</span>
+          </div>
+        </div>
+        <div class="hc-right">
+          <div class="hc-pr-count">&#127942; 2 PRs</div>
+          <div class="velocity-quality">
+            <div class="vq-dot filled"></div>
+            <div class="vq-dot filled"></div>
+            <div class="vq-dot filled"></div>
+            <div class="vq-dot warn"></div>
+            <div class="vq-dot"></div>
+          </div>
+        </div>
+      </div>
+      <div class="history-expanded">
+        <div class="history-expanded-inner">
+          <div class="hex-exercise">
+            <div class="hex-name">Bench Press <span class="pr-badge">&#127942; PR</span></div>
+            <div class="hex-sets">4 x 5 @ 76 kg</div>
+            <div class="hex-velocity">Avg: 0.52 m/s &middot; Loss: 22%</div>
+          </div>
+          <div class="hex-exercise">
+            <div class="hex-name">Overhead Press <span class="pr-badge">&#127942; PR</span></div>
+            <div class="hex-sets">3 x 8 @ 47.5 kg</div>
+            <div class="hex-velocity">Avg: 0.49 m/s &middot; Loss: 12%</div>
+          </div>
+          <div class="hex-exercise">
+            <div class="hex-name">Barbell Row</div>
+            <div class="hex-sets">4 x 8 @ 66.5 kg</div>
+            <div class="hex-velocity">Avg: 0.57 m/s &middot; Loss: 13%</div>
+          </div>
+          <div class="hex-exercise">
+            <div class="hex-name">Barbell Curl</div>
+            <div class="hex-sets">3 x 12 @ 28.5 kg</div>
+            <div class="hex-velocity">Avg: 0.58 m/s &middot; Loss: 13%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Session 2 -->
+    <div class="history-card" onclick="toggleHistory(this)">
+      <div class="history-card-header">
+        <div class="hc-left">
+          <div class="hc-date">Wed &mdash; Mar 12</div>
+          <div class="hc-name">Lower Body A</div>
+          <div class="hc-meta">
+            <span>62 min</span>
+            <span>11,200 kg</span>
+            <span>20 sets</span>
+          </div>
+        </div>
+        <div class="hc-right">
+          <div class="hc-pr-count">&#127942; 1 PR</div>
+          <div class="velocity-quality">
+            <div class="vq-dot filled"></div>
+            <div class="vq-dot filled"></div>
+            <div class="vq-dot filled"></div>
+            <div class="vq-dot filled"></div>
+            <div class="vq-dot"></div>
+          </div>
+        </div>
+      </div>
+      <div class="history-expanded">
+        <div class="history-expanded-inner">
+          <div class="hex-exercise">
+            <div class="hex-name">Squat <span class="pr-badge">&#127942; PR</span></div>
+            <div class="hex-sets">4 x 5 @ 100 kg</div>
+            <div class="hex-velocity">Avg: 0.48 m/s &middot; Loss: 15%</div>
+          </div>
+          <div class="hex-exercise">
+            <div class="hex-name">Romanian Deadlift</div>
+            <div class="hex-sets">3 x 8 @ 80 kg</div>
+            <div class="hex-velocity">Avg: 0.42 m/s &middot; Loss: 10%</div>
+          </div>
+          <div class="hex-exercise">
+            <div class="hex-name">Leg Press</div>
+            <div class="hex-sets">4 x 10 @ 140 kg</div>
+            <div class="hex-velocity">Avg: 0.38 m/s &middot; Loss: 8%</div>
+          </div>
+          <div class="hex-exercise">
+            <div class="hex-name">Calf Raise</div>
+            <div class="hex-sets">4 x 15 @ 60 kg</div>
+            <div class="hex-velocity">Avg: 0.55 m/s &middot; Loss: 11%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Session 3 -->
+    <div class="history-card" onclick="toggleHistory(this)">
+      <div class="history-card-header">
+        <div class="hc-left">
+          <div class="hc-date">Mon &mdash; Mar 10</div>
+          <div class="hc-name">Upper Body B</div>
+          <div class="hc-meta">
+            <span>52 min</span>
+            <span>7,800 kg</span>
+            <span>16 sets</span>
+          </div>
+        </div>
+        <div class="hc-right">
+          <div class="velocity-quality">
+            <div class="vq-dot filled"></div>
+            <div class="vq-dot filled"></div>
+            <div class="vq-dot filled"></div>
+            <div class="vq-dot filled"></div>
+            <div class="vq-dot filled"></div>
+          </div>
+        </div>
+      </div>
+      <div class="history-expanded">
+        <div class="history-expanded-inner">
+          <div class="hex-exercise">
+            <div class="hex-name">Incline DB Press</div>
+            <div class="hex-sets">4 x 8 @ 30 kg (each)</div>
+            <div class="hex-velocity">Avg: 0.50 m/s &middot; Loss: 9%</div>
+          </div>
+          <div class="hex-exercise">
+            <div class="hex-name">Pull-Ups</div>
+            <div class="hex-sets">4 x 8 @ BW+10 kg</div>
+            <div class="hex-velocity">Avg: 0.44 m/s &middot; Loss: 11%</div>
+          </div>
+          <div class="hex-exercise">
+            <div class="hex-name">Lateral Raise</div>
+            <div class="hex-sets">3 x 15 @ 12 kg</div>
+            <div class="hex-velocity">Avg: 0.65 m/s &middot; Loss: 7%</div>
+          </div>
+          <div class="hex-exercise">
+            <div class="hex-name">Tricep Pushdown</div>
+            <div class="hex-sets">3 x 12 @ 25 kg</div>
+            <div class="hex-velocity">Avg: 0.60 m/s &middot; Loss: 8%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── State ──
+  const readinessValues = { sleep: 3, stress: 3, soreness: 3, energy: 3 };
+  let readinessScreen = 0;
+  const screens = ['screen-1a', 'screen-1b', 'screen-1c'];
+
+  // ── Emoji Slider ──
+  function selectEmoji(el) {
+    const track = el.parentElement;
+    const key = track.dataset.key;
+    const value = parseInt(el.dataset.value);
+    track.querySelectorAll('.emoji-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    readinessValues[key] = value;
+    document.getElementById(key + '-val').textContent = value + '/5';
+  }
+
+  // ── Readiness Score Computation ──
+  function computeReadiness() {
+    const { sleep, stress, soreness, energy } = readinessValues;
+    const raw = (sleep + stress + soreness + energy) / 20;
+    return Math.round(raw * 100);
+  }
+
+  function updateReadinessDisplay() {
+    const score = computeReadiness();
+    const display = document.getElementById('score-display');
+    const arc = document.getElementById('score-arc');
+    const levelEl = document.getElementById('readiness-level');
+    const adviceEl = document.getElementById('readiness-advice');
+    const circumference = 2 * Math.PI * 42;
+
+    display.textContent = score;
+    const offset = circumference - (score / 100) * circumference;
+    arc.style.strokeDashoffset = offset;
+
+    let color, level, advice;
+    if (score >= 80) {
+      color = '#14B8A6';
+      level = 'Excellent';
+      advice = 'You\'re firing on all cylinders. Keep today\'s weights at prescribed levels and push hard.';
+    } else if (score >= 60) {
+      color = '#FF7900';
+      level = 'Good';
+      advice = 'Solid readiness. Keep today\'s weights at prescribed levels.';
+    } else if (score >= 40) {
+      color = '#FFB020';
+      level = 'Moderate';
+      advice = 'You\'re a bit off today. Consider reducing loads by 5-10% and focusing on quality reps.';
+    } else {
+      color = '#D14343';
+      level = 'Low';
+      advice = 'Your body needs recovery. We recommend reducing loads by 10% or switching to a lighter session.';
+    }
+
+    arc.style.stroke = color;
+    levelEl.style.color = color;
+    levelEl.textContent = level;
+    adviceEl.textContent = advice;
+
+    // Update workout preview weights
+    const reduction = score < 60 ? 0.9 : score < 40 ? 0.85 : 1;
+    document.querySelectorAll('#screen-1b .wpi-weight').forEach(el => {
+      const base = parseFloat(el.dataset.base);
+      const adjusted = Math.round(base * reduction * 2) / 2;
+      el.textContent = adjusted + ' kg';
+      if (reduction < 1) {
+        el.style.color = 'var(--amber)';
+      } else {
+        el.style.color = 'var(--accent)';
+      }
+    });
+  }
+
+  // ── Readiness Navigation ──
+  function readinessNav(dir) {
+    const next = readinessScreen + dir;
+    if (next < 0 || next >= screens.length) return;
+
+    if (next === 1) updateReadinessDisplay();
+
+    document.getElementById(screens[readinessScreen]).classList.remove('active');
+    readinessScreen = next;
+    const el = document.getElementById(screens[readinessScreen]);
+    el.classList.add('active');
+    el.style.animation = dir > 0 ? 'slideIn 0.3s ease' : 'slideInReverse 0.3s ease';
+
+    const dots = document.querySelectorAll('#readiness-nav .dot');
+    dots.forEach((d, i) => d.classList.toggle('active', i === readinessScreen));
+  }
+
+  // ── Top Flow Navigation ──
+  function switchFlow(index) {
+    document.querySelectorAll('.flow').forEach((f, i) => f.classList.toggle('active', i === index));
+    document.querySelectorAll('.top-nav button').forEach((b, i) => b.classList.toggle('active', i === index));
+    document.getElementById('readiness-nav').style.display = index === 0 ? 'flex' : 'none';
+
+    if (index === 1) {
+      requestAnimationFrame(drawVelocityChart);
+    }
+  }
+
+  // ── Variant Tabs (Flow 2) ──
+  function switchVariant(index) {
+    document.querySelectorAll('.variant-tab').forEach((t, i) => t.classList.toggle('active', i === index));
+    document.querySelectorAll('.variant-panel').forEach((p, i) => p.classList.toggle('active', i === index));
+    if (index === 1) requestAnimationFrame(drawVelocityChart);
+  }
+
+  // ── Star Rating ──
+  function rateStar(containerId, value) {
+    const container = document.getElementById(containerId);
+    container.querySelectorAll('.star').forEach(s => {
+      s.classList.toggle('filled', parseInt(s.dataset.v) <= value);
+    });
+  }
+
+  // ── Feedback Pills ──
+  function selectPill(el) {
+    el.parentElement.querySelectorAll('.feedback-pill').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  // ── Joint Health ──
+  function selectJoint(el, type) {
+    const row = el.closest('.joint-thumbs');
+    row.querySelectorAll('.thumb-btn').forEach(b => {
+      b.classList.remove('selected-good', 'selected-bad');
+    });
+    el.classList.add(type === 'good' ? 'selected-good' : 'selected-bad');
+  }
+
+  // ── History Card Expand ──
+  function toggleHistory(card) {
+    const expanded = card.querySelector('.history-expanded');
+    expanded.classList.toggle('open');
+  }
+
+  // ── Toast ──
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
+  // ── Velocity Chart (Canvas) ──
+  function drawVelocityChart() {
+    const canvas = document.getElementById('velocity-chart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const w = rect.width - 32;
+    const h = 160;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.scale(dpr, dpr);
+
+    // Data: mean velocity per set across all exercises
+    const data = [
+      // Bench
+      { v: 0.58, ex: 'B' }, { v: 0.55, ex: 'B' }, { v: 0.50, ex: 'B' }, { v: 0.45, ex: 'B', warn: true },
+      // OHP
+      { v: 0.52, ex: 'O' }, { v: 0.49, ex: 'O' }, { v: 0.46, ex: 'O' },
+      // Row
+      { v: 0.61, ex: 'R' }, { v: 0.58, ex: 'R' }, { v: 0.55, ex: 'R' }, { v: 0.53, ex: 'R' },
+      // Curl
+      { v: 0.62, ex: 'C' }, { v: 0.58, ex: 'C' }, { v: 0.54, ex: 'C' },
+      // padding
+      { v: 0.56, ex: 'X' }, { v: 0.53, ex: 'X' }, { v: 0.51, ex: 'X' }, { v: 0.50, ex: 'X' },
+    ];
+
+    const padL = 30, padR = 10, padT = 10, padB = 24;
+    const plotW = w - padL - padR;
+    const plotH = h - padT - padB;
+    const minV = 0.35, maxV = 0.70;
+
+    const yScale = v => padT + plotH - ((v - minV) / (maxV - minV)) * plotH;
+    const xScale = i => padL + (i / (data.length - 1)) * plotW;
+
+    // Grid lines
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = 1;
+    for (let v = 0.4; v <= 0.65; v += 0.05) {
+      const y = yScale(v);
+      ctx.beginPath();
+      ctx.moveTo(padL, y);
+      ctx.lineTo(w - padR, y);
+      ctx.stroke();
+      ctx.fillStyle = '#6b7280';
+      ctx.font = '10px Inter, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(v.toFixed(2), padL - 4, y + 3);
+    }
+
+    // Line
+    ctx.beginPath();
+    ctx.strokeStyle = '#FF7900';
+    ctx.lineWidth = 2;
+    ctx.lineJoin = 'round';
+    data.forEach((d, i) => {
+      const x = xScale(i);
+      const y = yScale(d.v);
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    // Gradient fill
+    const gradient = ctx.createLinearGradient(0, padT, 0, h - padB);
+    gradient.addColorStop(0, 'rgba(255,121,0,0.2)');
+    gradient.addColorStop(1, 'rgba(255,121,0,0)');
+    ctx.lineTo(xScale(data.length - 1), h - padB);
+    ctx.lineTo(xScale(0), h - padB);
+    ctx.closePath();
+    ctx.fillStyle = gradient;
+    ctx.fill();
+
+    // Dots
+    data.forEach((d, i) => {
+      const x = xScale(i);
+      const y = yScale(d.v);
+      ctx.beginPath();
+      ctx.arc(x, y, d.warn ? 5 : 3, 0, Math.PI * 2);
+      ctx.fillStyle = d.warn ? '#D14343' : '#FF7900';
+      ctx.fill();
+      if (d.warn) {
+        ctx.beginPath();
+        ctx.arc(x, y, 8, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(209,67,67,0.3)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+    });
+
+    // Set labels at bottom
+    ctx.fillStyle = '#6b7280';
+    ctx.font = '9px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    data.forEach((d, i) => {
+      if (i < 14) {
+        ctx.fillText((i + 1).toString(), xScale(i), h - 4);
+      }
+    });
+  }
+
+  // ── Init ──
+  document.addEventListener('DOMContentLoaded', () => {
+    // Set initial readiness nav visibility
+    document.getElementById('readiness-nav').style.display = 'flex';
+  });
+</script>
+</body>
+</html>

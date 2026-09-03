@@ -3,10 +3,13 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { View } from 'react-native'
 import { SetRow, type SetRowProps } from './SetRow'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
-// Literal-hex text treatments (dark theme neutral 100 / 400).
-const T_ACTIVE = '#F3F4F6'
-const T_MUTED = '#9CA3AF'
+// Text treatments, read from the tokens rather than pinned as hexes. These
+// used to be hand-copied literals and silently desynced when the greys moved
+// to the warm ramp (TD-07.14). The assertion still bites — it checks the
+// component reaches for the right ROLE — it just no longer restates the value.
+const { 'text-primary': T_ACTIVE, 'text-secondary': T_MUTED } = getSemanticColors('dark')
 
 const doneRow: SetRowProps = {
   state: 'done',
@@ -55,9 +58,9 @@ describe('SetRow', () => {
       expect(screen.getByText('8')).toHaveStyle({ color: T_MUTED })
     })
 
-    it('renders a flat mini strip (done reps, no todo stubs)', () => {
+    it('renders the flat compact strip (done reps, no todo stubs)', () => {
       render(<SetRow {...doneRow} />)
-      expect(screen.getByTestId('velocity-strip-mini')).toBeInTheDocument()
+      expect(screen.getByTestId('velocity-strip-compact')).toBeInTheDocument()
       expect(screen.getAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(3)
       expect(screen.queryByTestId('velocity-slot-todo')).not.toBeInTheDocument()
     })
@@ -76,9 +79,9 @@ describe('SetRow', () => {
       expect(screen.getByText('2')).toHaveStyle({ color: T_ACTIVE })
     })
 
-    it('renders the compact velocity-height spotlight strip', () => {
+    it('renders the velocity-height spotlight strip', () => {
       render(<SetRow {...liveRow} />)
-      expect(screen.getByTestId('velocity-strip-compact')).toBeInTheDocument()
+      expect(screen.getByTestId('velocity-strip-spotlight')).toBeInTheDocument()
       // 2 performed reps + grey stubs to the target (10).
       expect(screen.getAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(2)
       expect(screen.getAllByTestId('velocity-slot-todo')).toHaveLength(8)
@@ -93,10 +96,10 @@ describe('SetRow', () => {
       expect(screen.getByTestId('set-row-rpe')).toHaveTextContent('—')
     })
 
-    it('is muted and renders an all-grey mini stub strip', () => {
+    it('is muted and renders an all-grey compact stub strip', () => {
       render(<SetRow {...todoRow} />)
       expect(screen.getByText('3')).toHaveStyle({ color: T_MUTED })
-      expect(screen.getByTestId('velocity-strip-mini')).toBeInTheDocument()
+      expect(screen.getByTestId('velocity-strip-compact')).toBeInTheDocument()
       expect(screen.getAllByTestId('velocity-slot-todo')).toHaveLength(10)
       expect(screen.queryByTestId(/^velocity-bar-\d+$/)).not.toBeInTheDocument()
     })

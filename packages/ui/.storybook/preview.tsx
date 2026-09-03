@@ -36,7 +36,18 @@ const preview: Preview = {
         method: 'alphabetical',
         order: [
           'Foundations',
-          ['Color', 'Typography', 'Icons', 'Elevation', 'Shadows', 'Theme Presets'],
+          [
+            // Color splits into the raw scales and the assignments OF them.
+            // Alphabetical would put Palettes before Primitives, which reads
+            // backwards — the raw material should come first.
+            'Color',
+            ['Primitives', 'Palettes'],
+            'Typography',
+            'Icons',
+            'Elevation',
+            'Shadows',
+            'Theme Presets',
+          ],
           'Components',
           ['Atoms', 'Molecules', 'Organisms', 'DataViz'],
           'Workout',

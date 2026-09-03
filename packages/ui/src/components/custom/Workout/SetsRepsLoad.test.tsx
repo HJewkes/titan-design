@@ -34,6 +34,12 @@ describe('SetsRepsLoad', () => {
     expect(screen.getByTestId('sets-reps-load')).toHaveTextContent('15-20')
   })
 
+  it('scales the cell font size via fontSize', () => {
+    render(<SetsRepsLoad sets={4} reps={8} load={140} fontSize={32} />)
+    // The value cells (and separators) render at the supplied size.
+    expect(screen.getByText('4')).toHaveStyle({ fontSize: 32 })
+  })
+
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const { container } = render(<SetsRepsLoad sets={5} reps={8} load={145} />)

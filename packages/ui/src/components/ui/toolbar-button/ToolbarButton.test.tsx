@@ -96,7 +96,7 @@ describe('ToolbarButton', () => {
 
   describe('variants', () => {
     it('renders with neumorphic variant (default)', () => {
-      render(<ToolbarButton label="Neumorphic" variant="neumorphic" />)
+      render(<ToolbarButton label="Neumorphic" variant="raised" />)
       expect(screen.getByRole('button', { name: 'Neumorphic' })).toBeInTheDocument()
     })
 

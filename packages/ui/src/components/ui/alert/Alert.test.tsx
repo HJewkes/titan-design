@@ -200,3 +200,55 @@ describe('Alert', () => {
     })
   })
 })
+
+describe('Alert compact cue (absorbs CueFlag)', () => {
+  it('renders the message as content (batteries-included cue)', () => {
+    render(<Alert status="warning" size="compact" message="VL20 · end the set" />)
+    expect(screen.getByTestId('alert-message')).toHaveTextContent('VL20 · end the set')
+  })
+
+  it('renders the message alongside a status glyph and the alert role', () => {
+    render(<Alert status="error" size="compact" message="Stop now" />)
+    expect(screen.getByRole('alert')).toBeInTheDocument()
+    expect(screen.getByText('✕')).toBeInTheDocument()
+    expect(screen.getByText('Stop now')).toBeInTheDocument()
+  })
+
+  it('renders message in the default size too', () => {
+    render(<Alert status="info" message="Heads up" />)
+    expect(screen.getByTestId('alert-message')).toHaveTextContent('Heads up')
+  })
+
+  it('renders children after the message when both are given', () => {
+    render(
+      <Alert status="warning" size="compact" message="Cue line">
+        <AlertDescription>Extra detail</AlertDescription>
+      </Alert>
+    )
+    expect(screen.getByTestId('alert-message')).toHaveTextContent('Cue line')
+    expect(screen.getByText('Extra detail')).toBeInTheDocument()
+  })
+
+  it('omits the message node when no message is passed', () => {
+    render(
+      <Alert status="warning" size="compact">
+        <AlertDescription>Just children</AlertDescription>
+      </Alert>
+    )
+    expect(screen.queryByTestId('alert-message')).not.toBeInTheDocument()
+    expect(screen.getByText('Just children')).toBeInTheDocument()
+  })
+
+  it('still respects showIcon=false in compact', () => {
+    render(<Alert status="warning" size="compact" message="No icon cue" showIcon={false} />)
+    expect(screen.queryByText('⚠')).not.toBeInTheDocument()
+    expect(screen.getByText('No icon cue')).toBeInTheDocument()
+  })
+
+  it('has no accessibility violations as a compact cue', async () => {
+    const { container } = render(
+      <Alert status="warning" size="compact" message="VL20 · target reps met — end the set." />
+    )
+    expect(await axe(container)).toHaveNoViolations()
+  })
+})

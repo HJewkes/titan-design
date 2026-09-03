@@ -1,4 +1,5 @@
 export { cn } from './cn'
+export { formatCompact, formatSignedCompact } from './number-format'
 export {
   getStatusColor,
   getResultColor,
@@ -20,13 +21,7 @@ export {
   validationRules,
   composeValidators,
 } from './form'
-export type {
-  FieldState,
-  FieldWrapperProps,
-  FormValues,
-  FormErrors,
-  FormTouched,
-} from './form'
+export type { FieldState, FieldWrapperProps, FormValues, FormErrors, FormTouched } from './form'
 export {
   roundRpe,
   rpeColor,

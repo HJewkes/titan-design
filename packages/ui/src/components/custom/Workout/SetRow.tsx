@@ -120,7 +120,7 @@ function Cell({
   )
 }
 
-/** The per-row velocity strip: compact spotlight for the live set, flat mini otherwise. */
+/** The per-row velocity strip: the velocity-height `expanded` spotlight for the live set, the flat `compact` strip otherwise. */
 function RowStrip({ set }: { set: SetRowProps }) {
   const zones = set.velocityZones
   if (set.state === 'live') {
@@ -133,15 +133,22 @@ function RowStrip({ set }: { set: SetRowProps }) {
         showInfo={false}
         height={24}
         scale="fixed"
+        // Grow the newest rep from the baseline as it lands (the live-set spotlight).
+        liveRepIndex={set.velocities.length - 1}
         set={{ type: 'straight', velocities: set.velocities, planned: set.target.reps }}
         zones={zones}
       />
     )
   }
   const velocities = set.state === 'done' ? set.velocities : []
+  // Resting (done / todo) → the flat `compact` strip at the 8px SegmentedBar flat-bar language (the
+  // static compact bar fills its plot), so the resting per-rep strip matches the set-level segmented
+  // bars used elsewhere; the live spotlight above stays taller (24px).
   return (
     <VelocityStrip
-      variant="mini"
+      variant="compact"
+      height={8}
+      hideBaseline
       set={{ type: 'straight', velocities, planned: plannedReps(set) }}
       zones={zones}
     />

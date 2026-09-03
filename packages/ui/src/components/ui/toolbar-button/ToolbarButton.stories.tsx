@@ -10,7 +10,7 @@ const meta: Meta<typeof ToolbarButton> = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['default', 'neumorphic'],
+      options: ['default', 'raised'],
     },
     isActive: {
       control: 'select',
@@ -60,7 +60,7 @@ export const Default: Story = {
   args: {
     label: 'Settings',
     icon: <SettingsIcon />,
-    variant: 'neumorphic',
+    variant: 'raised',
     showLabel: true,
   },
 }
@@ -319,7 +319,7 @@ export const CompactMode: Story = {
             onPress={() => setIsCompact(!isCompact)}
           />
         </View>
-        <View className="h-px bg-border" />
+        <View className="h-px bg-hairline" />
         <ToolbarButtonGroup gap="sm">
           <ToolbarButton
             label="Filter"
@@ -351,8 +351,8 @@ export const Variants: Story = {
       <View>
         <Text className="text-text-secondary text-xs mb-2">Neumorphic (with 3D inset shadows)</Text>
         <View style={{ flexDirection: 'row', gap: 8 }}>
-          <ToolbarButton label="Inactive" icon={<SettingsIcon />} variant="neumorphic" isActive={false} />
-          <ToolbarButton label="Active" icon={<SettingsIcon />} variant="neumorphic" isActive={true} />
+          <ToolbarButton label="Inactive" icon={<SettingsIcon />} variant="raised" isActive={false} />
+          <ToolbarButton label="Active" icon={<SettingsIcon />} variant="raised" isActive={true} />
         </View>
       </View>
       <View>

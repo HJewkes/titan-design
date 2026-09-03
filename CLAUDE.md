@@ -9,8 +9,52 @@ Cross-platform React + React Native design system built on Gluestack UI, NativeW
 - **Node**: Use `pnpm` (v9.15.0) for all package management
 - **Build**: `pnpm build` (tsup, outputs ESM + CJS + DTS to `dist/`)
 - **Test**: `pnpm test` (Vitest + Testing Library + jest-axe)
-- **Storybook**: `pnpm storybook` (Storybook 10 on port 6006)
+- **Storybook**: `pnpm storybook` (Storybook 10, locked to port 6006 — see below)
 - **Lint**: `pnpm lint` (ESLint 9)
+
+### Storybook ports — read this before screenshotting anything
+
+`storybook dev` **auto-increments off a busy port**. A launch on a port you believed was
+free silently lands on a _different worktree's_ server, and every screenshot taken
+afterwards is plausible and wrong. This has already invalidated a VW-85 evidence set, and
+verifying `index.json` does not catch it — `importPath` is relative and identical across
+worktrees.
+
+Port 6006 is **locked**. `pnpm storybook` runs a launcher that owns the policy:
+
+| command                   | behaviour                                                                                                 |
+| ------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `pnpm storybook`          | Locked port. Reuses ours; **kills a foreign server squatting 6006**; refuses if a non-Storybook holds it. |
+| `pnpm storybook:isolated` | A private port from 6100–6199. Use when you _expect_ to run beside another instance.                      |
+| `pnpm storybook:ports`    | Inventory only — every server, categorised, with the flag that would clear it.                            |
+| `pnpm storybook:reap`     | Kill **orphans** (the default scope), then re-list.                                                       |
+| `pnpm storybook:reap:all` | Kill orphans + foreign + dupes.                                                                           |
+| `--restart`               | Replace our own server on the locked port.                                                                |
+
+`pnpm storybook:ports` categorises every server, and the categories **are** the reap
+scopes — so the inventory doubles as a menu of what each option would kill:
+
+| category  | meaning                               | cleared by         |
+| --------- | ------------------------------------- | ------------------ |
+| `locked`  | ours, on 6006                         | `--restart`        |
+| `orphan`  | its worktree no longer exists on disk | `--reap` (default) |
+| `foreign` | a live server rooted in another tree  | `--reap=foreign`   |
+| `dupe`    | ours, off the locked port             | `--reap=dupes`     |
+| `other`   | not identifiable as Storybook         | never touched      |
+
+Scopes combine: `--reap=foreign,dupes`. `--reap=all` is everything reapable.
+
+**Orphans are the default because they are the only category that is unambiguously
+dead** — nobody can be using a server whose tree has been deleted. A live `foreign`
+server may belong to a parallel agent, and a `dupe` may be a deliberate `--isolated`
+instance, so both are opt-in.
+
+Every launch passes `--exact-port`, so a port conflict is a **loud failure** instead of a
+silent move. Proof: on a busy port, `--exact-port` refuses to start; without it, Storybook
+quietly comes up one port over.
+
+**Verify provenance by something unique to the tree you meant to shoot** — a story that
+only exists there, or a rendered detail only that commit produces. Never by story IDs alone.
 
 ## Architecture
 
@@ -18,13 +62,13 @@ Cross-platform React + React Native design system built on Gluestack UI, NativeW
 
 All components use React Native primitives - never HTML elements directly:
 
-| Use | Not |
-|-----|-----|
-| `View` | `div` |
-| `Text` | `span`, `p` |
-| `Pressable` | `button` |
-| `TextInput` | `input` |
-| `Image` | `img` |
+| Use          | Not              |
+| ------------ | ---------------- |
+| `View`       | `div`            |
+| `Text`       | `span`, `p`      |
+| `Pressable`  | `button`         |
+| `TextInput`  | `input`          |
+| `Image`      | `img`            |
 | `ScrollView` | scrollable `div` |
 
 ### Styling: NativeWind v4 + Tailwind CSS
@@ -69,16 +113,16 @@ Custom components go in `src/components/custom/` with PascalCase directories.
 
 ### Props Conventions
 
-| Prop | Type | Notes |
-|------|------|-------|
-| `variant` | `'solid' \| 'outline' \| 'ghost' \| 'link'` | Visual style |
-| `size` | `'sm' \| 'md' \| 'lg'` | Size variant |
-| `color` | `'primary' \| 'secondary' \| 'success' \| 'error' \| 'warning' \| 'info'` | Color scheme |
-| `isDisabled` | `boolean` | Not `disabled` |
-| `isLoading` | `boolean` | Not `loading` |
-| `isSelected` | `boolean` | Not `selected` |
-| `onPress` | `() => void` | Not `onClick` (React Native convention) |
-| `className` | `string` | Tailwind overrides via cn() |
+| Prop         | Type                                                                      | Notes                                   |
+| ------------ | ------------------------------------------------------------------------- | --------------------------------------- |
+| `variant`    | `'solid' \| 'outline' \| 'ghost' \| 'link'`                               | Visual style                            |
+| `size`       | `'sm' \| 'md' \| 'lg'`                                                    | Size variant                            |
+| `color`      | `'primary' \| 'secondary' \| 'success' \| 'error' \| 'warning' \| 'info'` | Color scheme                            |
+| `isDisabled` | `boolean`                                                                 | Not `disabled`                          |
+| `isLoading`  | `boolean`                                                                 | Not `loading`                           |
+| `isSelected` | `boolean`                                                                 | Not `selected`                          |
+| `onPress`    | `() => void`                                                              | Not `onClick` (React Native convention) |
+| `className`  | `string`                                                                  | Tailwind overrides via cn()             |
 
 ### Accessibility Requirements
 
@@ -90,33 +134,37 @@ Custom components go in `src/components/custom/` with PascalCase directories.
 ### Testing Pattern
 
 ```tsx
-import { render, screen } from '@testing-library/react'
-import { axe, toHaveNoViolations } from 'jest-axe'
+import { render, screen } from "@testing-library/react";
+import { axe, toHaveNoViolations } from "jest-axe";
 
-expect.extend(toHaveNoViolations)
+expect.extend(toHaveNoViolations);
 
-describe('ComponentName', () => {
-  it('renders correctly', () => { /* ... */ })
-  it('has no accessibility violations', async () => {
-    const { container } = render(<Component />)
-    expect(await axe(container)).toHaveNoViolations()
-  })
-})
+describe("ComponentName", () => {
+  it("renders correctly", () => {
+    /* ... */
+  });
+  it("has no accessibility violations", async () => {
+    const { container } = render(<Component />);
+    expect(await axe(container)).toHaveNoViolations();
+  });
+});
 ```
 
 ### Storybook Pattern
 
 ```tsx
-import type { Meta, StoryObj } from '@storybook/react-vite'  // NOT @storybook/react
+import type { Meta, StoryObj } from "@storybook/react-vite"; // NOT @storybook/react
 
 const meta: Meta<typeof Component> = {
-  title: 'Components/ComponentName',  // or 'Custom/Name', 'Design Tokens/Name'
+  title: "Components/ComponentName", // or 'Custom/Name', 'Design Tokens/Name'
   component: Component,
-  tags: ['autodocs'],
-  argTypes: { /* controls */ },
-}
-export default meta
-type Story = StoryObj<typeof Component>
+  tags: ["autodocs"],
+  argTypes: {
+    /* controls */
+  },
+};
+export default meta;
+type Story = StoryObj<typeof Component>;
 ```
 
 **Critical**: Storybook uses `@storybook/react-native-web-vite` with `jsxImportSource: 'nativewind'`. Without this NativeWind classes won't work.
@@ -130,21 +178,22 @@ type Story = StoryObj<typeof Component>
 
 ### Token Categories
 
-| Category | Pattern | Example Classes |
-|----------|---------|----------------|
-| Brand | `brand-{role}` | `bg-brand-primary`, `text-brand-secondary` |
-| Status | `status-{type}` | `bg-status-success`, `text-status-error` |
-| Text | `text-{role}` | `text-text-primary`, `text-text-secondary` |
-| Surface | `surface-{level}` | `bg-surface-base`, `bg-surface-elevated` |
-| Background | `background-{role}` | `bg-background-base`, `bg-background-default` |
-| Border | `border-{strength}` | `border-border-default`, `border-border-subtle` |
+| Category    | Pattern               | Example Classes                                              |
+| ----------- | --------------------- | ------------------------------------------------------------ |
+| Brand       | `brand-{role}`        | `bg-brand-primary`, `text-brand-secondary`                   |
+| Status      | `status-{type}`       | `bg-status-success`, `text-status-error`                     |
+| Text        | `text-{role}`         | `text-text-primary`, `text-text-secondary`                   |
+| Surface     | `surface-{level}`     | `bg-surface-base`, `bg-surface-elevated`                     |
+| Background  | `background-{role}`   | `bg-background-base`, `bg-background-default`                |
+| Border      | `border-{strength}`   | `border-border-default`, `border-border-subtle`              |
 | Interactive | `interactive-{state}` | `hover:bg-interactive-hover`, `focus:ring-interactive-focus` |
-| Result | `result-{outcome}` | `text-result-improve`, `text-result-degrade` |
-| Data | `data-{n}` | `bg-data-1` through `bg-data-10` |
+| Result      | `result-{outcome}`    | `text-result-improve`, `text-result-degrade`                 |
+| Data        | `data-{n}`            | `bg-data-1` through `bg-data-10`                             |
 
 ### Adding New Tokens
 
 Four files must be updated in order:
+
 1. `primitives.ts` - Add raw value (if new)
 2. `semantic.ts` - Add semantic mapping (both dark and light)
 3. `global.css` - Add CSS custom property (both `:root` and `.light`)
@@ -153,6 +202,7 @@ Four files must be updated in order:
 ### Elevation System
 
 Levels -2 to +5 with calculated surface colors and shadows:
+
 - **-2, -1**: Inset (inputs, pressed states)
 - **0**: Base level
 - **1-3**: Cards, panels
@@ -160,31 +210,37 @@ Levels -2 to +5 with calculated surface colors and shadows:
 
 ## Key Files
 
-| File | Purpose |
-|------|---------|
-| `packages/ui/src/index.ts` | Main barrel export |
-| `packages/ui/src/theme/global.css` | CSS custom properties + Tailwind imports |
-| `packages/ui/src/theme/tokens/primitives.ts` | Raw color/spacing values |
-| `packages/ui/src/theme/tokens/semantic.ts` | Semantic token definitions |
-| `packages/ui/src/theme/elevation.ts` | Elevation system with shadow math |
-| `packages/ui/src/utils/cn.ts` | Tailwind class merge utility |
-| `packages/ui/tailwind.config.js` | Tailwind + NativeWind configuration |
-| `packages/ui/tsup.config.ts` | Build configuration |
-| `packages/ui/vitest.config.ts` | Test configuration |
-| `packages/ui/.storybook/main.ts` | Storybook config (jsxImportSource critical) |
+| File                                         | Purpose                                     |
+| -------------------------------------------- | ------------------------------------------- |
+| `packages/ui/src/index.ts`                   | Main barrel export                          |
+| `packages/ui/src/theme/global.css`           | CSS custom properties + Tailwind imports    |
+| `packages/ui/src/theme/tokens/primitives.ts` | Raw color/spacing values                    |
+| `packages/ui/src/theme/tokens/semantic.ts`   | Semantic token definitions                  |
+| `packages/ui/src/theme/elevation.ts`         | Elevation system with shadow math           |
+| `packages/ui/src/utils/cn.ts`                | Tailwind class merge utility                |
+| `packages/ui/tailwind.config.js`             | Tailwind + NativeWind configuration         |
+| `packages/ui/tsup.config.ts`                 | Build configuration                         |
+| `packages/ui/vitest.config.ts`               | Test configuration                          |
+| `packages/ui/.storybook/main.ts`             | Storybook config (jsxImportSource critical) |
 
 ## Exports
 
 ```tsx
 // Components + theme + utils
-import { Button, ButtonText, Card, Typography, cn } from '@titan-design/react-ui'
+import {
+  Button,
+  ButtonText,
+  Card,
+  Typography,
+  cn,
+} from "@titan-design/react-ui";
 
 // Theme only (subpath export)
-import { semanticColorsDark, elevation } from '@titan-design/react-ui/theme'
+import { semanticColorsDark, elevation } from "@titan-design/react-ui/theme";
 
 // CSS (required by consumers)
-import '@titan-design/react-ui/theme/global.css'
+import "@titan-design/react-ui/theme/global.css";
 
 // Tailwind config (for extending in consuming apps)
-const tailwindConfig = require('@titan-design/react-ui/tailwind.config.js')
+const tailwindConfig = require("@titan-design/react-ui/tailwind.config.js");
 ```

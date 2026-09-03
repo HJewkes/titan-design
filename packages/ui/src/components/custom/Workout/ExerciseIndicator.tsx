@@ -12,7 +12,7 @@ import {
   type IconProps,
 } from '../../icons'
 
-// Literal-hex status pins (the TempoBar pattern) — `resolveColor()` yields a
+// Literal-hex status pins (getSemanticColors, not resolveColor) — `resolveColor()` yields a
 // `var(...)` under the RNW vitest alias, which breaks `toHaveStyle` in tests.
 const t = getSemanticColors('dark')
 

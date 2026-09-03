@@ -65,12 +65,12 @@ Quick summary:
 ## Usage
 
 ```tsx
-import { 
-  Button, 
-  ButtonText, 
+import {
+  Button,
+  ButtonText,
   ButtonIcon,
-  Typography, 
-  Card, 
+  Typography,
+  Card,
   CardHeader,
   CardTitle,
   CardContent,
@@ -86,17 +86,12 @@ function App() {
         <CardTitle>Welcome</CardTitle>
       </CardHeader>
       <CardContent className="gap-4">
-        <Typography variant="body1">
-          This is a cross-platform card component.
-        </Typography>
-        
+        <Typography variant="body1">This is a cross-platform card component.</Typography>
+
         <InputGroup>
-          <Input
-            placeholder="Enter your email"
-            label="Email"
-          />
+          <Input placeholder="Enter your email" label="Email" />
         </InputGroup>
-        
+
         <Button color="primary" variant="solid">
           <ButtonIcon as={Plus} />
           <ButtonText>Get Started</ButtonText>
@@ -111,27 +106,27 @@ function App() {
 
 ### Core UI Components
 
-| Component | Description |
-|-----------|-------------|
-| **Button** | Primary action component with variants: solid, outline, ghost, link |
-| **Input** | Text input with label, helper text, and error states |
-| **Card** | Container component with header, content, footer |
-| **Badge** | Status indicator labels |
-| **Spinner** | Loading indicator |
-| **Avatar** | User/entity representation |
-| **Divider** | Visual separator |
-| **Checkbox** | Boolean input with group support |
-| **Switch** | Toggle input |
-| **Modal** | Dialog/overlay component |
+| Component    | Description                                                         |
+| ------------ | ------------------------------------------------------------------- |
+| **Button**   | Primary action component with variants: solid, outline, ghost, link |
+| **Input**    | Text input with label, helper text, and error states                |
+| **Card**     | Container component with header, content, footer                    |
+| **Badge**    | Status indicator labels                                             |
+| **Spinner**  | Loading indicator                                                   |
+| **Avatar**   | User/entity representation                                          |
+| **Divider**  | Visual separator                                                    |
+| **Checkbox** | Boolean input with group support                                    |
+| **Switch**   | Toggle input                                                        |
+| **Modal**    | Dialog/overlay component                                            |
 
 ### Custom Components
 
-| Component | Description |
-|-----------|-------------|
+| Component      | Description                                          |
+| -------------- | ---------------------------------------------------- |
 | **Typography** | Consistent text styling (h1-h6, body, caption, etc.) |
-| **Sidebar** | Navigation sidebar with collapsible support |
-| **Table** | Data table with sorting and pagination |
-| **EmptyState** | Placeholder for empty data states |
+| **Sidebar**    | Navigation sidebar with collapsible support          |
+| **Table**      | Data table with sorting and pagination               |
+| **EmptyState** | Placeholder for empty data states                    |
 
 ## Component API
 
@@ -174,7 +169,7 @@ function App() {
 
 ```tsx
 <Typography
-  variant="h1" | "h2" | "h3" | "h4" | "h5" | "h6" | 
+  variant="h1" | "h2" | "h3" | "h4" | "h5" | "h6" |
            "body1" | "body2" | "caption" | "overline"
   color="primary" | "secondary" | "tertiary" | "disabled"
 >
@@ -199,6 +194,10 @@ function App() {
 ```
 
 ## Theme
+
+> **Building a component in this package?** Read **[TOKENS.md](./TOKENS.md)** first — which palette
+> for which meaning (`result-*` vs `status-*` vs the categorical palette), how to resolve a colour in
+> code, and the type/spacing scales. Also in Storybook as **Foundations → Choosing Tokens**.
 
 The design system uses CSS custom properties for theming. Dark mode is the default.
 
@@ -240,15 +239,15 @@ The design system uses a two-tier token system following DTCG conventions:
 
 ### Token Categories
 
-| Category | Pattern | Description |
-|----------|---------|-------------|
-| `brand-*` | `brand-primary`, `brand-secondary` | Brand identity colors |
-| `status-*` | `status-success`, `status-error`, `status-warning`, `status-info` | Feedback colors |
-| `text-*` | `text-primary`, `text-secondary`, `text-tertiary` | Text hierarchy |
-| `surface-*` | `surface-base`, `surface-elevated`, `surface-raised` | Container backgrounds |
-| `background-*` | `background-base`, `background-default` | Page backgrounds |
-| `border-*` | `border-default`, `border-subtle`, `border-strong` | Border colors |
-| `interactive-*` | `interactive-hover`, `interactive-focus`, `interactive-active` | State colors |
+| Category        | Pattern                                                           | Description           |
+| --------------- | ----------------------------------------------------------------- | --------------------- |
+| `brand-*`       | `brand-primary`, `brand-secondary`                                | Brand identity colors |
+| `status-*`      | `status-success`, `status-error`, `status-warning`, `status-info` | Feedback colors       |
+| `text-*`        | `text-primary`, `text-secondary`, `text-tertiary`                 | Text hierarchy        |
+| `surface-*`     | `surface-base`, `surface-elevated`, `surface-raised`              | Container backgrounds |
+| `background-*`  | `background-base`, `background-default`                           | Page backgrounds      |
+| `border-*`      | `border-default`, `border-subtle`, `border-strong`                | Border colors         |
+| `interactive-*` | `interactive-hover`, `interactive-focus`, `interactive-active`    | State colors          |
 
 ### Using Tokens
 
@@ -345,12 +344,12 @@ See the [Storybook Setup Guide](../../docs/STORYBOOK_SETUP.md) for detailed conf
 All components use React Native primitives for cross-platform compatibility:
 
 | Web Element | React Native Equivalent |
-|-------------|------------------------|
-| `div` | `View` |
-| `span`, `p` | `Text` |
-| `button` | `Pressable` |
-| `input` | `TextInput` |
-| `img` | `Image` |
+| ----------- | ----------------------- |
+| `div`       | `View`                  |
+| `span`, `p` | `Text`                  |
+| `button`    | `Pressable`             |
+| `input`     | `TextInput`             |
+| `img`       | `Image`                 |
 
 ### Platform-Specific Styles
 

@@ -125,6 +125,7 @@ module.exports = {
           base: 'var(--color-background-base)',
           DEFAULT: 'var(--color-background-default)',
           subtle: 'var(--color-background-subtle)',
+          frame: 'var(--color-background-frame)',
         },
         // Text colors
         text: {
@@ -138,11 +139,9 @@ module.exports = {
             hover: 'var(--color-text-link-hover)',
           },
         },
-        // Border colors
+        // Border colors — DEFAULT/subtle/strong are RETIRED (TD-07.14); use the
+        // `hairline` family below for separation.
         border: {
-          DEFAULT: 'var(--color-border-default)',
-          subtle: 'var(--color-border-subtle)',
-          strong: 'var(--color-border-strong)',
           prominent: 'var(--color-border-prominent)',
           focus: 'var(--color-border-focus)',
           input: {
@@ -162,6 +161,12 @@ module.exports = {
             DEFAULT: 'var(--color-interactive-disabled)',
             text: 'var(--color-interactive-disabled-text)',
           },
+        },
+        // Alpha hairline separators (surface-independent — §4/S-2)
+        hairline: {
+          subtle: 'var(--color-hairline-subtle)',
+          DEFAULT: 'var(--color-hairline-default)',
+          strong: 'var(--color-hairline-strong)',
         },
         // Divider
         divider: 'var(--color-divider)',
