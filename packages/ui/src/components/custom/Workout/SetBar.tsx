@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { primitiveColors, primitiveRamps } from '../../../theme/tokens/primitives'
+import { primitiveRamps, greyRamp } from '../../../theme/tokens/primitives'
 import { SegmentedBar, type SegmentedBarSegment } from './SegmentedBar'
 
 /**
@@ -13,8 +13,8 @@ export const SET_STRIP_ZONES = {
   fastest: primitiveRamps.green[300],
 } as const
 
-/** Grey fill for planned-but-unperformed reps / upcoming sets (charcoal placeholder). */
-const TODO_COLOR = primitiveColors.charcoal[300]
+/** Grey fill for planned-but-unperformed reps / upcoming sets (grey placeholder). */
+const TODO_COLOR = greyRamp[900]
 
 /**
  * The learned "variable / unknown / opportunity" semantic (cyan-900, a real ramp

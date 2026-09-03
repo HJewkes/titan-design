@@ -65,7 +65,12 @@ export function NavItem({
         <Typography
           variant="button"
           color="inherit"
-          className={cn('text-[8.5px] font-bold uppercase tracking-[0.4px]', labelColor)}
+          // fontSize inline, not `text-[8.5px]`: the `button` variant's `text-sm` (14px) and the
+          // arbitrary `text-[8.5px]` are a same-property class conflict that the consumer's
+          // Tailwind build resolved the wrong way (labels rendered ~14px on the wall). Inline
+          // size wins unambiguously; className keeps weight/case/tracking.
+          style={{ fontSize: 8.5, lineHeight: 11 }}
+          className={cn('font-bold uppercase tracking-[0.4px]', labelColor)}
         >
           {label}
         </Typography>

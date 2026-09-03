@@ -11,20 +11,24 @@ const meta: Meta<typeof ExerciseCard> = {
     docs: {
       description: {
         component:
-          '**Organism** (data-contract card; `state="collapsed" | "expanded" | "upcoming" | "rail"`). ' +
-          'The `rail` heading representation delegates to ' +
-          '[ExerciseCardHeading](?path=/docs/workout-exercisecardheading--docs) ' +
-          '(the standalone heading molecule); the `expanded` state composes ' +
-          '[TableHeader](?path=/docs/shell-sessionrail-expandeddrawer-tableheader--docs). ' +
-          'Used-by ↑ [SessionRail](?path=/docs/shell-sessionrail--docs).',
+          '**Organism** (data-contract card). Three representations: `upcoming` (a dimmed, ' +
+          'not-yet-reached row), collapsed (name + summary + per-set velocity strips), and expanded ' +
+          '— the unified card whose persistent header is the real ' +
+          '[ExerciseCardHeading](?path=/docs/workout-exercisecardheading--docs) over a SET · REPS · ' +
+          'LBS · RPE body of [SetRow](?path=/docs/workout-setrow--docs)s (compact spotlight on the ' +
+          'live set). Expand is controlled (`expanded` + `onExpandedChange`) or uncontrolled ' +
+          '(`defaultExpanded`); `upcoming` overrides expand.',
       },
     },
   },
   argTypes: {
-    state: {
+    upcoming: { control: 'boolean', description: 'Dimmed, not-yet-reached representation' },
+    expanded: { control: 'boolean', description: 'Controlled expand state' },
+    defaultExpanded: { control: 'boolean', description: 'Uncontrolled initial expand state' },
+    indicator: {
       control: 'select',
-      options: ['collapsed', 'expanded', 'upcoming', 'rail'],
-      description: 'Card display state',
+      options: [undefined, 'pr', 'issue', 'info'],
+      description: 'Chip in the expanded header title line',
     },
   },
   decorators: [
@@ -39,76 +43,60 @@ const meta: Meta<typeof ExerciseCard> = {
 export default meta
 type Story = StoryObj<typeof ExerciseCard>
 
+// Done · done · LIVE · todo — the unified body's full lifecycle.
 const sampleSets: SetRowProps[] = [
   {
-    mode: 'completed',
+    state: 'done',
     setNumber: 1,
+    unit: 'lbs',
     reps: 8,
     weight: 135,
-    unit: 'lbs',
     rpe: 7,
-    previous: { reps: 8, weight: 130 },
     velocities: [1.1, 0.95, 0.82, 0.68, 0.55, 0.48, 0.42, 0.38],
   },
   {
-    mode: 'completed',
+    state: 'done',
     setNumber: 2,
+    unit: 'lbs',
     reps: 8,
     weight: 135,
-    unit: 'lbs',
     rpe: 8.5,
-    previous: { reps: 8, weight: 135 },
-    velocities: [0.95, 0.88, 0.78, 0.65, 0.52, 0.45, 0.40, 0.35],
+    velocities: [0.95, 0.88, 0.78, 0.65, 0.52, 0.45, 0.4, 0.35],
   },
   {
-    mode: 'active',
+    state: 'live',
     setNumber: 3,
-    reps: null,
-    weight: null,
     unit: 'lbs',
-    isNextSet: true,
-    targets: { reps: 8, weight: 135 },
-    previous: { reps: 8, weight: 135 },
+    target: { reps: 8, weight: 135 },
+    reps: 4,
+    weight: 135,
+    velocities: [0.92, 0.86, 0.8, 0.74],
   },
-  {
-    mode: 'active',
-    setNumber: 4,
-    reps: null,
-    weight: null,
-    unit: 'lbs',
-    targets: { reps: 8, weight: 135 },
-    previous: { reps: 8, weight: 135 },
-  },
+  { state: 'todo', setNumber: 4, unit: 'lbs', target: { reps: 8, weight: 135 } },
 ]
 
 export const CollapsedWithVelocity: Story = {
   args: {
     name: 'Bench Press',
-    state: 'collapsed',
-    onToggle: () => {},
     summary: { sets: 4, reps: 8, weight: 135, unit: 'lbs' },
     setVelocities: [
       [1.1, 0.95, 0.82, 0.68, 0.55, 0.48, 0.42, 0.38],
-      [0.95, 0.88, 0.78, 0.65, 0.52, 0.45, 0.40, 0.35],
+      [0.95, 0.88, 0.78, 0.65, 0.52, 0.45, 0.4, 0.35],
     ],
     totalPlannedSets: 4,
-    e1rm: { value: 225, unit: 'lbs' },
   },
 }
 
 export const CollapsedWithPR: Story = {
   args: {
     name: 'Squat',
-    state: 'collapsed',
-    onToggle: () => {},
     summary: { sets: 3, reps: 5, weight: 275, unit: 'lbs' },
     setVelocities: [
       [0.65, 0.55, 0.45, 0.38, 0.32],
-      [0.60, 0.50, 0.42, 0.35, 0.30],
-      [0.58, 0.48, 0.40, 0.33, 0.28],
+      [0.6, 0.5, 0.42, 0.35, 0.3],
+      [0.58, 0.48, 0.4, 0.33, 0.28],
     ],
     totalPlannedSets: 3,
-    e1rm: { value: 365, unit: 'lbs' },
     isPR: true,
   },
 }
@@ -116,50 +104,39 @@ export const CollapsedWithPR: Story = {
 export const ExpandedWithSets: Story = {
   args: {
     name: 'Bench Press',
-    state: 'expanded',
-    onToggle: () => {},
+    defaultExpanded: true,
     summary: { sets: 4, reps: 8, weight: 135, unit: 'lbs' },
+    indicator: 'info',
     sets: sampleSets,
-    e1rm: { value: 225, unit: 'lbs' },
   },
 }
 
 export const ExpandedWithTempo: Story = {
   args: {
     name: 'Romanian Deadlift',
-    state: 'expanded',
-    onToggle: () => {},
+    defaultExpanded: true,
     summary: { sets: 3, reps: 10, weight: 185, unit: 'lbs' },
     tempo: [2, 1, 3, 0],
     sets: [
       {
-        mode: 'completed',
+        state: 'done',
         setNumber: 1,
+        unit: 'lbs',
         reps: 10,
         weight: 185,
-        unit: 'lbs',
         rpe: 7,
-        previous: { reps: 10, weight: 175 },
+        velocities: [0.9, 0.82, 0.74, 0.66],
       },
       {
-        mode: 'active',
+        state: 'live',
         setNumber: 2,
-        reps: null,
-        weight: null,
         unit: 'lbs',
-        isNextSet: true,
-        targets: { reps: 10, weight: 185 },
-        previous: { reps: 10, weight: 185 },
+        target: { reps: 10, weight: 185 },
+        reps: 3,
+        weight: 185,
+        velocities: [0.88, 0.8, 0.72],
       },
-      {
-        mode: 'active',
-        setNumber: 3,
-        reps: null,
-        weight: null,
-        unit: 'lbs',
-        targets: { reps: 10, weight: 185 },
-        previous: { reps: 10, weight: 185 },
-      },
+      { state: 'todo', setNumber: 3, unit: 'lbs', target: { reps: 10, weight: 185 } },
     ],
   },
 }
@@ -167,54 +144,15 @@ export const ExpandedWithTempo: Story = {
 export const Upcoming: Story = {
   args: {
     name: 'Lat Pulldown',
-    state: 'upcoming',
-    onToggle: () => {},
-    prescription: '3\u00D78-12 @ RPE 8',
-    previousBest: '135 lbs \u00D7 10',
-  },
-}
-
-const railDecay = (n: number, start: number, span = 0.4): number[] =>
-  Array.from({ length: n }, (_, r) => +(start - (span * r) / Math.max(1, n - 1)).toFixed(3))
-
-export const RailHeading: Story = {
-  args: {
-    name: 'Cable Chest Press',
-    state: 'rail',
-    onToggle: () => {},
-    summary: { sets: 3, reps: 10, weight: 90, unit: 'lbs' },
-    tempo: [2, 1, 2, 0],
-    indicator: 'info',
-    setStates: [
-      { status: 'done', velocities: railDecay(10, 0.72) },
-      { status: 'active', velocities: railDecay(5, 0.62), planned: 10 },
-      { status: 'todo', planned: 10 },
-    ],
-  },
-  decorators: [
-    (Story) => (
-      <View style={{ width: 246, backgroundColor: '#131313' }}>
-        <Story />
-      </View>
-    ),
-  ],
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'The session-rail heading representation: name + indicator row, the tight ' +
-          'sets/reps/load line beside the real TempoDisplay, and the per-set SetStrip. ' +
-          'Consumed by [SessionRail](?path=/docs/shell-sessionrail--docs).',
-      },
-    },
+    upcoming: true,
+    prescription: '3×8-12 @ RPE 8',
+    previousBest: '135 lbs × 10',
   },
 }
 
 export const SupersetFirst: Story = {
   args: {
     name: 'Bench Press',
-    state: 'collapsed',
-    onToggle: () => {},
     summary: { sets: 3, reps: 8, weight: 185, unit: 'lbs' },
     supersetPosition: 'first',
     setVelocities: [[1.0, 0.9, 0.8]],
@@ -225,8 +163,6 @@ export const SupersetFirst: Story = {
 export const SupersetLast: Story = {
   args: {
     name: 'Barbell Row',
-    state: 'collapsed',
-    onToggle: () => {},
     summary: { sets: 3, reps: 8, weight: 155, unit: 'lbs' },
     supersetPosition: 'last',
     setVelocities: [[0.9, 0.8, 0.7]],

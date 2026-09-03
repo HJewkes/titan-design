@@ -2,35 +2,44 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ActiveWorkoutPage, type ActiveWorkoutExercise } from './ActiveWorkoutPage'
 import type { SetRowProps } from './SetRow'
 
+const velocities = (base: number): number[] =>
+  Array.from({ length: 8 }, (_, i) => Number((base - i * 0.03).toFixed(2)))
+
+// logged sets are done; the next set is being performed (live, a couple reps in);
+// the remainder are planned todo. Mirrors an active workout mid-set.
 function activeSets(weight: number, logged: number, total: number): SetRowProps[] {
   return Array.from({ length: total }, (_, i) => {
     const setNumber = i + 1
     if (setNumber <= logged) {
       return {
-        mode: 'completed' as const,
+        state: 'done' as const,
         setNumber,
-        previous: { reps: 8, weight: weight - 5 },
         reps: 8,
         weight,
         rpe: 7.5 + setNumber * 0.5,
         unit: 'lbs' as const,
+        velocities: velocities(0.74 - (setNumber - 1) * 0.03),
+      }
+    }
+    if (setNumber === logged + 1) {
+      return {
+        state: 'live' as const,
+        setNumber,
+        unit: 'lbs' as const,
+        target: { reps: 8, weight },
+        reps: 8,
+        weight,
+        velocities: velocities(0.7).slice(0, 3),
       }
     }
     return {
-      mode: 'active' as const,
+      state: 'todo' as const,
       setNumber,
-      previous: { reps: 8, weight: weight - 5 },
-      reps: null,
-      weight: null,
       unit: 'lbs' as const,
-      isNextSet: setNumber === logged + 1,
-      targets: { reps: 8, weight },
+      target: { reps: 8, weight },
     }
   })
 }
-
-const velocities = (base: number): number[] =>
-  Array.from({ length: 8 }, (_, i) => Number((base - i * 0.03).toFixed(2)))
 
 const exercises: ActiveWorkoutExercise[] = [
   {
@@ -48,7 +57,6 @@ const exercises: ActiveWorkoutExercise[] = [
     status: 'active',
     unit: 'lbs',
     totalPlannedSets: 4,
-    e1rm: { value: 248, unit: 'lbs' },
     tempo: [3, 1, 1, 0],
     setVelocities: [velocities(0.72), velocities(0.68)],
     sets: activeSets(195, 2, 4),

@@ -16,8 +16,17 @@ import { SetRow, type SetRowProps } from './SetRow'
 import { VelocityStrip } from './VelocityStrip'
 import { type SetStripSet } from './SetStrip'
 import {
-  INSET, INSET_SHADOW, RAISED, BORDER_SUBTLE, GREEN,
-  T_PRIMARY, T_SECONDARY, T_TERTIARY, Page, sectionTitle, monoTag,
+  INSET,
+  INSET_SHADOW,
+  RAISED,
+  BORDER_SUBTLE,
+  GREEN,
+  T_PRIMARY,
+  T_SECONDARY,
+  T_TERTIARY,
+  Page,
+  sectionTitle,
+  monoTag,
 } from './setHeadingKit'
 
 // Per-rep mean velocity that DECAYS across a set (fast → slow) so bar height/color carries shape.
@@ -31,11 +40,27 @@ const HEADING_STATES: SetStripSet[] = [
   { status: 'active', velocities: decay(5, 0.95, 0.3), planned: 10 },
   { status: 'todo', planned: 10 },
 ]
-// Expanded-body per-set rows (real SetRowProps).
+// Expanded-body per-set rows (real SetRowProps): set 1 done · set 2 LIVE · set 3 todo.
 const BODY_SETS: SetRowProps[] = [
-  { mode: 'completed', setNumber: 1, previous: { reps: 10, weight: 90 }, reps: 10, weight: 90, rpe: 7.5, unit: 'lbs', velocities: decay(10, 1.05) },
-  { mode: 'active', setNumber: 2, previous: { reps: 10, weight: 90 }, reps: null, weight: null, unit: 'lbs', isLive: true, targets: { reps: 10, weight: 90 }, velocities: decay(5, 0.95, 0.3) },
-  { mode: 'active', setNumber: 3, previous: { reps: 10, weight: 90 }, reps: null, weight: null, unit: 'lbs', isNextSet: false, targets: { reps: 10, weight: 90 } },
+  {
+    state: 'done',
+    setNumber: 1,
+    reps: 10,
+    weight: 90,
+    rpe: 7.5,
+    unit: 'lbs',
+    velocities: decay(10, 1.05),
+  },
+  {
+    state: 'live',
+    setNumber: 2,
+    unit: 'lbs',
+    target: { reps: 10, weight: 90 },
+    reps: 10,
+    weight: 90,
+    velocities: decay(5, 0.95, 0.3),
+  },
+  { state: 'todo', setNumber: 3, unit: 'lbs', target: { reps: 10, weight: 90 } },
 ]
 
 // ---- the real unexpanded rail row, used as the persistent expansion header ---------
@@ -62,20 +87,25 @@ function TableBody() {
     <View>
       <SetTableHeader unit="lbs" showPrevious={false} />
       {BODY_SETS.map((s, i) => (
-        <SetRow key={i} {...s} showPrevious={false} />
+        <SetRow key={i} {...s} />
       ))}
     </View>
   )
 }
 
 // ---- C · embed body: real VelocityStrip (full/expanded) per set + compact caption ---
-const capText = { fontFamily: 'Inter, sans-serif', fontSize: 11, fontWeight: '600' as const, color: T_PRIMARY }
+const capText = {
+  fontFamily: 'Inter, sans-serif',
+  fontSize: 11,
+  fontWeight: '600' as const,
+  color: T_PRIMARY,
+}
 const dimText = { ...capText, color: T_SECONDARY, fontWeight: '500' as const }
 function EmbedSetRow({ s }: { s: SetRowProps }) {
-  const live = s.isLive
-  const todo = s.mode === 'active' && !s.isLive && s.reps == null
-  const done = s.mode === 'completed'
-  const vels = s.velocities ?? []
+  const live = s.state === 'live'
+  const todo = s.state === 'todo'
+  const vels = s.state === 'done' || s.state === 'live' ? s.velocities : []
+  const rpe = s.state === 'todo' ? null : s.rpe
   return (
     <View
       style={{
@@ -85,30 +115,50 @@ function EmbedSetRow({ s }: { s: SetRowProps }) {
         marginBottom: 4,
         borderRadius: 8,
         opacity: todo ? 0.55 : 1,
-        ...(live ? { backgroundColor: 'rgba(46,213,115,0.06)', borderWidth: 1, borderColor: 'rgba(46,213,115,0.30)' } : {}),
+        ...(live
+          ? {
+              backgroundColor: 'rgba(46,213,115,0.06)',
+              borderWidth: 1,
+              borderColor: 'rgba(46,213,115,0.30)',
+            }
+          : {}),
       }}
     >
       <View style={{ flexDirection: 'row', alignItems: 'baseline', marginBottom: 6 }}>
         <Text style={{ ...dimText, width: 22, color: T_TERTIARY }}>{s.setNumber}</Text>
-        {live ? (
+        {s.state === 'live' ? (
           <Text style={{ ...capText, color: GREEN, fontWeight: '700' }}>
-            {vels.length}/{s.targets?.reps} × {s.targets?.weight}
+            {vels.length}/{s.target.reps} × {s.target.weight}
           </Text>
-        ) : done ? (
-          <Text style={capText}>{s.reps} × {s.weight}</Text>
+        ) : s.state === 'done' ? (
+          <Text style={capText}>
+            {s.reps} × {s.weight}
+          </Text>
         ) : (
-          <Text style={dimText}>{s.targets?.reps} × {s.targets?.weight}</Text>
+          <Text style={dimText}>
+            {s.target.reps} × {s.target.weight}
+          </Text>
         )}
         <View style={{ flex: 1 }} />
-        {s.rpe != null && <Text style={dimText}>RPE {s.rpe}</Text>}
+        {rpe != null && <Text style={dimText}>RPE {rpe}</Text>}
         {live && <Text style={{ ...capText, color: GREEN, fontWeight: '700' }}>live</Text>}
       </View>
       {vels.length > 0 ? (
-        <VelocityStrip velocities={vels} variant="full" expanded showInfo={false} />
+        <VelocityStrip velocities={vels} variant="expanded" showInfo={false} />
       ) : (
         <View style={{ height: 24, flexDirection: 'row', gap: 2 }}>
-          {Array.from({ length: s.targets?.reps ?? 10 }).map((_, i) => (
-            <View key={i} style={{ flex: 1, height: 6, alignSelf: 'flex-end', backgroundColor: '#2C2C2C', borderRadius: 1, opacity: 0.5 }} />
+          {Array.from({ length: s.state === 'todo' ? s.target.reps : 10 }).map((_, i) => (
+            <View
+              key={i}
+              style={{
+                flex: 1,
+                height: 6,
+                alignSelf: 'flex-end',
+                backgroundColor: '#2C2C2C',
+                borderRadius: 1,
+                opacity: 0.5,
+              }}
+            />
           ))}
         </View>
       )}
@@ -130,9 +180,26 @@ function ExpandedItem({ label, children }: { label: string; children: React.Reac
   return (
     <View style={{ gap: 8 }}>
       <Text style={{ ...monoTag, color: T_SECONDARY }}>{label}</Text>
-      <View style={{ width: 260, backgroundColor: INSET, boxShadow: INSET_SHADOW, borderRadius: 4, overflow: 'hidden' } as object}>
+      <View
+        style={
+          {
+            width: 260,
+            backgroundColor: INSET,
+            boxShadow: INSET_SHADOW,
+            borderRadius: 4,
+            overflow: 'hidden',
+          } as object
+        }
+      >
         <RailHeader />
-        <View style={{ backgroundColor: INSET, paddingBottom: 8, borderTopWidth: 1, borderTopColor: BORDER_SUBTLE }}>
+        <View
+          style={{
+            backgroundColor: INSET,
+            paddingBottom: 8,
+            borderTopWidth: 1,
+            borderTopColor: BORDER_SUBTLE,
+          }}
+        >
           {children}
         </View>
       </View>
@@ -140,7 +207,10 @@ function ExpandedItem({ label, children }: { label: string; children: React.Reac
   )
 }
 
-const meta: Meta = { title: 'Lab/Explorations/Workout Expansion', parameters: { layout: 'fullscreen' } }
+const meta: Meta = {
+  title: 'Lab/Explorations/Workout Expansion',
+  parameters: { layout: 'fullscreen' },
+}
 export default meta
 type Story = StoryObj
 

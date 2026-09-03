@@ -12,7 +12,7 @@ export interface SupersetWrapperProps {
 const DEFAULTS = {
   label: 'SS',
   color: getSemanticColors('dark')['brand-primary'],
-  bgBase: '#101010',
+  bgBase: getSemanticColors('dark')['background-base'],
 } as const
 
 export function SupersetWrapper({

@@ -13,31 +13,27 @@ export {
   type TempoDisplayProps,
   type TempoLivePhase,
   type TempoLiveState,
+  type TempoLiveReadout,
 } from './TempoDisplay'
-export {
-  TempoBar,
-  type TempoBarProps,
-  type TempoPhaseKey,
-  type TempoPacingState,
-  TEMPO_PACING,
-  getTempoPacingState,
-  getTempoFillPct,
-} from './TempoBar'
 export { DeviationBar, type DeviationBarProps } from './DeviationBar'
 export { IntensityBar, type IntensityBarProps } from './IntensityBar'
 export { WorkoutPill, type WorkoutPillProps, type WorkoutPillStatus } from './WorkoutPill'
 export {
   VelocityStrip,
   type VelocityStripProps,
+  type VelocitySet,
   type VelocityZoneBandProp,
   getVelocityZoneColor,
   getVelocityZoneName,
   calculateVelocityLoss,
   calculateMeanVelocity,
+  DualVelocityStrip,
+  type DualVelocityStripProps,
+  type DualVelocityStream,
 } from './VelocityStrip'
 export { MuscleGroupChip, type MuscleGroupChipProps, type VolumeStatus } from './MuscleGroupChip'
 export { Sparkline, type SparklineProps } from './Sparkline'
-export { SetRow, type SetRowProps, type SetRowMode } from './SetRow'
+export { SetRow, type SetRowProps, type SetRowState, type SetRowUnit } from './SetRow'
 export { InputBar, type InputBarProps } from './InputBar'
 export { RestTimer, type RestTimerProps } from './RestTimer'
 export { MetricCell, type MetricCellProps, METRIC_FONT } from './metricText'
@@ -69,14 +65,13 @@ export {
 } from './ExerciseIndicator'
 export { ExerciseHeading, type ExerciseHeadingProps } from './ExerciseHeading'
 export { ExerciseCardHeading, type ExerciseCardHeadingProps } from './ExerciseCardHeading'
-export { ExerciseCard, type ExerciseCardProps, type ExerciseCardState } from './ExerciseCard'
+export { ExerciseCard, type ExerciseCardProps } from './ExerciseCard'
 export { SetTableHeader, type SetTableHeaderProps } from './SetTableHeader'
 export {
   SessionHeader,
   type SessionHeaderProps,
   type SessionHeaderPlanEntry,
 } from './SessionHeader'
-export { ExpandedDrawer, type ExpandedDrawerProps } from './ExpandedDrawer'
 export { SessionRail, type SessionRailProps, type SessionRailExercise } from './SessionRail'
 export { SupersetWrapper, type SupersetWrapperProps } from './SupersetWrapper'
 export {
@@ -189,3 +184,19 @@ export type {
   WorkoutProgress,
   WorkoutGroup,
 } from './ActiveWorkoutPage'
+export { ZoneTrack } from './ZoneTrack'
+export type {
+  ZoneTrackProps,
+  ZoneTrackZone,
+  ZoneTrackTick,
+  ZoneTrackMarker,
+  ZoneTrackBand,
+} from './ZoneTrack'
+export { FatigueMeter } from './FatigueMeter'
+export type { FatigueMeterProps } from './FatigueMeter'
+export { VolumeLandmarkBar } from './VolumeLandmarkBar'
+export type { VolumeLandmarkBarProps, VolumeZone } from './VolumeLandmarkBar'
+export { StatusPill, statusPillColor } from './StatusPill'
+export type { StatusPillProps, StatusPillStatus } from './StatusPill'
+export { LiveAuraFrame, liveAuraColor } from './LiveAuraFrame'
+export type { LiveAuraFrameProps, LiveAuraCategory } from './LiveAuraFrame'

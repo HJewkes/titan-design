@@ -24,7 +24,7 @@ function PresetSwitcher({
   onSwitch: (name: string) => void
 }) {
   return (
-    <View className="flex-row items-center gap-3 p-4 bg-surface-elevated rounded-lg border border-border">
+    <View className="flex-row items-center gap-3 p-4 bg-surface-elevated rounded-lg border border-hairline">
       <Text className="text-text-secondary text-sm font-medium">Active Preset:</Text>
       {Object.keys(presets).map((name) => (
         <Pressable
@@ -33,7 +33,7 @@ function PresetSwitcher({
           className={`px-4 py-2 rounded-md border ${
             activePreset === name
               ? 'bg-brand-primary border-brand-primary'
-              : 'bg-surface-base border-border web:hover:bg-interactive-hover'
+              : 'bg-surface-base border-hairline web:hover:bg-interactive-hover'
           }`}
         >
           <Text
@@ -272,7 +272,7 @@ function TypographyShowcase() {
       </Section>
 
       <Section title="Monospace Font (font-mono)">
-        <View className="bg-surface-elevated rounded-lg p-4 border border-border">
+        <View className="bg-surface-elevated rounded-lg p-4 border border-hairline">
           <Text className="text-sm text-text-primary font-mono">
             {'const theme = applyThemePreset(audiobookPreset)'}
           </Text>
@@ -368,13 +368,13 @@ function ColorPaletteShowcase() {
 
       <Section title="Text Colors">
         <View className="flex-row gap-3 flex-wrap">
-          <View className="rounded-lg p-3 min-w-[120px] min-h-[60px] justify-end bg-surface-elevated border border-border">
+          <View className="rounded-lg p-3 min-w-[120px] min-h-[60px] justify-end bg-surface-elevated border border-hairline">
             <Text className="text-xs font-mono font-medium text-text-primary">text-primary</Text>
           </View>
-          <View className="rounded-lg p-3 min-w-[120px] min-h-[60px] justify-end bg-surface-elevated border border-border">
+          <View className="rounded-lg p-3 min-w-[120px] min-h-[60px] justify-end bg-surface-elevated border border-hairline">
             <Text className="text-xs font-mono font-medium text-text-secondary">text-secondary</Text>
           </View>
-          <View className="rounded-lg p-3 min-w-[120px] min-h-[60px] justify-end bg-surface-elevated border border-border">
+          <View className="rounded-lg p-3 min-w-[120px] min-h-[60px] justify-end bg-surface-elevated border border-hairline">
             <Text className="text-xs font-mono font-medium text-text-tertiary">text-tertiary</Text>
           </View>
         </View>
@@ -382,32 +382,32 @@ function ColorPaletteShowcase() {
 
       <Section title="Surface Colors">
         <View className="flex-row gap-3 flex-wrap">
-          <ColorSwatch label="surface-base" className="bg-surface-base border border-border" textClass="text-text-primary" />
-          <ColorSwatch label="surface-elevated" className="bg-surface-elevated border border-border" textClass="text-text-primary" />
-          <ColorSwatch label="surface-raised" className="bg-surface-raised border border-border" textClass="text-text-primary" />
-          <ColorSwatch label="surface-overlay" className="bg-surface-overlay border border-border" textClass="text-text-primary" />
-          <ColorSwatch label="surface-input" className="bg-surface-input border border-border" textClass="text-text-primary" />
+          <ColorSwatch label="surface-base" className="bg-surface-base border border-hairline" textClass="text-text-primary" />
+          <ColorSwatch label="surface-elevated" className="bg-surface-elevated border border-hairline" textClass="text-text-primary" />
+          <ColorSwatch label="surface-raised" className="bg-surface-raised border border-hairline" textClass="text-text-primary" />
+          <ColorSwatch label="surface-overlay" className="bg-surface-overlay border border-hairline" textClass="text-text-primary" />
+          <ColorSwatch label="surface-input" className="bg-surface-input border border-hairline" textClass="text-text-primary" />
         </View>
       </Section>
 
       <Section title="Background Colors">
         <View className="flex-row gap-3 flex-wrap">
-          <ColorSwatch label="background-base" className="bg-background-base border border-border" textClass="text-text-primary" />
-          <ColorSwatch label="background-default" className="bg-background-default border border-border" textClass="text-text-primary" />
-          <ColorSwatch label="background-subtle" className="bg-background-subtle border border-border" textClass="text-text-primary" />
+          <ColorSwatch label="background-base" className="bg-background-base border border-hairline" textClass="text-text-primary" />
+          <ColorSwatch label="background-default" className="bg-background-default border border-hairline" textClass="text-text-primary" />
+          <ColorSwatch label="background-subtle" className="bg-background-subtle border border-hairline" textClass="text-text-primary" />
         </View>
       </Section>
 
       <Section title="Border Colors">
         <View className="flex-row gap-3 flex-wrap">
-          <View className="rounded-lg p-3 min-w-[120px] min-h-[60px] justify-end bg-surface-base border-2 border-border">
-            <Text className="text-xs font-mono font-medium text-text-primary">border-default</Text>
+          <View className="rounded-lg p-3 min-w-[120px] min-h-[60px] justify-end bg-surface-base border-2 border-hairline-default">
+            <Text className="text-xs font-mono font-medium text-text-primary">hairline-default</Text>
           </View>
-          <View className="rounded-lg p-3 min-w-[120px] min-h-[60px] justify-end bg-surface-base border-2 border-border-subtle">
-            <Text className="text-xs font-mono font-medium text-text-primary">border-subtle</Text>
+          <View className="rounded-lg p-3 min-w-[120px] min-h-[60px] justify-end bg-surface-base border-2 border-hairline-subtle">
+            <Text className="text-xs font-mono font-medium text-text-primary">hairline-subtle</Text>
           </View>
-          <View className="rounded-lg p-3 min-w-[120px] min-h-[60px] justify-end bg-surface-base border-2 border-border-strong">
-            <Text className="text-xs font-mono font-medium text-text-primary">border-strong</Text>
+          <View className="rounded-lg p-3 min-w-[120px] min-h-[60px] justify-end bg-surface-base border-2 border-hairline-strong">
+            <Text className="text-xs font-mono font-medium text-text-primary">hairline-strong</Text>
           </View>
           <View className="rounded-lg p-3 min-w-[120px] min-h-[60px] justify-end bg-surface-base border-2 border-border-focus">
             <Text className="text-xs font-mono font-medium text-text-primary">border-focus</Text>
@@ -425,7 +425,7 @@ function ColorPaletteShowcase() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <View className="gap-3">
-      <Text className="text-lg font-semibold text-text-primary font-heading border-b border-border-subtle pb-2">
+      <Text className="text-lg font-semibold text-text-primary font-heading border-b border-hairline-subtle pb-2">
         {title}
       </Text>
       {children}

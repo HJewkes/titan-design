@@ -11,9 +11,12 @@ const AT = '@'
 export interface SetsRepsLoadProps extends ViewProps {
   sets: number
   reps: number | string
-  load: number
+  /** Load value; a string (e.g. "—") passes through verbatim for an unset/discovery load. */
+  load: number | string
   /** Displayed load unit label (e.g. "lb", "kg"). */
   unit?: string
+  /** Cell font size (px). Default 11 — the compact rail/card scale. Raise for a wall read-out. */
+  fontSize?: number
   className?: string
 }
 
@@ -27,6 +30,7 @@ export function SetsRepsLoad({
   reps,
   load,
   unit = 'lb',
+  fontSize,
   className,
   ...props
 }: SetsRepsLoadProps) {
@@ -41,12 +45,18 @@ export function SetsRepsLoad({
       testID="sets-reps-load"
       {...props}
     >
-      <MetricCell color={value}>{sets}</MetricCell>
-      <MetricCell color={sep}>{` ${TIMES} `}</MetricCell>
-      <MetricCell color={value}>{reps}</MetricCell>
-      <MetricCell color={sep}>{` ${AT} `}</MetricCell>
-      <MetricCell color={value}>{load}</MetricCell>
-      <MetricCell color={sep}>{` ${unit}`}</MetricCell>
+      <MetricCell color={value} fontSize={fontSize}>
+        {sets}
+      </MetricCell>
+      <MetricCell color={sep} fontSize={fontSize}>{` ${TIMES} `}</MetricCell>
+      <MetricCell color={value} fontSize={fontSize}>
+        {reps}
+      </MetricCell>
+      <MetricCell color={sep} fontSize={fontSize}>{` ${AT} `}</MetricCell>
+      <MetricCell color={value} fontSize={fontSize}>
+        {load}
+      </MetricCell>
+      <MetricCell color={sep} fontSize={fontSize}>{` ${unit}`}</MetricCell>
     </View>
   )
 }

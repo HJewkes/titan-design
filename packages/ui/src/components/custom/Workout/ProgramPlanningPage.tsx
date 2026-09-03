@@ -154,7 +154,11 @@ function Breadcrumbs({ crumbs, onNavigate }: BreadcrumbsProps) {
         const isLast = index === crumbs.length - 1
         return (
           <View key={crumb.key} className="flex-row items-center" style={{ gap: 4 }}>
-            {index > 0 && <Text className="text-text-tertiary" style={{ fontSize: 12 }}>{'›'}</Text>}
+            {index > 0 && (
+              <Text className="text-text-tertiary" style={{ fontSize: 12 }}>
+                {'›'}
+              </Text>
+            )}
             <Pressable
               onPress={() => onNavigate(crumb.level)}
               disabled={isLast}
@@ -270,13 +274,11 @@ interface WorkoutLevelProps {
 }
 
 function WorkoutLevel({ workout, expandedExercise, onToggleExercise }: WorkoutLevelProps) {
+  // `upcoming` cards ignore `expanded`, so it's safe to wire the toggle uniformly.
   const exercises = workout.exercises.map((exercise, index) => ({
     ...exercise,
-    state:
-      exercise.state === 'upcoming'
-        ? exercise.state
-        : ((index === expandedExercise ? 'expanded' : 'collapsed') as ExerciseCardProps['state']),
-    onToggle: () => onToggleExercise(index),
+    expanded: index === expandedExercise,
+    onExpandedChange: () => onToggleExercise(index),
   }))
   return (
     <View testID="program-planning-page-workout-level">
@@ -386,7 +388,7 @@ export function ProgramPlanningPage({
         )}
 
         <View
-          className="bg-surface-elevated border-border"
+          className="bg-surface-elevated border-hairline"
           style={{
             borderWidth: 1,
             borderRadius: 12,

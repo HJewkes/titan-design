@@ -146,7 +146,7 @@ function Diagram({
       onClick={() => onSelect(null)}
       style={{
         overflow: 'auto',
-        border: `1px solid ${C['border-subtle']}`,
+        border: `1px solid ${C['hairline-subtle']}`,
         borderRadius: 8,
         background: C['surface-base'],
       }}
@@ -254,7 +254,7 @@ function Diagram({
                   height={16}
                   rx={3}
                   fill={C['surface-elevated']}
-                  stroke={C['border-default']}
+                  stroke={C['hairline-default']}
                 />
                 <text
                   x={NODE_W - 12.5}
@@ -288,7 +288,7 @@ function DepLine({ label, items }: { label: string; items: string[] }) {
               fontSize: 12,
               color: C['text-secondary'],
               background: C['surface-raised'],
-              border: `1px solid ${C['border-subtle']}`,
+              border: `1px solid ${C['hairline-subtle']}`,
               borderRadius: 5,
               padding: '1px 7px',
             }}
@@ -321,7 +321,7 @@ function DetailPanel({
         padding: 14,
         borderRadius: 8,
         background: C['surface-elevated'],
-        border: `1px solid ${C['border-default']}`,
+        border: `1px solid ${C['hairline-default']}`,
         display: 'flex',
         flexDirection: 'column',
         gap: 8,
@@ -409,7 +409,7 @@ function RenderModal({
           width: 'min(940px, 92vw)',
           height: 'min(620px, 88vh)',
           background: C['surface-base'],
-          border: `1px solid ${C['border-default']}`,
+          border: `1px solid ${C['hairline-default']}`,
           borderRadius: 10,
           display: 'flex',
           flexDirection: 'column',
@@ -422,7 +422,7 @@ function RenderModal({
             alignItems: 'center',
             gap: 10,
             padding: '10px 14px',
-            borderBottom: `1px solid ${C['border-subtle']}`,
+            borderBottom: `1px solid ${C['hairline-subtle']}`,
           }}
         >
           <span style={{ fontSize: 15, fontWeight: 700, color: C['text-primary'] }}>{name}</span>
@@ -484,7 +484,7 @@ function Chip({ color, children }: { color: string; children: React.ReactNode })
         padding: '3px 9px',
         borderRadius: 999,
         background: C['surface-raised'],
-        border: `1px solid ${C['border-subtle']}`,
+        border: `1px solid ${C['hairline-subtle']}`,
         fontSize: 12,
         color: C['text-secondary'],
       }}
@@ -506,7 +506,7 @@ function Th({ children, right }: { children: React.ReactNode; right?: boolean })
         fontWeight: 600,
         textTransform: 'uppercase',
         letterSpacing: 0.5,
-        borderBottom: `1px solid ${C['border-subtle']}`,
+        borderBottom: `1px solid ${C['hairline-subtle']}`,
       }}
     >
       {children}
@@ -530,7 +530,7 @@ function Td({
         color: C['text-primary'],
         fontSize: 13,
         fontFamily: mono ? 'monospace' : 'inherit',
-        borderBottom: `1px solid ${C['border-subtle']}`,
+        borderBottom: `1px solid ${C['hairline-subtle']}`,
       }}
     >
       {children}

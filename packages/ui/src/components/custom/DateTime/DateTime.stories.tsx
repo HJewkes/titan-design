@@ -244,7 +244,7 @@ export const UsageExample: Story = {
         {items.map((item, index) => (
           <View
             key={index}
-            className="flex-row justify-between items-center py-2 border-b border-border"
+            className="flex-row justify-between items-center py-2 border-b border-hairline"
           >
             <Text className="text-text-primary">{item.title}</Text>
             <DateTime value={item.date} format="relative" color="secondary" className="text-sm" />

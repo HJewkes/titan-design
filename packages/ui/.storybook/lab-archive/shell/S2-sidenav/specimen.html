@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>S2 — Side nav options + decomposition · Voltras wall dashboard</title>
+<style>
+  :root{
+    --bg:#0b0c0e; --nav-bg:#0a0b0d; --surface:#16181c; --surface2:#1c1f24; --text:#e9eaec; --muted:#9aa0a8; --dim:#5f646c;
+    --border:#212429; --border-strong:#3a3e45; --brand:#ff7900; --brand-soft:rgba(255,121,0,.14); --brand-line:rgba(255,121,0,.5);
+    --green:#2ed573; --amber:#ffa502; --blue:#3aa0ff; --red:#ff4757; --hover:rgba(255,255,255,.05);
+    --exist:#2ed573; --extend:#ffa502; --new:#3aa0ff;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);padding:28px 22px 90px;line-height:1.5}
+  h1{font-size:18px;font-weight:800;letter-spacing:.3px;margin:0 0 4px}
+  h1 .accent{color:var(--brand)}
+  .lede{color:var(--muted);font-size:13px;margin:0 0 8px;max-width:900px}
+  .locked{font-family:var(--mono);font-size:11px;color:var(--dim);margin:0 0 8px;max-width:900px}
+  .locked b{color:var(--green)}
+  h2{font-size:13px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--brand);margin:44px 0 4px;border-top:1px solid var(--border);padding-top:22px}
+  h2.nb{border:0;padding-top:0;margin-top:32px}
+  .qnote{color:var(--muted);font-size:12.5px;margin:0 0 16px;max-width:900px}
+  .qnote b{color:var(--text)}
+  .qtag{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--brand);border:1px solid var(--brand-line);border-radius:5px;padding:1px 6px;margin-right:8px;letter-spacing:.4px}
+  .rec{color:var(--green);font-family:var(--mono);font-size:11px;font-weight:700}
+
+  /* option arrays */
+  .opts{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+  .opt{border:1px solid var(--border-strong);border-radius:10px;background:#0d0e11;padding:0;overflow:hidden;min-width:0}
+  .opt.pick{border-color:var(--brand-line);box-shadow:0 0 0 1px var(--brand-line)}
+  .opt .cap{font-family:var(--mono);font-size:10.5px;color:var(--muted);padding:9px 12px;border-top:1px solid var(--border);background:#0a0b0d;letter-spacing:.2px}
+  .opt .cap .k{color:var(--text);font-weight:700}
+  .opt .cap.rec .k{color:var(--green)}
+  .opt .note{display:block;color:var(--dim);font-size:10px;margin-top:2px;line-height:1.4}
+  .stage{display:flex;background:var(--bg)}
+
+  /* --- reusable rail --- */
+  .rail{display:flex;flex-direction:column;align-items:center;gap:9px;padding:12px 7px;background:var(--nav-bg);border-right:1px solid var(--border);position:relative}
+  .btn{width:46px;height:46px;border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--dim);cursor:pointer;position:relative;transition:background .15s,color .15s}
+  .btn:hover{background:var(--hover);color:var(--muted)}
+  .btn svg{width:20px;height:20px;display:block}
+  .btn .lbl{font-size:8.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase}
+  /* active treatments */
+  .btn.on-fill{background:var(--brand-soft);color:var(--brand)}
+  .btn.on-bar{color:var(--brand)}
+  .btn.on-bar::before{content:"";position:absolute;left:-7px;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--brand)}
+  .btn.on-solid{background:var(--brand);color:#140a00}
+  .btn.on-min{color:var(--text)}
+  .btn.on-min .lbl{color:var(--brand)}
+
+  /* fake main + topbar to ground the rail */
+  .main{flex:1;min-width:120px;background:linear-gradient(180deg,#0e0f12,#0b0c0e);display:flex;align-items:center;justify-content:center;color:var(--dim);font-family:var(--mono);font-size:11px}
+  .withbar{border:1px solid var(--border-strong);border-radius:10px;overflow:hidden;max-width:640px}
+  .tb{height:40px;display:flex;align-items:center;gap:12px;padding:0 14px;background:linear-gradient(180deg,#141519,#101113);border-bottom:1px solid var(--border)}
+  .tb .bd{font-weight:800;letter-spacing:1.4px;font-size:11px}.tb .bd .mk{color:var(--brand)}
+  .tb .st{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--text);display:flex;align-items:center;gap:7px}
+  .tb .pulse{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(46,213,115,.5)}70%{box-shadow:0 0 0 6px rgba(46,213,115,0)}100%{box-shadow:0 0 0 0 rgba(46,213,115,0)}}
+
+  /* live-affordance markers */
+  .livedot{position:absolute;top:5px;right:6px;width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 7px var(--green);animation:pulse 1.6s infinite}
+  .btn.livering{box-shadow:inset 0 0 0 1.5px var(--brand-line)}
+
+  /* wide horizontal variant */
+  .rail.wide{width:200px;align-items:stretch;padding:12px 10px;gap:5px}
+  .rail.wide .btn{width:100%;height:42px;flex-direction:row;justify-content:flex-start;gap:13px;padding:0 13px;border-radius:9px}
+  .rail.wide .btn .lbl{font-size:12.5px;letter-spacing:.2px;text-transform:none;font-weight:600}
+  .rail.wide .btn.on-bar::before{top:7px;bottom:7px}
+
+  /* icon-only variant */
+  .rail.iconly{padding:14px 9px;gap:11px}
+  .rail.iconly .btn{width:50px;height:50px}
+  .rail.iconly .btn svg{width:25px;height:25px}
+
+  /* footer slot */
+  .railspace{flex:1;min-height:22px}
+  .btn.foot{color:var(--dim)}
+
+  /* top-nav comparison */
+  .topnav{display:flex;align-items:center;gap:4px;height:44px;padding:0 12px;background:linear-gradient(180deg,#141519,#101113);border:1px solid var(--border-strong);border-radius:9px;max-width:560px}
+  .tn-item{display:flex;align-items:center;gap:7px;padding:7px 13px;border-radius:8px;color:var(--dim);font-size:12px;font-weight:600;cursor:pointer}
+  .tn-item svg{width:16px;height:16px}
+  .tn-item:hover{color:var(--muted);background:var(--hover)}
+  .tn-item.on{background:var(--brand-soft);color:var(--brand)}
+
+  /* glyph candidate grid */
+  .glyphgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;max-width:960px}
+  .gcard{border:1px solid var(--border-strong);border-radius:10px;background:#0d0e11;padding:14px;text-align:center}
+  .gcard .row{display:flex;justify-content:center;gap:16px;margin-bottom:10px}
+  .gc{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px;border-radius:9px;cursor:pointer}
+  .gc.pick{background:var(--brand-soft)}
+  .gc svg{width:24px;height:24px;color:var(--text)}
+  .gc.pick svg{color:var(--brand)}
+  .gc .gl{font-family:var(--mono);font-size:9px;color:var(--dim)}
+  .gc.pick .gl{color:var(--brand)}
+  .gcard .item{font-size:12px;font-weight:700;color:var(--text);letter-spacing:.3px}
+  .gcard .sub{font-size:10px;color:var(--dim);margin-top:2px;font-family:var(--mono)}
+
+  .scrollx{overflow-x:auto}
+  .caption{color:var(--dim);font-size:11px;font-family:var(--mono);margin:8px 0 0;max-width:900px;line-height:1.6}
+  .harness{font-family:var(--mono);font-size:10px;color:var(--dim);border:1px dashed var(--border-strong);border-radius:6px;padding:9px 11px;margin-top:14px;max-width:900px}
+
+  /* decomposition */
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;margin:2px 0 16px}
+  .lg{display:flex;align-items:center;gap:6px;color:var(--muted)}
+  .chip{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.4px;padding:2px 7px;border-radius:5px;border:1px solid}
+  .chip.exist{color:var(--exist);border-color:rgba(46,213,115,.45)}
+  .chip.extend{color:var(--extend);border-color:rgba(255,165,2,.45)}
+  .chip.new{color:var(--new);border-color:rgba(58,160,255,.45)}
+  .tree{font-family:var(--mono);font-size:12px;line-height:1.9;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:16px 18px;max-width:960px}
+  .tree .n{color:var(--text);font-weight:700}.tree .e{color:var(--exist)}.tree .x{color:var(--extend)}.tree .w{color:var(--new)}
+  table{border-collapse:collapse;width:100%;max-width:960px;font-size:12px;margin-top:6px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{font-family:var(--mono);font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--dim);font-weight:600}
+  td .nm{font-weight:700;color:var(--text)}td .tier{font-family:var(--mono);font-size:10px;color:var(--dim)}
+  td.map{font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .catches{max-width:960px;margin-top:14px}.catches li{margin:0 0 8px;color:var(--muted);font-size:13px}.catches b{color:var(--text)}
+</style>
+</head>
+<body>
+  <h1>S2 · Side nav — <span class="accent">options</span> + decomposition</h1>
+  <p class="lede">The persistent left rail switching <b>Live · Review · Program · Body</b>. Layout is locked
+  (<b>NAV-D01</b> = left rail; top-nav is comparison-only). This sheet pins the five open S2 decisions —
+  <b>glyphs · active state · density · live affordance · footer</b> — each as candidate arrays in a real rail
+  frame. Pick one per row → ledger → harden into the titan <span class="accent">SideNav</span> organism.</p>
+  <p class="locked">CONVERGED BASELINE (from r2-synthesis): 60px rail · 46px icon-over-microlabel buttons ·
+  4 items (idle folded into Live).</p>
+  <p class="locked" style="margin-bottom:24px">OPERATOR LOCKED 2026-07-08 — <b>Q-S2.1</b> glyphs = lucide (activity · history · layers ·
+  <b>figure</b>) · <b>Q-S2.2</b> active = <b>left accent bar</b> · <b>Q-S2.3</b> = <b>60px icon+micro-label</b> ·
+  <b>Q-S2.5</b> = four items only · <b>Q-S2.4</b> live cue = <b>green label-only</b> (green-500 #22a444). ALL LOCKED.</p>
+
+  <!-- ================= 0 · BASELINE ================= -->
+  <h2 class="nb">0 · Converged baseline (the starting point)</h2>
+  <div class="withbar">
+    <div class="tb"><span class="bd"><span class="mk">◇</span> VOLTRAS</span>
+      <span class="st"><span class="pulse"></span>LIVE</span></div>
+    <div class="stage" style="height:210px">
+      <div class="rail">
+        <div class="btn on-fill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg><span class="lbl">Live</span></div>
+        <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="16" rx="1"/><rect x="17" y="4" width="4" height="16" rx="1"/></svg><span class="lbl">Review</span></div>
+        <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg><span class="lbl">Program</span></div>
+        <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="2.5"/><path d="M12 8v8M12 10l-5 2M12 10l5 2M12 16l-3 5M12 16l3 5"/></svg><span class="lbl">Body</span></div>
+      </div>
+      <div class="main">main viewport →</div>
+    </div>
+  </div>
+
+  <!-- ================= Q-S2.1 · GLYPHS ================= -->
+  <h2>1 · Glyphs — <span style="color:var(--text)">one icon per item</span></h2>
+  <p class="qnote"><span class="qtag">Q-S2.1</span> Lock a glyph per nav item. r2 used hand-rolled SVGs;
+  titan already pulls <b>lucide</b> (S1 added icons to the set). Body is the real choice — a person reads as
+  "profile/account", an anatomy/torso mark reads as "muscle map". <span class="rec">LOCKED: lucide set · Body = standing figure.</span></p>
+  <div class="glyphgrid">
+    <div class="gcard"><div class="item">Live</div><div class="sub">"a set is happening now"</div>
+      <div class="row" style="margin-top:10px">
+        <div class="gc pick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg><span class="gl">activity</span></div>
+        <div class="gc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49M7.76 16.24a6 6 0 0 1 0-8.49M19.07 4.93a10 10 0 0 1 0 14.14M4.93 19.07a10 10 0 0 1 0-14.14"/></svg><span class="gl">radio</span></div>
+        <div class="gc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg><span class="gl">zap</span></div>
+      </div></div>
+    <div class="gcard"><div class="item">Review</div><div class="sub">past sessions / history</div>
+      <div class="row" style="margin-top:10px">
+        <div class="gc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="16" rx="1"/><rect x="17" y="4" width="4" height="16" rx="1"/></svg><span class="gl">bars</span></div>
+        <div class="gc pick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 8v4l3 2"/></svg><span class="gl">history</span></div>
+        <div class="gc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5h16M4 12h16M4 19h10"/></svg><span class="gl">list</span></div>
+      </div></div>
+    <div class="gcard"><div class="item">Program</div><div class="sub">plan / mesocycle</div>
+      <div class="row" style="margin-top:10px">
+        <div class="gc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg><span class="gl">calendar</span></div>
+        <div class="gc pick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg><span class="gl">layers</span></div>
+        <div class="gc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6.5 6.5 17.5 17.5M4 8l-2 2 2 2M20 16l2-2-2-2M8 4 6 6l2 2M16 20l2-2-2-2M6.5 6.5 4 9M17.5 17.5 20 15"/></svg><span class="gl">dumbbell</span></div>
+      </div></div>
+    <div class="gcard"><div class="item">Body</div><div class="sub">muscle map / status</div>
+      <div class="row" style="margin-top:10px">
+        <div class="gc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="2.5"/><path d="M12 8v8M12 10l-5 2M12 10l5 2M12 16l-3 5M12 16l3 5"/></svg><span class="gl">person</span></div>
+        <div class="gc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><circle cx="12" cy="4" r="2"/><path d="M9 8h6l1 6-2 .5-1-3.5v9h-2v-9l-1 3.5-2-.5z"/></svg><span class="gl">torso</span></div>
+        <div class="gc pick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="3"/><path d="M12 8v6M6 9c0 3 2 4 6 4s6-1 6-4M9 20l3-6 3 6"/></svg><span class="gl">figure</span></div>
+      </div></div>
+  </div>
+  <p class="caption">Highlighted = recommendation. Live activity-line is strong + already reads (keep).
+  Review "history" (clock-arrow) disambiguates from Program/analytics bars. Program "layers" = mesocycle
+  stack. Body "torso" reads as anatomy, not account.</p>
+
+  <!-- ================= Q-S2.2 · ACTIVE STATE ================= -->
+  <h2>2 · Active state — <span style="color:var(--text)">how the current category reads</span></h2>
+  <p class="qnote"><span class="qtag">Q-S2.2</span> Across a gym the active item must be unmistakable at a
+  glance. Four treatments (Live shown active). <span class="rec">LOCKED: B left accent bar — cleaner rail, brand glyph carries it.</span>
+  Also decide: micro-label <b>always</b> shown (below) vs. active-only.</p>
+  <div class="opts">
+    <div class="opt"><div class="stage" style="height:200px"><div class="rail">
+      <div class="btn on-fill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg><span class="lbl">Live</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 8v4l3 2"/></svg><span class="lbl">Review</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg><span class="lbl">Prog</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M9 8h6l1 6-2 .5-1-3.5v9h-2v-9l-1 3.5-2-.5z"/></svg><span class="lbl">Body</span></div>
+    </div><div class="main"></div></div><div class="cap">A · <span class="k">brand-soft fill</span><span class="note">r2 baseline · soft pill, brand glyph</span></div></div>
+
+    <div class="opt pick"><div class="stage" style="height:200px"><div class="rail">
+      <div class="btn on-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg><span class="lbl">Live</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 8v4l3 2"/></svg><span class="lbl">Review</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg><span class="lbl">Prog</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M9 8h6l1 6-2 .5-1-3.5v9h-2v-9l-1 3.5-2-.5z"/></svg><span class="lbl">Body</span></div>
+    </div><div class="main"></div></div><div class="cap rec">B · <span class="k">left accent bar</span><span class="note">edge bar + brand glyph, no fill · cleaner rail</span></div></div>
+
+    <div class="opt"><div class="stage" style="height:200px"><div class="rail">
+      <div class="btn on-solid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg><span class="lbl">Live</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 8v4l3 2"/></svg><span class="lbl">Review</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg><span class="lbl">Prog</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M9 8h6l1 6-2 .5-1-3.5v9h-2v-9l-1 3.5-2-.5z"/></svg><span class="lbl">Body</span></div>
+    </div><div class="main"></div></div><div class="cap">C · <span class="k">solid brand pill</span><span class="note">loudest · can shout on a bright wall</span></div></div>
+
+    <div class="opt"><div class="stage" style="height:200px"><div class="rail">
+      <div class="btn on-min"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg><span class="lbl">Live</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 8v4l3 2"/></svg><span class="lbl">Review</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg><span class="lbl">Prog</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M9 8h6l1 6-2 .5-1-3.5v9h-2v-9l-1 3.5-2-.5z"/></svg><span class="lbl">Body</span></div>
+    </div><div class="main"></div></div><div class="cap">D · <span class="k">minimal</span><span class="note">bright glyph + brand label, no bg · weakest at distance</span></div></div>
+  </div>
+
+  <!-- ================= Q-S2.3 · DENSITY ================= -->
+  <h2>3 · Density / width / labels</h2>
+  <p class="qnote"><span class="qtag">Q-S2.3</span> How wide, and do labels show? A 4-item rail the operator
+  learns fast — but a wall dashboard is also seen by walk-up lifters. <span class="rec">Rec: A 60px icon+micro-label (r2) — labels earn their keep for walk-ups without stealing width.</span></p>
+  <div class="opts">
+    <div class="opt pick"><div class="stage" style="height:230px"><div class="rail">
+      <div class="btn on-fill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg><span class="lbl">Live</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 8v4l3 2"/></svg><span class="lbl">Review</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg><span class="lbl">Program</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M9 8h6l1 6-2 .5-1-3.5v9h-2v-9l-1 3.5-2-.5z"/></svg><span class="lbl">Body</span></div>
+    </div><div class="main">60px</div></div><div class="cap rec">A · <span class="k">60px icon + micro-label</span><span class="note">r2 baseline</span></div></div>
+
+    <div class="opt"><div class="stage" style="height:230px"><div class="rail iconly">
+      <div class="btn on-fill" title="Live"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div>
+      <div class="btn" title="Review"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 8v4l3 2"/></svg></div>
+      <div class="btn" title="Program"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg></div>
+      <div class="btn" title="Body"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M9 8h6l1 6-2 .5-1-3.5v9h-2v-9l-1 3.5-2-.5z"/></svg></div>
+    </div><div class="main">~56px</div></div><div class="cap">B · <span class="k">icon-only</span><span class="note">biggest glyph · labels → tooltip · loses walk-up wayfinding</span></div></div>
+
+    <div class="opt" style="min-width:340px"><div class="stage" style="height:230px"><div class="rail wide">
+      <div class="btn on-fill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg><span class="lbl">Live</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 8v4l3 2"/></svg><span class="lbl">Review</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg><span class="lbl">Program</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M9 8h6l1 6-2 .5-1-3.5v9h-2v-9l-1 3.5-2-.5z"/></svg><span class="lbl">Body</span></div>
+    </div><div class="main">200px</div></div><div class="cap">C · <span class="k">200px icon + text</span><span class="note">most legible · eats width the S3 rail + main want</span></div></div>
+  </div>
+
+  <!-- ================= Q-S2.4 · LIVE AFFORDANCE ================= -->
+  <h2>4 · Live affordance on the nav <span style="color:var(--green);font-weight:400;text-transform:none;letter-spacing:0">(LOCKED — B green label-only)</span></h2>
+  <p class="qnote"><span class="qtag">Q-S2.4</span> A set is running but the operator is on <b>Program</b>
+  (shown active w/ the locked accent bar). Instead of a dot or ring, try a <b>quiet label tint</b> on the Live
+  item — a subtler ramp shade so it differentiates without shouting or animating: <b>green</b> (matches the LIVE
+  status green) vs. <b>orange</b> (brand), <b>label-only</b> vs. <b>label+glyph</b>. All static.
+  <span class="rec">Fallback = inert if none feel right.</span></p>
+  <div class="opts">
+    <div class="opt"><div class="stage" style="height:200px"><div class="rail">
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg><span class="lbl">Live</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 8v4l3 2"/></svg><span class="lbl">Review</span></div>
+      <div class="btn on-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg><span class="lbl">Prog</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="3"/><path d="M12 8v6M6 9c0 3 2 4 6 4s6-1 6-4M9 20l3-6 3 6"/></svg><span class="lbl">Body</span></div>
+    </div><div class="main"></div></div><div class="cap">A · <span class="k">inert</span><span class="note">Live label stays dim · strip + top-bar own it</span></div></div>
+
+    <div class="opt pick"><div class="stage" style="height:200px"><div class="rail">
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg><span class="lbl" style="color:#22a444">Live</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 8v4l3 2"/></svg><span class="lbl">Review</span></div>
+      <div class="btn on-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg><span class="lbl">Prog</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="3"/><path d="M12 8v6M6 9c0 3 2 4 6 4s6-1 6-4M9 20l3-6 3 6"/></svg><span class="lbl">Body</span></div>
+    </div><div class="main"></div></div><div class="cap rec">B · <span class="k">green label</span><span class="note">label only · green-500 <code>#22a444</code> · glyph stays dim</span></div></div>
+
+    <div class="opt"><div class="stage" style="height:200px"><div class="rail">
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg><span class="lbl" style="color:#da5f00">Live</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 8v4l3 2"/></svg><span class="lbl">Review</span></div>
+      <div class="btn on-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg><span class="lbl">Prog</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="3"/><path d="M12 8v6M6 9c0 3 2 4 6 4s6-1 6-4M9 20l3-6 3 6"/></svg><span class="lbl">Body</span></div>
+    </div><div class="main"></div></div><div class="cap">C · <span class="k">orange label</span><span class="note">label only · orange-500 <code>#da5f00</code> · brand-tied</span></div></div>
+
+    <div class="opt"><div class="stage" style="height:200px"><div class="rail">
+      <div class="btn" style="color:#21c05d"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg><span class="lbl">Live</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 8v4l3 2"/></svg><span class="lbl">Review</span></div>
+      <div class="btn on-bar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg><span class="lbl">Prog</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="3"/><path d="M12 8v6M6 9c0 3 2 4 6 4s6-1 6-4M9 20l3-6 3 6"/></svg><span class="lbl">Body</span></div>
+    </div><div class="main"></div></div><div class="cap">D · <span class="k">green label + glyph</span><span class="note">both tinted · green-400 <code>#21c05d</code> · a touch louder</span></div></div>
+  </div>
+  <p class="caption">Tints are real ramp steps (subtler than vivid success #2ED573 / brand #FF7900). Green ties to
+  the LIVE status color the operator already reads on the top bar; orange keeps it brand-neutral. Label-only (B/C)
+  is the quietest; label+glyph (D) is the loudest of the quiet set. None animate.</p>
+
+  <!-- ================= Q-S2.5 · FOOTER ================= -->
+  <h2>5 · Bottom slot</h2>
+  <p class="qnote"><span class="qtag">Q-S2.5</span> Four items top-aligned, or a bottom-anchored slot
+  (settings/overflow)? The top-nav toggle + transport text are <b>harness-only</b> (never shipped, per S1).
+  <span class="rec">Rec: A none — the wall dashboard has no per-user settings surface yet; add later if one appears.</span></p>
+  <div class="opts">
+    <div class="opt pick"><div class="stage" style="height:240px"><div class="rail">
+      <div class="btn on-fill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg><span class="lbl">Live</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 8v4l3 2"/></svg><span class="lbl">Review</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg><span class="lbl">Program</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M9 8h6l1 6-2 .5-1-3.5v9h-2v-9l-1 3.5-2-.5z"/></svg><span class="lbl">Body</span></div>
+    </div><div class="main"></div></div><div class="cap rec">A · <span class="k">four items only</span></div></div>
+
+    <div class="opt"><div class="stage" style="height:240px"><div class="rail">
+      <div class="btn on-fill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg><span class="lbl">Live</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 8v4l3 2"/></svg><span class="lbl">Review</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg><span class="lbl">Program</span></div>
+      <div class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M9 8h6l1 6-2 .5-1-3.5v9h-2v-9l-1 3.5-2-.5z"/></svg><span class="lbl">Body</span></div>
+      <div class="railspace"></div>
+      <div class="btn foot" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-2.98.67v.17a2 2 0 0 1-4 0v-.17a1.65 1.65 0 0 0-2.98-.67l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.31.22.66.22 1s-.08.69-.22 1z"/></svg></div>
+    </div><div class="main"></div></div><div class="cap">B · <span class="k">+ bottom settings</span><span class="note">only if a settings surface actually exists</span></div></div>
+  </div>
+
+  <!-- ================= SIZING (operator-refined 2026-07-08) ================= -->
+  <h2>6 · Sizing <span style="color:var(--green);font-weight:400;text-transform:none;letter-spacing:0">(operator-refined)</span></h2>
+  <p class="qnote">The rail is a <b>fixed 60px</b> at every breakpoint — the micro-label sits <b>under</b> the
+  icon, so it never affects width; there is <b>no label-hiding degradation step</b>. Phone reflow to a bottom
+  tab-bar is the mobile app's concern, out of shell scope. <b>No top-nav variant</b> ships or is kept as a
+  comparison (operator, 2026-07-08) — the left rail is the sole nav.</p>
+
+  <!-- ================= DECOMPOSITION ================= -->
+  <h2>7 · Component decomposition — into titan atoms / molecules</h2>
+  <div class="legend">
+    <span class="lg"><span class="chip exist">✅ EXISTS</span> reuse titan as-is</span>
+    <span class="lg"><span class="chip extend">✎ EXTEND</span> add a prop/variant to an existing atom</span>
+    <span class="lg"><span class="chip new">⊕ NET-NEW</span> new titan component</span>
+  </div>
+  <div class="tree">
+<span class="n">SideNav</span> <span class="w">⊕ organism (shell region)</span> — 60px vertical rail, category switch, live-affordance
+├─ <span class="n">NavItem</span> <span class="w">⊕ molecule</span> ×4 — icon + micro-label, active + hover + live states
+│   ├─ <span class="e">Pressable / ToolbarButton</span> <span class="e">✅ ui</span> (the 46×46 target + active bg)
+│   ├─ nav icon <span class="x">✎ titan icon set</span> — activity ✅ + <b>history · layers · figure</b> ⊕ (add 3)
+│   ├─ active = <span class="x">left accent bar</span> variant (Q-S2.2) — 3px brand edge bar + brand glyph
+│   ├─ live cue = <span class="x">label color token</span> (Q-S2.4, pending) — tint the label, likely no Indicator needed
+│   └─ Text (micro-label) — <span class="dim">Text + uppercase style, not a component</span>
+└─ <span class="dim">Footer slot dropped (Q-S2.5 = four items only)</span>
+  </div>
+  <table>
+    <tr><th>Part</th><th>Tier</th><th>titan</th><th>Build note</th></tr>
+    <tr><td><span class="nm">SideNav</span></td><td class="tier">organism / shell</td><td><span class="chip new">⊕ new</span></td><td class="map">rail container (Stack ✅) · active-key state · maps 4 items</td></tr>
+    <tr><td><span class="nm">NavItem</span></td><td class="tier">molecule</td><td><span class="chip new">⊕ new</span></td><td class="map">Pressable ✅ + icon + label · active = <b>accent-bar</b> variant (Q-S2.2) · live = label-tint token (Q-S2.4)</td></tr>
+    <tr><td><span class="nm">Pressable/ToolbarButton</span></td><td class="tier">atom</td><td><span class="chip exist">✅ reuse</span></td><td class="map">same target atom S1 used — do NOT hand-roll a div</td></tr>
+    <tr><td><span class="nm">nav glyphs</span></td><td class="tier">atom (icon)</td><td><span class="chip extend">✎ extend</span></td><td class="map">add <b>history · layers · figure</b> to the titan icon set (activity exists); per Q-S2.1</td></tr>
+    <tr><td><span class="nm">micro-label</span></td><td class="tier">—</td><td><span class="chip" style="color:var(--dim);border-color:var(--border-strong)">skip</span></td><td class="map">Text + uppercase style util, not a component</td></tr>
+  </table>
+  <ul class="catches">
+    <li><b>NavItem reuses S1's atoms.</b> The 46×46 target = the same Pressable/ToolbarButton S1's DeviceIndicator used. Active = an accent-bar variant; the live cue is a label color token (no new atom). Net-new is only the composition + the 3 icons.</li>
+    <li><b>Active treatment = a NavItem variant, not 4 components.</b> Whatever Q-S2.2 lands (fill / bar / solid / min) is one styling variant prop on NavItem, driven by the shared <code>active</code> flag.</li>
+    <li><b>Don't fork the icon set.</b> The 3 net-new glyphs go into the titan icon set S1 seeded (Bluetooth lives there) — shared, not a SideNav-private set.</li>
+    <li><b>SideNav is presentational.</b> It takes <code>activeKey</code> + <code>onNavigate</code> + <code>liveElsewhere</code>; routing/live-state wiring lives in the app (R2 harness), not the component.</li>
+    <li><b>Net-new to build:</b> SideNav, NavItem, + 3 icons. Everything else reuses S1's shell atoms.</li>
+  </ul>
+</body>
+</html>

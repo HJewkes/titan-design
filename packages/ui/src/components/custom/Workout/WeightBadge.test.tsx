@@ -2,6 +2,11 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { WeightBadge } from './WeightBadge'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+
+// Read from the token, not pinned: these used to be hand-copied hexes and
+// silently desynced when borders became alpha hairlines (TD-07.16).
+const T = getSemanticColors('dark')
 
 describe('WeightBadge', () => {
   it('renders value and default unit', () => {
@@ -71,7 +76,7 @@ describe('WeightBadge', () => {
     it('uses default border color when not a PR', () => {
       render(<WeightBadge value={225} />)
       expect(screen.getByTestId('weight-badge')).toHaveStyle({
-        borderTopColor: '#1F1F1F',
+        borderTopColor: T['hairline-default'],
       })
     })
 

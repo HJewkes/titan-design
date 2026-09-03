@@ -1,0 +1,436 @@
+{
+  "src/arch/Architecture.stories.tsx": {
+    "rgba(": 1
+  },
+  "src/components/custom/CircularTimer/CircularTimer.stories.tsx": {
+    "#0e0e0e": 1,
+    "#dadada": 1,
+    "rgba(": 1
+  },
+  "src/components/custom/EmptyState/EmptyState.stories.tsx": {
+    "text-white": 1
+  },
+  "src/components/custom/Gauge/Gauge.stories.tsx": {
+    "#5b9bd5": 1
+  },
+  "src/components/custom/Gauge/Gauge.tsx": {
+    "rgba(": 1
+  },
+  "src/components/custom/Scatter/Scatter.stories.tsx": {
+    "#14b8a6": 2,
+    "#5b9bd5": 2,
+    "#f4a736": 1,
+    "#f83030": 2
+  },
+  "src/components/custom/Scatter/Scatter.tsx": {
+    "#ffffff": 1,
+    "rgba(": 3
+  },
+  "src/components/custom/Sidebar/Sidebar.stories.tsx": {
+    "text-white": 1
+  },
+  "src/components/custom/stepper/Stepper.tsx": {
+    "text-white": 1
+  },
+  "src/components/custom/Table/Table.tsx": {
+    "text-white": 2
+  },
+  "src/components/custom/TimerReadout/TimerReadout.stories.tsx": {
+    "#131313": 1
+  },
+  "src/components/custom/Treemap/Treemap.stories.tsx": {
+    "#5b9bd5": 3,
+    "#f4a736": 3,
+    "#f83030": 4
+  },
+  "src/components/custom/Treemap/Treemap.tsx": {
+    "[#0b0b0b]": 1,
+    "#3a3a3a": 1,
+    "#ffffff": 1
+  },
+  "src/components/custom/Workout/ActiveWorkoutPage.stories.tsx": {
+    "#22d3ee": 1
+  },
+  "src/components/custom/Workout/BaseBadge.stories.tsx": {
+    "#9ca3af": 3,
+    "#ff7900": 4
+  },
+  "src/components/custom/Workout/BaseBadge.tsx": {
+    "rgba(": 2
+  },
+  "src/components/custom/Workout/BodyMap.tsx": {
+    "rgba(": 3
+  },
+  "src/components/custom/Workout/BodyMapDetailPanel.stories.tsx": {
+    "#0e0e0e": 2,
+    "#ff7900": 1,
+    "#ffffff": 1
+  },
+  "src/components/custom/Workout/BodyMapDetailPanel.tsx": {
+    "#000000": 1,
+    "rgba(": 3
+  },
+  "src/components/custom/Workout/CapacityBandChart.stories.tsx": {
+    "#9ca3af": 1
+  },
+  "src/components/custom/Workout/CapacityBandChart.tsx": {
+    "#f3f4f6": 1,
+    "rgba(": 3
+  },
+  "src/components/custom/Workout/DeviationBar.tsx": {
+    "rgba(": 4
+  },
+  "src/components/custom/Workout/ExerciseCard.stories.tsx": {
+    "#121212": 1
+  },
+  "src/components/custom/Workout/ExerciseCardHeading.stories.tsx": {
+    "#131313": 1
+  },
+  "src/components/custom/Workout/ExerciseDetailPage.tsx": {
+    "rgba(": 2
+  },
+  "src/components/custom/Workout/ExerciseHeading.stories.tsx": {
+    "#131313": 1
+  },
+  "src/components/custom/Workout/ExerciseIndicator.stories.tsx": {
+    "#131313": 1,
+    "#8a8a8a": 3,
+    "#cfcfcf": 2
+  },
+  "src/components/custom/Workout/FatigueMeter.stories.tsx": {
+    "#131313": 1
+  },
+  "src/components/custom/Workout/InputBar.stories.tsx": {
+    "#111111": 1
+  },
+  "src/components/custom/Workout/InputBar.tsx": {
+    "#ffffff": 1
+  },
+  "src/components/custom/Workout/IntensityBar.tsx": {
+    "#333333": 1,
+    "#6b7280": 1,
+    "rgba(": 3
+  },
+  "src/components/custom/Workout/LiveAuraFrame.stories.tsx": {
+    "#070707": 1
+  },
+  "src/components/custom/Workout/MesoCard.tsx": {
+    "rgba(": 2
+  },
+  "src/components/custom/Workout/MesoProgressBar.tsx": {
+    "rgba(": 3
+  },
+  "src/components/custom/Workout/MesoStatusCard.tsx": {
+    "rgba(": 15
+  },
+  "src/components/custom/Workout/metricText.stories.tsx": {
+    "#131313": 1,
+    "#6b7280": 4,
+    "#f3f4f6": 4
+  },
+  "src/components/custom/Workout/PlaceholderStrip.stories.tsx": {
+    "#2ed573": 1,
+    "#ffa502": 1,
+    "#ffd43b": 1
+  },
+  "src/components/custom/Workout/PrHistoryModal.stories.tsx": {
+    "#ff7900": 1,
+    "#ffffff": 1
+  },
+  "src/components/custom/Workout/PrHistoryModal.tsx": {
+    "rgba(": 2
+  },
+  "src/components/custom/Workout/ReadinessCheck.tsx": {
+    "#ffffff": 1,
+    "rgba(": 1
+  },
+  "src/components/custom/Workout/RestTimer.stories.tsx": {
+    "#0e0e0e": 1,
+    "#5a5a5a": 1
+  },
+  "src/components/custom/Workout/RestTimer.tsx": {
+    "rgba(": 2
+  },
+  "src/components/custom/Workout/RowInventory.stories.tsx": {
+    "#0c0d0f": 1,
+    "#0f1012": 1,
+    "#131418": 1,
+    "#24262d": 1,
+    "#31343d": 1,
+    "#5b616d": 1,
+    "#8d95a3": 3,
+    "#e8eaed": 3,
+    "#f3f4f6": 2,
+    "#ff6b6b": 1,
+    "#ff7900": 2
+  },
+  "src/components/custom/Workout/S3FullRail.stories.tsx": {
+    "#131313": 1,
+    "#1f1f1f": 1
+  },
+  "src/components/custom/Workout/S3SessionPace.stories.tsx": {
+    "#1c1c1c": 2,
+    "#22252c": 1,
+    "#2c2c2c": 1,
+    "rgba(": 4
+  },
+  "src/components/custom/Workout/S3SetTypes.stories.tsx": {
+    "#0b3149": 1,
+    "#112c5a": 1,
+    "#14407e": 1
+  },
+  "src/components/custom/Workout/S3WorkoutExpansion.stories.tsx": {
+    "#2c2c2c": 1,
+    "rgba(": 2
+  },
+  "src/components/custom/Workout/SegmentedBar.stories.tsx": {
+    "#01b5d1": 2,
+    "#131313": 1,
+    "#2ed573": 3,
+    "#d14343": 2,
+    "#f9b415": 3,
+    "#ff7900": 1,
+    "#ffffff": 1
+  },
+  "src/components/custom/Workout/SegmentedProgressBar.stories.tsx": {
+    "#242424": 1
+  },
+  "src/components/custom/Workout/SessionRail.stories.tsx": {
+    "#6b7280": 1
+  },
+  "src/components/custom/Workout/SetBar.stories.tsx": {
+    "#131313": 1
+  },
+  "src/components/custom/Workout/setHeadingKit.tsx": {
+    "#0a0a0a": 1,
+    "#2196f3": 1,
+    "#21c05d": 1,
+    "#2ed573": 1,
+    "#58f69e": 1,
+    "#6b7280": 1,
+    "#a4221c": 1,
+    "#d14343": 1,
+    "#da5f00": 1,
+    "#e05254": 1,
+    "#e08c00": 1,
+    "#f9b415": 1,
+    "#ff7900": 1,
+    "#ffa063": 1,
+    "#ffd352": 1,
+    "rgba(": 3
+  },
+  "src/components/custom/Workout/SetRow.tsx": {
+    "rgba(": 1
+  },
+  "src/components/custom/Workout/SetsRepsLoad.stories.tsx": {
+    "#131313": 1
+  },
+  "src/components/custom/Workout/SetStrip.stories.tsx": {
+    "#131313": 1,
+    "#6b7280": 1,
+    "#f3f4f6": 1
+  },
+  "src/components/custom/Workout/SetTableHeader.stories.tsx": {
+    "#131313": 1
+  },
+  "src/components/custom/Workout/Sparkline.stories.tsx": {
+    "#2ed573": 3,
+    "#ff4757": 3,
+    "#ffa502": 2,
+    "#ffd43b": 2
+  },
+  "src/components/custom/Workout/StatusDot.tsx": {
+    "#0a5c52": 1,
+    "#5c1a1a": 1,
+    "#6b4000": 1,
+    "rgba(": 13
+  },
+  "src/components/custom/Workout/StrengthTrendChart.stories.tsx": {
+    "#9ca3af": 1
+  },
+  "src/components/custom/Workout/StrengthTrendChart.tsx": {
+    "rgba(": 6
+  },
+  "src/components/custom/Workout/SupersetWrapper.stories.tsx": {
+    "#22c55e": 1,
+    "#f3f4f6": 6,
+    "#ff7900": 2
+  },
+  "src/components/custom/Workout/TempoDisplay.stories.tsx": {
+    "#9ca3af": 2,
+    "#e5e7eb": 1
+  },
+  "src/components/custom/Workout/TempoDisplay.tsx": {
+    "#2c2c2c": 2,
+    "#6b7280": 1,
+    "#9ca3af": 4
+  },
+  "src/components/custom/Workout/WeekRow.tsx": {
+    "rgba(": 2
+  },
+  "src/components/custom/Workout/WorkoutCard.tsx": {
+    "rgba(": 1
+  },
+  "src/components/custom/Workout/WorkoutPill.tsx": {
+    "rgba(": 10
+  },
+  "src/components/custom/Workout/ZoneTrack.stories.tsx": {
+    "#131313": 1,
+    "rgba(": 1
+  },
+  "src/components/shell/DashboardShell.stories.tsx": {
+    "#0e0e0e": 1,
+    "#8a8a8a": 1,
+    "#e5e5e5": 1
+  },
+  "src/components/shell/SessionRailSpecimen.stories.tsx": {
+    "#0f1012": 1,
+    "#101113": 1,
+    "#131418": 1,
+    "#141519": 1,
+    "#17181c": 1,
+    "#1e2025": 1,
+    "#2196f3": 1,
+    "#22252c": 2,
+    "#24262d": 1,
+    "#2a2d34": 1,
+    "#2ed573": 2,
+    "#31343d": 1,
+    "#3a3d44": 1,
+    "#5b616d": 1,
+    "#8d95a3": 1,
+    "#b8bec9": 1,
+    "#e8eaed": 1,
+    "#ff4757": 2,
+    "#ff7900": 2,
+    "#ffa502": 1,
+    "#ffb020": 1,
+    "#ffd43b": 1,
+    "rgba(": 11
+  },
+  "src/components/ui/alert/Alert.stories.tsx": {
+    "#0e0e0e": 2,
+    "#5a5a5a": 2
+  },
+  "src/components/ui/alert/Alert.tsx": {
+    "bg-black": 2,
+    "text-white": 3
+  },
+  "src/components/ui/button/Button.tsx": {
+    "#ffffff": 6,
+    "text-white": 6
+  },
+  "src/components/ui/card/Card.tsx": {
+    "#fafafa": 1
+  },
+  "src/components/ui/checkbox/Checkbox.tsx": {
+    "bg-white": 2
+  },
+  "src/components/ui/chip/Chip.tsx": {
+    "bg-black": 2,
+    "bg-neutral-100": 1,
+    "bg-neutral-600": 1,
+    "bg-neutral-800": 1,
+    "border-neutral-300": 1,
+    "border-neutral-600": 1,
+    "text-neutral-200": 2,
+    "text-neutral-700": 2,
+    "text-white": 7
+  },
+  "src/components/ui/data-row/DataRow.stories.tsx": {
+    "#22c55e": 1,
+    "#fff": 1
+  },
+  "src/components/ui/drawer/Drawer.tsx": {
+    "bg-black": 1
+  },
+  "src/components/ui/indicator/Indicator.stories.tsx": {
+    "#45b7d1": 1,
+    "#4ecdc4": 1,
+    "#ff6b6b": 1
+  },
+  "src/components/ui/list-item/ListItem.stories.tsx": {
+    "#22c55e": 1,
+    "#6366f1": 1,
+    "#9ca3af": 1,
+    "#fff": 1
+  },
+  "src/components/ui/modal/Modal.tsx": {
+    "bg-black": 2
+  },
+  "src/components/ui/popover/Popover.stories.tsx": {
+    "text-white": 1
+  },
+  "src/components/ui/radio/Radio.tsx": {
+    "bg-white": 1
+  },
+  "src/components/ui/section/Section.stories.tsx": {
+    "#6366f1": 3,
+    "#a0a0a0": 7
+  },
+  "src/components/ui/select/Select.stories.tsx": {
+    "blue": 2,
+    "green": 2,
+    "red": 2,
+    "yellow": 2
+  },
+  "src/components/ui/select/Select.tsx": {
+    "bg-black": 1,
+    "text-white": 1
+  },
+  "src/components/ui/spinner/Spinner.stories.tsx": {
+    "white": 2
+  },
+  "src/components/ui/spinner/Spinner.tsx": {
+    "#6b7280": 1,
+    "#ffffff": 1,
+    "white": 1
+  },
+  "src/components/ui/stack/Stack.stories.tsx": {
+    "text-neutral-400": 3,
+    "text-white": 4
+  },
+  "src/components/ui/surface/Surface.stories.tsx": {
+    "#111": 1,
+    "#22c55e": 1,
+    "#ef4444": 1,
+    "#f3f4f6": 1,
+    "#ff7900": 3,
+    "#fff": 8
+  },
+  "src/components/ui/switch/Switch.tsx": {
+    "bg-white": 1
+  },
+  "src/components/ui/tabs/Tabs.tsx": {
+    "text-white": 2
+  },
+  "src/components/ui/toolbar-button/ToolbarButton.stories.tsx": {
+    "#1f1f1f": 1,
+    "#3c3c3c": 2,
+    "#6e6e6e": 4,
+    "#d1d1d1": 1,
+    "#ff7900": 1,
+    "#ffffff": 1
+  },
+  "src/components/ui/toolbar-button/ToolbarButton.tsx": {
+    "[#d1d1d1]": 1,
+    "#d1d1d1": 1,
+    "#ffffff": 1,
+    "rgba(": 1,
+    "text-white": 1
+  },
+  "src/components/ui/tooltip/Tooltip.tsx": {
+    "bg-neutral-800": 1,
+    "text-white": 1
+  },
+  "src/lab/north-star/DualGhostLine.exploration.stories.tsx": {
+    "#000000": 1,
+    "rgba(": 5
+  },
+  "src/lab/north-star/LiveWallDashboard.stories.tsx": {
+    "#0e0e0e": 1
+  },
+  "src/stories/PresetShowcase.stories.tsx": {
+    "text-white": 1
+  }
+}

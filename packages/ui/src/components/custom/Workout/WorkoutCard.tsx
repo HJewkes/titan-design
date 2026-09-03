@@ -8,6 +8,8 @@ import {
 } from './MuscleGroupChip'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 
+const HAIRLINE_DEFAULT = getSemanticColors('dark')['hairline-default']
+
 const t = getSemanticColors('dark')
 
 export type WorkoutStatus = 'completed' | 'today' | 'upcoming'
@@ -48,7 +50,7 @@ export interface WorkoutCardProps extends ViewProps {
 const COLORS = {
   statusSuccess: t['status-success'],
   brandPrimary: t['brand-primary'],
-  borderDefault: '#1F1F1F',
+  borderDefault: HAIRLINE_DEFAULT,
   brandPrimarySubtle: 'rgba(255,121,0,0.06)',
 }
 

@@ -31,13 +31,15 @@ const meso: MesoStatusCardProps = {
 
 function historySets(weight: number, topRpe: number): SetRowProps[] {
   return [1, 2, 3, 4].map((setNumber) => ({
-    mode: 'history' as const,
+    state: 'done' as const,
     setNumber,
-    previous: { reps: 8, weight: weight - 5 },
     reps: 8,
     weight,
     rpe: topRpe - (4 - setNumber) * 0.5,
     unit: 'lbs' as const,
+    velocities: Array.from({ length: 8 }, (_, i) =>
+      Number((0.72 - (setNumber - 1) * 0.04 - i * 0.03).toFixed(2))
+    ),
   }))
 }
 

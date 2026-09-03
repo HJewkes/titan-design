@@ -38,10 +38,7 @@ type Story = StoryObj<typeof WorkoutCard>
 const sampleExercises: ExerciseCardProps[] = [
   {
     name: 'Bench Press',
-    state: 'collapsed',
-    onToggle: () => {},
     summary: { sets: 3, reps: 8, weight: 175, unit: 'lbs' },
-    e1rm: { value: 225, unit: 'lbs' },
     setVelocities: [
       [1.1, 0.95, 0.82],
       [0.95, 0.88, 0.78],
@@ -50,8 +47,7 @@ const sampleExercises: ExerciseCardProps[] = [
   },
   {
     name: 'Incline DB Press',
-    state: 'upcoming',
-    onToggle: () => {},
+    upcoming: true,
     prescription: '3×10-12 @ RPE 8',
     previousBest: '70 lbs × 11',
   },

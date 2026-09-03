@@ -1,7 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, Text, type ViewProps } from 'react-native'
-import { primitiveColors } from '../../../theme/tokens/primitives'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { Surface, onSurfaceColors, useSurfaceMode } from '../../ui/surface'
 import { Typography } from '../Typography'
 import { TimerReadout } from '../TimerReadout'
 import { SegmentedProgressBar } from './SegmentedProgressBar'
@@ -9,11 +8,10 @@ import { MetricTiles, type MetricTileData } from './MetricTiles'
 import { ScheduleTiles } from './ScheduleTiles'
 import { paceTone, paceToneColor } from './paceTone'
 
-const t = getSemanticColors('dark')
-
-// The raised charcoal heading plane (charcoal 400) — reads as one flat surface with
-// the nav; depth lives on the sunk list below it, not here.
-const RAISED = primitiveColors.charcoal[400] // #1F1F1F
+// The header shares the SideNav's `background-base` (warm-tapered ramp shell, #1C1916) so the
+// nav and the rail header read as ONE continuous dark plane on the left — the sunk exercise list
+// sits raised off it. A `<Surface level="background">` owns that plane so the header no
+// longer hand-sets it, and its title/label text resolve on-surface colours from context.
 
 // The chunked pace bar matches the SetStrip language but sits tighter than the default
 // SetStrip gap (5) — the locked design uses a 3px gap and a 9px track.
@@ -53,7 +51,7 @@ export interface SessionHeaderProps extends ViewProps {
  * done, coloured green/amber against the elapsed-vs-budget pace, with a live marker),
  * a mono `n/total sets` label and a ⏱ elapsed readout. Upcoming (`next` set), the tiles
  * become Date/Time/Until, the bar is the empty plan shape, and the readout shows the
- * planned duration. Rendered on the raised charcoal plane; presentational. Composes
+ * planned duration. Rendered on the raised grey plane; presentational. Composes
  * {@link MetricTiles} / {@link ScheduleTiles} + {@link SegmentedProgressBar} +
  * {@link TimerReadout}.
  */
@@ -72,21 +70,22 @@ export function SessionHeader({
 }: SessionHeaderProps) {
   const upcoming = next != null
   const totalSets = plan.reduce((sum, e) => sum + e.sets, 0)
+  const onSurface = onSurfaceColors(useSurfaceMode())
 
   const hasPace = !upcoming && budgetMs != null && elapsedMs != null
   const target = hasPace ? (elapsedMs as number) / (budgetMs as number) : undefined
 
   const setsLabel = upcoming ? `${totalSets} sets` : `${Math.floor(setsDone)}/${totalSets} sets`
   const setsLabelColor = upcoming
-    ? t['text-secondary']
+    ? onSurface.secondary
     : paceToneColor(paceTone(totalSets > 0 ? setsDone / totalSets : 0, target))
 
   return (
-    <View
+    <Surface
+      level="background"
       className={className}
       style={[
         {
-          backgroundColor: RAISED,
           paddingTop: 11,
           paddingRight: 12,
           paddingBottom: 12,
@@ -105,7 +104,7 @@ export function SessionHeader({
           lineHeight: 18,
           fontWeight: '700',
           fontFamily: '"Space Grotesk", sans-serif',
-          color: t['text-primary'],
+          color: onSurface.primary,
           marginBottom: 10,
         }}
         testID="session-rail-title"
@@ -147,6 +146,6 @@ export function SessionHeader({
           />
         </View>
       </View>
-    </View>
+    </Surface>
   )
 }

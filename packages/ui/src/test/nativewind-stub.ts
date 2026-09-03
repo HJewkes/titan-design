@@ -11,3 +11,16 @@
 export function vars(values: Record<string, string>): Record<string, string> {
   return values
 }
+
+/**
+ * Stand-in for nativewind's `useColorScheme()`. Under the web test env there is
+ * no nativewind theme applied, so it reports `undefined` (the "no explicit
+ * scheme" signal) — matching ThemeProvider's dark fallback for `mode="system"`.
+ */
+export function useColorScheme(): {
+  colorScheme: 'light' | 'dark' | undefined
+  setColorScheme: (scheme: 'light' | 'dark' | 'system') => void
+  toggleColorScheme: () => void
+} {
+  return { colorScheme: undefined, setColorScheme: () => {}, toggleColorScheme: () => {} }
+}

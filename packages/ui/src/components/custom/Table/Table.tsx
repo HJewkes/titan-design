@@ -590,7 +590,7 @@ export function TableSelectAllCell({ className }: TableSelectAllCellProps) {
             ? 'bg-brand-primary border-brand-primary'
             : someSelected
             ? 'bg-brand-primary-subtle border-brand-primary'
-            : 'border-border-strong bg-transparent'
+            : 'border-hairline-strong bg-transparent'
         )}
       >
         {(allSelected || someSelected) && (
@@ -629,7 +629,7 @@ export function TableSelectCell({ rowId, className }: TableSelectCellProps) {
           'w-5 h-5 rounded border-2 items-center justify-center',
           isSelected
             ? 'bg-brand-primary border-brand-primary'
-            : 'border-border-strong bg-transparent web:hover:border-brand-primary'
+            : 'border-hairline-strong bg-transparent web:hover:border-brand-primary'
         )}
       >
         {isSelected && (

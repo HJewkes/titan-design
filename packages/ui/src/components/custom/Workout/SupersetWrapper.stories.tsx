@@ -2,6 +2,9 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { SupersetWrapper } from './SupersetWrapper'
 import { ExerciseCard } from './ExerciseCard'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+
+const t = getSemanticColors('dark')
 
 const meta: Meta<typeof SupersetWrapper> = {
   title: 'Workout/SupersetWrapper',
@@ -9,7 +12,7 @@ const meta: Meta<typeof SupersetWrapper> = {
   tags: ['autodocs'],
   decorators: [
     (Story) => (
-      <View style={{ maxWidth: 400, padding: 16, backgroundColor: '#121212' }}>
+      <View style={{ maxWidth: 400, padding: 16, backgroundColor: t['background-base'] }}>
         <Story />
       </View>
     ),
@@ -26,24 +29,20 @@ export const Default: Story = {
         <View
           style={{
             padding: 12,
-            backgroundColor: '#1C1C1C',
+            backgroundColor: t['surface-raised'],
             borderRadius: 8,
           }}
         >
-          <Text style={{ color: '#F3F4F6', fontFamily: 'Inter, sans-serif' }}>
-            Exercise A
-          </Text>
+          <Text style={{ color: '#F3F4F6', fontFamily: 'Inter, sans-serif' }}>Exercise A</Text>
         </View>
         <View
           style={{
             padding: 12,
-            backgroundColor: '#1C1C1C',
+            backgroundColor: t['surface-raised'],
             borderRadius: 8,
           }}
         >
-          <Text style={{ color: '#F3F4F6', fontFamily: 'Inter, sans-serif' }}>
-            Exercise B
-          </Text>
+          <Text style={{ color: '#F3F4F6', fontFamily: 'Inter, sans-serif' }}>Exercise B</Text>
         </View>
       </>
     ),
@@ -58,24 +57,20 @@ export const CustomLabel: Story = {
         <View
           style={{
             padding: 12,
-            backgroundColor: '#1C1C1C',
+            backgroundColor: t['surface-raised'],
             borderRadius: 8,
           }}
         >
-          <Text style={{ color: '#F3F4F6', fontFamily: 'Inter, sans-serif' }}>
-            Exercise A1
-          </Text>
+          <Text style={{ color: '#F3F4F6', fontFamily: 'Inter, sans-serif' }}>Exercise A1</Text>
         </View>
         <View
           style={{
             padding: 12,
-            backgroundColor: '#1C1C1C',
+            backgroundColor: t['surface-raised'],
             borderRadius: 8,
           }}
         >
-          <Text style={{ color: '#F3F4F6', fontFamily: 'Inter, sans-serif' }}>
-            Exercise A2
-          </Text>
+          <Text style={{ color: '#F3F4F6', fontFamily: 'Inter, sans-serif' }}>Exercise A2</Text>
         </View>
       </>
     ),
@@ -90,24 +85,20 @@ export const CustomColor: Story = {
         <View
           style={{
             padding: 12,
-            backgroundColor: '#1C1C1C',
+            backgroundColor: t['surface-raised'],
             borderRadius: 8,
           }}
         >
-          <Text style={{ color: '#F3F4F6', fontFamily: 'Inter, sans-serif' }}>
-            Exercise A
-          </Text>
+          <Text style={{ color: '#F3F4F6', fontFamily: 'Inter, sans-serif' }}>Exercise A</Text>
         </View>
         <View
           style={{
             padding: 12,
-            backgroundColor: '#1C1C1C',
+            backgroundColor: t['surface-raised'],
             borderRadius: 8,
           }}
         >
-          <Text style={{ color: '#F3F4F6', fontFamily: 'Inter, sans-serif' }}>
-            Exercise B
-          </Text>
+          <Text style={{ color: '#F3F4F6', fontFamily: 'Inter, sans-serif' }}>Exercise B</Text>
         </View>
       </>
     ),

@@ -5,7 +5,7 @@ import {
   countCompletedSets,
   deriveWorkoutProgress,
   findActiveExercise,
-  statusToCardState,
+  isUpcomingExercise,
   groupExercises,
   type ActiveWorkoutExercise,
   type ActiveWorkoutPageProps,
@@ -29,8 +29,16 @@ const exercises: ActiveWorkoutExercise[] = [
     totalPlannedSets: 4,
     setVelocities: [[0.72], [0.68]],
     sets: [
-      { mode: 'completed', setNumber: 1, reps: 8, weight: 195, rpe: 8, unit: 'lbs' },
-      { mode: 'active', setNumber: 3, reps: null, weight: null, unit: 'lbs', isNextSet: true },
+      {
+        state: 'done',
+        setNumber: 1,
+        unit: 'lbs',
+        reps: 8,
+        weight: 195,
+        rpe: 8,
+        velocities: [0.72],
+      },
+      { state: 'todo', setNumber: 3, unit: 'lbs', target: { reps: 8, weight: 195 } },
     ],
   },
   {
@@ -107,16 +115,11 @@ describe('findActiveExercise', () => {
   })
 })
 
-describe('statusToCardState', () => {
-  it('keeps upcoming exercises upcoming regardless of focus', () => {
-    expect(statusToCardState('upcoming', true)).toBe('upcoming')
-    expect(statusToCardState('upcoming', false)).toBe('upcoming')
-  })
-
-  it('expands only the focused active/completed exercise', () => {
-    expect(statusToCardState('active', true)).toBe('expanded')
-    expect(statusToCardState('active', false)).toBe('collapsed')
-    expect(statusToCardState('completed', true)).toBe('expanded')
+describe('isUpcomingExercise', () => {
+  it('is true only for upcoming exercises', () => {
+    expect(isUpcomingExercise('upcoming')).toBe(true)
+    expect(isUpcomingExercise('active')).toBe(false)
+    expect(isUpcomingExercise('completed')).toBe(false)
   })
 })
 

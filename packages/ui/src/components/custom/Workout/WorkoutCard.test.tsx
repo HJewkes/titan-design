@@ -19,14 +19,11 @@ const baseProps: WorkoutCardProps = {
 const exercises: ExerciseCardProps[] = [
   {
     name: 'Bench Press',
-    state: 'collapsed',
-    onToggle: () => {},
     summary: { sets: 3, reps: 8, weight: 175, unit: 'lbs' },
   },
   {
     name: 'Row',
-    state: 'upcoming',
-    onToggle: () => {},
+    upcoming: true,
     prescription: '3×10 @ RPE 8',
   },
 ]
@@ -35,40 +32,28 @@ describe('WorkoutCard', () => {
   describe('rendering', () => {
     it('renders name and date', () => {
       render(<WorkoutCard {...baseProps} />)
-      expect(screen.getByTestId('workout-card-name')).toHaveTextContent(
-        'Upper A',
-      )
-      expect(screen.getByTestId('workout-card-date')).toHaveTextContent(
-        'Mon, Jun 23',
-      )
+      expect(screen.getByTestId('workout-card-name')).toHaveTextContent('Upper A')
+      expect(screen.getByTestId('workout-card-date')).toHaveTextContent('Mon, Jun 23')
     })
 
     it('renders the set count in the stats row', () => {
       render(<WorkoutCard {...baseProps} />)
-      expect(screen.getByTestId('workout-card-stats')).toHaveTextContent(
-        '18 sets',
-      )
+      expect(screen.getByTestId('workout-card-stats')).toHaveTextContent('18 sets')
     })
 
     it('includes duration in stats when provided', () => {
       render(<WorkoutCard {...baseProps} duration="45 min" />)
-      expect(screen.getByTestId('workout-card-stats')).toHaveTextContent(
-        '45 min',
-      )
+      expect(screen.getByTestId('workout-card-stats')).toHaveTextContent('45 min')
     })
 
     it('includes total volume with unit when provided', () => {
       render(<WorkoutCard {...baseProps} totalVolume={12450} unit="lbs" />)
-      expect(screen.getByTestId('workout-card-stats')).toHaveTextContent(
-        '12450 lbs',
-      )
+      expect(screen.getByTestId('workout-card-stats')).toHaveTextContent('12450 lbs')
     })
 
     it('omits volume from stats when not provided', () => {
       render(<WorkoutCard {...baseProps} />)
-      expect(screen.getByTestId('workout-card-stats')).not.toHaveTextContent(
-        'lbs',
-      )
+      expect(screen.getByTestId('workout-card-stats')).not.toHaveTextContent('lbs')
     })
   })
 
@@ -87,38 +72,22 @@ describe('WorkoutCard', () => {
 
     it('does not render the muscle group row when empty', () => {
       render(<WorkoutCard {...baseProps} muscleGroups={[]} />)
-      expect(
-        screen.queryByTestId('workout-card-muscle-groups'),
-      ).not.toBeInTheDocument()
+      expect(screen.queryByTestId('workout-card-muscle-groups')).not.toBeInTheDocument()
     })
   })
 
   describe('expansion', () => {
     it('renders exercises when expanded', () => {
-      render(
-        <WorkoutCard
-          {...baseProps}
-          expanded
-          onToggle={() => {}}
-          exercises={exercises}
-        />,
-      )
+      render(<WorkoutCard {...baseProps} expanded onToggle={() => {}} exercises={exercises} />)
       expect(screen.getByTestId('workout-card-exercises')).toBeInTheDocument()
       expect(screen.getAllByTestId('exercise-card')).toHaveLength(2)
     })
 
     it('does not render exercises when collapsed', () => {
       render(
-        <WorkoutCard
-          {...baseProps}
-          expanded={false}
-          onToggle={() => {}}
-          exercises={exercises}
-        />,
+        <WorkoutCard {...baseProps} expanded={false} onToggle={() => {}} exercises={exercises} />
       )
-      expect(
-        screen.queryByTestId('workout-card-exercises'),
-      ).not.toBeInTheDocument()
+      expect(screen.queryByTestId('workout-card-exercises')).not.toBeInTheDocument()
     })
 
     it('calls onToggle when pressed', () => {
@@ -145,9 +114,7 @@ describe('WorkoutCard', () => {
 
   describe('accessibility', () => {
     it('exposes button role and expanded state when expandable', () => {
-      render(
-        <WorkoutCard {...baseProps} expanded onToggle={() => {}} />,
-      )
+      render(<WorkoutCard {...baseProps} expanded onToggle={() => {}} />)
       const card = screen.getByRole('button', {
         name: 'Upper A workout, Mon, Jun 23, today',
       })
@@ -163,7 +130,7 @@ describe('WorkoutCard', () => {
           onToggle={() => {}}
           expanded
           exercises={exercises}
-        />,
+        />
       )
       const results = await axe(container)
       expect(results).toHaveNoViolations()

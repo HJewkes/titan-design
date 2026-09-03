@@ -55,7 +55,7 @@ export function SideNav({
     <View
       accessibilityRole="tablist"
       className={cn(
-        'w-[60px] items-center gap-[6px] border-r border-border bg-background-base py-3',
+        'w-[60px] items-center gap-[6px] border-r border-hairline bg-background-base py-3',
         className
       )}
     >

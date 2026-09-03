@@ -8,6 +8,8 @@ export interface ExerciseCardHeadingProps extends ExerciseHeadingProps {
   setStates: SetStripSet[]
   /** Strip height in px. Default 8. */
   stripHeight?: number
+  /** Root testID. Default "exercise-card"; override when nested inside another card. */
+  testID?: string
 }
 
 /**
@@ -21,12 +23,13 @@ export function ExerciseCardHeading({
   setStates,
   stripHeight = 8,
   dimmed,
+  testID = 'exercise-card',
   ...heading
 }: ExerciseCardHeadingProps) {
   return (
     <View
       style={{ paddingVertical: 9, paddingHorizontal: 12, opacity: dimmed ? 0.55 : 1 }}
-      testID="exercise-card"
+      testID={testID}
     >
       <ExerciseHeading {...heading} />
 

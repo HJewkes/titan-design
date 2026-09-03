@@ -43,6 +43,13 @@ const stories: StorybookConfig['stories'] = publishOnly
 
 const config: StorybookConfig = {
   stories,
+  // Lab/Design Archive — self-contained design-iteration HTML (see
+  // src/lab/archive/*). Served verbatim under `/lab-archive/…` and iframed by the
+  // archive stories; directory structure is preserved so each captured index's
+  // relative sibling links resolve. Gated behind the same `publishOnly` flag that
+  // drops the `Lab/*` stories, so neither the stories nor the raw HTML they iframe
+  // ever ship in a published (`STORYBOOK_PUBLIC=1`) build.
+  staticDirs: publishOnly ? [] : [{ from: './lab-archive', to: '/lab-archive' }],
   addons: ['@storybook/addon-a11y', '@storybook/addon-docs', '@storybook/addon-themes'],
   framework: {
     name: '@storybook/react-native-web-vite',

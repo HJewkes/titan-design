@@ -65,8 +65,8 @@ export interface ExerciseDetailEntry {
   title: string
   /** Collapsed summary (sets × reps @ weight). */
   summary?: ExerciseCardProps['summary']
-  /** Estimated one-rep max badge. */
-  e1rm?: ExerciseCardProps['e1rm']
+  /** Estimated one-rep max, feeding the page's best-e1RM stat. */
+  e1rm?: { value: number; unit: 'lbs' | 'kg' }
   /** Flags a personal-record entry. */
   isPR?: boolean
   /** Prescribed tempo, revealed when expanded. */
@@ -162,10 +162,9 @@ export function toExerciseCardProps(
 ): ExerciseCardProps {
   return {
     name: entry.title,
-    state: expanded ? 'expanded' : 'collapsed',
-    onToggle,
+    expanded,
+    onExpandedChange: onToggle,
     summary: entry.summary,
-    e1rm: entry.e1rm,
     isPR: entry.isPR,
     tempo: entry.tempo,
     sets: expanded ? entry.sets : undefined,
@@ -194,7 +193,7 @@ function TabBar({ active, onSelect }: TabBarProps) {
       className="flex-row"
       style={{
         borderBottomWidth: 1,
-        borderBottomColor: resolveColor('border-default'),
+        borderBottomColor: resolveColor('hairline-default'),
       }}
       accessibilityRole={'tablist' as ViewProps['accessibilityRole']}
       testID="exercise-detail-page-tabs"
@@ -248,7 +247,7 @@ function StatStrip({ stats, unit }: { stats: ExerciseDetailStats; unit: 'lbs' | 
         return (
           <View
             key={key}
-            className="bg-surface-elevated border-border"
+            className="bg-surface-elevated border-hairline"
             style={{
               flex: 1,
               padding: 12,
@@ -298,7 +297,7 @@ function SectionCard({
 }) {
   return (
     <View
-      className="bg-surface-elevated border-border"
+      className="bg-surface-elevated border-hairline"
       style={{
         borderWidth: 1,
         borderRadius: 12,
@@ -387,7 +386,13 @@ function VbtBreakdown({
               {set.label}
             </Text>
             <View className="flex-1" style={{ height: 8, justifyContent: 'center' }}>
-              <VelocityStrip velocities={set.velocities} zones={zones} variant="mini" />
+              <VelocityStrip
+                velocities={set.velocities}
+                zones={zones}
+                variant="compact"
+                height={8}
+                hideBaseline
+              />
             </View>
             <Text
               className="text-text-tertiary"
@@ -416,7 +421,7 @@ function VbtSummaryRow({ summary }: { summary: VbtSummary }) {
       {cells.map((cell) => (
         <View
           key={cell.label}
-          className="bg-surface-elevated border-border"
+          className="bg-surface-elevated border-hairline"
           style={{
             flex: 1,
             padding: 12,
