@@ -17,6 +17,12 @@ const CELL_PADDING: Record<TableDensity, string> = {
   dense: 'px-2 py-1',
 }
 
+// minWidth 0 lets a flexible cell shrink below its nowrap text, so long content truncates instead of pushing the row past the table.
+const FLEX_CELL = { flex: 1, minWidth: 0 } as const
+
+// A horizontal ScrollView sizes its content to max-content; a definite width makes the table fill the viewport and flexible cells shrink.
+const SCROLL_CONTENT = { width: '100%' } as const
+
 interface TableContextType {
   sortColumn?: string
   sortDirection: SortDirection
@@ -119,7 +125,11 @@ export function Table({
       }}
     >
       <View className={cn('w-full', className)} {...props}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={SCROLL_CONTENT}
+        >
           <View role="table" className="w-full min-w-full">
             {isLoading ? (
               <TableLoadingSkeleton rowCount={loadingRowCount} />
@@ -277,7 +287,7 @@ export function TableHeaderCell({
       <View
         role="columnheader"
         aria-sort={ariaSort}
-        style={width ? { width } : { flex: 1 }}
+        style={width ? { width } : FLEX_CELL}
       >
         <Pressable
           accessibilityRole="button"
@@ -301,7 +311,7 @@ export function TableHeaderCell({
   return (
     <View
       role="columnheader"
-      style={width ? { width } : { flex: 1 }}
+      style={width ? { width } : FLEX_CELL}
       className={cn('flex-row items-center', CELL_PADDING[density], alignStyles[align], className)}
     >
       {content}
@@ -339,7 +349,7 @@ export function TableCell({
   return (
     <View
       role="cell"
-      style={width ? { width } : { flex: 1 }}
+      style={width ? { width } : FLEX_CELL}
       className={cn('justify-center', CELL_PADDING[density], alignStyles[align], className)}
       {...props}
     >

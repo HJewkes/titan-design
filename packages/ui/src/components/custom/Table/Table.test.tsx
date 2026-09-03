@@ -322,6 +322,35 @@ describe('Table', () => {
     })
   })
 
+  describe('flexible column layout', () => {
+    // Regression: a long nowrap title used to size the horizontal scroller to
+    // max-content, so the flexible column never shrank and the last fixed
+    // column was clipped inside the table's card (AW-22 T2 Gate 2 finding).
+    it('fills the scroll viewport instead of sizing to its longest cell', () => {
+      renderBasicTable()
+      const scrollContent = screen.getByRole('table').parentElement
+      expect(scrollContent).toHaveStyle({ width: '100%' })
+    })
+
+    it('lets a cell without a width shrink below its content', () => {
+      render(
+        <Table>
+          <TableBody>
+            <TableRow>
+              <TableCell width={80}>fixed</TableCell>
+              <TableCell>flexible</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      )
+      expect(screen.getByText('fixed').closest('[role="cell"]')).toHaveStyle({ width: '80px' })
+      expect(screen.getByText('flexible').closest('[role="cell"]')).toHaveStyle({
+        flexGrow: '1',
+        minWidth: '0px',
+      })
+    })
+  })
+
   describe('TablePagination', () => {
     it('renders pagination info', () => {
       render(
