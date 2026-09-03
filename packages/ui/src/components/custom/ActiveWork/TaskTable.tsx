@@ -1,6 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { useMemo } from 'react'
-import { View } from 'react-native'
+import { useMemo, useState } from 'react'
+import { View, type LayoutChangeEvent } from 'react-native'
 import { cn } from '../../../utils/cn'
 import {
   Table,
@@ -48,11 +48,32 @@ interface TaskColumn {
   sortable: boolean
 }
 
-const COLUMNS: TaskColumn[] = [
+/** How the severity column renders: `auto` collapses to the dot below {@link COMPACT_SEVERITY_BELOW}. */
+export type SeverityDisplay = 'auto' | 'full' | 'dot'
+
+/**
+ * Table width under which severity collapses to its dot. Below this the fixed
+ * columns leave the flexible title under ~220px, which is where titles stop
+ * being scannable; the dot gives 68px back.
+ */
+export const COMPACT_SEVERITY_BELOW = 840
+
+const SEVERITY_COLUMN: Record<'full' | 'dot', TaskColumn> = {
+  full: { key: 'severity', label: 'Severity', width: TASK_COLUMN_WIDTHS.severity, sortable: true },
+  dot: {
+    key: 'severity',
+    label: 'Sev',
+    tooltip: 'Severity',
+    width: TASK_COLUMN_WIDTHS.severityCompact,
+    sortable: true,
+  },
+}
+
+const taskColumns = (dotOnly: boolean): TaskColumn[] => [
   { key: 'slug', label: 'Initiative', width: TASK_COLUMN_WIDTHS.slug, sortable: true },
   { key: 'id', label: 'ID', width: TASK_COLUMN_WIDTHS.id, sortable: true },
   { key: 'title', label: 'Title', sortable: true },
-  { key: 'severity', label: 'Severity', width: TASK_COLUMN_WIDTHS.severity, sortable: true },
+  SEVERITY_COLUMN[dotOnly ? 'dot' : 'full'],
   {
     key: 'priority',
     label: 'Pri',
@@ -119,7 +140,17 @@ export interface TaskTableProps {
   defaultSortKey?: TaskSortKey
   /** Hides the severity legend above the grid. */
   hideLegend?: boolean
+  /** Severity column mode. Defaults to `auto`, driven by the table's measured width. */
+  severityDisplay?: SeverityDisplay
   className?: string
+}
+
+function useSeverityDotOnly(display: SeverityDisplay) {
+  const [width, setWidth] = useState<number | null>(null)
+  const onLayout = (e: LayoutChangeEvent) => setWidth(e.nativeEvent.layout.width)
+  const dotOnly =
+    display === 'dot' || (display === 'auto' && width !== null && width < COMPACT_SEVERITY_BELOW)
+  return { dotOnly, onLayout }
 }
 
 /**
@@ -135,8 +166,11 @@ export function TaskTable({
   now,
   defaultSortKey = 'priority',
   hideLegend = false,
+  severityDisplay = 'auto',
   className,
 }: TaskTableProps) {
+  const { dotOnly, onLayout } = useSeverityDotOnly(severityDisplay)
+  const columns = useMemo(() => taskColumns(dotOnly), [dotOnly])
   const { sortedData, sortColumn, sortDirection, handleSort } = useTable<TaskListItem>({
     data: tasks,
     // One page: this grid is meant to be scanned and scrolled, not paged.
@@ -147,7 +181,7 @@ export function TaskTable({
   })
 
   return (
-    <View className={cn('gap-3', className)}>
+    <View className={cn('gap-3', className)} onLayout={onLayout}>
       <View className="flex-row items-center justify-between">
         <Eyebrow>{`${tasks.length} open · all initiatives`}</Eyebrow>
         {hideLegend ? null : <SeverityLegend tasks={tasks} />}
@@ -162,7 +196,7 @@ export function TaskTable({
         >
           <TableHeader>
             <TableRow isHoverable={false}>
-              {COLUMNS.map((col) => (
+              {columns.map((col) => (
                 <TableHeaderCell
                   key={col.key}
                   sortKey={col.sortable ? col.key : undefined}
@@ -181,6 +215,7 @@ export function TaskTable({
                 key={`${task.slug}:${task.id}`}
                 task={task}
                 ageLabel={formatTaskAge(task.updated, now)}
+                severityDotOnly={dotOnly}
               />
             ))}
           </TableBody>

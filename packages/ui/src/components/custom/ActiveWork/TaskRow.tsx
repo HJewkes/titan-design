@@ -5,7 +5,7 @@ import { Tooltip } from '../../ui/tooltip'
 import { formatDateTime } from '../DateTime'
 import { TableCell, TableRow } from '../Table'
 import { Typography } from '../Typography'
-import { SeverityLabel, type TaskSeverity } from './SeverityLabel'
+import { SEVERITY_META, SeverityLabel, type TaskSeverity } from './SeverityLabel'
 
 /** One open task, as the task list renders it. */
 export interface TaskListItem {
@@ -32,6 +32,8 @@ export const TASK_COLUMN_WIDTHS = {
   slug: 132,
   id: 66,
   severity: 112,
+  /** The severity column once it has collapsed to its dot. */
+  severityCompact: 44,
   priority: 42,
   estimate: 42,
   tags: 150,
@@ -58,6 +60,8 @@ export interface TaskRowProps {
   task: TaskListItem
   /** Pre-formatted age label (e.g. "3d ago"). Passed in so rows stay pure and deterministic. */
   ageLabel: string
+  /** Collapse severity to its dot (word on hover); the table decides this from its width. */
+  severityDotOnly?: boolean
 }
 
 /**
@@ -68,9 +72,12 @@ export interface TaskRowProps {
  * {@link SeverityLabel} for the severity dot, and {@link Pill} for tags. Used by
  * {@link TaskTable}.
  */
-export function TaskRow({ task, ageLabel }: TaskRowProps) {
+export function TaskRow({ task, ageLabel, severityDotOnly = false }: TaskRowProps) {
   const tags = task.tags ?? []
   const hiddenTags = tags.slice(MAX_VISIBLE_TAGS)
+  const severityWidth = severityDotOnly
+    ? TASK_COLUMN_WIDTHS.severityCompact
+    : TASK_COLUMN_WIDTHS.severity
 
   return (
     <TableRow testID="task-row">
@@ -92,8 +99,14 @@ export function TaskRow({ task, ageLabel }: TaskRowProps) {
         </Typography>
       </TableCell>
 
-      <TableCell width={TASK_COLUMN_WIDTHS.severity}>
-        <SeverityLabel severity={task.severity} />
+      <TableCell width={severityWidth}>
+        {severityDotOnly && task.severity ? (
+          <Tooltip usePortal label={SEVERITY_META[task.severity].label}>
+            <SeverityLabel severity={task.severity} dotOnly />
+          </Tooltip>
+        ) : (
+          <SeverityLabel severity={task.severity} />
+        )}
       </TableCell>
 
       <TableCell width={TASK_COLUMN_WIDTHS.priority} align="right">

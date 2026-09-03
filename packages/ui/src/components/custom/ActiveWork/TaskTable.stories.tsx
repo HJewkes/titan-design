@@ -23,6 +23,7 @@ const meta: Meta<typeof TaskTable> = {
       options: ['priority', 'severity', 'updated', 'slug', 'id', 'title', 'estimate'],
     },
     hideLegend: { control: 'boolean' },
+    severityDisplay: { control: 'inline-radio', options: ['auto', 'full', 'dot'] },
     now: { table: { disable: true } },
     tasks: { table: { disable: true } },
   },
@@ -48,6 +49,21 @@ type Story = StoryObj<typeof TaskTable>
 
 /** Default view: sorted by priority, lowest number first. */
 export const Default: Story = {}
+
+/**
+ * Under 840px the severity column collapses to its dot (word on hover) so the
+ * title keeps a scannable width. Driven by the table's own measured width, so
+ * resize the canvas to watch it switch.
+ */
+export const Narrow: Story = {
+  decorators: [
+    (Story) => (
+      <View className="w-full max-w-[760px]">
+        <Story />
+      </View>
+    ),
+  ],
+}
 
 /**
  * Sorted by severity. The comparator ranks critical→low by meaning, then breaks

@@ -20,6 +20,18 @@ export const primitiveColors = {
 } as const
 
 /**
+ * The vivid alert red: the one chromatic anchor outside the OKLCH ramps.
+ *
+ * It survived the TD-07.14 fold of the old `redVivid` scale only as the
+ * `-rgb`, `-subtle` and glow encodings of `status-error-vivid`, while the token
+ * itself was pinned to `red[600]` and collapsed onto `status-error`. Owning it
+ * here means the semantic layer references a primitive instead of carrying a
+ * literal. The red ramp has no step this saturated, and adding one means
+ * regenerating the ramp, so it stays a pin.
+ */
+export const alertRedVivid = '#FF4757' as const
+
+/**
  * Unified warm-neutral grey ramp (TD-07.14)
  *
  * The ONE achromatic scale. Regenerate with `scripts/generate-grey-ramp.mjs` —

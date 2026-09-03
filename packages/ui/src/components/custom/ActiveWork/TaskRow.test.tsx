@@ -17,17 +17,32 @@ const task: TaskListItem = {
 }
 
 /** TaskRow composes TableRow/TableCell, so it needs a Table for row semantics. */
-function renderRow(overrides: Partial<TaskListItem> = {}, ageLabel = '1d ago') {
+function renderRow(
+  overrides: Partial<TaskListItem> = {},
+  ageLabel = '1d ago',
+  severityDotOnly = false
+) {
   return render(
     <Table density="dense">
       <TableBody>
-        <TaskRow task={{ ...task, ...overrides }} ageLabel={ageLabel} />
+        <TaskRow
+          task={{ ...task, ...overrides }}
+          ageLabel={ageLabel}
+          severityDotOnly={severityDotOnly}
+        />
       </TableBody>
     </Table>
   )
 }
 
 describe('TaskRow', () => {
+  it('shows only the severity dot when collapsed, with the word on hover', () => {
+    renderRow({}, '1d ago', true)
+    expect(screen.queryByText('High')).not.toBeInTheDocument()
+    fireEvent.mouseEnter(screen.getByTestId('severity-dot-high').parentElement!.parentElement!)
+    expect(screen.getByText('High')).toBeInTheDocument()
+  })
+
   it('reveals the elided tags when the overflow count is hovered', () => {
     renderRow()
     expect(screen.queryByText('specimen')).not.toBeInTheDocument()

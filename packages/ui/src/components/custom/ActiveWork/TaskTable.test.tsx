@@ -19,6 +19,21 @@ describe('TaskTable', () => {
     expect(screen.getByText('npm publish the packaged distribution')).toBeInTheDocument()
   })
 
+  it('collapses severity to its dot when told to, keeping the full name for hover and a11y', () => {
+    render(
+      <TaskTable tasks={TASK_LIST_FIXTURE} now={TASK_LIST_NOW} severityDisplay="dot" hideLegend />
+    )
+    expect(screen.getByText('Sev')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Sort by Severity' })).toBeInTheDocument()
+    expect(screen.queryByText('Critical')).not.toBeInTheDocument()
+    expect(screen.getByTestId('severity-dot-critical')).toBeInTheDocument()
+  })
+
+  it('keeps the severity word until it has measured a narrow width', () => {
+    render(<TaskTable tasks={TASK_LIST_FIXTURE} now={TASK_LIST_NOW} hideLegend />)
+    expect(screen.getByText('Critical')).toBeInTheDocument()
+  })
+
   it('sorts by priority ascending by default', () => {
     render(<TaskTable tasks={TASK_LIST_FIXTURE} now={TASK_LIST_NOW} />)
     // RL-14 is priority 3, the lowest number in the fixture.
