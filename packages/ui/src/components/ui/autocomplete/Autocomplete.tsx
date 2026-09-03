@@ -238,7 +238,7 @@ export function Autocomplete<T extends string = string>({
           <View
             className={cn(
               'absolute z-50 top-full left-0 right-0 mt-1',
-              'bg-surface-elevated rounded-md shadow-lg border border-border',
+              'bg-surface-elevated rounded-md shadow-lg border border-hairline',
               'max-h-60 overflow-hidden'
             )}
           >

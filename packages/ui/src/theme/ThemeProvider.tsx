@@ -2,7 +2,7 @@
 //
 // Registers titan's semantic color tokens as runtime CSS variables via
 // nativewind's `vars()` so that className color tokens (`text-text-secondary`,
-// `bg-surface-raised`, `border-border`, …) resolve on NATIVE React Native — the
+// `bg-surface-raised`, `border-hairline`, …) resolve on NATIVE React Native — the
 // native equivalent of the `:root {}` block `global.css` provides on web.
 //
 // Why this exists: titan's Workout organisms reference semantic colors as CSS
@@ -13,11 +13,16 @@
 //
 // The var maps are the SAME canonical `darkThemeCSSVars` / `lightThemeCSSVars`
 // that generate `global.css`, so native and web resolve to identical values.
-import { vars } from 'nativewind'
+//
+// It also seeds the on-surface colour context (`<Surface>`'s mode), so titan's
+// JS-resolved on-surface colours track the same theme as the className tokens.
+import { vars, useColorScheme } from 'nativewind'
 import { View, type ViewProps } from 'react-native'
+import { SurfaceContext } from '../components/ui/surface/SurfaceContext'
 import { darkThemeCSSVars, lightThemeCSSVars } from './config'
 
-export type ThemeProviderMode = 'dark' | 'light'
+/** `'system'` follows nativewind's `useColorScheme()` (mobile light/dark flip). */
+export type ThemeProviderMode = 'dark' | 'light' | 'system'
 
 // Precomputed once — `vars()` is pure, so the same style object is reused across
 // renders. Native == web because these are the maps `tokens-css` emits.
@@ -27,7 +32,11 @@ const MODE_VARS = {
 }
 
 export interface ThemeProviderProps extends ViewProps {
-  /** Theme mode to register. Mobile is dark-only today; defaults to `dark`. */
+  /**
+   * Theme mode to register. `'system'` bridges nativewind's `useColorScheme()`
+   * so mobile follows the OS light/dark flip; `'dark'`/`'light'` pin it. Mobile
+   * is dark-only today, so this defaults to `dark`.
+   */
   mode?: ThemeProviderMode
 }
 
@@ -42,9 +51,17 @@ export function ThemeProvider({
   children,
   ...props
 }: ThemeProviderProps): React.JSX.Element {
+  // `'system'` → follow nativewind's applied scheme, falling back to dark when
+  // no scheme is set. `useColorScheme` runs unconditionally (rules of hooks);
+  // its result is only used in the `'system'` branch.
+  const { colorScheme } = useColorScheme()
+  const resolved = mode === 'system' ? (colorScheme ?? 'dark') : mode
+
   return (
-    <View style={[MODE_VARS[mode], { flex: 1 }, style]} {...props}>
-      {children}
-    </View>
+    <SurfaceContext.Provider value={{ mode: resolved, level: 'base' }}>
+      <View style={[MODE_VARS[resolved], { flex: 1 }, style]} {...props}>
+        {children}
+      </View>
+    </SurfaceContext.Provider>
   )
 }

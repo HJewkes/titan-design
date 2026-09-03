@@ -388,7 +388,7 @@ export function ProgramPlanningPage({
         )}
 
         <View
-          className="bg-surface-elevated border-border"
+          className="bg-surface-elevated border-hairline"
           style={{
             borderWidth: 1,
             borderRadius: 12,

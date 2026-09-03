@@ -1,0 +1,1600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Program Planning — Voltras Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand-primary: #FF7900;
+    --brand-primary-light: #FF9630;
+    --brand-primary-subtle: rgba(255, 121, 0, 0.12);
+    --brand-secondary: #406D87;
+    --bg-base: #101010;
+    --surface-elevated: #191919;
+    --surface-raised: #1C1C1C;
+    --text-primary: #F3F4F6;
+    --text-secondary: #9CA3AF;
+    --text-tertiary: #6B7280;
+    --border-default: #1F1F1F;
+    --border-strong: #2C2C2C;
+    --status-success: #14B8A6;
+    --status-error: #D14343;
+    --status-warning: #FFB020;
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --duration: 250ms;
+    --deload: #a855f7;
+    --interactive-hover: rgba(255,255,255,0.04);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --font-heading: 'Space Grotesk', sans-serif;
+    --font-body: 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --vel-red: #ff4757;
+    --vel-orange: #ffa502;
+    --vel-yellow: #ffd43b;
+    --vel-green: #2ed573;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg-base);
+    color: var(--text-primary);
+    max-width: 375px;
+    margin: 0 auto;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ===== BREADCRUMB BAR ===== */
+  .breadcrumb {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--bg-base);
+    border-bottom: 1px solid var(--border-default);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-ui);
+    font-size: 11px;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+  }
+  .breadcrumb::-webkit-scrollbar { display: none; }
+  .breadcrumb-item {
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: color 0.2s;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 0;
+  }
+  .breadcrumb-item:hover { color: var(--text-secondary); }
+  .breadcrumb-item.current {
+    color: var(--text-primary);
+    font-weight: 600;
+    cursor: default;
+    max-width: none;
+  }
+  .breadcrumb-separator {
+    color: var(--text-tertiary);
+    font-size: 10px;
+    flex-shrink: 0;
+  }
+
+  /* ===== PAGE CONTAINER ===== */
+  .page-viewport {
+    position: relative;
+    overflow: hidden;
+  }
+  .page-content {
+    transition: transform 0.35s var(--ease-out), opacity 0.25s;
+    will-change: transform, opacity;
+  }
+  .page-content.exit-left {
+    transform: translateX(-100%);
+    opacity: 0;
+    position: absolute;
+    top: 0; left: 0; right: 0;
+  }
+  .page-content.exit-right {
+    transform: translateX(100%);
+    opacity: 0;
+    position: absolute;
+    top: 0; left: 0; right: 0;
+  }
+  .page-content.enter-left {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  .page-content.enter-right {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  /* ===== HEADING SECTION ===== */
+  .heading-section {
+    background: var(--surface-raised);
+    padding: 20px 16px 16px;
+    border-bottom: 1px solid var(--border-default);
+  }
+  .heading-title {
+    font-family: var(--font-heading);
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .heading-subtitle {
+    font-family: var(--font-ui);
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+  .heading-detail {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+
+  /* ===== SEGMENTED MESO PROGRESS BAR ===== */
+  .meso-progress-bar {
+    display: flex;
+    gap: 2px;
+    margin: 16px 0 8px;
+    height: 10px;
+  }
+  .meso-segment {
+    flex: 1;
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    background: var(--border-default);
+    transition: box-shadow 0.2s;
+  }
+  .meso-segment:hover {
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.1);
+  }
+  .meso-segment-fill {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.6s var(--ease-out);
+  }
+  .meso-segment.completed .meso-segment-fill {
+    width: 100%;
+    background: rgba(20, 184, 166, 0.5);
+  }
+  .meso-segment.current .meso-segment-fill {
+    background: var(--brand-primary);
+  }
+  .meso-segment.future .meso-segment-fill {
+    width: 0;
+  }
+  .meso-segment.active-tab {
+    box-shadow: 0 0 0 1.5px var(--text-secondary);
+  }
+  .meso-position-indicator {
+    position: absolute;
+    top: -3px;
+    width: 4px;
+    height: 16px;
+    background: white;
+    border-radius: 2px;
+    box-shadow: 0 0 4px rgba(255,255,255,0.5);
+    transition: left 0.4s var(--ease-out);
+  }
+
+  /* ===== MESO SECTIONS (accordion) ===== */
+  .meso-sections {
+    padding: 0 16px 24px;
+  }
+  .meso-section {
+    border-bottom: 1px solid var(--border-default);
+  }
+  .meso-section:last-child {
+    border-bottom: none;
+  }
+  .meso-section-header {
+    display: flex;
+    align-items: center;
+    padding: 14px 0;
+    cursor: pointer;
+    gap: 8px;
+    transition: background 0.15s;
+  }
+  .meso-section-header:active {
+    opacity: 0.8;
+  }
+  .meso-section-chevron {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    transition: transform 0.25s var(--ease-out);
+    width: 14px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .meso-section.expanded .meso-section-chevron {
+    transform: rotate(90deg);
+  }
+  .meso-section-title {
+    font-family: var(--font-heading);
+    font-size: 14px;
+    font-weight: 700;
+    flex: 1;
+  }
+  .meso-section-meta {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+  .meso-section-status {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .meso-section-status.completed { color: var(--status-success); }
+  .meso-section-status.current { color: var(--brand-primary); }
+  .meso-section-status.upcoming { color: var(--text-tertiary); }
+
+  .meso-section-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s var(--ease-out);
+  }
+  .meso-section.expanded .meso-section-body {
+    max-height: 600px;
+  }
+
+  /* ===== WEEK ROW (inside meso accordion) ===== */
+  .week-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 0 10px 22px;
+    cursor: pointer;
+    gap: 8px;
+    border-radius: var(--radius-sm);
+    transition: background 0.15s;
+  }
+  .week-row:hover {
+    background: var(--interactive-hover);
+  }
+  .week-row:active {
+    background: rgba(255,255,255,0.06);
+  }
+  .week-row-label {
+    font-family: var(--font-ui);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+    width: 42px;
+    flex-shrink: 0;
+  }
+  .week-row.deload .week-row-label {
+    color: var(--deload);
+  }
+
+  /* ===== WORKOUT PILLS ===== */
+  .workout-pills {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+  .workout-pill {
+    font-family: var(--font-ui);
+    font-size: 9px;
+    font-weight: 600;
+    padding: 3px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+    transition: all 0.2s;
+    letter-spacing: 0.2px;
+  }
+  .workout-pill.done {
+    background: rgba(20, 184, 166, 0.15);
+    color: var(--status-success);
+    border: 1px solid rgba(20, 184, 166, 0.25);
+  }
+  .workout-pill.next {
+    background: var(--brand-primary-subtle);
+    color: var(--brand-primary);
+    border: 1px solid rgba(255, 121, 0, 0.3);
+    animation: pill-pulse 2s ease-in-out infinite;
+  }
+  @keyframes pill-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+  .workout-pill.upcoming {
+    background: transparent;
+    color: var(--text-tertiary);
+    border: 1px solid var(--border-strong);
+  }
+
+  /* ===== INTENSITY INDICATOR ===== */
+  .intensity-indicator {
+    display: flex;
+    gap: 2px;
+    align-items: flex-end;
+    height: 14px;
+    flex-shrink: 0;
+    margin-left: 4px;
+  }
+  .intensity-bar {
+    width: 3px;
+    border-radius: 1px;
+    transition: height 0.3s, background 0.3s;
+  }
+  .week-row.deload .intensity-indicator {
+    opacity: 0.6;
+  }
+
+  /* ===== CARDS LIST ===== */
+  .cards-list {
+    padding: 12px 12px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* ===== GENERIC CARD ===== */
+  .card {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius);
+    padding: 14px;
+    cursor: pointer;
+    transition: border-color var(--duration) var(--ease-out),
+                transform 0.15s var(--ease-out);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    position: relative;
+  }
+  .card:active { transform: scale(0.98); }
+  .card.completed .card-check { display: inline; }
+  .card.future { opacity: 0.7; }
+  .card.next-card { border-left: 3px solid var(--brand-primary); }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .card-name {
+    font-family: var(--font-heading);
+    font-size: 15px;
+    font-weight: 700;
+    flex: 1;
+  }
+  .card-right {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+  .card-meta {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-bottom: 4px;
+  }
+
+  /* Badges */
+  .badge {
+    display: inline-block;
+    font-family: var(--font-ui);
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    vertical-align: middle;
+  }
+  .badge-current {
+    color: #fff;
+    background: var(--brand-primary);
+    border: 1px solid var(--brand-primary-light);
+  }
+  .badge-complete {
+    color: var(--status-success);
+    background: rgba(20, 184, 166, 0.1);
+    border: 1px solid rgba(20, 184, 166, 0.25);
+  }
+  .badge-next {
+    color: var(--brand-primary);
+    background: var(--brand-primary-subtle);
+    border: 1px solid rgba(255, 121, 0, 0.3);
+  }
+
+  /* ===== MUSCLE PILLS ===== */
+  .muscle-pills {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 4px 0;
+  }
+  .muscle-pill {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-family: var(--font-ui);
+    font-size: 10px;
+    color: var(--text-secondary);
+  }
+  .muscle-pill-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  /* ===== EXERCISE CARD ===== */
+  .exercise-card {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    transition: border-color var(--duration), transform 0.15s var(--ease-out);
+    overflow: hidden;
+  }
+  .exercise-card:active { transform: scale(0.99); }
+  .exercise-card.expanded {
+    border-color: var(--border-strong);
+    cursor: default;
+  }
+  .exercise-collapsed-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .exercise-collapsed-name {
+    font-family: var(--font-heading);
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .exercise-collapsed-summary {
+    font-family: var(--font-ui);
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .exercise-collapsed-e1rm {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--brand-primary);
+    white-space: nowrap;
+    margin-left: auto;
+  }
+  .collapsed-strips {
+    display: flex;
+    gap: 4px;
+    margin-top: 6px;
+    padding: 0 2px;
+  }
+  .collapsed-strip {
+    flex: 1;
+    height: 3px;
+    border-radius: 1px;
+    display: flex;
+    gap: 1px;
+  }
+  .collapsed-strip-bar {
+    flex: 1;
+    height: 100%;
+    border-radius: 1px;
+  }
+  .collapsed-strip.placeholder {
+    border: 1px dashed #4A4A4A;
+    background: none;
+    opacity: 0.6;
+  }
+
+  /* ===== INLINE EXERCISE EXPANSION ===== */
+  .exercise-expand-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s var(--ease-out);
+  }
+  .exercise-card.expanded .exercise-expand-body {
+    max-height: 1200px;
+  }
+
+  /* ===== SET TABLE ===== */
+  .set-table {
+    width: 100%;
+    margin-top: 12px;
+  }
+  .set-table-header {
+    display: flex;
+    padding: 8px 4px 6px;
+    font-family: var(--font-ui);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-tertiary);
+  }
+  .set-row {
+    display: flex;
+    align-items: center;
+    padding: 7px 4px;
+    border-radius: 6px;
+  }
+  .col-set { width: 32px; text-align: center; }
+  .col-prev { flex: 1; color: var(--text-secondary); font-size: 12px; font-family: var(--font-ui); }
+  .col-reps { width: 44px; text-align: center; }
+  .col-weight { width: 56px; text-align: center; }
+  .col-rpe { width: 36px; text-align: center; }
+  .set-num {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+  .set-type {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--vel-orange);
+    background: rgba(255, 165, 2, 0.12);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  .set-value {
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .rpe-value { color: var(--brand-primary); font-size: 12px; }
+
+  /* ===== VELOCITY BARS ===== */
+  .vel-bars-b {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    margin: 0 4px;
+    padding: 10px 0;
+    height: 3px;
+    box-sizing: content-box;
+    cursor: pointer;
+    transition: height 0.4s var(--ease-out),
+                padding 0.4s var(--ease-out),
+                margin 0.4s var(--ease-out),
+                background 0.3s;
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+  .vel-bars-b.expanded {
+    height: 60px;
+    padding: 16px 6px 24px;
+    margin: 4px 4px;
+    border-radius: 6px;
+    background: var(--surface-raised);
+    overflow: visible;
+  }
+  .vel-bars-b .vbar {
+    flex: 1;
+    border-radius: 2px 2px 0 0;
+    min-height: 100%;
+    transition: min-height 0.4s var(--ease-out), height 0.4s var(--ease-out);
+    position: relative;
+    cursor: pointer;
+  }
+  .vel-bars-b.expanded .vbar {
+    min-height: 0;
+  }
+  .vel-bars-b .vbar-label {
+    position: absolute;
+    top: -13px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-ui);
+    font-size: 7px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s 0.15s;
+  }
+  .vel-bars-b.expanded .vbar-label { opacity: 1; }
+  .vel-bars-b .vel-info {
+    position: absolute;
+    bottom: 4px;
+    left: 6px;
+    right: 6px;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-ui);
+    font-size: 10px;
+    opacity: 0;
+    transition: opacity 0.3s 0.2s;
+    pointer-events: none;
+  }
+  .vel-bars-b.expanded .vel-info { opacity: 1; }
+
+  /* ===== TEMPO DISPLAY ===== */
+  .tempo-display {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 6px;
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    background: rgba(255,255,255,0.03);
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+  }
+  .tempo-label {
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    margin-right: 6px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* ===== WEEK VIEW HEADER ===== */
+  .week-header-intensity {
+    display: flex;
+    gap: 2px;
+    align-items: flex-end;
+    height: 16px;
+    margin-left: 8px;
+    display: inline-flex;
+    vertical-align: middle;
+  }
+  .week-header-intensity .intensity-bar {
+    width: 4px;
+    border-radius: 1.5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="breadcrumb" id="breadcrumb"></div>
+<div class="page-viewport">
+  <div class="page-content" id="page-content"></div>
+</div>
+
+<script>
+// ==================== DATA ====================
+const programData = {
+  name: '12-Week Hypertrophy Program',
+  currentWeek: 8,
+  totalWeeks: 12,
+  mesocycles: [
+    {
+      id: 'meso1',
+      name: 'Hypertrophy 1',
+      weekRange: 'Wks 1-5',
+      weekStart: 1,
+      weekEnd: 5,
+      split: 'Upper/Lower',
+      frequency: '4 days',
+      intensity: 'RIR 4\u21922',
+      status: 'completed',
+      currentWeekInMeso: null,
+      totalWeeksInMeso: 5,
+      weeks: [
+        { id: 'w1', num: 1, workoutsDone: 4, workoutsTotal: 4, status: 'completed',
+          workouts: [
+            { id: 'w1-ua', name: 'Upper A', abbr: 'Up A', status: 'completed' },
+            { id: 'w1-la', name: 'Lower A', abbr: 'Lo A', status: 'completed' },
+            { id: 'w1-ub', name: 'Upper B', abbr: 'Up B', status: 'completed' },
+            { id: 'w1-lb', name: 'Lower B', abbr: 'Lo B', status: 'completed' },
+          ]
+        },
+        { id: 'w2', num: 2, workoutsDone: 4, workoutsTotal: 4, status: 'completed',
+          workouts: [
+            { id: 'w2-ua', name: 'Upper A', abbr: 'Up A', status: 'completed' },
+            { id: 'w2-la', name: 'Lower A', abbr: 'Lo A', status: 'completed' },
+            { id: 'w2-ub', name: 'Upper B', abbr: 'Up B', status: 'completed' },
+            { id: 'w2-lb', name: 'Lower B', abbr: 'Lo B', status: 'completed' },
+          ]
+        },
+        { id: 'w3', num: 3, workoutsDone: 4, workoutsTotal: 4, status: 'completed',
+          workouts: [
+            { id: 'w3-ua', name: 'Upper A', abbr: 'Up A', status: 'completed' },
+            { id: 'w3-la', name: 'Lower A', abbr: 'Lo A', status: 'completed' },
+            { id: 'w3-ub', name: 'Upper B', abbr: 'Up B', status: 'completed' },
+            { id: 'w3-lb', name: 'Lower B', abbr: 'Lo B', status: 'completed' },
+          ]
+        },
+        { id: 'w4', num: 4, workoutsDone: 4, workoutsTotal: 4, status: 'completed',
+          workouts: [
+            { id: 'w4-ua', name: 'Upper A', abbr: 'Up A', status: 'completed' },
+            { id: 'w4-la', name: 'Lower A', abbr: 'Lo A', status: 'completed' },
+            { id: 'w4-ub', name: 'Upper B', abbr: 'Up B', status: 'completed' },
+            { id: 'w4-lb', name: 'Lower B', abbr: 'Lo B', status: 'completed' },
+          ]
+        },
+        { id: 'w5', num: 5, workoutsDone: 4, workoutsTotal: 4, status: 'completed', isDeload: true,
+          workouts: [
+            { id: 'w5-ua', name: 'Upper A', abbr: 'Up A', status: 'completed' },
+            { id: 'w5-la', name: 'Lower A', abbr: 'Lo A', status: 'completed' },
+            { id: 'w5-ub', name: 'Upper B', abbr: 'Up B', status: 'completed' },
+            { id: 'w5-lb', name: 'Lower B', abbr: 'Lo B', status: 'completed' },
+          ]
+        },
+      ]
+    },
+    {
+      id: 'meso2',
+      name: 'Hypertrophy 2',
+      weekRange: 'Wks 6-10',
+      weekStart: 6,
+      weekEnd: 10,
+      split: 'Upper/Lower',
+      frequency: '4 days',
+      intensity: 'RIR 3\u21920 + deload',
+      status: 'current',
+      currentWeekInMeso: 3,
+      totalWeeksInMeso: 5,
+      weeks: [
+        { id: 'w6', num: 1, workoutsDone: 4, workoutsTotal: 4, status: 'completed',
+          workouts: [
+            { id: 'w6-ua', name: 'Upper A', abbr: 'Up A', status: 'completed' },
+            { id: 'w6-la', name: 'Lower A', abbr: 'Lo A', status: 'completed' },
+            { id: 'w6-ub', name: 'Upper B', abbr: 'Up B', status: 'completed' },
+            { id: 'w6-lb', name: 'Lower B', abbr: 'Lo B', status: 'completed' },
+          ]
+        },
+        { id: 'w7', num: 2, workoutsDone: 4, workoutsTotal: 4, status: 'completed',
+          workouts: [
+            { id: 'w7-ua', name: 'Upper A', abbr: 'Up A', status: 'completed' },
+            { id: 'w7-la', name: 'Lower A', abbr: 'Lo A', status: 'completed' },
+            { id: 'w7-ub', name: 'Upper B', abbr: 'Up B', status: 'completed' },
+            { id: 'w7-lb', name: 'Lower B', abbr: 'Lo B', status: 'completed' },
+          ]
+        },
+        { id: 'w8', num: 3, workoutsDone: 2, workoutsTotal: 4, status: 'current',
+          workouts: [
+            {
+              id: 'w8-ua', name: 'Upper A', abbr: 'Up A', date: 'Mon Mar 10', duration: '58 min',
+              muscles: [{name:'Chest',color:'#14B8A6'},{name:'Shoulders',color:'#14B8A6'},{name:'Triceps',color:'#FFB020'}],
+              sets: 22, volume: 8450, status: 'completed',
+              exercises: [
+                {
+                  id: 'bench', name: 'Bench Press', summary: '3\u00d76 @ 175 lbs', e1rm: 217, isPR: true,
+                  tempo: '3-1-1-0', muscleTargets: ['Chest','Shoulders','Triceps'],
+                  sets: [
+                    { type: 'W', prev: '10 \u00d7 85', weight: 85, reps: 10, rpe: null, vel: { reps: [1.15,1.14,1.12,1.10,1.09,1.08,1.06,1.05,1.03,1.01], mean: 1.12, loss: 12, zone: 'speed' }},
+                    { num: 1, prev: '6 \u00d7 175', weight: 175, reps: 6, rpe: 7, vel: { reps: [0.62,0.60,0.58,0.56,0.54,0.52], mean: 0.57, loss: 16, zone: 'str-spd' }},
+                    { num: 2, prev: '5 \u00d7 175', weight: 175, reps: 6, rpe: 8, vel: { reps: [0.58,0.56,0.54,0.52,0.49,0.47], mean: 0.53, loss: 19, zone: 'str-spd' }},
+                    { num: 3, prev: '5 \u00d7 175', weight: 175, reps: 6, rpe: 9, vel: { reps: [0.52,0.48,0.44,0.41,0.39,0.37], mean: 0.44, loss: 28, zone: 'strength' }},
+                  ]
+                },
+                {
+                  id: 'incline', name: 'Incline DB Press', summary: '3\u00d710 @ 60 lbs', e1rm: 82, isPR: false,
+                  tempo: '2-0-1-0', muscleTargets: ['Chest','Shoulders'],
+                  sets: [
+                    { num: 1, prev: '10 \u00d7 60', weight: 60, reps: 10, rpe: 7.5, vel: { reps: [0.82,0.80,0.78,0.76,0.74,0.72,0.70,0.69,0.67,0.65], mean: 0.73, loss: 21, zone: 'str-spd' }},
+                    { num: 2, prev: '9 \u00d7 60', weight: 60, reps: 9, rpe: 8.5, vel: { reps: [0.78,0.75,0.72,0.70,0.68,0.65,0.63,0.61,0.58], mean: 0.68, loss: 26, zone: 'str-spd' }},
+                    { num: 3, prev: '8 \u00d7 60', weight: 60, reps: 8, rpe: 9, vel: { reps: [0.74,0.71,0.68,0.65,0.62,0.59,0.56,0.54], mean: 0.64, loss: 24, zone: 'str-spd' }},
+                  ]
+                },
+                {
+                  id: 'cable-flyes', name: 'Cable Flyes', summary: '4\u00d712 @ 40 lbs', e1rm: 58, isPR: false,
+                  tempo: '3-1-2-1', muscleTargets: ['Chest'],
+                  sets: [
+                    { num: 1, prev: '12 \u00d7 40', weight: 40, reps: 12, rpe: 6, vel: { reps: [0.95,0.93,0.91,0.89,0.87,0.85,0.83,0.81,0.79,0.77,0.75,0.73], mean: 0.84, loss: 23, zone: 'power' }},
+                    { num: 2, prev: '11 \u00d7 40', weight: 40, reps: 11, rpe: 7, vel: { reps: [0.91,0.88,0.86,0.83,0.81,0.78,0.76,0.73,0.71,0.68,0.66], mean: 0.78, loss: 27, zone: 'power' }},
+                    { num: 3, prev: '10 \u00d7 40', weight: 40, reps: 10, rpe: 8, vel: { reps: [0.88,0.85,0.82,0.79,0.76,0.73,0.70,0.67,0.64,0.61], mean: 0.75, loss: 31, zone: 'power' }},
+                    { num: 4, prev: '10 \u00d7 40', weight: 40, reps: 10, rpe: 8.5, vel: { reps: [0.84,0.80,0.76,0.73,0.70,0.66,0.63,0.60,0.57,0.54], mean: 0.68, loss: 36, zone: 'str-spd' }},
+                  ]
+                },
+                {
+                  id: 'pec-deck', name: 'Pec Deck', summary: '3\u00d712 @ 100 lbs', e1rm: null, isPR: false,
+                  tempo: '2-1-1-1', muscleTargets: ['Chest'],
+                  sets: [
+                    { num: 1, prev: '12 \u00d7 100', weight: 100, reps: 12, rpe: 7, vel: null },
+                    { num: 2, prev: '11 \u00d7 100', weight: 100, reps: 11, rpe: 8, vel: null },
+                    { num: 3, prev: '10 \u00d7 100', weight: 100, reps: 10, rpe: 9, vel: null },
+                  ]
+                },
+                {
+                  id: 'ohp', name: 'OHP', summary: '3\u00d78 @ 95 lbs', e1rm: 120, isPR: false,
+                  tempo: '2-0-1-0', muscleTargets: ['Shoulders','Triceps'],
+                  sets: [
+                    { num: 1, prev: '8 \u00d7 95', weight: 95, reps: 8, rpe: 7, vel: { reps: [0.72,0.70,0.68,0.66,0.64,0.62,0.60,0.58], mean: 0.65, loss: 19, zone: 'str-spd' }},
+                    { num: 2, prev: '7 \u00d7 95', weight: 95, reps: 7, rpe: 8, vel: { reps: [0.68,0.65,0.63,0.60,0.58,0.55,0.53], mean: 0.60, loss: 22, zone: 'str-spd' }},
+                    { num: 3, prev: '6 \u00d7 95', weight: 95, reps: 6, rpe: 9, vel: { reps: [0.64,0.60,0.57,0.54,0.51,0.48], mean: 0.56, loss: 25, zone: 'str-spd' }},
+                  ]
+                },
+                {
+                  id: 'lat-raise', name: 'Lateral Raises', summary: '3\u00d715 @ 20 lbs', e1rm: null, isPR: false,
+                  tempo: '2-0-1-1', muscleTargets: ['Shoulders'],
+                  sets: [
+                    { num: 1, prev: '15 \u00d7 20', weight: 20, reps: 15, rpe: 7, vel: null },
+                    { num: 2, prev: '14 \u00d7 20', weight: 20, reps: 14, rpe: 8, vel: null },
+                    { num: 3, prev: '12 \u00d7 20', weight: 20, reps: 12, rpe: 9, vel: null },
+                  ]
+                },
+              ]
+            },
+            {
+              id: 'w8-la', name: 'Lower A', abbr: 'Lo A', date: 'Tue Mar 11', duration: '52 min',
+              muscles: [{name:'Quads',color:'#14B8A6'},{name:'Hams',color:'#14B8A6'},{name:'Glutes',color:'#14B8A6'},{name:'Calves',color:'#FFB020'}],
+              sets: 16, volume: 12680, status: 'completed',
+              exercises: [
+                {
+                  id: 'squat', name: 'Squats', summary: '3\u00d75 @ 225 lbs', e1rm: 268, isPR: false,
+                  tempo: '3-1-1-0', muscleTargets: ['Quads','Glutes'],
+                  sets: [
+                    { type: 'W', prev: '8 \u00d7 135', weight: 135, reps: 8, rpe: null, vel: { reps: [0.95,0.93,0.91,0.89,0.87,0.85,0.83,0.81], mean: 0.88, loss: 15, zone: 'power' }},
+                    { num: 1, prev: '5 \u00d7 225', weight: 225, reps: 5, rpe: 7, vel: { reps: [0.55,0.53,0.51,0.49,0.47], mean: 0.51, loss: 15, zone: 'strength' }},
+                    { num: 2, prev: '5 \u00d7 225', weight: 225, reps: 5, rpe: 8, vel: { reps: [0.52,0.49,0.46,0.44,0.42], mean: 0.47, loss: 19, zone: 'strength' }},
+                    { num: 3, prev: '4 \u00d7 225', weight: 225, reps: 5, rpe: 9, vel: { reps: [0.48,0.44,0.41,0.38,0.36], mean: 0.41, loss: 25, zone: 'strength' }},
+                  ]
+                },
+                {
+                  id: 'rdl', name: 'RDL', summary: '3\u00d78 @ 185 lbs', e1rm: 234, isPR: false,
+                  tempo: '3-0-1-1', muscleTargets: ['Hams','Glutes'],
+                  sets: [
+                    { num: 1, prev: '8 \u00d7 185', weight: 185, reps: 8, rpe: 7, vel: { reps: [0.68,0.66,0.64,0.62,0.60,0.58,0.56,0.54], mean: 0.61, loss: 21, zone: 'str-spd' }},
+                    { num: 2, prev: '7 \u00d7 185', weight: 185, reps: 7, rpe: 8, vel: { reps: [0.64,0.61,0.58,0.55,0.53,0.50,0.48], mean: 0.56, loss: 25, zone: 'str-spd' }},
+                    { num: 3, prev: '7 \u00d7 185', weight: 185, reps: 7, rpe: 9, vel: { reps: [0.60,0.56,0.52,0.49,0.46,0.43,0.41], mean: 0.50, loss: 32, zone: 'strength' }},
+                  ]
+                },
+                {
+                  id: 'leg-press', name: 'Leg Press', summary: '3\u00d710 @ 320 lbs', e1rm: null, isPR: false,
+                  tempo: '2-0-1-0', muscleTargets: ['Quads','Glutes'],
+                  sets: [
+                    { num: 1, prev: '10 \u00d7 320', weight: 320, reps: 10, rpe: 7, vel: null },
+                    { num: 2, prev: '9 \u00d7 320', weight: 320, reps: 9, rpe: 8, vel: null },
+                    { num: 3, prev: '8 \u00d7 320', weight: 320, reps: 8, rpe: 9, vel: null },
+                  ]
+                },
+                {
+                  id: 'leg-curl', name: 'Leg Curl', summary: '3\u00d712 @ 80 lbs', e1rm: null, isPR: false,
+                  tempo: '2-1-1-0', muscleTargets: ['Hams'],
+                  sets: [
+                    { num: 1, prev: '12 \u00d7 80', weight: 80, reps: 12, rpe: 7, vel: null },
+                    { num: 2, prev: '11 \u00d7 80', weight: 80, reps: 11, rpe: 8, vel: null },
+                    { num: 3, prev: '10 \u00d7 80', weight: 80, reps: 10, rpe: 9, vel: null },
+                  ]
+                },
+                {
+                  id: 'calf-raise-la', name: 'Calf Raises', summary: '4\u00d715 @ 120 lbs', e1rm: null, isPR: false,
+                  tempo: '2-2-1-0', muscleTargets: ['Calves'],
+                  sets: [
+                    { num: 1, prev: '15 \u00d7 120', weight: 120, reps: 15, rpe: 7, vel: null },
+                    { num: 2, prev: '15 \u00d7 120', weight: 120, reps: 15, rpe: 7.5, vel: null },
+                    { num: 3, prev: '14 \u00d7 120', weight: 120, reps: 14, rpe: 8, vel: null },
+                    { num: 4, prev: '13 \u00d7 120', weight: 120, reps: 13, rpe: 9, vel: null },
+                  ]
+                },
+              ]
+            },
+            {
+              id: 'w8-ub', name: 'Upper B', abbr: 'Up B', date: 'Thu Mar 13', duration: null,
+              muscles: [{name:'Back',color:'#6B7280'},{name:'Biceps',color:'#6B7280'},{name:'Rear Delts',color:'#6B7280'}],
+              sets: null, volume: null, status: 'next',
+              plannedSets: 20,
+              exercises: [
+                { id: 'bb-row', name: 'Barbell Row', summary: '3\u00d78 @ 155 lbs', e1rm: null, isPR: false, tempo: '2-0-1-1', muscleTargets: ['Back'], sets: [
+                  { num: 1, weight: 155, reps: 8, rpe: null, vel: null },
+                  { num: 2, weight: 155, reps: 8, rpe: null, vel: null },
+                  { num: 3, weight: 155, reps: 8, rpe: null, vel: null },
+                ]},
+                { id: 'pullups', name: 'Pull-ups', summary: '3\u00d78 @ BW+25', e1rm: null, isPR: false, tempo: '2-0-1-0', muscleTargets: ['Back','Biceps'], sets: [
+                  { num: 1, weight: 25, reps: 8, rpe: null, vel: null },
+                  { num: 2, weight: 25, reps: 8, rpe: null, vel: null },
+                  { num: 3, weight: 25, reps: 8, rpe: null, vel: null },
+                ]},
+                { id: 'face-pulls', name: 'Face Pulls', summary: '3\u00d715 @ 30 lbs', e1rm: null, isPR: false, tempo: '2-1-1-1', muscleTargets: ['Rear Delts'], sets: [
+                  { num: 1, weight: 30, reps: 15, rpe: null, vel: null },
+                  { num: 2, weight: 30, reps: 15, rpe: null, vel: null },
+                  { num: 3, weight: 30, reps: 15, rpe: null, vel: null },
+                ]},
+                { id: 'bb-curl', name: 'Barbell Curl', summary: '3\u00d710 @ 65 lbs', e1rm: null, isPR: false, tempo: '2-0-1-0', muscleTargets: ['Biceps'], sets: [
+                  { num: 1, weight: 65, reps: 10, rpe: null, vel: null },
+                  { num: 2, weight: 65, reps: 10, rpe: null, vel: null },
+                  { num: 3, weight: 65, reps: 10, rpe: null, vel: null },
+                ]},
+                { id: 'hammer-curl', name: 'Hammer Curl', summary: '3\u00d712 @ 30 lbs', e1rm: null, isPR: false, tempo: '2-0-1-0', muscleTargets: ['Biceps'], sets: [
+                  { num: 1, weight: 30, reps: 12, rpe: null, vel: null },
+                  { num: 2, weight: 30, reps: 12, rpe: null, vel: null },
+                  { num: 3, weight: 30, reps: 12, rpe: null, vel: null },
+                ]},
+              ]
+            },
+            {
+              id: 'w8-lb', name: 'Lower B', abbr: 'Lo B', date: 'Fri Mar 14', duration: null,
+              muscles: [{name:'Quads',color:'#6B7280'},{name:'Glutes',color:'#6B7280'},{name:'Hams',color:'#6B7280'},{name:'Calves',color:'#6B7280'}],
+              sets: null, volume: null, status: 'future',
+              plannedSets: 18,
+              exercises: [
+                { id: 'front-squat', name: 'Front Squats', summary: '3\u00d76 @ 165 lbs', e1rm: null, isPR: false, tempo: '3-1-1-0', muscleTargets: ['Quads'], sets: [
+                  { num: 1, weight: 165, reps: 6, rpe: null, vel: null },
+                  { num: 2, weight: 165, reps: 6, rpe: null, vel: null },
+                  { num: 3, weight: 165, reps: 6, rpe: null, vel: null },
+                ]},
+                { id: 'lunges', name: 'Walking Lunges', summary: '3\u00d710 @ 50 lbs', e1rm: null, isPR: false, tempo: '2-0-1-0', muscleTargets: ['Quads','Glutes'], sets: [
+                  { num: 1, weight: 50, reps: 10, rpe: null, vel: null },
+                  { num: 2, weight: 50, reps: 10, rpe: null, vel: null },
+                  { num: 3, weight: 50, reps: 10, rpe: null, vel: null },
+                ]},
+                { id: 'hip-thrusts', name: 'Hip Thrusts', summary: '3\u00d710 @ 185 lbs', e1rm: null, isPR: false, tempo: '2-1-1-0', muscleTargets: ['Glutes','Hams'], sets: [
+                  { num: 1, weight: 185, reps: 10, rpe: null, vel: null },
+                  { num: 2, weight: 185, reps: 10, rpe: null, vel: null },
+                  { num: 3, weight: 185, reps: 10, rpe: null, vel: null },
+                ]},
+                { id: 'leg-ext-lb', name: 'Leg Extensions', summary: '3\u00d712 @ 100 lbs', e1rm: null, isPR: false, tempo: '2-1-1-0', muscleTargets: ['Quads'], sets: [
+                  { num: 1, weight: 100, reps: 12, rpe: null, vel: null },
+                  { num: 2, weight: 100, reps: 12, rpe: null, vel: null },
+                  { num: 3, weight: 100, reps: 12, rpe: null, vel: null },
+                ]},
+                { id: 'calf-raise-lb', name: 'Calf Raises', summary: '4\u00d715 @ 120 lbs', e1rm: null, isPR: false, tempo: '2-2-1-0', muscleTargets: ['Calves'], sets: [
+                  { num: 1, weight: 120, reps: 15, rpe: null, vel: null },
+                  { num: 2, weight: 120, reps: 15, rpe: null, vel: null },
+                  { num: 3, weight: 120, reps: 15, rpe: null, vel: null },
+                  { num: 4, weight: 120, reps: 15, rpe: null, vel: null },
+                ]},
+              ]
+            },
+          ]
+        },
+        { id: 'w9', num: 4, workoutsDone: 0, workoutsTotal: 4, status: 'future',
+          workouts: [
+            { id: 'w9-ua', name: 'Upper A', abbr: 'Up A', status: 'future' },
+            { id: 'w9-la', name: 'Lower A', abbr: 'Lo A', status: 'future' },
+            { id: 'w9-ub', name: 'Upper B', abbr: 'Up B', status: 'future' },
+            { id: 'w9-lb', name: 'Lower B', abbr: 'Lo B', status: 'future' },
+          ]
+        },
+        { id: 'w10', num: 5, workoutsDone: 0, workoutsTotal: 4, status: 'future', isDeload: true,
+          workouts: [
+            { id: 'w10-ua', name: 'Upper A', abbr: 'Up A', status: 'future' },
+            { id: 'w10-la', name: 'Lower A', abbr: 'Lo A', status: 'future' },
+            { id: 'w10-ub', name: 'Upper B', abbr: 'Up B', status: 'future' },
+            { id: 'w10-lb', name: 'Lower B', abbr: 'Lo B', status: 'future' },
+          ]
+        },
+      ]
+    },
+    {
+      id: 'meso3',
+      name: 'Hypertrophy 3',
+      weekRange: 'Wks 11-12',
+      weekStart: 11,
+      weekEnd: 12,
+      split: 'Upper/Lower',
+      frequency: '4 days',
+      intensity: 'RIR 2\u21920',
+      status: 'future',
+      currentWeekInMeso: null,
+      totalWeeksInMeso: 2,
+      weeks: [
+        { id: 'w11', num: 1, workoutsDone: 0, workoutsTotal: 4, status: 'future',
+          workouts: [
+            { id: 'w11-ua', name: 'Upper A', abbr: 'Up A', status: 'future' },
+            { id: 'w11-la', name: 'Lower A', abbr: 'Lo A', status: 'future' },
+            { id: 'w11-ub', name: 'Upper B', abbr: 'Up B', status: 'future' },
+            { id: 'w11-lb', name: 'Lower B', abbr: 'Lo B', status: 'future' },
+          ]
+        },
+        { id: 'w12', num: 2, workoutsDone: 0, workoutsTotal: 4, status: 'future',
+          workouts: [
+            { id: 'w12-ua', name: 'Upper A', abbr: 'Up A', status: 'future' },
+            { id: 'w12-la', name: 'Lower A', abbr: 'Lo A', status: 'future' },
+            { id: 'w12-ub', name: 'Upper B', abbr: 'Up B', status: 'future' },
+            { id: 'w12-lb', name: 'Lower B', abbr: 'Lo B', status: 'future' },
+          ]
+        },
+      ]
+    },
+  ]
+};
+
+// ==================== NAVIGATION STATE ====================
+let navStack = [];
+
+function navigate(level, id, label, direction) {
+  navStack.push({ level, id, label });
+  renderPage(direction || 'forward');
+}
+
+function navigateTo(index) {
+  if (index >= navStack.length - 1) return;
+  navStack = navStack.slice(0, index + 1);
+  renderPage('back');
+}
+
+// ==================== HELPERS ====================
+function velZoneColor(v) {
+  if (v < 0.5) return 'var(--vel-red)';
+  if (v < 0.75) return 'var(--vel-orange)';
+  if (v < 1.0) return 'var(--vel-yellow)';
+  return 'var(--vel-green)';
+}
+
+function velZoneName(zone) {
+  const names = { strength: 'Strength', 'str-spd': 'Str-Speed', power: 'Power', speed: 'Speed' };
+  return names[zone] || zone;
+}
+
+function zoneColorVar(zone) {
+  const map = { strength: 'var(--vel-red)', 'str-spd': 'var(--vel-orange)', power: 'var(--vel-yellow)', speed: 'var(--vel-green)' };
+  return map[zone] || 'var(--text-secondary)';
+}
+
+function formatVolume(v) {
+  if (v >= 1000) return (v / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+  return v.toString();
+}
+
+// Intensity color: interpolates from teal (low) through yellow to orange (high)
+function intensityColor(level, total) {
+  if (level <= 1) return 'var(--status-success)';
+  const ratio = (level - 1) / Math.max(total - 1, 1);
+  if (ratio < 0.5) {
+    // teal to yellow
+    const t = ratio * 2;
+    const r = Math.round(20 + (255 - 20) * t);
+    const g = Math.round(184 + (212 - 184) * t);
+    const b = Math.round(166 + (59 - 166) * t);
+    return `rgb(${r},${g},${b})`;
+  }
+  // yellow to orange
+  const t = (ratio - 0.5) * 2;
+  const r = Math.round(255);
+  const g = Math.round(212 + (121 - 212) * t);
+  const b = Math.round(59 + (0 - 59) * t);
+  return `rgb(${r},${g},${b})`;
+}
+
+function buildIntensityBars(weekNum, totalWeeks, isDeload) {
+  const barCount = 4;
+  let html = '<div class="intensity-indicator">';
+  if (isDeload) {
+    // Deload: single short dashed-style bar in teal
+    html += `<div class="intensity-bar" style="width:3px;height:4px;background:var(--status-success);border:1px dashed var(--status-success);background:transparent;"></div>`;
+    html += '</div>';
+    return html;
+  }
+  const activeBars = Math.min(Math.ceil((weekNum / totalWeeks) * barCount), barCount);
+  const color = intensityColor(weekNum, totalWeeks);
+  for (let i = 0; i < barCount; i++) {
+    const h = 3 + (i + 1) * 2.5;
+    if (i < activeBars) {
+      html += `<div class="intensity-bar" style="height:${h}px;background:${color}"></div>`;
+    } else {
+      html += `<div class="intensity-bar" style="height:${h}px;background:var(--border-strong);opacity:0.4"></div>`;
+    }
+  }
+  html += '</div>';
+  return html;
+}
+
+function findWorkout(workoutId) {
+  for (const m of programData.mesocycles) {
+    for (const w of m.weeks) {
+      if (w.workouts) {
+        const wo = w.workouts.find(x => x.id === workoutId);
+        if (wo) return { workout: wo, week: w, meso: m };
+      }
+    }
+  }
+  return null;
+}
+
+function findExercise(exerciseId, workoutId) {
+  const result = findWorkout(workoutId);
+  if (result && result.workout.exercises) {
+    const ex = result.workout.exercises.find(e => e.id === exerciseId);
+    if (ex) return ex;
+  }
+  return null;
+}
+
+// ==================== BREADCRUMB ====================
+function renderBreadcrumb() {
+  const bc = document.getElementById('breadcrumb');
+  let html = '';
+  navStack.forEach((item, i) => {
+    if (i > 0) html += '<span class="breadcrumb-separator">\u203A</span>';
+    const isCurrent = i === navStack.length - 1;
+    html += `<span class="breadcrumb-item${isCurrent ? ' current' : ''}" data-idx="${i}">${item.label}</span>`;
+  });
+  bc.innerHTML = html;
+  bc.querySelectorAll('.breadcrumb-item:not(.current)').forEach(el => {
+    el.addEventListener('click', () => navigateTo(parseInt(el.dataset.idx)));
+  });
+  bc.scrollLeft = bc.scrollWidth;
+}
+
+// ==================== PAGE TRANSITION ====================
+function renderPage(direction) {
+  renderBreadcrumb();
+  const container = document.getElementById('page-content');
+  const current = navStack[navStack.length - 1];
+  const newHTML = buildPageHTML(current.level, current.id);
+
+  if (direction === 'none') {
+    container.innerHTML = newHTML;
+    attachPageListeners(container);
+    return;
+  }
+
+  const exitClass = direction === 'forward' ? 'exit-left' : 'exit-right';
+  const enterClass = direction === 'forward' ? 'enter-right' : 'enter-left';
+
+  container.classList.add(exitClass);
+  setTimeout(() => {
+    container.innerHTML = newHTML;
+    container.classList.remove(exitClass);
+    container.classList.add(enterClass);
+    container.offsetHeight; // force reflow
+    container.classList.remove(enterClass);
+    attachPageListeners(container);
+  }, 200);
+}
+
+// ==================== PAGE BUILDERS ====================
+function buildPageHTML(level, id) {
+  switch (level) {
+    case 'block': return buildBlockPage();
+    case 'week': return buildWeekPage(id);
+    case 'workout': return buildWorkoutPage(id);
+    default: return '';
+  }
+}
+
+// ----- Block View (with segmented meso bar + accordion) -----
+function buildBlockPage() {
+  const p = programData;
+  const pct = Math.round((p.currentWeek / p.totalWeeks) * 100);
+
+  // Build segmented progress bar
+  let segBarHTML = '<div class="meso-progress-bar">';
+  p.mesocycles.forEach((meso, i) => {
+    let fillPct = 0;
+    if (meso.status === 'completed') fillPct = 100;
+    else if (meso.status === 'current' && meso.currentWeekInMeso) {
+      fillPct = Math.round((meso.currentWeekInMeso / meso.totalWeeksInMeso) * 100);
+    }
+    const stateClass = meso.status;
+    const activeClass = meso.status === 'current' ? ' active-tab' : '';
+    let indicator = '';
+    if (meso.status === 'current' && meso.currentWeekInMeso) {
+      const pos = ((meso.currentWeekInMeso - 0.5) / meso.totalWeeksInMeso) * 100;
+      indicator = `<div class="meso-position-indicator" style="left:calc(${pos}% - 2px)"></div>`;
+    }
+    segBarHTML += `<div class="meso-segment ${stateClass}${activeClass}" data-meso-tab="${meso.id}">
+      <div class="meso-segment-fill" style="width:${fillPct}%"></div>
+      ${indicator}
+    </div>`;
+  });
+  segBarHTML += '</div>';
+
+  // Build meso sections (accordion)
+  let sectionsHTML = '<div class="meso-sections">';
+  p.mesocycles.forEach(meso => {
+    const isExpanded = meso.status === 'current';
+    const expandedClass = isExpanded ? ' expanded' : '';
+    let statusHTML = '';
+    if (meso.status === 'completed') statusHTML = '<span class="meso-section-status completed">\u2713</span>';
+    else if (meso.status === 'current') statusHTML = '<span class="meso-section-status current">Current</span>';
+    else statusHTML = '<span class="meso-section-status upcoming">Upcoming</span>';
+
+    let weeksHTML = '';
+    meso.weeks.forEach(week => {
+      const globalWeekNum = meso.weekStart + week.num - 1;
+      const deloadClass = week.isDeload ? ' deload' : '';
+
+      // Build workout pills
+      let pillsHTML = '<div class="workout-pills">';
+      if (week.workouts) {
+        week.workouts.forEach(wo => {
+          let pillClass = 'upcoming';
+          let pillIcon = '';
+          if (wo.status === 'completed') { pillClass = 'done'; pillIcon = ' \u2713'; }
+          else if (wo.status === 'next') { pillClass = 'next'; pillIcon = ' \u25CF'; }
+          pillsHTML += `<span class="workout-pill ${pillClass}">${wo.abbr || wo.name}${pillIcon}</span>`;
+        });
+      }
+      pillsHTML += '</div>';
+
+      const intensityHTML = buildIntensityBars(week.num, meso.totalWeeksInMeso, week.isDeload);
+
+      weeksHTML += `<div class="week-row${deloadClass}" data-nav="week" data-id="${week.id}" data-meso-id="${meso.id}">
+        <span class="week-row-label">Wk ${week.num}</span>
+        ${pillsHTML}
+        ${intensityHTML}
+      </div>`;
+    });
+
+    sectionsHTML += `<div class="meso-section${expandedClass}" data-meso-section="${meso.id}">
+      <div class="meso-section-header" data-meso-toggle="${meso.id}">
+        <span class="meso-section-chevron">\u25B6</span>
+        <span class="meso-section-title">${meso.name}</span>
+        <span class="meso-section-meta">${meso.weekRange}</span>
+        ${statusHTML}
+      </div>
+      <div class="meso-section-body">
+        ${weeksHTML}
+      </div>
+    </div>`;
+  });
+  sectionsHTML += '</div>';
+
+  return `
+    <div class="heading-section">
+      <div class="heading-title">${p.name}</div>
+      <div class="heading-subtitle">Week ${p.currentWeek} of ${p.totalWeeks} \u00b7 ${pct}% complete</div>
+      ${segBarHTML}
+    </div>
+    ${sectionsHTML}
+  `;
+}
+
+// ----- Week View -----
+function buildWeekPage(weekId) {
+  let week = null, parentMeso = null;
+  for (const m of programData.mesocycles) {
+    const w = m.weeks.find(w => w.id === weekId);
+    if (w) { week = w; parentMeso = m; break; }
+  }
+  if (!week) return '';
+
+  const intensityHTML = buildIntensityBars(week.num, parentMeso.totalWeeksInMeso, week.isDeload);
+
+  let html = `
+    <div class="heading-section">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="heading-title" style="margin-bottom:0">Week ${week.num}</div>
+        ${intensityHTML}
+      </div>
+      <div class="heading-subtitle">${week.workoutsDone} of ${week.workoutsTotal} workouts complete</div>
+    </div>
+    <div class="cards-list">`;
+
+  if (week.workouts && week.workouts.length > 0) {
+    week.workouts.forEach(wo => {
+      const isCompleted = wo.status === 'completed';
+      const isNext = wo.status === 'next';
+      const isFuture = wo.status === 'future';
+      const stateClass = isCompleted ? '' : isNext ? 'next-card' : isFuture ? 'future' : '';
+
+      const woBadge = isNext ? ' <span class="badge badge-next">Next</span>' : '';
+
+      let musclesHTML = '';
+      if (wo.muscles) {
+        musclesHTML = '<div class="muscle-pills">';
+        wo.muscles.forEach(m => {
+          musclesHTML += `<span class="muscle-pill"><span class="muscle-pill-dot" style="background:${m.color}"></span>${m.name}</span>`;
+        });
+        musclesHTML += '</div>';
+      }
+
+      let statsHTML = '';
+      if (wo.sets !== null && wo.sets !== undefined) {
+        statsHTML = `<div class="card-meta" style="margin-top:4px">${wo.sets} sets \u00b7 ${formatVolume(wo.volume)} lbs</div>`;
+      } else if (wo.plannedSets) {
+        statsHTML = `<div class="card-meta" style="margin-top:4px;font-style:italic">~${wo.plannedSets} sets planned</div>`;
+      }
+
+      // Mini velocity strips for completed workouts
+      let stripsHTML = '';
+      if (wo.exercises && wo.exercises.length > 0) {
+        const hasVelData = wo.exercises.some(ex => ex.sets && ex.sets.some(s => s.vel));
+        if (hasVelData) {
+          stripsHTML = '<div class="collapsed-strips" style="margin-top:6px">';
+          wo.exercises.forEach(ex => {
+            if (!ex.sets) return;
+            const velSets = ex.sets.filter(s => s.vel);
+            if (velSets.length > 0) {
+              velSets.forEach(set => {
+                stripsHTML += '<div class="collapsed-strip">';
+                set.vel.reps.slice(0, 6).forEach(v => {
+                  stripsHTML += `<div class="collapsed-strip-bar" style="background:${velZoneColor(v)}"></div>`;
+                });
+                stripsHTML += '</div>';
+              });
+            } else {
+              stripsHTML += '<div class="collapsed-strip placeholder"></div>';
+            }
+          });
+          stripsHTML += '</div>';
+        } else if (!isCompleted && wo.exercises.length > 0) {
+          // Show placeholder dashed strips for upcoming
+          stripsHTML = '<div class="collapsed-strips" style="margin-top:6px">';
+          wo.exercises.forEach(() => {
+            stripsHTML += '<div class="collapsed-strip placeholder"></div>';
+          });
+          stripsHTML += '</div>';
+        }
+      }
+
+      const dateStr = wo.date || '';
+      const durStr = wo.duration ? ' \u00b7 ' + wo.duration : '';
+      const rightLabel = isCompleted ? `${dateStr}${durStr}` : isNext ? `${dateStr} \u00b7 NEXT` : dateStr;
+
+      html += `
+        <div class="card ${stateClass}" data-nav="workout" data-id="${wo.id}">
+          <div class="card-top">
+            <span class="card-name">${wo.name}${isCompleted ? ' <span style="color:var(--status-success);font-size:12px">\u2713</span>' : ''}</span>
+            <span class="card-right">${rightLabel}${woBadge}</span>
+          </div>
+          ${musclesHTML}
+          ${statsHTML}
+          ${stripsHTML}
+        </div>`;
+    });
+  } else {
+    html += '<div style="text-align:center;color:var(--text-tertiary);font-family:var(--font-ui);font-size:12px;padding:24px 0">No workout data for this week</div>';
+  }
+
+  html += '</div>';
+  return html;
+}
+
+// ----- Workout View (exercises expand inline) -----
+function buildWorkoutPage(workoutId) {
+  const result = findWorkout(workoutId);
+  if (!result) return '';
+  const workout = result.workout;
+
+  let musclesHTML = '';
+  if (workout.muscles) {
+    musclesHTML = '<div class="muscle-pills">';
+    workout.muscles.forEach(m => {
+      musclesHTML += `<span class="muscle-pill"><span class="muscle-pill-dot" style="background:${m.color}"></span>${m.name}</span>`;
+    });
+    musclesHTML += '</div>';
+  }
+
+  const statsLine = [
+    workout.date || '',
+    workout.duration || '',
+    workout.sets ? workout.sets + ' sets' : '',
+    workout.volume ? formatVolume(workout.volume) + ' lbs' : '',
+  ].filter(Boolean).join(' \u00b7 ');
+
+  let html = `
+    <div class="heading-section">
+      <div class="heading-title">${workout.name}</div>
+      <div class="heading-subtitle">${statsLine}</div>
+      ${musclesHTML}
+    </div>
+    <div class="cards-list">`;
+
+  if (workout.exercises && workout.exercises.length > 0) {
+    workout.exercises.forEach(ex => {
+      // Collapsed view: header row + velocity strips
+      let stripHTML = '<div class="collapsed-strips">';
+      if (ex.sets) {
+        ex.sets.forEach(set => {
+          if (set.vel) {
+            stripHTML += '<div class="collapsed-strip">';
+            set.vel.reps.slice(0, 8).forEach(v => {
+              stripHTML += `<div class="collapsed-strip-bar" style="background:${velZoneColor(v)}"></div>`;
+            });
+            stripHTML += '</div>';
+          } else if (set.rpe !== undefined && set.rpe !== null) {
+            // Completed but no velocity data
+            stripHTML += '<div class="collapsed-strip" style="background:var(--border-strong);height:3px;border-radius:1px"></div>';
+          } else {
+            stripHTML += '<div class="collapsed-strip placeholder"></div>';
+          }
+        });
+      }
+      stripHTML += '</div>';
+
+      const e1rmHTML = ex.e1rm ? `<span class="exercise-collapsed-e1rm">e1RM ${ex.e1rm}${ex.isPR ? ' \u2605' : ''}</span>` : '';
+
+      // Build inline-expandable body
+      let expandBodyHTML = buildExerciseExpandBody(ex);
+
+      html += `
+        <div class="exercise-card" data-exercise-toggle="${ex.id}" data-workout-id="${workoutId}">
+          <div class="exercise-collapsed-row">
+            <span class="exercise-collapsed-name">${ex.name}</span>
+            <span class="exercise-collapsed-summary">${ex.summary}</span>
+            ${e1rmHTML}
+          </div>
+          ${stripHTML}
+          <div class="exercise-expand-body">
+            ${expandBodyHTML}
+          </div>
+        </div>`;
+    });
+  } else {
+    html += '<div style="text-align:center;color:var(--text-tertiary);font-family:var(--font-ui);font-size:12px;padding:24px 0">Workout not yet completed</div>';
+  }
+
+  html += '</div>';
+  return html;
+}
+
+// ----- Inline Exercise Expansion Content -----
+function buildExerciseExpandBody(exercise) {
+  let html = '';
+
+  // Tempo
+  if (exercise.tempo) {
+    html += `<div class="tempo-display" style="margin-top:10px"><span class="tempo-label">Tempo</span>${exercise.tempo}</div>`;
+  }
+
+  // Muscle targets
+  if (exercise.muscleTargets && exercise.muscleTargets.length > 0) {
+    html += `<div style="font-family:var(--font-ui);font-size:11px;color:var(--text-secondary);margin-top:6px">${exercise.muscleTargets.join(' \u00b7 ')}</div>`;
+  }
+
+  // Set table
+  html += `<div class="set-table">
+    <div class="set-table-header">
+      <div class="col-set">Set</div>
+      <div class="col-prev">Prev</div>
+      <div class="col-reps">Reps</div>
+      <div class="col-weight">LBS</div>
+      <div class="col-rpe">RPE</div>
+    </div>`;
+
+  if (exercise.sets) {
+    exercise.sets.forEach(set => {
+      html += '<div class="set-row">';
+      if (set.type === 'W') {
+        html += '<div class="col-set"><span class="set-type">W</span></div>';
+      } else {
+        html += `<div class="col-set"><span class="set-num">${set.num}</span></div>`;
+      }
+      html += `<div class="col-prev">${set.prev || '\u2014'}</div>`;
+      html += `<div class="col-reps"><span class="set-value">${set.reps}</span></div>`;
+      html += `<div class="col-weight"><span class="set-value">${set.weight}</span></div>`;
+      if (set.type === 'W') {
+        html += '<div class="col-rpe"><span style="color:var(--text-tertiary);font-family:var(--font-ui);font-size:12px">\u2014</span></div>';
+      } else {
+        html += `<div class="col-rpe"><span class="set-value rpe-value">${set.rpe || '\u2014'}</span></div>`;
+      }
+      html += '</div>';
+
+      // Velocity strip
+      if (set.vel) {
+        html += `<div class="vel-bars-b" data-vel='${JSON.stringify(set.vel)}'></div>`;
+      }
+    });
+  }
+
+  html += '</div>';
+  return html;
+}
+
+// ==================== LISTENERS ====================
+function attachPageListeners(container) {
+  // Card navigation (week and workout level)
+  container.querySelectorAll('[data-nav]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const level = el.dataset.nav;
+      const id = el.dataset.id;
+
+      let label = '';
+      if (level === 'week') {
+        let week = null, meso = null;
+        for (const m of programData.mesocycles) {
+          week = m.weeks.find(w => w.id === id);
+          if (week) { meso = m; break; }
+        }
+        label = week ? 'Week ' + week.num : id;
+        // Push meso into nav stack if not already there
+        if (meso && !navStack.find(n => n.label === meso.name)) {
+          navStack.push({ level: 'meso-label', id: meso.id, label: meso.name });
+        }
+      } else if (level === 'workout') {
+        const result = findWorkout(id);
+        label = result ? result.workout.name : id;
+      }
+
+      navigate(level, id, label, 'forward');
+    });
+  });
+
+  // Meso section toggle (accordion)
+  container.querySelectorAll('[data-meso-toggle]').forEach(el => {
+    el.addEventListener('click', () => {
+      const mesoId = el.dataset.mesoToggle;
+      const section = container.querySelector(`[data-meso-section="${mesoId}"]`);
+      if (section) {
+        // Toggle this section
+        const isExpanded = section.classList.contains('expanded');
+        // Collapse all
+        container.querySelectorAll('.meso-section').forEach(s => s.classList.remove('expanded'));
+        // Expand clicked if it was collapsed
+        if (!isExpanded) section.classList.add('expanded');
+
+        // Update segment bar active state
+        container.querySelectorAll('.meso-segment').forEach(s => s.classList.remove('active-tab'));
+        if (!isExpanded) {
+          const seg = container.querySelector(`[data-meso-tab="${mesoId}"]`);
+          if (seg) seg.classList.add('active-tab');
+        }
+      }
+    });
+  });
+
+  // Meso segment bar taps (act as tabs)
+  container.querySelectorAll('[data-meso-tab]').forEach(el => {
+    el.addEventListener('click', () => {
+      const mesoId = el.dataset.mesoTab;
+      // Collapse all, expand target
+      container.querySelectorAll('.meso-section').forEach(s => s.classList.remove('expanded'));
+      const section = container.querySelector(`[data-meso-section="${mesoId}"]`);
+      if (section) section.classList.add('expanded');
+      // Update active tab
+      container.querySelectorAll('.meso-segment').forEach(s => s.classList.remove('active-tab'));
+      el.classList.add('active-tab');
+      // Scroll to section
+      if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // Inline exercise expand/collapse
+  container.querySelectorAll('[data-exercise-toggle]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      // Don't toggle if clicking on velocity bars
+      if (e.target.closest('.vel-bars-b')) return;
+      el.classList.toggle('expanded');
+      // Init velocity bars inside if first expansion
+      if (el.classList.contains('expanded')) {
+        el.querySelectorAll('.vel-bars-b:not([data-init])').forEach(vb => {
+          initVelBars(vb);
+          vb.setAttribute('data-init', 'true');
+        });
+      }
+    });
+  });
+
+  // Velocity bars toggle
+  container.querySelectorAll('.vel-bars-b[data-init]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      el.classList.toggle('expanded');
+    });
+  });
+}
+
+// ==================== VELOCITY BARS ====================
+function initVelBars(el) {
+  const vel = JSON.parse(el.dataset.vel);
+  let html = '';
+  vel.reps.forEach(v => {
+    html += `<div class="vbar" style="background:${velZoneColor(v)};height:${(v / 1.2) * 100}%"><span class="vbar-label">${v.toFixed(2)}</span></div>`;
+  });
+  html += `<div class="vel-info"><span style="color:${zoneColorVar(vel.zone)}">${velZoneName(vel.zone)}</span><span style="color:var(--text-tertiary)">Mean ${vel.mean.toFixed(2)} m/s \u00b7 Loss ${vel.loss}%</span></div>`;
+  el.innerHTML = html;
+
+  // Add click handler for expand
+  el.addEventListener('click', (e) => {
+    e.stopPropagation();
+    el.classList.toggle('expanded');
+  });
+}
+
+// ==================== INIT ====================
+navStack = [{ level: 'block', id: null, label: 'Program' }];
+renderPage('none');
+</script>
+</body>
+</html>

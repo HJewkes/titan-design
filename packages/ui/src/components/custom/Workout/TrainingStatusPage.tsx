@@ -114,7 +114,7 @@ function SummaryCards({ summary }: { summary: TrainingStatusSummary }) {
         return (
           <View
             key={key}
-            className="bg-surface-elevated border-border"
+            className="bg-surface-elevated border-hairline"
             style={{
               flexGrow: 1,
               flexBasis: '46%',
@@ -265,7 +265,7 @@ export function TrainingStatusPage({
         <SummaryCards summary={summary} />
 
         <View
-          className="bg-surface-elevated border-border"
+          className="bg-surface-elevated border-hairline"
           style={{
             borderWidth: 1,
             borderRadius: 12,

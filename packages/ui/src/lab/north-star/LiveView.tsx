@@ -14,17 +14,21 @@ import {
 import { Tooltip } from '../../components/ui/tooltip/Tooltip'
 import { getSemanticColors } from '../../theme/tokens/semantic'
 import { alpha } from '../../utils/colors'
-import { neumorphicShadows } from '../../theme/shadows'
+import { paperSheet } from '../../theme/materials'
 import { type DashboardModel, verdictFromLoss } from './fixtures'
 
 const t = getSemanticColors('dark')
 
-/** Raised-card elevation shared by the alert + tempo cards. */
-const CARD_SHADOW = neumorphicShadows.charcoal.raised.medium
+/**
+ * Hero-card material shared by the alert + tempo cards. Paper, not a raised
+ * neumorphic shadow — these are exactly the hero surfaces paper is scoped to,
+ * and the dual-opposing shadow it replaces was the ruled-out pattern.
+ */
+const CARD_SHADOW = paperSheet(t['surface-raised'])
 /** One row height for the tempo + alert cards, so they line up regardless of tempo font size. */
 const CONTROL_HEIGHT = 34
-/** The tempo card ground — mirrors TempoDisplay's own charcoal so a shorter inner pill reads seamless. */
-const TEMPO_GROUND = '#1C1C1C'
+/** The tempo card ground — mirrors TempoDisplay's own surface-raised so a shorter inner pill reads seamless. */
+const TEMPO_GROUND = t['surface-raised']
 
 /** Clamped linear interpolation of `v` between `vLo..vHi` as `w` runs `wLo..wHi`. */
 function clampLerp(w: number, wLo: number, wHi: number, vLo: number, vHi: number): number {
@@ -48,7 +52,7 @@ function VerticalSlotLabel({ slot }: { slot: VoltraSlot }) {
   const { label } = SLOT_META[slot]
   return (
     <View
-      className="border-border"
+      className="border-hairline"
       style={{ width: 34, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1 }}
     >
       {/* Fixed width holds the full label before rotation (a bare rotate clips to the strip). */}
@@ -236,7 +240,7 @@ export function ExerciseHeader({ session }: { session: DashboardModel['session']
   return (
     <View
       onLayout={onLayout}
-      className="border-border"
+      className="border-hairline"
       style={{
         flexDirection: wrap ? 'column' : 'row',
         alignItems: wrap ? 'flex-start' : 'baseline',
@@ -363,7 +367,7 @@ export function LiveView({
             style={{ gap: CONTROLS_GAP, justifyContent: hasTempo ? 'space-between' : 'flex-end' }}
           >
             {/* tempo card — locked to the alert's height (this view only); the inner TempoDisplay
-                shrinks its font but stays centred on the shared charcoal ground so it reads seamless. */}
+                shrinks its font but stays centred on the shared grey ground so it reads seamless. */}
             {session.tempo != null && (
               <View
                 onLayout={onTempoLayout}

@@ -19,7 +19,7 @@ describe('LiveAuraFrame', () => {
     expect(screen.getByText('Cable Row')).toBeInTheDocument()
   })
 
-  it('sits on the charcoal base surface', () => {
+  it('sits on the grey base surface', () => {
     render(<LiveAuraFrame category="productive" />)
     expect(screen.getByTestId('live-aura-frame')).toHaveStyle({
       backgroundColor: t['background-base'],

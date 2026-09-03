@@ -9,7 +9,7 @@ import { SessionHeader, type SessionHeaderPlanEntry } from './SessionHeader'
  * bar (fill ∝ sets done, coloured against the elapsed-vs-budget pace with a live marker),
  * a mono `n/total sets` label and a ⏱ elapsed readout. Upcoming, the tiles become
  * Date/Time/Until, the bar is the empty plan shape, and the readout shows the planned
- * duration. Rendered on the raised charcoal plane.
+ * duration. Rendered on the raised grey plane.
  */
 const meta: Meta<typeof SessionHeader> = {
   title: 'Shell/SessionRail/SessionHeader',
@@ -20,7 +20,7 @@ const meta: Meta<typeof SessionHeader> = {
       description: {
         component:
           '**Molecule** (shell S3). The session-rail heading — title, stat tiles, chunked ' +
-          'pace bar, sets label + ⏱ readout, on the raised charcoal plane. Composes ' +
+          'pace bar, sets label + ⏱ readout, on the raised grey plane. Composes ' +
           '[MetricTiles](?path=/docs/workout-metrictiles--docs) / ' +
           '[ScheduleTiles](?path=/docs/workout-scheduletiles--docs) + ' +
           '[SegmentedProgressBar](?path=/docs/workout-segmentedprogressbar--docs) + ' +

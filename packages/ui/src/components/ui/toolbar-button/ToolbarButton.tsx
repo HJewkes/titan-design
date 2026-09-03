@@ -1,10 +1,12 @@
 import React, { useState, useCallback, createContext, useContext } from 'react'
 import { View, Text, Pressable, type ViewProps, StyleSheet, Platform } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { neumorphicShadows, getHoverColors } from '../../../theme'
+import { getHoverColors } from '../../../theme'
+import { greyRamp } from '../../../theme/tokens/primitives'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { resolveColor } from '../../../theme/resolve-color'
 
-export type ToolbarButtonVariant = 'default' | 'neumorphic'
+export type ToolbarButtonVariant = 'default' | 'raised'
 export type ToolbarButtonSize = 'sm' | 'md' | 'lg'
 
 interface ToolbarButtonContextType {
@@ -47,9 +49,19 @@ export interface ToolbarButtonProps extends ViewProps {
   className?: string
 }
 
-// Base button color
-const BUTTON_BG = '#3C3C3C'
-const MENU_BG = '#2C2C2C'
+const SEMANTIC = getSemanticColors('dark')
+
+// Base button colours. These were raw `#3C3C3C`/`#2C2C2C` literals — old cold
+// charcoal steps that survived the grey migration only because they were plain
+// strings rather than scale references.
+const BUTTON_BG = greyRamp[800]
+const MENU_BG = greyRamp[900]
+
+// Inline depth is a HAIRLINE, not a shadow (TD-07.16). On a ~10% lightness
+// surface a dual-opposing neumorphic shadow has no room below to read; alpha
+// composites by the same amount over any plane, so the edge holds everywhere.
+const EDGE = { borderWidth: 1, borderColor: SEMANTIC['hairline-default'] } as const
+const EDGE_PRESSED = { borderWidth: 1, borderColor: SEMANTIC['hairline-strong'] } as const
 
 // Calculate hover colors using color math
 const hoverColors = getHoverColors(BUTTON_BG, 'medium')
@@ -100,7 +112,7 @@ export function ToolbarButton({
   isActive,
   isDisabled = false,
   size = 'md',
-  variant = 'neumorphic',
+  variant = 'raised',
   tooltip,
   showLabel = true,
   onPress,
@@ -135,25 +147,27 @@ export function ToolbarButton({
   }
 
   // Get shadow and background styles for neumorphic variant
-  const getNeumorphicStyle = () => {
+  /**
+   * Raised/pressed treatment. Depth comes from the FILL plus a hairline edge —
+   * pressed sits darker with a stronger edge, raised sits lighter with a quieter
+   * one. It used to come from a two-layer neumorphic shadow, which the surface
+   * exploration ruled out for inline hierarchy: it needs a mid-tone background
+   * for the dark half to have somewhere to fall, and these buttons sit at ~10%
+   * lightness.
+   */
+  const getRaisedStyle = () => {
     if (isDisabled) {
       return styles.disabledBg
     }
-    
-    const shadows = neumorphicShadows.charcoal
-    
     if (showActive) {
-      // Active = pressed/sunken appearance
       return {
-        backgroundColor: isHovered ? hoverColors.pressed : BUTTON_BG,
-        ...(isHovered ? shadows.pressedHover.subtle : shadows.pressed.subtle),
+        backgroundColor: isHovered ? hoverColors.pressed : greyRamp[900],
+        ...EDGE_PRESSED,
       }
-    } else {
-      // Inactive = raised/elevated appearance
-      return {
-        backgroundColor: isHovered ? hoverColors.raised : BUTTON_BG,
-        ...(isHovered ? shadows.raisedHover.subtle : shadows.raised.subtle),
-      }
+    }
+    return {
+      backgroundColor: isHovered ? hoverColors.raised : BUTTON_BG,
+      ...EDGE,
     }
   }
 
@@ -180,9 +194,9 @@ export function ToolbarButton({
             className
           )}
           style={[
-            variant === 'neumorphic' && getNeumorphicStyle(),
+            variant === 'raised' && getRaisedStyle(),
             variant === 'default' && {
-              backgroundColor: showActive ? BUTTON_BG : '#6E6E6E',
+              backgroundColor: showActive ? BUTTON_BG : greyRamp[600],
             },
           ]}
         >
@@ -232,7 +246,7 @@ export function ToolbarButton({
             <View
               className={cn(
                 'absolute z-50 top-full left-0 mt-1',
-                'rounded-lg shadow-lg border border-border',
+                'rounded-lg shadow-lg border border-hairline',
                 'min-w-[150px] overflow-hidden',
                 `bg-[${MENU_BG}]`
               )}

@@ -53,16 +53,17 @@ const RNW_TEXT_SELECTOR = 'div[dir="auto"]'
 type StyleMap = Record<string, string>
 
 async function getStyles(locator: Locator, props: readonly string[]): Promise<StyleMap> {
-  return locator.evaluate((el, propsArg) => {
-    const cs = window.getComputedStyle(el)
-    const result: Record<string, string> = {}
-    for (const p of propsArg) {
-      result[p] = cs.getPropertyValue(
-        p.replace(/([A-Z])/g, '-$1').toLowerCase(),
-      )
-    }
-    return result
-  }, props as unknown as string[])
+  return locator.evaluate(
+    (el, propsArg) => {
+      const cs = window.getComputedStyle(el)
+      const result: Record<string, string> = {}
+      for (const p of propsArg) {
+        result[p] = cs.getPropertyValue(p.replace(/([A-Z])/g, '-$1').toLowerCase())
+      }
+      return result
+    },
+    props as unknown as string[]
+  )
 }
 
 function normalizeColor(value: string): string {
@@ -99,7 +100,7 @@ function normalizeLineHeight(htmlVal: string, reactVal: string): [string, string
 function compareStyles(
   htmlStyles: StyleMap,
   reactStyles: StyleMap,
-  props: readonly string[],
+  props: readonly string[]
 ): Array<{ prop: string; html: string; react: string }> {
   const mismatches: Array<{ prop: string; html: string; react: string }> = []
 
@@ -205,10 +206,12 @@ async function assertStyleMatch(
   testId: string,
   htmlSelector: string,
   reactSelector: string,
-  propsOrOptions?: readonly string[] | {
-    reactTextSelector: string
-    props?: readonly string[]
-  },
+  propsOrOptions?:
+    | readonly string[]
+    | {
+        reactTextSelector: string
+        props?: readonly string[]
+      }
 ) {
   const hasTextSplit = propsOrOptions != null && !Array.isArray(propsOrOptions)
   const props = hasTextSplit
@@ -228,12 +231,8 @@ async function assertStyleMatch(
   const allMismatches: Array<{ prop: string; html: string; react: string }> = []
 
   if (reactTextSelector) {
-    const containerProps = props.filter(
-      (p) => !(TEXT_PROPS as readonly string[]).includes(p),
-    )
-    const textProps = props.filter(
-      (p) => (TEXT_PROPS as readonly string[]).includes(p),
-    )
+    const containerProps = props.filter((p) => !(TEXT_PROPS as readonly string[]).includes(p))
+    const textProps = props.filter((p) => (TEXT_PROPS as readonly string[]).includes(p))
 
     if (containerProps.length > 0) {
       const htmlStyles = await getStyles(htmlEl, containerProps)
@@ -242,9 +241,7 @@ async function assertStyleMatch(
     }
 
     if (textProps.length > 0) {
-      const reactTextEl = container
-        .locator(`.react-version ${reactTextSelector}`)
-        .first()
+      const reactTextEl = container.locator(`.react-version ${reactTextSelector}`).first()
       await expect(reactTextEl).toBeAttached({ timeout: 3000 })
 
       const htmlStyles = await getStyles(htmlEl, textProps)
@@ -264,28 +261,38 @@ async function assertStyleMatch(
   // substantive style (font, padding, border, radius, color) matches exactly.
   // Real layout drift (missing element, wrong padding) blows well past this.
   const DIMENSION_TOLERANCE = 3
-  const htmlRect = await htmlEl.evaluate(el => {
+  const htmlRect = await htmlEl.evaluate((el) => {
     const r = el.getBoundingClientRect()
     return { width: Math.round(r.width), height: Math.round(r.height) }
   })
-  const reactRect = await reactEl.evaluate(el => {
+  const reactRect = await reactEl.evaluate((el) => {
     const r = el.getBoundingClientRect()
     return { width: Math.round(r.width), height: Math.round(r.height) }
   })
 
   if (Math.abs(htmlRect.width - reactRect.width) > DIMENSION_TOLERANCE) {
-    allMismatches.push({ prop: 'width (px)', html: `${htmlRect.width}px`, react: `${reactRect.width}px` })
+    allMismatches.push({
+      prop: 'width (px)',
+      html: `${htmlRect.width}px`,
+      react: `${reactRect.width}px`,
+    })
   }
   if (Math.abs(htmlRect.height - reactRect.height) > DIMENSION_TOLERANCE) {
-    allMismatches.push({ prop: 'height (px)', html: `${htmlRect.height}px`, react: `${reactRect.height}px` })
+    allMismatches.push({
+      prop: 'height (px)',
+      html: `${htmlRect.height}px`,
+      react: `${reactRect.height}px`,
+    })
   }
 
   // Priority 4: Text content verification (normalize whitespace).
   // RNW renders each Text as a separate div[dir="auto"], so adjacent text nodes
   // lack the inter-element whitespace that HTML naturally has. We normalize by
   // collapsing all whitespace and comparing the non-space characters.
-  const htmlText = await htmlEl.evaluate(el => (el.textContent ?? '').replace(/\s+/g, ' ').trim())
-  const reactText = await reactEl.evaluate(el => (el.textContent ?? '').replace(/\s+/g, ' ').trim())
+  const htmlText = await htmlEl.evaluate((el) => (el.textContent ?? '').replace(/\s+/g, ' ').trim())
+  const reactText = await reactEl.evaluate((el) =>
+    (el.textContent ?? '').replace(/\s+/g, ' ').trim()
+  )
   // Compare with all spaces removed (catches RNW no-space-between-elements)
   const htmlTextNoSpace = htmlText.replace(/\s/g, '')
   const reactTextNoSpace = reactText.replace(/\s/g, '')
@@ -296,11 +303,15 @@ async function assertStyleMatch(
   // Priority 5: Child element count
   // Note: RNW wraps text in div[dir="auto"], so React typically has more
   // child elements than flat HTML. We only flag large discrepancies (>2).
-  const htmlChildCount = await htmlEl.evaluate(el => el.children.length)
-  const reactChildCount = await reactEl.evaluate(el => el.children.length)
+  const htmlChildCount = await htmlEl.evaluate((el) => el.children.length)
+  const reactChildCount = await reactEl.evaluate((el) => el.children.length)
   const childDiff = Math.abs(htmlChildCount - reactChildCount)
   if (childDiff > 2) {
-    allMismatches.push({ prop: 'childCount', html: String(htmlChildCount), react: String(reactChildCount) })
+    allMismatches.push({
+      prop: 'childCount',
+      html: String(htmlChildCount),
+      react: String(reactChildCount),
+    })
   }
 
   if (allMismatches.length > 0) {
@@ -320,7 +331,7 @@ async function assertSubElementStyles(
   testId: string,
   htmlSelector: string,
   reactSelector: string,
-  props: readonly string[],
+  props: readonly string[]
 ) {
   const container = page.locator(`[data-testid="${testId}"]`)
   await expect(container).toBeAttached()
@@ -334,7 +345,11 @@ async function assertSubElementStyles(
   const allMismatches: Array<{ prop: string; html: string; react: string }> = []
 
   if (htmlCount !== reactCount) {
-    allMismatches.push({ prop: 'element count', html: String(htmlCount), react: String(reactCount) })
+    allMismatches.push({
+      prop: 'element count',
+      html: String(htmlCount),
+      react: String(reactCount),
+    })
   }
 
   const count = Math.min(htmlCount, reactCount)
@@ -365,46 +380,94 @@ test.describe('HTML vs React Component Comparison', () => {
   // ── WeightBadge ──
 
   test('WeightBadge default md', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-weight-badge-default-md', '.weight-badge', '[data-testid="weight-badge"]', { reactTextSelector: '[data-testid="weight-badge"] div[dir="auto"]' })
+    await assertStyleMatch(
+      page,
+      'compare-weight-badge-default-md',
+      '.weight-badge',
+      '[data-testid="weight-badge"]',
+      { reactTextSelector: '[data-testid="weight-badge"] div[dir="auto"]' }
+    )
   })
 
   test('WeightBadge default sm', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-weight-badge-default-sm', '.weight-badge', '[data-testid="weight-badge"]', { reactTextSelector: '[data-testid="weight-badge"] div[dir="auto"]' })
+    await assertStyleMatch(
+      page,
+      'compare-weight-badge-default-sm',
+      '.weight-badge',
+      '[data-testid="weight-badge"]',
+      { reactTextSelector: '[data-testid="weight-badge"] div[dir="auto"]' }
+    )
   })
 
   test('WeightBadge default lg', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-weight-badge-default-lg', '.weight-badge', '[data-testid="weight-badge"]', { reactTextSelector: '[data-testid="weight-badge"] div[dir="auto"]' })
+    await assertStyleMatch(
+      page,
+      'compare-weight-badge-default-lg',
+      '.weight-badge',
+      '[data-testid="weight-badge"]',
+      { reactTextSelector: '[data-testid="weight-badge"] div[dir="auto"]' }
+    )
   })
 
   test('WeightBadge PR', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-weight-badge-pr', '.weight-badge', '[data-testid="weight-badge"]', { reactTextSelector: '[data-testid="weight-badge"] div[dir="auto"]' })
+    await assertStyleMatch(
+      page,
+      'compare-weight-badge-pr',
+      '.weight-badge',
+      '[data-testid="weight-badge"]',
+      { reactTextSelector: '[data-testid="weight-badge"] div[dir="auto"]' }
+    )
   })
 
   test('WeightBadge delta positive', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-weight-badge-delta-positive', '.weight-badge', '[data-testid="weight-badge"]', { reactTextSelector: '[data-testid="weight-badge"] div[dir="auto"]' })
+    await assertStyleMatch(
+      page,
+      'compare-weight-badge-delta-positive',
+      '.weight-badge',
+      '[data-testid="weight-badge"]',
+      { reactTextSelector: '[data-testid="weight-badge"] div[dir="auto"]' }
+    )
   })
 
   test('WeightBadge delta negative', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-weight-badge-delta-negative', '.weight-badge', '[data-testid="weight-badge"]', { reactTextSelector: '[data-testid="weight-badge"] div[dir="auto"]' })
+    await assertStyleMatch(
+      page,
+      'compare-weight-badge-delta-negative',
+      '.weight-badge',
+      '[data-testid="weight-badge"]',
+      { reactTextSelector: '[data-testid="weight-badge"] div[dir="auto"]' }
+    )
   })
 
   test('WeightBadge no icon', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-weight-badge-no-icon', '.weight-badge', '[data-testid="weight-badge"]', { reactTextSelector: '[data-testid="weight-badge"] div[dir="auto"]' })
+    await assertStyleMatch(
+      page,
+      'compare-weight-badge-no-icon',
+      '.weight-badge',
+      '[data-testid="weight-badge"]',
+      { reactTextSelector: '[data-testid="weight-badge"] div[dir="auto"]' }
+    )
   })
 
   // ── PrBadge ──
 
   test('PrBadge e1rm', async ({ page }) => {
     await assertStyleMatch(
-      page, 'compare-pr-badge-e1rm',
-      '.pr-badge', '[aria-label^="Personal record"]', { reactTextSelector: '[aria-label^="Personal record"] div[dir="auto"]' },
+      page,
+      'compare-pr-badge-e1rm',
+      '.pr-badge',
+      '[aria-label^="Personal record"]',
+      { reactTextSelector: '[aria-label^="Personal record"] div[dir="auto"]' }
     )
   })
 
   test('PrBadge reps', async ({ page }) => {
     await assertStyleMatch(
-      page, 'compare-pr-badge-reps',
-      '.pr-badge', '[aria-label^="Personal record"]', { reactTextSelector: '[aria-label^="Personal record"] div[dir="auto"]' },
+      page,
+      'compare-pr-badge-reps',
+      '.pr-badge',
+      '[aria-label^="Personal record"]',
+      { reactTextSelector: '[aria-label^="Personal record"] div[dir="auto"]' }
     )
   })
 
@@ -412,26 +475,44 @@ test.describe('HTML vs React Component Comparison', () => {
   // to match the component's Lucide <Star>, so the compact badge reaches parity.
   test('PrBadge compact', async ({ page }) => {
     await assertStyleMatch(
-      page, 'compare-pr-badge-compact',
-      '.pr-badge-compact', '[data-testid="pr-badge-star"]',
-      ['color', 'fontSize'] as const,
+      page,
+      'compare-pr-badge-compact',
+      '.pr-badge-compact',
+      '[data-testid="pr-badge-star"]',
+      ['color', 'fontSize'] as const
     )
   })
 
   // ── StatusDot ──
 
-  const statusVariants = ['success', 'warning', 'error', 'neutral', 'on-track', 'deviation', 'future'] as const
+  const statusVariants = [
+    'success',
+    'warning',
+    'error',
+    'neutral',
+    'on-track',
+    'deviation',
+    'future',
+  ] as const
   const statusDotProps = [
-    'backgroundColor', 'borderColor', 'borderRadius', 'borderWidth', 'borderStyle',
-    'display', 'alignItems', 'justifyContent',
+    'backgroundColor',
+    'borderColor',
+    'borderRadius',
+    'borderWidth',
+    'borderStyle',
+    'display',
+    'alignItems',
+    'justifyContent',
   ] as const
 
   for (const variant of statusVariants) {
     test(`StatusDot ${variant} md`, async ({ page }) => {
       await assertStyleMatch(
-        page, `compare-status-dot-${variant}-md`,
-        '.status-dot', '[data-testid="status-dot"]',
-        statusDotProps,
+        page,
+        `compare-status-dot-${variant}-md`,
+        '.status-dot',
+        '[data-testid="status-dot"]',
+        statusDotProps
       )
     })
   }
@@ -439,9 +520,11 @@ test.describe('HTML vs React Component Comparison', () => {
   for (const variant of statusVariants) {
     test(`StatusDot ${variant} sm`, async ({ page }) => {
       await assertStyleMatch(
-        page, `compare-status-dot-${variant}-sm`,
-        '.status-dot', '[data-testid="status-dot"]',
-        statusDotProps,
+        page,
+        `compare-status-dot-${variant}-sm`,
+        '.status-dot',
+        '[data-testid="status-dot"]',
+        statusDotProps
       )
     })
   }
@@ -453,14 +536,18 @@ test.describe('HTML vs React Component Comparison', () => {
     test(`StatusDot ${variant} md with icon`, async ({ page }) => {
       // Check the dot container
       await assertStyleMatch(
-        page, `compare-status-dot-${variant}-icon`,
-        '.status-dot', '[data-testid="status-dot"]',
-        statusDotProps,
+        page,
+        `compare-status-dot-${variant}-icon`,
+        '.status-dot',
+        '[data-testid="status-dot"]',
+        statusDotProps
       )
       // Check the icon text element
       const container = page.locator(`[data-testid="compare-status-dot-${variant}-icon"]`)
       const htmlIcon = container.locator('.html-version .dot-icon').first()
-      const reactIcon = container.locator(`.react-version [data-testid="status-dot"] ${RNW_TEXT_SELECTOR}`).first()
+      const reactIcon = container
+        .locator(`.react-version [data-testid="status-dot"] ${RNW_TEXT_SELECTOR}`)
+        .first()
 
       await expect(htmlIcon).toBeAttached({ timeout: 3000 })
       await expect(reactIcon).toBeAttached({ timeout: 3000 })
@@ -474,7 +561,9 @@ test.describe('HTML vs React Component Comparison', () => {
         const report = mismatches
           .map((m) => `  icon.${m.prop}: HTML="${m.html}" React="${m.react}"`)
           .join('\n')
-        expect.soft(mismatches.length, `Icon style mismatches for StatusDot ${variant}:\n${report}`).toBe(0)
+        expect
+          .soft(mismatches.length, `Icon style mismatches for StatusDot ${variant}:\n${report}`)
+          .toBe(0)
       }
     })
   }
@@ -483,9 +572,11 @@ test.describe('HTML vs React Component Comparison', () => {
   for (const variant of iconVariants) {
     test(`StatusDot ${variant} md with glow`, async ({ page }) => {
       await assertStyleMatch(
-        page, `compare-status-dot-${variant}-glow`,
-        '.status-dot', '[data-testid="status-dot"]',
-        [...statusDotProps, 'boxShadow'] as const,
+        page,
+        `compare-status-dot-${variant}-glow`,
+        '.status-dot',
+        '[data-testid="status-dot"]',
+        [...statusDotProps, 'boxShadow'] as const
       )
     })
   }
@@ -493,84 +584,55 @@ test.describe('HTML vs React Component Comparison', () => {
   // ── PlaceholderStrip ──
 
   const placeholderProps = [
-    'height', 'backgroundColor', 'borderRadius', 'opacity', 'gap', 'display',
+    'height',
+    'backgroundColor',
+    'borderRadius',
+    'opacity',
+    'gap',
+    'display',
   ] as const
 
   test('PlaceholderStrip single', async ({ page }) => {
     // Single strip: no children, so display: block (HTML) vs flex (RNW) is not visually different.
     // Use the original props without display for single strip.
     const singleStripProps = [
-      'height', 'backgroundColor', 'borderRadius', 'opacity', 'gap',
+      'height',
+      'backgroundColor',
+      'borderRadius',
+      'opacity',
+      'gap',
     ] as const
     await assertStyleMatch(
-      page, 'compare-placeholder-single',
-      '.placeholder-strip-single', '[data-testid="placeholder-strip"]',
-      singleStripProps,
+      page,
+      'compare-placeholder-single',
+      '.placeholder-strip-single',
+      '[data-testid="placeholder-strip"]',
+      singleStripProps
     )
   })
 
   test('PlaceholderStrip segmented 3', async ({ page }) => {
     await assertStyleMatch(
-      page, 'compare-placeholder-segmented-3',
-      '.placeholder-strip-segmented', '[data-testid="placeholder-strip"]',
-      placeholderProps,
+      page,
+      'compare-placeholder-segmented-3',
+      '.placeholder-strip-segmented',
+      '[data-testid="placeholder-strip"]',
+      placeholderProps
     )
   })
 
-  // ── VelocityStrip (mini) ──
-
-  const velocityMiniProps = [
-    'height', 'gap', 'borderRadius', 'display', 'flexDirection',
-  ] as const
-
-  test('VelocityStrip mini fast', async ({ page }) => {
-    await assertStyleMatch(
-      page, 'compare-velocity-mini-fast',
-      '.velocity-mini', '[data-testid="velocity-strip-mini"]',
-      velocityMiniProps,
-    )
-  })
-
-  test('VelocityStrip mini mixed', async ({ page }) => {
-    await assertStyleMatch(
-      page, 'compare-velocity-mini-mixed',
-      '.velocity-mini', '[data-testid="velocity-strip-mini"]',
-      velocityMiniProps,
-    )
-  })
-
-  test('VelocityStrip mini grinding', async ({ page }) => {
-    await assertStyleMatch(
-      page, 'compare-velocity-mini-grinding',
-      '.velocity-mini', '[data-testid="velocity-strip-mini"]',
-      velocityMiniProps,
-    )
-  })
-
-  // Priority 2a: VelocityStrip bar colors
-  test('VelocityStrip mini fast -- bar colors', async ({ page }) => {
-    await assertSubElementStyles(
-      page, 'compare-velocity-mini-fast',
-      '.vel-bar', '[data-testid^="velocity-bar-"]',
-      ['backgroundColor'] as const,
-    )
-  })
-
-  test('VelocityStrip mini mixed -- bar colors', async ({ page }) => {
-    await assertSubElementStyles(
-      page, 'compare-velocity-mini-mixed',
-      '.vel-bar', '[data-testid^="velocity-bar-"]',
-      ['backgroundColor'] as const,
-    )
-  })
-
-  test('VelocityStrip mini grinding -- bar colors', async ({ page }) => {
-    await assertSubElementStyles(
-      page, 'compare-velocity-mini-grinding',
-      '.vel-bar', '[data-testid^="velocity-bar-"]',
-      ['backgroundColor'] as const,
-    )
-  })
+  // ── VelocityStrip (mini) — REMOVED ──
+  //
+  // The `mini` variant no longer exists: `compact` replaced it, and compact is
+  // now SetBarChart in flat mode (paper, chunk-notch, gutter, hero geometry)
+  // rather than a flex row of plain bars. The HTML ground truth here described
+  // the old design, so these parity specimens tested a component that is gone.
+  //
+  // Not a coverage loss: the velocity->zone colour mapping these asserted is
+  // covered directly by unit tests (VelocityStrip.test.tsx asserts VL_GREEN/
+  // YELLOW/ORANGE/RED on velocity-bar-N, SetBarChart.test.tsx on t-bar-N).
+  // Re-adding parity specimens for compact would mean re-deriving SetBarChart's
+  // geometry in hand-written CSS, which would rot on the next chart change.
 
   // Priority 3d: VelocityStrip expanded
   // Note: RNW Animated.View may not render animated height in static test context.
@@ -586,11 +648,13 @@ test.describe('HTML vs React Component Comparison', () => {
     await page.waitForTimeout(1000)
 
     // Verify bars are rendered
-    const barCount = await container.locator('.react-version [data-testid^="velocity-bar-"]').count()
+    const barCount = await container
+      .locator('.react-version [data-testid^="velocity-bar-"]')
+      .count()
     expect(barCount, 'Expanded strip should have 3 bars').toBe(3)
 
     // Check width renders correctly
-    const reactRect = await reactEl.evaluate(el => {
+    const reactRect = await reactEl.evaluate((el) => {
       const r = el.getBoundingClientRect()
       return { width: Math.round(r.width), height: Math.round(r.height) }
     })
@@ -600,20 +664,30 @@ test.describe('HTML vs React Component Comparison', () => {
   // ── TempoDisplay ──
 
   const tempoContainerProps = [
-    'backgroundColor', 'borderRadius', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
-    'display', 'alignItems',
+    'backgroundColor',
+    'borderRadius',
+    'paddingTop',
+    'paddingRight',
+    'paddingBottom',
+    'paddingLeft',
+    'display',
+    'alignItems',
   ] as const
 
   test('TempoDisplay colored md', async ({ page }) => {
     await assertStyleMatch(
-      page, 'compare-tempo-colored-md',
-      '.tempo-display', '[data-testid="tempo-display"] > div',
-      tempoContainerProps,
+      page,
+      'compare-tempo-colored-md',
+      '.tempo-display',
+      '[data-testid="tempo-display"] > div',
+      tempoContainerProps
     )
     // Check text-level properties on the tempo-value element
     const container = page.locator('[data-testid="compare-tempo-colored-md"]')
     const htmlText = container.locator('.html-version .tempo-value').first()
-    const reactText = container.locator(`.react-version [data-testid="tempo-value"] ${RNW_TEXT_SELECTOR}`).first()
+    const reactText = container
+      .locator(`.react-version [data-testid="tempo-value"] ${RNW_TEXT_SELECTOR}`)
+      .first()
 
     await expect(htmlText).toBeAttached({ timeout: 3000 })
     await expect(reactText).toBeAttached({ timeout: 3000 })
@@ -624,39 +698,65 @@ test.describe('HTML vs React Component Comparison', () => {
     const mismatches = compareStyles(htmlStyles, reactStyles, tempoTextProps)
 
     if (mismatches.length > 0) {
-      const report = mismatches.map((m) => `  text.${m.prop}: HTML="${m.html}" React="${m.react}"`).join('\n')
+      const report = mismatches
+        .map((m) => `  text.${m.prop}: HTML="${m.html}" React="${m.react}"`)
+        .join('\n')
       expect.soft(mismatches.length, `TempoDisplay colored md text mismatches:\n${report}`).toBe(0)
     }
   })
 
   test('TempoDisplay colored sm', async ({ page }) => {
     await assertStyleMatch(
-      page, 'compare-tempo-colored-sm',
-      '.tempo-display', '[data-testid="tempo-display"] > div',
-      tempoContainerProps,
+      page,
+      'compare-tempo-colored-sm',
+      '.tempo-display',
+      '[data-testid="tempo-display"] > div',
+      tempoContainerProps
     )
   })
 
   // ── DeviationBar ──
 
-  const deviationContainerProps = [
-    'height', 'display', 'alignItems', 'justifyContent',
-  ] as const
+  const deviationContainerProps = ['height', 'display', 'alignItems', 'justifyContent'] as const
 
   test('DeviationBar -1.0', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-deviation-neg1', '.deviation-bar', '[data-testid="deviation-bar"]', deviationContainerProps)
+    await assertStyleMatch(
+      page,
+      'compare-deviation-neg1',
+      '.deviation-bar',
+      '[data-testid="deviation-bar"]',
+      deviationContainerProps
+    )
   })
 
   test('DeviationBar 0', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-deviation-0', '.deviation-bar', '[data-testid="deviation-bar"]', deviationContainerProps)
+    await assertStyleMatch(
+      page,
+      'compare-deviation-0',
+      '.deviation-bar',
+      '[data-testid="deviation-bar"]',
+      deviationContainerProps
+    )
   })
 
   test('DeviationBar +0.5', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-deviation-0_5', '.deviation-bar', '[data-testid="deviation-bar"]', deviationContainerProps)
+    await assertStyleMatch(
+      page,
+      'compare-deviation-0_5',
+      '.deviation-bar',
+      '[data-testid="deviation-bar"]',
+      deviationContainerProps
+    )
   })
 
   test('DeviationBar +1.0', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-deviation-1', '.deviation-bar', '[data-testid="deviation-bar"]', deviationContainerProps)
+    await assertStyleMatch(
+      page,
+      'compare-deviation-1',
+      '.deviation-bar',
+      '[data-testid="deviation-bar"]',
+      deviationContainerProps
+    )
   })
 
   // Priority 2c: DeviationBar dot color checks
@@ -669,11 +769,10 @@ test.describe('HTML vs React Component Comparison', () => {
 
   for (const { testId, label } of deviationDotData) {
     test(`DeviationBar ${label} -- dot color`, async ({ page }) => {
-      await assertStyleMatch(
-        page, testId,
-        '.deviation-dot', '[data-testid="deviation-dot"]',
-        ['backgroundColor', 'borderRadius'] as const,
-      )
+      await assertStyleMatch(page, testId, '.deviation-dot', '[data-testid="deviation-dot"]', [
+        'backgroundColor',
+        'borderRadius',
+      ] as const)
     })
   }
 
@@ -682,37 +781,59 @@ test.describe('HTML vs React Component Comparison', () => {
   // model encoded by the frozen-HTML GT — numeric %-label, teal→amber→graded-red
   // zones, at-target blue glow + target line, and >100% over-target grading + bulge —
   // so these 7 variants reach parity.
-  const intensityBarProps = [
-    'alignItems', 'display', 'flexDirection',
-  ] as const
+  const intensityBarProps = ['alignItems', 'display', 'flexDirection'] as const
 
   test('IntensityBar 20% building', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-intensity-20', '.intensity-bar', '[data-testid="intensity-bar"]',
-      intensityBarProps,
+    await assertStyleMatch(
+      page,
+      'compare-intensity-20',
+      '.intensity-bar',
+      '[data-testid="intensity-bar"]',
+      intensityBarProps
     )
-    await assertStyleMatch(page, 'compare-intensity-20', '.intensity-fill', '[data-testid="intensity-fill"]',
-      ['backgroundColor'] as const,
+    await assertStyleMatch(
+      page,
+      'compare-intensity-20',
+      '.intensity-fill',
+      '[data-testid="intensity-fill"]',
+      ['backgroundColor'] as const
     )
   })
 
   test('IntensityBar 75% approaching', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-intensity-75', '.intensity-bar', '[data-testid="intensity-bar"]',
-      intensityBarProps,
+    await assertStyleMatch(
+      page,
+      'compare-intensity-75',
+      '.intensity-bar',
+      '[data-testid="intensity-bar"]',
+      intensityBarProps
     )
-    await assertStyleMatch(page, 'compare-intensity-75', '.intensity-fill', '[data-testid="intensity-fill"]',
-      ['backgroundColor'] as const,
+    await assertStyleMatch(
+      page,
+      'compare-intensity-75',
+      '.intensity-fill',
+      '[data-testid="intensity-fill"]',
+      ['backgroundColor'] as const
     )
   })
 
   test('IntensityBar 100% target', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-intensity-100', '.intensity-bar', '[data-testid="intensity-bar"]',
-      intensityBarProps,
+    await assertStyleMatch(
+      page,
+      'compare-intensity-100',
+      '.intensity-bar',
+      '[data-testid="intensity-bar"]',
+      intensityBarProps
     )
   })
 
   test('IntensityBar 110% over', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-intensity-110', '.intensity-fill', '[data-testid="intensity-fill"]',
-      ['backgroundColor'] as const,
+    await assertStyleMatch(
+      page,
+      'compare-intensity-110',
+      '.intensity-fill',
+      '[data-testid="intensity-fill"]',
+      ['backgroundColor'] as const
     )
     // Priority 2d: Check bulge exists and has correct color
     const container = page.locator('[data-testid="compare-intensity-110"]')
@@ -726,14 +847,20 @@ test.describe('HTML vs React Component Comparison', () => {
     const reactStyles = await getStyles(reactBulge, bulgeProps)
     const mismatches = compareStyles(htmlStyles, reactStyles, bulgeProps)
     if (mismatches.length > 0) {
-      const report = mismatches.map((m) => `  bulge.${m.prop}: HTML="${m.html}" React="${m.react}"`).join('\n')
+      const report = mismatches
+        .map((m) => `  bulge.${m.prop}: HTML="${m.html}" React="${m.react}"`)
+        .join('\n')
       expect.soft(mismatches.length, `IntensityBar 110% bulge mismatches:\n${report}`).toBe(0)
     }
   })
 
   test('IntensityBar 50% at target (blue glow)', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-intensity-50-target', '.intensity-fill', '[data-testid="intensity-fill"]',
-      ['backgroundColor', 'boxShadow'] as const,
+    await assertStyleMatch(
+      page,
+      'compare-intensity-50-target',
+      '.intensity-fill',
+      '[data-testid="intensity-fill"]',
+      ['backgroundColor', 'boxShadow'] as const
     )
     // Check target line exists
     const container = page.locator('[data-testid="compare-intensity-50-target"]')
@@ -747,18 +874,28 @@ test.describe('HTML vs React Component Comparison', () => {
     const reactStyles = await getStyles(reactTarget, lineProps)
     const mismatches = compareStyles(htmlStyles, reactStyles, lineProps)
     if (mismatches.length > 0) {
-      const report = mismatches.map((m) => `  target-line.${m.prop}: HTML="${m.html}" React="${m.react}"`).join('\n')
+      const report = mismatches
+        .map((m) => `  target-line.${m.prop}: HTML="${m.html}" React="${m.react}"`)
+        .join('\n')
       expect.soft(mismatches.length, `IntensityBar target line mismatches:\n${report}`).toBe(0)
     }
   })
 
   // Priority 3e: IntensityBar over-2 and over-3
   test('IntensityBar 120% over-2', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-intensity-120', '.intensity-bar', '[data-testid="intensity-bar"]',
-      intensityBarProps,
+    await assertStyleMatch(
+      page,
+      'compare-intensity-120',
+      '.intensity-bar',
+      '[data-testid="intensity-bar"]',
+      intensityBarProps
     )
-    await assertStyleMatch(page, 'compare-intensity-120', '.intensity-fill', '[data-testid="intensity-fill"]',
-      ['backgroundColor'] as const,
+    await assertStyleMatch(
+      page,
+      'compare-intensity-120',
+      '.intensity-fill',
+      '[data-testid="intensity-fill"]',
+      ['backgroundColor'] as const
     )
     // Check bulge
     const container = page.locator('[data-testid="compare-intensity-120"]')
@@ -772,17 +909,27 @@ test.describe('HTML vs React Component Comparison', () => {
     const reactStyles = await getStyles(reactBulge, bulgeProps)
     const mismatches = compareStyles(htmlStyles, reactStyles, bulgeProps)
     if (mismatches.length > 0) {
-      const report = mismatches.map((m) => `  bulge.${m.prop}: HTML="${m.html}" React="${m.react}"`).join('\n')
+      const report = mismatches
+        .map((m) => `  bulge.${m.prop}: HTML="${m.html}" React="${m.react}"`)
+        .join('\n')
       expect.soft(mismatches.length, `IntensityBar 120% bulge mismatches:\n${report}`).toBe(0)
     }
   })
 
   test('IntensityBar 130% over-3', async ({ page }) => {
-    await assertStyleMatch(page, 'compare-intensity-130', '.intensity-bar', '[data-testid="intensity-bar"]',
-      intensityBarProps,
+    await assertStyleMatch(
+      page,
+      'compare-intensity-130',
+      '.intensity-bar',
+      '[data-testid="intensity-bar"]',
+      intensityBarProps
     )
-    await assertStyleMatch(page, 'compare-intensity-130', '.intensity-fill', '[data-testid="intensity-fill"]',
-      ['backgroundColor'] as const,
+    await assertStyleMatch(
+      page,
+      'compare-intensity-130',
+      '.intensity-fill',
+      '[data-testid="intensity-fill"]',
+      ['backgroundColor'] as const
     )
     // Check bulge
     const container = page.locator('[data-testid="compare-intensity-130"]')
@@ -796,7 +943,9 @@ test.describe('HTML vs React Component Comparison', () => {
     const reactStyles = await getStyles(reactBulge, bulgeProps)
     const mismatches = compareStyles(htmlStyles, reactStyles, bulgeProps)
     if (mismatches.length > 0) {
-      const report = mismatches.map((m) => `  bulge.${m.prop}: HTML="${m.html}" React="${m.react}"`).join('\n')
+      const report = mismatches
+        .map((m) => `  bulge.${m.prop}: HTML="${m.html}" React="${m.react}"`)
+        .join('\n')
       expect.soft(mismatches.length, `IntensityBar 130% bulge mismatches:\n${report}`).toBe(0)
     }
   })
@@ -804,10 +953,21 @@ test.describe('HTML vs React Component Comparison', () => {
   // ── WorkoutPill ──
 
   const pillProps = [
-    'backgroundColor', 'borderColor', 'borderRadius', 'borderWidth',
-    'color', 'fontFamily', 'fontSize', 'fontWeight',
-    'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
-    'display', 'alignItems', 'flexDirection',
+    'backgroundColor',
+    'borderColor',
+    'borderRadius',
+    'borderWidth',
+    'color',
+    'fontFamily',
+    'fontSize',
+    'fontWeight',
+    'paddingTop',
+    'paddingRight',
+    'paddingBottom',
+    'paddingLeft',
+    'display',
+    'alignItems',
+    'flexDirection',
   ] as const
 
   const pillStatuses = ['completed', 'active', 'next', 'upcoming', 'missed'] as const
@@ -815,10 +975,11 @@ test.describe('HTML vs React Component Comparison', () => {
   for (const status of pillStatuses) {
     test(`WorkoutPill ${status}`, async ({ page }) => {
       await assertStyleMatch(
-        page, `compare-workout-pill-${status}`,
+        page,
+        `compare-workout-pill-${status}`,
         '.workout-pill',
         '[data-testid="workout-pill"] > div',
-        { reactTextSelector: '[data-testid="workout-pill"] div[dir="auto"]', props: pillProps },
+        { reactTextSelector: '[data-testid="workout-pill"] div[dir="auto"]', props: pillProps }
       )
     })
   }
@@ -826,20 +987,32 @@ test.describe('HTML vs React Component Comparison', () => {
   // Priority 3c: WorkoutPill deload
   test('WorkoutPill deload', async ({ page }) => {
     await assertStyleMatch(
-      page, 'compare-workout-pill-deload',
+      page,
+      'compare-workout-pill-deload',
       '.workout-pill',
       '[data-testid="workout-pill"] > div',
-      { reactTextSelector: '[data-testid="workout-pill"] div[dir="auto"]', props: pillProps },
+      { reactTextSelector: '[data-testid="workout-pill"] div[dir="auto"]', props: pillProps }
     )
   })
 
   // ── MuscleGroupChip ──
 
   const chipProps = [
-    'backgroundColor', 'borderColor', 'borderRadius', 'borderWidth',
-    'color', 'fontFamily', 'fontSize', 'fontWeight',
-    'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
-    'display', 'alignItems', 'flexDirection',
+    'backgroundColor',
+    'borderColor',
+    'borderRadius',
+    'borderWidth',
+    'color',
+    'fontFamily',
+    'fontSize',
+    'fontWeight',
+    'paddingTop',
+    'paddingRight',
+    'paddingBottom',
+    'paddingLeft',
+    'display',
+    'alignItems',
+    'flexDirection',
   ] as const
 
   const volumeStatuses = ['ontrack', 'target', 'behind', 'untrained', 'over'] as const
@@ -847,9 +1020,11 @@ test.describe('HTML vs React Component Comparison', () => {
   for (const vs of volumeStatuses) {
     test(`MuscleGroupChip ${vs}`, async ({ page }) => {
       await assertStyleMatch(
-        page, `compare-muscle-chip-${vs}`,
-        '.muscle-chip', '[data-testid="muscle-group-chip"]',
-        { reactTextSelector: '[data-testid="muscle-group-chip"] div[dir="auto"]', props: chipProps },
+        page,
+        `compare-muscle-chip-${vs}`,
+        '.muscle-chip',
+        '[data-testid="muscle-group-chip"]',
+        { reactTextSelector: '[data-testid="muscle-group-chip"] div[dir="auto"]', props: chipProps }
       )
     })
   }
@@ -858,9 +1033,11 @@ test.describe('HTML vs React Component Comparison', () => {
   for (const vs of volumeStatuses) {
     test(`MuscleGroupChip ${vs} -- dot color`, async ({ page }) => {
       await assertStyleMatch(
-        page, `compare-muscle-chip-${vs}`,
-        '.muscle-chip-dot', '[data-testid="muscle-group-chip-dot"]',
-        ['backgroundColor', 'borderRadius'] as const,
+        page,
+        `compare-muscle-chip-${vs}`,
+        '.muscle-chip-dot',
+        '[data-testid="muscle-group-chip-dot"]',
+        ['backgroundColor', 'borderRadius'] as const
       )
     })
   }
@@ -874,7 +1051,7 @@ test.describe('HTML vs React Component Comparison', () => {
     const reactEl = container.locator('.react-version [data-testid="sparkline"]').first()
     await expect(reactEl).toBeAttached({ timeout: 3000 })
 
-    const rect = await reactEl.evaluate(el => {
+    const rect = await reactEl.evaluate((el) => {
       const r = el.getBoundingClientRect()
       return { width: Math.round(r.width), height: Math.round(r.height) }
     })
@@ -891,7 +1068,9 @@ test.describe('HTML vs React Component Comparison', () => {
     await expect(reactEl).toBeAttached({ timeout: 3000 })
 
     // Verify reference line exists
-    const refLine = container.locator('.react-version [data-testid="sparkline-reference-0"]').first()
+    const refLine = container
+      .locator('.react-version [data-testid="sparkline-reference-0"]')
+      .first()
     await expect(refLine).toBeAttached({ timeout: 3000 })
   })
 
@@ -919,7 +1098,7 @@ test.describe('HTML vs React Component Comparison', () => {
     await expect(container).toBeAttached()
     const reactEl = container.locator('.react-version [data-testid="exercise-card"]').first()
     await expect(reactEl).toBeAttached({ timeout: 3000 })
-    const opacity = await reactEl.evaluate(el => window.getComputedStyle(el).opacity)
+    const opacity = await reactEl.evaluate((el) => window.getComputedStyle(el).opacity)
     expect.soft(opacity, 'Upcoming card opacity').toBe('0.6')
   })
 
@@ -930,9 +1109,13 @@ test.describe('HTML vs React Component Comparison', () => {
     await expect(container).toBeAttached()
     const reactEl = container.locator('.react-version [data-testid="superset-wrapper"]').first()
     await expect(reactEl).toBeAttached({ timeout: 3000 })
-    const styles = await reactEl.evaluate(el => {
+    const styles = await reactEl.evaluate((el) => {
       const cs = window.getComputedStyle(el)
-      return { borderLeftWidth: cs.borderLeftWidth, paddingLeft: cs.paddingLeft, position: cs.position }
+      return {
+        borderLeftWidth: cs.borderLeftWidth,
+        paddingLeft: cs.paddingLeft,
+        position: cs.position,
+      }
     })
     expect.soft(styles.borderLeftWidth, 'SW borderLeftWidth').toBe('3px')
     expect.soft(styles.paddingLeft, 'SW paddingLeft').toBe('8px')
@@ -946,11 +1129,15 @@ test.describe('HTML vs React Component Comparison', () => {
     await expect(container).toBeAttached()
     const reactEl = container.locator('.react-version [data-testid="input-bar"]').first()
     await expect(reactEl).toBeAttached({ timeout: 3000 })
-    const styles = await reactEl.evaluate(el => {
+    const styles = await reactEl.evaluate((el) => {
       const cs = window.getComputedStyle(el)
-      return { backgroundColor: cs.backgroundColor, flexDirection: cs.flexDirection, alignItems: cs.alignItems }
+      return {
+        backgroundColor: cs.backgroundColor,
+        flexDirection: cs.flexDirection,
+        alignItems: cs.alignItems,
+      }
     })
-    expect.soft(styles.backgroundColor, 'InputBar bg').toBe('rgb(25, 25, 25)')
+    expect.soft(styles.backgroundColor, 'InputBar bg').toBe('rgb(44, 42, 40)')
     expect.soft(styles.flexDirection, 'InputBar flexDirection').toBe('row')
     expect.soft(styles.alignItems, 'InputBar alignItems').toBe('center')
   })
@@ -962,11 +1149,15 @@ test.describe('HTML vs React Component Comparison', () => {
     await expect(container).toBeAttached()
     const reactEl = container.locator('.react-version [data-testid="rest-timer"]').first()
     await expect(reactEl).toBeAttached({ timeout: 3000 })
-    const styles = await reactEl.evaluate(el => {
+    const styles = await reactEl.evaluate((el) => {
       const cs = window.getComputedStyle(el)
-      return { backgroundColor: cs.backgroundColor, paddingLeft: cs.paddingLeft, paddingRight: cs.paddingRight }
+      return {
+        backgroundColor: cs.backgroundColor,
+        paddingLeft: cs.paddingLeft,
+        paddingRight: cs.paddingRight,
+      }
     })
-    expect.soft(styles.backgroundColor, 'RestTimer bg').toBe('rgb(28, 28, 28)')
+    expect.soft(styles.backgroundColor, 'RestTimer bg').toBe('rgb(49, 48, 47)')
     expect.soft(styles.paddingLeft, 'RestTimer paddingLeft').toBe('16px')
     expect.soft(styles.paddingRight, 'RestTimer paddingRight').toBe('16px')
   })
@@ -982,7 +1173,7 @@ test.describe('HTML vs React Component Comparison', () => {
     const lastDot = container.locator('.react-version [data-testid="sparkline-dot-4"]').first()
     await expect(lastDot).toBeAttached({ timeout: 3000 })
 
-    const dotRect = await lastDot.evaluate(el => {
+    const dotRect = await lastDot.evaluate((el) => {
       const r = el.getBoundingClientRect()
       return { width: Math.round(r.width), height: Math.round(r.height) }
     })

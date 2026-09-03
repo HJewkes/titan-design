@@ -273,7 +273,7 @@ function WorkoutHeader({
         </View>
       </View>
       <View
-        className="bg-border"
+        className="bg-hairline"
         style={{ height: 4, borderRadius: 2 }}
         testID="active-workout-page-progress-track"
       >
@@ -305,7 +305,7 @@ function ExerciseList({ groups, focusedId, onToggle }: ExerciseListProps) {
           return (
             <View
               key={group.exercise.id}
-              className="bg-surface-elevated border-border"
+              className="bg-surface-elevated border-hairline"
               style={{
                 borderWidth: 1,
                 borderRadius: 12,
@@ -399,7 +399,7 @@ export function ActiveWorkoutPage({
 
       {(showRest || showInput) && (
         <View
-          style={{ borderTopWidth: 1, borderTopColor: resolveColor('border-default') }}
+          style={{ borderTopWidth: 1, borderTopColor: resolveColor('hairline-default') }}
           testID="active-workout-page-bottom-bar"
         >
           {showRest && rest != null ? (

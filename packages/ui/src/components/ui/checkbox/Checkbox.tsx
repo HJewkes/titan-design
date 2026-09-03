@@ -91,7 +91,7 @@ export const Checkbox = forwardRef<View, CheckboxProps>(function Checkbox(
           styles.box,
           isChecked || isIndeterminate
             ? 'bg-brand-primary border-brand-primary'
-            : 'bg-transparent border-border',
+            : 'bg-transparent border-hairline',
           isInvalid && 'border-status-error',
           !isDisabled && 'web:hover:border-brand-primary'
         )}

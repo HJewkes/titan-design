@@ -118,7 +118,7 @@ export function RestView({ model }: { model: DashboardModel }) {
 
         {/* mock "next set" block — clearly labelled NO-DATA / mock, not a wired read-model. */}
         <View
-          className="border-border"
+          className="border-hairline"
           style={{ borderWidth: 1, borderStyle: 'dashed', borderRadius: 10, padding: 16, gap: 4 }}
         >
           <Text

@@ -180,7 +180,7 @@ export function Accordion({
 
   return (
     <AccordionContext.Provider value={{ openIndices, toggleIndex, allowMultiple }}>
-      <View className={cn('w-full divide-y divide-border', className)} {...props}>
+      <View className={cn('w-full divide-y divide-hairline', className)} {...props}>
         {React.Children.map(children, (child, index) => {
           if (React.isValidElement(child)) {
             return React.cloneElement(child as React.ReactElement<any>, { index })

@@ -5,83 +5,81 @@
  * and should rarely be used directly in components. Use semantic tokens instead.
  */
 
+/**
+ * Absolute colour keywords.
+ *
+ * This used to hold five scales — `blue`, `red`, `redVivid`, `neutral` and
+ * `charcoal`. All five are gone (TD-07.14): the greys folded into `greyRamp`
+ * below and the chromatics into the OKLCH `primitiveRamps`. What is left has no
+ * scale because these three are not colours you tune, they are keywords.
+ */
 export const primitiveColors = {
-  // Blue scale
-  blue: {
-    50: '#EFF6FF',
-    100: '#DBEAFE',
-    200: '#BFDBFE',
-    300: '#93C5FD',
-    400: '#60A5FA',
-    500: '#3B82F6',
-    600: '#5048E5',
-    700: '#3832A0',
-    800: '#1E40AF',
-    900: '#1E3A8A',
-  },
-
-  // Red scale
-  red: {
-    50: '#FEF2F2',
-    100: '#FEE2E2',
-    200: '#FECACA',
-    300: '#FCA5A5',
-    400: '#DA6868',
-    500: '#EF4444',
-    600: '#D14343',
-    700: '#922E2E',
-    800: '#991B1B',
-    900: '#7F1D1D',
-  },
-
-  // Vivid red scale
-  redVivid: {
-    50: '#FFECEE',
-    100: '#FFD6DB',
-    200: '#FFB3BC',
-    300: '#FF8593',
-    400: '#FF6070',
-    500: '#FF4757',
-    600: '#E63548',
-    700: '#C42539',
-    800: '#9E1C2C',
-    900: '#7A1520',
-  },
-
-  // Neutral/Gray scale
-  neutral: {
-    50: '#FAFAFA',
-    100: '#F3F4F6',
-    200: '#E5E7EB',
-    300: '#D1D5DB',
-    400: '#9CA3AF',
-    500: '#6B7280',
-    600: '#4B5563',
-    700: '#374151',
-    800: '#1F2937',
-    900: '#111827',
-    950: '#030712',
-  },
-
-  // Charcoal scale (dark backgrounds)
-  charcoal: {
-    0: '#6E6E6E',
-    50: '#5D5D5D',
-    100: '#4C4C4C',
-    200: '#3C3C3C',
-    300: '#2C2C2C',
-    400: '#1F1F1F',
-    500: '#1C1C1C',
-    600: '#191919',
-    700: '#161616',
-    800: '#131313',
-    900: '#101010',
-  },
-
-  // Pure colors
   white: '#FFFFFF',
   black: '#000000',
   transparent: 'transparent',
+} as const
+
+/**
+ * Unified warm-neutral grey ramp (TD-07.14)
+ *
+ * The ONE achromatic scale. Regenerate with `scripts/generate-grey-ramp.mjs` —
+ * preserve the generator, not just the hexes.
+ *
+ * The surface planes ARE steps here rather than a parallel object: `850` is
+ * overlay, `975` is the bezel. That is the whole point of the ramp. `grey`,
+ * `neutral`, `surfaceRampDark` and `backgroundFrameDark` all resolve into it,
+ * which is why every plane step below is byte-identical to the value that
+ * shipped in v0.10.0 — the surfaces do not move, only their names.
+ *
+ * TWO THINGS ABOUT THE NUMBERING, both deliberate and both previously re-derived
+ * from scratch more than once because they were never written down:
+ *
+ * 1. `975` sits BELOW the standard grid. `canonL` — the median L* of the seven
+ *    chromatic `primitiveRamps` at each step — ends at L*10.3, which is step
+ *    `950`. The bezel is L*3.8, darker than the grid's last rung, so there is
+ *    simply no step number left for it and `975` extends past the end.
+ * 2. `850`/`875` are quarter-steps because overlay/raised/elevated are only
+ *    ~2.7 L* apart and all three collide on `900` at normal resolution. `800`
+ *    is a generated bridge between `700` (L*37.9) and overlay (L*22.7) so the
+ *    spacing stays even across the join.
+ *
+ * There is no `inset`. It was retired, not renamed: at ΔE 1.10 from `975` it was
+ * an imperceptible duplicate of the frame, which is exactly why `<Surface pressed>`
+ * (surface − 1) kept collapsing into it. `975` is the floor.
+ *
+ * Spec, generator and the rejected v1/v2 cuts:
+ * sources/design/foundations/warm-grey-ramp/
+ */
+export const greyRamp = {
+  50: '#F9F6F3', //  L*97.0  W6
+  100: '#EDEAE7', // L*92.8  W6
+  200: '#D4D1CE', // L*84.0  W6  — warm silver
+  300: '#BDBAB7', // L*75.7  W6
+  400: '#A29F9D', // L*65.7  W5
+  500: '#888684', // L*56.0  W4
+  600: '#72716F', // L*47.7  W3
+  700: '#5A5958', // L*37.9  W2
+  800: '#424140', // L*27.6  W2  — generated bridge
+  850: '#373635', // L*22.7  W2  — surface overlay
+  875: '#31302F', // L*19.9  W2  — surface raised
+  900: '#2C2A28', // L*17.2  W4  — surface elevated
+  925: '#252321', // L*13.9  W4  — surface base
+  950: '#1C1916', // L*9.0   W6  — background base / shell
+  975: '#100D0A', // L*3.8   W6  — background frame / bezel
+} as const
+
+/**
+ * The surface planes, as ramp steps — the mapping `<Surface level>` resolves through.
+ *
+ * Ordered darkest -> lightest, which is the order `pressedLevel()` walks.
+ */
+export const SURFACE_PLANE_STEPS = {
+  frame: 975,
+  background: 950,
+  base: 925,
+  elevated: 900,
+  raised: 875,
+  overlay: 850,
 } as const
 
 /**
@@ -92,7 +90,7 @@ export const primitiveColors = {
  * hexes. `pin` marks the step each ramp flows through its anchor.
  * This is the single source of truth for chromatic hexes — the categorical palette
  * below references these steps rather than duplicating values.
- * See coordination/design-explorations/foundations.
+ * See sources/design/foundations.
  */
 export const primitiveRamps = {
   red: {
@@ -465,17 +463,6 @@ export const primitiveBorderRadius = {
   xl: '16px',
   '2xl': '24px',
   full: '9999px',
-} as const
-
-export const primitiveShadows = {
-  none: 'none',
-  sm: '0px 1px 2px rgba(100, 116, 139, 0.12)',
-  DEFAULT: '0px 1px 3px rgba(100, 116, 139, 0.12), 0px 1px 2px rgba(100, 116, 139, 0.24)',
-  md: '0px 4px 6px rgba(100, 116, 139, 0.12)',
-  lg: '0px 10px 15px rgba(100, 116, 139, 0.12)',
-  xl: '0px 20px 25px rgba(100, 116, 139, 0.12)',
-  '2xl': '0px 25px 50px rgba(100, 116, 139, 0.25)',
-  inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
 } as const
 
 export const primitiveBreakpoints = {

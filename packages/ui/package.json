@@ -1,6 +1,6 @@
 {
   "name": "@titan-design/react-ui",
-  "version": "0.9.1",
+  "version": "0.12.1",
   "description": "Cross-platform design system built on Gluestack UI",
   "author": "Henry Jewkes",
   "license": "MIT",
@@ -43,6 +43,12 @@
       "import": "./dist/theme/index.mjs",
       "require": "./dist/theme/index.js"
     },
+    "./theme/tokens": {
+      "react-native": "./src/theme/tokens/index.ts",
+      "types": "./dist/theme/tokens.d.ts",
+      "import": "./dist/theme/tokens.mjs",
+      "require": "./dist/theme/tokens.js"
+    },
     "./theme/global.css": "./src/theme/global.css",
     "./tailwind.config.js": "./tailwind.config.js"
   },
@@ -58,7 +64,7 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\"",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
-    "storybook": "storybook dev -p 6006",
+    "storybook": "node scripts/storybook-launch.mjs",
     "build-storybook": "storybook build",
     "test:visual": "playwright test",
     "test:visual:update": "playwright test --update-snapshots",
@@ -72,7 +78,12 @@
     "test:visual:tokens": "playwright test --config playwright.tokens.config.ts",
     "test:visual:stories": "playwright test stories.spec.ts",
     "test:visual:stories:update": "playwright test stories.spec.ts --update-snapshots",
-    "prepublishOnly": "tsup && vitest --run"
+    "prepublishOnly": "tsup && vitest --run",
+    "lint:colors:baseline": "node scripts/update-raw-color-baseline.mjs",
+    "storybook:isolated": "node scripts/storybook-launch.mjs --isolated",
+    "storybook:ports": "node scripts/storybook-launch.mjs --list",
+    "storybook:reap": "node scripts/storybook-launch.mjs --reap --list",
+    "storybook:reap:all": "node scripts/storybook-launch.mjs --reap=all --list"
   },
   "peerDependencies": {
     "nativewind": "^4.2.1",

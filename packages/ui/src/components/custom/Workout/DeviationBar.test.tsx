@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { DeviationBar } from './DeviationBar'
+import { greyRamp } from '../../../theme/tokens/primitives'
 
 describe('DeviationBar', () => {
   it('renders the bar and dot', () => {
@@ -62,7 +63,7 @@ describe('DeviationBar', () => {
     const { getByTestId } = render(<DeviationBar deviation={0} />)
     const dot = getByTestId('deviation-dot')
     expect(dot).toHaveStyle({ width: '8px', height: '8px' })
-    expect(dot).toHaveStyle({ borderTopWidth: '1.5px', borderTopColor: '#F3F4F6' })
+    expect(dot).toHaveStyle({ borderTopWidth: '1.5px', borderTopColor: greyRamp[50] })
     expect(dot).toHaveStyle({ boxShadow: '0 0 4px rgba(0,0,0,0.5)' })
   })
 

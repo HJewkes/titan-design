@@ -100,8 +100,8 @@ export function TabList({ children, className }: TabListProps) {
 
   const variantStyles = {
     line: orientation === 'horizontal'
-      ? 'border-b border-border'
-      : 'border-r border-border',
+      ? 'border-b border-hairline'
+      : 'border-r border-hairline',
     enclosed: 'bg-surface-raised rounded-lg p-1',
     'soft-rounded': 'bg-surface-raised rounded-full p-1',
   }

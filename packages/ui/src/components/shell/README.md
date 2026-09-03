@@ -19,7 +19,7 @@ SideNav ...................... organism — the 60px left rail (Shell/SideNav)
 └─ (accent bar) .............. bg-brand-primary edge bar on the active item
 ```
 
-Decisions locked 2026-07-08 (specimen `coordination/design-explorations/shell/S2-sidenav/`): lucide glyphs
+Decisions locked 2026-07-08 (specimen `sources/design/shell/S2-sidenav/`): lucide glyphs
 (activity · history · layers · figure) · **Plan** label (narrower than "Program") · active = **left accent
 bar** (short, centered on the icon+label) · **60px** icon+micro-label · live cue = **muted-green label**
 (`status-live-muted`) on the Live item while a set runs off-Live · four items, no footer, no top-nav. Fixed

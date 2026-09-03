@@ -43,7 +43,7 @@ export function DeviceMenu({
       <PopoverTrigger>
         <DeviceIndicator status={status} />
       </PopoverTrigger>
-      <PopoverContent className="right-0 left-auto mt-[10px] w-[326px] bg-surface-elevated border border-border-strong rounded-[10px] p-[7px]">
+      <PopoverContent className="right-0 left-auto mt-[10px] w-[326px] bg-surface-elevated border border-hairline-strong rounded-[10px] p-[7px]">
         <Typography
           variant="monoLabel"
           color="tertiary"
@@ -52,7 +52,7 @@ export function DeviceMenu({
           Devices — {boundCount} bound · {availCount} available
         </Typography>
         {devices.map((device, i) => (
-          <View key={device.id} className={cn(i > 0 && 'border-t border-border')}>
+          <View key={device.id} className={cn(i > 0 && 'border-t border-hairline')}>
             <DeviceRow
               device={device}
               onPress={onSelectDevice ? () => onSelectDevice(device) : undefined}

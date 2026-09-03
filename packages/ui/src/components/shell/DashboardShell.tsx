@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { View, Text } from 'react-native'
 import { cn } from '../../utils/cn'
+import { Surface } from '../ui/surface'
 import { SideNav, type SideNavItem } from './SideNav'
 import { TopBar } from './TopBar'
 import { type Device } from './DeviceRow'
@@ -58,17 +59,17 @@ export function DashboardShell({
   className,
 }: DashboardShellProps) {
   return (
-    <View className={cn('flex-1 flex-row bg-surface-base', className)}>
-      <SideNav activeKey={activeKey} items={navItems} liveKey={liveKey} onNavigate={onNavigate} />
-      <View className="flex-1">
-        <TopBar
-          state={state}
-          devices={devices}
-          subtitle={subtitle}
-          onSelectDevice={onSelectDevice}
-        />
+    // Column: the TopBar spans the FULL width across the top, and the SideNav sits BELOW it
+    // in the content row (not a full-height left rail). This keeps the brand/status band
+    // unbroken edge-to-edge and lets the nav align under it. The shell is the outermost
+    // Surface — it owns the base plane and seeds the on-surface colour context (mode) for
+    // the whole dashboard tree.
+    <Surface level="base" className={cn('flex-1', className)}>
+      <TopBar state={state} devices={devices} subtitle={subtitle} onSelectDevice={onSelectDevice} />
+      <View className="flex-1 flex-row">
+        <SideNav activeKey={activeKey} items={navItems} liveKey={liveKey} onNavigate={onNavigate} />
         <View className="flex-1">{children ?? <ContentPlaceholder />}</View>
       </View>
-    </View>
+    </Surface>
   )
 }

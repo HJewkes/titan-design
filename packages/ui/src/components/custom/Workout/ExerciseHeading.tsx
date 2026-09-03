@@ -10,7 +10,8 @@ export interface ExerciseHeadingProps {
   /** Prescription line values (sets × reps @ load). */
   sets: number
   reps: number | string
-  load: number
+  /** Load value; a string (e.g. "—") passes through verbatim for an unset/discovery load. */
+  load: number | string
   unit?: 'lbs' | 'kg'
   /** Tempo tuple [eccentric, pauseBottom, concentric, pauseTop]; hidden when absent. */
   tempo?: [number, number, number, number]
@@ -26,10 +27,11 @@ function headingLabel(
   name: string,
   sets: number,
   reps: number | string,
-  load: number,
+  load: number | string,
   unit: string
 ) {
-  return `${name}, ${sets}×${reps} @ ${roundWeight(load)} ${unit}`
+  const loadLabel = typeof load === 'number' ? roundWeight(load) : load
+  return `${name}, ${sets}×${reps} @ ${loadLabel} ${unit}`
 }
 
 /**

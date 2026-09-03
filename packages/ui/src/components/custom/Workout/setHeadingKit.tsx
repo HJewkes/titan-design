@@ -5,19 +5,25 @@
  */
 import type { ReactNode } from 'react'
 import { TempoDisplay } from './TempoDisplay'
+import { greyRamp } from '../../../theme/tokens/primitives'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 // ---- geometry
 export const RAIL_W = 232
 export const SET_GAP = 5
 
-// ---- surface + text tokens (dark theme; charcoal + neutral ramps)
-export const GREY = '#2C2C2C' // charcoal 300 — upcoming/placeholder
-export const BORDER_SUBTLE = '#1C1C1C' // charcoal 500 — row dividers
-export const T_PRIMARY = '#F3F4F6' // neutral 100
-export const T_SECONDARY = '#9CA3AF' // neutral 400
-export const T_TERTIARY = '#6B7280' // neutral 500
-export const RAISED = '#1F1F1F' // charcoal 400 — nav + heading raised plane
-export const INSET = '#131313' // charcoal 800 — sunk exercise-list column
+// ---- surface + text tokens (dark theme)
+// These were hand-copied hexes labelled with their grey/neutral steps, which
+// is exactly how they silently stopped matching the ramps they named. They read
+// from the tokens now, so a retune reaches them.
+const T = getSemanticColors('dark')
+export const GREY = greyRamp[900] // upcoming/placeholder
+export const BORDER_SUBTLE = greyRamp[950] // row dividers
+export const T_PRIMARY = T['text-primary']
+export const T_SECONDARY = T['text-secondary']
+export const T_TERTIARY = T['text-tertiary']
+export const RAISED = greyRamp[925] // nav + heading raised plane
+export const INSET = greyRamp[975] // sunk exercise-list column
 // depth lives on the sunk list: inner shadow from the heading (top) + nav (left). Raised plane is flat.
 export const INSET_SHADOW =
   'inset 0 9px 12px -6px rgba(0,0,0,0.85), inset 7px 0 10px -6px rgba(0,0,0,0.7), inset 0 -1px 0 rgba(255,255,255,0.02)'

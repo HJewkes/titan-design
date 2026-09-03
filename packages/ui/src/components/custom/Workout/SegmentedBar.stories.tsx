@@ -56,7 +56,7 @@ export const Weighted: Story = {
   args: {
     height: 12,
     gap: 4,
-    radius: 6,
+    radius: 2,
     segments: [
       { color: '#2ED573', weight: 3 },
       { color: '#F9B415', weight: 2 },
@@ -72,7 +72,7 @@ export const PartialFills: Story = {
   args: {
     height: 12,
     gap: 4,
-    radius: 6,
+    radius: 2,
     segments: [
       { color: '#2ED573', fill: 1 },
       { color: '#F9B415', fill: 0.6 },
@@ -89,7 +89,7 @@ export const PartialFills: Story = {
 export const WithMarker: Story = {
   args: {
     height: 10,
-    radius: 5,
+    radius: 2,
     segments: [{ color: '#01B5D1', fill: 0.7 }],
     marker: { position: 0.5, color: '#FFFFFF' },
   },

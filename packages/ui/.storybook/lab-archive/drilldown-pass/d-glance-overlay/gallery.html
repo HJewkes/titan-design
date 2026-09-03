@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Direction D — Immutable Glance + Overlay Drill</title>
+<style>
+:root{
+  --brand:#FF7900; --brand-light:#FF9630; --brand-subtle:rgba(255,121,0,.12);
+  --steel:#406D87;
+  --bg-black:#0A0A0A; --bg-deep:#0E0E0E; --bg-base:#101010;
+  --surf:#161616; --surf-elev:#191919; --surf-raised:#1C1C1C;
+  --border:#1F1F1F; --border-strong:#2C2C2C;
+  --tp:#F3F4F6; --ts:#9CA3AF; --tt:#6B7280; --muted:#8D95A3;
+  --teal:#14B8A6; --red:#D14343; --amber:#FFB020; --sky:#2196F3;
+  --v-green:#2ed573; --v-yellow:#ffd43b; --v-orange:#ffa502; --v-red:#ff4757;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Nunito Sans',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#262626;border-radius:3px}
+html,body{background:#000;font-family:var(--sans);color:var(--tp);-webkit-font-smoothing:antialiased}
+body{display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:14px 0 40px}
+
+/* ============ DEMO HARNESS (gallery chrome — NOT product) ============ */
+.harness{width:1280px;max-width:96vw;border:1px dashed #3a3a3a;border-radius:10px;
+  background:repeating-linear-gradient(45deg,#0d0d0d,#0d0d0d 10px,#0f0f0f 10px,#0f0f0f 20px);
+  padding:10px 16px;margin-bottom:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.harness .tag{font:600 10px/1 var(--mono);letter-spacing:1.5px;color:var(--tt);
+  border:1px solid #333;border-radius:4px;padding:4px 7px}
+.harness .grp{display:flex;gap:6px;align-items:center}
+.harness .lbl{font:600 10px/1 var(--sans);letter-spacing:.5px;color:var(--tt);text-transform:uppercase}
+.hbtn{font:600 12px/1 var(--sans);color:var(--ts);background:#151515;border:1px solid #2a2a2a;
+  border-radius:6px;padding:7px 12px;cursor:pointer;transition:all .15s}
+.hbtn:hover{border-color:#3d3d3d;color:var(--tp)}
+.hbtn.on{background:var(--brand-subtle);border-color:var(--brand);color:var(--brand-light)}
+.hbtn.ghost{border-style:dashed}
+.harness .note{font:400 11px/1.3 var(--sans);color:var(--tt);margin-left:auto;max-width:340px}
+.harness .note b{color:var(--muted)}
+
+/* ============ STAGE (product frame, 1280x800, sacred) ============ */
+.stage-wrap{width:1280px;height:800px;transform-origin:top center;position:relative}
+.stage{position:absolute;inset:0;background:var(--bg-black);border-radius:14px;overflow:hidden;
+  border:1px solid #000;box-shadow:0 30px 90px rgba(0,0,0,.6)}
+/* subtle atmosphere */
+.stage::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(circle at 26% 30%,rgba(255,255,255,.018),transparent 60%),
+  radial-gradient(circle,rgba(255,255,255,.014) 1px,transparent 1px);background-size:auto,22px 22px}
+
+/* ---- persistent LIVE STRIP (pinned above every scrim/overlay) ---- */
+.livestrip{position:absolute;top:0;left:0;right:0;height:0;overflow:hidden;z-index:60;
+  background:linear-gradient(90deg,#141414,#101010);border-bottom:1px solid var(--border-strong);
+  display:flex;align-items:center;gap:0;transition:height .3s var(--ease)}
+.livestrip.show{height:46px}
+.ls-seg{display:flex;align-items:center;gap:8px;padding:0 16px;height:100%;border-right:1px solid var(--border);white-space:nowrap}
+.ls-live{background:var(--brand-subtle)}
+.ls-dot{width:8px;height:8px;border-radius:50%;background:var(--v-green);box-shadow:0 0 8px currentColor}
+.ls-k{font:600 9px/1 var(--sans);letter-spacing:1px;color:var(--tt);text-transform:uppercase}
+.ls-v{font:700 15px/1 var(--mono);color:var(--tp)}
+.ls-v.brand{color:var(--brand-light)}
+.ls-tempo{display:flex;gap:3px}
+.ls-tempo i{width:14px;height:5px;border-radius:2px;background:#333;display:block}
+.ls-tempo i.on{background:var(--v-green)}
+.ls-mini{display:flex;align-items:flex-end;gap:2px;height:22px}
+.ls-mini i{width:4px;border-radius:1px;display:block}
+.ls-label{margin-left:auto;padding:0 16px;font:600 9px/1.3 var(--mono);letter-spacing:1px;color:var(--tt);border-right:none;text-align:right}
+
+/* ============ PRODUCT GLANCE GRID (immutable) ============ */
+.glance{position:absolute;inset:0;z-index:1;padding:16px;display:grid;gap:14px;
+  grid-template-columns:1fr 400px;grid-template-rows:auto 1fr auto;
+  grid-template-areas:"meso meso" "hero skel" "body cap"}
+.meso{grid-area:meso} .hero{grid-area:hero} .skel{grid-area:skel}
+.body{grid-area:body} .cap{grid-area:cap}
+.card{background:var(--surf-elev);border:1px solid var(--border);border-radius:14px;position:relative}
+.card.tapz{cursor:pointer;transition:border-color .2s,background .2s}
+.card.tapz:hover{border-color:#333}
+.card.tapz::after{content:'⤢';position:absolute;top:10px;right:12px;font-size:13px;color:var(--tt);opacity:0;transition:opacity .2s}
+.card.tapz:hover::after{opacity:1}
+
+/* meso banner */
+.meso{padding:12px 18px;display:flex;align-items:center;gap:18px}
+.meso .mt{font:700 15px/1 var(--sans)}
+.meso .chip{font:600 10px/1 var(--sans);letter-spacing:.5px;padding:4px 8px;border-radius:5px}
+.chip.b{background:var(--brand-subtle);color:var(--brand)}
+.chip.s{background:rgba(20,184,166,.12);color:var(--teal)}
+.chip.i{background:rgba(64,109,135,.18);color:#7fb0cc}
+.meso .dots{display:flex;gap:6px;margin-left:6px}
+.mdot{width:9px;height:9px;border-radius:50%;background:var(--border-strong)}
+.mdot.done{background:var(--brand)}
+.mdot.cur{background:linear-gradient(90deg,var(--brand) 50%,var(--border-strong) 50%);box-shadow:0 0 7px rgba(255,121,0,.5)}
+.mdot.dl{border:1.5px dashed var(--tt);background:transparent}
+.meso .intent{margin-left:auto;font:500 11px/1 var(--ts)}
+.meso .intent b{color:var(--brand-light)}
+
+/* HERO */
+.hero{padding:18px 20px;display:flex;flex-direction:column;overflow:hidden;transition:box-shadow .4s,border-color .4s}
+.hero.fatigued{border-color:rgba(255,176,32,.5);box-shadow:inset 0 0 60px rgba(255,176,32,.06)}
+.hero.stop{border-color:rgba(209,67,67,.6);box-shadow:inset 0 0 70px rgba(209,67,67,.1);animation:floodpulse 1.6s ease-in-out infinite}
+@keyframes floodpulse{0%,100%{box-shadow:inset 0 0 70px rgba(209,67,67,.08)}50%{box-shadow:inset 0 0 90px rgba(209,67,67,.16)}}
+.hero-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px}
+.hero-cat{font:700 13px/1.2 var(--sans);letter-spacing:.3px;color:var(--brand-light)}
+.hero-cat .sub{display:block;font:600 22px/1.1 var(--sans);color:var(--tp);margin-top:3px}
+.hero-detail{text-align:right;font:600 12px/1.5 var(--mono);color:var(--ts)}
+.hero-detail b{color:var(--tp)}
+.hero-mid{display:flex;gap:22px;align-items:flex-end;margin:8px 0 6px}
+.peakbox{text-align:center}
+.peakbox .pk{font:800 46px/1 var(--mono);color:var(--v-green);letter-spacing:-1px}
+.peakbox .pk.bounce{animation:pkbounce .45s var(--ease)}
+@keyframes pkbounce{0%{transform:scale(1)}35%{transform:scale(1.14)}100%{transform:scale(1)}}
+.peakbox .pku{font:600 11px/1 var(--ts);margin-top:2px;letter-spacing:1px}
+.peakbox .pkl{font:600 9px/1 var(--tt);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px}
+/* live velocity bars (VelocityStrip lineage — THE live velocity component) */
+.vstrip{flex:1;display:flex;align-items:flex-end;gap:6px;height:130px;padding:6px 4px 0;border-bottom:1px solid var(--border)}
+.vbar{flex:1;min-width:8px;border-radius:3px 3px 0 0;position:relative;height:4px;transition:height .5s var(--ease);align-self:flex-end}
+.vbar .bl{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font:600 10px/1 var(--mono);color:var(--ts);opacity:0;transition:opacity .3s}
+.vbar.grow .bl{opacity:1}
+.vbar.ph{background:repeating-linear-gradient(45deg,#1a1a1a,#1a1a1a 4px,#151515 4px,#151515 8px);border:1px dashed #2e2e2e;opacity:.7}
+.vstrip-info{display:flex;justify-content:space-between;margin-top:8px;font:600 12px/1 var(--mono)}
+.vstrip-info .z{color:var(--v-yellow)} .vstrip-info .l{color:var(--ts)}
+/* tempo bar V1 */
+.tempo{margin-top:12px}
+.tempo-lab{display:flex;justify-content:space-between;font:600 9px/1 var(--tt);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
+.tempo-bar{display:flex;gap:3px;height:14px}
+.tseg{position:relative;border-radius:3px;background:#161616;overflow:hidden;border:1px solid var(--border)}
+.tseg .fill{position:absolute;inset:0;width:0;background:var(--steel);transition:width .1s linear}
+.tseg.con .fill{background:var(--v-green)} .tseg.hold .fill{background:var(--v-yellow)} .tseg.ecc .fill{background:var(--steel)}
+.tseg .tl{position:absolute;top:50%;left:6px;transform:translateY(-50%);font:600 8px/1 var(--mono);color:rgba(255,255,255,.5);z-index:2}
+/* fatigue meter V2 */
+.fatigue{margin-top:14px}
+.fat-track{position:relative;height:12px;border-radius:6px;
+  background:linear-gradient(90deg,var(--v-green) 0%,var(--v-yellow) 45%,var(--v-orange) 72%,var(--v-red) 100%);opacity:.85}
+.fat-track .stopline{position:absolute;top:-4px;height:20px;width:2px;background:#fff;left:80%;opacity:.6}
+.fat-needle{position:absolute;top:-5px;width:4px;height:22px;border-radius:2px;background:#fff;
+  box-shadow:0 0 8px rgba(255,255,255,.6);left:0%;transition:left .5s var(--ease)}
+.fat-ticks{display:flex;justify-content:space-between;margin-top:5px;font:600 9px/1 var(--tt);letter-spacing:.5px}
+.fat-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.fat-row .rir{font:700 13px/1 var(--mono);color:var(--tp)}
+.fat-row .rir.warn{color:var(--amber)} .fat-row .rir.stop{color:var(--red)}
+
+/* SESSION SKELETON */
+.skel{padding:14px 16px;overflow:hidden;display:flex;flex-direction:column}
+.sk-title{font:700 11px/1 var(--ts);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px}
+.sk-ex{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:8px;margin:0 -4px;cursor:pointer;transition:background .15s}
+.sk-ex:hover{background:#131313}
+.sk-ex.active{background:rgba(255,121,0,.05)}
+.sk-marker{width:3px;align-self:stretch;border-radius:2px;background:transparent}
+.sk-ex.active .sk-marker{background:var(--brand);box-shadow:0 0 8px rgba(255,121,0,.5)}
+.sk-name{flex:1;min-width:0}
+.sk-name .n{font:600 13px/1.2 var(--sans);color:var(--tp);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sk-name .n .st{font:600 11px/1 var(--tt);margin-left:6px}
+.sk-strips{display:flex;gap:3px}
+.mstrip{display:flex;gap:1px;align-items:flex-end;height:20px;width:34px;padding:1px;border-radius:3px;background:#0f0f0f}
+.mstrip.ph{background:repeating-linear-gradient(45deg,#141414,#141414 3px,#101010 3px,#101010 6px);border:1px dashed #262626}
+.mstrip i{flex:1;border-radius:.5px;display:block;min-height:2px}
+.sk-e1{font:700 12px/1 var(--mono);color:var(--tp)}
+.sk-e1 .star{color:var(--brand)}
+/* e1RM trend line */
+.trend{margin-top:auto;padding-top:12px;border-top:1px solid var(--border)}
+.trend-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.trend-head .tl{font:700 10px/1 var(--tt);letter-spacing:1px;text-transform:uppercase}
+.trend-head .tv{font:700 14px/1 var(--mono);color:var(--tp)}
+.trend-head .tv .d{color:var(--teal);font-size:11px;margin-left:4px}
+
+/* BODY-PART STRIP */
+.body{padding:14px 16px;display:flex;flex-direction:column;overflow:hidden}
+.body-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.body-head .bt{font:700 11px/1 var(--ts);letter-spacing:1.5px;text-transform:uppercase}
+.body-parts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.bp{background:var(--surf);border:1px solid var(--border);border-radius:9px;padding:8px 9px;cursor:pointer;transition:border-color .15s}
+.bp:hover{border-color:#333}
+.bp-top{display:flex;align-items:center;gap:6px;margin-bottom:5px}
+.bp-dot{width:7px;height:7px;border-radius:50%}
+.bp-n{font:600 11px/1 var(--sans);color:var(--tp)}
+.bp-v{font:700 15px/1 var(--mono);color:var(--tp)}
+.bp-v span{font:500 10px/1 var(--tt)}
+.bp-bar{height:5px;border-radius:3px;background:var(--surf-raised);margin-top:6px;position:relative;overflow:hidden}
+.bp-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:3px}
+
+/* CAPACITY / NEXT / REST tile */
+.cap{padding:14px 16px;overflow:hidden}
+.cap-title{font:700 11px/1 var(--ts);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;display:flex;justify-content:space-between}
+.cap-title .rt{color:var(--brand-light)}
+/* rest ring */
+.rest-wrap{display:none;align-items:center;gap:16px}
+.rest-ring{position:relative;width:76px;height:76px;flex-shrink:0}
+.rest-ring svg{transform:rotate(-90deg)}
+.rest-ring .rn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 18px/1 var(--mono);color:var(--tp)}
+.rest-next{flex:1}
+.rest-next .nl{font:600 9px/1 var(--tt);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.rest-next .nx{font:700 15px/1.2 var(--sans);color:var(--tp)}
+.rest-next .nd{font:600 12px/1.4 var(--mono);color:var(--brand-light);margin-top:3px}
+.rest-last{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font:600 11px/1.5 var(--mono);color:var(--ts);display:none}
+.rest-last b{color:var(--tp)}
+/* capacity default / idle */
+.cap-body{display:block}
+.capband{height:64px;position:relative;margin:4px 0 8px}
+.cap-metric{display:flex;justify-content:space-between;font:600 11px/1.6 var(--sans);color:var(--ts)}
+.cap-metric b{color:var(--tp);font-family:var(--mono)}
+
+/* ============ SCRIM ============ */
+.scrim{position:absolute;inset:0;z-index:40;opacity:0;pointer-events:none;transition:opacity .3s var(--ease);
+  background:radial-gradient(130% 95% at 24% 34%,rgba(4,4,4,.30),rgba(4,4,4,.64) 56%)}
+.scrim.show{opacity:1;pointer-events:auto}
+
+/* ============ CENTER FOCUS PANEL (primary drill lineage) ============ */
+.center{position:absolute;z-index:50;top:64px;left:52px;right:52px;bottom:34px;
+  background:var(--bg-base);border:1px solid var(--border-strong);border-radius:16px;
+  box-shadow:0 40px 120px rgba(0,0,0,.7);display:flex;flex-direction:column;overflow:hidden;
+  opacity:0;transform:translateY(22px) scale(.985);pointer-events:none;transition:opacity .32s var(--ease),transform .32s var(--ease)}
+.center.show{opacity:1;transform:none;pointer-events:auto}
+.center-bar{display:flex;align-items:center;gap:4px;padding:14px 18px;border-bottom:1px solid var(--border);flex-shrink:0}
+.crumbs{display:flex;align-items:center;gap:2px;flex-wrap:wrap;flex:1;min-width:0}
+.crumb{font:600 13px/1 var(--sans);color:var(--ts);padding:5px 9px;border-radius:6px;cursor:pointer;white-space:nowrap;transition:all .15s}
+.crumb:hover{background:#181818;color:var(--tp)}
+.crumb.cur{color:var(--tp);background:var(--surf-elev);cursor:default}
+.crumb-sep{color:var(--tt);font-size:12px;padding:0 1px}
+.center-body{flex:1;overflow-y:auto;padding:20px 24px;position:relative}
+.pane{transition:opacity .22s var(--ease),transform .22s var(--ease)}
+.pane.leaving{opacity:0;transform:translateX(-14px)}
+.pane.entering{opacity:0;transform:translateX(14px)}
+
+/* countdown ring */
+.countdown{position:absolute;top:12px;right:14px;width:40px;height:40px;z-index:5;opacity:0;pointer-events:none;transition:opacity .2s}
+.countdown.show{opacity:1}
+.countdown svg{transform:rotate(-90deg)}
+.countdown .cn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 15px/1 var(--mono);color:#fff}
+.countdown .cl{position:absolute;top:44px;right:0;font:600 8px/1.3 var(--sans);color:var(--tt);letter-spacing:.5px;white-space:nowrap;text-align:right;text-transform:uppercase}
+
+/* ============ SIDE SHEET (stacked, secondary lineage) ============ */
+.sheet{position:absolute;z-index:55;top:64px;right:0;bottom:0;width:420px;
+  background:var(--bg-deep);border-left:1px solid var(--border-strong);
+  box-shadow:-30px 0 90px rgba(0,0,0,.6);display:flex;flex-direction:column;overflow:hidden;
+  transform:translateX(100%);transition:transform .32s var(--ease)}
+.sheet.show{transform:none}
+.sheet-bar{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--border);flex-shrink:0}
+.sheet-bar .sx{font:700 15px/1 var(--sans)}
+.sheet-bar .peek{font:600 9px/1 var(--mono);letter-spacing:1px;color:var(--tt);border:1px solid var(--border-strong);border-radius:4px;padding:3px 6px;text-transform:uppercase}
+.sheet-close{margin-left:auto;font:600 12px/1 var(--ts);cursor:pointer;padding:6px 10px;border-radius:6px}
+.sheet-close:hover{background:#181818;color:var(--tp)}
+.sheet-body{flex:1;overflow-y:auto;padding:18px}
+
+/* ============ shared overlay content ============ */
+.h2{font:700 18px/1.2 var(--sans);margin-bottom:2px}
+.sub{font:500 12px/1.4 var(--ts);margin-bottom:16px}
+.exrow{display:flex;align-items:center;gap:14px;padding:14px 14px;border:1px solid var(--border);border-radius:11px;
+  background:var(--surf-elev);margin-bottom:10px;cursor:pointer;transition:border-color .15s,background .15s}
+.exrow:hover{border-color:#363636;background:#1b1b1b}
+.exrow.active-ex{border-left:3px solid var(--brand)}
+.exrow .exn{flex:1}
+.exrow .exn b{font:700 15px/1.2 var(--sans);display:block}
+.exrow .exn small{font:500 11px/1.4 var(--ts)}
+.exrow .exmini{display:flex;gap:3px}
+.exrow .exe1{font:700 14px/1 var(--mono);text-align:right}
+.exrow .exe1 small{display:block;font:500 9px/1 var(--tt);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px}
+.exrow .chev{color:var(--tt);font-size:16px}
+.exlink{font:600 11px/1 var(--brand-light);cursor:pointer;padding:4px 8px;border:1px solid rgba(255,121,0,.3);border-radius:6px}
+.exlink:hover{background:var(--brand-subtle)}
+
+/* set table (L2) */
+.settable{width:100%;border-collapse:collapse}
+.settable th{font:600 10px/1 var(--tt);letter-spacing:.5px;text-transform:uppercase;text-align:left;padding:8px 10px;border-bottom:1px solid var(--border)}
+.settable td{padding:12px 10px;border-bottom:1px solid var(--border);font:600 13px/1 var(--sans)}
+.settable tr.setrow{cursor:pointer;transition:background .15s}
+.settable tr.setrow:hover td{background:#171717}
+.settable tr.setrow.live td{background:rgba(255,121,0,.05)}
+.settable .num{font-family:var(--mono);color:var(--tp)}
+.settable .meanv{font-family:var(--mono);font-weight:700}
+.settable .loss{font-family:var(--mono);font-size:11px;color:var(--ts)}
+.devbar{width:64px;height:6px;border-radius:3px;background:var(--surf-raised);position:relative}
+.devbar i{position:absolute;top:0;bottom:0;border-radius:3px}
+.devbar .mid{position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:#3a3a3a}
+.prbadge{font:700 9px/1 var(--mono);color:var(--brand);border:1px solid var(--brand);border-radius:4px;padding:2px 4px;margin-left:5px}
+.setstrip{display:flex;gap:2px;align-items:flex-end;height:18px;cursor:pointer}
+.setstrip i{width:5px;border-radius:1px;min-height:2px}
+
+/* set detail (L3): full velocity bars + waterfall */
+.detail-grid{display:grid;grid-template-columns:1fr;gap:22px}
+.panelcard{background:var(--surf-elev);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+.pc-title{font:700 11px/1 var(--ts);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px}
+.pc-note{font:500 11px/1.4 var(--tt);margin-bottom:14px}
+.fullstrip{display:flex;align-items:flex-end;gap:8px;height:150px;border-bottom:1px solid var(--border);padding-bottom:0}
+.fbar{flex:1;border-radius:4px 4px 0 0;position:relative;cursor:pointer;transition:height .55s var(--ease),filter .15s;align-self:flex-end}
+.fbar:hover{filter:brightness(1.2)}
+.fbar .fbv{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font:600 10px/1 var(--mono);color:var(--ts)}
+.fbar .fbn{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font:600 10px/1 var(--tt)}
+.fbar.best::before{content:'▲';position:absolute;top:-34px;left:50%;transform:translateX(-50%);color:var(--v-green);font-size:9px}
+.strip-info{display:flex;gap:24px;margin-top:28px;font:600 13px/1 var(--mono)}
+.strip-info .si{display:flex;flex-direction:column;gap:4px}
+.strip-info .si small{font:600 9px/1 var(--tt);letter-spacing:1px;text-transform:uppercase}
+/* waterfall */
+.waterfall{position:relative;height:140px;border-bottom:1px solid var(--border);margin-top:6px}
+.wf-stopline{position:absolute;left:0;right:0;border-top:1px dashed rgba(209,67,67,.55);z-index:1}
+.wf-stopline span{position:absolute;right:0;top:-14px;font:600 9px/1 var(--red);background:var(--surf-elev);padding:1px 4px}
+.wf-bars{position:absolute;inset:0;display:flex;align-items:flex-start;gap:8px}
+.wf-col{flex:1;height:100%;position:relative}
+.wf-drop{position:absolute;left:0;right:0;top:0;border-radius:0 0 3px 3px}
+.wf-up{position:absolute;left:0;right:0;top:0;height:3px;background:var(--v-green);border-radius:2px}
+.wf-lab{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font:600 9px/1 var(--tt)}
+.wf-pct{position:absolute;left:50%;transform:translateX(-50%);font:600 9px/1 var(--mono);color:var(--ts)}
+/* rpe gauge E2 */
+.rpe-gauge{display:flex;align-items:center;gap:18px}
+.rpe-num{text-align:center}
+.rpe-num .rv{font:800 34px/1 var(--mono)}
+.rpe-num small{font:600 9px/1 var(--tt);letter-spacing:1px;text-transform:uppercase}
+.rpe-track{flex:1;position:relative;height:30px}
+.rpe-scale{position:absolute;top:12px;left:0;right:0;height:6px;border-radius:3px;background:linear-gradient(90deg,#2a3a2a,#3a3a2a,#3a2a2a)}
+.rpe-ci{position:absolute;top:9px;height:12px;border-radius:6px;background:rgba(255,121,0,.25);border:1px solid rgba(255,121,0,.5)}
+.rpe-act{position:absolute;top:6px;width:3px;height:18px;background:#fff;border-radius:2px}
+.rpe-pred{position:absolute;top:8px;width:14px;height:14px;border-radius:50%;background:var(--brand);border:2px solid #fff;transform:translateX(-50%)}
+
+/* rep detail L4 */
+.repdetail{text-align:center;padding:30px 0}
+.repdetail .rd-rep{font:700 13px/1 var(--tt);letter-spacing:2px;text-transform:uppercase}
+.repdetail .rd-v{font:800 64px/1 var(--mono);margin:10px 0}
+.repdetail .rd-phases{display:flex;justify-content:center;gap:14px;margin-top:14px}
+.rd-ph{background:var(--surf-elev);border:1px solid var(--border);border-radius:10px;padding:12px 20px}
+.rd-ph .p{font:700 20px/1 var(--mono);color:var(--tp)}
+.rd-ph .pl{font:600 9px/1 var(--tt);letter-spacing:1px;text-transform:uppercase;margin-top:5px}
+.rd-curve{margin-top:24px}
+
+/* exercise detail tabs */
+.tabs{display:flex;gap:4px;margin-bottom:18px;border-bottom:1px solid var(--border)}
+.tab{font:600 13px/1 var(--ts);padding:10px 14px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab.on{color:var(--tp);border-bottom-color:var(--brand)}
+.mesocard{background:linear-gradient(135deg,rgba(255,121,0,.06),transparent);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:18px}
+.mesocard .mh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.mesocard .mh b{font:700 15px/1 var(--sans)}
+.wk-hist{display:flex;flex-direction:column;gap:8px}
+.wk-row{display:flex;align-items:center;gap:14px;padding:9px 12px;background:var(--surf-elev);border:1px solid var(--border);border-radius:9px}
+.wk-row .wk{font:700 11px/1 var(--mono);color:var(--tt);width:40px}
+.wk-row .wb{flex:1;height:8px;border-radius:4px;background:var(--surf-raised);position:relative;overflow:hidden}
+.wk-row .wb i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--steel)}
+.wk-row .wv{font:700 12px/1 var(--mono);width:54px;text-align:right}
+
+/* program block/week/workout */
+.blkrow{border:1px solid var(--border);border-radius:11px;margin-bottom:10px;overflow:hidden;background:var(--surf-elev)}
+.blkhead{display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;transition:background .15s}
+.blkhead:hover{background:#1b1b1b}
+.blkhead .bn{font:700 14px/1.2 var(--sans);flex:1}
+.blkhead .bn small{font:500 11px/1.3 var(--ts);display:block}
+.blkhead .bstat{font:600 10px/1 var(--tt);letter-spacing:.5px}
+
+/* trend svg helper */
+.linechart{width:100%;height:auto;display:block}
+.footer-note{width:1280px;max-width:96vw;margin-top:14px;font:400 11px/1.6 var(--sans);color:#555;text-align:center}
+.footer-note b{color:#777}
+</style>
+</head>
+<body>
+
+<!-- ============ DEMO HARNESS (not product) ============ -->
+<div class="harness">
+  <span class="tag">DEMO HARNESS</span>
+  <div class="grp">
+    <span class="lbl">Glance state</span>
+    <button class="hbtn on" id="btn-live" onclick="setScenario('live')">Live set</button>
+    <button class="hbtn" id="btn-rest" onclick="setScenario('rest')">Rest</button>
+    <button class="hbtn" id="btn-idle" onclick="setScenario('idle')">Idle / no session</button>
+  </div>
+  <div class="grp">
+    <span class="lbl">Drill</span>
+    <button class="hbtn ghost" onclick="autoDrill()">▶ Auto-drill demo</button>
+    <button class="hbtn ghost" onclick="openDebrief()">Session debrief</button>
+  </div>
+  <div class="grp">
+    <span class="lbl">Idle-timeout</span>
+    <button class="hbtn" id="btn-idletimer" onclick="toggleIdle()">on · 8s</button>
+  </div>
+  <div class="note">Tap any glance element to drill. <b>Layout never changes</b> — every drill is an overlay over a graduated scrim; a persistent live strip keeps the set readable; overlays self-dissolve on idle.</div>
+</div>
+
+<!-- ============ STAGE (1280×800 product) ============ -->
+<div class="stage-wrap" id="stagewrap">
+<div class="stage" id="stage">
+
+  <!-- persistent live strip -->
+  <div class="livestrip" id="livestrip"></div>
+
+  <!-- IMMUTABLE GLANCE GRID -->
+  <div class="glance" id="glance">
+
+    <!-- meso banner -->
+    <div class="card tapz meso" onclick="openProgram()">
+      <div class="mt">Upper Hypertrophy A</div>
+      <span class="chip b">HYPERTROPHY</span>
+      <span class="chip i">BLOCK 2 · WK 3/5</span>
+      <div class="dots">
+        <span class="mdot done"></span><span class="mdot done"></span>
+        <span class="mdot cur"></span><span class="mdot"></span><span class="mdot dl"></span>
+      </div>
+      <div class="intent">accumulate · <b>MAV</b> · +2.5% load vs wk2</div>
+    </div>
+
+    <!-- HERO -->
+    <div class="card hero" id="hero">
+      <div class="hero-head">
+        <div class="hero-cat" id="hero-cat">PRODUCTIVE — keep going<span class="sub" id="hero-name">Cable Row</span></div>
+        <div class="hero-detail" id="hero-detail">Set <b>4</b>/5 · <b>150</b> lb<br>target 8 reps</div>
+      </div>
+      <div class="hero-mid">
+        <div class="peakbox">
+          <div class="pkl">Peak</div>
+          <div class="pk" id="peak">0.00</div>
+          <div class="pku">m/s</div>
+        </div>
+        <div class="vstrip" id="vstrip"></div>
+      </div>
+      <div class="vstrip-info">
+        <span class="z" id="vs-zone">Str-Speed zone</span>
+        <span class="l" id="vs-loss">mean 0.00 · loss 0%</span>
+      </div>
+
+      <div class="tempo">
+        <div class="tempo-lab"><span>Tempo · CON → HOLD → ECC</span><span id="tempo-pace">on pace</span></div>
+        <div class="tempo-bar" id="tempo-bar"></div>
+      </div>
+
+      <div class="fatigue">
+        <div class="fat-row">
+          <span style="font:600 9px/1 var(--tt);letter-spacing:1px;text-transform:uppercase">Live fatigue · est. RIR</span>
+          <span class="rir" id="rir">~4 in reserve</span>
+        </div>
+        <div class="fat-track">
+          <div class="stopline"></div>
+          <div class="fat-needle" id="needle"></div>
+        </div>
+        <div class="fat-ticks"><span>fresh</span><span>productive</span><span>VL20 stop</span><span>failure</span></div>
+      </div>
+    </div>
+
+    <!-- SESSION SKELETON -->
+    <div class="card skel">
+      <div class="sk-title">This Session</div>
+      <div id="sk-list"></div>
+      <div class="trend">
+        <div class="trend-head">
+          <span class="tl">Cable Row · e1RM trend</span>
+          <span class="tv">185 lb<span class="d">▲ +5</span></span>
+        </div>
+        <div id="trendchart"></div>
+      </div>
+    </div>
+
+    <!-- BODY PARTS -->
+    <div class="card body">
+      <div class="body-head"><span class="bt">Body State · this mesocycle</span><span style="font:600 10px/1 var(--tt)">vol vs MEV/MAV/MRV</span></div>
+      <div class="body-parts" id="bodyparts"></div>
+    </div>
+
+    <!-- CAPACITY / NEXT / REST -->
+    <div class="card cap" id="captile">
+      <div class="cap-title"><span id="cap-title-l">Session Pace</span><span class="rt" id="cap-title-r"></span></div>
+      <!-- rest state -->
+      <div class="rest-wrap" id="restwrap">
+        <div class="rest-ring">
+          <svg width="76" height="76" viewBox="0 0 76 76">
+            <circle cx="38" cy="38" r="33" fill="none" stroke="#222" stroke-width="6"/>
+            <circle id="restarc" cx="38" cy="38" r="33" fill="none" stroke="var(--brand)" stroke-width="6" stroke-linecap="round" stroke-dasharray="207" stroke-dashoffset="0"/>
+          </svg>
+          <div class="rn" id="restnum">2:30</div>
+        </div>
+        <div class="rest-next">
+          <div class="nl">Next set — set 5/5</div>
+          <div class="nx">Cable Row</div>
+          <div class="nd">8 reps @ 150 lb · hold target ≥0.55 m/s</div>
+        </div>
+      </div>
+      <div class="rest-last" id="restlast">Set 4 done: <b>7 reps</b> · mean <b>0.58 m/s</b> · loss <b>21%</b> · RPE <b>8</b></div>
+      <!-- capacity / idle default -->
+      <div class="cap-body" id="capbody">
+        <div id="capband"></div>
+        <div class="cap-metric"><span>Weekly set volume</span><b>16 / 18 MAV</b></div>
+        <div class="cap-metric"><span>Est. readiness</span><b>82%</b></div>
+        <div class="cap-metric"><span>Session pace</span><b>on track · +2 min</b></div>
+      </div>
+    </div>
+
+  </div><!-- /glance -->
+
+  <!-- SCRIM -->
+  <div class="scrim" id="scrim" onclick="onScrimTap()"></div>
+
+  <!-- CENTER FOCUS PANEL -->
+  <div class="center" id="center">
+    <div class="center-bar">
+      <div class="crumbs" id="crumbs"></div>
+    </div>
+    <div class="countdown" id="countdown">
+      <svg width="40" height="40" viewBox="0 0 40 40">
+        <circle cx="20" cy="20" r="16" fill="none" stroke="#2a2a2a" stroke-width="3"/>
+        <circle id="cdarc" cx="20" cy="20" r="16" fill="none" stroke="var(--brand)" stroke-width="3" stroke-linecap="round" stroke-dasharray="100.5" stroke-dashoffset="0"/>
+      </svg>
+      <div class="cn" id="cdnum">3</div>
+      <div class="cl">returning to glance</div>
+    </div>
+    <div class="center-body" id="center-body"></div>
+  </div>
+
+  <!-- SIDE SHEET (stacked) -->
+  <div class="sheet" id="sheet">
+    <div class="sheet-bar">
+      <span class="peek">LATERAL PEEK</span>
+      <span class="sx" id="sheet-title">—</span>
+      <span class="sheet-close" onclick="closeSheet()">✕ back to set</span>
+    </div>
+    <div class="sheet-body" id="sheet-body"></div>
+  </div>
+
+</div><!-- /stage -->
+</div><!-- /stage-wrap -->
+
+<div class="footer-note">
+  Direction <b>D — Immutable glance + overlay drill</b>. Synthetic WA-shaped data. Read-only surface; the only
+  controls are the DEMO HARNESS (dashed, above). Replace-with-breadcrumb within a lineage · stack (cap 2) across lineages · idle self-dissolve.
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   SYNTHETIC DATA (real WA shape: per-rep mean velocities m/s,
+   running-best velocity-loss, e1RM lbs, RPE, tempo ms, WA-injected zones)
+   ============================================================ */
+// WA-injected, cable-tuned velocity zones (thresholds, colored UI-side) — not barbell constants
+const ROW_ZONES = {red:0.45, orange:0.58, yellow:0.70};
+const PD_ZONES  = {red:0.42, orange:0.55, yellow:0.68};
+
+function zoneColor(v, z){
+  if(v < z.red) return 'var(--v-red)';
+  if(v < z.orange) return 'var(--v-orange)';
+  if(v < z.yellow) return 'var(--v-yellow)';
+  return 'var(--v-green)';
+}
+function zoneName(v, z){
+  if(v < z.red) return 'Strength';
+  if(v < z.orange) return 'Str-Speed';
+  if(v < z.yellow) return 'Power';
+  return 'Speed';
+}
+// running-best velocity loss on MEAN velocity, reference = running max
+function setStats(reps){
+  let best = -1, out=[];
+  reps.forEach(v=>{ best=Math.max(best,v); out.push(Math.max(0,(best-v)/best)); });
+  const mean = reps.reduce((a,b)=>a+b,0)/reps.length;
+  const loss = out[out.length-1];
+  return {best, mean, loss, drops:out};
+}
+
+const SESSION = {
+  exercises:[
+    { id:'pd', name:'Lat Pulldown', status:'done', zones:PD_ZONES, e1rm:172, delta:+2, tempo:{con:800,hold:200,ecc:1300},
+      target:'4×10 @ 130', plannedSets:4,
+      sets:[
+        {reps:8, weight:130, rpe:7, vel:[0.66,0.69,0.68,0.66,0.63,0.60,0.57,0.55]},
+        {reps:8, weight:130, rpe:8, vel:[0.64,0.67,0.65,0.62,0.58,0.55,0.52,0.50]},
+        {reps:9, weight:130, rpe:8, vel:[0.63,0.66,0.64,0.61,0.57,0.54,0.51,0.49,0.47]},
+        {reps:8, weight:130, rpe:9, pr:true, vel:[0.61,0.63,0.60,0.57,0.53,0.50,0.47,0.45]}
+      ]},
+    { id:'row', name:'Cable Row', status:'active', zones:ROW_ZONES, e1rm:185, delta:+5, pr:true, tempo:{con:900,hold:250,ecc:1400},
+      target:'5×8 @ 150', plannedSets:5, activeSet:3, /* 0-indexed -> 4th set live */
+      sets:[
+        {reps:8, weight:150, rpe:7, vel:[0.68,0.72,0.71,0.69,0.66,0.63,0.60,0.58]},
+        {reps:8, weight:150, rpe:8, vel:[0.66,0.70,0.69,0.66,0.62,0.59,0.56,0.53]},
+        {reps:8, weight:150, rpe:8, pr:true, vel:[0.64,0.68,0.67,0.63,0.59,0.55,0.52,0.50]},
+        {reps:0, weight:150, rpe:null, live:true, vel:[]}, // ticks live
+        {planned:true, weight:150}
+      ],
+      // the live set's scripted rep stream: NON-MONOTONIC (rep2 beats rep1 -> re-base) + fatigue decay
+      liveStream:[0.61,0.66,0.64,0.62,0.58,0.54,0.50] },
+    { id:'cf', name:'Cable Fly', status:'up', zones:ROW_ZONES, e1rm:98, delta:0, tempo:{con:900,hold:300,ecc:1500}, target:'3×12 @ 40', plannedSets:3, sets:[{planned:true},{planned:true},{planned:true}] },
+    { id:'fp', name:'Face Pull', status:'up', zones:PD_ZONES, e1rm:60, delta:0, tempo:{con:700,hold:400,ecc:1100}, target:'3×15 @ 35', plannedSets:3, sets:[{planned:true},{planned:true},{planned:true}] }
+  ]
+};
+
+// e1RM across-session trend (line idiom, spent on e1RM)
+const E1RM_TREND = [172,174,176,175,180,185];
+const E1RM_PROJ = 188;
+
+// body parts: volume vs MEV/MAV/MRV
+const BODY = [
+  {n:'Back',   status:'target', color:'var(--brand)', cur:18, mev:10, mav:18, mrv:22, wk:[12,14,16,18]},
+  {n:'Chest',  status:'ontrack',color:'var(--teal)', cur:14, mev:10, mav:18, mrv:22, wk:[10,12,13,14]},
+  {n:'Delts',  status:'ontrack',color:'var(--teal)', cur:15, mev:8,  mav:16, mrv:20, wk:[9,11,13,15]},
+  {n:'Biceps', status:'behind', color:'var(--steel)',cur:8,  mev:8,  mav:14, mrv:18, wk:[6,7,7,8]},
+  {n:'Triceps',status:'ontrack',color:'var(--teal)', cur:12, mev:8,  mav:16, mrv:20, wk:[8,10,11,12]},
+  {n:'Quads',  status:'over',   color:'var(--red)',  cur:21, mev:10, mav:18, mrv:20, wk:[14,17,19,21]},
+  {n:'Hams',   status:'ontrack',color:'var(--teal)', cur:13, mev:8,  mav:16, mrv:20, wk:[8,10,12,13]},
+  {n:'Core',   status:'behind', color:'var(--steel)',cur:6,  mev:6,  mav:12, mrv:16, wk:[4,5,5,6]}
+];
+
+/* ============================================================
+   GLANCE RENDER (immutable layout)
+   ============================================================ */
+function miniStrip(vel, zones){
+  if(!vel || !vel.length) return '<div class="mstrip ph"></div>';
+  const mx = Math.max(...vel)*1.1;
+  let h = '<div class="mstrip">';
+  vel.forEach(v=> h+=`<i style="height:${(v/mx*100).toFixed(0)}%;background:${zoneColor(v,zones)}"></i>`);
+  return h+'</div>';
+}
+function renderSkeleton(){
+  let h='';
+  SESSION.exercises.forEach(ex=>{
+    const active = ex.status==='active';
+    let strips='';
+    for(let i=0;i<ex.plannedSets;i++){
+      const s = ex.sets[i];
+      if(s && s.vel && s.vel.length) strips+=miniStrip(s.vel, ex.zones);
+      else if(s && s.live) strips+= (ex.sets[i].vel.length? miniStrip(ex.sets[i].vel,ex.zones):'<div class="mstrip ph"></div>');
+      else strips+='<div class="mstrip ph"></div>';
+    }
+    h+=`<div class="sk-ex ${active?'active':''}" onclick="drillExerciseSets('${ex.id}')">
+      <div class="sk-marker"></div>
+      <div class="sk-name"><div class="n">${ex.name}<span class="st">${ex.target}</span></div></div>
+      <div class="sk-strips">${strips}</div>
+      <div class="sk-e1">${ex.e1rm}${ex.pr?'<span class="star"> ★</span>':''}</div>
+    </div>`;
+  });
+  document.getElementById('sk-list').innerHTML=h;
+}
+function renderTrend(){
+  const w=364,h=54,pad=6;
+  const all=[...E1RM_TREND,E1RM_PROJ];
+  const mn=Math.min(...all)-2, mx=Math.max(...all)+2;
+  const xs=i=>pad+i*((w-2*pad)/(all.length-1));
+  const ys=v=>h-pad-((v-mn)/(mx-mn))*(h-2*pad);
+  let solid='', dash='';
+  E1RM_TREND.forEach((v,i)=> solid+=(i?'L':'M')+xs(i).toFixed(1)+' '+ys(v).toFixed(1)+' ');
+  const li=E1RM_TREND.length-1;
+  dash=`M${xs(li)} ${ys(E1RM_TREND[li])} L${xs(li+1)} ${ys(E1RM_PROJ)}`;
+  let dots='';
+  E1RM_TREND.forEach((v,i)=>{ const pr=(i===E1RM_TREND.length-1);
+    dots+=`<circle cx="${xs(i)}" cy="${ys(v)}" r="${pr?3.5:2.5}" fill="${pr?'var(--brand)':'var(--steel)'}"/>`;
+    if(pr) dots+=`<text x="${xs(i)}" y="${ys(v)-8}" fill="var(--brand)" font-size="10" font-family="var(--mono)" text-anchor="middle">★</text>`;
+  });
+  document.getElementById('trendchart').innerHTML=
+    `<svg class="linechart" viewBox="0 0 ${w} ${h}"><path d="${solid}" fill="none" stroke="var(--steel)" stroke-width="2"/><path d="${dash}" fill="none" stroke="var(--tt)" stroke-width="1.5" stroke-dasharray="3 3"/>${dots}</svg>`;
+}
+function renderBody(){
+  let h='';
+  BODY.forEach(b=>{
+    const pct=Math.min(100,(b.cur/b.mrv)*100);
+    const mavpct=(b.mav/b.mrv)*100;
+    h+=`<div class="bp" onclick="peekMuscle('${b.n}')">
+      <div class="bp-top"><span class="bp-dot" style="background:${b.color};box-shadow:0 0 5px ${b.color}"></span><span class="bp-n">${b.n}</span></div>
+      <div class="bp-v">${b.cur}<span> sets</span></div>
+      <div class="bp-bar"><i style="width:${pct}%;background:${b.color}"></i><span style="position:absolute;left:${mavpct}%;top:-2px;bottom:-2px;width:1px;background:#555"></span></div>
+    </div>`;
+  });
+  document.getElementById('bodyparts').innerHTML=h;
+}
+function renderCapBand(targetId){
+  // capacity band chart — VBT capacity over recent sessions
+  const el=document.getElementById(targetId||'capband'); if(!el) return;
+  const w=364,h=64;const data=[0.60,0.58,0.61,0.59,0.62,0.63];
+  const band=0.04;const mn=0.5,mx=0.72;
+  const xs=i=>i*(w/(data.length-1));const ys=v=>h-((v-mn)/(mx-mn))*h;
+  let top='',bot='',mid='';
+  data.forEach((v,i)=>{top+=(i?'L':'M')+xs(i)+' '+ys(v+band)+' ';mid+=(i?'L':'M')+xs(i)+' '+ys(v)+' ';});
+  for(let i=data.length-1;i>=0;i--) bot+='L'+xs(i)+' '+ys(data[i]-band)+' ';
+  el.innerHTML=
+    `<svg class="linechart" viewBox="0 0 ${w} ${h}" style="height:64px"><path d="${top}${bot}Z" fill="rgba(64,109,135,.18)"/><path d="${mid}" fill="none" stroke="var(--steel)" stroke-width="2"/></svg>`;
+}
+// the live/rest capbody markup, captured once so idle can overwrite it and live can restore it
+const CAPBODY_DEFAULT=`
+  <div id="capband"></div>
+  <div class="cap-metric"><span>Weekly set volume</span><b>16 / 18 MAV</b></div>
+  <div class="cap-metric"><span>Est. readiness</span><b>82%</b></div>
+  <div class="cap-metric"><span>Session pace</span><b>on track · +2 min</b></div>`;
+
+/* ============================================================
+   LIVE SET SIMULATION (SSE-as-if)
+   ============================================================ */
+let liveTimer=null, tempoTimer=null, repIdx=0, running=false;
+const ROW = SESSION.exercises[1];
+function activeSet(){ return ROW.sets[ROW.activeSet]; }
+
+function renderHeroBars(animateLast){
+  const set=activeSet(); const vs=document.getElementById('vstrip');
+  const zones=ROW.zones;
+  const target=8;
+  const all = set.vel.slice();
+  const mx = Math.max(0.75, ...all)*1.12;
+  let h='';
+  for(let i=0;i<target;i++){
+    const v=all[i];
+    if(v==null){ h+=`<div class="vbar ph" style="height:${(0.15*100).toFixed(0)}%"></div>`; }
+    else {
+      const isLast = i===all.length-1;
+      h+=`<div class="vbar ${isLast&&animateLast?'':'grow'}" data-h="${(v/mx*100).toFixed(0)}" style="height:${isLast&&animateLast?4:(v/mx*100).toFixed(0)}${isLast&&animateLast?'px':'%'};background:${zoneColor(v,zones)}"><span class="bl">${v.toFixed(2)}</span></div>`;
+    }
+  }
+  vs.innerHTML=h;
+  if(animateLast){
+    const bars=vs.querySelectorAll('.vbar:not(.ph)');
+    const last=bars[bars.length-1];
+    requestAnimationFrame(()=>{ if(last){ last.style.height=last.dataset.h+'%'; last.classList.add('grow'); }});
+  }
+  // stats
+  const st=setStats(all.length?all:[0]);
+  document.getElementById('vs-zone').textContent = all.length? zoneName(st.mean,zones)+' zone' : '—';
+  document.getElementById('vs-loss').textContent = all.length? `mean ${st.mean.toFixed(2)} · loss ${(st.loss*100).toFixed(0)}%` : 'mean 0.00 · loss 0%';
+  // fatigue needle: map loss(0..0.30) -> 0..100 with VL20 at ~66%
+  const needlePct=Math.min(96,(st.loss/0.30)*100);
+  document.getElementById('needle').style.left=needlePct+'%';
+  // RIR estimate
+  const rir=Math.max(0,Math.round((0.28-st.loss)/0.045));
+  const rirEl=document.getElementById('rir');
+  rirEl.className='rir'+(st.loss>=0.20?' stop':st.loss>=0.15?' warn':'');
+  rirEl.textContent = st.loss>=0.20? 'STOP — VL20 hit' : `~${rir} in reserve`;
+  // hero flood + coaching category (trigger-only)
+  const hero=document.getElementById('hero');
+  hero.classList.toggle('fatigued', st.loss>=0.12 && st.loss<0.20);
+  hero.classList.toggle('stop', st.loss>=0.20);
+  const cat=document.getElementById('hero-cat');
+  if(st.loss>=0.20) cat.childNodes[0].nodeValue='END SET — velocity loss target hit';
+  else if(st.loss>=0.12) cat.childNodes[0].nodeValue='FATIGUING — 1–2 reps left';
+  else cat.childNodes[0].nodeValue='PRODUCTIVE — keep going';
+  document.getElementById('hero-detail').innerHTML=`Set <b>4</b>/5 · <b>150</b> lb<br>rep <b>${all.length}</b> / 8 target`;
+  // peak bounce (owned here — the ONE live velocity component)
+  const peak=document.getElementById('peak');
+  const pk=all.length?Math.max(...all):0;
+  peak.style.color=zoneColor(pk,zones);
+  if(animateLast && pk>=(window._lastPeak||0)){ peak.classList.remove('bounce'); void peak.offsetWidth; peak.classList.add('bounce'); }
+  window._lastPeak=pk; peak.textContent=pk.toFixed(2);
+  updateLiveStrip();
+}
+function renderTempoBar(){
+  const t=ROW.tempo; const total=t.con+t.hold+t.ecc;
+  const segs=[['con','CON',t.con],['hold','HOLD',t.hold],['ecc','ECC',t.ecc]];
+  let h='';
+  segs.forEach(([c,l,ms])=> h+=`<div class="tseg ${c}" style="flex:${ms}"><div class="fill" data-ph="${c}"></div><span class="tl">${l} ${ms}ms</span></div>`);
+  document.getElementById('tempo-bar').innerHTML=h;
+}
+function animateTempoRep(cb){
+  const t=ROW.tempo; const fills=document.querySelectorAll('#tempo-bar .fill');
+  const speed=3.0; // demo accel
+  fills.forEach(f=>{f.style.transition='none';f.style.width='0';});
+  const seq=[['con',t.con],['hold',t.hold],['ecc',t.ecc]];
+  let i=0;
+  function step(){
+    if(i>=seq.length){ if(cb)cb(); return; }
+    const [ph,ms]=seq[i];
+    const f=document.querySelector(`#tempo-bar .fill[data-ph="${ph}"]`);
+    const dur=ms/speed;
+    f.style.transition=`width ${dur}ms linear`;
+    requestAnimationFrame(()=>{f.style.width='100%';});
+    // pace indicator
+    document.getElementById('tempo-pace').textContent = ph==='con'?'concentric':ph==='hold'?'hold…':'eccentric';
+    i++; setTimeout(step,dur);
+  }
+  step();
+}
+function tickRep(){
+  const stream=ROW.liveStream;
+  if(repIdx>=stream.length){ // set auto-completes -> nudge to rest (demo: stop, keep glance)
+    document.getElementById('tempo-pace').textContent='set complete';
+    running=false; clearInterval(liveTimer); liveTimer=null; return;
+  }
+  const set=activeSet();
+  animateTempoRep(()=>{
+    set.vel.push(stream[repIdx]);
+    repIdx++;
+    renderHeroBars(true);
+    renderSkeleton();
+  });
+}
+function startLive(){
+  if(running) return; running=true;
+  renderTempoBar(); renderHeroBars(false);
+  liveTimer=setInterval(tickRep, 2600);
+  setTimeout(tickRep,400);
+}
+function stopLive(){ running=false; if(liveTimer){clearInterval(liveTimer);liveTimer=null;} }
+function resetLive(){ stopLive(); ROW.activeSet=3; ROW.sets[3].vel=[]; ROW.sets[3].live=true; ROW.sets[3].reps=0; ROW.sets[3].rpe=null; repIdx=0; window._lastPeak=0; }
+
+/* ---- live strip (persistent, above scrim) ---- */
+function updateLiveStrip(){
+  const strip=document.getElementById('livestrip');
+  if(scenario==='idle' || !overlayOpen()){ return; }
+  const set=activeSet(); const zones=ROW.zones; const all=set.vel;
+  if(scenario==='rest'){
+    strip.innerHTML=`<div class="ls-seg ls-live"><span class="ls-dot" style="background:var(--brand);color:var(--brand)"></span><span class="ls-k">Resting</span><span class="ls-v brand" id="ls-rest">${document.getElementById('restnum').textContent}</span></div>
+      <div class="ls-seg"><span class="ls-k">Next</span><span class="ls-v">Cable Row · set 5 · 8×150</span></div>
+      <div class="ls-label">LIVE STRIP · pinned above scrim<br>rest-only next-set info</div>`;
+    return;
+  }
+  const pk=all.length?Math.max(...all):0;
+  let mini='';const mx=Math.max(0.75,...(all.length?all:[0.5]))*1.12;
+  all.forEach(v=>mini+=`<i style="height:${(v/mx*100).toFixed(0)}%;background:${zoneColor(v,zones)}"></i>`);
+  strip.innerHTML=`<div class="ls-seg ls-live"><span class="ls-dot"></span><span class="ls-k">Live</span><span class="ls-v">Cable Row · set 4</span></div>
+    <div class="ls-seg"><span class="ls-k">Rep</span><span class="ls-v">${all.length}/8</span></div>
+    <div class="ls-seg"><span class="ls-k">Peak</span><span class="ls-v brand">${pk.toFixed(2)}</span><span class="ls-k">m/s</span></div>
+    <div class="ls-seg"><span class="ls-k">Reps</span><div class="ls-mini">${mini||'<i style="height:10%;background:#333"></i>'}</div></div>
+    <div class="ls-label">LIVE STRIP · pinned above scrim<br>set stays readable while you drill</div>`;
+}
+
+/* ============================================================
+   SCENARIOS
+   ============================================================ */
+let scenario='live';
+let restTimer=null, restRemain=150;
+function setScenario(s){
+  scenario=s;
+  ['live','rest','idle'].forEach(x=>document.getElementById('btn-'+x).classList.toggle('on',x===s));
+  closeAll(true);
+  const restw=document.getElementById('restwrap');
+  const restl=document.getElementById('restlast');
+  const capb=document.getElementById('capbody');
+  const capTL=document.getElementById('cap-title-l');
+  const capTR=document.getElementById('cap-title-r');
+  const heroName=document.getElementById('hero-name');
+  const heroCat=document.getElementById('hero-cat');
+  if(restTimer){clearInterval(restTimer);restTimer=null;}
+  if(s==='live'){
+    restw.style.display='none'; restl.style.display='none'; capb.style.display='block';
+    capb.innerHTML=CAPBODY_DEFAULT; renderCapBand();
+    capTL.textContent='Session Pace'; capTR.textContent='';
+    heroName.textContent='Cable Row';
+    resetLive(); startLive();
+  }
+  else if(s==='rest'){
+    stopLive();
+    restw.style.display='flex'; restl.style.display='block'; capb.style.display='none';
+    capb.innerHTML=CAPBODY_DEFAULT;
+    capTL.textContent='Rest'; capTR.textContent='2:30';
+    heroName.textContent='Cable Row';
+    // build a completed set-4 for context
+    ROW.sets[3].vel=[0.61,0.66,0.64,0.62,0.58,0.54,0.50]; ROW.sets[3].reps=7; ROW.sets[3].rpe=8; ROW.sets[3].live=false;
+    renderHeroBars(false); renderSkeleton();
+    heroCat.childNodes[0].nodeValue='SET COMPLETE — recover';
+    restRemain=150; startRest();
+  }
+  else { // idle
+    stopLive();
+    restw.style.display='none'; restl.style.display='none'; capb.style.display='block';
+    capTL.textContent='Next Workout'; capTR.textContent='';
+    capb.innerHTML=
+      `<div style="font:700 15px/1.2 var(--sans);margin-bottom:2px">Lower Hypertrophy B</div>
+       <div style="font:500 11px/1.4 var(--ts);margin-bottom:12px">tomorrow · est. 52 min · 6 exercises</div>
+       <div id="capband2"></div>
+       <div class="cap-metric"><span>VBT capacity (6 wk)</span><b>▲ trending</b></div>
+       <div class="cap-metric"><span>Recovery</span><b>82% ready</b></div>`;
+    renderCapBand('capband2');
+    heroCat.childNodes[0].nodeValue='NO ACTIVE SESSION';
+    heroName.textContent='Wall idle';
+    document.getElementById('hero-detail').innerHTML='last: Upper A<br>3 days ago';
+    // dim hero velocity area to a resting recap
+    document.getElementById('vstrip').innerHTML='<div style="align-self:center;width:100%;text-align:center;font:600 12px/1.4 var(--tt)">glance surface between sessions —<br>next workout · capacity trend · body state</div>';
+    document.getElementById('peak').textContent='—';document.getElementById('peak').style.color='var(--tt)';
+    document.getElementById('vs-zone').textContent='';document.getElementById('vs-loss').textContent='';
+    document.getElementById('needle').style.left='0%';
+    document.getElementById('rir').textContent='rested';document.getElementById('rir').className='rir';
+    document.getElementById('tempo-pace').textContent='—';
+  }
+  renderLiveStripVisibility();
+}
+function startRest(){
+  const arc=document.getElementById('restarc'); const C=207;
+  restTimer=setInterval(()=>{
+    restRemain--;
+    if(restRemain<0){restRemain=150;}
+    const m=Math.floor(restRemain/60),sec=restRemain%60;
+    const txt=m+':'+String(sec).padStart(2,'0');
+    document.getElementById('restnum').textContent=txt;
+    document.getElementById('cap-title-r').textContent=txt;
+    arc.style.strokeDashoffset=(C*(1-restRemain/150)).toFixed(1);
+    const ls=document.getElementById('ls-rest'); if(ls) ls.textContent=txt;
+  },200); // accelerated
+}
+
+/* ============================================================
+   OVERLAY ENGINE — center (replace+breadcrumb) + sheet (stack)
+   ============================================================ */
+let trail=[];           // center panel breadcrumb trail
+let sheetOpen=false;
+function overlayOpen(){ return trail.length>0 || sheetOpen; }
+
+function showScrim(on){ document.getElementById('scrim').classList.toggle('show',on); }
+function renderLiveStripVisibility(){
+  const show = overlayOpen() && scenario!=='idle';
+  document.getElementById('livestrip').classList.toggle('show',show);
+  if(show) updateLiveStrip();
+}
+
+function crumbLabel(node){
+  switch(node.type){
+    case 'session': return 'Session';
+    case 'program': return 'Program';
+    case 'block': return node.name;
+    case 'exercise': return exById(node.exId).name;
+    case 'exdetail': return exById(node.exId).name+' · history';
+    case 'setrows': return exById(node.exId).name;
+    case 'setdetail': return 'Set '+(node.setIdx+1);
+    case 'rep': return 'Rep '+(node.repIdx+1);
+    case 'debrief': return 'Session Debrief';
+  }
+  return '?';
+}
+function exById(id){ return SESSION.exercises.find(e=>e.id===id); }
+
+function renderCrumbs(){
+  const c=document.getElementById('crumbs');
+  let h='';
+  trail.forEach((n,i)=>{
+    if(i) h+='<span class="crumb-sep">▸</span>';
+    const cur=i===trail.length-1;
+    h+=`<span class="crumb ${cur?'cur':''}" ${cur?'':`onclick="popTo(${i})"`}>${crumbLabel(n)}</span>`;
+  });
+  c.innerHTML=h;
+}
+
+function openCenterFresh(node){
+  trail=[node];
+  document.getElementById('center').classList.add('show');
+  showScrim(true);
+  renderCrumbs(); renderPane(false);
+  renderLiveStripVisibility();
+  resetIdle();
+}
+function pushCrumb(node){
+  trail.push(node);
+  renderCrumbs(); renderPane(true);
+  resetIdle();
+}
+function popTo(i){
+  trail=trail.slice(0,i+1);
+  if(sheetOpen) closeSheet(true);
+  renderCrumbs(); renderPane(true,true);
+  resetIdle();
+}
+function renderPane(animate, back){
+  const body=document.getElementById('center-body');
+  const node=trail[trail.length-1];
+  const html=paneHTML(node);
+  if(animate){
+    const old=body.querySelector('.pane');
+    if(old){ old.classList.add('leaving'); }
+    setTimeout(()=>{
+      body.innerHTML=`<div class="pane ${back?'':'entering'}">${html}</div>`;
+      requestAnimationFrame(()=>{ const p=body.querySelector('.pane'); if(p) p.classList.remove('entering'); });
+      afterPaneRender(node);
+    },140);
+  } else {
+    body.innerHTML=`<div class="pane">${html}</div>`;
+    afterPaneRender(node);
+  }
+}
+
+/* ---- pane content ---- */
+function paneHTML(node){
+  switch(node.type){
+    case 'session': return sessionPane();
+    case 'setrows': return setRowsPane(node.exId);
+    case 'setdetail': return setDetailPane(node.exId,node.setIdx);
+    case 'rep': return repPane(node.exId,node.setIdx,node.repIdx);
+    case 'exdetail': return exDetailPane(node.exId,node.tab||'progress');
+    case 'program': return programPane();
+    case 'block': return blockPane(node.blockId);
+    case 'debrief': return debriefPane();
+  }
+  return '';
+}
+function afterPaneRender(node){ /* hook for post-insert animation of bars */
+  document.querySelectorAll('#center-body .fbar[data-h]').forEach(b=>{
+    requestAnimationFrame(()=>{ b.style.height=b.dataset.h+'%'; });
+  });
+}
+
+// L1 session list
+function sessionPane(){
+  let h=`<div class="h2">Upper Hypertrophy A</div><div class="sub">4 exercises · tap an exercise to drill its sets, or open its history →</div>`;
+  SESSION.exercises.forEach(ex=>{
+    let mini='';
+    (ex.sets||[]).forEach(s=>{ mini+= (s.vel&&s.vel.length)? miniStrip(s.vel,ex.zones) : '<div class="mstrip ph"></div>'; });
+    const done=(ex.sets||[]).filter(s=>s.vel&&s.vel.length).length;
+    h+=`<div class="exrow ${ex.status==='active'?'active-ex':''}" onclick="drillExerciseSets('${ex.id}')">
+      <div class="exn"><b>${ex.name}</b><small>${ex.target} · ${done}/${ex.plannedSets} sets${ex.status==='active'?' · <span style="color:var(--brand-light)">live</span>':''}</small></div>
+      <div class="exmini">${mini}</div>
+      <div class="exe1"><small>e1RM</small>${ex.e1rm} lb ${ex.delta>0?'<span style="color:var(--teal)">▲'+ex.delta+'</span>':''}</div>
+      <span class="exlink" onclick="event.stopPropagation();drillExerciseDetail('${ex.id}')">history ›</span>
+      <span class="chev">›</span>
+    </div>`;
+  });
+  return h;
+}
+// L2 set rows
+function setRowsPane(exId){
+  const ex=exById(exId);
+  let h=`<div class="h2">${ex.name} — sets</div><div class="sub">tap a set's velocity strip to open its per-rep detail. Mean velocity is a NUMBER; loss vs running-best rep.</div>`;
+  h+=`<table class="settable"><thead><tr><th>Set</th><th>Prev</th><th>Reps</th><th>Wt</th><th>RPE</th><th>Deviation</th><th>Mean v</th><th>Loss</th><th>Strip</th></tr></thead><tbody>`;
+  ex.sets.forEach((s,i)=>{
+    if(s.planned){ h+=`<tr><td class="num">${i+1}</td><td colspan="8" style="color:var(--tt)">— planned · ${ex.target.split('@')[1]||''} —</td></tr>`; return; }
+    if(!s.vel||!s.vel.length){ h+=`<tr class="live"><td class="num">${i+1}</td><td colspan="8" style="color:var(--brand-light)">live · in progress…</td></tr>`; return; }
+    const st=setStats(s.vel);
+    const dev=(Math.random()*0-0.1); // deviation vs target (lighter/harder)
+    const devPct=50+ (i-1)*8; // synthetic
+    const lossPct=(st.loss*100).toFixed(0);
+    const lossColor=st.loss>=0.25?'var(--v-red)':st.loss>=0.20?'var(--v-orange)':'var(--ts)';
+    let strip='';const mx=Math.max(...s.vel)*1.1;
+    s.vel.forEach(v=>strip+=`<i style="height:${(v/mx*100).toFixed(0)}%;background:${zoneColor(v,ex.zones)}"></i>`);
+    h+=`<tr class="setrow" onclick="drillSetDetail('${exId}',${i})">
+      <td class="num">${i+1}${s.pr?'<span class="prbadge">PR</span>':''}</td>
+      <td class="num" style="color:var(--tt)">${s.reps}×${s.weight}</td>
+      <td class="num">${s.reps}</td>
+      <td class="num">${s.weight}</td>
+      <td class="num">${s.rpe||'—'}</td>
+      <td><div class="devbar"><div class="mid"></div><i style="left:50%;width:${Math.abs(devPct-50)}%;background:var(--steel)"></i></div></td>
+      <td class="meanv">${st.mean.toFixed(2)}</td>
+      <td class="loss" style="color:${lossColor}">${lossPct}%</td>
+      <td><div class="setstrip">${strip}</div></td>
+    </tr>`;
+  });
+  h+='</tbody></table>';
+  return h;
+}
+// L3 set detail: full bars + waterfall + rpe gauge
+function setDetailPane(exId,setIdx){
+  const ex=exById(exId); const s=ex.sets[setIdx]; const st=setStats(s.vel);
+  const mx=Math.max(...s.vel)*1.12;
+  let bars='';
+  s.vel.forEach((v,i)=>{
+    const isBest=Math.abs(v-st.best)<1e-9 && s.vel.indexOf(st.best)===i;
+    bars+=`<div class="fbar ${isBest?'best':''}" data-h="${(v/mx*100).toFixed(0)}" style="height:4px;background:${zoneColor(v,ex.zones)}" onclick="drillRep('${exId}',${setIdx},${i})">
+      <span class="fbv">${v.toFixed(2)}</span><span class="fbn">R${i+1}</span></div>`;
+  });
+  // waterfall (running-best drop), non-monotonic safe
+  const stopY=20; // VL20 line at 20% of chart height from top region
+  let wf='';
+  s.vel.forEach((v,i)=>{
+    const drop=st.drops[i]; const dh=Math.max(2,drop/0.30*120);
+    if(drop<=0.0001){
+      wf+=`<div class="wf-col"><div class="wf-up"></div><span class="wf-pct" style="top:6px">best</span><span class="wf-lab">R${i+1}</span></div>`;
+    } else {
+      wf+=`<div class="wf-col"><div class="wf-drop" style="height:${dh}px;background:${zoneColor(v,ex.zones)};opacity:.85"></div><span class="wf-pct" style="top:${dh+3}px">${(drop*100).toFixed(0)}%</span><span class="wf-lab">R${i+1}</span></div>`;
+    }
+  });
+  const vl20h=0.20/0.30*120;
+  // rpe gauge
+  const predRPE=(10-(0.28-st.loss)/0.045).toFixed(1);
+  const actRPE=s.rpe||8;
+  const ci=0.6;
+  const rpeToX=r=>((r-6)/(10-6))*100;
+  return `<div class="h2">${ex.name} · Set ${setIdx+1}</div>
+    <div class="sub">${s.reps} reps @ ${s.weight} lb · RPE ${actRPE} ${s.pr?'· <span style="color:var(--brand)">PR ★</span>':''} — tap any bar for the single-rep view</div>
+    <div class="detail-grid">
+      <div class="panelcard">
+        <div class="pc-title">Per-rep velocity · VelocityStrip</div>
+        <div class="pc-note">one bar per rep, zone-colored (WA-injected cable zones). Bars = intra-set distribution.</div>
+        <div class="fullstrip">${bars}</div>
+        <div class="strip-info">
+          <div class="si"><small>zone</small><span style="color:${zoneColor(st.mean,ex.zones)}">${zoneName(st.mean,ex.zones)}</span></div>
+          <div class="si"><small>mean vel</small><span>${st.mean.toFixed(2)} m/s</span></div>
+          <div class="si"><small>peak / best</small><span style="color:var(--v-green)">${st.best.toFixed(2)}</span></div>
+          <div class="si"><small>set loss (VL)</small><span style="color:${st.loss>=0.20?'var(--v-orange)':'var(--ts)'}">${(st.loss*100).toFixed(0)}%</span></div>
+        </div>
+      </div>
+      <div class="panelcard">
+        <div class="pc-title">Rep-quality waterfall (E1) · drop vs running-best rep</div>
+        <div class="pc-note">reference ratchets up on a faster rep (▲ = new best → zero drop). VL20 stop-line dashed. Handles non-monotonic shapes.</div>
+        <div class="waterfall">
+          <div class="wf-stopline" style="top:${vl20h}px"><span>VL20 stop</span></div>
+          <div class="wf-bars">${wf}</div>
+        </div>
+        <div style="height:24px"></div>
+      </div>
+      <div class="panelcard">
+        <div class="pc-title">RPE ↔ velocity calibration (E2)</div>
+        <div class="pc-note">velocity-predicted RPE (band = confidence interval) vs the logged RPE.</div>
+        <div class="rpe-gauge">
+          <div class="rpe-num"><div class="rv" style="color:${Math.abs(predRPE-actRPE)>1?'var(--amber)':'var(--teal)'}">${actRPE}</div><small>logged</small></div>
+          <div class="rpe-track">
+            <div class="rpe-scale"></div>
+            <div class="rpe-ci" style="left:${rpeToX(predRPE-ci)}%;width:${rpeToX(predRPE+ci)-rpeToX(predRPE-ci)}%"></div>
+            <div class="rpe-pred" style="left:${rpeToX(predRPE)}%"></div>
+            <div class="rpe-act" style="left:${rpeToX(actRPE)}%"></div>
+          </div>
+          <div class="rpe-num"><div class="rv" style="color:var(--brand)">${predRPE}</div><small>predicted</small></div>
+        </div>
+        <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);font:600 11px/1.5 var(--sans);color:var(--ts)">
+          Back muscle chip · <span class="exlink" onclick="peekMuscle('Back')">peek weekly status ⤢</span>
+          <span style="color:var(--tt);font-weight:500"> — opens a stacked side-sheet (lateral peek, different lineage)</span>
+        </div>
+      </div>
+    </div>`;
+}
+// L4 rep
+function repPane(exId,setIdx,repIdx){
+  const ex=exById(exId); const s=ex.sets[setIdx]; const v=s.vel[repIdx];
+  const t=ex.tempo;
+  const con=(t.con/1000+ (Math.random()*.2-.1)).toFixed(1);
+  const ecc=(t.ecc/1000+ (Math.random()*.2-.1)).toFixed(1);
+  const hold=(t.hold/1000).toFixed(1);
+  // small velocity-vs-time rep curve
+  const w=420,h=110;
+  let path='M0 '+h+' ';
+  for(let i=0;i<=40;i++){const x=i/40; const bump=Math.sin(x*Math.PI); const yy=h-(bump*(v/1.0)*h*0.9); path+=`L${(x*w).toFixed(0)} ${yy.toFixed(0)} `;}
+  return `<div class="repdetail">
+    <div class="rd-rep">${ex.name} · Set ${setIdx+1} · Rep ${repIdx+1}</div>
+    <div class="rd-v" style="color:${zoneColor(v,ex.zones)}">${v.toFixed(2)}<span style="font-size:22px;color:var(--ts)"> m/s</span></div>
+    <div class="rd-phases">
+      <div class="rd-ph"><div class="p" style="color:var(--v-green)">${con}s</div><div class="pl">Concentric</div></div>
+      <div class="rd-ph"><div class="p" style="color:var(--v-yellow)">${hold}s</div><div class="pl">Hold</div></div>
+      <div class="rd-ph"><div class="p" style="color:var(--steel)">${ecc}s</div><div class="pl">Eccentric</div></div>
+    </div>
+    <div class="rd-curve"><svg viewBox="0 0 ${w} ${h}" style="width:${w}px;max-width:100%"><path d="${path}" fill="none" stroke="${zoneColor(v,ex.zones)}" stroke-width="2.5"/><line x1="0" y1="${h}" x2="${w}" y2="${h}" stroke="var(--border)"/></svg>
+      <div style="font:600 10px/1 var(--tt);letter-spacing:1px;margin-top:6px">VELOCITY × TIME · within-rep curve (leaf of the drill)</div>
+    </div>
+  </div>`;
+}
+// Exercise detail (tabs)
+function exDetailPane(exId,tab){
+  const ex=exById(exId);
+  const tabs=['progress','history','advanced'];
+  let h=`<div class="h2">${ex.name}</div><div class="sub">exercise-level view — meso status, week-by-week history, strength trend, LV profile</div>`;
+  h+='<div class="tabs">'+tabs.map(t=>`<span class="tab ${t===tab?'on':''}" onclick="switchExTab('${exId}','${t}')">${t[0].toUpperCase()+t.slice(1)}</span>`).join('')+'</div>';
+  if(tab==='progress'){
+    h+=`<div class="mesocard"><div class="mh"><b>Mesocycle status</b><span style="font:600 11px/1 var(--brand-light)">Block 2 · Wk 3/5 · MAV</span></div>
+      <div class="cap-metric"><span>e1RM this block</span><b>172 → 185 lb (+7.6%)</b></div>
+      <div class="cap-metric"><span>Velocity at 150 lb</span><b>0.66 → 0.62 m/s (fatigue accruing)</b></div>
+      <div class="cap-metric"><span>Progression call</span><b style="color:var(--teal)">+2.5% next week</b></div></div>
+      <div class="pc-title" style="margin-bottom:8px">e1RM strength trend · line (across sessions)</div>
+      <div class="panelcard">${bigTrendSVG()}</div>`;
+  } else if(tab==='history'){
+    h+='<div class="wk-hist">';
+    [['Wk1',176],['Wk2',180],['Wk3',185]].forEach(([w,e],i)=>{
+      h+=`<div class="wk-row"><span class="wk">${w}</span><div class="wb"><i style="width:${((e-160)/40*100).toFixed(0)}%"></i></div><span class="wv">${e} lb</span></div>`;
+    });
+    h+='</div><div class="sub" style="margin-top:16px">Logged sessions — tap into a session to re-enter the set→rep ladder (breadcrumb continues).</div>';
+  } else {
+    h+=`<div class="pc-title" style="margin-bottom:8px">Load–velocity profile · Advanced</div>
+      <div class="panelcard">${lvProfileSVG()}</div>
+      <div class="cap-metric" style="margin-top:12px"><span>Est. 1RM (LV intercept)</span><b>214 lb</b></div>
+      <div class="cap-metric"><span>Min velocity threshold</span><b>0.34 m/s</b></div>`;
+  }
+  return h;
+}
+function bigTrendSVG(){
+  const w=560,h=150,pad=16;const all=[...E1RM_TREND,E1RM_PROJ];
+  const mn=Math.min(...all)-3,mx=Math.max(...all)+3;
+  const xs=i=>pad+i*((w-2*pad)/(all.length-1));const ys=v=>h-pad-((v-mn)/(mx-mn))*(h-2*pad);
+  let solid='';E1RM_TREND.forEach((v,i)=>solid+=(i?'L':'M')+xs(i)+' '+ys(v)+' ');
+  const li=E1RM_TREND.length-1;
+  let dots='';E1RM_TREND.forEach((v,i)=>{const pr=i===li;dots+=`<circle cx="${xs(i)}" cy="${ys(v)}" r="${pr?4:3}" fill="${pr?'var(--brand)':'var(--steel)'}"/><text x="${xs(i)}" y="${ys(v)-9}" fill="var(--ts)" font-size="9" text-anchor="middle" font-family="var(--mono)">${v}</text>`;});
+  return `<svg class="linechart" viewBox="0 0 ${w} ${h}"><path d="${solid}" fill="none" stroke="var(--steel)" stroke-width="2.5"/><path d="M${xs(li)} ${ys(E1RM_TREND[li])} L${xs(li+1)} ${ys(E1RM_PROJ)}" fill="none" stroke="var(--tt)" stroke-width="2" stroke-dasharray="4 4"/>${dots}<text x="${xs(li+1)}" y="${ys(E1RM_PROJ)-9}" fill="var(--tt)" font-size="9" text-anchor="middle" font-family="var(--mono)">${E1RM_PROJ} proj</text></svg>`;
+}
+function lvProfileSVG(){
+  const w=560,h=170,pad=24;
+  // load (x) vs velocity (y): higher load -> lower velocity
+  const pts=[[110,0.82],[130,0.71],[150,0.62],[170,0.53],[190,0.44]];
+  const prior=[[110,0.80],[130,0.68],[150,0.58],[170,0.49],[190,0.40]];
+  const lx=l=>pad+((l-100)/110)*(w-2*pad);const vy=v=>h-pad-((v-0.30)/0.60)*(h-2*pad);
+  const line=p=>p.map((d,i)=>(i?'L':'M')+lx(d[0])+' '+vy(d[1])).join(' ');
+  const band=`${pts.map(d=>'L'+lx(d[0])+' '+vy(d[1]+0.05)).join(' ').replace('L','M')} ${[...pts].reverse().map(d=>'L'+lx(d[0])+' '+vy(d[1]-0.05)).join(' ')} Z`;
+  let dots=pts.map(d=>`<circle cx="${lx(d[0])}" cy="${vy(d[1])}" r="3.5" fill="var(--brand)"/>`).join('');
+  let pdots=prior.map(d=>`<circle cx="${lx(d[0])}" cy="${vy(d[1])}" r="3" fill="none" stroke="#666" stroke-width="1.5"/>`).join('');
+  return `<svg class="linechart" viewBox="0 0 ${w} ${h}"><path d="${band}" fill="rgba(255,121,0,.12)"/><path d="${line(prior)}" fill="none" stroke="#666" stroke-width="1.5" stroke-dasharray="4 3"/>${pdots}<path d="${line(pts)}" fill="none" stroke="var(--brand)" stroke-width="2.5"/>${dots}<text x="${pad}" y="${h-4}" fill="var(--tt)" font-size="9">load →</text><text x="${pad}" y="12" fill="var(--tt)" font-size="9">velocity ↑ · band = CI · grey = prior wk</text></svg>`;
+}
+// Program (block/week/workout)
+function programPane(){
+  let h=`<div class="h2">Program · 16-week hypertrophy</div><div class="sub">block → week → workout. A different object lineage — its own breadcrumb trail.</div>`;
+  const blocks=[
+    {id:'b1',n:'Block 1 · Accumulation',s:'Wk 1–4 · complete',stat:'DONE'},
+    {id:'b2',n:'Block 2 · Intensification',s:'Wk 5–9 · current (wk 3/5)',stat:'CURRENT'},
+    {id:'b3',n:'Block 3 · Peak',s:'Wk 10–14 · upcoming',stat:'UPCOMING'},
+    {id:'b4',n:'Deload → Test',s:'Wk 15–16',stat:'PLANNED'}
+  ];
+  blocks.forEach(b=>{
+    const cur=b.stat==='CURRENT';
+    h+=`<div class="blkrow"><div class="blkhead" onclick="pushCrumb({type:'block',blockId:'${b.id}'})" style="${cur?'background:rgba(255,121,0,.05)':''}">
+      <div class="bn">${b.n}<small>${b.s}</small></div><span class="bstat" style="color:${cur?'var(--brand-light)':'var(--tt)'}">${b.stat} ›</span></div></div>`;
+  });
+  return h;
+}
+function blockPane(blockId){
+  let h=`<div class="h2">Block 2 · Intensification</div><div class="sub">weeks → workouts. Tap a workout to enter its session (continues into set→rep ladder).</div>`;
+  [['Wk1','Upper A / Lower A / Upper B / Lower B','done'],
+   ['Wk2','Upper A / Lower A / Upper B / Lower B','done'],
+   ['Wk3','Upper A ✓ · Lower A · Upper B · Lower B','current'],
+   ['Wk4','—','upcoming'],['Wk5 (deload)','reduced volume','upcoming']].forEach(([w,d,st])=>{
+    h+=`<div class="blkrow"><div class="blkhead" onclick="pushCrumb({type:'session'})" style="${st==='current'?'background:rgba(255,121,0,.05)':''}">
+      <div class="bn">${w}<small>${d}</small></div><span class="bstat" style="color:${st==='current'?'var(--brand-light)':'var(--tt)'}">${st.toUpperCase()} ›</span></div></div>`;
+  });
+  return h;
+}
+// Session debrief (verdict E2-V2 + Session-Debrief V1)
+function debriefPane(){
+  return `<div class="h2">Upper Hypertrophy A — Debrief</div><div class="sub">session-close aggregation · verdict card + trend pills. The natural drill-out target.</div>
+    <div class="mesocard" style="border-color:rgba(20,184,166,.3)">
+      <div class="mh"><b style="color:var(--teal)">Strong productive session</b><span style="font:600 11px/1 var(--ts)">verdict · E2-V2</span></div>
+      <div style="font:500 13px/1.6 var(--ts)">Velocity held within the productive band; you stopped Cable Row set 3 right at VL20 — clean autoregulation. e1RM PR on set 3 (185 lb). Biceps + core still under MEV this week.</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+      ${[['Total volume','14,850 lb','▲ +6%','var(--teal)'],['Mean velocity','0.61 m/s','▼ −4%','var(--ts)'],['e1RM','185 lb','▲ PR','var(--brand)']].map(([k,v,d,c])=>
+        `<div class="panelcard" style="text-align:center"><div class="pc-title">${k}</div><div style="font:800 24px/1 var(--mono);margin:6px 0">${v}</div><div style="font:600 12px/1 ${c==='var(--ts)'?'color:var(--ts)':'color:'+c}">${d}</div></div>`).join('')}
+    </div>
+    <div class="sub">Drillable set histories continue the breadcrumb ladder from here.</div>
+    <div class="exrow" onclick="pushCrumb({type:'setrows',exId:'row'})"><div class="exn"><b>Cable Row</b><small>4 sets · PR set 3 · tap to re-open the set ladder</small></div><span class="chev">›</span></div>
+    <div class="exrow" onclick="pushCrumb({type:'setrows',exId:'pd'})"><div class="exn"><b>Lat Pulldown</b><small>4 sets · RPE ramp 7→9</small></div><span class="chev">›</span></div>`;
+}
+
+/* ---- drill entry points ---- */
+function drillExerciseSets(exId){
+  if(trail.length===0) openCenterFresh({type:'session'});
+  // if opened from glance, land straight on setrows with session as parent crumb
+  if(trail[trail.length-1].type==='session' || trail.length===0){
+    if(trail.length===0) trail=[{type:'session'}];
+    pushCrumb({type:'setrows',exId});
+  } else pushCrumb({type:'setrows',exId});
+}
+function drillExerciseDetail(exId){
+  if(trail.length===0) openCenterFresh({type:'session'});
+  pushCrumb({type:'exdetail',exId,tab:'progress'});
+}
+function drillSetDetail(exId,setIdx){ pushCrumb({type:'setdetail',exId,setIdx}); }
+function drillRep(exId,setIdx,repIdx){ pushCrumb({type:'rep',exId,setIdx,repIdx}); }
+function switchExTab(exId,tab){
+  trail[trail.length-1].tab=tab;
+  renderPane(false); resetIdle();
+}
+function openProgram(){ openCenterFresh({type:'program'}); }
+function openDebrief(){ setScenario('idle'); openCenterFresh({type:'debrief'}); }
+
+/* ---- side sheet (stacked lateral peek) ---- */
+function peekMuscle(part){
+  const b=BODY.find(x=>x.n===part)||BODY[0];
+  // if no center open (from glance body strip), open sheet standalone over scrim
+  if(trail.length===0){ showScrim(true); }
+  sheetOpen=true;
+  document.getElementById('sheet').classList.add('show');
+  document.getElementById('sheet-title').textContent=b.n;
+  const pct=Math.min(100,b.cur/b.mrv*100);
+  const mevp=b.mev/b.mrv*100, mavp=b.mav/b.mrv*100;
+  const wkmax=Math.max(...b.wk);
+  let wk='';b.wk.forEach((v,i)=>wk+=`<div class="wk-row"><span class="wk">Wk${i+1}</span><div class="wb"><i style="width:${(v/wkmax*100).toFixed(0)}%"></i></div><span class="wv">${v} sets</span></div>`);
+  document.getElementById('sheet-body').innerHTML=`
+    <div class="pc-title">Weekly volume vs landmarks</div>
+    <div class="pc-note">status: <b style="color:${b.color}">${b.status.toUpperCase()}</b> — ${b.cur} sets this week</div>
+    <div style="position:relative;height:14px;border-radius:7px;background:var(--surf-raised);margin:10px 0 6px;overflow:hidden">
+      <i style="position:absolute;left:0;top:0;bottom:0;width:${pct}%;background:${b.color};border-radius:7px;display:block"></i>
+      <span style="position:absolute;left:${mevp}%;top:-3px;bottom:-3px;width:1px;background:#888"></span>
+      <span style="position:absolute;left:${mavp}%;top:-3px;bottom:-3px;width:1px;background:#fff"></span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font:600 9px/1 var(--tt);letter-spacing:.5px;text-transform:uppercase;margin-bottom:18px"><span>MEV ${b.mev}</span><span>MAV ${b.mav}</span><span>MRV ${b.mrv}</span></div>
+    <div class="pc-title" style="margin-bottom:8px">4-week trend</div>
+    <div class="wk-hist">${wk}</div>
+    <div style="margin-top:18px;padding:12px;border:1px dashed var(--border-strong);border-radius:10px;font:500 11px/1.5 var(--ts)">
+      This is a <b style="color:var(--muted)">stacked side-sheet</b> — a lateral peek into a different object lineage. Closing it returns you to exactly where you were in the set ladder. Stack cap = 2.</div>`;
+  renderLiveStripVisibility();
+  resetIdle();
+}
+function closeSheet(silent){
+  sheetOpen=false;
+  document.getElementById('sheet').classList.remove('show');
+  if(trail.length===0 && !silent){ showScrim(false); renderLiveStripVisibility(); }
+  if(!silent) resetIdle();
+}
+
+/* ---- close everything (drill-out) ---- */
+function closeAll(instant){
+  if(sheetOpen) closeSheet(true);
+  trail=[];
+  document.getElementById('center').classList.remove('show');
+  showScrim(false);
+  document.getElementById('countdown').classList.remove('show');
+  renderLiveStripVisibility();
+  stopIdle();
+}
+function onScrimTap(){ dismissChoreo(); }
+
+/* ============================================================
+   IDLE TIMEOUT + countdown choreography
+   ============================================================ */
+let idleEnabled=true;
+const IDLE_MS=8000, WARN_MS=3000;
+let idleDeadline=0, idleRAF=null;
+function toggleIdle(){ idleEnabled=!idleEnabled; document.getElementById('btn-idletimer').textContent=idleEnabled?'on · 8s':'off';
+  document.getElementById('btn-idletimer').classList.toggle('on',idleEnabled);
+  if(!idleEnabled) stopIdle(); else if(overlayOpen()) resetIdle(); }
+function resetIdle(){
+  if(!idleEnabled || !overlayOpen()){ document.getElementById('countdown').classList.remove('show'); return; }
+  idleDeadline=performance.now()+IDLE_MS;
+  document.getElementById('countdown').classList.remove('show');
+  if(!idleRAF) idleRAF=requestAnimationFrame(idleTick);
+}
+function stopIdle(){ if(idleRAF){cancelAnimationFrame(idleRAF);idleRAF=null;} document.getElementById('countdown').classList.remove('show'); }
+function idleTick(){
+  if(!overlayOpen()){ idleRAF=null; return; }
+  const rem=idleDeadline-performance.now();
+  const cd=document.getElementById('countdown');
+  if(rem<=WARN_MS){
+    cd.classList.add('show');
+    const secs=Math.max(0,Math.ceil(rem/1000));
+    document.getElementById('cdnum').textContent=secs;
+    const C=100.5;
+    document.getElementById('cdarc').style.strokeDashoffset=(C*(1-rem/WARN_MS)).toFixed(1);
+  }
+  if(rem<=0){ idleRAF=null; dismissChoreo(); return; }
+  idleRAF=requestAnimationFrame(idleTick);
+}
+// drill-out choreography: sheet collapses first, then center, then scrim lifts
+function dismissChoreo(){
+  stopIdle();
+  document.getElementById('countdown').classList.remove('show');
+  if(sheetOpen){
+    closeSheet(true);
+    setTimeout(()=>{ if(trail.length) finishDismiss(); }, 320);
+    // if a center is still open, keep it (peek closed, back to set); restart idle
+    if(trail.length){ setTimeout(resetIdle, 340); return; }
+  }
+  finishDismiss();
+}
+function finishDismiss(){
+  trail=[];
+  document.getElementById('center').classList.remove('show');
+  showScrim(false);
+  setTimeout(renderLiveStripVisibility,120);
+}
+
+/* interaction resets idle */
+['pointerdown','keydown'].forEach(ev=>document.getElementById('stage').addEventListener(ev,()=>{ if(overlayOpen()) resetIdle(); },true));
+
+/* ============================================================
+   AUTO-DRILL DEMO (guided transitions for a reviewer)
+   ============================================================ */
+function autoDrill(){
+  setScenario('live');
+  closeAll(true);
+  const steps=[
+    ()=>openCenterFresh({type:'session'}),
+    ()=>drillExerciseSets('row'),
+    ()=>drillSetDetail('row',2),
+    ()=>peekMuscle('Back'),
+    ()=>closeSheet(),
+    ()=>drillRep('row',2,1),
+    ()=>popTo(0)
+  ];
+  let i=0;
+  (function run(){ if(i>=steps.length) return; steps[i++](); setTimeout(run, 1400); })();
+}
+
+/* ============================================================
+   FIT + INIT
+   ============================================================ */
+function fit(){
+  const wrap=document.getElementById('stagewrap');
+  const avail=Math.min(window.innerWidth-24, 1280);
+  const scale=avail/1280;
+  wrap.style.transform=`scale(${scale})`;
+  wrap.style.height=(800*scale)+'px';
+  wrap.style.marginBottom=(800*(scale-1))+'px';
+}
+window.addEventListener('resize',fit);
+
+renderSkeleton(); renderTrend(); renderBody(); renderCapBand();
+renderTempoBar();
+setScenario('live');
+fit();
+</script>
+</body>
+</html>

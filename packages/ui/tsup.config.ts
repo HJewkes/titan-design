@@ -10,6 +10,7 @@ export default defineConfig({
     bodymap: 'src/bodymap.ts',
     pages: 'src/pages.ts',
     'theme/index': 'src/theme/index.ts',
+    'theme/tokens': 'src/theme/tokens/index.ts',
     'theme/tokens-css': 'src/theme/tokens-css.ts',
   },
   format: ['cjs', 'esm'],

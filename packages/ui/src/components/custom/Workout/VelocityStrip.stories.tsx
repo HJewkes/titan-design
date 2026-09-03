@@ -1,34 +1,51 @@
-import { useState } from 'react'
-import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'
-import { View, Text } from 'react-native'
-import { VelocityStrip } from './VelocityStrip'
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { View } from 'react-native'
+import { VelocityStrip, DualVelocityStrip } from './VelocityStrip'
+import { SessionRail, type SessionRailExercise } from './SessionRail'
+import type { SetRowProps } from './SetRow'
+import {
+  Note,
+  ViewLabel,
+  SURFACE_BG,
+  VIEW_HEIGHT,
+  dualVariantFor,
+  dualOf,
+  LEFT_SLOT,
+  RIGHT_SLOT,
+  REP_SET,
+  REP_SET_LAGGING,
+  type StripView,
+} from './velocity-story-kit'
 
+/**
+ * Per-rep velocity strip.
+ *
+ * Three views, each with its own story group:
+ * - **[Compact](?path=/docs/workout-dataviz-velocitystrip-compact--docs)** — the flat resting strip
+ * - **[Expanded](?path=/docs/workout-dataviz-velocitystrip-expanded--docs)** — the value-height chart
+ * - **[Hero](?path=/docs/workout-dataviz-velocitystrip-hero--docs)** — the across-the-room wall treatment
+ *
+ * Dual is NOT a fourth view. It is the same strip when the exercise used two
+ * Voltras, so every group pairs single above dual on one dataset.
+ *
+ * Feed either `velocities` or a `set` descriptor (set-type aware). `height` sets
+ * the plot height; `scale` is `peak` (to the set max) or `fixed` (a fixed
+ * ceiling, cross-set comparable — recommended for a live hero so bar heights
+ * never reflow as reps land). `barColor` picks the fill scale: `zone` is the
+ * absolute velocity zone, `loss` colours each bar by its drop from the set's own
+ * best, so a fatiguing set reads green-to-red regardless of absolute speed.
+ *
+ * This root group holds only the cross-cutting stories — the per-view scenarios
+ * live in the three group files above.
+ */
 const meta: Meta<typeof VelocityStrip> = {
   title: 'Workout/DataViz/VelocityStrip',
   component: VelocityStrip,
   tags: ['autodocs'],
-  parameters: {
-    docs: {
-      description: {
-        component:
-          'Per-rep velocity strip. Three variants: `mini` (a flat 3px static strip), `expanded` ' +
-          '(the velocity-HEIGHT bar chart, rounded tops), and `hero` (the across-the-room, single-set ' +
-          'wall treatment — tall bars, per-bar value labels, a dashed running-best reference line, and ' +
-          'dashed placeholders for the reps still to come via `targetReps`). The `expanded` chrome is ' +
-          'prop-driven — with `showNumbers`/`showInfo` on it is the framed chart (raised surface, per-bar ' +
-          'm/s labels, mean/loss info row, interactive tap-to-expand); with both off it is a bare strip, ' +
-          'the active-set spotlight. `height` sets the plot height; `scale` is `peak` (to the set max) ' +
-          'or `fixed` (a fixed ceiling, cross-set-comparable — recommended for the live `hero` so bar ' +
-          'heights never reflow as reps land). Feed either `velocities` or a `set` ' +
-          'descriptor (set-type aware — see the ' +
-          '[modalities](?path=/docs/workout-dataviz-velocitystrip-modalities--docs) sheet).',
-      },
-    },
-  },
   argTypes: {
     variant: {
       control: 'select',
-      options: ['mini', 'expanded', 'hero'],
+      options: ['compact', 'expanded', 'hero'],
       description: 'Display variant',
     },
     targetReps: {
@@ -56,28 +73,21 @@ const meta: Meta<typeof VelocityStrip> = {
       options: ['peak', 'fixed'],
       description: 'expanded bar scaling: peak (set max) or fixed (cross-set ceiling)',
     },
-    liveRepIndex: {
-      control: 'number',
+    barColor: {
+      control: 'inline-radio',
+      options: ['zone', 'loss'],
       description:
-        'expanded framed chart: index of the newest rep to animate (pop / new-peak bounce)',
+        "bar-fill scale: zone (default, absolute velocity) or loss (relative to set's own best)",
     },
-    set: { control: false, description: 'Structured set descriptor (supersedes `velocities`)' },
-    zones: { control: false, description: 'Velocity-zone bands (WA); default scale when absent' },
   },
 }
-
 export default meta
 type Story = StoryObj<typeof VelocityStrip>
-
-const fastSet = [1.15, 1.12, 1.08, 1.05, 1.02]
-const slowSet = [0.65, 0.58, 0.52, 0.48, 0.42]
-const mixedSet = [1.1, 0.95, 0.82, 0.68, 0.55, 0.45]
-const moderateSet = [0.88, 0.85, 0.82, 0.78, 0.76]
 
 /** Controls-driven: flip `variant` / `showNumbers` / `showInfo` / `height` / `scale` in the panel. */
 export const Playground: Story = {
   args: {
-    velocities: moderateSet,
+    velocities: [0.88, 0.85, 0.82, 0.78, 0.76],
     variant: 'expanded',
     expanded: true,
     showNumbers: true,
@@ -88,244 +98,201 @@ export const Playground: Story = {
   },
   decorators: [
     (Story) => (
-      <View style={{ width: 300, padding: 16 }}>
+      <View style={{ width: 300, padding: 16, backgroundColor: SURFACE_BG }}>
         <Story />
       </View>
     ),
   ],
 }
 
-/** The flat 3px static strip — the collapsed glance used in cards and rails. */
-export const Mini: Story = {
-  args: { velocities: mixedSet, variant: 'mini' },
-}
+// ── All views · the alignment matrix ────────────────────────────────────────
+// ONE dataset across all three views, each in its single and dual form. The
+// whole SetBarChart fold exists so these share ONE geometry; this is the story
+// that catches drift at a glance.
 
-/** Framed chart with per-bar m/s labels + info row (numbers ON) — the rich readout. */
-export const ExpandedWithNumbers: Story = {
-  args: { velocities: mixedSet, variant: 'expanded', expanded: true },
-  decorators: [
-    (Story) => (
-      <View style={{ width: 300, padding: 16 }}>
-        <Story />
-      </View>
-    ),
-  ],
-}
-
-/** Bare velocity-height strip (numbers OFF, info OFF, fixed 24px) — the active-set spotlight. */
-export const ExpandedBareSpotlight: Story = {
-  args: {
-    variant: 'expanded',
-    showNumbers: false,
-    showInfo: false,
-    height: 24,
-    scale: 'fixed',
-    set: { type: 'straight', velocities: [0.95, 0.9, 0.86, 0.8, 0.72], planned: 10 },
-  },
-}
-
-// --- Hero variant ------------------------------------------------------------
-// The across-the-room, single-set wall treatment. Rendered on the north-star wall
-// background so the dashed reference line + placeholders read the way they will live.
+const AV_VIEWS: { view: StripView; note: string }[] = [
+  { view: 'compact', note: 'single fills · dual folds to rounded L/R pills' },
+  { view: 'expanded', note: 'value-height bars' },
+  { view: 'hero', note: 'wall treatment' },
+]
 
 /**
- * Wall-background frame for the hero stories. The eyebrow label is ORGANISM chrome
- * (the north-star live page renders it), NOT part of the primitive — it sits here only
- * to show the component in the context it will live in. The `VelocityStrip` hero variant
- * itself renders no title.
+ * The hero reserves a 34px slot-label gutter; compact and expanded are
+ * gutter-less in production. They are indented here ONLY so every row's bars
+ * line up under the hero's — a comparison affordance, not production layout.
  */
-const heroDecorator: Decorator = (Story) => (
-  <View style={{ width: 560, padding: 28, backgroundColor: '#0E0E0E' }}>
-    <Text
-      style={{
-        color: '#5A5A5A',
-        fontSize: 10,
-        fontWeight: '700',
-        letterSpacing: 1,
-        marginBottom: 12,
-      }}
-    >
-      CONCENTRIC VELOCITY · THIS SET · (organism chrome — not the component)
-    </Text>
-    <Story />
-  </View>
-)
+const AV_GUTTER = 34
 
-const heroMidSet = [0.82, 0.79, 0.81, 0.76]
-const heroNearComplete = [0.82, 0.79, 0.81, 0.76, 0.74, 0.71, 0.68]
-const heroFatigue = [0.96, 0.91, 0.83, 0.72, 0.61, 0.5]
-
-/** Controls-driven hero: flip `velocities` / `targetReps` / `liveRepIndex` / `scale` / `height`. */
-export const HeroPlayground: Story = {
-  args: {
-    velocities: heroMidSet,
-    variant: 'hero',
-    targetReps: 8,
-    liveRepIndex: 3,
-    scale: 'fixed',
-    height: 220,
-  },
-  decorators: [heroDecorator],
-}
-
-/** Mid-set: 4 of 8 reps done, the newest bar popping, 4 dashed reps still to come. */
-export const HeroMidSet: Story = {
-  args: { velocities: heroMidSet, variant: 'hero', targetReps: 8, liveRepIndex: 3, scale: 'fixed' },
-  decorators: [heroDecorator],
-}
-
-/** Near complete: 7 of 8, one placeholder left; the running-best line sits at rep 3. */
-export const HeroNearComplete: Story = {
-  args: {
-    velocities: heroNearComplete,
-    variant: 'hero',
-    targetReps: 8,
-    liveRepIndex: 6,
-    scale: 'fixed',
-  },
-  decorators: [heroDecorator],
-}
-
-/** Fatigue decline: velocity falling rep over rep — the shape you read across the room. */
-export const HeroFatigueDecline: Story = {
-  args: {
-    velocities: heroFatigue,
-    variant: 'hero',
-    targetReps: 8,
-    liveRepIndex: 5,
-    scale: 'fixed',
-  },
-  decorators: [heroDecorator],
-}
-
-/** Ends on the best rep: the running-best line lands on the last (live) bar's top. */
-export const HeroEndsOnBest: Story = {
-  args: {
-    velocities: [0.7, 0.76, 0.83, 0.9],
-    variant: 'hero',
-    targetReps: 4,
-    liveRepIndex: 3,
-    scale: 'peak',
-  },
-  decorators: [heroDecorator],
-}
-
-/**
- * Set expansion — reps performed BEYOND `targetReps` (11 done vs 8 planned). Placeholders
- * are gone (target met) and the extra reps just render as more bars; `flex` bars narrow to
- * fit, so the chart absorbs the overflow with no clipping. The AMRAP "keep going" case.
- */
-export const HeroExceedsTarget: Story = {
-  args: {
-    velocities: [0.9, 0.87, 0.84, 0.8, 0.77, 0.74, 0.71, 0.68, 0.64, 0.6, 0.55],
-    variant: 'hero',
-    targetReps: 8,
-    liveRepIndex: 10,
-    scale: 'fixed',
-  },
-  decorators: [heroDecorator],
-}
-
-/** Set complete: 8 of 8, no placeholders. */
-export const HeroComplete: Story = {
-  args: {
-    velocities: [0.96, 0.91, 0.83, 0.79, 0.76, 0.72, 0.68, 0.61],
-    variant: 'hero',
-    targetReps: 8,
-    scale: 'fixed',
-  },
-  decorators: [heroDecorator],
-}
-
-/** The same set at three container widths — the hero is width-fluid (flex bars, capped width, fixed height). */
-export const HeroResponsive: Story = {
+export const AllViews: Story = {
+  name: 'All Views · single × dual matrix',
   render: () => (
-    <View style={{ gap: 24, padding: 24, backgroundColor: '#0E0E0E' }}>
-      {[360, 560, 900].map((w) => (
-        <View key={w} style={{ width: w }}>
-          <Text style={{ color: '#5A5A5A', fontSize: 10, fontWeight: '700', marginBottom: 8 }}>
-            {w}px
-          </Text>
-          <VelocityStrip
-            velocities={heroFatigue}
-            variant="hero"
-            targetReps={8}
-            liveRepIndex={5}
-            scale="fixed"
-            height={180}
-          />
+    <View style={{ padding: 24, backgroundColor: SURFACE_BG, gap: 26, width: 760 }}>
+      <View style={{ flexDirection: 'row', gap: 16 }}>
+        <View style={{ width: 92 }} />
+        <View style={{ flex: 1 }}>
+          <ViewLabel text="Single slot" />
+        </View>
+        <View style={{ flex: 1 }}>
+          <ViewLabel text="Dual · diverging" />
+        </View>
+      </View>
+      <Note>
+        The SAME set across every row — compact is the flattened expanded (identical bar
+        x-positions, only the heights change). Shown at actual size.
+      </Note>
+      {AV_VIEWS.map(({ view, note }) => (
+        <View key={view} style={{ flexDirection: 'row', gap: 16, alignItems: 'center' }}>
+          <View style={{ width: 92, gap: 3 }}>
+            <ViewLabel text={view} />
+            <Note>{note}</Note>
+          </View>
+          <View style={{ flex: 1, paddingLeft: view === 'hero' ? 0 : AV_GUTTER }}>
+            <VelocityStrip
+              velocities={REP_SET}
+              variant={view}
+              height={VIEW_HEIGHT[view].single}
+              scale="peak"
+              {...(view === 'hero' ? { label: 'Set' } : {})}
+              {...(view === 'expanded' ? { showNumbers: false, showInfo: false } : {})}
+            />
+          </View>
+          <View style={{ flex: 1, paddingLeft: view === 'hero' ? 0 : AV_GUTTER }}>
+            <DualVelocityStrip
+              left={dualOf(REP_SET, LEFT_SLOT)}
+              right={dualOf(REP_SET_LAGGING, RIGHT_SLOT)}
+              variant={dualVariantFor(view)}
+              height={VIEW_HEIGHT[view].dual}
+              scale="peak"
+            />
+          </View>
         </View>
       ))}
     </View>
   ),
 }
 
-/** A structured set descriptor (a drop set): the mini variant carries the set-type gap/color encoding. */
-export const SetTypeMini: Story = {
-  args: {
-    variant: 'mini',
-    set: {
-      type: 'drop',
-      subloads: [
-        [1.0, 0.92],
-        [0.85, 0.78],
-        [0.7, 0.62],
-      ],
-    },
+// ── In context · the real session rail + expanded exercise ──────────────────
+
+const decay = (n: number, start: number, span = 0.4): number[] =>
+  Array.from({ length: n }, (_, r) => +(start - (span * r) / Math.max(1, n - 1)).toFixed(3))
+
+/**
+ * The current exercise's set table. This is where BOTH strip views ship: a
+ * `done` row carries the flat compact strip, the `live` row carries the
+ * velocity-height spotlight, and `todo` rows carry a grey stub.
+ */
+const CURRENT_SETS: SetRowProps[] = [
+  {
+    state: 'done',
+    setNumber: 1,
+    unit: 'lbs',
+    reps: 10,
+    weight: 90,
+    rpe: 7,
+    velocities: decay(10, 0.72),
   },
-}
+  {
+    state: 'live',
+    setNumber: 2,
+    unit: 'lbs',
+    target: { reps: 10, weight: 90 },
+    reps: 5,
+    weight: 90,
+    velocities: decay(5, 0.62),
+    liveRepIndex: 4,
+  },
+  { state: 'todo', setNumber: 3, unit: 'lbs', target: { reps: 10, weight: 90 }, planned: 10 },
+]
 
-function InteractiveVelocityStrip() {
-  const [open, setOpen] = useState(false)
-  // Tap-to-expand: `onToggle` + the controlled `expanded` boolean. Tapping the strip
-  // toggles both ways (collapsed 3px ↔ chart). No `onRepPress` here — per-bar rep
-  // presses would intercept bar taps and block collapse; that's a separate mode.
-  return (
-    <View style={{ width: 300, padding: 16 }}>
-      <VelocityStrip velocities={moderateSet} expanded={open} onToggle={() => setOpen((v) => !v)} />
-    </View>
-  )
-}
+/** A live session, mid-workout: two done, one active, one still upcoming. */
+const RAIL_SESSION: SessionRailExercise[] = [
+  {
+    name: 'Seated Cable Row',
+    summary: { sets: 5, reps: 8, weight: 145, unit: 'lbs' },
+    tempo: [3, 1, 2, 0],
+    indicator: 'pr',
+    setStates: [1.0, 0.9, 0.8, 0.7, 0.6].map((v) => ({
+      status: 'done' as const,
+      velocities: decay(8, v),
+    })),
+  },
+  {
+    name: 'Incline DB Press',
+    summary: { sets: 3, reps: 8, weight: 70, unit: 'lbs' },
+    tempo: [3, 0, 3, 0],
+    setStates: [0.72, 0.62, 0.54].map((v) => ({
+      status: 'done' as const,
+      velocities: decay(8, v),
+    })),
+  },
+  {
+    name: 'Cable Chest Press',
+    summary: { sets: 3, reps: 10, weight: 90, unit: 'lbs' },
+    tempo: [2, 1, 2, 0],
+    indicator: 'info',
+    setStates: [
+      { status: 'done', velocities: decay(10, 0.72) },
+      { status: 'active', velocities: decay(5, 0.62), planned: 10 },
+      { status: 'todo', planned: 10 },
+    ],
+    sets: CURRENT_SETS,
+  },
+  {
+    name: 'Standing Calf Raise',
+    summary: { sets: 5, reps: 20, weight: 25, unit: 'lbs' },
+    tempo: [2, 1, 2, 0],
+    upcoming: true,
+    setStates: [1, 2, 3, 4, 5].map(() => ({ status: 'todo' as const, planned: 20 })),
+  },
+]
 
-/** Tap to expand; tap again to collapse (3px ↔ chart, animated). */
-export const Interactive: Story = {
-  render: () => <InteractiveVelocityStrip />,
-}
+/**
+ * The strip in the place it actually ships, at production size, using the real
+ * components — no mock rows.
+ *
+ * Left: `SessionRail`, which draws SET-level bars (`SetStrip`, `stripHeight={8}`)
+ * — one bar per set, segmented per rep. Right: the current exercise opened as an
+ * `ExerciseCard`, whose set table is where BOTH strip views live in production —
+ * a `done` row renders `compact`, the `live` row renders the velocity-height
+ * spotlight (`expanded` at h=24), and a `todo` row renders a grey stub.
+ *
+ * That composition is the honest answer to "where does this component appear":
+ * the SPA renders `ExerciseCard` in its hero panel and rest view, so compact
+ * ships through this table rather than through any direct call site. Reading
+ * left to right is a zoom — set-level bars, then the same sets rep by rep — and
+ * a fork in the flat-bar language shows up here as a mismatch in bar height,
+ * radius or gap between the rail and the table.
+ */
+export const InContext: Story = {
+  name: 'In Context · session rail',
+  parameters: { layout: 'fullscreen' },
+  render: () => (
+    <View style={{ flexDirection: 'row', backgroundColor: SURFACE_BG, minHeight: 640 }}>
+      <SessionRail
+        title="Pull A · Intensification"
+        exercises={RAIL_SESSION}
+        stripHeight={8}
+        width={560}
+        expandedIndex={2}
+        setsDone={7.2}
+        elapsedMs={(42 * 60 + 18) * 1000}
+        budgetMs={60 * 60 * 1000}
+        metrics={[
+          { label: 'Volume', value: '76%' },
+          { label: 'Load', value: '7.3k' },
+          { label: 'Fatigue', value: 'MOD' },
+        ]}
+      />
 
-/** The four zone profiles across the treatments, so the color scale reads at a glance. */
-export const Profiles: Story = {
-  render: () => {
-    const rows: [string, number[]][] = [
-      ['Speed', fastSet],
-      ['Power', moderateSet],
-      ['Strength', slowSet],
-      ['Mixed', mixedSet],
-    ]
-    return (
-      <View style={{ gap: 20, padding: 16, width: 320 }}>
-        {rows.map(([label, velocities]) => (
-          <View key={label} style={{ gap: 6 }}>
-            <Text style={{ fontFamily: 'Inter, sans-serif', fontSize: 11, color: '#9CA3AF' }}>
-              {label}
-            </Text>
-            <VelocityStrip
-              velocities={velocities}
-              variant="expanded"
-              showInfo={false}
-              onToggle={() => {}}
-            />
-            <VelocityStrip
-              variant="expanded"
-              showNumbers={false}
-              showInfo={false}
-              height={24}
-              scale="fixed"
-              set={{ type: 'straight', velocities, planned: velocities.length }}
-            />
-            <VelocityStrip velocities={velocities} variant="mini" />
-          </View>
-        ))}
+      <View style={{ flex: 1, padding: 28, gap: 6 }}>
+        <ViewLabel text="reading the rail" />
+        <Note>
+          Collapsed rows draw SET-level bars — one per set, segmented per rep, at the same 8px
+          flat-bar language. The expanded row is the same exercise rep by rep: its `done` rows carry
+          the compact strip, the `live` row the velocity-height spotlight, `todo` rows a grey stub.
+          A zoom, not a repeat.
+        </Note>
       </View>
-    )
-  },
+    </View>
+  ),
 }

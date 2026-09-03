@@ -1,18 +1,26 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
-import { primitiveColors } from '../../../theme/tokens/primitives'
-import { neumorphicShadows } from '../../../theme/shadows'
+import { greyRamp } from '../../../theme/tokens/primitives'
+import { insetWell } from '../../../theme/materials'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { Surface } from '../../ui/surface'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
+import { ExerciseCard } from './ExerciseCard'
+import type { SetRowProps } from './SetRow'
 import { SessionHeader } from './SessionHeader'
 import type { MetricTileData } from './MetricTiles'
 import type { SetStripSet } from './SetStrip'
 import type { ExerciseIndicatorKind } from './ExerciseIndicator'
 
-// Charcoal-ramp surfaces (the locked S3 shell shades): the nav + the heading plane
-// read as ONE flat raised surface; the exercise list is sunk. Depth comes only from
-// the list's subtle inset shadow (top cast by the heading, faint left edge by the nav).
-const INSET = primitiveColors.charcoal[800] // #131313 — sunk exercise list
-const DIVIDER = primitiveColors.charcoal[500] // #1C1C1C — row divider
+// Warm-tapered ramp surfaces (the locked S3 shell shades): the nav + the heading plane read as
+// ONE dark plane (background shell, #1C1916, owned by SessionHeader's `<Surface level="background">`).
+// The exercise list is a LIGHTER inset panel — `<Surface level="elevated">` (#2A2827) —
+// recessed via its inner shadow yet paler than the header, so the transparent
+// exercise headings on it never blend into the header plane. Surface owns both backgrounds,
+// so the rail no longer hand-sets them.
+const SEMANTIC = getSemanticColors('dark')
+/** Row divider — one step up from the well it sits in so the line reads. */
+const DIVIDER = greyRamp[875]
 
 const DEFAULT_WIDTH = 246
 
@@ -20,13 +28,27 @@ export interface SessionRailExercise {
   /** Stable key + press payload. Falls back to list index when absent. */
   id?: string
   name: string
-  summary: { sets: number; reps: number | string; weight: number; unit: 'lbs' | 'kg' }
+  /** `weight` accepts a string (e.g. "—") for an unset/discovery load — never a faked 0. */
+  summary: { sets: number; reps: number | string; weight: number | string; unit: 'lbs' | 'kg' }
+  /**
+   * Prescribed set count for the header total + pace-bar segment width. Distinct from
+   * `summary.sets`, which is the row's live DONE count (0 for the active exercise before
+   * its first set) — using that for the total under-counts by the active exercise's
+   * remaining sets. Falls back to `summary.sets` when absent.
+   */
+  plannedSets?: number
   tempo?: [number, number, number, number]
   indicator?: ExerciseIndicatorKind
   /** Per-set performance data driving the heading strip. */
   setStates: SetStripSet[]
   /** Dim the row as a not-yet-reached exercise. */
   upcoming?: boolean
+  /**
+   * Per-set rows for the expanded body. Only read when this row is the one named
+   * by `expandedIndex` — a rail row without them can never expand, which is the
+   * correct behaviour for an exercise whose sets aren't loaded.
+   */
+  sets?: SetRowProps[]
 }
 
 export interface SessionRailProps extends ViewProps {
@@ -49,6 +71,16 @@ export interface SessionRailProps extends ViewProps {
   stripHeight?: number
   /** Rail width in px. Default 246. */
   width?: number
+  /**
+   * Index of the exercise to render EXPANDED in place — its set table opens
+   * inside the rail rather than in a separate pane. The row still draws the same
+   * `ExerciseCardHeading` (an `ExerciseCard` composes one), so an expanded row
+   * differs from a collapsed one only by the revealed body.
+   *
+   * Ignored when the named exercise has no `sets`. Omit for an all-collapsed
+   * rail, which is the prior behaviour.
+   */
+  expandedIndex?: number
   onExercisePress?: (exercise: SessionRailExercise, index: number) => void
   className?: string
 }
@@ -70,21 +102,23 @@ export function SessionRail({
   next,
   stripHeight = 8,
   width = DEFAULT_WIDTH,
+  expandedIndex,
   onExercisePress,
   className,
   style,
   ...props
 }: SessionRailProps) {
   return (
-    <View
+    <Surface
+      level="elevated"
       className={className}
-      style={[{ width, flexDirection: 'column', backgroundColor: INSET }, style]}
+      style={[{ width, flexDirection: 'column' }, style]}
       testID="session-rail"
       {...props}
     >
       <SessionHeader
         title={title}
-        plan={exercises.map((ex) => ({ name: ex.name, sets: ex.summary.sets }))}
+        plan={exercises.map((ex) => ({ name: ex.name, sets: ex.plannedSets ?? ex.summary.sets }))}
         setsDone={setsDone}
         elapsedMs={elapsedMs}
         budgetMs={budgetMs}
@@ -93,8 +127,14 @@ export function SessionRail({
         next={next}
       />
 
-      <View
-        style={[{ flex: 1, backgroundColor: INSET }, neumorphicShadows.charcoal.pressed.subtle]}
+      {/* The list is a WELL cut into the rail: one plane down from the rail's
+          `elevated`, recessed by the shared inset material rather than by a
+          neumorphic pressed shadow (which had no room to read at this
+          lightness). `level` follows the well's tone so on-surface text
+          resolves against what is actually painted. */}
+      <Surface
+        level="base"
+        style={[{ flex: 1 }, insetWell(SEMANTIC['surface-base'])]}
         testID="session-rail-list"
       >
         {exercises.map((ex, i) => (
@@ -105,22 +145,40 @@ export function SessionRail({
               borderBottomColor: DIVIDER,
             }}
           >
-            <ExerciseCardHeading
-              name={ex.name}
-              sets={ex.summary.sets}
-              reps={ex.summary.reps}
-              load={ex.summary.weight}
-              unit={ex.summary.unit}
-              tempo={ex.tempo}
-              indicator={ex.indicator}
-              setStates={ex.setStates}
-              stripHeight={stripHeight}
-              dimmed={ex.upcoming}
-              onPress={() => onExercisePress?.(ex, i)}
-            />
+            {i === expandedIndex && ex.sets ? (
+              <ExerciseCard
+                name={ex.name}
+                expanded
+                summary={{
+                  sets: ex.summary.sets,
+                  reps: ex.summary.reps,
+                  // ExerciseCard's summary takes a numeric load; a string load is
+                  // an unset/discovery weight, which has no expanded form yet.
+                  weight: typeof ex.summary.weight === 'number' ? ex.summary.weight : 0,
+                  unit: ex.summary.unit,
+                }}
+                tempo={ex.tempo}
+                sets={ex.sets}
+                onExpandedChange={() => onExercisePress?.(ex, i)}
+              />
+            ) : (
+              <ExerciseCardHeading
+                name={ex.name}
+                sets={ex.summary.sets}
+                reps={ex.summary.reps}
+                load={ex.summary.weight}
+                unit={ex.summary.unit}
+                tempo={ex.tempo}
+                indicator={ex.indicator}
+                setStates={ex.setStates}
+                stripHeight={stripHeight}
+                dimmed={ex.upcoming}
+                onPress={() => onExercisePress?.(ex, i)}
+              />
+            )}
           </View>
         ))}
-      </View>
-    </View>
+      </Surface>
+    </Surface>
   )
 }

@@ -287,7 +287,7 @@ export const FormExample: Story = {
           isRequired
         />
 
-        <View className="pt-2 border-t border-border">
+        <View className="pt-2 border-t border-hairline">
           <Text className="text-sm text-text-secondary">
             Selected: {country ? `${countryOptions.find(c => c.value === country)?.label}` : '-'}
             {city ? `, ${cityOptions[country!]?.find(c => c.value === city)?.label}` : ''}

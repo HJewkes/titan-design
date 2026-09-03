@@ -3,6 +3,7 @@ import { render, screen, fireEvent, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ExerciseCard } from './ExerciseCard'
 import type { SetRowProps } from './SetRow'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 const baseCollapsedProps = {
   name: 'Bench Press',
@@ -49,7 +50,7 @@ describe('ExerciseCard', () => {
       expect(screen.getByTestId('pr-badge-star')).toBeInTheDocument()
     })
 
-    it('renders mini velocity strips for logged sets', () => {
+    it('renders compact velocity strips for logged sets', () => {
       render(
         <ExerciseCard
           {...baseCollapsedProps}
@@ -86,9 +87,8 @@ describe('ExerciseCard', () => {
       sets: unifiedSets,
     }
 
-    // Literal-hex text treatments (dark theme neutral 100 / 400).
-    const T_ACTIVE = '#F3F4F6'
-    const T_MUTED = '#9CA3AF'
+    // Read from the tokens, not pinned (see SetRow.test.tsx).
+    const { 'text-primary': T_ACTIVE, 'text-secondary': T_MUTED } = getSemanticColors('dark')
 
     it('renders exercise name via the real ExerciseCardHeading header', () => {
       render(<ExerciseCard {...expandedProps} />)
@@ -158,10 +158,10 @@ describe('ExerciseCard', () => {
       expect(within(rows[2]).getByText('3')).toHaveStyle({ color: T_MUTED })
     })
 
-    it('uses the compact velocity-height spotlight for the live set and mini elsewhere', () => {
+    it('uses the velocity-height spotlight for the live set and the flat compact strip elsewhere', () => {
       render(<ExerciseCard {...expandedProps} />)
-      expect(screen.getAllByTestId('velocity-strip-compact')).toHaveLength(1)
-      expect(screen.getAllByTestId('velocity-strip-mini')).toHaveLength(2)
+      expect(screen.getAllByTestId('velocity-strip-spotlight')).toHaveLength(1)
+      expect(screen.getAllByTestId('velocity-strip-compact')).toHaveLength(2)
     })
 
     it('renders the TempoDisplay in the header when tempo provided', () => {

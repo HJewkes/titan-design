@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Tempo &amp; Realtime Feedback — Round 1</title>
+<style>
+  :root{
+    --bg:#101010; --bg2:#161616; --card:#191919; --raised:#1C1C1C;
+    --border:#1F1F1F; --border2:#2C2C2C;
+    --text:#F3F4F6; --muted:#9CA3AF; --dim:#6B7280;
+    /* phase colors — match mobile TempoBar PHASE_CONFIG */
+    --con:#14B8A6; --hold:#FF7900; --ecc:#FFB020; --behind:#D14343;
+    /* VBT 4-band velocity scale (green = fastest) */
+    --v-green:#2ed573; --v-yellow:#ffd43b; --v-orange:#ffa502; --v-red:#ff4757;
+    --brand:#FF7900;
+    --cycle:5s;
+    --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+    --ui:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 800px at 50% -10%,#181818,var(--bg));
+    color:var(--text);font-family:var(--ui);line-height:1.4;padding:28px 22px 60px}
+  h1{font-size:22px;margin:0 0 4px;letter-spacing:.2px}
+  .sub{color:var(--muted);font-size:13px;max-width:900px;margin:0 0 20px}
+  .sub code{color:#cbd2dc;background:#0d0d0d;padding:1px 5px;border-radius:4px;font-family:var(--mono);font-size:12px}
+  .mono{font-family:var(--mono)}
+  .dim{color:var(--dim)}
+
+  /* ---- scenario data band ---- */
+  .scenarios{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:0 0 26px}
+  .scn{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+  .scn h3{margin:0 0 2px;font-size:13px;font-weight:600}
+  .scn .id{color:var(--dim);font-family:var(--mono);font-size:11px}
+  .scn .tempo{font-family:var(--mono);font-size:26px;font-weight:700;margin:6px 0 2px;letter-spacing:1px}
+  .scn .row{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:12px;color:var(--muted)}
+  .vdot{width:12px;height:12px;border-radius:50%;flex:0 0 auto;box-shadow:0 0 10px 0 currentColor}
+  .scn .mini{display:flex;gap:2px;height:8px;margin-top:9px}
+  .scn .mini span{border-radius:2px;opacity:.9}
+
+  /* ---- variant grid ---- */
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}.scenarios{grid-template-columns:repeat(2,1fr)}}
+  .card{background:linear-gradient(180deg,#1b1b1b,var(--card));border:1px solid var(--border2);
+    border-radius:16px;padding:18px 18px 16px;position:relative;overflow:hidden}
+  .tag{display:inline-block;font-family:var(--mono);font-size:11px;color:#0a0a0a;background:var(--brand);
+    padding:2px 8px;border-radius:6px;font-weight:700;letter-spacing:.5px}
+  .card h2{font-size:16px;margin:10px 0 3px}
+  .concept{color:var(--muted);font-size:12.5px;margin:0 0 14px;min-height:34px}
+  .stage{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px}
+  .poll{margin-top:12px;font-size:11.5px;color:var(--dim);border-top:1px dashed var(--border2);padding-top:9px}
+  .poll b{color:var(--muted);font-weight:600}
+  .lbl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin:0 0 8px}
+
+  /* ============ V1 SEGMENTED PHASE-FILL BAR ============ */
+  .phaselabels{display:flex;gap:3px;margin-bottom:4px}
+  .phaselabels div{text-align:center;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--dim)}
+  .bar{display:flex;gap:3px;height:26px}
+  .seg{position:relative;background:rgba(255,255,255,.05);border-radius:5px;overflow:hidden}
+  .seg .fill{position:absolute;inset:0 auto 0 0;width:0;border-radius:5px}
+  .seg .txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:12px;font-weight:700;color:#0c0c0c;mix-blend-mode:normal}
+  .flex2{flex:2}.flex1{flex:1}.flex3{flex:3}
+
+  @keyframes conFill{0%{width:0}18%{width:100%}100%{width:100%}}
+  @keyframes holdFill{0%,18%{width:0}22%{width:100%}100%{width:100%}}
+  @keyframes eccFill{0%,22%{width:0}82%{width:100%}100%{width:100%}}
+  /* behind: eccentric over-runs and reddens past the 1.15x crossover */
+  @keyframes eccFillBehind{0%,22%{width:0;background:var(--ecc)}55%{background:var(--ecc)}
+    62%{background:var(--behind)}92%{width:100%;background:var(--behind)}100%{width:100%;background:var(--behind)}}
+  @keyframes labOn{0%,18%{color:#fff;text-shadow:0 0 8px currentColor}
+    18.01%,100%{color:var(--dim);text-shadow:none}}
+  @keyframes labOnHold{0%,18%{color:var(--dim)}18.01%,22%{color:#fff;text-shadow:0 0 8px var(--hold)}
+    22.01%,100%{color:var(--dim);text-shadow:none}}
+  @keyframes labOnEcc{0%,22%{color:var(--dim)}22.01%,82%{color:#fff;text-shadow:0 0 8px currentColor}
+    82.01%,100%{color:var(--dim);text-shadow:none}}
+
+  .a-con{animation:conFill var(--cycle) linear infinite;background:var(--con)}
+  .a-hold{animation:holdFill var(--cycle) linear infinite;background:var(--hold)}
+  .a-ecc{animation:eccFill var(--cycle) linear infinite;background:var(--ecc)}
+  .a-ecc-behind{animation:eccFillBehind var(--cycle) linear infinite}
+  .barwrap+.barwrap{margin-top:16px}
+  .caplbl{font-size:11px;color:var(--muted);margin-bottom:5px;display:flex;justify-content:space-between}
+  .caplbl b{color:var(--text)}
+
+  /* ============ V2 CIRCULAR TEMPO RING ============ */
+  .ringwrap{display:flex;align-items:center;justify-content:center;gap:22px}
+  .ring{position:relative;width:180px;height:180px}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .ring .ph{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+  .ring .big{font-family:var(--mono);font-size:34px;font-weight:700}
+  .ring .tgt{font-family:var(--mono);font-size:12px;color:var(--dim)}
+  @keyframes ringSweep{0%{stroke-dashoffset:440}82%{stroke-dashoffset:0}100%{stroke-dashoffset:0}}
+  @keyframes ringColor{0%,18%{stroke:var(--con)}18.01%,22%{stroke:var(--hold)}
+    22.01%,82%{stroke:var(--ecc)}82.01%,100%{stroke:var(--ecc)}}
+  @keyframes hand{0%{transform:rotate(-90deg)}82%{transform:rotate(205deg)}100%{transform:rotate(205deg)}}
+  @keyframes phLabel{0%,18%{content:''}}
+  .ring .prog{animation:ringSweep var(--cycle) linear infinite,ringColor var(--cycle) linear infinite}
+  .handline{position:absolute;top:50%;left:50%;width:76px;height:2px;background:linear-gradient(90deg,transparent,#fff);
+    transform-origin:0 50%;animation:hand var(--cycle) linear infinite;border-radius:2px;opacity:.9}
+  .handdot{position:absolute;top:50%;left:50%;width:9px;height:9px;margin:-4.5px;border-radius:50%;
+    background:#fff;box-shadow:0 0 12px 2px #fff;transform-origin:center;
+    animation:handOrbit var(--cycle) linear infinite}
+  @keyframes handOrbit{0%{transform:rotate(-90deg) translateX(76px)}82%{transform:rotate(205deg) translateX(76px)}
+    100%{transform:rotate(205deg) translateX(76px)}}
+  .legend{font-size:12px;color:var(--muted)}
+  .legend div{display:flex;align-items:center;gap:8px;margin:7px 0}
+  .swatch{width:14px;height:14px;border-radius:3px}
+
+  /* ============ V3 DUAL VELOCITY + TEMPO STRIP ============ */
+  .v3top .bar{height:18px}
+  .v3vel{margin-top:20px;position:relative;height:96px;border-left:1px solid var(--border2);
+    border-bottom:1px solid var(--border2);padding:0 6px}
+  .v3dots{display:flex;align-items:flex-end;justify-content:space-around;height:100%;padding-bottom:2px}
+  .vbar{width:16px;border-radius:4px 4px 0 0;transform-origin:bottom;position:relative}
+  .vbar::after{content:attr(data-v);position:absolute;top:-16px;left:50%;transform:translateX(-50%);
+    font-family:var(--mono);font-size:9px;color:var(--muted);white-space:nowrap}
+  @keyframes pop{0%{transform:scaleY(0);opacity:0}6%{transform:scaleY(1.12);opacity:1}
+    12%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:1}}
+  .stopline{position:absolute;left:0;right:0;border-top:2px dashed var(--behind);opacity:.55}
+  .stoptxt{position:absolute;right:2px;font-size:9px;color:var(--behind);transform:translateY(-13px)}
+  .v3meta{display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--muted)}
+  .v3meta b{font-family:var(--mono);color:var(--text);font-size:14px}
+
+  /* ============ V4 METRONOME / BEAT PACING ============ */
+  .metro{display:flex;flex-direction:column;align-items:center;gap:14px}
+  .pend{position:relative;width:200px;height:120px;overflow:hidden}
+  .arc{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:180px;height:90px;
+    border:2px solid var(--border2);border-bottom:none;border-radius:180px 180px 0 0;opacity:.4}
+  .arm{position:absolute;bottom:6px;left:50%;width:3px;height:98px;background:linear-gradient(180deg,var(--brand),#7a3a00);
+    transform-origin:bottom center;border-radius:3px;animation:swing var(--cycle) ease-in-out infinite}
+  .arm .bob{position:absolute;top:-6px;left:50%;width:18px;height:18px;margin-left:-9px;border-radius:50%;
+    background:var(--brand);box-shadow:0 0 16px 3px rgba(255,121,0,.6)}
+  @keyframes swing{0%{transform:rotate(-32deg)}50%{transform:rotate(32deg)}100%{transform:rotate(-32deg)}}
+  .beat{width:14px;height:14px;border-radius:50%;background:var(--con);animation:beatPulse calc(var(--cycle)/2) ease-out infinite}
+  @keyframes beatPulse{0%{box-shadow:0 0 0 0 rgba(20,184,166,.6);transform:scale(1)}
+    40%{box-shadow:0 0 0 14px rgba(20,184,166,0);transform:scale(1.35)}100%{box-shadow:0 0 0 0 rgba(20,184,166,0);transform:scale(1)}}
+  .track{width:100%;margin-top:4px}
+  .trk{position:relative;height:10px;background:rgba(255,255,255,.05);border-radius:5px;overflow:hidden;margin-top:8px}
+  .ghost{position:absolute;inset:0 auto 0 0;width:0;background:repeating-linear-gradient(90deg,#3a3a3a,#3a3a3a 6px,transparent 6px,transparent 11px);
+    animation:ghostRun var(--cycle) linear infinite}
+  .actual{position:absolute;inset:0 auto 0 0;width:0;background:var(--con);animation:actualRun var(--cycle) linear infinite,actualColor var(--cycle) linear infinite}
+  @keyframes ghostRun{0%{width:0}82%{width:100%}100%{width:100%}}
+  @keyframes actualRun{0%{width:0}86%{width:100%}100%{width:100%}} /* lags the ghost slightly = "behind the beat" */
+  @keyframes actualColor{0%,60%{background:var(--con)}72%{background:var(--behind)}100%{background:var(--behind)}}
+  .trklbl{display:flex;justify-content:space-between;font-size:10px;color:var(--dim);margin-top:6px}
+
+  .foot{margin-top:30px;color:var(--dim);font-size:11.5px;max-width:920px}
+  .foot code{font-family:var(--mono);color:var(--muted)}
+</style>
+</head>
+<body>
+
+<h1>Live Tempo &amp; Realtime Feedback Strip <span class="dim" style="font-size:13px;font-weight:400">— Round 1 exploration</span></h1>
+<p class="sub">
+  Dark-theme tablet, read across the room mid-set. Every variant <b>animates a full rep cycle</b> so you can judge
+  feedback-speed feel. Fill math + pace thresholds come straight from mobile <code>TempoBar.tsx</code>
+  (<code>getFillPct</code>, behind &gt; 1.15&times; target) and <code>@voltras/workout-analytics</code>
+  (<code>getRepTempo</code>, <code>getPhaseMovementDuration</code>, <code>getRepPeakVelocity</code>).
+  Designed for the sub-second SSE stream; per-variant poll-degrade noted. Phase colors:
+  <span style="color:var(--con)">CON</span> · <span style="color:var(--hold)">HOLD</span> ·
+  <span style="color:var(--ecc)">ECC</span> · <span style="color:var(--behind)">behind</span>.
+</p>
+
+<!-- ============ SCENARIO DATA BAND ============ -->
+<p class="lbl">Synthetic suite — real WA shapes (one set, 3-0-1 target; rep D paused)</p>
+<div class="scenarios">
+  <div class="scn">
+    <div class="id">rep A</div><h3>On-pace</h3>
+    <div class="tempo">3-0-1</div>
+    <div class="row"><span class="vdot" style="color:var(--v-yellow);background:var(--v-yellow)"></span> 0.62 m/s · moderate</div>
+    <div class="mini"><span class="flex2" style="background:var(--con)"></span><span class="flex1" style="background:rgba(255,255,255,.06)"></span><span class="flex3" style="background:var(--ecc)"></span></div>
+  </div>
+  <div class="scn">
+    <div class="id">rep B</div><h3>Behind — slow ecc</h3>
+    <div class="tempo" style="color:var(--behind)">5-0-1</div>
+    <div class="row"><span class="vdot" style="color:var(--v-yellow);background:var(--v-yellow)"></span> 0.55 m/s · ecc 4.6s &gt; 3s</div>
+    <div class="mini"><span class="flex2" style="background:var(--con)"></span><span class="flex1" style="background:rgba(255,255,255,.06)"></span><span style="flex:5;background:var(--behind)"></span></div>
+  </div>
+  <div class="scn">
+    <div class="id">rep C</div><h3>Explosive con</h3>
+    <div class="tempo">3-0-1</div>
+    <div class="row"><span class="vdot" style="color:var(--v-green);background:var(--v-green)"></span> 0.94 m/s · ahead of pace</div>
+    <div class="mini"><span class="flex1" style="background:var(--v-green)"></span><span class="flex1" style="background:rgba(255,255,255,.06)"></span><span class="flex3" style="background:var(--ecc)"></span></div>
+  </div>
+  <div class="scn">
+    <div class="id">rep D</div><h3>Long hold @ top</h3>
+    <div class="tempo">2-2-1</div>
+    <div class="row"><span class="vdot" style="color:var(--v-yellow);background:var(--v-yellow)"></span> 0.58 m/s · pauseTop 2.1s</div>
+    <div class="mini"><span class="flex2" style="background:var(--con)"></span><span style="flex:2;background:var(--hold)"></span><span class="flex2" style="background:var(--ecc)"></span></div>
+  </div>
+</div>
+
+<!-- ============ VARIANT GRID ============ -->
+<div class="grid">
+
+  <!-- V1 -->
+  <div class="card">
+    <span class="tag">V1</span>
+    <h2>Segmented Phase-Fill Bar</h2>
+    <p class="concept">Faithful tablet port of the mobile <code style="font-family:var(--mono);font-size:11px">TempoBar</code>: CON/HOLD/ECC segments,
+      active segment fills L&rarr;R live; behind snaps to red at the 1.15&times; crossover. The safe baseline.</p>
+    <div class="stage">
+      <div class="barwrap">
+        <div class="caplbl"><span>Live rep — <b>on-pace</b></span><span class="mono dim">3-0-1</span></div>
+        <div class="phaselabels"><div class="flex2" style="animation:labOn var(--cycle) linear infinite;color:var(--dim)">Con</div>
+          <div class="flex1" style="animation:labOnHold var(--cycle) linear infinite">Hold</div>
+          <div class="flex3" style="animation:labOnEcc var(--cycle) linear infinite;color:var(--dim)">Ecc</div></div>
+        <div class="bar">
+          <div class="seg flex2"><div class="fill a-con"></div></div>
+          <div class="seg flex1"><div class="fill a-hold"></div></div>
+          <div class="seg flex3"><div class="fill a-ecc"></div></div>
+        </div>
+      </div>
+      <div class="barwrap">
+        <div class="caplbl"><span>Live rep — <b style="color:var(--behind)">behind</b> (ecc too slow)</span><span class="mono dim">5-0-1 ✗</span></div>
+        <div class="bar">
+          <div class="seg flex2"><div class="fill a-con"></div></div>
+          <div class="seg flex1"><div class="fill a-hold"></div></div>
+          <div class="seg flex3"><div class="fill a-ecc-behind"></div></div>
+        </div>
+      </div>
+    </div>
+    <p class="poll"><b>Degrades to poll:</b> fill quantizes to ~2 steps/s; a &lt;1s explosive concentric (rep C) can finish
+      inside one 500ms gap and never be seen filling. Reads best up close; segment widths use TempoBar's fixed 2:1:3 flex, not target proportion.</p>
+  </div>
+
+  <!-- V2 -->
+  <div class="card">
+    <span class="tag">V2</span>
+    <h2>Circular Tempo Ring</h2>
+    <p class="concept">One rep = one revolution. Arc sectors sized to target proportion; a sweep hand travels the ring
+      in real time; center shows live phase + elapsed/target. Behind = the sweep reddens and over-runs its sector.</p>
+    <div class="stage">
+      <div class="ringwrap">
+        <div class="ring">
+          <svg width="180" height="180" viewBox="0 0 180 180">
+            <circle cx="90" cy="90" r="70" fill="none" stroke="#242424" stroke-width="16"/>
+            <!-- static sector guides (con 24% / hold 5% / ecc 71% of circumference ~440) -->
+            <circle cx="90" cy="90" r="70" fill="none" stroke="var(--con)" stroke-width="4" opacity=".35"
+              stroke-dasharray="107 333"/>
+            <circle cx="90" cy="90" r="70" fill="none" stroke="var(--hold)" stroke-width="4" opacity=".35"
+              stroke-dasharray="21 419" stroke-dashoffset="-107"/>
+            <circle cx="90" cy="90" r="70" fill="none" stroke="var(--ecc)" stroke-width="4" opacity=".35"
+              stroke-dasharray="312 128" stroke-dashoffset="-128"/>
+            <!-- animated progress sweep -->
+            <circle class="prog" cx="90" cy="90" r="70" fill="none" stroke="var(--con)" stroke-width="16"
+              stroke-linecap="round" stroke-dasharray="440 440" stroke-dashoffset="440"/>
+          </svg>
+          <div class="handline"></div>
+          <div class="center">
+            <div class="ph">Eccentric</div>
+            <div class="big">2.9<span style="font-size:16px;color:var(--dim)">s</span></div>
+            <div class="tgt">/ 3.0s target</div>
+          </div>
+        </div>
+        <div class="legend">
+          <div><span class="swatch" style="background:var(--con)"></span> Con &nbsp;<span class="mono dim">1.0s</span></div>
+          <div><span class="swatch" style="background:var(--hold)"></span> Hold <span class="mono dim">0.0s</span></div>
+          <div><span class="swatch" style="background:var(--ecc)"></span> Ecc &nbsp;<span class="mono dim">3.0s</span></div>
+          <div><span class="swatch" style="background:var(--behind)"></span> Behind (over-run)</div>
+        </div>
+      </div>
+    </div>
+    <p class="poll"><b>Degrades to poll:</b> sweep hand jumps in ~45&deg; hops at 500ms — visibly steppy. Sectors + center
+      readout stay accurate. Rings are less precise to read exact seconds off than a bar; a 0s hold sector collapses.</p>
+  </div>
+
+  <!-- V3 -->
+  <div class="card">
+    <span class="tag">V3</span>
+    <h2>Dual Velocity + Tempo Strip</h2>
+    <p class="concept">Both halves in one strip: top = live tempo phase-fill; bottom = per-rep peak-velocity bars in
+      VBT band colors that <b>pop the instant each rep closes</b>, with a velocity-loss stop line. The likely production shape.</p>
+    <div class="stage">
+      <div class="v3top">
+        <div class="caplbl"><span>Tempo — <b>live rep</b></span><span class="mono dim">3-0-1</span></div>
+        <div class="bar">
+          <div class="seg flex2"><div class="fill a-con"></div></div>
+          <div class="seg flex1"><div class="fill a-hold"></div></div>
+          <div class="seg flex3"><div class="fill a-ecc"></div></div>
+        </div>
+      </div>
+      <div class="caplbl" style="margin-top:16px"><span>Peak velocity — <b>per rep</b></span><span class="mono dim">m/s</span></div>
+      <div class="v3vel">
+        <div class="stopline" style="bottom:34%"></div><div class="stoptxt" style="bottom:34%">−30% stop</div>
+        <div class="v3dots">
+          <div class="vbar" data-v="0.72" style="height:76%;background:var(--v-yellow);animation:pop var(--cycle) linear infinite;animation-delay:calc(var(--cycle)*0.02)"></div>
+          <div class="vbar" data-v="0.62" style="height:66%;background:var(--v-yellow);animation:pop var(--cycle) linear infinite;animation-delay:calc(var(--cycle)*0.15)"></div>
+          <div class="vbar" data-v="0.94" style="height:100%;background:var(--v-green);animation:pop var(--cycle) linear infinite;animation-delay:calc(var(--cycle)*0.28)"></div>
+          <div class="vbar" data-v="0.58" style="height:62%;background:var(--v-yellow);animation:pop var(--cycle) linear infinite;animation-delay:calc(var(--cycle)*0.41)"></div>
+          <div class="vbar" data-v="0.55" style="height:58%;background:var(--v-yellow);animation:pop var(--cycle) linear infinite;animation-delay:calc(var(--cycle)*0.54)"></div>
+          <div class="vbar" data-v="0.49" style="height:52%;background:var(--v-orange);animation:pop var(--cycle) linear infinite;animation-delay:calc(var(--cycle)*0.67)"></div>
+        </div>
+      </div>
+      <div class="v3meta">
+        <span>mean <b>0.53</b> m/s</span>
+        <span>vel-loss <b style="color:var(--v-orange)">32%</b></span>
+        <span>reps <b>6</b></span>
+      </div>
+    </div>
+    <p class="poll"><b>Degrades to poll:</b> the star here — a rep close is a discrete event, so every velocity bar still
+      pops within one poll (500ms) of the rep finishing. Only the top tempo fill softens. Densest layout — watch across-room busyness.</p>
+  </div>
+
+  <!-- V4 -->
+  <div class="card">
+    <span class="tag">V4</span>
+    <h2>Metronome / Beat Pacing</h2>
+    <p class="concept">Tempo as a <b>felt rhythm</b>: a pendulum swings on the target cadence (the beat you match); a
+      pulse fires each phase boundary; a ghost bar is where you <i>should</i> be, the solid bar is where you <i>are</i>. Highest ceiling, most novel.</p>
+    <div class="stage">
+      <div class="metro">
+        <div class="pend">
+          <div class="arc"></div>
+          <div class="arm"><div class="bob"></div></div>
+        </div>
+        <div class="beat"></div>
+        <div class="track">
+          <div class="trklbl"><span>ghost = target beat</span><span>solid = your rep</span></div>
+          <div class="trk">
+            <div class="ghost"></div>
+            <div class="actual"></div>
+          </div>
+          <div class="trklbl"><span class="mono">on the beat</span><span class="mono" style="color:var(--behind)">drifting behind &rarr;</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="poll"><b>Degrades to poll:</b> most poll-robust — the target beat is client-side (target is static) so the
+      pendulum never stutters; only the <i>actual</i> tracker gets steppy. Conveys rhythm well but exact seconds/velocity poorly — pair with a numeric readout.</p>
+  </div>
+
+</div>
+
+<p class="foot">
+  All four loop a rep every 5s. Fill windows map the real timeline: CON 0&ndash;1.0s, HOLD 1.0&ndash;1.2s, ECC 1.2&ndash;4.1s
+  (of the 3-0-1 on-pace rep). Pace coloring uses <code>getPacingState</code> — behind triggers at
+  elapsed/target &gt; 1.15. Velocity band colors are the SHARED-BRIEF 4-band scale (green fastest). No external deps;
+  renders standalone via <code>file://</code>. See <code>brief.md</code> for the design decisions to critique and
+  <code>data-contract.md</code> for the exact WA types + synthetic objects.
+</p>
+
+</body>
+</html>

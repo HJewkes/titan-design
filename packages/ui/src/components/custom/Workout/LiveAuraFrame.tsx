@@ -45,7 +45,7 @@ export function liveAuraColor(category: LiveAuraCategory): string | null {
 
 /**
  * Full-surface color-flood frame tied to a coaching category. Wraps `children`
- * on a charcoal base and layers a radial wash (amber at threshold, red at stop)
+ * on a grey base and layers a radial wash (amber at threshold, red at stop)
  * as a decorative, pointer-transparent overlay. The wash uses a solid
  * `backgroundColor` fallback (native) plus a web-only `backgroundImage` radial
  * gradient; both derive from the same semantic token via `alpha()`.
@@ -62,7 +62,7 @@ export function LiveAuraFrame({
   const tint = color ? alpha(color, floodOpacity[category]) : 'transparent'
 
   // Match R2's canonical aura: a top-down radial wash that FADES TO TRANSPARENT
-  // by ~62%, so the charcoal base shows through the lower panel — NOT a flat
+  // by ~62%, so the grey base shows through the lower panel — NOT a flat
   // full-surface tint. On web (the target: MCP dashboard + Storybook) render the
   // gradient only; native has no gradient support, so fall back to a solid tint.
   const floodStyle = {
@@ -84,7 +84,7 @@ export function LiveAuraFrame({
           borderRadius: 10,
           backgroundColor: t['background-base'],
           borderWidth: 1,
-          borderColor: t['border-default'],
+          borderColor: t['hairline-default'],
         },
         style,
       ]}

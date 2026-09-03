@@ -193,7 +193,7 @@ function TabBar({ active, onSelect }: TabBarProps) {
       className="flex-row"
       style={{
         borderBottomWidth: 1,
-        borderBottomColor: resolveColor('border-default'),
+        borderBottomColor: resolveColor('hairline-default'),
       }}
       accessibilityRole={'tablist' as ViewProps['accessibilityRole']}
       testID="exercise-detail-page-tabs"
@@ -247,7 +247,7 @@ function StatStrip({ stats, unit }: { stats: ExerciseDetailStats; unit: 'lbs' | 
         return (
           <View
             key={key}
-            className="bg-surface-elevated border-border"
+            className="bg-surface-elevated border-hairline"
             style={{
               flex: 1,
               padding: 12,
@@ -297,7 +297,7 @@ function SectionCard({
 }) {
   return (
     <View
-      className="bg-surface-elevated border-border"
+      className="bg-surface-elevated border-hairline"
       style={{
         borderWidth: 1,
         borderRadius: 12,
@@ -386,7 +386,13 @@ function VbtBreakdown({
               {set.label}
             </Text>
             <View className="flex-1" style={{ height: 8, justifyContent: 'center' }}>
-              <VelocityStrip velocities={set.velocities} zones={zones} variant="mini" />
+              <VelocityStrip
+                velocities={set.velocities}
+                zones={zones}
+                variant="compact"
+                height={8}
+                hideBaseline
+              />
             </View>
             <Text
               className="text-text-tertiary"
@@ -415,7 +421,7 @@ function VbtSummaryRow({ summary }: { summary: VbtSummary }) {
       {cells.map((cell) => (
         <View
           key={cell.label}
-          className="bg-surface-elevated border-border"
+          className="bg-surface-elevated border-hairline"
           style={{
             flex: 1,
             padding: 12,

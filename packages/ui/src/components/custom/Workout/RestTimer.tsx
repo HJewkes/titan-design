@@ -188,7 +188,7 @@ export function RestTimer({
       style={{
         width: '100%',
         borderTopWidth: 1,
-        borderTopColor: resolveColor('border-default'),
+        borderTopColor: resolveColor('hairline-default'),
         paddingVertical: 12,
         paddingHorizontal: 16,
       }}
@@ -253,7 +253,7 @@ export function RestTimer({
 
       {/* Progress bar */}
       <View
-        className="bg-border"
+        className="bg-hairline"
         style={{
           height: 3,
           borderRadius: 2,
