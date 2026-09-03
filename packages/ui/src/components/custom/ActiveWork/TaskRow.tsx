@@ -1,6 +1,8 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View } from 'react-native'
 import { Pill } from '../../ui/pill'
+import { Tooltip } from '../../ui/tooltip'
+import { formatDateTime } from '../DateTime'
 import { TableCell, TableRow } from '../Table'
 import { Typography } from '../Typography'
 import { SeverityLabel, type TaskSeverity } from './SeverityLabel'
@@ -39,6 +41,19 @@ export const TASK_COLUMN_WIDTHS = {
 /** How many tags fit before the row starts eliding them. */
 const MAX_VISIBLE_TAGS = 2
 
+/** The tags a row elided, shown when the `+N` count is hovered. */
+function HiddenTags({ tags }: { tags: string[] }) {
+  return (
+    <View className="flex-row flex-wrap gap-1" testID="hidden-tags">
+      {tags.map((tag) => (
+        <Pill key={tag} variant="subtle" color="default" size="xs">
+          {tag}
+        </Pill>
+      ))}
+    </View>
+  )
+}
+
 export interface TaskRowProps {
   task: TaskListItem
   /** Pre-formatted age label (e.g. "3d ago"). Passed in so rows stay pure and deterministic. */
@@ -54,7 +69,8 @@ export interface TaskRowProps {
  * {@link TaskTable}.
  */
 export function TaskRow({ task, ageLabel }: TaskRowProps) {
-  const hiddenTagCount = Math.max(0, (task.tags?.length ?? 0) - MAX_VISIBLE_TAGS)
+  const tags = task.tags ?? []
+  const hiddenTags = tags.slice(MAX_VISIBLE_TAGS)
 
   return (
     <TableRow testID="task-row">
@@ -94,23 +110,28 @@ export function TaskRow({ task, ageLabel }: TaskRowProps) {
 
       <TableCell width={TASK_COLUMN_WIDTHS.tags}>
         <View className="flex-row items-center gap-1">
-          {(task.tags ?? []).slice(0, MAX_VISIBLE_TAGS).map((tag) => (
+          {tags.slice(0, MAX_VISIBLE_TAGS).map((tag) => (
             <Pill key={tag} variant="subtle" color="default" size="xs">
               {tag}
             </Pill>
           ))}
-          {hiddenTagCount > 0 ? (
-            <Typography variant="caption" className="text-text-tertiary">
-              {`+${hiddenTagCount}`}
-            </Typography>
+          {hiddenTags.length > 0 ? (
+            <Tooltip usePortal content={<HiddenTags tags={hiddenTags} />}>
+              {/* leading-none: the caption's loose line box would otherwise float the pills above centre. */}
+              <Typography variant="caption" className="leading-none text-text-tertiary">
+                {`+${hiddenTags.length}`}
+              </Typography>
+            </Tooltip>
           ) : null}
         </View>
       </TableCell>
 
       <TableCell width={TASK_COLUMN_WIDTHS.age} align="right">
-        <Typography variant="caption" className="text-text-tertiary">
-          {ageLabel}
-        </Typography>
+        <Tooltip usePortal label={formatDateTime(task.updated, 'medium', true)}>
+          <Typography variant="caption" className="text-text-tertiary">
+            {ageLabel}
+          </Typography>
+        </Tooltip>
       </TableCell>
     </TableRow>
   )

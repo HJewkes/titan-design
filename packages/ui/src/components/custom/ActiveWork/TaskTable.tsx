@@ -41,6 +41,8 @@ type TaskSortKey = 'slug' | 'id' | 'title' | 'severity' | 'priority' | 'estimate
 interface TaskColumn {
   key: TaskSortKey | 'tags'
   label: string
+  /** Full name behind an abbreviated label, shown on hover. */
+  tooltip?: string
   width?: number
   align?: 'left' | 'right'
   sortable: boolean
@@ -54,6 +56,7 @@ const COLUMNS: TaskColumn[] = [
   {
     key: 'priority',
     label: 'Pri',
+    tooltip: 'Priority',
     width: TASK_COLUMN_WIDTHS.priority,
     align: 'right',
     sortable: true,
@@ -61,6 +64,7 @@ const COLUMNS: TaskColumn[] = [
   {
     key: 'estimate',
     label: 'Est',
+    tooltip: 'Estimate',
     width: TASK_COLUMN_WIDTHS.estimate,
     align: 'right',
     sortable: true,
@@ -162,6 +166,7 @@ export function TaskTable({
                 <TableHeaderCell
                   key={col.key}
                   sortKey={col.sortable ? col.key : undefined}
+                  tooltip={col.tooltip}
                   width={col.width}
                   align={col.align}
                 >

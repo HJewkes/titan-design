@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Table, TableBody } from '../Table'
 import { TaskRow } from './TaskRow'
@@ -28,6 +28,20 @@ function renderRow(overrides: Partial<TaskListItem> = {}, ageLabel = '1d ago') {
 }
 
 describe('TaskRow', () => {
+  it('reveals the elided tags when the overflow count is hovered', () => {
+    renderRow()
+    expect(screen.queryByText('specimen')).not.toBeInTheDocument()
+    fireEvent.mouseEnter(screen.getByText('+2').parentElement!)
+    expect(screen.getByText('specimen')).toBeInTheDocument()
+    expect(screen.getByText('extra')).toBeInTheDocument()
+  })
+
+  it('shows the exact date behind the age label on hover', () => {
+    renderRow()
+    fireEvent.mouseEnter(screen.getByText('1d ago').parentElement!)
+    expect(screen.getByText('Aug 29, 2026')).toBeInTheDocument()
+  })
+
   it('renders every column of a fully-populated task', () => {
     renderRow()
     expect(screen.getByText('active-work')).toBeInTheDocument()

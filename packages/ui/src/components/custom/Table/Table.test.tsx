@@ -322,6 +322,82 @@ describe('Table', () => {
     })
   })
 
+  describe('sort cycle end state', () => {
+    // Regression: after asc -> desc -> unsorted the column is still the sort
+    // column, and the header kept showing the descending arrow.
+    it('shows the neutral glyph once the cycle returns to unsorted', () => {
+      render(
+        <Table sortColumn="name" sortDirection={null} onSort={vi.fn()}>
+          <TableHeader>
+            <TableRow>
+              <TableHeaderCell sortKey="name">Name</TableHeaderCell>
+            </TableRow>
+          </TableHeader>
+        </Table>
+      )
+      expect(screen.getByText('↕')).toBeInTheDocument()
+      expect(screen.getByRole('columnheader')).toHaveAttribute('aria-sort', 'none')
+    })
+  })
+
+  describe('idle sort glyph', () => {
+    it('hides the neutral glyph until the header is hovered, and keeps an active arrow visible', () => {
+      render(
+        <Table sortColumn="name" sortDirection="asc" onSort={vi.fn()}>
+          <TableHeader>
+            <TableRow>
+              <TableHeaderCell sortKey="name">Name</TableHeaderCell>
+              <TableHeaderCell sortKey="email">Email</TableHeaderCell>
+            </TableRow>
+          </TableHeader>
+        </Table>
+      )
+      expect(screen.getByText('↑')).toHaveStyle({ opacity: '1' })
+      const idle = screen.getByText('↕')
+      expect(idle).toHaveStyle({ opacity: '0' })
+      fireEvent.mouseEnter(screen.getByRole('button', { name: 'Sort by Email' }))
+      expect(idle).toHaveStyle({ opacity: '1' })
+      fireEvent.mouseLeave(screen.getByRole('button', { name: 'Sort by Email' }))
+      expect(idle).toHaveStyle({ opacity: '0' })
+    })
+  })
+
+  describe('header tooltip', () => {
+    it('uses the full column name as the accessible sort name and shows it on hover', () => {
+      render(
+        <Table onSort={vi.fn()}>
+          <TableHeader>
+            <TableRow>
+              <TableHeaderCell sortKey="priority" tooltip="Priority">
+                Pri
+              </TableHeaderCell>
+            </TableRow>
+          </TableHeader>
+        </Table>
+      )
+      const sortButton = screen.getByRole('button', { name: 'Sort by Priority' })
+      fireEvent.mouseEnter(sortButton.parentElement!)
+      expect(screen.getByText('Priority')).toBeInTheDocument()
+    })
+
+    it('still sorts when the tooltip-wrapped header is pressed', () => {
+      const onSort = vi.fn()
+      render(
+        <Table onSort={onSort}>
+          <TableHeader>
+            <TableRow>
+              <TableHeaderCell sortKey="priority" tooltip="Priority">
+                Pri
+              </TableHeaderCell>
+            </TableRow>
+          </TableHeader>
+        </Table>
+      )
+      fireEvent.click(screen.getByText('Pri'))
+      expect(onSort).toHaveBeenCalledWith('priority')
+    })
+  })
+
   describe('flexible column layout', () => {
     // Regression: a long nowrap title used to size the horizontal scroller to
     // max-content, so the flexible column never shrank and the last fixed

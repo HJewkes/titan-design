@@ -42,14 +42,14 @@ describe('TaskTable', () => {
 
   it('keeps blanks last after flipping direction', () => {
     render(<TaskTable tasks={TASK_LIST_FIXTURE} now={TASK_LIST_NOW} defaultSortKey="estimate" />)
-    fireEvent.click(screen.getByRole('button', { name: 'Sort by Est' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Sort by Estimate' }))
     expect(renderedIds().at(-1)).toBe('AW-86')
   })
 
   it('reverses order when a sorted column header is pressed', () => {
     render(<TaskTable tasks={TASK_LIST_FIXTURE} now={TASK_LIST_NOW} />)
     const first = renderedIds()[0]
-    fireEvent.click(screen.getByRole('button', { name: 'Sort by Pri' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Sort by Priority' }))
     expect(renderedIds()[0]).not.toBe(first)
   })
 
