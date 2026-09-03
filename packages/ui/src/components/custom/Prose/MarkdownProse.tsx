@@ -85,6 +85,9 @@ export function parseProseBlocks(body: string): ProseBlock[] {
   return blocks
 }
 
+// One step denser than body2, with a 20px line so long logs stay readable at that size.
+const BODY_TEXT = 'text-xs leading-5 text-text-secondary'
+
 const TONE_CLASS: Record<ProseLinkTone, string> = {
   brand: 'font-semibold text-brand-primary',
   link: 'font-medium text-text-link',
@@ -145,14 +148,14 @@ function renderInline(text: string, linkers: ProseLinker[], tokenizer: RegExp): 
 function Block({ block, inline }: { block: ProseBlock; inline: (text: string) => ReactNode[] }) {
   if (block.type === 'h1' || block.type === 'h2') {
     return (
-      <Typography variant={block.type === 'h1' ? 'h5' : 'h6'} className="mt-1.5 text-text-primary">
+      <Typography variant={block.type === 'h1' ? 'h4' : 'h5'} className="mt-1.5 text-text-primary">
         {block.text}
       </Typography>
     )
   }
   if (block.type === 'h3') {
     return (
-      <Typography variant="subtitle2" className="mt-1 font-bold text-text-primary">
+      <Typography variant="subtitle1" className="mt-1 font-semibold text-text-primary">
         {inline(block.text)}
       </Typography>
     )
@@ -160,15 +163,15 @@ function Block({ block, inline }: { block: ProseBlock; inline: (text: string) =>
   if (block.type === 'li') {
     return (
       <View className="flex-row gap-2 pl-1">
-        <Text className="text-brand-primary">•</Text>
-        <Typography variant="body2" className="flex-1 text-text-secondary">
+        <Text className="text-xs leading-5 text-brand-primary">•</Text>
+        <Typography variant="body2" className={cn('flex-1', BODY_TEXT)}>
           {inline(block.text)}
         </Typography>
       </View>
     )
   }
   return (
-    <Typography variant="body2" className="text-text-secondary">
+    <Typography variant="body2" className={BODY_TEXT}>
       {inline(block.text)}
     </Typography>
   )

@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useMemo } from 'react'
 import { Pressable, View } from 'react-native'
-import { Pill } from '../../ui/pill'
+import { Tooltip } from '../../ui/tooltip'
 import { DateTime } from '../DateTime'
 import { Typography } from '../Typography'
 import { formatSessionDuration, formatTaskAge } from './format-time'
@@ -32,20 +32,57 @@ export interface SessionListItemProps {
   onSelect?: () => void
 }
 
-/** The row's footer: age, wall-clock length, and how many distinct tasks the log touches. */
+/** The row's footer: age, wall-clock length, distinct tasks touched, and the track. */
 export function sessionRowMeta(session: SessionSummary, now: number, taskCount: number): string {
   const parts = [formatTaskAge(session.ended, now)]
   const duration = formatSessionDuration(session.started, session.ended)
   if (duration) parts.push(duration)
   if (taskCount > 0) parts.push(`${taskCount} ${taskCount === 1 ? 'task' : 'tasks'}`)
+  parts.push(session.track)
   return parts.join(' · ')
 }
 
+/** What the row shows on hover: the untruncated title, the exact time, and the task ids. */
+function RowHover({ session, refs }: { session: SessionSummary; refs: string[] }) {
+  const duration = formatSessionDuration(session.started, session.ended)
+  return (
+    <View className="gap-1" testID="session-list-item-hover">
+      <Typography variant="body2" className="text-text-primary">
+        {session.title}
+      </Typography>
+      <View className="flex-row items-center gap-1">
+        <DateTime
+          value={session.ended}
+          format="datetime"
+          isUTC
+          variant="caption"
+          color="secondary"
+        />
+        {duration ? (
+          <Typography variant="caption" className="text-text-secondary">
+            {`· ${duration}`}
+          </Typography>
+        ) : null}
+      </View>
+      {refs.length > 0 ? (
+        <Typography variant="mono" className="text-text-tertiary">
+          {refs.join(' ')}
+        </Typography>
+      ) : null}
+    </View>
+  )
+}
+
 /**
- * SessionListItem — one session in the reader's list: when it ended, its
- * track, its title, and a footer of age · duration · tasks touched.
+ * SessionListItem — one session in the reader's list, led by its title, with
+ * a footer of age · duration · tasks touched · track. Hovering the row shows
+ * the full title, the exact end time and the task ids.
  *
- * Composes {@link DateTime}, {@link Pill} and {@link Typography}. Used by
+ * One hover surface wraps the whole row rather than one per field: a Tooltip
+ * is a Pressable, and nesting one inside the row would take the row's press.
+ * The row's `option` role lives on that wrapper so it stays the listbox's
+ * direct child.
+ * Composes {@link Tooltip}, {@link DateTime} and {@link Typography}. Used by
  * {@link SessionList}.
  */
 export function SessionListItem({
@@ -54,47 +91,38 @@ export function SessionListItem({
   selected = false,
   onSelect,
 }: SessionListItemProps) {
-  const taskCount = useMemo(() => extractTaskRefs(session.body).length, [session.body])
-  const meta = sessionRowMeta(session, now, taskCount)
+  const refs = useMemo(() => extractTaskRefs(session.body), [session.body])
+  const meta = sessionRowMeta(session, now, refs.length)
   return (
-    <Pressable
-      onPress={onSelect}
-      // Raw `role`/`aria-selected` rather than `accessibilityState={{ selected }}`:
-      // RNW silently drops the latter, so selection would never reach AT.
+    // The option role sits on the Tooltip's outer view so the listbox's direct
+    // child is the option; raw `role`/`aria-selected` because RNW drops
+    // `accessibilityState={{ selected }}`.
+    <Tooltip
+      usePortal
+      placement="right"
+      content={<RowHover session={session} refs={refs} />}
       role="option"
       aria-selected={selected}
       accessibilityLabel={`${session.title}, ${meta}`}
       testID="session-list-item"
-      className={`relative gap-1 rounded-md px-3 py-2 ${selected ? 'bg-surface-raised' : ''}`}
     >
-      {selected ? (
-        <View
-          testID="session-list-item-accent"
-          className="absolute bottom-2 left-0 top-2 w-[3px] rounded-r-[3px] bg-brand-primary"
-        />
-      ) : null}
-      <View className="flex-row items-center justify-between gap-2">
-        <DateTime
-          value={session.ended}
-          format="short"
-          isUTC
-          variant="mono"
-          className="font-bold text-text-primary"
-        />
-        <Pill
-          variant="subtle"
-          color={session.track === 'canonical' ? 'primary' : 'default'}
-          size="xs"
-        >
-          {session.track}
-        </Pill>
-      </View>
-      <Typography variant="body2" numberOfLines={2} className="text-xs text-text-secondary">
-        {session.title}
-      </Typography>
-      <Typography variant="caption" className="text-text-tertiary">
-        {meta}
-      </Typography>
-    </Pressable>
+      <Pressable
+        onPress={onSelect}
+        className={`relative gap-1 rounded-md px-3 py-2 ${selected ? 'bg-surface-raised' : ''}`}
+      >
+        {selected ? (
+          <View
+            testID="session-list-item-accent"
+            className="absolute bottom-2 left-0 top-2 w-[3px] rounded-r-[3px] bg-brand-primary"
+          />
+        ) : null}
+        <Typography variant="body2" numberOfLines={2} className="font-medium text-text-primary">
+          {session.title}
+        </Typography>
+        <Typography variant="caption" className="leading-none text-text-tertiary">
+          {meta}
+        </Typography>
+      </Pressable>
+    </Tooltip>
   )
 }

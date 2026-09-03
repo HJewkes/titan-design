@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 import { SessionDetail } from './SessionDetail'
-import { SESSION_FIXTURE, SESSION_NOW } from './session-fixture'
+import { SESSION_FIXTURE, SESSION_NOW, SESSION_TASK_FIXTURE } from './session-fixture'
 
 /**
  * **SessionDetail** — one session log: when it ran and for how long, the
@@ -14,10 +14,12 @@ const meta: Meta<typeof SessionDetail> = {
   component: SessionDetail,
   args: {
     session: SESSION_FIXTURE[0],
+    tasks: SESSION_TASK_FIXTURE,
     now: SESSION_NOW,
   },
   argTypes: {
     session: { table: { disable: true } },
+    tasks: { table: { disable: true } },
     now: { table: { disable: true } },
     onPressTask: { action: 'onPressTask' },
     onPressLink: { action: 'onPressLink' },
@@ -54,6 +56,11 @@ export const Short: Story = {
 /** An ad-hoc session: `[[name]]` link and a PR number, one task mentioned. */
 export const AdHoc: Story = {
   args: { session: SESSION_FIXTURE[5] },
+}
+
+/** No task rows supplied: the strip is pills only, with no table toggle. */
+export const WithoutTasks: Story = {
+  args: { tasks: [] },
 }
 
 /** No handlers: references stay highlighted but are not pressable. */

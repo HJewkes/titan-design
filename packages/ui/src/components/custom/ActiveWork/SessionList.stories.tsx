@@ -39,7 +39,7 @@ const meta: Meta<typeof SessionList> = {
     docs: {
       description: {
         component:
-          'Composes **Eyebrow** · **SessionListItem**. Used-by ↑ the Session Reader composition. Selection is controlled by the host.',
+          'Composes **Eyebrow** · **Divider** · **SessionListItem**. Used-by ↑ the Session Reader composition. Selection is controlled by the host; sessions group under a month divider once the list spans more than one.',
       },
     },
   },
@@ -48,8 +48,13 @@ export default meta
 
 type Story = StoryObj<typeof SessionList>
 
-/** Six sessions, newest selected. */
+/** Six sessions across two months, newest selected. */
 export const Default: Story = {}
+
+/** One month only: no period dividers. */
+export const SingleMonth: Story = {
+  args: { sessions: SESSION_FIXTURE.filter((s) => s.ended.startsWith('2026-07')) },
+}
 
 /** Nothing selected yet. */
 export const NoSelection: Story = {

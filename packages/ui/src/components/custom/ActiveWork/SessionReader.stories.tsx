@@ -4,10 +4,13 @@ import { View } from 'react-native'
 import { SessionDetail } from './SessionDetail'
 import { SessionList } from './SessionList'
 import type { SessionSummary } from './SessionListItem'
-import { SESSION_FIXTURE, SESSION_NOW } from './session-fixture'
+import { SESSION_FIXTURE, SESSION_NOW, SESSION_TASK_FIXTURE } from './session-fixture'
+import type { TaskListItem } from './TaskRow'
 
 interface ReaderArgs {
   sessions: SessionSummary[]
+  /** The host's task store; the detail looks its touched ids up here. */
+  tasks: TaskListItem[]
   now: number
   onPressTask: (id: string) => void
   onPressLink: (name: string) => void
@@ -19,7 +22,7 @@ interface ReaderArgs {
  * and lays the list beside the detail. There is deliberately no
  * `SessionReader` organism; this story is the reference composition.
  */
-function SessionReader({ sessions, now, onPressTask, onPressLink, onPressPr }: ReaderArgs) {
+function SessionReader({ sessions, tasks, now, onPressTask, onPressLink, onPressPr }: ReaderArgs) {
   const [selectedId, setSelectedId] = useState(sessions[0]?.id)
   const selected = sessions.find((s) => s.id === selectedId) ?? sessions[0]
   return (
@@ -35,6 +38,7 @@ function SessionReader({ sessions, now, onPressTask, onPressLink, onPressPr }: R
         <SessionDetail
           className="flex-1"
           session={selected}
+          tasks={tasks}
           now={now}
           onPressTask={onPressTask}
           onPressLink={onPressLink}
@@ -58,10 +62,12 @@ const meta: Meta<ReaderArgs> = {
   component: SessionReader,
   args: {
     sessions: SESSION_FIXTURE,
+    tasks: SESSION_TASK_FIXTURE,
     now: SESSION_NOW,
   },
   argTypes: {
     sessions: { table: { disable: true } },
+    tasks: { table: { disable: true } },
     now: { table: { disable: true } },
     onPressTask: { action: 'onPressTask' },
     onPressLink: { action: 'onPressLink' },
@@ -93,4 +99,9 @@ export const Default: Story = {}
 /** A single session, so the list and detail read without neighbours. */
 export const OneSession: Story = {
   args: { sessions: SESSION_FIXTURE.slice(0, 1) },
+}
+
+/** No task store: the tasks-touched strip stays pills with no table toggle. */
+export const WithoutTaskStore: Story = {
+  args: { tasks: [] },
 }

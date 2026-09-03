@@ -35,12 +35,12 @@ export interface PillProps extends ViewProps {
 const variantColorStyles: Record<PillVariant, Record<PillColor, string>> = {
   subtle: {
     default: 'bg-surface-raised border-hairline-subtle text-text-secondary',
-    primary: 'bg-brand-primary/10 border-brand-primary/25 text-brand-primary',
-    secondary: 'bg-brand-secondary/10 border-brand-secondary/25 text-brand-secondary',
-    success: 'bg-status-success/10 border-status-success/25 text-status-success',
-    error: 'bg-status-error/10 border-status-error/25 text-status-error',
-    warning: 'bg-status-warning/10 border-status-warning/25 text-status-warning',
-    info: 'bg-status-info/10 border-status-info/25 text-status-info',
+    primary: 'bg-brand-primary/10 border-brand-primary/40 text-brand-primary',
+    secondary: 'bg-brand-secondary/10 border-brand-secondary/40 text-brand-secondary',
+    success: 'bg-status-success/10 border-status-success/40 text-status-success',
+    error: 'bg-status-error/10 border-status-error/40 text-status-error',
+    warning: 'bg-status-warning/10 border-status-warning/40 text-status-warning',
+    info: 'bg-status-info/10 border-status-info/40 text-status-info',
   },
   outline: {
     default: 'border-hairline text-text-secondary',

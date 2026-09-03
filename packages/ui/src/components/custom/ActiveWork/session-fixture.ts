@@ -1,4 +1,5 @@
 import type { SessionSummary } from './SessionListItem'
+import type { TaskListItem } from './TaskRow'
 /**
  * A hand-trimmed slice of real active-work session logs, used by the session
  * reader stories and tests. Fixed values (no `Date.now()`) so visual baselines
@@ -70,3 +71,196 @@ export const SESSION_FIXTURE: SessionSummary[] = [
 
 /** The reference instant the stories and tests measure ages from (2026-07-14 09:00Z). */
 export const SESSION_NOW = new Date('2026-07-14T09:00:00Z').getTime()
+
+/**
+ * The real task rows behind every id the fixture sessions mention, for the
+ * detail pane's tasks-touched table. A host resolves these from its task store;
+ * the story does the same lookup against this list.
+ */
+export const SESSION_TASK_FIXTURE: TaskListItem[] = [
+  {
+    slug: 'active-work',
+    id: 'AW-1',
+    title: 'Add Linux support: systemd unit for daemon supervision',
+    priority: 1,
+    severity: 'medium',
+    estimate: 5,
+    updated: '2026-07-12',
+  },
+  {
+    slug: 'active-work',
+    id: 'AW-2',
+    title: 'Add launchd plist install/uninstall to setup wizard (macOS)',
+    priority: 2,
+    severity: 'medium',
+    estimate: 3,
+    updated: '2026-07-01',
+  },
+  {
+    slug: 'active-work',
+    id: 'AW-3',
+    title: 'WebSocket file-event broadcasts from daemon to dashboard',
+    priority: 3,
+    severity: 'low',
+    estimate: 5,
+    updated: '2026-07-02',
+  },
+  {
+    slug: 'active-work',
+    id: 'AW-4',
+    title: 'aw doctor: health-check command (verify deps, daemon, MCP registration, skill install)',
+    priority: 4,
+    severity: 'medium',
+    estimate: 3,
+    updated: '2026-07-01',
+  },
+  {
+    slug: 'active-work',
+    id: 'AW-5',
+    title: 'Multi-machine git-backed sync wrapper (aw sync)',
+    priority: 5,
+    severity: 'low',
+    estimate: 8,
+    updated: '2026-07-02',
+  },
+  {
+    slug: 'active-work',
+    id: 'AW-6',
+    title: 'Linear / Jira / Slack discovery sources',
+    priority: 6,
+    severity: 'low',
+    estimate: 13,
+    updated: '2026-05-12',
+  },
+  {
+    slug: 'active-work',
+    id: 'AW-7',
+    title: 'Read-write dashboard (mark tasks done from /ui, reorder via drag)',
+    priority: 7,
+    severity: 'low',
+    estimate: 8,
+    updated: '2026-05-12',
+  },
+  {
+    slug: 'active-work',
+    id: 'AW-8',
+    title: 'Auto-archive done tasks older than N days during bootstrap',
+    priority: 8,
+    severity: 'low',
+    estimate: 2,
+    updated: '2026-07-01',
+  },
+  {
+    slug: 'active-work',
+    id: 'AW-9',
+    title: "Audit tests for unsafe HOME/filesystem mocking; ensure all use vi.spyOn(os, 'homedir')",
+    priority: 9,
+    severity: 'high',
+    estimate: 2,
+    updated: '2026-07-01',
+  },
+  {
+    slug: 'active-work',
+    id: 'AW-10',
+    title:
+      'Clean up readRawFrontmatter workarounds in commands now that gray-matter-io coerces dates',
+    priority: 10,
+    severity: 'low',
+    estimate: 2,
+    updated: '2026-07-01',
+  },
+  {
+    slug: 'active-work',
+    id: 'AW-11',
+    title: 'Remove @titan-design/react-ui dep — dashboard agent ended up not using it',
+    priority: 11,
+    severity: 'low',
+    estimate: 1,
+    updated: '2026-07-01',
+  },
+  {
+    slug: 'active-work',
+    id: 'AW-12',
+    title:
+      'Investigate occasional integration-test flakes (cli.test.ts had 5 failures on first merged run, clean on retry)',
+    priority: 12,
+    severity: 'medium',
+    estimate: 3,
+    updated: '2026-07-01',
+  },
+  {
+    slug: 'active-work',
+    id: 'AW-13',
+    title:
+      'First npm publish: trigger release.yml; verify @hjewkes/active-work@0.1.0 installable via npm i -g',
+    priority: 13,
+    severity: 'high',
+    estimate: 1,
+    updated: '2026-07-02',
+  },
+  {
+    slug: 'active-work',
+    id: 'AW-14',
+    title:
+      'Add gen:cli-reference script entry to package.json (generator script exists; just needs npm-run wiring)',
+    priority: 14,
+    severity: 'low',
+    estimate: 1,
+    updated: '2026-07-01',
+  },
+  {
+    slug: 'active-work',
+    id: 'AW-15',
+    title: 'Simplify artifacts.yml: branches/stashes only; live-pull PR + branch state',
+    priority: 1,
+    severity: 'medium',
+    estimate: 8,
+    updated: '2026-07-01',
+  },
+  {
+    slug: 'active-work',
+    id: 'AW-16',
+    title: 'session record --body-file passes validation when --body is omitted',
+    priority: 6,
+    severity: 'low',
+    estimate: 1,
+    tags: ['polish', 'cli'],
+    updated: '2026-07-01',
+  },
+  {
+    slug: 'active-work',
+    id: 'AW-17',
+    title: 'open/aw: resolve initiative from cwd when no slug given',
+    priority: 15,
+    severity: 'medium',
+    estimate: 3,
+    updated: '2026-07-12',
+  },
+  {
+    slug: 'active-work',
+    id: 'AW-18',
+    title: 'worktree.set: register/update a worktree on an existing initiative',
+    priority: 16,
+    severity: 'low',
+    estimate: 2,
+    updated: '2026-07-12',
+  },
+  {
+    slug: 'active-work',
+    id: 'AW-19',
+    title: 'active-work prompt + /aw-prompt slash command for mid-session context re-seed',
+    priority: 17,
+    severity: 'low',
+    estimate: 3,
+    updated: '2026-07-12',
+  },
+  {
+    slug: 'active-work',
+    id: 'AW-20',
+    title: 'aw/open --adhoc: frame bootstrap prompt as ad-hoc work, not handoff continuation',
+    priority: 18,
+    severity: 'low',
+    estimate: 2,
+    updated: '2026-07-12',
+  },
+]

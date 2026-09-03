@@ -4,10 +4,11 @@ import { SessionListItem } from './SessionListItem'
 import { SESSION_FIXTURE, SESSION_NOW } from './session-fixture'
 
 /**
- * **SessionListItem** — one session in the reader's list: date, track,
- * title, then age · duration · tasks touched.
+ * **SessionListItem** — one session in the reader's list, led by its title,
+ * then age · duration · tasks touched · track. Hover for the full title, the
+ * exact end time and the task ids.
  *
- * Composes `DateTime` · `Pill` · `Typography`.
+ * Composes `Tooltip` · `DateTime` · `Typography`.
  */
 const meta: Meta<typeof SessionListItem> = {
   title: 'Custom/ActiveWork/SessionListItem',
@@ -33,7 +34,7 @@ const meta: Meta<typeof SessionListItem> = {
     docs: {
       description: {
         component:
-          'Composes **DateTime** · **Pill** · **Typography**. Used-by ↑ SessionList. Selection is a prop; the row renders the raised fill and accent bar.',
+          'Composes **Tooltip** · **DateTime** · **Typography**. Used-by ↑ SessionList. Selection is a prop; the row renders the raised fill and accent bar. Hover a row for the full title, exact end time and task ids.',
       },
     },
   },
@@ -50,7 +51,7 @@ export const Selected: Story = {
   args: { selected: true },
 }
 
-/** An ad-hoc session, so the track pill takes its default colour. */
+/** An ad-hoc session: the track reads in the footer. */
 export const AdHoc: Story = {
   args: { session: SESSION_FIXTURE[5] },
 }
