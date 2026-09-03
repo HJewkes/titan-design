@@ -41,7 +41,7 @@
     --color-status-error-light: #E05254;
     --color-status-error-dark: #A4221C;
     --color-status-error-subtle: rgba(209, 67, 67, 0.12);
-    --color-status-error-vivid: #D14343;
+    --color-status-error-vivid: #FF4757;
     --color-status-error-vivid-light: #E05254;
     --color-status-error-vivid-dark: #A4221C;
     --color-status-error-vivid-subtle: rgba(255, 71, 87, 0.12);
@@ -193,7 +193,7 @@
     --color-status-error-light: #E05254;
     --color-status-error-dark: #A4221C;
     --color-status-error-subtle: #FFF4F4;
-    --color-status-error-vivid: #D14343;
+    --color-status-error-vivid: #FF4757;
     --color-status-error-vivid-light: #E05254;
     --color-status-error-vivid-dark: #A4221C;
     --color-status-error-vivid-subtle: rgba(255, 71, 87, 0.12);

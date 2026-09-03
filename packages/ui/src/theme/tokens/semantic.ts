@@ -82,7 +82,7 @@ export const semanticColorsLight = {
   'status-error-dark': ramp.red[700],
   'status-error-subtle': ramp.red[50],
 
-  'status-error-vivid': ramp.red[600],     // vivid alert red
+  'status-error-vivid': '#FF4757',         // vivid alert red — NOT red[600], that is status-error
   'status-error-vivid-light': ramp.red[500],
   'status-error-vivid-dark': ramp.red[700],
   'status-error-vivid-subtle': 'rgba(255, 71, 87, 0.12)',
@@ -222,7 +222,7 @@ export const semanticColorsDark = {
   'status-error-dark': ramp.red[700],
   'status-error-subtle': 'rgba(209, 67, 67, 0.12)',
 
-  'status-error-vivid': ramp.red[600],
+  'status-error-vivid': '#FF4757',
   'status-error-vivid-light': ramp.red[500],
   'status-error-vivid-dark': ramp.red[700],
   'status-error-vivid-subtle': 'rgba(255, 71, 87, 0.12)',
