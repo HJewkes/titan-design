@@ -16,25 +16,10 @@ import { Eyebrow } from './Eyebrow'
 import { SeverityLabel, SEVERITY_ORDER, severityRank, type TaskSeverity } from './SeverityLabel'
 import { TaskRow, TASK_COLUMN_WIDTHS, type TaskListItem } from './TaskRow'
 
-/**
- * A compact age label for a dense column: `today`, `4d ago`, `3mo ago`.
- *
- * Deliberately not `DateTime format="relative"` — that renders Intl prose ("4
- * days ago"), which is too long for a 74px column, and it reads `Date.now()`
- * internally so a story or a visual baseline could never be deterministic. `now`
- * is injected here for exactly that reason.
- */
-export function formatTaskAge(iso: string | null | undefined, now: number): string {
-  if (!iso) return '—'
-  const then = new Date(iso).getTime()
-  if (Number.isNaN(then)) return '—'
+import { formatTaskAge } from './format-time'
 
-  const days = Math.floor((now - then) / 86_400_000)
-  if (days <= 0) return 'today'
-  if (days === 1) return '1d ago'
-  if (days < 30) return `${days}d ago`
-  return `${Math.floor(days / 30)}mo ago`
-}
+// Kept on this module's surface: the session reader shares the helper now, but callers imported it from here first.
+export { formatTaskAge }
 
 type TaskSortKey = 'slug' | 'id' | 'title' | 'severity' | 'priority' | 'estimate' | 'updated'
 

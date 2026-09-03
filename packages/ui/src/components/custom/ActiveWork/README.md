@@ -1,7 +1,8 @@
 # ActiveWork — component family
 
-Presentational components for surfacing `active-work` data: initiative/task rollups (portfolio status) and
-per-file mined history (the file-history explorer). Read-only: every component takes plain data as props and
+Presentational components for surfacing `active-work` data: initiative/task rollups (portfolio status),
+the cross-initiative task table, session logs (the session reader) and per-file mined history (the
+file-history explorer). Read-only: every component takes plain data as props and
 has no fetch/store dependency of its own — wiring to a live source (the active-work session-mining export, or
 a future API) is entirely the caller's concern. Components live flat on disk; the tiering below is a
 documentation contract, not a directory layout.
@@ -43,6 +44,17 @@ TaskTable ........................ organism
    ├─ TableRow + TableCell ....... (existing primitives, Table family)
    ├─ SeverityLabel .............. molecule → Indicator
    └─ Pill ....................... (existing primitive)
+
+Session reader ................... (no organism: the host composes the two halves)
+├─ SessionList ................... list
+│  ├─ Eyebrow .................... molecule
+│  └─ SessionListItem ............ row          (listbox `option`)
+│     ├─ DateTime / Pill ......... (existing primitives)
+│     └─ Typography .............. (existing primitive)
+└─ SessionDetail ................. card
+   ├─ Card / Divider / Pill / DateTime .... (existing primitives)
+   └─ MarkdownProse .............. molecule     (Custom/Prose — new shared primitive)
+      └─ Typography .............. (existing primitive)
 ```
 
 ## Dependency map
@@ -59,7 +71,10 @@ TaskTable ........................ organism
 | `TaskTable`           | organism | Table, useTable, TableHeader/Row/HeaderCell, TaskRow, SeverityLabel, Eyebrow | app root (`Custom/ActiveWork/TaskTable`)                              |
 | `TaskRow`             | row      | TableRow, TableCell, SeverityLabel, Pill, Typography                         | TaskTable                                                             |
 | `SeverityLabel`       | molecule | Indicator, Typography (`caption`)                                            | TaskRow, TaskTable (legend), InitiativeCard (vocabulary)              |
-| `Eyebrow`             | molecule | Typography (`overline`)                                                      | PortfolioOverview, FileHistoryExplorer, FileActivityDetail, TaskTable |
+| `Eyebrow`             | molecule | Typography (`overline`)                                                      | PortfolioOverview, FileHistoryExplorer, FileActivityDetail, TaskTable, SessionList |
+| `SessionList`         | list     | Eyebrow, SessionListItem                                                     | host composition (`Custom/ActiveWork/Session Reader` story)           |
+| `SessionListItem`     | row      | DateTime, Pill, Typography                                                   | SessionList                                                           |
+| `SessionDetail`       | card     | Card, Divider, Pill, DateTime, MarkdownProse (+ `sessionLinkers`)            | host composition (`Custom/ActiveWork/Session Reader` story)           |
 
 ## Shared substrates introduced here (reusable beyond this family)
 
@@ -72,6 +87,16 @@ TaskTable ........................ organism
   `SparkBars`: `SetBarChart` and `live-rep-growth` stay workout-internal and imported by path.
 - **`formatCompact` / `formatSignedCompact`** (`utils/number-format`) — `1234 → "1.2k"`, `+514689 → "+514.7k"`.
   Generic dense-readout formatting; no equivalent existed (`workout-format` is domain-specific).
+- **`MarkdownProse`** (`components/custom/Prose`, `Custom/Prose/MarkdownProse`) — a small markdown subset
+  (headings, bullets, paragraphs, bold, code) rendered as themed prose, with caller-supplied `linkers` that
+  auto-link references in a `brand` / `link` / `muted` tone and, when a linker carries `onPress`, make them
+  pressable `link`-role spans. Deliberately not a markdown engine. Domain-neutral; the active-work patterns
+  (`taskRefLinker`, `wikiLinkLinker`, `prRefLinker`, bundled as `sessionLinkers`) live in this family's
+  `session-linkers.ts`. Second consumer is the initiative reader (M2: brief and handoff prose). Inline refs
+  are `Text` with `onPress`, not `Link`: `Link` wraps a `Pressable` view, which cannot sit inline in prose.
+- **`formatTaskAge` / `formatSessionDuration`** (`format-time.ts`) — the compact age label moved out of
+  `TaskTable` so the session reader shares it (`TaskTable` still re-exports it), plus `1h 4m` / `42m` for a
+  session's wall-clock length. `hooks/useTimer`'s `formatDuration` is `mm:ss` for timers, a different job.
 
 ## Changes to existing primitives
 
@@ -120,6 +145,9 @@ maps stay separate on purpose — `low` is `status-info` as a dot (it must stay 
 | count badges       | `Pill` `variant="subtle"`                           | ad-hoc bordered `View`                                                                                                |
 | card chrome        | `Card` (`accent` / `outline` / `filled`)            | ad-hoc bordered `View`                                                                                                |
 | colors             | `getSemanticColors` / `greyRamp` tokens             | magic hex                                                                                                             |
+| session prose      | `MarkdownProse` (new, `Custom/Prose`)               | the specimen's inline `parseBlocks` / `renderInline` / `BlockView` (deleted); no markdown renderer existed            |
+| session durations  | `formatSessionDuration` (new, `format-time.ts`)     | the specimen's inline `duration`; `useTimer.formatDuration` is `mm:ss`                                                |
+| selectable rows    | `Pressable` + `role="option"` (the F1 pattern)      | the specimen's bordered `Card`-per-row; `ListItem` has no selected state                                              |
 
 ### Colour vocabularies
 
@@ -188,7 +216,10 @@ hardening it; see TOKENS.md §6.
   because **RNW silently drops the latter** — the gap `components/shell/README.md` flags as unresolved for
   `NavItem`, where active state is asserted via an accent-bar testID instead. The same fix applies there.
 - React Native's `Role` union has `'option'` but omits `'listbox'`, so `FileHistoryExplorer` casts once
-  through a named `LISTBOX_ROLE` constant rather than dropping the ARIA parent.
+  through a named `LISTBOX_ROLE` constant rather than dropping the ARIA parent. `SessionList` does the same;
+  each `SessionListItem` is an `option` with `aria-selected` and an accessible name of title plus footer.
+- `MarkdownProse` references with a handler carry `accessibilityRole="link"`; inert ones carry no role, so
+  a screen reader does not announce a link that goes nowhere.
 
 ## Testing
 
@@ -197,7 +228,10 @@ hardening it; see TOKENS.md §6.
   `selectedPath`, empty `files`, empty `coEdges`, missing touch dates, no-co-change, net-negative growth, and
   `maxRows` / `maxCoEdges` capping (F1).
 - Fixtures: `file-history-fixture.ts` — a small hand-trimmed slice of a real mine with fixed values (no
-  `Date.now()`, no randomness) so visual baselines stay deterministic.
+  `Date.now()`, no randomness) so visual baselines stay deterministic. `session-fixture.ts` likewise: five
+  real session logs (their real markdown, so the linkers meet real references) plus one synthesized ad-hoc
+  session, paired with `SESSION_NOW`.
 - Visual: not yet added to `tests/visual/stories.spec.ts` — see follow-up in the PR description.
 - Lint guardrails: the token-pure rule set above; no
   re-implemented status dot, segmented bar, or sparkline.
+```
