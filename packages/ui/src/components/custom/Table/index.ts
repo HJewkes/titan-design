@@ -19,4 +19,6 @@ export type {
   UseTableOptions,
   UseTableReturn,
   SortDirection,
+  TableDensity,
+  TableComparator,
 } from './Table'

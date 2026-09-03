@@ -33,20 +33,33 @@ FileHistoryExplorer .............. organism
 └─ CoChangeChip .................. molecule
    ├─ Card + Pill ................ (existing primitives)
    └─ FilePathLabel .............. molecule
+
+TaskTable ........................ organism
+├─ Eyebrow ....................... molecule
+├─ Table (density="dense") ....... (existing primitive, Table family)
+│  └─ useTable ({ comparators }) . (existing hook, Table family)
+├─ SeverityLabel ................. molecule      (legend tallies)
+└─ TaskRow ....................... row
+   ├─ TableRow + TableCell ....... (existing primitives, Table family)
+   ├─ SeverityLabel .............. molecule → Indicator
+   └─ Pill ....................... (existing primitive)
 ```
 
 ## Dependency map
 
-| Component             | Tier     | Composes ↓                                                             | Used-by ↑                                                  |
-| --------------------- | -------- | ---------------------------------------------------------------------- | ---------------------------------------------------------- |
-| `PortfolioOverview`   | organism | Card, Metric, Eyebrow, InitiativeCard                                  | app root (`Lab/ActiveWork/Portfolio Overview` specimen)    |
-| `InitiativeCard`      | card     | Card, Pill, StatusDot, SegmentedBar, Typography                        | PortfolioOverview                                          |
-| `FileHistoryExplorer` | organism | Card, Tile, Divider, Eyebrow, FileActivityRow/Detail, CoChangeChip     | app root (`Lab/ActiveWork/File History Explorer` specimen) |
-| `FileActivityDetail`  | card     | Card, Tile, Pill, DataRow, DateTime, SparkBars, FilePathLabel, Eyebrow | FileHistoryExplorer                                        |
-| `FileActivityRow`     | row      | FilePathLabel, SparkBars, Typography                                   | FileHistoryExplorer                                        |
-| `CoChangeChip`        | molecule | Card, Pill, FilePathLabel, Typography                                  | FileHistoryExplorer                                        |
-| `FilePathLabel`       | molecule | Typography (`mono`)                                                    | FileActivityRow, FileActivityDetail, CoChangeChip          |
-| `Eyebrow`             | molecule | Typography (`overline`)                                                | PortfolioOverview, FileHistoryExplorer, FileActivityDetail |
+| Component             | Tier     | Composes ↓                                                                   | Used-by ↑                                                             |
+| --------------------- | -------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `PortfolioOverview`   | organism | Card, Metric, Eyebrow, InitiativeCard                                        | app root (`Lab/ActiveWork/Portfolio Overview` specimen)               |
+| `InitiativeCard`      | card     | Card, Pill, StatusDot, SegmentedBar, Typography                              | PortfolioOverview                                                     |
+| `FileHistoryExplorer` | organism | Card, Tile, Divider, Eyebrow, FileActivityRow/Detail, CoChangeChip           | app root (`Lab/ActiveWork/File History Explorer` specimen)            |
+| `FileActivityDetail`  | card     | Card, Tile, Pill, DataRow, DateTime, SparkBars, FilePathLabel, Eyebrow       | FileHistoryExplorer                                                   |
+| `FileActivityRow`     | row      | FilePathLabel, SparkBars, Typography                                         | FileHistoryExplorer                                                   |
+| `CoChangeChip`        | molecule | Card, Pill, FilePathLabel, Typography                                        | FileHistoryExplorer                                                   |
+| `FilePathLabel`       | molecule | Typography (`mono`)                                                          | FileActivityRow, FileActivityDetail, CoChangeChip                     |
+| `TaskTable`           | organism | Table, useTable, TableHeader/Row/HeaderCell, TaskRow, SeverityLabel, Eyebrow | app root (`Custom/ActiveWork/TaskTable`)                              |
+| `TaskRow`             | row      | TableRow, TableCell, SeverityLabel, Pill, Typography                         | TaskTable                                                             |
+| `SeverityLabel`       | molecule | Indicator, Typography (`caption`)                                            | TaskRow, TaskTable (legend), InitiativeCard (vocabulary)              |
+| `Eyebrow`             | molecule | Typography (`overline`)                                                      | PortfolioOverview, FileHistoryExplorer, FileActivityDetail, TaskTable |
 
 ## Shared substrates introduced here (reusable beyond this family)
 
@@ -66,6 +79,32 @@ FileHistoryExplorer .............. organism
   `value` already worked. The co-change rows need a rich `FilePathLabel` on the left; the alternative was
   passing `label=""` and hand-rolling the row, which defeats the primitive. Backwards compatible — `string`
   is a `ReactNode` and the string branch is unchanged.
+- **`Table` gained a `density` axis** (`comfortable` | `dense`, default `comfortable`). Cell padding is
+  chosen once in `CELL_PADDING` and read from context by both `TableHeaderCell` and `TableCell`, so a row's
+  header and body halves cannot drift. `TaskTable` is a scannable backlog grid, not a reading table; without
+  this it would have had to hand-roll the whole grid to get 34px rows.
+- **`useTable` gained per-column `comparators`.** It previously sorted on the raw field value only, which
+  cannot express "rank severity critical→low" (alphabetically `low` lands between `high` and `medium`),
+  "tie-break on priority", or "read this date newest-first". Columns absent from the map keep the default
+  compare, so this is additive. Two ordering rules were also made explicit while in there: `desc` **inverts**
+  the comparator rather than reversing the array (reversing also flips tied rows), and blank values rank last
+  in **both** directions rather than reading as the smallest value when the column flips.
+- **`status-error-vivid` fixed from `#D14343` to `#FF4757`** (both themes). It pointed at `ramp.red[600]`,
+  the exact value of `status-error`, so the two rendered as one colour — Critical and High were
+  indistinguishable, and so were `DeviceRow`/`DeviceIndicator`'s `lost` state and a plain error. Three other
+  places already encoded the correct vivid red (`--color-status-error-vivid-rgb`, the `-subtle` rgba, and
+  `Indicator`'s `glow` shadow); only the value anyone rendered was wrong. Found 2026-08-31 by measuring the
+  Storybook render, not by reading tokens. Guarded by `theme/status-distinctness.test.ts`, which asks whether
+  tokens LOOK different — a question the existing presence/parity tests structurally cannot ask, since a
+  collapsed token is present and parity-matched.
+
+## Severity vocabulary has one owner
+
+`SeverityLabel.tsx` owns `TaskSeverity`, `SEVERITY_ORDER`, `SEVERITY_RANK`/`severityRank`, `SEVERITY_META`
+(dot colours) and `SEVERITY_BAR_COLOR` (area-mark fills). `InitiativeCard` previously declared its own copy
+of the type plus private `SEVERITY_ORDER`/`SEVERITY_COLOR` constants; it now imports them. The two colour
+maps stay separate on purpose — `low` is `status-info` as a dot (it must stay legible among four) and
+`text-tertiary` as a bar segment (it should recede) — but the _set_ of severities is defined once.
 
 ## Reuse audit
 

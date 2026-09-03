@@ -17,7 +17,13 @@
  * - interactive-* : Hover/focus/active/disabled states
  */
 
-import { primitiveColors as p, primitiveRamps as ramp, greyRamp, discreteRainbow } from './primitives'
+import {
+  primitiveColors as p,
+  primitiveRamps as ramp,
+  greyRamp,
+  discreteRainbow,
+  alertRedVivid,
+} from './primitives'
 
 /**
  * GREY MAPPING (TD-07.14) — how the old cool scales resolved onto `greyRamp`.
@@ -82,7 +88,7 @@ export const semanticColorsLight = {
   'status-error-dark': ramp.red[700],
   'status-error-subtle': ramp.red[50],
 
-  'status-error-vivid': '#FF4757',         // vivid alert red — NOT red[600], that is status-error
+  'status-error-vivid': alertRedVivid,     // NOT red[600], that is status-error
   'status-error-vivid-light': ramp.red[500],
   'status-error-vivid-dark': ramp.red[700],
   'status-error-vivid-subtle': 'rgba(255, 71, 87, 0.12)',
@@ -222,7 +228,7 @@ export const semanticColorsDark = {
   'status-error-dark': ramp.red[700],
   'status-error-subtle': 'rgba(209, 67, 67, 0.12)',
 
-  'status-error-vivid': '#FF4757',
+  'status-error-vivid': alertRedVivid,
   'status-error-vivid-light': ramp.red[500],
   'status-error-vivid-dark': ramp.red[700],
   'status-error-vivid-subtle': 'rgba(255, 71, 87, 0.12)',

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, renderHook, act } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import {
   Table,
@@ -12,6 +12,7 @@ import {
   TableEmptyState,
   TableSelectAllCell,
   TableSelectCell,
+  useTable,
 } from './Table'
 
 function renderBasicTable() {
@@ -321,6 +322,111 @@ describe('Table', () => {
     })
   })
 
+  describe('sort cycle end state', () => {
+    // Regression: after asc -> desc -> unsorted the column is still the sort
+    // column, and the header kept showing the descending arrow.
+    it('shows the neutral glyph once the cycle returns to unsorted', () => {
+      render(
+        <Table sortColumn="name" sortDirection={null} onSort={vi.fn()}>
+          <TableHeader>
+            <TableRow>
+              <TableHeaderCell sortKey="name">Name</TableHeaderCell>
+            </TableRow>
+          </TableHeader>
+        </Table>
+      )
+      expect(screen.getByText('↕')).toBeInTheDocument()
+      expect(screen.getByRole('columnheader')).toHaveAttribute('aria-sort', 'none')
+    })
+  })
+
+  describe('idle sort glyph', () => {
+    it('hides the neutral glyph until the header is hovered, and keeps an active arrow visible', () => {
+      render(
+        <Table sortColumn="name" sortDirection="asc" onSort={vi.fn()}>
+          <TableHeader>
+            <TableRow>
+              <TableHeaderCell sortKey="name">Name</TableHeaderCell>
+              <TableHeaderCell sortKey="email">Email</TableHeaderCell>
+            </TableRow>
+          </TableHeader>
+        </Table>
+      )
+      expect(screen.getByText('↑')).toHaveStyle({ opacity: '1' })
+      const idle = screen.getByText('↕')
+      expect(idle).toHaveStyle({ opacity: '0' })
+      fireEvent.mouseEnter(screen.getByRole('button', { name: 'Sort by Email' }))
+      expect(idle).toHaveStyle({ opacity: '1' })
+      fireEvent.mouseLeave(screen.getByRole('button', { name: 'Sort by Email' }))
+      expect(idle).toHaveStyle({ opacity: '0' })
+    })
+  })
+
+  describe('header tooltip', () => {
+    it('uses the full column name as the accessible sort name and shows it on hover', () => {
+      render(
+        <Table onSort={vi.fn()}>
+          <TableHeader>
+            <TableRow>
+              <TableHeaderCell sortKey="priority" tooltip="Priority">
+                Pri
+              </TableHeaderCell>
+            </TableRow>
+          </TableHeader>
+        </Table>
+      )
+      const sortButton = screen.getByRole('button', { name: 'Sort by Priority' })
+      fireEvent.mouseEnter(sortButton.parentElement!)
+      expect(screen.getByText('Priority')).toBeInTheDocument()
+    })
+
+    it('still sorts when the tooltip-wrapped header is pressed', () => {
+      const onSort = vi.fn()
+      render(
+        <Table onSort={onSort}>
+          <TableHeader>
+            <TableRow>
+              <TableHeaderCell sortKey="priority" tooltip="Priority">
+                Pri
+              </TableHeaderCell>
+            </TableRow>
+          </TableHeader>
+        </Table>
+      )
+      fireEvent.click(screen.getByText('Pri'))
+      expect(onSort).toHaveBeenCalledWith('priority')
+    })
+  })
+
+  describe('flexible column layout', () => {
+    // Regression: a long nowrap title used to size the horizontal scroller to
+    // max-content, so the flexible column never shrank and the last fixed
+    // column was clipped inside the table's card (AW-22 T2 Gate 2 finding).
+    it('fills the scroll viewport instead of sizing to its longest cell', () => {
+      renderBasicTable()
+      const scrollContent = screen.getByRole('table').parentElement
+      expect(scrollContent).toHaveStyle({ width: '100%' })
+    })
+
+    it('lets a cell without a width shrink below its content', () => {
+      render(
+        <Table>
+          <TableBody>
+            <TableRow>
+              <TableCell width={80}>fixed</TableCell>
+              <TableCell>flexible</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      )
+      expect(screen.getByText('fixed').closest('[role="cell"]')).toHaveStyle({ width: '80px' })
+      expect(screen.getByText('flexible').closest('[role="cell"]')).toHaveStyle({
+        flexGrow: '1',
+        minWidth: '0px',
+      })
+    })
+  })
+
   describe('TablePagination', () => {
     it('renders pagination info', () => {
       render(
@@ -554,5 +660,137 @@ describe('Table', () => {
       expect(screen.getByLabelText('Previous page')).toBeInTheDocument()
       expect(screen.getByLabelText('Next page')).toBeInTheDocument()
     })
+  })
+})
+
+describe('Table density', () => {
+  it('defaults to comfortable and accepts dense without changing structure', () => {
+    const { rerender } = render(
+      <Table>
+        <TableBody>
+          <TableRow>
+            <TableCell>Alice</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    )
+    expect(screen.getByRole('cell')).toBeInTheDocument()
+
+    rerender(
+      <Table density="dense">
+        <TableBody>
+          <TableRow>
+            <TableCell>Alice</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    )
+    // nativewind compiles className to style, so density is asserted through
+    // structure + a11y surviving rather than through class names.
+    expect(screen.getByRole('cell')).toBeInTheDocument()
+    expect(screen.getByText('Alice')).toBeInTheDocument()
+  })
+
+  it('keeps header cells sortable at dense density', () => {
+    const onSort = vi.fn()
+    render(
+      <Table density="dense" sortColumn="name" sortDirection="asc" onSort={onSort}>
+        <TableHeader>
+          <TableRow>
+            <TableHeaderCell sortKey="name">Name</TableHeaderCell>
+          </TableRow>
+        </TableHeader>
+      </Table>
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Sort by Name' }))
+    expect(onSort).toHaveBeenCalledWith('name')
+    expect(screen.getByRole('columnheader')).toHaveAttribute('aria-sort', 'ascending')
+  })
+})
+
+describe('useTable', () => {
+  // A type alias, not an interface: `useTable` constrains T to an index-signature
+  // shape, and only aliases get the implicit index signature that satisfies it.
+  type Row = {
+    id: string
+    rank: number
+    size?: number
+  }
+  const rows: Row[] = [
+    { id: 'b', rank: 2, size: 5 },
+    { id: 'a', rank: 3 },
+    { id: 'c', rank: 1, size: 2 },
+  ]
+
+  const ids = (data: Row[]) => data.map((r) => r.id)
+
+  it('returns data untouched until a direction is set', () => {
+    const { result } = renderHook(() => useTable<Row>({ data: rows, defaultSortColumn: 'rank' }))
+    expect(ids(result.current.sortedData)).toEqual(['b', 'a', 'c'])
+  })
+
+  it('sorts by raw field value when no comparator is supplied', () => {
+    const { result } = renderHook(() =>
+      useTable<Row>({ data: rows, defaultSortColumn: 'rank', defaultSortDirection: 'asc' })
+    )
+    expect(ids(result.current.sortedData)).toEqual(['c', 'b', 'a'])
+  })
+
+  it('ranks blank values last in BOTH directions', () => {
+    const asc = renderHook(() =>
+      useTable<Row>({ data: rows, defaultSortColumn: 'size', defaultSortDirection: 'asc' })
+    )
+    const desc = renderHook(() =>
+      useTable<Row>({ data: rows, defaultSortColumn: 'size', defaultSortDirection: 'desc' })
+    )
+    // `a` has no size; flipping direction must not promote it to the top.
+    expect(ids(asc.result.current.sortedData).at(-1)).toBe('a')
+    expect(ids(desc.result.current.sortedData).at(-1)).toBe('a')
+  })
+
+  it('uses a per-column comparator when one is supplied', () => {
+    const { result } = renderHook(() =>
+      useTable<Row>({
+        data: rows,
+        defaultSortColumn: 'id',
+        defaultSortDirection: 'asc',
+        // Reverse-alphabetical, to prove the comparator beats the field compare.
+        comparators: { id: (x, y) => y.id.localeCompare(x.id) },
+      })
+    )
+    expect(ids(result.current.sortedData)).toEqual(['c', 'b', 'a'])
+  })
+
+  it('inverts a comparator for desc rather than reversing the array', () => {
+    const { result } = renderHook(() =>
+      useTable<Row>({
+        data: rows,
+        defaultSortColumn: 'id',
+        defaultSortDirection: 'desc',
+        comparators: { id: (x, y) => y.id.localeCompare(x.id) },
+      })
+    )
+    expect(ids(result.current.sortedData)).toEqual(['a', 'b', 'c'])
+  })
+
+  it('leaves columns without a comparator on the default compare', () => {
+    const { result } = renderHook(() =>
+      useTable<Row>({
+        data: rows,
+        defaultSortColumn: 'rank',
+        defaultSortDirection: 'asc',
+        comparators: { id: (x, y) => y.id.localeCompare(x.id) },
+      })
+    )
+    expect(ids(result.current.sortedData)).toEqual(['c', 'b', 'a'])
+  })
+
+  it('toggles direction through handleSort on the same column', () => {
+    const { result } = renderHook(() =>
+      useTable<Row>({ data: rows, defaultSortColumn: 'rank', defaultSortDirection: 'asc' })
+    )
+    act(() => result.current.handleSort('rank'))
+    expect(result.current.sortDirection).toBe('desc')
+    expect(ids(result.current.sortedData)).toEqual(['a', 'b', 'c'])
   })
 })

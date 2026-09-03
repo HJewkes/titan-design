@@ -5,10 +5,9 @@ import { Pill } from '../../ui/pill'
 import { StatusDot, type StatusDotVariant } from '../Workout/StatusDot'
 import { SegmentedBar, type SegmentedBarSegment } from '../Workout/SegmentedBar'
 import { Typography } from '../Typography'
-import { resolveColor } from '../../../theme/resolve-color'
+import { SEVERITY_BAR_COLOR, SEVERITY_ORDER, type TaskSeverity } from './SeverityLabel'
 
 export type InitiativeState = 'focused' | 'backburner' | 'paused' | 'done'
-export type TaskSeverity = 'critical' | 'high' | 'medium' | 'low'
 
 /** Initiative state → label + {@link StatusDot} variant. */
 const STATE_META: Record<InitiativeState, { label: string; dot: StatusDotVariant }> = {
@@ -16,17 +15,6 @@ const STATE_META: Record<InitiativeState, { label: string; dot: StatusDotVariant
   backburner: { label: 'Backburner', dot: 'future' },
   paused: { label: 'Paused', dot: 'deviation' },
   done: { label: 'Done', dot: 'success' },
-}
-
-/** Task severity → {@link SegmentedBar} segment fill color, most-to-least severe. */
-const SEVERITY_ORDER: TaskSeverity[] = ['critical', 'high', 'medium', 'low']
-const SEVERITY_COLOR: Record<TaskSeverity, string> = {
-  critical: resolveColor('status-error-vivid'),
-  high: resolveColor('status-error'),
-  medium: resolveColor('status-warning'),
-  // `text-tertiary` is greyRamp[500] in dark — identical to the original literal,
-  // and it adapts in light instead of freezing. See TOKENS.md §3.
-  low: resolveColor('text-tertiary'),
 }
 
 export interface InitiativeCardTopTask {
@@ -74,7 +62,7 @@ export function InitiativeCard({
 }: InitiativeCardProps) {
   const meta = STATE_META[state]
   const segments: SegmentedBarSegment[] = SEVERITY_ORDER.filter((k) => severityCounts[k] > 0).map(
-    (k) => ({ weight: severityCounts[k], color: SEVERITY_COLOR[k] })
+    (k) => ({ weight: severityCounts[k], color: SEVERITY_BAR_COLOR[k] })
   )
 
   return (

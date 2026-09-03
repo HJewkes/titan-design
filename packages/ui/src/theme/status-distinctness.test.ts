@@ -19,6 +19,7 @@
  */
 import { describe, it, expect } from 'vitest'
 import { semanticColorsDark, semanticColorsLight } from './tokens/semantic'
+import { alertRedVivid } from './tokens/primitives'
 
 type SemanticMap = Record<string, string>
 
@@ -57,8 +58,9 @@ describe('semantically distinct status tokens render distinct values', () => {
 
 describe('status-error-vivid is the vivid red the rest of the system already assumes', () => {
   for (const [theme, colors] of THEMES) {
-    it(`${theme}: matches the #FF4757 that -rgb, -subtle and Indicator's glow encode`, () => {
-      expect(colors['status-error-vivid']!.toLowerCase()).toBe('#ff4757')
+    it(`${theme}: is the alertRedVivid primitive that -rgb, -subtle and Indicator's glow encode`, () => {
+      expect(colors['status-error-vivid']).toBe(alertRedVivid)
+      expect(alertRedVivid.toLowerCase()).toBe('#ff4757')
     })
   }
 })
