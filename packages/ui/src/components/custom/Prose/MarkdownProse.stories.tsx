@@ -5,7 +5,7 @@ import { MarkdownProse, type ProseLinker } from './MarkdownProse'
 const SAMPLE = `# Shipped AW-17 and AW-18
 
 Resolved the cwd to an initiative via the registered worktree, then folded the
-result into [[bootstrap-prompt]]. See #157 for the file-history explorer.
+result into [[bootstrap-prompt]]. See #42 for the file-history explorer.
 
 ## What changed
 
