@@ -59,22 +59,22 @@ Session reader ................... (no organism: the host composes the two halve
 
 ## Dependency map
 
-| Component             | Tier     | Composes ↓                                                                   | Used-by ↑                                                             |
-| --------------------- | -------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `PortfolioOverview`   | organism | Card, Metric, Eyebrow, InitiativeCard                                        | app root (`Lab/ActiveWork/Portfolio Overview` specimen)               |
-| `InitiativeCard`      | card     | Card, Pill, StatusDot, SegmentedBar, Typography                              | PortfolioOverview                                                     |
-| `FileHistoryExplorer` | organism | Card, Tile, Divider, Eyebrow, FileActivityRow/Detail, CoChangeChip           | app root (`Lab/ActiveWork/File History Explorer` specimen)            |
-| `FileActivityDetail`  | card     | Card, Tile, Pill, DataRow, DateTime, SparkBars, FilePathLabel, Eyebrow       | FileHistoryExplorer                                                   |
-| `FileActivityRow`     | row      | FilePathLabel, SparkBars, Typography                                         | FileHistoryExplorer                                                   |
-| `CoChangeChip`        | molecule | Card, Pill, FilePathLabel, Typography                                        | FileHistoryExplorer                                                   |
-| `FilePathLabel`       | molecule | Typography (`mono`)                                                          | FileActivityRow, FileActivityDetail, CoChangeChip                     |
-| `TaskTable`           | organism | Table, useTable, TableHeader/Row/HeaderCell, TaskRow, SeverityLabel, Eyebrow | app root (`Custom/ActiveWork/TaskTable`)                              |
-| `TaskRow`             | row      | TableRow, TableCell, SeverityLabel, Pill, Typography                         | TaskTable                                                             |
-| `SeverityLabel`       | molecule | Indicator, Typography (`caption`)                                            | TaskRow, TaskTable (legend), InitiativeCard (vocabulary)              |
+| Component             | Tier     | Composes ↓                                                                   | Used-by ↑                                                                          |
+| --------------------- | -------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `PortfolioOverview`   | organism | Card, Metric, Eyebrow, InitiativeCard                                        | app root (`Lab/ActiveWork/Portfolio Overview` specimen)                            |
+| `InitiativeCard`      | card     | Card, Pill, StatusDot, SegmentedBar, Typography                              | PortfolioOverview                                                                  |
+| `FileHistoryExplorer` | organism | Card, Tile, Divider, Eyebrow, FileActivityRow/Detail, CoChangeChip           | app root (`Lab/ActiveWork/File History Explorer` specimen)                         |
+| `FileActivityDetail`  | card     | Card, Tile, Pill, DataRow, DateTime, SparkBars, FilePathLabel, Eyebrow       | FileHistoryExplorer                                                                |
+| `FileActivityRow`     | row      | FilePathLabel, SparkBars, Typography                                         | FileHistoryExplorer                                                                |
+| `CoChangeChip`        | molecule | Card, Pill, FilePathLabel, Typography                                        | FileHistoryExplorer                                                                |
+| `FilePathLabel`       | molecule | Typography (`mono`)                                                          | FileActivityRow, FileActivityDetail, CoChangeChip                                  |
+| `TaskTable`           | organism | Table, useTable, TableHeader/Row/HeaderCell, TaskRow, SeverityLabel, Eyebrow | app root (`Custom/ActiveWork/TaskTable`)                                           |
+| `TaskRow`             | row      | TableRow, TableCell, SeverityLabel, Pill, Typography                         | TaskTable                                                                          |
+| `SeverityLabel`       | molecule | Indicator, Typography (`caption`)                                            | TaskRow, TaskTable (legend), InitiativeCard (vocabulary)                           |
 | `Eyebrow`             | molecule | Typography (`overline`)                                                      | PortfolioOverview, FileHistoryExplorer, FileActivityDetail, TaskTable, SessionList |
-| `SessionList`         | list     | Eyebrow, SessionListItem                                                     | host composition (`Custom/ActiveWork/Session Reader` story)           |
-| `SessionListItem`     | row      | DateTime, Pill, Typography                                                   | SessionList                                                           |
-| `SessionDetail`       | card     | Card, Divider, Pill, DateTime, MarkdownProse (+ `sessionLinkers`)            | host composition (`Custom/ActiveWork/Session Reader` story)           |
+| `SessionList`         | list     | Eyebrow, SessionListItem                                                     | host composition (`Custom/ActiveWork/Session Reader` story)                        |
+| `SessionListItem`     | row      | DateTime, Pill, Typography                                                   | SessionList                                                                        |
+| `SessionDetail`       | card     | Card, Divider, Pill, DateTime, MarkdownProse (+ `sessionLinkers`)            | host composition (`Custom/ActiveWork/Session Reader` story)                        |
 
 ## Shared substrates introduced here (reusable beyond this family)
 
@@ -234,4 +234,7 @@ hardening it; see TOKENS.md §6.
 - Visual: not yet added to `tests/visual/stories.spec.ts` — see follow-up in the PR description.
 - Lint guardrails: the token-pure rule set above; no
   re-implemented status dot, segmented bar, or sparkline.
+
+```
+
 ```
