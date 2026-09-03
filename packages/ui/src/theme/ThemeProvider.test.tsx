@@ -14,7 +14,7 @@ describe('ThemeProvider', () => {
     render(
       <ThemeProvider>
         <Text>inside</Text>
-      </ThemeProvider>,
+      </ThemeProvider>
     )
     expect(screen.getByText('inside')).toBeInTheDocument()
   })
@@ -23,7 +23,7 @@ describe('ThemeProvider', () => {
     render(
       <ThemeProvider mode="light">
         <Text>light</Text>
-      </ThemeProvider>,
+      </ThemeProvider>
     )
     expect(screen.getByText('light')).toBeInTheDocument()
   })
@@ -32,7 +32,7 @@ describe('ThemeProvider', () => {
     render(
       <ThemeProvider mode="light">
         <ModeProbe />
-      </ThemeProvider>,
+      </ThemeProvider>
     )
     expect(screen.getByText('light')).toBeInTheDocument()
   })
@@ -41,7 +41,7 @@ describe('ThemeProvider', () => {
     render(
       <ThemeProvider mode="system">
         <ModeProbe />
-      </ThemeProvider>,
+      </ThemeProvider>
     )
     expect(screen.getByText('dark')).toBeInTheDocument()
   })

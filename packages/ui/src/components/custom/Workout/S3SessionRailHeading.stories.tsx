@@ -7,10 +7,45 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Heading, INSET, INSET_SHADOW, Page, monoTag, reps, type Exercise } from './setHeadingKit'
 
-const DONE: Exercise = { name: 'Seated Cable Row', sets: 5, reps: 8, load: 145, tempo: [3, 1, 2, 0], indicator: 'pr', setStates: [1.0, 0.9, 0.8, 0.7, 0.6].map((s) => ({ status: 'done', reps: reps(8, s) })) }
-const ACTIVE: Exercise = { name: 'Cable Chest Press', sets: 3, reps: 10, load: 90, tempo: [2, 1, 2, 0], indicator: 'info', setStates: [{ status: 'done', reps: reps(10, 0.72) }, { status: 'active', reps: reps(5, 0.62), planned: 10 }, { status: 'todo', planned: 10 }] }
-const UPCOMING: Exercise = { name: 'Standing Calf Raise', sets: 5, reps: 20, load: 25, tempo: [2, 1, 2, 0], upcoming: true, setStates: [1, 2, 3, 4, 5].map(() => ({ status: 'todo', planned: 20 })) }
-const RANGE: Exercise = { name: 'Face Pull', sets: 3, reps: '15-20', load: 40, tempo: [2, 1, 2, 0], setStates: [1, 2, 3].map(() => ({ status: 'todo', planned: 18 })) }
+const DONE: Exercise = {
+  name: 'Seated Cable Row',
+  sets: 5,
+  reps: 8,
+  load: 145,
+  tempo: [3, 1, 2, 0],
+  indicator: 'pr',
+  setStates: [1.0, 0.9, 0.8, 0.7, 0.6].map((s) => ({ status: 'done', reps: reps(8, s) })),
+}
+const ACTIVE: Exercise = {
+  name: 'Cable Chest Press',
+  sets: 3,
+  reps: 10,
+  load: 90,
+  tempo: [2, 1, 2, 0],
+  indicator: 'info',
+  setStates: [
+    { status: 'done', reps: reps(10, 0.72) },
+    { status: 'active', reps: reps(5, 0.62), planned: 10 },
+    { status: 'todo', planned: 10 },
+  ],
+}
+const UPCOMING: Exercise = {
+  name: 'Standing Calf Raise',
+  sets: 5,
+  reps: 20,
+  load: 25,
+  tempo: [2, 1, 2, 0],
+  upcoming: true,
+  setStates: [1, 2, 3, 4, 5].map(() => ({ status: 'todo', planned: 20 })),
+}
+const RANGE: Exercise = {
+  name: 'Face Pull',
+  sets: 3,
+  reps: '15-20',
+  load: 40,
+  tempo: [2, 1, 2, 0],
+  setStates: [1, 2, 3].map(() => ({ status: 'todo', planned: 18 })),
+}
 
 // a heading on the sunk inset surface, at the real rail width
 function Row({ ex, h }: { ex: Exercise; h: number }) {
@@ -40,7 +75,14 @@ export const States: Story = {
     >
       <div style={{ display: 'flex', gap: 48, flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          {([['completed', DONE], ['active (pulsing)', ACTIVE], ['upcoming', UPCOMING], ['rep range', RANGE]] as [string, Exercise][]).map(([lbl, ex]) => (
+          {(
+            [
+              ['completed', DONE],
+              ['active (pulsing)', ACTIVE],
+              ['upcoming', UPCOMING],
+              ['rep range', RANGE],
+            ] as [string, Exercise][]
+          ).map(([lbl, ex]) => (
             <div key={lbl} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <span style={monoTag}>{lbl}</span>
               <Row ex={ex} h={args.stripHeight} />

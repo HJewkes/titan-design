@@ -36,8 +36,14 @@ const meta: Meta<typeof StrengthTrendChart> = {
   component: StrengthTrendChart,
   tags: ['autodocs'],
   argTypes: {
-    width: { control: { type: 'range', min: 160, max: 480, step: 10 }, description: 'Plot width in px' },
-    height: { control: { type: 'range', min: 100, max: 220, step: 10 }, description: 'Plot height in px (120-160 for compact)' },
+    width: {
+      control: { type: 'range', min: 160, max: 480, step: 10 },
+      description: 'Plot width in px',
+    },
+    height: {
+      control: { type: 'range', min: 100, max: 220, step: 10 },
+      description: 'Plot height in px (120-160 for compact)',
+    },
     unit: { control: 'inline-radio', options: ['lbs', 'kg'], description: 'Display unit' },
     animateOnMount: { control: 'boolean', description: 'Left-to-right draw animation on mount' },
   },

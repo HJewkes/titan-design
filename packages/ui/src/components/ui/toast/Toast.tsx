@@ -3,7 +3,13 @@ import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 
 export type ToastStatus = 'success' | 'error' | 'warning' | 'info'
-export type ToastPosition = 'top' | 'top-right' | 'top-left' | 'bottom' | 'bottom-right' | 'bottom-left'
+export type ToastPosition =
+  | 'top'
+  | 'top-right'
+  | 'top-left'
+  | 'bottom'
+  | 'bottom-right'
+  | 'bottom-left'
 
 export interface ToastConfig {
   /** Unique ID for the toast */
@@ -44,10 +50,10 @@ export interface ToastProviderProps {
 }
 
 const positionStyles: Record<ToastPosition, string> = {
-  'top': 'top-4 left-1/2 -translate-x-1/2',
+  top: 'top-4 left-1/2 -translate-x-1/2',
   'top-right': 'top-4 right-4',
   'top-left': 'top-4 left-4',
-  'bottom': 'bottom-4 left-1/2 -translate-x-1/2',
+  bottom: 'bottom-4 left-1/2 -translate-x-1/2',
   'bottom-right': 'bottom-4 right-4',
   'bottom-left': 'bottom-4 left-4',
 }
@@ -73,23 +79,26 @@ export function ToastProvider({
 }: ToastProviderProps) {
   const [toasts, setToasts] = useState<ToastConfig[]>([])
 
-  const addToast = useCallback((config: Omit<ToastConfig, 'id'>) => {
-    const id = `toast-${++toastIdCounter}`
-    const newToast: ToastConfig = {
-      id,
-      duration: defaultDuration,
-      isClosable: true,
-      status: 'info',
-      ...config,
-    }
+  const addToast = useCallback(
+    (config: Omit<ToastConfig, 'id'>) => {
+      const id = `toast-${++toastIdCounter}`
+      const newToast: ToastConfig = {
+        id,
+        duration: defaultDuration,
+        isClosable: true,
+        status: 'info',
+        ...config,
+      }
 
-    setToasts((prev) => {
-      const updated = [newToast, ...prev]
-      return updated.slice(0, maxToasts)
-    })
+      setToasts((prev) => {
+        const updated = [newToast, ...prev]
+        return updated.slice(0, maxToasts)
+      })
 
-    return id
-  }, [defaultDuration, maxToasts])
+      return id
+    },
+    [defaultDuration, maxToasts]
+  )
 
   const removeToast = useCallback((id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id))
@@ -104,10 +113,7 @@ export function ToastProvider({
       {children}
       {/* Toast Container */}
       <View
-        className={cn(
-          'fixed z-[9999] flex flex-col gap-2',
-          positionStyles[position]
-        )}
+        className={cn('fixed z-[9999] flex flex-col gap-2', positionStyles[position])}
         pointerEvents="box-none"
       >
         {toasts.map((toast) => (
@@ -216,14 +222,8 @@ function ToastItem({
 
         {/* Content */}
         <View className="flex-1">
-          <Text className="text-sm font-semibold text-text-primary">
-            {title}
-          </Text>
-          {description && (
-            <Text className="text-sm text-text-secondary mt-0.5">
-              {description}
-            </Text>
-          )}
+          <Text className="text-sm font-semibold text-text-primary">{title}</Text>
+          {description && <Text className="text-sm text-text-secondary mt-0.5">{description}</Text>}
         </View>
 
         {/* Close button */}
@@ -301,14 +301,8 @@ export function Toast({
 
         {/* Content */}
         <View className="flex-1">
-          <Text className="text-sm font-semibold text-text-primary">
-            {title}
-          </Text>
-          {description && (
-            <Text className="text-sm text-text-secondary mt-0.5">
-              {description}
-            </Text>
-          )}
+          <Text className="text-sm font-semibold text-text-primary">{title}</Text>
+          {description && <Text className="text-sm text-text-secondary mt-0.5">{description}</Text>}
         </View>
 
         {/* Close button */}

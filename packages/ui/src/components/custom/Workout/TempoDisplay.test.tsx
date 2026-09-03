@@ -120,12 +120,18 @@ describe('TempoDisplay', () => {
     it('locks the phases completed earlier in the rep, and resets on the first phase', () => {
       // Concentric active (3rd phase) → eccentric + pauseBottom are locked done.
       const mid = render(
-        <TempoDisplay tempo={[3, 1, 2, 1]} live={{ activePhase: 'concentric', phaseElapsedMs: 800 }} />
+        <TempoDisplay
+          tempo={[3, 1, 2, 1]}
+          live={{ activePhase: 'concentric', phaseElapsedMs: 800 }}
+        />
       )
       expect(mid.getAllByTestId('tempo-live-done')).toHaveLength(2)
       // Back to the first phase (next rep) → nothing is locked yet.
       mid.rerender(
-        <TempoDisplay tempo={[3, 1, 2, 1]} live={{ activePhase: 'eccentric', phaseElapsedMs: 200 }} />
+        <TempoDisplay
+          tempo={[3, 1, 2, 1]}
+          live={{ activePhase: 'eccentric', phaseElapsedMs: 200 }}
+        />
       )
       expect(mid.queryByTestId('tempo-live-done')).not.toBeInTheDocument()
     })
@@ -133,13 +139,21 @@ describe('TempoDisplay', () => {
     it('colours the TEMPO label live-muted while live', () => {
       const { getByText, rerender } = render(<TempoDisplay tempo={[3, 1, 1, 0]} />)
       const restColor = getByText('TEMPO').style.color
-      rerender(<TempoDisplay tempo={[3, 1, 1, 0]} live={{ activePhase: 'eccentric', phaseElapsedMs: 500 }} />)
+      rerender(
+        <TempoDisplay
+          tempo={[3, 1, 1, 0]}
+          live={{ activePhase: 'eccentric', phaseElapsedMs: 500 }}
+        />
+      )
       expect(getByText('TEMPO').style.color).not.toBe(restColor)
     })
 
     it('shows upcoming phases as their prescribed time and the active as the live readout', () => {
       render(
-        <TempoDisplay tempo={[5, 3, 2, 1]} live={{ activePhase: 'eccentric', phaseElapsedMs: 1000 }} />
+        <TempoDisplay
+          tempo={[5, 3, 2, 1]}
+          live={{ activePhase: 'eccentric', phaseElapsedMs: 1000 }}
+        />
       )
       // active eccentric: 5s target, 1s in → 4.0 remaining
       expect(screen.getByText('4.0')).toBeInTheDocument()

@@ -160,9 +160,7 @@ export const validationRules = {
 /**
  * Compose multiple validation functions
  */
-export function composeValidators(
-  ...validators: Array<(value: any) => string | undefined>
-) {
+export function composeValidators(...validators: Array<(value: any) => string | undefined>) {
   return (value: any): string | undefined => {
     for (const validator of validators) {
       const error = validator(value)

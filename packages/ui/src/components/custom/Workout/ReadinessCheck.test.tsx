@@ -22,9 +22,7 @@ describe('ReadinessCheck', () => {
   describe('rendering', () => {
     it('renders the title and one row per factor', () => {
       render(<ReadinessCheck {...baseProps} factors={makeFactors()} />)
-      expect(screen.getByTestId('readiness-check-title')).toHaveTextContent(
-        'How are you feeling?',
-      )
+      expect(screen.getByTestId('readiness-check-title')).toHaveTextContent('How are you feeling?')
       expect(screen.getByTestId('readiness-check-factor-sleep')).toBeInTheDocument()
       expect(screen.getByTestId('readiness-check-factor-stress')).toBeInTheDocument()
     })
@@ -78,7 +76,7 @@ describe('ReadinessCheck', () => {
           {...baseProps}
           factors={makeFactors()}
           warmUpValidation={{ velocityDeficit: 5, recommendation: 'OK', status: 'good' }}
-        />,
+        />
       )
       expect(screen.queryByTestId('readiness-check-warmup')).not.toBeInTheDocument()
     })
@@ -94,13 +92,13 @@ describe('ReadinessCheck', () => {
             recommendation: 'Reduce load today.',
             status: 'caution',
           }}
-        />,
+        />
       )
       expect(screen.getByTestId('readiness-check-warmup-deficit')).toHaveTextContent(
-        '18% below 14-day average',
+        '18% below 14-day average'
       )
       expect(screen.getByTestId('readiness-check-warmup-recommendation')).toHaveTextContent(
-        'Reduce load today.',
+        'Reduce load today.'
       )
       expect(screen.getByTestId('readiness-check-warmup-badge')).toHaveTextContent('Caution')
     })
@@ -112,10 +110,10 @@ describe('ReadinessCheck', () => {
           factors={makeFactors()}
           warmUpCompleted
           warmUpValidation={{ velocityDeficit: 0, recommendation: 'Proceed.', status: 'good' }}
-        />,
+        />
       )
       expect(screen.getByTestId('readiness-check-warmup-deficit')).toHaveTextContent(
-        'Velocity on 14-day average',
+        'Velocity on 14-day average'
       )
     })
 
@@ -126,10 +124,10 @@ describe('ReadinessCheck', () => {
           factors={makeFactors()}
           warmUpCompleted
           warmUpValidation={{ velocityDeficit: -6, recommendation: 'Proceed.', status: 'good' }}
-        />,
+        />
       )
       expect(screen.getByTestId('readiness-check-warmup-deficit')).toHaveTextContent(
-        'Velocity 6% above 14-day average',
+        'Velocity 6% above 14-day average'
       )
     })
   })
@@ -149,15 +147,11 @@ describe('ReadinessCheck', () => {
 
     it('exposes the readiness score on the gauge', () => {
       render(<ReadinessCheck {...baseProps} factors={makeFactors()} score={78} />)
-      expect(
-        screen.getByLabelText('Readiness score: 78 out of 100'),
-      ).toBeInTheDocument()
+      expect(screen.getByLabelText('Readiness score: 78 out of 100')).toBeInTheDocument()
     })
 
     it('has no accessibility violations', async () => {
-      const { container } = render(
-        <ReadinessCheck {...baseProps} factors={makeFactors()} />,
-      )
+      const { container } = render(<ReadinessCheck {...baseProps} factors={makeFactors()} />)
       expect(await axe(container)).toHaveNoViolations()
     })
 
@@ -173,7 +167,7 @@ describe('ReadinessCheck', () => {
             status: 'moderate',
           }}
           onConfirm={vi.fn()}
-        />,
+        />
       )
       expect(await axe(container)).toHaveNoViolations()
     })

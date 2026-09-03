@@ -54,7 +54,7 @@ describe('semantic text on the surface planes (dark)', () => {
         const ratio = contrast(fg, greyRamp[plane])
         expect(
           ratio,
-          `${role} ${fg} on grey-${plane} ${greyRamp[plane]} is ${ratio.toFixed(2)}:1, needs ${min}`,
+          `${role} ${fg} on grey-${plane} ${greyRamp[plane]} is ${ratio.toFixed(2)}:1, needs ${min}`
         ).toBeGreaterThanOrEqual(min)
       })
     })
@@ -68,10 +68,19 @@ describe('semantic text on the surface planes (dark)', () => {
   it('keeps primary > secondary > tertiary in contrast on every plane', () => {
     for (const plane of PLANES) {
       const [pri, sec, ter] = TEXT_ROLES.map(({ role }) =>
-        contrast(semanticColorsDark[role as keyof typeof semanticColorsDark] as string, greyRamp[plane]),
+        contrast(
+          semanticColorsDark[role as keyof typeof semanticColorsDark] as string,
+          greyRamp[plane]
+        )
       )
-      expect(pri, `on grey-${plane}: primary ${pri.toFixed(2)} vs secondary ${sec.toFixed(2)}`).toBeGreaterThan(sec)
-      expect(sec, `on grey-${plane}: secondary ${sec.toFixed(2)} vs tertiary ${ter.toFixed(2)}`).toBeGreaterThan(ter)
+      expect(
+        pri,
+        `on grey-${plane}: primary ${pri.toFixed(2)} vs secondary ${sec.toFixed(2)}`
+      ).toBeGreaterThan(sec)
+      expect(
+        sec,
+        `on grey-${plane}: secondary ${sec.toFixed(2)} vs tertiary ${ter.toFixed(2)}`
+      ).toBeGreaterThan(ter)
     }
   })
 

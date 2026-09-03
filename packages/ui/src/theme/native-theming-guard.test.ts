@@ -37,7 +37,7 @@ const colorTree = tailwindConfig.theme?.extend?.colors ?? {}
 // `brand-primary` class).
 function flattenColors(
   node: Record<string, unknown>,
-  prefix: string[] = [],
+  prefix: string[] = []
 ): Record<string, string> {
   const out: Record<string, string> = {}
   for (const [key, value] of Object.entries(node)) {
@@ -83,11 +83,11 @@ describe('native theming guard (no color token renders black on native)', () => 
     }
     expect(
       undefinedDark,
-      'tailwind colors point at vars missing from darkThemeCSSVars (className renders black on native dark)',
+      'tailwind colors point at vars missing from darkThemeCSSVars (className renders black on native dark)'
     ).toEqual([])
     expect(
       undefinedLight,
-      'tailwind colors point at vars missing from lightThemeCSSVars (className renders black on native light)',
+      'tailwind colors point at vars missing from lightThemeCSSVars (className renders black on native light)'
     ).toEqual([])
   })
 
@@ -106,11 +106,11 @@ describe('native theming guard (no color token renders black on native)', () => 
       }
       expect(
         invalidValues,
-        `getSemanticColors('${mode}') has tokens with no valid color (renders black/unset on native)`,
+        `getSemanticColors('${mode}') has tokens with no valid color (renders black/unset on native)`
       ).toEqual([])
       expect(
         missingVars,
-        `resolveColor tokens missing a --color-<token> in ${mode} vars (renders unset on web)`,
+        `resolveColor tokens missing a --color-<token> in ${mode} vars (renders unset on web)`
       ).toEqual([])
     }
   })

@@ -68,7 +68,7 @@ describe('Scatter', () => {
         width={200}
         height={200}
         axis={{ xMin: 0, xMax: 1000, yMin: 0, yMax: 1000 }}
-      />,
+      />
     )
     expect(screen.getByTestId('scatter-point-big')).toBeInTheDocument()
   })
@@ -83,7 +83,7 @@ describe('Scatter', () => {
 
     it('has no accessibility violations', async () => {
       const { container } = render(
-        <Scatter {...base} diagonal axis={{ xLabel: 'I', yLabel: 'A' }} selectedId="b" />,
+        <Scatter {...base} diagonal axis={{ xLabel: 'I', yLabel: 'A' }} selectedId="b" />
       )
       expect(await axe(container)).toHaveNoViolations()
     })

@@ -28,9 +28,7 @@ describe('HelpTip', () => {
   })
 
   it('renders custom ReactNode content', () => {
-    render(
-      <HelpTip content={<span data-testid="custom-content">Rich content</span>} />
-    )
+    render(<HelpTip content={<span data-testid="custom-content">Rich content</span>} />)
 
     fireEvent.click(screen.getByRole('button', { name: 'Show help information' }))
     expect(screen.getByTestId('custom-content')).toBeInTheDocument()

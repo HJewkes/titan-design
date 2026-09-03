@@ -29,11 +29,9 @@ describe('MesoStatusCard', () => {
     it('renders the card, name, and subtitle', () => {
       render(<MesoStatusCard {...baseProps} />)
       expect(screen.getByTestId('meso-status-card')).toBeInTheDocument()
-      expect(screen.getByTestId('meso-status-card-name')).toHaveTextContent(
-        'Hypertrophy Block',
-      )
+      expect(screen.getByTestId('meso-status-card-name')).toHaveTextContent('Hypertrophy Block')
       expect(screen.getByTestId('meso-status-card-subtitle')).toHaveTextContent(
-        'Week 6 of 8 · Upper/Lower',
+        'Week 6 of 8 · Upper/Lower'
       )
     })
 
@@ -44,9 +42,7 @@ describe('MesoStatusCard', () => {
 
     it('renders the status badge with its label', () => {
       render(<MesoStatusCard {...baseProps} />)
-      expect(screen.getByTestId('meso-status-card-badge')).toHaveTextContent(
-        'On Track',
-      )
+      expect(screen.getByTestId('meso-status-card-badge')).toHaveTextContent('On Track')
     })
   })
 
@@ -67,16 +63,14 @@ describe('MesoStatusCard', () => {
             { label: 'Set', value: '1' },
             { label: 'Set', value: '2' },
           ]}
-        />,
+        />
       )
       expect(screen.getAllByTestId('meso-status-card-metric')).toHaveLength(2)
     })
 
     it('does not render the metrics grid when empty', () => {
       render(<MesoStatusCard {...baseProps} metrics={[]} />)
-      expect(
-        screen.queryByTestId('meso-status-card-metrics'),
-      ).not.toBeInTheDocument()
+      expect(screen.queryByTestId('meso-status-card-metrics')).not.toBeInTheDocument()
     })
   })
 
@@ -84,9 +78,7 @@ describe('MesoStatusCard', () => {
     it('renders one gauge per entry with a marker', () => {
       render(<MesoStatusCard {...baseProps} />)
       expect(screen.getAllByTestId('meso-status-card-gauge')).toHaveLength(2)
-      expect(
-        screen.getAllByTestId('meso-status-card-gauge-marker'),
-      ).toHaveLength(2)
+      expect(screen.getAllByTestId('meso-status-card-gauge-marker')).toHaveLength(2)
     })
 
     it('renders a 50% center line per gauge', () => {
@@ -96,34 +88,19 @@ describe('MesoStatusCard', () => {
     })
 
     it('exposes gauge level via progressbar value', () => {
-      render(
-        <MesoStatusCard
-          {...baseProps}
-          gauges={[{ label: 'Intensity', level: 0.7 }]}
-        />,
-      )
+      render(<MesoStatusCard {...baseProps} gauges={[{ label: 'Intensity', level: 0.7 }]} />)
       const gauge = screen.getByLabelText('Intensity: 70%')
       expect(gauge).toHaveAttribute('role', 'progressbar')
       expect(gauge).toHaveAttribute('aria-valuenow', '70')
     })
 
     it('clamps out-of-range levels', () => {
-      render(
-        <MesoStatusCard
-          {...baseProps}
-          gauges={[{ label: 'Volume', level: 1.7 }]}
-        />,
-      )
+      render(<MesoStatusCard {...baseProps} gauges={[{ label: 'Volume', level: 1.7 }]} />)
       expect(screen.getByLabelText('Volume: 100%')).toBeInTheDocument()
     })
 
     it('guards a non-finite level, rendering 0% instead of NaN%', () => {
-      render(
-        <MesoStatusCard
-          {...baseProps}
-          gauges={[{ label: 'Intensity', level: Number.NaN }]}
-        />,
-      )
+      render(<MesoStatusCard {...baseProps} gauges={[{ label: 'Intensity', level: Number.NaN }]} />)
       expect(screen.getByLabelText('Intensity: 0%')).toBeInTheDocument()
       expect(screen.queryByLabelText('Intensity: NaN%')).not.toBeInTheDocument()
     })
@@ -136,7 +113,7 @@ describe('MesoStatusCard', () => {
             { label: 'Load', level: 0.3 },
             { label: 'Load', level: 0.6 },
           ]}
-        />,
+        />
       )
       expect(screen.getAllByTestId('meso-status-card-gauge')).toHaveLength(2)
     })
@@ -152,9 +129,7 @@ describe('MesoStatusCard', () => {
 
     it('omits the coaching box when not provided', () => {
       render(<MesoStatusCard {...baseProps} coaching={undefined} />)
-      expect(
-        screen.queryByTestId('meso-status-card-coaching'),
-      ).not.toBeInTheDocument()
+      expect(screen.queryByTestId('meso-status-card-coaching')).not.toBeInTheDocument()
     })
   })
 
@@ -167,9 +142,7 @@ describe('MesoStatusCard', () => {
 
     it('omits the next-target box when not provided', () => {
       render(<MesoStatusCard {...baseProps} nextTarget={undefined} />)
-      expect(
-        screen.queryByTestId('meso-status-card-next-target'),
-      ).not.toBeInTheDocument()
+      expect(screen.queryByTestId('meso-status-card-next-target')).not.toBeInTheDocument()
     })
   })
 
@@ -177,10 +150,7 @@ describe('MesoStatusCard', () => {
     it('exposes the card as an article with a descriptive label', () => {
       render(<MesoStatusCard {...baseProps} />)
       const article = screen.getByRole('article')
-      expect(article).toHaveAttribute(
-        'aria-label',
-        'Mesocycle status for Hypertrophy Block',
-      )
+      expect(article).toHaveAttribute('aria-label', 'Mesocycle status for Hypertrophy Block')
     })
 
     it('has no accessibility violations', async () => {
@@ -201,7 +171,7 @@ describe('MesoStatusCard', () => {
             coaching={undefined}
             nextTarget={undefined}
           />
-        </>,
+        </>
       )
       expect(await axe(container)).toHaveNoViolations()
     })

@@ -68,7 +68,7 @@ export const INDICATOR_PRECEDENCE: readonly ExerciseIndicatorKind[] = [
  * duplicates in `candidates` don't matter — {@link INDICATOR_PRECEDENCE} decides.
  */
 export function resolveIndicator(
-  candidates: ExerciseIndicatorKind[],
+  candidates: ExerciseIndicatorKind[]
 ): ExerciseIndicatorKind | undefined {
   return INDICATOR_PRECEDENCE.find((kind) => candidates.includes(kind))
 }

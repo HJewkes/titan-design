@@ -119,7 +119,10 @@ export function MesoCard({
   })
 
   const header = (
-    <View style={{ paddingHorizontal: 14, paddingTop: 12, paddingBottom: 10 }} testID="meso-card-body">
+    <View
+      style={{ paddingHorizontal: 14, paddingTop: 12, paddingBottom: 10 }}
+      testID="meso-card-body"
+    >
       <View className="flex-row items-center" style={{ gap: 8 }} testID="meso-card-header">
         <Text
           className="text-text-primary"
@@ -174,7 +177,10 @@ export function MesoCard({
   )
 
   return (
-    <Animated.View style={highlighted ? { transform: [{ scale: 1.0 }] } : undefined} testID="meso-card-wrapper">
+    <Animated.View
+      style={highlighted ? { transform: [{ scale: 1.0 }] } : undefined}
+      testID="meso-card-wrapper"
+    >
       <Card
         variant="outline"
         elevation={2}
@@ -182,9 +188,7 @@ export function MesoCard({
         className={className}
         style={[
           { borderColor: borderColor as unknown as string },
-          highlighted
-            ? { boxShadow: '0 0 12px 2px rgba(255,121,0,0.25)' }
-            : undefined,
+          highlighted ? { boxShadow: '0 0 12px 2px rgba(255,121,0,0.25)' } : undefined,
         ]}
         testID="meso-card"
         {...props}
@@ -211,10 +215,7 @@ export function MesoCard({
             {header}
           </Pressable>
         ) : (
-          <View
-            accessibilityLabel={`${name}, ${goal}, ${weekRange}`}
-            testID="meso-card-static"
-          >
+          <View accessibilityLabel={`${name}, ${goal}, ${weekRange}`} testID="meso-card-static">
             {header}
           </View>
         )}

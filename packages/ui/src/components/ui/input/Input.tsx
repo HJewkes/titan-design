@@ -50,7 +50,10 @@ const multilineSizeStyles: Record<InputSize, string> = {
   lg: 'min-h-[120px] px-4 py-3 text-lg',
 }
 
-const variantStyles: Record<InputVariant, { base: string; focus: string; hover: string; error: string }> = {
+const variantStyles: Record<
+  InputVariant,
+  { base: string; focus: string; hover: string; error: string }
+> = {
   outline: {
     base: 'border border-border-input rounded-md bg-transparent',
     hover: 'web:hover:border-border-input-hover',
@@ -146,11 +149,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
           isDisabled && 'opacity-40 cursor-not-allowed'
         )}
       >
-        {leftElement && (
-          <View className={cn('pl-3 pr-1', multiline && 'pt-3')}>
-            {leftElement}
-          </View>
-        )}
+        {leftElement && <View className={cn('pl-3 pr-1', multiline && 'pt-3')}>{leftElement}</View>}
 
         <TextInput
           ref={ref}
@@ -176,23 +175,13 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
         />
 
         {rightElement && (
-          <View className={cn('pl-1 pr-3', multiline && 'pt-3')}>
-            {rightElement}
-          </View>
+          <View className={cn('pl-1 pr-3', multiline && 'pt-3')}>{rightElement}</View>
         )}
       </View>
 
-      {showHelper && (
-        <Text className="mt-1.5 text-xs text-text-secondary">
-          {helperText}
-        </Text>
-      )}
+      {showHelper && <Text className="mt-1.5 text-xs text-text-secondary">{helperText}</Text>}
 
-      {showError && (
-        <Text className="mt-1.5 text-xs text-status-error">
-          {errorMessage}
-        </Text>
-      )}
+      {showError && <Text className="mt-1.5 text-xs text-status-error">{errorMessage}</Text>}
     </View>
   )
 })
@@ -206,11 +195,7 @@ export interface InputGroupProps {
  * Container for grouping related inputs.
  */
 export function InputGroup({ children, className }: InputGroupProps) {
-  return (
-    <View className={cn('flex-col gap-4', className)}>
-      {children}
-    </View>
-  )
+  return <View className={cn('flex-col gap-4', className)}>{children}</View>
 }
 
 export interface PasswordInputProps extends Omit<InputProps, 'secureTextEntry' | 'rightElement'> {
@@ -264,7 +249,7 @@ export const PasswordInput = forwardRef<TextInput, PasswordInputProps>(function 
           accessibilityLabel={isVisible ? 'Hide password' : 'Show password'}
           className="p-1 rounded active:opacity-70"
         >
-          {isVisible ? (hideIcon || defaultHideIcon) : (showIcon || defaultShowIcon)}
+          {isVisible ? hideIcon || defaultHideIcon : showIcon || defaultShowIcon}
         </Pressable>
       }
       {...props}

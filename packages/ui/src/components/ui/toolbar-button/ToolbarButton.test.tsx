@@ -11,12 +11,7 @@ describe('ToolbarButton', () => {
   })
 
   it('renders icon when provided', () => {
-    render(
-      <ToolbarButton
-        label="Settings"
-        icon={<span data-testid="icon">gear</span>}
-      />
-    )
+    render(<ToolbarButton label="Settings" icon={<span data-testid="icon">gear</span>} />)
     expect(screen.getByTestId('icon')).toBeInTheDocument()
   })
 
@@ -108,24 +103,14 @@ describe('ToolbarButton', () => {
 
   describe('menu content', () => {
     it('shows menu when pressed with menuContent', () => {
-      render(
-        <ToolbarButton
-          label="Options"
-          menuContent={<span>Menu item</span>}
-        />
-      )
+      render(<ToolbarButton label="Options" menuContent={<span>Menu item</span>} />)
 
       fireEvent.click(screen.getByRole('button', { name: 'Options' }))
       expect(screen.getByText('Menu item')).toBeInTheDocument()
     })
 
     it('hides menu when pressed again', () => {
-      render(
-        <ToolbarButton
-          label="Options"
-          menuContent={<span>Menu item</span>}
-        />
-      )
+      render(<ToolbarButton label="Options" menuContent={<span>Menu item</span>} />)
 
       const button = screen.getByRole('button', { name: 'Options' })
       fireEvent.click(button)

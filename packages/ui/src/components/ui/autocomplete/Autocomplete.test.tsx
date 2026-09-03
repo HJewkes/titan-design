@@ -102,26 +102,20 @@ describe('Autocomplete', () => {
   })
 
   it('shows clear button when value is selected', () => {
-    render(
-      <Autocomplete options={defaultOptions} value="1" isClearable />
-    )
+    render(<Autocomplete options={defaultOptions} value="1" isClearable />)
     expect(screen.getByLabelText('Clear selection')).toBeInTheDocument()
   })
 
   it('calls onChange with null when clear is pressed', () => {
     const onChange = vi.fn()
-    render(
-      <Autocomplete options={defaultOptions} value="1" onChange={onChange} isClearable />
-    )
+    render(<Autocomplete options={defaultOptions} value="1" onChange={onChange} isClearable />)
 
     fireEvent.click(screen.getByLabelText('Clear selection'))
     expect(onChange).toHaveBeenCalledWith(null)
   })
 
   it('does not show clear button when isClearable is false', () => {
-    render(
-      <Autocomplete options={defaultOptions} value="1" isClearable={false} />
-    )
+    render(<Autocomplete options={defaultOptions} value="1" isClearable={false} />)
     expect(screen.queryByLabelText('Clear selection')).not.toBeInTheDocument()
   })
 
@@ -144,13 +138,7 @@ describe('Autocomplete', () => {
     })
 
     it('shows custom minCharsText', () => {
-      render(
-        <Autocomplete
-          options={defaultOptions}
-          minChars={3}
-          minCharsText="Keep typing..."
-        />
-      )
+      render(<Autocomplete options={defaultOptions} minChars={3} minCharsText="Keep typing..." />)
       const input = screen.getByPlaceholderText('Search...')
 
       typeInInput(input, 'A')
@@ -185,9 +173,7 @@ describe('Autocomplete', () => {
     })
 
     it('does not show clear button when disabled', () => {
-      render(
-        <Autocomplete options={defaultOptions} value="1" isDisabled isClearable />
-      )
+      render(<Autocomplete options={defaultOptions} value="1" isDisabled isClearable />)
       expect(screen.queryByLabelText('Clear selection')).not.toBeInTheDocument()
     })
   })
@@ -225,9 +211,7 @@ describe('Autocomplete', () => {
 
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
-      const { container } = render(
-        <Autocomplete options={defaultOptions} label="Search" />
-      )
+      const { container } = render(<Autocomplete options={defaultOptions} label="Search" />)
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
@@ -238,9 +222,7 @@ describe('Autocomplete', () => {
     })
 
     it('clear button has accessible label', () => {
-      render(
-        <Autocomplete options={defaultOptions} value="1" isClearable />
-      )
+      render(<Autocomplete options={defaultOptions} value="1" isClearable />)
       expect(screen.getByLabelText('Clear selection')).toBeInTheDocument()
     })
   })

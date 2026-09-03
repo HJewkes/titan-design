@@ -100,7 +100,7 @@ function squarify(data: TreemapDatum[], w: number, h: number): Rect[] {
       out.push(
         vertical
           ? { x: rx, y: along, w: thickness, h: len, datum: r.datum }
-          : { x: along, y: ry, w: len, h: thickness, datum: r.datum },
+          : { x: along, y: ry, w: len, h: thickness, datum: r.datum }
       )
       along += len
     }
@@ -143,7 +143,12 @@ export function Treemap({
     const restValue = clean.slice(maxTiles - 1).reduce((s, d) => s + d.value, 0)
     tiles = [
       ...head,
-      { id: '__more__', value: restValue, color: '#3a3a3a', label: `+${clean.length - (maxTiles - 1)} more` },
+      {
+        id: '__more__',
+        value: restValue,
+        color: '#3a3a3a',
+        label: `+${clean.length - (maxTiles - 1)} more`,
+      },
     ]
   }
 

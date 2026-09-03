@@ -58,7 +58,7 @@ export function Stack({
         align && alignMap[align],
         justify && justifyMap[justify],
         wrap && 'flex-wrap',
-        className,
+        className
       )}
       {...props}
     >

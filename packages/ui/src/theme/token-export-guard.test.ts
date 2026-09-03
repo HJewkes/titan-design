@@ -82,9 +82,7 @@ describe('token-only subpath export (TP-16)', () => {
 
   it('reaches no react / react-native / nativewind module in its import graph', () => {
     const { bare } = collectGraph(TOKEN_ENTRY)
-    const leaked = bare.filter((s) =>
-      FORBIDDEN.some((f) => s === f || s.startsWith(`${f}/`)),
-    )
+    const leaked = bare.filter((s) => FORBIDDEN.some((f) => s === f || s.startsWith(`${f}/`)))
     expect(leaked).toEqual([])
   })
 

@@ -152,7 +152,10 @@ export function Gauge({
       ))}
 
       {/* Center readout — Metric visual language. */}
-      <View style={{ position: 'absolute', top: 0, left: 0, width: size, height: size }} className="items-center justify-center">
+      <View
+        style={{ position: 'absolute', top: 0, left: 0, width: size, height: size }}
+        className="items-center justify-center"
+      >
         <View className="flex-row items-baseline gap-0.5">
           <Text testID="gauge-value" className="text-3xl font-bold" style={{ color: displayColor }}>
             {formatValue(value)}

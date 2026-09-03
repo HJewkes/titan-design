@@ -101,7 +101,7 @@ function formatDate(date: string): string {
 function toPixels(
   points: CapacityBandDataPoint[],
   toX: (date: string) => number,
-  toY: (value: number) => number,
+  toY: (value: number) => number
 ): PixelPoint[] {
   return points
     .map((p) => ({ x: toX(p.date), yHigh: toY(p.bandHigh), yLow: toY(p.bandLow) }))
@@ -153,7 +153,7 @@ function buildEdges(pixels: PixelPoint[], key: 'yHigh' | 'yLow') {
 function collectValues(
   band: CapacityBandDataPoint[],
   workouts: WorkoutDot[],
-  projection?: CapacityBandProjection,
+  projection?: CapacityBandProjection
 ): number[] {
   const values: number[] = []
   band.forEach((p) => values.push(p.bandLow, p.bandHigh))
@@ -200,7 +200,7 @@ export function CapacityBandChart({
   const [reveal] = useState(() => new Animated.Value(0))
   const dotAnims = useMemo(
     () => Array.from({ length: workouts.length }, () => new Animated.Value(0)),
-    [workouts.length],
+    [workouts.length]
   )
 
   useEffect(() => {
@@ -218,7 +218,7 @@ export function CapacityBandChart({
         duration: 200,
         easing: Easing.out(Easing.ease),
         useNativeDriver: false,
-      }),
+      })
     )
     const animation = Animated.sequence([draw, Animated.stagger(200, pops)])
     animation.start()
@@ -244,10 +244,8 @@ export function CapacityBandChart({
     const domainMax = maxV + pad
     const vRange = domainMax - domainMin || 1
 
-    const toX = (date: string) =>
-      PADDING_LEFT + ((parseTime(date) - minT) / tRange) * plotWidth
-    const toY = (value: number) =>
-      PADDING_TOP + (1 - (value - domainMin) / vRange) * plotHeight
+    const toX = (date: string) => PADDING_LEFT + ((parseTime(date) - minT) / tRange) * plotWidth
+    const toY = (value: number) => PADDING_TOP + (1 - (value - domainMin) / vRange) * plotHeight
     return { toX, toY }
   }, [band, workouts, projection, plotWidth, plotHeight])
 
@@ -274,9 +272,7 @@ export function CapacityBandChart({
   const trainingPixels = projection
     ? toPixels([lastBandPoint, ...projection.withTraining], toX, toY)
     : []
-  const restPixels = projection
-    ? toPixels([lastBandPoint, ...projection.withRest], toX, toY)
-    : []
+  const restPixels = projection ? toPixels([lastBandPoint, ...projection.withRest], toX, toY) : []
 
   const labelStride = Math.max(1, Math.ceil(band.length / 5))
   const revealWidth = reveal.interpolate({ inputRange: [0, 1], outputRange: [0, width] })
@@ -303,7 +299,7 @@ export function CapacityBandChart({
     segments: ReturnType<typeof buildEdges>,
     color: string,
     dashed: boolean,
-    key: string,
+    key: string
   ) =>
     segments.map((seg, i) => (
       <View
@@ -341,107 +337,142 @@ export function CapacityBandChart({
         style={{ position: 'absolute', top: 0, left: 0, width, height }}
         accessibilityRole="image"
         accessibilityLabel={`Training capacity band chart. Current capacity: ${currentStatus(
-          workouts,
+          workouts
         )}. ${workouts.length} workout${workouts.length === 1 ? '' : 's'} shown.`}
         testID="capacity-band-chart"
       >
-      {/* Band + projection draw left-to-right via an animated clip. */}
-      <Animated.View
-        style={{ position: 'absolute', top: 0, left: 0, height, width: revealWidth, overflow: 'hidden' }}
-        accessibilityElementsHidden
-        importantForAccessibility="no-hide-descendants"
-        testID="capacity-band-chart-reveal"
-      >
-        <View style={{ width, height, position: 'relative' }}>
-          {projection && (
-            <View testID="capacity-band-chart-projection">
-              {renderColumns(buildColumns(trainingPixels, COLUMN_STEP), PROJECTION_FILL, 'capacity-band-chart-projection-fill')}
-              {renderColumns(buildColumns(restPixels, COLUMN_STEP), PROJECTION_FILL, 'capacity-band-chart-projection-fill')}
-              {renderEdges(buildEdges(trainingPixels, 'yHigh'), STATUS_SUCCESS, true, 'capacity-band-chart-projection-training')}
-              {renderEdges(buildEdges(trainingPixels, 'yLow'), STATUS_SUCCESS, true, 'capacity-band-chart-projection-training')}
-              {renderEdges(buildEdges(restPixels, 'yHigh'), STATUS_INFO, true, 'capacity-band-chart-projection-rest')}
-              {renderEdges(buildEdges(restPixels, 'yLow'), STATUS_INFO, true, 'capacity-band-chart-projection-rest')}
-              <Text
-                style={{
-                  position: 'absolute',
-                  left: trainingPixels[trainingPixels.length - 1]?.x + 2,
-                  top: trainingPixels[trainingPixels.length - 1]?.yHigh - 12,
-                  fontSize: 9,
-                  fontFamily: 'Inter, sans-serif',
-                  color: STATUS_SUCCESS,
-                }}
-                testID="capacity-band-chart-projection-training-label"
-              >
-                Training
-              </Text>
-              <Text
-                style={{
-                  position: 'absolute',
-                  left: restPixels[restPixels.length - 1]?.x + 2,
-                  top: restPixels[restPixels.length - 1]?.yLow + 2,
-                  fontSize: 9,
-                  fontFamily: 'Inter, sans-serif',
-                  color: STATUS_INFO,
-                }}
-                testID="capacity-band-chart-projection-rest-label"
-              >
-                Rest
-              </Text>
+        {/* Band + projection draw left-to-right via an animated clip. */}
+        <Animated.View
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            height,
+            width: revealWidth,
+            overflow: 'hidden',
+          }}
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
+          testID="capacity-band-chart-reveal"
+        >
+          <View style={{ width, height, position: 'relative' }}>
+            {projection && (
+              <View testID="capacity-band-chart-projection">
+                {renderColumns(
+                  buildColumns(trainingPixels, COLUMN_STEP),
+                  PROJECTION_FILL,
+                  'capacity-band-chart-projection-fill'
+                )}
+                {renderColumns(
+                  buildColumns(restPixels, COLUMN_STEP),
+                  PROJECTION_FILL,
+                  'capacity-band-chart-projection-fill'
+                )}
+                {renderEdges(
+                  buildEdges(trainingPixels, 'yHigh'),
+                  STATUS_SUCCESS,
+                  true,
+                  'capacity-band-chart-projection-training'
+                )}
+                {renderEdges(
+                  buildEdges(trainingPixels, 'yLow'),
+                  STATUS_SUCCESS,
+                  true,
+                  'capacity-band-chart-projection-training'
+                )}
+                {renderEdges(
+                  buildEdges(restPixels, 'yHigh'),
+                  STATUS_INFO,
+                  true,
+                  'capacity-band-chart-projection-rest'
+                )}
+                {renderEdges(
+                  buildEdges(restPixels, 'yLow'),
+                  STATUS_INFO,
+                  true,
+                  'capacity-band-chart-projection-rest'
+                )}
+                <Text
+                  style={{
+                    position: 'absolute',
+                    left: trainingPixels[trainingPixels.length - 1]?.x + 2,
+                    top: trainingPixels[trainingPixels.length - 1]?.yHigh - 12,
+                    fontSize: 9,
+                    fontFamily: 'Inter, sans-serif',
+                    color: STATUS_SUCCESS,
+                  }}
+                  testID="capacity-band-chart-projection-training-label"
+                >
+                  Training
+                </Text>
+                <Text
+                  style={{
+                    position: 'absolute',
+                    left: restPixels[restPixels.length - 1]?.x + 2,
+                    top: restPixels[restPixels.length - 1]?.yLow + 2,
+                    fontSize: 9,
+                    fontFamily: 'Inter, sans-serif',
+                    color: STATUS_INFO,
+                  }}
+                  testID="capacity-band-chart-projection-rest-label"
+                >
+                  Rest
+                </Text>
+              </View>
+            )}
+
+            <View testID="capacity-band-chart-band">
+              {renderColumns(columns, BAND_FILL, 'capacity-band-chart-band-cell')}
             </View>
-          )}
-
-          <View testID="capacity-band-chart-band">
-            {renderColumns(columns, BAND_FILL, 'capacity-band-chart-band-cell')}
+            {renderEdges(topEdge, BAND_EDGE, false, 'capacity-band-chart-edge-top')}
+            {renderEdges(bottomEdge, BAND_EDGE, false, 'capacity-band-chart-edge-bottom')}
           </View>
-          {renderEdges(topEdge, BAND_EDGE, false, 'capacity-band-chart-edge-top')}
-          {renderEdges(bottomEdge, BAND_EDGE, false, 'capacity-band-chart-edge-bottom')}
-        </View>
-      </Animated.View>
+        </Animated.View>
 
-      {/* Y axis conceptual label (no numbers). */}
-      <Text
-        className="text-text-tertiary"
-        style={{
-          position: 'absolute',
-          left: PADDING_LEFT / 2 - 14,
-          top: PADDING_TOP + plotHeight / 2 - 7,
-          width: 32,
-          textAlign: 'center',
-          fontSize: 9,
-          fontFamily: 'Inter, sans-serif',
-          transform: [{ rotate: '-90deg' }],
-        }}
-        accessibilityElementsHidden
-        importantForAccessibility="no-hide-descendants"
-        testID="capacity-band-chart-y-axis-label"
-      >
-        Load
-      </Text>
+        {/* Y axis conceptual label (no numbers). */}
+        <Text
+          className="text-text-tertiary"
+          style={{
+            position: 'absolute',
+            left: PADDING_LEFT / 2 - 14,
+            top: PADDING_TOP + plotHeight / 2 - 7,
+            width: 32,
+            textAlign: 'center',
+            fontSize: 9,
+            fontFamily: 'Inter, sans-serif',
+            transform: [{ rotate: '-90deg' }],
+          }}
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
+          testID="capacity-band-chart-y-axis-label"
+        >
+          Load
+        </Text>
 
-      {/* X axis date labels (subset to avoid overlap). */}
-      {band.map((point, i) => {
-        if (i % labelStride !== 0 && i !== band.length - 1) return null
-        return (
-          <Text
-            key={`x-${point.date}`}
-            className="text-text-tertiary"
-            style={{
-              position: 'absolute',
-              left: toX(point.date) - 14,
-              top: height - PADDING_BOTTOM + 2,
-              width: 28,
-              textAlign: 'center',
-              fontSize: 10,
-              fontFamily: 'Inter, sans-serif',
-            }}
-            accessibilityElementsHidden
-            importantForAccessibility="no-hide-descendants"
-            testID="capacity-band-chart-x-label"
-          >
-            {formatDate(point.date)}
-          </Text>
-        )
-      })}
+        {/* X axis date labels (subset to avoid overlap). */}
+        {band.map((point, i) => {
+          if (i % labelStride !== 0 && i !== band.length - 1) return null
+          return (
+            <Text
+              key={`x-${point.date}`}
+              className="text-text-tertiary"
+              style={{
+                position: 'absolute',
+                left: toX(point.date) - 14,
+                top: height - PADDING_BOTTOM + 2,
+                width: 28,
+                textAlign: 'center',
+                fontSize: 10,
+                fontFamily: 'Inter, sans-serif',
+              }}
+              accessibilityElementsHidden
+              importantForAccessibility="no-hide-descendants"
+              testID="capacity-band-chart-x-label"
+            >
+              {formatDate(point.date)}
+            </Text>
+          )
+        })}
       </View>
 
       {/* Workout dots — scale in after the band draws. */}

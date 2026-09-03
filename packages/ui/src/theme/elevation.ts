@@ -104,7 +104,7 @@ export const elevationSystem: Record<ElevationLevel, ElevationConfig> = {
   // Level 4: High elevation (overlays, popovers)
   [4]: {
     name: 'high',
-    colorAdjustment: 0.10,
+    colorAdjustment: 0.1,
     shadowIntensity: 'strong',
     shadowStyle: 'raised',
     description: 'High elevation (overlays, popovers, tooltips)',

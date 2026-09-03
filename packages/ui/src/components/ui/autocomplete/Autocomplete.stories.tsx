@@ -48,9 +48,7 @@ export const Default: Story = {
           onChange={setValue}
           placeholder="Search fruits..."
         />
-        <Text className="text-sm text-text-secondary mt-2">
-          Selected: {value || 'None'}
-        </Text>
+        <Text className="text-sm text-text-secondary mt-2">Selected: {value || 'None'}</Text>
       </View>
     )
   },
@@ -140,12 +138,7 @@ export const Disabled: Story = {
   render: function Render() {
     return (
       <View className="w-64">
-        <Autocomplete
-          options={fruitOptions}
-          value="apple"
-          label="Disabled field"
-          isDisabled
-        />
+        <Autocomplete options={fruitOptions} value="apple" label="Disabled field" isDisabled />
       </View>
     )
   },
@@ -175,7 +168,12 @@ export const DisabledOptions: Story = {
     const optionsWithDisabled: AutocompleteOption[] = [
       { value: 'free', label: 'Free Plan' },
       { value: 'pro', label: 'Pro Plan' },
-      { value: 'enterprise', label: 'Enterprise Plan', isDisabled: true, description: 'Contact sales' },
+      {
+        value: 'enterprise',
+        label: 'Enterprise Plan',
+        isDisabled: true,
+        description: 'Contact sales',
+      },
     ]
     return (
       <View className="w-64">
@@ -289,8 +287,8 @@ export const FormExample: Story = {
 
         <View className="pt-2 border-t border-hairline">
           <Text className="text-sm text-text-secondary">
-            Selected: {country ? `${countryOptions.find(c => c.value === country)?.label}` : '-'}
-            {city ? `, ${cityOptions[country!]?.find(c => c.value === city)?.label}` : ''}
+            Selected: {country ? `${countryOptions.find((c) => c.value === country)?.label}` : '-'}
+            {city ? `, ${cityOptions[country!]?.find((c) => c.value === city)?.label}` : ''}
           </Text>
         </View>
       </View>

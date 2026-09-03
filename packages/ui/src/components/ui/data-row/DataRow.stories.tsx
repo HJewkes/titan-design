@@ -40,7 +40,14 @@ export const WithCustomValue: Story = {
     <DataRow
       label="Status"
       value={
-        <View style={{ backgroundColor: '#22c55e', borderRadius: 9999, paddingHorizontal: 8, paddingVertical: 2 }}>
+        <View
+          style={{
+            backgroundColor: '#22c55e',
+            borderRadius: 9999,
+            paddingHorizontal: 8,
+            paddingVertical: 2,
+          }}
+        >
           <Text style={{ color: '#fff', fontSize: 12, fontWeight: '600' }}>Active</Text>
         </View>
       }

@@ -1,11 +1,4 @@
-export {
-  Typography,
-  Heading,
-  Paragraph,
-  Caption,
-  Label,
-  Overline,
-} from './Typography'
+export { Typography, Heading, Paragraph, Caption, Label, Overline } from './Typography'
 export type {
   TypographyProps,
   TypographyVariant,

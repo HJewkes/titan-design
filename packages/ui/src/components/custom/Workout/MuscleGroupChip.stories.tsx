@@ -82,13 +82,7 @@ export const Tappable: Story = {
   },
 }
 
-const allStatuses: VolumeStatus[] = [
-  'untrained',
-  'behind',
-  'ontrack',
-  'target',
-  'over',
-]
+const allStatuses: VolumeStatus[] = ['untrained', 'behind', 'ontrack', 'target', 'over']
 
 export const AllStatuses: Story = {
   render: () => (

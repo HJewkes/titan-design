@@ -202,9 +202,7 @@ describe('Tooltip', () => {
       hoverTrigger('Hover me')
       expect(screen.getByText('Portal tooltip')).toBeInTheDocument()
       expect(screen.getByTestId('tooltip-portal')).toBeInTheDocument()
-      expect(screen.getByTestId('tooltip-portal').parentElement).toBe(
-        document.body
-      )
+      expect(screen.getByTestId('tooltip-portal').parentElement).toBe(document.body)
     })
 
     it('applies fixed positioning and z-index to portal tooltip', () => {

@@ -133,12 +133,7 @@ export interface AvatarGroupProps {
 /**
  * Group of avatars with stacking effect.
  */
-export function AvatarGroup({
-  children,
-  max,
-  size = 'md',
-  className,
-}: AvatarGroupProps) {
+export function AvatarGroup({ children, max, size = 'md', className }: AvatarGroupProps) {
   const childArray = React.Children.toArray(children)
   const visibleChildren = max ? childArray.slice(0, max) : childArray
   const remainingCount = max ? Math.max(0, childArray.length - max) : 0
@@ -148,10 +143,7 @@ export function AvatarGroup({
       {visibleChildren.map((child, index) => (
         <View
           key={index}
-          className={cn(
-            'border-2 border-surface-base rounded-full',
-            index > 0 && '-ml-2'
-          )}
+          className={cn('border-2 border-surface-base rounded-full', index > 0 && '-ml-2')}
         >
           {React.isValidElement(child)
             ? React.cloneElement(child as React.ReactElement<any>, { size })

@@ -3,7 +3,14 @@ import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 
 export type ChipVariant = 'solid' | 'subtle' | 'outline'
-export type ChipColor = 'default' | 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info'
+export type ChipColor =
+  | 'default'
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'error'
+  | 'warning'
+  | 'info'
 export type ChipSize = 'sm' | 'md' | 'lg'
 
 export interface ChipProps extends ViewProps {
@@ -30,7 +37,8 @@ const colorStyles: Record<ChipColor, Record<ChipVariant, string>> = {
   default: {
     solid: 'bg-neutral-600 text-white',
     subtle: 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-200',
-    outline: 'border border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-200',
+    outline:
+      'border border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-200',
   },
   primary: {
     solid: 'bg-brand-primary text-white',
@@ -97,9 +105,7 @@ export function Chip({
   const content = (
     <>
       {leftElement && <View className="mr-1.5">{leftElement}</View>}
-      <Text className={cn('font-medium', sizes.text)}>
-        {children}
-      </Text>
+      <Text className={cn('font-medium', sizes.text)}>{children}</Text>
       {onDelete && (
         <Pressable
           onPress={(e) => {

@@ -23,7 +23,7 @@ describe('PrHistoryModal', () => {
       render(<PrHistoryModal {...baseProps} />)
       expect(screen.getByTestId('pr-history-modal')).toBeInTheDocument()
       expect(screen.getByTestId('pr-history-modal-title')).toHaveTextContent(
-        'Bench Press PR history',
+        'Bench Press PR history'
       )
     })
 
@@ -40,23 +40,14 @@ describe('PrHistoryModal', () => {
           visible
           records={records}
           onClose={vi.fn()}
-        />,
+        />
       )
       expect(screen.getByTestId('pr-history-modal')).toBeInTheDocument()
     })
 
     it('falls back to exerciseId when no name is given', () => {
-      render(
-        <PrHistoryModal
-          exerciseId="deadlift"
-          isOpen
-          records={records}
-          onClose={vi.fn()}
-        />,
-      )
-      expect(screen.getByTestId('pr-history-modal-title')).toHaveTextContent(
-        'deadlift PR history',
-      )
+      render(<PrHistoryModal exerciseId="deadlift" isOpen records={records} onClose={vi.fn()} />)
+      expect(screen.getByTestId('pr-history-modal-title')).toHaveTextContent('deadlift PR history')
     })
 
     it('renders a drag handle', () => {
@@ -68,22 +59,14 @@ describe('PrHistoryModal', () => {
   describe('records', () => {
     it('renders a row per record with type, value, and date', () => {
       render(<PrHistoryModal {...baseProps} />)
-      expect(screen.getByTestId('pr-history-modal-record-0-type')).toHaveTextContent(
-        'e1RM',
-      )
-      expect(screen.getByTestId('pr-history-modal-record-0-value')).toHaveTextContent(
-        '245 lbs',
-      )
-      expect(screen.getByTestId('pr-history-modal-record-0-date')).toHaveTextContent(
-        'Mar 14',
-      )
+      expect(screen.getByTestId('pr-history-modal-record-0-type')).toHaveTextContent('e1RM')
+      expect(screen.getByTestId('pr-history-modal-record-0-value')).toHaveTextContent('245 lbs')
+      expect(screen.getByTestId('pr-history-modal-record-0-date')).toHaveTextContent('Mar 14')
     })
 
     it('renders pre-formatted string values verbatim', () => {
       render(<PrHistoryModal {...baseProps} />)
-      expect(screen.getByTestId('pr-history-modal-record-1-value')).toHaveTextContent(
-        '8 @ 185 lbs',
-      )
+      expect(screen.getByTestId('pr-history-modal-record-1-value')).toHaveTextContent('8 @ 185 lbs')
     })
 
     it('renders one row per supplied record', () => {
@@ -91,27 +74,21 @@ describe('PrHistoryModal', () => {
       expect(screen.getByTestId('pr-history-modal-record-0')).toBeInTheDocument()
       expect(screen.getByTestId('pr-history-modal-record-1')).toBeInTheDocument()
       expect(screen.getByTestId('pr-history-modal-record-2')).toBeInTheDocument()
-      expect(
-        screen.queryByTestId('pr-history-modal-record-3'),
-      ).not.toBeInTheDocument()
+      expect(screen.queryByTestId('pr-history-modal-record-3')).not.toBeInTheDocument()
     })
 
     it('marks recent records in their accessible label', () => {
       render(<PrHistoryModal {...baseProps} />)
       expect(
-        screen.getByLabelText('e1RM personal record: 245 lbs, Mar 14, recent'),
+        screen.getByLabelText('e1RM personal record: 245 lbs, Mar 14, recent')
       ).toBeInTheDocument()
-      expect(
-        screen.getByLabelText('Reps personal record: 8 @ 185 lbs, Feb 28'),
-      ).toBeInTheDocument()
+      expect(screen.getByLabelText('Reps personal record: 8 @ 185 lbs, Feb 28')).toBeInTheDocument()
     })
 
     it('shows an empty state when there are no records', () => {
       render(<PrHistoryModal {...baseProps} records={[]} />)
       expect(screen.getByTestId('pr-history-modal-empty')).toBeInTheDocument()
-      expect(
-        screen.queryByTestId('pr-history-modal-record-0'),
-      ).not.toBeInTheDocument()
+      expect(screen.queryByTestId('pr-history-modal-record-0')).not.toBeInTheDocument()
     })
   })
 
@@ -153,7 +130,7 @@ describe('PrHistoryModal', () => {
             { type: 'weight', value: 365, unit: 'lbs', date: 'Last week' },
             { type: 'volume', value: '18,200 lbs', date: 'Mar 1' },
           ]}
-        />,
+        />
       )
       expect(await axe(container)).toHaveNoViolations()
     })

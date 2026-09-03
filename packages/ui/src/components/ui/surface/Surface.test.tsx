@@ -262,7 +262,9 @@ describe('Surface on-surface colour context', () => {
 
   it('resolves dark on-surface colours even with no enclosing Surface', () => {
     render(<Probe role="primary" label="p" />)
-    expect(screen.getByTestId('p')).toHaveStyle({ color: getSemanticColors('dark')['text-primary'] })
+    expect(screen.getByTestId('p')).toHaveStyle({
+      color: getSemanticColors('dark')['text-primary'],
+    })
   })
 
   it('flows an overridden theme to descendant text', () => {

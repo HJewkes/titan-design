@@ -124,15 +124,15 @@ export const WithCloseButton: Story = {
         </Button>
       </PopoverTrigger>
       <PopoverContent>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <View
+          style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
+        >
           <Text className="text-text-primary text-sm font-semibold">Settings</Text>
           <PopoverCloseButton>
             <Text className="text-text-secondary text-lg">&#10005;</Text>
           </PopoverCloseButton>
         </View>
-        <Text className="text-text-secondary text-sm mt-2">
-          Configure your preferences here.
-        </Text>
+        <Text className="text-text-secondary text-sm mt-2">Configure your preferences here.</Text>
       </PopoverContent>
     </Popover>
   ),
@@ -149,9 +149,7 @@ export const WithFormContent: Story = {
       <PopoverContent>
         <View style={{ gap: 12 }}>
           <Text className="text-text-primary text-sm font-semibold">Edit Display Name</Text>
-          <Text className="text-text-secondary text-xs">
-            Enter your new display name below.
-          </Text>
+          <Text className="text-text-secondary text-xs">Enter your new display name below.</Text>
           <View className="bg-surface-input border border-hairline rounded-md px-3 py-2">
             <Text className="text-text-secondary text-sm">John Doe</Text>
           </View>

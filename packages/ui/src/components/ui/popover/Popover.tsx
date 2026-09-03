@@ -68,12 +68,15 @@ export function Popover({
   const isOpen = controlledIsOpen ?? internalIsOpen
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const setIsOpen = useCallback((open: boolean) => {
-    if (controlledIsOpen === undefined) {
-      setInternalIsOpen(open)
-    }
-    onOpenChange?.(open)
-  }, [controlledIsOpen, onOpenChange])
+  const setIsOpen = useCallback(
+    (open: boolean) => {
+      if (controlledIsOpen === undefined) {
+        setInternalIsOpen(open)
+      }
+      onOpenChange?.(open)
+    },
+    [controlledIsOpen, onOpenChange]
+  )
 
   const handleHoverIn = useCallback(() => {
     if (triggerMode !== 'hover') return

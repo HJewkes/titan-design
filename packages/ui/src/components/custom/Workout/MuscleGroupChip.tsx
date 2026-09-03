@@ -30,9 +30,7 @@ export function MuscleGroupChip({
   className,
   ...props
 }: MuscleGroupChipProps) {
-  const dotColor = volumeStatus
-    ? dotColorMap[volumeStatus]
-    : greyRamp[900]
+  const dotColor = volumeStatus ? dotColorMap[volumeStatus] : greyRamp[900]
 
   const statusLabel = volumeStatus ?? 'no status'
 

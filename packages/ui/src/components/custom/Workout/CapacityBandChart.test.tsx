@@ -2,11 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { CapacityBandChart } from './CapacityBandChart'
-import type {
-  CapacityBandDataPoint,
-  CapacityBandProjection,
-  WorkoutDot,
-} from './CapacityBandChart'
+import type { CapacityBandDataPoint, CapacityBandProjection, WorkoutDot } from './CapacityBandChart'
 
 const band: CapacityBandDataPoint[] = [
   { date: '2026-06-01', bandLow: 40, bandHigh: 70 },
@@ -44,50 +40,36 @@ describe('CapacityBandChart', () => {
     it('renders the shaded band fill as column cells', () => {
       render(<CapacityBandChart {...baseProps} />)
       expect(screen.getByTestId('capacity-band-chart-band')).toBeInTheDocument()
-      expect(
-        screen.getAllByTestId('capacity-band-chart-band-cell').length,
-      ).toBeGreaterThan(0)
+      expect(screen.getAllByTestId('capacity-band-chart-band-cell').length).toBeGreaterThan(0)
     })
 
     it('renders the top and bottom band edge lines', () => {
       render(<CapacityBandChart {...baseProps} />)
-      expect(
-        screen.getAllByTestId('capacity-band-chart-edge-top').length,
-      ).toBe(band.length - 1)
-      expect(
-        screen.getAllByTestId('capacity-band-chart-edge-bottom').length,
-      ).toBe(band.length - 1)
+      expect(screen.getAllByTestId('capacity-band-chart-edge-top').length).toBe(band.length - 1)
+      expect(screen.getAllByTestId('capacity-band-chart-edge-bottom').length).toBe(band.length - 1)
     })
 
     it('renders a conceptual Load axis label with no numbers', () => {
       render(<CapacityBandChart {...baseProps} />)
-      expect(
-        screen.getByTestId('capacity-band-chart-y-axis-label'),
-      ).toHaveTextContent('Load')
+      expect(screen.getByTestId('capacity-band-chart-y-axis-label')).toHaveTextContent('Load')
     })
 
     it('renders x-axis date labels', () => {
       render(<CapacityBandChart {...baseProps} />)
-      expect(
-        screen.getAllByTestId('capacity-band-chart-x-label').length,
-      ).toBeGreaterThan(0)
+      expect(screen.getAllByTestId('capacity-band-chart-x-label').length).toBeGreaterThan(0)
     })
 
     it('renders the empty state when band has no data', () => {
       render(<CapacityBandChart band={[]} workouts={[]} width={320} height={200} />)
       expect(screen.getByTestId('capacity-band-chart-empty')).toBeInTheDocument()
-      expect(
-        screen.queryByTestId('capacity-band-chart-band'),
-      ).not.toBeInTheDocument()
+      expect(screen.queryByTestId('capacity-band-chart-band')).not.toBeInTheDocument()
     })
   })
 
   describe('workout dots', () => {
     it('renders one dot per workout', () => {
       render(<CapacityBandChart {...baseProps} />)
-      expect(screen.getAllByTestId('capacity-band-chart-dot')).toHaveLength(
-        workouts.length,
-      )
+      expect(screen.getAllByTestId('capacity-band-chart-dot')).toHaveLength(workouts.length)
     })
 
     it('colors dots by status relative to the band', () => {
@@ -125,41 +107,36 @@ describe('CapacityBandChart', () => {
 
     it('exposes dots as labeled buttons when interactive', () => {
       render(<CapacityBandChart {...baseProps} onWorkoutPress={vi.fn()} />)
-      expect(
-        screen.getByLabelText('Workout on 6/6, load 80, above range'),
-      ).toHaveAttribute('role', 'button')
+      expect(screen.getByLabelText('Workout on 6/6, load 80, above range')).toHaveAttribute(
+        'role',
+        'button'
+      )
     })
   })
 
   describe('projection', () => {
     it('renders dashed diverging training and rest edges when provided', () => {
       render(<CapacityBandChart {...baseProps} projection={projection} />)
+      expect(screen.getByTestId('capacity-band-chart-projection')).toBeInTheDocument()
       expect(
-        screen.getByTestId('capacity-band-chart-projection'),
-      ).toBeInTheDocument()
-      expect(
-        screen.getAllByTestId('capacity-band-chart-projection-training').length,
+        screen.getAllByTestId('capacity-band-chart-projection-training').length
       ).toBeGreaterThan(0)
-      expect(
-        screen.getAllByTestId('capacity-band-chart-projection-rest').length,
-      ).toBeGreaterThan(0)
+      expect(screen.getAllByTestId('capacity-band-chart-projection-rest').length).toBeGreaterThan(0)
     })
 
     it('labels the training and rest projections', () => {
       render(<CapacityBandChart {...baseProps} projection={projection} />)
-      expect(
-        screen.getByTestId('capacity-band-chart-projection-training-label'),
-      ).toHaveTextContent('Training')
-      expect(
-        screen.getByTestId('capacity-band-chart-projection-rest-label'),
-      ).toHaveTextContent('Rest')
+      expect(screen.getByTestId('capacity-band-chart-projection-training-label')).toHaveTextContent(
+        'Training'
+      )
+      expect(screen.getByTestId('capacity-band-chart-projection-rest-label')).toHaveTextContent(
+        'Rest'
+      )
     })
 
     it('omits the projection layer when not provided', () => {
       render(<CapacityBandChart {...baseProps} />)
-      expect(
-        screen.queryByTestId('capacity-band-chart-projection'),
-      ).not.toBeInTheDocument()
+      expect(screen.queryByTestId('capacity-band-chart-projection')).not.toBeInTheDocument()
     })
   })
 
@@ -170,7 +147,7 @@ describe('CapacityBandChart', () => {
       expect(chart).toHaveAttribute('role', 'img')
       expect(chart).toHaveAttribute(
         'aria-label',
-        'Training capacity band chart. Current capacity: below range. 3 workouts shown.',
+        'Training capacity band chart. Current capacity: below range. 3 workouts shown.'
       )
     })
 
@@ -181,11 +158,7 @@ describe('CapacityBandChart', () => {
 
     it('has no accessibility violations with all features enabled', async () => {
       const { container } = render(
-        <CapacityBandChart
-          {...baseProps}
-          projection={projection}
-          onWorkoutPress={vi.fn()}
-        />,
+        <CapacityBandChart {...baseProps} projection={projection} onWorkoutPress={vi.fn()} />
       )
       expect(await axe(container)).toHaveNoViolations()
     })

@@ -94,14 +94,7 @@ describe('Select', () => {
 
     it('calls onChangeMulti when toggling options', () => {
       const onChangeMulti = vi.fn()
-      render(
-        <Select
-          options={defaultOptions}
-          isMulti
-          values={[]}
-          onChangeMulti={onChangeMulti}
-        />
-      )
+      render(<Select options={defaultOptions} isMulti values={[]} onChangeMulti={onChangeMulti} />)
 
       fireEvent.click(screen.getByRole('combobox'))
       fireEvent.click(screen.getByText('Option 1'))
@@ -163,9 +156,7 @@ describe('Select', () => {
 
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
-      const { container } = render(
-        <Select options={defaultOptions} value="1" />
-      )
+      const { container } = render(<Select options={defaultOptions} value="1" />)
       const results = await axe(container, {
         rules: {
           'aria-input-field-name': { enabled: false },

@@ -194,8 +194,8 @@ export const ScrollableContent: Story = {
                 <Text className="text-text-primary font-semibold mb-1">Section {i + 1}</Text>
                 <Text className="text-text-secondary text-sm">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-                  incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                  nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                  incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                  exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
                 </Text>
               </View>
             ))}

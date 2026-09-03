@@ -34,15 +34,17 @@ const mul = (M: number[], v: number[]) => [
 // Machado-2009 dichromacy simulation matrices, severity 1.0. The palette solver
 // optimizes worst-case deuteranopia/protanopia (red-green is the binding case) —
 // match that 2-way metric here, not a stricter 3-way including tritan.
-const DEUT = [0.367322, 0.860646, -0.227968, 0.280085, 0.672501, 0.047413, -0.01182, 0.04294, 0.968881]
-const PROT = [0.152286, 1.052583, -0.204868, 0.114503, 0.786281, 0.099216, -0.003882, -0.048116, 1.051998]
+const DEUT = [
+  0.367322, 0.860646, -0.227968, 0.280085, 0.672501, 0.047413, -0.01182, 0.04294, 0.968881,
+]
+const PROT = [
+  0.152286, 1.052583, -0.204868, 0.114503, 0.786281, 0.099216, -0.003882, -0.048116, 1.051998,
+]
 const dist = (a: number[], b: number[]) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]) * 100
 // worst-case perceived ΔE across deuteranopia and protanopia
 const cvdDelta = (x: string, y: string) => {
   const sim = (M: number[], hex: string) => toOklab(mul(M, hexToRgb(hex).map(lin)))
-  return Math.min(
-    ...[DEUT, PROT].map((M) => dist(sim(M, x), sim(M, y))),
-  )
+  return Math.min(...[DEUT, PROT].map((M) => dist(sim(M, x), sim(M, y))))
 }
 
 const HEX6 = /^#[0-9A-F]{6}$/
@@ -115,7 +117,10 @@ describe('categoricalPalette', () => {
           worst = Math.min(worst, cvdDelta(colors[i], colors[j]))
         }
       }
-      expect(worst, `${variant} min CVD deltaE (first ${CATEGORICAL_CVD_SAFE_MAX})`).toBeGreaterThanOrEqual(8)
+      expect(
+        worst,
+        `${variant} min CVD deltaE (first ${CATEGORICAL_CVD_SAFE_MAX})`
+      ).toBeGreaterThanOrEqual(8)
     }
   })
 
@@ -212,7 +217,10 @@ describe('sequentialEffort', () => {
 
   it('keeps adjacent stops distinguishable', () => {
     for (let i = 0; i < sequentialEffort.length - 1; i++) {
-      expect(cvdDelta(sequentialEffort[i], sequentialEffort[i + 1]), `stop ${i}->${i + 1}`).toBeGreaterThanOrEqual(4.5)
+      expect(
+        cvdDelta(sequentialEffort[i], sequentialEffort[i + 1]),
+        `stop ${i}->${i + 1}`
+      ).toBeGreaterThanOrEqual(4.5)
     }
   })
 

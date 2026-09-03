@@ -108,11 +108,7 @@ export function CollapseContent({ children, className }: CollapseContentProps) {
 
   if (!isOpen) return null
 
-  return (
-    <View className={cn('overflow-hidden', className)}>
-      {children}
-    </View>
-  )
+  return <View className={cn('overflow-hidden', className)}>{children}</View>
 }
 
 // Accordion component
@@ -267,9 +263,5 @@ export interface AccordionPanelProps {
 export function AccordionPanel({ isOpen = false, children, className }: AccordionPanelProps) {
   if (!isOpen) return null
 
-  return (
-    <View className={cn('pb-4 px-1', className)}>
-      {children}
-    </View>
-  )
+  return <View className={cn('pb-4 px-1', className)}>{children}</View>
 }

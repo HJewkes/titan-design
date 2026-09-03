@@ -42,12 +42,7 @@ describe('SectionHeader', () => {
   })
 
   it('renders trailing action when provided', () => {
-    render(
-      <SectionHeader
-        title="Title"
-        trailing={<Text>View All</Text>}
-      />
-    )
+    render(<SectionHeader title="Title" trailing={<Text>View All</Text>} />)
     expect(screen.getByText('View All')).toBeInTheDocument()
   })
 

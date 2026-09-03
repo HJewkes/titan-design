@@ -69,7 +69,7 @@ describe('token codegen completeness (config.ts vs global.css)', () => {
 
     it(`${mode}: config emits no var absent from global.css`, () => {
       const extra = Object.keys(cfg).filter(
-        (name) => !globalVars.has(name) && !CODEGEN_ALLOWLIST.has(name),
+        (name) => !globalVars.has(name) && !CODEGEN_ALLOWLIST.has(name)
       )
       expect(extra, 'config.ts vars not present in global.css :root').toEqual([])
     })

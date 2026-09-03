@@ -26,9 +26,7 @@ describe('PrBadge', () => {
 
   it('sets accessibility label with resolved label', () => {
     render(<PrBadge animate={false} />)
-    expect(
-      screen.getByLabelText('Personal record: PR e1RM'),
-    ).toBeInTheDocument()
+    expect(screen.getByLabelText('Personal record: PR e1RM')).toBeInTheDocument()
   })
 
   describe('type prop', () => {
@@ -66,9 +64,7 @@ describe('PrBadge', () => {
 
     it('sets accessibility label with custom label', () => {
       render(<PrBadge label="PR 5RM" animate={false} />)
-      expect(
-        screen.getByLabelText('Personal record: PR 5RM'),
-      ).toBeInTheDocument()
+      expect(screen.getByLabelText('Personal record: PR 5RM')).toBeInTheDocument()
     })
   })
 
@@ -89,9 +85,7 @@ describe('PrBadge', () => {
 
     it('has correct accessibility label in compact mode', () => {
       render(<PrBadge compact animate={false} />)
-      expect(
-        screen.getByLabelText('Personal record: PR e1RM'),
-      ).toBeInTheDocument()
+      expect(screen.getByLabelText('Personal record: PR e1RM')).toBeInTheDocument()
     })
   })
 

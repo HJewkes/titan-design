@@ -1,12 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
-import {
-  Skeleton,
-  SkeletonText,
-  SkeletonCircle,
-  SkeletonCard,
-  SkeletonListItem,
-} from './Skeleton'
+import { Skeleton, SkeletonText, SkeletonCircle, SkeletonCard, SkeletonListItem } from './Skeleton'
 
 const meta: Meta<typeof Skeleton> = {
   title: 'Components/Atoms/Skeleton',
@@ -64,9 +58,7 @@ export const RectVariant: Story = {
 }
 
 export const RoundedVariant: Story = {
-  render: () => (
-    <Skeleton variant="rounded" width={300} height={200} />
-  ),
+  render: () => <Skeleton variant="rounded" width={300} height={200} />,
 }
 
 export const TextBlock: Story = {

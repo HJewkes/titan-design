@@ -78,11 +78,7 @@ export function RadioGroup({
         accessibilityLabel={label}
         {...props}
       >
-        {label && (
-          <Text className="text-sm font-medium text-text-primary mb-2">
-            {label}
-          </Text>
-        )}
+        {label && <Text className="text-sm font-medium text-text-primary mb-2">{label}</Text>}
         <View
           className={cn(
             orientation === 'horizontal' ? 'flex-row flex-wrap' : 'flex-col',
@@ -117,9 +113,18 @@ const sizeConfig: Record<RadioSize, { outer: string; inner: string; text: string
 }
 
 const colorStyles: Record<RadioColor, { checked: string; unchecked: string }> = {
-  primary: { checked: 'border-brand-primary bg-brand-primary', unchecked: 'border-hairline-strong' },
-  secondary: { checked: 'border-brand-secondary bg-brand-secondary', unchecked: 'border-hairline-strong' },
-  success: { checked: 'border-status-success bg-status-success', unchecked: 'border-hairline-strong' },
+  primary: {
+    checked: 'border-brand-primary bg-brand-primary',
+    unchecked: 'border-hairline-strong',
+  },
+  secondary: {
+    checked: 'border-brand-secondary bg-brand-secondary',
+    unchecked: 'border-hairline-strong',
+  },
+  success: {
+    checked: 'border-status-success bg-status-success',
+    unchecked: 'border-hairline-strong',
+  },
   error: { checked: 'border-status-error bg-status-error', unchecked: 'border-hairline-strong' },
 }
 
@@ -144,7 +149,13 @@ export function Radio({
     throw new Error('Radio must be used within a RadioGroup')
   }
 
-  const { value: selectedValue, onChange, isDisabled: groupDisabled, size: groupSize, color: groupColor } = context
+  const {
+    value: selectedValue,
+    onChange,
+    isDisabled: groupDisabled,
+    size: groupSize,
+    color: groupColor,
+  } = context
 
   const isDisabled = radioDisabled ?? groupDisabled ?? false
   const size = radioSize ?? groupSize ?? 'md'
@@ -166,11 +177,7 @@ export function Radio({
       disabled={isDisabled}
       accessibilityRole="radio"
       accessibilityState={{ checked: isChecked, disabled: isDisabled }}
-      className={cn(
-        'flex-row items-center',
-        isDisabled && 'opacity-50',
-        className
-      )}
+      className={cn('flex-row items-center', isDisabled && 'opacity-50', className)}
       {...props}
     >
       {/* Radio circle */}
@@ -184,17 +191,11 @@ export function Radio({
         )}
       >
         {/* Inner dot */}
-        {isChecked && (
-          <View className={cn('rounded-full bg-white', inner)} />
-        )}
+        {isChecked && <View className={cn('rounded-full bg-white', inner)} />}
       </View>
 
       {/* Label */}
-      {children && (
-        <Text className={cn('ml-2 text-text-primary', text)}>
-          {children}
-        </Text>
-      )}
+      {children && <Text className={cn('ml-2 text-text-primary', text)}>{children}</Text>}
     </Pressable>
   )
 }

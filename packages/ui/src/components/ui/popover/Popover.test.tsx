@@ -1,12 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverCloseButton,
-} from './Popover'
+import { Popover, PopoverTrigger, PopoverContent, PopoverCloseButton } from './Popover'
 
 describe('Popover', () => {
   it('renders trigger element', () => {

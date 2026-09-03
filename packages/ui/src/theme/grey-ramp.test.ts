@@ -11,7 +11,6 @@ import { execFileSync } from 'node:child_process'
 import { join } from 'node:path'
 import { greyRamp, SURFACE_PLANE_STEPS, primitiveRamps } from './tokens/primitives'
 
-
 // ── colour math (CIELAB D65 + WCAG relative luminance) ──────────────────────
 const hex2rgb = (h: string): [number, number, number] => {
   const n = parseInt(h.slice(1), 16)
@@ -42,9 +41,15 @@ const warmth = (hex: string) => {
 
 /** Machado-2009 dichromacy, severity 1.0. */
 const CVD = {
-  deuteranopia: [0.367322, 0.860646, -0.227968, 0.280085, 0.672501, 0.047413, -0.01182, 0.04294, 0.968881],
-  protanopia: [0.152286, 1.052583, -0.204868, 0.114503, 0.786281, 0.099216, -0.003882, -0.048116, 1.051998],
-  tritanopia: [1.255528, -0.076749, -0.178779, -0.078411, 0.930809, 0.147602, 0.004733, 0.691367, 0.3039],
+  deuteranopia: [
+    0.367322, 0.860646, -0.227968, 0.280085, 0.672501, 0.047413, -0.01182, 0.04294, 0.968881,
+  ],
+  protanopia: [
+    0.152286, 1.052583, -0.204868, 0.114503, 0.786281, 0.099216, -0.003882, -0.048116, 1.051998,
+  ],
+  tritanopia: [
+    1.255528, -0.076749, -0.178779, -0.078411, 0.930809, 0.147602, 0.004733, 0.691367, 0.3039,
+  ],
 } as const
 function simulateCvd(m: readonly number[], hex: string): string {
   const [r, g, b] = hex2rgb(hex)
@@ -56,13 +61,19 @@ function simulateCvd(m: readonly number[], hex: string): string {
   return (
     '#' +
     out
-      .map((v) => Math.round(Math.max(0, Math.min(255, v))).toString(16).padStart(2, '0'))
+      .map((v) =>
+        Math.round(Math.max(0, Math.min(255, v)))
+          .toString(16)
+          .padStart(2, '0')
+      )
       .join('')
       .toUpperCase()
   )
 }
 
-const STEPS = Object.keys(greyRamp).map(Number).sort((a, b) => a - b)
+const STEPS = Object.keys(greyRamp)
+  .map(Number)
+  .sort((a, b) => a - b)
 const hexAt = (step: number) => greyRamp[step as keyof typeof greyRamp]
 
 describe('greyRamp — shape', () => {
@@ -82,7 +93,9 @@ describe('greyRamp — shape', () => {
   it('has no two steps a reader could not tell apart', () => {
     for (let i = 1; i < STEPS.length; i++) {
       const d = dE76(hexAt(STEPS[i - 1]), hexAt(STEPS[i]))
-      expect(d, `steps ${STEPS[i - 1]}/${STEPS[i]} collapse at ΔE ${d.toFixed(2)}`).toBeGreaterThan(1.5)
+      expect(d, `steps ${STEPS[i - 1]}/${STEPS[i]} collapse at ΔE ${d.toFixed(2)}`).toBeGreaterThan(
+        1.5
+      )
     }
   })
 
@@ -150,7 +163,10 @@ describe('greyRamp — accessibility gate (TD-07.15)', () => {
       // Adjacent steps must stay separable AFTER simulation, or the depth
       // ordering of the surface stack stops reading for those viewers.
       for (let i = 1; i < STEPS.length; i++) {
-        const d = dE76(simulateCvd(matrix, hexAt(STEPS[i - 1])), simulateCvd(matrix, hexAt(STEPS[i])))
+        const d = dE76(
+          simulateCvd(matrix, hexAt(STEPS[i - 1])),
+          simulateCvd(matrix, hexAt(STEPS[i]))
+        )
         expect(d, `${mode}: grey-${STEPS[i - 1]}/${STEPS[i]} merge`).toBeGreaterThan(1.5)
       }
     }

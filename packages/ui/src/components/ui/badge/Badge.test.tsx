@@ -33,7 +33,15 @@ describe('Badge', () => {
   })
 
   it('renders with all color options', () => {
-    const colors = ['default', 'primary', 'secondary', 'success', 'error', 'warning', 'info'] as const
+    const colors = [
+      'default',
+      'primary',
+      'secondary',
+      'success',
+      'error',
+      'warning',
+      'info',
+    ] as const
     colors.forEach((color) => {
       const { unmount } = render(<Badge color={color}>Test</Badge>)
       expect(screen.getByText('Test')).toBeInTheDocument()
@@ -74,12 +82,20 @@ describe('Badge', () => {
 
   describe('dot indicator', () => {
     it('renders dot when dot prop is true', () => {
-      const { container } = render(<Badge dot color="success">Active</Badge>)
+      const { container } = render(
+        <Badge dot color="success">
+          Active
+        </Badge>
+      )
       expect(container.firstChild).toBeInTheDocument()
     })
 
     it('renders dot with explicit dotColor', () => {
-      const { container } = render(<Badge dot dotColor="warning">Pending</Badge>)
+      const { container } = render(
+        <Badge dot dotColor="warning">
+          Pending
+        </Badge>
+      )
       expect(container.firstChild).toBeInTheDocument()
     })
 

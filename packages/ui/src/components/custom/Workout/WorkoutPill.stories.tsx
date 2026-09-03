@@ -14,7 +14,10 @@ const meta: Meta<typeof WorkoutPill> = {
       description: 'Pill status',
     },
     pulse: { control: 'boolean', description: 'Pulsing animation (independent of status)' },
-    highlighted: { control: 'boolean', description: 'Highlighted with thicker border and slight scale' },
+    highlighted: {
+      control: 'boolean',
+      description: 'Highlighted with thicker border and slight scale',
+    },
   },
 }
 

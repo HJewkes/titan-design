@@ -78,7 +78,10 @@ export const Range: Story = {
 export const Drop: Story = {
   args: {
     height: 8,
-    set: { status: 'drop', subloads: [decay(10, 0.85), decay(8, 0.7), decay(6, 0.6)] } as SetStripSet,
+    set: {
+      status: 'drop',
+      subloads: [decay(10, 0.85), decay(8, 0.7), decay(6, 0.6)],
+    } as SetStripSet,
   },
   parameters: {
     docs: {

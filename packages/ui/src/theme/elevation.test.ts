@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest'
-import { getGlowShadow, getElevationSurface, getElevationShadow, getBaseSurfaceColor, FLOATING_ELEVATION_MIN } from './elevation'
+import {
+  getGlowShadow,
+  getElevationSurface,
+  getElevationShadow,
+  getBaseSurfaceColor,
+  FLOATING_ELEVATION_MIN,
+} from './elevation'
 
 describe('getGlowShadow', () => {
   it('returns shadow style for valid hex color', () => {
@@ -57,12 +63,16 @@ describe('elevation depth model', () => {
       const prev = Lstar(getElevationSurface(base, levels[i - 1], 'dark'))
       const cur = Lstar(getElevationSurface(base, levels[i], 'dark'))
       const step = cur - prev
-      expect(step, `L${levels[i - 1]}→L${levels[i]} moves ΔL* ${step.toFixed(2)}`).toBeGreaterThan(1)
+      expect(step, `L${levels[i - 1]}→L${levels[i]} moves ΔL* ${step.toFixed(2)}`).toBeGreaterThan(
+        1
+      )
     }
   })
 
   it('gets lighter as it rises, never darker', () => {
-    const ls = ([0, 1, 2, 3, 4, 5] as const).map((lv) => Lstar(getElevationSurface(base, lv, 'dark')))
+    const ls = ([0, 1, 2, 3, 4, 5] as const).map((lv) =>
+      Lstar(getElevationSurface(base, lv, 'dark'))
+    )
     for (let i = 1; i < ls.length; i++) expect(ls[i]).toBeGreaterThan(ls[i - 1])
   })
 
@@ -76,13 +86,19 @@ describe('elevation depth model', () => {
 
   it('does cast one at and above the floating threshold', () => {
     for (const lv of [FLOATING_ELEVATION_MIN, 5] as const) {
-      expect(Object.keys(getElevationShadow(base, lv, 'dark')).length, `level ${lv}`).toBeGreaterThan(0)
+      expect(
+        Object.keys(getElevationShadow(base, lv, 'dark')).length,
+        `level ${lv}`
+      ).toBeGreaterThan(0)
     }
   })
 
   it('keeps the recess on inset levels — a well is not a cast shadow', () => {
     for (const lv of [-1, -2] as const) {
-      expect(Object.keys(getElevationShadow(base, lv, 'dark')).length, `level ${lv}`).toBeGreaterThan(0)
+      expect(
+        Object.keys(getElevationShadow(base, lv, 'dark')).length,
+        `level ${lv}`
+      ).toBeGreaterThan(0)
     }
   })
 })

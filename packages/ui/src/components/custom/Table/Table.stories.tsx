@@ -114,9 +114,7 @@ export const WithSorting: Story = {
 
     const handleSort = (column: string) => {
       if (sortColumn === column) {
-        setSortDirection((prev) =>
-          prev === 'asc' ? 'desc' : prev === 'desc' ? null : 'asc'
-        )
+        setSortDirection((prev) => (prev === 'asc' ? 'desc' : prev === 'desc' ? null : 'asc'))
       } else {
         setSortColumn(column)
         setSortDirection('asc')
@@ -313,11 +311,17 @@ export const WithColumnWidths: Story = {
     <Table>
       <TableHeader>
         <TableRow isHoverable={false}>
-          <TableHeaderCell width={60} align="center">#</TableHeaderCell>
+          <TableHeaderCell width={60} align="center">
+            #
+          </TableHeaderCell>
           <TableHeaderCell width={200}>Name</TableHeaderCell>
           <TableHeaderCell>Email</TableHeaderCell>
-          <TableHeaderCell width={120} align="center">Role</TableHeaderCell>
-          <TableHeaderCell width={100} align="right">Status</TableHeaderCell>
+          <TableHeaderCell width={120} align="center">
+            Role
+          </TableHeaderCell>
+          <TableHeaderCell width={100} align="right">
+            Status
+          </TableHeaderCell>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -330,8 +334,12 @@ export const WithColumnWidths: Story = {
               <Text className="text-sm text-text-primary font-medium">{user.name}</Text>
             </TableCell>
             <TableCell>{user.email}</TableCell>
-            <TableCell width={120} align="center">{user.role}</TableCell>
-            <TableCell width={100} align="right">{user.status}</TableCell>
+            <TableCell width={120} align="center">
+              {user.role}
+            </TableCell>
+            <TableCell width={100} align="right">
+              {user.status}
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -361,8 +369,8 @@ export const UseTableHook: Story = {
     return (
       <View style={{ gap: 8 }}>
         <Text className="text-sm text-text-secondary">
-          Showing {paginatedData.length} of {totalItems} users, sorted by{' '}
-          {sortColumn ?? 'none'} ({sortDirection ?? 'none'})
+          Showing {paginatedData.length} of {totalItems} users, sorted by {sortColumn ?? 'none'} (
+          {sortDirection ?? 'none'})
         </Text>
         <Table sortColumn={sortColumn} sortDirection={sortDirection} onSort={handleSort}>
           <TableHeader>
@@ -434,9 +442,7 @@ export const SortingAndSelection: Story = {
 
     return (
       <View style={{ gap: 8 }}>
-        <Text className="text-sm text-text-secondary">
-          Selected: {selectedRows.size} rows
-        </Text>
+        <Text className="text-sm text-text-secondary">Selected: {selectedRows.size} rows</Text>
         <Table
           sortColumn={sortColumn}
           sortDirection={sortDirection}

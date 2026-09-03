@@ -25,13 +25,7 @@ describe('Input', () => {
   })
 
   it('displays error message when isInvalid', () => {
-    render(
-      <Input
-        isInvalid
-        errorMessage="Invalid input"
-        helperText="This should not show"
-      />
-    )
+    render(<Input isInvalid errorMessage="Invalid input" helperText="This should not show" />)
     expect(screen.getByText('Invalid input')).toBeInTheDocument()
     expect(screen.queryByText('This should not show')).not.toBeInTheDocument()
   })
@@ -62,9 +56,7 @@ describe('Input', () => {
 
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
-      const { container } = render(
-        <Input label="Email" placeholder="Enter your email" />
-      )
+      const { container } = render(<Input label="Email" placeholder="Enter your email" />)
 
       const results = await axe(container)
       expect(results).toHaveNoViolations()

@@ -66,7 +66,9 @@ const PLANE_BY_STEP: Record<number, string> = Object.fromEntries(
 /** Steps whose value is byte-identical to what shipped in v0.10.0. */
 const ANCHOR_STEPS = new Set<number>(Object.values(SURFACE_PLANE_STEPS))
 
-const GREY_STEPS = Object.keys(greyRamp).map(Number).sort((a, b) => a - b)
+const GREY_STEPS = Object.keys(greyRamp)
+  .map(Number)
+  .sort((a, b) => a - b)
 
 /**
  * The grey ramp, rendered as a numbered scale with its plane aliases.
@@ -92,7 +94,10 @@ function GreyRampRow() {
                 borderColor: ANCHOR_STEPS.has(step) ? '#FF7900' : SWATCH_BORDER,
               }}
             />
-            <Text className="text-text-primary" style={{ fontSize: 10, fontWeight: '600', marginTop: 3 }}>
+            <Text
+              className="text-text-primary"
+              style={{ fontSize: 10, fontWeight: '600', marginTop: 3 }}
+            >
               {step}
               {ANCHOR_STEPS.has(step) ? ' ★' : ''}
             </Text>
@@ -115,11 +120,10 @@ export const Ramps: StoryObj = {
     <View style={{ padding: 24 }}>
       <Text className="text-2xl font-bold text-text-primary mb-2">Ramps</Text>
       <SectionIntro>
-        Every raw colour value titan ships, as ordered scales. Nothing here carries meaning — a
-        ramp step becomes a border or a status only when a semantic token or a palette references
-        it, which is what{' '}
-        <Text className="font-semibold">Foundations/Color/Palettes</Text> documents. Everything on
-        this page is current and safe to pick.
+        Every raw colour value titan ships, as ordered scales. Nothing here carries meaning — a ramp
+        step becomes a border or a status only when a semantic token or a palette references it,
+        which is what <Text className="font-semibold">Foundations/Color/Palettes</Text> documents.
+        Everything on this page is current and safe to pick.
       </SectionIntro>
 
       <Text className="text-text-tertiary text-xs mb-6">
@@ -127,21 +131,20 @@ export const Ramps: StoryObj = {
         <Text className="font-semibold">neutral</Text>,{' '}
         <Text className="font-semibold">redVivid</Text> or the support{' '}
         <Text className="font-semibold">blue</Text>/<Text className="font-semibold">red</Text>{' '}
-        scales? All five were DELETED in TD-07.14, not shelved. The two grey scales folded into
-        the warm ramp below — they were cold (neutral ran R−B down to −26) while the surfaces had
-        been warm since v0.10.0, and nothing ever reconciled the two. The chromatics moved to the
-        OKLCH ramps above. Spec and generator:
-        sources/design/foundations/warm-grey-ramp/.
+        scales? All five were DELETED in TD-07.14, not shelved. The two grey scales folded into the
+        warm ramp below — they were cold (neutral ran R−B down to −26) while the surfaces had been
+        warm since v0.10.0, and nothing ever reconciled the two. The chromatics moved to the OKLCH
+        ramps above. Spec and generator: sources/design/foundations/warm-grey-ramp/.
       </Text>
 
       <SectionTitle>Chromatic — OKLCH tonal ramps</SectionTitle>
       <Text className="text-text-secondary text-xs mb-4">
-        Seven OKLCH-generated hue ramps, 11 perceptual steps each (50 → 950), built with
-        hue-torsion and a chroma arc anchored through the brand/semantic hexes. These are the
-        source of truth for chromatic hexes: the categorical, diverging, effort and fatigue
-        palettes are all references into these steps rather than duplicated values, so re-tuning a
-        ramp moves them together. Amber absorbs the former yellow (lemon → warm body) and cyan
-        absorbs the former steel.
+        Seven OKLCH-generated hue ramps, 11 perceptual steps each (50 → 950), built with hue-torsion
+        and a chroma arc anchored through the brand/semantic hexes. These are the source of truth
+        for chromatic hexes: the categorical, diverging, effort and fatigue palettes are all
+        references into these steps rather than duplicated values, so re-tuning a ramp moves them
+        together. Amber absorbs the former yellow (lemon → warm body) and cyan absorbs the former
+        steel.
       </Text>
       {CHROMATIC_RAMPS.map(([key, name]) => (
         <ScaleRow key={key} name={name} scale={primitiveRamps[key]} />
@@ -157,16 +160,15 @@ export const Ramps: StoryObj = {
         set of names.
       </Text>
       <Text className="text-text-secondary text-xs mb-4">
-        Two things about the numbering, both deliberate.{' '}
-        <Text className="font-semibold">975</Text> sits past the end of the shared grid: the
-        canonical L* ladder — the median of the seven chromatic ramps — stops at L*10.3, which is
-        step 950, and the bezel is L*3.8. There was no number left for it.{' '}
-        <Text className="font-semibold">850</Text> and <Text className="font-semibold">875</Text>{' '}
-        are quarter-steps because overlay, raised and elevated sit only ~2.7 L* apart and all three
-        collide on 900 at normal resolution. There is deliberately no{' '}
-        <Text className="font-semibold">inset</Text>: at ΔE 1.10 from the frame it was an
-        imperceptible duplicate, which is why <Text className="font-semibold">&lt;Surface
-        pressed&gt;</Text> kept collapsing into it.
+        Two things about the numbering, both deliberate. <Text className="font-semibold">975</Text>{' '}
+        sits past the end of the shared grid: the canonical L* ladder — the median of the seven
+        chromatic ramps — stops at L*10.3, which is step 950, and the bezel is L*3.8. There was no
+        number left for it. <Text className="font-semibold">850</Text> and{' '}
+        <Text className="font-semibold">875</Text> are quarter-steps because overlay, raised and
+        elevated sit only ~2.7 L* apart and all three collide on 900 at normal resolution. There is
+        deliberately no <Text className="font-semibold">inset</Text>: at ΔE 1.10 from the frame it
+        was an imperceptible duplicate, which is why{' '}
+        <Text className="font-semibold">&lt;Surface pressed&gt;</Text> kept collapsing into it.
       </Text>
       <GreyRampRow />
       <Text className="text-text-tertiary text-xs mb-4">
@@ -258,8 +260,8 @@ export const Accessibility: StoryObj = {
       <SectionIntro>
         How the raw material behaves for viewers who cannot separate the hues, and under text.
         Dichromacy is simulated with the Machado-2009 matrices at severity 1.0. Converging strips
-        across two swatches mean those two are the same colour to that viewer — which is a
-        problem only where hue is carrying the meaning on its own.
+        across two swatches mean those two are the same colour to that viewer — which is a problem
+        only where hue is carrying the meaning on its own.
       </SectionIntro>
 
       <SectionTitle>Ramp mid-steps (500)</SectionTitle>
@@ -269,9 +271,7 @@ export const Accessibility: StoryObj = {
         below fans its picks across lightness instead of taking all seven at 500, and why the
         ordered scales in Palettes encode magnitude in lightness rather than hue.
       </Text>
-      <View
-        style={{ flexDirection: 'row', gap: 6, marginBottom: 6, paddingLeft: CVD_LABEL_WIDTH }}
-      >
+      <View style={{ flexDirection: 'row', gap: 6, marginBottom: 6, paddingLeft: CVD_LABEL_WIDTH }}>
         {RAMP_MIDS.map(({ name, hex }) => (
           <View key={name} style={{ alignItems: 'center' }}>
             <View
@@ -297,8 +297,8 @@ export const Accessibility: StoryObj = {
       <SectionTitle>Categorical series — in-place text contrast</SectionTitle>
       <Text className="text-text-secondary text-xs mb-3">
         The palette that has to survive this test in production. All pairs hold ΔE ≥ 8 through the
-        first {CATEGORICAL_CVD_SAFE_MAX}; the 7th is extended and wants a legend. The palette
-        itself is documented in Palettes — this is the validation of it.
+        first {CATEGORICAL_CVD_SAFE_MAX}; the 7th is extended and wants a legend. The palette itself
+        is documented in Palettes — this is the validation of it.
       </Text>
       {(['default', 'dark'] as const).map((variant) => {
         const colors = categoricalPalette[variant]

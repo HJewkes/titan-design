@@ -76,14 +76,14 @@ export const Mechanisms: StoryObj = {
       <SectionIntro>
         Three mechanisms, in the order you should reach for them. A surface that needs to read as
         deeper takes a TONE; one that needs an edge takes a HAIRLINE; one that needs to feel
-        physical takes a MATERIAL. Drop-shadow is not on the list for anything that is not
-        floating — see section 3 for why.
+        physical takes a MATERIAL. Drop-shadow is not on the list for anything that is not floating
+        — see section 3 for why.
       </SectionIntro>
 
       <SectionTitle>Tone — the grey ramp</SectionTitle>
       <Text className="text-text-secondary text-xs mb-3">
-        The primary cue and the only one that works identically on web and native. Every plane is
-        a ramp step.
+        The primary cue and the only one that works identically on web and native. Every plane is a
+        ramp step.
       </Text>
       <View style={{ flexDirection: 'row', gap: 10, marginBottom: 22 }}>
         {[975, 950, 925, 900, 875, 850].map((step) => (
@@ -98,10 +98,9 @@ export const Mechanisms: StoryObj = {
 
       <SectionTitle>Hairline — where a plane ends</SectionTitle>
       <Text className="text-text-secondary text-xs mb-3">
-        Alpha-white, so it composites toward white by the same amount on any background and holds
-        a near-constant ΔL* wherever it lands. A solid border swings wildly across the ramp; this
-        does not. It is the default separator, and it is what replaced the solid dark border
-        tokens.
+        Alpha-white, so it composites toward white by the same amount on any background and holds a
+        near-constant ΔL* wherever it lands. A solid border swings wildly across the ramp; this does
+        not. It is the default separator, and it is what replaced the solid dark border tokens.
       </Text>
       <View style={{ flexDirection: 'row', gap: 10, marginBottom: 22 }}>
         {(['hairline-subtle', 'hairline-default', 'hairline-strong'] as const).map((token) => (
@@ -120,9 +119,9 @@ export const Mechanisms: StoryObj = {
 
       <SectionTitle>Material — what a plane is made of</SectionTitle>
       <Text className="text-text-secondary text-xs mb-3">
-        Used sparingly. Paper is for HERO surfaces only and takes muted tones only — vivid colour
-        is ink ON paper, never the paper itself. There are no levels of paper; one treatment, or
-        the texture stops meaning anything.
+        Used sparingly. Paper is for HERO surfaces only and takes muted tones only — vivid colour is
+        ink ON paper, never the paper itself. There are no levels of paper; one treatment, or the
+        texture stops meaning anything.
       </Text>
       <View style={{ flexDirection: 'row', gap: 10, marginBottom: 8 }}>
         <Swatch
@@ -138,13 +137,16 @@ export const Mechanisms: StoryObj = {
         <Swatch
           label="barPaper"
           note="the same grain curve, tuned for a small saturated element."
-          style={{ ...(barPaper(t['status-info']) as Record<string, unknown>), backgroundColor: t['status-info'] }}
+          style={{
+            ...(barPaper(t['status-info']) as Record<string, unknown>),
+            backgroundColor: t['status-info'],
+          }}
         />
       </View>
       <Text className="text-text-tertiary text-xs">
         Materials are web/RNW only — `backgroundImage` and multi-layer `boxShadow` are ignored on
-        native. Every material keeps a solid `backgroundColor` underneath so a surface never
-        depends on one, and a material must never be the only thing carrying meaning.
+        native. Every material keeps a solid `backgroundColor` underneath so a surface never depends
+        on one, and a material must never be the only thing carrying meaning.
       </Text>
     </View>
   ),
@@ -158,9 +160,9 @@ export const Elevation: StoryObj = {
       <SectionIntro>
         Levels 0–3 are separated by TONE ALONE. They cast no shadow, because a dark-on-dark drop
         shadow is inert — it costs a composite layer and shows nothing. From{' '}
-        <Text className="font-semibold">{FLOATING_ELEVATION_MIN}</Text> up the element is
-        genuinely floating over a backdrop, where a large soft shadow describes separation rather
-        than rank, and there the shadow returns.
+        <Text className="font-semibold">{FLOATING_ELEVATION_MIN}</Text> up the element is genuinely
+        floating over a backdrop, where a large soft shadow describes separation rather than rank,
+        and there the shadow returns.
       </SectionIntro>
 
       <SectionTitle>Content levels — tone only</SectionTitle>
@@ -197,8 +199,8 @@ export const Elevation: StoryObj = {
         ))}
       </View>
       <Text className="text-text-tertiary text-xs">
-        A floating surface should carry a hairline ring as well as its shadow — the shadow places
-        it above the page, the ring gives it an edge that survives on a panel where the shadow is
+        A floating surface should carry a hairline ring as well as its shadow — the shadow places it
+        above the page, the ring gives it an edge that survives on a panel where the shadow is
         washed out by glare.
       </Text>
     </View>
@@ -212,15 +214,15 @@ export const WhyNotNeumorphism: StoryObj = {
       <Text className="text-2xl font-bold text-text-primary mb-2">Why not neumorphism</Text>
       <SectionIntro>
         The system used to ship a neumorphic builder — a dark shadow bottom-right paired with a
-        light rim top-left. It was removed rather than retuned, and the reason is a lightness
-        budget rather than a preference, so it is worth being able to see.
+        light rim top-left. It was removed rather than retuned, and the reason is a lightness budget
+        rather than a preference, so it is worth being able to see.
       </SectionIntro>
 
       <Text className="text-text-secondary text-xs mb-4">
         Neumorphism needs a MID-TONE ground (roughly 75–90% lightness) so the dark half has
-        somewhere to fall and the light half has somewhere to rise. Our surfaces sit near 10%.
-        Below them there is almost nothing left — so the dark half disappears and the treatment
-        collapses to a one-sided rim, which reads as a smudge rather than as depth.
+        somewhere to fall and the light half has somewhere to rise. Our surfaces sit near 10%. Below
+        them there is almost nothing left — so the dark half disappears and the treatment collapses
+        to a one-sided rim, which reads as a smudge rather than as depth.
       </Text>
 
       <View style={{ flexDirection: 'row', gap: 24 }}>

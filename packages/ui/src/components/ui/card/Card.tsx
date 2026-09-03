@@ -1,17 +1,17 @@
 import React, { useMemo, useState } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { 
-  getElevationSurface, 
-  getElevationShadow, 
+import {
+  getElevationSurface,
+  getElevationShadow,
   getBaseSurfaceColor,
   getValidatedElevation,
-  type ElevationLevel 
+  type ElevationLevel,
 } from '../../../theme'
 import { useTheme } from '../../../utils/useTheme'
 
 export type CardVariant = 'elevated' | 'outline' | 'filled' | 'accent' | 'subtle'
-export type CardElevation = 1 | 2 | 3  // subtle, standard, prominent
+export type CardElevation = 1 | 2 | 3 // subtle, standard, prominent
 
 export interface CardProps extends ViewProps {
   /** Visual variant */
@@ -100,7 +100,7 @@ export function Card({
     const validated = getValidatedElevation('card', elevation as ElevationLevel)
     // Map variant to elevation if needed
     if (variant === 'outline' || variant === 'accent' || variant === 'subtle') {
-      return 1 as ElevationLevel  // These border variants use subtle elevation
+      return 1 as ElevationLevel // These border variants use subtle elevation
     }
     return validated
   }, [variant, elevation])
@@ -112,7 +112,7 @@ export function Card({
   const surfaceColor = useMemo(() => {
     // Outline variant in light mode uses a specific off-white for clear visibility
     if ((variant === 'outline' || variant === 'accent') && theme === 'light') {
-      return '#FAFAFA'  // Matches --color-surface-elevated in light mode
+      return '#FAFAFA' // Matches --color-surface-elevated in light mode
     }
     // Subtle variant uses the base surface color without elevation lift
     if (variant === 'subtle') {
@@ -162,8 +162,8 @@ export function Card({
     // Apply variant styles, but only use default border color if no custom borderColor
     variant === 'outline'
       ? borderColor
-        ? 'border'  // Just the border width, color via style
-        : variantStyles[variant]  // Full variant styles including color
+        ? 'border' // Just the border width, color via style
+        : variantStyles[variant] // Full variant styles including color
       : variantStyles[variant],
     // Remove Tailwind shadow classes - we're using elevation shadows via style prop
     isClickable && 'web:cursor-pointer web:transition-all web:duration-150',
@@ -173,10 +173,16 @@ export function Card({
   )
 
   // Accent variant: left stripe via borderLeft override
-  const accentStyle = useMemo(() => variant === 'accent' ? {
-    borderLeftWidth: accentWidth ?? 3,
-    borderLeftColor: accentColor ?? 'var(--color-brand-primary)',
-  } : {}, [variant, accentWidth, accentColor])
+  const accentStyle = useMemo(
+    () =>
+      variant === 'accent'
+        ? {
+            borderLeftWidth: accentWidth ?? 3,
+            borderLeftColor: accentColor ?? 'var(--color-brand-primary)',
+          }
+        : {},
+    [variant, accentWidth, accentColor]
+  )
 
   // Merge styles: background color from elevation + shadow style + custom colors + custom style
   const mergedStyle = useMemo(() => {
@@ -230,11 +236,7 @@ export interface CardHeaderProps {
  * Header section of a Card.
  */
 export function CardHeader({ children, className }: CardHeaderProps) {
-  return (
-    <View className={cn('px-6 py-6', className)}>
-      {children}
-    </View>
-  )
+  return <View className={cn('px-6 py-6', className)}>{children}</View>
 }
 
 export interface CardTitleProps {
@@ -265,11 +267,7 @@ export interface CardDescriptionProps {
  * Description for CardHeader.
  */
 export function CardDescription({ children, className }: CardDescriptionProps) {
-  return (
-    <Text className={cn('mt-1.5 text-sm text-text-secondary', className)}>
-      {children}
-    </Text>
-  )
+  return <Text className={cn('mt-1.5 text-sm text-text-secondary', className)}>{children}</Text>
 }
 
 export interface CardContentProps {
@@ -281,11 +279,7 @@ export interface CardContentProps {
  * Content section of a Card.
  */
 export function CardContent({ children, className }: CardContentProps) {
-  return (
-    <View className={cn('px-6 py-4', className)}>
-      {children}
-    </View>
-  )
+  return <View className={cn('px-6 py-4', className)}>{children}</View>
 }
 
 export interface CardFooterProps {
@@ -297,11 +291,7 @@ export interface CardFooterProps {
  * Footer section of a Card.
  */
 export function CardFooter({ children, className }: CardFooterProps) {
-  return (
-    <View className={cn('px-6 py-4 flex-row items-center gap-2', className)}>
-      {children}
-    </View>
-  )
+  return <View className={cn('px-6 py-4 flex-row items-center gap-2', className)}>{children}</View>
 }
 
 export interface CardSkeletonProps {
@@ -363,7 +353,7 @@ export interface CardInsetProps extends ViewProps {
 /**
  * Inset element within a Card. Applies pressed neumorphic shadow
  * to create a sunken/recessed appearance.
- * 
+ *
  * @example
  * <Card elevation={2}>
  *   <CardContent>
@@ -388,7 +378,7 @@ export function CardInset({
   const shadowStyle = useMemo(() => {
     return getElevationShadow(baseColor, elevation as ElevationLevel, theme)
   }, [baseColor, elevation, theme])
-  
+
   return (
     <View
       className={cn('rounded', className)}

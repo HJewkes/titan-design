@@ -10,11 +10,7 @@
  * native Metro). It is only inlined into the dist by tsup via
  * an esbuild onResolve plugin.
  */
-import {
-  jsx as reactJsx,
-  jsxs as reactJsxs,
-  Fragment,
-} from 'react/jsx-runtime'
+import { jsx as reactJsx, jsxs as reactJsxs, Fragment } from 'react/jsx-runtime'
 import type { StyleProp } from 'react-native'
 
 type JsxFn = typeof reactJsx

@@ -4,7 +4,14 @@ import { cn } from '../../../utils/cn'
 import { Indicator, type IndicatorColor } from '../indicator'
 
 export type BadgeVariant = 'solid' | 'subtle' | 'outline'
-export type BadgeColor = 'default' | 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info'
+export type BadgeColor =
+  | 'default'
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'error'
+  | 'warning'
+  | 'info'
 export type BadgeSize = 'sm' | 'md' | 'lg'
 
 export interface BadgeProps extends ViewProps {
@@ -89,7 +96,10 @@ export function Badge({
       {dot && (
         <Indicator
           size="xs"
-          color={dotColor ?? (color === 'default' || color === 'secondary' ? 'default' : color as IndicatorColor)}
+          color={
+            dotColor ??
+            (color === 'default' || color === 'secondary' ? 'default' : (color as IndicatorColor))
+          }
           className="mr-0.5"
         />
       )}
@@ -111,9 +121,5 @@ export interface BadgeTextProps {
  * Text component for Badge content.
  */
 export function BadgeText({ children, className }: BadgeTextProps) {
-  return (
-    <Text className={cn('text-inherit font-medium', className)}>
-      {children}
-    </Text>
-  )
+  return <Text className={cn('text-inherit font-medium', className)}>{children}</Text>
 }

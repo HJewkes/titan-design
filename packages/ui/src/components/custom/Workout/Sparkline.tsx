@@ -22,10 +22,7 @@ export interface SparklineProps extends ViewProps {
   className?: string
 }
 
-function normalizeData(
-  data: number[],
-  height: number,
-): number[] {
+function normalizeData(data: number[], height: number): number[] {
   if (data.length === 0) return []
   const min = Math.min(...data)
   const max = Math.max(...data)
@@ -33,11 +30,7 @@ function normalizeData(
   return data.map((v) => height - ((v - min) / range) * height)
 }
 
-function normalizeValue(
-  value: number,
-  data: number[],
-  height: number,
-): number {
+function normalizeValue(value: number, data: number[], height: number): number {
   const min = Math.min(...data)
   const max = Math.max(...data)
   const range = max - min || 1

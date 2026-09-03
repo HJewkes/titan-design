@@ -125,7 +125,10 @@ function BlockView({ block, i }: { block: Block; i: number }) {
     return (
       <View className="flex-row gap-[8px] pl-[4px]">
         <Text className="text-brand-primary">•</Text>
-        <Typography variant="body2" className="flex-1 text-[13px] leading-[20px] text-text-secondary">
+        <Typography
+          variant="body2"
+          className="flex-1 text-[13px] leading-[20px] text-text-secondary"
+        >
           {renderInline(block.text, kp)}
         </Typography>
       </View>
@@ -147,11 +150,7 @@ function SessionRow({
   onPress: () => void
 }) {
   return (
-    <Pressable
-      onPress={onPress}
-      accessibilityRole="button"
-      className={cnRow(active)}
-    >
+    <Pressable onPress={onPress} accessibilityRole="button" className={cnRow(active)}>
       {active ? (
         <View className="absolute left-0 top-[10px] bottom-[10px] w-[3px] rounded-r-[3px] bg-brand-primary" />
       ) : null}

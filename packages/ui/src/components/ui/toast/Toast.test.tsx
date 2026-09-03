@@ -90,11 +90,7 @@ describe('ToastProvider', () => {
     const { addToast, removeAllToasts } = useToast()
     return (
       <div>
-        <button
-          onClick={() =>
-            addToast({ title: 'New Toast', status: 'success' })
-          }
-        >
+        <button onClick={() => addToast({ title: 'New Toast', status: 'success' })}>
           Add Toast
         </button>
         <button onClick={removeAllToasts}>Clear All</button>
@@ -179,9 +175,7 @@ describe('ToastProvider', () => {
       return null
     }
 
-    expect(() => render(<BadConsumer />)).toThrow(
-      'useToast must be used within a ToastProvider'
-    )
+    expect(() => render(<BadConsumer />)).toThrow('useToast must be used within a ToastProvider')
   })
 
   describe('positions', () => {

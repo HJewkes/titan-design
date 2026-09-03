@@ -88,7 +88,7 @@ export const semanticColorsLight = {
   'status-error-dark': ramp.red[700],
   'status-error-subtle': ramp.red[50],
 
-  'status-error-vivid': alertRedVivid,     // NOT red[600], that is status-error
+  'status-error-vivid': alertRedVivid, // NOT red[600], that is status-error
   'status-error-vivid-light': ramp.red[500],
   'status-error-vivid-dark': ramp.red[700],
   'status-error-vivid-subtle': 'rgba(255, 71, 87, 0.12)',
@@ -110,15 +110,15 @@ export const semanticColorsLight = {
   'on-status-info': p.white,
 
   // Result/outcome indicators (result-*)
-  'result-improve': '#4caf50',                // Green - positive outcome
+  'result-improve': '#4caf50', // Green - positive outcome
   'result-improve-light': 'rgba(76, 175, 80, 0.12)',
   'result-improve-dark': '#248a24',
-  'result-degrade': '#ef5350',                // Red - negative outcome
+  'result-degrade': '#ef5350', // Red - negative outcome
   'result-degrade-light': 'rgba(239, 83, 80, 0.12)',
   'result-degrade-dark': '#b30000',
-  'result-inconclusive': '#9E9A97',           // Gray - no clear result
+  'result-inconclusive': '#9E9A97', // Gray - no clear result
   'result-inconclusive-light': 'rgba(158, 154, 151, 0.12)',
-  'result-neutral': greyRamp[600],           // Neutral baseline
+  'result-neutral': greyRamp[600], // Neutral baseline
 
   // Text on result backgrounds (on-result-*)
   'on-result-improve': p.white,
@@ -127,16 +127,16 @@ export const semanticColorsLight = {
 
   // Data visualization colors (data-*)
   // First 10 colors from discrete rainbow optimized for charts
-  'data-1': discreteRainbow[9],               // Blue
-  'data-2': discreteRainbow[14],              // Green
-  'data-3': discreteRainbow[17],              // Yellow
-  'data-4': discreteRainbow[25],              // Red
-  'data-5': discreteRainbow[8],               // Purple
-  'data-6': discreteRainbow[20],              // Orange
-  'data-7': discreteRainbow[13],              // Light Blue
-  'data-8': discreteRainbow[15],              // Light Green
-  'data-9': discreteRainbow[3],               // Lavender
-  'data-10': discreteRainbow[22],             // Dark Orange
+  'data-1': discreteRainbow[9], // Blue
+  'data-2': discreteRainbow[14], // Green
+  'data-3': discreteRainbow[17], // Yellow
+  'data-4': discreteRainbow[25], // Red
+  'data-5': discreteRainbow[8], // Purple
+  'data-6': discreteRainbow[20], // Orange
+  'data-7': discreteRainbow[13], // Light Blue
+  'data-8': discreteRainbow[15], // Light Green
+  'data-9': discreteRainbow[3], // Lavender
+  'data-10': discreteRainbow[22], // Dark Orange
 
   // Text colors (text-*)
   'text-primary': '#121828',
@@ -149,10 +149,10 @@ export const semanticColorsLight = {
 
   // Surface colors (surface-*) - for elevated containers
   'surface-base': p.white,
-  'surface-elevated': greyRamp[50],          // slightly off-white for elevated cards
-  'surface-raised': greyRamp[100],           // light gray for raised cards
+  'surface-elevated': greyRamp[50], // slightly off-white for elevated cards
+  'surface-raised': greyRamp[100], // light gray for raised cards
   'surface-overlay': p.white,
-  'surface-input': greyRamp[50],             // Input field background (filled variant)
+  'surface-input': greyRamp[50], // Input field background (filled variant)
 
   // Background colors (background-*)
   'background-base': '#EBEBEB',
@@ -163,12 +163,12 @@ export const semanticColorsLight = {
   'background-frame': greyRamp[400],
 
   // Border colors (border-*)
-  'border-prominent': greyRamp[400],        // high-visibility divider
+  'border-prominent': greyRamp[400], // high-visibility divider
   'border-focus': ramp.blue[600],
-  'border-input': greyRamp[200],             // Input field border
-  'border-input-hover': greyRamp[400],       // Input field border on hover
-  'border-input-focus': ramp.blue[600],          // Input field border on focus
-  'border-input-error': ramp.red[600],           // Input field border on error
+  'border-input': greyRamp[200], // Input field border
+  'border-input-hover': greyRamp[400], // Input field border on hover
+  'border-input-focus': ramp.blue[600], // Input field border on focus
+  'border-input-error': ramp.red[600], // Input field border on error
 
   // Alpha hairline separators (surface-independent — composite toward black on
   // light surfaces, mirroring the dark-mode white-alpha family). See §4/S-2.
@@ -185,7 +185,7 @@ export const semanticColorsLight = {
   'interactive-disabled-text': 'rgba(55, 65, 81, 0.26)',
 
   // Divider
-  'divider': '#E8E9EB',
+  divider: '#E8E9EB',
 
   // Avatar default
   'avatar-background': greyRamp[600],
@@ -301,20 +301,20 @@ export const semanticColorsDark = {
   // `background-base` backs `Surface level="background"` (SurfaceContext.SURFACE_LEVEL_TOKEN),
   // so it takes the ramp's shell role. The deepest plane is `background-frame`,
   // which is also the `SurfaceLevel` floor a pressed surface clamps at.
-  'surface-base': greyRamp[925],           // main surface        (#252321, L*13.9)
-  'surface-elevated': greyRamp[900],       // elevated surface     (#2C2A28, L*17.2 — nav/rail)
-  'surface-raised': greyRamp[875],         // raised surface       (#31302F, L*19.9 — cards)
-  'surface-overlay': greyRamp[850],        // overlay surface      (#373635, L*22.7 — hero/popover)
-  'surface-input': greyRamp[900],          // input surface        (#2C2A28 — one plane above base)
+  'surface-base': greyRamp[925], // main surface        (#252321, L*13.9)
+  'surface-elevated': greyRamp[900], // elevated surface     (#2C2A28, L*17.2 — nav/rail)
+  'surface-raised': greyRamp[875], // raised surface       (#31302F, L*19.9 — cards)
+  'surface-overlay': greyRamp[850], // overlay surface      (#373635, L*22.7 — hero/popover)
+  'surface-input': greyRamp[900], // input surface        (#2C2A28 — one plane above base)
 
   // Background colors — same ramp, the frame/shell end of it.
-  'background-base': greyRamp[950],        // shell                (#1C1916, L*9   — Surface level="background")
-  'background-default': greyRamp[925],     // main background      (#252321, L*13.9 — matches surface-base)
-  'background-subtle': greyRamp[900],      // subtle background    (#2C2A28, L*17.2 — matches surface-elevated)
+  'background-base': greyRamp[950], // shell                (#1C1916, L*9   — Surface level="background")
+  'background-default': greyRamp[925], // main background      (#252321, L*13.9 — matches surface-base)
+  'background-subtle': greyRamp[900], // subtle background    (#2C2A28, L*17.2 — matches surface-elevated)
   // Frame/bezel chrome — the top bar + side nav shell, one step BELOW
   // `background-base`. It used to be described as sitting OUTSIDE the ramp; it
   // is simply the ramp's last step now, and the floor `<Surface pressed>` clamps at.
-  'background-frame': greyRamp[975],       // frame / bezel        (#100D0A, L*3.8)
+  'background-frame': greyRamp[975], // frame / bezel        (#100D0A, L*3.8)
 
   // Border colors — solid dark borders are RETIRED (TD-07.14). Not a preference — a structural
   // consequence of one ramp. Every step from 850 to 975 is now a surface plane,
@@ -332,7 +332,7 @@ export const semanticColorsDark = {
   // `border-prominent` stays SOLID: it is the one border meant to be seen
   // outright (4 call sites, high-visibility dividers), and grey-800 is not a
   // plane, so it keeps its job without collision.
-  'border-prominent': greyRamp[800],     // high-visibility divider
+  'border-prominent': greyRamp[800], // high-visibility divider
   'border-focus': '#828DF8',
   'border-input': greyRamp[700],
   'border-input-hover': greyRamp[600],
@@ -382,7 +382,7 @@ export const semanticColorsDark = {
   'interactive-disabled-text': 'rgba(255, 255, 255, 0.26)',
 
   // Divider
-  'divider': 'rgba(255, 255, 255, 0.09)',
+  divider: 'rgba(255, 255, 255, 0.09)',
 
   // Avatar default
   'avatar-background': greyRamp[700],

@@ -45,7 +45,11 @@ export function DotLabel({
   return (
     <View className={cn('flex-row items-center gap-[6px]', className)}>
       <Indicator size="sm" color={color} />
-      <Typography variant="caption" color="inherit" className={cn('text-text-secondary', labelClass)}>
+      <Typography
+        variant="caption"
+        color="inherit"
+        className={cn('text-text-secondary', labelClass)}
+      >
         {label}
       </Typography>
     </View>
@@ -53,12 +57,21 @@ export function DotLabel({
 }
 
 /** Uppercase micro-label above a value — the standard stat/section eyebrow. */
-export function Eyebrow({ children, className }: { children: React.ReactNode; className?: string }) {
+export function Eyebrow({
+  children,
+  className,
+}: {
+  children: React.ReactNode
+  className?: string
+}) {
   return (
     <Typography
       variant="overline"
       color="inherit"
-      className={cn('text-[10px] font-semibold uppercase tracking-[0.6px] text-text-tertiary', className)}
+      className={cn(
+        'text-[10px] font-semibold uppercase tracking-[0.6px] text-text-tertiary',
+        className
+      )}
     >
       {children}
     </Typography>

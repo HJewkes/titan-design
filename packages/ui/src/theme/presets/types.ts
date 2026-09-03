@@ -32,7 +32,7 @@ export interface ThemePresetColors {
   'hairline-subtle'?: string
   'hairline-strong'?: string
   'border-focus'?: string
-  'divider'?: string
+  divider?: string
   [key: `${string}`]: string | undefined
 }
 

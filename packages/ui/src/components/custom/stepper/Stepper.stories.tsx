@@ -124,9 +124,7 @@ export const VerticalWithContent: Story = {
         <StepIndicator />
         <StepLabel>Create Account</StepLabel>
         <StepContent>
-          <Text className="text-text-secondary text-sm">
-            Account creation is complete.
-          </Text>
+          <Text className="text-text-secondary text-sm">Account creation is complete.</Text>
         </StepContent>
       </Step>
       <Step>
@@ -147,9 +145,7 @@ export const VerticalWithContent: Story = {
         <StepIndicator />
         <StepLabel>Configure Settings</StepLabel>
         <StepContent>
-          <Text className="text-text-secondary text-sm">
-            Adjust your preferences.
-          </Text>
+          <Text className="text-text-secondary text-sm">Adjust your preferences.</Text>
         </StepContent>
       </Step>
     </Stepper>
@@ -221,9 +217,7 @@ export const ActiveStepProgression: Story = {
     <View style={{ gap: 24 }}>
       {[0, 1, 2, 3].map((activeStep) => (
         <View key={activeStep}>
-          <Text className="text-text-secondary text-xs mb-2">
-            Active step: {activeStep}
-          </Text>
+          <Text className="text-text-secondary text-xs mb-2">Active step: {activeStep}</Text>
           <Stepper activeStep={activeStep} orientation="horizontal">
             <Step>
               <StepIndicator />

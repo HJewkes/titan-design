@@ -132,7 +132,15 @@ export const WithoutUpcoming: Story = {
 function InteractiveBodyMapDetailPanel() {
   const [open, setOpen] = useState(false)
   return (
-    <View style={{ position: 'relative', height: 640, width: 380, backgroundColor: '#0E0E0E', padding: 16 }}>
+    <View
+      style={{
+        position: 'relative',
+        height: 640,
+        width: 380,
+        backgroundColor: '#0E0E0E',
+        padding: 16,
+      }}
+    >
       <Pressable
         onPress={() => setOpen(true)}
         accessibilityRole="button"

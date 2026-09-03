@@ -52,36 +52,55 @@ function Markdown({ source }: { source: string }) {
     if (!line.trim()) return
     if (line.startsWith('### '))
       out.push(
-        <Typography key={key} variant="subtitle2" className="mt-[8px] text-[13px] font-bold text-text-primary">
+        <Typography
+          key={key}
+          variant="subtitle2"
+          className="mt-[8px] text-[13px] font-bold text-text-primary"
+        >
           {renderInline(line.slice(4), key)}
-        </Typography>,
+        </Typography>
       )
     else if (line.startsWith('## '))
       out.push(
-        <Typography key={key} variant="subtitle1" className="mt-[10px] text-[14.5px] font-bold text-text-primary">
+        <Typography
+          key={key}
+          variant="subtitle1"
+          className="mt-[10px] text-[14.5px] font-bold text-text-primary"
+        >
           {renderInline(line.slice(3), key)}
-        </Typography>,
+        </Typography>
       )
     else if (line.startsWith('# '))
       out.push(
-        <Typography key={key} variant="h6" className="mt-[10px] text-[16px] font-bold text-text-primary">
+        <Typography
+          key={key}
+          variant="h6"
+          className="mt-[10px] text-[16px] font-bold text-text-primary"
+        >
           {renderInline(line.slice(2), key)}
-        </Typography>,
+        </Typography>
       )
     else if (/^\s*[-*]\s+/.test(line))
       out.push(
         <View key={key} className="flex-row gap-[8px] pl-[6px]">
           <Text className="text-text-tertiary">•</Text>
-          <Typography variant="body2" className="flex-1 text-[12.5px] leading-[19px] text-text-secondary">
+          <Typography
+            variant="body2"
+            className="flex-1 text-[12.5px] leading-[19px] text-text-secondary"
+          >
             {renderInline(line.replace(/^\s*[-*]\s+/, ''), key)}
           </Typography>
-        </View>,
+        </View>
       )
     else
       out.push(
-        <Typography key={key} variant="body2" className="text-[12.5px] leading-[19px] text-text-secondary">
+        <Typography
+          key={key}
+          variant="body2"
+          className="text-[12.5px] leading-[19px] text-text-secondary"
+        >
           {renderInline(line, key)}
-        </Typography>,
+        </Typography>
       )
   })
   return <View className="gap-[5px]">{out}</View>
@@ -116,11 +135,18 @@ function TaskRow({ task }: { task: (typeof openTasks)[number] }) {
       <Typography variant="mono" className="w-[52px] text-[11px] text-brand-primary">
         {task.id}
       </Typography>
-      <Typography variant="body2" numberOfLines={1} className="flex-1 text-[12.5px] text-text-secondary">
+      <Typography
+        variant="body2"
+        numberOfLines={1}
+        className="flex-1 text-[12.5px] text-text-secondary"
+      >
         {task.title}
       </Typography>
       {task.severity ? (
-        <DotLabel color={SEVERITY_META[task.severity].dot} label={SEVERITY_META[task.severity].label} />
+        <DotLabel
+          color={SEVERITY_META[task.severity].dot}
+          label={SEVERITY_META[task.severity].label}
+        />
       ) : null}
       <Typography variant="mono" className="w-[26px] text-right text-[11px] text-text-tertiary">
         {`p${task.priority}`}
@@ -145,7 +171,11 @@ function SessionRow({ session }: { session: (typeof sessions)[number] }) {
           </Pill>
         </View>
       </View>
-      <Typography variant="body2" numberOfLines={2} className="text-[12px] leading-[17px] text-text-secondary">
+      <Typography
+        variant="body2"
+        numberOfLines={2}
+        className="text-[12px] leading-[17px] text-text-secondary"
+      >
         {session.first_line.replace(/^#\s*/, '')}
       </Typography>
     </View>

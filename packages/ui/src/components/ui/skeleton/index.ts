@@ -1,10 +1,4 @@
-export {
-  Skeleton,
-  SkeletonText,
-  SkeletonCircle,
-  SkeletonCard,
-  SkeletonListItem,
-} from './Skeleton'
+export { Skeleton, SkeletonText, SkeletonCircle, SkeletonCard, SkeletonListItem } from './Skeleton'
 export type {
   SkeletonProps,
   SkeletonTextProps,

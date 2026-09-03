@@ -50,9 +50,7 @@ export function ListItemContent({ title, subtitle, className, ...props }: ListIt
   return (
     <View className={cn('flex-1 justify-center', className)} {...props}>
       <Text className="text-sm font-medium text-text-primary">{title}</Text>
-      {subtitle && (
-        <Text className="text-xs text-text-secondary mt-0.5">{subtitle}</Text>
-      )}
+      {subtitle && <Text className="text-xs text-text-secondary mt-0.5">{subtitle}</Text>}
     </View>
   )
 }
@@ -80,10 +78,5 @@ export interface ListItemDividerProps extends ViewProps {
 }
 
 export function ListItemDivider({ inset = true, className, ...props }: ListItemDividerProps) {
-  return (
-    <View
-      className={cn('h-px bg-divider', inset ? 'ml-14' : '', className)}
-      {...props}
-    />
-  )
+  return <View className={cn('h-px bg-divider', inset ? 'ml-14' : '', className)} {...props} />
 }

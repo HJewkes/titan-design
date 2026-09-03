@@ -19,7 +19,15 @@ describe('Pill', () => {
   })
 
   it('renders with all colors', () => {
-    const colors = ['default', 'primary', 'secondary', 'success', 'error', 'warning', 'info'] as const
+    const colors = [
+      'default',
+      'primary',
+      'secondary',
+      'success',
+      'error',
+      'warning',
+      'info',
+    ] as const
     colors.forEach((color) => {
       const { unmount } = render(<Pill color={color}>Test</Pill>)
       expect(screen.getByText('Test')).toBeInTheDocument()

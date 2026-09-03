@@ -57,9 +57,11 @@ const placementStyles: Record<HelpTipPlacement, string> = {
 
 const arrowStyles: Record<HelpTipPlacement, string> = {
   top: 'bottom-0 left-1/2 -translate-x-1/2 translate-y-full border-t-surface-elevated border-x-transparent border-b-transparent',
-  bottom: 'top-0 left-1/2 -translate-x-1/2 -translate-y-full border-b-surface-elevated border-x-transparent border-t-transparent',
+  bottom:
+    'top-0 left-1/2 -translate-x-1/2 -translate-y-full border-b-surface-elevated border-x-transparent border-t-transparent',
   left: 'right-0 top-1/2 -translate-y-1/2 translate-x-full border-l-surface-elevated border-y-transparent border-r-transparent',
-  right: 'left-0 top-1/2 -translate-y-1/2 -translate-x-full border-r-surface-elevated border-y-transparent border-l-transparent',
+  right:
+    'left-0 top-1/2 -translate-y-1/2 -translate-x-full border-r-surface-elevated border-y-transparent border-l-transparent',
 }
 
 /**
@@ -144,9 +146,7 @@ export function HelpTip({
           iconClassName
         )}
       >
-        <Text className={cn('font-semibold', iconSize, colorStyles[color])}>
-          {iconMap[icon]}
-        </Text>
+        <Text className={cn('font-semibold', iconSize, colorStyles[color])}>{iconMap[icon]}</Text>
       </Pressable>
 
       {/* Tooltip */}
@@ -163,22 +163,14 @@ export function HelpTip({
           style={{ maxWidth }}
         >
           {typeof content === 'string' ? (
-            <Text className={cn('text-text-primary', textSize)}>
-              {content}
-            </Text>
+            <Text className={cn('text-text-primary', textSize)}>{content}</Text>
           ) : (
             content
           )}
 
           {/* Arrow */}
           {hasArrow && (
-            <View
-              className={cn(
-                'absolute w-0 h-0',
-                'border-4',
-                arrowStyles[placement]
-              )}
-            />
+            <View className={cn('absolute w-0 h-0', 'border-4', arrowStyles[placement])} />
           )}
         </View>
       )}

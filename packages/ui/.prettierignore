@@ -4,3 +4,6 @@ storybook-static
 pnpm-lock.yaml
 *.min.js
 *.min.css
+
+# Mirrors config.ts byte-for-byte (config.completeness.test.ts); prettier would lowercase its hex.
+src/theme/global.css

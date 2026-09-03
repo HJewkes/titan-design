@@ -147,13 +147,19 @@ export function Tooltip({
   // Arrow positioning. The arrow is a border triangle, so it takes the same surface token as the box.
   const arrowStyles = {
     top: 'bottom-0 left-1/2 -translate-x-1/2 translate-y-full border-l-transparent border-r-transparent border-b-transparent border-t-surface-elevated',
-    'top-start': 'bottom-0 left-4 translate-y-full border-l-transparent border-r-transparent border-b-transparent border-t-surface-elevated',
-    'top-end': 'bottom-0 right-4 translate-y-full border-l-transparent border-r-transparent border-b-transparent border-t-surface-elevated',
-    bottom: 'top-0 left-1/2 -translate-x-1/2 -translate-y-full border-l-transparent border-r-transparent border-t-transparent border-b-surface-elevated',
-    'bottom-start': 'top-0 left-4 -translate-y-full border-l-transparent border-r-transparent border-t-transparent border-b-surface-elevated',
-    'bottom-end': 'top-0 right-4 -translate-y-full border-l-transparent border-r-transparent border-t-transparent border-b-surface-elevated',
+    'top-start':
+      'bottom-0 left-4 translate-y-full border-l-transparent border-r-transparent border-b-transparent border-t-surface-elevated',
+    'top-end':
+      'bottom-0 right-4 translate-y-full border-l-transparent border-r-transparent border-b-transparent border-t-surface-elevated',
+    bottom:
+      'top-0 left-1/2 -translate-x-1/2 -translate-y-full border-l-transparent border-r-transparent border-t-transparent border-b-surface-elevated',
+    'bottom-start':
+      'top-0 left-4 -translate-y-full border-l-transparent border-r-transparent border-t-transparent border-b-surface-elevated',
+    'bottom-end':
+      'top-0 right-4 -translate-y-full border-l-transparent border-r-transparent border-t-transparent border-b-surface-elevated',
     left: 'right-0 top-1/2 translate-x-full -translate-y-1/2 border-t-transparent border-b-transparent border-r-transparent border-l-surface-elevated',
-    right: 'left-0 top-1/2 -translate-x-full -translate-y-1/2 border-t-transparent border-b-transparent border-l-transparent border-r-surface-elevated',
+    right:
+      'left-0 top-1/2 -translate-x-full -translate-y-1/2 border-t-transparent border-b-transparent border-l-transparent border-r-surface-elevated',
   }
 
   // Tooltip positioning
@@ -171,14 +177,7 @@ export function Tooltip({
   const tooltipContent = (
     <View className="bg-surface-elevated border border-hairline px-3 py-2 rounded-md shadow-lg max-w-xs">
       {content ?? <Text className="text-text-primary text-sm">{label}</Text>}
-      {hasArrow && (
-        <View
-          className={cn(
-            'absolute w-0 h-0 border-4',
-            arrowStyles[placement]
-          )}
-        />
-      )}
+      {hasArrow && <View className={cn('absolute w-0 h-0 border-4', arrowStyles[placement])} />}
     </View>
   )
 
