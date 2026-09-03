@@ -89,6 +89,14 @@ TaskTable ........................ organism
   compare, so this is additive. Two ordering rules were also made explicit while in there: `desc` **inverts**
   the comparator rather than reversing the array (reversing also flips tied rows), and blank values rank last
   in **both** directions rather than reading as the smallest value when the column flips.
+- **`status-error-vivid` fixed from `#D14343` to `#FF4757`** (both themes). It pointed at `ramp.red[600]`,
+  the exact value of `status-error`, so the two rendered as one colour — Critical and High were
+  indistinguishable, and so were `DeviceRow`/`DeviceIndicator`'s `lost` state and a plain error. Three other
+  places already encoded the correct vivid red (`--color-status-error-vivid-rgb`, the `-subtle` rgba, and
+  `Indicator`'s `glow` shadow); only the value anyone rendered was wrong. Found 2026-08-31 by measuring the
+  Storybook render, not by reading tokens. Guarded by `theme/status-distinctness.test.ts`, which asks whether
+  tokens LOOK different — a question the existing presence/parity tests structurally cannot ask, since a
+  collapsed token is present and parity-matched.
 
 ## Severity vocabulary has one owner
 
