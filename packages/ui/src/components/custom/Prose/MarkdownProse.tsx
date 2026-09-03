@@ -43,8 +43,9 @@ const CODE = /`[^`]+`/
 
 /**
  * Splits markdown into the block kinds this renderer understands. Consecutive
- * text lines join into one paragraph; a blank line ends it. Deeper headings
- * flatten to h3, since session prose never needs more than three levels.
+ * text lines join into one paragraph; a blank line ends it. An indented line
+ * straight after a bullet continues that bullet. Deeper headings flatten to
+ * h3, since session prose never needs more than three levels.
  */
 export function parseProseBlocks(body: string): ProseBlock[] {
   const blocks: ProseBlock[] = []
@@ -70,6 +71,12 @@ export function parseProseBlocks(body: string): ProseBlock[] {
     if (item) {
       flush()
       blocks.push({ type: 'li', text: item[1]! })
+      continue
+    }
+    // Lazy continuation: an indented line straight after a bullet belongs to it.
+    const last = blocks[blocks.length - 1]
+    if (last?.type === 'li' && paragraph.length === 0 && /^\s/.test(raw)) {
+      last.text = `${last.text} ${line}`
       continue
     }
     paragraph.push(line)

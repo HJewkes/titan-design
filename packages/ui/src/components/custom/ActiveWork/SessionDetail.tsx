@@ -31,13 +31,13 @@ function SessionHeader({ session, now }: { session: SessionSummary; now: number 
         format="medium"
         isUTC
         variant="mono"
-        className="text-sm text-text-secondary"
+        className="shrink-0 text-sm text-text-secondary"
       />
-      <Typography variant="caption" className="text-text-tertiary">
+      <Typography variant="caption" className="shrink-0 text-text-tertiary">
         {formatTaskAge(session.ended, now)}
       </Typography>
       {duration ? (
-        <Typography variant="caption" className="text-text-tertiary">
+        <Typography variant="caption" className="shrink-0 text-text-tertiary">
           {`· ${duration}`}
         </Typography>
       ) : null}

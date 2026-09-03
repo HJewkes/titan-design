@@ -27,6 +27,14 @@ describe('parseProseBlocks', () => {
     expect(blocks[4]!.text).toBe('other')
   })
 
+  it('folds an indented continuation line into the bullet above it', () => {
+    const blocks = parseProseBlocks('- first `code\n  span` continues\nnot indented')
+    expect(blocks).toEqual([
+      { type: 'li', text: 'first `code span` continues' },
+      { type: 'p', text: 'not indented' },
+    ])
+  })
+
   it('renders nothing for an empty body', () => {
     expect(parseProseBlocks('')).toEqual([])
   })
