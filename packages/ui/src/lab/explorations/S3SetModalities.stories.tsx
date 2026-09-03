@@ -8,8 +8,8 @@
  */
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
-import { SET_STRIP_VARIABLE_COLOR as CYAN } from './SetStrip'
-import { GREY, velColor, T_PRIMARY, T_SECONDARY, T_TERTIARY, INSET, BORDER_SUBTLE, Page, monoTag } from './setHeadingKit'
+import { SET_STRIP_VARIABLE_COLOR as CYAN } from '../../components/custom/Workout/SetStrip'
+import { GREY, velColor, T_PRIMARY, T_SECONDARY, T_TERTIARY, INSET, BORDER_SUBTLE, Page, monoTag } from '../../components/custom/Workout/setHeadingKit'
 
 const INTER = 'Inter, sans-serif'
 const VAR_EDGE = '#22465F' // cyan-800 — the continue-slot outline
