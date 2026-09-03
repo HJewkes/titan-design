@@ -6,7 +6,7 @@ import { SESSION_FIXTURE, SESSION_NOW, SESSION_TASK_FIXTURE } from './session-fi
 import { extractTaskRefs } from './session-linkers'
 
 const session = SESSION_FIXTURE[0]!
-const adhoc = SESSION_FIXTURE[5]!
+const adhoc = SESSION_FIXTURE[1]!
 
 describe('SessionDetail', () => {
   it('renders the header: title, date, age, duration and session id', () => {

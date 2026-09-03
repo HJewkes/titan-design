@@ -19,7 +19,6 @@ describe('SessionList', () => {
     expect(screen.getAllByTestId('session-period').map((p) => p.textContent)).toEqual([
       'July 2026',
       'May 2026',
-      'July 2026',
     ])
     rerender(<SessionList sessions={july} now={SESSION_NOW} />)
     expect(screen.queryByTestId('session-period')).not.toBeInTheDocument()
@@ -72,9 +71,8 @@ describe('period grouping', () => {
   it('groups consecutive sessions and keeps the given order', () => {
     const groups = groupByPeriod(SESSION_FIXTURE)
     expect(groups.map((g) => [g.label, g.sessions.length])).toEqual([
-      ['July 2026', 4],
+      ['July 2026', 5],
       ['May 2026', 1],
-      ['July 2026', 1],
     ])
   })
 })

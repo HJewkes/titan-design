@@ -53,10 +53,10 @@ export const Selected: Story = {
 
 /** An ad-hoc session: the track reads in the footer. */
 export const AdHoc: Story = {
-  args: { session: SESSION_FIXTURE[5] },
+  args: { session: SESSION_FIXTURE[1] },
 }
 
 /** A six-minute session mentioning one task. */
 export const Short: Story = {
-  args: { session: SESSION_FIXTURE[4] },
+  args: { session: SESSION_FIXTURE[5] },
 }

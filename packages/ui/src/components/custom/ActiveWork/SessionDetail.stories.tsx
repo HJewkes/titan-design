@@ -50,12 +50,12 @@ export const Default: Story = {}
 
 /** A six-minute session with a short log. */
 export const Short: Story = {
-  args: { session: SESSION_FIXTURE[4] },
+  args: { session: SESSION_FIXTURE[5] },
 }
 
 /** An ad-hoc session: `[[name]]` link and a PR number, one task mentioned. */
 export const AdHoc: Story = {
-  args: { session: SESSION_FIXTURE[5] },
+  args: { session: SESSION_FIXTURE[1] },
 }
 
 /** No task rows supplied: the strip is pills only, with no table toggle. */
