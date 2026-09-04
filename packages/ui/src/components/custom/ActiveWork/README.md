@@ -123,11 +123,13 @@ Session reader ................... (no organism: the host composes the two halve
   tokens LOOK different — a question the existing presence/parity tests structurally cannot ask, since a
   collapsed token is present and parity-matched.
 
-- **`Tooltip` gained a controlled `isOpen`.** RNW's `Pressable` hovers with `contain: true`, which locks the
-  pointer to the innermost Pressable and ends any ancestor's hover, so a `Tooltip` wrapped around a pressable
-  row never shows in a real browser (jsdom's synthetic `mouseEnter` hides this). The row now owns hover via
-  its own `onHoverIn`/`onHoverOut` and drives the tooltip through `isOpen`. Same trap as the T2 header
-  tooltip, seen from the other side.
+- **`Tooltip` gained a controlled `isOpen` and a `useHoverState` hook.** RNW's `Pressable` hovers with
+  `contain: true`, which locks the pointer to the innermost Pressable and ends any ancestor's hover, so a
+  `Tooltip` wrapped around a pressable row never shows in a real browser (jsdom's synthetic `mouseEnter`
+  hides this). In controlled mode the Tooltip renders no Pressable of its own, so it can sit _inside_ a
+  pressable row without taking its press; the field owns hover through `useHoverState`'s pointer
+  enter/leave props. The session row's age and task count use this. Same trap as the T2 header tooltip, seen
+  from the other side.
 - **`CollapseButton` gained `accessibilityLabel`**, so a bare chevron toggle (the tasks-touched table) has an
   accessible name.
 - **`TaskTable` gained `hideColumns`** (mirrored by `TaskRow`), so an embedded table can drop columns its

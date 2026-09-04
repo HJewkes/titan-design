@@ -6,12 +6,13 @@ import { Card } from '../../ui/card'
 import { Collapse, CollapseButton, CollapseContent } from '../../ui/collapse'
 import { Divider } from '../../ui/divider'
 import { Pill } from '../../ui/pill'
+import { Tooltip, useHoverState } from '../../ui/tooltip'
 import { DateTime } from '../DateTime'
 import { MarkdownProse } from '../Prose'
 import { Typography } from '../Typography'
 import { formatSessionDuration, formatTaskAge } from './format-time'
 import { extractTaskRefs, sessionLinkers, type SessionLinkHandlers } from './session-linkers'
-import type { SessionSummary } from './SessionListItem'
+import { ExactTime, type SessionSummary } from './SessionListItem'
 import { TaskTable, type TaskColumnKey } from './TaskTable'
 import type { TaskListItem } from './TaskRow'
 
@@ -41,6 +42,19 @@ export function stripLeadingHeading(body: string): string {
   return lines.slice(first + 1).join('\n')
 }
 
+function AgeHover({ session, now }: { session: SessionSummary; now: number }) {
+  const { hovered, hoverProps } = useHoverState()
+  return (
+    <Tooltip usePortal isOpen={hovered} content={<ExactTime session={session} />}>
+      <View {...hoverProps} className="shrink-0" testID="session-age">
+        <Typography variant="caption" className="leading-none text-text-tertiary">
+          {formatTaskAge(session.ended, now)}
+        </Typography>
+      </View>
+    </Tooltip>
+  )
+}
+
 function SessionMeta({ session, now }: { session: SessionSummary; now: number }) {
   const duration = formatSessionDuration(session.started, session.ended)
   return (
@@ -52,9 +66,7 @@ function SessionMeta({ session, now }: { session: SessionSummary; now: number })
         variant="mono"
         className="shrink-0 text-text-secondary"
       />
-      <Typography variant="caption" className="shrink-0 leading-none text-text-tertiary">
-        {formatTaskAge(session.ended, now)}
-      </Typography>
+      <AgeHover session={session} now={now} />
       {duration ? (
         <Typography variant="caption" className="shrink-0 leading-none text-text-tertiary">
           {`· ${duration}`}

@@ -37,7 +37,7 @@ describe('SessionList', () => {
     const options = screen.getAllByRole('option')
     expect(options.filter((o) => o.getAttribute('aria-selected') === 'true')).toHaveLength(1)
     expect(options[1]).toHaveAttribute('aria-selected', 'true')
-    fireEvent.click(screen.getByText(SESSION_FIXTURE[3]!.title))
+    fireEvent.click(options[3]!)
     expect(onSelect).toHaveBeenCalledWith(SESSION_FIXTURE[3])
   })
 

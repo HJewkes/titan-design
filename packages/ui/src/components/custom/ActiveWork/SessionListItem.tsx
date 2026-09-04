@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { useMemo, useState } from 'react'
+import { useMemo, type ReactNode } from 'react'
 import { Pressable, View } from 'react-native'
-import { Tooltip } from '../../ui/tooltip'
+import { Tooltip, useHoverState } from '../../ui/tooltip'
 import { DateTime } from '../DateTime'
 import { Typography } from '../Typography'
 import { formatSessionDuration, formatTaskAge } from './format-time'
@@ -32,7 +32,7 @@ export interface SessionListItemProps {
   onSelect?: () => void
 }
 
-/** The row's footer: age, wall-clock length, distinct tasks touched, and the track. */
+/** The row's footer as one string: age, wall-clock length, distinct tasks touched, and the track. */
 export function sessionRowMeta(session: SessionSummary, now: number, taskCount: number): string {
   const parts = [formatTaskAge(session.ended, now)]
   const duration = formatSessionDuration(session.started, session.ended)
@@ -42,49 +42,82 @@ export function sessionRowMeta(session: SessionSummary, now: number, taskCount: 
   return parts.join(' · ')
 }
 
-/** What the row shows on hover: the untruncated title, the exact time, and the task ids. */
-function RowHover({ session, refs }: { session: SessionSummary; refs: string[] }) {
-  const duration = formatSessionDuration(session.started, session.ended)
+function MetaText({ children }: { children: ReactNode }) {
   return (
-    <View className="gap-1" testID="session-list-item-hover">
-      <Typography variant="body2" className="text-text-primary">
-        {session.title}
-      </Typography>
-      <View className="flex-row items-center gap-1">
-        <DateTime
-          value={session.ended}
-          format="datetime"
-          isUTC
-          variant="caption"
-          color="secondary"
-        />
-        {duration ? (
-          <Typography variant="caption" className="text-text-secondary">
-            {`· ${duration}`}
-          </Typography>
-        ) : null}
+    <Typography variant="caption" className="leading-none text-text-tertiary">
+      {children}
+    </Typography>
+  )
+}
+
+/**
+ * A footer segment with a hover detail. The Tooltip is controlled and renders
+ * no Pressable, so the row underneath keeps its press.
+ */
+function MetaHover({
+  tip,
+  testID,
+  children,
+}: {
+  tip: ReactNode
+  testID: string
+  children: string
+}) {
+  const { hovered, hoverProps } = useHoverState()
+  return (
+    <Tooltip usePortal isOpen={hovered} content={tip}>
+      <View {...hoverProps} testID={testID}>
+        <MetaText>{children}</MetaText>
       </View>
-      {refs.length > 0 ? (
-        <Typography variant="mono" className="text-text-tertiary">
-          {refs.join(' ')}
-        </Typography>
+    </Tooltip>
+  )
+}
+
+/** The exact end time behind the relative age. */
+export function ExactTime({ session }: { session: SessionSummary }) {
+  return (
+    <DateTime value={session.ended} format="datetime" isUTC variant="caption" color="primary" />
+  )
+}
+
+/** The task ids behind the count. */
+export function TaskIds({ refs }: { refs: string[] }) {
+  return (
+    <Typography variant="mono" className="text-text-primary">
+      {refs.join(' ')}
+    </Typography>
+  )
+}
+
+function RowMeta({ session, now, refs }: { session: SessionSummary; now: number; refs: string[] }) {
+  const duration = formatSessionDuration(session.started, session.ended)
+  const count = refs.length
+  return (
+    <View className="flex-row flex-wrap items-center">
+      <MetaHover tip={<ExactTime session={session} />} testID="session-age">
+        {formatTaskAge(session.ended, now)}
+      </MetaHover>
+      {duration ? <MetaText>{` · ${duration}`}</MetaText> : null}
+      {count > 0 ? (
+        <>
+          <MetaText>{' · '}</MetaText>
+          <MetaHover tip={<TaskIds refs={refs} />} testID="session-task-count">
+            {`${count} ${count === 1 ? 'task' : 'tasks'}`}
+          </MetaHover>
+        </>
       ) : null}
+      <MetaText>{` · ${session.track}`}</MetaText>
     </View>
   )
 }
 
 /**
  * SessionListItem — one session in the reader's list, led by its title, with
- * a footer of age · duration · tasks touched · track. Hovering the row shows
- * the full title, the exact end time and the task ids.
+ * a footer of age · duration · tasks touched · track. Hovering the age shows
+ * the exact end time; hovering the task count lists the task ids.
  *
- * One hover surface wraps the whole row rather than one per field: a Tooltip
- * is a Pressable, and nesting one inside the row would take the row's press.
- * The row's `option` role lives on that wrapper so it stays the listbox's
- * direct child, and the row drives the tooltip through `isOpen`, because RNW
- * ends the wrapper's own hover as soon as the row Pressable claims the pointer.
- * Composes {@link Tooltip}, {@link DateTime} and {@link Typography}. Used by
- * {@link SessionList}.
+ * Composes {@link Tooltip} (controlled, so the row keeps its press),
+ * {@link DateTime} and {@link Typography}. Used by {@link SessionList}.
  */
 export function SessionListItem({
   session,
@@ -93,41 +126,27 @@ export function SessionListItem({
   onSelect,
 }: SessionListItemProps) {
   const refs = useMemo(() => extractTaskRefs(session.body), [session.body])
-  const meta = sessionRowMeta(session, now, refs.length)
-  const [hovered, setHovered] = useState(false)
   return (
-    // The option role sits on the Tooltip's outer view so the listbox's direct
-    // child is the option; raw `role`/`aria-selected` because RNW drops
-    // `accessibilityState={{ selected }}`.
-    <Tooltip
-      usePortal
-      placement="right"
-      content={<RowHover session={session} refs={refs} />}
-      isOpen={hovered}
+    <Pressable
+      onPress={onSelect}
+      // Raw `role`/`aria-selected` rather than `accessibilityState={{ selected }}`:
+      // RNW silently drops the latter, so selection would never reach AT.
       role="option"
       aria-selected={selected}
-      accessibilityLabel={`${session.title}, ${meta}`}
+      accessibilityLabel={`${session.title}, ${sessionRowMeta(session, now, refs.length)}`}
       testID="session-list-item"
+      className={`relative gap-1 rounded-md px-3 py-2 ${selected ? 'bg-surface-raised' : ''}`}
     >
-      <Pressable
-        onPress={onSelect}
-        onHoverIn={() => setHovered(true)}
-        onHoverOut={() => setHovered(false)}
-        className={`relative gap-1 rounded-md px-3 py-2 ${selected ? 'bg-surface-raised' : ''}`}
-      >
-        {selected ? (
-          <View
-            testID="session-list-item-accent"
-            className="absolute bottom-2 left-0 top-2 w-[3px] rounded-r-[3px] bg-brand-primary"
-          />
-        ) : null}
-        <Typography variant="body2" numberOfLines={2} className="font-medium text-text-primary">
-          {session.title}
-        </Typography>
-        <Typography variant="caption" className="leading-none text-text-tertiary">
-          {meta}
-        </Typography>
-      </Pressable>
-    </Tooltip>
+      {selected ? (
+        <View
+          testID="session-list-item-accent"
+          className="absolute bottom-2 left-0 top-2 w-[3px] rounded-r-[3px] bg-brand-primary"
+        />
+      ) : null}
+      <Typography variant="body2" numberOfLines={2} className="font-medium text-text-primary">
+        {session.title}
+      </Typography>
+      <RowMeta session={session} now={now} refs={refs} />
+    </Pressable>
   )
 }

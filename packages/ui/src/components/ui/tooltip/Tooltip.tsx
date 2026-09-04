@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { View, Text, Pressable, Platform, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 
@@ -46,11 +46,20 @@ export interface TooltipProps extends ViewProps {
   /** Render tooltip via portal to escape overflow:hidden ancestors (web only) */
   usePortal?: boolean
   /**
-   * Controlled visibility. Use when the trigger already owns hover (a Pressable
-   * child): RNW ends this wrapper's hover the moment a nested Pressable claims
-   * the pointer, so the wrapper's own hover cannot be relied on there.
+   * Controlled visibility. In this mode the tooltip renders no Pressable of its
+   * own, so it can sit inside a pressable row without taking its press; the
+   * caller owns hover (see {@link useHoverState}). Needed because RNW ends a
+   * wrapper's hover the moment a nested Pressable claims the pointer.
    */
   isOpen?: boolean
+}
+
+/** Hover state from pointer enter/leave on any View, for driving a controlled Tooltip. */
+export function useHoverState() {
+  const [hovered, setHovered] = useState(false)
+  const onPointerEnter = useCallback(() => setHovered(true), [])
+  const onPointerLeave = useCallback(() => setHovered(false), [])
+  return { hovered, hoverProps: { onPointerEnter, onPointerLeave } }
 }
 
 /**
@@ -212,15 +221,19 @@ export function Tooltip({
 
   return (
     <View className="relative" ref={triggerRef} {...props}>
-      <Pressable
-        onHoverIn={show}
-        onHoverOut={hide}
-        onLongPress={show}
-        onPressOut={hide}
-        delayLongPress={500}
-      >
-        {children}
-      </Pressable>
+      {isOpen === undefined ? (
+        <Pressable
+          onHoverIn={show}
+          onHoverOut={hide}
+          onLongPress={show}
+          onPressOut={hide}
+          delayLongPress={500}
+        >
+          {children}
+        </Pressable>
+      ) : (
+        children
+      )}
 
       {isPortalMode
         ? renderPortalTooltip()

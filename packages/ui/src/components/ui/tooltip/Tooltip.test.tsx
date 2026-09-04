@@ -261,7 +261,7 @@ describe('Tooltip', () => {
 })
 
 describe('controlled visibility', () => {
-  it('follows isOpen instead of its own hover', () => {
+  it('follows isOpen instead of its own hover, and renders no pressable wrapper', () => {
     const { rerender } = render(
       <Tooltip label="Controlled" isOpen={false}>
         <Text>Trigger</Text>
@@ -275,5 +275,6 @@ describe('controlled visibility', () => {
       </Tooltip>
     )
     expect(screen.getByText('Controlled')).toBeInTheDocument()
+    expect(screen.getByText('Trigger').parentElement).not.toHaveAttribute('tabindex')
   })
 })
