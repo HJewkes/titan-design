@@ -60,6 +60,7 @@ describe('SessionDetail', () => {
     rerender(<SessionDetail session={adhoc} now={SESSION_NOW} tasks={SESSION_TASK_FIXTURE} />)
     expect(screen.queryByTestId('task-row')).not.toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /table/ }))
+    expect(screen.getByText('1 task touched')).toBeInTheDocument()
     const rows = screen.getAllByTestId('task-row')
     expect(rows).toHaveLength(1)
     expect(within(rows[0]!).getByText('AW-17')).toBeInTheDocument()

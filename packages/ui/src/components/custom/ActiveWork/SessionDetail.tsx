@@ -110,7 +110,13 @@ function TasksTouched({ refs, tasks, now, onPressTask }: TasksTouchedProps) {
       </View>
       {tasks.length > 0 ? (
         <CollapseContent className="pt-2">
-          <TaskTable tasks={tasks} now={now} hideLegend hideColumns={EMBEDDED_HIDDEN_COLUMNS} />
+          <TaskTable
+            tasks={tasks}
+            now={now}
+            hideLegend
+            hideColumns={EMBEDDED_HIDDEN_COLUMNS}
+            label={`${tasks.length} ${tasks.length === 1 ? 'task' : 'tasks'} touched`}
+          />
         </CollapseContent>
       ) : null}
     </Collapse>

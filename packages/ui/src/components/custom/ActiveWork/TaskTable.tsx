@@ -137,6 +137,8 @@ export interface TaskTableProps {
   severityDisplay?: SeverityDisplay
   /** Columns to leave out, for an embedded table that already knows its context. */
   hideColumns?: TaskColumnKey[]
+  /** Eyebrow over the grid. Defaults to the backlog wording, `N open · all initiatives`. */
+  label?: string
   className?: string
 }
 
@@ -163,6 +165,7 @@ export function TaskTable({
   hideLegend = false,
   severityDisplay = 'auto',
   hideColumns = NO_HIDDEN_COLUMNS,
+  label,
   className,
 }: TaskTableProps) {
   const { dotOnly, onLayout } = useSeverityDotOnly(severityDisplay)
@@ -179,7 +182,7 @@ export function TaskTable({
   return (
     <View className={cn('gap-3', className)} onLayout={onLayout}>
       <View className="flex-row items-center justify-between">
-        <Eyebrow>{`${tasks.length} open · all initiatives`}</Eyebrow>
+        <Eyebrow>{label ?? `${tasks.length} open · all initiatives`}</Eyebrow>
         {hideLegend ? null : <SeverityLegend tasks={tasks} />}
       </View>
 
