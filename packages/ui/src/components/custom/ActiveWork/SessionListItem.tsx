@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Pressable, View } from 'react-native'
 import { Tooltip } from '../../ui/tooltip'
 import { DateTime } from '../DateTime'
@@ -81,7 +81,8 @@ function RowHover({ session, refs }: { session: SessionSummary; refs: string[] }
  * One hover surface wraps the whole row rather than one per field: a Tooltip
  * is a Pressable, and nesting one inside the row would take the row's press.
  * The row's `option` role lives on that wrapper so it stays the listbox's
- * direct child.
+ * direct child, and the row drives the tooltip through `isOpen`, because RNW
+ * ends the wrapper's own hover as soon as the row Pressable claims the pointer.
  * Composes {@link Tooltip}, {@link DateTime} and {@link Typography}. Used by
  * {@link SessionList}.
  */
@@ -93,6 +94,7 @@ export function SessionListItem({
 }: SessionListItemProps) {
   const refs = useMemo(() => extractTaskRefs(session.body), [session.body])
   const meta = sessionRowMeta(session, now, refs.length)
+  const [hovered, setHovered] = useState(false)
   return (
     // The option role sits on the Tooltip's outer view so the listbox's direct
     // child is the option; raw `role`/`aria-selected` because RNW drops
@@ -101,6 +103,7 @@ export function SessionListItem({
       usePortal
       placement="right"
       content={<RowHover session={session} refs={refs} />}
+      isOpen={hovered}
       role="option"
       aria-selected={selected}
       accessibilityLabel={`${session.title}, ${meta}`}
@@ -108,6 +111,8 @@ export function SessionListItem({
     >
       <Pressable
         onPress={onSelect}
+        onHoverIn={() => setHovered(true)}
+        onHoverOut={() => setHovered(false)}
         className={`relative gap-1 rounded-md px-3 py-2 ${selected ? 'bg-surface-raised' : ''}`}
       >
         {selected ? (

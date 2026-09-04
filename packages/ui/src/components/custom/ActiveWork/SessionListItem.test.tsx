@@ -17,10 +17,13 @@ describe('SessionListItem', () => {
   it('shows the exact end time and the task ids on hover', () => {
     render(<SessionListItem session={session} now={SESSION_NOW} />)
     expect(screen.queryByTestId('session-list-item-hover')).not.toBeInTheDocument()
-    fireEvent.mouseEnter(screen.getByRole('option').firstElementChild!)
+    const row = screen.getByText(session.title).parentElement!
+    fireEvent.mouseEnter(row)
     const hover = screen.getByTestId('session-list-item-hover')
     expect(hover).toHaveTextContent('07/12/2026, 02:52 PM')
     expect(hover).toHaveTextContent('AW-17 AW-18')
+    fireEvent.mouseLeave(row)
+    expect(screen.queryByTestId('session-list-item-hover')).not.toBeInTheDocument()
   })
 
   it('exposes selection to assistive tech and shows the accent bar only when selected', () => {

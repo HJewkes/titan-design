@@ -6,6 +6,7 @@ import { formatDateTime } from '../DateTime'
 import { TableCell, TableRow } from '../Table'
 import { Typography } from '../Typography'
 import { SEVERITY_META, SeverityLabel, type TaskSeverity } from './SeverityLabel'
+import type { TaskColumnKey } from './TaskTable'
 
 /** One open task, as the task list renders it. */
 export interface TaskListItem {
@@ -62,6 +63,8 @@ export interface TaskRowProps {
   ageLabel: string
   /** Collapse severity to its dot (word on hover); the table decides this from its width. */
   severityDotOnly?: boolean
+  /** Columns the table left out; the row skips their cells so header and body stay aligned. */
+  hideColumns?: TaskColumnKey[]
 }
 
 /**
@@ -72,7 +75,8 @@ export interface TaskRowProps {
  * {@link SeverityLabel} for the severity dot, and {@link Pill} for tags. Used by
  * {@link TaskTable}.
  */
-export function TaskRow({ task, ageLabel, severityDotOnly = false }: TaskRowProps) {
+export function TaskRow({ task, ageLabel, severityDotOnly = false, hideColumns }: TaskRowProps) {
+  const show = (column: TaskColumnKey) => !hideColumns?.includes(column)
   const tags = task.tags ?? []
   const hiddenTags = tags.slice(MAX_VISIBLE_TAGS)
   const severityWidth = severityDotOnly
@@ -81,17 +85,21 @@ export function TaskRow({ task, ageLabel, severityDotOnly = false }: TaskRowProp
 
   return (
     <TableRow testID="task-row">
-      <TableCell width={TASK_COLUMN_WIDTHS.slug}>
-        <Typography variant="mono" numberOfLines={1} className="text-xs text-text-tertiary">
-          {task.slug}
-        </Typography>
-      </TableCell>
+      {show('slug') ? (
+        <TableCell width={TASK_COLUMN_WIDTHS.slug}>
+          <Typography variant="mono" numberOfLines={1} className="text-xs text-text-tertiary">
+            {task.slug}
+          </Typography>
+        </TableCell>
+      ) : null}
 
-      <TableCell width={TASK_COLUMN_WIDTHS.id}>
-        <Typography variant="mono" className="text-xs text-brand-primary">
-          {task.id}
-        </Typography>
-      </TableCell>
+      {show('id') ? (
+        <TableCell width={TASK_COLUMN_WIDTHS.id}>
+          <Typography variant="mono" className="text-xs text-brand-primary">
+            {task.id}
+          </Typography>
+        </TableCell>
+      ) : null}
 
       <TableCell>
         <Typography variant="body2" numberOfLines={1} className="text-xs text-text-primary">
@@ -99,53 +107,63 @@ export function TaskRow({ task, ageLabel, severityDotOnly = false }: TaskRowProp
         </Typography>
       </TableCell>
 
-      <TableCell width={severityWidth}>
-        {severityDotOnly && task.severity ? (
-          <Tooltip usePortal label={SEVERITY_META[task.severity].label}>
-            <SeverityLabel severity={task.severity} dotOnly />
-          </Tooltip>
-        ) : (
-          <SeverityLabel severity={task.severity} />
-        )}
-      </TableCell>
-
-      <TableCell width={TASK_COLUMN_WIDTHS.priority} align="right">
-        <Typography variant="mono" className="text-xs text-text-secondary">
-          {String(task.priority)}
-        </Typography>
-      </TableCell>
-
-      <TableCell width={TASK_COLUMN_WIDTHS.estimate} align="right">
-        <Typography variant="mono" className="text-xs text-text-secondary">
-          {task.estimate === undefined ? '—' : String(task.estimate)}
-        </Typography>
-      </TableCell>
-
-      <TableCell width={TASK_COLUMN_WIDTHS.tags}>
-        <View className="flex-row items-center gap-1">
-          {tags.slice(0, MAX_VISIBLE_TAGS).map((tag) => (
-            <Pill key={tag} variant="subtle" color="default" size="xs">
-              {tag}
-            </Pill>
-          ))}
-          {hiddenTags.length > 0 ? (
-            <Tooltip usePortal content={<HiddenTags tags={hiddenTags} />}>
-              {/* leading-none: the caption's loose line box would otherwise float the pills above centre. */}
-              <Typography variant="caption" className="leading-none text-text-tertiary">
-                {`+${hiddenTags.length}`}
-              </Typography>
+      {show('severity') ? (
+        <TableCell width={severityWidth}>
+          {severityDotOnly && task.severity ? (
+            <Tooltip usePortal label={SEVERITY_META[task.severity].label}>
+              <SeverityLabel severity={task.severity} dotOnly />
             </Tooltip>
-          ) : null}
-        </View>
-      </TableCell>
+          ) : (
+            <SeverityLabel severity={task.severity} />
+          )}
+        </TableCell>
+      ) : null}
 
-      <TableCell width={TASK_COLUMN_WIDTHS.age} align="right">
-        <Tooltip usePortal label={formatDateTime(task.updated, 'medium', true)}>
-          <Typography variant="caption" className="text-text-tertiary">
-            {ageLabel}
+      {show('priority') ? (
+        <TableCell width={TASK_COLUMN_WIDTHS.priority} align="right">
+          <Typography variant="mono" className="text-xs text-text-secondary">
+            {String(task.priority)}
           </Typography>
-        </Tooltip>
-      </TableCell>
+        </TableCell>
+      ) : null}
+
+      {show('estimate') ? (
+        <TableCell width={TASK_COLUMN_WIDTHS.estimate} align="right">
+          <Typography variant="mono" className="text-xs text-text-secondary">
+            {task.estimate === undefined ? '—' : String(task.estimate)}
+          </Typography>
+        </TableCell>
+      ) : null}
+
+      {show('tags') ? (
+        <TableCell width={TASK_COLUMN_WIDTHS.tags}>
+          <View className="flex-row items-center gap-1">
+            {tags.slice(0, MAX_VISIBLE_TAGS).map((tag) => (
+              <Pill key={tag} variant="subtle" color="default" size="xs">
+                {tag}
+              </Pill>
+            ))}
+            {hiddenTags.length > 0 ? (
+              <Tooltip usePortal content={<HiddenTags tags={hiddenTags} />}>
+                {/* leading-none: the caption's loose line box would otherwise float the pills above centre. */}
+                <Typography variant="caption" className="leading-none text-text-tertiary">
+                  {`+${hiddenTags.length}`}
+                </Typography>
+              </Tooltip>
+            ) : null}
+          </View>
+        </TableCell>
+      ) : null}
+
+      {show('updated') ? (
+        <TableCell width={TASK_COLUMN_WIDTHS.age} align="right">
+          <Tooltip usePortal label={formatDateTime(task.updated, 'medium', true)}>
+            <Typography variant="caption" className="text-text-tertiary">
+              {ageLabel}
+            </Typography>
+          </Tooltip>
+        </TableCell>
+      ) : null}
     </TableRow>
   )
 }

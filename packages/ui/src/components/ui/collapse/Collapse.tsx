@@ -67,19 +67,22 @@ export function Collapse({
 
 export interface CollapseButtonProps {
   children?: React.ReactNode
+  /** Accessible name when the button carries no text of its own (a bare chevron). */
+  accessibilityLabel?: string
   className?: string
 }
 
 /**
  * Button to toggle collapse state.
  */
-export function CollapseButton({ children, className }: CollapseButtonProps) {
+export function CollapseButton({ children, accessibilityLabel, className }: CollapseButtonProps) {
   const { isOpen, toggle } = useContext(CollapseContext)
 
   return (
     <Pressable
       onPress={toggle}
       accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
       accessibilityState={{ expanded: isOpen }}
       className={cn(
         'flex-row items-center justify-between py-3 px-4',

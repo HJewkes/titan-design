@@ -123,6 +123,19 @@ Session reader ................... (no organism: the host composes the two halve
   tokens LOOK different — a question the existing presence/parity tests structurally cannot ask, since a
   collapsed token is present and parity-matched.
 
+- **`Tooltip` gained a controlled `isOpen`.** RNW's `Pressable` hovers with `contain: true`, which locks the
+  pointer to the innermost Pressable and ends any ancestor's hover, so a `Tooltip` wrapped around a pressable
+  row never shows in a real browser (jsdom's synthetic `mouseEnter` hides this). The row now owns hover via
+  its own `onHoverIn`/`onHoverOut` and drives the tooltip through `isOpen`. Same trap as the T2 header
+  tooltip, seen from the other side.
+- **`CollapseButton` gained `accessibilityLabel`**, so a bare chevron toggle (the tasks-touched table) has an
+  accessible name.
+- **`TaskTable` gained `hideColumns`** (mirrored by `TaskRow`), so an embedded table can drop columns its
+  context already implies: the session detail hides `slug` and `tags` to give the title room.
+- **Subtle coloured `Pill`s are borderless with a stronger tint** (`bg-*/15`, `border-transparent`; the
+  neutral `default` keeps its hairline). The 25%-alpha coloured border read as a dark outline on dark
+  surfaces. System-wide; visual baselines for coloured subtle pills move.
+
 ## Severity vocabulary has one owner
 
 `SeverityLabel.tsx` owns `TaskSeverity`, `SEVERITY_ORDER`, `SEVERITY_RANK`/`severityRank`, `SEVERITY_META`

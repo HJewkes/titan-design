@@ -45,6 +45,12 @@ export interface TooltipProps extends ViewProps {
   className?: string
   /** Render tooltip via portal to escape overflow:hidden ancestors (web only) */
   usePortal?: boolean
+  /**
+   * Controlled visibility. Use when the trigger already owns hover (a Pressable
+   * child): RNW ends this wrapper's hover the moment a nested Pressable claims
+   * the pointer, so the wrapper's own hover cannot be relied on there.
+   */
+  isOpen?: boolean
 }
 
 /**
@@ -74,9 +80,11 @@ export function Tooltip({
   isDisabled = false,
   className,
   usePortal: usePortalProp = false,
+  isOpen,
   ...props
 }: TooltipProps) {
-  const [isVisible, setIsVisible] = useState(false)
+  const [hovered, setHovered] = useState(false)
+  const isVisible = isOpen ?? hovered
   const [portalPos, setPortalPos] = useState<PortalPosition | null>(null)
   const openTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -129,18 +137,18 @@ export function Tooltip({
     if (isDisabled) return
     clearTimeouts()
     if (openDelay > 0) {
-      openTimeoutRef.current = setTimeout(() => setIsVisible(true), openDelay)
+      openTimeoutRef.current = setTimeout(() => setHovered(true), openDelay)
     } else {
-      setIsVisible(true)
+      setHovered(true)
     }
   }
 
   const hide = () => {
     clearTimeouts()
     if (closeDelay > 0) {
-      closeTimeoutRef.current = setTimeout(() => setIsVisible(false), closeDelay)
+      closeTimeoutRef.current = setTimeout(() => setHovered(false), closeDelay)
     } else {
-      setIsVisible(false)
+      setHovered(false)
     }
   }
 

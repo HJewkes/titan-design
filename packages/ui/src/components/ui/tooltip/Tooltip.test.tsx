@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
+import { Text } from 'react-native'
 import { axe } from 'jest-axe'
 import { Tooltip } from './Tooltip'
 
@@ -256,5 +257,23 @@ describe('Tooltip', () => {
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
+  })
+})
+
+describe('controlled visibility', () => {
+  it('follows isOpen instead of its own hover', () => {
+    const { rerender } = render(
+      <Tooltip label="Controlled" isOpen={false}>
+        <Text>Trigger</Text>
+      </Tooltip>
+    )
+    hoverTrigger('Trigger')
+    expect(screen.queryByText('Controlled')).not.toBeInTheDocument()
+    rerender(
+      <Tooltip label="Controlled" isOpen>
+        <Text>Trigger</Text>
+      </Tooltip>
+    )
+    expect(screen.getByText('Controlled')).toBeInTheDocument()
   })
 })

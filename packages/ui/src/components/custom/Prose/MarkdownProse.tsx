@@ -148,14 +148,14 @@ function renderInline(text: string, linkers: ProseLinker[], tokenizer: RegExp): 
 function Block({ block, inline }: { block: ProseBlock; inline: (text: string) => ReactNode[] }) {
   if (block.type === 'h1' || block.type === 'h2') {
     return (
-      <Typography variant={block.type === 'h1' ? 'h4' : 'h5'} className="mt-1.5 text-text-primary">
+      <Typography variant={block.type === 'h1' ? 'h5' : 'h6'} className="mt-1.5 text-text-primary">
         {block.text}
       </Typography>
     )
   }
   if (block.type === 'h3') {
     return (
-      <Typography variant="subtitle1" className="mt-1 font-semibold text-text-primary">
+      <Typography variant="subtitle2" className="mt-1 font-bold text-text-primary">
         {inline(block.text)}
       </Typography>
     )

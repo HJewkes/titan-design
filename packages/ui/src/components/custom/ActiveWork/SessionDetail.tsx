@@ -12,11 +12,14 @@ import { Typography } from '../Typography'
 import { formatSessionDuration, formatTaskAge } from './format-time'
 import { extractTaskRefs, sessionLinkers, type SessionLinkHandlers } from './session-linkers'
 import type { SessionSummary } from './SessionListItem'
-import { TaskTable } from './TaskTable'
+import { TaskTable, type TaskColumnKey } from './TaskTable'
 import type { TaskListItem } from './TaskRow'
 
 /** Task pills beyond this collapse into a `+N`, so a sprawling session cannot push the log off screen. */
 const MAX_TASK_PILLS = 14
+
+// The card already names the initiative context, and tags would crowd the title; the id column keeps the prefix.
+const EMBEDDED_HIDDEN_COLUMNS: TaskColumnKey[] = ['slug', 'tags']
 
 export interface SessionDetailProps extends SessionLinkHandlers {
   session: SessionSummary
@@ -99,16 +102,15 @@ function TasksTouched({ refs, tasks, now, onPressTask }: TasksTouchedProps) {
           </Typography>
         ) : null}
         {tasks.length > 0 ? (
-          <CollapseButton className="gap-1 px-1 py-0">
-            <Typography variant="caption" className="leading-none text-text-secondary">
-              table
-            </Typography>
-          </CollapseButton>
+          <CollapseButton
+            className="ml-auto px-1 py-0"
+            accessibilityLabel={`Show the ${tasks.length} tasks touched as a table`}
+          />
         ) : null}
       </View>
       {tasks.length > 0 ? (
         <CollapseContent className="pt-2">
-          <TaskTable tasks={tasks} now={now} hideLegend />
+          <TaskTable tasks={tasks} now={now} hideLegend hideColumns={EMBEDDED_HIDDEN_COLUMNS} />
         </CollapseContent>
       ) : null}
     </Collapse>
@@ -147,7 +149,7 @@ export function SessionDetail({
   return (
     <Card variant="outline" className={cn('gap-3 p-5', className)} testID="session-detail">
       <View className="gap-2">
-        <Typography variant="h6" className="text-text-primary">
+        <Typography variant="h5" className="text-text-primary">
           {session.title}
         </Typography>
         <SessionMeta session={session} now={now} />

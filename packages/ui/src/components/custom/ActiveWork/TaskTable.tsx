@@ -23,6 +23,9 @@ export { formatTaskAge }
 
 type TaskSortKey = 'slug' | 'id' | 'title' | 'severity' | 'priority' | 'estimate' | 'updated'
 
+/** Any column the table can leave out; `title` is the one column that always renders. */
+export type TaskColumnKey = Exclude<TaskSortKey, 'title'> | 'tags'
+
 interface TaskColumn {
   key: TaskSortKey | 'tags'
   label: string
@@ -32,6 +35,8 @@ interface TaskColumn {
   align?: 'left' | 'right'
   sortable: boolean
 }
+
+const NO_HIDDEN_COLUMNS: TaskColumnKey[] = []
 
 /** How the severity column renders: `auto` collapses to the dot below {@link COMPACT_SEVERITY_BELOW}. */
 export type SeverityDisplay = 'auto' | 'full' | 'dot'
@@ -54,7 +59,10 @@ const SEVERITY_COLUMN: Record<'full' | 'dot', TaskColumn> = {
   },
 }
 
-const taskColumns = (dotOnly: boolean): TaskColumn[] => [
+const taskColumns = (dotOnly: boolean, hidden: TaskColumnKey[]): TaskColumn[] =>
+  allTaskColumns(dotOnly).filter((col) => !hidden.includes(col.key as TaskColumnKey))
+
+const allTaskColumns = (dotOnly: boolean): TaskColumn[] => [
   { key: 'slug', label: 'Initiative', width: TASK_COLUMN_WIDTHS.slug, sortable: true },
   { key: 'id', label: 'ID', width: TASK_COLUMN_WIDTHS.id, sortable: true },
   { key: 'title', label: 'Title', sortable: true },
@@ -127,6 +135,8 @@ export interface TaskTableProps {
   hideLegend?: boolean
   /** Severity column mode. Defaults to `auto`, driven by the table's measured width. */
   severityDisplay?: SeverityDisplay
+  /** Columns to leave out, for an embedded table that already knows its context. */
+  hideColumns?: TaskColumnKey[]
   className?: string
 }
 
@@ -152,10 +162,11 @@ export function TaskTable({
   defaultSortKey = 'priority',
   hideLegend = false,
   severityDisplay = 'auto',
+  hideColumns = NO_HIDDEN_COLUMNS,
   className,
 }: TaskTableProps) {
   const { dotOnly, onLayout } = useSeverityDotOnly(severityDisplay)
-  const columns = useMemo(() => taskColumns(dotOnly), [dotOnly])
+  const columns = useMemo(() => taskColumns(dotOnly, hideColumns), [dotOnly, hideColumns])
   const { sortedData, sortColumn, sortDirection, handleSort } = useTable<TaskListItem>({
     data: tasks,
     // One page: this grid is meant to be scanned and scrolled, not paged.
@@ -201,6 +212,7 @@ export function TaskTable({
                 task={task}
                 ageLabel={formatTaskAge(task.updated, now)}
                 severityDotOnly={dotOnly}
+                hideColumns={hideColumns}
               />
             ))}
           </TableBody>
