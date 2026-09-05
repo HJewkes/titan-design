@@ -81,6 +81,8 @@ const meta: Meta<ReaderArgs> = {
     ),
   ],
   parameters: {
+    // Top-anchored: the global `centered` layout re-centres the whole reader whenever a short log is selected.
+    layout: 'padded',
     docs: {
       description: {
         component:
