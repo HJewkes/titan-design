@@ -34,6 +34,23 @@ describe('TaskTable', () => {
     expect(screen.getByText('Critical')).toBeInTheDocument()
   })
 
+  it('leaves out hidden columns in both the header and the rows', () => {
+    render(
+      <TaskTable
+        tasks={TASK_LIST_FIXTURE}
+        now={TASK_LIST_NOW}
+        hideLegend
+        hideColumns={['slug', 'tags']}
+      />
+    )
+    const headers = screen.getAllByRole('columnheader').map((h) => h.textContent)
+    expect(headers.some((h) => h?.startsWith('Initiative'))).toBe(false)
+    expect(headers.some((h) => h?.startsWith('Tags'))).toBe(false)
+    expect(headers.some((h) => h?.startsWith('Title'))).toBe(true)
+    const firstRow = screen.getAllByTestId('task-row')[0]!
+    expect(within(firstRow).getAllByRole('cell')).toHaveLength(headers.length)
+  })
+
   it('sorts by priority ascending by default', () => {
     render(<TaskTable tasks={TASK_LIST_FIXTURE} now={TASK_LIST_NOW} />)
     // RL-14 is priority 3, the lowest number in the fixture.

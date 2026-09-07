@@ -16,27 +16,15 @@ import { Eyebrow } from './Eyebrow'
 import { SeverityLabel, SEVERITY_ORDER, severityRank, type TaskSeverity } from './SeverityLabel'
 import { TaskRow, TASK_COLUMN_WIDTHS, type TaskListItem } from './TaskRow'
 
-/**
- * A compact age label for a dense column: `today`, `4d ago`, `3mo ago`.
- *
- * Deliberately not `DateTime format="relative"` — that renders Intl prose ("4
- * days ago"), which is too long for a 74px column, and it reads `Date.now()`
- * internally so a story or a visual baseline could never be deterministic. `now`
- * is injected here for exactly that reason.
- */
-export function formatTaskAge(iso: string | null | undefined, now: number): string {
-  if (!iso) return '—'
-  const then = new Date(iso).getTime()
-  if (Number.isNaN(then)) return '—'
+import { formatTaskAge } from './format-time'
 
-  const days = Math.floor((now - then) / 86_400_000)
-  if (days <= 0) return 'today'
-  if (days === 1) return '1d ago'
-  if (days < 30) return `${days}d ago`
-  return `${Math.floor(days / 30)}mo ago`
-}
+// Kept on this module's surface: the session reader shares the helper now, but callers imported it from here first.
+export { formatTaskAge }
 
 type TaskSortKey = 'slug' | 'id' | 'title' | 'severity' | 'priority' | 'estimate' | 'updated'
+
+/** Any column the table can leave out; `title` is the one column that always renders. */
+export type TaskColumnKey = Exclude<TaskSortKey, 'title'> | 'tags'
 
 interface TaskColumn {
   key: TaskSortKey | 'tags'
@@ -47,6 +35,8 @@ interface TaskColumn {
   align?: 'left' | 'right'
   sortable: boolean
 }
+
+const NO_HIDDEN_COLUMNS: TaskColumnKey[] = []
 
 /** How the severity column renders: `auto` collapses to the dot below {@link COMPACT_SEVERITY_BELOW}. */
 export type SeverityDisplay = 'auto' | 'full' | 'dot'
@@ -69,7 +59,10 @@ const SEVERITY_COLUMN: Record<'full' | 'dot', TaskColumn> = {
   },
 }
 
-const taskColumns = (dotOnly: boolean): TaskColumn[] => [
+const taskColumns = (dotOnly: boolean, hidden: TaskColumnKey[]): TaskColumn[] =>
+  allTaskColumns(dotOnly).filter((col) => !hidden.includes(col.key as TaskColumnKey))
+
+const allTaskColumns = (dotOnly: boolean): TaskColumn[] => [
   { key: 'slug', label: 'Initiative', width: TASK_COLUMN_WIDTHS.slug, sortable: true },
   { key: 'id', label: 'ID', width: TASK_COLUMN_WIDTHS.id, sortable: true },
   { key: 'title', label: 'Title', sortable: true },
@@ -142,6 +135,10 @@ export interface TaskTableProps {
   hideLegend?: boolean
   /** Severity column mode. Defaults to `auto`, driven by the table's measured width. */
   severityDisplay?: SeverityDisplay
+  /** Columns to leave out, for an embedded table that already knows its context. */
+  hideColumns?: TaskColumnKey[]
+  /** Eyebrow over the grid. Defaults to the backlog wording, `N open · all initiatives`. */
+  label?: string
   className?: string
 }
 
@@ -167,10 +164,12 @@ export function TaskTable({
   defaultSortKey = 'priority',
   hideLegend = false,
   severityDisplay = 'auto',
+  hideColumns = NO_HIDDEN_COLUMNS,
+  label,
   className,
 }: TaskTableProps) {
   const { dotOnly, onLayout } = useSeverityDotOnly(severityDisplay)
-  const columns = useMemo(() => taskColumns(dotOnly), [dotOnly])
+  const columns = useMemo(() => taskColumns(dotOnly, hideColumns), [dotOnly, hideColumns])
   const { sortedData, sortColumn, sortDirection, handleSort } = useTable<TaskListItem>({
     data: tasks,
     // One page: this grid is meant to be scanned and scrolled, not paged.
@@ -183,7 +182,7 @@ export function TaskTable({
   return (
     <View className={cn('gap-3', className)} onLayout={onLayout}>
       <View className="flex-row items-center justify-between">
-        <Eyebrow>{`${tasks.length} open · all initiatives`}</Eyebrow>
+        <Eyebrow>{label ?? `${tasks.length} open · all initiatives`}</Eyebrow>
         {hideLegend ? null : <SeverityLegend tasks={tasks} />}
       </View>
 
@@ -216,6 +215,7 @@ export function TaskTable({
                 task={task}
                 ageLabel={formatTaskAge(task.updated, now)}
                 severityDotOnly={dotOnly}
+                hideColumns={hideColumns}
               />
             ))}
           </TableBody>
