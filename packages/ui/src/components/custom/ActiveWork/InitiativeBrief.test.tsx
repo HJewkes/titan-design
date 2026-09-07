@@ -21,20 +21,38 @@ describe('splitBriefSections', () => {
 })
 
 describe('InitiativeBrief', () => {
-  it('renders each section heading and opens the first', () => {
+  it('opens only the first section, showing its body and the others as headings', () => {
     render(<InitiativeBrief brief={INITIATIVE_BRIEF_FIXTURE} />)
-    // The first section's heading is "Why this exists"; its body is visible.
     expect(screen.getByText('Why this exists')).toBeInTheDocument()
     expect(screen.getByText(/Engineering work spans days/)).toBeInTheDocument()
-    // A later section is collapsed: its heading shows, its body does not.
     expect(screen.getByText('Stakeholders')).toBeInTheDocument()
     expect(screen.queryByText(/@hjewkes/)).not.toBeInTheDocument()
   })
 
-  it('expands a collapsed section when its heading is pressed', () => {
+  it('opens a section on its heading and closes the previously open one', () => {
     render(<InitiativeBrief brief={INITIATIVE_BRIEF_FIXTURE} />)
     fireEvent.click(screen.getByText('Stakeholders'))
     expect(screen.getByText(/@hjewkes/)).toBeInTheDocument()
+    expect(screen.queryByText(/Engineering work spans days/)).not.toBeInTheDocument()
+  })
+
+  it('steps through the sections with the prev/next controls', () => {
+    render(<InitiativeBrief brief={INITIATIVE_BRIEF_FIXTURE} />)
+    expect(screen.getByText(/1 \//)).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Next section' }))
+    // The second section is now open; the first's body is gone.
+    expect(screen.queryByText(/Engineering work spans days/)).not.toBeInTheDocument()
+    expect(screen.getByText(/2 \//)).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Previous section' }))
+    expect(screen.getByText(/Engineering work spans days/)).toBeInTheDocument()
+  })
+
+  it('disables prev on the first section', () => {
+    render(<InitiativeBrief brief={INITIATIVE_BRIEF_FIXTURE} />)
+    expect(screen.getByRole('button', { name: 'Previous section' })).toHaveAttribute(
+      'aria-disabled',
+      'true'
+    )
   })
 
   it('has no a11y violations', async () => {

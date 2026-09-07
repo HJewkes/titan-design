@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 import { Card } from '../../ui/card'
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from '../../ui/tabs'
 import { InitiativeHeader } from './InitiativeHeader'
 import { InitiativeBrief, type InitiativeBriefData } from './InitiativeBrief'
 import { OpenLoops, type OpenLoop } from './OpenLoops'
@@ -42,6 +43,9 @@ function InitiativeReader({
   onPressPr,
 }: ReaderArgs) {
   const linkers = sessionLinkers({ onPressTask, onPressLink, onPressPr })
+  // Content-level cards sit one tone up from the page (surface-raised, the card plane) with a
+  // hairline, per the family's depth model — tone first, then hairline, never a heavy border.
+  const cardClass = 'gap-1 bg-surface-raised p-4'
   return (
     <View className="gap-4">
       <InitiativeHeader
@@ -52,27 +56,33 @@ function InitiativeReader({
         shipTarget={brief.shipTarget ?? undefined}
         updated={brief.updated}
       />
-      <Card variant="outline" className="gap-1 p-4">
+      <Card variant="subtle" className={cardClass}>
         <OpenLoops loops={loops} now={now} linkers={linkers} />
       </Card>
       <View className="flex-row flex-wrap items-start gap-4">
-        <Card variant="outline" className="min-w-[360px] flex-1 gap-1 p-4">
+        <Card variant="subtle" className={`min-w-[360px] flex-1 ${cardClass}`}>
           <InitiativeBrief brief={brief} linkers={linkers} />
         </Card>
-        <View className="min-w-[360px] flex-1 gap-4">
-          <Card variant="outline" className="gap-1 p-4">
-            <TaskTable
-              tasks={tasks}
-              now={now}
-              hideLegend
-              hideColumns={['slug']}
-              label={`${tasks.length} open ${tasks.length === 1 ? 'task' : 'tasks'}`}
-            />
-          </Card>
-          <Card variant="outline" className="gap-1 p-4">
-            <SessionList sessions={SESSION_FIXTURE} now={SESSION_NOW} label="Recent sessions" />
-          </Card>
-        </View>
+        <Card variant="subtle" className={`min-w-[360px] flex-1 ${cardClass}`}>
+          <Tabs defaultIndex={0}>
+            <TabList>
+              <Tab>{`Tasks (${tasks.length})`}</Tab>
+              <Tab>{`Sessions (${SESSION_FIXTURE.length})`}</Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
+                <View className="pt-3">
+                  <TaskTable tasks={tasks} now={now} hideLegend hideColumns={['slug']} label=" " />
+                </View>
+              </TabPanel>
+              <TabPanel>
+                <View className="pt-3">
+                  <SessionList sessions={SESSION_FIXTURE} now={SESSION_NOW} label=" " />
+                </View>
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        </Card>
       </View>
     </View>
   )
