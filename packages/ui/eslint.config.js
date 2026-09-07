@@ -139,6 +139,10 @@ module.exports = tseslint.config(
       // trips this rule sits inside prose `notes` strings, not styling. Same
       // false positive as no-device-internals above, and lab never ships.
       'src/lab/**',
+      // Promoted fixtures carry real session/brief/loop prose: a PR ref like
+      // `#102` reads as a 3-digit hex, and a brief naming the brand orange
+      // carries `#FF7900` — both inside data strings, not styling.
+      'src/**/*-fixture.ts',
     ],
     rules: {
       'titan/no-raw-color': 'error',
@@ -213,7 +217,8 @@ module.exports = tseslint.config(
       'src/components/custom/Prose/**/*.{ts,tsx}',
       'src/components/custom/charts/**/*.{ts,tsx}',
     ],
-    ignores: ['**/*.stories.tsx', '**/*.test.tsx'],
+    // Fixtures hold real prose (PR refs like `#102` read as hex); stories/tests exempt as elsewhere.
+    ignores: ['**/*.stories.tsx', '**/*.test.tsx', '**/*-fixture.ts'],
     rules: {
       // Flat config replaces (not merges) this rule per file, so the gradient and
       // hex selectors are repeated here rather than inherited.
