@@ -55,6 +55,19 @@ Session reader ................... (no organism: the host composes the two halve
    ├─ Card / Divider / Pill / DateTime .... (existing primitives)
    └─ MarkdownProse .............. molecule     (Custom/Prose — new shared primitive)
       └─ Typography .............. (existing primitive)
+
+Initiative reader (no organism: the host composes the pieces)
+├─ InitiativeHeader .............. molecule
+│  ├─ StatusDot / Pill / DateTime ...... (existing primitives; INITIATIVE_STATE_META shared with InitiativeCard)
+│  └─ Typography ................. (existing primitive)
+├─ OpenLoops ..................... list
+│  ├─ Eyebrow / Pill / Divider ... (existing primitives)
+│  └─ MarkdownProse .............. molecule
+├─ InitiativeBrief ............... card         (single-open `##` accordion + prev/next stepper)
+│  ├─ Eyebrow / Typography ....... (existing primitives)
+│  └─ MarkdownProse .............. molecule
+├─ TaskTable ..................... organism     (embedded, hideColumns)
+└─ SessionList ................... list
 ```
 
 ## Dependency map
@@ -75,6 +88,17 @@ Session reader ................... (no organism: the host composes the two halve
 | `SessionList`         | list     | Eyebrow, SessionListItem                                                     | host composition (`Custom/ActiveWork/Session Reader` story)                        |
 | `SessionListItem`     | row      | DateTime, Pill, Typography                                                   | SessionList                                                                        |
 | `SessionDetail`       | card     | Card, Divider, Pill, DateTime, MarkdownProse (+ `sessionLinkers`)            | host composition (`Custom/ActiveWork/Session Reader` story)                        |
+| `InitiativeHeader`    | molecule | StatusDot, Pill, DateTime, Typography (+ `INITIATIVE_STATE_META`)            | host composition (`Custom/ActiveWork/Initiative Reader` story)                     |
+| `OpenLoops`           | list     | Eyebrow, Pill, Divider, MarkdownProse                                        | host composition (`Custom/ActiveWork/Initiative Reader` story)                     |
+| `InitiativeBrief`     | card     | Eyebrow, Typography, MarkdownProse                                           | host composition (`Custom/ActiveWork/Initiative Reader` story)                     |
+
+## Surfaces and depth
+
+Content-level cards sit on `surface-raised` (greyRamp[875], the documented card plane) one tone up from the
+page, with a `Card variant="subtle"` hairline. That is the depth model's tone-first order — tone, then
+hairline, never a heavy border. `variant="outline"` (a 1px hairline-strong box on the base plane) reads
+flat: the M2 reader used it first and the cards did not lift off the page. Nested reading regions inside a
+card (the brief's sections, the tabbed tasks/sessions) stay on the card plane; only the card itself lifts.
 
 ## Shared substrates introduced here (reusable beyond this family)
 
