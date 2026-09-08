@@ -7,17 +7,29 @@ import {
   INDICATOR_PRECEDENCE,
   type ExerciseIndicatorKind,
 } from './ExerciseIndicator'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
-// tier color = titan status token, applied as the glyph's SVG stroke (literal hex):
-// danger=status-error, warning=status-warning, success=status-success, info=status-info.
-const kinds: { kind: ExerciseIndicatorKind; label: string; tier: string }[] = [
-  { kind: 'imbalance', label: 'Left/right imbalance', tier: '#D14343' },
-  { kind: 'overshoot', label: 'Load overshoot', tier: '#D14343' },
-  { kind: 'velocity-loss', label: 'Velocity loss', tier: '#F9B415' },
-  { kind: 'missed-reps', label: 'Missed reps', tier: '#F9B415' },
-  { kind: 'pr', label: 'Personal record', tier: '#2ED573' },
-  { kind: 'info', label: 'More info', tier: '#2196F3' },
+type StatusToken = 'status-error' | 'status-warning' | 'status-success' | 'status-info'
+
+// tier color = titan status token, applied as the glyph's SVG stroke. The component
+// resolves it through `resolveColor`, so on web the stroke is the CSS var and the
+// theme drives the value; the dark hex is asserted separately below.
+const kinds: { kind: ExerciseIndicatorKind; label: string; tier: StatusToken }[] = [
+  { kind: 'imbalance', label: 'Left/right imbalance', tier: 'status-error' },
+  { kind: 'overshoot', label: 'Load overshoot', tier: 'status-error' },
+  { kind: 'velocity-loss', label: 'Velocity loss', tier: 'status-warning' },
+  { kind: 'missed-reps', label: 'Missed reps', tier: 'status-warning' },
+  { kind: 'pr', label: 'Personal record', tier: 'status-success' },
+  { kind: 'info', label: 'More info', tier: 'status-info' },
 ]
+
+// The dark-mode values the tier tokens must keep resolving to (the pre-port literals).
+const DARK_TIER: Record<StatusToken, string> = {
+  'status-error': '#D14343',
+  'status-warning': '#F9B415',
+  'status-success': '#2ED573',
+  'status-info': '#2196F3',
+}
 
 describe('ExerciseIndicator', () => {
   it.each(kinds)('renders the $kind chip glyph and accessible label', ({ kind, label }) => {
@@ -27,9 +39,13 @@ describe('ExerciseIndicator', () => {
     expect(screen.getByLabelText(label)).toBeInTheDocument()
   })
 
-  it.each(kinds)('tints the $kind glyph with its tier color', ({ kind, tier }) => {
+  it.each(kinds)('tints the $kind glyph with its tier token', ({ kind, tier }) => {
     const { container } = render(<ExerciseIndicator kind={kind} />)
-    expect(container.querySelector('svg')!.getAttribute('stroke')).toBe(tier)
+    expect(container.querySelector('svg')!.getAttribute('stroke')).toBe(`var(--color-${tier})`)
+  })
+
+  it.each(kinds)('keeps the $kind tier on its dark-mode value', ({ tier }) => {
+    expect(getSemanticColors('dark')[tier]).toBe(DARK_TIER[tier])
   })
 
   it('renders a decorative (aria-hidden) glyph so the chip owns the label', () => {

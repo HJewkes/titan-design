@@ -1,9 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { useOnSurfaceColor } from '../../ui/surface/SurfaceContext'
 import { MetricCell } from './metricText'
-
-const t = getSemanticColors('dark')
 
 const TIMES = '×' // × multiplication sign, padded by muted separators
 const AT = '@'
@@ -34,8 +32,8 @@ export function SetsRepsLoad({
   className,
   ...props
 }: SetsRepsLoadProps) {
-  const value = t['text-primary']
-  const sep = t['text-tertiary']
+  const value = useOnSurfaceColor('primary')
+  const sep = useOnSurfaceColor('tertiary')
 
   return (
     <View

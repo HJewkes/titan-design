@@ -1,11 +1,10 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useEffect, useState } from 'react'
-import { View, Text, Animated, Easing, type ViewProps } from 'react-native'
+import { View, Animated, Easing, type ViewProps } from 'react-native'
 import { StarIcon } from './icons'
 import { BaseBadge } from './BaseBadge'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
-
-const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
+import { Typography } from '../Typography'
+import { resolveColor } from '../../../theme/resolve-color'
 
 export type PRType = 'e1rm' | 'weight' | 'reps' | 'volume' | 'velocity'
 
@@ -38,6 +37,7 @@ export function PrBadge({
   ...props
 }: PrBadgeProps) {
   const resolvedLabel = labelProp ?? typeLabels[type]
+  const brandPrimary = resolveColor('brand-primary')
   const [scale] = useState(() => new Animated.Value(animate ? 0.8 : 1))
   const [opacity] = useState(() => new Animated.Value(animate ? 0 : 1))
 
@@ -69,7 +69,7 @@ export function PrBadge({
       testID="pr-badge-star"
       {...props}
     >
-      <StarIcon size={14} color={BRAND_PRIMARY} fill={BRAND_PRIMARY} strokeWidth={2} />
+      <StarIcon size={14} color={brandPrimary} fill={brandPrimary} strokeWidth={2} />
     </View>
   ) : (
     <BaseBadge
@@ -78,16 +78,14 @@ export function PrBadge({
       accessibilityLabel={`Personal record: ${resolvedLabel}`}
       {...props}
     >
-      <Text
-        style={{
-          fontSize: 12,
-          color: BRAND_PRIMARY,
-          fontWeight: '700',
-          fontFamily: 'Inter, sans-serif',
-        }}
+      {/* `button` is the nearest Inter variant; the badge label is 12px/700, not 14px/600. */}
+      <Typography
+        variant="button"
+        color="inherit"
+        className="text-xs font-bold leading-[normal] text-brand-primary"
       >
         {'\u2605'} {resolvedLabel}
-      </Text>
+      </Typography>
     </BaseBadge>
   )
 
