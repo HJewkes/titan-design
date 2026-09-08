@@ -9,6 +9,7 @@ import {
   type TextInputProps,
 } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { Surface } from '../surface'
 
 export interface AutocompleteOption<T = string> {
   value: T
@@ -233,11 +234,12 @@ export function Autocomplete<T extends string = string>({
 
         {/* Dropdown */}
         {isOpen && (
-          <View
+          <Surface
+            elevation={4}
+            rounded={false}
             className={cn(
               'absolute z-50 top-full left-0 right-0 mt-1',
-              'bg-surface-elevated rounded-md shadow-lg border border-hairline',
-              'max-h-60 overflow-hidden'
+              'rounded-md max-h-60 overflow-hidden'
             )}
           >
             <ScrollView className="py-1">
@@ -306,7 +308,7 @@ export function Autocomplete<T extends string = string>({
                   )
                 })}
             </ScrollView>
-          </View>
+          </Surface>
         )}
       </View>
 

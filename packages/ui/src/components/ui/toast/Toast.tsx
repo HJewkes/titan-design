@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { Surface } from '../surface'
 
 export type ToastStatus = 'success' | 'error' | 'warning' | 'info'
 export type ToastPosition =
@@ -206,12 +207,10 @@ function ToastItem({
   }, [duration, onClose])
 
   return (
-    <View
-      className={cn(
-        'min-w-[280px] max-w-[400px] rounded-lg border-l-4 shadow-lg',
-        'bg-surface-elevated',
-        border
-      )}
+    <Surface
+      elevation={5}
+      rounded={false}
+      className={cn('min-w-[280px] max-w-[400px] rounded-lg border-l-4', border)}
       accessibilityRole="alert"
     >
       <View className={cn('flex-row items-start p-3', bg)}>
@@ -237,7 +236,7 @@ function ToastItem({
           </Pressable>
         )}
       </View>
-    </View>
+    </Surface>
   )
 }
 
@@ -281,13 +280,10 @@ export function Toast({
   const { bg, border, icon } = statusStyles[status]
 
   return (
-    <View
-      className={cn(
-        'min-w-[280px] max-w-[400px] rounded-lg border-l-4 shadow-lg',
-        'bg-surface-elevated',
-        border,
-        className
-      )}
+    <Surface
+      elevation={5}
+      rounded={false}
+      className={cn('min-w-[280px] max-w-[400px] rounded-lg border-l-4', border, className)}
       accessibilityRole="alert"
       {...props}
     >
@@ -316,6 +312,6 @@ export function Toast({
           </Pressable>
         )}
       </View>
-    </View>
+    </Surface>
   )
 }

@@ -8,6 +8,7 @@ import {
   type ModalProps as RNModalProps,
 } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { Surface } from '../surface'
 
 export type ModalSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
 export type ModalScrollBehavior = 'inside' | 'outside'
@@ -136,15 +137,14 @@ export function ModalContent({ children, className }: ModalContentProps) {
       // Prevent backdrop click from propagating
       onPress={(e) => e.stopPropagation()}
     >
-      <View
-        className={cn(
-          'bg-surface-elevated rounded-lg shadow-xl w-full',
-          sizeStyles[size],
-          className
-        )}
+      {/* Floating: overlay plane + the deepest lift, no ring. */}
+      <Surface
+        elevation={5}
+        rounded={false}
+        className={cn('rounded-lg w-full', sizeStyles[size], className)}
       >
         {children}
-      </View>
+      </Surface>
     </Pressable>
   )
 }

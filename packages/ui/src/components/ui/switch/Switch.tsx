@@ -1,6 +1,8 @@
 import React, { forwardRef } from 'react'
 import { Pressable, View, Text, type PressableProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { liftStyle } from '../../../theme/lift'
+import { useSurfaceMode } from '../surface'
 
 export type SwitchSize = 'sm' | 'md' | 'lg'
 
@@ -51,6 +53,7 @@ export const Switch = forwardRef<View, SwitchProps>(function Switch(
   ref
 ) {
   const styles = sizeStyles[size]
+  const mode = useSurfaceMode()
 
   const handlePress = () => {
     if (!isDisabled) {
@@ -66,12 +69,14 @@ export const Switch = forwardRef<View, SwitchProps>(function Switch(
         isChecked ? 'bg-brand-primary' : 'bg-hairline-strong'
       )}
     >
+      {/* The thumb is a raised control resting in its track: one plane of lift. */}
       <View
         className={cn(
-          'rounded-full bg-white shadow-sm transition-transform',
+          'rounded-full bg-white transition-transform',
           styles.thumb,
           isChecked && styles.translate
         )}
+        style={liftStyle(1, mode)}
       />
     </View>
   )

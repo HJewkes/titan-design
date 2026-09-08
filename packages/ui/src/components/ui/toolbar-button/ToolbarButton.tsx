@@ -3,8 +3,10 @@ import { View, Text, Pressable, type ViewProps, StyleSheet, Platform } from 'rea
 import { cn } from '../../../utils/cn'
 import { getHoverColors } from '../../../theme'
 import { greyRamp } from '../../../theme/tokens/primitives'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { resolveColor } from '../../../theme/resolve-color'
+import { getPressedRecessShadow } from '../../../theme/elevation'
+import { liftStyle } from '../../../theme/lift'
+import { Surface, useSurfaceMode } from '../surface'
 
 export type ToolbarButtonVariant = 'default' | 'raised'
 export type ToolbarButtonSize = 'sm' | 'md' | 'lg'
@@ -49,19 +51,10 @@ export interface ToolbarButtonProps extends ViewProps {
   className?: string
 }
 
-const SEMANTIC = getSemanticColors('dark')
-
 // Base button colours. These were raw `#3C3C3C`/`#2C2C2C` literals — old cold
 // charcoal steps that survived the grey migration only because they were plain
 // strings rather than scale references.
 const BUTTON_BG = greyRamp[800]
-const MENU_BG = greyRamp[900]
-
-// Inline depth is a HAIRLINE, not a shadow (TD-07.16). On a ~10% lightness
-// surface a dual-opposing neumorphic shadow has no room below to read; alpha
-// composites by the same amount over any plane, so the edge holds everywhere.
-const EDGE = { borderWidth: 1, borderColor: SEMANTIC['hairline-default'] } as const
-const EDGE_PRESSED = { borderWidth: 1, borderColor: SEMANTIC['hairline-strong'] } as const
 
 // Calculate hover colors using color math
 const hoverColors = getHoverColors(BUTTON_BG, 'medium')
@@ -83,11 +76,11 @@ const textSizeStyles: Record<ToolbarButtonSize, string> = {
  * ToolbarButton component for toolbar actions with toggle state support.
  *
  * Features:
- * - Neumorphic styling with inset shadows for pressed/raised 3D effect
+ * - Depth from the fill plus the lift (raised) or the inset recess (active)
  * - Active (pressed) state is the default visual appearance
  * - Set isActive={false} explicitly for the raised/inactive appearance
  * - Orange accent color on icon when isActive={true}
- * - Hover states that lighten background and remove shadows
+ * - Hover states that lighten the background
  *
  * @example
  * // Toggle button - orange icon when active
@@ -123,6 +116,7 @@ export function ToolbarButton({
 }: ToolbarButtonProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
+  const mode = useSurfaceMode()
 
   const handlePress = useCallback(() => {
     if (isDisabled) return
@@ -146,28 +140,21 @@ export function ToolbarButton({
     return showActive ? '#FFFFFF' : '#D1D1D1'
   }
 
-  // Get shadow and background styles for neumorphic variant
   /**
-   * Raised/pressed treatment. Depth comes from the FILL plus a hairline edge —
-   * pressed sits darker with a stronger edge, raised sits lighter with a quieter
-   * one. It used to come from a two-layer neumorphic shadow, which the surface
-   * exploration ruled out for inline hierarchy: it needs a mid-tone background
-   * for the dark half to have somewhere to fall, and these buttons sit at ~10%
-   * lightness.
+   * Raised/pressed treatment on the depth model: the raised face is a plane one
+   * step above the toolbar and wears the lift, the active face is pressed into
+   * it and wears the recess. The hairline ring both used to carry is an edge,
+   * not depth, and is gone with the rest of the rings on this pass.
    */
   const getRaisedStyle = () => {
-    if (isDisabled) {
-      return styles.disabledBg
-    }
+    if (isDisabled) return styles.disabledBg
     if (showActive) {
-      return {
-        backgroundColor: isHovered ? hoverColors.pressed : greyRamp[900],
-        ...EDGE_PRESSED,
-      }
+      const fill = isHovered ? hoverColors.pressed : greyRamp[900]
+      return { backgroundColor: fill, ...getPressedRecessShadow(fill, mode) }
     }
     return {
       backgroundColor: isHovered ? hoverColors.raised : BUTTON_BG,
-      ...EDGE,
+      ...liftStyle(1, mode),
     }
   }
 
@@ -237,17 +224,17 @@ export function ToolbarButton({
           <>
             {/* Backdrop */}
             <Pressable onPress={handleClose} style={StyleSheet.absoluteFill} className="z-40" />
-            {/* Menu Content */}
-            <View
+            {/* Menu Content — floating: overlay plane + lift, no ring. */}
+            <Surface
+              elevation={4}
+              rounded={false}
               className={cn(
                 'absolute z-50 top-full left-0 mt-1',
-                'rounded-lg shadow-lg border border-hairline',
-                'min-w-[150px] overflow-hidden',
-                `bg-[${MENU_BG}]`
+                'rounded-lg min-w-[150px] overflow-hidden'
               )}
             >
               {menuContent}
-            </View>
+            </Surface>
           </>
         )}
       </View>

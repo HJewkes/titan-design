@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback, createContext, useContext } from 'react'
 import { View, Pressable, Modal, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { Surface } from '../surface'
 
 export type PopoverPlacement = 'top' | 'bottom' | 'left' | 'right'
 
@@ -187,12 +188,13 @@ export function PopoverContent({ children, className }: PopoverContentProps) {
         className="fixed inset-0 z-40"
         style={{ position: 'absolute' }}
       />
-      {/* Content */}
-      <View
+      {/* Content — floating: overlay plane + lift, no ring. */}
+      <Surface
+        elevation={4}
+        rounded={false}
         className={cn(
           'absolute z-50 min-w-[200px]',
-          'bg-surface-elevated rounded-lg shadow-lg border border-hairline',
-          'p-4',
+          'rounded-lg p-4',
           placementStyles[placement],
           className
         )}
@@ -211,7 +213,7 @@ export function PopoverContent({ children, className }: PopoverContentProps) {
           />
         )}
         {children}
-      </View>
+      </Surface>
     </>
   )
 }
