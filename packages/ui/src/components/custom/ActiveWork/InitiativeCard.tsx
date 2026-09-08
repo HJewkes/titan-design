@@ -9,13 +9,18 @@ import { SEVERITY_BAR_COLOR, SEVERITY_ORDER, type TaskSeverity } from './Severit
 
 export type InitiativeState = 'focused' | 'backburner' | 'paused' | 'done'
 
-/** Initiative state → label + {@link StatusDot} variant. */
-const STATE_META: Record<InitiativeState, { label: string; dot: StatusDotVariant }> = {
+/** Initiative state → label + {@link StatusDot} variant. One owner; the initiative header reads it too. */
+export const INITIATIVE_STATE_META: Record<
+  InitiativeState,
+  { label: string; dot: StatusDotVariant }
+> = {
   focused: { label: 'Focused', dot: 'on-track' },
   backburner: { label: 'Backburner', dot: 'future' },
   paused: { label: 'Paused', dot: 'deviation' },
   done: { label: 'Done', dot: 'success' },
 }
+
+const STATE_META = INITIATIVE_STATE_META
 
 export interface InitiativeCardTopTask {
   id: string
