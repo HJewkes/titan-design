@@ -11,12 +11,19 @@ import {
   CardSkeleton,
   CardInset,
 } from './Card'
+import { greyRamp } from '../../../theme/tokens/primitives'
+
+// Planes by RAMP STEP, never by literal bytes — see Surface.test.tsx.
+const BASE = greyRamp[925]
+const ELEVATED = greyRamp[900]
+const RAISED = greyRamp[875]
+const OVERLAY = greyRamp[850]
 
 describe('Card depth', () => {
   it('lifts two planes from the page onto the card plane with rim + shadow', () => {
     render(<Card testID="card" />)
     const el = screen.getByTestId('card')
-    expect(el).toHaveStyle({ backgroundColor: '#31302F' })
+    expect(el).toHaveStyle({ backgroundColor: RAISED })
     expect(el.style.boxShadow).toContain('inset 0 1px 0')
     expect(el.style.boxShadow).toMatch(/0 \d+px \d+px rgba\(0,0,0/)
   })
@@ -29,8 +36,8 @@ describe('Card depth', () => {
         </Card>
       </Card>
     )
-    expect(screen.getByTestId('inner')).toHaveStyle({ backgroundColor: '#373635' })
-    expect(screen.getByTestId('innermost')).toHaveStyle({ backgroundColor: '#373635' })
+    expect(screen.getByTestId('inner')).toHaveStyle({ backgroundColor: OVERLAY })
+    expect(screen.getByTestId('innermost')).toHaveStyle({ backgroundColor: OVERLAY })
   })
 
   it('outline and subtle stay on the host plane with an edge and no lift', () => {
@@ -42,7 +49,7 @@ describe('Card depth', () => {
     )
     for (const id of ['outline', 'subtle']) {
       const el = screen.getByTestId(id)
-      expect(el).toHaveStyle({ backgroundColor: '#252321' })
+      expect(el).toHaveStyle({ backgroundColor: BASE })
       expect(el.style.boxShadow).toBe('')
     }
   })
@@ -50,7 +57,7 @@ describe('Card depth', () => {
   it('filled lifts by tone only', () => {
     render(<Card variant="filled" elevation={1} testID="filled" />)
     const el = screen.getByTestId('filled')
-    expect(el).toHaveStyle({ backgroundColor: '#2C2A28' })
+    expect(el).toHaveStyle({ backgroundColor: ELEVATED })
     expect(el.style.boxShadow).toBe('')
   })
 
@@ -62,7 +69,7 @@ describe('Card depth', () => {
       </>
     )
     expect(screen.getByTestId('bg')).toHaveStyle({ backgroundColor: '#00ff00' })
-    expect(screen.getByTestId('cls')).toHaveStyle({ backgroundColor: '#31302F' })
+    expect(screen.getByTestId('cls')).toHaveStyle({ backgroundColor: RAISED })
   })
 
   it('CardInset presses one plane down from the card', () => {
@@ -72,7 +79,7 @@ describe('Card depth', () => {
       </Card>
     )
     const el = screen.getByTestId('well')
-    expect(el).toHaveStyle({ backgroundColor: '#2C2A28' })
+    expect(el).toHaveStyle({ backgroundColor: ELEVATED })
     expect(el.style.boxShadow).toContain('inset')
   })
 })
@@ -279,7 +286,7 @@ describe('Card', () => {
           </CardInset>
         </Card>
       )
-      expect(screen.getByTestId('deeper')).toHaveStyle({ backgroundColor: '#252321' })
+      expect(screen.getByTestId('deeper')).toHaveStyle({ backgroundColor: BASE })
     })
   })
 
