@@ -17,6 +17,10 @@ export interface MetricCellProps {
   fontSize?: number
 }
 
+/**
+ * @deprecated Use `<Metric size="…" align="…">` (roadmap decision 11) — removed
+ * after AW-127 consumer migration.
+ */
 export function MetricCell({ children, color, fontSize = 11 }: MetricCellProps) {
   return (
     <Text

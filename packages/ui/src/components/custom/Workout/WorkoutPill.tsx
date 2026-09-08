@@ -85,6 +85,9 @@ function usePulse(enabled: boolean) {
   return opacity
 }
 
+/**
+ * @deprecated Use `<Pill tone="…" leading="dot">` — removed after AW-127 consumer migration.
+ */
 export function WorkoutPill({
   name,
   status,

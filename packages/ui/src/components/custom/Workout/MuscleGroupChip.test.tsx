@@ -11,7 +11,7 @@ describe('MuscleGroupChip', () => {
 
   it('renders the colored dot', () => {
     render(<MuscleGroupChip name="Quads" volumeStatus="ontrack" />)
-    expect(screen.getByTestId('muscle-group-chip-dot')).toBeInTheDocument()
+    expect(screen.getByTestId('pill-dot')).toBeInTheDocument()
   })
 
   it('sets accessibility label with name and status', () => {

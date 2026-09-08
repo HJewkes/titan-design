@@ -5,6 +5,9 @@ import type { ThemePreset } from './types'
  *
  * Warm copper/patina aesthetic inspired by vintage audio equipment
  * and reading lounges. Dark-mode only design with editorial typography.
+ *
+ * @deprecated Use `ThemeProvider` with semantic tokens — removed once audiobook
+ * migrates off presets (AW-129).
  */
 export const audiobookPreset: ThemePreset = {
   name: 'audiobook',

@@ -8,42 +8,48 @@ const meta: Meta<typeof Pill> = {
   component: Pill,
   tags: ['autodocs'],
   argTypes: {
-    variant: { control: 'select', options: ['subtle', 'outline'] },
-    color: {
+    variant: { control: 'select', options: ['solid', 'subtle', 'outline'] },
+    tone: {
       control: 'select',
-      options: ['default', 'primary', 'secondary', 'success', 'error', 'warning', 'info'],
+      options: ['neutral', 'brand', 'brand-secondary', 'success', 'warning', 'error', 'info'],
     },
-    size: { control: 'select', options: ['xs', 'sm', 'md'] },
+    size: { control: 'select', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
+    leading: { control: 'select', options: [undefined, 'dot'] },
     rounded: { control: 'boolean' },
+    isDisabled: { control: 'boolean' },
   },
 }
 export default meta
 type Story = StoryObj<typeof Pill>
 
-export const Default: Story = { args: { children: 'Label', color: 'primary' } }
+export const Default: Story = { args: { children: 'Label', tone: 'brand' } }
 
 export const AllVariants: Story = {
   render: () => (
     <View className="flex-row gap-2">
-      <Pill variant="subtle" color="primary">
+      <Pill variant="solid" tone="brand">
+        Solid
+      </Pill>
+      <Pill variant="subtle" tone="brand">
         Subtle
       </Pill>
-      <Pill variant="outline" color="primary">
+      <Pill variant="outline" tone="brand">
         Outline
       </Pill>
     </View>
   ),
 }
 
-export const AllColors: Story = {
+export const AllTones: Story = {
   render: () => (
     <View className="flex-row gap-2 flex-wrap">
-      <Pill color="default">Default</Pill>
-      <Pill color="primary">Primary</Pill>
-      <Pill color="success">Success</Pill>
-      <Pill color="error">Error</Pill>
-      <Pill color="warning">Warning</Pill>
-      <Pill color="info">Info</Pill>
+      <Pill tone="neutral">Neutral</Pill>
+      <Pill tone="brand">Brand</Pill>
+      <Pill tone="brand-secondary">Accent</Pill>
+      <Pill tone="success">Success</Pill>
+      <Pill tone="warning">Warning</Pill>
+      <Pill tone="error">Error</Pill>
+      <Pill tone="info">Info</Pill>
     </View>
   ),
 }
@@ -51,29 +57,35 @@ export const AllColors: Story = {
 export const AllSizes: Story = {
   render: () => (
     <View className="flex-row gap-2 items-center">
-      <Pill size="xs" color="primary">
+      <Pill size="xs" tone="brand">
         XS
       </Pill>
-      <Pill size="sm" color="primary">
+      <Pill size="sm" tone="brand">
         SM
       </Pill>
-      <Pill size="md" color="primary">
+      <Pill size="md" tone="brand">
         MD
+      </Pill>
+      <Pill size="lg" tone="brand">
+        LG
+      </Pill>
+      <Pill size="xl" tone="brand">
+        XL
       </Pill>
     </View>
   ),
 }
 
-export const WithDot: Story = {
+export const LeadingSlot: Story = {
   render: () => (
     <View className="flex-row gap-2">
-      <Pill color="success" leftElement={<Indicator size="xs" color="success" />}>
+      <Pill tone="success" leading="dot">
         Active
       </Pill>
-      <Pill color="error" leftElement={<Indicator size="xs" color="error" />}>
+      <Pill tone="error" leading="dot">
         Failed
       </Pill>
-      <Pill color="warning" leftElement={<Indicator size="xs" color="warning" />}>
+      <Pill tone="warning" leading={<Indicator size="xs" color="warning" />}>
         Pending
       </Pill>
     </View>
@@ -83,10 +95,10 @@ export const WithDot: Story = {
 export const SquareCorners: Story = {
   render: () => (
     <View className="flex-row gap-2">
-      <Pill rounded={false} color="primary">
+      <Pill rounded={false} tone="brand">
         Tag
       </Pill>
-      <Pill rounded={false} color="success">
+      <Pill rounded={false} tone="success">
         Done
       </Pill>
     </View>

@@ -37,6 +37,9 @@ const variantColors: Record<BaseBadgeVariant, { backgroundColor: string; borderC
   },
 }
 
+/**
+ * @deprecated Use `<Pill tone="…" variant="…">` — removed after AW-127 consumer migration.
+ */
 export function BaseBadge({
   variant = 'plain',
   size = 'md',

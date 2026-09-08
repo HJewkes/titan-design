@@ -183,6 +183,10 @@ module.exports = {
         mono: ['var(--font-family-mono)', 'monospace'],
       },
       fontSize: {
+        // Micro steps. `2xs` carries a paired line-height like the rest of the
+        // scale (Typography's microLabel needs it); `3xs` is bare because a pill
+        // capsule takes its height from padding, not from the label's leading.
+        '3xs': '0.5625rem',
         '2xs': ['0.625rem', { lineHeight: '0.875rem' }],
         xs: ['0.75rem', { lineHeight: '1rem' }],
         sm: ['0.875rem', { lineHeight: '1.25rem' }],

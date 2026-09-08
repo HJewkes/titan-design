@@ -30,6 +30,9 @@ export interface WeightBadgeProps extends Omit<BaseBadgeProps, 'variant' | 'icon
   className?: string
 }
 
+/**
+ * @deprecated Use `<Pill tone="neutral">` — removed after AW-127 consumer migration.
+ */
 export function WeightBadge({
   value,
   unit = 'lbs',

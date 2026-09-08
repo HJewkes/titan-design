@@ -6,6 +6,11 @@ export {
 } from './BaseBadge'
 export { WeightBadge, type WeightBadgeProps, type WeightBadgeSize } from './WeightBadge'
 export { PrBadge, type PrBadgeProps, type PRType } from './PrBadge'
+/**
+ * @deprecated Use `Indicator` (roadmap decision 10) — removed after AW-127
+ * consumer migration. Marked on the barrel, not the module: `StatusDot.tsx` is
+ * being edited under E1 this hour.
+ */
 export { StatusDot, type StatusDotVariant, type StatusDotProps } from './StatusDot'
 export { PlaceholderStrip, type PlaceholderStripProps } from './PlaceholderStrip'
 export {

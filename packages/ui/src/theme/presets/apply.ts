@@ -36,6 +36,10 @@ function injectFontImport(url: string) {
   document.head.appendChild(link)
 }
 
+/**
+ * @deprecated Use `ThemeProvider` with semantic tokens — removed once audiobook
+ * migrates off presets (AW-129).
+ */
 export function applyThemePreset(preset: ThemePreset): () => void {
   if (typeof document === 'undefined') {
     return () => {}

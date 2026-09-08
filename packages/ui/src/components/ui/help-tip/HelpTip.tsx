@@ -90,6 +90,9 @@ const arrowStyles: Record<HelpTipPlacement, string> = {
  *   <Text>Email Address</Text>
  *   <HelpTip content="We'll never share your email with anyone." size="sm" />
  * </View>
+ *
+ * @deprecated Use `Tooltip` (roadmap decision 5) — removed after AW-127
+ * consumer migration.
  */
 export function HelpTip({
   content,
@@ -201,6 +204,9 @@ export interface LabelWithHelpProps extends ViewProps {
  *   helpContent="Your API key can be found in the developer settings."
  *   isRequired
  * />
+ *
+ * @deprecated Use `Tooltip` beside your own label (roadmap decision 5) —
+ * removed after AW-127 consumer migration.
  */
 export function LabelWithHelp({
   label,
