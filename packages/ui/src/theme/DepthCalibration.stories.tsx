@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text, Pressable } from 'react-native'
 import { greyRamp } from './tokens/primitives'
 import { getSemanticColors } from './tokens/semantic'
-import { getBaseSurfaceColor, getElevationSurface, type ElevationLevel } from './elevation'
+import { getElevationSurface, type ElevationLevel } from './elevation'
 import { grainForTone, paperSheet } from './materials'
 
 /**
@@ -19,8 +19,9 @@ import { grainForTone, paperSheet } from './materials'
  * north-star doc set its floors explicitly "to survive glare + a mediocre
  * panel", and none of them have been looked at on the panel. That matters more
  * than the numbers suggest: solid dark borders were DELETED, so if the hairlines
- * wash out there is no fallback, and elevation levels 1-3 are separated by tone
- * alone now that shadow is gated behind FLOATING_ELEVATION_MIN.
+ * wash out there is no fallback. Elevation levels now resolve to the ramp planes
+ * themselves and wear a lift (rim + shadow) on top; C2 measures the tone half of
+ * that pairing on its own, because the lift must never be the only cue.
  *
  * WHY FORCED-CHOICE. "Does this look OK?" is close to unfalsifiable at
  * threshold — you are asking someone to report the absence of a faint thing they
@@ -45,7 +46,6 @@ const meta: Meta = {
 export default meta
 
 const t = getSemanticColors('dark')
-const base = getBaseSurfaceColor('dark')
 
 /**
  * The rig's ground sits BELOW the ramp, at true black.
@@ -105,7 +105,7 @@ function Panel({
             borderRadius: 8,
             borderWidth: 1,
             borderColor: t['hairline-strong'],
-            backgroundColor: getElevationSurface(base, 2, 'dark'),
+            backgroundColor: getElevationSurface(2, 'dark'),
           }}
         >
           <Text className="text-text-primary" style={{ fontSize: 14, fontWeight: '600' }}>
@@ -233,7 +233,9 @@ export const Hairlines: StoryObj = {
 
 // ── C2 · tone steps ─────────────────────────────────────────────────────────
 
-const STAIRCASE: ElevationLevel[] = [0, 1, 2, 3, 4, 5]
+// Levels 4 and 5 share the overlay plane by design (past the ramp the shadow
+// separates), so the staircase stops at the last distinct tone.
+const STAIRCASE: ElevationLevel[] = [-2, -1, 0, 1, 2, 3]
 
 /**
  * Adjacent-step pairs, with the lighter side pre-assigned to a fixed side and
@@ -244,13 +246,13 @@ const STEP_PAIRS: { left: ElevationLevel; right: ElevationLevel; label: string }
   { left: 1, right: 0, label: '1' },
   { left: 2, right: 3, label: '2' },
   { left: 2, right: 2, label: '3' },
-  { left: 3, right: 4, label: '4' },
+  { left: -1, right: 0, label: '4' },
   { left: 1, right: 2, label: '5' },
-  { left: 5, right: 4, label: '6' },
+  { left: -2, right: -1, label: '6' },
 ]
 
 export const ToneSteps: StoryObj = {
-  name: 'C2 · Tone steps — levels 1-3 have nothing else',
+  name: 'C2 · Tone steps — the ramp with the lift stripped off',
   render: () => (
     <Panel
       title="C2 · Tone steps"
@@ -266,13 +268,13 @@ export const ToneSteps: StoryObj = {
             {STAIRCASE.map((lv) => (
               <View
                 key={lv}
-                style={{ flex: 1, backgroundColor: getElevationSurface(base, lv, 'dark') }}
+                style={{ flex: 1, backgroundColor: getElevationSurface(lv, 'dark') }}
               />
             ))}
           </View>
           <Text className="text-text-tertiary" style={{ fontSize: 13, marginTop: 8 }}>
             {revealed
-              ? `6 bands / 5 edges — elevation 0…5, colorAdjustment 0 · .025 · .05 · .075 · .10 · .13`
+              ? `6 bands / 5 edges — elevation -2…3 = frame · background · base · elevated · raised · overlay`
               : 'Edges visible: ______'}
           </Text>
 
@@ -285,13 +287,13 @@ export const ToneSteps: StoryObj = {
                   <View
                     style={{
                       flex: 1,
-                      backgroundColor: getElevationSurface(base, pair.left, 'dark'),
+                      backgroundColor: getElevationSurface(pair.left, 'dark'),
                     }}
                   />
                   <View
                     style={{
                       flex: 1,
-                      backgroundColor: getElevationSurface(base, pair.right, 'dark'),
+                      backgroundColor: getElevationSurface(pair.right, 'dark'),
                     }}
                   />
                 </View>
@@ -310,18 +312,18 @@ export const ToneSteps: StoryObj = {
           {revealed ? (
             <View style={{ marginTop: 14, maxWidth: 1000 }}>
               <KeyLine>
-                {'Pair 1 is the one that matters: it is the 0.025 step from level 0 to level 1, the ' +
-                  'smallest in the ladder and the one carrying the most UI. Pair 3 is the decoy.'}
+                {'Pair 2 is the one that matters: raised → overlay is the tightest step on the ' +
+                  'ramp (ΔL* 2.5) and the one a card inside a card lands on. Pair 3 is the decoy.'}
               </KeyLine>
               <KeyLine>
                 {'PASS: all five edges counted on the staircase, pairs 1/2/4/5/6 called correctly, ' +
-                  'pair 3 called SAME. Missing pair 1 means level 1 is not a level — it is level 0 ' +
-                  'with extra bookkeeping, and no shadow is coming to save it below level 4.'}
+                  'pair 3 called SAME. In production every lifted plane also wears a rim + shadow, ' +
+                  'but the tone must carry on its own — native has no multi-layer shadow at all.'}
               </KeyLine>
               <KeyLine>
-                {'Retune lever: widen `colorAdjustment` on elevation levels 1-3 in elevation.ts. ' +
-                  'Level 5 is the ceiling the ladder has to fit under, so widening the bottom ' +
-                  'compresses the top — re-space the whole ladder rather than nudging one entry.'}
+                {'Retune lever: the ramp itself (tokens/primitives.ts, greyRamp 850–975). The ' +
+                  'elevation ladder no longer has values of its own to widen — it reads the ramp — ' +
+                  'so a missed step is a ramp finding, and re-spacing goes through the generator.'}
               </KeyLine>
             </View>
           ) : null}

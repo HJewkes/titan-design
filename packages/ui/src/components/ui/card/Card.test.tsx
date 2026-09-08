@@ -12,6 +12,71 @@ import {
   CardInset,
 } from './Card'
 
+describe('Card depth', () => {
+  it('lifts two planes from the page onto the card plane with rim + shadow', () => {
+    render(<Card testID="card" />)
+    const el = screen.getByTestId('card')
+    expect(el).toHaveStyle({ backgroundColor: '#31302F' })
+    expect(el.style.boxShadow).toContain('inset 0 1px 0')
+    expect(el.style.boxShadow).toMatch(/0 \d+px \d+px rgba\(0,0,0/)
+  })
+
+  it('is relative: a card nested in a card steps up again and clamps at overlay', () => {
+    render(
+      <Card>
+        <Card testID="inner">
+          <Card testID="innermost" />
+        </Card>
+      </Card>
+    )
+    expect(screen.getByTestId('inner')).toHaveStyle({ backgroundColor: '#373635' })
+    expect(screen.getByTestId('innermost')).toHaveStyle({ backgroundColor: '#373635' })
+  })
+
+  it('outline and subtle stay on the host plane with an edge and no lift', () => {
+    render(
+      <>
+        <Card variant="outline" testID="outline" />
+        <Card variant="subtle" testID="subtle" />
+      </>
+    )
+    for (const id of ['outline', 'subtle']) {
+      const el = screen.getByTestId(id)
+      expect(el).toHaveStyle({ backgroundColor: '#252321' })
+      expect(el.style.boxShadow).toBe('')
+    }
+  })
+
+  it('filled lifts by tone only', () => {
+    render(<Card variant="filled" elevation={1} testID="filled" />)
+    const el = screen.getByTestId('filled')
+    expect(el).toHaveStyle({ backgroundColor: '#2C2A28' })
+    expect(el.style.boxShadow).toBe('')
+  })
+
+  it('bgColor is the override; a bg-* className is not', () => {
+    render(
+      <>
+        <Card bgColor="#00ff00" testID="bg" />
+        <Card className="bg-surface-overlay" testID="cls" />
+      </>
+    )
+    expect(screen.getByTestId('bg')).toHaveStyle({ backgroundColor: '#00ff00' })
+    expect(screen.getByTestId('cls')).toHaveStyle({ backgroundColor: '#31302F' })
+  })
+
+  it('CardInset presses one plane down from the card', () => {
+    render(
+      <Card>
+        <CardInset testID="well" />
+      </Card>
+    )
+    const el = screen.getByTestId('well')
+    expect(el).toHaveStyle({ backgroundColor: '#2C2A28' })
+    expect(el.style.boxShadow).toContain('inset')
+  })
+})
+
 describe('Card', () => {
   it('renders children correctly', () => {
     render(
@@ -206,13 +271,15 @@ describe('Card', () => {
       expect(screen.getByText('Inset content')).toBeInTheDocument()
     })
 
-    it('accepts elevation prop', () => {
-      const { container } = render(
-        <CardInset elevation={-2}>
-          <span>Deep inset</span>
-        </CardInset>
+    it('nests: a well inside a well steps down again', () => {
+      render(
+        <Card>
+          <CardInset>
+            <CardInset testID="deeper" />
+          </CardInset>
+        </Card>
       )
-      expect(container).toBeInTheDocument()
+      expect(screen.getByTestId('deeper')).toHaveStyle({ backgroundColor: '#252321' })
     })
   })
 

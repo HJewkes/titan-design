@@ -1,22 +1,26 @@
 import React, { useMemo, useState } from 'react'
-import { View, Text, Pressable, type ViewProps } from 'react-native'
+import { View, Text, Pressable, type ViewProps, type ViewStyle } from 'react-native'
 import { cn } from '../../../utils/cn'
-import {
-  getElevationSurface,
-  getElevationShadow,
-  getBaseSurfaceColor,
-  getValidatedElevation,
-  type ElevationLevel,
-} from '../../../theme'
-import { useTheme } from '../../../utils/useTheme'
+import { liftStyle, type LiftStep } from '../../../theme/lift'
+import { Surface } from '../surface/Surface'
+import { SurfaceContext, type SurfaceContextValue } from '../surface/SurfaceContext'
+import { useResolvedSurface } from '../surface/resolveSurface'
 
 export type CardVariant = 'elevated' | 'outline' | 'filled' | 'accent' | 'subtle'
-export type CardElevation = 1 | 2 | 3 // subtle, standard, prominent
+/** Planes to lift above the enclosing Surface. */
+export type CardElevation = 1 | 2 | 3
 
 export interface CardProps extends ViewProps {
-  /** Visual variant */
+  /**
+   * How the card separates from its host:
+   *  - `elevated` (default): lifts `elevation` planes and wears the lift (rim + shadow).
+   *  - `accent`: as `elevated`, plus a left stripe.
+   *  - `filled`: lifts `elevation` planes, tone only — for tiles nested in a lifted card.
+   *  - `outline`: stays on the host plane with a hairline-strong edge — status borders.
+   *  - `subtle`: stays on the host plane with a hairline-subtle edge.
+   */
   variant?: CardVariant
-  /** Elevation level (1=subtle, 2=standard, 3=prominent) */
+  /** Planes to lift above the enclosing Surface (default 2: page → the card plane). */
   elevation?: CardElevation
   /** Whether the card is interactive (hoverable/pressable) */
   isInteractive?: boolean
@@ -26,7 +30,10 @@ export interface CardProps extends ViewProps {
   onPress?: () => void
   /** Custom border color (hex, rgb, or CSS color). Useful for status cards. */
   borderColor?: string
-  /** Custom background color (hex, rgb, or CSS color). Useful for colored cards. */
+  /**
+   * Custom background color. The one way to override the plane: a `bg-*`
+   * className is discarded because the plane is written into `style`.
+   */
   bgColor?: string
   /** Accent stripe color for accent variant (CSS color or hex) */
   accentColor?: string
@@ -43,16 +50,51 @@ export interface CardProps extends ViewProps {
   skeletonContentLines?: number
 }
 
-const variantStyles: Record<CardVariant, string> = {
-  elevated: '', // Will be set dynamically via elevation system
+const EDGE_CLASS: Record<CardVariant, string> = {
+  elevated: '',
+  accent: '',
+  filled: '',
   outline: 'border border-hairline-strong',
-  filled: '', // Will be set dynamically via elevation system
-  accent: 'border border-hairline',
   subtle: 'border border-hairline-subtle',
 }
 
+const LIFTED: Record<CardVariant, boolean> = {
+  elevated: true,
+  accent: true,
+  filled: false,
+  outline: false,
+  subtle: false,
+}
+
+const STAYS_ON_HOST: Record<CardVariant, boolean> = {
+  elevated: false,
+  accent: false,
+  filled: false,
+  outline: true,
+  subtle: true,
+}
+
+/** The card's plane and treatment, hover lifting one more plane when clickable. */
+function useCardDepth(variant: CardVariant, elevation: CardElevation, hovered: boolean) {
+  const raise = STAYS_ON_HOST[variant] ? undefined : elevation
+  const resolved = useResolvedSurface({ raise, lift: LIFTED[variant] })
+  const depthStyle = useMemo(() => {
+    if (!hovered || !LIFTED[variant]) return resolved.depthStyle
+    const hoverStep = Math.min(3, resolved.step + 1) as LiftStep
+    return liftStyle(hoverStep, resolved.mode)
+  }, [hovered, variant, resolved])
+  return { ...resolved, depthStyle }
+}
+
 /**
- * Card component for containing related content.
+ * Card component for containing related content. Sits `elevation` planes above
+ * the enclosing Surface and publishes its own plane, so a card nested in a card
+ * steps up again (and clamps at the top of the ramp).
+ *
+ * Lift sparingly: a card lifts off the page, but a small card lifted off a
+ * small card reads as clutter. Inside a card, organise with `CardInset`, a
+ * `filled` tile, or a divider, and keep a second lift for something that
+ * genuinely floats over the first.
  *
  * @example
  * <Card>
@@ -63,14 +105,6 @@ const variantStyles: Record<CardVariant, string> = {
  *   <CardContent>
  *     <Text>Card content goes here</Text>
  *   </CardContent>
- *   <CardFooter>
- *     <Button>Action</Button>
- *   </CardFooter>
- * </Card>
- *
- * // Interactive card
- * <Card isInteractive onPress={() => console.log('pressed')}>
- *   <CardContent>Click me</CardContent>
  * </Card>
  */
 export function Card({
@@ -93,137 +127,67 @@ export function Card({
 }: CardProps) {
   const isClickable = isInteractive || !!onPress
   const [isHovered, setIsHovered] = useState(false)
-  const theme = useTheme()
-
-  // Get elevation level (validate and clamp to card's allowed range)
-  const elevationLevel = useMemo(() => {
-    const validated = getValidatedElevation('card', elevation as ElevationLevel)
-    // Map variant to elevation if needed
-    if (variant === 'outline' || variant === 'accent' || variant === 'subtle') {
-      return 1 as ElevationLevel // These border variants use subtle elevation
-    }
-    return validated
-  }, [variant, elevation])
-
-  // Get base surface color for theme
-  const baseColor = useMemo(() => getBaseSurfaceColor(theme), [theme])
-
-  // Calculate surface color and shadow from elevation
-  const surfaceColor = useMemo(() => {
-    // Outline variant in light mode uses a specific off-white for clear visibility
-    if ((variant === 'outline' || variant === 'accent') && theme === 'light') {
-      return '#FAFAFA' // Matches --color-surface-elevated in light mode
-    }
-    // Subtle variant uses the base surface color without elevation lift
-    if (variant === 'subtle') {
-      return getElevationSurface(baseColor, 0 as ElevationLevel, theme)
-    }
-    return getElevationSurface(baseColor, elevationLevel, theme)
-  }, [baseColor, elevationLevel, theme, variant])
-
-  const shadowStyle = useMemo(() => {
-    // Only apply hover shadow if card is actually clickable
-    const shouldHover = isHovered && isClickable
-    return getElevationShadow(baseColor, elevationLevel, theme, shouldHover)
-  }, [baseColor, elevationLevel, theme, isHovered, isClickable])
-
-  // Render skeleton content when loading, otherwise render children
-  const cardContent = isLoading ? (
-    <>
-      {skeletonHasHeader && (
-        <CardHeader>
-          <View className="h-5 w-1/3 bg-interactive-disabled rounded" />
-          <View className="mt-2 h-4 w-2/3 bg-interactive-disabled rounded" />
-        </CardHeader>
-      )}
-      <CardContent>
-        {Array.from({ length: skeletonContentLines }).map((_, i) => (
-          <View
-            key={i}
-            className={cn(
-              'h-4 bg-interactive-disabled rounded',
-              i < skeletonContentLines - 1 ? 'mb-2 w-full' : 'w-4/5'
-            )}
-          />
-        ))}
-      </CardContent>
-      {skeletonHasFooter && (
-        <CardFooter>
-          <View className="h-9 w-24 bg-interactive-disabled rounded" />
-        </CardFooter>
-      )}
-    </>
-  ) : (
-    children
-  )
+  const depth = useCardDepth(variant, elevation, isHovered && isClickable)
 
   const baseClassName = cn(
     'rounded-lg overflow-hidden relative',
-    // Apply variant styles, but only use default border color if no custom borderColor
-    variant === 'outline'
-      ? borderColor
-        ? 'border' // Just the border width, color via style
-        : variantStyles[variant] // Full variant styles including color
-      : variantStyles[variant],
-    // Remove Tailwind shadow classes - we're using elevation shadows via style prop
+    borderColor ? 'border' : EDGE_CLASS[variant],
     isClickable && 'web:cursor-pointer web:transition-all web:duration-150',
     isClickable && 'web:hover:-translate-y-0.5 active:scale-[0.99]',
     isLoading && 'pointer-events-none animate-pulse',
     className
   )
 
-  // Accent variant: left stripe via borderLeft override
-  const accentStyle = useMemo(
-    () =>
-      variant === 'accent'
-        ? {
-            borderLeftWidth: accentWidth ?? 3,
-            borderLeftColor: accentColor ?? 'var(--color-brand-primary)',
-          }
-        : {},
-    [variant, accentWidth, accentColor]
+  const mergedStyle = useMemo(() => {
+    const own: ViewStyle & Record<string, unknown> = {
+      backgroundColor: bgColor || depth.backgroundColor,
+      borderRadius: 8,
+      overflow: 'hidden',
+      ...depth.depthStyle,
+    }
+    if (variant === 'accent') {
+      own.borderLeftWidth = accentWidth ?? 3
+      own.borderLeftColor = accentColor ?? 'var(--color-brand-primary)'
+    }
+    if (borderColor) own.borderColor = borderColor
+    return style ? [own, style] : own
+  }, [style, depth, bgColor, borderColor, variant, accentWidth, accentColor])
+
+  const context = useMemo<SurfaceContextValue>(
+    () => ({ mode: depth.mode, level: depth.plane }),
+    [depth.mode, depth.plane]
   )
 
-  // Merge styles: background color from elevation + shadow style + custom colors + custom style
-  const mergedStyle = useMemo(() => {
-    const elevationStyle: Record<string, any> = {
-      backgroundColor: bgColor || surfaceColor,
-      borderRadius: 8,
-      overflow: 'hidden' as const,
-      ...shadowStyle,
-      ...accentStyle,
-    }
-
-    // Add custom border color if provided
-    if (borderColor) {
-      elevationStyle.borderColor = borderColor
-    }
-
-    if (!style) return elevationStyle
-    // User style takes precedence over elevation defaults (e.g. maxWidth, custom bg)
-    return [elevationStyle, style]
-  }, [style, surfaceColor, shadowStyle, borderColor, bgColor, accentStyle])
-
-  if (isClickable) {
-    return (
-      <Pressable
-        onPress={onPress}
-        onHoverIn={() => setIsHovered(true)}
-        onHoverOut={() => setIsHovered(false)}
-        accessibilityRole="button"
-        className={baseClassName}
-        style={mergedStyle}
-        {...props}
-      >
-        {cardContent}
-      </Pressable>
-    )
-  }
+  const content = isLoading ? (
+    <SkeletonBody
+      hasHeader={skeletonHasHeader}
+      hasFooter={skeletonHasFooter}
+      contentLines={skeletonContentLines}
+    />
+  ) : (
+    children
+  )
 
   return (
-    <View className={baseClassName} style={mergedStyle} {...props}>
-      {cardContent}
-    </View>
+    <SurfaceContext.Provider value={context}>
+      {isClickable ? (
+        <Pressable
+          onPress={onPress}
+          onHoverIn={() => setIsHovered(true)}
+          onHoverOut={() => setIsHovered(false)}
+          accessibilityRole="button"
+          className={baseClassName}
+          style={mergedStyle}
+          {...props}
+        >
+          {content}
+        </Pressable>
+      ) : (
+        <View className={baseClassName} style={mergedStyle} {...props}>
+          {content}
+        </View>
+      )}
+    </SurfaceContext.Provider>
   )
 }
 
@@ -294,28 +258,15 @@ export function CardFooter({ children, className }: CardFooterProps) {
   return <View className={cn('px-6 py-4 flex-row items-center gap-2', className)}>{children}</View>
 }
 
-export interface CardSkeletonProps {
-  /** Whether to show header skeleton */
-  hasHeader?: boolean
-  /** Whether to show footer skeleton */
-  hasFooter?: boolean
-  /** Number of content lines */
-  contentLines?: number
-  /** Additional className */
-  className?: string
+interface SkeletonBodyProps {
+  hasHeader: boolean
+  hasFooter: boolean
+  contentLines: number
 }
 
-/**
- * Skeleton placeholder for Card loading state.
- */
-export function CardSkeleton({
-  hasHeader = true,
-  hasFooter = false,
-  contentLines = 3,
-  className,
-}: CardSkeletonProps) {
+function SkeletonBody({ hasHeader, hasFooter, contentLines }: SkeletonBodyProps) {
   return (
-    <Card variant="elevated" elevation={2} className={cn('animate-pulse', className)}>
+    <>
       {hasHeader && (
         <CardHeader>
           <View className="h-5 w-1/3 bg-interactive-disabled rounded" />
@@ -338,54 +289,60 @@ export function CardSkeleton({
           <View className="h-9 w-24 bg-interactive-disabled rounded" />
         </CardFooter>
       )}
+    </>
+  )
+}
+
+export interface CardSkeletonProps {
+  /** Whether to show header skeleton */
+  hasHeader?: boolean
+  /** Whether to show footer skeleton */
+  hasFooter?: boolean
+  /** Number of content lines */
+  contentLines?: number
+  /** Additional className */
+  className?: string
+}
+
+/**
+ * Skeleton placeholder for Card loading state.
+ */
+export function CardSkeleton({
+  hasHeader = true,
+  hasFooter = false,
+  contentLines = 3,
+  className,
+}: CardSkeletonProps) {
+  return (
+    <Card variant="elevated" className={cn('animate-pulse', className)}>
+      <SkeletonBody hasHeader={hasHeader} hasFooter={hasFooter} contentLines={contentLines} />
     </Card>
   )
 }
 
 export interface CardInsetProps extends ViewProps {
-  /** Elevation level for inset (-2=deep, -1=shallow) */
-  elevation?: -2 | -1
   /** Additional className */
   className?: string
   children?: React.ReactNode
 }
 
 /**
- * Inset element within a Card. Applies pressed neumorphic shadow
- * to create a sunken/recessed appearance.
+ * A sunken well inside a Card: one plane down from the card with the inset
+ * recess. Nest one inside another to step down again (clamps at the frame).
  *
  * @example
- * <Card elevation={2}>
+ * <Card>
  *   <CardContent>
- *     <CardInset elevation={-1}>
+ *     <CardInset className="p-4">
  *       <Text>This content appears inset/sunken</Text>
  *     </CardInset>
  *   </CardContent>
  * </Card>
  */
-export function CardInset({
-  elevation = -1,
-  className,
-  children,
-  style,
-  ...props
-}: CardInsetProps) {
-  const theme = useTheme()
-  const baseColor = useMemo(() => getBaseSurfaceColor(theme), [theme])
-  const surfaceColor = useMemo(() => {
-    return getElevationSurface(baseColor, elevation as ElevationLevel, theme)
-  }, [baseColor, elevation, theme])
-  const shadowStyle = useMemo(() => {
-    return getElevationShadow(baseColor, elevation as ElevationLevel, theme)
-  }, [baseColor, elevation, theme])
-
+export function CardInset({ className, children, ...props }: CardInsetProps) {
   return (
-    <View
-      className={cn('rounded', className)}
-      style={[{ backgroundColor: surfaceColor }, shadowStyle, style]}
-      {...props}
-    >
+    <Surface pressed className={cn('rounded', className)} rounded={false} {...props}>
       {children}
-    </View>
+    </Surface>
   )
 }

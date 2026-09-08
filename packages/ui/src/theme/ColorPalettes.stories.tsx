@@ -146,9 +146,9 @@ export const SurfaceRamp: StoryObj = {
         scales — the greys it is built from are in Foundations/Color/Primitives. To apply it at
         runtime use <Text className="font-semibold text-text-primary">&lt;Surface level&gt;</Text>{' '}
         and <Text className="font-semibold text-text-primary">useOnSurfaceColor</Text> rather than
-        reading tokens directly — see Components/Atoms/Surface. Shadow and glow treatments layered
-        on top of these planes are in Foundations/Shadows; tone, hairline, material and the
-        elevation levels are in Foundations/Depth.
+        reading tokens directly — see Components/Atoms/Surface. How a plane says it is ABOVE its
+        neighbour (tone, lift, hairline, material) and how the elevation levels map onto these steps
+        are in Foundations/Depth.
       </Text>
     </View>
   ),

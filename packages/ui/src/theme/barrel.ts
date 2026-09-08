@@ -34,14 +34,15 @@ export {
   type ShadowIntensity,
 } from './color-utils'
 export {
-  getElevationConfig,
+  ELEVATION_PLANE,
+  elevationPlane,
   getElevationSurface,
   getElevationShadow,
-  getBaseSurfaceColor,
-  getValidatedElevation,
-  componentElevationRanges,
+  getPressedRecessShadow,
+  FLOATING_ELEVATION_MIN,
+  PRESSED_ELEVATION_LEVEL,
   type ElevationLevel,
-  type ElevationConfig,
-  type ComponentType,
 } from './elevation'
+export * from './lift'
+export * from './surface-planes'
 export * from './presets'
