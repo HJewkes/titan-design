@@ -33,7 +33,7 @@ import { primitiveColors } from '../../theme/tokens/primitives'
 import { WORKOUT_TOKENS } from '../../theme/workout-tokens'
 import { alpha } from '../../utils/colors'
 import { formatVelocity } from '../../utils/workout-format'
-import { paperSheet, insetWell, debossLabel } from '../north-star/surfaces'
+import { paperSheet, insetWell, debossLabel } from '../../theme/materials'
 
 const C = getSemanticColors('dark')
 const PAGE_BG = primitiveColors.charcoal[900]

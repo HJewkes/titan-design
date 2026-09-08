@@ -24,7 +24,7 @@ import { getSemanticColors } from '../../theme/tokens/semantic'
 import { primitiveColors, primitiveRamps } from '../../theme/tokens/primitives'
 import { alpha } from '../../utils/colors'
 import { roundTempo } from '../../utils/workout-format'
-import { grainForTone } from './surfaces'
+import { grainForTone } from '../../theme/materials'
 
 const T = getSemanticColors('dark')
 const PAGE_BG = primitiveColors.charcoal[900]

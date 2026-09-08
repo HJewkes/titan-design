@@ -25,7 +25,7 @@ import { getSemanticColors } from '../../theme/tokens/semantic'
 import { primitiveColors } from '../../theme/tokens/primitives'
 import { WORKOUT_TOKENS } from '../../theme/workout-tokens'
 import { alpha } from '../../utils/colors'
-import { insetWell } from '../north-star/surfaces'
+import { insetWell } from '../../theme/materials'
 
 const C = getSemanticColors('dark')
 const PAGE_BG = primitiveColors.charcoal[900]

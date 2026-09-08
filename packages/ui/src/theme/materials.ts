@@ -59,7 +59,7 @@
  * the `voltras-workspace` active-work initiative (`active-work open voltras-workspace`), not this repo —
  * titan-design has no `sources/` directory, so they do not resolve from here.
  */
-import type { ViewStyle } from 'react-native'
+import type { TextStyle, ViewStyle } from 'react-native'
 import { getSemanticColors } from './tokens/semantic'
 
 const c = getSemanticColors('dark')
@@ -216,4 +216,30 @@ export function barPaper(color: string, flip = false): ViewStyle {
       ? '0 -6px 16px rgba(0,0,0,0.45)'
       : 'inset 0 1.5px 0 rgba(255,255,255,0.22), 0 6px 16px rgba(0,0,0,0.45)',
   } as unknown as ViewStyle
+}
+
+/**
+ * A POST-IT card: a matte tinted sheet with a crisp rim, a defined contact
+ * shadow, and a deliberate CANT (`deg`) so it reads as a stuck note — where a
+ * small unit of data wants to feel pinned to the surface (alerts, next-set). A
+ * degree or two, not a fraction, so the tilt is intentional rather than a bug.
+ */
+export function postIt(tone: string = c['surface-raised'], deg = -1.5): ViewStyle {
+  return {
+    backgroundColor: tone,
+    backgroundImage: grainForTone(tone),
+    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12), 0 6px 14px rgba(0,0,0,0.45)',
+    transform: [{ rotate: `${deg}deg` }],
+  } as unknown as ViewStyle
+}
+
+/**
+ * DEBOSSED (engraved) text: a 1px light highlight dropped just below the glyphs
+ * so a label reads as pressed INTO the surface. Deliberate, for section eyebrows
+ * on a matte plane — not body copy. Pair with a tertiary/dim text colour.
+ */
+export const debossLabel: TextStyle = {
+  textShadowColor: 'rgba(255,255,255,0.11)',
+  textShadowOffset: { width: 0, height: 1 },
+  textShadowRadius: 0,
 }
