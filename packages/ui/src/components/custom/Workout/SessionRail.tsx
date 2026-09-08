@@ -13,11 +13,11 @@ import type { SetStripSet } from './SetStrip'
 import type { ExerciseIndicatorKind } from './ExerciseIndicator'
 
 // Warm-tapered ramp surfaces (the locked S3 shell shades): the nav + the heading plane read as
-// ONE dark plane (background shell, #1C1916, owned by SessionHeader's `<Surface level="background">`).
-// The exercise list is a LIGHTER inset panel — `<Surface level="elevated">` (#2A2827) —
-// recessed via its inner shadow yet paler than the header, so the transparent
-// exercise headings on it never blend into the header plane. Surface owns both backgrounds,
-// so the rail no longer hand-sets them.
+// ONE dark plane, the shell `background`, owned by SessionHeader's `<Surface level="background">`.
+// The exercise list is a well cut into the rail — `<Surface level="base">` with the shared
+// `insetWell` material — recessed by its inner shadow yet paler than the header, so the
+// transparent exercise headings on it never blend into the header plane. Surface owns both
+// backgrounds, so the rail no longer hand-sets them.
 const SEMANTIC = getSemanticColors('dark')
 /** Row divider — one step up from the well it sits in so the line reads. */
 const DIVIDER = greyRamp[875]
@@ -128,10 +128,8 @@ export function SessionRail({
       />
 
       {/* The list is a WELL cut into the rail: one plane down from the rail's
-          `elevated`, recessed by the shared inset material rather than by a
-          neumorphic pressed shadow (which had no room to read at this
-          lightness). `level` follows the well's tone so on-surface text
-          resolves against what is actually painted. */}
+          `elevated`, recessed by the shared inset material. `level` follows the
+          well's tone so on-surface text resolves against what is painted. */}
       <Surface
         level="base"
         style={[{ flex: 1 }, insetWell(SEMANTIC['surface-base'])]}

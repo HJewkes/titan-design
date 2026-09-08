@@ -1,8 +1,9 @@
 /**
- * Color utility functions for the design system
+ * Color utility functions for the design system.
  *
- * lighten/darken are re-exported from shadows.ts which uses HSV-based
- * color math for more perceptually consistent results across hues.
+ * `lighten`/`darken` are re-exported from `theme/color-utils`, which does the
+ * HSV math. They are hover/state adjustments, not a depth ladder — planes come
+ * from the grey ramp.
  */
 
 export { lighten, darken } from '../theme/color-utils'

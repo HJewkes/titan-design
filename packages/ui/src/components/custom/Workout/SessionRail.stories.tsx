@@ -10,8 +10,8 @@ const t = getSemanticColors('dark')
  * `SessionRail` (shell organism) — the live-workout exercise list: a flat raised
  * `SessionHeader` glance (title, stat tiles, chunked pace bar) over a sunk, inset list
  * of ExerciseCard rail headings. The header plan (chunk widths ∝ sets) is derived from
- * `exercises`. Surfaces bind to the grey ramp; the list depth is a subtle neumorphic
- * inset. Driven entirely by props.
+ * `exercises`. Surfaces bind to the grey ramp; the list is a well cut into the rail
+ * with the shared `insetWell` material. Driven entirely by props.
  */
 const meta: Meta<typeof SessionRail> = {
   title: 'Shell/SessionRail',
@@ -37,7 +37,7 @@ const meta: Meta<typeof SessionRail> = {
       description: {
         component:
           '**Organism** (shell S3). The live-workout exercise list: raised header glance over ' +
-          'a sunk inset list, subtle neumorphic depth (grey ramp + `neumorphicShadows`). ' +
+          'a sunk inset list (grey ramp + the `insetWell` material). ' +
           'Composes ' +
           '[SessionHeader](?path=/docs/shell-sessionrail-sessionheader--docs) + ' +
           '[ExerciseCardHeading](?path=/docs/workout-exercisecardheading--docs) × N. ' +
