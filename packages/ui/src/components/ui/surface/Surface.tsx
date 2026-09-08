@@ -64,7 +64,12 @@ export function Surface({
       <View
         className={cn(applyRounded && 'rounded-2xl', className)}
         // backgroundColor first so a caller `style` can still override it.
-        style={[{ backgroundColor: resolved.backgroundColor }, resolved.depthStyle, glowStyle, style]}
+        style={[
+          { backgroundColor: resolved.backgroundColor },
+          resolved.depthStyle,
+          glowStyle,
+          style,
+        ]}
         {...props}
       >
         {children}

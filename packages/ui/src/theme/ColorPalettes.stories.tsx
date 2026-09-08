@@ -147,8 +147,8 @@ export const SurfaceRamp: StoryObj = {
         runtime use <Text className="font-semibold text-text-primary">&lt;Surface level&gt;</Text>{' '}
         and <Text className="font-semibold text-text-primary">useOnSurfaceColor</Text> rather than
         reading tokens directly — see Components/Atoms/Surface. How a plane says it is ABOVE its
-        neighbour (tone, lift, hairline, material) and how the elevation levels map onto these
-        steps are in Foundations/Depth.
+        neighbour (tone, lift, hairline, material) and how the elevation levels map onto these steps
+        are in Foundations/Depth.
       </Text>
     </View>
   ),

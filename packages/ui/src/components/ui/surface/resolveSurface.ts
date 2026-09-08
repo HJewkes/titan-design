@@ -84,7 +84,15 @@ export function useResolvedSurface(props: SurfaceDepthProps): ResolvedSurface {
   const { level, raise, elevation, pressed, lift, liftOptions, theme } = props
   return useMemo(
     () =>
-      resolveSurfaceDepth(inherited, { level, raise, elevation, pressed, lift, liftOptions, theme }),
+      resolveSurfaceDepth(inherited, {
+        level,
+        raise,
+        elevation,
+        pressed,
+        lift,
+        liftOptions,
+        theme,
+      }),
     [inherited, level, raise, elevation, pressed, lift, liftOptions, theme]
   )
 }
