@@ -31,7 +31,7 @@ import {
  * sets and do not reflow as each rep lands.
  */
 const meta: Meta<typeof VelocityStrip> = {
-  title: 'Workout/DataViz/VelocityStrip/Hero',
+  title: 'Custom/Workout/DataViz/VelocityStrip/Hero',
   component: VelocityStrip,
   tags: ['autodocs'],
 }

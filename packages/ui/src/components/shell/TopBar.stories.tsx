@@ -33,7 +33,7 @@ const meta: Meta<typeof TopBar> = {
           '[SessionStatePill](?path=/docs/shell-sessionstatepill--docs) + ' +
           '[Divider](?path=/docs/components-atoms-divider--docs) (`bg-border-prominent`) + ' +
           '[DeviceMenu](?path=/docs/shell-devicemenu--docs) + ' +
-          '[DateTime](?path=/docs/components-molecules-datetime--docs) (`variant="mono"` live clock). ' +
+          '[DateTime](?path=/docs/custom-datetime--docs) (`variant="mono"` live clock). ' +
           'Background = the shared `surfaceGradient.chrome` primitive.\n\n' +
           '**Try it:** use the **Controls** to change `state`, edit `devices` (set one to `lost` to see the ' +
           'fault), or toggle `showSubtitle` / `showClock`. **Resize the canvas** to watch the ' +

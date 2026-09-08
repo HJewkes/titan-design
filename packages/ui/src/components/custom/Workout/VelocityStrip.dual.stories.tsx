@@ -17,9 +17,9 @@ import {
  * Dual is **not a fourth view**, so its scenario coverage lives in the
  * per-view groups, where every scenario renders single ABOVE dual on one
  * dataset:
- * [Compact](?path=/docs/workout-dataviz-velocitystrip-compact--docs) ·
- * [Expanded](?path=/docs/workout-dataviz-velocitystrip-expanded--docs) ·
- * [Hero](?path=/docs/workout-dataviz-velocitystrip-hero--docs).
+ * [Compact](?path=/docs/custom-workout-dataviz-velocitystrip-compact--docs) ·
+ * [Expanded](?path=/docs/custom-workout-dataviz-velocitystrip-expanded--docs) ·
+ * [Hero](?path=/docs/custom-workout-dataviz-velocitystrip-hero--docs).
  *
  * This group exists for the two things a pairing cannot carry: the exported
  * **API** (`DualVelocityStripProps`, in the args table below) and the layout
@@ -37,7 +37,7 @@ import {
  * not a hardcoded side. Single-slot sets keep using `VelocityStrip`.
  */
 const meta: Meta<typeof DualVelocityStrip> = {
-  title: 'Workout/DataViz/VelocityStrip/Dual',
+  title: 'Custom/Workout/DataViz/VelocityStrip/Dual',
   component: DualVelocityStrip,
   tags: ['autodocs'],
   decorators: [wallDecorator],

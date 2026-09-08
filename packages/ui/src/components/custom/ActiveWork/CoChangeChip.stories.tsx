@@ -3,7 +3,7 @@ import { Surface } from '../../ui/surface'
 import { CoChangeChip } from './CoChangeChip'
 
 const meta: Meta<typeof CoChangeChip> = {
-  title: 'ActiveWork/CoChangeChip',
+  title: 'Custom/ActiveWork/CoChangeChip',
   component: CoChangeChip,
   tags: ['autodocs'],
   decorators: [
@@ -20,10 +20,10 @@ const meta: Meta<typeof CoChangeChip> = {
         component:
           '**Molecule.** One symmetric "these two files change together" pair. Only basenames are ' +
           'shown — at chip size the directory is noise. Composes ' +
-          '[Card](?path=/docs/components-card--docs), ' +
-          '[Pill](?path=/docs/components-pill--docs) and ' +
-          '[FilePathLabel](?path=/docs/activework-filepathlabel--docs). ' +
-          'Used by [FileHistoryExplorer](?path=/docs/activework-filehistoryexplorer--docs).',
+          '[Card](?path=/docs/components-molecules-card--docs), ' +
+          '[Pill](?path=/docs/components-atoms-pill--docs) and ' +
+          '[FilePathLabel](?path=/docs/custom-activework-filepathlabel--docs). ' +
+          'Used by [FileHistoryExplorer](?path=/docs/custom-activework-filehistoryexplorer--docs).',
       },
     },
   },

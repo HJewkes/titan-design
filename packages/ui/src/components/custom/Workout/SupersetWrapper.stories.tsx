@@ -7,7 +7,7 @@ import { getSemanticColors } from '../../../theme/tokens/semantic'
 const t = getSemanticColors('dark')
 
 const meta: Meta<typeof SupersetWrapper> = {
-  title: 'Workout/SupersetWrapper',
+  title: 'Custom/Workout/SupersetWrapper',
   component: SupersetWrapper,
   tags: ['autodocs'],
   decorators: [

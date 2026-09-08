@@ -9,7 +9,7 @@ const PAGE_BG = greyRamp[975]
 const t = getSemanticColors('dark')
 
 const meta: Meta<typeof FatigueLights> = {
-  title: 'Workout/Fatigue/Fatigue Lights',
+  title: 'Custom/Fatigue/Fatigue Lights',
   component: FatigueLights,
   tags: ['autodocs'],
   parameters: {

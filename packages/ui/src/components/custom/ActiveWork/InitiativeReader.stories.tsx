@@ -98,7 +98,7 @@ function InitiativeReader({
  * · `SessionList`, all over `MarkdownProse` and the session linkers.
  */
 const meta: Meta<ReaderArgs> = {
-  title: 'Custom/ActiveWork/Initiative Reader',
+  title: 'Custom/ActiveWork/InitiativeReader',
   component: InitiativeReader,
   args: {
     brief: INITIATIVE_BRIEF_FIXTURE,

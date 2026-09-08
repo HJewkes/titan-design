@@ -21,10 +21,10 @@ const meta: Meta<typeof SessionHeader> = {
         component:
           '**Molecule** (shell S3). The session-rail heading — title, stat tiles, chunked ' +
           'pace bar, sets label + ⏱ readout, on the raised grey plane. Composes ' +
-          '[MetricTiles](?path=/docs/workout-metrictiles--docs) / ' +
-          '[ScheduleTiles](?path=/docs/workout-scheduletiles--docs) + ' +
-          '[SegmentedProgressBar](?path=/docs/workout-segmentedprogressbar--docs) + ' +
-          '[TimerReadout](?path=/docs/components-atoms-timerreadout--docs). ' +
+          '[MetricTiles](?path=/docs/custom-workout-metrictiles--docs) / ' +
+          '[ScheduleTiles](?path=/docs/custom-workout-scheduletiles--docs) + ' +
+          '[SegmentedProgressBar](?path=/docs/custom-workout-segmentedprogressbar--docs) + ' +
+          '[TimerReadout](?path=/docs/custom-timerreadout--docs). ' +
           'Used-by ↑ [SessionRail](?path=/docs/shell-sessionrail--docs).',
       },
     },

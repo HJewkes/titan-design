@@ -14,8 +14,8 @@
  */
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
-import { ExerciseCard, type ExerciseCardProps } from '../custom/Workout/ExerciseCard'
-import type { SetRowProps } from '../custom/Workout/SetRow'
+import { ExerciseCard, type ExerciseCardProps } from '../../components/custom/Workout/ExerciseCard'
+import type { SetRowProps } from '../../components/custom/Workout/SetRow'
 
 // ----------------------------------------------------------------------------- specimen data
 // Transcribed from the r2-synthesis gallery `EX` model (cable pull/push session, "Pull A").

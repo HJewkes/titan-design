@@ -4,7 +4,7 @@ import { SetRow } from './SetRow'
 import { SetTableHeader } from './SetTableHeader'
 
 const meta: Meta<typeof SetRow> = {
-  title: 'Workout/SetRow',
+  title: 'Custom/Workout/SetRow',
   component: SetRow,
   tags: ['autodocs'],
   parameters: {
@@ -16,7 +16,7 @@ const meta: Meta<typeof SetRow> = {
           '(logged), `live` (performing now — brightened, compact velocity-height spotlight), `todo` ' +
           '(planned — muted grey stub). Done + upcoming share one muted treatment; only `live` is ' +
           'brightened. No PREV column. Composed by ' +
-          '[ExerciseCard](?path=/docs/workout-exercisecard--docs) (expanded).',
+          '[ExerciseCard](?path=/docs/custom-workout-exercisecard--docs) (expanded).',
       },
     },
   },

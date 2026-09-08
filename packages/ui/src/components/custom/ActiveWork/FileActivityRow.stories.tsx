@@ -8,7 +8,7 @@ import { Surface } from '../../ui/surface'
 import { FILE_HISTORY_FILES } from './file-history-fixture'
 
 const meta: Meta<typeof FileActivityRow> = {
-  title: 'ActiveWork/FileActivityRow',
+  title: 'Custom/ActiveWork/FileActivityRow',
   component: FileActivityRow,
   tags: ['autodocs'],
   parameters: {
@@ -17,9 +17,9 @@ const meta: Meta<typeof FileActivityRow> = {
         component:
           '**Row.** One file in the ranked "hottest files" list: path, total touches, the ' +
           'read/write/edit split, and a sparkline of per-session growth. Composes ' +
-          '[FilePathLabel](?path=/docs/activework-filepathlabel--docs) and ' +
-          '[SparkBars](?path=/docs/components-charts-sparkbars--docs). ' +
-          'Used by [FileHistoryExplorer](?path=/docs/activework-filehistoryexplorer--docs).',
+          '[FilePathLabel](?path=/docs/custom-activework-filepathlabel--docs) and ' +
+          '[SparkBars](?path=/docs/custom-charts-sparkbars--docs). ' +
+          'Used by [FileHistoryExplorer](?path=/docs/custom-activework-filehistoryexplorer--docs).',
       },
     },
   },

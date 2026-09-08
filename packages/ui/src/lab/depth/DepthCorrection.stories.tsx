@@ -27,7 +27,7 @@ import { grainForTone } from '../../theme/materials'
  * Delete this file once the decision is recorded in Foundations/Depth.
  */
 const meta: Meta = {
-  title: 'Lab/Depth/Correction — Gate 2',
+  title: 'Lab/Depth/Correction - Gate 2',
   parameters: { layout: 'fullscreen' },
 }
 export default meta

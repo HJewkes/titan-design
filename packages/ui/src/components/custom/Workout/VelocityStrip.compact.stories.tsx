@@ -23,7 +23,7 @@ import {
  * vertical space as a single — 2x is only forced for the value-height expanded.
  */
 const meta: Meta<typeof VelocityStrip> = {
-  title: 'Workout/DataViz/VelocityStrip/Compact',
+  title: 'Custom/Workout/DataViz/VelocityStrip/Compact',
   component: VelocityStrip,
   tags: ['autodocs'],
 }

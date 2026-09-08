@@ -15,7 +15,7 @@ import {
  * picks the highest-precedence active signal.
  */
 const meta: Meta<typeof ExerciseIndicator> = {
-  title: 'Workout/ExerciseIndicator',
+  title: 'Custom/Workout/ExerciseIndicator',
   component: ExerciseIndicator,
   tags: ['autodocs'],
   parameters: {
@@ -26,7 +26,7 @@ const meta: Meta<typeof ExerciseIndicator> = {
           'precedence-ranked kinds (imbalance › overshoot › velocity-loss › missed-reps › pr › ' +
           'info) over four status-token tier colors; glyph = signal, color = severity tier. ' +
           '`resolveIndicator()` selects the single chip to show. Used-by ↑ ' +
-          '[ExerciseHeading](?path=/docs/workout-exerciseheading--docs).',
+          '[ExerciseHeading](?path=/docs/custom-workout-exerciseheading--docs).',
       },
     },
   },

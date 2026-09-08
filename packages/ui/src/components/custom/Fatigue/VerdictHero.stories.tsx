@@ -9,7 +9,7 @@ const PAGE_BG = greyRamp[975]
 const t = getSemanticColors('dark')
 
 const meta: Meta<typeof VerdictHero> = {
-  title: 'Workout/Fatigue/Verdict Hero',
+  title: 'Custom/Fatigue/Verdict Hero',
   component: VerdictHero,
   tags: ['autodocs'],
   parameters: {

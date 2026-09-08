@@ -32,7 +32,7 @@ inherited default and adding the new status:
 
 ```ts
 const meta: Meta<typeof Foo> = {
-  title: 'Workout/Foo',
+  title: 'Custom/Workout/Foo',
   tags: ['status:stable', '!status:review'], // ! negates the inherited default
   // ...
 }

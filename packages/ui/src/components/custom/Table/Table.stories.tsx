@@ -42,7 +42,7 @@ const manyUsers: User[] = Array.from({ length: 50 }, (_, i) => ({
 }))
 
 const meta: Meta<typeof Table> = {
-  title: 'Components/Organisms/Table',
+  title: 'Custom/Table',
   component: Table,
   tags: ['autodocs'],
   argTypes: {

@@ -11,7 +11,7 @@ import {
 } from './Sidebar'
 
 const meta: Meta<typeof Sidebar> = {
-  title: 'Components/Organisms/Sidebar',
+  title: 'Custom/Sidebar',
   component: Sidebar,
   tags: ['autodocs'],
   argTypes: {

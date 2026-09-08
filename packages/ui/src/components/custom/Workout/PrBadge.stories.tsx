@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { PrBadge } from './PrBadge'
 
 const meta: Meta<typeof PrBadge> = {
-  title: 'Components/Atoms/PrBadge',
+  title: 'Custom/Workout/PrBadge',
   component: PrBadge,
   tags: ['autodocs'],
   argTypes: {

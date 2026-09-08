@@ -8,7 +8,7 @@ import { FATIGUE_STATES, WARMING_UP_MODEL, buildMockModel } from './fatigue-mock
 const t = getSemanticColors('dark')
 
 const meta: Meta<typeof LiveFatigueCard> = {
-  title: 'Workout/Fatigue/Live Fatigue Card',
+  title: 'Custom/Fatigue/Live Fatigue Card',
   component: LiveFatigueCard,
   tags: ['autodocs'],
   parameters: {

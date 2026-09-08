@@ -3,7 +3,7 @@ import { View, Text } from 'react-native'
 import { RestTimer } from './RestTimer'
 
 const meta: Meta<typeof RestTimer> = {
-  title: 'Workout/RestTimer',
+  title: 'Custom/Workout/RestTimer',
   component: RestTimer,
   tags: ['autodocs'],
   parameters: {

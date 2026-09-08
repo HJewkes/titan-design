@@ -21,9 +21,9 @@ import {
  * Per-rep velocity strip.
  *
  * Three views, each with its own story group:
- * - **[Compact](?path=/docs/workout-dataviz-velocitystrip-compact--docs)** — the flat resting strip
- * - **[Expanded](?path=/docs/workout-dataviz-velocitystrip-expanded--docs)** — the value-height chart
- * - **[Hero](?path=/docs/workout-dataviz-velocitystrip-hero--docs)** — the across-the-room wall treatment
+ * - **[Compact](?path=/docs/custom-workout-dataviz-velocitystrip-compact--docs)** — the flat resting strip
+ * - **[Expanded](?path=/docs/custom-workout-dataviz-velocitystrip-expanded--docs)** — the value-height chart
+ * - **[Hero](?path=/docs/custom-workout-dataviz-velocitystrip-hero--docs)** — the across-the-room wall treatment
  *
  * Dual is NOT a fourth view. It is the same strip when the exercise used two
  * Voltras, so every group pairs single above dual on one dataset.
@@ -39,7 +39,7 @@ import {
  * live in the three group files above.
  */
 const meta: Meta<typeof VelocityStrip> = {
-  title: 'Workout/DataViz/VelocityStrip',
+  title: 'Custom/Workout/DataViz/VelocityStrip',
   component: VelocityStrip,
   tags: ['autodocs'],
   argTypes: {

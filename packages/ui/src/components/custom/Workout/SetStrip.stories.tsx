@@ -9,7 +9,7 @@ import { SetStrip, type SetStripSet } from './SetStrip'
  * amber-300 · green-300).
  */
 const meta: Meta<typeof SetStrip> = {
-  title: 'Workout/SetStrip',
+  title: 'Custom/Workout/SetStrip',
   component: SetStrip,
   tags: ['autodocs'],
   parameters: {
@@ -18,8 +18,8 @@ const meta: Meta<typeof SetStrip> = {
         component:
           '**Molecule.** The per-set segmented performance strip — one bar per set, rep ' +
           'intensities as butted ramp-pin segments (no rep gaps), active set pulses. Composes ' +
-          '[SetBar](?path=/docs/workout-setbar--docs) × N. ' +
-          'Used-by ↑ [ExerciseCardHeading](?path=/docs/workout-exercisecardheading--docs).',
+          '[SetBar](?path=/docs/custom-workout-setbar--docs) × N. ' +
+          'Used-by ↑ [ExerciseCardHeading](?path=/docs/custom-workout-exercisecardheading--docs).',
       },
     },
   },

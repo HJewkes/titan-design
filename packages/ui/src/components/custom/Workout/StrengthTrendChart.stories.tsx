@@ -32,7 +32,7 @@ const decline: StrengthTrendDataPoint[] = [
 ]
 
 const meta: Meta<typeof StrengthTrendChart> = {
-  title: 'Workout/DataViz/StrengthTrendChart',
+  title: 'Custom/Workout/DataViz/StrengthTrendChart',
   component: StrengthTrendChart,
   tags: ['autodocs'],
   argTypes: {

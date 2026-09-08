@@ -22,7 +22,7 @@ const FATIGUE_TICKS = [
 ]
 
 const meta: Meta<typeof ZoneTrack> = {
-  title: 'Workout/DataViz/ZoneTrack',
+  title: 'Custom/Workout/DataViz/ZoneTrack',
   component: ZoneTrack,
   tags: ['autodocs'],
   parameters: {
@@ -32,7 +32,7 @@ const meta: Meta<typeof ZoneTrack> = {
           '**Primitive.** The shared linear-gauge base: a pill track with an N-band zone ' +
           'gradient, optional tick marks + labels, and a single value marker — a `needle` line ' +
           'or a left-anchored `fill` (clip-reveal gradient, or solid trend colour). Used-by ↓ ' +
-          '[FatigueMeter](?path=/docs/workout-dataviz-fatiguemeter--docs); the target base for ' +
+          '[FatigueMeter](?path=/docs/custom-workout-dataviz-fatiguemeter--docs); the target base for ' +
           'TrainingLoadGauge (ACWR) + RpeCalibration (band + marker). Zone colours are literal ' +
           'ramp-token hex.',
       },

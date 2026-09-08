@@ -14,7 +14,7 @@ const meta: Meta<typeof Eyebrow> = {
       description: {
         component:
           '**Molecule.** An uppercase micro-label used above a value or a section of ' +
-          "content. Composes [Typography](?path=/docs/custom-typography--docs)'s `overline` variant.",
+          "content. Composes [Typography](?path=/docs/foundations-typography--docs)'s `overline` variant.",
       },
     },
   },

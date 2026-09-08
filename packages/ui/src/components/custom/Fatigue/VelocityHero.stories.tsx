@@ -10,7 +10,7 @@ const PANEL_BG = greyRamp[950]
 const t = getSemanticColors('dark')
 
 const meta: Meta<typeof VelocityHero> = {
-  title: 'Workout/DataViz/VelocityHero',
+  title: 'Custom/Fatigue/Velocity Hero',
   component: VelocityHero,
   tags: ['autodocs'],
   parameters: {

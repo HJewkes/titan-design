@@ -32,7 +32,7 @@ import {
  * meaning.
  */
 const meta: Meta<typeof VelocityStrip> = {
-  title: 'Workout/DataViz/VelocityStrip/Expanded',
+  title: 'Custom/Workout/DataViz/VelocityStrip/Expanded',
   component: VelocityStrip,
   tags: ['autodocs'],
 }

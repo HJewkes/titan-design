@@ -6,14 +6,14 @@ import { SegmentedProgressBar } from './SegmentedProgressBar'
 const PLAN = [{ weight: 3 }, { weight: 3 }, { weight: 2 }, { weight: 2 }, { weight: 2 }]
 
 const meta: Meta<typeof SegmentedProgressBar> = {
-  title: 'Workout/SegmentedProgressBar',
+  title: 'Custom/Workout/SegmentedProgressBar',
   component: SegmentedProgressBar,
   tags: ['autodocs'],
   parameters: {
     docs: {
       description: {
         component:
-          '**Atom.** Composes [SegmentedBar](?path=/docs/workout-segmentedbar--docs) + paceTone. Used-by ↑ SessionHeader.',
+          '**Atom.** Composes [SegmentedBar](?path=/docs/custom-workout-segmentedbar--docs) + paceTone. Used-by ↑ SessionHeader.',
       },
     },
   },

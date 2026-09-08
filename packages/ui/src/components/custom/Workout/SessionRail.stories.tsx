@@ -40,7 +40,7 @@ const meta: Meta<typeof SessionRail> = {
           'a sunk inset list, subtle neumorphic depth (grey ramp + `neumorphicShadows`). ' +
           'Composes ' +
           '[SessionHeader](?path=/docs/shell-sessionrail-sessionheader--docs) + ' +
-          '[ExerciseCardHeading](?path=/docs/workout-exercisecardheading--docs) × N. ' +
+          '[ExerciseCardHeading](?path=/docs/custom-workout-exercisecardheading--docs) × N. ' +
           'Sits beside [SideNav](?path=/docs/shell-sidenav--docs) in the dashboard shell.',
       },
     },

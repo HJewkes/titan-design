@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { DeviationBar } from './DeviationBar'
 
 const meta: Meta<typeof DeviationBar> = {
-  title: 'Workout/DataViz/DeviationBar',
+  title: 'Custom/Workout/DataViz/DeviationBar',
   component: DeviationBar,
   tags: ['autodocs'],
   argTypes: {

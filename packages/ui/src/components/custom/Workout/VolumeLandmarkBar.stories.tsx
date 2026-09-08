@@ -6,7 +6,7 @@ import { getSemanticColors } from '../../../theme/tokens/semantic'
 const t = getSemanticColors('dark')
 
 const meta: Meta<typeof VolumeLandmarkBar> = {
-  title: 'Workout/DataViz/VolumeLandmarkBar',
+  title: 'Custom/Workout/DataViz/VolumeLandmarkBar',
   component: VolumeLandmarkBar,
   tags: ['autodocs'],
   parameters: {

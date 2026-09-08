@@ -8,7 +8,7 @@ import {
 } from './file-history-fixture'
 
 const meta: Meta<typeof FileHistoryExplorer> = {
-  title: 'ActiveWork/FileHistoryExplorer',
+  title: 'Custom/ActiveWork/FileHistoryExplorer',
   component: FileHistoryExplorer,
   tags: ['autodocs'],
   decorators: [
@@ -26,12 +26,12 @@ const meta: Meta<typeof FileHistoryExplorer> = {
           '**Organism.** A file browser ranked by mined activity instead of alphabetised by name: ' +
           'a KPI strip, a two-pane hottest-files list ⇄ detail, and the repo’s strongest ' +
           'co-change pairs. The co-change view is the part a plain file tree cannot show. Composes ' +
-          '[Card](?path=/docs/components-card--docs), ' +
-          '[Tile](?path=/docs/components-tile--docs), ' +
-          '[Divider](?path=/docs/components-divider--docs), ' +
-          '[FileActivityRow](?path=/docs/activework-fileactivityrow--docs), ' +
-          '[FileActivityDetail](?path=/docs/activework-fileactivitydetail--docs), ' +
-          '[CoChangeChip](?path=/docs/activework-cochangechip--docs), and ' +
+          '[Card](?path=/docs/components-molecules-card--docs), ' +
+          '[Tile](?path=/docs/components-atoms-tile--docs), ' +
+          '[Divider](?path=/docs/components-atoms-divider--docs), ' +
+          '[FileActivityRow](?path=/docs/custom-activework-fileactivityrow--docs), ' +
+          '[FileActivityDetail](?path=/docs/custom-activework-fileactivitydetail--docs), ' +
+          '[CoChangeChip](?path=/docs/custom-activework-cochangechip--docs), and ' +
           '[Eyebrow](?path=/docs/components-molecules-eyebrow--docs). ' +
           'Presentational only — the caller supplies every prop.',
       },

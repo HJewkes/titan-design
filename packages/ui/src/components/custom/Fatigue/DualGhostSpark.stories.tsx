@@ -12,7 +12,7 @@ const PAGE_BG = greyRamp[975]
 const t = getSemanticColors('dark')
 
 const meta: Meta<typeof DualGhostSpark> = {
-  title: 'Workout/Fatigue/Dual Ghost Spark',
+  title: 'Custom/Fatigue/Dual Ghost Spark',
   component: DualGhostSpark,
   tags: ['autodocs'],
   parameters: {

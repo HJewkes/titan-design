@@ -4,7 +4,7 @@ import { ExerciseCard } from './ExerciseCard'
 import type { SetRowProps } from './SetRow'
 
 const meta: Meta<typeof ExerciseCard> = {
-  title: 'Workout/ExerciseCard',
+  title: 'Custom/Workout/ExerciseCard',
   component: ExerciseCard,
   tags: ['autodocs'],
   parameters: {
@@ -14,8 +14,8 @@ const meta: Meta<typeof ExerciseCard> = {
           '**Organism** (data-contract card). Three representations: `upcoming` (a dimmed, ' +
           'not-yet-reached row), collapsed (name + summary + per-set velocity strips), and expanded ' +
           '— the unified card whose persistent header is the real ' +
-          '[ExerciseCardHeading](?path=/docs/workout-exercisecardheading--docs) over a SET · REPS · ' +
-          'LBS · RPE body of [SetRow](?path=/docs/workout-setrow--docs)s (compact spotlight on the ' +
+          '[ExerciseCardHeading](?path=/docs/custom-workout-exercisecardheading--docs) over a SET · REPS · ' +
+          'LBS · RPE body of [SetRow](?path=/docs/custom-workout-setrow--docs)s (compact spotlight on the ' +
           'live set). Expand is controlled (`expanded` + `onExpandedChange`) or uncontrolled ' +
           '(`defaultExpanded`); `upcoming` overrides expand.',
       },

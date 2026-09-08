@@ -6,7 +6,7 @@ import { getSemanticColors } from '../../../theme'
 const AMBER = getSemanticColors('dark')['status-warning']
 
 const meta: Meta<typeof MetricTiles> = {
-  title: 'Workout/MetricTiles',
+  title: 'Custom/Workout/MetricTiles',
   component: MetricTiles,
   tags: ['autodocs'],
   parameters: {

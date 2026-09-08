@@ -9,7 +9,7 @@ const DAY = 24 * HOUR
 const NOW = Date.now()
 
 const meta: Meta<typeof ScheduleTiles> = {
-  title: 'Workout/ScheduleTiles',
+  title: 'Custom/Workout/ScheduleTiles',
   component: ScheduleTiles,
   tags: ['autodocs'],
   parameters: {

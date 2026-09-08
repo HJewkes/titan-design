@@ -8,7 +8,7 @@ import { MetricCell } from './metricText'
  * single source of the value/separator look shared by SetsRepsLoad and TempoDisplay.
  */
 const meta: Meta<typeof MetricCell> = {
-  title: 'Workout/MetricCell',
+  title: 'Custom/Workout/MetricCell',
   component: MetricCell,
   tags: ['autodocs'],
   parameters: {
@@ -18,8 +18,8 @@ const meta: Meta<typeof MetricCell> = {
           '**Primitive.** The shared Inter·600·letter-spacing-1 value/separator cell. ' +
           'Extracted so the two prescription readouts read as one visual language instead of ' +
           'drifting copies. Used-by ↑ ' +
-          '[SetsRepsLoad](?path=/docs/workout-setsrepsload--docs) + ' +
-          '[TempoDisplay](?path=/docs/workout-tempodisplay--docs).',
+          '[SetsRepsLoad](?path=/docs/custom-workout-setsrepsload--docs) + ' +
+          '[TempoDisplay](?path=/docs/custom-workout-tempodisplay--docs).',
       },
     },
   },

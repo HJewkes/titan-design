@@ -59,7 +59,7 @@ function SessionReader({ sessions, tasks, now, onPressTask, onPressLink, onPress
  * (→ `MarkdownProse`). Selection lives in the host.
  */
 const meta: Meta<ReaderArgs> = {
-  title: 'Custom/ActiveWork/Session Reader',
+  title: 'Custom/ActiveWork/SessionReader',
   component: SessionReader,
   args: {
     sessions: SESSION_FIXTURE,

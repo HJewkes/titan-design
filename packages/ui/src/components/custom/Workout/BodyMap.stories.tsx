@@ -51,7 +51,7 @@ const backData: BodyMapData[] = [
 ]
 
 const meta: Meta<typeof BodyMap> = {
-  title: 'Workout/DataViz/BodyMap',
+  title: 'Custom/Workout/DataViz/BodyMap',
   component: BodyMap,
   tags: ['autodocs'],
   argTypes: {

@@ -12,7 +12,7 @@ const PAGE_BG = greyRamp[975]
 const t = getSemanticColors('dark')
 
 const meta: Meta<typeof GhostSpark> = {
-  title: 'Workout/Fatigue/Ghost Spark',
+  title: 'Custom/Fatigue/Ghost Spark',
   component: GhostSpark,
   tags: ['autodocs'],
   parameters: {

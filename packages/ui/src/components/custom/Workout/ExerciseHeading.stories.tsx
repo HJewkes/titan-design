@@ -9,7 +9,7 @@ import { ExerciseHeading } from './ExerciseHeading'
  * target; TempoDisplay is a sibling (it is itself a Pressable).
  */
 const meta: Meta<typeof ExerciseHeading> = {
-  title: 'Workout/ExerciseHeading',
+  title: 'Custom/Workout/ExerciseHeading',
   component: ExerciseHeading,
   tags: ['autodocs'],
   parameters: {
@@ -17,10 +17,10 @@ const meta: Meta<typeof ExerciseHeading> = {
       description: {
         component:
           '**Molecule.** The exercise-heading info block (no strip). Composes ' +
-          '[ExerciseIndicator](?path=/docs/workout-exerciseindicator--docs) + ' +
-          '[SetsRepsLoad](?path=/docs/workout-setsrepsload--docs) + ' +
-          '[TempoDisplay](?path=/docs/workout-tempodisplay--docs). ' +
-          'Used-by ↑ [ExerciseCardHeading](?path=/docs/workout-exercisecardheading--docs).',
+          '[ExerciseIndicator](?path=/docs/custom-workout-exerciseindicator--docs) + ' +
+          '[SetsRepsLoad](?path=/docs/custom-workout-setsrepsload--docs) + ' +
+          '[TempoDisplay](?path=/docs/custom-workout-tempodisplay--docs). ' +
+          'Used-by ↑ [ExerciseCardHeading](?path=/docs/custom-workout-exercisecardheading--docs).',
       },
     },
   },

@@ -10,11 +10,11 @@
  */
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
-import { ExerciseCardHeading } from './ExerciseCardHeading'
-import { SetTableHeader } from './SetTableHeader'
-import { SetRow, type SetRowProps } from './SetRow'
-import { VelocityStrip } from './VelocityStrip'
-import { type SetStripSet } from './SetStrip'
+import { ExerciseCardHeading } from '../../components/custom/Workout/ExerciseCardHeading'
+import { SetTableHeader } from '../../components/custom/Workout/SetTableHeader'
+import { SetRow, type SetRowProps } from '../../components/custom/Workout/SetRow'
+import { VelocityStrip } from '../../components/custom/Workout/VelocityStrip'
+import { type SetStripSet } from '../../components/custom/Workout/SetStrip'
 import {
   INSET,
   INSET_SHADOW,
@@ -27,7 +27,7 @@ import {
   Page,
   sectionTitle,
   monoTag,
-} from './setHeadingKit'
+} from '../../components/custom/Workout/setHeadingKit'
 
 // Per-rep mean velocity that DECAYS across a set (fast → slow) so bar height/color carries shape.
 const decay = (n: number, start: number, span = 0.5) =>

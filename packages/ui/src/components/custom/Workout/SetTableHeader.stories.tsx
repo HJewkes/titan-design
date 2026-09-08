@@ -10,7 +10,7 @@ import { SetTableHeader } from './SetTableHeader'
  * unification (TD-03.56).
  */
 const meta: Meta<typeof SetTableHeader> = {
-  title: 'Workout/SetTableHeader',
+  title: 'Custom/Workout/SetTableHeader',
   component: SetTableHeader,
   tags: ['autodocs'],
   parameters: {
@@ -18,8 +18,8 @@ const meta: Meta<typeof SetTableHeader> = {
       description: {
         component:
           '**Atom.** The expanded-set-table column header row; per-column widths mirror ' +
-          '[SetRow](?path=/docs/workout-setrow--docs) so headers align over the rows. ' +
-          'Used-by ↑ [ExerciseCard](?path=/docs/workout-exercisecard--docs) (expanded), which ' +
+          '[SetRow](?path=/docs/custom-workout-setrow--docs) so headers align over the rows. ' +
+          'Used-by ↑ [ExerciseCard](?path=/docs/custom-workout-exercisecard--docs) (expanded), which ' +
           'renders it with `showPrevious={false}`. ' +
           'Column set / widths provisional pending TD-03.56 responsive unification.',
       },

@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { WeekRow } from './WeekRow'
 
 const meta: Meta<typeof WeekRow> = {
-  title: 'Workout/WeekRow',
+  title: 'Custom/Workout/WeekRow',
   component: WeekRow,
   tags: ['autodocs'],
   argTypes: {

@@ -145,3 +145,78 @@ where nothing is prescribed the fill covers the run and the recess is hidden any
 `boxShadow`/`backgroundImage` for RN Views and does NOT apply to the band, which is
 pure SVG. Any future material work there has to be re-expressed as SVG defs — that
 translation cost is real and was part of why this did not pay for itself.
+
+---
+
+## The five ActiveWork lab specimens, once the family was hardened (2026-09-08)
+
+**What they were:** `Lab/ActiveWork/{Portfolio Overview, Task List, Session
+Reader, Initiative Reader, File History Explorer}` — the pre-hardening design
+specimens in `src/lab/active-work/`. Each hand-rolled its own `DotLabel`,
+`Eyebrow`, `MiniBars`, `shortDate` and severity maps out of `shared.tsx`, and
+composed them inside an `AwShell` frame.
+
+**Superseded by** the hardened family, which is what those specimens were drawn
+to produce:
+
+| Deleted specimen                         | Hardened story                          | Landed in |
+| ---------------------------------------- | --------------------------------------- | --------- |
+| `Lab/ActiveWork/Portfolio Overview`      | `Custom/ActiveWork/PortfolioOverview`   | #156      |
+| `Lab/ActiveWork/File History Explorer`   | `Custom/ActiveWork/FileHistoryExplorer` | #157      |
+| `Lab/ActiveWork/Task List`               | `Custom/ActiveWork/TaskTable`           | #161      |
+| `Lab/ActiveWork/Session Reader`          | `Custom/ActiveWork/SessionReader`       | #164      |
+| `Lab/ActiveWork/Initiative Reader`       | `Custom/ActiveWork/InitiativeReader`    | #165      |
+
+**Why:** a specimen that outlives its hardening stops reading as a specimen. It
+is a second, older rendering of the same screen sitting one sidebar group away
+from the real one, and its hand-rolled parts are exactly the reuse failures the
+family's README records as *deleted* (`DotLabel` → `StatusDot`, `MiniBars` →
+`SparkBars`, inline `shortDate` → `DateTime`). Keeping them invites the next
+session to copy the wrong one, and it makes the ActiveWork family read as split
+across two groups in a tree whose whole point is one place per thing.
+
+**What survives:** `Lab/ActiveWork/File Biography` — never hardened, so it is
+still a live proposal rather than a stale copy — plus `AwShell`, `shared.tsx`
+and the `data/` fixtures it depends on.
+
+---
+
+## The three relocated fatigue variant references (2026-09-08)
+
+**What they were:** `Lab/Components/{Ghost Spark, Velocity Hero, Verdict Hero}`
+— variant studies lifted out of the fatigue-card exploration in #163 "so a
+variant reference survives for hardening". They rendered the lab-local
+`fatigue-lab-shared` forks (`SparkCombinedChart`, `HeroWithVlBands`,
+`FatigueCard`), not the components.
+
+**Superseded by** the hardened components, all landed in #128 and reviewed in
+#147: `Custom/Fatigue/Ghost Spark` (`GhostSpark.tsx`), `Custom/Fatigue/Velocity
+Hero` (`VelocityHero.tsx`), `Custom/Fatigue/Verdict Hero` (`VerdictHero.tsx`).
+
+**Why:** the hardening they were kept for has happened, so the reference has
+been consumed. What remains is a fork — a second implementation of each mark in
+`fatigue-lab-shared`, with its own colour math — presented in the sidebar under
+a `Lab/Components` group that the six-group tree does not have. The variants
+that were considered and lost are recorded in the exploration
+(`Lab/North Star/4 - Fatigue System`) and in this file, which is where that
+reasoning belongs; a running copy of the loser is not the record.
+
+---
+
+## `Lab/Archive/Surface` — the surface option-comparison stories (2026-09-08)
+
+**What it was:** twelve option-comparison stories (Ramps, SeparationTreatments,
+TextureOptions, NeutralVsWarm, WarmthCurves, AtScaleComparison, AlphaLayering,
+SkeuomorphicCard, WarmthCurvesAtScale, PaperModels, TopBarTreatments,
+FrameRecess) split out of the surface exploration when the direction locked.
+
+**Superseded by** `Lab/North Star/1 - Surface System`, which carries the three
+locked stories and, in its file header, the decision list the comparisons were
+run to produce (derived warm-tapered ramp, alpha-white hairline separation,
+static dither + grain, paper on hero surfaces only).
+
+**Why:** the archive is a snapshot of a decision that has since been re-made.
+The ramp it compares is the pre-#166 warm one; elevation now resolves to the
+grey ramp, so every "which warmth curve" story argues about an axis the system
+no longer has. `surface-lab-shared.tsx` stays — the North Star file imports it,
+and `surface.contract.test.ts` carries a verbatim copy of its `lstar()`.

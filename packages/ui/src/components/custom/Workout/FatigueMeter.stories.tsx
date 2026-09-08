@@ -4,7 +4,7 @@ import { View } from 'react-native'
 import { FatigueMeter } from './FatigueMeter'
 
 const meta: Meta<typeof FatigueMeter> = {
-  title: 'Workout/DataViz/FatigueMeter',
+  title: 'Custom/Workout/DataViz/FatigueMeter',
   component: FatigueMeter,
   tags: ['autodocs'],
   argTypes: {
@@ -16,7 +16,7 @@ const meta: Meta<typeof FatigueMeter> = {
         component:
           '**Component.** The winning fatigue-visual lineage: a sliding needle over a fixed ' +
           'green→gold→orange→red velocity-loss gradient with VL10/VL20/VL30/stop markers. ' +
-          'Composes the [ZoneTrack](?path=/docs/workout-dataviz-zonetrack--docs) primitive. ' +
+          'Composes the [ZoneTrack](?path=/docs/custom-workout-dataviz-zonetrack--docs) primitive. ' +
           'Prop-driven: `value` plus overridable `thresholds` / `max` / `zoneColors` / `labels`.',
       },
     },

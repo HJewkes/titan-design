@@ -74,7 +74,7 @@ function LiveHero({ caption }: { caption: string }) {
 const PANEL = { width: 360, height: 620, borderRadius: 24, overflow: 'hidden' as const }
 
 const meta: Meta<typeof LiveAuraFrame> = {
-  title: 'Workout/LiveAuraFrame',
+  title: 'Custom/Workout/LiveAuraFrame',
   component: LiveAuraFrame,
   tags: ['autodocs'],
   parameters: {
