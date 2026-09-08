@@ -2,7 +2,14 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { Surface } from '../../components/ui/surface/Surface'
 import { useOnSurfaceColor } from '../../components/ui/surface/SurfaceContext'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardInset,
+} from '../../components/ui/card/Card'
 import { getSemanticColors, type ThemeMode } from '../../theme/tokens/semantic'
 import { surfaceBackground } from '../../theme/surface-planes'
 import { liftStyle, LIFT_RIM_ALPHA, type LiftStep } from '../../theme/lift'
@@ -25,7 +32,8 @@ const meta: Meta = {
 }
 export default meta
 
-const LIGHTER_RIM = 0.12
+/** paperSheet's hero rim, the alternative the default was chosen against. */
+const HERO_RIM = 0.2
 
 function Label({ children }: { children: string }) {
   return (
@@ -67,7 +75,16 @@ function RawCard({
   sub: string
 }) {
   return (
-    <View style={{ flex: 1, minWidth: 200, padding: 14, borderRadius: 8, backgroundColor: hex, ...style }}>
+    <View
+      style={{
+        flex: 1,
+        minWidth: 200,
+        padding: 14,
+        borderRadius: 8,
+        backgroundColor: hex,
+        ...style,
+      }}
+    >
       <Body title={title} sub={sub} />
     </View>
   )
@@ -108,7 +125,9 @@ function TreatmentRows({ mode }: { mode: ThemeMode }) {
           />
         ))}
       </Row>
-      <Row label={`A — RIM ${LIFT_RIM_ALPHA[mode]} (PAPERSHEET) + AMBIENT SHADOW SCALED BY PLANES CROSSED`}>
+      <Row
+        label={`A — CHOSEN: RIM ${LIFT_RIM_ALPHA[mode]} + AMBIENT SHADOW SCALED BY PLANES CROSSED`}
+      >
         {STEPS.map((step) => (
           <RawCard
             key={step}
@@ -119,18 +138,18 @@ function TreatmentRows({ mode }: { mode: ThemeMode }) {
           />
         ))}
       </Row>
-      <Row label={`B — LIGHTER RIM ${LIGHTER_RIM} + THE SAME SHADOW`}>
+      <Row label={`B — REJECTED FOR CARDS: PAPERSHEET HERO RIM ${HERO_RIM} + THE SAME SHADOW`}>
         {STEPS.map((step) => (
           <RawCard
             key={step}
             hex={hex(step)}
-            style={liftStyle(step, mode, { rim: LIGHTER_RIM }) as Record<string, unknown>}
+            style={liftStyle(step, mode, { rim: HERO_RIM }) as Record<string, unknown>}
             title={`+${step}`}
             sub={sub(step)}
           />
         ))}
       </Row>
-      <Row label="C — A, PLUS PAPERSHEET GRAIN (IS GRAIN HERO-ONLY?)">
+      <Row label="C — REJECTED: A PLUS PAPERSHEET GRAIN (GRAIN STAYS HERO-ONLY)">
         {STEPS.map((step) => (
           <RawCard
             key={step}
@@ -178,7 +197,9 @@ export const Floating: StoryObj = {
     return (
       <Surface level="base" style={{ padding: 28, minHeight: '100vh' as never }}>
         <Row label="LEFT: SHIPPED FLOATING (SHADOW + HAIRLINE-STRONG RING) · RIGHT: LIFT 4 (RIM + THREE-LAYER SHADOW, NO RING)">
-          <View style={{ flex: 1, padding: 40, backgroundColor: c['surface-raised'], borderRadius: 8 }}>
+          <View
+            style={{ flex: 1, padding: 40, backgroundColor: c['surface-raised'], borderRadius: 8 }}
+          >
             <RawCard
               hex={c['surface-overlay']}
               style={{
@@ -190,7 +211,9 @@ export const Floating: StoryObj = {
               sub="overlay · ring + shadow"
             />
           </View>
-          <View style={{ flex: 1, padding: 40, backgroundColor: c['surface-raised'], borderRadius: 8 }}>
+          <View
+            style={{ flex: 1, padding: 40, backgroundColor: c['surface-raised'], borderRadius: 8 }}
+          >
             <RawCard
               hex={c['surface-overlay']}
               style={liftStyle(4, 'dark') as Record<string, unknown>}
@@ -208,7 +231,7 @@ export const Composed: StoryObj = {
   name: '4 · Through the components: Card on Surface, nested',
   render: () => (
     <Surface level="base" style={{ padding: 28, minHeight: '100vh' as never, gap: 20 }}>
-      <Label>DEFAULT CARDS ON THE PAGE (RAISED, LIFT 2) WITH REAL-ISH CONTENT</Label>
+      <Label>DEFAULT CARDS ON THE PAGE (RAISED, LIFT 2) · INSIDE: INSET, NOT A SECOND LIFT</Label>
       <View style={{ flexDirection: 'row', gap: 16 }}>
         {['Open loops', 'Brief', 'Tasks'].map((title) => (
           <Card key={title} style={{ flex: 1 }}>
@@ -218,14 +241,13 @@ export const Composed: StoryObj = {
             </CardHeader>
             <CardContent>
               <Text className="text-text-secondary text-sm">
-                Body copy sits on the card plane. A nested card climbs to overlay and stops.
+                Body copy sits on the card plane. Grouped content inside recesses instead of lifting
+                again.
               </Text>
               <View style={{ height: 12 }} />
-              <Card>
-                <CardContent>
-                  <Text className="text-text-primary text-sm">Nested · overlay (clamped)</Text>
-                </CardContent>
-              </Card>
+              <CardInset className="p-3">
+                <Text className="text-text-primary text-sm">CardInset · elevated, recessed</Text>
+              </CardInset>
             </CardContent>
           </Card>
         ))}

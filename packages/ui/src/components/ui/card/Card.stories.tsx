@@ -155,19 +155,30 @@ export const ElevationLevels: Story = {
 }
 
 // Depth is relative to the enclosing Surface: the same default Card steps up
-// from wherever it is nested, and a card inside a card climbs again until the
-// ramp runs out at overlay.
-export const NestedCards: Story = {
+// from wherever it is nested. Inside a card, prefer organising with an inset
+// well or a tone-only `filled` tile over lifting again; a second lift is for a
+// surface that genuinely floats over the first, and it clamps at overlay.
+export const InsideACard: Story = {
   render: () => (
     <Card style={{ width: 360 }}>
       <CardHeader>
         <CardTitle>Outer · raised</CardTitle>
         <CardDescription>Two planes up from the page</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="gap-3">
+        <CardInset className="p-3">
+          <Text className="text-text-secondary text-sm">CardInset · one plane down, recessed</Text>
+        </CardInset>
+        <Card variant="filled" elevation={1}>
+          <CardContent>
+            <Text className="text-text-primary text-sm">filled · one plane up, tone only</Text>
+          </CardContent>
+        </Card>
         <Card>
           <CardContent>
-            <Text className="text-text-primary">Inner · overlay (clamped)</Text>
+            <Text className="text-text-primary text-sm">
+              lifted again · overlay (clamped) — sparingly
+            </Text>
           </CardContent>
         </Card>
       </CardContent>

@@ -71,8 +71,10 @@ describe('elevation treatment: recess below, nothing at 0, lift above', () => {
   it('lifts every content level with a top rim-light AND an ambient shadow', () => {
     for (const level of [1, 2, 3] as const) {
       const shadow = web(getElevationShadow(level, 'dark')).boxShadow ?? ''
-      expect(shadow, `level ${level} rim`).toContain('inset 0 1px 0 rgba(255,255,255,0.20)')
-      expect(shadow.split(', ').filter((layer) => !layer.startsWith('inset')).length).toBeGreaterThan(0)
+      expect(shadow, `level ${level} rim`).toContain('inset 0 1px 0 rgba(255,255,255,0.12)')
+      expect(
+        shadow.split(', ').filter((layer) => !layer.startsWith('inset')).length
+      ).toBeGreaterThan(0)
     }
   })
 

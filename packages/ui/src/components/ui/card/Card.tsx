@@ -91,6 +91,11 @@ function useCardDepth(variant: CardVariant, elevation: CardElevation, hovered: b
  * the enclosing Surface and publishes its own plane, so a card nested in a card
  * steps up again (and clamps at the top of the ramp).
  *
+ * Lift sparingly: a card lifts off the page, but a small card lifted off a
+ * small card reads as clutter. Inside a card, organise with `CardInset`, a
+ * `filled` tile, or a divider, and keep a second lift for something that
+ * genuinely floats over the first.
+ *
  * @example
  * <Card>
  *   <CardHeader>

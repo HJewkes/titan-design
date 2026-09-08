@@ -5,8 +5,9 @@
  * below. Two cues, both lit from above:
  *
  *   RIM      a crisp 1px top rim-light. The one neumorphism half that survives
- *            near black. The dark alpha is the paperSheet rim, calibrated on the
- *            wall in VW-99 run 2 (0.10 read as weak at distance; 0.20 landed).
+ *            near black. paperSheet's hero rim is 0.20 (VW-99 run 2); a card is
+ *            not a hero, so the default lift sits one grade quieter at 0.12,
+ *            chosen against 0.20 side by side in Lab/Depth (2026-09-08).
  *   AMBIENT  a soft shadow cast onto the plane below, growing with the number of
  *            planes crossed. Content lifts (1–3) are tight; floating lifts (4–5)
  *            are large and soft, describing separation from the page rather than
@@ -24,8 +25,8 @@ export type LiftStep = 1 | 2 | 3 | 4 | 5
 /** The lowest lift that is FLOATING (menu, popover, toast) rather than content. */
 export const FLOATING_LIFT_MIN: LiftStep = 4
 
-/** Rim-light alpha per mode. Dark is the VW-99 paperSheet rim. */
-export const LIFT_RIM_ALPHA: Record<ThemeMode, number> = { dark: 0.2, light: 0.9 }
+/** Rim-light alpha per mode. Light mode is a placeholder pending its own pass. */
+export const LIFT_RIM_ALPHA: Record<ThemeMode, number> = { dark: 0.12, light: 0.9 }
 
 interface ShadowLayer {
   y: number

@@ -2,9 +2,9 @@ import { describe, it, expect } from 'vitest'
 import { liftShadow, liftStyle, LIFT_RIM_ALPHA, FLOATING_LIFT_MIN } from './lift'
 
 describe('liftShadow', () => {
-  it('leads with the wall-calibrated rim on dark', () => {
-    expect(liftShadow(1, 'dark')).toMatch(/^inset 0 1px 0 rgba\(255,255,255,0\.20\)/)
-    expect(LIFT_RIM_ALPHA.dark).toBe(0.2)
+  it('leads with the card rim on dark: one grade under the paperSheet hero rim', () => {
+    expect(liftShadow(1, 'dark')).toMatch(/^inset 0 1px 0 rgba\(255,255,255,0\.12\)/)
+    expect(LIFT_RIM_ALPHA.dark).toBe(0.12)
   })
 
   it('omits the rim when asked, keeping the ambient layers', () => {
@@ -13,8 +13,8 @@ describe('liftShadow', () => {
     expect(shadow.split(', ').length).toBe(2)
   })
 
-  it('honours a rim override', () => {
-    expect(liftShadow(2, 'dark', { rim: 0.12 })).toContain('rgba(255,255,255,0.12)')
+  it('honours a rim override (a hero surface can ask for the paperSheet rim)', () => {
+    expect(liftShadow(2, 'dark', { rim: 0.2 })).toContain('rgba(255,255,255,0.20)')
   })
 
   it('casts a lighter shadow on a light surface, same geometry', () => {

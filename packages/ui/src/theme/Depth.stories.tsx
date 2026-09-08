@@ -78,16 +78,16 @@ export const Mechanisms: StoryObj = {
     <View style={{ padding: 24, backgroundColor: greyRamp[925] }}>
       <Text className="text-2xl font-bold text-text-primary mb-2">Depth</Text>
       <SectionIntro>
-        Four mechanisms, in the order you should reach for them. A surface that sits higher takes
-        a TONE and, with it, a LIFT; one that only needs an edge takes a HAIRLINE; one that needs
-        to feel physical takes a MATERIAL. Tone is the only cue that works identically on web and
+        Four mechanisms, in the order you should reach for them. A surface that sits higher takes a
+        TONE and, with it, a LIFT; one that only needs an edge takes a HAIRLINE; one that needs to
+        feel physical takes a MATERIAL. Tone is the only cue that works identically on web and
         native, so it is never optional; the others sit on top of it.
       </SectionIntro>
 
       <SectionTitle>Tone — the grey ramp</SectionTitle>
       <Text className="text-text-secondary text-xs mb-3">
-        Every plane is a ramp step. Nothing derives a colour between two steps: the elevation
-        levels in section 2 index this list, they do not lighten a base.
+        Every plane is a ramp step. Nothing derives a colour between two steps: the elevation levels
+        in section 2 index this list, they do not lighten a base.
       </Text>
       <View style={{ flexDirection: 'row', gap: 10, marginBottom: 22 }}>
         {[975, 950, 925, 900, 875, 850].map((step) => (
@@ -102,10 +102,11 @@ export const Mechanisms: StoryObj = {
 
       <SectionTitle>Lift — resting on the plane below</SectionTitle>
       <Text className="text-text-secondary text-xs mb-3">
-        A crisp 1px top rim-light (the paperSheet rim, calibrated on the wall in VW-99 at{' '}
-        {LIFT_RIM_ALPHA.dark}) plus a soft ambient shadow that grows with the planes crossed. Both
-        are lit from above. This is what separates a card from the page when the tone step alone is
-        ΔL* 3. It is not a hairline ring: a ring is an edge, and stays the divider&apos;s job.
+        A crisp 1px top rim-light at {LIFT_RIM_ALPHA.dark} (one grade under paperSheet&apos;s 0.20
+        hero rim, chosen side by side in Lab/Depth) plus a soft ambient shadow that grows with the
+        planes crossed. Both are lit from above. This is what separates a card from the page when
+        the tone step alone is ΔL* 3. It is not a hairline ring: a ring is an edge, and stays the
+        divider&apos;s job.
       </Text>
       <View style={{ flexDirection: 'row', gap: 10, marginBottom: 22 }}>
         <Swatch
@@ -195,11 +196,17 @@ export const Elevation: StoryObj = {
       <Text className="text-2xl font-bold text-text-primary mb-2">Elevation</Text>
       <SectionIntro>
         A level is a ramp plane plus the lift that plane wears. Level 0 is the page. Levels 1–3
-        climb one plane each and lift; from {FLOATING_ELEVATION_MIN} up the element is floating
-        over a backdrop, so it stays on the overlay plane and the shadow does the separating. In a
+        climb one plane each and lift; from {FLOATING_ELEVATION_MIN} up the element is floating over
+        a backdrop, so it stays on the overlay plane and the shadow does the separating. In a
         component the numbers are RELATIVE to the enclosing Surface, clamped at overlay, so a card
         inside a card cannot leave the ramp.
       </SectionIntro>
+      <Text className="text-text-secondary text-xs mb-4">
+        Lift sparingly, and only over something much larger. A card lifts off the page; a small card
+        lifted off a small card reads as clutter, not depth. Inside a lifted surface, organise with
+        an inset well (`CardInset`, `Surface pressed`), a tone-only `filled` tile, or a hairline
+        divider, and save a second lift for a surface that genuinely floats over the first.
+      </Text>
 
       <SectionTitle>Content levels — tone + lift</SectionTitle>
       <View style={{ flexDirection: 'row', gap: 10, marginBottom: 22 }}>
