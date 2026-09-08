@@ -58,6 +58,10 @@ const HTML_CSS = `
     --font-heading: 'Space Grotesk', sans-serif;
     --font-ui: 'Nunito Sans', sans-serif;
     --font-body: 'Inter', sans-serif;
+    /* Same primary face as --font-body, plus the fallback tail tailwind's
+       font-sans carries (tailwind.config.js). A ported atom moves onto this
+       when its React twin stops hand-writing 'Inter, sans-serif'. */
+    --font-body-token: var(--font-family-sans), -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
   /* 1. WeightBadge */
@@ -114,7 +118,7 @@ const HTML_CSS = `
     font-size: 12px;
     font-weight: 700;
     color: var(--brand-primary);
-    font-family: var(--font-body);
+    font-family: var(--font-body-token);
   }
   .html-scope .pr-badge-compact {
     display: inline-flex;
