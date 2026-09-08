@@ -16,7 +16,8 @@ const meta: Meta<typeof SetRow> = {
           '(logged), `live` (performing now — brightened, compact velocity-height spotlight), `todo` ' +
           '(planned — muted grey stub). Done + upcoming share one muted treatment; only `live` is ' +
           'brightened. No PREV column. Composed by ' +
-          '[ExerciseCard](?path=/docs/custom-workout-exercisecard--docs) (expanded).',
+          '[ExerciseCard](?path=/docs/custom-workout-exercisecard--docs) (expanded).' +
+          ' Composes **VelocityStrip**.',
       },
     },
   },

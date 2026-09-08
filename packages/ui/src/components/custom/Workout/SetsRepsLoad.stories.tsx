@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
 import { SetsRepsLoad } from './SetsRepsLoad'
+import { Surface } from '../../ui/surface'
 
 /**
  * `SetsRepsLoad` — the `sets × reps @ load` prescription line in the TempoDisplay
@@ -24,9 +24,9 @@ const meta: Meta<typeof SetsRepsLoad> = {
   },
   decorators: [
     (Story) => (
-      <View style={{ padding: 16, backgroundColor: '#131313' }}>
+      <Surface level="base" style={{ padding: 16 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

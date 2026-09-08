@@ -12,6 +12,7 @@ import { InitiativeHeader } from './InitiativeHeader'
 const meta: Meta<typeof InitiativeHeader> = {
   title: 'Custom/ActiveWork/InitiativeHeader',
   component: InitiativeHeader,
+  tags: ['autodocs'],
   args: {
     title: 'active-work — durable workspace state',
     slug: 'active-work',

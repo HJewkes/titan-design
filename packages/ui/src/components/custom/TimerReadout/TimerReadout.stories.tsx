@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
 import { TimerReadout } from './TimerReadout'
+import { Surface } from '../../ui/surface'
 
 /**
  * `TimerReadout` — a small textual timer (⏱ + mono, right-justified) built on the
@@ -14,15 +14,17 @@ const meta: Meta<typeof TimerReadout> = {
   parameters: {
     docs: {
       description: {
-        component: '**Atom.** A small textual timer on [useTimer]. Used-by ↑ SessionHeader.',
+        component:
+          '**Atom.** A small textual timer on [useTimer]. Used-by ↑ SessionHeader.' +
+          ' Composes **Typography**.',
       },
     },
   },
   decorators: [
     (Story) => (
-      <View style={{ padding: 16, backgroundColor: '#131313', alignItems: 'flex-end', width: 200 }}>
+      <Surface level="base" style={{ padding: 16, alignItems: 'flex-end', width: 200 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

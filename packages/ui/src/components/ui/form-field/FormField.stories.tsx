@@ -2,11 +2,11 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text, TextInput } from 'react-native'
 import { FormField, FormSection, FormActions, FormRow } from './FormField'
 import { Button, ButtonText } from '../button'
-import { Input } from '../input'
 
 const meta: Meta<typeof FormField> = {
   title: 'Components/Molecules/FormField',
   component: FormField,
+  parameters: {},
   tags: ['autodocs'],
   argTypes: {
     labelSize: {

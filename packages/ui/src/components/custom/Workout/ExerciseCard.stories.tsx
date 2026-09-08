@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
 import { ExerciseCard } from './ExerciseCard'
 import type { SetRowProps } from './SetRow'
+import { Surface } from '../../ui/surface'
 
 const meta: Meta<typeof ExerciseCard> = {
   title: 'Custom/Workout/ExerciseCard',
@@ -17,7 +17,8 @@ const meta: Meta<typeof ExerciseCard> = {
           '[ExerciseCardHeading](?path=/docs/custom-workout-exercisecardheading--docs) over a SET · REPS · ' +
           'LBS · RPE body of [SetRow](?path=/docs/custom-workout-setrow--docs)s (compact spotlight on the ' +
           'live set). Expand is controlled (`expanded` + `onExpandedChange`) or uncontrolled ' +
-          '(`defaultExpanded`); `upcoming` overrides expand.',
+          '(`defaultExpanded`); `upcoming` overrides expand.' +
+          ' Composes **VelocityStrip** · **PlaceholderStrip** · **PrBadge** · **SetRow** · **SetTableHeader** · **ExerciseCardHeading**.',
       },
     },
   },
@@ -33,9 +34,9 @@ const meta: Meta<typeof ExerciseCard> = {
   },
   decorators: [
     (Story) => (
-      <View style={{ maxWidth: 400, padding: 16, backgroundColor: '#121212' }}>
+      <Surface level="base" style={{ maxWidth: 400, padding: 16 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

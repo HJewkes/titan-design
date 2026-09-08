@@ -16,7 +16,8 @@ const meta: Meta<typeof ScheduleTiles> = {
     docs: {
       description: {
         component:
-          '**Molecule.** An HStack of [Tile](?path=/docs/components-atoms-tile--docs); Until reuses [DateTime](?path=/docs/custom-datetime--docs) relative. Used-by ↑ SessionHeader.',
+          '**Molecule.** An HStack of [Tile](?path=/docs/components-atoms-tile--docs); Until reuses [DateTime](?path=/docs/custom-datetime--docs) relative. Used-by ↑ SessionHeader.' +
+          ' Composes **HStack** · **Tile**.',
       },
     },
   },

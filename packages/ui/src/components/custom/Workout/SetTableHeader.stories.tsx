@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
 import { SetTableHeader } from './SetTableHeader'
+import { Surface } from '../../ui/surface'
 
 /**
  * 🚧 WIP / placeholder — `SetTableHeader` (exported as `SetTableHeader`; the generic
@@ -31,9 +31,9 @@ const meta: Meta<typeof SetTableHeader> = {
   },
   decorators: [
     (Story) => (
-      <View style={{ width: 320, backgroundColor: '#131313' }}>
+      <Surface level="base" style={{ width: 320 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

@@ -95,7 +95,15 @@ const exercises: ActiveWorkoutExercise[] = [
 const meta: Meta<typeof ActiveWorkoutPage> = {
   title: 'Pages/Active Workout',
   component: ActiveWorkoutPage,
-  parameters: { layout: 'fullscreen' },
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: {
+        component:
+          'Composes **ExerciseCard** · **InputBar** · **RestTimer** · **SupersetWrapper**.',
+      },
+    },
+  },
   tags: ['autodocs'],
   args: {
     title: 'Push Day A',

@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
 import { FatigueMeter } from './FatigueMeter'
+import { Surface } from '../../ui/surface'
 
 const meta: Meta<typeof FatigueMeter> = {
   title: 'Custom/Workout/DataViz/FatigueMeter',
@@ -23,9 +23,9 @@ const meta: Meta<typeof FatigueMeter> = {
   },
   decorators: [
     (Story) => (
-      <View style={{ width: 360, padding: 20, backgroundColor: '#131313' }}>
+      <Surface level="base" style={{ width: 360, padding: 20 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

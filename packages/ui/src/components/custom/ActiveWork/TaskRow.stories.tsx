@@ -11,6 +11,7 @@ import { TASK_LIST_FIXTURE } from './task-list-fixture'
 const meta: Meta<typeof TaskRow> = {
   title: 'Custom/ActiveWork/TaskRow',
   component: TaskRow,
+  tags: ['autodocs'],
   args: {
     task: TASK_LIST_FIXTURE[0],
     ageLabel: '2d ago',

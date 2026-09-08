@@ -14,6 +14,7 @@ import { SESSION_FIXTURE, SESSION_NOW } from './session-fixture'
 const meta: Meta<typeof SessionList> = {
   title: 'Custom/ActiveWork/SessionList',
   component: SessionList,
+  tags: ['autodocs'],
   args: {
     sessions: SESSION_FIXTURE,
     now: SESSION_NOW,

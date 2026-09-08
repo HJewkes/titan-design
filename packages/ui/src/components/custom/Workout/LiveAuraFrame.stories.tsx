@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { LiveAuraFrame } from './LiveAuraFrame'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { Surface } from '../../ui/surface'
 
 const t = getSemanticColors('dark')
 
@@ -100,17 +101,17 @@ const meta: Meta<typeof LiveAuraFrame> = {
   },
   decorators: [
     (Story) => (
-      <View
+      <Surface
+        level="base"
         style={{
           minHeight: 700,
-          backgroundColor: '#070707',
           alignItems: 'center',
           justifyContent: 'center',
           padding: 32,
         }}
       >
         <Story />
-      </View>
+      </Surface>
     ),
   ],
   render: (args) => (

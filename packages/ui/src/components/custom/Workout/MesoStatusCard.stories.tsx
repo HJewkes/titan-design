@@ -5,6 +5,7 @@ import { MesoStatusCard } from './MesoStatusCard'
 const meta: Meta<typeof MesoStatusCard> = {
   title: 'Custom/Workout/MesoStatusCard',
   component: MesoStatusCard,
+  parameters: { docs: { description: { component: 'Composes **Card** · **StatusDot**.' } } },
   tags: ['autodocs'],
   argTypes: {
     mesoName: {

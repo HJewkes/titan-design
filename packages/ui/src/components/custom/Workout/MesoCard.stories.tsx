@@ -50,6 +50,9 @@ const weeks: WeekRowProps[] = [
 const meta: Meta<typeof MesoCard> = {
   title: 'Custom/Workout/MesoCard',
   component: MesoCard,
+  parameters: {
+    docs: { description: { component: 'Composes **Card** · **Badge** · **WeekRow**.' } },
+  },
   tags: ['autodocs'],
   argTypes: {
     goal: {

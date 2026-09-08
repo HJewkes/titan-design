@@ -24,7 +24,8 @@ const meta: Meta<typeof DualGhostSpark> = {
           'wings share one time scale and one magnitude scale, so an L/R imbalance reads as bloom size ' +
           'rather than as two independently normalized charts. Each wing is tinted INDEPENDENTLY by its ' +
           'own current rep — silver while the rep stays controlled, warming through shades of red once ' +
-          'that side crosses the grind threshold — so one arm can go red while the other stays silver.',
+          'that side crosses the grind threshold — so one arm can go red while the other stays silver.' +
+          ' Composes **GhostBand** · **GhostBloom**.',
       },
     },
   },

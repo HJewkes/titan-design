@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
 import { SegmentedBar } from './SegmentedBar'
+import { Surface } from '../../ui/surface'
 
 /**
  * `SegmentedBar` — a horizontal track split into weighted, individually-fillable
@@ -30,9 +30,9 @@ const meta: Meta<typeof SegmentedBar> = {
   },
   decorators: [
     (Story) => (
-      <View style={{ width: 240, padding: 16, backgroundColor: '#131313' }}>
+      <Surface level="base" style={{ width: 240, padding: 16 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

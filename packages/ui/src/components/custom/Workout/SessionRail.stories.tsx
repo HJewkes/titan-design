@@ -1,10 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
 import { primitiveRamps } from '../../../theme/tokens/primitives'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { SessionRail, type SessionRailExercise } from './SessionRail'
-
-const t = getSemanticColors('dark')
+import { Surface } from '../../ui/surface'
+import { Typography } from '../Typography'
 
 /**
  * `SessionRail` (shell organism) — the live-workout exercise list: a flat raised
@@ -23,12 +22,14 @@ const meta: Meta<typeof SessionRail> = {
   },
   decorators: [
     (Story) => (
-      <View className="min-h-screen flex-row" style={{ backgroundColor: t['background-base'] }}>
+      <Surface level="background" className="min-h-screen flex-row">
         <Story />
         <View className="flex-1 items-center justify-center">
-          <Text style={{ color: '#6B7280', fontSize: 12 }}>main viewport</Text>
+          <Typography variant="caption" color="tertiary">
+            main viewport
+          </Typography>
         </View>
-      </View>
+      </Surface>
     ),
   ],
   parameters: {

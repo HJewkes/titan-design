@@ -25,6 +25,9 @@ import {
 const meta: Meta<typeof VelocityStrip> = {
   title: 'Custom/Workout/DataViz/VelocityStrip/Compact',
   component: VelocityStrip,
+  parameters: {
+    docs: { description: { component: 'Composes **SetBarChart** · **ChartSideRail**.' } },
+  },
   tags: ['autodocs'],
 }
 export default meta

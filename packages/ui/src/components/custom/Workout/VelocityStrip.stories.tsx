@@ -16,6 +16,7 @@ import {
   REP_SET_LAGGING,
   type StripView,
 } from './velocity-story-kit'
+import { Surface } from '../../ui/surface'
 
 /**
  * Per-rep velocity strip.
@@ -41,6 +42,11 @@ import {
 const meta: Meta<typeof VelocityStrip> = {
   title: 'Custom/Workout/DataViz/VelocityStrip',
   component: VelocityStrip,
+  parameters: {
+    docs: {
+      description: { component: 'Composes **SetBarChart** · **ChartSideRail** · **SessionRail**.' },
+    },
+  },
   tags: ['autodocs'],
   argTypes: {
     variant: {
@@ -98,9 +104,9 @@ export const Playground: Story = {
   },
   decorators: [
     (Story) => (
-      <View style={{ width: 300, padding: 16, backgroundColor: SURFACE_BG }}>
+      <Surface level="base" style={{ width: 300, padding: 16 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

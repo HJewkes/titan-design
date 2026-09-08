@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { SetStrip, type SetStripSet } from './SetStrip'
+import { Surface } from '../../ui/surface'
 
 /**
  * `SetStrip` — the per-set segmented performance strip. One continuous bar per
@@ -28,9 +29,9 @@ const meta: Meta<typeof SetStrip> = {
   },
   decorators: [
     (Story) => (
-      <View style={{ width: 210, padding: 16, backgroundColor: '#131313' }}>
+      <Surface level="base" style={{ width: 210, padding: 16 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

@@ -230,7 +230,12 @@ const mesos: PlanMeso[] = [accumulationDone, accumulation, intensification, peak
 const meta: Meta<typeof ProgramPlanningPage> = {
   title: 'Pages/Program Planning',
   component: ProgramPlanningPage,
-  parameters: { layout: 'fullscreen' },
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: { component: 'Composes **MesoProgressBar** · **MesoCard** · **WorkoutCard**.' },
+    },
+  },
   tags: ['autodocs'],
   args: { title: 'Program Plan', mesos },
 }

@@ -14,6 +14,9 @@ const records: PrRecord[] = [
 const meta: Meta<typeof PrHistoryModal> = {
   title: 'Custom/Workout/PrHistoryModal',
   component: PrHistoryModal,
+  parameters: {
+    docs: { description: { component: 'Composes **Icons** · **Drawer** · **DrawerBody**.' } },
+  },
   tags: ['autodocs'],
   argTypes: {
     exerciseId: {

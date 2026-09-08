@@ -18,6 +18,7 @@ const staticFactors: ReadinessFactor[] = FACTOR_SEED.map((f) => ({
 const meta: Meta<typeof ReadinessCheck> = {
   title: 'Custom/Workout/ReadinessCheck',
   component: ReadinessCheck,
+  parameters: { docs: { description: { component: 'Composes **Card** · **Badge**.' } } },
   tags: ['autodocs'],
   argTypes: {
     score: {

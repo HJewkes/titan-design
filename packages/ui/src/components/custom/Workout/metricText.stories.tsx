@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 import { MetricCell } from './metricText'
+import { Surface } from '../../ui/surface'
 
 /**
  * `MetricCell` — the shared "segmented metric" typography primitive (Inter · 600 ·
@@ -29,9 +30,9 @@ const meta: Meta<typeof MetricCell> = {
   },
   decorators: [
     (Story) => (
-      <View style={{ padding: 20, backgroundColor: '#131313' }}>
+      <Surface level="base" style={{ padding: 20 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

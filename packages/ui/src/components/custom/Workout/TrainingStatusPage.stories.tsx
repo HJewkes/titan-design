@@ -183,7 +183,15 @@ const muscles: TrainingStatusMuscle[] = [
 const meta: Meta<typeof TrainingStatusPage> = {
   title: 'Pages/Training Status',
   component: TrainingStatusPage,
-  parameters: { layout: 'fullscreen' },
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: {
+        component:
+          'Composes **BodyMap** · **BodyMapDetailPanel** · **MesoStatusCard** · **MuscleGroup**.',
+      },
+    },
+  },
   tags: ['autodocs'],
   args: { title: 'Training Status', meso, muscles },
 }

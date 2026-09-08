@@ -5,6 +5,7 @@ import { PrBadge } from './PrBadge'
 const meta: Meta<typeof PrBadge> = {
   title: 'Custom/Workout/PrBadge',
   component: PrBadge,
+  parameters: { docs: { description: { component: 'Composes **Icons** · **BaseBadge**.' } } },
   tags: ['autodocs'],
   argTypes: {
     type: {

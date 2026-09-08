@@ -39,6 +39,9 @@ import {
 const meta: Meta<typeof DualVelocityStrip> = {
   title: 'Custom/Workout/DataViz/VelocityStrip/Dual',
   component: DualVelocityStrip,
+  parameters: {
+    docs: { description: { component: 'Composes **SetBarChart** · **ChartSideRail**.' } },
+  },
   tags: ['autodocs'],
   decorators: [wallDecorator],
   argTypes: {

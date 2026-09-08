@@ -13,7 +13,8 @@ const meta: Meta<typeof MetricTiles> = {
     docs: {
       description: {
         component:
-          '**Molecule.** An HStack of [Tile](?path=/docs/components-atoms-tile--docs). Used-by ↑ SessionHeader.',
+          '**Molecule.** An HStack of [Tile](?path=/docs/components-atoms-tile--docs). Used-by ↑ SessionHeader.' +
+          ' Composes **HStack** · **Tile**.',
       },
     },
   },

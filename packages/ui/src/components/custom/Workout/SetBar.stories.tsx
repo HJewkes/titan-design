@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
 import { SetBar, type SetStripSet } from './SetBar'
+import { Surface } from '../../ui/surface'
 
 /**
  * `SetBar` — ONE set's multi-coloured bar: the butted per-rep colour segments for a
@@ -18,7 +18,8 @@ const meta: Meta<typeof SetBar> = {
         component:
           '**Atom.** ONE set’s multi-coloured bar — the per-rep colour segments for a ' +
           'single set (done / active-with-pulse / todo). Colours are the real titan ramp pins. ' +
-          'Used-by ↑ [SetStrip](?path=/docs/custom-workout-setstrip--docs).',
+          'Used-by ↑ [SetStrip](?path=/docs/custom-workout-setstrip--docs).' +
+          ' Composes **SegmentedBar**.',
       },
     },
   },
@@ -27,9 +28,9 @@ const meta: Meta<typeof SetBar> = {
   },
   decorators: [
     (Story) => (
-      <View style={{ width: 180, flexDirection: 'row', padding: 16, backgroundColor: '#131313' }}>
+      <Surface level="base" style={{ width: 180, flexDirection: 'row', padding: 16 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

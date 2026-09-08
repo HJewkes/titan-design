@@ -29,6 +29,7 @@ const t = getSemanticColors('dark')
 
 const meta: Meta = {
   title: 'Foundations/Color/Silver-Red Scheme',
+  tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
     docs: {

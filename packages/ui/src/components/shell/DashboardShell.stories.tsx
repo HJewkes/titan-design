@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { DashboardShell } from './DashboardShell'
+import { Surface } from '../ui/surface'
 
 /**
  * `Pages/DashboardShell` — the wall-dashboard chrome as one registered surface.
@@ -33,9 +34,9 @@ const meta: Meta<typeof DashboardShell> = {
   },
   decorators: [
     (Story) => (
-      <View style={{ height: '100vh' as unknown as number, backgroundColor: '#0E0E0E' }}>
+      <Surface level="base" style={{ height: '100vh' as unknown as number }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

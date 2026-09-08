@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
 import { SegmentedProgressBar } from './SegmentedProgressBar'
+import { Surface } from '../../ui/surface'
 
 const PLAN = [{ weight: 3 }, { weight: 3 }, { weight: 2 }, { weight: 2 }, { weight: 2 }]
 
@@ -19,9 +19,9 @@ const meta: Meta<typeof SegmentedProgressBar> = {
   },
   decorators: [
     (Story) => (
-      <View style={{ width: 246, padding: 16, backgroundColor: '#242424' }}>
+      <Surface level="base" style={{ width: 246, padding: 16 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

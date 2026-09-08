@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
 import type { SetStripSet } from './SetStrip'
+import { Surface } from '../../ui/surface'
 
 /**
  * `ExerciseCardHeading` — the complete, standalone session-rail heading: an
@@ -37,9 +37,9 @@ const meta: Meta<typeof ExerciseCardHeading> = {
   },
   decorators: [
     (Story) => (
-      <View style={{ width: 246, backgroundColor: '#131313' }}>
+      <Surface level="base" style={{ width: 246 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

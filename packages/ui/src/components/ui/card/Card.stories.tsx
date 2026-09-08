@@ -15,6 +15,9 @@ import { Button, ButtonText } from '../button'
 const meta: Meta<typeof Card> = {
   title: 'Components/Molecules/Card',
   component: Card,
+  parameters: {
+    docs: { description: { component: 'Composes **Surface**.' } },
+  },
   tags: ['autodocs'],
   argTypes: {
     variant: {

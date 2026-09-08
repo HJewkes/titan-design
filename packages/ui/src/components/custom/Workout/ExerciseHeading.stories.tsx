@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
 import { ExerciseHeading } from './ExerciseHeading'
+import { Surface } from '../../ui/surface'
 
 /**
  * `ExerciseHeading` — the exercise-heading info block (no strip): the name +
@@ -35,9 +35,9 @@ const meta: Meta<typeof ExerciseHeading> = {
   },
   decorators: [
     (Story) => (
-      <View style={{ width: 246, padding: 16, backgroundColor: '#131313' }}>
+      <Surface level="base" style={{ width: 246, padding: 16 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

@@ -100,6 +100,7 @@ function InitiativeReader({
 const meta: Meta<ReaderArgs> = {
   title: 'Custom/ActiveWork/InitiativeReader',
   component: InitiativeReader,
+  tags: ['autodocs'],
   args: {
     brief: INITIATIVE_BRIEF_FIXTURE,
     loops: INITIATIVE_LOOPS_FIXTURE,
