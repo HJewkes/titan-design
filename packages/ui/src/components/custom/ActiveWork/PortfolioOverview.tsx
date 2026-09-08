@@ -62,7 +62,7 @@ export function PortfolioOverview({
 
       <View className="flex-row flex-wrap gap-3">
         {stats.map((stat) => (
-          <Card key={stat.label} variant="filled" className="min-w-[150px] flex-1 p-4">
+          <Card key={stat.label} className="min-w-[150px] flex-1 p-4" testID="portfolio-stat">
             <Metric value={stat.value} label={stat.label} />
           </Card>
         ))}

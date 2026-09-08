@@ -186,7 +186,8 @@ export function TaskTable({
         {hideLegend ? null : <SeverityLegend tasks={tasks} />}
       </View>
 
-      <View className="overflow-hidden rounded-lg border border-hairline">
+      {/* A table frame is a hairline RULE, not a plane: it paints no background and casts no lift. */}
+      <View className="overflow-hidden rounded-lg border border-hairline" testID="task-grid">
         <Table
           density="dense"
           sortColumn={sortColumn}

@@ -94,11 +94,19 @@ Initiative reader (no organism: the host composes the pieces)
 
 ## Surfaces and depth
 
-Content-level cards sit on `surface-raised` (greyRamp[875], the documented card plane) one tone up from the
-page, with a `Card variant="subtle"` hairline. That is the depth model's tone-first order — tone, then
-hairline, never a heavy border. `variant="outline"` (a 1px hairline-strong box on the base plane) reads
-flat: the M2 reader used it first and the cards did not lift off the page. Nested reading regions inside a
-card (the brief's sections, the tabbed tasks/sessions) stay on the card plane; only the card itself lifts.
+The page is a `<Surface level="base">` (greyRamp[925], `#252321`). Every content container on it is a
+**default `<Card>`** — no variant, no `bg-*` className — which lifts two planes to greyRamp[875]
+(`#31302F`) and wears the lift: a 1px top rim-light at 0.12 plus an ambient shadow. Depth here is tone AND
+lift together, not tone alone.
+
+Inside a lifted card, nothing lifts again. Organise with `CardInset` (a pressed well one plane down,
+greyRamp[900] `#2C2A28`, with the `insetWell` recess), a tone-only `filled` tile, or a `Divider`.
+`variant="outline"` is reserved for a status edge; it is not how you make a box.
+
+`Card` writes its plane into `style`, so a `bg-surface-*` className on a `Card` is **discarded**. `bgColor`
+is the only override. The M2 reader shipped with `className="… bg-surface-raised" variant="subtle"` on its
+three cards and rendered flat on greyRamp[900] with a hairline ring — that combination is the bug, not the
+model.
 
 ## Shared substrates introduced here (reusable beyond this family)
 
@@ -172,21 +180,21 @@ maps stay separate on purpose — `low` is `status-info` as a dot (it must stay 
 
 ## Reuse audit
 
-| Concern            | Uses                                                | Not                                                                                                                   |
-| ------------------ | --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| status dot + label | `StatusDot` (Workout family)                        | the original Lab specimen's hand-rolled `DotLabel` (deleted)                                                          |
-| severity mix bar   | `SegmentedBar` (Workout family)                     | the original Lab specimen's hand-rolled `SeverityBar` (deleted)                                                       |
-| bar sparkline      | `SparkBars` (new, `Components/Charts`)              | the specimen's hand-rolled `MiniBars` (deleted); `Sparkline` is a _line_ mark, `SetBar`/`SetStrip` are workout-domain |
-| KPI stat boxes     | `Tile` (bare — it already carries `surface-raised`) | the specimen's redundant `Card variant="filled"` wrapper around `Tile`                                                |
-| label ↔ value rows | `DataRow` (label widened to `ReactNode`)            | a hand-rolled `flex-row justify-between`                                                                              |
-| short dates        | `DateTime` `format="short"` + `fallback`            | the specimen's hand-rolled `shortDate` (deleted)                                                                      |
-| compact numbers    | `formatCompact` / `formatSignedCompact` (new util)  | the specimen's inline `compact` / `signedCompact` (deleted)                                                           |
-| count badges       | `Pill` `variant="subtle"`                           | ad-hoc bordered `View`                                                                                                |
-| card chrome        | `Card` (`accent` / `outline` / `filled`)            | ad-hoc bordered `View`                                                                                                |
-| colors             | `getSemanticColors` / `greyRamp` tokens             | magic hex                                                                                                             |
-| session prose      | `MarkdownProse` (new, `Custom/Prose`)               | the specimen's inline `parseBlocks` / `renderInline` / `BlockView` (deleted); no markdown renderer existed            |
-| session durations  | `formatSessionDuration` (new, `format-time.ts`)     | the specimen's inline `duration`; `useTimer.formatDuration` is `mm:ss`                                                |
-| selectable rows    | `Pressable` + `role="option"` (the F1 pattern)      | the specimen's bordered `Card`-per-row; `ListItem` has no selected state                                              |
+| Concern            | Uses                                                  | Not                                                                                                                   |
+| ------------------ | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| status dot + label | `StatusDot` (Workout family)                          | the original Lab specimen's hand-rolled `DotLabel` (deleted)                                                          |
+| severity mix bar   | `SegmentedBar` (Workout family)                       | the original Lab specimen's hand-rolled `SeverityBar` (deleted)                                                       |
+| bar sparkline      | `SparkBars` (new, `Components/Charts`)                | the specimen's hand-rolled `MiniBars` (deleted); `Sparkline` is a _line_ mark, `SetBar`/`SetStrip` are workout-domain |
+| KPI stat boxes     | `Tile` (bare on the page; one plane up inside a card) | the specimen's redundant `Card variant="filled"` wrapper around `Tile`                                                |
+| label ↔ value rows | `DataRow` (label widened to `ReactNode`)              | a hand-rolled `flex-row justify-between`                                                                              |
+| short dates        | `DateTime` `format="short"` + `fallback`              | the specimen's hand-rolled `shortDate` (deleted)                                                                      |
+| compact numbers    | `formatCompact` / `formatSignedCompact` (new util)    | the specimen's inline `compact` / `signedCompact` (deleted)                                                           |
+| count badges       | `Pill` `variant="subtle"`                             | ad-hoc bordered `View`                                                                                                |
+| card chrome        | `Card` (default; `accent` for focused state)          | ad-hoc bordered `View`; `subtle`/`outline` used to make a box                                                         |
+| colors             | `getSemanticColors` / `greyRamp` tokens               | magic hex                                                                                                             |
+| session prose      | `MarkdownProse` (new, `Custom/Prose`)                 | the specimen's inline `parseBlocks` / `renderInline` / `BlockView` (deleted); no markdown renderer existed            |
+| session durations  | `formatSessionDuration` (new, `format-time.ts`)       | the specimen's inline `duration`; `useTimer.formatDuration` is `mm:ss`                                                |
+| selectable rows    | `Pressable` + `role="option"` (the F1 pattern)        | the specimen's bordered `Card`-per-row; `ListItem` has no selected state                                              |
 
 ### Colour vocabularies
 
@@ -205,27 +213,37 @@ to the dark hex and silently breaks light theme.
 
 ### Surfaces and depth
 
-Follows _Foundations → Depth_ (the current model, fixed in TD-07.16), whose three mechanisms are, in
-reach-for order: **tone** (the grey ramp), **hairline** (1px alpha — "what replaced the solid dark border
-tokens"), **material** (`paperSheet` / `insetWell`, sparingly). Drop-shadow is not a mechanism below
-`FLOATING_ELEVATION_MIN`; nothing here floats, so nothing here casts one.
+Follows _Foundations → Depth_ as corrected on 2026-09-08. Every container plane is a step on the grey ramp,
+and a plane that sits above its host wears the **lift** — a 1px top rim-light at 0.12 plus an ambient
+shadow. The earlier claim on this page that levels 1–3 separate by tone alone, and that "nothing here
+floats, so nothing casts a shadow", was reversed: the upper ramp steps are only ΔL\* 2.5–3 apart, too tight
+for tone to carry the separation on its own.
 
-| Surface                      | Treatment                                                           |
-| ---------------------------- | ------------------------------------------------------------------- |
-| List pane, detail pane       | `Card variant="subtle"` — a 1px hairline, content-level             |
-| Growth block (grouped stats) | `insetWell()` — its stated purpose is grouped/awaiting-data regions |
-| KPI tiles, co-change chips   | tone only (`Tile`'s `surface-raised`, `Card variant="filled"`)      |
+Measured planes (dark mode; light mode is a separate pass):
 
-These were all `Card variant="outline"` first, which was `border-2 border-hairline-strong` — 2px at the
-strongest hairline, the heaviest chrome the Card offers, on every surface at once. That is the
-"everything is a bordered box" look the depth model explicitly rejects.
+| Role                                      | Component                               | Plane                 | Colour    | Treatment                     |
+| ----------------------------------------- | --------------------------------------- | --------------------- | --------- | ----------------------------- |
+| Page                                      | `<Surface level="base">`                | `base` / grey-925     | `#252321` | flat, no lift                 |
+| List pane, detail pane, reader cards, KPI | `<Card>` (default, `elevation={2}`)     | `raised` / grey-875   | `#31302F` | rim `inset 0 1px 0` + ambient |
+| Focused initiative                        | `<Card variant="accent">`               | `raised` / grey-875   | `#31302F` | lift + brand left stripe      |
+| Growth block (grouped stats)              | `<CardInset>`                           | `elevated` / grey-900 | `#2C2A28` | `insetWell` recess            |
+| Co-change chips                           | `<Card variant="filled">`               | `raised` / grey-875   | `#31302F` | tone only, no lift            |
+| Activity tiles inside the detail pane     | `<Tile className="bg-surface-overlay">` | `overlay` / grey-850  | `#373635` | tone only, no lift            |
+| Table frame, month rules, section rules   | `border-hairline` / `Divider`           | host plane            | —         | hairline edge only            |
 
-**The `Card` primitive was corrected too.** `variant="outline"` is now `border border-hairline-strong`.
-The 2px was a defect: a hairline is 1px by definition, and the system varies edge _contrast_
-(`hairline-subtle` / `hairline` / `hairline-strong`), not width — `materials.ts` fixed the same class of
-mistuned edge by raising an alpha rather than thickening a line. `subtle` and `accent` were already
-correctly 1px; `outline` was the outlier, and now sits on that same single axis. This restyles the three
-production consumers (`MesoCard`, `MesoStatusCard`, `ReadinessCheck`).
+Three rules the family now holds:
+
+1. **Lift sparingly.** One lift per page-level container. A card inside a card does not lift again; it
+   becomes a `CardInset`, a `filled` tile, or a `Divider`.
+2. **Never pass a `bg-*` className to a `Card`.** The plane is written into `style`, so the class is
+   silently dropped. `bgColor` is the one override.
+3. **A hairline is an edge, not a plane.** Dividers, table rules and the `outline` variant's status edge
+   are the only places it belongs. `variant="subtle"`/`"outline"` used to make a box is the anti-pattern
+   this migration removed.
+
+`Tile` still hand-rolls `bg-surface-raised`, which _is_ the card plane. At page level that is right; inside
+a lifted card the call site steps it up one (`className="bg-surface-overlay"`). Teaching `Tile` to resolve
+its plane from the surface context is a separate epic.
 
 ### Token discipline
 

@@ -1,11 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { Surface } from '../../ui/surface'
 import { CoChangeChip } from './CoChangeChip'
 
 const meta: Meta<typeof CoChangeChip> = {
   title: 'ActiveWork/CoChangeChip',
   component: CoChangeChip,
   tags: ['autodocs'],
+  decorators: [
+    (Story) => (
+      <Surface level="base" className="min-h-screen p-6" testID="page-surface">
+        <Story />
+      </Surface>
+    ),
+  ],
   parameters: {
+    layout: 'fullscreen',
     docs: {
       description: {
         component:

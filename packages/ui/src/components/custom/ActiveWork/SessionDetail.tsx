@@ -165,7 +165,7 @@ export function SessionDetail({
     [onPressTask, onPressLink, onPressPr]
   )
   return (
-    <Card variant="outline" className={cn('gap-3 p-5', className)} testID="session-detail">
+    <Card className={cn('gap-3 p-5', className)} testID="session-detail">
       <View className="gap-2">
         <Typography variant="h5" className="text-text-primary">
           {session.title}

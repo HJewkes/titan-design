@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { Surface } from '../../ui/surface'
 import { FileHistoryExplorer } from './FileHistoryExplorer'
 import {
   FILE_HISTORY_CO_EDGES,
@@ -10,6 +11,13 @@ const meta: Meta<typeof FileHistoryExplorer> = {
   title: 'ActiveWork/FileHistoryExplorer',
   component: FileHistoryExplorer,
   tags: ['autodocs'],
+  decorators: [
+    (Story) => (
+      <Surface level="base" className="min-h-screen p-6" testID="page-surface">
+        <Story />
+      </Surface>
+    ),
+  ],
   parameters: {
     layout: 'fullscreen',
     docs: {

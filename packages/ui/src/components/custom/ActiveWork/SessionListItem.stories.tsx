@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
+import { Surface } from '../../ui/surface'
 import { SessionListItem } from './SessionListItem'
 import { SESSION_FIXTURE, SESSION_NOW } from './session-fixture'
 
@@ -25,12 +25,13 @@ const meta: Meta<typeof SessionListItem> = {
   },
   decorators: [
     (Story) => (
-      <View className="w-72 p-4">
+      <Surface level="base" className="min-h-screen w-72 p-6" testID="page-surface">
         <Story />
-      </View>
+      </Surface>
     ),
   ],
   parameters: {
+    layout: 'fullscreen',
     docs: {
       description: {
         component:

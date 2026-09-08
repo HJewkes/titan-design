@@ -4,6 +4,7 @@ import {
   FILE_EVENT_COLOR_CATEGORICAL,
   FILE_EVENT_COLOR_SEMANTIC,
 } from './FileActivityRow'
+import { Surface } from '../../ui/surface'
 import { FILE_HISTORY_FILES } from './file-history-fixture'
 
 const meta: Meta<typeof FileActivityRow> = {
@@ -26,11 +27,14 @@ const meta: Meta<typeof FileActivityRow> = {
   // The row is a listbox `option`, which is only valid inside a listbox.
   decorators: [
     (Story) => (
-      <div role="listbox" aria-label="Hottest files" style={{ width: 404 }}>
-        <Story />
-      </div>
+      <Surface level="base" className="min-h-screen p-6" testID="page-surface">
+        <div role="listbox" aria-label="Hottest files" style={{ width: 404 }}>
+          <Story />
+        </div>
+      </Surface>
     ),
   ],
+  parameters: { layout: 'fullscreen' },
 }
 export default meta
 type Story = StoryObj<typeof FileActivityRow>
