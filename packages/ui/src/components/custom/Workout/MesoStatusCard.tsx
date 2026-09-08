@@ -9,6 +9,7 @@ import {
   MESO_ACCENT_GRADIENT_DARK,
   MESO_ACCENT_GRADIENT_LIGHT,
 } from '../../../theme/extracted-colors-dataviz'
+import { liftStyle } from '../../../theme/lift'
 
 const t = getSemanticColors('dark')
 
@@ -272,7 +273,8 @@ function Gauge({ gauge }: { gauge: MesoStatusGauge }) {
             borderRadius: 9999,
             borderWidth: 2,
             backgroundColor: markerColor,
-            boxShadow: '0 0 4px rgba(0,0,0,0.5)',
+            // A knob resting on the gauge: lift, with the ring as its edge.
+            ...liftStyle(1, 'dark', { rim: 0 }),
           }}
           testID="meso-status-card-gauge-marker"
         />

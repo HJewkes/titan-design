@@ -2,8 +2,12 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { IntensityBar } from './IntensityBar'
+import { getGlowShadow } from '../../../theme/elevation'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
-const AT_TARGET_GLOW = '0 0 5px 1px rgba(33, 150, 243, 0.35), 0 0 10px 3px rgba(33, 150, 243, 0.15)'
+const AT_TARGET_GLOW = (
+  getGlowShadow(getSemanticColors('dark')['status-info'], 'subtle') as { boxShadow: string }
+).boxShadow
 
 describe('IntensityBar', () => {
   it('renders the bar', () => {

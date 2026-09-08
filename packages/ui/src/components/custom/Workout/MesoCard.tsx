@@ -9,6 +9,7 @@ import {
   MESO_ACCENT_GRADIENT_DARK,
   MESO_ACCENT_GRADIENT_LIGHT,
 } from '../../../theme/extracted-colors-dataviz'
+import { getGlowShadow } from '../../../theme/elevation'
 
 const HAIRLINE_DEFAULT = getSemanticColors('dark')['hairline-default']
 
@@ -188,7 +189,8 @@ export function MesoCard({
         className={className}
         style={[
           { borderColor: borderColor as unknown as string },
-          highlighted ? { boxShadow: '0 0 12px 2px rgba(255,121,0,0.25)' } : undefined,
+          // Highlight is emphasis, not depth: a brand glow through the shared builder.
+          highlighted ? getGlowShadow(BRAND_PRIMARY, 'subtle') : undefined,
         ]}
         testID="meso-card"
         {...props}

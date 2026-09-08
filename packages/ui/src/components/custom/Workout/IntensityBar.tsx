@@ -9,6 +9,7 @@ import {
   type DimensionValue,
 } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getGlowShadow } from '../../../theme/elevation'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 
 const t = getSemanticColors('dark')
@@ -34,7 +35,8 @@ export interface IntensityBarProps extends ViewProps {
 const TRACK_BG = '#333333'
 const LABEL_COLOR = '#6B7280'
 const TARGET_LINE_COLOR = 'rgba(33, 150, 243, 0.5)'
-const AT_TARGET_GLOW = '0 0 5px 1px rgba(33, 150, 243, 0.35), 0 0 10px 3px rgba(33, 150, 243, 0.15)'
+/** At-target is EMPHASIS, not depth: an info-toned glow through the shared builder. */
+const AT_TARGET_GLOW = getGlowShadow(t['status-info'], 'subtle')
 
 // Zone colors graded by TRUE percentage (level * 100).
 const ZONE = {
@@ -178,7 +180,7 @@ export function IntensityBar({
             borderRadius: 3,
             backgroundColor: zone.color,
             zIndex: 2,
-            ...(atTarget ? { boxShadow: AT_TARGET_GLOW } : null),
+            ...(atTarget ? AT_TARGET_GLOW : null),
           }}
           testID="intensity-fill"
         />

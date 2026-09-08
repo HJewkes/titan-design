@@ -19,6 +19,7 @@ import {
   type VolumeStatus,
 } from './muscleTaxonomy'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { liftStyle } from '../../../theme/lift'
 
 const t = getSemanticColors('dark')
 
@@ -334,7 +335,8 @@ export function BodyMapDetailPanel({
                   height: 14,
                   borderRadius: 7,
                   borderWidth: 2,
-                  boxShadow: '0 0 4px rgba(0,0,0,0.5)',
+                  // A knob resting on the volume bar: lift, with the ring as its edge.
+                  ...liftStyle(1, 'dark', { rim: 0 }),
                 }}
                 accessibilityElementsHidden
                 testID="body-map-detail-panel-volume-marker"

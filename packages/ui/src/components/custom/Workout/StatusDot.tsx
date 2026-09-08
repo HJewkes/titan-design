@@ -1,7 +1,8 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { View, Text, type ViewProps } from 'react-native'
+import { View, Text, type ViewProps, type ViewStyle } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { greyRamp } from '../../../theme/tokens/primitives'
+import { getGlowShadow } from '../../../theme/elevation'
 
 const t = getSemanticColors('dark')
 
@@ -51,15 +52,20 @@ const ringVariantStyles: Record<string, Record<string, unknown>> = {
   },
 }
 
-const glowStyles: Record<StatusDotVariant, Record<string, unknown>> = {
-  success: { boxShadow: '0 0 4px rgba(46,213,115,0.4)' },
-  warning: { boxShadow: '0 0 4px rgba(245,158,11,0.4)' },
-  error: { boxShadow: '0 0 4px rgba(239,68,68,0.4)' },
-  neutral: { boxShadow: '0 0 4px rgba(107,114,128,0.4)' },
-  'on-track': { boxShadow: '0 0 4px rgba(46,213,115,0.4)' },
-  deviation: { boxShadow: '0 0 4px rgba(245,158,11,0.4)' },
-  future: { boxShadow: '0 0 4px rgba(107,114,128,0.4)' },
+/** Glow is EMPHASIS, not depth: one shared builder, one token colour per variant. */
+const glowColors: Record<StatusDotVariant, string> = {
+  success: t['status-success'],
+  warning: t['status-warning'],
+  error: t['status-error'],
+  neutral: greyRamp[500],
+  'on-track': t['status-success'],
+  deviation: t['status-warning'],
+  future: greyRamp[500],
 }
+
+const glowStyles: Record<StatusDotVariant, ViewStyle> = Object.fromEntries(
+  Object.entries(glowColors).map(([variant, color]) => [variant, getGlowShadow(color, 'subtle')])
+) as Record<StatusDotVariant, ViewStyle>
 
 const iconChars: Record<string, string> = {
   check: '\u2713',

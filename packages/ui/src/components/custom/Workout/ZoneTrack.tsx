@@ -9,15 +9,10 @@ import {
 } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { primitiveColors, greyRamp } from '../../../theme/tokens/primitives'
-import { alpha } from '../../../utils/colors'
+import { getGlowShadow } from '../../../theme/elevation'
 import { Tooltip } from '../../ui/tooltip/Tooltip'
 
 const t = getSemanticColors('dark')
-
-/** Soft two-stop glow in `color`, for a marker's optional `glow`. */
-function glowShadow(color: string): string {
-  return `0 0 5px 1px ${alpha(color, 0.3)}, 0 0 10px 3px ${alpha(color, 0.12)}`
-}
 
 /** Muted, un-reached track colour — a grey step, matches the IntensityBar track family. */
 const DEFAULT_TRACK_COLOR = greyRamp[800]
@@ -236,9 +231,9 @@ export function ZoneTrack({
             overflow: 'hidden',
             flexDirection: 'row',
             // The pill's own box-shadow renders outside its overflow:hidden, so
-            // `glow` haloes the whole track in the marker colour.
+            // `glow` haloes the whole track in the marker colour. Emphasis, not depth.
             ...(marker?.glow
-              ? { boxShadow: glowShadow(marker.color ?? DEFAULT_MARKER_COLOR) }
+              ? getGlowShadow(marker.color ?? DEFAULT_MARKER_COLOR, 'subtle')
               : null),
           }}
         >

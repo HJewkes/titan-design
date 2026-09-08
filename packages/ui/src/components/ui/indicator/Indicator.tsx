@@ -1,5 +1,8 @@
 import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { getGlowShadow } from '../../../theme/elevation'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { greyRamp } from '../../../theme/tokens/primitives'
 
 export type IndicatorSize = 'xs' | 'sm' | 'md' | 'lg'
 export type IndicatorColor =
@@ -50,6 +53,21 @@ const colorStyles: Record<IndicatorColor, string> = {
   'error-vivid': 'bg-status-error-vivid',
 }
 
+// Glow is EMPHASIS, not depth: the dot's own colour, through the shared builder.
+// Literal hex (not `resolveColor`) because getGlowShadow does colour maths on it.
+const t = getSemanticColors('dark')
+
+const glowColors: Record<IndicatorColor, string> = {
+  default: greyRamp[500],
+  primary: t['brand-primary'],
+  success: t['status-success'],
+  live: t['status-live'],
+  error: t['status-error'],
+  warning: t['status-warning'],
+  info: t['status-info'],
+  'error-vivid': t['status-error-vivid'],
+}
+
 export function Indicator({
   size = 'sm',
   color = 'default',
@@ -86,11 +104,7 @@ export function Indicator({
     )
   }
 
-  const dynamicStyle = {
-    ...(typeof style === 'object' ? style : {}),
-    ...(colorStyle ?? {}),
-    ...(glow && customColor ? { boxShadow: `0 0 6px ${customColor}` } : {}),
-  }
+  const glowStyle = glow ? getGlowShadow(customColor ?? glowColors[color], 'subtle') : null
 
   return (
     <View
@@ -100,17 +114,9 @@ export function Indicator({
         colorClass,
         pulseMode === 'opacity' && 'animate-pulse',
         ring && 'border-2 border-background-base',
-        glow &&
-          !customColor &&
-          (color === 'success' || color === 'live') &&
-          'shadow-[0_0_6px_rgba(46,213,115,0.6)]',
-        glow && !customColor && color === 'error' && 'shadow-[0_0_6px_rgba(239,68,68,0.6)]',
-        glow && !customColor && color === 'warning' && 'shadow-[0_0_6px_rgba(245,158,11,0.6)]',
-        glow && !customColor && color === 'primary' && 'shadow-[0_0_6px_rgba(255,121,0,0.6)]',
-        glow && !customColor && color === 'error-vivid' && 'shadow-[0_0_6px_rgba(255,71,87,0.6)]',
         className
       )}
-      style={Object.keys(dynamicStyle).length > 0 ? dynamicStyle : style}
+      style={[style, colorStyle, glowStyle]}
       {...props}
     />
   )
