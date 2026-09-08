@@ -63,11 +63,11 @@ export function ExerciseHeading({
         style={{ gap: 8 }}
         testID="exercise-card-header"
       >
-        {/* h6 is the nearest heading variant; the row is a button label, not a heading. */}
+        {/* The row is a button label, not a heading, so `boldLabel` carries the weight and
+            no header role has to be undone. Size and the Space Grotesk face are pinned. */}
         <Typography
-          variant="h6"
-          className="text-sm font-bold leading-[normal]"
-          accessibilityRole="text"
+          variant="boldLabel"
+          className="font-heading text-sm leading-[normal]"
           testID="exercise-card-name"
         >
           {name}

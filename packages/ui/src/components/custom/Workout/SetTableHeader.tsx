@@ -20,10 +20,10 @@ export interface SetTableHeaderProps {
 // distribute across the full strip width via `justifyContent: space-between`.
 const PREV_COLUMN: Column = { label: 'PREV', width: undefined }
 
-// `overline` is the label variant; the old 10px is off the type scale, so it rounds
-// up to the variant's `text-xs` per TOKENS.md §4. Only the family (Inter, matching the
-// table's value cells) and the row's line box are pinned.
-const COLUMN_LABEL = 'font-sans leading-[normal]'
+// `microLabel` is the 10px step of the scale (TOKENS.md §4), in the same Inter face as
+// the table's value cells. Only the row's line box is pinned: the raw <Text> this
+// replaced carried no lineHeight, and the variant's `leading-normal` would grow the row.
+const COLUMN_LABEL = 'leading-[normal]'
 
 /** Columns in order, with the weight column reflecting `unit`; PREV dropped when hidden. */
 function buildColumns(unit: 'lbs' | 'kg', showPrevious: boolean): Column[] {
@@ -74,7 +74,7 @@ export function SetTableHeader({
             }}
             {...(isFlex ? { className: 'flex-1' } : {})}
           >
-            <Typography variant="overline" color="tertiary" className={COLUMN_LABEL}>
+            <Typography variant="microLabel" color="tertiary" className={COLUMN_LABEL}>
               {label}
             </Typography>
           </View>

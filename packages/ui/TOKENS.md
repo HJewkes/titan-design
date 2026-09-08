@@ -102,11 +102,17 @@ and the line-height that comes with it.
 | `caption`                 | secondary/meta text                       |
 | `overline`                | uppercase micro-labels (or use `Eyebrow`) |
 | `mono` / `monoLabel`      | numerals, paths, identifiers              |
+| `microLabel`              | 10px uppercase column/table headers       |
+| `boldLabel`               | 12px bold badge and row labels            |
+
+`overline` and `microLabel` are the same idea at two sizes and in two faces: `overline` is
+12px `font-body`, `microLabel` is 10px `font-sans` for dense tabular headers.
 
 Raw sizes, when a variant genuinely does not fit:
 
 | Class       | Size |
 | ----------- | ---- |
+| `text-2xs`  | 10px |
 | `text-xs`   | 12px |
 | `text-sm`   | 14px |
 | `text-base` | 16px |

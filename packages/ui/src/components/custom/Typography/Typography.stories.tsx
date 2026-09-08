@@ -25,6 +25,8 @@ const meta: Meta<typeof Typography> = {
         'button',
         'mono',
         'monoLabel',
+        'microLabel',
+        'boldLabel',
       ],
     },
     color: {
@@ -107,6 +109,31 @@ export const Mono: Story = {
     <View style={{ gap: 16 }}>
       <Typography variant="mono">mono — 16:12 · Voltra-A3F2 · 0.42 m/s</Typography>
       <Typography variant="monoLabel">monoLabel — live status label</Typography>
+    </View>
+  ),
+}
+
+/** The sans label pair, shown against the variants they sit between on the scale. */
+export const Labels: Story = {
+  render: () => (
+    <View style={{ gap: 16 }}>
+      <Typography variant="microLabel">microLabel — SET · PREV · REPS · LBS · RPE</Typography>
+      <Typography variant="overline">overline — 12PX FONT-BODY MICRO LABEL</Typography>
+      <Typography variant="boldLabel">boldLabel — PR e1RM</Typography>
+      <Typography variant="caption">caption — 12px font-body, regular weight</Typography>
+    </View>
+  ),
+}
+
+/** microLabel is the only 10px step; every other label variant is 12px. */
+export const MicroLabelInATableHeader: Story = {
+  render: () => (
+    <View style={{ flexDirection: 'row', gap: 24 }}>
+      {['SET', 'PREV', 'REPS', 'LBS', 'RPE'].map((label) => (
+        <Typography key={label} variant="microLabel" color="tertiary">
+          {label}
+        </Typography>
+      ))}
     </View>
   ),
 }

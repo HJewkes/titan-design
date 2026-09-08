@@ -78,11 +78,12 @@ export function PrBadge({
       accessibilityLabel={`Personal record: ${resolvedLabel}`}
       {...props}
     >
-      {/* `button` is the nearest Inter variant; the badge label is 12px/700, not 14px/600. */}
+      {/* `boldLabel` is the badge label exactly: 12px/700 Inter. The line box is pinned
+          because the raw <Text> it replaced carried no lineHeight. */}
       <Typography
-        variant="button"
+        variant="boldLabel"
         color="inherit"
-        className="text-xs font-bold leading-[normal] text-brand-primary"
+        className="leading-[normal] text-brand-primary"
       >
         {'\u2605'} {resolvedLabel}
       </Typography>

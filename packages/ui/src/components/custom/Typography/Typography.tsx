@@ -18,6 +18,8 @@ export type TypographyVariant =
   | 'button'
   | 'mono'
   | 'monoLabel'
+  | 'microLabel'
+  | 'boldLabel'
 
 export type TypographyColor =
   | 'primary'
@@ -75,6 +77,10 @@ const variantStyles: Record<TypographyVariant, string> = {
   // Monospace technical readouts (clocks, ids, metrics) and their all-caps label form.
   mono: 'font-mono text-xs font-normal leading-normal',
   monoLabel: 'font-mono text-xs font-bold uppercase tracking-wide leading-normal',
+  // The sans (Inter) label pair: 10px for dense table/column headers, 12px bold for
+  // badge and row labels. `overline` is the 12px font-body form of the same idea.
+  microLabel: 'font-sans text-2xs font-semibold uppercase tracking-widest leading-normal',
+  boldLabel: 'font-sans text-xs font-bold leading-normal',
 }
 
 const colorStyles: Record<TypographyColor, string> = {

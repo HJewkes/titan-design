@@ -89,6 +89,40 @@ describe('Typography', () => {
     })
   })
 
+  describe('label variants', () => {
+    it('renders the microLabel variant', () => {
+      render(<Typography variant="microLabel">SET</Typography>)
+      expect(screen.getByText('SET')).toBeInTheDocument()
+    })
+
+    it('renders the boldLabel variant', () => {
+      render(<Typography variant="boldLabel">PR e1RM</Typography>)
+      expect(screen.getByText('PR e1RM')).toBeInTheDocument()
+    })
+
+    it('keeps both label variants out of the heading tree', () => {
+      render(
+        <>
+          <Typography variant="microLabel">REPS</Typography>
+          <Typography variant="boldLabel">PR Weight</Typography>
+        </>
+      )
+      expect(screen.queryByRole('heading')).not.toBeInTheDocument()
+    })
+
+    it('label variants have no accessibility violations', async () => {
+      const { container } = render(
+        <div>
+          <Typography variant="microLabel">RPE</Typography>
+          <Typography variant="boldLabel">PR Volume</Typography>
+        </div>
+      )
+
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
+  })
+
   describe('accessibility', () => {
     it('headings have no accessibility violations', async () => {
       const { container } = render(
