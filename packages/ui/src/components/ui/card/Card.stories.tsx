@@ -19,12 +19,14 @@ const meta: Meta<typeof Card> = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['elevated', 'outline', 'filled'],
+      options: ['elevated', 'accent', 'filled', 'outline', 'subtle'],
+      description:
+        'elevated/accent lift with rim + shadow · filled lifts by tone only · outline/subtle stay on the host plane with a hairline edge',
     },
     elevation: {
       control: 'select',
       options: [1, 2, 3],
-      description: 'Elevation level (1=subtle, 2=standard, 3=prominent)',
+      description: 'Planes to lift above the enclosing Surface (default 2: page → card plane)',
     },
     isInteractive: { control: 'boolean' },
     isLoading: { control: 'boolean' },
@@ -128,25 +130,48 @@ export const SimpleCard: Story = {
   ),
 }
 
+// Each level is one more plane up the ramp from the page (base): elevated,
+// raised, overlay. The lift (rim + shadow) grows with the number of planes crossed.
 export const ElevationLevels: Story = {
   render: () => (
     <View style={{ flexDirection: 'row', gap: 16, flexWrap: 'wrap' }}>
       <Card elevation={1} style={{ width: 140 }}>
         <CardContent>
-          <Text className="text-text-primary font-semibold">Subtle (1)</Text>
+          <Text className="text-text-primary font-semibold">1 · elevated</Text>
         </CardContent>
       </Card>
       <Card elevation={2} style={{ width: 140 }}>
         <CardContent>
-          <Text className="text-text-primary font-semibold">Standard (2)</Text>
+          <Text className="text-text-primary font-semibold">2 · raised</Text>
         </CardContent>
       </Card>
       <Card elevation={3} style={{ width: 140 }}>
         <CardContent>
-          <Text className="text-text-primary font-semibold">Prominent (3)</Text>
+          <Text className="text-text-primary font-semibold">3 · overlay</Text>
         </CardContent>
       </Card>
     </View>
+  ),
+}
+
+// Depth is relative to the enclosing Surface: the same default Card steps up
+// from wherever it is nested, and a card inside a card climbs again until the
+// ramp runs out at overlay.
+export const NestedCards: Story = {
+  render: () => (
+    <Card style={{ width: 360 }}>
+      <CardHeader>
+        <CardTitle>Outer · raised</CardTitle>
+        <CardDescription>Two planes up from the page</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Card>
+          <CardContent>
+            <Text className="text-text-primary">Inner · overlay (clamped)</Text>
+          </CardContent>
+        </Card>
+      </CardContent>
+    </Card>
   ),
 }
 
@@ -195,43 +220,32 @@ export const Skeleton: Story = {
   ),
 }
 
+// A CardInset is a pressed well one plane DOWN from the card, with the insetWell
+// recess. Nesting one inside another steps down again.
 export const InsetElements: Story = {
   render: () => (
     <View style={{ gap: 16 }}>
-      <Card elevation={2} style={{ width: 320 }}>
+      <Card style={{ width: 320 }}>
         <CardHeader>
           <CardTitle>Card with Inset</CardTitle>
-          <CardDescription>Demonstrating inset elements within cards</CardDescription>
+          <CardDescription>A well one plane below the card</CardDescription>
         </CardHeader>
         <CardContent>
-          <CardInset elevation={-1} className="p-4">
-            <Text className="text-text-secondary text-sm">
-              Shallow inset element (elevation -1)
-            </Text>
+          <CardInset className="p-4">
+            <Text className="text-text-secondary text-sm">Inset element (card − 1)</Text>
           </CardInset>
         </CardContent>
       </Card>
 
-      <Card elevation={3} style={{ width: 320 }}>
-        <CardHeader>
-          <CardTitle>Deep Inset</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <CardInset elevation={-2} className="p-4">
-            <Text className="text-text-secondary text-sm">Deep inset element (elevation -2)</Text>
-          </CardInset>
-        </CardContent>
-      </Card>
-
-      <Card elevation={2} style={{ width: 320 }}>
+      <Card style={{ width: 320 }}>
         <CardHeader>
           <CardTitle>Nested Insets</CardTitle>
         </CardHeader>
         <CardContent>
-          <CardInset elevation={-1} className="p-4 mb-4">
-            <Text className="text-text-secondary text-sm mb-2">Outer inset (elevation -1)</Text>
-            <CardInset elevation={-2} className="p-3">
-              <Text className="text-text-secondary text-xs">Inner inset (elevation -2)</Text>
+          <CardInset className="p-4 mb-4">
+            <Text className="text-text-secondary text-sm mb-2">Outer inset (card − 1)</Text>
+            <CardInset className="p-3">
+              <Text className="text-text-secondary text-xs">Inner inset (card − 2)</Text>
             </CardInset>
           </CardInset>
         </CardContent>

@@ -72,11 +72,56 @@ describe('Surface (card model)', () => {
     expect(screen.getByTestId('my-surface')).toBeInTheDocument()
   })
 
-  it('paints the default flat dark card surface', () => {
+  it('sits flat on the inherited plane by default (dark base, no treatment)', () => {
     render(<Surface testID="s" />)
-    // elevation 0 → base surface (surface-elevated) with no lightening.
-    // TD-surface-tokens S-3 re-space: was #2A2827.
-    expect(screen.getByTestId('s')).toHaveStyle({ backgroundColor: '#2C2A28' })
+    const el = screen.getByTestId('s')
+    expect(el).toHaveStyle({ backgroundColor: '#252321' })
+    expect(el.style.boxShadow).toBe('')
+  })
+
+  it('lifts onto ramp planes with rim + shadow: elevation 2 from the page is the card plane', () => {
+    render(<Surface elevation={2} testID="s" />)
+    const el = screen.getByTestId('s')
+    expect(el).toHaveStyle({ backgroundColor: '#31302F' })
+    expect(el.style.boxShadow).toContain('inset 0 1px 0')
+    expect(el.style.boxShadow).toMatch(/, 0 \d+px \d+px rgba\(0,0,0/)
+  })
+
+  it('raise is relative: one step up from an elevated host lands on raised', () => {
+    render(
+      <Surface level="elevated">
+        <Surface raise={1} testID="s" />
+      </Surface>
+    )
+    expect(screen.getByTestId('s')).toHaveStyle({ backgroundColor: '#31302F' })
+  })
+
+  it('clamps at overlay so raised-on-raised cannot leave the ramp', () => {
+    render(
+      <Surface level="overlay">
+        <Surface raise={2} testID="s" />
+      </Surface>
+    )
+    expect(screen.getByTestId('s')).toHaveStyle({ backgroundColor: '#373635' })
+  })
+
+  it('floats on the overlay plane with a larger shadow and no ring', () => {
+    render(<Surface elevation={4} testID="s" />)
+    const el = screen.getByTestId('s')
+    expect(el).toHaveStyle({ backgroundColor: '#373635' })
+    expect(el.style.boxShadow.split(', ').length).toBe(4)
+    expect(el.style.borderWidth).toBe('')
+  })
+
+  it('lets a caller switch the lift off on a raised plane, or on for a named one', () => {
+    render(
+      <>
+        <Surface raise={1} lift={false} testID="flat" />
+        <Surface level="raised" lift testID="lifted" />
+      </>
+    )
+    expect(screen.getByTestId('flat').style.boxShadow).toBe('')
+    expect(screen.getByTestId('lifted').style.boxShadow).toContain('inset 0 1px 0')
   })
 
   describe('accessibility', () => {

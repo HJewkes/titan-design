@@ -11,16 +11,25 @@ const meta: Meta<typeof Surface> = {
   argTypes: {
     elevation: {
       control: { type: 'range', min: -2, max: 5, step: 1 },
-      description: 'Elevation level (-2 to 5)',
+      description:
+        'Depth relative to the enclosing Surface: <0 recess, 0 flat, 1–3 lift a plane each, 4–5 float',
+    },
+    raise: {
+      control: { type: 'range', min: 1, max: 3, step: 1 },
+      description: 'Planes to step UP from the enclosing Surface, with the lift treatment',
     },
     level: {
       control: 'select',
       options: ['frame', 'background', 'base', 'elevated', 'raised', 'overlay'],
-      description: 'Named grey plane (flat background from a semantic token)',
+      description: 'Absolute grey plane for a shell root (flat, no lift)',
     },
     pressed: {
       control: 'boolean',
       description: 'Sunken well: one ramp step DOWN from the parent level + inner-shadow recess',
+    },
+    lift: {
+      control: 'boolean',
+      description: 'Force the rim + shadow treatment on or off',
     },
     theme: {
       control: 'select',
@@ -54,15 +63,18 @@ export const Default: Story = {
   ),
 }
 
+// Every level is a ramp plane. Negative levels recess, 0 sits flat on the page,
+// 1–3 climb one plane each with the lift treatment, 4–5 float on overlay with a
+// larger shadow. Rendered on a `base` page so the relative model has a host.
 export const ElevationLevels: Story = {
   render: () => (
-    <View style={{ gap: 16, padding: 24 }}>
+    <Surface level="base" style={{ gap: 16, padding: 24 }}>
       {([-2, -1, 0, 1, 2, 3, 4, 5] as ElevationLevel[]).map((level) => (
         <Surface key={level} elevation={level} style={{ padding: 16 }}>
           <Text style={{ color: '#fff' }}>Elevation {level}</Text>
         </Surface>
       ))}
-    </View>
+    </Surface>
   ),
 }
 
