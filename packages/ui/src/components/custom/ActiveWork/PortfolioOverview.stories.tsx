@@ -1,10 +1,18 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { Surface } from '../../ui/surface'
 import { PortfolioOverview } from './PortfolioOverview'
 
 const meta: Meta<typeof PortfolioOverview> = {
   title: 'ActiveWork/PortfolioOverview',
   component: PortfolioOverview,
   tags: ['autodocs'],
+  decorators: [
+    (Story) => (
+      <Surface level="base" className="min-h-screen p-6" testID="page-surface">
+        <Story />
+      </Surface>
+    ),
+  ],
   parameters: {
     layout: 'fullscreen',
     docs: {

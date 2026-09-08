@@ -52,6 +52,9 @@ export interface InitiativeCardProps extends ViewProps {
  * rank, open-task count, a severity-mix bar, and its top-priority open task.
  * Composes Card / Pill / StatusDot / SegmentedBar / Typography — never
  * hand-rolled. Used by {@link PortfolioOverview}.
+ *
+ * Sits on the card plane above the page like every other content card; the
+ * `accent` stripe is reserved for the focused state, where it carries meaning.
  */
 export function InitiativeCard({
   title,
@@ -72,9 +75,10 @@ export function InitiativeCard({
 
   return (
     <Card
-      variant={state === 'focused' ? 'accent' : 'outline'}
+      variant={state === 'focused' ? 'accent' : 'elevated'}
       accentColor={state === 'focused' ? 'var(--color-brand-primary)' : undefined}
       className={`w-[326px] gap-2.5 p-4 ${className ?? ''}`}
+      testID="initiative-card"
       {...props}
     >
       <View className="flex-row items-start justify-between gap-2">

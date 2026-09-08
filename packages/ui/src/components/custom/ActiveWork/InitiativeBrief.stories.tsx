@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
 import { Card } from '../../ui/card'
+import { Surface } from '../../ui/surface'
 import { InitiativeBrief } from './InitiativeBrief'
 import { sessionLinkers } from './session-linkers'
 import { INITIATIVE_BRIEF_FIXTURE } from './initiative-fixture'
@@ -24,14 +24,15 @@ const meta: Meta<typeof InitiativeBrief> = {
   },
   decorators: [
     (Story) => (
-      <View className="w-full max-w-[560px] p-4">
-        <Card variant="outline" className="gap-1 p-4">
+      <Surface level="base" className="min-h-screen w-full max-w-[560px] p-6" testID="page-surface">
+        <Card className="gap-1 p-4">
           <Story />
         </Card>
-      </View>
+      </Surface>
     ),
   ],
   parameters: {
+    layout: 'fullscreen',
     docs: {
       description: {
         component:

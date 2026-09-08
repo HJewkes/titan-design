@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
+import { Surface } from '../../ui/surface'
 import { Table, TableBody } from '../Table'
 import { TaskRow } from './TaskRow'
 import { TASK_LIST_FIXTURE } from './task-list-fixture'
@@ -17,16 +17,21 @@ const meta: Meta<typeof TaskRow> = {
   },
   decorators: [
     (Story) => (
-      <View className="w-full max-w-[1100px] p-4">
+      <Surface
+        level="base"
+        className="min-h-screen w-full max-w-[1100px] p-6"
+        testID="page-surface"
+      >
         <Table density="dense">
           <TableBody>
             <Story />
           </TableBody>
         </Table>
-      </View>
+      </Surface>
     ),
   ],
   parameters: {
+    layout: 'fullscreen',
     docs: {
       description: {
         component:

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { View } from 'react-native'
+import { Surface } from '../../ui/surface'
 import { SessionDetail } from './SessionDetail'
 import { SessionList } from './SessionList'
 import type { SessionSummary } from './SessionListItem'
@@ -75,14 +76,16 @@ const meta: Meta<ReaderArgs> = {
   },
   decorators: [
     (Story) => (
-      <View className="w-full max-w-[1100px] p-4">
-        <Story />
-      </View>
+      <Surface level="base" className="min-h-screen p-6" testID="page-surface">
+        <View className="w-full max-w-[1100px]">
+          <Story />
+        </View>
+      </Surface>
     ),
   ],
   parameters: {
-    // Top-anchored: the global `centered` layout re-centres the whole reader whenever a short log is selected.
-    layout: 'padded',
+    // Fullscreen: the page Surface is the host plane the detail card lifts off, so it owns the frame.
+    layout: 'fullscreen',
     docs: {
       description: {
         component:

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { Surface } from '../../ui/surface'
 import { InitiativeCard } from './InitiativeCard'
 
 const meta: Meta<typeof InitiativeCard> = {
@@ -23,7 +24,15 @@ const meta: Meta<typeof InitiativeCard> = {
     severityCounts: { control: 'object' },
     topTask: { control: 'object' },
   },
+  decorators: [
+    (Story) => (
+      <Surface level="base" className="min-h-screen p-6" testID="page-surface">
+        <Story />
+      </Surface>
+    ),
+  ],
   parameters: {
+    layout: 'fullscreen',
     docs: {
       description: {
         component:

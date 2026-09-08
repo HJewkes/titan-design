@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View } from 'react-native'
-import { Card } from '../../ui/card'
+// Deep import: `CardInset` is not on the card barrel yet (Lab/Depth reaches it the same way).
+import { Card, CardInset } from '../../ui/card/Card'
 import { Pill } from '../../ui/pill'
 import { Tile } from '../../ui/tile'
 import { DataRow } from '../../ui/data-row'
@@ -9,7 +10,6 @@ import { DateTime } from '../DateTime'
 import { Typography } from '../Typography'
 import { formatCompact, formatSignedCompact } from '../../../utils/number-format'
 import { resolveColor } from '../../../theme/resolve-color'
-import { insetWell } from '../../../theme/materials'
 import { Eyebrow } from './Eyebrow'
 import { FilePathLabel, splitPath } from './FilePathLabel'
 import { FILE_EVENT_COLOR, type FileEventColors, type FileActivity } from './FileActivityRow'
@@ -24,6 +24,14 @@ const GROWTH_COLOR = {
   removed: resolveColor('result-degrade'),
   neutral: resolveColor('result-neutral'),
 } as const
+
+/**
+ * `Tile` paints `surface-raised` itself, which IS this card's plane. Inside the
+ * lifted pane it has to read one plane up to separate at all. Overriding the
+ * fill at the call site keeps Tile's own default right for a page-level strip;
+ * teaching Tile to resolve its plane from the surface context is its own epic.
+ */
+const TILE_PLANE = 'bg-surface-overlay'
 
 /** Another file that tends to change in the same session as this one. */
 export interface FileCoChange {
@@ -68,8 +76,11 @@ function GrowthStat({ label, value, color }: { label: string; value: string; col
  * the files it changes together with — the co-change list being the part a
  * plain file tree cannot show.
  *
- * Composes Card / Tile / Pill / DataRow / DateTime plus {@link SparkBars},
- * {@link FilePathLabel} and {@link Eyebrow}.
+ * Composes Card / CardInset / Tile / Pill / DataRow / DateTime plus
+ * {@link SparkBars}, {@link FilePathLabel} and {@link Eyebrow}.
+ *
+ * One lift only: the pane itself. Inside it the activity split reads as filled
+ * tiles a plane up and the growth block as a `CardInset` well a plane down.
  */
 export function FileActivityDetail({
   file,
@@ -80,11 +91,7 @@ export function FileActivityDetail({
   const grew = file.netGrowth >= 0
 
   return (
-    <Card
-      variant="subtle"
-      className={`flex-1 gap-4 p-4 ${className ?? ''}`}
-      testID="file-activity-detail"
-    >
+    <Card className={`flex-1 gap-4 p-4 ${className ?? ''}`} testID="file-activity-detail">
       <View className="gap-1">
         <Typography variant="mono" className="text-xs text-text-tertiary">
           {dir || './'}
@@ -115,13 +122,29 @@ export function FileActivityDetail({
       </View>
 
       <View className="flex-row gap-2">
-        <Tile label="Reads" value={String(file.reads)} valueColor={eventColors.reads} />
-        <Tile label="Writes" value={String(file.writes)} valueColor={eventColors.writes} />
-        <Tile label="Edits" value={String(file.edits)} valueColor={eventColors.edits} />
-        <Tile label="Touches" value={String(file.touches)} />
+        {/* Tile's own fill is the card plane, which is this card; step it one up. */}
+        <Tile
+          label="Reads"
+          value={String(file.reads)}
+          valueColor={eventColors.reads}
+          className={TILE_PLANE}
+        />
+        <Tile
+          label="Writes"
+          value={String(file.writes)}
+          valueColor={eventColors.writes}
+          className={TILE_PLANE}
+        />
+        <Tile
+          label="Edits"
+          value={String(file.edits)}
+          valueColor={eventColors.edits}
+          className={TILE_PLANE}
+        />
+        <Tile label="Touches" value={String(file.touches)} className={TILE_PLANE} />
       </View>
 
-      <View className="gap-2 rounded-lg p-3" style={insetWell()}>
+      <CardInset className="gap-2 rounded-lg p-3" testID="growth-well">
         <View className="flex-row items-center justify-between">
           <Eyebrow>Net change over sessions</Eyebrow>
           <Typography
@@ -150,7 +173,7 @@ export function FileActivityDetail({
           />
           <GrowthStat label="Sessions" value={String(file.sessions)} color={GROWTH_COLOR.neutral} />
         </View>
-      </View>
+      </CardInset>
 
       <View className="gap-0.5">
         <Eyebrow>Changes together with</Eyebrow>
