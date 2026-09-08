@@ -56,7 +56,7 @@ export interface FileActivity {
 
 export interface FileActivityRowProps {
   file: FileActivity
-  /** Renders the selected treatment (raised fill + leading accent bar). */
+  /** Renders the selected treatment (one tone up from the list pane + leading accent bar). */
   selected?: boolean
   onSelect?: () => void
   /** Override the read/write/edit fills. Defaults to {@link FILE_EVENT_COLOR}. */
@@ -93,7 +93,9 @@ export function FileActivityRow({
       aria-selected={selected}
       accessibilityLabel={`${file.path}, ${file.touches} touches`}
       testID="file-activity-row"
-      className={`relative gap-1.5 rounded-md px-3 py-2 ${selected ? 'bg-surface-raised' : ''}`}
+      // The row lives inside the lifted list pane (surface-raised), so the selected
+      // fill steps one tone above it. Tone as a state cue; no lift.
+      className={`relative gap-1.5 rounded-md px-3 py-2 ${selected ? 'bg-surface-overlay' : ''}`}
     >
       {selected ? (
         <View
