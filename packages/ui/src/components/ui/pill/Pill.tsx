@@ -123,12 +123,15 @@ const sizeStyles: Record<PillSize, { container: string; text: string }> = {
   xl: { container: 'px-4 py-2', text: 'text-base' },
 }
 
-function PillDot({ tone }: { tone: PillTone }) {
+// The dot derives its testID from the pill's, so a preset's dot stays
+// addressable under the preset's own name (`muscle-group-chip-dot`) instead of
+// collapsing to a generic one — the visual parity layer targets it by name.
+function PillDot({ tone, testID }: { tone: PillTone; testID?: string }) {
   return (
     <View
       className={cn('w-1.5 h-1.5 rounded-full shrink-0', dotToneStyles[tone])}
       accessibilityElementsHidden
-      testID="pill-dot"
+      testID={testID ? `${testID}-dot` : 'pill-dot'}
     />
   )
 }
@@ -153,7 +156,7 @@ function PillContent({ tone, ...p }: PillProps & { tone: PillTone }) {
   const slot = p.leading ?? p.leftElement
   return (
     <>
-      {slot === 'dot' ? <PillDot tone={p.dotTone ?? tone} /> : slot}
+      {slot === 'dot' ? <PillDot tone={p.dotTone ?? tone} testID={p.testID} /> : slot}
       {typeof p.children === 'string' ? (
         <Text className={textClasses}>{p.children}</Text>
       ) : (
