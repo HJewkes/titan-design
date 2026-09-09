@@ -35,7 +35,8 @@ export function MuscleGroupChip({
 
   return (
     <Pill
-      tone={volumeStatus ? dotTone[volumeStatus] : 'neutral'}
+      tone="neutral"
+      dotTone={volumeStatus ? dotTone[volumeStatus] : 'neutral'}
       variant="subtle"
       size="md"
       leading="dot"

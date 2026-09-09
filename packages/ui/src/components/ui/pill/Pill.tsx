@@ -38,6 +38,12 @@ export interface PillProps extends ViewProps {
   rounded?: boolean
   /** Leading slot: `'dot'` renders a tone-matched dot, any node renders as-is. */
   leading?: React.ReactNode | 'dot'
+  /**
+   * Colour the leading dot independently of the capsule. For the pattern where
+   * the label is neutral and only the dot carries status, so a row of chips
+   * stays quiet and the dots are the signal.
+   */
+  dotTone?: PillTone
   /** @deprecated Use `leading`. */
   leftElement?: React.ReactNode
   /** Trailing slot (dismiss affordance, counter) */
@@ -147,7 +153,7 @@ function PillContent({ tone, ...p }: PillProps & { tone: PillTone }) {
   const slot = p.leading ?? p.leftElement
   return (
     <>
-      {slot === 'dot' ? <PillDot tone={tone} /> : slot}
+      {slot === 'dot' ? <PillDot tone={p.dotTone ?? tone} /> : slot}
       {typeof p.children === 'string' ? (
         <Text className={textClasses}>{p.children}</Text>
       ) : (
@@ -174,6 +180,7 @@ export function Pill(props: PillProps) {
     size,
     rounded,
     leading,
+    dotTone,
     leftElement,
     trailing,
     onPress,
