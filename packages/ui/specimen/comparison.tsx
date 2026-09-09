@@ -162,9 +162,9 @@ const HTML_CSS = `
   /* Glows come from getGlowShadow('subtle') now. The frozen demo's tighter
      0 0 4px / .40 halo survives as the 'tight' rung of that same scale, so this
      reference tracks the shipped value rather than the pre-centralisation one. */
-  .html-scope .glow-success { box-shadow: 0 0 12px rgba(46,213,115,0.25); }
-  .html-scope .glow-warning { box-shadow: 0 0 12px rgba(245,158,11,0.25); }
-  .html-scope .glow-error { box-shadow: 0 0 12px rgba(239,68,68,0.25); }
+  .html-scope .glow-success { box-shadow: 0 0 12px rgba(46,213,115,0.25); }   /* green-300  #2ED573 */
+  .html-scope .glow-warning { box-shadow: 0 0 12px rgba(249,180,21,0.25); }   /* amber-300  #F9B415 */
+  .html-scope .glow-error   { box-shadow: 0 0 12px rgba(209,67,67,0.25); }    /* red-600    #D14343 */
 
   /* 4. PlaceholderStrip */
   .html-scope .placeholder-strip-single {
