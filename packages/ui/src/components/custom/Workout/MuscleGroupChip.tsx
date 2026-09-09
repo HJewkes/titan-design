@@ -36,13 +36,13 @@ export function MuscleGroupChip({
   return (
     <Pill
       tone={volumeStatus ? dotTone[volumeStatus] : 'neutral'}
-      variant="outline"
-      size="sm"
+      variant="subtle"
+      size="md"
       leading="dot"
       onPress={onPress}
-      className={['bg-surface-raised border-hairline gap-1.5 px-2 py-0.5', className]
-        .filter(Boolean)
-        .join(' ')}
+      // Borderless, like every other tone: the tinted fill carries the capsule.
+      // `md` keeps the chip at its shipped ~24px height with 12px text.
+      className={['gap-1.5', className].filter(Boolean).join(' ')}
       textClassName="font-sans font-medium text-text-secondary"
       accessibilityLabel={`${name}, volume status: ${statusLabel}`}
       testID={onPress ? 'muscle-group-chip-pressable' : 'muscle-group-chip'}

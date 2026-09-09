@@ -360,17 +360,20 @@ const HTML_CSS = `
   }
 
   /* 10. MuscleGroupChip */
+  /* Now a Pill preset: borderless subtle fill, size md. The frozen demo's 11px
+     text and 3/9 padding sat between scale steps; md rounds UP to 12px and holds
+     the chip at its shipped height. Font stack is the token's, not a literal. */
   .html-scope .muscle-chip {
     display: inline-flex;
     align-items: center;
-    background: var(--surface-raised);
-    border: 1px solid var(--border-default);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid transparent;
     border-radius: 100px;
-    padding: 3px 9px;
-    font-size: 11px;
+    padding: 4px 10px;
+    font-size: 12px;
     font-weight: 500;
     color: var(--text-secondary);
-    font-family: var(--font-body);
+    font-family: var(--font-family-sans), -apple-system, BlinkMacSystemFont, sans-serif;
   }
   .html-scope .muscle-chip-dot {
     width: 6px;

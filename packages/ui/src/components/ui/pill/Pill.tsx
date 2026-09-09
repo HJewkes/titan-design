@@ -106,12 +106,15 @@ const dotToneStyles: Record<PillTone, string> = {
   info: 'bg-status-info',
 }
 
+// One text step per rung. `md` used to repeat `sm`'s 10px, which left no 12px
+// capsule at all and pushed anything between the two down to 10px — that is how
+// MuscleGroupChip lost 7px of height. `md` is the 12px rung now.
 const sizeStyles: Record<PillSize, { container: string; text: string }> = {
   xs: { container: 'px-1 py-px', text: 'text-3xs' },
   sm: { container: 'px-2 py-0.5', text: 'text-2xs' },
-  md: { container: 'px-2 py-1', text: 'text-2xs' },
-  lg: { container: 'px-2.5 py-1', text: 'text-sm' },
-  xl: { container: 'px-4 py-1.5', text: 'text-base' },
+  md: { container: 'px-2.5 py-1', text: 'text-xs' },
+  lg: { container: 'px-3 py-1.5', text: 'text-sm' },
+  xl: { container: 'px-4 py-2', text: 'text-base' },
 }
 
 function PillDot({ tone }: { tone: PillTone }) {
