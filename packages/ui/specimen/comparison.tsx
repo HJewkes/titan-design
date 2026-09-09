@@ -43,9 +43,11 @@ const HTML_CSS = `
        layer catches it — which is exactly what happened the first time. */
     --border-default: rgba(255, 255, 255, 0.15);
     --border-strong: rgba(255, 255, 255, 0.22);
-    /* A dim FILL for 'no data' dots. Used to borrow --border-strong; borders are
-       alpha now, so a fill needs its own solid ramp step. */
-    --dot-inactive: #2C2A28;
+    /* A dim FILL for 'no data' dots. Was grey-900 (#2C2A28) — a SURFACE plane
+       borrowed as a mark colour, which made the dot near-invisible on the nav
+       plane. A dot is foreground, so it takes the muted text role: text-tertiary,
+       grey-500. */
+    --dot-inactive: #888684;
     --status-success: #2ED573;
     --status-error: #D14343;
     --status-warning: #F9B415;
