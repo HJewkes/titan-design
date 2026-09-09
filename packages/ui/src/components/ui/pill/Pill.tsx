@@ -73,7 +73,11 @@ const toneStyles: Record<PillVariant, Record<PillTone, string>> = {
     info: 'bg-status-info border-transparent text-text-inverse',
   },
   subtle: {
-    neutral: 'bg-surface-raised border-hairline-subtle text-text-secondary',
+    // Alpha-white rather than a ramp step: a pill sits on whatever plane its
+    // host is, and an alpha fill composites by the same amount on all of them.
+    // A `surface-*` fill would vanish on the plane it names. Borderless like the
+    // six coloured tones — the fill carries the capsule, not a ring.
+    neutral: 'bg-hairline-subtle border-transparent text-text-secondary',
     brand: 'bg-brand-primary-subtle border-transparent text-brand-primary',
     'brand-secondary': 'bg-brand-secondary-subtle border-transparent text-brand-secondary',
     success: 'bg-status-success-subtle border-transparent text-status-success',
