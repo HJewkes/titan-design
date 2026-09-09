@@ -159,9 +159,12 @@ const HTML_CSS = `
   .html-scope .status-dot.on-track .dot-icon { color: var(--status-success); }
   .html-scope .status-dot.deviation .dot-icon { color: var(--status-warning); }
   .html-scope .status-dot.future .dot-icon { color: var(--text-tertiary); }
-  .html-scope .glow-success { box-shadow: 0 0 4px rgba(46,213,115,0.4); }
-  .html-scope .glow-warning { box-shadow: 0 0 4px rgba(245,158,11,0.4); }
-  .html-scope .glow-error { box-shadow: 0 0 4px rgba(239,68,68,0.4); }
+  /* Glows come from getGlowShadow('subtle') now. The frozen demo's tighter
+     0 0 4px / .40 halo survives as the 'tight' rung of that same scale, so this
+     reference tracks the shipped value rather than the pre-centralisation one. */
+  .html-scope .glow-success { box-shadow: 0 0 12px rgba(46,213,115,0.25); }
+  .html-scope .glow-warning { box-shadow: 0 0 12px rgba(245,158,11,0.25); }
+  .html-scope .glow-error { box-shadow: 0 0 12px rgba(239,68,68,0.25); }
 
   /* 4. PlaceholderStrip */
   .html-scope .placeholder-strip-single {
@@ -286,8 +289,9 @@ const HTML_CSS = `
   .html-scope .intensity-fill.over-1 { background: var(--status-error); height: 100% !important; }
   .html-scope .intensity-fill.over-2 { background: #A4221C; height: 100% !important; }
   .html-scope .intensity-fill.over-3 { background: #7E1002; height: 100% !important; }
+  /* Was a hand-tuned two-layer halo; the bar now takes getGlowShadow('subtle'). */
   .html-scope .intensity-fill.at-target {
-    box-shadow: 0 0 5px 1px rgba(33, 150, 243, 0.35), 0 0 10px 3px rgba(33, 150, 243, 0.15);
+    box-shadow: 0 0 12px rgba(33, 150, 243, 0.25);
   }
   .html-scope .intensity-bulge {
     position: absolute;

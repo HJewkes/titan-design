@@ -95,9 +95,14 @@ export function getElevationShadow(
 // Glow Shadow Support
 // =============================================================================
 
-export type GlowIntensity = 'subtle' | 'medium' | 'strong'
+export type GlowIntensity = 'tight' | 'subtle' | 'medium' | 'strong'
 
+// Four fixed intensities, chosen by EMPHASIS rather than by the element's size:
+// a caller says how loud the glow should be, not how big the thing is. `tight`
+// is the close halo a small indicator wore before glows were centralised; it is
+// kept as a rung on the scale so that look stays reachable.
 const glowConfig: Record<GlowIntensity, { blur: number; spread: number; opacity: number }> = {
+  tight: { blur: 4, spread: 0, opacity: 0.4 },
   subtle: { blur: 12, spread: 0, opacity: 0.25 },
   medium: { blur: 20, spread: 2, opacity: 0.4 },
   strong: { blur: 30, spread: 4, opacity: 0.55 },
