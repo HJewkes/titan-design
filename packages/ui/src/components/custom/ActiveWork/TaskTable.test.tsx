@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen, fireEvent, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { TaskTable, formatTaskAge } from './TaskTable'
+import { TaskTable, formatTaskAge, type TaskColumnKey } from './TaskTable'
 import { TASK_LIST_FIXTURE, TASK_LIST_NOW } from './task-list-fixture'
 
 /** Task ids in the order they currently appear, read off the rendered rows. */
@@ -118,6 +118,84 @@ describe('TaskTable', () => {
 
   it('has no a11y violations', async () => {
     const { container } = render(<TaskTable tasks={TASK_LIST_FIXTURE} now={TASK_LIST_NOW} />)
+    expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+/** Header labels in render order, with the sort glyph stripped off. */
+function headerLabels(): string[] {
+  return screen
+    .getAllByRole('columnheader')
+    .map((header) => (header.textContent ?? '').replace(/[↑↓↕]/g, '').trim())
+}
+
+describe('TaskTable column drop order', () => {
+  const at = (fitWidth: number, hideColumns?: TaskColumnKey[]) =>
+    render(
+      <TaskTable
+        tasks={TASK_LIST_FIXTURE}
+        now={TASK_LIST_NOW}
+        hideLegend
+        fitWidth={fitWidth}
+        hideColumns={hideColumns}
+      />
+    )
+
+  // Each width is one step of the declared order: severity, priority, estimate, tags, age, initiative.
+  it.each([
+    [1100, ['Initiative', 'ID', 'Title', 'Severity', 'Pri', 'Est', 'Tags', 'Age']],
+    [700, ['Initiative', 'ID', 'Title', 'Pri', 'Est', 'Tags', 'Age']],
+    [640, ['Initiative', 'ID', 'Title', 'Est', 'Tags', 'Age']],
+    [590, ['Initiative', 'ID', 'Title', 'Tags', 'Age']],
+    [440, ['Initiative', 'ID', 'Title', 'Age']],
+    [380, ['Initiative', 'ID', 'Title']],
+    [200, ['ID', 'Title']],
+  ])('renders %ipx as %j', (fitWidth, expected) => {
+    at(fitWidth as number)
+    expect(headerLabels()).toEqual(expected)
+  })
+
+  it('keeps the title and the id at any width, however narrow', () => {
+    at(80)
+    expect(headerLabels()).toEqual(['ID', 'Title'])
+    // Below the floor the table scrolls rather than dropping what names the task.
+    expect(screen.getAllByText(TASK_LIST_FIXTURE[0]!.title)[0]).toBeInTheDocument()
+  })
+
+  it('drops one column at a time rather than collapsing to the floor', () => {
+    at(700)
+    expect(headerLabels()).toHaveLength(7)
+  })
+
+  it('gives every header label a column of its own', () => {
+    for (const width of [1100, 700, 440, 200]) {
+      const { unmount } = at(width)
+      const labels = headerLabels()
+      expect(new Set(labels).size).toBe(labels.length)
+      expect(labels.every((label) => label.split(/\s+/).length === 1)).toBe(true)
+      unmount()
+    }
+  })
+
+  it('keeps the rows in step with the header it dropped columns from', () => {
+    at(440)
+    const firstRow = screen.getAllByTestId('task-row')[0]!
+    expect(within(firstRow).getAllByRole('cell')).toHaveLength(headerLabels().length)
+  })
+
+  it("shows id, title and age in the reader's embedded card", () => {
+    // 369px is what the reader's right-hand card measured at an 865px viewport.
+    at(369, ['slug'])
+    expect(headerLabels()).toEqual(['ID', 'Title', 'Age'])
+  })
+
+  it('has no a11y violations once columns have dropped', async () => {
+    const { container } = at(440)
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
+  it('has no a11y violations at the horizontal-scroll floor', async () => {
+    const { container } = at(200)
     expect(await axe(container)).toHaveNoViolations()
   })
 })

@@ -166,6 +166,14 @@ model.
   accessible name.
 - **`TaskTable` gained `hideColumns`** (mirrored by `TaskRow`), so an embedded table can drop columns its
   context already implies: the session detail hides `slug` and `tags` to give the title room.
+- **`Table` gained a column drop order** (`useMeasuredWidth` + `useColumnFit` + `Table.contentMinWidth`), and
+  `TaskTable` declares one: severity, priority, estimate, tags, age, initiative. `title` and `id` declare no
+  `dropPriority`, so they never drop and the table scrolls horizontally instead. Found in the initiative
+  reader at an 865px viewport: the card measured 369px against 418px of fixed columns, the flexible title
+  collapsed to 0 and painted its header over the severity column, and the age column was clipped off the
+  right edge. `priority`, `estimate` and `severityCompact` also widened (42/42/44 → 56/56/56) because each
+  was narrower than its own uppercase header plus the sort glyph — the arithmetic behind `SEV`/`PRI`
+  overlapping at every width, not just narrow ones.
 - **Subtle coloured `Pill`s are borderless with a stronger tint** (`bg-*/15`, `border-transparent`; the
   neutral `default` keeps its hairline). The 25%-alpha coloured border read as a dark outline on dark
   surfaces. System-wide; visual baselines for coloured subtle pills move.

@@ -47,6 +47,8 @@ function InitiativeReader({
   // A default Card already resolves the card plane from the page it is on and wears the lift.
   // A `bg-*` className here would be silently discarded — Card writes its plane into `style`.
   const cardClass = 'gap-1 p-4'
+  // A tab strip is the card's header: its own py-2 is the whole gap above the labels, so the card gives none.
+  const tabCardClass = `min-w-[360px] flex-1 ${cardClass} pt-2`
   return (
     <View className="gap-4">
       <InitiativeHeader
@@ -64,7 +66,7 @@ function InitiativeReader({
         <Card className={`min-w-[360px] flex-1 ${cardClass}`} testID="reader-card">
           <InitiativeBrief brief={brief} linkers={linkers} />
         </Card>
-        <Card className={`min-w-[360px] flex-1 ${cardClass}`} testID="reader-card">
+        <Card className={tabCardClass} testID="reader-card">
           <Tabs defaultIndex={0}>
             <TabList>
               <Tab>{`Tasks (${tasks.length})`}</Tab>
@@ -72,14 +74,10 @@ function InitiativeReader({
             </TabList>
             <TabPanels>
               <TabPanel>
-                <View className="pt-3">
-                  <TaskTable tasks={tasks} now={now} hideLegend hideColumns={['slug']} label=" " />
-                </View>
+                <TaskTable tasks={tasks} now={now} hideLegend hideColumns={['slug']} label=" " />
               </TabPanel>
               <TabPanel>
-                <View className="pt-3">
-                  <SessionList sessions={SESSION_FIXTURE} now={SESSION_NOW} label=" " />
-                </View>
+                <SessionList sessions={SESSION_FIXTURE} now={SESSION_NOW} label=" " />
               </TabPanel>
             </TabPanels>
           </Tabs>

@@ -15,6 +15,7 @@ import {
   TableSelectCell,
   useTable,
 } from './Table'
+import { useColumnFit, type TableColumnFit } from './column-fit'
 import { Button, ButtonText } from '../../ui/button/Button'
 
 interface User {
@@ -344,6 +345,79 @@ export const WithColumnWidths: Story = {
         ))}
       </TableBody>
     </Table>
+  ),
+}
+
+/**
+ * A column's terms for the fit: what it needs, and when it leaves. `name` has no
+ * `dropPriority`, so it never drops — which is what puts a floor under the
+ * dropping and hands the overflow to horizontal scroll instead.
+ */
+const FIT_COLUMNS: (TableColumnFit & { label: string })[] = [
+  { key: 'name', label: 'Name', minWidth: 200 },
+  { key: 'email', label: 'Email', minWidth: 220, dropPriority: 3 },
+  { key: 'role', label: 'Role', minWidth: 120, dropPriority: 2 },
+  { key: 'status', label: 'Status', minWidth: 100, dropPriority: 1 },
+]
+
+/** The hairline frame, which the outer width includes but the columns cannot use. */
+const FRAME_INSET = 2
+
+/** The same table at a pinned width, so one story shows every step of the order at once. */
+function FittedTable({ available }: { available: number }) {
+  const fit = useColumnFit(FIT_COLUMNS, available - FRAME_INSET)
+  const columns = FIT_COLUMNS.filter((column) => fit.isVisible(column.key))
+  const width = (key: string) =>
+    key === 'name' ? undefined : FIT_COLUMNS.find((c) => c.key === key)!.minWidth
+
+  return (
+    <View className="gap-1" style={{ width: available }}>
+      <Text className="text-xs text-text-secondary">
+        {`${available}px · ${columns.length} columns${fit.isScrolling ? ' · scrolls' : ''}`}
+      </Text>
+      <View className="overflow-hidden rounded-lg border border-hairline">
+        <Table contentMinWidth={fit.contentMinWidth}>
+          <TableHeader>
+            <TableRow isHoverable={false}>
+              {columns.map((column) => (
+                <TableHeaderCell key={column.key} width={width(column.key)}>
+                  {column.label}
+                </TableHeaderCell>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {sampleUsers.slice(0, 3).map((user) => (
+              <TableRow key={user.id}>
+                {columns.map((column) => (
+                  <TableCell key={column.key} width={width(column.key)}>
+                    {user[column.key as keyof User]}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </View>
+    </View>
+  )
+}
+
+/**
+ * **Column drop order.** When the measured width cannot hold every column, they
+ * drop one at a time in the order the caller declared — `status`, then `role`,
+ * then `email`. `name` declares no `dropPriority`, so dropping stops there and
+ * the table scrolls horizontally instead: scroll is the floor, not the first
+ * resort. Measure with `useMeasuredWidth`, decide with `useColumnFit`, and hand
+ * `contentMinWidth` to `Table` so it knows what to scroll to.
+ */
+export const ColumnDropOrder: Story = {
+  render: () => (
+    <View className="gap-6">
+      {[660, 560, 440, 300, 150].map((available) => (
+        <FittedTable key={available} available={available} />
+      ))}
+    </View>
   ),
 }
 

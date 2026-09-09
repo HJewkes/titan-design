@@ -74,6 +74,12 @@ export interface TableProps extends ViewProps {
   loadingRowCount?: number
   /** Row height / cell padding. Defaults to `comfortable`. */
   density?: TableDensity
+  /**
+   * Width the columns need, below which the table scrolls horizontally instead
+   * of squeezing them into overlap. Pair with {@link useColumnFit}, which drops
+   * columns first and reports what the survivors need.
+   */
+  contentMinWidth?: number
   /** Additional className */
   className?: string
   children?: React.ReactNode
@@ -114,10 +120,18 @@ export function Table({
   isLoading = false,
   loadingRowCount = 5,
   density = 'comfortable',
+  contentMinWidth,
   className,
   children,
   ...props
 }: TableProps) {
+  // width 100% + a minWidth floor resolves to max(container, floor): the table fills its
+  // container, and once the columns need more than that it overflows and scrolls.
+  const contentStyle =
+    contentMinWidth === undefined
+      ? SCROLL_CONTENT
+      : { ...SCROLL_CONTENT, minWidth: contentMinWidth }
+
   return (
     <TableContext.Provider
       value={{
@@ -135,8 +149,8 @@ export function Table({
       <View className={cn('w-full', className)} {...props}>
         <ScrollView
           horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={SCROLL_CONTENT}
+          showsHorizontalScrollIndicator={contentMinWidth !== undefined}
+          contentContainerStyle={contentStyle}
         >
           <View role="table" className="w-full min-w-full">
             {isLoading ? <TableLoadingSkeleton rowCount={loadingRowCount} /> : children}
@@ -308,7 +322,13 @@ export function TableHeaderCell({
     // columnheader cell wraps the sort button so it carries proper table
     // semantics (role + aria-sort) while the inner control keeps its button role.
     return (
-      <View role="columnheader" aria-sort={ariaSort} style={width ? { width } : FLEX_CELL}>
+      <View
+        role="columnheader"
+        aria-sort={ariaSort}
+        // A label and its sort glyph belong to one column: clipped is recoverable, painted over the neighbour is not.
+        className="overflow-hidden"
+        style={width ? { width } : FLEX_CELL}
+      >
         {withTooltip(
           <Pressable
             accessibilityRole="button"
@@ -336,7 +356,12 @@ export function TableHeaderCell({
     <View
       role="columnheader"
       style={width ? { width } : FLEX_CELL}
-      className={cn('flex-row items-center', CELL_PADDING[density], alignStyles[align], className)}
+      className={cn(
+        'flex-row items-center overflow-hidden',
+        CELL_PADDING[density],
+        alignStyles[align],
+        className
+      )}
     >
       {withTooltip(content)}
     </View>

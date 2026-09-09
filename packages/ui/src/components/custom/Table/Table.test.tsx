@@ -425,6 +425,28 @@ describe('Table', () => {
         minWidth: '0px',
       })
     })
+
+    it('floors the content at the width the columns need, so a too-narrow table scrolls', () => {
+      render(
+        <Table contentMinWidth={420}>
+          <TableBody>
+            <TableRow>
+              <TableCell>only</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      )
+      // width 100% + the floor resolves to max(container, floor): fill, then scroll.
+      expect(screen.getByRole('table').parentElement).toHaveStyle({
+        width: '100%',
+        minWidth: '420px',
+      })
+    })
+
+    it('sets no floor when the caller has not measured one', () => {
+      renderBasicTable()
+      expect(screen.getByRole('table').parentElement).not.toHaveStyle({ minWidth: '420px' })
+    })
   })
 
   describe('TablePagination', () => {
