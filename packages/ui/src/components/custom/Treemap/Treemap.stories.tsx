@@ -4,7 +4,7 @@ import { Treemap, type TreemapDatum } from './Treemap'
 const meta: Meta<typeof Treemap> = {
   title: 'Custom/Charts/Treemap',
   component: Treemap,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     width: { control: { type: 'range', min: 200, max: 900, step: 20 } },
     height: { control: { type: 'range', min: 120, max: 600, step: 20 } },

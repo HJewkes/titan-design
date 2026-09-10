@@ -10,7 +10,7 @@ import {
 const meta: Meta<typeof FileHistoryExplorer> = {
   title: 'Custom/ActiveWork/FileHistoryExplorer',
   component: FileHistoryExplorer,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   decorators: [
     (Story) => (
       <Surface level="base" className="min-h-screen p-6" testID="page-surface">

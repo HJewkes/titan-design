@@ -155,6 +155,7 @@ const mesos = [
 // ----------------------------------------------------------------------------- the pane
 const meta: Meta = {
   title: 'Lab/Audits/Row Inventory',
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
 }
 export default meta

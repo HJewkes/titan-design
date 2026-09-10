@@ -7,7 +7,7 @@ import type { ElevationLevel } from '../../../theme/elevation'
 const meta: Meta<typeof Surface> = {
   title: 'Components/Atoms/Surface',
   component: Surface,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     elevation: {
       control: { type: 'range', min: -2, max: 5, step: 1 },

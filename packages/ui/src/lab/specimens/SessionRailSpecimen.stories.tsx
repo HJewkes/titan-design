@@ -581,6 +581,7 @@ function Frame({ children }: { children: React.ReactNode }) {
 
 const meta: Meta = {
   title: 'Lab/Specimens/Session Rail',
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
 }
 export default meta

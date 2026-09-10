@@ -35,6 +35,7 @@ import {
 
 const meta: Meta = {
   title: 'Lab/North Star/4 - Fatigue System',
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
 }
 export default meta

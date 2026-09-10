@@ -11,6 +11,7 @@ const t = getSemanticColors('dark')
 type Args = { stripHeight: number }
 const meta: Meta<Args> = {
   title: 'Lab/Explorations/Full Rail',
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
   argTypes: { stripHeight: { control: { type: 'range', min: 3, max: 14, step: 1 } } },
   args: { stripHeight: 8 },

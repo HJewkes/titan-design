@@ -5,7 +5,7 @@ import { CoChangeChip } from './CoChangeChip'
 const meta: Meta<typeof CoChangeChip> = {
   title: 'Custom/ActiveWork/CoChangeChip',
   component: CoChangeChip,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   decorators: [
     (Story) => (
       <Surface level="base" className="min-h-screen p-6" testID="page-surface">

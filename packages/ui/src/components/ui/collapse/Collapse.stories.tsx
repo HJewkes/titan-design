@@ -14,7 +14,7 @@ import {
 const meta: Meta<typeof Accordion> = {
   title: 'Components/Organisms/Accordion',
   component: Accordion,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     allowMultiple: {
       control: 'boolean',

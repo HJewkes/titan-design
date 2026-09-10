@@ -5,7 +5,7 @@ import { Tabs, TabList, Tab, TabPanels, TabPanel } from './Tabs'
 const meta: Meta<typeof Tabs> = {
   title: 'Components/Molecules/Tabs',
   component: Tabs,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     variant: {
       control: 'select',

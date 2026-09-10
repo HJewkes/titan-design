@@ -258,6 +258,7 @@ function Sheet() {
 
 const meta: Meta = {
   title: 'Lab/Explorations/Set Types',
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
 }
 export default meta

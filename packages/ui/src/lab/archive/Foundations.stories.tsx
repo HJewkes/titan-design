@@ -20,6 +20,7 @@ import { ArchiveFrame } from './ArchiveFrame'
  */
 const meta: Meta<typeof ArchiveFrame> = {
   title: 'Lab/Design Archive/Foundations (superseded)',
+  tags: ['status:lab', '!status:review'],
   component: ArchiveFrame,
   parameters: { layout: 'fullscreen' },
 }

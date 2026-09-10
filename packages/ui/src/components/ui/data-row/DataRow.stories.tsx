@@ -5,7 +5,7 @@ import { DataRow } from './DataRow'
 const meta: Meta<typeof DataRow> = {
   title: 'Components/Molecules/DataRow',
   component: DataRow,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     label: {
       control: 'text',

@@ -200,7 +200,11 @@ function SessionPaceTile({ state }: { state: PaceState }) {
   )
 }
 
-const meta: Meta = { title: 'Lab/Explorations/Session Pace', parameters: { layout: 'fullscreen' } }
+const meta: Meta = {
+  title: 'Lab/Explorations/Session Pace',
+  tags: ['status:lab', '!status:review'],
+  parameters: { layout: 'fullscreen' },
+}
 export default meta
 type Story = StoryObj
 

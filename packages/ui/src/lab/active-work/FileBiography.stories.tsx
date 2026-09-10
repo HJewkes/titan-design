@@ -331,6 +331,7 @@ function FileBiography() {
 
 const meta: Meta<typeof FileBiography> = {
   title: 'Lab/ActiveWork/File Biography',
+  tags: ['status:lab', '!status:review'],
   component: FileBiography,
   parameters: {
     layout: 'fullscreen',

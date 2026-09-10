@@ -34,6 +34,7 @@ interface WallArgs {
 
 const meta: Meta<WallArgs> = {
   title: 'Lab/North Star/Live Wall Dashboard',
+  tags: ['status:lab', '!status:review'],
   args: { variant: 'live', tempo: true },
   argTypes: {
     variant: {

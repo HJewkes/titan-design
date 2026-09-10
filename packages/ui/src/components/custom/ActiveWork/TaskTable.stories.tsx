@@ -14,7 +14,7 @@ import { TASK_LIST_FIXTURE, TASK_LIST_NOW } from './task-list-fixture'
 const meta: Meta<typeof TaskTable> = {
   title: 'Custom/ActiveWork/TaskTable',
   component: TaskTable,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   args: {
     tasks: TASK_LIST_FIXTURE,
     now: TASK_LIST_NOW,

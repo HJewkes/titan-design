@@ -18,7 +18,7 @@ const meta: Meta<typeof Card> = {
   parameters: {
     docs: { description: { component: 'Composes **Surface**.' } },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     variant: {
       control: 'select',

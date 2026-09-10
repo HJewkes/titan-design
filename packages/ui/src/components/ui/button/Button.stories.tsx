@@ -5,7 +5,7 @@ import { Button, ButtonText, ButtonIcon } from './Button'
 const meta: Meta<typeof Button> = {
   title: 'Components/Molecules/Button',
   component: Button,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     variant: {
       control: 'select',

@@ -61,7 +61,7 @@ function SessionReader({ sessions, tasks, now, onPressTask, onPressLink, onPress
 const meta: Meta<ReaderArgs> = {
   title: 'Custom/ActiveWork/SessionReader',
   component: SessionReader,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   args: {
     sessions: SESSION_FIXTURE,
     tasks: SESSION_TASK_FIXTURE,

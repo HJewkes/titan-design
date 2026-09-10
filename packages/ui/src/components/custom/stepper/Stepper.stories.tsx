@@ -5,7 +5,7 @@ import { Stepper, Step, StepIndicator, StepLabel, StepContent } from './Stepper'
 const meta: Meta<typeof Stepper> = {
   title: 'Custom/Stepper',
   component: Stepper,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     activeStep: {
       control: { type: 'number', min: 0, max: 4 },

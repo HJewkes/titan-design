@@ -4,7 +4,7 @@ import { BrandLockup } from './BrandLockup'
 const meta: Meta<typeof BrandLockup> = {
   title: 'Shell/BrandLockup',
   component: BrandLockup,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   args: { subtitle: 'wall dashboard', showSubtitle: true },
   argTypes: {
     subtitle: { control: 'text' },

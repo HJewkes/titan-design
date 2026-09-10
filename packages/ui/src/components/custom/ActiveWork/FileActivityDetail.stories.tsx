@@ -6,7 +6,7 @@ import { FILE_HISTORY_FILES } from './file-history-fixture'
 const meta: Meta<typeof FileActivityDetail> = {
   title: 'Custom/ActiveWork/FileActivityDetail',
   component: FileActivityDetail,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   decorators: [
     (Story) => (
       <Surface level="base" className="min-h-screen w-full max-w-[560px] p-6" testID="page-surface">

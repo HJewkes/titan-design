@@ -40,6 +40,7 @@ import {
 
 const meta: Meta = {
   title: 'Lab/North Star/1 - Surface System',
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
 }
 export default meta

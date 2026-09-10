@@ -11,7 +11,7 @@ const DEVICES: Device[] = [
 const meta: Meta<typeof TopBar> = {
   title: 'Shell/TopBar',
   component: TopBar,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   args: { state: 'live', devices: DEVICES },
   argTypes: {
     state: { control: 'select', options: ['live', 'rest', 'idle'] },

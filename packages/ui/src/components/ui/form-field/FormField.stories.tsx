@@ -7,7 +7,7 @@ const meta: Meta<typeof FormField> = {
   title: 'Components/Molecules/FormField',
   component: FormField,
   parameters: {},
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     labelSize: {
       control: 'select',

@@ -5,7 +5,7 @@ import { CircularTimer } from './CircularTimer'
 const meta: Meta<typeof CircularTimer> = {
   title: 'Custom/CircularTimer',
   component: CircularTimer,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

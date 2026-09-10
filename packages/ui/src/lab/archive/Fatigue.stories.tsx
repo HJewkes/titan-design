@@ -27,6 +27,7 @@ import {
 
 const meta: Meta = {
   title: 'Lab/Archive/Fatigue',
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
 }
 export default meta

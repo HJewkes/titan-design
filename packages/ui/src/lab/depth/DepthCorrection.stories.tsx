@@ -28,6 +28,7 @@ import { grainForTone } from '../../theme/materials'
  */
 const meta: Meta = {
   title: 'Lab/Depth/Correction - Gate 2',
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
 }
 export default meta

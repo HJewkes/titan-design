@@ -4,7 +4,7 @@ import { SessionStatePill } from './SessionStatePill'
 const meta: Meta<typeof SessionStatePill> = {
   title: 'Shell/SessionStatePill',
   component: SessionStatePill,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   args: { state: 'live' },
   argTypes: {
     state: { control: 'select', options: ['live', 'rest', 'idle'] },

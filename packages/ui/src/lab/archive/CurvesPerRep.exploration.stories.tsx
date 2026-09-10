@@ -825,6 +825,7 @@ function Page({ children }: { children: ReactNode }) {
 
 const meta: Meta = {
   title: 'Lab/Archive/Curves/Per Rep',
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
 }
 export default meta

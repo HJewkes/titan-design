@@ -12,7 +12,7 @@ import { SESSION_FIXTURE, SESSION_NOW, SESSION_TASK_FIXTURE } from './session-fi
 const meta: Meta<typeof SessionDetail> = {
   title: 'Custom/ActiveWork/SessionDetail',
   component: SessionDetail,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   args: {
     session: SESSION_FIXTURE[0],
     tasks: SESSION_TASK_FIXTURE,

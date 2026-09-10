@@ -6,7 +6,7 @@ import { Button, ButtonText } from '../button'
 const meta: Meta<typeof Toast> = {
   title: 'Components/Molecules/Toast',
   component: Toast,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     status: {
       control: 'select',

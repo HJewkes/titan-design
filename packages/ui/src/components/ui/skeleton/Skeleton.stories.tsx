@@ -5,7 +5,7 @@ import { Skeleton, SkeletonText, SkeletonCircle, SkeletonCard, SkeletonListItem 
 const meta: Meta<typeof Skeleton> = {
   title: 'Components/Atoms/Skeleton',
   component: Skeleton,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     variant: {
       control: 'select',

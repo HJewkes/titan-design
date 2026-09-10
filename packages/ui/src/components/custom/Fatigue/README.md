@@ -17,7 +17,7 @@ LiveFatiguePanel              ← the composition (Live panel v2)
 └─ LiveFatigueCard            ← secondary read (consumes LiveFatigueModel)
    ├─ VerdictHero             (RPE number + verdict word, tone-flooded)
    ├─ FatigueLights           (VEL/ROM/TEMPO "why" dots)
-   │  ├─ StatusDot            (Workout/ — the dot primitive, glow)
+   │  ├─ Indicator           (ui/indicator — the dot primitive, glow)
    │  └─ Tooltip              (ui/tooltip — hover detail)
    ├─ RomProgressionChart     (per-rep silver/red depth bars + reference lines)
    ├─ GhostSpark              (per-rep velocity-time sparkline; tempo EMBEDDED)
@@ -38,8 +38,11 @@ LiveFatiguePanel              ← the composition (Live panel v2)
 
 ## Reuse audit — composed, not hand-rolled
 
-- **`StatusDot`** (Workout/) — the fatigue lights are `StatusDot` (glow) + a mono label
-  inside a `Tooltip`; no re-implemented dot.
+- **`Indicator`** (ui/indicator/) — the fatigue lights are an `Indicator` (glow) + a mono
+  label inside a `Tooltip`; no re-implemented dot. Roadmap decision 10 settled the two
+  competing dots in `Indicator`'s favour and this README used to name the loser.
+  `FatigueLights.tsx:12` still imports the deprecated `StatusDot`; that call site migrates
+  under AW-127 (`DEPRECATIONS.md`). Compose `Indicator` in anything new here.
 - **`Tooltip`** (ui/tooltip/) — the per-dimension hover detail.
 - **`VelocityStrip`** (Workout/) — the hero reuses it verbatim; `VelocityHero` only adds
   the loss-relative VL20/VL30 band overlay on the strip's own peak scale.

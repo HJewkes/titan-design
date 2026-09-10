@@ -5,7 +5,7 @@ import { Section, SectionHeader, SectionContent } from './Section'
 const meta: Meta<typeof Section> = {
   title: 'Components/Atoms/Section',
   component: Section,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
 }
 
 export default meta

@@ -7,7 +7,7 @@ import { Button, ButtonText } from '../button'
 const meta: Meta<typeof Drawer> = {
   title: 'Components/Organisms/Drawer',
   component: Drawer,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     placement: {
       control: 'select',

@@ -6,7 +6,7 @@ import { ToolbarButton, ToolbarButtonGroup } from './ToolbarButton'
 const meta: Meta<typeof ToolbarButton> = {
   title: 'Components/Molecules/ToolbarButton',
   component: ToolbarButton,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     variant: {
       control: 'select',

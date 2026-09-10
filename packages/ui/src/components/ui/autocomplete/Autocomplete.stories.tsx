@@ -6,7 +6,7 @@ import { Autocomplete, AutocompleteOption } from './Autocomplete'
 const meta: Meta<typeof Autocomplete> = {
   title: 'Components/Molecules/Autocomplete',
   component: Autocomplete,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     isDisabled: {
       control: 'boolean',

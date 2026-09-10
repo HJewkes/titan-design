@@ -10,7 +10,7 @@ const t = getSemanticColors('dark')
 const meta: Meta<typeof LiveFatigueCard> = {
   title: 'Custom/Fatigue/Live Fatigue Card',
   component: LiveFatigueCard,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

@@ -4,7 +4,7 @@ import { Gauge } from './Gauge'
 const meta: Meta<typeof Gauge> = {
   title: 'Custom/Charts/Gauge',
   component: Gauge,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     value: { control: { type: 'range', min: 0, max: 100, step: 1 } },
     size: { control: { type: 'range', min: 100, max: 320, step: 10 } },
