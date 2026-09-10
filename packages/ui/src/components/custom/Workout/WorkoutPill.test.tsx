@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { WorkoutPill } from './WorkoutPill'
+import { resolveColor } from '../../../theme/resolve-color'
 
 describe('WorkoutPill', () => {
   it('renders the workout name', () => {
@@ -78,6 +79,41 @@ describe('WorkoutPill', () => {
       expect(screen.getByTestId('workout-pill')).toBeInTheDocument()
       unmount()
     }
+  })
+
+  // The rim is a whole rung above the wash. Asserting both rules out the
+  // flattening that collapses a two-step pill onto one `-subtle`.
+  describe('wash ladder', () => {
+    it.each([
+      ['completed', 'status-success'],
+      ['current', 'brand-primary'],
+      ['missed', 'status-error'],
+    ] as const)('washes the %s pill with %s -subtle inside a -muted rim', (status, role) => {
+      render(<WorkoutPill name="Upper A" status={status} />)
+      const pill = screen.getByLabelText(`Upper A workout, ${status}`)
+      expect(pill).toHaveStyle({ backgroundColor: resolveColor(`${role}-subtle`) })
+      expect(pill.style.borderTopColor).toBe(resolveColor(`${role}-muted`))
+    })
+
+    it('gives the washless next pill the -strong rim, a rung above current', () => {
+      render(<WorkoutPill name="Upper A" status="next" />)
+      const pill = screen.getByLabelText('Upper A workout, next')
+      // jsdom normalises the `transparent` keyword to its rgba() form.
+      expect(pill.style.backgroundColor).toBe('rgba(0, 0, 0, 0)')
+      expect(pill.style.borderTopColor).toBe(resolveColor('brand-primary-strong'))
+    })
+
+    it.each([
+      ['completed', 'status-success'],
+      ['current', 'brand-primary'],
+      ['upcoming', 'text-tertiary'],
+      ['missed', 'status-error-dark'],
+    ] as const)('labels the %s pill from the %s token', (status, token) => {
+      render(<WorkoutPill name="Upper A" status={status} />)
+      expect(screen.getByTestId('workout-pill-name')).toHaveStyle({
+        color: resolveColor(token),
+      })
+    })
   })
 
   describe('pulse', () => {

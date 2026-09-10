@@ -174,13 +174,13 @@ const HTML_CSS = `
     background: rgba(136, 134, 132, 0.1);
     border: 1px dashed rgba(136, 134, 132, 0.2);
   }
-  /* 11px is off the type scale; `boldLabel` is the 12px step, `font-black` the weight. */
+  /* 11px is off the type scale; boldLabel is the 12px step, font-black the weight. */
   .html-scope .status-dot .dot-icon {
     font-size: 12px;
     line-height: 1;
     font-weight: 900;
   }
-  /* The glyph sits on a light status fill, so it takes text-inverse. `on-status-*`
+  /* The glyph sits on a light status fill, so it takes text-inverse. on-status-*
      names that role but is white in both modes, which fails on these pins. */
   .html-scope .status-dot.success .dot-icon { color: var(--text-inverse); }
   .html-scope .status-dot.warning .dot-icon { color: var(--text-inverse); }
@@ -350,28 +350,32 @@ const HTML_CSS = `
   }
 
   /* 9. WorkoutPill */
+  /* 11px sat between scale steps; caption rounds UP to 12px, the same call the
+     MuscleGroupChip -> Pill preset made in B2. */
   .html-scope .workout-pill {
     display: inline-flex;
     align-items: center;
     border-radius: 6px;
     padding: 4px 10px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     font-family: var(--font-ui);
   }
   .html-scope .workout-pill.completed {
-    background: rgba(46,213,115,0.15);
-    border: 1px solid rgba(46,213,115,0.3);
+    background: var(--status-success-subtle);
+    border: 1px solid var(--status-success-muted);
     color: var(--status-success);
   }
   .html-scope .workout-pill.active {
-    background: rgba(255,121,0,0.15);
-    border: 1px solid rgba(255,121,0,0.3);
+    background: var(--brand-primary-subtle);
+    border: 1px solid var(--brand-primary-muted);
     color: var(--brand-primary);
   }
+  /* next is the only status with no wash, so its rim is deliberately the
+     strongest — -strong (0.50) rather than collapsing onto active's 0.30. */
   .html-scope .workout-pill.next {
     background: transparent;
-    border: 1px solid rgba(255,121,0,0.4);
+    border: 1px solid var(--brand-primary-strong);
     color: var(--brand-primary);
   }
   .html-scope .workout-pill.upcoming {
@@ -379,10 +383,12 @@ const HTML_CSS = `
     border: 1px solid var(--border-default);
     color: var(--text-tertiary);
   }
+  /* The label was a 0.7 alpha, which no rung expresses; status-error-dark
+     composites to within a hair of it and needs no alpha at all. */
   .html-scope .workout-pill.missed {
-    background: rgba(209,67,67,0.1);
-    border: 1px solid rgba(209,67,67,0.25);
-    color: rgba(209,67,67,0.7);
+    background: var(--status-error-subtle);
+    border: 1px solid var(--status-error-muted);
+    color: var(--status-error-dark);
   }
 
   /* 10. MuscleGroupChip */
@@ -414,10 +420,11 @@ const HTML_CSS = `
   .html-scope .muscle-chip-dot.untrained { background: var(--dot-inactive); }
   .html-scope .muscle-chip-dot.over { background: var(--status-error); }
 
-  /* WorkoutPill deload */
+  /* WorkoutPill deload — the role has no semantic tokens, so the wash and rim are
+     derived from the same magenta-600 pin WeekRow reads, at the ladder's rungs. */
   .html-scope .workout-pill.deload {
-    background: rgba(186,41,150,0.15);
-    border: 1px solid rgba(186,41,150,0.3);
+    background: rgba(186, 41, 150, 0.12);
+    border: 1px solid rgba(186, 41, 150, 0.3);
     color: #ba2996;
   }
 
