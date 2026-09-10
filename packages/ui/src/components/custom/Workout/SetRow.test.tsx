@@ -3,13 +3,16 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { View } from 'react-native'
 import { SetRow, type SetRowProps } from './SetRow'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { resolveColor } from '../../../theme/resolve-color'
 
 // Text treatments, read from the tokens rather than pinned as hexes. These
 // used to be hand-copied literals and silently desynced when the greys moved
 // to the warm ramp (TD-07.14). The assertion still bites — it checks the
 // component reaches for the right ROLE — it just no longer restates the value.
-const { 'text-primary': T_ACTIVE, 'text-secondary': T_MUTED } = getSemanticColors('dark')
+// Now through `resolveColor`, which is what the row renders after the B3 port:
+// the same role, but the theme-switching `var()` ref rather than a dark hex.
+const T_ACTIVE = resolveColor('text-primary')
+const T_MUTED = resolveColor('text-secondary')
 
 const doneRow: SetRowProps = {
   state: 'done',
@@ -114,6 +117,17 @@ describe('SetRow', () => {
     it('renders the set-type badge instead of the set number', () => {
       render(<SetRow {...doneRow} setType="W" />)
       expect(screen.getByTestId('set-row-type-badge')).toHaveTextContent('W')
+    })
+
+    // SetRow has no visual baseline, so the chip's tokens are asserted here. It
+    // used to borrow `WORKOUT_TOKENS.scale.orange` — the EFFORT scale — for a
+    // label that reads set type, over a hand-mixed 0.12 wash off a different hue.
+    it('draws the type badge from the brand role, not the effort scale', () => {
+      render(<SetRow {...doneRow} setType="DROP" />)
+      expect(screen.getByTestId('set-row-type-badge')).toHaveStyle({
+        color: resolveColor('brand-primary'),
+        backgroundColor: resolveColor('brand-primary-subtle'),
+      })
     })
 
     it('does not render the type badge when setType is absent', () => {
