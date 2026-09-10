@@ -135,6 +135,14 @@ describe('WeightBadge', () => {
       expect(screen.getByText(/315 lbs/)).toHaveStyle({ color: resolveColor('brand-primary') })
     })
 
+    // A load value is not a heading. Typography's h-variants render role="heading",
+    // which both misreports the badge and breaks the parity layer's text selector.
+    it('renders the value as text, not a heading', () => {
+      render(<WeightBadge value={225} />)
+      expect(screen.queryByRole('heading')).not.toBeInTheDocument()
+      expect(screen.getByText('225 lbs').getAttribute('dir')).toBe('auto')
+    })
+
     it('draws a non-PR value from the text-secondary token', () => {
       render(<WeightBadge value={225} />)
       expect(screen.getByText('225 lbs')).toHaveStyle({ color: resolveColor('text-secondary') })

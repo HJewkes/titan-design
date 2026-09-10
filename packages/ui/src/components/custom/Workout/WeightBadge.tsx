@@ -70,12 +70,13 @@ export function WeightBadge({
       testID="weight-badge"
       {...props}
     >
-      {/* `h6` carries the heading face and 600 weight; the size prop still drives the
-          step, so the fontSize stays computed (BaseBadge's 9/10/12 config). */}
+      {/* `body2` + `font-heading`, NOT `h6`: a load value is not a heading, and the
+          heading variants make Typography render `role="heading"`. The size prop still
+          drives the step, so the fontSize stays computed (BaseBadge's 9/10/12 config). */}
       <Typography
-        variant="h6"
+        variant="body2"
         color="inherit"
-        className="leading-[normal]"
+        className="font-heading font-semibold leading-[normal]"
         style={{ fontSize: config.fontSize, color: textColor }}
       >
         {isPr ? '✳ ' : ''}
@@ -83,9 +84,9 @@ export function WeightBadge({
       </Typography>
       {reps != null && (
         <Typography
-          variant="h6"
+          variant="body2"
           color="inherit"
-          className="leading-[normal]"
+          className="font-heading font-semibold leading-[normal]"
           style={{
             fontSize: config.fontSize,
             marginLeft: 2,
@@ -99,9 +100,9 @@ export function WeightBadge({
       )}
       {delta != null && (
         <Typography
-          variant="h6"
+          variant="body2"
           color="inherit"
-          className="font-normal leading-[normal]"
+          className="font-heading leading-[normal]"
           style={{
             fontSize: config.fontSize,
             marginLeft: 4,
