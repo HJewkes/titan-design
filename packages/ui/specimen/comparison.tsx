@@ -55,6 +55,19 @@ const HTML_CSS = `
     --status-success: #2ED573;
     --status-error: #D14343;
     --status-warning: #F9B415;
+    --text-inverse: #1C1916;
+    /* The wash ladder (#178): -subtle 0.12, -muted 0.30. The B3 port put the ring
+       variants and WorkoutPill on it, so the reference follows onto the rungs
+       instead of keeping the frozen demo's hand-mixed 0.15 / 0.3 / 0.25. */
+    --status-success-subtle: rgba(46, 213, 115, 0.12);
+    --status-success-muted: rgba(46, 213, 115, 0.30);
+    --status-warning-subtle: rgba(249, 180, 21, 0.12);
+    --status-warning-muted: rgba(249, 180, 21, 0.30);
+    --status-error-subtle: rgba(209, 67, 67, 0.12);
+    --status-error-muted: rgba(209, 67, 67, 0.30);
+    --status-error-dark: #A4221C;
+    --brand-primary-muted: rgba(255, 121, 0, 0.30);
+    --brand-primary-strong: rgba(255, 121, 0, 0.50);
     --result-improve: #4caf50;
     --result-degrade: #ef5350;
     --vel-red: #d14343;
@@ -146,26 +159,33 @@ const HTML_CSS = `
   .html-scope .status-dot.error { background: var(--status-error); }
   .html-scope .status-dot.neutral { background: var(--text-tertiary); }
   .html-scope .status-dot.on-track {
-    background: rgba(46,213,115,0.15);
-    border: 1px solid rgba(46,213,115,0.3);
+    background: var(--status-success-subtle);
+    border: 1px solid var(--status-success-muted);
   }
+  /* The frozen demo's rgba(245,158,11) is tailwind amber-500, not the amber ramp
+     status-warning flows through; the port moved it onto the role. */
   .html-scope .status-dot.deviation {
-    background: rgba(245,158,11,0.15);
-    border: 1px solid rgba(245,158,11,0.25);
+    background: var(--status-warning-subtle);
+    border: 1px solid var(--status-warning-muted);
   }
+  /* No neutral wash rungs exist, so both stay derived from the warm grey ramp step
+     text-tertiary resolves to (#888684) — the demo's rgba(107,114,128) is off it. */
   .html-scope .status-dot.future {
-    background: rgba(107,114,128,0.1);
-    border: 1px dashed rgba(107,114,128,0.2);
+    background: rgba(136, 134, 132, 0.1);
+    border: 1px dashed rgba(136, 134, 132, 0.2);
   }
+  /* 11px is off the type scale; `boldLabel` is the 12px step, `font-black` the weight. */
   .html-scope .status-dot .dot-icon {
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1;
     font-weight: 900;
   }
-  .html-scope .status-dot.success .dot-icon { color: #0A5C52; }
-  .html-scope .status-dot.warning .dot-icon { color: #6B4000; }
-  .html-scope .status-dot.error .dot-icon { color: #5C1A1A; }
-  .html-scope .status-dot.neutral .dot-icon { color: #D1D5DB; }
+  /* The glyph sits on a light status fill, so it takes text-inverse. `on-status-*`
+     names that role but is white in both modes, which fails on these pins. */
+  .html-scope .status-dot.success .dot-icon { color: var(--text-inverse); }
+  .html-scope .status-dot.warning .dot-icon { color: var(--text-inverse); }
+  .html-scope .status-dot.error .dot-icon { color: var(--text-inverse); }
+  .html-scope .status-dot.neutral .dot-icon { color: var(--text-inverse); }
   .html-scope .status-dot.on-track .dot-icon { color: var(--status-success); }
   .html-scope .status-dot.deviation .dot-icon { color: var(--status-warning); }
   .html-scope .status-dot.future .dot-icon { color: var(--text-tertiary); }
