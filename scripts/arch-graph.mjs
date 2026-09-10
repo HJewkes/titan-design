@@ -137,10 +137,14 @@ const edges = edgeRows
   .filter(([a, b]) => a !== b);
 
 // ---- 2. consumer projects: cross-project usage + primitive substitution -----
+// Every consumer must be listed. A missing one silently promotes its components
+// to the `dead` list, which is how Chip/Modal/Skeleton were nearly declared dead
+// while audiobook imported all three.
 const CONSUMERS = CFG.consumers ?? [
   { name: "mobile", path: "../voltras/mobile/src", kind: "native" },
   { name: "mcp", path: "../voltras-mcp/src", kind: "web" },
   { name: "dash", path: "../codewatch/dashboard/src", kind: "web" },
+  { name: "audiobook", path: "../audiobook/frontend/src", kind: "web" },
 ];
 const consumerDir = (c) => path.resolve(SIBLING_BASE, c.path);
 
@@ -260,13 +264,16 @@ const familyOf = (p) => {
 const outEdges = {}; // name -> Set(deps)
 for (const [a, b] of edges) (outEdges[a] ||= new Set()).add(b);
 
+// Keys come from CONSUMERS, never a hardcoded list: a consumer missing from the
+// tally scores 0 usage and its components get reported dead.
 const xprojFor = (file) => {
-  const acc = { mobile: 0, mcp: 0, dash: 0 };
+  const acc = Object.fromEntries(CONSUMERS.map((c) => [c.name, 0]));
   for (const nm of symsBy[file] || []) {
     const hit = xprojBySymbol[nm];
     if (hit) for (const k of Object.keys(acc)) acc[k] += hit[k] || 0;
   }
-  return { ...acc, total: acc.mobile + acc.mcp + acc.dash };
+  const total = Object.values(acc).reduce((a, b) => a + b, 0);
+  return { ...acc, total };
 };
 
 let comps = files.map((file) => {

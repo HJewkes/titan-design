@@ -19,4 +19,17 @@ describe('arch-graph.json freshness', () => {
         'Run `pnpm arch:graph -- --reindex` from the repo root and commit the result.'
     ).toBe(componentBarrelHash(PKG_ROOT))
   })
+
+  it('tallies every configured consumer, so none can be silently scored as zero usage', () => {
+    const configured = graph.summary.consumers.map((c) => c.name)
+    for (const component of graph.components) {
+      expect(
+        Object.keys(component.xproj)
+          .filter((k) => k !== 'total')
+          .sort(),
+        `${component.name}.xproj is missing a configured consumer. A consumer absent from ` +
+          'the tally scores 0 usage, which lands its components on the `dead` list.'
+      ).toEqual([...configured].sort())
+    }
+  })
 })
