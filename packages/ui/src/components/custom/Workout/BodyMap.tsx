@@ -5,6 +5,7 @@ import BodyHighlighter, { type ExtendedBodyPart, type Slug } from 'react-native-
 import { cn } from '../../../utils/cn'
 import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getGlowShadow } from '../../../theme/elevation'
 import {
   MuscleGroup,
   SimpleMuscleGroup,
@@ -197,7 +198,8 @@ export function BodyMap({
             alignSelf: 'center',
             transform: [{ scale }],
           },
-          glowColor ? { boxShadow: `0 0 14px 2px ${glowColor}` } : undefined,
+          // The highlight halo is emphasis, not depth.
+          glowColor ? getGlowShadow(glowColor, 'medium') : undefined,
         ]}
         // The SVG is decorative; the accessible muscle legend below is the
         // screen-reader / keyboard interface.

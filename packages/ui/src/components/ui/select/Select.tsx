@@ -1,6 +1,7 @@
 import React, { useState, createContext, useContext } from 'react'
 import { View, Text, Pressable, ScrollView, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { Surface } from '../surface'
 
 export interface SelectOption<T = string> {
   value: T
@@ -177,11 +178,12 @@ export function Select<T extends string = string>({
               className="fixed inset-0 z-40"
               style={{ position: 'absolute' }}
             />
-            <View
+            <Surface
+              elevation={4}
+              rounded={false}
               className={cn(
                 'absolute z-50 top-full left-0 right-0 mt-1',
-                'bg-surface-elevated rounded-md shadow-lg border border-hairline',
-                'max-h-60 overflow-hidden'
+                'rounded-md max-h-60 overflow-hidden'
               )}
             >
               <ScrollView className="py-1">
@@ -189,7 +191,7 @@ export function Select<T extends string = string>({
                   <SelectOption key={option.value} option={option} />
                 ))}
               </ScrollView>
-            </View>
+            </Surface>
           </>
         )}
       </View>

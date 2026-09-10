@@ -215,10 +215,21 @@ export const Elevation: StoryObj = {
             key={lv}
             label={`elevation ${lv}`}
             note={`${ELEVATION_PLANE[lv]} · ${getElevationSurface(lv, 'dark')}${lv > 0 ? ` · liftStyle(${lv})` : ' · the page'}`}
-            style={{
-              backgroundColor: getElevationSurface(lv, 'dark'),
-              ...(getElevationShadow(lv, 'dark') as Record<string, unknown>),
-            }}
+            // Level 0 IS the page, so a solid swatch on the page would be an
+            // invisible rectangle. A dashed outline gives the row a fourth slot
+            // and says why it has nothing to draw.
+            style={
+              lv === 0
+                ? {
+                    borderWidth: 1,
+                    borderStyle: 'dashed',
+                    borderColor: t['hairline-default'],
+                  }
+                : {
+                    backgroundColor: getElevationSurface(lv, 'dark'),
+                    ...(getElevationShadow(lv, 'dark') as Record<string, unknown>),
+                  }
+            }
           />
         ))}
       </View>

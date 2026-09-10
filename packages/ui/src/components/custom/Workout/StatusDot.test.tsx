@@ -2,6 +2,15 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { StatusDot } from './StatusDot'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { greyRamp } from '../../../theme/tokens/primitives'
+import { hexToRgb } from '../../../theme/color-utils'
+
+/** The `rgba(r, g, b` prefix getGlowShadow emits for a token colour. */
+function glowRgb(hex: string): string {
+  const { r, g, b } = hexToRgb(hex)!
+  return `rgba(${r}, ${g}, ${b}`
+}
 
 describe('StatusDot', () => {
   it('renders a dot', () => {
@@ -103,19 +112,19 @@ describe('StatusDot', () => {
     it('applies a box-shadow when glow is set on a solid variant', () => {
       render(<StatusDot variant="success" glow />)
       const dot = screen.getByTestId('status-dot')
-      expect(dot.style.boxShadow).toContain('rgba(46,213,115,0.4)')
+      expect(dot.style.boxShadow).toContain(glowRgb(getSemanticColors('dark')['status-success']))
     })
 
     it('applies a box-shadow when glow is set on a ring variant', () => {
       render(<StatusDot variant="on-track" glow />)
       const dot = screen.getByTestId('status-dot')
-      expect(dot.style.boxShadow).toContain('rgba(46,213,115,0.4)')
+      expect(dot.style.boxShadow).toContain(glowRgb(getSemanticColors('dark')['status-success']))
     })
 
     it('applies a gray box-shadow when glow is set on the future variant', () => {
       render(<StatusDot variant="future" glow />)
       const dot = screen.getByTestId('status-dot')
-      expect(dot.style.boxShadow).toContain('rgba(107,114,128,0.4)')
+      expect(dot.style.boxShadow).toContain(glowRgb(greyRamp[500]))
     })
 
     it('does not apply a box-shadow when glow is not set', () => {

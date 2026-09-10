@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { View, Text, Pressable, Platform, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { Surface } from '../surface'
 
 let createPortal: typeof import('react-dom').createPortal | undefined
 if (Platform.OS === 'web') {
@@ -163,20 +164,20 @@ export function Tooltip({
 
   // Arrow positioning. The arrow is a border triangle, so it takes the same surface token as the box.
   const arrowStyles = {
-    top: 'bottom-0 left-1/2 -translate-x-1/2 translate-y-full border-l-transparent border-r-transparent border-b-transparent border-t-surface-elevated',
+    top: 'bottom-0 left-1/2 -translate-x-1/2 translate-y-full border-l-transparent border-r-transparent border-b-transparent border-t-surface-overlay',
     'top-start':
-      'bottom-0 left-4 translate-y-full border-l-transparent border-r-transparent border-b-transparent border-t-surface-elevated',
+      'bottom-0 left-4 translate-y-full border-l-transparent border-r-transparent border-b-transparent border-t-surface-overlay',
     'top-end':
-      'bottom-0 right-4 translate-y-full border-l-transparent border-r-transparent border-b-transparent border-t-surface-elevated',
+      'bottom-0 right-4 translate-y-full border-l-transparent border-r-transparent border-b-transparent border-t-surface-overlay',
     bottom:
-      'top-0 left-1/2 -translate-x-1/2 -translate-y-full border-l-transparent border-r-transparent border-t-transparent border-b-surface-elevated',
+      'top-0 left-1/2 -translate-x-1/2 -translate-y-full border-l-transparent border-r-transparent border-t-transparent border-b-surface-overlay',
     'bottom-start':
-      'top-0 left-4 -translate-y-full border-l-transparent border-r-transparent border-t-transparent border-b-surface-elevated',
+      'top-0 left-4 -translate-y-full border-l-transparent border-r-transparent border-t-transparent border-b-surface-overlay',
     'bottom-end':
-      'top-0 right-4 -translate-y-full border-l-transparent border-r-transparent border-t-transparent border-b-surface-elevated',
-    left: 'right-0 top-1/2 translate-x-full -translate-y-1/2 border-t-transparent border-b-transparent border-r-transparent border-l-surface-elevated',
+      'top-0 right-4 -translate-y-full border-l-transparent border-r-transparent border-t-transparent border-b-surface-overlay',
+    left: 'right-0 top-1/2 translate-x-full -translate-y-1/2 border-t-transparent border-b-transparent border-r-transparent border-l-surface-overlay',
     right:
-      'left-0 top-1/2 -translate-x-full -translate-y-1/2 border-t-transparent border-b-transparent border-l-transparent border-r-surface-elevated',
+      'left-0 top-1/2 -translate-x-full -translate-y-1/2 border-t-transparent border-b-transparent border-l-transparent border-r-surface-overlay',
   }
 
   // Tooltip positioning
@@ -191,11 +192,12 @@ export function Tooltip({
     right: 'left-full top-1/2 -translate-y-1/2 ml-2',
   }
 
+  // Floating: overlay plane + lift, no ring.
   const tooltipContent = (
-    <View className="bg-surface-elevated border border-hairline px-3 py-2 rounded-md shadow-lg max-w-xs">
+    <Surface elevation={4} rounded={false} className="px-3 py-2 rounded-md max-w-xs">
       {content ?? <Text className="text-text-primary text-sm">{label}</Text>}
       {hasArrow && <View className={cn('absolute w-0 h-0 border-4', arrowStyles[placement])} />}
-    </View>
+    </Surface>
   )
 
   const renderPortalTooltip = () => {

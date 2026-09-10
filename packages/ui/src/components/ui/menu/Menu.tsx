@@ -1,6 +1,7 @@
 import React, { useState, createContext, useContext } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { Surface } from '../surface'
 
 interface MenuContextType {
   isOpen: boolean
@@ -112,18 +113,19 @@ export function MenuList({ children, className }: MenuListProps) {
         className="fixed inset-0 z-40"
         style={{ position: 'absolute' }}
       />
-      {/* Menu */}
-      <View
+      {/* Menu — floating: overlay plane + lift, no ring. */}
+      <Surface
+        elevation={4}
+        rounded={false}
         className={cn(
           'absolute z-50 top-full left-0 mt-1 min-w-[160px]',
-          'bg-surface-elevated rounded-lg shadow-lg border border-hairline',
-          'py-1 overflow-hidden',
+          'rounded-lg py-1 overflow-hidden',
           className
         )}
         accessibilityRole="menu"
       >
         {children}
-      </View>
+      </Surface>
     </>
   )
 }

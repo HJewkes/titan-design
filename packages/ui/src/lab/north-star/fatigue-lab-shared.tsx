@@ -18,7 +18,7 @@ import { greyRamp, primitiveRamps } from '../../theme/tokens/primitives'
 import { WORKOUT_TOKENS } from '../../theme/workout-tokens'
 import { alpha } from '../../utils/colors'
 import { roundTempo } from '../../utils/workout-format'
-import { paperSheet, insetWell, debossLabel } from './surfaces'
+import { paperSheet, insetWell, debossLabel } from '../../theme/materials'
 
 export const C = getSemanticColors('dark')
 export const PAGE_BG = greyRamp[975]

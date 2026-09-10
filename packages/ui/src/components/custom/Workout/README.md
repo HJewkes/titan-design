@@ -103,8 +103,8 @@ type props without pulling the dependency.
   `SegmentedBar` carries these via additive `leadingGap` (per-segment left margin) and
   static `opacity` props — the flat sets stay byte-identical.
   `SetStrip`/`SetBar` colors are the real titan ramp pins (`primitiveRamps` red-600 /
-  orange-400 / amber-300 / green-300); the rail surfaces bind to the charcoal ramp +
-  a subtle neumorphic inset (`neumorphicShadows.charcoal.pressed.subtle`). The heading
+  orange-400 / amber-300 / green-300); the rail surfaces bind to the grey ramp and the
+  list is a well cut with the shared `insetWell` material. The heading
   design is locked in `sources/design/shell/S3-sessionrail/DECISIONS-ExerciseRow.md`; the
   exploration specimens live under `Custom/Workout/Explorations/*` (do not repoint yet).
   In Storybook the family nests by composition under **`Shell/SessionRail/…`**
@@ -179,8 +179,8 @@ Modalities`** (each card carries a `Collapse` accordion; promoted from the
   vertical (rotated) orientation so it never overlaps the bars. Two scales: `hero` (tall
   wings, per-rep m/s velocity labels, a dashed running-best reference line per side) and
   `rail` (compact — no velocity labels / reference lines, slot names in a narrow gutter).
-  **Rep-index alignment is the invariant:** column *i* is rep *i* on
-  both sides, so the set-type slot *kinds* carry through (rep / todo / variable / continue,
+  **Rep-index alignment is the invariant:** column _i_ is rep _i_ on
+  both sides, so the set-type slot _kinds_ carry through (rep / todo / variable / continue,
   coloured as in the single strip) but the wide-notch chunk **gaps** (drop / myo / cluster
   boundaries) are intentionally NOT rendered — per-side horizontal gaps would break the
   mirrored L↔R column alignment. Single-voltra sets keep using `VelocityStrip`
@@ -199,6 +199,7 @@ Modalities`** (each card carries a `Collapse` accordion; promoted from the
   a follow-up so the hero PR stays focused (the cross-file migration touches `Sparkline`'s
   test surface and the Lab specimens, which are out of this branch's scope). Proposed API:
   `<ReferenceLine anchor offset color dashed opacity? label? testID />`.
+
 - **RestTimer `ring` variant** — the across-the-room **wall** rest treatment (the
   north-star rest page). Built as a **three-tier decomposition** (not a one-off):
   `CircularProgress` (atom, gained a **`children`** center slot + a **`fill`**

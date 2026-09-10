@@ -12,7 +12,20 @@ import {
   useSurfaceMode,
 } from './SurfaceContext'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { greyRamp, primitiveColors } from '../../../theme/tokens/primitives'
 import { getPressedRecessShadow } from '../../../theme/elevation'
+
+// Planes by RAMP STEP, never by literal bytes: a re-space of the grey ramp
+// should move these expectations with it, not break them. Which step backs
+// which plane is still asserted — that mapping is the behaviour.
+const FRAME = greyRamp[975]
+const BACKGROUND = greyRamp[950]
+const BASE = greyRamp[925]
+const ELEVATED = greyRamp[900]
+const RAISED = greyRamp[875]
+const OVERLAY = greyRamp[850]
+const LIGHT_BASE = primitiveColors.white
+const LIGHT_TEXT_PRIMARY = getSemanticColors('light')['text-primary']
 
 // A descendant probe that renders the on-surface colour + mode it resolves from
 // context, so tests can assert what a nested consumer would actually paint.
@@ -75,14 +88,14 @@ describe('Surface (card model)', () => {
   it('sits flat on the inherited plane by default (dark base, no treatment)', () => {
     render(<Surface testID="s" />)
     const el = screen.getByTestId('s')
-    expect(el).toHaveStyle({ backgroundColor: '#252321' })
+    expect(el).toHaveStyle({ backgroundColor: BASE })
     expect(el.style.boxShadow).toBe('')
   })
 
   it('lifts onto ramp planes with rim + shadow: elevation 2 from the page is the card plane', () => {
     render(<Surface elevation={2} testID="s" />)
     const el = screen.getByTestId('s')
-    expect(el).toHaveStyle({ backgroundColor: '#31302F' })
+    expect(el).toHaveStyle({ backgroundColor: RAISED })
     expect(el.style.boxShadow).toContain('inset 0 1px 0')
     expect(el.style.boxShadow).toMatch(/, 0 \d+px \d+px rgba\(0,0,0/)
   })
@@ -93,7 +106,7 @@ describe('Surface (card model)', () => {
         <Surface raise={1} testID="s" />
       </Surface>
     )
-    expect(screen.getByTestId('s')).toHaveStyle({ backgroundColor: '#31302F' })
+    expect(screen.getByTestId('s')).toHaveStyle({ backgroundColor: RAISED })
   })
 
   it('clamps at overlay so raised-on-raised cannot leave the ramp', () => {
@@ -102,13 +115,13 @@ describe('Surface (card model)', () => {
         <Surface raise={2} testID="s" />
       </Surface>
     )
-    expect(screen.getByTestId('s')).toHaveStyle({ backgroundColor: '#373635' })
+    expect(screen.getByTestId('s')).toHaveStyle({ backgroundColor: OVERLAY })
   })
 
   it('floats on the overlay plane with a larger shadow and no ring', () => {
     render(<Surface elevation={4} testID="s" />)
     const el = screen.getByTestId('s')
-    expect(el).toHaveStyle({ backgroundColor: '#373635' })
+    expect(el).toHaveStyle({ backgroundColor: OVERLAY })
     expect(el.style.boxShadow.split(', ').length).toBe(4)
     expect(el.style.borderWidth).toBe('')
   })
@@ -139,10 +152,10 @@ describe('Surface (card model)', () => {
 
 describe('Surface (named plane)', () => {
   it.each([
-    ['background', '#1C1916'],
-    ['base', '#252321'],
-    ['elevated', '#2C2A28'],
-    ['raised', '#31302F'],
+    ['background', BACKGROUND],
+    ['base', BASE],
+    ['elevated', ELEVATED],
+    ['raised', RAISED],
   ] as const)('maps level %s to the surface-ramp token %s', (level, hex) => {
     render(<Surface level={level} testID="s" />)
     expect(screen.getByTestId('s')).toHaveStyle({ backgroundColor: hex })
@@ -150,7 +163,7 @@ describe('Surface (named plane)', () => {
 
   it('resolves the light-mode background when theme is overridden', () => {
     render(<Surface level="base" theme="light" testID="s" />)
-    expect(screen.getByTestId('s')).toHaveStyle({ backgroundColor: '#FFFFFF' })
+    expect(screen.getByTestId('s')).toHaveStyle({ backgroundColor: LIGHT_BASE })
   })
 
   it('lets a caller style override the owned background', () => {
@@ -179,12 +192,12 @@ function lstar(hex: string): number {
 
 describe('Surface (pressed well)', () => {
   it.each([
-    // TD-surface-tokens S-3 re-space: top steps widened (elevated #2C2A28,
-    // raised #31302F, overlay #373635); base/background unchanged.
-    ['overlay', '#373635', '#31302F'], // → raised
-    ['raised', '#31302F', '#2C2A28'], // → elevated
-    ['elevated', '#2C2A28', '#252321'], // → base
-    ['base', '#252321', '#1C1916'], // → background
+    // TD-surface-tokens S-3 re-space widened the top steps; base and
+    // background were unchanged. The pairs below are ramp-adjacent by index.
+    ['overlay', OVERLAY, RAISED], // → raised
+    ['raised', RAISED, ELEVATED], // → elevated
+    ['elevated', ELEVATED, BASE], // → base
+    ['base', BASE, BACKGROUND], // → background
   ] as const)(
     'in a %s parent renders one ramp step down (%s → %s), darker than its parent',
     (parent, parentHex, pressedHex) => {
@@ -200,7 +213,7 @@ describe('Surface (pressed well)', () => {
 
   it('with no enclosing Surface (default base) presses to the background plane', () => {
     render(<Surface pressed testID="well" />)
-    expect(screen.getByTestId('well')).toHaveStyle({ backgroundColor: '#1C1916' })
+    expect(screen.getByTestId('well')).toHaveStyle({ backgroundColor: BACKGROUND })
   })
 
   it('clamps at the frame floor: pressed directly in background does not underflow', () => {
@@ -209,8 +222,8 @@ describe('Surface (pressed well)', () => {
         <Surface pressed testID="well" />
       </Surface>
     )
-    // background (#1C1916) steps down to the frame floor (#100D0A), the bezel.
-    expect(screen.getByTestId('well')).toHaveStyle({ backgroundColor: '#100D0A' })
+    // background steps down to the frame floor, the bezel.
+    expect(screen.getByTestId('well')).toHaveStyle({ backgroundColor: FRAME })
   })
 
   it('does not step below the floor: pressed within a floor-pressed well stays at frame', () => {
@@ -221,7 +234,7 @@ describe('Surface (pressed well)', () => {
         </Surface>
       </Surface>
     )
-    expect(screen.getByTestId('deeper')).toHaveStyle({ backgroundColor: '#100D0A' })
+    expect(screen.getByTestId('deeper')).toHaveStyle({ backgroundColor: FRAME })
   })
 
   it('publishes the stepped-down level to descendants so a nested press steps again', () => {
@@ -254,8 +267,8 @@ describe('Surface (pressed well)', () => {
         <Surface pressed testID="well" style={{ boxShadow: undefined }} />
       </Surface>
     )
-    expect(screen.getByTestId('well')).toHaveStyle({ backgroundColor: '#1C1916' })
-    expect(lstar('#1C1916')).toBeLessThan(lstar('#252321'))
+    expect(screen.getByTestId('well')).toHaveStyle({ backgroundColor: BACKGROUND })
+    expect(lstar(BACKGROUND)).toBeLessThan(lstar(BASE))
   })
 
   it('rounds the well by default and honours an explicit rounded override', () => {
@@ -285,7 +298,7 @@ describe('pressedLevel helper', () => {
 
 describe('getPressedRecessShadow', () => {
   it('returns an inset recess tuned to the fill colour on the web path', () => {
-    const style = getPressedRecessShadow('#1C1916', 'dark') as { boxShadow?: string }
+    const style = getPressedRecessShadow(BACKGROUND, 'dark') as { boxShadow?: string }
     expect(style.boxShadow).toContain('inset')
   })
 })
@@ -318,7 +331,7 @@ describe('Surface on-surface colour context', () => {
         <Probe role="primary" label="p" />
       </Surface>
     )
-    expect(screen.getByTestId('p')).toHaveStyle({ color: '#121828' })
+    expect(screen.getByTestId('p')).toHaveStyle({ color: LIGHT_TEXT_PRIMARY })
     expect(screen.getByTestId('p')).toHaveTextContent('light')
   })
 
@@ -330,15 +343,15 @@ describe('Surface on-surface colour context', () => {
         </Surface>
       </Surface>
     )
-    expect(screen.getByTestId('p')).toHaveStyle({ color: '#121828' })
+    expect(screen.getByTestId('p')).toHaveStyle({ color: LIGHT_TEXT_PRIMARY })
   })
 })
 
 describe('surface colour helpers', () => {
   it('surfaceBackground returns literal hex per level + mode', () => {
-    expect(surfaceBackground('elevated', 'dark')).toBe('#2C2A28')
-    expect(surfaceBackground('background', 'dark')).toBe('#1C1916')
-    expect(surfaceBackground('base', 'light')).toBe('#FFFFFF')
+    expect(surfaceBackground('elevated', 'dark')).toBe(ELEVATED)
+    expect(surfaceBackground('background', 'dark')).toBe(BACKGROUND)
+    expect(surfaceBackground('base', 'light')).toBe(LIGHT_BASE)
   })
 
   it('resolves the frame floor from its own semantic token', () => {

@@ -1,25 +1,27 @@
 // The depth contract of the five ActiveWork specimens, asserted against the
 // stories Storybook actually renders — so a reverted decorator fails here too.
 //
-// The planes are literal on purpose. `Card` writes its background into `style`,
-// so a `bg-*` className on a Card is discarded and only the inline value is
-// real; asserting the class would pass while the render was wrong. That is the
-// exact bug this migration removed.
+// The planes are asserted as INLINE STYLE on purpose. `Card` writes its
+// background into `style`, so a `bg-*` className on a Card is discarded and only
+// the inline value is real; asserting the class would pass while the render was
+// wrong. That is the exact bug this migration removed. The values come from the
+// ramp so a re-space moves them rather than breaking them.
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { composeStories } from '@storybook/react'
+import { greyRamp } from '../../../theme/tokens/primitives'
 import * as PortfolioStories from './PortfolioOverview.stories'
 import * as TaskTableStories from './TaskTable.stories'
 import * as SessionReaderStories from './SessionReader.stories'
 import * as InitiativeReaderStories from './InitiativeReader.stories'
 import * as ExplorerStories from './FileHistoryExplorer.stories'
 
-/** greyRamp[925] — the page plane a `<Surface level="base">` paints. */
-const PAGE = '#252321'
-/** greyRamp[875] — the card plane, two lifts above the page. */
-const CARD = '#31302F'
-/** greyRamp[900] — one plane DOWN from a card, where a `CardInset` well sits. */
-const WELL = '#2C2A28'
+/** The page plane a `<Surface level="base">` paints. */
+const PAGE = greyRamp[925]
+/** The card plane, two lifts above the page. */
+const CARD = greyRamp[875]
+/** One plane DOWN from a card, where a `CardInset` well sits. */
+const WELL = greyRamp[900]
 
 function expectLiftedCard(el: HTMLElement) {
   expect(el).toHaveStyle({ backgroundColor: CARD })

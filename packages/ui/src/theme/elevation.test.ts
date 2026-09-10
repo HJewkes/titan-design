@@ -108,6 +108,7 @@ describe('elevation treatment: recess below, nothing at 0, lift above', () => {
   })
 
   it('getPressedRecessShadow returns the same cut for a given fill', () => {
-    expect(web(getPressedRecessShadow('#1C1916', 'dark')).boxShadow).toContain('inset')
+    const fill = getSemanticColors('dark')['background-base']
+    expect(web(getPressedRecessShadow(fill, 'dark')).boxShadow).toContain('inset')
   })
 })

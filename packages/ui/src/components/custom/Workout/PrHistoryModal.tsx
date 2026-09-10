@@ -4,10 +4,14 @@ import { StarIcon } from './icons'
 import { Drawer, DrawerBody } from '../../ui/drawer'
 import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getGlowShadow } from '../../../theme/elevation'
+import { alpha } from '../../../utils/colors'
 
-const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
-const RECENT_BORDER = 'rgba(249,180,21,0.3)'
-const RECENT_GLOW = '0 0 12px rgba(249,180,21,0.06)'
+const SEMANTIC = getSemanticColors('dark')
+const BRAND_PRIMARY = SEMANTIC['brand-primary']
+const RECENT_BORDER = alpha(SEMANTIC['status-warning'], 0.3)
+/** A recent PR is EMPHASIS, not depth: a warning-toned glow, shared builder. */
+const RECENT_GLOW = getGlowShadow(SEMANTIC['status-warning'], 'subtle')
 // Native-safe fallback for the conditional row border (recent uses a computed
 // rgba, so className can't express both branches).
 const BORDER_DEFAULT = resolveColor('hairline-default')
@@ -81,7 +85,7 @@ function PrRecordRow({ record, index }: { record: PrRecord; index: number }) {
         borderRadius: 8,
         borderWidth: 1,
         borderColor: record.isRecent ? RECENT_BORDER : BORDER_DEFAULT,
-        ...(record.isRecent ? { boxShadow: RECENT_GLOW } : {}),
+        ...(record.isRecent ? RECENT_GLOW : {}),
       }}
       testID={`pr-history-modal-record-${index}`}
     >

@@ -2,6 +2,7 @@
 import { View, type ViewProps, type ViewStyle } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { greyRamp } from '../../../theme/tokens/primitives'
+import { liftStyle } from '../../../theme/lift'
 
 const t = getSemanticColors('dark')
 
@@ -72,7 +73,9 @@ export function DeviationBar({ deviation, width, className, ...props }: Deviatio
           borderRadius: 9999,
           borderWidth: 1.5,
           borderColor: greyRamp[50],
-          boxShadow: '0 0 4px rgba(0,0,0,0.5)',
+          // The dot is a knob resting on the track: one plane of lift. Its light
+          // ring is already the edge, so the lift contributes the shadow alone.
+          ...liftStyle(1, 'dark', { rim: 0 }),
           backgroundColor: getDotColor(clamped),
           left: Math.max(0, Math.min(dotPosition - dotSize / 2, resolvedWidth - dotSize)),
           top: (containerHeight - dotSize) / 2,

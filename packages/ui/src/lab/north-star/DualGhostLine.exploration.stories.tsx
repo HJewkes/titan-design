@@ -20,9 +20,10 @@
  * collapsing rep warms through SHADES OF RED by severity. No greens, no ambers.
  */
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import type { ReactNode, TextStyle, ViewStyle } from 'react'
+import type { ReactNode } from 'react'
 import { View, Text } from 'react-native'
 import { getSemanticColors } from '../../theme/tokens/semantic'
+import { paperSheet, insetWell, debossLabel } from '../../theme/materials'
 import { greyRamp } from '../../theme/tokens/primitives'
 import { alpha } from '../../utils/colors'
 import { GRIND_THRESHOLD, ghostLineColor } from '../../components/custom/Fatigue/fatigue-tokens'
@@ -37,52 +38,6 @@ const FONT_UI = '"Nunito Sans", sans-serif'
 const FONT_MONO = 'monospace'
 
 const PARCH = C['text-primary']
-
-// =================================================================================
-// Composition-level surface helpers — inlined from the north-star `surfaces.ts`
-// treatment (lab-scoped design language) so this story stays self-contained.
-// =================================================================================
-function perceivedLuminance(hex: string): number {
-  const h = hex.replace('#', '')
-  const full =
-    h.length === 3
-      ? h
-          .split('')
-          .map((ch) => ch + ch)
-          .join('')
-      : h
-  const r = parseInt(full.slice(0, 2), 16)
-  const g = parseInt(full.slice(2, 4), 16)
-  const b = parseInt(full.slice(4, 6), 16)
-  if ([r, g, b].some(Number.isNaN)) return 0.5
-  return (0.299 * r + 0.587 * g + 0.114 * b) / 255
-}
-function grainForTone(baseColor: string): string {
-  const op = Math.min(0.24, Math.max(0.04, 0.02 + 0.31 * perceivedLuminance(baseColor))).toFixed(3)
-  return (
-    `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E` +
-    `%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E` +
-    `%3Crect width='120' height='120' filter='url(%23n)' opacity='${op}'/%3E%3C/svg%3E")`
-  )
-}
-function paperSheet(tone: string): ViewStyle {
-  return {
-    backgroundColor: tone,
-    backgroundImage: grainForTone(tone),
-    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10), 0 8px 22px rgba(0,0,0,0.50)',
-  } as unknown as ViewStyle
-}
-function insetWell(tone: string): ViewStyle {
-  return {
-    backgroundColor: tone,
-    boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.04)',
-  } as unknown as ViewStyle
-}
-const debossLabel: TextStyle = {
-  textShadowColor: 'rgba(255,255,255,0.11)',
-  textShadowOffset: { width: 0, height: 1 },
-  textShadowRadius: 0,
-}
 
 // =================================================================================
 // Mock dual-device data — two devices, each a real per-sample rep curve (controlled

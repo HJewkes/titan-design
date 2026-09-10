@@ -34,7 +34,7 @@ import { View, Text } from 'react-native'
 import { getSemanticColors } from '../../theme/tokens/semantic'
 import { primitiveColors, primitiveRamps } from '../../theme/tokens/primitives'
 import { alpha } from '../../utils/colors'
-import { paperSheet, insetWell, debossLabel } from '../north-star/surfaces'
+import { paperSheet, insetWell, debossLabel } from '../../theme/materials'
 
 const C = getSemanticColors('dark')
 const PAGE_BG = primitiveColors.charcoal[900]

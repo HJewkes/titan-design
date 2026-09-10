@@ -160,10 +160,11 @@ export function Tab({ index = 0, isDisabled = false, className, children }: TabP
         ? 'border-brand-primary text-brand-primary'
         : 'border-transparent text-text-secondary web:hover:text-text-primary'
     ),
+    // The active enclosed tab is an indicator, not a plane: tone alone marks it.
     enclosed: cn(
       'px-4 py-2 rounded-md',
       isActive
-        ? 'bg-surface-elevated text-text-primary shadow-sm'
+        ? 'bg-surface-elevated text-text-primary'
         : 'text-text-secondary web:hover:text-text-primary'
     ),
     'soft-rounded': cn(

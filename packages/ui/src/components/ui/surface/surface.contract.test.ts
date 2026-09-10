@@ -92,6 +92,10 @@ describe('surface ramp contract (dark) — token-value guardrails', () => {
     // Locked values from surface-system-north-star.md (re-spaced S-3) — see
     // surfaceRampDark in primitives.ts for the derivation this must match
     // byte-for-byte. background/base are unchanged by the re-space.
+    //
+    // The literal hexes are the POINT of this one test: it pins the bytes, so a
+    // re-space has to come here and say so. Every other test in the suite
+    // references the ramp instead.
     expect(dark['background-frame']).toBe('#100D0A')
     expect(dark['background-base']).toBe('#1C1916')
     expect(dark['surface-base']).toBe('#252321')

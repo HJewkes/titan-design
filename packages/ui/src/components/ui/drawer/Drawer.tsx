@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, Pressable, Modal, ScrollView, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { Surface } from '../surface'
 
 export type DrawerPlacement = 'left' | 'right' | 'top' | 'bottom'
 export type DrawerSize = 'sm' | 'md' | 'lg' | 'xl' | 'full'
@@ -104,10 +105,12 @@ export function Drawer({
         {/* Backdrop */}
         <Pressable onPress={handleOverlayPress} className="absolute inset-0 bg-black/50" />
 
-        {/* Drawer Panel */}
-        <View
+        {/* Drawer Panel — floating: overlay plane + lift, no ring. */}
+        <Surface
+          elevation={4}
+          rounded={false}
           className={cn(
-            'absolute bg-surface-elevated shadow-2xl',
+            'absolute',
             placementStyles[placement],
             sizeStyles[placement][size],
             className
@@ -133,7 +136,7 @@ export function Drawer({
 
           {/* Content */}
           <View className="flex-1">{children}</View>
-        </View>
+        </Surface>
       </View>
     </Modal>
   )

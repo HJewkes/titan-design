@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { Surface } from '../surface'
 
 export type HelpTipSize = 'sm' | 'md' | 'lg'
 export type HelpTipPlacement = 'top' | 'bottom' | 'left' | 'right'
@@ -56,12 +57,12 @@ const placementStyles: Record<HelpTipPlacement, string> = {
 }
 
 const arrowStyles: Record<HelpTipPlacement, string> = {
-  top: 'bottom-0 left-1/2 -translate-x-1/2 translate-y-full border-t-surface-elevated border-x-transparent border-b-transparent',
+  top: 'bottom-0 left-1/2 -translate-x-1/2 translate-y-full border-t-surface-overlay border-x-transparent border-b-transparent',
   bottom:
-    'top-0 left-1/2 -translate-x-1/2 -translate-y-full border-b-surface-elevated border-x-transparent border-t-transparent',
-  left: 'right-0 top-1/2 -translate-y-1/2 translate-x-full border-l-surface-elevated border-y-transparent border-r-transparent',
+    'top-0 left-1/2 -translate-x-1/2 -translate-y-full border-b-surface-overlay border-x-transparent border-t-transparent',
+  left: 'right-0 top-1/2 -translate-y-1/2 translate-x-full border-l-surface-overlay border-y-transparent border-r-transparent',
   right:
-    'left-0 top-1/2 -translate-y-1/2 -translate-x-full border-r-surface-elevated border-y-transparent border-l-transparent',
+    'left-0 top-1/2 -translate-y-1/2 -translate-x-full border-r-surface-overlay border-y-transparent border-l-transparent',
 }
 
 /**
@@ -151,12 +152,12 @@ export function HelpTip({
 
       {/* Tooltip */}
       {isOpen && (
-        <View
+        <Surface
+          elevation={4}
+          rounded={false}
           className={cn(
             'absolute z-50',
-            'bg-surface-elevated rounded-lg shadow-lg',
-            'border border-hairline',
-            'px-3 py-2',
+            'rounded-lg px-3 py-2',
             placementStyles[placement],
             tooltipClassName
           )}
@@ -172,7 +173,7 @@ export function HelpTip({
           {hasArrow && (
             <View className={cn('absolute w-0 h-0', 'border-4', arrowStyles[placement])} />
           )}
-        </View>
+        </Surface>
       )}
     </View>
   )

@@ -59,12 +59,15 @@ describe('DeviationBar', () => {
     expect(bar).toHaveAttribute('role', 'slider')
   })
 
-  it('renders an 8px dot with a text-primary border and shadow', () => {
+  it('renders an 8px dot with a text-primary border and a lift', () => {
     const { getByTestId } = render(<DeviationBar deviation={0} />)
     const dot = getByTestId('deviation-dot')
     expect(dot).toHaveStyle({ width: '8px', height: '8px' })
     expect(dot).toHaveStyle({ borderTopWidth: '1.5px', borderTopColor: greyRamp[50] })
-    expect(dot).toHaveStyle({ boxShadow: '0 0 4px rgba(0,0,0,0.5)' })
+    // The knob rests on the track: an ambient cast shadow, no rim (the ring is
+    // already its edge) and never an inset.
+    expect(dot.style.boxShadow).toContain('rgba(0,0,0')
+    expect(dot.style.boxShadow).not.toContain('inset')
   })
 
   it('renders the track with the deviation gradient background', () => {
