@@ -59,3 +59,26 @@ follow-up.
 `PillProps.color` (use `tone`) and `PillProps.leftElement` (use `leading`) carry
 `@deprecated` tags but keep working; they are the compatibility surface for
 existing call sites and for `voltras-mcp`, which imports `Pill` directly.
+
+## Shell family — generic shell + a workout shell that composes it (AW-132)
+
+`shell/` is now generic and `shell/workout/` holds the workout app's chrome. All
+exports keep their names on the package barrel, so imports of
+`@titan-design/react-ui` are unchanged; only the props below moved.
+
+| Export                                   | Replacement                                    | Known consumers      | Task   |
+| ---------------------------------------- | ---------------------------------------------- | -------------------- | ------ |
+| `DashboardShell` (+ `DashboardShellProps`) | `WorkoutShell` (+ `WorkoutShellProps`) — identical props, alias kept | in-repo `lab/` only  | AW-132 |
+| `defaultNavItems`                        | `workoutNavItems`                              | in-repo shell only   | AW-132 |
+
+**Two breaking prop changes, no alias possible** (a deprecated shim would put a
+workout import back inside the generic shell, which is the cycle this task
+removes):
+
+| Change                                                  | Replacement                                     | Known consumers    |
+| ------------------------------------------------------- | ----------------------------------------------- | ------------------ |
+| `TopBar` lost `state` / `devices` / `onSelectDevice`    | `WorkoutTopBar` — identical prop shape          | in-repo shell only |
+| `SideNav.items` is required (was defaulted to the four workout categories) | pass `workoutNavItems`, or the app's own | in-repo shell only |
+
+`SessionStatePill` keeps its own AW-127 `@deprecated` tag (use `Pill`); it moved
+directory but its export is unchanged.

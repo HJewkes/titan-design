@@ -1,7 +1,7 @@
 import { View, Pressable, type ViewProps } from 'react-native'
-import { cn } from '../../utils/cn'
-import { Indicator, type IndicatorColor } from '../ui/indicator'
-import { Typography } from '../custom/Typography'
+import { cn } from '../../../utils/cn'
+import { Indicator, type IndicatorColor } from '../../ui/indicator'
+import { Typography } from '../../custom/Typography'
 
 export type DeviceRowState = 'connected' | 'available' | 'degraded' | 'lost'
 

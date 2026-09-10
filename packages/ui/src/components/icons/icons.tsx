@@ -151,3 +151,54 @@ export function InfoIcon(props: IconProps) {
     </SvgIcon>
   )
 }
+
+// ---------------------------------------------------------------------------
+// AW-132 · App brand marks — the mark half of a `BrandLockup` for each app that
+// is likely to mount the shell. Sized 14 by default, like `VoltrasMark`.
+// ---------------------------------------------------------------------------
+
+/** Headphones glyph (mirrors lucide-react `Headphones`). Audiobook brand mark. */
+export function HeadphonesIcon({ size = 14, ...props }: IconProps) {
+  return (
+    <SvgIcon size={size} {...props}>
+      <path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5a9 9 0 0 1 18 0v5a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3" />
+    </SvgIcon>
+  )
+}
+
+/** Kanban board glyph (mirrors lucide-react `SquareKanban`). Active-work brand mark. */
+export function KanbanIcon({ size = 14, ...props }: IconProps) {
+  return (
+    <SvgIcon size={size} {...props}>
+      <rect width="18" height="18" x="3" y="3" rx="2" />
+      <path d="M8 7v7" />
+      <path d="M12 7v4" />
+      <path d="M16 7v9" />
+    </SvgIcon>
+  )
+}
+
+/** Robot glyph (mirrors lucide-react `Bot`). Agent-dashboard brand mark. */
+export function BotIcon({ size = 14, ...props }: IconProps) {
+  return (
+    <SvgIcon size={size} {...props}>
+      <path d="M12 8V4H8" />
+      <rect width="16" height="12" x="4" y="8" rx="2" />
+      <path d="M2 14h2" />
+      <path d="M20 14h2" />
+      <path d="M15 13v2" />
+      <path d="M9 13v2" />
+    </SvgIcon>
+  )
+}
+
+/** Brain glyph (mirrors lucide-react `Brain`). Brain-app brand mark. */
+export function BrainIcon({ size = 14, ...props }: IconProps) {
+  return (
+    <SvgIcon size={size} {...props}>
+      <path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" />
+      <path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z" />
+      <path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4" />
+    </SvgIcon>
+  )
+}

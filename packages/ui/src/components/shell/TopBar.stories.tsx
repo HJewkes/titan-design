@@ -1,44 +1,41 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { Pill } from '../ui/pill'
 import { TopBar } from './TopBar'
-import { type Device } from './DeviceRow'
-
-const DEVICES: Device[] = [
-  { id: 'Voltra-A3F2', nickname: 'Left Cable', slot: 'L', state: 'connected' },
-  { id: 'Voltra-9B1C', nickname: 'Right Cable', slot: 'R', state: 'connected' },
-  { id: 'Voltra-77E0', nickname: 'Spare', slot: null, state: 'available' },
-]
+import { brandKeys } from './brands'
 
 const meta: Meta<typeof TopBar> = {
   title: 'Shell/TopBar',
   component: TopBar,
   tags: ['autodocs', 'status:candidate', '!status:review'],
-  args: { state: 'live', devices: DEVICES },
+  args: { brand: 'voltras' },
   argTypes: {
-    state: { control: 'select', options: ['live', 'rest', 'idle'] },
-    devices: { control: 'object' },
+    brand: { control: 'select', options: brandKeys },
     subtitle: { control: 'text' },
     showSubtitle: { control: 'boolean' },
     showClock: { control: 'boolean' },
     time: { control: false },
-    onSelectDevice: { control: false },
+    leading: { control: false },
+    trailing: { control: false },
   },
   parameters: {
     layout: 'fullscreen',
     docs: {
       description: {
         component:
-          '**Organism** — the persistent shell chrome band, and the root of the top-bar family ' +
+          '**Organism** — the persistent shell chrome band, generic over the app ' +
           '(see `shell/README.md` for the full dependency map). Composes ' +
           '[BrandLockup](?path=/docs/shell-brandlockup--docs) + ' +
-          '[SessionStatePill](?path=/docs/shell-sessionstatepill--docs) + ' +
           '[Divider](?path=/docs/components-atoms-divider--docs) (`bg-border-prominent`) + ' +
-          '[DeviceMenu](?path=/docs/shell-devicemenu--docs) + ' +
-          '[DateTime](?path=/docs/custom-datetime--docs) (`variant="mono"` live clock). ' +
+          '[DateTime](?path=/docs/components-molecules-datetime--docs) (`variant="mono"` live clock). ' +
           'Background = the shared `surfaceGradient.chrome` primitive.\n\n' +
-          '**Try it:** use the **Controls** to change `state`, edit `devices` (set one to `lost` to see the ' +
-          'fault), or toggle `showSubtitle` / `showClock`. **Resize the canvas** to watch the ' +
-          'container-responsive collapse (SIZE-D01) — subtitle drops < 1024px, clock < 720px. ' +
-          'Click the device glyph to open the menu.',
+          '**Composition (AW-132).** The bar owns the band, the brand region, the divider ' +
+          'rhythm and the edge-pinned clock. An app supplies its own chrome through ' +
+          '`trailing` — pass an array and the bar puts its dividers between the items. ' +
+          "`leading` replaces the brand region outright. The workout app's cluster lives in " +
+          '[WorkoutTopBar](?path=/docs/shell-workout-workouttopbar--docs).\n\n' +
+          '**Try it:** switch `brand` in the **Controls**, or toggle `showSubtitle` / ' +
+          '`showClock`. **Resize the canvas** to watch the container-responsive collapse ' +
+          '(SIZE-D01) — subtitle drops < 1024px, clock < 720px.',
       },
     },
   },
@@ -46,4 +43,32 @@ const meta: Meta<typeof TopBar> = {
 export default meta
 type Story = StoryObj<typeof TopBar>
 
+/** Brand + clock only. No app has supplied any chrome. */
 export const Default: Story = {}
+
+/** Two app-supplied items in `trailing` — the bar adds the dividers and the clock. */
+export const WithAppChrome: Story = {
+  args: {
+    brand: 'brain',
+    trailing: [
+      <Pill key="index" tone="success" leading="dot" size="xs">
+        indexed
+      </Pill>,
+      <Pill key="scope" tone="neutral" size="xs">
+        4 vaults
+      </Pill>,
+    ],
+  },
+}
+
+/** One item, no array — a single node is a valid `trailing` too. */
+export const SingleTrailingItem: Story = {
+  args: {
+    brand: 'audiobook',
+    trailing: (
+      <Pill tone="brand-secondary" size="xs">
+        3 downloading
+      </Pill>
+    ),
+  },
+}

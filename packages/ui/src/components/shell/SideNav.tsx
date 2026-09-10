@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import { View } from 'react-native'
 import { cn } from '../../utils/cn'
-import { ActivityIcon, HistoryIcon, LayersIcon, PersonStandingIcon } from '../icons'
 import { NavItem } from './NavItem'
 
 export interface SideNavItem {
@@ -14,8 +13,8 @@ export interface SideNavItem {
 }
 
 export interface SideNavProps {
-  /** Category items, top → bottom. Defaults to the four dashboard categories. */
-  items?: SideNavItem[]
+  /** Category items, top → bottom. The app owns its own categories. */
+  items: SideNavItem[]
   /** Key of the active category. */
   activeKey: string
   /** Called with the tapped item's key. */
@@ -28,29 +27,15 @@ export interface SideNavProps {
   className?: string
 }
 
-/** The four dashboard categories with their locked S2 glyphs (activity · history · layers · figure). */
-export const defaultNavItems: SideNavItem[] = [
-  { key: 'live', label: 'Live', icon: <ActivityIcon size={20} color="currentColor" /> },
-  { key: 'review', label: 'Review', icon: <HistoryIcon size={20} color="currentColor" /> },
-  { key: 'program', label: 'Plan', icon: <LayersIcon size={20} color="currentColor" /> },
-  { key: 'body', label: 'Body', icon: <PersonStandingIcon size={20} color="currentColor" /> },
-]
-
 /**
  * Shell S2 · SideNav — the persistent 60px left rail that switches the main
- * viewport between categories (Live · Review · Program · Body). Presentational:
- * it renders `items` and reports taps via `onNavigate`; the app owns routing and
- * which key is `live`. Active item shows a left accent bar; `liveKey` (when not
- * the active view) tints that item's label a muted green. Fixed 60px at every
+ * viewport between an app's categories. Presentational: it renders `items` and
+ * reports taps via `onNavigate`; the app owns its categories, routing, and which
+ * key is `live`. Active item shows a left accent bar; `liveKey` (when not the
+ * active view) tints that item's label a muted green. Fixed 60px at every
  * width — labels sit under the glyph, so they never change the rail width.
  */
-export function SideNav({
-  items = defaultNavItems,
-  activeKey,
-  onNavigate,
-  liveKey = null,
-  className,
-}: SideNavProps) {
+export function SideNav({ items, activeKey, onNavigate, liveKey = null, className }: SideNavProps) {
   return (
     <View
       accessibilityRole="tablist"

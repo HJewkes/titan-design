@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:5322564217727c833c7e564d0d21c3d6208cad757f137ab36c4bb4b339b59d95",
+  "componentBarrelHash": "sha256:1af46f570a05ea82c017f200161b9ab1eea634f4e2270773a87e4ea8cb8ae35b",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -95,6 +95,45 @@
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": true
+    },
+    {
+      "name": "AppShell",
+      "file": "packages/ui/src/components/shell/AppShell.tsx",
+      "dir": "shell",
+      "family": "shell",
+      "exports": [
+        "AppShell",
+        "AppShellProps",
+        "ContentPlaceholder"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "SideNav",
+        "Surface",
+        "TopBar",
+        "brands"
+      ],
+      "leak": {
+        "rawView": 3,
+        "rawText": 1,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 87,
+        "score": 4
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Autocomplete",
@@ -349,15 +388,52 @@
       },
       "dependsOn": [
         "Typography",
-        "icons"
+        "brands"
       ],
       "leak": {
         "rawView": 2,
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 48,
+        "loc": 64,
         "score": 2
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "brands",
+      "file": "packages/ui/src/components/shell/brands.tsx",
+      "dir": "shell",
+      "family": "shell",
+      "exports": [
+        "BrandKey",
+        "BrandPreset",
+        "brandPresets",
+        "brandKeys"
+      ],
+      "libDependents": 3,
+      "storyRefs": 3,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "icons"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 56,
+        "score": 0
       },
       "tier": "organism",
       "verdict": "keep-internal",
@@ -739,46 +815,6 @@
       "standard": true
     },
     {
-      "name": "DashboardShell",
-      "file": "packages/ui/src/components/shell/DashboardShell.tsx",
-      "dir": "shell",
-      "family": "shell",
-      "exports": [
-        "DashboardShell",
-        "DashboardShellProps",
-        "ContentPlaceholder"
-      ],
-      "libDependents": 0,
-      "storyRefs": 2,
-      "xproj": {
-        "mobile": 0,
-        "mcp": 1,
-        "dash": 0,
-        "audiobook": 0,
-        "total": 1
-      },
-      "dependsOn": [
-        "DeviceRow",
-        "SessionStatePill",
-        "SideNav",
-        "Surface",
-        "TopBar"
-      ],
-      "leak": {
-        "rawView": 3,
-        "rawText": 1,
-        "inlineStyle": 0,
-        "rawHex": 0,
-        "loc": 76,
-        "score": 4
-      },
-      "tier": "organism",
-      "verdict": "keep-app",
-      "deadByAssociation": false,
-      "audited": "unaudited",
-      "standard": false
-    },
-    {
       "name": "DataRow",
       "file": "packages/ui/src/components/ui/data-row/DataRow.tsx",
       "dir": "ui",
@@ -887,7 +923,7 @@
     },
     {
       "name": "DeviceIndicator",
-      "file": "packages/ui/src/components/shell/DeviceIndicator.tsx",
+      "file": "packages/ui/src/components/shell/workout/DeviceIndicator.tsx",
       "dir": "shell",
       "family": "shell",
       "exports": [
@@ -924,7 +960,7 @@
     },
     {
       "name": "DeviceMenu",
-      "file": "packages/ui/src/components/shell/DeviceMenu.tsx",
+      "file": "packages/ui/src/components/shell/workout/DeviceMenu.tsx",
       "dir": "shell",
       "family": "shell",
       "exports": [
@@ -963,7 +999,7 @@
     },
     {
       "name": "DeviceRow",
-      "file": "packages/ui/src/components/shell/DeviceRow.tsx",
+      "file": "packages/ui/src/components/shell/workout/DeviceRow.tsx",
       "dir": "shell",
       "family": "shell",
       "exports": [
@@ -1967,10 +2003,14 @@
         "TrendingDownIcon",
         "CircleSlashIcon",
         "AwardIcon",
-        "InfoIcon"
+        "InfoIcon",
+        "HeadphonesIcon",
+        "KanbanIcon",
+        "BotIcon",
+        "BrainIcon"
       ],
       "libDependents": 10,
-      "storyRefs": 3,
+      "storyRefs": 6,
       "xproj": {
         "mobile": 0,
         "mcp": 6,
@@ -1986,7 +2026,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 154,
+        "loc": 205,
         "score": 0
       },
       "tier": "molecule",
@@ -2962,7 +3002,7 @@
         "PillProps"
       ],
       "libDependents": 11,
-      "storyRefs": 2,
+      "storyRefs": 4,
       "xproj": {
         "mobile": 0,
         "mcp": 1,
@@ -3876,7 +3916,7 @@
     },
     {
       "name": "SessionStatePill",
-      "file": "packages/ui/src/components/shell/SessionStatePill.tsx",
+      "file": "packages/ui/src/components/shell/workout/SessionStatePill.tsx",
       "dir": "shell",
       "family": "shell",
       "exports": [
@@ -4325,32 +4365,30 @@
       "exports": [
         "SideNav",
         "SideNavItem",
-        "SideNavProps",
-        "defaultNavItems"
+        "SideNavProps"
       ],
-      "libDependents": 1,
-      "storyRefs": 1,
+      "libDependents": 3,
+      "storyRefs": 2,
       "xproj": {
         "mobile": 0,
-        "mcp": 1,
+        "mcp": 0,
         "dash": 0,
         "audiobook": 0,
-        "total": 1
+        "total": 0
       },
       "dependsOn": [
-        "NavItem",
-        "icons"
+        "NavItem"
       ],
       "leak": {
         "rawView": 1,
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 75,
+        "loc": 60,
         "score": 1
       },
       "tier": "organism",
-      "verdict": "keep-core",
+      "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": true
@@ -4742,7 +4780,7 @@
         "SurfaceProps"
       ],
       "libDependents": 15,
-      "storyRefs": 43,
+      "storyRefs": 45,
       "xproj": {
         "mobile": 22,
         "mcp": 7,
@@ -5279,9 +5317,11 @@
       "exports": [
         "TopBar",
         "TopBarProps",
+        "ClusterDivider",
+        "dividedCluster",
         "onLayout"
       ],
-      "libDependents": 1,
+      "libDependents": 2,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -5293,17 +5333,15 @@
       "dependsOn": [
         "BrandLockup",
         "DateTime",
-        "DeviceMenu",
-        "DeviceRow",
         "Divider",
-        "SessionStatePill"
+        "brands"
       ],
       "leak": {
         "rawView": 2,
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 90,
+        "loc": 111,
         "score": 2
       },
       "tier": "organism",
@@ -5449,7 +5487,7 @@
         "OverlineProps"
       ],
       "libDependents": 36,
-      "storyRefs": 6,
+      "storyRefs": 9,
       "xproj": {
         "mobile": 0,
         "mcp": 6,
@@ -5819,6 +5857,42 @@
       "standard": false
     },
     {
+      "name": "workoutNavItems",
+      "file": "packages/ui/src/components/shell/workout/workoutNavItems.tsx",
+      "dir": "shell",
+      "family": "shell",
+      "exports": [
+        "workoutNavItems",
+        "defaultNavItems"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 1,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 1
+      },
+      "dependsOn": [
+        "SideNav",
+        "icons"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 17,
+        "score": 0
+      },
+      "tier": "organism",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "WorkoutPill",
       "file": "packages/ui/src/components/custom/Workout/WorkoutPill.tsx",
       "dir": "workout",
@@ -5850,6 +5924,86 @@
       "tier": "atom",
       "verdict": "keep-internal",
       "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "WorkoutShell",
+      "file": "packages/ui/src/components/shell/workout/WorkoutShell.tsx",
+      "dir": "shell",
+      "family": "shell",
+      "exports": [
+        "WorkoutShell",
+        "WorkoutShellProps",
+        "DashboardShell",
+        "DashboardShellProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 1,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 1
+      },
+      "dependsOn": [
+        "AppShell",
+        "DeviceRow",
+        "SessionStatePill",
+        "SideNav",
+        "WorkoutTopBar",
+        "workoutNavItems"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 78,
+        "score": 0
+      },
+      "tier": "organism",
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "WorkoutTopBar",
+      "file": "packages/ui/src/components/shell/workout/WorkoutTopBar.tsx",
+      "dir": "shell",
+      "family": "shell",
+      "exports": [
+        "WorkoutTopBar",
+        "WorkoutTopBarProps"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "DeviceMenu",
+        "DeviceRow",
+        "SessionStatePill",
+        "TopBar"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 53,
+        "score": 0
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
     },
@@ -6720,32 +6874,56 @@
       "SvgIcon"
     ],
     [
+      "AppShell",
+      "Surface"
+    ],
+    [
+      "AppShell",
+      "SideNav"
+    ],
+    [
+      "AppShell",
+      "TopBar"
+    ],
+    [
+      "AppShell",
+      "brands"
+    ],
+    [
       "BrandLockup",
       "Typography"
     ],
     [
       "BrandLockup",
+      "brands"
+    ],
+    [
+      "NavItem",
+      "Typography"
+    ],
+    [
+      "SideNav",
+      "NavItem"
+    ],
+    [
+      "TopBar",
+      "Divider"
+    ],
+    [
+      "TopBar",
+      "DateTime"
+    ],
+    [
+      "TopBar",
+      "BrandLockup"
+    ],
+    [
+      "TopBar",
+      "brands"
+    ],
+    [
+      "brands",
       "icons"
-    ],
-    [
-      "DashboardShell",
-      "Surface"
-    ],
-    [
-      "DashboardShell",
-      "SideNav"
-    ],
-    [
-      "DashboardShell",
-      "TopBar"
-    ],
-    [
-      "DashboardShell",
-      "DeviceRow"
-    ],
-    [
-      "DashboardShell",
-      "SessionStatePill"
     ],
     [
       "DeviceIndicator",
@@ -6776,10 +6954,6 @@
       "Typography"
     ],
     [
-      "NavItem",
-      "Typography"
-    ],
-    [
       "SessionStatePill",
       "Indicator"
     ],
@@ -6788,36 +6962,52 @@
       "Typography"
     ],
     [
-      "SideNav",
-      "icons"
+      "WorkoutShell",
+      "AppShell"
     ],
     [
-      "SideNav",
-      "NavItem"
+      "WorkoutShell",
+      "SideNav"
     ],
     [
-      "TopBar",
-      "Divider"
+      "WorkoutShell",
+      "WorkoutTopBar"
     ],
     [
-      "TopBar",
-      "DateTime"
+      "WorkoutShell",
+      "workoutNavItems"
     ],
     [
-      "TopBar",
-      "BrandLockup"
+      "WorkoutShell",
+      "DeviceRow"
     ],
     [
-      "TopBar",
+      "WorkoutShell",
       "SessionStatePill"
     ],
     [
-      "TopBar",
+      "WorkoutTopBar",
+      "TopBar"
+    ],
+    [
+      "WorkoutTopBar",
+      "SessionStatePill"
+    ],
+    [
+      "WorkoutTopBar",
       "DeviceMenu"
     ],
     [
-      "TopBar",
+      "WorkoutTopBar",
       "DeviceRow"
+    ],
+    [
+      "workoutNavItems",
+      "icons"
+    ],
+    [
+      "workoutNavItems",
+      "SideNav"
     ],
     [
       "Autocomplete",
@@ -6889,7 +7079,7 @@
     ]
   ],
   "summary": {
-    "total": 146,
+    "total": 150,
     "dead": [
       "Autocomplete",
       "Avatar",

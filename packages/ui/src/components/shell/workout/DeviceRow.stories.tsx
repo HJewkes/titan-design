@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { DeviceRow } from './DeviceRow'
 
 const meta: Meta<typeof DeviceRow> = {
-  title: 'Shell/DeviceRow',
+  title: 'Shell/Workout/DeviceRow',
   component: DeviceRow,
   tags: ['autodocs', 'status:candidate', '!status:review'],
   args: {

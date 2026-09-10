@@ -278,11 +278,6 @@
     "#131313": 1,
     "rgba(": 1
   },
-  "src/components/shell/DashboardShell.stories.tsx": {
-    "#0e0e0e": 1,
-    "#8a8a8a": 1,
-    "#e5e5e5": 1
-  },
   "src/components/shell/SessionRailSpecimen.stories.tsx": {
     "#0f1012": 1,
     "#101113": 1,

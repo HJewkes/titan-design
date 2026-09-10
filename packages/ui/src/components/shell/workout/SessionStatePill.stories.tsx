@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SessionStatePill } from './SessionStatePill'
 
 const meta: Meta<typeof SessionStatePill> = {
-  title: 'Shell/SessionStatePill',
+  title: 'Shell/Workout/SessionStatePill',
   component: SessionStatePill,
   tags: ['autodocs', 'status:candidate', '!status:review'],
   args: { state: 'live' },

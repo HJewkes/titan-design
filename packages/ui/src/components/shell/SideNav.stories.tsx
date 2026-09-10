@@ -4,15 +4,18 @@ import { View } from 'react-native'
 import { SideNav } from './SideNav'
 import { Typography } from '../custom/Typography'
 import { Surface } from '../ui/surface'
+import { BotIcon, BrainIcon, LayersIcon } from '../icons'
+import { workoutNavItems } from './workout'
 
 const meta: Meta<typeof SideNav> = {
   title: 'Shell/SideNav',
   component: SideNav,
   tags: ['autodocs', 'status:candidate', '!status:review'],
-  args: { activeKey: 'live', liveKey: null },
+  args: { items: workoutNavItems, activeKey: 'live', liveKey: null },
   argTypes: {
     activeKey: { control: 'select', options: ['live', 'review', 'program', 'body'] },
     liveKey: { control: 'select', options: [null, 'live', 'review', 'program', 'body'] },
+    items: { control: false },
     onNavigate: { action: 'navigate' },
   },
   // Interactive AND Controls-synced: clicking a category writes `activeKey` back to the
@@ -51,9 +54,11 @@ const meta: Meta<typeof SideNav> = {
     docs: {
       description: {
         component:
-          '**Organism** (shell region). The persistent 60px left rail switching Live · Review · Plan · ' +
-          'Body. Composes [NavItem](?path=/docs/shell-navitem--docs) × the four categories + the ' +
-          'shared [icon set](?path=/docs/foundations-icons--docs). Presentational — drive it with `activeKey` / ' +
+          '**Organism** (shell region). The persistent 60px left rail that switches the main viewport ' +
+          "between an app's categories. Composes [NavItem](?path=/docs/shell-navitem--docs) × `items` + the " +
+          'shared [icon set](?path=/docs/foundations-icons--docs). It has no built-in categories: `items` is ' +
+          'required, and each app supplies its own (the workout set is `workoutNavItems`). ' +
+          'Presentational — drive it with `activeKey` / ' +
           '`onNavigate` / `liveKey`. Active = left accent bar; `liveKey` (when not active) tints that ' +
           'label a muted green.\n\n' +
           '**Try it:** stories render in a full-height shell frame — the rail pins to the left edge and ' +
@@ -76,6 +81,25 @@ export const LiveElsewhere: Story = {
         story:
           'A set runs on Live while the operator is on Plan → the Live item carries a quiet green label cue. ' +
           '(Still clickable — try switching away and back.)',
+      },
+    },
+  },
+}
+
+/** A different app's categories in the same rail — the nav is generic over `items` (AW-132). */
+export const AnotherApp: Story = {
+  args: {
+    items: [
+      { key: 'notes', label: 'Notes', icon: <LayersIcon size={20} color="currentColor" /> },
+      { key: 'graph', label: 'Graph', icon: <BrainIcon size={20} color="currentColor" /> },
+      { key: 'agents', label: 'Agents', icon: <BotIcon size={20} color="currentColor" /> },
+    ],
+    activeKey: 'graph',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: "The brain app's three categories. Same rail, same states, different `items`.",
       },
     },
   },
