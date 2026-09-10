@@ -2,6 +2,7 @@ import React, { useState, createContext, useContext } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Surface } from '../surface'
+import { TriggerSurface } from '../trigger'
 
 interface MenuContextType {
   isOpen: boolean
@@ -81,14 +82,14 @@ export function MenuTrigger({ children, className }: MenuTriggerProps) {
   const { isOpen, setIsOpen } = useContext(MenuContext)
 
   return (
-    <Pressable
-      onPress={() => setIsOpen(!isOpen)}
+    <TriggerSurface
+      handlers={{ onPress: () => setIsOpen(!isOpen) }}
       accessibilityRole="button"
       accessibilityState={{ expanded: isOpen }}
       className={className}
     >
       {children}
-    </Pressable>
+    </TriggerSurface>
   )
 }
 

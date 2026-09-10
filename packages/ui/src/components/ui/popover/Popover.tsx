@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback, createContext, useContext } from 
 import { View, Pressable, Modal, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Surface } from '../surface'
+import { TriggerSurface } from '../trigger'
 
 export type PopoverPlacement = 'top' | 'bottom' | 'left' | 'right'
 
@@ -130,15 +131,14 @@ export function PopoverTrigger({ children, className }: PopoverTriggerProps) {
       : {}
 
   return (
-    <Pressable
-      onPress={() => setIsOpen(!isOpen)}
+    <TriggerSurface
+      handlers={{ onPress: () => setIsOpen(!isOpen), ...hoverProps }}
       accessibilityRole="button"
       accessibilityState={{ expanded: isOpen }}
       className={className}
-      {...hoverProps}
     >
       {children}
-    </Pressable>
+    </TriggerSurface>
   )
 }
 
