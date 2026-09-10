@@ -6,7 +6,7 @@ import { Surface } from '../ui/surface'
 const meta: Meta<typeof NavItem> = {
   title: 'Shell/NavItem',
   component: NavItem,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   args: { label: 'Live', active: false, live: false },
   argTypes: {
     label: { control: 'text' },

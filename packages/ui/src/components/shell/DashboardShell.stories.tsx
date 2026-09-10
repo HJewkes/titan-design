@@ -11,7 +11,7 @@ import { Surface } from '../ui/surface'
 const meta: Meta<typeof DashboardShell> = {
   title: 'Pages/DashboardShell',
   component: DashboardShell,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     layout: 'fullscreen',
     docs: {

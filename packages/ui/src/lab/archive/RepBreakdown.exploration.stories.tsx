@@ -779,6 +779,7 @@ function Row({
 
 const meta: Meta = {
   title: 'Lab/Archive/Rep Breakdown',
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
 }
 export default meta

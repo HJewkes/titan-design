@@ -4,7 +4,7 @@ import { Eyebrow } from './Eyebrow'
 const meta: Meta<typeof Eyebrow> = {
   title: 'Components/Molecules/Eyebrow',
   component: Eyebrow,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   args: { children: 'Focused · by rank' },
   argTypes: {
     children: { control: 'text' },

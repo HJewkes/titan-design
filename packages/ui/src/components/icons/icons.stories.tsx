@@ -20,7 +20,7 @@ import {
 
 const meta: Meta = {
   title: 'Foundations/Icons',
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

@@ -5,7 +5,7 @@ import { Typography, Heading, Paragraph, Caption, Label, Overline } from './Typo
 const meta: Meta<typeof Typography> = {
   title: 'Foundations/Typography',
   component: Typography,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     variant: {
       control: 'select',

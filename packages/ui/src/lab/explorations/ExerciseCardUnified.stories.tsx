@@ -74,6 +74,7 @@ function Surface({ children, width = 260 }: { children: React.ReactNode; width?:
 
 const meta: Meta = {
   title: 'Lab/Explorations/Unified Exercise Card',
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
 }
 export default meta

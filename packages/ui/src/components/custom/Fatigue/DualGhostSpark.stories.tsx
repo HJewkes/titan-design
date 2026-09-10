@@ -14,7 +14,7 @@ const t = getSemanticColors('dark')
 const meta: Meta<typeof DualGhostSpark> = {
   title: 'Custom/Fatigue/Dual Ghost Spark',
   component: DualGhostSpark,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

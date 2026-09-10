@@ -40,7 +40,7 @@ const PR_LINKER: ProseLinker = { id: 'pr', pattern: /#\d+\b/, tone: 'muted' }
 const meta: Meta<typeof MarkdownProse> = {
   title: 'Custom/Prose/MarkdownProse',
   component: MarkdownProse,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   args: {
     body: SAMPLE,
     linkers: [TASK_LINKER, WIKI_LINKER, PR_LINKER],

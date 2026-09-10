@@ -5,7 +5,7 @@ import { EmptyState } from './EmptyState'
 const meta: Meta<typeof EmptyState> = {
   title: 'Custom/EmptyState',
   component: EmptyState,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     title: {
       control: 'text',

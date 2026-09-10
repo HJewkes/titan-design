@@ -5,7 +5,7 @@ import { HelpTip, LabelWithHelp } from './HelpTip'
 const meta: Meta<typeof HelpTip> = {
   title: 'Components/Molecules/HelpTip',
   component: HelpTip,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     size: {
       control: 'select',

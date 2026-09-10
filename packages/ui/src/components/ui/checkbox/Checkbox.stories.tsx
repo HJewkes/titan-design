@@ -5,7 +5,7 @@ import { Checkbox, CheckboxGroup } from './Checkbox'
 const meta: Meta<typeof Checkbox> = {
   title: 'Components/Molecules/Checkbox',
   component: Checkbox,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     isChecked: {
       control: 'boolean',

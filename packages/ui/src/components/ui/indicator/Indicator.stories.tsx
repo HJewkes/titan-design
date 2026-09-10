@@ -5,7 +5,7 @@ import { Indicator } from './Indicator'
 const meta: Meta<typeof Indicator> = {
   title: 'Components/Atoms/Indicator',
   component: Indicator,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     size: { control: 'select', options: ['xs', 'sm', 'md', 'lg'] },
     color: {

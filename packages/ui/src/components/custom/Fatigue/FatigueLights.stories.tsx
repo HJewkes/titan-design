@@ -11,7 +11,7 @@ const t = getSemanticColors('dark')
 const meta: Meta<typeof FatigueLights> = {
   title: 'Custom/Fatigue/Fatigue Lights',
   component: FatigueLights,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

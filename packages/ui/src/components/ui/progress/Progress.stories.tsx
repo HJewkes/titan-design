@@ -5,7 +5,7 @@ import { Progress, CircularProgress, ProgressSteps } from './Progress'
 const meta: Meta<typeof Progress> = {
   title: 'Components/Molecules/Progress',
   component: Progress,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     value: {
       control: { type: 'range', min: 0, max: 100, step: 1 },

@@ -9,7 +9,7 @@ const SUCCESS = getSemanticColors('dark')['status-success']
 const meta: Meta<typeof Tile> = {
   title: 'Components/Atoms/Tile',
   component: Tile,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

@@ -5,7 +5,7 @@ import { Link } from './Link'
 const meta: Meta<typeof Link> = {
   title: 'Components/Atoms/Link',
   component: Link,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     color: {
       control: 'select',

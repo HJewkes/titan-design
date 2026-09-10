@@ -15,7 +15,7 @@ import { INITIATIVE_LOOPS_FIXTURE, INITIATIVE_NOW } from './initiative-fixture'
 const meta: Meta<typeof OpenLoops> = {
   title: 'Custom/ActiveWork/OpenLoops',
   component: OpenLoops,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   args: {
     loops: INITIATIVE_LOOPS_FIXTURE,
     now: INITIATIVE_NOW,

@@ -6,7 +6,7 @@ const meta: Meta<typeof Badge> = {
   title: 'Components/Atoms/Badge',
   component: Badge,
   parameters: { docs: { description: { component: 'Composes **Indicator**.' } } },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     variant: {
       control: 'select',

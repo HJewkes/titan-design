@@ -4,7 +4,7 @@ import { DeviceIndicator } from './DeviceIndicator'
 const meta: Meta<typeof DeviceIndicator> = {
   title: 'Shell/DeviceIndicator',
   component: DeviceIndicator,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   args: { status: 'connected' },
   argTypes: {
     status: { control: 'select', options: ['connected', 'degraded', 'lost'] },

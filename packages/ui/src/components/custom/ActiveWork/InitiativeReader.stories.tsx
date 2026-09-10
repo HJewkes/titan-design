@@ -98,7 +98,7 @@ function InitiativeReader({
 const meta: Meta<ReaderArgs> = {
   title: 'Custom/ActiveWork/InitiativeReader',
   component: InitiativeReader,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   args: {
     brief: INITIATIVE_BRIEF_FIXTURE,
     loops: INITIATIVE_LOOPS_FIXTURE,

@@ -5,7 +5,7 @@ import { Chip } from './Chip'
 const meta: Meta<typeof Chip> = {
   title: 'Components/Atoms/Chip',
   component: Chip,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     variant: {
       control: 'select',

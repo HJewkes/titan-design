@@ -13,7 +13,7 @@ import {
 const meta: Meta<typeof Sidebar> = {
   title: 'Custom/Sidebar',
   component: Sidebar,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     isCollapsed: {
       control: 'boolean',

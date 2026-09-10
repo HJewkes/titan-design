@@ -12,7 +12,7 @@ const t = getSemanticColors('dark')
 const meta: Meta<typeof VelocityHero> = {
   title: 'Custom/Fatigue/Velocity Hero',
   component: VelocityHero,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

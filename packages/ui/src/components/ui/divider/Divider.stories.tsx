@@ -5,7 +5,7 @@ import { Divider } from './Divider'
 const meta: Meta<typeof Divider> = {
   title: 'Components/Atoms/Divider',
   component: Divider,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     orientation: {
       control: 'select',

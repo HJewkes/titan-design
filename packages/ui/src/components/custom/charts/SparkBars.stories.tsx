@@ -4,7 +4,7 @@ import { SparkBars } from './SparkBars'
 const meta: Meta<typeof SparkBars> = {
   title: 'Custom/Charts/SparkBars',
   component: SparkBars,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

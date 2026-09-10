@@ -5,7 +5,7 @@ import { Spinner } from './Spinner'
 const meta: Meta<typeof Spinner> = {
   title: 'Components/Atoms/Spinner',
   component: Spinner,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     size: {
       control: 'select',

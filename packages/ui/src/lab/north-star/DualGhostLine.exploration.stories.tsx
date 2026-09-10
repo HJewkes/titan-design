@@ -440,6 +440,7 @@ function Page({ children }: { children: ReactNode }) {
 
 const meta: Meta = {
   title: 'Lab/North Star/Dual Ghost Line',
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
 }
 export default meta

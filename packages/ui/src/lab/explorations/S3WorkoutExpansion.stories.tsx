@@ -209,6 +209,7 @@ function ExpandedItem({ label, children }: { label: string; children: React.Reac
 
 const meta: Meta = {
   title: 'Lab/Explorations/Workout Expansion',
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
 }
 export default meta

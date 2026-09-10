@@ -284,6 +284,7 @@ function Swatch({ color, label, outlined }: { color: string; label: string; outl
 
 const meta: Meta = {
   title: 'Lab/Explorations/Set Modalities',
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
 }
 export default meta

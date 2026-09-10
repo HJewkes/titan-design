@@ -5,7 +5,7 @@ import { InitiativeCard } from './InitiativeCard'
 const meta: Meta<typeof InitiativeCard> = {
   title: 'Custom/ActiveWork/InitiativeCard',
   component: InitiativeCard,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   args: {
     title: 'active-work — durable workspace state',
     slug: 'active-work',

@@ -6,7 +6,7 @@ import { Radio, RadioGroup } from './Radio'
 const meta: Meta<typeof RadioGroup> = {
   title: 'Components/Molecules/Radio',
   component: RadioGroup,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     size: {
       control: 'select',

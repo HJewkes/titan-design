@@ -1102,6 +1102,7 @@ function LiveToReviewBanner() {
 // =================================================================================
 const meta: Meta = {
   title: 'Lab/Archive/Curves/Set Level',
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
 }
 export default meta

@@ -10,7 +10,7 @@ import { Surface } from '../../ui/surface'
 const meta: Meta<typeof TimerReadout> = {
   title: 'Custom/TimerReadout',
   component: TimerReadout,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

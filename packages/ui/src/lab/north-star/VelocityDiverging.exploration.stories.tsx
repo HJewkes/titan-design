@@ -449,6 +449,7 @@ const RAIL_CONTENT = RAIL_WIDTH - 24
 
 const meta: Meta = {
   title: 'Lab/North Star/3 - Diverging Bars',
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
 }
 export default meta

@@ -29,7 +29,7 @@ const t = getSemanticColors('dark')
 
 const meta: Meta = {
   title: 'Foundations/Color/Silver-Red Scheme',
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     layout: 'fullscreen',
     docs: {

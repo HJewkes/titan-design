@@ -5,7 +5,7 @@ import { Alert, AlertTitle, AlertDescription } from './Alert'
 const meta: Meta<typeof Alert> = {
   title: 'Components/Molecules/Alert',
   component: Alert,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   parameters: {
     docs: {
       description: {

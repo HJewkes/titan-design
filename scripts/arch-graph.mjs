@@ -8,21 +8,23 @@
  *   node scripts/arch-graph.mjs            # use existing .codewatch/graph.db (or build it)
  *   node scripts/arch-graph.mjs --reindex  # force a fresh codewatch index first
  *
- * codewatch CLI: set CODEWATCH_CLI (e.g. an absolute dist path) or it falls back to
- * `npx --yes @codewatch/cli`. Consumer projects come from scripts/arch.config.json
- * (see arch.config.example.json); missing ones are skipped, so the script degrades to
- * in-library-only analysis when the sibling repos aren't checked out.
+ * codewatch CLI: `@codewatch/cli` is NOT published to npm (AW-118), so `npx` 404s.
+ * Resolution order is CODEWATCH_CLI → `codewatchCli` in scripts/arch.config.json →
+ * a sibling `codewatch` checkout's built dist → `npx` as a last resort. Consumer
+ * projects come from scripts/arch.config.json (see arch.config.example.json); missing
+ * ones are skipped, so the script degrades to in-library-only analysis when the
+ * sibling repos aren't checked out.
  */
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { componentBarrelHash } from "../packages/ui/scripts/barrel-hash.mjs";
 
 const ROOT = path.resolve(fileURLToPath(import.meta.url), "../.."); // repo root (titan-design)
 const DB = path.join(ROOT, ".codewatch", "graph.db");
 const OUT = path.join(ROOT, "packages/ui/src/arch/arch-graph.json");
-const CW = process.env.CODEWATCH_CLI || "npx --yes @codewatch/cli";
 const sh = (cmd) =>
   execSync(cmd, {
     cwd: ROOT,
@@ -30,6 +32,43 @@ const sh = (cmd) =>
     shell: "/bin/bash",
     stdio: ["pipe", "pipe", "inherit"],
   });
+
+// ---- where sibling repos live ----------------------------------------------
+// ROOT is the *worktree* root when run from .worktrees/<name>, so `../voltras`
+// resolves inside .worktrees/ and every consumer silently goes missing. Sibling
+// paths are always relative to the MAIN checkout, which the git common dir names.
+function mainCheckout() {
+  try {
+    const common = sh(
+      "git rev-parse --path-format=absolute --git-common-dir",
+    ).trim();
+    return path.dirname(common);
+  } catch {
+    return ROOT;
+  }
+}
+const SIBLING_BASE = mainCheckout();
+
+const cfgPath = path.join(ROOT, "scripts/arch.config.json");
+const CFG = fs.existsSync(cfgPath)
+  ? JSON.parse(fs.readFileSync(cfgPath, "utf8"))
+  : {};
+
+// ---- codewatch CLI ----------------------------------------------------------
+function resolveCodewatch() {
+  if (process.env.CODEWATCH_CLI) return process.env.CODEWATCH_CLI;
+  if (CFG.codewatchCli) return `node ${JSON.stringify(CFG.codewatchCli)}`;
+  const local = path.resolve(
+    SIBLING_BASE,
+    "../codewatch/packages/cli/dist/index.js",
+  );
+  if (fs.existsSync(local)) return `node ${JSON.stringify(local)}`;
+  console.error(
+    "· no local codewatch checkout found — falling back to npx (AW-118: unpublished, expect a 404)",
+  );
+  return "npx --yes @codewatch/cli";
+}
+const CW = resolveCodewatch();
 
 // ---- codewatch index -------------------------------------------------------
 // codewatch indexes incrementally and appends a snapshot; nodes for files deleted
@@ -98,14 +137,16 @@ const edges = edgeRows
   .filter(([a, b]) => a !== b);
 
 // ---- 2. consumer projects: cross-project usage + primitive substitution -----
-const cfgPath = path.join(ROOT, "scripts/arch.config.json");
-const CONSUMERS = fs.existsSync(cfgPath)
-  ? JSON.parse(fs.readFileSync(cfgPath, "utf8")).consumers
-  : [
-      { name: "mobile", path: "../voltras/mobile/src", kind: "native" },
-      { name: "mcp", path: "../voltras-mcp/src", kind: "web" },
-      { name: "dash", path: "../codewatch/dashboard/src", kind: "web" },
-    ];
+// Every consumer must be listed. A missing one silently promotes its components
+// to the `dead` list, which is how Chip/Modal/Skeleton were nearly declared dead
+// while audiobook imported all three.
+const CONSUMERS = CFG.consumers ?? [
+  { name: "mobile", path: "../voltras/mobile/src", kind: "native" },
+  { name: "mcp", path: "../voltras-mcp/src", kind: "web" },
+  { name: "dash", path: "../codewatch/dashboard/src", kind: "web" },
+  { name: "audiobook", path: "../audiobook/frontend/src", kind: "web" },
+];
+const consumerDir = (c) => path.resolve(SIBLING_BASE, c.path);
 
 const TITAN_IMPORT =
   /import\s+(?:type\s+)?\{([^}]*)\}\s+from\s+['"]@titan-design\/react-ui['"]/g;
@@ -154,7 +195,7 @@ function primTally() {
 }
 
 for (const c of CONSUMERS) {
-  const dir = path.resolve(ROOT, c.path);
+  const dir = consumerDir(c);
   substitution[c.name] = primTally();
   for (const f of listFiles(dir)) {
     const src = fs.readFileSync(f, "utf8");
@@ -199,19 +240,40 @@ const dirOf = (p) =>
     ? "ui"
     : p.includes("/components/shell/")
       ? "shell"
-      : p.includes("/custom/Workout/")
-        ? "workout"
-        : "custom";
+      : p.includes("/components/icons/")
+        ? "icons"
+        : p.includes("/custom/Workout/")
+          ? "workout"
+          : "custom";
+
+// The family is the directory a README and a lint block are scoped to — the unit
+// governance actually works in. `dir` collapses ActiveWork, Fatigue, charts and
+// Prose into one "custom" bucket, which is why they read as one undifferentiated
+// family. Loose files directly under a bucket report the bucket itself.
+const familyOf = (p) => {
+  const rel = p.replace(/^packages\/ui\/src\/components\//, "");
+  const parts = rel.split("/");
+  if (parts.length < 2) return "components";
+  const [bucket, next] = parts;
+  if (bucket === "custom")
+    return parts.length > 2 ? `custom/${next}` : "custom";
+  if (bucket === "ui") return parts.length > 2 ? `ui/${next}` : "ui";
+  return bucket;
+};
+
 const outEdges = {}; // name -> Set(deps)
 for (const [a, b] of edges) (outEdges[a] ||= new Set()).add(b);
 
+// Keys come from CONSUMERS, never a hardcoded list: a consumer missing from the
+// tally scores 0 usage and its components get reported dead.
 const xprojFor = (file) => {
-  const acc = { mobile: 0, mcp: 0, dash: 0 };
+  const acc = Object.fromEntries(CONSUMERS.map((c) => [c.name, 0]));
   for (const nm of symsBy[file] || []) {
     const hit = xprojBySymbol[nm];
     if (hit) for (const k of Object.keys(acc)) acc[k] += hit[k] || 0;
   }
-  return { ...acc, total: acc.mobile + acc.mcp + acc.dash };
+  const total = Object.values(acc).reduce((a, b) => a + b, 0);
+  return { ...acc, total };
 };
 
 let comps = files.map((file) => {
@@ -221,6 +283,7 @@ let comps = files.map((file) => {
     name,
     file,
     dir: dirOf(file),
+    family: familyOf(file),
     exports: symsBy[file] || [],
     libDependents: dep.prod,
     storyRefs: dep.story,
@@ -348,11 +411,15 @@ const summary = {
   substitution,
   consumers: CONSUMERS.map((c) => ({
     name: c.name,
-    present: fs.existsSync(path.resolve(ROOT, c.path)),
+    present: fs.existsSync(consumerDir(c)),
   })),
 };
 const payload = {
   schema: 1,
+  // What the graph was generated FROM. `arch-graph.freshness.test.ts` recomputes
+  // it and fails when it drifts, so a component added to a barrel without a
+  // regenerate is caught in CI rather than read as an absence months later.
+  componentBarrelHash: componentBarrelHash(path.join(ROOT, "packages/ui")),
   components: comps.sort((a, b) => a.name.localeCompare(b.name)),
   edges,
   summary,

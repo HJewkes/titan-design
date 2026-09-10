@@ -5,7 +5,7 @@ import { Stack, HStack, VStack } from './Stack'
 const meta: Meta<typeof Stack> = {
   title: 'Components/Atoms/Stack',
   component: Stack,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     gap: {
       control: 'select',

@@ -5,7 +5,7 @@ import { DeviceRow } from './DeviceRow'
 const meta: Meta<typeof DeviceRow> = {
   title: 'Shell/DeviceRow',
   component: DeviceRow,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   args: {
     device: { id: 'Voltra-A3F2', nickname: 'Left Cable', slot: 'L', state: 'connected' },
   },

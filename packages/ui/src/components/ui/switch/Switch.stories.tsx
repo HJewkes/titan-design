@@ -5,7 +5,7 @@ import { Switch } from './Switch'
 const meta: Meta<typeof Switch> = {
   title: 'Components/Molecules/Switch',
   component: Switch,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     isChecked: {
       control: 'boolean',

@@ -381,6 +381,7 @@ function DualExercisePanel() {
 
 const meta: Meta = {
   title: 'Lab/North Star/Session Rail Lockup',
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
 }
 export default meta

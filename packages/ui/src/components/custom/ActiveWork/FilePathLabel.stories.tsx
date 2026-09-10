@@ -4,7 +4,7 @@ import { FilePathLabel } from './FilePathLabel'
 const meta: Meta<typeof FilePathLabel> = {
   title: 'Custom/ActiveWork/FilePathLabel',
   component: FilePathLabel,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

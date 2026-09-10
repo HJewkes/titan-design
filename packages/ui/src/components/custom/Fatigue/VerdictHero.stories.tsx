@@ -11,7 +11,7 @@ const t = getSemanticColors('dark')
 const meta: Meta<typeof VerdictHero> = {
   title: 'Custom/Fatigue/Verdict Hero',
   component: VerdictHero,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

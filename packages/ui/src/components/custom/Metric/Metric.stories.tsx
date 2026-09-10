@@ -5,7 +5,7 @@ import { Metric, MetricGroup } from './Metric'
 const meta: Meta<typeof Metric> = {
   title: 'Custom/Metric',
   component: Metric,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     value: {
       control: 'text',

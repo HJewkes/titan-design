@@ -5,7 +5,7 @@ import { Breadcrumbs, BreadcrumbItem } from './Breadcrumbs'
 const meta: Meta<typeof Breadcrumbs> = {
   title: 'Components/Molecules/Breadcrumbs',
   component: Breadcrumbs,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     maxItems: {
       control: 'number',

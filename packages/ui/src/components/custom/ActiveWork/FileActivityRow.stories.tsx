@@ -10,7 +10,7 @@ import { FILE_HISTORY_FILES } from './file-history-fixture'
 const meta: Meta<typeof FileActivityRow> = {
   title: 'Custom/ActiveWork/FileActivityRow',
   component: FileActivityRow,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

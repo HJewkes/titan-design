@@ -11,7 +11,7 @@ const t = getSemanticColors('dark')
 const meta: Meta<typeof LiveFatiguePanel> = {
   title: 'Custom/Fatigue/Live Fatigue Panel',
   component: LiveFatiguePanel,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     layout: 'fullscreen',
     docs: {

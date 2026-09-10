@@ -6,7 +6,7 @@ const meta: Meta<typeof DateTime> = {
   title: 'Custom/DateTime',
   component: DateTime,
   parameters: { docs: { description: { component: 'Composes **Typography**.' } } },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     format: {
       control: 'select',

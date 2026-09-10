@@ -4,7 +4,7 @@ import { Scatter, type ScatterDatum } from './Scatter'
 const meta: Meta<typeof Scatter> = {
   title: 'Custom/Charts/Scatter',
   component: Scatter,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     width: { control: { type: 'range', min: 240, max: 800, step: 20 } },
     height: { control: { type: 'range', min: 180, max: 600, step: 20 } },

@@ -14,7 +14,7 @@ import { INITIATIVE_BRIEF_FIXTURE } from './initiative-fixture'
 const meta: Meta<typeof InitiativeBrief> = {
   title: 'Custom/ActiveWork/InitiativeBrief',
   component: InitiativeBrief,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   args: {
     brief: INITIATIVE_BRIEF_FIXTURE,
     linkers: sessionLinkers(),

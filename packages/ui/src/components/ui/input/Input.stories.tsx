@@ -5,7 +5,7 @@ import { Input, InputGroup, PasswordInput } from './Input'
 const meta: Meta<typeof Input> = {
   title: 'Components/Molecules/Input',
   component: Input,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
     variant: {
       control: 'select',

@@ -11,7 +11,7 @@ const t = getSemanticColors('dark')
 const meta: Meta<typeof RomProgressionChart> = {
   title: 'Custom/Fatigue/ROM Progression',
   component: RomProgressionChart,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

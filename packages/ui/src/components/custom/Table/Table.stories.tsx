@@ -48,7 +48,7 @@ const meta: Meta<typeof Table> = {
   parameters: {
     docs: { description: { component: 'Composes **Tooltip**.' } },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     isLoading: {
       control: 'boolean',

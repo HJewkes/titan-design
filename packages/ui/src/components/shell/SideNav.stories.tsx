@@ -8,7 +8,7 @@ import { Surface } from '../ui/surface'
 const meta: Meta<typeof SideNav> = {
   title: 'Shell/SideNav',
   component: SideNav,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   args: { activeKey: 'live', liveKey: null },
   argTypes: {
     activeKey: { control: 'select', options: ['live', 'review', 'program', 'body'] },
