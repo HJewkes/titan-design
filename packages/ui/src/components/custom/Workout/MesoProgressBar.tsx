@@ -1,9 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useState } from 'react'
 import { View, Pressable, Animated, type ViewProps } from 'react-native'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
-
-const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
+import { resolveColor } from '../../../theme/resolve-color'
 
 export type MesoStatus = 'completed' | 'current' | 'upcoming'
 
@@ -26,10 +24,16 @@ export interface MesoProgressBarProps extends ViewProps {
   className?: string
 }
 
-const segmentBgColors: Record<MesoStatus, string> = {
-  completed: 'rgba(46,213,115,0.3)',
-  current: 'rgba(255,121,0,0.5)',
-  upcoming: 'rgba(255,255,255,0.06)',
+// The segment track is a status wash. These were hand-mixed at 0.3 / 0.5 / 0.06
+// alpha; the semantic tier only publishes a `-subtle` rung (0.12), so the
+// completed and current tracks read lighter than the frozen design did.
+const segmentTrackToken: Record<
+  MesoStatus,
+  'status-success-subtle' | 'brand-primary-subtle' | 'hairline-subtle'
+> = {
+  completed: 'status-success-subtle',
+  current: 'brand-primary-subtle',
+  upcoming: 'hairline-subtle',
 }
 
 function clampProgress(currentWeek: number | undefined, weekCount: number): number {
@@ -46,6 +50,7 @@ interface SegmentProps {
 
 function MesoSegment({ meso, isActive, onPress }: SegmentProps) {
   const [pressScale] = useState(() => new Animated.Value(1))
+  const brandPrimary = resolveColor('brand-primary')
 
   const handlePressIn = () => {
     Animated.timing(pressScale, {
@@ -85,13 +90,13 @@ function MesoSegment({ meso, isActive, onPress }: SegmentProps) {
             height: 8,
             borderRadius: 4,
             overflow: 'hidden',
-            backgroundColor: segmentBgColors[meso.status],
+            backgroundColor: resolveColor(segmentTrackToken[meso.status]),
             transform: [{ scale: pressScale }],
           },
           isActive
             ? {
                 borderWidth: 2,
-                borderColor: BRAND_PRIMARY,
+                borderColor: brandPrimary,
                 transform: [{ scale: 1.02 }, { scale: pressScale }],
               }
             : undefined,
@@ -106,7 +111,7 @@ function MesoSegment({ meso, isActive, onPress }: SegmentProps) {
               top: 0,
               bottom: 0,
               width: `${progress * 100}%`,
-              backgroundColor: BRAND_PRIMARY,
+              backgroundColor: brandPrimary,
             }}
             testID={`meso-segment-fill-${meso.id}`}
           />

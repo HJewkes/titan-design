@@ -1,7 +1,12 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
+import { resolveColor } from '../../../theme/resolve-color'
+
+// The planned-set rail is a visible hairline rule, not a plane, so it takes the
+// one border token meant to be seen outright. It used to be a `#3A3A3A` pin in
+// `workout-tokens`, which sat between two ramp steps and never flipped to light.
+const RAIL_TOKEN = 'border-prominent' as const
 
 export interface PlaceholderStripProps extends ViewProps {
   width?: number | string
@@ -23,7 +28,7 @@ function SingleStrip({
       style={[
         {
           height: 3,
-          backgroundColor: WORKOUT_TOKENS.placeholder.fill,
+          backgroundColor: resolveColor(RAIL_TOKEN),
           borderRadius: 2,
           opacity: 0.5,
         },
@@ -61,7 +66,7 @@ function SegmentedStrip({
           style={{
             flex: 1,
             height: 3,
-            backgroundColor: WORKOUT_TOKENS.placeholder.fill,
+            backgroundColor: resolveColor(RAIL_TOKEN),
             borderRadius: 1,
             minWidth: 4,
           }}

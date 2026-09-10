@@ -1,10 +1,17 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { View, Text, type ViewProps } from 'react-native'
+import { View, type ViewProps } from 'react-native'
 import { WorkoutPill, type WorkoutPillStatus } from './WorkoutPill'
 import { IntensityBar } from './IntensityBar'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { Typography } from '../Typography'
+import { resolveColor } from '../../../theme/resolve-color'
+import { WORKOUT_PILL_DELOAD } from '../../../theme/extracted-colors-dataviz'
+import { alpha } from '../../../utils/colors'
 
-const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
+// Deload magenta has no semantic token — it is a ramp pin shared with WorkoutPill
+// (`extracted-colors-dataviz`). The row wash must track the pill exactly, so it
+// is derived from the same pin rather than mixed independently. FINDING for E3:
+// the deload role needs a `-subtle` token like every other status.
+const DELOAD_ROW_WASH = alpha(WORKOUT_PILL_DELOAD, 0.06)
 
 export interface WeekRowWorkout {
   name: string
@@ -58,6 +65,7 @@ export function WeekRow({
   className,
   ...props
 }: WeekRowProps) {
+  const brandPrimary = resolveColor('brand-primary')
   const rowStyle: Record<string, unknown> = {
     flexDirection: 'row' as const,
     alignItems: 'center' as const,
@@ -67,13 +75,14 @@ export function WeekRow({
   }
 
   if (isDeload) {
-    rowStyle.backgroundColor = 'rgba(186,41,150,0.06)'
+    rowStyle.backgroundColor = DELOAD_ROW_WASH
   }
 
+  // Current wins over deload: the active week keeps the brand rail and wash.
   if (isCurrent) {
-    rowStyle.backgroundColor = 'rgba(255,121,0,0.04)'
+    rowStyle.backgroundColor = resolveColor('brand-primary-subtle')
     rowStyle.borderLeftWidth = 2
-    rowStyle.borderLeftColor = BRAND_PRIMARY
+    rowStyle.borderLeftColor = brandPrimary
   }
 
   return (
@@ -94,24 +103,22 @@ export function WeekRow({
               width: 6,
               height: 6,
               borderRadius: 3,
-              backgroundColor: BRAND_PRIMARY,
+              backgroundColor: brandPrimary,
             }}
             accessibilityElementsHidden
             testID="week-row-current-dot"
           />
         )}
-        <Text
-          className={isCurrent ? undefined : 'text-text-primary'}
-          style={{
-            fontSize: 13,
-            fontWeight: '700',
-            fontFamily: 'Inter, sans-serif',
-            color: isCurrent ? BRAND_PRIMARY : undefined,
-          }}
+        {/* `boldLabel` is 12px/700 Inter — the row-label form. The week number was
+            13px, which is off the type scale (TOKENS.md §4). */}
+        <Typography
+          variant="boldLabel"
+          color={isCurrent ? 'inherit' : 'primary'}
+          className={isCurrent ? 'text-brand-primary' : undefined}
           accessibilityElementsHidden
         >
           {`W${weekNumber}`}
-        </Text>
+        </Typography>
       </View>
 
       <View

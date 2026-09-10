@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View, Text } from 'react-native'
 import { SupersetWrapper } from './SupersetWrapper'
 import { ExerciseCard } from './ExerciseCard'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { Card } from '../../ui/card'
+import { Typography } from '../Typography'
 import { Surface } from '../../ui/surface'
-
-const t = getSemanticColors('dark')
+import { resolveColor } from '../../../theme/resolve-color'
 
 const meta: Meta<typeof SupersetWrapper> = {
   title: 'Custom/Workout/SupersetWrapper',
@@ -23,28 +22,21 @@ const meta: Meta<typeof SupersetWrapper> = {
 export default meta
 type Story = StoryObj<typeof SupersetWrapper>
 
+/** Stand-in for a real exercise row: a filled Card on the wrapper's own plane. */
+function DemoExercise({ name }: { name: string }) {
+  return (
+    <Card variant="filled" elevation={1} className="p-3">
+      <Typography variant="body2">{name}</Typography>
+    </Card>
+  )
+}
+
 export const Default: Story = {
   args: {
     children: (
       <>
-        <View
-          style={{
-            padding: 12,
-            backgroundColor: t['surface-raised'],
-            borderRadius: 8,
-          }}
-        >
-          <Text style={{ color: '#F3F4F6', fontFamily: 'Inter, sans-serif' }}>Exercise A</Text>
-        </View>
-        <View
-          style={{
-            padding: 12,
-            backgroundColor: t['surface-raised'],
-            borderRadius: 8,
-          }}
-        >
-          <Text style={{ color: '#F3F4F6', fontFamily: 'Inter, sans-serif' }}>Exercise B</Text>
-        </View>
+        <DemoExercise name="Exercise A" />
+        <DemoExercise name="Exercise B" />
       </>
     ),
   },
@@ -55,24 +47,8 @@ export const CustomLabel: Story = {
     label: 'A1/A2',
     children: (
       <>
-        <View
-          style={{
-            padding: 12,
-            backgroundColor: t['surface-raised'],
-            borderRadius: 8,
-          }}
-        >
-          <Text style={{ color: '#F3F4F6', fontFamily: 'Inter, sans-serif' }}>Exercise A1</Text>
-        </View>
-        <View
-          style={{
-            padding: 12,
-            backgroundColor: t['surface-raised'],
-            borderRadius: 8,
-          }}
-        >
-          <Text style={{ color: '#F3F4F6', fontFamily: 'Inter, sans-serif' }}>Exercise A2</Text>
-        </View>
+        <DemoExercise name="Exercise A1" />
+        <DemoExercise name="Exercise A2" />
       </>
     ),
   },
@@ -80,31 +56,17 @@ export const CustomLabel: Story = {
 
 export const CustomColor: Story = {
   args: {
-    color: '#22C55E',
+    color: resolveColor('status-success'),
     children: (
       <>
-        <View
-          style={{
-            padding: 12,
-            backgroundColor: t['surface-raised'],
-            borderRadius: 8,
-          }}
-        >
-          <Text style={{ color: '#F3F4F6', fontFamily: 'Inter, sans-serif' }}>Exercise A</Text>
-        </View>
-        <View
-          style={{
-            padding: 12,
-            backgroundColor: t['surface-raised'],
-            borderRadius: 8,
-          }}
-        >
-          <Text style={{ color: '#F3F4F6', fontFamily: 'Inter, sans-serif' }}>Exercise B</Text>
-        </View>
+        <DemoExercise name="Exercise A" />
+        <DemoExercise name="Exercise B" />
       </>
     ),
   },
 }
+
+const supersetColor = resolveColor('brand-primary')
 
 const exerciseA = {
   name: 'Bench Press',
@@ -112,7 +74,7 @@ const exerciseA = {
   onToggle: () => {},
   summary: { sets: 3, reps: 8, weight: 185, unit: 'lbs' as const },
   supersetPosition: 'first' as const,
-  supersetColor: '#FF7900',
+  supersetColor,
 }
 
 const exerciseB = {
@@ -121,7 +83,7 @@ const exerciseB = {
   onToggle: () => {},
   summary: { sets: 3, reps: 8, weight: 155, unit: 'lbs' as const },
   supersetPosition: 'last' as const,
-  supersetColor: '#FF7900',
+  supersetColor,
 }
 
 export const WithExerciseCards: Story = {

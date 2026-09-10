@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { WorkoutCard, type WorkoutCardProps } from './WorkoutCard'
 import type { ExerciseCardProps } from './ExerciseCard'
+import { resolveColor } from '../../../theme/resolve-color'
 
 const baseProps: WorkoutCardProps = {
   name: 'Upper A',
@@ -108,6 +109,23 @@ describe('WorkoutCard', () => {
       render(<WorkoutCard {...baseProps} status="completed" />)
       expect(screen.getByTestId('workout-card')).not.toHaveStyle({
         opacity: 0.6,
+      })
+    })
+
+    it.each([
+      ['completed', 'status-success'],
+      ['today', 'brand-primary'],
+      ['upcoming', 'hairline-default'],
+    ] as const)('draws the %s accent stripe from the %s token', (status, token) => {
+      render(<WorkoutCard {...baseProps} status={status} />)
+      const style = screen.getByTestId('workout-card').getAttribute('style') ?? ''
+      expect(style).toContain(`border-left-color: ${resolveColor(token)}`)
+    })
+
+    it("washes today's card with the brand subtle token", () => {
+      render(<WorkoutCard {...baseProps} status="today" />)
+      expect(screen.getByTestId('workout-card')).toHaveStyle({
+        backgroundColor: resolveColor('brand-primary-subtle'),
       })
     })
   })

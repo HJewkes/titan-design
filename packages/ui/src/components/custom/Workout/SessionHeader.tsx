@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { View, Text, type ViewProps } from 'react-native'
+import { View, type ViewProps } from 'react-native'
 import { Surface, onSurfaceColors, useSurfaceMode } from '../../ui/surface'
 import { Typography } from '../Typography'
 import { TimerReadout } from '../TimerReadout'
@@ -97,20 +97,18 @@ export function SessionHeader({
       testID="session-rail-header"
       {...props}
     >
-      <Text
+      {/* `h6` carries the heading face and role; the rail title is 16px/700 on a
+          tight 18px line box, which is one step below `h6`'s own 18px/600. */}
+      <Typography
+        variant="h6"
+        color="inherit"
+        className="text-base font-bold leading-[18px]"
         accessibilityRole="header"
-        style={{
-          fontSize: 16,
-          lineHeight: 18,
-          fontWeight: '700',
-          fontFamily: '"Space Grotesk", sans-serif',
-          color: onSurface.primary,
-          marginBottom: 10,
-        }}
+        style={{ color: onSurface.primary, marginBottom: 10 }}
         testID="session-rail-title"
       >
         {title}
-      </Text>
+      </Typography>
 
       {upcoming ? <ScheduleTiles when={next} /> : <MetricTiles metrics={metrics} />}
 
@@ -132,7 +130,9 @@ export function SessionHeader({
         >
           <Typography
             variant="mono"
-            style={{ fontSize: 10, color: setsLabelColor }}
+            color="inherit"
+            className="text-2xs"
+            style={{ color: setsLabelColor }}
             testID="session-rail-sets"
           >
             {setsLabel}

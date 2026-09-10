@@ -3,6 +3,9 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { WeekRow } from './WeekRow'
 import type { WeekRowWorkout } from './WeekRow'
+import { resolveColor } from '../../../theme/resolve-color'
+import { WORKOUT_PILL_DELOAD } from '../../../theme/extracted-colors-dataviz'
+import { alpha } from '../../../utils/colors'
 
 const workouts: WeekRowWorkout[] = [
   { name: 'Upper', status: 'completed' },
@@ -57,11 +60,11 @@ describe('WeekRow', () => {
       expect(screen.queryByTestId('week-row-current-dot')).not.toBeInTheDocument()
     })
 
-    it('applies the current-week tint and left border', () => {
+    it('applies the current-week tint and left border from the brand tokens', () => {
       render(<WeekRow {...baseProps} isCurrent />)
       const style = screen.getByTestId('week-row').getAttribute('style') ?? ''
-      expect(style).toContain('background-color')
-      expect(style).toContain('border-left')
+      expect(style).toContain(`background-color: ${resolveColor('brand-primary-subtle')}`)
+      expect(style).toContain(`border-left-color: ${resolveColor('brand-primary')}`)
     })
   })
 
@@ -71,10 +74,17 @@ describe('WeekRow', () => {
       expect(screen.getAllByLabelText(/workout, deload/)).toHaveLength(3)
     })
 
-    it('applies a purple tint to the row', () => {
+    it('washes the row with the same deload pin WorkoutPill uses', () => {
       render(<WeekRow {...baseProps} isDeload />)
       const style = screen.getByTestId('week-row').getAttribute('style') ?? ''
-      expect(style).toContain('background-color')
+      expect(style).toContain(`background-color: ${alpha(WORKOUT_PILL_DELOAD, 0.06)}`)
+    })
+
+    it('lets a current deload week keep the brand rail over the deload wash', () => {
+      render(<WeekRow {...baseProps} isDeload isCurrent />)
+      const style = screen.getByTestId('week-row').getAttribute('style') ?? ''
+      expect(style).toContain(`background-color: ${resolveColor('brand-primary-subtle')}`)
+      expect(style).toContain(`border-left-color: ${resolveColor('brand-primary')}`)
     })
   })
 

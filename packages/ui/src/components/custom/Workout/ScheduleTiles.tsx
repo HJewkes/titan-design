@@ -1,14 +1,11 @@
 import { useState } from 'react'
 import { type ViewProps } from 'react-native'
-import { primitiveRamps } from '../../../theme/tokens/primitives'
+import { resolveColor } from '../../../theme/resolve-color'
 import { HStack } from '../../ui/stack'
 import { Tile } from '../../ui/tile/Tile'
 import { formatDateTime } from '../DateTime/DateTime'
 
 const DAY_MS = 24 * 60 * 60 * 1000
-
-/** Accent applied to the Until value when the session is < 1 day away. */
-const SOON_ACCENT = primitiveRamps.orange[400]
 
 /** Compact time-until label: `30m` / `5h` / `2d` / `3w`. Deterministic from the delta. */
 export function compactUntil(ms: number): string {
@@ -37,8 +34,8 @@ export interface ScheduleTilesProps extends ViewProps {
  * ScheduleTiles — Date / Time / Until row for an upcoming session.
  *
  * An HStack of three {@link Tile}s derived from a single scheduled moment. The
- * Until value reuses {@link formatDateTime} relative formatting and turns
- * accent-orange only when the session is less than a day away.
+ * Until value reuses {@link formatDateTime} relative formatting and takes the
+ * `brand-primary` accent only when the session is less than a day away.
  *
  * @example
  * <ScheduleTiles when={Date.now() + 5 * 60 * 60 * 1000} />
@@ -63,7 +60,7 @@ export function ScheduleTiles({ when, now, gap = 1, ...props }: ScheduleTilesPro
       <Tile
         label="Until"
         value={compactUntil(whenMs - reference)}
-        valueColor={soon ? SOON_ACCENT : undefined}
+        valueColor={soon ? resolveColor('brand-primary') : undefined}
       />
     </HStack>
   )

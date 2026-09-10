@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { MesoProgressBar, type Meso } from './MesoProgressBar'
+import { resolveColor } from '../../../theme/resolve-color'
 
 const mesos: Meso[] = [
   { id: 'm1', name: 'Accumulation', weekCount: 4, status: 'completed' },
@@ -37,25 +38,33 @@ describe('MesoProgressBar', () => {
   })
 
   describe('status colors', () => {
-    it('applies completed color at 0.3 alpha', () => {
+    it('tracks the completed segment on the success wash', () => {
       render(<MesoProgressBar mesos={mesos} activeMesoId={null} onMesoPress={vi.fn()} />)
       expect(screen.getByTestId('meso-segment-inner-m1')).toHaveStyle({
-        backgroundColor: 'rgba(46,213,115,0.3)',
+        backgroundColor: resolveColor('status-success-subtle'),
       })
     })
 
-    it('applies current color at 0.5 alpha', () => {
+    it('tracks the current segment on the brand wash', () => {
       render(<MesoProgressBar mesos={mesos} activeMesoId={null} onMesoPress={vi.fn()} />)
       expect(screen.getByTestId('meso-segment-inner-m2')).toHaveStyle({
-        backgroundColor: 'rgba(255,121,0,0.5)',
+        backgroundColor: resolveColor('brand-primary-subtle'),
       })
     })
 
-    it('applies upcoming color', () => {
+    it('tracks the upcoming segment on the neutral hairline wash', () => {
       render(<MesoProgressBar mesos={mesos} activeMesoId={null} onMesoPress={vi.fn()} />)
       expect(screen.getByTestId('meso-segment-inner-m3')).toHaveStyle({
-        backgroundColor: 'rgba(255,255,255,0.06)',
+        backgroundColor: resolveColor('hairline-subtle'),
       })
+    })
+
+    it('gives each status a distinct track, so the three never collapse', () => {
+      render(<MesoProgressBar mesos={mesos} activeMesoId={null} onMesoPress={vi.fn()} />)
+      const tracks = ['m1', 'm2', 'm3'].map(
+        (id) => screen.getByTestId(`meso-segment-inner-${id}`).style.backgroundColor
+      )
+      expect(new Set(tracks).size).toBe(3)
     })
   })
 
@@ -93,7 +102,7 @@ describe('MesoProgressBar', () => {
       render(<MesoProgressBar mesos={mesos} activeMesoId="m2" onMesoPress={vi.fn()} />)
       const style = screen.getByTestId('meso-segment-inner-m2').getAttribute('style') ?? ''
       expect(style).toContain('border-top-width: 2px')
-      expect(style).toContain('border-top-color: rgb(255, 121, 0)')
+      expect(style).toContain(`border-top-color: ${resolveColor('brand-primary')}`)
     })
 
     it('does not apply a border to inactive segments', () => {

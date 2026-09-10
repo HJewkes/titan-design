@@ -1,11 +1,10 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { ScheduleTiles, compactUntil } from './ScheduleTiles'
-import { primitiveRamps } from '../../../theme/tokens/primitives'
+import { resolveColor } from '../../../theme/resolve-color'
 
 const HOUR = 60 * 60 * 1000
 const DAY = 24 * HOUR
-const ORANGE = primitiveRamps.orange[400]
 
 // A fixed reference; the compact Until label is deterministic from (when - now).
 const NOW = Date.now()
@@ -25,10 +24,10 @@ describe('ScheduleTiles', () => {
     expect(value.style.color).toBe('')
   })
 
-  it('accents the Until value orange when less than a day away', () => {
+  it('accents the Until value with the brand token when less than a day away', () => {
     const when = NOW + 5 * HOUR
     render(<ScheduleTiles now={NOW} when={when} />)
     const value = screen.getByText(compactUntil(when - NOW))
-    expect(value).toHaveStyle({ color: ORANGE })
+    expect(value).toHaveStyle({ color: resolveColor('brand-primary') })
   })
 })

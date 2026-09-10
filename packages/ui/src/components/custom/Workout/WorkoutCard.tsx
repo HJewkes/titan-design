@@ -1,13 +1,10 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { View, Text, ScrollView, Pressable, type ViewProps } from 'react-native'
+import { View, ScrollView, Pressable, type ViewProps } from 'react-native'
 import { Card } from '../../ui/card'
 import { ExerciseCard, type ExerciseCardProps } from './ExerciseCard'
 import { MuscleGroupChip, type VolumeStatus } from './MuscleGroupChip'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
-
-const HAIRLINE_DEFAULT = getSemanticColors('dark')['hairline-default']
-
-const t = getSemanticColors('dark')
+import { Typography } from '../Typography'
+import { resolveColor } from '../../../theme/resolve-color'
 
 export type WorkoutStatus = 'completed' | 'today' | 'upcoming'
 
@@ -40,17 +37,14 @@ export interface WorkoutCardProps extends ViewProps {
   className?: string
 }
 
-const COLORS = {
-  statusSuccess: t['status-success'],
-  brandPrimary: t['brand-primary'],
-  borderDefault: HAIRLINE_DEFAULT,
-  brandPrimarySubtle: 'rgba(255,121,0,0.06)',
-}
-
-const statusBorderColors: Record<WorkoutStatus, string> = {
-  completed: COLORS.statusSuccess,
-  today: COLORS.brandPrimary,
-  upcoming: COLORS.borderDefault,
+/** Accent-stripe token per status, resolved per theme at render. */
+const statusAccentToken: Record<
+  WorkoutStatus,
+  'status-success' | 'brand-primary' | 'hairline-default'
+> = {
+  completed: 'status-success',
+  today: 'brand-primary',
+  upcoming: 'hairline-default',
 }
 
 /** Maps the spec's volume-status vocabulary onto MuscleGroupChip's enum. */
@@ -116,41 +110,36 @@ export function WorkoutCard({
   const summary = (
     <View style={{ padding: 14 }} testID="workout-card-body">
       <View className="flex-row items-center" testID="workout-card-header">
-        <Text
-          className="text-text-primary"
-          style={{
-            fontSize: 15,
-            fontFamily: '"Space Grotesk", sans-serif',
-            fontWeight: '700',
-          }}
+        {/* The card name was 15px/700 Space Grotesk — off the type scale between
+            `sm` and `base`. `h6` carries the heading face; `base` is the step up. */}
+        <Typography
+          variant="h6"
+          color="primary"
+          className="text-base font-bold leading-[normal]"
           testID="workout-card-name"
         >
           {name}
-        </Text>
+        </Typography>
         <View className="flex-1" />
-        <Text
-          className="text-text-tertiary"
-          style={{
-            fontSize: 11,
-            fontFamily: 'Inter, sans-serif',
-          }}
+        {/* 11px is off the scale too; `2xs` (10px) is the step below. */}
+        <Typography
+          variant="caption"
+          color="tertiary"
+          className="text-2xs leading-[normal]"
           testID="workout-card-date"
         >
           {date}
-        </Text>
+        </Typography>
       </View>
 
-      <Text
-        className="text-text-secondary"
-        style={{
-          marginTop: 4,
-          fontSize: 12,
-          fontFamily: 'Inter, sans-serif',
-        }}
+      <Typography
+        variant="caption"
+        color="secondary"
+        className="mt-1 leading-[normal]"
         testID="workout-card-stats"
       >
         {formatStats(totalSets, totalVolume, unit, duration)}
-      </Text>
+      </Typography>
 
       {muscleGroups.length > 0 && (
         <ScrollView
@@ -176,8 +165,8 @@ export function WorkoutCard({
     <Card
       variant="accent"
       elevation={1}
-      accentColor={statusBorderColors[status]}
-      bgColor={isToday ? COLORS.brandPrimarySubtle : undefined}
+      accentColor={resolveColor(statusAccentToken[status])}
+      bgColor={isToday ? resolveColor('brand-primary-subtle') : undefined}
       className={className}
       style={isUpcoming ? { opacity: 0.6 } : undefined}
       testID="workout-card"

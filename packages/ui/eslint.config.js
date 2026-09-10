@@ -230,6 +230,18 @@ module.exports = tseslint.config(
       'src/components/ui/chip/**/*.{ts,tsx}',
       'src/components/custom/Workout/StatusPill.tsx',
       'src/components/custom/Workout/MuscleGroupChip.tsx',
+      // Workout batch B2 (E3). StatusPill and MuscleGroupChip are already above,
+      // enrolled with the Pill presets in E2.
+      'src/components/custom/Workout/SegmentedBar.tsx',
+      'src/components/custom/Workout/PlaceholderStrip.tsx',
+      'src/components/custom/Workout/ScheduleTiles.tsx',
+      'src/components/custom/Workout/SupersetWrapper.tsx',
+      'src/components/custom/Workout/MesoProgressBar.tsx',
+      'src/components/custom/Workout/Sparkline.tsx',
+      'src/components/custom/Workout/VolumeLandmarkBar.tsx',
+      'src/components/custom/Workout/SessionHeader.tsx',
+      'src/components/custom/Workout/WeekRow.tsx',
+      'src/components/custom/Workout/WorkoutCard.tsx',
     ],
     // Fixtures hold real prose (PR refs like `#102` read as hex); stories/tests exempt as elsewhere.
     ignores: ['**/*.stories.tsx', '**/*.test.tsx', '**/*-fixture.ts'],
