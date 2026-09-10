@@ -242,6 +242,13 @@ module.exports = tseslint.config(
       'src/components/custom/Workout/SessionHeader.tsx',
       'src/components/custom/Workout/WeekRow.tsx',
       'src/components/custom/Workout/WorkoutCard.tsx',
+      // Workout batch B3 (E3).
+      'src/components/custom/Workout/StatusDot.tsx',
+      'src/components/custom/Workout/WeightBadge.tsx',
+      'src/components/custom/Workout/ExerciseCard.tsx',
+      'src/components/custom/Workout/SetRow.tsx',
+      'src/components/custom/Workout/SetBar.tsx',
+      'src/components/custom/Workout/WorkoutPill.tsx',
     ],
     // Fixtures hold real prose (PR refs like `#102` read as hex); stories/tests exempt as elsewhere.
     ignores: ['**/*.stories.tsx', '**/*.test.tsx', '**/*-fixture.ts'],

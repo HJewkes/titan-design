@@ -3,7 +3,6 @@ import { render, screen, fireEvent, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ExerciseCard } from './ExerciseCard'
 import type { SetRowProps } from './SetRow'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { resolveColor } from '../../../theme/resolve-color'
 
 const baseCollapsedProps = {
@@ -88,8 +87,10 @@ describe('ExerciseCard', () => {
       sets: unifiedSets,
     }
 
-    // Read from the tokens, not pinned (see SetRow.test.tsx).
-    const { 'text-primary': T_ACTIVE, 'text-secondary': T_MUTED } = getSemanticColors('dark')
+    // Read from the tokens, not pinned, and through resolveColor as SetRow now
+    // renders them (see SetRow.test.tsx).
+    const T_ACTIVE = resolveColor('text-primary')
+    const T_MUTED = resolveColor('text-secondary')
 
     it('renders exercise name via the real ExerciseCardHeading header', () => {
       render(<ExerciseCard {...expandedProps} />)
