@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { SetBar, velocityZoneColor, SET_STRIP_ZONES, SET_STRIP_VARIABLE_COLOR } from './SetBar'
+import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
+import { resolveColor } from '../../../theme/resolve-color'
 
 /** The slot wrapper (carrier of the leading-gap margin) is a fill segment's parent. */
 const slotOf = (fill: HTMLElement) => fill.parentElement as HTMLElement
@@ -34,6 +36,24 @@ describe('SetBar', () => {
     expect(screen.getAllByTestId('set-strip-empty')).toHaveLength(1)
     expect(screen.queryByTestId('set-strip-fill')).not.toBeInTheDocument()
     expect(screen.queryByTestId('set-strip-pulse')).not.toBeInTheDocument()
+  })
+
+  // SetBar has no visual baseline. The placeholder fill was `greyRamp[900]` — the
+  // `surface-elevated` plane used as a mark — so its role is asserted here.
+  it('fills unperformed reps from the border role, not a surface plane', () => {
+    render(<SetBar set={{ status: 'todo', planned: 10 }} />)
+    expect(screen.getByTestId('set-strip-empty')).toHaveStyle({
+      backgroundColor: resolveColor('border-prominent'),
+    })
+  })
+
+  it('sources the four zone pins from the canonical effort scale', () => {
+    expect(SET_STRIP_ZONES).toEqual({
+      slow: WORKOUT_TOKENS.scale.red,
+      moderate: WORKOUT_TOKENS.scale.orange,
+      fast: WORKOUT_TOKENS.scale.yellow,
+      fastest: WORKOUT_TOKENS.scale.green,
+    })
   })
 
   describe('range (variable rep-range)', () => {
