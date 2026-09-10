@@ -27,16 +27,23 @@ export interface TaskListItem {
 
 /**
  * Fixed column widths, shared by {@link TaskRow} and {@link TaskTable}'s header
- * so the two cannot drift. `title` is the flexible column and carries no width.
+ * so the two cannot drift. `title` is the flexible column: it renders with no
+ * width and only declares the floor it may be squeezed to.
+ *
+ * Every fixed width holds its own header — the uppercase label, the 4px gap and
+ * the sort glyph, inside the dense cell's 16px of padding. A column narrower
+ * than its own header is what let `SEV` and `PRI` paint over each other.
  */
 export const TASK_COLUMN_WIDTHS = {
   slug: 132,
   id: 66,
+  /** The narrowest the flexible title column may be squeezed before a column drops instead. */
+  titleMin: 160,
   severity: 112,
   /** The severity column once it has collapsed to its dot. */
-  severityCompact: 44,
-  priority: 42,
-  estimate: 42,
+  severityCompact: 56,
+  priority: 56,
+  estimate: 56,
   tags: 150,
   age: 74,
 } as const

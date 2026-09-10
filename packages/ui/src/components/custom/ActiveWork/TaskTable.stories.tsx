@@ -26,6 +26,7 @@ const meta: Meta<typeof TaskTable> = {
     },
     hideLegend: { control: 'boolean' },
     severityDisplay: { control: 'inline-radio', options: ['auto', 'full', 'dot'] },
+    fitWidth: { control: { type: 'number', min: 120, step: 20 } },
     now: { table: { disable: true } },
     tasks: { table: { disable: true } },
   },
@@ -58,12 +59,31 @@ export const Default: Story = {}
 /**
  * Under 840px the severity column collapses to its dot (word on hover) so the
  * title keeps a scannable width. Driven by the table's own measured width, so
- * resize the canvas to watch it switch.
+ * resize the canvas to watch it switch. Narrower still and whole columns start
+ * to drop — see **Embedded Narrow**.
  */
 export const Narrow: Story = {
   decorators: [
     (Story) => (
       <View className="w-full max-w-[760px]">
+        <Story />
+      </View>
+    ),
+  ],
+}
+
+/**
+ * The table inside a card half a page wide, which is where the reader puts it.
+ * Columns drop in the declared order — severity, priority, estimate, tags, age,
+ * initiative — and `title` and `id` never drop, because a task with no name is
+ * not a narrower row, it is a useless one. Below the last droppable column the
+ * table scrolls horizontally rather than squeezing the survivors into overlap.
+ */
+export const EmbeddedNarrow: Story = {
+  args: { hideLegend: true, hideColumns: ['slug'] },
+  decorators: [
+    (Story) => (
+      <View className="w-full max-w-[400px]">
         <Story />
       </View>
     ),

@@ -22,3 +22,10 @@ export type {
   TableDensity,
   TableComparator,
 } from './Table'
+export { fitColumns, useColumnFit, useMeasuredWidth } from './column-fit'
+export type {
+  TableColumnFit,
+  ColumnFitResult,
+  UseColumnFitResult,
+  UseMeasuredWidthResult,
+} from './column-fit'
