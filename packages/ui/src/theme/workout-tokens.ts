@@ -51,11 +51,6 @@ export const WORKOUT_TOKENS = {
     atTargetGlow: '0 0 5px 1px rgba(33, 150, 243, 0.35), 0 0 10px 3px rgba(33, 150, 243, 0.15)',
   },
 
-  // Placeholder strip
-  placeholder: {
-    fill: '#3A3A3A',
-  },
-
   // Deviation bar
   deviation: {
     track: '#333333',

@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { View, Text } from 'react-native'
 import { SupersetWrapper } from './SupersetWrapper'
+import { resolveColor } from '../../../theme/resolve-color'
 
 describe('SupersetWrapper', () => {
   describe('label', () => {
@@ -26,17 +27,18 @@ describe('SupersetWrapper', () => {
   })
 
   describe('color', () => {
-    it('applies default color #FF7900 to border and label background', () => {
+    it('defaults border and label background to the brand-primary token', () => {
       render(
         <SupersetWrapper>
           <View />
         </SupersetWrapper>
       )
+      const brand = resolveColor('brand-primary')
       const wrapper = screen.getByTestId('superset-wrapper')
-      expect(wrapper).toHaveStyle({ borderLeftColor: '#FF7900' })
+      expect(wrapper).toHaveStyle({ borderLeftColor: brand })
 
       const label = screen.getByTestId('superset-label')
-      expect(label).toHaveStyle({ backgroundColor: '#FF7900' })
+      expect(label).toHaveStyle({ backgroundColor: brand })
     })
 
     it('applies custom color to border and label background', () => {

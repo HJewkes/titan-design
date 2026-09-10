@@ -48,6 +48,10 @@ const HTML_CSS = `
        plane. A dot is foreground, so it takes the muted text role: text-tertiary,
        grey-500. */
     --dot-inactive: #888684;
+    /* The B2 port put PlaceholderStrip on border-prominent (grey-800). The
+       frozen demo's #3A3A3A sat between two ramp steps, so the reference follows
+       the component onto the ramp rather than pinning it back off it. */
+    --border-prominent: #424140;
     --status-success: #2ED573;
     --status-error: #D14343;
     --status-warning: #F9B415;
@@ -175,7 +179,7 @@ const HTML_CSS = `
   /* 4. PlaceholderStrip */
   .html-scope .placeholder-strip-single {
     height: 3px;
-    background: #3A3A3A;
+    background: var(--border-prominent);
     border-radius: 2px;
     opacity: 0.5;
   }
@@ -188,7 +192,7 @@ const HTML_CSS = `
   .html-scope .placeholder-segment {
     flex: 1;
     height: 3px;
-    background: #3A3A3A;
+    background: var(--border-prominent);
     border-radius: 1px;
     min-width: 4px;
   }

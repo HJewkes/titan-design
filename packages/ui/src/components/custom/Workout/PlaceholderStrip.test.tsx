@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { PlaceholderStrip } from './PlaceholderStrip'
+import { resolveColor } from '../../../theme/resolve-color'
 
 describe('PlaceholderStrip', () => {
   it('renders a strip element', () => {
@@ -35,6 +36,18 @@ describe('PlaceholderStrip', () => {
   it('defaults to single mode', () => {
     render(<PlaceholderStrip />)
     expect(screen.queryAllByTestId('placeholder-segment')).toHaveLength(0)
+  })
+
+  it('fills both modes from the border-prominent token, not a pinned hex', () => {
+    const rail = resolveColor('border-prominent')
+    const { unmount } = render(<PlaceholderStrip />)
+    expect(screen.getByTestId('placeholder-strip')).toHaveStyle({ backgroundColor: rail })
+    unmount()
+
+    render(<PlaceholderStrip mode="segmented" segments={2} />)
+    for (const segment of screen.getAllByTestId('placeholder-segment')) {
+      expect(segment).toHaveStyle({ backgroundColor: rail })
+    }
   })
 
   describe('segmented mode', () => {

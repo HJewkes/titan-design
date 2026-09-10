@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
-import { primitiveRamps } from '../../../theme/tokens/primitives'
+import { resolveColor } from '../../../theme/resolve-color'
 import { SessionHeader, type SessionHeaderPlanEntry } from './SessionHeader'
 
 /**
@@ -41,7 +41,7 @@ const meta: Meta<typeof SessionHeader> = {
 export default meta
 type Story = StoryObj<typeof SessionHeader>
 
-const AMBER = primitiveRamps.amber[300]
+const AMBER = resolveColor('status-warning')
 
 const PLAN: SessionHeaderPlanEntry[] = [
   { name: 'Seated Row', sets: 3 },

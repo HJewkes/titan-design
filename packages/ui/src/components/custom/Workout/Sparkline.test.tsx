@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Sparkline } from './Sparkline'
+import { resolveColor } from '../../../theme/resolve-color'
 
 const sampleData = [10, 25, 15, 30, 20]
 
@@ -67,6 +68,35 @@ describe('Sparkline', () => {
   it('does not render reference lines when not provided', () => {
     render(<Sparkline data={sampleData} />)
     expect(screen.queryByTestId('sparkline-reference-0')).not.toBeInTheDocument()
+  })
+
+  it('defaults the trace to the brand-primary token', () => {
+    render(<Sparkline data={sampleData} highlightLast />)
+    expect(screen.getByTestId('sparkline-segment-1')).toHaveStyle({
+      backgroundColor: resolveColor('brand-primary'),
+    })
+    expect(screen.getByTestId('sparkline-dot-4')).toHaveStyle({
+      backgroundColor: resolveColor('brand-primary'),
+    })
+  })
+
+  it('lets a caller override the trace colour', () => {
+    render(<Sparkline data={sampleData} color="#00ff00" />)
+    expect(screen.getByTestId('sparkline-segment-1')).toHaveStyle({
+      backgroundColor: '#00ff00',
+    })
+  })
+
+  it('renders a reference-line label in the caller colour', () => {
+    render(
+      <Sparkline
+        data={sampleData}
+        referenceLines={[{ value: 20, color: '#ff0000', label: 'MAV' }]}
+      />
+    )
+    const label = screen.getByTestId('sparkline-reference-label-0')
+    expect(label).toHaveTextContent('MAV')
+    expect(label).toHaveStyle({ color: '#ff0000' })
   })
 
   it('uses default dimensions', () => {

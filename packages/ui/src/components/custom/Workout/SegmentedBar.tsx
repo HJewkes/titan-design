@@ -16,13 +16,16 @@ export interface SegmentedBarSegment {
   weight?: number
   /** Fraction 0..1 of the slot the coloured fill covers, left-aligned. Default 1 (full). */
   fill?: number
-  /** Fill colour — a literal hex (RNW-safe), never a `var()` token ref. */
+  /** Fill colour. Pass `resolveColor(token)` — a plain fill takes a `var()` ref fine. */
   color: string
   /** When true the fill animates on the shared active-pulse loop. */
   pulse?: boolean
   /**
    * When pulsing, interpolate the fill's `backgroundColor` from→to over the loop
    * (full opacity). Omit to fall back to the default opacity breathe.
+   *
+   * Literal hex only: `Animated.interpolate` parses these two endpoints itself
+   * and cannot read a `var()` ref, so `resolveColor(token)` does not work here.
    */
   pulseColor?: [from: string, to: string]
   /**
@@ -90,7 +93,8 @@ function usePulse(active: boolean): Animated.Value {
  * presentational atom the per-set strips are built from. Each segment is a flex
  * slot (flex = `weight`) holding a left-aligned fill (`fill` fraction, `color`);
  * `pulse` segments breathe on a shared active-pulse loop, and `marker` drops a
- * vertical line at a fraction of the total width. Colours are passed-in literal hex.
+ * vertical line at a fraction of the total width. Every colour is injected by the
+ * composer, so this atom holds no palette of its own.
  */
 export function SegmentedBar({
   segments,

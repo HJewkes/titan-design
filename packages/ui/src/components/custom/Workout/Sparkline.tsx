@@ -1,10 +1,8 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import React from 'react'
-import { View, Text, type ViewProps } from 'react-native'
+import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
-
-const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
+import { Typography } from '../Typography'
+import { resolveColor } from '../../../theme/resolve-color'
 
 export interface SparklineProps extends ViewProps {
   data: number[]
@@ -60,7 +58,7 @@ export function Sparkline({
     )
   }
 
-  const resolvedColor = color ?? BRAND_PRIMARY
+  const resolvedColor = color ?? resolveColor('brand-primary')
   const normalized = normalizeData(data, height)
   const stepX = data.length > 1 ? width / (data.length - 1) : 0
 
@@ -105,19 +103,24 @@ export function Sparkline({
             testID={`sparkline-reference-${i}`}
           >
             {line.label && (
-              <Text
+              // `3xs` (9px) is the scale floor; the label was 7px, which is off it
+              // entirely (TOKENS.md §4). The line box stays unpinned, as the raw
+              // <Text> this replaced was, so the absolute offset still lands.
+              <Typography
+                variant="caption"
+                color="inherit"
+                className="text-3xs leading-[normal]"
                 style={{
                   position: 'absolute',
                   right: 0,
                   top: -10,
-                  fontSize: 7,
                   color: line.color,
                   opacity: 1,
                 }}
                 testID={`sparkline-reference-label-${i}`}
               >
                 {line.label}
-              </Text>
+              </Typography>
             )}
           </View>
         )

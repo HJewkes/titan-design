@@ -1,9 +1,10 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { View, Text, type ViewProps } from 'react-native'
+import { View, type ViewProps } from 'react-native'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { greyRamp } from '../../../theme/tokens/primitives'
 import { ZoneTrack } from './ZoneTrack'
 import { DataRow } from '../../ui/data-row/DataRow'
+import { Typography } from '../Typography'
 import type { VolumeLandmarks } from './muscleTaxonomy'
 
 // Reuse the canonical BodyMap volume HEAT scale (the `divergingScale` under →
@@ -12,9 +13,11 @@ import type { VolumeLandmarks } from './muscleTaxonomy'
 const HEAT = WORKOUT_TOKENS.heatmap
 
 // The muted, un-reached track colour — the same grey step ZoneTrack defaults
-// to, so the bar sits on the shared gauge-track surface.
+// to, so the bar sits on the shared gauge-track surface. Kept as a ramp step
+// rather than `resolveColor('border-prominent')`: ZoneTrack takes literal hex
+// only, never a `var()` ref. FINDING for E3: the gauge-track grey has no
+// semantic token, and ZoneTrack (B5) cannot consume one until it can.
 const NEUTRAL_TRACK = greyRamp[800]
-const MONO = 'monospace'
 
 export type VolumeZone = 'under' | 'maintenance' | 'productive' | 'approaching' | 'over'
 
@@ -113,12 +116,18 @@ export function VolumeLandmarkBar({
       <DataRow
         label={muscle}
         value={
-          <Text
+          // `mono` at `sm` matches DataRow's own 14px label, so the header lockup
+          // stays at one type height. The face moves from bare `monospace` to the
+          // `font-mono` token stack.
+          <Typography
+            variant="mono"
+            color="inherit"
+            className="text-sm font-bold"
+            style={{ color: fillColor }}
             testID="volume-landmark-pct"
-            style={{ fontSize: 14, fontWeight: '700', fontFamily: MONO, color: fillColor }}
           >
             {pct}%
-          </Text>
+          </Typography>
         }
         className="py-0"
         testID="volume-landmark-header"
