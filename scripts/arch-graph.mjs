@@ -49,10 +49,15 @@ function mainCheckout() {
 }
 const SIBLING_BASE = mainCheckout();
 
-const cfgPath = path.join(ROOT, "scripts/arch.config.json");
-const CFG = fs.existsSync(cfgPath)
-  ? JSON.parse(fs.readFileSync(cfgPath, "utf8"))
-  : {};
+// arch.config.json is COMMITTED and holds the shared consumer list, so every
+// machine computes the same `dead` verdicts. arch.config.local.json is gitignored
+// and layers machine-specific paths on top, so nobody has to edit the shared file
+// to point at their own checkout (and accidentally commit an absolute path).
+const readCfg = (name) => {
+  const p = path.join(ROOT, "scripts", name);
+  return fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, "utf8")) : {};
+};
+const CFG = { ...readCfg("arch.config.json"), ...readCfg("arch.config.local.json") };
 
 // ---- codewatch CLI ----------------------------------------------------------
 function resolveCodewatch() {
