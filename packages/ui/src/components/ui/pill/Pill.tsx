@@ -2,7 +2,17 @@ import React from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 
-export type PillVariant = 'subtle' | 'outline'
+export type PillVariant = 'solid' | 'subtle' | 'outline'
+/** Semantic tone. `brand-secondary` is the accent, not a second brand. */
+export type PillTone =
+  | 'neutral'
+  | 'brand'
+  | 'brand-secondary'
+  | 'success'
+  | 'warning'
+  | 'error'
+  | 'info'
+/** Legacy palette names, kept so existing `color=` call sites keep working. */
 export type PillColor =
   | 'default'
   | 'primary'
@@ -11,92 +21,198 @@ export type PillColor =
   | 'error'
   | 'warning'
   | 'info'
-export type PillSize = 'xs' | 'sm' | 'md'
+export type PillSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 
 export interface PillProps extends ViewProps {
   /** Pill content */
-  children: React.ReactNode
+  children?: React.ReactNode
   /** Visual variant */
   variant?: PillVariant
-  /** Color scheme */
+  /** Semantic tone */
+  tone?: PillTone
+  /** @deprecated Use `tone` — `color` maps onto it and is kept for call-site compatibility. */
   color?: PillColor
   /** Size */
   size?: PillSize
   /** Fully rounded (default true) or slight radius */
   rounded?: boolean
-  /** Element before the label (e.g., Indicator dot) */
+  /** Leading slot: `'dot'` renders a tone-matched dot, any node renders as-is. */
+  leading?: React.ReactNode | 'dot'
+  /**
+   * Colour the leading dot independently of the capsule. For the pattern where
+   * the label is neutral and only the dot carries status, so a row of chips
+   * stays quiet and the dots are the signal.
+   */
+  dotTone?: PillTone
+  /** @deprecated Use `leading`. */
   leftElement?: React.ReactNode
+  /** Trailing slot (dismiss affordance, counter) */
+  trailing?: React.ReactNode
   /** Press handler (makes pill interactive) */
   onPress?: () => void
-  /** Additional className */
+  /** Non-interactive and dimmed */
+  isDisabled?: boolean
+  /** Additional className on the container */
   className?: string
+  /** Additional className on the label, for presets that own their typography */
+  textClassName?: string
 }
 
-const variantColorStyles: Record<PillVariant, Record<PillColor, string>> = {
+const colorToTone: Record<PillColor, PillTone> = {
+  default: 'neutral',
+  primary: 'brand',
+  secondary: 'brand-secondary',
+  success: 'success',
+  error: 'error',
+  warning: 'warning',
+  info: 'info',
+}
+
+const toneStyles: Record<PillVariant, Record<PillTone, string>> = {
+  solid: {
+    neutral: 'bg-hairline-strong border-transparent text-text-inverse',
+    brand: 'bg-brand-primary border-transparent text-text-inverse',
+    'brand-secondary': 'bg-brand-secondary border-transparent text-text-inverse',
+    success: 'bg-status-success border-transparent text-text-inverse',
+    warning: 'bg-status-warning border-transparent text-text-inverse',
+    error: 'bg-status-error border-transparent text-text-inverse',
+    info: 'bg-status-info border-transparent text-text-inverse',
+  },
   subtle: {
-    default: 'bg-surface-raised border-hairline-subtle text-text-secondary',
-    primary: 'bg-brand-primary/15 border-transparent text-brand-primary',
-    secondary: 'bg-brand-secondary/15 border-transparent text-brand-secondary',
-    success: 'bg-status-success/15 border-transparent text-status-success',
-    error: 'bg-status-error/15 border-transparent text-status-error',
-    warning: 'bg-status-warning/15 border-transparent text-status-warning',
-    info: 'bg-status-info/15 border-transparent text-status-info',
+    // Alpha-white rather than a ramp step: a pill sits on whatever plane its
+    // host is, and an alpha fill composites by the same amount on all of them.
+    // A `surface-*` fill would vanish on the plane it names. Borderless like the
+    // six coloured tones — the fill carries the capsule, not a ring.
+    neutral: 'bg-hairline-subtle border-transparent text-text-secondary',
+    brand: 'bg-brand-primary-subtle border-transparent text-brand-primary',
+    'brand-secondary': 'bg-brand-secondary-subtle border-transparent text-brand-secondary',
+    success: 'bg-status-success-subtle border-transparent text-status-success',
+    warning: 'bg-status-warning-subtle border-transparent text-status-warning',
+    error: 'bg-status-error-subtle border-transparent text-status-error',
+    info: 'bg-status-info-subtle border-transparent text-status-info',
   },
   outline: {
-    default: 'border-hairline text-text-secondary',
-    primary: 'border-brand-primary text-brand-primary',
-    secondary: 'border-brand-secondary text-brand-secondary',
+    neutral: 'border-hairline text-text-secondary',
+    brand: 'border-brand-primary text-brand-primary',
+    'brand-secondary': 'border-brand-secondary text-brand-secondary',
     success: 'border-status-success text-status-success',
-    error: 'border-status-error text-status-error',
     warning: 'border-status-warning text-status-warning',
+    error: 'border-status-error text-status-error',
     info: 'border-status-info text-status-info',
   },
 }
 
-const sizeStyles: Record<PillSize, { container: string; text: string }> = {
-  xs: { container: 'px-1 py-px', text: 'text-[9px]' },
-  sm: { container: 'px-2 py-0.5', text: 'text-[10px]' },
-  md: { container: 'px-2 py-1', text: 'text-[10px]' },
+const dotToneStyles: Record<PillTone, string> = {
+  neutral: 'bg-text-tertiary',
+  brand: 'bg-brand-primary',
+  'brand-secondary': 'bg-brand-secondary',
+  success: 'bg-status-success',
+  warning: 'bg-status-warning',
+  error: 'bg-status-error',
+  info: 'bg-status-info',
 }
 
-export function Pill({
-  children,
-  variant = 'subtle',
-  color = 'default',
-  size = 'sm',
-  rounded = true,
-  leftElement,
-  onPress,
-  className,
-  ...props
-}: PillProps) {
-  const containerClasses = cn(
-    'flex-row items-center gap-1 border self-start shrink-0',
-    rounded ? 'rounded-full' : 'rounded',
-    variantColorStyles[variant][color],
-    sizeStyles[size].container,
-    className
+// One text step per rung. `md` used to repeat `sm`'s 10px, which left no 12px
+// capsule at all and pushed anything between the two down to 10px — that is how
+// MuscleGroupChip lost 7px of height. `md` is the 12px rung now.
+const sizeStyles: Record<PillSize, { container: string; text: string }> = {
+  xs: { container: 'px-1 py-px', text: 'text-3xs' },
+  sm: { container: 'px-2 py-0.5', text: 'text-2xs' },
+  md: { container: 'px-2.5 py-1', text: 'text-xs' },
+  lg: { container: 'px-3 py-1.5', text: 'text-sm' },
+  xl: { container: 'px-4 py-2', text: 'text-base' },
+}
+
+// The dot derives its testID from the pill's, so a preset's dot stays
+// addressable under the preset's own name (`muscle-group-chip-dot`) instead of
+// collapsing to a generic one — the visual parity layer targets it by name.
+function PillDot({ tone, testID }: { tone: PillTone; testID?: string }) {
+  return (
+    <View
+      className={cn('w-1.5 h-1.5 rounded-full shrink-0', dotToneStyles[tone])}
+      accessibilityElementsHidden
+      testID={testID ? `${testID}-dot` : 'pill-dot'}
+    />
   )
+}
 
-  const textClasses = cn('font-heading font-semibold', sizeStyles[size].text, 'text-inherit')
+function containerClasses(p: PillProps, tone: PillTone) {
+  return cn(
+    'flex-row items-center gap-1 border self-start shrink-0',
+    p.rounded === false ? 'rounded' : 'rounded-full',
+    toneStyles[p.variant ?? 'subtle'][tone],
+    sizeStyles[p.size ?? 'sm'].container,
+    p.isDisabled && 'opacity-50',
+    p.className
+  )
+}
 
-  const content = (
+function PillContent({ tone, ...p }: PillProps & { tone: PillTone }) {
+  const textClasses = cn(
+    'font-heading font-semibold text-inherit',
+    sizeStyles[p.size ?? 'sm'].text,
+    p.textClassName
+  )
+  const slot = p.leading ?? p.leftElement
+  return (
     <>
-      {leftElement}
-      {typeof children === 'string' ? <Text className={textClasses}>{children}</Text> : children}
+      {slot === 'dot' ? <PillDot tone={p.dotTone ?? tone} testID={p.testID} /> : slot}
+      {typeof p.children === 'string' ? (
+        <Text className={textClasses}>{p.children}</Text>
+      ) : (
+        p.children
+      )}
+      {p.trailing}
     </>
   )
+}
+
+/**
+ * The single pill primitive: a capsule of tone-coloured label with optional
+ * leading and trailing slots. `Badge`, `Chip`, `StatusPill` and
+ * `MuscleGroupChip` are presets over it.
+ *
+ * @example
+ * <Pill tone="success" leading="dot">Active</Pill>
+ */
+export function Pill(props: PillProps) {
+  const {
+    variant,
+    tone,
+    color,
+    size,
+    rounded,
+    leading,
+    dotTone,
+    leftElement,
+    trailing,
+    onPress,
+    isDisabled,
+    className,
+    textClassName,
+    children,
+    ...viewProps
+  } = props
+  const resolvedTone = tone ?? (color ? colorToTone[color] : 'neutral')
+  const classes = containerClasses(props, resolvedTone)
+  const content = <PillContent {...props} tone={resolvedTone} />
 
   if (onPress) {
     return (
-      <Pressable onPress={onPress} className={containerClasses} {...props}>
+      <Pressable
+        onPress={onPress}
+        disabled={isDisabled}
+        accessibilityRole="button"
+        className={classes}
+        {...viewProps}
+      >
         {content}
       </Pressable>
     )
   }
 
   return (
-    <View className={containerClasses} {...props}>
+    <View className={classes} {...viewProps}>
       {content}
     </View>
   )

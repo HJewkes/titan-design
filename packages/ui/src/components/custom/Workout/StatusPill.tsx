@@ -1,10 +1,8 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { View, Text, type ViewProps } from 'react-native'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { alpha } from '../../../utils/colors'
+import { View, type ViewProps } from 'react-native'
+import { resolveColor } from '../../../theme/resolve-color'
+import { Pill, type PillTone } from '../../ui/pill'
 import { StatusDot, type StatusDotVariant } from './StatusDot'
-
-const t = getSemanticColors('dark')
 
 /**
  * Auto-regulation verdict — the human-readable read-once summary of a set's
@@ -29,6 +27,12 @@ const statusToken: Record<StatusPillStatus, 'status-success' | 'status-warning' 
     stop: 'status-error',
   }
 
+const statusTone: Record<StatusPillStatus, PillTone> = {
+  productive: 'success',
+  threshold: 'warning',
+  stop: 'error',
+}
+
 const statusDotVariant: Record<StatusPillStatus, StatusDotVariant> = {
   productive: 'success',
   threshold: 'warning',
@@ -43,46 +47,31 @@ const defaultLabel: Record<StatusPillStatus, string> = {
 
 /** Resolved semantic color for a verdict status. */
 export function statusPillColor(status: StatusPillStatus): string {
-  return t[statusToken[status]]
+  return resolveColor(statusToken[status])
 }
 
 /**
- * Verdict pill: a glowing status dot + colored verdict text, in a tinted,
- * bordered capsule. Composes {@link StatusDot} for the dot so the glow/color
- * stays consistent with the atom. Tint and border are derived from the same
- * semantic token via `alpha()` — no per-status raw hex.
+ * Verdict pill: a glowing status dot + coloured verdict text in a tinted
+ * capsule. A `Pill` preset — tone, tint and border all come from the pill's
+ * semantic tone, so no per-status colour is computed here.
  */
-export function StatusPill({ status, label, className, style, ...props }: StatusPillProps) {
-  const color = statusPillColor(status)
-  const text = label ?? defaultLabel[status]
-
+export function StatusPill({ status, label, className, ...props }: StatusPillProps) {
   return (
-    <View
+    <Pill
       testID="status-pill"
-      className={className}
-      style={[
-        {
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 7,
-          alignSelf: 'flex-start',
-          paddingVertical: 7,
-          paddingHorizontal: 13,
-          borderRadius: 9,
-          backgroundColor: alpha(color, 0.14),
-          borderWidth: 1,
-          borderColor: alpha(color, 0.4),
-        },
-        style,
-      ]}
+      tone={statusTone[status]}
+      size="lg"
+      rounded={false}
+      className={['gap-2 px-3 py-1.5 rounded-lg', className].filter(Boolean).join(' ')}
+      textClassName="font-sans font-extrabold"
+      leading={
+        <View accessibilityElementsHidden>
+          <StatusDot variant={statusDotVariant[status]} glow />
+        </View>
+      }
       {...props}
     >
-      <View accessibilityElementsHidden>
-        <StatusDot variant={statusDotVariant[status]} glow />
-      </View>
-      <Text testID="status-pill-label" style={{ fontSize: 13, fontWeight: '800', color }}>
-        {text}
-      </Text>
-    </View>
+      {label ?? defaultLabel[status]}
+    </Pill>
   )
 }

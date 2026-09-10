@@ -43,9 +43,11 @@ const HTML_CSS = `
        layer catches it — which is exactly what happened the first time. */
     --border-default: rgba(255, 255, 255, 0.15);
     --border-strong: rgba(255, 255, 255, 0.22);
-    /* A dim FILL for 'no data' dots. Used to borrow --border-strong; borders are
-       alpha now, so a fill needs its own solid ramp step. */
-    --dot-inactive: #2C2A28;
+    /* A dim FILL for 'no data' dots. Was grey-900 (#2C2A28) — a SURFACE plane
+       borrowed as a mark colour, which made the dot near-invisible on the nav
+       plane. A dot is foreground, so it takes the muted text role: text-tertiary,
+       grey-500. */
+    --dot-inactive: #888684;
     --status-success: #2ED573;
     --status-error: #D14343;
     --status-warning: #F9B415;
@@ -360,17 +362,20 @@ const HTML_CSS = `
   }
 
   /* 10. MuscleGroupChip */
+  /* Now a Pill preset: borderless subtle fill, size md. The frozen demo's 11px
+     text and 3/9 padding sat between scale steps; md rounds UP to 12px and holds
+     the chip at its shipped height. Font stack is the token's, not a literal. */
   .html-scope .muscle-chip {
     display: inline-flex;
     align-items: center;
-    background: var(--surface-raised);
-    border: 1px solid var(--border-default);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid transparent;
     border-radius: 100px;
-    padding: 3px 9px;
-    font-size: 11px;
+    padding: 4px 10px;
+    font-size: 12px;
     font-weight: 500;
     color: var(--text-secondary);
-    font-family: var(--font-body);
+    font-family: var(--font-family-sans), -apple-system, BlinkMacSystemFont, sans-serif;
   }
   .html-scope .muscle-chip-dot {
     width: 6px;

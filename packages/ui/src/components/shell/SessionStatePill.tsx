@@ -32,6 +32,8 @@ const stateConfig: Record<
  * The global session-state readout (dot + label). Shared: the top bar's status
  * and the Live-view header both use it (this is the ledger's "StatusPill",
  * Family C — built once). S1 · SessionStatePill.
+ *
+ * @deprecated Use `<Pill tone="…" leading="dot">` — removed after AW-127 consumer migration.
  */
 export function SessionStatePill({ state, label, className, ...props }: SessionStatePillProps) {
   const cfg = stateConfig[state]

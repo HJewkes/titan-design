@@ -9,9 +9,23 @@ describe('MuscleGroupChip', () => {
     expect(screen.getByText('Chest')).toBeInTheDocument()
   })
 
-  it('renders the colored dot', () => {
+  it('renders the coloured dot under the chip’s own testID', () => {
     render(<MuscleGroupChip name="Quads" volumeStatus="ontrack" />)
     expect(screen.getByTestId('muscle-group-chip-dot')).toBeInTheDocument()
+  })
+
+  it('keeps one capsule shape across every status, changing only the dot', () => {
+    // The dot carries status; the capsule stays neutral, so a row of chips reads
+    // as one family. jsdom cannot compute a nativewind class background, so the
+    // fill itself is asserted by the HTML-vs-React parity layer; what is
+    // checkable here is that the status never reaches the capsule element.
+    const { rerender } = render(<MuscleGroupChip name="Quads" volumeStatus="untrained" />)
+    const shape = screen.getByTestId('muscle-group-chip').getAttribute('class')
+    for (const status of ['behind', 'ontrack', 'target', 'over'] as const) {
+      rerender(<MuscleGroupChip name="Quads" volumeStatus={status} />)
+      expect(screen.getByTestId('muscle-group-chip').getAttribute('class'), status).toBe(shape)
+      expect(screen.getByTestId('muscle-group-chip-dot')).toBeInTheDocument()
+    }
   })
 
   it('sets accessibility label with name and status', () => {

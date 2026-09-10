@@ -224,6 +224,12 @@ module.exports = tseslint.config(
       'src/components/custom/Workout/ExerciseIndicator.tsx',
       'src/components/custom/Workout/ExerciseCardHeading.tsx',
       'src/components/custom/Workout/PrBadge.tsx',
+      // The Pill primitive and its four presets (E2).
+      'src/components/ui/pill/**/*.{ts,tsx}',
+      'src/components/ui/badge/**/*.{ts,tsx}',
+      'src/components/ui/chip/**/*.{ts,tsx}',
+      'src/components/custom/Workout/StatusPill.tsx',
+      'src/components/custom/Workout/MuscleGroupChip.tsx',
     ],
     // Fixtures hold real prose (PR refs like `#102` read as hex); stories/tests exempt as elsewhere.
     ignores: ['**/*.stories.tsx', '**/*.test.tsx', '**/*-fixture.ts'],

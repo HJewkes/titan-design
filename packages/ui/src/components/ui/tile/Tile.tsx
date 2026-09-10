@@ -23,6 +23,9 @@ export interface TileProps extends ViewProps {
  * @example
  * <Tile label="Volume" value="76%" />
  * <Tile label="Fatigue" value="MOD" valueColor="#F5A623" />
+ *
+ * @deprecated Use the `Card` stat preset (roadmap decision 1) — removed after
+ * AW-127 consumer migration.
  */
 export function Tile({
   label,
