@@ -1,5 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
+import { Typography } from '../Typography'
 
 // One header column: its label and its fixed width (PREV is the lone flex column,
 // `undefined`). Order + widths mirror SetRow's cells so headers align over rows.
@@ -18,6 +19,11 @@ export interface SetTableHeaderProps {
 // it is dropped entirely (not blanked to a spacer) and the four fixed columns
 // distribute across the full strip width via `justifyContent: space-between`.
 const PREV_COLUMN: Column = { label: 'PREV', width: undefined }
+
+// `microLabel` is the 10px step of the scale (TOKENS.md §4), in the same Inter face as
+// the table's value cells. Only the row's line box is pinned: the raw <Text> this
+// replaced carried no lineHeight, and the variant's `leading-normal` would grow the row.
+const COLUMN_LABEL = 'leading-[normal]'
 
 /** Columns in order, with the weight column reflecting `unit`; PREV dropped when hidden. */
 function buildColumns(unit: 'lbs' | 'kg', showPrevious: boolean): Column[] {
@@ -68,18 +74,9 @@ export function SetTableHeader({
             }}
             {...(isFlex ? { className: 'flex-1' } : {})}
           >
-            <Text
-              className="text-text-tertiary"
-              style={{
-                fontSize: 10,
-                fontWeight: '600',
-                fontFamily: 'Inter, sans-serif',
-                textTransform: 'uppercase',
-                letterSpacing: 0.8,
-              }}
-            >
+            <Typography variant="microLabel" color="tertiary" className={COLUMN_LABEL}>
               {label}
-            </Text>
+            </Typography>
           </View>
         )
       })}

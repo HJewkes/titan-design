@@ -1,5 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { View, Text, Pressable } from 'react-native'
+import { View, Pressable } from 'react-native'
+import { Typography } from '../Typography'
 import { roundWeight } from '../../../utils/workout-format'
 import { SetsRepsLoad } from './SetsRepsLoad'
 import { TempoDisplay } from './TempoDisplay'
@@ -62,13 +63,15 @@ export function ExerciseHeading({
         style={{ gap: 8 }}
         testID="exercise-card-header"
       >
-        <Text
-          className="text-text-primary"
-          style={{ fontSize: 14, fontFamily: '"Space Grotesk", sans-serif', fontWeight: '700' }}
+        {/* The row is a button label, not a heading, so `boldLabel` carries the weight and
+            no header role has to be undone. Size and the Space Grotesk face are pinned. */}
+        <Typography
+          variant="boldLabel"
+          className="font-heading text-sm leading-[normal]"
           testID="exercise-card-name"
         >
           {name}
-        </Text>
+        </Typography>
         <View className="flex-1" />
         {indicator && <ExerciseIndicator kind={indicator} />}
       </Pressable>

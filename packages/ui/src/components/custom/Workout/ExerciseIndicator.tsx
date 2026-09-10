@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import type { ComponentType } from 'react'
 import { View, Pressable, type ViewProps } from 'react-native'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { resolveColor } from '../../../theme/resolve-color'
 import {
   ScaleIcon,
   AlertTriangleIcon,
@@ -11,10 +11,6 @@ import {
   InfoIcon,
   type IconProps,
 } from '../../icons'
-
-// Literal-hex status pins (getSemanticColors, not resolveColor) — `resolveColor()` yields a
-// `var(...)` under the RNW vitest alias, which breaks `toHaveStyle` in tests.
-const t = getSemanticColors('dark')
 
 /**
  * The LOCKED 6-kind indicator taxonomy (TD-03.51). One precedence-ranked slot is
@@ -31,21 +27,23 @@ export type ExerciseIndicatorKind =
   | 'pr'
   | 'info'
 
+type StatusToken = 'status-error' | 'status-warning' | 'status-success' | 'status-info'
+
 interface IndicatorConfig {
   Icon: ComponentType<IconProps>
-  /** Tier color — a titan status semantic token (literal hex on `t`). */
-  color: string
+  /** Tier token — resolved per theme by {@link resolveColor} at render. */
+  token: StatusToken
   /** Accessible description (also the intended tooltip subject). */
   label: string
 }
 
 const INDICATOR_CONFIG: Record<ExerciseIndicatorKind, IndicatorConfig> = {
-  imbalance: { Icon: ScaleIcon, color: t['status-error'], label: 'Left/right imbalance' },
-  overshoot: { Icon: AlertTriangleIcon, color: t['status-error'], label: 'Load overshoot' },
-  'velocity-loss': { Icon: TrendingDownIcon, color: t['status-warning'], label: 'Velocity loss' },
-  'missed-reps': { Icon: CircleSlashIcon, color: t['status-warning'], label: 'Missed reps' },
-  pr: { Icon: AwardIcon, color: t['status-success'], label: 'Personal record' },
-  info: { Icon: InfoIcon, color: t['status-info'], label: 'More info' },
+  imbalance: { Icon: ScaleIcon, token: 'status-error', label: 'Left/right imbalance' },
+  overshoot: { Icon: AlertTriangleIcon, token: 'status-error', label: 'Load overshoot' },
+  'velocity-loss': { Icon: TrendingDownIcon, token: 'status-warning', label: 'Velocity loss' },
+  'missed-reps': { Icon: CircleSlashIcon, token: 'status-warning', label: 'Missed reps' },
+  pr: { Icon: AwardIcon, token: 'status-success', label: 'Personal record' },
+  info: { Icon: InfoIcon, token: 'status-info', label: 'More info' },
 }
 
 /**
@@ -86,7 +84,8 @@ export interface ExerciseIndicatorProps extends Omit<ViewProps, 'children'> {
  * by the consumer.
  */
 export function ExerciseIndicator({ kind, onPress, className, ...props }: ExerciseIndicatorProps) {
-  const { Icon, color, label } = INDICATOR_CONFIG[kind]
+  const { Icon, token, label } = INDICATOR_CONFIG[kind]
+  const color = resolveColor(token)
 
   const chip = (
     <View

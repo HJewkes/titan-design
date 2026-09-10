@@ -216,6 +216,14 @@ module.exports = tseslint.config(
       'src/components/custom/ActiveWork/**/*.{ts,tsx}',
       'src/components/custom/Prose/**/*.{ts,tsx}',
       'src/components/custom/charts/**/*.{ts,tsx}',
+      // Workout batch B1 (E3) — hardened file by file, not family-wide yet.
+      'src/components/custom/Workout/SetStrip.tsx',
+      'src/components/custom/Workout/SetTableHeader.tsx',
+      'src/components/custom/Workout/SetsRepsLoad.tsx',
+      'src/components/custom/Workout/ExerciseHeading.tsx',
+      'src/components/custom/Workout/ExerciseIndicator.tsx',
+      'src/components/custom/Workout/ExerciseCardHeading.tsx',
+      'src/components/custom/Workout/PrBadge.tsx',
     ],
     // Fixtures hold real prose (PR refs like `#102` read as hex); stories/tests exempt as elsewhere.
     ignores: ['**/*.stories.tsx', '**/*.test.tsx', '**/*-fixture.ts'],

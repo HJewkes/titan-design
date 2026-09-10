@@ -102,11 +102,17 @@ and the line-height that comes with it.
 | `caption`                 | secondary/meta text                       |
 | `overline`                | uppercase micro-labels (or use `Eyebrow`) |
 | `mono` / `monoLabel`      | numerals, paths, identifiers              |
+| `microLabel`              | 10px uppercase column/table headers       |
+| `boldLabel`               | 12px bold badge and row labels            |
+
+`overline` and `microLabel` are the same idea at two sizes and in two faces: `overline` is
+12px `font-body`, `microLabel` is 10px `font-sans` for dense tabular headers.
 
 Raw sizes, when a variant genuinely does not fit:
 
 | Class       | Size |
 | ----------- | ---- |
+| `text-2xs`  | 10px |
 | `text-xs`   | 12px |
 | `text-sm`   | 14px |
 | `text-base` | 16px |
@@ -148,6 +154,12 @@ spacing, radius, and type, not layout geometry.
 | all of `src/components/**`             | no inline `linear-gradient` strings (warn)                       |
 | `shell/`, `icons/`                     | \+ no raw hex (warn)                                             |
 | `custom/ActiveWork/`, `custom/charts/` | \+ no raw hex, no arbitrary px, no inline `fontSize` (**error**) |
+| `custom/Workout/` — batch B1 only      | same errors, listed file by file until the family is ported      |
+
+Workout is being ported in batches (E3), so it is enrolled per file rather than per
+family. Batch B1: `SetStrip`, `SetTableHeader`, `SetsRepsLoad`, `ExerciseHeading`,
+`ExerciseIndicator`, `ExerciseCardHeading`, `PrBadge`. Add each later batch's files to
+the same list as it lands; swap the list for a `Workout/**` glob when the last one is in.
 
 The scope is deliberately per-family rather than repo-wide: a codebase-wide migration is a separate
 effort, and a rule that fires 140 times on legacy code gets ignored. **When you harden a new family
