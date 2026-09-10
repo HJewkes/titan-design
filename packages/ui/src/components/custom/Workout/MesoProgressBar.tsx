@@ -24,15 +24,14 @@ export interface MesoProgressBarProps extends ViewProps {
   className?: string
 }
 
-// The segment track is a status wash. These were hand-mixed at 0.3 / 0.5 / 0.06
-// alpha; the semantic tier only publishes a `-subtle` rung (0.12), so the
-// completed and current tracks read lighter than the frozen design did.
+// The segment track is a status wash, and the three states must stay a legible
+// ramp rather than one weight in three hues.
 const segmentTrackToken: Record<
   MesoStatus,
-  'status-success-subtle' | 'brand-primary-subtle' | 'hairline-subtle'
+  'status-success-muted' | 'brand-primary-strong' | 'hairline-subtle'
 > = {
-  completed: 'status-success-subtle',
-  current: 'brand-primary-subtle',
+  completed: 'status-success-muted',
+  current: 'brand-primary-strong',
   upcoming: 'hairline-subtle',
 }
 

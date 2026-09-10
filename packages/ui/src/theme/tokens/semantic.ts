@@ -59,6 +59,8 @@ export const semanticColorsLight = {
   'brand-primary-light': ramp.orange[300],
   'brand-primary-dark': ramp.orange[500],
   'brand-primary-subtle': 'rgba(255, 121, 0, 0.08)',
+  'brand-primary-muted': 'rgba(255, 121, 0, 0.30)',
+  'brand-primary-strong': 'rgba(255, 121, 0, 0.50)',
   'brand-primary-hover': ramp.orange[500],
   'brand-primary-active': ramp.orange[600],
 
@@ -66,6 +68,8 @@ export const semanticColorsLight = {
   'brand-secondary-light': ramp.cyan[500],
   'brand-secondary-dark': ramp.cyan[700],
   'brand-secondary-subtle': 'rgba(48, 123, 155, 0.08)',
+  'brand-secondary-muted': 'rgba(48, 123, 155, 0.30)',
+  'brand-secondary-strong': 'rgba(48, 123, 155, 0.50)',
   'brand-secondary-hover': ramp.cyan[700],
   'brand-secondary-active': ramp.cyan[800],
 
@@ -78,6 +82,8 @@ export const semanticColorsLight = {
   'status-success-light': ramp.green[200],
   'status-success-dark': ramp.green[600],
   'status-success-subtle': ramp.green[50],
+  'status-success-muted': 'rgba(46, 213, 115, 0.30)',
+  'status-success-strong': 'rgba(46, 213, 115, 0.50)',
 
   // Live-session accent — its OWN role, decoupled from success so the two can diverge
   'status-live': ramp.green[300],
@@ -87,21 +93,29 @@ export const semanticColorsLight = {
   'status-error-light': ramp.red[500],
   'status-error-dark': ramp.red[700],
   'status-error-subtle': ramp.red[50],
+  'status-error-muted': 'rgba(209, 67, 67, 0.30)',
+  'status-error-strong': 'rgba(209, 67, 67, 0.50)',
 
   'status-error-vivid': alertRedVivid, // NOT red[600], that is status-error
   'status-error-vivid-light': ramp.red[500],
   'status-error-vivid-dark': ramp.red[700],
   'status-error-vivid-subtle': 'rgba(255, 71, 87, 0.12)',
+  'status-error-vivid-muted': 'rgba(255, 71, 87, 0.30)',
+  'status-error-vivid-strong': 'rgba(255, 71, 87, 0.50)',
 
   'status-warning': ramp.amber[300],
   'status-warning-light': ramp.amber[200],
   'status-warning-dark': ramp.amber[500],
   'status-warning-subtle': ramp.amber[50],
+  'status-warning-muted': 'rgba(249, 180, 21, 0.30)',
+  'status-warning-strong': 'rgba(249, 180, 21, 0.50)',
 
   'status-info': ramp.blue[500],
   'status-info-light': ramp.blue[300],
   'status-info-dark': ramp.blue[600],
   'status-info-subtle': ramp.blue[50],
+  'status-info-muted': 'rgba(33, 150, 243, 0.30)',
+  'status-info-strong': 'rgba(33, 150, 243, 0.50)',
 
   // Text on status backgrounds (on-status-*)
   'on-status-success': p.white,
@@ -199,6 +213,8 @@ export const semanticColorsDark = {
   'brand-primary-light': ramp.orange[300],
   'brand-primary-dark': ramp.orange[500],
   'brand-primary-subtle': 'rgba(255, 121, 0, 0.12)',
+  'brand-primary-muted': 'rgba(255, 121, 0, 0.30)',
+  'brand-primary-strong': 'rgba(255, 121, 0, 0.50)',
   'brand-primary-hover': ramp.orange[300],
   'brand-primary-active': ramp.orange[200],
 
@@ -206,6 +222,8 @@ export const semanticColorsDark = {
   'brand-secondary-light': ramp.cyan[500],
   'brand-secondary-dark': ramp.cyan[700],
   'brand-secondary-subtle': 'rgba(48, 123, 155, 0.12)',
+  'brand-secondary-muted': 'rgba(48, 123, 155, 0.30)',
+  'brand-secondary-strong': 'rgba(48, 123, 155, 0.50)',
   'brand-secondary-hover': ramp.cyan[500],
   'brand-secondary-active': ramp.cyan[400],
 
@@ -218,6 +236,8 @@ export const semanticColorsDark = {
   'status-success-light': ramp.green[200],
   'status-success-dark': ramp.green[600],
   'status-success-subtle': 'rgba(46, 213, 115, 0.12)',
+  'status-success-muted': 'rgba(46, 213, 115, 0.30)',
+  'status-success-strong': 'rgba(46, 213, 115, 0.50)',
 
   // Live-session accent — its OWN role, decoupled from success so the two can diverge
   'status-live': ramp.green[300],
@@ -227,21 +247,29 @@ export const semanticColorsDark = {
   'status-error-light': ramp.red[500],
   'status-error-dark': ramp.red[700],
   'status-error-subtle': 'rgba(209, 67, 67, 0.12)',
+  'status-error-muted': 'rgba(209, 67, 67, 0.30)',
+  'status-error-strong': 'rgba(209, 67, 67, 0.50)',
 
   'status-error-vivid': alertRedVivid,
   'status-error-vivid-light': ramp.red[500],
   'status-error-vivid-dark': ramp.red[700],
   'status-error-vivid-subtle': 'rgba(255, 71, 87, 0.12)',
+  'status-error-vivid-muted': 'rgba(255, 71, 87, 0.30)',
+  'status-error-vivid-strong': 'rgba(255, 71, 87, 0.50)',
 
   'status-warning': ramp.amber[300],
   'status-warning-light': ramp.amber[200],
   'status-warning-dark': ramp.amber[500],
   'status-warning-subtle': 'rgba(249, 180, 21, 0.12)',
+  'status-warning-muted': 'rgba(249, 180, 21, 0.30)',
+  'status-warning-strong': 'rgba(249, 180, 21, 0.50)',
 
   'status-info': ramp.blue[500],
   'status-info-light': ramp.blue[300],
   'status-info-dark': ramp.blue[600],
   'status-info-subtle': 'rgba(33, 150, 243, 0.12)',
+  'status-info-muted': 'rgba(33, 150, 243, 0.30)',
+  'status-info-strong': 'rgba(33, 150, 243, 0.50)',
 
   // Text on status backgrounds
   'on-status-success': p.white,

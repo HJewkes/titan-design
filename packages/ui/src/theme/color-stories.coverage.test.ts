@@ -60,7 +60,7 @@ const DOCUMENTED_ELSEWHERE: Record<string, string> = {
 const isSurfaceToken = (name: string) => /^(surface|background)-/.test(name)
 
 /** Must mirror VARIANT_SUFFIXES in ColorPalettes.stories.tsx (asserted below). */
-const VARIANT_SUFFIXES = ['light', 'dark', 'subtle', 'hover', 'active', 'muted'] as const
+const VARIANT_SUFFIXES = ['light', 'dark', 'subtle', 'muted', 'strong', 'hover', 'active'] as const
 
 describe('Foundations/Color story coverage', () => {
   it('every surface/background token resolves to a plane in the shipped ramp', () => {
