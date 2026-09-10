@@ -1,10 +1,8 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 /**
  * SHARED mock data + components for the Live Fatigue Card design-lab stories, split across:
- *   - `LiveFatigueCard.exploration.stories.tsx` = Lab/North Star/4 · Fatigue System (the
+ *   - `LiveFatigueCard.exploration.stories.tsx` = Lab/North Star/4 - Fatigue System (the
  *     aligned composition: LivePanelV2 + the state-variants showcase)
- *   - `Lab/Components/*` (Ghost Spark, Phase Marks, Verdict Hero, Velocity Hero) — sub-component
- *     variant examples relocated here so hardening keeps a variant reference
  *   - `Lab/Archive/Fatigue` — superseded single-card / combined-chart-only explorations
  *
  * NOT shipped — see the original file's design rationale (still documented on the North

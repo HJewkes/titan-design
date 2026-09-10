@@ -1,10 +1,9 @@
-import React from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
 import { InputBar } from './InputBar'
+import { Surface } from '../../ui/surface'
 
 const meta: Meta<typeof InputBar> = {
-  title: 'Workout/InputBar',
+  title: 'Custom/Workout/InputBar',
   component: InputBar,
   tags: ['autodocs'],
   argTypes: {
@@ -24,9 +23,9 @@ const meta: Meta<typeof InputBar> = {
   },
   decorators: [
     (Story) => (
-      <View style={{ width: 400, backgroundColor: '#111111' }}>
+      <Surface level="base" style={{ width: 400 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

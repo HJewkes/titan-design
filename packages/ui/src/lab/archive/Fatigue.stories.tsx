@@ -1,10 +1,10 @@
 /**
  * `Lab/Archive/Fatigue` — superseded fatigue-card explorations, kept for provenance.
- * The aligned direction is `Lab/North Star/4 · Fatigue System` (LivePanelV2 composition);
- * sub-component variants that survived are under `Lab/Components/*`.
+ * The aligned direction is `Lab/North Star/4 - Fatigue System` (LivePanelV2 composition);
+ * the sub-component variants have since hardened into `Custom/Fatigue/*`.
  *
  *   - Combined chart: the standalone P1 chart demo, superseded once it was demoted into
- *     the ghost-spark sparkline (`Lab/Components/Ghost Spark`) inside the fatigue card.
+ *     the ghost-spark sparkline (`Custom/Fatigue/Ghost Spark`) inside the fatigue card.
  *   - Fatigue card: the older SINGLE-card showcase (two cards side by side, no hero),
  *     superseded by the LivePanelV2 composition (hero + card together).
  *   - Overview: the P2/P3 pieces shown separately — redundant with LivePanelV2_, which
@@ -116,7 +116,7 @@ export const FatigueCard_: Story = {
 }
 
 /** Overview — the P2/P3 pieces shown separately. Redundant with LivePanelV2_
- *  (`Lab/North Star/4 · Fatigue System`), which already composes them together. */
+ *  (`Lab/North Star/4 - Fatigue System`), which already composes them together. */
 export const Overview: Story = {
   name: 'Overview (redundant with Live panel v2)',
   render: () => (

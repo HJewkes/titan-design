@@ -3,7 +3,7 @@ import { Surface } from '../../ui/surface'
 import { InitiativeCard } from './InitiativeCard'
 
 const meta: Meta<typeof InitiativeCard> = {
-  title: 'ActiveWork/InitiativeCard',
+  title: 'Custom/ActiveWork/InitiativeCard',
   component: InitiativeCard,
   tags: ['autodocs'],
   args: {
@@ -38,10 +38,10 @@ const meta: Meta<typeof InitiativeCard> = {
         component:
           '**Card.** An at-a-glance summary of one initiative: state, rank, open-task ' +
           'count, a severity-mix bar, and its top-priority open task. Composes ' +
-          '[Card](?path=/docs/components-card--docs), ' +
-          '[Pill](?path=/docs/components-pill--docs), StatusDot, and SegmentedBar ' +
+          '[Card](?path=/docs/components-molecules-card--docs), ' +
+          '[Pill](?path=/docs/components-atoms-pill--docs), StatusDot, and SegmentedBar ' +
           '(from the Workout family). Used by ' +
-          '[PortfolioOverview](?path=/docs/activework-portfoliooverview--docs).',
+          '[PortfolioOverview](?path=/docs/custom-activework-portfoliooverview--docs).',
       },
     },
   },

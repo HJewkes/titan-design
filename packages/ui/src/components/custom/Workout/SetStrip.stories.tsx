@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { SetStrip, type SetStripSet } from './SetStrip'
+import { Surface } from '../../ui/surface'
 
 /**
  * `SetStrip` — the per-set segmented performance strip. One continuous bar per
@@ -9,7 +10,7 @@ import { SetStrip, type SetStripSet } from './SetStrip'
  * amber-300 · green-300).
  */
 const meta: Meta<typeof SetStrip> = {
-  title: 'Workout/SetStrip',
+  title: 'Custom/Workout/SetStrip',
   component: SetStrip,
   tags: ['autodocs'],
   parameters: {
@@ -18,8 +19,8 @@ const meta: Meta<typeof SetStrip> = {
         component:
           '**Molecule.** The per-set segmented performance strip — one bar per set, rep ' +
           'intensities as butted ramp-pin segments (no rep gaps), active set pulses. Composes ' +
-          '[SetBar](?path=/docs/workout-setbar--docs) × N. ' +
-          'Used-by ↑ [ExerciseCardHeading](?path=/docs/workout-exercisecardheading--docs).',
+          '[SetBar](?path=/docs/custom-workout-setbar--docs) × N. ' +
+          'Used-by ↑ [ExerciseCardHeading](?path=/docs/custom-workout-exercisecardheading--docs).',
       },
     },
   },
@@ -28,9 +29,9 @@ const meta: Meta<typeof SetStrip> = {
   },
   decorators: [
     (Story) => (
-      <View style={{ width: 210, padding: 16, backgroundColor: '#131313' }}>
+      <Surface level="base" style={{ width: 210, padding: 16 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

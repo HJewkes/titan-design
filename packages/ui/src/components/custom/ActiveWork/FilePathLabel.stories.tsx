@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { FilePathLabel } from './FilePathLabel'
 
 const meta: Meta<typeof FilePathLabel> = {
-  title: 'ActiveWork/FilePathLabel',
+  title: 'Custom/ActiveWork/FilePathLabel',
   component: FilePathLabel,
   tags: ['autodocs'],
   parameters: {
@@ -12,7 +12,7 @@ const meta: Meta<typeof FilePathLabel> = {
           '**Molecule.** A file path with the directory dimmed and the basename bright — in a list ' +
           'of paths the basename is the identifier and the directory is disambiguation, so they get ' +
           'different weight rather than one flat string. Composes ' +
-          "[Typography](?path=/docs/components-typography--docs)'s `mono` variant.",
+          "[Typography](?path=/docs/foundations-typography--docs)'s `mono` variant.",
       },
     },
   },

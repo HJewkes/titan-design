@@ -10,6 +10,7 @@ import { SeverityLabel, SEVERITY_ORDER } from './SeverityLabel'
 const meta: Meta<typeof SeverityLabel> = {
   title: 'Custom/ActiveWork/SeverityLabel',
   component: SeverityLabel,
+  tags: ['autodocs'],
   args: { severity: 'high' },
   argTypes: {
     severity: { control: 'select', options: [...SEVERITY_ORDER, undefined] },

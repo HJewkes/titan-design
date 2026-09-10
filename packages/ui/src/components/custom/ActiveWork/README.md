@@ -25,7 +25,7 @@ FileHistoryExplorer .............. organism
 ├─ Eyebrow ....................... molecule
 ├─ FileActivityRow ............... row          (listbox `option`)
 │  ├─ FilePathLabel .............. molecule → Typography (mono)
-│  └─ SparkBars .................. atom         (Components/Charts — new shared primitive)
+│  └─ SparkBars .................. atom         (Custom/Charts — new shared primitive)
 ├─ FileActivityDetail ............ card
 │  ├─ Tile / Pill / DataRow / DateTime .... (existing primitives)
 │  ├─ SparkBars .................. atom
@@ -74,9 +74,9 @@ Initiative reader (no organism: the host composes the pieces)
 
 | Component             | Tier     | Composes ↓                                                                   | Used-by ↑                                                                          |
 | --------------------- | -------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `PortfolioOverview`   | organism | Card, Metric, Eyebrow, InitiativeCard                                        | app root (`Lab/ActiveWork/Portfolio Overview` specimen)                            |
+| `PortfolioOverview`   | organism | Card, Metric, Eyebrow, InitiativeCard                                        | app root (`Custom/ActiveWork/PortfolioOverview`)                            |
 | `InitiativeCard`      | card     | Card, Pill, StatusDot, SegmentedBar, Typography                              | PortfolioOverview                                                                  |
-| `FileHistoryExplorer` | organism | Card, Tile, Divider, Eyebrow, FileActivityRow/Detail, CoChangeChip           | app root (`Lab/ActiveWork/File History Explorer` specimen)                         |
+| `FileHistoryExplorer` | organism | Card, Tile, Divider, Eyebrow, FileActivityRow/Detail, CoChangeChip           | app root (`Custom/ActiveWork/FileHistoryExplorer`)                         |
 | `FileActivityDetail`  | card     | Card, Tile, Pill, DataRow, DateTime, SparkBars, FilePathLabel, Eyebrow       | FileHistoryExplorer                                                                |
 | `FileActivityRow`     | row      | FilePathLabel, SparkBars, Typography                                         | FileHistoryExplorer                                                                |
 | `CoChangeChip`        | molecule | Card, Pill, FilePathLabel, Typography                                        | FileHistoryExplorer                                                                |
@@ -85,12 +85,12 @@ Initiative reader (no organism: the host composes the pieces)
 | `TaskRow`             | row      | TableRow, TableCell, SeverityLabel, Pill, Typography                         | TaskTable                                                                          |
 | `SeverityLabel`       | molecule | Indicator, Typography (`caption`)                                            | TaskRow, TaskTable (legend), InitiativeCard (vocabulary)                           |
 | `Eyebrow`             | molecule | Typography (`overline`)                                                      | PortfolioOverview, FileHistoryExplorer, FileActivityDetail, TaskTable, SessionList |
-| `SessionList`         | list     | Eyebrow, SessionListItem                                                     | host composition (`Custom/ActiveWork/Session Reader` story)                        |
+| `SessionList`         | list     | Eyebrow, SessionListItem                                                     | host composition (`Custom/ActiveWork/SessionReader` story)                        |
 | `SessionListItem`     | row      | DateTime, Pill, Typography                                                   | SessionList                                                                        |
-| `SessionDetail`       | card     | Card, Divider, Pill, DateTime, MarkdownProse (+ `sessionLinkers`)            | host composition (`Custom/ActiveWork/Session Reader` story)                        |
-| `InitiativeHeader`    | molecule | StatusDot, Pill, DateTime, Typography (+ `INITIATIVE_STATE_META`)            | host composition (`Custom/ActiveWork/Initiative Reader` story)                     |
-| `OpenLoops`           | list     | Eyebrow, Pill, Divider, MarkdownProse                                        | host composition (`Custom/ActiveWork/Initiative Reader` story)                     |
-| `InitiativeBrief`     | card     | Eyebrow, Typography, MarkdownProse                                           | host composition (`Custom/ActiveWork/Initiative Reader` story)                     |
+| `SessionDetail`       | card     | Card, Divider, Pill, DateTime, MarkdownProse (+ `sessionLinkers`)            | host composition (`Custom/ActiveWork/SessionReader` story)                        |
+| `InitiativeHeader`    | molecule | StatusDot, Pill, DateTime, Typography (+ `INITIATIVE_STATE_META`)            | host composition (`Custom/ActiveWork/InitiativeReader` story)                     |
+| `OpenLoops`           | list     | Eyebrow, Pill, Divider, MarkdownProse                                        | host composition (`Custom/ActiveWork/InitiativeReader` story)                     |
+| `InitiativeBrief`     | card     | Eyebrow, Typography, MarkdownProse                                           | host composition (`Custom/ActiveWork/InitiativeReader` story)                     |
 
 ## Surfaces and depth
 
@@ -113,7 +113,7 @@ model.
 - **`Eyebrow`** — a generic uppercase micro-label. Not active-work-specific; exported at
   `Components/Molecules/Eyebrow` (not nested under `ActiveWork/`) so any family can reach for it instead of
   hand-rolling `Typography` + tracking/uppercase classes again.
-- **`SparkBars`** (`components/custom/charts`, `Components/Charts/SparkBars`) — a bar-mark sparkline for a
+- **`SparkBars`** (`components/custom/charts`, `Custom/Charts/SparkBars`) — a bar-mark sparkline for a
   signed series, the counterpart to `Sparkline`'s line mark. Domain-neutral and exported top-level, not
   nested under `ActiveWork/`. `custom/charts` gained an `index.ts` that deliberately exports **only**
   `SparkBars`: `SetBarChart` and `live-rep-growth` stay workout-internal and imported by path.
@@ -184,7 +184,7 @@ maps stay separate on purpose — `low` is `status-info` as a dot (it must stay 
 | ------------------ | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | status dot + label | `StatusDot` (Workout family)                          | the original Lab specimen's hand-rolled `DotLabel` (deleted)                                                          |
 | severity mix bar   | `SegmentedBar` (Workout family)                       | the original Lab specimen's hand-rolled `SeverityBar` (deleted)                                                       |
-| bar sparkline      | `SparkBars` (new, `Components/Charts`)                | the specimen's hand-rolled `MiniBars` (deleted); `Sparkline` is a _line_ mark, `SetBar`/`SetStrip` are workout-domain |
+| bar sparkline      | `SparkBars` (new, `Custom/Charts`)                    | the specimen's hand-rolled `MiniBars` (deleted); `Sparkline` is a _line_ mark, `SetBar`/`SetStrip` are workout-domain |
 | KPI stat boxes     | `Tile` (bare on the page; one plane up inside a card) | the specimen's redundant `Card variant="filled"` wrapper around `Tile`                                                |
 | label ↔ value rows | `DataRow` (label widened to `ReactNode`)              | a hand-rolled `flex-row justify-between`                                                                              |
 | short dates        | `DateTime` `format="short"` + `fallback`              | the specimen's hand-rolled `shortDate` (deleted)                                                                      |

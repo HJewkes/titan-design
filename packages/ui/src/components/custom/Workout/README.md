@@ -185,7 +185,7 @@ Modalities`** (each card carries a `Collapse` accordion; promoted from the
   boundaries) are intentionally NOT rendered — per-side horizontal gaps would break the
   mirrored L↔R column alignment. Single-voltra sets keep using `VelocityStrip`
   `variant="hero"`. Documented by the `Playground` / `Hero*` / `Rail` stories on the wall
-  background (`Workout/DataViz/DualVelocityStrip`).
+  background (`Custom/Workout/DataViz/DualVelocityStrip`).
 
   **Reuse audit — `DashedReferenceLine` (in-file today, top-level follow-up).** The dashed
   running-best line was hand-rolled three times inside `VelocityStrip.tsx` (the single

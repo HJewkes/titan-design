@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { StatusPill } from './StatusPill'
 
 const meta: Meta<typeof StatusPill> = {
-  title: 'Workout/StatusPill',
+  title: 'Custom/Workout/StatusPill',
   component: StatusPill,
   tags: ['autodocs'],
   parameters: {

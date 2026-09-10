@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Gauge } from './Gauge'
 
 const meta: Meta<typeof Gauge> = {
-  title: 'Components/DataViz/Gauge',
+  title: 'Custom/Charts/Gauge',
   component: Gauge,
   tags: ['autodocs'],
   argTypes: {

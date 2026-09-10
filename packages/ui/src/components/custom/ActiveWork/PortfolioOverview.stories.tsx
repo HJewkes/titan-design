@@ -3,7 +3,7 @@ import { Surface } from '../../ui/surface'
 import { PortfolioOverview } from './PortfolioOverview'
 
 const meta: Meta<typeof PortfolioOverview> = {
-  title: 'ActiveWork/PortfolioOverview',
+  title: 'Custom/ActiveWork/PortfolioOverview',
   component: PortfolioOverview,
   tags: ['autodocs'],
   decorators: [
@@ -20,10 +20,10 @@ const meta: Meta<typeof PortfolioOverview> = {
         component:
           '**Organism.** At-a-glance status across every tracked initiative: a KPI row ' +
           'followed by initiative groups. Composes ' +
-          '[Card](?path=/docs/components-card--docs), ' +
-          '[Metric](?path=/docs/components-molecules-metric--docs), ' +
+          '[Card](?path=/docs/components-molecules-card--docs), ' +
+          '[Metric](?path=/docs/custom-metric--docs), ' +
           '[Eyebrow](?path=/docs/components-molecules-eyebrow--docs), and ' +
-          '[InitiativeCard](?path=/docs/activework-initiativecard--docs). ' +
+          '[InitiativeCard](?path=/docs/custom-activework-initiativecard--docs). ' +
           'Presentational only — the caller supplies `stats` and `sections`.',
       },
     },

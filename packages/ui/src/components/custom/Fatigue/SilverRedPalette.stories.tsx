@@ -1,6 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 /**
- * `Workout/Fatigue/Silver-Red Palette` — the single documented source for the fatigue
+ * `Foundations/Color/Silver-Red Scheme` — the single documented source for the fatigue
  * family's line/quality colour language. SILVER when the rep is right, SHADES OF RED when
  * something's wrong — no greens, no ambers (those belong to the verdict tones + velocity-
  * loss bands, not here). Every swatch reads its value straight from `fatigue-tokens`, so
@@ -29,6 +29,7 @@ const t = getSemanticColors('dark')
 
 const meta: Meta = {
   title: 'Foundations/Color/Silver-Red Scheme',
+  tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
     docs: {

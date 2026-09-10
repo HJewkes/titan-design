@@ -1,10 +1,10 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
 import { FatigueMeter } from './FatigueMeter'
+import { Surface } from '../../ui/surface'
 
 const meta: Meta<typeof FatigueMeter> = {
-  title: 'Workout/DataViz/FatigueMeter',
+  title: 'Custom/Workout/DataViz/FatigueMeter',
   component: FatigueMeter,
   tags: ['autodocs'],
   argTypes: {
@@ -16,16 +16,16 @@ const meta: Meta<typeof FatigueMeter> = {
         component:
           '**Component.** The winning fatigue-visual lineage: a sliding needle over a fixed ' +
           'green→gold→orange→red velocity-loss gradient with VL10/VL20/VL30/stop markers. ' +
-          'Composes the [ZoneTrack](?path=/docs/workout-dataviz-zonetrack--docs) primitive. ' +
+          'Composes the [ZoneTrack](?path=/docs/custom-workout-dataviz-zonetrack--docs) primitive. ' +
           'Prop-driven: `value` plus overridable `thresholds` / `max` / `zoneColors` / `labels`.',
       },
     },
   },
   decorators: [
     (Story) => (
-      <View style={{ width: 360, padding: 20, backgroundColor: '#131313' }}>
+      <Surface level="base" style={{ width: 360, padding: 20 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

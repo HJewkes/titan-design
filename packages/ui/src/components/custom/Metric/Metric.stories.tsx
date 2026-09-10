@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { Metric, MetricGroup } from './Metric'
 
 const meta: Meta<typeof Metric> = {
-  title: 'Components/Molecules/Metric',
+  title: 'Custom/Metric',
   component: Metric,
   tags: ['autodocs'],
   argTypes: {

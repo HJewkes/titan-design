@@ -10,7 +10,7 @@ const PANEL_BG = greyRamp[950]
 const t = getSemanticColors('dark')
 
 const meta: Meta<typeof VelocityHero> = {
-  title: 'Workout/DataViz/VelocityHero',
+  title: 'Custom/Fatigue/Velocity Hero',
   component: VelocityHero,
   tags: ['autodocs'],
   parameters: {
@@ -20,7 +20,8 @@ const meta: Meta<typeof VelocityHero> = {
           'The shipped `VelocityStrip` hero with LOSS-RELATIVE VL20/VL30 decision bands layered behind ' +
           'the bars (on the hero’s own peak scale). The velocity-loss language lives here so the ' +
           'fatigue card carries no separate VL chart. (Deferred: recolouring the bar FILL loss-relative ' +
-          'needs a new VelocityStrip prop — this component owns the band overlay only.)',
+          'needs a new VelocityStrip prop — this component owns the band overlay only.)' +
+          ' Composes **VelocityStrip**.',
       },
     },
   },

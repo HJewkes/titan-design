@@ -3,8 +3,9 @@ import { View, Text } from 'react-native'
 import { DateTime, type DateTimeFormat } from './DateTime'
 
 const meta: Meta<typeof DateTime> = {
-  title: 'Components/Molecules/DateTime',
+  title: 'Custom/DateTime',
   component: DateTime,
+  parameters: { docs: { description: { component: 'Composes **Typography**.' } } },
   tags: ['autodocs'],
   argTypes: {
     format: {

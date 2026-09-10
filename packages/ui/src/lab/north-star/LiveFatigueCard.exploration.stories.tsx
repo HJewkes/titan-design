@@ -1,12 +1,12 @@
 /**
- * `Lab/North Star/4 · Fatigue System` — DESIGN EXPLORATION (not shipped).
+ * `Lab/North Star/4 - Fatigue System` — DESIGN EXPLORATION (not shipped).
  *
  * The ALIGNED composition for the redesigned LIVE PANEL on the wall dashboard: the
  * velocity HERO (primary, `VelocityStrip` + VL threshold bands) beside the secondary
  * UNIFIED FATIGUE CARD (verdict hero + "why" dots + ROM progression + ghost-trail chart).
  * This file keeps the two stories that show that composition; the sub-component variant
- * examples that led here have moved to `Lab/Components/*` (Ghost Spark, Phase Marks,
- * Verdict Hero, Velocity Hero) and the superseded single-piece explorations to
+ * examples that led here have hardened into `Custom/Fatigue/*` (Ghost Spark, Verdict
+ * Hero, Velocity Hero) and the superseded single-piece explorations moved to
  * `Lab/Archive/Fatigue` (Combined chart, the older single Fatigue card, the P2/P3 Overview).
  *
  * CHANNEL DISCIPLINE — three questions, three deliberately distinct color languages:
@@ -34,7 +34,7 @@ import {
 } from './fatigue-lab-shared'
 
 const meta: Meta = {
-  title: 'Lab/North Star/4 · Fatigue System',
+  title: 'Lab/North Star/4 - Fatigue System',
   parameters: { layout: 'fullscreen' },
 }
 export default meta

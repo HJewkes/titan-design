@@ -1,8 +1,8 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
 import { ZoneTrack, type ZoneTrackZone } from './ZoneTrack'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
+import { Surface } from '../../ui/surface'
 
 const { green, yellow, orange, red } = WORKOUT_TOKENS.scale
 
@@ -22,7 +22,7 @@ const FATIGUE_TICKS = [
 ]
 
 const meta: Meta<typeof ZoneTrack> = {
-  title: 'Workout/DataViz/ZoneTrack',
+  title: 'Custom/Workout/DataViz/ZoneTrack',
   component: ZoneTrack,
   tags: ['autodocs'],
   parameters: {
@@ -32,17 +32,18 @@ const meta: Meta<typeof ZoneTrack> = {
           '**Primitive.** The shared linear-gauge base: a pill track with an N-band zone ' +
           'gradient, optional tick marks + labels, and a single value marker — a `needle` line ' +
           'or a left-anchored `fill` (clip-reveal gradient, or solid trend colour). Used-by ↓ ' +
-          '[FatigueMeter](?path=/docs/workout-dataviz-fatiguemeter--docs); the target base for ' +
+          '[FatigueMeter](?path=/docs/custom-workout-dataviz-fatiguemeter--docs); the target base for ' +
           'TrainingLoadGauge (ACWR) + RpeCalibration (band + marker). Zone colours are literal ' +
-          'ramp-token hex.',
+          'ramp-token hex.' +
+          ' Composes **Tooltip**.',
       },
     },
   },
   decorators: [
     (Story) => (
-      <View style={{ width: 360, padding: 20, backgroundColor: '#131313' }}>
+      <Surface level="base" style={{ width: 360, padding: 20 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

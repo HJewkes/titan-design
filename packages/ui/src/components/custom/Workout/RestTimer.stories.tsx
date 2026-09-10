@@ -3,7 +3,7 @@ import { View, Text } from 'react-native'
 import { RestTimer } from './RestTimer'
 
 const meta: Meta<typeof RestTimer> = {
-  title: 'Workout/RestTimer',
+  title: 'Custom/Workout/RestTimer',
   component: RestTimer,
   tags: ['autodocs'],
   parameters: {
@@ -16,7 +16,8 @@ const meta: Meta<typeof RestTimer> = {
           'across-the-room wall treatment: a draining countdown ring (composes `CircularProgress`) ' +
           'with the mm:ss countdown in its center, flipping to a full `success` ring reading "GO" ' +
           'when rest is up. `displayOnly` hides the +30s/Skip controls in either variant; `size` ' +
-          'sets the ring diameter.',
+          'sets the ring diameter.' +
+          ' Composes **CircularTimer**.',
       },
     },
   },

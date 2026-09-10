@@ -9,14 +9,15 @@ const DAY = 24 * HOUR
 const NOW = Date.now()
 
 const meta: Meta<typeof ScheduleTiles> = {
-  title: 'Workout/ScheduleTiles',
+  title: 'Custom/Workout/ScheduleTiles',
   component: ScheduleTiles,
   tags: ['autodocs'],
   parameters: {
     docs: {
       description: {
         component:
-          '**Molecule.** An HStack of [Tile](?path=/docs/components-atoms-tile--docs); Until reuses [DateTime](?path=/docs/custom-datetime--docs) relative. Used-by ↑ SessionHeader.',
+          '**Molecule.** An HStack of [Tile](?path=/docs/components-atoms-tile--docs); Until reuses [DateTime](?path=/docs/custom-datetime--docs) relative. Used-by ↑ SessionHeader.' +
+          ' Composes **HStack** · **Tile**.',
       },
     },
   },

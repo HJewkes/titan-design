@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
 import type { SetStripSet } from './SetStrip'
+import { Surface } from '../../ui/surface'
 
 /**
  * `ExerciseCardHeading` — the complete, standalone session-rail heading: an
@@ -10,7 +10,7 @@ import type { SetStripSet } from './SetStrip'
  * An empty `setStates` renders no strip.
  */
 const meta: Meta<typeof ExerciseCardHeading> = {
-  title: 'Workout/ExerciseCardHeading',
+  title: 'Custom/Workout/ExerciseCardHeading',
   component: ExerciseCardHeading,
   tags: ['autodocs'],
   parameters: {
@@ -18,10 +18,10 @@ const meta: Meta<typeof ExerciseCardHeading> = {
       description: {
         component:
           '**Molecule.** The complete standalone session-rail heading. Composes ' +
-          '[ExerciseHeading](?path=/docs/workout-exerciseheading--docs) + ' +
-          '[SetStrip](?path=/docs/workout-setstrip--docs). ' +
+          '[ExerciseHeading](?path=/docs/custom-workout-exerciseheading--docs) + ' +
+          '[SetStrip](?path=/docs/custom-workout-setstrip--docs). ' +
           'Used-by ↑ [SessionRail](?path=/docs/shell-sessionrail--docs); ' +
-          '[ExerciseCard](?path=/docs/workout-exercisecard--docs) `state="rail"` delegates here.',
+          '[ExerciseCard](?path=/docs/custom-workout-exercisecard--docs) `state="rail"` delegates here.',
       },
     },
   },
@@ -37,9 +37,9 @@ const meta: Meta<typeof ExerciseCardHeading> = {
   },
   decorators: [
     (Story) => (
-      <View style={{ width: 246, backgroundColor: '#131313' }}>
+      <Surface level="base" style={{ width: 246 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

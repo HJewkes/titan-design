@@ -12,7 +12,7 @@ const PAGE_BG = greyRamp[975]
 const t = getSemanticColors('dark')
 
 const meta: Meta<typeof GhostSpark> = {
-  title: 'Workout/Fatigue/Ghost Spark',
+  title: 'Custom/Fatigue/Ghost Spark',
   component: GhostSpark,
   tags: ['autodocs'],
   parameters: {
@@ -26,7 +26,8 @@ const meta: Meta<typeof GhostSpark> = {
           'collapse), over a soft paper-inspired ground (no hard outline). Given `targetTempoSeconds` ' +
           'the band also PACES: each run fills across `elapsed / target` of its own width and its label ' +
           'takes the ahead / on-pace / over tone. Every story here passes the prescription the mock reps ' +
-          'were generated against, so the fill you see is the real relationship, not a decoration.',
+          'were generated against, so the fill you see is the real relationship, not a decoration.' +
+          ' Composes **GhostBand** · **GhostBloom**.',
       },
     },
   },

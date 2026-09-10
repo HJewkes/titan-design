@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { MuscleGroupChip, type VolumeStatus } from './MuscleGroupChip'
 
 const meta: Meta<typeof MuscleGroupChip> = {
-  title: 'Components/Atoms/MuscleGroupChip',
+  title: 'Custom/Workout/MuscleGroupChip',
   component: MuscleGroupChip,
   tags: ['autodocs'],
   argTypes: {

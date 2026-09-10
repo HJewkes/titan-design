@@ -6,6 +6,7 @@ import {
   INDICATOR_PRECEDENCE,
   type ExerciseIndicatorKind,
 } from './ExerciseIndicator'
+import { Surface } from '../../ui/surface'
 
 /**
  * `ExerciseIndicator` — a small circular OUTLINED chip in an exercise heading's
@@ -15,7 +16,7 @@ import {
  * picks the highest-precedence active signal.
  */
 const meta: Meta<typeof ExerciseIndicator> = {
-  title: 'Workout/ExerciseIndicator',
+  title: 'Custom/Workout/ExerciseIndicator',
   component: ExerciseIndicator,
   tags: ['autodocs'],
   parameters: {
@@ -26,7 +27,8 @@ const meta: Meta<typeof ExerciseIndicator> = {
           'precedence-ranked kinds (imbalance › overshoot › velocity-loss › missed-reps › pr › ' +
           'info) over four status-token tier colors; glyph = signal, color = severity tier. ' +
           '`resolveIndicator()` selects the single chip to show. Used-by ↑ ' +
-          '[ExerciseHeading](?path=/docs/workout-exerciseheading--docs).',
+          '[ExerciseHeading](?path=/docs/custom-workout-exerciseheading--docs).' +
+          ' Composes **Icons**.',
       },
     },
   },
@@ -36,9 +38,9 @@ const meta: Meta<typeof ExerciseIndicator> = {
   },
   decorators: [
     (Story) => (
-      <View style={{ padding: 24, backgroundColor: '#131313' }}>
+      <Surface level="base" style={{ padding: 24 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

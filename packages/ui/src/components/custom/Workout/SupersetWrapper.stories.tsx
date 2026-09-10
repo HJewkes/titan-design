@@ -3,18 +3,19 @@ import { View, Text } from 'react-native'
 import { SupersetWrapper } from './SupersetWrapper'
 import { ExerciseCard } from './ExerciseCard'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { Surface } from '../../ui/surface'
 
 const t = getSemanticColors('dark')
 
 const meta: Meta<typeof SupersetWrapper> = {
-  title: 'Workout/SupersetWrapper',
+  title: 'Custom/Workout/SupersetWrapper',
   component: SupersetWrapper,
   tags: ['autodocs'],
   decorators: [
     (Story) => (
-      <View style={{ maxWidth: 400, padding: 16, backgroundColor: t['background-base'] }}>
+      <Surface level="background" style={{ maxWidth: 400, padding: 16 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { Sparkline } from './Sparkline'
 
 const meta: Meta<typeof Sparkline> = {
-  title: 'Workout/DataViz/Sparkline',
+  title: 'Custom/Workout/DataViz/Sparkline',
   component: Sparkline,
   tags: ['autodocs'],
   argTypes: {

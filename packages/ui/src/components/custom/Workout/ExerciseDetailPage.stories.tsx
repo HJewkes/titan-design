@@ -192,7 +192,15 @@ const vbt: ExerciseVbt = {
 const meta: Meta<typeof ExerciseDetailPage> = {
   title: 'Pages/Exercise Detail',
   component: ExerciseDetailPage,
-  parameters: { layout: 'fullscreen' },
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: {
+        component:
+          'Composes **MesoStatusCard** · **StrengthTrendChart** · **CapacityBandChart** · **ExerciseCard** · **VelocityStrip**.',
+      },
+    },
+  },
   tags: ['autodocs'],
   args: {
     exercise: {

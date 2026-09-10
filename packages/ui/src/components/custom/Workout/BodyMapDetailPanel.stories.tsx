@@ -7,6 +7,7 @@ import {
   type UpcomingExercise,
 } from './BodyMapDetailPanel'
 import { MuscleGroup } from './muscleTaxonomy'
+import { Surface } from '../../ui/surface'
 
 const contributing: ContributingExercise[] = [
   { name: 'Barbell Bench Press', sets: 4, contributionWeight: 1 },
@@ -21,14 +22,17 @@ const upcoming: UpcomingExercise[] = [
 ]
 
 const meta: Meta<typeof BodyMapDetailPanel> = {
-  title: 'Workout/DataViz/BodyMapDetailPanel',
+  title: 'Custom/Workout/DataViz/BodyMapDetailPanel',
   component: BodyMapDetailPanel,
+  parameters: {
+    docs: { description: { component: 'Composes **Badge** · **Sparkline** · **MuscleGroup**.' } },
+  },
   tags: ['autodocs'],
   decorators: [
     (Story) => (
-      <View style={{ position: 'relative', height: 640, width: 380, backgroundColor: '#0E0E0E' }}>
+      <Surface level="base" style={{ position: 'relative', height: 640, width: 380 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
   argTypes: {

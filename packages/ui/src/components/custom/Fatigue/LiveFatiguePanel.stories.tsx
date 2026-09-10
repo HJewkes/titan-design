@@ -9,7 +9,7 @@ const PAGE_BG = greyRamp[975]
 const t = getSemanticColors('dark')
 
 const meta: Meta<typeof LiveFatiguePanel> = {
-  title: 'Workout/Fatigue/Live Fatigue Panel',
+  title: 'Custom/Fatigue/Live Fatigue Panel',
   component: LiveFatiguePanel,
   tags: ['autodocs'],
   parameters: {

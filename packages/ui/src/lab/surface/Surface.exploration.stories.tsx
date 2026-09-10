@@ -29,17 +29,17 @@ import {
 //     variant + brand orange (`-600 #B94A00` on paper / `-400 #FF7900` text).
 //     See `LayeredPaper` + `PaperWithBrand` below.
 //
-// Option-COMPARISON stories that led to these decisions have moved to
-// `Surface.archive.stories.tsx` (Lab/Archive/Surface): Ramps, SeparationTreatments,
-// TextureOptions, NeutralVsWarm, WarmthCurves, AtScaleComparison, AlphaLayering,
-// SkeuomorphicCard, WarmthCurvesAtScale, PaperModels, TopBarTreatments, FrameRecess.
+// The option-COMPARISON stories that led to these decisions (Ramps,
+// SeparationTreatments, TextureOptions, NeutralVsWarm, WarmthCurves, AtScaleComparison,
+// AlphaLayering, SkeuomorphicCard, WarmthCurvesAtScale, PaperModels, TopBarTreatments,
+// FrameRecess) were deleted; see REJECTED.md, "Lab/Archive/Surface".
 //
 // This story file now holds ONLY the three locked North Star §1 stories:
 // SurfaceRampSystem (the derivation), LayeredPaper, PaperWithBrand.
 // ===========================================================================
 
 const meta: Meta = {
-  title: 'Lab/North Star/1 · Surface System',
+  title: 'Lab/North Star/1 - Surface System',
   parameters: { layout: 'fullscreen' },
 }
 export default meta

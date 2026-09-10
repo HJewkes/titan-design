@@ -9,7 +9,7 @@
  */
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Fragment } from 'react'
-import { primitiveRamps as ramp, greyRamp } from '../../../theme/tokens/primitives'
+import { primitiveRamps as ramp, greyRamp } from '../../theme/tokens/primitives'
 import {
   GREY,
   RAIL_W,
@@ -22,7 +22,7 @@ import {
   reps,
   Page,
   sectionTitle,
-} from './setHeadingKit'
+} from '../../components/custom/Workout/setHeadingKit'
 
 // ---- variable-zone (floor→max) upcoming color — real ramp candidates (no invented hex)
 const VAR_GREY = greyRamp[800] // #3C3C3C — lighter grey (the paler-grey reference)

@@ -5,6 +5,7 @@ import { Badge, BadgeText } from './Badge'
 const meta: Meta<typeof Badge> = {
   title: 'Components/Atoms/Badge',
   component: Badge,
+  parameters: { docs: { description: { component: 'Composes **Indicator**.' } } },
   tags: ['autodocs'],
   argTypes: {
     variant: {

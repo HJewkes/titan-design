@@ -5,9 +5,9 @@ import { getSemanticColors } from '../../theme/tokens/semantic'
 
 // ===========================================================================
 // SHARED helpers for the Surface design-lab stories (`Surface.exploration.stories.tsx`
-// = Lab/North Star/1 · Surface System, `Surface.archive.stories.tsx` = Lab/Archive/Surface).
-// NOT shipped tokens/components — pure lab-exploration plumbing, split out so the two
-// story files (final direction vs. archived options) can each import only what they use.
+// = Lab/North Star/1 - Surface System). NOT shipped tokens/components — pure
+// lab-exploration plumbing. The archived option-comparison story file that shared these
+// was deleted; see REJECTED.md, "Lab/Archive/Surface".
 // See `coordination/design-explorations/surface-system-north-star.md`.
 // ===========================================================================
 

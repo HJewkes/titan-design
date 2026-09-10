@@ -6,14 +6,15 @@ import { getSemanticColors } from '../../../theme'
 const AMBER = getSemanticColors('dark')['status-warning']
 
 const meta: Meta<typeof MetricTiles> = {
-  title: 'Workout/MetricTiles',
+  title: 'Custom/Workout/MetricTiles',
   component: MetricTiles,
   tags: ['autodocs'],
   parameters: {
     docs: {
       description: {
         component:
-          '**Molecule.** An HStack of [Tile](?path=/docs/components-atoms-tile--docs). Used-by ↑ SessionHeader.',
+          '**Molecule.** An HStack of [Tile](?path=/docs/components-atoms-tile--docs). Used-by ↑ SessionHeader.' +
+          ' Composes **HStack** · **Tile**.',
       },
     },
   },

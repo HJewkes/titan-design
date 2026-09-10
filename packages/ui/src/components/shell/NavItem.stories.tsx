@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
 import { NavItem } from './NavItem'
 import { ActivityIcon } from '../icons'
+import { Surface } from '../ui/surface'
 
 const meta: Meta<typeof NavItem> = {
   title: 'Shell/NavItem',
@@ -17,9 +17,9 @@ const meta: Meta<typeof NavItem> = {
   },
   decorators: [
     (Story) => (
-      <View className="w-[60px] items-center bg-background-base py-2">
+      <Surface level="background" className="w-[60px] items-center py-2">
         <Story />
-      </View>
+      </Surface>
     ),
   ],
   parameters: {

@@ -1,12 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 import { VolumeLandmarkBar } from './VolumeLandmarkBar'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
-
-const t = getSemanticColors('dark')
+import { Surface } from '../../ui/surface'
 
 const meta: Meta<typeof VolumeLandmarkBar> = {
-  title: 'Workout/DataViz/VolumeLandmarkBar',
+  title: 'Custom/Workout/DataViz/VolumeLandmarkBar',
   component: VolumeLandmarkBar,
   tags: ['autodocs'],
   parameters: {
@@ -15,7 +13,8 @@ const meta: Meta<typeof VolumeLandmarkBar> = {
         component:
           'Horizontal weekly-volume bar with MEV / MAV / MRV landmark ticks, a HEAT-scale ' +
           'fill positioned against the MAV target, and a % readout. Reuses the canonical ' +
-          'BodyMap volume heat scale (under → maintenance → productive → approaching → over).',
+          'BodyMap volume heat scale (under → maintenance → productive → approaching → over).' +
+          ' Composes **ZoneTrack** · **DataRow**.',
       },
     },
   },
@@ -31,9 +30,9 @@ const meta: Meta<typeof VolumeLandmarkBar> = {
   },
   decorators: [
     (Story) => (
-      <View style={{ padding: 24, paddingBottom: 40, backgroundColor: t['background-base'] }}>
+      <Surface level="background" style={{ padding: 24, paddingBottom: 40 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

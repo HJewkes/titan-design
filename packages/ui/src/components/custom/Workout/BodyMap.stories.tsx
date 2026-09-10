@@ -51,8 +51,11 @@ const backData: BodyMapData[] = [
 ]
 
 const meta: Meta<typeof BodyMap> = {
-  title: 'Workout/DataViz/BodyMap',
+  title: 'Custom/Workout/DataViz/BodyMap',
   component: BodyMap,
+  parameters: {
+    docs: { description: { component: 'Composes **MuscleGroup** · **SimpleMuscleGroup**.' } },
+  },
   tags: ['autodocs'],
   argTypes: {
     view: { control: 'inline-radio', options: ['front', 'back'] },

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { cn } from '../../../utils/cn'
@@ -42,8 +42,11 @@ const manyUsers: User[] = Array.from({ length: 50 }, (_, i) => ({
 }))
 
 const meta: Meta<typeof Table> = {
-  title: 'Components/Organisms/Table',
+  title: 'Custom/Table',
   component: Table,
+  parameters: {
+    docs: { description: { component: 'Composes **Tooltip**.' } },
+  },
   tags: ['autodocs'],
   argTypes: {
     isLoading: {

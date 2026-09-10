@@ -3,8 +3,11 @@ import { View } from 'react-native'
 import { WeekRow } from './WeekRow'
 
 const meta: Meta<typeof WeekRow> = {
-  title: 'Workout/WeekRow',
+  title: 'Custom/Workout/WeekRow',
   component: WeekRow,
+  parameters: {
+    docs: { description: { component: 'Composes **WorkoutPill** · **IntensityBar**.' } },
+  },
   tags: ['autodocs'],
   argTypes: {
     weekNumber: { control: 'number', description: 'Week index (1-based)' },

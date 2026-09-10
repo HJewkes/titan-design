@@ -3,6 +3,7 @@ import { useArgs } from 'storybook/preview-api'
 import { View } from 'react-native'
 import { SideNav } from './SideNav'
 import { Typography } from '../custom/Typography'
+import { Surface } from '../ui/surface'
 
 const meta: Meta<typeof SideNav> = {
   title: 'Shell/SideNav',
@@ -35,14 +36,14 @@ const meta: Meta<typeof SideNav> = {
   // stretches with the viewport (resize the canvas height to see it hold).
   decorators: [
     (Story) => (
-      <View className="min-h-screen flex-row bg-background-default">
+      <Surface level="base" className="min-h-screen flex-row">
         <Story />
         <View className="flex-1 items-center justify-center">
           <Typography variant="body2" color="tertiary">
             main viewport
           </Typography>
         </View>
-      </View>
+      </Surface>
     ),
   ],
   parameters: {

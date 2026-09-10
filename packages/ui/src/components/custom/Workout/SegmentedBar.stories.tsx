@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
 import { SegmentedBar } from './SegmentedBar'
+import { Surface } from '../../ui/surface'
 
 /**
  * `SegmentedBar` — a horizontal track split into weighted, individually-fillable
@@ -9,7 +9,7 @@ import { SegmentedBar } from './SegmentedBar'
  * vertical line at a fraction of the width. Colours are passed-in literal hex.
  */
 const meta: Meta<typeof SegmentedBar> = {
-  title: 'Workout/SegmentedBar',
+  title: 'Custom/Workout/SegmentedBar',
   component: SegmentedBar,
   tags: ['autodocs'],
   parameters: {
@@ -19,7 +19,7 @@ const meta: Meta<typeof SegmentedBar> = {
           '**Atom.** A horizontal track split into weighted, individually-fillable ' +
           'segments (weight · fill · colour · pulse) with an optional marker line — the ' +
           'presentational primitive the per-set strips build on. ' +
-          'Used-by ↑ [SetStrip](?path=/docs/workout-setstrip--docs).',
+          'Used-by ↑ [SetStrip](?path=/docs/custom-workout-setstrip--docs).',
       },
     },
   },
@@ -30,9 +30,9 @@ const meta: Meta<typeof SegmentedBar> = {
   },
   decorators: [
     (Story) => (
-      <View style={{ width: 240, padding: 16, backgroundColor: '#131313' }}>
+      <Surface level="base" style={{ width: 240, padding: 16 }}>
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }

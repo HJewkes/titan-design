@@ -4,8 +4,13 @@ import { WorkoutCard } from './WorkoutCard'
 import type { ExerciseCardProps } from './ExerciseCard'
 
 const meta: Meta<typeof WorkoutCard> = {
-  title: 'Workout/WorkoutCard',
+  title: 'Custom/Workout/WorkoutCard',
   component: WorkoutCard,
+  parameters: {
+    docs: {
+      description: { component: 'Composes **Card** · **ExerciseCard** · **MuscleGroupChip**.' },
+    },
+  },
   tags: ['autodocs'],
   argTypes: {
     status: {
