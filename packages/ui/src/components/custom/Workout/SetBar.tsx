@@ -1,25 +1,38 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { primitiveRamps, greyRamp } from '../../../theme/tokens/primitives'
+import { primitiveRamps } from '../../../theme/tokens/primitives'
+import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
+import { resolveColor } from '../../../theme/resolve-color'
 import { SegmentedBar, type SegmentedBarSegment } from './SegmentedBar'
 
 /**
- * The four canonical rep-intensity zone pins (real titan ramp pins). A rep's mean
- * velocity ratio maps to one of these; butted together they form a set's bar.
+ * The four canonical rep-intensity zone pins. A rep's mean velocity ratio maps to
+ * one of these; butted together they form a set's bar.
+ *
+ * Sourced from {@link WORKOUT_TOKENS}.`scale`, which its own docs already call the
+ * single source for the velocity zone bars — this used to re-read the same four
+ * ramp steps independently, so the two could drift apart silently. Byte-identical.
  */
 export const SET_STRIP_ZONES = {
-  slow: primitiveRamps.red[600],
-  moderate: primitiveRamps.orange[400],
-  fast: primitiveRamps.amber[300],
-  fastest: primitiveRamps.green[300],
+  slow: WORKOUT_TOKENS.scale.red,
+  moderate: WORKOUT_TOKENS.scale.orange,
+  fast: WORKOUT_TOKENS.scale.yellow,
+  fastest: WORKOUT_TOKENS.scale.green,
 } as const
 
-/** Grey fill for planned-but-unperformed reps / upcoming sets (grey placeholder). */
-const TODO_COLOR = greyRamp[900]
+// Fill for planned-but-unperformed reps / upcoming sets. Was `greyRamp[900]` — the
+// `surface-elevated` plane borrowed as a MARK colour, the same anti-pattern the
+// specimen's `--dot-inactive` note calls out. It takes the border role instead, which
+// is where B2 landed PlaceholderStrip: the two placeholder languages now match.
+const TODO_COLOR = resolveColor('border-prominent')
 
 /**
  * The learned "variable / unknown / opportunity" semantic (cyan-900, a real ramp
  * pin): an unperformed rep in a range's variable zone, and the fading trail of a
  * myo set whose cluster count isn't yet known.
+ *
+ * FINDING for E3: no semantic role expresses this. `brand-secondary` is cyan-600
+ * and `brand-secondary-dark` cyan-700; neither reaches cyan-900, and pinning this
+ * to either would restyle the mark rather than migrate it.
  */
 export const SET_STRIP_VARIABLE_COLOR = primitiveRamps.cyan[900]
 
@@ -39,6 +52,10 @@ const MYO_UPCOMING_FADE = 0.6
 /**
  * Active-set pulse range per zone: each segment eases between its pin's adjacent
  * lighter/darker ramp steps, keeping the intensity reading while signalling "live".
+ *
+ * Literal ramp steps, not tokens: `Animated.interpolate` parses its own endpoints
+ * and cannot read a `var()` ref — the same exception SegmentedBar's `pulseColor`
+ * documents (B2).
  */
 const PULSE_RANGE: Record<string, [string, string]> = {
   [SET_STRIP_ZONES.slow]: [primitiveRamps.red[500], primitiveRamps.red[700]],

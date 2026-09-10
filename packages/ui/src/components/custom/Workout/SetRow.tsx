@@ -1,10 +1,10 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { type ReactNode } from 'react'
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
 import { VelocityStrip, type VelocityZoneBandProp } from './VelocityStrip'
+import { Typography } from '../Typography'
 import { roundWeight, roundRpe } from '../../../utils/workout-format'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
+import { resolveColor } from '../../../theme/resolve-color'
 
 export type SetRowUnit = 'lbs' | 'kg'
 
@@ -61,20 +61,23 @@ export type SetRowProps =
       planned?: number
     })
 
-const DARK = getSemanticColors('dark')
-/** Live set — brightest (neutral 100). Done + upcoming share the muted neutral 400. */
-const TEXT_ACTIVE = DARK['text-primary']
-const TEXT_MUTED = DARK['text-secondary']
+/** Live set — brightest. Done + upcoming share the muted role. */
+const TEXT_ACTIVE = 'text-primary'
+const TEXT_MUTED = 'text-secondary'
 
 /** Column widths mirror SetTableHeader(showPrevious=false) so cells align under it. */
 const COL = { set: 36, reps: 44, load: 56, rpe: 36 } as const
-const cellText = { fontFamily: 'Inter, sans-serif', fontSize: 13, fontWeight: '600' as const }
-const typeBadge = {
-  fontSize: 10,
-  fontWeight: '700' as const,
-  fontFamily: 'Inter, sans-serif',
-  color: WORKOUT_TOKENS.scale.orange,
-  backgroundColor: 'rgba(255,165,2,0.12)',
+
+// 13px is off the type scale (TOKENS.md §4); `boldLabel` is the 12px font-sans step
+// and `font-semibold` holds the original 600 — Inter is `font-sans` here, per B1.
+const CELL_CLASS = 'font-semibold leading-[normal]'
+
+// The set-type chip was `WORKOUT_TOKENS.scale.orange` on a hand-mixed
+// rgba(255,165,2,0.12). That pin is `sequentialEffort[3]` — the EFFORT scale, borrowed
+// for a label that reads set type, not intensity. It resolves to orange-400, which is
+// `brand-primary`, so the chip takes the brand role and the `-subtle` rung its 0.12 wash
+// was already reaching for. The wash's own base (255,165,2) is off the orange ramp.
+const typeBadgeStyle = {
   paddingVertical: 1,
   paddingHorizontal: 5,
   borderRadius: 3,
@@ -163,7 +166,8 @@ function RowStrip({ set }: { set: SetRowProps }) {
  */
 export function SetRow(set: SetRowProps) {
   const live = set.state === 'live'
-  const valueColor = live ? TEXT_ACTIVE : TEXT_MUTED
+  const valueColor = resolveColor(live ? TEXT_ACTIVE : TEXT_MUTED)
+  const mutedColor = resolveColor(TEXT_MUTED)
   const rpe = set.state === 'todo' ? null : set.rpe
 
   return (
@@ -175,25 +179,59 @@ export function SetRow(set: SetRowProps) {
       <View className="flex-row items-center" style={{ justifyContent: 'space-between' }}>
         <Cell width={COL.set} testID="set-row-set-number">
           {set.setType ? (
-            <Text style={typeBadge} testID="set-row-type-badge">
+            <Typography
+              variant="boldLabel"
+              color="inherit"
+              className="text-2xs leading-[normal]"
+              style={{
+                ...typeBadgeStyle,
+                color: resolveColor('brand-primary'),
+                backgroundColor: resolveColor('brand-primary-subtle'),
+              }}
+              testID="set-row-type-badge"
+            >
               {set.setType}
-            </Text>
+            </Typography>
           ) : (
-            <Text style={{ ...cellText, color: valueColor, fontWeight: live ? '700' : '600' }}>
+            <Typography
+              variant="boldLabel"
+              color="inherit"
+              className={live ? 'font-bold leading-[normal]' : CELL_CLASS}
+              style={{ color: valueColor }}
+            >
               {set.setNumber}
-            </Text>
+            </Typography>
           )}
         </Cell>
         <Cell width={COL.reps} testID="set-row-reps">
-          <Text style={{ ...cellText, color: valueColor }}>{displayReps(set)}</Text>
+          <Typography
+            variant="boldLabel"
+            color="inherit"
+            className={CELL_CLASS}
+            style={{ color: valueColor }}
+          >
+            {displayReps(set)}
+          </Typography>
         </Cell>
         <Cell width={COL.load} testID="set-row-weight">
-          <Text style={{ ...cellText, color: valueColor }}>{roundWeight(displayWeight(set))}</Text>
+          <Typography
+            variant="boldLabel"
+            color="inherit"
+            className={CELL_CLASS}
+            style={{ color: valueColor }}
+          >
+            {roundWeight(displayWeight(set))}
+          </Typography>
         </Cell>
         <Cell width={COL.rpe} testID="set-row-rpe">
-          <Text style={{ ...cellText, color: TEXT_MUTED }}>
+          <Typography
+            variant="boldLabel"
+            color="inherit"
+            className={CELL_CLASS}
+            style={{ color: mutedColor }}
+          >
             {rpe != null ? roundRpe(rpe) : '—'}
-          </Text>
+          </Typography>
         </Cell>
       </View>
       <View style={{ marginTop: live ? 6 : 4 }} testID="set-row-strip">

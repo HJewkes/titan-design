@@ -1,10 +1,11 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { View, Text, type ViewProps, type ViewStyle } from 'react-native'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { View, type ViewProps, type ViewStyle } from 'react-native'
+import { Typography } from '../Typography'
+import { resolveColor } from '../../../theme/resolve-color'
+import { semanticColorsDark } from '../../../theme/tokens/semantic'
 import { greyRamp } from '../../../theme/tokens/primitives'
+import { alpha } from '../../../utils/colors'
 import { getGlowShadow } from '../../../theme/elevation'
-
-const t = getSemanticColors('dark')
 
 export type StatusDotVariant =
   | 'success'
@@ -26,40 +27,50 @@ export interface StatusDotProps extends ViewProps {
   className?: string
 }
 
-const solidVariantColors: Record<string, string> = {
-  success: t['status-success'],
-  warning: t['status-warning'],
-  error: t['status-error'],
-  neutral: greyRamp[500],
-}
+type SolidVariant = 'success' | 'warning' | 'error' | 'neutral'
 
-const ringVariantStyles: Record<string, Record<string, unknown>> = {
-  'on-track': {
-    backgroundColor: 'rgba(46,213,115,0.15)',
-    borderWidth: 1,
-    borderColor: 'rgba(46,213,115,0.3)',
-  },
-  deviation: {
-    backgroundColor: 'rgba(245,158,11,0.15)',
-    borderWidth: 1,
-    borderColor: 'rgba(245,158,11,0.25)',
-  },
-  future: {
-    backgroundColor: 'rgba(107,114,128,0.1)',
-    borderWidth: 1,
-    borderStyle: 'dashed',
-    borderColor: 'rgba(107,114,128,0.2)',
-  },
-}
+/** Solid variants: a filled dot. `neutral` takes `text-tertiary`, as Indicator's `default` does. */
+const solidFillToken = {
+  success: 'status-success',
+  warning: 'status-warning',
+  error: 'status-error',
+  neutral: 'text-tertiary',
+} as const
 
-/** Glow is EMPHASIS, not depth: one shared builder, one token colour per variant. */
+/** Ring variants: a `-subtle` wash inside a `-muted` rim, both off the same role. */
+const ringWashToken = {
+  'on-track': { fill: 'status-success-subtle', border: 'status-success-muted' },
+  deviation: { fill: 'status-warning-subtle', border: 'status-warning-muted' },
+} as const
+
+// The neutral ring has no wash rungs: `-subtle`/`-muted`/`-strong` were published for
+// the seven status and brand roles, and `text-tertiary` is not one of them. Derived
+// from the same ramp step the token resolves to, at the frozen alphas, rather than
+// mixed independently. FINDING for E3: the neutral role needs the wash ladder too.
+const FUTURE_FILL = alpha(greyRamp[500], 0.1)
+const FUTURE_BORDER = alpha(greyRamp[500], 0.2)
+
+/** Glyph colour: dark on a solid fill, the role's own colour inside a ring. */
+const glyphToken = {
+  success: 'text-inverse',
+  warning: 'text-inverse',
+  error: 'text-inverse',
+  neutral: 'text-inverse',
+  'on-track': 'status-success',
+  deviation: 'status-warning',
+  future: 'text-tertiary',
+} as const
+
+// Glow is EMPHASIS, not depth: one shared builder, one token colour per variant.
+// Literal hex (not `resolveColor`) because getGlowShadow does colour maths on it —
+// the same exception Indicator documents.
 const glowColors: Record<StatusDotVariant, string> = {
-  success: t['status-success'],
-  warning: t['status-warning'],
-  error: t['status-error'],
+  success: semanticColorsDark['status-success'],
+  warning: semanticColorsDark['status-warning'],
+  error: semanticColorsDark['status-error'],
   neutral: greyRamp[500],
-  'on-track': t['status-success'],
-  deviation: t['status-warning'],
+  'on-track': semanticColorsDark['status-success'],
+  deviation: semanticColorsDark['status-warning'],
   future: greyRamp[500],
 }
 
@@ -73,24 +84,34 @@ const iconChars: Record<string, string> = {
   dash: '\u2014',
 }
 
-/** Color-matched icon colors: dark on solid bg, light on transparent bg */
-const iconColors: Record<StatusDotVariant, string> = {
-  success: '#0A5C52',
-  warning: '#6B4000',
-  error: '#5C1A1A',
-  neutral: greyRamp[200],
-  'on-track': t['status-success'],
-  deviation: t['status-warning'],
-  future: greyRamp[500],
-}
-
 const sizeDimensions = {
   sm: { size: 8, showIcon: false },
   md: { size: 18, showIcon: true },
 }
 
-function isSolidVariant(variant: StatusDotVariant): boolean {
-  return variant in solidVariantColors
+function isSolidVariant(variant: StatusDotVariant): variant is SolidVariant {
+  return variant in solidFillToken
+}
+
+/** The ring variants' wash + rim, resolved per theme. `future` adds the dashed rim. */
+function ringStyle(variant: StatusDotVariant): ViewStyle | undefined {
+  if (variant === 'future') {
+    return {
+      backgroundColor: FUTURE_FILL,
+      borderWidth: 1,
+      borderStyle: 'dashed',
+      borderColor: FUTURE_BORDER,
+    }
+  }
+  if (variant === 'on-track' || variant === 'deviation') {
+    const tokens = ringWashToken[variant]
+    return {
+      backgroundColor: resolveColor(tokens.fill),
+      borderWidth: 1,
+      borderColor: resolveColor(tokens.border),
+    }
+  }
+  return undefined
 }
 
 export function StatusDot({
@@ -104,7 +125,7 @@ export function StatusDot({
 }: StatusDotProps) {
   const config = sizeDimensions[size]
   const solid = isSolidVariant(variant)
-  const ring = ringVariantStyles[variant]
+  const ring = ringStyle(variant)
 
   const glowStyle = glow ? glowStyles[variant] : null
 
@@ -119,8 +140,8 @@ export function StatusDot({
           justifyContent: 'center',
           flexShrink: 0,
         },
-        solid ? { backgroundColor: solidVariantColors[variant] } : undefined,
-        ring ? (ring as Record<string, unknown>) : undefined,
+        solid ? { backgroundColor: resolveColor(solidFillToken[variant]) } : undefined,
+        ring,
         glowStyle ? (glowStyle as Record<string, unknown>) : undefined,
       ]}
       accessibilityRole="image"
@@ -128,17 +149,17 @@ export function StatusDot({
       testID="status-dot"
     >
       {config.showIcon && icon && (
-        <Text
-          style={{
-            fontSize: 11,
-            lineHeight: 11,
-            fontWeight: '900',
-            color: iconColors[variant],
-          }}
+        // The glyph was 11px/900, off the type scale (TOKENS.md §4); `boldLabel` is
+        // the 12px sans label step and `font-black` keeps the original weight.
+        <Typography
+          variant="boldLabel"
+          color="inherit"
+          className="font-black leading-none"
+          style={{ color: resolveColor(glyphToken[variant]) }}
           accessibilityElementsHidden
         >
           {iconChars[icon]}
-        </Text>
+        </Typography>
       )}
     </View>
   )
@@ -152,12 +173,15 @@ export function StatusDot({
         {...props}
       >
         <View accessibilityElementsHidden>{dot}</View>
-        <Text
-          style={{ fontSize: 12, lineHeight: 16, color: greyRamp[400] }}
+        {/* 12px/16 is `caption` at the 4-unit leading step; its colour is `text-secondary`. */}
+        <Typography
+          variant="caption"
+          color="secondary"
+          className="leading-4"
           accessibilityElementsHidden
         >
           {label}
-        </Text>
+        </Typography>
       </View>
     )
   }

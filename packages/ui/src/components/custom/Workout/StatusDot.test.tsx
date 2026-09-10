@@ -5,6 +5,7 @@ import { StatusDot } from './StatusDot'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { greyRamp } from '../../../theme/tokens/primitives'
 import { hexToRgb } from '../../../theme/color-utils'
+import { resolveColor } from '../../../theme/resolve-color'
 
 /** The `rgba(r, g, b` prefix getGlowShadow emits for a token colour. */
 function glowRgb(hex: string): string {
@@ -59,6 +60,23 @@ describe('StatusDot', () => {
   })
 
   describe('solid variants', () => {
+    it.each([
+      ['success', 'status-success'],
+      ['warning', 'status-warning'],
+      ['error', 'status-error'],
+      ['neutral', 'text-tertiary'],
+    ] as const)('fills the %s dot from the %s token', (variant, token) => {
+      render(<StatusDot variant={variant} />)
+      expect(screen.getByTestId('status-dot')).toHaveStyle({
+        backgroundColor: resolveColor(token),
+      })
+    })
+
+    it('draws the glyph on a solid fill in text-inverse', () => {
+      render(<StatusDot variant="success" size="md" icon="check" />)
+      expect(screen.getByText('✓')).toHaveStyle({ color: resolveColor('text-inverse') })
+    })
+
     it('renders all solid variant types without error', () => {
       const { rerender } = render(<StatusDot variant="success" />)
       expect(screen.getByTestId('status-dot')).toBeInTheDocument()
@@ -91,6 +109,18 @@ describe('StatusDot', () => {
       render(<StatusDot variant="future" />)
       expect(screen.getByTestId('status-dot')).toBeInTheDocument()
       expect(screen.getByLabelText('future status')).toBeInTheDocument()
+    })
+
+    // The rim is a whole rung above the wash. Asserting both rules out the
+    // flattening that collapses a two-step ring onto one `-subtle`.
+    it.each([
+      ['on-track', 'status-success'],
+      ['deviation', 'status-warning'],
+    ] as const)('washes the %s ring with %s -subtle inside a -muted rim', (variant, role) => {
+      render(<StatusDot variant={variant} />)
+      const dot = screen.getByTestId('status-dot')
+      expect(dot).toHaveStyle({ backgroundColor: resolveColor(`${role}-subtle`) })
+      expect(dot.style.borderTopColor).toBe(resolveColor(`${role}-muted`))
     })
 
     it('renders the future variant with a 1px dashed border', () => {

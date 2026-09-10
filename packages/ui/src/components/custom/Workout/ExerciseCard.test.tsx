@@ -3,7 +3,7 @@ import { render, screen, fireEvent, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ExerciseCard } from './ExerciseCard'
 import type { SetRowProps } from './SetRow'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { resolveColor } from '../../../theme/resolve-color'
 
 const baseCollapsedProps = {
   name: 'Bench Press',
@@ -87,8 +87,10 @@ describe('ExerciseCard', () => {
       sets: unifiedSets,
     }
 
-    // Read from the tokens, not pinned (see SetRow.test.tsx).
-    const { 'text-primary': T_ACTIVE, 'text-secondary': T_MUTED } = getSemanticColors('dark')
+    // Read from the tokens, not pinned, and through resolveColor as SetRow now
+    // renders them (see SetRow.test.tsx).
+    const T_ACTIVE = resolveColor('text-primary')
+    const T_MUTED = resolveColor('text-secondary')
 
     it('renders exercise name via the real ExerciseCardHeading header', () => {
       render(<ExerciseCard {...expandedProps} />)
@@ -100,6 +102,14 @@ describe('ExerciseCard', () => {
       expect(screen.getByTestId('exercise-card')).toBeInTheDocument()
       expect(screen.getByTestId('exercise-card-heading')).toBeInTheDocument()
       expect(screen.getByTestId('exercise-card-body')).toBeInTheDocument()
+    })
+
+    // No baseline covers the expanded card, so the seam's token is asserted here.
+    it('draws the header/body seam from the hairline-subtle token', () => {
+      render(<ExerciseCard {...expandedProps} />)
+      expect(screen.getByTestId('exercise-card-body')).toHaveStyle({
+        borderTopColor: resolveColor('hairline-subtle'),
+      })
     })
 
     it('renders the header per-set strip derived from the set rows', () => {
