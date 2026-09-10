@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
-import { View, Text, Pressable, Platform, type ViewProps } from 'react-native'
+import { View, Text, Platform, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Surface } from '../surface'
+import { TriggerSurface } from '../trigger'
 
 let createPortal: typeof import('react-dom').createPortal | undefined
 if (Platform.OS === 'web') {
@@ -224,15 +225,11 @@ export function Tooltip({
   return (
     <View className="relative" ref={triggerRef} {...props}>
       {isOpen === undefined ? (
-        <Pressable
-          onHoverIn={show}
-          onHoverOut={hide}
-          onLongPress={show}
-          onPressOut={hide}
-          delayLongPress={500}
+        <TriggerSurface
+          handlers={{ onHoverIn: show, onHoverOut: hide, onLongPress: show, onPressOut: hide }}
         >
           {children}
-        </Pressable>
+        </TriggerSurface>
       ) : (
         children
       )}
