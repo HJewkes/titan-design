@@ -3,9 +3,18 @@ import { View, Text } from 'react-native'
 import { EmptyState } from './EmptyState'
 
 const meta: Meta<typeof EmptyState> = {
-  title: 'Custom/EmptyState',
+  title: 'Components/Molecules/EmptyState',
   component: EmptyState,
   tags: ['autodocs', 'status:candidate', '!status:review'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          'Composes RN primitives only. The `icon` slot takes an icon component and the ' +
+          '`action` slot usually takes a **Button**.',
+      },
+    },
+  },
   argTypes: {
     title: {
       control: 'text',
@@ -38,6 +47,7 @@ export const WithDescription: Story = {
 function PlaceholderIcon({ size = 32, className }: { size?: number; className?: string }) {
   return (
     <View
+      className={className}
       style={{
         width: size,
         height: size,

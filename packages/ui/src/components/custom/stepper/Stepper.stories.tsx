@@ -3,9 +3,18 @@ import { View, Text } from 'react-native'
 import { Stepper, Step, StepIndicator, StepLabel, StepContent } from './Stepper'
 
 const meta: Meta<typeof Stepper> = {
-  title: 'Custom/Stepper',
+  title: 'Components/Molecules/Stepper',
   component: Stepper,
   tags: ['autodocs', 'status:candidate', '!status:review'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          'Composes RN primitives only. The five parts share step index and orientation through ' +
+          'a context, the same shape as **Tabs**.',
+      },
+    },
+  },
   argTypes: {
     activeStep: {
       control: { type: 'number', min: 0, max: 4 },

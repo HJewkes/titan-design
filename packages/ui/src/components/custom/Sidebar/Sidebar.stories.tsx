@@ -11,9 +11,18 @@ import {
 } from './Sidebar'
 
 const meta: Meta<typeof Sidebar> = {
-  title: 'Custom/Sidebar',
+  title: 'Components/Organisms/Sidebar',
   component: Sidebar,
   tags: ['autodocs', 'status:candidate', '!status:review'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          'Composes RN primitives only (View / Pressable / ScrollView) plus caller-supplied ' +
+          'icon components. The seven parts share collapsed and active state through a context.',
+      },
+    },
+  },
   argTypes: {
     isCollapsed: {
       control: 'boolean',
