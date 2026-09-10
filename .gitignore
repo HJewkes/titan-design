@@ -62,3 +62,9 @@ SHADOW_SURFACE_STANDARDIZATION_PLAN.md
 .brain/
 .claude/plans/
 tmp-*.mjs
+
+# Machine-specific arch-graph overrides; the shared consumer list is committed in scripts/arch.config.json
+scripts/arch.config.local.json
+
+# agent-chat worktrees
+.worktrees/

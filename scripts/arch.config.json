@@ -1,0 +1,11 @@
+{
+  "//": "COMMITTED. The shared consumer list, so every machine computes the same `dead` verdicts. Paths are relative to the MAIN checkout (not a worktree), so `../voltras` means a sibling of titan-design either way. Missing paths are skipped, which degrades that consumer to zero usage — see the warning below.",
+  "//consumers": "List EVERY consumer. A repo left off this list has its components silently reported as dead, because 'dead' means 'no usage found in any listed consumer'. audiobook was missing until 2026-09-10 and Chip, Modal, Skeleton, Collapse, Stepper, Tabs and ToolbarButton were all reported dead while it imported them.",
+  "//local": "Machine-specific settings (a codewatchCli path, a checkout somewhere unusual) go in scripts/arch.config.local.json, which is gitignored and shallow-merged over this file. Do not put an absolute path here.",
+  "consumers": [
+    { "name": "mobile", "path": "../voltras/mobile/src", "kind": "native" },
+    { "name": "mcp", "path": "../voltras-mcp/src", "kind": "web" },
+    { "name": "dash", "path": "../codewatch/dashboard/src", "kind": "web" },
+    { "name": "audiobook", "path": "../audiobook/frontend/src", "kind": "web" }
+  ]
+}
