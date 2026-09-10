@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { WeightBadge } from './WeightBadge'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { resolveColor } from '../../../theme/resolve-color'
 
 // Read from the token, not pinned: these used to be hand-copied hexes and
 // silently desynced when borders became alpha hairlines (TD-07.16).
@@ -120,6 +121,40 @@ describe('WeightBadge', () => {
     it('does not show delta when not provided', () => {
       render(<WeightBadge value={225} />)
       expect(screen.queryByTestId('weight-badge-delta')).not.toBeInTheDocument()
+    })
+  })
+
+  // Regression (E3 B3): the value, rep-max and delta colours were read through
+  // `getSemanticColors('dark')` / `greyRamp` ON THE RENDER PATH, which pins the badge
+  // to dark-mode hex and leaves it unreadable once `.light` is on <html>. Each of these
+  // asserts the `var()` reference `resolveColor` returns on web; every one of them
+  // fails against the old literal.
+  describe('theme-correct colours', () => {
+    it('draws a PR value from the brand-primary token, not a dark-mode hex', () => {
+      render(<WeightBadge value={315} isPr />)
+      expect(screen.getByText(/315 lbs/)).toHaveStyle({ color: resolveColor('brand-primary') })
+    })
+
+    it('draws a non-PR value from the text-secondary token', () => {
+      render(<WeightBadge value={225} />)
+      expect(screen.getByText('225 lbs')).toHaveStyle({ color: resolveColor('text-secondary') })
+    })
+
+    it('tints the rep-max qualifier with the same token as the value', () => {
+      render(<WeightBadge value={275} reps={5} isPr />)
+      expect(screen.getByTestId('weight-badge-repmax')).toHaveStyle({
+        color: resolveColor('brand-primary'),
+      })
+    })
+
+    it.each([
+      [3, 'result-improve'],
+      [-2, 'result-degrade'],
+    ] as const)('draws a %s%% delta from the %s token', (delta, token) => {
+      render(<WeightBadge value={225} delta={delta} />)
+      expect(screen.getByTestId('weight-badge-delta')).toHaveStyle({
+        color: resolveColor(token),
+      })
     })
   })
 

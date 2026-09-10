@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { Text } from 'react-native'
+import { Typography } from '../Typography'
 import { DumbbellIcon } from './icons'
 import {
   BaseBadge,
@@ -7,8 +7,7 @@ import {
   type BaseBadgeSize,
   type BaseBadgeProps,
 } from './BaseBadge'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { greyRamp } from '../../../theme/tokens/primitives'
+import { resolveColor } from '../../../theme/resolve-color'
 
 export type WeightBadgeSize = BaseBadgeSize
 
@@ -46,7 +45,7 @@ export function WeightBadge({
   ...props
 }: WeightBadgeProps) {
   const config = baseBadgeSizeConfig[size]
-  const textColor = isPr ? getSemanticColors('dark')['brand-primary'] : greyRamp[400]
+  const textColor = isPr ? resolveColor('brand-primary') : resolveColor('text-secondary')
   // Dumbbell reads clearly as a weight/strength metric and is unit-agnostic
   // across estimated-1RM and N-rep-max contexts (vs. TrendingUp which implies
   // change/trend rather than a load value).
@@ -71,22 +70,23 @@ export function WeightBadge({
       testID="weight-badge"
       {...props}
     >
-      <Text
-        style={{
-          fontFamily: '"Space Grotesk", sans-serif',
-          fontWeight: '600',
-          fontSize: config.fontSize,
-          color: textColor,
-        }}
+      {/* `h6` carries the heading face and 600 weight; the size prop still drives the
+          step, so the fontSize stays computed (BaseBadge's 9/10/12 config). */}
+      <Typography
+        variant="h6"
+        color="inherit"
+        className="leading-[normal]"
+        style={{ fontSize: config.fontSize, color: textColor }}
       >
         {isPr ? '✳ ' : ''}
         {value} {unit}
-      </Text>
+      </Typography>
       {reps != null && (
-        <Text
+        <Typography
+          variant="h6"
+          color="inherit"
+          className="leading-[normal]"
           style={{
-            fontFamily: '"Space Grotesk", sans-serif',
-            fontWeight: '600',
             fontSize: config.fontSize,
             marginLeft: 2,
             color: textColor,
@@ -95,24 +95,23 @@ export function WeightBadge({
           testID="weight-badge-repmax"
         >
           {reps}RM
-        </Text>
+        </Typography>
       )}
       {delta != null && (
-        <Text
+        <Typography
+          variant="h6"
+          color="inherit"
+          className="font-normal leading-[normal]"
           style={{
-            fontFamily: '"Space Grotesk", sans-serif',
             fontSize: config.fontSize,
             marginLeft: 4,
-            color:
-              delta >= 0
-                ? getSemanticColors('dark')['result-improve']
-                : getSemanticColors('dark')['result-degrade'],
+            color: resolveColor(delta >= 0 ? 'result-improve' : 'result-degrade'),
           }}
           testID="weight-badge-delta"
         >
           {delta >= 0 ? '+' : ''}
           {delta}%
-        </Text>
+        </Typography>
       )}
     </BaseBadge>
   )
