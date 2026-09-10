@@ -3,7 +3,7 @@ import { View, Text, Pressable } from 'react-native'
 import { CircularTimer } from './CircularTimer'
 
 const meta: Meta<typeof CircularTimer> = {
-  title: 'Custom/CircularTimer',
+  title: 'Components/Molecules/CircularTimer',
   component: CircularTimer,
   tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
@@ -15,7 +15,8 @@ const meta: Meta<typeof CircularTimer> = {
           '`durationMs` + `elapsedMs`) and composes `CircularProgress` for the arc (`down` drains, ' +
           '`up` fills). On completion a `down` timer with a `doneLabel` fills fully in `doneColor` ' +
           'and reads the label (e.g. "GO"). Pass `controls` to render buttons below the ring, or ' +
-          "`fill` to make it responsive to its container. `RestTimer`'s `ring` variant wraps this.",
+          "`fill` to make it responsive to its container. `RestTimer`'s `ring` variant wraps this." +
+          '\n\nComposes **CircularProgress** over the `useTimer` hook.',
       },
     },
   },

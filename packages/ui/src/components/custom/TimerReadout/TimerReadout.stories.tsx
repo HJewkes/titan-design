@@ -8,14 +8,14 @@ import { Surface } from '../../ui/surface'
  * `running`; the ` / total` suffix stays dim tertiary.
  */
 const meta: Meta<typeof TimerReadout> = {
-  title: 'Custom/TimerReadout',
+  title: 'Components/Molecules/TimerReadout',
   component: TimerReadout,
   tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {
         component:
-          '**Atom.** A small textual timer on [useTimer]. Used-by ↑ SessionHeader.' +
+          '**Molecule.** A small textual timer on [useTimer]. Used-by ↑ SessionHeader.' +
           ' Composes **Typography**.',
       },
     },

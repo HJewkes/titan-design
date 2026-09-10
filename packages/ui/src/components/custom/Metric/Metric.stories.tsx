@@ -3,9 +3,18 @@ import { View } from 'react-native'
 import { Metric, MetricGroup } from './Metric'
 
 const meta: Meta<typeof Metric> = {
-  title: 'Custom/Metric',
+  title: 'Components/Molecules/Metric',
   component: Metric,
   tags: ['autodocs', 'status:candidate', '!status:review'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          'Composes RN primitives only. `MetricGroup` arranges several with a divider rule ' +
+          'between them.',
+      },
+    },
+  },
   argTypes: {
     value: {
       control: 'text',
