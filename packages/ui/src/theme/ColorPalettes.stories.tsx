@@ -473,7 +473,9 @@ export const FatigueRomPalette: StoryObj = {
  * buries. Columns are derived from the shipped tokens, so a new modifier shows
  * up here without editing the story.
  */
-const VARIANT_SUFFIXES = ['light', 'dark', 'subtle', 'hover', 'active', 'muted'] as const
+// Wash rungs run subtle -> muted -> strong (0.12 / 0.30 / 0.50) so the matrix
+// reads as the ramp it is.
+const VARIANT_SUFFIXES = ['light', 'dark', 'subtle', 'muted', 'strong', 'hover', 'active'] as const
 
 function variantsOf(base: string, palette: Record<string, string>) {
   return [

@@ -41,14 +41,14 @@ describe('MesoProgressBar', () => {
     it('tracks the completed segment on the success wash', () => {
       render(<MesoProgressBar mesos={mesos} activeMesoId={null} onMesoPress={vi.fn()} />)
       expect(screen.getByTestId('meso-segment-inner-m1')).toHaveStyle({
-        backgroundColor: resolveColor('status-success-subtle'),
+        backgroundColor: resolveColor('status-success-muted'),
       })
     })
 
     it('tracks the current segment on the brand wash', () => {
       render(<MesoProgressBar mesos={mesos} activeMesoId={null} onMesoPress={vi.fn()} />)
       expect(screen.getByTestId('meso-segment-inner-m2')).toHaveStyle({
-        backgroundColor: resolveColor('brand-primary-subtle'),
+        backgroundColor: resolveColor('brand-primary-strong'),
       })
     })
 
