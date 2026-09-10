@@ -1,6 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useState } from 'react'
-import { View, Text, Pressable } from 'react-native'
+import { View, Pressable } from 'react-native'
 import { VelocityStrip, type VelocityZoneBandProp } from './VelocityStrip'
 import { PlaceholderStrip } from './PlaceholderStrip'
 import { PrBadge } from './PrBadge'
@@ -9,8 +9,9 @@ import { type SetStripSet } from './SetStrip'
 import { SetTableHeader } from './SetTableHeader'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
 import { type ExerciseIndicatorKind } from './ExerciseIndicator'
+import { Typography } from '../Typography'
 import { roundWeight } from '../../../utils/workout-format'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { resolveColor } from '../../../theme/resolve-color'
 
 export interface ExerciseCardProps {
   name: string
@@ -155,30 +156,28 @@ function CollapsedCard({
         }}
       >
         <View className="flex-row items-center" testID="exercise-card-header">
-          <Text
-            className="text-text-primary"
-            style={{
-              fontSize: 14,
-              fontFamily: '"Space Grotesk", sans-serif',
-              fontWeight: '700',
-            }}
+          {/* 14px/700 Space Grotesk is `h6` at the `sm` step; the face and the heading
+              role come from the variant, the weight and size from the scale. */}
+          <Typography
+            variant="h6"
+            color="primary"
+            className="text-sm font-bold leading-[normal]"
             testID="exercise-card-name"
           >
             {name}
-          </Text>
+          </Typography>
           <View className="flex-1" />
           {summary && (
-            <Text
-              className="text-text-secondary"
-              style={{
-                fontSize: 12,
-                fontFamily: 'Inter, sans-serif',
-                marginRight: 8,
-              }}
+            /* The demo's "body" face is Inter, which is the library's `font-sans`
+               (the mapping B1 established for PrBadge), not Typography's `font-body`. */
+            <Typography
+              variant="caption"
+              color="secondary"
+              className="font-sans mr-2 leading-[normal]"
               testID="exercise-card-summary"
             >
               {formatSummary(summary)}
-            </Text>
+            </Typography>
           )}
           {isPR && (
             <View style={{ marginLeft: 4 }}>
@@ -217,10 +216,6 @@ function CollapsedCard({
 // The expanded card is "one object" with its rail heading: the persistent header
 // is the real ExerciseCardHeading, and the revealed body drops PREV and renders
 // one real SetRow per set (muted done/todo, brightened live spotlight).
-
-const DARK = getSemanticColors('dark')
-/** The header↔body seam. */
-const BODY_DIVIDER = DARK['hairline-subtle']
 
 /** Project the set rows onto the heading strip's per-set state (done / active / todo). */
 function deriveHeaderSetStates(sets: SetRowProps[]): SetStripSet[] {
@@ -284,8 +279,13 @@ function ExpandedCard({
         testID="exercise-card-heading"
       />
 
+      {/* The header↔body seam. */}
       <View
-        style={{ borderTopWidth: 1, borderTopColor: BODY_DIVIDER, paddingBottom: 6 }}
+        style={{
+          borderTopWidth: 1,
+          borderTopColor: resolveColor('hairline-subtle'),
+          paddingBottom: 6,
+        }}
         testID="exercise-card-body"
       >
         <SetTableHeader unit={unit} showPrevious={false} testID="exercise-card-column-headers" />
@@ -327,47 +327,38 @@ function UpcomingCard({
       >
         <View className="flex-row items-center">
           {/* Name never truncates (no numberOfLines); prescription + previousBest ellipsize first. */}
-          <Text
-            className="text-text-primary"
-            style={{
-              flexShrink: 0,
-              fontSize: 14,
-              fontFamily: '"Space Grotesk", sans-serif',
-              fontWeight: '700',
-            }}
+          <Typography
+            variant="h6"
+            color="primary"
+            className="shrink-0 text-sm font-bold leading-[normal]"
             testID="exercise-card-name"
           >
             {name}
-          </Text>
+          </Typography>
           {prescription && (
-            <Text
-              className="text-text-secondary"
-              numberOfLines={1}
-              style={{
-                flexShrink: 1,
-                fontSize: 12,
-                fontFamily: 'Inter, sans-serif',
-                marginLeft: 8,
-              }}
+            <Typography
+              variant="caption"
+              color="secondary"
+              maxLines={1}
+              className="font-sans shrink ml-2 leading-[normal]"
               testID="exercise-card-prescription"
             >
               {prescription}
-            </Text>
+            </Typography>
           )}
           <View className="flex-1" style={{ minWidth: 8 }} />
           {previousBest && (
-            <Text
-              className="text-text-tertiary"
-              numberOfLines={1}
-              style={{
-                flexShrink: 1,
-                fontSize: 11,
-                fontFamily: 'Inter, sans-serif',
-              }}
+            /* 11px is off the type scale; `2xs` (10px) is the step below, as B2's
+               WorkoutCard date took for the same size. */
+            <Typography
+              variant="caption"
+              color="tertiary"
+              maxLines={1}
+              className="font-sans shrink text-2xs leading-[normal]"
               testID="exercise-card-previous-best"
             >
               {previousBest}
-            </Text>
+            </Typography>
           )}
         </View>
       </View>
