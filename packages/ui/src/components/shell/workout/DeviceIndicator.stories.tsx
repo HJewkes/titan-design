@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { DeviceIndicator } from './DeviceIndicator'
 
 const meta: Meta<typeof DeviceIndicator> = {
-  title: 'Shell/DeviceIndicator',
+  title: 'Shell/Workout/DeviceIndicator',
   component: DeviceIndicator,
   tags: ['autodocs', 'status:candidate', '!status:review'],
   args: { status: 'connected' },

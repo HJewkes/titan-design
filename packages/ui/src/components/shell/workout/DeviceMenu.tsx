@@ -1,7 +1,7 @@
 import { View } from 'react-native'
-import { cn } from '../../utils/cn'
-import { Typography } from '../custom/Typography'
-import { Popover, PopoverTrigger, PopoverContent } from '../ui/popover'
+import { cn } from '../../../utils/cn'
+import { Typography } from '../../custom/Typography'
+import { Popover, PopoverTrigger, PopoverContent } from '../../ui/popover'
 import { DeviceIndicator, type DeviceConnState } from './DeviceIndicator'
 import { DeviceRow, type Device } from './DeviceRow'
 

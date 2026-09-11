@@ -8,13 +8,17 @@ export interface NavItemProps {
   icon: ReactNode
   /** Short label shown under the glyph (uppercased for display; used as the accessible name). */
   label: string
-  /** Active category → left accent bar + brand-colored glyph & label. */
+  /** Active category → left accent bar + accent-colored glyph & label. */
   active?: boolean
   /**
    * A set is running for this category while it is NOT the active view
    * (live-elsewhere) → a quiet muted-green label tint. Ignored when `active`.
    */
   live?: boolean
+  /** Semantic `text-*` token for the active glyph and label. Defaults to the Voltras brand. */
+  accentClassName?: string
+  /** Semantic `bg-*` token for the active bar. Pair it with `accentClassName`. */
+  accentBarClassName?: string
   onPress?: () => void
   className?: string
 }
@@ -23,20 +27,25 @@ export interface NavItemProps {
  * Shell S2 · NavItem — one category button in the {@link SideNav}: a 20px glyph
  * over an uppercase micro-label in a 46×46 target. The button spans the full 60px
  * rail so the active **left accent bar** sits flush to the rail's edge. States:
- * active = accent bar + `brand-primary`; `live` (while not active) tints only the
+ * active = accent bar + the accent token; `live` (while not active) tints only the
  * label `status-success-dark` (the glyph stays dim); otherwise dim `text-tertiary`.
+ *
+ * The accent follows the mounting app's brand, so a Brain shell reads yellow
+ * throughout rather than showing a Voltras-orange active item under its own lockup.
  */
 export function NavItem({
   icon,
   label,
   active = false,
   live = false,
+  accentClassName = 'text-brand-primary',
+  accentBarClassName = 'bg-brand-primary',
   onPress,
   className,
 }: NavItemProps) {
-  const glyphColor = active ? 'text-brand-primary' : 'text-text-tertiary'
+  const glyphColor = active ? accentClassName : 'text-text-tertiary'
   const labelColor = active
-    ? 'text-brand-primary'
+    ? accentClassName
     : live
       ? 'text-status-live-muted'
       : 'text-text-tertiary'
@@ -52,7 +61,10 @@ export function NavItem({
       {active ? (
         <View
           testID="nav-item-accent"
-          className="absolute left-0 top-[13px] bottom-[13px] w-[3px] rounded-r-[3px] bg-brand-primary"
+          className={cn(
+            'absolute left-0 top-[13px] bottom-[13px] w-[3px] rounded-r-[3px]',
+            accentBarClassName
+          )}
         />
       ) : null}
       <View

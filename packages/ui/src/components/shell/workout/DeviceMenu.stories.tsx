@@ -10,7 +10,7 @@ const DEVICES: Device[] = [
 ]
 
 const meta: Meta<typeof DeviceMenu> = {
-  title: 'Shell/DeviceMenu',
+  title: 'Shell/Workout/DeviceMenu',
   component: DeviceMenu,
   tags: ['autodocs', 'status:candidate', '!status:review'],
   args: { devices: DEVICES, isOpen: false },

@@ -1,28 +1,34 @@
-import { useState } from 'react'
+import { Fragment, useState, type ReactNode } from 'react'
 import { View, type LayoutChangeEvent } from 'react-native'
 import { cn } from '../../utils/cn'
 import { surfaceGradient } from '../../theme/gradients'
 import { Divider } from '../ui/divider'
 import { DateTime } from '../custom/DateTime'
 import { BrandLockup } from './BrandLockup'
-import { SessionStatePill, type SessionState } from './SessionStatePill'
-import { DeviceMenu } from './DeviceMenu'
-import { type Device } from './DeviceRow'
+import { type BrandKey } from './brands'
 
 export interface TopBarProps {
-  /** Global session state → the status pill. */
-  state: SessionState
-  /** Devices for the connection glyph + dropdown. */
-  devices: Device[]
-  /** The moment to display in the clock (Date/timestamp). Omit for a live ticking clock. */
-  time?: number | Date
-  /** Brand subtitle. Default "wall dashboard". */
+  /** Which app identity the default {@link BrandLockup} renders. */
+  brand?: BrandKey
+  /** Brand subtitle. Defaults to the brand preset's own. */
   subtitle?: string
   /** Force the subtitle on/off; defaults to container-responsive (hidden below ~1024px). */
   showSubtitle?: boolean
+  /**
+   * Replace the whole brand region. Wins over `brand` / `subtitle`, and opts out
+   * of the responsive subtitle collapse — the node owns its own behaviour.
+   */
+  leading?: ReactNode
+  /**
+   * App chrome for the right cluster, left → right. An array is rendered with the
+   * bar's own vertical dividers between the items, so an app supplies its
+   * controls and the shell keeps the divider rhythm.
+   */
+  trailing?: ReactNode | ReactNode[]
+  /** The moment to display in the clock (Date/timestamp). Omit for a live ticking clock. */
+  time?: number | Date
   /** Force the clock on/off; defaults to container-responsive (hidden below ~720px). */
   showClock?: boolean
-  onSelectDevice?: (device: Device) => void
   className?: string
 }
 
@@ -30,20 +36,39 @@ export interface TopBarProps {
 const SUBTITLE_MIN = 1024
 const CLOCK_MIN = 720
 
+function ClusterDivider() {
+  return <Divider orientation="vertical" className="h-4 bg-border-prominent" />
+}
+
+/** Interleave the bar's divider between slot items, skipping empty slots. */
+function dividedCluster(items: ReactNode[]) {
+  return items
+    .filter((item) => item !== null && item !== undefined && item !== false)
+    .map((item, i) => (
+      <Fragment key={i}>
+        {i > 0 ? <ClusterDivider /> : null}
+        {item}
+      </Fragment>
+    ))
+}
+
 /**
- * S1 · TopBar — the persistent shell chrome band. Brand (left) + a right cluster
- * of session state · device glyph · clock (clock edge-pinned so spacing stays
- * stable as the state text changes). Collapses subtitle then clock as its
- * container narrows.
+ * S1 · TopBar — the persistent shell chrome band, generic over the app. Brand
+ * (left) + a `trailing` cluster of app-supplied chrome and the wall clock (clock
+ * edge-pinned so spacing stays stable as the items' text changes). Collapses
+ * subtitle then clock as its container narrows.
+ *
+ * @example
+ * <TopBar brand="brain" trailing={[<IndexStatus />, <SearchScope />]} />
  */
 export function TopBar({
-  state,
-  devices,
-  time,
-  subtitle = 'wall dashboard',
+  brand = 'voltras',
+  subtitle,
   showSubtitle,
+  leading,
+  trailing,
+  time,
   showClock,
-  onSelectDevice,
   className,
 }: TopBarProps) {
   const [width, setWidth] = useState(SUBTITLE_MIN)
@@ -51,6 +76,18 @@ export function TopBar({
 
   const subtitleVisible = showSubtitle ?? width >= SUBTITLE_MIN
   const clockVisible = showClock ?? width >= CLOCK_MIN
+
+  const clock = clockVisible ? (
+    <DateTime
+      value={time}
+      live={time == null}
+      format="time"
+      hour12={false}
+      variant="mono"
+      color="secondary"
+      className="text-[11px] min-w-[38px] text-right"
+    />
+  ) : null
 
   return (
     <View
@@ -62,27 +99,11 @@ export function TopBar({
         className
       )}
     >
-      <BrandLockup subtitle={subtitle} showSubtitle={subtitleVisible} />
+      {leading ?? <BrandLockup brand={brand} subtitle={subtitle} showSubtitle={subtitleVisible} />}
 
-      {/* right cluster — order: state · device · time (time pinned to the edge) */}
+      {/* right cluster — app chrome then the clock, pinned to the edge */}
       <View className="ml-auto flex-row items-center gap-[12px]">
-        <SessionStatePill state={state} />
-        <Divider orientation="vertical" className="h-4 bg-border-prominent" />
-        <DeviceMenu devices={devices} onSelectDevice={onSelectDevice} />
-        {clockVisible ? (
-          <>
-            <Divider orientation="vertical" className="h-4 bg-border-prominent" />
-            <DateTime
-              value={time}
-              live={time == null}
-              format="time"
-              hour12={false}
-              variant="mono"
-              color="secondary"
-              className="text-[11px] min-w-[38px] text-right"
-            />
-          </>
-        ) : null}
+        {dividedCluster([...(Array.isArray(trailing) ? trailing : [trailing]), clock])}
       </View>
     </View>
   )
