@@ -63,7 +63,9 @@ const HTML_CSS = `
     --status-success-muted: rgba(46, 213, 115, 0.30);
     --status-warning-subtle: rgba(249, 180, 21, 0.12);
     --status-warning-muted: rgba(249, 180, 21, 0.30);
-    --status-error-subtle: rgba(209, 67, 67, 0.12);
+    /* -subtle rebased onto red[300] (AW-133) so the fill and the text on it are one
+       hue family; -muted stays on the base red[600]. */
+    --status-error-subtle: rgba(255, 154, 157, 0.12);
     --status-error-muted: rgba(209, 67, 67, 0.30);
     --status-error-dark: #A4221C;
     --brand-primary-muted: rgba(255, 121, 0, 0.30);

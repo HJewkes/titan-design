@@ -25,10 +25,17 @@ module.exports = {
             active: 'var(--color-brand-secondary-active)',
           },
         },
-        // Text on brand backgrounds
+        // Text on brand backgrounds. `-subtle` is text ON the `-subtle` fill, a
+        // separate role from the white label a solid fill carries.
         'on-brand': {
-          primary: 'var(--color-on-brand-primary)',
-          secondary: 'var(--color-on-brand-secondary)',
+          primary: {
+            DEFAULT: 'var(--color-on-brand-primary)',
+            subtle: 'var(--color-on-brand-primary-subtle)',
+          },
+          secondary: {
+            DEFAULT: 'var(--color-on-brand-secondary)',
+            subtle: 'var(--color-on-brand-secondary-subtle)',
+          },
         },
         // Status colors
         status: {
@@ -68,12 +75,24 @@ module.exports = {
             subtle: 'var(--color-status-info-subtle)',
           },
         },
-        // Text on status backgrounds
+        // Text on status backgrounds. `-subtle` is text ON the `-subtle` fill.
         'on-status': {
-          success: 'var(--color-on-status-success)',
-          error: 'var(--color-on-status-error)',
-          warning: 'var(--color-on-status-warning)',
-          info: 'var(--color-on-status-info)',
+          success: {
+            DEFAULT: 'var(--color-on-status-success)',
+            subtle: 'var(--color-on-status-success-subtle)',
+          },
+          error: {
+            DEFAULT: 'var(--color-on-status-error)',
+            subtle: 'var(--color-on-status-error-subtle)',
+          },
+          warning: {
+            DEFAULT: 'var(--color-on-status-warning)',
+            subtle: 'var(--color-on-status-warning-subtle)',
+          },
+          info: {
+            DEFAULT: 'var(--color-on-status-info)',
+            subtle: 'var(--color-on-status-info-subtle)',
+          },
         },
         // Result/outcome colors
         result: {
