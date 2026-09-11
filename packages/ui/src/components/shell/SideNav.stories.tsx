@@ -6,6 +6,7 @@ import { Typography } from '../custom/Typography'
 import { Surface } from '../ui/surface'
 import { BotIcon, BrainIcon, LayersIcon } from '../icons'
 import { workoutNavItems } from './workout'
+import { brandPresets } from './brands'
 
 const meta: Meta<typeof SideNav> = {
   title: 'Shell/SideNav',
@@ -86,7 +87,7 @@ export const LiveElsewhere: Story = {
   },
 }
 
-/** A different app's categories in the same rail — the nav is generic over `items` (AW-132). */
+/** A different app's categories and accent in the same rail (AW-132). */
 export const AnotherApp: Story = {
   args: {
     items: [
@@ -95,11 +96,16 @@ export const AnotherApp: Story = {
       { key: 'agents', label: 'Agents', icon: <BotIcon size={20} color="currentColor" /> },
     ],
     activeKey: 'graph',
+    accentClassName: brandPresets.brain.accentClassName,
+    accentBarClassName: brandPresets.brain.accentBarClassName,
   },
   parameters: {
     docs: {
       description: {
-        story: "The brain app's three categories. Same rail, same states, different `items`.",
+        story:
+          "The brain app's three categories in its own accent. Same rail, same states, different " +
+          '`items` and accent. `AppShell` passes the accent down from its `brand`; drive the bare ' +
+          'rail with `accentClassName` / `accentBarClassName`.',
       },
     },
   },

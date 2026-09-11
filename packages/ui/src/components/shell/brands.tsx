@@ -11,6 +11,12 @@ export interface BrandPreset {
   wordmark: string
   /** Semantic text token that colours the mark. */
   accentClassName: string
+  /**
+   * The same accent as a background token, for the nav's active bar. Declared as
+   * a literal alongside its `text-*` twin because Tailwind only emits classes it
+   * can see in the source — a name built at runtime is never generated.
+   */
+  accentBarClassName: string
   /** Default "/ subtitle" for that app's shell. */
   subtitle: string
 }
@@ -23,30 +29,35 @@ export const brandPresets: Record<BrandKey, BrandPreset> = {
     mark: <VoltrasMark size={14} color="currentColor" />,
     wordmark: 'VOLTRAS',
     accentClassName: 'text-brand-primary',
+    accentBarClassName: 'bg-brand-primary',
     subtitle: 'wall dashboard',
   },
   audiobook: {
     mark: <HeadphonesIcon size={14} color="currentColor" />,
     wordmark: 'AUDIOBOOK',
     accentClassName: 'text-data-5',
+    accentBarClassName: 'bg-data-5',
     subtitle: 'library',
   },
   'active-work': {
     mark: <KanbanIcon size={14} color="currentColor" />,
     wordmark: 'ACTIVE WORK',
     accentClassName: 'text-data-1',
+    accentBarClassName: 'bg-data-1',
     subtitle: 'initiatives',
   },
   agents: {
     mark: <BotIcon size={14} color="currentColor" />,
     wordmark: 'AGENTS',
     accentClassName: 'text-data-2',
+    accentBarClassName: 'bg-data-2',
     subtitle: 'fleet',
   },
   brain: {
     mark: <BrainIcon size={14} color="currentColor" />,
     wordmark: 'BRAIN',
     accentClassName: 'text-data-3',
+    accentBarClassName: 'bg-data-3',
     subtitle: 'knowledge',
   },
 }

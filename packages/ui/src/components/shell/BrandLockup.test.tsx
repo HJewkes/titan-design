@@ -39,6 +39,16 @@ describe('BrandLockup', () => {
     expect(new Set(accents).size).toBe(accents.length)
   })
 
+  // The nav's active bar needs the accent as a background, and a mismatched pair
+  // would render a lockup and an active nav item in two different hues.
+  it('pairs every accent with the same token as a background', () => {
+    brandKeys.forEach((brand) => {
+      const { accentClassName, accentBarClassName } = brandPresets[brand]
+      expect(accentBarClassName).toMatch(/^bg-(brand|data)-/)
+      expect(accentBarClassName).toBe(accentClassName.replace(/^text-/, 'bg-'))
+    })
+  })
+
   it('has no accessibility violations', async () => {
     const { container } = render(<BrandLockup />)
     expect(await axe(container)).toHaveNoViolations()

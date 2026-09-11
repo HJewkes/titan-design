@@ -24,6 +24,10 @@ export interface SideNavProps {
    * running off its view) → a quiet green cue on that item's label.
    */
   liveKey?: string | null
+  /** Semantic `text-*` token for the active item. Defaults to the Voltras brand. */
+  accentClassName?: string
+  /** Semantic `bg-*` token for the active bar. Pair it with `accentClassName`. */
+  accentBarClassName?: string
   className?: string
 }
 
@@ -31,11 +35,20 @@ export interface SideNavProps {
  * Shell S2 · SideNav — the persistent 60px left rail that switches the main
  * viewport between an app's categories. Presentational: it renders `items` and
  * reports taps via `onNavigate`; the app owns its categories, routing, and which
- * key is `live`. Active item shows a left accent bar; `liveKey` (when not the
- * active view) tints that item's label a muted green. Fixed 60px at every
- * width — labels sit under the glyph, so they never change the rail width.
+ * key is `live`. Active item shows a left accent bar in the app's brand accent;
+ * `liveKey` (when not the active view) tints that item's label a muted green.
+ * Fixed 60px at every width — labels sit under the glyph, so they never change
+ * the rail width.
  */
-export function SideNav({ items, activeKey, onNavigate, liveKey = null, className }: SideNavProps) {
+export function SideNav({
+  items,
+  activeKey,
+  onNavigate,
+  liveKey = null,
+  accentClassName,
+  accentBarClassName,
+  className,
+}: SideNavProps) {
   return (
     <View
       accessibilityRole="tablist"
@@ -51,6 +64,8 @@ export function SideNav({ items, activeKey, onNavigate, liveKey = null, classNam
           label={item.label}
           active={item.key === activeKey}
           live={item.key === liveKey && item.key !== activeKey}
+          accentClassName={accentClassName}
+          accentBarClassName={accentBarClassName}
           onPress={() => onNavigate?.(item.key)}
         />
       ))}

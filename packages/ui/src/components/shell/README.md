@@ -48,7 +48,7 @@ SideNav ...................... organism — the 60px left rail (Shell/SideNav)
 ├─ NavItem ................... molecule × `items` (the app's own categories)
 │  ├─ icon ................... icons (shared primitive) — supplied per item
 │  └─ Typography ............. titan · button variant (uppercase micro-label)
-└─ (accent bar) .............. bg-brand-primary edge bar on the active item
+└─ (accent bar) .............. edge bar on the active item, in the app's brand accent
 ```
 
 Decisions locked 2026-07-08 (specimen `sources/design/shell/S2-sidenav/`): lucide glyphs
@@ -152,6 +152,14 @@ Every leaf now composes a primitive rather than hand-rolling it:
 mount this shell. Brand accents come from `data-*` rather than `status-*`: `data-*` is the library's
 set of distinct, CVD-checked hues with no semantic load, which is what a per-app identity accent
 needs. Voltras keeps the real `brand-primary` token.
+
+**The nav accent is brand-level, not shell-level** (operator, Gate 2 2026-09-11). `SideNav`'s active
+item and its edge bar take the mounting app's accent, so a Brain shell reads yellow throughout
+rather than showing a Voltras-orange active item under a yellow lockup. `AppShell` threads it down
+from `brand`; a bare `SideNav` takes `accentClassName` / `accentBarClassName`. Each preset declares
+both as literals (`text-data-3` + `bg-data-3`) because Tailwind only emits classes it can see in the
+source — a name built at runtime is never generated — and a test asserts the pair always matches.
+Workout is unaffected: its accent *is* `brand-primary`.
 
 **S2 shared substrate:** four nav glyphs added to `components/icons` (`ActivityIcon`, `HistoryIcon`,
 `LayersIcon`, `PersonStandingIcon` — lucide-mirrored, like Dumbbell/Star), available system-wide.

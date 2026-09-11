@@ -4,10 +4,10 @@ import { cn } from '../../utils/cn'
 import { Surface } from '../ui/surface'
 import { SideNav, type SideNavItem } from './SideNav'
 import { TopBar } from './TopBar'
-import { type BrandKey } from './brands'
+import { brandPresets, type BrandKey } from './brands'
 
 export interface AppShellProps {
-  /** Which app identity the default {@link TopBar} renders. */
+  /** Which app identity the default {@link TopBar} and nav accent render. */
   brand?: BrandKey
   /** Brand subtitle on the default top bar. */
   subtitle?: string
@@ -62,6 +62,8 @@ export function AppShell({
   children,
   className,
 }: AppShellProps) {
+  const { accentClassName, accentBarClassName } = brandPresets[brand]
+
   return (
     // Column: the TopBar spans the FULL width across the top, and the SideNav sits BELOW it
     // in the content row (not a full-height left rail). This keeps the brand/status band
@@ -76,6 +78,8 @@ export function AppShell({
             items={navItems}
             activeKey={activeKey}
             liveKey={liveKey}
+            accentClassName={accentClassName}
+            accentBarClassName={accentBarClassName}
             onNavigate={onNavigate}
           />
         )}

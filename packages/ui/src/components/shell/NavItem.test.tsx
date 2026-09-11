@@ -32,4 +32,21 @@ describe('NavItem', () => {
     const { container } = render(<NavItem icon={icon} label="Live" live />)
     expect(container.firstChild).toBeInTheDocument()
   })
+
+  // nativewind compiles className to style, so jsdom cannot see the accent colour.
+  // Assert an app-supplied accent leaves the rest of the active state intact; the
+  // colour itself is guarded by the paired-token test in BrandLockup.test.
+  it('keeps the active state when an app supplies its own accent', () => {
+    render(
+      <NavItem
+        icon={icon}
+        label="Graph"
+        active
+        accentClassName="text-data-3"
+        accentBarClassName="bg-data-3"
+      />
+    )
+    expect(screen.getByTestId('nav-item-accent')).toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'Graph' })).toBeInTheDocument()
+  })
 })
