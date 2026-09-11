@@ -216,7 +216,7 @@ Modalities`** (each card carries a `Collapse` accordion; promoted from the
   hides the shared `RestActions` (+30s/Skip, extracted, used by both variants);
   `size` (default 180) sets the diameter; the eyebrow/section title is organism
   chrome. Web/RNW-only (like `CircularProgress`) — the wall variant; mobile keeps
-  `bar`. `Ring*` (RestTimer) + `Custom/CircularTimer` stories on the wall background.
+  `bar`. `Ring*` (RestTimer) + `Components/Molecules/CircularTimer` stories on the wall background.
 - **`size="wall"` density (FatigueMeter · ZoneTrack)** — the across-the-room
   dashboard scale, added as the idiomatic titan `size` union (a JS number-map per
   component; **`default` values are byte-identical** to before, so existing consumers are
