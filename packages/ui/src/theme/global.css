@@ -24,7 +24,7 @@
     --color-brand-secondary: #307B9B;
     --color-brand-secondary-light: #2697B7;
     --color-brand-secondary-dark: #2A617F;
-    --color-brand-secondary-subtle: rgba(48, 123, 155, 0.12);
+    --color-brand-secondary-subtle: rgba(34, 211, 238, 0.12);
     --color-brand-secondary-muted: rgba(48, 123, 155, 0.30);
     --color-brand-secondary-strong: rgba(48, 123, 155, 0.50);
     --color-brand-primary-hover: #FFA063;
@@ -34,6 +34,8 @@
 
     --color-on-brand-primary: #FFFFFF;
     --color-on-brand-secondary: #FFFFFF;
+    --color-on-brand-primary-subtle: #FF7900;
+    --color-on-brand-secondary-subtle: #22D3EE;
 
     --color-status-success: #2ED573;
     --color-status-success-light: #58F69E;
@@ -46,7 +48,7 @@
     --color-status-error: #D14343;
     --color-status-error-light: #E05254;
     --color-status-error-dark: #A4221C;
-    --color-status-error-subtle: rgba(209, 67, 67, 0.12);
+    --color-status-error-subtle: rgba(255, 154, 157, 0.12);
     --color-status-error-muted: rgba(209, 67, 67, 0.30);
     --color-status-error-strong: rgba(209, 67, 67, 0.50);
     --color-status-error-vivid: #FF4757;
@@ -66,7 +68,7 @@
     --color-status-info: #2196F3;
     --color-status-info-light: #78C2FF;
     --color-status-info-dark: #1072CB;
-    --color-status-info-subtle: rgba(33, 150, 243, 0.12);
+    --color-status-info-subtle: rgba(120, 194, 255, 0.12);
     --color-status-info-muted: rgba(33, 150, 243, 0.30);
     --color-status-info-strong: rgba(33, 150, 243, 0.50);
 
@@ -74,6 +76,10 @@
     --color-on-status-error: #FFFFFF;
     --color-on-status-warning: #FFFFFF;
     --color-on-status-info: #FFFFFF;
+    --color-on-status-success-subtle: #2ED573;
+    --color-on-status-error-subtle: #FF9A9D;
+    --color-on-status-warning-subtle: #F9B415;
+    --color-on-status-info-subtle: #78C2FF;
 
     --color-result-improve: #4caf50;
     --color-result-improve-light: rgba(76, 175, 80, 0.16);
@@ -200,6 +206,8 @@
 
     --color-on-brand-primary: #FFFFFF;
     --color-on-brand-secondary: #FFFFFF;
+    --color-on-brand-primary-subtle: #FF7900;
+    --color-on-brand-secondary-subtle: #307B9B;
 
     --color-status-success: #2ED573;
     --color-status-success-light: #58F69E;
@@ -240,6 +248,10 @@
     --color-on-status-error: #FFFFFF;
     --color-on-status-warning: #FFFFFF;
     --color-on-status-info: #FFFFFF;
+    --color-on-status-success-subtle: #2ED573;
+    --color-on-status-error-subtle: #D14343;
+    --color-on-status-warning-subtle: #F9B415;
+    --color-on-status-info-subtle: #2196F3;
 
     --color-result-improve: #4caf50;
     --color-result-improve-light: rgba(76, 175, 80, 0.12);
