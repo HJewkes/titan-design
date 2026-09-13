@@ -183,6 +183,18 @@ describe('ExerciseCard', () => {
       render(<ExerciseCard {...expandedProps} />)
       expect(screen.queryByTestId('tempo-display')).not.toBeInTheDocument()
     })
+
+    // VW-97 item 3: ExerciseCardHeading takes `indicator`, but ExerciseCard didn't forward one —
+    // so the expanded rail row lost its indicator badge. Already fixed on main; this pins it.
+    it('forwards `indicator` to the header, so the expanded rail row keeps its badge', () => {
+      render(<ExerciseCard {...expandedProps} indicator="info" />)
+      expect(screen.getByTestId('exercise-indicator')).toBeInTheDocument()
+    })
+
+    it('falls back to the `pr` indicator from `isPR` when no explicit indicator is given', () => {
+      render(<ExerciseCard {...expandedProps} isPR />)
+      expect(screen.getByTestId('exercise-indicator')).toBeInTheDocument()
+    })
   })
 
   describe('upcoming', () => {
