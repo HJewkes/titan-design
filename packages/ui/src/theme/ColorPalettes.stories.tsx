@@ -622,6 +622,26 @@ export const TextAndBorderColors: StoryObj = {
         <ColorSwatch name="border-input-error" value={semanticColorsDark['border-input-error']} />
         <ColorSwatch name="divider" value={semanticColorsDark['divider']} />
       </View>
+
+      <SectionTitle>Overlays &amp; on-fill labels</SectionTitle>
+      <SectionIntro>
+        Scrims are translucent BLACK laid over arbitrary content, so a swatch of one on this page is
+        nearly invisible by design — see{' '}
+        <Text className="font-semibold">Foundations/Color/Proposed VW-82 tokens</Text> for all four
+        over a checkerboard and a photographic gradient, which is how they were approved. They are
+        tokens rather than `bg-black/50` because Tailwind v3 drops the `/n` opacity modifier on a
+        `var()` colour and emits no rule at all. Identical in both themes: a scrim recedes what is
+        behind it, which is as true on a light page as a dark one.
+      </SectionIntro>
+      <View style={{ gap: 16 }}>
+        <ColorSwatch name="scrim-press" value={semanticColorsDark['scrim-press']} />
+        <ColorSwatch name="scrim-press-strong" value={semanticColorsDark['scrim-press-strong']} />
+        <ColorSwatch name="scrim-subtle" value={semanticColorsDark['scrim-subtle']} />
+        <ColorSwatch name="scrim-default" value={semanticColorsDark['scrim-default']} />
+        <ColorSwatch name="on-control-idle" value={semanticColorsDark['on-control-idle']} />
+        <ColorSwatch name="on-control-active" value={semanticColorsDark['on-control-active']} />
+        <ColorSwatch name="on-data-strong" value={semanticColorsDark['on-data-strong']} />
+      </View>
     </View>
   ),
 }

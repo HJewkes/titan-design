@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
-import { alpha } from '../utils/colors'
 import { getSemanticColors } from './tokens/semantic'
 import { greyRamp, primitiveColors, primitiveRamps } from './tokens/primitives'
 import { SectionIntro, SectionTitle, SWATCH_BORDER } from './color-story-kit'
@@ -10,27 +9,29 @@ import { Treemap } from '../components/custom/Treemap'
 const t = getSemanticColors('dark')
 
 /**
- * Foundations/Color/Proposed VW-82 tokens — a DECISION story, not documentation.
+ * Foundations/Color/Proposed VW-82 tokens — APPROVED 2026-09-13.
  *
- * VW-82 (#200) migrated component source off raw colours. Every literal that had
- * an exact token was swapped; the ones with no token were deliberately left raw
- * and proposed rather than invented, because adding a token is a design call.
- * This story renders those candidates in the context they would actually ship
- * in, so the proposal can be accepted or rejected by eye instead of by hex.
+ * All seven shipped into the token layer in the follow-up to #200 and are now
+ * live in `theme/tokens/semantic.ts`, `global.css`, `config.ts` and
+ * `tailwind.config.js`. `Foundations/Color/Palettes` story 9 carries their
+ * swatches and `TOKENS.md` §1 the decision rules.
+ *
+ * This story is KEPT rather than deleted, for one reason a swatch list cannot
+ * cover: a scrim over a flat dark plane looks fine at every opacity, so the
+ * only place the four strengths can actually be told apart is over a
+ * checkerboard or a photographic backdrop with content under it. That is what
+ * the `showScrims` and `backdrop` controls exist for, and it is the evidence
+ * the approval was given on. Every panel now renders the SHIPPED token.
  *
  * WHY THE SCRIMS ARE TOKENS AND NOT `bg-black/50`: Tailwind v3 cannot apply an
  * opacity modifier to a `var()` colour — it fails to parse the value and emits
- * NO rule at all. So a translucent role has to ship as its own rgba token, which
- * is exactly what `hairline-*` already does (`rgba(255, 255, 255, 0.15)`, not
- * `white/15`). The four scrims below are rendered through
- * `alpha(primitiveColors.black, …)`, which is the value each token would carry.
+ * NO rule at all. So a translucent role ships as its own rgba token, exactly as
+ * `hairline-*` does (`rgba(255, 255, 255, 0.15)`, not `white/15`).
  *
- * The two candidates that have NO token and no primitive — `on-control-idle`
- * (#D1D1D1) and `on-data-strong` (#0B0B0B) — cannot be written as literals here:
- * `no-raw-color` allots this file zero, and funding a new allowance to document
- * a proposal would push the ratchet the wrong way. They are instead shown by
- * rendering the REAL components that carry them today, side by side with the
- * existing tokens that might replace them. That is stronger evidence anyway.
+ * `on-control-idle` and `on-data-strong` are still shown by rendering the REAL
+ * ToolbarButton and Treemap that carry them, beside the existing tokens that
+ * were the alternatives. Now that the swap has landed those components read the
+ * tokens, so the panels prove the shipped result rather than a mock-up.
  */
 const meta: Meta<ProposedTokensArgs> = {
   title: 'Foundations/Color/Proposed VW-82 tokens',
@@ -61,32 +62,20 @@ interface ProposedTokensArgs {
 // 1 — scrims
 // ---------------------------------------------------------------------------
 
-/**
- * The four candidates, as the value each token would carry. Derived through
- * `alpha()` from the black primitive rather than written as rgba triples, so
- * they track the primitive the way the real token would.
- */
+/** The shipped tokens, read from the token layer rather than re-derived. */
 const SCRIMS = [
-  {
-    name: 'scrim-press',
-    opacity: 0.1,
-    usedBy: 'Alert close button — web:hover',
-  },
+  { name: 'scrim-press', value: t['scrim-press'], usedBy: 'Alert close button — web:hover' },
   {
     name: 'scrim-press-strong',
-    opacity: 0.2,
+    value: t['scrim-press-strong'],
     usedBy: 'Alert close button — active',
   },
   {
     name: 'scrim-subtle',
-    opacity: 0.3,
+    value: t['scrim-subtle'],
     usedBy: 'Modal backdrop (blurred), Select filled fill',
   },
-  {
-    name: 'scrim-default',
-    opacity: 0.5,
-    usedBy: 'Modal backdrop, Drawer overlay',
-  },
+  { name: 'scrim-default', value: t['scrim-default'], usedBy: 'Modal backdrop, Drawer overlay' },
 ] as const
 
 const CHECKER_LIGHT = greyRamp[50]
@@ -193,7 +182,7 @@ function ScrimPanel({ showScrims, backdrop }: ProposedTokensArgs) {
                   right: 0,
                   bottom: 0,
                   left: 0,
-                  backgroundColor: alpha(primitiveColors.black, scrim.opacity),
+                  backgroundColor: scrim.value,
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
@@ -206,7 +195,7 @@ function ScrimPanel({ showScrims, backdrop }: ProposedTokensArgs) {
           </View>
           <Text className="text-text-primary text-xs font-semibold mt-2">{scrim.name}</Text>
           <Text className="text-text-tertiary" style={{ fontSize: 10 }}>
-            {alpha(primitiveColors.black, scrim.opacity)}
+            {scrim.value}
           </Text>
           <Text className="text-text-secondary" style={{ fontSize: 10, marginTop: 2 }}>
             {scrim.usedBy}
@@ -256,14 +245,14 @@ function OnControlPanel() {
   return (
     <View className="bg-surface-elevated" style={{ borderRadius: 8, padding: 16 }}>
       <Text className="text-text-secondary text-xs mb-3">
-        Left pair: the LIVE ToolbarButton, which is what the proposal is about. Right: the existing
-        tokens, drawn on the same face at the same size — does one of them already do the job?
+        Left pair: the live ToolbarButton, now reading `on-control-*`. Right: the existing tokens
+        that were the alternatives, drawn on the same face at the same size.
       </Text>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 14, alignItems: 'flex-start' }}>
         <View style={{ alignItems: 'center', width: 116 }}>
           <ToolbarButton label="Idle" isActive={false} variant="raised" />
           <Text className="text-text-secondary" style={{ fontSize: 10, marginTop: 4 }}>
-            live · on-control-idle
+            shipped · on-control-idle
           </Text>
           <Text className="text-text-tertiary" style={{ fontSize: 9 }}>
             #D1D1D1
@@ -272,7 +261,7 @@ function OnControlPanel() {
         <View style={{ alignItems: 'center', width: 116 }}>
           <ToolbarButton label="Active" isActive variant="raised" />
           <Text className="text-text-secondary" style={{ fontSize: 10, marginTop: 4 }}>
-            live · on-control-active
+            shipped · on-control-active
           </Text>
           <Text className="text-text-tertiary" style={{ fontSize: 9 }}>
             #FFFFFF
@@ -284,9 +273,10 @@ function OnControlPanel() {
         <LabelChip label="Active" color={primitiveColors.white} caption="primitiveColors.white" />
       </View>
       <Text className="text-text-tertiary text-xs mt-3">
-        `on-control-active` is exactly `primitiveColors.white`, so the only real question is whether
-        it deserves a NAME — the toolbar face is a grey plane, not a brand fill, so borrowing
-        `on-brand-primary` for it would be the wrong role at the right value.
+        `on-control-active` is exactly `primitiveColors.white`. It earns its own NAME because the
+        toolbar face is a grey plane, not a brand fill — borrowing `on-brand-primary` would have
+        been the wrong role at the right value, and would move if the brand&apos;s on-colour ever
+        did.
       </Text>
     </View>
   )
@@ -335,15 +325,15 @@ function OnDataPanel() {
   return (
     <View className="bg-surface-elevated" style={{ borderRadius: 8, padding: 16 }}>
       <Text className="text-text-secondary text-xs mb-3">
-        Top: the LIVE Treemap, whose label is the proposed `on-data-strong`. Below: the same tiles
-        with the nearest existing dark tokens, so the difference (or lack of one) is visible at
-        label size rather than as a swatch.
+        Top: the live Treemap, whose label now reads `on-data-strong`. Below: the same tiles with
+        the nearest existing dark tokens, so the difference is visible at label size, not as a
+        swatch.
       </Text>
       <View style={{ gap: 12 }}>
         <View>
           <Treemap data={LIGHT_TILES} width={320} height={92} maxTiles={5} />
           <Text className="text-text-secondary" style={{ fontSize: 10, marginTop: 4 }}>
-            live Treemap · on-data-strong · #0B0B0B
+            shipped Treemap · on-data-strong · #0B0B0B
           </Text>
         </View>
         <TileRow color={t['background-frame']} caption="background-frame" />
@@ -367,11 +357,11 @@ function ApprovedSnaps() {
       }}
     >
       <Text className="text-text-primary text-sm font-semibold mb-1">
-        Already approved — the six grey snaps (follow-up, NOT in #200)
+        The six grey snaps — applied in the same follow-up
       </Text>
       <Text className="text-text-secondary text-xs">
-        These need no new token: they are drifted Tailwind and ad-hoc neutrals that snap onto the
-        existing warm ramp. Approved for the follow-up PR because each one moves pixels.
+        These needed no new token: drifted Tailwind and ad-hoc neutrals, snapped onto the existing
+        warm ramp. Each one moves pixels, which is why they were signed off separately.
         {'\n\n'}
         #6B7280 (Tailwind gray-500) → result-neutral, at IntensityBar, TempoDisplay, setHeadingKit,
         Spinner · #9CA3AF (Tailwind gray-400) → text-secondary, at TempoDisplay ×4 · #333333 →
@@ -387,16 +377,20 @@ type Story = StoryObj<ProposedTokensArgs>
 export const Default: Story = {
   render: (args) => (
     <View style={{ padding: 24, maxWidth: 900 }}>
-      <Text className="text-2xl font-bold text-text-primary mb-2">Proposed VW-82 tokens</Text>
+      <Text className="text-2xl font-bold text-text-primary mb-2">
+        VW-82 tokens — approved 2026-09-13
+      </Text>
       <SectionIntro>
-        Seven candidates from #200, rendered where they would ship. Nothing here is in the token
-        layer — `semantic.ts`, `primitives.ts`, `global.css` and `tailwind.config.js` are untouched
-        until these are approved.
+        Approved 2026-09-13 and shipped. All seven are live in `theme/tokens/semantic.ts` (with
+        `on-control-idle` and `on-data-strong` pinned in `primitives.ts` as `semanticPins`),
+        mirrored into `global.css`, `config.ts` and `tailwind.config.js`, swatched in
+        `Foundations/Color/Palettes` story 9, and ruled on in `TOKENS.md` §1. Every panel below
+        renders the shipped token.
       </SectionIntro>
 
       <ApprovedSnaps />
 
-      <SectionTitle>1 · Scrims (4 candidates)</SectionTitle>
+      <SectionTitle>1 · Scrims (4 tokens)</SectionTitle>
       <Text className="text-text-secondary text-xs mb-3">
         Toggle `showScrims` off to see what each one is hiding, and switch `backdrop` between the
         checkerboard, a photographic gradient, and a plain surface. The plain surface is the case
@@ -404,10 +398,10 @@ export const Default: Story = {
       </Text>
       <ScrimPanel {...args} />
 
-      <SectionTitle>2 · on-control (2 candidates)</SectionTitle>
+      <SectionTitle>2 · on-control (2 tokens)</SectionTitle>
       <OnControlPanel />
 
-      <SectionTitle>3 · on-data-strong (1 candidate)</SectionTitle>
+      <SectionTitle>3 · on-data-strong (1 token)</SectionTitle>
       <OnDataPanel />
     </View>
   ),

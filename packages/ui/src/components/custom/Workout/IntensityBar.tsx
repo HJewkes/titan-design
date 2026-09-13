@@ -33,10 +33,8 @@ export interface IntensityBarProps extends ViewProps {
   className?: string
 }
 
-// VW-82: neither value is on a ramp (nearest surface-raised #31302F / greyRamp[600]
-// #72716F). Left raw pending the proposed roles — snapping them is a visual change.
-const TRACK_BG = '#333333'
-const LABEL_COLOR = '#6B7280'
+const TRACK_BG = t['surface-raised']
+const LABEL_COLOR = t['result-neutral']
 const TARGET_LINE_COLOR = alpha(t['status-info'], 0.5)
 /** At-target is EMPHASIS, not depth: an info-toned glow through the shared builder. */
 const AT_TARGET_GLOW = getGlowShadow(t['status-info'], 'subtle')
