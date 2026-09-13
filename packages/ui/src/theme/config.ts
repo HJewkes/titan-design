@@ -54,6 +54,8 @@ export const lightThemeCSSVars = {
 
   '--color-on-brand-primary': semanticColorsLight['on-brand-primary'],
   '--color-on-brand-secondary': semanticColorsLight['on-brand-secondary'],
+  '--color-on-brand-primary-subtle': semanticColorsLight['on-brand-primary-subtle'],
+  '--color-on-brand-secondary-subtle': semanticColorsLight['on-brand-secondary-subtle'],
 
   '--color-status-success': semanticColorsLight['status-success'],
   '--color-status-success-subtle': semanticColorsLight['status-success-subtle'],
@@ -126,6 +128,10 @@ export const lightThemeCSSVars = {
   '--color-on-status-error': semanticColorsLight['on-status-error'],
   '--color-on-status-warning': semanticColorsLight['on-status-warning'],
   '--color-on-status-info': semanticColorsLight['on-status-info'],
+  '--color-on-status-success-subtle': semanticColorsLight['on-status-success-subtle'],
+  '--color-on-status-error-subtle': semanticColorsLight['on-status-error-subtle'],
+  '--color-on-status-warning-subtle': semanticColorsLight['on-status-warning-subtle'],
+  '--color-on-status-info-subtle': semanticColorsLight['on-status-info-subtle'],
 
   '--color-result-improve': semanticColorsLight['result-improve'],
   '--color-result-improve-light': semanticColorsLight['result-improve-light'],
@@ -191,6 +197,8 @@ export const darkThemeCSSVars = {
 
   '--color-on-brand-primary': semanticColorsDark['on-brand-primary'],
   '--color-on-brand-secondary': semanticColorsDark['on-brand-secondary'],
+  '--color-on-brand-primary-subtle': semanticColorsDark['on-brand-primary-subtle'],
+  '--color-on-brand-secondary-subtle': semanticColorsDark['on-brand-secondary-subtle'],
 
   '--color-status-success': semanticColorsDark['status-success'],
   '--color-status-success-subtle': semanticColorsDark['status-success-subtle'],
@@ -263,6 +271,10 @@ export const darkThemeCSSVars = {
   '--color-on-status-error': semanticColorsDark['on-status-error'],
   '--color-on-status-warning': semanticColorsDark['on-status-warning'],
   '--color-on-status-info': semanticColorsDark['on-status-info'],
+  '--color-on-status-success-subtle': semanticColorsDark['on-status-success-subtle'],
+  '--color-on-status-error-subtle': semanticColorsDark['on-status-error-subtle'],
+  '--color-on-status-warning-subtle': semanticColorsDark['on-status-warning-subtle'],
+  '--color-on-status-info-subtle': semanticColorsDark['on-status-info-subtle'],
 
   '--color-result-improve': semanticColorsDark['result-improve'],
   '--color-result-improve-light': semanticColorsDark['result-improve-light'],

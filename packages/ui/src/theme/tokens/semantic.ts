@@ -79,6 +79,13 @@ export const semanticColorsLight = {
   'on-brand-primary': p.white,
   'on-brand-secondary': p.white,
 
+  // Text ON a `-subtle` fill. Light mode keeps today's pairing (the base token) so
+  // nothing moves here: light has the same disease mirrored — a light rung on a
+  // near-white ramp[50] fill — but correcting it belongs with the light-mode pass
+  // in AW-121, not this one.
+  'on-brand-primary-subtle': ramp.orange[400],
+  'on-brand-secondary-subtle': ramp.cyan[600],
+
   // Status colors (status-*)
   'status-success': ramp.green[300],
   'status-success-light': ramp.green[200],
@@ -118,6 +125,12 @@ export const semanticColorsLight = {
   'status-info-subtle': ramp.blue[50],
   'status-info-muted': 'rgba(33, 150, 243, 0.30)',
   'status-info-strong': 'rgba(33, 150, 243, 0.50)',
+
+  // Text ON a `-subtle` fill — see the on-brand-*-subtle note above.
+  'on-status-success-subtle': ramp.green[300],
+  'on-status-error-subtle': ramp.red[600],
+  'on-status-warning-subtle': ramp.amber[300],
+  'on-status-info-subtle': ramp.blue[500],
 
   // Text on status backgrounds (on-status-*)
   'on-status-success': p.white,
@@ -223,7 +236,7 @@ export const semanticColorsDark = {
   'brand-secondary': ramp.cyan[600],
   'brand-secondary-light': ramp.cyan[500],
   'brand-secondary-dark': ramp.cyan[700],
-  'brand-secondary-subtle': 'rgba(48, 123, 155, 0.12)',
+  'brand-secondary-subtle': 'rgba(34, 211, 238, 0.12)',
   'brand-secondary-muted': 'rgba(48, 123, 155, 0.30)',
   'brand-secondary-strong': 'rgba(48, 123, 155, 0.50)',
   'brand-secondary-hover': ramp.cyan[500],
@@ -232,6 +245,15 @@ export const semanticColorsDark = {
   // Text on brand backgrounds
   'on-brand-primary': p.white,
   'on-brand-secondary': p.white,
+
+  // Text ON a `-subtle` fill. Its own role: `brand-primary` and friends are tuned to
+  // carry a white label as a solid fill, which makes the two deepest of them
+  // (cyan[600], red[600]) too dark to read as text on a dark plane. Levelling the
+  // family at rung 300 puts every tone within OKLCH L 0.769-0.813 instead of
+  // 0.550-0.813. Brand is deliberately left at its own orange[400] (operator, AW-133)
+  // so the Voltras tone never drifts; it is the one tone under AA on a raised card.
+  'on-brand-primary-subtle': ramp.orange[400],
+  'on-brand-secondary-subtle': ramp.cyan[300],
 
   // Status colors
   'status-success': ramp.green[300],
@@ -248,7 +270,10 @@ export const semanticColorsDark = {
   'status-error': ramp.red[600],
   'status-error-light': ramp.red[500],
   'status-error-dark': ramp.red[700],
-  'status-error-subtle': 'rgba(209, 67, 67, 0.12)',
+  // Alpha 0.08, not the family's 0.12: error's label is red[400], a rung darker than
+  // its siblings so it reads RED rather than pink (rung 300 has only 0.121 chroma).
+  // Thinning the fill buys back the contrast that extra darkness costs. See AW-133.
+  'status-error-subtle': 'rgba(247, 113, 117, 0.08)',
   'status-error-muted': 'rgba(209, 67, 67, 0.30)',
   'status-error-strong': 'rgba(209, 67, 67, 0.50)',
 
@@ -269,7 +294,7 @@ export const semanticColorsDark = {
   'status-info': ramp.blue[500],
   'status-info-light': ramp.blue[300],
   'status-info-dark': ramp.blue[600],
-  'status-info-subtle': 'rgba(33, 150, 243, 0.12)',
+  'status-info-subtle': 'rgba(120, 194, 255, 0.12)',
   'status-info-muted': 'rgba(33, 150, 243, 0.30)',
   'status-info-strong': 'rgba(33, 150, 243, 0.50)',
 
@@ -278,6 +303,15 @@ export const semanticColorsDark = {
   'on-status-error': p.white,
   'on-status-warning': p.white,
   'on-status-info': p.white,
+
+  // Text ON a `-subtle` fill — see the on-brand-*-subtle note above. Error is the
+  // second deliberate exception to the rung-300 rule (operator, AW-133): red[300]
+  // levelled perfectly but read PINK, because a red that light can only hold 0.121
+  // chroma. red[400] carries 0.165 and reads red; its fill is thinned to compensate.
+  'on-status-success-subtle': ramp.green[300],
+  'on-status-error-subtle': ramp.red[400],
+  'on-status-warning-subtle': ramp.amber[300],
+  'on-status-info-subtle': ramp.blue[300],
 
   // Result/outcome indicators (result-*)
   'result-improve': resultPaletteColors.improve,

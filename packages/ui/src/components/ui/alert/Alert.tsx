@@ -47,6 +47,8 @@ const statusColors: Record<
     border: string
     icon: string
     text: string
+    /** Label ON the `subtle` fill — see AW-133; the base token is too deep to read there. */
+    subtleText: string
   }
 > = {
   success: {
@@ -56,6 +58,7 @@ const statusColors: Record<
     border: 'border-status-success',
     icon: 'text-status-success',
     text: 'text-status-success',
+    subtleText: 'text-on-status-success-subtle',
   },
   info: {
     subtle: 'bg-status-info-subtle',
@@ -64,6 +67,7 @@ const statusColors: Record<
     border: 'border-status-info',
     icon: 'text-status-info',
     text: 'text-status-info',
+    subtleText: 'text-on-status-info-subtle',
   },
   warning: {
     subtle: 'bg-status-warning-subtle',
@@ -72,6 +76,7 @@ const statusColors: Record<
     border: 'border-status-warning',
     icon: 'text-status-warning',
     text: 'text-status-warning',
+    subtleText: 'text-on-status-warning-subtle',
   },
   error: {
     subtle: 'bg-status-error-subtle',
@@ -80,6 +85,7 @@ const statusColors: Record<
     border: 'border-status-error',
     icon: 'text-status-error',
     text: 'text-status-error',
+    subtleText: 'text-on-status-error-subtle',
   },
 }
 
@@ -142,7 +148,7 @@ export function Alert({
               className={cn(
                 'font-bold',
                 isCompact ? 'text-base' : 'text-lg',
-                isSolid ? 'text-white' : colors.icon
+                isSolid ? 'text-white' : variant === 'subtle' ? colors.subtleText : colors.icon
               )}
             >
               {defaultIcons[status]}
@@ -154,7 +160,10 @@ export function Alert({
       <View className="flex-1">
         {message != null && (
           <Text
-            className={cn('text-sm font-semibold', isSolid ? 'text-white' : colors.text)}
+            className={cn(
+              'text-sm font-semibold',
+              isSolid ? 'text-white' : variant === 'subtle' ? colors.subtleText : colors.text
+            )}
             testID="alert-message"
           >
             {message}

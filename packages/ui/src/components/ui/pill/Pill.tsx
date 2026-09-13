@@ -83,13 +83,17 @@ const toneStyles: Record<PillVariant, Record<PillTone, string>> = {
     // host is, and an alpha fill composites by the same amount on all of them.
     // A `surface-*` fill would vanish on the plane it names. Borderless like the
     // six coloured tones — the fill carries the capsule, not a ring.
+    // Label comes from `on-*-subtle`, not the base tone token: the base is tuned to
+    // carry a white label as a solid fill, which left error and accent unreadable
+    // here (AW-133). The on-subtle tokens level the family at one weight.
     neutral: 'bg-hairline-subtle border-transparent text-text-secondary',
-    brand: 'bg-brand-primary-subtle border-transparent text-brand-primary',
-    'brand-secondary': 'bg-brand-secondary-subtle border-transparent text-brand-secondary',
-    success: 'bg-status-success-subtle border-transparent text-status-success',
-    warning: 'bg-status-warning-subtle border-transparent text-status-warning',
-    error: 'bg-status-error-subtle border-transparent text-status-error',
-    info: 'bg-status-info-subtle border-transparent text-status-info',
+    brand: 'bg-brand-primary-subtle border-transparent text-on-brand-primary-subtle',
+    'brand-secondary':
+      'bg-brand-secondary-subtle border-transparent text-on-brand-secondary-subtle',
+    success: 'bg-status-success-subtle border-transparent text-on-status-success-subtle',
+    warning: 'bg-status-warning-subtle border-transparent text-on-status-warning-subtle',
+    error: 'bg-status-error-subtle border-transparent text-on-status-error-subtle',
+    info: 'bg-status-info-subtle border-transparent text-on-status-info-subtle',
   },
   outline: {
     neutral: 'border-hairline text-text-secondary',

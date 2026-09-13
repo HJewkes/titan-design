@@ -63,7 +63,11 @@ const HTML_CSS = `
     --status-success-muted: rgba(46, 213, 115, 0.30);
     --status-warning-subtle: rgba(249, 180, 21, 0.12);
     --status-warning-muted: rgba(249, 180, 21, 0.30);
-    --status-error-subtle: rgba(209, 67, 67, 0.12);
+    /* -subtle rebased onto red[400] at 0.08, not the family's 0.12 (AW-133): the fill
+       and the text on it are one hue family, and error sits a rung darker than its
+       siblings so it reads red rather than pink. The thinner fill buys back the
+       contrast that costs. -muted stays on the base red[600]. */
+    --status-error-subtle: rgba(247, 113, 117, 0.08);
     --status-error-muted: rgba(209, 67, 67, 0.30);
     --status-error-dark: #A4221C;
     --brand-primary-muted: rgba(255, 121, 0, 0.30);

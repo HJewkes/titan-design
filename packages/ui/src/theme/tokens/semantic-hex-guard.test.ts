@@ -63,6 +63,14 @@ describe('semantic token hex guard (VW-83)', () => {
  * Resolved values captured from `main` (pre-VW-83), before any semantic.ts
  * literal was replaced by a ramp step or a named primitive. The migration must
  * not change what any token paints — only where its value comes from.
+ *
+ * AMENDED by AW-133, which is NOT a refactor and does change what some tokens
+ * paint. Splitting text-on-subtle from the base tone token added the six
+ * `on-*-subtle` entries, and rebased three dark `-subtle` fills onto the hue
+ * their label now uses (`brand-secondary`, `status-error`, `status-info`). Those
+ * deltas are deliberate and reviewed; everything else here is still the
+ * pre-migration pin. Treat a diff against this fixture as a question to answer,
+ * not a number to refresh — regenerating it wholesale defeats the guard.
  */
 const resolvedBeforeFixture = {
   light: {
@@ -84,6 +92,8 @@ const resolvedBeforeFixture = {
     'brand-secondary-active': '#22465F',
     'on-brand-primary': '#FFFFFF',
     'on-brand-secondary': '#FFFFFF',
+    'on-brand-primary-subtle': '#FF7900',
+    'on-brand-secondary-subtle': '#307B9B',
     'status-success': '#2ED573',
     'status-success-light': '#58F69E',
     'status-success-dark': '#298732',
@@ -120,6 +130,10 @@ const resolvedBeforeFixture = {
     'on-status-error': '#FFFFFF',
     'on-status-warning': '#FFFFFF',
     'on-status-info': '#FFFFFF',
+    'on-status-success-subtle': '#2ED573',
+    'on-status-error-subtle': '#D14343',
+    'on-status-warning-subtle': '#F9B415',
+    'on-status-info-subtle': '#2196F3',
     'result-improve': '#4caf50',
     'result-improve-light': 'rgba(76, 175, 80, 0.12)',
     'result-improve-dark': '#248a24',
@@ -189,13 +203,15 @@ const resolvedBeforeFixture = {
     'brand-secondary': '#307B9B',
     'brand-secondary-light': '#2697B7',
     'brand-secondary-dark': '#2A617F',
-    'brand-secondary-subtle': 'rgba(48, 123, 155, 0.12)',
+    'brand-secondary-subtle': 'rgba(34, 211, 238, 0.12)',
     'brand-secondary-muted': 'rgba(48, 123, 155, 0.30)',
     'brand-secondary-strong': 'rgba(48, 123, 155, 0.50)',
     'brand-secondary-hover': '#2697B7',
     'brand-secondary-active': '#01B5D1',
     'on-brand-primary': '#FFFFFF',
     'on-brand-secondary': '#FFFFFF',
+    'on-brand-primary-subtle': '#FF7900',
+    'on-brand-secondary-subtle': '#22D3EE',
     'status-success': '#2ED573',
     'status-success-light': '#58F69E',
     'status-success-dark': '#298732',
@@ -207,7 +223,7 @@ const resolvedBeforeFixture = {
     'status-error': '#D14343',
     'status-error-light': '#E05254',
     'status-error-dark': '#A4221C',
-    'status-error-subtle': 'rgba(209, 67, 67, 0.12)',
+    'status-error-subtle': 'rgba(247, 113, 117, 0.08)',
     'status-error-muted': 'rgba(209, 67, 67, 0.30)',
     'status-error-strong': 'rgba(209, 67, 67, 0.50)',
     'status-error-vivid': '#FF4757',
@@ -225,13 +241,17 @@ const resolvedBeforeFixture = {
     'status-info': '#2196F3',
     'status-info-light': '#78C2FF',
     'status-info-dark': '#1072CB',
-    'status-info-subtle': 'rgba(33, 150, 243, 0.12)',
+    'status-info-subtle': 'rgba(120, 194, 255, 0.12)',
     'status-info-muted': 'rgba(33, 150, 243, 0.30)',
     'status-info-strong': 'rgba(33, 150, 243, 0.50)',
     'on-status-success': '#FFFFFF',
     'on-status-error': '#FFFFFF',
     'on-status-warning': '#FFFFFF',
     'on-status-info': '#FFFFFF',
+    'on-status-success-subtle': '#2ED573',
+    'on-status-error-subtle': '#F77175',
+    'on-status-warning-subtle': '#F9B415',
+    'on-status-info-subtle': '#78C2FF',
     'result-improve': '#4caf50',
     'result-improve-light': 'rgba(76, 175, 80, 0.16)',
     'result-improve-dark': '#248a24',
