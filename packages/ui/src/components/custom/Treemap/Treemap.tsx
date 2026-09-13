@@ -3,6 +3,7 @@ import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { DATAVIZ_CATEGORICAL_PALETTE } from '../../../theme/extracted-colors-dataviz'
 import { primitiveColors } from '../../../theme/tokens/primitives'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 export interface TreemapDatum {
   /** Stable identity — returned by onPress and used as the React key. */
@@ -36,6 +37,8 @@ export interface TreemapProps extends Omit<ViewProps, 'children'> {
   selectedId?: string
   className?: string
 }
+
+const t = getSemanticColors('dark')
 
 /** Titan categorical fallback palette (see extracted-colors-dataviz). */
 const PALETTE = DATAVIZ_CATEGORICAL_PALETTE
@@ -147,8 +150,7 @@ export function Treemap({
       {
         id: '__more__',
         value: restValue,
-        // VW-82: no token at this value (nearest surface-overlay #373635); proposed, not swapped.
-        color: '#3a3a3a',
+        color: t['surface-overlay'],
         label: `+${clean.length - (maxTiles - 1)} more`,
       },
     ]
@@ -185,8 +187,7 @@ export function Treemap({
             }}
           >
             {labelFits && (
-              // VW-82: label on a data-coloured tile; no on-data token exists yet.
-              <Text numberOfLines={2} className="text-[10px] font-semibold text-[#0b0b0b]">
+              <Text numberOfLines={2} className="text-[10px] font-semibold text-on-data-strong">
                 {r.datum.label ?? r.datum.id}
               </Text>
             )}

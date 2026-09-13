@@ -62,6 +62,14 @@ export const semanticPins = {
   // Periwinkle/indigo; more purple than any primitiveRamps.blue step. Shared by
   // dark-mode text-link, border-focus and border-input-focus.
   focusIndigoDark: '#828DF8',
+  // Pure neutral grey (R=G=B) for the idle toolbar label. greyRamp[200]
+  // (#D4D1CE) is the nearest step and is warm, so it reads brown against the
+  // white active label sitting next to it. Approved as its own pin (VW-82).
+  onControlIdle: '#D1D1D1',
+  // Near-black for a label ON a light data fill. Below greyRamp[975] (#100D0A),
+  // and neutral where that step is warm — a chart tile is not a surface plane,
+  // so it does not inherit the ramp's warmth. Approved as its own pin (VW-82).
+  onDataStrong: '#0B0B0B',
 } as const
 
 /**

@@ -17,14 +17,6 @@ interface ToolbarButtonContextType {
   setIsOpen: (open: boolean) => void
 }
 
-/**
- * Idle icon/label tone. VW-82: no token resolves to this — it sits between
- * `text-secondary` (#A29F9D) and `text-primary` (#F9F6F3) and is cooler than
- * either, so snapping it to the warm grey ramp is a visual change awaiting the
- * proposed `on-control-idle` role rather than a silent swap.
- */
-const ICON_IDLE = '#D1D1D1'
-
 const ToolbarButtonContext = createContext<ToolbarButtonContextType>({
   isOpen: false,
   setIsOpen: () => {},
@@ -144,7 +136,7 @@ export function ToolbarButton({
   // Determine icon color based on state
   const getIconColor = () => {
     if (isActive === true) return resolveColor('brand-primary')
-    return showActive ? primitiveColors.white : ICON_IDLE
+    return showActive ? resolveColor('on-control-active') : resolveColor('on-control-idle')
   }
 
   /**
@@ -217,7 +209,7 @@ export function ToolbarButton({
                 'font-bold',
                 textSizeStyles[size],
                 icon && 'ml-2',
-                showActive ? 'text-white' : 'text-[#D1D1D1]'
+                showActive ? 'text-on-control-active' : 'text-on-control-idle'
               )}
               numberOfLines={1}
             >

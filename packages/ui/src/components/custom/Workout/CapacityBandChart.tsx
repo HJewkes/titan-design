@@ -11,8 +11,7 @@ const STATUS_WARNING = t['status-warning']
 const STATUS_INFO = t['status-info']
 /** Dot outline: near-white ring so load dots read on the band fill and any
  *  surface (matches the MesoStatusCard gauge-marker convention). */
-// VW-82: no token at this value (nearest text-primary #F9F6F3). Left raw, proposed.
-const DOT_BORDER = '#F3F4F6'
+const DOT_BORDER = t['text-primary']
 const BAND_FILL = alpha(STATUS_SUCCESS, 0.1)
 const BAND_EDGE = alpha(STATUS_SUCCESS, 0.45)
 const PROJECTION_FILL = alpha(STATUS_SUCCESS, 0.05)

@@ -140,8 +140,7 @@ export function Select<T extends string = string>({
           accessibilityState={{ expanded: isOpen, disabled: isDisabled }}
           className={cn(
             'flex-row items-center justify-between px-4 py-2.5 rounded-md border',
-            // VW-82: scrim-style fill, left raw (see Modal.tsx).
-            variant === 'filled' ? 'bg-black/30' : 'bg-surface-base',
+            variant === 'filled' ? 'bg-scrim-subtle' : 'bg-surface-base',
             isInvalid
               ? 'border-border-input-error'
               : variant === 'filled'
