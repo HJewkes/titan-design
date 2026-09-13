@@ -319,6 +319,20 @@ pnpm test:coverage
 pnpm build
 ```
 
+### Guardrails
+
+- `pnpm lint` enforces that every Storybook story's `title` starts with an approved
+  top-level group (`Foundations`, `Components`, `Custom`, `Shell`, `Pages`, `Lab`,
+  `Docs` — see `eslint-rules/story-title-prefix.js`), so a new story can't invent an
+  unlisted sidebar root.
+- `pnpm test` runs `src/arch/arch-graph.freshness.test.ts`, which fails CI when
+  `src/arch/arch-graph.json`'s recorded component-barrel hash no longer matches the
+  current barrels — i.e. when `pnpm arch:graph` needs to be re-run and committed.
+  Full regeneration doesn't run in CI itself: it needs the `@codewatch/cli` CLI
+  (unpublished, see AW-118) and sibling checkouts of every consumer in
+  `scripts/arch.config.json`, neither of which a CI runner has; running it there
+  would silently score every consumer as zero usage instead of failing loudly.
+
 ## Storybook Configuration
 
 This package uses Storybook 10 with `@storybook/react-native-web-vite` for proper NativeWind support. Key configuration:
