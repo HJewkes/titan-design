@@ -102,6 +102,10 @@ type props without pulling the dependency.
   (`SET_STRIP_VARIABLE_COLOR`) is the shared "variable / unknown / opportunity" pin.
   `SegmentedBar` carries these via additive `leadingGap` (per-segment left margin) and
   static `opacity` props — the flat sets stay byte-identical.
+  `active`/`todo` sets optionally carry the plan's prescribed rep RANGE (`repsLow`/
+  `repsHigh`, VMCP-03.04), rendered as a small label above the bar (`8–12`, or `8` when
+  equal/only one is given) via the shared `formatRepsRange` helper — independent of
+  `range`'s `floor`/`max` value range.
   `SetStrip`/`SetBar` colors are the real titan ramp pins (`primitiveRamps` red-600 /
   orange-400 / amber-300 / green-300); the rail surfaces bind to the grey ramp and the
   list is a well cut with the shared `insetWell` material. The heading
