@@ -93,11 +93,11 @@ type props without pulling the dependency.
   `ExerciseCardHeading` IS the exercise row. Its `density` prop carries the only
   axis that ever separated the three call sites:
 
-  | `density`  | shape                                                   | was                          |
-  | ---------- | ------------------------------------------------------- | ---------------------------- |
-  | `rail`     | two lines: name, then prescription beside the tempo      | `ExerciseCardHeading`        |
-  | `compact`  | one line: name + prescription, strip below               | `ExerciseCard`'s CollapsedCard |
-  | `upcoming` | `compact`, dimmed, previous best pinned right            | `ExerciseCard`'s UpcomingCard  |
+  | `density`  | shape                                               | was                            |
+  | ---------- | --------------------------------------------------- | ------------------------------ |
+  | `rail`     | two lines: name, then prescription beside the tempo | `ExerciseCardHeading`          |
+  | `compact`  | one line: name + prescription, strip below          | `ExerciseCard`'s CollapsedCard |
+  | `upcoming` | `compact`, dimmed, previous best pinned right       | `ExerciseCard`'s UpcomingCard  |
 
   `CollapsedCard` and `UpcomingCard` are deleted; `ExerciseCard` maps its props onto
   the row, so **its own prop shape is unchanged** and no consumer migrates. Three
@@ -148,6 +148,15 @@ type props without pulling the dependency.
   `repsHigh`, VMCP-03.04), rendered as a small label above the bar (`8–12`, or `8` when
   equal/only one is given) via the shared `formatRepsRange` helper — independent of
   `range`'s `floor`/`max` value range.
+  They may also carry `expectedRange` (`{ low, high, n }`, VW-301) — a **stats-derived**
+  expected rep range computed from the lifter's own history of reps completed to the
+  velocity-loss threshold, **not the plan's prescription**. Rendered via
+  `formatExpectedRange` as `~5–15 expected` beneath the prescribed label, deliberately
+  lighter/smaller (`text-3xs`/`text-tertiary`, regular weight vs. the prescription's
+  `text-2xs`/`text-secondary`/semibold) so it never reads as a second prescription —
+  per Jukic et al. 2023 its limits of agreement run about ±5 reps. `n` (sample size)
+  is surfaced only to screen readers (`accessibilityLabel`), to keep the visible label
+  short.
   `SetStrip`/`SetBar` colors are the real titan ramp pins (`primitiveRamps` red-600 /
   orange-400 / amber-300 / green-300); the rail surfaces bind to the grey ramp and the
   list is a well cut with the shared `insetWell` material. The heading

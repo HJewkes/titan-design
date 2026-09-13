@@ -119,6 +119,65 @@ describe('SetStrip', () => {
     })
   })
 
+  describe('expected rep range (VW-301)', () => {
+    it('prescribed-only: renders the prescribed label without an expected label', () => {
+      render(<SetStrip sets={[{ status: 'todo', planned: 10, repsLow: 8, repsHigh: 12 }]} />)
+      expect(screen.getByTestId('set-strip-reps-label')).toHaveTextContent('8–12')
+      expect(screen.queryByTestId('set-strip-expected-label')).not.toBeInTheDocument()
+    })
+
+    it('expected-only: renders the expected label without a prescribed label', () => {
+      render(
+        <SetStrip
+          sets={[{ status: 'todo', planned: 10, expectedRange: { low: 5, high: 15, n: 12 } }]}
+        />
+      )
+      expect(screen.queryByTestId('set-strip-reps-label')).not.toBeInTheDocument()
+      expect(screen.getByTestId('set-strip-expected-label')).toHaveTextContent('~5–15 expected')
+    })
+
+    it('both: renders the prescribed and expected labels side by side, visually distinct', () => {
+      render(
+        <SetStrip
+          sets={[
+            {
+              status: 'active',
+              velocities: [0.9],
+              planned: 10,
+              repsLow: 8,
+              repsHigh: 12,
+              expectedRange: { low: 5, high: 15, n: 12 },
+            },
+          ]}
+        />
+      )
+      const prescribed = screen.getByTestId('set-strip-reps-label')
+      const expected = screen.getByTestId('set-strip-expected-label')
+      expect(prescribed).toHaveTextContent('8–12')
+      expect(expected).toHaveTextContent('~5–15 expected')
+      // Both render as separate elements (distinct testIDs) rather than one merged
+      // string — the visual weight difference (2xs/secondary/semibold vs. 3xs/tertiary/
+      // regular, see SetStrip's docblock) is a Storybook/visual concern; nativewind is
+      // stubbed out under vitest (see vitest.config.ts), so className/style aren't
+      // meaningful to assert on here.
+      expect(prescribed).not.toBe(expected)
+    })
+
+    it('exposes the sample size to screen readers even though the visible label omits it', () => {
+      render(
+        <SetStrip
+          sets={[{ status: 'todo', planned: 10, expectedRange: { low: 5, high: 15, n: 12 } }]}
+        />
+      )
+      expect(screen.getByLabelText('Expected 5–15 reps, from 12 sets')).toBeInTheDocument()
+    })
+
+    it('renders no expected label when the set has no expectedRange', () => {
+      render(<SetStrip sets={[{ status: 'todo', planned: 10 }]} />)
+      expect(screen.queryByTestId('set-strip-expected-label')).not.toBeInTheDocument()
+    })
+  })
+
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const sets: SetStripSet[] = [

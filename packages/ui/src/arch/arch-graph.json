@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:dce43a7ab61690b039e84fc8569e9f7f8a62a40de91a6da5001abbf0ed8a51ba",
+  "componentBarrelHash": "sha256:c3e1e3fd2b66f5ae15313affa1cb8c8fb25c5fae368b42e306a9065da7e918a7",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -87,7 +87,7 @@
         "rawText": 5,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 205,
+        "loc": 226,
         "score": 8
       },
       "tier": "atom",
@@ -358,9 +358,9 @@
         "rawView": 15,
         "rawText": 15,
         "inlineStyle": 36,
-        "rawHex": 1,
-        "loc": 515,
-        "score": 103
+        "rawHex": 0,
+        "loc": 516,
+        "score": 102
       },
       "tier": "organism",
       "verdict": "keep-internal",
@@ -508,9 +508,9 @@
         "rawView": 0,
         "rawText": 2,
         "inlineStyle": 1,
-        "rawHex": 6,
+        "rawHex": 0,
         "loc": 305,
-        "score": 10
+        "score": 4
       },
       "tier": "atom",
       "verdict": "keep-core",
@@ -556,7 +556,7 @@
         "rawText": 4,
         "inlineStyle": 12,
         "rawHex": 1,
-        "loc": 528,
+        "loc": 529,
         "score": 38
       },
       "tier": "atom",
@@ -1106,7 +1106,7 @@
         "rawText": 3,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 212,
+        "loc": 215,
         "score": 9
       },
       "tier": "molecule",
@@ -1270,7 +1270,7 @@
         "rawText": 0,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 187,
+        "loc": 194,
         "score": 3
       },
       "tier": "organism",
@@ -1364,7 +1364,7 @@
         "rawText": 0,
         "inlineStyle": 5,
         "rawHex": 0,
-        "loc": 222,
+        "loc": 236,
         "score": 16
       },
       "tier": "organism",
@@ -1950,7 +1950,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 48,
+        "loc": 50,
         "score": 1
       },
       "tier": "atom",
@@ -2109,7 +2109,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 182,
+        "loc": 183,
         "score": 5
       },
       "tier": "organism",
@@ -2267,9 +2267,9 @@
         "rawView": 3,
         "rawText": 5,
         "inlineStyle": 10,
-        "rawHex": 1,
-        "loc": 163,
-        "score": 29
+        "rawHex": 0,
+        "loc": 165,
+        "score": 28
       },
       "tier": "atom",
       "verdict": "keep-internal",
@@ -2305,7 +2305,7 @@
         "rawText": 2,
         "inlineStyle": 5,
         "rawHex": 2,
-        "loc": 225,
+        "loc": 227,
         "score": 18
       },
       "tier": "atom",
@@ -2457,7 +2457,7 @@
         "rawText": 0,
         "inlineStyle": 4,
         "rawHex": 0,
-        "loc": 91,
+        "loc": 97,
         "score": 11
       },
       "tier": "organism",
@@ -2783,7 +2783,7 @@
         "rawText": 1,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 39,
+        "loc": 41,
         "score": 3
       },
       "tier": "atom",
@@ -2871,7 +2871,7 @@
         "rawText": 3,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 265,
+        "loc": 267,
         "score": 6
       },
       "tier": "molecule",
@@ -3021,7 +3021,7 @@
         "rawText": 1,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 220,
+        "loc": 224,
         "score": 3
       },
       "tier": "atom",
@@ -3317,7 +3317,7 @@
         "rawText": 4,
         "inlineStyle": 5,
         "rawHex": 0,
-        "loc": 365,
+        "loc": 368,
         "score": 26
       },
       "tier": "atom",
@@ -3397,9 +3397,9 @@
         "rawView": 7,
         "rawText": 7,
         "inlineStyle": 14,
-        "rawHex": 1,
-        "loc": 288,
-        "score": 43
+        "rawHex": 0,
+        "loc": 289,
+        "score": 42
       },
       "tier": "organism",
       "verdict": "dead",
@@ -3509,9 +3509,9 @@
         "rawView": 8,
         "rawText": 5,
         "inlineStyle": 14,
-        "rawHex": 1,
+        "rawHex": 0,
         "loc": 363,
-        "score": 42
+        "score": 41
       },
       "tier": "atom",
       "verdict": "keep-app",
@@ -3696,7 +3696,7 @@
         "rawText": 5,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 244,
+        "loc": 245,
         "score": 10
       },
       "tier": "molecule",
@@ -3966,6 +3966,7 @@
         "SetBar",
         "SET_STRIP_ZONES",
         "SET_STRIP_VARIABLE_COLOR",
+        "ExpectedRepsRange",
         "SetStripSet",
         "SetBarProps",
         "chunkedSegments",
@@ -3991,7 +3992,7 @@
         "rawText": 0,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 198,
+        "loc": 224,
         "score": 2
       },
       "tier": "molecule",
@@ -4117,9 +4118,9 @@
         "rawView": 0,
         "rawText": 0,
         "inlineStyle": 26,
-        "rawHex": 7,
-        "loc": 365,
-        "score": 59
+        "rawHex": 2,
+        "loc": 367,
+        "score": 54
       },
       "tier": "organism",
       "verdict": "remove",
@@ -4195,7 +4196,7 @@
         "rawText": 0,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 61,
+        "loc": 75,
         "score": 3
       },
       "tier": "molecule",
@@ -4214,7 +4215,9 @@
         "SetStripProps",
         "setCategory",
         "describeSets",
-        "repsRangeLabel"
+        "repsRangeLabel",
+        "expectedRangeLabel",
+        "expectedRangeAccessibilityLabel"
       ],
       "libDependents": 1,
       "storyRefs": 1,
@@ -4229,12 +4232,12 @@
         "SetBar"
       ],
       "leak": {
-        "rawView": 2,
-        "rawText": 1,
+        "rawView": 3,
+        "rawText": 2,
         "inlineStyle": 3,
         "rawHex": 0,
-        "loc": 92,
-        "score": 9
+        "loc": 131,
+        "score": 11
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -4541,9 +4544,9 @@
         "rawView": 1,
         "rawText": 0,
         "inlineStyle": 0,
-        "rawHex": 2,
-        "loc": 71,
-        "score": 3
+        "rawHex": 1,
+        "loc": 73,
+        "score": 2
       },
       "tier": "atom",
       "verdict": "keep-app",
@@ -4697,7 +4700,7 @@
         "rawText": 2,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 236,
+        "loc": 238,
         "score": 8
       },
       "tier": "atom",
@@ -4793,7 +4796,7 @@
         "SurfaceProps"
       ],
       "libDependents": 15,
-      "storyRefs": 46,
+      "storyRefs": 47,
       "xproj": {
         "mobile": 22,
         "mcp": 7,
@@ -4985,7 +4988,7 @@
         "rawText": 1,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 239,
+        "loc": 241,
         "score": 5
       },
       "tier": "atom",
@@ -5120,7 +5123,7 @@
         "rawText": 6,
         "inlineStyle": 13,
         "rawHex": 7,
-        "loc": 415,
+        "loc": 417,
         "score": 49
       },
       "tier": "molecule",
@@ -5229,7 +5232,7 @@
         "rawText": 8,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 318,
+        "loc": 320,
         "score": 15
       },
       "tier": "molecule",
@@ -5256,7 +5259,7 @@
         "cn"
       ],
       "libDependents": 0,
-      "storyRefs": 1,
+      "storyRefs": 2,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
@@ -5271,9 +5274,9 @@
         "rawView": 3,
         "rawText": 1,
         "inlineStyle": 0,
-        "rawHex": 2,
-        "loc": 304,
-        "score": 6
+        "rawHex": 1,
+        "loc": 312,
+        "score": 5
       },
       "tier": "molecule",
       "verdict": "keep-app",
@@ -5419,7 +5422,7 @@
         "squarify"
       ],
       "libDependents": 0,
-      "storyRefs": 1,
+      "storyRefs": 2,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
@@ -5432,9 +5435,9 @@
         "rawView": 1,
         "rawText": 1,
         "inlineStyle": 2,
-        "rawHex": 2,
-        "loc": 196,
-        "score": 8
+        "rawHex": 1,
+        "loc": 199,
+        "score": 7
       },
       "tier": "atom",
       "verdict": "dead",
@@ -5500,7 +5503,7 @@
         "OverlineProps"
       ],
       "libDependents": 40,
-      "storyRefs": 9,
+      "storyRefs": 10,
       "xproj": {
         "mobile": 0,
         "mcp": 6,
@@ -7488,9 +7491,9 @@
         "rawView": 15,
         "rawText": 15,
         "inlineStyle": 36,
-        "rawHex": 1,
-        "loc": 515,
-        "score": 103
+        "rawHex": 0,
+        "loc": 516,
+        "score": 102
       },
       {
         "name": "StrengthTrendChart",
@@ -7528,9 +7531,9 @@
         "rawView": 0,
         "rawText": 0,
         "inlineStyle": 26,
-        "rawHex": 7,
-        "loc": 365,
-        "score": 59
+        "rawHex": 2,
+        "loc": 367,
+        "score": 54
       },
       {
         "name": "VelocityStrip",
@@ -7549,7 +7552,7 @@
         "rawText": 6,
         "inlineStyle": 13,
         "rawHex": 7,
-        "loc": 415,
+        "loc": 417,
         "score": 49
       },
       {
@@ -7563,16 +7566,6 @@
         "score": 45
       },
       {
-        "name": "ReadinessCheck",
-        "tier": "organism",
-        "rawView": 7,
-        "rawText": 7,
-        "inlineStyle": 14,
-        "rawHex": 1,
-        "loc": 288,
-        "score": 43
-      },
-      {
         "name": "RestTimer",
         "tier": "organism",
         "rawView": 7,
@@ -7583,13 +7576,13 @@
         "score": 43
       },
       {
-        "name": "Scatter",
-        "tier": "atom",
-        "rawView": 8,
-        "rawText": 5,
+        "name": "ReadinessCheck",
+        "tier": "organism",
+        "rawView": 7,
+        "rawText": 7,
         "inlineStyle": 14,
-        "rawHex": 1,
-        "loc": 363,
+        "rawHex": 0,
+        "loc": 289,
         "score": 42
       },
       {
@@ -7613,13 +7606,23 @@
         "score": 42
       },
       {
+        "name": "Scatter",
+        "tier": "atom",
+        "rawView": 8,
+        "rawText": 5,
+        "inlineStyle": 14,
+        "rawHex": 0,
+        "loc": 363,
+        "score": 41
+      },
+      {
         "name": "CapacityBandChart",
         "tier": "atom",
         "rawView": 9,
         "rawText": 4,
         "inlineStyle": 12,
         "rawHex": 1,
-        "loc": 528,
+        "loc": 529,
         "score": 38
       },
       {

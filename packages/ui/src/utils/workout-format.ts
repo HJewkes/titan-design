@@ -66,6 +66,17 @@ export function formatRepsRange(repsLow?: number, repsHigh?: number): string | n
   return null
 }
 
+/**
+ * Stats-derived expected-range label, e.g. `"~5–15 expected"`. `null` when neither
+ * bound is set. **Not the prescription** (see {@link formatRepsRange}) — the `~`
+ * prefix and `expected` suffix are load-bearing: they mark this as the lifter's own
+ * velocity-loss-threshold history (VW-301), not what the plan called for.
+ */
+export function formatExpectedRange(low?: number, high?: number): string | null {
+  const bounds = formatRepsRange(low, high)
+  return bounds == null ? null : `~${bounds} expected`
+}
+
 /** Structured prescription for the active exercise (from the plan). */
 export interface PrescriptionInput {
   repsLow?: number
