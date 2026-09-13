@@ -28,14 +28,14 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ReactNode } from 'react'
 import { View, Text, type ViewStyle } from 'react-native'
 import { getSemanticColors } from '../../theme/tokens/semantic'
-import { primitiveColors } from '../../theme/tokens/primitives'
+import { greyRamp } from '../../theme/tokens/primitives'
 import { WORKOUT_TOKENS } from '../../theme/workout-tokens'
 import { alpha } from '../../utils/colors'
 import { formatVelocity } from '../../utils/workout-format'
 
 const C = getSemanticColors('dark')
-const PAGE_BG = primitiveColors.charcoal[900]
-const PANEL_BG = primitiveColors.charcoal[800]
+const PAGE_BG = greyRamp[975]
+const PANEL_BG = greyRamp[975]
 const FONT_HEAD = '"Space Grotesk", sans-serif'
 const FONT_UI = '"Nunito Sans", sans-serif'
 const FONT_MONO = 'monospace'
@@ -66,7 +66,7 @@ const BAR_GRAIN =
 const grain = { backgroundImage: BAR_GRAIN } as unknown as ViewStyle
 /** A recessed plot well — the inset-well surface language, so bars read as sitting IN the wall. */
 const well = {
-  backgroundColor: primitiveColors.charcoal[900],
+  backgroundColor: greyRamp[975],
   boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.6), inset 0 -1px 0 rgba(255,255,255,0.04)',
 } as unknown as ViewStyle
 

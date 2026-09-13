@@ -29,15 +29,15 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ReactNode } from 'react'
 import { View, Text, type ViewStyle } from 'react-native'
 import { getSemanticColors } from '../../theme/tokens/semantic'
-import { primitiveColors } from '../../theme/tokens/primitives'
+import { greyRamp } from '../../theme/tokens/primitives'
 import { WORKOUT_TOKENS } from '../../theme/workout-tokens'
 import { alpha } from '../../utils/colors'
 import { formatVelocity } from '../../utils/workout-format'
 import { paperSheet, insetWell, debossLabel } from '../../theme/materials'
 
 const C = getSemanticColors('dark')
-const PAGE_BG = primitiveColors.charcoal[900]
-const PANEL_BG = primitiveColors.charcoal[800]
+const PAGE_BG = greyRamp[975]
+const PANEL_BG = greyRamp[975]
 const FONT_HEAD = '"Space Grotesk", sans-serif'
 const FONT_UI = '"Nunito Sans", sans-serif'
 const FONT_MONO = 'monospace'
@@ -207,7 +207,7 @@ function Panel({ children, width }: { children: ReactNode; width?: number | stri
   )
 }
 /** A recessed plot well — the inset-well surface language, so a chart reads as cut INTO the wall. */
-const plotWell = insetWell(primitiveColors.charcoal[900])
+const plotWell = insetWell(greyRamp[975])
 
 // =================================================================================
 // #1 — VELOCITY LOSS IN SET
@@ -336,7 +336,7 @@ function VerdictTile({ width = 300 }: { width?: number }) {
     <View
       style={[
         { width, borderRadius: 12, padding: 18, gap: 12, justifyContent: 'center' },
-        paperSheet(primitiveColors.charcoal[800]),
+        paperSheet(greyRamp[975]),
       ]}
     >
       <Text
@@ -770,7 +770,7 @@ function LoadVelocityChart({ width = 620, height = 360 }: { width?: number; heig
             width={132}
             height={34}
             rx={6}
-            fill={alpha(primitiveColors.charcoal[700], 0.95)}
+            fill={alpha(greyRamp[950], 0.95)}
             stroke={alpha(C['text-primary'], 0.2)}
             strokeWidth={1}
           />
@@ -854,12 +854,7 @@ function LVReadout({ width = 260 }: { width?: number }) {
     { v: 0.35, name: 'Max strength' },
   ]
   return (
-    <View
-      style={[
-        { width, borderRadius: 12, padding: 18, gap: 12 },
-        paperSheet(primitiveColors.charcoal[800]),
-      ]}
-    >
+    <View style={[{ width, borderRadius: 12, padding: 18, gap: 12 }, paperSheet(greyRamp[975])]}>
       <Text
         style={[
           { fontSize: 10, letterSpacing: 1.5, fontFamily: FONT_MONO, color: C['text-tertiary'] },
@@ -953,12 +948,7 @@ function FVReadout({ width = 260 }: { width?: number }) {
   const vDrop = Math.round((1 - last.v / first.v) * 100)
   const fRise = Math.round((last.f / first.f - 1) * 100)
   return (
-    <View
-      style={[
-        { width, borderRadius: 12, padding: 18, gap: 10 },
-        paperSheet(primitiveColors.charcoal[800]),
-      ]}
-    >
+    <View style={[{ width, borderRadius: 12, padding: 18, gap: 10 }, paperSheet(greyRamp[975])]}>
       <Text
         style={[
           { fontSize: 10, letterSpacing: 1.5, fontFamily: FONT_MONO, color: C['text-tertiary'] },
@@ -1024,7 +1014,7 @@ function CurvesSlot({ width, height = 150 }: { width?: number | string; height?:
           justifyContent: 'center',
           gap: 6,
         },
-        insetWell(primitiveColors.charcoal[900]),
+        insetWell(greyRamp[975]),
       ]}
     >
       <Text

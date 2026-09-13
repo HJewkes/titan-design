@@ -32,13 +32,13 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ReactNode } from 'react'
 import { View, Text } from 'react-native'
 import { getSemanticColors } from '../../theme/tokens/semantic'
-import { primitiveColors, primitiveRamps } from '../../theme/tokens/primitives'
+import { greyRamp, primitiveRamps } from '../../theme/tokens/primitives'
 import { alpha } from '../../utils/colors'
 import { paperSheet, insetWell, debossLabel } from '../../theme/materials'
 
 const C = getSemanticColors('dark')
-const PAGE_BG = primitiveColors.charcoal[900]
-const PANEL_BG = primitiveColors.charcoal[800]
+const PAGE_BG = greyRamp[975]
+const PANEL_BG = greyRamp[975]
 const FONT_HEAD = '"Space Grotesk", sans-serif'
 const FONT_UI = '"Nunito Sans", sans-serif'
 const FONT_MONO = 'monospace'
@@ -323,9 +323,9 @@ function phaseRuns(samples: Sample[]): Array<{ phase: Phase; pts: Sample[] }> {
 // tint choice: ecc = magenta, con = cyan, pauses grey (the TempoDisplay phase language).
 const AXIS_TONE: Record<Phase, string> = {
   ecc: primitiveRamps.magenta[800],
-  pauseBottom: primitiveColors.charcoal[300],
+  pauseBottom: greyRamp[900],
   con: primitiveRamps.cyan[800],
-  pauseTop: primitiveColors.charcoal[300],
+  pauseTop: greyRamp[900],
 }
 function targetSpans(a: Arch): Array<{ phase: Phase; t0: number; t1: number }> {
   const b = [
@@ -534,7 +534,7 @@ function RepCell({ arch, rule, caption }: { arch: Arch; rule: RuleKey; caption?:
       <Text style={{ fontSize: 10, fontFamily: FONT_UI, color: C['text-tertiary'] }}>
         {arch.sub}
       </Text>
-      <View style={[{ borderRadius: 10, padding: 8 }, insetWell(primitiveColors.charcoal[900])]}>
+      <View style={[{ borderRadius: 10, padding: 8 }, insetWell(greyRamp[975])]}>
         <GhostSpark arch={arch} rule={rule} w={CHART_W - 16} h={CHART_H} />
       </View>
       {caption && (
