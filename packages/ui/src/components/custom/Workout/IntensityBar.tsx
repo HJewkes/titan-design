@@ -11,6 +11,7 @@ import {
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { getGlowShadow } from '../../../theme/elevation'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
+import { alpha } from '../../../utils/colors'
 
 const t = getSemanticColors('dark')
 
@@ -34,7 +35,7 @@ export interface IntensityBarProps extends ViewProps {
 
 const TRACK_BG = '#333333'
 const LABEL_COLOR = '#6B7280'
-const TARGET_LINE_COLOR = 'rgba(33, 150, 243, 0.5)'
+const TARGET_LINE_COLOR = alpha(t['status-info'], 0.5)
 /** At-target is EMPHASIS, not depth: an info-toned glow through the shared builder. */
 const AT_TARGET_GLOW = getGlowShadow(t['status-info'], 'subtle')
 

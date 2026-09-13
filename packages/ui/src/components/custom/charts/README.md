@@ -16,6 +16,7 @@ come from [`src/arch/arch-graph.json`](../../../arch/arch-graph.json).
 | `SparkBars`       | atom | `resolveColor`, `cn`                            | FileActivityDetail, FileActivityRow (ActiveWork)       | yes          |
 | `SetBarChart`     | atom | `barPaper`, `SurfaceContext`, `live-rep-growth` | RomProgressionChart (Fatigue), VelocityStrip (Workout) | no — by path |
 | `live-rep-growth` | hook | `Animated`, `Easing`                            | SetBarChart, VelocityStrip                             | no — by path |
+| `flatBarGeometry` | module | —                                              | SegmentedBar (Workout), SetBarChart                    | no — by path |
 
 `SetBarChart` and `live-rep-growth` are deliberately absent from `index.ts`: they
 are workout-internal and imported by path, so the public barrel stays one mark
@@ -38,6 +39,10 @@ as a series, and `maxBars` because a sparkline is a recent-history glance.
 **`live-rep-growth`** is the newest-rep entrance, promoted out of `VelocityStrip`
 so every value-height family animates the live rep identically. It carries the
 12% `PEAK_OVERSHOOT` for a new-peak bar and honours `prefers-reduced-motion`.
+
+**`flatBarGeometry`** is the single source for the default height/gap/radius
+`SegmentedBar` (set-level) and `SetBarChart` (rep-level) each declare, documented
+as intentionally different sizes rather than left to drift apart unnoticed (VW-86).
 
 ## Reuse audit
 

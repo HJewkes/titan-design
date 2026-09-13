@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 import { Sparkline } from './Sparkline'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+
+const t = getSemanticColors('dark')
 
 const meta: Meta<typeof Sparkline> = {
   title: 'Custom/Workout/DataViz/Sparkline',
@@ -56,7 +59,7 @@ export const Descending: Story = {
   args: {
     data: descending,
     showDots: true,
-    color: '#ff4757',
+    color: t['status-error-vivid'],
   },
 }
 
@@ -64,7 +67,7 @@ export const UCurve: Story = {
   args: {
     data: uCurve,
     showDots: true,
-    color: '#2ed573',
+    color: t['status-success'],
   },
 }
 
@@ -72,7 +75,7 @@ export const Flat: Story = {
   args: {
     data: flat,
     showDots: true,
-    color: '#ffd43b',
+    color: t['status-warning-light'],
   },
 }
 
@@ -81,8 +84,8 @@ export const WithReferenceLines: Story = {
     data: ascending,
     showDots: true,
     referenceLines: [
-      { value: 30, color: '#ff4757', dashed: true },
-      { value: 45, color: '#2ed573', dashed: false },
+      { value: 30, color: t['status-error-vivid'], dashed: true },
+      { value: 45, color: t['status-success'], dashed: false },
     ],
   },
 }
@@ -99,7 +102,7 @@ export const DotsAndHighlightLast: Story = {
     data: volatile,
     showDots: true,
     highlightLast: true,
-    color: '#ffa502',
+    color: t['status-warning'],
   },
 }
 
@@ -116,10 +119,10 @@ export const AllShapes: Story = {
   render: () => (
     <View style={{ gap: 16, padding: 16 }}>
       <Sparkline data={ascending} showDots highlightLast />
-      <Sparkline data={descending} showDots color="#ff4757" />
-      <Sparkline data={uCurve} showDots color="#2ed573" />
-      <Sparkline data={flat} showDots color="#ffd43b" />
-      <Sparkline data={volatile} showDots color="#ffa502" highlightLast />
+      <Sparkline data={descending} showDots color={t['status-error-vivid']} />
+      <Sparkline data={uCurve} showDots color={t['status-success']} />
+      <Sparkline data={flat} showDots color={t['status-warning-light']} />
+      <Sparkline data={volatile} showDots color={t['status-warning']} highlightLast />
     </View>
   ),
 }

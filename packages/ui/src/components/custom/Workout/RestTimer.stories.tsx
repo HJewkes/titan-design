@@ -1,6 +1,10 @@
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { RestTimer } from './RestTimer'
+import { greyRamp } from '../../../theme/tokens/primitives'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+
+const t = getSemanticColors('dark')
 
 const meta: Meta<typeof RestTimer> = {
   title: 'Custom/Workout/RestTimer',
@@ -100,10 +104,17 @@ export const JustStarted: Story = {
 
 /** Wall-background frame for the ring stories (mirrors the north-star rest page). */
 const ringDecorator: Decorator = (Story) => (
-  <View style={{ width: 420, padding: 32, alignItems: 'center', backgroundColor: '#0E0E0E' }}>
+  <View
+    style={{
+      width: 420,
+      padding: 32,
+      alignItems: 'center',
+      backgroundColor: t['background-frame'],
+    }}
+  >
     <Text
       style={{
-        color: '#5A5A5A',
+        color: greyRamp[700],
         fontSize: 10,
         fontWeight: '700',
         letterSpacing: 1,

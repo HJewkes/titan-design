@@ -86,11 +86,50 @@ type props without pulling the dependency.
      └─ SetStrip
         └─ SetBar × N               (one set's per-rep colour bar)
 
-  ExerciseCard state="rail"  ──delegates to──▶  ExerciseCardHeading
+  ExerciseCard (all three representations)  ──delegates to──▶  ExerciseCardHeading
   ```
 
-  `ExerciseCard`'s `rail` state is now a thin adapter that delegates to
-  `ExerciseCardHeading` (so the heading is reusable without the card). `SetBar`
+  **TD-03.55 / TD-03.56 — one row, three densities, and interaction states.**
+  `ExerciseCardHeading` IS the exercise row. Its `density` prop carries the only
+  axis that ever separated the three call sites:
+
+  | `density`  | shape                                                   | was                          |
+  | ---------- | ------------------------------------------------------- | ---------------------------- |
+  | `rail`     | two lines: name, then prescription beside the tempo      | `ExerciseCardHeading`        |
+  | `compact`  | one line: name + prescription, strip below               | `ExerciseCard`'s CollapsedCard |
+  | `upcoming` | `compact`, dimmed, previous best pinned right            | `ExerciseCard`'s UpcomingCard  |
+
+  `CollapsedCard` and `UpcomingCard` are deleted; `ExerciseCard` maps its props onto
+  the row, so **its own prop shape is unchanged** and no consumer migrates. Three
+  things converged in the process, each a consistency gain rather than a new idea:
+  the collapsed row's freeform `3×6 @ 175 lbs` caption became the shared
+  `SetsRepsLoad` line; its hand-rolled `VelocityStrip` + `PlaceholderStrip` row
+  became one `SetStrip` (so `velocityZones` no longer tints the collapsed glance —
+  the expanded header already ignored it); and `isPR` surfaces through the
+  `ExerciseIndicator` chip, which is what the expanded header already did.
+
+  The prescription is a **discriminated union**: either the structured
+  `sets`/`reps`/`load` triple, or a free-text `prescription` string for an exercise
+  whose numbers aren't loaded, or neither. Mixing them is a type error rather than a
+  half-rendered line.
+
+  Interaction states are `interactive-*` token washes on the row —
+  **press > selection > hover** — plus an `isLive` name tone (`status-live`). Every
+  one is static: this row renders on the wall during a set, where titan's "the grain
+  never animates" rule applies. Hover is web-only; RN Pressable's `onHoverIn` never
+  fires on a touch surface, so a touch consumer simply gets no hover state and
+  `isSelected` carries the same "this one" meaning. Selection has **no ARIA**:
+  `aria-selected` is not allowed on `role="button"`, so the wash is the whole signal
+  and list semantics stay the rail's job.
+
+  Two follow-ups are deliberately NOT taken here. The dim depths still differ by
+  density (rail 0.55, card 0.60) because they came from two specimens and converging
+  them needs an **opacity token the set does not have** — a foundations decision.
+  And `exerciseRowState.ts` (the `interactive-*` → literal-hex map, written in the
+  shape of `onSurfaceColors`) should be **promoted into the surface module** the
+  moment a second family needs row washes.
+
+  `SetBar`
   owns the per-set colour/pulse logic; `SetStrip` lays several side by side.
   Beyond the flat `done`/`active`/`todo` sets, `SetStripSet` models set-type
   prescriptions: `range` (variable rep-range — range-max segments, committed-todo grey
@@ -102,6 +141,10 @@ type props without pulling the dependency.
   (`SET_STRIP_VARIABLE_COLOR`) is the shared "variable / unknown / opportunity" pin.
   `SegmentedBar` carries these via additive `leadingGap` (per-segment left margin) and
   static `opacity` props — the flat sets stay byte-identical.
+  `active`/`todo` sets optionally carry the plan's prescribed rep RANGE (`repsLow`/
+  `repsHigh`, VMCP-03.04), rendered as a small label above the bar (`8–12`, or `8` when
+  equal/only one is given) via the shared `formatRepsRange` helper — independent of
+  `range`'s `floor`/`max` value range.
   `SetStrip`/`SetBar` colors are the real titan ramp pins (`primitiveRamps` red-600 /
   orange-400 / amber-300 / green-300); the rail surfaces bind to the grey ramp and the
   list is a well cut with the shared `insetWell` material. The heading
@@ -126,7 +169,7 @@ type props without pulling the dependency.
   array (unchanged, still the source of truth for `SetRow` / `ExerciseCard`), the
   strip accepts an optional structured `VelocitySet` descriptor and renders the
   strength set-type vocabulary as a typed slot list. Slots are
-  `rep` (velocity-coloured) · `todo` (charcoal-300 grey) · `variable` /
+  `rep` (velocity-coloured) · `todo` (`border-prominent` grey) · `variable` /
   `continue` (`SET_STRIP_VARIABLE_COLOR` cyan-900; `continue` adds a cyan-800
   outline to read as "keep going"). Types: `straight` (done + grey todo to
   `planned`), `range` (committed grey + a cyan variable window `floor..max`),
@@ -178,14 +221,22 @@ Modalities`** (each card carries a `Collapse` accordion; promoted from the
   when neither side carries one the gutter is omitted entirely. The label keeps the prior
   vertical (rotated) orientation so it never overlaps the bars. Two scales: `hero` (tall
   wings, per-rep m/s velocity labels, a dashed running-best reference line per side) and
-  `rail` (compact — no velocity labels / reference lines, slot names in a narrow gutter).
+  `dual-expanded` (compact — no velocity labels / reference lines, slot names in a narrow
+  gutter).
   **Rep-index alignment is the invariant:** column _i_ is rep _i_ on
   both sides, so the set-type slot _kinds_ carry through (rep / todo / variable / continue,
   coloured as in the single strip) but the wide-notch chunk **gaps** (drop / myo / cluster
   boundaries) are intentionally NOT rendered — per-side horizontal gaps would break the
   mirrored L↔R column alignment. Single-voltra sets keep using `VelocityStrip`
-  `variant="hero"`. Documented by the `Playground` / `Hero*` / `Rail` stories on the wall
-  background (`Custom/Workout/DataViz/DualVelocityStrip`).
+  `variant="hero"`. Documented by the `Playground` / `Hero*` / `DualExpanded` stories on the
+  wall background (`Custom/Workout/DataViz/DualVelocityStrip`).
+
+  **`variant="rail"` → `variant="dual-expanded"` (VW-97).** `rail` was a verified misnomer —
+  this variant is the value-height strip a session-rail row _expands into_, not the rail
+  itself (the rail stays 246px and never changes width; expansion lives in a separate detail
+  pane, per the VW-97 rail-width decision). `rail` is kept as a **deprecated alias** for one
+  release (same renderer, same output) so existing call sites keep working; migrate to
+  `dual-expanded` and expect `rail` to be removed in a future release.
 
   **Reuse audit — `DashedReferenceLine` (in-file today, top-level follow-up).** The dashed
   running-best line was hand-rolled three times inside `VelocityStrip.tsx` (the single
@@ -299,8 +350,7 @@ responsive level views land (removal is out of scope for this scaffold ticket):
   (Workout Expansion), `S3SetTypes` (Set Types), `S3SessionPace` (Session Pace).
   Each is superseded by a real Shell/SessionRail component + its Storybook stories;
   `S3SessionPace` in particular is superseded by the `SessionHeader` pace glance.
-- **`ExerciseCard`'s `collapsed` / `upcoming` state representations** — the rail now
-  owns the live-list heading (`rail` state → `ExerciseCardHeading`) and the expanded
-  view is moving to `ExpandedDrawer`. Once the responsive unification (TD-03.56)
-  lands a single responsive card, the `collapsed`/`upcoming` branches of
-  `ExerciseCard` are the superseded representations to retire.
+- **`ExerciseCard`'s `collapsed` / `upcoming` state representations** — DONE
+  (TD-03.56). Both hand-rolled sub-cards are deleted; `ExerciseCard` now delegates
+  all three representations to `ExerciseCardHeading` and its `density` prop. What
+  remains to retire is the expanded view, which is moving to `ExpandedDrawer`.

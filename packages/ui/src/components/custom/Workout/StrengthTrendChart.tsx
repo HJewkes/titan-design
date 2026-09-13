@@ -4,6 +4,8 @@ import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-n
 import { cn } from '../../../utils/cn'
 import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { primitiveColors } from '../../../theme/tokens/primitives'
+import { alpha } from '../../../utils/colors'
 
 const sem = getSemanticColors('dark')
 
@@ -14,11 +16,11 @@ const PROJECTION_LINE_COLOR = resolveColor('text-tertiary')
 const STATUS_SUCCESS = sem['status-success']
 const STATUS_ERROR = sem['status-error']
 const STATUS_WARNING = sem['status-warning']
-const GRID_LINE = 'rgba(255,255,255,0.06)'
-const SUCCESS_PILL_BG = 'rgba(46,213,115,0.10)'
-const SUCCESS_PILL_BORDER = 'rgba(46,213,115,0.20)'
-const ERROR_PILL_BG = 'rgba(209,67,67,0.10)'
-const ERROR_PILL_BORDER = 'rgba(209,67,67,0.20)'
+const GRID_LINE = alpha(primitiveColors.white, 0.06)
+const SUCCESS_PILL_BG = alpha(STATUS_SUCCESS, 0.1)
+const SUCCESS_PILL_BORDER = alpha(STATUS_SUCCESS, 0.2)
+const ERROR_PILL_BG = alpha(STATUS_ERROR, 0.1)
+const ERROR_PILL_BORDER = alpha(STATUS_ERROR, 0.2)
 
 /** Left gutter reserved for y-axis value labels. */
 const PLOT_LEFT = 26
@@ -379,7 +381,7 @@ export function StrengthTrendChart({
                 height,
                 borderLeftWidth: 1,
                 borderStyle: 'dashed',
-                borderLeftColor: 'rgba(255,255,255,0.10)',
+                borderLeftColor: alpha(primitiveColors.white, 0.1),
               }}
             />
           ))}

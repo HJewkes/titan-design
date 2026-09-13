@@ -2,31 +2,32 @@
 /**
  * LiveFatiguePanel — the aligned "Live panel v2": the loss-relative {@link VelocityHero}
  * (primary) beside the vertical {@link LiveFatigueCard} (secondary), flooded by a
- * coaching {@link LiveAuraFrame} whose category tracks the verdict state. The optional
- * lite exercise header sits above.
+ * coaching {@link LiveAuraFrame} whose category tracks the verdict state.
  *
  * The velocity hero's per-rep velocities are NOT on the fatigue model (they come from
  * the live-view velocity path), so they're passed as their own `velocity` prop.
+ *
+ * SURFACE (TD-03.59). Colour resolves from the enclosing `<Surface>` through
+ * {@link useOnSurfaceColor}, not from a module-scope `getSemanticColors('dark')`. Outside
+ * any Surface the context still defaults to the dark `base` plane, so the wall display
+ * renders exactly as before while a light surface now works.
+ *
+ * RESPONSIVE (TD-03.58). The panel is CONTAINER-responsive (SIZE-D01), not prop-sized: it
+ * measures its own width in `onLayout` and hands it to {@link panelLayout}, which owns the
+ * stack/expand tiers, the spacing and the card width. The one `bodyHeight` is split across
+ * the hero and the card by {@link panelBodySplit} — one call, so the two cannot disagree.
+ * Nothing here animates: a tier change is a re-layout, never a transition, because the panel
+ * is read from across a room mid-set.
  */
-import { View, Text } from 'react-native'
+import { useState } from 'react'
+import { View, Text, type LayoutChangeEvent } from 'react-native'
 import { LiveAuraFrame, type LiveAuraCategory } from '../Workout/LiveAuraFrame'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { alpha } from '../../../utils/colors'
+import { useOnSurfaceColor } from '../../ui/surface'
 import { VelocityHero } from './VelocityHero'
 import { LiveFatigueCard } from './LiveFatigueCard'
-import { FONT_HEAD, FONT_UI, FONT_MONO, auraForVerdict } from './fatigue-tokens'
+import { FONT_MONO, auraForVerdict } from './fatigue-tokens'
+import { panelLayout, panelBodySplit } from './panel-layout'
 import type { LiveFatigueModel } from './fatigue-model'
-
-const t = getSemanticColors('dark')
-
-export interface LiveFatiguePanelHeader {
-  /** Exercise name — the large title. */
-  title: string
-  /** Prescription / block line under the title. */
-  subtitle?: string
-  /** Right-aligned progress meta, e.g. "SET 3 · REP 7 / 8". */
-  meta?: string
-}
 
 export interface LiveFatiguePanelVelocity {
   /** Per-rep MEAN concentric velocity (m/s), ordered by rep. */
@@ -40,97 +41,63 @@ export interface LiveFatiguePanelProps {
   model: LiveFatigueModel
   /** The velocity-hero data (its own source — not on the fatigue model). */
   velocity: LiveFatiguePanelVelocity
-  /** Optional lite exercise header. Omitted → no header row. */
-  header?: LiveFatiguePanelHeader
   /** Aura-flood category. Defaults to the verdict-derived category. */
   aura?: LiveAuraCategory
   /** Panel body height in px. Default 508. */
   bodyHeight?: number
-  /** Fixed fatigue-card column width. Default 318. */
+  /**
+   * Pin the fatigue-card column width instead of letting the tier choose it. Ignored when
+   * the panel is stacked (the card fills the content width there).
+   */
   cardWidth?: number
-}
-
-function ExerciseHeaderLite({ header }: { header: LiveFatiguePanelHeader }) {
-  return (
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'flex-end',
-        justifyContent: 'space-between',
-        paddingHorizontal: 24,
-        paddingTop: 18,
-        paddingBottom: 14,
-        borderBottomWidth: 1,
-        borderColor: alpha(t['text-primary'], 0.08),
-      }}
-    >
-      <View style={{ gap: 2 }}>
-        <Text
-          style={{
-            fontSize: 28,
-            fontWeight: '700',
-            fontFamily: FONT_HEAD,
-            color: t['text-primary'],
-          }}
-        >
-          {header.title}
-        </Text>
-        {header.subtitle && (
-          <Text
-            style={{
-              fontSize: 13,
-              fontWeight: '600',
-              fontFamily: FONT_UI,
-              color: t['text-secondary'],
-            }}
-          >
-            {header.subtitle}
-          </Text>
-        )}
-      </View>
-      {header.meta && (
-        <Text
-          style={{
-            fontSize: 13,
-            fontWeight: '800',
-            fontFamily: FONT_MONO,
-            color: t['text-tertiary'],
-          }}
-        >
-          {header.meta}
-        </Text>
-      )}
-    </View>
-  )
+  /**
+   * Override the measured container width, in px. The panel measures itself, so this is
+   * for tests (`onLayout` never fires under jsdom) and for a consumer that already knows
+   * the width it is about to hand the panel.
+   */
+  containerWidth?: number
 }
 
 export function LiveFatiguePanel({
   model,
   velocity,
-  header,
   aura,
   bodyHeight = 508,
-  cardWidth = 318,
+  cardWidth,
+  containerWidth,
 }: LiveFatiguePanelProps) {
+  const eyebrowColor = useOnSurfaceColor('tertiary')
+  const [measuredWidth, setMeasuredWidth] = useState(0)
+  const width = containerWidth ?? measuredWidth
+  const layout = panelLayout(width)
+  const { heroHeight, cardHeight } = panelBodySplit(bodyHeight, layout)
   const category = aura ?? auraForVerdict(model.verdict?.state ?? null)
-  const heroH = bodyHeight - 26 // leaves room for the hero's own eyebrow above it
   return (
     <LiveAuraFrame
       category={category}
       style={{ borderRadius: 0, borderWidth: 0 }}
       testID="live-fatigue-panel"
+      onLayout={(e: LayoutChangeEvent) => setMeasuredWidth(e.nativeEvent.layout.width)}
     >
       <View style={{ flex: 1 }}>
-        {header && <ExerciseHeaderLite header={header} />}
-        <View style={{ padding: 24, flexDirection: 'row', gap: 18, alignItems: 'stretch' }}>
+        <View
+          testID="live-fatigue-body"
+          style={{
+            padding: layout.padding,
+            flexDirection: layout.stacked ? 'column' : 'row',
+            gap: layout.gap,
+            alignItems: 'stretch',
+          }}
+        >
           {/* PRIMARY — the velocity hero with VL bands; flexes to fill the width the card leaves. */}
           <View style={{ flex: 1, gap: 8 }}>
             <Text
+              testID="live-fatigue-eyebrow"
               style={{
                 fontSize: 9,
                 letterSpacing: 1.2,
                 fontFamily: FONT_MONO,
-                color: t['text-tertiary'],
+                color: eyebrowColor,
               }}
             >
               VELOCITY · this set
@@ -139,11 +106,15 @@ export function LiveFatiguePanel({
               velocities={velocity.velocities}
               targetReps={velocity.targetReps}
               liveRepIndex={velocity.liveRepIndex}
-              height={heroH}
+              height={heroHeight}
             />
           </View>
-          {/* SECONDARY — the vertical fatigue card. */}
-          <LiveFatigueCard model={model} width={cardWidth} height={bodyHeight} />
+          {/* SECONDARY — the vertical fatigue card. Stacked, it fills the content width. */}
+          <LiveFatigueCard
+            model={model}
+            width={cardWidth ?? layout.cardWidth}
+            height={cardHeight}
+          />
         </View>
       </View>
     </LiveAuraFrame>

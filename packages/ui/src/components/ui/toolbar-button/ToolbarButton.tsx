@@ -2,10 +2,11 @@ import React, { useState, useCallback, createContext, useContext } from 'react'
 import { View, Text, Pressable, type ViewProps, StyleSheet, Platform } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { getHoverColors } from '../../../theme'
-import { greyRamp } from '../../../theme/tokens/primitives'
+import { greyRamp, primitiveColors } from '../../../theme/tokens/primitives'
 import { resolveColor } from '../../../theme/resolve-color'
 import { getPressedRecessShadow } from '../../../theme/elevation'
 import { liftStyle } from '../../../theme/lift'
+import { alpha } from '../../../utils/colors'
 import { Surface, useSurfaceMode } from '../surface'
 
 export type ToolbarButtonVariant = 'default' | 'raised'
@@ -51,9 +52,7 @@ export interface ToolbarButtonProps extends ViewProps {
   className?: string
 }
 
-// Base button colours. These were raw `#3C3C3C`/`#2C2C2C` literals — old cold
-// charcoal steps that survived the grey migration only because they were plain
-// strings rather than scale references.
+// Base button colours.
 const BUTTON_BG = greyRamp[800]
 
 // Calculate hover colors using color math
@@ -246,7 +245,7 @@ export function ToolbarButton({
 const styles = StyleSheet.create({
   // Disabled - flat gray background, no shadows
   disabledBg: {
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    backgroundColor: alpha(primitiveColors.white, 0.12),
     ...Platform.select({
       web: { boxShadow: 'none' } as any,
       default: { shadowOpacity: 0, elevation: 0 },

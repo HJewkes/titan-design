@@ -23,6 +23,7 @@ import { primitiveRamps } from '../../../theme/tokens/primitives'
 import { barPaper } from '../../../theme/materials'
 import { useOnSurfaceColor, useSurface, surfaceBackground } from '../../ui/surface/SurfaceContext'
 import { useLiveRepGrowth } from './live-rep-growth'
+import { REP_LEVEL_FLAT_BAR } from './flatBarGeometry'
 
 /** Linear-blend two #RRGGBB hexes (`t`=0 → a, 1 → b) — the surface-relative solid to-do tone. */
 function mixHex(a: string, b: string, t: number): string {
@@ -134,6 +135,14 @@ export interface SetBarChartProps {
   /** Format a rep value for its label. Default `String`. */
   formatValue?: (value: number) => string
   /**
+   * The LAST column has no sibling to its right to absorb an overflowing value label, so a wide
+   * label there can bleed past the plot's right edge and crowd the reference line that also runs
+   * flush to it (TD-07.10). Default false (unchanged for every existing consumer — the single
+   * hero and ROM chart). When true, that column's label flips from centered to right-anchored
+   * (grows left) once {@link shouldFlipEdgeLabel} says it doesn't fit.
+   */
+  flipEdgeLabel?: boolean
+  /**
    * To-do placeholder treatment. `solid` (default) — a solid surface-relative section (the plane
    * blended toward the on-surface neutral). `dashed` — a dashed outline stub. Exists so ROM can keep
    * its dashed to-do while the hero (and the dual that composes it) take the solid section.
@@ -180,13 +189,21 @@ export interface SetBarChartProps {
 }
 
 /** The `scale="fixed"` velocity ceiling (m/s) — a bar height reads the same absolute value across sets. */
-const FIXED_MAX_VALUE = 1.15
-/** Headroom above the peak bar: just enough to seat its value label without a big empty band on top. */
+export const FIXED_MAX_VALUE = 1.15
+/**
+ * Headroom above the scaling ceiling: just enough to seat the peak bar's value label without a big
+ * empty band on top. Applied to BOTH scales — `peak` already multiplies the performed max by this,
+ * but `fixed` used the bare ceiling with none: a rep AT or PAST `FIXED_MAX_VALUE` (a fast lift on a
+ * live wall, not just a theoretical edge) filled the plot to its very top with no room left for that
+ * bar's own label, while an equally-tall `peak` bar always kept this margin. Multiplying `fixed`'s
+ * denominator by the same constant gives both scales the identical breathing room above their tallest
+ * bar, so a lift at the ceiling reads the same on either scale.
+ */
 export const PEAK_HEADROOM = 1.03
 
 /** The height-scaling denominator for `scale` at the given performed max (guarded ≥ 0 by callers). */
 export function scaleDenominator(scale: 'peak' | 'fixed', maxValue: number): number {
-  return scale === 'fixed' ? FIXED_MAX_VALUE : maxValue * PEAK_HEADROOM
+  return (scale === 'fixed' ? FIXED_MAX_VALUE : maxValue) * PEAK_HEADROOM
 }
 
 /**
@@ -196,6 +213,25 @@ export function scaleDenominator(scale: 'peak' | 'fixed', maxValue: number): num
  */
 export function valueLabelFontSize(height: number): number {
   return Math.round(Math.max(8, Math.min(12, height * 0.11)))
+}
+
+/** Average glyph width for the bold numeric value-label font, as a fraction of its font size — a
+ * measurement-free estimate (RN text can't be synchronously measured) good enough to catch overflow. */
+const LABEL_GLYPH_WIDTH_RATIO = 0.62
+
+/** Estimate a value label's rendered width (px) from its formatted text and font size. */
+export function estimateValueLabelWidth(text: string, fontSize: number): number {
+  return text.length * fontSize * LABEL_GLYPH_WIDTH_RATIO
+}
+
+/**
+ * Whether a value label needs to flip from its default centered anchor to a right-anchored
+ * (left-growing) placement to clear the plot's right edge (TD-07.10). `roomPx` is the space
+ * available to the right of the label's centered position; `labelWidthPx` is its measured or
+ * estimated rendered width.
+ */
+export function shouldFlipEdgeLabel(roomPx: number, labelWidthPx: number): boolean {
+  return labelWidthPx / 2 > roomPx
 }
 
 // --- Hero geometry -----------------------------------------------------------
@@ -208,7 +244,7 @@ const LABEL_GAP = 3
 /** Inter-bar gap as a fraction of bar width — the locked dense default (near expanded density). */
 export const GAP_RATIO = 0.08
 /** Floor on the proportional inter-bar gap (px) — narrow plots tighten to ~expanded density. */
-const MIN_BAR_GAP = 2
+const MIN_BAR_GAP = REP_LEVEL_FLAT_BAR.gapFloor
 /**
  * The EXTRA margin at a chunk boundary (drop sub-load / myo cluster / cluster intra-rest), as a
  * fraction of bar width — proportional so it scales with the dense spacing and reads as a clear
@@ -223,7 +259,7 @@ export const BAR_MAX_WIDTH = 120
 /** Below this per-bar width the value labels collide, so all but the peak + live rep are dropped. */
 const LABEL_MIN_BAR_WIDTH = 30
 /** Default top-corner radius on bars (px). */
-const DEFAULT_BAR_RADIUS = 5
+const DEFAULT_BAR_RADIUS = REP_LEVEL_FLAT_BAR.radius
 /** Minimum drawn height of a performed bar (px) — a near-zero rep still reads as a rep. */
 const MIN_BAR_HEIGHT = 4
 /** In `flat` (compact) mode every rep bar is this fraction of the plot height — a uniform short bar. */
@@ -281,6 +317,7 @@ export function SetBarChart({
   flat = false,
   showValueLabels: showValueLabelsProp = false,
   formatValue = String,
+  flipEdgeLabel = false,
   todoVariant = 'solid',
   minColumns,
   renderReference,
@@ -462,6 +499,17 @@ export function SetBarChart({
           // duplicate them); its own label shows otherwise, fading in with `expandProgress`.
           const ownLabel = showValueLabels && !renderBarOverlay && showBarLabel(repIndex)
           const labelBottom = (expandProgress ? valueBarHeight(best) : barHeight(best)) + LABEL_GAP
+          // Only the LAST cell has no sibling to its right to absorb an overflowing label
+          // (TD-07.10) — flip it right-anchored (grows left) when it doesn't fit.
+          const isLastCell = i === cells.length - 1
+          const labelText = formatValue(value)
+          const flipLabel =
+            flipEdgeLabel &&
+            isLastCell &&
+            shouldFlipEdgeLabel(
+              barWidth / 2,
+              estimateValueLabelWidth(labelText, valueLabelFontSize(height))
+            )
           return (
             <View key={i} accessibilityElementsHidden={renderBarOverlay == null} style={column}>
               {ownLabel && (
@@ -471,9 +519,8 @@ export function SetBarChart({
                   style={{
                     position: 'absolute',
                     bottom: labelBottom,
-                    left: 0,
-                    right: 0,
-                    alignItems: 'center',
+                    ...(flipLabel ? { right: 0 } : { left: 0, right: 0 }),
+                    alignItems: flipLabel ? 'flex-end' : 'center',
                     ...(expandProgress ? { opacity: expandProgress } : null),
                   }}
                   pointerEvents="none"
@@ -483,7 +530,7 @@ export function SetBarChart({
                     style={[{ fontSize: valueLabelFontSize(height), fontWeight: '700' }, flipStyle]}
                     testID={`${testIDPrefix}-label-${repIndex}`}
                   >
-                    {formatValue(value)}
+                    {labelText}
                   </Text>
                 </Animated.View>
               )}

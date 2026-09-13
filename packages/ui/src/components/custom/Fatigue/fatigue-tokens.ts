@@ -12,6 +12,18 @@ const t = getSemanticColors('dark')
 
 export const FONT_HEAD = '"Space Grotesk", sans-serif'
 export const FONT_UI = '"Nunito Sans", sans-serif'
+
+/**
+ * FOUNDATIONS GAP (TD-03.59 debt 3) — deliberately still the generic CSS fallback.
+ *
+ * titan has TWO mono declarations and they disagree, so adopting either here would be
+ * choosing a typeface rather than resolving a token:
+ *   `primitiveTypography.fontFamilies.mono`  SF Mono · Monaco · Inconsolata · Fira Mono · …
+ *   `--font-family-mono` (global.css, both themes)  SFMono-Regular · Consolas · Liberation Mono · Menlo
+ * They also pick different first faces on macOS, so the two render at different metrics.
+ * Reconciling them is a foundations decision; until it lands this stays `monospace` so the
+ * wall render does not move under a half-made choice.
+ */
 export const FONT_MONO = 'monospace'
 
 /** Per-dimension tone → semantic status colour (the one language the dots + hero share). */

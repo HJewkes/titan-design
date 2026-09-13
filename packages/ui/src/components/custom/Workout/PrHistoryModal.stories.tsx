@@ -2,6 +2,10 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { View, Text, Pressable } from 'react-native'
 import { PrHistoryModal, type PrRecord } from './PrHistoryModal'
+import { primitiveColors } from '../../../theme/tokens/primitives'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+
+const t = getSemanticColors('dark')
 
 const records: PrRecord[] = [
   { type: 'e1rm', value: 245, unit: 'lbs', date: 'Mar 14', isRecent: true },
@@ -93,13 +97,19 @@ function InteractivePrHistoryModal() {
         accessibilityRole="button"
         style={{
           alignSelf: 'flex-start',
-          backgroundColor: '#FF7900',
+          backgroundColor: t['brand-primary'],
           paddingVertical: 10,
           paddingHorizontal: 20,
           borderRadius: 8,
         }}
       >
-        <Text style={{ color: '#FFFFFF', fontWeight: '700', fontFamily: 'Inter, sans-serif' }}>
+        <Text
+          style={{
+            color: primitiveColors.white,
+            fontWeight: '700',
+            fontFamily: 'Inter, sans-serif',
+          }}
+        >
           Open PR history
         </Text>
       </Pressable>

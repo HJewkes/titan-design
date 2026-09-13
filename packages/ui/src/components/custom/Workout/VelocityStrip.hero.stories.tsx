@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 import { VelocityStrip, DualVelocityStrip } from './VelocityStrip'
+import { FIXED_MAX_VALUE, PEAK_HEADROOM } from '../charts/SetBarChart'
 import {
   Sheet,
   Note,
@@ -213,6 +214,45 @@ export const RepTypes: Story = {
       </Note>
       <RepTypeBoard view="hero" />
     </Sheet>
+  ),
+}
+
+/**
+ * VW-97: `scale="fixed"` used the bare `FIXED_MAX_VALUE` ceiling with no headroom multiplier, so a
+ * rep AT the ceiling filled the plot to its very top with no room for its own label — unlike an
+ * equally-tall `peak` bar, which always kept `PEAK_HEADROOM`'s margin. `scaleDenominator` now
+ * applies the same headroom to both scales.
+ *
+ * "Before" reproduces the old denominator through the public `scaleMax` prop (`scaleMax *
+ * PEAK_HEADROOM` cancels back down to the bare ceiling) rather than a hand-rolled duplicate, so
+ * this story exercises the real component on both sides.
+ */
+export const FixedScaleHeadroom: Story = {
+  name: 'Fixed Scale Headroom (VW-97)',
+  decorators: [wallDecorator],
+  render: () => (
+    <View style={{ flexDirection: 'row', gap: 24 }}>
+      <View style={{ gap: 8, flex: 1 }}>
+        <ViewLabel text="before · ceiling bar touches the plot top" />
+        <VelocityStrip
+          velocities={[FIXED_MAX_VALUE, FIXED_MAX_VALUE * 0.6]}
+          variant="hero"
+          label="Set"
+          height={140}
+          scaleMax={FIXED_MAX_VALUE / PEAK_HEADROOM}
+        />
+      </View>
+      <View style={{ gap: 8, flex: 1 }}>
+        <ViewLabel text="after · fixed reserves the same headroom peak does" />
+        <VelocityStrip
+          velocities={[FIXED_MAX_VALUE, FIXED_MAX_VALUE * 0.6]}
+          variant="hero"
+          label="Set"
+          height={140}
+          scale="fixed"
+        />
+      </View>
+    </View>
   ),
 }
 

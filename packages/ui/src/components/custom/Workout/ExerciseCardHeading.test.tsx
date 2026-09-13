@@ -1,7 +1,9 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
+import { exerciseLiveColor, exerciseRowStateColor } from './exerciseRowState'
+import { onSurfaceColors } from '../../ui/surface/SurfaceContext'
 import type { SetStripSet } from './SetStrip'
 
 const setStates: SetStripSet[] = [
@@ -62,11 +64,197 @@ describe('ExerciseCardHeading', () => {
     expect(onPress).toHaveBeenCalledOnce()
   })
 
+  // The three former call sites, each proven to render from the one component.
+  describe('density', () => {
+    it('rail: the prescription sits on its own line beside the tempo', () => {
+      render(<ExerciseCardHeading {...baseProps} />)
+      const header = screen.getByTestId('exercise-card-header')
+      expect(header).not.toContainElement(screen.getByTestId('exercise-card-summary'))
+      expect(screen.getByTestId('tempo-display')).toBeInTheDocument()
+    })
+
+    it('compact: name and prescription share the header row, and the tempo is dropped', () => {
+      render(<ExerciseCardHeading {...baseProps} density="compact" />)
+      const header = screen.getByTestId('exercise-card-header')
+      expect(header).toContainElement(screen.getByTestId('exercise-card-name'))
+      expect(header).toContainElement(screen.getByTestId('exercise-card-summary'))
+      expect(screen.queryByTestId('tempo-display')).not.toBeInTheDocument()
+    })
+
+    it('compact: the prescription reads "3×6 @ 185 lbs" with no spaces around the ×', () => {
+      render(
+        <ExerciseCardHeading
+          name="Bench Press"
+          density="compact"
+          sets={3}
+          reps={6}
+          load={185}
+          unit="lbs"
+        />
+      )
+      expect(screen.getByTestId('sets-reps-load')).toHaveTextContent('3×6 @ 185 lbs')
+    })
+
+    it("compact: the prescription numbers carry the secondary tone and regular weight, not the rail's bright bold", () => {
+      render(
+        <ExerciseCardHeading
+          name="Bench Press"
+          density="compact"
+          sets={3}
+          reps={6}
+          load={185}
+          unit="lbs"
+        />
+      )
+      const secondary = onSurfaceColors('dark').secondary
+      for (const text of ['3', '6', '185']) {
+        const el = screen.getByText(text)
+        expect(el).toHaveStyle({ color: secondary })
+        // jsdom's getComputedStyle doesn't resolve numeric font-weight, so read the
+        // inline style directly rather than through toHaveStyle.
+        expect(el.style.fontWeight).toBe('400')
+      }
+    })
+
+    it('rail: the prescription numbers keep the bright bold rail treatment', () => {
+      render(<ExerciseCardHeading {...baseProps} />)
+      const primary = onSurfaceColors('dark').primary
+      const el = screen.getByText('3')
+      expect(el).toHaveStyle({ color: primary })
+      expect(el.style.fontWeight).toBe('600')
+    })
+
+    it('upcoming: dims itself and carries the free-text prescription + previous best', () => {
+      render(
+        <ExerciseCardHeading
+          name="Deadlift"
+          density="upcoming"
+          prescription="3×8-12 @ RPE 8"
+          previousBest="185 lbs × 10"
+        />
+      )
+      expect(screen.getByTestId('exercise-card')).toHaveStyle({ opacity: 0.6 })
+      expect(screen.getByTestId('exercise-card-prescription')).toHaveTextContent('3×8-12 @ RPE 8')
+      expect(screen.getByTestId('exercise-card-previous-best')).toHaveTextContent('185 lbs × 10')
+    })
+
+    it('upcoming: an explicit dimmed=false overrides the density default', () => {
+      render(<ExerciseCardHeading name="Deadlift" density="upcoming" dimmed={false} />)
+      expect(screen.getByTestId('exercise-card')).toHaveStyle({ opacity: 1 })
+    })
+
+    // The fourth call site: voltras-mcp's SPA recap card, which takes a STRING load for
+    // a weightless mode rather than fabricating a 0 (VMCP-03.05).
+    it('rail: a string load and a testID override still render standalone', () => {
+      render(
+        <ExerciseCardHeading
+          name="Cable Row"
+          sets={3}
+          reps={10}
+          load="—"
+          unit="lbs"
+          indicator="velocity-loss"
+          setStates={[{ status: 'done', velocities: [0.8, 0.7] }]}
+          testID="recap-card-heading"
+        />
+      )
+      expect(screen.getByTestId('recap-card-heading')).toBeInTheDocument()
+      expect(screen.getByTestId('exercise-card-summary')).toHaveTextContent('—')
+    })
+  })
+
+  describe('interaction states', () => {
+    it('has no wash at rest', () => {
+      render(<ExerciseCardHeading {...baseProps} />)
+      expect(screen.getByTestId('exercise-card')).not.toHaveStyle({
+        backgroundColor: exerciseRowStateColor('hovered'),
+      })
+    })
+
+    it('washes on hover of the heading row', () => {
+      render(<ExerciseCardHeading {...baseProps} />)
+      fireEvent.mouseEnter(screen.getByTestId('exercise-card-header'))
+      expect(screen.getByTestId('exercise-card')).toHaveStyle({
+        backgroundColor: exerciseRowStateColor('hovered'),
+      })
+    })
+
+    it('clears the hover wash when the pointer leaves', () => {
+      render(<ExerciseCardHeading {...baseProps} />)
+      const header = screen.getByTestId('exercise-card-header')
+      fireEvent.mouseEnter(header)
+      fireEvent.mouseLeave(header)
+      expect(screen.getByTestId('exercise-card')).not.toHaveStyle({
+        backgroundColor: exerciseRowStateColor('hovered'),
+      })
+    })
+
+    it('washes while selected, and the selection outranks a hover', () => {
+      render(<ExerciseCardHeading {...baseProps} isSelected />)
+      fireEvent.mouseEnter(screen.getByTestId('exercise-card-header'))
+      expect(screen.getByTestId('exercise-card')).toHaveStyle({
+        backgroundColor: exerciseRowStateColor('selected'),
+      })
+    })
+
+    // RNW's Pressability grants the responder before it schedules onPressIn, so the
+    // wash lands a tick after the mousedown.
+    it('a press outranks the selection wash', async () => {
+      render(<ExerciseCardHeading {...baseProps} isSelected onPress={vi.fn()} />)
+      fireEvent.mouseDown(screen.getByTestId('exercise-card-header'), { button: 0, detail: 1 })
+      await waitFor(() =>
+        expect(screen.getByTestId('exercise-card')).toHaveStyle({
+          backgroundColor: exerciseRowStateColor('pressed'),
+        })
+      )
+    })
+
+    it('tints the name with the live tone while the exercise is being performed', () => {
+      render(<ExerciseCardHeading {...baseProps} isLive />)
+      expect(screen.getByTestId('exercise-card-name')).toHaveStyle({
+        color: exerciseLiveColor(),
+      })
+    })
+
+    it('leaves the name on the primary tone when not live', () => {
+      render(<ExerciseCardHeading {...baseProps} />)
+      expect(screen.getByTestId('exercise-card-name')).not.toHaveStyle({
+        color: exerciseLiveColor(),
+      })
+    })
+
+    // The rail renders on the wall during a set; titan's "the grain is static" rule
+    // makes a live state a tone change, never motion.
+    it('the live state adds no animation or transition', () => {
+      const { container } = render(<ExerciseCardHeading {...baseProps} isLive />)
+      expect(container.innerHTML).not.toMatch(/animation|transition/i)
+    })
+  })
+
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const { container } = render(<ExerciseCardHeading {...baseProps} onPress={vi.fn()} />)
       const results = await axe(container)
       expect(results).toHaveNoViolations()
+    })
+
+    it('has no accessibility violations in the upcoming density', async () => {
+      const { container } = render(
+        <ExerciseCardHeading
+          name="Deadlift"
+          density="upcoming"
+          prescription="3×8-12 @ RPE 8"
+          previousBest="185 lbs × 10"
+          onPress={vi.fn()}
+        />
+      )
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
+
+    it('names the row from its prescription, structured or free-text', () => {
+      render(<ExerciseCardHeading {...baseProps} onPress={vi.fn()} />)
+      expect(screen.getByLabelText('Cable Chest Press, 3×10 @ 90 lbs')).toBeInTheDocument()
     })
   })
 })

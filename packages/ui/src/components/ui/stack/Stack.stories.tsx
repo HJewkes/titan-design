@@ -35,7 +35,7 @@ type Story = StoryObj<typeof Stack>
 function Box({ children }: { children: string }) {
   return (
     <View className="rounded bg-brand-primary px-4 py-2">
-      <Text className="text-sm text-white">{children}</Text>
+      <Text className="text-sm text-on-brand-primary">{children}</Text>
     </View>
   )
 }
@@ -76,23 +76,23 @@ export const Vertical: Story = {
 export const WithAlignment: Story = {
   render: () => (
     <VStack gap={6}>
-      <Text className="text-sm font-medium text-neutral-400">justify=&quot;between&quot;</Text>
+      <Text className="text-sm font-medium text-text-secondary">justify=&quot;between&quot;</Text>
       <HStack gap={2} justify="between" className="w-full">
         <Box>A</Box>
         <Box>B</Box>
         <Box>C</Box>
       </HStack>
 
-      <Text className="text-sm font-medium text-neutral-400">align=&quot;center&quot;</Text>
+      <Text className="text-sm font-medium text-text-secondary">align=&quot;center&quot;</Text>
       <HStack gap={2} align="center">
         <View className="rounded bg-brand-primary px-4 py-1">
-          <Text className="text-sm text-white">Short</Text>
+          <Text className="text-sm text-on-brand-primary">Short</Text>
         </View>
         <View className="rounded bg-brand-primary px-4 py-4">
-          <Text className="text-sm text-white">Tall</Text>
+          <Text className="text-sm text-on-brand-primary">Tall</Text>
         </View>
         <View className="rounded bg-brand-primary px-4 py-2">
-          <Text className="text-sm text-white">Medium</Text>
+          <Text className="text-sm text-on-brand-primary">Medium</Text>
         </View>
       </HStack>
     </VStack>
@@ -114,7 +114,7 @@ export const GapScale: Story = {
     <VStack gap={6}>
       {([0, 1, 2, 4, 6, 8, 12] as const).map((g) => (
         <VStack key={g} gap={1}>
-          <Text className="text-xs text-neutral-400">gap={g}</Text>
+          <Text className="text-xs text-text-secondary">gap={g}</Text>
           <HStack gap={g}>
             <Box>A</Box>
             <Box>B</Box>

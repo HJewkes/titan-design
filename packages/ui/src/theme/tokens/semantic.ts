@@ -23,6 +23,8 @@ import {
   greyRamp,
   discreteRainbow,
   alertRedVivid,
+  resultPaletteColors,
+  semanticPins,
 } from './primitives'
 
 /**
@@ -137,13 +139,13 @@ export const semanticColorsLight = {
   'on-status-info': p.white,
 
   // Result/outcome indicators (result-*)
-  'result-improve': '#4caf50', // Green - positive outcome
+  'result-improve': resultPaletteColors.improve, // Green - positive outcome
   'result-improve-light': 'rgba(76, 175, 80, 0.12)',
-  'result-improve-dark': '#248a24',
-  'result-degrade': '#ef5350', // Red - negative outcome
+  'result-improve-dark': resultPaletteColors.improveDark,
+  'result-degrade': resultPaletteColors.degrade, // Red - negative outcome
   'result-degrade-light': 'rgba(239, 83, 80, 0.12)',
-  'result-degrade-dark': '#b30000',
-  'result-inconclusive': '#9E9A97', // Gray - no clear result
+  'result-degrade-dark': resultPaletteColors.degradeDark,
+  'result-inconclusive': resultPaletteColors.inconclusive, // Gray - no clear result
   'result-inconclusive-light': 'rgba(158, 154, 151, 0.12)',
   'result-neutral': greyRamp[600], // Neutral baseline
 
@@ -166,8 +168,8 @@ export const semanticColorsLight = {
   'data-10': discreteRainbow[22], // Dark Orange
 
   // Text colors (text-*)
-  'text-primary': '#121828',
-  'text-secondary': '#65748B',
+  'text-primary': semanticPins.textPrimaryLight,
+  'text-secondary': semanticPins.textSecondaryLight,
   'text-tertiary': greyRamp[400],
   'text-disabled': 'rgba(55, 65, 81, 0.48)',
   'text-inverse': p.white,
@@ -182,7 +184,7 @@ export const semanticColorsLight = {
   'surface-input': greyRamp[50], // Input field background (filled variant)
 
   // Background colors (background-*)
-  'background-base': '#EBEBEB',
+  'background-base': semanticPins.backgroundBaseLight,
   'background-default': p.white,
   'background-subtle': greyRamp[50],
   // Frame/bezel chrome — top bar + side nav shell, one step below
@@ -212,7 +214,7 @@ export const semanticColorsLight = {
   'interactive-disabled-text': 'rgba(55, 65, 81, 0.26)',
 
   // Divider
-  divider: '#E8E9EB',
+  divider: semanticPins.dividerLight,
 
   // Avatar default
   'avatar-background': greyRamp[600],
@@ -312,13 +314,13 @@ export const semanticColorsDark = {
   'on-status-info-subtle': ramp.blue[300],
 
   // Result/outcome indicators (result-*)
-  'result-improve': '#4caf50',
+  'result-improve': resultPaletteColors.improve,
   'result-improve-light': 'rgba(76, 175, 80, 0.16)',
-  'result-improve-dark': '#248a24',
-  'result-degrade': '#ef5350',
+  'result-improve-dark': resultPaletteColors.improveDark,
+  'result-degrade': resultPaletteColors.degrade,
   'result-degrade-light': 'rgba(239, 83, 80, 0.16)',
-  'result-degrade-dark': '#b30000',
-  'result-inconclusive': '#9E9A97',
+  'result-degrade-dark': resultPaletteColors.degradeDark,
+  'result-inconclusive': resultPaletteColors.inconclusive,
   'result-inconclusive-light': 'rgba(158, 154, 151, 0.16)',
   'result-neutral': greyRamp[400],
 
@@ -352,7 +354,7 @@ export const semanticColorsDark = {
   'text-tertiary': greyRamp[500],
   'text-disabled': 'rgba(255, 255, 255, 0.38)',
   'text-inverse': greyRamp[950],
-  'text-link': '#828DF8',
+  'text-link': semanticPins.focusIndigoDark,
   'text-link-hover': ramp.blue[400],
 
   // Surface colors - dark backgrounds — warm-tapered DERIVED ramp (TD-surface-tokens,
@@ -395,10 +397,10 @@ export const semanticColorsDark = {
   // outright (4 call sites, high-visibility dividers), and grey-800 is not a
   // plane, so it keeps its job without collision.
   'border-prominent': greyRamp[800], // high-visibility divider
-  'border-focus': '#828DF8',
+  'border-focus': semanticPins.focusIndigoDark,
   'border-input': greyRamp[700],
   'border-input-hover': greyRamp[600],
-  'border-input-focus': '#828DF8',
+  'border-input-focus': semanticPins.focusIndigoDark,
   'border-input-error': ramp.red[500],
 
   // Alpha hairline separators — the primary separation cue (§4/S-2). Self-

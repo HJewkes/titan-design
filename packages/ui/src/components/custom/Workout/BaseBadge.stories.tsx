@@ -2,6 +2,10 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { DumbbellIcon } from './icons'
 import { BaseBadge } from './BaseBadge'
+import { greyRamp } from '../../../theme/tokens/primitives'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+
+const t = getSemanticColors('dark')
 
 const meta: Meta<typeof BaseBadge> = {
   title: 'Custom/Workout/BaseBadge',
@@ -17,7 +21,7 @@ const meta: Meta<typeof BaseBadge> = {
 export default meta
 type Story = StoryObj<typeof BaseBadge>
 
-const Label = ({ children, color = '#9CA3AF' }: { children: string; color?: string }) => (
+const Label = ({ children, color = greyRamp[400] }: { children: string; color?: string }) => (
   <Text
     style={{
       fontFamily: '"Space Grotesk", sans-serif',
@@ -40,14 +44,14 @@ export const Plain: Story = {
 export const Pr: Story = {
   args: {
     variant: 'pr',
-    children: <Label color="#FF7900">PR</Label>,
+    children: <Label color={t['brand-primary']}>PR</Label>,
   },
 }
 
 export const WithIcon: Story = {
   args: {
     variant: 'plain',
-    icon: <DumbbellIcon size={12} color="#9CA3AF" strokeWidth={2} />,
+    icon: <DumbbellIcon size={12} color={greyRamp[400]} strokeWidth={2} />,
     children: <Label>225 lbs</Label>,
   },
 }
@@ -68,17 +72,17 @@ export const AllVariants: Story = {
       </View>
       <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
         <BaseBadge variant="pr" size="sm">
-          <Label color="#FF7900">PR</Label>
+          <Label color={t['brand-primary']}>PR</Label>
         </BaseBadge>
         <BaseBadge variant="pr" size="md">
-          <Label color="#FF7900">PR</Label>
+          <Label color={t['brand-primary']}>PR</Label>
         </BaseBadge>
         <BaseBadge variant="pr" size="lg">
-          <Label color="#FF7900">PR</Label>
+          <Label color={t['brand-primary']}>PR</Label>
         </BaseBadge>
       </View>
       <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
-        <BaseBadge icon={<DumbbellIcon size={12} color="#9CA3AF" strokeWidth={2} />}>
+        <BaseBadge icon={<DumbbellIcon size={12} color={greyRamp[400]} strokeWidth={2} />}>
           <Label>225 lbs</Label>
         </BaseBadge>
       </View>

@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { SetStrip, type SetStripSet } from './SetStrip'
 import { Surface } from '../../ui/surface'
+import { greyRamp } from '../../../theme/tokens/primitives'
 
 /**
  * `SetStrip` — the per-set segmented performance strip. One continuous bar per
@@ -79,13 +80,67 @@ export const ShortStrip: Story = {
   },
 }
 
+// ---- prescribed rep range (VMCP-03.04) — optional on `todo`/`active` only
+
+export const RepRange: Story = {
+  args: {
+    height: 8,
+    sets: [
+      { status: 'done', velocities: decay(8, 0.9) },
+      { status: 'active', velocities: decay(3, 0.75), planned: 8, repsLow: 8, repsHigh: 12 },
+      { status: 'todo', planned: 8, repsLow: 8, repsHigh: 12 },
+    ],
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "The plan's prescribed rep RANGE (VMCP-03.04): `8–12` on the active and todo sets. " +
+          "Independent of the `range` set-type's value range (isokinetic bands).",
+      },
+    },
+  },
+}
+
+export const RepRangeSingleNumber: Story = {
+  args: {
+    height: 8,
+    sets: [
+      { status: 'active', velocities: decay(3, 0.75), planned: 8, repsLow: 8, repsHigh: 8 },
+      { status: 'todo', planned: 8, repsLow: 8 },
+    ],
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Equal bounds (or only one given) collapse to a single number: `8`, not `8–8`.',
+      },
+    },
+  },
+}
+
+export const RepRangeAbsent: Story = {
+  args: {
+    height: 8,
+    sets: [
+      { status: 'active', velocities: decay(3, 0.75), planned: 8 },
+      { status: 'todo', planned: 8 },
+    ],
+  },
+  parameters: {
+    docs: {
+      description: { story: 'No prescription on the set — no label renders (the default today).' },
+    },
+  },
+}
+
 // ---- set-type variant sheet: every variant at the real rail width, for eyeballing
 function SheetRow({ label, meta, sets }: { label: string; meta: string; sets: SetStripSet[] }) {
   return (
     <View style={{ gap: 6 }}>
       <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}>
-        <Text style={{ color: '#F3F4F6', fontSize: 13, fontWeight: '800' }}>{label}</Text>
-        <Text style={{ color: '#6B7280', fontSize: 10, fontFamily: 'monospace' }}>{meta}</Text>
+        <Text style={{ color: greyRamp[50], fontSize: 13, fontWeight: '800' }}>{label}</Text>
+        <Text style={{ color: greyRamp[600], fontSize: 10, fontFamily: 'monospace' }}>{meta}</Text>
       </View>
       <SetStrip sets={sets} />
     </View>

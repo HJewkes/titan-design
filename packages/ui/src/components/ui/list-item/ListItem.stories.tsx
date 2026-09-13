@@ -7,6 +7,7 @@ import {
   ListItemTrailing,
   ListItemDivider,
 } from './ListItem'
+import { greyRamp } from '../../../theme/tokens/primitives'
 
 function UserIcon({ size = 20 }: { size?: number; className?: string }) {
   return (
@@ -15,12 +16,14 @@ function UserIcon({ size = 20 }: { size?: number; className?: string }) {
         width: size,
         height: size,
         borderRadius: size / 2,
-        backgroundColor: '#6366f1',
+        backgroundColor: 'var(--color-avatar-background)',
         justifyContent: 'center',
         alignItems: 'center',
       }}
     >
-      <Text style={{ color: '#fff', fontSize: size * 0.5, fontWeight: '600' }}>U</Text>
+      <Text style={{ color: 'var(--color-avatar-text)', fontSize: size * 0.5, fontWeight: '600' }}>
+        U
+      </Text>
     </View>
   )
 }
@@ -50,7 +53,7 @@ function LockIcon({ size = 20 }: { size?: number; className?: string }) {
 }
 
 function ChevronRight({ size = 16 }: { size?: number }) {
-  return <Text style={{ color: '#9ca3af', fontSize: size }}>{'>'}</Text>
+  return <Text style={{ color: greyRamp[400], fontSize: size }}>{'>'}</Text>
 }
 
 const meta: Meta<typeof ListItem> = {
@@ -133,7 +136,7 @@ export const SettingsList: Story = {
         <ListItemIcon icon={WifiIcon} />
         <ListItemContent title="Wi-Fi" subtitle="HomeNetwork" />
         <ListItemTrailing>
-          <Text style={{ color: '#22c55e', fontSize: 12 }}>Connected</Text>
+          <Text style={{ color: 'var(--color-status-success)', fontSize: 12 }}>Connected</Text>
         </ListItemTrailing>
       </ListItem>
     </View>

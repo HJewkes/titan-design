@@ -1,16 +1,12 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useState } from 'react'
-import { View, Pressable } from 'react-native'
-import { VelocityStrip, type VelocityZoneBandProp } from './VelocityStrip'
-import { PlaceholderStrip } from './PlaceholderStrip'
-import { PrBadge } from './PrBadge'
+import { View } from 'react-native'
+import { type VelocityZoneBandProp } from './VelocityStrip'
 import { SetRow, type SetRowProps } from './SetRow'
 import { type SetStripSet } from './SetStrip'
 import { SetTableHeader } from './SetTableHeader'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
 import { type ExerciseIndicatorKind } from './ExerciseIndicator'
-import { Typography } from '../Typography'
-import { roundWeight } from '../../../utils/workout-format'
 import { resolveColor } from '../../../theme/resolve-color'
 
 export interface ExerciseCardProps {
@@ -34,12 +30,19 @@ export interface ExerciseCardProps {
     unit: 'lbs' | 'kg'
   }
   isPR?: boolean
-  /** Collapsed glance: per-set logged velocities (drives the mini strips). */
+  /**
+   * Collapsed glance: per-set logged velocities. Projected onto `setStates` for the
+   * row's `SetStrip` — pass `setStates` directly for anything richer than done/todo.
+   */
   setVelocities?: number[][]
-  /** Optional velocity-zone bands shared across this exercise's sets (WA bands). */
+  /** Velocity-zone bands shared across this exercise's sets (WA bands). Expanded body only. */
   velocityZones?: readonly VelocityZoneBandProp[]
-  /** Collapsed glance: total planned sets (placeholder strips fill the remainder). */
+  /** Collapsed glance: total planned sets (todo bars fill the remainder). */
   totalPlannedSets?: number
+  /** The row the user has chosen — a persistent wash on the collapsed / upcoming row. */
+  isSelected?: boolean
+  /** This exercise is being performed right now — the name takes the live tone. */
+  isLive?: boolean
   /** Expanded body: the per-set rows (done / live / todo). */
   sets?: SetRowProps[]
   tempo?: [number, number, number, number]
@@ -47,11 +50,14 @@ export interface ExerciseCardProps {
   previousBest?: string
   supersetPosition?: 'first' | 'last' | 'middle' | null
   supersetColor?: string
-  /** Expanded header per-set strip override; derived from `sets` when omitted. */
+  /**
+   * Per-set strip override for the collapsed and expanded rows; derived from
+   * `setVelocities` (collapsed) or `sets` (expanded) when omitted.
+   */
   setStates?: SetStripSet[]
-  /** A small PR / issue / info chip in the title line (expanded header). */
+  /** A small PR / issue / info chip in the title line. */
   indicator?: ExerciseIndicatorKind
-  /** Expanded header strip height in px. Default 8. */
+  /** Row strip height in px. Default 8. */
   stripHeight?: number
 }
 
@@ -105,19 +111,28 @@ function getSupersetMargin(
   return {}
 }
 
-function formatSummary(summary: ExerciseCardProps['summary']): string {
-  if (!summary) return ''
-  return `${summary.sets}×${summary.reps} @ ${roundWeight(summary.weight)} ${summary.unit}`
+/** The chrome a card wraps its row in: superset corner radii + the inter-card margin. */
+function supersetChrome(position: ExerciseCardProps['supersetPosition']): Record<string, number> {
+  return { ...getSupersetBorderRadius(position), ...getSupersetMargin(position) }
 }
 
-function formatAccessibilityLabel(
-  name: string,
-  summary: ExerciseCardProps['summary'],
-  prescription: ExerciseCardProps['prescription']
-): string {
-  if (summary) return `${name}, ${formatSummary(summary)}`
-  if (prescription) return `${name}, ${prescription}`
-  return name
+/** Project the collapsed glance's velocities + planned total onto the strip's per-set states. */
+function deriveCollapsedSetStates(
+  setVelocities: number[][] | undefined,
+  totalPlannedSets: number | undefined,
+  plannedReps: number
+): SetStripSet[] {
+  const done = (setVelocities ?? []).map(
+    (velocities): SetStripSet => ({ status: 'done', velocities })
+  )
+  const remaining = Math.max(0, (totalPlannedSets ?? 0) - done.length)
+  return [
+    ...done,
+    ...Array.from(
+      { length: remaining },
+      (): SetStripSet => ({ status: 'todo', planned: plannedReps })
+    ),
+  ]
 }
 
 function CollapsedCard({
@@ -125,90 +140,40 @@ function CollapsedCard({
   onToggle,
   summary,
   isPR,
+  indicator,
   setVelocities,
-  velocityZones,
+  setStates,
   totalPlannedSets,
+  stripHeight,
   supersetPosition,
+  isSelected,
+  isLive,
 }: CardBodyProps) {
-  const [pressed, setPressed] = useState(false)
-  const completedSets = setVelocities?.length ?? 0
-  const remaining = Math.max(0, (totalPlannedSets ?? 0) - completedSets)
-  const borderRadius = getSupersetBorderRadius(supersetPosition)
-  const supersetMargin = getSupersetMargin(supersetPosition)
+  const plannedReps = typeof summary?.reps === 'number' ? summary.reps : 0
+  const row = {
+    density: 'compact' as const,
+    name,
+    indicator: indicator ?? (isPR ? ('pr' as const) : undefined),
+    setStates: setStates ?? deriveCollapsedSetStates(setVelocities, totalPlannedSets, plannedReps),
+    stripHeight,
+    isSelected,
+    isLive,
+    onPress: onToggle,
+    style: supersetChrome(supersetPosition),
+  }
 
-  return (
-    <Pressable
-      onPress={onToggle}
-      onPressIn={() => setPressed(true)}
-      onPressOut={() => setPressed(false)}
-      accessibilityRole="button"
-      accessibilityLabel={formatAccessibilityLabel(name, summary, undefined)}
-      testID="exercise-card"
-    >
-      <View
-        className={pressed ? 'bg-surface-raised' : undefined}
-        style={{
-          padding: 12,
-          paddingHorizontal: 14,
-          cursor: 'pointer',
-          ...borderRadius,
-          ...supersetMargin,
-        }}
-      >
-        <View className="flex-row items-center" testID="exercise-card-header">
-          {/* 14px/700 Space Grotesk is `h6` at the `sm` step; the face and the heading
-              role come from the variant, the weight and size from the scale. */}
-          <Typography
-            variant="h6"
-            color="primary"
-            className="text-sm font-bold leading-[normal]"
-            testID="exercise-card-name"
-          >
-            {name}
-          </Typography>
-          <View className="flex-1" />
-          {summary && (
-            /* The demo's "body" face is Inter, which is the library's `font-sans`
-               (the mapping B1 established for PrBadge), not Typography's `font-body`. */
-            <Typography
-              variant="caption"
-              color="secondary"
-              className="font-sans mr-2 leading-[normal]"
-              testID="exercise-card-summary"
-            >
-              {formatSummary(summary)}
-            </Typography>
-          )}
-          {isPR && (
-            <View style={{ marginLeft: 4 }}>
-              <PrBadge type="e1rm" compact animate={false} />
-            </View>
-          )}
-        </View>
-
-        {(completedSets > 0 || remaining > 0) && (
-          <View className="flex-row" style={{ marginTop: 6, gap: 4 }} testID="exercise-card-strips">
-            {setVelocities?.map((velocities, i) => (
-              <VelocityStrip
-                key={i}
-                velocities={velocities}
-                zones={velocityZones}
-                variant="compact"
-                height={8}
-                hideBaseline
-                testID={`exercise-card-velocity-strip-${i}`}
-              />
-            ))}
-            {Array.from({ length: remaining }, (_, i) => (
-              <PlaceholderStrip
-                key={`placeholder-${i}`}
-                testID={`exercise-card-placeholder-${i}`}
-              />
-            ))}
-          </View>
-        )}
-      </View>
-    </Pressable>
+  // Two call shapes, not a conditional spread: the prescription union only narrows
+  // when every field of a member is present at the call site.
+  return summary ? (
+    <ExerciseCardHeading
+      {...row}
+      sets={summary.sets}
+      reps={summary.reps}
+      load={summary.weight}
+      unit={summary.unit}
+    />
+  ) : (
+    <ExerciseCardHeading {...row} />
   )
 }
 
@@ -243,9 +208,8 @@ function ExpandedCard({
   stripHeight = 8,
   velocityZones,
   supersetPosition,
+  isLive,
 }: CardBodyProps) {
-  const borderRadius = getSupersetBorderRadius(supersetPosition)
-  const supersetMargin = getSupersetMargin(supersetPosition)
   // Summary is the card-level authority for the weight column; fall back to the
   // first set's unit, then lbs. (Mixed per-set units keep the card-level label.)
   const unit = summary?.unit ?? sets?.[0]?.unit ?? 'lbs'
@@ -258,11 +222,7 @@ function ExpandedCard({
   return (
     <View
       className="bg-surface-elevated border-hairline"
-      style={{
-        borderWidth: 1,
-        ...borderRadius,
-        ...supersetMargin,
-      }}
+      style={{ borderWidth: 1, ...supersetChrome(supersetPosition) }}
       testID="exercise-card"
     >
       <ExerciseCardHeading
@@ -275,6 +235,7 @@ function ExpandedCard({
         indicator={headerIndicator}
         setStates={headerStates}
         stripHeight={stripHeight}
+        isLive={isLive}
         onPress={onToggle}
         testID="exercise-card-heading"
       />
@@ -306,72 +267,36 @@ function UpcomingCard({
   name,
   prescription,
   previousBest,
+  indicator,
   supersetPosition,
+  isSelected,
   onToggle,
 }: CardBodyProps) {
-  const borderRadius = getSupersetBorderRadius(supersetPosition)
-  const supersetMargin = getSupersetMargin(supersetPosition)
+  const row = {
+    density: 'upcoming' as const,
+    name,
+    previousBest,
+    indicator,
+    isSelected,
+    onPress: onToggle,
+    style: supersetChrome(supersetPosition),
+  }
 
-  return (
-    <Pressable onPress={onToggle} accessibilityRole="button">
-      <View
-        style={{
-          opacity: 0.6,
-          padding: 12,
-          paddingHorizontal: 14,
-          ...borderRadius,
-          ...supersetMargin,
-        }}
-        accessibilityLabel={formatAccessibilityLabel(name, undefined, prescription)}
-        testID="exercise-card"
-      >
-        <View className="flex-row items-center">
-          {/* Name never truncates (no numberOfLines); prescription + previousBest ellipsize first. */}
-          <Typography
-            variant="h6"
-            color="primary"
-            className="shrink-0 text-sm font-bold leading-[normal]"
-            testID="exercise-card-name"
-          >
-            {name}
-          </Typography>
-          {prescription && (
-            <Typography
-              variant="caption"
-              color="secondary"
-              maxLines={1}
-              className="font-sans shrink ml-2 leading-[normal]"
-              testID="exercise-card-prescription"
-            >
-              {prescription}
-            </Typography>
-          )}
-          <View className="flex-1" style={{ minWidth: 8 }} />
-          {previousBest && (
-            /* 11px is off the type scale; `2xs` (10px) is the step below, as B2's
-               WorkoutCard date took for the same size. */
-            <Typography
-              variant="caption"
-              color="tertiary"
-              maxLines={1}
-              className="font-sans shrink text-2xs leading-[normal]"
-              testID="exercise-card-previous-best"
-            >
-              {previousBest}
-            </Typography>
-          )}
-        </View>
-      </View>
-    </Pressable>
+  return prescription !== undefined ? (
+    <ExerciseCardHeading {...row} prescription={prescription} />
+  ) : (
+    <ExerciseCardHeading {...row} />
   )
 }
 
 /**
- * The data-contract exercise card, in three representations:
- * - `upcoming` — a dimmed, not-yet-reached row (prescription + previous best).
- * - collapsed — a glance: name + summary + per-set velocity strips.
- * - expanded — the unified card: the real {@link ExerciseCardHeading} header over
- *   the SET · REPS · LBS · RPE body (one {@link SetRow} per set).
+ * The data-contract exercise card, in three representations — all three now ONE
+ * {@link ExerciseCardHeading}, selected by its `density`, rather than three hand-rolled
+ * heads:
+ * - `upcoming` — a dimmed, not-yet-reached row (`density="upcoming"`).
+ * - collapsed — a glance: name + prescription + the per-set strip (`density="compact"`).
+ * - expanded — the `rail` heading over the SET · REPS · LBS · RPE body (one
+ *   {@link SetRow} per set).
  *
  * Expand is controlled (`expanded` + `onExpandedChange`) or uncontrolled
  * (`defaultExpanded`, internal state). `upcoming` overrides expand.

@@ -9,6 +9,7 @@ import {
   calculateMeanVelocity,
   getVelocityLossColor,
 } from './VelocityStrip'
+import { FIXED_MAX_VALUE } from '../charts/SetBarChart'
 
 const sampleVelocities = [1.1, 0.95, 0.82, 0.68, 0.45]
 
@@ -583,28 +584,69 @@ describe('VelocityStrip expanded bare strip (spotlight: numbers + info off)', ()
   })
 
   it('scales bar height to velocity against the fixed ceiling at the given height', () => {
+    const barPx = (id: string) => parseFloat(getComputedStyle(screen.getByTestId(id)).height)
     render(
       <VelocityStrip
         {...bareProps}
         scale="fixed"
         height={24}
-        set={{ type: 'straight', velocities: [1.15, 0.575], planned: 2 }}
+        set={{ type: 'straight', velocities: [0.6, 0.3], planned: 2 }}
       />
     )
-    expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ height: '24px' })
-    expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ height: '12px' })
+    // Proportional to velocity against the fixed ceiling, not the performed max — a 2:1 velocity
+    // ratio reads as a 2:1 bar-height ratio.
+    expect(barPx('velocity-bar-0')).toBeCloseTo(2 * barPx('velocity-bar-1'), 5)
   })
 
   it('honors height for the scaling', () => {
-    render(
+    const barPx = (id: string) => parseFloat(getComputedStyle(screen.getByTestId(id)).height)
+    const { unmount } = render(
       <VelocityStrip
         {...bareProps}
         scale="fixed"
         height={40}
-        set={{ type: 'straight', velocities: [1.15], planned: 1 }}
+        set={{ type: 'straight', velocities: [0.6], planned: 1 }}
       />
     )
-    expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ height: '40px' })
+    const at40 = barPx('velocity-bar-0')
+    unmount()
+    render(
+      <VelocityStrip
+        {...bareProps}
+        scale="fixed"
+        height={80}
+        set={{ type: 'straight', velocities: [0.6], planned: 1 }}
+      />
+    )
+    expect(barPx('velocity-bar-0')).toBeCloseTo(2 * at40, 5)
+  })
+
+  it('reserves the same headroom above the fixed ceiling that `peak` reserves above its own max (VW-97)', () => {
+    // A rep AT the fixed ceiling must NOT fill the plot — it needs the identical margin an
+    // equally-tall `peak` bar always keeps for its own value label.
+    const { unmount } = render(
+      <VelocityStrip
+        {...bareProps}
+        scale="fixed"
+        height={100}
+        set={{ type: 'straight', velocities: [FIXED_MAX_VALUE], planned: 1 }}
+      />
+    )
+    const fixedAtCeilingPx = parseFloat(
+      getComputedStyle(screen.getByTestId('velocity-bar-0')).height
+    )
+    unmount()
+    render(
+      <VelocityStrip
+        {...bareProps}
+        scale="peak"
+        height={100}
+        set={{ type: 'straight', velocities: [1], planned: 1 }}
+      />
+    )
+    const peakAtMaxPx = parseFloat(getComputedStyle(screen.getByTestId('velocity-bar-0')).height)
+    expect(fixedAtCeilingPx).toBeLessThan(100)
+    expect(fixedAtCeilingPx).toBeCloseTo(peakAtMaxPx, 5)
   })
 
   it('draws planned-but-undone reps as short grey todo stubs (set-type aware)', () => {

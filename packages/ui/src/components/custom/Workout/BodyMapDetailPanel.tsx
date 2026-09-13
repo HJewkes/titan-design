@@ -20,6 +20,7 @@ import {
 } from './muscleTaxonomy'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { liftStyle } from '../../../theme/lift'
+import { alpha } from '../../../utils/colors'
 
 const t = getSemanticColors('dark')
 
@@ -488,9 +489,9 @@ export function BodyMapDetailPanel({
                 paddingVertical: 10,
                 borderRadius: 8,
                 alignItems: 'center',
-                backgroundColor: 'rgba(255,121,0,0.12)',
+                backgroundColor: alpha(BRAND_PRIMARY, 0.12),
                 borderWidth: 1,
-                borderColor: 'rgba(255,121,0,0.3)',
+                borderColor: alpha(BRAND_PRIMARY, 0.3),
               }}
               testID="body-map-detail-panel-view-exercises"
             >

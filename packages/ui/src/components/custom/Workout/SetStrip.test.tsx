@@ -94,6 +94,31 @@ describe('SetStrip', () => {
     expect(screen.getAllByTestId('set-strip-set')).toHaveLength(2)
   })
 
+  describe('prescribed rep range (VMCP-03.04)', () => {
+    it('todo: renders the range when both bounds are given', () => {
+      render(<SetStrip sets={[{ status: 'todo', planned: 10, repsLow: 8, repsHigh: 12 }]} />)
+      expect(screen.getByTestId('set-strip-reps-label')).toHaveTextContent('8–12')
+    })
+
+    it('active: renders a single number when the bounds are equal or only one is given', () => {
+      const { rerender } = render(
+        <SetStrip
+          sets={[{ status: 'active', velocities: [0.9], planned: 8, repsLow: 8, repsHigh: 8 }]}
+        />
+      )
+      expect(screen.getByTestId('set-strip-reps-label')).toHaveTextContent('8')
+      rerender(
+        <SetStrip sets={[{ status: 'active', velocities: [0.9], planned: 8, repsLow: 8 }]} />
+      )
+      expect(screen.getByTestId('set-strip-reps-label')).toHaveTextContent('8')
+    })
+
+    it('renders no label when neither bound is given', () => {
+      render(<SetStrip sets={[{ status: 'todo', planned: 10 }]} />)
+      expect(screen.queryByTestId('set-strip-reps-label')).not.toBeInTheDocument()
+    })
+  })
+
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const sets: SetStripSet[] = [

@@ -52,6 +52,20 @@ export function formatSignedPct(ratio: number): string {
   return `${pct > 0 ? '+' : ''}${pct}%`
 }
 
+/**
+ * Rep-range label, e.g. `"8–10"`. `"8"` when the bounds are equal or only one is
+ * given; `null` when neither is set. Shared by {@link formatPrescription} and the
+ * set strip's per-set prescribed-range label so the two never drift apart.
+ */
+export function formatRepsRange(repsLow?: number, repsHigh?: number): string | null {
+  if (repsLow != null && repsHigh != null) {
+    return repsLow === repsHigh ? `${repsLow}` : `${repsLow}–${repsHigh}`
+  }
+  if (repsLow != null) return `${repsLow}`
+  if (repsHigh != null) return `${repsHigh}`
+  return null
+}
+
 /** Structured prescription for the active exercise (from the plan). */
 export interface PrescriptionInput {
   repsLow?: number
@@ -67,12 +81,7 @@ export interface PrescriptionInput {
  */
 export function formatPrescription(p: PrescriptionInput | null | undefined): string | null {
   if (p == null) return null
-  let reps: string | null = null
-  if (p.repsLow != null && p.repsHigh != null) {
-    reps = p.repsLow === p.repsHigh ? `${p.repsLow}` : `${p.repsLow}–${p.repsHigh}`
-  } else if (p.repsLow != null) {
-    reps = `${p.repsLow}`
-  }
+  const reps = formatRepsRange(p.repsLow, p.repsHigh)
   const weight = p.weightLbs != null ? `${p.weightLbs} lb` : null
   const head = [reps, weight].filter((s): s is string => s != null).join(' @ ')
   const rpe = p.rpe != null ? `RPE ${p.rpe}` : null

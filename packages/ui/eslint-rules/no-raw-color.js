@@ -22,10 +22,74 @@
  *   - `transparent` — encodes absence, has no token equivalent
  *   - `currentColor` — defers to the cascade, which is the desired behaviour
  *   - anything in `src/theme/**` — that IS the colour system
+ *   - a bare colour word passed as a `color`/`variant`/`tone` JSX attribute, or
+ *     listed in a Storybook `argTypes.*.options` array — an enum member, not a
+ *     colour to theme (see isEnumMemberLiteral)
+ *   - a bare colour word used as `{ value, label }` demo data (see isDemoOptionLiteral)
+ *   - documentation text in a `<Text>` element's children, e.g. a CSS-reference
+ *     code block (see isTextChildDoc) — a `style` prop on the same element is
+ *     unaffected and still flagged
  */
 
 const path = require('node:path')
-const { extractRawColors } = require('./raw-color-patterns')
+const { extractRawColors, NAMED_KEYWORD } = require('./raw-color-patterns')
+
+/** Colour-ish JSX attribute names accepted by the enum-member heuristic below. */
+const ENUM_COLOR_PROP_NAMES = /^(color|variant|tone)$/i
+
+/**
+ * The rule runs without type info, so it can't see that a prop's type is a
+ * closed string union (e.g. `SpinnerColor`). Heuristic: a bare colour WORD
+ * (not hex/rgb — those still get flagged) is an enum member, not a colour to
+ * theme, when it's either the value of a `color`/`variant`/`tone` JSX
+ * attribute (`<Spinner color="white" />`) or an element of a Storybook
+ * `argTypes.*.options` array listing that same enum's members.
+ */
+function isEnumMemberLiteral(node) {
+  if (node.type !== 'Literal' || typeof node.value !== 'string') return false
+  if (!NAMED_KEYWORD.test(node.value.trim())) return false
+
+  const parent = node.parent
+  if (parent?.type === 'JSXAttribute' && ENUM_COLOR_PROP_NAMES.test(parent.name?.name ?? '')) {
+    return true
+  }
+  return (
+    parent?.type === 'ArrayExpression' &&
+    parent.parent?.type === 'Property' &&
+    parent.parent.key?.name === 'options'
+  )
+}
+
+/**
+ * `{ value, label }` demo-data objects (e.g. Select story options) reuse
+ * colour words as arbitrary IDs, not styling. Heuristic: a bare colour word
+ * that is the `value` or `label` property of an object literal which carries
+ * both a `value` and a `label` property.
+ */
+function isDemoOptionLiteral(node) {
+  if (node.type !== 'Literal' || typeof node.value !== 'string') return false
+  if (!NAMED_KEYWORD.test(node.value.trim())) return false
+
+  const prop = node.parent
+  if (prop?.type !== 'Property' || !['value', 'label'].includes(prop.key?.name)) return false
+  const obj = prop.parent
+  if (obj?.type !== 'ObjectExpression') return false
+  const keys = obj.properties.map((p) => p.key?.name)
+  return keys.includes('value') && keys.includes('label')
+}
+
+/**
+ * Text rendered as documentation content (e.g. a CSS-reference code block)
+ * inside a `<Text>` element's children is prose, not a styling value. Only
+ * matches when the literal sits in the element's *children* — a `style` prop
+ * on the same `<Text>` walks to a JSXAttribute instead and still gets flagged.
+ */
+function isTextChildDoc(node) {
+  let container = node
+  while (container && container.type !== 'JSXExpressionContainer') container = container.parent
+  const host = container?.parent
+  return host?.type === 'JSXElement' && host.openingElement?.name?.name === 'Text'
+}
 
 let baselineCache = null
 function loadBaseline() {
@@ -91,9 +155,12 @@ module.exports = {
 
     return {
       Literal(node) {
-        if (typeof node.value === 'string') check(node.value, node)
+        if (typeof node.value !== 'string') return
+        if (isEnumMemberLiteral(node) || isDemoOptionLiteral(node) || isTextChildDoc(node)) return
+        check(node.value, node)
       },
       TemplateElement(node) {
+        if (isTextChildDoc(node)) return
         check(node.value.raw, node)
       },
     }

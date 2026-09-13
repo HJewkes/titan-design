@@ -3,6 +3,8 @@ import { View, Text } from 'react-native'
 import { Surface } from './Surface'
 import { useOnSurfaceColor, type SurfaceLevel } from './SurfaceContext'
 import type { ElevationLevel } from '../../../theme/elevation'
+import { semanticColorsLight, semanticColorsDark } from '../../../theme/tokens/semantic'
+import { primitiveRamps } from '../../../theme/tokens/primitives'
 
 const meta: Meta<typeof Surface> = {
   title: 'Components/Atoms/Surface',
@@ -56,11 +58,18 @@ export const Default: Story = {
     elevation: 2,
     theme: 'dark',
   },
-  render: (args) => (
-    <Surface {...args} style={{ padding: 24 }}>
-      <Text style={{ color: '#fff' }}>Default Surface</Text>
-    </Surface>
-  ),
+  render: function Render(args) {
+    return (
+      <Surface {...args} style={{ padding: 24 }}>
+        <Text style={{ color: useOnSurfaceColor('primary') }}>Default Surface</Text>
+      </Surface>
+    )
+  },
+}
+
+/** On-surface elevation label — resolves from whichever Surface encloses it. */
+function ElevationLabel({ level }: { level: ElevationLevel }) {
+  return <Text style={{ color: useOnSurfaceColor('primary') }}>Elevation {level}</Text>
 }
 
 // Every level is a ramp plane. Negative levels recess, 0 sits flat on the page,
@@ -71,7 +80,7 @@ export const ElevationLevels: Story = {
     <Surface level="base" style={{ gap: 16, padding: 24 }}>
       {([-2, -1, 0, 1, 2, 3, 4, 5] as ElevationLevel[]).map((level) => (
         <Surface key={level} elevation={level} style={{ padding: 16 }}>
-          <Text style={{ color: '#fff' }}>Elevation {level}</Text>
+          <ElevationLabel level={level} />
         </Surface>
       ))}
     </Surface>
@@ -79,25 +88,58 @@ export const ElevationLevels: Story = {
 }
 
 export const WithGlow: Story = {
-  render: () => (
-    <View style={{ gap: 16, padding: 24 }}>
-      <Surface elevation={2} glowColor="#FF7900" glowIntensity="subtle" style={{ padding: 16 }}>
-        <Text style={{ color: '#fff' }}>Subtle Orange Glow</Text>
-      </Surface>
-      <Surface elevation={2} glowColor="#FF7900" glowIntensity="medium" style={{ padding: 16 }}>
-        <Text style={{ color: '#fff' }}>Medium Orange Glow</Text>
-      </Surface>
-      <Surface elevation={2} glowColor="#FF7900" glowIntensity="strong" style={{ padding: 16 }}>
-        <Text style={{ color: '#fff' }}>Strong Orange Glow</Text>
-      </Surface>
-      <Surface elevation={2} glowColor="#22C55E" glowIntensity="medium" style={{ padding: 16 }}>
-        <Text style={{ color: '#fff' }}>Green Glow (Success)</Text>
-      </Surface>
-      <Surface elevation={2} glowColor="#EF4444" glowIntensity="medium" style={{ padding: 16 }}>
-        <Text style={{ color: '#fff' }}>Red Glow (Error)</Text>
-      </Surface>
-    </View>
-  ),
+  render: function Render() {
+    const onSurface = useOnSurfaceColor('primary')
+    return (
+      <View style={{ gap: 16, padding: 24 }}>
+        <Surface
+          elevation={2}
+          glowColor={primitiveRamps.orange[400]}
+          glowIntensity="subtle"
+          style={{ padding: 16 }}
+        >
+          <Text style={{ color: onSurface }}>Subtle Orange Glow</Text>
+        </Surface>
+        <Surface
+          elevation={2}
+          glowColor={primitiveRamps.orange[400]}
+          glowIntensity="medium"
+          style={{ padding: 16 }}
+        >
+          <Text style={{ color: onSurface }}>Medium Orange Glow</Text>
+        </Surface>
+        <Surface
+          elevation={2}
+          glowColor={primitiveRamps.orange[400]}
+          glowIntensity="strong"
+          style={{ padding: 16 }}
+        >
+          <Text style={{ color: onSurface }}>Strong Orange Glow</Text>
+        </Surface>
+        <Surface
+          elevation={2}
+          glowColor={semanticColorsDark['status-success']}
+          glowIntensity="medium"
+          style={{ padding: 16 }}
+        >
+          <Text style={{ color: onSurface }}>Green Glow (Success)</Text>
+        </Surface>
+        <Surface
+          elevation={2}
+          glowColor={semanticColorsDark['status-error']}
+          glowIntensity="medium"
+          style={{ padding: 16 }}
+        >
+          <Text style={{ color: onSurface }}>Red Glow (Error)</Text>
+        </Surface>
+      </View>
+    )
+  },
+}
+
+/** On-surface plane label — resolves from whichever Surface encloses it. */
+function NamedPlaneLabel({ level }: { level: SurfaceLevel }) {
+  return <Text style={{ color: useOnSurfaceColor('primary') }}>level=&quot;{level}&quot;</Text>
 }
 
 // The named-plane model: flat, full-bleed grey planes straight from the
@@ -108,7 +150,7 @@ export const NamedPlanes: Story = {
     <View style={{ gap: 12, padding: 24 }}>
       {(['background', 'base', 'elevated', 'raised', 'overlay'] as SurfaceLevel[]).map((level) => (
         <Surface key={level} level={level} style={{ padding: 16 }}>
-          <Text style={{ color: '#fff' }}>level=&quot;{level}&quot;</Text>
+          <NamedPlaneLabel level={level} />
         </Surface>
       ))}
     </View>
@@ -199,12 +241,17 @@ export const OnSurfaceText: Story = {
   ),
 }
 
+/** On-surface elevation label for the forced-light demo below. */
+function LightElevationLabel({ level }: { level: ElevationLevel }) {
+  return <Text style={{ color: useOnSurfaceColor('primary') }}>Light Elevation {level}</Text>
+}
+
 export const LightTheme: Story = {
   render: () => (
-    <View style={{ gap: 16, padding: 24, backgroundColor: '#F3F4F6' }}>
+    <View style={{ gap: 16, padding: 24, backgroundColor: semanticColorsLight['background-base'] }}>
       {([0, 1, 2, 3, 4, 5] as ElevationLevel[]).map((level) => (
         <Surface key={level} elevation={level} theme="light" style={{ padding: 16 }}>
-          <Text style={{ color: '#111' }}>Light Elevation {level}</Text>
+          <LightElevationLabel level={level} />
         </Surface>
       ))}
     </View>
