@@ -2,6 +2,7 @@ const js = require('@eslint/js')
 const tseslint = require('typescript-eslint')
 const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
+const noDeprecatedImport = require('./eslint-rules/no-deprecated-import')
 const noDeviceInternals = require('./eslint-rules/no-device-internals')
 const noRawColor = require('./eslint-rules/no-raw-color')
 const noUpwardTierImport = require('./eslint-rules/no-upward-tier-import')
@@ -89,6 +90,7 @@ module.exports = tseslint.config(
       // below) are enabled in their own block without re-declaring `plugins`.
       titan: {
         rules: {
+          'no-deprecated-import': noDeprecatedImport,
           'no-device-internals': noDeviceInternals,
           'no-raw-color': noRawColor,
           'no-upward-tier-import': noUpwardTierImport,
@@ -352,6 +354,22 @@ module.exports = tseslint.config(
     ],
     rules: {
       'titan/no-upward-tier-import': 'error',
+    },
+  },
+
+  // An export's @deprecated JSDoc is a promise that no NEW usage appears
+  // before its migration task removes it (DEPRECATIONS.md). Nothing checked
+  // that promise (VW-88 gap 6) — a docblock is just a comment.
+  //
+  // Errored, but RATCHETED like no-raw-color: main carries 59 existing
+  // consumers across 45 files of StatusDot/Tile/MetricCell/BaseBadge/etc.
+  // (recorded in deprecated-import-baseline.json, VW-318) — new ones are
+  // blocked immediately and the backlog burns down file by file as each
+  // migrates to the replacement named in its @deprecated tag.
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    rules: {
+      'titan/no-deprecated-import': 'error',
     },
   },
 
