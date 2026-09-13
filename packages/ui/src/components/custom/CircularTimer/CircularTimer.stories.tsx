@@ -1,6 +1,11 @@
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text, Pressable } from 'react-native'
 import { CircularTimer } from './CircularTimer'
+import { greyRamp, primitiveColors } from '../../../theme/tokens/primitives'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { alpha } from '../../../utils/colors'
+
+const t = getSemanticColors('dark')
 
 const meta: Meta<typeof CircularTimer> = {
   title: 'Components/Molecules/CircularTimer',
@@ -32,7 +37,7 @@ export default meta
 type Story = StoryObj<typeof CircularTimer>
 
 const dark: Decorator = (Story) => (
-  <View style={{ padding: 32, alignItems: 'center', backgroundColor: '#0E0E0E' }}>
+  <View style={{ padding: 32, alignItems: 'center', backgroundColor: t['background-frame'] }}>
     <Story />
   </View>
 )
@@ -64,13 +69,13 @@ export const DoneWithLabel: Story = {
 const DemoButton = ({ label }: { label: string }) => (
   <Pressable
     style={{
-      backgroundColor: 'rgba(255,255,255,0.06)',
+      backgroundColor: alpha(primitiveColors.white, 0.06),
       paddingVertical: 8,
       paddingHorizontal: 20,
       borderRadius: 8,
     }}
   >
-    <Text style={{ color: '#DADADA', fontSize: 11, fontWeight: '600' }}>{label}</Text>
+    <Text style={{ color: greyRamp[200], fontSize: 11, fontWeight: '600' }}>{label}</Text>
   </Pressable>
 )
 

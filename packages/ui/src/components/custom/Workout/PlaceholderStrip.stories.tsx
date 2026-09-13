@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 import { PlaceholderStrip } from './PlaceholderStrip'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+
+const t = getSemanticColors('dark')
 
 const meta: Meta<typeof PlaceholderStrip> = {
   title: 'Custom/Workout/PlaceholderStrip',
@@ -74,9 +77,11 @@ export const SegmentedThree: Story = {
 export const MultipleStrips: Story = {
   render: () => (
     <View style={{ flexDirection: 'row', gap: 4, width: 300 }}>
-      <View style={{ flex: 1, height: 3, backgroundColor: '#2ed573', borderRadius: 1 }} />
-      <View style={{ flex: 1, height: 3, backgroundColor: '#ffd43b', borderRadius: 1 }} />
-      <View style={{ flex: 1, height: 3, backgroundColor: '#ffa502', borderRadius: 1 }} />
+      <View style={{ flex: 1, height: 3, backgroundColor: t['status-success'], borderRadius: 1 }} />
+      <View
+        style={{ flex: 1, height: 3, backgroundColor: t['status-warning-light'], borderRadius: 1 }}
+      />
+      <View style={{ flex: 1, height: 3, backgroundColor: t['status-warning'], borderRadius: 1 }} />
       <PlaceholderStrip />
       <PlaceholderStrip />
     </View>

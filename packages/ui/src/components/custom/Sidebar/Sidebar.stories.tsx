@@ -220,7 +220,7 @@ export const WithBadge: Story = {
             label="Messages"
             badge={
               <View className="bg-status-error rounded-full px-1.5 py-0.5">
-                <Text className="text-white text-xs font-bold">5</Text>
+                <Text className="text-on-status-error text-xs font-bold">5</Text>
               </View>
             }
           />

@@ -8,6 +8,10 @@ import {
 } from './BodyMapDetailPanel'
 import { MuscleGroup } from './muscleTaxonomy'
 import { Surface } from '../../ui/surface'
+import { primitiveColors } from '../../../theme/tokens/primitives'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+
+const t = getSemanticColors('dark')
 
 const contributing: ContributingExercise[] = [
   { name: 'Barbell Bench Press', sets: 4, contributionWeight: 1 },
@@ -141,7 +145,7 @@ function InteractiveBodyMapDetailPanel() {
         position: 'relative',
         height: 640,
         width: 380,
-        backgroundColor: '#0E0E0E',
+        backgroundColor: t['background-frame'],
         padding: 16,
       }}
     >
@@ -150,13 +154,19 @@ function InteractiveBodyMapDetailPanel() {
         accessibilityRole="button"
         style={{
           alignSelf: 'flex-start',
-          backgroundColor: '#FF7900',
+          backgroundColor: t['brand-primary'],
           paddingVertical: 10,
           paddingHorizontal: 20,
           borderRadius: 8,
         }}
       >
-        <Text style={{ color: '#FFFFFF', fontWeight: '700', fontFamily: 'Inter, sans-serif' }}>
+        <Text
+          style={{
+            color: primitiveColors.white,
+            fontWeight: '700',
+            fontFamily: 'Inter, sans-serif',
+          }}
+        >
           Tap Chest
         </Text>
       </Pressable>

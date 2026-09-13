@@ -7,6 +7,7 @@ import {
   type ExerciseIndicatorKind,
 } from './ExerciseIndicator'
 import { Surface } from '../../ui/surface'
+import { greyRamp } from '../../../theme/tokens/primitives'
 
 /**
  * `ExerciseIndicator` — a small circular OUTLINED chip in an exercise heading's
@@ -70,9 +71,9 @@ export const AllKinds: Story = {
     <View style={{ gap: 12 }}>
       {INDICATOR_PRECEDENCE.map((kind, i) => (
         <View key={kind} style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-          <Text style={{ color: '#8A8A8A', fontSize: 11, width: 14 }}>{i + 1}</Text>
+          <Text style={{ color: greyRamp[500], fontSize: 11, width: 14 }}>{i + 1}</Text>
           <ExerciseIndicator kind={kind} />
-          <Text style={{ color: '#CFCFCF', fontSize: 12 }}>{KIND_LABELS[kind]}</Text>
+          <Text style={{ color: greyRamp[200], fontSize: 12 }}>{KIND_LABELS[kind]}</Text>
         </View>
       ))}
     </View>
@@ -97,12 +98,12 @@ export const ResolvePrecedence: Story = {
           const winner = resolveIndicator(candidates)
           return (
             <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <Text style={{ color: '#8A8A8A', fontSize: 12, width: 200 }}>
+              <Text style={{ color: greyRamp[500], fontSize: 12, width: 200 }}>
                 {candidates.join(', ')}
               </Text>
-              <Text style={{ color: '#8A8A8A', fontSize: 12 }}>→</Text>
+              <Text style={{ color: greyRamp[500], fontSize: 12 }}>→</Text>
               {winner ? <ExerciseIndicator kind={winner} /> : null}
-              <Text style={{ color: '#CFCFCF', fontSize: 12 }}>{winner}</Text>
+              <Text style={{ color: greyRamp[200], fontSize: 12 }}>{winner}</Text>
             </View>
           )
         })}

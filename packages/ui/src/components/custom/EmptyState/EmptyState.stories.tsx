@@ -91,7 +91,7 @@ export const WithIcon: Story = {
 function ActionButton() {
   return (
     <View className="bg-brand-primary px-4 py-2 rounded-md">
-      <Text className="text-white font-semibold text-sm">Create New</Text>
+      <Text className="text-on-brand-primary font-semibold text-sm">Create New</Text>
     </View>
   )
 }

@@ -1,5 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Gauge } from './Gauge'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+
+const t = getSemanticColors('dark')
 
 const meta: Meta<typeof Gauge> = {
   title: 'Custom/Charts/Gauge',
@@ -32,7 +35,7 @@ export const ArbitraryDomain: Story = {
 
 /** Single-color override ignores the threshold bands. */
 export const OverrideColor: Story = {
-  args: { value: 55, unit: '%', label: 'Coverage', color: '#5B9BD5', size: 180 },
+  args: { value: 55, unit: '%', label: 'Coverage', color: t['data-7'], size: 180 },
 }
 
 /** Value above max is clamped for the fill but shown verbatim. */
