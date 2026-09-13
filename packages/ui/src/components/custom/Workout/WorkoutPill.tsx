@@ -5,6 +5,7 @@ import { Typography } from '../Typography'
 import { resolveColor } from '../../../theme/resolve-color'
 import { WORKOUT_PILL_DELOAD } from '../../../theme/extracted-colors-dataviz'
 import { alpha } from '../../../utils/colors'
+import { usePrefersReducedMotion } from '../charts/live-rep-growth'
 
 // The deload role has no semantic tokens at all, so its wash and rim are derived from
 // the same ramp pin WeekRow reads, at the LADDER'S rungs (0.12 subtle, 0.30 muted)
@@ -22,7 +23,7 @@ export type WorkoutPillStatus = 'completed' | 'current' | 'upcoming' | 'deload' 
 export interface WorkoutPillProps extends ViewProps {
   name: string
   status: WorkoutPillStatus
-  /** Force pulsing animation. Defaults to pulsing only on `current` status. */
+  /** Force pulsing animation. Defaults to pulsing only on `current` status. Honors prefers-reduced-motion. */
   pulse?: boolean
   onPress?: () => void
   highlighted?: boolean
@@ -83,10 +84,11 @@ function paintFor(status: WorkoutPillStatus): PillPaint {
 }
 
 function usePulse(enabled: boolean) {
+  const prefersReducedMotion = usePrefersReducedMotion()
   const [opacity] = useState(() => new Animated.Value(1))
 
   useEffect(() => {
-    if (!enabled) {
+    if (!enabled || prefersReducedMotion) {
       opacity.setValue(1)
       return
     }
@@ -110,7 +112,7 @@ function usePulse(enabled: boolean) {
     animation.start()
 
     return () => animation.stop()
-  }, [enabled, opacity])
+  }, [enabled, opacity, prefersReducedMotion])
 
   return opacity
 }
