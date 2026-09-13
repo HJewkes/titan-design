@@ -3,6 +3,7 @@ import { cn } from '../../../utils/cn'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { alpha } from '../../../utils/colors'
+import { formatTrimmedDecimal } from '../../../utils/number-format'
 
 const sem = getSemanticColors('dark')
 
@@ -54,10 +55,6 @@ const SEGMENTS = 40
 function clamp01(n: number): number {
   if (Number.isNaN(n)) return 0
   return Math.max(0, Math.min(1, n))
-}
-
-function formatValue(v: number): string {
-  return Number.isInteger(v) ? `${v}` : v.toFixed(1)
 }
 
 /** Color of the highest band whose start value the fraction reaches. */
@@ -124,7 +121,7 @@ export function Gauge({
   const tickLength = size * 0.11
   const tickThickness = Math.max(2, (size * 0.9) / SEGMENTS)
 
-  const ariaLabel = `${label ? `${label}: ` : ''}${formatValue(value)}${unit ?? ''} of ${formatValue(max)}`
+  const ariaLabel = `${label ? `${label}: ` : ''}${formatTrimmedDecimal(value, 1)}${unit ?? ''} of ${formatTrimmedDecimal(max, 1)}`
 
   return (
     <View
@@ -160,7 +157,7 @@ export function Gauge({
       >
         <View className="flex-row items-baseline gap-0.5">
           <Text testID="gauge-value" className="text-3xl font-bold" style={{ color: displayColor }}>
-            {formatValue(value)}
+            {formatTrimmedDecimal(value, 1)}
           </Text>
           {unit && <Text className="text-sm text-text-tertiary">{unit}</Text>}
         </View>

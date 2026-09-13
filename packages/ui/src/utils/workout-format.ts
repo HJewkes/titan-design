@@ -17,6 +17,12 @@ export function roundRpe(rpe: number): number {
   return Math.round(rpe * 2) / 2
 }
 
+/** Round-and-format an RPE to its conventional 0.5 step; em-dash when absent. */
+export function formatRpe(rpe: number | null | undefined): string {
+  if (rpe == null) return '—'
+  return roundRpe(rpe).toFixed(1)
+}
+
 /**
  * Color band for an RPE on the canonical performance scale. Higher RPE = harder
  * = red (direction inverted vs velocity, which shares the same scale). Bands:
@@ -100,4 +106,30 @@ export function formatPrescription(p: PrescriptionInput | null | undefined): str
     .filter((s): s is string => s != null)
     .join(' · ')
   return full.length > 0 ? full : null
+}
+
+/**
+ * Compact `M/D` axis label for a chart date, e.g. `"6/6"`. `date` is parsed as
+ * `YYYY-MM-DD` first (avoiding the UTC-shift `new Date()` applies to bare date
+ * strings); falls back to `new Date(date)` for anything else, and to the raw
+ * string when that's unparseable too.
+ */
+export function formatChartDate(date: string): string {
+  const parts = date.split('-')
+  if (parts.length === 3) return `${Number(parts[1])}/${Number(parts[2])}`
+  const d = new Date(date)
+  return Number.isNaN(d.getTime()) ? date : `${d.getMonth() + 1}/${d.getDate()}`
+}
+
+/** Joined `"N sets · V unit · duration"` summary line for a workout card. */
+export function formatWorkoutStats(
+  totalSets: number,
+  totalVolume: number | undefined,
+  unit: 'lbs' | 'kg',
+  duration: string | undefined
+): string {
+  const parts = [`${totalSets} sets`]
+  if (totalVolume != null) parts.push(`${totalVolume} ${unit}`)
+  if (duration) parts.push(duration)
+  return parts.join(' · ')
 }

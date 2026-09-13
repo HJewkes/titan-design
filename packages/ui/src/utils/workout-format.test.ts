@@ -8,6 +8,9 @@ import {
   formatSignedPct,
   formatPrescription,
   formatExpectedRange,
+  formatRpe,
+  formatChartDate,
+  formatWorkoutStats,
 } from './workout-format'
 import { WORKOUT_TOKENS } from '../theme/workout-tokens'
 
@@ -70,6 +73,40 @@ describe('formatExpectedRange', () => {
   it('returns null when neither bound is set', () => {
     expect(formatExpectedRange()).toBeNull()
     expect(formatExpectedRange(undefined, undefined)).toBeNull()
+  })
+})
+
+describe('formatRpe', () => {
+  it('rounds and formats to 1 decimal', () => {
+    expect(formatRpe(7.4)).toBe('7.5')
+    expect(formatRpe(9)).toBe('9.0')
+    expect(formatRpe(10)).toBe('10.0')
+  })
+
+  it('em-dashes a null/undefined RPE', () => {
+    expect(formatRpe(null)).toBe('—')
+    expect(formatRpe(undefined)).toBe('—')
+  })
+})
+
+describe('formatChartDate', () => {
+  it('formats an ISO date as M/D', () => {
+    expect(formatChartDate('2026-06-06')).toBe('6/6')
+    expect(formatChartDate('2026-01-15')).toBe('1/15')
+  })
+
+  it('returns the original string for an unparseable date', () => {
+    expect(formatChartDate('invalid')).toBe('invalid')
+  })
+})
+
+describe('formatWorkoutStats', () => {
+  it('joins sets, volume, and duration with a middle dot', () => {
+    expect(formatWorkoutStats(18, 12450, 'lbs', '45 min')).toBe('18 sets · 12450 lbs · 45 min')
+  })
+
+  it('omits volume and duration when not provided', () => {
+    expect(formatWorkoutStats(18, undefined, 'lbs', undefined)).toBe('18 sets')
   })
 })
 

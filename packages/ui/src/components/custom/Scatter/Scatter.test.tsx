@@ -25,6 +25,12 @@ describe('Scatter', () => {
     expect(screen.getAllByTestId('scatter-gridline-y').length).toBeGreaterThanOrEqual(2)
   })
 
+  it('labels sub-1 tick values to 2 decimal places', () => {
+    render(<Scatter {...base} />)
+    const labels = screen.getAllByTestId('scatter-gridline-y').map((el) => el.textContent)
+    expect(labels).toContain('0.50')
+  })
+
   it('fires onPress with the point id', () => {
     const onPress = vi.fn()
     render(<Scatter {...base} onPress={onPress} />)

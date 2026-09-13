@@ -3,6 +3,7 @@ import { cn } from '../../../utils/cn'
 import { DATAVIZ_CATEGORICAL_PALETTE } from '../../../theme/extracted-colors-dataviz'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { alpha } from '../../../utils/colors'
+import { formatTrimmedDecimal } from '../../../utils/number-format'
 
 export interface ScatterDatum {
   /** Stable identity — returned by onPress and used as the React key. */
@@ -81,9 +82,9 @@ function ticksOf(d: Domain, count: number): number[] {
   return Array.from({ length: count }, (_, i) => d.min + ((d.max - d.min) * i) / (count - 1))
 }
 
-function formatTick(v: number): string {
-  if (Number.isInteger(v)) return `${v}`
-  return v.toFixed(Math.abs(v) < 1 ? 2 : 1)
+/** Adaptive tick precision: sub-1 domains need 2dp to stay legible, else 1dp. */
+function tickLabel(v: number): string {
+  return formatTrimmedDecimal(v, Math.abs(v) < 1 ? 2 : 1)
 }
 
 /** A single straight segment drawn as one rotated View (SVG-free). */
@@ -205,7 +206,7 @@ export function Scatter({
                   textAlign: 'right',
                 }}
               >
-                {formatTick(t)}
+                {tickLabel(t)}
               </Text>
             </View>
           )
@@ -236,7 +237,7 @@ export function Scatter({
                   textAlign: 'center',
                 }}
               >
-                {formatTick(t)}
+                {tickLabel(t)}
               </Text>
             </View>
           )

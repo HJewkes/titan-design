@@ -42,6 +42,11 @@ describe('Gauge', () => {
     expect(screen.getByTestId('gauge-value')).toHaveTextContent('5')
   })
 
+  it('formats a non-integer value to 1 decimal place', () => {
+    render(<Gauge value={81.7} unit="%" />)
+    expect(screen.getByTestId('gauge-value')).toHaveTextContent('81.7')
+  })
+
   it('respects custom thresholds', () => {
     render(
       <Gauge

@@ -5,6 +5,7 @@ const reactHooks = require('eslint-plugin-react-hooks')
 const noDeprecatedImport = require('./eslint-rules/no-deprecated-import')
 const noDeviceInternals = require('./eslint-rules/no-device-internals')
 const noFrozenTheme = require('./eslint-rules/no-frozen-theme')
+const noLocalFormatter = require('./eslint-rules/no-local-formatter')
 const noRawColor = require('./eslint-rules/no-raw-color')
 const noUpwardTierImport = require('./eslint-rules/no-upward-tier-import')
 const noVarColorOpacity = require('./eslint-rules/no-var-color-opacity')
@@ -94,6 +95,7 @@ module.exports = tseslint.config(
           'no-deprecated-import': noDeprecatedImport,
           'no-device-internals': noDeviceInternals,
           'no-frozen-theme': noFrozenTheme,
+          'no-local-formatter': noLocalFormatter,
           'no-raw-color': noRawColor,
           'no-upward-tier-import': noUpwardTierImport,
           'no-var-color-opacity': noVarColorOpacity,
@@ -396,6 +398,37 @@ module.exports = tseslint.config(
     files: ['src/**/*.{ts,tsx}'],
     rules: {
       'titan/no-deprecated-import': 'error',
+    },
+  },
+
+  // Decision 13: numbers are formatted by the shared formatter module
+  // (utils/workout-format.ts, utils/number-format.ts) — the one place rounding
+  // rules live. VW-88 gap 3 found raw `.toFixed(` calls and local `format*`
+  // functions duplicating it all over the tree.
+  //
+  // Errored, but RATCHETED like no-raw-color/no-upward-tier-import: existing
+  // occurrences are recorded in no-local-formatter-baseline.json, keyed by
+  // value (the toFixed argument, or the function name) — new debt is blocked
+  // immediately and the backlog burns down file by file.
+  //
+  // src/lab/** is exempt — scratch/fixture code that never ships, same
+  // rationale as no-device-internals and no-upward-tier-import above.
+  // *.test.{ts,tsx} is exempt too — same as no-raw-color: assertion messages
+  // and expected-value fixtures legitimately use toFixed on purpose, they
+  // aren't display code that could drift from the shared formatter. The
+  // formatter module itself is exempt — it IS the thing everything else
+  // should call into (same shape as no-raw-color exempting src/theme/**).
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: [
+      'src/lab/**',
+      'src/**/*.test.{ts,tsx}',
+      'src/utils/workout-format.ts',
+      'src/utils/number-format.ts',
+      'src/components/custom/ActiveWork/format-time.ts',
+    ],
+    rules: {
+      'titan/no-local-formatter': 'error',
     },
   },
 

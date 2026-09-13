@@ -11,6 +11,7 @@
  */
 import { View, Text } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { formatRpe } from '../../../utils/workout-format'
 import { FONT_HEAD, FONT_MONO, TONE_COLOR, STATE_LABEL } from './fatigue-tokens'
 import type { FatigueVerdict } from './fatigue-model'
 
@@ -21,12 +22,6 @@ export interface VerdictHeroProps {
   rpe: number | null
   /** The aggregated verdict + tone. `null` = warming up (renders neutral). */
   verdict: FatigueVerdict | null
-}
-
-/** Round an exact RPE to the conventional 0.5 step; em-dash when absent. */
-function formatRpe(rpe: number | null): string {
-  if (rpe == null) return '—'
-  return (Math.round(rpe * 2) / 2).toFixed(1)
 }
 
 export function VerdictHero({ rpe, verdict }: VerdictHeroProps) {
