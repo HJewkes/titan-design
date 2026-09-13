@@ -4,6 +4,7 @@ const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
 const noDeviceInternals = require('./eslint-rules/no-device-internals')
 const noRawColor = require('./eslint-rules/no-raw-color')
+const noUpwardTierImport = require('./eslint-rules/no-upward-tier-import')
 const noVarColorOpacity = require('./eslint-rules/no-var-color-opacity')
 const storyTitlePrefix = require('./eslint-rules/story-title-prefix')
 
@@ -90,6 +91,7 @@ module.exports = tseslint.config(
         rules: {
           'no-device-internals': noDeviceInternals,
           'no-raw-color': noRawColor,
+          'no-upward-tier-import': noUpwardTierImport,
           'no-var-color-opacity': noVarColorOpacity,
           'story-title-prefix': storyTitlePrefix,
         },
@@ -326,6 +328,30 @@ module.exports = tseslint.config(
             'getSemanticColors() freezes to one theme — use resolveColor(token) in components. See TOKENS.md §3.',
         },
       ],
+    },
+  },
+
+  // Tier order (ui/README.md): theme -> icons -> ui -> custom -> shell -> pages.
+  // A lower tier importing from a higher one compiles fine but breaks the
+  // dependency direction the family split depends on (VW-88 gap 1).
+  //
+  // Errored, but RATCHETED like no-raw-color: main carries 7 existing upward
+  // imports (recorded in tier-import-baseline.json, VW-315) — new ones are
+  // blocked immediately and the backlog burns down file by file.
+  //
+  // src/lab/** is exempt — see no-upward-tier-import.js and the
+  // no-device-internals exemption above for the same rationale.
+  {
+    files: [
+      'src/theme/**/*.{ts,tsx}',
+      'src/components/icons/**/*.{ts,tsx}',
+      'src/components/ui/**/*.{ts,tsx}',
+      'src/components/custom/**/*.{ts,tsx}',
+      'src/components/shell/**/*.{ts,tsx}',
+      'src/components/pages/**/*.{ts,tsx}',
+    ],
+    rules: {
+      'titan/no-upward-tier-import': 'error',
     },
   },
 
