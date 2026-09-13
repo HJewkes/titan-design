@@ -4,6 +4,7 @@ const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
 const noDeviceInternals = require('./eslint-rules/no-device-internals')
 const noRawColor = require('./eslint-rules/no-raw-color')
+const storyTitlePrefix = require('./eslint-rules/story-title-prefix')
 
 module.exports = tseslint.config(
   // Global ignores
@@ -88,6 +89,7 @@ module.exports = tseslint.config(
         rules: {
           'no-device-internals': noDeviceInternals,
           'no-raw-color': noRawColor,
+          'story-title-prefix': storyTitlePrefix,
         },
       },
     },
@@ -308,6 +310,16 @@ module.exports = tseslint.config(
             'getSemanticColors() freezes to one theme — use resolveColor(token) in components. See TOKENS.md §3.',
         },
       ],
+    },
+  },
+
+  // Every story's top-level Storybook group must be one of the six-group-plus-Docs
+  // roots the reorg (#170) settled on, so a new story can't quietly invent an
+  // eighth root that the sidebar and storySort don't know about.
+  {
+    files: ['src/**/*.stories.{ts,tsx}'],
+    rules: {
+      'titan/story-title-prefix': 'error',
     },
   }
 )
