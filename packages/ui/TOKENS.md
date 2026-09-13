@@ -116,6 +116,23 @@ const t = getSemanticColors('dark')
 `getSemanticColors` is for tests, stories, and token-layer code — places where a concrete value is the
 point. There are ~98 legacy call sites in components; they are a known migration, not a precedent.
 
+**In tested component code, resolve at render time instead of reaching for `resolveColor`.** Under the
+RNW vitest alias `resolveColor` returns the `var()` string, which `toHaveStyle` cannot match, so a
+component whose colours are asserted needs literal hex that still follows the theme. That is what the
+Surface hooks give you: the mode comes from the nearest `<Surface>` on every render.
+
+```ts
+// ✗ frozen at import time — one palette for the process's lifetime
+const t = getSemanticColors('dark')
+
+// ✓ literal hex, re-resolved per render from the enclosing Surface
+const t = getSemanticColors(useSurfaceMode())
+const label = useOnSurfaceColor('secondary') // the three neutral text roles
+```
+
+A helper module that has no render of its own takes the mode as a parameter (`tone(mode)`) and lets
+its caller pass `useSurfaceMode()`. `titan/no-frozen-theme` enforces both halves — see §6.
+
 ### Translucency: never `/<n>` on a token (VW-308)
 
 **Tailwind v3 emits no rule at all for an opacity modifier on a `var()`-backed colour.** Not a
@@ -218,6 +235,7 @@ spacing, radius, and type, not layout geometry.
 | -------------------------------------- | ---------------------------------------------------------------- |
 | all of `src/**`                        | no `/<n>` opacity modifier on a token colour (**error**)         |
 | all of `src/components/**`             | no inline `linear-gradient` strings (warn)                       |
+| all of `src/components/**`             | no frozen theme — module-scope or literal-mode `getSemanticColors()` (**error**, ratcheted) |
 | `shell/`, `icons/`                     | \+ no raw hex (warn)                                             |
 | `custom/ActiveWork/`, `custom/charts/` | \+ no raw hex, no arbitrary px, no inline `fontSize` (**error**) |
 | `custom/Workout/` — batch B1 only      | same errors, listed file by file until the family is ported      |
@@ -231,3 +249,10 @@ The scope is deliberately per-family rather than repo-wide: a codebase-wide migr
 effort, and a rule that fires 140 times on legacy code gets ignored. **When you harden a new family
 into the library, add it to the token-pure list** — that is the ratchet, and it only works if each
 new family opts in while it is still clean.
+
+`titan/no-frozen-theme` is the exception that covers every family at once, because it can: its
+offenders are recorded per file in `eslint-rules/frozen-theme-baseline.json`, keyed by frozen value.
+A new frozen call fails immediately anywhere under `src/components/**`; the 38 recorded ones migrate
+in batches (VW-316). After migrating a file, run
+`node scripts/update-frozen-theme-baseline.mjs` to lower its allowance — the script refuses to raise
+one without `--allow-increase`, so the ratchet only shrinks.
