@@ -1,0 +1,21 @@
+{
+  "src/components/ui/pill/Pill.stories.tsx": {
+    "../../custom/Typography": 1
+  },
+  "src/theme/ChoosingTokens.stories.tsx": {
+    "../components/custom/Typography": 1
+  },
+  "src/theme/ColorPalettes.stories.tsx": {
+    "../components/custom/Fatigue/fatigue-tokens": 1
+  },
+  "src/theme/ProposedTokensVW82.stories.tsx": {
+    "../components/custom/Treemap": 1,
+    "../components/ui/toolbar-button": 1
+  },
+  "src/theme/ThemeProvider.test.tsx": {
+    "../components/ui/surface": 1
+  },
+  "src/theme/ThemeProvider.tsx": {
+    "../components/ui/surface/SurfaceContext": 1
+  }
+}
