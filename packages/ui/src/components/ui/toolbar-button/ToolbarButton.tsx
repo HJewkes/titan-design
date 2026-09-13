@@ -51,9 +51,7 @@ export interface ToolbarButtonProps extends ViewProps {
   className?: string
 }
 
-// Base button colours. These were raw `#3C3C3C`/`#2C2C2C` literals — old cold
-// charcoal steps that survived the grey migration only because they were plain
-// strings rather than scale references.
+// Base button colours.
 const BUTTON_BG = greyRamp[800]
 
 // Calculate hover colors using color math
