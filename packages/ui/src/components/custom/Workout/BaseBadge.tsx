@@ -2,6 +2,7 @@
 import { useState, type ReactNode } from 'react'
 import { View, Pressable, Animated, type ViewProps } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { alpha } from '../../../utils/colors'
 
 const t = getSemanticColors('dark')
 
@@ -32,8 +33,8 @@ export const baseBadgeSizeConfig: Record<
 const variantColors: Record<BaseBadgeVariant, { backgroundColor: string; borderColor: string }> = {
   plain: { backgroundColor: t['surface-raised'], borderColor: t['hairline-default'] },
   pr: {
-    backgroundColor: 'rgba(255, 121, 0, 0.12)',
-    borderColor: 'rgba(255, 121, 0, 0.3)',
+    backgroundColor: alpha(t['brand-primary'], 0.12),
+    borderColor: alpha(t['brand-primary'], 0.3),
   },
 }
 

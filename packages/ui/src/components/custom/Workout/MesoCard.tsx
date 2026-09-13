@@ -10,6 +10,7 @@ import {
   MESO_ACCENT_GRADIENT_LIGHT,
 } from '../../../theme/extracted-colors-dataviz'
 import { getGlowShadow } from '../../../theme/elevation'
+import { alpha } from '../../../utils/colors'
 
 const HAIRLINE_DEFAULT = getSemanticColors('dark')['hairline-default']
 
@@ -61,7 +62,7 @@ export interface MesoCardProps extends ViewProps {
 function heatmapColor(percentage: number): string {
   const clamped = Math.max(0, Math.min(100, percentage))
   const opacity = 0.12 + (clamped / 100) * 0.78
-  return `rgba(255,121,0,${opacity.toFixed(3)})`
+  return alpha(BRAND_PRIMARY, opacity)
 }
 
 /**

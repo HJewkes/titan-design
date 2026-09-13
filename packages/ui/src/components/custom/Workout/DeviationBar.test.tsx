@@ -3,6 +3,10 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { DeviationBar } from './DeviationBar'
 import { greyRamp } from '../../../theme/tokens/primitives'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { alpha } from '../../../utils/colors'
+
+const t = getSemanticColors('dark')
 
 describe('DeviationBar', () => {
   it('renders the bar and dot', () => {
@@ -75,8 +79,7 @@ describe('DeviationBar', () => {
     const bar = getByTestId('deviation-bar')
     const track = bar.firstElementChild as HTMLElement
     expect(track).toHaveStyle({
-      backgroundImage:
-        'linear-gradient(90deg, rgba(46,213,115,0.25) 0%, rgba(107,114,128,0.15) 50%, rgba(249,180,21,0.25) 100%)',
+      backgroundImage: `linear-gradient(90deg, ${alpha(t['status-success'], 0.25)} 0%, rgba(107,114,128,0.15) 50%, ${alpha(t['status-warning'], 0.25)} 100%)`,
     })
   })
 

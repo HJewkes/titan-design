@@ -1,6 +1,8 @@
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { DATAVIZ_CATEGORICAL_PALETTE } from '../../../theme/extracted-colors-dataviz'
+import { primitiveColors } from '../../../theme/tokens/primitives'
+import { alpha } from '../../../utils/colors'
 
 export interface ScatterDatum {
   /** Stable identity — returned by onPress and used as the React key. */
@@ -49,9 +51,9 @@ export interface ScatterProps extends Omit<ViewProps, 'children'> {
 /** Titan categorical fallback palette (see extracted-colors-dataviz). */
 const PALETTE = DATAVIZ_CATEGORICAL_PALETTE
 
-const GRID_LINE = 'rgba(255,255,255,0.07)'
-const AXIS_LINE = 'rgba(255,255,255,0.18)'
-const DIAGONAL_LINE = 'rgba(255,255,255,0.28)'
+const GRID_LINE = alpha(primitiveColors.white, 0.07)
+const AXIS_LINE = alpha(primitiveColors.white, 0.18)
+const DIAGONAL_LINE = alpha(primitiveColors.white, 0.28)
 const DEFAULT_R = 6
 
 const PLOT_LEFT = 40

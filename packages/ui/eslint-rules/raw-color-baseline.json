@@ -13,9 +13,6 @@
   "src/components/custom/Gauge/Gauge.stories.tsx": {
     "#5b9bd5": 1
   },
-  "src/components/custom/Gauge/Gauge.tsx": {
-    "rgba(": 1
-  },
   "src/components/custom/Scatter/Scatter.stories.tsx": {
     "#14b8a6": 2,
     "#5b9bd5": 2,
@@ -23,8 +20,7 @@
     "#f83030": 2
   },
   "src/components/custom/Scatter/Scatter.tsx": {
-    "#ffffff": 1,
-    "rgba(": 3
+    "#ffffff": 1
   },
   "src/components/custom/Sidebar/Sidebar.stories.tsx": {
     "text-white": 1
@@ -55,39 +51,28 @@
     "#9ca3af": 3,
     "#ff7900": 4
   },
-  "src/components/custom/Workout/BaseBadge.tsx": {
-    "rgba(": 2
-  },
-  "src/components/custom/Workout/BodyMap.tsx": {
-    "rgba(": 3
-  },
   "src/components/custom/Workout/BodyMapDetailPanel.stories.tsx": {
     "#0e0e0e": 2,
     "#ff7900": 1,
     "#ffffff": 1
   },
   "src/components/custom/Workout/BodyMapDetailPanel.tsx": {
-    "#000000": 1,
-    "rgba(": 3
+    "#000000": 1
   },
   "src/components/custom/Workout/CapacityBandChart.stories.tsx": {
     "#9ca3af": 1
   },
   "src/components/custom/Workout/CapacityBandChart.tsx": {
-    "#f3f4f6": 1,
-    "rgba(": 3
+    "#f3f4f6": 1
   },
   "src/components/custom/Workout/DeviationBar.tsx": {
-    "rgba(": 4
+    "rgba(": 1
   },
   "src/components/custom/Workout/ExerciseCard.stories.tsx": {
     "#121212": 1
   },
   "src/components/custom/Workout/ExerciseCardHeading.stories.tsx": {
     "#131313": 1
-  },
-  "src/components/custom/Workout/ExerciseDetailPage.tsx": {
-    "rgba(": 2
   },
   "src/components/custom/Workout/ExerciseHeading.stories.tsx": {
     "#131313": 1
@@ -108,20 +93,13 @@
   },
   "src/components/custom/Workout/IntensityBar.tsx": {
     "#333333": 1,
-    "#6b7280": 1,
-    "rgba(": 3
+    "#6b7280": 1
   },
   "src/components/custom/Workout/LiveAuraFrame.stories.tsx": {
     "#070707": 1
   },
-  "src/components/custom/Workout/MesoCard.tsx": {
-    "rgba(": 2
-  },
   "src/components/custom/Workout/MesoProgressBar.tsx": {
     "rgba(": 3
-  },
-  "src/components/custom/Workout/MesoStatusCard.tsx": {
-    "rgba(": 15
   },
   "src/components/custom/Workout/metricText.stories.tsx": {
     "#131313": 1,
@@ -141,15 +119,11 @@
     "rgba(": 2
   },
   "src/components/custom/Workout/ReadinessCheck.tsx": {
-    "#ffffff": 1,
-    "rgba(": 1
+    "#ffffff": 1
   },
   "src/components/custom/Workout/RestTimer.stories.tsx": {
     "#0e0e0e": 1,
     "#5a5a5a": 1
-  },
-  "src/components/custom/Workout/RestTimer.tsx": {
-    "rgba(": 2
   },
   "src/components/custom/Workout/RowInventory.stories.tsx": {
     "#0c0d0f": 1,
@@ -247,9 +221,6 @@
   },
   "src/components/custom/Workout/StrengthTrendChart.stories.tsx": {
     "#9ca3af": 1
-  },
-  "src/components/custom/Workout/StrengthTrendChart.tsx": {
-    "rgba(": 6
   },
   "src/components/custom/Workout/SupersetWrapper.stories.tsx": {
     "#22c55e": 1,
@@ -411,7 +382,6 @@
     "[#d1d1d1]": 1,
     "#d1d1d1": 1,
     "#ffffff": 1,
-    "rgba(": 1,
     "text-white": 1
   },
   "src/components/ui/tooltip/Tooltip.tsx": {

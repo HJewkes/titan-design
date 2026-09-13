@@ -1,6 +1,8 @@
 import { View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { primitiveColors } from '../../../theme/tokens/primitives'
+import { alpha } from '../../../utils/colors'
 
 const sem = getSemanticColors('dark')
 
@@ -36,7 +38,7 @@ export interface GaugeProps extends Omit<ViewProps, 'children'> {
 const STATUS_SUCCESS = sem['status-success']
 const STATUS_WARNING = sem['status-warning']
 const STATUS_ERROR = sem['status-error']
-const TRACK = 'rgba(255,255,255,0.08)'
+const TRACK = alpha(primitiveColors.white, 0.08)
 
 /** Titan status-token bands for a 0–100 score. */
 const DEFAULT_THRESHOLDS: GaugeThreshold[] = [
