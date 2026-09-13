@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:f79da78718437072ff8b9a1cb578dd3cf670e4a9a4d6324b86f1061032c13548",
+  "componentBarrelHash": "sha256:dce43a7ab61690b039e84fc8569e9f7f8a62a40de91a6da5001abbf0ed8a51ba",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -281,7 +281,7 @@
         "rawText": 0,
         "inlineStyle": 2,
         "rawHex": 0,
-        "loc": 117,
+        "loc": 118,
         "score": 6
       },
       "tier": "atom",
@@ -319,7 +319,7 @@
         "rawText": 3,
         "inlineStyle": 8,
         "rawHex": 0,
-        "loc": 352,
+        "loc": 354,
         "score": 23
       },
       "tier": "atom",
@@ -359,7 +359,7 @@
         "rawText": 15,
         "inlineStyle": 36,
         "rawHex": 1,
-        "loc": 514,
+        "loc": 515,
         "score": 103
       },
       "tier": "organism",
@@ -556,7 +556,7 @@
         "rawText": 4,
         "inlineStyle": 12,
         "rawHex": 1,
-        "loc": 527,
+        "loc": 528,
         "score": 38
       },
       "tier": "atom",
@@ -912,7 +912,7 @@
         "rawText": 0,
         "inlineStyle": 2,
         "rawHex": 0,
-        "loc": 88,
+        "loc": 91,
         "score": 7
       },
       "tier": "atom",
@@ -1201,9 +1201,10 @@
         "ExerciseCardProps",
         "getSupersetBorderRadius",
         "getSupersetMargin",
-        "formatSummary",
-        "formatAccessibilityLabel",
-        "onToggle"
+        "supersetChrome",
+        "deriveCollapsedSetStates",
+        "CollapsedCard",
+        "deriveHeaderSetStates"
       ],
       "libDependents": 7,
       "storyRefs": 7,
@@ -1217,21 +1218,18 @@
       "dependsOn": [
         "ExerciseCardHeading",
         "ExerciseIndicator",
-        "PlaceholderStrip",
-        "PrBadge",
         "SetBar",
         "SetRow",
         "SetTableHeader",
-        "Typography",
         "VelocityStrip"
       ],
       "leak": {
-        "rawView": 11,
+        "rawView": 3,
         "rawText": 0,
-        "inlineStyle": 7,
+        "inlineStyle": 2,
         "rawHex": 0,
-        "loc": 403,
-        "score": 25
+        "loc": 328,
+        "score": 7
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -1246,7 +1244,11 @@
       "family": "custom/Workout",
       "exports": [
         "ExerciseCardHeading",
-        "ExerciseCardHeadingProps"
+        "ExerciseRowDensity",
+        "ExerciseCardHeadingProps",
+        "useRowInteraction",
+        "rowWash",
+        "prescriptionProps"
       ],
       "libDependents": 2,
       "storyRefs": 3,
@@ -1260,15 +1262,16 @@
       "dependsOn": [
         "ExerciseHeading",
         "SetBar",
-        "SetStrip"
+        "SetStrip",
+        "Tooltip"
       ],
       "leak": {
-        "rawView": 2,
+        "rawView": 1,
         "rawText": 0,
-        "inlineStyle": 2,
+        "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 44,
-        "score": 6
+        "loc": 187,
+        "score": 3
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -1319,7 +1322,7 @@
         "rawText": 13,
         "inlineStyle": 32,
         "rawHex": 0,
-        "loc": 644,
+        "loc": 645,
         "score": 95
       },
       "tier": "page",
@@ -1334,9 +1337,12 @@
       "dir": "workout",
       "family": "custom/Workout",
       "exports": [
+        "exerciseHeadingLabel",
         "ExerciseHeading",
+        "ExerciseHeadingLayout",
         "ExerciseHeadingProps",
-        "headingLabel"
+        "prescriptionText",
+        "pressProps"
       ],
       "libDependents": 1,
       "storyRefs": 1,
@@ -1354,12 +1360,12 @@
         "Typography"
       ],
       "leak": {
-        "rawView": 4,
+        "rawView": 6,
         "rawText": 0,
-        "inlineStyle": 3,
+        "inlineStyle": 5,
         "rawHex": 0,
-        "loc": 91,
-        "score": 10
+        "loc": 222,
+        "score": 16
       },
       "tier": "organism",
       "verdict": "keep-internal",
@@ -1755,7 +1761,7 @@
         "rawText": 3,
         "inlineStyle": 4,
         "rawHex": 0,
-        "loc": 174,
+        "loc": 176,
         "score": 15
       },
       "tier": "atom",
@@ -2299,7 +2305,7 @@
         "rawText": 2,
         "inlineStyle": 5,
         "rawHex": 2,
-        "loc": 224,
+        "loc": 225,
         "score": 18
       },
       "tier": "atom",
@@ -2624,7 +2630,7 @@
         "rawText": 2,
         "inlineStyle": 9,
         "rawHex": 0,
-        "loc": 244,
+        "loc": 245,
         "score": 28
       },
       "tier": "organism",
@@ -2707,7 +2713,7 @@
         "rawText": 11,
         "inlineStyle": 24,
         "rawHex": 0,
-        "loc": 452,
+        "loc": 453,
         "score": 76
       },
       "tier": "organism",
@@ -3034,7 +3040,7 @@
         "PlaceholderStripProps",
         "SingleStrip"
       ],
-      "libDependents": 3,
+      "libDependents": 2,
       "storyRefs": 2,
       "xproj": {
         "mobile": 0,
@@ -3153,7 +3159,7 @@
         "PRType",
         "PrBadgeProps"
       ],
-      "libDependents": 3,
+      "libDependents": 2,
       "storyRefs": 2,
       "xproj": {
         "mobile": 0,
@@ -3392,7 +3398,7 @@
         "rawText": 7,
         "inlineStyle": 14,
         "rawHex": 1,
-        "loc": 287,
+        "loc": 288,
         "score": 43
       },
       "tier": "organism",
@@ -3427,7 +3433,7 @@
         "rawText": 6,
         "inlineStyle": 15,
         "rawHex": 0,
-        "loc": 280,
+        "loc": 282,
         "score": 43
       },
       "tier": "organism",
@@ -3504,7 +3510,7 @@
         "rawText": 5,
         "inlineStyle": 14,
         "rawHex": 1,
-        "loc": 361,
+        "loc": 363,
         "score": 42
       },
       "tier": "atom",
@@ -3614,7 +3620,7 @@
         "rawText": 0,
         "inlineStyle": 3,
         "rawHex": 0,
-        "loc": 177,
+        "loc": 178,
         "score": 10
       },
       "tier": "atom",
@@ -3985,7 +3991,7 @@
         "rawText": 0,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 189,
+        "loc": 198,
         "score": 2
       },
       "tier": "molecule",
@@ -4002,6 +4008,8 @@
       "exports": [
         "scaleDenominator",
         "valueLabelFontSize",
+        "estimateValueLabelWidth",
+        "shouldFlipEdgeLabel",
         "computeBarLayout",
         "SetBarChart",
         "sideLabelFontSize",
@@ -4012,6 +4020,7 @@
         "SetSlot",
         "SetBarGeometry",
         "SetBarChartProps",
+        "FIXED_MAX_VALUE",
         "PEAK_HEADROOM",
         "SET_BAR_DEFAULT_HEIGHT",
         "GAP_RATIO",
@@ -4030,7 +4039,7 @@
         "showBarLabel"
       ],
       "libDependents": 2,
-      "storyRefs": 0,
+      "storyRefs": 1,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
@@ -4044,7 +4053,7 @@
         "rawText": 2,
         "inlineStyle": 8,
         "rawHex": 0,
-        "loc": 652,
+        "loc": 699,
         "score": 29
       },
       "tier": "atom",
@@ -4204,7 +4213,8 @@
         "SetStrip",
         "SetStripProps",
         "setCategory",
-        "describeSets"
+        "describeSets",
+        "repsRangeLabel"
       ],
       "libDependents": 1,
       "storyRefs": 1,
@@ -4219,12 +4229,12 @@
         "SetBar"
       ],
       "leak": {
-        "rawView": 1,
-        "rawText": 0,
-        "inlineStyle": 1,
+        "rawView": 2,
+        "rawText": 1,
+        "inlineStyle": 3,
         "rawHex": 0,
-        "loc": 72,
-        "score": 3
+        "loc": 92,
+        "score": 9
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -4729,7 +4739,7 @@
         "rawText": 12,
         "inlineStyle": 33,
         "rawHex": 0,
-        "loc": 631,
+        "loc": 633,
         "score": 98
       },
       "tier": "atom",
@@ -5262,7 +5272,7 @@
         "rawText": 1,
         "inlineStyle": 0,
         "rawHex": 2,
-        "loc": 305,
+        "loc": 304,
         "score": 6
       },
       "tier": "molecule",
@@ -5285,7 +5295,7 @@
         "show",
         "hide"
       ],
-      "libDependents": 8,
+      "libDependents": 9,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -5489,7 +5499,7 @@
         "LabelProps",
         "OverlineProps"
       ],
-      "libDependents": 41,
+      "libDependents": 40,
       "storyRefs": 9,
       "xproj": {
         "mobile": 0,
@@ -5659,7 +5669,7 @@
         "rawText": 4,
         "inlineStyle": 15,
         "rawHex": 0,
-        "loc": 1469,
+        "loc": 1481,
         "score": 50
       },
       "tier": "molecule",
@@ -6510,14 +6520,6 @@
     ],
     [
       "ExerciseCard",
-      "PlaceholderStrip"
-    ],
-    [
-      "ExerciseCard",
-      "PrBadge"
-    ],
-    [
-      "ExerciseCard",
       "SetRow"
     ],
     [
@@ -6537,8 +6539,8 @@
       "ExerciseIndicator"
     ],
     [
-      "ExerciseCard",
-      "Typography"
+      "ExerciseCardHeading",
+      "Tooltip"
     ],
     [
       "ExerciseCardHeading",
@@ -7487,7 +7489,7 @@
         "rawText": 15,
         "inlineStyle": 36,
         "rawHex": 1,
-        "loc": 514,
+        "loc": 515,
         "score": 103
       },
       {
@@ -7497,7 +7499,7 @@
         "rawText": 12,
         "inlineStyle": 33,
         "rawHex": 0,
-        "loc": 631,
+        "loc": 633,
         "score": 98
       },
       {
@@ -7507,7 +7509,7 @@
         "rawText": 13,
         "inlineStyle": 32,
         "rawHex": 0,
-        "loc": 644,
+        "loc": 645,
         "score": 95
       },
       {
@@ -7517,7 +7519,7 @@
         "rawText": 11,
         "inlineStyle": 24,
         "rawHex": 0,
-        "loc": 452,
+        "loc": 453,
         "score": 76
       },
       {
@@ -7537,7 +7539,7 @@
         "rawText": 4,
         "inlineStyle": 15,
         "rawHex": 0,
-        "loc": 1469,
+        "loc": 1481,
         "score": 50
       },
       {
@@ -7567,7 +7569,7 @@
         "rawText": 7,
         "inlineStyle": 14,
         "rawHex": 1,
-        "loc": 287,
+        "loc": 288,
         "score": 43
       },
       {
@@ -7577,7 +7579,7 @@
         "rawText": 6,
         "inlineStyle": 15,
         "rawHex": 0,
-        "loc": 280,
+        "loc": 282,
         "score": 43
       },
       {
@@ -7587,7 +7589,7 @@
         "rawText": 5,
         "inlineStyle": 14,
         "rawHex": 1,
-        "loc": 361,
+        "loc": 363,
         "score": 42
       },
       {
@@ -7617,7 +7619,7 @@
         "rawText": 4,
         "inlineStyle": 12,
         "rawHex": 1,
-        "loc": 527,
+        "loc": 528,
         "score": 38
       },
       {
@@ -7633,7 +7635,7 @@
     ],
     "substitution": {
       "library(titan)": {
-        "Text": 68,
+        "Text": 69,
         "View": 126,
         "TouchableOpacity": 0,
         "Pressable": 54,

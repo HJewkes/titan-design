@@ -3,6 +3,7 @@ import { render, screen, fireEvent, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ExerciseCard } from './ExerciseCard'
 import type { SetRowProps } from './SetRow'
+import { exerciseRowStateColor } from './exerciseRowState'
 import { resolveColor } from '../../../theme/resolve-color'
 
 const baseCollapsedProps = {
@@ -40,17 +41,21 @@ describe('ExerciseCard', () => {
       expect(screen.getByTestId('exercise-card-name')).toHaveTextContent('Bench Press')
     })
 
-    it('renders summary text', () => {
+    it('renders the prescription through the shared SetsRepsLoad line', () => {
       render(<ExerciseCard {...baseCollapsedProps} />)
-      expect(screen.getByTestId('exercise-card-summary')).toHaveTextContent('3×6 @ 175 lbs')
+      const summary = screen.getByTestId('exercise-card-summary')
+      expect(summary).toHaveTextContent('3')
+      expect(summary).toHaveTextContent('6')
+      expect(summary).toHaveTextContent('175')
+      expect(summary).toHaveTextContent('lbs')
     })
 
-    it('renders PrBadge when isPR is true', () => {
+    it('surfaces a PR through the indicator chip, as the expanded card already did', () => {
       render(<ExerciseCard {...baseCollapsedProps} isPR />)
-      expect(screen.getByTestId('pr-badge-star')).toBeInTheDocument()
+      expect(screen.getByLabelText('Personal record')).toBeInTheDocument()
     })
 
-    it('renders compact velocity strips for logged sets', () => {
+    it('renders logged and remaining sets as one SetStrip', () => {
       render(
         <ExerciseCard
           {...baseCollapsedProps}
@@ -61,21 +66,22 @@ describe('ExerciseCard', () => {
           totalPlannedSets={4}
         />
       )
-      expect(screen.getByTestId('exercise-card-velocity-strip-0')).toBeInTheDocument()
-      expect(screen.getByTestId('exercise-card-velocity-strip-1')).toBeInTheDocument()
-    })
-
-    it('renders placeholder strips for remaining planned sets', () => {
-      render(
-        <ExerciseCard {...baseCollapsedProps} setVelocities={[[1.1, 0.95]]} totalPlannedSets={3} />
+      expect(screen.getByTestId('exercise-card-strip')).toBeInTheDocument()
+      expect(screen.getByTestId('set-strip')).toHaveAccessibleName(
+        'Set progress: 2 done, 0 in progress, 2 upcoming'
       )
-      expect(screen.getByTestId('exercise-card-placeholder-0')).toBeInTheDocument()
-      expect(screen.getByTestId('exercise-card-placeholder-1')).toBeInTheDocument()
     })
 
-    it('does not render strips container when no velocities and no planned sets', () => {
+    it('does not render the strip when there are no velocities and no planned sets', () => {
       render(<ExerciseCard {...baseCollapsedProps} />)
-      expect(screen.queryByTestId('exercise-card-strips')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('exercise-card-strip')).not.toBeInTheDocument()
+    })
+
+    it('washes the row when selected', () => {
+      render(<ExerciseCard {...baseCollapsedProps} isSelected />)
+      expect(screen.getByTestId('exercise-card')).toHaveStyle({
+        backgroundColor: exerciseRowStateColor('selected'),
+      })
     })
   })
 
@@ -279,10 +285,12 @@ describe('ExerciseCard', () => {
     })
   })
 
+  // The row IS the card now, so the superset chrome lands on the row root rather
+  // than on a Pressable's inner View.
   describe('superset position border radius', () => {
     it('applies first position border radius', () => {
       render(<ExerciseCard {...baseCollapsedProps} supersetPosition="first" />)
-      const container = screen.getByTestId('exercise-card').firstChild as HTMLElement
+      const container = screen.getByTestId('exercise-card')
       expect(container).toHaveStyle({
         borderTopLeftRadius: '12px',
         borderTopRightRadius: '12px',
@@ -293,7 +301,7 @@ describe('ExerciseCard', () => {
 
     it('applies last position border radius', () => {
       render(<ExerciseCard {...baseCollapsedProps} supersetPosition="last" />)
-      const container = screen.getByTestId('exercise-card').firstChild as HTMLElement
+      const container = screen.getByTestId('exercise-card')
       expect(container).toHaveStyle({
         borderTopLeftRadius: '8px',
         borderTopRightRadius: '8px',
@@ -304,7 +312,7 @@ describe('ExerciseCard', () => {
 
     it('applies middle position border radius', () => {
       render(<ExerciseCard {...baseCollapsedProps} supersetPosition="middle" />)
-      const container = screen.getByTestId('exercise-card').firstChild as HTMLElement
+      const container = screen.getByTestId('exercise-card')
       expect(container).toHaveStyle({
         borderTopLeftRadius: '8px',
         borderTopRightRadius: '8px',
