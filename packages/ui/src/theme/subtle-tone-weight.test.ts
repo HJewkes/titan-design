@@ -38,6 +38,16 @@ const oklabL = (rgb: number[]) => {
   const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b)
   return 0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s
 }
+/** OKLCH chroma — how saturated, independent of how light. */
+const oklabChroma = (rgb: number[]) => {
+  const [r, g, b] = rgb.map(srgb2lin)
+  const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b)
+  const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b)
+  const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b)
+  const a = 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s
+  const bb = 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s
+  return Math.sqrt(a * a + bb * bb)
+}
 
 const parseRgba = (v: string): { rgb: number[]; alpha: number } => {
   const m = v.match(/rgba?\(([^)]+)\)/)
@@ -56,28 +66,60 @@ const PAGE = greyRamp[925]
 const CARD = greyRamp[875]
 
 /**
- * `brand` is the documented exception (operator, AW-133): its subtle label stays
- * the exact `orange[400]` brand hue rather than levelling with the rest, so the
- * Voltras tone never drifts. That costs it ~4.2 on a raised card. Every other
- * tone clears AA on both planes.
+ * Four tones level at ramp rung 300. Two are deliberate exceptions, both operator
+ * calls during the AW-133 review, and both are held here rather than quietly
+ * widening the band:
+ *
+ * - `brand` keeps the exact `orange[400]` brand hue instead of levelling, so the
+ *   Voltras tone never drifts. It is the darkest label and the lowest contrast.
+ * - `error` sits at `red[400]`, a rung darker than its siblings. red[300] levelled
+ *   perfectly but read PINK: a red that light can only hold ~0.121 OKLCH chroma.
+ *   red[400] carries ~0.165 and reads red. Its fill is thinned to 0.08 to buy back
+ *   the contrast that darkness costs, which is why it still beats brand's floor.
  */
 const TONES = [
-  { name: 'brand', fill: 'brand-primary-subtle', text: 'on-brand-primary-subtle', min: 4.0 },
+  {
+    name: 'brand',
+    fill: 'brand-primary-subtle',
+    text: 'on-brand-primary-subtle',
+    min: 4.0,
+    levelled: false,
+  },
   {
     name: 'accent',
     fill: 'brand-secondary-subtle',
     text: 'on-brand-secondary-subtle',
     min: 4.5,
+    levelled: true,
   },
   {
     name: 'success',
     fill: 'status-success-subtle',
     text: 'on-status-success-subtle',
     min: 4.5,
+    levelled: true,
   },
-  { name: 'warning', fill: 'status-warning-subtle', text: 'on-status-warning-subtle', min: 4.5 },
-  { name: 'error', fill: 'status-error-subtle', text: 'on-status-error-subtle', min: 4.5 },
-  { name: 'info', fill: 'status-info-subtle', text: 'on-status-info-subtle', min: 4.5 },
+  {
+    name: 'warning',
+    fill: 'status-warning-subtle',
+    text: 'on-status-warning-subtle',
+    min: 4.5,
+    levelled: true,
+  },
+  {
+    name: 'error',
+    fill: 'status-error-subtle',
+    text: 'on-status-error-subtle',
+    min: 4.2,
+    levelled: false,
+  },
+  {
+    name: 'info',
+    fill: 'status-info-subtle',
+    text: 'on-status-info-subtle',
+    min: 4.5,
+    levelled: true,
+  },
 ] as const
 
 describe('subtle tone weight (dark)', () => {
@@ -91,13 +133,22 @@ describe('subtle tone weight (dark)', () => {
 
   // The original defect was a WEIGHT mismatch, not only a contrast one: the family
   // spanned OKLCH L 0.550-0.813, so accent and error read as a different rung of
-  // the system. Hold the five levelled tones in a tight band; brand sits below it
-  // by decision, so it is measured separately above.
-  it('levels the five non-brand tones to one weight', () => {
-    const ls = TONES.filter((t) => t.name !== 'brand').map((t) =>
+  // the system. Hold the levelled tones in a tight band; the two exceptions are
+  // measured by their own floors above.
+  it('levels the unexceptional tones to one weight', () => {
+    const ls = TONES.filter((t) => t.levelled).map((t) =>
       oklabL(hex2rgb(semanticColorsDark[t.text]))
     )
     expect(Math.max(...ls) - Math.min(...ls)).toBeLessThanOrEqual(0.06)
+  })
+
+  // Guards the operator's actual complaint. Levelling error back onto rung 300 would
+  // satisfy every other assertion in this file — tighter band, higher contrast — and
+  // reintroduce the pink. Chroma is the thing that made it wrong, so chroma is what
+  // gets asserted.
+  it('keeps error saturated enough to read red rather than pink', () => {
+    const c = oklabChroma(hex2rgb(semanticColorsDark['on-status-error-subtle']))
+    expect(c).toBeGreaterThanOrEqual(0.15)
   })
 
   // A fill whose hue drifts from its label's re-opens the split this fixed.

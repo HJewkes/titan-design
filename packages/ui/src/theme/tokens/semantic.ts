@@ -268,7 +268,10 @@ export const semanticColorsDark = {
   'status-error': ramp.red[600],
   'status-error-light': ramp.red[500],
   'status-error-dark': ramp.red[700],
-  'status-error-subtle': 'rgba(255, 154, 157, 0.12)',
+  // Alpha 0.08, not the family's 0.12: error's label is red[400], a rung darker than
+  // its siblings so it reads RED rather than pink (rung 300 has only 0.121 chroma).
+  // Thinning the fill buys back the contrast that extra darkness costs. See AW-133.
+  'status-error-subtle': 'rgba(247, 113, 117, 0.08)',
   'status-error-muted': 'rgba(209, 67, 67, 0.30)',
   'status-error-strong': 'rgba(209, 67, 67, 0.50)',
 
@@ -299,9 +302,12 @@ export const semanticColorsDark = {
   'on-status-warning': p.white,
   'on-status-info': p.white,
 
-  // Text ON a `-subtle` fill — see the on-brand-*-subtle note above.
+  // Text ON a `-subtle` fill — see the on-brand-*-subtle note above. Error is the
+  // second deliberate exception to the rung-300 rule (operator, AW-133): red[300]
+  // levelled perfectly but read PINK, because a red that light can only hold 0.121
+  // chroma. red[400] carries 0.165 and reads red; its fill is thinned to compensate.
   'on-status-success-subtle': ramp.green[300],
-  'on-status-error-subtle': ramp.red[300],
+  'on-status-error-subtle': ramp.red[400],
   'on-status-warning-subtle': ramp.amber[300],
   'on-status-info-subtle': ramp.blue[300],
 

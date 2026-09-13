@@ -48,7 +48,7 @@
     --color-status-error: #D14343;
     --color-status-error-light: #E05254;
     --color-status-error-dark: #A4221C;
-    --color-status-error-subtle: rgba(255, 154, 157, 0.12);
+    --color-status-error-subtle: rgba(247, 113, 117, 0.08);
     --color-status-error-muted: rgba(209, 67, 67, 0.30);
     --color-status-error-strong: rgba(209, 67, 67, 0.50);
     --color-status-error-vivid: #FF4757;
@@ -77,7 +77,7 @@
     --color-on-status-warning: #FFFFFF;
     --color-on-status-info: #FFFFFF;
     --color-on-status-success-subtle: #2ED573;
-    --color-on-status-error-subtle: #FF9A9D;
+    --color-on-status-error-subtle: #F77175;
     --color-on-status-warning-subtle: #F9B415;
     --color-on-status-info-subtle: #78C2FF;
 
