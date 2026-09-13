@@ -5,6 +5,7 @@ import { Surface } from '../../ui/surface'
 import { greyRamp } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { FATIGUE_STATES, buildMockPanelState } from './fatigue-mock'
+import { PANEL_BREAKPOINTS } from './panel-layout'
 
 const PAGE_BG = greyRamp[975]
 const t = getSemanticColors('dark')
@@ -41,6 +42,93 @@ export const LivePanelV2: Story = {
     return (
       <View style={{ backgroundColor: PAGE_BG, padding: 24 }}>
         <LiveFatiguePanel model={model} velocity={velocity} />
+      </View>
+    )
+  },
+}
+
+/**
+ * The stack/expand tiers side by side (TD-03.58). Each frame pins `containerWidth` so the
+ * tier is deterministic in the visual layer; live, the panel measures itself in `onLayout`
+ * and picks the same tier from the real width. Nothing transitions between tiers.
+ */
+export const ResponsiveTiers: Story = {
+  name: 'Responsive tiers (stack → row → wall)',
+  render: () => {
+    const { model, velocity } = buildMockPanelState(FATIGUE_STATES[1].current, {
+      rpe: FATIGUE_STATES[1].model.rpe,
+      verdict: FATIGUE_STATES[1].model.verdict,
+    })
+    const frames: Array<{ label: string; width: number; bodyHeight: number }> = [
+      { label: `xs · 480px · stacked`, width: 480, bodyHeight: 560 },
+      {
+        label: `sm · ${PANEL_BREAKPOINTS.sm}px · stacked`,
+        width: PANEL_BREAKPOINTS.sm,
+        bodyHeight: 560,
+      },
+      {
+        label: `md · ${PANEL_BREAKPOINTS.md}px · row`,
+        width: PANEL_BREAKPOINTS.md,
+        bodyHeight: 508,
+      },
+      {
+        label: `lg · ${PANEL_BREAKPOINTS.lg}px · row`,
+        width: PANEL_BREAKPOINTS.lg,
+        bodyHeight: 508,
+      },
+      {
+        label: `xl · ${PANEL_BREAKPOINTS.xl}px · wall, card expands`,
+        width: PANEL_BREAKPOINTS.xl,
+        bodyHeight: 620,
+      },
+    ]
+    return (
+      <View style={{ backgroundColor: PAGE_BG, padding: 24, gap: 24 }}>
+        {frames.map((f) => (
+          <View key={f.label} style={{ gap: 6, width: f.width }}>
+            <Text
+              style={{
+                fontSize: 9,
+                letterSpacing: 1,
+                fontFamily: 'monospace',
+                color: t['text-tertiary'],
+              }}
+            >
+              {f.label}
+            </Text>
+            <LiveFatiguePanel
+              model={model}
+              velocity={velocity}
+              containerWidth={f.width}
+              bodyHeight={f.bodyHeight}
+            />
+          </View>
+        ))}
+      </View>
+    )
+  },
+}
+
+/**
+ * The wall case on its own, at the real 1920 stage the SPA renders on. This is the frame
+ * to look at from across a room: the card expands out of its 318 sliver and the hero keeps
+ * the lead.
+ */
+export const WallWidth: Story = {
+  name: 'Wall width (1920)',
+  render: () => {
+    const { model, velocity } = buildMockPanelState(FATIGUE_STATES[2].current, {
+      rpe: FATIGUE_STATES[2].model.rpe,
+      verdict: FATIGUE_STATES[2].model.verdict,
+    })
+    return (
+      <View style={{ backgroundColor: PAGE_BG, width: PANEL_BREAKPOINTS.xl }}>
+        <LiveFatiguePanel
+          model={model}
+          velocity={velocity}
+          containerWidth={PANEL_BREAKPOINTS.xl}
+          bodyHeight={820}
+        />
       </View>
     )
   },

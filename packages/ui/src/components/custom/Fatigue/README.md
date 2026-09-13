@@ -79,6 +79,34 @@ The reusable pure helpers (`ghostLineColor`, `auraForVerdict`, `mixHex`) live in
 - **Tempo carried by the ghost-spark phase BAND** (`PHASE_AXIS_COLOR`) — no mini-tempo
   digits, and no standalone hero-tempo component.
 
+## Responsive geometry (TD-03.58 / TD-03.60)
+
+`panel-layout.ts` is the panel's single geometry source — a pure module with no
+`react-native` import, so the tiers are unit-tested without `onLayout` (which never fires
+under jsdom, gotcha 6). `LiveFatiguePanel` measures its own width (`SIZE-D01`:
+container-driven, not a `size` prop) and calls it; `containerWidth` overrides the
+measurement for tests and for a consumer that already knows the width.
+
+| tier | width | layout | padding · gap | card width |
+| --- | --- | --- | --- | --- |
+| `xs` | < 600 | stacked | 16 · 12 | full content width |
+| `sm` | 600–999 | stacked | 20 · 14 | full content width |
+| `md` | 1000–1199 | row | 24 · 18 | 318 |
+| `lg` | 1200–1919 | row | 24 · 18 | 318 |
+| `xl` | ≥ 1920 | row | 24 · 18 | `0.22 × width`, clamped to 318–460 |
+
+The edges are titan's own `primitiveBreakpoints`, asserted by identity in
+`panel-layout.test.ts` so nobody can quietly swap in a hand-picked set. Padding and gap
+are deliberately frozen from `md` up: voltras-mcp's `panel-geometry.ts` derives its stage
+chrome from them, and moving them would overflow the wall stage.
+
+`panelBodySplit` is the one-height rule: side by side, the hero and the card both take the
+whole `bodyHeight`; stacked, they share it (card 0.55, gap taken out first). Both numbers
+come from one call, so `bodyHeight` moves both or neither.
+
+Nothing here animates. A tier change is a re-layout, never a transition — the panel is
+read from across a room mid-set, and the visual baselines need a deterministic render.
+
 ## Data plan / follow-ups
 
 - **Store wiring:** `LiveFatigueCard` consumes `LiveFatigueModel` from voltras-mcp's
@@ -86,6 +114,12 @@ The reusable pure helpers (`ghostLineColor`, `auraForVerdict`, `mixHex`) live in
   hand-rolled `live-page/FatigueCard.tsx` spike. The velocity hero's per-rep velocities
   are NOT on the model (they come from the live-view velocity path) — passed as the
   panel's separate `velocity` prop.
+- **Open — voltras-mcp duplicates the panel geometry:** `panel-geometry.ts` hardcodes
+  `FATIGUE_CARD_WIDTH = 318`, `PANEL_PAD = 24` and `HERO_EYEBROW_ALLOWANCE = 26` so the
+  idle stage can prefigure the panel. Those are now derivable — `panelLayout` /
+  `panelBodySplit` / `HERO_EYEBROW_ALLOWANCE` are exported from this family's barrel. Until
+  the SPA imports them, its idle stage will draw a 318 card placeholder where the live panel
+  draws an expanded one on an `xl` display.
 - **Deferred — VelocityStrip loss-relative bar fill:** the locked call also wants the
   hero's BAR FILL recoloured gold→orange→red by velocity loss (not absolute zone).
   VelocityStrip has no loss-relative colour mode; `VelocityHero` owns the band overlay

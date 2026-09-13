@@ -25,6 +25,7 @@ import { View } from 'react-native'
 import { Surface, useSurfaceMode } from '../../ui/surface'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { barPaper } from '../../../theme/materials'
+import { cardChartHeight } from './panel-layout'
 import { VerdictHero } from './VerdictHero'
 import { FatigueLights } from './FatigueLights'
 import { RomProgressionChart } from './RomProgressionChart'
@@ -46,7 +47,7 @@ const GHOST_GUTTER = 4 // GhostSpark carries this L/R padding internally
 export function LiveFatigueCard({ model, width = 318, height }: LiveFatigueCardProps) {
   const t = getSemanticColors(useSurfaceMode())
   const chartW = width - PAD * 2 - GHOST_GUTTER * 2
-  const chartH = height != null ? Math.round(Math.min(240, Math.max(168, height * 0.4))) : 172
+  const chartH = cardChartHeight(height)
   return (
     <Surface
       level="base"

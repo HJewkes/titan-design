@@ -1,0 +1,149 @@
+import { describe, it, expect } from 'vitest'
+import { primitiveBreakpoints } from '../../../theme/tokens/primitives'
+import {
+  PANEL_BREAKPOINTS,
+  CARD_WIDTH_BASE,
+  CARD_WIDTH_MAX,
+  CARD_WIDTH_XL_RATIO,
+  CARD_HEIGHT_SHARE_STACKED,
+  CARD_MIN_HEIGHT_STACKED,
+  CARD_MIN_CHART_HEIGHT,
+  CARD_MAX_CHART_HEIGHT,
+  CARD_NATURAL_CHART_HEIGHT,
+  HERO_EYEBROW_ALLOWANCE,
+  HERO_MIN_PLOT_HEIGHT,
+  panelTier,
+  panelLayout,
+  panelBodySplit,
+  cardChartHeight,
+} from './panel-layout'
+
+describe('panel breakpoints', () => {
+  // The edges are titan's, not this component's. If someone re-points the panel at a
+  // hand-picked set, this is where it shows up.
+  it('are titan primitiveBreakpoints, not values invented here', () => {
+    expect(PANEL_BREAKPOINTS).toBe(primitiveBreakpoints)
+  })
+
+  it.each([
+    [320, 'xs'],
+    [599, 'xs'],
+    [600, 'sm'],
+    [999, 'sm'],
+    [1000, 'md'],
+    [1199, 'md'],
+    [1200, 'lg'],
+    [1919, 'lg'],
+    [1920, 'xl'],
+    [2560, 'xl'],
+  ])('puts %ipx in the %s tier', (width, tier) => {
+    expect(panelTier(width)).toBe(tier)
+  })
+
+  it('treats an unmeasured container as md so the first paint is the row layout', () => {
+    expect(panelTier(0)).toBe('md')
+    expect(panelLayout(0).stacked).toBe(false)
+    expect(panelLayout(0).cardWidth).toBe(CARD_WIDTH_BASE)
+  })
+})
+
+describe('panelLayout', () => {
+  it('stacks below the md edge and rows at or above it', () => {
+    expect(panelLayout(PANEL_BREAKPOINTS.md - 1).stacked).toBe(true)
+    expect(panelLayout(PANEL_BREAKPOINTS.md).stacked).toBe(false)
+  })
+
+  it('holds the shipped padding, gap and card width at md and lg', () => {
+    for (const width of [1000, 1200, 1600, 1919]) {
+      expect(panelLayout(width)).toMatchObject({
+        stacked: false,
+        padding: 24,
+        gap: 18,
+        cardWidth: CARD_WIDTH_BASE,
+      })
+    }
+  })
+
+  it('expands the card at wall width without moving the padding or the gap', () => {
+    const wall = panelLayout(1920)
+    expect(wall.cardWidth).toBe(Math.round(1920 * CARD_WIDTH_XL_RATIO))
+    expect(wall.cardWidth).toBeGreaterThan(CARD_WIDTH_BASE)
+    // The SPA's stage chrome is derived from these two; moving them would overflow it.
+    expect(wall.padding).toBe(24)
+    expect(wall.gap).toBe(18)
+  })
+
+  it('caps the expansion so the card charts stay near the width they were drawn at', () => {
+    expect(panelLayout(4000).cardWidth).toBe(CARD_WIDTH_MAX)
+  })
+
+  it('gives a stacked card the full content width', () => {
+    const narrow = panelLayout(600)
+    expect(narrow.stacked).toBe(true)
+    expect(narrow.cardWidth).toBe(600 - narrow.padding * 2)
+  })
+})
+
+describe('panelBodySplit — one height source', () => {
+  // TD-03.60: the hero and the card must not be able to disagree about the body height.
+  it('moves BOTH the hero and the card when bodyHeight changes, in every tier', () => {
+    for (const width of [480, 900, 1000, 1440, 1920]) {
+      const layout = panelLayout(width)
+      const small = panelBodySplit(800, layout)
+      const large = panelBodySplit(1200, layout)
+      expect(large.heroHeight).toBeGreaterThan(small.heroHeight)
+      expect(large.cardHeight).toBeGreaterThan(small.cardHeight)
+    }
+  })
+
+  it('gives the row layout the full height to both, less the hero eyebrow', () => {
+    const split = panelBodySplit(508, panelLayout(1440))
+    expect(split.cardHeight).toBe(508)
+    expect(split.heroHeight).toBe(508 - HERO_EYEBROW_ALLOWANCE)
+  })
+
+  it('spends the whole stacked height on the two blocks and the gap, nothing lost', () => {
+    const layout = panelLayout(700)
+    const split = panelBodySplit(900, layout)
+    expect(split.heroHeight + HERO_EYEBROW_ALLOWANCE + split.cardHeight + layout.gap).toBe(900)
+  })
+
+  it('gives the stacked card the larger share once there is height to share', () => {
+    const layout = panelLayout(700)
+    const split = panelBodySplit(900, layout)
+    expect(split.cardHeight).toBe(Math.round((900 - layout.gap) * CARD_HEIGHT_SHARE_STACKED))
+    expect(split.cardHeight).toBeGreaterThan(split.heroHeight)
+  })
+
+  // A stacked card shorter than its content spilled the ghost spark outside the rounded
+  // edge — measured at 301px against a 384px content height before the floor existed.
+  it('never draws a stacked card below its content floor', () => {
+    for (const bodyHeight of [200, 400, 560, 600]) {
+      const split = panelBodySplit(bodyHeight, panelLayout(480))
+      expect(split.cardHeight).toBeGreaterThanOrEqual(CARD_MIN_HEIGHT_STACKED)
+    }
+  })
+
+  it('keeps the stacked hero plot readable rather than flattening it to nothing', () => {
+    const split = panelBodySplit(300, panelLayout(480))
+    expect(split.heroHeight).toBe(HERO_MIN_PLOT_HEIGHT)
+  })
+
+  it('never returns a negative height for a body too short to hold the chrome', () => {
+    const split = panelBodySplit(10, panelLayout(700))
+    expect(split.heroHeight).toBeGreaterThanOrEqual(0)
+    expect(split.cardHeight).toBeGreaterThanOrEqual(0)
+  })
+})
+
+describe('cardChartHeight', () => {
+  it('gives an unpinned card its natural plot height', () => {
+    expect(cardChartHeight(undefined)).toBe(CARD_NATURAL_CHART_HEIGHT)
+  })
+
+  it('clamps a pinned card between the floor and the ceiling', () => {
+    expect(cardChartHeight(100)).toBe(CARD_MIN_CHART_HEIGHT)
+    expect(cardChartHeight(5000)).toBe(CARD_MAX_CHART_HEIGHT)
+    expect(cardChartHeight(508)).toBe(Math.round(508 * 0.4))
+  })
+})

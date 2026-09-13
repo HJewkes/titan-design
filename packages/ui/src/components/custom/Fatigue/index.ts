@@ -2,6 +2,22 @@
 // components. See ./README.md for the composition tree + reuse audit.
 export { LiveFatiguePanel } from './LiveFatiguePanel'
 export type { LiveFatiguePanelProps, LiveFatiguePanelVelocity } from './LiveFatiguePanel'
+// The panel's responsive geometry, exported so a consumer that prefigures the panel (the
+// wall SPA's idle stage) reads the same numbers instead of copying them.
+export {
+  panelLayout,
+  panelBodySplit,
+  panelTier,
+  PANEL_BREAKPOINTS,
+  CARD_WIDTH_BASE,
+  CARD_WIDTH_MAX,
+  CARD_WIDTH_XL_RATIO,
+  CARD_HEIGHT_SHARE_STACKED,
+  HERO_EYEBROW_ALLOWANCE,
+  type PanelLayout,
+  type PanelBodySplit,
+  type PanelTier,
+} from './panel-layout'
 export { LiveFatigueCard, type LiveFatigueCardProps } from './LiveFatigueCard'
 export { VerdictHero, type VerdictHeroProps } from './VerdictHero'
 export { FatigueLights, type FatigueLightsProps } from './FatigueLights'
