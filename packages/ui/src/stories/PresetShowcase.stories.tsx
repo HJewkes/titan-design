@@ -324,7 +324,7 @@ function TypographyShowcase() {
 function ColorSwatch({
   label,
   className,
-  textClass = 'text-white',
+  textClass = 'text-on-brand-primary',
 }: {
   label: string
   className: string

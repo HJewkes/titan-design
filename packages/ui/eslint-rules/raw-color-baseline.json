@@ -1,7 +1,4 @@
 {
-  "src/arch/Architecture.stories.tsx": {
-    "rgba(": 1
-  },
   "src/components/custom/Scatter/Scatter.tsx": {
     "#ffffff": 1
   },
@@ -97,9 +94,6 @@
     "[#d1d1d1]": 1,
     "#d1d1d1": 1,
     "#ffffff": 1,
-    "text-white": 1
-  },
-  "src/stories/PresetShowcase.stories.tsx": {
     "text-white": 1
   }
 }
