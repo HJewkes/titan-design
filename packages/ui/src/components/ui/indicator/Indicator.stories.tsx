@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 import { Indicator } from './Indicator'
+import { primitiveRamps } from '../../../theme/tokens/primitives'
 
 const meta: Meta<typeof Indicator> = {
   title: 'Components/Atoms/Indicator',
@@ -69,9 +70,9 @@ export const WithRing: Story = {
 export const CustomColor: Story = {
   render: () => (
     <View className="flex-row gap-4 items-center">
-      <Indicator size="md" customColor="#FF6B6B" />
-      <Indicator size="md" customColor="#4ECDC4" />
-      <Indicator size="md" customColor="#45B7D1" glow />
+      <Indicator size="md" customColor={primitiveRamps.red[400]} />
+      <Indicator size="md" customColor={primitiveRamps.cyan[300]} />
+      <Indicator size="md" customColor={primitiveRamps.blue[400]} glow />
     </View>
   ),
 }
