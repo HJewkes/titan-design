@@ -19,6 +19,7 @@ import {
   type VolumeStatus,
 } from './muscleTaxonomy'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { primitiveColors } from '../../../theme/tokens/primitives'
 import { liftStyle } from '../../../theme/lift'
 import { alpha } from '../../../utils/colors'
 
@@ -192,7 +193,7 @@ export function BodyMapDetailPanel({
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundColor: '#000000',
+          backgroundColor: primitiveColors.black,
           opacity: backdrop,
         }}
         testID="body-map-detail-panel-backdrop-anim"

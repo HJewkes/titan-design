@@ -2,6 +2,7 @@ import React from 'react'
 import { ActivityIndicator, View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { SPINNER_PRIMARY, SPINNER_SECONDARY } from '../../../theme/extracted-colors-ui'
+import { primitiveColors } from '../../../theme/tokens/primitives'
 
 export type SpinnerSize = 'sm' | 'md' | 'lg' | 'xl'
 export type SpinnerColor = 'primary' | 'secondary' | 'white' | 'default'
@@ -27,7 +28,8 @@ const sizeMap: Record<SpinnerSize, 'small' | 'large'> = {
 const colorMap: Record<SpinnerColor, string> = {
   primary: SPINNER_PRIMARY,
   secondary: SPINNER_SECONDARY,
-  white: '#FFFFFF',
+  white: primitiveColors.white,
+  // VW-82: Tailwind gray-500; no titan grey matches. Left raw, proposed in the PR.
   default: '#6B7280',
 }
 

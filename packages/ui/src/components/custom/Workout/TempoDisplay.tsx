@@ -53,6 +53,8 @@ export interface TempoDisplayProps extends ViewProps {
 }
 
 const INTER = 'Inter, sans-serif'
+// VW-82: Tailwind gray-500, not titan's text-tertiary (#888684) despite the name.
+// Left raw — re-pointing it at the ramp is a visual change awaiting sign-off.
 const TEXT_TERTIARY = '#6B7280'
 const STATUS_ERROR = t['status-error'] // slow — over the target time
 const STATUS_SUCCESS = t['status-success'] // on target (within the band of 0.0)

@@ -191,7 +191,7 @@ export function Radio({
         )}
       >
         {/* Inner dot */}
-        {isChecked && <View className={cn('rounded-full bg-white', inner)} />}
+        {isChecked && <View className={cn('rounded-full bg-on-brand-primary', inner)} />}
       </View>
 
       {/* Label */}

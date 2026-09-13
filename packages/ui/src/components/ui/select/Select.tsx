@@ -140,6 +140,7 @@ export function Select<T extends string = string>({
           accessibilityState={{ expanded: isOpen, disabled: isDisabled }}
           className={cn(
             'flex-row items-center justify-between px-4 py-2.5 rounded-md border',
+            // VW-82: scrim-style fill, left raw (see Modal.tsx).
             variant === 'filled' ? 'bg-black/30' : 'bg-surface-base',
             isInvalid
               ? 'border-border-input-error'
@@ -227,7 +228,7 @@ function SelectOption<T>({ option }: SelectOptionComponentProps<T>) {
             selected ? 'bg-brand-primary border-brand-primary' : 'border-hairline-strong'
           )}
         >
-          {selected && <Text className="text-white text-xs text-center">✓</Text>}
+          {selected && <Text className="text-on-brand-primary text-xs text-center">✓</Text>}
         </View>
       )}
       <Text

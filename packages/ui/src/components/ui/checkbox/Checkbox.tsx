@@ -93,12 +93,12 @@ export const Checkbox = forwardRef<View, CheckboxProps>(function Checkbox(
         )}
       >
         {isChecked && !isIndeterminate && (
-          <View className={cn('bg-white rounded-sm', styles.icon)}>
+          <View className={cn('bg-on-brand-primary rounded-sm', styles.icon)}>
             {/* Checkmark icon - using a simple view as placeholder */}
             <Text className="text-brand-primary font-bold text-center leading-none">✓</Text>
           </View>
         )}
-        {isIndeterminate && <View className={cn('bg-white h-0.5 w-2/3 rounded')} />}
+        {isIndeterminate && <View className={cn('bg-on-brand-primary h-0.5 w-2/3 rounded')} />}
       </View>
 
       {(label || helperText) && (

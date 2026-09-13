@@ -72,7 +72,7 @@ export const Switch = forwardRef<View, SwitchProps>(function Switch(
       {/* The thumb is a raised control resting in its track: one plane of lift. */}
       <View
         className={cn(
-          'rounded-full bg-white transition-transform',
+          'rounded-full bg-on-brand-primary transition-transform',
           styles.thumb,
           isChecked && styles.translate
         )}

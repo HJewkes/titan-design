@@ -8,6 +8,7 @@ import { alpha } from '../../../utils/colors'
 const t = getSemanticColors('dark')
 
 const BRAND_PRIMARY = t['brand-primary']
+const ON_BRAND_PRIMARY = t['on-brand-primary']
 const BRAND_PRIMARY_SUBTLE = alpha(BRAND_PRIMARY, 0.12)
 const STATUS_SUCCESS = t['status-success']
 const STATUS_WARNING = t['status-warning']
@@ -275,7 +276,7 @@ export function ReadinessCheck({
               fontSize: 13,
               fontWeight: '700',
               fontFamily: 'Inter, sans-serif',
-              color: '#FFFFFF',
+              color: ON_BRAND_PRIMARY,
             }}
           >
             Start Workout

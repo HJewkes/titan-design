@@ -161,6 +161,13 @@ export function StepIndicator({
     error: 'bg-status-error border-status-error',
   }
 
+  const glyphStyles: Record<StepStatus, string> = {
+    completed: 'text-on-brand-primary',
+    active: 'text-on-brand-primary',
+    upcoming: 'text-text-secondary',
+    error: 'text-on-status-error',
+  }
+
   return (
     <View
       className={cn(
@@ -170,12 +177,7 @@ export function StepIndicator({
       )}
     >
       {icon || (
-        <Text
-          className={cn(
-            'text-sm font-semibold',
-            status === 'upcoming' ? 'text-text-secondary' : 'text-white'
-          )}
-        >
+        <Text className={cn('text-sm font-semibold', glyphStyles[status])}>
           {status === 'completed' ? '✓' : index + 1}
         </Text>
       )}

@@ -169,7 +169,9 @@ export function Tab({ index = 0, isDisabled = false, className, children }: TabP
     ),
     'soft-rounded': cn(
       'px-4 py-2 rounded-full',
-      isActive ? 'bg-brand-primary text-white' : 'text-text-secondary web:hover:text-text-primary'
+      isActive
+        ? 'bg-brand-primary text-on-brand-primary'
+        : 'text-text-secondary web:hover:text-text-primary'
     ),
   }
 
@@ -191,7 +193,7 @@ export function Tab({ index = 0, isDisabled = false, className, children }: TabP
           'font-medium',
           isActive
             ? variant === 'soft-rounded'
-              ? 'text-white'
+              ? 'text-on-brand-primary'
               : 'text-text-primary'
             : 'text-text-secondary'
         )}

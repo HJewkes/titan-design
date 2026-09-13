@@ -18,7 +18,9 @@ export interface InputBarProps {
   visible: boolean
 }
 
-const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
+const t = getSemanticColors('dark')
+const BRAND_PRIMARY = t['brand-primary']
+const ON_BRAND_PRIMARY = t['on-brand-primary']
 const INPUT_CLASSNAME = 'bg-surface-raised border-hairline-strong text-text-primary'
 
 const inputStyle = {
@@ -151,7 +153,7 @@ export function InputBar({
             fontSize: 13,
             fontWeight: '700',
             fontFamily: 'Inter, sans-serif',
-            color: '#FFFFFF',
+            color: ON_BRAND_PRIMARY,
           }}
         >
           Record

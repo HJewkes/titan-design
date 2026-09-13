@@ -336,7 +336,7 @@ export function Scatter({
                 backgroundColor: p.color,
                 opacity: selected ? 1 : 0.82,
                 borderWidth: selected ? 2 : 0,
-                borderColor: '#ffffff',
+                borderColor: primitiveColors.white,
               }}
             >
               {showLabel && (

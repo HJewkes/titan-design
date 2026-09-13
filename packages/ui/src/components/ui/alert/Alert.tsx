@@ -44,6 +44,8 @@ const statusColors: Record<
     subtle: string
     outline: string
     solid: string
+    /** Text/glyph colour on the `solid` fill — the status's on-colour. */
+    onSolid: string
     border: string
     icon: string
     text: string
@@ -55,6 +57,7 @@ const statusColors: Record<
     subtle: 'bg-status-success-subtle',
     outline: 'border-2 border-status-success bg-transparent',
     solid: 'bg-status-success',
+    onSolid: 'text-on-status-success',
     border: 'border-status-success',
     icon: 'text-status-success',
     text: 'text-status-success',
@@ -64,6 +67,7 @@ const statusColors: Record<
     subtle: 'bg-status-info-subtle',
     outline: 'border-2 border-status-info bg-transparent',
     solid: 'bg-status-info',
+    onSolid: 'text-on-status-info',
     border: 'border-status-info',
     icon: 'text-status-info',
     text: 'text-status-info',
@@ -73,6 +77,7 @@ const statusColors: Record<
     subtle: 'bg-status-warning-subtle',
     outline: 'border-2 border-status-warning bg-transparent',
     solid: 'bg-status-warning',
+    onSolid: 'text-on-status-warning',
     border: 'border-status-warning',
     icon: 'text-status-warning',
     text: 'text-status-warning',
@@ -82,6 +87,7 @@ const statusColors: Record<
     subtle: 'bg-status-error-subtle',
     outline: 'border-2 border-status-error bg-transparent',
     solid: 'bg-status-error',
+    onSolid: 'text-on-status-error',
     border: 'border-status-error',
     icon: 'text-status-error',
     text: 'text-status-error',
@@ -148,7 +154,7 @@ export function Alert({
               className={cn(
                 'font-bold',
                 isCompact ? 'text-base' : 'text-lg',
-                isSolid ? 'text-white' : variant === 'subtle' ? colors.subtleText : colors.icon
+                isSolid ? colors.onSolid : variant === 'subtle' ? colors.subtleText : colors.icon
               )}
             >
               {defaultIcons[status]}
@@ -162,7 +168,7 @@ export function Alert({
           <Text
             className={cn(
               'text-sm font-semibold',
-              isSolid ? 'text-white' : variant === 'subtle' ? colors.subtleText : colors.text
+              isSolid ? colors.onSolid : variant === 'subtle' ? colors.subtleText : colors.text
             )}
             testID="alert-message"
           >
@@ -177,9 +183,15 @@ export function Alert({
           onPress={onClose}
           accessibilityRole="button"
           accessibilityLabel="Close alert"
+          /* VW-82: press-state scrims stay raw (see Modal.tsx). */
           className="ml-2 p-1 rounded web:hover:bg-black/10 active:bg-black/20"
         >
-          <Text className={cn('text-lg', isSolid ? 'text-white/70' : 'text-text-secondary')}>
+          <Text
+            className={cn(
+              'text-lg',
+              isSolid ? cn(colors.onSolid, 'opacity-70') : 'text-text-secondary'
+            )}
+          >
             ×
           </Text>
         </Pressable>

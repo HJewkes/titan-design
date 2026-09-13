@@ -5,7 +5,7 @@
  */
 import type { ReactNode } from 'react'
 import { TempoDisplay } from './TempoDisplay'
-import { greyRamp } from '../../../theme/tokens/primitives'
+import { greyRamp, primitiveRamps } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 // ---- geometry
@@ -29,19 +29,19 @@ export const INSET_SHADOW =
   'inset 0 9px 12px -6px rgba(0,0,0,0.85), inset 7px 0 10px -6px rgba(0,0,0,0.7), inset 0 -1px 0 rgba(255,255,255,0.02)'
 
 // ---- zone colors = real titan ramp pins (primitiveRamps)
-export const RED = '#D14343' // red 600
-export const ORANGE = '#FF7900' // orange 400
-export const AMBER = '#F9B415' // amber 300
-export const GREEN = '#2ED573' // green 300
+export const RED = primitiveRamps.red[600]
+export const ORANGE = primitiveRamps.orange[400]
+export const AMBER = primitiveRamps.amber[300]
+export const GREEN = primitiveRamps.green[300]
 export const velColor = (v: number): string =>
   v < 0.5 ? RED : v < 0.75 ? ORANGE : v < 1.0 ? AMBER : GREEN
 
 // active-set pulse: each segment eases along its own ramp (adjacent lighter/darker steps) through the pin.
 export const PULSE_CSS = `
-@keyframes s3pRed{0%,100%{background:#E05254}50%{background:#A4221C}}
-@keyframes s3pOrange{0%,100%{background:#FFA063}50%{background:#DA5F00}}
-@keyframes s3pAmber{0%,100%{background:#FFD352}50%{background:#E08C00}}
-@keyframes s3pGreen{0%,100%{background:#58F69E}50%{background:#21C05D}}`
+@keyframes s3pRed{0%,100%{background:${primitiveRamps.red[500]}}50%{background:${primitiveRamps.red[700]}}}
+@keyframes s3pOrange{0%,100%{background:${primitiveRamps.orange[300]}}50%{background:${primitiveRamps.orange[500]}}}
+@keyframes s3pAmber{0%,100%{background:${primitiveRamps.amber[200]}}50%{background:${primitiveRamps.amber[400]}}}
+@keyframes s3pGreen{0%,100%{background:${primitiveRamps.green[200]}}50%{background:${primitiveRamps.green[400]}}}`
 export const pulseAnim = (c: string): string | undefined => {
   const name =
     c === RED
@@ -58,6 +58,7 @@ export const pulseAnim = (c: string): string | undefined => {
 
 // ---- sets/reps/load in the TempoDisplay visual language (Inter · 600 · letter-spacing 1 · gray separators)
 const INTER = 'Inter, sans-serif'
+// VW-82: Tailwind gray-500; no ramp step matches. Left raw, proposed in the PR.
 const SRL_SEP = '#6B7280'
 function SRLCell({ children, color = T_PRIMARY }: { children: ReactNode; color?: string }) {
   return (
@@ -136,7 +137,7 @@ export function SetStrip({ sets, h }: { sets: SetState[]; h: number }) {
 }
 
 export function Indicator({ kind }: { kind: 'pr' | 'issue' | 'info' }) {
-  const map = { pr: ['★', ORANGE], issue: ['!', RED], info: ['i', '#2196F3'] } as const
+  const map = { pr: ['★', ORANGE], issue: ['!', RED], info: ['i', T['status-info']] } as const
   const [glyph, color] = map[kind]
   return (
     <span
@@ -336,6 +337,7 @@ export function Page({
     <div
       style={{
         minHeight: '100vh',
+        // VW-82: no token at this value (nearest background-frame #100D0A).
         background: '#0A0A0A',
         color: T_PRIMARY,
         padding: 28,
