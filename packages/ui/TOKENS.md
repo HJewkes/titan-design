@@ -87,6 +87,42 @@ const t = getSemanticColors('dark')
 `getSemanticColors` is for tests, stories, and token-layer code — places where a concrete value is the
 point. There are ~98 legacy call sites in components; they are a known migration, not a precedent.
 
+### Translucency: never `/<n>` on a token (VW-308)
+
+**Tailwind v3 emits no rule at all for an opacity modifier on a `var()`-backed colour.** Not a
+warning, not a fallback — the class is dead CSS, and the element paints nothing. Every colour in
+`tailwind.config.js` is `var(--color-…)`, which is exactly what makes light/dark switching work, so
+this hits every token in the system:
+
+```tsx
+// ✗ dead CSS — no rule is generated, the tint never appears
+<View className="bg-brand-primary/10" />
+
+// ✓ a published wash rung
+<View className="bg-brand-primary-subtle" />
+```
+
+The trap is that `text-white/70` and `bg-black/50` **do** compile, because Tailwind's own palette
+holds literal values. So the modifier looks like it works until you point it at a token. It shipped
+unnoticed in `IconBox`, `Progress`, `Toast` and `InitiativeBrief` for months.
+
+Reach for one of these instead:
+
+| Need                                     | Use                                                               |
+| ---------------------------------------- | ----------------------------------------------------------------- |
+| A tinted container or track              | a wash rung — `-subtle` (0.12) / `-muted` (0.30) / `-strong` (0.50) |
+| A state that already has a role          | `text-text-disabled`, `hairline-*`, `interactive-*`               |
+| A one-off alpha in an inline style / SVG | `alpha(resolveColor('brand-primary'), 0.06)`                      |
+
+Wash rungs are published for `brand-primary`, `brand-secondary`, and every `status-*` role. They work
+on native too, which `color-mix()` and the `<alpha-value>` channel-triplet pattern do not — that is
+why the fix was to remove the modifiers rather than teach the config to honour them.
+
+`titan/no-var-color-opacity` blocks new ones, deriving the token list from `tailwind.config.js` so a
+new token is covered the day it lands. `src/theme/tailwind-var-opacity.test.ts` compiles the real
+config against a fixture and pins both halves: the dead classes still emit nothing, and
+`text-white/70` still compiles.
+
 ---
 
 ## 4. Type scale
@@ -151,6 +187,7 @@ spacing, radius, and type, not layout geometry.
 
 | Scope                                  | Enforced                                                         |
 | -------------------------------------- | ---------------------------------------------------------------- |
+| all of `src/**`                        | no `/<n>` opacity modifier on a token colour (**error**)         |
 | all of `src/components/**`             | no inline `linear-gradient` strings (warn)                       |
 | `shell/`, `icons/`                     | \+ no raw hex (warn)                                             |
 | `custom/ActiveWork/`, `custom/charts/` | \+ no raw hex, no arbitrary px, no inline `fontSize` (**error**) |

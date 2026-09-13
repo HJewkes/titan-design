@@ -4,6 +4,7 @@ const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
 const noDeviceInternals = require('./eslint-rules/no-device-internals')
 const noRawColor = require('./eslint-rules/no-raw-color')
+const noVarColorOpacity = require('./eslint-rules/no-var-color-opacity')
 const storyTitlePrefix = require('./eslint-rules/story-title-prefix')
 
 module.exports = tseslint.config(
@@ -89,12 +90,27 @@ module.exports = tseslint.config(
         rules: {
           'no-device-internals': noDeviceInternals,
           'no-raw-color': noRawColor,
+          'no-var-color-opacity': noVarColorOpacity,
           'story-title-prefix': storyTitlePrefix,
         },
       },
     },
     rules: {
       'titan/no-device-internals': 'error',
+      // Tailwind v3 emits NO rule for an opacity modifier on a var()-backed
+      // colour, so `bg-brand-primary/10` is dead CSS while `text-white/70`
+      // compiles. Repo-wide and at zero: VW-308 cleared the last four. Unlike
+      // no-raw-color there is no backlog to ratchet down.
+      'titan/no-var-color-opacity': 'error',
+    },
+  },
+
+  // The VW-308 test quotes the dead classes deliberately — they are its probe
+  // list, compiled against the real config to prove they still emit no rule.
+  {
+    files: ['src/theme/tailwind-var-opacity.test.ts'],
+    rules: {
+      'titan/no-var-color-opacity': 'off',
     },
   },
 

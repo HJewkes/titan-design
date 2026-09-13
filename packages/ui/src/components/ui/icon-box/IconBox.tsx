@@ -13,13 +13,15 @@ export interface IconBoxProps extends ViewProps {
   className?: string
 }
 
+// `-subtle` is the wash ladder's lightest rung. It replaces a `/10` opacity
+// modifier, which emitted no rule at all against a var()-backed token (VW-308).
 const colorClasses: Record<IconBoxColor, { bg: string; icon: string }> = {
-  primary: { bg: 'bg-brand-primary/10', icon: 'text-brand-primary' },
-  secondary: { bg: 'bg-brand-secondary/10', icon: 'text-brand-secondary' },
-  success: { bg: 'bg-status-success/10', icon: 'text-status-success' },
-  error: { bg: 'bg-status-error/10', icon: 'text-status-error' },
-  warning: { bg: 'bg-status-warning/10', icon: 'text-status-warning' },
-  info: { bg: 'bg-status-info/10', icon: 'text-status-info' },
+  primary: { bg: 'bg-brand-primary-subtle', icon: 'text-brand-primary' },
+  secondary: { bg: 'bg-brand-secondary-subtle', icon: 'text-brand-secondary' },
+  success: { bg: 'bg-status-success-subtle', icon: 'text-status-success' },
+  error: { bg: 'bg-status-error-subtle', icon: 'text-status-error' },
+  warning: { bg: 'bg-status-warning-subtle', icon: 'text-status-warning' },
+  info: { bg: 'bg-status-info-subtle', icon: 'text-status-info' },
   neutral: { bg: 'bg-surface-elevated', icon: 'text-text-secondary' },
 }
 
