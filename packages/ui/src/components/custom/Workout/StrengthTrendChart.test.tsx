@@ -144,6 +144,16 @@ describe('StrengthTrendChart', () => {
       const tooltip = screen.getByTestId('strength-trend-chart-tooltip')
       expect(tooltip).toHaveTextContent('244 lbs')
     })
+
+    it('rounds a fractional tooltip value to the nearest whole unit', () => {
+      const fractionalData: StrengthTrendDataPoint[] = [
+        { date: '2026-01-06', e1rm: 215.2 },
+        { date: '2026-02-03', e1rm: 227.6 },
+      ]
+      render(<StrengthTrendChart {...baseProps} data={fractionalData} />)
+      fireEvent.click(screen.getAllByTestId('strength-trend-chart-point')[1])
+      expect(screen.getByTestId('strength-trend-chart-tooltip')).toHaveTextContent('228 lbs')
+    })
   })
 
   describe('empty state', () => {

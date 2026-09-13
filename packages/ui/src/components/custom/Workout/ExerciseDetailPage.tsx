@@ -25,6 +25,7 @@ import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { cn } from '../../../utils/cn'
 import { alpha } from '../../../utils/colors'
+import { formatVelocity } from '../../../utils/workout-format'
 
 const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
 
@@ -403,7 +404,7 @@ function VbtBreakdown({
                 fontVariant: ['tabular-nums'],
               }}
             >
-              {`${mean.toFixed(2)} · -${loss}%`}
+              {`${formatVelocity(mean)} · -${loss}%`}
             </Text>
           </View>
         )
@@ -414,7 +415,7 @@ function VbtBreakdown({
 
 function VbtSummaryRow({ summary }: { summary: VbtSummary }) {
   const cells = [
-    { label: 'Mean Velocity', value: `${summary.meanVelocity.toFixed(2)} m/s` },
+    { label: 'Mean Velocity', value: `${formatVelocity(summary.meanVelocity)} m/s` },
     { label: 'Peak Vel. Loss', value: `-${summary.velocityLoss}%` },
   ]
   return (

@@ -115,6 +115,16 @@ describe('ExerciseDetailPage', () => {
     expect(screen.getAllByTestId('exercise-detail-page-vbt-set')).toHaveLength(2)
   })
 
+  it('formats mean velocity to 2 decimal places in the summary and per-set rows', () => {
+    render(<ExerciseDetailPage {...baseProps} />)
+    fireEvent.click(screen.getByTestId('exercise-detail-page-tab-advanced'))
+
+    expect(screen.getByTestId('exercise-detail-page-vbt-summary')).toHaveTextContent('0.55 m/s')
+    const rows = screen.getAllByTestId('exercise-detail-page-vbt-set')
+    expect(rows[0]).toHaveTextContent('0.60 ·')
+    expect(rows[1]).toHaveTextContent('0.51 ·')
+  })
+
   it('inline-expands a progression entry to reveal its sets', () => {
     render(<ExerciseDetailPage {...baseProps} />)
     expect(screen.queryByTestId('exercise-card-sets')).not.toBeInTheDocument()

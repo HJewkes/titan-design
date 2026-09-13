@@ -6,6 +6,7 @@ import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { alpha } from '../../../utils/colors'
+import { roundWeight } from '../../../utils/workout-format'
 
 const sem = getSemanticColors('dark')
 
@@ -87,10 +88,6 @@ function timeOf(dateStr: string): number {
   return Number.isNaN(t) ? 0 : t
 }
 
-function formatValue(value: number): string {
-  return `${Math.round(value)}`
-}
-
 function buildGeometry(
   data: StrengthTrendDataPoint[],
   projection: StrengthTrendDataPoint[],
@@ -142,7 +139,7 @@ function buildGeometry(
     }))
 
   const tickValues = Array.from(new Set([yMax, (yMin + yMax) / 2, yMin].map((v) => Math.round(v))))
-  const gridLines = tickValues.map((v) => ({ y: toY(v), label: formatValue(v) }))
+  const gridLines = tickValues.map((v) => ({ y: toY(v), label: String(roundWeight(v)) }))
 
   return {
     hasData: true,
@@ -288,7 +285,7 @@ export function StrengthTrendChart({
   const trendSign = trend.percent >= 0 ? '+' : '-'
   const trendText = `${trendSign}${Math.abs(trend.percent).toFixed(1)}% this meso`
   const ariaLabel = geometry.hasData
-    ? `Strength trend chart showing estimated one rep max over time. Current: ${formatValue(current)} ${unit}. Trend: ${trendSign}${Math.abs(trend.percent).toFixed(1)}%`
+    ? `Strength trend chart showing estimated one rep max over time. Current: ${String(roundWeight(current))} ${unit}. Trend: ${trendSign}${Math.abs(trend.percent).toFixed(1)}%`
     : 'Strength trend chart, no data'
 
   if (!geometry.hasData) {
@@ -446,7 +443,7 @@ export function StrengthTrendChart({
                 key={`point-${c.index}`}
                 testID="strength-trend-chart-point"
                 accessibilityRole="button"
-                accessibilityLabel={`${label}: ${formatValue(c.point.e1rm)} ${unit}${c.point.isPR ? ', personal record' : ''}`}
+                accessibilityLabel={`${label}: ${String(roundWeight(c.point.e1rm))} ${unit}${c.point.isPR ? ', personal record' : ''}`}
                 onPress={() => {
                   setSelected(c.index)
                   onPointPress?.(c.point)
@@ -502,7 +499,7 @@ export function StrengthTrendChart({
                 fontWeight: '700',
               }}
             >
-              {`${formatValue(selectedCoord.point.e1rm)} ${unit}`}
+              {`${String(roundWeight(selectedCoord.point.e1rm))} ${unit}`}
             </Text>
             {selected != null && selected > 0 && (
               <Text

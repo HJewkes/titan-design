@@ -3,6 +3,7 @@ import { useEffect, useState, useMemo } from 'react'
 import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { alpha } from '../../../utils/colors'
+import { formatChartDate } from '../../../utils/workout-format'
 
 const t = getSemanticColors('dark')
 
@@ -90,13 +91,6 @@ function parseTime(date: string): number {
   }
   const parsed = Date.parse(date)
   return Number.isNaN(parsed) ? 0 : parsed
-}
-
-function formatDate(date: string): string {
-  const parts = date.split('-')
-  if (parts.length === 3) return `${Number(parts[1])}/${Number(parts[2])}`
-  const d = new Date(date)
-  return Number.isNaN(d.getTime()) ? date : `${d.getMonth() + 1}/${d.getDate()}`
 }
 
 function toPixels(
@@ -470,7 +464,7 @@ export function CapacityBandChart({
               importantForAccessibility="no-hide-descendants"
               testID="capacity-band-chart-x-label"
             >
-              {formatDate(point.date)}
+              {formatChartDate(point.date)}
             </Text>
           )
         })}
@@ -489,7 +483,7 @@ export function CapacityBandChart({
           borderWidth: 2,
           borderColor: DOT_BORDER,
         }
-        const label = `Workout on ${formatDate(workout.date)}, load ${workout.load}, ${
+        const label = `Workout on ${formatChartDate(workout.date)}, load ${workout.load}, ${
           STATUS_PHRASES[workout.status]
         }`
         return (

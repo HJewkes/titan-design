@@ -5,6 +5,7 @@ import { ExerciseCard, type ExerciseCardProps } from './ExerciseCard'
 import { MuscleGroupChip, type VolumeStatus } from './MuscleGroupChip'
 import { Typography } from '../Typography'
 import { resolveColor } from '../../../theme/resolve-color'
+import { formatWorkoutStats } from '../../../utils/workout-format'
 
 export type WorkoutStatus = 'completed' | 'today' | 'upcoming'
 
@@ -53,18 +54,6 @@ const volumeStatusMap: Record<WorkoutMuscleVolumeStatus, VolumeStatus> = {
   maintenance: 'ontrack',
   productive: 'target',
   over: 'over',
-}
-
-function formatStats(
-  totalSets: number,
-  totalVolume: number | undefined,
-  unit: 'lbs' | 'kg',
-  duration: string | undefined
-): string {
-  const parts = [`${totalSets} sets`]
-  if (totalVolume != null) parts.push(`${totalVolume} ${unit}`)
-  if (duration) parts.push(duration)
-  return parts.join(' · ')
 }
 
 /**
@@ -138,7 +127,7 @@ export function WorkoutCard({
         className="mt-1 leading-[normal]"
         testID="workout-card-stats"
       >
-        {formatStats(totalSets, totalVolume, unit, duration)}
+        {formatWorkoutStats(totalSets, totalVolume, unit, duration)}
       </Typography>
 
       {muscleGroups.length > 0 && (

@@ -15,3 +15,8 @@ export function formatCompact(n: number): string {
 export function formatSignedCompact(n: number): string {
   return (n >= 0 ? '+' : '') + formatCompact(n)
 }
+
+/** An integer renders bare; anything else renders to `decimals` places. */
+export function formatTrimmedDecimal(n: number, decimals: number): string {
+  return Number.isInteger(n) ? `${n}` : n.toFixed(decimals)
+}
