@@ -7,6 +7,7 @@ import {
   roundTempo,
   formatSignedPct,
   formatPrescription,
+  formatExpectedRange,
 } from './workout-format'
 import { WORKOUT_TOKENS } from '../theme/workout-tokens'
 
@@ -54,6 +55,21 @@ describe('formatSignedPct', () => {
     expect(formatSignedPct(0.09)).toBe('+9%')
     expect(formatSignedPct(-0.05)).toBe('-5%')
     expect(formatSignedPct(0)).toBe('0%')
+  })
+})
+
+describe('formatExpectedRange', () => {
+  it('formats a bounded range with the ~ prefix and expected suffix', () => {
+    expect(formatExpectedRange(5, 15)).toBe('~5–15 expected')
+  })
+
+  it('collapses an equal range to a single number', () => {
+    expect(formatExpectedRange(8, 8)).toBe('~8 expected')
+  })
+
+  it('returns null when neither bound is set', () => {
+    expect(formatExpectedRange()).toBeNull()
+    expect(formatExpectedRange(undefined, undefined)).toBeNull()
   })
 })
 

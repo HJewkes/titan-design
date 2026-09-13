@@ -134,6 +134,107 @@ export const RepRangeAbsent: Story = {
   },
 }
 
+// ---- stats-derived expected range (VW-301) — optional on `todo`/`active` only,
+// rendered lighter/smaller than the prescription so the two are never confused
+// (Jukic et al. 2023: limits of agreement on the expected range run ±5 reps).
+
+export const ExpectedRangeOnly: Story = {
+  args: {
+    height: 8,
+    sets: [
+      { status: 'done', velocities: decay(8, 0.9) },
+      {
+        status: 'active',
+        velocities: decay(3, 0.75),
+        planned: 8,
+        expectedRange: { low: 5, high: 15, n: 12 },
+      },
+      { status: 'todo', planned: 8, expectedRange: { low: 5, high: 15, n: 12 } },
+    ],
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "No plan prescription here — just the lifter's stats-derived expected range " +
+          '(`~5–15 expected`), from their own velocity-loss-threshold history (VW-301). ' +
+          '`text-3xs`/`text-tertiary`, not `text-2xs`/`text-secondary`: it must never look ' +
+          'like a prescription.',
+      },
+    },
+  },
+}
+
+export const PrescribedAndExpected: Story = {
+  args: {
+    height: 8,
+    sets: [
+      { status: 'done', velocities: decay(8, 0.9) },
+      {
+        status: 'active',
+        velocities: decay(3, 0.75),
+        planned: 8,
+        repsLow: 8,
+        repsHigh: 12,
+        expectedRange: { low: 5, high: 15, n: 12 },
+      },
+      {
+        status: 'todo',
+        planned: 8,
+        repsLow: 8,
+        repsHigh: 12,
+        expectedRange: { low: 5, high: 15, n: 12 },
+      },
+    ],
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Both together: the plan prescribes `8–12`; the lifter's own history expects " +
+          '`~5–15`. Stacked with the prescription on top (bold, `text-secondary`) and the ' +
+          "expected range beneath (lighter, `text-tertiary`) — the plan's call stays the " +
+          'primary read, the expected range trails as context.',
+      },
+    },
+  },
+}
+
+export const ExpectedRangeLongLabel: Story = {
+  args: {
+    height: 8,
+    sets: [
+      { status: 'done', velocities: decay(8, 0.9) },
+      {
+        status: 'active',
+        velocities: decay(3, 0.75),
+        planned: 8,
+        repsLow: 100,
+        repsHigh: 150,
+        expectedRange: { low: 95, high: 175, n: 128 },
+      },
+      {
+        status: 'todo',
+        planned: 8,
+        repsLow: 100,
+        repsHigh: 150,
+        expectedRange: { low: 95, high: 175, n: 128 },
+      },
+      { status: 'todo', planned: 8, repsLow: 100, repsHigh: 150 },
+    ],
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Overflow case: large bounds push both labels past the narrow per-set column. ' +
+          'Each label is `numberOfLines={1}` and clips with an ellipsis rather than ' +
+          'wrapping or breaking the strip layout.',
+      },
+    },
+  },
+}
+
 // ---- set-type variant sheet: every variant at the real rail width, for eyeballing
 function SheetRow({ label, meta, sets }: { label: string; meta: string; sets: SetStripSet[] }) {
   return (
