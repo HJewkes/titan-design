@@ -182,16 +182,16 @@ describe('DualVelocityStrip side labels', () => {
     expect(screen.queryByTestId('dual-velocity-side-label-L')).not.toBeInTheDocument()
   })
 
-  it('drops the gutter/slot labels AND the centre axis at rail scale (the lean dual-expanded)', () => {
+  it('drops the gutter/slot labels AND the centre axis at dual-expanded scale', () => {
     render(
       <DualVelocityStrip
         left={{ velocities: [0.9], label: 'Left Arm' }}
         right={{ velocities: [0.8], label: 'Right Arm' }}
-        variant="rail"
+        variant="dual-expanded"
       />
     )
-    // Rail = the lean dual-expanded: no gutter/vertical-axis + no slot labels (the two wings read as
-    // separate rows via the vertical gap), and no centre axis — only the bolder hero keeps those.
+    // dual-expanded = the lean renderer: no gutter/vertical-axis + no slot labels (the two wings
+    // read as separate rows via the vertical gap), and no centre axis — only the bolder hero keeps those.
     expect(screen.queryByTestId('dual-velocity-side-label-L')).not.toBeInTheDocument()
     expect(screen.queryByTestId('dual-velocity-side-label-R')).not.toBeInTheDocument()
     expect(screen.queryByTestId('dual-velocity-axis')).not.toBeInTheDocument()
@@ -225,12 +225,12 @@ describe('DualVelocityStrip reference lines', () => {
     expect(wingDown().getByTestId('velocity-hero-reference')).toBeInTheDocument()
   })
 
-  it('omits reference lines at rail scale', () => {
+  it('omits reference lines at dual-expanded scale', () => {
     render(
       <DualVelocityStrip
         left={{ velocities: [0.9, 0.85] }}
         right={{ velocities: [0.82, 0.74] }}
-        variant="rail"
+        variant="dual-expanded"
       />
     )
     expect(screen.queryByTestId('velocity-hero-reference')).not.toBeInTheDocument()
@@ -478,12 +478,12 @@ describe('DualVelocityStrip live mode', () => {
     ])
   })
 
-  it('arms both wings at rail scale too — its wings are composed strips as well', () => {
+  it('arms both wings at dual-expanded scale too — its wings are composed strips as well', () => {
     render(
       <DualVelocityStrip
         left={{ velocities: [0.9, 0.85, 0.8] }}
         right={{ velocities: [0.82, 0.78, 0.7] }}
-        variant="rail"
+        variant="dual-expanded"
         liveRepIndex={2}
       />
     )
@@ -591,16 +591,16 @@ describe('DualVelocityStrip compact variant (folded)', () => {
   })
 })
 
-describe('DualVelocityStrip rail variant', () => {
+describe('DualVelocityStrip dual-expanded variant', () => {
   it('renders compact bars but no value labels or reference lines', () => {
     render(
       <DualVelocityStrip
         left={{ velocities: [0.9, 0.85] }}
         right={{ velocities: [0.82, 0.74] }}
-        variant="rail"
+        variant="dual-expanded"
       />
     )
-    // The rail is now COMPOSED from two bare `expanded` strips, so each wing emits the shared
+    // dual-expanded is COMPOSED from two bare `expanded` strips, so each wing emits the shared
     // SetBarChart testIDs rather than the old bespoke `dual-velocity-bar-*` ones. Query per wing.
     const up = within(screen.getByTestId('dual-velocity-wing-up'))
     const down = within(screen.getByTestId('dual-velocity-wing-down'))
@@ -616,7 +616,7 @@ describe('DualVelocityStrip rail variant', () => {
       <DualVelocityStrip
         left={{ velocities: [0.9] }}
         right={{ velocities: [0.8] }}
-        variant="rail"
+        variant="dual-expanded"
         targetReps={2}
       />
     )
@@ -633,7 +633,7 @@ describe('DualVelocityStrip rail variant', () => {
       <DualVelocityStrip
         left={{ velocities: [0.9, 0.86, 0.82] }}
         right={{ velocities: [0.85, 0.8] }}
-        variant="rail"
+        variant="dual-expanded"
       />
     )
     const up = within(screen.getByTestId('dual-velocity-wing-up'))
@@ -650,13 +650,26 @@ describe('DualVelocityStrip rail variant', () => {
       <DualVelocityStrip
         left={{ set: { type: 'range', velocities: [0.9, 0.86], floor: 3, max: 4 } }}
         right={{ set: { type: 'range', velocities: [0.85, 0.8], floor: 3, max: 4 } }}
-        variant="rail"
+        variant="dual-expanded"
       />
     )
     const up = within(screen.getByTestId('dual-velocity-wing-up'))
     const down = within(screen.getByTestId('dual-velocity-wing-down'))
     expect(up.queryAllByTestId('velocity-slot-variable').length).toBeGreaterThan(0)
     expect(down.queryAllByTestId('velocity-slot-variable').length).toBeGreaterThan(0)
+  })
+
+  it('accepts the deprecated `rail` alias, rendering identically to `dual-expanded`', () => {
+    const props = {
+      left: { velocities: [0.9, 0.86, 0.82] },
+      right: { velocities: [0.85, 0.8] },
+      targetReps: 4,
+    }
+    const viaAlias = render(<DualVelocityStrip {...props} variant="rail" />)
+    const aliasHtml = viaAlias.container.innerHTML
+    viaAlias.unmount()
+    const viaCanonical = render(<DualVelocityStrip {...props} variant="dual-expanded" />)
+    expect(viaCanonical.container.innerHTML).toBe(aliasHtml)
   })
 })
 
@@ -673,12 +686,12 @@ describe('DualVelocityStrip accessibility', () => {
     expect(await axe(container)).toHaveNoViolations()
   })
 
-  it('has no violations at rail scale', async () => {
+  it('has no violations at dual-expanded scale', async () => {
     const { container } = render(
       <DualVelocityStrip
         left={{ velocities: [0.9] }}
         right={{ velocities: [0.8] }}
-        variant="rail"
+        variant="dual-expanded"
       />
     )
     expect(await axe(container)).toHaveNoViolations()

@@ -182,14 +182,22 @@ Modalities`** (each card carries a `Collapse` accordion; promoted from the
   when neither side carries one the gutter is omitted entirely. The label keeps the prior
   vertical (rotated) orientation so it never overlaps the bars. Two scales: `hero` (tall
   wings, per-rep m/s velocity labels, a dashed running-best reference line per side) and
-  `rail` (compact — no velocity labels / reference lines, slot names in a narrow gutter).
+  `dual-expanded` (compact — no velocity labels / reference lines, slot names in a narrow
+  gutter).
   **Rep-index alignment is the invariant:** column _i_ is rep _i_ on
   both sides, so the set-type slot _kinds_ carry through (rep / todo / variable / continue,
   coloured as in the single strip) but the wide-notch chunk **gaps** (drop / myo / cluster
   boundaries) are intentionally NOT rendered — per-side horizontal gaps would break the
   mirrored L↔R column alignment. Single-voltra sets keep using `VelocityStrip`
-  `variant="hero"`. Documented by the `Playground` / `Hero*` / `Rail` stories on the wall
-  background (`Custom/Workout/DataViz/DualVelocityStrip`).
+  `variant="hero"`. Documented by the `Playground` / `Hero*` / `DualExpanded` stories on the
+  wall background (`Custom/Workout/DataViz/DualVelocityStrip`).
+
+  **`variant="rail"` → `variant="dual-expanded"` (VW-97).** `rail` was a verified misnomer —
+  this variant is the value-height strip a session-rail row _expands into_, not the rail
+  itself (the rail stays 246px and never changes width; expansion lives in a separate detail
+  pane, per the VW-97 rail-width decision). `rail` is kept as a **deprecated alias** for one
+  release (same renderer, same output) so existing call sites keep working; migrate to
+  `dual-expanded` and expect `rail` to be removed in a future release.
 
   **Reuse audit — `DashedReferenceLine` (in-file today, top-level follow-up).** The dashed
   running-best line was hand-rolled three times inside `VelocityStrip.tsx` (the single
