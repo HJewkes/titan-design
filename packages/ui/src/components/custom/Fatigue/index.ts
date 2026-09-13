@@ -1,11 +1,7 @@
 // Live-fatigue component family — the aligned "Live panel v2" hardened into titan
 // components. See ./README.md for the composition tree + reuse audit.
 export { LiveFatiguePanel } from './LiveFatiguePanel'
-export type {
-  LiveFatiguePanelProps,
-  LiveFatiguePanelHeader,
-  LiveFatiguePanelVelocity,
-} from './LiveFatiguePanel'
+export type { LiveFatiguePanelProps, LiveFatiguePanelVelocity } from './LiveFatiguePanel'
 export { LiveFatigueCard, type LiveFatigueCardProps } from './LiveFatigueCard'
 export { VerdictHero, type VerdictHeroProps } from './VerdictHero'
 export { FatigueLights, type FatigueLightsProps } from './FatigueLights'

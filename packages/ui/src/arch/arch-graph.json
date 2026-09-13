@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:1af46f570a05ea82c017f200161b9ab1eea634f4e2270773a87e4ea8cb8ae35b",
+  "componentBarrelHash": "sha256:c2fa979b24c6f178e9e67474f1387a5f365e5a0ae150372343f36bbcebafa5b5",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -87,7 +87,7 @@
         "rawText": 5,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 205,
+        "loc": 214,
         "score": 8
       },
       "tier": "atom",
@@ -126,7 +126,7 @@
         "rawText": 1,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 87,
+        "loc": 91,
         "score": 4
       },
       "tier": "organism",
@@ -416,7 +416,7 @@
         "brandKeys"
       ],
       "libDependents": 3,
-      "storyRefs": 3,
+      "storyRefs": 4,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
@@ -432,7 +432,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 56,
+        "loc": 67,
         "score": 0
       },
       "tier": "organism",
@@ -1222,15 +1222,16 @@
         "SetBar",
         "SetRow",
         "SetTableHeader",
+        "Typography",
         "VelocityStrip"
       ],
       "leak": {
         "rawView": 11,
-        "rawText": 5,
-        "inlineStyle": 12,
+        "rawText": 0,
+        "inlineStyle": 7,
         "rawHex": 0,
-        "loc": 412,
-        "score": 40
+        "loc": 403,
+        "score": 25
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -2450,7 +2451,7 @@
         "rawText": 0,
         "inlineStyle": 4,
         "rawHex": 0,
-        "loc": 87,
+        "loc": 90,
         "score": 11
       },
       "tier": "organism",
@@ -2466,7 +2467,6 @@
       "family": "custom/Fatigue",
       "exports": [
         "LiveFatiguePanel",
-        "LiveFatiguePanelHeader",
         "LiveFatiguePanelVelocity",
         "LiveFatiguePanelProps"
       ],
@@ -2485,12 +2485,12 @@
         "VelocityHero"
       ],
       "leak": {
-        "rawView": 5,
-        "rawText": 4,
-        "inlineStyle": 10,
+        "rawView": 3,
+        "rawText": 1,
+        "inlineStyle": 5,
         "rawHex": 0,
-        "loc": 152,
-        "score": 29
+        "loc": 88,
+        "score": 14
       },
       "tier": "organism",
       "verdict": "keep-app",
@@ -2917,8 +2917,7 @@
       "family": "shell",
       "exports": [
         "NavItem",
-        "NavItemProps",
-        "cn"
+        "NavItemProps"
       ],
       "libDependents": 1,
       "storyRefs": 1,
@@ -2926,8 +2925,8 @@
         "mobile": 0,
         "mcp": 0,
         "dash": 0,
-        "audiobook": 4,
-        "total": 4
+        "audiobook": 0,
+        "total": 0
       },
       "dependsOn": [
         "Typography"
@@ -2937,11 +2936,11 @@
         "rawText": 0,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 81,
+        "loc": 93,
         "score": 4
       },
       "tier": "molecule",
-      "verdict": "keep-core",
+      "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -3016,7 +3015,7 @@
         "rawText": 1,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 220,
+        "loc": 224,
         "score": 3
       },
       "tier": "atom",
@@ -3986,7 +3985,7 @@
         "rawText": 0,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 172,
+        "loc": 189,
         "score": 2
       },
       "tier": "molecule",
@@ -4144,15 +4143,16 @@
         "total": 3
       },
       "dependsOn": [
+        "Typography",
         "VelocityStrip"
       ],
       "leak": {
         "rawView": 4,
-        "rawText": 5,
-        "inlineStyle": 8,
+        "rawText": 0,
+        "inlineStyle": 9,
         "rawHex": 0,
-        "loc": 205,
-        "score": 25
+        "loc": 243,
+        "score": 22
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -4384,7 +4384,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 60,
+        "loc": 75,
         "score": 1
       },
       "tier": "organism",
@@ -4585,7 +4585,8 @@
         "StatusDot",
         "StatusDotVariant",
         "StatusDotProps",
-        "isSolidVariant"
+        "isSolidVariant",
+        "ringStyle"
       ],
       "libDependents": 8,
       "storyRefs": 2,
@@ -4596,16 +4597,18 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [],
+      "dependsOn": [
+        "Typography"
+      ],
       "leak": {
         "rawView": 4,
-        "rawText": 2,
-        "inlineStyle": 3,
-        "rawHex": 3,
-        "loc": 171,
-        "score": 15
+        "rawText": 0,
+        "inlineStyle": 2,
+        "rawHex": 0,
+        "loc": 195,
+        "score": 8
       },
-      "tier": "atom",
+      "tier": "molecule",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -4643,7 +4646,7 @@
         "loc": 78,
         "score": 1
       },
-      "tier": "molecule",
+      "tier": "organism",
       "verdict": "keep-app",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -4780,7 +4783,7 @@
         "SurfaceProps"
       ],
       "libDependents": 15,
-      "storyRefs": 45,
+      "storyRefs": 46,
       "xproj": {
         "mobile": 22,
         "mcp": 7,
@@ -5486,7 +5489,7 @@
         "LabelProps",
         "OverlineProps"
       ],
-      "libDependents": 36,
+      "libDependents": 41,
       "storyRefs": 9,
       "xproj": {
         "mobile": 0,
@@ -5770,7 +5773,7 @@
         "loc": 150,
         "score": 11
       },
-      "tier": "molecule",
+      "tier": "organism",
       "verdict": "keep-internal",
       "deadByAssociation": true,
       "audited": "unaudited",
@@ -5798,15 +5801,16 @@
       },
       "dependsOn": [
         "BaseBadge",
+        "Typography",
         "icons"
       ],
       "leak": {
         "rawView": 0,
-        "rawText": 3,
+        "rawText": 0,
         "inlineStyle": 3,
         "rawHex": 0,
         "loc": 120,
-        "score": 9
+        "score": 6
       },
       "tier": "organism",
       "verdict": "keep-internal",
@@ -5901,6 +5905,7 @@
         "WorkoutPill",
         "WorkoutPillStatus",
         "WorkoutPillProps",
+        "paintFor",
         "usePulse"
       ],
       "libDependents": 4,
@@ -5912,16 +5917,18 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [],
+      "dependsOn": [
+        "Typography"
+      ],
       "leak": {
         "rawView": 1,
-        "rawText": 3,
+        "rawText": 0,
         "inlineStyle": 3,
         "rawHex": 0,
-        "loc": 188,
-        "score": 10
+        "loc": 216,
+        "score": 7
       },
-      "tier": "atom",
+      "tier": "molecule",
       "verdict": "keep-internal",
       "deadByAssociation": true,
       "audited": "unaudited",
@@ -6530,6 +6537,10 @@
       "ExerciseIndicator"
     ],
     [
+      "ExerciseCard",
+      "Typography"
+    ],
+    [
       "ExerciseCardHeading",
       "ExerciseHeading"
     ],
@@ -6762,6 +6773,10 @@
       "VelocityStrip"
     ],
     [
+      "SetRow",
+      "Typography"
+    ],
+    [
       "SetStrip",
       "SetBar"
     ],
@@ -6775,6 +6790,10 @@
     ],
     [
       "Sparkline",
+      "Typography"
+    ],
+    [
+      "StatusDot",
       "Typography"
     ],
     [
@@ -6835,6 +6854,10 @@
     ],
     [
       "WeightBadge",
+      "Typography"
+    ],
+    [
+      "WeightBadge",
       "icons"
     ],
     [
@@ -6855,6 +6878,10 @@
     ],
     [
       "WorkoutCard",
+      "Typography"
+    ],
+    [
+      "WorkoutPill",
       "Typography"
     ],
     [
@@ -7584,16 +7611,6 @@
         "score": 42
       },
       {
-        "name": "ExerciseCard",
-        "tier": "organism",
-        "rawView": 11,
-        "rawText": 5,
-        "inlineStyle": 12,
-        "rawHex": 0,
-        "loc": 412,
-        "score": 40
-      },
-      {
         "name": "CapacityBandChart",
         "tier": "atom",
         "rawView": 9,
@@ -7602,11 +7619,21 @@
         "rawHex": 1,
         "loc": 527,
         "score": 38
+      },
+      {
+        "name": "Table",
+        "tier": "organism",
+        "rawView": 21,
+        "rawText": 12,
+        "inlineStyle": 2,
+        "rawHex": 0,
+        "loc": 805,
+        "score": 37
       }
     ],
     "substitution": {
       "library(titan)": {
-        "Text": 73,
+        "Text": 68,
         "View": 126,
         "TouchableOpacity": 0,
         "Pressable": 54,

@@ -177,8 +177,8 @@ export function buildMockModel(
 }
 
 /**
- * The WHOLE panel's input for a set truncated at `current` — model, velocity and header
- * from one rep count and one truncation point.
+ * The WHOLE panel's input for a set truncated at `current` — model and velocity from one
+ * rep count and one truncation point.
  *
  * The panel feeds two components that each draw their own upcoming-rep remainder, so
  * assembling their props separately is how the two halves drift apart. Build both here
@@ -190,7 +190,6 @@ export function buildMockPanelState(
 ): {
   model: LiveFatigueModel
   velocity: { velocities: number[]; targetReps: number; liveRepIndex: number }
-  header: typeof MOCK_HEADER
 } {
   const model = buildMockModel(current, overrides)
   return {
@@ -201,7 +200,6 @@ export function buildMockPanelState(
       targetReps: MOCK_PLANNED_REPS,
       liveRepIndex: current,
     },
-    header: { ...MOCK_HEADER, meta: `SET 3 · REP ${current + 1} / ${MOCK_PLANNED_REPS}` },
   }
 }
 
@@ -260,9 +258,3 @@ export const FATIGUE_STATES: Array<{ name: string; current: number; model: LiveF
 
 /** A warming-up (cold-start, < 2 reps) model — null verdict / RPE. */
 export const WARMING_UP_MODEL: LiveFatigueModel = buildMockModel(0, { rpe: null, verdict: null })
-
-export const MOCK_HEADER = {
-  title: 'Cable Chest Press',
-  subtitle: `Push A · Hypertrophy · 62 lb × ${MOCK_PLANNED_REPS} · tempo 2.6·0.4·0.95·0.28`,
-  meta: `SET 3 · REP ${MOCK_PLANNED_REPS} / ${MOCK_PLANNED_REPS}`,
-}
