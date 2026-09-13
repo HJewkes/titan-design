@@ -20,9 +20,16 @@ import { test, expect } from '@playwright/test'
  * (`mcr.microsoft.com/playwright:v1.58.2-noble`) so the committed
  * `*-chromium-linux.png` snapshots are byte-identical to what CI renders in the
  * same container. Regenerate with `pnpm test:visual:baseline:update`.
+ *
+ * `animations: 'disabled'` (below) only freezes CSS animations/transitions — it
+ * does not touch JS-driven ones (e.g. React Native `Animated`, as WorkoutPill's
+ * `current`-status pulse uses on web). Those components must honour
+ * `prefers-reduced-motion` themselves; emulating it here is what actually freezes
+ * them, without disabling the animation for real users (VW-312).
  */
 
 test('workout component screenshot baselines', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/comparison.html')
   await page.waitForLoadState('networkidle')
   // Web fonts (Inter / Nunito Sans / Space Grotesk) load from the CDN; block on

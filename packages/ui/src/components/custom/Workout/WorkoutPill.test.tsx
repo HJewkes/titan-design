@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { WorkoutPill } from './WorkoutPill'
@@ -139,6 +139,25 @@ describe('WorkoutPill', () => {
     it('can disable pulse on current status', () => {
       render(<WorkoutPill name="Upper A" status="current" pulse={false} />)
       expect(screen.getByTestId('workout-pill').style.opacity).toBe('')
+    })
+
+    describe('reduced motion', () => {
+      const originalMatchMedia = window.matchMedia
+
+      afterEach(() => {
+        if (originalMatchMedia) window.matchMedia = originalMatchMedia
+        else delete (window as { matchMedia?: unknown }).matchMedia
+      })
+
+      it('does not animate the pulse when prefers-reduced-motion is set', () => {
+        window.matchMedia = vi.fn().mockReturnValue({
+          matches: true,
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+        }) as unknown as typeof window.matchMedia
+        render(<WorkoutPill name="Upper A" status="current" />)
+        expect(screen.getByTestId('workout-pill')).toHaveStyle({ opacity: 1 })
+      })
     })
   })
 
