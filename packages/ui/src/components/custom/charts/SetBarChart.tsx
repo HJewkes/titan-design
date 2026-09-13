@@ -189,13 +189,21 @@ export interface SetBarChartProps {
 }
 
 /** The `scale="fixed"` velocity ceiling (m/s) — a bar height reads the same absolute value across sets. */
-const FIXED_MAX_VALUE = 1.15
-/** Headroom above the peak bar: just enough to seat its value label without a big empty band on top. */
+export const FIXED_MAX_VALUE = 1.15
+/**
+ * Headroom above the scaling ceiling: just enough to seat the peak bar's value label without a big
+ * empty band on top. Applied to BOTH scales — `peak` already multiplies the performed max by this,
+ * but `fixed` used the bare ceiling with none: a rep AT or PAST `FIXED_MAX_VALUE` (a fast lift on a
+ * live wall, not just a theoretical edge) filled the plot to its very top with no room left for that
+ * bar's own label, while an equally-tall `peak` bar always kept this margin. Multiplying `fixed`'s
+ * denominator by the same constant gives both scales the identical breathing room above their tallest
+ * bar, so a lift at the ceiling reads the same on either scale.
+ */
 export const PEAK_HEADROOM = 1.03
 
 /** The height-scaling denominator for `scale` at the given performed max (guarded ≥ 0 by callers). */
 export function scaleDenominator(scale: 'peak' | 'fixed', maxValue: number): number {
-  return scale === 'fixed' ? FIXED_MAX_VALUE : maxValue * PEAK_HEADROOM
+  return (scale === 'fixed' ? FIXED_MAX_VALUE : maxValue) * PEAK_HEADROOM
 }
 
 /**

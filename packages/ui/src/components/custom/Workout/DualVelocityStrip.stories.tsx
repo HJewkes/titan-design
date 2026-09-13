@@ -27,13 +27,14 @@ const meta: Meta<typeof DualVelocityStrip> = {
           'silhouette. Reuses VelocityStrip’s slot vocabulary (rep / todo / variable / ' +
           'continue), its velocity-zone colors, hero geometry, and the live-rep pop. Color is ' +
           'ALWAYS the velocity zone; SIDE is encoded by position only, never hue. `variant="hero"` ' +
-          'is the wall scale (value labels + per-side running-best reference lines); `variant="rail"` ' +
-          'is the compact rail-expanded scale. Single-voltra sets keep using VelocityStrip.',
+          'is the wall scale (value labels + per-side running-best reference lines); ' +
+          '`variant="dual-expanded"` is the compact rail-expanded scale (`"rail"` is a deprecated ' +
+          'alias for the same renderer). Single-voltra sets keep using VelocityStrip.',
       },
     },
   },
   argTypes: {
-    variant: { control: 'inline-radio', options: ['hero', 'rail'] },
+    variant: { control: 'inline-radio', options: ['hero', 'dual-expanded'] },
     targetReps: { control: 'number' },
     liveRepIndex: { control: 'number' },
     height: { control: { type: 'number', min: 48, max: 320, step: 4 } },
@@ -81,9 +82,9 @@ export const Hero: Story = {
   ),
 }
 
-/** RAIL — the same diverging language at the compact rail-expanded scale (no labels/refs). */
-export const RailExpanded: Story = {
-  args: { variant: 'rail', targetReps: 8, height: 84 },
+/** DUAL-EXPANDED — the same diverging language at the compact rail-expanded scale (no labels/refs). */
+export const DualExpanded: Story = {
+  args: { variant: 'dual-expanded', targetReps: 8, height: 84 },
   render: (args) => (
     <Page>
       <Panel width={320}>

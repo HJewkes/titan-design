@@ -199,7 +199,7 @@ export const Responsive: Story = {
           <DualVelocityStrip
             left={{ velocities: REP_SET, label: 'Left' }}
             right={{ velocities: REP_SET_LAGGING, label: 'Right' }}
-            variant="rail"
+            variant="dual-expanded"
             height={h}
             scale="fixed"
           />
