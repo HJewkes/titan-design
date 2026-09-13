@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useEffect, useState } from 'react'
 import { View, Animated, Easing, type ViewProps, type DimensionValue } from 'react-native'
+import { SET_LEVEL_FLAT_BAR } from '../charts/flatBarGeometry'
 
 /** ~1.9s full cycle: a pulsing segment eases up then back down (2 × half). */
 const PULSE_HALF_MS = 950
@@ -9,7 +10,7 @@ const PULSE_HALF_MS = 950
 const PULSE_MIN_OPACITY = 0.45
 
 /** Default between-segment gap — matches SetStrip's between-set gap so strips read the same. */
-const SEGMENTED_BAR_GAP = 5
+const SEGMENTED_BAR_GAP = SET_LEVEL_FLAT_BAR.gap
 
 export interface SegmentedBarSegment {
   /** Flex weight of this segment's slot. Default 1 (all segments equal width). */
@@ -98,9 +99,9 @@ function usePulse(active: boolean): Animated.Value {
  */
 export function SegmentedBar({
   segments,
-  height = 8,
+  height = SET_LEVEL_FLAT_BAR.height,
   gap = SEGMENTED_BAR_GAP,
-  radius = 2,
+  radius = SET_LEVEL_FLAT_BAR.radius,
   marker = null,
   segmentTestID,
   style,

@@ -23,6 +23,7 @@ import { primitiveRamps } from '../../../theme/tokens/primitives'
 import { barPaper } from '../../../theme/materials'
 import { useOnSurfaceColor, useSurface, surfaceBackground } from '../../ui/surface/SurfaceContext'
 import { useLiveRepGrowth } from './live-rep-growth'
+import { REP_LEVEL_FLAT_BAR } from './flatBarGeometry'
 
 /** Linear-blend two #RRGGBB hexes (`t`=0 → a, 1 → b) — the surface-relative solid to-do tone. */
 function mixHex(a: string, b: string, t: number): string {
@@ -235,7 +236,7 @@ const LABEL_GAP = 3
 /** Inter-bar gap as a fraction of bar width — the locked dense default (near expanded density). */
 export const GAP_RATIO = 0.08
 /** Floor on the proportional inter-bar gap (px) — narrow plots tighten to ~expanded density. */
-const MIN_BAR_GAP = 2
+const MIN_BAR_GAP = REP_LEVEL_FLAT_BAR.gapFloor
 /**
  * The EXTRA margin at a chunk boundary (drop sub-load / myo cluster / cluster intra-rest), as a
  * fraction of bar width — proportional so it scales with the dense spacing and reads as a clear
@@ -250,7 +251,7 @@ export const BAR_MAX_WIDTH = 120
 /** Below this per-bar width the value labels collide, so all but the peak + live rep are dropped. */
 const LABEL_MIN_BAR_WIDTH = 30
 /** Default top-corner radius on bars (px). */
-const DEFAULT_BAR_RADIUS = 5
+const DEFAULT_BAR_RADIUS = REP_LEVEL_FLAT_BAR.radius
 /** Minimum drawn height of a performed bar (px) — a near-zero rep still reads as a rep. */
 const MIN_BAR_HEIGHT = 4
 /** In `flat` (compact) mode every rep bar is this fraction of the plot height — a uniform short bar. */
