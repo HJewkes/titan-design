@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:c2fa979b24c6f178e9e67474f1387a5f365e5a0ae150372343f36bbcebafa5b5",
+  "componentBarrelHash": "sha256:f79da78718437072ff8b9a1cb578dd3cf670e4a9a4d6324b86f1061032c13548",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -87,7 +87,7 @@
         "rawText": 5,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 214,
+        "loc": 205,
         "score": 8
       },
       "tier": "atom",
@@ -2451,7 +2451,7 @@
         "rawText": 0,
         "inlineStyle": 4,
         "rawHex": 0,
-        "loc": 90,
+        "loc": 91,
         "score": 11
       },
       "tier": "organism",
@@ -2489,7 +2489,7 @@
         "rawText": 1,
         "inlineStyle": 5,
         "rawHex": 0,
-        "loc": 88,
+        "loc": 123,
         "score": 14
       },
       "tier": "organism",
@@ -3015,7 +3015,7 @@
         "rawText": 1,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 224,
+        "loc": 220,
         "score": 3
       },
       "tier": "atom",

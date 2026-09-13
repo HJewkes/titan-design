@@ -11,13 +11,22 @@
  * {@link useOnSurfaceColor}, not from a module-scope `getSemanticColors('dark')`. Outside
  * any Surface the context still defaults to the dark `base` plane, so the wall display
  * renders exactly as before while a light surface now works.
+ *
+ * RESPONSIVE (TD-03.58). The panel is CONTAINER-responsive (SIZE-D01), not prop-sized: it
+ * measures its own width in `onLayout` and hands it to {@link panelLayout}, which owns the
+ * stack/expand tiers, the spacing and the card width. The one `bodyHeight` is split across
+ * the hero and the card by {@link panelBodySplit} — one call, so the two cannot disagree.
+ * Nothing here animates: a tier change is a re-layout, never a transition, because the panel
+ * is read from across a room mid-set.
  */
-import { View, Text } from 'react-native'
+import { useState } from 'react'
+import { View, Text, type LayoutChangeEvent } from 'react-native'
 import { LiveAuraFrame, type LiveAuraCategory } from '../Workout/LiveAuraFrame'
 import { useOnSurfaceColor } from '../../ui/surface'
 import { VelocityHero } from './VelocityHero'
 import { LiveFatigueCard } from './LiveFatigueCard'
 import { FONT_MONO, auraForVerdict } from './fatigue-tokens'
+import { panelLayout, panelBodySplit } from './panel-layout'
 import type { LiveFatigueModel } from './fatigue-model'
 
 export interface LiveFatiguePanelVelocity {
@@ -36,8 +45,17 @@ export interface LiveFatiguePanelProps {
   aura?: LiveAuraCategory
   /** Panel body height in px. Default 508. */
   bodyHeight?: number
-  /** Fixed fatigue-card column width. Default 318. */
+  /**
+   * Pin the fatigue-card column width instead of letting the tier choose it. Ignored when
+   * the panel is stacked (the card fills the content width there).
+   */
   cardWidth?: number
+  /**
+   * Override the measured container width, in px. The panel measures itself, so this is
+   * for tests (`onLayout` never fires under jsdom) and for a consumer that already knows
+   * the width it is about to hand the panel.
+   */
+  containerWidth?: number
 }
 
 export function LiveFatiguePanel({
@@ -45,19 +63,32 @@ export function LiveFatiguePanel({
   velocity,
   aura,
   bodyHeight = 508,
-  cardWidth = 318,
+  cardWidth,
+  containerWidth,
 }: LiveFatiguePanelProps) {
   const eyebrowColor = useOnSurfaceColor('tertiary')
+  const [measuredWidth, setMeasuredWidth] = useState(0)
+  const width = containerWidth ?? measuredWidth
+  const layout = panelLayout(width)
+  const { heroHeight, cardHeight } = panelBodySplit(bodyHeight, layout)
   const category = aura ?? auraForVerdict(model.verdict?.state ?? null)
-  const heroH = bodyHeight - 26 // leaves room for the hero's own eyebrow above it
   return (
     <LiveAuraFrame
       category={category}
       style={{ borderRadius: 0, borderWidth: 0 }}
       testID="live-fatigue-panel"
+      onLayout={(e: LayoutChangeEvent) => setMeasuredWidth(e.nativeEvent.layout.width)}
     >
       <View style={{ flex: 1 }}>
-        <View style={{ padding: 24, flexDirection: 'row', gap: 18, alignItems: 'stretch' }}>
+        <View
+          testID="live-fatigue-body"
+          style={{
+            padding: layout.padding,
+            flexDirection: layout.stacked ? 'column' : 'row',
+            gap: layout.gap,
+            alignItems: 'stretch',
+          }}
+        >
           {/* PRIMARY — the velocity hero with VL bands; flexes to fill the width the card leaves. */}
           <View style={{ flex: 1, gap: 8 }}>
             <Text
@@ -75,11 +106,15 @@ export function LiveFatiguePanel({
               velocities={velocity.velocities}
               targetReps={velocity.targetReps}
               liveRepIndex={velocity.liveRepIndex}
-              height={heroH}
+              height={heroHeight}
             />
           </View>
-          {/* SECONDARY — the vertical fatigue card. */}
-          <LiveFatigueCard model={model} width={cardWidth} height={bodyHeight} />
+          {/* SECONDARY — the vertical fatigue card. Stacked, it fills the content width. */}
+          <LiveFatigueCard
+            model={model}
+            width={cardWidth ?? layout.cardWidth}
+            height={cardHeight}
+          />
         </View>
       </View>
     </LiveAuraFrame>

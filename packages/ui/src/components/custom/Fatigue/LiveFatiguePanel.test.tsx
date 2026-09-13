@@ -4,6 +4,7 @@ import { LiveFatiguePanel } from './LiveFatiguePanel'
 import { Surface } from '../../ui/surface'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { buildMockPanelState } from './fatigue-mock'
+import { PANEL_BREAKPOINTS, CARD_WIDTH_BASE, panelLayout } from './panel-layout'
 
 const { model, velocity } = buildMockPanelState(3)
 
@@ -61,5 +62,73 @@ describe('LiveFatiguePanel', () => {
       backgroundColor: light['surface-base'],
     })
     expect(light['text-tertiary']).not.toBe(dark['text-tertiary'])
+  })
+})
+
+// `onLayout` never fires under jsdom (SIZE-D01 / gotcha 6), so the panel takes an explicit
+// `containerWidth` override and these drive the live wiring through it. The breakpoint
+// arithmetic itself is covered in `panel-layout.test.ts`.
+describe('LiveFatiguePanel responsiveness (TD-03.58)', () => {
+  it('renders the shipped row geometry at the md and lg tiers', () => {
+    for (const width of [1000, 1440]) {
+      const { unmount } = render(
+        <LiveFatiguePanel model={model} velocity={velocity} containerWidth={width} />
+      )
+      expect(screen.getByTestId('live-fatigue-body')).toHaveStyle({
+        flexDirection: 'row',
+        padding: '24px 24px 24px 24px',
+      })
+      expect(screen.getByTestId('live-fatigue-card')).toHaveStyle({
+        width: `${CARD_WIDTH_BASE}px`,
+      })
+      unmount()
+    }
+  })
+
+  it('stacks the card under the hero below the md edge', () => {
+    render(
+      <LiveFatiguePanel
+        model={model}
+        velocity={velocity}
+        containerWidth={PANEL_BREAKPOINTS.md - 1}
+      />
+    )
+    expect(screen.getByTestId('live-fatigue-body')).toHaveStyle({ flexDirection: 'column' })
+  })
+
+  it('gives the stacked card the full content width instead of the 318 column', () => {
+    const width = 720
+    render(<LiveFatiguePanel model={model} velocity={velocity} containerWidth={width} />)
+    const { padding } = panelLayout(width)
+    expect(screen.getByTestId('live-fatigue-card')).toHaveStyle({
+      width: `${width - padding * 2}px`,
+    })
+  })
+
+  it('expands the card column at wall width', () => {
+    render(<LiveFatiguePanel model={model} velocity={velocity} containerWidth={1920} />)
+    expect(screen.getByTestId('live-fatigue-card')).toHaveStyle({
+      width: `${panelLayout(1920).cardWidth}px`,
+    })
+    expect(panelLayout(1920).cardWidth).toBeGreaterThan(CARD_WIDTH_BASE)
+  })
+
+  it('still honours an explicit cardWidth over the tier', () => {
+    render(
+      <LiveFatiguePanel model={model} velocity={velocity} containerWidth={1920} cardWidth={280} />
+    )
+    expect(screen.getByTestId('live-fatigue-card')).toHaveStyle({ width: '280px' })
+  })
+
+  // TD-03.60 through the rendered tree, not just the pure split.
+  it('moves the rendered card height when bodyHeight changes', () => {
+    const { rerender } = render(
+      <LiveFatiguePanel model={model} velocity={velocity} containerWidth={1440} bodyHeight={400} />
+    )
+    expect(screen.getByTestId('live-fatigue-card')).toHaveStyle({ height: '400px' })
+    rerender(
+      <LiveFatiguePanel model={model} velocity={velocity} containerWidth={1440} bodyHeight={700} />
+    )
+    expect(screen.getByTestId('live-fatigue-card')).toHaveStyle({ height: '700px' })
   })
 })
