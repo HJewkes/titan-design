@@ -11,14 +11,14 @@ const meta: Meta<typeof ExerciseCard> = {
     docs: {
       description: {
         component:
-          '**Organism** (data-contract card). Three representations: `upcoming` (a dimmed, ' +
-          'not-yet-reached row), collapsed (name + summary + per-set velocity strips), and expanded ' +
-          '— the unified card whose persistent header is the real ' +
-          '[ExerciseCardHeading](?path=/docs/custom-workout-exercisecardheading--docs) over a SET · REPS · ' +
-          'LBS · RPE body of [SetRow](?path=/docs/custom-workout-setrow--docs)s (compact spotlight on the ' +
-          'live set). Expand is controlled (`expanded` + `onExpandedChange`) or uncontrolled ' +
-          '(`defaultExpanded`); `upcoming` overrides expand.' +
-          ' Composes **VelocityStrip** · **PlaceholderStrip** · **PrBadge** · **SetRow** · **SetTableHeader** · **ExerciseCardHeading**.',
+          '**Organism** (data-contract card). Three representations, all ONE ' +
+          '[ExerciseCardHeading](?path=/docs/custom-workout-exercisecardheading--docs) selected by its ' +
+          '`density`: `upcoming` (a dimmed, not-yet-reached row), collapsed (name + prescription + the ' +
+          'per-set strip) and expanded — the `rail` heading over a SET · REPS · LBS · RPE body of ' +
+          '[SetRow](?path=/docs/custom-workout-setrow--docs)s (compact spotlight on the live set). ' +
+          'Expand is controlled (`expanded` + `onExpandedChange`) or uncontrolled (`defaultExpanded`); ' +
+          '`upcoming` overrides expand.' +
+          ' Composes **ExerciseCardHeading** · **SetRow** · **SetTableHeader**.',
       },
     },
   },

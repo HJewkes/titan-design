@@ -86,11 +86,50 @@ type props without pulling the dependency.
      └─ SetStrip
         └─ SetBar × N               (one set's per-rep colour bar)
 
-  ExerciseCard state="rail"  ──delegates to──▶  ExerciseCardHeading
+  ExerciseCard (all three representations)  ──delegates to──▶  ExerciseCardHeading
   ```
 
-  `ExerciseCard`'s `rail` state is now a thin adapter that delegates to
-  `ExerciseCardHeading` (so the heading is reusable without the card). `SetBar`
+  **TD-03.55 / TD-03.56 — one row, three densities, and interaction states.**
+  `ExerciseCardHeading` IS the exercise row. Its `density` prop carries the only
+  axis that ever separated the three call sites:
+
+  | `density`  | shape                                                   | was                          |
+  | ---------- | ------------------------------------------------------- | ---------------------------- |
+  | `rail`     | two lines: name, then prescription beside the tempo      | `ExerciseCardHeading`        |
+  | `compact`  | one line: name + prescription, strip below               | `ExerciseCard`'s CollapsedCard |
+  | `upcoming` | `compact`, dimmed, previous best pinned right            | `ExerciseCard`'s UpcomingCard  |
+
+  `CollapsedCard` and `UpcomingCard` are deleted; `ExerciseCard` maps its props onto
+  the row, so **its own prop shape is unchanged** and no consumer migrates. Three
+  things converged in the process, each a consistency gain rather than a new idea:
+  the collapsed row's freeform `3×6 @ 175 lbs` caption became the shared
+  `SetsRepsLoad` line; its hand-rolled `VelocityStrip` + `PlaceholderStrip` row
+  became one `SetStrip` (so `velocityZones` no longer tints the collapsed glance —
+  the expanded header already ignored it); and `isPR` surfaces through the
+  `ExerciseIndicator` chip, which is what the expanded header already did.
+
+  The prescription is a **discriminated union**: either the structured
+  `sets`/`reps`/`load` triple, or a free-text `prescription` string for an exercise
+  whose numbers aren't loaded, or neither. Mixing them is a type error rather than a
+  half-rendered line.
+
+  Interaction states are `interactive-*` token washes on the row —
+  **press > selection > hover** — plus an `isLive` name tone (`status-live`). Every
+  one is static: this row renders on the wall during a set, where titan's "the grain
+  never animates" rule applies. Hover is web-only; RN Pressable's `onHoverIn` never
+  fires on a touch surface, so a touch consumer simply gets no hover state and
+  `isSelected` carries the same "this one" meaning. Selection has **no ARIA**:
+  `aria-selected` is not allowed on `role="button"`, so the wash is the whole signal
+  and list semantics stay the rail's job.
+
+  Two follow-ups are deliberately NOT taken here. The dim depths still differ by
+  density (rail 0.55, card 0.60) because they came from two specimens and converging
+  them needs an **opacity token the set does not have** — a foundations decision.
+  And `exerciseRowState.ts` (the `interactive-*` → literal-hex map, written in the
+  shape of `onSurfaceColors`) should be **promoted into the surface module** the
+  moment a second family needs row washes.
+
+  `SetBar`
   owns the per-set colour/pulse logic; `SetStrip` lays several side by side.
   Beyond the flat `done`/`active`/`todo` sets, `SetStripSet` models set-type
   prescriptions: `range` (variable rep-range — range-max segments, committed-todo grey
@@ -311,8 +350,7 @@ responsive level views land (removal is out of scope for this scaffold ticket):
   (Workout Expansion), `S3SetTypes` (Set Types), `S3SessionPace` (Session Pace).
   Each is superseded by a real Shell/SessionRail component + its Storybook stories;
   `S3SessionPace` in particular is superseded by the `SessionHeader` pace glance.
-- **`ExerciseCard`'s `collapsed` / `upcoming` state representations** — the rail now
-  owns the live-list heading (`rail` state → `ExerciseCardHeading`) and the expanded
-  view is moving to `ExpandedDrawer`. Once the responsive unification (TD-03.56)
-  lands a single responsive card, the `collapsed`/`upcoming` branches of
-  `ExerciseCard` are the superseded representations to retire.
+- **`ExerciseCard`'s `collapsed` / `upcoming` state representations** — DONE
+  (TD-03.56). Both hand-rolled sub-cards are deleted; `ExerciseCard` now delegates
+  all three representations to `ExerciseCardHeading` and its `density` prop. What
+  remains to retire is the expanded view, which is moving to `ExpandedDrawer`.

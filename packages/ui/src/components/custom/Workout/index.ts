@@ -68,8 +68,18 @@ export {
   type ExerciseIndicatorProps,
   type ExerciseIndicatorKind,
 } from './ExerciseIndicator'
-export { ExerciseHeading, type ExerciseHeadingProps } from './ExerciseHeading'
-export { ExerciseCardHeading, type ExerciseCardHeadingProps } from './ExerciseCardHeading'
+export {
+  ExerciseHeading,
+  exerciseHeadingLabel,
+  type ExerciseHeadingProps,
+  type ExerciseHeadingLayout,
+} from './ExerciseHeading'
+export {
+  ExerciseCardHeading,
+  type ExerciseCardHeadingProps,
+  type ExerciseRowDensity,
+} from './ExerciseCardHeading'
+export { exerciseLiveColor, exerciseRowStateColor, type ExerciseRowState } from './exerciseRowState'
 export { ExerciseCard, type ExerciseCardProps } from './ExerciseCard'
 export { SetTableHeader, type SetTableHeaderProps } from './SetTableHeader'
 export {
