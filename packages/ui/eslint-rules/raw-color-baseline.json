@@ -78,18 +78,9 @@
   "src/components/ui/radio/Radio.tsx": {
     "bg-white": 1
   },
-  "src/components/ui/select/Select.stories.tsx": {
-    "blue": 2,
-    "green": 2,
-    "red": 2,
-    "yellow": 2
-  },
   "src/components/ui/select/Select.tsx": {
     "bg-black": 1,
     "text-white": 1
-  },
-  "src/components/ui/spinner/Spinner.stories.tsx": {
-    "white": 2
   },
   "src/components/ui/spinner/Spinner.tsx": {
     "#6b7280": 1,
@@ -101,14 +92,6 @@
   },
   "src/components/ui/tabs/Tabs.tsx": {
     "text-white": 2
-  },
-  "src/components/ui/toolbar-button/ToolbarButton.stories.tsx": {
-    "#1f1f1f": 1,
-    "#3c3c3c": 2,
-    "#6e6e6e": 4,
-    "#d1d1d1": 1,
-    "#ff7900": 1,
-    "#ffffff": 1
   },
   "src/components/ui/toolbar-button/ToolbarButton.tsx": {
     "[#d1d1d1]": 1,
