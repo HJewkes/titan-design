@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { View, Text } from 'react-native'
 import { CapacityBandChart } from './CapacityBandChart'
 import type { CapacityBandDataPoint, CapacityBandProjection, WorkoutDot } from './CapacityBandChart'
+import { greyRamp } from '../../../theme/tokens/primitives'
 
 const band: CapacityBandDataPoint[] = [
   { date: '2026-06-01', bandLow: 40, bandHigh: 70 },
@@ -113,7 +114,7 @@ function InteractiveCapacityBandChart() {
         height={200}
         onWorkoutPress={setSelected}
       />
-      <Text style={{ fontSize: 12, fontFamily: 'Inter, sans-serif', color: '#9CA3AF' }}>
+      <Text style={{ fontSize: 12, fontFamily: 'Inter, sans-serif', color: greyRamp[400] }}>
         {selected
           ? `Selected ${selected.date}: load ${selected.load} (${selected.status})`
           : 'Tap a workout dot to inspect the session.'}

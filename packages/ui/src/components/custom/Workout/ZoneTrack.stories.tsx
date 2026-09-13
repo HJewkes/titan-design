@@ -3,8 +3,10 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ZoneTrack, type ZoneTrackZone } from './ZoneTrack'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { Surface } from '../../ui/surface'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 const { green, yellow, orange, red } = WORKOUT_TOKENS.scale
+const t = getSemanticColors('dark')
 
 const FATIGUE_ZONES: ZoneTrackZone[] = [
   { upTo: 10, color: green },
@@ -86,7 +88,7 @@ export const BandWithMarker: Story = {
     ],
     min: 6,
     max: 10,
-    band: { from: 7.2, to: 8.4, color: 'rgba(255,255,255,0.22)' },
+    band: { from: 7.2, to: 8.4, color: t['hairline-strong'] },
     marker: { type: 'needle', value: 8.1 },
     ticks: [
       { value: 6, label: '6' },

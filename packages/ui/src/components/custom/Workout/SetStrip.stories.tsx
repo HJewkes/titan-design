@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { SetStrip, type SetStripSet } from './SetStrip'
 import { Surface } from '../../ui/surface'
+import { greyRamp } from '../../../theme/tokens/primitives'
 
 /**
  * `SetStrip` — the per-set segmented performance strip. One continuous bar per
@@ -138,8 +139,8 @@ function SheetRow({ label, meta, sets }: { label: string; meta: string; sets: Se
   return (
     <View style={{ gap: 6 }}>
       <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}>
-        <Text style={{ color: '#F3F4F6', fontSize: 13, fontWeight: '800' }}>{label}</Text>
-        <Text style={{ color: '#6B7280', fontSize: 10, fontFamily: 'monospace' }}>{meta}</Text>
+        <Text style={{ color: greyRamp[50], fontSize: 13, fontWeight: '800' }}>{label}</Text>
+        <Text style={{ color: greyRamp[600], fontSize: 10, fontFamily: 'monospace' }}>{meta}</Text>
       </View>
       <SetStrip sets={sets} />
     </View>

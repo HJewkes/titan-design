@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ActiveWorkoutPage, type ActiveWorkoutExercise } from './ActiveWorkoutPage'
 import type { SetRowProps } from './SetRow'
+import { primitiveRamps } from '../../../theme/tokens/primitives'
 
 const velocities = (base: number): number[] =>
   Array.from({ length: 8 }, (_, i) => Number((base - i * 0.03).toFixed(2)))
@@ -109,7 +110,7 @@ const meta: Meta<typeof ActiveWorkoutPage> = {
     title: 'Push Day A',
     subtitle: 'Hypertrophy · Week 6 of 8',
     exercises,
-    supersets: [{ id: 'ss1', label: 'SS1', color: '#22D3EE' }],
+    supersets: [{ id: 'ss1', label: 'SS1', color: primitiveRamps.cyan[300] }],
     input: { reps: '8', weight: '195' },
     rest: { totalSeconds: 120, elapsedMs: 42_000, nextSetInfo: 'Set 3 · 8 × 195 lbs' },
   },

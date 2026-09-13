@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { View, Text } from 'react-native'
 import { StrengthTrendChart } from './StrengthTrendChart'
 import type { StrengthTrendDataPoint } from './StrengthTrendChart'
+import { greyRamp } from '../../../theme/tokens/primitives'
 
 const actual: StrengthTrendDataPoint[] = [
   { date: '2026-01-06', e1rm: 215, sessionLabel: 'Jan 6' },
@@ -122,7 +123,7 @@ function InteractiveChart() {
         unit="lbs"
         onPointPress={setSelected}
       />
-      <Text style={{ marginTop: 12, fontSize: 12, color: '#9CA3AF' }}>
+      <Text style={{ marginTop: 12, fontSize: 12, color: greyRamp[400] }}>
         {selected
           ? `Tapped ${selected.sessionLabel ?? selected.date}: ${selected.e1rm} lbs`
           : 'Tap a point on the chart.'}

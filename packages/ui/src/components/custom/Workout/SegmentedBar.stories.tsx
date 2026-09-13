@@ -1,6 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SegmentedBar } from './SegmentedBar'
 import { Surface } from '../../ui/surface'
+import { primitiveColors, primitiveRamps } from '../../../theme/tokens/primitives'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+
+const t = getSemanticColors('dark')
 
 /**
  * `SegmentedBar` — a horizontal track split into weighted, individually-fillable
@@ -44,10 +48,10 @@ export const EqualSegments: Story = {
   args: {
     height: 8,
     segments: [
-      { color: '#D14343' },
-      { color: '#FF7900' },
-      { color: '#F9B415' },
-      { color: '#2ED573' },
+      { color: primitiveRamps.red[600] },
+      { color: t['brand-primary'] },
+      { color: t['status-warning'] },
+      { color: t['status-success'] },
     ],
   },
 }
@@ -58,9 +62,9 @@ export const Weighted: Story = {
     gap: 4,
     radius: 2,
     segments: [
-      { color: '#2ED573', weight: 3 },
-      { color: '#F9B415', weight: 2 },
-      { color: '#D14343', weight: 1 },
+      { color: t['status-success'], weight: 3 },
+      { color: t['status-warning'], weight: 2 },
+      { color: primitiveRamps.red[600], weight: 1 },
     ],
   },
   parameters: {
@@ -74,9 +78,9 @@ export const PartialFills: Story = {
     gap: 4,
     radius: 2,
     segments: [
-      { color: '#2ED573', fill: 1 },
-      { color: '#F9B415', fill: 0.6 },
-      { color: '#01B5D1', fill: 0.3, pulse: true },
+      { color: t['status-success'], fill: 1 },
+      { color: t['status-warning'], fill: 0.6 },
+      { color: primitiveRamps.cyan[400], fill: 0.3, pulse: true },
     ],
   },
   parameters: {
@@ -90,8 +94,8 @@ export const WithMarker: Story = {
   args: {
     height: 10,
     radius: 2,
-    segments: [{ color: '#01B5D1', fill: 0.7 }],
-    marker: { position: 0.5, color: '#FFFFFF' },
+    segments: [{ color: primitiveRamps.cyan[400], fill: 0.7 }],
+    marker: { position: 0.5, color: primitiveColors.white },
   },
   parameters: {
     docs: { description: { story: 'A single fill with a target marker at the halfway point.' } },

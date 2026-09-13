@@ -3,6 +3,7 @@ import type { ComponentProps } from 'react'
 import { useEffect, useState } from 'react'
 import { View, Text } from 'react-native'
 import { TempoDisplay, type TempoLivePhase, type TempoLiveState } from './TempoDisplay'
+import { greyRamp } from '../../../theme/tokens/primitives'
 
 // tempo = [eccentric, pauseBottom, concentric, pauseTop]
 const meta: Meta<typeof TempoDisplay> = {
@@ -166,7 +167,7 @@ function Condition({
 }: { caption: string } & ComponentProps<typeof TempoDisplay>) {
   return (
     <View style={{ gap: 5 }}>
-      <Text style={{ color: '#9CA3AF', fontFamily: 'Inter, sans-serif', fontSize: 11 }}>
+      <Text style={{ color: greyRamp[400], fontFamily: 'Inter, sans-serif', fontSize: 11 }}>
         {caption}
       </Text>
       <TempoDisplay showLabel={false} showInfo={false} fontSize={26} {...props} />
@@ -179,7 +180,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
     <View style={{ gap: 12 }}>
       <Text
         style={{
-          color: '#E5E7EB',
+          color: greyRamp[100],
           fontFamily: 'Inter, sans-serif',
           fontSize: 12,
           fontWeight: '700',
@@ -313,7 +314,7 @@ export const ActiveTempoConditions: Story = {
           live={{ activePhase: null, phaseElapsedMs: 0 }}
         />
         <View style={{ gap: 5 }}>
-          <Text style={{ color: '#9CA3AF', fontFamily: 'Inter, sans-serif', fontSize: 11 }}>
+          <Text style={{ color: greyRamp[400], fontFamily: 'Inter, sans-serif', fontSize: 11 }}>
             Animated · Ecc → Pause → Con → 2s rest, banking each phase
           </Text>
           <LiveTempoDemo />

@@ -1,5 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Scatter, type ScatterDatum } from './Scatter'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+
+const t = getSemanticColors('dark')
 
 const meta: Meta<typeof Scatter> = {
   title: 'Custom/Charts/Scatter',
@@ -16,12 +19,12 @@ type Story = StoryObj<typeof Scatter>
 
 /** Modules on the instability × abstractness "main sequence". */
 const mainSequence: ScatterDatum[] = [
-  { id: 'core', x: 0.08, y: 0.85, r: 10, color: '#14B8A6', label: 'core' },
-  { id: 'domain', x: 0.22, y: 0.7, r: 8, color: '#14B8A6', label: 'domain' },
-  { id: 'services', x: 0.45, y: 0.4, r: 12, color: '#5B9BD5', label: 'services' },
-  { id: 'api', x: 0.6, y: 0.35, r: 7, color: '#5B9BD5', label: 'api' },
-  { id: 'cli', x: 0.9, y: 0.08, r: 9, color: '#F4A736', label: 'cli' },
-  { id: 'utils', x: 0.85, y: 0.75, r: 6, color: '#F83030', label: 'utils (pain?)' },
+  { id: 'core', x: 0.08, y: 0.85, r: 10, color: t['data-1'], label: 'core' },
+  { id: 'domain', x: 0.22, y: 0.7, r: 8, color: t['data-1'], label: 'domain' },
+  { id: 'services', x: 0.45, y: 0.4, r: 12, color: t['data-7'], label: 'services' },
+  { id: 'api', x: 0.6, y: 0.35, r: 7, color: t['data-7'], label: 'api' },
+  { id: 'cli', x: 0.9, y: 0.08, r: 9, color: t['data-6'], label: 'cli' },
+  { id: 'utils', x: 0.85, y: 0.75, r: 6, color: t['data-4'], label: 'utils (pain?)' },
 ]
 
 export const Default: Story = {
@@ -90,7 +93,7 @@ export const Outlier: Story = {
   args: {
     data: [
       ...mainSequence,
-      { id: 'legacy', x: 0.98, y: 0.98, r: 16, color: '#F83030', label: 'legacy.ts' },
+      { id: 'legacy', x: 0.98, y: 0.98, r: 16, color: t['data-4'], label: 'legacy.ts' },
     ],
     width: 480,
     height: 340,
