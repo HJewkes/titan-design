@@ -27,17 +27,17 @@ import { View, Text } from 'react-native'
 import { VelocityStrip } from '../../components/custom/Workout/VelocityStrip'
 import { SetBar, velocityZoneColor, type SetStripSet } from '../../components/custom/Workout/SetBar'
 import { getSemanticColors } from '../../theme/tokens/semantic'
-import { primitiveColors } from '../../theme/tokens/primitives'
+import { greyRamp } from '../../theme/tokens/primitives'
 import { formatVelocity } from '../../utils/workout-format'
 
 const T = getSemanticColors('dark')
 
-const PAGE_BG = primitiveColors.charcoal[900]
-const PANEL_BG = primitiveColors.charcoal[800]
-const LIST_BG = primitiveColors.charcoal[600]
-const HEADER_BG = primitiveColors.charcoal[900]
+const PAGE_BG = greyRamp[975]
+const PANEL_BG = greyRamp[975]
+const LIST_BG = greyRamp[950]
+const HEADER_BG = greyRamp[975]
 /** Grey placeholder for planned-but-unperformed reps — matches SetBar's TODO_COLOR. */
-const GREY = primitiveColors.charcoal[300]
+const GREY = greyRamp[900]
 
 const FONT_HEAD = '"Space Grotesk", sans-serif'
 const FONT_UI = '"Nunito Sans", sans-serif'
