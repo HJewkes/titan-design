@@ -130,7 +130,7 @@ type props without pulling the dependency.
   array (unchanged, still the source of truth for `SetRow` / `ExerciseCard`), the
   strip accepts an optional structured `VelocitySet` descriptor and renders the
   strength set-type vocabulary as a typed slot list. Slots are
-  `rep` (velocity-coloured) · `todo` (charcoal-300 grey) · `variable` /
+  `rep` (velocity-coloured) · `todo` (`border-prominent` grey) · `variable` /
   `continue` (`SET_STRIP_VARIABLE_COLOR` cyan-900; `continue` adds a cyan-800
   outline to read as "keep going"). Types: `straight` (done + grey todo to
   `planned`), `range` (committed grey + a cyan variable window `floor..max`),

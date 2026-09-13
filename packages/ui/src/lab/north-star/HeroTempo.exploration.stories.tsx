@@ -21,14 +21,14 @@ import { View, Text, type ViewStyle } from 'react-native'
 import { DualVelocityStrip, LiveAuraFrame } from '../../components'
 import type { TempoLivePhase } from '../../components/custom/Workout/TempoDisplay'
 import { getSemanticColors } from '../../theme/tokens/semantic'
-import { primitiveColors, primitiveRamps } from '../../theme/tokens/primitives'
+import { greyRamp, primitiveRamps } from '../../theme/tokens/primitives'
 import { alpha } from '../../utils/colors'
 import { roundTempo } from '../../utils/workout-format'
 import { grainForTone } from '../../theme/materials'
 
 const T = getSemanticColors('dark')
-const PAGE_BG = primitiveColors.charcoal[900]
-const PANEL_BG = primitiveColors.charcoal[800]
+const PAGE_BG = greyRamp[975]
+const PANEL_BG = greyRamp[975]
 const FONT_HEAD = '"Space Grotesk", sans-serif'
 const FONT_UI = '"Nunito Sans", sans-serif'
 
@@ -305,15 +305,15 @@ const paperChip = (tone: string): ViewStyle =>
 // as bright UI chips. Pauses stay a warm neutral. Active phase steps one shade brighter.
 const phaseTone: Record<TempoLivePhase, string> = {
   eccentric: primitiveRamps.magenta[900],
-  pauseBottom: primitiveColors.charcoal[300],
+  pauseBottom: greyRamp[900],
   concentric: primitiveRamps.cyan[900],
-  pauseTop: primitiveColors.charcoal[300],
+  pauseTop: greyRamp[900],
 }
 const phaseToneActive: Record<TempoLivePhase, string> = {
   eccentric: primitiveRamps.magenta[800],
-  pauseBottom: primitiveColors.charcoal[200],
+  pauseBottom: greyRamp[800],
   concentric: primitiveRamps.cyan[800],
-  pauseTop: primitiveColors.charcoal[200],
+  pauseTop: greyRamp[800],
 }
 
 // Semantic hit/miss of target cadence — also DARKER + paper-textured so the green/amber/red

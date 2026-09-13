@@ -12,7 +12,7 @@
  */
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
-import { primitiveColors } from '../../theme/tokens/primitives'
+import { greyRamp } from '../../theme/tokens/primitives'
 import {
   CombinedChart,
   FatigueCard,
@@ -58,7 +58,7 @@ export const CombinedChart_: Story = {
           8-REP CABLE PRESS · rep 8 current · reps 1–7 ghosts · absolute time · line =
           green-on-track tempo
         </Kicker>
-        <View style={[{ borderRadius: 12, padding: 14 }, insetWell(primitiveColors.charcoal[900])]}>
+        <View style={[{ borderRadius: 12, padding: 14 }, insetWell(greyRamp[975])]}>
           <CombinedChart w={800} h={320} current={7} />
         </View>
       </Panel>
@@ -67,14 +67,10 @@ export const CombinedChart_: Story = {
           EARLY REP (rep 3, on-tempo) vs LATE REP (rep 8, dropped ecc + long con grind)
         </Kicker>
         <View style={{ flexDirection: 'row', gap: 14, flexWrap: 'wrap' }}>
-          <View
-            style={[{ borderRadius: 12, padding: 10 }, insetWell(primitiveColors.charcoal[900])]}
-          >
+          <View style={[{ borderRadius: 12, padding: 10 }, insetWell(greyRamp[975])]}>
             <CombinedChart w={390} h={220} current={2} />
           </View>
-          <View
-            style={[{ borderRadius: 12, padding: 10 }, insetWell(primitiveColors.charcoal[900])]}
-          >
+          <View style={[{ borderRadius: 12, padding: 10 }, insetWell(greyRamp[975])]}>
             <CombinedChart w={390} h={220} current={7} />
           </View>
         </View>
@@ -138,9 +134,7 @@ export const Overview: Story = {
       <View style={{ flexDirection: 'row', gap: 18, alignItems: 'flex-start' }}>
         <Panel width={720}>
           <Kicker>P3 · HERO + VL BANDS (primary)</Kicker>
-          <View
-            style={[{ borderRadius: 12, padding: 16 }, insetWell(primitiveColors.charcoal[900])]}
-          >
+          <View style={[{ borderRadius: 12, padding: 16 }, insetWell(greyRamp[975])]}>
             <HeroWithVlBands width={660} height={470} current={7} />
           </View>
         </Panel>
