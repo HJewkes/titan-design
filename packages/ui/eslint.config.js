@@ -4,6 +4,7 @@ const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
 const noDeprecatedImport = require('./eslint-rules/no-deprecated-import')
 const noDeviceInternals = require('./eslint-rules/no-device-internals')
+const noFrozenTheme = require('./eslint-rules/no-frozen-theme')
 const noRawColor = require('./eslint-rules/no-raw-color')
 const noUpwardTierImport = require('./eslint-rules/no-upward-tier-import')
 const noVarColorOpacity = require('./eslint-rules/no-var-color-opacity')
@@ -92,6 +93,7 @@ module.exports = tseslint.config(
         rules: {
           'no-deprecated-import': noDeprecatedImport,
           'no-device-internals': noDeviceInternals,
+          'no-frozen-theme': noFrozenTheme,
           'no-raw-color': noRawColor,
           'no-upward-tier-import': noUpwardTierImport,
           'no-var-color-opacity': noVarColorOpacity,
@@ -323,13 +325,37 @@ module.exports = tseslint.config(
           message:
             'Hardcoded inline fontSize defeats the type scale — use a Typography variant or a text-* class. See TOKENS.md §4.',
         },
-        // Freezes the value to dark-mode hex; resolveColor returns the CSS var on web.
+        // Freezes the value to one palette at import time. Resolve at render
+        // time instead — titan/no-frozen-theme below says the same thing for
+        // every component family, ratcheted.
         {
           selector: 'CallExpression[callee.name="getSemanticColors"]',
           message:
-            'getSemanticColors() freezes to one theme — use resolveColor(token) in components. See TOKENS.md §3.',
+            'getSemanticColors() freezes to one theme — resolve at render time with useOnSurfaceColor(role), or getSemanticColors(useSurfaceMode()) for other tokens. See TOKENS.md §3.',
         },
       ],
+    },
+  },
+
+  // A module-scope `const t = getSemanticColors('dark')` captures the dark
+  // palette at import time, so the component can never follow the theme. The
+  // token-pure selector above has banned it per family since E2, which leaves
+  // 35 component files (all of Fatigue, 29 of 54 Workout, Gauge, TimerReadout,
+  // Treemap, 4 ui files) frozen — VW-88 gap 2.
+  //
+  // Errored across every component family, but RATCHETED like no-raw-color:
+  // today's offenders are recorded per file in frozen-theme-baseline.json,
+  // keyed by frozen value, and only calls beyond the allowance fail. New frozen
+  // theme is blocked immediately; the backlog migrates in batches (VW-316).
+  //
+  // Stories and tests are exempt for the same reason as everywhere else: a
+  // concrete value IS the point there (`toHaveStyle` cannot match the `var()`
+  // string resolveColor returns under the RNW vitest alias).
+  {
+    files: ['src/components/**/*.{ts,tsx}'],
+    ignores: ['**/*.stories.tsx', '**/*.test.{ts,tsx}', '**/*-fixture.ts'],
+    rules: {
+      'titan/no-frozen-theme': 'error',
     },
   },
 
