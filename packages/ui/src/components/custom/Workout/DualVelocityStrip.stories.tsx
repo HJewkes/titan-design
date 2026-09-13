@@ -105,6 +105,56 @@ export const RailExpanded: Story = {
   ),
 }
 
+/**
+ * A completed, narrow-panel set ending on its OWN peak on both sides (TD-07.10 repro): the last
+ * rep's value label has no sibling column to its right, and its bar sits at the running-best
+ * reference-line height — the two crowd together at the plot's right edge. Narrow enough
+ * (~420px panel, 8 reps/side) that the last column's bar width is under the label's estimated
+ * width, so the flip rule fires: the last label anchors right (grows left) instead of centering
+ * and bleeding past the edge.
+ */
+const ASCENDING_LEFT = [
+  0.55, 0.58, 0.6, 0.63, 0.66, 0.68, 0.71, 0.74, 0.77, 0.79, 0.82, 0.85, 0.87, 0.9,
+]
+const ASCENDING_RIGHT = [
+  0.53, 0.56, 0.58, 0.61, 0.64, 0.66, 0.69, 0.72, 0.75, 0.77, 0.8, 0.83, 0.85, 0.88,
+]
+
+export const CrowdedRightEdgeLabel: Story = {
+  args: { variant: 'hero', height: 300, scale: 'peak' },
+  render: (args) => (
+    <Page>
+      <Panel width={420}>
+        <Text
+          style={{
+            color: primitiveColors.white,
+            fontFamily: '"Space Grotesk", sans-serif',
+            fontSize: 15,
+            fontWeight: '700',
+          }}
+        >
+          Peak on the last rep, narrow panel — the flip rule (TD-07.10)
+        </Text>
+        <DualVelocityStrip
+          {...args}
+          left={{ velocities: ASCENDING_LEFT }}
+          right={{ velocities: ASCENDING_RIGHT }}
+        />
+      </Panel>
+    </Page>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Before the fix, the last rep's centered label bled past the plot's right edge and sat " +
+          "on top of the running-best reference line. The flip rule right-anchors that column's " +
+          'label instead, so it clears both.',
+      },
+    },
+  },
+}
+
 /** A range set on both sides — shows the cyan variable-window slots mirrored past the floor. */
 export const RangeSet: Story = {
   args: { variant: 'hero', height: 260, scale: 'peak' },

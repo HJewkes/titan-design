@@ -134,6 +134,14 @@ export interface SetBarChartProps {
   /** Format a rep value for its label. Default `String`. */
   formatValue?: (value: number) => string
   /**
+   * The LAST column has no sibling to its right to absorb an overflowing value label, so a wide
+   * label there can bleed past the plot's right edge and crowd the reference line that also runs
+   * flush to it (TD-07.10). Default false (unchanged for every existing consumer — the single
+   * hero and ROM chart). When true, that column's label flips from centered to right-anchored
+   * (grows left) once {@link shouldFlipEdgeLabel} says it doesn't fit.
+   */
+  flipEdgeLabel?: boolean
+  /**
    * To-do placeholder treatment. `solid` (default) — a solid surface-relative section (the plane
    * blended toward the on-surface neutral). `dashed` — a dashed outline stub. Exists so ROM can keep
    * its dashed to-do while the hero (and the dual that composes it) take the solid section.
@@ -196,6 +204,25 @@ export function scaleDenominator(scale: 'peak' | 'fixed', maxValue: number): num
  */
 export function valueLabelFontSize(height: number): number {
   return Math.round(Math.max(8, Math.min(12, height * 0.11)))
+}
+
+/** Average glyph width for the bold numeric value-label font, as a fraction of its font size — a
+ * measurement-free estimate (RN text can't be synchronously measured) good enough to catch overflow. */
+const LABEL_GLYPH_WIDTH_RATIO = 0.62
+
+/** Estimate a value label's rendered width (px) from its formatted text and font size. */
+export function estimateValueLabelWidth(text: string, fontSize: number): number {
+  return text.length * fontSize * LABEL_GLYPH_WIDTH_RATIO
+}
+
+/**
+ * Whether a value label needs to flip from its default centered anchor to a right-anchored
+ * (left-growing) placement to clear the plot's right edge (TD-07.10). `roomPx` is the space
+ * available to the right of the label's centered position; `labelWidthPx` is its measured or
+ * estimated rendered width.
+ */
+export function shouldFlipEdgeLabel(roomPx: number, labelWidthPx: number): boolean {
+  return labelWidthPx / 2 > roomPx
 }
 
 // --- Hero geometry -----------------------------------------------------------
@@ -281,6 +308,7 @@ export function SetBarChart({
   flat = false,
   showValueLabels: showValueLabelsProp = false,
   formatValue = String,
+  flipEdgeLabel = false,
   todoVariant = 'solid',
   minColumns,
   renderReference,
@@ -462,6 +490,17 @@ export function SetBarChart({
           // duplicate them); its own label shows otherwise, fading in with `expandProgress`.
           const ownLabel = showValueLabels && !renderBarOverlay && showBarLabel(repIndex)
           const labelBottom = (expandProgress ? valueBarHeight(best) : barHeight(best)) + LABEL_GAP
+          // Only the LAST cell has no sibling to its right to absorb an overflowing label
+          // (TD-07.10) — flip it right-anchored (grows left) when it doesn't fit.
+          const isLastCell = i === cells.length - 1
+          const labelText = formatValue(value)
+          const flipLabel =
+            flipEdgeLabel &&
+            isLastCell &&
+            shouldFlipEdgeLabel(
+              barWidth / 2,
+              estimateValueLabelWidth(labelText, valueLabelFontSize(height))
+            )
           return (
             <View key={i} accessibilityElementsHidden={renderBarOverlay == null} style={column}>
               {ownLabel && (
@@ -471,9 +510,8 @@ export function SetBarChart({
                   style={{
                     position: 'absolute',
                     bottom: labelBottom,
-                    left: 0,
-                    right: 0,
-                    alignItems: 'center',
+                    ...(flipLabel ? { right: 0 } : { left: 0, right: 0 }),
+                    alignItems: flipLabel ? 'flex-end' : 'center',
                     ...(expandProgress ? { opacity: expandProgress } : null),
                   }}
                   pointerEvents="none"
@@ -483,7 +521,7 @@ export function SetBarChart({
                     style={[{ fontSize: valueLabelFontSize(height), fontWeight: '700' }, flipStyle]}
                     testID={`${testIDPrefix}-label-${repIndex}`}
                   >
-                    {formatValue(value)}
+                    {labelText}
                   </Text>
                 </Animated.View>
               )}
