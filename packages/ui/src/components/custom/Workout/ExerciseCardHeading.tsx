@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useState } from 'react'
 import { Pressable, View, type StyleProp, type ViewStyle } from 'react-native'
+import { primitiveOpacity } from '../../../theme/tokens/primitives'
 import type { ThemeMode } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface/SurfaceContext'
 import { useHoverState } from '../../ui/tooltip'
@@ -26,14 +27,14 @@ interface DensitySpec {
   mutedPrescription: boolean
 }
 
-// The two dim depths are inherited from two different specimens (rail 0.55, card 0.60).
-// Converging them needs an opacity token the set does not have — reported, not invented.
+// All three densities dim to ONE depth (VW-276). They used to differ — rail/compact 0.55
+// against the card's 0.60 — only because they were traced from two different specimens.
 const DENSITY: Record<ExerciseRowDensity, DensitySpec> = {
   rail: {
     paddingVertical: 9,
     paddingHorizontal: 12,
     layout: 'stacked',
-    dimOpacity: 0.55,
+    dimOpacity: primitiveOpacity.dim,
     dimByDefault: false,
     mutedPrescription: false,
   },
@@ -41,7 +42,7 @@ const DENSITY: Record<ExerciseRowDensity, DensitySpec> = {
     paddingVertical: 12,
     paddingHorizontal: 14,
     layout: 'inline',
-    dimOpacity: 0.55,
+    dimOpacity: primitiveOpacity.dim,
     dimByDefault: false,
     mutedPrescription: true,
   },
@@ -49,7 +50,7 @@ const DENSITY: Record<ExerciseRowDensity, DensitySpec> = {
     paddingVertical: 12,
     paddingHorizontal: 14,
     layout: 'inline',
-    dimOpacity: 0.6,
+    dimOpacity: primitiveOpacity.dim,
     dimByDefault: true,
     mutedPrescription: true,
   },

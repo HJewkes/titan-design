@@ -89,6 +89,49 @@ export function cardChartHeight(cardHeight?: number): number {
   return Math.round(Math.min(CARD_MAX_CHART_HEIGHT, Math.max(CARD_MIN_CHART_HEIGHT, scaled)))
 }
 
+/** How many gaps the card's three sections are separated by. */
+export const CARD_SECTION_GAPS = 2
+
+/**
+ * MEASURED. Everything in the card that is neither a section gap nor the ghost-spark plot:
+ * the 18px padding top and bottom, the verdict hero + three lights (122.5) and the ROM chart
+ * (44). Read off the rendered card in Storybook at `height` 820, so a change to those
+ * sections needs re-measuring — same contract as {@link CARD_CHROME_HEIGHT}.
+ */
+export const CARD_FIXED_CONTENT_HEIGHT = 203
+
+/**
+ * SOURCED. `primitiveSpacing[4]`. The floor the two section gaps used to carry as
+ * `minHeight`, kept so a short card is spaced exactly as it is today.
+ */
+export const CARD_SECTION_GAP_MIN = 16
+
+/**
+ * CHOSEN (VW-276). The cap, and the point of this function.
+ *
+ * The gaps used to be `flex: 1`, so every pixel the card was given beyond its content went
+ * into them: at the wall's `bodyHeight` 820 that is 188px EACH, and the three sections read
+ * as three unrelated cards rather than one. A gap has to stay legible as a separator, not
+ * become a void, so it stops at `primitiveSpacing[7]` — one step above the card's own 18px
+ * edge inset and a little over 2x the 12px gap inside the top group, which is enough to part
+ * the sections while keeping them one read. Past the cap the leftover height collects below
+ * the last section, where ONE void at the edge of the card costs nothing, instead of being
+ * split into two voids that break the chain mid-read.
+ */
+export const CARD_SECTION_GAP_MAX = 28
+
+/**
+ * The gap between the card's three sections for a card height — content-driven, not
+ * slack-driven. The leftover after the plot and the fixed sections is split across the gaps
+ * and then clamped, so the gap grows with the card only until {@link CARD_SECTION_GAP_MAX}.
+ */
+export function cardSectionGap(cardHeight?: number): number {
+  if (cardHeight == null) return CARD_SECTION_GAP_MIN
+  const slack = cardHeight - CARD_FIXED_CONTENT_HEIGHT - cardChartHeight(cardHeight)
+  const perGap = Math.floor(slack / CARD_SECTION_GAPS)
+  return Math.min(CARD_SECTION_GAP_MAX, Math.max(CARD_SECTION_GAP_MIN, perGap))
+}
+
 /**
  * MEASURED, not chosen: everything in the card that is not the ghost-spark plot — the 18px
  * padding top and bottom, the verdict hero, the three lights, the two 16px minimum spacers

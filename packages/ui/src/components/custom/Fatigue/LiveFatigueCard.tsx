@@ -2,8 +2,13 @@
 /**
  * LiveFatigueCard — the vertical live fatigue card. One focal read (the RPE/verdict
  * hero + three why-lights, grouped at top) → the ROM progression → the ghost-spark
- * (tempo embedded), the last two spread through the leftover height. Consumes ONE
- * {@link LiveFatigueModel}.
+ * (tempo embedded). Consumes ONE {@link LiveFatigueModel}.
+ *
+ * SPACING (VW-276). The three sections are parted by ONE content-driven gap from
+ * {@link cardSectionGap}, capped at `CARD_SECTION_GAP_MAX`. They used to be `flex: 1`
+ * spacers, which handed the gaps every pixel of leftover height — 188px each at the
+ * wall's 820 — and the sections read as three unrelated cards. Leftover past the cap
+ * now collects below the last section rather than inside the group.
  *
  * SURFACE (TD-07.08). The card grounds on the `base` plane — ONE step above the
  * `background` shell the live stage paints, per the surface north-star's pairing matrix
@@ -25,7 +30,7 @@ import { View } from 'react-native'
 import { Surface, useSurfaceMode } from '../../ui/surface'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { barPaper } from '../../../theme/materials'
-import { cardChartHeight } from './panel-layout'
+import { cardChartHeight, cardSectionGap } from './panel-layout'
 import { VerdictHero } from './VerdictHero'
 import { FatigueLights } from './FatigueLights'
 import { RomProgressionChart } from './RomProgressionChart'
@@ -48,6 +53,7 @@ export function LiveFatigueCard({ model, width = 318, height }: LiveFatigueCardP
   const t = getSemanticColors(useSurfaceMode())
   const chartW = width - PAD * 2 - GHOST_GUTTER * 2
   const chartH = cardChartHeight(height)
+  const sectionGap = cardSectionGap(height)
   return (
     <Surface
       level="base"
@@ -68,7 +74,7 @@ export function LiveFatigueCard({ model, width = 318, height }: LiveFatigueCardP
         <FatigueLights dimensions={model.verdict?.dimensions ?? null} />
       </View>
 
-      <View style={{ flex: 1, minHeight: 16 }} />
+      <View style={{ height: sectionGap }} />
 
       <RomProgressionChart
         points={model.romProgression}
@@ -77,7 +83,7 @@ export function LiveFatigueCard({ model, width = 318, height }: LiveFatigueCardP
         plannedReps={model.plannedReps}
       />
 
-      <View style={{ flex: 1, minHeight: 16 }} />
+      <View style={{ height: sectionGap }} />
 
       <GhostSpark
         curves={model.velocityCurves}

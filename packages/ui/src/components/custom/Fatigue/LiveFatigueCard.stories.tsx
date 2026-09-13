@@ -116,6 +116,23 @@ export const WithoutPlannedReps: Story = {
   ),
 }
 
+/**
+ * WALL HEIGHT (VW-276). The card as the live panel actually draws it on the wall display —
+ * `bodyHeight` 820, so the card is pinned to 820 rather than the 508 every other story uses.
+ *
+ * This is the height the sparse read was reported at: the two inter-section spacers used to
+ * be `flex: 1`, so every pixel of leftover height was split between them and the three
+ * sections drifted ~198px apart. The gap is capped now, so the group holds together and the
+ * slack collects below the last section.
+ */
+export const WallHeight: Story = {
+  render: () => (
+    <Frame>
+      <LiveFatigueCard model={FATIGUE_STATES[3].model} width={318} height={820} />
+    </Frame>
+  ),
+}
+
 /** Warming up — a cold-start set (< 2 reps): neutral verdict, em-dash RPE, no reference lines. */
 export const WarmingUp: Story = {
   render: () => (

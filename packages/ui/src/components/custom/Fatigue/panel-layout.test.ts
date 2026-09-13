@@ -10,12 +10,17 @@ import {
   CARD_MIN_CHART_HEIGHT,
   CARD_MAX_CHART_HEIGHT,
   CARD_NATURAL_CHART_HEIGHT,
+  CARD_FIXED_CONTENT_HEIGHT,
+  CARD_SECTION_GAPS,
+  CARD_SECTION_GAP_MIN,
+  CARD_SECTION_GAP_MAX,
   HERO_EYEBROW_ALLOWANCE,
   HERO_MIN_PLOT_HEIGHT,
   panelTier,
   panelLayout,
   panelBodySplit,
   cardChartHeight,
+  cardSectionGap,
 } from './panel-layout'
 
 describe('panel breakpoints', () => {
@@ -133,6 +138,42 @@ describe('panelBodySplit — one height source', () => {
     const split = panelBodySplit(10, panelLayout(700))
     expect(split.heroHeight).toBeGreaterThanOrEqual(0)
     expect(split.cardHeight).toBeGreaterThanOrEqual(0)
+  })
+})
+
+describe('cardSectionGap — the capped section gap (VW-276)', () => {
+  it('gives an unpinned card the floor, the same spacing it carried as a minHeight', () => {
+    expect(cardSectionGap(undefined)).toBe(CARD_SECTION_GAP_MIN)
+  })
+
+  it('holds the floor on a card with no slack to spend', () => {
+    expect(cardSectionGap(CARD_MIN_HEIGHT_STACKED)).toBe(CARD_SECTION_GAP_MIN)
+    expect(cardSectionGap(0)).toBe(CARD_SECTION_GAP_MIN)
+  })
+
+  it('grows with the card between the floor and the cap', () => {
+    const gaps = [384, 420, 460, 500, 560, 640, 820].map(cardSectionGap)
+    for (let i = 1; i < gaps.length; i++) expect(gaps[i]).toBeGreaterThanOrEqual(gaps[i - 1])
+    expect(gaps[0]).toBe(CARD_SECTION_GAP_MIN)
+    expect(gaps.at(-1)).toBe(CARD_SECTION_GAP_MAX)
+  })
+
+  // THE REGRESSION. At the wall's bodyHeight 820 the `flex: 1` spacers split all the
+  // leftover height between them — 188px EACH — and the three sections read as three
+  // unrelated cards. Drop the cap and this is the number the gap goes back to.
+  it('caps the wall-height gap instead of handing it the whole slack', () => {
+    const uncapped = Math.floor(
+      (820 - CARD_FIXED_CONTENT_HEIGHT - cardChartHeight(820)) / CARD_SECTION_GAPS
+    )
+    expect(uncapped).toBeGreaterThan(180)
+    expect(cardSectionGap(820)).toBe(CARD_SECTION_GAP_MAX)
+    expect(cardSectionGap(820)).toBeLessThan(uncapped)
+  })
+
+  it('never parts the sections further than the cap, however tall the card gets', () => {
+    for (const height of [820, 1080, 1440, 2160]) {
+      expect(cardSectionGap(height)).toBe(CARD_SECTION_GAP_MAX)
+    }
   })
 })
 
