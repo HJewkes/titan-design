@@ -79,9 +79,10 @@ function StepButton({
         disabled ? '' : 'web:hover:bg-interactive-hover active:bg-interactive-active'
       )}
     >
+      {/* Was a tertiary text token under an opacity modifier, which emitted no rule (VW-308). */}
       <Typography
         variant="body2"
-        className={cn('leading-none', disabled ? 'text-text-tertiary/40' : 'text-text-secondary')}
+        className={cn('leading-none', disabled ? 'text-text-disabled' : 'text-text-secondary')}
       >
         {glyph}
       </Typography>
