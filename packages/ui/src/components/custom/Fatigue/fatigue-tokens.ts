@@ -4,11 +4,11 @@
  * is token-sourced (semantic tokens / primitive ramps) — no literal surface hex — so
  * the family inherits the surface-ramp refresh when it lands.
  */
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import type { getSemanticColors } from '../../../theme/tokens/semantic'
 import { primitiveRamps, greyRamp } from '../../../theme/tokens/primitives'
 import type { DimensionTone, FatigueVerdictState, SamplePhase } from './fatigue-model'
 
-const t = getSemanticColors('dark')
+type ColorToken = keyof ReturnType<typeof getSemanticColors>
 
 export const FONT_HEAD = '"Space Grotesk", sans-serif'
 export const FONT_UI = '"Nunito Sans", sans-serif'
@@ -26,12 +26,18 @@ export const FONT_UI = '"Nunito Sans", sans-serif'
  */
 export const FONT_MONO = 'monospace'
 
-/** Per-dimension tone → semantic status colour (the one language the dots + hero share). */
-export const TONE_COLOR: Record<DimensionTone, string> = {
-  ok: t['status-success'],
-  warn: t['status-warning'],
-  alarm: t['status-error'],
-}
+/**
+ * Per-dimension tone → semantic status TOKEN (the one language the dots + hero share).
+ *
+ * A token name rather than a resolved value: this module has no render of its own, so
+ * resolving here would freeze the palette at import time (VW-316). The consumer holds a
+ * live `getSemanticColors(useSurfaceMode())` and indexes it with this.
+ */
+export const TONE_TOKEN = {
+  ok: 'status-success',
+  warn: 'status-warning',
+  alarm: 'status-error',
+} as const satisfies Record<DimensionTone, ColorToken>
 
 /** Verdict state → the hero word. */
 export const STATE_LABEL: Record<FatigueVerdictState, string> = {

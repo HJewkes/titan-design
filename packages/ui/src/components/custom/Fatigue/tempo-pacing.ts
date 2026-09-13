@@ -13,11 +13,8 @@
  * canonical one; migrating TempoDisplay onto it is deliberately left out of the change
  * that introduced this file, so its rendering is untouched.
  */
-import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { PACING_TONE } from './fatigue-tokens'
 import type { SamplePhase, PhaseSegment } from './fatigue-model'
-
-const t = getSemanticColors('dark')
 
 /** ± this window (ms) around the target still counts as on pace. Matches TempoDisplay. */
 export const ON_TARGET_MS = 100
@@ -44,9 +41,13 @@ export function phaseFillFraction(elapsedMs: number, targetMs: number | null): n
  *
  * Takes {@link PACING_TONE} rather than the `status-*` semantic tokens — the label sits on a
  * saturated phase fill, where `status-error` measures 1.88:1. See the token's note.
+ *
+ * `null` when there is no target: pacing has no opinion, so the caller keeps its own label
+ * colour. That also keeps this module theme-free — it used to reach for a frozen
+ * `text-primary` here, which is the VW-316 pattern.
  */
-export function pacingTone(elapsedMs: number, targetMs: number | null): string {
-  if (targetMs == null || targetMs <= 0) return t['text-primary']
+export function pacingTone(elapsedMs: number, targetMs: number | null): string | null {
+  if (targetMs == null || targetMs <= 0) return null
   const remainingMs = targetMs - elapsedMs
   if (remainingMs > ON_TARGET_MS) return PACING_TONE.ahead
   if (remainingMs >= -ON_TARGET_MS) return PACING_TONE.onPace

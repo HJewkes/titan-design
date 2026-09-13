@@ -25,13 +25,11 @@
  * prescribed the fill covers the whole run and the recess is hidden behind it.
  */
 import { useId } from 'react'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { useOnSurfaceColor } from '../../ui/surface'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { FONT_UI, PHASE_AXIS_COLOR, PHASE_AXIS_BASE_COLOR } from './fatigue-tokens'
 import { phaseFillFraction, pacingTone, phaseTargetsMs, type TempoTuple } from './tempo-pacing'
 import type { PhaseSegment } from './fatigue-model'
-
-const t = getSemanticColors('dark')
 
 /** Band height in px. */
 export const BAND_H = 16
@@ -81,8 +79,9 @@ export interface GhostBandProps {
   /** Reveal the ECC / HOLD / CON labels inside the band. */
   showLabels?: boolean
   /**
-   * Label colour when there is no pacing tone to apply. Default the primary text token.
-   * Ignored for a run that paces — that label takes {@link pacingTone}.
+   * Label colour when there is no pacing tone to apply. Defaults to the primary on-surface
+   * colour of the enclosing Surface. Ignored for a run that paces — that label takes
+   * {@link pacingTone}.
    */
   labelColor?: string
   /**
@@ -118,10 +117,12 @@ export function GhostBand({
   top,
   height = BAND_H,
   showLabels = false,
-  labelColor = t['text-primary'],
+  labelColor,
   targetTempoSeconds = null,
   prescribed = false,
 }: GhostBandProps) {
+  const onSurface = useOnSurfaceColor('primary')
+  const plainLabelColor = labelColor ?? onSurface
   const rawId = useId()
   const safeId = rawId.replace(/[^a-zA-Z0-9]/g, '')
   const clipId = `ghost-band-${safeId}`
@@ -158,7 +159,7 @@ export function GhostBand({
       // Prescribed → nothing performed, so nothing filled. No target at all → the run reads
       // complete rather than perpetually empty.
       fillWidth: prescribed ? 0 : pacing ? width * phaseFillFraction(elapsedMs, targetMs) : width,
-      labelTone: pacing ? pacingTone(elapsedMs, targetMs) : labelColor,
+      labelTone: (pacing ? pacingTone(elapsedMs, targetMs) : null) ?? plainLabelColor,
     }
   })
 
