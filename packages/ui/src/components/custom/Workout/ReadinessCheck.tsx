@@ -3,11 +3,12 @@ import { View, Text, Pressable } from 'react-native'
 import { Card } from '../../ui/card'
 import { Badge, type BadgeColor } from '../../ui/badge'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { alpha } from '../../../utils/colors'
 
 const t = getSemanticColors('dark')
 
 const BRAND_PRIMARY = t['brand-primary']
-const BRAND_PRIMARY_SUBTLE = 'rgba(255,121,0,0.12)'
+const BRAND_PRIMARY_SUBTLE = alpha(BRAND_PRIMARY, 0.12)
 const STATUS_SUCCESS = t['status-success']
 const STATUS_WARNING = t['status-warning']
 const STATUS_ERROR = t['status-error']

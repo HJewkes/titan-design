@@ -3,6 +3,7 @@ import { View, type ViewProps, type ViewStyle } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { greyRamp } from '../../../theme/tokens/primitives'
 import { liftStyle } from '../../../theme/lift'
+import { alpha } from '../../../utils/colors'
 
 const t = getSemanticColors('dark')
 
@@ -60,8 +61,10 @@ export function DeviationBar({ deviation, width, className, ...props }: Deviatio
             width: resolvedWidth,
             borderRadius: 3,
             // react-native-web renders backgroundImage at runtime; not in RN ViewStyle types
-            backgroundImage:
-              'linear-gradient(90deg, rgba(46,213,115,0.25) 0%, rgba(107,114,128,0.15) 50%, rgba(249,180,21,0.25) 100%)',
+            // rgba(107,114,128,0.15) at 50% has no exact token match (nearest:
+            // semanticPins.textSecondaryLight #65748B, ΔRGB ~12.7) — left as a
+            // raw literal (VW-78).
+            backgroundImage: `linear-gradient(90deg, ${alpha(t['status-success'], 0.25)} 0%, rgba(107,114,128,0.15) 50%, ${alpha(t['status-warning'], 0.25)} 100%)`,
           } as ViewStyle
         }
       />

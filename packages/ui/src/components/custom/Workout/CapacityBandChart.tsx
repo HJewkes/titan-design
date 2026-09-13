@@ -2,6 +2,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { alpha } from '../../../utils/colors'
 
 const t = getSemanticColors('dark')
 
@@ -11,9 +12,9 @@ const STATUS_INFO = t['status-info']
 /** Dot outline: near-white ring so load dots read on the band fill and any
  *  surface (matches the MesoStatusCard gauge-marker convention). */
 const DOT_BORDER = '#F3F4F6'
-const BAND_FILL = 'rgba(46,213,115,0.1)'
-const BAND_EDGE = 'rgba(46,213,115,0.45)'
-const PROJECTION_FILL = 'rgba(46,213,115,0.05)'
+const BAND_FILL = alpha(STATUS_SUCCESS, 0.1)
+const BAND_EDGE = alpha(STATUS_SUCCESS, 0.45)
+const PROJECTION_FILL = alpha(STATUS_SUCCESS, 0.05)
 
 const PADDING_LEFT = 28
 const PADDING_RIGHT = 10

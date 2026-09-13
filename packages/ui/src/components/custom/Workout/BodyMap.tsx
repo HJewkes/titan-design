@@ -5,6 +5,8 @@ import BodyHighlighter, { type ExtendedBodyPart, type Slug } from 'react-native-
 import { cn } from '../../../utils/cn'
 import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { primitiveColors } from '../../../theme/tokens/primitives'
+import { alpha } from '../../../utils/colors'
 import { getGlowShadow } from '../../../theme/elevation'
 import {
   MuscleGroup,
@@ -29,8 +31,8 @@ const Body = ((BodyHighlighter as unknown as { default?: typeof BodyHighlighter 
 
 const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
 
-const OUTLINE_FILL = 'rgba(255,255,255,0.08)'
-const OUTLINE_BORDER = 'rgba(255,255,255,0.12)'
+const OUTLINE_FILL = alpha(primitiveColors.white, 0.08)
+const OUTLINE_BORDER = alpha(primitiveColors.white, 0.12)
 const BODY_SCALE = 0.8 // 200x400 intrinsic -> ~160x320 px
 
 export interface BodyMapData {
@@ -278,7 +280,7 @@ function ViewToggle({ view, onViewChange }: ViewToggleProps) {
               paddingHorizontal: 12,
               paddingVertical: 4,
               borderRadius: 9999,
-              backgroundColor: active ? 'rgba(255,121,0,0.16)' : 'transparent',
+              backgroundColor: active ? alpha(BRAND_PRIMARY, 0.16) : 'transparent',
               borderWidth: 1,
               borderColor: active ? BRAND_PRIMARY : resolveColor('hairline-strong'),
             }}

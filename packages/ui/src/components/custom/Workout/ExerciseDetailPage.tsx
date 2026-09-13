@@ -24,6 +24,7 @@ import {
 import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { cn } from '../../../utils/cn'
+import { alpha } from '../../../utils/colors'
 
 const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
 
@@ -545,9 +546,9 @@ export function ExerciseDetailPage({
                 paddingVertical: 4,
                 paddingHorizontal: 10,
                 borderRadius: 6,
-                backgroundColor: 'rgba(255,121,0,0.10)',
+                backgroundColor: alpha(BRAND_PRIMARY, 0.1),
                 borderWidth: 1,
-                borderColor: 'rgba(255,121,0,0.25)',
+                borderColor: alpha(BRAND_PRIMARY, 0.25),
               }}
               testID="exercise-detail-page-e1rm"
             >

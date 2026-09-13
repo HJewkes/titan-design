@@ -2,6 +2,8 @@
 import { View, Text, Pressable } from 'react-native'
 import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { primitiveColors } from '../../../theme/tokens/primitives'
+import { alpha } from '../../../utils/colors'
 import { useTimer } from '../../../hooks/useTimer'
 import { CircularTimer } from '../CircularTimer/CircularTimer'
 
@@ -37,7 +39,7 @@ function RestActions({ onAddTime, onSkip }: { onAddTime: () => void; onSkip: () 
       <Pressable
         onPress={onAddTime}
         style={{
-          backgroundColor: 'rgba(255,255,255,0.06)',
+          backgroundColor: alpha(primitiveColors.white, 0.06),
           paddingVertical: 8,
           paddingHorizontal: 20,
           borderRadius: 8,
@@ -56,7 +58,7 @@ function RestActions({ onAddTime, onSkip }: { onAddTime: () => void; onSkip: () 
       <Pressable
         onPress={onSkip}
         style={{
-          backgroundColor: 'rgba(255,121,0,0.12)',
+          backgroundColor: alpha(BRAND_PRIMARY, 0.12),
           paddingVertical: 8,
           paddingHorizontal: 20,
           borderRadius: 8,
