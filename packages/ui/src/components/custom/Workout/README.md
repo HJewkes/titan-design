@@ -122,10 +122,13 @@ type props without pulling the dependency.
   `aria-selected` is not allowed on `role="button"`, so the wash is the whole signal
   and list semantics stay the rail's job.
 
-  Two follow-ups are deliberately NOT taken here. The dim depths still differ by
-  density (rail 0.55, card 0.60) because they came from two specimens and converging
-  them needs an **opacity token the set does not have** — a foundations decision.
-  And `exerciseRowState.ts` (the `interactive-*` → literal-hex map, written in the
+  The dim depths have since converged on ONE token, `primitiveOpacity.dim` (0.6,
+  VW-276) — the foundations decision that was owed. It is whole-element opacity, not
+  an alpha colour, because a row fades as one thing; 0.6 over 0.55 because nothing
+  distinguishes them side by side and the shallower dim costs less contrast.
+
+  One follow-up is deliberately NOT taken here:
+  `exerciseRowState.ts` (the `interactive-*` → literal-hex map, written in the
   shape of `onSurfaceColors`) should be **promoted into the surface module** the
   moment a second family needs row washes.
 

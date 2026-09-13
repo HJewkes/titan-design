@@ -538,6 +538,28 @@ export const primitiveBreakpoints = {
   xl: 1920,
 } as const
 
+/**
+ * Whole-ELEMENT opacity, as plain numbers.
+ *
+ * Distinct from the alpha COLOUR families (`hairline-*`, `interactive-*`, the `-subtle` /
+ * `-muted` / `-strong` wash rungs), which bake a fixed alpha into one colour. Those cannot
+ * dim a subtree: a row that carries a name, a prescription and a set strip has to fade as
+ * one thing, so what it needs is a number for RN's `opacity` / CSS `opacity`, not a colour.
+ *
+ * `dim` is the ONE de-emphasis depth for such a subtree — the not-yet-reached exercise row,
+ * the row a surface hands `dimmed`. It is a de-emphasis, NOT a disabled state: disabled is
+ * `text-disabled` / `interactive-disabled-*`, which are colours and carry their own alpha.
+ *
+ * 0.6 rather than the 0.55 two of the three `ExerciseCardHeading` densities had inherited
+ * (VW-276). The two depths came from different specimens and no one could tell them apart
+ * side by side — 0.05 of opacity is ~11/255 per channel — so the tie went to the one that
+ * costs less contrast: on the upcoming row's own tones over `surface-base`, the name goes
+ * 5.39:1 -> 6.15:1 and the prescription 2.79:1 -> 3.05:1.
+ */
+export const primitiveOpacity = {
+  dim: 0.6,
+} as const
+
 export const primitiveZIndex = {
   hide: -1,
   auto: 'auto',

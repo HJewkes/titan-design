@@ -4,6 +4,7 @@ import { axe } from 'jest-axe'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
 import { exerciseLiveColor, exerciseRowStateColor } from './exerciseRowState'
 import { onSurfaceColors } from '../../ui/surface/SurfaceContext'
+import { primitiveOpacity } from '../../../theme/tokens/primitives'
 import type { SetStripSet } from './SetStrip'
 
 const setStates: SetStripSet[] = [
@@ -49,7 +50,19 @@ describe('ExerciseCardHeading', () => {
 
   it('dims the whole heading when marked dimmed', () => {
     render(<ExerciseCardHeading {...baseProps} dimmed />)
-    expect(screen.getByTestId('exercise-card')).toHaveStyle({ opacity: 0.55 })
+    expect(screen.getByTestId('exercise-card')).toHaveStyle({ opacity: primitiveOpacity.dim })
+  })
+
+  // VW-276: rail/compact dimmed to 0.55 and upcoming to 0.60 purely because they were
+  // traced from two specimens. One depth now, and it is the token's, not a literal.
+  it('dims every density to the ONE opacity token', () => {
+    for (const density of ['rail', 'compact', 'upcoming'] as const) {
+      const { unmount } = render(
+        <ExerciseCardHeading {...baseProps} density={density} dimmed testID={`row-${density}`} />
+      )
+      expect(screen.getByTestId(`row-${density}`)).toHaveStyle({ opacity: primitiveOpacity.dim })
+      unmount()
+    }
   })
 
   it('is full opacity by default', () => {
@@ -133,7 +146,7 @@ describe('ExerciseCardHeading', () => {
           previousBest="185 lbs × 10"
         />
       )
-      expect(screen.getByTestId('exercise-card')).toHaveStyle({ opacity: 0.6 })
+      expect(screen.getByTestId('exercise-card')).toHaveStyle({ opacity: primitiveOpacity.dim })
       expect(screen.getByTestId('exercise-card-prescription')).toHaveTextContent('3×8-12 @ RPE 8')
       expect(screen.getByTestId('exercise-card-previous-best')).toHaveTextContent('185 lbs × 10')
     })
