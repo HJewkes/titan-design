@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useEffect, useMemo, useState } from 'react'
 import { getSemanticColors } from '../theme/tokens/semantic'
+import { primitiveColors } from '../theme/tokens/primitives'
+import { alpha } from '../utils/colors'
 import graph from './arch-graph.json'
 
 /**
@@ -396,7 +398,7 @@ function RenderModal({
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'rgba(0,0,0,0.66)',
+        background: alpha(primitiveColors.black, 0.66),
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
