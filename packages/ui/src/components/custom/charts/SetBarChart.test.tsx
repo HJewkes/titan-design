@@ -1,7 +1,14 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { SetBarChart, sideLabelText, valueLabelFontSize, type SetSlot } from './SetBarChart'
+import {
+  SetBarChart,
+  sideLabelText,
+  valueLabelFontSize,
+  estimateValueLabelWidth,
+  shouldFlipEdgeLabel,
+  type SetSlot,
+} from './SetBarChart'
 
 const reps = (values: number[]): SetSlot[] => values.map((v) => ({ kind: 'rep', value: v }))
 const silver = () => '#C7CBD1'
@@ -15,6 +22,28 @@ describe('valueLabelFontSize', () => {
   it('floors at 8px on tiny charts (a 72px dual → 36px wing)', () => {
     expect(valueLabelFontSize(36)).toBe(8)
     expect(valueLabelFontSize(60)).toBe(8)
+  })
+})
+
+describe('shouldFlipEdgeLabel (TD-07.10)', () => {
+  it.each([
+    // [roomPx, labelWidthPx, expected]
+    [30, 20, false], // half-width (10) comfortably clears the room (30)
+    [30, 70, true], // half-width (35) exceeds the room (30)
+    [10, 20, false], // half-width (10) exactly equals the room — still a fit (not flipped)
+    [9, 20, true], // half-width (10) just exceeds the room (9)
+  ])('roomPx=%d labelWidthPx=%d -> flip=%s', (roomPx, labelWidthPx, expected) => {
+    expect(shouldFlipEdgeLabel(roomPx, labelWidthPx)).toBe(expected)
+  })
+})
+
+describe('estimateValueLabelWidth', () => {
+  it('scales with both character count and font size', () => {
+    expect(estimateValueLabelWidth('1.02', 12)).toBeCloseTo(4 * 12 * 0.62)
+    expect(estimateValueLabelWidth('1.02', 8)).toBeLessThan(estimateValueLabelWidth('1.02', 12))
+    expect(estimateValueLabelWidth('10.02', 12)).toBeGreaterThan(
+      estimateValueLabelWidth('1.02', 12)
+    )
   })
 })
 

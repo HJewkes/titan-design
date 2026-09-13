@@ -1252,6 +1252,9 @@ export function VelocityStrip({
         label={label}
         showValueLabels
         formatValue={formatVelocity}
+        // Only the diverging dual's composed wings opt in (TD-07.10) — the standalone single
+        // hero is unchanged, per columnSlots being the dual-only signal (see the comment above).
+        flipEdgeLabel={columnSlots != null}
         renderReference={(g) => velocityReferenceOverlay(g, lossBandsOn)}
         hideBaseline
         testID="velocity-strip-hero"
