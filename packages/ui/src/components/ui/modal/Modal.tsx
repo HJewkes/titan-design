@@ -92,6 +92,8 @@ export function Modal({
       onPress={handleBackdropPress}
       className={cn(
         'flex-1 items-center justify-center',
+        // VW-82: scrims stay raw — Tailwind v3 drops the `/n` modifier on a
+        // `var()` colour, so a translucent role has to be its own token (proposed).
         backdropBlur ? 'bg-black/30 web:backdrop-blur-sm' : 'bg-black/50',
         backdropClassName
       )}
