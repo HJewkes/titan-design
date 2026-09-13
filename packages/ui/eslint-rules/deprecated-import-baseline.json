@@ -1,0 +1,151 @@
+{
+  "src/components/custom/ActiveWork/CoChangeChip.stories.tsx": {
+    "CoChangeChip": 1
+  },
+  "src/components/custom/ActiveWork/CoChangeChip.test.tsx": {
+    "CoChangeChip": 1
+  },
+  "src/components/custom/ActiveWork/FileActivityDetail.tsx": {
+    "Tile": 1
+  },
+  "src/components/custom/ActiveWork/FileHistoryExplorer.tsx": {
+    "CoChangeChip": 1,
+    "Tile": 1
+  },
+  "src/components/custom/ActiveWork/InitiativeCard.tsx": {
+    "StatusDot": 1,
+    "StatusDotVariant": 1
+  },
+  "src/components/custom/ActiveWork/InitiativeHeader.tsx": {
+    "StatusDot": 1
+  },
+  "src/components/custom/ActiveWork/SeverityLabel.stories.tsx": {
+    "SeverityLabel": 1
+  },
+  "src/components/custom/ActiveWork/SeverityLabel.test.tsx": {
+    "SeverityLabel": 1
+  },
+  "src/components/custom/ActiveWork/TaskRow.tsx": {
+    "SeverityLabel": 1
+  },
+  "src/components/custom/ActiveWork/TaskTable.tsx": {
+    "SeverityLabel": 1
+  },
+  "src/components/custom/Fatigue/FatigueLights.tsx": {
+    "StatusDot": 1,
+    "StatusDotVariant": 1
+  },
+  "src/components/custom/Workout/BaseBadge.stories.tsx": {
+    "BaseBadge": 1
+  },
+  "src/components/custom/Workout/BaseBadge.test.tsx": {
+    "BaseBadge": 1
+  },
+  "src/components/custom/Workout/MesoStatusCard.tsx": {
+    "StatusDot": 1
+  },
+  "src/components/custom/Workout/metricText.stories.tsx": {
+    "MetricCell": 1
+  },
+  "src/components/custom/Workout/MetricTiles.tsx": {
+    "Tile": 1
+  },
+  "src/components/custom/Workout/PrBadge.tsx": {
+    "BaseBadge": 1
+  },
+  "src/components/custom/Workout/ScheduleTiles.tsx": {
+    "Tile": 1
+  },
+  "src/components/custom/Workout/SetsRepsLoad.tsx": {
+    "MetricCell": 1
+  },
+  "src/components/custom/Workout/StatusDot.stories.tsx": {
+    "StatusDot": 1
+  },
+  "src/components/custom/Workout/StatusDot.test.tsx": {
+    "StatusDot": 1
+  },
+  "src/components/custom/Workout/StatusPill.tsx": {
+    "StatusDot": 1,
+    "StatusDotVariant": 1
+  },
+  "src/components/custom/Workout/TempoDisplay.tsx": {
+    "MetricCell": 1
+  },
+  "src/components/custom/Workout/WeekRow.tsx": {
+    "WorkoutPill": 1
+  },
+  "src/components/custom/Workout/WeightBadge.stories.tsx": {
+    "WeightBadge": 1
+  },
+  "src/components/custom/Workout/WeightBadge.test.tsx": {
+    "WeightBadge": 1
+  },
+  "src/components/custom/Workout/WeightBadge.tsx": {
+    "BaseBadge": 1
+  },
+  "src/components/custom/Workout/WorkoutPill.stories.tsx": {
+    "WorkoutPill": 1
+  },
+  "src/components/custom/Workout/WorkoutPill.test.tsx": {
+    "WorkoutPill": 1
+  },
+  "src/components/shell/workout/SessionStatePill.stories.tsx": {
+    "SessionStatePill": 1
+  },
+  "src/components/shell/workout/SessionStatePill.test.tsx": {
+    "SessionStatePill": 1
+  },
+  "src/components/shell/workout/WorkoutShell.test.tsx": {
+    "DashboardShell": 1
+  },
+  "src/components/shell/workout/WorkoutTopBar.tsx": {
+    "SessionStatePill": 1
+  },
+  "src/components/ui/floating-overlay-depth.test.tsx": {
+    "HelpTip": 1
+  },
+  "src/components/ui/help-tip/HelpTip.stories.tsx": {
+    "HelpTip": 1,
+    "LabelWithHelp": 1
+  },
+  "src/components/ui/help-tip/HelpTip.test.tsx": {
+    "HelpTip": 1,
+    "LabelWithHelp": 1
+  },
+  "src/components/ui/tile/Tile.stories.tsx": {
+    "Tile": 1
+  },
+  "src/components/ui/tile/Tile.test.tsx": {
+    "Tile": 1
+  },
+  "src/lab/audits/RowInventory.stories.tsx": {
+    "StatusDot": 1,
+    "WeightBadge": 1,
+    "WorkoutPill": 1
+  },
+  "src/stories/PresetShowcase.stories.tsx": {
+    "applyThemePreset": 1,
+    "audiobookPreset": 1,
+    "defaultPreset": 1,
+    "ThemePreset": 1
+  },
+  "src/stories/ThemePresets.stories.tsx": {
+    "applyThemePreset": 1,
+    "audiobookPreset": 1,
+    "defaultPreset": 1
+  },
+  "src/theme/presets/apply.ts": {
+    "ThemePreset": 1
+  },
+  "src/theme/presets/audiobook.ts": {
+    "ThemePreset": 1
+  },
+  "src/theme/presets/default.ts": {
+    "ThemePreset": 1
+  },
+  "src/theme/presets/presets.test.ts": {
+    "applyThemePreset": 1,
+    "ThemePreset": 1
+  }
+}
