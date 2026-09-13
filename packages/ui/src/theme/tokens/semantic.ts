@@ -205,6 +205,19 @@ export const semanticColorsLight = {
   'hairline-default': 'rgba(0, 0, 0, 0.09)',
   'hairline-strong': 'rgba(0, 0, 0, 0.14)',
 
+  // Scrims (VW-82) — see the dark map for why these are tokens and not
+  // `bg-black/50`, and why they do not flip with the theme.
+  'scrim-press': 'rgba(0, 0, 0, 0.10)',
+  'scrim-press-strong': 'rgba(0, 0, 0, 0.20)',
+  'scrim-subtle': 'rgba(0, 0, 0, 0.30)',
+  'scrim-default': 'rgba(0, 0, 0, 0.50)',
+
+  // Control chrome and data labels (VW-82). Mode-independent for the same
+  // reason the `on-*` white labels are: the plane underneath them is fixed.
+  'on-control-idle': semanticPins.onControlIdle,
+  'on-control-active': p.white,
+  'on-data-strong': semanticPins.onDataStrong,
+
   // Interactive states (interactive-*)
   'interactive-hover': 'rgba(55, 65, 81, 0.04)',
   'interactive-focus': 'rgba(55, 65, 81, 0.12)',
@@ -436,6 +449,39 @@ export const semanticColorsDark = {
   'hairline-subtle': 'rgba(255, 255, 255, 0.10)',
   'hairline-default': 'rgba(255, 255, 255, 0.15)',
   'hairline-strong': 'rgba(255, 255, 255, 0.22)',
+
+  // Scrims (VW-82) — translucent BLACK laid over arbitrary content: modal and
+  // drawer backdrops, the filled Select fill, the Alert close button's press
+  // states. Approved from the `Foundations/Color/Proposed VW-82 tokens` story
+  // on 2026-09-13.
+  //
+  // Why tokens and not `bg-black/50`: Tailwind v3 cannot apply an opacity
+  // modifier to a `var()` colour — it fails to parse the value and emits NO
+  // rule, so the utility silently does nothing. A translucent role therefore
+  // has to ship as its own rgba value, exactly as `hairline-*` above does.
+  //
+  // NOT mirrored per theme. A scrim's job is to darken what is behind it so an
+  // overlay reads; that is true on a light page too, where flipping to
+  // white-alpha would wash the page out instead of receding it. Same reason
+  // `on-status-*` is white in both maps.
+  //
+  // Two decimals, per the hairline note above: react-native-web quantises alpha
+  // to 8 bits, so a third decimal silently rounds on the way to the DOM.
+  'scrim-press': 'rgba(0, 0, 0, 0.10)',
+  'scrim-press-strong': 'rgba(0, 0, 0, 0.20)',
+  'scrim-subtle': 'rgba(0, 0, 0, 0.30)',
+  'scrim-default': 'rgba(0, 0, 0, 0.50)',
+
+  // Control chrome and data labels (VW-82), also approved 2026-09-13.
+  //
+  // `on-control-*` is the label ON a toolbar control face — a grey plane, not a
+  // brand or status fill, which is why it is not `on-brand-primary` even though
+  // the active value is the same white. `on-data-strong` is the label ON a
+  // light categorical data fill (Treemap tiles), where every text-* token is
+  // far too light to read.
+  'on-control-idle': semanticPins.onControlIdle,
+  'on-control-active': p.white,
+  'on-data-strong': semanticPins.onDataStrong,
 
   // Interactive states
   'interactive-hover': 'rgba(255, 255, 255, 0.04)',

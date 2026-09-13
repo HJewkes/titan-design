@@ -171,6 +171,13 @@ export const lightThemeCSSVars = {
   '--color-hairline-subtle': semanticColorsLight['hairline-subtle'],
   '--color-hairline-default': semanticColorsLight['hairline-default'],
   '--color-hairline-strong': semanticColorsLight['hairline-strong'],
+  '--color-scrim-press': semanticColorsLight['scrim-press'],
+  '--color-scrim-press-strong': semanticColorsLight['scrim-press-strong'],
+  '--color-scrim-subtle': semanticColorsLight['scrim-subtle'],
+  '--color-scrim-default': semanticColorsLight['scrim-default'],
+  '--color-on-control-idle': semanticColorsLight['on-control-idle'],
+  '--color-on-control-active': semanticColorsLight['on-control-active'],
+  '--color-on-data-strong': semanticColorsLight['on-data-strong'],
 
   '--color-interactive-disabled-text': semanticColorsLight['interactive-disabled-text'],
 
@@ -314,6 +321,13 @@ export const darkThemeCSSVars = {
   '--color-hairline-subtle': semanticColorsDark['hairline-subtle'],
   '--color-hairline-default': semanticColorsDark['hairline-default'],
   '--color-hairline-strong': semanticColorsDark['hairline-strong'],
+  '--color-scrim-press': semanticColorsDark['scrim-press'],
+  '--color-scrim-press-strong': semanticColorsDark['scrim-press-strong'],
+  '--color-scrim-subtle': semanticColorsDark['scrim-subtle'],
+  '--color-scrim-default': semanticColorsDark['scrim-default'],
+  '--color-on-control-idle': semanticColorsDark['on-control-idle'],
+  '--color-on-control-active': semanticColorsDark['on-control-active'],
+  '--color-on-data-strong': semanticColorsDark['on-data-strong'],
 
   '--color-interactive-disabled-text': semanticColorsDark['interactive-disabled-text'],
 

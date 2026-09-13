@@ -58,8 +58,7 @@ export const pulseAnim = (c: string): string | undefined => {
 
 // ---- sets/reps/load in the TempoDisplay visual language (Inter · 600 · letter-spacing 1 · gray separators)
 const INTER = 'Inter, sans-serif'
-// VW-82: Tailwind gray-500; no ramp step matches. Left raw, proposed in the PR.
-const SRL_SEP = '#6B7280'
+const SRL_SEP = T['result-neutral']
 function SRLCell({ children, color = T_PRIMARY }: { children: ReactNode; color?: string }) {
   return (
     <span style={{ fontFamily: INTER, fontSize: 11, fontWeight: 600, letterSpacing: 1, color }}>
@@ -337,8 +336,7 @@ export function Page({
     <div
       style={{
         minHeight: '100vh',
-        // VW-82: no token at this value (nearest background-frame #100D0A).
-        background: '#0A0A0A',
+        background: T['background-frame'],
         color: T_PRIMARY,
         padding: 28,
         display: 'flex',

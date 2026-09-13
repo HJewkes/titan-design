@@ -183,8 +183,7 @@ export function Alert({
           onPress={onClose}
           accessibilityRole="button"
           accessibilityLabel="Close alert"
-          /* VW-82: press-state scrims stay raw (see Modal.tsx). */
-          className="ml-2 p-1 rounded web:hover:bg-black/10 active:bg-black/20"
+          className="ml-2 p-1 rounded web:hover:bg-scrim-press active:bg-scrim-press-strong"
         >
           <Text
             className={cn(

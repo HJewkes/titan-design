@@ -86,7 +86,7 @@ describe('CapacityBandChart', () => {
       expect(dots[0]).toHaveStyle({
         width: '8px',
         height: '8px',
-        borderTopColor: '#F3F4F6',
+        borderTopColor: '#F9F6F3', // text-primary (VW-82 grey snap, was #F3F4F6)
       })
     })
 

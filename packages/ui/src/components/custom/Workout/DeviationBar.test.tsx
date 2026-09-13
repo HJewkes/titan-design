@@ -79,7 +79,7 @@ describe('DeviationBar', () => {
     const bar = getByTestId('deviation-bar')
     const track = bar.firstElementChild as HTMLElement
     expect(track).toHaveStyle({
-      backgroundImage: `linear-gradient(90deg, ${alpha(t['status-success'], 0.25)} 0%, rgba(107,114,128,0.15) 50%, ${alpha(t['status-warning'], 0.25)} 100%)`,
+      backgroundImage: `linear-gradient(90deg, ${alpha(t['status-success'], 0.25)} 0%, ${alpha(t['result-neutral'], 0.15)} 50%, ${alpha(t['status-warning'], 0.25)} 100%)`,
     })
   })
 

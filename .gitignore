@@ -68,3 +68,8 @@ scripts/arch.config.local.json
 
 # agent-chat worktrees
 .worktrees/
+
+# Other agent harnesses (Codex); mirrors of CLAUDE.md and .claude/skills
+AGENTS.md
+.codex/
+.agents/

@@ -53,9 +53,7 @@ export interface TempoDisplayProps extends ViewProps {
 }
 
 const INTER = 'Inter, sans-serif'
-// VW-82: Tailwind gray-500, not titan's text-tertiary (#888684) despite the name.
-// Left raw — re-pointing it at the ramp is a visual change awaiting sign-off.
-const TEXT_TERTIARY = '#6B7280'
+const TEXT_TERTIARY = t['result-neutral']
 const STATUS_ERROR = t['status-error'] // slow — over the target time
 const STATUS_SUCCESS = t['status-success'] // on target (within the band of 0.0)
 const STATUS_WARNING = t['status-warning'] // ahead — still time left to the target
@@ -381,19 +379,47 @@ export function TempoDisplay({
               paddingVertical: 8,
               paddingHorizontal: 12,
               borderWidth: 1,
-              borderColor: '#2C2C2C',
+              borderColor: t['surface-elevated'],
             }}
           >
-            <Text style={{ fontSize: 10, lineHeight: 16, color: '#9CA3AF', fontFamily: INTER }}>
+            <Text
+              style={{
+                fontSize: 10,
+                lineHeight: 16,
+                color: t['text-secondary'],
+                fontFamily: INTER,
+              }}
+            >
               Eccentric: {eccentric}s
             </Text>
-            <Text style={{ fontSize: 10, lineHeight: 16, color: '#9CA3AF', fontFamily: INTER }}>
+            <Text
+              style={{
+                fontSize: 10,
+                lineHeight: 16,
+                color: t['text-secondary'],
+                fontFamily: INTER,
+              }}
+            >
               Pause (bottom): {pauseBottom}s
             </Text>
-            <Text style={{ fontSize: 10, lineHeight: 16, color: '#9CA3AF', fontFamily: INTER }}>
+            <Text
+              style={{
+                fontSize: 10,
+                lineHeight: 16,
+                color: t['text-secondary'],
+                fontFamily: INTER,
+              }}
+            >
               Concentric: {concentric}s
             </Text>
-            <Text style={{ fontSize: 10, lineHeight: 16, color: '#9CA3AF', fontFamily: INTER }}>
+            <Text
+              style={{
+                fontSize: 10,
+                lineHeight: 16,
+                color: t['text-secondary'],
+                fontFamily: INTER,
+              }}
+            >
               Pause (top): {pauseTop}s
             </Text>
           </View>
@@ -406,7 +432,7 @@ export function TempoDisplay({
               borderTopWidth: 5,
               borderLeftColor: 'transparent',
               borderRightColor: 'transparent',
-              borderTopColor: '#2C2C2C',
+              borderTopColor: t['surface-elevated'],
             }}
           />
         </View>

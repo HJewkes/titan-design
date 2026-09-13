@@ -148,6 +148,20 @@
     --color-hairline-default: rgba(255, 255, 255, 0.15);
     --color-hairline-strong: rgba(255, 255, 255, 0.22);
 
+    /* Scrims (VW-82) — translucent black over arbitrary content. Not mirrored
+       per theme: a scrim recedes what is behind it, which is true on a light
+       page too. See tokens/semantic.ts for why these are tokens and not
+       `bg-black/50`. */
+    --color-scrim-press: rgba(0, 0, 0, 0.10);
+    --color-scrim-press-strong: rgba(0, 0, 0, 0.20);
+    --color-scrim-subtle: rgba(0, 0, 0, 0.30);
+    --color-scrim-default: rgba(0, 0, 0, 0.50);
+
+    /* Control-face and data-fill labels (VW-82). */
+    --color-on-control-idle: #D1D1D1;
+    --color-on-control-active: #FFFFFF;
+    --color-on-data-strong: #0B0B0B;
+
     --color-interactive-hover: rgba(255, 255, 255, 0.04);
     --color-interactive-focus: rgba(255, 255, 255, 0.12);
     --color-interactive-active: rgba(255, 255, 255, 0.16);
@@ -309,6 +323,16 @@
     --color-hairline-subtle: rgba(0, 0, 0, 0.06);
     --color-hairline-default: rgba(0, 0, 0, 0.09);
     --color-hairline-strong: rgba(0, 0, 0, 0.14);
+
+    /* Scrims and control/data labels (VW-82) — identical to the dark block on
+       purpose; see tokens/semantic.ts. */
+    --color-scrim-press: rgba(0, 0, 0, 0.10);
+    --color-scrim-press-strong: rgba(0, 0, 0, 0.20);
+    --color-scrim-subtle: rgba(0, 0, 0, 0.30);
+    --color-scrim-default: rgba(0, 0, 0, 0.50);
+    --color-on-control-idle: #D1D1D1;
+    --color-on-control-active: #FFFFFF;
+    --color-on-data-strong: #0B0B0B;
 
     --color-interactive-hover: rgba(55, 65, 81, 0.04);
     --color-interactive-focus: rgba(55, 65, 81, 0.12);

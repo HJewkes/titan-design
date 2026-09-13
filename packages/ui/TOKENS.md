@@ -13,15 +13,17 @@ where the choice is actually made.
 
 Pick by **what the colour means**, not by what looks right.
 
-| The colour means…                                        | Use                                                    | Not                                      |
-| -------------------------------------------------------- | ------------------------------------------------------ | ---------------------------------------- |
-| **A value got better / worse** (delta, trend, growth)    | `result-improve` / `result-degrade` / `result-neutral` | `status-success` / `status-error`        |
-| **A thing is in a state** (error, warning, live, info)   | `status-*`                                             | `result-*`, brand colours                |
-| **N peer categories** (chart series, tags, split counts) | `categoricalPalette` (see §2)                          | `data-1..10` — **superseded**            |
-| **Brand identity / primary action**                      | `brand-primary`, `brand-secondary`                     | a status token that happens to be orange |
-| **Structural chrome** (page, card, input backgrounds)    | `surface-*`, `background-*`                            | grey ramp steps directly                 |
-| **Text**                                                 | `text-primary` / `-secondary` / `-tertiary`            | grey ramp steps directly                 |
-| **Rules and separators**                                 | `hairline-*`, `divider`, `border-*`                    | a hardcoded `border` colour              |
+| The colour means…                                         | Use                                                           | Not                                      |
+| --------------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------------- |
+| **A value got better / worse** (delta, trend, growth)     | `result-improve` / `result-degrade` / `result-neutral`        | `status-success` / `status-error`        |
+| **A thing is in a state** (error, warning, live, info)    | `status-*`                                                    | `result-*`, brand colours                |
+| **N peer categories** (chart series, tags, split counts)  | `categoricalPalette` (see §2)                                 | `data-1..10` — **superseded**            |
+| **Brand identity / primary action**                       | `brand-primary`, `brand-secondary`                            | a status token that happens to be orange |
+| **Structural chrome** (page, card, input backgrounds)     | `surface-*`, `background-*`                                   | grey ramp steps directly                 |
+| **Text**                                                  | `text-primary` / `-secondary` / `-tertiary`                   | grey ramp steps directly                 |
+| **Rules and separators**                                  | `hairline-*`, `divider`, `border-*`                           | a hardcoded `border` colour              |
+| **A dimming layer over content** (modal, drawer, press)   | `scrim-*`                                                     | `bg-black/50` — see below                |
+| **A label ON a fill** (solid button, chart tile, toolbar) | `on-brand-*`, `on-status-*`, `on-control-*`, `on-data-strong` | `text-white`, `text-primary`             |
 
 ### `result-*` vs `status-*` — the distinction that gets missed
 
@@ -33,6 +35,33 @@ They overlap visually (both have a green and a red) and mean different things.
 A net-negative char delta is **not an error** — it is a `result-degrade`. Reaching for `status-error`
 there says "something is wrong" about a file that was simply refactored down. `Metric` and
 `WeightBadge` already use `result-*` for exactly this; follow them.
+
+### Translucent roles are their own token — never a `/n` modifier
+
+`bg-black/50` works. `bg-scrim-default/50` does not, and neither does `bg-brand-primary/10`:
+Tailwind v3 cannot parse a `var()` colour when an opacity modifier is applied, so it emits **no
+rule at all** and the class silently does nothing. Anything translucent therefore ships as a token
+carrying its own alpha — which is what `hairline-*`, `interactive-*` and `scrim-*` all are.
+
+| Token                | Value                 | Use                                       |
+| -------------------- | --------------------- | ----------------------------------------- |
+| `scrim-press`        | `rgba(0, 0, 0, 0.10)` | press/hover wash on a control over a fill |
+| `scrim-press-strong` | `rgba(0, 0, 0, 0.20)` | the active half of that pair              |
+| `scrim-subtle`       | `rgba(0, 0, 0, 0.30)` | blurred modal backdrop, filled input fill |
+| `scrim-default`      | `rgba(0, 0, 0, 0.50)` | modal backdrop, drawer overlay            |
+
+Scrims do **not** flip with the theme. A scrim's job is to push content back so an overlay reads,
+and that is as true on a light page as a dark one.
+
+### `on-control-*` and `on-data-strong`
+
+The `on-*` family is "the label that sits ON this fill". Two members are not fills at all:
+
+- **`on-control-*`** — a toolbar control face is a grey plane, not a brand or status fill. Use
+  `on-control-active` / `on-control-idle` rather than `on-brand-primary`, even though the active
+  value is the same white; the role is what makes it survive a retune.
+- **`on-data-strong`** — a label on a light categorical data tile. Every `text-*` role is far too
+  light to read there.
 
 ### `data-1..10` is superseded
 

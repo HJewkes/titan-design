@@ -209,6 +209,24 @@ module.exports = {
           DEFAULT: 'var(--color-hairline-default)',
           strong: 'var(--color-hairline-strong)',
         },
+        // Scrims — translucent black overlays (VW-82). Their own tokens rather
+        // than `bg-black/50`: Tailwind v3 drops the `/n` modifier on a `var()`
+        // colour, so a translucent role has to carry its alpha itself.
+        scrim: {
+          DEFAULT: 'var(--color-scrim-default)',
+          subtle: 'var(--color-scrim-subtle)',
+          press: 'var(--color-scrim-press)',
+          'press-strong': 'var(--color-scrim-press-strong)',
+        },
+        // Label on a toolbar control face (VW-82) — a grey plane, not a fill.
+        'on-control': {
+          idle: 'var(--color-on-control-idle)',
+          active: 'var(--color-on-control-active)',
+        },
+        // Label on a light categorical data fill (VW-82).
+        'on-data': {
+          strong: 'var(--color-on-data-strong)',
+        },
         // Divider
         divider: 'var(--color-divider)',
         // Avatar

@@ -73,11 +73,30 @@ export function velocityZoneColor(v: number): string {
 }
 
 /**
+ * A lifter's stats-derived expected rep range (VW-301): computed from their history
+ * of reps completed to the velocity-loss threshold for this exercise, over `n`
+ * observed sets. **Not the prescription** — `repsLow`/`repsHigh` is what the plan
+ * calls for; this is what the lifter's own history predicts they'll actually hit,
+ * and per Jukic et al. 2023 the limits of agreement on that prediction are roughly
+ * ±5 reps. It must render as visually distinct from the prescribed range so the two
+ * are never mistaken for each other.
+ */
+export interface ExpectedRepsRange {
+  low: number
+  high: number
+  /** Number of observed sets the range was derived from. */
+  n: number
+}
+
+/**
  * One set's data. Flat variants: `done` = every rep performed; `active` = reps-so-far
  * performed against a planned count (remainder greyed, performed reps pulse); `todo` =
  * a planned but unstarted set (solid grey bar). `active`/`todo` optionally carry the
  * plan's prescribed rep RANGE (`repsLow`/`repsHigh`, VMCP-03.04) — a value range
- * (isokinetic bands), not a rep count, so it's independent of `range`'s `floor`/`max`.
+ * (isokinetic bands), not a rep count, so it's independent of `range`'s `floor`/`max` —
+ * and optionally {@link ExpectedRepsRange} (`expectedRange`, VW-301), the lifter's own
+ * stats-derived expected range, rendered lighter and smaller so it never reads as a
+ * second prescription.
  * Set-type variants:
  * - `range` — variable rep-range (e.g. 15–20): `max` segments; committed zone
  *   `0..floor` (done = velocity, todo = grey), variable zone `floor..max` (done =
@@ -95,8 +114,15 @@ export type SetStripSet =
       planned: number
       repsLow?: number
       repsHigh?: number
+      expectedRange?: ExpectedRepsRange
     }
-  | { status: 'todo'; planned: number; repsLow?: number; repsHigh?: number }
+  | {
+      status: 'todo'
+      planned: number
+      repsLow?: number
+      repsHigh?: number
+      expectedRange?: ExpectedRepsRange
+    }
   | { status: 'range'; floor: number; max: number; doneVels: number[] }
   | { status: 'drop'; subloads: number[][] }
   | { status: 'myo'; activation: number[]; clusters: number[][] }
