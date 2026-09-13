@@ -36,11 +36,6 @@ describe('buildMockPanelState', () => {
     }
   })
 
-  it('counts the header rep out of the same planned total', () => {
-    const { header } = buildMockPanelState(3)
-    expect(header.meta).toBe(`SET 3 · REP 4 / ${MOCK_PLANNED_REPS}`)
-  })
-
   it('derives the planned count from the rep data, not a literal', () => {
     expect(MOCK_PLANNED_REPS).toBe(MOCK_MEAN_VELOCITIES.length)
   })

@@ -16,9 +16,13 @@
  * grain + crisp top rim-light + soft contact shadow) — the same material the ROM /
  * velocity bars are made of, now carrying the sheet they sit on. Token-sourced fill, no
  * hardcoded surface hex.
+ *
+ * MODE (TD-03.59). The edge and the paper fill resolve for the mode the enclosing
+ * `<Surface>` publishes, not for a module-scope dark pin. Outside any Surface the context
+ * still defaults to dark, so the wall display is unchanged.
  */
 import { View } from 'react-native'
-import { Surface } from '../../ui/surface/Surface'
+import { Surface, useSurfaceMode } from '../../ui/surface'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { barPaper } from '../../../theme/materials'
 import { VerdictHero } from './VerdictHero'
@@ -26,8 +30,6 @@ import { FatigueLights } from './FatigueLights'
 import { RomProgressionChart } from './RomProgressionChart'
 import { GhostSpark } from './GhostSpark'
 import type { LiveFatigueModel } from './fatigue-model'
-
-const t = getSemanticColors('dark')
 
 export interface LiveFatigueCardProps {
   /** The live fatigue read-model for the current set. */
@@ -42,6 +44,7 @@ const PAD = 18
 const GHOST_GUTTER = 4 // GhostSpark carries this L/R padding internally
 
 export function LiveFatigueCard({ model, width = 318, height }: LiveFatigueCardProps) {
+  const t = getSemanticColors(useSurfaceMode())
   const chartW = width - PAD * 2 - GHOST_GUTTER * 2
   const chartH = height != null ? Math.round(Math.min(240, Math.max(168, height * 0.4))) : 172
   return (

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { LiveFatiguePanel } from './LiveFatiguePanel'
+import { Surface } from '../../ui/surface'
 import { greyRamp } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { FATIGUE_STATES, buildMockPanelState } from './fatigue-mock'
@@ -33,14 +34,35 @@ type Story = StoryObj<typeof LiveFatiguePanel>
 export const LivePanelV2: Story = {
   name: 'Live panel v2 (composition)',
   render: () => {
-    const { model, velocity, header } = buildMockPanelState(FATIGUE_STATES[3].current, {
+    const { model, velocity } = buildMockPanelState(FATIGUE_STATES[3].current, {
       rpe: 10,
       verdict: FATIGUE_STATES[3].model.verdict,
     })
     return (
       <View style={{ backgroundColor: PAGE_BG, padding: 24 }}>
-        <LiveFatiguePanel model={model} velocity={velocity} header={header} />
+        <LiveFatiguePanel model={model} velocity={velocity} />
       </View>
+    )
+  },
+}
+
+/**
+ * The same panel on a LIGHT surface (TD-03.59). Nothing about the panel changes — the
+ * `<Surface theme="light">` publishes the mode and the panel's eyebrow and the card's
+ * edge/paper resolve against it. Before the Surface adoption both were pinned to dark
+ * and this story rendered dark-on-light.
+ */
+export const OnLightSurface: Story = {
+  name: 'On a light surface',
+  render: () => {
+    const { model, velocity } = buildMockPanelState(FATIGUE_STATES[0].current, {
+      rpe: FATIGUE_STATES[0].model.rpe,
+      verdict: FATIGUE_STATES[0].model.verdict,
+    })
+    return (
+      <Surface level="background" theme="light" rounded={false} style={{ padding: 24 }}>
+        <LiveFatiguePanel model={model} velocity={velocity} />
+      </Surface>
     )
   },
 }
@@ -70,7 +92,7 @@ export const LiveStates: Story = {
         </Text>
       </View>
       {FATIGUE_STATES.map((s) => {
-        const { model, velocity, header } = buildMockPanelState(s.current, {
+        const { model, velocity } = buildMockPanelState(s.current, {
           rpe: s.model.rpe,
           verdict: s.model.verdict,
         })
@@ -86,7 +108,7 @@ export const LiveStates: Story = {
             >
               {s.name}
             </Text>
-            <LiveFatiguePanel model={model} velocity={velocity} header={header} />
+            <LiveFatiguePanel model={model} velocity={velocity} />
           </View>
         )
       })}
