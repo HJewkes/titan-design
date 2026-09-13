@@ -27,6 +27,12 @@ interface ExerciseHeadingBaseProps {
   dimmed?: boolean
   /** Row shape. Default `stacked`. */
   layout?: ExerciseHeadingLayout
+  /**
+   * Render the structured `sets × reps @ load` prescription in one dimmer, regular
+   * tone instead of the rail's bright/bold value cells. `stacked` (rail) never sets
+   * this; `inline` (compact, upcoming) always does.
+   */
+  mutedPrescription?: boolean
   /** Trailing right-edge caption (a previous best). `inline` layout only. */
   previousBest?: string
   /** This exercise is being performed right now — the name takes the live tone, never animated. */
@@ -126,7 +132,15 @@ function prescriptionNode(p: ExerciseHeadingProps, unit: string): ReactNode {
     )
   }
   if (p.sets === undefined) return null
-  return <SetsRepsLoad sets={p.sets} reps={p.reps} load={p.load} unit={unit} />
+  return (
+    <SetsRepsLoad
+      sets={p.sets}
+      reps={p.reps}
+      load={p.load}
+      unit={unit}
+      muted={p.mutedPrescription}
+    />
+  )
 }
 
 interface LayoutProps {

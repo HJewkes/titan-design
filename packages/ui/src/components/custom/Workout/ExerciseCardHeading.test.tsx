@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
 import { exerciseLiveColor, exerciseRowStateColor } from './exerciseRowState'
+import { onSurfaceColors } from '../../ui/surface/SurfaceContext'
 import type { SetStripSet } from './SetStrip'
 
 const setStates: SetStripSet[] = [
@@ -78,6 +79,49 @@ describe('ExerciseCardHeading', () => {
       expect(header).toContainElement(screen.getByTestId('exercise-card-name'))
       expect(header).toContainElement(screen.getByTestId('exercise-card-summary'))
       expect(screen.queryByTestId('tempo-display')).not.toBeInTheDocument()
+    })
+
+    it('compact: the prescription reads "3×6 @ 185 lbs" with no spaces around the ×', () => {
+      render(
+        <ExerciseCardHeading
+          name="Bench Press"
+          density="compact"
+          sets={3}
+          reps={6}
+          load={185}
+          unit="lbs"
+        />
+      )
+      expect(screen.getByTestId('sets-reps-load')).toHaveTextContent('3×6 @ 185 lbs')
+    })
+
+    it("compact: the prescription numbers carry the secondary tone and regular weight, not the rail's bright bold", () => {
+      render(
+        <ExerciseCardHeading
+          name="Bench Press"
+          density="compact"
+          sets={3}
+          reps={6}
+          load={185}
+          unit="lbs"
+        />
+      )
+      const secondary = onSurfaceColors('dark').secondary
+      for (const text of ['3', '6', '185']) {
+        const el = screen.getByText(text)
+        expect(el).toHaveStyle({ color: secondary })
+        // jsdom's getComputedStyle doesn't resolve numeric font-weight, so read the
+        // inline style directly rather than through toHaveStyle.
+        expect(el.style.fontWeight).toBe('400')
+      }
+    })
+
+    it('rail: the prescription numbers keep the bright bold rail treatment', () => {
+      render(<ExerciseCardHeading {...baseProps} />)
+      const primary = onSurfaceColors('dark').primary
+      const el = screen.getByText('3')
+      expect(el).toHaveStyle({ color: primary })
+      expect(el.style.fontWeight).toBe('600')
     })
 
     it('upcoming: dims itself and carries the free-text prescription + previous best', () => {

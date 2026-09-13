@@ -15,20 +15,22 @@ export interface MetricCellProps {
   /** Cell text color — value cells take a primary color, separators a muted one. */
   color: string
   fontSize?: number
+  /** Cell font weight. Default 600 (the bold "digital readout" look). */
+  weight?: 400 | 600
 }
 
 /**
  * @deprecated Use `<Metric size="…" align="…">` (roadmap decision 11) — removed
  * after AW-127 consumer migration.
  */
-export function MetricCell({ children, color, fontSize = 11 }: MetricCellProps) {
+export function MetricCell({ children, color, fontSize = 11, weight = 600 }: MetricCellProps) {
   return (
     <Text
       style={{
         fontFamily: METRIC_FONT,
         fontSize,
         color,
-        fontWeight: '600',
+        fontWeight: String(weight) as '400' | '600',
         letterSpacing: 1,
       }}
     >

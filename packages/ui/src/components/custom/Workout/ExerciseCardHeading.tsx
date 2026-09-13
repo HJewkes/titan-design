@@ -22,6 +22,8 @@ interface DensitySpec {
   layout: 'stacked' | 'inline'
   dimOpacity: number
   dimByDefault: boolean
+  /** The structured prescription renders in one dimmer, regular tone, not the rail's bright/bold. */
+  mutedPrescription: boolean
 }
 
 // The two dim depths are inherited from two different specimens (rail 0.55, card 0.60).
@@ -33,6 +35,7 @@ const DENSITY: Record<ExerciseRowDensity, DensitySpec> = {
     layout: 'stacked',
     dimOpacity: 0.55,
     dimByDefault: false,
+    mutedPrescription: false,
   },
   compact: {
     paddingVertical: 12,
@@ -40,6 +43,7 @@ const DENSITY: Record<ExerciseRowDensity, DensitySpec> = {
     layout: 'inline',
     dimOpacity: 0.55,
     dimByDefault: false,
+    mutedPrescription: true,
   },
   upcoming: {
     paddingVertical: 12,
@@ -47,6 +51,7 @@ const DENSITY: Record<ExerciseRowDensity, DensitySpec> = {
     layout: 'inline',
     dimOpacity: 0.6,
     dimByDefault: true,
+    mutedPrescription: true,
   },
 }
 
@@ -173,6 +178,7 @@ export function ExerciseCardHeading(props: ExerciseCardHeadingProps) {
         previousBest={props.previousBest}
         onPress={rowIsButton ? undefined : props.onPress}
         layout={spec.layout}
+        mutedPrescription={spec.mutedPrescription}
         isLive={isLive}
       />
 
