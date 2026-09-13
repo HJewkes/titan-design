@@ -690,7 +690,7 @@ export function TableSelectAllCell({ className }: TableSelectAllCellProps) {
         )}
       >
         {(allSelected || someSelected) && (
-          <Text className="text-white text-xs font-bold">{allSelected ? '✓' : '−'}</Text>
+          <Text className="text-on-brand-primary text-xs font-bold">{allSelected ? '✓' : '−'}</Text>
         )}
       </Pressable>
     </View>
@@ -726,7 +726,7 @@ export function TableSelectCell({ rowId, className }: TableSelectCellProps) {
             : 'border-hairline-strong bg-transparent web:hover:border-brand-primary'
         )}
       >
-        {isSelected && <Text className="text-white text-xs font-bold">✓</Text>}
+        {isSelected && <Text className="text-on-brand-primary text-xs font-bold">✓</Text>}
       </Pressable>
     </View>
   )

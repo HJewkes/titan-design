@@ -10,12 +10,12 @@ export type ButtonColor = 'primary' | 'secondary' | 'success' | 'error' | 'warni
 /** Inline color map for RNW where Tailwind text classes get dropped */
 const textColorMap: Record<ButtonVariant, Record<ButtonColor, string>> = {
   solid: {
-    primary: '#FFFFFF',
-    secondary: '#FFFFFF',
-    success: '#FFFFFF',
-    error: '#FFFFFF',
-    warning: '#FFFFFF',
-    info: '#FFFFFF',
+    primary: semanticColorsDark['on-brand-primary'],
+    secondary: semanticColorsDark['on-brand-secondary'],
+    success: semanticColorsDark['on-status-success'],
+    error: semanticColorsDark['on-status-error'],
+    warning: semanticColorsDark['on-status-warning'],
+    info: semanticColorsDark['on-status-info'],
   },
   outline: {
     primary: semanticColorsDark['brand-primary'],
@@ -128,12 +128,12 @@ const variantStyles: Record<ButtonVariant, Record<ButtonColor, string>> = {
 
 const textStyles: Record<ButtonVariant, Record<ButtonColor, string>> = {
   solid: {
-    primary: 'text-white',
-    secondary: 'text-white',
-    success: 'text-white',
-    error: 'text-white',
-    warning: 'text-white',
-    info: 'text-white',
+    primary: 'text-on-brand-primary',
+    secondary: 'text-on-brand-secondary',
+    success: 'text-on-status-success',
+    error: 'text-on-status-error',
+    warning: 'text-on-status-warning',
+    info: 'text-on-status-info',
   },
   outline: {
     primary: 'text-brand-primary',
