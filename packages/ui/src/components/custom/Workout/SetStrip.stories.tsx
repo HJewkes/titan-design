@@ -79,6 +79,60 @@ export const ShortStrip: Story = {
   },
 }
 
+// ---- prescribed rep range (VMCP-03.04) — optional on `todo`/`active` only
+
+export const RepRange: Story = {
+  args: {
+    height: 8,
+    sets: [
+      { status: 'done', velocities: decay(8, 0.9) },
+      { status: 'active', velocities: decay(3, 0.75), planned: 8, repsLow: 8, repsHigh: 12 },
+      { status: 'todo', planned: 8, repsLow: 8, repsHigh: 12 },
+    ],
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "The plan's prescribed rep RANGE (VMCP-03.04): `8–12` on the active and todo sets. " +
+          "Independent of the `range` set-type's value range (isokinetic bands).",
+      },
+    },
+  },
+}
+
+export const RepRangeSingleNumber: Story = {
+  args: {
+    height: 8,
+    sets: [
+      { status: 'active', velocities: decay(3, 0.75), planned: 8, repsLow: 8, repsHigh: 8 },
+      { status: 'todo', planned: 8, repsLow: 8 },
+    ],
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Equal bounds (or only one given) collapse to a single number: `8`, not `8–8`.',
+      },
+    },
+  },
+}
+
+export const RepRangeAbsent: Story = {
+  args: {
+    height: 8,
+    sets: [
+      { status: 'active', velocities: decay(3, 0.75), planned: 8 },
+      { status: 'todo', planned: 8 },
+    ],
+  },
+  parameters: {
+    docs: {
+      description: { story: 'No prescription on the set — no label renders (the default today).' },
+    },
+  },
+}
+
 // ---- set-type variant sheet: every variant at the real rail width, for eyeballing
 function SheetRow({ label, meta, sets }: { label: string; meta: string; sets: SetStripSet[] }) {
   return (
