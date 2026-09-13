@@ -32,8 +32,8 @@
     --color-brand-secondary-hover: #2697B7;
     --color-brand-secondary-active: #01B5D1;
 
-    --color-on-brand-primary: #FFFFFF;
-    --color-on-brand-secondary: #FFFFFF;
+    --color-on-brand-primary: #1C1916;
+    --color-on-brand-secondary: #1C1916;
     --color-on-brand-primary-subtle: #FF7900;
     --color-on-brand-secondary-subtle: #22D3EE;
 
@@ -72,14 +72,20 @@
     --color-status-info-muted: rgba(33, 150, 243, 0.30);
     --color-status-info-strong: rgba(33, 150, 243, 0.50);
 
-    --color-on-status-success: #FFFFFF;
-    --color-on-status-error: #FFFFFF;
-    --color-on-status-warning: #FFFFFF;
-    --color-on-status-info: #FFFFFF;
+    --color-on-status-success: #1C1916;
+    --color-on-status-error: #1C1916;
+    --color-on-status-warning: #1C1916;
+    --color-on-status-info: #1C1916;
     --color-on-status-success-subtle: #2ED573;
     --color-on-status-error-subtle: #F77175;
     --color-on-status-warning-subtle: #F9B415;
     --color-on-status-info-subtle: #78C2FF;
+    --color-brand-primary-solid: #FF7900;
+    --color-brand-secondary-solid: #2697B7;
+    --color-status-success-solid: #2ED573;
+    --color-status-error-solid: #E05254;
+    --color-status-warning-solid: #F9B415;
+    --color-status-info-solid: #2196F3;
 
     --color-result-improve: #4caf50;
     --color-result-improve-light: rgba(76, 175, 80, 0.16);
@@ -306,6 +312,12 @@
     --color-on-status-error-subtle: #D14343;
     --color-on-status-warning-subtle: #F9B415;
     --color-on-status-info-subtle: #2196F3;
+    --color-brand-primary-solid: #FF7900;
+    --color-brand-secondary-solid: #307B9B;
+    --color-status-success-solid: #2ED573;
+    --color-status-error-solid: #D14343;
+    --color-status-warning-solid: #F9B415;
+    --color-status-info-solid: #2196F3;
 
     --color-result-improve: #4caf50;
     --color-result-improve-light: rgba(76, 175, 80, 0.12);

@@ -127,6 +127,16 @@ export const semanticColorsLight = {
   'status-info-muted': 'rgba(33, 150, 243, 0.30)',
   'status-info-strong': 'rgba(33, 150, 243, 0.50)',
 
+  // Solid-variant fill. Light mode aliases the base tone unchanged: the dark-mode
+  // lift and label flip (AW-141) were measured against dark planes only, and light
+  // needs its own pass with AW-121. Defined here so no token is mode-incomplete.
+  'brand-primary-solid': ramp.orange[400],
+  'brand-secondary-solid': ramp.cyan[600],
+  'status-success-solid': ramp.green[300],
+  'status-error-solid': ramp.red[600],
+  'status-warning-solid': ramp.amber[300],
+  'status-info-solid': ramp.blue[500],
+
   // Text ON a `-subtle` fill — see the on-brand-*-subtle note above.
   'on-status-success-subtle': ramp.green[300],
   'on-status-error-subtle': ramp.red[600],
@@ -256,9 +266,9 @@ export const semanticColorsDark = {
   'brand-secondary-hover': ramp.cyan[500],
   'brand-secondary-active': ramp.cyan[400],
 
-  // Text on brand backgrounds
-  'on-brand-primary': p.white,
-  'on-brand-secondary': p.white,
+  // Text on a SOLID fill — see the on-status-* note below.
+  'on-brand-primary': greyRamp[950],
+  'on-brand-secondary': greyRamp[950],
 
   // Text ON a `-subtle` fill. Its own role: `brand-primary` and friends are tuned to
   // carry a white label as a solid fill, which makes the two deepest of them
@@ -312,11 +322,26 @@ export const semanticColorsDark = {
   'status-info-muted': 'rgba(33, 150, 243, 0.30)',
   'status-info-strong': 'rgba(33, 150, 243, 0.50)',
 
-  // Text on status backgrounds
-  'on-status-success': p.white,
-  'on-status-error': p.white,
-  'on-status-warning': p.white,
-  'on-status-info': p.white,
+  // SOLID-variant fill. Its own role, for the same reason `on-*-subtle` is: the base
+  // tone token is tuned for borders, dots and text, where a deep step is right. Four
+  // tones alias it unchanged; `brand-secondary` and `status-error` are lifted one rung
+  // because their base steps are too dark to carry a readable dark label — even the
+  // darkest step of their own hue only reaches ~3.6 on them. Lifting the FILL is what
+  // lets all six share one label, which is the point (AW-141).
+  'brand-primary-solid': ramp.orange[400],
+  'brand-secondary-solid': ramp.cyan[500],
+  'status-success-solid': ramp.green[300],
+  'status-error-solid': ramp.red[500],
+  'status-warning-solid': ramp.amber[300],
+  'status-info-solid': ramp.blue[500],
+
+  // Text on a SOLID fill. Every solid fill is now light enough to carry the dark
+  // inverse label, and measured on the `-solid` fills above it clears AA on all six
+  // (5.16 to 9.64). White cleared it on none of the bright four — warning was 1.82.
+  'on-status-success': greyRamp[950],
+  'on-status-error': greyRamp[950],
+  'on-status-warning': greyRamp[950],
+  'on-status-info': greyRamp[950],
 
   // Text ON a `-subtle` fill — see the on-brand-*-subtle note above. Error is the
   // second deliberate exception to the rung-300 rule (operator, AW-133): red[300]

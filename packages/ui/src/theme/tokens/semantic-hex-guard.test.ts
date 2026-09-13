@@ -71,6 +71,11 @@ describe('semantic token hex guard (VW-83)', () => {
  * deltas are deliberate and reviewed; everything else here is still the
  * pre-migration pin. Treat a diff against this fixture as a question to answer,
  * not a number to refresh — regenerating it wholesale defeats the guard.
+ *
+ * AMENDED AGAIN by AW-141: six `*-solid` entries added, and the six dark-mode
+ * `on-*` labels flipped from white to `greyRamp[950]`. White cleared AA on none
+ * of the four bright solid fills — warning measured 1.82. Light mode is
+ * untouched and still aliases its base tone.
  */
 const resolvedBeforeFixture = {
   light: {
@@ -197,6 +202,12 @@ const resolvedBeforeFixture = {
     divider: '#E8E9EB',
     'avatar-background': '#72716F',
     'avatar-text': '#FFFFFF',
+    'brand-primary-solid': '#FF7900',
+    'brand-secondary-solid': '#307B9B',
+    'status-success-solid': '#2ED573',
+    'status-error-solid': '#D14343',
+    'status-warning-solid': '#F9B415',
+    'status-info-solid': '#2196F3',
   },
   dark: {
     'brand-primary': '#FF7900',
@@ -215,8 +226,8 @@ const resolvedBeforeFixture = {
     'brand-secondary-strong': 'rgba(48, 123, 155, 0.50)',
     'brand-secondary-hover': '#2697B7',
     'brand-secondary-active': '#01B5D1',
-    'on-brand-primary': '#FFFFFF',
-    'on-brand-secondary': '#FFFFFF',
+    'on-brand-primary': '#1C1916',
+    'on-brand-secondary': '#1C1916',
     'on-brand-primary-subtle': '#FF7900',
     'on-brand-secondary-subtle': '#22D3EE',
     'status-success': '#2ED573',
@@ -251,10 +262,10 @@ const resolvedBeforeFixture = {
     'status-info-subtle': 'rgba(120, 194, 255, 0.12)',
     'status-info-muted': 'rgba(33, 150, 243, 0.30)',
     'status-info-strong': 'rgba(33, 150, 243, 0.50)',
-    'on-status-success': '#FFFFFF',
-    'on-status-error': '#FFFFFF',
-    'on-status-warning': '#FFFFFF',
-    'on-status-info': '#FFFFFF',
+    'on-status-success': '#1C1916',
+    'on-status-error': '#1C1916',
+    'on-status-warning': '#1C1916',
+    'on-status-info': '#1C1916',
     'on-status-success-subtle': '#2ED573',
     'on-status-error-subtle': '#F77175',
     'on-status-warning-subtle': '#F9B415',
@@ -322,6 +333,12 @@ const resolvedBeforeFixture = {
     divider: 'rgba(255, 255, 255, 0.09)',
     'avatar-background': '#5A5958',
     'avatar-text': '#FFFFFF',
+    'brand-primary-solid': '#FF7900',
+    'brand-secondary-solid': '#2697B7',
+    'status-success-solid': '#2ED573',
+    'status-error-solid': '#E05254',
+    'status-warning-solid': '#F9B415',
+    'status-info-solid': '#2196F3',
   },
 } as const
 

@@ -9,6 +9,8 @@ export type ButtonColor = 'primary' | 'secondary' | 'success' | 'error' | 'warni
 
 /** Inline color map for RNW where Tailwind text classes get dropped */
 const textColorMap: Record<ButtonVariant, Record<ButtonColor, string>> = {
+  // Was '#FFFFFF' on every tone, which failed AA on four of the six solid fills
+  // (warning measured 1.82). Reads the same on-* tokens as the className path (AW-141).
   solid: {
     primary: semanticColorsDark['on-brand-primary'],
     secondary: semanticColorsDark['on-brand-secondary'],
@@ -77,18 +79,20 @@ export interface ButtonProps extends Omit<PressableProps, 'children'> {
 }
 
 const variantStyles: Record<ButtonVariant, Record<ButtonColor, string>> = {
+  // Fill from `*-solid`, not the base tone: `brand-secondary` and `status-error` are
+  // dark steps, too dark for any label to read on (AW-141).
   solid: {
     primary:
-      'bg-brand-primary active:bg-brand-primary-dark active:scale-[0.98] web:hover:bg-brand-primary-dark web:active:scale-[0.98]',
+      'bg-brand-primary-solid active:bg-brand-primary-dark active:scale-[0.98] web:hover:bg-brand-primary-dark web:active:scale-[0.98]',
     secondary:
-      'bg-brand-secondary active:bg-brand-secondary-dark active:scale-[0.98] web:hover:bg-brand-secondary-dark web:active:scale-[0.98]',
+      'bg-brand-secondary-solid active:bg-brand-secondary-dark active:scale-[0.98] web:hover:bg-brand-secondary-dark web:active:scale-[0.98]',
     success:
-      'bg-status-success active:opacity-90 active:scale-[0.98] web:hover:opacity-90 web:active:scale-[0.98]',
+      'bg-status-success-solid active:opacity-90 active:scale-[0.98] web:hover:opacity-90 web:active:scale-[0.98]',
     error:
-      'bg-status-error active:opacity-90 active:scale-[0.98] web:hover:opacity-90 web:active:scale-[0.98]',
+      'bg-status-error-solid active:opacity-90 active:scale-[0.98] web:hover:opacity-90 web:active:scale-[0.98]',
     warning:
-      'bg-status-warning active:opacity-90 active:scale-[0.98] web:hover:opacity-90 web:active:scale-[0.98]',
-    info: 'bg-status-info active:opacity-90 active:scale-[0.98] web:hover:opacity-90 web:active:scale-[0.98]',
+      'bg-status-warning-solid active:opacity-90 active:scale-[0.98] web:hover:opacity-90 web:active:scale-[0.98]',
+    info: 'bg-status-info-solid active:opacity-90 active:scale-[0.98] web:hover:opacity-90 web:active:scale-[0.98]',
   },
   outline: {
     primary:
@@ -127,6 +131,8 @@ const variantStyles: Record<ButtonVariant, Record<ButtonColor, string>> = {
 }
 
 const textStyles: Record<ButtonVariant, Record<ButtonColor, string>> = {
+  // `text-white` failed AA on four of six fills (warning was 1.82). The `on-*` tokens
+  // carry the label that actually reads on each solid fill (AW-141).
   solid: {
     primary: 'text-on-brand-primary',
     secondary: 'text-on-brand-secondary',
@@ -233,6 +239,10 @@ export const Button = forwardRef<View, ButtonProps>(function Button(
         'flex-row items-center justify-center rounded-md transition-all duration-150',
         // Variant + color styles
         variantStyles[variant][color],
+        // Label colour lives on the container: ButtonText renders `text-inherit`, so a
+        // colour set only on the inner Text never reaches the common `<ButtonText>`
+        // child path — which is why solid labels stayed browser-default white (AW-141).
+        textStyles[variant][color],
         // Size styles (icon button vs regular)
         isIconButton ? iconButtonSizeStyles[size] : sizeStyles[size],
         // Full width
@@ -249,7 +259,7 @@ export const Button = forwardRef<View, ButtonProps>(function Button(
       {isLoading && (
         <ActivityIndicator
           size="small"
-          color={variant === 'solid' ? semanticColorsDark['on-brand-primary'] : undefined}
+          color={variant === 'solid' ? textColorMap.solid[color] : undefined}
           className="mr-2"
         />
       )}
