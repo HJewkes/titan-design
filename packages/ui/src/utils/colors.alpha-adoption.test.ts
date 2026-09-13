@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { describe, it, expect } from 'vitest'
 import { alpha } from './colors'
 import { getSemanticColors } from '../theme/tokens/semantic'
@@ -6,16 +9,17 @@ import { primitiveColors } from '../theme/tokens/primitives'
 /**
  * VW-78: every `rgba(...)` literal swapped for `alpha(<resolved token>, opacity)`
  * across the functional-colour baseline files must resolve to the exact same
- * colour it replaced. Table-driven rather than per-component render tests: the
- * literal each row replaced is recorded alongside the new `alpha()` call built
- * from the same tokens the component now imports, so a regression in either the
- * token value or `alpha()` itself fails here without needing a DOM render per
- * touched component.
+ * colour it replaced, AND the raw literal must actually be gone from the
+ * touched source file — two separate checks, because they catch different
+ * regressions:
  *
- * Comparison is on PARSED (r, g, b, a) rather than raw strings — `alpha()`
- * doesn't reproduce a source literal's decimal formatting (`0.10` -> `0.1`,
- * `0.20` -> `0.2`), and that difference is not a colour difference: both
- * strings parse to the identical rgba() the browser paints.
+ * - "resolves to the same colour" (below) re-derives the swap independently
+ *   from the token and `alpha()`, so it catches a bad token value or a bug in
+ *   `alpha()` itself.
+ * - "no longer contains the swapped literal" reads the ACTUAL component file
+ *   and catches someone reverting a call site back to a raw literal, or
+ *   copy-pasting the wrong token into it — neither of which the first check
+ *   can see, since it never looks at the file the swap lives in.
  */
 
 function parseRgba(value: string): [number, number, number, number] {
@@ -300,5 +304,105 @@ describe('alpha() adoption (VW-78) — swapped literal parity', () => {
     it.each([0, 1, 25, 50, 63, 80, 99, 100])('matches at %i%%', (pct) => {
       expectSameColor(swappedHeatmapColor(pct), originalHeatmapColor(pct), 0.0006)
     })
+  })
+})
+
+const SRC_ROOT = path.dirname(fileURLToPath(import.meta.url))
+
+function readSource(relativeToSrc: string): string {
+  return readFileSync(path.join(SRC_ROOT, '..', relativeToSrc), 'utf8')
+}
+
+describe('touched source files no longer contain the swapped raw literals', () => {
+  const fileCases: Array<{ file: string; removedLiterals: string[] }> = [
+    { file: 'components/custom/Gauge/Gauge.tsx', removedLiterals: ['rgba(255,255,255,0.08)'] },
+    {
+      file: 'components/custom/Scatter/Scatter.tsx',
+      removedLiterals: [
+        'rgba(255,255,255,0.07)',
+        'rgba(255,255,255,0.18)',
+        'rgba(255,255,255,0.28)',
+      ],
+    },
+    {
+      file: 'components/custom/Workout/BaseBadge.tsx',
+      removedLiterals: ['rgba(255, 121, 0, 0.12)', 'rgba(255, 121, 0, 0.3)'],
+    },
+    {
+      file: 'components/custom/Workout/BodyMap.tsx',
+      removedLiterals: ['rgba(255,255,255,0.08)', 'rgba(255,255,255,0.12)', 'rgba(255,121,0,0.16)'],
+    },
+    {
+      file: 'components/custom/Workout/BodyMapDetailPanel.tsx',
+      removedLiterals: ['rgba(255,121,0,0.12)', 'rgba(255,121,0,0.3)'],
+    },
+    {
+      file: 'components/custom/Workout/CapacityBandChart.tsx',
+      removedLiterals: ['rgba(46,213,115,0.1)', 'rgba(46,213,115,0.45)', 'rgba(46,213,115,0.05)'],
+    },
+    {
+      file: 'components/custom/Workout/DeviationBar.tsx',
+      removedLiterals: ['rgba(46,213,115,0.25)', 'rgba(249,180,21,0.25)'],
+    },
+    {
+      file: 'components/custom/Workout/ExerciseDetailPage.tsx',
+      removedLiterals: ['rgba(255,121,0,0.10)', 'rgba(255,121,0,0.25)'],
+    },
+    {
+      file: 'components/custom/Workout/IntensityBar.tsx',
+      removedLiterals: ['rgba(33, 150, 243, 0.5)'],
+    },
+    {
+      file: 'components/custom/Workout/MesoCard.tsx',
+      removedLiterals: ['rgba(255,121,0,${opacity.toFixed(3)})'],
+    },
+    {
+      file: 'components/custom/Workout/MesoStatusCard.tsx',
+      removedLiterals: [
+        'rgba(46,213,115,0.25)',
+        'rgba(249,180,21,0.25)',
+        'rgba(209,67,67,0.25)',
+        'rgba(46,213,115,0.15)',
+        'rgba(46,213,115,0.3)',
+        'rgba(249,180,21,0.15)',
+        'rgba(249,180,21,0.3)',
+        'rgba(209,67,67,0.15)',
+        'rgba(255,255,255,0.3)',
+        'rgba(249,180,21,0.06)',
+        'rgba(46,213,115,0.06)',
+        'rgba(46,213,115,0.2)',
+      ],
+    },
+    {
+      file: 'components/custom/Workout/ReadinessCheck.tsx',
+      removedLiterals: ['rgba(255,121,0,0.12)'],
+    },
+    {
+      file: 'components/custom/Workout/RestTimer.tsx',
+      removedLiterals: ['rgba(255,255,255,0.06)', 'rgba(255,121,0,0.12)'],
+    },
+    {
+      file: 'components/custom/Workout/StrengthTrendChart.tsx',
+      removedLiterals: [
+        'rgba(255,255,255,0.06)',
+        'rgba(46,213,115,0.10)',
+        'rgba(46,213,115,0.20)',
+        'rgba(209,67,67,0.10)',
+        'rgba(209,67,67,0.20)',
+        'rgba(255,255,255,0.10)',
+      ],
+    },
+    {
+      file: 'components/ui/toolbar-button/ToolbarButton.tsx',
+      removedLiterals: ['rgba(255, 255, 255, 0.12)'],
+    },
+  ]
+
+  it.each(fileCases)('$file no longer has its swapped literal(s)', ({ file, removedLiterals }) => {
+    const text = readSource(file)
+    expect(text).toContain('alpha(')
+    for (const literal of removedLiterals) {
+      expect(text).not.toContain(literal)
+    }
   })
 })
