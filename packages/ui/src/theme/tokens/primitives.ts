@@ -32,6 +32,39 @@ export const primitiveColors = {
 export const alertRedVivid = '#FF4757' as const
 
 /**
+ * Result/outcome palette anchors (VW-83): Material-style green/red/grey chosen
+ * for the result-improve/-degrade/-inconclusive tokens. No `primitiveRamps` step
+ * matches any of these exactly (the ramps are OKLCH-generated with a different
+ * hue/chroma arc), so they are pinned by name here rather than left as raw hex
+ * in semantic.ts — same pattern as {@link alertRedVivid}.
+ */
+export const resultPaletteColors = {
+  improve: '#4caf50',
+  improveDark: '#248a24',
+  degrade: '#ef5350',
+  degradeDark: '#b30000',
+  inconclusive: '#9E9A97',
+} as const
+
+/**
+ * One-off semantic literals (VW-83) with no exact `greyRamp`/`primitiveRamps`
+ * match, pinned by name instead of left as raw hex in semantic.ts.
+ */
+export const semanticPins = {
+  // Cool navy-black; darker and more blue-shifted than any warm greyRamp step.
+  textPrimaryLight: '#121828',
+  // Cool blue-grey; outside greyRamp's warm (R>=G>=B) scale.
+  textSecondaryLight: '#65748B',
+  // Pure neutral grey (R=G=B); no warm greyRamp step lands on it exactly.
+  backgroundBaseLight: '#EBEBEB',
+  // Near-neutral grey, kept one step off backgroundBaseLight by design.
+  dividerLight: '#E8E9EB',
+  // Periwinkle/indigo; more purple than any primitiveRamps.blue step. Shared by
+  // dark-mode text-link, border-focus and border-input-focus.
+  focusIndigoDark: '#828DF8',
+} as const
+
+/**
  * Unified warm-neutral grey ramp (TD-07.14)
  *
  * The ONE achromatic scale. Regenerate with `scripts/generate-grey-ramp.mjs` —
