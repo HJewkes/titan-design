@@ -160,7 +160,7 @@ export const WithFormContent: Story = {
               </View>
             </PopoverCloseButton>
             <View className="px-3 py-1.5 rounded-md bg-brand-primary">
-              <Text className="text-white text-sm font-medium">Save</Text>
+              <Text className="text-on-brand-primary text-sm font-medium">Save</Text>
             </View>
           </View>
         </View>
