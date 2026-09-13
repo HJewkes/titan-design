@@ -75,7 +75,10 @@ export function velocityZoneColor(v: number): string {
 /**
  * One set's data. Flat variants: `done` = every rep performed; `active` = reps-so-far
  * performed against a planned count (remainder greyed, performed reps pulse); `todo` =
- * a planned but unstarted set (solid grey bar). Set-type variants:
+ * a planned but unstarted set (solid grey bar). `active`/`todo` optionally carry the
+ * plan's prescribed rep RANGE (`repsLow`/`repsHigh`, VMCP-03.04) — a value range
+ * (isokinetic bands), not a rep count, so it's independent of `range`'s `floor`/`max`.
+ * Set-type variants:
  * - `range` — variable rep-range (e.g. 15–20): `max` segments; committed zone
  *   `0..floor` (done = velocity, todo = grey), variable zone `floor..max` (done =
  *   velocity, todo = the variable/opportunity cyan). `doneVels` may run past `floor`.
@@ -86,8 +89,14 @@ export function velocityZoneColor(v: number): string {
  */
 export type SetStripSet =
   | { status: 'done'; velocities: number[] }
-  | { status: 'active'; velocities: number[]; planned: number }
-  | { status: 'todo'; planned: number }
+  | {
+      status: 'active'
+      velocities: number[]
+      planned: number
+      repsLow?: number
+      repsHigh?: number
+    }
+  | { status: 'todo'; planned: number; repsLow?: number; repsHigh?: number }
   | { status: 'range'; floor: number; max: number; doneVels: number[] }
   | { status: 'drop'; subloads: number[][] }
   | { status: 'myo'; activation: number[]; clusters: number[][] }

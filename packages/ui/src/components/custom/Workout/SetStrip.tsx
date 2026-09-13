@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { View, type ViewProps } from 'react-native'
+import { View, Text, type ViewProps } from 'react-native'
 import { SetBar, type SetStripSet } from './SetBar'
+import { formatRepsRange } from '../../../utils/workout-format'
 
 // Re-exported so the per-set colour vocabulary stays importable from either the
 // molecule (SetStrip) or the atom (SetBar) it now lives in.
@@ -40,6 +41,12 @@ function describeSets(sets: SetStripSet[]): string {
   return `Set progress: ${done} done, ${active} in progress, ${upcoming} upcoming`
 }
 
+/** The prescribed rep-range label for a `todo`/`active` set, or `null` when unset. */
+function repsRangeLabel(set: SetStripSet): string | null {
+  if (set.status !== 'todo' && set.status !== 'active') return null
+  return formatRepsRange(set.repsLow, set.repsHigh)
+}
+
 export interface SetStripProps extends ViewProps {
   /** Per-set performance data, in set order. */
   sets: SetStripSet[]
@@ -63,9 +70,22 @@ export function SetStrip({ sets, height = 8, className, ...props }: SetStripProp
       testID="set-strip"
       {...props}
     >
-      {sets.map((set, i) => (
-        <SetBar key={i} set={set} height={height} />
-      ))}
+      {sets.map((set, i) => {
+        const label = repsRangeLabel(set)
+        if (label == null) return <SetBar key={i} set={set} height={height} />
+        return (
+          <View key={i} style={{ flex: 1, minWidth: 0, position: 'relative' }}>
+            <Text
+              className="text-text-secondary text-2xs font-semibold text-center"
+              style={{ position: 'absolute', bottom: height + 3, left: 0, right: 0 }}
+              testID="set-strip-reps-label"
+            >
+              {label}
+            </Text>
+            <SetBar set={set} height={height} />
+          </View>
+        )
+      })}
     </View>
   )
 }
