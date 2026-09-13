@@ -157,24 +157,26 @@ interface ToastItemProps extends ToastConfig {
   onClose: () => void
 }
 
+// `-subtle` is the wash ladder's lightest rung. It replaces a `/10` opacity
+// modifier, which emitted no rule at all against a var()-backed token (VW-308).
 const statusStyles: Record<ToastStatus, { bg: string; border: string; icon: string }> = {
   success: {
-    bg: 'bg-status-success/10',
+    bg: 'bg-status-success-subtle',
     border: 'border-status-success',
     icon: '✓',
   },
   error: {
-    bg: 'bg-status-error/10',
+    bg: 'bg-status-error-subtle',
     border: 'border-status-error',
     icon: '✕',
   },
   warning: {
-    bg: 'bg-status-warning/10',
+    bg: 'bg-status-warning-subtle',
     border: 'border-status-warning',
     icon: '⚠',
   },
   info: {
-    bg: 'bg-status-info/10',
+    bg: 'bg-status-info-subtle',
     border: 'border-status-info',
     icon: 'ℹ',
   },

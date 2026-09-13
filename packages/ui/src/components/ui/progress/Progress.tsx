@@ -56,13 +56,16 @@ const colorStyles: Record<ProgressColor, string> = {
   info: 'bg-status-info',
 }
 
+// `-muted` rather than `-subtle`: the track is structural — it has to show the
+// bar's full extent behind the fill — and the lightest rung disappears on the
+// dark base. Replaces a `/20` modifier that emitted no rule (VW-308).
 const trackColorStyles: Record<ProgressColor, string> = {
-  primary: 'bg-brand-primary/20',
-  secondary: 'bg-brand-secondary/20',
-  success: 'bg-status-success/20',
-  error: 'bg-status-error/20',
-  warning: 'bg-status-warning/20',
-  info: 'bg-status-info/20',
+  primary: 'bg-brand-primary-muted',
+  secondary: 'bg-brand-secondary-muted',
+  success: 'bg-status-success-muted',
+  error: 'bg-status-error-muted',
+  warning: 'bg-status-warning-muted',
+  info: 'bg-status-info-muted',
 }
 
 /**

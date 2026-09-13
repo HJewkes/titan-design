@@ -6,13 +6,23 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Brand colors
+        // Every leaf here is a `var(--color-*)` reference, which is what makes
+        // light/dark switching work — and also why an opacity modifier
+        // (`bg-brand-primary/10`) emits NO rule at all under Tailwind v3 and
+        // renders as nothing. Reach for a wash rung instead; see VW-308 and
+        // `titan/no-var-color-opacity`.
+        //
+        // The wash ladder (`-subtle`/`-muted`/`-strong`) is the translucency
+        // vocabulary. All three rungs are published as classes so a component
+        // never has to hand-mix alpha.
         brand: {
           primary: {
             DEFAULT: 'var(--color-brand-primary)',
             light: 'var(--color-brand-primary-light)',
             dark: 'var(--color-brand-primary-dark)',
             subtle: 'var(--color-brand-primary-subtle)',
+            muted: 'var(--color-brand-primary-muted)',
+            strong: 'var(--color-brand-primary-strong)',
             hover: 'var(--color-brand-primary-hover)',
             active: 'var(--color-brand-primary-active)',
           },
@@ -21,6 +31,8 @@ module.exports = {
             light: 'var(--color-brand-secondary-light)',
             dark: 'var(--color-brand-secondary-dark)',
             subtle: 'var(--color-brand-secondary-subtle)',
+            muted: 'var(--color-brand-secondary-muted)',
+            strong: 'var(--color-brand-secondary-strong)',
             hover: 'var(--color-brand-secondary-hover)',
             active: 'var(--color-brand-secondary-active)',
           },
@@ -44,6 +56,8 @@ module.exports = {
             light: 'var(--color-status-success-light)',
             dark: 'var(--color-status-success-dark)',
             subtle: 'var(--color-status-success-subtle)',
+            muted: 'var(--color-status-success-muted)',
+            strong: 'var(--color-status-success-strong)',
           },
           // Live-session accent — own role, decoupled from success
           live: {
@@ -55,24 +69,32 @@ module.exports = {
             light: 'var(--color-status-error-light)',
             dark: 'var(--color-status-error-dark)',
             subtle: 'var(--color-status-error-subtle)',
+            muted: 'var(--color-status-error-muted)',
+            strong: 'var(--color-status-error-strong)',
           },
           'error-vivid': {
             DEFAULT: 'var(--color-status-error-vivid)',
             light: 'var(--color-status-error-vivid-light)',
             dark: 'var(--color-status-error-vivid-dark)',
             subtle: 'var(--color-status-error-vivid-subtle)',
+            muted: 'var(--color-status-error-vivid-muted)',
+            strong: 'var(--color-status-error-vivid-strong)',
           },
           warning: {
             DEFAULT: 'var(--color-status-warning)',
             light: 'var(--color-status-warning-light)',
             dark: 'var(--color-status-warning-dark)',
             subtle: 'var(--color-status-warning-subtle)',
+            muted: 'var(--color-status-warning-muted)',
+            strong: 'var(--color-status-warning-strong)',
           },
           info: {
             DEFAULT: 'var(--color-status-info)',
             light: 'var(--color-status-info-light)',
             dark: 'var(--color-status-info-dark)',
             subtle: 'var(--color-status-info-subtle)',
+            muted: 'var(--color-status-info-muted)',
+            strong: 'var(--color-status-info-strong)',
           },
         },
         // Text on status backgrounds. `-subtle` is text ON the `-subtle` fill.

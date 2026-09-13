@@ -91,7 +91,7 @@ export const Default: Story = {
               <View
                 className={cn(
                   'px-2 py-0.5 rounded-full self-start',
-                  user.status === 'Active' ? 'bg-status-success/20' : 'bg-status-warning/20'
+                  user.status === 'Active' ? 'bg-status-success-subtle' : 'bg-status-warning-subtle'
                 )}
               >
                 <Text
