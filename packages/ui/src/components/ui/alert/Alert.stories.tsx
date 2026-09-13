@@ -1,6 +1,7 @@
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { Alert, AlertTitle, AlertDescription } from './Alert'
+import { greyRamp } from '../../../theme/tokens/primitives'
 
 const meta: Meta<typeof Alert> = {
   title: 'Components/Molecules/Alert',
@@ -178,7 +179,7 @@ export const DescriptionOnly: Story = {
 
 /** Wall-background frame for the compact cue stories. */
 const wall: Decorator = (Story) => (
-  <View style={{ width: 460, padding: 28, backgroundColor: '#0E0E0E' }}>
+  <View style={{ width: 460, padding: 28, backgroundColor: 'var(--color-background-frame)' }}>
     <Story />
   </View>
 )
@@ -219,13 +220,22 @@ export const CompactLiveCue: Story = {
 /** Default vs compact, side by side, for the density comparison. */
 export const DefaultVsCompact: Story = {
   render: () => (
-    <View style={{ gap: 16, width: 460, padding: 28, backgroundColor: '#0E0E0E' }}>
-      <Text style={{ color: '#5A5A5A', fontSize: 10, fontWeight: '700' }}>DEFAULT</Text>
+    <View
+      style={{
+        gap: 16,
+        width: 460,
+        padding: 28,
+        backgroundColor: 'var(--color-background-frame)',
+      }}
+    >
+      <Text style={{ color: greyRamp[700], fontSize: 10, fontWeight: '700' }}>DEFAULT</Text>
       <Alert status="warning" variant="subtle">
         <AlertTitle>Approaching threshold</AlertTitle>
         <AlertDescription>18% velocity loss — one or two reps left in the band.</AlertDescription>
       </Alert>
-      <Text style={{ color: '#5A5A5A', fontSize: 10, fontWeight: '700' }}>COMPACT (cue pill)</Text>
+      <Text style={{ color: greyRamp[700], fontSize: 10, fontWeight: '700' }}>
+        COMPACT (cue pill)
+      </Text>
       <Alert
         status="warning"
         variant="subtle"

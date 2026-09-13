@@ -42,13 +42,17 @@ export const WithCustomValue: Story = {
       value={
         <View
           style={{
-            backgroundColor: '#22c55e',
+            backgroundColor: 'var(--color-status-success)',
             borderRadius: 9999,
             paddingHorizontal: 8,
             paddingVertical: 2,
           }}
         >
-          <Text style={{ color: '#fff', fontSize: 12, fontWeight: '600' }}>Active</Text>
+          <Text
+            style={{ color: 'var(--color-on-status-success)', fontSize: 12, fontWeight: '600' }}
+          >
+            Active
+          </Text>
         </View>
       }
     />
