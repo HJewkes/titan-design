@@ -34,6 +34,17 @@ jobs:
       - name: Format Check
         run: pnpm format:check
 
+      # Fails when packages/ui/src/arch/arch-graph.json's recorded component-barrel
+      # hash no longer matches the current barrels, i.e. `pnpm arch:graph` needs to
+      # be re-run and committed (TD-02.03). Named separately from the general Test
+      # step below so a stale graph is diagnosable at a glance rather than buried in
+      # a full coverage run. Full regeneration doesn't run here: it needs the
+      # unpublished `@codewatch/cli` (AW-118) and sibling checkouts of every consumer
+      # in scripts/arch.config.json, neither available on a CI runner — running it
+      # anyway would silently score every consumer as zero usage instead of failing.
+      - name: Arch graph freshness
+        run: pnpm --filter @titan-design/react-ui exec vitest run src/arch/arch-graph.freshness.test.ts
+
       - name: Build
         run: pnpm build
 
