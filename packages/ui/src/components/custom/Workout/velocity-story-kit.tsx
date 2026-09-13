@@ -116,8 +116,8 @@ export const VIEW_HEIGHT: Record<StripView, { single: number; dual: number }> = 
 
 export type StripView = 'compact' | 'expanded' | 'hero'
 
-/** The dual renderer for a view. `expanded`'s dual is the lean `rail` (a verified misnomer). */
-export const dualVariantFor = (view: StripView) => (view === 'expanded' ? 'rail' : view)
+/** The dual renderer for a view. `expanded`'s dual is the lean `dual-expanded` renderer. */
+export const dualVariantFor = (view: StripView) => (view === 'expanded' ? 'dual-expanded' : view)
 
 /**
  * One scenario, rendered single above dual on the same dataset.

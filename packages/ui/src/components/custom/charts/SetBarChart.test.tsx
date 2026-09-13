@@ -7,11 +7,27 @@ import {
   valueLabelFontSize,
   estimateValueLabelWidth,
   shouldFlipEdgeLabel,
+  scaleDenominator,
+  FIXED_MAX_VALUE,
+  PEAK_HEADROOM,
   type SetSlot,
 } from './SetBarChart'
 
 const reps = (values: number[]): SetSlot[] => values.map((v) => ({ kind: 'rep', value: v }))
 const silver = () => '#C7CBD1'
+
+describe('scaleDenominator', () => {
+  it('gives `fixed` the same headroom band above its ceiling as `peak` gets above its max', () => {
+    // Pinned: without this headroom, a rep AT the fixed ceiling fills the plot with zero margin
+    // above it, unlike an equally-tall `peak` bar (which always keeps PEAK_HEADROOM's margin).
+    expect(scaleDenominator('fixed', 0)).toBeCloseTo(FIXED_MAX_VALUE * PEAK_HEADROOM)
+    expect(scaleDenominator('peak', 1)).toBeCloseTo(1 * PEAK_HEADROOM)
+  })
+
+  it('ignores the performed max for `fixed` — the ceiling stays constant across sets', () => {
+    expect(scaleDenominator('fixed', 0.5)).toBe(scaleDenominator('fixed', 100))
+  })
+})
 
 describe('valueLabelFontSize', () => {
   it('reads the full 12px at the standard single-hero (220) and dual-wing (110) scales', () => {

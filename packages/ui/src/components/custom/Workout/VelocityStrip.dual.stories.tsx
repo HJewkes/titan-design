@@ -57,9 +57,10 @@ const meta: Meta<typeof DualVelocityStrip> = {
     },
     variant: {
       control: 'inline-radio',
-      options: ['hero', 'compact', 'rail'],
+      options: ['hero', 'compact', 'dual-expanded'],
       description:
-        'hero (wall: labels + reference lines), compact (flat resting fold), or rail (lean, neither)',
+        'hero (wall: labels + reference lines), compact (flat resting fold), or dual-expanded ' +
+        '(lean, neither — `"rail"` is a deprecated alias for the same renderer)',
     },
     scale: {
       control: 'inline-radio',

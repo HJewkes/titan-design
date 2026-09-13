@@ -702,9 +702,14 @@ export interface DualVelocityStripProps extends ViewProps {
    * `hero` — the across-the-room wall scale: tall wings, per-rep m/s value labels, and a dashed
    * running-best reference line per side. `compact` — the flat resting form: dual-hero but flat +
    * no labels (both wings are the `compact` VelocityStrip variant), same aligned structure + shared
-   * gutter + axis. `rail` — the compact rail-expanded lean renderer, no labels / reference lines.
+   * gutter + axis. `dual-expanded` — the compact rail-expanded lean renderer, no labels / reference
+   * lines (VW-97: `rail` was a verified misnomer — this variant is the value-height strip a session
+   * rail row expands into, not the rail itself).
+   *
+   * `rail` is a **deprecated alias** for `dual-expanded` (same renderer, same output) — kept for one
+   * release so existing call sites keep working; see the Workout README.
    */
-  variant?: 'hero' | 'compact' | 'rail'
+  variant?: 'hero' | 'compact' | 'dual-expanded' | 'rail'
   /**
    * Bar-height scaling, shared across BOTH wings so the L/R asymmetry reads as bar
    * length against one scale. `peak` (default) = the pair's max +headroom; `fixed` =
@@ -926,12 +931,12 @@ function DualVelocityHero({
 }
 
 /**
- * The `rail` diverging chart — a lean, compact dedicated renderer. Composing the hero here would
- * drag in its value labels, reference lines, paper, and label headroom, none of which belong at
- * rail scale; instead it draws mirrored per-side bars at the compact rail metrics. Same shared
- * height scale + per-side loss coloring + mirrored radius + shared axis as the hero, but no labels
- * / reference lines / paper. (Set-type slot windows are a hero-composition concern; rail only ever
- * takes plain velocities.)
+ * The `dual-expanded` diverging chart (formerly `rail`) — a lean, compact dedicated renderer.
+ * Composing the hero here would drag in its value labels, reference lines, paper, and label
+ * headroom, none of which belong at this scale; instead it draws mirrored per-side bars at the
+ * compact metrics. Same shared height scale + per-side loss coloring + mirrored radius + shared
+ * axis as the hero, but no labels / reference lines / paper. (Set-type slot windows are a
+ * hero-composition concern; this renderer only ever takes plain velocities.)
  */
 function DualVelocityRail({
   leftDone,
@@ -1090,11 +1095,14 @@ export function DualVelocityStrip({
   className,
   ...props
 }: DualVelocityStripProps) {
+  // `rail` is the deprecated alias for `dual-expanded` — normalize once so every branch below
+  // reads one canonical value instead of re-checking both spellings.
+  const resolvedVariant = variant === 'rail' ? 'dual-expanded' : variant
   const resolvedHeight =
     height ??
-    (variant === 'hero'
+    (resolvedVariant === 'hero'
       ? DUAL_HERO_HEIGHT
-      : variant === 'compact'
+      : resolvedVariant === 'compact'
         ? DUAL_COMPACT_HEIGHT
         : DUAL_RAIL_HEIGHT)
   // The done arrays drive the shared max + per-side best + the summary counts; the raw streams
@@ -1123,10 +1131,11 @@ export function DualVelocityStrip({
     viewProps: props,
   }
 
-  // `liveRepIndex` reaches the rail too: its wings are composed strips, so the newest rep grows
-  // from the midline on BOTH sides. Compact is flat, so a grow animation has nothing to animate.
-  if (variant === 'rail') return <DualVelocityRail {...shared} liveRepIndex={liveRepIndex} />
-  if (variant === 'compact') return <DualVelocityCompactStrip {...shared} />
+  // `liveRepIndex` reaches dual-expanded too: its wings are composed strips, so the newest rep
+  // grows from the midline on BOTH sides. Compact is flat, so a grow animation has nothing to animate.
+  if (resolvedVariant === 'dual-expanded')
+    return <DualVelocityRail {...shared} liveRepIndex={liveRepIndex} />
+  if (resolvedVariant === 'compact') return <DualVelocityCompactStrip {...shared} />
   return <DualVelocityHero {...shared} liveRepIndex={liveRepIndex} />
 }
 
