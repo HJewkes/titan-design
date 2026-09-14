@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { NavItem } from './NavItem'
 import { ActivityIcon } from '../icons'
+import { siblingSource } from '../../test/spacing-resolver'
 
 const icon = <ActivityIcon size={20} color="currentColor" />
 
@@ -48,5 +49,26 @@ describe('NavItem', () => {
     )
     expect(screen.getByTestId('nav-item-accent')).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: 'Graph' })).toBeInTheDocument()
+  })
+})
+
+/**
+ * The nav button's spacing, pinned (AW-142 wave three).
+ *
+ * The 3px icon-to-label gap is the one shell value kept below the 4px grain,
+ * with its `// optical:` reason in the source. The test asserts both halves:
+ * the value AND the comment, so a later pass cannot drop the justification and
+ * leave an unexplained nudge behind.
+ */
+describe('NavItem keeps its optical 3px gap', () => {
+  const source = siblingSource(import.meta.url, 'NavItem.tsx')
+
+  it('ships gap-[3px] with the reason beside it', () => {
+    expect(source).toContain('gap-[3px]')
+    expect(source).toMatch(/\/\/ optical: 3px icon-to-micro-label/)
+  })
+
+  it('keeps the 46px target the specimen locks', () => {
+    expect(source).toContain('h-[46px] w-[46px]')
   })
 })

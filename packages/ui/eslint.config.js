@@ -355,8 +355,20 @@ module.exports = tseslint.config(
   // The 58 occurrences across the Workout batch and `charts/flatBarGeometry`
   // are wave three; enrolling them now would buy 58 disable comments and no
   // migration.
+  //
+  // Wave three adds `shell/**`, whose dialect was the bracket className rather
+  // than the style object — the rule finds it clean, and holds it that way.
+  // Shell is deliberately NOT added to the token-pure bracket selectors above:
+  // NavItem's 3px and BrandLockup's 7px are optical keepers the operator signed
+  // off, and a selector cannot read their `// optical:` reason, so enrolling
+  // there would buy two disable comments. That block also gates `rounded-[…]`
+  // and `text-[…]`, which are AW-145 and AW-134, not this wave.
   {
-    files: ['src/theme/**/*.{ts,tsx}', 'src/components/ui/**/*.{ts,tsx}'],
+    files: [
+      'src/theme/**/*.{ts,tsx}',
+      'src/components/ui/**/*.{ts,tsx}',
+      'src/components/shell/**/*.{ts,tsx}',
+    ],
     // `color-story-kit` is story chrome that happens not to be named `.stories.tsx`
     // — exempt on the same grounds as the stories themselves, not as a backlog.
     ignores: ['**/*.stories.tsx', '**/*.test.{ts,tsx}', 'src/theme/color-story-kit.tsx'],

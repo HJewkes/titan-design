@@ -68,6 +68,9 @@ export function NavItem({
         />
       ) : null}
       <View
+        // optical: 3px icon-to-micro-label, below the 4px grain. The 20px glyph over an
+        // 8.5px label is one stacked mark, not two siblings; 4px opens it into two. Held
+        // to the specimen's `.btn { gap: 3px }` — `.storybook/lab-archive/shell/S2-sidenav/`.
         className={cn(
           'h-[46px] w-[46px] items-center justify-center gap-[3px] rounded-[11px]',
           glyphColor

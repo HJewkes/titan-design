@@ -39,7 +39,7 @@ export function DeviceRow({ device, onPress, className, ...props }: DeviceRowPro
   return (
     <Wrapper
       {...(onPress ? { onPress, accessibilityRole: 'button' } : {})}
-      className={cn('flex-row items-center gap-[10px] px-2 py-[9px] rounded-[7px]', className)}
+      className={cn('flex-row items-center gap-2.5 p-inset-sm rounded-[7px]', className)}
       {...props}
     >
       <Indicator size="md" color={stateColor[device.state]} />

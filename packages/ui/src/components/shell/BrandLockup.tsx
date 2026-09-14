@@ -40,7 +40,13 @@ export function BrandLockup({
   const resolvedSubtitle = subtitle ?? preset.subtitle
 
   return (
-    <View className={cn('flex-row items-center gap-[7px]', className)} {...props}>
+    <View
+      // optical: 7px mark-to-wordmark. The mark carries its own right bearing, so the
+      // 8px rung reads wider here than 8 does between two text runs. Held to the
+      // specimen's `.brand { gap: 7px }` — `.storybook/lab-archive/shell/S1-topbar/`.
+      className={cn('flex-row items-center gap-[7px]', className)}
+      {...props}
+    >
       <View className={accentClassName ?? preset.accentClassName}>{mark ?? preset.mark}</View>
       <Typography
         variant="button"
