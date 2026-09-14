@@ -3,7 +3,8 @@ import { ActivityIndicator, View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { SPINNER_PRIMARY, SPINNER_SECONDARY } from '../../../theme/extracted-colors-ui'
 import { primitiveColors } from '../../../theme/tokens/primitives'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../surface'
 
 export type SpinnerSize = 'sm' | 'md' | 'lg' | 'xl'
 export type SpinnerColor = 'primary' | 'secondary' | 'white' | 'default'
@@ -26,11 +27,16 @@ const sizeMap: Record<SpinnerSize, 'small' | 'large'> = {
   xl: 'large',
 }
 
-const colorMap: Record<SpinnerColor, string> = {
-  primary: SPINNER_PRIMARY,
-  secondary: SPINNER_SECONDARY,
-  white: primitiveColors.white,
-  default: getSemanticColors('dark')['result-neutral'],
+// `default` is the only entry that themes: the other three are fixed marks (the
+// extracted spinner pair and pure white). ActivityIndicator needs a literal colour,
+// which `getSemanticColors(mode)` gives while still tracking the theme (VW-316).
+function colorMap(mode: ThemeMode): Record<SpinnerColor, string> {
+  return {
+    primary: SPINNER_PRIMARY,
+    secondary: SPINNER_SECONDARY,
+    white: primitiveColors.white,
+    default: getSemanticColors(mode)['result-neutral'],
+  }
 }
 
 const containerSizes: Record<SpinnerSize, string> = {
@@ -59,6 +65,7 @@ export function Spinner({
   className,
   ...props
 }: SpinnerProps) {
+  const mode = useSurfaceMode()
   return (
     <View
       accessibilityRole="progressbar"
@@ -66,7 +73,7 @@ export function Spinner({
       className={cn('items-center justify-center', containerSizes[size], className)}
       {...props}
     >
-      <ActivityIndicator size={sizeMap[size]} color={colorMap[color]} />
+      <ActivityIndicator size={sizeMap[size]} color={colorMap(mode)[color]} />
     </View>
   )
 }

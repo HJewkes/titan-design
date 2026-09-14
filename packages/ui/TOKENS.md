@@ -317,7 +317,13 @@ new family opts in while it is still clean.
 
 `titan/no-frozen-theme` is the exception that covers every family at once, because it can: its
 offenders are recorded per file in `eslint-rules/frozen-theme-baseline.json`, keyed by frozen value.
-A new frozen call fails immediately anywhere under `src/components/**`; the 38 recorded ones migrate
-in batches (VW-316). After migrating a file, run
-`node scripts/update-frozen-theme-baseline.mjs` to lower its allowance — the script refuses to raise
-one without `--allow-increase`, so the ratchet only shrinks.
+A new frozen call fails immediately anywhere under `src/components/**`; the 38 recorded at the start
+migrated in batches (VW-316) and **7 remain**, all in families another ticket is mid-way through.
+After migrating a file, run `node scripts/update-frozen-theme-baseline.mjs` to lower its allowance —
+the script refuses to raise one without `--allow-increase`, so the ratchet only shrinks.
+
+Two shapes count as frozen: a string-literal mode (`getSemanticColors('dark')`) anywhere, and any
+module-scope call. Resolving at render time is what clears it, NOT switching to `resolveColor` — a
+component whose colours are asserted needs literal hex, and `getSemanticColors(mode)` gives that
+while still following the theme. Where `getGlowShadow` or `ActivityIndicator` needs a literal
+(`ui/indicator`, `ui/spinner`), the hook form satisfies both.

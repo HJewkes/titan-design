@@ -3,14 +3,11 @@ import { View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { useTimer, formatDuration, type TimerMode } from '../../../hooks/useTimer'
 import { Typography } from '../Typography'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { useOnSurfaceColor } from '../../ui/surface'
 import { primitiveRamps } from '../../../theme/tokens/primitives'
 
-const semantic = getSemanticColors('dark')
 // status-live-muted — the SideNav "Live" cue; the elapsed value goes green while ticking.
 const LIVE_GREEN = primitiveRamps.green[500]
-const SECONDARY = semantic['text-secondary']
-const TERTIARY = semantic['text-tertiary']
 
 const DEFAULT_GLYPH = '⏱'
 
@@ -48,8 +45,10 @@ export function TimerReadout({
   ...rest
 }: TimerReadoutProps) {
   const { label } = useTimer({ mode, durationMs, elapsedMs, running, autoTick })
+  const secondary = useOnSurfaceColor('secondary')
+  const tertiary = useOnSurfaceColor('tertiary')
 
-  const currentColor = running ? LIVE_GREEN : SECONDARY
+  const currentColor = running ? LIVE_GREEN : secondary
   const total = showTotal && durationMs != null ? formatDuration(durationMs) : null
 
   return (
@@ -67,7 +66,7 @@ export function TimerReadout({
           {label}
         </Text>
         {total != null ? (
-          <Text testID="timer-readout-total" style={{ color: TERTIARY }}>{` / ${total}`}</Text>
+          <Text testID="timer-readout-total" style={{ color: tertiary }}>{` / ${total}`}</Text>
         ) : null}
       </Typography>
     </View>

@@ -1,7 +1,8 @@
 import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { getGlowShadow } from '../../../theme/elevation'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../surface'
 import { greyRamp } from '../../../theme/tokens/primitives'
 
 export type IndicatorSize = 'xs' | 'sm' | 'md' | 'lg'
@@ -53,19 +54,25 @@ const colorStyles: Record<IndicatorColor, string> = {
   'error-vivid': 'bg-status-error-vivid',
 }
 
-// Glow is EMPHASIS, not depth: the dot's own colour, through the shared builder.
-// Literal hex (not `resolveColor`) because getGlowShadow does colour maths on it.
-const t = getSemanticColors('dark')
-
-const glowColors: Record<IndicatorColor, string> = {
-  default: greyRamp[500],
-  primary: t['brand-primary'],
-  success: t['status-success'],
-  live: t['status-live'],
-  error: t['status-error'],
-  warning: t['status-warning'],
-  info: t['status-info'],
-  'error-vivid': t['status-error-vivid'],
+/**
+ * Glow is EMPHASIS, not depth: the dot's own colour, through the shared builder.
+ *
+ * Literal hex (not `resolveColor`) because `getGlowShadow` does colour maths on it —
+ * `getSemanticColors(mode)` keeps that literal while still following the theme, which
+ * is why this takes a mode instead of freezing one (VW-316).
+ */
+function glowColors(mode: ThemeMode): Record<IndicatorColor, string> {
+  const t = getSemanticColors(mode)
+  return {
+    default: greyRamp[500],
+    primary: t['brand-primary'],
+    success: t['status-success'],
+    live: t['status-live'],
+    error: t['status-error'],
+    warning: t['status-warning'],
+    info: t['status-info'],
+    'error-vivid': t['status-error-vivid'],
+  }
 }
 
 export function Indicator({
@@ -79,6 +86,7 @@ export function Indicator({
   style,
   ...props
 }: IndicatorProps) {
+  const mode = useSurfaceMode()
   const pulseMode: IndicatorPulse | false = pulse === true ? 'opacity' : pulse || false
   const colorClass = !customColor ? colorStyles[color] : undefined
   const colorStyle = customColor ? { backgroundColor: customColor } : undefined
@@ -104,7 +112,7 @@ export function Indicator({
     )
   }
 
-  const glowStyle = glow ? getGlowShadow(customColor ?? glowColors[color], 'subtle') : null
+  const glowStyle = glow ? getGlowShadow(customColor ?? glowColors(mode)[color], 'subtle') : null
 
   return (
     <View

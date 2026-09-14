@@ -4,6 +4,7 @@ import { cn } from '../../../utils/cn'
 import { DATAVIZ_CATEGORICAL_PALETTE } from '../../../theme/extracted-colors-dataviz'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../ui/surface'
 
 export interface TreemapDatum {
   /** Stable identity — returned by onPress and used as the React key. */
@@ -37,8 +38,6 @@ export interface TreemapProps extends Omit<ViewProps, 'children'> {
   selectedId?: string
   className?: string
 }
-
-const t = getSemanticColors('dark')
 
 /** Titan categorical fallback palette (see extracted-colors-dataviz). */
 const PALETTE = DATAVIZ_CATEGORICAL_PALETTE
@@ -136,6 +135,7 @@ export function Treemap({
   className,
   ...props
 }: TreemapProps) {
+  const overflowFill = getSemanticColors(useSurfaceMode())['surface-overlay']
   const clean = data
     .filter((d) => d.value > 0)
     .sort((a, b) => b.value - a.value)
@@ -150,7 +150,7 @@ export function Treemap({
       {
         id: '__more__',
         value: restValue,
-        color: t['surface-overlay'],
+        color: overflowFill,
         label: `+${clean.length - (maxTiles - 1)} more`,
       },
     ]
