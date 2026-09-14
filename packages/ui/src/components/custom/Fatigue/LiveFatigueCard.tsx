@@ -46,14 +46,8 @@ export interface LiveFatigueCardProps {
   height?: number
 }
 
-/**
- * CHOSEN, and flagged for an operator decision (AW-142 wave three). 18 is not a rung —
- * the inset ramp is 4 / 8 / 12 / 16 / 24. It stays at 18 here because two MEASURED
- * constants are written against it: `CARD_FIXED_CONTENT_HEIGHT` (203) and
- * `CARD_CHROME_HEIGHT` (216) both count this padding twice, and `CARD_SECTION_GAP_MAX`'s
- * cap is reasoned as "one step above the card's own 18px edge inset". Moving it to 16 or
- * 24 means re-measuring the card in Storybook, which is a separate change.
- */
+// Operator decision 2026-09-14 (AW-142 wave three): kept; measured geometry; AW-121.
+// CARD_FIXED_CONTENT_HEIGHT and CARD_CHROME_HEIGHT count PAD twice; re-measure in AW-121.
 const PAD = 18
 
 export function LiveFatigueCard({ model, width = 318, height }: LiveFatigueCardProps) {

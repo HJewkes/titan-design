@@ -69,7 +69,7 @@ describe('panelLayout', () => {
       expect(panelLayout(width)).toMatchObject({
         stacked: false,
         padding: 24,
-        gap: 18,
+        gap: TIER_GAP_MD,
         cardWidth: CARD_WIDTH_BASE,
       })
     }
@@ -81,7 +81,7 @@ describe('panelLayout', () => {
     expect(wall.cardWidth).toBeGreaterThan(CARD_WIDTH_BASE)
     // The SPA's stage chrome is derived from these two; moving them would overflow it.
     expect(wall.padding).toBe(24)
-    expect(wall.gap).toBe(18)
+    expect(wall.gap).toBe(TIER_GAP_MD)
   })
 
   it('caps the expansion so the card charts stay near the width they were drawn at', () => {
@@ -199,9 +199,10 @@ describe('cardChartHeight', () => {
  * The tier spacing, pinned (AW-142 wave three).
  *
  * The panel's own padding is an inset and now says so, reading the semantic key rather
- * than repeating 16 and 24. The three gaps and the `sm` padding are off every ramp and
- * stay named constants, flagged in the PR body for an operator decision — this asserts
- * they did not move while being named.
+ * than repeating 16 and 24. Operator decision 2026-09-14 put `TIER_GAP_SM`, `TIER_GAP_MD`
+ * and `TIER_PADDING_SM` on the ramp too (`stack-lg` / `stack-lg` / `inset-lg`); only
+ * `TIER_GAP_XS` is still a bare, unsourced literal — this asserts the on-ramp three
+ * resolve to their tokens and the fourth holds its shipped pixel.
  */
 describe('tier spacing resolves to the spacing tokens', () => {
   it.each([
@@ -215,8 +216,15 @@ describe('tier spacing resolves to the spacing tokens', () => {
     expect(resolveAll(['p-inset-lg', 'p-inset-xl'])).toEqual(['16px', '24px'])
   })
 
-  it('holds the four chosen numbers at their shipped pixels', () => {
-    expect([TIER_GAP_XS, TIER_GAP_SM, TIER_GAP_MD, TIER_PADDING_SM]).toEqual([12, 14, 18, 20])
+  it('holds the four chosen numbers at their post-decision pixels', () => {
+    expect([TIER_GAP_XS, TIER_GAP_SM, TIER_GAP_MD, TIER_PADDING_SM]).toEqual([12, 16, 16, 16])
+  })
+
+  it('sources the on-ramp gaps and padding from the spacing tokens', () => {
+    expect(TIER_GAP_SM).toBe(space.stack.lg)
+    expect(TIER_GAP_MD).toBe(space.stack.lg)
+    expect(TIER_PADDING_SM).toBe(space.inset.lg)
+    expect(resolveAll(['gap-stack-lg', 'p-inset-lg'])).toEqual(['16px', '16px'])
   })
 
   it('spaces the section gap floor by the stack ramp', () => {

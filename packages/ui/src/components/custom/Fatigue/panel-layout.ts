@@ -150,25 +150,25 @@ export const CARD_CHROME_HEIGHT = 216
 export const CARD_MIN_HEIGHT_STACKED = CARD_CHROME_HEIGHT + CARD_MIN_CHART_HEIGHT
 
 /**
- * CHOSEN, and flagged for an operator decision (AW-142 wave three).
+ * Operator decision 2026-09-14 (AW-142 wave three): the on-ramp rungs, no measured
+ * dependents. `TIER_GAP_SM` and `TIER_GAP_MD` both round to `stack-lg` (16), and
+ * `TIER_PADDING_SM` rounds to `inset-lg` (16). `TIER_GAP_XS` is left exactly as the PR
+ * had it — a bare literal, not sourced — because the on-ramp menu below never offered it
+ * a rung; the inset ramp is 4 / 8 / 12 / 16 / 24 and the stack ramp 4 / 8 / 16 / 24, and
+ * 12 sits on neither's `lg` step. The panel gap is a COLUMN gap at `md` and up and a ROW
+ * gap below it, so no single situational key covers it honestly — `inline` would name the
+ * stacked case wrong and `stack` the side-by-side case wrong; `stack` was picked for
+ * consistency with {@link CARD_SECTION_GAP_MIN} below.
  *
- * The three tier gaps are 12 / 14 / 18 and the `sm` padding is 20. None is a rung: the
- * inset ramp is 4 / 8 / 12 / 16 / 24 and the stack ramp 4 / 8 / 16 / 24. They are named
- * here rather than normalised, because the panel gap is a COLUMN gap at `md` and up and a
- * ROW gap below it, so no single situational key covers it honestly — `inline` would name
- * the stacked case wrong and `stack` the side-by-side case wrong.
- *
- * If the operator wants them on the ramp: 14 → 12 (`inline-lg`) or 16 (`stack-lg`), 18 →
- * 16 (`stack-lg`) or 24 (`stack-xl`), 20 → 16 (`inset-lg`) or 24 (`inset-xl`). Rounding 18
- * DOWN to 16 also touches the card: {@link CARD_SECTION_GAP_MAX}'s reasoning is written
- * against "one step above the card's own 18px edge inset", and `LiveFatigueCard`'s `PAD`
- * feeds {@link CARD_FIXED_CONTENT_HEIGHT} and {@link CARD_CHROME_HEIGHT}, both MEASURED
- * off the rendered card. Those two would need re-measuring, so this PR moves no pixel.
+ * Rounding `TIER_GAP_MD` (was 18) down to 16 does NOT touch the card: `LiveFatigueCard`'s
+ * `PAD` stays 18 by a separate operator decision (its own comment), so
+ * {@link CARD_FIXED_CONTENT_HEIGHT} and {@link CARD_CHROME_HEIGHT}, both MEASURED off the
+ * rendered card, are unaffected.
  */
 export const TIER_GAP_XS = 12
-export const TIER_PADDING_SM = 20
-export const TIER_GAP_SM = 14
-export const TIER_GAP_MD = 18
+export const TIER_PADDING_SM = space.inset.lg
+export const TIER_GAP_SM = space.stack.lg
+export const TIER_GAP_MD = space.stack.lg
 
 /** Padding and column gap per tier. `md` and up hold today's values exactly. */
 const TIER_SPACING: Record<PanelTier, { padding: number; gap: number }> = {
