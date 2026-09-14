@@ -194,7 +194,7 @@ export function PopoverContent({ children, className }: PopoverContentProps) {
         rounded={false}
         className={cn(
           'absolute z-50 min-w-[200px]',
-          'rounded-lg p-4',
+          'rounded-lg p-inset-lg',
           placementStyles[placement],
           className
         )}
@@ -234,7 +234,7 @@ export function PopoverCloseButton({ children, className }: PopoverCloseButtonPr
       onPress={() => setIsOpen(false)}
       accessibilityRole="button"
       accessibilityLabel="Close popover"
-      className={cn('p-1', className)}
+      className={cn('p-inset-xs', className)}
     >
       {children}
     </Pressable>

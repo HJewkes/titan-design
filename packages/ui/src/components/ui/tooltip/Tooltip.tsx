@@ -195,7 +195,7 @@ export function Tooltip({
 
   // Floating: overlay plane + lift, no ring.
   const tooltipContent = (
-    <Surface elevation={4} rounded={false} className="px-3 py-2 rounded-md max-w-xs">
+    <Surface elevation={4} rounded={false} className="px-inset-md py-inset-sm rounded-md max-w-xs">
       {content ?? <Text className="text-text-primary text-sm">{label}</Text>}
       {hasArrow && <View className={cn('absolute w-0 h-0 border-4', arrowStyles[placement])} />}
     </Surface>

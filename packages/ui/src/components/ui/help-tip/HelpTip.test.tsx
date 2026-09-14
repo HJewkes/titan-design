@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { HelpTip, LabelWithHelp } from './HelpTip'
+import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 
 describe('HelpTip', () => {
   it('renders the help icon button', () => {
@@ -193,4 +194,21 @@ describe('LabelWithHelp', () => {
       expect(results).toHaveNoViolations()
     })
   })
+})
+
+/**
+ * HelpTip's chrome, pinned (AW-142 wave two). Unchanged in pixels — and it
+ * lands on the same pair as Tooltip, which is the point of naming them.
+ */
+describe('HelpTip geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'HelpTip.tsx')
+
+  it.each([['the bubble', 'rounded-lg px-inset-md py-inset-sm', ['12px', '8px']]] as const)(
+    '%s ships `%s`',
+    (_label, classes, pixels) => {
+      expect(source).toContain(classes)
+      const spacing = classes.split(' ').filter((c) => resolveAll([c])[0] !== undefined)
+      expect(resolveAll(spacing)).toEqual([...pixels])
+    }
+  )
 })
