@@ -422,6 +422,7 @@ export function BodyMapDetailPanel({
             <View
               className="mb-1.5 flex-row items-center justify-between"
               accessibilityElementsHidden
+              testID="body-map-detail-panel-volume-landmarks"
             >
               <Text
                 className="text-text-tertiary"
@@ -471,7 +472,10 @@ export function BodyMapDetailPanel({
             </View>
           </View>
 
-          <View className="mt-3.5 flex-row items-baseline gap-inline-sm">
+          <View
+            className="mt-3.5 flex-row items-baseline gap-inline-sm"
+            testID="body-map-detail-panel-set-count-row"
+          >
             <Text
               className="text-text-primary"
               style={{
@@ -522,6 +526,7 @@ export function BodyMapDetailPanel({
                   fontFamily: 'Inter, sans-serif',
                   fontWeight: '600',
                 }}
+                testID="body-map-detail-panel-contributing-caption"
               >
                 {'CONTRIBUTING EXERCISES'}
               </Text>
