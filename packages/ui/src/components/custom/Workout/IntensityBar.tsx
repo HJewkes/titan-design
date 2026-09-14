@@ -8,12 +8,11 @@ import {
   type ViewStyle,
   type DimensionValue,
 } from 'react-native'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { getGlowShadow } from '../../../theme/elevation'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
+import { useSurfaceMode } from '../../ui/surface'
 import { alpha } from '../../../utils/colors'
-
-const t = getSemanticColors('dark')
 
 export type IntensityBarOrientation = 'vertical' | 'horizontal'
 
@@ -33,21 +32,33 @@ export interface IntensityBarProps extends ViewProps {
   className?: string
 }
 
-const TRACK_BG = t['surface-raised']
-const LABEL_COLOR = t['result-neutral']
-const TARGET_LINE_COLOR = alpha(t['status-info'], 0.5)
-/** At-target is EMPHASIS, not depth: an info-toned glow through the shared builder. */
-const AT_TARGET_GLOW = getGlowShadow(t['status-info'], 'subtle')
+/**
+ * Every colour the bar paints, resolved for one theme mode. A function rather than
+ * module constants so the bar follows the enclosing Surface instead of freezing the
+ * dark palette at import time (VW-316). The glow is unchanged — same builder, same
+ * `status-info` input (VW-79).
+ */
+function intensityColors(mode: ThemeMode) {
+  const t = getSemanticColors(mode)
+  return {
+    trackBg: t['surface-raised'],
+    labelColor: t['result-neutral'],
+    targetLineColor: alpha(t['status-info'], 0.5),
+    /** At-target is EMPHASIS, not depth: an info-toned glow through the shared builder. */
+    atTargetGlow: getGlowShadow(t['status-info'], 'subtle'),
+    // Zone colors graded by TRUE percentage (level * 100).
+    zone: {
+      building: t['status-success'], // below target ramp-up
+      approaching: t['status-warning'], // nearing target
+      target: t['brand-primary'], // exactly at target
+      over1: t['status-error'], // mild over-target
+      over2: WORKOUT_TOKENS.intensity.over2, // moderate over-target
+      over3: WORKOUT_TOKENS.intensity.over3, // severe over-target
+    },
+  }
+}
 
-// Zone colors graded by TRUE percentage (level * 100).
-const ZONE = {
-  building: t['status-success'], // below target ramp-up
-  approaching: t['status-warning'], // nearing target
-  target: t['brand-primary'], // exactly at target
-  over1: t['status-error'], // mild over-target
-  over2: WORKOUT_TOKENS.intensity.over2, // moderate over-target
-  over3: WORKOUT_TOKENS.intensity.over3, // severe over-target
-} as const
+type ZoneColors = ReturnType<typeof intensityColors>['zone']
 
 type OverTier = 0 | 1 | 2 | 3
 
@@ -59,13 +70,13 @@ interface Zone {
 const BULGE_SIZE: Record<Exclude<OverTier, 0>, number> = { 1: 8, 2: 10, 3: 11 }
 
 /** Map a true percentage to its fill color and over-target tier. */
-function zoneForPct(pct: number): Zone {
-  if (pct >= 125) return { color: ZONE.over3, over: 3 }
-  if (pct >= 115) return { color: ZONE.over2, over: 2 }
-  if (pct > 100) return { color: ZONE.over1, over: 1 }
-  if (pct === 100) return { color: ZONE.target, over: 0 }
-  if (pct >= 75) return { color: ZONE.approaching, over: 0 }
-  return { color: ZONE.building, over: 0 }
+function zoneForPct(pct: number, zone: ZoneColors): Zone {
+  if (pct >= 125) return { color: zone.over3, over: 3 }
+  if (pct >= 115) return { color: zone.over2, over: 2 }
+  if (pct > 100) return { color: zone.over1, over: 1 }
+  if (pct === 100) return { color: zone.target, over: 0 }
+  if (pct >= 75) return { color: zone.approaching, over: 0 }
+  return { color: zone.building, over: 0 }
 }
 
 function clampFill(value: number): number {
@@ -90,10 +101,11 @@ export function IntensityBar({
   className,
   ...props
 }: IntensityBarProps) {
+  const colors = intensityColors(useSurfaceMode())
   const isVertical = orientation === 'vertical'
   const fillLevel = clampFill(level)
   const pct = Math.round(Math.max(0, level) * 100)
-  const zone = zoneForPct(pct)
+  const zone = zoneForPct(pct, colors.zone)
   const atTarget = isAtTarget(pct, threshold)
 
   const [fillAnim] = useState(() => new Animated.Value(fillLevel))
@@ -142,7 +154,7 @@ export function IntensityBar({
         left: -3,
         right: -3,
         height: 1.5,
-        backgroundColor: TARGET_LINE_COLOR,
+        backgroundColor: colors.targetLineColor,
         zIndex: 4,
       }
     : {
@@ -151,7 +163,7 @@ export function IntensityBar({
         top: -3,
         bottom: -3,
         width: 1.5,
-        backgroundColor: TARGET_LINE_COLOR,
+        backgroundColor: colors.targetLineColor,
         zIndex: 4,
       }
 
@@ -169,7 +181,7 @@ export function IntensityBar({
         style={{
           ...trackStyle,
           borderRadius: 3,
-          backgroundColor: TRACK_BG,
+          backgroundColor: colors.trackBg,
           position: 'relative',
           overflow: 'visible',
         }}
@@ -181,7 +193,7 @@ export function IntensityBar({
             borderRadius: 3,
             backgroundColor: zone.color,
             zIndex: 2,
-            ...(atTarget ? AT_TARGET_GLOW : null),
+            ...(atTarget ? colors.atTargetGlow : null),
           }}
           testID="intensity-fill"
         />
@@ -194,7 +206,7 @@ export function IntensityBar({
       <Text
         style={{
           fontSize: 8,
-          color: LABEL_COLOR,
+          color: colors.labelColor,
           fontFamily: '"Nunito Sans", sans-serif',
           marginTop: 6,
         }}
@@ -209,7 +221,7 @@ export function IntensityBar({
           style={{
             fontSize: 8,
             fontWeight: '500',
-            color: LABEL_COLOR,
+            color: colors.labelColor,
             fontFamily: 'Inter, sans-serif',
             marginTop: 2,
           }}

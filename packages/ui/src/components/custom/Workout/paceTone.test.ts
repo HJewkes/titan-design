@@ -21,9 +21,18 @@ describe('paceTone', () => {
 
   describe('paceToneColor', () => {
     it('maps each tone to its real titan literal hex', () => {
-      expect(paceToneColor('ahead')).toBe('#2ED573') // status-success (green 300)
-      expect(paceToneColor('behind')).toBe('#F9B415') // status-warning (amber 300)
-      expect(paceToneColor('neutral')).toBe('#01B5D1') // cyan 400
+      expect(paceToneColor('ahead', 'dark')).toBe('#2ED573') // status-success (green 300)
+      expect(paceToneColor('behind', 'dark')).toBe('#F9B415') // status-warning (amber 300)
+      expect(paceToneColor('neutral', 'dark')).toBe('#01B5D1') // cyan 400
+    })
+
+    // The mode is a real parameter, not decoration: the caller passes
+    // `useSurfaceMode()` so the fill follows the theme (VW-316). These three roles
+    // happen to be mode-invariant today, which is why no rendered colour moved.
+    it('resolves through the requested mode', () => {
+      for (const tone of ['ahead', 'behind', 'neutral'] as const) {
+        expect(paceToneColor(tone, 'light')).toBe(paceToneColor(tone, 'dark'))
+      }
     })
   })
 })

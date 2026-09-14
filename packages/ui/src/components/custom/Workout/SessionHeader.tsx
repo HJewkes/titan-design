@@ -70,7 +70,8 @@ export function SessionHeader({
 }: SessionHeaderProps) {
   const upcoming = next != null
   const totalSets = plan.reduce((sum, e) => sum + e.sets, 0)
-  const onSurface = onSurfaceColors(useSurfaceMode())
+  const mode = useSurfaceMode()
+  const onSurface = onSurfaceColors(mode)
 
   const hasPace = !upcoming && budgetMs != null && elapsedMs != null
   const target = hasPace ? (elapsedMs as number) / (budgetMs as number) : undefined
@@ -78,7 +79,7 @@ export function SessionHeader({
   const setsLabel = upcoming ? `${totalSets} sets` : `${Math.floor(setsDone)}/${totalSets} sets`
   const setsLabelColor = upcoming
     ? onSurface.secondary
-    : paceToneColor(paceTone(totalSets > 0 ? setsDone / totalSets : 0, target))
+    : paceToneColor(paceTone(totalSets > 0 ? setsDone / totalSets : 0, target), mode)
 
   return (
     <Surface

@@ -1,11 +1,10 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps, type ViewStyle } from 'react-native'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { greyRamp } from '../../../theme/tokens/primitives'
 import { liftStyle } from '../../../theme/lift'
+import { useSurfaceMode } from '../../ui/surface'
 import { alpha } from '../../../utils/colors'
-
-const t = getSemanticColors('dark')
 
 export interface DeviationBarProps extends ViewProps {
   deviation: number
@@ -13,8 +12,9 @@ export interface DeviationBarProps extends ViewProps {
   className?: string
 }
 
-function getDotColor(deviation: number): string {
+function getDotColor(deviation: number, mode: ThemeMode): string {
   const abs = Math.abs(deviation)
+  const t = getSemanticColors(mode)
   if (deviation < -0.3) return t['status-success']
   if (abs <= 0.3) return greyRamp[500]
   if (abs <= 0.7) return t['status-warning']
@@ -28,6 +28,8 @@ function getDeviationDescription(deviation: number): string {
 }
 
 export function DeviationBar({ deviation, width, className, ...props }: DeviationBarProps) {
+  const mode = useSurfaceMode()
+  const t = getSemanticColors(mode)
   const clamped = Math.max(-1, Math.min(1, deviation))
   const resolvedWidth = width ?? 40
   const dotPosition = ((clamped + 1) / 2) * resolvedWidth
@@ -76,7 +78,7 @@ export function DeviationBar({ deviation, width, className, ...props }: Deviatio
           // The dot is a knob resting on the track: one plane of lift. Its light
           // ring is already the edge, so the lift contributes the shadow alone.
           ...liftStyle(1, 'dark', { rim: 0 }),
-          backgroundColor: getDotColor(clamped),
+          backgroundColor: getDotColor(clamped, mode),
           left: Math.max(0, Math.min(dotPosition - dotSize / 2, resolvedWidth - dotSize)),
           top: (containerHeight - dotSize) / 2,
         }}
