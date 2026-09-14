@@ -88,6 +88,27 @@ describe('BodyMap', () => {
     })
   })
 
+  describe('size variants', () => {
+    it('renders identical figure geometry for size unset and size="phone"', () => {
+      const { unmount } = render(<BodyMap data={data} view="front" />)
+      const defaultStyle = screen.getByTestId('body-map-svg').getAttribute('style')
+      expect(defaultStyle).toContain('width: 160px')
+      unmount()
+
+      render(<BodyMap data={data} view="front" size="phone" />)
+      const phoneStyle = screen.getByTestId('body-map-svg').getAttribute('style')
+      expect(phoneStyle).toBe(defaultStyle)
+    })
+
+    it('renders a larger figure and type ramp for size="wall"', () => {
+      render(<BodyMap data={data} view="front" size="wall" />)
+      expect(screen.getByTestId('body-map-svg').getAttribute('style')).toContain('width: 480px')
+      expect(screen.getByTestId('body-map-muscle-dot-chest').getAttribute('style')).toContain(
+        'width: 14px'
+      )
+    })
+  })
+
   describe('accessibility', () => {
     it('labels each muscle button with name, status, and weekly sets', () => {
       render(<BodyMap data={data} view="front" />)

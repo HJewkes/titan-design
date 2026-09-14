@@ -201,6 +201,18 @@ type Story = StoryObj<typeof TrainingStatusPage>
 
 export const Default: Story = {}
 
+export const Wall: Story = {
+  args: { size: 'wall' },
+  parameters: {
+    viewport: {
+      viewports: {
+        wall: { name: 'Wall', styles: { width: '1920px', height: '1080px' }, type: 'desktop' },
+      },
+      defaultViewport: 'wall',
+    },
+  },
+}
+
 export const NeedsAttention: Story = {
   args: {
     meso: {

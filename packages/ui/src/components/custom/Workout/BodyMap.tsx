@@ -33,7 +33,23 @@ const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
 
 const OUTLINE_FILL = alpha(primitiveColors.white, 0.08)
 const OUTLINE_BORDER = alpha(primitiveColors.white, 0.12)
-const BODY_SCALE = 0.8 // 200x400 intrinsic -> ~160x320 px
+
+/** Presentation size for BodyMap and TrainingStatusPage: 'phone' (default) keeps
+ * today's compact geometry; 'wall' scales up for large-display dashboards. */
+export type BodyMapSize = 'phone' | 'wall'
+
+/** Figure scale per size — drives react-native-body-highlighter's `scale` prop
+ * (the rendered SVG is 200*scale wide by 400*scale tall). */
+const BODY_SCALE: Record<BodyMapSize, number> = {
+  phone: 0.8, // 200x400 intrinsic -> ~160x320 px
+  wall: 2.4, // 200x400 intrinsic -> 480x960 px
+}
+
+/** Modest type ramp for the legend/toggle text at wall size; 1 (no-op) at phone. */
+export const TYPE_RAMP: Record<BodyMapSize, number> = {
+  phone: 1,
+  wall: 2,
+}
 
 export interface BodyMapData {
   muscleGroup: MuscleGroup
@@ -58,6 +74,8 @@ export interface BodyMapProps extends ViewProps {
   highlightedMuscle?: MuscleGroup | null
   /** Show simplified (8 groups) or detailed (15 groups). */
   mode?: 'simple' | 'detailed'
+  /** Presentation size: 'phone' (default) or 'wall' for large-display dashboards. */
+  size?: BodyMapSize
   className?: string
 }
 
@@ -151,9 +169,12 @@ export function BodyMap({
   onMusclePress,
   highlightedMuscle,
   mode = 'detailed',
+  size = 'phone',
   className,
   ...props
 }: BodyMapProps) {
+  const bodyScale = BODY_SCALE[size]
+  const ramp = TYPE_RAMP[size]
   const slugParts = useMemo(() => buildSlugParts(data), [data])
   const legend = useMemo(
     () => (mode === 'simple' ? buildSimpleLegend(data) : buildDetailedLegend(data)),
@@ -191,12 +212,12 @@ export function BodyMap({
 
   return (
     <View className={cn(className)} testID="body-map" {...props}>
-      <ViewToggle view={view} onViewChange={onViewChange} />
+      <ViewToggle view={view} onViewChange={onViewChange} ramp={ramp} />
 
       <Animated.View
         style={[
           {
-            width: 200 * BODY_SCALE,
+            width: 200 * bodyScale,
             alignSelf: 'center',
             transform: [{ scale }],
           },
@@ -213,7 +234,7 @@ export function BodyMap({
         <Body
           side={view}
           data={slugParts}
-          scale={BODY_SCALE}
+          scale={bodyScale}
           gender="male"
           defaultFill={OUTLINE_FILL}
           border={OUTLINE_BORDER}
@@ -225,8 +246,8 @@ export function BodyMap({
         <Text
           className="text-text-secondary"
           style={{
-            marginTop: 8,
-            fontSize: 12,
+            marginTop: 8 * ramp,
+            fontSize: 12 * ramp,
             textAlign: 'center',
             fontFamily: 'Inter, sans-serif',
           }}
@@ -237,7 +258,7 @@ export function BodyMap({
       ) : (
         <View
           className="flex-row flex-wrap"
-          style={{ marginTop: 10, gap: 6, justifyContent: 'center' }}
+          style={{ marginTop: 10 * ramp, gap: 6 * ramp, justifyContent: 'center' }}
           testID="body-map-legend"
         >
           {legend.map((entry) => (
@@ -246,6 +267,7 @@ export function BodyMap({
               entry={entry}
               highlighted={highlightedMuscle === entry.muscle}
               onMusclePress={onMusclePress}
+              ramp={ramp}
             />
           ))}
         </View>
@@ -257,13 +279,14 @@ export function BodyMap({
 interface ViewToggleProps {
   view: 'front' | 'back'
   onViewChange?: (view: 'front' | 'back') => void
+  ramp: number
 }
 
-function ViewToggle({ view, onViewChange }: ViewToggleProps) {
+function ViewToggle({ view, onViewChange, ramp }: ViewToggleProps) {
   return (
     <View
       className="flex-row self-center"
-      style={{ gap: 4, marginBottom: 8 }}
+      style={{ gap: 4 * ramp, marginBottom: 8 * ramp }}
       testID="body-map-view-toggle"
     >
       {(['front', 'back'] as const).map((side) => {
@@ -277,8 +300,8 @@ function ViewToggle({ view, onViewChange }: ViewToggleProps) {
             aria-pressed={active}
             disabled={!onViewChange}
             style={{
-              paddingHorizontal: 12,
-              paddingVertical: 4,
+              paddingHorizontal: 12 * ramp,
+              paddingVertical: 4 * ramp,
               borderRadius: 9999,
               backgroundColor: active ? alpha(BRAND_PRIMARY, 0.16) : 'transparent',
               borderWidth: 1,
@@ -288,7 +311,7 @@ function ViewToggle({ view, onViewChange }: ViewToggleProps) {
           >
             <Text
               style={{
-                fontSize: 12,
+                fontSize: 12 * ramp,
                 fontFamily: 'Inter, sans-serif',
                 fontWeight: active ? '700' : '500',
                 color: active ? BRAND_PRIMARY : resolveColor('text-secondary'),
@@ -308,9 +331,10 @@ interface MuscleButtonProps {
   entry: LegendEntry
   highlighted: boolean
   onMusclePress?: (muscleGroup: MuscleGroup) => void
+  ramp: number
 }
 
-function MuscleButton({ entry, highlighted, onMusclePress }: MuscleButtonProps) {
+function MuscleButton({ entry, highlighted, onMusclePress, ramp }: MuscleButtonProps) {
   const dotColor = getHeatmapColor(entry.status, entry.intensity)
   const label = `${entry.name}, ${VOLUME_STATUS_LABELS[entry.status]}, ${entry.sets} sets this week`
   return (
@@ -323,9 +347,9 @@ function MuscleButton({ entry, highlighted, onMusclePress }: MuscleButtonProps) 
       style={{
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 5,
-        paddingHorizontal: 8,
-        paddingVertical: 3,
+        gap: 5 * ramp,
+        paddingHorizontal: 8 * ramp,
+        paddingVertical: 3 * ramp,
         borderRadius: 9999,
         borderWidth: 1,
         borderColor: highlighted ? BRAND_PRIMARY : resolveColor('hairline-default'),
@@ -333,14 +357,14 @@ function MuscleButton({ entry, highlighted, onMusclePress }: MuscleButtonProps) 
       testID={`body-map-muscle-${entry.key}`}
     >
       <View
-        style={{ width: 7, height: 7, borderRadius: 9999, backgroundColor: dotColor }}
+        style={{ width: 7 * ramp, height: 7 * ramp, borderRadius: 9999, backgroundColor: dotColor }}
         accessibilityElementsHidden
         testID={`body-map-muscle-dot-${entry.key}`}
       />
       <Text
         className="text-text-primary"
         style={{
-          fontSize: 11,
+          fontSize: 11 * ramp,
           fontFamily: 'Inter, sans-serif',
           fontWeight: '500',
         }}

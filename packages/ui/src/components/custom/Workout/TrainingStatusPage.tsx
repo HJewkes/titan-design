@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useMemo, useState } from 'react'
 import { View, Text, type ViewProps } from 'react-native'
-import { BodyMap, type BodyMapData } from './BodyMap'
+import { BodyMap, TYPE_RAMP, type BodyMapData, type BodyMapSize } from './BodyMap'
 import {
   BodyMapDetailPanel,
   type ContributingExercise,
@@ -62,6 +62,8 @@ export interface TrainingStatusPageProps extends ViewProps {
   meso: MesoStatusCardProps
   /** Muscles tracked this week. */
   muscles: TrainingStatusMuscle[]
+  /** Presentation size: 'phone' (default, fixed 390px width) or 'wall' (fluid, larger body maps). */
+  size?: BodyMapSize
   className?: string
 }
 
@@ -154,24 +156,25 @@ function SummaryCards({ summary }: { summary: TrainingStatusSummary }) {
   )
 }
 
-function StatusLegend() {
+function StatusLegend({ size = 'phone' }: { size?: BodyMapSize }) {
+  const ramp = TYPE_RAMP[size]
   return (
     <View
       className="flex-row flex-wrap"
-      style={{ gap: 10, justifyContent: 'center' }}
+      style={{ gap: 10 * ramp, justifyContent: 'center' }}
       testID="training-status-page-legend"
     >
       {STATUS_ORDER.map((status) => (
         <View
           key={status}
           className="flex-row items-center"
-          style={{ gap: 5 }}
+          style={{ gap: 5 * ramp }}
           testID={`training-status-page-legend-${status}`}
         >
           <View
             style={{
-              width: 8,
-              height: 8,
+              width: 8 * ramp,
+              height: 8 * ramp,
               borderRadius: 9999,
               backgroundColor: getHeatmapColor(status, 0.6),
             }}
@@ -180,7 +183,7 @@ function StatusLegend() {
           <Text
             className="text-text-secondary"
             style={{
-              fontSize: 11,
+              fontSize: 11 * ramp,
               fontFamily: 'Inter, sans-serif',
               textTransform: 'capitalize',
             }}
@@ -198,9 +201,10 @@ interface BodyMapColumnProps {
   muscles: TrainingStatusMuscle[]
   selected: MuscleGroup | null
   onSelect: (muscle: MuscleGroup) => void
+  size?: BodyMapSize
 }
 
-function BodyMapColumn({ side, muscles, selected, onSelect }: BodyMapColumnProps) {
+function BodyMapColumn({ side, muscles, selected, onSelect, size }: BodyMapColumnProps) {
   const data = useMemo(() => toBodyMapData(muscles, side), [muscles, side])
   return (
     <View style={{ flexGrow: 1, flexBasis: '46%' }} testID={`training-status-page-bodymap-${side}`}>
@@ -210,6 +214,7 @@ function BodyMapColumn({ side, muscles, selected, onSelect }: BodyMapColumnProps
         onMusclePress={onSelect}
         highlightedMuscle={selected}
         mode="detailed"
+        size={size}
       />
     </View>
   )
@@ -230,6 +235,7 @@ export function TrainingStatusPage({
   title = 'Training Status',
   meso,
   muscles,
+  size = 'phone',
   className,
   ...props
 }: TrainingStatusPageProps) {
@@ -240,7 +246,7 @@ export function TrainingStatusPage({
   return (
     <View
       className={['bg-background-base', className].filter(Boolean).join(' ')}
-      style={{ position: 'relative', width: 390 }}
+      style={{ position: 'relative', ...(size === 'phone' ? { width: 390 } : {}) }}
       accessibilityRole={'main' as ViewProps['accessibilityRole']}
       aria-label={title}
       testID="training-status-page"
@@ -280,15 +286,17 @@ export function TrainingStatusPage({
               muscles={muscles}
               selected={selected}
               onSelect={setSelected}
+              size={size}
             />
             <BodyMapColumn
               side="back"
               muscles={muscles}
               selected={selected}
               onSelect={setSelected}
+              size={size}
             />
           </View>
-          <StatusLegend />
+          <StatusLegend size={size} />
         </View>
       </View>
 

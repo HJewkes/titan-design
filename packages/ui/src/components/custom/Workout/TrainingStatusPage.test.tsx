@@ -117,6 +117,27 @@ describe('TrainingStatusPage', () => {
     expect(screen.getByTestId('training-status-page-title')).toHaveTextContent('Weekly Volume')
   })
 
+  it('keeps the fixed phone width when size is unset or "phone"', () => {
+    const { unmount } = render(<TrainingStatusPage meso={meso} muscles={muscles} />)
+    const defaultStyle = screen.getByTestId('training-status-page').getAttribute('style')
+    expect(defaultStyle).toContain('width: 390px')
+    unmount()
+
+    render(<TrainingStatusPage meso={meso} muscles={muscles} size="phone" />)
+    const phoneStyle = screen.getByTestId('training-status-page').getAttribute('style')
+    expect(phoneStyle).toBe(defaultStyle)
+  })
+
+  it('drops the fixed width and scales the body maps for size="wall"', () => {
+    render(<TrainingStatusPage meso={meso} muscles={muscles} size="wall" />)
+    expect(screen.getByTestId('training-status-page').getAttribute('style')).not.toContain('width:')
+
+    const frontFigure = screen
+      .getByTestId('training-status-page-bodymap-front')
+      .querySelector('[data-testid="body-map-svg"]')
+    expect(frontFigure?.getAttribute('style')).toContain('width: 480px')
+  })
+
   it('opens the detail panel for a tapped muscle and closes it again', () => {
     render(<TrainingStatusPage meso={meso} muscles={muscles} />)
     expect(screen.queryByTestId('body-map-detail-panel')).not.toBeInTheDocument()
