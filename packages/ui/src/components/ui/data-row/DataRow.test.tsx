@@ -71,18 +71,20 @@ describe('DataRow', () => {
 /**
  * DataRow's row inset, pinned (AW-142 wave two).
  *
- * DataRow shipped `py-2` and NO horizontal inset at all. It gains one at 12,
- * one rung below ListItem's 16, so the two row primitives read as one ladder:
- * ListItem 12/16 loose, DataRow 8/12 dense.
+ * `py-2` named, and nothing else: DataRow stays GUTTERLESS. Its two callers
+ * already sit inside a padded container, so giving it a horizontal inset here
+ * would double-inset them until wave three reached them. Wave three adds the
+ * inset in the same PR that strips the callers' own padding, so the two halves
+ * land atomically. Operator decision, 2026-09-14.
+ *
+ * The absence is asserted, not just the presence — a horizontal inset arriving
+ * on its own is exactly what this test exists to catch.
  */
 describe('DataRow geometry resolves to the spacing tokens', () => {
   const source = siblingSource(import.meta.url, 'DataRow.tsx')
 
-  it.each([['DataRow', ['py-inset-sm', 'px-inset-md'], ['8px', '12px']]] as const)(
-    '%s ships %s',
-    (functionName, classes, pixels) => {
-      expect(spacingClassesIn(source, functionName)).toEqual([...classes])
-      expect(resolveAll([...classes])).toEqual([...pixels])
-    }
-  )
+  it('ships py-inset-sm and no horizontal inset', () => {
+    expect(spacingClassesIn(source, 'DataRow')).toEqual(['py-inset-sm'])
+    expect(resolveAll(['py-inset-sm'])).toEqual(['8px'])
+  })
 })
