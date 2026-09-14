@@ -49,7 +49,76 @@ Note: FAMILY-E-SPEC.md:95 records the "before" hexes as `#4A90D9/#F5C842/#4CAF50
 (figure) and `#2C2C2C/#406D87/#14B8A6/#FF7900/#D14343` (chip). Neither matches what the code
 renders today — the tables above are measured from the current source, not the spec.
 
-## Proposal — one status, existing tokens only
+## Is `divergingScale` theme-aware?
+
+**No.** It is a plain array of literal hexes in `primitives.ts:321`, consumed as literals through
+`WORKOUT_TOKENS.heatmap`. Nothing about it is `var()`-backed, so the figure paints identically in
+light and dark — which is why the light-mode figure has no light-mode answer today.
+
+Four of its five entries have an exact SEMANTIC twin, so a ladder can quote the scale and stay
+theme-aware: `ds[0]` = `status-info`, `ds[2]` = `status-success-light`, `ds[3]` =
+`status-warning`, `ds[4]` = `status-error`. Only `ds[1]` (`cyan-300`) has no fill-role token —
+its one semantic use is `on-brand-secondary-subtle`, a text role. Row C of the story prints
+`= ds[n]` beside every value that matches, computed at render rather than asserted.
+
+Today every `status-*` token holds the same hex in both themes, so a ladder built from them
+resolves identically light and dark. The one rung that really moves is `untrained`
+(`text-tertiary`: `#888684` dark, `#A29F9D` light).
+
+## The three candidate ladders
+
+| rung          | B (5)                 | B2 (6)                         | B3 (6)                                  |
+| ------------- | --------------------- | ------------------------------ | --------------------------------------- |
+| `untrained`   | `text-tertiary`       | `text-tertiary`                | `text-tertiary`                         |
+| `behind`      | `status-info`         | `status-warning` = ds[3]       | `cyan-300` = ds[1] **NEW TOKEN NEEDED** |
+| `ontrack`     | `status-success`      | `status-info` = ds[0]          | `status-success`                        |
+| `target`      | `brand-primary`       | `status-success-light` = ds[2] | `status-success-light` = ds[2]          |
+| `approaching` | — folds into `target` | `brand-primary`                | `brand-primary`                         |
+| `over`        | `status-error`        | `status-error` = ds[4]         | `status-error` = ds[4]                  |
+
+B2 needs **no new token**: four of its six rungs are `divergingScale` entries quoted through their
+semantic twins. B3 needs one, because `cyan-300` has no fill-role token. `brand-primary` (orange)
+is not a `divergingScale` entry at all — the scale's warm side is `amber-300`, a gold, which B2
+spends on `behind`.
+
+### Measured (the story prints these live, under each row)
+
+| ladder | min adjacent ΔE | min all-pairs ΔE              | vs floor 8           |
+| ------ | --------------- | ----------------------------- | -------------------- |
+| B      | 8.3             | 8.3 (`ontrack`/`target`)      | pass                 |
+| B2     | 15.3            | **8.7** (`untrained`/`over`)  | pass — best of three |
+| B3     | 10.0            | 8.3 (`ontrack`/`approaching`) | pass                 |
+
+Adjacent-pair ΔE, dark mode:
+
+- **B** — untrained→behind 16.7 · behind→ontrack 27.9 · ontrack→target 8.3 · target→over 15.3
+- **B2** — untrained→behind 22.6 · behind→ontrack 32.0 · ontrack→target 32.4 · target→approaching 16.0 · approaching→over 15.3
+- **B3** — untrained→behind 18.6 · behind→ontrack 16.0 · ontrack→target 10.0 · target→approaching 16.0 · approaching→over 15.3
+
+Contrast of each fill against the figure's outline fill (`alpha(white, 0.08)` over the panel
+plane, dark = `#3D3B39`):
+
+- **B** — untrained 3.07 · behind 3.57 · ontrack 5.78 · target 4.24 · over 2.44
+- **B2** — untrained 3.07 · behind 6.14 · ontrack 3.57 · target 8.01 · approaching 4.24 · over 2.44
+- **B3** — untrained 3.07 · behind 6.17 · ontrack 5.78 · target 8.01 · approaching 4.24 · over 2.44
+
+`over` is the weakest fill on the figure in every ladder (2.44:1) — `status-error` is a dark red
+on a dark plane. That is true of the palette shipping today too.
+
+### Variants measured and rejected
+
+- **A truer yellow for B2.** `amber-200` (`#FFD352`) instead of `status-warning` drops the ladder
+  to 8.4 and `amber-100` to 1.6 — the yellower it gets, the closer it sits to the green. The gold
+  is both safer and already a token, so B2 uses `status-warning`.
+- **A steel blue for B3.** `brand-secondary` (`cyan-600`) is the genuine steel blue, but it lands
+  7.4 against `untrained` grey, under the floor. `blue-700` clears CVD at 8.3 but contrasts
+  1.62:1 against the outline fill, so it barely reads as a fill. `cyan-300` is the one cold value
+  that clears both, and it is `ds[1]`.
+- **Two greens split by lightness.** `status-success-dark` as the second green collides with
+  `status-error` under deuteranopia (ΔE 4.9) — a dark green and a mid red are the classic
+  confusion. B3's two greens are therefore the light pair (`green-300` / `green-200`, ΔE 10.0).
+
+## Ladder B in detail — one status, existing tokens only
 
 Keep taxonomy A's five members (they match the settled operator legend verbatim), rename B to
 `VolumeLandmarkZone`, and key every surface off this table.
@@ -87,9 +156,10 @@ The proposal is the only token-only candidate that clears the repo's categorical
 
 ## Open questions
 
-1. **Is brand orange the right "Target Met"?** It is the settled operator legend, but orange
-   sitting between green and red reads as caution to some viewers. Swapping to green-is-target
-   costs 1.1 ΔE and falls under the CVD floor, so the recommendation is to keep the legend order.
+1. **B, B2 or B3?** B2 measures best (8.7) and matches the stated preference — blue for on track,
+   green for met, yellow for behind, orange for approaching, red for over — and needs no new
+   token. B3 keeps a cold `behind` but needs one new fill-role token for `cyan-300`. B is the
+   five-value ladder and has no home for `approaching`.
 2. **Where does `approaching` go?** `getHeatmapColor` swaps `productive` for `amber-300` above
    intensity 0.85 — a sixth rendered colour the five-value status cannot name. Fold it into
    `target` and lose the near-MRV warning, or move it to a non-hue channel (glow radius, dashed
