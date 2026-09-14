@@ -1,10 +1,9 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useState, type ReactNode } from 'react'
 import { View, Pressable, Animated, type ViewProps } from 'react-native'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../ui/surface'
 import { alpha } from '../../../utils/colors'
-
-const t = getSemanticColors('dark')
 
 export type BaseBadgeVariant = 'plain' | 'pr'
 export type BaseBadgeSize = 'sm' | 'md' | 'lg'
@@ -30,12 +29,18 @@ export const baseBadgeSizeConfig: Record<
   lg: { fontSize: 12, paddingH: 10, paddingV: 4, iconSize: 14 },
 }
 
-const variantColors: Record<BaseBadgeVariant, { backgroundColor: string; borderColor: string }> = {
-  plain: { backgroundColor: t['surface-raised'], borderColor: t['hairline-default'] },
-  pr: {
-    backgroundColor: alpha(t['brand-primary'], 0.12),
-    borderColor: alpha(t['brand-primary'], 0.3),
-  },
+/** Resolved per render from the enclosing Surface's mode, never frozen at import (VW-316). */
+function variantColors(
+  mode: ThemeMode
+): Record<BaseBadgeVariant, { backgroundColor: string; borderColor: string }> {
+  const t = getSemanticColors(mode)
+  return {
+    plain: { backgroundColor: t['surface-raised'], borderColor: t['hairline-default'] },
+    pr: {
+      backgroundColor: alpha(t['brand-primary'], 0.12),
+      borderColor: alpha(t['brand-primary'], 0.3),
+    },
+  }
 }
 
 /**
@@ -52,7 +57,7 @@ export function BaseBadge({
 }: BaseBadgeProps) {
   const [scaleAnim] = useState(() => new Animated.Value(1))
   const config = baseBadgeSizeConfig[size]
-  const colors = variantColors[variant]
+  const colors = variantColors(useSurfaceMode())[variant]
 
   const handlePressIn = () => {
     Animated.timing(scaleAnim, {

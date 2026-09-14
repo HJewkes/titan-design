@@ -11,15 +11,14 @@ import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { primitiveColors, greyRamp } from '../../../theme/tokens/primitives'
 import { getGlowShadow } from '../../../theme/elevation'
 import { Tooltip } from '../../ui/tooltip/Tooltip'
-
-const t = getSemanticColors('dark')
+import { useSurfaceMode } from '../../ui/surface'
 
 /** Muted, un-reached track colour — a grey step, matches the IntensityBar track family. */
 const DEFAULT_TRACK_COLOR = greyRamp[800]
 /** Default needle / fill-marker colour. */
 const DEFAULT_MARKER_COLOR = primitiveColors.white
-/** Tick mark + tick label colour. */
-const TICK_COLOR = t['text-tertiary']
+/** Tick mark + tick label token — resolved per render so ticks follow the theme. */
+const TICK_TOKEN = 'text-tertiary'
 
 /** Density. `default` — the compact card/rail gauge. `wall` — the across-the-room dashboard scale. */
 export type ZoneTrackSize = 'default' | 'wall'
@@ -180,6 +179,8 @@ export function ZoneTrack({
   accessibilityLabel,
   ...props
 }: ZoneTrackProps) {
+  const t = getSemanticColors(useSurfaceMode())
+  const tickColor = t[TICK_TOKEN]
   const s = ZONE_SIZES[size]
   const trackHeight = trackHeightProp ?? s.trackHeight
   const needleOverhang = needleOverhangProp ?? s.needleOverhang
@@ -313,7 +314,7 @@ export function ZoneTrack({
         {/* Colored tick lines over the track (decorative; the labels below carry the a11y). */}
         {ticks?.map((tick, i) => {
           const emphasized = tick.emphasized === true
-          const lineColor = tick.color ?? (emphasized ? t['brand-primary'] : TICK_COLOR)
+          const lineColor = tick.color ?? (emphasized ? t['brand-primary'] : tickColor)
           const lineWidth = emphasized ? s.tickLineEmphasized : s.tickLineNormal
           return (
             <View
@@ -344,7 +345,7 @@ export function ZoneTrack({
             if (tick.label == null) return null
             const emphasized = tick.emphasized === true
             if (!showTickLabel(i, emphasized)) return null
-            const labelColor = tick.color ?? (emphasized ? t['brand-primary'] : TICK_COLOR)
+            const labelColor = tick.color ?? (emphasized ? t['brand-primary'] : tickColor)
             const labelNode = (
               <Text
                 testID="zone-track-tick-label"

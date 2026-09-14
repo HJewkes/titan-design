@@ -3,6 +3,7 @@ import React from 'react'
 import { View, Text, Pressable, TextInput } from 'react-native'
 import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../ui/surface'
 
 export interface InputBarProps {
   exerciseName: string
@@ -18,9 +19,6 @@ export interface InputBarProps {
   visible: boolean
 }
 
-const t = getSemanticColors('dark')
-const BRAND_PRIMARY = t['brand-primary']
-const ON_BRAND_PRIMARY = t['on-brand-primary']
 const INPUT_CLASSNAME = 'bg-surface-raised border-hairline-strong text-text-primary'
 
 const inputStyle = {
@@ -47,6 +45,8 @@ export function InputBar({
   canRecord,
   visible,
 }: InputBarProps) {
+  // Before the early return: the mode is read on every render, hook rules and all.
+  const t = getSemanticColors(useSurfaceMode())
   if (!visible) return null
 
   const setLabel = totalSets != null ? `Set ${setNumber}/${totalSets}` : `Set ${setNumber}`
@@ -138,7 +138,7 @@ export function InputBar({
         onPress={onRecord}
         disabled={!canRecord}
         style={({ pressed }) => ({
-          backgroundColor: BRAND_PRIMARY,
+          backgroundColor: t['brand-primary'],
           borderRadius: 8,
           paddingVertical: 10,
           paddingHorizontal: 16,
@@ -153,7 +153,7 @@ export function InputBar({
             fontSize: 13,
             fontWeight: '700',
             fontFamily: 'Inter, sans-serif',
-            color: ON_BRAND_PRIMARY,
+            color: t['on-brand-primary'],
           }}
         >
           Record

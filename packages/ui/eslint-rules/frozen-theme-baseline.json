@@ -11,9 +11,6 @@
   "src/components/custom/Workout/ActiveWorkoutPage.tsx": {
     "dark": 1
   },
-  "src/components/custom/Workout/BaseBadge.tsx": {
-    "dark": 1
-  },
   "src/components/custom/Workout/BodyMap.tsx": {
     "dark": 1
   },
@@ -23,16 +20,7 @@
   "src/components/custom/Workout/CapacityBandChart.tsx": {
     "dark": 1
   },
-  "src/components/custom/Workout/DeviationBar.tsx": {
-    "dark": 1
-  },
   "src/components/custom/Workout/ExerciseDetailPage.tsx": {
-    "dark": 1
-  },
-  "src/components/custom/Workout/InputBar.tsx": {
-    "dark": 1
-  },
-  "src/components/custom/Workout/IntensityBar.tsx": {
     "dark": 1
   },
   "src/components/custom/Workout/LiveAuraFrame.tsx": {
@@ -43,9 +31,6 @@
   },
   "src/components/custom/Workout/MesoStatusCard.tsx": {
     "dark": 1
-  },
-  "src/components/custom/Workout/paceTone.ts": {
-    "dark": 2
   },
   "src/components/custom/Workout/PrHistoryModal.tsx": {
     "dark": 1
@@ -75,9 +60,6 @@
     "dark": 1
   },
   "src/components/custom/Workout/VelocityStrip.tsx": {
-    "dark": 1
-  },
-  "src/components/custom/Workout/ZoneTrack.tsx": {
     "dark": 1
   },
   "src/components/ui/indicator/Indicator.tsx": {
