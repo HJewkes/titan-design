@@ -44,11 +44,26 @@ const colorToTone: Record<ChipColor, PillTone> = {
   info: 'info',
 }
 
-/** Chip keeps its own geometry and squared corners; Pill supplies the rest. */
+/**
+ * Chip keeps its squared corners; the padding is the unified squish ramp
+ * (AW-142), which Chip already measured at every rung.
+ */
 const sizeStyles: Record<ChipSize, { container: string; text: string; deleteButton: string }> = {
-  sm: { container: 'px-2 py-0.5 rounded', text: 'text-xs', deleteButton: 'ml-1 -mr-0.5' },
-  md: { container: 'px-3 py-1 rounded-md', text: 'text-sm', deleteButton: 'ml-1.5 -mr-1' },
-  lg: { container: 'px-4 py-1.5 rounded-md', text: 'text-base', deleteButton: 'ml-2 -mr-1' },
+  sm: {
+    container: 'px-squish-x-sm py-squish-y-sm rounded',
+    text: 'text-xs',
+    deleteButton: 'ml-1 -mr-0.5',
+  },
+  md: {
+    container: 'px-squish-x-md py-squish-y-md rounded-md',
+    text: 'text-sm',
+    deleteButton: 'ml-1.5 -mr-1',
+  },
+  lg: {
+    container: 'px-squish-x-lg py-squish-y-lg rounded-md',
+    text: 'text-base',
+    deleteButton: 'ml-2 -mr-1',
+  },
 }
 
 function DeleteButton({

@@ -15,7 +15,7 @@ const meta: Meta<typeof Pill> = {
       control: 'select',
       options: ['neutral', 'brand', 'brand-secondary', 'success', 'warning', 'error', 'info'],
     },
-    size: { control: 'select', options: ['xs', 'sm', 'md', 'lg', 'xl'] },
+    size: { control: 'select', options: ['sm', 'md', 'lg'] },
     leading: { control: 'select', options: [undefined, 'dot'] },
     rounded: { control: 'boolean' },
     isDisabled: { control: 'boolean' },
@@ -150,22 +150,30 @@ export const OnBothPlanes: Story = {
 
 export const AllSizes: Story = {
   render: () => (
-    <View className="flex-row gap-2 items-center">
-      <Pill size="xs" tone="brand">
-        XS
-      </Pill>
-      <Pill size="sm" tone="brand">
-        SM
-      </Pill>
-      <Pill size="md" tone="brand">
-        MD
-      </Pill>
-      <Pill size="lg" tone="brand">
-        LG
-      </Pill>
-      <Pill size="xl" tone="brand">
-        XL
-      </Pill>
+    <View className="gap-4">
+      <View className="flex-row gap-2 items-center">
+        <Pill size="sm" tone="brand">
+          SM · 8 / 2
+        </Pill>
+        <Pill size="md" tone="brand">
+          MD · 12 / 4
+        </Pill>
+        <Pill size="lg" tone="brand">
+          LG · 16 / 6
+        </Pill>
+      </View>
+      <Typography variant="caption" color="secondary">
+        Three rungs of the shared squish ramp (AW-142). `xs` and `xl` still compile for one release
+        and render as `sm` and `lg`.
+      </Typography>
+      <View className="flex-row gap-2 items-center">
+        <Pill size="xs" tone="neutral">
+          xs → sm
+        </Pill>
+        <Pill size="xl" tone="neutral">
+          xl → lg
+        </Pill>
+      </View>
     </View>
   ),
 }

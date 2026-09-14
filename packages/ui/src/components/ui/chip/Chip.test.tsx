@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Chip } from './Chip'
+import { resolveAll, siblingSource, sizeClasses } from '../../../test/spacing-resolver'
 
 describe('Chip', () => {
   it('renders children correctly', () => {
@@ -119,5 +120,31 @@ describe('Chip', () => {
       render(<Chip onDelete={() => {}}>Tag</Chip>)
       expect(screen.getByLabelText('Remove')).toBeInTheDocument()
     })
+  })
+})
+
+/**
+ * Chip's squish geometry, pinned (AW-142 wave two).
+ *
+ * Chip already measured 8/2, 12/4, 16/6 at every rung, so naming the tokens
+ * moved no pixels. That is exactly what this test is for: it fails the day the
+ * ramp moves under Chip without anyone editing Chip.
+ */
+describe('Chip geometry resolves to the squish tokens', () => {
+  const source = siblingSource(import.meta.url, 'Chip.tsx')
+  const classes = (level: string) => sizeClasses(source, 'sizeStyles', level, 'container')
+
+  const ramp = [
+    ['sm', ['8px', '2px']],
+    ['md', ['12px', '4px']],
+    ['lg', ['16px', '6px']],
+  ] as const
+
+  it.each(ramp)('%s uses the squish tokens', (level) => {
+    expect(classes(level).slice(0, 2)).toEqual([`px-squish-x-${level}`, `py-squish-y-${level}`])
+  })
+
+  it.each(ramp)('%s measures what Chip shipped before the tokens', (level, pixels) => {
+    expect(resolveAll(classes(level).slice(0, 2))).toEqual([...pixels])
   })
 })

@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Pill } from './Pill'
+import { resolveAll, siblingSource, sizeClasses } from '../../../test/spacing-resolver'
 
 describe('Pill', () => {
   it('renders string children', () => {
@@ -163,5 +164,49 @@ describe('Pill', () => {
       render(<Pill onPress={() => {}}>Filter</Pill>)
       expect(screen.getByRole('button')).toBeInTheDocument()
     })
+  })
+})
+
+/**
+ * Pill's squish geometry, pinned (AW-142 wave two).
+ *
+ * The three rungs are the shared squish ramp — the same 8/2, 12/4, 16/6 that
+ * Badge and Chip now measure. The pixel numbers are spelled out rather than
+ * imported: they are what the ramp is FOR, so a token move has to fail here.
+ */
+describe('Pill geometry resolves to the squish tokens', () => {
+  const source = siblingSource(import.meta.url, 'Pill.tsx')
+  const classes = (level: string) => sizeClasses(source, 'sizeStyles', level, 'container')
+
+  const ramp = [
+    ['sm', ['px-squish-x-sm', 'py-squish-y-sm'], ['8px', '2px']],
+    ['md', ['px-squish-x-md', 'py-squish-y-md'], ['12px', '4px']],
+    ['lg', ['px-squish-x-lg', 'py-squish-y-lg'], ['16px', '6px']],
+  ] as const
+
+  it.each(ramp)('%s uses the squish tokens', (level, expected) => {
+    expect(classes(level)).toEqual([...expected])
+  })
+
+  it.each(ramp)('%s measures the squish ramp', (level, _, pixels) => {
+    expect(resolveAll(classes(level))).toEqual([...pixels])
+  })
+
+  it('has no rung outside sm/md/lg', () => {
+    expect(source.match(/^\s{2}(xs|xl):/m)).toBeNull()
+  })
+})
+
+describe('Pill deprecated size aliases', () => {
+  it('maps xs onto sm and xl onto lg', () => {
+    const source = siblingSource(import.meta.url, 'Pill.tsx')
+    expect(source).toMatch(/sizeAliases[^=]*= \{ xs: 'sm', xl: 'lg' \}/)
+  })
+
+  it('does not warn at runtime — the deprecation is a type, not a console line', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    render(<Pill size="xs">Legacy</Pill>)
+    expect(warn).not.toHaveBeenCalled()
+    warn.mockRestore()
   })
 })
