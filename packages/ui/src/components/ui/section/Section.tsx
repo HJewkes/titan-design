@@ -24,12 +24,12 @@ export interface SectionHeaderProps {
 
 export function SectionHeader({ title, subtitle, trailing, className }: SectionHeaderProps) {
   return (
-    <View className={cn('flex-row items-center justify-between mb-3 px-1', className)}>
-      <View className="flex-1">
+    <View className={cn('flex-row items-center justify-between mb-3 px-inset-xs', className)}>
+      <View className="flex-1 gap-stack-sm">
         <Text className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
           {title}
         </Text>
-        {subtitle && <Text className="text-xs text-text-tertiary mt-0.5">{subtitle}</Text>}
+        {subtitle && <Text className="text-xs text-text-tertiary">{subtitle}</Text>}
       </View>
       {trailing && <View>{trailing}</View>}
     </View>

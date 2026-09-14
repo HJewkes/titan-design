@@ -130,9 +130,9 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
   const showHelper = !showError && helperText
 
   return (
-    <View className={cn('w-full', className)}>
+    <View className={cn('w-full gap-stack-md', className)}>
       {label && (
-        <Text className="mb-1.5 text-sm font-medium text-text-primary">
+        <Text className="text-sm font-medium text-text-primary">
           {label}
           {isRequired && <Text className="text-status-error ml-0.5">*</Text>}
         </Text>
@@ -179,9 +179,9 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
         )}
       </View>
 
-      {showHelper && <Text className="mt-1.5 text-xs text-text-secondary">{helperText}</Text>}
+      {showHelper && <Text className="text-xs text-text-secondary">{helperText}</Text>}
 
-      {showError && <Text className="mt-1.5 text-xs text-status-error">{errorMessage}</Text>}
+      {showError && <Text className="text-xs text-status-error">{errorMessage}</Text>}
     </View>
   )
 })

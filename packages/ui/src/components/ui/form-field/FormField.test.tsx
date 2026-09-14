@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { FormField, FormSection, FormActions, FormRow } from './FormField'
+import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 
 describe('FormField', () => {
   it('renders label and children', () => {
@@ -272,5 +273,34 @@ describe('FormRow', () => {
       </FormRow>
     )
     expect(screen.getByText('Field')).toBeInTheDocument()
+  })
+})
+
+/**
+ * FormField's section stack, pinned (AW-142 wave two).
+ *
+ * `mb-4` on the title block and `mt-1` on the description become the two
+ * containers' own gaps. Unchanged in pixels.
+ */
+describe('FormField geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'FormField.tsx')
+
+  it.each([
+    ['the section root', 'w-full gap-stack-lg', ['100%', '16px']],
+    ['the title block', 'gap-stack-sm', ['4px']],
+    ['the actions band', 'flex-row items-center gap-3 pt-inset-lg', ['12px', '16px']],
+  ] as const)('%s ships `%s`', (_label, classes, pixels) => {
+    expect(source).toContain(classes)
+    const spacing = classes.split(' ').filter((c) => resolveAll([c])[0] !== undefined)
+    expect(resolveAll(spacing)).toEqual([...pixels])
+  })
+
+  // Both are conditional expressions rather than one class literal, so they are
+  // read as source rather than through `spacingClassesIn`.
+  it('spaces label, control and helper by the field root, not by three margins', () => {
+    expect(source).toContain("isHorizontal ? 'flex-row items-start' : 'gap-stack-md'")
+    expect(source).toContain("cn('gap-stack-md', isHorizontal && 'flex-1')")
+    expect(source).not.toMatch(/mb-1\.5|mt-1\.5/)
+    expect(resolveAll(['gap-stack-md'])).toEqual(['8px'])
   })
 })

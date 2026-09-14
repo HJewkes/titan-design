@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Text } from 'react-native'
 import { Section, SectionHeader, SectionContent } from './Section'
+import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 
 describe('Section', () => {
   it('renders children correctly', () => {
@@ -112,5 +113,25 @@ describe('Section compound component', () => {
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
+  })
+})
+
+/**
+ * Section's header, pinned (AW-142 wave two).
+ *
+ * The subtitle's 2px `mt-0.5` becomes the title column's 4px stack gap. The
+ * header's own `mb-3` stays a margin: it spaces the header against whatever
+ * the caller puts under it, which is not a sibling Section owns.
+ */
+describe('Section geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'Section.tsx')
+
+  it.each([
+    ['the header', 'flex-row items-center justify-between mb-3 px-inset-xs', ['12px', '4px']],
+    ['the title column', 'flex-1 gap-stack-sm', ['4px']],
+  ] as const)('%s ships `%s`', (_label, classes, pixels) => {
+    expect(source).toContain(classes)
+    const spacing = classes.split(' ').filter((c) => resolveAll([c])[0] !== undefined)
+    expect(resolveAll(spacing)).toEqual([...pixels])
   })
 })
