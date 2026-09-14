@@ -144,11 +144,9 @@ function StatusPill({ badge }: { badge: MesoStatusBadge }) {
   const colors = STATUS_VARIANTS[badge.variant]
   return (
     <View
-      className="flex-row items-center"
+      // 5/3 were off the grain; this is Pill's `sm` shape, so it takes Pill's rung.
+      className="flex-row items-center gap-inline-sm px-squish-x-sm py-squish-y-sm"
       style={{
-        gap: 5,
-        paddingVertical: 3,
-        paddingHorizontal: 8,
         borderRadius: 4,
         borderWidth: 1,
         backgroundColor: colors.bg,
@@ -199,9 +197,8 @@ function MetricCell({ metric }: { metric: MesoStatusMetric }) {
         {metric.label}
       </Text>
       <Text
-        className="text-text-primary"
+        className="text-text-primary mt-0.5"
         style={{
-          marginTop: 2,
           fontSize: 13,
           fontFamily: 'Inter, sans-serif',
           fontWeight: '600',
@@ -219,7 +216,7 @@ function Gauge({ gauge }: { gauge: MesoStatusGauge }) {
   const markerColor = getGaugeZoneColor(level)
   return (
     <View
-      style={{ gap: 6 }}
+      className="gap-1.5"
       accessibilityRole="progressbar"
       accessibilityValue={{ min: 0, max: 100, now: percentage }}
       accessibilityLabel={`${gauge.label}: ${percentage}%`}
@@ -273,6 +270,7 @@ function Gauge({ gauge }: { gauge: MesoStatusGauge }) {
             top: 0,
             bottom: 0,
             width: 1,
+            // optical: centres the 1px hairline on `left: 50%`, not its left edge.
             marginLeft: -0.5,
             backgroundColor: alpha(primitiveColors.white, 0.3),
           }}
@@ -284,6 +282,7 @@ function Gauge({ gauge }: { gauge: MesoStatusGauge }) {
             position: 'absolute',
             left: `${percentage}%`,
             top: -3,
+            // optical: half the 14px knob, centring it on `left: percentage%`.
             marginLeft: -7,
             width: 14,
             height: 14,
@@ -363,9 +362,9 @@ export function MesoStatusCard({
         ))}
       </View>
 
-      <View style={{ padding: 14, gap: 14 }} testID="meso-status-card-body">
+      <View className="p-3.5 gap-3.5" testID="meso-status-card-body">
         <View testID="meso-status-card-header">
-          <View className="flex-row items-center justify-between" style={{ gap: 8 }}>
+          <View className="flex-row items-center justify-between gap-inline-md">
             <Text
               className="text-text-primary"
               style={{
@@ -381,9 +380,8 @@ export function MesoStatusCard({
             <StatusPill badge={statusBadge} />
           </View>
           <Text
-            className="text-text-secondary"
+            className="text-text-secondary mt-stack-sm"
             style={{
-              marginTop: 4,
               fontSize: 12,
               fontFamily: 'Inter, sans-serif',
             }}
@@ -393,8 +391,8 @@ export function MesoStatusCard({
           </Text>
           {basis != null && (
             <Text
+              className="mt-0.5"
               style={{
-                marginTop: 2,
                 fontSize: 11,
                 fontFamily: 'Inter, sans-serif',
                 color: basisColor,
@@ -407,7 +405,7 @@ export function MesoStatusCard({
         </View>
 
         {metrics.length > 0 && (
-          <View className="flex-row flex-wrap" style={{ gap: 8 }} testID="meso-status-card-metrics">
+          <View className="flex-row flex-wrap gap-inline-md" testID="meso-status-card-metrics">
             {metrics.map((metric, index) => (
               <MetricCell key={`${metric.label}-${index}`} metric={metric} />
             ))}
@@ -415,7 +413,7 @@ export function MesoStatusCard({
         )}
 
         {gauges.length > 0 && (
-          <View style={{ gap: 12 }} testID="meso-status-card-gauges">
+          <View className="gap-3" testID="meso-status-card-gauges">
             {gauges.map((gauge, index) => (
               <Gauge key={`${gauge.label}-${index}`} gauge={gauge} />
             ))}
@@ -424,13 +422,12 @@ export function MesoStatusCard({
 
         {coaching != null && (
           <View
+            className="py-2.5 px-inset-md"
             style={{
               backgroundColor: alpha(WARNING, 0.06),
               borderWidth: 1,
               borderColor: alpha(WARNING, 0.15),
               borderRadius: 8,
-              paddingVertical: 10,
-              paddingHorizontal: 12,
             }}
             testID="meso-status-card-coaching"
           >
@@ -449,15 +446,12 @@ export function MesoStatusCard({
 
         {nextTarget != null && (
           <View
-            className="flex-row items-center"
+            className="flex-row items-center gap-inline-md py-2.5 px-inset-md"
             style={{
-              gap: 8,
               backgroundColor: alpha(SUCCESS, 0.06),
               borderWidth: 1,
               borderColor: alpha(SUCCESS, 0.2),
               borderRadius: 8,
-              paddingVertical: 10,
-              paddingHorizontal: 12,
             }}
             testID="meso-status-card-next-target"
           >

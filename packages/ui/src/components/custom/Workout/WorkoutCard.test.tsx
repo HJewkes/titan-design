@@ -1,4 +1,11 @@
 import { describe, it, expect, vi } from 'vitest'
+import { space } from '../../../theme/tokens/semantic'
+import {
+  siblingSource,
+  spacingClassesIn,
+  spacingClassesOn,
+  resolveAll,
+} from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { WorkoutCard, type WorkoutCardProps } from './WorkoutCard'
@@ -153,5 +160,31 @@ describe('WorkoutCard', () => {
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
+  })
+})
+
+/**
+ * WorkoutCard's geometry, pinned (AW-142). 14px has no semantic rung and stays
+ * numeric; the expanded strip's 6px gap likewise. The muscle-chip gap moved
+ * 5px -> `inline-sm` (4) and reads the JS export, because NativeWind has no
+ * `contentContainerClassName` for a ScrollView.
+ */
+describe('WorkoutCard geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'WorkoutCard.tsx')
+
+  it('keeps the card inset', () => {
+    expect(spacingClassesIn(source, 'WorkoutCard')).toEqual(['p-3.5'])
+    expect(resolveAll(['p-3.5'])).toEqual(['14px'])
+  })
+
+  it('insets the expanded exercise list', () => {
+    const classes = spacingClassesOn(source, 'workout-card-exercises')
+    expect(classes).toEqual(['px-inset-sm', 'pb-inset-sm', 'gap-1.5'])
+    expect(resolveAll(classes)).toEqual(['8px', '8px', '6px'])
+  })
+
+  it('spaces the muscle chips off the same inline rung the classes read', () => {
+    expect(space.inline.sm).toBe(4)
+    expect(resolveAll(['gap-inline-sm'])).toEqual(['4px'])
   })
 })

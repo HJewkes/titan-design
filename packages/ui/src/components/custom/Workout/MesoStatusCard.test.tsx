@@ -1,4 +1,10 @@
 import { describe, it, expect } from 'vitest'
+import {
+  siblingSource,
+  spacingClassesIn,
+  spacingClassesOn,
+  resolveAll,
+} from '../../../test/spacing-resolver'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { MesoStatusCard, type MesoStatusCardProps } from './MesoStatusCard'
@@ -220,5 +226,34 @@ describe('MesoStatusCard', () => {
       )
       expect(await axe(container)).toHaveNoViolations()
     })
+  })
+})
+
+/**
+ * MesoStatusCard's geometry, pinned (AW-142). The card body, metric row and
+ * gauge stack keep their pixels (14/8/12/6). The status badge was 8/3 with a
+ * 5px icon gap; it is Pill's `sm` shape, so it takes Pill's rung and loses one
+ * vertical pixel. The two negative margins are centring maths, not spacing, and
+ * stay inline under `// optical:` comments.
+ */
+describe('MesoStatusCard geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'MesoStatusCard.tsx')
+
+  it('keeps the card body inset and its section gap', () => {
+    const classes = spacingClassesOn(source, 'meso-status-card-body')
+    expect(classes).toEqual(['p-3.5', 'gap-3.5'])
+    expect(resolveAll(classes)).toEqual(['14px', '14px'])
+  })
+
+  it('puts the status badge on Pill’s sm rung', () => {
+    const classes = spacingClassesIn(source, 'StatusPill')
+    expect(classes).toEqual(['gap-inline-sm', 'px-squish-x-sm', 'py-squish-y-sm'])
+    expect(resolveAll(classes)).toEqual(['4px', '8px', '2px'])
+  })
+
+  it('keeps the gauge and metric stacks', () => {
+    expect(resolveAll(spacingClassesIn(source, 'Gauge'))).toEqual(['6px'])
+    expect(resolveAll(spacingClassesOn(source, 'meso-status-card-metrics'))).toEqual(['8px'])
+    expect(resolveAll(spacingClassesOn(source, 'meso-status-card-gauges'))).toEqual(['12px'])
   })
 })

@@ -18,8 +18,8 @@ import { exerciseRowStateColor } from './exerciseRowState'
 export type ExerciseRowDensity = 'rail' | 'compact' | 'upcoming'
 
 interface DensitySpec {
-  paddingVertical: number
-  paddingHorizontal: number
+  /** The row's own inset, as classes (AW-142). */
+  padding: string
   layout: 'stacked' | 'inline'
   dimOpacity: number
   dimByDefault: boolean
@@ -29,26 +29,25 @@ interface DensitySpec {
 
 // All three densities dim to ONE depth (VW-276). They used to differ — rail/compact 0.55
 // against the card's 0.60 — only because they were traced from two different specimens.
+// `rail` was 9px vertical, off the 4px grain with no stated reason; `inset-sm`
+// puts it on DataRow's 8/12 row rung. 14px horizontal has no semantic rung.
 const DENSITY: Record<ExerciseRowDensity, DensitySpec> = {
   rail: {
-    paddingVertical: 9,
-    paddingHorizontal: 12,
+    padding: 'py-inset-sm px-inset-md',
     layout: 'stacked',
     dimOpacity: primitiveOpacity.dim,
     dimByDefault: false,
     mutedPrescription: false,
   },
   compact: {
-    paddingVertical: 12,
-    paddingHorizontal: 14,
+    padding: 'py-inset-md px-3.5',
     layout: 'inline',
     dimOpacity: primitiveOpacity.dim,
     dimByDefault: false,
     mutedPrescription: true,
   },
   upcoming: {
-    paddingVertical: 12,
-    paddingHorizontal: 14,
+    padding: 'py-inset-md px-3.5',
     layout: 'inline',
     dimOpacity: primitiveOpacity.dim,
     dimByDefault: true,
@@ -159,12 +158,9 @@ export function ExerciseCardHeading(props: ExerciseCardHeadingProps) {
     <Root
       {...hoverProps}
       {...rootPress}
+      className={spec.padding}
       style={[
-        {
-          paddingVertical: spec.paddingVertical,
-          paddingHorizontal: spec.paddingHorizontal,
-          opacity: (dimmed ?? spec.dimByDefault) ? spec.dimOpacity : 1,
-        },
+        { opacity: (dimmed ?? spec.dimByDefault) ? spec.dimOpacity : 1 },
         wash ? { backgroundColor: wash } : null,
         style,
       ]}
@@ -184,7 +180,11 @@ export function ExerciseCardHeading(props: ExerciseCardHeadingProps) {
       />
 
       {setStates.length > 0 && (
-        <View style={{ marginTop: 7 }} testID="exercise-card-strip">
+        <View
+          // optical: the S3 session-rail specimen (#92) sets the strip 1px under stack-md.
+          style={{ marginTop: 7 }}
+          testID="exercise-card-strip"
+        >
           <SetStrip sets={setStates} height={stripHeight} />
         </View>
       )}

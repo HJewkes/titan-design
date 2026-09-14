@@ -1,4 +1,10 @@
 import { describe, it, expect, vi } from 'vitest'
+import {
+  siblingSource,
+  spacingClassesIn,
+  spacingClassesOn,
+  resolveAll,
+} from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { MesoCard } from './MesoCard'
@@ -155,5 +161,24 @@ describe('MesoCard', () => {
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
+  })
+})
+
+/**
+ * MesoCard's geometry, pinned (AW-142). Every pixel is what it shipped inline:
+ * 14/12/10 has no semantic rung, so the numeric scale carries it. The 3px
+ * heatmap gap stays inline under an `// optical:` comment.
+ */
+describe('MesoCard geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'MesoCard.tsx')
+
+  it('keeps the card inset', () => {
+    const classes = spacingClassesIn(source, 'MesoCard')
+    expect(classes).toEqual(['px-3.5', 'pt-inset-md', 'pb-2.5'])
+    expect(resolveAll(classes)).toEqual(['14px', '12px', '10px'])
+  })
+
+  it('puts the header cluster on the inline ramp', () => {
+    expect(resolveAll(spacingClassesOn(source, 'meso-card-header'))).toEqual(['8px'])
   })
 })

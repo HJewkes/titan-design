@@ -4,6 +4,7 @@ import { View, Pressable, Animated, type ViewProps } from 'react-native'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
 import { alpha } from '../../../utils/colors'
+import { cn } from '../../../utils/cn'
 
 export type BaseBadgeVariant = 'plain' | 'pr'
 export type BaseBadgeSize = 'sm' | 'md' | 'lg'
@@ -20,13 +21,17 @@ export interface BaseBadgeProps extends ViewProps {
   children?: ReactNode
 }
 
-export const baseBadgeSizeConfig: Record<
-  BaseBadgeSize,
-  { fontSize: number; paddingH: number; paddingV: number; iconSize: number }
-> = {
-  sm: { fontSize: 9, paddingH: 6, paddingV: 2, iconSize: 10 },
-  md: { fontSize: 10, paddingH: 8, paddingV: 2, iconSize: 12 },
-  lg: { fontSize: 12, paddingH: 10, paddingV: 4, iconSize: 14 },
+export const baseBadgeSizeConfig: Record<BaseBadgeSize, { fontSize: number; iconSize: number }> = {
+  sm: { fontSize: 9, iconSize: 10 },
+  md: { fontSize: 10, iconSize: 12 },
+  lg: { fontSize: 12, iconSize: 14 },
+}
+
+/** 6 and 10 are on the numeric scale but off the squish-x ramp (4/8/12/16). */
+const sizePadding: Record<BaseBadgeSize, string> = {
+  sm: 'px-1.5 py-squish-y-sm',
+  md: 'px-squish-x-sm py-squish-y-sm',
+  lg: 'px-2.5 py-squish-y-md',
 }
 
 /** Resolved per render from the enclosing Surface's mode, never frozen at import (VW-316). */
@@ -56,7 +61,6 @@ export function BaseBadge({
   ...props
 }: BaseBadgeProps) {
   const [scaleAnim] = useState(() => new Animated.Value(1))
-  const config = baseBadgeSizeConfig[size]
   const colors = variantColors(useSurfaceMode())[variant]
 
   const handlePressIn = () => {
@@ -77,18 +81,13 @@ export function BaseBadge({
 
   const badge = (
     <View
-      className={className}
+      className={cn('flex-row items-center gap-inline-sm', sizePadding[size], className)}
       style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 3,
         // borderRadius 2 is intentional per workout-tokens.ts (squared-off pill)
         borderRadius: 2,
         borderWidth: 1,
         borderColor: colors.borderColor,
         backgroundColor: colors.backgroundColor,
-        paddingHorizontal: config.paddingH,
-        paddingVertical: config.paddingV,
       }}
       {...props}
     >

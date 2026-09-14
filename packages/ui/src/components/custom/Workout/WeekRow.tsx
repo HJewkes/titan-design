@@ -6,6 +6,7 @@ import { Typography } from '../Typography'
 import { resolveColor } from '../../../theme/resolve-color'
 import { WORKOUT_PILL_DELOAD } from '../../../theme/extracted-colors-dataviz'
 import { alpha } from '../../../utils/colors'
+import { cn } from '../../../utils/cn'
 
 // Deload magenta has no semantic token — it is a ramp pin shared with WorkoutPill
 // (`extracted-colors-dataviz`). The row wash must track the pill exactly, so it
@@ -66,13 +67,7 @@ export function WeekRow({
   ...props
 }: WeekRowProps) {
   const brandPrimary = resolveColor('brand-primary')
-  const rowStyle: Record<string, unknown> = {
-    flexDirection: 'row' as const,
-    alignItems: 'center' as const,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    gap: 12,
-  }
+  const rowStyle: Record<string, unknown> = {}
 
   if (isDeload) {
     rowStyle.backgroundColor = DELOAD_ROW_WASH
@@ -87,14 +82,15 @@ export function WeekRow({
 
   return (
     <View
-      className={className}
+      className={cn('flex-row items-center px-inset-md py-2.5 gap-inline-lg', className)}
       style={rowStyle}
       accessibilityLabel={`Week ${weekNumber} of ${totalWeeks}, ${workouts.length} workouts`}
       testID="week-row"
       {...props}
     >
       <View
-        style={{ flexDirection: 'row', alignItems: 'center', width: 32, gap: 4 }}
+        className="flex-row items-center gap-inline-sm"
+        style={{ width: 32 }}
         testID="week-row-number"
       >
         {isCurrent && (
@@ -121,10 +117,7 @@ export function WeekRow({
         </Typography>
       </View>
 
-      <View
-        style={{ flex: 1, flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6 }}
-        testID="week-row-pills"
-      >
+      <View className="flex-1 flex-row items-center flex-wrap gap-1.5" testID="week-row-pills">
         {workouts.map((workout, i) => (
           <WorkoutPill
             key={i}
