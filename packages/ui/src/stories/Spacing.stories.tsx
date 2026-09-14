@@ -243,16 +243,28 @@ export const SemanticKeys: Story = {
 
 // ------------------------------------------------------------- 3. the ratios
 
-function RatioCard({ inside, gap, label }: { inside: string; gap: string; label: string }) {
+/** One group: a card whose padding AND inner gap are both the `inside` value. */
+function RatioCard({ inside }: { inside: string }) {
   return (
-    <View style={{ width: 190 }}>
+    <View className={`bg-surface-raised rounded-md ${inside}`}>
+      <Bar px={120} height={14} />
+      <Bar px={90} height={14} />
+      <Bar px={104} height={14} />
+    </View>
+  )
+}
+
+/**
+ * A ratio needs two groups to be a ratio. One card can only show its own
+ * padding; the second card is what turns "between" into something on screen.
+ */
+function RatioColumn({ inside, label }: { inside: string; label: string }) {
+  return (
+    <View style={{ width: 190 }} className="gap-stack-md">
       <Label>{label}</Label>
-      <View className={`bg-surface-raised rounded-md mt-2 ${inside}`}>
-        <View className={gap}>
-          <Bar px={120} height={14} />
-          <Bar px={90} height={14} />
-          <Bar px={104} height={14} />
-        </View>
+      <View className="gap-stack-lg">
+        <RatioCard inside={inside} />
+        <RatioCard inside={inside} />
       </View>
     </View>
   )
@@ -263,16 +275,18 @@ export const Ratios: Story = {
   render: () => (
     <Page
       title="Inside versus between"
-      intro="Proximity is a RATIO, not a number. Items read as one group when the space between them is smaller than the space around them. The three cards below hold the same content and differ only in that ratio — the middle one is ambiguous because inside and between are equal, and the right one has more padding than it needs to make the grouping read."
+      intro="Proximity is a RATIO, not a number. Items read as one group when the space inside the group is smaller than the space between it and the next one. Each column holds TWO identical cards a fixed 16px apart, and the columns differ only in what happens inside a card: padding and inner gap at 8, then 16, then 24. Read down a column, not across."
     >
       <View className="flex-row gap-inline-lg items-start">
-        <RatioCard label="inside 8 / between 16" inside="p-inset-sm" gap="gap-stack-lg" />
-        <RatioCard label="inside 16 / between 16" inside="p-inset-lg" gap="gap-stack-lg" />
-        <RatioCard label="inside 24 / between 16" inside="p-inset-xl" gap="gap-stack-lg" />
+        <RatioColumn label="inside 8 / between 16" inside="p-inset-sm gap-stack-md" />
+        <RatioColumn label="inside 16 / between 16" inside="p-inset-lg gap-stack-lg" />
+        <RatioColumn label="inside 24 / between 16" inside="p-inset-xl gap-stack-xl" />
       </View>
       <Text className="text-text-secondary text-sm">
-        Read them as a set: the leftmost groups cleanly, the middle one leaves the eye no signal,
-        the rightmost groups but spends more space than the signal costs.
+        Left: inside is half of between, so each card reads as one thing and the two read as two.
+        Middle: inside equals between, so the eye gets no signal and six bars read as six. Right:
+        inside exceeds between, so the grouping inverts — bars pair ACROSS the gap rather than
+        within a card. Only the ratio changed.
       </Text>
     </Page>
   ),
@@ -280,55 +294,104 @@ export const Ratios: Story = {
 
 // --------------------------------------------------------- 4. the pill ramps
 
-const PILL_RAMP = ['xs', 'sm', 'md', 'lg', 'xl'] as const
-const BADGE_RAMP = ['sm', 'md', 'lg'] as const
+const RAMP = ['sm', 'md', 'lg'] as const
+
+/**
+ * The three atoms as they shipped BEFORE wave two — the classes are literals on
+ * purpose. The live components have moved, so the disagreement only stays
+ * visible if this half is frozen.
+ */
+const RAMPS_BEFORE = [
+  {
+    atom: 'Pill',
+    was: 'px-1/2/2.5/3/4, py-px/0.5/1/1.5/2 · five rungs',
+    rungs: [
+      { label: 'xs', shape: 'rounded-full px-1 py-px', text: 'text-3xs' },
+      { label: 'sm', shape: 'rounded-full px-2 py-0.5', text: 'text-2xs' },
+      { label: 'md', shape: 'rounded-full px-2.5 py-1', text: 'text-xs' },
+      { label: 'lg', shape: 'rounded-full px-3 py-1.5', text: 'text-sm' },
+      { label: 'xl', shape: 'rounded-full px-4 py-2', text: 'text-base' },
+    ],
+  },
+  {
+    atom: 'Badge',
+    was: 'px-1.5/2/2.5, py-0.5/0.5/1',
+    rungs: [
+      { label: 'sm', shape: 'rounded-full px-1.5 py-0.5', text: 'text-xs' },
+      { label: 'md', shape: 'rounded-full px-2 py-0.5', text: 'text-xs' },
+      { label: 'lg', shape: 'rounded-full px-2.5 py-1', text: 'text-sm' },
+    ],
+  },
+  {
+    atom: 'Chip',
+    was: 'px-2/3/4, py-0.5/1/1.5 — already the ramp, at every rung',
+    rungs: [
+      { label: 'sm', shape: 'rounded px-2 py-0.5', text: 'text-xs' },
+      { label: 'md', shape: 'rounded-md px-3 py-1', text: 'text-sm' },
+      { label: 'lg', shape: 'rounded-md px-4 py-1.5', text: 'text-base' },
+    ],
+  },
+]
+
+function FrozenRamp({ rungs }: { rungs: { label: string; shape: string; text: string }[] }) {
+  return (
+    <View className="flex-row items-center gap-inline-lg">
+      {rungs.map((r) => (
+        <View key={r.label} className={`bg-hairline-subtle self-start ${r.shape}`}>
+          <Text className={`font-heading font-semibold text-text-secondary ${r.text}`}>
+            {r.label}
+          </Text>
+        </View>
+      ))}
+    </View>
+  )
+}
 
 export const PillRamps: Story = {
   name: '4. Three ramps for one shape',
   render: () => (
     <Page
       title="Three ramps for one shape"
-      intro="Pill, Badge and Chip are all the same pill-shaped atom, and each ships its own padding ramp. Rendered side by side the disagreement is plain. The unified squish ramp below is what wave two puts all three on; it changes no pixels for the levels that already match."
+      intro="Pill, Badge and Chip are the same pill-shaped atom, and each shipped its own padding ramp. The top half is frozen at what each one measured before wave two; the bottom half is the live components on the shared squish ramp. Chip already sat on the ramp at every rung, which is how the ramp's values were chosen."
     >
-      <SectionTitle>Pill — px-1/2/2.5/3/4, py-px/0.5/1/1.5/2</SectionTitle>
-      <View className="flex-row items-center gap-inline-lg">
-        {PILL_RAMP.map((s) => (
-          <Pill key={s} size={s}>
-            {s}
-          </Pill>
-        ))}
-      </View>
-
-      <SectionTitle>Badge — px-1.5/2/2.5, py-0.5/0.5/1</SectionTitle>
-      <View className="flex-row items-center gap-inline-lg">
-        {BADGE_RAMP.map((s) => (
-          <Badge key={s} size={s}>
-            {s}
-          </Badge>
-        ))}
-      </View>
-
-      <SectionTitle>Chip — px-2/3/4, py-0.5/1/1.5</SectionTitle>
-      <View className="flex-row items-center gap-inline-lg">
-        {BADGE_RAMP.map((s) => (
-          <Chip key={s} size={s}>
-            {s}
-          </Chip>
-        ))}
-      </View>
-
-      <SectionTitle>The unified squish ramp</SectionTitle>
-      <View className="flex-row items-center gap-inline-lg">
-        <View className="bg-surface-raised rounded-full px-squish-x-sm py-squish-y-sm">
-          <Text className="text-2xs text-text-primary">sm · 8 / 2</Text>
+      {RAMPS_BEFORE.map((r) => (
+        <View key={r.atom} className="gap-stack-md">
+          <SectionTitle>{`Before — ${r.atom}: ${r.was}`}</SectionTitle>
+          <FrozenRamp rungs={r.rungs} />
         </View>
-        <View className="bg-surface-raised rounded-full px-squish-x-md py-squish-y-md">
-          <Text className="text-xs text-text-primary">md · 12 / 4</Text>
+      ))}
+
+      <SectionTitle>After — one squish ramp: 8/2, 12/4, 16/6</SectionTitle>
+      <View className="gap-stack-lg">
+        <View className="flex-row items-center gap-inline-lg">
+          <Label>Pill</Label>
+          {RAMP.map((s) => (
+            <Pill key={s} size={s}>
+              {s}
+            </Pill>
+          ))}
         </View>
-        <View className="bg-surface-raised rounded-full px-squish-x-lg py-squish-y-lg">
-          <Text className="text-sm text-text-primary">lg · 16 / 6</Text>
+        <View className="flex-row items-center gap-inline-lg">
+          <Label>Badge</Label>
+          {RAMP.map((s) => (
+            <Badge key={s} size={s}>
+              {s}
+            </Badge>
+          ))}
+        </View>
+        <View className="flex-row items-center gap-inline-lg">
+          <Label>Chip</Label>
+          {RAMP.map((s) => (
+            <Chip key={s} size={s}>
+              {s}
+            </Chip>
+          ))}
         </View>
       </View>
+      <Text className="text-text-secondary text-sm">
+        Pill&apos;s `xs` and `xl` are deprecated aliases for one release — they render as `sm` and
+        `lg`, so a five-rung call site keeps compiling and lands on three rungs.
+      </Text>
     </Page>
   ),
 }
