@@ -34,7 +34,7 @@ import { cardChartHeight, cardSectionGap } from './panel-layout'
 import { VerdictHero } from './VerdictHero'
 import { FatigueLights } from './FatigueLights'
 import { RomProgressionChart } from './RomProgressionChart'
-import { GhostSpark } from './GhostSpark'
+import { GhostSpark, GHOST_GUTTER } from './GhostSpark'
 import type { LiveFatigueModel } from './fatigue-model'
 
 export interface LiveFatigueCardProps {
@@ -46,8 +46,15 @@ export interface LiveFatigueCardProps {
   height?: number
 }
 
+/**
+ * CHOSEN, and flagged for an operator decision (AW-142 wave three). 18 is not a rung —
+ * the inset ramp is 4 / 8 / 12 / 16 / 24. It stays at 18 here because two MEASURED
+ * constants are written against it: `CARD_FIXED_CONTENT_HEIGHT` (203) and
+ * `CARD_CHROME_HEIGHT` (216) both count this padding twice, and `CARD_SECTION_GAP_MAX`'s
+ * cap is reasoned as "one step above the card's own 18px edge inset". Moving it to 16 or
+ * 24 means re-measuring the card in Storybook, which is a separate change.
+ */
 const PAD = 18
-const GHOST_GUTTER = 4 // GhostSpark carries this L/R padding internally
 
 export function LiveFatigueCard({ model, width = 318, height }: LiveFatigueCardProps) {
   const t = getSemanticColors(useSurfaceMode())
@@ -69,7 +76,7 @@ export function LiveFatigueCard({ model, width = 318, height }: LiveFatigueCardP
       }}
     >
       {/* top group — verdict hero + the three why-lights, tight together. */}
-      <View style={{ gap: 12 }}>
+      <View className="gap-3">
         <VerdictHero rpe={model.rpe} verdict={model.verdict} />
         <FatigueLights dimensions={model.verdict?.dimensions ?? null} />
       </View>

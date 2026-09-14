@@ -4,6 +4,7 @@ import { LiveFatiguePanel } from './LiveFatiguePanel'
 import { Surface } from '../../ui/surface'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { buildMockPanelState } from './fatigue-mock'
+import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
 import { PANEL_BREAKPOINTS, CARD_WIDTH_BASE, panelLayout } from './panel-layout'
 
 const { model, velocity } = buildMockPanelState(3)
@@ -130,5 +131,26 @@ describe('LiveFatiguePanel responsiveness (TD-03.58)', () => {
       <LiveFatiguePanel model={model} velocity={velocity} containerWidth={1440} bodyHeight={700} />
     )
     expect(screen.getByTestId('live-fatigue-card')).toHaveStyle({ height: '700px' })
+  })
+})
+
+/**
+ * The hero column's spacing, pinned (AW-142 wave three).
+ *
+ * The eyebrow sits above the velocity plot on the stack ramp's 8px rung. The body's own
+ * padding and gap stay computed — they come from `panelLayout` per tier, which is the one
+ * place in the repo where spacing is a function of viewport.
+ */
+describe('LiveFatiguePanel geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'LiveFatiguePanel.tsx')
+
+  it('spaces the eyebrow from the plot by gap-stack-md', () => {
+    expect(spacingClassesIn(source, 'LiveFatiguePanel')).toEqual(['gap-stack-md'])
+    expect(resolveAll(['gap-stack-md'])).toEqual(['8px'])
+  })
+
+  it('keeps the body inset responsive rather than fixed', () => {
+    expect(source).toContain('padding: layout.padding')
+    expect(source).toContain('gap: layout.gap')
   })
 })

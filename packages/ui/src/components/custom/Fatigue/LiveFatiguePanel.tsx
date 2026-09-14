@@ -90,7 +90,7 @@ export function LiveFatiguePanel({
           }}
         >
           {/* PRIMARY — the velocity hero with VL bands; flexes to fill the width the card leaves. */}
-          <View style={{ flex: 1, gap: 8 }}>
+          <View className="flex-1 gap-stack-md">
             <Text
               testID="live-fatigue-eyebrow"
               style={{

@@ -27,6 +27,7 @@ import { FONT_UI, ghostLineColor, clamp01 } from './fatigue-tokens'
 import { GhostBand, BAND_H, BAND_GAP } from './GhostBand'
 import type { TempoTuple } from './tempo-pacing'
 import { GhostBloom, type Pt } from './GhostBloom'
+import { GHOST_GUTTER } from './GhostSpark'
 import type { PhaseSegment, RepVelocityCurve } from './fatigue-model'
 
 export interface DualGhostSparkProps {
@@ -141,7 +142,7 @@ export function DualGhostSpark({
   const segments = mergePhaseSegments(up.cur?.phaseSegments ?? [], down.cur?.phaseSegments ?? [])
 
   return (
-    <View testID="dual-ghost-spark" style={{ paddingHorizontal: 4 }}>
+    <View testID="dual-ghost-spark" style={{ paddingHorizontal: GHOST_GUTTER }}>
       <svg width={w} height={h}>
         {/* Same bloom, one prop flipped: LEFT grows UP, RIGHT grows DOWN. */}
         {up.current.length > 0 && (

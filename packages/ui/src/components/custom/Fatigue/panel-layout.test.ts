@@ -21,7 +21,13 @@ import {
   panelBodySplit,
   cardChartHeight,
   cardSectionGap,
+  TIER_GAP_XS,
+  TIER_GAP_SM,
+  TIER_GAP_MD,
+  TIER_PADDING_SM,
 } from './panel-layout'
+import { space } from '../../../theme/tokens/semantic'
+import { resolveAll } from '../../../test/spacing-resolver'
 
 describe('panel breakpoints', () => {
   // The edges are titan's, not this component's. If someone re-points the panel at a
@@ -186,5 +192,35 @@ describe('cardChartHeight', () => {
     expect(cardChartHeight(100)).toBe(CARD_MIN_CHART_HEIGHT)
     expect(cardChartHeight(5000)).toBe(CARD_MAX_CHART_HEIGHT)
     expect(cardChartHeight(508)).toBe(Math.round(508 * 0.4))
+  })
+})
+
+/**
+ * The tier spacing, pinned (AW-142 wave three).
+ *
+ * The panel's own padding is an inset and now says so, reading the semantic key rather
+ * than repeating 16 and 24. The three gaps and the `sm` padding are off every ramp and
+ * stay named constants, flagged in the PR body for an operator decision — this asserts
+ * they did not move while being named.
+ */
+describe('tier spacing resolves to the spacing tokens', () => {
+  it.each([
+    ['xs', 320, space.inset.lg],
+    ['sm', 800, TIER_PADDING_SM],
+    ['md', 1100, space.inset.xl],
+    ['lg', 1400, space.inset.xl],
+    ['xl', 2000, space.inset.xl],
+  ] as const)('reads the %s padding off the inset ramp where a rung exists', (_t, w, padding) => {
+    expect(panelLayout(w).padding).toBe(padding)
+    expect(resolveAll(['p-inset-lg', 'p-inset-xl'])).toEqual(['16px', '24px'])
+  })
+
+  it('holds the four chosen numbers at their shipped pixels', () => {
+    expect([TIER_GAP_XS, TIER_GAP_SM, TIER_GAP_MD, TIER_PADDING_SM]).toEqual([12, 14, 18, 20])
+  })
+
+  it('spaces the section gap floor by the stack ramp', () => {
+    expect(CARD_SECTION_GAP_MIN).toBe(space.stack.lg)
+    expect(resolveAll(['gap-stack-lg'])).toEqual(['16px'])
   })
 })
