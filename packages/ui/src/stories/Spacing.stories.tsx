@@ -32,11 +32,14 @@ const meta: Meta = {
 export default meta
 type Story = StoryObj
 
-const CANVAS = 'gap-stack-xl p-inset-xl'
+// Storybook's preview body is a centred flex row, so a section of fixed-width
+// specimens shrink-wraps and a section of stretching ones fills the viewport.
+// One explicit canvas width frames all eight identically.
+const CANVAS_WIDTH = 980
 
 function Page({ title, intro, children }: { title: string; intro: string; children: ReactNode }) {
   return (
-    <View className={CANVAS}>
+    <View className="gap-stack-xl p-inset-xl" style={{ width: CANVAS_WIDTH }}>
       <Text className="text-2xl font-bold text-text-primary">{title}</Text>
       <SectionIntro>{intro}</SectionIntro>
       {children}
@@ -72,7 +75,9 @@ function SpecRow({ name, note, children }: { name: string; note: string; childre
 
 // ---------------------------------------------------------------- 1. the scale
 
-const steps = Object.entries(primitiveSpacing)
+// Sorted by measurement, not by key: `0.5` and `px` are string keys, so a plain
+// object always enumerates them after the integer-like steps.
+const steps = Object.entries(primitiveSpacing).sort((a, b) => parseFloat(a[1]) - parseFloat(b[1]))
 
 export const Scale: Story = {
   name: '1. The numeric scale',
@@ -97,7 +102,9 @@ export const Scale: Story = {
           const px = parseFloat(value)
           return (
             <View key={step} className="flex-row items-center gap-inline-lg">
-              <Mono>{step.padEnd(6)}</Mono>
+              <View style={{ width: 56 }}>
+                <Mono>{step}</Mono>
+              </View>
               <View style={{ width: 56 }}>
                 <Mono>{value}</Mono>
               </View>
@@ -286,7 +293,9 @@ export const PillRamps: Story = {
       <SectionTitle>Pill — px-1/2/2.5/3/4, py-px/0.5/1/1.5/2</SectionTitle>
       <View className="flex-row items-center gap-inline-lg">
         {PILL_RAMP.map((s) => (
-          <Pill key={s} size={s} label={s} />
+          <Pill key={s} size={s}>
+            {s}
+          </Pill>
         ))}
       </View>
 
@@ -302,7 +311,9 @@ export const PillRamps: Story = {
       <SectionTitle>Chip — px-2/3/4, py-0.5/1/1.5</SectionTitle>
       <View className="flex-row items-center gap-inline-lg">
         {BADGE_RAMP.map((s) => (
-          <Chip key={s} size={s} label={s} />
+          <Chip key={s} size={s}>
+            {s}
+          </Chip>
         ))}
       </View>
 
@@ -514,7 +525,7 @@ export const Sizing: Story = {
       <SectionTitle>Icon sizes</SectionTitle>
       <View className="flex-row items-end gap-inline-lg">
         {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((level) => (
-          <View key={level} className="items-center gap-stack-sm">
+          <View key={level} className="items-center gap-stack-sm text-text-primary">
             <DumbbellIcon size={primitiveSizing.icon[level]} />
             <Mono>
               {level} · {primitiveSizing.icon[level]}
