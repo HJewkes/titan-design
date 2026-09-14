@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:e8dd330d719c69347cf50f8ad957b40a836753eb24a0ed8f5e3268054e021dca",
+  "componentBarrelHash": "sha256:28841e8fdec89870550b592cd412c7a6cb86b77c810eff1814a5e12053135abe",
   "components": [
     {
       "name": "ActiveWorkoutPage",
