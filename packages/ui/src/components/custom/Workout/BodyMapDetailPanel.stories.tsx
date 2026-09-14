@@ -8,6 +8,13 @@ import {
 } from './BodyMapDetailPanel'
 import { BodyMap, type BodyMapData } from './BodyMap'
 import { MuscleGroup } from './muscleTaxonomy'
+import {
+  bilateralStrength,
+  emptyPlan,
+  emptyStrength,
+  singleExercisePlan,
+  singleExerciseStrength,
+} from './muscle-sections-fixture'
 import { Surface } from '../../ui/surface'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
@@ -34,7 +41,13 @@ const meta: Meta<typeof BodyMapDetailPanel> = {
   title: 'Custom/Workout/DataViz/BodyMapDetailPanel',
   component: BodyMapDetailPanel,
   parameters: {
-    docs: { description: { component: 'Composes **Badge** · **Sparkline** · **MuscleGroup**.' } },
+    docs: {
+      description: {
+        component:
+          'Composes **Badge** · **DataRow** · **Sparkline** · **StrengthTrendChart** · ' +
+          '**PrBadge** · **MuscleGroup**.',
+      },
+    },
   },
   tags: ['autodocs'],
   decorators: [
@@ -266,6 +279,62 @@ export const RightSideSheetClosedAtWall: Story = {
   },
   args: { ...RightSideSheetAtWall.args, isOpen: false },
 }
+
+/**
+ * The T4 sections at wall width, one data scenario per row of stories and both
+ * placements per scenario. Everything else is held constant so the only thing
+ * that varies between two stories is the payload or the dock.
+ */
+const sectionArgs = {
+  ...Default.args,
+  displayName: 'Lats',
+  muscleGroup: MuscleGroup.LATS,
+  weeklySets: 6,
+  landmarks: { mev: 8, mav: 14, mrv: 20 },
+  volumeStatus: 'behind' as const,
+  lastTrained: '4 days ago',
+  weeklyHistory: [9, 8, 7, 6],
+  contributingExercises: undefined,
+  upcomingExercises: undefined,
+}
+
+const wallStory = (args: Partial<Story['args']>, story: string): Story => ({
+  parameters: { frame: WALL_FRAME, docs: { description: { story } } },
+  args: { ...sectionArgs, ...args },
+})
+
+export const SectionsEmptyAtWall: Story = wallStory(
+  { placement: 'bottom', strength: emptyStrength, plan: emptyPlan },
+  'Empty state: no exercise has trained this muscle, so the strength and PR blocks ' +
+    'drop out entirely and the plan block states the zero rather than hiding it.'
+)
+
+export const SectionsEmptyRightAtWall: Story = wallStory(
+  { placement: 'right', strength: emptyStrength, plan: emptyPlan },
+  'The same empty payload docked as the wall side-sheet.'
+)
+
+export const SectionsSingleExerciseAtWall: Story = wallStory(
+  { placement: 'bottom', strength: singleExerciseStrength, plan: singleExercisePlan },
+  'One exercise, side unknown: a mini StrengthTrendChart, its band caption, and a PR row. ' +
+    'A single exercise can never reach agreement — one exercise has nothing to agree with.'
+)
+
+export const SectionsSingleExerciseRightAtWall: Story = wallStory(
+  { placement: 'right', strength: singleExerciseStrength, plan: singleExercisePlan },
+  'The single-exercise payload docked as the wall side-sheet.'
+)
+
+export const SectionsBilateralAtWall: Story = wallStory(
+  { placement: 'bottom', strength: bilateralStrength, plan: singleExercisePlan },
+  'A bilateral exercise renders ONE ROW PER SIDE. Pooling left and right into one ' +
+    'strength number hides exactly the finding a per-side read exists to surface.'
+)
+
+export const SectionsBilateralRightAtWall: Story = wallStory(
+  { placement: 'right', strength: bilateralStrength, plan: singleExercisePlan },
+  'The bilateral payload docked as the wall side-sheet — the W2 wireframe as specified.'
+)
 
 export const RightSideSheetAtPhone: Story = {
   parameters: {

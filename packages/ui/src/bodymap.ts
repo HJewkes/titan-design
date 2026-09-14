@@ -18,6 +18,13 @@ export {
   type ContributingExercise,
   type UpcomingExercise,
 } from './components/custom/Workout/BodyMapDetailPanel'
+export type {
+  MusclePlanExerciseRow,
+  MusclePlanSection,
+  MuscleStrengthExerciseRow,
+  MuscleStrengthSection,
+  StrengthExerciseRow,
+} from './components/custom/Workout/muscleReadModels'
 export {
   TrainingStatusPage,
   deriveTrainingSummary,
