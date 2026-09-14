@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { BodyMap, type BodyMapData } from './BodyMap'
 import { MuscleGroup } from './muscleTaxonomy'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 const data: BodyMapData[] = [
   { muscleGroup: MuscleGroup.CHEST, intensity: 0.7, volumeStatus: 'target', weeklySets: 12 },
@@ -140,6 +141,53 @@ describe('BodyMap', () => {
       const { container } = render(<BodyMap data={[]} view="back" />)
       const results = await axe(container)
       expect(results).toHaveNoViolations()
+    })
+  })
+
+  describe('slug collision severity', () => {
+    // LATS and UPPER_BACK both map to the `upper-back` SVG slug (MUSCLE_TO_SVG_SLUGS).
+    const colors = getSemanticColors('dark')
+
+    it('paints a shared slug with its more severe status (approaching beats target)', () => {
+      const collisionData: BodyMapData[] = [
+        { muscleGroup: MuscleGroup.LATS, intensity: 0.6, volumeStatus: 'target', weeklySets: 12 },
+        {
+          muscleGroup: MuscleGroup.UPPER_BACK,
+          intensity: 0.9,
+          volumeStatus: 'approaching',
+          weeklySets: 14,
+        },
+      ]
+      const { container } = render(<BodyMap data={collisionData} view="back" />)
+      const slug = container.querySelector('[id="upper-back"]')
+      expect(slug).toHaveAttribute('fill', colors['dataviz-diverging-3'])
+    })
+
+    it('paints a shared slug as over when over outranks both target and approaching', () => {
+      // FRONT_DELTS, SIDE_DELTS, REAR_DELTS all map to the `deltoids` slug.
+      const collisionData: BodyMapData[] = [
+        {
+          muscleGroup: MuscleGroup.FRONT_DELTS,
+          intensity: 0.5,
+          volumeStatus: 'target',
+          weeklySets: 6,
+        },
+        {
+          muscleGroup: MuscleGroup.SIDE_DELTS,
+          intensity: 0.9,
+          volumeStatus: 'approaching',
+          weeklySets: 14,
+        },
+        {
+          muscleGroup: MuscleGroup.REAR_DELTS,
+          intensity: 1.0,
+          volumeStatus: 'over',
+          weeklySets: 22,
+        },
+      ]
+      const { container } = render(<BodyMap data={collisionData} view="front" />)
+      const slug = container.querySelector('[id="deltoids"]')
+      expect(slug).toHaveAttribute('fill', colors['dataviz-diverging-4'])
     })
   })
 })
