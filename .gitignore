@@ -30,6 +30,10 @@ coverage/
 # Playwright
 test-results/
 playwright-report/
+# Only *-chromium-linux.png is source of truth — generated in the pinned container.
+# A local darwin run WRITES the missing snapshot before failing, so without this a
+# broad `git add` sweeps 65 bogus baselines into the commit.
+*-chromium-darwin.png
 
 # Logs
 *.log

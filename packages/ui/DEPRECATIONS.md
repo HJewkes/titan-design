@@ -66,18 +66,18 @@ existing call sites and for `voltras-mcp`, which imports `Pill` directly.
 exports keep their names on the package barrel, so imports of
 `@titan-design/react-ui` are unchanged; only the props below moved.
 
-| Export                                   | Replacement                                    | Known consumers      | Task   |
-| ---------------------------------------- | ---------------------------------------------- | -------------------- | ------ |
-| `DashboardShell` (+ `DashboardShellProps`) | `WorkoutShell` (+ `WorkoutShellProps`) — identical props, alias kept | in-repo `lab/` only  | AW-132 |
-| `defaultNavItems`                        | `workoutNavItems`                              | in-repo shell only   | AW-132 |
+| Export                                     | Replacement                                                          | Known consumers     | Task   |
+| ------------------------------------------ | -------------------------------------------------------------------- | ------------------- | ------ |
+| `DashboardShell` (+ `DashboardShellProps`) | `WorkoutShell` (+ `WorkoutShellProps`) — identical props, alias kept | in-repo `lab/` only | AW-132 |
+| `defaultNavItems`                          | `workoutNavItems`                                                    | in-repo shell only  | AW-132 |
 
 **Two breaking prop changes, no alias possible** (a deprecated shim would put a
 workout import back inside the generic shell, which is the cycle this task
 removes):
 
-| Change                                                  | Replacement                                     | Known consumers    |
-| ------------------------------------------------------- | ----------------------------------------------- | ------------------ |
-| `TopBar` lost `state` / `devices` / `onSelectDevice`    | `WorkoutTopBar` — identical prop shape          | in-repo shell only |
+| Change                                                                     | Replacement                              | Known consumers    |
+| -------------------------------------------------------------------------- | ---------------------------------------- | ------------------ |
+| `TopBar` lost `state` / `devices` / `onSelectDevice`                       | `WorkoutTopBar` — identical prop shape   | in-repo shell only |
 | `SideNav.items` is required (was defaulted to the four workout categories) | pass `workoutNavItems`, or the app's own | in-repo shell only |
 
 `SessionStatePill` keeps its own AW-127 `@deprecated` tag (use `Pill`); it moved
@@ -90,8 +90,8 @@ time, which is exactly the frozen theme `titan/no-frozen-theme` bans — a
 compatibility alias would be a module-scope `getSemanticColors('dark')` call and
 would re-enter the frozen-theme baseline.
 
-| Export                                        | Replacement                                            | Known consumers                                                     |
-| --------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------- |
+| Export                                         | Replacement                                        | Known consumers                                                     |
+| ---------------------------------------------- | -------------------------------------------------- | ------------------------------------------------------------------- |
 | `TONE_COLOR` (`Record<DimensionTone, string>`) | `TONE_TOKEN` (`Record<DimensionTone, ColorToken>`) | `voltras-mcp` `src/dashboard/spa/planner/SessionSummaryPage.tsx:55` |
 
 Migration is one line at the point of use — hold a live palette and index it:
@@ -111,8 +111,8 @@ palette at module scope; an optional `mode` defaulting to `'dark'` would have
 left every existing caller frozen while looking migrated, so the parameter is
 required.
 
-| Change                                       | Replacement                                      | Known consumers                                    |
-| -------------------------------------------- | ------------------------------------------------ | -------------------------------------------------- |
+| Change                | Replacement                                           | Known consumers                                                                        |
+| --------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------------------- |
 | `paceToneColor(tone)` | `paceToneColor(tone, mode)` — pass `useSurfaceMode()` | in-repo only: `SegmentedProgressBar`, `SessionHeader`, `SegmentedProgressBar.test.tsx` |
 
 No downstream consumer: `grep -rn paceToneColor` over the `voltras-mcp` checkout
@@ -130,10 +130,43 @@ roles are mode-invariant. Grep the call sites when changing a signature.
 above: the resolved palette moved out of module scope, and the mode is required
 rather than defaulted so no caller stays frozen by accident.
 
-| Change                        | Replacement                                        | Known consumers                                     |
-| ----------------------------- | -------------------------------------------------- | --------------------------------------------------- |
+| Change                    | Replacement                                               | Known consumers                                         |
+| ------------------------- | --------------------------------------------------------- | ------------------------------------------------------- |
 | `liveAuraColor(category)` | `liveAuraColor(category, mode)` — pass `useSurfaceMode()` | in-repo only: `LiveAuraFrame`, `LiveAuraFrame.test.tsx` |
 
 No downstream consumer: `grep -rn liveAuraColor` over the `voltras-mcp` checkout
 returns nothing. Its two values are `status-warning` / `status-error`,
 mode-invariant today, so no rendered colour changes.
+
+## BodyMap heatmap — `getHeatmapColor` takes a mode (VW-371)
+
+**Breaking signature change**, same shape and same reasoning as `paceToneColor`
+and `liveAuraColor` above. The palette moved from a frozen primitive map onto the
+`dataviz-diverging-*` semantic roles, and `mode` is required rather than
+defaulted to `'dark'`: every one of the four call sites omitted it, so a default
+would have left the whole figure frozen while looking migrated — and
+`titan/no-frozen-theme` cannot see a default parameter.
+
+`intensity` also loses its `= 0` default, because a required third parameter
+after an optional second is not expressible.
+
+| Change                                | Replacement                                                          | Known consumers                                     |
+| ------------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------- |
+| `getHeatmapColor(status, intensity?)` | `getHeatmapColor(status, intensity, mode)` — pass `useSurfaceMode()` | in-repo only: `BodyMap` ×3, `TrainingStatusPage` ×1 |
+
+No downstream consumer: `grep -rn getHeatmapColor` over the `voltras-mcp`
+checkout returns nothing. Light and dark resolve to identical values until
+VW-371 phase 2, so no rendered colour changes.
+
+Per the `paceToneColor` warning above, the call sites were grepped rather than
+trusted to `tsc` — **no test, story, or lab file calls it**, so unlike the two
+entries above this change touches no test.
+
+`buildSlugParts` in `BodyMap.tsx` is a plain helper behind a `useMemo`, not a
+component, so it takes `mode` as a parameter (added to the memo deps) rather
+than calling the hook. `BodyMap`'s own local is named `surfaceMode` because
+`mode` is already its `detailed`/`simple` prop.
+
+`WORKOUT_TOKENS.heatmap` is **gone**, replaced by `heatmapColors(mode)` in
+`theme/workout-tokens.ts`. It was never on the package barrel, so this is
+internal only.

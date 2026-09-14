@@ -1,16 +1,12 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
-import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
+import { heatmapColors } from '../../../theme/workout-tokens'
 import { greyRamp } from '../../../theme/tokens/primitives'
+import { useSurfaceMode } from '../../ui/surface/SurfaceContext'
 import { ZoneTrack } from './ZoneTrack'
 import { DataRow } from '../../ui/data-row/DataRow'
 import { Typography } from '../Typography'
 import type { VolumeLandmarks } from './muscleTaxonomy'
-
-// Reuse the canonical BodyMap volume HEAT scale (the `divergingScale` under →
-// optimal → over) rather than reinventing a fill ramp. Same color language as
-// BodyMap / MesoProgressBar so a muscle reads identically across the app.
-const HEAT = WORKOUT_TOKENS.heatmap
 
 // The muted, un-reached track colour — the same grey step ZoneTrack defaults
 // to, so the bar sits on the shared gauge-track surface. Kept as a ramp step
@@ -42,14 +38,6 @@ export interface VolumeLandmarkBarProps extends ViewProps {
    */
   scaleMax?: number
   className?: string
-}
-
-const HEAT_BY_ZONE: Record<VolumeZone, string> = {
-  under: HEAT.under,
-  maintenance: HEAT.maintenance,
-  productive: HEAT.productive,
-  approaching: HEAT.approaching,
-  over: HEAT.over,
 }
 
 const ZONE_DESCRIPTION: Record<VolumeZone, string> = {
@@ -103,7 +91,10 @@ export function VolumeLandmarkBar({
   const { mev, mav, mrv } = landmarks
   const max = scaleMax ?? mrv * 1.2
   const zone = zoneForSets(currentSets, landmarks)
-  const fillColor = HEAT_BY_ZONE[zone]
+  // Resolved per render from the nearest Surface, not frozen at import (VW-371).
+  // ZoneTrack takes literal hex only, so this reads the diverging roles through
+  // `heatmapColors` rather than `resolveColor`, which returns `var()` on web.
+  const fillColor = heatmapColors(useSurfaceMode())[zone]
   const pct = mav > 0 ? Math.round((currentSets / mav) * 100) : 0
 
   return (

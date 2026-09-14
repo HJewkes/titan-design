@@ -8,6 +8,7 @@ import {
   type UpcomingExercise,
 } from './BodyMapDetailPanel'
 import { MesoStatusCard, type MesoStatusCardProps } from './MesoStatusCard'
+import { useSurfaceMode } from '../../ui/surface/SurfaceContext'
 import {
   MuscleGroup,
   VOLUME_STATUS_LABELS,
@@ -158,6 +159,7 @@ function SummaryCards({ summary }: { summary: TrainingStatusSummary }) {
 
 function StatusLegend({ size = 'phone' }: { size?: BodyMapSize }) {
   const ramp = TYPE_RAMP[size]
+  const surfaceMode = useSurfaceMode()
   return (
     <View
       className="flex-row flex-wrap"
@@ -176,7 +178,7 @@ function StatusLegend({ size = 'phone' }: { size?: BodyMapSize }) {
               width: 8 * ramp,
               height: 8 * ramp,
               borderRadius: 9999,
-              backgroundColor: getHeatmapColor(status, 0.6),
+              backgroundColor: getHeatmapColor(status, 0.6, surfaceMode),
             }}
             accessibilityElementsHidden
           />

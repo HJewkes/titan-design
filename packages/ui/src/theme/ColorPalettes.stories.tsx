@@ -158,6 +158,74 @@ export const SurfaceRamp: StoryObj = {
 // 2. Categorical palette
 // ============================================================================
 
+/**
+ * The `dataviz-*` semantic roles (VW-371). Each of the three palettes below is
+ * also reachable as a theme-aware token, so a chart can follow the theme instead
+ * of importing the primitive array. Phase 1 pins light and dark to the same
+ * values — the swatch here resolves through the token, which is what makes it a
+ * check on the plumbing rather than a second copy of the palette.
+ *
+ * Index is the ARRAY index of the palette, so `dataviz-diverging-2` is
+ * `divergingScale[2]`. `color-stories.coverage.test.ts` requires every semantic
+ * token to be named in a story; these three lists are where the roles are named.
+ */
+const DIVERGING_TOKENS = [
+  'dataviz-diverging-0',
+  'dataviz-diverging-1',
+  'dataviz-diverging-2',
+  'dataviz-diverging-3',
+  'dataviz-diverging-4',
+] as const
+
+const SEQUENTIAL_TOKENS = [
+  'dataviz-sequential-0',
+  'dataviz-sequential-1',
+  'dataviz-sequential-2',
+  'dataviz-sequential-3',
+  'dataviz-sequential-4',
+  'dataviz-sequential-5',
+] as const
+
+const CATEGORICAL_TOKENS = [
+  'dataviz-categorical-0',
+  'dataviz-categorical-1',
+  'dataviz-categorical-2',
+  'dataviz-categorical-3',
+  'dataviz-categorical-4',
+  'dataviz-categorical-5',
+  'dataviz-categorical-6',
+] as const
+
+function DatavizRoleRow({ tokens }: { tokens: readonly string[] }) {
+  return (
+    <View style={{ marginTop: 16 }}>
+      <SectionTitle>Semantic roles (theme-aware)</SectionTitle>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
+        {tokens.map((token) => {
+          const hex = (semanticColorsDark as Record<string, string>)[token]
+          return (
+            <View key={token} style={{ alignItems: 'center' }}>
+              <View
+                style={{
+                  width: 84,
+                  height: 28,
+                  borderRadius: 4,
+                  backgroundColor: hex,
+                  borderWidth: 1,
+                  borderColor: SWATCH_BORDER,
+                }}
+              />
+              <Text className="text-text-tertiary mt-1" style={{ fontSize: 9 }}>
+                {token.replace('dataviz-', '')}
+              </Text>
+            </View>
+          )
+        })}
+      </View>
+    </View>
+  )
+}
+
 function CategoricalRow({ name, colors }: { name: string; colors: readonly string[] }) {
   return (
     <View style={{ marginBottom: 24 }}>
@@ -221,6 +289,8 @@ export const CategoricalPalette: StoryObj = {
         rather than indexing the array — it wraps past the end. The contrast and colorblind
         validation for this palette is in Foundations/Color/Primitives → Accessibility.
       </Text>
+
+      <DatavizRoleRow tokens={CATEGORICAL_TOKENS} />
     </View>
   ),
 }
@@ -268,6 +338,8 @@ export const DivergingScale: StoryObj = {
           </View>
         ))}
       </View>
+
+      <DatavizRoleRow tokens={DIVERGING_TOKENS} />
     </View>
   ),
 }
@@ -331,6 +403,8 @@ export const SequentialEffortScale: StoryObj = {
           </View>
         ))}
       </View>
+
+      <DatavizRoleRow tokens={SEQUENTIAL_TOKENS} />
     </View>
   ),
 }

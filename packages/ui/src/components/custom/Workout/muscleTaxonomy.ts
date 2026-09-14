@@ -8,7 +8,8 @@
  * (Phase 1: combined colors, no sub-region splitting — deltoids is a single
  * slug, lats and upper back share `upper-back`).
  */
-import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
+import { heatmapColors } from '../../../theme/workout-tokens'
+import type { ThemeMode } from '../../../theme/tokens/semantic'
 
 /**
  * Full muscle group taxonomy for volume tracking and exercise mapping.
@@ -209,9 +210,19 @@ const STATUS_SEVERITY: Record<VolumeStatus, number> = {
 /**
  * Maps a volume status (and intensity, 0-1) to a heatmap fill color. The
  * `approaching` token is used when a productive muscle nears its MRV.
+ *
+ * `mode` is REQUIRED and has no default (VW-371). A default would be a frozen
+ * theme that `titan/no-frozen-theme` cannot see: every caller would omit it, and
+ * the figure would silently paint dark colours in light mode the moment VW-371
+ * phase 2 gives light its own values. Pass `useSurfaceMode()`. Same convention
+ * as `paceToneColor` and `liveAuraColor`.
  */
-export function getHeatmapColor(status: VolumeStatus | null | undefined, intensity = 0): string {
-  const heatmap = WORKOUT_TOKENS.heatmap
+export function getHeatmapColor(
+  status: VolumeStatus | null | undefined,
+  intensity: number,
+  mode: ThemeMode
+): string {
+  const heatmap = heatmapColors(mode)
   switch (status) {
     case 'under':
       return heatmap.under
