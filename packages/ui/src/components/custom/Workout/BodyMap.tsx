@@ -4,7 +4,8 @@ import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-n
 import BodyHighlighter, { type ExtendedBodyPart, type Slug } from 'react-native-body-highlighter'
 import { cn } from '../../../utils/cn'
 import { resolveColor } from '../../../theme/resolve-color'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../ui/surface/SurfaceContext'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { alpha } from '../../../utils/colors'
 import { getGlowShadow } from '../../../theme/elevation'
@@ -89,8 +90,13 @@ interface LegendEntry {
   muscle: MuscleGroup
 }
 
-/** Build the per-slug heatmap fill list, combining groups that share a slug. */
-function buildSlugParts(data: BodyMapData[]): ExtendedBodyPart[] {
+/**
+ * Build the per-slug heatmap fill list, combining groups that share a slug.
+ *
+ * Takes `mode` rather than reading a hook: this is a plain helper behind a
+ * `useMemo`, not a component, so the caller resolves the theme and passes it in.
+ */
+function buildSlugParts(data: BodyMapData[], mode: ThemeMode): ExtendedBodyPart[] {
   const bySlug = new Map<string, { status: VolumeStatus; intensity: number }>()
   for (const d of data) {
     for (const slug of MUSCLE_TO_SVG_SLUGS[d.muscleGroup] ?? []) {
@@ -102,7 +108,7 @@ function buildSlugParts(data: BodyMapData[]): ExtendedBodyPart[] {
   }
   return Array.from(bySlug.entries()).map(([slug, v]) => ({
     slug: slug as Slug,
-    color: getHeatmapColor(v.status, v.intensity),
+    color: getHeatmapColor(v.status, v.intensity, mode),
   }))
 }
 
@@ -175,7 +181,9 @@ export function BodyMap({
 }: BodyMapProps) {
   const bodyScale = BODY_SCALE[size]
   const ramp = TYPE_RAMP[size]
-  const slugParts = useMemo(() => buildSlugParts(data), [data])
+  // Named `surfaceMode` because `mode` is already this component's detailed/simple prop.
+  const surfaceMode = useSurfaceMode()
+  const slugParts = useMemo(() => buildSlugParts(data, surfaceMode), [data, surfaceMode])
   const legend = useMemo(
     () => (mode === 'simple' ? buildSimpleLegend(data) : buildDetailedLegend(data)),
     [data, mode]
@@ -197,7 +205,8 @@ export function BodyMap({
   const glowColor = highlightedMuscle
     ? getHeatmapColor(
         data.find((d) => d.muscleGroup === highlightedMuscle)?.volumeStatus,
-        data.find((d) => d.muscleGroup === highlightedMuscle)?.intensity ?? 0
+        data.find((d) => d.muscleGroup === highlightedMuscle)?.intensity ?? 0,
+        surfaceMode
       )
     : null
 
@@ -335,7 +344,7 @@ interface MuscleButtonProps {
 }
 
 function MuscleButton({ entry, highlighted, onMusclePress, ramp }: MuscleButtonProps) {
-  const dotColor = getHeatmapColor(entry.status, entry.intensity)
+  const dotColor = getHeatmapColor(entry.status, entry.intensity, useSurfaceMode())
   const label = `${entry.name}, ${VOLUME_STATUS_LABELS[entry.status]}, ${entry.sets} sets this week`
   return (
     <Pressable

@@ -2,7 +2,8 @@
  * Workout-specific tokens not yet in the main Tailwind config.
  * Use these inline instead of Tailwind classes.
  */
-import { divergingScale, sequentialEffort, primitiveRamps as ramp } from './tokens/primitives'
+import { sequentialEffort, primitiveRamps as ramp } from './tokens/primitives'
+import { getSemanticColors, type ThemeMode } from './tokens/semantic'
 
 export const WORKOUT_TOKENS = {
   // Canonical 4-band performance scale — the single source for BOTH the
@@ -20,18 +21,6 @@ export const WORKOUT_TOKENS = {
     yellow: sequentialEffort[2], // amber-300 (gold)
     orange: sequentialEffort[3], // orange-400 (true orange)
     red: sequentialEffort[4], // red-600
-  },
-
-  // BodyMap volume heatmap — the canonical `divergingScale` (under → optimal →
-  // over): a true diverging shape with a light green center, cool-blue under-
-  // trained end and warm-red over-reaching end (colorblind-robust in lightness).
-  heatmap: {
-    none: '#E0E0E0', // no training data
-    under: divergingScale[0], // below MEV
-    maintenance: divergingScale[1], // MEV to MAV
-    productive: divergingScale[2], // optimal center — MAV to MRV
-    approaching: divergingScale[3], // near MRV
-    over: divergingScale[4], // over MRV
   },
 
   // Badge border-radius (rounded-sm is 4px, we need 2px)
@@ -56,3 +45,36 @@ export const WORKOUT_TOKENS = {
     track: '#333333',
   },
 } as const
+
+/** The five diverging volume meanings, plus the no-data fill. */
+export interface HeatmapColors {
+  none: string
+  under: string
+  maintenance: string
+  productive: string
+  approaching: string
+  over: string
+}
+
+/**
+ * BodyMap volume heatmap for a theme mode — the `dataviz-diverging-*` roles
+ * (under → optimal → over): a true diverging shape with a light green center,
+ * cool-blue under-trained end and warm-red over-reaching end (colorblind-robust
+ * in lightness).
+ *
+ * A FUNCTION of mode rather than a frozen map (VW-371). The five meanings are
+ * fixed; which hex each one paints is the theme's business, so a consumer
+ * resolves it at render time from the nearest Surface. Dark and light hold the
+ * same values today — phase 2 tunes the light column.
+ */
+export function heatmapColors(mode: ThemeMode): HeatmapColors {
+  const c = getSemanticColors(mode)
+  return {
+    none: '#E0E0E0', // no training data — not a palette stop, so not a dataviz role
+    under: c['dataviz-diverging-0'], // below MEV
+    maintenance: c['dataviz-diverging-1'], // MEV to MAV
+    productive: c['dataviz-diverging-2'], // optimal center — MAV to MRV
+    approaching: c['dataviz-diverging-3'], // near MRV
+    over: c['dataviz-diverging-4'], // over MRV
+  }
+}

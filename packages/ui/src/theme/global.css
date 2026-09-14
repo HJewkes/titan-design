@@ -112,6 +112,31 @@
     --color-data-9: #CAACCB;
     --color-data-10: #EE8026;
 
+    /* Chart palettes (VW-371 phase 1) — the diverging / sequential / categorical
+       scales as theme-aware roles. Light and dark hold the same values for now;
+       phase 2 tunes the light column. Index is the array index of the underlying
+       palette, not a 1-based rank. See tokens/semantic.ts. */
+    --color-dataviz-diverging-0: #2196F3;
+    --color-dataviz-diverging-1: #22D3EE;
+    --color-dataviz-diverging-2: #58F69E;
+    --color-dataviz-diverging-3: #F9B415;
+    --color-dataviz-diverging-4: #D14343;
+
+    --color-dataviz-sequential-0: #2ED573;
+    --color-dataviz-sequential-1: #FFD352;
+    --color-dataviz-sequential-2: #F9B415;
+    --color-dataviz-sequential-3: #FF7900;
+    --color-dataviz-sequential-4: #D14343;
+    --color-dataviz-sequential-5: #A4221C;
+
+    --color-dataviz-categorical-0: #2196F3;
+    --color-dataviz-categorical-1: #D548AF;
+    --color-dataviz-categorical-2: #E05254;
+    --color-dataviz-categorical-3: #FF7900;
+    --color-dataviz-categorical-4: #2ED573;
+    --color-dataviz-categorical-5: #22D3EE;
+    --color-dataviz-categorical-6: #A45E00;
+
     --color-text-primary: #F9F6F3;
     --color-text-secondary: #A29F9D;
     --color-text-tertiary: #888684;
@@ -343,6 +368,29 @@
     --color-data-8: #90C987;
     --color-data-9: #CAACCB;
     --color-data-10: #EE8026;
+
+    /* Chart palettes (VW-371 phase 1) — same values as :root above, on purpose.
+       Phase 2 is where this column diverges. */
+    --color-dataviz-diverging-0: #2196F3;
+    --color-dataviz-diverging-1: #22D3EE;
+    --color-dataviz-diverging-2: #58F69E;
+    --color-dataviz-diverging-3: #F9B415;
+    --color-dataviz-diverging-4: #D14343;
+
+    --color-dataviz-sequential-0: #2ED573;
+    --color-dataviz-sequential-1: #FFD352;
+    --color-dataviz-sequential-2: #F9B415;
+    --color-dataviz-sequential-3: #FF7900;
+    --color-dataviz-sequential-4: #D14343;
+    --color-dataviz-sequential-5: #A4221C;
+
+    --color-dataviz-categorical-0: #2196F3;
+    --color-dataviz-categorical-1: #D548AF;
+    --color-dataviz-categorical-2: #E05254;
+    --color-dataviz-categorical-3: #FF7900;
+    --color-dataviz-categorical-4: #2ED573;
+    --color-dataviz-categorical-5: #22D3EE;
+    --color-dataviz-categorical-6: #A45E00;
 
     --color-text-primary: #121828;
     --color-text-secondary: #65748B;

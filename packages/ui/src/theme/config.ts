@@ -169,6 +169,28 @@ export const lightThemeCSSVars = {
   '--color-data-9': semanticColorsLight['data-9'],
   '--color-data-10': semanticColorsLight['data-10'],
 
+  // Chart palettes (VW-371 phase 1) — see tokens/semantic.ts.
+  '--color-dataviz-diverging-0': semanticColorsLight['dataviz-diverging-0'],
+  '--color-dataviz-diverging-1': semanticColorsLight['dataviz-diverging-1'],
+  '--color-dataviz-diverging-2': semanticColorsLight['dataviz-diverging-2'],
+  '--color-dataviz-diverging-3': semanticColorsLight['dataviz-diverging-3'],
+  '--color-dataviz-diverging-4': semanticColorsLight['dataviz-diverging-4'],
+
+  '--color-dataviz-sequential-0': semanticColorsLight['dataviz-sequential-0'],
+  '--color-dataviz-sequential-1': semanticColorsLight['dataviz-sequential-1'],
+  '--color-dataviz-sequential-2': semanticColorsLight['dataviz-sequential-2'],
+  '--color-dataviz-sequential-3': semanticColorsLight['dataviz-sequential-3'],
+  '--color-dataviz-sequential-4': semanticColorsLight['dataviz-sequential-4'],
+  '--color-dataviz-sequential-5': semanticColorsLight['dataviz-sequential-5'],
+
+  '--color-dataviz-categorical-0': semanticColorsLight['dataviz-categorical-0'],
+  '--color-dataviz-categorical-1': semanticColorsLight['dataviz-categorical-1'],
+  '--color-dataviz-categorical-2': semanticColorsLight['dataviz-categorical-2'],
+  '--color-dataviz-categorical-3': semanticColorsLight['dataviz-categorical-3'],
+  '--color-dataviz-categorical-4': semanticColorsLight['dataviz-categorical-4'],
+  '--color-dataviz-categorical-5': semanticColorsLight['dataviz-categorical-5'],
+  '--color-dataviz-categorical-6': semanticColorsLight['dataviz-categorical-6'],
+
   '--color-text-link-hover': semanticColorsLight['text-link-hover'],
 
   '--color-surface-overlay': semanticColorsLight['surface-overlay'],
@@ -324,6 +346,28 @@ export const darkThemeCSSVars = {
   '--color-data-8': semanticColorsDark['data-8'],
   '--color-data-9': semanticColorsDark['data-9'],
   '--color-data-10': semanticColorsDark['data-10'],
+
+  // Chart palettes (VW-371 phase 1) — see tokens/semantic.ts.
+  '--color-dataviz-diverging-0': semanticColorsDark['dataviz-diverging-0'],
+  '--color-dataviz-diverging-1': semanticColorsDark['dataviz-diverging-1'],
+  '--color-dataviz-diverging-2': semanticColorsDark['dataviz-diverging-2'],
+  '--color-dataviz-diverging-3': semanticColorsDark['dataviz-diverging-3'],
+  '--color-dataviz-diverging-4': semanticColorsDark['dataviz-diverging-4'],
+
+  '--color-dataviz-sequential-0': semanticColorsDark['dataviz-sequential-0'],
+  '--color-dataviz-sequential-1': semanticColorsDark['dataviz-sequential-1'],
+  '--color-dataviz-sequential-2': semanticColorsDark['dataviz-sequential-2'],
+  '--color-dataviz-sequential-3': semanticColorsDark['dataviz-sequential-3'],
+  '--color-dataviz-sequential-4': semanticColorsDark['dataviz-sequential-4'],
+  '--color-dataviz-sequential-5': semanticColorsDark['dataviz-sequential-5'],
+
+  '--color-dataviz-categorical-0': semanticColorsDark['dataviz-categorical-0'],
+  '--color-dataviz-categorical-1': semanticColorsDark['dataviz-categorical-1'],
+  '--color-dataviz-categorical-2': semanticColorsDark['dataviz-categorical-2'],
+  '--color-dataviz-categorical-3': semanticColorsDark['dataviz-categorical-3'],
+  '--color-dataviz-categorical-4': semanticColorsDark['dataviz-categorical-4'],
+  '--color-dataviz-categorical-5': semanticColorsDark['dataviz-categorical-5'],
+  '--color-dataviz-categorical-6': semanticColorsDark['dataviz-categorical-6'],
 
   '--color-text-link-hover': semanticColorsDark['text-link-hover'],
 

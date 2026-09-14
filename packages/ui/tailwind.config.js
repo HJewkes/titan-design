@@ -227,6 +227,35 @@ module.exports = {
           9: 'var(--color-data-9)',
           10: 'var(--color-data-10)',
         },
+        // Chart palettes (VW-371) — the three shipped scales as theme-aware
+        // roles. Index is the array index of the underlying palette, so
+        // `bg-dataviz-diverging-2` is the diverging scale's optimal centre.
+        dataviz: {
+          diverging: {
+            0: 'var(--color-dataviz-diverging-0)',
+            1: 'var(--color-dataviz-diverging-1)',
+            2: 'var(--color-dataviz-diverging-2)',
+            3: 'var(--color-dataviz-diverging-3)',
+            4: 'var(--color-dataviz-diverging-4)',
+          },
+          sequential: {
+            0: 'var(--color-dataviz-sequential-0)',
+            1: 'var(--color-dataviz-sequential-1)',
+            2: 'var(--color-dataviz-sequential-2)',
+            3: 'var(--color-dataviz-sequential-3)',
+            4: 'var(--color-dataviz-sequential-4)',
+            5: 'var(--color-dataviz-sequential-5)',
+          },
+          categorical: {
+            0: 'var(--color-dataviz-categorical-0)',
+            1: 'var(--color-dataviz-categorical-1)',
+            2: 'var(--color-dataviz-categorical-2)',
+            3: 'var(--color-dataviz-categorical-3)',
+            4: 'var(--color-dataviz-categorical-4)',
+            5: 'var(--color-dataviz-categorical-5)',
+            6: 'var(--color-dataviz-categorical-6)',
+          },
+        },
         // Surface colors (for elevated containers)
         surface: {
           base: 'var(--color-surface-base)',

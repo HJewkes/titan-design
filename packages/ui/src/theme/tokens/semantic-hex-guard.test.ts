@@ -76,6 +76,11 @@ describe('semantic token hex guard (VW-83)', () => {
  * `on-*` labels flipped from white to `greyRamp[950]`. White cleared AA on none
  * of the four bright solid fills — warning measured 1.82. Light mode is
  * untouched and still aliases its base tone.
+ *
+ * AMENDED AGAIN by VW-371 phase 1, which is purely additive: the 18 `dataviz-*`
+ * entries promote the three chart palettes to semantic roles. No pre-existing
+ * entry moved — the new keys carry the primitives' current values verbatim, in
+ * both modes. `dataviz-palettes.test.ts` pins them to the primitive arrays.
  */
 const resolvedBeforeFixture = {
   light: {
@@ -161,6 +166,24 @@ const resolvedBeforeFixture = {
     'data-8': '#90C987',
     'data-9': '#CAACCB',
     'data-10': '#EE8026',
+    'dataviz-diverging-0': '#2196F3',
+    'dataviz-diverging-1': '#22D3EE',
+    'dataviz-diverging-2': '#58F69E',
+    'dataviz-diverging-3': '#F9B415',
+    'dataviz-diverging-4': '#D14343',
+    'dataviz-sequential-0': '#2ED573',
+    'dataviz-sequential-1': '#FFD352',
+    'dataviz-sequential-2': '#F9B415',
+    'dataviz-sequential-3': '#FF7900',
+    'dataviz-sequential-4': '#D14343',
+    'dataviz-sequential-5': '#A4221C',
+    'dataviz-categorical-0': '#2196F3',
+    'dataviz-categorical-1': '#D548AF',
+    'dataviz-categorical-2': '#E05254',
+    'dataviz-categorical-3': '#FF7900',
+    'dataviz-categorical-4': '#2ED573',
+    'dataviz-categorical-5': '#22D3EE',
+    'dataviz-categorical-6': '#A45E00',
     'text-primary': '#121828',
     'text-secondary': '#65748B',
     'text-tertiary': '#A29F9D',
@@ -292,6 +315,24 @@ const resolvedBeforeFixture = {
     'data-8': '#90C987',
     'data-9': '#CAACCB',
     'data-10': '#EE8026',
+    'dataviz-diverging-0': '#2196F3',
+    'dataviz-diverging-1': '#22D3EE',
+    'dataviz-diverging-2': '#58F69E',
+    'dataviz-diverging-3': '#F9B415',
+    'dataviz-diverging-4': '#D14343',
+    'dataviz-sequential-0': '#2ED573',
+    'dataviz-sequential-1': '#FFD352',
+    'dataviz-sequential-2': '#F9B415',
+    'dataviz-sequential-3': '#FF7900',
+    'dataviz-sequential-4': '#D14343',
+    'dataviz-sequential-5': '#A4221C',
+    'dataviz-categorical-0': '#2196F3',
+    'dataviz-categorical-1': '#D548AF',
+    'dataviz-categorical-2': '#E05254',
+    'dataviz-categorical-3': '#FF7900',
+    'dataviz-categorical-4': '#2ED573',
+    'dataviz-categorical-5': '#22D3EE',
+    'dataviz-categorical-6': '#A45E00',
     'text-primary': '#F9F6F3',
     'text-secondary': '#A29F9D',
     'text-tertiary': '#888684',
