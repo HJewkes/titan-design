@@ -1,5 +1,10 @@
 import { describe, it, expect, vi } from 'vitest'
-import { siblingSource, sizeClasses, resolveAll } from '../../../test/spacing-resolver'
+import {
+  siblingSource,
+  sizeClasses,
+  spacingClassesOn,
+  resolveAll,
+} from '../../../test/spacing-resolver'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
@@ -291,5 +296,13 @@ describe('ExerciseCardHeading density resolves to the inset tokens', () => {
   it.each(shipped)('%s reads the inset keys', (level, classes, pixels) => {
     expect(sizeClasses(source, 'DENSITY', level, 'padding')).toEqual([...classes])
     expect(resolveAll([...classes])).toEqual([...pixels])
+  })
+
+  // The strip offset was 7px, traced from the S3 session-rail specimen (#92),
+  // which states no reason for sitting 1px under the rung. Normalised on the
+  // operator's call rather than kept as an optical nudge.
+  it('puts the strip offset on the stack ramp', () => {
+    expect(spacingClassesOn(source, 'exercise-card-strip')).toEqual(['mt-stack-md'])
+    expect(resolveAll(['mt-stack-md'])).toEqual(['8px'])
   })
 })

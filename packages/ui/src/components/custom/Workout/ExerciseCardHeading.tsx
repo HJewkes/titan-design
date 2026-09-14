@@ -184,11 +184,7 @@ export function ExerciseCardHeading(props: ExerciseCardHeadingProps) {
       />
 
       {setStates.length > 0 && (
-        <View
-          // optical: the S3 session-rail specimen (#92) sets the strip 1px under stack-md.
-          style={{ marginTop: 7 }}
-          testID="exercise-card-strip"
-        >
+        <View className="mt-stack-md" testID="exercise-card-strip">
           <SetStrip sets={setStates} height={stripHeight} />
         </View>
       )}
