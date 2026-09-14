@@ -204,11 +204,11 @@ export function IntensityBar({
       </View>
 
       <Text
+        className="mt-1.5"
         style={{
           fontSize: 8,
           color: colors.labelColor,
           fontFamily: '"Nunito Sans", sans-serif',
-          marginTop: 6,
         }}
         accessibilityElementsHidden
         testID="intensity-label"
@@ -218,12 +218,12 @@ export function IntensityBar({
 
       {showThresholdLabel && threshold != null && (
         <Text
+          className="mt-0.5"
           style={{
             fontSize: 8,
             fontWeight: '500',
             color: colors.labelColor,
             fontFamily: 'Inter, sans-serif',
-            marginTop: 2,
           }}
           accessibilityElementsHidden
           testID="intensity-threshold-label"

@@ -6,6 +6,7 @@ import { semanticColorsDark } from '../../../theme/tokens/semantic'
 import { greyRamp } from '../../../theme/tokens/primitives'
 import { alpha } from '../../../utils/colors'
 import { getGlowShadow } from '../../../theme/elevation'
+import { cn } from '../../../utils/cn'
 
 export type StatusDotVariant =
   | 'success'
@@ -167,8 +168,7 @@ export function StatusDot({
   if (label) {
     return (
       <View
-        className={className}
-        style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}
+        className={cn('flex-row items-center gap-1.5', className)}
         accessibilityLabel={`${variant} status: ${label}`}
         {...props}
       >

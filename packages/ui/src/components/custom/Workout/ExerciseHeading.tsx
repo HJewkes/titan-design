@@ -154,8 +154,7 @@ function StackedHeading({ heading, nameStyle }: LayoutProps) {
     <>
       <Pressable
         {...pressProps(heading, unit)}
-        className="flex-row items-center"
-        style={{ gap: 8 }}
+        className="flex-row items-center gap-inline-md"
         testID="exercise-card-header"
       >
         <HeadingName name={heading.name} nameStyle={nameStyle} />
@@ -164,8 +163,9 @@ function StackedHeading({ heading, nameStyle }: LayoutProps) {
       </Pressable>
 
       <View
-        className="flex-row items-center"
-        style={{ gap: 8, marginTop: 1 }}
+        className="flex-row items-center gap-inline-md"
+        // optical: 1px lifts the prescription line off the name's descenders.
+        style={{ marginTop: 1 }}
         testID="exercise-card-summary"
       >
         {prescriptionNode(heading, unit)}
@@ -182,8 +182,7 @@ function InlineHeading({ heading, nameStyle }: LayoutProps) {
   return (
     <Row
       {...(heading.pressTarget === 'ancestor' ? {} : pressProps(heading, unit))}
-      className="flex-row items-center"
-      style={{ gap: 8 }}
+      className="flex-row items-center gap-inline-md"
       testID="exercise-card-header"
     >
       {/* Name never truncates (no numberOfLines); prescription + previousBest ellipsize first. */}

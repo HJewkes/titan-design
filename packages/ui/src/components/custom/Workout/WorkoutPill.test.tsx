@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
+import { siblingSource, spacingClassesIn, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { WorkoutPill } from './WorkoutPill'
@@ -200,5 +201,16 @@ describe('WorkoutPill', () => {
       render(<WorkoutPill name="Upper A" status="completed" onPress={() => {}} />)
       expect(screen.getByLabelText('Upper A workout, completed')).toBeInTheDocument()
     })
+  })
+})
+
+/** WorkoutPill's geometry, pinned (AW-142); pixels unchanged. 10px is off the squish-x ramp. */
+describe('WorkoutPill geometry resolves to the squish ramp', () => {
+  const source = siblingSource(import.meta.url, 'WorkoutPill.tsx')
+
+  it('keeps the pill inset', () => {
+    const classes = spacingClassesIn(source, 'WorkoutPill')
+    expect(classes).toEqual(['px-2.5', 'py-squish-y-md'])
+    expect(resolveAll(classes)).toEqual(['10px', '4px'])
   })
 })

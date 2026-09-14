@@ -296,7 +296,8 @@ export function TempoDisplay({
   const isSm = size === 'sm'
   const fontSize = fontSizeProp ?? (isSm ? 9 : 11)
   // The chrome (padding, radius, label) scales with the digit size so the whole view stays
-  // proportional at any form factor — a compact rail chip up to a wall read-out.
+  // proportional at any form factor — a compact rail chip up to a wall read-out. Exempt
+  // from the AW-142 className migration: em-proportional spacing no fixed rung expresses.
   const chromePadX = Math.round(fontSize * 0.6)
   const chromePadY = Math.round(fontSize * 0.3)
   const chromeRadius = Math.round(fontSize * 0.4)
@@ -374,23 +375,21 @@ export function TempoDisplay({
       {content}
       {showTooltip && (
         <View
+          className="items-center mb-stack-md"
           style={{
             position: 'absolute',
             bottom: '100%',
             left: '50%',
             transform: [{ translateX: '-50%' as unknown as number }],
-            marginBottom: 8,
             zIndex: 20,
-            alignItems: 'center',
           }}
           testID="tempo-tooltip"
         >
           <View
+            className="py-inset-sm px-inset-md"
             style={{
               backgroundColor: c.overlay,
               borderRadius: 6,
-              paddingVertical: 8,
-              paddingHorizontal: 12,
               borderWidth: 1,
               borderColor: c.overlayEdge,
             }}

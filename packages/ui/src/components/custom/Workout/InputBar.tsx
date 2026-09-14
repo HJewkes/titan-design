@@ -19,7 +19,9 @@ export interface InputBarProps {
   visible: boolean
 }
 
-const INPUT_CLASSNAME = 'bg-surface-raised border-hairline-strong text-text-primary'
+// 5px vertical was off the 4px grain; `control-y-sm` is the input's own rung.
+const INPUT_CLASSNAME =
+  'bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5'
 
 const inputStyle = {
   fontSize: 14,
@@ -28,8 +30,6 @@ const inputStyle = {
   borderWidth: 1,
   borderRadius: 6,
   textAlign: 'center' as const,
-  paddingVertical: 5,
-  paddingHorizontal: 2,
 }
 
 export function InputBar({
@@ -53,17 +53,10 @@ export function InputBar({
 
   return (
     <View
-      className="bg-surface-elevated"
+      className="bg-surface-elevated w-full flex-row items-center pt-2.5 px-gutter-sm pb-inset-md gap-2.5"
       style={{
-        width: '100%',
         borderTopWidth: 1,
         borderTopColor: resolveColor('hairline-default'),
-        paddingTop: 10,
-        paddingHorizontal: 16,
-        paddingBottom: 12,
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 10,
       }}
       accessibilityRole="toolbar"
       testID="input-bar"
@@ -93,7 +86,7 @@ export function InputBar({
         </Text>
       </View>
 
-      <View className="flex-1 flex-row items-center" style={{ gap: 4 }}>
+      <View className="flex-1 flex-row items-center gap-inline-sm">
         <TextInput
           value={reps}
           onChangeText={onRepsChange}
@@ -137,11 +130,10 @@ export function InputBar({
       <Pressable
         onPress={onRecord}
         disabled={!canRecord}
+        className="py-control-y-lg px-control-x-sm"
         style={({ pressed }) => ({
           backgroundColor: t['brand-primary'],
           borderRadius: 8,
-          paddingVertical: 10,
-          paddingHorizontal: 16,
           opacity: !canRecord ? 0.4 : pressed ? 0.8 : 1,
         })}
         accessibilityRole="button"

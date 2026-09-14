@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { siblingSource, spacingClassesIn, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { SessionHeader, type SessionHeaderPlanEntry } from './SessionHeader'
@@ -118,5 +119,25 @@ describe('SessionHeader', () => {
       )
       expect(await axe(container)).toHaveNoViolations()
     })
+  })
+})
+
+/**
+ * SessionHeader's geometry, pinned (AW-142). The header was 11/12/12/12 — one
+ * pixel off an otherwise uniform inset, with no stated reason — and is now a
+ * single `inset-md`, so it gains one pixel at the top. The label row under the
+ * pace bar was 5px, off the grain, and takes `stack-sm`.
+ */
+describe('SessionHeader geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'SessionHeader.tsx')
+
+  it('insets the header uniformly', () => {
+    expect(spacingClassesIn(source, 'SessionHeader')).toEqual(['p-inset-md'])
+    expect(resolveAll(['p-inset-md'])).toEqual(['12px'])
+  })
+
+  it('puts the pace-bar label row on the stack ramp', () => {
+    expect(resolveAll(['mt-stack-sm'])).toEqual(['4px'])
+    expect(source).toContain('mt-stack-sm')
   })
 })

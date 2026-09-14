@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
+import { siblingSource, spacingClassesIn, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { RestTimer } from './RestTimer'
@@ -255,5 +256,20 @@ describe('RestTimer ring variant', () => {
       <RestTimer {...ringProps} nextSetInfo="Next · Bench · set 3 of 4" />
     )
     expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+/** RestTimer's geometry, pinned (AW-142); pixels unchanged. */
+describe('RestTimer geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'RestTimer.tsx')
+
+  it('puts the action row on the inline ramp and the controls on the control rung', () => {
+    expect(spacingClassesIn(source, 'RestActions')).toEqual(['gap-inline-md'])
+    expect(resolveAll(['py-control-y-md', 'px-control-x-md'])).toEqual(['8px', '20px'])
+  })
+
+  it('keeps the circular variant’s stack', () => {
+    expect(source).toContain('items-center gap-stack-lg')
+    expect(resolveAll(['gap-stack-lg'])).toEqual(['16px'])
   })
 })

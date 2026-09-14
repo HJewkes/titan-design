@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { siblingSource, spacingClassesIn, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { SetTableHeader } from './SetTableHeader'
@@ -43,5 +44,16 @@ describe('SetTableHeader', () => {
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
+  })
+})
+
+/** SetTableHeader's geometry, pinned (AW-142); pixels unchanged. */
+describe('SetTableHeader geometry resolves to the inset tokens', () => {
+  const source = siblingSource(import.meta.url, 'SetTableHeader.tsx')
+
+  it('keeps the header inset', () => {
+    const classes = spacingClassesIn(source, 'SetTableHeader')
+    expect(classes).toEqual(['p-inset-sm', 'pb-inset-xs'])
+    expect(resolveAll(classes)).toEqual(['8px', '4px'])
   })
 })

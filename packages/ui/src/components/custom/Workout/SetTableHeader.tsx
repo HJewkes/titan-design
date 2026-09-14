@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View } from 'react-native'
 import { Typography } from '../Typography'
+import { cn } from '../../../utils/cn'
 
 // One header column: its label and its fixed width (PREV is the lone flex column,
 // `undefined`). Order + widths mirror SetRow's cells so headers align over rows.
@@ -51,13 +52,8 @@ export function SetTableHeader({
 
   return (
     <View
-      className="flex-row"
-      style={{
-        paddingVertical: 8,
-        paddingHorizontal: 8,
-        paddingBottom: 4,
-        ...(showPrevious ? {} : { justifyContent: 'space-between' }),
-      }}
+      className="flex-row p-inset-sm pb-inset-xs"
+      style={showPrevious ? undefined : { justifyContent: 'space-between' }}
       testID={testID}
     >
       {columns.map(({ label, width }) => {
@@ -66,13 +62,8 @@ export function SetTableHeader({
         return (
           <View
             key={label}
-            style={{
-              ...(isFlex ? { minWidth: 44 } : { width, flexShrink: 1 }),
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 8,
-            }}
-            {...(isFlex ? { className: 'flex-1' } : {})}
+            className={cn('items-center justify-center gap-inline-md', isFlex && 'flex-1')}
+            style={isFlex ? { minWidth: 44 } : { width, flexShrink: 1 }}
           >
             <Typography variant="microLabel" color="tertiary" className={COLUMN_LABEL}>
               {label}

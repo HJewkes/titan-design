@@ -50,9 +50,9 @@ function SegmentedStrip({
 }: Omit<PlaceholderStripProps, 'mode'>) {
   return (
     <View
-      className={cn('flex-row', className)}
+      className={cn('flex-row gap-0.5', className)}
       style={[
-        { height: 3, gap: 2, opacity: 0.5 },
+        { height: 3, opacity: 0.5 },
         width != null ? { width: width as number } : { flex: 1 },
       ]}
       accessibilityRole="image"

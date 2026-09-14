@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
+import { siblingSource, spacingClassesIn, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { InputBar, type InputBarProps } from './InputBar'
@@ -112,5 +113,25 @@ describe('InputBar', () => {
       renderInputBar({ unit: 'kg' })
       expect(screen.getByLabelText('Weight in kg')).toBeInTheDocument()
     })
+  })
+})
+
+/**
+ * InputBar's geometry, pinned (AW-142). The bar and the record button keep their
+ * pixels. The numeric inputs were 5px vertical, off the 4px grain; `control-y-sm`
+ * is the rung a control sits on, so each input gains one pixel top and bottom.
+ */
+describe('InputBar geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'InputBar.tsx')
+
+  it('keeps the bar inset and its gap', () => {
+    const classes = spacingClassesIn(source, 'InputBar')
+    expect(classes).toEqual(['w-full', 'pt-2.5', 'px-gutter-sm', 'pb-inset-md', 'gap-2.5'])
+    expect(resolveAll(classes)).toEqual(['100%', '10px', '16px', '12px', '10px'])
+  })
+
+  it('puts the inputs on the control rung', () => {
+    expect(source).toContain('py-control-y-sm')
+    expect(resolveAll(['py-control-y-sm', 'px-0.5'])).toEqual(['6px', '2px'])
   })
 })

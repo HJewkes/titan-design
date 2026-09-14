@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
+import { siblingSource, spacingClassesIn, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ReadinessCheck, type ReadinessFactor } from './ReadinessCheck'
@@ -171,5 +172,21 @@ describe('ReadinessCheck', () => {
       )
       expect(await axe(container)).toHaveNoViolations()
     })
+  })
+})
+
+/** ReadinessCheck's geometry, pinned (AW-142); pixels unchanged. */
+describe('ReadinessCheck geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'ReadinessCheck.tsx')
+
+  it('keeps the card inset and the factor rhythm', () => {
+    expect(spacingClassesIn(source, 'ReadinessCheck')).toEqual(['p-inset-lg'])
+    expect(spacingClassesIn(source, 'EmojiSlider')).toEqual(['mt-3.5'])
+    expect(resolveAll(['p-inset-lg', 'mt-3.5'])).toEqual(['16px', '14px'])
+  })
+
+  it('keeps the warm-up panel inset', () => {
+    expect(source).toContain('mt-stack-lg p-inset-md')
+    expect(resolveAll(['mt-stack-lg', 'p-inset-md'])).toEqual(['16px', '12px'])
   })
 })

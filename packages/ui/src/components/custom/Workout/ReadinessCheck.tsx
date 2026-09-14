@@ -5,6 +5,7 @@ import { Badge, type BadgeColor } from '../../ui/badge'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
 import { alpha } from '../../../utils/colors'
+import { cn } from '../../../utils/cn'
 
 /** Emoji option sets per known factor, keyed by lowercase id/label. */
 const EMOJI_SETS: Record<string, readonly string[]> = {
@@ -90,7 +91,7 @@ function EmojiSlider({ factor }: EmojiSliderProps) {
   const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
   const emojis = emojiSet(factor)
   return (
-    <View style={{ marginTop: 14 }} testID={`readiness-check-factor-${factor.id}`}>
+    <View className="mt-3.5" testID={`readiness-check-factor-${factor.id}`}>
       <Text
         className="text-text-secondary"
         style={{ fontSize: 12, fontWeight: '500', fontFamily: 'Inter, sans-serif' }}
@@ -99,8 +100,7 @@ function EmojiSlider({ factor }: EmojiSliderProps) {
         {factor.label}
       </Text>
       <View
-        className="flex-row items-center"
-        style={{ marginTop: 6, gap: 6 }}
+        className="flex-row items-center mt-1.5 gap-1.5"
         accessibilityRole="radiogroup"
         aria-label={factor.label}
         testID="readiness-check-factor-options"
@@ -116,11 +116,10 @@ function EmojiSlider({ factor }: EmojiSliderProps) {
               accessibilityLabel={`${factor.label} level ${level} of 5`}
               aria-checked={selected}
               testID="readiness-check-emoji"
-              className={selected ? undefined : 'border-hairline bg-surface-raised'}
+              className={cn('py-inset-sm', !selected && 'border-hairline bg-surface-raised')}
               style={({ pressed }) => ({
                 flex: 1,
                 alignItems: 'center',
-                paddingVertical: 8,
                 borderRadius: 8,
                 borderWidth: 1,
                 borderColor: selected ? brandPrimary : undefined,
@@ -177,16 +176,14 @@ function WarmUpCard({ validation }: { validation: WarmUpValidation }) {
   const badge = WARMUP_BADGE[validation.status]
   return (
     <View
-      className="border-hairline bg-surface-raised"
+      className="border-hairline bg-surface-raised mt-stack-lg p-inset-md"
       style={{
-        marginTop: 16,
-        padding: 12,
         borderRadius: 8,
         borderWidth: 1,
       }}
       testID="readiness-check-warmup"
     >
-      <View className="flex-row items-center justify-between" style={{ gap: 8 }}>
+      <View className="flex-row items-center justify-between gap-inline-md">
         <Text
           className="text-text-secondary"
           style={{ fontSize: 12, fontWeight: '600', fontFamily: 'Inter, sans-serif' }}
@@ -199,8 +196,8 @@ function WarmUpCard({ validation }: { validation: WarmUpValidation }) {
         </Badge>
       </View>
       <Text
-        className="text-text-primary"
-        style={{ marginTop: 6, fontSize: 13, fontFamily: 'Inter, sans-serif' }}
+        className="text-text-primary mt-1.5"
+        style={{ fontSize: 13, fontFamily: 'Inter, sans-serif' }}
         testID="readiness-check-warmup-recommendation"
       >
         {validation.recommendation}
@@ -233,8 +230,8 @@ export function ReadinessCheck({
   const t = getSemanticColors(useSurfaceMode())
   return (
     <Card variant="outline" elevation={2} className={className} testID="readiness-check">
-      <View style={{ padding: 16 }}>
-        <View className="flex-row items-center justify-between" style={{ gap: 12 }}>
+      <View className="p-inset-lg">
+        <View className="flex-row items-center justify-between gap-inline-lg">
           <Text
             className="text-text-primary"
             style={{ fontSize: 18, fontWeight: '700', fontFamily: '"Space Grotesk", sans-serif' }}
@@ -256,13 +253,10 @@ export function ReadinessCheck({
           accessibilityRole="button"
           accessibilityLabel="Confirm readiness and start workout"
           testID="readiness-check-confirm"
+          className="mt-stack-lg w-full items-center py-inset-md"
           style={({ pressed }) => ({
-            marginTop: 16,
-            width: '100%',
-            alignItems: 'center',
             backgroundColor: t['brand-primary'],
             borderRadius: 8,
-            paddingVertical: 12,
             opacity: pressed ? 0.8 : 1,
           })}
         >
