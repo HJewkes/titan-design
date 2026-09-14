@@ -20,9 +20,21 @@ export function linearGradient(
   angle = 180,
   mode: ThemeMode = 'dark'
 ): GradientStyle {
-  return {
-    backgroundImage: `linear-gradient(${angle}deg, ${resolveColor(from, mode)}, ${resolveColor(to, mode)})`,
-  }
+  return linearGradientStops([from, to], angle, mode)
+}
+
+/**
+ * The n-stop form of {@link linearGradient}, for ramps that need a midpoint.
+ * Stops are evenly spaced — CSS distributes positionless stops uniformly, so a
+ * three-token ramp lands on 0% / 50% / 100%.
+ */
+export function linearGradientStops(
+  stops: readonly ColorToken[],
+  angle = 180,
+  mode: ThemeMode = 'dark'
+): GradientStyle {
+  const paint = stops.map((token) => resolveColor(token, mode)).join(', ')
+  return { backgroundImage: `linear-gradient(${angle}deg, ${paint})` }
 }
 
 /**
@@ -33,4 +45,7 @@ export const surfaceGradient = {
   /** Chrome bands (top bar, headers): elevated → base, a subtle dark wash. */
   chrome: (mode: ThemeMode = 'dark'): GradientStyle =>
     linearGradient('surface-elevated', 'background-base', 180, mode),
+  /** Volume track (MEV → MRV): under → on-target → over, left to right. */
+  volumeTrack: (mode: ThemeMode = 'dark'): GradientStyle =>
+    linearGradientStops(['status-info', 'status-success', 'status-error'], 90, mode),
 }

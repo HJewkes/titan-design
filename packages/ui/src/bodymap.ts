@@ -14,6 +14,7 @@ export {
 export {
   BodyMapDetailPanel,
   type BodyMapDetailPanelProps,
+  type SheetPlacement,
   type ContributingExercise,
   type UpcomingExercise,
 } from './components/custom/Workout/BodyMapDetailPanel'
