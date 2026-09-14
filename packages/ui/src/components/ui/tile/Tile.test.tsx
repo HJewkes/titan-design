@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Tile } from './Tile'
+import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
 
 describe('Tile', () => {
   it('renders label and value', () => {
@@ -45,4 +46,22 @@ describe('Tile', () => {
       expect(results).toHaveNoViolations()
     })
   })
+})
+
+/**
+ * Tile's inset, pinned (AW-142 wave two).
+ *
+ * `px-1.5 py-2` was 6 across and 8 down; 6 is not on the inset ramp, so the
+ * tile squares up at 8. The value's `mt-0.5` becomes the parent's stack gap.
+ */
+describe('Tile geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'Tile.tsx')
+
+  it.each([['Tile', ['p-inset-sm', 'gap-stack-sm'], ['8px', '4px']]] as const)(
+    '%s ships %s',
+    (functionName, classes, pixels) => {
+      expect(spacingClassesIn(source, functionName)).toEqual([...classes])
+      expect(resolveAll([...classes])).toEqual([...pixels])
+    }
+  )
 })

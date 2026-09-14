@@ -39,7 +39,7 @@ export function Tile({
   return (
     <View
       className={cn(
-        'flex-1 rounded-md bg-surface-raised px-1.5 py-2',
+        'flex-1 rounded-md bg-surface-raised p-inset-sm gap-stack-sm',
         isCenter ? 'items-center' : 'items-start',
         className
       )}
@@ -55,7 +55,7 @@ export function Tile({
       </Text>
       <Text
         className={cn(
-          'mt-0.5 font-mono text-sm font-bold text-text-primary',
+          'font-mono text-sm font-bold text-text-primary',
           isCenter ? 'text-center' : 'text-left'
         )}
         style={valueColor ? { color: valueColor } : undefined}

@@ -24,7 +24,10 @@ export function DataRow({
   ...props
 }: DataRowProps) {
   return (
-    <View className={cn('flex-row items-center justify-between py-2', className)} {...props}>
+    <View
+      className={cn('flex-row items-center justify-between py-inset-sm px-inset-md', className)}
+      {...props}
+    >
       {typeof label === 'string' ? (
         <Text className={cn('text-sm text-text-secondary', labelClassName)}>{label}</Text>
       ) : (
