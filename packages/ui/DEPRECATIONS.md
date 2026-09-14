@@ -113,8 +113,13 @@ required.
 
 | Change                                       | Replacement                                      | Known consumers                                    |
 | -------------------------------------------- | ------------------------------------------------ | -------------------------------------------------- |
-| `paceToneColor(tone)` | `paceToneColor(tone, mode)` — pass `useSurfaceMode()` | in-repo `SegmentedProgressBar`, `SessionHeader` only |
+| `paceToneColor(tone)` | `paceToneColor(tone, mode)` — pass `useSurfaceMode()` | in-repo only: `SegmentedProgressBar`, `SessionHeader`, `SegmentedProgressBar.test.tsx` |
 
 No downstream consumer: `grep -rn paceToneColor` over the `voltras-mcp` checkout
 returns nothing. Its two values come from `status-success` / `status-warning`,
 mode-invariant today, so no rendered colour changes.
+
+`tsconfig.json` excludes `**/*.test.ts(x)`, so a required-parameter change is
+**invisible to `tsc`** in a test: the old call kept compiling and resolved
+`getSemanticColors(undefined)` — the LIGHT branch — passing only because these
+roles are mode-invariant. Grep the call sites when changing a signature.
