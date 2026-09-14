@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { GhostSpark } from './GhostSpark'
+import { GhostSpark, GHOST_GUTTER } from './GhostSpark'
+import { siblingSource } from '../../../test/spacing-resolver'
 import { FATIGUE_STATES } from './fatigue-mock'
 
 const model = FATIGUE_STATES[3].model // the full 8-rep set
@@ -41,5 +42,27 @@ describe('GhostSpark', () => {
     render(<GhostSpark curves={model.velocityCurves} width={360} height={180} />)
     expect(screen.getByText('ECC')).toBeInTheDocument()
     expect(screen.getByText('CON')).toBeInTheDocument()
+  })
+})
+
+/**
+ * The spark's gutter, pinned (AW-142 wave three).
+ *
+ * Chart geometry, so the pixel does not move — but it was written three times across two
+ * files, and the card's plot arithmetic silently depends on matching it. One constant now,
+ * the way GhostBand already exports BAND_H and BAND_GAP.
+ */
+describe('GhostSpark gutter is one number', () => {
+  it('renders both branches through GHOST_GUTTER', () => {
+    const source = siblingSource(import.meta.url, 'GhostSpark.tsx')
+    expect(GHOST_GUTTER).toBe(4)
+    expect(source.match(/paddingHorizontal: GHOST_GUTTER/g)).toHaveLength(2)
+    expect(source).not.toMatch(/paddingHorizontal: [0-9]/)
+  })
+
+  it('is the same gutter the dual spark carries', () => {
+    const dual = siblingSource(import.meta.url, 'DualGhostSpark.tsx')
+    expect(dual).toContain('paddingHorizontal: GHOST_GUTTER')
+    expect(dual).not.toMatch(/paddingHorizontal: [0-9]/)
   })
 })

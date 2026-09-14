@@ -367,6 +367,11 @@ module.exports = tseslint.config(
   // Wave three takes custom/Workout file by file, cards and rows first, for the
   // same reason batches B1-B3 above did: the family is ~45 files and one PR that
   // touched all of them could not be reviewed.
+  //
+  // Wave three also adds `custom/Fatigue/**`. Its remaining numbers are all
+  // either a named constant (`PAD`, `TIER_GAP_*`, `GHOST_GUTTER`) or carry an
+  // `// optical:` reason, so the rule holds the family at zero with no disable
+  // comments.
   {
     files: [
       'src/theme/**/*.{ts,tsx}',
@@ -409,6 +414,7 @@ module.exports = tseslint.config(
       'src/components/custom/Workout/StrengthTrendChart.tsx',
       'src/components/custom/Workout/TrainingStatusPage.tsx',
       'src/components/custom/Workout/VelocityStrip.tsx',
+      'src/components/custom/Fatigue/**/*.{ts,tsx}',
     ],
     // `color-story-kit` is story chrome that happens not to be named `.stories.tsx`
     // — exempt on the same grounds as the stories themselves, not as a backlog.

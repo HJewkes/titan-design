@@ -24,6 +24,15 @@ import { GhostBloom, type Pt } from './GhostBloom'
 import { prescribedSegments, type TempoTuple } from './tempo-pacing'
 import type { RepVelocityCurve } from './fatigue-model'
 
+/**
+ * Chart geometry: the L/R gutter the spark carries outside its `<svg>` so the bloom's end
+ * caps and the band's first and last labels are not clipped by the card edge. Exported
+ * because {@link LiveFatigueCard} subtracts it twice to size the plot, and
+ * {@link DualGhostSpark} carries the same gutter — the number belongs in one place, the
+ * way {@link BAND_H} and {@link BAND_GAP} already do for the band.
+ */
+export const GHOST_GUTTER = 4
+
 export interface GhostSparkProps {
   /** Per-rep velocity-time curves, oldest first (last = current rep). */
   curves: RepVelocityCurve[]
@@ -63,7 +72,7 @@ export function GhostSpark({
     const bandTopEmpty = h - padBot - BAND_H
     const xEmpty = (ms: number): number => padL + (ms / (totalMs * 1.04)) * (w - padL - padR)
     return (
-      <View testID="ghost-spark" style={{ paddingHorizontal: 4 }}>
+      <View testID="ghost-spark" style={{ paddingHorizontal: GHOST_GUTTER }}>
         <svg width={w} height={h}>
           <GhostBand
             segments={prescribed}
@@ -100,7 +109,7 @@ export function GhostSpark({
     .map((c) => c.samples.map((s): Pt => [x(s.tMs), mag(s.velocityMps)]))
 
   return (
-    <View testID="ghost-spark" style={{ paddingHorizontal: 4 }}>
+    <View testID="ghost-spark" style={{ paddingHorizontal: GHOST_GUTTER }}>
       <svg width={w} height={h}>
         {/* the ghost fan + paper-treated tinted current line, blooming up from the band. */}
         <GhostBloom

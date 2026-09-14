@@ -34,7 +34,7 @@ import { cardChartHeight, cardSectionGap } from './panel-layout'
 import { VerdictHero } from './VerdictHero'
 import { FatigueLights } from './FatigueLights'
 import { RomProgressionChart } from './RomProgressionChart'
-import { GhostSpark } from './GhostSpark'
+import { GhostSpark, GHOST_GUTTER } from './GhostSpark'
 import type { LiveFatigueModel } from './fatigue-model'
 
 export interface LiveFatigueCardProps {
@@ -46,8 +46,9 @@ export interface LiveFatigueCardProps {
   height?: number
 }
 
+// Operator decision 2026-09-14 (AW-142 wave three): kept; measured geometry; AW-121.
+// CARD_FIXED_CONTENT_HEIGHT and CARD_CHROME_HEIGHT count PAD twice; re-measure in AW-121.
 const PAD = 18
-const GHOST_GUTTER = 4 // GhostSpark carries this L/R padding internally
 
 export function LiveFatigueCard({ model, width = 318, height }: LiveFatigueCardProps) {
   const t = getSemanticColors(useSurfaceMode())
@@ -69,7 +70,7 @@ export function LiveFatigueCard({ model, width = 318, height }: LiveFatigueCardP
       }}
     >
       {/* top group — verdict hero + the three why-lights, tight together. */}
-      <View style={{ gap: 12 }}>
+      <View className="gap-3">
         <VerdictHero rpe={model.rpe} verdict={model.verdict} />
         <FatigueLights dimensions={model.verdict?.dimensions ?? null} />
       </View>

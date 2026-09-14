@@ -15,6 +15,7 @@
  * named constant and each is called out in the PR body.
  */
 import { primitiveBreakpoints } from '../../../theme/tokens/primitives'
+import { space } from '../../../theme/tokens/semantic'
 
 /** titan's breakpoint scale, re-exported as the panel's tier edges. Sourced, not chosen. */
 export const PANEL_BREAKPOINTS = primitiveBreakpoints
@@ -101,10 +102,11 @@ export const CARD_SECTION_GAPS = 2
 export const CARD_FIXED_CONTENT_HEIGHT = 203
 
 /**
- * SOURCED. `primitiveSpacing[4]`. The floor the two section gaps used to carry as
- * `minHeight`, kept so a short card is spaced exactly as it is today.
+ * SOURCED. `space.stack.lg` — the vertical rung between sibling blocks, which is what
+ * these gaps are. The floor the two section gaps used to carry as `minHeight`, kept so a
+ * short card is spaced exactly as it is today.
  */
-export const CARD_SECTION_GAP_MIN = 16
+export const CARD_SECTION_GAP_MIN = space.stack.lg
 
 /**
  * CHOSEN (VW-276). The cap, and the point of this function.
@@ -147,13 +149,34 @@ export const CARD_CHROME_HEIGHT = 216
  */
 export const CARD_MIN_HEIGHT_STACKED = CARD_CHROME_HEIGHT + CARD_MIN_CHART_HEIGHT
 
+/**
+ * Operator decision 2026-09-14 (AW-142 wave three): the on-ramp rungs, no measured
+ * dependents. `TIER_GAP_SM` and `TIER_GAP_MD` both round to `stack-lg` (16), and
+ * `TIER_PADDING_SM` rounds to `inset-lg` (16) — `stack` for the gaps and `inset` for the
+ * padding, matching the family each already reasons in. The panel gap is a COLUMN gap at
+ * `md` and up and a ROW gap below it, so no single situational key covers it honestly —
+ * `inline` would name the stacked case wrong and `stack` the side-by-side case wrong;
+ * `stack` was picked for consistency with {@link CARD_SECTION_GAP_MIN} below. `TIER_GAP_XS`
+ * stays a literal — see the comment on it.
+ *
+ * Rounding `TIER_GAP_MD` (was 18) down to 16 does NOT touch the card: `LiveFatigueCard`'s
+ * `PAD` stays 18 by a separate operator decision (its own comment), so
+ * {@link CARD_FIXED_CONTENT_HEIGHT} and {@link CARD_CHROME_HEIGHT}, both MEASURED off the
+ * rendered card, are unaffected.
+ */
+// stack ramp is 4/8/16/24; 12 kept as the xs-tier gap pending AW-121's Fatigue re-measure
+export const TIER_GAP_XS = 12
+export const TIER_PADDING_SM = space.inset.lg
+export const TIER_GAP_SM = space.stack.lg
+export const TIER_GAP_MD = space.stack.lg
+
 /** Padding and column gap per tier. `md` and up hold today's values exactly. */
 const TIER_SPACING: Record<PanelTier, { padding: number; gap: number }> = {
-  xs: { padding: 16, gap: 12 },
-  sm: { padding: 20, gap: 14 },
-  md: { padding: 24, gap: 18 },
-  lg: { padding: 24, gap: 18 },
-  xl: { padding: 24, gap: 18 },
+  xs: { padding: space.inset.lg, gap: TIER_GAP_XS },
+  sm: { padding: TIER_PADDING_SM, gap: TIER_GAP_SM },
+  md: { padding: space.inset.xl, gap: TIER_GAP_MD },
+  lg: { padding: space.inset.xl, gap: TIER_GAP_MD },
+  xl: { padding: space.inset.xl, gap: TIER_GAP_MD },
 }
 
 export interface PanelLayout {

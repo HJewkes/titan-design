@@ -28,7 +28,7 @@ export function VerdictHero({ rpe, verdict }: VerdictHeroProps) {
   const tone = verdict ? t[TONE_TOKEN[verdict.tone]] : t['text-tertiary']
   const word = verdict ? STATE_LABEL[verdict.state] : 'Warming up'
   return (
-    <View style={{ gap: 6 }} testID="verdict-hero">
+    <View className="gap-1.5" testID="verdict-hero">
       <Text
         style={{
           fontSize: 9,
@@ -39,8 +39,14 @@ export function VerdictHero({ rpe, verdict }: VerdictHeroProps) {
       >
         FATIGUE
       </Text>
-      <View style={{ gap: 2 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 7 }}>
+      <View className="gap-0.5">
+        <View
+          className="flex-row items-end"
+          // The 62px numeral's right side bearing already reads as space, so the 8px rung
+          // parts the lockup instead of setting the suffix beside it.
+          // optical: 7px between the numeral and its RPE suffix, below the 4px grain.
+          style={{ gap: 7 }}
+        >
           <Text
             style={{
               fontSize: 62,
@@ -58,6 +64,9 @@ export function VerdictHero({ rpe, verdict }: VerdictHeroProps) {
               fontSize: 18,
               fontWeight: '800',
               color: tone,
+              // `items-end` aligns the two boxes, not the two baselines: the 62px numeral
+              // sits in a 60px line box, so its glyph bottom is not its box bottom.
+              // optical: 9px lifts the suffix onto the numeral's baseline.
               marginBottom: 9,
               fontFamily: FONT_HEAD,
             }}

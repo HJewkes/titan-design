@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { VerdictHero } from './VerdictHero'
 import type { FatigueVerdict } from './fatigue-model'
+import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
 
 const goodVerdict: FatigueVerdict = {
   state: 'good',
@@ -45,5 +46,31 @@ describe('VerdictHero', () => {
   it('has no accessibility violations', async () => {
     const { container } = render(<VerdictHero rpe={8} verdict={goodVerdict} />)
     expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+/**
+ * The hero's spacing, pinned (AW-142 wave three).
+ *
+ * Two gaps are numeric rungs (6 and 2, neither on the stack ramp). Two values are genuinely
+ * optical and stay, with their reason: the 7px between the numeral and its suffix, and the
+ * 9px that lifts the suffix onto the numeral's baseline. The comment is asserted alongside
+ * the value so a later pass cannot keep the nudge and drop the justification.
+ */
+describe('VerdictHero geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'VerdictHero.tsx')
+
+  it('spaces the eyebrow from the lockup by gap-1.5', () => {
+    expect(spacingClassesIn(source, 'VerdictHero')).toEqual(['gap-1.5'])
+    expect(resolveAll(['gap-1.5', 'gap-0.5'])).toEqual(['6px', '2px'])
+    expect(source).toContain('className="gap-0.5"')
+  })
+
+  it.each([
+    ['gap: 7', /\/\/ optical: 7px between the numeral and its RPE suffix/],
+    ['marginBottom: 9', /\/\/ optical: 9px lifts the suffix onto the numeral's baseline/],
+  ])('keeps %s with its reason beside it', (value, reason) => {
+    expect(source).toContain(value)
+    expect(source).toMatch(reason)
   })
 })

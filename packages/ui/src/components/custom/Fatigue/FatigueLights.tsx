@@ -8,6 +8,7 @@
  * Warming up (`dimensions === null`) shows three neutral dots.
  */
 import { View, Text } from 'react-native'
+import { cn } from '../../../utils/cn'
 import { StatusDot, type StatusDotVariant } from '../Workout/StatusDot'
 import { Tooltip } from '../../ui/tooltip/Tooltip'
 import { useOnSurfaceColor } from '../../ui/surface'
@@ -45,7 +46,7 @@ function Light({
     <Tooltip label={`${detail} · ${word}`} placement="bottom">
       <View
         accessibilityLabel={`${detail}, ${word}`}
-        style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}
+        className="flex-row items-center gap-inline-sm"
       >
         <StatusDot variant={variant} size="sm" glow />
         <Text
@@ -67,12 +68,7 @@ export function FatigueLights({ dimensions, spread = false }: FatigueLightsProps
   return (
     <View
       testID="fatigue-lights"
-      style={{
-        flexDirection: 'row',
-        gap: spread ? 0 : 16,
-        alignItems: 'center',
-        justifyContent: spread ? 'space-between' : 'flex-start',
-      }}
+      className={cn('flex-row items-center', spread ? 'justify-between' : 'justify-start gap-4')}
     >
       <Light label="VEL" tone={dimensions?.velocityLoss ?? null} detail="Velocity loss" />
       <Light label="ROM" tone={dimensions?.rom ?? null} detail="ROM depth" />
