@@ -160,7 +160,7 @@ export function HelpTip({
           rounded={false}
           className={cn(
             'absolute z-50',
-            'rounded-lg px-3 py-2',
+            'rounded-lg px-inset-md py-inset-sm',
             placementStyles[placement],
             tooltipClassName
           )}

@@ -120,7 +120,7 @@ export function MenuList({ children, className }: MenuListProps) {
         rounded={false}
         className={cn(
           'absolute z-50 top-full left-0 mt-1 min-w-[160px]',
-          'rounded-lg py-1 overflow-hidden',
+          'rounded-lg py-inset-xs overflow-hidden',
           className
         )}
         accessibilityRole="menu"
@@ -171,7 +171,7 @@ export function MenuItem({
       accessibilityRole="menuitem"
       accessibilityState={{ disabled: isDisabled }}
       className={cn(
-        'flex-row items-center px-4 py-2',
+        'flex-row items-center px-inset-lg py-inset-sm',
         'web:hover:bg-interactive-hover active:bg-interactive-active',
         isDisabled && 'opacity-50 cursor-not-allowed',
         className
@@ -210,7 +210,7 @@ export function MenuGroup({ label, children, className }: MenuGroupProps) {
   return (
     <View className={className}>
       {label && (
-        <Text className="px-4 py-2 text-xs font-semibold text-text-secondary uppercase">
+        <Text className="px-inset-lg py-inset-sm text-xs font-semibold text-text-secondary uppercase">
           {label}
         </Text>
       )}

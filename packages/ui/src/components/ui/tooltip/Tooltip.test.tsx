@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { Text } from 'react-native'
 import { axe } from 'jest-axe'
 import { Tooltip } from './Tooltip'
+import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 
 function hoverTrigger(triggerText: string) {
   const button = screen.getByText(triggerText)
@@ -277,4 +278,20 @@ describe('controlled visibility', () => {
     expect(screen.getByText('Controlled')).toBeInTheDocument()
     expect(screen.getByText('Trigger').parentElement).not.toHaveAttribute('tabindex')
   })
+})
+
+/**
+ * Tooltip's chrome, pinned (AW-142 wave two). Unchanged in pixels.
+ */
+describe('Tooltip geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'Tooltip.tsx')
+
+  it.each([['the bubble', 'px-inset-md py-inset-sm rounded-md', ['12px', '8px']]] as const)(
+    '%s ships `%s`',
+    (_label, classes, pixels) => {
+      expect(source).toContain(classes)
+      const spacing = classes.split(' ').filter((c) => resolveAll([c])[0] !== undefined)
+      expect(resolveAll(spacing)).toEqual([...pixels])
+    }
+  )
 })

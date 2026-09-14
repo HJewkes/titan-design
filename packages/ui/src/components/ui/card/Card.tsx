@@ -200,7 +200,7 @@ export interface CardHeaderProps {
  * Header section of a Card.
  */
 export function CardHeader({ children, className }: CardHeaderProps) {
-  return <View className={cn('px-6 py-6', className)}>{children}</View>
+  return <View className={cn('p-inset-xl gap-stack-md', className)}>{children}</View>
 }
 
 export interface CardTitleProps {
@@ -231,7 +231,7 @@ export interface CardDescriptionProps {
  * Description for CardHeader.
  */
 export function CardDescription({ children, className }: CardDescriptionProps) {
-  return <Text className={cn('mt-1.5 text-sm text-text-secondary', className)}>{children}</Text>
+  return <Text className={cn('text-sm text-text-secondary', className)}>{children}</Text>
 }
 
 export interface CardContentProps {
@@ -243,7 +243,7 @@ export interface CardContentProps {
  * Content section of a Card.
  */
 export function CardContent({ children, className }: CardContentProps) {
-  return <View className={cn('px-6 py-4', className)}>{children}</View>
+  return <View className={cn('px-inset-xl py-inset-lg', className)}>{children}</View>
 }
 
 export interface CardFooterProps {
@@ -255,7 +255,11 @@ export interface CardFooterProps {
  * Footer section of a Card.
  */
 export function CardFooter({ children, className }: CardFooterProps) {
-  return <View className={cn('px-6 py-4 flex-row items-center gap-2', className)}>{children}</View>
+  return (
+    <View className={cn('px-inset-xl py-inset-lg flex-row items-center gap-2', className)}>
+      {children}
+    </View>
+  )
 }
 
 interface SkeletonBodyProps {
@@ -270,16 +274,16 @@ function SkeletonBody({ hasHeader, hasFooter, contentLines }: SkeletonBodyProps)
       {hasHeader && (
         <CardHeader>
           <View className="h-5 w-1/3 bg-interactive-disabled rounded" />
-          <View className="mt-2 h-4 w-2/3 bg-interactive-disabled rounded" />
+          <View className="h-4 w-2/3 bg-interactive-disabled rounded" />
         </CardHeader>
       )}
-      <CardContent>
+      <CardContent className="gap-stack-md">
         {Array.from({ length: contentLines }).map((_, i) => (
           <View
             key={i}
             className={cn(
               'h-4 bg-interactive-disabled rounded',
-              i < contentLines - 1 ? 'mb-2 w-full' : 'w-4/5'
+              i < contentLines - 1 ? 'w-full' : 'w-4/5'
             )}
           />
         ))}

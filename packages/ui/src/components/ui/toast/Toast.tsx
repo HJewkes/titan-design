@@ -215,16 +215,16 @@ function ToastItem({
       className={cn('min-w-[280px] max-w-[400px] rounded-lg border-l-4', border)}
       accessibilityRole="alert"
     >
-      <View className={cn('flex-row items-start p-3', bg)}>
+      <View className={cn('flex-row items-start p-inset-md', bg)}>
         {/* Icon */}
         <View className={cn('w-6 h-6 items-center justify-center mr-3')}>
           <Text className={cn('text-lg', iconColors[status])}>{icon}</Text>
         </View>
 
         {/* Content */}
-        <View className="flex-1">
+        <View className="flex-1 gap-stack-sm">
           <Text className="text-sm font-semibold text-text-primary">{title}</Text>
-          {description && <Text className="text-sm text-text-secondary mt-0.5">{description}</Text>}
+          {description && <Text className="text-sm text-text-secondary">{description}</Text>}
         </View>
 
         {/* Close button */}
@@ -289,7 +289,7 @@ export function Toast({
       accessibilityRole="alert"
       {...props}
     >
-      <View className={cn('flex-row items-start p-3', bg)}>
+      <View className={cn('flex-row items-start p-inset-md', bg)}>
         {/* Icon */}
         {showIcon && (
           <View className="w-6 h-6 items-center justify-center mr-3">
@@ -298,9 +298,9 @@ export function Toast({
         )}
 
         {/* Content */}
-        <View className="flex-1">
+        <View className="flex-1 gap-stack-sm">
           <Text className="text-sm font-semibold text-text-primary">{title}</Text>
-          {description && <Text className="text-sm text-text-secondary mt-0.5">{description}</Text>}
+          {description && <Text className="text-sm text-text-secondary">{description}</Text>}
         </View>
 
         {/* Close button */}

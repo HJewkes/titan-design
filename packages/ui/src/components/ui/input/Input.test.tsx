@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Input } from './Input'
+import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 
 describe('Input', () => {
   it('renders correctly', () => {
@@ -75,4 +76,24 @@ describe('Input', () => {
       expect(input).toHaveAttribute('readonly')
     })
   })
+})
+
+/**
+ * Input's field stack, pinned (AW-142 wave two).
+ *
+ * Label, control and helper were spaced by three separate 6px margins. The
+ * root owns one 8px stack gap instead — 6 is not on the ramp, and 8 against
+ * FormSection's 16 between fields is the 1:2 the proximity rule wants.
+ */
+describe('Input geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'Input.tsx')
+
+  it.each([['the field root', 'w-full gap-stack-md', ['100%', '8px']]] as const)(
+    '%s ships `%s`',
+    (_label, classes, pixels) => {
+      expect(source).toContain(classes)
+      const spacing = classes.split(' ').filter((c) => resolveAll([c])[0] !== undefined)
+      expect(resolveAll(spacing)).toEqual([...pixels])
+    }
+  )
 })
