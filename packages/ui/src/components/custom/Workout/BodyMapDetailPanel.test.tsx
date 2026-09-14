@@ -1,12 +1,17 @@
+import { useState } from 'react'
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, act } from '@testing-library/react'
+import { View } from 'react-native'
 import { axe } from 'jest-axe'
 import {
   BodyMapDetailPanel,
+  type BodyMapDetailPanelProps,
   type ContributingExercise,
   type UpcomingExercise,
 } from './BodyMapDetailPanel'
 import { MuscleGroup } from './muscleTaxonomy'
+import { resolveAll } from '../../../test/spacing-resolver'
+import { space } from '../../../theme/tokens/semantic'
 
 const contributing: ContributingExercise[] = [
   { name: 'Barbell Bench Press', sets: 4, contributionWeight: 1 },
@@ -27,6 +32,22 @@ const baseProps = {
   upcomingExercises: upcoming,
   isOpen: true,
   onClose: vi.fn(),
+}
+
+const styleOf = (testId: string) => screen.getByTestId(testId).getAttribute('style') ?? ''
+
+/** An opener button plus a figure the sheet must never displace. */
+function DrillHarness(props: Partial<BodyMapDetailPanelProps>) {
+  const [open, setOpen] = useState(false)
+  return (
+    <View style={{ position: 'relative', flexDirection: 'row' }}>
+      <View style={{ width: 480, height: 960 }} testID="figure" />
+      <button type="button" data-testid="opener" onClick={() => setOpen(true)}>
+        Open
+      </button>
+      <BodyMapDetailPanel {...baseProps} {...props} isOpen={open} onClose={() => setOpen(false)} />
+    </View>
+  )
 }
 
 describe('BodyMapDetailPanel', () => {
@@ -203,6 +224,13 @@ describe('BodyMapDetailPanel', () => {
       }
     })
 
+    it('has no accessibility violations as a right side-sheet', async () => {
+      const { container } = render(
+        <BodyMapDetailPanel {...baseProps} placement="right" onViewExercises={vi.fn()} />
+      )
+      expect(await axe(container)).toHaveNoViolations()
+    })
+
     it('has no accessibility violations with only required props', async () => {
       const { container } = render(
         <BodyMapDetailPanel
@@ -216,6 +244,138 @@ describe('BodyMapDetailPanel', () => {
         />
       )
       expect(await axe(container)).toHaveNoViolations()
+    })
+  })
+
+  describe('placement', () => {
+    it('defaults to the bottom sheet', () => {
+      render(<BodyMapDetailPanel {...baseProps} />)
+      expect(styleOf('body-map-detail-panel-root')).not.toContain('flex-direction: row')
+      expect(styleOf('body-map-detail-panel')).toContain('border-top-right-radius: 16px')
+    })
+
+    it('renders the sheet in the right slot when placement is right', () => {
+      render(<BodyMapDetailPanel {...baseProps} placement="right" />)
+      const root = styleOf('body-map-detail-panel-root')
+      expect(root).toContain('flex-direction: row')
+      expect(root).toContain('justify-content: flex-end')
+      const sheet = styleOf('body-map-detail-panel')
+      expect(sheet).toContain('border-bottom-left-radius: 16px')
+      expect(sheet).toContain('height: 100%')
+      expect(sheet).toContain('width: 34%')
+    })
+
+    it('drops the drag handle in the right side-sheet', () => {
+      render(<BodyMapDetailPanel {...baseProps} placement="right" />)
+      expect(screen.queryByTestId('body-map-detail-panel-handle')).not.toBeInTheDocument()
+      expect(screen.getByTestId('body-map-detail-panel-close')).toBeInTheDocument()
+    })
+
+    it('overlays the figure without moving it', () => {
+      render(<DrillHarness placement="right" />)
+      const closedFigureStyle = screen.getByTestId('figure').getAttribute('style')
+      fireEvent.click(screen.getByTestId('opener'))
+      expect(screen.getByTestId('figure').getAttribute('style')).toBe(closedFigureStyle)
+      expect(styleOf('body-map-detail-panel-root')).toContain('position: absolute')
+    })
+
+    it('paints the volume track from the shared surfaceGradient primitive', () => {
+      render(<BodyMapDetailPanel {...baseProps} placement="right" />)
+      const track = screen.getByTestId('body-map-detail-panel-volume-bar').firstElementChild
+      expect(track?.getAttribute('style')).toContain(
+        'linear-gradient(90deg, var(--color-status-info), var(--color-status-success), var(--color-status-error))'
+      )
+    })
+  })
+
+  describe('keyboard', () => {
+    it('closes on Escape', () => {
+      const onClose = vi.fn()
+      render(<BodyMapDetailPanel {...baseProps} placement="right" onClose={onClose} />)
+      fireEvent.keyDown(screen.getByTestId('body-map-detail-panel'), { key: 'Escape' })
+      expect(onClose).toHaveBeenCalledOnce()
+    })
+
+    it('closes on Escape in the bottom sheet too', () => {
+      const onClose = vi.fn()
+      render(<BodyMapDetailPanel {...baseProps} onClose={onClose} />)
+      fireEvent.keyDown(screen.getByTestId('body-map-detail-panel'), { key: 'Escape' })
+      expect(onClose).toHaveBeenCalledOnce()
+    })
+
+    it('moves focus into the sheet on open and back to the opener on close', () => {
+      render(<DrillHarness placement="right" />)
+      const opener = screen.getByTestId('opener')
+      act(() => opener.focus())
+      fireEvent.click(opener)
+      expect(screen.getByTestId('body-map-detail-panel')).toHaveFocus()
+      fireEvent.keyDown(screen.getByTestId('body-map-detail-panel'), { key: 'Escape' })
+      expect(opener).toHaveFocus()
+    })
+
+    it('wraps Tab from the last tabbable back to the first', () => {
+      render(<BodyMapDetailPanel {...baseProps} placement="right" onViewExercises={vi.fn()} />)
+      const sheet = screen.getByTestId('body-map-detail-panel')
+      const close = screen.getByTestId('body-map-detail-panel-close')
+      const viewExercises = screen.getByTestId('body-map-detail-panel-view-exercises')
+      act(() => viewExercises.focus())
+      fireEvent.keyDown(sheet, { key: 'Tab' })
+      expect(close).toHaveFocus()
+    })
+
+    it('wraps Shift+Tab from the first tabbable back to the last', () => {
+      render(<BodyMapDetailPanel {...baseProps} placement="right" onViewExercises={vi.fn()} />)
+      const sheet = screen.getByTestId('body-map-detail-panel')
+      const close = screen.getByTestId('body-map-detail-panel-close')
+      const viewExercises = screen.getByTestId('body-map-detail-panel-view-exercises')
+      act(() => close.focus())
+      fireEvent.keyDown(sheet, { key: 'Tab', shiftKey: true })
+      expect(viewExercises).toHaveFocus()
+    })
+
+    it('leaves interior Tab steps to the browser', () => {
+      render(<BodyMapDetailPanel {...baseProps} placement="right" onViewExercises={vi.fn()} />)
+      const sheet = screen.getByTestId('body-map-detail-panel')
+      const close = screen.getByTestId('body-map-detail-panel-close')
+      act(() => close.focus())
+      const handled = fireEvent.keyDown(sheet, { key: 'Tab' })
+      expect(handled).toBe(true)
+      expect(close).toHaveFocus()
+    })
+
+    it('never traps focus onto the backdrop, which sits outside the sheet', () => {
+      render(<BodyMapDetailPanel {...baseProps} placement="right" onViewExercises={vi.fn()} />)
+      const sheet = screen.getByTestId('body-map-detail-panel')
+      expect(sheet).not.toContainElement(screen.getByTestId('body-map-detail-panel-backdrop'))
+    })
+  })
+
+  /**
+   * The inline spacing migrated to classes (AW-142 wave three). `className` never
+   * reaches the DOM here — NativeWind is stubbed — so the geometry is pinned by
+   * resolving each class the way Tailwind does. Every row is the pixel the style
+   * object used to carry, so a wrong key or a typo fails rather than silently
+   * rendering nothing.
+   */
+  describe('spacing tokens', () => {
+    it.each([
+      ['drag handle', ['py-control-y-md'], ['8px']],
+      ['scroll body', ['px-inset-lg', 'pt-inset-md'], ['16px', '12px']],
+      ['header row', ['gap-inline-md', 'py-1'], ['8px', '4px']],
+      ['close button pad and bleed', ['p-1', 'm-1'], ['4px', '4px']],
+      ['section tops', ['mt-stack-lg', 'mt-3.5'], ['16px', '14px']],
+      ['label bottoms', ['mb-1.5', 'mb-stack-md'], ['6px', '8px']],
+      ['set-count row', ['gap-inline-sm'], ['4px']],
+      ['contributing row', ['gap-2.5', 'px-inset-md', 'py-2'], ['10px', '12px', '8px']],
+      ['upcoming row', ['gap-2.5', 'py-1.5'], ['10px', '6px']],
+      ['view-exercises button', ['py-control-y-lg'], ['10px']],
+    ] as const)('%s resolves to %s', (_label, classes, pixels) => {
+      expect(resolveAll([...classes])).toEqual([...pixels])
+    })
+
+    it('pads the scroll content from the inset ramp', () => {
+      // The one value that moved: 20 was off the ramp, inset-xl is 24.
+      expect(space.inset.xl).toBe(24)
     })
   })
 })

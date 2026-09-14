@@ -1,5 +1,11 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { useEffect, useState } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent as ReactKeyboardEvent,
+} from 'react'
 import {
   View,
   Text,
@@ -18,21 +24,32 @@ import {
   type VolumeLandmarks,
   type VolumeStatus,
 } from './muscleTaxonomy'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getSemanticColors, space } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../ui/surface'
+import { surfaceGradient } from '../../../theme/gradients'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { liftStyle } from '../../../theme/lift'
 import { alpha } from '../../../utils/colors'
+import { cn } from '../../../utils/cn'
 
-const t = getSemanticColors('dark')
-
-const BRAND_PRIMARY = t['brand-primary']
-
-/** Volume track gradient: status-info -> status-success -> status-error. */
-const VOLUME_GRADIENT = `linear-gradient(90deg, ${t['status-info']} 0%, ${t['status-success']} 50%, ${t['status-error']} 100%)`
-
-/** Sheet slides up from this offset (px) and the backdrop fades to this opacity. */
+/** Sheet slides in from this offset (px) and the backdrop fades to this opacity. */
 const SLIDE_OFFSET = 400
 const BACKDROP_OPACITY = 0.4
+
+/** Diameter of the knob on the volume track; it centres on its own half-width. */
+const MARKER_SIZE = 14
+
+/** Right side-sheet track: a third of a wall, floored and capped for legibility. */
+const RIGHT_SHEET_WIDTH = '34%'
+const RIGHT_SHEET_MIN_WIDTH = 320
+const RIGHT_SHEET_MAX_WIDTH = 420
+
+/** Where the sheet docks: the phone slide-up sheet, or the wall side-sheet. */
+export type SheetPlacement = 'bottom' | 'right'
+
+/** Tabbable descendants of the sheet, in document order, for the focus trap. */
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
 
 /**
  * Volume status -> Badge color scheme. The badge is a semantic status chip, not
@@ -85,11 +102,17 @@ export interface BodyMapDetailPanelProps extends ViewProps {
   contributingExercises?: ContributingExercise[]
   /** Upcoming exercises targeting this muscle. */
   upcomingExercises?: UpcomingExercise[]
-  /** Whether the bottom sheet is visible. */
+  /**
+   * Where the sheet docks. `'bottom'` (default) is the phone slide-up sheet;
+   * `'right'` is the wall side-sheet that slides in over the right third
+   * without moving the figure beside it.
+   */
+  placement?: SheetPlacement
+  /** Whether the sheet is visible. */
   isOpen?: boolean
   /** Alias for `isOpen` (spec wording: "isOpen/visible"). `isOpen` wins when both are set. */
   visible?: boolean
-  /** Dismiss the panel (backdrop, handle, or close button). */
+  /** Dismiss the panel (backdrop, handle, close button, or Escape). */
   onClose: () => void
   /** Navigate to a filtered exercise list. */
   onViewExercises?: () => void
@@ -108,16 +131,93 @@ function markerFraction(weeklySets: number, { mev, mrv }: VolumeLandmarks): numb
   return clamp01((weeklySets - mev) / span)
 }
 
+/** Overlay flow that docks the sheet; the overlay itself never takes layout space. */
+const ROOT_LAYOUT = {
+  bottom: { justifyContent: 'flex-end' },
+  right: { flexDirection: 'row', justifyContent: 'flex-end' },
+} as const satisfies Record<SheetPlacement, ViewStyle>
+
+/** Sheet box per placement: a bottom sheet caps its height, a side-sheet its width. */
+const SHEET_SHAPE = {
+  bottom: { borderTopLeftRadius: 16, borderTopRightRadius: 16, maxHeight: '88%' },
+  right: {
+    borderTopLeftRadius: 16,
+    borderBottomLeftRadius: 16,
+    width: RIGHT_SHEET_WIDTH,
+    minWidth: RIGHT_SHEET_MIN_WIDTH,
+    maxWidth: RIGHT_SHEET_MAX_WIDTH,
+    height: '100%',
+  },
+} as const satisfies Record<SheetPlacement, ViewStyle>
+
+/** Keep Tab and Shift+Tab inside the sheet by wrapping at either end. */
+function trapTab(event: ReactKeyboardEvent, sheet: HTMLElement): void {
+  const tabbables = Array.from(sheet.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR))
+  const wrapTo = event.shiftKey ? tabbables[tabbables.length - 1] : tabbables[0]
+  if (wrapTo == null) {
+    event.preventDefault()
+    return
+  }
+  const active = sheet.ownerDocument?.activeElement
+  const atEdge = active === (event.shiftKey ? tabbables[0] : tabbables[tabbables.length - 1])
+  if (!atEdge && !(event.shiftKey && active === sheet)) return
+  event.preventDefault()
+  wrapTo.focus()
+}
+
 /**
- * Slide-up bottom-sheet panel with detailed weekly-volume info for a tapped
- * muscle group: a MEV|current|MRV gradient progress bar, the big weekly set
- * count against MRV, an optional volume sparkline, and the contributing /
- * upcoming exercise lists. Composes the titan `Badge` and Workout `Sparkline`.
+ * Dialog keyboard contract for the sheet, handled on the sheet root because
+ * react-native-web forwards `onKeyDown` on a `View` but ships no dialog
+ * primitive: Escape dismisses, Tab wraps inside, and the element that opened
+ * the sheet gets focus back when it closes.
+ */
+function useSheetKeyboard(open: boolean, onClose: () => void) {
+  const sheetRef = useRef<View>(null)
+  const openerRef = useRef<HTMLElement | null>(null)
+
+  useEffect(() => {
+    if (!open) return
+    const sheet = sheetRef.current as unknown as HTMLElement | null
+    if (!sheet?.focus) return
+    openerRef.current = (sheet.ownerDocument?.activeElement as HTMLElement | null) ?? null
+    sheet.focus()
+    return () => {
+      openerRef.current?.focus?.()
+      openerRef.current = null
+    }
+  }, [open])
+
+  const onKeyDown = useCallback(
+    (event: ReactKeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        onClose()
+        return
+      }
+      const sheet = sheetRef.current as unknown as HTMLElement | null
+      if (event.key === 'Tab' && sheet?.querySelectorAll) trapTab(event, sheet)
+    },
+    [onClose]
+  )
+
+  return { sheetRef, onKeyDown }
+}
+
+/**
+ * Sheet of detailed weekly-volume info for a tapped muscle group: a
+ * MEV|current|MRV gradient progress bar, the big weekly set count against MRV,
+ * an optional volume sparkline, and the contributing / upcoming exercise lists.
+ * Composes the titan `Badge` and Workout `Sparkline`.
+ *
+ * `placement="bottom"` (default) is the phone slide-up sheet with a drag handle.
+ * `placement="right"` is the wall side-sheet: it slides in over the right third
+ * of an absolutely-positioned overlay, so the figure beside it never reflows.
  *
  * Controlled via `isOpen` (or the `visible` alias); renders nothing when closed
- * and animates in on open — sheet translateY 400->0 (400ms ease-out) and a
- * backdrop fade 0->0.4 (RN Animated, useNativeDriver:false). Backdrop, handle,
- * and the header close button all call `onClose`.
+ * and animates in on open — sheet translate 400->0 (400ms ease-out, on Y for
+ * bottom and X for right) and a backdrop fade 0->0.4 (RN Animated,
+ * useNativeDriver:false). Backdrop, handle, header close button, and Escape all
+ * call `onClose`; focus is trapped in the sheet and restored to the opener.
  *
  * @example
  * <BodyMapDetailPanel
@@ -142,6 +242,7 @@ export function BodyMapDetailPanel({
   weeklyHistory,
   contributingExercises,
   upcomingExercises,
+  placement = 'bottom',
   isOpen,
   visible,
   onClose,
@@ -149,14 +250,17 @@ export function BodyMapDetailPanel({
   ...props
 }: BodyMapDetailPanelProps) {
   const open = isOpen ?? visible ?? false
+  const mode = useSurfaceMode()
+  const brandPrimary = getSemanticColors(mode)['brand-primary']
+  const { sheetRef, onKeyDown } = useSheetKeyboard(open, onClose)
 
-  const [translateY] = useState(() => new Animated.Value(SLIDE_OFFSET))
+  const [slide] = useState(() => new Animated.Value(SLIDE_OFFSET))
   const [backdrop] = useState(() => new Animated.Value(0))
 
   useEffect(() => {
     if (!open) return
     const animation = Animated.parallel([
-      Animated.timing(translateY, {
+      Animated.timing(slide, {
         toValue: 0,
         duration: 400,
         easing: Easing.out(Easing.ease),
@@ -171,7 +275,7 @@ export function BodyMapDetailPanel({
     ])
     animation.start()
     return () => animation.stop()
-  }, [open, translateY, backdrop])
+  }, [open, slide, backdrop])
 
   if (!open) return null
 
@@ -179,6 +283,9 @@ export function BodyMapDetailPanel({
   const markerLeft = markerFraction(weeklySets, landmarks) * 100
   const hasContributing = (contributingExercises?.length ?? 0) > 0
   const hasUpcoming = (upcomingExercises?.length ?? 0) > 0
+  const slideAxis = placement === 'right' ? { translateX: slide } : { translateY: slide }
+  // RN's ViewProps declares neither key; react-native-web forwards both on a View.
+  const dialogWebProps = { tabIndex: -1, onKeyDown } as unknown as ViewProps
 
   return (
     <View
@@ -188,7 +295,7 @@ export function BodyMapDetailPanel({
         left: 0,
         right: 0,
         bottom: 0,
-        justifyContent: 'flex-end',
+        ...ROOT_LAYOUT[placement],
       }}
       testID="body-map-detail-panel-root"
     >
@@ -214,45 +321,44 @@ export function BodyMapDetailPanel({
       </Animated.View>
 
       <Animated.View
+        ref={sheetRef}
         accessibilityRole={'dialog' as ViewProps['accessibilityRole']}
         accessibilityLabel={dialogLabel}
         aria-label={dialogLabel}
         className="bg-surface-elevated"
-        style={{
-          borderTopLeftRadius: 16,
-          borderTopRightRadius: 16,
-          maxHeight: '88%',
-          transform: [{ translateY }],
-        }}
+        style={{ ...SHEET_SHAPE[placement], transform: [slideAxis] }}
         testID="body-map-detail-panel"
+        {...dialogWebProps}
         {...props}
       >
-        <Pressable
-          onPress={onClose}
-          accessibilityRole="button"
-          accessibilityLabel={`Close ${displayName} details`}
-          hitSlop={12}
-          style={{ alignSelf: 'center', paddingVertical: 8 }}
-          testID="body-map-detail-panel-handle"
-        >
-          <View
-            className="bg-hairline-strong"
-            style={{ width: 40, height: 4, borderRadius: 2 }}
-            accessibilityElementsHidden
-          />
-        </Pressable>
+        {placement === 'bottom' && (
+          <Pressable
+            onPress={onClose}
+            accessibilityRole="button"
+            accessibilityLabel={`Close ${displayName} details`}
+            hitSlop={12}
+            className="py-control-y-md"
+            style={{ alignSelf: 'center' }}
+            testID="body-map-detail-panel-handle"
+          >
+            <View
+              className="bg-hairline-strong"
+              style={{ width: 40, height: 4, borderRadius: 2 }}
+              accessibilityElementsHidden
+            />
+          </Pressable>
+        )}
 
         <ScrollView
-          style={{ paddingHorizontal: 16 }}
-          contentContainerStyle={{ paddingBottom: 20 }}
+          className={cn('px-inset-lg', placement === 'right' && 'pt-inset-md')}
+          contentContainerStyle={{ paddingBottom: space.inset.xl }}
           testID="body-map-detail-panel-scroll"
         >
           <View
-            className="flex-row items-center justify-between"
-            style={{ gap: 8, paddingTop: 4, paddingBottom: 4 }}
+            className="flex-row items-center justify-between gap-inline-md py-1"
             testID="body-map-detail-panel-header"
           >
-            <View className="flex-row items-center" style={{ gap: 8, flexShrink: 1 }}>
+            <View className="flex-row items-center gap-inline-md" style={{ flexShrink: 1 }}>
               <Text
                 accessibilityRole="header"
                 className="text-text-primary"
@@ -279,7 +385,7 @@ export function BodyMapDetailPanel({
               accessibilityRole="button"
               accessibilityLabel={`Close ${displayName} details`}
               hitSlop={8}
-              style={{ padding: 4, margin: -4 }}
+              className="p-1 -m-1"
               testID="body-map-detail-panel-close"
             >
               <Text className="text-text-secondary" style={{ fontSize: 22, lineHeight: 22 }}>
@@ -298,10 +404,9 @@ export function BodyMapDetailPanel({
             </Text>
           )}
 
-          <View style={{ marginTop: 16 }} testID="body-map-detail-panel-volume">
+          <View className="mt-stack-lg" testID="body-map-detail-panel-volume">
             <View
-              className="flex-row items-center justify-between"
-              style={{ marginBottom: 6 }}
+              className="mb-1.5 flex-row items-center justify-between"
               accessibilityElementsHidden
             >
               <Text
@@ -318,7 +423,7 @@ export function BodyMapDetailPanel({
               </Text>
             </View>
             <View
-              style={{ height: 14, justifyContent: 'center' }}
+              style={{ height: MARKER_SIZE, justifyContent: 'center' }}
               accessibilityRole="progressbar"
               accessibilityValue={{ min: landmarks.mev, max: landmarks.mrv, now: weeklySets }}
               accessibilityLabel={`${weeklySets} weekly sets, between MEV ${landmarks.mev} and MRV ${landmarks.mrv}`}
@@ -329,7 +434,7 @@ export function BodyMapDetailPanel({
             >
               <View
                 style={
-                  { height: 8, borderRadius: 4, backgroundImage: VOLUME_GRADIENT } as ViewStyle
+                  { height: 8, borderRadius: 4, ...surfaceGradient.volumeTrack(mode) } as ViewStyle
                 }
                 accessibilityElementsHidden
               />
@@ -338,13 +443,13 @@ export function BodyMapDetailPanel({
                 style={{
                   position: 'absolute',
                   left: `${markerLeft}%`,
-                  marginLeft: -7,
-                  width: 14,
-                  height: 14,
-                  borderRadius: 7,
+                  marginLeft: -MARKER_SIZE / 2,
+                  width: MARKER_SIZE,
+                  height: MARKER_SIZE,
+                  borderRadius: MARKER_SIZE / 2,
                   borderWidth: 2,
                   // A knob resting on the volume bar: lift, with the ring as its edge.
-                  ...liftStyle(1, 'dark', { rim: 0 }),
+                  ...liftStyle(1, mode, { rim: 0 }),
                 }}
                 accessibilityElementsHidden
                 testID="body-map-detail-panel-volume-marker"
@@ -352,7 +457,7 @@ export function BodyMapDetailPanel({
             </View>
           </View>
 
-          <View className="flex-row items-baseline" style={{ marginTop: 14, gap: 4 }}>
+          <View className="mt-3.5 flex-row items-baseline gap-inline-sm">
             <Text
               className="text-text-primary"
               style={{
@@ -374,14 +479,13 @@ export function BodyMapDetailPanel({
           </View>
 
           {weeklyHistory != null && weeklyHistory.length > 0 && (
-            <View style={{ marginTop: 14 }} testID="body-map-detail-panel-sparkline">
+            <View className="mt-3.5" testID="body-map-detail-panel-sparkline">
               <Text
-                className="text-text-tertiary"
+                className="mb-1.5 text-text-tertiary"
                 style={{
                   fontSize: 10,
                   fontFamily: 'Inter, sans-serif',
                   fontWeight: '600',
-                  marginBottom: 6,
                 }}
                 accessibilityElementsHidden
               >
@@ -392,14 +496,13 @@ export function BodyMapDetailPanel({
           )}
 
           {hasContributing && (
-            <View style={{ marginTop: 16 }} testID="body-map-detail-panel-contributing">
+            <View className="mt-stack-lg" testID="body-map-detail-panel-contributing">
               <Text
-                className="text-text-tertiary"
+                className="mb-stack-md text-text-tertiary"
                 style={{
                   fontSize: 10,
                   fontFamily: 'Inter, sans-serif',
                   fontWeight: '600',
-                  marginBottom: 8,
                 }}
               >
                 {'CONTRIBUTING EXERCISES'}
@@ -407,15 +510,8 @@ export function BodyMapDetailPanel({
               {contributingExercises!.map((exercise, index) => (
                 <View
                   key={`${exercise.name}-${index}`}
-                  className="flex-row items-center justify-between bg-surface-raised border-hairline"
-                  style={{
-                    gap: 10,
-                    paddingVertical: 8,
-                    paddingHorizontal: 12,
-                    marginBottom: 6,
-                    borderRadius: 8,
-                    borderWidth: 1,
-                  }}
+                  className="mb-1.5 flex-row items-center justify-between gap-2.5 px-inset-md py-2 bg-surface-raised border-hairline"
+                  style={{ borderRadius: 8, borderWidth: 1 }}
                   testID={`body-map-detail-panel-contributing-${index}`}
                 >
                   <Text
@@ -443,14 +539,13 @@ export function BodyMapDetailPanel({
           )}
 
           {hasUpcoming && (
-            <View style={{ marginTop: 16 }} testID="body-map-detail-panel-upcoming">
+            <View className="mt-stack-lg" testID="body-map-detail-panel-upcoming">
               <Text
-                className="text-text-tertiary"
+                className="mb-stack-md text-text-tertiary"
                 style={{
                   fontSize: 10,
                   fontFamily: 'Inter, sans-serif',
                   fontWeight: '600',
-                  marginBottom: 8,
                 }}
               >
                 {'UPCOMING'}
@@ -458,8 +553,7 @@ export function BodyMapDetailPanel({
               {upcomingExercises!.map((exercise, index) => (
                 <View
                   key={`${exercise.name}-${index}`}
-                  className="flex-row items-center justify-between"
-                  style={{ gap: 10, paddingVertical: 6 }}
+                  className="flex-row items-center justify-between gap-2.5 py-1.5"
                   testID={`body-map-detail-panel-upcoming-${index}`}
                 >
                   <Text
@@ -491,14 +585,13 @@ export function BodyMapDetailPanel({
               onPress={onViewExercises}
               accessibilityRole="button"
               accessibilityLabel={`View ${displayName} exercises`}
+              className="mt-stack-lg py-control-y-lg"
               style={{
-                marginTop: 16,
-                paddingVertical: 10,
                 borderRadius: 8,
                 alignItems: 'center',
-                backgroundColor: alpha(BRAND_PRIMARY, 0.12),
+                backgroundColor: alpha(brandPrimary, 0.12),
                 borderWidth: 1,
-                borderColor: alpha(BRAND_PRIMARY, 0.3),
+                borderColor: alpha(brandPrimary, 0.3),
               }}
               testID="body-map-detail-panel-view-exercises"
             >
@@ -507,7 +600,7 @@ export function BodyMapDetailPanel({
                   fontSize: 13,
                   fontFamily: 'Inter, sans-serif',
                   fontWeight: '700',
-                  color: BRAND_PRIMARY,
+                  color: brandPrimary,
                 }}
               >
                 {'View exercises'}

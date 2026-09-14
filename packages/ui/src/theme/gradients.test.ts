@@ -22,4 +22,14 @@ describe('gradients', () => {
       'linear-gradient(180deg, var(--color-surface-elevated), var(--color-background-base))'
     )
   })
+
+  it('surfaceGradient.volumeTrack ramps info → success → error left to right', () => {
+    expect(surfaceGradient.volumeTrack().backgroundImage).toBe(
+      'linear-gradient(90deg, var(--color-status-info), var(--color-status-success), var(--color-status-error))'
+    )
+  })
+
+  it('surfaceGradient.volumeTrack resolves against the requested mode', () => {
+    expect(surfaceGradient.volumeTrack('light').backgroundImage).toContain('90deg')
+  })
 })

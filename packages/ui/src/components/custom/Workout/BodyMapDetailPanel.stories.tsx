@@ -6,12 +6,17 @@ import {
   type ContributingExercise,
   type UpcomingExercise,
 } from './BodyMapDetailPanel'
+import { BodyMap, type BodyMapData } from './BodyMap'
 import { MuscleGroup } from './muscleTaxonomy'
 import { Surface } from '../../ui/surface'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 const t = getSemanticColors('dark')
+
+/** Story frames. `frame` in a story's parameters overrides the phone default. */
+const PHONE_FRAME = { height: 640, width: 380 }
+const WALL_FRAME = { height: 800, width: 1200 }
 
 const contributing: ContributingExercise[] = [
   { name: 'Barbell Bench Press', sets: 4, contributionWeight: 1 },
@@ -33,11 +38,14 @@ const meta: Meta<typeof BodyMapDetailPanel> = {
   },
   tags: ['autodocs'],
   decorators: [
-    (Story) => (
-      <Surface level="base" style={{ position: 'relative', height: 640, width: 380 }}>
-        <Story />
-      </Surface>
-    ),
+    (Story, context) => {
+      const frame = (context.parameters.frame ?? PHONE_FRAME) as typeof PHONE_FRAME
+      return (
+        <Surface level="base" style={{ position: 'relative', ...frame }}>
+          <Story />
+        </Surface>
+      )
+    },
   ],
   argTypes: {
     displayName: { control: 'text', description: 'Human-readable muscle name' },
@@ -47,7 +55,12 @@ const meta: Meta<typeof BodyMapDetailPanel> = {
       options: ['untrained', 'behind', 'ontrack', 'target', 'approaching', 'over'],
       description: 'Volume status relative to landmarks',
     },
-    isOpen: { control: 'boolean', description: 'Whether the bottom sheet is visible' },
+    placement: {
+      control: 'inline-radio',
+      options: ['bottom', 'right'],
+      description: 'Bottom slide-up sheet (phone) or right side-sheet (wall)',
+    },
+    isOpen: { control: 'boolean', description: 'Whether the sheet is visible' },
     lastTrained: { control: 'text', description: 'Last trained label' },
   },
 }
@@ -190,4 +203,82 @@ function InteractiveBodyMapDetailPanel() {
 
 export const Interactive: Story = {
   render: () => <InteractiveBodyMapDetailPanel />,
+}
+
+const wallFigures: BodyMapData[] = [
+  { muscleGroup: MuscleGroup.CHEST, intensity: 0.7, volumeStatus: 'target', weeklySets: 14 },
+  { muscleGroup: MuscleGroup.LATS, intensity: 0.45, volumeStatus: 'behind', weeklySets: 6 },
+  { muscleGroup: MuscleGroup.QUADS, intensity: 0.95, volumeStatus: 'over', weeklySets: 20 },
+  { muscleGroup: MuscleGroup.BICEPS, intensity: 0.5, volumeStatus: 'ontrack', weeklySets: 8 },
+]
+
+/** The W1 glance: two figures in a row, which the side-sheet must never displace. */
+function WallFigures() {
+  return (
+    <View style={{ flexDirection: 'row', gap: 24, padding: 24 }} testID="wall-figures">
+      <BodyMap data={wallFigures} view="front" size="wall" mode="detailed" />
+      <BodyMap data={wallFigures} view="back" size="wall" mode="detailed" />
+    </View>
+  )
+}
+
+export const RightSideSheetAtWall: Story = {
+  parameters: {
+    frame: WALL_FRAME,
+    docs: {
+      description: {
+        story:
+          'Family E winner: the drill arrives as a right side-sheet over a 1200-wide wall. ' +
+          'The overlay is absolutely positioned, so the two figures keep the exact layout ' +
+          'they have with the sheet closed.',
+      },
+    },
+  },
+  render: (args) => (
+    <>
+      <WallFigures />
+      <BodyMapDetailPanel {...args} />
+    </>
+  ),
+  args: {
+    ...Default.args,
+    displayName: 'Lats',
+    muscleGroup: MuscleGroup.LATS,
+    weeklySets: 6,
+    landmarks: { mev: 8, mav: 14, mrv: 20 },
+    volumeStatus: 'behind',
+    lastTrained: '4 days ago',
+    weeklyHistory: [9, 8, 7, 6],
+    placement: 'right',
+  },
+}
+
+export const RightSideSheetClosedAtWall: Story = {
+  ...RightSideSheetAtWall,
+  parameters: {
+    frame: WALL_FRAME,
+    docs: {
+      description: {
+        story:
+          'The same wall with the sheet closed — the reference for "the figure does not move".',
+      },
+    },
+  },
+  args: { ...RightSideSheetAtWall.args, isOpen: false },
+}
+
+export const RightSideSheetAtPhone: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'What `placement="right"` degrades to at 390: the 320px minimum width swallows most ' +
+          'of the screen. The component does NOT auto-switch — the plan puts the breakpoint in ' +
+          'the caller ("the phone keeps the bottom sheet"), and a design-system sheet that ' +
+          'sniffs the viewport would fight the shell that owns the stack. Phone callers pass ' +
+          '`placement="bottom"`; see **Default**.',
+      },
+    },
+  },
+  args: { ...Default.args, placement: 'right' },
 }
