@@ -1,7 +1,11 @@
-# Unified volume-status palette — decision brief (VW-333 phase 1, TITAN-E-01)
+# Unified volume-status palette — decision brief (VW-333, TITAN-E-01)
 
 Story: `Lab/Decisions/Volume Status Palette` — `lab-decisions-volume-status-palette--compare`.
-Phase 1 is evidence only. No token, component API or baseline changes here.
+
+**Status: SHIPPED.** Phase 1 gathered the evidence; phase 2 landed the palette. The chip now
+paints `dataviz-diverging-0..4`, the figure is unchanged and pinned byte-identical by
+`volume-status-palette.test.tsx`, and `VolumeStatus` is one six-value union shared by
+`muscleTaxonomy`, `BodyMap` and `MuscleGroupChip`.
 
 ---
 
@@ -41,7 +45,7 @@ all-pairs floor). Note the "figure today 7.5" figure quoted further down counts 
 `over` at 2.44:1 against the outline fill is the weakest fill, and is unchanged by decision —
 `status-error` is a dark red on a dark plane. Accepted as-is, no lift.
 
-### What phase 2 does (starts on GO, on top of VW-371 phase 1 / PR #219)
+### What phase 2 did (landed on top of VW-371 phase 1 / PR #219)
 
 1. `MuscleGroupChip`'s `volumeStatus` becomes the six-value union; its dot reads
    `dataviz-diverging-0..4` plus `text-tertiary`, resolved live

@@ -20,7 +20,7 @@ const baseProps = {
   displayName: 'Chest',
   weeklySets: 14,
   landmarks: { mev: 8, mav: 14, mrv: 20 },
-  volumeStatus: 'productive' as const,
+  volumeStatus: 'target' as const,
   lastTrained: '2 days ago',
   weeklyHistory: [8, 10, 12, 14],
   contributingExercises: contributing,
@@ -52,7 +52,7 @@ describe('BodyMapDetailPanel', () => {
       render(<BodyMapDetailPanel {...baseProps} />)
       expect(screen.getByTestId('body-map-detail-panel-handle')).toBeInTheDocument()
       expect(screen.getByTestId('body-map-detail-panel-status-badge')).toHaveTextContent(
-        'productive'
+        'target met'
       )
       expect(screen.getByTestId('body-map-detail-panel-last-trained')).toHaveTextContent(
         'Last trained 2 days ago'
@@ -193,7 +193,7 @@ describe('BodyMapDetailPanel', () => {
     })
 
     it('has no accessibility violations for each volume status', async () => {
-      const statuses = ['under', 'maintenance', 'productive', 'over'] as const
+      const statuses = ['untrained', 'behind', 'ontrack', 'target', 'approaching', 'over'] as const
       for (const volumeStatus of statuses) {
         const { container, unmount } = render(
           <BodyMapDetailPanel {...baseProps} volumeStatus={volumeStatus} />
@@ -210,7 +210,7 @@ describe('BodyMapDetailPanel', () => {
           displayName="Calves"
           weeklySets={10}
           landmarks={{ mev: 6, mav: 10, mrv: 16 }}
-          volumeStatus="maintenance"
+          volumeStatus="ontrack"
           isOpen
           onClose={vi.fn()}
         />

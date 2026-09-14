@@ -9,7 +9,7 @@
  * slug, lats and upper back share `upper-back`).
  */
 import { heatmapColors } from '../../../theme/workout-tokens'
-import type { ThemeMode } from '../../../theme/tokens/semantic'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 
 /**
  * Full muscle group taxonomy for volume tracking and exercise mapping.
@@ -188,28 +188,94 @@ export const DEFAULT_VOLUME_LANDMARKS: Record<MuscleGroup, VolumeLandmarks> = {
   [MuscleGroup.OBLIQUES]: { mev: 0, mav: 6, mrv: 12 },
 }
 
-/** Weekly-volume status relative to MEV/MAV/MRV landmarks. */
-export type VolumeStatus = 'under' | 'maintenance' | 'productive' | 'over'
+/**
+ * Where a muscle's weekly sets sit in its MEV/MAV/MRV band — the physiological
+ * classification, not a UI status. Was itself called `VolumeStatus` until VW-333;
+ * that name now belongs to the one UI status below.
+ */
+export type VolumeLandmarkZone = 'under' | 'maintenance' | 'productive' | 'over'
+
+/**
+ * The ONE volume status, shared by the BodyMap fill, the MuscleGroupChip dot and
+ * every legend over them (VW-333). Before it existed, the figure keyed off the
+ * landmark zone and the chip off a five-value union of its own, so one muscle
+ * could render two different hues.
+ */
+export type VolumeStatus = 'untrained' | 'behind' | 'ontrack' | 'target' | 'approaching' | 'over'
+
+/**
+ * Intensity at or above which a muscle inside the productive band reads as
+ * approaching its MRV. This is the split that makes `approaching` a status of
+ * its own rather than a hue the figure picked and the chip could not name.
+ */
+export const APPROACHING_MRV_INTENSITY = 0.85
+
+/**
+ * The canonical landmark-zone → status wiring (VW-333). Replaces the map that
+ * `WorkoutCard` used to hand-write, and is the only place the `approaching`
+ * split is decided.
+ */
+export function landmarkZoneToStatus(zone: VolumeLandmarkZone, intensity = 0): VolumeStatus {
+  switch (zone) {
+    case 'under':
+      return 'behind'
+    case 'maintenance':
+      return 'ontrack'
+    case 'productive':
+      return intensity >= APPROACHING_MRV_INTENSITY ? 'approaching' : 'target'
+    case 'over':
+      return 'over'
+  }
+}
 
 /** Readable label per status for a11y descriptions. */
 export const VOLUME_STATUS_LABELS: Record<VolumeStatus, string> = {
-  under: 'under-trained',
-  maintenance: 'maintenance',
-  productive: 'productive',
-  over: 'over-reaching',
-}
-
-/** Severity ranking — higher wins when several groups share an SVG slug. */
-const STATUS_SEVERITY: Record<VolumeStatus, number> = {
-  under: 1,
-  maintenance: 2,
-  productive: 3,
-  over: 4,
+  untrained: 'untrained',
+  behind: 'behind plan',
+  ontrack: 'on track',
+  target: 'target met',
+  approaching: 'approaching MRV',
+  over: 'over MRV',
 }
 
 /**
- * Maps a volume status (and intensity, 0-1) to a heatmap fill color. The
- * `approaching` token is used when a productive muscle nears its MRV.
+ * The status → `dataviz-diverging-*` role map: the palette decision of VW-333,
+ * in one place. Both the figure fill and the chip dot read it, which is what
+ * makes a muscle render one hue everywhere.
+ *
+ * `untrained` is absent on purpose. It is not a stop on the diverging scale, and
+ * the two surfaces answer it differently: the figure has no data to paint (the
+ * muscle is simply missing from `data` and keeps the outline fill), while the
+ * chip shows a muted `text-tertiary` dot.
+ */
+export const VOLUME_STATUS_DATAVIZ_TOKEN = {
+  behind: 'dataviz-diverging-0',
+  ontrack: 'dataviz-diverging-1',
+  target: 'dataviz-diverging-2',
+  approaching: 'dataviz-diverging-3',
+  over: 'dataviz-diverging-4',
+} as const satisfies Record<Exclude<VolumeStatus, 'untrained'>, string>
+
+/**
+ * Severity ranking — higher wins when several muscle groups share an SVG slug.
+ *
+ * `approaching` outranks `target` (VW-333). Before the split they were one
+ * status and the tie resolved by data order, so two productive muscles on the
+ * same slug painted whichever colour came last. The ranking makes it definite.
+ */
+const STATUS_SEVERITY: Record<VolumeStatus, number> = {
+  untrained: 0,
+  behind: 1,
+  ontrack: 2,
+  target: 3,
+  approaching: 4,
+  over: 5,
+}
+
+/**
+ * Maps a volume status to its heatmap fill color. One status, one colour — the
+ * intensity argument is gone with VW-333, because the near-MRV case it used to
+ * decide is now the `approaching` status itself (see {@link landmarkZoneToStatus}).
  *
  * `mode` is REQUIRED and has no default (VW-371). A default would be a frozen
  * theme that `titan/no-frozen-theme` cannot see: every caller would omit it, and
@@ -217,24 +283,43 @@ const STATUS_SEVERITY: Record<VolumeStatus, number> = {
  * phase 2 gives light its own values. Pass `useSurfaceMode()`. Same convention
  * as `paceToneColor` and `liveAuraColor`.
  */
-export function getHeatmapColor(
-  status: VolumeStatus | null | undefined,
-  intensity: number,
-  mode: ThemeMode
-): string {
+export function getHeatmapColor(status: VolumeStatus | null | undefined, mode: ThemeMode): string {
   const heatmap = heatmapColors(mode)
   switch (status) {
-    case 'under':
+    case 'behind':
       return heatmap.under
-    case 'maintenance':
+    case 'ontrack':
       return heatmap.maintenance
-    case 'productive':
-      return intensity >= 0.85 ? heatmap.approaching : heatmap.productive
+    case 'target':
+      return heatmap.productive
+    case 'approaching':
+      return heatmap.approaching
     case 'over':
       return heatmap.over
     default:
       return heatmap.none
   }
+}
+
+/**
+ * The chip dot colour for a status, resolved for a theme mode.
+ *
+ * The five painted statuses come off the same diverging roles the figure uses,
+ * so a muscle is one colour on both surfaces. `untrained` is the one rung where
+ * they differ on purpose: the figure has no data to paint and keeps its no-data
+ * fill, while a chip still has to show something, so it takes the muted text role.
+ *
+ * A function of `mode` for the same reason `getHeatmapColor` is — `MuscleGroupChip`
+ * is token-pure and cannot call `getSemanticColors` itself, so it passes
+ * `useSurfaceMode()` in.
+ */
+export function volumeStatusDotColor(
+  status: VolumeStatus | null | undefined,
+  mode: ThemeMode
+): string {
+  const colors = getSemanticColors(mode)
+  if (!status || status === 'untrained') return colors['text-tertiary']
+  return colors[VOLUME_STATUS_DATAVIZ_TOKEN[status]]
 }
 
 /** True when one status is at least as severe as another. */

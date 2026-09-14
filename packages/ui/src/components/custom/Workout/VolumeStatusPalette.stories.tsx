@@ -1,33 +1,25 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
-import BodyHighlighter, { type ExtendedBodyPart, type Slug } from 'react-native-body-highlighter'
 import { Surface, surfaceBackground } from '../../ui/surface'
 import { Pill } from '../../ui/pill'
 import { Typography } from '../Typography'
 import { BodyMap, type BodyMapData } from './BodyMap'
-import { MuscleGroupChip, type VolumeStatus as ChipStatus } from './MuscleGroupChip'
+import { MuscleGroupChip } from './MuscleGroupChip'
 import {
   MuscleGroup,
-  MUSCLE_TO_SVG_SLUGS,
-  isMoreSevere,
-  type VolumeStatus as LandmarkZone,
+  VOLUME_STATUS_DATAVIZ_TOKEN,
+  getHeatmapColor,
+  type VolumeStatus,
 } from './muscleTaxonomy'
-import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
-import {
-  divergingScale,
-  greyRamp,
-  primitiveColors,
-  primitiveRamps,
-} from '../../../theme/tokens/primitives'
-import { alpha } from '../../../utils/colors'
+import { divergingScale, greyRamp, primitiveRamps } from '../../../theme/tokens/primitives'
 import { formatTrimmedDecimal } from '../../../utils/number-format'
 
 type ColorToken = keyof ReturnType<typeof getSemanticColors>
 
-/** The six rungs any candidate ladder can paint. A 5-value ladder leaves one out. */
-type Rung = 'untrained' | 'behind' | 'ontrack' | 'target' | 'approaching' | 'over'
+/** The six rungs of the shipped status. A rejected 5-value ladder leaves one out. */
+type Rung = VolumeStatus
 
 const RUNG_ORDER: Rung[] = ['untrained', 'behind', 'ontrack', 'target', 'approaching', 'over']
 
@@ -49,23 +41,11 @@ const RUNG_ZONE: Record<Rung, string> = {
   over: 'above MRV',
 }
 
-/** The wiring the codebase is missing: landmark zone (B) -> UI rung. */
-const ZONE_TO_RUNG: Record<LandmarkZone, Rung> = {
-  under: 'behind',
-  maintenance: 'ontrack',
-  productive: 'target',
-  over: 'over',
-}
-
-const HEAT = WORKOUT_TOKENS.heatmap
-
 /** A painted rung. `token` names a semantic token; `literal` names a raw primitive. */
 interface Paint {
   token?: ColorToken
   literal?: string
   label: string
-  /** No semantic token carries this value in a fill role. */
-  isNew?: boolean
 }
 
 function paintValue(paint: Paint, mode: ThemeMode): string {
@@ -78,18 +58,26 @@ function dsIndex(value: string): number | null {
   return i === -1 ? null : i
 }
 
-/** Today's figure fill — `muscleTaxonomy.ts:213` via `WORKOUT_TOKENS.heatmap`. */
-const TODAY_FIGURE: Partial<Record<Rung, Paint>> = {
-  untrained: { literal: HEAT.none, label: 'heatmap.none (literal)' },
-  behind: { literal: HEAT.under, label: 'blue-500' },
-  ontrack: { literal: HEAT.maintenance, label: 'cyan-300' },
-  target: { literal: HEAT.productive, label: 'green-200' },
-  approaching: { literal: HEAT.approaching, label: 'amber-300' },
-  over: { literal: HEAT.over, label: 'red-600' },
+/**
+ * What the figure paints — unchanged by VW-333 and pinned byte-identical by
+ * `volume-status-palette.test.tsx`. Read through `getHeatmapColor` rather than
+ * restated, so this row cannot drift from what `BodyMap` actually renders.
+ */
+const FIGURE: Record<Rung, Paint> = {
+  untrained: { literal: getHeatmapColor('untrained', 'dark'), label: 'no-data fill' },
+  behind: { token: 'dataviz-diverging-0', label: 'dataviz-diverging-0' },
+  ontrack: { token: 'dataviz-diverging-1', label: 'dataviz-diverging-1' },
+  target: { token: 'dataviz-diverging-2', label: 'dataviz-diverging-2' },
+  approaching: { token: 'dataviz-diverging-3', label: 'dataviz-diverging-3' },
+  over: { token: 'dataviz-diverging-4', label: 'dataviz-diverging-4' },
 }
 
-/** Today's chip dot — `MuscleGroupChip.tsx:15` via `Pill`'s `dotToneStyles`. */
-const TODAY_CHIP: Partial<Record<Rung, Paint>> = {
+/**
+ * The chip's palette BEFORE VW-333 — history, restated here because the code no
+ * longer holds it. This is the defect the ticket closed: the same muscle painted
+ * one hue on the figure and another on the chip.
+ */
+const CHIP_BEFORE: Partial<Record<Rung, Paint>> = {
   untrained: { token: 'text-tertiary', label: 'text-tertiary' },
   behind: { token: 'brand-secondary', label: 'brand-secondary' },
   ontrack: { token: 'status-success', label: 'status-success' },
@@ -97,22 +85,43 @@ const TODAY_CHIP: Partial<Record<Rung, Paint>> = {
   over: { token: 'status-error', label: 'status-error' },
 }
 
+/** What the chip paints now — the figure's scale, via the one shared map. */
+const SHIPPED: Record<Rung, Paint> = {
+  untrained: { token: 'text-tertiary', label: 'text-tertiary' },
+  behind: { token: VOLUME_STATUS_DATAVIZ_TOKEN.behind, label: VOLUME_STATUS_DATAVIZ_TOKEN.behind },
+  ontrack: {
+    token: VOLUME_STATUS_DATAVIZ_TOKEN.ontrack,
+    label: VOLUME_STATUS_DATAVIZ_TOKEN.ontrack,
+  },
+  target: { token: VOLUME_STATUS_DATAVIZ_TOKEN.target, label: VOLUME_STATUS_DATAVIZ_TOKEN.target },
+  approaching: {
+    token: VOLUME_STATUS_DATAVIZ_TOKEN.approaching,
+    label: VOLUME_STATUS_DATAVIZ_TOKEN.approaching,
+  },
+  over: { token: VOLUME_STATUS_DATAVIZ_TOKEN.over, label: VOLUME_STATUS_DATAVIZ_TOKEN.over },
+}
+
 interface Ladder {
-  id: 'B' | 'B2' | 'B3'
+  id: string
   title: string
-  shape: string
   paints: Partial<Record<Rung, Paint>>
 }
 
+/** The shipped ladder, measured beside the three that were weighed and rejected. */
+const DECIDED: Ladder = {
+  id: 'shipped',
+  title: 'shipped — the figure\u2019s diverging scale, now on both surfaces',
+  paints: SHIPPED,
+}
+
 /**
- * The three candidate ladders. B is the phase-1 proposal (five values, no
- * `approaching`); B2 and B3 are the six-value alternatives, which keep it.
+ * The three candidate ladders, ALL REJECTED on 2026-09-13. Kept rendered as the
+ * record of what was weighed; see `VolumeStatusPalette.decision.md`.
  */
-const LADDERS: Ladder[] = [
+const REJECTED: Ladder[] = [
   {
     id: 'B',
-    title: 'B — five values, orange is the target',
-    shape: 'grey · blue · green · ORANGE · red',
+    title: 'B (rejected) — five values, orange is the target',
     paints: {
       untrained: { token: 'text-tertiary', label: 'text-tertiary' },
       behind: { token: 'status-info', label: 'status-info' },
@@ -123,8 +132,7 @@ const LADDERS: Ladder[] = [
   },
   {
     id: 'B2',
-    title: 'B2 — six values, yellow behind / blue on track / green met',
-    shape: 'grey · YELLOW · blue · green · orange · red',
+    title: 'B2 (rejected) — yellow behind / blue on track / green met',
     paints: {
       untrained: { token: 'text-tertiary', label: 'text-tertiary' },
       behind: { token: 'status-warning', label: 'status-warning' },
@@ -136,15 +144,10 @@ const LADDERS: Ladder[] = [
   },
   {
     id: 'B3',
-    title: 'B3 — six values, cold end + two greens',
-    shape: 'grey · CYAN · green A · green B · orange · red',
+    title: 'B3 (rejected) — cold end + two greens',
     paints: {
       untrained: { token: 'text-tertiary', label: 'text-tertiary' },
-      behind: {
-        literal: primitiveRamps.cyan[300],
-        label: 'cyan-300 NEW TOKEN NEEDED',
-        isNew: true,
-      },
+      behind: { literal: primitiveRamps.cyan[300], label: 'cyan-300 NEW TOKEN NEEDED' },
       ontrack: { token: 'status-success', label: 'status-success' },
       target: { token: 'status-success-light', label: 'status-success-light' },
       approaching: { token: 'brand-primary', label: 'brand-primary' },
@@ -154,28 +157,28 @@ const LADDERS: Ladder[] = [
 ]
 
 const FRONT: BodyMapData[] = [
-  { muscleGroup: MuscleGroup.CHEST, intensity: 0.6, volumeStatus: 'productive', weeklySets: 12 },
+  { muscleGroup: MuscleGroup.CHEST, intensity: 0.6, volumeStatus: 'target', weeklySets: 12 },
   {
     muscleGroup: MuscleGroup.FRONT_DELTS,
     intensity: 0.5,
-    volumeStatus: 'maintenance',
+    volumeStatus: 'ontrack',
     weeklySets: 5,
   },
-  { muscleGroup: MuscleGroup.BICEPS, intensity: 0.3, volumeStatus: 'under', weeklySets: 3 },
-  { muscleGroup: MuscleGroup.ABS, intensity: 0.9, volumeStatus: 'productive', weeklySets: 15 },
+  { muscleGroup: MuscleGroup.BICEPS, intensity: 0.3, volumeStatus: 'behind', weeklySets: 3 },
+  { muscleGroup: MuscleGroup.ABS, intensity: 0.9, volumeStatus: 'approaching', weeklySets: 15 },
   { muscleGroup: MuscleGroup.QUADS, intensity: 1, volumeStatus: 'over', weeklySets: 22 },
 ]
 
 const BACK: BodyMapData[] = [
-  { muscleGroup: MuscleGroup.LATS, intensity: 0.6, volumeStatus: 'productive', weeklySets: 11 },
+  { muscleGroup: MuscleGroup.LATS, intensity: 0.6, volumeStatus: 'target', weeklySets: 11 },
   {
     muscleGroup: MuscleGroup.UPPER_BACK,
     intensity: 0.45,
-    volumeStatus: 'maintenance',
+    volumeStatus: 'ontrack',
     weeklySets: 8,
   },
-  { muscleGroup: MuscleGroup.TRICEPS, intensity: 0.25, volumeStatus: 'under', weeklySets: 3 },
-  { muscleGroup: MuscleGroup.GLUTES, intensity: 0.9, volumeStatus: 'productive', weeklySets: 14 },
+  { muscleGroup: MuscleGroup.TRICEPS, intensity: 0.25, volumeStatus: 'behind', weeklySets: 3 },
+  { muscleGroup: MuscleGroup.GLUTES, intensity: 0.9, volumeStatus: 'approaching', weeklySets: 14 },
   { muscleGroup: MuscleGroup.HAMSTRINGS, intensity: 1, volumeStatus: 'over', weeklySets: 18 },
 ]
 
@@ -283,77 +286,10 @@ function measure(ladder: Ladder, mode: ThemeMode): Measurement {
 // Rendering
 // ---------------------------------------------------------------------------
 
-// react-native-body-highlighter ships as a CommonJS default export; same interop
-// BodyMap.tsx:29 uses, so the clone consumes the identical SVG.
-const Body = ((BodyHighlighter as unknown as { default?: typeof BodyHighlighter }).default ??
-  BodyHighlighter) as typeof BodyHighlighter
-
-const BODY_SCALE = 0.8
-const OUTLINE_FILL = alpha(primitiveColors.white, 0.08)
-const OUTLINE_BORDER = alpha(primitiveColors.white, 0.12)
 const CHECKER_STEP = 16
 const SWATCH_CELL_HEIGHT = 88
 const LEGEND_COLUMN_WIDTH = 120
 const DOT_SIZE = 6
-
-/**
- * Which rung a landmark zone paints under a given ladder. A five-value ladder
- * has no `approaching`, so its near-MRV muscles fold back onto `target`.
- */
-function rungFor(zone: LandmarkZone, intensity: number, ladder: Ladder): Rung {
-  const rung = ZONE_TO_RUNG[zone]
-  const nearMrv = rung === 'target' && intensity >= 0.85
-  return nearMrv && ladder.paints.approaching ? 'approaching' : rung
-}
-
-/** Build the per-slug fill list for one ladder (the `BodyMap.tsx:75` shape). */
-function ladderSlugParts(data: BodyMapData[], ladder: Ladder, mode: ThemeMode): ExtendedBodyPart[] {
-  const bySlug = new Map<string, BodyMapData>()
-  for (const d of data) {
-    for (const slug of MUSCLE_TO_SVG_SLUGS[d.muscleGroup] ?? []) {
-      const existing = bySlug.get(slug)
-      if (!existing || isMoreSevere(d.volumeStatus, existing.volumeStatus)) bySlug.set(slug, d)
-    }
-  }
-  return Array.from(bySlug.entries()).map(([slug, d]) => ({
-    slug: slug as Slug,
-    color: paintValue(ladder.paints[rungFor(d.volumeStatus, d.intensity, ladder)] as Paint, mode),
-  }))
-}
-
-/**
- * Story-local figure clone. `BodyMap` resolves its fills internally through
- * `getHeatmapColor` and takes no colour override, so a proposal row renders the
- * same `react-native-body-highlighter` SVG with the same scale, default fill and
- * border, differing only in the per-slug colour.
- */
-function LadderFigure({
-  data,
-  view,
-  ladder,
-  mode,
-}: {
-  data: BodyMapData[]
-  view: 'front' | 'back'
-  ladder: Ladder
-  mode: ThemeMode
-}) {
-  return (
-    <View style={{ width: 200 * BODY_SCALE, gap: 4 }} testID={`ladder-figure-${ladder.id}-${view}`}>
-      <Typography variant="caption" color="tertiary" align="center">
-        {view}
-      </Typography>
-      <Body
-        side={view}
-        data={ladderSlugParts(data, ladder, mode)}
-        scale={BODY_SCALE}
-        gender="male"
-        defaultFill={OUTLINE_FILL}
-        border={OUTLINE_BORDER}
-      />
-    </View>
-  )
-}
 
 /** A deliberately hostile backdrop, so a fill is judged against tonal range. */
 function Checkerboard({ rows, columns, mode }: { rows: number; columns: number; mode: ThemeMode }) {
@@ -457,31 +393,21 @@ function LegendColumn({ rung, mode }: { rung: Rung; mode: ThemeMode }) {
           {RUNG_ZONE[rung]}
         </Typography>
       </View>
-      <LegendCell paint={TODAY_FIGURE[rung]} caption="figure today" mode={mode} />
-      <LegendCell paint={TODAY_CHIP[rung]} caption="chip today" mode={mode} />
-      {LADDERS.map((ladder) => (
+      <LegendCell paint={FIGURE[rung]} caption="figure (unchanged)" mode={mode} />
+      <LegendCell paint={CHIP_BEFORE[rung]} caption="chip before" mode={mode} />
+      <LegendCell paint={SHIPPED[rung]} caption="chip now" mode={mode} />
+      {REJECTED.map((ladder) => (
         <LegendCell key={ladder.id} paint={ladder.paints[rung]} caption={ladder.id} mode={mode} />
       ))}
     </View>
   )
 }
 
-function TodayChips() {
-  const chipStatus: ChipStatus[] = ['untrained', 'behind', 'ontrack', 'target', 'over']
-  return (
-    <View style={{ gap: 6 }}>
-      {chipStatus.map((status) => (
-        <MuscleGroupChip key={status} name={RUNG_LABEL[status]} volumeStatus={status} />
-      ))}
-    </View>
-  )
-}
-
 /**
- * Ladder chips are the same `Pill` primitive `MuscleGroupChip` is a preset over.
- * The dot is passed as an explicit node rather than `dotTone`, because B2 and B3
- * paint rungs (`status-success-light`, `cyan-300`) that no `PillTone` carries —
- * B alone maps one-to-one onto the existing tones.
+ * Chips for a palette that is not the shipped one — the same `Pill` primitive
+ * `MuscleGroupChip` is a preset over, with the dot passed explicitly. The
+ * shipped row renders the REAL `MuscleGroupChip` instead, so what it shows is
+ * what the component does.
  */
 function LadderChips({ ladder, mode }: { ladder: Ladder; mode: ThemeMode }) {
   return (
@@ -512,12 +438,23 @@ function LadderChips({ ladder, mode }: { ladder: Ladder; mode: ThemeMode }) {
   )
 }
 
+/** The shipped chips, rendered by the real component. */
+function ShippedChips() {
+  return (
+    <View style={{ gap: 6 }}>
+      {RUNG_ORDER.map((rung) => (
+        <MuscleGroupChip key={rung} name={RUNG_LABEL[rung]} volumeStatus={rung} />
+      ))}
+    </View>
+  )
+}
+
 /** The numbers under a ladder: adjacent CVD ΔE, the two minima, and contrast. */
 function Measurements({ ladder, mode }: { ladder: Ladder; mode: ThemeMode }) {
   const m = measure(ladder, mode)
   const passes = m.minAll >= CVD_FLOOR
   return (
-    <View style={{ gap: 3, maxWidth: 520 }} testID={`measurements-${ladder.id}`}>
+    <View style={{ gap: 3, maxWidth: 560 }} testID={`measurements-${ladder.id}`}>
       <Typography variant="mono" color="tertiary">
         adjacent ΔE —{' '}
         {m.adjacent.map((a) => `${a.pair} ${formatTrimmedDecimal(a.delta, 1)}`).join(' · ')}
@@ -546,65 +483,30 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   )
 }
 
-function LadderRow({
-  ladder,
-  selected,
+interface DecisionArgs {
+  backdrop: 'pattern' | 'surface'
+}
+
+function Figures({
   backdrop,
   mode,
-}: {
-  ladder: Ladder
-  selected: boolean
-  backdrop: DecisionArgs['backdrop']
-  mode: ThemeMode
+  title,
+  note,
+}: DecisionArgs & { mode: ThemeMode } & {
+  title: string
+  note: string
 }) {
   return (
-    <View style={{ gap: 8 }}>
-      <Row label={ladder.title}>
-        <Panel
-          title={`figure ${ladder.id}`}
-          note={
-            selected
-              ? 'same SVG, story-local fills — BodyMap takes no colour override'
-              : `switch the \`proposal\` control to ${ladder.id} to paint the figure`
-          }
-          backdrop={backdrop}
-          mode={mode}
-        >
-          {selected ? (
-            <View style={{ flexDirection: 'row', gap: 12 }}>
-              <LadderFigure data={FRONT} view="front" ladder={ladder} mode={mode} />
-              <LadderFigure data={BACK} view="back" ladder={ladder} mode={mode} />
-            </View>
-          ) : (
-            <Typography variant="caption" color="tertiary">
-              {ladder.shape}
-            </Typography>
-          )}
-        </Panel>
-        <Panel
-          title={`chips ${ladder.id}`}
-          note="the same Pill primitive, explicit dot"
-          backdrop={backdrop}
-          mode={mode}
-        >
-          <LadderChips ladder={ladder} mode={mode} />
-        </Panel>
-      </Row>
-      <Measurements ladder={ladder} mode={mode} />
-    </View>
+    <Panel title={title} note={note} backdrop={backdrop} mode={mode}>
+      <View style={{ flexDirection: 'row', gap: 12 }}>
+        <BodyMap data={FRONT} view="front" mode="simple" />
+        <BodyMap data={BACK} view="back" mode="simple" />
+      </View>
+    </Panel>
   )
 }
 
-interface DecisionArgs {
-  backdrop: 'pattern' | 'surface'
-  proposal: 'B' | 'B2' | 'B3'
-}
-
-function VolumeStatusPaletteDecision({
-  backdrop,
-  proposal,
-  mode,
-}: DecisionArgs & { mode: ThemeMode }) {
+function VolumeStatusPaletteDecision({ backdrop, mode }: DecisionArgs & { mode: ThemeMode }) {
   return (
     <View style={{ padding: 16 }}>
       <Surface
@@ -616,56 +518,66 @@ function VolumeStatusPaletteDecision({
       >
         <View style={{ gap: 4 }}>
           <Typography variant="h5" color="primary">
-            Volume status: two palettes today, three candidate ladders
+            Volume status: one scale, both surfaces
           </Typography>
           <Typography variant="body2" color="secondary">
-            Same muscle, two hues. The figure keys off `VolumeStatus` in muscleTaxonomy.ts:191; the
-            chip keys off its own `VolumeStatus` in MuscleGroupChip.tsx:6. `ds[n]` in row C marks a
-            value that IS `divergingScale[n]` — a literal primitive, not a theme-aware token.
-          </Typography>
-          <Typography variant="boldLabel" color="success">
-            DECIDED 2026-09-13 — row A&apos;s figure scale wins as-is. B, B2 and B3 are all rejected
-            and stay below as the record. Phase 2 moves the CHIP onto the diverging scale; the
-            figure does not change.
+            VW-333 shipped. `ds[n]` marks a value that IS `divergingScale[n]`, computed at render
+            rather than asserted. The figure did not move — `volume-status-palette.test.tsx` pins
+            every fill byte-identical; the chip did, onto the figure&apos;s scale.
           </Typography>
         </View>
 
-        <Row label="A — today">
+        <Row label="A — the defect (chip palette before VW-333)">
+          <Figures
+            backdrop={backdrop}
+            mode={mode}
+            title="figure"
+            note="BodyMap, getHeatmapColor — this is what the chip now matches"
+          />
           <Panel
-            title="figure today"
-            note="BodyMap, getHeatmapColor (muscleTaxonomy.ts:213)"
+            title="chips BEFORE"
+            note="restated history: the code no longer holds these values"
             backdrop={backdrop}
             mode={mode}
           >
-            <View style={{ flexDirection: 'row', gap: 12 }}>
-              <BodyMap data={FRONT} view="front" mode="simple" />
-              <BodyMap data={BACK} view="back" mode="simple" />
-            </View>
-          </Panel>
-          <Panel
-            title="chips today"
-            note="MuscleGroupChip, dotTone map (MuscleGroupChip.tsx:15)"
-            backdrop={backdrop}
-            mode={mode}
-          >
-            <TodayChips />
+            <LadderChips ladder={{ id: 'before', title: '', paints: CHIP_BEFORE }} mode={mode} />
           </Panel>
         </Row>
 
-        {LADDERS.map((ladder) => (
-          <LadderRow
-            key={ladder.id}
-            ladder={ladder}
-            selected={ladder.id === proposal}
+        <Row label="B — shipped: MuscleGroupChip on the figure’s scale">
+          <Panel
+            title="chips NOW"
+            note="the real MuscleGroupChip, dot on dataviz-diverging-*"
             backdrop={backdrop}
             mode={mode}
-          />
+          >
+            <ShippedChips />
+          </Panel>
+          <View style={{ gap: 8 }}>
+            <Measurements ladder={DECIDED} mode={mode} />
+          </View>
+        </Row>
+
+        {REJECTED.map((ladder) => (
+          <View key={ladder.id} style={{ gap: 8 }}>
+            <Row label={ladder.title}>
+              <Panel
+                title={`chips ${ladder.id}`}
+                note="kept as the record of what was weighed"
+                backdrop={backdrop}
+                mode={mode}
+              >
+                <LadderChips ladder={ladder} mode={mode} />
+              </Panel>
+            </Row>
+            <Measurements ladder={ladder} mode={mode} />
+          </View>
         ))}
 
-        <Row label="C — legend: today figure / today chip / B / B2 / B3">
+        <Row label="C — legend: figure / chip before / chip now / B / B2 / B3">
           <Panel
-            title="one rung, five palettes"
-            note="`— none` means the ladder has no rung there"
+            title="one rung, six palettes"
+            note="`— none` means that ladder has no rung there"
             // Never patterned: every legend swatch is an opaque fill, so a
             // backdrop adds nothing here and costs the token names their contrast.
             backdrop="surface"
@@ -684,121 +596,71 @@ function VolumeStatusPaletteDecision({
 }
 
 /**
- * # Lab / Decisions — unified volume-status palette (VW-333 phase 1, TITAN-E-01)
+ * # Lab / Decisions — unified volume-status palette (VW-333, TITAN-E-01)
  *
- * A decision surface, not a component. Nothing here changes a token, a component
- * API or a baseline.
+ * A decision surface, not a component. It is the record the palette was approved
+ * from, kept after the fact so the reasoning outlives the ticket.
  *
- * ## DECIDED 2026-09-13
+ * ## DECIDED 2026-09-13, SHIPPED in phase 2
  *
- * The diverging scale as the figure paints it today IS the palette. B, B2 and B3
- * are all rejected; they stay rendered as the record of what was weighed. So the
- * fix inverts: phase 2 moves the CHIP onto the diverging scale and the figure
- * does not change. `over` stays `status-error` / `ds[4]`, unlifted. The chosen
- * ladder measures min adjacent 10.9, min all-pairs 8.7 — the strongest of every
- * candidate here. Full record in `VolumeStatusPalette.decision.md`.
+ * The diverging scale as the figure already painted it IS the palette. B, B2 and
+ * B3 were all rejected; they stay rendered below with their numbers. So the fix
+ * inverted: the CHIP moved onto the figure\u2019s scale and the figure did not
+ * move at all. `over` stays `dataviz-diverging-4`, unlifted.
  *
- * ## The defect
+ * ## The defect this closed
  *
- * Two unions, both named `VolumeStatus`, both reachable, overlapping only on
- * `'over'`. The same muscle renders one hue on the figure and a different hue on
- * the chip. `WorkoutCard.tsx:52` already carries a hand-written bridge between
- * them (`under -> behind`, `maintenance -> ontrack`, `productive -> target`).
+ * Two unions, both named `VolumeStatus`, overlapping only on `'over'`: the
+ * figure keyed off the landmark zone (`under | maintenance | productive | over`)
+ * and the chip off five names of its own. One muscle rendered two hues, and
+ * `WorkoutCard` hand-wrote the bridge between them.
  *
- * ## Current mapping — figure (taxonomy B)
+ * Now there is one `VolumeStatus` —
+ * `untrained | behind | ontrack | target | approaching | over` — shared by
+ * `muscleTaxonomy`, the `BodyMap` fill and `MuscleGroupChip`. The old four-value
+ * union is `VolumeLandmarkZone`, an internal physiological class, and
+ * `landmarkZoneToStatus` is the one place the near-MRV split is decided.
  *
- * `muscleTaxonomy.ts:191` declares `under | maintenance | productive | over`;
- * `getHeatmapColor` (`muscleTaxonomy.ts:213`) resolves it through
- * `WORKOUT_TOKENS.heatmap` (`theme/workout-tokens.ts:28`), which is the
- * `divergingScale` primitive (`theme/tokens/primitives.ts:321`).
+ * ## The shipped palette
  *
- * | status | token | hex |
+ * | status | landmark zone | token |
  * | --- | --- | --- |
- * | (no data) | `heatmap.none` — a literal, not a token | `#E0E0E0` |
- * | `under` | `divergingScale[0]` = `blue-500` | `#2196F3` |
- * | `maintenance` | `divergingScale[1]` = `cyan-300` | `#22D3EE` |
- * | `productive` | `divergingScale[2]` = `green-200` | `#58F69E` |
- * | `productive` + intensity >= 0.85 | `divergingScale[3]` = `amber-300` | `#F9B415` |
- * | `over` | `divergingScale[4]` = `red-600` | `#D14343` |
+ * | `untrained` | 0 sets logged | `text-tertiary` (not a stop on the scale) |
+ * | `behind` | below MEV | `dataviz-diverging-0` |
+ * | `ontrack` | MEV - MAV | `dataviz-diverging-1` |
+ * | `target` | MAV - MRV | `dataviz-diverging-2` |
+ * | `approaching` | upper MAV-MRV | `dataviz-diverging-3` |
+ * | `over` | above MRV | `dataviz-diverging-4` |
  *
- * ## Current mapping — chip (taxonomy A)
- *
- * `MuscleGroupChip.tsx:6` declares `untrained | behind | ontrack | target | over`
- * and maps each to a `PillTone` (`MuscleGroupChip.tsx:15`); `Pill` resolves the
- * tone to a semantic token (`Pill.tsx:109`). Dark-mode hexes below.
- *
- * | status | PillTone | token | hex |
- * | --- | --- | --- | --- |
- * | `untrained` | `neutral` | `text-tertiary` | `#888684` |
- * | `behind` | `brand-secondary` | `brand-secondary` = `cyan-600` | `#307B9B` |
- * | `ontrack` | `success` | `status-success` = `green-300` | `#2ED573` |
- * | `target` | `brand` | `brand-primary` = `orange-400` | `#FF7900` |
- * | `over` | `error` | `status-error` = `red-600` | `#D14343` |
- *
- * ## Is `divergingScale` theme-aware?
- *
- * **No.** It is a plain array of literal hexes in `primitives.ts`, consumed as
- * literals through `WORKOUT_TOKENS.heatmap`. It is not `var()`-backed, so the
- * figure paints identically in light and dark — which is why the light-mode
- * figure has no light-mode answer today.
- *
- * Four of its five entries have an exact SEMANTIC twin, so a ladder can quote the
- * scale and still be theme-aware: `ds[0]` = `status-info`, `ds[2]` =
- * `status-success-light`, `ds[3]` = `status-warning`, `ds[4]` = `status-error`.
- * Only `ds[1]` (`cyan-300`) has no fill-role token — its only semantic use is
- * `on-brand-secondary-subtle`, a text role. Row C prints `= ds[n]` next to every
- * value that matches, computed at render rather than asserted.
- *
- * Today every `status-*` token holds the same hex in both themes, so a ladder
- * built from them resolves identically light and dark; the one rung that really
- * moves is `untrained` (`text-tertiary`: `#888684` dark, `#A29F9D` light).
- *
- * ## The three ladders
- *
- * | rung | B (5) | B2 (6) | B3 (6) |
- * | --- | --- | --- | --- |
- * | `untrained` | `text-tertiary` | `text-tertiary` | `text-tertiary` |
- * | `behind` | `status-info` | `status-warning` = ds[3] | `cyan-300` = ds[1] **NEW TOKEN NEEDED** |
- * | `ontrack` | `status-success` | `status-info` = ds[0] | `status-success` |
- * | `target` | `brand-primary` | `status-success-light` = ds[2] | `status-success-light` = ds[2] |
- * | `approaching` | — folds into `target` | `brand-primary` | `brand-primary` |
- * | `over` | `status-error` | `status-error` = ds[4] | `status-error` = ds[4] |
- *
- * B2 needs **no new token**: four of its six rungs are `divergingScale` entries
- * quoted through their semantic twins. B3 needs one — `cyan-300` has no fill-role
- * token. `brand-primary` (orange) is not a `divergingScale` entry; the scale's
- * warm side is `amber-300`, a gold, which B2 spends on `behind`.
+ * `VOLUME_STATUS_DATAVIZ_TOKEN` holds that map, and both surfaces read it, which
+ * is what makes a muscle one colour everywhere. The figure resolves it through
+ * `getHeatmapColor`; `volume-status-palette.test.tsx` pins each fill to the exact
+ * hex it painted before the unification.
  *
  * ## Measured (printed live under each row)
  *
- * | ladder | min adjacent ΔE | min all-pairs ΔE | verdict vs floor 8 |
+ * | ladder | min adjacent ΔE | min all-pairs ΔE | vs floor 8 |
  * | --- | --- | --- | --- |
- * | B | 8.3 | 8.3 (`ontrack`/`target`) | pass |
- * | B2 | 15.3 | **8.7** (`untrained`/`over`) | pass — best of the three |
- * | B3 | 10.0 | 8.3 (`ontrack`/`approaching`) | pass |
+ * | **shipped** | **10.9** | **8.7** (`untrained`/`over`) | pass — best measured |
+ * | B (rejected) | 8.3 | 8.3 (`ontrack`/`target`) | pass |
+ * | B2 (rejected) | 15.3 | 8.7 (`untrained`/`over`) | pass |
+ * | B3 (rejected) | 10.0 | 8.3 (`ontrack`/`approaching`) | pass |
  *
- * Two variants that were measured and rejected, both of which the brief asked
- * about directly:
+ * The shipped ladder ties B2 on the all-pairs floor and beats all three on
+ * adjacent separation. Its one substitution against what the figure paints today
+ * is `untrained`: `text-tertiary` rather than the `#E0E0E0` no-data literal,
+ * which is what lifts the floor from 7.5 to 8.7. The figure never paints that
+ * rung — an untrained muscle is simply absent from `data` and keeps the outline
+ * fill — so the substitution costs the figure nothing.
  *
- * - **A truer yellow for B2.** `amber-200` (`#FFD352`) instead of `status-warning`
- *   drops the ladder to 8.4, and `amber-100` to 1.6 — the yellower it gets the
- *   closer it sits to the green. The gold is both safer and already a token.
- * - **A steel blue for B3.** `brand-secondary` (`cyan-600`) is the genuine steel
- *   blue, but it lands 7.4 against `untrained` grey — under the floor. `blue-700`
- *   clears CVD at 8.3 but contrasts 1.62:1 against the figure's outline fill, so
- *   it barely reads as a fill. `cyan-300` is the one cold value that clears both.
- * - **Two greens split by lightness.** `status-success-dark` as the second green
- *   collides with `status-error` under deuteranopia (ΔE 4.9) — a dark green and a
- *   mid red are the classic confusion. B3's two greens are the light pair.
+ * Variants measured and rejected on the way: a truer yellow for B2 (`amber-200`
+ * 8.4, `amber-100` 1.6), a steel blue for B3 (`brand-secondary` 7.4 under the
+ * floor; `blue-700` clears CVD at 8.3 but contrasts 1.62:1 against the outline
+ * fill), and two greens split by lightness (`status-success-dark` collides with
+ * `status-error` at ΔE 4.9 — the classic dark-green/mid-red deuteranopia pair).
  *
- * ## Open questions for the approver
- *
- * 1. B, B2 or B3. B2 measures best and matches the stated preference (blue for on
- *    track, green for met); B3 keeps a cold `behind` but needs one new token.
- * 2. If B wins, `approaching` has no home — fold it into `target` and lose the
- *    near-MRV warning, or move it to a non-hue channel (glow, dashed edge)?
- * 3. On the figure, `untrained` currently means "absent from `data`" and paints
- *    the outline fill. Keep that, or paint `text-tertiary` like the chip dot?
+ * Full record, including the tables the decision was taken from, in
+ * `VolumeStatusPalette.decision.md`.
  */
 const meta: Meta<DecisionArgs> = {
   title: 'Lab/Decisions/Volume Status Palette',
@@ -808,15 +670,10 @@ const meta: Meta<DecisionArgs> = {
       control: 'inline-radio',
       options: ['pattern', 'surface'],
       description:
-        'What the panels sit on. `pattern` is the honest case — a fill and its glow over a flat plane always look fine.',
-    },
-    proposal: {
-      control: 'inline-radio',
-      options: ['B', 'B2', 'B3'],
-      description: 'Which ladder paints the figure. Chips and numbers render for all three.',
+        'What the specimens sit on. `pattern` is the honest case — a fill and its glow over a flat plane always look fine.',
     },
   },
-  args: { backdrop: 'pattern', proposal: 'B2' },
+  args: { backdrop: 'pattern' },
 }
 
 export default meta

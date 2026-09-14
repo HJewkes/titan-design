@@ -170,3 +170,31 @@ than calling the hook. `BodyMap`'s own local is named `surfaceMode` because
 `WORKOUT_TOKENS.heatmap` is **gone**, replaced by `heatmapColors(mode)` in
 `theme/workout-tokens.ts`. It was never on the package barrel, so this is
 internal only.
+
+## VW-333 — one `VolumeStatus`, shared by the figure and the chip
+
+Two unions were both named `VolumeStatus` and both exported, overlapping only on
+`'over'`. The figure keyed off the landmark zone, the chip off five names of its
+own, and one muscle rendered two hues. There is now one six-value status; the
+old four-value union is `VolumeLandmarkZone`, an internal physiological class.
+
+| Change                                                                   | Replacement                                             | Known consumers                                                |
+| ------------------------------------------------------------------------ | ------------------------------------------------------- | -------------------------------------------------------------- |
+| `VolumeStatus = under \| maintenance \| productive \| over` (taxonomy)   | `VolumeLandmarkZone` — same four values, new name       | in-repo: `BodyMap`, `TrainingStatusPage`, `BodyMapDetailPanel` |
+| `VolumeStatus = untrained \| behind \| ontrack \| target \| over` (chip) | the same union **plus `approaching`** — a pure widening | in-repo: `WorkoutCard`, lab fixtures                           |
+| `getHeatmapColor(status, intensity, mode)`                               | `getHeatmapColor(status, mode)`                         | in-repo: `BodyMap` ×3, `TrainingStatusPage` ×1                 |
+| `WorkoutMuscleVolumeStatus`                                              | `VolumeLandmarkZone` (kept as a `@deprecated` alias)    | in-repo: `WorkoutCard`, `ProgramPlanningPage` stories          |
+
+`intensity` leaves `getHeatmapColor` because the near-MRV case it decided is now
+the `approaching` status itself. `landmarkZoneToStatus(zone, intensity)` is the
+one place that split happens — it replaces the map `WorkoutCard.tsx` hand-wrote.
+
+**No public prop is renamed.** `MuscleGroupChip`'s `volumeStatus` keeps all five
+values it accepted and gains a sixth, so every existing call site still compiles.
+What changes is the rendered colour: the dot moved from the `status-*` family
+onto `dataviz-diverging-0..4`, matching the BodyMap figure. That was the decision
+of 2026-09-13 (`VolumeStatusPalette.decision.md`); the figure itself did not move,
+and `volume-status-palette.test.tsx` pins every fill byte-identical.
+
+Callers holding a `BodyMapData` built from landmark zones convert once at the
+boundary: `volumeStatus: landmarkZoneToStatus(zone, intensity)`.

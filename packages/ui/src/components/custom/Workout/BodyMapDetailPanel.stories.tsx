@@ -44,7 +44,7 @@ const meta: Meta<typeof BodyMapDetailPanel> = {
     weeklySets: { control: 'number', description: 'Weekly effective sets logged' },
     volumeStatus: {
       control: 'select',
-      options: ['under', 'maintenance', 'productive', 'over'],
+      options: ['untrained', 'behind', 'ontrack', 'target', 'approaching', 'over'],
       description: 'Volume status relative to landmarks',
     },
     isOpen: { control: 'boolean', description: 'Whether the bottom sheet is visible' },
@@ -61,7 +61,7 @@ export const Default: Story = {
     displayName: 'Chest',
     weeklySets: 14,
     landmarks: { mev: 8, mav: 14, mrv: 20 },
-    volumeStatus: 'productive',
+    volumeStatus: 'target',
     lastTrained: '2 days ago',
     weeklyHistory: [8, 10, 12, 11, 13, 14],
     contributingExercises: contributing,
@@ -79,7 +79,7 @@ export const UnderTrained: Story = {
     muscleGroup: MuscleGroup.REAR_DELTS,
     weeklySets: 4,
     landmarks: { mev: 6, mav: 12, mrv: 18 },
-    volumeStatus: 'under',
+    volumeStatus: 'behind',
     weeklyHistory: [2, 3, 3, 4],
   },
 }
@@ -91,7 +91,7 @@ export const Maintenance: Story = {
     muscleGroup: MuscleGroup.BICEPS,
     weeklySets: 8,
     landmarks: { mev: 4, mav: 10, mrv: 18 },
-    volumeStatus: 'maintenance',
+    volumeStatus: 'ontrack',
   },
 }
 
@@ -117,7 +117,7 @@ export const Minimal: Story = {
     displayName: 'Calves',
     weeklySets: 10,
     landmarks: { mev: 6, mav: 10, mrv: 16 },
-    volumeStatus: 'maintenance',
+    volumeStatus: 'ontrack',
     isOpen: true,
     onClose: () => {},
   },
@@ -175,7 +175,7 @@ function InteractiveBodyMapDetailPanel() {
         displayName="Chest"
         weeklySets={14}
         landmarks={{ mev: 8, mav: 14, mrv: 20 }}
-        volumeStatus="productive"
+        volumeStatus="target"
         lastTrained="2 days ago"
         weeklyHistory={[8, 10, 12, 11, 13, 14]}
         contributingExercises={contributing}

@@ -36,7 +36,12 @@ export {
   SIMPLE_DISPLAY_NAMES,
   DEFAULT_VOLUME_LANDMARKS,
   VOLUME_STATUS_LABELS,
+  VOLUME_STATUS_DATAVIZ_TOKEN,
+  APPROACHING_MRV_INTENSITY,
   getHeatmapColor,
+  landmarkZoneToStatus,
   type MovementCategory,
   type VolumeLandmarks,
+  type VolumeLandmarkZone,
+  type VolumeStatus,
 } from './components/custom/Workout/muscleTaxonomy'

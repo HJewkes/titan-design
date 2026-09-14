@@ -52,6 +52,13 @@ const HTML_CSS = `
        frozen demo's #3A3A3A sat between two ramp steps, so the reference follows
        the component onto the ramp rather than pinning it back off it. */
     --border-prominent: #424140;
+    /* The diverging dataviz scale (VW-371 roles), mirrored for the chip dot the
+       way every other var here mirrors tokens/semantic.ts. */
+    --dataviz-diverging-0: #2196F3;
+    --dataviz-diverging-1: #22D3EE;
+    --dataviz-diverging-2: #58F69E;
+    --dataviz-diverging-3: #F9B415;
+    --dataviz-diverging-4: #D14343;
     --status-success: #2ED573;
     --status-error: #D14343;
     --status-warning: #F9B415;
@@ -418,11 +425,17 @@ const HTML_CSS = `
     margin-right: 6px;
     flex-shrink: 0;
   }
-  .html-scope .muscle-chip-dot.ontrack { background: var(--status-success); }
-  .html-scope .muscle-chip-dot.target { background: var(--brand-primary); }
-  .html-scope .muscle-chip-dot.behind { background: var(--brand-secondary); }
+  /* VW-333: the dot follows the BodyMap figure onto the diverging scale, so one
+     muscle reads as one colour on both surfaces. Was status-success / brand-primary
+     / brand-secondary — a status-family palette that disagreed with the figure.
+     untrained is not a stop on the scale and keeps the muted text role; over is
+     unchanged (status-error and dataviz-diverging-4 are the same red). */
+  .html-scope .muscle-chip-dot.behind { background: var(--dataviz-diverging-0); }
+  .html-scope .muscle-chip-dot.ontrack { background: var(--dataviz-diverging-1); }
+  .html-scope .muscle-chip-dot.target { background: var(--dataviz-diverging-2); }
+  .html-scope .muscle-chip-dot.approaching { background: var(--dataviz-diverging-3); }
+  .html-scope .muscle-chip-dot.over { background: var(--dataviz-diverging-4); }
   .html-scope .muscle-chip-dot.untrained { background: var(--dot-inactive); }
-  .html-scope .muscle-chip-dot.over { background: var(--status-error); }
 
   /* WorkoutPill deload — the role has no semantic tokens, so the wash and rim are
      derived from the same magenta-600 pin WeekRow reads, at the ladder's rungs. */
