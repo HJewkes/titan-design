@@ -161,10 +161,13 @@ const textStyles: Record<ButtonVariant, Record<ButtonColor, string>> = {
   },
 }
 
+// Pixel-identical to the px-4/py-1.5/min-h-[32px] triples these replaced — the
+// control tokens were measured off this component (AW-142). `sm` sits at 32px,
+// below the 44pt hit-target floor; raising it is AW-144.
 const sizeStyles: Record<ButtonSize, string> = {
-  sm: 'px-4 py-1.5 min-h-[32px]',
-  md: 'px-5 py-2 min-h-[40px]',
-  lg: 'px-6 py-2.5 min-h-[48px]',
+  sm: 'px-control-x-sm py-control-y-sm min-h-control-sm',
+  md: 'px-control-x-md py-control-y-md min-h-control-md',
+  lg: 'px-control-x-lg py-control-y-lg min-h-control-lg',
 }
 
 // Icon button sizes (square aspect ratio)

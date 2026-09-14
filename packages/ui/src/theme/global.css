@@ -196,6 +196,46 @@
     --duration-fast: 150ms;
     --duration-normal: 250ms;
     --duration-slow: 400ms;
+    /* Spacing + sizing (AW-142). Theme-independent: identical in both blocks.
+       Derived from `space` / `size` in tokens/semantic.ts — regenerate rather
+       than hand-edit, and config.completeness.test.ts holds them equal. */
+    --space-inset-xs: 4px;
+    --space-inset-sm: 8px;
+    --space-inset-md: 12px;
+    --space-inset-lg: 16px;
+    --space-inset-xl: 24px;
+    --space-squish-x-sm: 8px;
+    --space-squish-x-md: 12px;
+    --space-squish-x-lg: 16px;
+    --space-squish-y-sm: 2px;
+    --space-squish-y-md: 4px;
+    --space-squish-y-lg: 6px;
+    --space-stack-sm: 4px;
+    --space-stack-md: 8px;
+    --space-stack-lg: 16px;
+    --space-stack-xl: 24px;
+    --space-inline-sm: 4px;
+    --space-inline-md: 8px;
+    --space-inline-lg: 12px;
+    --space-control-x-sm: 16px;
+    --space-control-x-md: 20px;
+    --space-control-x-lg: 24px;
+    --space-control-y-sm: 6px;
+    --space-control-y-md: 8px;
+    --space-control-y-lg: 10px;
+    --space-section-sm: 24px;
+    --space-section-md: 32px;
+    --space-section-lg: 48px;
+    --space-gutter-sm: 16px;
+    --space-gutter-md: 24px;
+    --size-control-sm: 32px;
+    --size-control-md: 40px;
+    --size-control-lg: 48px;
+    --size-icon-xs: 12px;
+    --size-icon-sm: 16px;
+    --size-icon-md: 20px;
+    --size-icon-lg: 24px;
+    --size-icon-xl: 28px;
   }
 
   /* Light mode */
@@ -368,6 +408,46 @@
     --duration-fast: 150ms;
     --duration-normal: 250ms;
     --duration-slow: 400ms;
+    /* Spacing + sizing (AW-142). Theme-independent: identical in both blocks.
+       Derived from `space` / `size` in tokens/semantic.ts — regenerate rather
+       than hand-edit, and config.completeness.test.ts holds them equal. */
+    --space-inset-xs: 4px;
+    --space-inset-sm: 8px;
+    --space-inset-md: 12px;
+    --space-inset-lg: 16px;
+    --space-inset-xl: 24px;
+    --space-squish-x-sm: 8px;
+    --space-squish-x-md: 12px;
+    --space-squish-x-lg: 16px;
+    --space-squish-y-sm: 2px;
+    --space-squish-y-md: 4px;
+    --space-squish-y-lg: 6px;
+    --space-stack-sm: 4px;
+    --space-stack-md: 8px;
+    --space-stack-lg: 16px;
+    --space-stack-xl: 24px;
+    --space-inline-sm: 4px;
+    --space-inline-md: 8px;
+    --space-inline-lg: 12px;
+    --space-control-x-sm: 16px;
+    --space-control-x-md: 20px;
+    --space-control-x-lg: 24px;
+    --space-control-y-sm: 6px;
+    --space-control-y-md: 8px;
+    --space-control-y-lg: 10px;
+    --space-section-sm: 24px;
+    --space-section-md: 32px;
+    --space-section-lg: 48px;
+    --space-gutter-sm: 16px;
+    --space-gutter-md: 24px;
+    --size-control-sm: 32px;
+    --size-control-md: 40px;
+    --size-control-lg: 48px;
+    --size-icon-xs: 12px;
+    --size-icon-sm: 16px;
+    --size-icon-md: 20px;
+    --size-icon-lg: 24px;
+    --size-icon-xl: 28px;
   }
 
   /* Base styles */

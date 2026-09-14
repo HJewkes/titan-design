@@ -25,6 +25,7 @@ import {
   alertRedVivid,
   resultPaletteColors,
   semanticPins,
+  primitiveSizing,
 } from './primitives'
 
 /**
@@ -586,23 +587,51 @@ export const semanticTypography = {
   },
 } as const
 
-// Button size tokens
-export const buttonSizes = {
-  sm: {
-    paddingX: '16px',
-    paddingY: '6px',
-    fontSize: '0.875rem',
+/**
+ * Semantic spacing (AW-142) — the situational layer over the 4px numeric scale.
+ *
+ * Every value here is a cluster the spacing audit MEASURED in the shipped
+ * components, so adopting a key changes no pixels. Each is defined once and
+ * exposed twice from this one object: as `--space-*` custom properties (via
+ * `theme/config.ts` into `global.css` and `dist/tokens.css`) and as Tailwind
+ * keys that reference those properties, so a future density mode remaps the
+ * variables without touching a component.
+ *
+ * Which key to reach for: a component's OWN padding is `control` (a pressable),
+ * `inset` (a surface, card or panel) or `squish` (a pill-shaped atom). Page
+ * rhythm is `section` (between unrelated blocks) and `gutter` (from the
+ * container edge). Gaps between siblings are `stack` (vertical) and `inline`
+ * (horizontal). The raw numeric scale stays legal everywhere.
+ *
+ * `stack` doubles at every level so adjacent levels never read as ambiguous.
+ *
+ * `squish` and `control` carry an explicit axis (`squish-x-md`, `control-y-md`)
+ * because `px-` and `py-` share one Tailwind namespace: a single `squish-md`
+ * key could not hold 12 horizontally and 4 vertically.
+ */
+export const space = {
+  inset: { xs: 4, sm: 8, md: 12, lg: 16, xl: 24 },
+  squish: {
+    x: { sm: 8, md: 12, lg: 16 },
+    y: { sm: 2, md: 4, lg: 6 },
   },
-  md: {
-    paddingX: '20px',
-    paddingY: '8px',
-    fontSize: '0.875rem',
+  stack: { sm: 4, md: 8, lg: 16, xl: 24 },
+  inline: { sm: 4, md: 8, lg: 12 },
+  control: {
+    x: { sm: 16, md: 20, lg: 24 },
+    y: { sm: 6, md: 8, lg: 10 },
   },
-  lg: {
-    paddingX: '24px',
-    paddingY: '11px',
-    fontSize: '1rem',
-  },
+  section: { sm: 24, md: 32, lg: 48 },
+  gutter: { sm: 16, md: 24 },
+} as const
+
+/**
+ * Semantic sizing — a control's height and the icon ramp, straight off the
+ * primitives. Control heights are also Tailwind `h-*` / `min-h-*` keys.
+ */
+export const size = {
+  control: primitiveSizing.control,
+  icon: primitiveSizing.icon,
 } as const
 
 // Export type for theme mode

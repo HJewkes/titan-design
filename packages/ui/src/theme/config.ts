@@ -6,11 +6,13 @@
  */
 
 import { semanticColorsLight, semanticColorsDark, type ThemeMode } from './tokens/semantic'
+import { spacingCSSVars } from './tokens/spacing-vars'
 
 // Theme-independent custom properties: identical in light and dark in
-// global.css (RGB glow decompositions, font families, animation tokens). Kept
-// as literals since they are not part of the semantic COLOR maps, and spread
-// into both theme maps so codegen mirrors global.css exactly.
+// global.css (RGB glow decompositions, font families, animation tokens,
+// spacing + sizing). Kept as literals since they are not part of the semantic
+// COLOR maps, and spread into both theme maps so codegen mirrors global.css
+// exactly. `spacingCSSVars` is derived, not literal — see tokens/spacing-vars.ts.
 const themeIndependentCSSVars = {
   // RGB decomposed values for glow shadows
   '--color-brand-primary-rgb': '255, 121, 0',
@@ -35,6 +37,9 @@ const themeIndependentCSSVars = {
   '--duration-fast': '150ms',
   '--duration-normal': '250ms',
   '--duration-slow': '400ms',
+
+  // Spacing + sizing (AW-142). Theme-independent, so one derivation covers both.
+  ...spacingCSSVars,
 } as const
 
 // CSS custom properties for light mode
