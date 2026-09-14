@@ -7,6 +7,12 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## 0.15.0
 
+> **Native consumers:** spacing values now emit in `px` instead of `rem` (#220, AW-142
+> wave one). On web nothing moves. On native, NativeWind resolves `rem` at a 14px base,
+> so every Tailwind spacing step (`m-4`, `p-2`, …) was already rendering at 14/16 of its
+> web size — this bump corrects that divergence, and every native spacing value grows to
+> match web on your next titan bump. Review spacing on-device when you take this release.
+
 ### Breaking Changes
 
 See `DEPRECATIONS.md` for migration detail on each entry below.
@@ -56,12 +62,20 @@ See `DEPRECATIONS.md` for migration detail on each entry below.
 - Spacing and sizing token foundation — `inset`, `squish`, `stack`, `inline`, `control`,
   `section`, `gutter` situations plus the Tailwind wiring, `Foundations/Spacing` story
   and lint rule. No component pixel moves on web (#220, AW-142 wave one).
+- New semantic spacing classes: `p-inset-*`, `gap-stack-*`, `gap-inline-*`,
+  `px-squish-x-*` (paired with `py-squish-y-*`), `px-control-x-*` (paired with
+  `py-control-y-*`), `py-section-*`, `px-gutter-*` (#220, AW-142 wave one).
+- `titan/no-raw-spacing` eslint rule, flagging inline `paddingVertical`/`margin`-style
+  numeric literals outside an `// optical: <why>` escape hatch (#220, AW-142 wave one).
 
 ### Changed
 
 - `Pill`, `Badge` and `Chip` unified onto the `squish` spacing ramp; several size rungs
   move (Pill `md`/`lg`, all three `Badge` rungs) to land on the ramp (#222, AW-142 wave
-  two part A).
+  two part A). Exact deltas (px, `padding-x / padding-y`):
+  - Pill `md`: 10/4 → 12/4. Pill `lg`: 12/6 → 16/6.
+  - Badge `sm`: 6/2 → 8/2. Badge `md`: 8/2 → 12/4. Badge `lg`: 10/4 → 16/6.
+  - Chip is unchanged at every rung — it already sat on the ramp.
 - `Card`, `ListItem`, `Popover`, `Menu`, `Tooltip`, `HelpTip`, `Modal`, `Drawer`, `Alert`,
   `Toast`, `Section`, `Input`/`FormField`, `Progress` and `Tile` onto the `inset-*` /
   `gap-stack-*` tokens; `Drawer`'s header/footer/body band grows from 16/12 to 24/16 to
@@ -69,7 +83,10 @@ See `DEPRECATIONS.md` for migration detail on each entry below.
 - Solid-fill components (`Pill`, `Button`) now resolve their label colour against a
   dedicated `*-solid` token per tone instead of a single shared white/dark label, fixing
   WCAG AA contrast failures that alternated between the two components depending on tone
-  (#204).
+  (#204). `Button`'s solid label moves from white to the dark `on-*` token on **every**
+  tone — primary buttons flip from white to near-black text. `brand-secondary` and
+  `status-error` solid fills lift one ramp rung (dark mode: `cyan[600]`→`cyan[500]`,
+  `red[600]`→`red[500]`) so the shared dark label clears AA on all six tones.
 - `TimerReadout`, `Treemap`, `Indicator` and `Spinner` colours now resolve at render time
   from the current surface mode instead of a frozen `getSemanticColors('dark')` module
   read (#221, VW-316 part 5).
@@ -83,6 +100,12 @@ See `DEPRECATIONS.md` for migration detail on each entry below.
 - Seven of the approved VW-82 tokens shipped, plus six grey-snap corrections (#203).
 - `LiveFatigueCard`'s section gap is now capped and content-driven instead of an
   unbounded flex spacer; the row dimension converges on one token (#205, VW-276).
+
+### Deprecated
+
+- `Pill`'s `size="xl"` is deprecated and renders as `lg` — the `squish` ramp tops out at
+  `lg` because nothing in the library or its consumers ships a capsule above 16/6 (#222,
+  AW-142 wave two part A).
 
 ### Fixed
 
