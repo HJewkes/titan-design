@@ -41,11 +41,11 @@ const colorToTone: Record<BadgeColor, PillTone> = {
   info: 'info',
 }
 
-/** Badge keeps its own geometry; Pill supplies structure, tone and the slots. */
+/** The unified squish ramp (AW-142) — the same three rungs Pill and Chip ship. */
 const sizeStyles: Record<BadgeSize, string> = {
-  sm: 'px-1.5 py-0.5',
-  md: 'px-2 py-0.5',
-  lg: 'px-2.5 py-1',
+  sm: 'px-squish-x-sm py-squish-y-sm',
+  md: 'px-squish-x-md py-squish-y-md',
+  lg: 'px-squish-x-lg py-squish-y-lg',
 }
 
 const textSizeStyles: Record<BadgeSize, string> = {

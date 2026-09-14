@@ -235,9 +235,11 @@
     --space-inset-md: 12px;
     --space-inset-lg: 16px;
     --space-inset-xl: 24px;
+    --space-squish-x-xs: 4px;
     --space-squish-x-sm: 8px;
     --space-squish-x-md: 12px;
     --space-squish-x-lg: 16px;
+    --space-squish-y-xs: 1px;
     --space-squish-y-sm: 2px;
     --space-squish-y-md: 4px;
     --space-squish-y-lg: 6px;
@@ -476,9 +478,11 @@
     --space-inset-md: 12px;
     --space-inset-lg: 16px;
     --space-inset-xl: 24px;
+    --space-squish-x-xs: 4px;
     --space-squish-x-sm: 8px;
     --space-squish-x-md: 12px;
     --space-squish-x-lg: 16px;
+    --space-squish-y-xs: 1px;
     --space-squish-y-sm: 2px;
     --space-squish-y-md: 4px;
     --space-squish-y-lg: 6px;

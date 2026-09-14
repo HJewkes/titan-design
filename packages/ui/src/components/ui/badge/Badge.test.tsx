@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Badge, BadgeText } from './Badge'
+import { resolveAll, siblingSource, sizeClasses } from '../../../test/spacing-resolver'
 
 describe('Badge', () => {
   it('renders string children correctly', () => {
@@ -115,5 +116,31 @@ describe('Badge', () => {
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
+  })
+})
+
+/**
+ * Badge's squish geometry, pinned (AW-142 wave two).
+ *
+ * Badge is the atom the unification moved most: it shipped 6/2, 8/2, 10/4 and
+ * now measures the shared 8/2, 12/4, 16/6. These numbers are the ramp, spelled
+ * out so a token move fails here rather than in a screenshot.
+ */
+describe('Badge geometry resolves to the squish tokens', () => {
+  const source = siblingSource(import.meta.url, 'Badge.tsx')
+  const classes = (level: string) => sizeClasses(source, 'sizeStyles', level)
+
+  const ramp = [
+    ['sm', ['px-squish-x-sm', 'py-squish-y-sm'], ['8px', '2px']],
+    ['md', ['px-squish-x-md', 'py-squish-y-md'], ['12px', '4px']],
+    ['lg', ['px-squish-x-lg', 'py-squish-y-lg'], ['16px', '6px']],
+  ] as const
+
+  it.each(ramp)('%s uses the squish tokens', (level, expected) => {
+    expect(classes(level)).toEqual([...expected])
+  })
+
+  it.each(ramp)('%s measures the squish ramp', (level, _, pixels) => {
+    expect(resolveAll(classes(level))).toEqual([...pixels])
   })
 })

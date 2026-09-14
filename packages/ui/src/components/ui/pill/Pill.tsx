@@ -21,7 +21,15 @@ export type PillColor =
   | 'error'
   | 'warning'
   | 'info'
-export type PillSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+/** The four levels Pill ships, one per rung of the shared squish ramp. */
+export type PillSizeLevel = 'xs' | 'sm' | 'md' | 'lg'
+/**
+ * @deprecated `xl` is accepted for one release and renders as `lg`. The squish
+ * ramp tops out at `lg` (AW-142), because nothing in the library or its
+ * consumers shipped a capsule above it.
+ */
+export type DeprecatedPillSize = 'xl'
+export type PillSize = PillSizeLevel | DeprecatedPillSize
 
 export interface PillProps extends ViewProps {
   /** Pill content */
@@ -32,7 +40,7 @@ export interface PillProps extends ViewProps {
   tone?: PillTone
   /** @deprecated Use `tone` — `color` maps onto it and is kept for call-site compatibility. */
   color?: PillColor
-  /** Size */
+  /** Size. `xl` is a deprecated alias for `lg`. */
   size?: PillSize
   /** Fully rounded (default true) or slight radius */
   rounded?: boolean
@@ -122,12 +130,19 @@ const dotToneStyles: Record<PillTone, string> = {
 // One text step per rung. `md` used to repeat `sm`'s 10px, which left no 12px
 // capsule at all and pushed anything between the two down to 10px — that is how
 // MuscleGroupChip lost 7px of height. `md` is the 12px rung now.
-const sizeStyles: Record<PillSize, { container: string; text: string }> = {
-  xs: { container: 'px-1 py-px', text: 'text-3xs' },
-  sm: { container: 'px-2 py-0.5', text: 'text-2xs' },
-  md: { container: 'px-2.5 py-1', text: 'text-xs' },
-  lg: { container: 'px-3 py-1.5', text: 'text-sm' },
-  xl: { container: 'px-4 py-2', text: 'text-base' },
+const sizeStyles: Record<PillSizeLevel, { container: string; text: string }> = {
+  xs: { container: 'px-squish-x-xs py-squish-y-xs', text: 'text-3xs' },
+  sm: { container: 'px-squish-x-sm py-squish-y-sm', text: 'text-2xs' },
+  md: { container: 'px-squish-x-md py-squish-y-md', text: 'text-xs' },
+  lg: { container: 'px-squish-x-lg py-squish-y-lg', text: 'text-sm' },
+}
+
+// One release of grace, and silent: a runtime warning would fire on every render
+// of call sites the deprecation notice already names.
+const sizeAliases: Record<DeprecatedPillSize, PillSizeLevel> = { xl: 'lg' }
+
+function resolveSize(size: PillSize = 'sm'): PillSizeLevel {
+  return sizeAliases[size as DeprecatedPillSize] ?? (size as PillSizeLevel)
 }
 
 // The dot derives its testID from the pill's, so a preset's dot stays
@@ -148,7 +163,7 @@ function containerClasses(p: PillProps, tone: PillTone) {
     'flex-row items-center gap-1 border self-start shrink-0',
     p.rounded === false ? 'rounded' : 'rounded-full',
     toneStyles[p.variant ?? 'subtle'][tone],
-    sizeStyles[p.size ?? 'sm'].container,
+    sizeStyles[resolveSize(p.size)].container,
     p.isDisabled && 'opacity-50',
     p.className
   )
@@ -157,7 +172,7 @@ function containerClasses(p: PillProps, tone: PillTone) {
 function PillContent({ tone, ...p }: PillProps & { tone: PillTone }) {
   const textClasses = cn(
     'font-heading font-semibold text-inherit',
-    sizeStyles[p.size ?? 'sm'].text,
+    sizeStyles[resolveSize(p.size)].text,
     p.textClassName
   )
   const slot = p.leading ?? p.leftElement

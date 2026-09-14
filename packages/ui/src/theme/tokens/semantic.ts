@@ -702,8 +702,8 @@ export const semanticTypography = {
 export const space = {
   inset: { xs: 4, sm: 8, md: 12, lg: 16, xl: 24 },
   squish: {
-    x: { sm: 8, md: 12, lg: 16 },
-    y: { sm: 2, md: 4, lg: 6 },
+    x: { xs: 4, sm: 8, md: 12, lg: 16 },
+    y: { xs: 1, sm: 2, md: 4, lg: 6 },
   },
   stack: { sm: 4, md: 8, lg: 16, xl: 24 },
   inline: { sm: 4, md: 8, lg: 12 },

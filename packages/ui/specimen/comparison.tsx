@@ -398,14 +398,16 @@ const HTML_CSS = `
   /* 10. MuscleGroupChip */
   /* Now a Pill preset: borderless subtle fill, size md. The frozen demo's 11px
      text and 3/9 padding sat between scale steps; md rounds UP to 12px and holds
-     the chip at its shipped height. Font stack is the token's, not a literal. */
+     the chip at its shipped height. Font stack is the token's, not a literal.
+     The horizontal inset tracks Pill's md rung, which AW-142 moved from 10 to
+     the squish ramp's 12 — this side mirrors the component, it does not pin it. */
   .html-scope .muscle-chip {
     display: inline-flex;
     align-items: center;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid transparent;
     border-radius: 100px;
-    padding: 4px 10px;
+    padding: 4px 12px;
     font-size: 12px;
     font-weight: 500;
     color: var(--text-secondary);
