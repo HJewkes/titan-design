@@ -98,7 +98,7 @@ const HTML_CSS = `
   .html-scope .weight-badge {
     display: inline-flex;
     align-items: center;
-    /* 4px, not 3: BaseBadge's icon gap moved to Pill's `inline-sm` rung (AW-142). */
+    /* 4px, not 3: BaseBadge's icon gap moved to Pill's inline-sm rung (AW-142). */
     gap: 4px;
     background: var(--surface-raised);
     border: 1px solid var(--border-default);
@@ -141,7 +141,7 @@ const HTML_CSS = `
   .html-scope .pr-badge {
     display: inline-flex;
     align-items: center;
-    /* 4px, not 3: BaseBadge's icon gap moved to Pill's `inline-sm` rung (AW-142). */
+    /* 4px, not 3: BaseBadge's icon gap moved to Pill's inline-sm rung (AW-142). */
     gap: 4px;
     background: var(--brand-primary-subtle);
     border: 1px solid rgba(255, 121, 0, 0.3);
