@@ -37,6 +37,7 @@ export {
   type DualVelocityStream,
 } from './VelocityStrip'
 export { MuscleGroupChip, type MuscleGroupChipProps, type VolumeStatus } from './MuscleGroupChip'
+export { MuscleStrip, type MuscleStripProps, type MuscleStripMuscleData } from './MuscleStrip'
 export { Sparkline, type SparklineProps } from './Sparkline'
 export { SetRow, type SetRowProps, type SetRowState, type SetRowUnit } from './SetRow'
 export { InputBar, type InputBarProps } from './InputBar'
