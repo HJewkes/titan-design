@@ -7,6 +7,7 @@ const noDeviceInternals = require('./eslint-rules/no-device-internals')
 const noFrozenTheme = require('./eslint-rules/no-frozen-theme')
 const noLocalFormatter = require('./eslint-rules/no-local-formatter')
 const noRawColor = require('./eslint-rules/no-raw-color')
+const noRawSpacing = require('./eslint-rules/no-raw-spacing')
 const noUpwardTierImport = require('./eslint-rules/no-upward-tier-import')
 const noVarColorOpacity = require('./eslint-rules/no-var-color-opacity')
 const storyTitlePrefix = require('./eslint-rules/story-title-prefix')
@@ -97,6 +98,7 @@ module.exports = tseslint.config(
           'no-frozen-theme': noFrozenTheme,
           'no-local-formatter': noLocalFormatter,
           'no-raw-color': noRawColor,
+          'no-raw-spacing': noRawSpacing,
           'no-upward-tier-import': noUpwardTierImport,
           'no-var-color-opacity': noVarColorOpacity,
           'story-title-prefix': storyTitlePrefix,
@@ -336,6 +338,28 @@ module.exports = tseslint.config(
             'getSemanticColors() freezes to one theme — resolve at render time with useOnSurfaceColor(role), or getSemanticColors(useSurfaceMode()) for other tokens. See TOKENS.md §3.',
         },
       ],
+    },
+  },
+
+  // Inline-style spacing (AW-142). The bracket-form selectors above catch
+  // `gap-[3px]` in a className; they cannot see `paddingVertical: 9` or
+  // `padding: '9px 12px'` in a style object, which is the dialect the
+  // specimen-derived families write. `titan/no-raw-spacing` covers that shape
+  // and honours a `// optical: <why>` comment — the reason it is a rule and not
+  // two more selectors, since a selector cannot read comments.
+  //
+  // Enrolled per WAVE, never ahead of one (spec decision 2: one allow-list, no
+  // second count ratchet). Wave one is the tier it hardened — the theme tokens
+  // and Button. The 58 occurrences the rule finds across the Workout batch and
+  // `charts/flatBarGeometry` belong to waves two and three; enrolling them now
+  // would buy 58 disable comments and no migration.
+  {
+    files: ['src/theme/**/*.{ts,tsx}', 'src/components/ui/button/**/*.{ts,tsx}'],
+    // `color-story-kit` is story chrome that happens not to be named `.stories.tsx`
+    // — exempt on the same grounds as the stories themselves, not as a backlog.
+    ignores: ['**/*.stories.tsx', '**/*.test.{ts,tsx}', 'src/theme/color-story-kit.tsx'],
+    rules: {
+      'titan/no-raw-spacing': 'error',
     },
   },
 

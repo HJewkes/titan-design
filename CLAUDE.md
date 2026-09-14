@@ -189,6 +189,13 @@ type Story = StoryObj<typeof Component>;
 | Interactive | `interactive-{state}` | `hover:bg-interactive-hover`, `focus:ring-interactive-focus` |
 | Result      | `result-{outcome}`    | `text-result-improve`, `text-result-degrade`                 |
 | Data        | `data-{n}`            | `bg-data-1` through `bg-data-10`                             |
+| Spacing     | `{situation}-{level}` | `p-inset-md`, `gap-stack-md`, `px-control-x-md`              |
+| Sizing      | `control-{level}`     | `h-control-md`, `min-h-control-md`                           |
+
+The 4px numeric scale (`p-3`, `gap-2`) stays legal everywhere. Spacing situations are `inset`,
+`squish`, `stack`, `inline`, `control`, `section` and `gutter` — see `Foundations/Spacing` in
+Storybook and TOKENS.md §5. `squish` and `control` carry an explicit axis (`squish-x-md`,
+`control-y-md`) because `px-` and `py-` share one Tailwind namespace.
 
 ### Adding New Tokens
 
@@ -198,6 +205,13 @@ Four files must be updated in order:
 2. `semantic.ts` - Add semantic mapping (both dark and light)
 3. `global.css` - Add CSS custom property (both `:root` and `.light`)
 4. `tailwind.config.js` - Add Tailwind color reference
+
+**Spacing and sizing tokens skip step 3's hand-editing.** Their numbers live once, in `space` /
+`size` in `semantic.ts`; `tokens/spacing-vars.ts` derives the `--space-*` / `--size-*` properties,
+`theme/config.ts` spreads them into both theme maps, and `tailwind.config.js` references the property
+by name only. Add the number in `semantic.ts`, mirror the derived line into both `global.css` blocks,
+and add the key name to `SEMANTIC_SPACING_KEYS`. `spacing-tokens.test.ts` and
+`config.completeness.test.ts` fail if any of the three drifts.
 
 ### Elevation System
 
