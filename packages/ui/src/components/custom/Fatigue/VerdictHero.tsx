@@ -12,10 +12,9 @@
 import { View, Text } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { formatRpe } from '../../../utils/workout-format'
-import { FONT_HEAD, FONT_MONO, TONE_COLOR, STATE_LABEL } from './fatigue-tokens'
+import { useSurfaceMode } from '../../ui/surface'
+import { FONT_HEAD, FONT_MONO, TONE_TOKEN, STATE_LABEL } from './fatigue-tokens'
 import type { FatigueVerdict } from './fatigue-model'
-
-const t = getSemanticColors('dark')
 
 export interface VerdictHeroProps {
   /** Exact (unrounded) RPE estimate; rounded to the conventional 0.5 for display. `null` = warming up. */
@@ -25,7 +24,8 @@ export interface VerdictHeroProps {
 }
 
 export function VerdictHero({ rpe, verdict }: VerdictHeroProps) {
-  const tone = verdict ? TONE_COLOR[verdict.tone] : t['text-tertiary']
+  const t = getSemanticColors(useSurfaceMode())
+  const tone = verdict ? t[TONE_TOKEN[verdict.tone]] : t['text-tertiary']
   const word = verdict ? STATE_LABEL[verdict.state] : 'Warming up'
   return (
     <View style={{ gap: 6 }} testID="verdict-hero">

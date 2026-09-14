@@ -13,11 +13,8 @@
  */
 import { useId } from 'react'
 import { primitiveColors } from '../../../theme/tokens/primitives'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { useOnSurfaceColor } from '../../ui/surface'
 import { alpha } from '../../../utils/colors'
-
-const t = getSemanticColors('dark')
-const PARCH = t['text-primary']
 
 /** A point as `[x_px, magnitude_px]` — magnitude is height off the axis baseline (≥ 0). */
 export type Pt = [number, number]
@@ -63,7 +60,7 @@ export interface GhostBloomProps {
   baseline: number
   /** Grow UP from the baseline (default) or DOWN — the mirrored-dual flip. */
   orientation?: 'up' | 'down'
-  /** Per-ghost stroke colour by index; default fades the primary text token. */
+  /** Per-ghost stroke colour by index; default fades the surface's primary on-surface colour. */
   ghostStroke?: (index: number) => string
   /** Current-line stroke width, px. Default 3.5. */
   lineWidth?: number
@@ -76,9 +73,11 @@ export function GhostBloom({
   tint,
   baseline,
   orientation = 'up',
-  ghostStroke = (i) => alpha(PARCH, 0.1 + i * 0.015),
+  ghostStroke,
   lineWidth = 3.5,
 }: GhostBloomProps) {
+  const parch = useOnSurfaceColor('primary')
+  const stroke = ghostStroke ?? ((i: number) => alpha(parch, 0.1 + i * 0.015))
   const rawId = useId()
   const blurId = `bloom-blur-${rawId.replace(/[^a-zA-Z0-9]/g, '')}`
   const toY = (mag: number) => (orientation === 'down' ? baseline + mag : baseline - mag)
@@ -101,7 +100,7 @@ export function GhostBloom({
           key={i}
           d={d}
           fill="none"
-          stroke={ghostStroke(i)}
+          stroke={stroke(i)}
           strokeWidth={1.5}
           strokeLinejoin="round"
         />

@@ -21,14 +21,13 @@
  */
 import { View } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../ui/surface'
 import { alpha } from '../../../utils/colors'
 import { FONT_UI, ghostLineColor, clamp01 } from './fatigue-tokens'
 import { GhostBand, BAND_H, BAND_GAP } from './GhostBand'
 import type { TempoTuple } from './tempo-pacing'
 import { GhostBloom, type Pt } from './GhostBloom'
 import type { PhaseSegment, RepVelocityCurve } from './fatigue-model'
-
-const t = getSemanticColors('dark')
 
 export interface DualGhostSparkProps {
   /** LEFT device per-rep curves, oldest first (last = current rep) — blooms UP. */
@@ -100,6 +99,7 @@ export function DualGhostSpark({
   showDeviceLabels = true,
   targetTempoSeconds = null,
 }: DualGhostSparkProps) {
+  const t = getSemanticColors(useSurfaceMode())
   const w = width
   const h = height
   const padL = 14

@@ -8,13 +8,11 @@
  * Warming up (`dimensions === null`) shows three neutral dots.
  */
 import { View, Text } from 'react-native'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { StatusDot, type StatusDotVariant } from '../Workout/StatusDot'
 import { Tooltip } from '../../ui/tooltip/Tooltip'
+import { useOnSurfaceColor } from '../../ui/surface'
 import { FONT_MONO } from './fatigue-tokens'
 import type { DimensionTone, FatigueVerdict } from './fatigue-model'
-
-const t = getSemanticColors('dark')
 
 /** Tone → the StatusDot variant (ok=success, warn=warning, alarm=error). */
 const TONE_VARIANT: Record<DimensionTone, StatusDotVariant> = {
@@ -42,6 +40,7 @@ function Light({
 }) {
   const variant: StatusDotVariant = tone ? TONE_VARIANT[tone] : 'neutral'
   const word = tone ? TONE_WORD[tone] : 'warming up'
+  const labelColor = useOnSurfaceColor('secondary')
   return (
     <Tooltip label={`${detail} · ${word}`} placement="bottom">
       <View
@@ -54,7 +53,7 @@ function Light({
             fontSize: 9,
             letterSpacing: 0.6,
             fontFamily: FONT_MONO,
-            color: t['text-secondary'],
+            color: labelColor,
           }}
         >
           {label}

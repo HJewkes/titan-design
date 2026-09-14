@@ -63,8 +63,12 @@ describe('pacingTone', () => {
     expect(pacingTone(2000 + ON_TARGET_MS + 1, 2000)).toBe(PACING_TONE.over)
   })
 
-  it('stays neutral with no target', () => {
-    expect(pacingTone(500, null)).toBe(t['text-primary'])
+  // No target means pacing has no opinion, so the band keeps its own label colour —
+  // which is how the colour stays theme-aware (VW-316). GhostBand.test.tsx pins the
+  // rendered end of this: an unpaced label takes the on-surface primary.
+  it('has no tone with no target', () => {
+    expect(pacingTone(500, null)).toBeNull()
+    expect(pacingTone(500, 0)).toBeNull()
   })
 })
 

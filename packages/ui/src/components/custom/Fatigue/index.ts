@@ -30,7 +30,7 @@ export { VelocityHero, type VelocityHeroProps } from './VelocityHero'
 export {
   ghostLineColor,
   auraForVerdict,
-  TONE_COLOR,
+  TONE_TOKEN,
   STATE_LABEL,
   GRIND_THRESHOLD,
   SILVER,

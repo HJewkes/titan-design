@@ -82,3 +82,24 @@ removes):
 
 `SessionStatePill` keeps its own AW-127 `@deprecated` tag (use `Pill`); it moved
 directory but its export is unchanged.
+
+## Fatigue tokens — `TONE_COLOR` replaced by `TONE_TOKEN` (VW-316)
+
+**Breaking, no alias possible.** `TONE_COLOR` held colours resolved at import
+time, which is exactly the frozen theme `titan/no-frozen-theme` bans — a
+compatibility alias would be a module-scope `getSemanticColors('dark')` call and
+would re-enter the frozen-theme baseline.
+
+| Export                                        | Replacement                                            | Known consumers                                                     |
+| --------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------- |
+| `TONE_COLOR` (`Record<DimensionTone, string>`) | `TONE_TOKEN` (`Record<DimensionTone, ColorToken>`) | `voltras-mcp` `src/dashboard/spa/planner/SessionSummaryPage.tsx:55` |
+
+Migration is one line at the point of use — hold a live palette and index it:
+
+```ts
+const t = getSemanticColors(useSurfaceMode())
+const color = t[TONE_TOKEN[tone]] // was TONE_COLOR[tone]
+```
+
+The three values are `status-success` / `status-warning` / `status-error`, which
+are byte-identical in dark and light, so no rendered colour changes.
