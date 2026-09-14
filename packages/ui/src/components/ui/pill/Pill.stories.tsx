@@ -15,7 +15,7 @@ const meta: Meta<typeof Pill> = {
       control: 'select',
       options: ['neutral', 'brand', 'brand-secondary', 'success', 'warning', 'error', 'info'],
     },
-    size: { control: 'select', options: ['sm', 'md', 'lg'] },
+    size: { control: 'select', options: ['xs', 'sm', 'md', 'lg'] },
     leading: { control: 'select', options: [undefined, 'dot'] },
     rounded: { control: 'boolean' },
     isDisabled: { control: 'boolean' },
@@ -152,6 +152,9 @@ export const AllSizes: Story = {
   render: () => (
     <View className="gap-4">
       <View className="flex-row gap-2 items-center">
+        <Pill size="xs" tone="brand">
+          XS · 4 / 1
+        </Pill>
         <Pill size="sm" tone="brand">
           SM · 8 / 2
         </Pill>
@@ -163,13 +166,10 @@ export const AllSizes: Story = {
         </Pill>
       </View>
       <Typography variant="caption" color="secondary">
-        Three rungs of the shared squish ramp (AW-142). `xs` and `xl` still compile for one release
-        and render as `sm` and `lg`.
+        Four rungs of the shared squish ramp (AW-142). Badge and Chip take the top three; `xs` is
+        Pill&apos;s alone. `xl` still compiles for one release and renders as `lg`.
       </Typography>
       <View className="flex-row gap-2 items-center">
-        <Pill size="xs" tone="neutral">
-          xs → sm
-        </Pill>
         <Pill size="xl" tone="neutral">
           xl → lg
         </Pill>

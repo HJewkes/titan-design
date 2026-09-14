@@ -149,8 +149,11 @@ export const SemanticKeys: Story = {
       </SpecRow>
 
       <SectionTitle>squish — a pill-shaped atom</SectionTitle>
-      <SpecRow name="px-squish-x-* py-squish-y-*" note="x 8/12/16 · y 2/4/6">
+      <SpecRow name="px-squish-x-* py-squish-y-*" note="x 4/8/12/16 · y 1/2/4/6">
         <View className="flex-row items-center gap-inline-lg">
+          <View className="bg-brand-primary-subtle rounded-full px-squish-x-xs py-squish-y-xs">
+            <Text className="text-3xs text-text-primary">xs</Text>
+          </View>
           <View className="bg-brand-primary-subtle rounded-full px-squish-x-sm py-squish-y-sm">
             <Text className="text-2xs text-text-primary">sm</Text>
           </View>
@@ -295,6 +298,7 @@ export const Ratios: Story = {
 // --------------------------------------------------------- 4. the pill ramps
 
 const RAMP = ['sm', 'md', 'lg'] as const
+const PILL_RAMP = ['xs', 'sm', 'md', 'lg'] as const
 
 /**
  * The three atoms as they shipped BEFORE wave two — the classes are literals on
@@ -361,11 +365,11 @@ export const PillRamps: Story = {
         </View>
       ))}
 
-      <SectionTitle>After — one squish ramp: 8/2, 12/4, 16/6</SectionTitle>
+      <SectionTitle>After — one squish ramp: 4/1, 8/2, 12/4, 16/6</SectionTitle>
       <View className="gap-stack-lg">
         <View className="flex-row items-center gap-inline-lg">
           <Label>Pill</Label>
-          {RAMP.map((s) => (
+          {PILL_RAMP.map((s) => (
             <Pill key={s} size={s}>
               {s}
             </Pill>
@@ -389,8 +393,10 @@ export const PillRamps: Story = {
         </View>
       </View>
       <Text className="text-text-secondary text-sm">
-        Pill&apos;s `xs` and `xl` are deprecated aliases for one release — they render as `sm` and
-        `lg`, so a five-rung call site keeps compiling and lands on three rungs.
+        The ramp has four rungs. Badge and Chip take the top three, because neither shipped a
+        capsule that small; `xs` is Pill&apos;s alone, and it stays a real rung because nine in-repo
+        call sites already render one. Only `xl` is deprecated — it renders as `lg` for one release,
+        so a five-rung call site keeps compiling.
       </Text>
     </Page>
   ),

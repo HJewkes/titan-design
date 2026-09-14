@@ -170,15 +170,19 @@ describe('Pill', () => {
 /**
  * Pill's squish geometry, pinned (AW-142 wave two).
  *
- * The three rungs are the shared squish ramp — the same 8/2, 12/4, 16/6 that
- * Badge and Chip now measure. The pixel numbers are spelled out rather than
- * imported: they are what the ramp is FOR, so a token move has to fail here.
+ * Four rungs on the shared ramp. Badge and Chip take the top three; `xs` is
+ * Pill's alone, because nine in-repo call sites already render a 4/1 capsule
+ * and folding them into `sm` would have grown all nine without an edit.
+ *
+ * The pixel numbers are spelled out rather than imported: they are what the
+ * ramp is FOR, so a token move has to fail here.
  */
 describe('Pill geometry resolves to the squish tokens', () => {
   const source = siblingSource(import.meta.url, 'Pill.tsx')
   const classes = (level: string) => sizeClasses(source, 'sizeStyles', level, 'container')
 
   const ramp = [
+    ['xs', ['px-squish-x-xs', 'py-squish-y-xs'], ['4px', '1px']],
     ['sm', ['px-squish-x-sm', 'py-squish-y-sm'], ['8px', '2px']],
     ['md', ['px-squish-x-md', 'py-squish-y-md'], ['12px', '4px']],
     ['lg', ['px-squish-x-lg', 'py-squish-y-lg'], ['16px', '6px']],
@@ -192,20 +196,20 @@ describe('Pill geometry resolves to the squish tokens', () => {
     expect(resolveAll(classes(level))).toEqual([...pixels])
   })
 
-  it('has no rung outside sm/md/lg', () => {
-    expect(source.match(/^\s{2}(xs|xl):/m)).toBeNull()
+  it('has no rung above lg', () => {
+    expect(source.match(/^\s{2}xl:/m)).toBeNull()
   })
 })
 
-describe('Pill deprecated size aliases', () => {
-  it('maps xs onto sm and xl onto lg', () => {
+describe('Pill deprecated size alias', () => {
+  it('maps xl onto lg, and aliases nothing else', () => {
     const source = siblingSource(import.meta.url, 'Pill.tsx')
-    expect(source).toMatch(/sizeAliases[^=]*= \{ xs: 'sm', xl: 'lg' \}/)
+    expect(source).toMatch(/sizeAliases[^=]*= \{ xl: 'lg' \}/)
   })
 
   it('does not warn at runtime — the deprecation is a type, not a console line', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-    render(<Pill size="xs">Legacy</Pill>)
+    render(<Pill size="xl">Legacy</Pill>)
     expect(warn).not.toHaveBeenCalled()
     warn.mockRestore()
   })

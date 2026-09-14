@@ -21,14 +21,14 @@ export type PillColor =
   | 'error'
   | 'warning'
   | 'info'
-/** The three levels Pill ships, one per rung of the unified squish ramp. */
-export type PillSizeLevel = 'sm' | 'md' | 'lg'
+/** The four levels Pill ships, one per rung of the shared squish ramp. */
+export type PillSizeLevel = 'xs' | 'sm' | 'md' | 'lg'
 /**
- * @deprecated `xs` and `xl` are accepted for one release and render as `sm` and
- * `lg`. Pill, Badge and Chip share one squish ramp now (AW-142), which has three
- * rungs; pick the nearest level.
+ * @deprecated `xl` is accepted for one release and renders as `lg`. The squish
+ * ramp tops out at `lg` (AW-142), because nothing in the library or its
+ * consumers shipped a capsule above it.
  */
-export type DeprecatedPillSize = 'xs' | 'xl'
+export type DeprecatedPillSize = 'xl'
 export type PillSize = PillSizeLevel | DeprecatedPillSize
 
 export interface PillProps extends ViewProps {
@@ -40,7 +40,7 @@ export interface PillProps extends ViewProps {
   tone?: PillTone
   /** @deprecated Use `tone` — `color` maps onto it and is kept for call-site compatibility. */
   color?: PillColor
-  /** Size. `xs` and `xl` are deprecated aliases for `sm` and `lg`. */
+  /** Size. `xl` is a deprecated alias for `lg`. */
   size?: PillSize
   /** Fully rounded (default true) or slight radius */
   rounded?: boolean
@@ -131,6 +131,7 @@ const dotToneStyles: Record<PillTone, string> = {
 // capsule at all and pushed anything between the two down to 10px — that is how
 // MuscleGroupChip lost 7px of height. `md` is the 12px rung now.
 const sizeStyles: Record<PillSizeLevel, { container: string; text: string }> = {
+  xs: { container: 'px-squish-x-xs py-squish-y-xs', text: 'text-3xs' },
   sm: { container: 'px-squish-x-sm py-squish-y-sm', text: 'text-2xs' },
   md: { container: 'px-squish-x-md py-squish-y-md', text: 'text-xs' },
   lg: { container: 'px-squish-x-lg py-squish-y-lg', text: 'text-sm' },
@@ -138,7 +139,7 @@ const sizeStyles: Record<PillSizeLevel, { container: string; text: string }> = {
 
 // One release of grace, and silent: a runtime warning would fire on every render
 // of call sites the deprecation notice already names.
-const sizeAliases: Record<DeprecatedPillSize, PillSizeLevel> = { xs: 'sm', xl: 'lg' }
+const sizeAliases: Record<DeprecatedPillSize, PillSizeLevel> = { xl: 'lg' }
 
 function resolveSize(size: PillSize = 'sm'): PillSizeLevel {
   return sizeAliases[size as DeprecatedPillSize] ?? (size as PillSizeLevel)
