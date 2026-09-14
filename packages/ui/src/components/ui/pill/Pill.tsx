@@ -69,14 +69,17 @@ const colorToTone: Record<PillColor, PillTone> = {
 }
 
 const toneStyles: Record<PillVariant, Record<PillTone, string>> = {
+  // Fill from `*-solid`, label from `on-*`, never the base tone token: the base is
+  // tuned for borders and text, and `brand-secondary` / `status-error` are dark enough
+  // there that no label reads on them (AW-141). Every solid tone now clears AA.
   solid: {
     neutral: 'bg-hairline-strong border-transparent text-text-inverse',
-    brand: 'bg-brand-primary border-transparent text-text-inverse',
-    'brand-secondary': 'bg-brand-secondary border-transparent text-text-inverse',
-    success: 'bg-status-success border-transparent text-text-inverse',
-    warning: 'bg-status-warning border-transparent text-text-inverse',
-    error: 'bg-status-error border-transparent text-text-inverse',
-    info: 'bg-status-info border-transparent text-text-inverse',
+    brand: 'bg-brand-primary-solid border-transparent text-on-brand-primary',
+    'brand-secondary': 'bg-brand-secondary-solid border-transparent text-on-brand-secondary',
+    success: 'bg-status-success-solid border-transparent text-on-status-success',
+    warning: 'bg-status-warning-solid border-transparent text-on-status-warning',
+    error: 'bg-status-error-solid border-transparent text-on-status-error',
+    info: 'bg-status-info-solid border-transparent text-on-status-info',
   },
   subtle: {
     // Alpha-white rather than a ramp step: a pill sits on whatever plane its

@@ -91,6 +91,7 @@ module.exports = {
             subtle: 'var(--color-brand-primary-subtle)',
             muted: 'var(--color-brand-primary-muted)',
             strong: 'var(--color-brand-primary-strong)',
+            solid: 'var(--color-brand-primary-solid)',
             hover: 'var(--color-brand-primary-hover)',
             active: 'var(--color-brand-primary-active)',
           },
@@ -101,6 +102,7 @@ module.exports = {
             subtle: 'var(--color-brand-secondary-subtle)',
             muted: 'var(--color-brand-secondary-muted)',
             strong: 'var(--color-brand-secondary-strong)',
+            solid: 'var(--color-brand-secondary-solid)',
             hover: 'var(--color-brand-secondary-hover)',
             active: 'var(--color-brand-secondary-active)',
           },
@@ -126,6 +128,7 @@ module.exports = {
             subtle: 'var(--color-status-success-subtle)',
             muted: 'var(--color-status-success-muted)',
             strong: 'var(--color-status-success-strong)',
+            solid: 'var(--color-status-success-solid)',
           },
           // Live-session accent — own role, decoupled from success
           live: {
@@ -139,6 +142,7 @@ module.exports = {
             subtle: 'var(--color-status-error-subtle)',
             muted: 'var(--color-status-error-muted)',
             strong: 'var(--color-status-error-strong)',
+            solid: 'var(--color-status-error-solid)',
           },
           'error-vivid': {
             DEFAULT: 'var(--color-status-error-vivid)',
@@ -155,6 +159,7 @@ module.exports = {
             subtle: 'var(--color-status-warning-subtle)',
             muted: 'var(--color-status-warning-muted)',
             strong: 'var(--color-status-warning-strong)',
+            solid: 'var(--color-status-warning-solid)',
           },
           info: {
             DEFAULT: 'var(--color-status-info)',
@@ -163,6 +168,7 @@ module.exports = {
             subtle: 'var(--color-status-info-subtle)',
             muted: 'var(--color-status-info-muted)',
             strong: 'var(--color-status-info-strong)',
+            solid: 'var(--color-status-info-solid)',
           },
         },
         // Text on status backgrounds. `-subtle` is text ON the `-subtle` fill.
