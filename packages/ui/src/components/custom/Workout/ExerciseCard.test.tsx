@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
+import { siblingSource, spacingClassesOn, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ExerciseCard } from './ExerciseCard'
@@ -372,5 +373,23 @@ describe('ExerciseCard', () => {
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
+  })
+})
+
+/**
+ * ExerciseCard's geometry, pinned (AW-142); pixels unchanged. The superset
+ * hairline moved from a returned `marginBottom` object to a class, so the
+ * heading it wraps now takes a `className` alongside its `style`.
+ */
+describe('ExerciseCard geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'ExerciseCard.tsx')
+
+  it('keeps the expanded body’s bottom inset', () => {
+    expect(resolveAll(spacingClassesOn(source, 'exercise-card-body'))).toEqual(['6px'])
+  })
+
+  it('keeps the superset hairline', () => {
+    expect(source).toContain("'mb-0.5'")
+    expect(resolveAll(['mb-0.5'])).toEqual(['2px'])
   })
 })

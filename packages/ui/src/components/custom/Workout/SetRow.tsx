@@ -78,11 +78,12 @@ const CELL_CLASS = 'font-semibold leading-[normal]'
 // `brand-primary`, so the chip takes the brand role and the `-subtle` rung its 0.12 wash
 // was already reaching for. The wash's own base (255,165,2) is off the orange ramp.
 const typeBadgeStyle = {
-  paddingVertical: 1,
-  paddingHorizontal: 5,
   borderRadius: 3,
   overflow: 'hidden' as const,
 }
+
+// 5px horizontal was off the 4px grain; the chip is the squish ramp's xs rung.
+const TYPE_BADGE_CLASS = 'text-2xs leading-[normal] px-squish-x-xs py-squish-y-xs'
 
 /** Reps to show: recorded for a `done` set, else the prescribed target. */
 function displayReps(set: SetRowProps): number {
@@ -172,7 +173,7 @@ export function SetRow(set: SetRowProps) {
 
   return (
     <View
-      style={{ paddingVertical: 6, paddingHorizontal: 8 }}
+      className="px-inset-sm py-1.5"
       accessibilityLabel={accessibilityLabel(set)}
       testID="set-row"
     >
@@ -182,7 +183,7 @@ export function SetRow(set: SetRowProps) {
             <Typography
               variant="boldLabel"
               color="inherit"
-              className="text-2xs leading-[normal]"
+              className={TYPE_BADGE_CLASS}
               style={{
                 ...typeBadgeStyle,
                 color: resolveColor('brand-primary'),

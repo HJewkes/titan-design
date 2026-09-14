@@ -1,4 +1,10 @@
 import { describe, it, expect, vi } from 'vitest'
+import {
+  siblingSource,
+  spacingClassesIn,
+  spacingClassesOn,
+  resolveAll,
+} from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { WeekRow } from './WeekRow'
@@ -116,5 +122,25 @@ describe('WeekRow', () => {
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
+  })
+})
+
+/**
+ * WeekRow's geometry, pinned (AW-142). Every pixel is what it shipped inline.
+ * 10px vertical and the 6px pill gap have no semantic rung, so the numeric
+ * scale carries them; the row inset and the two cluster gaps do.
+ */
+describe('WeekRow geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'WeekRow.tsx')
+
+  it('keeps the row inset and its column gap', () => {
+    const classes = spacingClassesIn(source, 'WeekRow')
+    expect(classes).toEqual(['px-inset-md', 'py-2.5', 'gap-inline-lg'])
+    expect(resolveAll(classes)).toEqual(['12px', '10px', '12px'])
+  })
+
+  it('keeps the week-number and pill clusters', () => {
+    expect(resolveAll(spacingClassesOn(source, 'week-row-number'))).toEqual(['4px'])
+    expect(resolveAll(spacingClassesOn(source, 'week-row-pills'))).toEqual(['6px'])
   })
 })

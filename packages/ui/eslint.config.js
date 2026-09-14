@@ -363,6 +363,10 @@ module.exports = tseslint.config(
   // off, and a selector cannot read their `// optical:` reason, so enrolling
   // there would buy two disable comments. That block also gates `rounded-[…]`
   // and `text-[…]`, which are AW-145 and AW-134, not this wave.
+  //
+  // Wave three takes custom/Workout file by file, cards and rows first, for the
+  // same reason batches B1-B3 above did: the family is ~45 files and one PR that
+  // touched all of them could not be reviewed.
   {
     files: [
       'src/theme/**/*.{ts,tsx}',
@@ -386,10 +390,26 @@ module.exports = tseslint.config(
       'src/components/custom/Workout/TempoDisplay.tsx',
       'src/components/custom/Workout/WeightBadge.tsx',
       'src/components/custom/Workout/WorkoutPill.tsx',
+      // Wave three, cards and rows (AW-142).
+      'src/components/custom/Workout/BaseBadge.tsx',
+      'src/components/custom/Workout/ExerciseCard.tsx',
+      'src/components/custom/Workout/ExerciseCardHeading.tsx',
+      'src/components/custom/Workout/MesoCard.tsx',
+      'src/components/custom/Workout/MesoStatusCard.tsx',
+      'src/components/custom/Workout/SetRow.tsx',
+      'src/components/custom/Workout/WeekRow.tsx',
+      'src/components/custom/Workout/WorkoutCard.tsx',
     ],
     // `color-story-kit` is story chrome that happens not to be named `.stories.tsx`
     // — exempt on the same grounds as the stories themselves, not as a backlog.
-    ignores: ['**/*.stories.tsx', '**/*.test.{ts,tsx}', 'src/theme/color-story-kit.tsx'],
+    // `setHeadingKit` is the same category: throwaway S3 rail R&D on raw `<div>`s
+    // whose every importer is a story under `lab/explorations`.
+    ignores: [
+      '**/*.stories.tsx',
+      '**/*.test.{ts,tsx}',
+      'src/theme/color-story-kit.tsx',
+      'src/components/custom/Workout/setHeadingKit.tsx',
+    ],
     rules: {
       'titan/no-raw-spacing': 'error',
     },

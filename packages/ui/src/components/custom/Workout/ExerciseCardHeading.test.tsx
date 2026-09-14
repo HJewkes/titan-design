@@ -1,4 +1,10 @@
 import { describe, it, expect, vi } from 'vitest'
+import {
+  siblingSource,
+  sizeClasses,
+  spacingClassesOn,
+  resolveAll,
+} from '../../../test/spacing-resolver'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
@@ -269,5 +275,34 @@ describe('ExerciseCardHeading', () => {
       render(<ExerciseCardHeading {...baseProps} onPress={vi.fn()} />)
       expect(screen.getByLabelText('Cable Chest Press, 3×10 @ 90 lbs')).toBeInTheDocument()
     })
+  })
+})
+
+/**
+ * The DENSITY map's geometry, pinned (AW-142). It was a numeric inset table —
+ * a density token in all but name. `rail` was 9px vertical, off the 4px grain
+ * with no stated reason; `inset-sm` puts it on DataRow's 8/12 row rung. 14px
+ * horizontal has no semantic rung and stays numeric.
+ */
+describe('ExerciseCardHeading density resolves to the inset tokens', () => {
+  const source = siblingSource(import.meta.url, 'ExerciseCardHeading.tsx')
+
+  const shipped = [
+    ['rail', ['py-inset-sm', 'px-inset-md'], ['8px', '12px']],
+    ['compact', ['py-inset-md', 'px-3.5'], ['12px', '14px']],
+    ['upcoming', ['py-inset-md', 'px-3.5'], ['12px', '14px']],
+  ] as const
+
+  it.each(shipped)('%s reads the inset keys', (level, classes, pixels) => {
+    expect(sizeClasses(source, 'DENSITY', level, 'padding')).toEqual([...classes])
+    expect(resolveAll([...classes])).toEqual([...pixels])
+  })
+
+  // The strip offset was 7px, traced from the S3 session-rail specimen (#92),
+  // which states no reason for sitting 1px under the rung. Normalised on the
+  // operator's call rather than kept as an optical nudge.
+  it('puts the strip offset on the stack ramp', () => {
+    expect(spacingClassesOn(source, 'exercise-card-strip')).toEqual(['mt-stack-md'])
+    expect(resolveAll(['mt-stack-md'])).toEqual(['8px'])
   })
 })

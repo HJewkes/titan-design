@@ -1,4 +1,10 @@
 import { describe, it, expect, vi } from 'vitest'
+import {
+  siblingSource,
+  sizeClasses,
+  spacingClassesIn,
+  resolveAll,
+} from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Text, View } from 'react-native'
@@ -123,5 +129,33 @@ describe('BaseBadge', () => {
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
+  })
+})
+
+/**
+ * BaseBadge's geometry, pinned (AW-142).
+ *
+ * The pixels below are the ones it shipped as `paddingH`/`paddingV` numbers on
+ * `baseBadgeSizeConfig`, except the icon gap: 3px became `inline-sm` (4) so the
+ * deprecated badge matches Pill, the primitive replacing it (`Pill.tsx` `gap-1`).
+ * `spacing-resolver` explains why the classes come from the source.
+ */
+describe('BaseBadge geometry resolves to the squish ramp', () => {
+  const source = siblingSource(import.meta.url, 'BaseBadge.tsx')
+
+  const shipped = [
+    ['sm', ['px-1.5', 'py-squish-y-sm'], ['6px', '2px']],
+    ['md', ['px-squish-x-sm', 'py-squish-y-sm'], ['8px', '2px']],
+    ['lg', ['px-2.5', 'py-squish-y-md'], ['10px', '4px']],
+  ] as const
+
+  it.each(shipped)('%s keeps its inset', (level, classes, pixels) => {
+    expect(sizeClasses(source, 'sizePadding', level)).toEqual([...classes])
+    expect(resolveAll([...classes])).toEqual([...pixels])
+  })
+
+  it('takes the icon gap off the inline ramp, at Pill 4px', () => {
+    expect(spacingClassesIn(source, 'BaseBadge')).toEqual(['gap-inline-sm'])
+    expect(resolveAll(['gap-inline-sm'])).toEqual(['4px'])
   })
 })

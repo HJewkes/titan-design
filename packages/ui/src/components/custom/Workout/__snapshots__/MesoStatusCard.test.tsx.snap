@@ -29,7 +29,6 @@ exports[`MesoStatusCard > rendering > does not change the default (success, no b
   <div
     class="css-view-175oi2r"
     data-testid="meso-status-card-body"
-    style="padding: 14px 14px 14px 14px; gap: 14px;"
   >
     <div
       class="css-view-175oi2r"
@@ -37,7 +36,6 @@ exports[`MesoStatusCard > rendering > does not change the default (success, no b
     >
       <div
         class="css-view-175oi2r"
-        style="gap: 8px;"
       >
         <div
           class="css-text-146c3p1"
@@ -50,7 +48,7 @@ exports[`MesoStatusCard > rendering > does not change the default (success, no b
         <div
           class="css-view-175oi2r"
           data-testid="meso-status-card-badge"
-          style="gap: 5px; padding: 3px 8px 3px 8px; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; background-color: rgba(46, 213, 115, 0.15); border-top-color: rgba(46, 213, 115, 0.3); border-right-color: rgba(46, 213, 115, 0.3); border-bottom-color: rgba(46, 213, 115, 0.3); border-left-color: rgba(46, 213, 115, 0.3);"
+          style="border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; background-color: rgba(46, 213, 115, 0.15); border-top-color: rgba(46, 213, 115, 0.3); border-right-color: rgba(46, 213, 115, 0.3); border-bottom-color: rgba(46, 213, 115, 0.3); border-left-color: rgba(46, 213, 115, 0.3);"
         >
           <div
             class="css-view-175oi2r"
@@ -80,7 +78,7 @@ exports[`MesoStatusCard > rendering > does not change the default (success, no b
         class="css-text-146c3p1"
         data-testid="meso-status-card-subtitle"
         dir="auto"
-        style="margin-top: 4px; font-size: 12px; font-family: Inter, sans-serif;"
+        style="font-size: 12px; font-family: Inter, sans-serif;"
       >
         Week 6 of 8 · Upper/Lower
       </div>
@@ -88,7 +86,6 @@ exports[`MesoStatusCard > rendering > does not change the default (success, no b
     <div
       class="css-view-175oi2r"
       data-testid="meso-status-card-metrics"
-      style="gap: 8px;"
     >
       <div
         class="css-view-175oi2r"
@@ -105,7 +102,7 @@ exports[`MesoStatusCard > rendering > does not change the default (success, no b
         <div
           class="css-text-146c3p1"
           dir="auto"
-          style="margin-top: 2px; font-size: 13px; font-family: Inter, sans-serif; font-weight: 600;"
+          style="font-size: 13px; font-family: Inter, sans-serif; font-weight: 600;"
         >
           3×8 @ RPE 8
         </div>
@@ -125,7 +122,7 @@ exports[`MesoStatusCard > rendering > does not change the default (success, no b
         <div
           class="css-text-146c3p1"
           dir="auto"
-          style="margin-top: 2px; font-size: 13px; font-family: Inter, sans-serif; font-weight: 600;"
+          style="font-size: 13px; font-family: Inter, sans-serif; font-weight: 600;"
         >
           3×8 @ 185 lbs
         </div>
@@ -145,7 +142,7 @@ exports[`MesoStatusCard > rendering > does not change the default (success, no b
         <div
           class="css-text-146c3p1"
           dir="auto"
-          style="margin-top: 2px; font-size: 13px; font-family: Inter, sans-serif; font-weight: 600;"
+          style="font-size: 13px; font-family: Inter, sans-serif; font-weight: 600;"
         >
           +12% vs wk 1
         </div>
@@ -165,7 +162,7 @@ exports[`MesoStatusCard > rendering > does not change the default (success, no b
         <div
           class="css-text-146c3p1"
           dir="auto"
-          style="margin-top: 2px; font-size: 13px; font-family: Inter, sans-serif; font-weight: 600;"
+          style="font-size: 13px; font-family: Inter, sans-serif; font-weight: 600;"
         >
           232 lbs
         </div>
@@ -174,7 +171,6 @@ exports[`MesoStatusCard > rendering > does not change the default (success, no b
     <div
       class="css-view-175oi2r"
       data-testid="meso-status-card-gauges"
-      style="gap: 12px;"
     >
       <div
         aria-label="Intensity: 68%"
@@ -184,7 +180,6 @@ exports[`MesoStatusCard > rendering > does not change the default (success, no b
         class="css-view-175oi2r"
         data-testid="meso-status-card-gauge"
         role="progressbar"
-        style="gap: 6px;"
       >
         <div
           class="css-view-175oi2r"
@@ -228,7 +223,6 @@ exports[`MesoStatusCard > rendering > does not change the default (success, no b
         class="css-view-175oi2r"
         data-testid="meso-status-card-gauge"
         role="progressbar"
-        style="gap: 6px;"
       >
         <div
           class="css-view-175oi2r"
@@ -268,7 +262,7 @@ exports[`MesoStatusCard > rendering > does not change the default (success, no b
     <div
       class="css-view-175oi2r"
       data-testid="meso-status-card-coaching"
-      style="background-color: rgba(249, 180, 21, 0.06); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-color: rgba(249, 180, 21, 0.15); border-right-color: rgba(249, 180, 21, 0.15); border-bottom-color: rgba(249, 180, 21, 0.15); border-left-color: rgba(249, 180, 21, 0.15); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; padding: 10px 12px 10px 12px;"
+      style="background-color: rgba(249, 180, 21, 0.06); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-color: rgba(249, 180, 21, 0.15); border-right-color: rgba(249, 180, 21, 0.15); border-bottom-color: rgba(249, 180, 21, 0.15); border-left-color: rgba(249, 180, 21, 0.15); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
     >
       <div
         class="css-text-146c3p1"
@@ -288,7 +282,7 @@ exports[`MesoStatusCard > rendering > does not change the default (success, no b
     <div
       class="css-view-175oi2r"
       data-testid="meso-status-card-next-target"
-      style="gap: 8px; background-color: rgba(46, 213, 115, 0.06); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-color: rgba(46, 213, 115, 0.2); border-right-color: rgba(46, 213, 115, 0.2); border-bottom-color: rgba(46, 213, 115, 0.2); border-left-color: rgba(46, 213, 115, 0.2); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; padding: 10px 12px 10px 12px;"
+      style="background-color: rgba(46, 213, 115, 0.06); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-color: rgba(46, 213, 115, 0.2); border-right-color: rgba(46, 213, 115, 0.2); border-bottom-color: rgba(46, 213, 115, 0.2); border-left-color: rgba(46, 213, 115, 0.2); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
     >
       <div
         class="css-text-146c3p1"

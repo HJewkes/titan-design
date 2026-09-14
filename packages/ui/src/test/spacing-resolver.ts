@@ -106,8 +106,44 @@ export function sizeClasses(
   return value.split(' ')
 }
 
+/** The classes a module-scope string constant holds, split on spaces. */
+export function constClasses(source: string, constName: string): string[] {
+  const value = source.match(new RegExp(`const ${constName}\\s*=\\s*'(.+?)'`))?.[1]
+  if (value === undefined) throw new Error(`no string const ${constName} in source`)
+  return value.split(/\s+/)
+}
+
 /** A class naming a semantic key rather than a step of the numeric scale. */
 const SEMANTIC_CLASS = /-(inset|squish|stack|inline|control|section|gutter)-/
+
+/** Drop the non-spacing classes; throw on a semantic key that does not resolve. */
+function spacingOnly(classNames: string[], where: string): string[] {
+  return classNames.filter((className) => {
+    const resolved = resolvePx(className)
+    if (resolved === undefined && SEMANTIC_CLASS.test(className)) {
+      throw new Error(`${where}: '${className}' is not a spacing key`)
+    }
+    return resolved !== undefined
+  })
+}
+
+/**
+ * The spacing classes on the element carrying `testID`, in source order.
+ *
+ * `spacingClassesIn` reads the FIRST className in a function, which is the root
+ * and nothing else. A component whose geometry lives on an inner element needs
+ * to name that element, and the testID it already renders for is the one handle
+ * that is stable across a refactor.
+ */
+export function spacingClassesOn(source: string, testId: string): string[] {
+  const element = source.match(
+    new RegExp(
+      `className="([^"]+)"[^<>]*testID="${testId}"|testID="${testId}"[^<>]*className="([^"]+)"`
+    )
+  )
+  if (!element) throw new Error(`no literal className on testID="${testId}"`)
+  return spacingOnly((element[1] ?? element[2]).split(/\s+/), `testID="${testId}"`)
+}
 
 /**
  * The spacing classes on the first `className` inside the named function,
@@ -120,13 +156,7 @@ export function spacingClassesIn(source: string, functionName: string): string[]
   if (start === -1) throw new Error(`no function ${functionName} in source`)
   const literal = source.slice(start).match(/className=(?:\{cn\(\s*)?["'`]([^"'`]+)["'`]/)
   if (!literal) throw new Error(`no className literal in ${functionName}`)
-  return literal[1].split(/\s+/).filter((className) => {
-    const resolved = resolvePx(className)
-    if (resolved === undefined && SEMANTIC_CLASS.test(className)) {
-      throw new Error(`${functionName}: '${className}' is not a spacing key`)
-    }
-    return resolved !== undefined
-  })
+  return spacingOnly(literal[1].split(/\s+/), functionName)
 }
 
 /**

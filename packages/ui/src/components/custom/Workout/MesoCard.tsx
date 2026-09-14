@@ -123,11 +123,8 @@ export function MesoCard({
   })
 
   const header = (
-    <View
-      style={{ paddingHorizontal: 14, paddingTop: 12, paddingBottom: 10 }}
-      testID="meso-card-body"
-    >
-      <View className="flex-row items-center" style={{ gap: 8 }} testID="meso-card-header">
+    <View className="px-3.5 pt-inset-md pb-2.5" testID="meso-card-body">
+      <View className="flex-row items-center gap-inline-md" testID="meso-card-header">
         <Text
           className="text-text-primary"
           style={{
@@ -145,9 +142,8 @@ export function MesoCard({
       </View>
 
       <Text
-        className="text-text-secondary"
+        className="text-text-secondary mt-stack-sm"
         style={{
-          marginTop: 4,
           fontSize: 12,
           fontFamily: 'Inter, sans-serif',
         }}
@@ -158,8 +154,9 @@ export function MesoCard({
 
       {volumeHeatmap && volumeHeatmap.length > 0 && (
         <View
-          className="flex-row items-center"
-          style={{ marginTop: 10, gap: 3 }}
+          className="flex-row items-center mt-2.5"
+          // optical: hairline between 8px heatmap segments; 4px reads as separate bars.
+          style={{ gap: 3 }}
           accessibilityElementsHidden
           testID="meso-card-heatmap"
         >

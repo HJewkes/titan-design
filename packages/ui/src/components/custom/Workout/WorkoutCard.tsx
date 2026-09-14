@@ -6,6 +6,7 @@ import { MuscleGroupChip } from './MuscleGroupChip'
 import { landmarkZoneToStatus, type VolumeLandmarkZone } from './muscleTaxonomy'
 import { Typography } from '../Typography'
 import { resolveColor } from '../../../theme/resolve-color'
+import { space } from '../../../theme/tokens/semantic'
 import { formatWorkoutStats } from '../../../utils/workout-format'
 
 export type WorkoutStatus = 'completed' | 'today' | 'upcoming'
@@ -95,7 +96,7 @@ export function WorkoutCard({
   const isToday = status === 'today'
 
   const summary = (
-    <View style={{ padding: 14 }} testID="workout-card-body">
+    <View className="p-3.5" testID="workout-card-body">
       <View className="flex-row items-center" testID="workout-card-header">
         {/* The card name was 15px/700 Space Grotesk — off the type scale between
             `sm` and `base`. `h6` carries the heading face; `base` is the step up. */}
@@ -132,8 +133,10 @@ export function WorkoutCard({
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: 5 }}
-          style={{ marginTop: 8 }}
+          // NativeWind has no `contentContainerClassName`, so the chip gap reads
+          // the same token through the JS export.
+          contentContainerStyle={{ gap: space.inline.sm }}
+          className="mt-stack-md"
           testID="workout-card-muscle-groups"
         >
           {muscleGroups.map((muscle) => (
@@ -181,10 +184,7 @@ export function WorkoutCard({
       )}
 
       {expanded && exercises && exercises.length > 0 && (
-        <View
-          style={{ paddingHorizontal: 8, paddingBottom: 8, gap: 6 }}
-          testID="workout-card-exercises"
-        >
+        <View className="px-inset-sm pb-inset-sm gap-1.5" testID="workout-card-exercises">
           {exercises.map((exercise, i) => (
             <ExerciseCard key={i} {...exercise} />
           ))}

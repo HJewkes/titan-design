@@ -8,6 +8,7 @@ import { useHoverState } from '../../ui/tooltip'
 import { ExerciseHeading, exerciseHeadingLabel, type ExerciseHeadingProps } from './ExerciseHeading'
 import { SetStrip, type SetStripSet } from './SetStrip'
 import { exerciseRowStateColor } from './exerciseRowState'
+import { cn } from '../../../utils/cn'
 
 /**
  * How much room the row gets, and therefore which shape it takes:
@@ -18,8 +19,8 @@ import { exerciseRowStateColor } from './exerciseRowState'
 export type ExerciseRowDensity = 'rail' | 'compact' | 'upcoming'
 
 interface DensitySpec {
-  paddingVertical: number
-  paddingHorizontal: number
+  /** The row's own inset, as classes (AW-142). */
+  padding: string
   layout: 'stacked' | 'inline'
   dimOpacity: number
   dimByDefault: boolean
@@ -29,26 +30,25 @@ interface DensitySpec {
 
 // All three densities dim to ONE depth (VW-276). They used to differ — rail/compact 0.55
 // against the card's 0.60 — only because they were traced from two different specimens.
+// `rail` was 9px vertical, off the 4px grain with no stated reason; `inset-sm`
+// puts it on DataRow's 8/12 row rung. 14px horizontal has no semantic rung.
 const DENSITY: Record<ExerciseRowDensity, DensitySpec> = {
   rail: {
-    paddingVertical: 9,
-    paddingHorizontal: 12,
+    padding: 'py-inset-sm px-inset-md',
     layout: 'stacked',
     dimOpacity: primitiveOpacity.dim,
     dimByDefault: false,
     mutedPrescription: false,
   },
   compact: {
-    paddingVertical: 12,
-    paddingHorizontal: 14,
+    padding: 'py-inset-md px-3.5',
     layout: 'inline',
     dimOpacity: primitiveOpacity.dim,
     dimByDefault: false,
     mutedPrescription: true,
   },
   upcoming: {
-    paddingVertical: 12,
-    paddingHorizontal: 14,
+    padding: 'py-inset-md px-3.5',
     layout: 'inline',
     dimOpacity: primitiveOpacity.dim,
     dimByDefault: true,
@@ -65,8 +65,10 @@ export type ExerciseCardHeadingProps = ExerciseHeadingProps & {
   stripHeight?: number
   /** The row the user has chosen — a persistent wash, distinct from transient hover. */
   isSelected?: boolean
-  /** Root style, for the chrome a card wraps the row in (superset radius, margins). */
+  /** Root style, for the chrome a card wraps the row in (superset radius). */
   style?: StyleProp<ViewStyle>
+  /** Root classes, for the chrome a card wraps the row in (superset gap). */
+  className?: string
   /** Root testID. Default "exercise-card"; override when nested inside another card. */
   testID?: string
 }
@@ -136,6 +138,7 @@ export function ExerciseCardHeading(props: ExerciseCardHeadingProps) {
     isLive = false,
     testID = 'exercise-card',
     style,
+    className,
   } = props
   const spec = DENSITY[density]
   const { hoverProps, pressed, hovered, headingHandlers } = useRowInteraction()
@@ -159,12 +162,9 @@ export function ExerciseCardHeading(props: ExerciseCardHeadingProps) {
     <Root
       {...hoverProps}
       {...rootPress}
+      className={cn(spec.padding, className)}
       style={[
-        {
-          paddingVertical: spec.paddingVertical,
-          paddingHorizontal: spec.paddingHorizontal,
-          opacity: (dimmed ?? spec.dimByDefault) ? spec.dimOpacity : 1,
-        },
+        { opacity: (dimmed ?? spec.dimByDefault) ? spec.dimOpacity : 1 },
         wash ? { backgroundColor: wash } : null,
         style,
       ]}
@@ -184,7 +184,7 @@ export function ExerciseCardHeading(props: ExerciseCardHeadingProps) {
       />
 
       {setStates.length > 0 && (
-        <View style={{ marginTop: 7 }} testID="exercise-card-strip">
+        <View className="mt-stack-md" testID="exercise-card-strip">
           <SetStrip sets={setStates} height={stripHeight} />
         </View>
       )}
