@@ -85,10 +85,22 @@ describe('the chip dot reads the same diverging scale as the figure', () => {
     })
   }
 
-  it('renders the dot with that hex', () => {
-    const { getByTestId } = render(<MuscleGroupChip name="Quads" volumeStatus="approaching" />)
-    expect(getByTestId('muscle-group-chip-dot')).toHaveStyle({ backgroundColor: '#F9B415' })
-  })
+  // The rendered dot, status by status. These are the hexes the Layer-1 chip
+  // baselines depict; a stale baseline is a colour mismatch against this table.
+  const RENDERED_DOT: Array<[VolumeStatus, string]> = [
+    ['behind', '#2196F3'],
+    ['ontrack', '#22D3EE'],
+    ['target', '#58F69E'],
+    ['approaching', '#F9B415'],
+    ['over', '#D14343'],
+  ]
+
+  for (const [status, hex] of RENDERED_DOT) {
+    it(`renders the ${status} dot as ${hex}`, () => {
+      const { getByTestId } = render(<MuscleGroupChip name="Quads" volumeStatus={status} />)
+      expect(getByTestId('muscle-group-chip-dot')).toHaveStyle({ backgroundColor: hex })
+    })
+  }
 
   it('renders an untrained dot in the muted text role, not on the scale', () => {
     const { getByTestId } = render(<MuscleGroupChip name="Rear Delts" volumeStatus="untrained" />)
