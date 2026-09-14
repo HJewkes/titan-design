@@ -96,3 +96,26 @@ export function sizeClasses(
   if (value === undefined) throw new Error(`no ${field ?? 'string'} value at ${constName}.${level}`)
   return value.split(' ')
 }
+
+/** A class naming a semantic key rather than a step of the numeric scale. */
+const SEMANTIC_CLASS = /-(inset|squish|stack|inline|control|section|gutter)-/
+
+/**
+ * The spacing classes on the first `className` inside the named function,
+ * in source order. Non-spacing classes (`flex-row`, `rounded-lg`) drop out; a
+ * semantic class that fails to resolve throws rather than dropping out, so a
+ * typo cannot pass as "no geometry here".
+ */
+export function spacingClassesIn(source: string, functionName: string): string[] {
+  const start = source.indexOf(`function ${functionName}(`)
+  if (start === -1) throw new Error(`no function ${functionName} in source`)
+  const literal = source.slice(start).match(/className=(?:\{cn\(\s*)?["'`]([^"'`]+)["'`]/)
+  if (!literal) throw new Error(`no className literal in ${functionName}`)
+  return literal[1].split(/\s+/).filter((className) => {
+    const resolved = resolvePx(className)
+    if (resolved === undefined && SEMANTIC_CLASS.test(className)) {
+      throw new Error(`${functionName}: '${className}' is not a spacing key`)
+    }
+    return resolved !== undefined
+  })
+}
