@@ -1,5 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
+import { cn } from '../../../utils/cn'
 import { MuscleGroupChip } from './MuscleGroupChip'
 import { MuscleGroup, MUSCLE_DISPLAY_NAMES, type VolumeStatus } from './muscleTaxonomy'
 
@@ -25,7 +26,9 @@ export interface MuscleStripProps extends ViewProps {
  *
  * Wrap is `flexWrap` via `style` (RNW drops Tailwind flex classNames), so the
  * strip reads as one or two rows depending on the container's width — phone
- * width wraps to several rows, wall width fits one or two.
+ * width wraps to several rows, wall width fits one or two. The gap between
+ * chips is `gap-inline-md` in `className` — spacing, unlike flex layout,
+ * survives as a Tailwind className.
  *
  * @example
  * <MuscleStrip
@@ -36,8 +39,8 @@ export interface MuscleStripProps extends ViewProps {
 export function MuscleStrip({ data, onMusclePress, className, style, ...props }: MuscleStripProps) {
   return (
     <View
-      style={[{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }, style]}
-      className={className}
+      style={[{ flexDirection: 'row', flexWrap: 'wrap' }, style]}
+      className={cn('gap-inline-md', className)}
       testID="muscle-strip"
       {...props}
     >
