@@ -349,12 +349,14 @@ module.exports = tseslint.config(
   // two more selectors, since a selector cannot read comments.
   //
   // Enrolled per WAVE, never ahead of one (spec decision 2: one allow-list, no
-  // second count ratchet). Wave one is the tier it hardened — the theme tokens
-  // and Button. The 58 occurrences the rule finds across the Workout batch and
-  // `charts/flatBarGeometry` belong to waves two and three; enrolling them now
-  // would buy 58 disable comments and no migration.
+  // second count ratchet). Wave one hardened the theme tokens and Button; wave
+  // two widens to the whole ui tier, which the rule finds already clean — ui/**
+  // writes spacing as classes, so there was no inline dialect to migrate here.
+  // The 58 occurrences across the Workout batch and `charts/flatBarGeometry`
+  // are wave three; enrolling them now would buy 58 disable comments and no
+  // migration.
   {
-    files: ['src/theme/**/*.{ts,tsx}', 'src/components/ui/button/**/*.{ts,tsx}'],
+    files: ['src/theme/**/*.{ts,tsx}', 'src/components/ui/**/*.{ts,tsx}'],
     // `color-story-kit` is story chrome that happens not to be named `.stories.tsx`
     // — exempt on the same grounds as the stories themselves, not as a backlog.
     ignores: ['**/*.stories.tsx', '**/*.test.{ts,tsx}', 'src/theme/color-story-kit.tsx'],
