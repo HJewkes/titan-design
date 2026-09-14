@@ -1,5 +1,34 @@
 import { clsx, type ClassValue } from 'clsx'
-import { twMerge } from 'tailwind-merge'
+import { extendTailwindMerge } from 'tailwind-merge'
+import { spacingCSSVars } from '../theme/tokens/spacing-vars'
+
+/**
+ * tailwind-merge only collapses conflicting classes it recognises, and it
+ * recognises a spacing value by matching it against the theme scale it was
+ * configured with. `px-squish-x-md` is not a length, so out of the box it read
+ * as an unknown class and survived beside `px-squish-x-sm` — both rules then
+ * reached the DOM at equal specificity and stylesheet order picked the winner.
+ * Badge rendered all three sizes at 8px that way (AW-142 wave two).
+ *
+ * The key names are derived from the same object `tailwind.config.js` and
+ * `global.css` read, so the merge vocabulary cannot drift from the scale.
+ * Heights need their own group: v2's `h` / `min-h` groups validate lengths
+ * directly instead of reading `theme.spacing`.
+ */
+const nameOf = (prefix: string) =>
+  Object.keys(spacingCSSVars)
+    .filter((property) => property.startsWith(prefix))
+    .map((property) => property.slice(prefix.length))
+
+const spacingKeys = nameOf('--space-')
+const controlHeightKeys = nameOf('--size-control-').map((level) => `control-${level}`)
+
+const twMerge = extendTailwindMerge({
+  extend: {
+    theme: { spacing: spacingKeys, padding: spacingKeys, margin: spacingKeys, gap: spacingKeys },
+    classGroups: { h: [{ h: controlHeightKeys }], 'min-h': [{ 'min-h': controlHeightKeys }] },
+  },
+})
 
 /**
  * Utility function to merge Tailwind CSS classes with proper conflict resolution.
