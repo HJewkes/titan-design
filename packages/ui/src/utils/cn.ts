@@ -10,8 +10,13 @@ import { spacingCSSVars } from '../theme/tokens/spacing-vars'
  * reached the DOM at equal specificity and stylesheet order picked the winner.
  * Badge rendered all three sizes at 8px that way (AW-142 wave two).
  *
- * The key names are derived from the same object `tailwind.config.js` and
- * `global.css` read, so the merge vocabulary cannot drift from the scale.
+ * The key names are DERIVED from `spacingCSSVars`, which `semantic.ts` is the
+ * sole source of. `tailwind.config.js` cannot do the same — it is CJS and
+ * cannot import a TypeScript module, so it hand-repeats the key list at
+ * `tailwind.config.js:23-54` and `global.css` hand-repeats the values. Those
+ * two copies are held to `semantic.ts` by `spacing-tokens.test.ts`, not by the
+ * language. This file is the one consumer that reads the source directly.
+ *
  * Heights need their own group: v2's `h` / `min-h` groups validate lengths
  * directly instead of reading `theme.spacing`.
  */
