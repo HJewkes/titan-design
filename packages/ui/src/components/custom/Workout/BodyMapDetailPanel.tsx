@@ -18,6 +18,8 @@ import {
 } from 'react-native'
 import { Badge, type BadgeColor } from '../../ui/badge'
 import { Sparkline } from './Sparkline'
+import { PlanSection, PrSection, StrengthSection } from './BodyMapDetailSections'
+import type { MusclePlanSection, MuscleStrengthSection } from './muscleReadModels'
 import {
   MuscleGroup,
   VOLUME_STATUS_LABELS,
@@ -102,6 +104,14 @@ export interface BodyMapDetailPanelProps extends ViewProps {
   contributingExercises?: ContributingExercise[]
   /** Upcoming exercises targeting this muscle. */
   upcomingExercises?: UpcomingExercise[]
+  /**
+   * Per-exercise strength rows for this muscle, mirroring voltras-mcp's
+   * `/api/muscle-strength` (B3). Also feeds the PR rows: they are exactly the
+   * rows the read model flagged `isPR`.
+   */
+  strength?: MuscleStrengthSection
+  /** This week's plan for this muscle, mirroring `/api/muscle-plan` (B4). */
+  plan?: MusclePlanSection
   /**
    * Where the sheet docks. `'bottom'` (default) is the phone slide-up sheet;
    * `'right'` is the wall side-sheet that slides in over the right third
@@ -206,8 +216,10 @@ function useSheetKeyboard(open: boolean, onClose: () => void) {
 /**
  * Sheet of detailed weekly-volume info for a tapped muscle group: a
  * MEV|current|MRV gradient progress bar, the big weekly set count against MRV,
- * an optional volume sparkline, and the contributing / upcoming exercise lists.
- * Composes the titan `Badge` and Workout `Sparkline`.
+ * an optional volume sparkline, the per-exercise strength / this-week plan / PR
+ * sections, and the contributing / upcoming exercise lists. Composes the titan
+ * `Badge` and `DataRow` and the Workout `Sparkline`, `StrengthTrendChart` and
+ * `PrBadge`.
  *
  * `placement="bottom"` (default) is the phone slide-up sheet with a drag handle.
  * `placement="right"` is the wall side-sheet: it slides in over the right third
@@ -242,6 +254,8 @@ export function BodyMapDetailPanel({
   weeklyHistory,
   contributingExercises,
   upcomingExercises,
+  strength,
+  plan,
   placement = 'bottom',
   isOpen,
   visible,
@@ -494,6 +508,10 @@ export function BodyMapDetailPanel({
               <Sparkline data={weeklyHistory} width={80} height={30} highlightLast />
             </View>
           )}
+
+          {strength != null && <StrengthSection section={strength} />}
+          {plan != null && <PlanSection section={plan} />}
+          {strength != null && <PrSection section={strength} />}
 
           {hasContributing && (
             <View className="mt-stack-lg" testID="body-map-detail-panel-contributing">

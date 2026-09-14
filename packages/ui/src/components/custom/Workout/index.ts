@@ -169,6 +169,26 @@ export type {
   ContributingExercise,
   UpcomingExercise,
 } from './BodyMapDetailPanel'
+// The mirrored voltras-mcp read-model shapes pull nothing native, so they stay
+// on this barrel even though the panel that consumes them does not.
+export {
+  AGREEMENT_LABELS,
+  bandLabel,
+  prRows,
+  slopeLabel,
+  strengthRowTitle,
+  type E1RMBand,
+  type E1RMMethod,
+  type MusclePlanExerciseRow,
+  type MusclePlanRemainingExercise,
+  type MusclePlanSection,
+  type MuscleStrengthAgreement,
+  type MuscleStrengthBestE1rm,
+  type MuscleStrengthExerciseRow,
+  type MuscleStrengthSection,
+  type MuscleStrengthSide,
+  type StrengthExerciseRow,
+} from './muscleReadModels'
 export type {
   TrainingStatusPageProps,
   TrainingStatusMuscle,

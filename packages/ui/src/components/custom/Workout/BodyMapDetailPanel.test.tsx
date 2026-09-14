@@ -10,6 +10,13 @@ import {
   type UpcomingExercise,
 } from './BodyMapDetailPanel'
 import { MuscleGroup } from './muscleTaxonomy'
+import {
+  bilateralStrength,
+  emptyPlan,
+  emptyStrength,
+  singleExercisePlan,
+  singleExerciseStrength,
+} from './muscle-sections-fixture'
 import { resolveAll } from '../../../test/spacing-resolver'
 import { space } from '../../../theme/tokens/semantic'
 
@@ -350,6 +357,170 @@ describe('BodyMapDetailPanel', () => {
     })
   })
 
+  describe('strength section', () => {
+    it('renders one row per exercise with its e1RM, band caption and slope', () => {
+      render(<BodyMapDetailPanel {...baseProps} strength={singleExerciseStrength} />)
+      expect(screen.getByTestId('body-map-detail-panel-strength-0-name')).toHaveTextContent(
+        'Seated Cable Row'
+      )
+      expect(screen.getByTestId('body-map-detail-panel-strength-0-e1rm')).toHaveTextContent(
+        '205 lb'
+      )
+      expect(screen.getByTestId('body-map-detail-panel-strength-0-band')).toHaveTextContent(
+        'trend only · ±20.1 lb (SEE 9.8%)'
+      )
+      expect(screen.getByTestId('body-map-detail-panel-strength-0-slope')).toHaveTextContent(
+        '+2.1%/wk'
+      )
+    })
+
+    it('draws a StrengthTrendChart mini for each row that carries a series', () => {
+      render(<BodyMapDetailPanel {...baseProps} strength={bilateralStrength} />)
+      for (const index of [0, 1, 2]) {
+        expect(
+          screen.getByTestId(`body-map-detail-panel-strength-${index}-chart`)
+        ).toBeInTheDocument()
+      }
+    })
+
+    it('keeps a bilateral exercise as two side rows rather than one merged row', () => {
+      render(<BodyMapDetailPanel {...baseProps} strength={bilateralStrength} />)
+      expect(screen.getByTestId('body-map-detail-panel-strength-1-name')).toHaveTextContent(
+        'Lat Pulldown · left'
+      )
+      expect(screen.getByTestId('body-map-detail-panel-strength-2-name')).toHaveTextContent(
+        'Lat Pulldown · right'
+      )
+      expect(screen.queryByTestId('body-map-detail-panel-strength-3')).not.toBeInTheDocument()
+    })
+
+    it('states the band is unavailable rather than borrowing one for a rep estimate', () => {
+      render(<BodyMapDetailPanel {...baseProps} strength={bilateralStrength} />)
+      expect(screen.getByTestId('body-map-detail-panel-strength-1-band')).toHaveTextContent(
+        'trend only · no stated band for a reps estimate'
+      )
+    })
+
+    it('names the plateau verdict beside the slope', () => {
+      render(<BodyMapDetailPanel {...baseProps} strength={bilateralStrength} />)
+      expect(screen.getByTestId('body-map-detail-panel-strength-2-slope')).toHaveTextContent(
+        '-0.4%/wk · plateau'
+      )
+    })
+
+    it('captions the agreement and flags the early training phase', () => {
+      render(<BodyMapDetailPanel {...baseProps} strength={bilateralStrength} />)
+      expect(screen.getByTestId('body-map-detail-panel-strength-agreement')).toHaveTextContent(
+        'Exercises disagree · early training phase'
+      )
+    })
+  })
+
+  describe('PR section', () => {
+    it('renders a PrBadge row for each row the read model flagged isPR', () => {
+      render(<BodyMapDetailPanel {...baseProps} strength={bilateralStrength} />)
+      expect(screen.getByTestId('body-map-detail-panel-pr-0-name')).toHaveTextContent(
+        'Seated Cable Row'
+      )
+      expect(screen.getByTestId('body-map-detail-panel-pr-1-name')).toHaveTextContent(
+        'Lat Pulldown · right'
+      )
+      expect(screen.queryByTestId('body-map-detail-panel-pr-2')).not.toBeInTheDocument()
+    })
+
+    it('shows the new best and what it beat', () => {
+      render(<BodyMapDetailPanel {...baseProps} strength={singleExerciseStrength} />)
+      expect(screen.getByTestId('body-map-detail-panel-pr-0-detail')).toHaveTextContent(
+        '205 lb · prev 198 lb'
+      )
+      expect(screen.getByTestId('body-map-detail-panel-pr-0-badge')).toBeInTheDocument()
+    })
+
+    it('omits the section when no row is a PR', () => {
+      const noPrs = {
+        ...singleExerciseStrength,
+        exercises: singleExerciseStrength.exercises.map((row) => ({ ...row, isPR: false })),
+      }
+      render(<BodyMapDetailPanel {...baseProps} strength={noPrs} />)
+      expect(screen.queryByTestId('body-map-detail-panel-prs')).not.toBeInTheDocument()
+      expect(screen.getByTestId('body-map-detail-panel-strength')).toBeInTheDocument()
+    })
+  })
+
+  describe('plan section', () => {
+    it('renders done and upcoming rows under this week', () => {
+      render(<BodyMapDetailPanel {...baseProps} plan={singleExercisePlan} />)
+      expect(screen.getByTestId('body-map-detail-panel-plan-counts')).toHaveTextContent('3 / 9')
+      expect(screen.getByTestId('body-map-detail-panel-plan-done-0')).toHaveTextContent(
+        'Seated Cable Row'
+      )
+      expect(screen.getByTestId('body-map-detail-panel-plan-done-0')).toHaveTextContent(
+        '3 sets · Pull A'
+      )
+      expect(screen.getByTestId('body-map-detail-panel-plan-upcoming-0')).toHaveTextContent(
+        'Lat Pulldown'
+      )
+      expect(screen.getByTestId('body-map-detail-panel-plan-upcoming-1')).toHaveTextContent(
+        'Chest-Supported Row'
+      )
+    })
+
+    it('drops the sub-list whose side of the week is empty', () => {
+      const allDone = {
+        ...singleExercisePlan,
+        exercises: singleExercisePlan.exercises.map((row) => ({ ...row, done: true })),
+      }
+      render(<BodyMapDetailPanel {...baseProps} plan={allDone} />)
+      expect(screen.getByTestId('body-map-detail-panel-plan-done')).toBeInTheDocument()
+      expect(screen.queryByTestId('body-map-detail-panel-plan-upcoming')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('section empty states', () => {
+    it('drops the strength and PR blocks but still states a zero week', () => {
+      render(<BodyMapDetailPanel {...baseProps} strength={emptyStrength} plan={emptyPlan} />)
+      expect(screen.queryByTestId('body-map-detail-panel-strength')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('body-map-detail-panel-prs')).not.toBeInTheDocument()
+      expect(screen.getByTestId('body-map-detail-panel-plan-counts')).toHaveTextContent('0 / 0')
+      expect(screen.queryByTestId('body-map-detail-panel-plan-done')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('body-map-detail-panel-plan-upcoming')).not.toBeInTheDocument()
+    })
+
+    it('renders nothing new when neither section is supplied', () => {
+      render(<BodyMapDetailPanel {...baseProps} />)
+      expect(screen.queryByTestId('body-map-detail-panel-strength')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('body-map-detail-panel-prs')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('body-map-detail-panel-plan')).not.toBeInTheDocument()
+    })
+
+    it('has no accessibility violations with every section populated', async () => {
+      const { container } = render(
+        <BodyMapDetailPanel
+          {...baseProps}
+          placement="right"
+          strength={bilateralStrength}
+          plan={singleExercisePlan}
+        />
+      )
+      expect(await axe(container)).toHaveNoViolations()
+    })
+  })
+
+  /**
+   * VW-336 added sections around the sparkline; the sparkline itself is not part
+   * of that change. Pinned by subtree equality rather than by props, so a stray
+   * edit to its size, data or `highlightLast` fails here.
+   */
+  it('leaves the weeklyHistory sparkline untouched by the new sections', () => {
+    const { unmount } = render(<BodyMapDetailPanel {...baseProps} />)
+    const before = screen.getByTestId('body-map-detail-panel-sparkline').innerHTML
+    unmount()
+    render(
+      <BodyMapDetailPanel {...baseProps} strength={bilateralStrength} plan={singleExercisePlan} />
+    )
+    expect(screen.getByTestId('body-map-detail-panel-sparkline').innerHTML).toBe(before)
+  })
+
   /**
    * The inline spacing migrated to classes (AW-142 wave three). `className` never
    * reaches the DOM here — NativeWind is stubbed — so the geometry is pinned by
@@ -369,6 +540,13 @@ describe('BodyMapDetailPanel', () => {
       ['contributing row', ['gap-2.5', 'px-inset-md', 'py-2'], ['10px', '12px', '8px']],
       ['upcoming row', ['gap-2.5', 'py-1.5'], ['10px', '6px']],
       ['view-exercises button', ['py-control-y-lg'], ['10px']],
+      [
+        'strength row',
+        ['mb-stack-sm', 'gap-stack-sm', 'px-inset-md', 'py-2'],
+        ['4px', '4px', '12px', '8px'],
+      ],
+      ['strength row split', ['gap-inline-md'], ['8px']],
+      ['plan sub-list', ['mt-stack-md'], ['8px']],
     ] as const)('%s resolves to %s', (_label, classes, pixels) => {
       expect(resolveAll([...classes])).toEqual([...pixels])
     })
