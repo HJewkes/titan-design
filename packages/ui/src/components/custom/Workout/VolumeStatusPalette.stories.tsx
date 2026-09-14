@@ -623,6 +623,11 @@ function VolumeStatusPaletteDecision({
             chip keys off its own `VolumeStatus` in MuscleGroupChip.tsx:6. `ds[n]` in row C marks a
             value that IS `divergingScale[n]` — a literal primitive, not a theme-aware token.
           </Typography>
+          <Typography variant="boldLabel" color="success">
+            DECIDED 2026-09-13 — row A&apos;s figure scale wins as-is. B, B2 and B3 are all rejected
+            and stay below as the record. Phase 2 moves the CHIP onto the diverging scale; the
+            figure does not change.
+          </Typography>
         </View>
 
         <Row label="A — today">
@@ -682,8 +687,16 @@ function VolumeStatusPaletteDecision({
  * # Lab / Decisions — unified volume-status palette (VW-333 phase 1, TITAN-E-01)
  *
  * A decision surface, not a component. Nothing here changes a token, a component
- * API or a baseline; it renders today's two palettes beside three candidate
- * ladders so a palette can be approved from pixels plus measured numbers.
+ * API or a baseline.
+ *
+ * ## DECIDED 2026-09-13
+ *
+ * The diverging scale as the figure paints it today IS the palette. B, B2 and B3
+ * are all rejected; they stay rendered as the record of what was weighed. So the
+ * fix inverts: phase 2 moves the CHIP onto the diverging scale and the figure
+ * does not change. `over` stays `status-error` / `ds[4]`, unlifted. The chosen
+ * ladder measures min adjacent 10.9, min all-pairs 8.7 — the strongest of every
+ * candidate here. Full record in `VolumeStatusPalette.decision.md`.
  *
  * ## The defect
  *

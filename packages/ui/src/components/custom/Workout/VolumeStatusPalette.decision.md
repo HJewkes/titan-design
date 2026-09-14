@@ -1,8 +1,65 @@
 # Unified volume-status palette — decision brief (VW-333 phase 1, TITAN-E-01)
 
 Story: `Lab/Decisions/Volume Status Palette` — `lab-decisions-volume-status-palette--compare`.
-Phase 1 is evidence only. No token, component API or baseline changes here; phase 2 lands the
-approved palette, retires the heatmap path and adds the ratchet + Layer-1 visual.
+Phase 1 is evidence only. No token, component API or baseline changes here.
+
+---
+
+## DECIDED — 2026-09-13
+
+**The diverging scale, exactly as the figure paints it today, is the palette.** Not B, B2 or B3
+— all three proposals below are rejected. `over` stays `status-error` / `ds[4]`, unlifted.
+
+So the direction of the fix inverts: **the chip adopts the figure's scale; the figure does not
+move.** The unified status keeps six values, `approaching` among them.
+
+| status        | landmark zone | source                | hex (both themes)                |
+| ------------- | ------------- | --------------------- | -------------------------------- |
+| `untrained`   | 0 sets logged | `text-tertiary`       | `#888684` dark / `#A29F9D` light |
+| `behind`      | below MEV     | `ds[0]` = `blue-500`  | `#2196F3`                        |
+| `ontrack`     | MEV - MAV     | `ds[1]` = `cyan-300`  | `#22D3EE`                        |
+| `target`      | MAV - MRV     | `ds[2]` = `green-200` | `#58F69E`                        |
+| `approaching` | upper MAV-MRV | `ds[3]` = `amber-300` | `#F9B415`                        |
+| `over`        | above MRV     | `ds[4]` = `red-600`   | `#D14343`                        |
+
+Measured with the same metric as everything below:
+
+- adjacent ΔE — untrained→behind 16.7 · behind→ontrack 17.4 · ontrack→target 16.5 ·
+  target→approaching 10.9 · approaching→over 23.8
+- **min adjacent 10.9 · min all-pairs 8.7** (`untrained`/`over`) · floor 8 — **pass**
+- contrast vs the figure's outline fill (dark `#3D3B39`) — untrained 3.07 · behind 3.57 ·
+  ontrack 6.17 · target 8.01 · approaching 6.14 · over 2.44
+- contrast vs the chip capsule (`hairline-subtle` over `surface-elevated`, dark `#393735`) —
+  untrained 3.27 · behind 3.79 · ontrack 6.56 · target 8.52 · approaching 6.53 · over 2.59
+
+This is the strongest ladder measured: it ties B2 on min all-pairs (8.7) and beats every
+candidate on min adjacent (10.9 vs 15.3/10.0/8.3 — B2's 15.3 adjacent comes with the same 8.7
+all-pairs floor). Note the "figure today 7.5" figure quoted further down counts `heatmap.none`
+(`#E0E0E0`) as the untrained value; replacing it with `text-tertiary` is what lifts the floor to
+8.7, and it is the one substitution this decision makes.
+
+`over` at 2.44:1 against the outline fill is the weakest fill, and is unchanged by decision —
+`status-error` is a dark red on a dark plane. Accepted as-is, no lift.
+
+### What phase 2 does (starts on GO, on top of VW-371 phase 1 / PR #219)
+
+1. `MuscleGroupChip`'s `volumeStatus` becomes the six-value union; its dot reads
+   `dataviz-diverging-0..4` plus `text-tertiary`, resolved live
+   (`getSemanticColors(useSurfaceMode())`), never at module scope.
+2. `muscleTaxonomy`: the four-value union becomes `VolumeLandmarkZone`, and the zone→status map
+   is exported, replacing the hand-written one at `WorkoutCard.tsx:52`. `getHeatmapColor` keeps
+   painting from the same diverging keys, so **the figure stays byte-identical**.
+3. Every consumer of the old chip statuses migrates (src, tests, stories, lab).
+4. `DEPRECATIONS.md` entry if any chip status value is renamed.
+5. Raw-colour ratchet unchanged or reduced, frozen-theme delta 0, Layer-1 visual zero drift for
+   the figure. If a specimen contains the chip, the chip WILL move — stop and report the diff for
+   a baseline-refresh approval rather than refreshing it.
+6. The chip story shows all six values.
+
+This PR stays a **draft**: it is a record, not a shipped component, and the story stays under
+`Lab/Decisions`.
+
+---
 
 ## The defect
 
@@ -65,7 +122,7 @@ Today every `status-*` token holds the same hex in both themes, so a ladder buil
 resolves identically light and dark. The one rung that really moves is `untrained`
 (`text-tertiary`: `#888684` dark, `#A29F9D` light).
 
-## The three candidate ladders
+## The three candidate ladders — ALL REJECTED 2026-09-13
 
 | rung          | B (5)                 | B2 (6)                         | B3 (6)                                  |
 | ------------- | --------------------- | ------------------------------ | --------------------------------------- |
@@ -118,10 +175,11 @@ on a dark plane. That is true of the palette shipping today too.
   `status-error` under deuteranopia (ΔE 4.9) — a dark green and a mid red are the classic
   confusion. B3's two greens are therefore the light pair (`green-300` / `green-200`, ΔE 10.0).
 
-## Ladder B in detail — one status, existing tokens only
+## Ladder B in detail — REJECTED, kept as the record of what was weighed
 
-Keep taxonomy A's five members (they match the settled operator legend verbatim), rename B to
-`VolumeLandmarkZone`, and key every surface off this table.
+B was the phase-1 proposal: keep taxonomy A's five members and have the figure adopt the chip's
+palette. The decision went the other way — the chip adopts the figure's scale — so the table
+below is history, not a plan.
 
 | status      | landmark zone | token            | primitive    | hex                              |
 | ----------- | ------------- | ---------------- | ------------ | -------------------------------- |
@@ -154,19 +212,20 @@ as `primitives.test.ts:44`:
 The proposal is the only token-only candidate that clears the repo's categorical CVD floor of 8
 (`primitives.test.ts:110`), and it beats both palettes it replaces.
 
-## Open questions
+## Questions answered by the decision
 
-1. **B, B2 or B3?** B2 measures best (8.7) and matches the stated preference — blue for on track,
-   green for met, yellow for behind, orange for approaching, red for over — and needs no new
-   token. B3 keeps a cold `behind` but needs one new fill-role token for `cyan-300`. B is the
-   five-value ladder and has no home for `approaching`.
-2. **Where does `approaching` go?** `getHeatmapColor` swaps `productive` for `amber-300` above
-   intensity 0.85 — a sixth rendered colour the five-value status cannot name. Fold it into
-   `target` and lose the near-MRV warning, or move it to a non-hue channel (glow radius, dashed
-   edge, pattern)?
-3. **How should the figure paint `untrained`?** Today a muscle with no data is simply absent from
-   `BodyMap`'s `data` and takes the outline fill. DECOMPOSITION.md:136 proposes a grey fill
-   instead. Keep the outline, or paint `text-tertiary`?
+1. **B, B2 or B3?** None. The diverging scale as the figure already paints it wins, and the chip
+   moves to meet it.
+2. **Where does `approaching` go?** It stays a rung of its own — `ds[3]`, `amber-300`. The
+   unified status is six-valued, so nothing has to move to a non-hue channel.
+3. **Does `over` get lifted off the dark red?** No. `status-error` / `ds[4]` stands, at 2.44:1
+   against the figure's outline fill.
+
+Still open, and not blocking phase 2:
+
+- **How should the figure paint `untrained`?** Today a muscle with no data is simply absent from
+  `BodyMap`'s `data` and takes the outline fill. DECOMPOSITION.md:136 proposes a grey fill
+  instead. The chip dot is `text-tertiary` either way.
 
 ## Notes found while building the story
 
