@@ -1,10 +1,78 @@
+// Spacing + sizing (AW-142). This file is CJS and cannot import the TypeScript
+// token modules, so it repeats the STRUCTURE of the scale (the step list, the
+// semantic key names) but never a semantic VALUE: every semantic key resolves to
+// a `var(--space-*)` / `var(--size-*)` custom property whose number lives once in
+// `src/theme/tokens/semantic.ts`. `spacing-tokens.test.ts` resolves this config
+// and fails if either half drifts from the tokens — the same two-sources,
+// one-test arrangement the colour vars already use.
+
+// Tailwind's default numeric scale, emitted in px rather than rem: NativeWind
+// resolves rem at a 14px base on native, so a rem scale renders 14/16 size there.
+const SPACING_STEPS = [
+  0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 20, 24, 28, 32, 36, 40, 44,
+  48, 52, 56, 60, 64, 72, 80, 96,
+]
+
+const numericSpacing = {
+  px: '1px',
+  ...Object.fromEntries(SPACING_STEPS.map((step) => [step, step === 0 ? '0' : `${step * 4}px`])),
+}
+
+// `squish` and `control` carry an explicit axis because `px-`/`py-` share one
+// namespace — a single `squish-md` key cannot hold 12 across and 4 down.
+const SEMANTIC_SPACING_KEYS = [
+  'inset-xs',
+  'inset-sm',
+  'inset-md',
+  'inset-lg',
+  'inset-xl',
+  'squish-x-sm',
+  'squish-x-md',
+  'squish-x-lg',
+  'squish-y-sm',
+  'squish-y-md',
+  'squish-y-lg',
+  'stack-sm',
+  'stack-md',
+  'stack-lg',
+  'stack-xl',
+  'inline-sm',
+  'inline-md',
+  'inline-lg',
+  'control-x-sm',
+  'control-x-md',
+  'control-x-lg',
+  'control-y-sm',
+  'control-y-md',
+  'control-y-lg',
+  'section-sm',
+  'section-md',
+  'section-lg',
+  'gutter-sm',
+  'gutter-md',
+]
+
+const CONTROL_HEIGHT_KEYS = ['control-sm', 'control-md', 'control-lg']
+
+const semanticSpacing = Object.fromEntries(
+  SEMANTIC_SPACING_KEYS.map((key) => [key, `var(--space-${key})`])
+)
+
+const controlHeights = Object.fromEntries(
+  CONTROL_HEIGHT_KEYS.map((key) => [key, `var(--size-${key})`])
+)
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   presets: [require('nativewind/preset')],
   darkMode: 'class',
   theme: {
+    spacing: numericSpacing,
     extend: {
+      spacing: semanticSpacing,
+      height: controlHeights,
+      minHeight: controlHeights,
       colors: {
         // Every leaf here is a `var(--color-*)` reference, which is what makes
         // light/dark switching work — and also why an opacity modifier
@@ -282,14 +350,14 @@ module.exports = {
         xl: '16px',
       },
       transitionTimingFunction: {
-        'out': 'cubic-bezier(0.22, 1, 0.36, 1)',
+        out: 'cubic-bezier(0.22, 1, 0.36, 1)',
         'in-out': 'cubic-bezier(0.65, 0, 0.35, 1)',
-        'spring': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        spring: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
       },
       transitionDuration: {
-        'fast': '150ms',
-        'normal': '250ms',
-        'slow': '400ms',
+        fast: '150ms',
+        normal: '250ms',
+        slow: '400ms',
       },
       keyframes: {
         'fade-in': {

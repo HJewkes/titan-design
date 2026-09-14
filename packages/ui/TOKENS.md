@@ -154,11 +154,11 @@ unnoticed in `IconBox`, `Progress`, `Toast` and `InitiativeBrief` for months.
 
 Reach for one of these instead:
 
-| Need                                     | Use                                                               |
-| ---------------------------------------- | ----------------------------------------------------------------- |
+| Need                                     | Use                                                                 |
+| ---------------------------------------- | ------------------------------------------------------------------- |
 | A tinted container or track              | a wash rung — `-subtle` (0.12) / `-muted` (0.30) / `-strong` (0.50) |
-| A state that already has a role          | `text-text-disabled`, `hairline-*`, `interactive-*`               |
-| A one-off alpha in an inline style / SVG | `alpha(resolveColor('brand-primary'), 0.06)`                      |
+| A state that already has a role          | `text-text-disabled`, `hairline-*`, `interactive-*`                 |
+| A one-off alpha in an inline style / SVG | `alpha(resolveColor('brand-primary'), 0.06)`                        |
 
 Wash rungs are published for `brand-primary`, `brand-secondary`, and every `status-*` role. They work
 on native too, which `color-mix()` and the `<alpha-value>` channel-triplet pattern do not — that is
@@ -208,7 +208,42 @@ Raw sizes, when a variant genuinely does not fit:
 
 ## 5. Spacing and radius
 
-Default Tailwind 4px scale — `gap-2` is 8px, `p-3` is 12px, `p-4` is 16px.
+The 4px numeric scale — `gap-2` is 8px, `p-3` is 12px, `p-4` is 16px — stays legal everywhere. It is
+`theme.spacing` in `tailwind.config.js`, set from `primitiveSpacing`, and emitted in **px rather than
+rem**: NativeWind resolves `rem` at a 14px base, so a rem-valued scale renders every step at 14/16
+size on a device while browsers render it at 16.
+
+### Semantic keys (AW-142)
+
+On top of the numeric scale sits a thin situational layer. Each key is defined once, in `space` /
+`size` in `theme/tokens/semantic.ts`, and reaches Tailwind as a `var(--space-*)` reference — so a
+future density mode remaps custom properties instead of editing components.
+
+| Key       | Levels         | px                               | Reach for it when                           |
+| --------- | -------------- | -------------------------------- | ------------------------------------------- |
+| `inset`   | xs sm md lg xl | 4 8 12 16 24                     | padding inside a surface, card or panel     |
+| `squish`  | sm md lg       | x 8/12/16, y 2/4/6               | a pill-shaped atom                          |
+| `stack`   | sm md lg xl    | 4 8 16 24                        | vertical gap between siblings in one group  |
+| `inline`  | sm md lg       | 4 8 12                           | horizontal gap between items on one line    |
+| `control` | sm md lg       | x 16/20/24, y 6/8/10, h 32/40/48 | a control's own inset and height            |
+| `section` | sm md lg       | 24 32 48                         | gap between unrelated blocks                |
+| `gutter`  | sm md          | 16 24                            | padding from the container or viewport edge |
+
+```tsx
+<View className="p-inset-md gap-stack-md" />
+<Pressable className="px-control-x-md py-control-y-md min-h-control-md" />
+<View className="px-squish-x-md py-squish-y-md" />
+```
+
+`squish` and `control` carry an explicit axis because `px-` and `py-` share one Tailwind namespace: a
+single `squish-md` key cannot hold 12 across and 4 down. Control heights are also `h-control-*` and
+`min-h-control-*`. `Foundations/Spacing` in Storybook renders every row of this table.
+
+For code that computes layout in JavaScript rather than in classes, import the same numbers:
+
+```ts
+import { space, size } from '@titan-design/react-ui/theme'
+```
 
 | Radius       | Size |
 | ------------ | ---- |
@@ -217,13 +252,43 @@ Default Tailwind 4px scale — `gap-2` is 8px, `p-3` is 12px, `p-4` is 16px.
 | `rounded-lg` | 12px |
 | `rounded-xl` | 16px |
 
+### What the lint rules catch
+
 **Arbitrary values (`p-[18px]`, `gap-[14px]`, `rounded-[10px]`) are lint errors** in token-pure
 families. They are how a specimen's hand-tuned pixels leak into the library: each one is individually
 defensible and collectively there is no scale left. Mature components (`ExerciseCard`, `SetRow`,
 `Card`) contain zero.
 
-Genuine one-off layout dimensions — a fixed pane width like `w-[420px]` — are fine. The rule targets
+The bracket form is only one dialect. `titan/no-raw-spacing` covers the other — a raw number or a
+CSS shorthand string on a `padding*`, `margin*`, `gap`, `rowGap` or `columnGap` property inside a
+style object, which is how the specimen-derived families write spacing:
+
+```ts
+// ✗ both flagged
+const s = { paddingVertical: 9, padding: '9px 12px' }
+
+// ✓ the semantic class, or the numeric scale
+<View className="py-squish-y-lg px-inset-md" />
+```
+
+`0` is never flagged — zero is the absence of spacing, not a value off the scale. A computed value
+(`paddingTop: rowHeight / 2`) is layout arithmetic and stays allowed.
+
+**A genuine optical correction survives with a reason.** A `// optical: <why>` comment on the same
+line or the line above exempts the value:
+
+```ts
+// optical: the cap sits 1px high at this weight
+paddingTop: 7,
+```
+
+That escape hatch is why this is a rule rather than two more `no-restricted-syntax` selectors — a
+selector cannot read comments. `optical:` with no reason after it does not count.
+
+Genuine one-off layout dimensions — a fixed pane width like `w-[420px]` — are fine. The rules target
 spacing, radius, and type, not layout geometry.
+
+Both rules are enrolled per family, extended as each migration wave lands and never ahead of one.
 
 ---
 
@@ -231,14 +296,14 @@ spacing, radius, and type, not layout geometry.
 
 `eslint.config.js` enforces a subset of the above, scoped by directory:
 
-| Scope                                  | Enforced                                                         |
-| -------------------------------------- | ---------------------------------------------------------------- |
-| all of `src/**`                        | no `/<n>` opacity modifier on a token colour (**error**)         |
-| all of `src/components/**`             | no inline `linear-gradient` strings (warn)                       |
+| Scope                                  | Enforced                                                                                    |
+| -------------------------------------- | ------------------------------------------------------------------------------------------- |
+| all of `src/**`                        | no `/<n>` opacity modifier on a token colour (**error**)                                    |
+| all of `src/components/**`             | no inline `linear-gradient` strings (warn)                                                  |
 | all of `src/components/**`             | no frozen theme — module-scope or literal-mode `getSemanticColors()` (**error**, ratcheted) |
-| `shell/`, `icons/`                     | \+ no raw hex (warn)                                             |
-| `custom/ActiveWork/`, `custom/charts/` | \+ no raw hex, no arbitrary px, no inline `fontSize` (**error**) |
-| `custom/Workout/` — batch B1 only      | same errors, listed file by file until the family is ported      |
+| `shell/`, `icons/`                     | \+ no raw hex (warn)                                                                        |
+| `custom/ActiveWork/`, `custom/charts/` | \+ no raw hex, no arbitrary px, no inline `fontSize` (**error**)                            |
+| `custom/Workout/` — batch B1 only      | same errors, listed file by file until the family is ported                                 |
 
 Workout is being ported in batches (E3), so it is enrolled per file rather than per
 family. Batch B1: `SetStrip`, `SetTableHeader`, `SetsRepsLoad`, `ExerciseHeading`,

@@ -500,31 +500,72 @@ export const primitiveTypography = {
   },
 } as const
 
-export const primitiveSpacing = {
-  0: '0',
+/**
+ * The unit every spacing and sizing token is emitted in.
+ *
+ * `px` because `rem` is a web unit: NativeWind resolves `rem` at a 14px base on
+ * native while browsers use 16, so a `rem`-valued scale renders one size on web
+ * and 14/16 of it on native. Authoring px collapses the two (AW-142 spike).
+ * Flipping this back to `rem` is a one-line change that `spacing-tokens.test.ts`
+ * pins, so it can only happen deliberately.
+ */
+export type SpacingUnit = 'px' | 'rem'
+export const spacingUnit: SpacingUnit = 'px'
+
+const REM_BASE_PX = 16
+
+/** Render a pixel measurement in the configured spacing unit. */
+export function toSpacingValue(px: number): string {
+  if (px === 0) return '0'
+  return spacingUnit === 'rem' ? `${px / REM_BASE_PX}rem` : `${px}px`
+}
+
+/**
+ * Tailwind's default numeric scale, in full.
+ *
+ * `theme.spacing` is shared by `p-`, `m-`, `gap-`, `w-`, `h-`, `size-`, `inset-`
+ * and `translate-`, and the codebase uses steps up to 96 for sizing — so every
+ * step has to stay. Narrowing the vocabulary is the job of the semantic layer
+ * and the lint rule, not of the primitive.
+ */
+const SPACING_STEPS = [
+  0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 20, 24, 28, 32, 36, 40, 44,
+  48, 52, 56, 60, 64, 72, 80, 96,
+] as const
+
+const STEP_PX = 4
+
+export type SpacingStep = 'px' | `${(typeof SPACING_STEPS)[number]}`
+
+export const primitiveSpacing: Readonly<Record<SpacingStep, string>> = Object.freeze({
   px: '1px',
-  0.5: '0.125rem', // 2px
-  1: '0.25rem', // 4px
-  1.5: '0.375rem', // 6px
-  2: '0.5rem', // 8px
-  2.5: '0.625rem', // 10px
-  3: '0.75rem', // 12px
-  3.5: '0.875rem', // 14px
-  4: '1rem', // 16px
-  5: '1.25rem', // 20px
-  6: '1.5rem', // 24px
-  7: '1.75rem', // 28px
-  8: '2rem', // 32px
-  9: '2.25rem', // 36px
-  10: '2.5rem', // 40px
-  11: '2.75rem', // 44px
-  12: '3rem', // 48px
-  14: '3.5rem', // 56px
-  16: '4rem', // 64px
-  20: '5rem', // 80px
-  24: '6rem', // 96px
-  28: '7rem', // 112px
-  32: '8rem', // 128px
+  ...Object.fromEntries(SPACING_STEPS.map((step) => [step, toSpacingValue(step * STEP_PX)])),
+}) as Readonly<Record<SpacingStep, string>>
+
+/**
+ * Sizing primitives: a control's own height, and the icon ramp.
+ *
+ * Control heights are the three Button already ships (`Button.tsx` sm/md/lg
+ * `min-h-[32px]` / `[40px]` / `[48px]`). Icon sizes are the ones titan renders
+ * today — 24 is `SvgIcon`'s default, 28 is what `Foundations/Icons` shows, and
+ * 12/16/20 all appear in component call sites. None of them is invented.
+ *
+ * 32 is below the 44pt Apple / 48dp Material hit-target floor. Raising it is
+ * AW-144's job, not this file's — see the Sizing section of `Foundations/Spacing`.
+ */
+export const primitiveSizing = {
+  control: {
+    sm: 32,
+    md: 40,
+    lg: 48,
+  },
+  icon: {
+    xs: 12,
+    sm: 16,
+    md: 20,
+    lg: 24,
+    xl: 28,
+  },
 } as const
 
 export const primitiveBorderRadius = {
