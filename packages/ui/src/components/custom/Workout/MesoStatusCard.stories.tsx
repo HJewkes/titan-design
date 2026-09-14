@@ -16,6 +16,10 @@ const meta: Meta<typeof MesoStatusCard> = {
       control: 'text',
       description: 'Context line, e.g. "Week 6 of 8 · Upper/Lower"',
     },
+    basis: {
+      control: 'text',
+      description: 'Optional muted line under the subtitle, e.g. a ramp/basis note',
+    },
     statusBadge: {
       control: 'object',
       description: 'Header status pill { label, variant }',
@@ -110,6 +114,29 @@ export const Overreaching: Story = {
       highlights: ['deload'],
     },
     nextTarget: { icon: '↓', text: 'Next: deload — 60% × 3×5' },
+  },
+}
+
+export const InfoBadge: Story = {
+  args: {
+    ...Default.args,
+    mesoName: 'Strength Block',
+    mesoSubtitle: 'Week 3 of 6 · Upper/Lower',
+    statusBadge: { label: 'Ahead of Pace', variant: 'info' },
+    coaching: {
+      text: 'Running ahead of the ramp — hold current load and let the extra reps bank.',
+      highlights: ['hold current load'],
+    },
+  },
+}
+
+export const WithBasis: Story = {
+  args: {
+    ...Default.args,
+    mesoName: 'Strength Block',
+    mesoSubtitle: 'Week 3 of 6 · Upper/Lower',
+    basis: '+5 lb/wk ramp · basis: RP intermediate ramp · slope agrees (r² .81)',
+    statusBadge: { label: 'Ahead of Pace', variant: 'info' },
   },
 }
 
