@@ -77,12 +77,8 @@ function PrRecordRow({ record, index }: { record: PrRecord; index: number }) {
     <View
       accessibilityRole="text"
       accessibilityLabel={a11yLabel}
-      className="flex-row items-center bg-surface-raised"
+      className="flex-row items-center bg-surface-raised gap-2.5 py-2.5 px-inset-md mb-stack-md"
       style={{
-        gap: 10,
-        paddingVertical: 10,
-        paddingHorizontal: 12,
-        marginBottom: 8,
         borderRadius: 8,
         borderWidth: 1,
         borderColor: record.isRecent ? recentBorder : BORDER_DEFAULT,
@@ -177,20 +173,17 @@ export function PrHistoryModal({
     >
       <View
         accessibilityElementsHidden
-        className="bg-hairline"
+        className="bg-hairline self-center mt-stack-md"
         style={{
-          alignSelf: 'center',
           width: 40,
           height: 4,
           borderRadius: 2,
-          marginTop: 8,
         }}
         testID="pr-history-modal-handle"
       />
 
       <View
-        className="flex-row items-center justify-between"
-        style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8 }}
+        className="flex-row items-center justify-between px-gutter-sm pt-inset-md pb-inset-sm"
         testID="pr-history-modal-header"
       >
         <Text
@@ -210,7 +203,9 @@ export function PrHistoryModal({
           accessibilityRole="button"
           accessibilityLabel="Close PR history"
           hitSlop={8}
-          style={{ padding: 4, margin: -4 }}
+          className="p-inset-xs"
+          // optical: pulls the close glyph back flush with the header edge.
+          style={{ margin: -4 }}
           testID="pr-history-modal-close"
         >
           <Text className="text-text-secondary" style={{ fontSize: 22, lineHeight: 22 }}>
@@ -221,7 +216,7 @@ export function PrHistoryModal({
 
       <DrawerBody className="px-4 pt-0 pb-4">
         {records.length === 0 ? (
-          <View style={{ paddingVertical: 24 }} testID="pr-history-modal-empty">
+          <View className="py-inset-xl" testID="pr-history-modal-empty">
             <Text
               className="text-text-tertiary"
               style={{

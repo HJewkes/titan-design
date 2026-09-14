@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { View, Pressable, Animated, type ViewProps } from 'react-native'
 import { resolveColor } from '../../../theme/resolve-color'
+import { cn } from '../../../utils/cn'
 
 export type MesoStatus = 'completed' | 'current' | 'upcoming'
 
@@ -145,13 +146,7 @@ export function MesoProgressBar({
 }: MesoProgressBarProps) {
   return (
     <View
-      className={className}
-      style={{
-        flexDirection: 'row',
-        gap: 2,
-        paddingHorizontal: 16,
-        alignItems: 'center',
-      }}
+      className={cn('flex-row items-center gap-0.5 px-inset-lg', className)}
       testID="meso-progress-bar"
       {...props}
     >

@@ -18,13 +18,11 @@ export function SupersetWrapper({ label = DEFAULT_LABEL, color, children }: Supe
 
   return (
     <View
+      className="pl-inset-sm mx-inset-md mb-stack-md"
       style={{
         position: 'relative',
         borderLeftWidth: 3,
         borderLeftColor: rail,
-        paddingLeft: 8,
-        marginHorizontal: 12,
-        marginBottom: 8,
         overflow: 'visible',
       }}
       accessibilityRole={'group' as never}
@@ -37,13 +35,12 @@ export function SupersetWrapper({ label = DEFAULT_LABEL, color, children }: Supe
       <Typography
         variant="microLabel"
         color="inverse"
+        className="py-squish-y-sm px-1.5"
         style={{
           position: 'absolute',
           top: -1,
           left: -3,
           backgroundColor: rail,
-          paddingVertical: 2,
-          paddingHorizontal: 6,
           borderBottomRightRadius: 4,
           zIndex: 2,
         }}
@@ -51,7 +48,7 @@ export function SupersetWrapper({ label = DEFAULT_LABEL, color, children }: Supe
       >
         {label}
       </Typography>
-      <View style={{ gap: 2 }} testID="superset-children">
+      <View className="gap-0.5" testID="superset-children">
         {children}
       </View>
     </View>

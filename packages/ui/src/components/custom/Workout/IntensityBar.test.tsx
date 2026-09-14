@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { siblingSource, spacingClassesIn, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { IntensityBar } from './IntensityBar'
@@ -165,5 +166,15 @@ describe('IntensityBar', () => {
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
+  })
+})
+
+/** IntensityBar's label offsets, pinned (AW-142); pixels unchanged. */
+describe('IntensityBar geometry resolves to the numeric scale', () => {
+  const source = siblingSource(import.meta.url, 'IntensityBar.tsx')
+
+  it('keeps both label offsets', () => {
+    expect(spacingClassesIn(source, 'IntensityBar')).toEqual(['mt-1.5'])
+    expect(resolveAll(['mt-1.5', 'mt-0.5'])).toEqual(['6px', '2px'])
   })
 })

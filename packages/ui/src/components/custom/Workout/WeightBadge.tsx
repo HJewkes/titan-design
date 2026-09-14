@@ -86,10 +86,9 @@ export function WeightBadge({
         <Typography
           variant="body2"
           color="inherit"
-          className="font-heading font-semibold leading-[normal]"
+          className="font-heading font-semibold leading-[normal] ml-0.5"
           style={{
             fontSize: config.fontSize,
-            marginLeft: 2,
             color: textColor,
             opacity: 0.7,
           }}
@@ -102,10 +101,9 @@ export function WeightBadge({
         <Typography
           variant="body2"
           color="inherit"
-          className="font-heading leading-[normal]"
+          className="font-heading leading-[normal] ml-inline-sm"
           style={{
             fontSize: config.fontSize,
-            marginLeft: 4,
             color: resolveColor(delta >= 0 ? 'result-improve' : 'result-degrade'),
           }}
           testID="weight-badge-delta"

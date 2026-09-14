@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
+import { siblingSource, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { TempoDisplay } from './TempoDisplay'
@@ -180,5 +181,25 @@ describe('TempoDisplay', () => {
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
+  })
+})
+
+/**
+ * TempoDisplay's tooltip geometry, pinned (AW-142). The chip's OWN padding stays
+ * computed from the digit size (`chromePadX`/`chromePadY`) — em-proportional
+ * spacing that no fixed rung expresses — and is exempt by design.
+ */
+describe('TempoDisplay tooltip geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'TempoDisplay.tsx')
+
+  it('keeps the tooltip offset and inset', () => {
+    expect(source).toContain('items-center mb-stack-md')
+    expect(resolveAll(['mb-stack-md'])).toEqual(['8px'])
+    expect(resolveAll(['py-inset-sm', 'px-inset-md'])).toEqual(['8px', '12px'])
+  })
+
+  it('leaves the chip padding proportional to the digit size', () => {
+    expect(source).toContain('Math.round(fontSize * 0.6)')
+    expect(source).toContain('Math.round(fontSize * 0.3)')
   })
 })

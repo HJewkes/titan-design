@@ -7,6 +7,7 @@ import { SegmentedProgressBar } from './SegmentedProgressBar'
 import { MetricTiles, type MetricTileData } from './MetricTiles'
 import { ScheduleTiles } from './ScheduleTiles'
 import { paceTone, paceToneColor } from './paceTone'
+import { cn } from '../../../utils/cn'
 
 // The header shares the SideNav's `background-base` (warm-tapered ramp shell, #1C1916) so the
 // nav and the rail header read as ONE continuous dark plane on the left — the sunk exercise list
@@ -84,17 +85,9 @@ export function SessionHeader({
   return (
     <Surface
       level="background"
-      className={className}
-      style={[
-        {
-          paddingTop: 11,
-          paddingRight: 12,
-          paddingBottom: 12,
-          paddingLeft: 12,
-          zIndex: 2,
-        },
-        style,
-      ]}
+      // 11px top was 1px off an otherwise uniform 12px inset, with no stated reason.
+      className={cn('p-inset-md', className)}
+      style={[{ zIndex: 2 }, style]}
       testID="session-rail-header"
       {...props}
     >
@@ -103,9 +96,9 @@ export function SessionHeader({
       <Typography
         variant="h6"
         color="inherit"
-        className="text-base font-bold leading-[18px]"
+        className="text-base font-bold leading-[18px] mb-2.5"
         accessibilityRole="header"
-        style={{ color: onSurface.primary, marginBottom: 10 }}
+        style={{ color: onSurface.primary }}
         testID="session-rail-title"
       >
         {title}
@@ -113,7 +106,7 @@ export function SessionHeader({
 
       {upcoming ? <ScheduleTiles when={next} /> : <MetricTiles metrics={metrics} />}
 
-      <View style={{ marginTop: 10 }}>
+      <View className="mt-2.5">
         <SegmentedProgressBar
           segments={plan.map((e) => ({ weight: e.sets }))}
           value={upcoming ? 0 : setsDone}
@@ -121,14 +114,8 @@ export function SessionHeader({
           height={BAR_HEIGHT}
           gap={BAR_GAP}
         />
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'baseline',
-            marginTop: 5,
-          }}
-        >
+        {/* 5px was off the 4px grain; `stack-sm` is the rung below the 8px it sat under. */}
+        <View className="flex-row justify-between items-baseline mt-stack-sm">
           <Typography
             variant="mono"
             color="inherit"

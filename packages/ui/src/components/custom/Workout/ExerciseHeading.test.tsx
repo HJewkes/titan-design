@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
+import { siblingSource, spacingClassesIn, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ExerciseHeading } from './ExerciseHeading'
@@ -73,5 +74,15 @@ describe('ExerciseHeading', () => {
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
+  })
+})
+
+/** Both heading layouts share one inline gap (AW-142); pixels unchanged. */
+describe('ExerciseHeading geometry resolves to the inline ramp', () => {
+  const source = siblingSource(import.meta.url, 'ExerciseHeading.tsx')
+
+  it.each(['StackedHeading', 'InlineHeading'])('%s clusters on inline-md', (layout) => {
+    expect(spacingClassesIn(source, layout)).toEqual(['gap-inline-md'])
+    expect(resolveAll(['gap-inline-md'])).toEqual(['8px'])
   })
 })

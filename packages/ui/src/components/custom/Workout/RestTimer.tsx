@@ -35,13 +35,12 @@ export interface RestTimerProps {
 function RestActions({ onAddTime, onSkip }: { onAddTime: () => void; onSkip: () => void }) {
   const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
   return (
-    <View style={{ flexDirection: 'row', gap: 8 }}>
+    <View className="flex-row gap-inline-md">
       <Pressable
         onPress={onAddTime}
+        className="py-control-y-md px-control-x-md"
         style={{
           backgroundColor: alpha(primitiveColors.white, 0.06),
-          paddingVertical: 8,
-          paddingHorizontal: 20,
           borderRadius: 8,
         }}
         accessibilityRole="button"
@@ -57,10 +56,9 @@ function RestActions({ onAddTime, onSkip }: { onAddTime: () => void; onSkip: () 
       </Pressable>
       <Pressable
         onPress={onSkip}
+        className="py-control-y-md px-control-x-md"
         style={{
           backgroundColor: alpha(brandPrimary, 0.12),
-          paddingVertical: 8,
-          paddingHorizontal: 20,
           borderRadius: 8,
         }}
         accessibilityRole="button"
@@ -115,7 +113,7 @@ function RestTimerRing({
     ? 'Rest complete, next set ready'
     : `Rest timer, ${Math.max(0, remainingSec)} seconds remaining`
   return (
-    <View style={{ alignItems: 'center', gap: 16 }} testID="rest-timer">
+    <View className="items-center gap-stack-lg" testID="rest-timer">
       <CircularTimer
         durationMs={totalSeconds * 1000}
         elapsedMs={elapsedMs}
@@ -187,27 +185,17 @@ export function RestTimer({
 
   return (
     <View
-      className="bg-surface-raised"
+      className="bg-surface-raised w-full py-inset-md px-gutter-sm"
       style={{
-        width: '100%',
         borderTopWidth: 1,
         borderTopColor: resolveColor('hairline-default'),
-        paddingVertical: 12,
-        paddingHorizontal: 16,
       }}
       accessibilityRole="timer"
       accessibilityLabel={`Rest timer, ${remainingSec} seconds remaining`}
       testID="rest-timer"
     >
       {/* Top row */}
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: 8,
-        }}
-      >
+      <View className="flex-row justify-between items-center mb-stack-md">
         {/* Left side */}
         <View style={{ flexDirection: 'column' }}>
           <Text
@@ -225,11 +213,10 @@ export function RestTimer({
           </Text>
           {nextSetInfo != null && (
             <Text
-              className="text-text-tertiary"
+              className="text-text-tertiary mt-0.5"
               style={{
                 fontSize: 11,
                 fontFamily: 'Inter, sans-serif',
-                marginTop: 2,
               }}
               testID="rest-timer-next-set"
             >
@@ -256,11 +243,10 @@ export function RestTimer({
 
       {/* Progress bar */}
       <View
-        className="bg-hairline"
+        className="bg-hairline mb-3"
         style={{
           height: 3,
           borderRadius: 2,
-          marginBottom: 12,
         }}
         testID="rest-timer-progress-track"
       >

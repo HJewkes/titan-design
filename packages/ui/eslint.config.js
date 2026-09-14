@@ -368,6 +368,24 @@ module.exports = tseslint.config(
       'src/theme/**/*.{ts,tsx}',
       'src/components/ui/**/*.{ts,tsx}',
       'src/components/shell/**/*.{ts,tsx}',
+      // Wave three, Workout molecules (AW-142). Enrolled file by file, as
+      // batches B1-B3 above were: the family is ~45 files and one PR touching
+      // all of them could not be reviewed.
+      'src/components/custom/Workout/ExerciseHeading.tsx',
+      'src/components/custom/Workout/InputBar.tsx',
+      'src/components/custom/Workout/IntensityBar.tsx',
+      'src/components/custom/Workout/MesoProgressBar.tsx',
+      'src/components/custom/Workout/PlaceholderStrip.tsx',
+      'src/components/custom/Workout/PrHistoryModal.tsx',
+      'src/components/custom/Workout/ReadinessCheck.tsx',
+      'src/components/custom/Workout/RestTimer.tsx',
+      'src/components/custom/Workout/SessionHeader.tsx',
+      'src/components/custom/Workout/SetTableHeader.tsx',
+      'src/components/custom/Workout/StatusDot.tsx',
+      'src/components/custom/Workout/SupersetWrapper.tsx',
+      'src/components/custom/Workout/TempoDisplay.tsx',
+      'src/components/custom/Workout/WeightBadge.tsx',
+      'src/components/custom/Workout/WorkoutPill.tsx',
     ],
     // `color-story-kit` is story chrome that happens not to be named `.stories.tsx`
     // — exempt on the same grounds as the stories themselves, not as a backlog.

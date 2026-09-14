@@ -6,6 +6,7 @@ import { resolveColor } from '../../../theme/resolve-color'
 import { WORKOUT_PILL_DELOAD } from '../../../theme/extracted-colors-dataviz'
 import { alpha } from '../../../utils/colors'
 import { usePrefersReducedMotion } from '../charts/live-rep-growth'
+import { cn } from '../../../utils/cn'
 
 // The deload role has no semantic tokens at all, so its wash and rim are derived from
 // the same ramp pin WeekRow reads, at the LADDER'S rungs (0.12 subtle, 0.30 muted)
@@ -145,13 +146,9 @@ export function WorkoutPill({
       testID="workout-pill"
     >
       <View
-        className={className}
+        className={cn('flex-row items-center px-2.5 py-squish-y-md', className)}
         style={[
           {
-            flexDirection: 'row',
-            alignItems: 'center',
-            paddingHorizontal: 10,
-            paddingVertical: 4,
             borderRadius: 6,
             backgroundColor: paint.background,
             borderWidth: 1,
@@ -166,8 +163,8 @@ export function WorkoutPill({
           <Typography
             variant="caption"
             color="inherit"
-            className={labelClass}
-            style={{ color: paint.text, marginRight: 4 }}
+            className={cn(labelClass, 'mr-inline-sm')}
+            style={{ color: paint.text }}
             accessibilityElementsHidden
             testID="workout-pill-check"
           >
@@ -178,8 +175,8 @@ export function WorkoutPill({
           <Typography
             variant="caption"
             color="inherit"
-            className={labelClass}
-            style={{ color: paint.text, marginRight: 4 }}
+            className={cn(labelClass, 'mr-inline-sm')}
+            style={{ color: paint.text }}
             accessibilityElementsHidden
             testID="workout-pill-dash"
           >
