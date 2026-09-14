@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import type { ViewProps } from 'react-native'
 import { primitiveRamps } from '../../../theme/tokens/primitives'
+import { useSurfaceMode } from '../../ui/surface'
 import { SegmentedBar } from './SegmentedBar'
 import { paceTone, paceToneColor } from './paceTone'
 
@@ -46,8 +47,9 @@ export function SegmentedProgressBar({
   gap,
   ...props
 }: SegmentedProgressBarProps) {
+  const mode = useSurfaceMode()
   const total = segments.reduce((sum, s) => sum + s.weight, 0)
-  const fillColor = color ?? paceToneColor(paceTone(total > 0 ? value / total : 0, target))
+  const fillColor = color ?? paceToneColor(paceTone(total > 0 ? value / total : 0, target), mode)
 
   const barSegments = segments.map((seg, i) => {
     const cumulativeBefore = segments.slice(0, i).reduce((sum, s) => sum + s.weight, 0)
