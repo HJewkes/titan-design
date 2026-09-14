@@ -5,49 +5,49 @@ import { BodyMap, type BodyMapData } from './BodyMap'
 import { MuscleGroup } from './muscleTaxonomy'
 
 const sampleData: BodyMapData[] = [
-  { muscleGroup: MuscleGroup.CHEST, intensity: 0.7, volumeStatus: 'productive', weeklySets: 12 },
+  { muscleGroup: MuscleGroup.CHEST, intensity: 0.7, volumeStatus: 'target', weeklySets: 12 },
   {
     muscleGroup: MuscleGroup.FRONT_DELTS,
     intensity: 0.5,
-    volumeStatus: 'maintenance',
+    volumeStatus: 'ontrack',
     weeklySets: 5,
   },
   {
     muscleGroup: MuscleGroup.SIDE_DELTS,
     intensity: 0.6,
-    volumeStatus: 'productive',
+    volumeStatus: 'target',
     weeklySets: 10,
   },
-  { muscleGroup: MuscleGroup.BICEPS, intensity: 0.3, volumeStatus: 'under', weeklySets: 3 },
-  { muscleGroup: MuscleGroup.TRICEPS, intensity: 0.65, volumeStatus: 'productive', weeklySets: 8 },
-  { muscleGroup: MuscleGroup.ABS, intensity: 0.4, volumeStatus: 'maintenance', weeklySets: 6 },
+  { muscleGroup: MuscleGroup.BICEPS, intensity: 0.3, volumeStatus: 'behind', weeklySets: 3 },
+  { muscleGroup: MuscleGroup.TRICEPS, intensity: 0.65, volumeStatus: 'target', weeklySets: 8 },
+  { muscleGroup: MuscleGroup.ABS, intensity: 0.4, volumeStatus: 'ontrack', weeklySets: 6 },
   {
     muscleGroup: MuscleGroup.OBLIQUES,
     intensity: 0.35,
-    volumeStatus: 'maintenance',
+    volumeStatus: 'ontrack',
     weeklySets: 4,
   },
   { muscleGroup: MuscleGroup.QUADS, intensity: 0.95, volumeStatus: 'over', weeklySets: 20 },
 ]
 
 const backData: BodyMapData[] = [
-  { muscleGroup: MuscleGroup.LATS, intensity: 0.6, volumeStatus: 'productive', weeklySets: 11 },
+  { muscleGroup: MuscleGroup.LATS, intensity: 0.6, volumeStatus: 'target', weeklySets: 11 },
   {
     muscleGroup: MuscleGroup.UPPER_BACK,
     intensity: 0.5,
-    volumeStatus: 'maintenance',
+    volumeStatus: 'ontrack',
     weeklySets: 8,
   },
-  { muscleGroup: MuscleGroup.REAR_DELTS, intensity: 0.3, volumeStatus: 'under', weeklySets: 4 },
-  { muscleGroup: MuscleGroup.TRICEPS, intensity: 0.65, volumeStatus: 'productive', weeklySets: 8 },
-  { muscleGroup: MuscleGroup.GLUTES, intensity: 0.7, volumeStatus: 'productive', weeklySets: 10 },
+  { muscleGroup: MuscleGroup.REAR_DELTS, intensity: 0.3, volumeStatus: 'behind', weeklySets: 4 },
+  { muscleGroup: MuscleGroup.TRICEPS, intensity: 0.65, volumeStatus: 'target', weeklySets: 8 },
+  { muscleGroup: MuscleGroup.GLUTES, intensity: 0.7, volumeStatus: 'target', weeklySets: 10 },
   {
     muscleGroup: MuscleGroup.HAMSTRINGS,
     intensity: 0.55,
-    volumeStatus: 'productive',
+    volumeStatus: 'target',
     weeklySets: 9,
   },
-  { muscleGroup: MuscleGroup.CALVES, intensity: 0.2, volumeStatus: 'under', weeklySets: 3 },
+  { muscleGroup: MuscleGroup.CALVES, intensity: 0.2, volumeStatus: 'behind', weeklySets: 3 },
 ]
 
 const meta: Meta<typeof BodyMap> = {

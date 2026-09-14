@@ -23,7 +23,7 @@ const muscles: TrainingStatusMuscle[] = [
     displayName: 'Chest',
     side: 'front',
     intensity: 0.7,
-    volumeStatus: 'productive',
+    volumeStatus: 'target',
     weeklySets: 14,
     landmarks: { mev: 8, mav: 14, mrv: 20 },
     lastTrained: '2 days ago',
@@ -34,7 +34,7 @@ const muscles: TrainingStatusMuscle[] = [
     displayName: 'Biceps',
     side: 'front',
     intensity: 0.3,
-    volumeStatus: 'under',
+    volumeStatus: 'behind',
     weeklySets: 3,
     landmarks: { mev: 4, mav: 10, mrv: 18 },
   },
@@ -43,7 +43,7 @@ const muscles: TrainingStatusMuscle[] = [
     displayName: 'Lats',
     side: 'back',
     intensity: 0.6,
-    volumeStatus: 'productive',
+    volumeStatus: 'target',
     weeklySets: 11,
     landmarks: { mev: 8, mav: 14, mrv: 20 },
   },
@@ -64,9 +64,11 @@ describe('deriveTrainingSummary', () => {
     expect(summary.totalWeeklySets).toBe(48)
     expect(summary.trackedMuscles).toBe(4)
     expect(summary.statusCounts).toEqual({
-      under: 1,
-      maintenance: 0,
-      productive: 2,
+      untrained: 0,
+      behind: 1,
+      ontrack: 0,
+      target: 2,
+      approaching: 0,
       over: 1,
     })
   })
@@ -75,7 +77,14 @@ describe('deriveTrainingSummary', () => {
     const summary = deriveTrainingSummary([])
     expect(summary.totalWeeklySets).toBe(0)
     expect(summary.trackedMuscles).toBe(0)
-    expect(summary.statusCounts).toEqual({ under: 0, maintenance: 0, productive: 0, over: 0 })
+    expect(summary.statusCounts).toEqual({
+      untrained: 0,
+      behind: 0,
+      ontrack: 0,
+      target: 0,
+      approaching: 0,
+      over: 0,
+    })
   })
 })
 
@@ -90,7 +99,7 @@ describe('toBodyMapData', () => {
     expect(front[0]).toEqual({
       muscleGroup: MuscleGroup.CHEST,
       intensity: 0.7,
-      volumeStatus: 'productive',
+      volumeStatus: 'target',
       weeklySets: 14,
     })
   })
@@ -107,7 +116,7 @@ describe('TrainingStatusPage', () => {
     expect(screen.getByTestId('training-status-page')).toBeInTheDocument()
     expect(screen.getByTestId('meso-status-card')).toBeInTheDocument()
     expect(screen.getByTestId('training-status-page-summary-total')).toHaveTextContent('48')
-    expect(screen.getByTestId('training-status-page-summary-productive')).toHaveTextContent('2')
+    expect(screen.getByTestId('training-status-page-summary-target')).toHaveTextContent('2')
     expect(screen.getByTestId('training-status-page-bodymap-front')).toBeInTheDocument()
     expect(screen.getByTestId('training-status-page-bodymap-back')).toBeInTheDocument()
   })

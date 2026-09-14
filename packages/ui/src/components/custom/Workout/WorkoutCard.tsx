@@ -2,15 +2,21 @@
 import { View, ScrollView, Pressable, type ViewProps } from 'react-native'
 import { Card } from '../../ui/card'
 import { ExerciseCard, type ExerciseCardProps } from './ExerciseCard'
-import { MuscleGroupChip, type VolumeStatus } from './MuscleGroupChip'
+import { MuscleGroupChip } from './MuscleGroupChip'
+import { landmarkZoneToStatus, type VolumeLandmarkZone } from './muscleTaxonomy'
 import { Typography } from '../Typography'
 import { resolveColor } from '../../../theme/resolve-color'
 import { formatWorkoutStats } from '../../../utils/workout-format'
 
 export type WorkoutStatus = 'completed' | 'today' | 'upcoming'
 
-/** Spec volume-status vocabulary; mapped to MuscleGroupChip's VolumeStatus internally. */
-export type WorkoutMuscleVolumeStatus = 'under' | 'maintenance' | 'productive' | 'over'
+/**
+ * The landmark-zone vocabulary a plan emits.
+ *
+ * @deprecated Use {@link VolumeLandmarkZone} — the same four values under the
+ * name VW-333 gave them. Kept as an alias so existing call sites keep compiling.
+ */
+export type WorkoutMuscleVolumeStatus = VolumeLandmarkZone
 
 export interface WorkoutMuscleGroup {
   /** Muscle group identifier (free-form to match plan data). */
@@ -46,14 +52,6 @@ const statusAccentToken: Record<
   completed: 'status-success',
   today: 'brand-primary',
   upcoming: 'hairline-default',
-}
-
-/** Maps the spec's volume-status vocabulary onto MuscleGroupChip's enum. */
-const volumeStatusMap: Record<WorkoutMuscleVolumeStatus, VolumeStatus> = {
-  under: 'behind',
-  maintenance: 'ontrack',
-  productive: 'target',
-  over: 'over',
 }
 
 /**
@@ -142,7 +140,9 @@ export function WorkoutCard({
             <MuscleGroupChip
               key={muscle.group}
               name={muscle.label}
-              volumeStatus={muscle.volumeStatus ? volumeStatusMap[muscle.volumeStatus] : undefined}
+              volumeStatus={
+                muscle.volumeStatus ? landmarkZoneToStatus(muscle.volumeStatus) : undefined
+              }
             />
           ))}
         </ScrollView>

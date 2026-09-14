@@ -97,18 +97,16 @@ interface LegendEntry {
  * `useMemo`, not a component, so the caller resolves the theme and passes it in.
  */
 function buildSlugParts(data: BodyMapData[], mode: ThemeMode): ExtendedBodyPart[] {
-  const bySlug = new Map<string, { status: VolumeStatus; intensity: number }>()
+  const bySlug = new Map<string, VolumeStatus>()
   for (const d of data) {
     for (const slug of MUSCLE_TO_SVG_SLUGS[d.muscleGroup] ?? []) {
       const existing = bySlug.get(slug)
-      if (!existing || isMoreSevere(d.volumeStatus, existing.status)) {
-        bySlug.set(slug, { status: d.volumeStatus, intensity: d.intensity })
-      }
+      if (!existing || isMoreSevere(d.volumeStatus, existing)) bySlug.set(slug, d.volumeStatus)
     }
   }
-  return Array.from(bySlug.entries()).map(([slug, v]) => ({
+  return Array.from(bySlug.entries()).map(([slug, status]) => ({
     slug: slug as Slug,
-    color: getHeatmapColor(v.status, v.intensity, mode),
+    color: getHeatmapColor(status, mode),
   }))
 }
 
@@ -161,7 +159,7 @@ function buildDetailedLegend(data: BodyMapData[]): LegendEntry[] {
  *
  * @example
  * <BodyMap
- *   data={[{ muscleGroup: MuscleGroup.CHEST, intensity: 0.7, volumeStatus: 'productive', weeklySets: 12 }]}
+ *   data={[{ muscleGroup: MuscleGroup.CHEST, intensity: 0.7, volumeStatus: 'target', weeklySets: 12 }]}
  *   view="front"
  *   onViewChange={setView}
  *   onMusclePress={setSelected}
@@ -205,7 +203,6 @@ export function BodyMap({
   const glowColor = highlightedMuscle
     ? getHeatmapColor(
         data.find((d) => d.muscleGroup === highlightedMuscle)?.volumeStatus,
-        data.find((d) => d.muscleGroup === highlightedMuscle)?.intensity ?? 0,
         surfaceMode
       )
     : null
@@ -344,7 +341,7 @@ interface MuscleButtonProps {
 }
 
 function MuscleButton({ entry, highlighted, onMusclePress, ramp }: MuscleButtonProps) {
-  const dotColor = getHeatmapColor(entry.status, entry.intensity, useSurfaceMode())
+  const dotColor = getHeatmapColor(entry.status, useSurfaceMode())
   const label = `${entry.name}, ${VOLUME_STATUS_LABELS[entry.status]}, ${entry.sets} sets this week`
   return (
     <Pressable

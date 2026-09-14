@@ -34,11 +34,17 @@ const VOLUME_GRADIENT = `linear-gradient(90deg, ${t['status-info']} 0%, ${t['sta
 const SLIDE_OFFSET = 400
 const BACKDROP_OPACITY = 0.4
 
-/** Volume status -> Badge color scheme. */
+/**
+ * Volume status -> Badge color scheme. The badge is a semantic status chip, not
+ * a dataviz mark, so it stays on the semantic status family rather than
+ * following the dot and the figure onto the diverging scale.
+ */
 const STATUS_BADGE_COLOR: Record<VolumeStatus, BadgeColor> = {
-  under: 'info',
-  maintenance: 'warning',
-  productive: 'success',
+  untrained: 'default',
+  behind: 'info',
+  ontrack: 'warning',
+  target: 'success',
+  approaching: 'warning',
   over: 'error',
 }
 
@@ -119,7 +125,7 @@ function markerFraction(weeklySets: number, { mev, mrv }: VolumeLandmarks): numb
  *   displayName="Chest"
  *   weeklySets={14}
  *   landmarks={{ mev: 8, mav: 14, mrv: 20 }}
- *   volumeStatus="productive"
+ *   volumeStatus="target"
  *   lastTrained="2 days ago"
  *   weeklyHistory={[8, 10, 12, 14]}
  *   isOpen={open}

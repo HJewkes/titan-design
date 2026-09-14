@@ -18,7 +18,7 @@ import {
 } from './muscleTaxonomy'
 
 /** Volume statuses in display order for the legend and summary cards. */
-const STATUS_ORDER: VolumeStatus[] = ['under', 'maintenance', 'productive', 'over']
+const STATUS_ORDER: VolumeStatus[] = ['behind', 'ontrack', 'target', 'approaching', 'over']
 
 /** One muscle's full volume picture — feeds the body maps and the detail panel. */
 export interface TrainingStatusMuscle {
@@ -71,9 +71,11 @@ export interface TrainingStatusPageProps extends ViewProps {
 /** Roll up per-muscle rows into the page summary (pure, testable). */
 export function deriveTrainingSummary(muscles: TrainingStatusMuscle[]): TrainingStatusSummary {
   const statusCounts: Record<VolumeStatus, number> = {
-    under: 0,
-    maintenance: 0,
-    productive: 0,
+    untrained: 0,
+    behind: 0,
+    ontrack: 0,
+    target: 0,
+    approaching: 0,
     over: 0,
   }
   let totalWeeklySets = 0
@@ -104,9 +106,9 @@ const SUMMARY_CARDS: Array<{
   label: string
 }> = [
   { key: 'total', label: 'Weekly Sets' },
-  { key: 'productive', label: 'Productive' },
-  { key: 'under', label: 'Under' },
-  { key: 'over', label: 'Over' },
+  { key: 'target', label: 'Target Met' },
+  { key: 'behind', label: 'Behind' },
+  { key: 'over', label: 'Over MRV' },
 ]
 
 function SummaryCards({ summary }: { summary: TrainingStatusSummary }) {
@@ -178,7 +180,7 @@ function StatusLegend({ size = 'phone' }: { size?: BodyMapSize }) {
               width: 8 * ramp,
               height: 8 * ramp,
               borderRadius: 9999,
-              backgroundColor: getHeatmapColor(status, 0.6, surfaceMode),
+              backgroundColor: getHeatmapColor(status, surfaceMode),
             }}
             accessibilityElementsHidden
           />

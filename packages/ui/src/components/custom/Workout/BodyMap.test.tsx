@@ -5,8 +5,8 @@ import { BodyMap, type BodyMapData } from './BodyMap'
 import { MuscleGroup } from './muscleTaxonomy'
 
 const data: BodyMapData[] = [
-  { muscleGroup: MuscleGroup.CHEST, intensity: 0.7, volumeStatus: 'productive', weeklySets: 12 },
-  { muscleGroup: MuscleGroup.LATS, intensity: 0.4, volumeStatus: 'under', weeklySets: 6 },
+  { muscleGroup: MuscleGroup.CHEST, intensity: 0.7, volumeStatus: 'target', weeklySets: 12 },
+  { muscleGroup: MuscleGroup.LATS, intensity: 0.4, volumeStatus: 'behind', weeklySets: 6 },
   { muscleGroup: MuscleGroup.QUADS, intensity: 0.9, volumeStatus: 'over', weeklySets: 20 },
 ]
 
@@ -112,8 +112,8 @@ describe('BodyMap', () => {
   describe('accessibility', () => {
     it('labels each muscle button with name, status, and weekly sets', () => {
       render(<BodyMap data={data} view="front" />)
-      expect(screen.getByLabelText('Chest, productive, 12 sets this week')).toBeInTheDocument()
-      expect(screen.getByLabelText('Lats, under-trained, 6 sets this week')).toBeInTheDocument()
+      expect(screen.getByLabelText('Chest, target met, 12 sets this week')).toBeInTheDocument()
+      expect(screen.getByLabelText('Lats, behind plan, 6 sets this week')).toBeInTheDocument()
     })
 
     it('labels the view toggle buttons', () => {

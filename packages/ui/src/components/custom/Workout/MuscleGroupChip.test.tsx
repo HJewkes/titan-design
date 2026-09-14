@@ -21,7 +21,7 @@ describe('MuscleGroupChip', () => {
     // checkable here is that the status never reaches the capsule element.
     const { rerender } = render(<MuscleGroupChip name="Quads" volumeStatus="untrained" />)
     const shape = screen.getByTestId('muscle-group-chip').getAttribute('class')
-    for (const status of ['behind', 'ontrack', 'target', 'over'] as const) {
+    for (const status of ['behind', 'ontrack', 'target', 'approaching', 'over'] as const) {
       rerender(<MuscleGroupChip name="Quads" volumeStatus={status} />)
       expect(screen.getByTestId('muscle-group-chip').getAttribute('class'), status).toBe(shape)
       expect(screen.getByTestId('muscle-group-chip-dot')).toBeInTheDocument()
@@ -52,7 +52,7 @@ describe('MuscleGroupChip', () => {
   })
 
   it('renders all volume status variants without error', () => {
-    const statuses = ['untrained', 'behind', 'ontrack', 'target', 'over'] as const
+    const statuses = ['untrained', 'behind', 'ontrack', 'target', 'approaching', 'over'] as const
     const { rerender } = render(<MuscleGroupChip name="Test" volumeStatus="untrained" />)
     for (const status of statuses) {
       rerender(<MuscleGroupChip name="Test" volumeStatus={status} />)

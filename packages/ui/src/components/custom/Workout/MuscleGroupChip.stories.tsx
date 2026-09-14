@@ -13,8 +13,9 @@ const meta: Meta<typeof MuscleGroupChip> = {
     },
     volumeStatus: {
       control: 'select',
-      options: [undefined, 'untrained', 'behind', 'ontrack', 'target', 'over'],
-      description: 'Volume status determines dot color',
+      options: [undefined, 'untrained', 'behind', 'ontrack', 'target', 'approaching', 'over'],
+      description:
+        'Volume status. The dot paints the same `dataviz-diverging-*` scale as the BodyMap figure (VW-333).',
     },
     onPress: {
       action: 'pressed',
@@ -61,6 +62,13 @@ export const Target: Story = {
   },
 }
 
+export const Approaching: Story = {
+  args: {
+    name: 'Glutes',
+    volumeStatus: 'approaching',
+  },
+}
+
 export const Over: Story = {
   args: {
     name: 'Front Delts',
@@ -82,7 +90,14 @@ export const Tappable: Story = {
   },
 }
 
-const allStatuses: VolumeStatus[] = ['untrained', 'behind', 'ontrack', 'target', 'over']
+const allStatuses: VolumeStatus[] = [
+  'untrained',
+  'behind',
+  'ontrack',
+  'target',
+  'approaching',
+  'over',
+]
 
 export const AllStatuses: Story = {
   render: () => (
@@ -106,6 +121,7 @@ export const MuscleGroups: Story = {
       <MuscleGroupChip name="Triceps" volumeStatus="target" />
       <MuscleGroupChip name="Front Delts" volumeStatus="over" />
       <MuscleGroupChip name="Side Delts" volumeStatus="behind" />
+      <MuscleGroupChip name="Glutes" volumeStatus="approaching" />
       <MuscleGroupChip name="Abs" volumeStatus="untrained" />
     </View>
   ),
