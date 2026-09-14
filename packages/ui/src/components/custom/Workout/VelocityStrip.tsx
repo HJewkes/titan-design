@@ -7,7 +7,6 @@ import { getSemanticColors, space } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
 import { alpha } from '../../../utils/colors'
 import { formatVelocity } from '../../../utils/workout-format'
-import { cn } from '../../../utils/cn'
 import {
   SetBarChart,
   type SetSlot,
