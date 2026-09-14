@@ -5,7 +5,12 @@
 // main barrel can stay body-highlighter-free and tree-shakeable. Everything
 // re-exported here transitively pulls that native SVG dependency; consumers who
 // render the muscle map import from this subpath instead of the root barrel.
-export { BodyMap, type BodyMapProps, type BodyMapData } from './components/custom/Workout/BodyMap'
+export {
+  BodyMap,
+  type BodyMapProps,
+  type BodyMapData,
+  type BodyMapSize,
+} from './components/custom/Workout/BodyMap'
 export {
   BodyMapDetailPanel,
   type BodyMapDetailPanelProps,

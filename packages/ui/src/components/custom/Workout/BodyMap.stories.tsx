@@ -62,8 +62,8 @@ const meta: Meta<typeof BodyMap> = {
     mode: { control: 'inline-radio', options: ['simple', 'detailed'] },
   },
   decorators: [
-    (Story) => (
-      <View style={{ padding: 16, maxWidth: 320 }}>
+    (Story, context) => (
+      <View style={{ padding: 16, maxWidth: context.args.size === 'wall' ? undefined : 320 }}>
         <Story />
       </View>
     ),
@@ -100,6 +100,18 @@ export const Highlighted: Story = {
 
 export const Empty: Story = {
   args: { data: [], view: 'front' },
+}
+
+export const Wall: Story = {
+  args: { data: sampleData, view: 'front', mode: 'detailed', size: 'wall' },
+  parameters: {
+    viewport: {
+      viewports: {
+        wall: { name: 'Wall', styles: { width: '1920px', height: '1080px' }, type: 'desktop' },
+      },
+      defaultViewport: 'wall',
+    },
+  },
 }
 
 function InteractiveBodyMap() {
