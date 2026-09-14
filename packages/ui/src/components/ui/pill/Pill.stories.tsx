@@ -57,6 +57,47 @@ export const AllTones: Story = {
 }
 
 /**
+ * Every tone in the solid variant. All six carry the same dark label, because every
+ * `-solid` fill is light enough to take one (AW-141). Accent and Error use a fill one
+ * rung lighter than their base tone, which is deliberate: at their base step no label
+ * reads on them at all, not even the darkest step of their own hue.
+ */
+export const SolidTones: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Contrast runs 5.16 (accent) to 9.64 (warning). Before AW-141 this row mixed a dark ' +
+          'label that failed on the two dark fills with a white one in `Button` that failed on ' +
+          'the four bright fills.',
+      },
+    },
+  },
+  render: () => (
+    <View className="flex-row gap-2 flex-wrap">
+      <Pill variant="solid" tone="brand">
+        Brand
+      </Pill>
+      <Pill variant="solid" tone="brand-secondary">
+        Accent
+      </Pill>
+      <Pill variant="solid" tone="success">
+        Success
+      </Pill>
+      <Pill variant="solid" tone="warning">
+        Warning
+      </Pill>
+      <Pill variant="solid" tone="error">
+        Error
+      </Pill>
+      <Pill variant="solid" tone="info">
+        Info
+      </Pill>
+    </View>
+  ),
+}
+
+/**
  * The same row on both planes a subtle pill actually lands on. A `-subtle` fill is
  * alpha, so it composites against whatever is behind it: the raised card lifts every
  * capsule and costs each label contrast. It is the harder case and the one AW-133 is
