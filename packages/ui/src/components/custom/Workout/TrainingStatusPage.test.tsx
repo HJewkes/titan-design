@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { siblingSource, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import {
   TrainingStatusPage,
@@ -157,5 +158,20 @@ describe('TrainingStatusPage', () => {
 
     fireEvent.click(screen.getByTestId('body-map-detail-panel-close'))
     expect(screen.queryByTestId('body-map-detail-panel')).not.toBeInTheDocument()
+  })
+})
+
+/** TrainingStatusPage's geometry, pinned (AW-142); pixels unchanged. */
+describe('TrainingStatusPage geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'TrainingStatusPage.tsx')
+
+  it('keeps the page gutter and its section rhythm', () => {
+    expect(source).toContain('p-gutter-sm gap-stack-lg')
+    expect(resolveAll(['p-gutter-sm', 'gap-stack-lg'])).toEqual(['16px', '16px'])
+  })
+
+  it('keeps the summary and body-map card insets', () => {
+    expect(source).toContain('p-inset-md gap-3')
+    expect(resolveAll(['p-inset-md', 'gap-3', 'gap-inline-md'])).toEqual(['12px', '12px', '8px'])
   })
 })

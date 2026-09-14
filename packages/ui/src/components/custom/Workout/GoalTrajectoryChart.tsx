@@ -485,16 +485,14 @@ export function GoalTrajectoryChart({
 
       {/* Status pill + legend. */}
       <View
-        className="flex-row items-center flex-wrap"
-        style={{ marginTop: 8, gap: 12 }}
+        className="flex-row items-center flex-wrap mt-stack-md gap-3"
         testID="goal-trajectory-chart-legend"
       >
         <View
           testID="goal-trajectory-chart-status-pill"
           accessibilityLabel={`Goal status: ${STATUS_LABEL[status]}`}
+          className="px-squish-x-sm py-squish-y-sm"
           style={{
-            paddingVertical: 3,
-            paddingHorizontal: 8,
             borderRadius: 4,
             borderWidth: 1,
             backgroundColor: alpha(palette.status, 0.15),
@@ -513,7 +511,7 @@ export function GoalTrajectoryChart({
           </Text>
         </View>
 
-        <View className="flex-row items-center" style={{ gap: 5 }}>
+        <View className="flex-row items-center gap-inline-sm">
           <View
             style={{
               width: 14,
@@ -533,7 +531,7 @@ export function GoalTrajectoryChart({
             {direction === 'down' ? 'Expected (loss)' : 'Expected'}
           </Text>
         </View>
-        <View className="flex-row items-center" style={{ gap: 5 }}>
+        <View className="flex-row items-center gap-inline-sm">
           <View style={{ width: 14, height: 2, backgroundColor: palette.committed }} />
           <Text
             style={{
@@ -545,7 +543,7 @@ export function GoalTrajectoryChart({
             Committed
           </Text>
         </View>
-        <View className="flex-row items-center" style={{ gap: 5 }}>
+        <View className="flex-row items-center gap-inline-sm">
           <View
             style={{
               width: 14,
@@ -565,7 +563,7 @@ export function GoalTrajectoryChart({
             Stretch
           </Text>
         </View>
-        <View className="flex-row items-center" style={{ gap: 5 }}>
+        <View className="flex-row items-center gap-inline-sm">
           <Text style={{ color: palette.star, fontSize: density.pillFont + 2 }}>★</Text>
           <Text
             style={{
@@ -578,7 +576,7 @@ export function GoalTrajectoryChart({
           </Text>
         </View>
         {geometry.deloadRects.length > 0 && (
-          <View className="flex-row items-center" style={{ gap: 5 }}>
+          <View className="flex-row items-center gap-inline-sm">
             <View style={{ width: 14, height: 8, backgroundColor: palette.deload }} />
             <Text
               style={{

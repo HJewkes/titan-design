@@ -466,7 +466,7 @@ export function StrengthTrendChart({
           <View
             testID="strength-trend-chart-tooltip"
             accessibilityElementsHidden
-            className="bg-surface-elevated border-hairline-strong"
+            className="bg-surface-elevated border-hairline-strong py-inset-sm px-2.5"
             style={{
               position: 'absolute',
               left: Math.max(
@@ -477,8 +477,6 @@ export function StrengthTrendChart({
               maxWidth: TOOLTIP_WIDTH,
               borderWidth: 1,
               borderRadius: 8,
-              paddingVertical: 8,
-              paddingHorizontal: 10,
             }}
           >
             <Text
@@ -491,9 +489,8 @@ export function StrengthTrendChart({
               {selectedCoord.point.sessionLabel ?? selectedCoord.point.date}
             </Text>
             <Text
-              className="text-text-primary"
+              className="text-text-primary mt-0.5"
               style={{
-                marginTop: 2,
                 fontSize: 13,
                 fontFamily: 'Inter, sans-serif',
                 fontWeight: '700',
@@ -504,6 +501,7 @@ export function StrengthTrendChart({
             {selected != null && selected > 0 && (
               <Text
                 style={{
+                  // optical: 1px keeps the delta tight under its value line.
                   marginTop: 1,
                   fontSize: 10,
                   fontFamily: 'Inter, sans-serif',
@@ -529,7 +527,8 @@ export function StrengthTrendChart({
       {/* Meso boundary x-axis labels. */}
       {geometry.boundaries.length > 0 && (
         <View
-          style={{ width, height: 14, position: 'relative', marginTop: 2 }}
+          className="mt-0.5"
+          style={{ width, height: 14, position: 'relative' }}
           accessibilityElementsHidden
           testID="strength-trend-chart-axis"
         >
@@ -554,13 +553,12 @@ export function StrengthTrendChart({
       )}
 
       {/* Trend pill. */}
-      <View className="flex-row" style={{ marginTop: 8 }}>
+      <View className="flex-row mt-stack-md">
         <View
           testID="strength-trend-chart-trend-pill"
           accessibilityLabel={`Strength trend: ${trendText}`}
+          className="px-squish-x-sm py-squish-y-sm"
           style={{
-            paddingVertical: 3,
-            paddingHorizontal: 8,
             borderRadius: 4,
             borderWidth: 1,
             backgroundColor: trend.positive ? SUCCESS_PILL_BG : ERROR_PILL_BG,
@@ -582,11 +580,10 @@ export function StrengthTrendChart({
 
       {/* Legend. */}
       <View
-        className="flex-row items-center"
-        style={{ marginTop: 8, gap: 14 }}
+        className="flex-row items-center mt-stack-md gap-3.5"
         testID="strength-trend-chart-legend"
       >
-        <View className="flex-row items-center" style={{ gap: 5 }}>
+        <View className="flex-row items-center gap-inline-sm">
           <View
             style={{ width: 14, height: 2.5, borderRadius: 1.5, backgroundColor: BRAND_PRIMARY }}
           />
@@ -597,7 +594,7 @@ export function StrengthTrendChart({
             Actual
           </Text>
         </View>
-        <View className="flex-row items-center" style={{ gap: 5 }}>
+        <View className="flex-row items-center gap-inline-sm">
           <View
             style={{
               width: 14,
@@ -614,7 +611,7 @@ export function StrengthTrendChart({
             Projected
           </Text>
         </View>
-        <View className="flex-row items-center" style={{ gap: 5 }}>
+        <View className="flex-row items-center gap-inline-sm">
           <Text style={{ fontSize: 12, color: STATUS_WARNING }}>★</Text>
           <Text
             className="text-text-secondary"

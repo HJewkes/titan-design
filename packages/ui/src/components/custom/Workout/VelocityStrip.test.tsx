@@ -1,4 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
+import { siblingSource, resolveAll } from '../../../test/spacing-resolver'
+import { space } from '../../../theme/tokens/semantic'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import {
@@ -788,5 +790,35 @@ describe('VelocityStrip hero variant', () => {
       <VelocityStrip velocities={heroSet} variant="hero" targetReps={8} liveRepIndex={3} />
     )
     expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+/**
+ * VelocityStrip's chrome geometry, pinned (AW-142).
+ *
+ * The framed strip is an `Animated.View`, which NativeWind does not compile
+ * className on — it renders `class="css-view-175oi2r"` and nothing else, so a
+ * spacing class there is silently dropped. Its chrome therefore reads the inset
+ * tokens through the JS export, which this asserts. The bar geometry is exempt
+ * and untouched: `SET_STRIP_GAP`, `BAR_GAP` and the sub-pixel `COMPACT_FOLD_GAP`
+ * stay local constants, as the spec requires.
+ */
+describe('VelocityStrip chrome resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'VelocityStrip.tsx')
+
+  it('keeps the framed strip’s inset, which tightens when the info row hides', () => {
+    expect(source).toContain('paddingTop: space.inset.lg')
+    expect(source).toContain('paddingBottom: showInfo ? space.inset.sm : space.inset.xs')
+    expect([space.inset.lg, space.inset.sm, space.inset.xs]).toEqual([16, 8, 4])
+  })
+
+  it('keeps the band label offset on the numeric scale', () => {
+    expect(source).toContain('mx-1.5')
+    expect(resolveAll(['mx-1.5'])).toEqual(['6px'])
+  })
+
+  it('leaves the bar geometry constants alone', () => {
+    expect(source).toContain('COMPACT_FOLD_GAP')
+    expect(source).toContain('chart geometry')
   })
 })
