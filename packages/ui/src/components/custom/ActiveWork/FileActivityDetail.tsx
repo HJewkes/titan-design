@@ -181,7 +181,9 @@ export function FileActivityDetail({
           file.coChange.map((c) => (
             <DataRow
               key={c.path}
-              className="py-1"
+              // The card's `p-4` is already this column's gutter, so the row drops
+              // its own inset rather than indenting the co-change list inside it.
+              className="px-0 py-1"
               labelClassName="shrink"
               label={<FilePathLabel path={c.path} size="sm" />}
               value={
