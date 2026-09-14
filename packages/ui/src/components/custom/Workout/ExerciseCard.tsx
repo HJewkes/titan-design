@@ -8,6 +8,7 @@ import { SetTableHeader } from './SetTableHeader'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
 import { type ExerciseIndicatorKind } from './ExerciseIndicator'
 import { resolveColor } from '../../../theme/resolve-color'
+import { cn } from '../../../utils/cn'
 
 export interface ExerciseCardProps {
   name: string
@@ -102,18 +103,14 @@ function getSupersetBorderRadius(
   }
 }
 
-function getSupersetMargin(
-  position: ExerciseCardProps['supersetPosition']
-): Record<string, number> {
-  if (position === 'first' || position === 'middle') {
-    return { marginBottom: 2 }
-  }
-  return {}
+/** The hairline between two cards of one superset; below `stack-sm`, so numeric. */
+function supersetGap(position: ExerciseCardProps['supersetPosition']): string | undefined {
+  return position === 'first' || position === 'middle' ? 'mb-0.5' : undefined
 }
 
-/** The chrome a card wraps its row in: superset corner radii + the inter-card margin. */
+/** The chrome a card wraps its row in: superset corner radii. */
 function supersetChrome(position: ExerciseCardProps['supersetPosition']): Record<string, number> {
-  return { ...getSupersetBorderRadius(position), ...getSupersetMargin(position) }
+  return getSupersetBorderRadius(position)
 }
 
 /** Project the collapsed glance's velocities + planned total onto the strip's per-set states. */
@@ -160,6 +157,7 @@ function CollapsedCard({
     isLive,
     onPress: onToggle,
     style: supersetChrome(supersetPosition),
+    className: supersetGap(supersetPosition),
   }
 
   // Two call shapes, not a conditional spread: the prescription union only narrows
@@ -221,7 +219,7 @@ function ExpandedCard({
 
   return (
     <View
-      className="bg-surface-elevated border-hairline"
+      className={cn('bg-surface-elevated border-hairline', supersetGap(supersetPosition))}
       style={{ borderWidth: 1, ...supersetChrome(supersetPosition) }}
       testID="exercise-card"
     >
@@ -242,10 +240,10 @@ function ExpandedCard({
 
       {/* The header↔body seam. */}
       <View
+        className="pb-1.5"
         style={{
           borderTopWidth: 1,
           borderTopColor: resolveColor('hairline-subtle'),
-          paddingBottom: 6,
         }}
         testID="exercise-card-body"
       >
@@ -280,6 +278,7 @@ function UpcomingCard({
     isSelected,
     onPress: onToggle,
     style: supersetChrome(supersetPosition),
+    className: supersetGap(supersetPosition),
   }
 
   return prescription !== undefined ? (

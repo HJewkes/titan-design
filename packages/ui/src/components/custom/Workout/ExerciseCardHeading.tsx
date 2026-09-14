@@ -8,6 +8,7 @@ import { useHoverState } from '../../ui/tooltip'
 import { ExerciseHeading, exerciseHeadingLabel, type ExerciseHeadingProps } from './ExerciseHeading'
 import { SetStrip, type SetStripSet } from './SetStrip'
 import { exerciseRowStateColor } from './exerciseRowState'
+import { cn } from '../../../utils/cn'
 
 /**
  * How much room the row gets, and therefore which shape it takes:
@@ -64,8 +65,10 @@ export type ExerciseCardHeadingProps = ExerciseHeadingProps & {
   stripHeight?: number
   /** The row the user has chosen — a persistent wash, distinct from transient hover. */
   isSelected?: boolean
-  /** Root style, for the chrome a card wraps the row in (superset radius, margins). */
+  /** Root style, for the chrome a card wraps the row in (superset radius). */
   style?: StyleProp<ViewStyle>
+  /** Root classes, for the chrome a card wraps the row in (superset gap). */
+  className?: string
   /** Root testID. Default "exercise-card"; override when nested inside another card. */
   testID?: string
 }
@@ -135,6 +138,7 @@ export function ExerciseCardHeading(props: ExerciseCardHeadingProps) {
     isLive = false,
     testID = 'exercise-card',
     style,
+    className,
   } = props
   const spec = DENSITY[density]
   const { hoverProps, pressed, hovered, headingHandlers } = useRowInteraction()
@@ -158,7 +162,7 @@ export function ExerciseCardHeading(props: ExerciseCardHeadingProps) {
     <Root
       {...hoverProps}
       {...rootPress}
-      className={spec.padding}
+      className={cn(spec.padding, className)}
       style={[
         { opacity: (dimmed ?? spec.dimByDefault) ? spec.dimOpacity : 1 },
         wash ? { backgroundColor: wash } : null,

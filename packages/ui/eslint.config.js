@@ -392,6 +392,7 @@ module.exports = tseslint.config(
       'src/components/custom/Workout/WorkoutPill.tsx',
       // Wave three, cards and rows (AW-142).
       'src/components/custom/Workout/BaseBadge.tsx',
+      'src/components/custom/Workout/ExerciseCard.tsx',
       'src/components/custom/Workout/ExerciseCardHeading.tsx',
       'src/components/custom/Workout/MesoCard.tsx',
       'src/components/custom/Workout/MesoStatusCard.tsx',
