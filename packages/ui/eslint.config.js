@@ -355,7 +355,14 @@ module.exports = tseslint.config(
   // string resolveColor returns under the RNW vitest alias).
   {
     files: ['src/components/**/*.{ts,tsx}'],
-    ignores: ['**/*.stories.tsx', '**/*.test.{ts,tsx}', '**/*-fixture.ts'],
+    ignores: [
+      '**/*.stories.tsx',
+      '**/*.test.{ts,tsx}',
+      '**/*-fixture.ts',
+      // Story-only fixtures, resolved colours are demo data; VW-316.
+      'src/components/custom/Workout/setHeadingKit.tsx',
+      'src/components/custom/Workout/velocity-story-kit.tsx',
+    ],
     rules: {
       'titan/no-frozen-theme': 'error',
     },

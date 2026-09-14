@@ -2,17 +2,9 @@
 import { View, Text, Pressable } from 'react-native'
 import { Card } from '../../ui/card'
 import { Badge, type BadgeColor } from '../../ui/badge'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../ui/surface'
 import { alpha } from '../../../utils/colors'
-
-const t = getSemanticColors('dark')
-
-const BRAND_PRIMARY = t['brand-primary']
-const ON_BRAND_PRIMARY = t['on-brand-primary']
-const BRAND_PRIMARY_SUBTLE = alpha(BRAND_PRIMARY, 0.12)
-const STATUS_SUCCESS = t['status-success']
-const STATUS_WARNING = t['status-warning']
-const STATUS_ERROR = t['status-error']
 
 /** Emoji option sets per known factor, keyed by lowercase id/label. */
 const EMOJI_SETS: Record<string, readonly string[]> = {
@@ -59,11 +51,12 @@ export interface ReadinessCheckProps {
   className?: string
 }
 
-/** Maps a 0-100 readiness score onto a status color. */
-function scoreColor(score: number): string {
-  if (score < 40) return STATUS_ERROR
-  if (score < 70) return STATUS_WARNING
-  return STATUS_SUCCESS
+/** Maps a 0-100 readiness score onto a status color, in the caller's theme mode. */
+function scoreColor(score: number, mode: ThemeMode): string {
+  const t = getSemanticColors(mode)
+  if (score < 40) return t['status-error']
+  if (score < 70) return t['status-warning']
+  return t['status-success']
 }
 
 const WARMUP_BADGE: Record<WarmUpStatus, { color: BadgeColor; label: string }> = {
@@ -94,6 +87,7 @@ interface EmojiSliderProps {
 
 /** One factor row: label plus a radiogroup of five tappable emoji. */
 function EmojiSlider({ factor }: EmojiSliderProps) {
+  const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
   const emojis = emojiSet(factor)
   return (
     <View style={{ marginTop: 14 }} testID={`readiness-check-factor-${factor.id}`}>
@@ -129,8 +123,8 @@ function EmojiSlider({ factor }: EmojiSliderProps) {
                 paddingVertical: 8,
                 borderRadius: 8,
                 borderWidth: 1,
-                borderColor: selected ? BRAND_PRIMARY : undefined,
-                backgroundColor: selected ? BRAND_PRIMARY_SUBTLE : undefined,
+                borderColor: selected ? brandPrimary : undefined,
+                backgroundColor: selected ? alpha(brandPrimary, 0.12) : undefined,
                 opacity: selected ? 1 : pressed ? 0.8 : 0.55,
                 transform: [{ scale: selected ? 1.06 : 1 }],
               })}
@@ -146,7 +140,7 @@ function EmojiSlider({ factor }: EmojiSliderProps) {
 
 /** Circular score gauge: 60px ring colored by range with the score centered. */
 function ScoreGauge({ score }: { score: number }) {
-  const color = scoreColor(score)
+  const color = scoreColor(score, useSurfaceMode())
   return (
     <View
       accessibilityRole="image"
@@ -236,6 +230,7 @@ export function ReadinessCheck({
   onConfirm,
   className,
 }: ReadinessCheckProps) {
+  const t = getSemanticColors(useSurfaceMode())
   return (
     <Card variant="outline" elevation={2} className={className} testID="readiness-check">
       <View style={{ padding: 16 }}>
@@ -265,7 +260,7 @@ export function ReadinessCheck({
             marginTop: 16,
             width: '100%',
             alignItems: 'center',
-            backgroundColor: BRAND_PRIMARY,
+            backgroundColor: t['brand-primary'],
             borderRadius: 8,
             paddingVertical: 12,
             opacity: pressed ? 0.8 : 1,
@@ -276,7 +271,7 @@ export function ReadinessCheck({
               fontSize: 13,
               fontWeight: '700',
               fontFamily: 'Inter, sans-serif',
-              color: ON_BRAND_PRIMARY,
+              color: t['on-brand-primary'],
             }}
           >
             Start Workout

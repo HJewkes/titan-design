@@ -3,11 +3,10 @@ import { useState, useCallback } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { roundTempo } from '../../../utils/workout-format'
 import { alpha } from '../../../utils/colors'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../ui/surface'
 import { primitiveRamps } from '../../../theme/tokens/primitives'
 import { MetricCell } from './metricText'
-
-const t = getSemanticColors('dark')
 
 /** The four tempo phases, in the order the display renders them. */
 export type TempoLivePhase = 'eccentric' | 'pauseBottom' | 'concentric' | 'pauseTop'
@@ -53,10 +52,37 @@ export interface TempoDisplayProps extends ViewProps {
 }
 
 const INTER = 'Inter, sans-serif'
-const TEXT_TERTIARY = t['result-neutral']
-const STATUS_ERROR = t['status-error'] // slow — over the target time
-const STATUS_SUCCESS = t['status-success'] // on target (within the band of 0.0)
-const STATUS_WARNING = t['status-warning'] // ahead — still time left to the target
+
+/**
+ * Every colour the display paints, for one theme mode. A function rather than module
+ * constants so the tempo row follows the enclosing Surface instead of freezing the dark
+ * palette at import (VW-316). Phase hues stay non-semantic ramp pins.
+ */
+function tempoColors(mode: ThemeMode) {
+  const t = getSemanticColors(mode)
+  const neutral = t['result-neutral']
+  return {
+    neutral,
+    surface: t['surface-raised'],
+    liveLabel: t['status-live-muted'],
+    textPrimary: t['text-primary'],
+    textSecondary: t['text-secondary'],
+    overlay: t['surface-overlay'],
+    overlayEdge: t['surface-elevated'],
+    slow: t['status-error'], // slow — over the target time
+    onTarget: t['status-success'], // on target (within the band of 0.0)
+    ahead: t['status-warning'], // ahead — still time left to the target
+    // Phase IDENTITY colours — deliberately NON-semantic (magenta ecc / cyan con) so the
+    // phase hue never collides with the semantic pacing tones the active number carries.
+    phase: {
+      eccentric: primitiveRamps.magenta[400],
+      pauseBottom: neutral,
+      concentric: primitiveRamps.cyan[300],
+      pauseTop: neutral,
+      dash: neutral,
+    },
+  }
+}
 
 /** Live active-phase readout: `countdown` remaining to 0.0, or `countup` elapsed to target. */
 export type TempoLiveReadout = 'countdown' | 'countup'
@@ -75,29 +101,19 @@ function getTempoFillPct(elapsedMs: number, targetMs: number | null): number {
  * identity, so the number is free to carry pacing). Keyed on time remaining to target:
  * ahead of target (still counting) → warning; within ±0.1s of 0.0 → success; over → error.
  */
-function activeNumberTone(elapsedMs: number, targetMs: number | null): string {
-  if (targetMs == null) return t['text-primary']
+function activeNumberTone(elapsedMs: number, targetMs: number | null, mode: ThemeMode): string {
+  const c = tempoColors(mode)
+  if (targetMs == null) return c.textPrimary
   const remainingMs = targetMs - elapsedMs
-  if (remainingMs > ON_TARGET_MS) return STATUS_WARNING
-  if (remainingMs >= -ON_TARGET_MS) return STATUS_SUCCESS
-  return STATUS_ERROR
+  if (remainingMs > ON_TARGET_MS) return c.ahead
+  if (remainingMs >= -ON_TARGET_MS) return c.onTarget
+  return c.slow
 }
 
 /** The active number: `countup` elapsed (→ target) or `countdown` remaining (→ 0.0, then −). */
 function liveReadoutText(elapsedMs: number, targetMs: number, readout: TempoLiveReadout): string {
   const seconds = readout === 'countup' ? elapsedMs / 1000 : (targetMs - elapsedMs) / 1000
   return seconds.toFixed(1)
-}
-
-// Phase IDENTITY colours — deliberately NON-semantic (magenta ecc / cyan con) so the
-// phase hue never collides with the semantic pacing tones (success/error) the active
-// number carries. Pauses stay neutral grey. [eccentric, pauseBottom, concentric, pauseTop]
-const phaseColors = {
-  eccentric: primitiveRamps.magenta[400],
-  pauseBottom: TEXT_TERTIARY,
-  concentric: primitiveRamps.cyan[300],
-  pauseTop: TEXT_TERTIARY,
-  dash: TEXT_TERTIARY,
 }
 
 function TempoValue({
@@ -124,13 +140,9 @@ function TempoSeparator({ color, fontSize }: { color: string; fontSize: number }
   )
 }
 
-// Phase order + color matching the tempo tuple, for the live phase-fill row.
-const LIVE_PHASES: { key: TempoLivePhase; color: string }[] = [
-  { key: 'eccentric', color: phaseColors.eccentric },
-  { key: 'pauseBottom', color: phaseColors.pauseBottom },
-  { key: 'concentric', color: phaseColors.concentric },
-  { key: 'pauseTop', color: phaseColors.pauseTop },
-]
+// Phase order matching the tempo tuple, for the live phase-fill row. The colour comes
+// from `tempoColors(mode).phase` at render time, keyed by this order.
+const LIVE_PHASE_KEYS: TempoLivePhase[] = ['eccentric', 'pauseBottom', 'concentric', 'pauseTop']
 
 /** A phase's place in the current rep: already done (locked full), filling now, or still to come. */
 type LiveCellStatus = 'done' | 'active' | 'upcoming'
@@ -174,6 +186,7 @@ function LiveTempoCell({
   fontSize: number
   readout: TempoLiveReadout
 }) {
+  const mode = useSurfaceMode()
   const targetMs = value > 0 ? value * 1000 : null
   // Fixed, monospace-width cell sized to the widest readout — a phase activating or its
   // number changing never shifts the layout (the fill bar stays put too).
@@ -202,7 +215,7 @@ function LiveTempoCell({
   if (status === 'done') {
     const finalMs = completedMs ?? targetMs ?? 0
     const finalText = targetMs != null ? liveReadoutText(finalMs, targetMs, readout) : String(value)
-    const finalTone = targetMs != null ? activeNumberTone(finalMs, targetMs) : color
+    const finalTone = targetMs != null ? activeNumberTone(finalMs, targetMs, mode) : color
     return (
       <View style={wrap} testID="tempo-live-done">
         <CellFill color={color} pct={100} />
@@ -213,7 +226,7 @@ function LiveTempoCell({
 
   // Active: the phase-hued fill grows with the phase; the number reads the live time
   // (countdown/countup) to 0.1s, coloured SEMANTICALLY by pacing (neutral/on-target/behind).
-  const numberTone = activeNumberTone(phaseElapsedMs, targetMs)
+  const numberTone = activeNumberTone(phaseElapsedMs, targetMs, mode)
   const fillPct = getTempoFillPct(phaseElapsedMs, targetMs)
   const activeText =
     targetMs != null ? liveReadoutText(phaseElapsedMs, targetMs, readout) : String(value)
@@ -238,23 +251,22 @@ function LiveTempoRow({
 }) {
   // Phases run in a fixed order within a rep, so the active phase's position tells us which
   // phases are already done (locked). When it wraps back to the first phase, the row resets.
-  const activeIndex = live.activePhase
-    ? LIVE_PHASES.findIndex((p) => p.key === live.activePhase)
-    : -1
+  const phase = tempoColors(useSurfaceMode()).phase
+  const activeIndex = live.activePhase ? LIVE_PHASE_KEYS.indexOf(live.activePhase) : -1
   return (
     <>
-      {LIVE_PHASES.map((phase, i) => {
+      {LIVE_PHASE_KEYS.map((key, i) => {
         const status: LiveCellStatus =
           activeIndex < 0 || i > activeIndex ? 'upcoming' : i < activeIndex ? 'done' : 'active'
         return (
-          <View key={phase.key} style={{ flexDirection: 'row', alignItems: 'center' }}>
-            {i > 0 && <TempoSeparator color={phaseColors.dash} fontSize={fontSize} />}
+          <View key={key} style={{ flexDirection: 'row', alignItems: 'center' }}>
+            {i > 0 && <TempoSeparator color={phase.dash} fontSize={fontSize} />}
             <LiveTempoCell
               value={values[i]}
-              color={phase.color}
+              color={phase[key]}
               status={status}
               phaseElapsedMs={live.phaseElapsedMs}
-              completedMs={live.completed?.[phase.key]}
+              completedMs={live.completed?.[key]}
               fontSize={fontSize}
               readout={readout}
             />
@@ -277,6 +289,7 @@ export function TempoDisplay({
   className,
   ...props
 }: TempoDisplayProps) {
+  const c = tempoColors(useSurfaceMode())
   const [showTooltip, setShowTooltip] = useState(false)
   // Round exact (unrounded) tempo seconds to the 1-dp display granularity.
   const [eccentric, pauseBottom, concentric, pauseTop] = roundTempo(tempo)
@@ -304,7 +317,7 @@ export function TempoDisplay({
       style={{
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: t['surface-raised'],
+        backgroundColor: c.surface,
         paddingHorizontal: chromePadX,
         paddingVertical: chromePadY,
         borderRadius: chromeRadius,
@@ -318,7 +331,7 @@ export function TempoDisplay({
             fontSize: labelFont,
             fontWeight: '500',
             // Live-muted green while a rep is running, tertiary at rest.
-            color: live ? t['status-live-muted'] : TEXT_TERTIARY,
+            color: live ? c.liveLabel : c.neutral,
             letterSpacing: 0.5,
             textTransform: 'uppercase',
             marginRight: Math.round(fontSize * 0.5),
@@ -338,13 +351,13 @@ export function TempoDisplay({
         ) : (
           // Static prescription: the phase-coloured lockup (the same colours the live row rests at).
           <>
-            <TempoValue value={eccentric} color={phaseColors.eccentric} fontSize={fontSize} />
-            <TempoSeparator color={phaseColors.dash} fontSize={fontSize} />
-            <TempoValue value={pauseBottom} color={phaseColors.pauseBottom} fontSize={fontSize} />
-            <TempoSeparator color={phaseColors.dash} fontSize={fontSize} />
-            <TempoValue value={concentric} color={phaseColors.concentric} fontSize={fontSize} />
-            <TempoSeparator color={phaseColors.dash} fontSize={fontSize} />
-            <TempoValue value={pauseTop} color={phaseColors.pauseTop} fontSize={fontSize} />
+            <TempoValue value={eccentric} color={c.phase.eccentric} fontSize={fontSize} />
+            <TempoSeparator color={c.phase.dash} fontSize={fontSize} />
+            <TempoValue value={pauseBottom} color={c.phase.pauseBottom} fontSize={fontSize} />
+            <TempoSeparator color={c.phase.dash} fontSize={fontSize} />
+            <TempoValue value={concentric} color={c.phase.concentric} fontSize={fontSize} />
+            <TempoSeparator color={c.phase.dash} fontSize={fontSize} />
+            <TempoValue value={pauseTop} color={c.phase.pauseTop} fontSize={fontSize} />
           </>
         )}
       </View>
@@ -374,19 +387,19 @@ export function TempoDisplay({
         >
           <View
             style={{
-              backgroundColor: t['surface-overlay'],
+              backgroundColor: c.overlay,
               borderRadius: 6,
               paddingVertical: 8,
               paddingHorizontal: 12,
               borderWidth: 1,
-              borderColor: t['surface-elevated'],
+              borderColor: c.overlayEdge,
             }}
           >
             <Text
               style={{
                 fontSize: 10,
                 lineHeight: 16,
-                color: t['text-secondary'],
+                color: c.textSecondary,
                 fontFamily: INTER,
               }}
             >
@@ -396,7 +409,7 @@ export function TempoDisplay({
               style={{
                 fontSize: 10,
                 lineHeight: 16,
-                color: t['text-secondary'],
+                color: c.textSecondary,
                 fontFamily: INTER,
               }}
             >
@@ -406,7 +419,7 @@ export function TempoDisplay({
               style={{
                 fontSize: 10,
                 lineHeight: 16,
-                color: t['text-secondary'],
+                color: c.textSecondary,
                 fontFamily: INTER,
               }}
             >
@@ -416,7 +429,7 @@ export function TempoDisplay({
               style={{
                 fontSize: 10,
                 lineHeight: 16,
-                color: t['text-secondary'],
+                color: c.textSecondary,
                 fontFamily: INTER,
               }}
             >
@@ -432,7 +445,7 @@ export function TempoDisplay({
               borderTopWidth: 5,
               borderLeftColor: 'transparent',
               borderRightColor: 'transparent',
-              borderTopColor: t['surface-elevated'],
+              borderTopColor: c.overlayEdge,
             }}
           />
         </View>

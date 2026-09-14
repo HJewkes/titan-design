@@ -1,9 +1,8 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, StyleSheet, Platform, type ViewProps, type ViewStyle } from 'react-native'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../ui/surface'
 import { alpha } from '../../../utils/colors'
-
-const t = getSemanticColors('dark')
 
 /**
  * Coaching-category flood level for the live surface. Mirrors {@link StatusPill}:
@@ -37,10 +36,14 @@ const floodOpacity: Record<LiveAuraCategory, number> = {
   stop: 0.18,
 }
 
-/** Resolved flood color for a category, or `null` when there is no flood. */
-export function liveAuraColor(category: LiveAuraCategory): string | null {
+/**
+ * Resolved flood color for a category in `mode`, or `null` when there is no flood.
+ * Takes the mode rather than holding a palette so the flood follows the theme:
+ * pass `useSurfaceMode()` (VW-316).
+ */
+export function liveAuraColor(category: LiveAuraCategory, mode: ThemeMode): string | null {
   const token = categoryToken[category]
-  return token ? t[token] : null
+  return token ? getSemanticColors(mode)[token] : null
 }
 
 /**
@@ -58,7 +61,9 @@ export function LiveAuraFrame({
   style,
   ...props
 }: LiveAuraFrameProps) {
-  const color = liveAuraColor(category)
+  const mode = useSurfaceMode()
+  const t = getSemanticColors(mode)
+  const color = liveAuraColor(category, mode)
   const tint = color ? alpha(color, floodOpacity[category]) : 'transparent'
 
   // Match R2's canonical aura: a top-down radial wash that FADES TO TRANSPARENT

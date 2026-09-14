@@ -3,7 +3,7 @@ import { View, type ViewProps } from 'react-native'
 import { greyRamp } from '../../../theme/tokens/primitives'
 import { insetWell } from '../../../theme/materials'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { Surface } from '../../ui/surface'
+import { Surface, useSurfaceMode } from '../../ui/surface'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
 import { ExerciseCard } from './ExerciseCard'
 import type { SetRowProps } from './SetRow'
@@ -18,7 +18,6 @@ import type { ExerciseIndicatorKind } from './ExerciseIndicator'
 // `insetWell` material — recessed by its inner shadow yet paler than the header, so the
 // transparent exercise headings on it never blend into the header plane. Surface owns both
 // backgrounds, so the rail no longer hand-sets them.
-const SEMANTIC = getSemanticColors('dark')
 /** Row divider — one step up from the well it sits in so the line reads. */
 const DIVIDER = greyRamp[875]
 
@@ -108,6 +107,7 @@ export function SessionRail({
   style,
   ...props
 }: SessionRailProps) {
+  const wellFill = getSemanticColors(useSurfaceMode())['surface-base']
   return (
     <Surface
       level="elevated"
@@ -130,11 +130,7 @@ export function SessionRail({
       {/* The list is a WELL cut into the rail: one plane down from the rail's
           `elevated`, recessed by the shared inset material. `level` follows the
           well's tone so on-surface text resolves against what is painted. */}
-      <Surface
-        level="base"
-        style={[{ flex: 1 }, insetWell(SEMANTIC['surface-base'])]}
-        testID="session-rail-list"
-      >
+      <Surface level="base" style={[{ flex: 1 }, insetWell(wellFill)]} testID="session-rail-list">
         {exercises.map((ex, i) => (
           <View
             key={ex.id ?? i}

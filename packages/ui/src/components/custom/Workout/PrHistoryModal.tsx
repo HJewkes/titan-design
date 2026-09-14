@@ -4,14 +4,10 @@ import { StarIcon } from './icons'
 import { Drawer, DrawerBody } from '../../ui/drawer'
 import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../ui/surface'
 import { getGlowShadow } from '../../../theme/elevation'
 import { alpha } from '../../../utils/colors'
 
-const SEMANTIC = getSemanticColors('dark')
-const BRAND_PRIMARY = SEMANTIC['brand-primary']
-const RECENT_BORDER = alpha(SEMANTIC['status-warning'], 0.3)
-/** A recent PR is EMPHASIS, not depth: a warning-toned glow, shared builder. */
-const RECENT_GLOW = getGlowShadow(SEMANTIC['status-warning'], 'subtle')
 // Native-safe fallback for the conditional row border (recent uses a computed
 // rgba, so className can't express both branches).
 const BORDER_DEFAULT = resolveColor('hairline-default')
@@ -66,6 +62,11 @@ function recordValueText({ value, unit }: PrRecord): string {
 }
 
 function PrRecordRow({ record, index }: { record: PrRecord; index: number }) {
+  const t = getSemanticColors(useSurfaceMode())
+  const brandPrimary = t['brand-primary']
+  const recentBorder = alpha(t['status-warning'], 0.3)
+  // A recent PR is EMPHASIS, not depth: a warning-toned glow, shared builder.
+  const recentGlow = getGlowShadow(t['status-warning'], 'subtle')
   const label = recordLabel(record.type)
   const valueText = recordValueText(record)
   const a11yLabel = record.isRecent
@@ -84,12 +85,12 @@ function PrRecordRow({ record, index }: { record: PrRecord; index: number }) {
         marginBottom: 8,
         borderRadius: 8,
         borderWidth: 1,
-        borderColor: record.isRecent ? RECENT_BORDER : BORDER_DEFAULT,
-        ...(record.isRecent ? RECENT_GLOW : {}),
+        borderColor: record.isRecent ? recentBorder : BORDER_DEFAULT,
+        ...(record.isRecent ? recentGlow : {}),
       }}
       testID={`pr-history-modal-record-${index}`}
     >
-      <StarIcon size={16} color={BRAND_PRIMARY} fill={BRAND_PRIMARY} strokeWidth={2} />
+      <StarIcon size={16} color={brandPrimary} fill={brandPrimary} strokeWidth={2} />
       <Text
         className="text-text-secondary"
         style={{
