@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { DataRow } from './DataRow'
+import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
 
 describe('DataRow', () => {
   it('renders label and string value', () => {
@@ -65,4 +66,23 @@ describe('DataRow', () => {
       expect(results).toHaveNoViolations()
     })
   })
+})
+
+/**
+ * DataRow's row inset, pinned (AW-142 wave two).
+ *
+ * DataRow shipped `py-2` and NO horizontal inset at all. It gains one at 12,
+ * one rung below ListItem's 16, so the two row primitives read as one ladder:
+ * ListItem 12/16 loose, DataRow 8/12 dense.
+ */
+describe('DataRow geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'DataRow.tsx')
+
+  it.each([['DataRow', ['py-inset-sm', 'px-inset-md'], ['8px', '12px']]] as const)(
+    '%s ships %s',
+    (functionName, classes, pixels) => {
+      expect(spacingClassesIn(source, functionName)).toEqual([...classes])
+      expect(resolveAll([...classes])).toEqual([...pixels])
+    }
+  )
 })

@@ -15,7 +15,7 @@ export function ListItem({ className, children, onPress, ...props }: ListItemPro
 
   return (
     <Container
-      className={cn('flex-row items-center py-3 px-4 min-h-[48px]', className)}
+      className={cn('flex-row items-center py-inset-md px-inset-lg min-h-[48px]', className)}
       {...(containerProps as any)}
     >
       {children}
@@ -48,9 +48,9 @@ export interface ListItemContentProps extends ViewProps {
 
 export function ListItemContent({ title, subtitle, className, ...props }: ListItemContentProps) {
   return (
-    <View className={cn('flex-1 justify-center', className)} {...props}>
+    <View className={cn('flex-1 justify-center gap-stack-sm', className)} {...props}>
       <Text className="text-sm font-medium text-text-primary">{title}</Text>
-      {subtitle && <Text className="text-xs text-text-secondary mt-0.5">{subtitle}</Text>}
+      {subtitle && <Text className="text-xs text-text-secondary">{subtitle}</Text>}
     </View>
   )
 }
