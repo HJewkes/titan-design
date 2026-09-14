@@ -54,7 +54,7 @@ function StrengthRow({ row, index }: { row: StrengthExerciseRow; index: number }
       style={{ borderRadius: 8, borderWidth: 1 }}
       testID={id}
     >
-      <View className="gap-inline-md" style={SPLIT_ROW}>
+      <View className="gap-inline-md" style={SPLIT_ROW} testID={`${id}-header`}>
         <Text
           className="text-text-primary"
           style={{ ...ROW_NAME, flexShrink: 1 }}

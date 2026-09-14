@@ -17,7 +17,7 @@ import {
   singleExercisePlan,
   singleExerciseStrength,
 } from './muscle-sections-fixture'
-import { resolveAll } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
 import { space } from '../../../theme/tokens/semantic'
 
 const contributing: ContributingExercise[] = [
@@ -523,32 +523,110 @@ describe('BodyMapDetailPanel', () => {
 
   /**
    * The inline spacing migrated to classes (AW-142 wave three). `className` never
-   * reaches the DOM here — NativeWind is stubbed — so the geometry is pinned by
-   * resolving each class the way Tailwind does. Every row is the pixel the style
-   * object used to carry, so a wrong key or a typo fails rather than silently
-   * rendering nothing.
+   * reaches the DOM here — NativeWind is stubbed — so each row renders the panel
+   * and reads the className `setup.ts` captured for the pinned `testID` (see
+   * `spacingClassesOf`), then resolves it the way Tailwind does. A class changed
+   * on that element, or typo'd, fails — pinned to the render, not a guess.
    */
   describe('spacing tokens', () => {
-    it.each([
-      ['drag handle', ['py-control-y-md'], ['8px']],
-      ['scroll body', ['px-inset-lg', 'pt-inset-md'], ['16px', '12px']],
-      ['header row', ['gap-inline-md', 'py-1'], ['8px', '4px']],
-      ['close button pad and bleed', ['p-1', 'm-1'], ['4px', '4px']],
-      ['section tops', ['mt-stack-lg', 'mt-3.5'], ['16px', '14px']],
-      ['label bottoms', ['mb-1.5', 'mb-stack-md'], ['6px', '8px']],
-      ['set-count row', ['gap-inline-sm'], ['4px']],
-      ['contributing row', ['gap-2.5', 'px-inset-md', 'py-2'], ['10px', '12px', '8px']],
-      ['upcoming row', ['gap-2.5', 'py-1.5'], ['10px', '6px']],
-      ['view-exercises button', ['py-control-y-lg'], ['10px']],
-      [
-        'strength row',
-        ['mb-stack-sm', 'gap-stack-sm', 'px-inset-md', 'py-2'],
-        ['4px', '4px', '12px', '8px'],
-      ],
-      ['strength row split', ['gap-inline-md'], ['8px']],
-      ['plan sub-list', ['mt-stack-md'], ['8px']],
-    ] as const)('%s resolves to %s', (_label, classes, pixels) => {
-      expect(resolveAll([...classes])).toEqual([...pixels])
+    it('drag handle: py-control-y-md', () => {
+      render(<BodyMapDetailPanel {...baseProps} />)
+      expect(resolveAll(spacingClassesOf('body-map-detail-panel-handle'))).toEqual(['8px'])
+    })
+
+    it('scroll body: px-inset-lg, pt-inset-md', () => {
+      render(<BodyMapDetailPanel {...baseProps} placement="right" />)
+      expect(resolveAll(spacingClassesOf('body-map-detail-panel-scroll'))).toEqual(['16px', '12px'])
+    })
+
+    it('header row: gap-inline-md, py-1', () => {
+      render(<BodyMapDetailPanel {...baseProps} />)
+      expect(resolveAll(spacingClassesOf('body-map-detail-panel-header'))).toEqual(['8px', '4px'])
+    })
+
+    it('close button pad and bleed: p-1, -m-1', () => {
+      render(<BodyMapDetailPanel {...baseProps} />)
+      expect(resolveAll(spacingClassesOf('body-map-detail-panel-close'))).toEqual(['4px', '4px'])
+    })
+
+    it('volume section top: mt-stack-lg', () => {
+      render(<BodyMapDetailPanel {...baseProps} />)
+      expect(resolveAll(spacingClassesOf('body-map-detail-panel-volume'))).toEqual(['16px'])
+    })
+
+    it('volume landmarks row: mb-1.5', () => {
+      render(<BodyMapDetailPanel {...baseProps} />)
+      expect(resolveAll(spacingClassesOf('body-map-detail-panel-volume-landmarks'))).toEqual([
+        '6px',
+      ])
+    })
+
+    it('set-count row: mt-3.5, gap-inline-sm', () => {
+      render(<BodyMapDetailPanel {...baseProps} />)
+      expect(resolveAll(spacingClassesOf('body-map-detail-panel-set-count-row'))).toEqual([
+        '14px',
+        '4px',
+      ])
+    })
+
+    it('sparkline top: mt-3.5', () => {
+      render(<BodyMapDetailPanel {...baseProps} />)
+      expect(resolveAll(spacingClassesOf('body-map-detail-panel-sparkline'))).toEqual(['14px'])
+    })
+
+    it('contributing caption bottom: mb-stack-md', () => {
+      render(<BodyMapDetailPanel {...baseProps} />)
+      expect(resolveAll(spacingClassesOf('body-map-detail-panel-contributing-caption'))).toEqual([
+        '8px',
+      ])
+    })
+
+    it('contributing row: mb-1.5, gap-2.5, px-inset-md, py-2', () => {
+      render(<BodyMapDetailPanel {...baseProps} />)
+      expect(resolveAll(spacingClassesOf('body-map-detail-panel-contributing-0'))).toEqual([
+        '6px',
+        '10px',
+        '12px',
+        '8px',
+      ])
+    })
+
+    it('upcoming row: gap-2.5, py-1.5', () => {
+      render(<BodyMapDetailPanel {...baseProps} />)
+      expect(resolveAll(spacingClassesOf('body-map-detail-panel-upcoming-0'))).toEqual([
+        '10px',
+        '6px',
+      ])
+    })
+
+    it('view-exercises button: mt-stack-lg, py-control-y-lg', () => {
+      render(<BodyMapDetailPanel {...baseProps} onViewExercises={vi.fn()} />)
+      expect(resolveAll(spacingClassesOf('body-map-detail-panel-view-exercises'))).toEqual([
+        '16px',
+        '10px',
+      ])
+    })
+
+    it('strength row: mb-stack-sm, gap-stack-sm, px-inset-md, py-2', () => {
+      render(<BodyMapDetailPanel {...baseProps} strength={singleExerciseStrength} />)
+      expect(resolveAll(spacingClassesOf('body-map-detail-panel-strength-0'))).toEqual([
+        '4px',
+        '4px',
+        '12px',
+        '8px',
+      ])
+    })
+
+    it('strength row split: gap-inline-md', () => {
+      render(<BodyMapDetailPanel {...baseProps} strength={singleExerciseStrength} />)
+      expect(resolveAll(spacingClassesOf('body-map-detail-panel-strength-0-header'))).toEqual([
+        '8px',
+      ])
+    })
+
+    it('plan sub-list: mt-stack-md', () => {
+      render(<BodyMapDetailPanel {...baseProps} plan={singleExercisePlan} />)
+      expect(resolveAll(spacingClassesOf('body-map-detail-panel-plan-done'))).toEqual(['8px'])
     })
 
     it('pads the scroll content from the inset ramp', () => {

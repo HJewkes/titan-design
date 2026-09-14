@@ -11,12 +11,21 @@
  * fails the test.
  *
  * Not named `*.test.ts`, so vitest's `include` does not collect it.
+ *
+ * A component with more than one `className` per source function (a sheet
+ * with a dozen rows, say) defeats `spacingClassesIn`'s single source-text
+ * match — it can't tell rows apart, which is how a stale hardcoded class list
+ * shipped for one and stayed green through an unrelated edit. `spacingClassesOf`
+ * is the fix: it binds to the actual render, reading the className `setup.ts`
+ * captured per `testID` (see `classname-capture.ts`), so a class change on
+ * that element — not just anywhere in the file — is what fails the test.
  */
 
 import { createRequire } from 'node:module'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { capturedClassNames } from './classname-capture'
 
 const require = createRequire(import.meta.url)
 const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
@@ -118,4 +127,26 @@ export function spacingClassesIn(source: string, functionName: string): string[]
     }
     return resolved !== undefined
   })
+}
+
+/**
+ * The spacing classes the element at `testId` actually rendered, in source
+ * order, resolved the same way `spacingClassesIn` resolves a source literal —
+ * except this reads the render (via `setup.ts`'s per-testID capture), so it
+ * survives components with more than one `className` per function. A
+ * negative utility (`-m-1`) resolves by magnitude, sign stripped.
+ */
+export function spacingClassesOf(testId: string): string[] {
+  const raw = capturedClassNames.get(testId)
+  if (raw === undefined) throw new Error(`no captured className for testID '${testId}'`)
+  return raw
+    .split(/\s+/)
+    .map((className) => className.replace(/^-/, ''))
+    .filter((className) => {
+      const resolved = resolvePx(className)
+      if (resolved === undefined && SEMANTIC_CLASS.test(className)) {
+        throw new Error(`'${className}' is not a spacing key`)
+      }
+      return resolved !== undefined
+    })
 }
