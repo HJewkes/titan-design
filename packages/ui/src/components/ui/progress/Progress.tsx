@@ -100,10 +100,10 @@ export function Progress({
   const percentage = Math.min(Math.max((value / max) * 100, 0), 100)
 
   return (
-    <View className={cn('w-full', className)} {...props}>
+    <View className={cn('w-full gap-stack-sm', className)} {...props}>
       {/* Label and Value Row */}
       {(label || showValue) && (
-        <View className="flex-row justify-between items-center mb-1">
+        <View className="flex-row justify-between items-center">
           {label && <Text className="text-sm text-text-secondary">{label}</Text>}
           {showValue && !isIndeterminate && (
             <Text className="text-sm font-medium text-text-primary">{formatValue(value, max)}</Text>
@@ -319,7 +319,7 @@ export function ProgressSteps({
   const { dot, connector } = stepSizeStyles[size]
 
   return (
-    <View className={cn('w-full', className)} {...props}>
+    <View className={cn('w-full gap-stack-md', className)} {...props}>
       <View className="flex-row items-center">
         {Array.from({ length: totalSteps }).map((_, index) => (
           <React.Fragment key={index}>
@@ -348,7 +348,7 @@ export function ProgressSteps({
 
       {/* Labels */}
       {labels && labels.length > 0 && (
-        <View className="flex-row mt-2">
+        <View className="flex-row">
           {labels.map((label, index) => (
             <Text
               key={index}

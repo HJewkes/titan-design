@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Progress, CircularProgress, ProgressSteps } from './Progress'
+import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 
 describe('Progress', () => {
   it('renders correctly', () => {
@@ -202,5 +203,24 @@ describe('Progress', () => {
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
+  })
+})
+
+/**
+ * Progress's stack, pinned (AW-142 wave two).
+ *
+ * `mb-1` on the label row and `mt-2` on the step labels become the roots'
+ * own gaps. Unchanged in pixels.
+ */
+describe('Progress geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'Progress.tsx')
+
+  it.each([
+    ['the bar root', 'w-full gap-stack-sm', ['100%', '4px']],
+    ['the steps root', 'w-full gap-stack-md', ['100%', '8px']],
+  ] as const)('%s ships `%s`', (_label, classes, pixels) => {
+    expect(source).toContain(classes)
+    const spacing = classes.split(' ').filter((c) => resolveAll([c])[0] !== undefined)
+    expect(resolveAll(spacing)).toEqual([...pixels])
   })
 })

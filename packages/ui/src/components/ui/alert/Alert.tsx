@@ -137,8 +137,8 @@ export function Alert({
       accessibilityRole="alert"
       className={cn(
         isCompact
-          ? 'flex-row items-center px-3 py-2 rounded-lg'
-          : 'flex-row items-start p-4 rounded-lg',
+          ? 'flex-row items-center px-inset-md py-inset-sm rounded-lg'
+          : 'flex-row items-start p-inset-lg rounded-lg',
         colors[variant],
         // A compact `subtle` pill gets a hairline status border so it reads as a
         // defined cue on a dark wall (the CueFlag look); other variants carry their own.
@@ -163,7 +163,7 @@ export function Alert({
         </View>
       )}
 
-      <View className="flex-1">
+      <View className="flex-1 gap-stack-sm">
         {message != null && (
           <Text
             className={cn(
@@ -208,7 +208,7 @@ export interface AlertTitleProps {
  * Title for Alert component.
  */
 export function AlertTitle({ children, className }: AlertTitleProps) {
-  return <Text className={cn('font-semibold text-text-primary mb-1', className)}>{children}</Text>
+  return <Text className={cn('font-semibold text-text-primary', className)}>{children}</Text>
 }
 
 export interface AlertDescriptionProps {

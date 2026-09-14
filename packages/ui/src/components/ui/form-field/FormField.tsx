@@ -86,7 +86,7 @@ export function FormField({
     <View
       className={cn(
         'w-full',
-        isHorizontal && 'flex-row items-start',
+        isHorizontal ? 'flex-row items-start' : 'gap-stack-md',
         isDisabled && 'opacity-50',
         className
       )}
@@ -95,7 +95,7 @@ export function FormField({
       {/* Label Section */}
       {label && (
         <View
-          className={cn('flex-row items-center', isHorizontal ? 'pt-2' : 'mb-1.5')}
+          className={cn('flex-row items-center', isHorizontal && 'pt-2')}
           style={isHorizontal && labelWidth ? { width: labelWidth as number } : undefined}
         >
           <Text className={cn('font-medium text-text-primary', labelSizeStyles[labelSize])}>
@@ -113,7 +113,7 @@ export function FormField({
       )}
 
       {/* Input Section */}
-      <View className={cn(isHorizontal && 'flex-1')}>
+      <View className={cn('gap-stack-md', isHorizontal && 'flex-1')}>
         {/* Clone children to pass accessibility props */}
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child)) {
@@ -137,7 +137,7 @@ export function FormField({
         {(helperText || errorMessage) && (
           <Text
             id={isInvalid ? errorId : helperId}
-            className={cn('text-xs mt-1.5', isInvalid ? 'text-status-error' : 'text-text-tertiary')}
+            className={cn('text-xs', isInvalid ? 'text-status-error' : 'text-text-tertiary')}
           >
             {errorMessage || helperText}
           </Text>
@@ -179,15 +179,15 @@ export function FormSection({
 }: FormSectionProps) {
   return (
     <View
-      className={cn('w-full', className)}
+      className={cn('w-full gap-stack-lg', className)}
       accessibilityRole={'group' as any}
       accessibilityLabel={title}
       {...props}
     >
       {(title || description) && (
-        <View className="mb-4">
+        <View className="gap-stack-sm">
           {title && <Text className="text-lg font-semibold text-text-primary">{title}</Text>}
-          {description && <Text className="text-sm text-text-secondary mt-1">{description}</Text>}
+          {description && <Text className="text-sm text-text-secondary">{description}</Text>}
         </View>
       )}
 
@@ -224,7 +224,7 @@ export function FormActions({ align = 'right', className, children, ...props }: 
   return (
     <View
       className={cn(
-        'flex-row items-center gap-3 pt-4',
+        'flex-row items-center gap-3 pt-inset-lg',
         'border-t border-hairline mt-4',
         alignStyles[align],
         className
