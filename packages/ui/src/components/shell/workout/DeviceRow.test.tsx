@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { DeviceRow, type Device } from './DeviceRow'
+import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
 
 const bound: Device = { id: 'Voltra-A3F2', nickname: 'Left Cable', slot: 'L', state: 'connected' }
 const unbound: Device = { id: 'Voltra-77E0', nickname: 'Spare', slot: null, state: 'available' }
@@ -33,5 +34,22 @@ describe('DeviceRow', () => {
       expect(container.firstChild).toBeInTheDocument()
       unmount()
     })
+  })
+})
+
+/**
+ * The device row's spacing, pinned (AW-142 wave three).
+ *
+ * `px-2 py-[9px]` was 8 across and 9 down — the specimen's pixel, with no
+ * optical reason to be off the grain — and squares up to `p-inset-sm` at 8/8.
+ * The 10px dot-to-name gap sits between the inline rungs 8 and 12, so it stays
+ * the numeric rung `gap-2.5`.
+ */
+describe('DeviceRow geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'DeviceRow.tsx')
+
+  it('ships gap-2.5 and p-inset-sm', () => {
+    expect(spacingClassesIn(source, 'DeviceRow')).toEqual(['gap-2.5', 'p-inset-sm'])
+    expect(resolveAll(['gap-2.5', 'p-inset-sm'])).toEqual(['10px', '8px'])
   })
 })

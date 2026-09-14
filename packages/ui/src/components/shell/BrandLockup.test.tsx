@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { BrandLockup } from './BrandLockup'
 import { brandKeys, brandPresets } from './brands'
+import { siblingSource } from '../../test/spacing-resolver'
 
 describe('BrandLockup', () => {
   it('renders the voltras wordmark by default', () => {
@@ -52,5 +53,21 @@ describe('BrandLockup', () => {
   it('has no accessibility violations', async () => {
     const { container } = render(<BrandLockup />)
     expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+/**
+ * The lockup's spacing, pinned (AW-142 wave three).
+ *
+ * 7px mark-to-wordmark is an optical gap, not a rung, and stays — with its
+ * reason in the source. Asserting the comment as well as the value keeps the
+ * two from drifting apart.
+ */
+describe('BrandLockup keeps its optical 7px gap', () => {
+  const source = siblingSource(import.meta.url, 'BrandLockup.tsx')
+
+  it('ships gap-[7px] with the reason beside it', () => {
+    expect(source).toContain('gap-[7px]')
+    expect(source).toMatch(/\/\/ optical: 7px mark-to-wordmark/)
   })
 })

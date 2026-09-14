@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { DataRow } from './DataRow'
 import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
+import { cn } from '../../../utils/cn'
 
 describe('DataRow', () => {
   it('renders label and string value', () => {
@@ -26,9 +27,7 @@ describe('DataRow', () => {
   })
 
   it('wraps ReactNode value in a View container', () => {
-    const { container } = render(
-      <DataRow label="Custom" value={<div data-testid="inner">Content</div>} />
-    )
+    render(<DataRow label="Custom" value={<div data-testid="inner">Content</div>} />)
     expect(screen.getByTestId('inner')).toBeInTheDocument()
   })
 
@@ -69,22 +68,45 @@ describe('DataRow', () => {
 })
 
 /**
- * DataRow's row inset, pinned (AW-142 wave two).
+ * DataRow's row inset, pinned (AW-142 wave three).
  *
- * `py-2` named, and nothing else: DataRow stays GUTTERLESS. Its two callers
- * already sit inside a padded container, so giving it a horizontal inset here
- * would double-inset them until wave three reached them. Wave three adds the
- * inset in the same PR that strips the callers' own padding, so the two halves
- * land atomically. Operator decision, 2026-09-14.
+ * Wave two named `py-2` and deliberately left the row GUTTERLESS, because both
+ * in-repo callers sat inside a padded container and would have double-inset.
+ * Wave three completes the ladder: the row owns 12 across, and the same PR
+ * strips the callers' reliance on their container. ListItem is 16/12 loose,
+ * DataRow 12/8 dense.
  *
- * The absence is asserted, not just the presence — a horizontal inset arriving
- * on its own is exactly what this test exists to catch.
+ * The override is asserted too. A semantic key that tailwind-merge does not
+ * recognise survives beside the caller's `px-0` and stylesheet order picks the
+ * winner — the exact failure that rendered all three Badge sizes at 8px in wave
+ * two — so the ladder's escape hatch gets a test, not an assumption.
  */
 describe('DataRow geometry resolves to the spacing tokens', () => {
   const source = siblingSource(import.meta.url, 'DataRow.tsx')
 
-  it('ships py-inset-sm and no horizontal inset', () => {
-    expect(spacingClassesIn(source, 'DataRow')).toEqual(['py-inset-sm'])
-    expect(resolveAll(['py-inset-sm'])).toEqual(['8px'])
+  it('ships the dense rung: 12 across, 8 down, 8 between', () => {
+    expect(spacingClassesIn(source, 'DataRow')).toEqual([
+      'gap-inline-md',
+      'px-inset-md',
+      'py-inset-sm',
+    ])
+    expect(resolveAll(['gap-inline-md', 'px-inset-md', 'py-inset-sm'])).toEqual([
+      '8px',
+      '12px',
+      '8px',
+    ])
+  })
+
+  it('sits one rung inside ListItem', () => {
+    expect(resolveAll(['px-inset-lg', 'py-inset-md'])).toEqual(['16px', '12px'])
+  })
+
+  it.each([
+    ['px-0 py-1', 'flex-row items-center justify-between gap-inline-md px-0 py-1'],
+    ['p-0', 'flex-row items-center justify-between gap-inline-md p-0'],
+  ])("a caller's %s replaces the row inset rather than nesting inside it", (override, expected) => {
+    expect(
+      cn('flex-row items-center justify-between gap-inline-md px-inset-md py-inset-sm', override)
+    ).toBe(expected)
   })
 })

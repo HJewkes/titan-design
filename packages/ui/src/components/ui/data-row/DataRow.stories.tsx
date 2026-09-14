@@ -69,7 +69,10 @@ export const WithValueClassName: Story = {
 
 export const MultipleRows: Story = {
   render: () => (
-    <View style={{ gap: 0 }}>
+    // The rows are `justify-between`, so a container with no width shrinks to the
+    // widest label-value pair and every other row's two runs meet in the middle —
+    // which is what made "Mean Velocity" read as one word with its value.
+    <View style={{ width: 320 }}>
       <DataRow label="Exercise" value="Back Squat" />
       <DataRow label="Weight" value="185 lbs" />
       <DataRow label="Sets" value="5" />

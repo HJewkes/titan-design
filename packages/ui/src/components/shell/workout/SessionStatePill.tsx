@@ -38,7 +38,7 @@ const stateConfig: Record<
 export function SessionStatePill({ state, label, className, ...props }: SessionStatePillProps) {
   const cfg = stateConfig[state]
   return (
-    <View className={cn('flex-row items-center gap-2', className)} {...props}>
+    <View className={cn('flex-row items-center gap-inline-md', className)} {...props}>
       <Indicator size="md" color={cfg.color} pulse={cfg.pulse} />
       <Typography variant="monoLabel" color={cfg.textColor} className="text-[11px]">
         {label ?? cfg.label}

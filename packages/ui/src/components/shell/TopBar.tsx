@@ -95,14 +95,14 @@ export function TopBar({
       // shared chrome gradient (web); solid bg-surface-elevated is the native fallback
       style={surfaceGradient.chrome() as object}
       className={cn(
-        'h-[46px] flex-row items-center gap-[14px] px-4 bg-surface-elevated border-b border-hairline',
+        'h-[46px] flex-row items-center gap-3.5 px-inset-lg bg-surface-elevated border-b border-hairline',
         className
       )}
     >
       {leading ?? <BrandLockup brand={brand} subtitle={subtitle} showSubtitle={subtitleVisible} />}
 
       {/* right cluster — app chrome then the clock, pinned to the edge */}
-      <View className="ml-auto flex-row items-center gap-[12px]">
+      <View className="ml-auto flex-row items-center gap-inline-lg">
         {dividedCluster([...(Array.isArray(trailing) ? trailing : [trailing]), clock])}
       </View>
     </View>

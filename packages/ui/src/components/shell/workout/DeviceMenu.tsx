@@ -43,11 +43,11 @@ export function DeviceMenu({
       <PopoverTrigger>
         <DeviceIndicator status={status} />
       </PopoverTrigger>
-      <PopoverContent className="right-0 left-auto mt-[10px] w-[326px] bg-surface-elevated border border-hairline-strong rounded-[10px] p-[7px]">
+      <PopoverContent className="right-0 left-auto mt-2.5 w-[326px] bg-surface-elevated border border-hairline-strong rounded-[10px] p-inset-sm">
         <Typography
           variant="monoLabel"
           color="tertiary"
-          className="text-[9px] tracking-[0.8px] px-2 pt-[6px] pb-2"
+          className="text-[9px] tracking-[0.8px] px-2 pt-1.5 pb-2"
         >
           Devices — {boundCount} bound · {availCount} available
         </Typography>

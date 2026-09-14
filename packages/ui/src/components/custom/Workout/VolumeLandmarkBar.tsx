@@ -120,7 +120,9 @@ export function VolumeLandmarkBar({
             {pct}%
           </Typography>
         }
-        className="py-0"
+        // The header lockup spans the bar's own width, so it drops DataRow's
+        // inset and stays flush with the track beneath it.
+        className="p-0"
         testID="volume-landmark-header"
       />
 
