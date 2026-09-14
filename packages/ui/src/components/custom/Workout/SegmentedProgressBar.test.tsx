@@ -31,7 +31,7 @@ describe('SegmentedProgressBar', () => {
 
   it('uses the behind (warning) pace colour when fill trails the target', () => {
     render(<SegmentedProgressBar segments={PLAN} value={7.2} target={0.7} />)
-    const behind = paceToneColor(paceTone(7.2 / 12, 0.7))
+    const behind = paceToneColor(paceTone(7.2 / 12, 0.7), 'dark')
     expect(screen.getAllByTestId('segmented-bar-segment')[0]).toHaveStyle({
       backgroundColor: behind,
     })
@@ -39,7 +39,7 @@ describe('SegmentedProgressBar', () => {
 
   it('uses the ahead (success) pace colour when fill is at or past the target', () => {
     render(<SegmentedProgressBar segments={PLAN} value={9.5} target={0.7} />)
-    const ahead = paceToneColor(paceTone(9.5 / 12, 0.7))
+    const ahead = paceToneColor(paceTone(9.5 / 12, 0.7), 'dark')
     expect(screen.getAllByTestId('segmented-bar-segment')[0]).toHaveStyle({
       backgroundColor: ahead,
     })
@@ -48,7 +48,7 @@ describe('SegmentedProgressBar', () => {
   it('is neutral (steel) with no marker when no target is given', () => {
     render(<SegmentedProgressBar segments={PLAN} value={7} />)
     expect(screen.queryByTestId('segmented-bar-marker')).not.toBeInTheDocument()
-    const neutral = paceToneColor('neutral')
+    const neutral = paceToneColor('neutral', 'dark')
     expect(screen.getAllByTestId('segmented-bar-segment')[0]).toHaveStyle({
       backgroundColor: neutral,
     })

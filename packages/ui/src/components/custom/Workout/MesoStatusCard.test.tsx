@@ -44,6 +44,46 @@ describe('MesoStatusCard', () => {
       render(<MesoStatusCard {...baseProps} />)
       expect(screen.getByTestId('meso-status-card-badge')).toHaveTextContent('On Track')
     })
+
+    it('does not change the default (success, no basis) rendered markup', () => {
+      render(<MesoStatusCard {...baseProps} />)
+      expect(screen.getByTestId('meso-status-card-subtitle').getAttribute('style')).toContain(
+        'font-size: 12px'
+      )
+      expect(screen.queryByTestId('meso-status-card-basis')).not.toBeInTheDocument()
+      expect(screen.getByTestId('meso-status-card')).toMatchSnapshot()
+    })
+  })
+
+  describe('info badge variant', () => {
+    it('renders the info-token colour, not warning-amber', () => {
+      render(
+        <MesoStatusCard {...baseProps} statusBadge={{ label: 'Ahead of Pace', variant: 'info' }} />
+      )
+      const badge = screen.getByTestId('meso-status-card-badge')
+      expect(badge).toHaveTextContent('Ahead of Pace')
+      const label = screen.getByText('Ahead of Pace')
+      expect(label).toHaveStyle({ color: 'rgb(33, 150, 243)' })
+    })
+  })
+
+  describe('basis line', () => {
+    it('renders the basis line under the subtitle when given', () => {
+      render(
+        <MesoStatusCard
+          {...baseProps}
+          basis="+5 lb/wk ramp · basis: RP intermediate ramp · slope agrees (r² .81)"
+        />
+      )
+      expect(screen.getByTestId('meso-status-card-basis')).toHaveTextContent(
+        '+5 lb/wk ramp · basis: RP intermediate ramp · slope agrees (r² .81)'
+      )
+    })
+
+    it('omits the basis line when not provided', () => {
+      render(<MesoStatusCard {...baseProps} />)
+      expect(screen.queryByTestId('meso-status-card-basis')).not.toBeInTheDocument()
+    })
   })
 
   describe('metrics grid', () => {
@@ -170,6 +210,11 @@ describe('MesoStatusCard', () => {
             statusBadge={{ label: 'Deload Soon', variant: 'error' }}
             coaching={undefined}
             nextTarget={undefined}
+          />
+          <MesoStatusCard
+            {...baseProps}
+            statusBadge={{ label: 'Ahead of Pace', variant: 'info' }}
+            basis="+5 lb/wk ramp · basis: RP intermediate ramp"
           />
         </>
       )

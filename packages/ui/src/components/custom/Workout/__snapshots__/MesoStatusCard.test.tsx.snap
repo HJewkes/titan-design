@@ -1,0 +1,310 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`MesoStatusCard > rendering > does not change the default (success, no basis) rendered markup 1`] = `
+<article
+  aria-label="Mesocycle status for Hypertrophy Block"
+  class="css-view-175oi2r"
+  data-testid="meso-status-card"
+  role="article"
+  style="background-color: rgb(37, 35, 33); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden; border-top-color: rgb(218, 95, 0); border-right-color: rgb(218, 95, 0); border-bottom-color: rgb(218, 95, 0); border-left-color: rgb(218, 95, 0); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; background-image: linear-gradient(135deg, var(--color-surface-elevated) 0%, var(--color-surface-raised) 100%);"
+>
+  <div
+    class="css-view-175oi2r"
+    data-testid="meso-status-card-accent"
+    style="position: absolute; top: 0px; left: 0px; right: 0px; height: 3px; z-index: 1;"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="flex: 1 1 0%; background-color: rgb(218, 95, 0);"
+    />
+    <div
+      class="css-view-175oi2r"
+      style="flex: 1 1 0%; background-color: rgb(255, 121, 0);"
+    />
+    <div
+      class="css-view-175oi2r"
+      style="flex: 1 1 0%; background-color: rgb(255, 160, 99);"
+    />
+  </div>
+  <div
+    class="css-view-175oi2r"
+    data-testid="meso-status-card-body"
+    style="padding: 14px 14px 14px 14px; gap: 14px;"
+  >
+    <div
+      class="css-view-175oi2r"
+      data-testid="meso-status-card-header"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 8px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          data-testid="meso-status-card-name"
+          dir="auto"
+          style="flex-shrink: 1; font-size: 15px; font-family: "Space Grotesk", sans-serif; font-weight: 700;"
+        >
+          Hypertrophy Block
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="meso-status-card-badge"
+          style="gap: 5px; padding: 3px 8px 3px 8px; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; background-color: rgba(46, 213, 115, 0.15); border-top-color: rgba(46, 213, 115, 0.3); border-right-color: rgba(46, 213, 115, 0.3); border-bottom-color: rgba(46, 213, 115, 0.3); border-left-color: rgba(46, 213, 115, 0.3);"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                aria-label="success status"
+                class="css-view-175oi2r"
+                data-testid="status-dot"
+                role="img"
+                style="width: 8px; height: 8px; border-top-left-radius: 9999px; border-top-right-radius: 9999px; border-bottom-right-radius: 9999px; border-bottom-left-radius: 9999px; align-items: center; justify-content: center; flex-shrink: 0; background-color: var(--color-status-success);"
+              />
+            </div>
+          </div>
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 10px; font-family: Inter, sans-serif; font-weight: 700; letter-spacing: 0.3px; color: rgb(46, 213, 115);"
+          >
+            On Track
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-text-146c3p1"
+        data-testid="meso-status-card-subtitle"
+        dir="auto"
+        style="margin-top: 4px; font-size: 12px; font-family: Inter, sans-serif;"
+      >
+        Week 6 of 8 · Upper/Lower
+      </div>
+    </div>
+    <div
+      class="css-view-175oi2r"
+      data-testid="meso-status-card-metrics"
+      style="gap: 8px;"
+    >
+      <div
+        class="css-view-175oi2r"
+        data-testid="meso-status-card-metric"
+        style="width: 48%;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="font-size: 10px; font-family: Inter, sans-serif; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;"
+        >
+          Prescribed
+        </div>
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="margin-top: 2px; font-size: 13px; font-family: Inter, sans-serif; font-weight: 600;"
+        >
+          3×8 @ RPE 8
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="meso-status-card-metric"
+        style="width: 48%;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="font-size: 10px; font-family: Inter, sans-serif; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;"
+        >
+          Actual
+        </div>
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="margin-top: 2px; font-size: 13px; font-family: Inter, sans-serif; font-weight: 600;"
+        >
+          3×8 @ 185 lbs
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="meso-status-card-metric"
+        style="width: 48%;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="font-size: 10px; font-family: Inter, sans-serif; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;"
+        >
+          Volume
+        </div>
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="margin-top: 2px; font-size: 13px; font-family: Inter, sans-serif; font-weight: 600;"
+        >
+          +12% vs wk 1
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="meso-status-card-metric"
+        style="width: 48%;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="font-size: 10px; font-family: Inter, sans-serif; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;"
+        >
+          e1RM
+        </div>
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="margin-top: 2px; font-size: 13px; font-family: Inter, sans-serif; font-weight: 600;"
+        >
+          232 lbs
+        </div>
+      </div>
+    </div>
+    <div
+      class="css-view-175oi2r"
+      data-testid="meso-status-card-gauges"
+      style="gap: 12px;"
+    >
+      <div
+        aria-label="Intensity: 68%"
+        aria-valuemax="100"
+        aria-valuemin="0"
+        aria-valuenow="68"
+        class="css-view-175oi2r"
+        data-testid="meso-status-card-gauge"
+        role="progressbar"
+        style="gap: 6px;"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 10px; font-family: Inter, sans-serif; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase;"
+          >
+            Intensity
+          </div>
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 10px; font-family: Inter, sans-serif; font-weight: 500;"
+          >
+            Actual
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="height: 8px; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; position: relative; background-image: linear-gradient(90deg, rgba(46, 213, 115, 0.25) 0%, rgba(249, 180, 21, 0.25) 50%, rgba(209, 67, 67, 0.25) 100%);"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="meso-status-card-gauge-center"
+            style="position: absolute; left: 50%; top: 0px; bottom: 0px; width: 1px; margin-left: -0.5px; background-color: rgba(255, 255, 255, 0.3);"
+          />
+          <div
+            class="css-view-175oi2r"
+            data-testid="meso-status-card-gauge-marker"
+            style="position: absolute; left: 68%; top: -3px; margin-left: -7px; width: 14px; height: 14px; border-top-left-radius: 9999px; border-top-right-radius: 9999px; border-bottom-right-radius: 9999px; border-bottom-left-radius: 9999px; border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; background-color: rgb(249, 180, 21); box-shadow: 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+          />
+        </div>
+      </div>
+      <div
+        aria-label="Volume: 82%"
+        aria-valuemax="100"
+        aria-valuemin="0"
+        aria-valuenow="82"
+        class="css-view-175oi2r"
+        data-testid="meso-status-card-gauge"
+        role="progressbar"
+        style="gap: 6px;"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 10px; font-family: Inter, sans-serif; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase;"
+          >
+            Volume
+          </div>
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 10px; font-family: Inter, sans-serif; font-weight: 500;"
+          >
+            vs MRV
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="height: 8px; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; position: relative; background-image: linear-gradient(90deg, rgba(46, 213, 115, 0.25) 0%, rgba(249, 180, 21, 0.25) 50%, rgba(209, 67, 67, 0.25) 100%);"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="meso-status-card-gauge-center"
+            style="position: absolute; left: 50%; top: 0px; bottom: 0px; width: 1px; margin-left: -0.5px; background-color: rgba(255, 255, 255, 0.3);"
+          />
+          <div
+            class="css-view-175oi2r"
+            data-testid="meso-status-card-gauge-marker"
+            style="position: absolute; left: 82%; top: -3px; margin-left: -7px; width: 14px; height: 14px; border-top-left-radius: 9999px; border-top-right-radius: 9999px; border-bottom-right-radius: 9999px; border-bottom-left-radius: 9999px; border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; background-color: rgb(209, 67, 67); box-shadow: 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="css-view-175oi2r"
+      data-testid="meso-status-card-coaching"
+      style="background-color: rgba(249, 180, 21, 0.06); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-color: rgba(249, 180, 21, 0.15); border-right-color: rgba(249, 180, 21, 0.15); border-bottom-color: rgba(249, 180, 21, 0.15); border-left-color: rgba(249, 180, 21, 0.15); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; padding: 10px 12px 10px 12px;"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="font-size: 12px; line-height: 17px; font-family: Inter, sans-serif;"
+      >
+        Velocity is holding — 
+        <span
+          class="css-textHasAncestor-1jxf684"
+          style="font-weight: 700;"
+        >
+          add load
+        </span>
+         next session.
+      </div>
+    </div>
+    <div
+      class="css-view-175oi2r"
+      data-testid="meso-status-card-next-target"
+      style="gap: 8px; background-color: rgba(46, 213, 115, 0.06); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-color: rgba(46, 213, 115, 0.2); border-right-color: rgba(46, 213, 115, 0.2); border-bottom-color: rgba(46, 213, 115, 0.2); border-left-color: rgba(46, 213, 115, 0.2); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; padding: 10px 12px 10px 12px;"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="font-size: 14px; color: rgb(46, 213, 115);"
+      >
+        →
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="flex-shrink: 1; font-size: 12px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(46, 213, 115);"
+      >
+        Next: 190 lbs × 8
+      </div>
+    </div>
+  </div>
+</article>
+`;

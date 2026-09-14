@@ -3,6 +3,7 @@ import { Fragment, type ReactNode } from 'react'
 import { View, Text, type ViewProps, type ViewStyle } from 'react-native'
 import { Card } from '../../ui/card'
 import { StatusDot } from './StatusDot'
+import { useOnSurfaceColor } from '../../ui/surface'
 import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { primitiveColors } from '../../../theme/tokens/primitives'
@@ -22,6 +23,7 @@ const BRAND_PRIMARY_LIGHT = MESO_ACCENT_GRADIENT_LIGHT
 const SUCCESS = t['status-success']
 const WARNING = t['status-warning']
 const ERROR = t['status-error']
+const INFO = t['status-info']
 
 /** Gradient stops for the 3px top accent: dark -> primary -> light (matches MesoCard). */
 const ACCENT_STOPS = [BRAND_PRIMARY_DARK, BRAND_PRIMARY, BRAND_PRIMARY_LIGHT]
@@ -36,7 +38,7 @@ const CARD_GRADIENT = `linear-gradient(135deg, ${resolveColor('surface-elevated'
 /** Gauge track gradient (teal -> amber -> red) at 0.25 alpha. */
 const GAUGE_GRADIENT = `linear-gradient(90deg, ${alpha(SUCCESS, 0.25)} 0%, ${alpha(WARNING, 0.25)} 50%, ${alpha(ERROR, 0.25)} 100%)`
 
-export type MesoStatusBadgeVariant = 'success' | 'warning' | 'error'
+export type MesoStatusBadgeVariant = 'success' | 'warning' | 'error' | 'info'
 
 const STATUS_VARIANTS: Record<
   MesoStatusBadgeVariant,
@@ -45,6 +47,9 @@ const STATUS_VARIANTS: Record<
   success: { bg: alpha(SUCCESS, 0.15), border: alpha(SUCCESS, 0.3), text: SUCCESS },
   warning: { bg: alpha(WARNING, 0.15), border: alpha(WARNING, 0.3), text: WARNING },
   error: { bg: alpha(ERROR, 0.15), border: alpha(ERROR, 0.25), text: ERROR },
+  // Pacing "ahead of target" reads as brand/info, never warning-amber — that hue is
+  // reserved for the pacing tone itself (REJECTED.md: "amber holds").
+  info: { bg: alpha(INFO, 0.15), border: alpha(INFO, 0.3), text: INFO },
 }
 
 export interface MesoStatusBadge {
@@ -89,6 +94,8 @@ export interface MesoStatusCardProps extends ViewProps {
   mesoName: string
   /** Context line, e.g. "Week 6 of 8 · Upper/Lower". */
   mesoSubtitle: string
+  /** Optional muted line under the subtitle, e.g. "+5 lb/wk ramp · basis: RP intermediate ramp". */
+  basis?: string
   /** Status pill in the header. */
   statusBadge: MesoStatusBadge
   /** Prescription-vs-actual metrics rendered as a 2x2 grid. */
@@ -150,7 +157,16 @@ function StatusPill({ badge }: { badge: MesoStatusBadge }) {
       testID="meso-status-card-badge"
     >
       <View accessibilityElementsHidden>
-        <StatusDot variant={badge.variant} size="sm" />
+        {badge.variant === 'info' ? (
+          // StatusDot has no `info` variant (out of this change's scope); a plain
+          // 8px fill matches its `sm` solid-dot look.
+          <View
+            style={{ width: 8, height: 8, borderRadius: 9999, backgroundColor: colors.text }}
+            testID="status-dot"
+          />
+        ) : (
+          <StatusDot variant={badge.variant} size="sm" />
+        )}
       </View>
       <Text
         style={{
@@ -308,6 +324,7 @@ function Gauge({ gauge }: { gauge: MesoStatusGauge }) {
 export function MesoStatusCard({
   mesoName,
   mesoSubtitle,
+  basis,
   statusBadge,
   metrics,
   gauges,
@@ -316,6 +333,7 @@ export function MesoStatusCard({
   className,
   ...props
 }: MesoStatusCardProps) {
+  const basisColor = useOnSurfaceColor('secondary')
   return (
     <Card
       variant="outline"
@@ -373,6 +391,19 @@ export function MesoStatusCard({
           >
             {mesoSubtitle}
           </Text>
+          {basis != null && (
+            <Text
+              style={{
+                marginTop: 2,
+                fontSize: 11,
+                fontFamily: 'Inter, sans-serif',
+                color: basisColor,
+              }}
+              testID="meso-status-card-basis"
+            >
+              {basis}
+            </Text>
+          )}
         </View>
 
         {metrics.length > 0 && (

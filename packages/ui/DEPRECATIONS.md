@@ -103,3 +103,23 @@ const color = t[TONE_TOKEN[tone]] // was TONE_COLOR[tone]
 
 The three values are `status-success` / `status-warning` / `status-error`, which
 are byte-identical in dark and light, so no rendered colour changes.
+
+## Workout pace tone — `paceToneColor` takes a mode (VW-316)
+
+**Breaking signature change, no overload kept.** `paceToneColor` held a resolved
+palette at module scope; an optional `mode` defaulting to `'dark'` would have
+left every existing caller frozen while looking migrated, so the parameter is
+required.
+
+| Change                                       | Replacement                                      | Known consumers                                    |
+| -------------------------------------------- | ------------------------------------------------ | -------------------------------------------------- |
+| `paceToneColor(tone)` | `paceToneColor(tone, mode)` — pass `useSurfaceMode()` | in-repo only: `SegmentedProgressBar`, `SessionHeader`, `SegmentedProgressBar.test.tsx` |
+
+No downstream consumer: `grep -rn paceToneColor` over the `voltras-mcp` checkout
+returns nothing. Its two values come from `status-success` / `status-warning`,
+mode-invariant today, so no rendered colour changes.
+
+`tsconfig.json` excludes `**/*.test.ts(x)`, so a required-parameter change is
+**invisible to `tsc`** in a test: the old call kept compiling and resolved
+`getSemanticColors(undefined)` — the LIGHT branch — passing only because these
+roles are mode-invariant. Grep the call sites when changing a signature.

@@ -1,6 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { primitiveRamps } from '../../../theme/tokens/primitives'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 
 /** How progress compares to its target pace: `ahead`, `behind`, or `neutral` (no target). */
 export type PaceTone = 'ahead' | 'behind' | 'neutral'
@@ -14,14 +14,18 @@ export function paceTone(progress: number, target?: number): PaceTone {
   return progress >= target ? 'ahead' : 'behind'
 }
 
-/** Literal-hex fill for each tone (RNW-safe): success · warning · cyan pin. */
-const PACE_TONE_COLORS: Record<PaceTone, string> = {
-  ahead: getSemanticColors('dark')['status-success'],
-  behind: getSemanticColors('dark')['status-warning'],
-  neutral: primitiveRamps.cyan[400],
-}
+/** Semantic token per tone. `neutral` pins a ramp step: there is no "no target" token. */
+const PACE_TONE_TOKEN = {
+  ahead: 'status-success',
+  behind: 'status-warning',
+} as const
 
-/** The literal-hex colour for a tone. */
-export function paceToneColor(tone: PaceTone): string {
-  return PACE_TONE_COLORS[tone]
+/**
+ * The literal-hex fill for a tone (RNW-safe — `resolveColor` would return a `var()`
+ * string here). Takes the theme `mode` rather than holding a resolved palette, so the
+ * colour follows the enclosing `<Surface>`: pass `useSurfaceMode()` (VW-316).
+ */
+export function paceToneColor(tone: PaceTone, mode: ThemeMode): string {
+  if (tone === 'neutral') return primitiveRamps.cyan[400]
+  return getSemanticColors(mode)[PACE_TONE_TOKEN[tone]]
 }
