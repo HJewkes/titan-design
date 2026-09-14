@@ -208,10 +208,10 @@ function TabBar({ active, onSelect }: TabBarProps) {
             onPress={() => onSelect(key)}
             accessibilityRole="tab"
             accessibilityState={{ selected: isActive }}
+            className="py-2.5"
             style={{
               flex: 1,
               alignItems: 'center',
-              paddingVertical: 10,
               borderBottomWidth: 2,
               borderBottomColor: isActive ? BRAND_PRIMARY : 'transparent',
             }}
@@ -242,17 +242,16 @@ const STAT_CARDS: Array<{ key: keyof ExerciseDetailStats; label: string }> = [
 
 function StatStrip({ stats, unit }: { stats: ExerciseDetailStats; unit: 'lbs' | 'kg' }) {
   return (
-    <View className="flex-row" style={{ gap: 8 }} testID="exercise-detail-page-stats">
+    <View className="flex-row gap-inline-md" testID="exercise-detail-page-stats">
       {STAT_CARDS.map(({ key, label }) => {
         const raw = stats[key]
         const value = key === 'bestE1rm' ? (raw == null ? '—' : `${raw} ${unit}`) : `${raw}`
         return (
           <View
             key={key}
-            className="bg-surface-elevated border-hairline"
+            className="bg-surface-elevated border-hairline p-inset-md"
             style={{
               flex: 1,
-              padding: 12,
               borderRadius: 10,
               borderWidth: 1,
             }}
@@ -269,9 +268,8 @@ function StatStrip({ stats, unit }: { stats: ExerciseDetailStats; unit: 'lbs' | 
               {value}
             </Text>
             <Text
-              className="text-text-tertiary"
+              className="text-text-tertiary mt-0.5"
               style={{
-                marginTop: 2,
                 fontSize: 10,
                 fontFamily: 'Inter, sans-serif',
                 fontWeight: '600',
@@ -299,12 +297,10 @@ function SectionCard({
 }) {
   return (
     <View
-      className="bg-surface-elevated border-hairline"
+      className="bg-surface-elevated border-hairline p-inset-md gap-2.5"
       style={{
         borderWidth: 1,
         borderRadius: 12,
-        padding: 12,
-        gap: 10,
       }}
       testID={testID}
     >
@@ -346,7 +342,7 @@ function EntryList({ entries, expandedId, onToggle, emptyLabel, testID }: EntryL
     )
   }
   return (
-    <View style={{ gap: 8 }} testID={testID}>
+    <View className="gap-inline-md" testID={testID}>
       {entries.map((entry) => (
         <ExerciseCard
           key={entry.id}
@@ -365,15 +361,14 @@ function VbtBreakdown({
   zones?: readonly VelocityZoneBandProp[]
 }) {
   return (
-    <View style={{ gap: 10 }} testID="exercise-detail-page-vbt-breakdown">
+    <View className="gap-2.5" testID="exercise-detail-page-vbt-breakdown">
       {sets.map((set) => {
         const mean = calculateMeanVelocity(set.velocities)
         const loss = calculateVelocityLoss(set.velocities)
         return (
           <View
             key={set.label}
-            className="flex-row items-center"
-            style={{ gap: 10 }}
+            className="flex-row items-center gap-2.5"
             testID="exercise-detail-page-vbt-set"
           >
             <Text
@@ -419,14 +414,13 @@ function VbtSummaryRow({ summary }: { summary: VbtSummary }) {
     { label: 'Peak Vel. Loss', value: `-${summary.velocityLoss}%` },
   ]
   return (
-    <View className="flex-row" style={{ gap: 8 }} testID="exercise-detail-page-vbt-summary">
+    <View className="flex-row gap-inline-md" testID="exercise-detail-page-vbt-summary">
       {cells.map((cell) => (
         <View
           key={cell.label}
-          className="bg-surface-elevated border-hairline"
+          className="bg-surface-elevated border-hairline p-inset-md"
           style={{
             flex: 1,
-            padding: 12,
             borderRadius: 10,
             borderWidth: 1,
           }}
@@ -442,9 +436,8 @@ function VbtSummaryRow({ summary }: { summary: VbtSummary }) {
             {cell.value}
           </Text>
           <Text
-            className="text-text-tertiary"
+            className="text-text-tertiary mt-0.5"
             style={{
-              marginTop: 2,
               fontSize: 10,
               fontFamily: 'Inter, sans-serif',
               fontWeight: '600',
@@ -510,10 +503,9 @@ export function ExerciseDetailPage({
       testID="exercise-detail-page"
       {...props}
     >
-      <View style={{ padding: 16, gap: 14 }} testID="exercise-detail-page-content">
+      <View className="p-gutter-sm gap-3.5" testID="exercise-detail-page-content">
         <View
-          className="flex-row items-start justify-between"
-          style={{ gap: 8 }}
+          className="flex-row items-start justify-between gap-inline-md"
           testID="exercise-detail-page-header"
         >
           <View style={{ flexShrink: 1 }}>
@@ -530,9 +522,8 @@ export function ExerciseDetailPage({
               {exercise.name}
             </Text>
             <Text
-              className="text-text-secondary"
+              className="text-text-secondary mt-0.5"
               style={{
-                marginTop: 2,
                 fontSize: 12,
                 fontFamily: 'Inter, sans-serif',
               }}
@@ -543,9 +534,8 @@ export function ExerciseDetailPage({
           </View>
           {exercise.currentE1rm != null && (
             <View
+              className="py-squish-y-md px-2.5"
               style={{
-                paddingVertical: 4,
-                paddingHorizontal: 10,
                 borderRadius: 6,
                 backgroundColor: alpha(BRAND_PRIMARY, 0.1),
                 borderWidth: 1,
@@ -582,7 +572,7 @@ export function ExerciseDetailPage({
         <TabBar active={tab} onSelect={setTab} />
 
         {tab === 'progress' && (
-          <View style={{ gap: 14 }} testID="exercise-detail-page-panel-progress">
+          <View className="gap-3.5" testID="exercise-detail-page-panel-progress">
             <MesoStatusCard {...meso} />
             <StatStrip stats={stats} unit={exercise.unit} />
             <SectionCard title="Strength Trend" testID="exercise-detail-page-trend">
@@ -609,7 +599,7 @@ export function ExerciseDetailPage({
         )}
 
         {tab === 'history' && (
-          <View style={{ gap: 14 }} testID="exercise-detail-page-panel-history">
+          <View className="gap-3.5" testID="exercise-detail-page-panel-history">
             <SectionCard title="All Sessions" testID="exercise-detail-page-history">
               <EntryList
                 entries={history}
@@ -623,7 +613,7 @@ export function ExerciseDetailPage({
         )}
 
         {tab === 'advanced' && (
-          <View style={{ gap: 14 }} testID="exercise-detail-page-panel-advanced">
+          <View className="gap-3.5" testID="exercise-detail-page-panel-advanced">
             <SectionCard title="Capacity Band" testID="exercise-detail-page-capacity">
               <CapacityBandChart
                 band={vbt.band}

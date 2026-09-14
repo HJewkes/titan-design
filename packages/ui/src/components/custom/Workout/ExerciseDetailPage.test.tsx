@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { siblingSource, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import {
   ExerciseDetailPage,
@@ -134,5 +135,29 @@ describe('ExerciseDetailPage', () => {
 
     fireEvent.click(screen.getAllByTestId('exercise-card-header')[0])
     expect(screen.queryByTestId('exercise-card-sets')).not.toBeInTheDocument()
+  })
+})
+
+/**
+ * ExerciseDetailPage's geometry, pinned (AW-142); pixels unchanged. Every tab
+ * panel takes the same 14px section rhythm as the page shell.
+ */
+describe('ExerciseDetailPage geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'ExerciseDetailPage.tsx')
+
+  it('keeps the page gutter and its section rhythm', () => {
+    expect(source).toContain('p-gutter-sm gap-3.5')
+    expect(resolveAll(['p-gutter-sm', 'gap-3.5'])).toEqual(['16px', '14px'])
+  })
+
+  it('gives all three tab panels one rhythm', () => {
+    for (const tab of ['progress', 'history', 'advanced']) {
+      expect(source).toContain(`className="gap-3.5" testID="exercise-detail-page-panel-${tab}"`)
+    }
+  })
+
+  it('keeps the stat and section card insets', () => {
+    expect(source).toContain('p-inset-md')
+    expect(resolveAll(['p-inset-md', 'gap-inline-md', 'py-2.5'])).toEqual(['12px', '8px', '10px'])
   })
 })

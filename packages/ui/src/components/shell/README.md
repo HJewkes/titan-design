@@ -21,14 +21,14 @@ sibling directory rather than a new prop on `AppShell`.
 built-in default, the same shape as `Pill`'s `leading`/`trailing` and `SectionHeader`'s `trailing`.
 No second mechanism was introduced.
 
-| Slot                     | On          | Default                          | An app uses it to…                       |
-| ------------------------ | ----------- | -------------------------------- | ---------------------------------------- |
-| `TopBar.trailing`        | `TopBar`    | just the clock                   | put its own chrome in the right cluster  |
-| `TopBar.leading`         | `TopBar`    | `<BrandLockup brand=…>`          | replace the brand region outright        |
-| `AppShell.topBarTrailing` | `AppShell`  | —                                | pass chrome through to the default bar   |
-| `AppShell.topBar`        | `AppShell`  | `<TopBar brand=…>`               | swap the whole band                      |
-| `AppShell.nav`           | `AppShell`  | `<SideNav items=…>`              | swap the whole rail                      |
-| `AppShell.children`      | `AppShell`  | a placeholder                    | mount its page                           |
+| Slot                      | On         | Default                 | An app uses it to…                      |
+| ------------------------- | ---------- | ----------------------- | --------------------------------------- |
+| `TopBar.trailing`         | `TopBar`   | just the clock          | put its own chrome in the right cluster |
+| `TopBar.leading`          | `TopBar`   | `<BrandLockup brand=…>` | replace the brand region outright       |
+| `AppShell.topBarTrailing` | `AppShell` | —                       | pass chrome through to the default bar  |
+| `AppShell.topBar`         | `AppShell` | `<TopBar brand=…>`      | swap the whole band                     |
+| `AppShell.nav`            | `AppShell` | `<SideNav items=…>`     | swap the whole rail                     |
+| `AppShell.children`       | `AppShell` | a placeholder           | mount its page                          |
 
 `TopBar.trailing` takes an array as well as a node. **The bar interleaves its own vertical dividers
 between the items**, so an app supplies the controls and the shell keeps the divider rhythm from the
@@ -88,34 +88,34 @@ WorkoutTopBar ................ organism — Shell/Workout/WorkoutTopBar
 
 ## Dependency map — generic (`shell/`)
 
-| Component | Tier | Composes ↓ | Used-by ↑ |
-|---|---|---|---|
-| `AppShell` | page shell | TopBar, SideNav, Surface | WorkoutShell, any app root |
-| `SideNav` | organism | NavItem × `items` | AppShell |
-| `NavItem` | molecule | icon, Typography | SideNav |
-| `TopBar` | organism | BrandLockup, Divider, DateTime, `surfaceGradient.chrome` | AppShell, WorkoutTopBar |
-| `BrandLockup` | molecule | a brand mark icon, Typography | TopBar |
-| `brands.tsx` | data | VoltrasMark / Headphones / Kanban / Bot / Brain icons | BrandLockup, TopBar, AppShell |
+| Component     | Tier       | Composes ↓                                               | Used-by ↑                     |
+| ------------- | ---------- | -------------------------------------------------------- | ----------------------------- |
+| `AppShell`    | page shell | TopBar, SideNav, Surface                                 | WorkoutShell, any app root    |
+| `SideNav`     | organism   | NavItem × `items`                                        | AppShell                      |
+| `NavItem`     | molecule   | icon, Typography                                         | SideNav                       |
+| `TopBar`      | organism   | BrandLockup, Divider, DateTime, `surfaceGradient.chrome` | AppShell, WorkoutTopBar       |
+| `BrandLockup` | molecule   | a brand mark icon, Typography                            | TopBar                        |
+| `brands.tsx`  | data       | VoltrasMark / Headphones / Kanban / Bot / Brain icons    | BrandLockup, TopBar, AppShell |
 
 ## Dependency map — workout app (`shell/workout/`)
 
-| Component | Tier | Composes ↓ | Used-by ↑ |
-|---|---|---|---|
-| `WorkoutShell` | page shell | AppShell, WorkoutTopBar, workoutNavItems | dashboard app root |
-| `WorkoutTopBar` | organism | TopBar, SessionStatePill, DeviceMenu | WorkoutShell |
-| `SessionStatePill` | molecule | Indicator, Typography | WorkoutTopBar, **Live-view header** *(planned reuse)* |
-| `DeviceMenu` | organism | Popover, DeviceIndicator, DeviceRow, Typography | WorkoutTopBar |
-| `DeviceIndicator` | molecule | BluetoothIcon | DeviceMenu |
-| `DeviceRow` | molecule | Indicator, Typography | DeviceMenu |
-| `workoutNavItems` | data | Activity/History/Layers/PersonStanding icons | WorkoutShell |
+| Component          | Tier       | Composes ↓                                      | Used-by ↑                                             |
+| ------------------ | ---------- | ----------------------------------------------- | ----------------------------------------------------- |
+| `WorkoutShell`     | page shell | AppShell, WorkoutTopBar, workoutNavItems        | dashboard app root                                    |
+| `WorkoutTopBar`    | organism   | TopBar, SessionStatePill, DeviceMenu            | WorkoutShell                                          |
+| `SessionStatePill` | molecule   | Indicator, Typography                           | WorkoutTopBar, **Live-view header** _(planned reuse)_ |
+| `DeviceMenu`       | organism   | Popover, DeviceIndicator, DeviceRow, Typography | WorkoutTopBar                                         |
+| `DeviceIndicator`  | molecule   | BluetoothIcon                                   | DeviceMenu                                            |
+| `DeviceRow`        | molecule   | Indicator, Typography                           | DeviceMenu                                            |
+| `workoutNavItems`  | data       | Activity/History/Layers/PersonStanding icons    | WorkoutShell                                          |
 
 ## Shared substrates introduced here (reusable beyond the shell)
 
 Building S1 grew the design system — these are now available to every component:
 
 - **`components/icons`** — a shared icon primitive: an `SvgIcon` base (24×24, a11y contract, `currentColor`)
-  + `IconProps`. VoltrasMark / BluetoothIcon live here, and the previously-orphaned Workout icons
-  (Dumbbell / Star) were folded in (re-exported from `Workout/icons` for back-compat).
+  - `IconProps`. VoltrasMark / BluetoothIcon live here, and the previously-orphaned Workout icons
+    (Dumbbell / Star) were folded in (re-exported from `Workout/icons` for back-compat).
 - **`theme/gradients.ts`** — `linearGradient(from, to, angle)` + named `surfaceGradient.*`, built on
   `resolveColor` (themeable web CSS vars + native hex fallback).
 - **`Indicator`** (titan atom) — `pulse: 'ping'` (expanding ring) + `success` / `error-vivid` colors.
@@ -127,14 +127,14 @@ Building S1 grew the design system — these are now available to every componen
 
 Every leaf now composes a primitive rather than hand-rolling it:
 
-| Concern | Uses | Not |
-|---|---|---|
-| status dots | `Indicator` | raw CSS/`View` dots |
-| dividers | `Divider` (`border-prominent`) | hairline `View`s |
-| mono / all-caps text | `Typography` `mono`/`monoLabel` | ad-hoc `font-mono` classes |
-| glyphs | icon atoms (`VoltrasMark`, `BluetoothIcon`) | unicode chars / inline `<svg>` |
-| chrome gradient | `surfaceGradient.chrome` | inline `linear-gradient` strings |
-| colors | semantic tokens (vivid palette) | magic hex |
+| Concern              | Uses                                        | Not                              |
+| -------------------- | ------------------------------------------- | -------------------------------- |
+| status dots          | `Indicator`                                 | raw CSS/`View` dots              |
+| dividers             | `Divider` (`border-prominent`)              | hairline `View`s                 |
+| mono / all-caps text | `Typography` `mono`/`monoLabel`             | ad-hoc `font-mono` classes       |
+| glyphs               | icon atoms (`VoltrasMark`, `BluetoothIcon`) | unicode chars / inline `<svg>`   |
+| chrome gradient      | `surfaceGradient.chrome`                    | inline `linear-gradient` strings |
+| colors               | semantic tokens (vivid palette)             | magic hex                        |
 
 ## Testing
 
@@ -159,12 +159,13 @@ rather than showing a Voltras-orange active item under a yellow lockup. `AppShel
 from `brand`; a bare `SideNav` takes `accentClassName` / `accentBarClassName`. Each preset declares
 both as literals (`text-data-3` + `bg-data-3`) because Tailwind only emits classes it can see in the
 source — a name built at runtime is never generated — and a test asserts the pair always matches.
-Workout is unaffected: its accent *is* `brand-primary`.
+Workout is unaffected: its accent _is_ `brand-primary`.
 
 **S2 shared substrate:** four nav glyphs added to `components/icons` (`ActivityIcon`, `HistoryIcon`,
 `LayersIcon`, `PersonStandingIcon` — lucide-mirrored, like Dumbbell/Star), available system-wide.
 
 **Watch-list (known gaps to close as we go):**
+
 - **Dot primitive overlap** — titan has both `StatusDot` (Workout, semantic) and `Indicator` (ui, generic).
   The shell standardizes on `Indicator`; a future pass could consolidate.
 - **Other hand-rolled gradients** — `MesoCard`, `DeviationBar`, `MesoStatusCard` still

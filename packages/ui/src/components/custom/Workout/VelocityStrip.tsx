@@ -3,10 +3,11 @@ import { useEffect, useState } from 'react'
 import { View, Text, Pressable, Animated, type ViewProps, type ViewStyle } from 'react-native'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { sequentialEffort, greyRamp } from '../../../theme/tokens/primitives'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getSemanticColors, space } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
 import { alpha } from '../../../utils/colors'
 import { formatVelocity } from '../../../utils/workout-format'
+import { cn } from '../../../utils/cn'
 import {
   SetBarChart,
   type SetSlot,
@@ -579,8 +580,8 @@ export function VelocityLossBands({
       {showLabels ? (
         <>
           <Text
+            className="mx-1.5"
             style={{
-              marginHorizontal: 6,
               fontSize: vlFont,
               fontWeight: '800',
               fontFamily: BAND_LABEL_FONT,
@@ -1417,7 +1418,15 @@ export function VelocityStrip({
   const stripContent = (
     <Animated.View
       className={[className, 'bg-surface-raised'].filter(Boolean).join(' ')}
-      style={{ width: '100%', borderRadius: 6, paddingTop: 16, paddingBottom: showInfo ? 8 : 4 }}
+      // NativeWind does not compile className on an `Animated.View` — verified in
+      // Storybook, where the element renders `class="css-view-175oi2r"` and nothing
+      // else — so this chrome reads the inset tokens through the JS export.
+      style={{
+        width: '100%',
+        borderRadius: 6,
+        paddingTop: space.inset.lg,
+        paddingBottom: showInfo ? space.inset.sm : space.inset.xs,
+      }}
       accessibilityRole={hasInteractiveContainer || hasInteractiveReps ? 'none' : 'button'}
       accessibilityLabel={hasInteractiveContainer || hasInteractiveReps ? undefined : stripLabel}
       testID="velocity-strip"
@@ -1439,11 +1448,14 @@ export function VelocityStrip({
       />
       {expanded && showInfo && (
         <Animated.View
+          // Same `Animated.View` limitation as the strip above: style, not className.
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
             opacity: infoOpacity,
+            // eslint-disable-next-line titan/no-raw-spacing -- chart geometry
             marginTop: 6,
+            // eslint-disable-next-line titan/no-raw-spacing -- chart geometry
             paddingHorizontal: 6,
           }}
           testID="velocity-info-row"

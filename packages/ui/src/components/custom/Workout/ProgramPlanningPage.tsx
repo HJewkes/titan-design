@@ -146,14 +146,13 @@ function Breadcrumbs({ crumbs, onNavigate }: BreadcrumbsProps) {
   const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
   return (
     <View
-      className="flex-row items-center flex-wrap"
-      style={{ gap: 4 }}
+      className="flex-row items-center flex-wrap gap-inline-sm"
       testID="program-planning-page-breadcrumbs"
     >
       {crumbs.map((crumb, index) => {
         const isLast = index === crumbs.length - 1
         return (
-          <View key={crumb.key} className="flex-row items-center" style={{ gap: 4 }}>
+          <View key={crumb.key} className="flex-row items-center gap-inline-sm">
             {index > 0 && (
               <Text className="text-text-tertiary" style={{ fontSize: 12 }}>
                 {'›'}
@@ -215,7 +214,7 @@ interface MesoLevelProps {
 
 function MesoLevel({ mesos, activeMesoId, onSelectMeso, onSelectWeek }: MesoLevelProps) {
   return (
-    <View style={{ gap: 12 }} testID="program-planning-page-meso-level">
+    <View className="gap-3" testID="program-planning-page-meso-level">
       {mesos.map((meso) => {
         const expanded = meso.id === activeMesoId
         return (
@@ -246,7 +245,7 @@ interface WeekLevelProps {
 
 function WeekLevel({ week, onSelectWorkout }: WeekLevelProps) {
   return (
-    <View style={{ gap: 10 }} testID="program-planning-page-week-level">
+    <View className="gap-2.5" testID="program-planning-page-week-level">
       {week.workouts.map((workout) => (
         <WorkoutCard
           key={workout.id}
@@ -358,7 +357,7 @@ export function ProgramPlanningPage({
       testID="program-planning-page"
       {...props}
     >
-      <View style={{ padding: 16, gap: 14 }} testID="program-planning-page-content">
+      <View className="p-gutter-sm gap-3.5" testID="program-planning-page-content">
         <Text
           accessibilityRole="header"
           className="text-text-primary"
@@ -388,11 +387,10 @@ export function ProgramPlanningPage({
         )}
 
         <View
-          className="bg-surface-elevated border-hairline"
+          className="bg-surface-elevated border-hairline p-inset-md"
           style={{
             borderWidth: 1,
             borderRadius: 12,
-            padding: 12,
           }}
           testID="program-planning-page-body"
         >

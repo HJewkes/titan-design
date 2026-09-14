@@ -113,17 +113,16 @@ const SUMMARY_CARDS: Array<{
 
 function SummaryCards({ summary }: { summary: TrainingStatusSummary }) {
   return (
-    <View className="flex-row flex-wrap" style={{ gap: 8 }} testID="training-status-page-summary">
+    <View className="flex-row flex-wrap gap-inline-md" testID="training-status-page-summary">
       {SUMMARY_CARDS.map(({ key, label }) => {
         const value = key === 'total' ? summary.totalWeeklySets : summary.statusCounts[key]
         return (
           <View
             key={key}
-            className="bg-surface-elevated border-hairline"
+            className="bg-surface-elevated border-hairline p-inset-md"
             style={{
               flexGrow: 1,
               flexBasis: '46%',
-              padding: 12,
               borderRadius: 10,
               borderWidth: 1,
             }}
@@ -140,9 +139,8 @@ function SummaryCards({ summary }: { summary: TrainingStatusSummary }) {
               {value}
             </Text>
             <Text
-              className="text-text-tertiary"
+              className="text-text-tertiary mt-0.5"
               style={{
-                marginTop: 2,
                 fontSize: 11,
                 fontFamily: 'Inter, sans-serif',
                 fontWeight: '600',
@@ -256,7 +254,7 @@ export function TrainingStatusPage({
       testID="training-status-page"
       {...props}
     >
-      <View style={{ padding: 16, gap: 16 }} testID="training-status-page-content">
+      <View className="p-gutter-sm gap-stack-lg" testID="training-status-page-content">
         <Text
           accessibilityRole="header"
           className="text-text-primary"
@@ -275,16 +273,14 @@ export function TrainingStatusPage({
         <SummaryCards summary={summary} />
 
         <View
-          className="bg-surface-elevated border-hairline"
+          className="bg-surface-elevated border-hairline p-inset-md gap-3"
           style={{
             borderWidth: 1,
             borderRadius: 12,
-            padding: 12,
-            gap: 12,
           }}
           testID="training-status-page-bodymaps"
         >
-          <View className="flex-row" style={{ gap: 8 }}>
+          <View className="flex-row gap-inline-md">
             <BodyMapColumn
               side="front"
               muscles={muscles}

@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { siblingSource, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { GoalTrajectoryChart } from './GoalTrajectoryChart'
@@ -237,5 +238,26 @@ describe('GoalTrajectoryChart', () => {
       )
       expect(await axe(container)).toHaveNoViolations()
     })
+  })
+})
+
+/**
+ * GoalTrajectoryChart's chrome geometry, pinned (AW-142). The plot itself is
+ * untouched — only the legend and status pill around it. The five legend rows
+ * were 5px swatch-to-label, off the 4px grain; they take `inline-sm`, and the
+ * status pill takes Pill's `sm` rung as MesoStatusCard's badge did.
+ */
+describe('GoalTrajectoryChart chrome resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'GoalTrajectoryChart.tsx')
+
+  it('puts every legend row on the inline ramp', () => {
+    expect(source).not.toContain('gap: 5')
+    expect(source.match(/gap-inline-sm/g)).toHaveLength(5)
+    expect(resolveAll(['gap-inline-sm'])).toEqual(['4px'])
+  })
+
+  it('puts the status pill on Pill’s sm rung', () => {
+    expect(source).toContain('px-squish-x-sm py-squish-y-sm')
+    expect(resolveAll(['px-squish-x-sm', 'py-squish-y-sm'])).toEqual(['8px', '2px'])
   })
 })

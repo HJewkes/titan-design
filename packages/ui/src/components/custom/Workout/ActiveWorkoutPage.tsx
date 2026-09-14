@@ -217,8 +217,8 @@ function WorkoutHeader({
 }) {
   const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
   return (
-    <View style={{ gap: 10 }} testID="active-workout-page-header">
-      <View className="flex-row items-start justify-between" style={{ gap: 8 }}>
+    <View className="gap-2.5" testID="active-workout-page-header">
+      <View className="flex-row items-start justify-between gap-inline-md">
         <View style={{ flexShrink: 1 }}>
           <Text
             accessibilityRole="header"
@@ -234,9 +234,8 @@ function WorkoutHeader({
           </Text>
           {subtitle != null && (
             <Text
-              className="text-text-secondary"
+              className="text-text-secondary mt-0.5"
               style={{
-                marginTop: 2,
                 fontSize: 12,
                 fontFamily: 'Inter, sans-serif',
               }}
@@ -299,7 +298,7 @@ interface ExerciseListProps {
 
 function ExerciseList({ groups, focusedId, onToggle }: ExerciseListProps) {
   return (
-    <View style={{ gap: 10 }} testID="active-workout-page-exercises">
+    <View className="gap-2.5" testID="active-workout-page-exercises">
       {groups.map((group) => {
         if (group.type === 'single') {
           return (
@@ -392,7 +391,7 @@ export function ActiveWorkoutPage({
       testID="active-workout-page"
       {...props}
     >
-      <View style={{ padding: 16, gap: 14 }} testID="active-workout-page-content">
+      <View className="p-gutter-sm gap-3.5" testID="active-workout-page-content">
         <WorkoutHeader title={title} subtitle={subtitle} progress={progress} />
         <ExerciseList groups={groups} focusedId={focusedId} onToggle={toggleFocus} />
       </View>
