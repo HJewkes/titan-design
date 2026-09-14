@@ -123,3 +123,17 @@ mode-invariant today, so no rendered colour changes.
 **invisible to `tsc`** in a test: the old call kept compiling and resolved
 `getSemanticColors(undefined)` — the LIGHT branch — passing only because these
 roles are mode-invariant. Grep the call sites when changing a signature.
+
+## Live aura flood — `liveAuraColor` takes a mode (VW-316)
+
+**Breaking signature change**, same shape and same reasoning as `paceToneColor`
+above: the resolved palette moved out of module scope, and the mode is required
+rather than defaulted so no caller stays frozen by accident.
+
+| Change                        | Replacement                                        | Known consumers                                     |
+| ----------------------------- | -------------------------------------------------- | --------------------------------------------------- |
+| `liveAuraColor(category)` | `liveAuraColor(category, mode)` — pass `useSurfaceMode()` | in-repo only: `LiveAuraFrame`, `LiveAuraFrame.test.tsx` |
+
+No downstream consumer: `grep -rn liveAuraColor` over the `voltras-mcp` checkout
+returns nothing. Its two values are `status-warning` / `status-error`,
+mode-invariant today, so no rendered colour changes.

@@ -53,9 +53,17 @@ describe('LiveAuraFrame', () => {
   })
 
   it('exposes the resolved flood color via liveAuraColor', () => {
-    expect(liveAuraColor('productive')).toBeNull()
-    expect(liveAuraColor('threshold')).toBe(t['status-warning'])
-    expect(liveAuraColor('stop')).toBe(t['status-error'])
+    expect(liveAuraColor('productive', 'dark')).toBeNull()
+    expect(liveAuraColor('threshold', 'dark')).toBe(t['status-warning'])
+    expect(liveAuraColor('stop', 'dark')).toBe(t['status-error'])
+  })
+
+  // The mode is a real parameter: the component passes useSurfaceMode(). These two
+  // status roles are mode-invariant today, which is why no rendered colour moved.
+  it('resolves the flood color through the requested mode', () => {
+    for (const category of ['productive', 'threshold', 'stop'] as const) {
+      expect(liveAuraColor(category, 'light')).toBe(liveAuraColor(category, 'dark'))
+    }
   })
 
   it('renders the flood for stop when pulse is disabled', () => {

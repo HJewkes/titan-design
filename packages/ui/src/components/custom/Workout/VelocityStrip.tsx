@@ -4,6 +4,7 @@ import { View, Text, Pressable, Animated, type ViewProps, type ViewStyle } from 
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { sequentialEffort, greyRamp } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../ui/surface'
 import { alpha } from '../../../utils/colors'
 import { formatVelocity } from '../../../utils/workout-format'
 import {
@@ -507,7 +508,6 @@ const BAND_LABEL_FONT = 'monospace'
  * cramped mid-small range drop, while the accepted board scale (≈76px plot/wing) keeps its labels.
  */
 const VL_LABEL_MIN_PLOT = 65
-const VL_SEMANTIC = getSemanticColors('dark')
 
 /**
  * Velocity-LOSS decision bands for the `hero` variant: the VL20 / VL30 coaching
@@ -534,6 +534,8 @@ export function VelocityLossBands({
   /** The parent plot is vertically mirrored (a `down` wing) — counter-flip the labels upright. */
   flip?: boolean
 }) {
+  // Before the early return, so the mode is read on every render.
+  const vl = getSemanticColors(useSurfaceMode())
   if (best <= 0 || scaleDenom <= 0 || plotHeight <= 0) return null
   const yOf = (v: number): number => (v / scaleDenom) * plotHeight
   const vl20 = best * 0.8
@@ -600,10 +602,10 @@ export function VelocityLossBands({
       style={{ position: 'absolute', left: 0, right: 0, bottom: 0, top: 0 }}
       testID="velocity-loss-bands"
     >
-      {band(0, vl30, alpha(VL_SEMANTIC['status-error'], 0.09))}
-      {band(vl30, vl20, alpha(VL_SEMANTIC['status-warning'], 0.08))}
-      {threshold(vl20, alpha(VL_SEMANTIC['status-warning'], 0.75), 'VL 20%')}
-      {threshold(vl30, alpha(VL_SEMANTIC['status-error'], 0.75), 'VL 30%')}
+      {band(0, vl30, alpha(vl['status-error'], 0.09))}
+      {band(vl30, vl20, alpha(vl['status-warning'], 0.08))}
+      {threshold(vl20, alpha(vl['status-warning'], 0.75), 'VL 20%')}
+      {threshold(vl30, alpha(vl['status-error'], 0.75), 'VL 30%')}
     </View>
   )
 }

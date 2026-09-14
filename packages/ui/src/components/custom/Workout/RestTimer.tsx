@@ -2,12 +2,11 @@
 import { View, Text, Pressable } from 'react-native'
 import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../ui/surface'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { alpha } from '../../../utils/colors'
 import { useTimer } from '../../../hooks/useTimer'
 import { CircularTimer } from '../CircularTimer/CircularTimer'
-
-const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
 
 /** Default `ring` diameter (px) — the across-the-room wall rest treatment. */
 const RING_DEFAULT_SIZE = 180
@@ -34,6 +33,7 @@ export interface RestTimerProps {
 
 /** The +30s / Skip control row — shared by both variants (hidden in `displayOnly`). */
 function RestActions({ onAddTime, onSkip }: { onAddTime: () => void; onSkip: () => void }) {
+  const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
   return (
     <View style={{ flexDirection: 'row', gap: 8 }}>
       <Pressable
@@ -58,7 +58,7 @@ function RestActions({ onAddTime, onSkip }: { onAddTime: () => void; onSkip: () 
       <Pressable
         onPress={onSkip}
         style={{
-          backgroundColor: alpha(BRAND_PRIMARY, 0.12),
+          backgroundColor: alpha(brandPrimary, 0.12),
           paddingVertical: 8,
           paddingHorizontal: 20,
           borderRadius: 8,
@@ -72,7 +72,7 @@ function RestActions({ onAddTime, onSkip }: { onAddTime: () => void; onSkip: () 
             fontSize: 11,
             fontFamily: 'Inter, sans-serif',
             fontWeight: '600',
-            color: BRAND_PRIMARY,
+            color: brandPrimary,
           }}
         >
           Skip
@@ -151,6 +151,7 @@ export function RestTimer({
   variant = 'bar',
   size = RING_DEFAULT_SIZE,
 }: RestTimerProps) {
+  const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
   // useTimer owns the countdown math (remaining/progress/mm:ss); a zero-duration
   // timer is complete, which keeps the width out of the 0/0 === NaN case.
   const {
@@ -266,7 +267,7 @@ export function RestTimer({
         <View
           style={{
             height: '100%',
-            backgroundColor: BRAND_PRIMARY,
+            backgroundColor: brandPrimary,
             borderRadius: 2,
             width: `${progressPct}%`,
           }}

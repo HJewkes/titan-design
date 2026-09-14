@@ -8,8 +8,7 @@ import { SupersetWrapper } from './SupersetWrapper'
 import { type SetRowProps } from './SetRow'
 import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-
-const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
+import { useSurfaceMode } from '../../ui/surface'
 
 /** Where an exercise sits in the during-workout flow. */
 export type ActiveExerciseStatus = 'completed' | 'active' | 'upcoming'
@@ -216,6 +215,7 @@ function WorkoutHeader({
   subtitle?: string
   progress: WorkoutProgress
 }) {
+  const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
   return (
     <View style={{ gap: 10 }} testID="active-workout-page-header">
       <View className="flex-row items-start justify-between" style={{ gap: 8 }}>
@@ -252,7 +252,7 @@ function WorkoutHeader({
               fontSize: 15,
               fontFamily: '"Space Grotesk", sans-serif',
               fontWeight: '700',
-              color: BRAND_PRIMARY,
+              color: brandPrimary,
               fontVariant: ['tabular-nums'],
             }}
           >
@@ -281,7 +281,7 @@ function WorkoutHeader({
           style={{
             height: '100%',
             width: `${Math.round(progress.fraction * 100)}%`,
-            backgroundColor: BRAND_PRIMARY,
+            backgroundColor: brandPrimary,
             borderRadius: 2,
           }}
           testID="active-workout-page-progress-fill"

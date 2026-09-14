@@ -9,8 +9,7 @@ import { type WorkoutPillStatus } from './WorkoutPill'
 import { type ExerciseCardProps } from './ExerciseCard'
 import { cn } from '../../../utils/cn'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-
-const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
+import { useSurfaceMode } from '../../ui/surface'
 
 /** A single workout within a planned week, plus its exercise breakdown. */
 export interface PlanWorkout {
@@ -144,6 +143,7 @@ interface BreadcrumbsProps {
 }
 
 function Breadcrumbs({ crumbs, onNavigate }: BreadcrumbsProps) {
+  const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
   return (
     <View
       className="flex-row items-center flex-wrap"
@@ -171,7 +171,7 @@ function Breadcrumbs({ crumbs, onNavigate }: BreadcrumbsProps) {
                   fontSize: 12,
                   fontFamily: 'Inter, sans-serif',
                   fontWeight: isLast ? '700' : '500',
-                  color: isLast ? undefined : BRAND_PRIMARY,
+                  color: isLast ? undefined : brandPrimary,
                 }}
               >
                 {crumb.label}

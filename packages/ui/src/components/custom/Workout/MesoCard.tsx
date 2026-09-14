@@ -5,6 +5,7 @@ import { Card } from '../../ui/card'
 import { Badge } from '../../ui/badge'
 import { WeekRow, type WeekRowProps } from './WeekRow'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../ui/surface'
 import {
   MESO_ACCENT_GRADIENT_DARK,
   MESO_ACCENT_GRADIENT_LIGHT,
@@ -12,15 +13,13 @@ import {
 import { getGlowShadow } from '../../../theme/elevation'
 import { alpha } from '../../../utils/colors'
 
-const HAIRLINE_DEFAULT = getSemanticColors('dark')['hairline-default']
-
-const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
 const BRAND_PRIMARY_DARK = MESO_ACCENT_GRADIENT_DARK
 const BRAND_PRIMARY_LIGHT = MESO_ACCENT_GRADIENT_LIGHT
-const BORDER_DEFAULT = HAIRLINE_DEFAULT
 
 /** Gradient stops for the 3px top accent: dark -> primary -> light. */
-const ACCENT_STOPS = [BRAND_PRIMARY_DARK, BRAND_PRIMARY, BRAND_PRIMARY_LIGHT]
+function accentStops(brandPrimary: string): string[] {
+  return [BRAND_PRIMARY_DARK, brandPrimary, BRAND_PRIMARY_LIGHT]
+}
 
 export interface MesoVolumeHeatmapEntry {
   /** Muscle group identifier (free-form to match plan data). */
@@ -59,10 +58,10 @@ export interface MesoCardProps extends ViewProps {
  * Maps a 0-100 volume percentage onto a brand-primary tint whose opacity
  * tracks intensity, keeping a visible floor so low-volume groups stay legible.
  */
-function heatmapColor(percentage: number): string {
+function heatmapColor(percentage: number, brandPrimary: string): string {
   const clamped = Math.max(0, Math.min(100, percentage))
   const opacity = 0.12 + (clamped / 100) * 0.78
-  return alpha(BRAND_PRIMARY, opacity)
+  return alpha(brandPrimary, opacity)
 }
 
 /**
@@ -101,6 +100,9 @@ export function MesoCard({
   className,
   ...props
 }: MesoCardProps) {
+  const t = getSemanticColors(useSurfaceMode())
+  const brandPrimary = t['brand-primary']
+  const borderDefault = t['hairline-default']
   const isExpandable = onToggle != null
   const [highlight] = useState(() => new Animated.Value(highlighted ? 1 : 0))
 
@@ -117,7 +119,7 @@ export function MesoCard({
 
   const borderColor = highlight.interpolate({
     inputRange: [0, 1],
-    outputRange: [BORDER_DEFAULT, BRAND_PRIMARY],
+    outputRange: [borderDefault, brandPrimary],
   })
 
   const header = (
@@ -168,7 +170,7 @@ export function MesoCard({
                 flex: 1,
                 height: 8,
                 borderRadius: 2,
-                backgroundColor: heatmapColor(entry.percentage),
+                backgroundColor: heatmapColor(entry.percentage, brandPrimary),
               }}
               testID="meso-card-heatmap-cell"
             />
@@ -186,12 +188,12 @@ export function MesoCard({
       <Card
         variant="outline"
         elevation={2}
-        borderColor={highlighted ? BRAND_PRIMARY : BORDER_DEFAULT}
+        borderColor={highlighted ? brandPrimary : borderDefault}
         className={className}
         style={[
           { borderColor: borderColor as unknown as string },
           // Highlight is emphasis, not depth: a brand glow through the shared builder.
-          highlighted ? getGlowShadow(BRAND_PRIMARY, 'subtle') : undefined,
+          highlighted ? getGlowShadow(brandPrimary, 'subtle') : undefined,
         ]}
         testID="meso-card"
         {...props}
@@ -202,7 +204,7 @@ export function MesoCard({
           accessibilityElementsHidden
           testID="meso-card-accent"
         >
-          {ACCENT_STOPS.map((color) => (
+          {accentStops(brandPrimary).map((color) => (
             <View key={color} style={{ flex: 1, backgroundColor: color }} />
           ))}
         </View>
@@ -225,7 +227,7 @@ export function MesoCard({
 
         {expanded && weeks.length > 0 && (
           <View
-            style={{ borderTopWidth: 1, borderTopColor: BORDER_DEFAULT }}
+            style={{ borderTopWidth: 1, borderTopColor: borderDefault }}
             testID="meso-card-weeks"
           >
             {weeks.map((week) => (

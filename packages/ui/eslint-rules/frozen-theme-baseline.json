@@ -8,9 +8,6 @@
   "src/components/custom/Treemap/Treemap.tsx": {
     "dark": 1
   },
-  "src/components/custom/Workout/ActiveWorkoutPage.tsx": {
-    "dark": 1
-  },
   "src/components/custom/Workout/BodyMap.tsx": {
     "dark": 1
   },
@@ -23,43 +20,10 @@
   "src/components/custom/Workout/ExerciseDetailPage.tsx": {
     "dark": 1
   },
-  "src/components/custom/Workout/LiveAuraFrame.tsx": {
-    "dark": 1
-  },
-  "src/components/custom/Workout/MesoCard.tsx": {
-    "dark": 2
-  },
   "src/components/custom/Workout/MesoStatusCard.tsx": {
     "dark": 1
   },
-  "src/components/custom/Workout/PrHistoryModal.tsx": {
-    "dark": 1
-  },
-  "src/components/custom/Workout/ProgramPlanningPage.tsx": {
-    "dark": 1
-  },
-  "src/components/custom/Workout/ReadinessCheck.tsx": {
-    "dark": 1
-  },
-  "src/components/custom/Workout/RestTimer.tsx": {
-    "dark": 1
-  },
-  "src/components/custom/Workout/SessionRail.tsx": {
-    "dark": 1
-  },
-  "src/components/custom/Workout/setHeadingKit.tsx": {
-    "dark": 1
-  },
   "src/components/custom/Workout/StrengthTrendChart.tsx": {
-    "dark": 1
-  },
-  "src/components/custom/Workout/TempoDisplay.tsx": {
-    "dark": 1
-  },
-  "src/components/custom/Workout/velocity-story-kit.tsx": {
-    "dark": 1
-  },
-  "src/components/custom/Workout/VelocityStrip.tsx": {
     "dark": 1
   },
   "src/components/ui/indicator/Indicator.tsx": {
