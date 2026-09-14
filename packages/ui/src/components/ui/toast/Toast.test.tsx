@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Toast, ToastProvider, useToast } from './Toast'
+import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 
 describe('Toast (standalone)', () => {
   it('renders with title', () => {
@@ -197,5 +198,24 @@ describe('ToastProvider', () => {
         expect(screen.getByText('Content')).toBeInTheDocument()
       })
     })
+  })
+})
+
+/**
+ * Toast's inset and stack, pinned (AW-142 wave two).
+ *
+ * The 12px inset is unchanged. The description's `mt-0.5` was 2px, below the
+ * grain and off every ramp; it becomes the column's 4px stack gap.
+ */
+describe('Toast geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'Toast.tsx')
+
+  it.each([
+    ['the band', 'flex-row items-start p-inset-md', ['12px']],
+    ['the content column', 'flex-1 gap-stack-sm', ['4px']],
+  ] as const)('%s ships `%s`', (_label, classes, pixels) => {
+    expect(source).toContain(classes)
+    const spacing = classes.split(' ').filter((c) => resolveAll([c])[0] !== undefined)
+    expect(resolveAll(spacing)).toEqual([...pixels])
   })
 })

@@ -120,7 +120,7 @@ export function Drawer({
         >
           {/* Header */}
           {(title || showCloseButton) && (
-            <View className="flex-row items-center justify-between px-4 py-3 border-b border-hairline">
+            <View className="flex-row items-center justify-between px-inset-xl py-inset-lg border-b border-hairline">
               {title && <Text className="text-lg font-semibold text-text-primary">{title}</Text>}
               {showCloseButton && (
                 <Pressable
@@ -153,7 +153,7 @@ export interface DrawerHeaderProps extends ViewProps {
  */
 export function DrawerHeader({ className, children, ...props }: DrawerHeaderProps) {
   return (
-    <View className={cn('px-4 py-3 border-b border-hairline', className)} {...props}>
+    <View className={cn('px-inset-xl py-inset-lg border-b border-hairline', className)} {...props}>
       {children}
     </View>
   )
@@ -173,14 +173,14 @@ export interface DrawerBodyProps extends ViewProps {
 export function DrawerBody({ scrollable = true, className, children, ...props }: DrawerBodyProps) {
   if (scrollable) {
     return (
-      <ScrollView className={cn('flex-1 p-4', className)} {...props}>
+      <ScrollView className={cn('flex-1 px-inset-xl py-inset-lg', className)} {...props}>
         {children}
       </ScrollView>
     )
   }
 
   return (
-    <View className={cn('flex-1 p-4', className)} {...props}>
+    <View className={cn('flex-1 px-inset-xl py-inset-lg', className)} {...props}>
       {children}
     </View>
   )
@@ -200,7 +200,7 @@ export function DrawerFooter({ className, children, ...props }: DrawerFooterProp
     <View
       className={cn(
         'flex-row items-center justify-end gap-3',
-        'px-4 py-3 border-t border-hairline',
+        'px-inset-xl py-inset-lg border-t border-hairline',
         className
       )}
       {...props}

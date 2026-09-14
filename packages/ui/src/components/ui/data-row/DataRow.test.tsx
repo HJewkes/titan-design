@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { DataRow } from './DataRow'
+import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
 
 describe('DataRow', () => {
   it('renders label and string value', () => {
@@ -64,5 +65,26 @@ describe('DataRow', () => {
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
+  })
+})
+
+/**
+ * DataRow's row inset, pinned (AW-142 wave two).
+ *
+ * `py-2` named, and nothing else: DataRow stays GUTTERLESS. Its two callers
+ * already sit inside a padded container, so giving it a horizontal inset here
+ * would double-inset them until wave three reached them. Wave three adds the
+ * inset in the same PR that strips the callers' own padding, so the two halves
+ * land atomically. Operator decision, 2026-09-14.
+ *
+ * The absence is asserted, not just the presence — a horizontal inset arriving
+ * on its own is exactly what this test exists to catch.
+ */
+describe('DataRow geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'DataRow.tsx')
+
+  it('ships py-inset-sm and no horizontal inset', () => {
+    expect(spacingClassesIn(source, 'DataRow')).toEqual(['py-inset-sm'])
+    expect(resolveAll(['py-inset-sm'])).toEqual(['8px'])
   })
 })

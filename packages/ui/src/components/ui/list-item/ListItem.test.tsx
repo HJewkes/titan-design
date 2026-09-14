@@ -9,6 +9,7 @@ import {
   ListItemTrailing,
   ListItemDivider,
 } from './ListItem'
+import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
 
 function MockIcon({ size = 20 }: { size?: number; className?: string }) {
   return <View testID="mock-icon" style={{ width: size, height: size }} />
@@ -124,5 +125,23 @@ describe('ListItem accessibility', () => {
 
     const results = await axe(container)
     expect(results).toHaveNoViolations()
+  })
+})
+
+/**
+ * ListItem's row inset, pinned (AW-142 wave two).
+ *
+ * 12 down, 16 across — the loose rung of the row ladder DataRow now sits one
+ * step below. Unchanged in pixels.
+ */
+describe('ListItem geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'ListItem.tsx')
+
+  it.each([
+    ['ListItem', ['py-inset-md', 'px-inset-lg'], ['12px', '16px']],
+    ['ListItemContent', ['gap-stack-sm'], ['4px']],
+  ] as const)('%s ships %s', (functionName, classes, pixels) => {
+    expect(spacingClassesIn(source, functionName)).toEqual([...classes])
+    expect(resolveAll([...classes])).toEqual([...pixels])
   })
 })

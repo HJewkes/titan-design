@@ -12,6 +12,7 @@ import {
   CardInset,
 } from './Card'
 import { greyRamp } from '../../../theme/tokens/primitives'
+import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
 
 // Planes by RAMP STEP, never by literal bytes — see Surface.test.tsx.
 const BASE = greyRamp[925]
@@ -364,5 +365,25 @@ describe('Card', () => {
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
+  })
+})
+
+/**
+ * Card's bands, pinned (AW-142 wave two).
+ *
+ * One inset ladder across the three bands: the header is square at 24, the
+ * content and footer keep 24 across and 16 down. No pixel moved — the classes
+ * only stopped being anonymous.
+ */
+describe('Card geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'Card.tsx')
+
+  it.each([
+    ['CardHeader', ['p-inset-xl', 'gap-stack-md'], ['24px', '8px']],
+    ['CardContent', ['px-inset-xl', 'py-inset-lg'], ['24px', '16px']],
+    ['CardFooter', ['px-inset-xl', 'py-inset-lg', 'gap-2'], ['24px', '16px', '8px']],
+  ] as const)('%s ships %s', (functionName, classes, pixels) => {
+    expect(spacingClassesIn(source, functionName)).toEqual([...classes])
+    expect(resolveAll([...classes])).toEqual([...pixels])
   })
 })

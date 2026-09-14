@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Alert, AlertTitle, AlertDescription } from './Alert'
+import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 
 describe('Alert', () => {
   it('renders children correctly', () => {
@@ -250,5 +251,30 @@ describe('Alert compact cue (absorbs CueFlag)', () => {
       <Alert status="warning" size="compact" message="VL20 · target reps met — end the set." />
     )
     expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+/**
+ * Alert's inset and stack, pinned (AW-142 wave two).
+ *
+ * The insets are unchanged. `AlertTitle`'s `mb-1` becomes the content
+ * column's own stack gap, so the title and the description are spaced by the
+ * container that holds them rather than by the title reaching downward.
+ */
+describe('Alert geometry resolves to the spacing tokens', () => {
+  const source = siblingSource(import.meta.url, 'Alert.tsx')
+
+  it.each([
+    [
+      'the compact band',
+      'flex-row items-center px-inset-md py-inset-sm rounded-lg',
+      ['12px', '8px'],
+    ],
+    ['the default band', 'flex-row items-start p-inset-lg rounded-lg', ['16px']],
+    ['the content column', 'flex-1 gap-stack-sm', ['4px']],
+  ] as const)('%s ships `%s`', (_label, classes, pixels) => {
+    expect(source).toContain(classes)
+    const spacing = classes.split(' ').filter((c) => resolveAll([c])[0] !== undefined)
+    expect(resolveAll(spacing)).toEqual([...pixels])
   })
 })
