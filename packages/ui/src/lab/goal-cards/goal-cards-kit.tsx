@@ -76,12 +76,32 @@ export interface LiftCardData {
   actuals: GoalActual[]
 }
 
-/** One contributing lift inside a muscle rollup. */
+/**
+ * One contributing lift inside a muscle rollup.
+ *
+ * `goalWeek` is this TARGET's own due week, not the meso's current week — two
+ * lifts under one muscle can be due in different weeks, which is the whole
+ * reason the row can carry one at all. See `liftRowText`.
+ */
 export interface MuscleLiftRow {
   name: string
   status: GoalStatus
-  /** Already-formatted next milestone, e.g. "8 x 105 kg · wk 8". */
-  milestone: string
+  reps: number
+  load: number
+  unit: string
+  goalWeek: number
+}
+
+/**
+ * The row's text. The week is shown ONLY when this lift's goal week differs
+ * from the muscle's common one — the human's round-four question was "what does
+ * the week number refer to", and the honest answer is that it is per-target and
+ * usually identical, so repeating it on every row is noise that reads as if it
+ * meant something.
+ */
+export function liftRowText(row: MuscleLiftRow, commonGoalWeek: number): string {
+  const base = `${row.reps} x ${row.load} ${row.unit}`
+  return row.goalWeek === commonGoalWeek ? base : `${base} · wk ${row.goalWeek}`
 }
 
 export interface MuscleCardData {
@@ -97,7 +117,18 @@ export interface MuscleCardData {
   summary: string
   liftsOnTrack: number
   liftsTotal: number
+  /** The week most of this muscle's lifts are due; the row text elides it. */
+  commonGoalWeek: number
   lifts: MuscleLiftRow[]
+  /**
+   * A muscle-level progress series, for the R4b spark.
+   *
+   * NOT ON THE READ MODEL. `/api/goal-progress` returns actuals per TARGET; a
+   * muscle rollup carries only status, a summary and a count. Rendering this
+   * needs either a new aggregate field or the page fetching every contributing
+   * target and combining them client-side. Fixture-only until then.
+   */
+  series?: { actuals: GoalActual[]; committed: number; stretch: number; goalWeek: number }
 }
 
 /** "8 x 105" — reps first. */
@@ -308,10 +339,23 @@ export const MUSCLE_FIXTURES: MuscleCardData[] = [
     summary: 'Both lifts tracking their committed band.',
     liftsOnTrack: 2,
     liftsTotal: 2,
+    commonGoalWeek: 8,
     lifts: [
-      { name: 'Bench press', status: 'on_track', milestone: '8 x 105 kg · wk 8' },
-      { name: 'Incline press', status: 'tolerated', milestone: '8 x 85 kg · wk 6' },
+      { name: 'Bench press', status: 'on_track', reps: 8, load: 105, unit: 'kg', goalWeek: 8 },
+      { name: 'Incline press', status: 'tolerated', reps: 8, load: 85, unit: 'kg', goalWeek: 6 },
     ],
+    series: {
+      committed: 102.5,
+      stretch: 110,
+      goalWeek: 8,
+      actuals: [
+        { week: 1, value: 92.5 },
+        { week: 2, value: 95 },
+        { week: 3, value: 95 },
+        { week: 4, value: 97.5 },
+        { week: 5, value: 100 },
+      ],
+    },
   },
   {
     name: 'BACK',
@@ -321,11 +365,31 @@ export const MUSCLE_FIXTURES: MuscleCardData[] = [
     summary: 'Row is ahead of band; pull up cleared a PR.',
     liftsOnTrack: 3,
     liftsTotal: 3,
+    commonGoalWeek: 5,
     lifts: [
-      { name: 'Barbell row', status: 'on_track', milestone: '10 x 100 kg · wk 5' },
-      { name: 'Weighted pull up', status: 'deload_week', milestone: '6 x 30 kg · wk 5' },
-      { name: 'Lat pulldown', status: 'ahead', milestone: '12 x 70 kg · wk 7' },
+      { name: 'Barbell row', status: 'on_track', reps: 10, load: 100, unit: 'kg', goalWeek: 5 },
+      {
+        name: 'Weighted pull up',
+        status: 'deload_week',
+        reps: 6,
+        load: 30,
+        unit: 'kg',
+        goalWeek: 5,
+      },
+      { name: 'Lat pulldown', status: 'ahead', reps: 12, load: 70, unit: 'kg', goalWeek: 7 },
     ],
+    series: {
+      committed: 97.5,
+      stretch: 105,
+      goalWeek: 8,
+      actuals: [
+        { week: 1, value: 85 },
+        { week: 2, value: 87.5 },
+        { week: 3, value: 90 },
+        { week: 4, value: 92.5 },
+        { week: 5, value: 95 },
+      ],
+    },
   },
   {
     name: 'QUADS',
@@ -335,10 +399,23 @@ export const MUSCLE_FIXTURES: MuscleCardData[] = [
     summary: 'Squat slipped under the band in week 3.',
     liftsOnTrack: 1,
     liftsTotal: 2,
+    commonGoalWeek: 8,
     lifts: [
-      { name: 'Back squat', status: 'behind', milestone: '5 x 150 kg · wk 8' },
-      { name: 'Leg press', status: 'on_track', milestone: '10 x 220 kg · wk 6' },
+      { name: 'Back squat', status: 'behind', reps: 5, load: 150, unit: 'kg', goalWeek: 8 },
+      { name: 'Leg press', status: 'on_track', reps: 10, load: 220, unit: 'kg', goalWeek: 8 },
     ],
+    series: {
+      committed: 145,
+      stretch: 155,
+      goalWeek: 8,
+      actuals: [
+        { week: 1, value: 130 },
+        { week: 2, value: 135 },
+        { week: 3, value: 132.5 },
+        { week: 4, value: 137.5 },
+        { week: 5, value: 140 },
+      ],
+    },
   },
   {
     name: 'HAMSTRINGS',
@@ -348,10 +425,23 @@ export const MUSCLE_FIXTURES: MuscleCardData[] = [
     summary: 'RDL has not moved for five sessions.',
     liftsOnTrack: 0,
     liftsTotal: 2,
+    commonGoalWeek: 7,
     lifts: [
-      { name: 'Romanian deadlift', status: 'stalled', milestone: '8 x 140 kg · wk 7' },
-      { name: 'Leg curl', status: 'behind', milestone: '12 x 55 kg · wk 6' },
+      { name: 'Romanian deadlift', status: 'stalled', reps: 8, load: 140, unit: 'kg', goalWeek: 7 },
+      { name: 'Leg curl', status: 'behind', reps: 12, load: 55, unit: 'kg', goalWeek: 7 },
     ],
+    series: {
+      committed: 135,
+      stretch: 145,
+      goalWeek: 8,
+      actuals: [
+        { week: 1, value: 125 },
+        { week: 2, value: 127.5 },
+        { week: 3, value: 127.5 },
+        { week: 4, value: 127.5 },
+        { week: 5, value: 127.5 },
+      ],
+    },
   },
   {
     name: 'SHOULDERS',
@@ -361,7 +451,20 @@ export const MUSCLE_FIXTURES: MuscleCardData[] = [
     summary: 'Three readings in; band not yet fitted.',
     liftsOnTrack: 0,
     liftsTotal: 1,
-    lifts: [{ name: 'Overhead press', status: 'calibrating', milestone: '8 x 65 kg · wk 8' }],
+    commonGoalWeek: 8,
+    lifts: [
+      { name: 'Overhead press', status: 'calibrating', reps: 8, load: 65, unit: 'kg', goalWeek: 8 },
+    ],
+    series: {
+      committed: 62.5,
+      stretch: 70,
+      goalWeek: 8,
+      actuals: [
+        { week: 1, value: 57.5 },
+        { week: 2, value: 60 },
+        { week: 3, value: 60 },
+      ],
+    },
   },
 ]
 
@@ -997,7 +1100,11 @@ function LiftMiniRow({ row }: { row: MuscleLiftRow }) {
         </Typography>
       </View>
       <Typography variant="caption" color="tertiary" className="text-3xs leading-[normal]">
-        {row.milestone}
+        {/* Round three showed "wk N" on EVERY row. Kept verbatim (a goal week
+            can never be -1, so the week always renders) so the round-3 sheet
+            still shows the human what they actually reviewed. Round four is
+            where the week became conditional. */}
+        {liftRowText(row, -1)}
       </Typography>
     </View>
   )
@@ -1119,5 +1226,250 @@ export function MuscleRollupR4({
         </View>
       </View>
     </RollupShell>
+  )
+}
+
+/**
+ * Below this content width the status pill collapses to its light, whatever
+ * the density. Round three drove the collapse off density ALONE, so a narrow
+ * comfortable cell still rendered the full pill and pushed the title into a
+ * wrap — "narrow cell should keep the small status icon". The mark is never
+ * absent; only its form changes.
+ */
+const STATUS_COLLAPSE_WIDTH = 320
+
+/**
+ * The PR mark stacked over the unit, its top on the hero's cap line — the
+ * round-four note, "above the kg, not next to it".
+ *
+ * The column sits in a `baseline` row, so the unit keeps the hero's baseline
+ * and the star rides above it.
+ */
+function PrStack({ unit, isPR }: { unit: string; isPR: boolean }) {
+  const brand = getSemanticColors(useSurfaceMode())['brand-primary']
+  return (
+    <View style={{ position: 'relative' }}>
+      <Typography variant="caption" color="tertiary">
+        {unit}
+      </Typography>
+      {isPR && (
+        <View
+          accessibilityRole="image"
+          accessibilityLabel="Personal record"
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            alignItems: 'center',
+            // optical: puts the 10px star's top on the hero's cap line. Absolute
+            // so the unit does NOT move — stacking the star in normal flow
+            // pushed `kg` down, and a PR card then sat a line off every non-PR
+            // card beside it in the same grid row.
+            top: -9,
+          }}
+          testID="goal-card-pr-star"
+        >
+          <StarIcon size={10} color={brand} fill={brand} strokeWidth={2} />
+        </View>
+      )}
+    </View>
+  )
+}
+
+/**
+ * The lift card, round four. Round three plus the two fixes: the status mark
+ * collapses on measured WIDTH rather than density alone, and the PR star is
+ * stacked over the unit instead of sitting beside it.
+ */
+export function GoalLiftCardR4({ lift, density }: { lift: LiftCardData; density: CardDensity }) {
+  const d = DENSITY[density]
+  const [chartWidth, onChartLayout] = useMeasuredWidth()
+  const [cardWidth, onCardLayout] = useMeasuredWidth()
+  const collapsed = density === 'compact' || (cardWidth > 0 && cardWidth < STATUS_COLLAPSE_WIDTH)
+
+  return (
+    <Card elevation={1} testID="goal-lift-card-r4">
+      <View className={`${d.pad} ${d.gap}`} onLayout={onCardLayout}>
+        <View className="gap-stack-sm">
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'flex-start',
+              justifyContent: 'space-between',
+            }}
+            className="gap-inline-sm"
+          >
+            <View style={{ flexShrink: 1, minWidth: 0 }}>
+              <Typography variant="overline" color="tertiary">
+                {lift.name}
+              </Typography>
+            </View>
+            {collapsed ? (
+              <Indicator
+                color={STATUS_INDICATOR[lift.status]}
+                size="md"
+                accessibilityLabel={statusLabel(lift.status)}
+                testID="goal-card-status-dot"
+              />
+            ) : (
+              <StatusCapsule status={lift.status} />
+            )}
+          </View>
+
+          <View style={{ flexDirection: 'row', alignItems: 'baseline' }} className="gap-inline-sm">
+            <Typography variant="body1" className={d.heroClass} maxLines={1}>
+              {milestoneHero(lift)}
+            </Typography>
+            <PrStack unit={lift.unit} isPR={lift.isPR} />
+          </View>
+          <Typography variant="caption" color="tertiary">
+            {milestoneTail(lift)}
+          </Typography>
+        </View>
+
+        <View style={{ height: d.bandHeight }} onLayout={onChartLayout}>
+          {chartWidth > 0 && (
+            <GoalBandSpark
+              actuals={lift.actuals}
+              committed={lift.committed}
+              stretch={lift.stretch}
+              goalWeek={lift.goalWeek}
+              unit={lift.unit}
+              width={chartWidth}
+              height={d.bandHeight}
+              isRegressing={isRegressing(lift.status)}
+              placement="inline-left"
+            />
+          )}
+        </View>
+      </View>
+    </Card>
+  )
+}
+
+/** The count, sized to sit beside the figure rather than above the rows. */
+function RollupCountBlock({ muscle, density }: { muscle: MuscleCardData; density: CardDensity }) {
+  return (
+    <View>
+      <Typography variant="body1" className={DENSITY[density].heroClass} maxLines={1}>
+        {`${muscle.liftsOnTrack}/${muscle.liftsTotal}`}
+      </Typography>
+      <Typography variant="caption" color="tertiary">
+        lifts on track
+      </Typography>
+    </View>
+  )
+}
+
+/** A rollup lift row. The week is elided unless this lift's differs. */
+function RollupLiftRow({ row, commonGoalWeek }: { row: MuscleLiftRow; commonGoalWeek: number }) {
+  return (
+    <View
+      style={{ flexDirection: 'row', alignItems: 'center' }}
+      className="gap-inline-sm"
+      testID="rollup-lift-row"
+    >
+      <Indicator
+        color={STATUS_INDICATOR[row.status]}
+        size="sm"
+        accessibilityLabel={statusLabel(row.status)}
+      />
+      <View style={{ flex: 1, minWidth: 0 }}>
+        <Typography variant="caption" maxLines={1}>
+          {row.name}
+        </Typography>
+      </View>
+      <Typography variant="caption" color="tertiary" className="text-3xs leading-[normal]">
+        {liftRowText(row, commonGoalWeek)}
+      </Typography>
+    </View>
+  )
+}
+
+/** Chart geometry for the R4b inline spark, not a spacing token. */
+const ROLLUP_SPARK_HEIGHT = 40
+
+/**
+ * R4 rearranged — the round-four rollup.
+ *
+ * Top band: the count on the left, the figure pushed right and the count
+ * centred against it (R1's arrangement). `withSpark` adds the muscle-level
+ * band spark between them, which is R4b.
+ *
+ * The rows sit below at `gap-stack-md` rather than `lg` — "potentially
+ * slightly tighter spaced".
+ */
+export function MuscleRollupR4Arranged({
+  muscle,
+  density,
+  withSpark,
+}: {
+  muscle: MuscleCardData
+  density: CardDensity
+  withSpark: boolean
+}) {
+  const d = DENSITY[density]
+  const litColor = useStatusColor(muscle.status)
+  const [sparkWidth, onSparkLayout] = useMeasuredWidth()
+  const series = muscle.series
+
+  return (
+    <Card elevation={1} testID="muscle-rollup-card-r4">
+      <View className={`${d.pad} ${d.gap}`}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+          }}
+          className="gap-inline-sm"
+        >
+          <View style={{ flexShrink: 1, minWidth: 0 }}>
+            <Typography variant="overline" color="tertiary">
+              {muscle.name}
+            </Typography>
+          </View>
+          <StatusMark status={muscle.status} density={density} />
+        </View>
+
+        <View
+          style={{ flexDirection: 'row', alignItems: 'center' }}
+          className="gap-inline-md"
+          testID="rollup-top-band"
+        >
+          <RollupCountBlock muscle={muscle} density={density} />
+          {withSpark && series !== undefined && (
+            <View
+              style={{ flex: 1, minWidth: 0, height: ROLLUP_SPARK_HEIGHT }}
+              onLayout={onSparkLayout}
+            >
+              {sparkWidth > 0 && (
+                <GoalBandSpark
+                  actuals={series.actuals}
+                  committed={series.committed}
+                  stretch={series.stretch}
+                  goalWeek={series.goalWeek}
+                  unit={muscle.lifts[0]?.unit ?? ''}
+                  width={sparkWidth}
+                  height={ROLLUP_SPARK_HEIGHT}
+                  isRegressing={isRegressing(muscle.status)}
+                  placement="inline-left"
+                />
+              )}
+            </View>
+          )}
+          {!withSpark && <View style={{ flex: 1 }} />}
+          <MuscleGlyph muscle={muscle.muscle} side={muscle.side} litColor={litColor} />
+        </View>
+
+        <Divider />
+
+        <View className="gap-stack-md">
+          {muscle.lifts.map((row) => (
+            <RollupLiftRow key={row.name} row={row} commonGoalWeek={muscle.commonGoalWeek} />
+          ))}
+        </View>
+      </View>
+    </Card>
   )
 }

@@ -5,6 +5,7 @@ import { composeStories } from '@storybook/react'
 import * as gridStories from './GoalCardGrid.stories'
 import * as bVariationStories from './BVariations.stories'
 import * as roundThreeStories from './Round3.stories'
+import * as roundFourStories from './Round4.stories'
 import { deriveGoalBandSparkGeometry } from './GoalBandSpark'
 
 /**
@@ -23,6 +24,7 @@ describe('Lab/Goals goal-card specimens', () => {
     ['GoalCardGrid', gridStories],
     ['BVariations', bVariationStories],
     ['Round3', roundThreeStories],
+    ['Round4', roundFourStories],
   ] as const) {
     const composed = composeStories(mod)
     for (const [name, Story] of Object.entries(composed)) {
