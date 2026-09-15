@@ -12,6 +12,23 @@ project adheres to [Semantic Versioning](https://semver.org/).
 - Token-pure `no-restricted-syntax` lint rule now permits the render-time
   `getSemanticColors(useSurfaceMode())` form its own message recommends,
   instead of banning every `getSemanticColors()` call outright (VW-381).
+- Root barrel re-exported `MuscleGroup` as `export type`, so `dist/index.d.ts`
+  declared it while `dist/index.mjs` never actually exported it —
+  `import { MuscleGroup } from '@titan-design/react-ui'` typechecked and then
+  crashed at runtime. `MuscleGroup` is now a real value export at root,
+  matching what its `.d.ts` entry already promised (VW-388).
+
+### Changed
+
+- `CHANGELOG.md` now ships in the published tarball (`package.json` `files`)
+  (VW-388).
+
+### Documentation
+
+- README documents the `@titan-design/react-ui/bodymap` and `/pages` subpaths,
+  the `react-native-body-highlighter` peer dependency, and the Vite plugin
+  pattern (`vite-rn-svg-plugins.ts`) a web consumer needs to build `/bodymap`;
+  adds `GoalLiftCard` and `GoalMuscleCard` to the component list (VW-388).
 
 ## 0.16.0
 
