@@ -5,6 +5,28 @@ All notable changes to `@titan-design/react-ui` are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- Root barrel re-exported `MuscleGroup` as `export type`, so `dist/index.d.ts`
+  declared it while `dist/index.mjs` never actually exported it —
+  `import { MuscleGroup } from '@titan-design/react-ui'` typechecked and then
+  crashed at runtime. `MuscleGroup` is now a real value export at root,
+  matching what its `.d.ts` entry already promised (VW-388).
+
+### Changed
+
+- `CHANGELOG.md` now ships in the published tarball (`package.json` `files`)
+  (VW-388).
+
+### Documentation
+
+- README documents the `@titan-design/react-ui/bodymap` and `/pages` subpaths,
+  the `react-native-body-highlighter` peer dependency, and the Vite plugin
+  pattern (`vite-rn-svg-plugins.ts`) a web consumer needs to build `/bodymap`;
+  adds `GoalLiftCard` and `GoalMuscleCard` to the component list (VW-388).
+
 ## 0.16.0
 
 ### Added

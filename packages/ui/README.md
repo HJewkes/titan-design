@@ -121,12 +121,48 @@ function App() {
 
 ### Custom Components
 
-| Component      | Description                                          |
-| -------------- | ---------------------------------------------------- |
-| **Typography** | Consistent text styling (h1-h6, body, caption, etc.) |
-| **Sidebar**    | Navigation sidebar with collapsible support          |
-| **Table**      | Data table with sorting and pagination               |
-| **EmptyState** | Placeholder for empty data states                    |
+| Component          | Description                                                                                    |
+| ------------------ | ------------------------------------------------------------------------------------------------ |
+| **Typography**     | Consistent text styling (h1-h6, body, caption, etc.)                                            |
+| **Sidebar**        | Navigation sidebar with collapsible support                                                     |
+| **Table**          | Data table with sorting and pagination                                                          |
+| **EmptyState**     | Placeholder for empty data states                                                                |
+| **GoalLiftCard**   | One lift's goal state — next milestone, status pill, committed/stretch progress (root barrel)   |
+| **GoalMuscleCard** | A muscle priority's rollup card, built on `MuscleGlyph` (`bodymap` subpath — see [Subpaths](#subpaths)) |
+
+## Subpaths
+
+Two exports stay off the root barrel so `@titan-design/react-ui` itself never pulls
+their heavier runtime dependencies:
+
+- **`@titan-design/react-ui/bodymap`** — `BodyMap`, `BodyMapDetailPanel`,
+  `TrainingStatusPage`, `MuscleGlyph`, `GoalMuscleCard`, the muscle taxonomy
+  (`MuscleGroup`, `SimpleMuscleGroup`, …), and related types. Reaches
+  `react-native-body-highlighter` (and transitively `react-native-svg`) —
+  install both as peer dependencies if you import from this subpath.
+
+  For a **web build via Vite**, `react-native-body-highlighter` ships
+  untranspiled JSX in a CommonJS dist that neither Rollup nor Vite's default
+  transform can parse, and its own `require('react-native-svg')` would load
+  that package's native Flow sources instead of the web build. Titan's own
+  Storybook and test config solve this with two Vite plugins in
+  `packages/ui/vite-rn-svg-plugins.ts`: one that resolves `react-native-svg`'s
+  relative imports to their `.web.js` siblings (Node resolvers don't honor RN's
+  platform-extension convention), and one that pre-bundles
+  `react-native-body-highlighter` to a single ESM module with esbuild
+  (`jsx: 'automatic'`, `react-native-svg` aliased to its web entry, `react`
+  left external). That esbuild pass needs an explicit `require` shim banner —
+  a small snippet defining a `require(id)` that returns React for `"react"`
+  and throws otherwise — because esbuild's own dynamic-require helper only
+  throws when nothing supplies `require`, and a plain `vite build` bundle has
+  nothing to supply it (Node's CJS interop hides the gap in a vitest run,
+  which is why it can look unnecessary until you build for the browser). A
+  consumer building `/bodymap` for web needs the same two plugins; see
+  `packages/ui/vite-rn-svg-plugins.ts` in this repo for the working pattern.
+
+- **`@titan-design/react-ui/pages`** — page-level organisms
+  (`ActiveWorkoutPage`, `ExerciseDetailPage`, `ProgramPlanningPage`) kept off
+  the root as reference implementations.
 
 ## Component API
 

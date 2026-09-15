@@ -233,15 +233,17 @@ export type {
   ExerciseDetailStats,
   VbtSummary,
 } from './ExerciseDetailPage'
-// muscleTaxonomy imports `react-native-body-highlighter` at runtime. Its value
-// exports (incl. the MuscleGroup / SimpleMuscleGroup enums) live behind the
-// `@titan-design/react-ui/bodymap` subpath. Only type-only re-exports stay here.
-export type {
-  MuscleGroup,
-  SimpleMuscleGroup,
-  MovementCategory,
-  VolumeLandmarks,
-} from './muscleTaxonomy'
+// muscleTaxonomy.ts itself has no react-native-body-highlighter dependency —
+// only BodyMap.tsx and MuscleGlyph.tsx (the figure renderers) do, which is why
+// those stay behind the `@titan-design/react-ui/bodymap` subpath below.
+// MuscleGroup already ships as a runtime value in this bundle (MuscleStrip
+// above imports it as a value), so re-exporting it as `export type` declared a
+// value in dist/index.d.ts that dist/index.mjs never actually exported
+// (VW-388) — export the value here to match. SimpleMuscleGroup has no
+// root-side value user and would need to be evaluated for a symbol nobody
+// here needs, so it stays type-only; import its value from `/bodymap`.
+export { MuscleGroup } from './muscleTaxonomy'
+export type { SimpleMuscleGroup, MovementCategory, VolumeLandmarks } from './muscleTaxonomy'
 export type {
   ActiveWorkoutPageProps,
   ActiveWorkoutExercise,
