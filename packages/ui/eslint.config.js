@@ -410,6 +410,8 @@ module.exports = tseslint.config(
       'src/components/custom/Workout/ActiveWorkoutPage.tsx',
       'src/components/custom/Workout/ExerciseDetailPage.tsx',
       'src/components/custom/Workout/GoalLiftCard.tsx',
+      'src/components/custom/Workout/GoalMuscleCard.tsx',
+      'src/components/custom/Workout/MuscleGlyph.tsx',
       'src/components/custom/Workout/GoalTrajectoryChart.tsx',
       'src/components/custom/Workout/ProgramPlanningPage.tsx',
       'src/components/custom/Workout/StrengthTrendChart.tsx',

@@ -9,7 +9,7 @@ component is pure import churn with no file moves.
 
 **Atoms** — single-purpose, no cross-component state:
 BaseBadge · WeightBadge · PrBadge · StatusDot · PlaceholderStrip ·
-DeviationBar · IntensityBar · WorkoutPill · MuscleGroupChip · Sparkline ·
+DeviationBar · IntensityBar · WorkoutPill · MuscleGroupChip · Sparkline · MuscleGlyph ·
 SupersetWrapper · InputBar · MetricCell · SetsRepsLoad · ExerciseIndicator · SetBar
 
 **Molecules** — compose atoms, own a little local state:
@@ -17,7 +17,7 @@ VelocityStrip · DualVelocityStrip · SetRow · TempoDisplay · RestTimer · Mes
 WeekRow · WorkoutCard · SetStrip · ExerciseHeading · ExerciseCardHeading
 
 **Organisms** — full features, often with their own data contract:
-ExerciseCard · SessionRail · MesoCard · MesoStatusCard · GoalLiftCard · PrHistoryModal ·
+ExerciseCard · SessionRail · MesoCard · MesoStatusCard · GoalLiftCard · GoalMuscleCard · PrHistoryModal ·
 ReadinessCheck · StrengthTrendChart · CapacityBandChart · BodyMap · BodyMapDetailPanel
 
 **Pages** — phone-shaped reference screens (whole-screen compositions):
@@ -32,7 +32,8 @@ type props without pulling the dependency.
 
 - **`@titan-design/react-ui/bodymap`** — isolates
   `react-native-body-highlighter` (a native SVG dep). BodyMap, BodyMapDetailPanel,
-  TrainingStatusPage, and the muscle taxonomy live here.
+  TrainingStatusPage, the muscle taxonomy, and (VW-386) `MuscleGlyph` and
+  `GoalMuscleCard` live here.
 - **`@titan-design/react-ui/pages`** — isolates the page-level organisms
   (ActiveWorkoutPage, ExerciseDetailPage, ProgramPlanningPage). They are full app
   screens orphaned by both consumers, kept as reference implementations while their
@@ -66,6 +67,41 @@ type props without pulling the dependency.
 
   `onLayout` does not fire under jsdom, so the width collapse is covered by the
   explicit `statusForm` override in tests and by the `Widths` story live.
+
+- **GoalMuscleCard (VW-386)** — a muscle priority's goal state at card scale:
+  the figure lit by its status, the lifts-on-track count beneath it as a label,
+  and every contributing lift to its right.
+
+  _composes ↓_ `Card` (elevation 1) · `Pill` / `Indicator` · `Typography` ·
+  `MuscleGlyph`. _used-by ↑_ voltras-mcp `#/goals` `MuscleRollupPanel`.
+
+  **A sibling of `GoalLiftCard`, not a variant of it.** The survey's original
+  claim was one card with two content presets; the built prop APIs killed it.
+  They share `name` and `status` and nothing else — the lift card takes a
+  milestone, a band and a series, the muscle card takes a roster — so one
+  component would key every remaining prop off a discriminator. And this one
+  pulls `react-native-body-highlighter`, which is quarantined behind `/bodymap`
+  precisely so the root barrel stays free of it; folding it into `GoalLiftCard`
+  would drag that dep onto every consumer of the lift card.
+
+  **A lift row prints its own week only when it differs** from `commonGoalWeek`.
+  It is a per-TARGET due week, so on most muscles every row matches and the week
+  vanishes — printing it on every row read as if it meant something.
+
+  **The figure is lit by GOAL status, never `getHeatmapColor`.** That function is
+  the volume-landmark measurement (sets against MAV) and lives on a read model
+  `#/goals` never fetches. `MuscleGlyph` takes a resolved colour so the two
+  vocabularies cannot share a default.
+
+- **MuscleGlyph (VW-386)** — the card-scale figure, ~44x88, with one muscle lit.
+  The library had no mini muscle svg: `BodyMap` renders the same artwork only at
+  160x320 and 480x960 and always with its legend, and the icon set's one body
+  glyph has no muscle regions. This is the same `react-native-body-highlighter`
+  drawing and the same `MUSCLE_TO_SVG_SLUGS` mapping at a smaller scale, so the
+  figure still has exactly one source; `BodyMap` can compose it later.
+
+  The svg subtree is `aria-hidden` and the wrapper carries the name — the
+  package puts `aria-label` on bare `<path>` elements, which axe rejects.
 
 - **BaseBadge is an internal composition primitive** — the shared shell that
   WeightBadge and PrBadge build on. It is exempt from orphan accounting; it is not

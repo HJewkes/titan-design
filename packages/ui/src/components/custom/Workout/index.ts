@@ -169,6 +169,11 @@ export {
   type GoalLiftMilestone,
   type GoalLiftStatus,
 } from './GoalLiftCard'
+// GoalMuscleCard and MuscleGlyph depend on `react-native-body-highlighter` at
+// runtime, so their VALUE exports live behind `@titan-design/react-ui/bodymap`.
+// Type-only re-exports stay here (erased at build, so no runtime pull).
+export type { GoalMuscleCardProps, GoalMuscleLift } from './GoalMuscleCard'
+export type { MuscleGlyphProps } from './MuscleGlyph'
 // BodyMap / BodyMapDetailPanel / TrainingStatusPage depend on
 // `react-native-body-highlighter` at runtime. Their VALUE exports live behind the
 // `@titan-design/react-ui/bodymap` subpath to keep this barrel body-highlighter-free.

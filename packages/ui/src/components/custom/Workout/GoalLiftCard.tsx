@@ -67,7 +67,8 @@ export interface GoalLiftCardProps extends ViewProps {
   className?: string
 }
 
-const STATUS_LABEL: Record<GoalLiftStatus, string> = {
+/** Shared with `GoalMuscleCard` so one vocabulary covers both cards. */
+export const GOAL_STATUS_LABEL: Record<GoalLiftStatus, string> = {
   on_track: 'On track',
   ahead: 'Ahead',
   behind: 'Behind',
@@ -81,7 +82,7 @@ const STATUS_LABEL: Record<GoalLiftStatus, string> = {
  * `ahead` is info, never warning-amber — that hue is reserved for the pacing
  * tone itself (REJECTED.md, "Amber holds").
  */
-const STATUS_TONE: Record<GoalLiftStatus, PillTone & IndicatorColor> = {
+export const GOAL_STATUS_TONE: Record<GoalLiftStatus, PillTone & IndicatorColor> = {
   on_track: 'success',
   ahead: 'info',
   tolerated: 'info',
@@ -115,7 +116,7 @@ const DENSITY = {
 } as const
 
 export function goalLiftStatusLabel(status: GoalLiftStatus): string {
-  return STATUS_LABEL[status]
+  return GOAL_STATUS_LABEL[status]
 }
 
 /** A regressing trend paints `result-degrade` rather than `result-improve`. */
@@ -258,7 +259,7 @@ export function GoalLiftCard({
       elevation={1}
       className={className}
       role="article"
-      aria-label={`${name} goal, ${STATUS_LABEL[status]}`}
+      aria-label={`${name} goal, ${GOAL_STATUS_LABEL[status]}`}
       testID="goal-lift-card"
       {...props}
     >
@@ -281,24 +282,24 @@ export function GoalLiftCard({
             </View>
             {collapsed ? (
               <Indicator
-                color={STATUS_TONE[status]}
+                color={GOAL_STATUS_TONE[status]}
                 size="md"
                 // RNW drops `aria-label` on a View with no role, and axe then
                 // flags the bare attribute as prohibited (gotcha #3). The dot
                 // IS the status here, so it needs the name, so it needs a role.
                 accessibilityRole="image"
-                accessibilityLabel={STATUS_LABEL[status]}
+                accessibilityLabel={GOAL_STATUS_LABEL[status]}
                 testID="goal-lift-card-status-dot"
               />
             ) : (
               <Pill
-                tone={STATUS_TONE[status]}
+                tone={GOAL_STATUS_TONE[status]}
                 variant="subtle"
                 size="sm"
                 leading="dot"
                 testID="goal-lift-card-status-pill"
               >
-                {STATUS_LABEL[status]}
+                {GOAL_STATUS_LABEL[status]}
               </Pill>
             )}
           </View>

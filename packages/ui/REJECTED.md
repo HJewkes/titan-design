@@ -159,18 +159,18 @@ composed them inside an `AwShell` frame.
 **Superseded by** the hardened family, which is what those specimens were drawn
 to produce:
 
-| Deleted specimen                         | Hardened story                          | Landed in |
-| ---------------------------------------- | --------------------------------------- | --------- |
-| `Lab/ActiveWork/Portfolio Overview`      | `Custom/ActiveWork/PortfolioOverview`   | #156      |
-| `Lab/ActiveWork/File History Explorer`   | `Custom/ActiveWork/FileHistoryExplorer` | #157      |
-| `Lab/ActiveWork/Task List`               | `Custom/ActiveWork/TaskTable`           | #161      |
-| `Lab/ActiveWork/Session Reader`          | `Custom/ActiveWork/SessionReader`       | #164      |
-| `Lab/ActiveWork/Initiative Reader`       | `Custom/ActiveWork/InitiativeReader`    | #165      |
+| Deleted specimen                       | Hardened story                          | Landed in |
+| -------------------------------------- | --------------------------------------- | --------- |
+| `Lab/ActiveWork/Portfolio Overview`    | `Custom/ActiveWork/PortfolioOverview`   | #156      |
+| `Lab/ActiveWork/File History Explorer` | `Custom/ActiveWork/FileHistoryExplorer` | #157      |
+| `Lab/ActiveWork/Task List`             | `Custom/ActiveWork/TaskTable`           | #161      |
+| `Lab/ActiveWork/Session Reader`        | `Custom/ActiveWork/SessionReader`       | #164      |
+| `Lab/ActiveWork/Initiative Reader`     | `Custom/ActiveWork/InitiativeReader`    | #165      |
 
 **Why:** a specimen that outlives its hardening stops reading as a specimen. It
 is a second, older rendering of the same screen sitting one sidebar group away
 from the real one, and its hand-rolled parts are exactly the reuse failures the
-family's README records as *deleted* (`DotLabel` → `StatusDot`, `MiniBars` →
+family's README records as _deleted_ (`DotLabel` → `StatusDot`, `MiniBars` →
 `SparkBars`, inline `shortDate` → `DateTime`). Keeping them invites the next
 session to copy the wrong one, and it makes the ActiveWork family read as split
 across two groups in a tree whose whole point is one place per thing.
@@ -269,7 +269,7 @@ timeline, plus the round-2 load-velocity follow-up. Frozen HTML, archived in #99
 `FatigueLights`, `GhostSpark`, `VerdictHero`, `RomProgressionChart` — which is
 the shipped answer to "live fatigue autoreg" and "rep quality / RPE".
 
-**Why:** these were feature *questions*, and the ones worth answering have been
+**Why:** these were feature _questions_, and the ones worth answering have been
 answered in components with a data contract (`LiveFatigueModel`), tests and
 stories. The captures cannot show what the shipped answer looks like because they
 predate the token system. The one gallery with no shipped counterpart — the
@@ -341,9 +341,9 @@ React-first now.
 ## `Lab/Archive/Curves/Per Rep` and `Curves/Set Level` — the SVG curve explorations (2026-09-10)
 
 **What they were:** two exploration story files landed lab-only in
-[#163](https://github.com/HJewkes/titan-design/pull/163). *Per Rep* rendered
+[#163](https://github.com/HJewkes/titan-design/pull/163). _Per Rep_ rendered
 smooth per-rep curves (inline `<svg>` + Catmull-Rom bezier) over the ~11 Hz
-per-sample stream — time, position, velocity, force, phase. *Set Level* rendered
+per-sample stream — time, position, velocity, force, phase. _Set Level_ rendered
 the review/analysis counterpart: the derived set- and session-level curves from
 the VBT literature, including an across-session load-velocity profile.
 
@@ -361,7 +361,7 @@ path-drawing code. The channel discipline both files established — velocity is
 the one saturated hue, force/ROM/position are neutral parchment geometry —
 **survived** and is the rule the shipped marks follow.
 
-The across-session load-velocity profile in *Set Level* has no shipped
+The across-session load-velocity profile in _Set Level_ has no shipped
 counterpart and needs backend plumbing to assemble. It is the one live proposal
 in either file; if it is picked up, it starts from the signals audit, not from
 this rendering.
@@ -382,7 +382,7 @@ velocity collapse from the concentric's peak to its mid/late trough.
 `custom/Fatigue/fatigue-tokens.ts`
 ([#128](https://github.com/HJewkes/titan-design/pull/128)).
 
-**Why:** Option A tints by deviation *magnitude*, so any slow concentric warms —
+**Why:** Option A tints by deviation _magnitude_, so any slow concentric warms —
 including a rep that is slow because the lifter is doing deliberate tempo work.
 Smooth, steady, low velocity, no failure: factually off prescribed tempo, but not
 a form breakdown. A grind — velocity collapsing mid-concentric, the rep barely
@@ -437,7 +437,7 @@ hero tempo element.
 **Why:** the exploration was run because the vertical `TempoDisplay` in the
 gutter clashed with the warm hero — magenta/cyan phase-identity chips and a
 compact mono treatment beside a velocity ramp and a split aura. All three
-replacements solved the clash by making tempo *bigger*, which spends hero space
+replacements solved the clash by making tempo _bigger_, which spends hero space
 on a prescription the lifter already knows. Embedding it in the band spends no
 space at all: the phase runs are already drawn, so labelling them carries tempo
 for free and puts it next to the rep it describes. The lesson generalises — when
@@ -562,3 +562,41 @@ lab folder again, check whether the gap is still real before rebuilding it.
 collapsing `MesoStatusCard`'s private `StatusPill` onto `Pill` were both named
 in the survey and neither fell out of this unit. They are follow-ups, not
 rejections — see `src/lab/goal-cards/SURVEY.md`.
+
+---
+
+## Centred rollup rows, and the one-card claim (2026-09-15)
+
+**What they were:** the two round-five alternatives for `GoalMuscleCard`, and
+the survey's original Gate 1 verdict that the muscle rollup should be a preset
+on the lift card rather than its own component.
+
+**Centred rows — rejected on the render.** With the figure on the left and the
+lift list to its right, centring the rows against the figure column reads fine
+at two or three lifts and badly at one: the single row floats in the middle of
+the card with the figure hanging beside it. Top-aligned holds at every roster
+size, so it is what shipped. The operator locked it as "top-aligned rows".
+
+**The one-card claim — invalidated by the built prop APIs.** The Gate 1 survey
+argued `MuscleGroupCard` should be `<GoalLiftCard variant="rollup">`, on the
+reasoning that both were "name, status, a summary and a count". That held while
+both were sketches. Once the lift card was hardened against `GoalProgressView`
+the overlap turned out to be `name` and `status` and nothing else — the lift
+card takes a milestone, a committed/stretch band and a week-indexed series; the
+muscle card takes a roster of contributing lifts and a figure. A single
+component would have keyed every remaining prop off a discriminator.
+
+The decisive reason is not aesthetic: `GoalMuscleCard` pulls
+`react-native-body-highlighter`, which is quarantined behind the
+`@titan-design/react-ui/bodymap` subpath so the root barrel stays free of a
+native SVG dependency. Folding it into `GoalLiftCard` would have dragged that
+dep onto every consumer of the lift card.
+
+**The lesson worth keeping:** a "one component, two presets" verdict taken at
+Gate 1 is a hypothesis about two prop APIs that do not exist yet. Re-check it
+once both are real, and be willing to lose it — the survey was not wrong to
+propose it, only wrong to treat it as settled.
+
+**The lab is now empty of this unit.** `src/lab/goal-cards/` kept only
+`SURVEY.md`; the kit, the specimen sheets and the lab `MuscleGlyph` are deleted,
+the last of them promoted to `custom/Workout/MuscleGlyph`.
