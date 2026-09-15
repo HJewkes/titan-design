@@ -331,9 +331,13 @@ module.exports = tseslint.config(
         },
         // Freezes the value to one palette at import time. Resolve at render
         // time instead — titan/no-frozen-theme below says the same thing for
-        // every component family, ratcheted.
+        // every component family, ratcheted. The `:not(:has(...))` clause
+        // carves out exactly the render-time form this message recommends
+        // (VW-381): a bare selector on the call name banned that form too,
+        // since it can't see the argument.
         {
-          selector: 'CallExpression[callee.name="getSemanticColors"]',
+          selector:
+            'CallExpression[callee.name="getSemanticColors"]:not(:has(> CallExpression[callee.name="useSurfaceMode"]))',
           message:
             'getSemanticColors() freezes to one theme — resolve at render time with useOnSurfaceColor(role), or getSemanticColors(useSurfaceMode()) for other tokens. See TOKENS.md §3.',
         },
