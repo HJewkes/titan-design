@@ -53,3 +53,10 @@ export {
   type VolumeLandmarkZone,
   type VolumeStatus,
 } from './components/custom/Workout/muscleTaxonomy'
+export { MuscleGlyph, type MuscleGlyphProps } from './components/custom/Workout/MuscleGlyph'
+export {
+  GoalMuscleCard,
+  goalMuscleLiftText,
+  type GoalMuscleCardProps,
+  type GoalMuscleLift,
+} from './components/custom/Workout/GoalMuscleCard'

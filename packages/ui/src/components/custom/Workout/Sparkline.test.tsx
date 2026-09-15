@@ -121,6 +121,74 @@ describe('Sparkline', () => {
     expect(screen.getByLabelText('Sparkline chart, no data')).toBeInTheDocument()
   })
 
+  describe('domain, band and label placement (VW-386)', () => {
+    it('places a point by its xValue rather than its index', () => {
+      // Three readings at weeks 1, 2, 3 on a 1-8 domain sit in the left third;
+      // by index they would have spanned the whole width.
+      render(
+        <Sparkline
+          data={[10, 20, 30]}
+          xValues={[1, 2, 3]}
+          domain={{ x: [1, 8] }}
+          width={70}
+          showDots
+        />
+      )
+      const last = screen.getByTestId('sparkline-dot-2')
+      // week 3 of 1..8 => 2/7 of 70px = 20px, less half the 3px dot.
+      expect(last).toHaveStyle({ left: '18.5px' })
+    })
+
+    it('keeps a reference above every reading inside the box when y is given', () => {
+      // Without the domain this line normalises to a negative y and is drawn
+      // outside the chart — the bug the domain prop exists to fix.
+      render(
+        <Sparkline
+          data={[10, 20]}
+          domain={{ y: [10, 40] }}
+          height={30}
+          referenceLines={[{ value: 40, color: '#fff' }]}
+        />
+      )
+      expect(screen.getByTestId('sparkline-reference-0')).toHaveStyle({ top: '0px' })
+    })
+
+    it('draws a band between two values', () => {
+      render(
+        <Sparkline data={[0, 40]} domain={{ y: [0, 40] }} height={40} band={{ from: 10, to: 30 }} />
+      )
+      const band = screen.getByTestId('sparkline-band')
+      expect(band).toHaveStyle({ top: '10px' })
+      expect(band).toHaveStyle({ height: '20px' })
+    })
+
+    it('renders no band when none is given', () => {
+      render(<Sparkline data={sampleData} />)
+      expect(screen.queryByTestId('sparkline-band')).toBeNull()
+    })
+
+    it('pins a reference label to the left edge when asked', () => {
+      render(
+        <Sparkline
+          data={sampleData}
+          referenceLabelPlacement="left"
+          referenceLines={[{ value: 20, color: '#fff', label: '20kg' }]}
+        />
+      )
+      expect(screen.getByTestId('sparkline-reference-label-0')).toHaveStyle({ left: '0px' })
+    })
+
+    it('keeps the label on the right by default', () => {
+      render(
+        <Sparkline
+          data={sampleData}
+          referenceLines={[{ value: 20, color: '#fff', label: '20kg' }]}
+        />
+      )
+      expect(screen.getByTestId('sparkline-reference-label-0')).toHaveStyle({ right: '0px' })
+    })
+  })
+
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const { container } = render(<Sparkline data={sampleData} showDots highlightLast />)

@@ -4,8 +4,43 @@ import { cn } from '../../../utils/cn'
 import { Typography } from '../Typography'
 import { resolveColor } from '../../../theme/resolve-color'
 
+/**
+ * An explicit plotting range. Both axes default to the data's own extent, which
+ * is what every pre-VW-386 consumer gets.
+ *
+ * `x` exists because a series can stop short of the range it is measured
+ * against: a goal's readings run to the current week, but the chart has to run
+ * to the goal week so the distance left to close is legible. `y` exists for the
+ * same reason on the other axis — a reference line above every reading is drawn
+ * OUTSIDE the box unless the caller widens the range to include it.
+ */
+export interface SparklineDomain {
+  x?: [number, number]
+  y?: [number, number]
+}
+
+/** A shaded region between two values on the y axis, e.g. a committed/stretch band. */
+export interface SparklineBand {
+  from: number
+  to: number
+  /** Defaults to a low-alpha `text-tertiary`. */
+  color?: string
+}
+
+/** Where a reference line's label sits. `above` is the pre-VW-386 behaviour. */
+export type SparklineReferenceLabelPlacement = 'above' | 'left'
+
 export interface SparklineProps extends ViewProps {
   data: number[]
+  /**
+   * The x position of each entry in `data`, same length and order. Defaults to
+   * the array index, which is what an evenly-spaced series wants.
+   */
+  xValues?: number[]
+  /** Explicit axis ranges. Each axis falls back to the data's own extent. */
+  domain?: SparklineDomain
+  /** A shaded region between two y values, drawn behind the trace. */
+  band?: SparklineBand
   width?: number
   height?: number
   color?: string
@@ -16,32 +51,38 @@ export interface SparklineProps extends ViewProps {
     dashed?: boolean
     label?: string
   }>
+  /** Where reference labels sit. Defaults to `above`, the original placement. */
+  referenceLabelPlacement?: SparklineReferenceLabelPlacement
   highlightLast?: boolean
   className?: string
 }
 
-function normalizeData(data: number[], height: number): number[] {
-  if (data.length === 0) return []
-  const min = Math.min(...data)
-  const max = Math.max(...data)
-  const range = max - min || 1
-  return data.map((v) => height - ((v - min) / range) * height)
+/** A [min, max] pair that never has zero width, so no scale divides by zero. */
+function extentOf(values: number[], override?: [number, number]): [number, number] {
+  if (override) return override
+  if (values.length === 0) return [0, 1]
+  return [Math.min(...values), Math.max(...values)]
 }
 
-function normalizeValue(value: number, data: number[], height: number): number {
-  const min = Math.min(...data)
-  const max = Math.max(...data)
-  const range = max - min || 1
-  return height - ((value - min) / range) * height
+function scaleY(value: number, [lo, hi]: [number, number], height: number): number {
+  return height - ((value - lo) / (hi - lo || 1)) * height
+}
+
+function scaleX(value: number, [lo, hi]: [number, number], width: number): number {
+  return ((value - lo) / (hi - lo || 1)) * width
 }
 
 export function Sparkline({
   data,
+  xValues,
+  domain,
+  band,
   width = 80,
   height = 30,
   color,
   showDots = false,
   referenceLines,
+  referenceLabelPlacement = 'above',
   highlightLast = false,
   className,
   ...props
@@ -59,8 +100,13 @@ export function Sparkline({
   }
 
   const resolvedColor = color ?? resolveColor('brand-primary')
-  const normalized = normalizeData(data, height)
-  const stepX = data.length > 1 ? width / (data.length - 1) : 0
+  const xs = xValues ?? data.map((_, i) => i)
+  const xDomain = extentOf(xs, domain?.x)
+  const yDomain = extentOf(data, domain?.y)
+  const points = data.map((value, i) => ({
+    x: scaleX(xs[i] ?? i, xDomain, width),
+    y: scaleY(value, yDomain, height),
+  }))
 
   const dotSize = 3
   const highlightSize = 6
@@ -74,8 +120,25 @@ export function Sparkline({
       testID="sparkline"
       {...props}
     >
+      {band !== undefined && (
+        <View
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: Math.min(scaleY(band.from, yDomain, height), scaleY(band.to, yDomain, height)),
+            height: Math.abs(scaleY(band.to, yDomain, height) - scaleY(band.from, yDomain, height)),
+            backgroundColor: band.color ?? resolveColor('hairline-default'),
+            opacity: band.color === undefined ? 0.35 : 1,
+          }}
+          accessibilityElementsHidden
+          testID="sparkline-band"
+        />
+      )}
+
       {referenceLines?.map((line, i) => {
-        const y = normalizeValue(line.value, data, height)
+        const y = scaleY(line.value, yDomain, height)
+        const labelOnLeft = referenceLabelPlacement === 'left'
         return (
           <View
             key={`ref-${i}`}
@@ -112,7 +175,7 @@ export function Sparkline({
                 className="text-3xs leading-[normal]"
                 style={{
                   position: 'absolute',
-                  right: 0,
+                  ...(labelOnLeft ? { left: 0 } : { right: 0 }),
                   top: -10,
                   color: line.color,
                   opacity: 1,
@@ -127,13 +190,12 @@ export function Sparkline({
       })}
 
       {/* Line segments connecting data points */}
-      {normalized.map((y, i) => {
+      {points.map((point, i) => {
         if (i === 0) return null
-        const prevY = normalized[i - 1]
-        const x1 = (i - 1) * stepX
-        const x2 = i * stepX
-        const dx = x2 - x1
-        const dy = y - prevY
+        const prev = points[i - 1]
+        if (prev === undefined) return null
+        const dx = point.x - prev.x
+        const dy = point.y - prev.y
         const length = Math.sqrt(dx * dx + dy * dy)
         const angle = Math.atan2(dy, dx) * (180 / Math.PI)
         return (
@@ -141,8 +203,8 @@ export function Sparkline({
             key={`line-${i}`}
             style={{
               position: 'absolute',
-              left: x1,
-              top: prevY,
+              left: prev.x,
+              top: prev.y,
               width: length,
               height: 1.5,
               backgroundColor: resolvedColor,
@@ -157,7 +219,7 @@ export function Sparkline({
 
       {/* Data point dots */}
       {(showDots || highlightLast) &&
-        normalized.map((y, i) => {
+        points.map((point, i) => {
           const isLast = i === data.length - 1
           const shouldShow = showDots || (highlightLast && isLast)
           if (!shouldShow) return null
@@ -168,8 +230,8 @@ export function Sparkline({
               key={`dot-${i}`}
               style={{
                 position: 'absolute',
-                left: i * stepX - size / 2,
-                top: y - size / 2,
+                left: point.x - size / 2,
+                top: point.y - size / 2,
                 width: size,
                 height: size,
                 borderRadius: size / 2,
