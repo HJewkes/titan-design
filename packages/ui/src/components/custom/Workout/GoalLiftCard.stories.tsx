@@ -81,8 +81,24 @@ type Story = StoryObj<typeof GoalLiftCard>
 export const Default: Story = {}
 
 /**
+ * A name long enough to actually wrap in the narrow cell.
+ *
+ * "ROMANIAN DEADLIFT" was here first and did NOT wrap: it measures ~147.6px
+ * against a ~152px content width, so it rendered on one line while the caption
+ * claimed otherwise. Measured in the browser, not estimated — this one renders
+ * 156px wide and 39px tall against a 19.5px line-height, i.e. exactly two
+ * lines. If you swap it, measure the replacement the same way.
+ */
+const WRAPPING_NAME = 'SINGLE-ARM DUMBBELL ROW'
+
+/**
  * The widths that decide it. 459px is a 4-up cell at 1920, 200px is where the
  * title wraps and the status keeps its light.
+ *
+ * The wrap is verified HERE, in the browser, not in a unit test: jsdom has no
+ * layout engine, so every `getBoundingClientRect` is zero and a rendered line
+ * count cannot be asserted. `GoalLiftCard.test.tsx` pins the *mechanism* — that
+ * the name carries no line clamp — and this story is what shows the result.
  */
 export const Widths: Story = {
   parameters: { layout: 'fullscreen' },
@@ -97,9 +113,7 @@ export const Widths: Story = {
     <View style={{ flexDirection: 'row', alignItems: 'flex-start' }} className="gap-section-sm">
       {[459, 616, 200].map((width) => (
         <View key={width} style={{ width }}>
-          {/* The narrow cell takes the longest name in the set, because the
-              wrap is the thing this width exists to show. */}
-          <GoalLiftCard {...args} name={width === 200 ? 'ROMANIAN DEADLIFT' : args.name} />
+          <GoalLiftCard {...args} name={width === 200 ? WRAPPING_NAME : args.name} />
         </View>
       ))}
     </View>

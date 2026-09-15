@@ -45,11 +45,25 @@ describe('GoalLiftCard', () => {
       expect(screen.queryByTestId('goal-lift-card-pr')).toBeNull()
     })
 
-    it('does not move the unit, so PR and non-PR cards align in a row', () => {
+    /**
+     * NOT a layout assertion. jsdom has no layout engine, so this compares the
+     * unit Text's OWN style and nothing about where it lands on screen. It
+     * catches a regression that restyles the unit; it would NOT catch the star
+     * being put back into normal flow, which is what actually pushed the unit
+     * down. That invariant is pinned by the `Widths` story in the browser.
+     */
+    it('leaves the unit element unstyled by the presence of a PR', () => {
       const { rerender } = render(<GoalLiftCard {...baseProps} />)
       const withoutPR = screen.getByText('lb').getAttribute('style')
       rerender(<GoalLiftCard {...baseProps} isPR />)
       expect(screen.getByText('lb').getAttribute('style')).toBe(withoutPR)
+    })
+
+    it('takes the star out of flow, so it cannot displace the unit', () => {
+      // The mechanism behind the alignment invariant above, which IS assertable:
+      // absolute positioning is why a PR card and a non-PR card stay level.
+      render(<GoalLiftCard {...baseProps} isPR />)
+      expect(screen.getByTestId('goal-lift-card-pr')).toHaveStyle({ position: 'absolute' })
     })
   })
 
@@ -117,11 +131,16 @@ describe('GoalLiftCard', () => {
     expect(screen.getByLabelText('BENCH PRESS goal, On track')).toBeInTheDocument()
   })
 
-  it('accepts a long name without truncating it', () => {
-    render(<GoalLiftCard {...baseProps} name="ROMANIAN DEADLIFT" />)
-    // A `maxLines` would set webkit line clamping; the name must stay wrappable.
+  /**
+   * The wrap itself is NOT assertable here — jsdom has no layout engine, so
+   * every rect is zero and a rendered line count cannot be read. This pins the
+   * mechanism that permits the wrap; the `Widths` story at 200px is where the
+   * result is verified.
+   */
+  it('leaves a long name unclamped, so it can wrap rather than truncate', () => {
+    render(<GoalLiftCard {...baseProps} name="SINGLE-ARM DUMBBELL ROW" />)
     const name = screen.getByTestId('goal-lift-card-name')
-    expect(name).toHaveTextContent('ROMANIAN DEADLIFT')
+    expect(name).toHaveTextContent('SINGLE-ARM DUMBBELL ROW')
     expect(name.getAttribute('style') ?? '').not.toContain('line-clamp')
   })
 
