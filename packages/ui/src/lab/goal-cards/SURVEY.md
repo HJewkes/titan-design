@@ -96,6 +96,42 @@ The human's first sentence resolves to: page is `<Surface level="base">`, each c
 (`status` + rollup summary + lifts-on-track). Same noun, different measurement — reusing it
 would collide two meanings on one colour channel, the failure reference 02 warns about.
 
+#### Mini muscle svg — surveyed 2026-09-15 for round three
+
+The human asked whether a mini version of the muscle-group svgs could go on the rollup card.
+Searched the icon set, the Workout family and the arch graph. **No mini muscle svg primitive
+exists.** What does exist:
+
+| Thing                             | What it actually is                                                                                                                             | Usable at card scale?                                                      |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `react-native-body-highlighter`   | The dependency `BodyMap` wraps. One 200×400 figure, front/back, per-slug fills, a `scale` prop.                                                 | **Yes** — this is the only real muscle artwork in the repo.                |
+| `BodyMap` (custom/Workout)        | Wraps the above at `scale` 0.8 (phone, 160×320) and 2.4 (wall, 480×960), and always renders its legend and front/back toggle beside the figure. | No. Both sizes dwarf a card, and the chrome is not suppressible by a prop. |
+| `MUSCLE_TO_SVG_SLUGS` (taxonomy)  | `MuscleGroup` → the highlighter's slug names. The mapping that makes a single muscle lightable.                                                 | **Yes**, directly.                                                         |
+| `PersonStandingIcon` (icons)      | The icon set's only body glyph — a four-stroke lucide figure (circle head, two paths). Shell S2 nav → Body. No muscle regions at all.           | No. Cannot express _which_ muscle.                                         |
+| `MuscleGroupChip` / `MuscleStrip` | Text only: a name, sets/target, and a colour. No artwork.                                                                                       | No.                                                                        |
+
+So round three's `MuscleGlyph` (`src/lab/goal-cards/MuscleGlyph.tsx`) reuses the **same svg
+family and the same slug mapping** at `scale` 0.22 (≈44×88). It draws no new body.
+
+**This makes R1 a promotion, not a reuse.** If the human keeps R1 or R4, the harden step adds
+either a `MuscleGlyph` primitive or a `size="glyph"` on `BodyMap` that suppresses the legend.
+Two consumers: this rollup card, and `MuscleGroupChip`, which labels a muscle with text alone
+today. If the human drops both variants, nothing is promoted and the lab file is deleted.
+
+One thing the glyph must not inherit: `BodyMap` fills by `getHeatmapColor(volumeStatus)`,
+which is the volume-landmark measurement. A goals rollup has no landmark data, so `MuscleGlyph`
+takes a caller-resolved colour and the goals card passes **goal** status. The two vocabularies
+must not be conflated on the same artwork.
+
+#### Volume-landmark position on a goal card — not honest
+
+Round three asked whether a rollup could show the volume-landmark position beside the lift
+statuses. It cannot, today: `#/goals` fetches `/api/goals` and `/api/goal-progress` only, and a
+`GoalPriorityRow`'s rollup carries `status`, `summary` and a lifts-on-track count. Weekly sets
+and the MAV/MRV landmarks come from a different read model the page never requests. Variant R3
+therefore draws one segment per lift coloured by **goal** status and nothing else; a landmark
+bar would need a new data source, which is a ticket, not a design choice.
+
 ### The big one — `MesoStatusCard`
 
 `custom/Workout`, organism, `candidate`, 2 lib dependents, flagged `deadByAssociation`, and

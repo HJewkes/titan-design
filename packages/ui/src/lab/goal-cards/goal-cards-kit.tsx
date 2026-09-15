@@ -25,8 +25,15 @@ import { Metric, MetricGroup } from '../../components/custom/Metric'
 import { Sparkline } from '../../components/custom/Workout/Sparkline'
 import { PrBadge } from '../../components/custom/Workout/PrBadge'
 import { MesoStatusCard } from '../../components/custom/Workout/MesoStatusCard'
+import { MuscleGroup } from '../../components/custom/Workout/muscleTaxonomy'
+import { StarIcon } from '../../components/icons'
+import { useSurfaceMode } from '../../components/ui/surface'
+import { getSemanticColors } from '../../theme/tokens/semantic'
 import { resolveColor } from '../../theme/resolve-color'
 import { GoalBandSpark, type BandLabelPlacement, type GoalActual } from './GoalBandSpark'
+import { MuscleGlyph } from './MuscleGlyph'
+
+export { MuscleGroup }
 
 export type { GoalActual, BandLabelPlacement }
 
@@ -69,12 +76,28 @@ export interface LiftCardData {
   actuals: GoalActual[]
 }
 
+/** One contributing lift inside a muscle rollup. */
+export interface MuscleLiftRow {
+  name: string
+  status: GoalStatus
+  /** Already-formatted next milestone, e.g. "8 x 105 kg · wk 8". */
+  milestone: string
+}
+
 export interface MuscleCardData {
   name: string
+  /** Drives the mini figure's highlighted slugs via `MUSCLE_TO_SVG_SLUGS`. */
+  muscle: MuscleGroup
+  /**
+   * Which face of the figure shows this muscle. A real implementation derives
+   * it from the slug set rather than carrying it on the row.
+   */
+  side: 'front' | 'back'
   status: GoalStatus
   summary: string
   liftsOnTrack: number
   liftsTotal: number
+  lifts: MuscleLiftRow[]
 }
 
 /** "8 x 105" — reps first. */
@@ -279,38 +302,66 @@ export const LIFT_FIXTURES: LiftCardData[] = [
 export const MUSCLE_FIXTURES: MuscleCardData[] = [
   {
     name: 'CHEST',
+    muscle: MuscleGroup.CHEST,
+    side: 'front',
     status: 'on_track',
     summary: 'Both lifts tracking their committed band.',
     liftsOnTrack: 2,
     liftsTotal: 2,
+    lifts: [
+      { name: 'Bench press', status: 'on_track', milestone: '8 x 105 kg · wk 8' },
+      { name: 'Incline press', status: 'tolerated', milestone: '8 x 85 kg · wk 6' },
+    ],
   },
   {
     name: 'BACK',
+    muscle: MuscleGroup.UPPER_BACK,
+    side: 'back',
     status: 'ahead',
     summary: 'Row is ahead of band; pull up cleared a PR.',
     liftsOnTrack: 3,
     liftsTotal: 3,
+    lifts: [
+      { name: 'Barbell row', status: 'on_track', milestone: '10 x 100 kg · wk 5' },
+      { name: 'Weighted pull up', status: 'deload_week', milestone: '6 x 30 kg · wk 5' },
+      { name: 'Lat pulldown', status: 'ahead', milestone: '12 x 70 kg · wk 7' },
+    ],
   },
   {
     name: 'QUADS',
+    muscle: MuscleGroup.QUADS,
+    side: 'front',
     status: 'behind',
     summary: 'Squat slipped under the band in week 3.',
     liftsOnTrack: 1,
     liftsTotal: 2,
+    lifts: [
+      { name: 'Back squat', status: 'behind', milestone: '5 x 150 kg · wk 8' },
+      { name: 'Leg press', status: 'on_track', milestone: '10 x 220 kg · wk 6' },
+    ],
   },
   {
     name: 'HAMSTRINGS',
+    muscle: MuscleGroup.HAMSTRINGS,
+    side: 'back',
     status: 'stalled',
     summary: 'RDL has not moved for five sessions.',
     liftsOnTrack: 0,
     liftsTotal: 2,
+    lifts: [
+      { name: 'Romanian deadlift', status: 'stalled', milestone: '8 x 140 kg · wk 7' },
+      { name: 'Leg curl', status: 'behind', milestone: '12 x 55 kg · wk 6' },
+    ],
   },
   {
     name: 'SHOULDERS',
+    muscle: MuscleGroup.SIDE_DELTS,
+    side: 'front',
     status: 'calibrating',
     summary: 'Three readings in; band not yet fitted.',
     liftsOnTrack: 0,
     liftsTotal: 1,
+    lifts: [{ name: 'Overhead press', status: 'calibrating', milestone: '8 x 65 kg · wk 8' }],
   },
 ]
 
@@ -394,6 +445,38 @@ function StatusCapsule({ status }: { status: GoalStatus }) {
     <Pill tone={statusTone(status)} variant="subtle" size="sm" leading="dot">
       {statusLabel(status)}
     </Pill>
+  )
+}
+
+/** A resolved goal-status colour, for the places a token class cannot reach. */
+function useStatusColor(status: GoalStatus): string {
+  const t = getSemanticColors(useSurfaceMode())
+  const tone = statusTone(status)
+  if (tone === 'success') return t['status-success']
+  if (tone === 'warning') return t['status-warning']
+  return t['status-info']
+}
+
+/**
+ * The PR mark as an asterisk on the load, not a badge on the title — the
+ * human's round-three note. `PrBadge compact` is the same `StarIcon` but pins
+ * it at 14px, which is hero-sized here, so this composes the icon directly.
+ *
+ * HARDEN-STEP: give `PrBadge` a `size`, and this becomes `<PrBadge compact
+ * size={10} />`. Two consumers: this card and any other inline PR mark.
+ */
+function PrAsterisk() {
+  const brand = getSemanticColors(useSurfaceMode())['brand-primary']
+  return (
+    <View
+      accessibilityRole="image"
+      accessibilityLabel="Personal record"
+      // optical: lifts the mark onto the hero's cap line, superscript-style.
+      style={{ marginTop: -6 }}
+      testID="goal-card-pr-asterisk"
+    >
+      <StarIcon size={10} color={brand} fill={brand} strokeWidth={2} />
+    </View>
   )
 }
 
@@ -774,5 +857,267 @@ export function GroupHeading({ title, note }: { title: string; note?: string }) 
         </Typography>
       )}
     </View>
+  )
+}
+
+/**
+ * The lift card, round three — the human's 2026-09-15 notes on top of B3.
+ *
+ * - the unit sits on the hero line ("8 x 105 kg"), caption is just "in week 8";
+ * - band labels sit over the plot at its LEFT end, one type step smaller;
+ * - the title WRAPS to a second line instead of truncating when the cell is
+ *   too narrow to hold it;
+ * - the PR mark is a small asterisk on the load, not a badge on the title.
+ */
+export function GoalLiftCardR3({ lift, density }: { lift: LiftCardData; density: CardDensity }) {
+  const d = DENSITY[density]
+  const [width, onLayout] = useMeasuredWidth()
+
+  return (
+    <Card elevation={1} testID="goal-lift-card-r3">
+      <View className={`${d.pad} ${d.gap}`}>
+        <View className="gap-stack-sm">
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'flex-start',
+              justifyContent: 'space-between',
+            }}
+            className="gap-inline-sm"
+          >
+            {/* No maxLines: a long exercise name breaks to a second line rather
+                than truncating, which is what the narrow-cell note asked for. */}
+            <View style={{ flexShrink: 1, minWidth: 0 }}>
+              <Typography variant="overline" color="tertiary">
+                {lift.name}
+              </Typography>
+            </View>
+            <StatusMark status={lift.status} density={density} />
+          </View>
+
+          <View style={{ flexDirection: 'row', alignItems: 'baseline' }} className="gap-inline-sm">
+            <Typography variant="body1" className={d.heroClass} maxLines={1}>
+              {milestoneHero(lift)}
+            </Typography>
+            <Typography variant="caption" color="tertiary">
+              {lift.unit}
+            </Typography>
+            {lift.isPR && <PrAsterisk />}
+          </View>
+          <Typography variant="caption" color="tertiary">
+            {milestoneTail(lift)}
+          </Typography>
+        </View>
+
+        <View style={{ height: d.bandHeight }} onLayout={onLayout}>
+          {width > 0 && (
+            <GoalBandSpark
+              actuals={lift.actuals}
+              committed={lift.committed}
+              stretch={lift.stretch}
+              goalWeek={lift.goalWeek}
+              unit={lift.unit}
+              width={width}
+              height={d.bandHeight}
+              isRegressing={isRegressing(lift.status)}
+              placement="inline-left"
+            />
+          )}
+        </View>
+      </View>
+    </Card>
+  )
+}
+
+/** The rollup card's shared chrome, so all four variants differ only in body. */
+function RollupShell({
+  muscle,
+  density,
+  children,
+}: {
+  muscle: MuscleCardData
+  density: CardDensity
+  children: React.ReactNode
+}) {
+  const d = DENSITY[density]
+  return (
+    <Card elevation={1} testID="muscle-rollup-card-r3">
+      <View className={`${d.pad} ${d.gap}`}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+          }}
+          className="gap-inline-sm"
+        >
+          <View style={{ flexShrink: 1, minWidth: 0 }}>
+            <Typography variant="overline" color="tertiary">
+              {muscle.name}
+            </Typography>
+          </View>
+          <StatusMark status={muscle.status} density={density} />
+        </View>
+        {children}
+      </View>
+    </Card>
+  )
+}
+
+/** The count as the hero, matching the lift card's hero slot. */
+function RollupCount({ muscle, density }: { muscle: MuscleCardData; density: CardDensity }) {
+  return (
+    <View>
+      <Typography variant="body1" className={DENSITY[density].heroClass} maxLines={1}>
+        {`${muscle.liftsOnTrack}/${muscle.liftsTotal}`}
+      </Typography>
+      <Typography variant="caption" color="tertiary">
+        lifts on track
+      </Typography>
+    </View>
+  )
+}
+
+/** One contributing lift: status light, name, next milestone. */
+function LiftMiniRow({ row }: { row: MuscleLiftRow }) {
+  return (
+    <View
+      style={{ flexDirection: 'row', alignItems: 'center' }}
+      className="gap-inline-sm"
+      testID="rollup-lift-row"
+    >
+      <Indicator
+        color={STATUS_INDICATOR[row.status]}
+        size="sm"
+        accessibilityLabel={statusLabel(row.status)}
+      />
+      <View style={{ flex: 1, minWidth: 0 }}>
+        <Typography variant="caption" maxLines={1}>
+          {row.name}
+        </Typography>
+      </View>
+      <Typography variant="caption" color="tertiary" className="text-3xs leading-[normal]">
+        {row.milestone}
+      </Typography>
+    </View>
+  )
+}
+
+/**
+ * A segment per contributing lift, coloured by that lift's goal status.
+ *
+ * NOT a volume-landmark bar, deliberately. The landmark position (sets against
+ * MAV/MRV) lives on a different read model that `#/goals` never fetches — the
+ * rollup carries status, a summary and a count, and nothing else. Drawing a
+ * landmark here would be inventing data.
+ */
+function LiftStatusStrip({ muscle }: { muscle: MuscleCardData }) {
+  return (
+    <View
+      style={{ flexDirection: 'row', height: 6, borderRadius: 3, overflow: 'hidden' }}
+      className="gap-inline-sm"
+      accessibilityRole="image"
+      accessibilityLabel={`${muscle.liftsOnTrack} of ${muscle.liftsTotal} lifts on track`}
+      testID="rollup-status-strip"
+    >
+      {muscle.lifts.map((row) => (
+        <StripSegment key={row.name} status={row.status} />
+      ))}
+    </View>
+  )
+}
+
+function StripSegment({ status }: { status: GoalStatus }) {
+  return <View style={{ flex: 1, backgroundColor: useStatusColor(status), borderRadius: 3 }} />
+}
+
+/** R1 — count hero beside the mini figure. */
+export function MuscleRollupR1({
+  muscle,
+  density,
+}: {
+  muscle: MuscleCardData
+  density: CardDensity
+}) {
+  const litColor = useStatusColor(muscle.status)
+  return (
+    <RollupShell muscle={muscle} density={density}>
+      <View
+        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
+        className="gap-inline-md"
+      >
+        <View style={{ flexShrink: 1, minWidth: 0 }}>
+          <RollupCount muscle={muscle} density={density} />
+        </View>
+        <MuscleGlyph muscle={muscle.muscle} side={muscle.side} litColor={litColor} />
+      </View>
+      <Typography variant="caption" color="tertiary" maxLines={2}>
+        {muscle.summary}
+      </Typography>
+    </RollupShell>
+  )
+}
+
+/** R2 — every contributing lift as its own mini row. */
+export function MuscleRollupR2({
+  muscle,
+  density,
+}: {
+  muscle: MuscleCardData
+  density: CardDensity
+}) {
+  return (
+    <RollupShell muscle={muscle} density={density}>
+      <RollupCount muscle={muscle} density={density} />
+      <Divider />
+      <View className="gap-stack-md">
+        {muscle.lifts.map((row) => (
+          <LiftMiniRow key={row.name} row={row} />
+        ))}
+      </View>
+    </RollupShell>
+  )
+}
+
+/** R3 — the status strip plus the count; no per-lift detail. */
+export function MuscleRollupR3({
+  muscle,
+  density,
+}: {
+  muscle: MuscleCardData
+  density: CardDensity
+}) {
+  return (
+    <RollupShell muscle={muscle} density={density}>
+      <RollupCount muscle={muscle} density={density} />
+      <LiftStatusStrip muscle={muscle} />
+      <Typography variant="caption" color="tertiary" maxLines={2}>
+        {muscle.summary}
+      </Typography>
+    </RollupShell>
+  )
+}
+
+/** R4 — the figure and the lift list together. */
+export function MuscleRollupR4({
+  muscle,
+  density,
+}: {
+  muscle: MuscleCardData
+  density: CardDensity
+}) {
+  const litColor = useStatusColor(muscle.status)
+  return (
+    <RollupShell muscle={muscle} density={density}>
+      <View style={{ flexDirection: 'row', alignItems: 'flex-start' }} className="gap-inline-md">
+        <MuscleGlyph muscle={muscle.muscle} side={muscle.side} litColor={litColor} />
+        <View style={{ flex: 1, minWidth: 0 }} className="gap-stack-md">
+          <RollupCount muscle={muscle} density={density} />
+          {muscle.lifts.map((row) => (
+            <LiftMiniRow key={row.name} row={row} />
+          ))}
+        </View>
+      </View>
+    </RollupShell>
   )
 }

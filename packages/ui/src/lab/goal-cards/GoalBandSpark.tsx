@@ -31,8 +31,12 @@ export interface GoalActual {
   value: number
 }
 
-/** Where the committed/stretch numbers are written. */
-export type BandLabelPlacement = 'gutter' | 'inline'
+/**
+ * Where the committed/stretch numbers are written. `inline-left` is the round-3
+ * choice — over the plot, at the LEFT end of each line, where the trend has not
+ * yet risen to meet them.
+ */
+export type BandLabelPlacement = 'gutter' | 'inline' | 'inline-left'
 
 export interface GoalBandSparkGeometryInput {
   actuals: GoalActual[]
@@ -172,7 +176,10 @@ function BandLabel({
       }}
       accessibilityElementsHidden
     >
-      <Typography variant="microLabel" color="tertiary">
+      {/* `caption` at the `3xs` floor rather than `microLabel`: one type step
+          smaller, and microLabel uppercases, which reads heavy at 9px. The
+          class pair is `Sparkline`'s own reference-label precedent. */}
+      <Typography variant="caption" color="tertiary" className="text-3xs leading-[normal]">
         {`${value}${unit}`}
       </Typography>
     </View>
@@ -278,39 +285,36 @@ export function GoalBandSpark({
         />
       )}
 
-      {placement === 'gutter' ? (
-        <>
+      {[
+        { value: committed, y: g.committedY },
+        { value: stretch, y: g.stretchY },
+      ].map((edge, index) => {
+        if (placement === 'gutter') {
+          return (
+            <BandLabel
+              key={`label-${index}`}
+              value={edge.value}
+              unit={unit}
+              top={edge.y - LABEL_HALF_HEIGHT}
+              left={g.plotWidth}
+              align="left"
+            />
+          )
+        }
+        // Both inline placements lift the label clear of the line it names;
+        // `inline-left` pins it to x=0, where the trend has not yet risen.
+        const isLeft = placement === 'inline-left'
+        return (
           <BandLabel
-            value={committed}
+            key={`label-${index}`}
+            value={edge.value}
             unit={unit}
-            top={g.committedY - LABEL_HALF_HEIGHT}
-            left={g.plotWidth}
-            align="left"
+            top={edge.y - INLINE_LABEL_RISE}
+            {...(isLeft ? { left: 0 } : {})}
+            align={isLeft ? 'left' : 'right'}
           />
-          <BandLabel
-            value={stretch}
-            unit={unit}
-            top={g.stretchY - LABEL_HALF_HEIGHT}
-            left={g.plotWidth}
-            align="left"
-          />
-        </>
-      ) : (
-        <>
-          <BandLabel
-            value={committed}
-            unit={unit}
-            top={g.committedY - INLINE_LABEL_RISE}
-            align="right"
-          />
-          <BandLabel
-            value={stretch}
-            unit={unit}
-            top={g.stretchY - INLINE_LABEL_RISE}
-            align="right"
-          />
-        </>
-      )}
+        )
+      })}
     </View>
   )
 }
