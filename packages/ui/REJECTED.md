@@ -515,3 +515,50 @@ kept because the token set is public API and removing it is a breaking change
 that has not been scheduled; it is listed here because it is the single easiest
 wrong turn in the system — the names look like the obvious choice for chart data.
 If you reach for `bg-data-3`, you want `categoricalPalette`.
+
+---
+
+## The VW-386 goal-card directions, rounds one to three (2026-09-15)
+
+**What they were:** four specimen sheets under `Lab/Goals` — `GoalCardGrid`
+(directions A, B and C), `GoalCardGrid/B Variations` (B1-B4),
+`GoalCardGrid/Round 3` and `GoalCardGrid/Round 4` — plus the lab-local
+`GoalBandSpark` chart and the lab copies of the lift card.
+
+**Superseded by** `custom/Workout/GoalLiftCard`, which is the round-four render
+the operator locked ("Lock it, harden as rendered", 2026-09-15). The muscle
+rollup was NOT locked with it and continues in `Lab/Goals/Round 5`.
+
+**Why each direction lost:**
+
+- **A — metric pair under the title.** Committed and stretch as a `MetricGroup`
+  pair gave the band two large numbers and the milestone a caption. The operator
+  read the grid for "what's next", not for the band, so the hierarchy was
+  inverted.
+- **C — a `MesoStatusCard` size variant.** The honest "this already exists"
+  option, rendered rather than argued. It lost on its chrome: the brand gradient
+  and 3px brand accent are hero treatment, and eight peers all wearing it flatten
+  the page. Its 453 lines of extraction debt (arch-graph `extractionTop` #4) were
+  the secondary reason, not the deciding one.
+- **B1 / B2 — band labels in a right gutter, or inline at the right end.** Both
+  lost to `inline-left`: at the left end of each line the trend has not yet risen
+  to meet the label, so nothing overlaps and no gutter is spent.
+- **B3's caption unit.** "kg · in week 8" reads worse than the unit on the hero
+  line with the caption left as "in week 8".
+- **R1 / R2 / R3 rollups.** Count-plus-figure, rows-only and the status strip
+  each lost to R4's combination; round five then rearranged R4 rather than
+  reopening the set.
+- **R4b — a muscle-level spark.** Killed on data, not taste:
+  `/api/goal-progress` returns actuals per TARGET, and a muscle rollup carries
+  status, a summary and a count. The series did not exist.
+
+**`GoalBandSpark` is gone because its reason to exist landed upstream.** It was
+a lab wrapper for four things `Sparkline` could not express; `Sparkline` now
+takes `domain` (x and y), a two-reference `band`, and `referenceLabelPlacement`,
+so the card composes the real primitive. If you find a fork of `Sparkline` in a
+lab folder again, check whether the gap is still real before rebuilding it.
+
+**Still open.** The `Card` stat preset (`Tile`'s documented successor) and
+collapsing `MesoStatusCard`'s private `StatusPill` onto `Pill` were both named
+in the survey and neither fell out of this unit. They are follow-ups, not
+rejections — see `src/lab/goal-cards/SURVEY.md`.

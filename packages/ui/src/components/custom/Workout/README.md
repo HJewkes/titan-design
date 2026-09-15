@@ -17,7 +17,7 @@ VelocityStrip · DualVelocityStrip · SetRow · TempoDisplay · RestTimer · Mes
 WeekRow · WorkoutCard · SetStrip · ExerciseHeading · ExerciseCardHeading
 
 **Organisms** — full features, often with their own data contract:
-ExerciseCard · SessionRail · MesoCard · MesoStatusCard · PrHistoryModal ·
+ExerciseCard · SessionRail · MesoCard · MesoStatusCard · GoalLiftCard · PrHistoryModal ·
 ReadinessCheck · StrengthTrendChart · CapacityBandChart · BodyMap · BodyMapDetailPanel
 
 **Pages** — phone-shaped reference screens (whole-screen compositions):
@@ -40,6 +40,32 @@ type props without pulling the dependency.
   exception — it stays under `/bodymap` because of the body-highlighter dep.
 
 ## Notes
+
+- **GoalLiftCard (VW-386)** — one lift's goal state at card scale, replacing the
+  `#/goals` per-lift row whose label and data sat at opposite edges of the viewport.
+
+  _composes ↓_ `Card` (elevation 1) · `Pill` / `Indicator` · `Typography` ·
+  `StarIcon` · `Sparkline`. _used-by ↑_ voltras-mcp `#/goals` `PerLiftTable`.
+
+  Its props map 1:1 onto `GoalProgressView`: `status` is `GoalProgressStatus`
+  verbatim, and `milestone` takes the structured `reps` / `load` / `unit` /
+  `goalWeek` that voltras-mcp #433 added to `GoalMilestone` — the card never
+  parses the milestone `label`.
+
+  Three things that are decisions, not accidents:
+  - **The status mark collapses on measured WIDTH, not density.** Below
+    `STATUS_COLLAPSE_WIDTH` (320) the pill becomes its `Indicator`. Keying it to
+    density alone left a narrow comfortable cell rendering a full pill, which
+    shoved the title into a wrap. The mark is never absent, only reshaped.
+  - **The PR star is absolutely positioned** over the unit. In normal flow it
+    pushes the unit down, and a PR card then sits a line off every non-PR card
+    beside it in the same grid row.
+  - **The hero is `body1` plus the heading face, not `h4`.** `h1`-`h6` emit
+    `accessibilityRole="header"` (gotcha #11b) and a milestone number is not a
+    heading; a four-column grid would have put eight bogus headings on the page.
+
+  `onLayout` does not fire under jsdom, so the width collapse is covered by the
+  explicit `statusForm` override in tests and by the `Widths` story live.
 
 - **BaseBadge is an internal composition primitive** — the shared shell that
   WeightBadge and PrBadge build on. It is exempt from orphan accounting; it is not

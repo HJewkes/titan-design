@@ -409,6 +409,7 @@ module.exports = tseslint.config(
       // touching all of them could not be reviewed.
       'src/components/custom/Workout/ActiveWorkoutPage.tsx',
       'src/components/custom/Workout/ExerciseDetailPage.tsx',
+      'src/components/custom/Workout/GoalLiftCard.tsx',
       'src/components/custom/Workout/GoalTrajectoryChart.tsx',
       'src/components/custom/Workout/ProgramPlanningPage.tsx',
       'src/components/custom/Workout/StrengthTrendChart.tsx',

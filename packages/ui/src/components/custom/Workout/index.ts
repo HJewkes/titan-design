@@ -159,6 +159,16 @@ export {
   type GoalTrajectoryGeometry,
   type GoalTrajectoryGeometryInput,
 } from './GoalTrajectoryChartGeometry'
+export {
+  GoalLiftCard,
+  goalLiftStatusLabel,
+  STATUS_COLLAPSE_WIDTH as GOAL_LIFT_CARD_STATUS_COLLAPSE_WIDTH,
+  type GoalLiftCardProps,
+  type GoalLiftCardDensity,
+  type GoalLiftActual,
+  type GoalLiftMilestone,
+  type GoalLiftStatus,
+} from './GoalLiftCard'
 // BodyMap / BodyMapDetailPanel / TrainingStatusPage depend on
 // `react-native-body-highlighter` at runtime. Their VALUE exports live behind the
 // `@titan-design/react-ui/bodymap` subpath to keep this barrel body-highlighter-free.

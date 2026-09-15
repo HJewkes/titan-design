@@ -216,3 +216,59 @@ consumer's read model, not a titan element. It stays `Typography`.
 - `ahead` is `info`, never `warning` — REJECTED.md, "Amber holds".
 - `Sparkline` takes a resolved colour string, so its colours come from `resolveColor(token)`,
   not a class (gotcha #5).
+
+---
+
+## Data plan — `GoalLiftCard` (written 2026-09-15, for the PR body)
+
+### Store wiring
+
+The card is presentational and takes no store. Its consumer is voltras-mcp's
+`#/goals` page, which already fetches everything it needs:
+
+| Card prop   | Source                                                                                      |
+| ----------- | ------------------------------------------------------------------------------------------- |
+| `name`      | `targetLabel(row)` in `goals-model.ts` — unchanged                                          |
+| `status`    | `GoalProgressView.status`, passed through verbatim (same seven words)                       |
+| `milestone` | `GoalProgressView.nextMilestone` — `reps` / `load` / `unit` / `goalWeek` (voltras-mcp #433) |
+| `committed` | `GoalProgressView.committed`                                                                |
+| `stretch`   | `GoalProgressView.stretch`                                                                  |
+| `actuals`   | `GoalProgressView.actuals`, filtered to readings that carry a `weekIndex`                   |
+| `isPR`      | `view.actuals.some((a) => a.isPR)`                                                          |
+
+`PerLiftTable` becomes a grid of these; `goals-model.ts` loses `statusLabel` and
+`statusBadgeVariant` at that call site, since the card owns both mappings.
+
+### Store / read-model gaps
+
+1. **`GoalActualView.weekIndex` is optional.** It is absent for readings outside
+   the meso. The card requires a week, so the consumer filters them out. That is
+   correct behaviour (a reading before the meso started has no position on this
+   axis) and needs no ticket — but it must be a filter, not a `?? 0`.
+2. **`unit` is always `'lb'`.** Every stored value in the system is pounds
+   (VW-230) and no per-user kg preference exists. The card renders whatever it is
+   handed and does not convert. A kg preference is a store ticket, not a card one.
+3. **No muscle-level series.** `/api/goal-progress` returns actuals per TARGET.
+   The rollup card's spark variant (R4b) was killed on this. If a muscle-level
+   trend is ever wanted, it needs a new aggregate field or a client-side combine
+   across contributing targets — schedule it before designing it.
+
+### State / context drilldown
+
+The card holds exactly one piece of state: its own measured width, from
+`onLayout`, used for the status collapse. It is local, it does not read context
+beyond `SurfaceContext` (which `Card` already establishes), and it publishes
+nothing.
+
+Re-render cost in a grid of N cards is N independent `useState` updates on first
+layout and none afterwards, since the width only changes when the container
+resizes. No memoisation is needed at the wall's card counts (8-16). If a future
+surface renders hundreds, the fix is to hoist one measurement to the grid and
+pass `statusForm` down — the prop already exists for exactly that, and the tests
+use it.
+
+### Visual baselines
+
+Not generated locally, deliberately: a macOS run writes bogus PNGs (the Layer-1
+darwin trap). Seed them from the CI `component-visual-baselines` artifact after
+this merges.
