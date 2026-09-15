@@ -5,6 +5,84 @@ All notable changes to `@titan-design/react-ui` are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/).
 
+## 0.16.0
+
+### Added
+
+- `GoalLiftCard` organism (root barrel): one lift's goal state, with the next
+  milestone as the hero, status pill and progress against the committed/stretch
+  band (#237, VW-386).
+- `GoalMuscleCard` and `MuscleGlyph` (`bodymap` subpath): a muscle priority's
+  rollup card and the card-scale figure it composes, promoted out of the lab
+  (#237, VW-386).
+- `Sparkline` gains `domain` (x and y), a two-reference `band`,
+  `referenceLabelPlacement`, and `xValues` — all optional and defaulting to the
+  prior behavior, so the 17 pre-existing tests are unchanged (#237, VW-386).
+- `placement?: 'bottom' | 'right'` on `BodyMapDetailPanel`, default `'bottom'`;
+  `'right'` docks the sheet as a right side-sheet at wall size without moving
+  the figure (#228, VW-335).
+- `strength?: MuscleStrengthSection` and `plan?: MusclePlanSection` on
+  `BodyMapDetailPanel`, rendering per-exercise strength trend rows, a PR badge
+  row, and done/upcoming plan rows (#233, VW-336).
+- `linearGradientStops` in `theme/gradients.ts`, the n-stop form `surfaceGradient`
+  now composes from; `linearGradient`'s output is byte-identical (#228, VW-335).
+
+### Changed
+
+- Shell (`TopBar`, `SideNav`, `DeviceMenu`, `DeviceRow`) and `DataRow` moved off
+  arbitrary bracket spacing classes onto the semantic ramp; three values move —
+  `DeviceMenu` panel padding 7 → 8px, `DeviceRow` row height 34 → 32px (9 → 8px
+  vertical), `DataRow` gains a 12px horizontal gutter and 8px gap it previously
+  had neither of (#229, AW-142 wave three).
+- Workout cards and rows (`BaseBadge`, `SetRow`, `MesoStatusCard`,
+  `ExerciseCardHeading`, `WorkoutCard`) onto the semantic spacing ramp; six
+  off-grain values move onto the nearest rung — `BaseBadge` icon gap 3 → 4px,
+  `SetRow` type chip 5 → 4px horizontal, `MesoStatusCard` status badge 3 → 2px
+  vertical (gap 5 → 4px), `ExerciseCardHeading` rail 9 → 8px vertical,
+  `WorkoutCard` muscle chip gap 5 → 4px, `ExerciseCardHeading` strip offset
+  7 → 8px (#230, AW-142 wave three).
+- Workout molecules and organisms (`SessionHeader`, `InputBar`, `RestTimer`,
+  `ReadinessCheck`, `PrHistoryModal`, `SupersetWrapper`, `SetTableHeader`,
+  `ExerciseHeading`, `WorkoutPill`, `TempoDisplay`, `WeightBadge`,
+  `IntensityBar`, `MesoProgressBar`, `StatusDot`, `PlaceholderStrip`) onto the
+  semantic spacing ramp; two values move — `SessionHeader`'s header inset
+  normalizes to 12px on all sides (was 11/12/12/12) and its label row moves
+  5 → 4px, `InputBar`'s numeric inputs move 5 → 6px vertical (#232, AW-142 wave
+  three).
+- Workout pages (`ActiveWorkoutPage`, `TrainingStatusPage`,
+  `ProgramPlanningPage`, `ExerciseDetailPage`) and charts (`GoalTrajectoryChart`,
+  `StrengthTrendChart`, `VelocityStrip`) onto the semantic spacing ramp; both
+  charts' legend swatch gaps move 5 → 4px and their status/trend pills move
+  3 → 2px vertical (#234, AW-142 wave three).
+- Fatigue family (`LiveFatiguePanel`, `LiveFatigueCard`, `VerdictHero`,
+  `FatigueLights`, `GhostSpark`, `DualGhostSpark`, and the panel layout tiers)
+  onto the semantic spacing ramp; `FatigueLights`' dot-to-label gap moves
+  5 → 4px, and three internal tier constants move onto the ramp (`TIER_GAP_SM`
+  14 → 16px, `TIER_GAP_MD` 18 → 16px, `TIER_PADDING_SM` 20 → 16px) (#231,
+  AW-142 wave three).
+
+All five spacing waves above read the same `space`/semantic tokens 0.15.0
+(#220) put on `px` for native, so no further native-specific behavior changes.
+
+### Fixed
+
+- `Indicator` used with `accessibilityLabel` and no role emitted a bare
+  `aria-label` on a `div`, which axe rejects as `aria-prohibited-attr`; it now
+  sets `accessibilityRole="image"` (#237, VW-386).
+- `react-native-body-highlighter`'s `aria-label` on bare `<path>` elements is
+  now hidden behind an `aria-hidden` subtree with the name on the wrapper,
+  matching `BodyMap`'s existing treatment of the same drawing (#237, VW-386).
+
+### Internal
+
+- Added slug-collision regression coverage for `BodyMap`'s severity ranking
+  (`STATUS_SEVERITY` / `isMoreSevere`), pinning that the more severe status
+  wins when multiple muscles share an SVG slug (#235, VW-382).
+- `BodyMapDetailPanel`'s "spacing tokens" test block now resolves each pinned
+  element's className from an actual render, via a new per-`testID` capture
+  helper (`classname-capture.ts`, `spacingClassesOf`), instead of a hardcoded
+  literal array disconnected from the component (#236, VW-383).
+
 ## 0.15.0
 
 > **Native consumers:** spacing values now emit in `px` instead of `rem` (#220, AW-142
