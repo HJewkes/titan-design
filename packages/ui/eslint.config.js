@@ -7,6 +7,7 @@ const noDeviceInternals = require('./eslint-rules/no-device-internals')
 const noFrozenTheme = require('./eslint-rules/no-frozen-theme')
 const noLocalFormatter = require('./eslint-rules/no-local-formatter')
 const noRawColor = require('./eslint-rules/no-raw-color')
+const noRawDeviceDataInChat = require('./eslint-rules/no-raw-device-data-in-chat')
 const noRawSpacing = require('./eslint-rules/no-raw-spacing')
 const noUpwardTierImport = require('./eslint-rules/no-upward-tier-import')
 const noVarColorOpacity = require('./eslint-rules/no-var-color-opacity')
@@ -98,6 +99,7 @@ module.exports = tseslint.config(
           'no-frozen-theme': noFrozenTheme,
           'no-local-formatter': noLocalFormatter,
           'no-raw-color': noRawColor,
+          'no-raw-device-data-in-chat': noRawDeviceDataInChat,
           'no-raw-spacing': noRawSpacing,
           'no-upward-tier-import': noUpwardTierImport,
           'no-var-color-opacity': noVarColorOpacity,
@@ -121,6 +123,18 @@ module.exports = tseslint.config(
     files: ['src/theme/tailwind-var-opacity.test.ts'],
     rules: {
       'titan/no-var-color-opacity': 'off',
+    },
+  },
+
+  // The in-app chat design (VW-391/VW-393) renders AI SDK `data-*` message
+  // parts before the Chat component family exists to carry them — this rule
+  // holds the path at zero from the start. Scoped narrowly: the glob is empty
+  // today and is the contract (VW-394). See no-raw-device-data-in-chat.js for
+  // what it flags and why; it mirrors voltras-mcp's no-protocol-detail (NF-07).
+  {
+    files: ['src/components/custom/Chat/**/*.{ts,tsx}'],
+    rules: {
+      'titan/no-raw-device-data-in-chat': 'error',
     },
   },
 

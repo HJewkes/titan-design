@@ -7,6 +7,17 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- `titan/no-raw-device-data-in-chat` lint rule, scoped to
+  `src/components/custom/Chat/**` (empty today, ahead of the VW-393 chat
+  component family). Flags `Buffer.*`/`Uint8Array`/`ArrayBuffer` usage in a
+  component or render function, hex-literal and raw-byte-sequence string
+  shapes, raw-frame field names (`raw`, `frame`, `bytes`, `payloadHex`,
+  `register`, `opcode`) accessed on a data-* part, and a `data-*` part key
+  with a hyphen after the prefix (silently dropped by the Claude Code channel
+  meta). Mirrors voltras-mcp's `no-protocol-detail` (NF-07) (VW-394).
+
 ### Fixed
 
 - Token-pure `no-restricted-syntax` lint rule now permits the render-time
