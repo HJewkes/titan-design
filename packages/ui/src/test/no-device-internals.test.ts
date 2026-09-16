@@ -10,9 +10,11 @@ const ruleTester = new RuleTester({
   languageOptions: { ecmaVersion: 2022, sourceType: 'module' },
 })
 
+// `ruleTester.run` must sit directly in the `describe` callback, not nested
+// inside `it()` — nesting it inside `it()` makes RuleTester's internal
+// assertions no-op silently (see no-raw-device-data-in-chat.test.ts).
 describe('no-device-internals', () => {
-  it('flags device internals without flagging design-system content', () => {
-    ruleTester.run('no-device-internals', rule as never, {
+  ruleTester.run('no-device-internals', rule as never, {
       valid: [
         // Hex colours are the dominant hex form in this package.
         { code: "const bg = '#1C1C1C'" },
@@ -47,5 +49,4 @@ describe('no-device-internals', () => {
         },
       ],
     })
-  })
 })

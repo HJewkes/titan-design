@@ -10,9 +10,11 @@ const ruleTester = new RuleTester({
 // occurrence here regardless of what frozen-theme-baseline.json records.
 const componentFile = '/fake/packages/ui/src/components/custom/Fatigue/GhostBand.tsx'
 
+// `ruleTester.run` must sit directly in the `describe` callback, not nested
+// inside `it()` — nesting it inside `it()` makes RuleTester's internal
+// assertions no-op silently (see no-raw-device-data-in-chat.test.ts).
 describe('no-frozen-theme', () => {
-  it('flags frozen calls and leaves render-time resolution alone', () => {
-    ruleTester.run('no-frozen-theme', rule as never, {
+  ruleTester.run('no-frozen-theme', rule as never, {
       valid: [
         // The convention: mode comes from the nearest Surface, at render time.
         {
@@ -71,5 +73,4 @@ describe('no-frozen-theme', () => {
         },
       ],
     })
-  })
 })

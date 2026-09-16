@@ -550,7 +550,9 @@ const SHIPPED_PAPER = paperSheet(BAND_TONE) as Record<string, unknown>
  * producing the artefact, and the mitigation for it is unearned.
  */
 const BAND_STEPS = (() => {
+  // eslint-disable-next-line titan/no-device-internals -- RGB channel bytes, not device protocol data
   const from = [0x2c, 0x2a, 0x28] // grey-900
+  // eslint-disable-next-line titan/no-device-internals -- RGB channel bytes, not device protocol data
   const to = [0x31, 0x30, 0x2f] // grey-875
   return Array.from({ length: 5 }, (_, i) => {
     const t = i / 4

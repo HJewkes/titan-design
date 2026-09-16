@@ -82,6 +82,9 @@ module.exports = {
     return {
       Literal(node) {
         if (typeof node.value === 'string') check(node.value, node)
+        // Numeric hex literals (`0xab`) carry the hex text only in `raw` —
+        // `node.value` is the decimal number, which the string check misses.
+        else if (typeof node.value === 'number' && node.raw) check(node.raw, node)
       },
       TemplateElement(node) {
         check(node.value.raw, node)
