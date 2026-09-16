@@ -139,11 +139,13 @@ Every leaf now composes a primitive rather than hand-rolling it:
 ## Testing
 
 - **Unit** — every component + primitive has a `*.test.tsx` (render, behavior, a11y); shell branch coverage ≈96%.
-- **Visual** — `tests/visual/stories.spec.ts` screenshots the `Shell/*` + `Icons` stories via Playwright
-  (`toHaveScreenshot`), clock-frozen + animations-disabled so the live-clock/animated stories are
-  deterministic. Widen `SCOPE` to cover more of the library. **Baselines must be generated in the pinned
-  container** (`mcr.microsoft.com/playwright:v1.58.2-noble`) — the `visual.yml` "Layer 2" step seeds them as
-  an artifact; commit the `*-chromium-linux.png` and flip the step to the `test:visual:stories` gate.
+- **Visual** — `tests/visual/stories.spec.ts` screenshots the `Shell/*` + `Foundations/Icons` stories via
+  Playwright (`toHaveScreenshot`), clock-frozen + animations-disabled so the live-clock/animated stories are
+  deterministic. The `visual.yml` "Layer 2" step gates on the committed `*-chromium-linux.png` under
+  `tests/visual/reference/stories.spec.ts-snapshots/`; any drift, or an in-scope story with no baseline,
+  fails CI. **Baselines must be generated in the pinned container**
+  (`mcr.microsoft.com/playwright:v1.58.2-noble`): download the `storybook-visual-baselines` artifact the
+  refresh step uploads on every run and commit the changed PNGs. Widen `SCOPE` to cover more of the library.
 - **Lint guardrails** — components may not inline `linear-gradient` (use `surfaceGradient`); shell + icons may
   not use raw hex (use tokens).
 

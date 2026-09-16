@@ -56,17 +56,22 @@ jobs:
           retention-days: 7
 
       # Layer 2 — Storybook story baselines (shell + icons; clock-frozen so
-      # live/animated stories are deterministic).
-      #
-      # BOOTSTRAP: baselines aren't committed yet (they must be generated in
-      # THIS pinned container to match byte-for-byte). This step generates them
-      # and uploads them as the `storybook-visual-baselines` artifact. To turn on
-      # the gate: download the artifact, commit its *-chromium-linux.png under
-      # packages/ui/tests/visual/reference/stories.spec.ts-snapshots/, then change
-      # `test:visual:stories:update` below to the gate `test:visual:stories`.
-      - name: Layer 2 — Storybook story baselines (seed)
+      # live/animated stories are deterministic). Any pixel drift against the
+      # committed *-chromium-linux.png under
+      # packages/ui/tests/visual/reference/stories.spec.ts-snapshots/ fails the build.
+      - name: Layer 2 — Storybook story baselines
+        run: pnpm --filter @titan-design/react-ui test:visual:stories
+
+      # Layer 2 — REGEN (refresh): same pattern as Layer 1. Runs even when the
+      # gate fails, renders in the same container, so unchanged stories come
+      # back byte-identical and only real drift (or a newly in-scope story with
+      # no baseline yet) shows up in git. To refresh: download the
+      # `storybook-visual-baselines` artifact and commit the changed PNGs.
+      - name: Layer 2 — regenerate story baselines (refresh)
+        if: always()
         run: pnpm --filter @titan-design/react-ui test:visual:stories:update
-      - name: Upload seeded Storybook baselines
+      - name: Upload regenerated Storybook baselines
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: storybook-visual-baselines
