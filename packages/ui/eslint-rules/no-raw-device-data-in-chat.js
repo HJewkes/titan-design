@@ -119,14 +119,26 @@ module.exports = {
 
         const propName =
           !node.computed && node.property.type === 'Identifier' ? node.property.name : null
-        if (propName && RAW_FIELD_NAMES.has(propName) && looksLikeChatPart(node.object, sourceCode)) {
-          context.report({ node: node.property, messageId: 'rawFieldAccess', data: { field: propName } })
+        if (
+          propName &&
+          RAW_FIELD_NAMES.has(propName) &&
+          looksLikeChatPart(node.object, sourceCode)
+        ) {
+          context.report({
+            node: node.property,
+            messageId: 'rawFieldAccess',
+            data: { field: propName },
+          })
         }
       },
       Identifier(node) {
         if (!RAW_CONSTRUCTORS.has(node.name)) return
         // Skip the property side of a member/import (`x.Uint8Array`, `import { Uint8Array }`).
-        if (node.parent.type === 'MemberExpression' && node.parent.property === node && !node.parent.computed) {
+        if (
+          node.parent.type === 'MemberExpression' &&
+          node.parent.property === node &&
+          !node.parent.computed
+        ) {
           return
         }
         if (node.parent.type.startsWith('Import')) return

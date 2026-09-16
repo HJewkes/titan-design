@@ -20,10 +20,10 @@ describe('no-raw-device-data-in-chat', () => {
     valid: [
       // Buffer/Uint8Array/ArrayBuffer are only banned inside a component or
       // render function — a module-scope reference is not a render path.
-      { code: "const decode = Buffer.from" },
+      { code: 'const decode = Buffer.from' },
       { code: 'const Encoder = Uint8Array' },
       // An interpreted value, not a raw frame, in a render function.
-      { code: "function Bubble({ part }) { return part.summary }" },
+      { code: 'function Bubble({ part }) { return part.summary }' },
       // A data-* part key with no hyphen after the prefix.
       { code: "const type = 'data-typing'" },
       // A raw-frame-shaped name accessed on something that isn't a chat part.
@@ -33,7 +33,7 @@ describe('no-raw-device-data-in-chat', () => {
     ],
     invalid: [
       {
-        code: "function Bubble({ part }) { return Buffer.from(part.summary).toString() }",
+        code: 'function Bubble({ part }) { return Buffer.from(part.summary).toString() }',
         errors: [{ messageId: 'rawConstructor' }],
       },
       {
