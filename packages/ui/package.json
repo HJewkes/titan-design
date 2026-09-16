@@ -160,7 +160,8 @@
     "src",
     "!src/lab",
     "docs",
-    "tailwind.config.js"
+    "tailwind.config.js",
+    "CHANGELOG.md"
   ],
   "sideEffects": false,
   "keywords": [

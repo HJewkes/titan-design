@@ -26,9 +26,14 @@ ActiveWorkoutPage · ExerciseDetailPage · ProgramPlanningPage · TrainingStatus
 ## Subpaths
 
 Two families are kept off the root barrel so `@titan-design/react-ui` stays free
-of their heavy runtime dependencies. In both cases the value exports move to the
-subpath while type-only re-exports remain on the root, so consumers can still
-type props without pulling the dependency.
+of their heavy runtime dependencies. Their component/page value exports move to
+the subpath while type-only re-exports remain on the root, so consumers can
+still type props without pulling the dependency — except `MuscleGroup`, which
+IS a runtime value at root (VW-388): it's a plain enum with no
+`react-native-body-highlighter` dependency of its own, so re-exporting it as
+`export type` only hid the runtime binding without buying anything. See
+`muscleTaxonomy.ts`'s re-export in this directory's `index.ts` for the exact
+split.
 
 - **`@titan-design/react-ui/bodymap`** — isolates
   `react-native-body-highlighter` (a native SVG dep). BodyMap, BodyMapDetailPanel,
