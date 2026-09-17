@@ -47,6 +47,11 @@ export interface SegmentedBarSegment {
   outline?: boolean
   /** A 1px ring around the whole slot, over any fill: "this is the one you are in". */
   ringColor?: string
+  /**
+   * Slot height as a fraction of the track, bottom-aligned. Default 1 (full).
+   * Lets one cell in a row stand taller than its neighbours.
+   */
+  heightFraction?: number
 }
 
 export interface SegmentedBarProps extends ViewProps {
@@ -140,9 +145,15 @@ export function SegmentedBar({
           <View
             key={i}
             style={{
-              flex: renderSegment ? 1 : (seg.weight ?? 1),
+              // Inside a wrapper the slot must not grow, or `flex` beats its
+              // height and every cell renders full height.
+              flex: renderSegment ? undefined : (seg.weight ?? 1),
+              alignSelf: renderSegment ? 'stretch' : undefined,
               minWidth: 0,
-              height: '100%',
+              height: `${(seg.heightFraction ?? 1) * 100}%` as DimensionValue,
+              // Bottom-aligns in a row and in a column; `alignSelf` would collapse
+              // the slot's width inside a wrapper that lays its child out vertically.
+              marginTop: 'auto',
               marginLeft: renderSegment ? undefined : seg.leadingGap,
               borderRadius: radius,
               overflow: 'hidden',
