@@ -43,6 +43,7 @@ const meta: Meta<typeof GoalMilestoneTile> = {
     showWeeks: { control: 'boolean' },
     layout: { control: 'inline-radio', options: ['full', 'compact'] },
     scale: { control: 'select', options: [undefined, 'wall', 'phone'] },
+    summaryFit: { control: 'inline-radio', options: [undefined, 'row', 'stacked'] },
     direction: { control: 'inline-radio', options: ['up', 'down'] },
     framed: { control: 'boolean' },
     currentWeek: { control: { type: 'number', min: 1, max: 16 } },
@@ -72,6 +73,23 @@ export const Ahead: Story = { args: S.ahead }
 export const Hit: Story = { args: S.hit }
 export const Missed: Story = { args: S.missed }
 export const Compact: Story = { args: { layout: 'compact' } }
+
+/**
+ * Too tight for one line, so the three facts stack left-aligned rather than wrap
+ * mid-phrase. The switch is measured, not a breakpoint: this tile is 230px, and
+ * the row needs about 258.
+ */
+export const NarrowStacked: Story = {
+  decorators: [
+    (Story) => (
+      <Surface level="base" className="p-gutter-md">
+        <View style={{ width: 230 }}>
+          <Story />
+        </View>
+      </Surface>
+    ),
+  ],
+}
 
 export const LossGoal: Story = {
   args: {
