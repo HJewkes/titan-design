@@ -17,7 +17,8 @@ import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semanti
 import { bestTextColor } from '../../../theme/tokens/primitives'
 import { formatTrimmedDecimal } from '../../../utils/number-format'
 import {
-  LIGHT_CANDIDATES,
+  LIGHT_CANDIDATE_SETS,
+  type CandidateSet,
   type DatavizKey,
   type DatavizPalette,
   type LightCandidate,
@@ -27,43 +28,46 @@ type ColorToken = keyof ReturnType<typeof getSemanticColors>
 
 /** One column of the comparison: a theme, and the values painted under it. */
 interface Column {
-  id: 'dark-current' | 'light-current' | 'light-proposed'
+  id: string
   title: string
   note: string
   theme: ThemeMode
-  /** `true` renders the real token-reading components, which can only show shipped values. */
-  shipped: boolean
+  /** Absent for shipped columns, which render the real token-reading components. */
+  set?: CandidateSet
 }
 
-const COLUMNS: Column[] = [
+const CURRENT_COLUMNS: Column[] = [
   {
     id: 'dark-current',
     title: 'DARK · current',
     note: 'what ships today on dark; the reference the light column must match in meaning',
     theme: 'dark',
-    shipped: true,
   },
   {
     id: 'light-current',
     title: 'LIGHT · current (phase 1)',
     note: 'same values as dark, by design of phase 1',
     theme: 'light',
-    shipped: true,
-  },
-  {
-    id: 'light-proposed',
-    title: 'LIGHT · PROPOSED',
-    note: 'candidate values from DatavizLightPalette.candidates.ts; not in any token file',
-    theme: 'light',
-    shipped: false,
   },
 ]
 
+function proposedColumns(palette: DatavizPalette): Column[] {
+  return LIGHT_CANDIDATE_SETS[palette].map((set) => ({
+    id: `light-proposed-${set.id}`,
+    title: `LIGHT · PROPOSED ${set.title}`,
+    note: set.rationale,
+    theme: 'light',
+    set,
+  }))
+}
+
+const paletteKeys = (palette: DatavizPalette): DatavizKey[] =>
+  LIGHT_CANDIDATE_SETS[palette][0].steps.map((c) => c.key)
+
 function columnValues(column: Column, palette: DatavizPalette): string[] {
-  const candidates = LIGHT_CANDIDATES[palette]
-  if (!column.shipped) return candidates.map((c) => c.value)
+  if (column.set) return column.set.steps.map((c) => c.value)
   const tokens = getSemanticColors(column.theme)
-  return candidates.map((c) => tokens[c.key as ColorToken])
+  return paletteKeys(palette).map((key) => tokens[key as ColorToken])
 }
 
 // ---------------------------------------------------------------------------
@@ -99,6 +103,11 @@ const oklabDistance = (a: number[], b: number[]) =>
 
 const lightness = (hex: string) => toOklab(hexToRgb(hex).map(linearise))[0]
 
+const chroma = (hex: string) => {
+  const [, a, b] = toOklab(hexToRgb(hex).map(linearise))
+  return Math.hypot(a, b)
+}
+
 /** Worst-case perceived ΔE across deuteranopia and protanopia. */
 function cvdDelta(x: string, y: string): number {
   const sim = (M: number[], hex: string) => toOklab(mul(M, hexToRgb(hex).map(linearise)))
@@ -114,6 +123,15 @@ function contrastRatio(a: string, b: string): number {
   const [hi, lo] = [relativeLuminance(a), relativeLuminance(b)].sort((p, q) => q - p)
   return (hi + 0.05) / (lo + 0.05)
 }
+
+/** The planes a chart can sit on in `mode`; rules are checked against the worst of them. */
+const chartPlanes = (mode: ThemeMode) => {
+  const tokens = getSemanticColors(mode)
+  return [tokens['surface-base'], tokens['surface-elevated'], tokens['surface-raised']]
+}
+
+const worstPlaneContrast = (hex: string, mode: ThemeMode) =>
+  Math.min(...chartPlanes(mode).map((plane) => contrastRatio(hex, plane)))
 
 function minPairDelta(values: string[], allPairs: boolean): number {
   let min = Infinity
@@ -201,35 +219,20 @@ function Swatch({
   )
 }
 
-function SwatchRow({
-  values,
-  palette,
-  proposed,
-}: {
-  values: string[]
-  palette: DatavizPalette
-  proposed: boolean
-}) {
-  const candidates = LIGHT_CANDIDATES[palette]
+function SwatchRow({ values, candidates }: { values: string[]; candidates?: LightCandidate[] }) {
   return (
     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
       {values.map((value, i) => (
-        <Swatch key={i} value={value} index={i} candidate={proposed ? candidates[i] : undefined} />
+        <Swatch key={i} value={value} index={i} candidate={candidates?.[i]} />
       ))}
     </View>
   )
 }
 
-/** Lightness, separation and contrast for one column, printed under its swatches. */
-function Measurements({ values, palette }: { values: string[]; palette: DatavizPalette }) {
-  const { plane } = usePlane()
+/** Palette-specific structure checks: centre, monotony, first-three separation. */
+function paletteChecks(values: string[], palette: DatavizPalette): string[] {
   const ls = values.map(lightness)
-  const lines = [
-    `OKLCH L ${ls.map(fmt2).join(' / ')}`,
-    `min adjacent CVD ΔE ${fmt1(minPairDelta(values, false))}`,
-    `min contrast vs plane ${fmt2(Math.min(...values.map((v) => contrastRatio(v, plane))))}:1`,
-    `min label contrast ${fmt2(Math.min(...values.map((v) => contrastRatio(v, bestTextColor(v)))))}:1`,
-  ]
+  const lines: string[] = []
   if (palette === 'diverging') {
     const centreLightest = ls.every((l, i) => i === 2 || l < ls[2])
     lines.push(`min all-pairs CVD ΔE ${fmt1(minPairDelta(values, true))}`)
@@ -242,6 +245,22 @@ function Measurements({ values, palette }: { values: string[]; palette: DatavizP
   if (palette === 'categorical') {
     lines.push(`first-three all-pairs CVD ΔE ${fmt1(minPairDelta(values.slice(0, 3), true))}`)
   }
+  return lines
+}
+
+/** Lightness, chroma, separation and contrast for one column, printed under its swatches. */
+function Measurements({ values, palette }: { values: string[]; palette: DatavizPalette }) {
+  const { mode } = usePlane()
+  const cs = values.map(chroma)
+  const lines = [
+    `OKLCH L ${values.map(lightness).map(fmt2).join(' / ')}`,
+    `OKLCH C ${cs.map((c) => formatTrimmedDecimal(c, 3)).join(' / ')}`,
+    `min C ${formatTrimmedDecimal(Math.min(...cs), 3)} · mean C ${formatTrimmedDecimal(cs.reduce((a, b) => a + b) / cs.length, 3)}`,
+    `worst-plane contrast ${values.map((v) => fmt2(worstPlaneContrast(v, mode))).join(' / ')}`,
+    `min label contrast ${fmt2(Math.min(...values.map((v) => contrastRatio(v, bestTextColor(v)))))}:1`,
+    `min adjacent CVD ΔE ${fmt1(minPairDelta(values, false))}`,
+    ...paletteChecks(values, palette),
+  ]
   return (
     <View style={{ gap: 2 }} testID="measurements">
       {lines.map((line) => (
@@ -400,14 +419,31 @@ function Sample({
   return <CategoricalSample values={values} />
 }
 
+function RuleList({ rules }: { rules: string[] }) {
+  return (
+    <View style={{ gap: 2 }} testID="rules">
+      {rules.map((rule) => (
+        <Ink
+          key={rule}
+          variant="caption"
+          role={rule.startsWith('RELAXED') ? 'primary' : 'secondary'}
+        >
+          {`• ${rule}`}
+        </Ink>
+      ))}
+    </View>
+  )
+}
+
 function ColumnPanel({ column, palette }: { column: Column; palette: DatavizPalette }) {
   const values = columnValues(column, palette)
+  const shipped = !column.set
   return (
     <Surface
       level="base"
       theme={column.theme}
       className="p-3"
-      style={{ flex: 1, gap: 10, minWidth: 440 }}
+      style={{ flex: 1, gap: 10, minWidth: 440, maxWidth: 600 }}
       testID={`column-${column.id}`}
     >
       <View style={{ gap: 2 }}>
@@ -418,9 +454,10 @@ function ColumnPanel({ column, palette }: { column: Column; palette: DatavizPale
           {column.note}
         </Ink>
       </View>
+      {column.set ? <RuleList rules={column.set.rules} /> : null}
       <Surface raise={1} className="p-3" style={{ gap: 10 }}>
-        <SwatchRow values={values} palette={palette} proposed={!column.shipped} />
-        <Sample palette={palette} values={values} shipped={column.shipped} />
+        <SwatchRow values={values} candidates={column.set?.steps} />
+        <Sample palette={palette} values={values} shipped={shipped} />
         <Measurements values={values} palette={palette} />
       </Surface>
     </Surface>
@@ -430,16 +467,39 @@ function ColumnPanel({ column, palette }: { column: Column; palette: DatavizPale
 const HEADLINE: Record<DatavizPalette, { title: string; note: string }> = {
   diverging: {
     title: 'Diverging (BodyMap fill, MuscleGroupChip dot)',
-    note: 'Light pulls the arms darker so every non-centre stop clears 3:1 on the panel; the green centre stays the lightest step.',
+    note: 'A (turn 1) went to 800-step ends and read navy/maroon. B keeps 500/700 steps and lets inner stops sit at 2:1. C stays within two steps of dark mode and keeps a very light centre.',
   },
   sequential: {
     title: 'Sequential effort (heatmap, velocity strip)',
-    note: 'Light makes the walk strictly darker per step. Dark and phase-1 light are not monotone: amber-200 is lighter than step 0.',
+    note: 'Dark and phase-1 light are not monotone: amber-200 is lighter than step 0. A ends on red-900 (brown); B shifts the walk one step lighter and ends on red-800.',
   },
   categorical: {
     title: 'Categorical (Treemap, Scatter)',
-    note: 'Light moves cyan, green and orange down their ramps. Treemap tile labels are fixed near-black, so darker fills lose them.',
+    note: 'A moved magenta and orange to 700 (brown). B keeps orange-400 and separates red by moving it to its pin instead. Treemap tile labels are fixed near-black.',
   },
+}
+
+function ColumnRow({
+  label,
+  columns,
+  palette,
+}: {
+  label: string
+  columns: Column[]
+  palette: DatavizPalette
+}) {
+  return (
+    <View style={{ gap: 6 }}>
+      <Typography variant="overline" color="secondary">
+        {label}
+      </Typography>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
+        {columns.map((column) => (
+          <ColumnPanel key={column.id} column={column} palette={palette} />
+        ))}
+      </View>
+    </View>
+  )
 }
 
 function PaletteDecision({ palette }: { palette: DatavizPalette }) {
@@ -453,15 +513,13 @@ function PaletteDecision({ palette }: { palette: DatavizPalette }) {
           {HEADLINE[palette].note}
         </Typography>
         <Typography variant="caption" color="tertiary">
-          Swatch captions: value, proposed ramp step, contrast vs the panel it sits on. Keys:{' '}
-          {LIGHT_CANDIDATES[palette].map((c): DatavizKey => c.key).join(', ')}.
+          Swatch captions: value, proposed ramp step, contrast vs the panel it sits on. Worst-plane
+          contrast is the minimum over surface-base, -elevated and -raised. Keys:{' '}
+          {paletteKeys(palette).join(', ')}.
         </Typography>
       </View>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
-        {COLUMNS.map((column) => (
-          <ColumnPanel key={column.id} column={column} palette={palette} />
-        ))}
-      </View>
+      <ColumnRow label="Current" columns={CURRENT_COLUMNS} palette={palette} />
+      <ColumnRow label="Proposed (light)" columns={proposedColumns(palette)} palette={palette} />
     </View>
   )
 }
@@ -472,38 +530,38 @@ function PaletteDecision({ palette }: { palette: DatavizPalette }) {
  * A decision surface, not a component. Phase 1 made the three chart palettes
  * theme-aware roles (`dataviz-diverging-*`, `dataviz-sequential-*`,
  * `dataviz-categorical-*`) with light and dark carrying the same values. This
- * story proposes the light column and shows it beside what ships.
+ * story proposes light values and shows them beside what ships.
  *
- * ## Status: PROPOSED, awaiting sign-off
+ * ## Status: PROPOSED, turn 2, awaiting sign-off
  *
- * The proposals live in `DatavizLightPalette.candidates.ts`. No token file has
- * changed. Once approved, each `step` there is what goes into the light block
- * of `semantic.ts` and the other four mirrors.
+ * The proposals live in `DatavizLightPalette.candidates.ts` as named sets. No
+ * token file has changed. Once one set is approved, each `step` in it is what
+ * goes into the light block of `semantic.ts` and the other four mirrors.
+ *
+ * Turn 1 (set A) was reviewed on 2026-09-17: "the proposed palettes look very
+ * muddy". A enforced 3:1 on every non-centre stop, which forced ramp steps
+ * 700-900, where OKLCH chroma collapses. Turn 2 adds set B (vivid) for every
+ * palette and set C (light centre) for diverging. Each column prints the rules
+ * it satisfies; a rule it loosens is printed as RELAXED.
  *
  * ## How the values were chosen
  *
  * Exhaustive search over `primitiveRamps` steps, keeping each palette's hue
  * order, scored with the dataviz skill's validator (Machado-2009 CVD simulation,
- * OKLab ΔE×100):
- *
- * - **Diverging**: arms ≥ 3:1 on white, `surface-elevated` and `surface-raised`;
- *   centre strictly lightest; arms symmetric in lightness; every label ≥ 4.5:1
- *   with black or white; all-pairs CVD ΔE 15.4 (floor 8).
- * - **Sequential**: strictly decreasing lightness with ΔL ≥ 0.06; lightest step
- *   ≥ 2:1 on white; adjacent CVD ΔE 6.5 (phase-1 floor 4.5). It is the only
- *   combination on the ramps that satisfies all three.
- * - **Categorical**: every slot inside the light L band, chroma ≥ 0.10, ≥ 3:1 on
- *   white; adjacent CVD ΔE 14.3 and normal-vision ΔE 17.1 (floor 15); first three
- *   all-pairs ΔE 20.5.
+ * OKLab ΔE×100). Contrast is taken against the worst of `surface-base`,
+ * `surface-elevated` and `surface-raised`. The B relaxation: fills sit inside
+ * chips and tiles with their own labels, so fill-vs-panel contrast is a
+ * legibility floor (3:1 for diverging ends, 2:1 elsewhere), not a text rule.
+ * Label contrast stays at 4.5:1 with `bestTextColor`.
  *
  * ## Open questions for the reviewer
  *
- * - The diverging centre (`green[400]`) is 2.0:1 on `surface-raised`. A centre
- *   that clears 3:1 forces the arms so dark the all-pairs ΔE falls to 8.6.
- * - `dataviz-sequential-5` (`red[900]`) reads near-brown.
- * - No categorical set clears 3:1 on white AND keeps near-black labels ≥ 4.5:1.
- *   `Treemap` hard-codes `text-on-data-strong`, so adopting these values needs a
- *   per-tile label colour in `Treemap` first.
+ * - Under turn 1's sequential rules (ΔL ≥ 0.06, lightest ≥ 2:1, fixed hue per
+ *   step) A is the only solution. B relaxes both floors slightly.
+ * - Categorical B sits in the validator's CVD WARN band (green↔orange 6.9), which
+ *   is legal only with labels or a legend. Every categorical consumer has one.
+ * - `Treemap` hard-codes `text-on-data-strong`. Its worst tile label is 2.6:1 on
+ *   A and 3.6:1 on B, so either set needs per-tile label colour in `Treemap`.
  */
 const meta: Meta<{ palette: DatavizPalette }> = {
   title: 'Lab/Decisions/Dataviz Light Palettes',
