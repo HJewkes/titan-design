@@ -1,5 +1,6 @@
 // Font mapping context: presentation-only helpers, no rendering.
 import { WORKOUT_TOKENS } from '../theme/workout-tokens'
+import { formatTrimmedDecimal } from './number-format'
 
 /**
  * Presentation helpers for workout metrics.
@@ -132,4 +133,45 @@ export function formatWorkoutStats(
   if (totalVolume != null) parts.push(`${totalVolume} ${unit}`)
   if (duration) parts.push(duration)
   return parts.join(' · ')
+}
+
+/** What stands between a lifter and a goal milestone, in the one unit that closes it. */
+export type GoalMilestoneGap =
+  | { kind: 'load'; amount: number }
+  | { kind: 'reps'; amount: number }
+  | { kind: 'none' }
+
+export function formatMilestoneLoad(load: number): string {
+  return formatTrimmedDecimal(load, 1)
+}
+
+function plural(n: number, one: string, many: string): string {
+  return `${n} ${n === 1 ? one : many}`
+}
+
+/** "5 lb", "1 rep", or null once nothing is left to close. */
+export function formatMilestoneGapAmount(gap: GoalMilestoneGap, unit: string): string | null {
+  if (gap.kind === 'load') return `${formatMilestoneLoad(gap.amount)} ${unit}`
+  if (gap.kind === 'reps') return plural(gap.amount, 'rep', 'reps')
+  return null
+}
+
+/** "5 lb to go", "1 rep to go", or null once nothing is left to close. */
+export function formatMilestoneGap(gap: GoalMilestoneGap, unit: string): string | null {
+  const amount = formatMilestoneGapAmount(gap, unit)
+  return amount && `${amount} to go`
+}
+
+/** "in 3 weeks", "this week", "2 weeks ago", or null without a current week. */
+export function formatWeeksAway(away: number | null): string | null {
+  if (away === null) return null
+  if (away === 0) return 'this week'
+  if (away > 0) return `in ${plural(away, 'week', 'weeks')}`
+  return `${plural(-away, 'week', 'weeks')} ago`
+}
+
+/** The muted caption under the target: "Week 8 · in 3 weeks". */
+export function formatMilestoneWhen(goalWeek: number, currentWeek?: number): string {
+  const relative = formatWeeksAway(currentWeek === undefined ? null : goalWeek - currentWeek)
+  return relative ? `Week ${goalWeek} · ${relative}` : `Week ${goalWeek}`
 }
