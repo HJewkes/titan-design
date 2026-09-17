@@ -6,7 +6,14 @@ import { Button, ButtonText } from '../../ui/button'
 import { Surface } from '../../ui/surface'
 import { EmptyState } from '../EmptyState'
 import { MessageList, type MessageListProps } from './MessageList'
-import { ATHLETE, COACH, COACH_THREAD, NOW, PARTICIPANTS, chatMessage } from './coach-thread-fixture'
+import {
+  ATHLETE,
+  COACH,
+  COACH_THREAD,
+  NOW,
+  PARTICIPANTS,
+  chatMessage,
+} from './coach-thread-fixture'
 
 const meta: Meta<typeof MessageList> = {
   title: 'Custom/Chat/MessageList',

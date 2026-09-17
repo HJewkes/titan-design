@@ -75,7 +75,10 @@ function useCoachReplies(replyDelayMs: number) {
     const at = new Date().toISOString()
     const id = `local-${Date.now()}`
     const delivery = [{ participantId: COACH.id, status: 'accepted' as const, at }]
-    setMessages((current) => [...current, chatMessage(id, ATHLETE, at, [{ type: 'text', text }], delivery)])
+    setMessages((current) => [
+      ...current,
+      chatMessage(id, ATHLETE, at, [{ type: 'text', text }], delivery),
+    ])
     setTyping([COACH])
     timers.current.push(
       setTimeout(() => {

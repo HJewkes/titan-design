@@ -49,9 +49,13 @@ export const Undeliverable: Story = {
   args: {
     isOwn: true,
     author: ATHLETE,
-    message: chatMessage('f', ATHLETE, localIso(0, 8, 0), [{ type: 'text', text: 'Can we move it?' }], [
-      { participantId: COACH.id, status: 'undeliverable', at: localIso(0, 8, 0) },
-    ]),
+    message: chatMessage(
+      'f',
+      ATHLETE,
+      localIso(0, 8, 0),
+      [{ type: 'text', text: 'Can we move it?' }],
+      [{ participantId: COACH.id, status: 'undeliverable', at: localIso(0, 8, 0) }]
+    ),
   },
 }
 
