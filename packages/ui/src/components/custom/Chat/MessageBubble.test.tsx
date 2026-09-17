@@ -47,16 +47,22 @@ describe('MessageBubble', () => {
   })
 
   it('flags an undeliverable message', () => {
-    const failed = chatMessage('f', ATHLETE, localIso(0, 8, 0), [{ type: 'text', text: 'hi' }], [
-      { participantId: COACH.id, status: 'undeliverable', at: localIso(0, 8, 0) },
-    ])
+    const failed = chatMessage(
+      'f',
+      ATHLETE,
+      localIso(0, 8, 0),
+      [{ type: 'text', text: 'hi' }],
+      [{ participantId: COACH.id, status: 'undeliverable', at: localIso(0, 8, 0) }]
+    )
     render(<MessageBubble message={failed} author={ATHLETE} isOwn />)
     expect(screen.getByTestId('chat-message-delivery')).toHaveTextContent('Not delivered')
   })
 
   it('hands data parts to the caller’s renderer with their message', () => {
     const renderDataPart = vi.fn(() => <Text>Check-in card</Text>)
-    render(<MessageBubble message={checkinMessage} author={COACH} renderDataPart={renderDataPart} />)
+    render(
+      <MessageBubble message={checkinMessage} author={COACH} renderDataPart={renderDataPart} />
+    )
     expect(screen.getByText('Check-in card')).toBeInTheDocument()
     expect(renderDataPart).toHaveBeenCalledWith(
       expect.objectContaining({ type: 'data-checkin' }),
@@ -75,7 +81,9 @@ describe('MessageBubble', () => {
     const cardOnly = chatMessage('c', COACH, localIso(0, 8, 0), [
       { type: 'data-checkin', data: {} },
     ])
-    render(<MessageBubble message={cardOnly} author={COACH} renderDataPart={() => <Text>card</Text>} />)
+    render(
+      <MessageBubble message={cardOnly} author={COACH} renderDataPart={() => <Text>card</Text>} />
+    )
     expect(screen.queryByTestId('chat-message-body')).toBeNull()
     expect(screen.getByText('card')).toBeInTheDocument()
   })

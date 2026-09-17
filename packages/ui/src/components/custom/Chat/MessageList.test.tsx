@@ -15,10 +15,14 @@ import {
   localIso,
 } from './coach-thread-fixture'
 
-function renderList(messages: ChatMessage[], extra: Partial<Parameters<typeof MessageList>[0]> = {}) {
+function renderList(
+  messages: ChatMessage[],
+  extra: Partial<Parameters<typeof MessageList>[0]> = {}
+) {
   const props = { participants: PARTICIPANTS, viewerId: ATHLETE.id, now: NOW, ...extra }
   const view = render(<MessageList messages={messages} {...props} />)
-  const rerender = (next: ChatMessage[]) => view.rerender(<MessageList messages={next} {...props} />)
+  const rerender = (next: ChatMessage[]) =>
+    view.rerender(<MessageList messages={next} {...props} />)
   return { ...view, rerender }
 }
 

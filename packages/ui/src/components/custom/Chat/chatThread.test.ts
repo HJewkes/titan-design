@@ -42,18 +42,30 @@ describe('aggregateDelivery', () => {
   const at = localIso(0, 8, 0)
 
   it('reports the least-advanced recipient', () => {
-    const message = chatMessage('a', ATHLETE, at, [], [
-      { participantId: 'coach', status: 'read', at },
-      { participantId: 'observer', status: 'accepted', at },
-    ])
+    const message = chatMessage(
+      'a',
+      ATHLETE,
+      at,
+      [],
+      [
+        { participantId: 'coach', status: 'read', at },
+        { participantId: 'observer', status: 'accepted', at },
+      ]
+    )
     expect(aggregateDelivery(message)).toBe('accepted')
   })
 
   it('surfaces an undeliverable recipient over a read one', () => {
-    const message = chatMessage('a', ATHLETE, at, [], [
-      { participantId: 'coach', status: 'read', at },
-      { participantId: 'observer', status: 'undeliverable', at },
-    ])
+    const message = chatMessage(
+      'a',
+      ATHLETE,
+      at,
+      [],
+      [
+        { participantId: 'coach', status: 'read', at },
+        { participantId: 'observer', status: 'undeliverable', at },
+      ]
+    )
     expect(aggregateDelivery(message)).toBe('undeliverable')
   })
 

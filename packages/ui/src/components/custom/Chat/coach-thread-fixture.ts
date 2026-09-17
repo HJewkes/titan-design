@@ -68,14 +68,28 @@ export function chatMessage(
   parts: ChatPart[],
   delivery?: DeliveryState[]
 ): ChatMessage {
-  return { id, threadId: THREAD_ID, authorId: author.id, role: author.role, createdAt, parts, delivery }
+  return {
+    id,
+    threadId: THREAD_ID,
+    authorId: author.id,
+    role: author.role,
+    createdAt,
+    parts,
+    delivery,
+  }
 }
 
 export const COACH_THREAD: ChatMessage[] = [
   chatMessage('m1', COACH, localIso(1, 18, 2), [
     text('Good session. Your top bench set moved at **0.52 m/s**, right on target.'),
   ]),
-  chatMessage('m2', ATHLETE, localIso(1, 18, 10), [text('Set 3 felt heavy though.')], read(localIso(1, 18, 11))),
+  chatMessage(
+    'm2',
+    ATHLETE,
+    localIso(1, 18, 10),
+    [text('Set 3 felt heavy though.')],
+    read(localIso(1, 18, 11))
+  ),
   chatMessage('m3', COACH, localIso(1, 18, 11), [
     text('That tracks: speed fell **18%** by the last rep. Rest up tonight.'),
   ]),
@@ -84,7 +98,11 @@ export const COACH_THREAD: ChatMessage[] = [
     { type: CHECKIN_PART_TYPE, id: 'checkin-1', data: CHECKIN },
   ]),
   chatMessage('m5', COACH, localIso(0, 8, 1), [text('Reply here if that slot does not work.')]),
-  chatMessage('m6', ATHLETE, localIso(0, 8, 14), [text('Works for me.')], [
-    { participantId: COACH.id, status: 'accepted', at: localIso(0, 8, 14) },
-  ]),
+  chatMessage(
+    'm6',
+    ATHLETE,
+    localIso(0, 8, 14),
+    [text('Works for me.')],
+    [{ participantId: COACH.id, status: 'accepted', at: localIso(0, 8, 14) }]
+  ),
 ]

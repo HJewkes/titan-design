@@ -32,7 +32,15 @@ export interface MessageBubbleProps {
   className?: string
 }
 
-function BubbleBody({ body, isOwn, linkers }: { body: string; isOwn: boolean; linkers?: ProseLinker[] }) {
+function BubbleBody({
+  body,
+  isOwn,
+  linkers,
+}: {
+  body: string
+  isOwn: boolean
+  linkers?: ProseLinker[]
+}) {
   const prose = <MarkdownProse body={body} linkers={linkers} testID="chat-message-body" />
   if (isOwn) {
     return (
@@ -49,7 +57,10 @@ function BubbleBody({ body, isOwn, linkers }: { body: string; isOwn: boolean; li
 function MessageMeta({ message, isOwn }: { message: ChatMessage; isOwn: boolean }) {
   const delivery = isOwn ? aggregateDelivery(message) : undefined
   return (
-    <View className={cn('flex-row gap-inline-sm', isOwn && 'justify-end')} testID="chat-message-meta">
+    <View
+      className={cn('flex-row gap-inline-sm', isOwn && 'justify-end')}
+      testID="chat-message-meta"
+    >
       {isStreaming(message) ? (
         <Typography variant="caption" color="tertiary">
           Writing…

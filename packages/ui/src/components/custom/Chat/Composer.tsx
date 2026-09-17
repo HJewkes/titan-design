@@ -1,5 +1,10 @@
 import { useState } from 'react'
-import { Platform, View, type NativeSyntheticEvent, type TextInputKeyPressEventData } from 'react-native'
+import {
+  Platform,
+  View,
+  type NativeSyntheticEvent,
+  type TextInputKeyPressEventData,
+} from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Button, ButtonText } from '../../ui/button'
 import { Input } from '../../ui/input'

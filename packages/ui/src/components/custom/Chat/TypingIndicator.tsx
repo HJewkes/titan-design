@@ -54,7 +54,11 @@ function PulsingDot({ index }: { index: number }) {
 }
 
 /** Three staggered dots in a small bubble, plus who is composing. Composes Surface + Indicator + Typography. */
-export function TypingIndicator({ participants, dotsOnly = false, className }: TypingIndicatorProps) {
+export function TypingIndicator({
+  participants,
+  dotsOnly = false,
+  className,
+}: TypingIndicatorProps) {
   if (participants.length === 0) return null
   const label = typingLabel(participants)
   return (
