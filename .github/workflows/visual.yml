@@ -78,10 +78,18 @@ jobs:
           path: packages/ui/tests/visual/reference/stories.spec.ts-snapshots/
           retention-days: 7
 
-      - name: Upload Playwright report on failure
+      # No html reporter is configured, so the diagnostics are the per-test
+      # -actual/-diff/-expected PNGs: Layer 2 writes to tests/visual/results
+      # (playwright.config.ts outputDir), Layers 1 and 3 to Playwright's default
+      # test-results. Uploading a directory that never exists made every failed
+      # gate undiagnosable from CI (titan PR #245 was the first casualty).
+      - name: Upload Playwright failure diagnostics
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
-          path: packages/ui/playwright-report/
+          name: playwright-failure-diagnostics
+          path: |
+            packages/ui/tests/visual/results/
+            packages/ui/test-results/
+          if-no-files-found: warn
           retention-days: 7
