@@ -95,6 +95,11 @@ export interface GoalTrajectoryChartProps extends ViewProps {
   mesoBoundaries?: number[]
   /** Read-model status; drives the actual line's tone and the status pill. */
   status: GoalTrajectoryStatus
+  /**
+   * Overrides the status tone. Exists so a decision story can hold two candidate
+   * hues side by side; production passes `status` alone.
+   */
+  statusColor?: string
   /** Which way "better" points. `down` is a loss goal (low > high numerically). */
   direction?: GoalDirection
   /** Chart plot width in px (360 phone, 1200 wall). */
@@ -183,6 +188,7 @@ export function GoalTrajectoryChart({
   leftShadowSpread = DEFAULT_LEFT_SHADOW_SPREAD,
   animate = true,
   baseline = 'lip',
+  statusColor,
   bandFade = 'centre-14',
   bandCurve = 'monotone',
   className,
@@ -190,7 +196,8 @@ export function GoalTrajectoryChart({
 }: GoalTrajectoryChartProps) {
   const surface = useSurface()
   const axisColor = useOnSurfaceColor('tertiary')
-  const palette = trajectoryPalette(surface.mode, surface.level, status)
+  const resolved = trajectoryPalette(surface.mode, surface.level, status)
+  const palette = statusColor ? { ...resolved, status: statusColor } : resolved
   const density = width >= WALL_BREAKPOINT ? DENSITY.wall : DENSITY.phone
   const entrance = useTrajectoryEntrance(animate)
 
