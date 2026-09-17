@@ -1,50 +1,57 @@
 import type { GoalMilestoneTileProps } from './GoalMilestoneTile'
 
-type Scenario = Omit<GoalMilestoneTileProps, 'scale' | 'outcomeStyle'>
+type Scenario = Omit<GoalMilestoneTileProps, 'scale' | 'summaryStyle' | 'tipStyle'>
 
 const block = {
   target: { metric: 'top_load_at_reps', reps: 8, load: 105, unit: 'lb' },
-  goalWeek: 6,
   weekCount: 6,
-  start: { reps: 8, load: 95 },
 } as const
 
-/** One 6-week bench block at the points the design round compares; every outcome appears. */
+/** Weeks 1-5 of the block, so a scenario can take the prefix it has lived through. */
+const WEEKS = [
+  { outcome: 'on_track', reading: { reps: 8, load: 95 } },
+  { outcome: 'ahead', reading: { reps: 8, load: 100 } },
+  { outcome: 'none' },
+  { outcome: 'missed', reading: { reps: 6, load: 97.5 } },
+  { outcome: 'on_track', reading: { reps: 8, load: 100 } },
+] as const
+
+/** One 6-week bench block at the points the design round compares. */
 export const GOAL_MILESTONE_SCENARIOS = {
   onTrack: {
     ...block,
     currentWeek: 4,
     latest: { reps: 8, load: 100 },
     status: 'on_track',
-    weekOutcomes: ['on_track', 'ahead', 'none'],
+    weeks: WEEKS.slice(0, 3),
   },
   behind: {
     ...block,
     currentWeek: 4,
     latest: { reps: 8, load: 97.5 },
     status: 'behind',
-    weekOutcomes: ['on_track', 'missed', 'missed'],
+    weeks: [WEEKS[0], WEEKS[3], WEEKS[2]],
   },
   ahead: {
     ...block,
     currentWeek: 3,
     latest: { reps: 6, load: 105 },
     status: 'ahead',
-    weekOutcomes: ['ahead', 'ahead'],
+    weeks: WEEKS.slice(0, 2),
   },
   hit: {
     ...block,
     currentWeek: 5,
     latest: { reps: 8, load: 107.5 },
     status: 'ahead',
-    weekOutcomes: ['on_track', 'ahead', 'ahead', 'on_track'],
+    weeks: WEEKS.slice(0, 4),
   },
   missed: {
     ...block,
     currentWeek: 7,
     latest: { reps: 8, load: 102.5 },
     status: 'behind',
-    weekOutcomes: ['on_track', 'none', 'missed', 'on_track', 'missed', 'missed'],
+    weeks: [...WEEKS, { outcome: 'missed', reading: { reps: 8, load: 102.5 } }],
   },
 } satisfies Record<string, Scenario>
 

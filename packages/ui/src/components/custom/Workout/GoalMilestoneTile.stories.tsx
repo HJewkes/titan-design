@@ -15,18 +15,18 @@ const meta: Meta<typeof GoalMilestoneTile> = {
         component:
           "**Molecule.** A goal's meso target (the block's committed value, due in its last " +
           'week), led by what is still short. A bar runs from the block start to the target and a ' +
-          'thin week strip shows now, the goal week and how each past week went. Open targets take ' +
+          'week strip shows now and how each past week went, with a tip card per week. Open targets take ' +
           "the chart's pace colour; hit is success; missed is muted, never red. Composes " +
           '[Surface](?path=/docs/components-surface--docs) + ' +
           '[Indicator](?path=/docs/components-indicator--docs) + ' +
           '[Typography](?path=/docs/custom-typography--docs) + `GoalMilestoneWeekStrip`.\n\n' +
-          'The type scale follows the measured width (`wall` from 420px). The past-week ' +
-          'treatment (`outcomeStyle`) is open; see ' +
-          '[Lab/Decisions/Goal Milestone Tiles](?path=/story/lab-decisions-goal-milestone-tiles--wall-cells).',
+          'The type scale follows the measured width (`wall` from 420px). The summary line ' +
+          'draft (`summaryStyle`) and the tip card layout (`tipStyle`) are open; see ' +
+          '[Lab/Decisions/Goal Milestone Tiles](?path=/story/lab-decisions-goal-milestone-tiles--wall-sentence).',
       },
     },
   },
-  args: { ...S.onTrack, outcomeStyle: 'cells', layout: 'full' },
+  args: { ...S.onTrack, summaryStyle: 'sentence', tipStyle: 'one-line', layout: 'full' },
   argTypes: {
     status: {
       control: 'select',
@@ -41,18 +41,19 @@ const meta: Meta<typeof GoalMilestoneTile> = {
       ],
     },
     state: { control: 'select', options: [undefined, 'upcoming', 'hit', 'missed'] },
-    outcomeStyle: { control: 'inline-radio', options: ['cells', 'dots'] },
+    summaryStyle: { control: 'inline-radio', options: ['sentence', 'metrics', 'stacked'] },
+    tipStyle: { control: 'inline-radio', options: ['one-line', 'stacked'] },
+    showWeeks: { control: 'boolean' },
     layout: { control: 'inline-radio', options: ['full', 'compact'] },
     scale: { control: 'select', options: [undefined, 'wall', 'phone'] },
     direction: { control: 'inline-radio', options: ['up', 'down'] },
     framed: { control: 'boolean' },
     currentWeek: { control: { type: 'number', min: 1, max: 16 } },
-    goalWeek: { control: { type: 'number', min: 1, max: 16 } },
     weekCount: { control: { type: 'number', min: 1, max: 16 } },
     target: { control: 'object' },
     latest: { control: 'object' },
     start: { control: 'object' },
-    weekOutcomes: { control: 'object' },
+    weeks: { control: 'object' },
   },
   decorators: [
     (Story) => (
@@ -73,7 +74,9 @@ export const Behind: Story = { args: S.behind }
 export const Ahead: Story = { args: S.ahead }
 export const Hit: Story = { args: S.hit }
 export const Missed: Story = { args: S.missed }
-export const Dots: Story = { args: { outcomeStyle: 'dots' } }
+export const SummaryMetrics: Story = { args: { summaryStyle: 'metrics' } }
+export const SummaryStacked: Story = { args: { summaryStyle: 'stacked' } }
+export const TipStacked: Story = { args: { tipStyle: 'stacked' } }
 export const Compact: Story = { args: { layout: 'compact' } }
 
 export const LossGoal: Story = {
@@ -82,9 +85,15 @@ export const LossGoal: Story = {
     latest: { value: 192.4 },
     start: { value: 195 },
     direction: 'down',
-    goalWeek: 12,
     weekCount: 12,
     currentWeek: 7,
-    weekOutcomes: ['on_track', 'on_track', 'ahead', 'none', 'on_track', 'missed'],
+    weeks: [
+      { outcome: 'on_track', reading: { value: 194 } },
+      { outcome: 'on_track', reading: { value: 193.2 } },
+      { outcome: 'ahead', reading: { value: 192 } },
+      { outcome: 'none' },
+      { outcome: 'on_track', reading: { value: 192.4 } },
+      { outcome: 'missed', reading: { value: 193 } },
+    ],
   },
 }
