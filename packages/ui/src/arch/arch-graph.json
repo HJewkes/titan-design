@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:142bd4a7375fcf43e5d68269ad3d0214e19afadf55ac53f560b04930b1cf71ae",
+  "componentBarrelHash": "sha256:a01fd5318b804a700d5a6ac52539b7dc5a2d9a4003742e51bf0a5a37480ca881",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -1949,7 +1949,7 @@
         "isRegressing",
         "useMeasuredWidth"
       ],
-      "libDependents": 3,
+      "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -1986,38 +1986,45 @@
       "dir": "workout",
       "family": "custom/Workout",
       "exports": [
-        "milestoneTone",
+        "milestoneToneToken",
         "GoalMilestoneTile",
-        "GoalMilestoneTileVariant",
-        "GoalMilestoneTileDensity",
-        "GoalMilestoneTileProps"
+        "GoalMilestoneTileScale",
+        "GoalMilestoneTileLayout",
+        "GoalMilestoneTileProps",
+        "WALL_MIN_WIDTH",
+        "targetText",
+        "readingText",
+        "gapAmountText",
+        "copyFor",
+        "resolveTile",
+        "cn"
       ],
-      "libDependents": 0,
+      "libDependents": 1,
       "storyRefs": 2,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
         "dash": 0,
-        "audiobook": 0,
-        "total": 0
+        "audiobook": 4,
+        "total": 4
       },
       "dependsOn": [
-        "GoalLiftCard",
         "GoalMilestoneWeekStrip",
+        "GoalTrajectoryPlot",
         "Indicator",
         "Surface",
         "Typography"
       ],
       "leak": {
-        "rawView": 7,
+        "rawView": 6,
         "rawText": 0,
         "inlineStyle": 4,
         "rawHex": 0,
-        "loc": 362,
-        "score": 15
+        "loc": 363,
+        "score": 14
       },
       "tier": "organism",
-      "verdict": "dead",
+      "verdict": "keep-core",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -2028,15 +2035,15 @@
       "dir": "workout",
       "family": "custom/Workout",
       "exports": [
-        "weekStripLabels",
         "GoalMilestoneWeekStrip",
-        "GoalMilestoneTone",
+        "GoalWeekOutcomeStyle",
         "GoalMilestoneWeekStripProps",
+        "outcomeCell",
         "cellFill",
-        "StripLabel"
+        "OutcomeDot"
       ],
       "libDependents": 1,
-      "storyRefs": 0,
+      "storyRefs": 1,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
@@ -2045,19 +2052,20 @@
         "total": 0
       },
       "dependsOn": [
+        "GoalTrajectoryPlot",
         "Typography"
       ],
       "leak": {
         "rawView": 5,
         "rawText": 0,
-        "inlineStyle": 4,
+        "inlineStyle": 3,
         "rawHex": 0,
-        "loc": 126,
-        "score": 13
+        "loc": 159,
+        "score": 11
       },
-      "tier": "molecule",
+      "tier": "organism",
       "verdict": "keep-internal",
-      "deadByAssociation": true,
+      "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
     },
@@ -2105,6 +2113,42 @@
       "standard": false
     },
     {
+      "name": "GoalTrajectoryBand",
+      "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryBand.tsx",
+      "dir": "workout",
+      "family": "custom/Workout",
+      "exports": [
+        "BandLayer",
+        "BandFade",
+        "BAND_OPACITY",
+        "EDGE_OPACITY",
+        "useBandIds"
+      ],
+      "libDependents": 2,
+      "storyRefs": 0,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 107,
+        "score": 0
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "GoalTrajectoryChart",
       "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryChart.tsx",
       "dir": "workout",
@@ -2112,7 +2156,7 @@
       "exports": [
         "GoalTrajectoryChart",
         "GoalTrajectoryChartProps",
-        "trajectoryPalette"
+        "summarize"
       ],
       "libDependents": 0,
       "storyRefs": 1,
@@ -2123,17 +2167,70 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [],
+      "dependsOn": [
+        "GoalTrajectoryBand",
+        "GoalTrajectoryPlot"
+      ],
       "leak": {
-        "rawView": 23,
-        "rawText": 12,
-        "inlineStyle": 27,
+        "rawView": 12,
+        "rawText": 3,
+        "inlineStyle": 10,
         "rawHex": 0,
-        "loc": 596,
-        "score": 89
+        "loc": 410,
+        "score": 35
       },
-      "tier": "atom",
+      "tier": "organism",
       "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "GoalTrajectoryPlot",
+      "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryPlot.tsx",
+      "dir": "workout",
+      "family": "custom/Workout",
+      "exports": [
+        "trajectoryPalette",
+        "starPoints",
+        "GoalTrajectoryPlot",
+        "STATUS_TOKEN",
+        "DEPTH",
+        "DEFAULT_LEFT_SHADOW_SPREAD",
+        "DOT_RADIUS",
+        "TrajectoryPalette",
+        "PlotBaseline",
+        "PlotStyle",
+        "GoalTrajectoryPlotProps",
+        "tokenAlpha",
+        "useDefIds",
+        "PlotDefs",
+        "planeBox",
+        "isBaseline",
+        "Gridline"
+      ],
+      "libDependents": 3,
+      "storyRefs": 0,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "GoalTrajectoryBand"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 520,
+        "score": 0
+      },
+      "tier": "molecule",
+      "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -5131,7 +5228,7 @@
         "SurfaceProps"
       ],
       "libDependents": 16,
-      "storyRefs": 53,
+      "storyRefs": 54,
       "xproj": {
         "mobile": 22,
         "mcp": 12,
@@ -5839,7 +5936,7 @@
         "OverlineProps"
       ],
       "libDependents": 44,
-      "storyRefs": 13,
+      "storyRefs": 14,
       "xproj": {
         "mobile": 0,
         "mcp": 10,
@@ -7002,7 +7099,7 @@
     ],
     [
       "GoalMilestoneTile",
-      "GoalLiftCard"
+      "GoalTrajectoryPlot"
     ],
     [
       "GoalMilestoneTile",
@@ -7011,6 +7108,10 @@
     [
       "GoalMilestoneWeekStrip",
       "Typography"
+    ],
+    [
+      "GoalMilestoneWeekStrip",
+      "GoalTrajectoryPlot"
     ],
     [
       "GoalMuscleCard",
@@ -7035,6 +7136,18 @@
     [
       "GoalMuscleCard",
       "GoalLiftCard"
+    ],
+    [
+      "GoalTrajectoryChart",
+      "GoalTrajectoryPlot"
+    ],
+    [
+      "GoalTrajectoryChart",
+      "GoalTrajectoryBand"
+    ],
+    [
+      "GoalTrajectoryPlot",
+      "GoalTrajectoryBand"
     ],
     [
       "MesoCard",
@@ -7542,12 +7655,11 @@
     ]
   ],
   "summary": {
-    "total": 158,
+    "total": 160,
     "dead": [
       "Autocomplete",
       "Avatar",
       "Breadcrumbs",
-      "GoalMilestoneTile",
       "IconBox",
       "InitiativeHeader",
       "Menu",
@@ -7566,7 +7678,6 @@
       "BodyMap",
       "BodyMapDetailPanel",
       "CapacityBandChart",
-      "GoalMilestoneWeekStrip",
       "InitiativeCard",
       "InputBar",
       "IntensityBar",
@@ -7915,16 +8026,6 @@
     ],
     "extractionTop": [
       {
-        "name": "GoalTrajectoryChart",
-        "tier": "atom",
-        "rawView": 23,
-        "rawText": 12,
-        "inlineStyle": 27,
-        "rawHex": 0,
-        "loc": 596,
-        "score": 89
-      },
-      {
         "name": "StrengthTrendChart",
         "tier": "atom",
         "rawView": 20,
@@ -8063,6 +8164,16 @@
         "rawHex": 0,
         "loc": 321,
         "score": 36
+      },
+      {
+        "name": "GoalTrajectoryChart",
+        "tier": "organism",
+        "rawView": 12,
+        "rawText": 3,
+        "inlineStyle": 10,
+        "rawHex": 0,
+        "loc": 410,
+        "score": 35
       }
     ],
     "substitution": {
