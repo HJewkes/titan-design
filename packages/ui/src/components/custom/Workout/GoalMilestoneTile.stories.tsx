@@ -14,19 +14,18 @@ const meta: Meta<typeof GoalMilestoneTile> = {
       description: {
         component:
           "**Molecule.** A goal's meso target (the block's committed value, due in its last " +
-          'week), led by what is still short. A bar runs from the block start to the target and a ' +
-          'week strip shows now and how each past week went, with a tip card per week. Open targets take ' +
+          'week), led by what is still short. The gap leads with the week count under it, best ' +
+          'and goal on its line, and the week cells carry each past week, with a tip card each. Open targets take ' +
           "the chart's pace colour; hit is success; missed is muted, never red. Composes " +
           '[Surface](?path=/docs/components-surface--docs) + ' +
           '[Indicator](?path=/docs/components-indicator--docs) + ' +
           '[Typography](?path=/docs/custom-typography--docs) + `GoalMilestoneWeekStrip`.\n\n' +
-          'The type scale follows the measured width (`wall` from 420px). The summary line ' +
-          'draft (`summaryStyle`) and the tip card layout (`tipStyle`) are open; see ' +
-          '[Lab/Decisions/Goal Milestone Tiles](?path=/story/lab-decisions-goal-milestone-tiles--wall-sentence).',
+          'The type scale follows the measured width (`wall` from 420px). See ' +
+          '[Lab/Decisions/Goal Milestone Tiles](?path=/story/lab-decisions-goal-milestone-tiles--wall).',
       },
     },
   },
-  args: { ...S.onTrack, summaryStyle: 'sentence', tipStyle: 'one-line', layout: 'full' },
+  args: { ...S.onTrack, layout: 'full' },
   argTypes: {
     status: {
       control: 'select',
@@ -41,8 +40,6 @@ const meta: Meta<typeof GoalMilestoneTile> = {
       ],
     },
     state: { control: 'select', options: [undefined, 'upcoming', 'hit', 'missed'] },
-    summaryStyle: { control: 'inline-radio', options: ['sentence', 'metrics', 'stacked'] },
-    tipStyle: { control: 'inline-radio', options: ['one-line', 'stacked'] },
     showWeeks: { control: 'boolean' },
     layout: { control: 'inline-radio', options: ['full', 'compact'] },
     scale: { control: 'select', options: [undefined, 'wall', 'phone'] },
@@ -74,9 +71,6 @@ export const Behind: Story = { args: S.behind }
 export const Ahead: Story = { args: S.ahead }
 export const Hit: Story = { args: S.hit }
 export const Missed: Story = { args: S.missed }
-export const SummaryMetrics: Story = { args: { summaryStyle: 'metrics' } }
-export const SummaryStacked: Story = { args: { summaryStyle: 'stacked' } }
-export const TipStacked: Story = { args: { tipStyle: 'stacked' } }
 export const Compact: Story = { args: { layout: 'compact' } }
 
 export const LossGoal: Story = {
