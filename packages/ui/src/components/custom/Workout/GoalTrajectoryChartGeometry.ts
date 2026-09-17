@@ -146,6 +146,8 @@ export const PLOT_BOTTOM = 20
 export const PLANE_OVERHANG = 6
 /** The y-domain floor rounds down to a multiple of this, in the goal's unit. */
 export const VALUE_STEP = 5
+/** Keeps the first and last week's dot and ring inside the rounded plane. */
+export const WEEK_INSET = 8
 export const DEFAULT_TICK_COUNT = 5
 export const DEFAULT_HEADROOM = 11
 
@@ -375,7 +377,9 @@ export function deriveTrajectoryGeometry(
     committed,
     stretch,
   ].filter((v) => Number.isFinite(v))
-  const xScale = scaleLinear().domain([wks.min, wks.max]).range([plot.left, plot.right])
+  const xScale = scaleLinear()
+    .domain([wks.min, wks.max])
+    .range([plot.left + WEEK_INSET, plot.right - WEEK_INSET])
   const yScale = valueScale(values, plot, input.headroom ?? DEFAULT_HEADROOM)
   const toX = (weekIndex: number): number => xScale(weekIndex)
   const toY = (value: number): number => yScale(value)
@@ -384,7 +388,7 @@ export function deriveTrajectoryGeometry(
   const slices = bandSlices(expected, toX, toY)
   const hasBand = slices.length >= 2
   const actuals = actualCoords(placed, toX, toY)
-  const weekSpan = (plot.right - plot.left) / Math.max(1, wks.max - wks.min)
+  const weekSpan = (plot.right - plot.left - 2 * WEEK_INSET) / Math.max(1, wks.max - wks.min)
 
   return {
     hasBand,

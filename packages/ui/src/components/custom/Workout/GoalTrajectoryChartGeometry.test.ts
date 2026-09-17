@@ -5,6 +5,7 @@ import {
   paddedFloor,
   PLANE_OVERHANG,
   resolveActualWeek,
+  WEEK_INSET,
   type GoalExpectedPoint,
   type GoalTrajectoryWeek,
 } from './GoalTrajectoryChartGeometry'
@@ -220,8 +221,8 @@ describe('deriveTrajectoryGeometry', () => {
       })
       expect(g.boundaries.map((b) => b.weekIndex)).toEqual([1, 4, 6])
       g.boundaries.forEach((b) => expect(b.x).toBeCloseTo(g.toX(b.weekIndex)))
-      expect(g.boundaries[0].x).toBeCloseTo(g.plot.left)
-      expect(g.boundaries[2].x).toBeCloseTo(g.plot.right)
+      expect(g.boundaries[0].x).toBeCloseTo(g.plot.left + WEEK_INSET)
+      expect(g.boundaries[2].x).toBeCloseTo(g.plot.right - WEEK_INSET)
     })
 
     it('puts the committed rule below the stretch rule for a gain goal', () => {
@@ -438,5 +439,16 @@ describe('deriveTrajectoryGeometry', () => {
       expect(g.plane.y).toBe(g.plot.top - PLANE_OVERHANG)
       expect(g.plane.y + g.plane.height).toBe(g.plot.bottom)
     })
+  })
+
+  it('keeps the first and last week clear of the plane edge', () => {
+    const g = deriveTrajectoryGeometry({
+      ...base,
+      expected: gainExpected,
+      committed: 185,
+      stretch: 195,
+    })
+    expect(g.toX(1) - g.plane.x).toBeGreaterThanOrEqual(WEEK_INSET)
+    expect(g.plane.x + g.plane.width - g.toX(6)).toBeGreaterThanOrEqual(WEEK_INSET)
   })
 })
