@@ -81,9 +81,11 @@ describe('VolumeLandmarkBar', () => {
       })
     })
 
-    it('mirrors the fill color in the percentage headline', () => {
-      renderBar(3)
-      expect(screen.getByTestId('volume-landmark-pct')).toHaveStyle({ color: HEAT.under })
+    cases.forEach(([sets, zone]) => {
+      it(`keeps the percentage headline out of the ${zone} fill colour`, () => {
+        renderBar(sets)
+        expect(screen.getByTestId('volume-landmark-pct')).not.toHaveStyle({ color: HEAT[zone] })
+      })
     })
   })
 

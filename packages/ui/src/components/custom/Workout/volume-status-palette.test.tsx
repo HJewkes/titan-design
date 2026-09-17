@@ -24,24 +24,32 @@ import {
 } from './muscleTaxonomy'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 
-/** What the figure painted before VW-333, keyed by landmark zone + intensity. */
-const FIGURE_BEFORE: Array<{ zone: VolumeLandmarkZone; intensity: number; hex: string }> = [
-  { zone: 'under', intensity: 0.3, hex: '#2196F3' },
-  { zone: 'maintenance', intensity: 0.5, hex: '#22D3EE' },
-  { zone: 'productive', intensity: 0.6, hex: '#58F69E' },
+/**
+ * What the figure painted before VW-333, keyed by landmark zone + intensity.
+ * `light` is the VW-371 phase-2 light column (set C'), which moved on purpose.
+ */
+const FIGURE_BEFORE: Array<{
+  zone: VolumeLandmarkZone
+  intensity: number
+  hex: string
+  light: string
+}> = [
+  { zone: 'under', intensity: 0.3, hex: '#2196F3', light: '#2196F3' },
+  { zone: 'maintenance', intensity: 0.5, hex: '#22D3EE', light: '#01B5D1' },
+  { zone: 'productive', intensity: 0.6, hex: '#58F69E', light: '#2ED573' },
   // The near-MRV case `getHeatmapColor` used to decide from intensity; it is the
   // `approaching` status now, and it must still paint amber.
-  { zone: 'productive', intensity: 0.85, hex: '#F9B415' },
-  { zone: 'productive', intensity: 0.95, hex: '#F9B415' },
-  { zone: 'over', intensity: 1, hex: '#D14343' },
+  { zone: 'productive', intensity: 0.85, hex: '#F9B415', light: '#E08C00' },
+  { zone: 'productive', intensity: 0.95, hex: '#F9B415', light: '#E08C00' },
+  { zone: 'over', intensity: 1, hex: '#D14343', light: '#D14343' },
 ]
 
 describe('BodyMap fill is byte-identical across the VW-333 status unification', () => {
-  for (const { zone, intensity, hex } of FIGURE_BEFORE) {
-    it(`zone ${zone} at intensity ${intensity} still paints ${hex}`, () => {
+  for (const { zone, intensity, hex, light } of FIGURE_BEFORE) {
+    it(`zone ${zone} at intensity ${intensity} still paints ${hex} on dark, ${light} on light`, () => {
       const status = landmarkZoneToStatus(zone, intensity)
       expect(getHeatmapColor(status, 'dark')).toBe(hex)
-      expect(getHeatmapColor(status, 'light')).toBe(hex)
+      expect(getHeatmapColor(status, 'light')).toBe(light)
     })
   }
 

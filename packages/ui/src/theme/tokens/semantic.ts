@@ -182,42 +182,48 @@ export const semanticColorsLight = {
   'data-9': discreteRainbow[3], // Lavender
   'data-10': discreteRainbow[22], // Dark Orange
 
-  // Chart palettes (dataviz-*) — VW-371 phase 1.
+  // Chart palettes (dataviz-*) — VW-371.
   //
-  // The three shipped palettes become theme-aware ROLES instead of primitive
-  // literals a chart imports directly. Phase 1 is plumbing only: light and dark
-  // point at the same values, so nothing moves on screen. Phase 2 tunes the
-  // light column against a decision story — at which point a consumer already
-  // reading `getSemanticColors(mode)` picks the change up for free.
+  // The three shipped palettes are theme-aware ROLES instead of primitive
+  // literals a chart imports directly. Phase 1 made them roles with light and
+  // dark on the same values; phase 2 (2026-09-17) tuned this light column
+  // against `Lab/Decisions/Dataviz Light Palettes`, which keeps the candidates,
+  // the measurements and the sets that were not chosen. Dark still tracks the
+  // primitive arrays. A consumer reading `getSemanticColors(mode)` follows the
+  // theme; one importing the primitive arrays keeps painting the dark values.
   //
   // Index is the ARRAY index of the underlying palette, not a 1-based rank, so
   // `dataviz-diverging-2` is `divergingScale[2]` and the two stay legible
   // against each other. `data-1..10` keeps its 1-based naming; it is superseded
   // and not the model to copy.
-  'dataviz-diverging-0': divergingScale[0], // under
-  'dataviz-diverging-1': divergingScale[1], // maintenance
-  'dataviz-diverging-2': divergingScale[2], // optimal (light center)
-  'dataviz-diverging-3': divergingScale[3], // approaching
-  'dataviz-diverging-4': divergingScale[4], // over
+  //
+  // Diverging, set C': the inner stops sit one step darker than dark so they hold
+  // on a light plane; the centre stays the lightest stop. Slot 0 takes a black label.
+  'dataviz-diverging-0': ramp.blue[500], // under (dark: same step)
+  'dataviz-diverging-1': ramp.cyan[400], // maintenance (dark: cyan[300])
+  'dataviz-diverging-2': ramp.green[300], // optimal, light centre (dark: green[200])
+  'dataviz-diverging-3': ramp.amber[400], // approaching (dark: amber[300])
+  'dataviz-diverging-4': ramp.red[600], // over (dark: same step)
 
-  'dataviz-sequential-0': sequentialEffort[0],
-  'dataviz-sequential-1': sequentialEffort[1],
-  'dataviz-sequential-2': sequentialEffort[2],
-  'dataviz-sequential-3': sequentialEffort[3],
-  'dataviz-sequential-4': sequentialEffort[4],
-  'dataviz-sequential-5': sequentialEffort[5],
+  // Sequential, set S1: dark's hues through step 3, lifting at step 1 as dark
+  // does, then strictly darker (ΔL ≥ 0.05) into a red tail that stays saturated.
+  'dataviz-sequential-0': ramp.green[300], // dark: same step
+  'dataviz-sequential-1': ramp.amber[300], // dark: amber[200]
+  'dataviz-sequential-2': ramp.orange[400], // dark: amber[300]
+  'dataviz-sequential-3': ramp.orange[500], // dark: orange[400]
+  'dataviz-sequential-4': ramp.red[700], // dark: red[600]
+  'dataviz-sequential-5': ramp.red[800], // dark: red[700]
 
-  // The `default` variant only. The palette's second variant (`dark`, deeper
-  // shades for white text on a fill) stays a primitive: whether the THEME should
-  // select the variant is exactly the phase-2 question, and promoting both now
-  // would prejudge it.
-  'dataviz-categorical-0': categoricalPalette.default[0],
-  'dataviz-categorical-1': categoricalPalette.default[1],
-  'dataviz-categorical-2': categoricalPalette.default[2],
-  'dataviz-categorical-3': categoricalPalette.default[3],
-  'dataviz-categorical-4': categoricalPalette.default[4],
-  'dataviz-categorical-5': categoricalPalette.default[5],
-  'dataviz-categorical-6': categoricalPalette.default[6], // extended — pair with a legend
+  // Categorical, set B: the `default` variant's hues, with red and green taking
+  // the darker slots so orange[400] keeps its brightness. The palette's `dark`
+  // variant stays a primitive.
+  'dataviz-categorical-0': ramp.blue[500], // dark: same step
+  'dataviz-categorical-1': ramp.magenta[600], // dark: magenta[500]
+  'dataviz-categorical-2': ramp.red[600], // dark: red[500]
+  'dataviz-categorical-3': ramp.orange[400], // dark: same step
+  'dataviz-categorical-4': ramp.green[600], // dark: green[300]
+  'dataviz-categorical-5': ramp.cyan[400], // dark: cyan[300]
+  'dataviz-categorical-6': ramp.amber[600], // extended — pair with a legend (dark: same step)
 
   // Text colors (text-*)
   'text-primary': semanticPins.textPrimaryLight,
@@ -421,9 +427,8 @@ export const semanticColorsDark = {
   'data-9': discreteRainbow[3],
   'data-10': discreteRainbow[22],
 
-  // Chart palettes (dataviz-*) — VW-371 phase 1. Same values as the light map
-  // above by design; see it for why, and for why the categorical `dark` variant
-  // is deliberately NOT promoted yet.
+  // Chart palettes (dataviz-*) — VW-371. Dark tracks the primitive arrays; the
+  // light map above carries its own tuned steps (phase 2) and explains why.
   'dataviz-diverging-0': divergingScale[0],
   'dataviz-diverging-1': divergingScale[1],
   'dataviz-diverging-2': divergingScale[2],
