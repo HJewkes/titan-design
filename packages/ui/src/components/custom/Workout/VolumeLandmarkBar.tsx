@@ -108,13 +108,11 @@ export function VolumeLandmarkBar({
         label={muscle}
         value={
           // `mono` at `sm` matches DataRow's own 14px label, so the header lockup
-          // stays at one type height. The face moves from bare `monospace` to the
-          // `font-mono` token stack.
+          // stays at one type height. Text ink, not the zone fill: a pale fill is unreadable as text (VW-371).
           <Typography
             variant="mono"
-            color="inherit"
+            color="primary"
             className="text-sm font-bold"
-            style={{ color: fillColor }}
             testID="volume-landmark-pct"
           >
             {pct}%
