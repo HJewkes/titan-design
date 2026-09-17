@@ -171,29 +171,39 @@ export {
 } from './GoalLiftCard'
 export {
   GoalMilestoneTile,
-  milestoneTone,
+  milestoneToneToken,
+  WALL_MIN_WIDTH as GOAL_MILESTONE_WALL_MIN_WIDTH,
   type GoalMilestoneTileProps,
-  type GoalMilestoneTileVariant,
-  type GoalMilestoneTileDensity,
+  type GoalMilestoneTileScale,
+  type GoalMilestoneTileLayout,
 } from './GoalMilestoneTile'
 export {
   GoalMilestoneWeekStrip,
-  weekStripLabels,
   type GoalMilestoneWeekStripProps,
-  type GoalMilestoneTone,
+  type GoalWeekOutcomeStyle,
 } from './GoalMilestoneWeekStrip'
 export {
-  GOAL_MILESTONE_STATE_LABEL,
   deriveMilestoneState,
   estimatedOneRepMax,
+  isLoadTarget,
   isMilestoneMet,
   milestoneGap,
   milestoneProgress,
+  weekStripCells,
   UNMET_PROGRESS_CAP,
-  weeksAway,
+  type GoalLoadMetric,
+  type GoalLoadTarget,
   type GoalMilestoneGap,
+  type GoalMilestoneReading,
   type GoalMilestoneSet,
   type GoalMilestoneState,
+  type GoalMilestoneTarget,
+  type GoalMilestoneValue,
+  type GoalValueMetric,
+  type GoalValueTarget,
+  type GoalWeekCell,
+  type GoalWeekOutcome,
+  type GoalWeekPhase,
 } from './goalMilestone'
 // GoalMuscleCard and MuscleGlyph depend on `react-native-body-highlighter` at
 // runtime, so their VALUE exports live behind `@titan-design/react-ui/bodymap`.

@@ -1,125 +1,158 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import type { ReactNode } from 'react'
-import { View } from 'react-native'
+import { View, type ViewStyle } from 'react-native'
 
-import { cn } from '../../../utils/cn'
+import { useSurfaceMode } from '../../ui/surface'
 import { Typography } from '../Typography'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { CHART_FONT } from './GoalTrajectoryChartGeometry'
+import { STATUS_TOKEN } from './GoalTrajectoryPlot'
+import { weekStripCells, type GoalWeekCell, type GoalWeekOutcome } from './goalMilestone'
 
-export type GoalMilestoneTone = 'success' | 'warning' | 'info'
+/** How past weeks show their verdict: the cell itself, or a dot under a neutral cell. */
+export type GoalWeekOutcomeStyle = 'cells' | 'dots'
 
 export interface GoalMilestoneWeekStripProps {
-  /** Weeks on the axis; every week from 1 to here gets one cell. */
-  totalWeeks: number
+  weekCount: number
   goalWeek: number
   currentWeek?: number
-  tone: GoalMilestoneTone
-  /** Cell height in px; the goal cell stands taller by half. */
+  /** One verdict per week, aligned to week 1; only past weeks read theirs. */
+  weekOutcomes?: readonly GoalWeekOutcome[]
+  outcomeStyle?: GoalWeekOutcomeStyle
+  /** The target's colour, resolved by the tile; paints a goal week still ahead. */
+  goalColor: string
+  /** Cell height in px; the goal cell stands half again as tall. */
   cellHeight?: number
 }
 
-const TONE_FILL: Record<GoalMilestoneTone, string> = {
-  success: 'bg-status-success',
-  warning: 'bg-status-warning',
-  info: 'bg-status-info',
+type Palette = ReturnType<typeof getSemanticColors>
+
+const OUTCOME_LABEL: Record<GoalWeekOutcome, string> = {
+  ahead: 'ahead',
+  on_track: 'on track',
+  missed: 'missed',
+  none: 'no data',
+}
+
+/**
+ * Missed is hollow and muted, never red: failure is not scored. No data is
+ * an empty cell, fainter than a week still to come.
+ */
+function outcomeCell(outcome: GoalWeekOutcome, t: Palette): ViewStyle {
+  switch (outcome) {
+    case 'ahead':
+      return { backgroundColor: t[STATUS_TOKEN.ahead] }
+    case 'on_track':
+      return { backgroundColor: t[STATUS_TOKEN.on_track] }
+    case 'missed':
+      return { borderWidth: 1, borderColor: t['text-tertiary'] }
+    case 'none':
+      return { backgroundColor: t['hairline-subtle'] }
+  }
 }
 
 function cellFill(
-  week: number,
-  goalWeek: number,
-  currentWeek: number | undefined,
-  tone: GoalMilestoneTone
-) {
-  if (week === goalWeek) return TONE_FILL[tone]
-  if (currentWeek !== undefined && week <= currentWeek) return 'bg-text-tertiary'
-  return 'bg-hairline-strong'
+  cell: GoalWeekCell,
+  style: GoalWeekOutcomeStyle,
+  goalColor: string,
+  t: Palette
+): ViewStyle {
+  if (cell.outcome && style === 'cells') return outcomeCell(cell.outcome, t)
+  // Solid, not a ring: a ring read as the hollow "missed" cell beside it.
+  if (cell.phase === 'current') return { backgroundColor: t['text-secondary'] }
+  if (cell.phase === 'future' && cell.isGoal) return { backgroundColor: goalColor }
+  if (cell.phase === 'future') return { backgroundColor: t['hairline-strong'] }
+  return { backgroundColor: t['text-tertiary'] }
 }
 
-/** Axis ends closer than this to the goal are dropped so their labels never collide. */
-const END_LABEL_CLEARANCE = 2
+const DOT = 6
 
-/** The weeks named under the strip: the goal, and whichever axis ends clear it. */
-export function weekStripLabels(totalWeeks: number, goalWeek: number): number[] {
-  const ends = [1, totalWeeks].filter((end) => Math.abs(end - goalWeek) >= END_LABEL_CLEARANCE)
-  return [...new Set([...ends, goalWeek])].sort((a, b) => a - b)
+function OutcomeDot({ outcome, t }: { outcome?: GoalWeekOutcome; t: Palette }) {
+  const box: ViewStyle = { width: DOT, height: DOT, borderRadius: DOT / 2 }
+  if (!outcome || outcome === 'none') return <View style={box} />
+  const paint =
+    outcome === 'missed'
+      ? { borderWidth: 1, borderColor: t['text-tertiary'] }
+      : { backgroundColor: t[STATUS_TOKEN[outcome]] }
+  return <View style={[box, paint]} testID={`goal-milestone-dot-${outcome}`} />
 }
 
-function StripLabel({
-  week,
-  totalWeeks,
-  children,
-  emphasis = false,
-}: {
-  week: number
-  totalWeeks: number
-  children: string
-  emphasis?: boolean
-}) {
-  const center = ((week - 0.5) / totalWeeks) * 100
+interface WeekCellProps {
+  cell: GoalWeekCell
+  style: GoalWeekOutcomeStyle
+  goalColor: string
+  height: number
+  t: Palette
+}
+
+function WeekCell({ cell, style, goalColor, height, t }: WeekCellProps) {
+  const box: ViewStyle = {
+    alignSelf: 'stretch',
+    borderRadius: 2,
+    height: cell.isGoal ? height * 1.5 : height,
+  }
   return (
-    <View
-      // Centred on its cell: a 40px box pulled back by half its width.
-      style={{
-        position: 'absolute',
-        left: `${center}%`,
-        width: 40,
-        transform: [{ translateX: -20 }],
-      }}
-    >
-      <Typography variant="caption" color={emphasis ? 'primary' : 'tertiary'} align="center">
-        {children}
+    <View style={{ flex: 1, alignItems: 'center' }} className="gap-stack-sm">
+      <View
+        testID={`goal-milestone-week-${cell.week}`}
+        style={[box, cellFill(cell, style, goalColor, t)]}
+      />
+      {style === 'dots' && <OutcomeDot outcome={cell.outcome} t={t} />}
+      <Typography
+        variant="caption"
+        align="center"
+        color={cell.phase === 'current' ? 'primary' : 'tertiary'}
+        // Same size as the chart's week axis, so the strip reads as that axis.
+        style={{ fontSize: CHART_FONT, lineHeight: CHART_FONT + 3 }}
+      >
+        {`w${cell.week}`}
       </Typography>
     </View>
   )
 }
 
-function LabelRow({ children }: { children: ReactNode }) {
-  return <View style={{ height: 18 }}>{children}</View>
+function stripSummary(cells: GoalWeekCell[]): string {
+  const current = cells.find((c) => c.phase === 'current')
+  const now = current ? `Week ${current.week} of ${cells.length}` : `${cells.length} weeks`
+  const past = cells.flatMap((c) =>
+    c.outcome ? [`week ${c.week} ${OUTCOME_LABEL[c.outcome]}`] : []
+  )
+  return [now, ...past].join(', ')
 }
 
 /**
- * The meso as a row of week cells, in the chart's `w1..wN` axis language:
- * elapsed weeks a step stronger than future ones, the goal week in the status
- * colour, and the current week ringed and named above the strip, clear of the
- * week labels below. Colour appears once, on the goal cell.
+ * The block as a row of week cells in the chart's `w1..wN` axis language: the
+ * current week solid and light, the goal week taller, and each past week showing its
+ * verdict against that week's band.
  */
 export function GoalMilestoneWeekStrip({
-  totalWeeks,
+  weekCount,
   goalWeek,
   currentWeek,
-  tone,
-  cellHeight = 8,
+  weekOutcomes,
+  outcomeStyle = 'cells',
+  goalColor,
+  cellHeight = 6,
 }: GoalMilestoneWeekStripProps) {
-  const weeks = Array.from({ length: Math.max(totalWeeks, 1) }, (_, i) => i + 1)
+  const t = getSemanticColors(useSurfaceMode())
+  const cells = weekStripCells(weekCount, goalWeek, currentWeek, weekOutcomes)
   return (
-    <View className="gap-stack-sm" testID="goal-milestone-week-strip">
-      {currentWeek !== undefined && currentWeek <= totalWeeks && (
-        <LabelRow>
-          <StripLabel week={currentWeek} totalWeeks={totalWeeks} emphasis>
-            now
-          </StripLabel>
-        </LabelRow>
-      )}
-      <View style={{ flexDirection: 'row', alignItems: 'flex-end' }} className="gap-inline-sm">
-        {weeks.map((week) => (
-          <View
-            key={week}
-            testID={week === goalWeek ? 'goal-milestone-week-goal' : `goal-milestone-week-${week}`}
-            className={cn(
-              'flex-1 rounded-sm',
-              cellFill(week, goalWeek, currentWeek, tone),
-              week === currentWeek && 'border border-text-primary'
-            )}
-            style={{ height: week === goalWeek ? cellHeight * 1.5 : cellHeight }}
-          />
-        ))}
-      </View>
-      <LabelRow>
-        {weekStripLabels(totalWeeks, goalWeek).map((week) => (
-          <StripLabel key={week} week={week} totalWeeks={totalWeeks}>
-            {`w${week}`}
-          </StripLabel>
-        ))}
-      </LabelRow>
+    <View
+      role="img"
+      aria-label={stripSummary(cells)}
+      style={{ flexDirection: 'row', alignItems: 'flex-end' }}
+      className="gap-inline-sm"
+      testID="goal-milestone-week-strip"
+    >
+      {cells.map((cell) => (
+        <WeekCell
+          key={cell.week}
+          cell={cell}
+          style={outcomeStyle}
+          goalColor={goalColor}
+          height={cellHeight}
+          t={t}
+        />
+      ))}
     </View>
   )
 }

@@ -4,180 +4,205 @@ import { axe } from 'jest-axe'
 
 import {
   GoalMilestoneTile,
-  milestoneTone,
+  milestoneToneToken,
   type GoalMilestoneTileProps,
-  type GoalMilestoneTileVariant,
 } from './GoalMilestoneTile'
-import { weekStripLabels } from './GoalMilestoneWeekStrip'
 
 const base: GoalMilestoneTileProps = {
-  milestone: { reps: 8, load: 105, unit: 'lb', goalWeek: 8 },
-  current: { reps: 8, load: 100 },
+  target: { metric: 'top_load_at_reps', reps: 8, load: 105, unit: 'lb' },
+  goalWeek: 6,
+  weekCount: 6,
+  currentWeek: 4,
+  latest: { reps: 8, load: 100 },
   start: { reps: 8, load: 95 },
-  currentWeek: 5,
-  totalWeeks: 10,
+  status: 'on_track',
+  weekOutcomes: ['on_track', 'ahead', 'missed'],
+  scale: 'wall',
 }
 
-const VARIANTS: GoalMilestoneTileVariant[] = ['numeric', 'progress', 'timeline', 'gap']
+const hero = () => screen.getByTestId('goal-milestone-hero')
+const line = () => screen.getByTestId('goal-milestone-line')
 
 describe('GoalMilestoneTile', () => {
-  it('leads with the target load, reps as the unit line', () => {
+  it('leads with the shortfall and names the target and its week', () => {
     render(<GoalMilestoneTile {...base} />)
 
-    expect(screen.getByTestId('goal-milestone-load')).toHaveTextContent('105')
-    expect(screen.getByText('lb')).toBeInTheDocument()
-    expect(screen.getByTestId('goal-milestone-reps')).toHaveTextContent('x 8 reps')
+    expect(hero()).toHaveTextContent('5 lb')
+    expect(line()).toHaveTextContent('to 8 x 105 lb by week 6')
   })
 
-  it('says when the milestone is due relative to now', () => {
+  it('leads with reps for a reps-at-load goal', () => {
+    render(
+      <GoalMilestoneTile
+        {...base}
+        target={{ metric: 'reps_at_load', reps: 12, load: 185, unit: 'lb' }}
+        latest={{ reps: 10, load: 180 }}
+      />
+    )
+
+    expect(hero()).toHaveTextContent('2 reps')
+  })
+
+  it('shows the best set and where the lifter is in the block', () => {
     render(<GoalMilestoneTile {...base} />)
 
-    expect(screen.getByTestId('goal-milestone-when')).toHaveTextContent('Week 8 · in 3 weeks')
+    expect(screen.getByTestId('goal-milestone-best')).toHaveTextContent(
+      'Best 8 x 100 lb · week 4 of 6'
+    )
   })
 
-  it('shows no state mark while the milestone is simply upcoming', () => {
+  it('shows the target itself before any set has matched', () => {
+    render(<GoalMilestoneTile {...base} latest={undefined} />)
+
+    expect(hero()).toHaveTextContent('8 x 105 lb')
+    expect(screen.getByTestId('goal-milestone-best')).toHaveTextContent('No matched set yet')
+  })
+
+  it('fills the bar to the share of the climb already made', () => {
     render(<GoalMilestoneTile {...base} />)
 
-    expect(screen.queryByTestId('goal-milestone-state')).toBeNull()
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '50')
   })
 
-  it('marks a hit milestone', () => {
-    render(<GoalMilestoneTile {...base} current={{ reps: 8, load: 105 }} />)
+  it('draws no bar without a starting reading', () => {
+    render(<GoalMilestoneTile {...base} start={undefined} />)
 
-    expect(screen.getByTestId('goal-milestone-state')).toHaveTextContent('Hit')
+    expect(screen.queryByRole('progressbar')).toBeNull()
   })
 
-  it('stops counting down to a milestone already hit', () => {
-    render(<GoalMilestoneTile {...base} current={{ reps: 8, load: 105 }} />)
+  describe('once hit', () => {
+    it('makes the target the hero, marks it, and fills the bar', () => {
+      render(<GoalMilestoneTile {...base} latest={{ reps: 8, load: 107.5 }} />)
 
-    expect(screen.getByTestId('goal-milestone-when')).toHaveTextContent(/^Week 8$/)
+      expect(hero()).toHaveTextContent('8 x 105 lb')
+      expect(line()).toHaveTextContent('Reached · best 8 x 107.5 lb')
+      expect(screen.getByTestId('goal-milestone-state')).toHaveTextContent('Hit')
+      expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '100')
+    })
+
+    it('does not repeat the best set in the caption', () => {
+      render(<GoalMilestoneTile {...base} latest={{ reps: 8, load: 107.5 }} />)
+
+      expect(screen.getByTestId('goal-milestone-best')).toHaveTextContent(/^Week 4 of 6$/)
+    })
   })
 
-  it('marks a milestone missed once its week has passed', () => {
-    render(<GoalMilestoneTile {...base} currentWeek={9} />)
+  describe('once missed', () => {
+    it('keeps the shortfall and says what it fell short of', () => {
+      render(<GoalMilestoneTile {...base} currentWeek={7} latest={{ reps: 8, load: 102.5 }} />)
 
-    expect(screen.getByTestId('goal-milestone-state')).toHaveTextContent('Missed')
+      expect(hero()).toHaveTextContent('2.5 lb')
+      expect(line()).toHaveTextContent('short of 8 x 105 lb at week 6')
+      expect(screen.getByTestId('goal-milestone-state')).toHaveTextContent('Missed')
+    })
+
+    it('drops the week-of count once the block is over', () => {
+      render(<GoalMilestoneTile {...base} currentWeek={7} />)
+
+      expect(screen.getByTestId('goal-milestone-best')).toHaveTextContent(/^Best 8 x 100 lb$/)
+    })
   })
 
-  it('does not treat a missed milestone as hit because the read model said so', () => {
-    render(<GoalMilestoneTile {...base} current={{ reps: 8, load: 105 }} state="missed" />)
+  it('reads a loss goal in its own words', () => {
+    render(
+      <GoalMilestoneTile
+        {...base}
+        target={{ metric: 'bodyweight', value: 189, unit: 'lb' }}
+        latest={{ value: 192.4 }}
+        start={{ value: 195 }}
+        direction="down"
+        goalWeek={12}
+        weekCount={12}
+      />
+    )
 
-    expect(screen.getByTestId('goal-milestone-state')).toHaveTextContent('Missed')
+    expect(hero()).toHaveTextContent('3.4 lb')
+    expect(line()).toHaveTextContent('to 189 lb bodyweight by week 12')
   })
 
-  it('summarises target, timing, state and distance for assistive tech', () => {
-    render(<GoalMilestoneTile {...base} currentWeek={8} />)
+  describe('the week strip', () => {
+    it('draws one cell per week of the block', () => {
+      render(<GoalMilestoneTile {...base} />)
+
+      expect(screen.getAllByTestId(/^goal-milestone-week-\d+$/)).toHaveLength(6)
+    })
+
+    it('summarises now and each past week for assistive tech', () => {
+      render(<GoalMilestoneTile {...base} />)
+
+      expect(screen.getByTestId('goal-milestone-week-strip')).toHaveAttribute(
+        'aria-label',
+        'Week 4 of 6, week 1 on track, week 2 ahead, week 3 missed'
+      )
+    })
+
+    it('puts a dot under each past week with a verdict in the dots treatment', () => {
+      render(
+        <GoalMilestoneTile
+          {...base}
+          currentWeek={5}
+          weekOutcomes={['on_track', 'ahead', 'missed', 'none']}
+          outcomeStyle="dots"
+        />
+      )
+
+      expect(screen.getByTestId('goal-milestone-dot-on_track')).toBeInTheDocument()
+      expect(screen.getByTestId('goal-milestone-dot-ahead')).toBeInTheDocument()
+      expect(screen.getByTestId('goal-milestone-dot-missed')).toBeInTheDocument()
+      expect(screen.queryByTestId('goal-milestone-dot-none')).toBeNull()
+    })
+
+    it('draws no dots in the cells treatment', () => {
+      render(<GoalMilestoneTile {...base} />)
+
+      expect(screen.queryByTestId(/^goal-milestone-dot-/)).toBeNull()
+    })
+  })
+
+  describe('the compact layout', () => {
+    it('keeps the hero, the line and the bar, and drops the rest', () => {
+      render(<GoalMilestoneTile {...base} layout="compact" />)
+
+      expect(hero()).toHaveTextContent('5 lb')
+      expect(screen.getByRole('progressbar')).toBeInTheDocument()
+      expect(screen.queryByTestId('goal-milestone-week-strip')).toBeNull()
+      expect(screen.queryByTestId('goal-milestone-best')).toBeNull()
+      expect(screen.queryByText('Meso target')).toBeNull()
+    })
+  })
+
+  it('summarises target, state and distance for assistive tech', () => {
+    render(<GoalMilestoneTile {...base} />)
 
     expect(screen.getByRole('article')).toHaveAttribute(
       'aria-label',
-      'Next milestone 8 reps at 105 lb, Week 8 · this week, Due this week, 5 lb to go'
+      'Meso target 8 x 105 lb by week 6, 5 lb to go'
     )
   })
 
-  describe('the progress variant', () => {
-    it('fills the share of the climb already made', () => {
-      render(<GoalMilestoneTile {...base} variant="progress" />)
-
-      expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '50')
-    })
-
-    it('states the distance left', () => {
-      render(<GoalMilestoneTile {...base} variant="progress" />)
-
-      expect(screen.getByTestId('goal-milestone-gap')).toHaveTextContent('5 lb to go')
-    })
-
-    it('fills completely and drops the distance once hit', () => {
-      render(<GoalMilestoneTile {...base} variant="progress" state="hit" />)
-
-      expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '100')
-      expect(screen.queryByTestId('goal-milestone-gap')).toBeNull()
-    })
-
-    it('draws no bar without a starting set', () => {
-      render(<GoalMilestoneTile {...base} variant="progress" start={undefined} />)
-
-      expect(screen.queryByRole('progressbar')).toBeNull()
-    })
-  })
-
-  describe('the gap variant', () => {
-    it('makes the distance the hero and keeps the target beside it', () => {
-      render(<GoalMilestoneTile {...base} variant="gap" current={{ reps: 6, load: 105 }} />)
-
-      expect(screen.getByTestId('goal-milestone-gap')).toHaveTextContent('2 reps')
-      expect(screen.getByText('to 8 x 105 lb')).toBeInTheDocument()
-    })
-
-    it('falls back to the target once nothing is left to close', () => {
-      render(<GoalMilestoneTile {...base} variant="gap" current={{ reps: 8, load: 105 }} />)
-
-      expect(screen.queryByTestId('goal-milestone-gap')).toBeNull()
-      expect(screen.getByTestId('goal-milestone-load')).toHaveTextContent('105')
-    })
-  })
-
-  describe('the timeline variant', () => {
-    it('draws one cell per week on the axis', () => {
-      render(<GoalMilestoneTile {...base} variant="timeline" />)
-
-      expect(screen.getByTestId('goal-milestone-week-goal')).toBeInTheDocument()
-      expect(screen.getAllByTestId(/^goal-milestone-week-\d+$/)).toHaveLength(9)
-    })
-
-    it('runs the axis to the current week when that is past the goal', () => {
-      render(
-        <GoalMilestoneTile {...base} variant="timeline" totalWeeks={undefined} currentWeek={11} />
-      )
-
-      expect(screen.getAllByTestId(/^goal-milestone-week-\d+$/)).toHaveLength(10)
-    })
-  })
-
-  it('renders the lowered plane alone, with its header, when unframed', () => {
-    render(<GoalMilestoneTile {...base} framed={false} current={{ reps: 8, load: 105 }} />)
-
-    expect(screen.getByTestId('goal-milestone-plane')).toContainElement(
-      screen.getByTestId('goal-milestone-state')
-    )
-  })
-
-  it.each(VARIANTS)('has no accessibility violations as the %s variant', async (variant) => {
-    const { container } = render(<GoalMilestoneTile {...base} variant={variant} />)
+  it.each([
+    ['full, cells', {}],
+    ['full, dots', { outcomeStyle: 'dots' as const }],
+    ['compact', { layout: 'compact' as const }],
+    ['missed', { currentWeek: 7 }],
+  ])('has no accessibility violations (%s)', async (_name, extra) => {
+    const { container } = render(<GoalMilestoneTile {...base} {...extra} />)
 
     expect(await axe(container)).toHaveNoViolations()
   })
 })
 
-describe('milestone tone', () => {
-  it('is success for a hit milestone whatever the pace', () => {
-    expect(milestoneTone('hit', 'behind')).toBe('success')
+describe('meso target tone', () => {
+  it('takes the pace colour while open, as the chart line does', () => {
+    expect(milestoneToneToken('upcoming', 'ahead')).toBe('brand-primary')
+    expect(milestoneToneToken('upcoming', 'behind')).toBe('status-warning')
   })
 
-  it('is warning for a missed milestone', () => {
-    expect(milestoneTone('missed', 'on_track')).toBe('warning')
+  it('is success once hit, whatever the pace', () => {
+    expect(milestoneToneToken('hit', 'stalled')).toBe('status-success')
   })
 
-  it('follows the goal pace while open', () => {
-    expect(milestoneTone('upcoming', 'behind')).toBe('warning')
-    expect(milestoneTone('due_this_week', 'on_track')).toBe('success')
-  })
-
-  it('is info while open with no pace', () => {
-    expect(milestoneTone('upcoming')).toBe('info')
-  })
-})
-
-describe('week strip labels', () => {
-  it('names the axis ends and the goal', () => {
-    expect(weekStripLabels(10, 5)).toEqual([1, 5, 10])
-  })
-
-  it('drops an axis end that would crowd the goal label', () => {
-    expect(weekStripLabels(10, 9)).toEqual([1, 9])
-  })
-
-  it('names a goal on the last week once', () => {
-    expect(weekStripLabels(10, 10)).toEqual([1, 10])
+  it('is muted, never an error colour, once missed', () => {
+    expect(milestoneToneToken('missed', 'stalled')).toBe('text-tertiary')
   })
 })
