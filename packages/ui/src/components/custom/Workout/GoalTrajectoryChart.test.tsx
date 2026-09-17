@@ -232,6 +232,21 @@ describe('GoalTrajectoryChart', () => {
       return stroke
     }
 
+    it('keeps the rule entries in the wall legend and drops them on the phone', () => {
+      const { unmount } = render(
+        <GoalTrajectoryChart {...baseProps} width={1200} status="on_track" />
+      )
+      const wallLegend = screen.getByTestId('goal-trajectory-chart-legend')
+      expect(wallLegend).toHaveTextContent('Committed')
+      expect(wallLegend).toHaveTextContent('Stretch')
+      unmount()
+      render(<GoalTrajectoryChart {...baseProps} width={360} status="on_track" />)
+      const phoneLegend = screen.getByTestId('goal-trajectory-chart-legend')
+      expect(phoneLegend).not.toHaveTextContent('Committed')
+      expect(phoneLegend).not.toHaveTextContent('Stretch')
+      expect(screen.getByText('Committed 185')).toBeInTheDocument()
+    })
+
     it('strokes the line 2px on the phone and 3px on the wall', () => {
       expect(strokeAt(360)).toBe(2)
       expect(strokeAt(1200)).toBe(3)
@@ -300,19 +315,19 @@ describe('GoalTrajectoryChart', () => {
 
     it('fades the left inner shadow from 16% over the given spread', () => {
       const { container } = render(
-        <GoalTrajectoryChart {...baseProps} leftShadowSpread={0.04} status="on_track" />
+        <GoalTrajectoryChart {...baseProps} leftShadowSpread={0.03} status="on_track" />
       )
       const left = [...container.querySelectorAll('linearGradient')][1]
       const stops = left.querySelectorAll('stop')
       expect(left.getAttribute('x2')).toBe('1')
       expect(effective(stops[0], 'stop-opacity')).toBeCloseTo(0.16)
-      expect(stops[1].getAttribute('offset')).toBe('0.04')
+      expect(stops[1].getAttribute('offset')).toBe('0.03')
     })
 
-    it('defaults the left inner shadow spread to 3%', () => {
+    it('defaults the left inner shadow spread to 4%', () => {
       const { container } = render(<GoalTrajectoryChart {...baseProps} status="on_track" />)
       const left = [...container.querySelectorAll('linearGradient')][1]
-      expect(left.querySelectorAll('stop')[1].getAttribute('offset')).toBe('0.03')
+      expect(left.querySelectorAll('stop')[1].getAttribute('offset')).toBe('0.04')
     })
   })
 

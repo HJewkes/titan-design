@@ -51,12 +51,30 @@ interface Density {
   tickCount: number
   showYLabels: boolean
   maxWeekLabels: number
+  /** The phone drops the rule entries: each rule already carries its own label. */
+  showRuleLegend: boolean
 }
 
 // Phone drops to three gridlines; its y labels stay because the plot has the gutter.
 const DENSITY: Record<'phone' | 'wall', Density> = {
-  phone: { stroke: 2, star: 6, pillFont: 10, tickCount: 3, showYLabels: true, maxWeekLabels: 6 },
-  wall: { stroke: 3, star: 7.5, pillFont: 16, tickCount: 5, showYLabels: true, maxWeekLabels: 12 },
+  phone: {
+    stroke: 2,
+    star: 6,
+    pillFont: 10,
+    tickCount: 3,
+    showYLabels: true,
+    maxWeekLabels: 6,
+    showRuleLegend: false,
+  },
+  wall: {
+    stroke: 3,
+    star: 7.5,
+    pillFont: 16,
+    tickCount: 5,
+    showYLabels: true,
+    maxWeekLabels: 12,
+    showRuleLegend: true,
+  },
 }
 
 export interface GoalTrajectoryChartProps extends ViewProps {
@@ -231,6 +249,7 @@ export function GoalTrajectoryChart({
         axisColor={axisColor}
         font={density.pillFont}
         hasDeload={geometry.deloadRects.length > 0}
+        showRules={density.showRuleLegend}
       />
     </View>
   )
@@ -243,6 +262,7 @@ interface ChartLegendProps {
   axisColor: string
   font: number
   hasDeload: boolean
+  showRules: boolean
 }
 
 function LegendLabel({ color, font, children }: { color: string; font: number; children: string }) {
@@ -296,19 +316,13 @@ function RuleSwatch({ color, dashed }: { color: string; dashed?: boolean }) {
   )
 }
 
-function ChartLegend({ status, direction, palette, axisColor, font, hasDeload }: ChartLegendProps) {
+function RuleLegend({
+  palette,
+  axisColor,
+  font,
+}: Pick<ChartLegendProps, 'palette' | 'axisColor' | 'font'>) {
   return (
-    <View
-      className="flex-row items-center flex-wrap mt-stack-md gap-3"
-      testID="goal-trajectory-chart-legend"
-    >
-      <StatusPill status={status} palette={palette} font={font} />
-      <View className="flex-row items-center gap-inline-sm">
-        <View style={{ width: 14, height: 8, borderRadius: 2, backgroundColor: palette.band }} />
-        <LegendLabel color={axisColor} font={font}>
-          {direction === 'down' ? 'Expected (loss)' : 'Expected'}
-        </LegendLabel>
-      </View>
+    <>
       <View className="flex-row items-center gap-inline-sm">
         <RuleSwatch color={palette.rule} />
         <LegendLabel color={axisColor} font={font}>
@@ -321,6 +335,32 @@ function ChartLegend({ status, direction, palette, axisColor, font, hasDeload }:
           Stretch
         </LegendLabel>
       </View>
+    </>
+  )
+}
+
+function ChartLegend({
+  status,
+  direction,
+  palette,
+  axisColor,
+  font,
+  hasDeload,
+  showRules,
+}: ChartLegendProps) {
+  return (
+    <View
+      className="flex-row items-center flex-wrap mt-stack-md gap-3"
+      testID="goal-trajectory-chart-legend"
+    >
+      <StatusPill status={status} palette={palette} font={font} />
+      <View className="flex-row items-center gap-inline-sm">
+        <View style={{ width: 14, height: 8, borderRadius: 2, backgroundColor: palette.band }} />
+        <LegendLabel color={axisColor} font={font}>
+          {direction === 'down' ? 'Expected (loss)' : 'Expected'}
+        </LegendLabel>
+      </View>
+      {showRules && <RuleLegend palette={palette} axisColor={axisColor} font={font} />}
       <View className="flex-row items-center gap-inline-sm">
         <svg width={12} height={12} aria-hidden="true">
           <polygon points={starPoints(6, 6.5, 6)} fill={palette.star} />

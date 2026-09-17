@@ -6,6 +6,9 @@ import {
   PLANE_OVERHANG,
   resolveActualWeek,
   WEEK_INSET,
+  LABEL_CLEARANCE,
+  MARKER_CLEARANCE,
+  ruleLabelTop,
   type GoalExpectedPoint,
   type GoalTrajectoryWeek,
 } from './GoalTrajectoryChartGeometry'
@@ -40,6 +43,8 @@ const lossExpected: GoalExpectedPoint[] = [
 ]
 
 const base = { actuals: [], weeks, width: 600, height: 300 }
+
+const PATH_PRECISION = 0.001
 
 /** The end point of every command in an SVG path d3 emitted (M, L and C). */
 function pathVertices(d: string): Array<{ x: number; y: number }> {
@@ -321,8 +326,9 @@ describe('deriveTrajectoryGeometry', () => {
       const vertices = pathVertices(g.linePath)
       expect(vertices).toHaveLength(g.actuals.length)
       g.actuals.forEach((dot, i) => {
-        expect(vertices[i].x).toBeCloseTo(dot.x, 6)
-        expect(vertices[i].y).toBeCloseTo(dot.y, 6)
+        // d3-shape writes path coordinates to 3 decimals.
+        expect(Math.abs(vertices[i].x - dot.x)).toBeLessThanOrEqual(PATH_PRECISION)
+        expect(Math.abs(vertices[i].y - dot.y)).toBeLessThanOrEqual(PATH_PRECISION)
       })
     })
 
@@ -340,8 +346,8 @@ describe('deriveTrajectoryGeometry', () => {
       controls.forEach((numbers, i) => {
         const [a, b] = [g.actuals[i].y, g.actuals[i + 1].y]
         ;[numbers[1], numbers[3]].forEach((y) => {
-          expect(y).toBeGreaterThanOrEqual(Math.min(a, b) - 1e-6)
-          expect(y).toBeLessThanOrEqual(Math.max(a, b) + 1e-6)
+          expect(y).toBeGreaterThanOrEqual(Math.min(a, b) - PATH_PRECISION)
+          expect(y).toBeLessThanOrEqual(Math.max(a, b) + PATH_PRECISION)
         })
       })
     })
@@ -386,18 +392,6 @@ describe('deriveTrajectoryGeometry', () => {
         stretch: 186,
       })
       expect(g.domain.min).toBe(185)
-    })
-
-    it('keeps the highest value the headroom below the plot top', () => {
-      const g = deriveTrajectoryGeometry({
-        ...base,
-        expected: gainExpected,
-        committed: 185,
-        stretch: 195,
-        headroom: 11,
-      })
-      expect(g.stretchY - g.plot.top).toBeCloseTo(11)
-      expect(g.domain.max).toBeGreaterThan(195)
     })
 
     it('puts gridlines on round values inside the plot', () => {
@@ -450,5 +444,86 @@ describe('deriveTrajectoryGeometry', () => {
     })
     expect(g.toX(1) - g.plane.x).toBeGreaterThanOrEqual(WEEK_INSET)
     expect(g.plane.x + g.plane.width - g.toX(6)).toBeGreaterThanOrEqual(WEEK_INSET)
+  })
+
+  describe('label clearance', () => {
+    /** The LossGoalBodyweight story: stretch is the LOWEST rule. */
+    const bodyweight = {
+      committed: 193,
+      stretch: 188,
+      expected: [
+        { weekIndex: 1, low: 198, high: 198 },
+        { weekIndex: 2, low: 197, high: 195.5 },
+        { weekIndex: 3, low: 196, high: 193 },
+        { weekIndex: 4, low: 195, high: 190.5 },
+        { weekIndex: 5, low: 194, high: 189 },
+        { weekIndex: 6, low: 193, high: 188 },
+      ],
+      actuals: [
+        { weekIndex: 1, value: 198 },
+        { weekIndex: 2, value: 196.5 },
+        { weekIndex: 3, value: 195 },
+        { weekIndex: 4, value: 194.5 },
+      ],
+    }
+    const bench = { expected: gainExpected, committed: 185, stretch: 195, actuals: [] }
+    /** Committed above everything else, so its label is the one at risk. */
+    const committedOnTop = { expected: gainExpected, committed: 200, stretch: 195, actuals: [] }
+    const presets = [
+      ['wall', { width: 1200, height: 340 }],
+      ['phone', { width: 360, height: 220 }],
+    ] as const
+    const cases = [
+      ['a gain goal', bench],
+      ['a loss goal', bodyweight],
+      ['committed as the highest rule', committedOnTop],
+    ] as const
+
+    describe.each(presets)('at %s size', (_, size) => {
+      it.each(cases)('keeps both rule labels inside the plane for %s', (__, goal) => {
+        const g = deriveTrajectoryGeometry({ ...base, ...goal, ...size })
+        ;[g.committedY, g.stretchY].forEach((ruleY) => {
+          expect(ruleLabelTop(ruleY)).toBeGreaterThanOrEqual(g.plane.y + LABEL_CLEARANCE - 1e-9)
+        })
+      })
+
+      it.each(cases)('keeps every rule and marker clear of the bottom edge for %s', (__, goal) => {
+        const g = deriveTrajectoryGeometry({ ...base, ...goal, ...size })
+        const ys = [g.committedY, g.stretchY, ...g.actuals.map((a) => a.y)]
+        ys.forEach((y) => expect(y).toBeLessThanOrEqual(g.plot.bottom - MARKER_CLEARANCE + 1e-9))
+      })
+
+      it.each(cases)('keeps every marker clear of the top edge for %s', (__, goal) => {
+        const g = deriveTrajectoryGeometry({ ...base, ...goal, ...size })
+        g.actuals.forEach((a) => {
+          expect(a.y).toBeGreaterThanOrEqual(g.plot.top + MARKER_CLEARANCE - 1e-9)
+        })
+      })
+
+      it.each(cases)(
+        'keeps the floor a multiple of 5 below the lowest value for %s',
+        (__, goal) => {
+          const g = deriveTrajectoryGeometry({ ...base, ...goal, ...size })
+          const lowest = Math.min(goal.committed, goal.stretch, ...goal.expected.map((p) => p.high))
+          expect(g.domain.min % 5).toBe(0)
+          expect(g.domain.min).toBeLessThan(lowest)
+        }
+      )
+    })
+
+    it('pads more value range on a short plot than on a tall one', () => {
+      const tall = deriveTrajectoryGeometry({ ...base, ...bench, width: 1200, height: 340 })
+      const short = deriveTrajectoryGeometry({ ...base, ...bench, width: 360, height: 220 })
+      expect(short.domain.max).toBeGreaterThan(tall.domain.max)
+    })
+
+    it('pads more for a larger label font', () => {
+      const small = deriveTrajectoryGeometry({ ...base, ...bench, labelFont: 11 })
+      const large = deriveTrajectoryGeometry({ ...base, ...bench, labelFont: 16 })
+      expect(large.domain.max).toBeGreaterThan(small.domain.max)
+      expect(ruleLabelTop(large.stretchY, 16)).toBeGreaterThanOrEqual(
+        large.plane.y + LABEL_CLEARANCE - 1e-9
+      )
+    })
   })
 })

@@ -15,6 +15,7 @@ import type {
   GoalTrajectoryStatus,
   GoalTrajectoryWeek,
 } from './GoalTrajectoryChartGeometry'
+import { CHART_FONT, RULE_LABEL_LIFT } from './GoalTrajectoryChartGeometry'
 import {
   ENTRANCE,
   drawStyle,
@@ -49,11 +50,9 @@ export const DEPTH = {
   leftInner: { opacity: 0.16 },
 } as const
 
-export const DEFAULT_LEFT_SHADOW_SPREAD = 0.03
-export const CHART_FONT = 11
+export const DEFAULT_LEFT_SHADOW_SPREAD = 0.04
 const FONT_FAMILY = 'Inter, sans-serif'
 const LABEL_GAP = 8
-const RULE_LABEL_LIFT = 5
 const PLANE_RADIUS = 6
 export const DOT_RADIUS = 4
 const DOT_RING = 2

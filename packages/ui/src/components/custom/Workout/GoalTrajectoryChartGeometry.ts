@@ -64,8 +64,8 @@ export interface GoalTrajectoryGeometryInput {
   height: number
   /** Approximate gridline count; d3 picks round values near it. Default 5. */
   tickCount?: number
-  /** Px kept clear between the highest value and the plot top, for the rule labels. */
-  headroom?: number
+  /** Rule label font size in px; the y-domain pads so those labels clear the plane. */
+  labelFont?: number
 }
 
 export interface GeometryPoint {
@@ -149,7 +149,17 @@ export const VALUE_STEP = 5
 /** Keeps the first and last week's dot and ring inside the rounded plane. */
 export const WEEK_INSET = 8
 export const DEFAULT_TICK_COUNT = 5
-export const DEFAULT_HEADROOM = 11
+export const CHART_FONT = 11
+/** Rule labels sit this far above their rule (baseline to rule). */
+export const RULE_LABEL_LIFT = 5
+/** Inter's ascender height as a fraction of the font size ("Stretch" has ascenders). */
+export const LABEL_ASCENT = 0.76
+/** Minimum gap between a rule label's top and the plane's top edge. */
+export const LABEL_CLEARANCE = 6
+/** Room a marker (r=4 dot plus 2px ring, or the star) needs inside the plane. */
+export const MARKER_CLEARANCE = 8
+/** Upper bound on how many value steps the floor may drop to clear the bottom edge. */
+const MAX_FLOOR_STEPS = 10
 
 function parseDay(date: string): number {
   const parts = date.split('-')
@@ -236,22 +246,65 @@ export function paddedFloor(min: number, step = VALUE_STEP): number {
   return step * (Math.ceil(min / step) - 1)
 }
 
+/** Top of a rule label's glyphs, in px, for a rule drawn at `ruleY`. */
+export function ruleLabelTop(ruleY: number, font = CHART_FONT): number {
+  return ruleY - RULE_LABEL_LIFT - font * LABEL_ASCENT
+}
+
+/** A value that must sit at least `need` px below the plot top. */
+interface Clearance {
+  value: number
+  need: number
+}
+
+interface ScaleInput {
+  values: number[]
+  rules: number[]
+  plot: PlotRect
+  font: number
+}
+
+function topClearances({ values, rules, plot, font }: ScaleInput): Clearance[] {
+  // The inverse of ruleLabelTop: the highest a rule may sit and keep its label clear.
+  const lowestRuleY = planeRect(plot).y + LABEL_CLEARANCE + RULE_LABEL_LIFT + font * LABEL_ASCENT
+  const labelNeed = lowestRuleY - plot.top
+  return [
+    ...rules.map((value) => ({ value, need: labelNeed })),
+    ...values.map((value) => ({ value, need: MARKER_CLEARANCE })),
+  ]
+}
+
 /**
- * Value scale: the padded floor maps to the plot bottom and the highest value to
- * `headroom` px below the plot top, so the stretch label never touches the frame.
+ * The smallest domain top that keeps every value `need` px below the plot top:
+ * y(v) >= top + need  <=>  ceiling >= floor + (v - floor) * H / (H - need).
  */
-function valueScale(values: number[], plot: PlotRect, headroom: number) {
-  const min = values.length > 0 ? Math.min(...values) : 0
-  const floor = paddedFloor(min)
-  const max = values.length > 0 ? Math.max(...values) : floor + VALUE_STEP
-  const high = max > floor ? max : floor + VALUE_STEP
-  const room = Math.min(headroom, (plot.bottom - plot.top) / 4)
-  const fitted = scaleLinear()
-    .domain([floor, high])
-    .range([plot.bottom, plot.top + room])
-  return scaleLinear()
-    .domain([floor, fitted.invert(plot.top)])
-    .range([plot.bottom, plot.top])
+function ceilingFor(floor: number, clearances: Clearance[], height: number): number {
+  return clearances.reduce((ceiling, { value, need }) => {
+    const usable = Math.max(height * 0.4, height - need)
+    return Math.max(ceiling, floor + ((value - floor) * height) / usable)
+  }, floor + VALUE_STEP)
+}
+
+/**
+ * Value scale. The floor starts strictly below the lowest value and steps down
+ * until the lowest mark clears the bottom edge; the top pads until every rule
+ * label and marker clears the plane's top edge. Both derive from the label font
+ * and the plot height, so a 220px phone pads more value range than a 340px wall.
+ */
+function valueScale(input: ScaleInput) {
+  const all = [...input.values, ...input.rules]
+  const min = all.length > 0 ? Math.min(...all) : 0
+  const height = input.plot.bottom - input.plot.top
+  const clearances = topClearances(input)
+  let floor = paddedFloor(min)
+  let ceiling = ceilingFor(floor, clearances, height)
+  for (let i = 0; i < MAX_FLOOR_STEPS; i++) {
+    const gap = ((min - floor) / (ceiling - floor)) * height
+    if (gap >= MARKER_CLEARANCE) break
+    floor -= VALUE_STEP
+    ceiling = ceilingFor(floor, clearances, height)
+  }
+  return scaleLinear().domain([floor, ceiling]).range([input.plot.bottom, input.plot.top])
 }
 
 function placeActuals(input: GoalTrajectoryGeometryInput) {
@@ -374,13 +427,12 @@ export function deriveTrajectoryGeometry(
   const values = [
     ...expected.flatMap((p) => [p.low, p.high]),
     ...placed.map((p) => p.actual.value),
-    committed,
-    stretch,
   ].filter((v) => Number.isFinite(v))
+  const rules = [committed, stretch].filter((v) => Number.isFinite(v))
   const xScale = scaleLinear()
     .domain([wks.min, wks.max])
     .range([plot.left + WEEK_INSET, plot.right - WEEK_INSET])
-  const yScale = valueScale(values, plot, input.headroom ?? DEFAULT_HEADROOM)
+  const yScale = valueScale({ values, rules, plot, font: input.labelFont ?? CHART_FONT })
   const toX = (weekIndex: number): number => xScale(weekIndex)
   const toY = (value: number): number => yScale(value)
   const [domainMin, domainMax] = yScale.domain()
