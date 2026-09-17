@@ -4,6 +4,8 @@ import {
   deriveMilestoneState,
   isMilestoneMet,
   milestoneGap,
+  milestoneReach,
+  valueReach,
   weekStripCells,
   type GoalLoadTarget,
   type GoalValueTarget,
@@ -149,5 +151,45 @@ describe('meso target copy', () => {
 
   it('reads nothing once the gap is closed', () => {
     expect(formatMilestoneGapAmount({ kind: 'none' }, 'lb')).toBeNull()
+  })
+})
+
+describe('reach', () => {
+  describe('valueReach', () => {
+    it('is short while the target is still above the reading', () => {
+      expect(valueReach(185, 180)).toBe('short')
+    })
+
+    it('is met exactly on the number, and beyond past it', () => {
+      expect(valueReach(185, 185)).toBe('met')
+      expect(valueReach(185, 186)).toBe('beyond')
+    })
+
+    it('reads a loss goal the other way', () => {
+      expect(valueReach(189, 191, 'down')).toBe('short')
+      expect(valueReach(189, 189, 'down')).toBe('met')
+      expect(valueReach(189, 187, 'down')).toBe('beyond')
+    })
+  })
+
+  describe('milestoneReach', () => {
+    it('judges a load target by the unit the metric leads with', () => {
+      expect(milestoneReach(topSet, { reps: 8, load: 100 })).toBe('short')
+      expect(milestoneReach(topSet, { reps: 8, load: 105 })).toBe('met')
+      expect(milestoneReach(topSet, { reps: 8, load: 107.5 })).toBe('beyond')
+    })
+
+    it('counts extra reps at the target load as beyond', () => {
+      expect(milestoneReach(topSet, { reps: 10, load: 105 })).toBe('beyond')
+    })
+
+    it('agrees with valueReach on a value target', () => {
+      expect(milestoneReach(cut, { value: 187 }, 'down')).toBe(valueReach(cut.value, 187, 'down'))
+      expect(milestoneReach(cut, { value: 191 }, 'down')).toBe('short')
+    })
+
+    it('is null when the reading does not match the target shape', () => {
+      expect(milestoneReach(topSet, { value: 105 })).toBeNull()
+    })
   })
 })

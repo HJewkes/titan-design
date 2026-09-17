@@ -7,6 +7,42 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- `PrimaryGoalCard` (`status:candidate`) — the lead priority at the top of the
+  `#/goals` wall: the lift, its priority mark, its verdict and a PR badge in one
+  header row, then `GoalTrajectoryChart` and `GoalMilestoneTile`. It deletes the
+  old header block rather than restyling it (VW-385 unit 1, human call
+  2026-09-17): the week reads off the chart axis and the tile's summary line,
+  committed and stretch off the chart's rules, next week off the new hollow
+  marker, the status basis and its RP citation off the status pill's tip, and the
+  priority word off `GoalPriorityIcon`. Two layouts under one `layout` prop —
+  `fill` measures the card and hands the chart its whole width (capped 340 high)
+  with the tile beneath, `fixed` pins the chart to 1200 and gives the tile the
+  right column.
+- `GoalPriorityIcon` (`status:candidate`) — specialize / maintain / deprioritize
+  as a mark beside the status pill, with the level's meaning on hover, focus or
+  press. Priority is not pace, so it never borrows a `status-*` tone: the accent
+  goes to the level worth the attention and the others step back through the text
+  ramp. Three new shared icons: `TargetIcon`, `EqualIcon`, `ChevronsDownIcon`.
+- `GoalTrajectoryChart` takes `nextTarget` — a hollow dot at the week and value
+  the plan asks for next, joined to the latest reading by a dashed run, carrying
+  its label as a tip rather than as type on the plane. The y-domain and the week
+  axis both take the marker into account, so a target above every reading still
+  lands inside the plane.
+- `TipTrigger` (`ui/tooltip`) — one tip opened by hover, focus and press off a
+  single state. `GoalMilestoneWeekStrip` now composes it instead of its own copy.
+- `valueReach` / `milestoneReach` (`goalMilestone.ts`) — one definition of where
+  a reading landed against its target.
+
+### Changed
+
+- The goal verdict outranks the pace once a reading reaches the committed target.
+  Exactly on the target is success green with the hit label; past it is the
+  `ahead` blue labelled `Beyond goal`. The chart's line and pill, the milestone
+  tile's hero and the card's header pill all derive it from the shared helper, so
+  the three can no longer disagree.
+
 ## 0.17.1
 
 ### Fixed

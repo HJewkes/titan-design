@@ -24,6 +24,7 @@ import {
   deriveMilestoneState,
   isLoadTarget,
   milestoneGap,
+  milestoneReach,
   milestoneSurplus,
   type GoalMilestoneReading,
   type GoalMilestoneState,
@@ -145,10 +146,10 @@ function heroFor(
       beyond: false,
     }
   }
-  const surplus = props.latest
-    ? milestoneSurplus(props.target, props.latest, props.direction)
-    : null
-  const over = surplus && surplus.kind !== 'none' ? surplusText(props, surplus) : null
+  const { target, latest, direction } = props
+  const beyond = latest ? milestoneReach(target, latest, direction) === 'beyond' : false
+  const surplus = beyond && latest ? milestoneSurplus(target, latest, direction) : null
+  const over = surplus ? surplusText(props, surplus) : null
   return over
     ? { hero: `+${over}`, heroSuffix: 'beyond goal', beyond: true }
     : { hero: 'Reached goal', heroSuffix: null, beyond: false }

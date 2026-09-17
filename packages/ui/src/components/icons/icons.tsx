@@ -153,6 +153,42 @@ export function InfoIcon(props: IconProps) {
 }
 
 // ---------------------------------------------------------------------------
+// VW-385 · Goal priority marks — `GoalPriorityIcon`'s three glyphs. Each reads
+// at wall distance as a shape, not as a detail: rings, two rules, two chevrons.
+// ---------------------------------------------------------------------------
+
+/** Concentric-rings glyph (mirrors lucide-react `Target`). Goal priority → specialize. */
+export function TargetIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <circle cx="12" cy="12" r="10" />
+      <circle cx="12" cy="12" r="6" />
+      <circle cx="12" cy="12" r="2" />
+    </SvgIcon>
+  )
+}
+
+/** Two-rules glyph (mirrors lucide-react `Equal`). Goal priority → maintain. */
+export function EqualIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="M5 9h14" />
+      <path d="M5 15h14" />
+    </SvgIcon>
+  )
+}
+
+/** Double-chevron-down glyph (mirrors lucide-react `ChevronsDown`). Goal priority → deprioritize. */
+export function ChevronsDownIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="m7 6 5 5 5-5" />
+      <path d="m7 13 5 5 5-5" />
+    </SvgIcon>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // AW-132 · App brand marks — the mark half of a `BrandLockup` for each app that
 // is likely to mount the shell. Sized 14 by default, like `VoltrasMark`.
 // ---------------------------------------------------------------------------

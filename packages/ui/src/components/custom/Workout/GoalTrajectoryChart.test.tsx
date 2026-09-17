@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest'
 import { siblingSource, resolveAll } from '../../../test/spacing-resolver'
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, within, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { GoalTrajectoryChart } from './GoalTrajectoryChart'
+import { GoalTrajectoryChart, trajectoryReach } from './GoalTrajectoryChart'
 import type {
   GoalActualPoint,
   GoalExpectedPoint,
@@ -165,8 +165,18 @@ describe('GoalTrajectoryChart', () => {
   })
 
   describe('status tone', () => {
+    // Short of the committed target on purpose: a reading that reaches it takes
+    // the goal's own tone rather than the pace's.
+    const shortOfGoal: GoalActualPoint[] = [
+      { weekIndex: 1, value: 175 },
+      { weekIndex: 2, value: 178 },
+      { weekIndex: 3, value: 181, isPR: true },
+      { weekIndex: 4, value: 183 },
+    ]
     const toneOf = (status: GoalTrajectoryStatus): string | null => {
-      const { unmount } = render(<GoalTrajectoryChart {...baseProps} status={status} />)
+      const { unmount } = render(
+        <GoalTrajectoryChart {...baseProps} actuals={shortOfGoal} status={status} />
+      )
       const tone = screen.getByTestId('goal-trajectory-chart-actual-line').getAttribute('stroke')
       unmount()
       return tone
@@ -194,7 +204,9 @@ describe('GoalTrajectoryChart', () => {
         ['stalled', 'Stalled'],
       ]
       labels.forEach(([status, label]) => {
-        const { unmount } = render(<GoalTrajectoryChart {...baseProps} status={status} />)
+        const { unmount } = render(
+          <GoalTrajectoryChart {...baseProps} actuals={shortOfGoal} status={status} />
+        )
         expect(screen.getByText(label)).toBeInTheDocument()
         unmount()
       })
@@ -344,7 +356,17 @@ describe('GoalTrajectoryChart', () => {
 
   describe('accessibility', () => {
     it('summarizes the status, targets and PR count in the image label', () => {
-      render(<GoalTrajectoryChart {...baseProps} status="behind" unit="lbs" />)
+      render(
+        <GoalTrajectoryChart
+          {...baseProps}
+          actuals={[
+            { weekIndex: 1, value: 175 },
+            { weekIndex: 3, value: 181, isPR: true },
+          ]}
+          status="behind"
+          unit="lbs"
+        />
+      )
       const canvas = screen.getByTestId('goal-trajectory-chart-canvas')
       const label = canvas.getAttribute('aria-label') ?? ''
       expect(label).toContain('Bench top load')
@@ -391,5 +413,74 @@ describe('GoalTrajectoryChart chrome resolves to the spacing tokens', () => {
   it('puts the status pill on Pill’s sm rung', () => {
     expect(source).toContain('px-squish-x-sm py-squish-y-sm')
     expect(resolveAll(['px-squish-x-sm', 'py-squish-y-sm'])).toEqual(['8px', '2px'])
+  })
+})
+
+describe('GoalTrajectoryChart next target', () => {
+  const nextTarget = { weekIndex: 5, value: 183, label: 'next week: 183 x 8' }
+
+  it('draws a hollow dot and a dashed lead in the status tone', () => {
+    render(<GoalTrajectoryChart {...baseProps} status="on_track" nextTarget={nextTarget} />)
+    const dot = screen.getByTestId('goal-trajectory-chart-next-target-dot')
+    expect(dot.getAttribute('fill')).toBe('none')
+    expect(dot.getAttribute('stroke')).toBe(dark['status-success'])
+    const lead = screen.getByTestId('goal-trajectory-chart-next-target-lead')
+    expect(lead.getAttribute('stroke-dasharray')).toBe('6 5')
+  })
+
+  it('carries no label on the plane', () => {
+    render(<GoalTrajectoryChart {...baseProps} status="on_track" nextTarget={nextTarget} />)
+    expect(screen.queryByText(nextTarget.label)).not.toBeInTheDocument()
+  })
+
+  it('opens the label as a tip on hover', () => {
+    render(<GoalTrajectoryChart {...baseProps} status="on_track" nextTarget={nextTarget} />)
+
+    fireEvent.mouseEnter(screen.getByRole('button', { name: 'Next target' }))
+
+    expect(screen.getByText(nextTarget.label)).toBeInTheDocument()
+  })
+
+  it('draws nothing when the caller passes no next target', () => {
+    render(<GoalTrajectoryChart {...baseProps} status="on_track" />)
+    expect(screen.queryByTestId('goal-trajectory-chart-next-target-dot')).not.toBeInTheDocument()
+  })
+})
+
+describe('GoalTrajectoryChart goal reach', () => {
+  const reaching = (value: number): GoalActualPoint[] => [
+    { weekIndex: 1, value: 175 },
+    { weekIndex: 2, value },
+  ]
+
+  function lineStroke(): string | null {
+    return screen.getByTestId('goal-trajectory-chart-actual-line').getAttribute('stroke')
+  }
+
+  it('turns the line and the pill blue once a reading beats the committed target', () => {
+    render(<GoalTrajectoryChart {...baseProps} actuals={reaching(190)} status="behind" />)
+    expect(lineStroke()).toBe(dark['status-info'])
+    expect(screen.getByText('Beyond goal')).toBeInTheDocument()
+  })
+
+  it('keeps success green for a reading exactly on the target', () => {
+    render(<GoalTrajectoryChart {...baseProps} actuals={reaching(185)} status="behind" />)
+    expect(lineStroke()).toBe(dark['status-success'])
+    expect(screen.getByText('Hit')).toBeInTheDocument()
+  })
+
+  it('reports pace while every reading is short of the target', () => {
+    render(<GoalTrajectoryChart {...baseProps} actuals={reaching(180)} status="behind" />)
+    expect(lineStroke()).toBe(dark['status-warning'])
+    expect(screen.getByText('Behind')).toBeInTheDocument()
+  })
+
+  it('judges a loss goal by its lowest reading', () => {
+    const cut = [
+      { weekIndex: 1, value: 190 },
+      { weekIndex: 2, value: 179 },
+    ]
+    expect(trajectoryReach(180, cut, 'down')).toBe('beyond')
+    expect(trajectoryReach(180, cut.slice(0, 1), 'down')).toBe('short')
   })
 })

@@ -73,6 +73,48 @@ split.
   `onLayout` does not fire under jsdom, so the width collapse is covered by the
   explicit `statusForm` override in tests and by the `Widths` story live.
 
+- **PrimaryGoalCard (VW-385 unit 1)** — the lead priority at the top of the
+  `#/goals` wall: the lift, its priority mark and its verdict in one row, then
+  the trajectory chart and the meso target tile.
+
+  _composes ↓_ `Card` (elevation 1) · `GoalPriorityIcon` · `Pill` + `TipTrigger` ·
+  `PrBadge` · `GoalTrajectoryChart` · `GoalMilestoneTile` · `Typography`.
+  _used-by ↑_ voltras-mcp `#/goals` `PrimaryGoalCard` (a later ticket ports it).
+
+  **It deletes a block rather than restyling it.** The old header printed the
+  week, the priority word, the status basis, committed, stretch and the next
+  milestone as text above the chart — every one of which the chart already shows
+  or can show (human call, 2026-09-17). The week is the chart's axis and the
+  tile's summary line; committed and stretch are its rules; next week is the
+  hollow marker; the basis and its RP citation are the status pill's tip; the
+  priority word is `GoalPriorityIcon`.
+
+  **Two layouts, one prop.** `fill` (A) measures the card and hands the chart its
+  whole width, capped at 340 high, with the tile beneath. `fixed` (B) pins the
+  chart to 1200 and gives the tile the right column. B is what the wall shipped;
+  A exists because 1200 left a dead zone on a 1920 wall.
+
+  `onLayout` does not fire under jsdom, so `chartWidth` pins the measured width
+  for tests. Without it the `fill` layout renders its tile and no chart, which is
+  also what one frame of a real mount looks like.
+
+- **GoalPriorityIcon (VW-385 unit 1)** — specialize / maintain / deprioritize as
+  a mark, sized and placed like `PrBadge`'s compact star.
+
+  _composes ↓_ `TargetIcon` / `EqualIcon` / `ChevronsDownIcon` (new, shared) ·
+  `TipTrigger` · `Typography`. _used-by ↑_ `PrimaryGoalCard`.
+
+  **Priority is not pace, so it never takes a `status-*` tone.** The accent goes
+  to the one level worth the attention; the other two step back through the text
+  ramp. A test asserts none of the three is a status colour.
+
+- **The goal verdict has one definition** — `valueReach` / `milestoneReach` in
+  `goalMilestone.ts`. A reading short of the committed target leaves the pace
+  tone alone; exactly on it is success green with the hit label; past it is the
+  `ahead` blue labelled `Beyond goal`. `GoalTrajectoryChart` (line, pill),
+  `GoalMilestoneTile` (hero) and `PrimaryGoalCard` (header pill) all read it off
+  that helper — the maths is not duplicated anywhere.
+
 - **GoalMuscleCard (VW-386)** — a muscle priority's goal state at card scale:
   the figure lit by its status, the lifts-on-track count beneath it as a label,
   and every contributing lift to its right.

@@ -53,6 +53,24 @@ export interface GoalTrajectoryWeek {
   startDate?: string
 }
 
+/**
+ * The week the plan asks for next, and what it asks for. Drawn as a hollow dot
+ * joined to the latest actual by a dashed segment: a claim, not a reading.
+ */
+export interface GoalNextTarget {
+  weekIndex: number
+  value: number
+  /** Tooltip text, e.g. "next week: 105 x 8". The chart never derives it. */
+  label: string
+}
+
+export interface NextTargetCoord extends GeometryPoint {
+  weekIndex: number
+  value: number
+  /** Dashed run from the latest actual to the marker; empty when there is none. */
+  leadPath: string
+}
+
 export interface GoalTrajectoryGeometryInput {
   expected: GoalExpectedPoint[]
   committed: number
@@ -68,6 +86,8 @@ export interface GoalTrajectoryGeometryInput {
   bandCurve?: BandCurve
   /** Rule label font size in px; the y-domain pads so those labels clear the plane. */
   labelFont?: number
+  /** The next planned waypoint, drawn ahead of the actual line. */
+  nextTarget?: GoalNextTarget
 }
 
 export type BandCurve = 'linear' | 'monotone'
@@ -141,6 +161,8 @@ export interface GoalTrajectoryGeometry {
   committedY: number
   stretchY: number
   actuals: ActualCoord[]
+  /** The next planned waypoint in px, or null when the caller passed none. */
+  nextTarget: NextTargetCoord | null
   prStars: ActualCoord[]
   deloadRects: DeloadRect[]
   boundaries: BoundaryRule[]
@@ -596,6 +618,29 @@ const actualLine = line<ActualCoord>()
   .curve(curveMonotoneX)
 
 /**
+ * The next waypoint in px, with the dashed run that joins it to the latest
+ * reading. The run is a straight segment on purpose: the actual line is a
+ * monotone curve through measured points, and this is a plan, not a measurement.
+ */
+function nextTargetCoord(
+  next: GoalNextTarget,
+  actuals: ActualCoord[],
+  toX: (weekIndex: number) => number,
+  toY: (value: number) => number
+): NextTargetCoord {
+  const x = toX(next.weekIndex)
+  const y = toY(next.value)
+  const last = actuals[actuals.length - 1]
+  return {
+    x,
+    y,
+    weekIndex: next.weekIndex,
+    value: next.value,
+    leadPath: last ? `M${String(last.x)},${String(last.y)}L${String(x)},${String(y)}` : '',
+  }
+}
+
+/**
  * Map a goal-progress payload onto chart pixels: the expected-band path, the
  * committed and stretch rules, y gridlines, the actual line with its PR stars,
  * deload shading and meso boundary rules.
@@ -614,14 +659,15 @@ export function deriveTrajectoryGeometry(
   const placed = placeActuals(input)
   const plot = plotRect(width, height)
 
-  const wks = weekDomain(
-    expected,
-    weeks,
-    placed.map((p) => p.week)
-  )
+  const next = input.nextTarget
+  const wks = weekDomain(expected, weeks, [
+    ...placed.map((p) => p.week),
+    ...(next ? [next.weekIndex] : []),
+  ])
   const values = [
     ...expected.flatMap((p) => [p.low, p.high]),
     ...placed.map((p) => p.actual.value),
+    ...(next ? [next.value] : []),
   ].filter((v) => Number.isFinite(v))
   const rules = [committed, stretch].filter((v) => Number.isFinite(v))
   const xScale = scaleLinear()
@@ -658,6 +704,7 @@ export function deriveTrajectoryGeometry(
     committedY: toY(committed),
     stretchY: toY(stretch),
     actuals,
+    nextTarget: next ? nextTargetCoord(next, actuals, toX, toY) : null,
     prStars: actuals.filter((a) => a.isPR),
     deloadRects: deloadRects(weeks, plot, weekSpan, toX),
     boundaries: mesoBoundaries.map((weekIndex) => ({ weekIndex, x: toX(weekIndex) })),

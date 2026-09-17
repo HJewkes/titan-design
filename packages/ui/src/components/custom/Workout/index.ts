@@ -145,10 +145,13 @@ export {
 } from './CapacityBandChart'
 export {
   GoalTrajectoryChart,
+  trajectoryReach,
+  WALL_BREAKPOINT as GOAL_TRAJECTORY_WALL_BREAKPOINT,
   type GoalTrajectoryChartProps,
   type GoalActualPoint,
   type GoalDirection,
   type GoalExpectedPoint,
+  type GoalNextTarget,
   type GoalTrajectoryStatus,
   type GoalTrajectoryWeek,
 } from './GoalTrajectoryChart'
@@ -158,6 +161,7 @@ export {
   resolveActualWeek,
   type GoalTrajectoryGeometry,
   type GoalTrajectoryGeometryInput,
+  type NextTargetCoord,
 } from './GoalTrajectoryChartGeometry'
 export {
   GoalLiftCard,
@@ -178,6 +182,21 @@ export {
   type GoalMilestoneTileLayout,
 } from './GoalMilestoneTile'
 export {
+  GoalPriorityIcon,
+  GOAL_PRIORITY_LABEL,
+  GOAL_PRIORITY_MEANING,
+  type GoalPriority,
+  type GoalPriorityIconProps,
+} from './GoalPriorityIcon'
+export {
+  PrimaryGoalCard,
+  goalStatusBadge,
+  FIXED_CHART_WIDTH as PRIMARY_GOAL_FIXED_CHART_WIDTH,
+  type PrimaryGoalCardProps,
+  type PrimaryGoalCardLayout,
+  type PrimaryGoalChart,
+} from './PrimaryGoalCard'
+export {
   GoalMilestoneWeekStrip,
   WEEK_OUTCOME_LABEL,
   weekSegments,
@@ -188,7 +207,10 @@ export {
   isLoadTarget,
   isMilestoneMet,
   milestoneGap,
+  milestoneReach,
+  valueReach,
   weekStripCells,
+  type GoalReach,
   type GoalLoadMetric,
   type GoalLoadTarget,
   type GoalMilestoneGap,

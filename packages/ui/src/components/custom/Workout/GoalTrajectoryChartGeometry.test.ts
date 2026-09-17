@@ -663,3 +663,69 @@ describe('deriveTrajectoryGeometry', () => {
     })
   })
 })
+
+describe('next-target marker', () => {
+  const base = {
+    expected: gainExpected,
+    committed: 185,
+    stretch: 195,
+    actuals: [
+      { weekIndex: 1, value: 175 },
+      { weekIndex: 2, value: 178 },
+    ],
+    weeks,
+    width: 600,
+    height: 300,
+  }
+
+  it('places the marker on the week and value it names', () => {
+    const g = deriveTrajectoryGeometry({
+      ...base,
+      nextTarget: { weekIndex: 3, value: 181, label: 'next week: 181 x 8' },
+    })
+    expect(g.nextTarget).not.toBeNull()
+    expect(g.nextTarget?.x).toBeCloseTo(g.toX(3), 6)
+    expect(g.nextTarget?.y).toBeCloseTo(g.toY(181), 6)
+  })
+
+  it('runs the lead from the latest reading to the marker', () => {
+    const g = deriveTrajectoryGeometry({
+      ...base,
+      nextTarget: { weekIndex: 3, value: 181, label: 'next week: 181 x 8' },
+    })
+    const last = g.actuals[g.actuals.length - 1]
+    expect(g.nextTarget?.leadPath).toBe(
+      `M${String(last.x)},${String(last.y)}L${String(g.nextTarget?.x)},${String(g.nextTarget?.y)}`
+    )
+  })
+
+  it('draws no lead when nothing has been measured yet', () => {
+    const g = deriveTrajectoryGeometry({
+      ...base,
+      actuals: [],
+      nextTarget: { weekIndex: 3, value: 181, label: 'next week: 181 x 8' },
+    })
+    expect(g.nextTarget?.leadPath).toBe('')
+  })
+
+  it('is null when the caller passes none', () => {
+    expect(deriveTrajectoryGeometry(base).nextTarget).toBeNull()
+  })
+
+  it('keeps a marker above every other value inside the plane', () => {
+    const g = deriveTrajectoryGeometry({
+      ...base,
+      nextTarget: { weekIndex: 3, value: 240, label: 'next week: 240 x 8' },
+    })
+    expect(g.nextTarget?.y).toBeGreaterThanOrEqual(g.plot.top + MARKER_CLEARANCE - 0.5)
+    expect(g.nextTarget?.y).toBeLessThanOrEqual(g.plot.bottom)
+  })
+
+  it('extends the week axis to a marker past the last planned week', () => {
+    const g = deriveTrajectoryGeometry({
+      ...base,
+      nextTarget: { weekIndex: 8, value: 190, label: 'next week: 190 x 8' },
+    })
+    expect(g.nextTarget?.x).toBeCloseTo(g.plot.right - WEEK_INSET, 6)
+  })
+})

@@ -1,10 +1,10 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { useState, type ReactNode } from 'react'
-import { Pressable, View } from 'react-native'
+import type { ReactNode } from 'react'
+import { View } from 'react-native'
 
 import { Pill, type PillTone } from '../../ui/pill'
 import { useSurfaceMode } from '../../ui/surface'
-import { Tooltip } from '../../ui/tooltip'
+import { TipTrigger } from '../../ui/tooltip'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { Typography } from '../Typography'
 import { SegmentedBar, type SegmentedBarSegment } from './SegmentedBar'
@@ -92,7 +92,6 @@ function TipBody({
   )
 }
 
-/** Hover on web, focus for the keyboard, press on native — one open state for all three. */
 function WeekCellTrigger({
   cell,
   children,
@@ -102,32 +101,17 @@ function WeekCellTrigger({
   children: ReactNode
   readingText: (entry: GoalWeekEntry) => string
 }) {
-  const [open, setOpen] = useState(false)
-  const label = `Week ${cell.week}, ${WEEK_OUTCOME_LABEL[cell.outcome ?? 'none']}`
   return (
-    <Tooltip
-      isOpen={open}
-      placement="top"
-      usePortal
+    <TipTrigger
+      label={`Week ${cell.week}, ${WEEK_OUTCOME_LABEL[cell.outcome ?? 'none']}`}
+      content={<TipBody cell={cell} readingText={readingText} />}
       // The tooltip's own wrapper sits between the row and the cell; without a
       // size it collapses to zero height and the cell disappears.
       style={{ flex: 1, height: '100%' }}
-      content={<TipBody cell={cell} readingText={readingText} />}
+      testID={`goal-milestone-week-${cell.week}`}
     >
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={label}
-        onHoverIn={() => setOpen(true)}
-        onHoverOut={() => setOpen(false)}
-        onFocus={() => setOpen(true)}
-        onBlur={() => setOpen(false)}
-        onPress={() => setOpen((wasOpen) => !wasOpen)}
-        style={{ flex: 1, height: '100%' }}
-        testID={`goal-milestone-week-${cell.week}`}
-      >
-        {children}
-      </Pressable>
-    </Tooltip>
+      {children}
+    </TipTrigger>
   )
 }
 

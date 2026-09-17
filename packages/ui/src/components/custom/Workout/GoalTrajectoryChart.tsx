@@ -5,9 +5,14 @@ import { cn } from '../../../utils/cn'
 import { alpha } from '../../../utils/colors'
 import { roundWeight } from '../../../utils/workout-format'
 import { useSurface, useOnSurfaceColor } from '../../ui/surface'
+import { TipTrigger } from '../../ui/tooltip'
+import { Typography } from '../Typography'
+import { valueReach, type GoalReach } from './goalMilestone'
 import {
   deriveTrajectoryGeometry,
   type GoalActualPoint,
+  type GoalNextTarget,
+  type NextTargetCoord,
   type GoalDirection,
   type GoalExpectedPoint,
   type GoalTrajectoryGeometry,
@@ -30,6 +35,7 @@ export type {
   GoalActualPoint,
   GoalDirection,
   GoalExpectedPoint,
+  GoalNextTarget,
   GoalTrajectoryStatus,
   GoalTrajectoryWeek,
 } from './GoalTrajectoryChartGeometry'
@@ -44,8 +50,33 @@ const STATUS_LABEL: Record<GoalTrajectoryStatus, string> = {
   stalled: 'Stalled',
 }
 
+/**
+ * Once a reading reaches the committed target the pill stops reporting pace and
+ * reports the result: reaching the goal is success green, going past it is the
+ * `ahead` blue. Both tones and both words are shared with `GoalMilestoneTile`,
+ * which derives the same verdict from the same helper.
+ */
+const REACH_STATUS = { met: 'on_track', beyond: 'ahead' } as const satisfies Record<
+  Exclude<GoalReach, 'short'>,
+  GoalTrajectoryStatus
+>
+
+const REACH_LABEL = { met: 'Hit', beyond: 'Beyond goal' } as const
+
+/** The best reading in the goal's direction, judged against the committed target. */
+export function trajectoryReach(
+  committed: number,
+  actuals: GoalActualPoint[],
+  direction: GoalDirection = 'up'
+): GoalReach {
+  const values = actuals.map((a) => a.value).filter((v) => Number.isFinite(v))
+  if (values.length === 0) return 'short'
+  const best = direction === 'down' ? Math.min(...values) : Math.max(...values)
+  return valueReach(committed, best, direction)
+}
+
 /** Above this width the chart renders at wall density (across-the-room scale). */
-const WALL_BREAKPOINT = 720
+export const WALL_BREAKPOINT = 720
 
 interface Density {
   stroke: number
@@ -93,6 +124,12 @@ export interface GoalTrajectoryChartProps extends ViewProps {
   weeks: GoalTrajectoryWeek[]
   /** Week indices where a mesocycle boundary falls. */
   mesoBoundaries?: number[]
+  /**
+   * The next planned waypoint: a hollow dot at (`weekIndex`, `value`), joined to
+   * the latest reading by a dashed run, carrying `label` as its tip. Unlabelled
+   * on the plane — the plan reads as a shape, and the words are one hover away.
+   */
+  nextTarget?: GoalNextTarget
   /** Read-model status; drives the actual line's tone and the status pill. */
   status: GoalTrajectoryStatus
   /** Which way "better" points. `down` is a loss goal (low > high numerically). */
@@ -125,7 +162,7 @@ export interface GoalTrajectoryChartProps extends ViewProps {
 }
 
 function summarize(
-  status: GoalTrajectoryStatus,
+  statusLabel: string,
   geometry: GoalTrajectoryGeometry,
   committed: number,
   stretch: number,
@@ -138,7 +175,7 @@ function summarize(
     : 'No measured values yet.'
   const prs = geometry.prStars.length
   return (
-    `${metricLabel} trajectory chart. Status: ${STATUS_LABEL[status]}. ` +
+    `${metricLabel} trajectory chart. Status: ${statusLabel}. ` +
     `Committed ${String(roundWeight(committed))} ${unit}, stretch ${String(roundWeight(stretch))} ${unit}. ` +
     `${current} ${String(prs)} personal record${prs === 1 ? '' : 's'}.`
   )
@@ -174,6 +211,7 @@ export function GoalTrajectoryChart({
   actuals,
   weeks,
   mesoBoundaries = [],
+  nextTarget,
   status,
   direction = 'up',
   width,
@@ -190,7 +228,10 @@ export function GoalTrajectoryChart({
 }: GoalTrajectoryChartProps) {
   const surface = useSurface()
   const axisColor = useOnSurfaceColor('tertiary')
-  const palette = trajectoryPalette(surface.mode, surface.level, status)
+  const reach = trajectoryReach(committed, actuals, direction)
+  const toneStatus = reach === 'short' ? status : REACH_STATUS[reach]
+  const statusLabel = reach === 'short' ? STATUS_LABEL[status] : REACH_LABEL[reach]
+  const palette = trajectoryPalette(surface.mode, surface.level, toneStatus)
   const density = width >= WALL_BREAKPOINT ? DENSITY.wall : DENSITY.phone
   const entrance = useTrajectoryEntrance(animate)
 
@@ -203,6 +244,7 @@ export function GoalTrajectoryChart({
         actuals,
         weeks,
         mesoBoundaries,
+        nextTarget,
         width,
         height,
         tickCount: density.tickCount,
@@ -215,6 +257,7 @@ export function GoalTrajectoryChart({
       actuals,
       weeks,
       mesoBoundaries,
+      nextTarget,
       width,
       height,
       density,
@@ -245,7 +288,7 @@ export function GoalTrajectoryChart({
       <View
         style={{ width, height }}
         accessibilityRole="image"
-        accessibilityLabel={summarize(status, geometry, committed, stretch, unit, metricLabel)}
+        accessibilityLabel={summarize(statusLabel, geometry, committed, stretch, unit, metricLabel)}
         testID="goal-trajectory-chart-canvas"
       >
         <GoalTrajectoryPlot
@@ -269,8 +312,11 @@ export function GoalTrajectoryChart({
           entrance={entrance}
         />
       </View>
+      {geometry.nextTarget && nextTarget && (
+        <NextTargetTip point={geometry.nextTarget} label={nextTarget.label} />
+      )}
       <ChartLegend
-        status={status}
+        statusLabel={statusLabel}
         direction={direction}
         palette={palette}
         axisColor={axisColor}
@@ -282,8 +328,32 @@ export function GoalTrajectoryChart({
   )
 }
 
+/** Side of the square hit area the next-target tip opens from. */
+const TIP_HIT = 24
+
+/**
+ * The marker's words, one hover away: a hit target over the plane rather than a
+ * label on it. Absolute against the chart's own box, whose origin is the canvas.
+ */
+function NextTargetTip({ point, label }: { point: NextTargetCoord; label: string }) {
+  return (
+    <View
+      style={{ position: 'absolute', left: point.x - TIP_HIT / 2, top: point.y - TIP_HIT / 2 }}
+      testID="goal-trajectory-chart-next-target-tip"
+    >
+      <TipTrigger
+        label="Next target"
+        content={<Typography variant="body2">{label}</Typography>}
+        style={{ width: TIP_HIT, height: TIP_HIT }}
+      >
+        <View style={{ width: TIP_HIT, height: TIP_HIT }} />
+      </TipTrigger>
+    </View>
+  )
+}
+
 interface ChartLegendProps {
-  status: GoalTrajectoryStatus
+  statusLabel: string
   direction: GoalDirection
   palette: TrajectoryPalette
   axisColor: string
@@ -297,14 +367,14 @@ function LegendLabel({ color, font, children }: { color: string; font: number; c
 }
 
 function StatusPill({
-  status,
+  statusLabel,
   palette,
   font,
-}: Pick<ChartLegendProps, 'status' | 'palette' | 'font'>) {
+}: Pick<ChartLegendProps, 'statusLabel' | 'palette' | 'font'>) {
   return (
     <View
       testID="goal-trajectory-chart-status-pill"
-      accessibilityLabel={`Goal status: ${STATUS_LABEL[status]}`}
+      accessibilityLabel={`Goal status: ${statusLabel}`}
       className="px-squish-x-sm py-squish-y-sm"
       style={{
         borderRadius: 4,
@@ -321,7 +391,7 @@ function StatusPill({
           fontWeight: '600',
         }}
       >
-        {STATUS_LABEL[status]}
+        {statusLabel}
       </Text>
     </View>
   )
@@ -367,7 +437,7 @@ function RuleLegend({
 }
 
 function ChartLegend({
-  status,
+  statusLabel,
   direction,
   palette,
   axisColor,
@@ -380,7 +450,7 @@ function ChartLegend({
       className="flex-row items-center flex-wrap mt-stack-md gap-3"
       testID="goal-trajectory-chart-legend"
     >
-      <StatusPill status={status} palette={palette} font={font} />
+      <StatusPill statusLabel={statusLabel} palette={palette} font={font} />
       <View className="flex-row items-center gap-inline-sm">
         <View style={{ width: 14, height: 8, borderRadius: 2, backgroundColor: palette.band }} />
         <LegendLabel color={axisColor} font={font}>

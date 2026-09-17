@@ -470,6 +470,40 @@ function ActualPoint({
   )
 }
 
+/**
+ * The next planned waypoint: a dashed run out of the latest reading to a hollow
+ * dot. Hollow and dashed because nothing has been measured there yet — the
+ * filled dots and the solid line are readings, this is the ask.
+ */
+function NextTargetMark({ geometry, palette, stroke }: LayerProps & { stroke: number }) {
+  const next = geometry.nextTarget
+  if (!next) return null
+  return (
+    <>
+      {next.leadPath && (
+        <path
+          data-testid="goal-trajectory-chart-next-target-lead"
+          d={next.leadPath}
+          fill="none"
+          stroke={palette.status}
+          strokeWidth={stroke}
+          strokeLinecap="round"
+          strokeDasharray="6 5"
+        />
+      )}
+      <circle
+        data-testid="goal-trajectory-chart-next-target-dot"
+        cx={next.x}
+        cy={next.y}
+        r={DOT_RADIUS}
+        fill="none"
+        stroke={palette.status}
+        strokeWidth={DOT_RING}
+      />
+    </>
+  )
+}
+
 function WeekAxis({
   geometry,
   palette,
@@ -541,6 +575,9 @@ export function GoalTrajectoryPlot(props: GoalTrajectoryPlotProps) {
           shadowId={ids.shadow}
           entrance={props.entrance}
         />
+        <g style={popStyle(props.entrance)}>
+          <NextTargetMark {...layer} stroke={style.stroke} />
+        </g>
         {geometry.actuals.map((coord) => (
           <g key={coord.index} style={popStyle(props.entrance)}>
             <ActualPoint coord={coord} palette={palette} star={style.star} />
