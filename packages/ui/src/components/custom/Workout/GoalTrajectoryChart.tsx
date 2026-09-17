@@ -21,6 +21,7 @@ import {
   trajectoryPalette,
   type TrajectoryPalette,
 } from './GoalTrajectoryPlot'
+import { useTrajectoryEntrance } from './goalTrajectoryMotion'
 
 export type {
   GoalActualPoint,
@@ -88,6 +89,11 @@ export interface GoalTrajectoryChartProps extends ViewProps {
    * Exposed while the human picks between 3% and 4%.
    */
   leftShadowSpread?: number
+  /**
+   * Play the entrance: the line draws, then its shadow and points arrive. Off
+   * renders the final frame at once (visual baselines); reduced motion forces it off.
+   */
+  animate?: boolean
   className?: string
 }
 
@@ -148,6 +154,7 @@ export function GoalTrajectoryChart({
   unit = 'lbs',
   metricLabel = 'Goal',
   leftShadowSpread = DEFAULT_LEFT_SHADOW_SPREAD,
+  animate = true,
   className,
   ...props
 }: GoalTrajectoryChartProps) {
@@ -155,6 +162,7 @@ export function GoalTrajectoryChart({
   const axisColor = useOnSurfaceColor('tertiary')
   const palette = trajectoryPalette(surface.mode, surface.level, status)
   const density = width >= WALL_BREAKPOINT ? DENSITY.wall : DENSITY.phone
+  const entrance = useTrajectoryEntrance(animate)
 
   const geometry = useMemo(
     () =>
@@ -213,6 +221,7 @@ export function GoalTrajectoryChart({
             star: density.star,
             leftShadowSpread,
           }}
+          entrance={entrance}
         />
       </View>
       <ChartLegend

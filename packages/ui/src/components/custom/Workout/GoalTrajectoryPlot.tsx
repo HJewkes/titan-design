@@ -15,6 +15,13 @@ import type {
   GoalTrajectoryStatus,
   GoalTrajectoryWeek,
 } from './GoalTrajectoryChartGeometry'
+import {
+  ENTRANCE,
+  drawStyle,
+  fadeStyle,
+  popStyle,
+  type EntranceState,
+} from './goalTrajectoryMotion'
 
 type ColorToken = keyof ReturnType<typeof getSemanticColors>
 
@@ -291,7 +298,8 @@ function ActualLine({
   palette,
   stroke,
   shadowId,
-}: LayerProps & { stroke: number; shadowId: string }) {
+  entrance,
+}: LayerProps & { stroke: number; shadowId: string; entrance: EntranceState }) {
   const common = {
     d: geometry.linePath,
     fill: 'none',
@@ -306,8 +314,14 @@ function ActualLine({
         data-testid="goal-trajectory-chart-actual-shadow"
         {...common}
         filter={`url(#${shadowId})`}
+        style={fadeStyle(entrance, ENTRANCE.shadow)}
       />
-      <path data-testid="goal-trajectory-chart-actual-line" {...common} pathLength={1} />
+      <path
+        data-testid="goal-trajectory-chart-actual-line"
+        {...common}
+        pathLength={1}
+        style={drawStyle(entrance)}
+      />
     </>
   )
 }
@@ -391,6 +405,7 @@ export interface GoalTrajectoryPlotProps extends LayerProps {
   weekStride: number
   showYLabels: boolean
   style: PlotStyle
+  entrance: EntranceState
 }
 
 export function GoalTrajectoryPlot(props: GoalTrajectoryPlotProps) {
@@ -418,9 +433,16 @@ export function GoalTrajectoryPlot(props: GoalTrajectoryPlotProps) {
           />
         )}
         <TargetRules {...layer} />
-        <ActualLine {...layer} stroke={style.stroke} shadowId={ids.shadow} />
+        <ActualLine
+          {...layer}
+          stroke={style.stroke}
+          shadowId={ids.shadow}
+          entrance={props.entrance}
+        />
         {geometry.actuals.map((coord) => (
-          <ActualPoint key={coord.index} coord={coord} palette={palette} star={style.star} />
+          <g key={coord.index} style={popStyle(props.entrance)}>
+            <ActualPoint coord={coord} palette={palette} star={style.star} />
+          </g>
         ))}
         <rect data-testid="goal-trajectory-chart-inner-top" {...box} fill={`url(#${ids.top})`} />
         <rect data-testid="goal-trajectory-chart-inner-left" {...box} fill={`url(#${ids.left})`} />
