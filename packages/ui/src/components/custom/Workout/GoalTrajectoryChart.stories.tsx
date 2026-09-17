@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { Surface } from '../../ui/surface'
 import { GoalTrajectoryChart } from './GoalTrajectoryChart'
 import type { GoalActualPoint, GoalExpectedPoint, GoalTrajectoryWeek } from './GoalTrajectoryChart'
 
@@ -80,7 +81,25 @@ const meta: Meta<typeof GoalTrajectoryChart> = {
     actuals: { description: 'Measured values; `isPR` adds a star' },
     weeks: { description: 'Planned weeks; `isDeload` flattens the band and shades the column' },
     mesoBoundaries: { description: 'Week indices where a mesocycle boundary falls' },
+    animate: {
+      control: 'boolean',
+      description: 'Play the entrance (line draw, then shadow and points). Remount to replay.',
+    },
+    leftShadowSpread: {
+      control: { type: 'range', min: 0, max: 0.08, step: 0.005 },
+      description: 'Fraction of the plot width the left inner shadow fades over',
+    },
   },
+  // The plot plane sits one step below the card it is drawn on, as on the page.
+  decorators: [
+    (Story) => (
+      <Surface level="base" className="p-gutter-md">
+        <Surface raise={1} className="p-inset-md self-start">
+          <Story />
+        </Surface>
+      </Surface>
+    ),
+  ],
 }
 
 export default meta
@@ -236,7 +255,7 @@ export const EmptyCalibrating: Story = {
   },
 }
 
-/** The same on-track block at phone width: thinner stroke, smaller dots and type. */
+/** The same on-track block at phone width: 2px line and three gridlines. */
 export const PhoneOnTrack: Story = {
   args: { ...bench, ...PHONE, actuals: onTrackActuals, status: 'on_track' },
 }
@@ -244,4 +263,34 @@ export const PhoneOnTrack: Story = {
 /** The loss goal at phone width. */
 export const PhoneLossGoal: Story = {
   args: { ...LossGoalBodyweight.args, ...PHONE } as Story['args'],
+}
+
+/**
+ * The final frame with the entrance switched off: the deterministic render to
+ * baseline against.
+ */
+export const NoMotion: Story = {
+  args: { ...bench, ...WALL, actuals: onTrackActuals, status: 'on_track', animate: false },
+}
+
+/** A noisy block (a bad week 3, a PR at 4, a dip at 5) at wall width, with the entrance. */
+export const WallMotion: Story = {
+  args: {
+    ...bench,
+    ...WALL,
+    status: 'on_track',
+    animate: true,
+    actuals: [
+      { weekIndex: 1, value: 175 },
+      { weekIndex: 2, value: 179 },
+      { weekIndex: 3, value: 177 },
+      { weekIndex: 4, value: 184, isPR: true },
+      { weekIndex: 5, value: 182 },
+    ],
+  },
+}
+
+/** The same noisy block at phone width: 2px line, three gridlines. */
+export const PhoneMotion: Story = {
+  args: { ...WallMotion.args, ...PHONE } as Story['args'],
 }
