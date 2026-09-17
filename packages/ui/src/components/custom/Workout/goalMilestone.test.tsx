@@ -6,139 +6,179 @@ import {
   milestoneGap,
   milestoneProgress,
   UNMET_PROGRESS_CAP,
-  weeksAway,
+  weekStripCells,
+  type GoalLoadTarget,
+  type GoalValueTarget,
 } from './goalMilestone'
 import {
-  formatMilestoneGap,
-  formatMilestoneWhen,
-  formatWeeksAway,
+  formatMilestoneGapAmount,
+  formatMilestoneSet,
+  formatMilestoneValue,
 } from '../../../utils/workout-format'
 
-const milestone = { reps: 8, load: 105, unit: 'lb' as const, goalWeek: 8 }
+const topSet: GoalLoadTarget = { metric: 'top_load_at_reps', reps: 8, load: 105, unit: 'lb' }
+const repsGoal: GoalLoadTarget = { metric: 'reps_at_load', reps: 12, load: 185, unit: 'lb' }
+const cut: GoalValueTarget = { metric: 'bodyweight', value: 189, unit: 'lb' }
 
-describe('milestone state', () => {
-  it('is hit once the best set carries the target load for the target reps', () => {
-    const state = deriveMilestoneState(milestone, {
-      current: { reps: 8, load: 105 },
-      currentWeek: 5,
-    })
-
-    expect(state).toBe('hit')
-  })
-
-  it('is not hit by a heavier set with fewer reps', () => {
-    expect(isMilestoneMet({ reps: 6, load: 110 }, milestone)).toBe(false)
-  })
-
-  it('is upcoming while the goal week is still ahead', () => {
-    expect(deriveMilestoneState(milestone, { currentWeek: 7 })).toBe('upcoming')
-  })
-
-  it('is due this week in the goal week itself', () => {
-    expect(deriveMilestoneState(milestone, { currentWeek: 8 })).toBe('due_this_week')
-  })
-
-  it('is missed once the goal week has passed without the set', () => {
-    const state = deriveMilestoneState(milestone, {
-      current: { reps: 7, load: 105 },
-      currentWeek: 9,
-    })
-
-    expect(state).toBe('missed')
-  })
-
-  it('is upcoming when the current week is unknown', () => {
-    expect(deriveMilestoneState(milestone, {})).toBe('upcoming')
-  })
-
-  it('takes an explicit state from the read model over the derived one', () => {
-    const state = deriveMilestoneState(milestone, {
-      state: 'missed',
-      current: { reps: 8, load: 105 },
-    })
-
-    expect(state).toBe('missed')
-  })
-})
-
-describe('distance to the milestone', () => {
-  it('counts the load still to add while the bar is light', () => {
-    expect(milestoneGap({ reps: 10, load: 100 }, milestone)).toEqual({ kind: 'load', amount: 5 })
+describe('the gap to the meso target', () => {
+  it('counts the load still to add', () => {
+    expect(milestoneGap(topSet, { reps: 10, load: 100 })).toEqual({ kind: 'load', amount: 5 })
   })
 
   it('counts reps once the load is there', () => {
-    expect(milestoneGap({ reps: 6, load: 105 }, milestone)).toEqual({ kind: 'reps', amount: 2 })
+    expect(milestoneGap(topSet, { reps: 6, load: 105 })).toEqual({ kind: 'reps', amount: 2 })
   })
 
-  it('has nothing left once the milestone is met', () => {
-    expect(milestoneGap({ reps: 8, load: 107.5 }, milestone)).toEqual({ kind: 'none' })
+  it('leads with load for a top-load goal when both are short', () => {
+    expect(milestoneGap(topSet, { reps: 6, load: 100 })).toEqual({ kind: 'load', amount: 5 })
   })
 
-  it('reads a fractional load gap to one decimal', () => {
-    const gap = milestoneGap({ reps: 8, load: 102.5 }, milestone)
-
-    expect(formatMilestoneGap(gap, 'lb')).toBe('2.5 lb to go')
+  it('leads with reps for a reps-at-load goal when both are short', () => {
+    expect(milestoneGap(repsGoal, { reps: 10, load: 180 })).toEqual({ kind: 'reps', amount: 2 })
   })
 
-  it('reads a single rep in the singular', () => {
-    expect(formatMilestoneGap({ kind: 'reps', amount: 1 }, 'lb')).toBe('1 rep to go')
+  it('falls to load for a reps-at-load goal once the reps are there', () => {
+    expect(milestoneGap(repsGoal, { reps: 12, load: 180 })).toEqual({ kind: 'load', amount: 5 })
   })
 
-  it('reads nothing once the gap is closed', () => {
-    expect(formatMilestoneGap({ kind: 'none' }, 'lb')).toBeNull()
+  it('has nothing left once the target is met', () => {
+    expect(milestoneGap(topSet, { reps: 8, load: 107.5 })).toEqual({ kind: 'none' })
+  })
+
+  it('counts a loss goal down from above', () => {
+    const gap = milestoneGap(cut, { value: 192.4 }, 'down')
+
+    expect(gap?.kind).toBe('value')
+    expect(formatMilestoneGapAmount(gap!, 'lb', 'bodyweight')).toBe('3.4 lb')
+  })
+
+  it('has nothing left once a loss goal is below its target', () => {
+    expect(milestoneGap(cut, { value: 188.5 }, 'down')).toEqual({ kind: 'none' })
+  })
+
+  it('cannot measure a reading whose shape does not match the target', () => {
+    expect(milestoneGap(topSet, { value: 100 })).toBeNull()
+  })
+
+  it('does not count a heavier set with fewer reps as met', () => {
+    expect(isMilestoneMet(topSet, { reps: 6, load: 110 })).toBe(false)
   })
 })
 
-describe('progress toward the milestone', () => {
-  it('is the share of the estimated-max climb from the start', () => {
-    const start = { reps: 8, load: 95 }
-    const current = { reps: 8, load: 100 }
+describe('meso target state', () => {
+  it('takes an explicit state from the read model over the derived one', () => {
+    expect(deriveMilestoneState({ state: 'missed', met: true, goalWeek: 6 })).toBe('missed')
+  })
 
-    expect(milestoneProgress(milestone, current, start)).toBeCloseTo(0.5)
+  it('is hit once the target is met, whatever the week', () => {
+    expect(deriveMilestoneState({ met: true, currentWeek: 3, goalWeek: 6 })).toBe('hit')
+  })
+
+  it('stays open through the goal week itself', () => {
+    expect(deriveMilestoneState({ met: false, currentWeek: 6, goalWeek: 6 })).toBe('upcoming')
+  })
+
+  it('is missed once the block has ended without it', () => {
+    expect(deriveMilestoneState({ met: false, currentWeek: 7, goalWeek: 6 })).toBe('missed')
+  })
+
+  it('is open when the current week is unknown', () => {
+    expect(deriveMilestoneState({ met: false, goalWeek: 6 })).toBe('upcoming')
+  })
+})
+
+describe('progress toward the meso target', () => {
+  const start = { reps: 8, load: 95 }
+
+  it('is the share of the estimated-max climb from the start', () => {
+    expect(milestoneProgress(topSet, { reps: 8, load: 100 }, start)).toBeCloseTo(0.5)
   })
 
   it('credits a rep gain at the same load', () => {
-    const start = { reps: 8, load: 95 }
-
-    const before = milestoneProgress(milestone, { reps: 8, load: 100 }, start) ?? 0
-    const after = milestoneProgress(milestone, { reps: 10, load: 100 }, start) ?? 0
+    const before = milestoneProgress(topSet, { reps: 8, load: 100 }, start) ?? 0
+    const after = milestoneProgress(topSet, { reps: 10, load: 100 }, start) ?? 0
 
     expect(after).toBeGreaterThan(before)
   })
 
   it('never falls below zero after a regression', () => {
-    expect(milestoneProgress(milestone, { reps: 5, load: 80 }, { reps: 8, load: 95 })).toBe(0)
+    expect(milestoneProgress(topSet, { reps: 5, load: 80 }, start)).toBe(0)
   })
 
   it('stops short of full for a light high-rep set that out-estimates the target', () => {
-    const progress = milestoneProgress(milestone, { reps: 20, load: 100 }, { reps: 8, load: 95 })
-
-    expect(progress).toBe(UNMET_PROGRESS_CAP)
+    expect(milestoneProgress(topSet, { reps: 20, load: 100 }, start)).toBe(UNMET_PROGRESS_CAP)
   })
 
-  it('is full once the milestone is met', () => {
-    expect(milestoneProgress(milestone, { reps: 8, load: 105 }, { reps: 8, load: 95 })).toBe(1)
+  it('is full once the target is met', () => {
+    expect(milestoneProgress(topSet, { reps: 8, load: 105 }, start)).toBe(1)
   })
 
-  it('is unknown without a starting set', () => {
-    expect(milestoneProgress(milestone, { reps: 8, load: 100 })).toBeNull()
+  it('measures a loss goal downward', () => {
+    expect(milestoneProgress(cut, { value: 192 }, { value: 195 }, 'down')).toBeCloseTo(0.5)
+  })
+
+  it('is unknown without a starting reading', () => {
+    expect(milestoneProgress(topSet, { reps: 8, load: 100 })).toBeNull()
   })
 })
 
-describe('when the milestone is due', () => {
-  it('counts weeks ahead', () => {
-    expect(formatMilestoneWhen(8, 5)).toBe('Week 8 · in 3 weeks')
+describe('week strip cells', () => {
+  const outcomes = ['on_track', 'ahead', 'missed'] as const
+
+  it('places past, current and future weeks around now', () => {
+    const phases = weekStripCells(6, 6, 4, outcomes).map((c) => c.phase)
+
+    expect(phases).toEqual(['past', 'past', 'past', 'current', 'future', 'future'])
   })
 
-  it('says this week in the goal week', () => {
-    expect(formatMilestoneWhen(8, 8)).toBe('Week 8 · this week')
+  it('marks only the goal week as the goal', () => {
+    const goals = weekStripCells(6, 6, 4).filter((c) => c.isGoal)
+
+    expect(goals.map((c) => c.week)).toEqual([6])
   })
 
-  it('counts weeks since a passed goal week', () => {
-    expect(formatWeeksAway(weeksAway(8, 9))).toBe('1 week ago')
+  it('gives past weeks their outcome and reads a missing one as no data', () => {
+    const cells = weekStripCells(6, 6, 5, outcomes)
+
+    expect(cells.map((c) => c.outcome)).toEqual([
+      'on_track',
+      'ahead',
+      'missed',
+      'none',
+      undefined,
+      undefined,
+    ])
   })
 
-  it('names only the week when the current week is unknown', () => {
-    expect(formatMilestoneWhen(8)).toBe('Week 8')
+  it('treats every week as ahead of us when now is unknown', () => {
+    expect(weekStripCells(4, 4).every((c) => c.phase === 'future')).toBe(true)
+  })
+
+  it('treats every week as past once the block has ended', () => {
+    expect(weekStripCells(4, 4, 5).every((c) => c.phase === 'past')).toBe(true)
+  })
+})
+
+describe('meso target copy', () => {
+  it('prints a set reps first', () => {
+    expect(formatMilestoneSet(8, 102.5, 'lb')).toBe('8 x 102.5 lb')
+  })
+
+  it('names each value metric in its own words', () => {
+    expect(formatMilestoneValue('bodyweight', 189, 'lb')).toBe('189 lb bodyweight')
+    expect(formatMilestoneValue('sessions_28d', 12)).toBe('12 sessions in 28 days')
+    expect(formatMilestoneValue('e1rm_trend', 180, 'lb')).toBe('e1RM 180 lb')
+    expect(formatMilestoneValue('composite_strength', 72)).toBe('strength score 72')
+  })
+
+  it('reads a single rep and a single session in the singular', () => {
+    expect(formatMilestoneGapAmount({ kind: 'reps', amount: 1 }, 'lb')).toBe('1 rep')
+    expect(formatMilestoneGapAmount({ kind: 'value', amount: 1 }, '', 'sessions_28d')).toBe(
+      '1 session'
+    )
+  })
+
+  it('reads nothing once the gap is closed', () => {
+    expect(formatMilestoneGapAmount({ kind: 'none' }, 'lb')).toBeNull()
   })
 })

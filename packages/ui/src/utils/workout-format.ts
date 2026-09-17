@@ -135,10 +135,14 @@ export function formatWorkoutStats(
   return parts.join(' · ')
 }
 
-/** What stands between a lifter and a goal milestone, in the one unit that closes it. */
+/** The non-load goal metrics; their target is a single value. */
+export type GoalValueMetric = 'bodyweight' | 'sessions_28d' | 'e1rm_trend' | 'composite_strength'
+
+/** What stands between a lifter and a goal milestone, in the one unit that leads. */
 export type GoalMilestoneGap =
   | { kind: 'load'; amount: number }
   | { kind: 'reps'; amount: number }
+  | { kind: 'value'; amount: number }
   | { kind: 'none' }
 
 export function formatMilestoneLoad(load: number): string {
@@ -146,32 +150,39 @@ export function formatMilestoneLoad(load: number): string {
 }
 
 function plural(n: number, one: string, many: string): string {
-  return `${n} ${n === 1 ? one : many}`
+  return `${formatMilestoneLoad(n)} ${n === 1 ? one : many}`
 }
 
-/** "5 lb", "1 rep", or null once nothing is left to close. */
-export function formatMilestoneGapAmount(gap: GoalMilestoneGap, unit: string): string | null {
+/** "8 x 105 lb": reps first, as the goal cards print it. */
+export function formatMilestoneSet(reps: number, load: number, unit: string): string {
+  return `${reps} x ${formatMilestoneLoad(load)} ${unit}`
+}
+
+/** "185 lb bodyweight", "12 sessions in 28 days", "e1RM 180 lb", "strength score 72". */
+export function formatMilestoneValue(metric: GoalValueMetric, value: number, unit = ''): string {
+  const n = formatMilestoneLoad(value)
+  switch (metric) {
+    case 'bodyweight':
+      return `${n} ${unit} bodyweight`.replace(/\s+/g, ' ')
+    case 'sessions_28d':
+      return `${plural(value, 'session', 'sessions')} in 28 days`
+    case 'e1rm_trend':
+      return `e1RM ${n} ${unit}`.trim()
+    case 'composite_strength':
+      return `strength score ${n}`
+  }
+}
+
+/** The shortfall as a hero: "5 lb", "2 reps", "1 session", "4 pts"; null once closed. */
+export function formatMilestoneGapAmount(
+  gap: GoalMilestoneGap,
+  unit: string,
+  metric?: GoalValueMetric
+): string | null {
+  if (gap.kind === 'none') return null
   if (gap.kind === 'load') return `${formatMilestoneLoad(gap.amount)} ${unit}`
   if (gap.kind === 'reps') return plural(gap.amount, 'rep', 'reps')
-  return null
-}
-
-/** "5 lb to go", "1 rep to go", or null once nothing is left to close. */
-export function formatMilestoneGap(gap: GoalMilestoneGap, unit: string): string | null {
-  const amount = formatMilestoneGapAmount(gap, unit)
-  return amount && `${amount} to go`
-}
-
-/** "in 3 weeks", "this week", "2 weeks ago", or null without a current week. */
-export function formatWeeksAway(away: number | null): string | null {
-  if (away === null) return null
-  if (away === 0) return 'this week'
-  if (away > 0) return `in ${plural(away, 'week', 'weeks')}`
-  return `${plural(-away, 'week', 'weeks')} ago`
-}
-
-/** The muted caption under the target: "Week 8 · in 3 weeks". */
-export function formatMilestoneWhen(goalWeek: number, currentWeek?: number): string {
-  const relative = formatWeeksAway(currentWeek === undefined ? null : goalWeek - currentWeek)
-  return relative ? `Week ${goalWeek} · ${relative}` : `Week ${goalWeek}`
+  if (metric === 'sessions_28d') return plural(gap.amount, 'session', 'sessions')
+  if (metric === 'composite_strength') return plural(gap.amount, 'pt', 'pts')
+  return `${formatMilestoneLoad(gap.amount)} ${unit}`.trim()
 }
