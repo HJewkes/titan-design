@@ -10,6 +10,8 @@ import type {
   GoalTrajectoryWeek,
 } from './GoalTrajectoryChart'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { pressedLevel, surfaceBackground } from '../../../theme/surface-planes'
+import { PLOT_LEFT } from './GoalTrajectoryChartGeometry'
 
 const dark = getSemanticColors('dark')
 
@@ -50,18 +52,6 @@ const baseProps = {
   metricLabel: 'Bench top load',
 }
 
-/** The inline `style` prop, flattened to the DOM string react-native-web emits. */
-function styleOf(element: HTMLElement): CSSStyleDeclaration {
-  return element.style
-}
-
-/** jsdom normalises an inline hex to `rgb(r, g, b)`; compare tokens in that form. */
-function rgbOf(hex: string): string {
-  const h = hex.replace('#', '')
-  const part = (i: number): number => parseInt(h.slice(i * 2, i * 2 + 2), 16)
-  return `rgb(${String(part(0))}, ${String(part(1))}, ${String(part(2))})`
-}
-
 describe('GoalTrajectoryChart', () => {
   describe('rendering', () => {
     it('renders the chart canvas', () => {
@@ -69,15 +59,10 @@ describe('GoalTrajectoryChart', () => {
       expect(screen.getByTestId('goal-trajectory-chart-canvas')).toBeInTheDocument()
     })
 
-    it('renders the expected band as fill columns with both edges', () => {
+    it('renders the expected band as one filled path', () => {
       render(<GoalTrajectoryChart {...baseProps} status="on_track" />)
-      expect(screen.getAllByTestId('goal-trajectory-chart-band-cell').length).toBeGreaterThan(0)
-      expect(screen.getAllByTestId('goal-trajectory-chart-band-edge-top')).toHaveLength(
-        expected.length - 1
-      )
-      expect(screen.getAllByTestId('goal-trajectory-chart-band-edge-bottom')).toHaveLength(
-        expected.length - 1
-      )
+      const band = screen.getByTestId('goal-trajectory-chart-band')
+      expect(band.getAttribute('d')).toMatch(/^M.*Z$/)
     })
 
     it('renders the committed and stretch rules with their values', () => {
@@ -88,13 +73,30 @@ describe('GoalTrajectoryChart', () => {
       expect(screen.getByText('Stretch 195')).toBeInTheDocument()
     })
 
-    it('renders the actual line, one dot per actual and a star per PR', () => {
+    it('renders one actual line, a star for each PR and a dot for every other point', () => {
       render(<GoalTrajectoryChart {...baseProps} status="on_track" />)
-      expect(screen.getAllByTestId('goal-trajectory-chart-actual-segment')).toHaveLength(
+      expect(screen.getAllByTestId('goal-trajectory-chart-actual-line')).toHaveLength(1)
+      expect(screen.getAllByTestId('goal-trajectory-chart-actual-dot')).toHaveLength(
         actuals.length - 1
       )
-      expect(screen.getAllByTestId('goal-trajectory-chart-actual-dot')).toHaveLength(actuals.length)
       expect(screen.getAllByTestId('goal-trajectory-chart-pr-star')).toHaveLength(1)
+    })
+
+    it('draws round joins and caps on the actual line', () => {
+      render(<GoalTrajectoryChart {...baseProps} status="on_track" />)
+      const line = screen.getByTestId('goal-trajectory-chart-actual-line')
+      expect(line.getAttribute('stroke-linejoin')).toBe('round')
+      expect(line.getAttribute('stroke-linecap')).toBe('round')
+    })
+
+    it('fills no area under the line: the band is the only filled path', () => {
+      const { container } = render(<GoalTrajectoryChart {...baseProps} status="on_track" />)
+      const filled = [...container.querySelectorAll('path')].filter(
+        (path) => path.getAttribute('fill') !== 'none'
+      )
+      expect(filled.map((path) => path.getAttribute('data-testid'))).toEqual([
+        'goal-trajectory-chart-band',
+      ])
     })
 
     it('shades each deload week and rules each meso boundary', () => {
@@ -143,10 +145,7 @@ describe('GoalTrajectoryChart', () => {
           unit="lbs"
         />
       )
-      expect(screen.getAllByTestId('goal-trajectory-chart-band-cell').length).toBeGreaterThan(0)
-      expect(screen.getAllByTestId('goal-trajectory-chart-band-edge-top')).toHaveLength(
-        lossExpected.length - 1
-      )
+      expect(screen.getByTestId('goal-trajectory-chart-band').getAttribute('d')).toMatch(/Z$/)
     })
 
     it('labels the legend as a loss band', () => {
@@ -156,10 +155,9 @@ describe('GoalTrajectoryChart', () => {
   })
 
   describe('status tone', () => {
-    const toneOf = (status: GoalTrajectoryStatus): string => {
+    const toneOf = (status: GoalTrajectoryStatus): string | null => {
       const { unmount } = render(<GoalTrajectoryChart {...baseProps} status={status} />)
-      const segment = screen.getAllByTestId('goal-trajectory-chart-actual-segment')[0]
-      const tone = styleOf(segment).backgroundColor
+      const tone = screen.getByTestId('goal-trajectory-chart-actual-line').getAttribute('stroke')
       unmount()
       return tone
     }
@@ -167,11 +165,11 @@ describe('GoalTrajectoryChart', () => {
     it('never paints "ahead" in warning-amber', () => {
       const ahead = toneOf('ahead')
       expect(ahead).not.toBe(toneOf('behind'))
-      expect(ahead).not.toBe(rgbOf(dark['status-warning']))
+      expect(ahead).not.toBe(dark['status-warning'])
     })
 
     it('paints "ahead" in the brand tone', () => {
-      expect(toneOf('ahead')).toBe(rgbOf(dark['brand-primary']))
+      expect(toneOf('ahead')).toBe(dark['brand-primary'])
     })
 
     it('gives each status its own pill label', () => {
@@ -197,16 +195,124 @@ describe('GoalTrajectoryChart', () => {
     })
   })
 
+  describe('target rules', () => {
+    it('keeps both target rules and their labels neutral whatever the status', () => {
+      const statuses: GoalTrajectoryStatus[] = ['on_track', 'behind', 'stalled']
+      statuses.forEach((status) => {
+        const { unmount } = render(<GoalTrajectoryChart {...baseProps} status={status} />)
+        ;['committed-line', 'stretch-line'].forEach((id) => {
+          const rule = screen.getByTestId(`goal-trajectory-chart-${id}`)
+          expect(rule.getAttribute('stroke')).toBe(dark['text-secondary'])
+        })
+        ;['committed-label', 'stretch-label'].forEach((id) => {
+          const label = screen.getByTestId(`goal-trajectory-chart-${id}`)
+          expect(label.getAttribute('fill')).toBe(dark['text-secondary'])
+        })
+        unmount()
+      })
+    })
+
+    it('draws the committed rule solid and the stretch rule dashed', () => {
+      render(<GoalTrajectoryChart {...baseProps} status="on_track" />)
+      const committedRule = screen.getByTestId('goal-trajectory-chart-committed-line')
+      const stretchRule = screen.getByTestId('goal-trajectory-chart-stretch-line')
+      expect(committedRule.getAttribute('stroke-dasharray')).toBeNull()
+      expect(stretchRule.getAttribute('stroke-dasharray')).not.toBeNull()
+    })
+  })
+
   describe('density', () => {
-    it('scales the stroke up at wall width', () => {
+    const strokeAt = (width: number): number => {
+      const { unmount } = render(
+        <GoalTrajectoryChart {...baseProps} width={width} status="on_track" />
+      )
+      const line = screen.getByTestId('goal-trajectory-chart-actual-line')
+      const stroke = Number(line.getAttribute('stroke-width'))
+      unmount()
+      return stroke
+    }
+
+    it('strokes the line 2px on the phone and 3px on the wall', () => {
+      expect(strokeAt(360)).toBe(2)
+      expect(strokeAt(1200)).toBe(3)
+    })
+
+    it('draws three gridlines on the phone and more on the wall', () => {
       const { unmount } = render(
         <GoalTrajectoryChart {...baseProps} width={360} status="on_track" />
       )
-      const phone = styleOf(screen.getAllByTestId('goal-trajectory-chart-actual-segment')[0]).height
+      expect(screen.getAllByTestId('goal-trajectory-chart-gridline')).toHaveLength(3)
       unmount()
       render(<GoalTrajectoryChart {...baseProps} width={1200} status="on_track" />)
-      const wall = styleOf(screen.getAllByTestId('goal-trajectory-chart-actual-segment')[0]).height
-      expect(parseFloat(wall)).toBeGreaterThan(parseFloat(phone))
+      expect(screen.getAllByTestId('goal-trajectory-chart-gridline').length).toBeGreaterThan(3)
+    })
+  })
+
+  describe('axis and plane', () => {
+    it('labels each gridline 8px left of the plot, right-aligned', () => {
+      render(<GoalTrajectoryChart {...baseProps} width={1200} status="on_track" />)
+      const labels = screen.getAllByTestId('goal-trajectory-chart-y-label')
+      expect(labels.map((l) => l.textContent)).toEqual(['170', '175', '180', '185', '190', '195'])
+      labels.forEach((label) => {
+        expect(label.getAttribute('x')).toBe(String(PLOT_LEFT - 8))
+        expect(label.getAttribute('text-anchor')).toBe('end')
+      })
+    })
+
+    it('lowers the plane one surface step below the enclosing surface', () => {
+      render(<GoalTrajectoryChart {...baseProps} status="on_track" />)
+      const plane = screen.getByTestId('goal-trajectory-chart-plane')
+      expect(plane.getAttribute('fill')).toBe(surfaceBackground(pressedLevel('base'), 'dark'))
+      expect(plane.getAttribute('fill')).not.toBe(surfaceBackground('base', 'dark'))
+    })
+
+    it('rings each dot in the plane colour', () => {
+      render(<GoalTrajectoryChart {...baseProps} status="on_track" />)
+      const plane = screen.getByTestId('goal-trajectory-chart-plane').getAttribute('fill')
+      screen.getAllByTestId('goal-trajectory-chart-actual-dot').forEach((dot) => {
+        expect(dot.getAttribute('r')).toBe('4')
+        expect(dot.getAttribute('stroke')).toBe(plane)
+        expect(dot.getAttribute('stroke-width')).toBe('2')
+      })
+    })
+  })
+
+  describe('depth', () => {
+    const effective = (el: Element, attr: string): number => Number(el.getAttribute(attr)) * 0.5 // scrim-default is 50% black
+
+    it('shadows the line 2px down with a 3px blur at 45% black', () => {
+      const { container } = render(<GoalTrajectoryChart {...baseProps} status="on_track" />)
+      const shadow = container.querySelector('feDropShadow') as Element
+      expect(shadow.getAttribute('dy')).toBe('2')
+      expect(shadow.getAttribute('stdDeviation')).toBe('3')
+      expect(effective(shadow, 'flood-opacity')).toBeCloseTo(0.45)
+      expect(shadow.getAttribute('flood-color')).toBe(dark['scrim-default'])
+    })
+
+    it('fades the top inner shadow from 22% over 12% of the height', () => {
+      const { container } = render(<GoalTrajectoryChart {...baseProps} status="on_track" />)
+      const [top] = [...container.querySelectorAll('linearGradient')]
+      const stops = top.querySelectorAll('stop')
+      expect(top.getAttribute('y2')).toBe('1')
+      expect(effective(stops[0], 'stop-opacity')).toBeCloseTo(0.22)
+      expect(stops[1].getAttribute('offset')).toBe('0.12')
+    })
+
+    it('fades the left inner shadow from 16% over the given spread', () => {
+      const { container } = render(
+        <GoalTrajectoryChart {...baseProps} leftShadowSpread={0.04} status="on_track" />
+      )
+      const left = [...container.querySelectorAll('linearGradient')][1]
+      const stops = left.querySelectorAll('stop')
+      expect(left.getAttribute('x2')).toBe('1')
+      expect(effective(stops[0], 'stop-opacity')).toBeCloseTo(0.16)
+      expect(stops[1].getAttribute('offset')).toBe('0.04')
+    })
+
+    it('defaults the left inner shadow spread to 3%', () => {
+      const { container } = render(<GoalTrajectoryChart {...baseProps} status="on_track" />)
+      const left = [...container.querySelectorAll('linearGradient')][1]
+      expect(left.querySelectorAll('stop')[1].getAttribute('offset')).toBe('0.03')
     })
   })
 

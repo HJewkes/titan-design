@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest'
 import {
   deriveTrajectoryGeometry,
   flattenDeloadWeeks,
+  paddedFloor,
+  PLANE_OVERHANG,
   resolveActualWeek,
   type GoalExpectedPoint,
   type GoalTrajectoryWeek,
@@ -38,17 +40,29 @@ const lossExpected: GoalExpectedPoint[] = [
 
 const base = { actuals: [], weeks, width: 600, height: 300 }
 
+/** The end point of every command in an SVG path d3 emitted (M, L and C). */
+function pathVertices(d: string): Array<{ x: number; y: number }> {
+  return (d.match(/[MLC][^MLCZ]*/g) ?? []).map((command) => {
+    const numbers = command.slice(1).split(/[ ,]+/).filter(Boolean).map(Number)
+    return { x: numbers[numbers.length - 2], y: numbers[numbers.length - 1] }
+  })
+}
+
 describe('deriveTrajectoryGeometry', () => {
   describe('band ordering', () => {
-    it('draws a gain goal band with every column top above its bottom', () => {
+    it('draws a gain goal band as one closed path through every polygon vertex', () => {
       const g = deriveTrajectoryGeometry({
         ...base,
         expected: gainExpected,
         committed: 185,
         stretch: 195,
       })
-      expect(g.bandColumns.length).toBeGreaterThan(0)
-      g.bandColumns.forEach((c) => expect(c.height).toBeGreaterThanOrEqual(0))
+      expect(g.bandPath).toMatch(/Z$/)
+      expect(pathVertices(g.bandPath)).toHaveLength(g.bandPolygon.length)
+      pathVertices(g.bandPath).forEach((v, i) => {
+        expect(v.x).toBeCloseTo(g.bandPolygon[i].x)
+        expect(v.y).toBeCloseTo(g.bandPolygon[i].y)
+      })
     })
 
     it('draws a loss goal band the same way, with low numerically above high', () => {
@@ -58,8 +72,8 @@ describe('deriveTrajectoryGeometry', () => {
         committed: 191,
         stretch: 186,
       })
-      expect(g.bandColumns.length).toBeGreaterThan(0)
-      g.bandColumns.forEach((c) => expect(c.height).toBeGreaterThanOrEqual(0))
+      expect(g.hasBand).toBe(true)
+      expect(pathVertices(g.bandPath)).toHaveLength(lossExpected.length * 2)
     })
 
     it('keeps every polygon top vertex above its paired bottom vertex for a loss goal', () => {
@@ -100,7 +114,7 @@ describe('deriveTrajectoryGeometry', () => {
       })
       expect(g.hasBand).toBe(false)
       expect(g.bandPolygon).toEqual([])
-      expect(g.bandColumns).toEqual([])
+      expect(g.bandPath).toBe('')
     })
   })
 
@@ -189,8 +203,9 @@ describe('deriveTrajectoryGeometry', () => {
         ],
       })
       expect(g.actuals.map((a) => a.weekIndex)).toEqual([1, 2, 4])
-      expect(g.actualSegments).toHaveLength(2)
-      g.actualSegments.forEach((s) => expect(s.length).toBeGreaterThan(0))
+      const xs = pathVertices(g.linePath).map((v) => v.x)
+      expect(xs).toHaveLength(3)
+      xs.slice(1).forEach((x, i) => expect(x).toBeGreaterThan(xs[i]))
     })
   })
 
@@ -282,6 +297,146 @@ describe('deriveTrajectoryGeometry', () => {
     ;[...g.actuals.map((a) => a.y), g.committedY, g.stretchY].forEach((y) => {
       expect(y).toBeGreaterThan(g.plot.top)
       expect(y).toBeLessThan(g.plot.bottom)
+    })
+  })
+
+  describe('actual line', () => {
+    const noisy = [
+      { weekIndex: 1, value: 175 },
+      { weekIndex: 2, value: 179 },
+      { weekIndex: 3, value: 177 },
+      { weekIndex: 4, value: 184, isPR: true },
+      { weekIndex: 5, value: 182 },
+    ]
+
+    it('passes through the centre of every dot', () => {
+      const g = deriveTrajectoryGeometry({
+        ...base,
+        expected: gainExpected,
+        committed: 185,
+        stretch: 195,
+        actuals: noisy,
+      })
+      const vertices = pathVertices(g.linePath)
+      expect(vertices).toHaveLength(g.actuals.length)
+      g.actuals.forEach((dot, i) => {
+        expect(vertices[i].x).toBeCloseTo(dot.x, 6)
+        expect(vertices[i].y).toBeCloseTo(dot.y, 6)
+      })
+    })
+
+    it('never overshoots between points, so a dip stays a dip', () => {
+      const g = deriveTrajectoryGeometry({
+        ...base,
+        expected: gainExpected,
+        committed: 185,
+        stretch: 195,
+        actuals: noisy,
+      })
+      const controls = (g.linePath.match(/C[^C]*/g) ?? []).map((c) =>
+        c.slice(1).split(',').map(Number)
+      )
+      controls.forEach((numbers, i) => {
+        const [a, b] = [g.actuals[i].y, g.actuals[i + 1].y]
+        ;[numbers[1], numbers[3]].forEach((y) => {
+          expect(y).toBeGreaterThanOrEqual(Math.min(a, b) - 1e-6)
+          expect(y).toBeLessThanOrEqual(Math.max(a, b) + 1e-6)
+        })
+      })
+    })
+
+    it('is empty with no actuals', () => {
+      const g = deriveTrajectoryGeometry({
+        ...base,
+        expected: gainExpected,
+        committed: 185,
+        stretch: 195,
+      })
+      expect(g.linePath).toBe('')
+    })
+  })
+
+  describe('y domain and gridlines', () => {
+    it.each([
+      [175, 170],
+      [176, 175],
+      [179.5, 175],
+      [180, 175],
+    ])('floors a lowest value of %d to %d, strictly below it', (lowest, floor) => {
+      expect(paddedFloor(lowest)).toBe(floor)
+    })
+
+    it('puts the padded floor on the plot bottom for a gain goal', () => {
+      const g = deriveTrajectoryGeometry({
+        ...base,
+        expected: gainExpected,
+        committed: 185,
+        stretch: 195,
+      })
+      expect(g.domain.min).toBe(170)
+      expect(g.toY(170)).toBeCloseTo(g.plot.bottom)
+    })
+
+    it('pads below a loss goal’s lowest value, the stretch target', () => {
+      const g = deriveTrajectoryGeometry({
+        ...base,
+        expected: lossExpected,
+        committed: 191,
+        stretch: 186,
+      })
+      expect(g.domain.min).toBe(185)
+    })
+
+    it('keeps the highest value the headroom below the plot top', () => {
+      const g = deriveTrajectoryGeometry({
+        ...base,
+        expected: gainExpected,
+        committed: 185,
+        stretch: 195,
+        headroom: 11,
+      })
+      expect(g.stretchY - g.plot.top).toBeCloseTo(11)
+      expect(g.domain.max).toBeGreaterThan(195)
+    })
+
+    it('puts gridlines on round values inside the plot', () => {
+      const g = deriveTrajectoryGeometry({
+        ...base,
+        expected: gainExpected,
+        committed: 185,
+        stretch: 195,
+      })
+      expect(g.yTicks.map((t) => t.value)).toEqual([170, 175, 180, 185, 190, 195])
+      g.yTicks.forEach((t) => {
+        expect(t.y).toBeGreaterThanOrEqual(g.plot.top)
+        expect(t.y).toBeLessThanOrEqual(g.plot.bottom)
+      })
+    })
+
+    it('draws fewer gridlines when asked for fewer', () => {
+      const g = deriveTrajectoryGeometry({
+        ...base,
+        expected: gainExpected,
+        committed: 185,
+        stretch: 195,
+        tickCount: 3,
+      })
+      expect(g.yTicks.map((t) => t.value)).toEqual([170, 180, 190])
+    })
+  })
+
+  describe('plane', () => {
+    it('spans the plot width and rises above the plot top', () => {
+      const g = deriveTrajectoryGeometry({
+        ...base,
+        expected: gainExpected,
+        committed: 185,
+        stretch: 195,
+      })
+      expect(g.plane.x).toBe(g.plot.left)
+      expect(g.plane.width).toBe(g.plot.right - g.plot.left)
+      expect(g.plane.y).toBe(g.plot.top - PLANE_OVERHANG)
+      expect(g.plane.y + g.plane.height).toBe(g.plot.bottom)
     })
   })
 })
