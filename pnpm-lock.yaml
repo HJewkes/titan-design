@@ -81,6 +81,9 @@ importers:
       '@gluestack-ui/themed':
         specifier: ^1.1.0
         version: 1.1.73(@gluestack-style/react@1.0.57)(@types/react-native@0.73.0(@babel/core@7.28.6)(@types/react@18.3.27)(react@18.3.1))(nativewind@4.2.1(react-native-reanimated@4.2.1(react-native-worklets@0.7.2(@babel/core@7.28.6)(react-native@0.83.1(@babel/core@7.28.6)(@types/react@18.3.27)(react@18.3.1))(react@18.3.1))(react-native@0.83.1(@babel/core@7.28.6)(@types/react@18.3.27)(react@18.3.1))(react@18.3.1))(react-native-svg@15.15.5(react-native@0.83.1(@babel/core@7.28.6)(@types/react@18.3.27)(react@18.3.1))(react@18.3.1))(react-native@0.83.1(@babel/core@7.28.6)(@types/react@18.3.27)(react@18.3.1))(react@18.3.1)(tailwindcss@3.4.19(yaml@2.8.2)))(react-dom@18.3.1(react@18.3.1))(react-native-svg@15.15.5(react-native@0.83.1(@babel/core@7.28.6)(@types/react@18.3.27)(react@18.3.1))(react@18.3.1))(react-native-web@0.19.13(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-native@0.83.1(@babel/core@7.28.6)(@types/react@18.3.27)(react@18.3.1))(react@18.3.1)
+      '@titan-design/chat-protocol':
+        specifier: 0.1.0
+        version: 0.1.0(zod@4.3.6)
       clsx:
         specifier: ^2.1.0
         version: 2.1.1
@@ -2145,6 +2148,12 @@ packages:
     engines: {node: '>=12', npm: '>=6'}
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
+
+  '@titan-design/chat-protocol@0.1.0':
+    resolution: {integrity: sha512-o5je54FrHS4cUM6FQDIvBep+9N95cypZsT/a2yU4O94TOAeSTyPOdhL6C7C1wwssRE0g77F/+vA9UH7dp3S/Iw==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      zod: ^4.0.0
 
   '@ts-graphviz/adapter@2.0.6':
     resolution: {integrity: sha512-kJ10lIMSWMJkLkkCG5gt927SnGZcBuG0s0HHswGzcHTgvtUe7yk5/3zTEr0bafzsodsOq5Gi6FhQeV775nC35Q==}
@@ -5836,7 +5845,7 @@ snapshots:
 
   '@babel/helper-annotate-as-pure@7.27.3':
     dependencies:
-      '@babel/types': 7.28.6
+      '@babel/types': 7.29.8
 
   '@babel/helper-compilation-targets@7.28.6':
     dependencies:
@@ -5871,7 +5880,7 @@ snapshots:
   '@babel/helper-member-expression-to-functions@7.28.5':
     dependencies:
       '@babel/traverse': 7.28.6
-      '@babel/types': 7.28.6
+      '@babel/types': 7.29.8
     transitivePeerDependencies:
       - supports-color
 
@@ -5893,7 +5902,7 @@ snapshots:
 
   '@babel/helper-optimise-call-expression@7.27.1':
     dependencies:
-      '@babel/types': 7.28.6
+      '@babel/types': 7.29.8
 
   '@babel/helper-plugin-utils@7.28.6': {}
 
@@ -5909,7 +5918,7 @@ snapshots:
   '@babel/helper-skip-transparent-expression-wrappers@7.27.1':
     dependencies:
       '@babel/traverse': 7.28.6
-      '@babel/types': 7.28.6
+      '@babel/types': 7.29.8
     transitivePeerDependencies:
       - supports-color
 
@@ -6096,7 +6105,7 @@ snapshots:
       '@babel/helper-module-imports': 7.28.6
       '@babel/helper-plugin-utils': 7.28.6
       '@babel/plugin-syntax-jsx': 7.28.6(@babel/core@7.28.6)
-      '@babel/types': 7.28.6
+      '@babel/types': 7.29.8
     transitivePeerDependencies:
       - supports-color
 
@@ -8054,6 +8063,10 @@ snapshots:
   '@testing-library/user-event@14.6.1(@testing-library/dom@10.4.0)':
     dependencies:
       '@testing-library/dom': 10.4.0
+
+  '@titan-design/chat-protocol@0.1.0(zod@4.3.6)':
+    dependencies:
+      zod: 4.3.6
 
   '@ts-graphviz/adapter@2.0.6':
     dependencies:
