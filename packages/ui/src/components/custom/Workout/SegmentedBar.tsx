@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { View, Animated, Easing, type ViewProps, type DimensionValue } from 'react-native'
 import { SET_LEVEL_FLAT_BAR } from '../charts/flatBarGeometry'
 
@@ -40,6 +40,13 @@ export interface SegmentedBarSegment {
    * unknown" trail). Ignored for `pulse` segments, which drive their own opacity.
    */
   opacity?: number
+  /**
+   * Draw the slot as a 1px outline in `color` with no fill — a cell that is
+   * present but unearned (a planned rep, a week whose target was missed).
+   */
+  outline?: boolean
+  /** A 1px ring around the whole slot, over any fill: "this is the one you are in". */
+  ringColor?: string
 }
 
 export interface SegmentedBarProps extends ViewProps {
@@ -58,6 +65,11 @@ export interface SegmentedBarProps extends ViewProps {
    * (e.g. SetBar) preserve its own test hooks; defaults to `segmented-bar-segment`.
    */
   segmentTestID?: (segment: SegmentedBarSegment, index: number) => string | undefined
+  /**
+   * Wrap each rendered slot — a tooltip, a press target — without this atom
+   * knowing what the wrapper is. Returns the slot unchanged by default.
+   */
+  renderSegment?: (slot: ReactNode, segment: SegmentedBarSegment, index: number) => ReactNode
 }
 
 /** The shared active-pulse loop: a single 0→1→0 value driving every pulsing segment. */
@@ -104,6 +116,7 @@ export function SegmentedBar({
   radius = SET_LEVEL_FLAT_BAR.radius,
   marker = null,
   segmentTestID,
+  renderSegment,
   style,
   ...props
 }: SegmentedBarProps) {
@@ -115,20 +128,26 @@ export function SegmentedBar({
         const fillStyle = {
           width: `${(seg.fill ?? 1) * 100}%` as DimensionValue,
           height: '100%' as DimensionValue,
-          backgroundColor: seg.color,
+          backgroundColor: seg.outline ? 'transparent' : seg.color,
+          borderWidth: seg.outline ? 1 : undefined,
+          borderColor: seg.outline ? seg.color : undefined,
           opacity: seg.opacity,
         }
         const testID = segmentTestID?.(seg, i) ?? 'segmented-bar-segment'
-        return (
+        // Without a wrapper the slot keeps its own flex and leading gap, so the
+        // rendered tree is unchanged for every existing consumer.
+        const slot = (
           <View
             key={i}
             style={{
-              flex: seg.weight ?? 1,
+              flex: renderSegment ? 1 : (seg.weight ?? 1),
               minWidth: 0,
               height: '100%',
-              marginLeft: seg.leadingGap,
+              marginLeft: renderSegment ? undefined : seg.leadingGap,
               borderRadius: radius,
               overflow: 'hidden',
+              borderWidth: seg.ringColor ? 1 : undefined,
+              borderColor: seg.ringColor,
             }}
           >
             {seg.pulse ? (
@@ -155,6 +174,19 @@ export function SegmentedBar({
             ) : (
               <View style={fillStyle} accessibilityElementsHidden testID={testID} />
             )}
+          </View>
+        )
+        return (
+          <View
+            key={i}
+            style={{
+              flex: seg.weight ?? 1,
+              minWidth: 0,
+              height: '100%',
+              marginLeft: seg.leadingGap,
+            }}
+          >
+            {renderSegment ? renderSegment(slot, seg, i) : slot}
           </View>
         )
       })}
