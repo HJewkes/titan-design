@@ -22,6 +22,9 @@ import {
   type TrajectoryPalette,
 } from './GoalTrajectoryPlot'
 import { useTrajectoryEntrance } from './goalTrajectoryMotion'
+import type { BandFade } from './GoalTrajectoryBand'
+import type { BandCurve } from './GoalTrajectoryChartGeometry'
+import type { PlotBaseline } from './GoalTrajectoryPlot'
 
 export type {
   GoalActualPoint,
@@ -112,6 +115,12 @@ export interface GoalTrajectoryChartProps extends ViewProps {
    * renders the final frame at once (visual baselines); reduced motion forces it off.
    */
   animate?: boolean
+  /** Exploration (VW-385 round 2): what marks the plane's bottom edge. */
+  baseline?: PlotBaseline
+  /** Exploration (VW-385 round 2): a subtle fade across the expected band. */
+  bandFade?: BandFade
+  /** Exploration (VW-385 round 2): straight or monotone-smoothed band edges. */
+  bandCurve?: BandCurve
   className?: string
 }
 
@@ -173,6 +182,9 @@ export function GoalTrajectoryChart({
   metricLabel = 'Goal',
   leftShadowSpread = DEFAULT_LEFT_SHADOW_SPREAD,
   animate = true,
+  baseline = 'inset-rule',
+  bandFade = 'none',
+  bandCurve = 'linear',
   className,
   ...props
 }: GoalTrajectoryChartProps) {
@@ -194,8 +206,20 @@ export function GoalTrajectoryChart({
         width,
         height,
         tickCount: density.tickCount,
+        bandCurve,
       }),
-    [expected, committed, stretch, actuals, weeks, mesoBoundaries, width, height, density]
+    [
+      expected,
+      committed,
+      stretch,
+      actuals,
+      weeks,
+      mesoBoundaries,
+      width,
+      height,
+      density,
+      bandCurve,
+    ]
   )
 
   if (!geometry.hasBand && !geometry.hasActuals) {
@@ -238,6 +262,9 @@ export function GoalTrajectoryChart({
             stroke: density.stroke,
             star: density.star,
             leftShadowSpread,
+            baseline,
+            bandFade,
+            bandCurve,
           }}
           entrance={entrance}
         />

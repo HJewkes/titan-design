@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { View } from 'react-native'
 import { Surface } from '../../ui/surface'
+import { Typography } from '../Typography'
 import { GoalTrajectoryChart } from './GoalTrajectoryChart'
 import type { GoalActualPoint, GoalExpectedPoint, GoalTrajectoryWeek } from './GoalTrajectoryChart'
 
@@ -84,6 +86,21 @@ const meta: Meta<typeof GoalTrajectoryChart> = {
     animate: {
       control: 'boolean',
       description: 'Play the entrance (line draw, then shadow and points). Remount to replay.',
+    },
+    baseline: {
+      control: { type: 'inline-radio' },
+      options: ['inset-rule', 'lip'],
+      description: 'Exploration: floor gridline pulled clear of the corners, or the card rim light',
+    },
+    bandFade: {
+      control: { type: 'inline-radio' },
+      options: ['none', 'centre-20', 'centre-14', 'across-20'],
+      description: 'Exploration: band opacity 28% at the centre line fading to the edge value',
+    },
+    bandCurve: {
+      control: { type: 'inline-radio' },
+      options: ['linear', 'monotone'],
+      description: 'Exploration: straight band edges, or smoothed like the actual line',
     },
     leftShadowSpread: {
       control: { type: 'range', min: 0, max: 0.08, step: 0.005 },
@@ -293,4 +310,66 @@ export const WallMotion: Story = {
 /** The same noisy block at phone width: 2px line, three gridlines. */
 export const PhoneMotion: Story = {
   args: { ...WallMotion.args, ...PHONE } as Story['args'],
+}
+
+/*
+ * VW-385 round 2 explorations. Each story is NoMotion with one treatment
+ * changed, so they screenshot the same frame. The human picks; the losing
+ * options are deleted from the component and these stories go with them.
+ */
+
+/** Band edges smoothed with the actual line's monotone cubic. */
+export const ExploreBandSmoothed: Story = {
+  args: { ...NoMotion.args, bandCurve: 'monotone' },
+}
+
+/** Band 28% on its centre line fading to 20% at both edges. */
+export const ExploreBandFadeCentre20: Story = {
+  args: { ...NoMotion.args, bandFade: 'centre-20' },
+}
+
+/** Band 28% on its centre line fading to 14% at both edges. */
+export const ExploreBandFadeCentre14: Story = {
+  args: { ...NoMotion.args, bandFade: 'centre-14' },
+}
+
+/** Band 28% at w1 fading to 20% at the last week. */
+export const ExploreBandFadeAcross20: Story = {
+  args: { ...NoMotion.args, bandFade: 'across-20' },
+}
+
+/** Baseline A (the default): the floor gridline, pulled clear of the rounded corners. */
+export const ExploreBaselineInsetRule: Story = {
+  args: { ...NoMotion.args, baseline: 'inset-rule' },
+}
+
+/** Baseline B: no floor gridline; the plane wears the card rim light on its bottom edge. */
+export const ExploreBaselineLip: Story = {
+  args: { ...NoMotion.args, baseline: 'lip' },
+}
+
+const TREATMENTS: Array<{ caption: string; args: Partial<Story['args']> }> = [
+  { caption: 'Flat band (locked), baseline A', args: {} },
+  { caption: 'Smoothed band edges', args: { bandCurve: 'monotone' } },
+  { caption: 'Centre fade 28% to 20%', args: { bandFade: 'centre-20' } },
+  { caption: 'Centre fade 28% to 14%', args: { bandFade: 'centre-14' } },
+  { caption: 'Across fade 28% at w1 to 20% at w6', args: { bandFade: 'across-20' } },
+  { caption: 'Baseline B: card rim light, no floor rule', args: { baseline: 'lip' } },
+]
+
+/** Every round-2 treatment stacked on the same data, for a side-by-side read. */
+export const ExploreAllTreatments: Story = {
+  args: { ...NoMotion.args },
+  render: (args) => (
+    <View style={{ gap: 20 }}>
+      {TREATMENTS.map((treatment) => (
+        <View key={treatment.caption} style={{ gap: 6 }}>
+          <Typography variant="caption" color="secondary">
+            {treatment.caption}
+          </Typography>
+          <GoalTrajectoryChart {...args} {...treatment.args} />
+        </View>
+      ))}
+    </View>
+  ),
 }

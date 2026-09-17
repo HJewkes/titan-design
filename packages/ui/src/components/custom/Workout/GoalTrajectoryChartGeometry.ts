@@ -62,11 +62,15 @@ export interface GoalTrajectoryGeometryInput {
   mesoBoundaries?: number[]
   width: number
   height: number
-  /** Approximate gridline count; d3 picks round values near it. Default 5. */
+  /** Most gridlines to draw; d3 picks round values and the step widens to stay under it. Default 5. */
   tickCount?: number
+  /** Band edge interpolation. `monotone` smooths the edges the way the actual line is. */
+  bandCurve?: BandCurve
   /** Rule label font size in px; the y-domain pads so those labels clear the plane. */
   labelFont?: number
 }
+
+export type BandCurve = 'linear' | 'monotone'
 
 export interface GeometryPoint {
   x: number
@@ -122,6 +126,8 @@ export interface GoalTrajectoryGeometry {
   bandPolygon: GeometryPoint[]
   /** SVG path for the band: straight edges, because the band is a plan. */
   bandPath: string
+  /** Per-week band extents in px, for layered band treatments ({@link bandPathAt}). */
+  bandSlices: BandSlice[]
   /** SVG path for the actual line: monotone cubic, so it passes through every point. */
   linePath: string
   yTicks: YTick[]
@@ -346,7 +352,7 @@ function deloadRects(
     })
 }
 
-interface BandSlice {
+export interface BandSlice {
   x: number
   top: number
   bottom: number
@@ -390,10 +396,38 @@ function actualCoords(
   }))
 }
 
-const bandArea = area<BandSlice>()
-  .x((d) => d.x)
-  .y0((d) => d.bottom)
-  .y1((d) => d.top)
+/**
+ * The band path, optionally narrowed about its centre line: `spread` 1 is the
+ * full band, 0.5 the middle half of it at every week.
+ */
+export function bandPathAt(slices: BandSlice[], spread = 1, curve: BandCurve = 'linear'): string {
+  if (slices.length < 2) return ''
+  const half = (d: BandSlice): number => ((d.bottom - d.top) / 2) * spread
+  const centre = (d: BandSlice): number => (d.top + d.bottom) / 2
+  const shape = area<BandSlice>()
+    .x((d) => d.x)
+    .y0((d) => centre(d) + half(d))
+    .y1((d) => centre(d) - half(d))
+  return (curve === 'monotone' ? shape.curve(curveMonotoneX) : shape)(slices) ?? ''
+}
+
+/**
+ * Round-valued ticks, at most one more than asked. d3's step for a count can
+ * overshoot it (a 14-unit span at 5 gives 7, at step 2), so the request shrinks
+ * until the lines fit; one extra is allowed so a 25-unit span keeps its six
+ * lines at step 5 rather than collapsing to three at step 10.
+ */
+export function cappedTicks(
+  scale: { ticks: (count: number) => number[] },
+  target: number
+): number[] {
+  const max = target + 1
+  for (let count = target; count > 1; count--) {
+    const ticks = scale.ticks(count)
+    if (ticks.length <= max) return ticks
+  }
+  return scale.ticks(1).slice(0, max)
+}
 
 const actualLine = line<ActualCoord>()
   .x((d) => d.x)
@@ -449,11 +483,13 @@ export function deriveTrajectoryGeometry(
     toY,
     domain: { min: domainMin, max: domainMax },
     bandPolygon: hasBand ? ringOf(slices) : [],
-    bandPath: hasBand ? (bandArea(slices) ?? '') : '',
+    bandPath: hasBand ? bandPathAt(slices, 1, input.bandCurve) : '',
+    bandSlices: hasBand ? slices : [],
     linePath: actuals.length > 0 ? (actualLine(actuals) ?? '') : '',
-    yTicks: yScale
-      .ticks(input.tickCount ?? DEFAULT_TICK_COUNT)
-      .map((value) => ({ value, y: toY(value) })),
+    yTicks: cappedTicks(yScale, input.tickCount ?? DEFAULT_TICK_COUNT).map((value) => ({
+      value,
+      y: toY(value),
+    })),
     committedY: toY(committed),
     stretchY: toY(stretch),
     actuals,

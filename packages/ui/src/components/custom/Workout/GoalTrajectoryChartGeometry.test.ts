@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { scaleLinear } from 'd3-scale'
 import {
   deriveTrajectoryGeometry,
   flattenDeloadWeeks,
@@ -9,6 +10,8 @@ import {
   LABEL_CLEARANCE,
   MARKER_CLEARANCE,
   ruleLabelTop,
+  bandPathAt,
+  cappedTicks,
   type GoalExpectedPoint,
   type GoalTrajectoryWeek,
 } from './GoalTrajectoryChartGeometry'
@@ -524,6 +527,81 @@ describe('deriveTrajectoryGeometry', () => {
       expect(ruleLabelTop(large.stretchY, 16)).toBeGreaterThanOrEqual(
         large.plane.y + LABEL_CLEARANCE - 1e-9
       )
+    })
+  })
+
+  describe('gridline cap', () => {
+    it('widens the step rather than draw seven lines for five', () => {
+      const d3Like = {
+        ticks: (count: number) =>
+          count >= 5 ? [186, 188, 190, 192, 194, 196, 198] : [185, 190, 195],
+      }
+      expect(cappedTicks(d3Like, 5)).toEqual([185, 190, 195])
+    })
+
+    it('keeps six lines at step 5 over a 25-unit span', () => {
+      expect(cappedTicks(scaleLinear().domain([170, 196]), 5)).toEqual([
+        170, 175, 180, 185, 190, 195,
+      ])
+    })
+
+    it('never shows more than six gridlines on the wall loss goal', () => {
+      const g = deriveTrajectoryGeometry({
+        ...base,
+        width: 1200,
+        height: 340,
+        committed: 193,
+        stretch: 188,
+        expected: [
+          { weekIndex: 1, low: 198, high: 198 },
+          { weekIndex: 6, low: 193, high: 188 },
+        ],
+      })
+      expect(g.yTicks.length).toBeLessThanOrEqual(6)
+      expect(g.yTicks.length).toBeGreaterThanOrEqual(3)
+    })
+  })
+
+  describe('band shape', () => {
+    const g = deriveTrajectoryGeometry({
+      ...base,
+      expected: gainExpected,
+      committed: 185,
+      stretch: 195,
+    })
+
+    it('smooths the band edges through every weekly edge point', () => {
+      const d = bandPathAt(g.bandSlices, 1, 'monotone')
+      expect(d).toContain('C')
+      const vertices = pathVertices(d)
+      expect(vertices).toHaveLength(g.bandPolygon.length)
+      vertices.forEach((v, i) => {
+        expect(Math.abs(v.x - g.bandPolygon[i].x)).toBeLessThanOrEqual(PATH_PRECISION)
+        expect(Math.abs(v.y - g.bandPolygon[i].y)).toBeLessThanOrEqual(PATH_PRECISION)
+      })
+    })
+
+    it('keeps a smoothed band flat across the deload week', () => {
+      const d = bandPathAt(g.bandSlices, 1, 'monotone')
+      const segments = (d.match(/C[^CLZ]*/g) ?? []).map((c) => c.slice(1).split(',').map(Number))
+      const deloadTop = segments[3]
+      ;[deloadTop[1], deloadTop[3], deloadTop[5]].forEach((y) => {
+        expect(Math.abs(y - g.bandSlices[3].top)).toBeLessThanOrEqual(PATH_PRECISION)
+      })
+    })
+
+    it('narrows the band about its centre line', () => {
+      const vertices = pathVertices(bandPathAt(g.bandSlices, 0.5))
+      g.bandSlices.forEach((slice, i) => {
+        const centre = (slice.top + slice.bottom) / 2
+        const quarter = (slice.bottom - slice.top) / 4
+        expect(vertices[i].y).toBeCloseTo(centre - quarter, 2)
+      })
+    })
+
+    it('draws the band as the straight path unless asked to smooth', () => {
+      expect(g.bandPath).toBe(bandPathAt(g.bandSlices))
+      expect(g.bandPath).not.toContain('C')
     })
   })
 })

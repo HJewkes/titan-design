@@ -256,10 +256,10 @@ describe('GoalTrajectoryChart', () => {
       const { unmount } = render(
         <GoalTrajectoryChart {...baseProps} width={360} status="on_track" />
       )
-      expect(screen.getAllByTestId('goal-trajectory-chart-gridline')).toHaveLength(3)
+      expect(screen.getAllByTestId('goal-trajectory-chart-y-label')).toHaveLength(3)
       unmount()
       render(<GoalTrajectoryChart {...baseProps} width={1200} status="on_track" />)
-      expect(screen.getAllByTestId('goal-trajectory-chart-gridline').length).toBeGreaterThan(3)
+      expect(screen.getAllByTestId('goal-trajectory-chart-y-label').length).toBeGreaterThan(3)
     })
   })
 

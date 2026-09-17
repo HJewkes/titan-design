@@ -8,6 +8,8 @@ import { useId } from 'react'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { pressedLevel, surfaceBackground, type SurfaceLevel } from '../../../theme/surface-planes'
 import { alpha } from '../../../utils/colors'
+import { LIFT_RIM_ALPHA } from '../../../theme/lift'
+import { primitiveColors } from '../../../theme/tokens/primitives'
 import { roundWeight } from '../../../utils/workout-format'
 import type {
   ActualCoord,
@@ -15,7 +17,8 @@ import type {
   GoalTrajectoryStatus,
   GoalTrajectoryWeek,
 } from './GoalTrajectoryChartGeometry'
-import { CHART_FONT, RULE_LABEL_LIFT } from './GoalTrajectoryChartGeometry'
+import { CHART_FONT, RULE_LABEL_LIFT, type BandCurve } from './GoalTrajectoryChartGeometry'
+import { BAND_OPACITY, BandLayer, type BandFade } from './GoalTrajectoryBand'
 import {
   ENTRANCE,
   drawStyle,
@@ -73,7 +76,10 @@ export function trajectoryPalette(
   const shade = t['scrim-default']
   return {
     status: t[STATUS_TOKEN[status]],
-    band: alpha(t['brand-secondary'], 0.28),
+    band: alpha(t['brand-secondary'], BAND_OPACITY),
+    bandHue: t['brand-secondary'],
+    // The card rim's white and alpha, so the plane's lip matches every lifted card.
+    lip: alpha(primitiveColors.white, LIFT_RIM_ALPHA[mode]),
     rule: t['text-secondary'],
     grid: alpha(t['text-primary'], 0.12),
     axis: t['text-tertiary'],
@@ -89,10 +95,19 @@ export function trajectoryPalette(
 
 export type TrajectoryPalette = ReturnType<typeof trajectoryPalette>
 
+/**
+ * What sits on the plane's bottom edge: `inset-rule` keeps the floor gridline,
+ * pulled in clear of the rounded corners; `lip` drops it for the card rim light.
+ */
+export type PlotBaseline = 'inset-rule' | 'lip'
+
 export interface PlotStyle {
   stroke: number
   star: number
   leftShadowSpread: number
+  baseline: PlotBaseline
+  bandFade: BandFade
+  bandCurve: BandCurve
 }
 
 interface LayerProps {
@@ -159,24 +174,54 @@ function PlotDefs({
   )
 }
 
-function planeBox(plane: GoalTrajectoryGeometry['plane']) {
+type PlaneBox = GoalTrajectoryGeometry['plane']
+
+function planeBox(plane: PlaneBox): PlaneBox {
   return { x: plane.x, y: plane.y, width: plane.width, height: plane.height }
 }
 
-function Gridlines({ geometry, palette, showLabels }: LayerProps & { showLabels: boolean }) {
+/** The floor gridline lands on the plane's bottom edge, where it reads as the lip. */
+function isBaseline(tickY: number, plotBottom: number): boolean {
+  return Math.abs(tickY - plotBottom) < 0.5
+}
+
+function Gridline({
+  geometry,
+  palette,
+  y,
+  baseline,
+}: LayerProps & { y: number; baseline: PlotBaseline | null }) {
+  if (baseline === 'lip') return null
+  const inset = baseline === 'inset-rule' ? PLANE_RADIUS : 0
+  return (
+    <line
+      data-testid={baseline ? 'goal-trajectory-chart-baseline' : 'goal-trajectory-chart-gridline'}
+      x1={geometry.plot.left + inset}
+      x2={geometry.plot.right - inset}
+      y1={y}
+      y2={y}
+      stroke={palette.grid}
+      strokeWidth={1}
+    />
+  )
+}
+
+function Gridlines({
+  geometry,
+  palette,
+  showLabels,
+  baseline,
+}: LayerProps & { showLabels: boolean; baseline: PlotBaseline }) {
   const { plot, yTicks } = geometry
   return (
     <g data-testid="goal-trajectory-chart-gridlines">
       {yTicks.map((tick) => (
         <g key={tick.value}>
-          <line
-            data-testid="goal-trajectory-chart-gridline"
-            x1={plot.left}
-            x2={plot.right}
-            y1={tick.y}
-            y2={tick.y}
-            stroke={palette.grid}
-            strokeWidth={1}
+          <Gridline
+            geometry={geometry}
+            palette={palette}
+            y={tick.y}
+            baseline={isBaseline(tick.y, plot.bottom) ? baseline : null}
           />
           {showLabels && (
             <text
@@ -194,6 +239,27 @@ function Gridlines({ geometry, palette, showLabels }: LayerProps & { showLabels:
         </g>
       ))}
     </g>
+  )
+}
+
+function roundedRectPath({ x, y, width, height }: PlaneBox, r: number): string {
+  return (
+    `M${x + r},${y}H${x + width - r}A${r},${r} 0 0 1 ${x + width},${y + r}` +
+    `V${y + height - r}A${r},${r} 0 0 1 ${x + width - r},${y + height}` +
+    `H${x + r}A${r},${r} 0 0 1 ${x},${y + height - r}V${y + r}A${r},${r} 0 0 1 ${x + r},${y}Z`
+  )
+}
+
+/**
+ * The inset well's bottom lip: the plane minus itself shifted up 1px, which
+ * leaves a 1px sliver that follows the rounded corners (CSS `inset 0 -1px 0`).
+ */
+function PlaneLip({ geometry, palette }: LayerProps) {
+  const box = planeBox(geometry.plane)
+  const d =
+    roundedRectPath(box, PLANE_RADIUS) + roundedRectPath({ ...box, y: box.y - 1 }, PLANE_RADIUS)
+  return (
+    <path data-testid="goal-trajectory-chart-lip" d={d} fill={palette.lip} fillRule="evenodd" />
   )
 }
 
@@ -421,16 +487,15 @@ export function GoalTrajectoryPlot(props: GoalTrajectoryPlotProps) {
         rx={PLANE_RADIUS}
         fill={palette.plane}
       />
-      <Gridlines {...layer} showLabels={props.showYLabels} />
+      <Gridlines {...layer} showLabels={props.showYLabels} baseline={style.baseline} />
       <g clipPath={`url(#${ids.clip})`}>
         <DeloadAndBoundaries {...layer} height={height} />
-        {geometry.hasBand && (
-          <path
-            data-testid="goal-trajectory-chart-band"
-            d={geometry.bandPath}
-            fill={palette.band}
-          />
-        )}
+        <BandLayer
+          geometry={geometry}
+          hue={palette.bandHue}
+          fade={style.bandFade}
+          curve={style.bandCurve}
+        />
         <TargetRules {...layer} />
         <ActualLine
           {...layer}
@@ -445,6 +510,7 @@ export function GoalTrajectoryPlot(props: GoalTrajectoryPlotProps) {
         ))}
         <rect data-testid="goal-trajectory-chart-inner-top" {...box} fill={`url(#${ids.top})`} />
         <rect data-testid="goal-trajectory-chart-inner-left" {...box} fill={`url(#${ids.left})`} />
+        {style.baseline === 'lip' && <PlaneLip {...layer} />}
       </g>
       <RuleLabels {...layer} committed={props.committed} stretch={props.stretch} />
       <WeekAxis {...layer} weeks={props.weeks} stride={props.weekStride} />
