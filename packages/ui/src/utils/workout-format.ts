@@ -1,5 +1,6 @@
 // Font mapping context: presentation-only helpers, no rendering.
 import { WORKOUT_TOKENS } from '../theme/workout-tokens'
+import { formatTrimmedDecimal } from './number-format'
 
 /**
  * Presentation helpers for workout metrics.
@@ -132,4 +133,56 @@ export function formatWorkoutStats(
   if (totalVolume != null) parts.push(`${totalVolume} ${unit}`)
   if (duration) parts.push(duration)
   return parts.join(' · ')
+}
+
+/** The non-load goal metrics; their target is a single value. */
+export type GoalValueMetric = 'bodyweight' | 'sessions_28d' | 'e1rm_trend' | 'composite_strength'
+
+/** What stands between a lifter and a goal milestone, in the one unit that leads. */
+export type GoalMilestoneGap =
+  | { kind: 'load'; amount: number }
+  | { kind: 'reps'; amount: number }
+  | { kind: 'value'; amount: number }
+  | { kind: 'none' }
+
+export function formatMilestoneLoad(load: number): string {
+  return formatTrimmedDecimal(load, 1)
+}
+
+function plural(n: number, one: string, many: string): string {
+  return `${formatMilestoneLoad(n)} ${n === 1 ? one : many}`
+}
+
+/** "8 x 105 lb": reps first, as the goal cards print it. */
+export function formatMilestoneSet(reps: number, load: number, unit: string): string {
+  return `${reps} x ${formatMilestoneLoad(load)} ${unit}`
+}
+
+/** "185 lb bodyweight", "12 sessions in 28 days", "e1RM 180 lb", "strength score 72". */
+export function formatMilestoneValue(metric: GoalValueMetric, value: number, unit = ''): string {
+  const n = formatMilestoneLoad(value)
+  switch (metric) {
+    case 'bodyweight':
+      return `${n} ${unit} bodyweight`.replace(/\s+/g, ' ')
+    case 'sessions_28d':
+      return `${plural(value, 'session', 'sessions')} in 28 days`
+    case 'e1rm_trend':
+      return `e1RM ${n} ${unit}`.trim()
+    case 'composite_strength':
+      return `strength score ${n}`
+  }
+}
+
+/** The shortfall as a hero: "5 lb", "2 reps", "1 session", "4 pts"; null once closed. */
+export function formatMilestoneGapAmount(
+  gap: GoalMilestoneGap,
+  unit: string,
+  metric?: GoalValueMetric
+): string | null {
+  if (gap.kind === 'none') return null
+  if (gap.kind === 'load') return `${formatMilestoneLoad(gap.amount)} ${unit}`
+  if (gap.kind === 'reps') return plural(gap.amount, 'rep', 'reps')
+  if (metric === 'sessions_28d') return plural(gap.amount, 'session', 'sessions')
+  if (metric === 'composite_strength') return plural(gap.amount, 'pt', 'pts')
+  return `${formatMilestoneLoad(gap.amount)} ${unit}`.trim()
 }

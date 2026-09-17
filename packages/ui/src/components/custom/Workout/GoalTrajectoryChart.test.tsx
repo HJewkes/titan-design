@@ -176,10 +176,11 @@ describe('GoalTrajectoryChart', () => {
       const ahead = toneOf('ahead')
       expect(ahead).not.toBe(toneOf('behind'))
       expect(ahead).not.toBe(dark['status-warning'])
+      expect(ahead).not.toBe(dark['brand-primary'])
     })
 
-    it('paints "ahead" in the brand tone', () => {
-      expect(toneOf('ahead')).toBe(dark['brand-primary'])
+    it('paints "ahead" in a cool tone, clear of the warm pacing family', () => {
+      expect(toneOf('ahead')).toBe(dark['status-info'])
     })
 
     it('gives each status its own pill label', () => {

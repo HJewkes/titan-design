@@ -32,13 +32,25 @@ type ColorToken = keyof ReturnType<typeof getSemanticColors>
 /**
  * Status tone tokens.
  *
- * `ahead` takes the BRAND tone, never warning-amber: amber is the pacing/PR hue,
- * and painting "better than asked" in the warning colour is the collision
- * REJECTED.md records under "amber holds".
+ * `ahead` is a COOL tone, never warning-amber and no longer the brand orange:
+ * amber is the pacing/PR hue, and REJECTED.md's "amber holds" rule is that a hue
+ * must never collide with the semantic pacing tones. Orange satisfied the letter
+ * of that rule but not its intent — beside `behind`'s amber it read as the same
+ * warm family (VW-385 round 3, human call: "change ahead for chart and tile
+ * together"). Blue cannot collide with amber at any value.
+ *
+ * Cyan (`brand-secondary`) was the other candidate and lost: the expected band is
+ * painted in exactly that hue at 0.28 alpha, so an "ahead" line would sit on a
+ * wash of itself. Blue's own overlap is `tolerated`, which shares the token; the
+ * two never describe the same target at the same time.
+ *
+ * These are the existing semantic status tokens. When the `dataviz-*` semantic
+ * keys land the chart-specific entries should move onto them; the map is the
+ * single place that swap has to happen.
  */
 export const STATUS_TOKEN = {
   on_track: 'status-success',
-  ahead: 'brand-primary',
+  ahead: 'status-info',
   behind: 'status-warning',
   tolerated: 'status-info',
   deload_week: 'result-neutral',
