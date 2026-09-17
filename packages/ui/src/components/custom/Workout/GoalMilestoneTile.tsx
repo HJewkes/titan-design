@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { View } from 'react-native'
 
 import { cn } from '../../../utils/cn'
@@ -14,7 +14,6 @@ import { primitiveColors } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { Indicator } from '../../ui/indicator'
 import { Surface, useSurfaceMode } from '../../ui/surface'
-import { Metric } from '../Metric'
 import { useMeasuredWidth } from '../Table/column-fit'
 import { Typography } from '../Typography'
 import type { GoalDirection, GoalTrajectoryStatus } from './GoalTrajectoryChartGeometry'
@@ -49,6 +48,8 @@ export interface GoalMilestoneTileProps {
   status: GoalTrajectoryStatus
   /** One entry per week of the block, aligned to week 1. */
   weeks?: readonly GoalWeekEntry[]
+  /** Pins the summary row's branch; defaults to the measured fit. */
+  summaryFit?: 'row' | 'stacked'
   /** `compact` drops the header; the week cells stay unless `showWeeks` says otherwise. */
   layout?: GoalMilestoneTileLayout
   showWeeks?: boolean
@@ -68,10 +69,8 @@ const SCALE = {
     hero: 'text-[40px] leading-[44px]',
     pad: 'p-inset-lg gap-stack-md',
     cell: 10,
-    // `sm`, not `md`: at wall size a 32px metric value fought the 40px hero.
-    metric: 'sm' as const,
   },
-  phone: { hero: 'text-2xl', pad: 'p-inset-md gap-stack-sm', cell: 8, metric: 'sm' as const },
+  phone: { hero: 'text-2xl', pad: 'p-inset-md gap-stack-sm', cell: 8 },
 } as const
 
 type Palette = ReturnType<typeof getSemanticColors>
@@ -184,41 +183,94 @@ function Hero({ tile, scale }: { tile: ResolvedTile; scale: GoalMilestoneTileSca
 }
 
 /** Best and goal, read together, on the hero's line. */
-function TargetMetrics({ tile, scale }: { tile: ResolvedTile; scale: GoalMilestoneTileScale }) {
+/** One fact: a muted word and its figure, the figure bold and bright. */
+function Fact({
+  label,
+  value,
+  align,
+}: {
+  label: string
+  value: string
+  align: 'left' | 'center' | 'right'
+}) {
   return (
-    <View
-      style={{ flexDirection: 'row' }}
-      className="gap-inline-lg"
-      testID="goal-milestone-metrics"
-    >
-      <Metric label="BEST" value={tile.bestText ?? '—'} size={SCALE[scale].metric} />
-      <Metric label="GOAL" value={targetText(tile.props.target)} size={SCALE[scale].metric} />
-    </View>
+    <Typography variant="caption" color="tertiary" align={align} maxLines={1}>
+      {`${label} `}
+      <Typography variant="caption" color="primary" className="font-bold">
+        {value}
+      </Typography>
+    </Typography>
+  )
+}
+
+/** The week reads as one muted phrase, so it takes no bold figure of its own. */
+function WeekFact({ text, testID }: { text: string; testID?: string }) {
+  return (
+    <Typography variant="caption" color="tertiary" maxLines={1} testID={testID}>
+      {text}
+    </Typography>
+  )
+}
+
+/** Week, best, goal — in the order they read: where we are, where we got, where we go. */
+function FactItems({
+  tile,
+  spread,
+  measuring = false,
+}: {
+  tile: ResolvedTile
+  spread: boolean
+  /** The hidden copy carries no test hooks: one row owns them. */
+  measuring?: boolean
+}) {
+  return (
+    <>
+      <WeekFact
+        text={tile.weekText ?? ''}
+        testID={measuring ? undefined : 'goal-milestone-week-count'}
+      />
+      <Fact label="Best" value={tile.bestText ?? '—'} align={spread ? 'center' : 'left'} />
+      <Fact label="Goal" value={targetText(tile.props.target)} align={spread ? 'right' : 'left'} />
+    </>
   )
 }
 
 /**
- * The gap leads, with the week count under it, and best and goal sit on the same
- * line to its right. They wrap under the hero when the tile is too narrow.
+ * Week left, best centred, goal right — unless the three cannot share a line at
+ * this tile's width, in which case they stack left-aligned rather than wrap
+ * mid-phrase. The fit is MEASURED: a hidden copy of the row reports its natural
+ * width, and the visible row reports the width it has. `onLayout` never fires
+ * under jsdom, so `summaryFit` pins the branch for tests.
  */
-function HeadRow({ tile, scale }: { tile: ResolvedTile; scale: GoalMilestoneTileScale }) {
+function SummaryRow({ tile }: { tile: ResolvedTile }) {
+  const [natural, setNatural] = useState<number | null>(null)
+  const [available, setAvailable] = useState<number | null>(null)
+  const measuredStack = natural !== null && available !== null && natural > available
+  const stacked = tile.props.summaryFit ? tile.props.summaryFit === 'stacked' : measuredStack
+
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        alignItems: 'flex-end',
-        justifyContent: 'space-between',
-      }}
-      className="gap-inline-lg"
-    >
-      <View className="gap-stack-sm">
-        <Hero tile={tile} scale={scale} />
-        <Typography variant="caption" color="tertiary" testID="goal-milestone-week-count">
-          {tile.weekText}
-        </Typography>
+    <View onLayout={(e) => setAvailable(e.nativeEvent.layout.width)}>
+      <View
+        // The measuring copy: laid out unconstrained, never shown, never read.
+        style={{ position: 'absolute', opacity: 0, flexDirection: 'row', alignSelf: 'flex-start' }}
+        className="gap-inline-lg"
+        pointerEvents="none"
+        accessibilityElementsHidden
+        onLayout={(e) => setNatural(e.nativeEvent.layout.width)}
+      >
+        <FactItems tile={tile} spread={false} measuring />
       </View>
-      <TargetMetrics tile={tile} scale={scale} />
+      <View
+        style={
+          stacked
+            ? undefined
+            : { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' }
+        }
+        className={stacked ? 'gap-stack-sm' : 'gap-inline-lg'}
+        testID="goal-milestone-facts"
+      >
+        <FactItems tile={tile} spread={!stacked} />
+      </View>
     </View>
   )
 }
@@ -228,7 +280,8 @@ function PlaneBody({ tile, scale }: { tile: ResolvedTile; scale: GoalMilestoneTi
   const showWeeks = props.showWeeks ?? true
   return (
     <>
-      <HeadRow tile={tile} scale={scale} />
+      <Hero tile={tile} scale={scale} />
+      <SummaryRow tile={tile} />
       {showWeeks && (
         <GoalMilestoneWeekStrip
           weekCount={props.weekCount}
@@ -266,9 +319,9 @@ function accessibleSummary(tile: ResolvedTile): string {
 
 /**
  * The goal's meso target — the block's committed value, due in its last week —
- * led by what is still short. The gap leads with the week count beneath it, and
- * best and goal sit on its line; under them the block's weeks are cells on the
- * same `SegmentedBar` atom the rep and set strips use, each with a tip card.
+ * led by what is still short. Under it one row reads week, best and goal across
+ * the tile, stacking when it cannot fit; under that the block's weeks are cells
+ * on the same `SegmentedBar` atom the rep and set strips use, each with a tip card.
  * The hero's colour is the goal's pace: success once hit, muted once missed.
  *
  * @example

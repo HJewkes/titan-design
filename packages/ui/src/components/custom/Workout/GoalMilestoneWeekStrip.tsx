@@ -83,9 +83,11 @@ function TipBody({
       <Typography variant="body2">
         {cell.entry?.reading ? readingText(cell.entry) : 'No matched set'}
       </Typography>
-      <Pill tone={OUTCOME_PILL_TONE[outcome]} variant="subtle" size="sm" leading="dot">
-        {WEEK_OUTCOME_LABEL[outcome]}
-      </Pill>
+      <View style={{ alignItems: 'center' }}>
+        <Pill tone={OUTCOME_PILL_TONE[outcome]} variant="subtle" size="sm" leading="dot">
+          {WEEK_OUTCOME_LABEL[outcome]}
+        </Pill>
+      </View>
     </View>
   )
 }

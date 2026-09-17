@@ -26,7 +26,7 @@ const base: GoalMilestoneTileProps = {
 }
 
 const hero = () => screen.getByTestId('goal-milestone-hero')
-const metrics = () => screen.getByTestId('goal-milestone-metrics')
+const facts = () => screen.getByTestId('goal-milestone-facts')
 const weekCount = () => screen.getByTestId('goal-milestone-week-count')
 
 describe('GoalMilestoneTile', () => {
@@ -54,23 +54,30 @@ describe('GoalMilestoneTile', () => {
     expect(hero()).toHaveTextContent('8 x 105 lb')
   })
 
-  describe('the head row', () => {
-    it('puts best and goal on the hero line', () => {
+  describe('the fact row', () => {
+    it('reads week, best and goal across one line', () => {
       render(<GoalMilestoneTile {...base} />)
 
-      expect(metrics()).toHaveTextContent('BEST')
-      expect(metrics()).toHaveTextContent('8 x 100 lb')
-      expect(metrics()).toHaveTextContent('GOAL')
-      expect(metrics()).toHaveTextContent('8 x 105 lb')
+      expect(facts()).toHaveTextContent('Week 4 of 6')
+      expect(facts()).toHaveTextContent('Best 8 x 100 lb')
+      expect(facts()).toHaveTextContent('Goal 8 x 105 lb')
+    })
+
+    it('stacks the same three facts when they cannot share a line', () => {
+      render(<GoalMilestoneTile {...base} summaryFit="stacked" />)
+
+      expect(facts()).toHaveTextContent('Week 4 of 6')
+      expect(facts()).toHaveTextContent('Best 8 x 100 lb')
+      expect(facts()).toHaveTextContent('Goal 8 x 105 lb')
     })
 
     it('dashes the best cell when nothing has matched yet', () => {
       render(<GoalMilestoneTile {...base} latest={undefined} />)
 
-      expect(metrics()).toHaveTextContent('—')
+      expect(facts()).toHaveTextContent('—')
     })
 
-    it('names the week count once, under the hero', () => {
+    it('names the week count once, in the fact row', () => {
       render(<GoalMilestoneTile {...base} />)
 
       expect(weekCount()).toHaveTextContent('Week 4 of 6')
@@ -115,7 +122,7 @@ describe('GoalMilestoneTile', () => {
     )
 
     expect(hero()).toHaveTextContent('3.4 lb')
-    expect(metrics()).toHaveTextContent('189 lb bodyweight')
+    expect(facts()).toHaveTextContent('189 lb bodyweight')
   })
 
   describe('the week cells', () => {
@@ -198,11 +205,11 @@ describe('GoalMilestoneTile', () => {
   })
 
   describe('the compact layout', () => {
-    it('keeps the head row and the cells, and drops the header', () => {
+    it('keeps the fact row and the cells, and drops the header', () => {
       render(<GoalMilestoneTile {...base} layout="compact" />)
 
       expect(hero()).toHaveTextContent('5 lb')
-      expect(metrics()).toBeInTheDocument()
+      expect(facts()).toBeInTheDocument()
       expect(screen.getByTestId('goal-milestone-week-strip')).toBeInTheDocument()
       expect(screen.queryByText('Meso target')).toBeNull()
     })
@@ -221,6 +228,7 @@ describe('GoalMilestoneTile', () => {
     ['full', {}],
     ['compact', { layout: 'compact' as const }],
     ['missed', { currentWeek: 7 }],
+    ['stacked facts', { summaryFit: 'stacked' as const }],
   ])('has no accessibility violations (%s)', async (_name, extra) => {
     const { container } = render(<GoalMilestoneTile {...base} {...extra} />)
 
