@@ -17,7 +17,7 @@ import type {
   GoalTrajectoryStatus,
   GoalTrajectoryWeek,
 } from './GoalTrajectoryChartGeometry'
-import { CHART_FONT, RULE_LABEL_LIFT, type BandCurve } from './GoalTrajectoryChartGeometry'
+import { CHART_FONT, ruleLabelLayout, type BandCurve } from './GoalTrajectoryChartGeometry'
 import { BAND_OPACITY, BandLayer, type BandFade } from './GoalTrajectoryBand'
 import {
   ENTRANCE,
@@ -335,37 +335,62 @@ function TargetRules({ geometry, palette }: LayerProps) {
   )
 }
 
+function RuleLabel({
+  palette,
+  x,
+  y,
+  id,
+  children,
+}: {
+  palette: TrajectoryPalette
+  x: number
+  y: number
+  id: string
+  children: string
+}) {
+  return (
+    <text
+      data-testid={`goal-trajectory-chart-${id}`}
+      x={x}
+      y={y}
+      fill={palette.rule}
+      fontSize={CHART_FONT}
+      fontFamily={FONT_FAMILY}
+      textAnchor="end"
+    >
+      {children}
+    </text>
+  )
+}
+
+/**
+ * One label per rule, except when the two rules coincide: a calibrating goal has
+ * committed === stretch, and two labels on one baseline print as one unreadable
+ * word (VW-414). Then they merge into a single right-anchored label.
+ */
 function RuleLabels({
   geometry,
   palette,
   committed,
   stretch,
 }: LayerProps & { committed: number; stretch: number }) {
-  const { plot } = geometry
-  const labels = [
-    {
-      key: 'committed',
-      y: geometry.committedY,
-      text: `Committed ${String(roundWeight(committed))}`,
-    },
-    { key: 'stretch', y: geometry.stretchY, text: `Stretch ${String(roundWeight(stretch))}` },
-  ]
+  const x = geometry.plot.right
+  const layout = ruleLabelLayout(geometry.committedY, geometry.stretchY)
+  if (layout.merged) {
+    return (
+      <RuleLabel palette={palette} x={x} y={layout.committed.y} id="merged-rule-label">
+        {`Committed = Stretch ${String(roundWeight(committed))}`}
+      </RuleLabel>
+    )
+  }
   return (
     <>
-      {labels.map((label) => (
-        <text
-          key={label.key}
-          data-testid={`goal-trajectory-chart-${label.key}-label`}
-          x={plot.right}
-          y={label.y - RULE_LABEL_LIFT}
-          fill={palette.rule}
-          fontSize={CHART_FONT}
-          fontFamily={FONT_FAMILY}
-          textAnchor="end"
-        >
-          {label.text}
-        </text>
-      ))}
+      <RuleLabel palette={palette} x={x} y={layout.committed.y} id="committed-label">
+        {`Committed ${String(roundWeight(committed))}`}
+      </RuleLabel>
+      <RuleLabel palette={palette} x={x} y={layout.stretch.y} id="stretch-label">
+        {`Stretch ${String(roundWeight(stretch))}`}
+      </RuleLabel>
     </>
   )
 }
@@ -377,6 +402,7 @@ function ActualLine({
   shadowId,
   entrance,
 }: LayerProps & { stroke: number; shadowId: string; entrance: EntranceState }) {
+  if (!geometry.linePath) return null
   const common = {
     d: geometry.linePath,
     fill: 'none',
