@@ -22,6 +22,7 @@ import {
   type CandidateSet,
   type DatavizKey,
   type DatavizPalette,
+  type LabelInk,
   type LightCandidate,
 } from './DatavizLightPalette.candidates'
 
@@ -64,9 +65,12 @@ function toColumns(sets: CandidateSet[]): Column[] {
 
 const proposedColumns = (palette: DatavizPalette) => toColumns(LIGHT_CANDIDATE_SETS[palette])
 
-/** A forced white label wins; otherwise black or white, whichever contrasts more. */
-const labelOn = (fill: string, whiteLabels?: boolean) =>
-  whiteLabels ? primitiveColors.white : bestTextColor(fill)
+/** A forced ink wins; otherwise black or white, whichever contrasts more. */
+function labelOn(fill: string, forced?: LabelInk): string {
+  if (forced === 'light') return primitiveColors.white
+  if (forced === 'dark') return primitiveColors.black
+  return bestTextColor(fill)
+}
 
 const paletteKeys = (palette: DatavizPalette): DatavizKey[] =>
   LIGHT_CANDIDATE_SETS[palette][0].steps.map((c) => c.key)
@@ -190,12 +194,12 @@ function Swatch({
   value,
   index,
   candidate,
-  whiteLabels,
+  forcedLabel,
 }: {
   value: string
   index: number
   candidate?: LightCandidate
-  whiteLabels?: boolean
+  forcedLabel?: LabelInk
 }) {
   const { plane } = usePlane()
   return (
@@ -209,7 +213,7 @@ function Swatch({
           justifyContent: 'center',
         }}
       >
-        <Text style={{ color: labelOn(value, whiteLabels), fontSize: 12, fontWeight: '600' }}>
+        <Text style={{ color: labelOn(value, forcedLabel), fontSize: 12, fontWeight: '600' }}>
           {index}
         </Text>
       </View>
@@ -237,7 +241,7 @@ function SwatchRow({ values, set }: { values: string[]; set?: CandidateSet }) {
           value={value}
           index={i}
           candidate={set?.steps[i]}
-          whiteLabels={set?.whiteLabels}
+          forcedLabel={set?.forcedLabels?.[i]}
         />
       ))}
     </View>
@@ -246,6 +250,9 @@ function SwatchRow({ values, set }: { values: string[]; set?: CandidateSet }) {
 
 /** Smallest ΔL at which the centre reads lighter than its arms; one ramp step is ~0.08. */
 const CENTRE_LEAD_MIN = 0.03
+
+/** Minimum lightness drop per step from step 1 on (turn 4 rule). */
+const SEQUENTIAL_DL_MIN = 0.05
 
 /** Palette-specific structure checks: centre, monotony, first-three separation. */
 function paletteChecks(values: string[], palette: DatavizPalette): string[] {
@@ -259,8 +266,14 @@ function paletteChecks(values: string[], palette: DatavizPalette): string[] {
     )
   }
   if (palette === 'sequential') {
-    const monotone = ls.slice(1).every((l, i) => l < ls[i])
-    lines.push(`lightness monotone light→dark: ${monotone ? 'yes' : 'NO'}`)
+    const drops = ls.slice(2).map((l, i) => ls[i + 1] - l)
+    const step01 = ls[1] - ls[0]
+    lines.push(
+      `step 0→1 ${step01 > 0 ? 'lifts' : 'drops'} ΔL ${formatTrimmedDecimal(Math.abs(step01), 3)} (either is allowed)`
+    )
+    lines.push(
+      `monotone from step 1: ${drops.every((d) => d >= SEQUENTIAL_DL_MIN) ? 'yes' : 'NO'} (min ΔL ${formatTrimmedDecimal(Math.min(...drops), 3)})`
+    )
   }
   if (palette === 'categorical') {
     lines.push(`first-three all-pairs CVD ΔE ${fmt1(minPairDelta(values.slice(0, 3), true))}`)
@@ -272,22 +285,22 @@ function paletteChecks(values: string[], palette: DatavizPalette): string[] {
 function Measurements({
   values,
   palette,
-  whiteLabels,
+  forcedLabels,
 }: {
   values: string[]
   palette: DatavizPalette
-  whiteLabels?: boolean
+  forcedLabels?: CandidateSet['forcedLabels']
 }) {
   const { mode } = usePlane()
   const cs = values.map(chroma)
-  const labels = values.map((v) => contrastRatio(v, labelOn(v, whiteLabels)))
+  const labels = values.map((v, i) => contrastRatio(v, labelOn(v, forcedLabels?.[i])))
   const lines = [
     `OKLCH L ${values.map(lightness).map(fmt2).join(' / ')}`,
     `OKLCH C ${cs.map((c) => formatTrimmedDecimal(c, 3)).join(' / ')}`,
     `min C ${formatTrimmedDecimal(Math.min(...cs), 3)} · mean C ${formatTrimmedDecimal(cs.reduce((a, b) => a + b) / cs.length, 3)}`,
     `worst-plane contrast ${values.map((v) => fmt2(worstPlaneContrast(v, mode))).join(' / ')}`,
-    whiteLabels
-      ? `white label contrast ${labels.map(fmt2).join(' / ')}`
+    forcedLabels
+      ? `label contrast (forced at ${Object.keys(forcedLabels).join(',')}) ${labels.map(fmt2).join(' / ')}`
       : `min label contrast ${fmt2(Math.min(...labels))}:1`,
     `min adjacent CVD ΔE ${fmt1(minPairDelta(values, false))}`,
     ...paletteChecks(values, palette),
@@ -326,11 +339,11 @@ const STATUS_LABEL: Record<(typeof STATUS_ORDER)[number], string> = {
 function DivergingSample({
   values,
   shipped,
-  whiteLabels,
+  forcedLabels,
 }: {
   values: string[]
   shipped: boolean
-  whiteLabels?: boolean
+  forcedLabels?: CandidateSet['forcedLabels']
 }) {
   return (
     <View style={{ gap: 8 }}>
@@ -375,7 +388,11 @@ function DivergingSample({
             }}
           >
             <Text
-              style={{ color: labelOn(values[i], whiteLabels), fontSize: 10, textAlign: 'center' }}
+              style={{
+                color: labelOn(values[i], forcedLabels?.[i]),
+                fontSize: 10,
+                textAlign: 'center',
+              }}
             >
               {STATUS_LABEL[status]}
             </Text>
@@ -458,7 +475,7 @@ function Sample({
   set?: CandidateSet
 }) {
   if (palette === 'diverging') {
-    return <DivergingSample values={values} shipped={!set} whiteLabels={set?.whiteLabels} />
+    return <DivergingSample values={values} shipped={!set} forcedLabels={set?.forcedLabels} />
   }
   if (palette === 'sequential') return <SequentialSample values={values} />
   return <CategoricalSample values={values} />
@@ -510,7 +527,7 @@ function ColumnPanel({
       <Surface raise={1} className="p-3" style={{ gap: 10 }}>
         <SwatchRow values={values} set={column.set} />
         <Sample palette={palette} values={values} set={column.set} />
-        <Measurements values={values} palette={palette} whiteLabels={column.set?.whiteLabels} />
+        <Measurements values={values} palette={palette} forcedLabels={column.set?.forcedLabels} />
       </Surface>
     </Surface>
   )
@@ -519,11 +536,11 @@ function ColumnPanel({
 const HEADLINE: Record<DatavizPalette, { title: string; note: string }> = {
   diverging: {
     title: 'Diverging (BodyMap fill, MuscleGroupChip dot)',
-    note: 'Reviewer prefers C. D asks whether every stop can carry white text: it can, without 700-step arms, but only by giving up the light centre and CVD separation. No shipped consumer draws text on these fills.',
+    note: "Reviewer prefers C. C' lifts slot 0 to blue-500 with a black label; D (white labels) is not chosen. No shipped consumer draws text on these fills.",
   },
   sequential: {
     title: 'Sequential effort (heatmap, velocity strip)',
-    note: 'Neither A nor B works: amber at 400-600 reads as dirt on a light plane. The strip at the bottom settles steps 0-2 first; the tail follows once one is picked.',
+    note: 'Turn 4: S1 (H1 opening, lift at step 1 as in dark) is primary; S4 (H4 opening) is beside it. Both share the orange-500 → red-700 → red-800 tail. The strip below holds the steps 0-2 exploration.',
   },
   categorical: {
     title: 'Categorical (Treemap, Scatter)',
@@ -556,6 +573,19 @@ function ColumnRow({
   )
 }
 
+/** Why turn 4 allows a lift at step 0→1: the shipped dark ramp already has one. */
+function DarkLiftNote() {
+  const dark = getSemanticColors('dark')
+  const [l0, l1] = (['dataviz-sequential-0', 'dataviz-sequential-1'] as const).map((key) =>
+    lightness(dark[key])
+  )
+  return (
+    <Typography variant="body2" color="secondary" testID="dark-lift-note">
+      {`Why the step 0→1 rule changed: dark step 0 (green-300) is OKLCH L ${fmt2(l0)} and dark step 1 (amber-200) is L ${fmt2(l1)}. The shipped ramp lifts by ${formatTrimmedDecimal(l1 - l0, 3)} at step 1, so light may too. Strict monotony applies from step 1 on (ΔL ≥ ${SEQUENTIAL_DL_MIN}).`}
+    </Typography>
+  )
+}
+
 function PaletteDecision({ palette }: { palette: DatavizPalette }) {
   return (
     <View style={{ padding: 16, gap: 12 }} testID={`dataviz-light-${palette}`}>
@@ -576,12 +606,13 @@ function PaletteDecision({ palette }: { palette: DatavizPalette }) {
       <ColumnRow label="Proposed (light)" columns={proposedColumns(palette)} palette={palette} />
       {palette === 'sequential' ? (
         <ColumnRow
-          label="Turn 3: steps 0-2 only, on light (tail undecided)"
+          label="Turn 3: steps 0-2 only, on light"
           columns={toColumns(SEQUENTIAL_HEAD_VARIANTS)}
           palette={palette}
           minWidth={380}
         />
       ) : null}
+      {palette === 'sequential' ? <DarkLiftNote /> : null}
     </View>
   )
 }
@@ -594,7 +625,7 @@ function PaletteDecision({ palette }: { palette: DatavizPalette }) {
  * `dataviz-categorical-*`) with light and dark carrying the same values. This
  * story proposes light values and shows them beside what ships.
  *
- * ## Status: turn 3. Categorical LOCKED; diverging C vs D; sequential steps 0-2 open
+ * ## Status: turn 4. Categorical LOCKED; diverging C vs C'; sequential S1 vs S4
  *
  * The proposals live in `DatavizLightPalette.candidates.ts` as named sets. No
  * token file has changed. Once one set is approved, each `step` in it is what
@@ -610,6 +641,10 @@ function PaletteDecision({ palette }: { palette: DatavizPalette }) {
  * (white labels on every stop) beside C, and added a steps 0-2 strip for
  * sequential. Set A is dropped from diverging and categorical.
  *
+ * Turn 4 adds diverging C' (blue[500] end, black label) and marks D not
+ * chosen. Sequential allows a lift at step 0→1 because dark has one, and
+ * shows full ramps S1 (H1 opening) and S4 (H4 opening). A and B are dropped.
+ *
  * ## How the values were chosen
  *
  * Exhaustive search over `primitiveRamps` steps, keeping each palette's hue
@@ -622,12 +657,14 @@ function PaletteDecision({ palette }: { palette: DatavizPalette }) {
  *
  * ## Open questions for the reviewer
  *
- * - Under turn 1's sequential rules (ΔL ≥ 0.06, lightest ≥ 2:1, fixed hue per
- *   step) A is the only solution. B relaxes both floors slightly.
+ * - Sequential S1's step 0↔1 CVD ΔE is 6.4, inside the WARN band; the
+ *   heatmap's cell gaps and tooltip are its secondary encoding.
+ * - Diverging C' fails the 3:1 end rule and puts blue and cyan at normal-vision
+ *   ΔE 11.1.
  * - Categorical B sits in the validator's CVD WARN band (green↔orange 6.9), which
  *   is legal only with labels or a legend. Every categorical consumer has one.
  * - `Treemap` hard-codes `text-on-data-strong`. Its worst tile label is 2.6:1 on
- *   A and 3.6:1 on B, so either set needs per-tile label colour in `Treemap`.
+ *   A and 3.6:1 on B, so B needs per-tile label colour in `Treemap`.
  */
 const meta: Meta<{ palette: DatavizPalette }> = {
   title: 'Lab/Decisions/Dataviz Light Palettes',

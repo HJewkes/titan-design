@@ -11,6 +11,10 @@ import { primitiveRamps as ramp } from '../../../theme/tokens/primitives'
  * ΔE×100). "Planes" below means the three light surfaces a chart sits on:
  * `surface-base` (white), `surface-elevated` and `surface-raised`.
  *
+ * Turn 4 (2026-09-17 review): diverging C is preferred and C' tries blue[500]
+ * with a black slot-0 label. Sequential allows a lift at step 0→1, as the
+ * shipped dark ramp does, and proposes full ramps on the H1 and H4 openings.
+ *
  * Turn 1 (set A) read as muddy: it pushed stops to ramp steps 700-900, where
  * OKLCH chroma collapses (amber[800] C 0.066, cyan[600] C 0.088). Turn 2 added
  * B and C on steps 300-700. Turn 3 (2026-09-17 review) locks categorical B with
@@ -22,7 +26,10 @@ export type DatavizPalette = 'diverging' | 'sequential' | 'categorical'
 
 export type DatavizKey = `dataviz-${DatavizPalette}-${number}`
 
-export type CandidateSetId = 'A' | 'B' | 'C' | 'D' | 'H1' | 'H2' | 'H3' | 'H4'
+export type CandidateSetId = 'B' | 'C' | "C'" | 'D' | 'H1' | 'H2' | 'H3' | 'H4' | 'S1' | 'S4'
+
+/** Which ink a label on a fill is forced to; `light` is white, `dark` is black. */
+export type LabelInk = 'light' | 'dark'
 
 export interface LightCandidate {
   key: DatavizKey
@@ -40,52 +47,8 @@ export interface CandidateSet {
   /** The rules the set satisfies, and any rule it relaxes, printed as stated. */
   rules: string[]
   steps: LightCandidate[]
-  /** Forces every label on the fills to white instead of `bestTextColor`. */
-  whiteLabels?: boolean
-}
-
-const DIVERGING_B: CandidateSet = {
-  id: 'B',
-  title: 'B · vivid',
-  rationale: 'Ends one step darker than dark mode, inner arms at 500; every relaxed rule passes.',
-  rules: [
-    'ends (stops 0,4) ≥ 3:1 on all planes',
-    'RELAXED: inner stops (1,2,3) ≥ 2:1 on all planes (was 3:1)',
-    'centre strictly lightest; arms symmetric in L',
-    'labels ≥ 4.5:1 (black or white); all-pairs CVD ΔE ≥ 8',
-  ],
-  steps: [
-    {
-      key: 'dataviz-diverging-0',
-      step: 'blue[700]',
-      value: ramp.blue[700],
-      rationale: 'L 0.47, C 0.142. At 600 the ends sit too close to the 500 arms (ΔE 11.9-12.5).',
-    },
-    {
-      key: 'dataviz-diverging-1',
-      step: 'cyan[500]',
-      value: ramp.cyan[500],
-      rationale: 'L 0.63 mirrors amber[500]. C 0.106 is the cyan ramp at this L.',
-    },
-    {
-      key: 'dataviz-diverging-2',
-      step: 'green[400]',
-      value: ramp.green[400],
-      rationale: 'L 0.71, C 0.187. 2.0:1 on raised, 2.4:1 on white.',
-    },
-    {
-      key: 'dataviz-diverging-3',
-      step: 'amber[500]',
-      value: ramp.amber[500],
-      rationale: 'L 0.63, C 0.141. 3.0:1 on raised.',
-    },
-    {
-      key: 'dataviz-diverging-4',
-      step: 'red[700]',
-      value: ramp.red[700],
-      rationale: 'L 0.47, C 0.167. Same step dark mode uses for sequential-5.',
-    },
-  ],
+  /** Per-stop label ink overrides; stops not listed use `bestTextColor`. */
+  forcedLabels?: Partial<Record<number, LabelInk>>
 }
 
 const DIVERGING_C: CandidateSet = {
@@ -133,12 +96,57 @@ const DIVERGING_C: CandidateSet = {
   ],
 }
 
+const DIVERGING_C_PRIME: CandidateSet = {
+  id: "C'",
+  title: "C' · C with a blue[500] end, black label",
+  rationale: 'Reviewer ask: C with slot 0 lifted to blue[500] and its label forced black.',
+  forcedLabels: { 0: 'dark' },
+  rules: [
+    'slot 0 black label 6.72:1 (white would be 3.12:1); inner arms ≥ 2:1',
+    'BROKEN: slot 0 end is 2.61:1 on raised, 3.12:1 on white (ends rule is ≥ 3:1 on all planes)',
+    'BROKEN: blue[500]↔cyan[400] normal-vision ΔE 11.1 (floor 15; C has 19.0). CVD ΔE 10.9',
+    'all-pairs CVD ΔE 8.5 (unchanged from C; the worst pair is not blue↔cyan)',
+  ],
+  steps: [
+    {
+      key: 'dataviz-diverging-0',
+      step: 'blue[500]',
+      value: ramp.blue[500],
+      rationale: 'L 0.66, C 0.169. The dark-mode value.',
+    },
+    {
+      key: 'dataviz-diverging-1',
+      step: 'cyan[400]',
+      value: ramp.cyan[400],
+      rationale: 'L 0.71. Now only 0.05 L from slot 0.',
+    },
+    {
+      key: 'dataviz-diverging-2',
+      step: 'green[300]',
+      value: ramp.green[300],
+      rationale: 'L 0.77, C 0.191.',
+    },
+    {
+      key: 'dataviz-diverging-3',
+      step: 'amber[400]',
+      value: ramp.amber[400],
+      rationale: 'L 0.71, C 0.156.',
+    },
+    {
+      key: 'dataviz-diverging-4',
+      step: 'red[600]',
+      value: ramp.red[600],
+      rationale: 'L 0.59, C 0.179.',
+    },
+  ],
+}
+
 const DIVERGING_D: CandidateSet = {
   id: 'D',
-  title: 'D · white labels everywhere',
+  title: 'D · white labels everywhere (NOT CHOSEN)',
   rationale:
     'B with a green[500] centre, the lightest centre that still takes white text at 3:1. No 700-step arms.',
-  whiteLabels: true,
+  forcedLabels: { 0: 'light', 1: 'light', 2: 'light', 3: 'light', 4: 'light' },
   rules: [
     'white label ≥ 3:1 on every stop; ≥ 4.5:1 on the ends only (6.87, 7.44)',
     'ends ≥ 3:1 and inner stops ≥ 2:1 on all planes',
@@ -175,105 +183,6 @@ const DIVERGING_D: CandidateSet = {
       step: 'red[700]',
       value: ramp.red[700],
       rationale: 'L 0.47, C 0.167. White 7.44:1.',
-    },
-  ],
-}
-
-const SEQUENTIAL_A: CandidateSet = {
-  id: 'A',
-  title: 'A · turn 1 (contrast-first)',
-  rationale: 'Strict ΔL 0.08 walk from a 2:1 light end; the dark end lands on brown.',
-  rules: [
-    'L strictly decreasing, ΔL ≥ 0.06',
-    'lightest step ≥ 2:1 on white',
-    'labels ≥ 4.5:1; adjacent CVD ΔE ≥ 4.5',
-  ],
-  steps: [
-    {
-      key: 'dataviz-sequential-0',
-      step: 'green[400]',
-      value: ramp.green[400],
-      rationale: 'L 0.71, 2.4:1 on white.',
-    },
-    {
-      key: 'dataviz-sequential-1',
-      step: 'amber[500]',
-      value: ramp.amber[500],
-      rationale: 'L 0.63, C 0.141.',
-    },
-    {
-      key: 'dataviz-sequential-2',
-      step: 'amber[600]',
-      value: ramp.amber[600],
-      rationale: 'L 0.55, C 0.126.',
-    },
-    {
-      key: 'dataviz-sequential-3',
-      step: 'orange[700]',
-      value: ramp.orange[700],
-      rationale: 'L 0.47, C 0.140.',
-    },
-    {
-      key: 'dataviz-sequential-4',
-      step: 'red[800]',
-      value: ramp.red[800],
-      rationale: 'L 0.38, C 0.145.',
-    },
-    {
-      key: 'dataviz-sequential-5',
-      step: 'red[900]',
-      value: ramp.red[900],
-      rationale: 'L 0.30, C 0.114. Reads near-brown.',
-    },
-  ],
-}
-
-const SEQUENTIAL_B: CandidateSet = {
-  id: 'B',
-  title: 'B · vivid',
-  rationale: 'The A walk shifted one step lighter: starts on the green pin, ends on red[800].',
-  rules: [
-    'L strictly decreasing',
-    'RELAXED: ΔL ≥ 0.05 (was 0.06; step 0→1 is 0.059)',
-    'RELAXED: lightest step ≥ 1.9:1 on white (was 2:1; green[300] is 1.93:1)',
-    'labels ≥ 4.5:1; adjacent CVD ΔE ≥ 4.5 (7.9 here)',
-  ],
-  steps: [
-    {
-      key: 'dataviz-sequential-0',
-      step: 'green[300]',
-      value: ramp.green[300],
-      rationale: 'Unchanged from dark. L 0.77, C 0.191.',
-    },
-    {
-      key: 'dataviz-sequential-1',
-      step: 'amber[400]',
-      value: ramp.amber[400],
-      rationale: 'L 0.71, C 0.156. Darker than step 0, unlike dark-mode amber[200].',
-    },
-    {
-      key: 'dataviz-sequential-2',
-      step: 'amber[500]',
-      value: ramp.amber[500],
-      rationale: 'L 0.63, C 0.141.',
-    },
-    {
-      key: 'dataviz-sequential-3',
-      step: 'orange[600]',
-      value: ramp.orange[600],
-      rationale: 'L 0.55, C 0.159. A used orange[700] (C 0.140).',
-    },
-    {
-      key: 'dataviz-sequential-4',
-      step: 'red[700]',
-      value: ramp.red[700],
-      rationale: 'L 0.47, C 0.167.',
-    },
-    {
-      key: 'dataviz-sequential-5',
-      step: 'red[800]',
-      value: ramp.red[800],
-      rationale: 'L 0.38, C 0.145. Replaces red[900] (C 0.114).',
     },
   ],
 }
@@ -360,8 +269,8 @@ export const SEQUENTIAL_HEAD_VARIANTS: CandidateSet[] = [
     title: 'H1 · green → gold pin → orange pin',
     rationale: 'Nearest thing to a lime/yellow middle: no ramp exists, so the gold pin stands in.',
     rules: [
-      'BROKEN: not monotone; amber[300] (L 0.81) is lighter than green[300] (L 0.77)',
-      'adjacent CVD 6.4 / 8.9',
+      'step 0→1 lifts (L 0.77 → 0.81); allowed since turn 4, dark lifts 0.77 → 0.88',
+      'adjacent CVD 6.4 (WARN band) / 8.9',
     ],
     steps: [
       headStep(0, 'green[300]', ramp.green[300], 'L 0.77, C 0.191.'),
@@ -385,7 +294,7 @@ export const SEQUENTIAL_HEAD_VARIANTS: CandidateSet[] = [
     title: 'H3 · skip mustard',
     rationale: 'No amber at all: green straight into light and mid orange.',
     rules: [
-      'BROKEN: not monotone; orange[300] (L 0.79) is lighter than green[300] (L 0.77)',
+      'step 0→1 lifts (L 0.77 → 0.79); allowed since turn 4',
       'BROKEN: adjacent CVD 4.7 (step 0↔1), below the 6 WARN floor',
     ],
     steps: [
@@ -396,14 +305,14 @@ export const SEQUENTIAL_HEAD_VARIANTS: CandidateSet[] = [
   },
   {
     id: 'H4',
-    title: 'H4 · pins only (recommended)',
+    title: 'H4 · pins only',
     rationale:
       'Amber never goes below its gold pin, where it turns to mustard; every step is C ≥ 0.165.',
     rules: [
       'monotone light→dark (ΔL 0.055 / 0.092)',
       'adjacent CVD 10.9 / 8.9',
       'step 0 is 1.16:1 on raised; it reads by chroma, not contrast',
-      'leaves orange[500] 0.63 → red[600] 0.59 → red[700] 0.47 for the tail',
+      'full ramp with the turn-4 tail: S4 above',
     ],
     steps: [
       headStep(0, 'green[200]', ramp.green[200], 'L 0.87, C 0.181. The dark-mode centre mint.'),
@@ -413,8 +322,51 @@ export const SEQUENTIAL_HEAD_VARIANTS: CandidateSet[] = [
   },
 ]
 
+const tailSteps: LightCandidate[] = [
+  headStep(3, 'orange[500]', ramp.orange[500], 'L 0.63, C 0.175. ΔL 0.092 below orange[400].'),
+  headStep(
+    4,
+    'red[700]',
+    ramp.red[700],
+    'L 0.47, C 0.167. red[600] is only ΔL 0.044 below orange[500].'
+  ),
+  headStep(5, 'red[800]', ramp.red[800], 'L 0.38, C 0.145. Darkest; ΔL 0.089.'),
+]
+
+const TAIL_RULES = [
+  'monotone from step 1, ΔL ≥ 0.05 (0.091 / 0.092 / 0.160 / 0.089)',
+  'tail orange[500] → red[700] → red[800]; min C 0.145, labels ≥ 5.6:1',
+]
+
+const SEQUENTIAL_S1: CandidateSet = {
+  id: 'S1',
+  title: 'S1 · H1 opening + tail (PRIMARY)',
+  rationale:
+    'Dark-mode hues through step 3, lifting at step 1 exactly as dark does; one vivid red tail.',
+  rules: [
+    'step 0→1 lifts ΔL +0.044 (allowed; dark lifts +0.113)',
+    ...TAIL_RULES,
+    'adjacent CVD 6.4 / 8.9 / 9.0 / 16.7 / 7.9 (step 0↔1 in the WARN band)',
+    'step 0 is 1.61:1 on raised, 1.93:1 on white',
+  ],
+  steps: [...SEQUENTIAL_HEAD_VARIANTS[0].steps, ...tailSteps],
+}
+
+const SEQUENTIAL_S4: CandidateSet = {
+  id: 'S4',
+  title: 'S4 · H4 opening + same tail (comparison)',
+  rationale: 'Strictly monotone all the way; step 0 is the pale dark-mode mint.',
+  rules: [
+    'monotone from step 0 (ΔL 0.055 at step 0→1)',
+    ...TAIL_RULES,
+    'adjacent CVD 10.9 / 8.9 / 9.0 / 16.7 / 7.9',
+    'step 0 is 1.16:1 on raised, 1.39:1 on white',
+  ],
+  steps: [...SEQUENTIAL_HEAD_VARIANTS[3].steps, ...tailSteps],
+}
+
 export const LIGHT_CANDIDATE_SETS: Record<DatavizPalette, CandidateSet[]> = {
-  diverging: [DIVERGING_C, DIVERGING_D, DIVERGING_B],
-  sequential: [SEQUENTIAL_A, SEQUENTIAL_B],
+  diverging: [DIVERGING_C, DIVERGING_C_PRIME, DIVERGING_D],
+  sequential: [SEQUENTIAL_S1, SEQUENTIAL_S4],
   categorical: [CATEGORICAL_B],
 }
