@@ -3,6 +3,7 @@ import { View } from 'react-native'
 import { Surface } from '../../ui/surface'
 import { Typography } from '../Typography'
 import { GoalTrajectoryChart } from './GoalTrajectoryChart'
+import { calibratingGoal } from './goalTrajectoryCalibratingFixture'
 import type { GoalActualPoint, GoalExpectedPoint, GoalTrajectoryWeek } from './GoalTrajectoryChart'
 
 /** Six-week bench block: +5 lb/wk committed edge, the RP ramp as the stretch edge. */
@@ -190,6 +191,20 @@ export const DeloadWeek: Story = {
       { weekIndex: 5, value: 165 },
     ],
   },
+}
+
+/**
+ * The payload the voltras-mcp wall actually sent for a calibrating Cable Chest Press
+ * goal (captured 2026-09-17). The plan's committed and stretch edges are the same
+ * number every week, so the band has no area and both rules land on one line.
+ *
+ * VW-414: on 0.17.0 this rendered as an empty plane with the two labels overprinted
+ * into "ConStretcled 128". The band's centre line is now stroked so the 100 → 127.5
+ * ramp is visible, and the two labels merge into one.
+ */
+export const CalibratingRealWallData: Story = {
+  name: 'Calibrating (real wall data)',
+  args: { ...calibratingGoal, ...WALL },
 }
 
 /** Two matched sessions is not a trend: the band is shown, no gain claim is made. */

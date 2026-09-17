@@ -7,6 +7,23 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- `GoalTrajectoryChart` rendered an empty plane for a goal whose committed and
+  stretch targets are the same number (VW-414). A calibrating goal arrives with
+  `low === high` at every expected week, which collapsed the band to a
+  zero-height fill, and with `committed === stretch`, which printed both rule
+  labels on one baseline as a single unreadable word. Now a band with no
+  drawable thickness anywhere draws its centre line as a 1.5 px stroke in the
+  band hue at full alpha, so the plan's ramp stays visible across a room; a
+  minimum fill thickness was rejected because a 2 px slice of the centre-to-edge
+  gradient shows only its 14 % edge stops. Coincident rule labels merge into one
+  right-anchored `Committed = Stretch 128`, and rules closer than a label height
+  push the lower label under its own rule. A single actual no longer emits a
+  zero-length closed line path. Bands that merely pinch at week one are
+  unchanged. New story `Calibrating (real wall data)` carries the captured
+  payload.
+
 ## 0.17.0
 
 ### Added
@@ -35,9 +52,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
   component family). Flags `Buffer.*`/`Uint8Array`/`ArrayBuffer` usage in a
   component or render function, hex-literal and raw-byte-sequence string
   shapes, raw-frame field names (`raw`, `frame`, `bytes`, `payloadHex`,
-  `register`, `opcode`) accessed on a data-* part, and a `data-*` part key
-  with a hyphen after the prefix (silently dropped by the Claude Code channel
-  meta). Mirrors voltras-mcp's `no-protocol-detail` (NF-07) (VW-394).
+  `register`, `opcode`) accessed on a data-_ part, and a `data-_`part key
+with a hyphen after the prefix (silently dropped by the Claude Code channel
+meta). Mirrors voltras-mcp's`no-protocol-detail` (NF-07) (VW-394).
 
 ### Fixed
 

@@ -128,6 +128,13 @@ export interface GoalTrajectoryGeometry {
   bandPath: string
   /** Per-week band extents in px, for layered band treatments ({@link bandPathAt}). */
   bandSlices: BandSlice[]
+  /**
+   * The band is too thin to read as a fill anywhere, so its centre line carries
+   * the ramp. True whenever committed and stretch coincide at every week.
+   */
+  bandIsDegenerate: boolean
+  /** The band's centre line, drawn when {@link bandIsDegenerate}. */
+  bandEdgePath: string
   /** SVG path for the actual line: monotone cubic, so it passes through every point. */
   linePath: string
   yTicks: YTick[]
@@ -160,6 +167,8 @@ export const CHART_FONT = 11
 export const RULE_LABEL_LIFT = 5
 /** Inter's ascender height as a fraction of the font size ("Stretch" has ascenders). */
 export const LABEL_ASCENT = 0.76
+/** Inter's descender depth as a fraction of the font size, for label-box maths. */
+export const LABEL_DESCENT = 0.24
 /** Minimum gap between a rule label's top and the plane's top edge. */
 export const LABEL_CLEARANCE = 6
 /** Room a marker (r=4 dot plus 2px ring, or the star) needs inside the plane. */
@@ -255,6 +264,58 @@ export function paddedFloor(min: number, step = VALUE_STEP): number {
 /** Top of a rule label's glyphs, in px, for a rule drawn at `ruleY`. */
 export function ruleLabelTop(ruleY: number, font = CHART_FONT): number {
   return ruleY - RULE_LABEL_LIFT - font * LABEL_ASCENT
+}
+
+/** Ascender-to-descender height of a rule label, in px. */
+export function ruleLabelHeight(font = CHART_FONT): number {
+  return font * (LABEL_ASCENT + LABEL_DESCENT)
+}
+
+/** Two rules closer than this in px are one rule as far as the labels are concerned. */
+export const RULE_COINCIDENT = 0.5
+
+/** Where a rule's label sits: `above` is the default lift, `below` clears a near neighbour. */
+export interface RuleLabelPlacement {
+  y: number
+  side: 'above' | 'below'
+}
+
+export interface RuleLabelLayout {
+  merged: boolean
+  committed: RuleLabelPlacement
+  stretch: RuleLabelPlacement
+}
+
+function above(ruleY: number): RuleLabelPlacement {
+  return { y: ruleY - RULE_LABEL_LIFT, side: 'above' }
+}
+
+function below(ruleY: number, font: number): RuleLabelPlacement {
+  return { y: ruleY + RULE_LABEL_LIFT + font * LABEL_ASCENT, side: 'below' }
+}
+
+/**
+ * Lay the two rule labels out so they never overprint: coincident rules merge into
+ * one label, and rules closer than a label's height push the LOWER label under its
+ * own rule. VW-414: a calibrating goal has committed === stretch, which printed
+ * "Committed 128" and "Stretch 128" on the same baseline.
+ */
+export function ruleLabelLayout(
+  committedY: number,
+  stretchY: number,
+  font = CHART_FONT
+): RuleLabelLayout {
+  const gap = Math.abs(committedY - stretchY)
+  if (gap <= RULE_COINCIDENT) {
+    return { merged: true, committed: above(committedY), stretch: above(stretchY) }
+  }
+  const stretchIsLower = stretchY > committedY
+  const crowded = gap < ruleLabelHeight(font)
+  return {
+    merged: false,
+    committed: crowded && !stretchIsLower ? below(committedY, font) : above(committedY),
+    stretch: crowded && stretchIsLower ? below(stretchY, font) : above(stretchY),
+  }
 }
 
 /** A value that must sit at least `need` px below the plot top. */
@@ -411,6 +472,32 @@ export function bandPathAt(slices: BandSlice[], spread = 1, curve: BandCurve = '
   return (curve === 'monotone' ? shape.curve(curveMonotoneX) : shape)(slices) ?? ''
 }
 
+/**
+ * The band's centre line as a stroked path. VW-414: when the plan's committed and
+ * stretch edges coincide the band has no area to fill, so the ramp it describes is
+ * drawn as an edge instead. Same curve as the fill, so the two never disagree.
+ */
+export function bandCentrePath(slices: BandSlice[], curve: BandCurve = 'linear'): string {
+  if (slices.length < 2) return ''
+  const shape = line<BandSlice>()
+    .x((d) => d.x)
+    .y((d) => (d.top + d.bottom) / 2)
+  return (curve === 'monotone' ? shape.curve(curveMonotoneX) : shape)(slices) ?? ''
+}
+
+/** Thickest the band gets, in px. Zero when every week's committed edge equals its stretch edge. */
+export function bandThickness(slices: BandSlice[]): number {
+  return slices.reduce((max, s) => Math.max(max, s.bottom - s.top), 0)
+}
+
+/**
+ * Below this the band's fill cannot be seen from across the room, so the centre
+ * edge is drawn instead. Measured on the band's THICKEST week, not its thinnest:
+ * a normal band that starts pinched at week 1 (committed === stretch before any
+ * divergence) is not degenerate and keeps the plain fill.
+ */
+export const BAND_MIN_THICKNESS = 1.5
+
 /** One vertical strip of the band, spanning its full extent across the strip's width. */
 export interface BandColumn {
   x: number
@@ -559,7 +646,11 @@ export function deriveTrajectoryGeometry(
     bandPolygon: hasBand ? ringOf(slices) : [],
     bandPath: hasBand ? bandPathAt(slices, 1, input.bandCurve) : '',
     bandSlices: hasBand ? slices : [],
-    linePath: actuals.length > 0 ? (actualLine(actuals) ?? '') : '',
+    bandIsDegenerate: hasBand && bandThickness(slices) < BAND_MIN_THICKNESS,
+    bandEdgePath: hasBand ? bandCentrePath(slices, input.bandCurve) : '',
+    // One actual is not a line: d3 emits "M42,266Z", a closed zero-length path
+    // that paints nothing but still carries the drop-shadow filter (VW-414).
+    linePath: actuals.length > 1 ? (actualLine(actuals) ?? '') : '',
     yTicks: cappedTicks(yScale, input.tickCount ?? DEFAULT_TICK_COUNT).map((value) => ({
       value,
       y: toY(value),
