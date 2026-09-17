@@ -4,6 +4,7 @@ import { View } from 'react-native'
 
 import { cn } from '../../../utils/cn'
 import { alpha } from '../../../utils/colors'
+import type { GoalMilestoneGap } from '../../../utils/workout-format'
 import {
   formatMilestoneGapAmount,
   formatMilestoneSet,
@@ -23,6 +24,7 @@ import {
   deriveMilestoneState,
   isLoadTarget,
   milestoneGap,
+  milestoneSurplus,
   type GoalMilestoneReading,
   type GoalMilestoneState,
   type GoalMilestoneTarget,
@@ -75,9 +77,18 @@ const SCALE = {
 
 type Palette = ReturnType<typeof getSemanticColors>
 
-/** Open takes the pace colour the chart's line uses; hit is success; missed is muted, never red. */
-export function milestoneToneToken(state: GoalMilestoneState, status: GoalTrajectoryStatus) {
-  if (state === 'hit') return 'status-success' as const
+/**
+ * Open takes the pace colour the chart's line uses. Hit is success, or the
+ * `ahead` blue when the best set went past the target — clearing a goal and
+ * beating it are different results and read as different colours. Missed is
+ * muted, never red.
+ */
+export function milestoneToneToken(
+  state: GoalMilestoneState,
+  status: GoalTrajectoryStatus,
+  beyond = false
+) {
+  if (state === 'hit') return beyond ? STATUS_TOKEN.ahead : ('status-success' as const)
   if (state === 'missed') return 'text-tertiary' as const
   return STATUS_TOKEN[status]
 }
@@ -102,8 +113,10 @@ interface ResolvedTile {
   state: GoalMilestoneState
   color: string
   hero: string
-  /** True when the hero is the shortfall rather than the target itself. */
-  heroIsGap: boolean
+  /** The muted words after the hero figure, when it is a distance rather than a verdict. */
+  heroSuffix: string | null
+  /** True when the best set went past the target, not merely to it. */
+  beyond: boolean
   bestText: string | null
   weekText: string | null
 }
@@ -119,17 +132,48 @@ function gapAmountText(props: GoalMilestoneTileProps): string | null {
   )
 }
 
+/** Hit reads as what was cleared; anything open reads as what is left. */
+function heroFor(
+  state: GoalMilestoneState,
+  props: GoalMilestoneTileProps,
+  gap: string | null
+): { hero: string; heroSuffix: string | null; beyond: boolean } {
+  if (state !== 'hit') {
+    return {
+      hero: gap ?? targetText(props.target),
+      heroSuffix: gap && state === 'upcoming' ? 'to goal' : null,
+      beyond: false,
+    }
+  }
+  const surplus = props.latest
+    ? milestoneSurplus(props.target, props.latest, props.direction)
+    : null
+  const over = surplus && surplus.kind !== 'none' ? surplusText(props, surplus) : null
+  return over
+    ? { hero: `+${over}`, heroSuffix: 'beyond goal', beyond: true }
+    : { hero: 'Reached goal', heroSuffix: null, beyond: false }
+}
+
+function surplusText(props: GoalMilestoneTileProps, surplus: GoalMilestoneGap): string | null {
+  const { target } = props
+  return formatMilestoneGapAmount(
+    surplus,
+    target.unit ?? '',
+    isLoadTarget(target) ? undefined : target.metric
+  )
+}
+
 function resolveTile(props: GoalMilestoneTileProps, t: Palette): ResolvedTile {
   const { target, latest, direction, currentWeek, weekCount } = props
   const met = latest ? milestoneGap(target, latest, direction)?.kind === 'none' : false
   const state = deriveMilestoneState({ state: props.state, met, currentWeek, goalWeek: weekCount })
   const gap = state === 'hit' ? null : gapAmountText(props)
+  const heroParts = heroFor(state, props, gap)
   return {
     props,
     state,
-    color: t[milestoneToneToken(state, props.status)],
-    hero: gap ?? targetText(target),
-    heroIsGap: gap !== null,
+    color: t[milestoneToneToken(state, props.status, heroParts.beyond)],
+    ...heroParts,
     bestText: latest ? readingText(target, latest) : null,
     weekText:
       currentWeek !== undefined && currentWeek <= weekCount
@@ -170,8 +214,7 @@ function Header({ label, state }: { label: string; state: GoalMilestoneState }) 
 }
 
 function Hero({ tile, scale }: { tile: ResolvedTile; scale: GoalMilestoneTileScale }) {
-  // Only an open target is a distance to cover; a hit or missed one is a verdict.
-  const suffix = tile.heroIsGap && tile.state === 'upcoming'
+  const suffix = tile.heroSuffix
   return (
     // body1 plus the heading face: a heading variant would emit role=heading.
     <Typography
@@ -185,7 +228,7 @@ function Hero({ tile, scale }: { tile: ResolvedTile; scale: GoalMilestoneTileSca
       {tile.hero}
       {suffix && (
         <Typography variant="caption" color="tertiary" className="font-body font-normal">
-          {'  to goal'}
+          {`  ${suffix}`}
         </Typography>
       )}
     </Typography>

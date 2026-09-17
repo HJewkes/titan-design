@@ -46,6 +46,13 @@ export const GOAL_MILESTONE_SCENARIOS = {
     status: 'ahead',
     weeks: WEEKS.slice(0, 4),
   },
+  hitExact: {
+    ...block,
+    currentWeek: 5,
+    latest: { reps: 8, load: 105 },
+    status: 'on_track',
+    weeks: WEEKS.slice(0, 4),
+  },
   missed: {
     ...block,
     currentWeek: 7,

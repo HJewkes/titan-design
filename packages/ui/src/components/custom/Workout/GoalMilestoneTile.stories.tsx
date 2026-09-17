@@ -70,7 +70,11 @@ type Story = StoryObj<typeof GoalMilestoneTile>
 export const OnTrack: Story = {}
 export const Behind: Story = { args: S.behind }
 export const Ahead: Story = { args: S.ahead }
+/** The best set cleared the target, so the hero counts what it cleared it by. */
 export const Hit: Story = { args: S.hit }
+
+/** The best set matched the target exactly: a verdict, with nothing beyond it. */
+export const HitExact: Story = { args: S.hitExact }
 export const Missed: Story = { args: S.missed }
 export const Compact: Story = { args: { layout: 'compact' } }
 

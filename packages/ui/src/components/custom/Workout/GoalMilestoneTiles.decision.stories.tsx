@@ -15,7 +15,8 @@ const STATES: { key: GoalMilestoneScenario; name: string }[] = [
   { key: 'onTrack', name: 'Upcoming, on track' },
   { key: 'behind', name: 'Upcoming, behind' },
   { key: 'ahead', name: 'Upcoming, ahead' },
-  { key: 'hit', name: 'Hit' },
+  { key: 'hit', name: 'Hit, beyond the goal' },
+  { key: 'hitExact', name: 'Hit, exactly the goal' },
   { key: 'missed', name: 'Missed' },
 ]
 

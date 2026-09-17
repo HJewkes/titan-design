@@ -99,12 +99,45 @@ describe('GoalMilestoneTile', () => {
   })
 
   describe('once hit', () => {
-    it('makes the target the hero and marks it', () => {
+    it('counts the load the best set cleared the goal by', () => {
       render(<GoalMilestoneTile {...base} latest={{ reps: 8, load: 107.5 }} />)
 
-      expect(hero()).toHaveTextContent('8 x 105 lb')
+      expect(hero()).toHaveTextContent('+2.5 lb')
+      expect(hero()).toHaveTextContent('beyond goal')
       expect(hero()).not.toHaveTextContent('to goal')
       expect(screen.getByTestId('goal-milestone-state')).toHaveTextContent('Hit')
+    })
+
+    it('paints a target beaten in the ahead blue, not the reached green', () => {
+      const dark = getSemanticColors('dark')
+      const { rerender } = render(<GoalMilestoneTile {...base} latest={{ reps: 8, load: 107.5 }} />)
+
+      expect(hero()).toHaveStyle({ color: dark['status-info'] })
+
+      rerender(<GoalMilestoneTile {...base} latest={{ reps: 8, load: 105 }} />)
+
+      expect(hero()).toHaveStyle({ color: dark['status-success'] })
+    })
+
+    it('counts extra reps when the load only matched', () => {
+      render(<GoalMilestoneTile {...base} latest={{ reps: 10, load: 105 }} />)
+
+      expect(hero()).toHaveTextContent('+2 reps')
+      expect(hero()).toHaveTextContent('beyond goal')
+    })
+
+    it('reads as reached when the best set matched the goal exactly', () => {
+      render(<GoalMilestoneTile {...base} latest={{ reps: 8, load: 105 }} />)
+
+      expect(hero()).toHaveTextContent('Reached goal')
+      expect(hero()).not.toHaveTextContent('beyond')
+    })
+
+    it('keeps the meso best in the fact row', () => {
+      render(<GoalMilestoneTile {...base} latest={{ reps: 8, load: 107.5 }} />)
+
+      expect(facts()).toHaveTextContent('Best 8 x 107.5 lb')
+      expect(facts()).toHaveTextContent('Goal 8 x 105 lb')
     })
   })
 
@@ -261,8 +294,12 @@ describe('meso target tone', () => {
     expect(milestoneToneToken('upcoming', 'ahead')).not.toBe('brand-primary')
   })
 
-  it('is success once hit, whatever the pace', () => {
+  it('is success once hit exactly, whatever the pace', () => {
     expect(milestoneToneToken('hit', 'stalled')).toBe('status-success')
+  })
+
+  it('takes the ahead blue when the best set went past the target', () => {
+    expect(milestoneToneToken('hit', 'stalled', true)).toBe('status-info')
   })
 
   it('is muted, never an error colour, once missed', () => {

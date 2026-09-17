@@ -1995,6 +1995,8 @@
         "targetText",
         "readingText",
         "gapAmountText",
+        "heroFor",
+        "surplusText",
         "resolveTile",
         "cn"
       ],
@@ -2011,17 +2013,16 @@
         "GoalMilestoneWeekStrip",
         "GoalTrajectoryPlot",
         "Indicator",
-        "Metric",
         "Surface",
         "Typography"
       ],
       "leak": {
         "rawView": 6,
         "rawText": 0,
-        "inlineStyle": 5,
+        "inlineStyle": 4,
         "rawHex": 0,
-        "loc": 318,
-        "score": 16
+        "loc": 410,
+        "score": 14
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -2039,8 +2040,7 @@
         "GoalMilestoneWeekStrip",
         "GoalMilestoneWeekStripProps",
         "WEEK_OUTCOME_LABEL",
-        "paint",
-        "TipBody"
+        "paint"
       ],
       "libDependents": 1,
       "storyRefs": 0,
@@ -2059,12 +2059,12 @@
         "Typography"
       ],
       "leak": {
-        "rawView": 2,
+        "rawView": 3,
         "rawText": 0,
-        "inlineStyle": 3,
+        "inlineStyle": 4,
         "rawHex": 0,
-        "loc": 177,
-        "score": 8
+        "loc": 179,
+        "score": 11
       },
       "tier": "organism",
       "verdict": "keep-internal",
@@ -2124,6 +2124,7 @@
         "BandLayer",
         "BandFade",
         "BAND_OPACITY",
+        "BAND_EDGE_WIDTH",
         "EDGE_OPACITY",
         "useBandIds"
       ],
@@ -2142,7 +2143,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 107,
+        "loc": 135,
         "score": 0
       },
       "tier": "atom",
@@ -2229,7 +2230,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 532,
+        "loc": 558,
         "score": 0
       },
       "tier": "molecule",
@@ -3093,7 +3094,7 @@
         "MetricProps",
         "MetricGroupProps"
       ],
-      "libDependents": 4,
+      "libDependents": 3,
       "storyRefs": 1,
       "xproj": {
         "mobile": 8,
@@ -4051,7 +4052,7 @@
         "rawText": 0,
         "inlineStyle": 4,
         "rawHex": 0,
-        "loc": 218,
+        "loc": 221,
         "score": 13
       },
       "tier": "atom",
@@ -7095,10 +7096,6 @@
     [
       "GoalMilestoneTile",
       "Surface"
-    ],
-    [
-      "GoalMilestoneTile",
-      "Metric"
     ],
     [
       "GoalMilestoneTile",

@@ -83,6 +83,27 @@ export function milestoneGap(
   return value === null ? null : valueGap(value, target.value, direction)
 }
 
+/** How far past the target the reading went, in the unit the metric leads with. */
+export function milestoneSurplus(
+  target: GoalMilestoneTarget,
+  latest: GoalMilestoneReading,
+  direction: GoalDirection = 'up'
+): GoalMilestoneGap | null {
+  if (isLoadTarget(target)) {
+    const set = asSet(latest)
+    if (!set) return null
+    const over = { load: set.load - target.load, reps: set.reps - target.reps }
+    for (const kind of LEAD_ORDER[target.metric]) {
+      if (over[kind] > 0) return { kind, amount: over[kind] }
+    }
+    return { kind: 'none' }
+  }
+  const value = asValue(latest)
+  if (value === null) return null
+  const over = direction === 'down' ? target.value - value : value - target.value
+  return over > 0 ? { kind: 'value', amount: over } : { kind: 'none' }
+}
+
 export function isMilestoneMet(
   target: GoalMilestoneTarget,
   latest: GoalMilestoneReading,
