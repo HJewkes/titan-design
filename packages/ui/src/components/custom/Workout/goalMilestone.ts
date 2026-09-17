@@ -108,57 +108,21 @@ export function deriveMilestoneState({
   return currentWeek !== undefined && currentWeek > goalWeek ? 'missed' : 'upcoming'
 }
 
-/** Epley: the one number that lets a rep gain and a load gain count toward the same bar. */
-export function estimatedOneRepMax({ reps, load }: GoalMilestoneSet): number {
-  return load * (1 + reps / 30)
-}
-
-/** An unmet target never fills the bar, however far its estimate has climbed. */
-export const UNMET_PROGRESS_CAP = 0.95
-
-/** A reading on one "higher is better" axis, or null when its shape does not fit the target. */
-function measure(
-  target: GoalMilestoneTarget,
-  reading: GoalMilestoneReading,
-  direction: GoalDirection
-): number | null {
-  if (isLoadTarget(target)) {
-    const set = asSet(reading)
-    return set && estimatedOneRepMax(set)
-  }
-  const value = asValue(reading)
-  if (value === null) return null
-  return direction === 'down' ? -value : value
-}
-
-/**
- * The share of the start-to-target move already made, 0..1, or null when an
- * end is unknown. Only a met target reads 1.
- */
-export function milestoneProgress(
-  target: GoalMilestoneTarget,
-  latest?: GoalMilestoneReading,
-  start?: GoalMilestoneReading,
-  direction: GoalDirection = 'up'
-): number | null {
-  if (!latest || !start) return null
-  if (isMilestoneMet(target, latest, direction)) return 1
-  const from = measure(target, start, direction)
-  const now = measure(target, latest, direction)
-  const to = measure(target, target, direction)
-  if (from === null || now === null || to === null) return null
-  if (to - from <= 0) return 0
-  return Math.min(Math.max((now - from) / (to - from), 0), UNMET_PROGRESS_CAP)
-}
-
 export type GoalWeekPhase = 'past' | 'current' | 'future'
+
+/** What the read model says about one week: its verdict, and the reading behind it. */
+export interface GoalWeekEntry {
+  outcome: GoalWeekOutcome
+  /** The week's matched reading, in the target's shape; absent when `outcome` is `none`. */
+  reading?: GoalMilestoneReading
+}
 
 export interface GoalWeekCell {
   week: number
   phase: GoalWeekPhase
-  isGoal: boolean
   /** Present on past weeks only; a missing entry reads as `none`. */
   outcome?: GoalWeekOutcome
+  entry?: GoalWeekEntry
 }
 
 function weekPhase(week: number, currentWeek?: number): GoalWeekPhase {
@@ -169,14 +133,14 @@ function weekPhase(week: number, currentWeek?: number): GoalWeekPhase {
 /** Every week of the block, 1-based, with where it sits against now and what it came to. */
 export function weekStripCells(
   weekCount: number,
-  goalWeek: number,
   currentWeek?: number,
-  outcomes: readonly GoalWeekOutcome[] = []
+  weeks: readonly GoalWeekEntry[] = []
 ): GoalWeekCell[] {
   return Array.from({ length: Math.max(weekCount, 1) }, (_, i) => {
     const week = i + 1
     const phase = weekPhase(week, currentWeek)
-    const outcome = phase === 'past' ? (outcomes[i] ?? 'none') : undefined
-    return { week, phase, isGoal: week === goalWeek, outcome }
+    if (phase !== 'past') return { week, phase }
+    const entry = weeks[i]
+    return { week, phase, outcome: entry?.outcome ?? 'none', entry }
   })
 }

@@ -14,52 +14,56 @@ import { primitiveColors } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { Indicator } from '../../ui/indicator'
 import { Surface, useSurfaceMode } from '../../ui/surface'
+import { Metric } from '../Metric'
 import { useMeasuredWidth } from '../Table/column-fit'
 import { Typography } from '../Typography'
 import type { GoalDirection, GoalTrajectoryStatus } from './GoalTrajectoryChartGeometry'
 import { STATUS_TOKEN } from './GoalTrajectoryPlot'
-import { GoalMilestoneWeekStrip, type GoalWeekOutcomeStyle } from './GoalMilestoneWeekStrip'
+import { GoalMilestoneWeekStrip, type GoalWeekTipStyle } from './GoalMilestoneWeekStrip'
 import {
   deriveMilestoneState,
   isLoadTarget,
   milestoneGap,
-  milestoneProgress,
   type GoalMilestoneReading,
   type GoalMilestoneState,
   type GoalMilestoneTarget,
-  type GoalWeekOutcome,
+  type GoalWeekEntry,
 } from './goalMilestone'
 
 export type GoalMilestoneTileScale = 'wall' | 'phone'
 export type GoalMilestoneTileLayout = 'full' | 'compact'
 
+/** The three drafts of the one line that carries best, goal and the week count. */
+export type GoalMilestoneSummaryStyle = 'sentence' | 'metrics' | 'stacked'
+
 export interface GoalMilestoneTileProps {
-  /** The block's committed value. */
+  /** The block's committed value, due in its last week. */
   target: GoalMilestoneTarget
-  /** The block's last week, when the target is due. */
-  goalWeek: number
   weekCount: number
-  /** 1-based; past `goalWeek` once the block has ended. */
+  /** 1-based; past `weekCount` once the block has ended. */
   currentWeek?: number
   /** The latest matched reading, in the target's shape. */
   latest?: GoalMilestoneReading
-  /** The block-start value or the first matched reading; the bar measures from here. */
-  start?: GoalMilestoneReading
   /** `down` for a loss goal. */
   direction?: GoalDirection
   /** Overrides the derived state when the read model already knows it. */
   state?: GoalMilestoneState
-  /** The goal's pace; colours the hero and bar while the target is open. */
+  /** The goal's pace; colours the hero while the target is open. */
   status: GoalTrajectoryStatus
-  /** One verdict per week of the block, aligned to week 1. */
-  weekOutcomes?: readonly GoalWeekOutcome[]
-  outcomeStyle?: GoalWeekOutcomeStyle
-  /** `compact` is hero, one line and the bar, for the per-lift card slot. */
+  /** One entry per week of the block, aligned to week 1. */
+  weeks?: readonly GoalWeekEntry[]
+  /** Which draft of the consolidated line to render. */
+  summaryStyle?: GoalMilestoneSummaryStyle
+  tipStyle?: GoalWeekTipStyle
+  /** `compact` drops the header; the week cells stay unless `showWeeks` says otherwise. */
   layout?: GoalMilestoneTileLayout
+  showWeeks?: boolean
   /** Type scale. Defaults to the measured width: `wall` from `WALL_MIN_WIDTH` up. */
   scale?: GoalMilestoneTileScale
   /** Defaults to a raised card for `full` and the bare plane for `compact`. */
   framed?: boolean
+  /** Overrides the pace colour. Exists for the decision story's candidate hues. */
+  toneColor?: string
   label?: string
   className?: string
 }
@@ -70,11 +74,12 @@ export const WALL_MIN_WIDTH = 420
 const SCALE = {
   wall: {
     hero: 'text-[40px] leading-[44px]',
-    line: 'text-lg',
     pad: 'p-inset-lg gap-stack-md',
-    cell: 8,
+    cell: 10,
+    // `sm`, not `md`: at wall size a 32px metric value fought the 40px hero.
+    metric: 'sm' as const,
   },
-  phone: { hero: 'text-2xl', line: 'text-base', pad: 'p-inset-md gap-stack-sm', cell: 6 },
+  phone: { hero: 'text-2xl', pad: 'p-inset-md gap-stack-sm', cell: 8, metric: 'sm' as const },
 } as const
 
 type Palette = ReturnType<typeof getSemanticColors>
@@ -106,35 +111,37 @@ interface ResolvedTile {
   state: GoalMilestoneState
   color: string
   hero: string
-  line: string
-  gapText: string | null
+  bestText: string | null
+  weekText: string | null
 }
 
 function gapAmountText(props: GoalMilestoneTileProps): string | null {
   const { target, latest, direction } = props
   const gap = latest ? milestoneGap(target, latest, direction) : null
   if (!gap) return null
-  const unit = target.unit ?? ''
-  return formatMilestoneGapAmount(gap, unit, isLoadTarget(target) ? undefined : target.metric)
-}
-
-function copyFor(state: GoalMilestoneState, props: GoalMilestoneTileProps, gap: string | null) {
-  const goal = targetText(props.target)
-  const best = props.latest ? readingText(props.target, props.latest) : ''
-  if (state === 'hit') return { hero: goal, line: best ? `Reached · best ${best}` : 'Reached' }
-  if (state === 'missed') {
-    return { hero: gap ?? goal, line: `short of ${goal} at week ${props.goalWeek}` }
-  }
-  return { hero: gap ?? goal, line: `${gap ? 'to ' : ''}${goal} by week ${props.goalWeek}` }
+  return formatMilestoneGapAmount(
+    gap,
+    target.unit ?? '',
+    isLoadTarget(target) ? undefined : target.metric
+  )
 }
 
 function resolveTile(props: GoalMilestoneTileProps, t: Palette): ResolvedTile {
-  const { target, latest, direction, currentWeek, goalWeek } = props
+  const { target, latest, direction, currentWeek, weekCount } = props
   const met = latest ? milestoneGap(target, latest, direction)?.kind === 'none' : false
-  const state = deriveMilestoneState({ state: props.state, met, currentWeek, goalWeek })
-  const gapText = state === 'hit' ? null : gapAmountText(props)
-  const color = t[milestoneToneToken(state, props.status)]
-  return { props, state, color, gapText, ...copyFor(state, props, gapText) }
+  const state = deriveMilestoneState({ state: props.state, met, currentWeek, goalWeek: weekCount })
+  const gap = state === 'hit' ? null : gapAmountText(props)
+  return {
+    props,
+    state,
+    color: props.toneColor ?? t[milestoneToneToken(state, props.status)],
+    hero: gap ?? targetText(target),
+    bestText: latest ? readingText(target, latest) : null,
+    weekText:
+      currentWeek !== undefined && currentWeek <= weekCount
+        ? `week ${currentWeek} of ${weekCount}`
+        : `${weekCount} weeks`,
+  }
 }
 
 function StateMark({ state }: { state: GoalMilestoneState }) {
@@ -168,113 +175,91 @@ function Header({ label, state }: { label: string; state: GoalMilestoneState }) 
   )
 }
 
-function ProgressTrack({
-  fraction,
-  color,
-  scale,
-}: {
-  fraction: number
-  color: string
-  scale: GoalMilestoneTileScale
-}) {
-  const percent = Math.round(fraction * 100)
-  return (
-    <View
-      role="progressbar"
-      aria-label="Progress to the meso target"
-      aria-valuemin={0}
-      aria-valuemax={100}
-      aria-valuenow={percent}
-      className={cn(
-        'w-full rounded-full overflow-hidden bg-hairline-strong',
-        scale === 'wall' ? 'h-2' : 'h-1.5'
-      )}
-      testID="goal-milestone-progress"
-    >
-      <View
-        className="h-full rounded-full"
-        style={{ width: `${percent}%`, backgroundColor: color }}
-      />
-    </View>
-  )
-}
-
 function Hero({ tile, scale }: { tile: ResolvedTile; scale: GoalMilestoneTileScale }) {
-  const s = SCALE[scale]
   return (
-    <View className="gap-stack-sm">
-      {/* body1 plus the heading face: a heading variant would emit role=heading. */}
-      <Typography
-        variant="body1"
-        color="inherit"
-        className={cn('font-heading font-bold', s.hero)}
-        style={{ color: tile.color }}
-        maxLines={1}
-        testID="goal-milestone-hero"
-      >
-        {tile.hero}
-      </Typography>
-      <Typography
-        variant="body1"
-        color="secondary"
-        className={cn('font-heading font-semibold', s.line)}
-        testID="goal-milestone-line"
-      >
-        {tile.line}
-      </Typography>
-    </View>
+    // body1 plus the heading face: a heading variant would emit role=heading.
+    <Typography
+      variant="body1"
+      color="inherit"
+      className={cn('font-heading font-bold', SCALE[scale].hero)}
+      style={{ color: tile.color }}
+      maxLines={1}
+      testID="goal-milestone-hero"
+    >
+      {tile.hero}
+    </Typography>
   )
 }
 
-function bestText({ props, state }: ResolvedTile): string | null {
-  // A hit tile already names its best set on the line above.
-  if (state === 'hit') return null
-  return props.latest ? `Best ${readingText(props.target, props.latest)}` : 'No matched set yet'
-}
-
-function BestCaption({ tile }: { tile: ResolvedTile }) {
-  const { currentWeek, weekCount } = tile.props
+/** Draft 1: one caption sentence. */
+function SentenceSummary({ tile }: { tile: ResolvedTile }) {
+  const goal = targetText(tile.props.target)
   const parts = [
-    bestText(tile),
-    currentWeek !== undefined && currentWeek <= weekCount
-      ? `${bestText(tile) ? 'week' : 'Week'} ${currentWeek} of ${weekCount}`
-      : null,
+    tile.bestText ? `Best ${tile.bestText}` : 'No matched set',
+    `goal ${goal}`,
+    tile.weekText,
   ]
   return (
-    <Typography variant="caption" color="tertiary" testID="goal-milestone-best">
+    <Typography variant="caption" color="tertiary" testID="goal-milestone-summary">
       {parts.filter(Boolean).join(' · ')}
     </Typography>
   )
 }
 
-function PlaneBody({
-  tile,
-  scale,
-  layout,
-}: {
-  tile: ResolvedTile
-  scale: GoalMilestoneTileScale
-  layout: GoalMilestoneTileLayout
-}) {
+/** Draft 2: best and goal as Metric cells, the week count as the row's caption. */
+function MetricsSummary({ tile, scale }: { tile: ResolvedTile; scale: GoalMilestoneTileScale }) {
+  return (
+    <View
+      style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }}
+      className="gap-inline-md"
+      testID="goal-milestone-summary"
+    >
+      <Metric label="BEST" value={tile.bestText ?? '—'} size={SCALE[scale].metric} />
+      <Metric label="GOAL" value={targetText(tile.props.target)} size={SCALE[scale].metric} />
+      <Typography variant="caption" color="tertiary">
+        {tile.weekText}
+      </Typography>
+    </View>
+  )
+}
+
+/** Draft 3: best on its own line, goal and the week count under it. */
+function StackedSummary({ tile }: { tile: ResolvedTile }) {
+  return (
+    <View className="gap-stack-sm" testID="goal-milestone-summary">
+      <Typography variant="body2" color="secondary">
+        {tile.bestText ? `Best ${tile.bestText}` : 'No matched set'}
+      </Typography>
+      <Typography variant="caption" color="tertiary">
+        {`Goal ${targetText(tile.props.target)} · ${tile.weekText}`}
+      </Typography>
+    </View>
+  )
+}
+
+function Summary({ tile, scale }: { tile: ResolvedTile; scale: GoalMilestoneTileScale }) {
+  const style = tile.props.summaryStyle ?? 'sentence'
+  if (style === 'metrics') return <MetricsSummary tile={tile} scale={scale} />
+  if (style === 'stacked') return <StackedSummary tile={tile} />
+  return <SentenceSummary tile={tile} />
+}
+
+function PlaneBody({ tile, scale }: { tile: ResolvedTile; scale: GoalMilestoneTileScale }) {
   const { props } = tile
-  const fraction =
-    tile.state === 'hit'
-      ? 1
-      : milestoneProgress(props.target, props.latest, props.start, props.direction)
+  const showWeeks = props.showWeeks ?? true
   return (
     <>
       <Hero tile={tile} scale={scale} />
-      {layout === 'full' && <BestCaption tile={tile} />}
-      {fraction !== null && <ProgressTrack fraction={fraction} color={tile.color} scale={scale} />}
-      {layout === 'full' && (
+      <Summary tile={tile} scale={scale} />
+      {showWeeks && (
         <GoalMilestoneWeekStrip
           weekCount={props.weekCount}
-          goalWeek={props.goalWeek}
           currentWeek={props.currentWeek}
-          weekOutcomes={props.weekOutcomes}
-          outcomeStyle={props.outcomeStyle}
-          goalColor={tile.color}
+          weeks={props.weeks}
+          tipStyle={props.tipStyle}
           cellHeight={SCALE[scale].cell}
+          aheadColor={props.toneColor}
+          readingText={(entry) => (entry.reading ? readingText(props.target, entry.reading) : '')}
         />
       )}
     </>
@@ -297,32 +282,27 @@ function Plane({ children, pad }: { children: ReactNode; pad: string }) {
 
 function accessibleSummary(tile: ResolvedTile): string {
   const goal = targetText(tile.props.target)
-  const parts = [`Meso target ${goal} by week ${tile.props.goalWeek}`]
+  const parts = [`Meso target ${goal}`, tile.weekText]
   if (tile.state !== 'upcoming') parts.push(tile.state === 'hit' ? 'Hit' : 'Missed')
-  if (tile.gapText) parts.push(`${tile.gapText} to go`)
-  return parts.join(', ')
+  else parts.push(`${tile.hero} to go`)
+  return parts.filter(Boolean).join(', ')
 }
 
 /**
- * The goal's meso target (the block's committed value, due in its last week)
- * led by what is still short. A progress bar runs from the block's start to the
- * target, and a thin week strip shows where the lifter is and how past weeks
- * went. Open targets take the goal's pace colour; hit is success; missed is
- * muted. Data sits on a lowered plane inside a raised card.
- *
- * Composes `Surface`, `Indicator`, `Typography` and `GoalMilestoneWeekStrip`,
- * and takes its pace colours from the chart's `STATUS_TOKEN`.
+ * The goal's meso target — the block's committed value, due in its last week —
+ * led by what is still short. One line carries the best set, the goal and the
+ * week count; under it the block's weeks sit as cells on the same `SegmentedBar`
+ * atom the rep and set strips use, each with a tip card. The hero's colour is
+ * the goal's pace: success once hit, muted once missed.
  *
  * @example
  * <GoalMilestoneTile
  *   target={{ metric: 'top_load_at_reps', reps: 8, load: 105, unit: 'lb' }}
- *   goalWeek={6}
  *   weekCount={6}
  *   currentWeek={4}
  *   latest={{ reps: 8, load: 100 }}
- *   start={{ reps: 8, load: 95 }}
  *   status="on_track"
- *   weekOutcomes={['on_track', 'ahead', 'missed']}
+ *   weeks={[{ outcome: 'on_track', reading: { reps: 8, load: 97.5 } }]}
  * />
  */
 export function GoalMilestoneTile(allProps: GoalMilestoneTileProps) {
@@ -333,8 +313,7 @@ export function GoalMilestoneTile(allProps: GoalMilestoneTileProps) {
   const tile = resolveTile(allProps, t)
   const pad = SCALE[scale].pad
   const a11y = { role: 'article' as const, 'aria-label': accessibleSummary(tile) }
-  const header = <Header label={label} state={tile.state} />
-  const body = <PlaneBody tile={tile} scale={scale} layout={layout} />
+  const body = <PlaneBody tile={tile} scale={scale} />
   if (!framed) {
     return (
       <View
@@ -355,7 +334,7 @@ export function GoalMilestoneTile(allProps: GoalMilestoneTileProps) {
       testID="goal-milestone-tile"
       {...a11y}
     >
-      {header}
+      <Header label={label} state={tile.state} />
       <Plane pad={pad}>{body}</Plane>
     </Surface>
   )

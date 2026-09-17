@@ -4,8 +4,6 @@ import {
   deriveMilestoneState,
   isMilestoneMet,
   milestoneGap,
-  milestoneProgress,
-  UNMET_PROGRESS_CAP,
   weekStripCells,
   type GoalLoadTarget,
   type GoalValueTarget,
@@ -87,75 +85,46 @@ describe('meso target state', () => {
   })
 })
 
-describe('progress toward the meso target', () => {
-  const start = { reps: 8, load: 95 }
-
-  it('is the share of the estimated-max climb from the start', () => {
-    expect(milestoneProgress(topSet, { reps: 8, load: 100 }, start)).toBeCloseTo(0.5)
-  })
-
-  it('credits a rep gain at the same load', () => {
-    const before = milestoneProgress(topSet, { reps: 8, load: 100 }, start) ?? 0
-    const after = milestoneProgress(topSet, { reps: 10, load: 100 }, start) ?? 0
-
-    expect(after).toBeGreaterThan(before)
-  })
-
-  it('never falls below zero after a regression', () => {
-    expect(milestoneProgress(topSet, { reps: 5, load: 80 }, start)).toBe(0)
-  })
-
-  it('stops short of full for a light high-rep set that out-estimates the target', () => {
-    expect(milestoneProgress(topSet, { reps: 20, load: 100 }, start)).toBe(UNMET_PROGRESS_CAP)
-  })
-
-  it('is full once the target is met', () => {
-    expect(milestoneProgress(topSet, { reps: 8, load: 105 }, start)).toBe(1)
-  })
-
-  it('measures a loss goal downward', () => {
-    expect(milestoneProgress(cut, { value: 192 }, { value: 195 }, 'down')).toBeCloseTo(0.5)
-  })
-
-  it('is unknown without a starting reading', () => {
-    expect(milestoneProgress(topSet, { reps: 8, load: 100 })).toBeNull()
-  })
-})
-
 describe('week strip cells', () => {
-  const outcomes = ['on_track', 'ahead', 'missed'] as const
+  const weeks = [
+    { outcome: 'on_track' as const, reading: { reps: 8, load: 95 } },
+    { outcome: 'ahead' as const, reading: { reps: 8, load: 100 } },
+    { outcome: 'missed' as const },
+  ]
 
   it('places past, current and future weeks around now', () => {
-    const phases = weekStripCells(6, 6, 4, outcomes).map((c) => c.phase)
+    const phases = weekStripCells(6, 4, weeks).map((c) => c.phase)
 
     expect(phases).toEqual(['past', 'past', 'past', 'current', 'future', 'future'])
   })
 
-  it('marks only the goal week as the goal', () => {
-    const goals = weekStripCells(6, 6, 4).filter((c) => c.isGoal)
+  it('gives each past week its verdict and reading', () => {
+    const cells = weekStripCells(6, 4, weeks)
 
-    expect(goals.map((c) => c.week)).toEqual([6])
+    expect(cells[1].outcome).toBe('ahead')
+    expect(cells[1].entry?.reading).toEqual({ reps: 8, load: 100 })
   })
 
-  it('gives past weeks their outcome and reads a missing one as no data', () => {
-    const cells = weekStripCells(6, 6, 5, outcomes)
+  it('reads a past week with no entry as no data', () => {
+    const cells = weekStripCells(6, 5, weeks)
 
-    expect(cells.map((c) => c.outcome)).toEqual([
-      'on_track',
-      'ahead',
-      'missed',
-      'none',
-      undefined,
-      undefined,
-    ])
+    expect(cells[3].outcome).toBe('none')
+    expect(cells[3].entry).toBeUndefined()
+  })
+
+  it('leaves the current and future weeks without a verdict', () => {
+    const cells = weekStripCells(6, 4, weeks)
+
+    expect(cells[3].outcome).toBeUndefined()
+    expect(cells[5].outcome).toBeUndefined()
   })
 
   it('treats every week as ahead of us when now is unknown', () => {
-    expect(weekStripCells(4, 4).every((c) => c.phase === 'future')).toBe(true)
+    expect(weekStripCells(4).every((c) => c.phase === 'future')).toBe(true)
   })
 
   it('treats every week as past once the block has ended', () => {
-    expect(weekStripCells(4, 4, 5).every((c) => c.phase === 'past')).toBe(true)
+    expect(weekStripCells(4, 5).every((c) => c.phase === 'past')).toBe(true)
   })
 })
 

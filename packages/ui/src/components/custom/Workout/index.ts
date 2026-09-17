@@ -176,21 +176,20 @@ export {
   type GoalMilestoneTileProps,
   type GoalMilestoneTileScale,
   type GoalMilestoneTileLayout,
+  type GoalMilestoneSummaryStyle,
 } from './GoalMilestoneTile'
 export {
   GoalMilestoneWeekStrip,
+  WEEK_OUTCOME_LABEL,
   type GoalMilestoneWeekStripProps,
-  type GoalWeekOutcomeStyle,
+  type GoalWeekTipStyle,
 } from './GoalMilestoneWeekStrip'
 export {
   deriveMilestoneState,
-  estimatedOneRepMax,
   isLoadTarget,
   isMilestoneMet,
   milestoneGap,
-  milestoneProgress,
   weekStripCells,
-  UNMET_PROGRESS_CAP,
   type GoalLoadMetric,
   type GoalLoadTarget,
   type GoalMilestoneGap,
@@ -202,6 +201,7 @@ export {
   type GoalValueMetric,
   type GoalValueTarget,
   type GoalWeekCell,
+  type GoalWeekEntry,
   type GoalWeekOutcome,
   type GoalWeekPhase,
 } from './goalMilestone'
