@@ -104,7 +104,7 @@ export function MessageBubble({
   const body = messageBody(message)
   return (
     <View
-      className={cn('flex-row items-end gap-inline-md', isOwn && 'justify-end', className)}
+      className={cn('flex-row items-start gap-inline-md', isOwn && 'justify-end', className)}
       testID={`chat-message-${message.id}`}
     >
       {isOwn ? null : <AvatarSlot author={author} visible={startsGroup} />}
