@@ -30,6 +30,8 @@ project adheres to [Semantic Versioning](https://semver.org/).
   its label as a tip rather than as type on the plane. The y-domain and the week
   axis both take the marker into account, so a target above every reading still
   lands inside the plane.
+- `PrBadge` takes `iconSize` for its compact star, so a wall-density header can
+  carry a 20px mark and a phone the original 14px.
 - `TipTrigger` (`ui/tooltip`) — one tip opened by hover, focus and press off a
   single state. `GoalMilestoneWeekStrip` now composes it instead of its own copy.
 - `valueReach` / `milestoneReach` (`goalMilestone.ts`) — one definition of where
@@ -37,6 +39,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- `GoalMilestoneTile`'s hit mark takes the hero's own colour rather than a second
+  mapping of the same verdict, so a target that was beaten reads `Hit` in the
+  `ahead` blue instead of green over a blue hero.
 - The goal verdict outranks the pace once a reading reaches the committed target.
   Exactly on the target is success green with the hit label; past it is the
   `ahead` blue labelled `Beyond goal`. The chart's line and pill, the milestone

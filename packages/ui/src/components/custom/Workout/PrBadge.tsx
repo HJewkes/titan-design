@@ -15,6 +15,8 @@ export interface PrBadgeProps extends ViewProps {
   label?: string
   /** Show only the star icon, no text label */
   compact?: boolean
+  /** Star size in px for `compact`; wall-density headers take a larger mark. */
+  iconSize?: number
   /** Trigger pop animation on mount */
   animate?: boolean
   className?: string
@@ -32,6 +34,7 @@ export function PrBadge({
   type = 'e1rm',
   label: labelProp,
   compact = false,
+  iconSize = 14,
   animate = true,
   className,
   ...props
@@ -69,7 +72,7 @@ export function PrBadge({
       testID="pr-badge-star"
       {...props}
     >
-      <StarIcon size={14} color={brandPrimary} fill={brandPrimary} strokeWidth={2} />
+      <StarIcon size={iconSize} color={brandPrimary} fill={brandPrimary} strokeWidth={2} />
     </View>
   ) : (
     <BaseBadge

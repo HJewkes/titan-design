@@ -28,10 +28,15 @@ const meta: Meta<typeof PrimaryGoalCard> = {
       description: 'A: chart fills the card. B: chart pinned to 1200 with the tile beside it.',
     },
     priority: { control: 'inline-radio', options: ['specialize', 'maintain', 'deprioritize'] },
-    chartWidth: { control: { type: 'range', min: 320, max: 1800, step: 20 } },
+    chartWidth: {
+      control: { type: 'range', min: 320, max: 1800, step: 20 },
+      description: 'Pins the measured content width. Leave unset to follow the canvas.',
+    },
   },
   decorators: [
     (Story) => (
+      // No frame: the card is the canvas width, so the chart measures whatever
+      // the Storybook pane (or a viewport preset) currently is.
       <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-sm">
         <View style={{ width: '100%' }}>
           <Story />
@@ -62,12 +67,19 @@ export const BeyondGoal: Story = { args: { ...S.beyondGoal, layout: 'fill' } }
 /** Layout B: the chart pinned to 1200 with the milestone tile in a right column. */
 export const FixedChartWithSideTile: Story = { args: { ...S.onTrack, layout: 'fixed' } }
 
-/** Phone width. The chart drops to its 220px phone density under 720px. */
+/**
+ * Phone width. The card still fills its container — the container is what is
+ * 360 wide — and the chart drops to its 220px phone density under 720px.
+ */
 export const Phone: Story = {
   args: { ...S.onTrack, layout: 'fill' },
   decorators: [
     (Story) => (
-      <Surface level="base" style={{ minHeight: '100%', width: 360 }} className="p-gutter-sm">
+      <Surface
+        level="base"
+        style={{ minHeight: '100%', width: 360, maxWidth: '100%' }}
+        className="p-gutter-sm"
+      >
         <Story />
       </Surface>
     ),

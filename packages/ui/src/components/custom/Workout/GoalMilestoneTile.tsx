@@ -183,24 +183,31 @@ function resolveTile(props: GoalMilestoneTileProps, t: Palette): ResolvedTile {
   }
 }
 
-function StateMark({ state }: { state: GoalMilestoneState }) {
-  if (state === 'upcoming') return null
-  const hit = state === 'hit'
+/**
+ * The mark reads the same verdict the hero does: clearing the goal is success
+ * green, beating it is the `ahead` blue. A green HIT over a blue hero said two
+ * different things about one result (VW-385 round 2).
+ */
+function StateMark({ tile }: { tile: ResolvedTile }) {
+  if (tile.state === 'upcoming') return null
+  const hit = tile.state === 'hit'
+  const dot = hit ? (tile.beyond ? 'info' : 'success') : 'default'
   return (
     <View
       style={{ flexDirection: 'row', alignItems: 'center' }}
       className="gap-inline-sm"
       testID="goal-milestone-state"
     >
-      <Indicator color={hit ? 'success' : 'default'} size="md" />
-      <Typography variant="overline" color={hit ? 'success' : 'tertiary'}>
+      <Indicator color={dot} size="md" />
+      {/* The hero's own colour, not a second mapping of the same verdict. */}
+      <Typography variant="overline" color="inherit" style={{ color: tile.color }}>
         {hit ? 'Hit' : 'Missed'}
       </Typography>
     </View>
   )
 }
 
-function Header({ label, state }: { label: string; state: GoalMilestoneState }) {
+function Header({ label, tile }: { label: string; tile: ResolvedTile }) {
   return (
     <View
       style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
@@ -209,7 +216,7 @@ function Header({ label, state }: { label: string; state: GoalMilestoneState }) 
       <Typography variant="overline" color="tertiary">
         {label}
       </Typography>
-      <StateMark state={state} />
+      <StateMark tile={tile} />
     </View>
   )
 }
@@ -416,7 +423,7 @@ export function GoalMilestoneTile(allProps: GoalMilestoneTileProps) {
       testID="goal-milestone-tile"
       {...a11y}
     >
-      <Header label={label} state={tile.state} />
+      <Header label={label} tile={tile} />
       <Plane pad={pad}>{body}</Plane>
     </Surface>
   )

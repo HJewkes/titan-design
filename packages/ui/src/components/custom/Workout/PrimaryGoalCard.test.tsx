@@ -2,7 +2,13 @@ import { describe, it, expect } from 'vitest'
 import { render, screen, fireEvent, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 
-import { PrimaryGoalCard, FIXED_CHART_WIDTH, goalStatusBadge } from './PrimaryGoalCard'
+import {
+  PrimaryGoalCard,
+  FIXED_CHART_WIDTH,
+  chartWidthFor,
+  goalStatusBadge,
+  markSizeFor,
+} from './PrimaryGoalCard'
 import { PRIMARY_GOAL_SCENARIOS as S } from './primaryGoal-fixture'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 
@@ -100,17 +106,45 @@ describe('PrimaryGoalCard', () => {
       expect(screen.getByTestId('goal-trajectory-chart-canvas')).toHaveStyle({ width: '900px' })
     })
 
-    it('B pins the chart to 1200 without being told a width', () => {
-      render(<PrimaryGoalCard {...S.onTrack} layout="fixed" />)
+    it('B caps the chart at 1200 when the card is wider', () => {
+      render(<PrimaryGoalCard {...S.onTrack} layout="fixed" chartWidth={1888} />)
       expect(screen.getByTestId('goal-trajectory-chart-canvas')).toHaveStyle({
         width: `${FIXED_CHART_WIDTH}px`,
       })
+    })
+
+    it('B is a cap, not a pin: a narrower card gets a chart that fits it', () => {
+      expect(chartWidthFor('fixed', 900)).toBe(900)
+      expect(chartWidthFor('fixed', 1888)).toBe(FIXED_CHART_WIDTH)
+      expect(chartWidthFor('fill', 1888)).toBe(1888)
+    })
+
+    it('B renders inside a 360 card rather than overflowing it', () => {
+      render(<PrimaryGoalCard {...S.onTrack} layout="fixed" chartWidth={360} />)
+      expect(screen.getByTestId('goal-trajectory-chart-canvas')).toHaveStyle({ width: '360px' })
     })
 
     it('draws no chart until the fill layout has been measured', () => {
       render(<PrimaryGoalCard {...S.onTrack} layout="fill" />)
       expect(screen.queryByTestId('goal-trajectory-chart-canvas')).toBeNull()
       expect(screen.getByTestId('goal-milestone-tile')).toBeInTheDocument()
+    })
+
+    it('sizes the header marks off the same density flag the chart uses', () => {
+      expect(markSizeFor(1888)).toBe(20)
+      expect(markSizeFor(360)).toBe(14)
+      expect(markSizeFor(null)).toBe(14)
+    })
+
+    it('gives the wall a larger PR star than the phone', () => {
+      const starSize = (width: number): string | null => {
+        const { unmount } = render(<PrimaryGoalCard {...S.onTrack} chartWidth={width} />)
+        const size = screen.getByTestId('pr-badge-star').querySelector('svg')?.getAttribute('width')
+        unmount()
+        return size ?? null
+      }
+      expect(starSize(1888)).toBe('20')
+      expect(starSize(360)).toBe('14')
     })
 
     it('takes the phone chart height under the wall breakpoint', () => {

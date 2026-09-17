@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 
 import { getSemanticColors } from '../../../theme/tokens/semantic'
@@ -117,6 +117,18 @@ describe('GoalMilestoneTile', () => {
       rerender(<GoalMilestoneTile {...base} latest={{ reps: 8, load: 105 }} />)
 
       expect(hero()).toHaveStyle({ color: dark['status-success'] })
+    })
+
+    it('paints the hit mark the same verdict its hero carries', () => {
+      const dark = getSemanticColors('dark')
+      const markText = () => within(screen.getByTestId('goal-milestone-state')).getByText('Hit')
+      const { rerender } = render(<GoalMilestoneTile {...base} latest={{ reps: 8, load: 107.5 }} />)
+
+      expect(markText()).toHaveStyle({ color: dark['status-info'] })
+
+      rerender(<GoalMilestoneTile {...base} latest={{ reps: 8, load: 105 }} />)
+
+      expect(markText()).toHaveStyle({ color: dark['status-success'] })
     })
 
     it('counts extra reps when the load only matched', () => {

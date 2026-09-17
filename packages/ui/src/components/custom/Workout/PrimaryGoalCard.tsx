@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
 
+import { cn } from '../../../utils/cn'
 import { Card } from '../../ui/card'
 import { Pill, type PillTone } from '../../ui/pill'
 import { TipTrigger } from '../../ui/tooltip'
@@ -53,7 +54,11 @@ export interface PrimaryGoalCardProps extends ViewProps {
   goal: PrimaryGoalChart
   milestone: GoalMilestoneTileProps
   layout?: PrimaryGoalCardLayout
-  /** Pins the chart width. `fixed` defaults to 1200; `fill` measures its box. */
+  /**
+   * Pins the measured content width, which `onLayout` cannot supply under jsdom.
+   * It is what the card has to spend, not what the chart takes: `fixed` still
+   * caps the chart at {@link FIXED_CHART_WIDTH}.
+   */
   chartWidth?: number
   /** Chart height. Defaults to 340 at wall width, 220 below it. */
   chartHeight?: number
@@ -136,6 +141,7 @@ function Header({
   basis,
   citation,
   isPR,
+  markSize,
 }: {
   title: string
   priority: GoalPriority
@@ -143,6 +149,7 @@ function Header({
   basis?: string
   citation?: string
   isPR: boolean
+  markSize: number
 }) {
   return (
     <View
@@ -162,9 +169,9 @@ function Header({
         </Typography>
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center' }} className="gap-inline-sm">
-        <GoalPriorityIcon priority={priority} />
+        <GoalPriorityIcon priority={priority} size={markSize} />
         <StatusBadge badge={badge} basis={basis} citation={citation} />
-        {isPR && <PrBadge type="weight" compact animate={false} />}
+        {isPR && <PrBadge type="weight" compact animate={false} iconSize={markSize} />}
       </View>
     </View>
   )
@@ -175,23 +182,37 @@ function chartHeightFor(width: number): number {
   return width >= WALL_BREAKPOINT ? 340 : 220
 }
 
-function Body({
-  props,
-  width,
-  onLayout,
-}: {
-  props: PrimaryGoalCardProps
-  width: number | null
-  onLayout: (event: Parameters<NonNullable<ViewProps['onLayout']>>[0]) => void
-}) {
+/**
+ * The header marks take the chart's own density flag: a 14px star reads as a
+ * speck across a room beside a wall-scale title, and a 20px one crowds a phone.
+ */
+export function markSizeFor(width: number | null): number {
+  return width !== null && width >= WALL_BREAKPOINT ? 20 : 14
+}
+
+/**
+ * `fill` hands the chart the whole content width. `fixed` caps it at 1200 —
+ * caps, not pins: a container narrower than that gets a chart that fits it,
+ * because a fixed 1200 inside a 1200 canvas is a horizontal scrollbar.
+ */
+export function chartWidthFor(layout: PrimaryGoalCardLayout, content: number): number {
+  return layout === 'fixed' ? Math.min(FIXED_CHART_WIDTH, content) : content
+}
+
+function Body({ props, content }: { props: PrimaryGoalCardProps; content: number | null }) {
   const { goal, milestone, status, title, layout = 'fill', chartHeight } = props
   const side = layout === 'fixed'
+  const width = content === null ? null : chartWidthFor(layout, content)
   return (
     <View
-      style={side ? { flexDirection: 'row', alignItems: 'flex-start' } : undefined}
-      className={side ? 'gap-inline-lg' : 'gap-stack-lg'}
+      // The row wraps: once the chart has taken its cap there may be less than a
+      // tile's width left, and a tile crushed to 90px is worse than one below.
+      style={
+        side ? { flexDirection: 'row', alignItems: 'flex-start', flexWrap: 'wrap' } : undefined
+      }
+      className={side ? 'gap-inline-lg gap-y-stack-lg' : 'gap-stack-lg'}
     >
-      <View onLayout={onLayout} testID="primary-goal-card-chart">
+      <View testID="primary-goal-card-chart">
         {width !== null && (
           <GoalTrajectoryChart
             {...goal}
@@ -202,7 +223,7 @@ function Body({
           />
         )}
       </View>
-      <View style={side ? { flex: 1, minWidth: TILE_MIN_WIDTH } : undefined}>
+      <View style={side ? { flexGrow: 1, flexBasis: TILE_MIN_WIDTH, minWidth: 0 } : undefined}>
         <GoalMilestoneTile {...milestone} />
       </View>
     </View>
@@ -229,9 +250,8 @@ function Body({
  * />
  */
 export function PrimaryGoalCard(props: PrimaryGoalCardProps) {
-  const { title, priority, status, basis, citation, goal, layout = 'fill', className } = props
-  const pinned = props.chartWidth ?? (layout === 'fixed' ? FIXED_CHART_WIDTH : undefined)
-  const measured = useMeasuredWidth(pinned)
+  const { title, priority, status, basis, citation, goal, className } = props
+  const measured = useMeasuredWidth(props.chartWidth)
   const badge = goalStatusBadge(
     status,
     trajectoryReach(goal.committed, goal.actuals, goal.direction)
@@ -239,12 +259,18 @@ export function PrimaryGoalCard(props: PrimaryGoalCardProps) {
   return (
     <Card
       elevation={1}
-      className={className}
+      // The inset lives on the card, so the measured box below it is exactly the
+      // width its content has to spend — the chart's width, with nothing to subtract.
+      className={cn('p-inset-lg', className)}
       role="article"
       aria-label={`${title} goal, ${badge.label}`}
       testID="primary-goal-card"
     >
-      <View className="p-inset-lg gap-stack-lg">
+      <View
+        className="gap-stack-lg"
+        onLayout={measured.onLayout}
+        testID="primary-goal-card-content"
+      >
         <Header
           title={title}
           priority={priority}
@@ -252,8 +278,9 @@ export function PrimaryGoalCard(props: PrimaryGoalCardProps) {
           basis={basis}
           citation={citation}
           isPR={goal.actuals.some((actual) => actual.isPR)}
+          markSize={markSizeFor(measured.width)}
         />
-        <Body props={props} width={measured.width} onLayout={measured.onLayout} />
+        <Body props={props} content={measured.width} />
       </View>
     </Card>
   )
