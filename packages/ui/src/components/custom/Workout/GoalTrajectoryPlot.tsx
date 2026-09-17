@@ -96,8 +96,8 @@ export function trajectoryPalette(
 export type TrajectoryPalette = ReturnType<typeof trajectoryPalette>
 
 /**
- * What sits on the plane's bottom edge: `inset-rule` keeps the floor gridline,
- * pulled in clear of the rounded corners; `lip` drops it for the card rim light.
+ * What sits on the plane's bottom edge: `lip` (locked) drops the floor gridline
+ * for the card rim light; `inset-rule` (not chosen) keeps it, clear of the corners.
  */
 export type PlotBaseline = 'inset-rule' | 'lip'
 

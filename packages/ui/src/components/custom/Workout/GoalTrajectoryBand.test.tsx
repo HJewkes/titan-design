@@ -1,15 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { BAND_OPACITY, FADE_LAYERS, fadeLayerOpacities } from './GoalTrajectoryBand'
+import { BAND_OPACITY } from './GoalTrajectoryBand'
 import { GoalTrajectoryChart } from './GoalTrajectoryChart'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { LIFT_RIM_ALPHA } from '../../../theme/lift'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { alpha } from '../../../utils/colors'
-import { PLOT_LEFT } from './GoalTrajectoryChartGeometry'
-
-const composite = (opacities: number[]): number =>
-  1 - opacities.reduce((clear, a) => clear * (1 - a), 1)
+import { BAND_COLUMN_STEP, PLOT_LEFT } from './GoalTrajectoryChartGeometry'
 
 const props = {
   expected: [
@@ -27,71 +24,76 @@ const props = {
   animate: false,
 }
 
-describe('fadeLayerOpacities', () => {
-  it.each([
-    [0.2, 0.28],
-    [0.14, 0.28],
-  ])('composites to %d at the edge and %d at the centre', (edge, centre) => {
-    const layers = fadeLayerOpacities(edge, centre, FADE_LAYERS)
-    expect(layers).toHaveLength(FADE_LAYERS)
-    expect(composite(layers.slice(0, 1))).toBeCloseTo(edge)
-    expect(composite(layers)).toBeCloseTo(centre)
+/** The gradient an element's `fill="url(#id)"` points at. */
+function gradientOf(container: HTMLElement, element: Element): Element {
+  const id = /url\(#(.+)\)/.exec(element.getAttribute('fill') ?? '')?.[1] ?? ''
+  return container.querySelector(`[id="${id}"]`) as Element
+}
+
+const stopOpacities = (gradient: Element): string[] =>
+  [...gradient.querySelectorAll('stop')].map((stop) => stop.getAttribute('stop-opacity') ?? '')
+
+describe('GoalTrajectoryChart band (locked: smoothed, 28% centre to 14% edge)', () => {
+  it('fades continuously from 14% at each edge to 28% on the centre line', () => {
+    const { container } = render(<GoalTrajectoryChart {...props} />)
+    const column = screen.getAllByTestId('goal-trajectory-chart-band-column')[0]
+    const gradient = gradientOf(container, column)
+    expect(gradient.getAttribute('y2')).toBe('1')
+    expect(stopOpacities(gradient)).toEqual(['0.14', '0.28', '0.14'])
+    expect(
+      [...gradient.querySelectorAll('stop')].map((stop) => stop.getAttribute('offset'))
+    ).toEqual(['0', '0.5', '1'])
   })
 
-  it('rises evenly from the edge to the centre', () => {
-    const layers = fadeLayerOpacities(0.2, 0.28, FADE_LAYERS)
-    const steps = layers.map((_, k) => composite(layers.slice(0, k + 1)))
-    steps.slice(1).forEach((value, k) => expect(value - steps[k]).toBeCloseTo(0.08 / 7))
-  })
-})
-
-describe('GoalTrajectoryChart band treatments', () => {
-  const hue = getSemanticColors('dark')['brand-secondary']
-
-  it('paints the locked flat band at 28% by default', () => {
-    render(<GoalTrajectoryChart {...props} />)
+  it('paints one shared gradient over abutting 2px columns, clipped to the smoothed band', () => {
+    const { container } = render(<GoalTrajectoryChart {...props} />)
+    const columns = screen.getAllByTestId('goal-trajectory-chart-band-column')
+    const xs = columns.map((c) => Number(c.getAttribute('x')))
+    xs.slice(1).forEach((x, i) => expect(x - xs[i]).toBe(BAND_COLUMN_STEP))
+    expect(new Set(columns.map((c) => c.getAttribute('fill'))).size).toBe(1)
     const band = screen.getByTestId('goal-trajectory-chart-band')
-    expect(band.getAttribute('fill')).toBe(hue)
+    const clipId = /url\(#(.+)\)/.exec(band.getAttribute('clip-path') ?? '')?.[1] ?? ''
+    const clip = container.querySelector(`[id="${clipId}"] path`)
+    expect(clip?.getAttribute('d')).toContain('C')
+  })
+
+  it('keeps the NOT CHOSEN flat band reachable at a uniform 28%', () => {
+    render(<GoalTrajectoryChart {...props} bandFade="none" bandCurve="linear" />)
+    const band = screen.getByTestId('goal-trajectory-chart-band')
+    expect(band.getAttribute('fill')).toBe(getSemanticColors('dark')['brand-secondary'])
     expect(band.getAttribute('fill-opacity')).toBe(String(BAND_OPACITY))
     expect(band.getAttribute('d')).not.toContain('C')
   })
 
-  it('smooths the band edges when asked', () => {
-    render(<GoalTrajectoryChart {...props} bandCurve="monotone" />)
-    expect(screen.getByTestId('goal-trajectory-chart-band').getAttribute('d')).toContain('C')
+  it('keeps the NOT CHOSEN 20% centre fade on the same continuous gradient', () => {
+    const { container } = render(<GoalTrajectoryChart {...props} bandFade="centre-20" />)
+    const column = screen.getAllByTestId('goal-trajectory-chart-band-column')[0]
+    expect(stopOpacities(gradientOf(container, column))).toEqual(['0.2', '0.28', '0.2'])
   })
 
-  it('fades toward the edges with nested layers for a centre fade', () => {
-    render(<GoalTrajectoryChart {...props} bandFade="centre-14" />)
-    const layers = screen.getAllByTestId('goal-trajectory-chart-band-layer')
-    expect(layers).toHaveLength(FADE_LAYERS)
-    expect(Number(layers[0].getAttribute('fill-opacity'))).toBeCloseTo(0.14)
-  })
-
-  it('fades from w1 to the last week for the across fade', () => {
+  it('keeps the NOT CHOSEN across fade from w1 to the last week', () => {
     const { container } = render(<GoalTrajectoryChart {...props} bandFade="across-20" />)
     const band = screen.getByTestId('goal-trajectory-chart-band')
-    const id = /url\(#(.+)\)/.exec(band.getAttribute('fill') ?? '')?.[1] ?? ''
-    const stops = container.querySelectorAll(`[id="${id}"] stop`)
-    expect([...stops].map((stop) => stop.getAttribute('stop-opacity'))).toEqual(['0.28', '0.2'])
+    const gradient = gradientOf(container, band)
+    expect(gradient.getAttribute('x2')).toBe('1')
+    expect(stopOpacities(gradient)).toEqual(['0.28', '0.2'])
   })
 })
 
-describe('GoalTrajectoryChart baseline', () => {
-  it('pulls the floor gridline clear of the rounded corners by default', () => {
+describe('GoalTrajectoryChart baseline (locked: lip)', () => {
+  it('drops the floor gridline for the card rim light, keeping its label', () => {
     render(<GoalTrajectoryChart {...props} />)
-    const baseline = screen.getByTestId('goal-trajectory-chart-baseline')
-    expect(Number(baseline.getAttribute('x1'))).toBeGreaterThan(PLOT_LEFT)
-    expect(Number(baseline.getAttribute('x1'))).toBe(PLOT_LEFT + 6)
-    expect(screen.queryByTestId('goal-trajectory-chart-lip')).not.toBeInTheDocument()
-  })
-
-  it('swaps the floor gridline for the card rim light in lip mode, keeping its label', () => {
-    render(<GoalTrajectoryChart {...props} baseline="lip" />)
     expect(screen.queryByTestId('goal-trajectory-chart-baseline')).not.toBeInTheDocument()
     const lip = screen.getByTestId('goal-trajectory-chart-lip')
     expect(lip.getAttribute('fill')).toBe(alpha(primitiveColors.white, LIFT_RIM_ALPHA.dark))
     expect(lip.getAttribute('fill-rule')).toBe('evenodd')
     expect(screen.getByText('170')).toBeInTheDocument()
+  })
+
+  it('keeps the NOT CHOSEN inset floor rule clear of the rounded corners', () => {
+    render(<GoalTrajectoryChart {...props} baseline="inset-rule" />)
+    const baseline = screen.getByTestId('goal-trajectory-chart-baseline')
+    expect(Number(baseline.getAttribute('x1'))).toBe(PLOT_LEFT + 6)
+    expect(screen.queryByTestId('goal-trajectory-chart-lip')).not.toBeInTheDocument()
   })
 })

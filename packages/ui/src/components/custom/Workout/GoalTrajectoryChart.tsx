@@ -115,11 +115,11 @@ export interface GoalTrajectoryChartProps extends ViewProps {
    * renders the final frame at once (visual baselines); reduced motion forces it off.
    */
   animate?: boolean
-  /** Exploration (VW-385 round 2): what marks the plane's bottom edge. */
+  /** What marks the plane's bottom edge. Locked: `lip`; `inset-rule` was not chosen. */
   baseline?: PlotBaseline
-  /** Exploration (VW-385 round 2): a subtle fade across the expected band. */
+  /** Band fade. Locked: `centre-14`; the others were not chosen. */
   bandFade?: BandFade
-  /** Exploration (VW-385 round 2): straight or monotone-smoothed band edges. */
+  /** Band edge interpolation. Locked: `monotone`; `linear` was not chosen. */
   bandCurve?: BandCurve
   className?: string
 }
@@ -182,9 +182,9 @@ export function GoalTrajectoryChart({
   metricLabel = 'Goal',
   leftShadowSpread = DEFAULT_LEFT_SHADOW_SPREAD,
   animate = true,
-  baseline = 'inset-rule',
-  bandFade = 'none',
-  bandCurve = 'linear',
+  baseline = 'lip',
+  bandFade = 'centre-14',
+  bandCurve = 'monotone',
   className,
   ...props
 }: GoalTrajectoryChartProps) {

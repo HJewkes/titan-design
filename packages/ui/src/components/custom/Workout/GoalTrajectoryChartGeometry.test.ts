@@ -11,6 +11,8 @@ import {
   MARKER_CLEARANCE,
   ruleLabelTop,
   bandPathAt,
+  bandColumns,
+  BAND_COLUMN_STEP,
   cappedTicks,
   type GoalExpectedPoint,
   type GoalTrajectoryWeek,
@@ -48,6 +50,7 @@ const lossExpected: GoalExpectedPoint[] = [
 const base = { actuals: [], weeks, width: 600, height: 300 }
 
 const PATH_PRECISION = 0.001
+type BandColumnT = ReturnType<typeof bandColumns>[number]
 
 /** The end point of every command in an SVG path d3 emitted (M, L and C). */
 function pathVertices(d: string): Array<{ x: number; y: number }> {
@@ -602,6 +605,61 @@ describe('deriveTrajectoryGeometry', () => {
     it('draws the band as the straight path unless asked to smooth', () => {
       expect(g.bandPath).toBe(bandPathAt(g.bandSlices))
       expect(g.bandPath).not.toContain('C')
+    })
+  })
+
+  describe('band columns', () => {
+    const g = deriveTrajectoryGeometry({
+      ...base,
+      expected: gainExpected,
+      committed: 185,
+      stretch: 195,
+    })
+
+    it.each(['linear', 'monotone'] as const)(
+      'tiles the band with abutting integer columns (%s)',
+      (curve) => {
+        const columns = bandColumns(g.bandSlices, curve)
+        const first = g.bandSlices[0].x
+        const last = g.bandSlices[g.bandSlices.length - 1].x
+        expect(columns[0].x).toBeLessThanOrEqual(first)
+        expect(columns[columns.length - 1].x + BAND_COLUMN_STEP).toBeGreaterThanOrEqual(last)
+        columns.forEach((c, i) => {
+          expect(Number.isInteger(c.x)).toBe(true)
+          if (i > 0) expect(c.x - columns[i - 1].x).toBe(BAND_COLUMN_STEP)
+        })
+      }
+    )
+
+    it('meets the drawn smoothed edges at every weekly edge point', () => {
+      const columns = bandColumns(g.bandSlices, 'monotone')
+      g.bandSlices.slice(1, -1).forEach((slice) => {
+        const column = columns.find((c) => c.x === Math.floor(slice.x / 2) * 2) as BandColumnT
+        expect(column.top).toBeLessThanOrEqual(slice.top + PATH_PRECISION)
+        expect(column.bottom).toBeGreaterThanOrEqual(slice.bottom - PATH_PRECISION)
+        expect(slice.top - column.top).toBeLessThan(1)
+        expect(column.bottom - slice.bottom).toBeLessThan(1)
+      })
+    })
+
+    it('centres each column on the band centre line to within half a pixel', () => {
+      const columns = bandColumns(g.bandSlices, 'linear')
+      g.bandSlices.slice(1, -1).forEach((slice) => {
+        const column = columns.find((c) => c.x === Math.floor(slice.x / 2) * 2) as BandColumnT
+        const centre = (slice.top + slice.bottom) / 2
+        expect(Math.abs((column.top + column.bottom) / 2 - centre)).toBeLessThan(0.5)
+      })
+    })
+
+    it('follows the smoothed curve between weeks, not the straight chord', () => {
+      const smooth = bandColumns(g.bandSlices, 'monotone')
+      const straight = bandColumns(g.bandSlices, 'linear')
+      const differs = smooth.some((c, i) => Math.abs(c.top - straight[i].top) > 0.5)
+      expect(differs).toBe(true)
+    })
+
+    it('draws no columns without a band', () => {
+      expect(bandColumns(g.bandSlices.slice(0, 1))).toEqual([])
     })
   })
 })

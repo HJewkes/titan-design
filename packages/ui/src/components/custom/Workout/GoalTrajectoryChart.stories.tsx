@@ -90,23 +90,25 @@ const meta: Meta<typeof GoalTrajectoryChart> = {
     baseline: {
       control: { type: 'inline-radio' },
       options: ['inset-rule', 'lip'],
-      description: 'Exploration: floor gridline pulled clear of the corners, or the card rim light',
+      description: 'Locked: `lip`. NOT CHOSEN: `inset-rule`',
     },
     bandFade: {
       control: { type: 'inline-radio' },
       options: ['none', 'centre-20', 'centre-14', 'across-20'],
-      description: 'Exploration: band opacity 28% at the centre line fading to the edge value',
+      description: 'Locked: `centre-14`. NOT CHOSEN: `none`, `centre-20`, `across-20`',
     },
     bandCurve: {
       control: { type: 'inline-radio' },
       options: ['linear', 'monotone'],
-      description: 'Exploration: straight band edges, or smoothed like the actual line',
+      description: 'Locked: `monotone`. NOT CHOSEN: `linear`',
     },
     leftShadowSpread: {
       control: { type: 'range', min: 0, max: 0.08, step: 0.005 },
       description: 'Fraction of the plot width the left inner shadow fades over',
     },
   },
+  // Controls open on the locked treatment; the Explore stories override one at a time.
+  args: { bandCurve: 'monotone', bandFade: 'centre-14', baseline: 'lip' },
   // The plot plane sits one step below the card it is drawn on, as on the page.
   decorators: [
     (Story) => (
@@ -313,51 +315,69 @@ export const PhoneMotion: Story = {
 }
 
 /*
- * VW-385 round 2 explorations. Each story is NoMotion with one treatment
- * changed, so they screenshot the same frame. The human picks; the losing
- * options are deleted from the component and these stories go with them.
+ * VW-385 round 2, decided 2026-09-17. LOCKED (the component defaults): smoothed
+ * band edges, 28% centre to 14% edge fade, bottom lip. The NOT CHOSEN stories
+ * stay so the decision can be re-read against what was rejected.
  */
 
-/** Band edges smoothed with the actual line's monotone cubic. */
-export const ExploreBandSmoothed: Story = {
-  args: { ...NoMotion.args, bandCurve: 'monotone' },
+/** CHOSEN: the locked treatment, identical to NoMotion. */
+export const ExploreBandFadeCentre14: Story = {
+  args: { ...NoMotion.args },
 }
 
-/** Band 28% on its centre line fading to 20% at both edges. */
+/** CHOSEN: smoothed band edges (the default; same frame as NoMotion). */
+export const ExploreBandSmoothed: Story = {
+  args: { ...NoMotion.args },
+}
+
+/** NOT CHOSEN: straight band edges. */
+export const ExploreBandStraight: Story = {
+  args: { ...NoMotion.args, bandCurve: 'linear' },
+}
+
+/** NOT CHOSEN: a flat 28% band with no fade. */
+export const ExploreBandFlat: Story = {
+  args: { ...NoMotion.args, bandFade: 'none' },
+}
+
+/** NOT CHOSEN: 28% on the centre line fading to 20% at both edges. */
 export const ExploreBandFadeCentre20: Story = {
   args: { ...NoMotion.args, bandFade: 'centre-20' },
 }
 
-/** Band 28% on its centre line fading to 14% at both edges. */
-export const ExploreBandFadeCentre14: Story = {
-  args: { ...NoMotion.args, bandFade: 'centre-14' },
-}
-
-/** Band 28% at w1 fading to 20% at the last week. */
+/** NOT CHOSEN: 28% at w1 fading to 20% at the last week. */
 export const ExploreBandFadeAcross20: Story = {
   args: { ...NoMotion.args, bandFade: 'across-20' },
 }
 
-/** Baseline A (the default): the floor gridline, pulled clear of the rounded corners. */
+/** NOT CHOSEN: baseline A, the floor gridline pulled clear of the rounded corners. */
 export const ExploreBaselineInsetRule: Story = {
   args: { ...NoMotion.args, baseline: 'inset-rule' },
 }
 
-/** Baseline B: no floor gridline; the plane wears the card rim light on its bottom edge. */
+/** CHOSEN: baseline B, the card rim light on the plane's bottom edge (the default). */
 export const ExploreBaselineLip: Story = {
-  args: { ...NoMotion.args, baseline: 'lip' },
+  args: { ...NoMotion.args },
 }
 
+const LOCKED = { bandCurve: 'monotone', bandFade: 'centre-14', baseline: 'lip' } as const
+
 const TREATMENTS: Array<{ caption: string; args: Partial<Story['args']> }> = [
-  { caption: 'Flat band (locked), baseline A', args: {} },
-  { caption: 'Smoothed band edges', args: { bandCurve: 'monotone' } },
-  { caption: 'Centre fade 28% to 20%', args: { bandFade: 'centre-20' } },
-  { caption: 'Centre fade 28% to 14%', args: { bandFade: 'centre-14' } },
-  { caption: 'Across fade 28% at w1 to 20% at w6', args: { bandFade: 'across-20' } },
-  { caption: 'Baseline B: card rim light, no floor rule', args: { baseline: 'lip' } },
+  { caption: 'LOCKED: smoothed, centre fade 28% to 14%, bottom lip', args: LOCKED },
+  { caption: 'NOT CHOSEN: straight band edges', args: { ...LOCKED, bandCurve: 'linear' } },
+  { caption: 'NOT CHOSEN: flat 28% band', args: { ...LOCKED, bandFade: 'none' } },
+  { caption: 'NOT CHOSEN: centre fade 28% to 20%', args: { ...LOCKED, bandFade: 'centre-20' } },
+  {
+    caption: 'NOT CHOSEN: across fade 28% at w1 to 20% at w6',
+    args: { ...LOCKED, bandFade: 'across-20' },
+  },
+  {
+    caption: 'NOT CHOSEN: inset floor rule instead of the lip',
+    args: { ...LOCKED, baseline: 'inset-rule' },
+  },
 ]
 
-/** Every round-2 treatment stacked on the same data, for a side-by-side read. */
+/** The locked treatment above every rejected one, on the same data. */
 export const ExploreAllTreatments: Story = {
   args: { ...NoMotion.args },
   render: (args) => (

@@ -411,6 +411,80 @@ export function bandPathAt(slices: BandSlice[], spread = 1, curve: BandCurve = '
   return (curve === 'monotone' ? shape.curve(curveMonotoneX) : shape)(slices) ?? ''
 }
 
+/** One vertical strip of the band, spanning its full extent across the strip's width. */
+export interface BandColumn {
+  x: number
+  width: number
+  top: number
+  bottom: number
+}
+
+/** Column width for gradient-painted bands; a 2px step is below what the eye resolves. */
+export const BAND_COLUMN_STEP = 2
+
+type Segment = { x0: number; x1: number; ys: number[] }
+
+/**
+ * The drawn edge as segments. d3's monotone cubic places both control points at
+ * the thirds of each span, so a segment's x is linear in t and y(x) is exact.
+ */
+function edgeSegments(points: GeometryPoint[], curve: BandCurve): Segment[] {
+  const shape = line<GeometryPoint>()
+    .x((p) => p.x)
+    .y((p) => p.y)
+  const d = (curve === 'monotone' ? shape.curve(curveMonotoneX) : shape)(points) ?? ''
+  const commands = d.match(/[MLC][^MLC]*/g) ?? []
+  const segments: Segment[] = []
+  let at = { x: 0, y: 0 }
+  commands.forEach((command) => {
+    const n = command.slice(1).split(',').map(Number)
+    const end = { x: n[n.length - 2], y: n[n.length - 1] }
+    if (command[0] === 'L') segments.push({ x0: at.x, x1: end.x, ys: [at.y, at.y, end.y, end.y] })
+    if (command[0] === 'C') segments.push({ x0: at.x, x1: end.x, ys: [at.y, n[1], n[3], end.y] })
+    at = end
+  })
+  return segments
+}
+
+function edgeYAt(segments: Segment[], x: number): number {
+  const seg = segments.find((s) => x <= s.x1) ?? segments[segments.length - 1]
+  const t = seg.x1 === seg.x0 ? 0 : Math.min(1, Math.max(0, (x - seg.x0) / (seg.x1 - seg.x0)))
+  const [a, b, c, d] = seg.ys
+  const u = 1 - t
+  return u * u * u * a + 3 * u * u * t * b + 3 * u * t * t * c + t * t * t * d
+}
+
+/**
+ * The band cut into abutting integer-x columns, each covering the band's full
+ * extent across its width, so a per-column gradient can follow the centre line
+ * and a clip to the band path trims the overhang.
+ */
+export function bandColumns(slices: BandSlice[], curve: BandCurve = 'linear'): BandColumn[] {
+  if (slices.length < 2) return []
+  const top = edgeSegments(
+    slices.map((s) => ({ x: s.x, y: s.top })),
+    curve
+  )
+  const bottom = edgeSegments(
+    slices.map((s) => ({ x: s.x, y: s.bottom })),
+    curve
+  )
+  const columns: BandColumn[] = []
+  const end = Math.ceil(slices[slices.length - 1].x)
+  for (let x = Math.floor(slices[0].x); x < end; x += BAND_COLUMN_STEP) {
+    const edges = [x, x + BAND_COLUMN_STEP / 2, x + BAND_COLUMN_STEP]
+    const tops = edges.map((e) => edgeYAt(top, e))
+    const bottoms = edges.map((e) => edgeYAt(bottom, e))
+    columns.push({
+      x,
+      width: BAND_COLUMN_STEP,
+      top: Math.min(...tops),
+      bottom: Math.max(...bottoms),
+    })
+  }
+  return columns
+}
+
 /**
  * Round-valued ticks, at most one more than asked. d3's step for a count can
  * overshoot it (a 14-unit span at 5 gives 7, at step 2), so the request shrinks

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { siblingSource, resolveAll } from '../../../test/spacing-resolver'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { GoalTrajectoryChart } from './GoalTrajectoryChart'
 import type {
@@ -52,6 +52,13 @@ const baseProps = {
   metricLabel: 'Bench top load',
 }
 
+/** The path the band is clipped to, i.e. the band's drawn outline. */
+function bandOutline(root: HTMLElement): string {
+  const band = within(root).getByTestId('goal-trajectory-chart-band')
+  const id = /url\(#(.+)\)/.exec(band.getAttribute('clip-path') ?? '')?.[1] ?? ''
+  return root.querySelector(`[id="${id}"] path`)?.getAttribute('d') ?? ''
+}
+
 describe('GoalTrajectoryChart', () => {
   describe('rendering', () => {
     it('renders the chart canvas', () => {
@@ -59,10 +66,9 @@ describe('GoalTrajectoryChart', () => {
       expect(screen.getByTestId('goal-trajectory-chart-canvas')).toBeInTheDocument()
     })
 
-    it('renders the expected band as one filled path', () => {
-      render(<GoalTrajectoryChart {...baseProps} status="on_track" />)
-      const band = screen.getByTestId('goal-trajectory-chart-band')
-      expect(band.getAttribute('d')).toMatch(/^M.*Z$/)
+    it('renders the expected band inside one closed outline', () => {
+      const { container } = render(<GoalTrajectoryChart {...baseProps} status="on_track" />)
+      expect(bandOutline(container)).toMatch(/^M.*Z$/)
     })
 
     it('renders the committed and stretch rules with their values', () => {
@@ -89,14 +95,18 @@ describe('GoalTrajectoryChart', () => {
       expect(line.getAttribute('stroke-linecap')).toBe('round')
     })
 
-    it('fills no area under the line: the band is the only filled path', () => {
+    it('fills no area under the line: nothing is filled in the status tone but the dots', () => {
       const { container } = render(<GoalTrajectoryChart {...baseProps} status="on_track" />)
-      const filled = [...container.querySelectorAll('path')].filter(
-        (path) => path.getAttribute('fill') !== 'none'
+      const drawn = [...container.querySelectorAll('path, rect')].filter(
+        (el) => !el.closest('defs')
       )
-      expect(filled.map((path) => path.getAttribute('data-testid'))).toEqual([
-        'goal-trajectory-chart-band',
+      const filledPaths = drawn.filter(
+        (el) => el.tagName.toLowerCase() === 'path' && el.getAttribute('fill') !== 'none'
+      )
+      expect(filledPaths.map((el) => el.getAttribute('data-testid'))).toEqual([
+        'goal-trajectory-chart-lip',
       ])
+      expect(drawn.filter((el) => el.getAttribute('fill') === dark['status-success'])).toEqual([])
     })
 
     it('shades each deload week and rules each meso boundary', () => {
@@ -145,7 +155,7 @@ describe('GoalTrajectoryChart', () => {
           unit="lbs"
         />
       )
-      expect(screen.getByTestId('goal-trajectory-chart-band').getAttribute('d')).toMatch(/Z$/)
+      expect(bandOutline(document.body)).toMatch(/Z$/)
     })
 
     it('labels the legend as a loss band', () => {
