@@ -40,6 +40,8 @@ const KNOWN_TYPE_ONLY_BARE_NAMES = new Set([
   'ElevationLevel', // theme/elevation.ts: type alias
   'ExerciseIndicatorKind', // components/custom/Workout/ExerciseIndicator.tsx: type alias
   'GlowIntensity', // theme/elevation.ts: type alias
+  'GoalLiftMilestone', // components/custom/Workout/GoalLiftCard.tsx: interface
+  'GoalLiftStatus', // components/custom/Workout/GoalLiftCard.tsx: type alias
   'LiftOptions', // theme/lift.ts: interface
   'SetRowProps', // components/custom/Workout/SetRow.tsx: type alias
   'SetStripSet', // components/custom/Workout/SetBar.tsx: type alias
