@@ -16,6 +16,9 @@ export type BandFade = 'none' | 'centre-20' | 'centre-14' | 'across-20'
 /** Band opacity at its centre line (and everywhere, for `none`). */
 export const BAND_OPACITY = 0.28
 
+/** Stroke width of the degenerate band's centre edge (VW-414). */
+export const BAND_EDGE_WIDTH = 1.5
+
 export const EDGE_OPACITY: Record<Exclude<BandFade, 'none'>, number> = {
   'centre-20': 0.2,
   'centre-14': 0.14,
@@ -91,8 +94,7 @@ function AcrossFade({ geometry, hue, curve }: BandLayerProps) {
   )
 }
 
-export function BandLayer(props: BandLayerProps) {
-  if (!props.geometry.hasBand) return null
+function Fill(props: BandLayerProps) {
   if (props.fade === 'across-20') return <AcrossFade {...props} />
   if (props.fade !== 'none') return <CentreFade {...props} />
   return (
@@ -103,4 +105,30 @@ export function BandLayer(props: BandLayerProps) {
       fillOpacity={BAND_OPACITY}
     />
   )
+}
+
+/**
+ * The band's centre line at full hue, drawn INSTEAD of the fill. A degenerate band
+ * has no area, so 28% of it is 28% of nothing, and the gradient painter still emits
+ * a column every 2px across the plot for nothing. A minimum FILL thickness was
+ * rejected: 2px of a centre-to-edge gradient shows only its 14% edge stops, which
+ * is not legible from across the room, and it would lie about the band's width.
+ */
+function BandEdge({ geometry, hue }: BandLayerProps) {
+  return (
+    <path
+      data-testid="goal-trajectory-chart-band-edge"
+      d={geometry.bandEdgePath}
+      fill="none"
+      stroke={hue}
+      strokeWidth={BAND_EDGE_WIDTH}
+      strokeLinecap="round"
+    />
+  )
+}
+
+export function BandLayer(props: BandLayerProps) {
+  if (!props.geometry.hasBand) return null
+  if (props.geometry.bandIsDegenerate) return <BandEdge {...props} />
+  return <Fill {...props} />
 }
