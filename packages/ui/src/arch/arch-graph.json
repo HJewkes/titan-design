@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:23549c7e902a6a711b783708fa9e1853cc0803971fc0fa143ed721a938842ef5",
+  "componentBarrelHash": "sha256:0cad207dabc5dbc49ecc07c0bdd0fdd729eace76d80213b782507986ec10f29f",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -45,10 +45,10 @@
       "leak": {
         "rawView": 11,
         "rawText": 4,
-        "inlineStyle": 15,
+        "inlineStyle": 11,
         "rawHex": 0,
-        "loc": 438,
-        "score": 45
+        "loc": 437,
+        "score": 37
       },
       "tier": "page",
       "verdict": "demo-only",
@@ -87,7 +87,7 @@
         "rawText": 5,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 226,
+        "loc": 225,
         "score": 8
       },
       "tier": "atom",
@@ -186,7 +186,7 @@
         "AvatarBadgeProps",
         "AvatarGroupProps"
       ],
-      "libDependents": 0,
+      "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -205,8 +205,8 @@
         "score": 8
       },
       "tier": "atom",
-      "verdict": "dead",
-      "deadByAssociation": false,
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
       "audited": "unaudited",
       "standard": true
     },
@@ -226,7 +226,7 @@
         "dotIndicatorColor"
       ],
       "libDependents": 3,
-      "storyRefs": 3,
+      "storyRefs": 4,
       "xproj": {
         "mobile": 0,
         "mcp": 1,
@@ -263,6 +263,7 @@
         "BaseBadgeSize",
         "BaseBadgeProps",
         "baseBadgeSizeConfig",
+        "variantColors",
         "handlePressIn",
         "handlePressOut"
       ],
@@ -281,7 +282,7 @@
         "rawText": 0,
         "inlineStyle": 2,
         "rawHex": 0,
-        "loc": 118,
+        "loc": 122,
         "score": 6
       },
       "tier": "atom",
@@ -297,6 +298,8 @@
       "family": "custom/Workout",
       "exports": [
         "BodyMap",
+        "BodyMapSize",
+        "TYPE_RAMP",
         "BodyMapData",
         "BodyMapProps",
         "buildSlugParts",
@@ -305,7 +308,7 @@
         "handleBodyPress"
       ],
       "libDependents": 1,
-      "storyRefs": 1,
+      "storyRefs": 3,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
@@ -319,7 +322,7 @@
         "rawText": 3,
         "inlineStyle": 8,
         "rawHex": 0,
-        "loc": 354,
+        "loc": 384,
         "score": 23
       },
       "tier": "atom",
@@ -335,11 +338,14 @@
       "family": "custom/Workout",
       "exports": [
         "BodyMapDetailPanel",
+        "SheetPlacement",
         "ContributingExercise",
         "UpcomingExercise",
         "BodyMapDetailPanelProps",
         "clamp01",
-        "markerFraction"
+        "markerFraction",
+        "trapTab",
+        "useSheetKeyboard"
       ],
       "libDependents": 1,
       "storyRefs": 1,
@@ -352,19 +358,59 @@
       },
       "dependsOn": [
         "Badge",
+        "BodyMapDetailSections",
         "Sparkline"
       ],
       "leak": {
-        "rawView": 15,
+        "rawView": 16,
         "rawText": 15,
-        "inlineStyle": 36,
+        "inlineStyle": 26,
         "rawHex": 0,
-        "loc": 516,
-        "score": 102
+        "loc": 638,
+        "score": 83
       },
       "tier": "organism",
       "verdict": "keep-internal",
       "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "BodyMapDetailSections",
+      "file": "packages/ui/src/components/custom/Workout/BodyMapDetailSections.tsx",
+      "dir": "workout",
+      "family": "custom/Workout",
+      "exports": [
+        "StrengthSection",
+        "PrSection",
+        "PlanSection",
+        "Caption"
+      ],
+      "libDependents": 1,
+      "storyRefs": 0,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 5,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 5
+      },
+      "dependsOn": [
+        "DataRow",
+        "PrBadge",
+        "StrengthTrendChart"
+      ],
+      "leak": {
+        "rawView": 9,
+        "rawText": 8,
+        "inlineStyle": 5,
+        "rawHex": 0,
+        "loc": 197,
+        "score": 27
+      },
+      "tier": "organism",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
     },
@@ -375,7 +421,8 @@
       "family": "shell",
       "exports": [
         "BrandLockup",
-        "BrandLockupProps"
+        "BrandLockupProps",
+        "cn"
       ],
       "libDependents": 1,
       "storyRefs": 1,
@@ -383,8 +430,8 @@
         "mobile": 0,
         "mcp": 0,
         "dash": 0,
-        "audiobook": 0,
-        "total": 0
+        "audiobook": 4,
+        "total": 4
       },
       "dependsOn": [
         "Typography",
@@ -395,11 +442,11 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 64,
+        "loc": 70,
         "score": 2
       },
       "tier": "organism",
-      "verdict": "keep-internal",
+      "verdict": "keep-core",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -494,8 +541,8 @@
         "ButtonIconProps",
         "ButtonSpinnerProps"
       ],
-      "libDependents": 1,
-      "storyRefs": 12,
+      "libDependents": 3,
+      "storyRefs": 15,
       "xproj": {
         "mobile": 14,
         "mcp": 1,
@@ -508,9 +555,9 @@
         "rawView": 0,
         "rawText": 2,
         "inlineStyle": 1,
-        "rawHex": 0,
-        "loc": 305,
-        "score": 4
+        "rawHex": 1,
+        "loc": 318,
+        "score": 5
       },
       "tier": "atom",
       "verdict": "keep-core",
@@ -531,7 +578,6 @@
         "CapacityBandProjection",
         "CapacityBandChartProps",
         "parseTime",
-        "formatDate",
         "toPixels",
         "interpEdge",
         "buildColumns",
@@ -555,9 +601,9 @@
         "rawView": 9,
         "rawText": 4,
         "inlineStyle": 12,
-        "rawHex": 1,
-        "loc": 529,
-        "score": 38
+        "rawHex": 0,
+        "loc": 522,
+        "score": 37
       },
       "tier": "atom",
       "verdict": "keep-internal",
@@ -591,8 +637,8 @@
         "CardInsetProps",
         "useCardDepth"
       ],
-      "libDependents": 10,
-      "storyRefs": 9,
+      "libDependents": 12,
+      "storyRefs": 11,
       "xproj": {
         "mobile": 69,
         "mcp": 3,
@@ -608,7 +654,7 @@
         "rawText": 4,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 349,
+        "loc": 353,
         "score": 12
       },
       "tier": "molecule",
@@ -668,7 +714,7 @@
         "cn"
       ],
       "libDependents": 0,
-      "storyRefs": 1,
+      "storyRefs": 2,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
@@ -684,7 +730,7 @@
         "rawText": 1,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 137,
+        "loc": 152,
         "score": 2
       },
       "tier": "molecule",
@@ -815,6 +861,48 @@
       "standard": true
     },
     {
+      "name": "Composer",
+      "file": "packages/ui/src/components/custom/Chat/Composer.tsx",
+      "dir": "custom",
+      "family": "custom/Chat",
+      "exports": [
+        "Composer",
+        "ComposerProps",
+        "isSubmitKey",
+        "useDraft",
+        "setDraft",
+        "send",
+        "onKeyPress"
+      ],
+      "libDependents": 0,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Button",
+        "Input",
+        "Surface"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 112,
+        "score": 1
+      },
+      "tier": "molecule",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "DataRow",
       "file": "packages/ui/src/components/ui/data-row/DataRow.tsx",
       "dir": "ui",
@@ -823,7 +911,7 @@
         "DataRow",
         "DataRowProps"
       ],
-      "libDependents": 2,
+      "libDependents": 3,
       "storyRefs": 1,
       "xproj": {
         "mobile": 2,
@@ -838,12 +926,50 @@
         "rawText": 2,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 41,
+        "loc": 59,
         "score": 5
       },
       "tier": "atom",
       "verdict": "keep-core",
       "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "DateSeparator",
+      "file": "packages/ui/src/components/custom/Chat/DateSeparator.tsx",
+      "dir": "custom",
+      "family": "custom/Chat",
+      "exports": [
+        "DateSeparator",
+        "DateSeparatorProps",
+        "relativeDayName"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "DateTime",
+        "Divider",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 51,
+        "score": 1
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
       "audited": "unaudited",
       "standard": false
     },
@@ -860,8 +986,8 @@
         "formatDate",
         "getRelativeTime"
       ],
-      "libDependents": 7,
-      "storyRefs": 1,
+      "libDependents": 9,
+      "storyRefs": 2,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
@@ -912,7 +1038,7 @@
         "rawText": 0,
         "inlineStyle": 2,
         "rawHex": 0,
-        "loc": 91,
+        "loc": 90,
         "score": 7
       },
       "tier": "atom",
@@ -1046,7 +1172,7 @@
         "DividerOrientation",
         "DividerProps"
       ],
-      "libDependents": 5,
+      "libDependents": 6,
       "storyRefs": 2,
       "xproj": {
         "mobile": 0,
@@ -1106,7 +1232,7 @@
         "rawText": 3,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 215,
+        "loc": 212,
         "score": 9
       },
       "tier": "molecule",
@@ -1142,17 +1268,18 @@
       },
       "dependsOn": [
         "GhostBand",
-        "GhostBloom"
+        "GhostBloom",
+        "GhostSpark"
       ],
       "leak": {
         "rawView": 2,
         "rawText": 0,
         "inlineStyle": 2,
         "rawHex": 0,
-        "loc": 209,
+        "loc": 210,
         "score": 6
       },
-      "tier": "molecule",
+      "tier": "organism",
       "verdict": "keep-app",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -1168,13 +1295,13 @@
         "EmptyStateProps"
       ],
       "libDependents": 1,
-      "storyRefs": 1,
+      "storyRefs": 2,
       "xproj": {
         "mobile": 1,
-        "mcp": 3,
+        "mcp": 5,
         "dash": 4,
         "audiobook": 1,
-        "total": 9
+        "total": 11
       },
       "dependsOn": [],
       "leak": {
@@ -1200,7 +1327,7 @@
         "ExerciseCard",
         "ExerciseCardProps",
         "getSupersetBorderRadius",
-        "getSupersetMargin",
+        "supersetGap",
         "supersetChrome",
         "deriveCollapsedSetStates",
         "CollapsedCard",
@@ -1228,7 +1355,7 @@
         "rawText": 0,
         "inlineStyle": 2,
         "rawHex": 0,
-        "loc": 328,
+        "loc": 327,
         "score": 7
       },
       "tier": "organism",
@@ -1268,10 +1395,10 @@
       "leak": {
         "rawView": 1,
         "rawText": 0,
-        "inlineStyle": 1,
+        "inlineStyle": 0,
         "rawHex": 0,
         "loc": 194,
-        "score": 3
+        "score": 1
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -1298,7 +1425,8 @@
         "ExerciseVbt",
         "ExerciseDetailStats",
         "VbtSummary",
-        "ExerciseDetailPageProps"
+        "ExerciseDetailPageProps",
+        "SectionCard"
       ],
       "libDependents": 0,
       "storyRefs": 1,
@@ -1320,10 +1448,10 @@
       "leak": {
         "rawView": 18,
         "rawText": 13,
-        "inlineStyle": 32,
+        "inlineStyle": 22,
         "rawHex": 0,
-        "loc": 645,
-        "score": 95
+        "loc": 636,
+        "score": 75
       },
       "tier": "page",
       "verdict": "demo-only",
@@ -1362,10 +1490,10 @@
       "leak": {
         "rawView": 6,
         "rawText": 0,
-        "inlineStyle": 5,
+        "inlineStyle": 3,
         "rawHex": 0,
-        "loc": 236,
-        "score": 16
+        "loc": 235,
+        "score": 12
       },
       "tier": "organism",
       "verdict": "keep-internal",
@@ -1473,10 +1601,10 @@
       "leak": {
         "rawView": 2,
         "rawText": 1,
-        "inlineStyle": 3,
+        "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 84,
-        "score": 9
+        "loc": 79,
+        "score": 5
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -1558,7 +1686,7 @@
         "rawText": 0,
         "inlineStyle": 2,
         "rawHex": 0,
-        "loc": 203,
+        "loc": 205,
         "score": 11
       },
       "tier": "organism",
@@ -1741,7 +1869,6 @@
         "GaugeThreshold",
         "GaugeProps",
         "clamp01",
-        "formatValue",
         "bandColor",
         "buildTicks",
         "activeColor"
@@ -1761,7 +1888,7 @@
         "rawText": 3,
         "inlineStyle": 4,
         "rawHex": 0,
-        "loc": 176,
+        "loc": 173,
         "score": 15
       },
       "tier": "atom",
@@ -1797,7 +1924,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 247,
+        "loc": 248,
         "score": 0
       },
       "tier": "atom",
@@ -1834,7 +1961,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 133,
+        "loc": 132,
         "score": 0
       },
       "tier": "atom",
@@ -1850,12 +1977,13 @@
       "family": "custom/Fatigue",
       "exports": [
         "GhostSpark",
+        "GHOST_GUTTER",
         "GhostSparkProps",
         "xEmpty",
         "x",
         "mag"
       ],
-      "libDependents": 1,
+      "libDependents": 2,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -1873,11 +2001,138 @@
         "rawText": 0,
         "inlineStyle": 3,
         "rawHex": 0,
-        "loc": 127,
+        "loc": 136,
         "score": 9
       },
       "tier": "molecule",
       "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "GoalLiftCard",
+      "file": "packages/ui/src/components/custom/Workout/GoalLiftCard.tsx",
+      "dir": "workout",
+      "family": "custom/Workout",
+      "exports": [
+        "goalLiftStatusLabel",
+        "GoalLiftCard",
+        "GoalLiftStatus",
+        "GoalLiftActual",
+        "GoalLiftMilestone",
+        "GoalLiftCardDensity",
+        "GoalLiftCardProps",
+        "GOAL_STATUS_LABEL",
+        "GOAL_STATUS_TONE",
+        "STATUS_COLLAPSE_WIDTH",
+        "isRegressing",
+        "useMeasuredWidth"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 3,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 3
+      },
+      "dependsOn": [
+        "Card",
+        "Indicator",
+        "Pill",
+        "Sparkline",
+        "Typography",
+        "icons"
+      ],
+      "leak": {
+        "rawView": 8,
+        "rawText": 0,
+        "inlineStyle": 6,
+        "rawHex": 0,
+        "loc": 339,
+        "score": 20
+      },
+      "tier": "organism",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "GoalMuscleCard",
+      "file": "packages/ui/src/components/custom/Workout/GoalMuscleCard.tsx",
+      "dir": "workout",
+      "family": "custom/Workout",
+      "exports": [
+        "goalMuscleLiftText",
+        "GoalMuscleCard",
+        "GoalMuscleLift",
+        "GoalMuscleCardProps",
+        "useStatusColor"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 1,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 1
+      },
+      "dependsOn": [
+        "Card",
+        "GoalLiftCard",
+        "Indicator",
+        "MuscleGlyph",
+        "Pill",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 8,
+        "rawText": 0,
+        "inlineStyle": 7,
+        "rawHex": 0,
+        "loc": 217,
+        "score": 22
+      },
+      "tier": "organism",
+      "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "GoalTrajectoryChart",
+      "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryChart.tsx",
+      "dir": "workout",
+      "family": "custom/Workout",
+      "exports": [
+        "GoalTrajectoryChart",
+        "GoalTrajectoryChartProps",
+        "trajectoryPalette"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 1,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 1
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 23,
+        "rawText": 12,
+        "inlineStyle": 27,
+        "rawHex": 0,
+        "loc": 596,
+        "score": 89
+      },
+      "tier": "atom",
+      "verdict": "keep-app",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -2016,14 +2271,14 @@
         "BotIcon",
         "BrainIcon"
       ],
-      "libDependents": 10,
-      "storyRefs": 6,
+      "libDependents": 11,
+      "storyRefs": 7,
       "xproj": {
         "mobile": 0,
-        "mcp": 6,
+        "mcp": 7,
         "dash": 0,
         "audiobook": 0,
-        "total": 6
+        "total": 7
       },
       "dependsOn": [
         "SvgIcon"
@@ -2052,9 +2307,10 @@
         "IndicatorSize",
         "IndicatorColor",
         "IndicatorPulse",
-        "IndicatorProps"
+        "IndicatorProps",
+        "glowColors"
       ],
-      "libDependents": 6,
+      "libDependents": 9,
       "storyRefs": 3,
       "xproj": {
         "mobile": 0,
@@ -2069,7 +2325,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 124,
+        "loc": 132,
         "score": 4
       },
       "tier": "atom",
@@ -2220,7 +2476,7 @@
         "cn",
         "toggleVisibility"
       ],
-      "libDependents": 1,
+      "libDependents": 2,
       "storyRefs": 3,
       "xproj": {
         "mobile": 0,
@@ -2266,10 +2522,10 @@
       "leak": {
         "rawView": 3,
         "rawText": 5,
-        "inlineStyle": 10,
+        "inlineStyle": 9,
         "rawHex": 0,
-        "loc": 165,
-        "score": 28
+        "loc": 157,
+        "score": 26
       },
       "tier": "atom",
       "verdict": "keep-internal",
@@ -2286,6 +2542,7 @@
         "IntensityBar",
         "IntensityBarOrientation",
         "IntensityBarProps",
+        "intensityColors",
         "zoneForPct",
         "clampFill",
         "isAtTarget"
@@ -2304,9 +2561,9 @@
         "rawView": 4,
         "rawText": 2,
         "inlineStyle": 5,
-        "rawHex": 2,
-        "loc": 227,
-        "score": 18
+        "rawHex": 0,
+        "loc": 237,
+        "score": 16
       },
       "tier": "atom",
       "verdict": "keep-internal",
@@ -2330,10 +2587,10 @@
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
-        "mcp": 0,
+        "mcp": 1,
         "dash": 0,
         "audiobook": 0,
-        "total": 0
+        "total": 1
       },
       "dependsOn": [],
       "leak": {
@@ -2345,7 +2602,7 @@
         "score": 1
       },
       "tier": "atom",
-      "verdict": "dead",
+      "verdict": "keep-app",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": true
@@ -2418,7 +2675,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 106,
+        "loc": 111,
         "score": 2
       },
       "tier": "atom",
@@ -2455,10 +2712,10 @@
       "leak": {
         "rawView": 3,
         "rawText": 0,
-        "inlineStyle": 4,
+        "inlineStyle": 3,
         "rawHex": 0,
-        "loc": 97,
-        "score": 11
+        "loc": 98,
+        "score": 9
       },
       "tier": "organism",
       "verdict": "keep-internal",
@@ -2493,10 +2750,10 @@
       "leak": {
         "rawView": 3,
         "rawText": 1,
-        "inlineStyle": 5,
+        "inlineStyle": 4,
         "rawHex": 0,
         "loc": 123,
-        "score": 14
+        "score": 12
       },
       "tier": "organism",
       "verdict": "keep-app",
@@ -2526,7 +2783,7 @@
         "cn",
         "inline"
       ],
-      "libDependents": 4,
+      "libDependents": 6,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -2609,6 +2866,7 @@
         "MesoCard",
         "MesoVolumeHeatmapEntry",
         "MesoCardProps",
+        "accentStops",
         "heatmapColor"
       ],
       "libDependents": 1,
@@ -2628,10 +2886,10 @@
       "leak": {
         "rawView": 8,
         "rawText": 2,
-        "inlineStyle": 9,
+        "inlineStyle": 7,
         "rawHex": 0,
-        "loc": 245,
-        "score": 28
+        "loc": 244,
+        "score": 24
       },
       "tier": "organism",
       "verdict": "keep-internal",
@@ -2666,10 +2924,10 @@
       "leak": {
         "rawView": 2,
         "rawText": 0,
-        "inlineStyle": 3,
+        "inlineStyle": 2,
         "rawHex": 0,
-        "loc": 169,
-        "score": 8
+        "loc": 164,
+        "score": 6
       },
       "tier": "atom",
       "verdict": "keep-internal",
@@ -2699,26 +2957,109 @@
       "storyRefs": 3,
       "xproj": {
         "mobile": 0,
-        "mcp": 0,
+        "mcp": 1,
         "dash": 0,
         "audiobook": 0,
-        "total": 0
+        "total": 1
       },
       "dependsOn": [
         "Card",
         "StatusDot"
       ],
       "leak": {
-        "rawView": 17,
-        "rawText": 11,
-        "inlineStyle": 24,
+        "rawView": 18,
+        "rawText": 12,
+        "inlineStyle": 21,
         "rawHex": 0,
-        "loc": 453,
-        "score": 76
+        "loc": 478,
+        "score": 72
+      },
+      "tier": "organism",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "MessageBubble",
+      "file": "packages/ui/src/components/custom/Chat/MessageBubble.tsx",
+      "dir": "custom",
+      "family": "custom/Chat",
+      "exports": [
+        "MessageBubble",
+        "DataPartRenderer",
+        "MessageBubbleProps"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Avatar",
+        "DateTime",
+        "MarkdownProse",
+        "Surface",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 6,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 135,
+        "score": 6
       },
       "tier": "organism",
       "verdict": "keep-internal",
       "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "MessageList",
+      "file": "packages/ui/src/components/custom/Chat/MessageList.tsx",
+      "dir": "custom",
+      "family": "custom/Chat",
+      "exports": [
+        "MessageList",
+        "MessageListProps",
+        "Row",
+        "findParticipant",
+        "useWindow"
+      ],
+      "libDependents": 0,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Button",
+        "DateSeparator",
+        "MarkdownProse",
+        "MessageBubble",
+        "TypingIndicator",
+        "UnreadBadge"
+      ],
+      "leak": {
+        "rawView": 5,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 115,
+        "score": 5
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
     },
@@ -2806,10 +3147,10 @@
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
-        "mcp": 3,
+        "mcp": 7,
         "dash": 0,
         "audiobook": 0,
-        "total": 3
+        "total": 7
       },
       "dependsOn": [
         "Stack",
@@ -2871,7 +3212,7 @@
         "rawText": 3,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 267,
+        "loc": 265,
         "score": 6
       },
       "tier": "molecule",
@@ -2881,17 +3222,49 @@
       "standard": true
     },
     {
+      "name": "MuscleGlyph",
+      "file": "packages/ui/src/components/custom/Workout/MuscleGlyph.tsx",
+      "dir": "workout",
+      "family": "custom/Workout",
+      "exports": [
+        "MuscleGlyph",
+        "MuscleGlyphProps"
+      ],
+      "libDependents": 1,
+      "storyRefs": 0,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 103,
+        "score": 2
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "MuscleGroupChip",
       "file": "packages/ui/src/components/custom/Workout/MuscleGroupChip.tsx",
       "dir": "workout",
       "family": "custom/Workout",
       "exports": [
         "MuscleGroupChip",
-        "VolumeStatus",
         "MuscleGroupChipProps"
       ],
-      "libDependents": 3,
-      "storyRefs": 2,
+      "libDependents": 4,
+      "storyRefs": 3,
       "xproj": {
         "mobile": 0,
         "mcp": 1,
@@ -2903,15 +3276,51 @@
         "Pill"
       ],
       "leak": {
-        "rawView": 0,
+        "rawView": 1,
         "rawText": 0,
-        "inlineStyle": 0,
+        "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 56,
-        "score": 0
+        "loc": 70,
+        "score": 3
       },
       "tier": "molecule",
       "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "MuscleStrip",
+      "file": "packages/ui/src/components/custom/Workout/MuscleStrip.tsx",
+      "dir": "workout",
+      "family": "custom/Workout",
+      "exports": [
+        "MuscleStrip",
+        "MuscleStripMuscleData",
+        "MuscleStripProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 2,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 2
+      },
+      "dependsOn": [
+        "MuscleGroupChip"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 61,
+        "score": 1
+      },
+      "tier": "organism",
+      "verdict": "keep-app",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -2923,7 +3332,8 @@
       "family": "shell",
       "exports": [
         "NavItem",
-        "NavItemProps"
+        "NavItemProps",
+        "cn"
       ],
       "libDependents": 1,
       "storyRefs": 1,
@@ -2931,8 +3341,8 @@
         "mobile": 0,
         "mcp": 0,
         "dash": 0,
-        "audiobook": 0,
-        "total": 0
+        "audiobook": 4,
+        "total": 4
       },
       "dependsOn": [
         "Typography"
@@ -2942,11 +3352,11 @@
         "rawText": 0,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 93,
+        "loc": 96,
         "score": 4
       },
       "tier": "molecule",
-      "verdict": "keep-internal",
+      "verdict": "keep-core",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -3003,17 +3413,20 @@
         "PillVariant",
         "PillTone",
         "PillColor",
+        "PillSizeLevel",
+        "DeprecatedPillSize",
         "PillSize",
-        "PillProps"
+        "PillProps",
+        "resolveSize"
       ],
-      "libDependents": 11,
-      "storyRefs": 4,
+      "libDependents": 14,
+      "storyRefs": 7,
       "xproj": {
         "mobile": 0,
-        "mcp": 1,
+        "mcp": 2,
         "dash": 0,
         "audiobook": 0,
-        "total": 1
+        "total": 2
       },
       "dependsOn": [],
       "leak": {
@@ -3021,7 +3434,7 @@
         "rawText": 1,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 224,
+        "loc": 242,
         "score": 3
       },
       "tier": "atom",
@@ -3159,14 +3572,14 @@
         "PRType",
         "PrBadgeProps"
       ],
-      "libDependents": 2,
+      "libDependents": 3,
       "storyRefs": 2,
       "xproj": {
         "mobile": 0,
-        "mcp": 1,
+        "mcp": 3,
         "dash": 0,
         "audiobook": 0,
-        "total": 1
+        "total": 3
       },
       "dependsOn": [
         "BaseBadge",
@@ -3216,10 +3629,10 @@
       "leak": {
         "rawView": 4,
         "rawText": 6,
-        "inlineStyle": 11,
+        "inlineStyle": 9,
         "rawHex": 0,
-        "loc": 248,
-        "score": 32
+        "loc": 244,
+        "score": 28
       },
       "tier": "organism",
       "verdict": "dead",
@@ -3273,10 +3686,10 @@
       "leak": {
         "rawView": 9,
         "rawText": 3,
-        "inlineStyle": 11,
+        "inlineStyle": 6,
         "rawHex": 0,
-        "loc": 422,
-        "score": 34
+        "loc": 420,
+        "score": 24
       },
       "tier": "page",
       "verdict": "demo-only",
@@ -3396,10 +3809,10 @@
       "leak": {
         "rawView": 7,
         "rawText": 7,
-        "inlineStyle": 14,
+        "inlineStyle": 9,
         "rawHex": 0,
-        "loc": 289,
-        "score": 42
+        "loc": 278,
+        "score": 32
       },
       "tier": "organism",
       "verdict": "dead",
@@ -3431,10 +3844,10 @@
       "leak": {
         "rawView": 7,
         "rawText": 6,
-        "inlineStyle": 15,
+        "inlineStyle": 12,
         "rawHex": 0,
-        "loc": 282,
-        "score": 43
+        "loc": 269,
+        "score": 37
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -3490,7 +3903,7 @@
         "ScatterProps",
         "domainOf",
         "ticksOf",
-        "formatTick",
+        "tickLabel",
         "LineSegment",
         "toX",
         "toY"
@@ -3510,7 +3923,7 @@
         "rawText": 5,
         "inlineStyle": 14,
         "rawHex": 0,
-        "loc": 363,
+        "loc": 364,
         "score": 41
       },
       "tier": "atom",
@@ -3656,7 +4069,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 68,
+        "loc": 70,
         "score": 0
       },
       "tier": "molecule",
@@ -3696,7 +4109,7 @@
         "rawText": 5,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 245,
+        "loc": 244,
         "score": 10
       },
       "tier": "molecule",
@@ -3781,10 +4194,10 @@
       "leak": {
         "rawView": 2,
         "rawText": 0,
-        "inlineStyle": 4,
+        "inlineStyle": 2,
         "rawHex": 0,
-        "loc": 152,
-        "score": 10
+        "loc": 140,
+        "score": 6
       },
       "tier": "organism",
       "verdict": "keep-internal",
@@ -3910,7 +4323,7 @@
         "rawText": 0,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 183,
+        "loc": 179,
         "score": 3
       },
       "tier": "organism",
@@ -4118,9 +4531,9 @@
         "rawView": 0,
         "rawText": 0,
         "inlineStyle": 26,
-        "rawHex": 2,
-        "loc": 367,
-        "score": 54
+        "rawHex": 0,
+        "loc": 365,
+        "score": 52
       },
       "tier": "organism",
       "verdict": "remove",
@@ -4159,10 +4572,10 @@
       "leak": {
         "rawView": 4,
         "rawText": 0,
-        "inlineStyle": 9,
+        "inlineStyle": 8,
         "rawHex": 0,
-        "loc": 243,
-        "score": 22
+        "loc": 244,
+        "score": 20
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -4270,10 +4683,10 @@
       "leak": {
         "rawView": 2,
         "rawText": 1,
-        "inlineStyle": 2,
+        "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 86,
-        "score": 7
+        "loc": 77,
+        "score": 3
       },
       "tier": "molecule",
       "verdict": "keep-core",
@@ -4489,11 +4902,15 @@
       "family": "custom/Workout",
       "exports": [
         "Sparkline",
+        "SparklineDomain",
+        "SparklineBand",
+        "SparklineReferenceLabelPlacement",
         "SparklineProps",
-        "normalizeData",
-        "normalizeValue"
+        "extentOf",
+        "scaleY",
+        "scaleX"
       ],
-      "libDependents": 3,
+      "libDependents": 4,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -4506,16 +4923,16 @@
         "Typography"
       ],
       "leak": {
-        "rawView": 5,
+        "rawView": 6,
         "rawText": 1,
-        "inlineStyle": 5,
+        "inlineStyle": 6,
         "rawHex": 0,
-        "loc": 186,
-        "score": 16
+        "loc": 248,
+        "score": 19
       },
       "tier": "molecule",
       "verdict": "keep-internal",
-      "deadByAssociation": true,
+      "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
     },
@@ -4528,25 +4945,26 @@
         "Spinner",
         "SpinnerSize",
         "SpinnerColor",
-        "SpinnerProps"
+        "SpinnerProps",
+        "colorMap"
       ],
       "libDependents": 0,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
-        "mcp": 2,
+        "mcp": 4,
         "dash": 0,
         "audiobook": 1,
-        "total": 3
+        "total": 5
       },
       "dependsOn": [],
       "leak": {
         "rawView": 1,
         "rawText": 0,
         "inlineStyle": 0,
-        "rawHex": 1,
-        "loc": 73,
-        "score": 2
+        "rawHex": 0,
+        "loc": 80,
+        "score": 1
       },
       "tier": "atom",
       "verdict": "keep-app",
@@ -4616,10 +5034,10 @@
       "leak": {
         "rawView": 4,
         "rawText": 0,
-        "inlineStyle": 2,
+        "inlineStyle": 1,
         "rawHex": 0,
         "loc": 195,
-        "score": 8
+        "score": 6
       },
       "tier": "molecule",
       "verdict": "keep-internal",
@@ -4720,14 +5138,13 @@
         "StrengthTrendChartMesoBoundary",
         "StrengthTrendChartProps",
         "timeOf",
-        "formatValue",
         "buildGeometry",
         "toX",
         "toY",
         "project",
         "computeTrend"
       ],
-      "libDependents": 1,
+      "libDependents": 4,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -4740,10 +5157,10 @@
       "leak": {
         "rawView": 20,
         "rawText": 12,
-        "inlineStyle": 33,
+        "inlineStyle": 28,
         "rawHex": 0,
-        "loc": 633,
-        "score": 98
+        "loc": 627,
+        "score": 88
       },
       "tier": "atom",
       "verdict": "keep-core",
@@ -4775,10 +5192,10 @@
       "leak": {
         "rawView": 2,
         "rawText": 0,
-        "inlineStyle": 3,
+        "inlineStyle": 2,
         "rawHex": 0,
-        "loc": 60,
-        "score": 8
+        "loc": 57,
+        "score": 6
       },
       "tier": "molecule",
       "verdict": "keep-internal",
@@ -4795,14 +5212,14 @@
         "Surface",
         "SurfaceProps"
       ],
-      "libDependents": 15,
-      "storyRefs": 47,
+      "libDependents": 18,
+      "storyRefs": 57,
       "xproj": {
         "mobile": 22,
-        "mcp": 7,
+        "mcp": 12,
         "dash": 0,
         "audiobook": 0,
-        "total": 29
+        "total": 34
       },
       "dependsOn": [],
       "leak": {
@@ -5099,6 +5516,7 @@
         "TempoLiveState",
         "TempoDisplayProps",
         "TempoLiveReadout",
+        "tempoColors",
         "getTempoFillPct",
         "activeNumberTone",
         "liveReadoutText",
@@ -5122,9 +5540,9 @@
         "rawView": 10,
         "rawText": 6,
         "inlineStyle": 13,
-        "rawHex": 7,
-        "loc": 417,
-        "score": 49
+        "rawHex": 0,
+        "loc": 455,
+        "score": 42
       },
       "tier": "molecule",
       "verdict": "keep-core",
@@ -5191,7 +5609,7 @@
         "rawText": 3,
         "inlineStyle": 4,
         "rawHex": 0,
-        "loc": 76,
+        "loc": 75,
         "score": 12
       },
       "tier": "molecule",
@@ -5274,9 +5692,9 @@
         "rawView": 3,
         "rawText": 1,
         "inlineStyle": 0,
-        "rawHex": 1,
-        "loc": 312,
-        "score": 5
+        "rawHex": 0,
+        "loc": 304,
+        "score": 4
       },
       "tier": "molecule",
       "verdict": "keep-app",
@@ -5396,10 +5814,10 @@
       "leak": {
         "rawView": 10,
         "rawText": 4,
-        "inlineStyle": 14,
+        "inlineStyle": 11,
         "rawHex": 0,
-        "loc": 313,
-        "score": 42
+        "loc": 321,
+        "score": 36
       },
       "tier": "page",
       "verdict": "demo-only",
@@ -5435,9 +5853,9 @@
         "rawView": 1,
         "rawText": 1,
         "inlineStyle": 2,
-        "rawHex": 1,
-        "loc": 199,
-        "score": 7
+        "rawHex": 0,
+        "loc": 200,
+        "score": 6
       },
       "tier": "atom",
       "verdict": "dead",
@@ -5480,6 +5898,45 @@
       "standard": false
     },
     {
+      "name": "TypingIndicator",
+      "file": "packages/ui/src/components/custom/Chat/TypingIndicator.tsx",
+      "dir": "custom",
+      "family": "custom/Chat",
+      "exports": [
+        "typingLabel",
+        "TypingIndicator",
+        "TypingIndicatorProps",
+        "useStaggeredPulse"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Indicator",
+        "Surface",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 1,
+        "rawHex": 0,
+        "loc": 83,
+        "score": 3
+      },
+      "tier": "molecule",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "Typography",
       "file": "packages/ui/src/components/custom/Typography/Typography.tsx",
       "dir": "custom",
@@ -5502,14 +5959,14 @@
         "LabelProps",
         "OverlineProps"
       ],
-      "libDependents": 40,
-      "storyRefs": 10,
+      "libDependents": 45,
+      "storyRefs": 12,
       "xproj": {
         "mobile": 0,
-        "mcp": 6,
+        "mcp": 10,
         "dash": 1,
         "audiobook": 0,
-        "total": 7
+        "total": 11
       },
       "dependsOn": [],
       "leak": {
@@ -5525,6 +5982,43 @@
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": true
+    },
+    {
+      "name": "UnreadBadge",
+      "file": "packages/ui/src/components/custom/Chat/UnreadBadge.tsx",
+      "dir": "custom",
+      "family": "custom/Chat",
+      "exports": [
+        "unreadCountLabel",
+        "UnreadBadge",
+        "UnreadBadgeProps",
+        "jumpLabel"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Pill"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 52,
+        "score": 0
+      },
+      "tier": "molecule",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "velocity-story-kit",
@@ -5672,7 +6166,7 @@
         "rawText": 4,
         "inlineStyle": 15,
         "rawHex": 0,
-        "loc": 1481,
+        "loc": 1494,
         "score": 50
       },
       "tier": "molecule",
@@ -5688,8 +6182,7 @@
       "family": "custom/Fatigue",
       "exports": [
         "VerdictHero",
-        "VerdictHeroProps",
-        "formatRpe"
+        "VerdictHeroProps"
       ],
       "libDependents": 1,
       "storyRefs": 1,
@@ -5704,10 +6197,10 @@
       "leak": {
         "rawView": 3,
         "rawText": 4,
-        "inlineStyle": 7,
+        "inlineStyle": 5,
         "rawHex": 0,
-        "loc": 80,
-        "score": 21
+        "loc": 84,
+        "score": 17
       },
       "tier": "atom",
       "verdict": "keep-core",
@@ -5745,7 +6238,7 @@
         "rawText": 0,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 164,
+        "loc": 157,
         "score": 3
       },
       "tier": "organism",
@@ -5781,10 +6274,10 @@
       "leak": {
         "rawView": 5,
         "rawText": 0,
-        "inlineStyle": 3,
+        "inlineStyle": 2,
         "rawHex": 0,
-        "loc": 150,
-        "score": 11
+        "loc": 143,
+        "score": 9
       },
       "tier": "organism",
       "verdict": "keep-internal",
@@ -5822,7 +6315,7 @@
         "rawText": 0,
         "inlineStyle": 3,
         "rawHex": 0,
-        "loc": 120,
+        "loc": 118,
         "score": 6
       },
       "tier": "organism",
@@ -5841,8 +6334,7 @@
         "WorkoutStatus",
         "WorkoutMuscleVolumeStatus",
         "WorkoutMuscleGroup",
-        "WorkoutCardProps",
-        "formatStats"
+        "WorkoutCardProps"
       ],
       "libDependents": 1,
       "storyRefs": 3,
@@ -5862,10 +6354,10 @@
       "leak": {
         "rawView": 5,
         "rawText": 0,
-        "inlineStyle": 3,
+        "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 207,
-        "score": 11
+        "loc": 196,
+        "score": 5
       },
       "tier": "organism",
       "verdict": "keep-internal",
@@ -5919,7 +6411,8 @@
         "WorkoutPillStatus",
         "WorkoutPillProps",
         "paintFor",
-        "usePulse"
+        "usePulse",
+        "cn"
       ],
       "libDependents": 4,
       "storyRefs": 2,
@@ -5927,8 +6420,8 @@
         "mobile": 0,
         "mcp": 0,
         "dash": 0,
-        "audiobook": 0,
-        "total": 0
+        "audiobook": 4,
+        "total": 4
       },
       "dependsOn": [
         "Typography"
@@ -5938,12 +6431,12 @@
         "rawText": 0,
         "inlineStyle": 3,
         "rawHex": 0,
-        "loc": 216,
+        "loc": 215,
         "score": 7
       },
       "tier": "molecule",
-      "verdict": "keep-internal",
-      "deadByAssociation": true,
+      "verdict": "keep-core",
+      "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
     },
@@ -6062,7 +6555,7 @@
         "rawText": 1,
         "inlineStyle": 11,
         "rawHex": 0,
-        "loc": 389,
+        "loc": 390,
         "score": 34
       },
       "tier": "organism",
@@ -6406,6 +6899,90 @@
       "TaskRow"
     ],
     [
+      "Composer",
+      "Button"
+    ],
+    [
+      "Composer",
+      "Input"
+    ],
+    [
+      "Composer",
+      "Surface"
+    ],
+    [
+      "DateSeparator",
+      "Divider"
+    ],
+    [
+      "DateSeparator",
+      "Typography"
+    ],
+    [
+      "DateSeparator",
+      "DateTime"
+    ],
+    [
+      "MessageBubble",
+      "Avatar"
+    ],
+    [
+      "MessageBubble",
+      "Surface"
+    ],
+    [
+      "MessageBubble",
+      "Typography"
+    ],
+    [
+      "MessageBubble",
+      "DateTime"
+    ],
+    [
+      "MessageBubble",
+      "MarkdownProse"
+    ],
+    [
+      "MessageList",
+      "Button"
+    ],
+    [
+      "MessageList",
+      "MarkdownProse"
+    ],
+    [
+      "MessageList",
+      "DateSeparator"
+    ],
+    [
+      "MessageList",
+      "MessageBubble"
+    ],
+    [
+      "MessageList",
+      "TypingIndicator"
+    ],
+    [
+      "MessageList",
+      "UnreadBadge"
+    ],
+    [
+      "TypingIndicator",
+      "Indicator"
+    ],
+    [
+      "TypingIndicator",
+      "Surface"
+    ],
+    [
+      "TypingIndicator",
+      "Typography"
+    ],
+    [
+      "UnreadBadge",
+      "Pill"
+    ],
+    [
       "CircularTimer",
       "Progress"
     ],
@@ -6420,6 +6997,10 @@
     [
       "DualGhostSpark",
       "GhostBloom"
+    ],
+    [
+      "DualGhostSpark",
+      "GhostSpark"
     ],
     [
       "FatigueLights",
@@ -6518,6 +7099,22 @@
       "Sparkline"
     ],
     [
+      "BodyMapDetailPanel",
+      "BodyMapDetailSections"
+    ],
+    [
+      "BodyMapDetailSections",
+      "DataRow"
+    ],
+    [
+      "BodyMapDetailSections",
+      "PrBadge"
+    ],
+    [
+      "BodyMapDetailSections",
+      "StrengthTrendChart"
+    ],
+    [
       "ExerciseCard",
       "VelocityStrip"
     ],
@@ -6610,6 +7207,54 @@
       "ZoneTrack"
     ],
     [
+      "GoalLiftCard",
+      "Card"
+    ],
+    [
+      "GoalLiftCard",
+      "Indicator"
+    ],
+    [
+      "GoalLiftCard",
+      "Pill"
+    ],
+    [
+      "GoalLiftCard",
+      "icons"
+    ],
+    [
+      "GoalLiftCard",
+      "Typography"
+    ],
+    [
+      "GoalLiftCard",
+      "Sparkline"
+    ],
+    [
+      "GoalMuscleCard",
+      "Card"
+    ],
+    [
+      "GoalMuscleCard",
+      "Indicator"
+    ],
+    [
+      "GoalMuscleCard",
+      "Pill"
+    ],
+    [
+      "GoalMuscleCard",
+      "Typography"
+    ],
+    [
+      "GoalMuscleCard",
+      "MuscleGlyph"
+    ],
+    [
+      "GoalMuscleCard",
+      "GoalLiftCard"
+    ],
+    [
       "MesoCard",
       "Card"
     ],
@@ -6640,6 +7285,10 @@
     [
       "MuscleGroupChip",
       "Pill"
+    ],
+    [
+      "MuscleStrip",
+      "MuscleGroupChip"
     ],
     [
       "PrBadge",
@@ -7111,15 +7760,15 @@
     ]
   ],
   "summary": {
-    "total": 150,
+    "total": 162,
     "dead": [
       "Autocomplete",
-      "Avatar",
       "Breadcrumbs",
+      "Composer",
       "IconBox",
       "InitiativeHeader",
-      "Link",
       "Menu",
+      "MessageList",
       "PortfolioOverview",
       "PrHistoryModal",
       "ReadinessCheck",
@@ -7132,21 +7781,23 @@
       "velocity-story-kit"
     ],
     "deadByAssociation": [
+      "Avatar",
       "BodyMap",
       "BodyMapDetailPanel",
       "CapacityBandChart",
+      "DateSeparator",
       "InitiativeCard",
       "InputBar",
       "IntensityBar",
       "MesoCard",
       "MesoProgressBar",
-      "MesoStatusCard",
+      "MessageBubble",
       "SessionListItem",
-      "Sparkline",
       "SupersetWrapper",
+      "TypingIndicator",
+      "UnreadBadge",
       "WeekRow",
-      "WorkoutCard",
-      "WorkoutPill"
+      "WorkoutCard"
     ],
     "auditedCount": 0,
     "standardCoverage": [
@@ -7270,7 +7921,7 @@
       {
         "name": "Link",
         "category": "Navigation",
-        "status": "present-dead",
+        "status": "present",
         "have": [
           "Link"
         ]
@@ -7486,44 +8137,54 @@
     ],
     "extractionTop": [
       {
-        "name": "BodyMapDetailPanel",
-        "tier": "organism",
-        "rawView": 15,
-        "rawText": 15,
-        "inlineStyle": 36,
+        "name": "GoalTrajectoryChart",
+        "tier": "atom",
+        "rawView": 23,
+        "rawText": 12,
+        "inlineStyle": 27,
         "rawHex": 0,
-        "loc": 516,
-        "score": 102
+        "loc": 596,
+        "score": 89
       },
       {
         "name": "StrengthTrendChart",
         "tier": "atom",
         "rawView": 20,
         "rawText": 12,
-        "inlineStyle": 33,
+        "inlineStyle": 28,
         "rawHex": 0,
-        "loc": 633,
-        "score": 98
+        "loc": 627,
+        "score": 88
+      },
+      {
+        "name": "BodyMapDetailPanel",
+        "tier": "organism",
+        "rawView": 16,
+        "rawText": 15,
+        "inlineStyle": 26,
+        "rawHex": 0,
+        "loc": 638,
+        "score": 83
       },
       {
         "name": "ExerciseDetailPage",
         "tier": "page",
         "rawView": 18,
         "rawText": 13,
-        "inlineStyle": 32,
+        "inlineStyle": 22,
         "rawHex": 0,
-        "loc": 645,
-        "score": 95
+        "loc": 636,
+        "score": 75
       },
       {
         "name": "MesoStatusCard",
         "tier": "organism",
-        "rawView": 17,
-        "rawText": 11,
-        "inlineStyle": 24,
+        "rawView": 18,
+        "rawText": 12,
+        "inlineStyle": 21,
         "rawHex": 0,
-        "loc": 453,
-        "score": 76
+        "loc": 478,
+        "score": 72
       },
       {
         "name": "setHeadingKit",
@@ -7531,9 +8192,9 @@
         "rawView": 0,
         "rawText": 0,
         "inlineStyle": 26,
-        "rawHex": 2,
-        "loc": 367,
-        "score": 54
+        "rawHex": 0,
+        "loc": 365,
+        "score": 52
       },
       {
         "name": "VelocityStrip",
@@ -7542,7 +8203,7 @@
         "rawText": 4,
         "inlineStyle": 15,
         "rawHex": 0,
-        "loc": 1481,
+        "loc": 1494,
         "score": 50
       },
       {
@@ -7551,48 +8212,8 @@
         "rawView": 10,
         "rawText": 6,
         "inlineStyle": 13,
-        "rawHex": 7,
-        "loc": 417,
-        "score": 49
-      },
-      {
-        "name": "ActiveWorkoutPage",
-        "tier": "page",
-        "rawView": 11,
-        "rawText": 4,
-        "inlineStyle": 15,
         "rawHex": 0,
-        "loc": 438,
-        "score": 45
-      },
-      {
-        "name": "RestTimer",
-        "tier": "organism",
-        "rawView": 7,
-        "rawText": 6,
-        "inlineStyle": 15,
-        "rawHex": 0,
-        "loc": 282,
-        "score": 43
-      },
-      {
-        "name": "ReadinessCheck",
-        "tier": "organism",
-        "rawView": 7,
-        "rawText": 7,
-        "inlineStyle": 14,
-        "rawHex": 0,
-        "loc": 289,
-        "score": 42
-      },
-      {
-        "name": "TrainingStatusPage",
-        "tier": "page",
-        "rawView": 10,
-        "rawText": 4,
-        "inlineStyle": 14,
-        "rawHex": 0,
-        "loc": 313,
+        "loc": 455,
         "score": 42
       },
       {
@@ -7612,18 +8233,8 @@
         "rawText": 5,
         "inlineStyle": 14,
         "rawHex": 0,
-        "loc": 363,
+        "loc": 364,
         "score": 41
-      },
-      {
-        "name": "CapacityBandChart",
-        "tier": "atom",
-        "rawView": 9,
-        "rawText": 4,
-        "inlineStyle": 12,
-        "rawHex": 1,
-        "loc": 529,
-        "score": 38
       },
       {
         "name": "Table",
@@ -7634,12 +8245,52 @@
         "rawHex": 0,
         "loc": 805,
         "score": 37
+      },
+      {
+        "name": "ActiveWorkoutPage",
+        "tier": "page",
+        "rawView": 11,
+        "rawText": 4,
+        "inlineStyle": 11,
+        "rawHex": 0,
+        "loc": 437,
+        "score": 37
+      },
+      {
+        "name": "CapacityBandChart",
+        "tier": "atom",
+        "rawView": 9,
+        "rawText": 4,
+        "inlineStyle": 12,
+        "rawHex": 0,
+        "loc": 522,
+        "score": 37
+      },
+      {
+        "name": "RestTimer",
+        "tier": "organism",
+        "rawView": 7,
+        "rawText": 6,
+        "inlineStyle": 12,
+        "rawHex": 0,
+        "loc": 269,
+        "score": 37
+      },
+      {
+        "name": "TrainingStatusPage",
+        "tier": "page",
+        "rawView": 10,
+        "rawText": 4,
+        "inlineStyle": 11,
+        "rawHex": 0,
+        "loc": 321,
+        "score": 36
       }
     ],
     "substitution": {
       "library(titan)": {
-        "Text": 69,
-        "View": 126,
+        "Text": 71,
+        "View": 138,
         "TouchableOpacity": 0,
         "Pressable": 54,
         "TextInput": 3,
@@ -7658,8 +8309,8 @@
         "Modal": 5
       },
       "mcp": {
-        "Text": 7,
-        "View": 6,
+        "Text": 8,
+        "View": 7,
         "TouchableOpacity": 0,
         "Pressable": 1,
         "TextInput": 0,
