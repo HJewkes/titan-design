@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:004371be1a705c4962e9ded659d220181dfb6b97829f29850634bd7276ca6390",
+  "componentBarrelHash": "sha256:b0b0cd0af29663a721c48ac4cbd3f3b18ab613c5310ed6667617b8d9c82ee978",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -1990,7 +1990,6 @@
         "GoalMilestoneTile",
         "GoalMilestoneTileScale",
         "GoalMilestoneTileLayout",
-        "GoalMilestoneSummaryStyle",
         "GoalMilestoneTileProps",
         "WALL_MIN_WIDTH",
         "targetText",
@@ -2017,12 +2016,12 @@
         "Typography"
       ],
       "leak": {
-        "rawView": 5,
+        "rawView": 6,
         "rawText": 0,
-        "inlineStyle": 4,
+        "inlineStyle": 5,
         "rawHex": 0,
-        "loc": 341,
-        "score": 13
+        "loc": 318,
+        "score": 16
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -2036,14 +2035,15 @@
       "dir": "workout",
       "family": "custom/Workout",
       "exports": [
+        "weekSegments",
         "GoalMilestoneWeekStrip",
-        "GoalWeekTipStyle",
         "GoalMilestoneWeekStripProps",
         "WEEK_OUTCOME_LABEL",
-        "paint"
+        "paint",
+        "TipBody"
       ],
       "libDependents": 1,
-      "storyRefs": 1,
+      "storyRefs": 0,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
@@ -2059,12 +2059,12 @@
         "Typography"
       ],
       "leak": {
-        "rawView": 3,
+        "rawView": 2,
         "rawText": 0,
-        "inlineStyle": 4,
+        "inlineStyle": 3,
         "rawHex": 0,
-        "loc": 191,
-        "score": 11
+        "loc": 177,
+        "score": 8
       },
       "tier": "organism",
       "verdict": "keep-internal",
@@ -2162,7 +2162,7 @@
         "summarize"
       ],
       "libDependents": 0,
-      "storyRefs": 2,
+      "storyRefs": 1,
       "xproj": {
         "mobile": 0,
         "mcp": 1,
@@ -2179,7 +2179,7 @@
         "rawText": 3,
         "inlineStyle": 10,
         "rawHex": 0,
-        "loc": 417,
+        "loc": 410,
         "score": 35
       },
       "tier": "organism",
@@ -2229,7 +2229,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 533,
+        "loc": 532,
         "score": 0
       },
       "tier": "molecule",
@@ -4051,7 +4051,7 @@
         "rawText": 0,
         "inlineStyle": 4,
         "rawHex": 0,
-        "loc": 210,
+        "loc": 218,
         "score": 13
       },
       "tier": "atom",
@@ -8191,7 +8191,7 @@
         "rawText": 3,
         "inlineStyle": 10,
         "rawHex": 0,
-        "loc": 417,
+        "loc": 410,
         "score": 35
       }
     ],
