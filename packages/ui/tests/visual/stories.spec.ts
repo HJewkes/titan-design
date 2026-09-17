@@ -7,8 +7,8 @@ import { test, expect } from '@playwright/test'
  * root, asserting against a committed baseline (`toHaveScreenshot`). Unlike the
  * dead `screenshots.spec.ts` it replaces, this actually gates drift.
  *
- * Determinism: the clock is frozen (so `DateTime live` clocks render a fixed
- * time) and CSS animations are disabled (pulse / ping), so control-driven,
+ * Determinism: the clock is installed AND paused at a fixed instant (so
+ * `DateTime live` clocks render a fixed time however long the run takes) and CSS animations are disabled (pulse / ping), so control-driven,
  * animated stories snapshot stably.
  *
  * Scope: the shell family + the icon foundation story (`Foundations/Icons`,
@@ -28,7 +28,10 @@ const SCOPE = /^(shell-|foundations-icons--)/
 const FIXED_TIME = new Date('2024-01-01T16:12:07')
 
 test('storybook story baselines (shell + icons)', async ({ page, request }) => {
+  // install() alone keeps ticking from FIXED_TIME in real time, so any story
+  // rendered more than 53 s into the run showed 16:13 instead of 16:12 (#250).
   await page.clock.install({ time: FIXED_TIME })
+  await page.clock.pauseAt(FIXED_TIME)
 
   const index = (await (await request.get('/index.json')).json()) as {
     entries: Record<string, { id: string; type: string; title: string }>
