@@ -1,4 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
+import type { ReactNode } from 'react'
 import { View } from 'react-native'
 
 import { cn } from '../../../utils/cn'
@@ -29,33 +30,29 @@ function cellFill(
   tone: GoalMilestoneTone
 ) {
   if (week === goalWeek) return TONE_FILL[tone]
-  if (currentWeek !== undefined && week <= currentWeek) return 'bg-hairline-strong'
-  return 'bg-hairline-default'
+  if (currentWeek !== undefined && week <= currentWeek) return 'bg-text-tertiary'
+  return 'bg-hairline-strong'
 }
 
-/** The weeks worth naming: the axis ends, now, and the goal. Now wins a shared week. */
-export function weekStripLabels(
-  totalWeeks: number,
-  goalWeek: number,
-  currentWeek?: number
-): { week: number; text: string }[] {
-  const labels = new Map<number, string>([
-    [1, 'w1'],
-    [totalWeeks, `w${totalWeeks}`],
-    [goalWeek, `w${goalWeek}`],
-  ])
-  if (currentWeek !== undefined) labels.set(currentWeek, 'now')
-  return [...labels.entries()].sort(([a], [b]) => a - b).map(([week, text]) => ({ week, text }))
+/** Axis ends closer than this to the goal are dropped so their labels never collide. */
+const END_LABEL_CLEARANCE = 2
+
+/** The weeks named under the strip: the goal, and whichever axis ends clear it. */
+export function weekStripLabels(totalWeeks: number, goalWeek: number): number[] {
+  const ends = [1, totalWeeks].filter((end) => Math.abs(end - goalWeek) >= END_LABEL_CLEARANCE)
+  return [...new Set([...ends, goalWeek])].sort((a, b) => a - b)
 }
 
 function StripLabel({
   week,
-  text,
   totalWeeks,
+  children,
+  emphasis = false,
 }: {
   week: number
-  text: string
   totalWeeks: number
+  children: string
+  emphasis?: boolean
 }) {
   const center = ((week - 0.5) / totalWeeks) * 100
   return (
@@ -68,17 +65,22 @@ function StripLabel({
         transform: [{ translateX: -20 }],
       }}
     >
-      <Typography variant="caption" color={text === 'now' ? 'primary' : 'tertiary'} align="center">
-        {text}
+      <Typography variant="caption" color={emphasis ? 'primary' : 'tertiary'} align="center">
+        {children}
       </Typography>
     </View>
   )
 }
 
+function LabelRow({ children }: { children: ReactNode }) {
+  return <View style={{ height: 18 }}>{children}</View>
+}
+
 /**
  * The meso as a row of week cells, in the chart's `w1..wN` axis language:
  * elapsed weeks a step stronger than future ones, the goal week in the status
- * colour, and the current week ringed. Colour appears once, on the goal cell.
+ * colour, and the current week ringed and named above the strip, clear of the
+ * week labels below. Colour appears once, on the goal cell.
  */
 export function GoalMilestoneWeekStrip({
   totalWeeks,
@@ -90,6 +92,13 @@ export function GoalMilestoneWeekStrip({
   const weeks = Array.from({ length: Math.max(totalWeeks, 1) }, (_, i) => i + 1)
   return (
     <View className="gap-stack-sm" testID="goal-milestone-week-strip">
+      {currentWeek !== undefined && currentWeek <= totalWeeks && (
+        <LabelRow>
+          <StripLabel week={currentWeek} totalWeeks={totalWeeks} emphasis>
+            now
+          </StripLabel>
+        </LabelRow>
+      )}
       <View style={{ flexDirection: 'row', alignItems: 'flex-end' }} className="gap-inline-sm">
         {weeks.map((week) => (
           <View
@@ -104,11 +113,13 @@ export function GoalMilestoneWeekStrip({
           />
         ))}
       </View>
-      <View style={{ height: 18 }}>
-        {weekStripLabels(totalWeeks, goalWeek, currentWeek).map((label) => (
-          <StripLabel key={label.week} {...label} totalWeeks={totalWeeks} />
+      <LabelRow>
+        {weekStripLabels(totalWeeks, goalWeek).map((week) => (
+          <StripLabel key={week} week={week} totalWeeks={totalWeeks}>
+            {`w${week}`}
+          </StripLabel>
         ))}
-      </View>
+      </LabelRow>
     </View>
   )
 }

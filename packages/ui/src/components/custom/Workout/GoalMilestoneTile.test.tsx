@@ -47,6 +47,12 @@ describe('GoalMilestoneTile', () => {
     expect(screen.getByTestId('goal-milestone-state')).toHaveTextContent('Hit')
   })
 
+  it('stops counting down to a milestone already hit', () => {
+    render(<GoalMilestoneTile {...base} current={{ reps: 8, load: 105 }} />)
+
+    expect(screen.getByTestId('goal-milestone-when')).toHaveTextContent(/^Week 8$/)
+  })
+
   it('marks a milestone missed once its week has passed', () => {
     render(<GoalMilestoneTile {...base} currentWeek={9} />)
 
@@ -163,11 +169,15 @@ describe('milestone tone', () => {
 })
 
 describe('week strip labels', () => {
-  it('names the axis ends, the goal and now', () => {
-    expect(weekStripLabels(10, 8, 5).map((l) => l.text)).toEqual(['w1', 'now', 'w8', 'w10'])
+  it('names the axis ends and the goal', () => {
+    expect(weekStripLabels(10, 5)).toEqual([1, 5, 10])
   })
 
-  it('lets now win a week it shares with the goal', () => {
-    expect(weekStripLabels(10, 8, 8).map((l) => l.text)).toEqual(['w1', 'now', 'w10'])
+  it('drops an axis end that would crowd the goal label', () => {
+    expect(weekStripLabels(10, 9)).toEqual([1, 9])
+  })
+
+  it('names a goal on the last week once', () => {
+    expect(weekStripLabels(10, 10)).toEqual([1, 10])
   })
 })

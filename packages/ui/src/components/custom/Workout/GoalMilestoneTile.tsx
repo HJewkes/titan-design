@@ -6,7 +6,8 @@ import { cn } from '../../../utils/cn'
 import { Indicator } from '../../ui/indicator'
 import { Surface } from '../../ui/surface'
 import { Typography } from '../Typography'
-import { GOAL_STATUS_TONE, type GoalLiftMilestone, type GoalLiftStatus } from './GoalLiftCard'
+import { GOAL_STATUS_TONE } from './GoalLiftCard'
+import type { GoalLiftMilestone, GoalLiftStatus } from './GoalLiftCard'
 import { GoalMilestoneWeekStrip, type GoalMilestoneTone } from './GoalMilestoneWeekStrip'
 import {
   formatMilestoneGap,
@@ -175,10 +176,7 @@ function ProgressTrack({
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={percent}
-      className={cn(
-        'w-full rounded-full overflow-hidden bg-hairline-default',
-        DENSITY[density].bar
-      )}
+      className={cn('w-full rounded-full overflow-hidden bg-hairline-strong', DENSITY[density].bar)}
       testID="goal-milestone-progress"
     >
       <View
@@ -196,6 +194,7 @@ interface ResolvedTile {
   density: GoalMilestoneTileDensity
   gapAmount: string | null
   gapText: string | null
+  whenText: string
 }
 
 function resolveTile(props: GoalMilestoneTileProps): ResolvedTile {
@@ -209,17 +208,17 @@ function resolveTile(props: GoalMilestoneTileProps): ResolvedTile {
     density: props.density ?? 'comfortable',
     gapAmount: gap && formatMilestoneGapAmount(gap, milestone.unit),
     gapText: gap && formatMilestoneGap(gap, milestone.unit),
+    // A hit milestone is done; counting down to its week would read as still open.
+    whenText: formatMilestoneWhen(milestone.goalWeek, state === 'hit' ? undefined : currentWeek),
   }
 }
 
-function NumericBody({ props, density }: ResolvedTile) {
-  const { milestone, currentWeek } = props
+function NumericBody({ props, density, whenText }: ResolvedTile) {
+  const { milestone } = props
   return (
     <>
       <TargetFigure set={milestone} unit={milestone.unit} density={density} />
-      <Caption testID="goal-milestone-when">
-        {formatMilestoneWhen(milestone.goalWeek, currentWeek)}
-      </Caption>
+      <Caption testID="goal-milestone-when">{whenText}</Caption>
     </>
   )
 }
@@ -261,7 +260,7 @@ function TimelineBody(tile: ResolvedTile) {
 
 /** The distance is the hero; the target and the best set sit under it as a ledger line. */
 function GapBody(tile: ResolvedTile) {
-  const { milestone, current, currentWeek } = tile.props
+  const { milestone, current } = tile.props
   if (!tile.gapAmount || !current) return <NumericBody {...tile} />
   const d = DENSITY[tile.density]
   return (
@@ -273,7 +272,7 @@ function GapBody(tile: ResolvedTile) {
         {`to ${milestone.reps} x ${formatMilestoneLoad(milestone.load)} ${milestone.unit}`}
       </Typography>
       <Caption testID="goal-milestone-when">
-        {`Best ${current.reps} x ${formatMilestoneLoad(current.load)} · ${formatMilestoneWhen(milestone.goalWeek, currentWeek)}`}
+        {`Best ${current.reps} x ${formatMilestoneLoad(current.load)} · ${tile.whenText}`}
       </Caption>
     </>
   )
@@ -286,10 +285,10 @@ const BODY: Record<GoalMilestoneTileVariant, (tile: ResolvedTile) => ReactNode> 
   gap: GapBody,
 }
 
-function accessibleSummary({ props, state, gapText }: ResolvedTile): string {
-  const { milestone, currentWeek } = props
+function accessibleSummary({ props, state, gapText, whenText }: ResolvedTile): string {
+  const { milestone } = props
   const target = `${milestone.reps} reps at ${formatMilestoneLoad(milestone.load)} ${milestone.unit}`
-  const parts = [`Next milestone ${target}`, formatMilestoneWhen(milestone.goalWeek, currentWeek)]
+  const parts = [`Next milestone ${target}`, whenText]
   if (state !== 'upcoming') parts.push(GOAL_MILESTONE_STATE_LABEL[state])
   if (gapText) parts.push(gapText)
   return parts.join(', ')
