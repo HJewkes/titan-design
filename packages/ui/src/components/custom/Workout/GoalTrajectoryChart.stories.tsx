@@ -1,4 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { View } from 'react-native'
+import { Surface } from '../../ui/surface'
+import { Typography } from '../Typography'
 import { GoalTrajectoryChart } from './GoalTrajectoryChart'
 import type { GoalActualPoint, GoalExpectedPoint, GoalTrajectoryWeek } from './GoalTrajectoryChart'
 
@@ -80,7 +83,42 @@ const meta: Meta<typeof GoalTrajectoryChart> = {
     actuals: { description: 'Measured values; `isPR` adds a star' },
     weeks: { description: 'Planned weeks; `isDeload` flattens the band and shades the column' },
     mesoBoundaries: { description: 'Week indices where a mesocycle boundary falls' },
+    animate: {
+      control: 'boolean',
+      description: 'Play the entrance (line draw, then shadow and points). Remount to replay.',
+    },
+    baseline: {
+      control: { type: 'inline-radio' },
+      options: ['inset-rule', 'lip'],
+      description: 'Locked: `lip`. NOT CHOSEN: `inset-rule`',
+    },
+    bandFade: {
+      control: { type: 'inline-radio' },
+      options: ['none', 'centre-20', 'centre-14', 'across-20'],
+      description: 'Locked: `centre-14`. NOT CHOSEN: `none`, `centre-20`, `across-20`',
+    },
+    bandCurve: {
+      control: { type: 'inline-radio' },
+      options: ['linear', 'monotone'],
+      description: 'Locked: `monotone`. NOT CHOSEN: `linear`',
+    },
+    leftShadowSpread: {
+      control: { type: 'range', min: 0, max: 0.08, step: 0.005 },
+      description: 'Fraction of the plot width the left inner shadow fades over',
+    },
   },
+  // Controls open on the locked treatment; the Explore stories override one at a time.
+  args: { bandCurve: 'monotone', bandFade: 'centre-14', baseline: 'lip' },
+  // The plot plane sits one step below the card it is drawn on, as on the page.
+  decorators: [
+    (Story) => (
+      <Surface level="base" className="p-gutter-md">
+        <Surface raise={1} className="p-inset-md self-start">
+          <Story />
+        </Surface>
+      </Surface>
+    ),
+  ],
 }
 
 export default meta
@@ -236,7 +274,7 @@ export const EmptyCalibrating: Story = {
   },
 }
 
-/** The same on-track block at phone width: thinner stroke, smaller dots and type. */
+/** The same on-track block at phone width: 2px line and three gridlines. */
 export const PhoneOnTrack: Story = {
   args: { ...bench, ...PHONE, actuals: onTrackActuals, status: 'on_track' },
 }
@@ -244,4 +282,114 @@ export const PhoneOnTrack: Story = {
 /** The loss goal at phone width. */
 export const PhoneLossGoal: Story = {
   args: { ...LossGoalBodyweight.args, ...PHONE } as Story['args'],
+}
+
+/**
+ * The final frame with the entrance switched off: the deterministic render to
+ * baseline against.
+ */
+export const NoMotion: Story = {
+  args: { ...bench, ...WALL, actuals: onTrackActuals, status: 'on_track', animate: false },
+}
+
+/** A noisy block (a bad week 3, a PR at 4, a dip at 5) at wall width, with the entrance. */
+export const WallMotion: Story = {
+  args: {
+    ...bench,
+    ...WALL,
+    status: 'on_track',
+    animate: true,
+    actuals: [
+      { weekIndex: 1, value: 175 },
+      { weekIndex: 2, value: 179 },
+      { weekIndex: 3, value: 177 },
+      { weekIndex: 4, value: 184, isPR: true },
+      { weekIndex: 5, value: 182 },
+    ],
+  },
+}
+
+/** The same noisy block at phone width: 2px line, three gridlines. */
+export const PhoneMotion: Story = {
+  args: { ...WallMotion.args, ...PHONE } as Story['args'],
+}
+
+/*
+ * VW-385 round 2, decided 2026-09-17. LOCKED (the component defaults): smoothed
+ * band edges, 28% centre to 14% edge fade, bottom lip. The NOT CHOSEN stories
+ * stay so the decision can be re-read against what was rejected.
+ */
+
+/** CHOSEN: the locked treatment, identical to NoMotion. */
+export const ExploreBandFadeCentre14: Story = {
+  args: { ...NoMotion.args },
+}
+
+/** CHOSEN: smoothed band edges (the default; same frame as NoMotion). */
+export const ExploreBandSmoothed: Story = {
+  args: { ...NoMotion.args },
+}
+
+/** NOT CHOSEN: straight band edges. */
+export const ExploreBandStraight: Story = {
+  args: { ...NoMotion.args, bandCurve: 'linear' },
+}
+
+/** NOT CHOSEN: a flat 28% band with no fade. */
+export const ExploreBandFlat: Story = {
+  args: { ...NoMotion.args, bandFade: 'none' },
+}
+
+/** NOT CHOSEN: 28% on the centre line fading to 20% at both edges. */
+export const ExploreBandFadeCentre20: Story = {
+  args: { ...NoMotion.args, bandFade: 'centre-20' },
+}
+
+/** NOT CHOSEN: 28% at w1 fading to 20% at the last week. */
+export const ExploreBandFadeAcross20: Story = {
+  args: { ...NoMotion.args, bandFade: 'across-20' },
+}
+
+/** NOT CHOSEN: baseline A, the floor gridline pulled clear of the rounded corners. */
+export const ExploreBaselineInsetRule: Story = {
+  args: { ...NoMotion.args, baseline: 'inset-rule' },
+}
+
+/** CHOSEN: baseline B, the card rim light on the plane's bottom edge (the default). */
+export const ExploreBaselineLip: Story = {
+  args: { ...NoMotion.args },
+}
+
+const LOCKED = { bandCurve: 'monotone', bandFade: 'centre-14', baseline: 'lip' } as const
+
+const TREATMENTS: Array<{ caption: string; args: Partial<Story['args']> }> = [
+  { caption: 'LOCKED: smoothed, centre fade 28% to 14%, bottom lip', args: LOCKED },
+  { caption: 'NOT CHOSEN: straight band edges', args: { ...LOCKED, bandCurve: 'linear' } },
+  { caption: 'NOT CHOSEN: flat 28% band', args: { ...LOCKED, bandFade: 'none' } },
+  { caption: 'NOT CHOSEN: centre fade 28% to 20%', args: { ...LOCKED, bandFade: 'centre-20' } },
+  {
+    caption: 'NOT CHOSEN: across fade 28% at w1 to 20% at w6',
+    args: { ...LOCKED, bandFade: 'across-20' },
+  },
+  {
+    caption: 'NOT CHOSEN: inset floor rule instead of the lip',
+    args: { ...LOCKED, baseline: 'inset-rule' },
+  },
+]
+
+/** The locked treatment above every rejected one, on the same data. */
+export const ExploreAllTreatments: Story = {
+  args: { ...NoMotion.args },
+  render: (args) => (
+    <View style={{ gap: 20 }}>
+      {TREATMENTS.map((treatment) => (
+        <View key={treatment.caption} style={{ gap: 6 }}>
+          <Typography variant="caption" color="secondary">
+            {treatment.caption}
+          </Typography>
+          <GoalTrajectoryChart {...args} {...treatment.args} />
+        </View>
+      ))}
+    </View>
+  ),
 }
