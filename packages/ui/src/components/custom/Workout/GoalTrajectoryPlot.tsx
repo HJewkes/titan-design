@@ -87,8 +87,7 @@ export function trajectoryPalette(
   const t = getSemanticColors(mode)
   const shade = t['scrim-default']
   return {
-    // `string`, not the literal union: a decision story overrides this hue.
-    status: t[STATUS_TOKEN[status]] as string,
+    status: t[STATUS_TOKEN[status]],
     band: alpha(t['brand-secondary'], BAND_OPACITY),
     bandHue: t['brand-secondary'],
     // The card rim's white and alpha, so the plane's lip matches every lifted card.

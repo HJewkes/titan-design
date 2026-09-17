@@ -176,13 +176,12 @@ export {
   type GoalMilestoneTileProps,
   type GoalMilestoneTileScale,
   type GoalMilestoneTileLayout,
-  type GoalMilestoneSummaryStyle,
 } from './GoalMilestoneTile'
 export {
   GoalMilestoneWeekStrip,
   WEEK_OUTCOME_LABEL,
+  weekSegments,
   type GoalMilestoneWeekStripProps,
-  type GoalWeekTipStyle,
 } from './GoalMilestoneWeekStrip'
 export {
   deriveMilestoneState,

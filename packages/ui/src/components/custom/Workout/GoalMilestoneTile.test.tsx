@@ -2,11 +2,14 @@ import { describe, it, expect } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import {
   GoalMilestoneTile,
   milestoneToneToken,
   type GoalMilestoneTileProps,
 } from './GoalMilestoneTile'
+import { weekSegments } from './GoalMilestoneWeekStrip'
+import { weekStripCells } from './goalMilestone'
 
 const base: GoalMilestoneTileProps = {
   target: { metric: 'top_load_at_reps', reps: 8, load: 105, unit: 'lb' },
@@ -23,7 +26,8 @@ const base: GoalMilestoneTileProps = {
 }
 
 const hero = () => screen.getByTestId('goal-milestone-hero')
-const summary = () => screen.getByTestId('goal-milestone-summary')
+const metrics = () => screen.getByTestId('goal-milestone-metrics')
+const weekCount = () => screen.getByTestId('goal-milestone-week-count')
 
 describe('GoalMilestoneTile', () => {
   it('leads with the shortfall', () => {
@@ -50,40 +54,27 @@ describe('GoalMilestoneTile', () => {
     expect(hero()).toHaveTextContent('8 x 105 lb')
   })
 
-  it('names the week count once, on the summary line', () => {
-    render(<GoalMilestoneTile {...base} />)
+  describe('the head row', () => {
+    it('puts best and goal on the hero line', () => {
+      render(<GoalMilestoneTile {...base} />)
 
-    expect(summary()).toHaveTextContent('week 4 of 6')
-    expect(screen.queryByText(/by week/)).toBeNull()
-  })
-
-  describe('the consolidated line', () => {
-    it('carries best, goal and the week count as one sentence', () => {
-      render(<GoalMilestoneTile {...base} summaryStyle="sentence" />)
-
-      expect(summary()).toHaveTextContent('Best 8 x 100 lb · goal 8 x 105 lb · week 4 of 6')
+      expect(metrics()).toHaveTextContent('BEST')
+      expect(metrics()).toHaveTextContent('8 x 100 lb')
+      expect(metrics()).toHaveTextContent('GOAL')
+      expect(metrics()).toHaveTextContent('8 x 105 lb')
     })
 
-    it('carries the same three facts as metric cells', () => {
-      render(<GoalMilestoneTile {...base} summaryStyle="metrics" />)
-
-      expect(summary()).toHaveTextContent('BEST')
-      expect(summary()).toHaveTextContent('8 x 100 lb')
-      expect(summary()).toHaveTextContent('GOAL')
-      expect(summary()).toHaveTextContent('week 4 of 6')
-    })
-
-    it('carries the same three facts stacked', () => {
-      render(<GoalMilestoneTile {...base} summaryStyle="stacked" />)
-
-      expect(summary()).toHaveTextContent('Best 8 x 100 lb')
-      expect(summary()).toHaveTextContent('Goal 8 x 105 lb · week 4 of 6')
-    })
-
-    it('says so when nothing has matched yet', () => {
+    it('dashes the best cell when nothing has matched yet', () => {
       render(<GoalMilestoneTile {...base} latest={undefined} />)
 
-      expect(summary()).toHaveTextContent('No matched set')
+      expect(metrics()).toHaveTextContent('—')
+    })
+
+    it('names the week count once, under the hero', () => {
+      render(<GoalMilestoneTile {...base} />)
+
+      expect(weekCount()).toHaveTextContent('Week 4 of 6')
+      expect(screen.queryByText(/by week/)).toBeNull()
     })
   })
 
@@ -107,7 +98,7 @@ describe('GoalMilestoneTile', () => {
     it('counts the block weeks rather than a week within it', () => {
       render(<GoalMilestoneTile {...base} currentWeek={7} />)
 
-      expect(summary()).toHaveTextContent('6 weeks')
+      expect(weekCount()).toHaveTextContent('6 weeks')
     })
   })
 
@@ -124,7 +115,7 @@ describe('GoalMilestoneTile', () => {
     )
 
     expect(hero()).toHaveTextContent('3.4 lb')
-    expect(summary()).toHaveTextContent('goal 189 lb bodyweight')
+    expect(metrics()).toHaveTextContent('189 lb bodyweight')
   })
 
   describe('the week cells', () => {
@@ -154,13 +145,23 @@ describe('GoalMilestoneTile', () => {
       )
     })
 
-    it('opens a tip card on hover, with that week reading and verdict', () => {
+    it('stands the current week taller than every other week', () => {
+      const cells = weekStripCells(6, 4, base.weeks)
+
+      const heights = weekSegments(cells, getSemanticColors('dark')).map((s) => s.heightFraction)
+
+      expect(heights[3]).toBe(1)
+      expect(heights.filter((h) => h === 1)).toHaveLength(1)
+    })
+
+    it('opens a tip card on hover, stacking week, reading and verdict', () => {
       render(<GoalMilestoneTile {...base} />)
 
-      fireEvent.mouseEnter(screen.getByTestId('goal-milestone-week-2'))
+      fireEvent.mouseEnter(screen.getByTestId('goal-milestone-week-3'))
 
-      expect(screen.getByText('8 x 100 lb')).toBeInTheDocument()
-      expect(screen.getByText('Ahead')).toBeInTheDocument()
+      expect(screen.getByText('Week 3')).toBeInTheDocument()
+      expect(screen.getByText('6 x 97.5 lb')).toBeInTheDocument()
+      expect(screen.getByText('Missed')).toBeInTheDocument()
     })
 
     it('opens the tip card on keyboard focus too', () => {
@@ -181,15 +182,6 @@ describe('GoalMilestoneTile', () => {
       expect(screen.queryByText('On track')).toBeNull()
     })
 
-    it('stacks the tip card when asked', () => {
-      render(<GoalMilestoneTile {...base} tipStyle="stacked" />)
-
-      fireEvent.mouseEnter(screen.getByTestId('goal-milestone-week-3'))
-
-      expect(screen.getByText('Week 3')).toBeInTheDocument()
-      expect(screen.getByText('Missed')).toBeInTheDocument()
-    })
-
     it('says a week has no matched set when the read model sent none', () => {
       render(<GoalMilestoneTile {...base} weeks={[{ outcome: 'none' }]} />)
 
@@ -206,20 +198,14 @@ describe('GoalMilestoneTile', () => {
   })
 
   describe('the compact layout', () => {
-    it('keeps the hero, the line and the cells, and drops the header', () => {
+    it('keeps the head row and the cells, and drops the header', () => {
       render(<GoalMilestoneTile {...base} layout="compact" />)
 
       expect(hero()).toHaveTextContent('5 lb')
-      expect(summary()).toBeInTheDocument()
+      expect(metrics()).toBeInTheDocument()
       expect(screen.getByTestId('goal-milestone-week-strip')).toBeInTheDocument()
       expect(screen.queryByText('Meso target')).toBeNull()
     })
-  })
-
-  it('takes a candidate tone when the decision story overrides it', () => {
-    render(<GoalMilestoneTile {...base} toneColor="rgb(1, 2, 3)" />)
-
-    expect(hero()).toHaveStyle({ color: 'rgb(1, 2, 3)' })
   })
 
   it('summarises target, week and distance for assistive tech', () => {
@@ -227,15 +213,14 @@ describe('GoalMilestoneTile', () => {
 
     expect(screen.getByRole('article')).toHaveAttribute(
       'aria-label',
-      'Meso target 8 x 105 lb, week 4 of 6, 5 lb to go'
+      'Meso target 8 x 105 lb, Week 4 of 6, 5 lb to go'
     )
   })
 
   it.each([
-    ['sentence', {}],
-    ['metrics', { summaryStyle: 'metrics' as const }],
-    ['stacked', { summaryStyle: 'stacked' as const }],
+    ['full', {}],
     ['compact', { layout: 'compact' as const }],
+    ['missed', { currentWeek: 7 }],
   ])('has no accessibility violations (%s)', async (_name, extra) => {
     const { container } = render(<GoalMilestoneTile {...base} {...extra} />)
 

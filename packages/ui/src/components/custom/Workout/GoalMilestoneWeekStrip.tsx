@@ -16,9 +16,6 @@ import {
   type GoalWeekOutcome,
 } from './goalMilestone'
 
-/** How a week's tip card is laid out. Both carry the same three facts. */
-export type GoalWeekTipStyle = 'one-line' | 'stacked'
-
 export interface GoalMilestoneWeekStripProps {
   weekCount: number
   currentWeek?: number
@@ -26,11 +23,8 @@ export interface GoalMilestoneWeekStripProps {
   weeks?: readonly GoalWeekEntry[]
   /** Renders each week's reading in the tip card. */
   readingText: (entry: GoalWeekEntry) => string
-  tipStyle?: GoalWeekTipStyle
-  /** Cell height in px. Matches the rep and set cells this composes. */
+  /** Height of the current week's cell in px; every other week sits shorter. */
   cellHeight?: number
-  /** Overrides the `ahead` cell colour, so a decision story can hold a candidate hue. */
-  aheadColor?: string
 }
 
 type Palette = ReturnType<typeof getSemanticColors>
@@ -53,49 +47,45 @@ const OUTCOME_PILL_TONE: Record<GoalWeekOutcome, PillTone> = {
  * Missed is an outlined cell, never red: failure is not scored. No data is the
  * faintest fill, and a week still to come is the neutral track.
  */
-function paint(cell: GoalWeekCell, t: Palette, aheadColor?: string): SegmentedBarSegment {
+/** Every other week sits at this share of the current week's height. */
+const PAST_WEEK_HEIGHT = 0.7
+
+export function weekSegments(cells: GoalWeekCell[], t: Palette): SegmentedBarSegment[] {
+  return cells.map((cell) => ({
+    ...paint(cell, t),
+    heightFraction: cell.phase === 'current' ? 1 : PAST_WEEK_HEIGHT,
+  }))
+}
+
+function paint(cell: GoalWeekCell, t: Palette): SegmentedBarSegment {
   if (cell.phase === 'current') return { color: t['hairline-strong'], ringColor: t['text-primary'] }
-  if (cell.outcome === 'ahead') return { color: aheadColor ?? t[STATUS_TOKEN.ahead] }
+  if (cell.outcome === 'ahead') return { color: t[STATUS_TOKEN.ahead] }
   if (cell.outcome === 'on_track') return { color: t[STATUS_TOKEN.on_track] }
   if (cell.outcome === 'missed') return { color: t['text-tertiary'], outline: true }
   if (cell.outcome === 'none') return { color: t['hairline-subtle'] }
   return { color: t['hairline-strong'] }
 }
 
+/** The tip card: the week, its reading, and the verdict as a chip. */
 function TipBody({
   cell,
   readingText,
-  style,
 }: {
   cell: GoalWeekCell
   readingText: (entry: GoalWeekEntry) => string
-  style: GoalWeekTipStyle
 }) {
   const outcome = cell.outcome ?? 'none'
-  const reading = cell.entry?.reading ? readingText(cell.entry) : 'No matched set'
-  const pill = (
-    <Pill tone={OUTCOME_PILL_TONE[outcome]} variant="subtle" size="sm" leading="dot">
-      {WEEK_OUTCOME_LABEL[outcome]}
-    </Pill>
-  )
-  if (style === 'one-line') {
-    return (
-      <View style={{ flexDirection: 'row', alignItems: 'center' }} className="gap-inline-sm">
-        <Typography variant="boldLabel">{`w${cell.week}`}</Typography>
-        <Typography variant="body2" color="secondary">
-          {reading}
-        </Typography>
-        {pill}
-      </View>
-    )
-  }
   return (
     <View className="gap-stack-sm">
       <Typography variant="overline" color="tertiary">
         {`Week ${cell.week}`}
       </Typography>
-      <Typography variant="body2">{reading}</Typography>
-      {pill}
+      <Typography variant="body2">
+        {cell.entry?.reading ? readingText(cell.entry) : 'No matched set'}
+      </Typography>
+      <Pill tone={OUTCOME_PILL_TONE[outcome]} variant="subtle" size="sm" leading="dot">
+        {WEEK_OUTCOME_LABEL[outcome]}
+      </Pill>
     </View>
   )
 }
@@ -105,12 +95,10 @@ function WeekCellTrigger({
   cell,
   children,
   readingText,
-  tipStyle,
 }: {
   cell: GoalWeekCell
   children: ReactNode
   readingText: (entry: GoalWeekEntry) => string
-  tipStyle: GoalWeekTipStyle
 }) {
   const [open, setOpen] = useState(false)
   const label = `Week ${cell.week}, ${WEEK_OUTCOME_LABEL[cell.outcome ?? 'none']}`
@@ -122,7 +110,7 @@ function WeekCellTrigger({
       // The tooltip's own wrapper sits between the row and the cell; without a
       // size it collapses to zero height and the cell disappears.
       style={{ flex: 1, height: '100%' }}
-      content={<TipBody cell={cell} readingText={readingText} style={tipStyle} />}
+      content={<TipBody cell={cell} readingText={readingText} />}
     >
       <Pressable
         accessibilityRole="button"
@@ -153,7 +141,7 @@ function stripSummary(cells: GoalWeekCell[]): string {
 /**
  * The block's weeks as cells, on the same `SegmentedBar` atom the rep and set
  * strips are built from: each past week carries its verdict, the current week
- * wears the ring, and every cell opens a tip card with its reading.
+ * stands taller and wears the ring, and every cell opens a tip card.
  *
  * No week labels: the week count lives once, on the tile's summary line.
  */
@@ -162,9 +150,7 @@ export function GoalMilestoneWeekStrip({
   currentWeek,
   weeks,
   readingText,
-  tipStyle = 'one-line',
   cellHeight = 8,
-  aheadColor,
 }: GoalMilestoneWeekStripProps) {
   const t = getSemanticColors(useSurfaceMode())
   const cells = weekStripCells(weekCount, currentWeek, weeks)
@@ -177,10 +163,10 @@ export function GoalMilestoneWeekStrip({
     >
       <SegmentedBar
         height={cellHeight}
-        segments={cells.map((cell) => paint(cell, t, aheadColor))}
+        segments={weekSegments(cells, t)}
         segmentTestID={(_seg, i) => `goal-milestone-week-fill-${i + 1}`}
         renderSegment={(slot, _seg, i) => (
-          <WeekCellTrigger cell={cells[i]} readingText={readingText} tipStyle={tipStyle}>
+          <WeekCellTrigger cell={cells[i]} readingText={readingText}>
             {slot}
           </WeekCellTrigger>
         )}
