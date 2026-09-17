@@ -88,7 +88,7 @@ function ThreadScroll(props: MessageListProps) {
           <TypingIndicator participants={typing} className="pl-10" />
         </View>
       </ScrollView>
-      <View className="absolute bottom-inset-md self-center" pointerEvents="box-none">
+      <View className="absolute bottom-inset-md self-center pointer-events-box-none">
         <UnreadBadge count={unseen} onPress={jumpToNewest} size="md" />
       </View>
     </View>
