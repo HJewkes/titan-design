@@ -7,6 +7,8 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## 0.17.1
+
 ### Fixed
 
 - `GoalTrajectoryChart` rendered an empty plane for a goal whose committed and
