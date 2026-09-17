@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:a01fd5318b804a700d5a6ac52539b7dc5a2d9a4003742e51bf0a5a37480ca881",
+  "componentBarrelHash": "sha256:004371be1a705c4962e9ded659d220181dfb6b97829f29850634bd7276ca6390",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -1990,12 +1990,12 @@
         "GoalMilestoneTile",
         "GoalMilestoneTileScale",
         "GoalMilestoneTileLayout",
+        "GoalMilestoneSummaryStyle",
         "GoalMilestoneTileProps",
         "WALL_MIN_WIDTH",
         "targetText",
         "readingText",
         "gapAmountText",
-        "copyFor",
         "resolveTile",
         "cn"
       ],
@@ -2012,16 +2012,17 @@
         "GoalMilestoneWeekStrip",
         "GoalTrajectoryPlot",
         "Indicator",
+        "Metric",
         "Surface",
         "Typography"
       ],
       "leak": {
-        "rawView": 6,
+        "rawView": 5,
         "rawText": 0,
         "inlineStyle": 4,
         "rawHex": 0,
-        "loc": 363,
-        "score": 14
+        "loc": 341,
+        "score": 13
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -2036,11 +2037,10 @@
       "family": "custom/Workout",
       "exports": [
         "GoalMilestoneWeekStrip",
-        "GoalWeekOutcomeStyle",
+        "GoalWeekTipStyle",
         "GoalMilestoneWeekStripProps",
-        "outcomeCell",
-        "cellFill",
-        "OutcomeDot"
+        "WEEK_OUTCOME_LABEL",
+        "paint"
       ],
       "libDependents": 1,
       "storyRefs": 1,
@@ -2053,14 +2053,17 @@
       },
       "dependsOn": [
         "GoalTrajectoryPlot",
+        "Pill",
+        "SegmentedBar",
+        "Tooltip",
         "Typography"
       ],
       "leak": {
-        "rawView": 5,
+        "rawView": 3,
         "rawText": 0,
-        "inlineStyle": 3,
+        "inlineStyle": 4,
         "rawHex": 0,
-        "loc": 159,
+        "loc": 191,
         "score": 11
       },
       "tier": "organism",
@@ -2159,7 +2162,7 @@
         "summarize"
       ],
       "libDependents": 0,
-      "storyRefs": 1,
+      "storyRefs": 2,
       "xproj": {
         "mobile": 0,
         "mcp": 1,
@@ -2176,7 +2179,7 @@
         "rawText": 3,
         "inlineStyle": 10,
         "rawHex": 0,
-        "loc": 410,
+        "loc": 417,
         "score": 35
       },
       "tier": "organism",
@@ -2226,7 +2229,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 520,
+        "loc": 533,
         "score": 0
       },
       "tier": "molecule",
@@ -3090,7 +3093,7 @@
         "MetricProps",
         "MetricGroupProps"
       ],
-      "libDependents": 3,
+      "libDependents": 4,
       "storyRefs": 1,
       "xproj": {
         "mobile": 8,
@@ -3434,7 +3437,7 @@
         "PillProps",
         "resolveSize"
       ],
-      "libDependents": 13,
+      "libDependents": 14,
       "storyRefs": 7,
       "xproj": {
         "mobile": 0,
@@ -4033,7 +4036,7 @@
         "SegmentedBarProps",
         "usePulse"
       ],
-      "libDependents": 3,
+      "libDependents": 4,
       "storyRefs": 2,
       "xproj": {
         "mobile": 0,
@@ -4044,12 +4047,12 @@
       },
       "dependsOn": [],
       "leak": {
-        "rawView": 4,
+        "rawView": 5,
         "rawText": 0,
-        "inlineStyle": 3,
+        "inlineStyle": 4,
         "rawHex": 0,
-        "loc": 178,
-        "score": 10
+        "loc": 210,
+        "score": 13
       },
       "tier": "atom",
       "verdict": "keep-internal",
@@ -5731,7 +5734,7 @@
         "show",
         "hide"
       ],
-      "libDependents": 9,
+      "libDependents": 10,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -7095,6 +7098,10 @@
     ],
     [
       "GoalMilestoneTile",
+      "Metric"
+    ],
+    [
+      "GoalMilestoneTile",
       "Typography"
     ],
     [
@@ -7107,7 +7114,19 @@
     ],
     [
       "GoalMilestoneWeekStrip",
+      "Pill"
+    ],
+    [
+      "GoalMilestoneWeekStrip",
+      "Tooltip"
+    ],
+    [
+      "GoalMilestoneWeekStrip",
       "Typography"
+    ],
+    [
+      "GoalMilestoneWeekStrip",
+      "SegmentedBar"
     ],
     [
       "GoalMilestoneWeekStrip",
@@ -8172,7 +8191,7 @@
         "rawText": 3,
         "inlineStyle": 10,
         "rawHex": 0,
-        "loc": 410,
+        "loc": 417,
         "score": 35
       }
     ],
@@ -8181,7 +8200,7 @@
         "Text": 71,
         "View": 135,
         "TouchableOpacity": 0,
-        "Pressable": 54,
+        "Pressable": 55,
         "TextInput": 3,
         "ActivityIndicator": 2,
         "Switch": 0,
