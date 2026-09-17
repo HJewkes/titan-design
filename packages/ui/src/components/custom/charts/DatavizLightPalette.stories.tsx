@@ -14,10 +14,11 @@ import { Treemap, type TreemapDatum } from '../Treemap'
 import { MuscleGroupChip } from '../Workout/MuscleGroupChip'
 import type { VolumeStatus } from '../Workout/muscleTaxonomy'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
-import { bestTextColor } from '../../../theme/tokens/primitives'
+import { bestTextColor, primitiveColors } from '../../../theme/tokens/primitives'
 import { formatTrimmedDecimal } from '../../../utils/number-format'
 import {
   LIGHT_CANDIDATE_SETS,
+  SEQUENTIAL_HEAD_VARIANTS,
   type CandidateSet,
   type DatavizKey,
   type DatavizPalette,
@@ -51,8 +52,8 @@ const CURRENT_COLUMNS: Column[] = [
   },
 ]
 
-function proposedColumns(palette: DatavizPalette): Column[] {
-  return LIGHT_CANDIDATE_SETS[palette].map((set) => ({
+function toColumns(sets: CandidateSet[]): Column[] {
+  return sets.map((set) => ({
     id: `light-proposed-${set.id}`,
     title: `LIGHT · PROPOSED ${set.title}`,
     note: set.rationale,
@@ -60,6 +61,12 @@ function proposedColumns(palette: DatavizPalette): Column[] {
     set,
   }))
 }
+
+const proposedColumns = (palette: DatavizPalette) => toColumns(LIGHT_CANDIDATE_SETS[palette])
+
+/** A forced white label wins; otherwise black or white, whichever contrasts more. */
+const labelOn = (fill: string, whiteLabels?: boolean) =>
+  whiteLabels ? primitiveColors.white : bestTextColor(fill)
 
 const paletteKeys = (palette: DatavizPalette): DatavizKey[] =>
   LIGHT_CANDIDATE_SETS[palette][0].steps.map((c) => c.key)
@@ -183,10 +190,12 @@ function Swatch({
   value,
   index,
   candidate,
+  whiteLabels,
 }: {
   value: string
   index: number
   candidate?: LightCandidate
+  whiteLabels?: boolean
 }) {
   const { plane } = usePlane()
   return (
@@ -200,7 +209,7 @@ function Swatch({
           justifyContent: 'center',
         }}
       >
-        <Text style={{ color: bestTextColor(value), fontSize: 12, fontWeight: '600' }}>
+        <Text style={{ color: labelOn(value, whiteLabels), fontSize: 12, fontWeight: '600' }}>
           {index}
         </Text>
       </View>
@@ -219,24 +228,35 @@ function Swatch({
   )
 }
 
-function SwatchRow({ values, candidates }: { values: string[]; candidates?: LightCandidate[] }) {
+function SwatchRow({ values, set }: { values: string[]; set?: CandidateSet }) {
   return (
     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
       {values.map((value, i) => (
-        <Swatch key={i} value={value} index={i} candidate={candidates?.[i]} />
+        <Swatch
+          key={i}
+          value={value}
+          index={i}
+          candidate={set?.steps[i]}
+          whiteLabels={set?.whiteLabels}
+        />
       ))}
     </View>
   )
 }
+
+/** Smallest ΔL at which the centre reads lighter than its arms; one ramp step is ~0.08. */
+const CENTRE_LEAD_MIN = 0.03
 
 /** Palette-specific structure checks: centre, monotony, first-three separation. */
 function paletteChecks(values: string[], palette: DatavizPalette): string[] {
   const ls = values.map(lightness)
   const lines: string[] = []
   if (palette === 'diverging') {
-    const centreLightest = ls.every((l, i) => i === 2 || l < ls[2])
+    const lead = ls[2] - Math.max(...ls.filter((_, i) => i !== 2))
     lines.push(`min all-pairs CVD ΔE ${fmt1(minPairDelta(values, true))}`)
-    lines.push(`centre is lightest: ${centreLightest ? 'yes' : 'NO'}`)
+    lines.push(
+      `centre leads the arms by ΔL ${formatTrimmedDecimal(lead, 3)}: ${lead >= CENTRE_LEAD_MIN ? 'reads lightest' : 'NOT visibly lightest'}`
+    )
   }
   if (palette === 'sequential') {
     const monotone = ls.slice(1).every((l, i) => l < ls[i])
@@ -249,15 +269,26 @@ function paletteChecks(values: string[], palette: DatavizPalette): string[] {
 }
 
 /** Lightness, chroma, separation and contrast for one column, printed under its swatches. */
-function Measurements({ values, palette }: { values: string[]; palette: DatavizPalette }) {
+function Measurements({
+  values,
+  palette,
+  whiteLabels,
+}: {
+  values: string[]
+  palette: DatavizPalette
+  whiteLabels?: boolean
+}) {
   const { mode } = usePlane()
   const cs = values.map(chroma)
+  const labels = values.map((v) => contrastRatio(v, labelOn(v, whiteLabels)))
   const lines = [
     `OKLCH L ${values.map(lightness).map(fmt2).join(' / ')}`,
     `OKLCH C ${cs.map((c) => formatTrimmedDecimal(c, 3)).join(' / ')}`,
     `min C ${formatTrimmedDecimal(Math.min(...cs), 3)} · mean C ${formatTrimmedDecimal(cs.reduce((a, b) => a + b) / cs.length, 3)}`,
     `worst-plane contrast ${values.map((v) => fmt2(worstPlaneContrast(v, mode))).join(' / ')}`,
-    `min label contrast ${fmt2(Math.min(...values.map((v) => contrastRatio(v, bestTextColor(v)))))}:1`,
+    whiteLabels
+      ? `white label contrast ${labels.map(fmt2).join(' / ')}`
+      : `min label contrast ${fmt2(Math.min(...labels))}:1`,
     `min adjacent CVD ΔE ${fmt1(minPairDelta(values, false))}`,
     ...paletteChecks(values, palette),
   ]
@@ -292,7 +323,15 @@ const STATUS_LABEL: Record<(typeof STATUS_ORDER)[number], string> = {
  * Proposed chips use the `Pill` primitive `MuscleGroupChip` is a preset over;
  * the real chip reads tokens, so it can only render shipped values.
  */
-function DivergingSample({ values, shipped }: { values: string[]; shipped: boolean }) {
+function DivergingSample({
+  values,
+  shipped,
+  whiteLabels,
+}: {
+  values: string[]
+  shipped: boolean
+  whiteLabels?: boolean
+}) {
   return (
     <View style={{ gap: 8 }}>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
@@ -335,7 +374,9 @@ function DivergingSample({ values, shipped }: { values: string[]; shipped: boole
               justifyContent: 'center',
             }}
           >
-            <Text style={{ color: bestTextColor(values[i]), fontSize: 10, textAlign: 'center' }}>
+            <Text
+              style={{ color: labelOn(values[i], whiteLabels), fontSize: 10, textAlign: 'center' }}
+            >
               {STATUS_LABEL[status]}
             </Text>
           </View>
@@ -355,7 +396,9 @@ const EFFORT_GRID = [
 
 const HEATMAP_CELL = 26
 
+/** Spreads the grid's six effort levels over however many steps a variant has. */
 function SequentialSample({ values }: { values: string[] }) {
+  const stepFor = (level: number) => Math.floor((level * values.length) / 6)
   return (
     <View style={{ gap: 2 }} testID="effort-heatmap">
       {EFFORT_GRID.map((row, r) => (
@@ -367,7 +410,7 @@ function SequentialSample({ values }: { values: string[] }) {
                 width: HEATMAP_CELL,
                 height: HEATMAP_CELL,
                 borderRadius: 4,
-                backgroundColor: values[step],
+                backgroundColor: values[stepFor(step)],
               }}
             />
           ))}
@@ -408,13 +451,15 @@ function CategoricalSample({ values }: { values: string[] }) {
 function Sample({
   palette,
   values,
-  shipped,
+  set,
 }: {
   palette: DatavizPalette
   values: string[]
-  shipped: boolean
+  set?: CandidateSet
 }) {
-  if (palette === 'diverging') return <DivergingSample values={values} shipped={shipped} />
+  if (palette === 'diverging') {
+    return <DivergingSample values={values} shipped={!set} whiteLabels={set?.whiteLabels} />
+  }
   if (palette === 'sequential') return <SequentialSample values={values} />
   return <CategoricalSample values={values} />
 }
@@ -426,7 +471,7 @@ function RuleList({ rules }: { rules: string[] }) {
         <Ink
           key={rule}
           variant="caption"
-          role={rule.startsWith('RELAXED') ? 'primary' : 'secondary'}
+          role={/^(RELAXED|BROKEN)/.test(rule) ? 'primary' : 'secondary'}
         >
           {`• ${rule}`}
         </Ink>
@@ -435,15 +480,22 @@ function RuleList({ rules }: { rules: string[] }) {
   )
 }
 
-function ColumnPanel({ column, palette }: { column: Column; palette: DatavizPalette }) {
+function ColumnPanel({
+  column,
+  palette,
+  minWidth,
+}: {
+  column: Column
+  palette: DatavizPalette
+  minWidth: number
+}) {
   const values = columnValues(column, palette)
-  const shipped = !column.set
   return (
     <Surface
       level="base"
       theme={column.theme}
       className="p-3"
-      style={{ flex: 1, gap: 10, minWidth: 440, maxWidth: 600 }}
+      style={{ flex: 1, gap: 10, minWidth, maxWidth: 600 }}
       testID={`column-${column.id}`}
     >
       <View style={{ gap: 2 }}>
@@ -456,9 +508,9 @@ function ColumnPanel({ column, palette }: { column: Column; palette: DatavizPale
       </View>
       {column.set ? <RuleList rules={column.set.rules} /> : null}
       <Surface raise={1} className="p-3" style={{ gap: 10 }}>
-        <SwatchRow values={values} candidates={column.set?.steps} />
-        <Sample palette={palette} values={values} shipped={shipped} />
-        <Measurements values={values} palette={palette} />
+        <SwatchRow values={values} set={column.set} />
+        <Sample palette={palette} values={values} set={column.set} />
+        <Measurements values={values} palette={palette} whiteLabels={column.set?.whiteLabels} />
       </Surface>
     </Surface>
   )
@@ -467,15 +519,15 @@ function ColumnPanel({ column, palette }: { column: Column; palette: DatavizPale
 const HEADLINE: Record<DatavizPalette, { title: string; note: string }> = {
   diverging: {
     title: 'Diverging (BodyMap fill, MuscleGroupChip dot)',
-    note: 'A (turn 1) went to 800-step ends and read navy/maroon. B keeps 500/700 steps and lets inner stops sit at 2:1. C stays within two steps of dark mode and keeps a very light centre.',
+    note: 'Reviewer prefers C. D asks whether every stop can carry white text: it can, without 700-step arms, but only by giving up the light centre and CVD separation. No shipped consumer draws text on these fills.',
   },
   sequential: {
     title: 'Sequential effort (heatmap, velocity strip)',
-    note: 'Dark and phase-1 light are not monotone: amber-200 is lighter than step 0. A ends on red-900 (brown); B shifts the walk one step lighter and ends on red-800.',
+    note: 'Neither A nor B works: amber at 400-600 reads as dirt on a light plane. The strip at the bottom settles steps 0-2 first; the tail follows once one is picked.',
   },
   categorical: {
     title: 'Categorical (Treemap, Scatter)',
-    note: 'A moved magenta and orange to 700 (brown). B keeps orange-400 and separates red by moving it to its pin instead. Treemap tile labels are fixed near-black.',
+    note: 'LOCKED: B with Cardio kept on the current brown amber-600. Treemap tile labels are fixed near-black.',
   },
 }
 
@@ -483,10 +535,12 @@ function ColumnRow({
   label,
   columns,
   palette,
+  minWidth = 440,
 }: {
   label: string
   columns: Column[]
   palette: DatavizPalette
+  minWidth?: number
 }) {
   return (
     <View style={{ gap: 6 }}>
@@ -495,7 +549,7 @@ function ColumnRow({
       </Typography>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
         {columns.map((column) => (
-          <ColumnPanel key={column.id} column={column} palette={palette} />
+          <ColumnPanel key={column.id} column={column} palette={palette} minWidth={minWidth} />
         ))}
       </View>
     </View>
@@ -520,6 +574,14 @@ function PaletteDecision({ palette }: { palette: DatavizPalette }) {
       </View>
       <ColumnRow label="Current" columns={CURRENT_COLUMNS} palette={palette} />
       <ColumnRow label="Proposed (light)" columns={proposedColumns(palette)} palette={palette} />
+      {palette === 'sequential' ? (
+        <ColumnRow
+          label="Turn 3: steps 0-2 only, on light (tail undecided)"
+          columns={toColumns(SEQUENTIAL_HEAD_VARIANTS)}
+          palette={palette}
+          minWidth={380}
+        />
+      ) : null}
     </View>
   )
 }
@@ -532,7 +594,7 @@ function PaletteDecision({ palette }: { palette: DatavizPalette }) {
  * `dataviz-categorical-*`) with light and dark carrying the same values. This
  * story proposes light values and shows them beside what ships.
  *
- * ## Status: PROPOSED, turn 2, awaiting sign-off
+ * ## Status: turn 3. Categorical LOCKED; diverging C vs D; sequential steps 0-2 open
  *
  * The proposals live in `DatavizLightPalette.candidates.ts` as named sets. No
  * token file has changed. Once one set is approved, each `step` in it is what
@@ -542,7 +604,11 @@ function PaletteDecision({ palette }: { palette: DatavizPalette }) {
  * muddy". A enforced 3:1 on every non-centre stop, which forced ramp steps
  * 700-900, where OKLCH chroma collapses. Turn 2 adds set B (vivid) for every
  * palette and set C (light centre) for diverging. Each column prints the rules
- * it satisfies; a rule it loosens is printed as RELAXED.
+ * it satisfies; a rule it loosens is printed as RELAXED, one it fails as BROKEN.
+ *
+ * Turn 3 locked categorical B with Cardio on amber[600], added diverging D
+ * (white labels on every stop) beside C, and added a steps 0-2 strip for
+ * sequential. Set A is dropped from diverging and categorical.
  *
  * ## How the values were chosen
  *
