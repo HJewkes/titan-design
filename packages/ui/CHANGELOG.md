@@ -7,8 +7,29 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## 0.17.0
+
 ### Added
 
+- `GoalTrajectoryChart` restyled as a d3-backed SVG on an inset plane (#248,
+  VW-385): monotone-cubic actual line and band (`bandCurve`), a centre-to-edge
+  band fade painted as one continuous gradient (`bandFade`), neutral committed
+  and stretch rules, horizontal gridlines with y labels, a y-domain padded from
+  the label metrics so rule labels always clear the plane, a line drop shadow,
+  a lowered plane with a lip highlight (`baseline`, `leftShadowSpread`), and a
+  1 s line-draw entrance that honours reduced motion (`animate`). Dot centres
+  now sit exactly on the line (the old View renderer anchored the stroke's top
+  edge at the data point). The rejected explorations stay as `explore-*`
+  stories marked NOT CHOSEN. New runtime dependencies: `d3-shape`, `d3-scale`.
+- Light-mode values for the three `dataviz-*` palettes (#245, VW-371):
+  diverging, sequential and categorical light tokens are tuned for light
+  surfaces after four human-reviewed turns; dark values are unchanged. The
+  decision story `Lab/Decisions/Dataviz Light Palettes` shows every candidate
+  with live OKLCH, CVD and contrast measurements and marks the chosen sets;
+  `DatavizLightPalette.candidates.test` pins the light tokens to them.
+- Layer-2 Storybook visual gate (#244, VW-319): the shell and icon stories now
+  have committed pinned-container baselines and any pixel drift fails CI; a
+  refresh step uploads regenerated PNGs on every run.
 - `titan/no-raw-device-data-in-chat` lint rule, scoped to
   `src/components/custom/Chat/**` (empty today, ahead of the VW-393 chat
   component family). Flags `Buffer.*`/`Uint8Array`/`ArrayBuffer` usage in a
@@ -20,6 +41,16 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- `VolumeLandmarkBar`'s percentage label reads `text-primary` instead of the
+  zone fill, in both themes, so it stays legible on light surfaces (#245,
+  VW-371).
+- Two `RuleTester` suites (`no-frozen-theme`, `no-device-internals`) wrapped
+  `run()` inside `it()` and passed with zero assertions; unwrapped, and
+  `no-device-internals` now also checks numeric hex literals (#242, VW-396;
+  #243 for the five remaining suites).
+- The Visual Regression workflow uploaded a `playwright-report/` directory that
+  never exists; it now uploads the real `-actual`/`-diff`/`-expected` PNGs so a
+  failed gate can be diagnosed from CI (#246).
 - Token-pure `no-restricted-syntax` lint rule now permits the render-time
   `getSemanticColors(useSurfaceMode())` form its own message recommends,
   instead of banning every `getSemanticColors()` call outright (VW-381).
