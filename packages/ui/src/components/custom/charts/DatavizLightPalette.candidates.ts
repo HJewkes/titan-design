@@ -1,25 +1,26 @@
 import { primitiveRamps as ramp } from '../../../theme/tokens/primitives'
 
 /**
- * PROPOSALS ONLY (VW-371 phase 2). Candidate light-mode values for the three
- * `dataviz-*` palettes, rendered by `DatavizLightPalette.stories.tsx` for
- * approval. Nothing reads these outside the story; the token mirrors still
- * carry the phase-1 values until a human signs one set off.
+ * The VW-371 phase 2 decision record: every light-mode candidate for the three
+ * `dataviz-*` palettes, rendered by `DatavizLightPalette.stories.tsx`. The set
+ * marked `chosen` in each palette is what the light block of the token mirrors
+ * carries (landed 2026-09-17); `dataviz-palettes.test.ts` fails if they drift.
+ * The rest stay here as the record of what was weighed and why it lost.
  *
  * Every value is a `primitiveRamps` step, picked by exhaustive search over the
  * ramps and scored with the dataviz skill's validator (Machado-2009 CVD, OKLab
  * ΔE×100). "Planes" below means the three light surfaces a chart sits on:
  * `surface-base` (white), `surface-elevated` and `surface-raised`.
  *
- * Turn 4 (2026-09-17 review): diverging C is preferred and C' tries blue[500]
- * with a black slot-0 label. Sequential allows a lift at step 0→1, as the
- * shipped dark ramp does, and proposes full ramps on the H1 and H4 openings.
- *
- * Turn 1 (set A) read as muddy: it pushed stops to ramp steps 700-900, where
- * OKLCH chroma collapses (amber[800] C 0.066, cyan[600] C 0.088). Turn 2 added
- * B and C on steps 300-700. Turn 3 (2026-09-17 review) locks categorical B with
- * Cardio kept brown, adds diverging D (white labels) and narrows sequential to
- * steps 0-2 (`SEQUENTIAL_HEAD_VARIANTS`). Set A survives for sequential only.
+ * Turns, all reviewed 2026-09-17:
+ * 1. Set A (contrast-first, steps 700-900) read as "very muddy": chroma
+ *    collapses there (amber[800] C 0.066, cyan[600] C 0.088). A is not kept.
+ * 2. Sets B and C on steps 300-700, with relaxed panel-contrast floors.
+ * 3. Categorical B locked with Cardio kept brown; diverging D (white labels);
+ *    sequential narrowed to steps 0-2 (`SEQUENTIAL_HEAD_VARIANTS`).
+ * 4. Diverging C' (blue[500], black slot-0 label); sequential allows a lift at
+ *    step 0→1, as the shipped dark ramp does; full ramps S1 and S4.
+ * 5. Chosen: diverging C', sequential S1, categorical B. Landed.
  */
 
 export type DatavizPalette = 'diverging' | 'sequential' | 'categorical'
@@ -47,6 +48,8 @@ export interface CandidateSet {
   /** The rules the set satisfies, and any rule it relaxes, printed as stated. */
   rules: string[]
   steps: LightCandidate[]
+  /** The set the reviewer picked; its steps are the landed light tokens. */
+  chosen?: boolean
   /** Per-stop label ink overrides; stops not listed use `bestTextColor`. */
   forcedLabels?: Partial<Record<number, LabelInk>>
 }
@@ -99,9 +102,11 @@ const DIVERGING_C: CandidateSet = {
 const DIVERGING_C_PRIME: CandidateSet = {
   id: "C'",
   title: "C' · C with a blue[500] end, black label",
+  chosen: true,
   rationale: 'Reviewer ask: C with slot 0 lifted to blue[500] and its label forced black.',
   forcedLabels: { 0: 'dark' },
   rules: [
+    'ACCEPTED: the blue↔cyan normal-vision ΔE below, knowingly, for the brighter end',
     'slot 0 black label 6.72:1 (white would be 3.12:1); inner arms ≥ 2:1',
     'BROKEN: slot 0 end is 2.61:1 on raised, 3.12:1 on white (ends rule is ≥ 3:1 on all planes)',
     'BROKEN: blue[500]↔cyan[400] normal-vision ΔE 11.1 (floor 15; C has 19.0). CVD ΔE 10.9',
@@ -143,7 +148,7 @@ const DIVERGING_C_PRIME: CandidateSet = {
 
 const DIVERGING_D: CandidateSet = {
   id: 'D',
-  title: 'D · white labels everywhere (NOT CHOSEN)',
+  title: 'D · white labels everywhere',
   rationale:
     'B with a green[500] centre, the lightest centre that still takes white text at 3:1. No 700-step arms.',
   forcedLabels: { 0: 'light', 1: 'light', 2: 'light', 3: 'light', 4: 'light' },
@@ -189,7 +194,8 @@ const DIVERGING_D: CandidateSet = {
 
 const CATEGORICAL_B: CandidateSet = {
   id: 'B',
-  title: 'B · vivid, LOCKED (Cardio kept brown)',
+  title: 'B · vivid, Cardio kept brown',
+  chosen: true,
   rationale:
     'Reviewer pick: B with step 6 back on the current amber[600]. Red and green take the darker slots.',
   rules: [
@@ -266,7 +272,8 @@ const headStep = (
 export const SEQUENTIAL_HEAD_VARIANTS: CandidateSet[] = [
   {
     id: 'H1',
-    title: 'H1 · green → gold pin → orange pin',
+    title: 'H1 · green → gold pin → orange pin (S1 opening)',
+    chosen: true,
     rationale: 'Nearest thing to a lime/yellow middle: no ramp exists, so the gold pin stands in.',
     rules: [
       'step 0→1 lifts (L 0.77 → 0.81); allowed since turn 4, dark lifts 0.77 → 0.88',
@@ -340,7 +347,8 @@ const TAIL_RULES = [
 
 const SEQUENTIAL_S1: CandidateSet = {
   id: 'S1',
-  title: 'S1 · H1 opening + tail (PRIMARY)',
+  title: 'S1 · H1 opening + tail',
+  chosen: true,
   rationale:
     'Dark-mode hues through step 3, lifting at step 1 exactly as dark does; one vivid red tail.',
   rules: [
@@ -354,7 +362,7 @@ const SEQUENTIAL_S1: CandidateSet = {
 
 const SEQUENTIAL_S4: CandidateSet = {
   id: 'S4',
-  title: 'S4 · H4 opening + same tail (comparison)',
+  title: 'S4 · H4 opening + same tail',
   rationale: 'Strictly monotone all the way; step 0 is the pale dark-mode mint.',
   rules: [
     'monotone from step 0 (ΔL 0.055 at step 0→1)',
@@ -366,7 +374,16 @@ const SEQUENTIAL_S4: CandidateSet = {
 }
 
 export const LIGHT_CANDIDATE_SETS: Record<DatavizPalette, CandidateSet[]> = {
-  diverging: [DIVERGING_C, DIVERGING_C_PRIME, DIVERGING_D],
+  diverging: [DIVERGING_C_PRIME, DIVERGING_C, DIVERGING_D],
   sequential: [SEQUENTIAL_S1, SEQUENTIAL_S4],
   categorical: [CATEGORICAL_B],
+}
+
+/** The reviewer's pick for a palette: the values the light token block carries. */
+export function chosenSet(palette: DatavizPalette): CandidateSet {
+  const chosen = LIGHT_CANDIDATE_SETS[palette].filter((set) => set.chosen)
+  if (chosen.length !== 1) {
+    throw new Error(`${palette}: expected exactly one chosen set, found ${chosen.length}`)
+  }
+  return chosen[0]
 }

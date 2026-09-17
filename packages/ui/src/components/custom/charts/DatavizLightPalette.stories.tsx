@@ -47,8 +47,8 @@ const CURRENT_COLUMNS: Column[] = [
   },
   {
     id: 'light-current',
-    title: 'LIGHT · current (phase 1)',
-    note: 'same values as dark, by design of phase 1',
+    title: 'LIGHT · current (landed 2026-09-17)',
+    note: 'what ships today on light, read from the tokens; equals the CHOSEN column below',
     theme: 'light',
   },
 ]
@@ -56,7 +56,7 @@ const CURRENT_COLUMNS: Column[] = [
 function toColumns(sets: CandidateSet[]): Column[] {
   return sets.map((set) => ({
     id: `light-proposed-${set.id}`,
-    title: `LIGHT · PROPOSED ${set.title}`,
+    title: `${set.chosen ? 'CHOSEN' : 'NOT CHOSEN'} · ${set.title}`,
     note: set.rationale,
     theme: 'light',
     set,
@@ -488,7 +488,7 @@ function RuleList({ rules }: { rules: string[] }) {
         <Ink
           key={rule}
           variant="caption"
-          role={/^(RELAXED|BROKEN)/.test(rule) ? 'primary' : 'secondary'}
+          role={/^(RELAXED|BROKEN|ACCEPTED)/.test(rule) ? 'primary' : 'secondary'}
         >
           {`• ${rule}`}
         </Ink>
@@ -536,15 +536,15 @@ function ColumnPanel({
 const HEADLINE: Record<DatavizPalette, { title: string; note: string }> = {
   diverging: {
     title: 'Diverging (BodyMap fill, MuscleGroupChip dot)',
-    note: "Reviewer prefers C. C' lifts slot 0 to blue-500 with a black label; D (white labels) is not chosen. No shipped consumer draws text on these fills.",
+    note: "CHOSEN: C' (C with slot 0 on blue-500 and a black label). The blue/cyan normal-vision ΔE 11.1 was accepted knowingly. No shipped consumer draws text on these fills.",
   },
   sequential: {
     title: 'Sequential effort (heatmap, velocity strip)',
-    note: 'Turn 4: S1 (H1 opening, lift at step 1 as in dark) is primary; S4 (H4 opening) is beside it. Both share the orange-500 → red-700 → red-800 tail. The strip below holds the steps 0-2 exploration.',
+    note: 'CHOSEN: S1 (the H1 opening, lifting at step 1 as dark does, then orange-500 → red-700 → red-800). The strip below keeps the steps 0-2 exploration.',
   },
   categorical: {
     title: 'Categorical (Treemap, Scatter)',
-    note: 'LOCKED: B with Cardio kept on the current brown amber-600. Treemap tile labels are fixed near-black.',
+    note: 'CHOSEN: B with Cardio kept on the brown amber-600. Treemap tile labels are fixed near-black.',
   },
 }
 
@@ -603,10 +603,10 @@ function PaletteDecision({ palette }: { palette: DatavizPalette }) {
         </Typography>
       </View>
       <ColumnRow label="Current" columns={CURRENT_COLUMNS} palette={palette} />
-      <ColumnRow label="Proposed (light)" columns={proposedColumns(palette)} palette={palette} />
+      <ColumnRow label="Candidates (light)" columns={proposedColumns(palette)} palette={palette} />
       {palette === 'sequential' ? (
         <ColumnRow
-          label="Turn 3: steps 0-2 only, on light"
+          label="Turn 3 exploration: steps 0-2 only, on light"
           columns={toColumns(SEQUENTIAL_HEAD_VARIANTS)}
           palette={palette}
           minWidth={380}
@@ -620,51 +620,54 @@ function PaletteDecision({ palette }: { palette: DatavizPalette }) {
 /**
  * # Lab / Decisions — dataviz palettes on light (VW-371 phase 2)
  *
- * A decision surface, not a component. Phase 1 made the three chart palettes
+ * A decision record, not a component. Phase 1 made the three chart palettes
  * theme-aware roles (`dataviz-diverging-*`, `dataviz-sequential-*`,
- * `dataviz-categorical-*`) with light and dark carrying the same values. This
- * story proposes light values and shows them beside what ships.
+ * `dataviz-categorical-*`) with light and dark on the same values. Phase 2 gave
+ * light its own values; this story shows what landed beside every candidate
+ * that was weighed.
  *
- * ## Status: turn 4. Categorical LOCKED; diverging C vs C'; sequential S1 vs S4
+ * ## Status: LANDED 2026-09-17
  *
- * The proposals live in `DatavizLightPalette.candidates.ts` as named sets. No
- * token file has changed. Once one set is approved, each `step` in it is what
- * goes into the light block of `semantic.ts` and the other four mirrors.
+ * | palette | chosen set | light steps |
+ * | --- | --- | --- |
+ * | diverging | C' | blue[500] cyan[400] green[300] amber[400] red[600]; black label on slot 0 |
+ * | sequential | S1 | green[300] amber[300] orange[400] orange[500] red[700] red[800] |
+ * | categorical | B | blue[500] magenta[600] red[600] orange[400] green[600] cyan[400] amber[600] |
  *
- * Turn 1 (set A) was reviewed on 2026-09-17: "the proposed palettes look very
- * muddy". A enforced 3:1 on every non-centre stop, which forced ramp steps
- * 700-900, where OKLCH chroma collapses. Turn 2 adds set B (vivid) for every
- * palette and set C (light centre) for diverging. Each column prints the rules
- * it satisfies; a rule it loosens is printed as RELAXED, one it fails as BROKEN.
+ * The light block of `semantic.ts` and `global.css` carries these steps; the
+ * `LIGHT · current` column reads them from the tokens and must equal the CHOSEN
+ * column (`DatavizLightPalette.candidates.test.tsx` enforces it). Dark is unchanged.
  *
- * Turn 3 locked categorical B with Cardio on amber[600], added diverging D
- * (white labels on every stop) beside C, and added a steps 0-2 strip for
- * sequential. Set A is dropped from diverging and categorical.
+ * ## How it was decided (all turns reviewed 2026-09-17)
  *
- * Turn 4 adds diverging C' (blue[500] end, black label) and marks D not
- * chosen. Sequential allows a lift at step 0→1 because dark has one, and
- * shows full ramps S1 (H1 opening) and S4 (H4 opening). A and B are dropped.
+ * 1. Set A enforced 3:1 on every non-centre stop and landed on steps 700-900:
+ *    "the proposed palettes look very muddy".
+ * 2. Sets B and C kept steps 300-700 by relaxing the panel-contrast floor to 2:1
+ *    for fills that carry their own labels. Labels stay at 4.5:1.
+ * 3. Categorical: "B, though I would suggest keeping 6 the same brown as we have
+ *    currently". Sequential: "we need to start by figuring out how to make steps
+ *    1 and 2 work without making them look like dirt", so steps 0-2 were
+ *    explored alone.
+ * 4. Diverging: "C looks good, but could we look at using black on slot 0,
+ *    potentially taking it to blue 500?", which became C'. Sequential: the dark
+ *    ramp lifts at step 1 (L 0.77 to 0.88), so light may too; S1 is the H1
+ *    opening with an orange-500, red-700, red-800 tail.
+ * 5. Chosen: C', S1, B. The human accepted C''s blue/cyan normal-vision ΔE 11.1.
  *
- * ## How the values were chosen
+ * Every value is a `primitiveRamps` step, scored with the dataviz skill's
+ * validator (Machado-2009 CVD simulation, OKLab ΔE×100). Contrast is taken
+ * against the worst of `surface-base`, `surface-elevated` and `surface-raised`.
+ * Each column prints its rules: RELAXED marks a loosened rule, BROKEN a failed
+ * one, ACCEPTED a failure the reviewer took knowingly.
  *
- * Exhaustive search over `primitiveRamps` steps, keeping each palette's hue
- * order, scored with the dataviz skill's validator (Machado-2009 CVD simulation,
- * OKLab ΔE×100). Contrast is taken against the worst of `surface-base`,
- * `surface-elevated` and `surface-raised`. The B relaxation: fills sit inside
- * chips and tiles with their own labels, so fill-vs-panel contrast is a
- * legibility floor (3:1 for diverging ends, 2:1 elsewhere), not a text rule.
- * Label contrast stays at 4.5:1 with `bestTextColor`.
- *
- * ## Open questions for the reviewer
+ * ## Known follow-ups
  *
  * - Sequential S1's step 0↔1 CVD ΔE is 6.4, inside the WARN band; the
  *   heatmap's cell gaps and tooltip are its secondary encoding.
- * - Diverging C' fails the 3:1 end rule and puts blue and cyan at normal-vision
- *   ΔE 11.1.
- * - Categorical B sits in the validator's CVD WARN band (green↔orange 6.9), which
- *   is legal only with labels or a legend. Every categorical consumer has one.
- * - `Treemap` hard-codes `text-on-data-strong`. Its worst tile label is 2.6:1 on
- *   A and 3.6:1 on B, so B needs per-tile label colour in `Treemap`.
+ * - `Treemap` hard-codes `text-on-data-strong`; its worst tile label on B is
+ *   3.6:1 (magenta[600]), so Treemap needs a per-tile label colour.
+ * - Consumers importing the primitive arrays instead of the roles keep painting
+ *   the dark values on light.
  */
 const meta: Meta<{ palette: DatavizPalette }> = {
   title: 'Lab/Decisions/Dataviz Light Palettes',
