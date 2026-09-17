@@ -30,10 +30,23 @@ const facts = () => screen.getByTestId('goal-milestone-facts')
 const weekCount = () => screen.getByTestId('goal-milestone-week-count')
 
 describe('GoalMilestoneTile', () => {
-  it('leads with the shortfall', () => {
+  it('leads with the shortfall, marked as the distance to the goal', () => {
     render(<GoalMilestoneTile {...base} />)
 
     expect(hero()).toHaveTextContent('5 lb')
+    expect(hero()).toHaveTextContent('to goal')
+  })
+
+  it('keeps the to-goal suffix in a compact tile', () => {
+    render(<GoalMilestoneTile {...base} layout="compact" />)
+
+    expect(hero()).toHaveTextContent('to goal')
+  })
+
+  it('drops the to-goal suffix before any set has matched', () => {
+    render(<GoalMilestoneTile {...base} latest={undefined} />)
+
+    expect(hero()).not.toHaveTextContent('to goal')
   })
 
   it('leads with reps for a reps-at-load goal', () => {
@@ -90,6 +103,7 @@ describe('GoalMilestoneTile', () => {
       render(<GoalMilestoneTile {...base} latest={{ reps: 8, load: 107.5 }} />)
 
       expect(hero()).toHaveTextContent('8 x 105 lb')
+      expect(hero()).not.toHaveTextContent('to goal')
       expect(screen.getByTestId('goal-milestone-state')).toHaveTextContent('Hit')
     })
   })
@@ -99,6 +113,7 @@ describe('GoalMilestoneTile', () => {
       render(<GoalMilestoneTile {...base} currentWeek={7} latest={{ reps: 8, load: 102.5 }} />)
 
       expect(hero()).toHaveTextContent('2.5 lb')
+      expect(hero()).not.toHaveTextContent('to goal')
       expect(screen.getByTestId('goal-milestone-state')).toHaveTextContent('Missed')
     })
 

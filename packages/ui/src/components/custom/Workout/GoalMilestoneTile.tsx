@@ -102,6 +102,8 @@ interface ResolvedTile {
   state: GoalMilestoneState
   color: string
   hero: string
+  /** True when the hero is the shortfall rather than the target itself. */
+  heroIsGap: boolean
   bestText: string | null
   weekText: string | null
 }
@@ -127,6 +129,7 @@ function resolveTile(props: GoalMilestoneTileProps, t: Palette): ResolvedTile {
     state,
     color: t[milestoneToneToken(state, props.status)],
     hero: gap ?? targetText(target),
+    heroIsGap: gap !== null,
     bestText: latest ? readingText(target, latest) : null,
     weekText:
       currentWeek !== undefined && currentWeek <= weekCount
@@ -167,6 +170,8 @@ function Header({ label, state }: { label: string; state: GoalMilestoneState }) 
 }
 
 function Hero({ tile, scale }: { tile: ResolvedTile; scale: GoalMilestoneTileScale }) {
+  // Only an open target is a distance to cover; a hit or missed one is a verdict.
+  const suffix = tile.heroIsGap && tile.state === 'upcoming'
   return (
     // body1 plus the heading face: a heading variant would emit role=heading.
     <Typography
@@ -178,11 +183,15 @@ function Hero({ tile, scale }: { tile: ResolvedTile; scale: GoalMilestoneTileSca
       testID="goal-milestone-hero"
     >
       {tile.hero}
+      {suffix && (
+        <Typography variant="caption" color="tertiary" className="font-body font-normal">
+          {'  to goal'}
+        </Typography>
+      )}
     </Typography>
   )
 }
 
-/** Best and goal, read together, on the hero's line. */
 /** One fact: a muted word and its figure, the figure bold and bright. */
 function Fact({
   label,
