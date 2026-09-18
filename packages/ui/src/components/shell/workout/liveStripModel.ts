@@ -17,7 +17,7 @@ export type LiveStripZone = 'grinding' | 'maximalStrength' | 'strengthSpeed' | '
 /** One performed rep: its mean concentric velocity (m/s) and the zone analytics assigned it (used by `barColor="zone"`). */
 export interface LiveStripRep {
   velocity: number
-  zone: LiveStripZone
+  zone?: LiveStripZone
 }
 
 /** The session phase the strip mirrors. `idle` renders nothing. */
@@ -43,7 +43,7 @@ const LIVE_STRIP_LOSS_TOKEN: readonly ColorToken[] = [
   LIVE_STRIP_ZONE_TOKEN.maximalStrength,
 ]
 
-/** The colour token for one rep, by zone or by its loss from the best rep of `reps`. */
+/** The colour token for one rep, by zone or by its loss from the best rep of `reps`; a rep without a zone uses its loss. */
 export function liveStripRepToken(
   reps: readonly LiveStripRep[],
   index: number,
@@ -51,7 +51,7 @@ export function liveStripRepToken(
   lossThresholds?: VelocityLossThresholds
 ): ColorToken {
   const rep = reps[index]
-  if (barColor === 'zone') return LIVE_STRIP_ZONE_TOKEN[rep.zone]
+  if (barColor === 'zone' && rep.zone) return LIVE_STRIP_ZONE_TOKEN[rep.zone]
   const best = Math.max(...reps.map((r) => r.velocity))
   return LIVE_STRIP_LOSS_TOKEN[
     velocityLossBand(velocityLossForRep(rep.velocity, best), lossThresholds)
