@@ -25,6 +25,14 @@ import {
   type ReferenceLabelSide,
 } from './GoalTrajectoryPlot'
 import { useTrajectoryEntrance } from './goalTrajectoryMotion'
+import {
+  CalibratingCaption,
+  calibratingMarks,
+  treatmentPlan,
+  type CalibratingMarks,
+  type CalibratingTreatment,
+  type CalibrationProgress,
+} from './GoalTrajectoryCalibrating'
 import type { BandFade } from './GoalTrajectoryBand'
 import type { BandCurve } from './GoalTrajectoryChartGeometry'
 import type { PlotBaseline } from './GoalTrajectoryPlot'
@@ -164,7 +172,57 @@ export interface GoalTrajectoryChartProps extends ViewProps {
    * a goal that is going well, and the labels sat on top of it.
    */
   referenceLabelSide?: ReferenceLabelSide
+  /**
+   * VW-433 review round 1, calibrating goals only: which treatment draws the
+   * calibrating state. `v0` is the shipped rendering; the rest are candidates.
+   */
+  calibratingTreatment?: CalibratingTreatment
+  /** How far through calibration the lift is, for the treatments that say so. */
+  calibration?: CalibrationProgress
   className?: string
+}
+
+/** Plain dots in place of stars, for the treatments that drop the PR star. */
+function withoutRecords(actuals: GoalActualPoint[]): GoalActualPoint[] {
+  return actuals.map((actual) => ({ ...actual, isPR: false }))
+}
+
+/** The next target as a treatment draws it: today's run, the dot alone, or neither. */
+function nextTargetShown(
+  geometry: GoalTrajectoryGeometry,
+  next: 'run' | 'dot' | 'flat' | 'none'
+): GoalTrajectoryGeometry {
+  if (next === 'run' || !geometry.nextTarget) return geometry
+  if (next === 'dot') return { ...geometry, nextTarget: { ...geometry.nextTarget, leadPath: '' } }
+  return { ...geometry, nextTarget: null }
+}
+
+interface CalibratingView {
+  geometry: GoalTrajectoryGeometry
+  marks: CalibratingMarks | null
+  caption: boolean
+}
+
+interface CalibratingViewInput {
+  geometry: GoalTrajectoryGeometry
+  treatment: CalibratingTreatment | null
+  expected: GoalExpectedPoint[]
+  nextTarget?: GoalNextTarget
+  wall: boolean
+  progress?: CalibrationProgress
+}
+
+/** What a calibrating treatment changes about the plot; everything else passes through. */
+function calibratingView(input: CalibratingViewInput): CalibratingView {
+  const { geometry, treatment } = input
+  if (!treatment || treatment === 'v0') return { geometry, marks: null, caption: false }
+  const plan = treatmentPlan(treatment)
+  const span = Math.abs(geometry.toX(2) - geometry.toX(1))
+  return {
+    geometry: nextTargetShown(geometry, plan.next),
+    marks: calibratingMarks({ ...input, treatment, span }),
+    caption: plan.caption,
+  }
 }
 
 function summarize(
@@ -235,6 +293,8 @@ export function GoalTrajectoryChart({
   bandFade = 'centre-14',
   bandCurve = 'monotone',
   referenceLabelSide = 'left',
+  calibratingTreatment = 'v0',
+  calibration,
   className,
   ...props
 }: GoalTrajectoryChartProps) {
@@ -246,14 +306,17 @@ export function GoalTrajectoryChart({
   const palette = trajectoryPalette(surface.mode, surface.level, toneStatus)
   const density = width >= WALL_BREAKPOINT ? DENSITY.wall : DENSITY.phone
   const entrance = useTrajectoryEntrance(animate)
+  const treatment = status === 'calibrating' ? calibratingTreatment : null
+  const dropPR = treatment !== null && treatmentPlan(treatment).dropPR
+  const plotted = useMemo(() => (dropPR ? withoutRecords(actuals) : actuals), [actuals, dropPR])
 
-  const geometry = useMemo(
+  const derived = useMemo(
     () =>
       deriveTrajectoryGeometry({
         expected,
         committed,
         stretch,
-        actuals,
+        actuals: plotted,
         weeks,
         mesoBoundaries,
         nextTarget,
@@ -266,7 +329,7 @@ export function GoalTrajectoryChart({
       expected,
       committed,
       stretch,
-      actuals,
+      plotted,
       weeks,
       mesoBoundaries,
       nextTarget,
@@ -276,6 +339,15 @@ export function GoalTrajectoryChart({
       bandCurve,
     ]
   )
+  const view = calibratingView({
+    geometry: derived,
+    treatment,
+    expected,
+    ...(nextTarget ? { nextTarget } : {}),
+    wall: width >= WALL_BREAKPOINT,
+    ...(calibration ? { progress: calibration } : {}),
+  })
+  const { geometry } = view
 
   if (!geometry.hasBand && !geometry.hasActuals) {
     return (
@@ -296,7 +368,12 @@ export function GoalTrajectoryChart({
 
   const axisWeeks = weeks.length > 0 ? weeks : expected.map((p) => ({ index: p.weekIndex }))
   return (
-    <View style={{ width }} className={cn(className)} testID="goal-trajectory-chart" {...props}>
+    <View
+      style={{ width }}
+      className={cn(view.caption && 'gap-stack-sm', className)}
+      testID="goal-trajectory-chart"
+      {...props}
+    >
       <View
         style={{ width, height }}
         accessibilityRole="image"
@@ -323,11 +400,13 @@ export function GoalTrajectoryChart({
             referenceLabelSide,
           }}
           entrance={entrance}
+          calibrating={view.marks}
         />
       </View>
       {geometry.nextTarget && nextTarget && (
         <NextTargetTip point={geometry.nextTarget} label={nextTarget.label} />
       )}
+      {view.caption && <CalibratingCaption {...(calibration ? { progress: calibration } : {})} />}
     </View>
   )
 }
