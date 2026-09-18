@@ -3706,13 +3706,13 @@
       "exports": [
         "PinnedLiveStrip",
         "PinnedLiveStripLayout",
+        "PinnedLiveStripPhoneMeta",
         "PinnedLiveStripProps",
         "PINNED_LIVE_STRIP_PHONE_MAX",
         "toneOf",
         "setLine",
-        "Velocity",
         "colorFor",
-        "cn"
+        "showSet"
       ],
       "libDependents": 1,
       "storyRefs": 2,
@@ -3720,8 +3720,8 @@
         "mobile": 0,
         "mcp": 0,
         "dash": 0,
-        "audiobook": 4,
-        "total": 4
+        "audiobook": 0,
+        "total": 0
       },
       "dependsOn": [
         "Indicator",
@@ -3736,11 +3736,11 @@
         "rawText": 8,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 378,
+        "loc": 412,
         "score": 25
       },
       "tier": "organism",
-      "verdict": "keep-core",
+      "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false

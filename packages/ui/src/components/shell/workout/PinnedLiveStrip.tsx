@@ -25,6 +25,7 @@ const WALL_HEIGHT = 72
 const PHONE_MIN_HEIGHT = 88
 
 export type PinnedLiveStripLayout = 'wall' | 'phone'
+export type PinnedLiveStripPhoneMeta = 'flow' | 'chevron' | 'pinned'
 
 export interface PinnedLiveStripProps {
   /** `set` while reps are being logged, `rest` while the rest timer runs, `idle` renders nothing. */
@@ -47,6 +48,12 @@ export interface PinnedLiveStripProps {
   onPress?: () => void
   /** Force a layout. Omitted: measured from the strip's own width. */
   layout?: PinnedLiveStripLayout
+  /**
+   * Phone title row, under review (VW-429 round 4): `flow` drops the set count under a title too
+   * long to share its line; `chevron` pins only the chevron and hides the set count; `pinned` pins
+   * set count and chevron. The unchosen values are removed after the pick.
+   */
+  phoneMeta?: PinnedLiveStripPhoneMeta
   className?: string
 }
 
@@ -58,6 +65,8 @@ interface Scale {
   sub: string
   hero: string
   heroUnit: string
+  /** Fits both "12/12" and "0:00" at the hero size, so set and rest share one slot. */
+  heroSlot: number
   velocity: string
   barHeight: number
   barPitch: number
@@ -70,6 +79,7 @@ const SCALES: Record<PinnedLiveStripLayout, Scale> = {
     sub: 'text-base',
     hero: 'text-4xl',
     heroUnit: 'text-xl',
+    heroSlot: 108,
     velocity: 'text-3xl',
     barHeight: 40,
     barPitch: 24,
@@ -79,6 +89,7 @@ const SCALES: Record<PinnedLiveStripLayout, Scale> = {
     sub: 'text-sm',
     hero: 'text-3xl',
     heroUnit: 'text-lg',
+    heroSlot: 82,
     velocity: 'text-2xl',
     barHeight: 26,
     barPitch: 12,
@@ -166,8 +177,13 @@ const LAST_BASELINE = Platform.select<ViewStyle>({
 
 function HeroNumeral({ state, reps, targetReps, restRemainingMs = 0, scale }: Parts) {
   const isRest = state === 'rest'
+  // A fixed slot: switching set to rest must not move the velocity or the bars.
   return (
-    <Text testID="live-strip-hero" className={cn(NUMERAL, scale.hero)} style={TABULAR}>
+    <Text
+      testID="live-strip-hero"
+      className={cn(NUMERAL, scale.hero)}
+      style={[TABULAR, { width: scale.heroSlot }]}
+    >
       {isRest ? formatDuration(restRemainingMs) : reps.length}
       {isRest ? null : <Text className={cn(UNIT, scale.heroUnit)}>/{targetReps}</Text>}
     </Text>
@@ -256,25 +272,43 @@ function WallRow(props: Parts) {
   )
 }
 
+function PhoneMeta({ props, scale, showSet }: { props: Parts; scale: Scale; showSet: boolean }) {
+  return (
+    <View testID="live-strip-meta" className="shrink-0 flex-row items-center gap-inline-sm">
+      {showSet ? (
+        <Text className={cn('font-body text-text-secondary', scale.sub)}>
+          {setLine(props, true)}
+        </Text>
+      ) : null}
+      <ChevronRightIcon size={20} color={resolveColor('text-primary')} />
+    </View>
+  )
+}
+
+function PhoneTitleRow(props: Parts) {
+  const { exerciseName, scale, phoneMeta = 'flow' } = props
+  const isFlow = phoneMeta === 'flow'
+  // flow wraps the meta group under the title only when both cannot share the line.
+  return (
+    <View
+      testID="live-strip-title-row"
+      className={cn(
+        'flex-row gap-x-inline-lg',
+        isFlow ? 'flex-wrap items-baseline' : 'items-start'
+      )}
+    >
+      <View className={isFlow ? 'shrink grow' : 'flex-1'}>
+        <Title name={exerciseName} scale={scale} lines={2} />
+      </View>
+      <PhoneMeta props={props} scale={scale} showSet={phoneMeta !== 'chevron'} />
+    </View>
+  )
+}
+
 function PhoneRows(props: Parts) {
-  const { exerciseName, scale } = props
   return (
     <View className="justify-center gap-stack-sm px-inset-md py-inset-sm">
-      {/* The meta group wraps under the title only when the title would not fit beside it. */}
-      <View
-        testID="live-strip-title-row"
-        className="flex-row flex-wrap items-baseline gap-x-inline-lg"
-      >
-        <View className="shrink grow">
-          <Title name={exerciseName} scale={scale} lines={2} />
-        </View>
-        <View testID="live-strip-meta" className="flex-row items-center gap-inline-sm">
-          <Text className={cn('font-body text-text-secondary', scale.sub)}>
-            {setLine(props, true)}
-          </Text>
-          <ChevronRightIcon size={20} color={resolveColor('text-primary')} />
-        </View>
-      </View>
+      <PhoneTitleRow {...props} />
       <View testID="live-strip-baseline-row" className="flex-row items-baseline gap-inline-lg">
         <HeroNumeral {...props} />
         <Velocity {...props} showUnit={false} />
