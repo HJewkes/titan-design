@@ -3706,12 +3706,12 @@
       "exports": [
         "PinnedLiveStrip",
         "PinnedLiveStripLayout",
+        "PinnedLiveStripLongRest",
         "PinnedLiveStripProps",
         "PINNED_LIVE_STRIP_PHONE_MAX",
+        "longRestOf",
         "toneOf",
         "setLine",
-        "StateTag",
-        "colorFor",
         "cn"
       ],
       "libDependents": 1,
@@ -3733,11 +3733,11 @@
       ],
       "leak": {
         "rawView": 15,
-        "rawText": 9,
+        "rawText": 12,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 414,
-        "score": 26
+        "loc": 493,
+        "score": 29
       },
       "tier": "organism",
       "verdict": "keep-core",
