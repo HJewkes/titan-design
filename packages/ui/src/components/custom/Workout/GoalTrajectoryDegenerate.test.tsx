@@ -19,21 +19,21 @@ import {
 } from './GoalTrajectoryChartGeometry'
 import { BAND_EDGE_WIDTH } from './GoalTrajectoryBand'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { calibratingGoal } from './goalTrajectoryCalibratingFixture'
+import { calibratingWallCapture } from './goalTrajectoryCalibratingFixture'
 
 const WALL = { width: 1200, height: 340 }
 const PHONE = { width: 360, height: 220 }
 const dark = getSemanticColors('dark')
 
-const wall = { ...calibratingGoal, ...WALL, animate: false }
+const wall = { ...calibratingWallCapture, ...WALL, animate: false }
 
 const geometryOf = (size: { width: number; height: number }) =>
   deriveTrajectoryGeometry({
-    expected: [...calibratingGoal.expected],
-    committed: calibratingGoal.committed,
-    stretch: calibratingGoal.stretch,
-    actuals: [...calibratingGoal.actuals],
-    weeks: [...calibratingGoal.weeks],
+    expected: [...calibratingWallCapture.expected],
+    committed: calibratingWallCapture.committed,
+    stretch: calibratingWallCapture.stretch,
+    actuals: [...calibratingWallCapture.actuals],
+    weeks: [...calibratingWallCapture.weeks],
     bandCurve: 'monotone',
     ...size,
   })
@@ -133,7 +133,7 @@ describe('GoalTrajectoryChart with committed === stretch (VW-414)', () => {
       ['phone', PHONE],
     ])('spans the full plot at %s width, never the expected points', (_name, size) => {
       const { unmount } = render(
-        <GoalTrajectoryChart {...calibratingGoal} {...size} animate={false} />
+        <GoalTrajectoryChart {...calibratingWallCapture} {...size} animate={false} />
       )
       const g = geometryOf(size)
       ;['committed-line', 'stretch-line'].forEach((id) => {
@@ -174,13 +174,13 @@ describe('GoalTrajectoryChart with committed === stretch (VW-414)', () => {
     })
 
     it('drops the ts-only actual the wall sent, without letting it skew the domain', () => {
-      const wild = { ...calibratingGoal.actuals[0], value: 400 }
+      const wild = { ...calibratingWallCapture.actuals[0], value: 400 }
       const g = deriveTrajectoryGeometry({
-        expected: [...calibratingGoal.expected],
-        committed: calibratingGoal.committed,
-        stretch: calibratingGoal.stretch,
-        actuals: [wild, calibratingGoal.actuals[1]],
-        weeks: [...calibratingGoal.weeks],
+        expected: [...calibratingWallCapture.expected],
+        committed: calibratingWallCapture.committed,
+        stretch: calibratingWallCapture.stretch,
+        actuals: [wild, calibratingWallCapture.actuals[1]],
+        weeks: [...calibratingWallCapture.weeks],
         ...WALL,
       })
       expect(g.actuals).toHaveLength(1)
@@ -195,7 +195,7 @@ describe('GoalTrajectoryChart with committed === stretch (VW-414)', () => {
     })
 
     it('leaves the marker fully opaque once the entrance has played', () => {
-      render(<GoalTrajectoryChart {...calibratingGoal} {...WALL} animate />)
+      render(<GoalTrajectoryChart {...calibratingWallCapture} {...WALL} animate />)
       const group = screen.getByTestId('goal-trajectory-chart-pr-star').parentElement as HTMLElement
       expect(group.style.opacity === '' || Number(group.style.opacity) >= 0).toBe(true)
       expect(group.style.display).not.toBe('none')
