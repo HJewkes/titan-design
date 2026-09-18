@@ -32,7 +32,6 @@ export {
   getVelocityZoneName,
   calculateVelocityLoss,
   calculateMeanVelocity,
-  type VelocityLossThresholds,
   DualVelocityStrip,
   type DualVelocityStripProps,
   type DualVelocityStream,
