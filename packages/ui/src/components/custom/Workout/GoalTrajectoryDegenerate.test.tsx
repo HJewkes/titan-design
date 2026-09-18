@@ -165,11 +165,11 @@ describe('GoalTrajectoryChart with committed === stretch (VW-414)', () => {
     it('places the one week-indexed marker on its week and value', () => {
       render(<GoalTrajectoryChart {...wall} />)
       const g = geometryOf(WALL)
-      const stars = screen.getAllByTestId('goal-trajectory-chart-pr-star')
-      expect(stars).toHaveLength(1)
-      const [cx, cy] = (stars[0].getAttribute('points') ?? '').split(' ')[0].split(',').map(Number)
-      expect(cx).toBeCloseTo(g.toX(1), 5)
-      expect(cy).toBeLessThan(g.toY(110) + 1)
+      // Calibrating draws a first reading as a plain dot, never a PR star (VW-433).
+      const dots = screen.getAllByTestId('goal-trajectory-chart-actual-dot')
+      expect(dots).toHaveLength(1)
+      expect(Number(dots[0].getAttribute('cx'))).toBeCloseTo(g.toX(1), 5)
+      expect(Number(dots[0].getAttribute('cy'))).toBeCloseTo(g.toY(110), 5)
       expect(g.actuals).toHaveLength(1)
     })
 
@@ -196,7 +196,8 @@ describe('GoalTrajectoryChart with committed === stretch (VW-414)', () => {
 
     it('leaves the marker fully opaque once the entrance has played', () => {
       render(<GoalTrajectoryChart {...calibratingWallCapture} {...WALL} animate />)
-      const group = screen.getByTestId('goal-trajectory-chart-pr-star').parentElement as HTMLElement
+      const group = screen.getByTestId('goal-trajectory-chart-actual-dot')
+        .parentElement as HTMLElement
       expect(group.style.opacity === '' || Number(group.style.opacity) >= 0).toBe(true)
       expect(group.style.display).not.toBe('none')
     })

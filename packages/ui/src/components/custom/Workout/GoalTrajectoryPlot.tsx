@@ -20,8 +20,8 @@ import type {
 import { CHART_FONT, ruleLabelLayout, type BandCurve } from './GoalTrajectoryChartGeometry'
 import { BAND_OPACITY, BandLayer, type BandFade } from './GoalTrajectoryBand'
 import {
+  CalibratingHatch,
   CalibratingLabels,
-  CalibratingUnderlay,
   type CalibratingMarks,
 } from './GoalTrajectoryCalibrating'
 import {
@@ -571,7 +571,7 @@ export interface GoalTrajectoryPlotProps extends LayerProps {
   showYLabels: boolean
   style: PlotStyle
   entrance: EntranceState
-  /** VW-433 review round: the marks a calibrating treatment adds. */
+  /** A calibrating goal's hatch and note; null for every other status. */
   calibrating?: CalibratingMarks | null
 }
 
@@ -592,15 +592,14 @@ export function GoalTrajectoryPlot(props: GoalTrajectoryPlotProps) {
       <Gridlines {...layer} showLabels={props.showYLabels} baseline={style.baseline} />
       <g clipPath={`url(#${ids.clip})`}>
         <DeloadAndBoundaries {...layer} height={height} />
-        {!props.calibrating?.ghostRamp && (
-          <BandLayer
-            geometry={geometry}
-            hue={palette.bandHue}
-            fade={style.bandFade}
-            curve={style.bandCurve}
-          />
-        )}
-        {props.calibrating && <CalibratingUnderlay marks={props.calibrating} {...layer} />}
+        {props.calibrating && <CalibratingHatch marks={props.calibrating} {...layer} />}
+        <BandLayer
+          geometry={geometry}
+          hue={palette.bandHue}
+          fade={style.bandFade}
+          curve={style.bandCurve}
+          dashed={Boolean(props.calibrating)}
+        />
         <TargetRules {...layer} />
         <ActualLine
           {...layer}

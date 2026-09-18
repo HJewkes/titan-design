@@ -25,14 +25,7 @@ import {
   type ReferenceLabelSide,
 } from './GoalTrajectoryPlot'
 import { useTrajectoryEntrance } from './goalTrajectoryMotion'
-import {
-  CalibratingCaption,
-  calibratingMarks,
-  treatmentPlan,
-  type CalibratingMarks,
-  type CalibratingTreatment,
-  type CalibrationProgress,
-} from './GoalTrajectoryCalibrating'
+import { DEFAULT_CALIBRATING_NOTE, calibratingMarks } from './GoalTrajectoryCalibrating'
 import type { BandFade } from './GoalTrajectoryBand'
 import type { BandCurve } from './GoalTrajectoryChartGeometry'
 import type { PlotBaseline } from './GoalTrajectoryPlot'
@@ -173,56 +166,30 @@ export interface GoalTrajectoryChartProps extends ViewProps {
    */
   referenceLabelSide?: ReferenceLabelSide
   /**
-   * VW-433 review round 1, calibrating goals only: which treatment draws the
-   * calibrating state. `v0` is the shipped rendering; the rest are candidates.
+   * Calibrating only: the first line of the note in the hatched weeks. The
+   * consumer supplies it because only the read model knows what calibration is
+   * still waiting on; the default claims nothing.
    */
-  calibratingTreatment?: CalibratingTreatment
-  /** How far through calibration the lift is, for the treatments that say so. */
-  calibration?: CalibrationProgress
+  calibratingNote?: string
+  /**
+   * Calibrating only: name the dashed ramp on the plane. Open in VW-433 round 2,
+   * where the human compares the chart with and without it.
+   */
+  showRampLabel?: boolean
   className?: string
 }
 
-/** Plain dots in place of stars, for the treatments that drop the PR star. */
+/**
+ * A calibrating chart (VW-433): readings are plain dots, because a first reading
+ * is not an achievement, and the next target is its hollow dot with no dashed run.
+ */
 function withoutRecords(actuals: GoalActualPoint[]): GoalActualPoint[] {
   return actuals.map((actual) => ({ ...actual, isPR: false }))
 }
 
-/** The next target as a treatment draws it: today's run, the dot alone, or neither. */
-function nextTargetShown(
-  geometry: GoalTrajectoryGeometry,
-  next: 'run' | 'dot' | 'flat' | 'none'
-): GoalTrajectoryGeometry {
-  if (next === 'run' || !geometry.nextTarget) return geometry
-  if (next === 'dot') return { ...geometry, nextTarget: { ...geometry.nextTarget, leadPath: '' } }
-  return { ...geometry, nextTarget: null }
-}
-
-interface CalibratingView {
-  geometry: GoalTrajectoryGeometry
-  marks: CalibratingMarks | null
-  caption: boolean
-}
-
-interface CalibratingViewInput {
-  geometry: GoalTrajectoryGeometry
-  treatment: CalibratingTreatment | null
-  expected: GoalExpectedPoint[]
-  nextTarget?: GoalNextTarget
-  wall: boolean
-  progress?: CalibrationProgress
-}
-
-/** What a calibrating treatment changes about the plot; everything else passes through. */
-function calibratingView(input: CalibratingViewInput): CalibratingView {
-  const { geometry, treatment } = input
-  if (!treatment || treatment === 'v0') return { geometry, marks: null, caption: false }
-  const plan = treatmentPlan(treatment)
-  const span = Math.abs(geometry.toX(2) - geometry.toX(1))
-  return {
-    geometry: nextTargetShown(geometry, plan.next),
-    marks: calibratingMarks({ ...input, treatment, span }),
-    caption: plan.caption,
-  }
+function withoutLead(geometry: GoalTrajectoryGeometry): GoalTrajectoryGeometry {
+  const next = geometry.nextTarget
+  return next ? { ...geometry, nextTarget: { ...next, leadPath: '' } } : geometry
 }
 
 function summarize(
@@ -293,8 +260,8 @@ export function GoalTrajectoryChart({
   bandFade = 'centre-14',
   bandCurve = 'monotone',
   referenceLabelSide = 'left',
-  calibratingTreatment = 'v0',
-  calibration,
+  calibratingNote = DEFAULT_CALIBRATING_NOTE,
+  showRampLabel = false,
   className,
   ...props
 }: GoalTrajectoryChartProps) {
@@ -306,9 +273,11 @@ export function GoalTrajectoryChart({
   const palette = trajectoryPalette(surface.mode, surface.level, toneStatus)
   const density = width >= WALL_BREAKPOINT ? DENSITY.wall : DENSITY.phone
   const entrance = useTrajectoryEntrance(animate)
-  const treatment = status === 'calibrating' ? calibratingTreatment : null
-  const dropPR = treatment !== null && treatmentPlan(treatment).dropPR
-  const plotted = useMemo(() => (dropPR ? withoutRecords(actuals) : actuals), [actuals, dropPR])
+  const calibrating = status === 'calibrating'
+  const plotted = useMemo(
+    () => (calibrating ? withoutRecords(actuals) : actuals),
+    [actuals, calibrating]
+  )
 
   const derived = useMemo(
     () =>
@@ -339,15 +308,16 @@ export function GoalTrajectoryChart({
       bandCurve,
     ]
   )
-  const view = calibratingView({
-    geometry: derived,
-    treatment,
-    expected,
-    ...(nextTarget ? { nextTarget } : {}),
-    wall: width >= WALL_BREAKPOINT,
-    ...(calibration ? { progress: calibration } : {}),
-  })
-  const { geometry } = view
+  const geometry = calibrating ? withoutLead(derived) : derived
+  const marks = calibrating
+    ? calibratingMarks({
+        geometry,
+        expected,
+        wall: width >= WALL_BREAKPOINT,
+        note: calibratingNote,
+        showRampLabel,
+      })
+    : null
 
   if (!geometry.hasBand && !geometry.hasActuals) {
     return (
@@ -368,12 +338,7 @@ export function GoalTrajectoryChart({
 
   const axisWeeks = weeks.length > 0 ? weeks : expected.map((p) => ({ index: p.weekIndex }))
   return (
-    <View
-      style={{ width }}
-      className={cn(view.caption && 'gap-stack-sm', className)}
-      testID="goal-trajectory-chart"
-      {...props}
-    >
+    <View style={{ width }} className={cn(className)} testID="goal-trajectory-chart" {...props}>
       <View
         style={{ width, height }}
         accessibilityRole="image"
@@ -400,13 +365,12 @@ export function GoalTrajectoryChart({
             referenceLabelSide,
           }}
           entrance={entrance}
-          calibrating={view.marks}
+          calibrating={marks}
         />
       </View>
       {geometry.nextTarget && nextTarget && (
         <NextTargetTip point={geometry.nextTarget} label={nextTarget.label} />
       )}
-      {view.caption && <CalibratingCaption {...(calibration ? { progress: calibration } : {})} />}
     </View>
   )
 }

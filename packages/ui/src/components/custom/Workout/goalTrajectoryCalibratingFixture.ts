@@ -60,21 +60,35 @@ export const calibratingWallCapture = {
   ] satisfies GoalActualPoint[],
 }
 
-/** Where the week-2 reading sits against the ramp's week-2 value (102.5). */
-export type CalibratingPlacement = 'above' | 'on' | 'below'
+/**
+ * Where the week-2 reading sits against the ramp's week-2 value (102.5), or
+ * `start` for a lift with only its start lift on record, which by construction
+ * sits on the ramp's start.
+ */
+export type CalibratingPlacement = 'start' | 'above' | 'on' | 'below'
 
-const WEEK_TWO_READING: Record<CalibratingPlacement, { value: number; isPR: boolean }> = {
+const WEEK_TWO_READING: Record<
+  Exclude<CalibratingPlacement, 'start'>,
+  { value: number; isPR: boolean }
+> = {
   above: { value: 110, isPR: true },
   on: { value: 102.5, isPR: true },
   below: { value: 97.5, isPR: false },
 }
 
-/** The start lift on week 1 at the ramp's start, then one reading in week 2. */
+/** The start lift on week 1 at the ramp's start, then (unless `start`) one reading in week 2. */
 export function calibratingActuals(placement: CalibratingPlacement): GoalActualPoint[] {
-  const reading = WEEK_TWO_READING[placement]
+  const start: GoalActualPoint = {
+    ts: '2026-09-07',
+    weekIndex: 1,
+    value: CALIBRATING_START_VALUE,
+    isPR: true,
+    matched: true,
+  }
+  if (placement === 'start') return [start]
   return [
-    { ts: '2026-09-07', weekIndex: 1, value: CALIBRATING_START_VALUE, isPR: false, matched: true },
-    { ts: '2026-09-14', weekIndex: 2, ...reading, matched: true },
+    { ...start, isPR: false },
+    { ts: '2026-09-14', weekIndex: 2, ...WEEK_TWO_READING[placement], matched: true },
   ]
 }
 

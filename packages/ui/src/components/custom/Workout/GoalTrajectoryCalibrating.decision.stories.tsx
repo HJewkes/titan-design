@@ -5,24 +5,21 @@ import { View } from 'react-native'
 import { Surface } from '../../ui/surface'
 import { Typography } from '../Typography'
 import { GoalCard } from './GoalCard'
-import type { CalibratingTreatment, CalibrationProgress } from './GoalTrajectoryCalibrating'
 import type { CalibratingPlacement } from './goalTrajectoryCalibratingFixture'
 import { calibratingScenario } from './primaryGoal-fixture'
 
 const PLACEMENTS: { key: CalibratingPlacement; name: string }[] = [
+  { key: 'start', name: 'Only the start lift on record: one dot on the ramp start' },
   { key: 'above', name: 'Week-2 reading ABOVE the ramp (110 against 102.5)' },
   { key: 'on', name: 'Week-2 reading ON the ramp (102.5)' },
   { key: 'below', name: 'Week-2 reading BELOW the ramp (97.5 against 102.5)' },
 ]
 
-/** Placeholder: the read model states the shortfall only in its basis prose today. */
-const PROGRESS: CalibrationProgress = { sessions: 2, needed: 3 }
-
 interface DecisionArgs {
-  treatment: CalibratingTreatment
+  showRampLabel: boolean
 }
 
-function CalibratingCards({ treatment }: DecisionArgs) {
+function CalibratingCards({ showRampLabel }: DecisionArgs) {
   return (
     <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-sm gap-section-sm">
       {PLACEMENTS.map(({ key, name }) => {
@@ -32,14 +29,7 @@ function CalibratingCards({ treatment }: DecisionArgs) {
             <Typography variant="caption" color="tertiary">
               {name}
             </Typography>
-            <GoalCard
-              {...scenario}
-              goal={{
-                ...scenario.goal!,
-                calibratingTreatment: treatment,
-                calibration: PROGRESS,
-              }}
-            />
+            <GoalCard {...scenario} goal={{ ...scenario.goal!, showRampLabel }} />
           </View>
         )
       })}
@@ -48,47 +38,37 @@ function CalibratingCards({ treatment }: DecisionArgs) {
 }
 
 /**
- * VW-433 review round 1: how a calibrating goal's chart reads. OPEN, a menu.
+ * VW-433, CHOSEN in round 1: **D with B's dashed ramp**. A calibrating lift has
+ * too little history for its own band, so the planned ramp stands in, drawn
+ * dashed. The weeks after the latest reading are hatched, with the reason there
+ * is no band written in their lower-right corner. Readings are plain dots, and
+ * the next target is a hollow dot with no dashed run.
  *
- * A calibrating lift has too little history for its own band, so the planned ramp
- * stands in. Each story is one treatment, drawn in the real full-size `GoalCard`
- * for the three places the week-2 reading can land against the ramp. Every
- * fixture is on the calendar-week grid (VW-421): the start lift is week 1, where
- * the ramp starts. `v0` is what ships today.
+ * Not chosen and deleted (see `REJECTED.md`): today's rendering (PR star and a
+ * dashed run to the next target), A plain, B labelled marks and C caption.
  *
- * Once the human picks, the unchosen treatments are deleted and recorded in
- * `REJECTED.md`, and this file becomes the record of the pick.
+ * Still open in round 2: whether the ramp also carries a "Planned ramp" label.
+ * Every card is the real full-size `GoalCard` on the calendar-week grid (VW-421).
  */
 const meta: Meta<DecisionArgs> = {
   title: 'Lab/Decisions/Calibrating Goal Chart',
   tags: ['autodocs', 'status:lab'],
   parameters: { layout: 'fullscreen' },
-  argTypes: {
-    treatment: {
-      control: 'inline-radio',
-      options: ['v0', 'plain', 'labelled', 'caption', 'annotated'],
-    },
-  },
+  argTypes: { showRampLabel: { control: 'boolean' } },
   render: (args) => <CalibratingCards {...args} />,
 }
 export default meta
 
 type Story = StoryObj<DecisionArgs>
 
-/** v0, today: PR star on the reading, dashed run to the next target, solid ramp. */
-export const Today: Story = { name: 'v0 — today', args: { treatment: 'v0' } }
+/** The dashed ramp with no label: the note in the hatched weeks names it. */
+export const RampUnlabelled: Story = {
+  name: 'Dashed ramp, no label',
+  args: { showRampLabel: false },
+}
 
-/** A: remove what confuses. Plain dots, no next-target run or marker, nothing added. */
-export const Plain: Story = { name: 'A — plain', args: { treatment: 'plain' } }
-
-/** B: every mark labelled on the plane. Ghost ramp with words, a flat "next week" rule. */
-export const Labelled: Story = { name: 'B — labelled marks', args: { treatment: 'labelled' } }
-
-/** C: the plot as A, with a sentence under it saying what each mark is. */
-export const Caption: Story = { name: 'C — caption', args: { treatment: 'caption' } }
-
-/** D: the weeks still to come hatched, with the reason there is no band written in them. */
-export const Annotated: Story = {
-  name: 'D — annotated empty weeks',
-  args: { treatment: 'annotated' },
+/** The same, with "Planned ramp" written under the ramp. */
+export const RampLabelled: Story = {
+  name: 'Dashed ramp, labelled',
+  args: { showRampLabel: true },
 }

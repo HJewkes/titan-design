@@ -40,6 +40,15 @@ describe('calibrating fixtures on the calendar-week grid', () => {
     expect(holds(reading.value, goal.expected[1].low)).toBe(true)
   })
 
+  it('has a start-lift-only fixture: one reading, on the ramp start, in week 1', () => {
+    const goal = calibratingGoalAt('start')
+    const g = geometryOf(goal)
+    expect(g.actuals).toHaveLength(1)
+    expect(g.actuals[0].weekIndex).toBe(1)
+    expect(g.actuals[0].value).toBe(goal.expected[0].low)
+    expect(calibratingScenario('start').milestone.currentWeek).toBe(1)
+  })
+
   it('dates each week from the Monday of the start lift', () => {
     const { weeks, actuals } = calibratingGoalAt('on')
     expect(weeks[0].startDate).toBe('2026-09-07')

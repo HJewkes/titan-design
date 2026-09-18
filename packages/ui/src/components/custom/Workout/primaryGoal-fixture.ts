@@ -93,6 +93,7 @@ function bench({ status, currentWeek, loads, outcomes, prWeek, basis }: BenchInp
 }
 
 const CALIBRATING_OUTCOME: Record<CalibratingPlacement, GoalWeekEntry['outcome']> = {
+  start: 'on_track',
   above: 'ahead',
   on: 'on_track',
   below: 'missed',
@@ -101,12 +102,14 @@ const CALIBRATING_OUTCOME: Record<CalibratingPlacement, GoalWeekEntry['outcome']
 /**
  * The wall's calibrating goal on the calendar-week grid (VW-421), as the card
  * composes it: the start lift in week 1, one more reading in week 2 at
- * `placement` against the ramp, and week 3's ramp value as the next target.
+ * `placement` against the ramp unless `start`, and the following week's ramp
+ * value as the next target.
  */
 export function calibratingScenario(placement: CalibratingPlacement): Scenario {
   const goal = calibratingGoalAt(placement)
-  const [start, reading] = goal.actuals
-  const set = (load: number) => ({ reps: 8, load })
+  const currentWeek = goal.actuals.length
+  const best = Math.max(...goal.actuals.map((a) => a.value))
+  const next = goal.expected[currentWeek]
   return {
     title: 'Cable chest press',
     priority: 'specialize',
@@ -123,18 +126,22 @@ export function calibratingScenario(placement: CalibratingPlacement): Scenario {
       direction: 'up',
       unit: 'lb',
       animate: false,
-      nextTarget: { weekIndex: 3, value: 105, label: 'next week: 105 x 8' },
+      nextTarget: {
+        weekIndex: next.weekIndex,
+        value: next.low,
+        label: `next week: ${String(next.low)} x 8`,
+      },
     },
     milestone: {
       target: { metric: 'top_load_at_reps', reps: 8, load: 127.5, unit: 'lb' },
       weekCount: 12,
-      currentWeek: 2,
-      latest: set(Math.max(start.value, reading.value)),
+      currentWeek,
+      latest: { reps: 8, load: best },
       status: 'calibrating',
-      weeks: [
-        { outcome: 'on_track', reading: set(start.value) },
-        { outcome: CALIBRATING_OUTCOME[placement], reading: set(reading.value) },
-      ],
+      weeks: goal.actuals.map((actual, i) => ({
+        outcome: i === 0 ? 'on_track' : CALIBRATING_OUTCOME[placement],
+        reading: { reps: 8, load: actual.value },
+      })),
     },
   }
 }

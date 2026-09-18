@@ -24,6 +24,37 @@ that someone can tell whether a future change invalidates the reasoning.
 
 ---
 
+## Calibrating chart treatments v0, A, B and C — rejected 2026-09-18
+
+**Tried:** five ways to draw a calibrating goal, the state with too little history
+for a band, where the planned ramp stands in (VW-433 round 1). Each was shown in the
+full `GoalCard` with the week-2 reading above, on and below the ramp.
+**v0** — the rendering until then: the reading as a PR star, a dashed run from it
+to the next target (sloping down whenever the reading sat above the ramp), a
+solid ramp. **A** — plain dots, no run and no next-target marker, nothing added.
+**B** — the ramp as a dashed ghost labelled "Planned ramp" on the plane, and a
+flat dashed rule labelled "Next week: 105" in place of the run. **C** — A plus a
+sentence under the plot saying what the dots and the line are.
+
+**Chosen instead:** **D with B's dashed ramp** — plain dots, the next target as a
+hollow dot with no run, the ramp dashed, and the weeks after the latest reading
+hatched with the reason there is no band written in them. The human's words:
+"the calibrating chart just doesn't make sense to me, the PR star and dashed line
+are weird"; round 1 answers: no PR star in calibrating, "hollow dot only", and
+D "but use the dashed blue line from B instead of solid".
+
+**Why:** a first reading is not an achievement, so the star claimed something
+false; the run joined a measurement to a plan and read as a trend. A removed the
+confusion but explained nothing. B's words crowded the plane and needed two label
+moves to stop colliding with the ramp. C explained the marks from outside the
+chart, where D writes the explanation into the empty weeks it is about.
+
+**Code:** deleted — the `calibratingTreatment` prop and every treatment but D.
+`Lab/Decisions/Calibrating Goal Chart` keeps the decision as a record, rendering
+the shipped card.
+
+---
+
 ## Compact goal-chart variants A, D2, D3 and the Sparkline — rejected 2026-09-18
 
 **Tried:** four shapes for the per-lift card's chart slot (VW-385 ideation).
