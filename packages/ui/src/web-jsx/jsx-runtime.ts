@@ -8,26 +8,16 @@
  *
  * This file is NOT used by source builds (specimen, storybook,
  * native Metro). It is only inlined into the dist by tsup via
- * an esbuild onResolve plugin.
+ * its jsxImportSource option.
  */
 import { jsx as reactJsx, jsxs as reactJsxs, Fragment } from 'react/jsx-runtime'
-import type { StyleProp } from 'react-native'
+import { classNameToStyle } from './class-name-style'
 
 type JsxFn = typeof reactJsx
 
 function wrapJsx(fn: JsxFn): JsxFn {
-  return function (type, props: Record<string, any>, ...rest) {
-    if (props && typeof props.className === 'string' && props.className) {
-      const cn = props.className
-      const cssStyle = { $$css: true, [cn]: cn } as unknown as StyleProp<any>
-      const existing = props.style
-      props = {
-        ...props,
-        style: existing ? [cssStyle, existing] : cssStyle,
-      }
-      delete props.className
-    }
-    return fn(type, props, ...rest)
+  return function (type, props, ...rest) {
+    return fn(type, classNameToStyle(props), ...rest)
   } as JsxFn
 }
 

@@ -1,25 +1,15 @@
 /**
  * Development-mode custom JSX runtime for titan-design's web distribution.
- * See jsx-runtime-web.ts for details on the $$css conversion approach.
+ * See jsx-runtime.ts for details on the $$css conversion approach.
  */
 import { jsxDEV as reactJsxDEV, Fragment } from 'react/jsx-dev-runtime'
-import type { StyleProp } from 'react-native'
+import { classNameToStyle } from './class-name-style'
 
 type JsxDevFn = typeof reactJsxDEV
 
 function wrapJsxDev(fn: JsxDevFn): JsxDevFn {
-  return function (type, props: Record<string, any>, ...rest) {
-    if (props && typeof props.className === 'string' && props.className) {
-      const cn = props.className
-      const cssStyle = { $$css: true, [cn]: cn } as unknown as StyleProp<any>
-      const existing = props.style
-      props = {
-        ...props,
-        style: existing ? [cssStyle, existing] : cssStyle,
-      }
-      delete props.className
-    }
-    return fn(type, props, ...rest)
+  return function (type, props, ...rest) {
+    return fn(type, classNameToStyle(props), ...rest)
   } as JsxDevFn
 }
 
