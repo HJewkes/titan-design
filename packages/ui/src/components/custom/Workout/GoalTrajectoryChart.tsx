@@ -118,6 +118,13 @@ export interface GoalTrajectoryChartProps extends ViewProps {
   height: number
   /** Unit suffix for value labels, e.g. "lbs". */
   unit?: string
+  /**
+   * Draw the week numbers under the plot. Off inside a card whose week cells sit
+   * over the columns: the cells label the weeks, and the axis said it twice
+   * (VW-385 round 6, human: "they line up with the points on the chart below and
+   * so you have a built in labeling scheme there").
+   */
+  showWeekLabels?: boolean
   /** Metric name for the accessible summary, e.g. "Bench top load". */
   metricLabel?: string
   /**
@@ -199,6 +206,7 @@ export function GoalTrajectoryChart({
   width,
   height,
   unit = 'lbs',
+  showWeekLabels = true,
   metricLabel = 'Goal',
   leftShadowSpread = DEFAULT_LEFT_SHADOW_SPREAD,
   animate = true,
@@ -280,7 +288,7 @@ export function GoalTrajectoryChart({
           height={height}
           committed={committed}
           stretch={stretch}
-          weeks={axisWeeks}
+          weeks={showWeekLabels ? axisWeeks : []}
           weekStride={Math.max(1, Math.ceil(axisWeeks.length / density.maxWeekLabels))}
           showYLabels={density.showYLabels}
           style={{

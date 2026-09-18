@@ -253,6 +253,18 @@ describe('GoalTrajectoryChart', () => {
       return stroke
     }
 
+    it('draws a week label per week, and none when the caller says so', () => {
+      const { unmount } = render(
+        <GoalTrajectoryChart {...baseProps} width={1200} status="on_track" />
+      )
+      expect(screen.getAllByTestId('goal-trajectory-chart-week-label')).toHaveLength(weeks.length)
+      unmount()
+      render(
+        <GoalTrajectoryChart {...baseProps} width={1200} status="on_track" showWeekLabels={false} />
+      )
+      expect(screen.queryAllByTestId('goal-trajectory-chart-week-label')).toHaveLength(0)
+    })
+
     it('draws no legend at either density: each rule labels itself on the plane', () => {
       const { unmount } = render(
         <GoalTrajectoryChart {...baseProps} width={1200} status="on_track" />

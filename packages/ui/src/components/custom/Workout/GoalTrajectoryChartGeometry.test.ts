@@ -16,6 +16,7 @@ import {
   cappedTicks,
   trajectoryWeekScale,
   weekInset,
+  WEEK_COLUMN_GAP,
   type GoalExpectedPoint,
   type GoalTrajectoryWeek,
 } from './GoalTrajectoryChartGeometry'
@@ -735,7 +736,7 @@ describe('next-target marker', () => {
     expect(g.nextTarget?.x).toBeCloseTo(g.plot.right - inset, 6)
   })
 
-  it('leaves the first and last column whole inside the plot', () => {
+  it('stands the outer cells off the plane by the gap they stand off each other', () => {
     const g = deriveTrajectoryGeometry(base)
     const scale = trajectoryWeekScale({
       expected: gainExpected,
@@ -743,7 +744,10 @@ describe('next-target marker', () => {
       actuals: base.actuals,
       width: base.width,
     })
-    expect(scale.toX(1) - scale.span / 2).toBeCloseTo(g.plot.left, 6)
-    expect(scale.toX(6) + scale.span / 2).toBeCloseTo(g.plot.right, 6)
+    const cell = scale.span - WEEK_COLUMN_GAP
+    expect(scale.toX(1) - cell / 2).toBeCloseTo(g.plot.left + WEEK_COLUMN_GAP, 6)
+    expect(scale.toX(6) + cell / 2).toBeCloseTo(g.plot.right - WEEK_COLUMN_GAP, 6)
+    // And the air between two neighbours is that same gap.
+    expect(scale.toX(2) - cell / 2 - (scale.toX(1) + cell / 2)).toBeCloseTo(WEEK_COLUMN_GAP, 6)
   })
 })

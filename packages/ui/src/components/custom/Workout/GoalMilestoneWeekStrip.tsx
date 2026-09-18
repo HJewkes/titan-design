@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { View } from 'react-native'
 
 import { SET_LEVEL_FLAT_BAR } from '../charts/flatBarGeometry'
+import { WEEK_COLUMN_GAP } from './GoalTrajectoryChartGeometry'
 import { Pill, type PillTone } from '../../ui/pill'
 import { useSurfaceMode } from '../../ui/surface'
 import { TipTrigger } from '../../ui/tooltip'
@@ -69,11 +70,13 @@ const OUTCOME_PILL_TONE: Record<GoalWeekOutcome, PillTone> = {
 const PAST_WEEK_HEIGHT = 0.7
 
 /**
- * A cell is its whole column less the shared strip gap — the same relationship a
+ * A cell is its whole column less the shared gap — the same relationship a
  * `SegmentedBar` slot has to its pitch. A 60% cell was tried in round 4 and
- * rejected: "lets go back to how they were before".
+ * rejected: "lets go back to how they were before". The number lives with the
+ * axis maths, which insets by half of it so the end cells are not left with half
+ * the air their neighbours have.
  */
-export const CELL_GAP = SET_LEVEL_FLAT_BAR.gap
+export const CELL_GAP = WEEK_COLUMN_GAP
 
 export function weekSegments(cells: GoalWeekCell[], t: Palette): SegmentedBarSegment[] {
   return cells.map((cell) => ({

@@ -125,6 +125,12 @@ describe('PrimaryGoalCard', () => {
       expect(summary.compareDocumentPosition(chart) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     })
 
+    it('leaves the week numbers to the cells: the axis does not repeat them', () => {
+      render(<PrimaryGoalCard {...S.onTrack} chartWidth={WALL} />)
+      expect(screen.queryAllByTestId('goal-trajectory-chart-week-label')).toHaveLength(0)
+      expect(screen.getByTestId('goal-milestone-week-cell-1')).toBeInTheDocument()
+    })
+
     it('fills the width it is given', () => {
       render(<PrimaryGoalCard {...S.onTrack} chartWidth={900} />)
       expect(screen.getByTestId('goal-trajectory-chart-canvas')).toHaveStyle({ width: '900px' })

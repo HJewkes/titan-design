@@ -496,6 +496,9 @@ function FullBody({ props, width }: { props: GoalCardProps; width: number }) {
         metricLabel={title}
         width={width}
         height={chartHeight ?? chartHeightFor(width)}
+        // The week cells directly above the plot stand on these very columns, so
+        // the axis would print each week a second time, a row lower.
+        showWeekLabels={goal.showWeekLabels ?? false}
       />
     </View>
   )

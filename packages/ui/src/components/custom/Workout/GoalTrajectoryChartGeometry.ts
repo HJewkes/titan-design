@@ -185,15 +185,28 @@ export const VALUE_STEP = 5
 export const WEEK_INSET = 8
 
 /**
- * Half a column, so the first and last week's COLUMN — not just its dot — sits
- * whole inside the plot. `w / (2n)` is the inset for which the span comes to
- * `w / n`, i.e. n columns exactly filling the plot (VW-385 round 5: a half-width
- * first cell "looks weird", and the same half-width applied to a week-one
- * deload). It cannot go below {@link WEEK_INSET}, which a block long enough to
- * make a column narrower than a marker would otherwise do.
+ * The air between two week cells, and therefore the air the outer two owe the
+ * plane's edges. It lives here, with the axis maths, because the inset that
+ * makes the rhythm even has to know it — a strip that only knew it itself would
+ * leave the end cells half a gap from the edge.
+ */
+export const WEEK_COLUMN_GAP = 5
+
+/**
+ * Half a column plus half a gap, so every week's COLUMN — not just its dot —
+ * sits whole inside the plot AND the outer cells stand the same distance off the
+ * plane's edges as they do off each other.
+ *
+ * Round 5 insetted by half a column, which put n columns exactly edge to edge:
+ * the end cells then had `gap / 2` of air outside them against `gap` between
+ * them, and read as cut off (VW-385 round 6, measured — nothing was clipped; the
+ * padding was uneven). Solving `first cell left = plot.left + gap` gives
+ * `span = (w - gap) / n` and this inset. It cannot go below {@link WEEK_INSET},
+ * which a block long enough to make a column narrower than a marker would do.
  */
 export function weekInset(plotWidth: number, columns: number): number {
-  return Math.max(WEEK_INSET, plotWidth / (2 * Math.max(1, columns)))
+  const span = (plotWidth - WEEK_COLUMN_GAP) / Math.max(1, columns)
+  return Math.max(WEEK_INSET, (span + WEEK_COLUMN_GAP) / 2)
 }
 export const DEFAULT_TICK_COUNT = 5
 export const CHART_FONT = 11
