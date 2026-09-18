@@ -58,6 +58,14 @@ quietly comes up one port over.
 **Verify provenance by something unique to the tree you meant to shoot** — a story that
 only exists there, or a rendered detail only that commit produces. Never by story IDs alone.
 
+**Stop only the servers you started, by PID.** Record the PID of any server you start (Storybook,
+Vite, `pnpm review`) and stop that PID when you are done. Never kill by name pattern
+(`pkill -f storybook`, `killall node`): other sessions run servers in this repo at the same time,
+and in September 2026 a name-pattern kill took down the Storybook behind a live review round. To
+list what is running, use `pnpm storybook:ports`; `pnpm storybook:reap` stops orphans only. Plain
+`pnpm storybook` replaces a foreign server on 6006, so use `pnpm storybook:isolated` when another
+session may be using 6006.
+
 ## Architecture
 
 ### Cross-Platform First
