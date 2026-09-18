@@ -47,28 +47,40 @@ split.
 
 ## Notes
 
-- **GoalLiftCard (VW-386)** — one lift's goal state at card scale, replacing the
-  `#/goals` per-lift row whose label and data sat at opposite edges of the viewport.
+- **GoalLiftCard (VW-386, folded VW-385 round 4)** — one lift's goal state at card
+  scale, replacing the `#/goals` per-lift row whose label and data sat at opposite
+  edges of the viewport.
 
-  _composes ↓_ `Card` (elevation 1) · `Pill` / `Indicator` · `Typography` ·
-  `StarIcon` · `Sparkline`. _used-by ↑_ voltras-mcp `#/goals` `PerLiftTable`.
+  _composes ↓_ `Card` (elevation 1) · `Pill` / `Indicator` · `GoalMilestoneSummary` ·
+  `Typography` · `StarIcon` · `Sparkline`. _used-by ↑_ voltras-mcp `#/goals`
+  `PerLiftTable`.
+
+  **It leads with the meso target block, not its own hero.** The hand-rolled
+  `reps x load` figure and its `in week 8` line said less in more space and said
+  it in a second vocabulary; `GoalMilestoneSummary` says what is left to the goal,
+  the week/best/goal facts line and the block's week cells, exactly as the folded
+  `PrimaryGoalCard` does. `milestoneBlock()` adapts the card's own props onto the
+  summary's — the target is the milestone, the block runs to its due week, and the
+  best set is the last reading at the target's reps, because `top_load_at_reps` is
+  a load AT those reps. A caller holding the real set passes `latest`.
+
+  **The PR star sits in the title row** beside the status affordance. It used to
+  hang over the hero, absolutely positioned so it could not push the unit down;
+  with the hero gone there is nothing below it to displace.
 
   Its props map 1:1 onto `GoalProgressView`: `status` is `GoalProgressStatus`
   verbatim, and `milestone` takes the structured `reps` / `load` / `unit` /
   `goalWeek` that voltras-mcp #433 added to `GoalMilestone` — the card never
   parses the milestone `label`.
 
-  Three things that are decisions, not accidents:
+  Two things that are decisions, not accidents:
   - **The status mark collapses on measured WIDTH, not density.** Below
     `STATUS_COLLAPSE_WIDTH` (320) the pill becomes its `Indicator`. Keying it to
     density alone left a narrow comfortable cell rendering a full pill, which
     shoved the title into a wrap. The mark is never absent, only reshaped.
-  - **The PR star is absolutely positioned** over the unit. In normal flow it
-    pushes the unit down, and a PR card then sits a line off every non-PR card
-    beside it in the same grid row.
-  - **The hero is `body1` plus the heading face, not `h4`.** `h1`-`h6` emit
-    `accessibilityRole="header"` (gotcha #11b) and a milestone number is not a
-    heading; a four-column grid would have put eight bogus headings on the page.
+  - **The block's hero is `body1` plus the heading face, not `h4`.** `h1`-`h6`
+    emit `accessibilityRole="header"` (gotcha #11b) and a milestone number is not
+    a heading; a four-column grid would have put eight bogus headings on the page.
 
   `onLayout` does not fire under jsdom, so the width collapse is covered by the
   explicit `statusForm` override in tests and by the `Widths` story live.
@@ -95,6 +107,11 @@ split.
   plane edge exactly as the chart trims its own deload columns. A cell is the
   header of its week's column, which is only true if it is over that column at
   every width; `PrimaryGoalCard.test.tsx` asserts the centres at 1888 and 328.
+
+  **A cell covers 60% of its column** (`CELL_WIDTH_FRACTION`), centred. Full-width
+  cells read as one continuous band across a wall-scale card. The unaligned strip
+  derives its gap from its measured width (`evenCellGap`) to land on the same
+  fraction, so a lift card's cells and a folded card's cells read alike.
 
   **The fold left the tile behind.** An inset plane inside a card that already
   has one (the chart's) read as two unrelated wells; the summary now sits

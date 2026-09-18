@@ -13,23 +13,13 @@ project adheres to [Semantic Versioning](https://semver.org/).
   `#/goals` wall as ONE card: the lift, its priority mark, its verdict and a PR
   badge in the title row, the meso target folded in above the chart, and the
   block's weeks as cells standing on the chart's own week columns. It deletes the
-  old header block rather than restyling it (VW-385 unit 1, human call
+  old header block rather than restyling it (VW-385 unit 1, human calls
   2026-09-17): the week reads off the chart axis and the summary's facts line,
   committed and stretch off the chart's rules, next week off the new hollow
   marker, the status basis and its RP citation off the status pill's tip, and the
   priority word off `GoalPriorityIcon`. The milestone tile's own inset plane went
   with the fold — the chart's plane is the only inset the card has. The card
-  measures its container, so its one layout follows whatever width it is given.
-- `GoalMilestoneSummary` — the meso target's content (hero, facts row, week
-  cells) with no plane or frame of its own. `GoalMilestoneTile` is now that
-  summary in its inset plane, and `PrimaryGoalCard` composes it directly, so the
-  gap, surplus and outcome maths has exactly one home.
-- `GoalMilestoneWeekStrip` takes an `axis`, which pins each week cell to a chart
-  column instead of sharing the width evenly, and clips the row to the plot so the
-  first and last cells trim at the plane edge as the chart's own columns do.
-- `trajectoryWeekScale` — the chart's week axis as a pure function, so anything
-  lining up with the columns from outside the SVG shares them rather than
-  re-deriving them.
+  measures its container, so it follows whatever width it is given.
 - `GoalPriorityIcon` (`status:candidate`) — specialize / maintain / deprioritize
   as a mark beside the status pill, with the level's meaning on hover, focus or
   press. Priority is not pace, so it never borrows a `status-*` tone: the accent
@@ -38,25 +28,43 @@ project adheres to [Semantic Versioning](https://semver.org/).
 - `GoalTrajectoryChart` takes `nextTarget` — a hollow dot at the week and value
   the plan asks for next, joined to the latest reading by a dashed run, carrying
   its label as a tip rather than as type on the plane. The y-domain and the week
-  axis both take the marker into account, so a target above every reading still
-  lands inside the plane.
+  axis both account for the marker, so a target above every reading still lands
+  inside the plane.
+- `GoalMilestoneSummary` — the meso target's content (hero, facts row, week
+  cells) with no plane or frame of its own. `GoalMilestoneTile` is that summary in
+  its inset plane, `PrimaryGoalCard` folds it onto the card, and `GoalLiftCard`
+  leads with it, so the gap, surplus and outcome maths has exactly one home.
+- `GoalMilestoneWeekStrip` takes an `axis`, which pins each week cell to a chart
+  column instead of sharing the width evenly, and clips the row to the plot so the
+  first and last cells trim at the plane edge as the chart's own columns do. A
+  cell covers 60% of its column, centred, in both modes.
+- `trajectoryWeekScale` — the chart's week axis as a pure function, so anything
+  lining up with the columns from outside the SVG shares them rather than
+  re-deriving them.
+- `TipTrigger` (`ui/tooltip`) — one tip opened by hover, focus and press off a
+  single state, with a `usePortal` escape for tips that need `-start` / `-end`
+  placement. `GoalMilestoneWeekStrip` now composes it instead of its own copy.
 - `PrBadge` takes `iconSize` for its compact star, so a wall-density header can
   carry a 20px mark and a phone the original 14px.
-- `TipTrigger` (`ui/tooltip`) — one tip opened by hover, focus and press off a
-  single state. `GoalMilestoneWeekStrip` now composes it instead of its own copy.
 - `valueReach` / `milestoneReach` (`goalMilestone.ts`) — one definition of where
   a reading landed against its target.
 
 ### Changed
 
+- The goal verdict outranks the pace once a reading reaches the committed target.
+  Exactly at the goal is success green with the hit label, past it is the `ahead`
+  blue labelled `Beyond goal`. The chart's line and pill, the milestone summary's
+  hero, the tile's hit mark and the card's header pill all derive it from the
+  shared helper, so they cannot disagree.
+- `GoalLiftCard` leads with the meso target block instead of its own
+  `reps x load` hero and `in week 8` line, which said less in more space and said
+  it in a second vocabulary. Its PR star moves into the title row beside the
+  status affordance, where it no longer has to be taken out of flow. New optional
+  `weeks`, `currentWeek` and `latest` props feed the block; without them it reads
+  the target and the best set off the props the card already had.
 - `GoalMilestoneTile`'s hit mark takes the hero's own colour rather than a second
   mapping of the same verdict, so a target that was beaten reads `Hit` in the
   `ahead` blue instead of green over a blue hero.
-- The goal verdict outranks the pace once a reading reaches the committed target.
-  Exactly on the target is success green with the hit label; past it is the
-  `ahead` blue labelled `Beyond goal`. The chart's line and pill, the milestone
-  tile's hero and the card's header pill all derive it from the shared helper, so
-  the three can no longer disagree.
 
 ## 0.17.1
 

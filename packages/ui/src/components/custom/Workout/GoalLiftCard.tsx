@@ -3,6 +3,8 @@ import { useCallback, useState } from 'react'
 import { View, type LayoutChangeEvent, type ViewProps } from 'react-native'
 
 import { Card } from '../../ui/card'
+import { GoalMilestoneSummary, type GoalMilestoneSummaryProps } from './GoalMilestoneSummary'
+import type { GoalMilestoneReading, GoalWeekEntry } from './goalMilestone'
 import { Indicator, type IndicatorColor } from '../../ui/indicator'
 import { Pill, type PillTone } from '../../ui/pill'
 import { useSurfaceMode } from '../../ui/surface'
@@ -57,6 +59,18 @@ export interface GoalLiftCardProps extends ViewProps {
   actuals: GoalLiftActual[]
   /** Whether any reading in this target is a personal record. */
   isPR?: boolean
+  /**
+   * One entry per week of the block, aligned to week 1 — the outcome cells under
+   * the hero. Omitted, every week reads as one with no matched set.
+   */
+  weeks?: readonly GoalWeekEntry[]
+  /** 1-based. Defaults to the last reading's week. */
+  currentWeek?: number
+  /**
+   * The best matched set. Defaults to the last reading's value at the target's
+   * own reps, which is what `top_load_at_reps` measures.
+   */
+  latest?: GoalMilestoneReading
   density?: GoalLiftCardDensity
   /**
    * Force the status affordance's form. Defaults to width-driven: a pill above
@@ -101,18 +115,8 @@ export const GOAL_STATUS_TONE: Record<GoalLiftStatus, PillTone & IndicatorColor>
 export const STATUS_COLLAPSE_WIDTH = 320
 
 const DENSITY = {
-  comfortable: {
-    pad: 'p-inset-lg',
-    gap: 'gap-stack-lg',
-    chartHeight: 56,
-    hero: 'font-heading text-2xl font-bold leading-tight',
-  },
-  compact: {
-    pad: 'p-inset-md',
-    gap: 'gap-stack-md',
-    chartHeight: 42,
-    hero: 'font-heading text-xl font-bold leading-tight',
-  },
+  comfortable: { pad: 'p-inset-lg', gap: 'gap-stack-lg', chartHeight: 56 },
+  compact: { pad: 'p-inset-md', gap: 'gap-stack-md', chartHeight: 42 },
 } as const
 
 export function goalLiftStatusLabel(status: GoalLiftStatus): string {
@@ -133,31 +137,38 @@ function useMeasuredWidth(): [number, (event: LayoutChangeEvent) => void] {
 }
 
 /**
- * The PR mark, stacked over the unit with its top on the hero's cap line.
- *
- * Absolutely positioned on purpose: in normal flow it pushes the unit down, and
- * a PR card then sits a line off every non-PR card beside it in a grid row.
+ * The card's own props as the milestone block reads them: the target is the
+ * milestone, the block runs to its due week, and the best set is the last
+ * reading at the target's reps — `top_load_at_reps` is a load AT those reps, so
+ * the pair is the reading, not an assumption. A caller with the real set passes
+ * `latest`.
  */
-function PrMark({ unit, isPR }: { unit: string; isPR: boolean }) {
-  const brand = getSemanticColors(useSurfaceMode())['brand-primary']
-  return (
-    <View style={{ position: 'relative' }}>
-      <Typography variant="caption" color="tertiary">
-        {unit}
-      </Typography>
-      {isPR && (
-        <View
-          accessibilityRole="image"
-          accessibilityLabel="Personal record"
-          // optical: puts the 10px star's top on the hero's cap line.
-          style={{ position: 'absolute', left: 0, right: 0, alignItems: 'center', top: -9 }}
-          testID="goal-lift-card-pr"
-        >
-          <StarIcon size={10} color={brand} fill={brand} strokeWidth={2} />
-        </View>
-      )}
-    </View>
-  )
+export function milestoneBlock({
+  milestone,
+  actuals,
+  status,
+  weeks,
+  currentWeek,
+  latest,
+}: Pick<
+  GoalLiftCardProps,
+  'milestone' | 'actuals' | 'status' | 'weeks' | 'currentWeek' | 'latest'
+>): GoalMilestoneSummaryProps {
+  const last = actuals[actuals.length - 1]
+  const reading = latest ?? (last ? { reps: milestone.reps, load: last.value } : undefined)
+  return {
+    target: {
+      metric: 'top_load_at_reps',
+      reps: milestone.reps,
+      load: milestone.load,
+      unit: milestone.unit,
+    },
+    weekCount: milestone.goalWeek,
+    status,
+    ...((currentWeek ?? last?.weekIndex) ? { currentWeek: currentWeek ?? last.weekIndex } : {}),
+    ...(reading ? { latest: reading } : {}),
+    ...(weeks ? { weeks } : {}),
+  }
 }
 
 function GoalTrend({
@@ -214,14 +225,20 @@ function GoalTrend({
 }
 
 /**
- * A lift's goal state at card scale: the next milestone as the hero, its status
- * in the upper right, and the trajectory against the committed/stretch band.
+ * A lift's goal state at card scale: the name, its status and PR mark in the top
+ * row, the meso target's own block — what is left to the goal, the week/best/goal
+ * facts line, the block's week cells — and the trajectory against the
+ * committed/stretch band.
  *
  * Maps 1:1 onto one row of the `#/goals` per-lift table. It replaces a
  * full-width row whose label and data sat at opposite edges of the viewport.
  *
+ * The hand-rolled `reps x load` hero and its `in week 8` line are gone (VW-385
+ * round 4): `GoalMilestoneSummary` says the same thing and says it the same way
+ * the folded `PrimaryGoalCard` does.
+ *
  * Composes `Card` (one plane above the page), `Pill` / `Indicator`,
- * `Typography`, `StarIcon` and `Sparkline`.
+ * `GoalMilestoneSummary`, `Typography`, `StarIcon` and `Sparkline`.
  *
  * @example
  * <GoalLiftCard
@@ -242,12 +259,16 @@ export function GoalLiftCard({
   stretch,
   actuals,
   isPR = false,
+  weeks,
+  currentWeek,
+  latest,
   density = 'comfortable',
   statusForm,
   className,
   ...props
 }: GoalLiftCardProps) {
   const d = DENSITY[density]
+  const brand = getSemanticColors(useSurfaceMode())['brand-primary']
   const [cardWidth, onCardLayout] = useMeasuredWidth()
   const collapsed =
     statusForm !== undefined
@@ -280,47 +301,45 @@ export function GoalLiftCard({
                 {name}
               </Typography>
             </View>
-            {collapsed ? (
-              <Indicator
-                color={GOAL_STATUS_TONE[status]}
-                size="md"
-                // RNW drops `aria-label` on a View with no role, and axe then
-                // flags the bare attribute as prohibited (gotcha #3). The dot
-                // IS the status here, so it needs the name, so it needs a role.
-                accessibilityRole="image"
-                accessibilityLabel={GOAL_STATUS_LABEL[status]}
-                testID="goal-lift-card-status-dot"
-              />
-            ) : (
-              <Pill
-                tone={GOAL_STATUS_TONE[status]}
-                variant="subtle"
-                size="sm"
-                leading="dot"
-                testID="goal-lift-card-status-pill"
-              >
-                {GOAL_STATUS_LABEL[status]}
-              </Pill>
-            )}
+            <View style={{ flexDirection: 'row', alignItems: 'center' }} className="gap-inline-sm">
+              {isPR && (
+                <View
+                  accessibilityRole="image"
+                  accessibilityLabel="Personal record"
+                  testID="goal-lift-card-pr"
+                >
+                  <StarIcon size={12} color={brand} fill={brand} strokeWidth={2} />
+                </View>
+              )}
+              {collapsed ? (
+                <Indicator
+                  color={GOAL_STATUS_TONE[status]}
+                  size="md"
+                  // RNW drops `aria-label` on a View with no role, and axe then
+                  // flags the bare attribute as prohibited (gotcha #3). The dot
+                  // IS the status here, so it needs the name, so it needs a role.
+                  accessibilityRole="image"
+                  accessibilityLabel={GOAL_STATUS_LABEL[status]}
+                  testID="goal-lift-card-status-dot"
+                />
+              ) : (
+                <Pill
+                  tone={GOAL_STATUS_TONE[status]}
+                  variant="subtle"
+                  size="sm"
+                  leading="dot"
+                  testID="goal-lift-card-status-pill"
+                >
+                  {GOAL_STATUS_LABEL[status]}
+                </Pill>
+              )}
+            </View>
           </View>
 
-          <View style={{ flexDirection: 'row', alignItems: 'baseline' }} className="gap-inline-sm">
-            <Typography
-              variant="body1"
-              className={d.hero}
-              maxLines={1}
-              testID="goal-lift-card-hero"
-            >
-              {/* Reps first. `body1` plus the heading face rather than an `h4`:
-                  h1-h6 emit accessibilityRole="header", and a milestone number
-                  is not a heading. */}
-              {`${milestone.reps} x ${milestone.load}`}
-            </Typography>
-            <PrMark unit={milestone.unit} isPR={isPR} />
-          </View>
-          <Typography variant="caption" color="tertiary" testID="goal-lift-card-due">
-            {`in week ${milestone.goalWeek}`}
-          </Typography>
+          <GoalMilestoneSummary
+            {...milestoneBlock({ milestone, actuals, status, weeks, currentWeek, latest })}
+            scale="phone"
+          />
         </View>
 
         <GoalTrend

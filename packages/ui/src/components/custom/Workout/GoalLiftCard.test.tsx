@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 
 import { GoalLiftCard, goalLiftStatusLabel, type GoalLiftCardProps } from './GoalLiftCard'
@@ -18,15 +18,34 @@ const baseProps: GoalLiftCardProps = {
 }
 
 describe('GoalLiftCard', () => {
-  it('leads with the milestone as reps x load', () => {
+  it('leads with the meso target block, not a hand-rolled hero', () => {
     render(<GoalLiftCard {...baseProps} />)
-    expect(screen.getByTestId('goal-lift-card-hero')).toHaveTextContent('8 x 105')
+    const summary = screen.getByTestId('goal-milestone-summary')
+    expect(within(summary).getByTestId('goal-milestone-hero')).toHaveTextContent('5 lb')
+    expect(screen.queryByTestId('goal-lift-card-hero')).toBeNull()
+    expect(screen.queryByTestId('goal-lift-card-due')).toBeNull()
   })
 
-  it('renders the unit and the due week', () => {
+  it('reads the block off the props the card already had', () => {
     render(<GoalLiftCard {...baseProps} />)
-    expect(screen.getByText('lb')).toBeInTheDocument()
-    expect(screen.getByTestId('goal-lift-card-due')).toHaveTextContent('in week 8')
+    const summary = screen.getByTestId('goal-milestone-summary')
+    // Week 5 is the last reading's week, 8 the milestone's due week.
+    expect(within(summary).getByTestId('goal-milestone-week-count')).toHaveTextContent(
+      'Week 5 of 8'
+    )
+    // The facts row lays out a hidden measuring copy beside the visible one.
+    expect(within(summary).getAllByText('8 x 100 lb').length).toBeGreaterThan(0)
+    expect(within(summary).getAllByText('8 x 105 lb').length).toBeGreaterThan(0)
+  })
+
+  it('carries a week cell per week of the block', () => {
+    render(<GoalLiftCard {...baseProps} />)
+    expect(screen.getAllByTestId(/goal-milestone-week-fill-/)).toHaveLength(8)
+  })
+
+  it('takes an explicit best set over the one derived from the readings', () => {
+    render(<GoalLiftCard {...baseProps} latest={{ reps: 6, load: 102.5 }} />)
+    expect(screen.getAllByText('6 x 102.5 lb').length).toBeGreaterThan(0)
   })
 
   it('renders the exercise name', () => {
@@ -46,24 +65,14 @@ describe('GoalLiftCard', () => {
     })
 
     /**
-     * NOT a layout assertion. jsdom has no layout engine, so this compares the
-     * unit Text's OWN style and nothing about where it lands on screen. It
-     * catches a regression that restyles the unit; it would NOT catch the star
-     * being put back into normal flow, which is what actually pushed the unit
-     * down. That invariant is pinned by the `Widths` story in the browser.
+     * The star sits in the title row beside the status affordance now that the
+     * hero it used to hang over is gone, so it no longer needs to be taken out
+     * of flow: nothing below it can be displaced by it.
      */
-    it('leaves the unit element unstyled by the presence of a PR', () => {
-      const { rerender } = render(<GoalLiftCard {...baseProps} />)
-      const withoutPR = screen.getByText('lb').getAttribute('style')
-      rerender(<GoalLiftCard {...baseProps} isPR />)
-      expect(screen.getByText('lb').getAttribute('style')).toBe(withoutPR)
-    })
-
-    it('takes the star out of flow, so it cannot displace the unit', () => {
-      // The mechanism behind the alignment invariant above, which IS assertable:
-      // absolute positioning is why a PR card and a non-PR card stay level.
-      render(<GoalLiftCard {...baseProps} isPR />)
-      expect(screen.getByTestId('goal-lift-card-pr')).toHaveStyle({ position: 'absolute' })
+    it('sits in the title row, beside the status affordance', () => {
+      render(<GoalLiftCard {...baseProps} isPR statusForm="pill" />)
+      const row = screen.getByTestId('goal-lift-card-pr').parentElement
+      expect(row).toContainElement(screen.getByTestId('goal-lift-card-status-pill'))
     })
   })
 

@@ -2,6 +2,8 @@
 import type { ReactNode } from 'react'
 import { View } from 'react-native'
 
+import { useMeasuredWidth } from '../Table/column-fit'
+
 import { SET_LEVEL_FLAT_BAR } from '../charts/flatBarGeometry'
 import { Pill, type PillTone } from '../../ui/pill'
 import { useSurfaceMode } from '../../ui/surface'
@@ -67,6 +69,13 @@ const OUTCOME_PILL_TONE: Record<GoalWeekOutcome, PillTone> = {
  */
 /** Every other week sits at this share of the current week's height. */
 const PAST_WEEK_HEIGHT = 0.7
+
+/**
+ * A cell covers this much of its week's column, centred on the week. Full-width
+ * cells read as one continuous band across a wall-scale card; at 60% each week
+ * is its own mark and the column it heads is still unambiguous (VW-385 round 4).
+ */
+export const CELL_WIDTH_FRACTION = 0.6
 
 export function weekSegments(cells: GoalWeekCell[], t: Palette): SegmentedBarSegment[] {
   return cells.map((cell) => ({
@@ -151,7 +160,7 @@ function AlignedCell({
   cellHeight: number
   readingText: (entry: GoalWeekEntry) => string
 }) {
-  const width = Math.max(2, axis.span - SET_LEVEL_FLAT_BAR.gap)
+  const width = Math.max(2, axis.span * CELL_WIDTH_FRACTION)
   const height = cellHeight * (segment.heightFraction ?? 1)
   return (
     <View
@@ -183,6 +192,16 @@ function AlignedCell({
   )
 }
 
+/**
+ * The gap that leaves each evenly-shared cell at {@link CELL_WIDTH_FRACTION} of
+ * its pitch, so an unaligned strip reads the same as one pinned to a chart.
+ * Falls back to the shared strip gap before the row has been measured.
+ */
+export function evenCellGap(width: number | null, cellCount: number): number {
+  if (width === null || cellCount < 2) return SET_LEVEL_FLAT_BAR.gap
+  return Math.max(2, ((1 - CELL_WIDTH_FRACTION) * width) / (cellCount - 1))
+}
+
 function stripSummary(cells: GoalWeekCell[]): string {
   const current = cells.find((c) => c.phase === 'current')
   const now = current ? `Week ${current.week} of ${cells.length}` : `${cells.length} weeks`
@@ -208,6 +227,7 @@ export function GoalMilestoneWeekStrip({
   axis,
 }: GoalMilestoneWeekStripProps) {
   const t = getSemanticColors(useSurfaceMode())
+  const measured = useMeasuredWidth()
   const cells = weekStripCells(weekCount, currentWeek, weeks)
   const segments = weekSegments(cells, t)
   if (axis) {
@@ -244,10 +264,12 @@ export function GoalMilestoneWeekStrip({
       role="group"
       aria-label={stripSummary(cells)}
       testID="goal-milestone-week-strip"
+      onLayout={measured.onLayout}
       style={{ width: '100%' }}
     >
       <SegmentedBar
         height={cellHeight}
+        gap={evenCellGap(measured.width, cells.length)}
         segments={segments}
         segmentTestID={(_seg, i) => `goal-milestone-week-fill-${i + 1}`}
         renderSegment={(slot, _seg, i) => (

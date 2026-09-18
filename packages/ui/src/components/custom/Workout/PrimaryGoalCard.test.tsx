@@ -4,6 +4,7 @@ import { axe } from 'jest-axe'
 
 import { PrimaryGoalCard, goalStatusBadge, markSizeFor } from './PrimaryGoalCard'
 import { trajectoryWeekScale } from './GoalTrajectoryChartGeometry'
+import { CELL_WIDTH_FRACTION, evenCellGap } from './GoalMilestoneWeekStrip'
 import { PRIMARY_GOAL_SCENARIOS as S } from './primaryGoal-fixture'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 
@@ -184,6 +185,19 @@ describe('PrimaryGoalCard', () => {
       expectAligned(1888, S.calibrating)
     })
 
+    it('leaves air between the cells: each is 60% of its column', () => {
+      render(<PrimaryGoalCard {...S.onTrack} chartWidth={1888} />)
+      const scale = trajectoryWeekScale({
+        expected: S.onTrack.goal.expected,
+        weeks: S.onTrack.goal.weeks,
+        actuals: S.onTrack.goal.actuals,
+        ...(S.onTrack.goal.nextTarget ? { nextTarget: S.onTrack.goal.nextTarget } : {}),
+        width: 1888,
+      })
+      const width = parseFloat(screen.getByTestId('goal-milestone-week-cell-3').style.width)
+      expect(width / scale.span).toBeCloseTo(CELL_WIDTH_FRACTION, 6)
+    })
+
     it('keeps the current week taller than the weeks behind it', () => {
       render(<PrimaryGoalCard {...S.onTrack} chartWidth={WALL} />)
       const height = (week: number) =>
@@ -198,6 +212,12 @@ describe('PrimaryGoalCard', () => {
 
       expect(screen.getByText('Week 1')).toBeInTheDocument()
     })
+  })
+
+  it('gives an unaligned strip the same cell fraction as an aligned one', () => {
+    // 6 cells over 600px: a 100px pitch, 60px cells, so 40px of gap between each.
+    expect(evenCellGap(600, 6)).toBeCloseTo(48, 6)
+    expect((600 - 5 * evenCellGap(600, 6)) / 6 / 100).toBeCloseTo(CELL_WIDTH_FRACTION, 6)
   })
 
   it('has no accessibility violations', async () => {

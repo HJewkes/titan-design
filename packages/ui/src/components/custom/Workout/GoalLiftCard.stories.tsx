@@ -2,9 +2,15 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 
 import { GoalLiftCard } from './GoalLiftCard'
-import { GoalMilestoneTile } from './GoalMilestoneTile'
-import { GOAL_MILESTONE_SCENARIOS as S } from './goalMilestone-fixture'
 import { Surface } from '../../ui/surface'
+
+/** Weeks 1-4 of the block, so a card can take the prefix it has lived through. */
+const WEEKS = [
+  { outcome: 'on_track', reading: { reps: 8, load: 95 } },
+  { outcome: 'ahead', reading: { reps: 8, load: 100 } },
+  { outcome: 'none' },
+  { outcome: 'missed', reading: { reps: 6, load: 97.5 } },
+] as const
 
 const meta: Meta<typeof GoalLiftCard> = {
   title: 'Custom/Workout/GoalLiftCard',
@@ -14,14 +20,16 @@ const meta: Meta<typeof GoalLiftCard> = {
     docs: {
       description: {
         component:
-          "**Organism.** One lift's goal state at card scale — the milestone as the hero, " +
-          'its status in the upper right, and the trajectory against the committed/stretch band. ' +
+          "**Organism.** One lift's goal state at card scale — the meso target block " +
+          '(gap hero, week/best/goal facts, week cells), its status and PR mark in the top ' +
+          'row, and the trajectory against the committed/stretch band. ' +
           'Maps 1:1 onto a row of the `#/goals` per-lift table (VW-386). Composes ' +
           '[Card](?path=/docs/components-card--docs) + ' +
           '[Pill](?path=/docs/components-pill--docs) / ' +
           '[Indicator](?path=/docs/components-indicator--docs) + ' +
           '[Typography](?path=/docs/custom-typography--docs) + ' +
-          '[Sparkline](?path=/docs/custom-workout-sparkline--docs) + `StarIcon`.\n\n' +
+          '[Sparkline](?path=/docs/custom-workout-sparkline--docs) + ' +
+          '`GoalMilestoneSummary` + `StarIcon`.\n\n' +
           'The status affordance collapses from a pill to its light below ' +
           '`STATUS_COLLAPSE_WIDTH` (320px) — it never disappears. Drag the canvas ' +
           'edge to watch it, or use the `statusForm` control to force it.',
@@ -122,23 +130,60 @@ export const Widths: Story = {
   ),
 }
 
-/** Four lifts at the wall's 4-up cell width, each carrying the compact meso block. */
+/** Four lifts at the wall's 4-up cell width, each with its own history and gap. */
 const GRID_LIFTS = [
-  { name: 'BENCH PRESS', scenario: 'onTrack' },
-  { name: 'BACK SQUAT', scenario: 'ahead' },
-  { name: 'DEADLIFT', scenario: 'behind' },
-  { name: 'OVERHEAD PRESS', scenario: 'hitExact' },
+  {
+    name: 'BENCH PRESS',
+    status: 'on_track',
+    weeks: WEEKS.slice(0, 3),
+    isPR: true,
+    milestone: { reps: 8, load: 105, unit: 'lb', goalWeek: 8 },
+    actuals: [
+      { weekIndex: 1, value: 92.5 },
+      { weekIndex: 3, value: 95 },
+      { weekIndex: 5, value: 100 },
+    ],
+  },
+  {
+    name: 'BACK SQUAT',
+    status: 'ahead',
+    weeks: WEEKS.slice(0, 4),
+    isPR: false,
+    milestone: { reps: 5, load: 245, unit: 'lb', goalWeek: 8 },
+    actuals: [
+      { weekIndex: 1, value: 225 },
+      { weekIndex: 3, value: 235 },
+      { weekIndex: 5, value: 242.5 },
+    ],
+  },
+  {
+    name: 'DEADLIFT',
+    status: 'behind',
+    weeks: WEEKS.slice(0, 2),
+    isPR: false,
+    milestone: { reps: 5, load: 315, unit: 'lb', goalWeek: 8 },
+    actuals: [
+      { weekIndex: 1, value: 285 },
+      { weekIndex: 3, value: 287.5 },
+      { weekIndex: 5, value: 290 },
+    ],
+  },
+  {
+    name: 'OVERHEAD PRESS',
+    status: 'calibrating',
+    weeks: [],
+    isPR: true,
+    milestone: { reps: 8, load: 95, unit: 'lb', goalWeek: 8 },
+    actuals: [{ weekIndex: 5, value: 95 }],
+  },
 ] as const
 
 /**
- * The per-lift grid with the compact milestone block under each card: hero, the
- * week/best/goal facts line, and the block's week cells with their tip cards, at
- * the tile's phone scale.
- *
- * A composition preview, not a `GoalLiftCard` prop — whether the block belongs
- * INSIDE the lift card or beside it is the open question (VW-385 round 3).
+ * The per-lift grid as the wall lays it out: four cards, each leading with its
+ * meso target block — what is left to the goal, the week/best/goal facts line,
+ * and the block's week cells with their tip cards.
  */
-export const WithCompactMilestone: Story = {
+export const PerLiftGrid: Story = {
   parameters: { layout: 'fullscreen' },
   decorators: [
     (Story) => (
@@ -155,9 +200,18 @@ export const WithCompactMilestone: Story = {
       className="gap-section-sm"
     >
       {GRID_LIFTS.map((lift) => (
-        <View key={lift.name} style={{ width: 440 }} className="gap-stack-sm">
-          <GoalLiftCard {...args} name={lift.name} />
-          <GoalMilestoneTile {...S[lift.scenario]} layout="compact" />
+        <View key={lift.name} style={{ width: 440 }}>
+          <GoalLiftCard
+            {...args}
+            name={lift.name}
+            status={lift.status}
+            weeks={lift.weeks}
+            isPR={lift.isPR}
+            milestone={lift.milestone}
+            actuals={[...lift.actuals]}
+            committed={lift.milestone.load - 2.5}
+            stretch={lift.milestone.load + 5}
+          />
         </View>
       ))}
     </View>
