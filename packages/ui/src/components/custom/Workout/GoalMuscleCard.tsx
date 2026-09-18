@@ -14,7 +14,7 @@ import {
   GOAL_STATUS_TONE,
   type GoalLiftCardDensity,
   type GoalLiftStatus,
-} from './GoalLiftCard'
+} from './GoalCard'
 
 /**
  * One lift contributing to a muscle priority.

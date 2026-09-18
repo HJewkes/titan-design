@@ -9,8 +9,8 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- `PrimaryGoalCard` (`status:candidate`) — the lead priority at the top of the
-  `#/goals` wall as ONE card: the lift, its priority mark, its verdict and a PR
+- `GoalCard` (`status:candidate`) — one goal at card scale in two sizes. `full`
+  is the lead card at the top of the `#/goals` wall: the lift, its priority mark, its verdict and a PR
   badge in the title row, the meso target folded in above the chart, and the
   block's weeks as cells standing on the chart's own week columns. It deletes the
   old header block rather than restyling it (VW-385 unit 1, human calls
@@ -19,7 +19,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
   marker, the status basis and its RP citation off the status pill's tip, and the
   priority word off `GoalPriorityIcon`. The milestone tile's own inset plane went
   with the fold — the chart's plane is the only inset the card has. The card
-  measures its container, so it follows whatever width it is given.
+  measures its container, so it follows whatever width it is given. `compact` is
+  a cell in the per-lift grid: the same title row and the same summary over a
+  sparkline. One title row serves both — the lift on the left, then the priority
+  mark, the PR star and the status badge furthest right.
 - `GoalPriorityIcon` (`status:candidate`) — specialize / maintain / deprioritize
   as a mark beside the status pill, with the level's meaning on hover, focus or
   press. Priority is not pace, so it never borrows a `status-*` tone: the accent
@@ -51,6 +54,23 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- `PrimaryGoalCard` and `GoalLiftCard` are now presets of `GoalCard` (`full` and
+  `compact`). **Renamed, not removed**: both names still export and take the props
+  they took, so voltras-mcp's `#/goals` needs no change; `GoalLiftCard` can retire
+  once the SPA moves to `GoalCard size="compact"`. Their test hooks moved onto the
+  merged card: `goal-card-title`, `goal-card-status`, `goal-card-status-light`,
+  `goal-card-trend`, `goal-card-content`, `goal-card-fold`.
+- `GoalTrajectoryChart` draws no legend at all (human: "way too chunky and I think
+  unnecessary"). Every rule already labels itself on the plane, and the status is
+  said once, in the card's title row. The pill, the swatches and their density
+  knobs are deleted rather than hidden behind a prop.
+- The week axis insets by half a column, so the first and last week's COLUMN — not
+  just its dot — sits whole inside the plot. A half-width first cell "looks weird",
+  and the same half-width applied to a week-one deload column. Cells are their full
+  column again, less the shared strip gap: 60% was tried and rejected.
+- The card's status badge reads the MILESTONE's verdict, the same one the summary's
+  hero shows. A band's committed edge and the block's target are different numbers,
+  so judging the badge by the band could print "Hit" over "2.5 lb to goal".
 - The goal verdict outranks the pace once a reading reaches the committed target.
   Exactly at the goal is success green with the hit label, past it is the `ahead`
   blue labelled `Beyond goal`. The chart's line and pill, the milestone summary's

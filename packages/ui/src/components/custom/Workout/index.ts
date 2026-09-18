@@ -166,15 +166,24 @@ export {
   type NextTargetCoord,
 } from './GoalTrajectoryChartGeometry'
 export {
+  GoalCard,
   GoalLiftCard,
   goalLiftStatusLabel,
+  goalStatusBadge,
+  markSizeFor as goalCardMarkSize,
+  milestoneBlock,
   STATUS_COLLAPSE_WIDTH as GOAL_LIFT_CARD_STATUS_COLLAPSE_WIDTH,
+  type GoalCardChart,
+  type GoalCardMilestone,
+  type GoalCardProps,
+  type GoalCardSize,
+  type GoalCardTrend,
   type GoalLiftCardProps,
   type GoalLiftCardDensity,
   type GoalLiftActual,
   type GoalLiftMilestone,
   type GoalLiftStatus,
-} from './GoalLiftCard'
+} from './GoalCard'
 export {
   GoalMilestoneTile,
   milestoneToneToken,
@@ -192,8 +201,6 @@ export {
 } from './GoalPriorityIcon'
 export {
   PrimaryGoalCard,
-  goalStatusBadge,
-  markSizeFor as primaryGoalMarkSize,
   type PrimaryGoalCardProps,
   type PrimaryGoalChart,
   type PrimaryGoalMilestone,
