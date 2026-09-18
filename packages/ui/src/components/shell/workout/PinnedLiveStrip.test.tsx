@@ -104,6 +104,40 @@ describe('PinnedLiveStrip', () => {
     })
   })
 
+  describe('loss colouring', () => {
+    // Zones all say speed; the loss from the 1.0 m/s best is 0, 12 and 25 percent.
+    const reps: LiveStripRep[] = [1.0, 0.88, 0.75].map((velocity) => ({ velocity, zone: 'speed' }))
+
+    it('colours each bar by its loss from the set best, banded 10/20/30 like the hero', () => {
+      renderStrip({ state: 'set', reps, layout: 'wall', barColor: 'loss' })
+      expect(screen.getByTestId('live-strip-bar-0')).toHaveStyle({
+        backgroundColor: resolveColor(LIVE_STRIP_ZONE_TOKEN.speed),
+      })
+      expect(screen.getByTestId('live-strip-bar-1')).toHaveStyle({
+        backgroundColor: resolveColor(LIVE_STRIP_ZONE_TOKEN.power),
+      })
+      expect(screen.getByTestId('live-strip-bar-2')).toHaveStyle({
+        backgroundColor: resolveColor(LIVE_STRIP_ZONE_TOKEN.strengthSpeed),
+      })
+    })
+
+    it('uses the thresholds given for the bars and the last-rep velocity', () => {
+      renderStrip({
+        state: 'set',
+        reps,
+        layout: 'wall',
+        barColor: 'loss',
+        lossThresholds: [5, 10, 20],
+      })
+      expect(screen.getByTestId('live-strip-bar-2')).toHaveStyle({
+        backgroundColor: resolveColor(LIVE_STRIP_ZONE_TOKEN.maximalStrength),
+      })
+      expect(screen.getByTestId('live-strip-velocity')).toHaveStyle({
+        color: resolveColor(LIVE_STRIP_ZONE_TOKEN.maximalStrength),
+      })
+    })
+  })
+
   describe('zone colour comes from props', () => {
     // A fast velocity tagged with the slowest zone: any velocity-derived colour would disagree.
     const reps: LiveStripRep[] = [

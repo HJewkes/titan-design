@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:c67dbb96a1d8f37971e8f25c6fa28af20d311d2d32a78d5ff2b4fc4b8bbfc22e",
+  "componentBarrelHash": "sha256:a14bf9f4ac2c858ff21113edb7b2e8db4001c695e4eca99475671b2856aa3852",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -2999,7 +2999,7 @@
         "LiveAuraFrameProps"
       ],
       "libDependents": 3,
-      "storyRefs": 2,
+      "storyRefs": 3,
       "xproj": {
         "mobile": 0,
         "mcp": 3,
@@ -3090,7 +3090,7 @@
         "rawText": 1,
         "inlineStyle": 4,
         "rawHex": 0,
-        "loc": 123,
+        "loc": 126,
         "score": 12
       },
       "tier": "organism",
@@ -3717,7 +3717,7 @@
         "cn"
       ],
       "libDependents": 1,
-      "storyRefs": 2,
+      "storyRefs": 3,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
@@ -3731,6 +3731,7 @@
         "SetBarChart",
         "Surface",
         "Typography",
+        "VelocityStrip",
         "icons"
       ],
       "leak": {
@@ -3738,7 +3739,7 @@
         "rawText": 12,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 454,
+        "loc": 467,
         "score": 29
       },
       "tier": "organism",
@@ -6297,7 +6298,7 @@
         "OverlineProps"
       ],
       "libDependents": 48,
-      "storyRefs": 17,
+      "storyRefs": 18,
       "xproj": {
         "mobile": 0,
         "mcp": 10,
@@ -6406,7 +6407,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 47,
+        "loc": 51,
         "score": 1
       },
       "tier": "organism",
@@ -6425,16 +6426,19 @@
         "getVelocityZoneName",
         "calculateVelocityLoss",
         "calculateMeanVelocity",
+        "velocityLossBand",
         "getVelocityLossColor",
+        "velocityLossForRep",
         "VelocityLossBands",
         "DualVelocityStrip",
         "VelocityStrip",
         "VelocityZoneBandProp",
         "VelocityStripProps",
+        "VelocityLossThresholds",
+        "VelocityLossBand",
         "VelocitySet",
         "DualVelocityStream",
         "DualVelocityStripProps",
-        "velocityLossForRep",
         "classifyBand",
         "bandColor",
         "makeBarColorFor",
@@ -6449,8 +6453,8 @@
         "wing",
         "barColorFor"
       ],
-      "libDependents": 9,
-      "storyRefs": 11,
+      "libDependents": 11,
+      "storyRefs": 12,
       "xproj": {
         "mobile": 0,
         "mcp": 3,
@@ -6466,7 +6470,7 @@
         "rawText": 4,
         "inlineStyle": 15,
         "rawHex": 0,
-        "loc": 1494,
+        "loc": 1531,
         "score": 50
       },
       "tier": "molecule",
@@ -7999,6 +8003,10 @@
       "SetBarChart"
     ],
     [
+      "PinnedLiveStrip",
+      "VelocityStrip"
+    ],
+    [
       "SessionStatePill",
       "Indicator"
     ],
@@ -8558,7 +8566,7 @@
         "rawText": 4,
         "inlineStyle": 15,
         "rawHex": 0,
-        "loc": 1494,
+        "loc": 1531,
         "score": 50
       },
       {

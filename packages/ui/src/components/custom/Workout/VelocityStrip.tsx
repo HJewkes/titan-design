@@ -76,6 +76,11 @@ export interface VelocityStripProps extends ViewProps {
    */
   barColor?: 'zone' | 'loss'
   /**
+   * `barColor="loss"` only: the loss (%) where bars turn yellow, orange and red, and where the
+   * hero's amber and red decision bands start. Default `[10, 20, 30]`.
+   */
+  lossThresholds?: VelocityLossThresholds
+  /**
    * `hero` only: draw the VL20 / VL30 velocity-loss decision bands behind the bars
    * (see {@link VelocityLossBands}). Defaults to on when {@link barColor} is `loss`
    * (the default), off for `zone` — the bands and the loss bar-fill are the two
@@ -242,7 +247,26 @@ export function calculateMeanVelocity(velocities: number[]): number {
  * FatigueMeter's default thresholds use — kept in sync so a `barColor="loss"`
  * strip and a fatigue hero's VL20/VL30 reference bands agree on where amber/red start.
  */
-const VL_LOSS_THRESHOLDS: readonly [number, number, number] = [10, 20, 30]
+const VL_LOSS_THRESHOLDS: VelocityLossThresholds = [10, 20, 30]
+
+/** Loss (%) where a bar turns yellow, orange and red, ascending; equal steps skip a colour. */
+export type VelocityLossThresholds = readonly [number, number, number]
+
+/** A loss's band: 0 green, 1 yellow, 2 orange, 3 red. */
+export type VelocityLossBand = 0 | 1 | 2 | 3
+
+export function velocityLossBand(
+  lossPct: number,
+  thresholds: VelocityLossThresholds = VL_LOSS_THRESHOLDS
+): VelocityLossBand {
+  const [t1, t2, t3] = thresholds
+  if (lossPct < t1) return 0
+  if (lossPct < t2) return 1
+  if (lossPct < t3) return 2
+  return 3
+}
+
+const LOSS_BAND_COLORS = [VEL_COLORS.green, VEL_COLORS.yellow, VEL_COLORS.orange, VEL_COLORS.red]
 
 /**
  * Map a per-rep velocity LOSS (%, from the set's own best — see {@link
@@ -253,12 +277,11 @@ const VL_LOSS_THRESHOLDS: readonly [number, number, number] = [10, 20, 30]
  * band), past VL30 reads red, so a fatiguing set reads green→red by LOSS
  * regardless of how slow its absolute velocity is.
  */
-export function getVelocityLossColor(lossPct: number): string {
-  const [t1, t2, t3] = VL_LOSS_THRESHOLDS
-  if (lossPct < t1) return VEL_COLORS.green
-  if (lossPct < t2) return VEL_COLORS.yellow
-  if (lossPct < t3) return VEL_COLORS.orange
-  return VEL_COLORS.red
+export function getVelocityLossColor(
+  lossPct: number,
+  thresholds: VelocityLossThresholds = VL_LOSS_THRESHOLDS
+): string {
+  return LOSS_BAND_COLORS[velocityLossBand(lossPct, thresholds)]
 }
 
 /**
@@ -270,7 +293,7 @@ export function getVelocityLossColor(lossPct: number): string {
  * Feeds `barColor="loss"` bar coloring; distinct from {@link calculateVelocityLoss},
  * which reports only the set's FINAL loss (last rep vs best) as a single summary number.
  */
-function velocityLossForRep(velocity: number, best: number): number {
+export function velocityLossForRep(velocity: number, best: number): number {
   if (best <= 0) return 0
   return Math.max(0, Math.round(((best - velocity) / best) * 100))
 }
@@ -527,19 +550,24 @@ export function VelocityLossBands({
   scaleDenom,
   plotHeight,
   flip = false,
+  thresholds = VL_LOSS_THRESHOLDS,
 }: {
   best: number
   scaleDenom: number
   plotHeight: number
   /** The parent plot is vertically mirrored (a `down` wing) — counter-flip the labels upright. */
   flip?: boolean
+  /** The bar-colour thresholds; the amber band starts at the second, the red at the third. */
+  thresholds?: VelocityLossThresholds
 }) {
   // Before the early return, so the mode is read on every render.
   const vl = getSemanticColors(useSurfaceMode())
   if (best <= 0 || scaleDenom <= 0 || plotHeight <= 0) return null
   const yOf = (v: number): number => (v / scaleDenom) * plotHeight
-  const vl20 = best * 0.8
-  const vl30 = best * 0.7
+  const [, amberPct, redPct] = thresholds
+  const vl20 = best * (1 - amberPct / 100)
+  const vl30 = best * (1 - redPct / 100)
+  const hasAmber = amberPct < redPct
   // The VL20 / VL30 lines sit ~0.09·plotHeight apart, so on a short chart their labels crowd. Scale
   // the label font to the plot height; below VL_LABEL_MIN_PLOT DROP the labels entirely (keep the
   // dashed lines + washes) rather than shrink them into an illegible smear.
@@ -603,9 +631,10 @@ export function VelocityLossBands({
       testID="velocity-loss-bands"
     >
       {band(0, vl30, alpha(vl['status-error'], 0.09))}
-      {band(vl30, vl20, alpha(vl['status-warning'], 0.08))}
-      {threshold(vl20, alpha(vl['status-warning'], 0.75), 'VL 20%')}
-      {threshold(vl30, alpha(vl['status-error'], 0.75), 'VL 30%')}
+      {hasAmber && band(vl30, vl20, alpha(vl['status-warning'], 0.08))}
+      {hasAmber &&
+        threshold(vl20, alpha(vl['status-warning'], 0.75), `VL ${Math.round(amberPct)}%`)}
+      {threshold(vl30, alpha(vl['status-error'], 0.75), `VL ${Math.round(redPct)}%`)}
     </View>
   )
 }
@@ -617,7 +646,11 @@ export function VelocityLossBands({
  * per-side loss language that survives the dual's shared height scale. Unlabeled by design (the peak
  * bar already shows its value; the numeric best is in the chart's accessibility label).
  */
-function velocityReferenceOverlay(g: SetBarGeometry, showLossBands: boolean) {
+function velocityReferenceOverlay(
+  g: SetBarGeometry,
+  showLossBands: boolean,
+  thresholds?: VelocityLossThresholds
+) {
   const referencePx = g.best > 0 && g.scaleDenom > 0 ? Math.min(g.plotHeight, g.yOf(g.best)) : 0
   return (
     <>
@@ -627,6 +660,7 @@ function velocityReferenceOverlay(g: SetBarGeometry, showLossBands: boolean) {
           scaleDenom={g.scaleDenom}
           plotHeight={g.plotHeight}
           flip={g.flip}
+          thresholds={thresholds}
         />
       )}
       {referencePx > 0 && (
@@ -1146,6 +1180,7 @@ export function VelocityStrip({
   set,
   zones,
   barColor = 'loss',
+  lossThresholds,
   showLossBands,
   orientation = 'up',
   scaleMax,
@@ -1187,7 +1222,9 @@ export function VelocityStrip({
   // variant hands this `colorFor` to SetBarChart, so all variants color identically.
   const zoneColorFor = makeBarColorFor(zones)
   const barColorFor = (v: number): string =>
-    barColor === 'loss' ? getVelocityLossColor(velocityLossForRep(v, maxVelocity)) : zoneColorFor(v)
+    barColor === 'loss'
+      ? getVelocityLossColor(velocityLossForRep(v, maxVelocity), lossThresholds)
+      : zoneColorFor(v)
   const meanZone = hasZones
     ? (classifyBand(meanVelocity, zones)?.label ?? '')
     : getVelocityZoneName(meanVelocity)
@@ -1266,7 +1303,7 @@ export function VelocityStrip({
         // Only the diverging dual's composed wings opt in (TD-07.10) — the standalone single
         // hero is unchanged, per columnSlots being the dual-only signal (see the comment above).
         flipEdgeLabel={columnSlots != null}
-        renderReference={(g) => velocityReferenceOverlay(g, lossBandsOn)}
+        renderReference={(g) => velocityReferenceOverlay(g, lossBandsOn, lossThresholds)}
         hideBaseline
         testID="velocity-strip-hero"
         testIDPrefix="velocity"

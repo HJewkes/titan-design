@@ -822,3 +822,39 @@ describe('VelocityStrip chrome resolves to the spacing tokens', () => {
     expect(source).toContain('chart geometry')
   })
 })
+
+describe('VelocityStrip lossThresholds', () => {
+  // Best 1.0 m/s: the reps lose 0, 5, 12 and 20 percent.
+  const set = [1.0, 0.95, 0.88, 0.8]
+
+  it('bands the bars at the thresholds given, here a 20 percent stop split in thirds', () => {
+    render(
+      <VelocityStrip velocities={set} variant="compact" lossThresholds={[20 / 3, 40 / 3, 20]} />
+    )
+    expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: VL_GREEN })
+    expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ backgroundColor: VL_GREEN })
+    expect(screen.getByTestId('velocity-bar-2')).toHaveStyle({ backgroundColor: VL_YELLOW })
+    expect(screen.getByTestId('velocity-bar-3')).toHaveStyle({ backgroundColor: VL_RED })
+  })
+
+  it('skips orange when two thresholds are equal', () => {
+    expect(getVelocityLossColor(15, [10, 20, 20])).toBe(VL_YELLOW)
+    expect(getVelocityLossColor(20, [10, 20, 20])).toBe(VL_RED)
+  })
+
+  it('moves the hero decision bands to the second and third thresholds', () => {
+    render(
+      <VelocityStrip velocities={set} variant="hero" height={300} lossThresholds={[5, 10, 15]} />
+    )
+    expect(screen.getByText('VL 10%')).toBeInTheDocument()
+    expect(screen.getByText('VL 15%')).toBeInTheDocument()
+    expect(screen.queryByText('VL 20%')).not.toBeInTheDocument()
+  })
+
+  it('draws only the red band when the amber and red thresholds meet', () => {
+    render(
+      <VelocityStrip velocities={set} variant="hero" height={300} lossThresholds={[5, 10, 10]} />
+    )
+    expect(screen.getAllByText('VL 10%')).toHaveLength(1)
+  })
+})

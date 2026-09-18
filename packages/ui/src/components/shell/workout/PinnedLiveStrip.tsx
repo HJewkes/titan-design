@@ -17,9 +17,11 @@ import { Progress } from '../../ui/progress'
 import { Typography } from '../../custom/Typography'
 import { ChevronRightIcon } from '../../icons'
 import { SetBarChart, type SetSlot } from '../../custom/charts/SetBarChart'
+import type { VelocityLossThresholds } from '../../custom/Workout/VelocityStrip'
 import {
-  LIVE_STRIP_ZONE_TOKEN,
+  liveStripRepToken,
   liveStripRestReadout,
+  type LiveStripBarColor,
   type LiveStripRep,
   type LiveStripState,
 } from './liveStripModel'
@@ -42,6 +44,10 @@ export interface PinnedLiveStripProps {
   /** Performed reps of the current set (in `rest`, of the set just finished), zones from analytics. */
   reps: readonly LiveStripRep[]
   targetReps: number
+  /** `zone` (default) colours each bar by its rep's zone; `loss` by its loss from the set's best, as the live hero does. */
+  barColor?: LiveStripBarColor
+  /** `loss` only: loss (%) where bars turn yellow, orange and red. Default 10/20/30, as the hero. */
+  lossThresholds?: VelocityLossThresholds
   /** Analytics says the set has fatigued past its cut-off. Shown by the strip's edge and wash, never text. */
   isFatigued?: boolean
   /** `rest` only: time left and the rest's full length, in ms. */
@@ -244,10 +250,16 @@ function HeroNumeral(props: Parts) {
   )
 }
 
-function Velocity({ reps, scale, showUnit }: Parts & { showUnit: boolean }) {
+function Velocity({
+  reps,
+  scale,
+  showUnit,
+  barColor,
+  lossThresholds,
+}: Parts & { showUnit: boolean }) {
   const last = reps[reps.length - 1]
   if (!last) return null
-  const color = resolveColor(LIVE_STRIP_ZONE_TOKEN[last.zone])
+  const color = resolveColor(liveStripRepToken(reps, reps.length - 1, barColor, lossThresholds))
   return (
     <Text
       testID="live-strip-velocity"
@@ -260,11 +272,12 @@ function Velocity({ reps, scale, showUnit }: Parts & { showUnit: boolean }) {
   )
 }
 
-function RepBars({ reps, targetReps, scale, fill }: Parts & { fill?: boolean }) {
+function RepBars(props: Parts & { fill?: boolean }) {
+  const { reps, targetReps, scale, fill, barColor, lossThresholds } = props
   const slots: SetSlot[] = reps.map((rep) => ({ kind: 'rep', value: rep.velocity }))
   // Colour is looked up by rep, never derived from the value: the zone is analytics' call.
   const colorFor = (_value: number, repIndex: number) =>
-    resolveColor(LIVE_STRIP_ZONE_TOKEN[reps[repIndex].zone])
+    resolveColor(liveStripRepToken(reps, repIndex, barColor, lossThresholds))
   return (
     <View
       testID="live-strip-bars-frame"
