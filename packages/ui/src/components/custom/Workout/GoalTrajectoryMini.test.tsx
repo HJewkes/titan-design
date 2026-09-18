@@ -15,6 +15,7 @@ import {
   MINI_INSETS,
   miniGeometryInput,
   miniRuleLabelYs,
+  weekDividerXs,
   miniWeekAxis,
   type GoalTrajectoryMiniData,
   type MiniTrajectoryVariant,
@@ -148,9 +149,20 @@ describe('GoalTrajectoryMini', () => {
     expect(screen.queryByTestId('goal-trajectory-mini-committed-label')).toBeNull()
   })
 
-  it('tints the current week column only in the week-columns variant', () => {
+  it('tints the current week and rules each column edge only in the week-columns variant', () => {
     renderMini('week-columns')
     expect(screen.getByTestId('goal-trajectory-mini-current-week')).toBeTruthy()
+    expect(screen.getAllByTestId('goal-trajectory-mini-week-divider')).toHaveLength(7)
+  })
+
+  it('draws no week columns outside the week-columns variant', () => {
+    renderMini('plane')
+    expect(screen.queryByTestId('goal-trajectory-mini-current-week')).toBeNull()
+    expect(screen.queryByTestId('goal-trajectory-mini-week-divider')).toBeNull()
+  })
+
+  it('puts each column edge halfway between two week centres', () => {
+    expect(weekDividerXs((w) => w * 10, 3)).toEqual([15, 25])
   })
 
   it('paints a reading past the committed target in the beyond-goal blue', () => {

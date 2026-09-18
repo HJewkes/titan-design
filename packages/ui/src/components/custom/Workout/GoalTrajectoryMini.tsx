@@ -65,6 +65,9 @@ export const MINI_INSETS: PlotInsets = { left: 0, right: 0, top: 8, bottom: 1 }
 /** Recessed line alpha for `week-columns`, where the points carry the reading. */
 export const RECESSED_LINE_ALPHA = 0.4
 
+/** `week-columns` column treatment: a visible current-week tint and hairline dividers under each cell gap. */
+export const WEEK_COLUMN = { tintAlpha: 0.12, dividerAlpha: 0.1 } as const
+
 export interface GoalTrajectoryMiniData {
   actuals: GoalActualPoint[]
   committed: number
@@ -245,18 +248,45 @@ function RuleValues({
   )
 }
 
-function CurrentWeekColumn({ geometry, palette, week }: LayerProps & { week: number }) {
-  const scaleSpan = geometry.toX(2) - geometry.toX(1)
+/** Column edges between weeks, so each week cell above reads as its column's header. */
+export function weekDividerXs(toX: (week: number) => number, weekCount: number): number[] {
+  return Array.from({ length: Math.max(0, weekCount - 1) }, (_, i) => (toX(i + 1) + toX(i + 2)) / 2)
+}
+
+function WeekColumns({
+  geometry,
+  palette,
+  week,
+  weekCount,
+}: LayerProps & { week?: number; weekCount: number }) {
+  const span = geometry.toX(2) - geometry.toX(1)
   const { plane } = geometry
+  const ink = palette.rule
   return (
-    <rect
-      data-testid="goal-trajectory-mini-current-week"
-      x={geometry.toX(week) - scaleSpan / 2}
-      y={plane.y}
-      width={scaleSpan}
-      height={plane.height}
-      fill={palette.deload}
-    />
+    <>
+      {week !== undefined && (
+        <rect
+          data-testid="goal-trajectory-mini-current-week"
+          x={geometry.toX(week) - span / 2}
+          y={plane.y}
+          width={span}
+          height={plane.height}
+          fill={alpha(ink, WEEK_COLUMN.tintAlpha)}
+        />
+      )}
+      {weekDividerXs(geometry.toX, weekCount).map((x) => (
+        <line
+          key={x}
+          data-testid="goal-trajectory-mini-week-divider"
+          x1={x}
+          x2={x}
+          y1={plane.y}
+          y2={plane.y + plane.height}
+          stroke={alpha(ink, WEEK_COLUMN.dividerAlpha)}
+          strokeWidth={1}
+        />
+      ))}
+    </>
   )
 }
 
@@ -381,6 +411,7 @@ interface MiniPlotProps extends MiniLayer {
   committed: number
   stretch: number
   currentWeek?: number
+  weekCount: number
   entrance: EntranceState
 }
 
@@ -394,8 +425,8 @@ function MiniPlot(props: MiniPlotProps) {
       <PlotDefs ids={ids} {...layer} leftShadowSpread={DEFAULT_LEFT_SHADOW_SPREAD} />
       <g clipPath={`url(#${ids.clip})`}>
         {hasPlane && <PlaneFill {...layer} ids={ids} />}
-        {variant === 'week-columns' && props.currentWeek !== undefined && (
-          <CurrentWeekColumn {...layer} week={props.currentWeek} />
+        {variant === 'week-columns' && (
+          <WeekColumns {...layer} week={props.currentWeek} weekCount={props.weekCount} />
         )}
         <CommittedRule {...layer} />
         {showsStretch(variant) && <StretchRule {...layer} />}
@@ -485,6 +516,7 @@ export function GoalTrajectoryMini({
         height={height}
         committed={committed}
         stretch={stretch}
+        weekCount={goalWeek}
         {...(currentWeek !== undefined ? { currentWeek } : {})}
         entrance={entrance}
       />
