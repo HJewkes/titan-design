@@ -16,6 +16,9 @@ import {
   CircleSlashIcon,
   AwardIcon,
   InfoIcon,
+  TargetIcon,
+  EqualIcon,
+  ChevronsDownIcon,
 } from './icons'
 
 const meta: Meta = {
@@ -115,6 +118,21 @@ export const All: Story = {
       <Swatch label="InfoIcon">
         <View className="text-status-info">
           <InfoIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="TargetIcon">
+        <View className="text-brand-secondary">
+          <TargetIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="EqualIcon">
+        <View className="text-text-secondary">
+          <EqualIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="ChevronsDownIcon">
+        <View className="text-text-tertiary">
+          <ChevronsDownIcon size={28} />
         </View>
       </Swatch>
     </View>

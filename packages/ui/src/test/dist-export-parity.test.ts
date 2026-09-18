@@ -40,6 +40,27 @@ const KNOWN_TYPE_ONLY_BARE_NAMES = new Set([
   'ElevationLevel', // theme/elevation.ts: type alias
   'ExerciseIndicatorKind', // components/custom/Workout/ExerciseIndicator.tsx: type alias
   'GlowIntensity', // theme/elevation.ts: type alias
+  // The goal family, which VW-385 gave another re-export hop (the summary and the
+  // tile now both re-export the milestone types): every one is an interface or a
+  // type alias in `GoalTrajectoryChartGeometry.ts` / `goalMilestone.ts`.
+  'GoalActualPoint',
+  'GoalCardChart',
+  'GoalCardMilestone',
+  'GoalCardProps',
+  'GoalDirection',
+  'GoalExpectedPoint',
+  'GoalMilestoneReading',
+  'GoalMilestoneSummaryProps',
+  'GoalMilestoneState',
+  'GoalMilestoneTarget',
+  'GoalNextTarget',
+  'GoalReach',
+  'GoalTrajectoryStatus',
+  'GoalTrajectoryWeek',
+  'GoalWeekCell',
+  'GoalWeekEntry',
+  'GoalWeekOutcome',
+  'IndicatorColor', // components/ui/indicator/Indicator.tsx: type alias
   'LiftOptions', // theme/lift.ts: interface
   'SetRowProps', // components/custom/Workout/SetRow.tsx: type alias
   'SetStripSet', // components/custom/Workout/SetBar.tsx: type alias

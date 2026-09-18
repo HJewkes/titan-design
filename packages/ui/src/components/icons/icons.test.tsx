@@ -16,6 +16,9 @@ import {
   CircleSlashIcon,
   AwardIcon,
   InfoIcon,
+  TargetIcon,
+  EqualIcon,
+  ChevronsDownIcon,
 } from './icons'
 import { SvgIcon } from './SvgIcon'
 
@@ -36,6 +39,9 @@ describe('icon primitives', () => {
       CircleSlashIcon,
       AwardIcon,
       InfoIcon,
+      TargetIcon,
+      EqualIcon,
+      ChevronsDownIcon,
     ].forEach((Icon) => {
       const { container, unmount } = render(<Icon />)
       expect(container.querySelector('svg')).toBeInTheDocument()

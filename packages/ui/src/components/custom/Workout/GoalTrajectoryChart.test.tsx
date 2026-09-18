@@ -1,8 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { siblingSource, resolveAll } from '../../../test/spacing-resolver'
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, within, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { GoalTrajectoryChart } from './GoalTrajectoryChart'
+import { GoalTrajectoryChart, outcomeReach, trajectoryReach } from './GoalTrajectoryChart'
 import type {
   GoalActualPoint,
   GoalExpectedPoint,
@@ -157,16 +156,21 @@ describe('GoalTrajectoryChart', () => {
       )
       expect(bandOutline(document.body)).toMatch(/Z$/)
     })
-
-    it('labels the legend as a loss band', () => {
-      render(<GoalTrajectoryChart {...baseProps} direction="down" status="on_track" />)
-      expect(screen.getByText('Expected (loss)')).toBeInTheDocument()
-    })
   })
 
   describe('status tone', () => {
+    // Short of the committed target on purpose: a reading that reaches it takes
+    // the goal's own tone rather than the pace's.
+    const shortOfGoal: GoalActualPoint[] = [
+      { weekIndex: 1, value: 175 },
+      { weekIndex: 2, value: 178 },
+      { weekIndex: 3, value: 181, isPR: true },
+      { weekIndex: 4, value: 183 },
+    ]
     const toneOf = (status: GoalTrajectoryStatus): string | null => {
-      const { unmount } = render(<GoalTrajectoryChart {...baseProps} status={status} />)
+      const { unmount } = render(
+        <GoalTrajectoryChart {...baseProps} actuals={shortOfGoal} status={status} />
+      )
       const tone = screen.getByTestId('goal-trajectory-chart-actual-line').getAttribute('stroke')
       unmount()
       return tone
@@ -183,7 +187,7 @@ describe('GoalTrajectoryChart', () => {
       expect(toneOf('ahead')).toBe(dark['status-info'])
     })
 
-    it('gives each status its own pill label', () => {
+    it('names each status in the accessible summary — the chart draws no legend', () => {
       const labels: Array<[GoalTrajectoryStatus, string]> = [
         ['on_track', 'On track'],
         ['ahead', 'Ahead'],
@@ -194,8 +198,14 @@ describe('GoalTrajectoryChart', () => {
         ['stalled', 'Stalled'],
       ]
       labels.forEach(([status, label]) => {
-        const { unmount } = render(<GoalTrajectoryChart {...baseProps} status={status} />)
-        expect(screen.getByText(label)).toBeInTheDocument()
+        const { unmount } = render(
+          <GoalTrajectoryChart {...baseProps} actuals={shortOfGoal} status={status} />
+        )
+        expect(screen.getByTestId('goal-trajectory-chart-canvas')).toHaveAttribute(
+          'aria-label',
+          expect.stringContaining(`Status: ${label}`)
+        )
+        expect(screen.queryByText(label)).toBeNull()
         unmount()
       })
     })
@@ -243,18 +253,27 @@ describe('GoalTrajectoryChart', () => {
       return stroke
     }
 
-    it('keeps the rule entries in the wall legend and drops them on the phone', () => {
+    it('draws a week label per week, and none when the caller says so', () => {
       const { unmount } = render(
         <GoalTrajectoryChart {...baseProps} width={1200} status="on_track" />
       )
-      const wallLegend = screen.getByTestId('goal-trajectory-chart-legend')
-      expect(wallLegend).toHaveTextContent('Committed')
-      expect(wallLegend).toHaveTextContent('Stretch')
+      expect(screen.getAllByTestId('goal-trajectory-chart-week-label')).toHaveLength(weeks.length)
+      unmount()
+      render(
+        <GoalTrajectoryChart {...baseProps} width={1200} status="on_track" showWeekLabels={false} />
+      )
+      expect(screen.queryAllByTestId('goal-trajectory-chart-week-label')).toHaveLength(0)
+    })
+
+    it('draws no legend at either density: each rule labels itself on the plane', () => {
+      const { unmount } = render(
+        <GoalTrajectoryChart {...baseProps} width={1200} status="on_track" />
+      )
+      expect(screen.queryByTestId('goal-trajectory-chart-legend')).toBeNull()
+      expect(screen.getByText('Committed 185')).toBeInTheDocument()
       unmount()
       render(<GoalTrajectoryChart {...baseProps} width={360} status="on_track" />)
-      const phoneLegend = screen.getByTestId('goal-trajectory-chart-legend')
-      expect(phoneLegend).not.toHaveTextContent('Committed')
-      expect(phoneLegend).not.toHaveTextContent('Stretch')
+      expect(screen.queryByTestId('goal-trajectory-chart-legend')).toBeNull()
       expect(screen.getByText('Committed 185')).toBeInTheDocument()
     })
 
@@ -344,7 +363,17 @@ describe('GoalTrajectoryChart', () => {
 
   describe('accessibility', () => {
     it('summarizes the status, targets and PR count in the image label', () => {
-      render(<GoalTrajectoryChart {...baseProps} status="behind" unit="lbs" />)
+      render(
+        <GoalTrajectoryChart
+          {...baseProps}
+          actuals={[
+            { weekIndex: 1, value: 175 },
+            { weekIndex: 3, value: 181, isPR: true },
+          ]}
+          status="behind"
+          unit="lbs"
+        />
+      )
       const canvas = screen.getByTestId('goal-trajectory-chart-canvas')
       const label = canvas.getAttribute('aria-label') ?? ''
       expect(label).toContain('Bench top load')
@@ -373,23 +402,119 @@ describe('GoalTrajectoryChart', () => {
   })
 })
 
-/**
- * GoalTrajectoryChart's chrome geometry, pinned (AW-142). The plot itself is
- * untouched — only the legend and status pill around it. The five legend rows
- * were 5px swatch-to-label, off the 4px grain; they take `inline-sm`, and the
- * status pill takes Pill's `sm` rung as MesoStatusCard's badge did.
- */
-describe('GoalTrajectoryChart chrome resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'GoalTrajectoryChart.tsx')
+describe('GoalTrajectoryChart next target', () => {
+  const nextTarget = { weekIndex: 5, value: 183, label: 'next week: 183 x 8' }
 
-  it('puts every legend row on the inline ramp', () => {
-    expect(source).not.toContain('gap: 5')
-    expect(source.match(/gap-inline-sm/g)).toHaveLength(5)
-    expect(resolveAll(['gap-inline-sm'])).toEqual(['4px'])
+  it('draws a hollow dot and a dashed lead in the status tone', () => {
+    render(<GoalTrajectoryChart {...baseProps} status="on_track" nextTarget={nextTarget} />)
+    const dot = screen.getByTestId('goal-trajectory-chart-next-target-dot')
+    expect(dot.getAttribute('fill')).toBe('none')
+    expect(dot.getAttribute('stroke')).toBe(dark['status-success'])
+    const lead = screen.getByTestId('goal-trajectory-chart-next-target-lead')
+    expect(lead.getAttribute('stroke-dasharray')).toBe('6 5')
   })
 
-  it('puts the status pill on Pill’s sm rung', () => {
-    expect(source).toContain('px-squish-x-sm py-squish-y-sm')
-    expect(resolveAll(['px-squish-x-sm', 'py-squish-y-sm'])).toEqual(['8px', '2px'])
+  it('carries no label on the plane', () => {
+    render(<GoalTrajectoryChart {...baseProps} status="on_track" nextTarget={nextTarget} />)
+    expect(screen.queryByText(nextTarget.label)).not.toBeInTheDocument()
+  })
+
+  it('opens the label as a tip on hover', () => {
+    render(<GoalTrajectoryChart {...baseProps} status="on_track" nextTarget={nextTarget} />)
+
+    fireEvent.mouseEnter(screen.getByRole('button', { name: 'Next target' }))
+
+    expect(screen.getByText(nextTarget.label)).toBeInTheDocument()
+  })
+
+  it('draws nothing when the caller passes no next target', () => {
+    render(<GoalTrajectoryChart {...baseProps} status="on_track" />)
+    expect(screen.queryByTestId('goal-trajectory-chart-next-target-dot')).not.toBeInTheDocument()
+  })
+})
+
+describe('GoalTrajectoryChart goal reach', () => {
+  const reaching = (value: number): GoalActualPoint[] => [
+    { weekIndex: 1, value: 175 },
+    { weekIndex: 2, value },
+  ]
+
+  function lineStroke(): string | null {
+    return screen.getByTestId('goal-trajectory-chart-actual-line').getAttribute('stroke')
+  }
+
+  function summary(): string {
+    return screen.getByTestId('goal-trajectory-chart-canvas').getAttribute('aria-label') ?? ''
+  }
+
+  it('turns the line blue once a reading beats the committed target', () => {
+    render(<GoalTrajectoryChart {...baseProps} actuals={reaching(190)} status="behind" />)
+    expect(lineStroke()).toBe(dark['status-info'])
+    expect(summary()).toContain('Status: Beyond goal')
+  })
+
+  it('keeps success green for a reading exactly on the target', () => {
+    render(<GoalTrajectoryChart {...baseProps} actuals={reaching(185)} status="behind" />)
+    expect(lineStroke()).toBe(dark['status-success'])
+    expect(summary()).toContain('Status: Goal met')
+  })
+
+  it('reports pace while every reading is short of the target', () => {
+    render(<GoalTrajectoryChart {...baseProps} actuals={reaching(180)} status="behind" />)
+    expect(lineStroke()).toBe(dark['status-warning'])
+    expect(summary()).toContain('Status: Behind')
+  })
+
+  it('judges a loss goal by its lowest reading', () => {
+    const cut = [
+      { weekIndex: 1, value: 190 },
+      { weekIndex: 2, value: 179 },
+    ]
+    expect(trajectoryReach(180, cut, 'down')).toBe('beyond')
+    expect(trajectoryReach(180, cut.slice(0, 1), 'down')).toBe('short')
+  })
+})
+
+describe('GoalTrajectoryChart outcome statuses', () => {
+  const shortOfIt: GoalActualPoint[] = [
+    { weekIndex: 1, value: 175 },
+    { weekIndex: 2, value: 178 },
+  ]
+
+  function lineStrokeFor(status: GoalTrajectoryStatus): string | null {
+    const { unmount } = render(
+      <GoalTrajectoryChart {...baseProps} actuals={shortOfIt} status={status} />
+    )
+    const stroke = screen.getByTestId('goal-trajectory-chart-actual-line').getAttribute('stroke')
+    unmount()
+    return stroke
+  }
+
+  it('paints goal_met success green and beyond_goal the ahead blue', () => {
+    expect(lineStrokeFor('goal_met')).toBe(dark['status-success'])
+    expect(lineStrokeFor('beyond_goal')).toBe(dark['status-info'])
+  })
+
+  it('names them in the accessible summary', () => {
+    const summaryFor = (status: GoalTrajectoryStatus) => {
+      const { unmount } = render(
+        <GoalTrajectoryChart {...baseProps} actuals={shortOfIt} status={status} />
+      )
+      const label =
+        screen.getByTestId('goal-trajectory-chart-canvas').getAttribute('aria-label') ?? ''
+      unmount()
+      return label
+    }
+    expect(summaryFor('goal_met')).toContain('Status: Goal met')
+    expect(summaryFor('beyond_goal')).toContain('Status: Beyond goal')
+  })
+
+  it('believes the read model over its own comparison', () => {
+    // Every reading is short of the committed target, and the status still wins.
+    expect(outcomeReach('goal_met')).toBe('met')
+    expect(outcomeReach('beyond_goal')).toBe('beyond')
+    expect(outcomeReach('behind')).toBeNull()
+    expect(trajectoryReach(baseProps.committed, shortOfIt)).toBe('short')
+    expect(lineStrokeFor('goal_met')).toBe(dark['status-success'])
   })
 })

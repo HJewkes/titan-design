@@ -56,6 +56,10 @@ export const STATUS_TOKEN = {
   deload_week: 'result-neutral',
   calibrating: 'result-inconclusive',
   stalled: 'status-error',
+  // The outcomes take the tones the derived verdict already used: reaching the
+  // goal is success green, beating it is the `ahead` blue.
+  goal_met: 'status-success',
+  beyond_goal: 'status-info',
 } as const satisfies Record<GoalTrajectoryStatus, ColorToken>
 
 /** The locked depth recipe (2026-09-17): line shadow "1a" and the plane's inner shadows. */
@@ -68,9 +72,9 @@ export const DEPTH = {
 export const DEFAULT_LEFT_SHADOW_SPREAD = 0.04
 const FONT_FAMILY = 'Inter, sans-serif'
 const LABEL_GAP = 8
-const PLANE_RADIUS = 6
+export const PLANE_RADIUS = 6
 export const DOT_RADIUS = 4
-const DOT_RING = 2
+export const DOT_RING = 2
 
 /** The alpha a `rgba()` token carries, so a scrim can stand in for pure black. */
 function tokenAlpha(color: string): number {
@@ -113,6 +117,12 @@ export type TrajectoryPalette = ReturnType<typeof trajectoryPalette>
  */
 export type PlotBaseline = 'inset-rule' | 'lip'
 
+/** Which edge of the plot the committed and stretch labels anchor to. */
+export type ReferenceLabelSide = 'left' | 'right'
+
+/** Inset from the plot edge for left-anchored labels, so they clear the plane's rounded corner. */
+export const LEFT_LABEL_INSET = PLANE_RADIUS + 2
+
 export interface PlotStyle {
   stroke: number
   star: number
@@ -120,21 +130,22 @@ export interface PlotStyle {
   baseline: PlotBaseline
   bandFade: BandFade
   bandCurve: BandCurve
+  referenceLabelSide: ReferenceLabelSide
 }
 
-interface LayerProps {
+export interface LayerProps {
   geometry: GoalTrajectoryGeometry
   palette: TrajectoryPalette
 }
 
-interface DefIds {
+export interface DefIds {
   shadow: string
   top: string
   left: string
   clip: string
 }
 
-function useDefIds(): DefIds {
+export function useDefIds(): DefIds {
   const base = useId().replace(/[^a-zA-Z0-9]/g, '')
   return {
     shadow: `gtc-shadow-${base}`,
@@ -144,7 +155,7 @@ function useDefIds(): DefIds {
   }
 }
 
-function PlotDefs({
+export function PlotDefs({
   ids,
   geometry,
   palette,
@@ -188,7 +199,7 @@ function PlotDefs({
 
 type PlaneBox = GoalTrajectoryGeometry['plane']
 
-function planeBox(plane: PlaneBox): PlaneBox {
+export function planeBox(plane: PlaneBox): PlaneBox {
   return { x: plane.x, y: plane.y, width: plane.width, height: plane.height }
 }
 
@@ -266,7 +277,7 @@ function roundedRectPath({ x, y, width, height }: PlaneBox, r: number): string {
  * The inset well's bottom lip: the plane minus itself shifted up 1px, which
  * leaves a 1px sliver that follows the rounded corners (CSS `inset 0 -1px 0`).
  */
-function PlaneLip({ geometry, palette }: LayerProps) {
+export function PlaneLip({ geometry, palette }: LayerProps) {
   const box = planeBox(geometry.plane)
   const d =
     roundedRectPath(box, PLANE_RADIUS) + roundedRectPath({ ...box, y: box.y - 1 }, PLANE_RADIUS)
@@ -340,12 +351,14 @@ function RuleLabel({
   x,
   y,
   id,
+  side,
   children,
 }: {
   palette: TrajectoryPalette
   x: number
   y: number
   id: string
+  side: ReferenceLabelSide
   children: string
 }) {
   return (
@@ -356,39 +369,49 @@ function RuleLabel({
       fill={palette.rule}
       fontSize={CHART_FONT}
       fontFamily={FONT_FAMILY}
-      textAnchor="end"
+      textAnchor={side === 'left' ? 'start' : 'end'}
     >
       {children}
     </text>
   )
 }
 
+/** The x a rule label anchors at for a given side. */
+export function ruleLabelX(
+  plot: { left: number; right: number },
+  side: ReferenceLabelSide
+): number {
+  return side === 'left' ? plot.left + LEFT_LABEL_INSET : plot.right
+}
+
 /**
  * One label per rule, except when the two rules coincide: a calibrating goal has
  * committed === stretch, and two labels on one baseline print as one unreadable
- * word (VW-414). Then they merge into a single right-anchored label.
+ * word (VW-414). Then they merge into a single label.
  */
 function RuleLabels({
   geometry,
   palette,
   committed,
   stretch,
-}: LayerProps & { committed: number; stretch: number }) {
-  const x = geometry.plot.right
+  side,
+}: LayerProps & { committed: number; stretch: number; side: ReferenceLabelSide }) {
+  const x = ruleLabelX(geometry.plot, side)
+  const label = { palette, x, side }
   const layout = ruleLabelLayout(geometry.committedY, geometry.stretchY)
   if (layout.merged) {
     return (
-      <RuleLabel palette={palette} x={x} y={layout.committed.y} id="merged-rule-label">
+      <RuleLabel {...label} y={layout.committed.y} id="merged-rule-label">
         {`Committed = Stretch ${String(roundWeight(committed))}`}
       </RuleLabel>
     )
   }
   return (
     <>
-      <RuleLabel palette={palette} x={x} y={layout.committed.y} id="committed-label">
+      <RuleLabel {...label} y={layout.committed.y} id="committed-label">
         {`Committed ${String(roundWeight(committed))}`}
       </RuleLabel>
-      <RuleLabel palette={palette} x={x} y={layout.stretch.y} id="stretch-label">
+      <RuleLabel {...label} y={layout.stretch.y} id="stretch-label">
         {`Stretch ${String(roundWeight(stretch))}`}
       </RuleLabel>
     </>
@@ -470,6 +493,40 @@ function ActualPoint({
   )
 }
 
+/**
+ * The next planned waypoint: a dashed run out of the latest reading to a hollow
+ * dot. Hollow and dashed because nothing has been measured there yet — the
+ * filled dots and the solid line are readings, this is the ask.
+ */
+function NextTargetMark({ geometry, palette, stroke }: LayerProps & { stroke: number }) {
+  const next = geometry.nextTarget
+  if (!next) return null
+  return (
+    <>
+      {next.leadPath && (
+        <path
+          data-testid="goal-trajectory-chart-next-target-lead"
+          d={next.leadPath}
+          fill="none"
+          stroke={palette.status}
+          strokeWidth={stroke}
+          strokeLinecap="round"
+          strokeDasharray="6 5"
+        />
+      )}
+      <circle
+        data-testid="goal-trajectory-chart-next-target-dot"
+        cx={next.x}
+        cy={next.y}
+        r={DOT_RADIUS}
+        fill="none"
+        stroke={palette.status}
+        strokeWidth={DOT_RING}
+      />
+    </>
+  )
+}
+
 function WeekAxis({
   geometry,
   palette,
@@ -541,6 +598,9 @@ export function GoalTrajectoryPlot(props: GoalTrajectoryPlotProps) {
           shadowId={ids.shadow}
           entrance={props.entrance}
         />
+        <g style={popStyle(props.entrance)}>
+          <NextTargetMark {...layer} stroke={style.stroke} />
+        </g>
         {geometry.actuals.map((coord) => (
           <g key={coord.index} style={popStyle(props.entrance)}>
             <ActualPoint coord={coord} palette={palette} star={style.star} />
@@ -550,7 +610,12 @@ export function GoalTrajectoryPlot(props: GoalTrajectoryPlotProps) {
         <rect data-testid="goal-trajectory-chart-inner-left" {...box} fill={`url(#${ids.left})`} />
         {style.baseline === 'lip' && <PlaneLip {...layer} />}
       </g>
-      <RuleLabels {...layer} committed={props.committed} stretch={props.stretch} />
+      <RuleLabels
+        {...layer}
+        committed={props.committed}
+        stretch={props.stretch}
+        side={style.referenceLabelSide}
+      />
       <WeekAxis {...layer} weeks={props.weeks} stride={props.weekStride} />
     </svg>
   )

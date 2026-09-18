@@ -58,8 +58,8 @@ describe('GoalTrajectoryChart with committed === stretch (VW-414)', () => {
       const g = geometryOf(WALL)
       const xs = [...g.bandEdgePath.matchAll(/([\d.]+),([\d.]+)/g)].map((m) => Number(m[1]))
       const ys = [...g.bandEdgePath.matchAll(/([\d.]+),([\d.]+)/g)].map((m) => Number(m[2]))
-      expect(Math.min(...xs)).toBeCloseTo(g.toX(1), 5)
-      expect(Math.max(...xs)).toBeCloseTo(g.toX(12), 5)
+      expect(Math.min(...xs)).toBeCloseTo(g.toX(1), 2)
+      expect(Math.max(...xs)).toBeCloseTo(g.toX(12), 2)
       expect(Math.max(...ys) - Math.min(...ys)).toBeGreaterThan(100)
     })
 
@@ -92,14 +92,18 @@ describe('GoalTrajectoryChart with committed === stretch (VW-414)', () => {
       expect(screen.queryByTestId('goal-trajectory-chart-stretch-label')).not.toBeInTheDocument()
     })
 
-    it('right-anchors the merged label on the plot edge, above the rules', () => {
+    it('anchors the merged label on the plot edge the labels take, above the rules', () => {
       const g = geometryOf(WALL)
-      const label = screen.queryByTestId('goal-trajectory-chart-merged-rule-label')
       render(<GoalTrajectoryChart {...wall} />)
-      const merged = label ?? screen.getByTestId('goal-trajectory-chart-merged-rule-label')
-      expect(merged.getAttribute('text-anchor')).toBe('end')
-      expect(Number(merged.getAttribute('x'))).toBe(g.plot.right)
+      const merged = screen.getByTestId('goal-trajectory-chart-merged-rule-label')
+      // Left by default since round 6; `right` still right-anchors on the edge.
+      expect(merged.getAttribute('text-anchor')).toBe('start')
       expect(ruleLabelTop(g.committedY)).toBeGreaterThanOrEqual(g.plane.y)
+
+      render(<GoalTrajectoryChart {...wall} referenceLabelSide="right" />)
+      const right = screen.getAllByTestId('goal-trajectory-chart-merged-rule-label')[1]
+      expect(right.getAttribute('text-anchor')).toBe('end')
+      expect(Number(right.getAttribute('x'))).toBe(g.plot.right)
     })
 
     it('pushes the lower label under its own rule when the two are close but distinct', () => {

@@ -7,6 +7,115 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- `GoalCard` (`status:candidate`) — one goal at card scale in two sizes. `full`
+  is the lead card at the top of the `#/goals` wall: the lift, its priority mark, its verdict and a PR
+  badge in the title row, the meso target folded in above the chart, and the
+  block's weeks as cells standing on the chart's own week columns. It deletes the
+  old header block rather than restyling it (VW-385 unit 1, human calls
+  2026-09-17): the week reads off the chart axis and the summary's facts line,
+  committed and stretch off the chart's rules, next week off the new hollow
+  marker, the status basis and its RP citation off the status pill's tip, and the
+  priority word off `GoalPriorityIcon`. The milestone tile's own inset plane went
+  with the fold — the chart's plane is the only inset the card has. The card
+  measures its container, so it follows whatever width it is given. `compact` is
+  a cell in the per-lift grid: the same title row and the same summary over a
+  sparkline. One title row serves both — the lift on the left, then the priority
+  mark, the PR star and the status badge furthest right.
+- `GoalPriorityIcon` (`status:candidate`) — specialize / maintain / deprioritize
+  as a mark beside the status pill, with the level's meaning on hover, focus or
+  press. Priority is not pace, so it never borrows a `status-*` tone: the accent
+  goes to the level worth the attention and the others step back through the text
+  ramp. Three new shared icons: `TargetIcon`, `EqualIcon`, `ChevronsDownIcon`.
+- `GoalTrajectoryChart` takes `nextTarget` — a hollow dot at the week and value
+  the plan asks for next, joined to the latest reading by a dashed run, carrying
+  its label as a tip rather than as type on the plane. The y-domain and the week
+  axis both account for the marker, so a target above every reading still lands
+  inside the plane.
+- `GoalMilestoneSummary` — the meso target's content (hero, facts row, week
+  cells) with no plane or frame of its own. `GoalMilestoneTile` is that summary in
+  its inset plane, `PrimaryGoalCard` folds it onto the card, and `GoalLiftCard`
+  leads with it, so the gap, surplus and outcome maths has exactly one home.
+- `GoalMilestoneWeekStrip` takes an `axis`, which pins each week cell to a chart
+  column instead of sharing the width evenly, and clips the row to the plot so the
+  first and last cells trim at the plane edge as the chart's own columns do. A
+  cell covers 60% of its column, centred, in both modes.
+- `trajectoryWeekScale` — the chart's week axis as a pure function, so anything
+  lining up with the columns from outside the SVG shares them rather than
+  re-deriving them.
+- `TipTrigger` (`ui/tooltip`) — one tip opened by hover, focus and press off a
+  single state, with a `usePortal` escape for tips that need `-start` / `-end`
+  placement. `GoalMilestoneWeekStrip` now composes it instead of its own copy.
+- `PrBadge` takes `iconSize` for its compact star, so a wall-density header can
+  carry a 20px mark and a phone the original 14px.
+- `valueReach` / `milestoneReach` (`goalMilestone.ts`) — one definition of where
+  a reading landed against its target.
+- `GoalTrajectoryMini` and `GoalWeekColumnsChart` — the compact goal chart, and
+  the body of `GoalCard size="compact"`. The block's week cells stand on the
+  chart's plane, on its own week columns, so a cell heads the column its point
+  sits in; the current week's column is lit, and the line is recessed so the
+  points lead. It runs through the big chart's own `deriveTrajectoryGeometry`, so
+  the curve, the value floor, the week columns and the marks come from one place.
+  Folded in from #255.
+
+### Changed
+
+- `GoalTrajectoryStatus` and `GoalLiftStatus` accept two OUTCOME statuses beside
+  the seven pace ones: `goal_met` (success green, "Goal met") and `beyond_goal`
+  (the `ahead` blue, "Beyond goal"), which voltras-mcp's goal read model now
+  sends instead of leaving the UI to compare the best reading with the committed
+  value (VW-400). Where a card or the chart derived that verdict itself, an
+  incoming outcome status wins and the derivation stays as the fallback for
+  callers still sending pace. The derived "met" verdict now prints "Goal met"
+  too, so one state has one word whoever decided it — it read "Hit" before.
+- `PrimaryGoalCard` and `GoalLiftCard` are now presets of `GoalCard` (`full` and
+  `compact`). **Renamed, not removed**: both names still export and take the props
+  they took, so voltras-mcp's `#/goals` needs no change; `GoalLiftCard` can retire
+  once the SPA moves to `GoalCard size="compact"`. Their test hooks moved onto the
+  merged card: `goal-card-title`, `goal-card-status`, `goal-card-status-light`,
+  `goal-card-trend`, `goal-card-content`, `goal-card-fold`.
+- The compact card draws the goal chart instead of a `Sparkline`, and the
+  summary above it no longer draws its own week cells — the chart's row is the
+  card's row. A second chart vocabulary on the same page as
+  `GoalTrajectoryChart`, and two rows of the same weeks, both went (VW-385
+  ideation round 2, D1 chosen; A, D2, D3 and the `Sparkline` path are deleted and
+  recorded in `REJECTED.md`).
+- `GoalTrajectoryChart` takes `showWeekLabels` (default on). The full goal card
+  passes it off: its week cells stand on those very columns, so the axis was
+  printing every week a second time a row lower.
+- The committed and stretch rule labels anchor to the LEFT edge by default
+  (`referenceLabelSide`, folded in from #255). A goal that is going well ends its
+  line at the right edge, under the labels that used to anchor there.
+- The week axis insets by half a column plus half a gap, so the outer cells stand
+  the same distance off the plane's edges as they do off each other. Round 5's
+  half-column inset left them with half that air, which read as clipping —
+  measured in the browser, nothing was ever clipped.
+- `GoalTrajectoryChart` draws no legend at all (human: "way too chunky and I think
+  unnecessary"). Every rule already labels itself on the plane, and the status is
+  said once, in the card's title row. The pill, the swatches and their density
+  knobs are deleted rather than hidden behind a prop.
+- Cells are their full column again, less the shared gap: 60% was tried and
+  rejected. Every week's COLUMN — not just its dot — now sits whole inside the
+  plot, which also un-halves a week-one deload column.
+- The card's status badge reads the MILESTONE's verdict, the same one the summary's
+  hero shows. A band's committed edge and the block's target are different numbers,
+  so judging the badge by the band could print "Hit" over "2.5 lb to goal".
+- The goal verdict outranks the pace once a reading reaches the committed target.
+  Exactly at the goal is success green with the hit label, past it is the `ahead`
+  blue labelled `Beyond goal`. The chart's line and pill, the milestone summary's
+  hero, the tile's hit mark and the card's header pill all derive it from the
+  shared helper, so they cannot disagree.
+- `GoalLiftCard` leads with the meso target block instead of its own
+  `reps x load` hero and `in week 8` line, which said less in more space and said
+  it in a second vocabulary. Its PR star moves into the title row beside the
+  status affordance, where it no longer has to be taken out of flow. New optional
+  `weeks`, `currentWeek` and `latest` props feed the block; without them it reads
+  the target and the best set off the props the card already had.
+- `GoalMilestoneTile`'s hit mark takes the hero's own colour rather than a second
+  mapping of the same verdict, so a target that was beaten reads `Hit` in the
+  `ahead` blue instead of green over a blue hero.
+
 ## 0.17.1
 
 ### Fixed

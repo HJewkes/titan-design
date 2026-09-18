@@ -104,6 +104,40 @@ export function milestoneSurplus(
   return over > 0 ? { kind: 'value', amount: over } : { kind: 'none' }
 }
 
+/** Where a reading landed against its target: short of it, exactly on it, or past it. */
+export type GoalReach = 'short' | 'met' | 'beyond'
+
+/**
+ * Reach against a bare number, in the goal's direction. The one definition of
+ * "past the target": the chart derives its beyond-goal tone from this, and
+ * {@link milestoneReach} routes its value targets through it.
+ */
+export function valueReach(
+  target: number,
+  latest: number,
+  direction: GoalDirection = 'up'
+): GoalReach {
+  const remaining = direction === 'down' ? latest - target : target - latest
+  if (remaining > 0) return 'short'
+  return remaining === 0 ? 'met' : 'beyond'
+}
+
+/**
+ * Reach against a milestone target, judged in the unit the metric leads with,
+ * or null when the reading's shape does not match the target's.
+ */
+export function milestoneReach(
+  target: GoalMilestoneTarget,
+  latest: GoalMilestoneReading,
+  direction: GoalDirection = 'up'
+): GoalReach | null {
+  const gap = milestoneGap(target, latest, direction)
+  if (!gap) return null
+  if (gap.kind !== 'none') return 'short'
+  const surplus = milestoneSurplus(target, latest, direction)
+  return surplus && surplus.kind !== 'none' ? 'beyond' : 'met'
+}
+
 export function isMilestoneMet(
   target: GoalMilestoneTarget,
   latest: GoalMilestoneReading,

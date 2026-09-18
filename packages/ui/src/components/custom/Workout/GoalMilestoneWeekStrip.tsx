@@ -1,10 +1,12 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { useState, type ReactNode } from 'react'
-import { Pressable, View } from 'react-native'
+import type { ReactNode } from 'react'
+import { View } from 'react-native'
 
+import { SET_LEVEL_FLAT_BAR } from '../charts/flatBarGeometry'
+import { WEEK_COLUMN_GAP } from './GoalTrajectoryChartGeometry'
 import { Pill, type PillTone } from '../../ui/pill'
 import { useSurfaceMode } from '../../ui/surface'
-import { Tooltip } from '../../ui/tooltip'
+import { TipTrigger } from '../../ui/tooltip'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { Typography } from '../Typography'
 import { SegmentedBar, type SegmentedBarSegment } from './SegmentedBar'
@@ -16,6 +18,17 @@ import {
   type GoalWeekOutcome,
 } from './goalMilestone'
 
+/** Where a week's column sits, when the strip has to line up with a chart. */
+export interface GoalMilestoneWeekAxis {
+  /** Centre x of a week's column, in the chart's coordinate space. */
+  x: (week: number) => number
+  /** Column width in px. */
+  span: number
+  /** The plot's edges. The strip sits between them and clips there, as the plot does. */
+  left: number
+  right: number
+}
+
 export interface GoalMilestoneWeekStripProps {
   weekCount: number
   currentWeek?: number
@@ -25,6 +38,12 @@ export interface GoalMilestoneWeekStripProps {
   readingText: (entry: GoalWeekEntry) => string
   /** Height of the current week's cell in px; every other week sits shorter. */
   cellHeight?: number
+  /**
+   * Pins each cell to a chart column instead of sharing the width evenly. The
+   * folded card puts the strip directly above the plot, where a cell is the
+   * header of its week's column and has to sit exactly over it.
+   */
+  axis?: GoalMilestoneWeekAxis
 }
 
 type Palette = ReturnType<typeof getSemanticColors>
@@ -49,6 +68,15 @@ const OUTCOME_PILL_TONE: Record<GoalWeekOutcome, PillTone> = {
  */
 /** Every other week sits at this share of the current week's height. */
 const PAST_WEEK_HEIGHT = 0.7
+
+/**
+ * A cell is its whole column less the shared gap — the same relationship a
+ * `SegmentedBar` slot has to its pitch. A 60% cell was tried in round 4 and
+ * rejected: "lets go back to how they were before". The number lives with the
+ * axis maths, which insets by half of it so the end cells are not left with half
+ * the air their neighbours have.
+ */
+export const CELL_GAP = WEEK_COLUMN_GAP
 
 export function weekSegments(cells: GoalWeekCell[], t: Palette): SegmentedBarSegment[] {
   return cells.map((cell) => ({
@@ -92,7 +120,6 @@ function TipBody({
   )
 }
 
-/** Hover on web, focus for the keyboard, press on native — one open state for all three. */
 function WeekCellTrigger({
   cell,
   children,
@@ -102,32 +129,67 @@ function WeekCellTrigger({
   children: ReactNode
   readingText: (entry: GoalWeekEntry) => string
 }) {
-  const [open, setOpen] = useState(false)
-  const label = `Week ${cell.week}, ${WEEK_OUTCOME_LABEL[cell.outcome ?? 'none']}`
   return (
-    <Tooltip
-      isOpen={open}
-      placement="top"
-      usePortal
+    <TipTrigger
+      label={`Week ${cell.week}, ${WEEK_OUTCOME_LABEL[cell.outcome ?? 'none']}`}
+      content={<TipBody cell={cell} readingText={readingText} />}
       // The tooltip's own wrapper sits between the row and the cell; without a
       // size it collapses to zero height and the cell disappears.
       style={{ flex: 1, height: '100%' }}
-      content={<TipBody cell={cell} readingText={readingText} />}
+      testID={`goal-milestone-week-${cell.week}`}
     >
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={label}
-        onHoverIn={() => setOpen(true)}
-        onHoverOut={() => setOpen(false)}
-        onFocus={() => setOpen(true)}
-        onBlur={() => setOpen(false)}
-        onPress={() => setOpen((wasOpen) => !wasOpen)}
-        style={{ flex: 1, height: '100%' }}
-        testID={`goal-milestone-week-${cell.week}`}
-      >
-        {children}
-      </Pressable>
-    </Tooltip>
+      {children}
+    </TipTrigger>
+  )
+}
+
+/**
+ * One column-aligned cell. Same paint as a `SegmentedBar` slot — fill, outline,
+ * ring, short-for-a-past-week — laid out by absolute x rather than by flex,
+ * because a flex gap drifts a cell off its column by half a gap per step.
+ */
+function AlignedCell({
+  cell,
+  segment,
+  axis,
+  cellHeight,
+  readingText,
+}: {
+  cell: GoalWeekCell
+  segment: SegmentedBarSegment
+  axis: GoalMilestoneWeekAxis
+  cellHeight: number
+  readingText: (entry: GoalWeekEntry) => string
+}) {
+  const width = Math.max(2, axis.span - CELL_GAP)
+  const height = cellHeight * (segment.heightFraction ?? 1)
+  return (
+    <View
+      style={{
+        position: 'absolute',
+        // Chart coordinates, less the strip's own offset into them.
+        left: axis.x(cell.week) - axis.left - width / 2,
+        bottom: 0,
+        width,
+        height,
+      }}
+      testID={`goal-milestone-week-cell-${cell.week}`}
+    >
+      <WeekCellTrigger cell={cell} readingText={readingText}>
+        <View
+          style={{
+            width: '100%',
+            height: '100%',
+            borderRadius: SET_LEVEL_FLAT_BAR.radius,
+            backgroundColor: segment.outline ? 'transparent' : segment.color,
+            borderWidth: segment.outline || segment.ringColor ? 1 : undefined,
+            borderColor: segment.ringColor ?? segment.color,
+          }}
+          accessibilityElementsHidden
+          testID={`goal-milestone-week-fill-${cell.week}`}
+        />
+      </WeekCellTrigger>
+    </View>
   )
 }
 
@@ -153,9 +215,39 @@ export function GoalMilestoneWeekStrip({
   weeks,
   readingText,
   cellHeight = 8,
+  axis,
 }: GoalMilestoneWeekStripProps) {
   const t = getSemanticColors(useSurfaceMode())
   const cells = weekStripCells(weekCount, currentWeek, weeks)
+  const segments = weekSegments(cells, t)
+  if (axis) {
+    return (
+      <View
+        role="group"
+        aria-label={stripSummary(cells)}
+        testID="goal-milestone-week-strip"
+        // Inset to the plot. Nothing is clipped: the axis insets by half a
+        // column, so the first and last cells sit whole inside the plane.
+        style={{
+          marginLeft: axis.left,
+          width: axis.right - axis.left,
+          height: cellHeight,
+          position: 'relative',
+        }}
+      >
+        {cells.map((cell, i) => (
+          <AlignedCell
+            key={cell.week}
+            cell={cell}
+            segment={segments[i]}
+            axis={axis}
+            cellHeight={cellHeight}
+            readingText={readingText}
+          />
+        ))}
+      </View>
+    )
+  }
   return (
     <View
       role="group"
@@ -165,7 +257,7 @@ export function GoalMilestoneWeekStrip({
     >
       <SegmentedBar
         height={cellHeight}
-        segments={weekSegments(cells, t)}
+        segments={segments}
         segmentTestID={(_seg, i) => `goal-milestone-week-fill-${i + 1}`}
         renderSegment={(slot, _seg, i) => (
           <WeekCellTrigger cell={cells[i]} readingText={readingText}>

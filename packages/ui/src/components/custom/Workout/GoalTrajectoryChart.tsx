@@ -2,12 +2,16 @@
 import { useMemo } from 'react'
 import { View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { alpha } from '../../../utils/colors'
 import { roundWeight } from '../../../utils/workout-format'
 import { useSurface, useOnSurfaceColor } from '../../ui/surface'
+import { TipTrigger } from '../../ui/tooltip'
+import { Typography } from '../Typography'
+import { valueReach, type GoalReach } from './goalMilestone'
 import {
   deriveTrajectoryGeometry,
   type GoalActualPoint,
+  type GoalNextTarget,
+  type NextTargetCoord,
   type GoalDirection,
   type GoalExpectedPoint,
   type GoalTrajectoryGeometry,
@@ -17,9 +21,8 @@ import {
 import {
   DEFAULT_LEFT_SHADOW_SPREAD,
   GoalTrajectoryPlot,
-  starPoints,
   trajectoryPalette,
-  type TrajectoryPalette,
+  type ReferenceLabelSide,
 } from './GoalTrajectoryPlot'
 import { useTrajectoryEntrance } from './goalTrajectoryMotion'
 import type { BandFade } from './GoalTrajectoryBand'
@@ -30,6 +33,7 @@ export type {
   GoalActualPoint,
   GoalDirection,
   GoalExpectedPoint,
+  GoalNextTarget,
   GoalTrajectoryStatus,
   GoalTrajectoryWeek,
 } from './GoalTrajectoryChartGeometry'
@@ -42,42 +46,62 @@ const STATUS_LABEL: Record<GoalTrajectoryStatus, string> = {
   deload_week: 'Deload week',
   calibrating: 'Calibrating',
   stalled: 'Stalled',
+  goal_met: 'Goal met',
+  beyond_goal: 'Beyond goal',
+}
+
+/**
+ * Once a reading reaches the committed target the pill stops reporting pace and
+ * reports the result: reaching the goal is success green, going past it is the
+ * `ahead` blue. Both tones and both words are shared with `GoalMilestoneTile`,
+ * which derives the same verdict from the same helper.
+ */
+export const REACH_STATUS = { met: 'on_track', beyond: 'ahead' } as const satisfies Record<
+  Exclude<GoalReach, 'short'>,
+  GoalTrajectoryStatus
+>
+
+const REACH_LABEL = { met: 'Goal met', beyond: 'Beyond goal' } as const
+
+/**
+ * The read model's own outcome words. When it sends one, the UI prints it rather
+ * than re-deriving the same verdict from the numbers — its committed value and
+ * ours can differ, and the read model is the one that knows.
+ */
+const OUTCOME_REACH = { goal_met: 'met', beyond_goal: 'beyond' } as const
+
+/** The reach a status already states, or null when it only states pace. */
+export function outcomeReach(status: GoalTrajectoryStatus): GoalReach | null {
+  return status === 'goal_met' || status === 'beyond_goal' ? OUTCOME_REACH[status] : null
+}
+
+/** The best reading in the goal's direction, judged against the committed target. */
+export function trajectoryReach(
+  committed: number,
+  actuals: GoalActualPoint[],
+  direction: GoalDirection = 'up'
+): GoalReach {
+  const values = actuals.map((a) => a.value).filter((v) => Number.isFinite(v))
+  if (values.length === 0) return 'short'
+  const best = direction === 'down' ? Math.min(...values) : Math.max(...values)
+  return valueReach(committed, best, direction)
 }
 
 /** Above this width the chart renders at wall density (across-the-room scale). */
-const WALL_BREAKPOINT = 720
+export const WALL_BREAKPOINT = 720
 
 interface Density {
   stroke: number
   star: number
-  pillFont: number
   tickCount: number
   showYLabels: boolean
   maxWeekLabels: number
-  /** The phone drops the rule entries: each rule already carries its own label. */
-  showRuleLegend: boolean
 }
 
 // Phone drops to three gridlines; its y labels stay because the plot has the gutter.
 const DENSITY: Record<'phone' | 'wall', Density> = {
-  phone: {
-    stroke: 2,
-    star: 6,
-    pillFont: 10,
-    tickCount: 3,
-    showYLabels: true,
-    maxWeekLabels: 6,
-    showRuleLegend: false,
-  },
-  wall: {
-    stroke: 3,
-    star: 7.5,
-    pillFont: 16,
-    tickCount: 5,
-    showYLabels: true,
-    maxWeekLabels: 12,
-    showRuleLegend: true,
-  },
+  phone: { stroke: 2, star: 6, tickCount: 3, showYLabels: true, maxWeekLabels: 6 },
+  wall: { stroke: 3, star: 7.5, tickCount: 5, showYLabels: true, maxWeekLabels: 12 },
 }
 
 export interface GoalTrajectoryChartProps extends ViewProps {
@@ -93,6 +117,12 @@ export interface GoalTrajectoryChartProps extends ViewProps {
   weeks: GoalTrajectoryWeek[]
   /** Week indices where a mesocycle boundary falls. */
   mesoBoundaries?: number[]
+  /**
+   * The next planned waypoint: a hollow dot at (`weekIndex`, `value`), joined to
+   * the latest reading by a dashed run, carrying `label` as its tip. Unlabelled
+   * on the plane — the plan reads as a shape, and the words are one hover away.
+   */
+  nextTarget?: GoalNextTarget
   /** Read-model status; drives the actual line's tone and the status pill. */
   status: GoalTrajectoryStatus
   /** Which way "better" points. `down` is a loss goal (low > high numerically). */
@@ -103,6 +133,13 @@ export interface GoalTrajectoryChartProps extends ViewProps {
   height: number
   /** Unit suffix for value labels, e.g. "lbs". */
   unit?: string
+  /**
+   * Draw the week numbers under the plot. Off inside a card whose week cells sit
+   * over the columns: the cells label the weeks, and the axis said it twice
+   * (VW-385 round 6, human: "they line up with the points on the chart below and
+   * so you have a built in labeling scheme there").
+   */
+  showWeekLabels?: boolean
   /** Metric name for the accessible summary, e.g. "Bench top load". */
   metricLabel?: string
   /**
@@ -121,11 +158,17 @@ export interface GoalTrajectoryChartProps extends ViewProps {
   bandFade?: BandFade
   /** Band edge interpolation. Locked: `monotone`; `linear` was not chosen. */
   bandCurve?: BandCurve
+  /**
+   * Which plot edge the committed/stretch labels anchor to. Defaults to `left`
+   * (VW-385 round 6, human's call): the right edge is where the line ends up on
+   * a goal that is going well, and the labels sat on top of it.
+   */
+  referenceLabelSide?: ReferenceLabelSide
   className?: string
 }
 
 function summarize(
-  status: GoalTrajectoryStatus,
+  statusLabel: string,
   geometry: GoalTrajectoryGeometry,
   committed: number,
   stretch: number,
@@ -138,7 +181,7 @@ function summarize(
     : 'No measured values yet.'
   const prs = geometry.prStars.length
   return (
-    `${metricLabel} trajectory chart. Status: ${STATUS_LABEL[status]}. ` +
+    `${metricLabel} trajectory chart. Status: ${statusLabel}. ` +
     `Committed ${String(roundWeight(committed))} ${unit}, stretch ${String(roundWeight(stretch))} ${unit}. ` +
     `${current} ${String(prs)} personal record${prs === 1 ? '' : 's'}.`
   )
@@ -148,6 +191,10 @@ function summarize(
  * Goal trajectory over a block: the coach's expected band as a shaded polygon,
  * the committed and stretch rules, the athlete's actual line with PR stars,
  * meso boundary rules and deload shading.
+ *
+ * It draws no legend (VW-385 round 5, human: "way too chunky and I think
+ * unnecessary"). Every rule already carries its own label on the plane, and the
+ * status belongs to the card's title row, where it is said once.
  *
  * Drawn as one SVG ({@link GoalTrajectoryPlot}) on a lowered plane. All geometry
  * comes from `deriveTrajectoryGeometry`, which orders the band in pixel space so a
@@ -174,23 +221,29 @@ export function GoalTrajectoryChart({
   actuals,
   weeks,
   mesoBoundaries = [],
+  nextTarget,
   status,
   direction = 'up',
   width,
   height,
   unit = 'lbs',
+  showWeekLabels = true,
   metricLabel = 'Goal',
   leftShadowSpread = DEFAULT_LEFT_SHADOW_SPREAD,
   animate = true,
   baseline = 'lip',
   bandFade = 'centre-14',
   bandCurve = 'monotone',
+  referenceLabelSide = 'left',
   className,
   ...props
 }: GoalTrajectoryChartProps) {
   const surface = useSurface()
   const axisColor = useOnSurfaceColor('tertiary')
-  const palette = trajectoryPalette(surface.mode, surface.level, status)
+  const reach = outcomeReach(status) ?? trajectoryReach(committed, actuals, direction)
+  const toneStatus = reach === 'short' ? status : REACH_STATUS[reach]
+  const statusLabel = reach === 'short' ? STATUS_LABEL[status] : REACH_LABEL[reach]
+  const palette = trajectoryPalette(surface.mode, surface.level, toneStatus)
   const density = width >= WALL_BREAKPOINT ? DENSITY.wall : DENSITY.phone
   const entrance = useTrajectoryEntrance(animate)
 
@@ -203,6 +256,7 @@ export function GoalTrajectoryChart({
         actuals,
         weeks,
         mesoBoundaries,
+        nextTarget,
         width,
         height,
         tickCount: density.tickCount,
@@ -215,6 +269,7 @@ export function GoalTrajectoryChart({
       actuals,
       weeks,
       mesoBoundaries,
+      nextTarget,
       width,
       height,
       density,
@@ -245,7 +300,7 @@ export function GoalTrajectoryChart({
       <View
         style={{ width, height }}
         accessibilityRole="image"
-        accessibilityLabel={summarize(status, geometry, committed, stretch, unit, metricLabel)}
+        accessibilityLabel={summarize(statusLabel, geometry, committed, stretch, unit, metricLabel)}
         testID="goal-trajectory-chart-canvas"
       >
         <GoalTrajectoryPlot
@@ -255,7 +310,7 @@ export function GoalTrajectoryChart({
           height={height}
           committed={committed}
           stretch={stretch}
-          weeks={axisWeeks}
+          weeks={showWeekLabels ? axisWeeks : []}
           weekStride={Math.max(1, Math.ceil(axisWeeks.length / density.maxWeekLabels))}
           showYLabels={density.showYLabels}
           style={{
@@ -265,145 +320,38 @@ export function GoalTrajectoryChart({
             baseline,
             bandFade,
             bandCurve,
+            referenceLabelSide,
           }}
           entrance={entrance}
         />
       </View>
-      <ChartLegend
-        status={status}
-        direction={direction}
-        palette={palette}
-        axisColor={axisColor}
-        font={density.pillFont}
-        hasDeload={geometry.deloadRects.length > 0}
-        showRules={density.showRuleLegend}
-      />
-    </View>
-  )
-}
-
-interface ChartLegendProps {
-  status: GoalTrajectoryStatus
-  direction: GoalDirection
-  palette: TrajectoryPalette
-  axisColor: string
-  font: number
-  hasDeload: boolean
-  showRules: boolean
-}
-
-function LegendLabel({ color, font, children }: { color: string; font: number; children: string }) {
-  return <Text style={{ color, fontSize: font, fontFamily: 'Inter, sans-serif' }}>{children}</Text>
-}
-
-function StatusPill({
-  status,
-  palette,
-  font,
-}: Pick<ChartLegendProps, 'status' | 'palette' | 'font'>) {
-  return (
-    <View
-      testID="goal-trajectory-chart-status-pill"
-      accessibilityLabel={`Goal status: ${STATUS_LABEL[status]}`}
-      className="px-squish-x-sm py-squish-y-sm"
-      style={{
-        borderRadius: 4,
-        borderWidth: 1,
-        backgroundColor: alpha(palette.status, 0.15),
-        borderColor: alpha(palette.status, 0.3),
-      }}
-    >
-      <Text
-        style={{
-          color: palette.status,
-          fontSize: font,
-          fontFamily: 'Inter, sans-serif',
-          fontWeight: '600',
-        }}
-      >
-        {STATUS_LABEL[status]}
-      </Text>
-    </View>
-  )
-}
-
-function RuleSwatch({ color, dashed }: { color: string; dashed?: boolean }) {
-  return (
-    <svg width={14} height={4} aria-hidden="true">
-      <line
-        x1={0}
-        x2={14}
-        y1={2}
-        y2={2}
-        stroke={color}
-        strokeWidth={dashed ? 1.5 : 2}
-        strokeDasharray={dashed ? '3 2' : undefined}
-      />
-    </svg>
-  )
-}
-
-function RuleLegend({
-  palette,
-  axisColor,
-  font,
-}: Pick<ChartLegendProps, 'palette' | 'axisColor' | 'font'>) {
-  return (
-    <>
-      <View className="flex-row items-center gap-inline-sm">
-        <RuleSwatch color={palette.rule} />
-        <LegendLabel color={axisColor} font={font}>
-          Committed
-        </LegendLabel>
-      </View>
-      <View className="flex-row items-center gap-inline-sm">
-        <RuleSwatch color={palette.rule} dashed />
-        <LegendLabel color={axisColor} font={font}>
-          Stretch
-        </LegendLabel>
-      </View>
-    </>
-  )
-}
-
-function ChartLegend({
-  status,
-  direction,
-  palette,
-  axisColor,
-  font,
-  hasDeload,
-  showRules,
-}: ChartLegendProps) {
-  return (
-    <View
-      className="flex-row items-center flex-wrap mt-stack-md gap-3"
-      testID="goal-trajectory-chart-legend"
-    >
-      <StatusPill status={status} palette={palette} font={font} />
-      <View className="flex-row items-center gap-inline-sm">
-        <View style={{ width: 14, height: 8, borderRadius: 2, backgroundColor: palette.band }} />
-        <LegendLabel color={axisColor} font={font}>
-          {direction === 'down' ? 'Expected (loss)' : 'Expected'}
-        </LegendLabel>
-      </View>
-      {showRules && <RuleLegend palette={palette} axisColor={axisColor} font={font} />}
-      <View className="flex-row items-center gap-inline-sm">
-        <svg width={12} height={12} aria-hidden="true">
-          <polygon points={starPoints(6, 6.5, 6)} fill={palette.star} />
-        </svg>
-        <LegendLabel color={axisColor} font={font}>
-          PR
-        </LegendLabel>
-      </View>
-      {hasDeload && (
-        <View className="flex-row items-center gap-inline-sm">
-          <View style={{ width: 14, height: 8, backgroundColor: palette.deload }} />
-          <LegendLabel color={axisColor} font={font}>
-            Deload
-          </LegendLabel>
-        </View>
+      {geometry.nextTarget && nextTarget && (
+        <NextTargetTip point={geometry.nextTarget} label={nextTarget.label} />
       )}
+    </View>
+  )
+}
+
+/** Side of the square hit area the next-target tip opens from. */
+const TIP_HIT = 24
+
+/**
+ * The marker's words, one hover away: a hit target over the plane rather than a
+ * label on it. Absolute against the chart's own box, whose origin is the canvas.
+ */
+function NextTargetTip({ point, label }: { point: NextTargetCoord; label: string }) {
+  return (
+    <View
+      style={{ position: 'absolute', left: point.x - TIP_HIT / 2, top: point.y - TIP_HIT / 2 }}
+      testID="goal-trajectory-chart-next-target-tip"
+    >
+      <TipTrigger
+        label="Next target"
+        content={<Typography variant="body2">{label}</Typography>}
+        style={{ width: TIP_HIT, height: TIP_HIT }}
+      >
+        <View style={{ width: TIP_HIT, height: TIP_HIT }} />
+      </TipTrigger>
     </View>
   )
 }

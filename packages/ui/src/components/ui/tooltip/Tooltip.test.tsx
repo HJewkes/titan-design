@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { Text } from 'react-native'
 import { axe } from 'jest-axe'
 import { Tooltip } from './Tooltip'
+import { TipTrigger } from './TipTrigger'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 
 function hoverTrigger(triggerText: string) {
@@ -294,4 +295,55 @@ describe('Tooltip geometry resolves to the spacing tokens', () => {
       expect(resolveAll(spacing)).toEqual([...pixels])
     }
   )
+})
+
+describe('TipTrigger', () => {
+  function renderTip() {
+    return render(
+      <TipTrigger label="Goal status: Behind" content={<Text>Under the band</Text>} testID="tip">
+        <Text>Behind</Text>
+      </TipTrigger>
+    )
+  }
+
+  it('names the trigger before the tip is open', () => {
+    renderTip()
+    expect(screen.getByRole('button', { name: 'Goal status: Behind' })).toBeInTheDocument()
+    expect(screen.queryByText('Under the band')).toBeNull()
+  })
+
+  it('opens on hover and closes when the pointer leaves', () => {
+    renderTip()
+    const trigger = screen.getByTestId('tip')
+
+    fireEvent.mouseEnter(trigger)
+    expect(screen.getByText('Under the band')).toBeInTheDocument()
+
+    fireEvent.mouseLeave(trigger)
+    expect(screen.queryByText('Under the band')).toBeNull()
+  })
+
+  it('opens on keyboard focus', () => {
+    renderTip()
+
+    fireEvent.focus(screen.getByTestId('tip'))
+
+    expect(screen.getByText('Under the band')).toBeInTheDocument()
+  })
+
+  it('toggles on press, for touch', () => {
+    renderTip()
+    const trigger = screen.getByTestId('tip')
+
+    fireEvent.click(trigger)
+    expect(screen.getByText('Under the band')).toBeInTheDocument()
+
+    fireEvent.click(trigger)
+    expect(screen.queryByText('Under the band')).toBeNull()
+  })
+
+  it('has no accessibility violations', async () => {
+    const { container } = renderTip()
+    expect(await axe(container)).toHaveNoViolations()
+  })
 })

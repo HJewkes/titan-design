@@ -145,10 +145,13 @@ export {
 } from './CapacityBandChart'
 export {
   GoalTrajectoryChart,
+  trajectoryReach,
+  WALL_BREAKPOINT as GOAL_TRAJECTORY_WALL_BREAKPOINT,
   type GoalTrajectoryChartProps,
   type GoalActualPoint,
   type GoalDirection,
   type GoalExpectedPoint,
+  type GoalNextTarget,
   type GoalTrajectoryStatus,
   type GoalTrajectoryWeek,
 } from './GoalTrajectoryChart'
@@ -156,19 +159,31 @@ export {
   deriveTrajectoryGeometry,
   flattenDeloadWeeks,
   resolveActualWeek,
+  trajectoryWeekScale,
+  type TrajectoryWeekScale,
   type GoalTrajectoryGeometry,
   type GoalTrajectoryGeometryInput,
+  type NextTargetCoord,
 } from './GoalTrajectoryChartGeometry'
 export {
+  GoalCard,
   GoalLiftCard,
   goalLiftStatusLabel,
+  goalStatusBadge,
+  markSizeFor as goalCardMarkSize,
+  milestoneBlock,
   STATUS_COLLAPSE_WIDTH as GOAL_LIFT_CARD_STATUS_COLLAPSE_WIDTH,
+  type GoalCardChart,
+  type GoalCardMilestone,
+  type GoalCardProps,
+  type GoalCardSize,
+  type GoalCardTrend,
   type GoalLiftCardProps,
   type GoalLiftCardDensity,
   type GoalLiftActual,
   type GoalLiftMilestone,
   type GoalLiftStatus,
-} from './GoalLiftCard'
+} from './GoalCard'
 export {
   GoalMilestoneTile,
   milestoneToneToken,
@@ -178,17 +193,35 @@ export {
   type GoalMilestoneTileLayout,
 } from './GoalMilestoneTile'
 export {
+  GoalPriorityIcon,
+  GOAL_PRIORITY_LABEL,
+  GOAL_PRIORITY_MEANING,
+  type GoalPriority,
+  type GoalPriorityIconProps,
+} from './GoalPriorityIcon'
+export {
+  PrimaryGoalCard,
+  type PrimaryGoalCardProps,
+  type PrimaryGoalChart,
+  type PrimaryGoalMilestone,
+} from './PrimaryGoalCard'
+export { GoalMilestoneSummary, type GoalMilestoneSummaryProps } from './GoalMilestoneSummary'
+export {
   GoalMilestoneWeekStrip,
   WEEK_OUTCOME_LABEL,
   weekSegments,
   type GoalMilestoneWeekStripProps,
+  type GoalMilestoneWeekAxis,
 } from './GoalMilestoneWeekStrip'
 export {
   deriveMilestoneState,
   isLoadTarget,
   isMilestoneMet,
   milestoneGap,
+  milestoneReach,
+  valueReach,
   weekStripCells,
+  type GoalReach,
   type GoalLoadMetric,
   type GoalLoadTarget,
   type GoalMilestoneGap,

@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 import { GoalLiftCard, goalLiftStatusLabel, type GoalLiftCardProps } from './GoalLiftCard'
 
@@ -18,71 +19,84 @@ const baseProps: GoalLiftCardProps = {
 }
 
 describe('GoalLiftCard', () => {
-  it('leads with the milestone as reps x load', () => {
+  it('leads with the meso target block, not a hand-rolled hero', () => {
     render(<GoalLiftCard {...baseProps} />)
-    expect(screen.getByTestId('goal-lift-card-hero')).toHaveTextContent('8 x 105')
+    const summary = screen.getByTestId('goal-milestone-summary')
+    expect(within(summary).getByTestId('goal-milestone-hero')).toHaveTextContent('5 lb')
+    expect(screen.queryByTestId('goal-lift-card-hero')).toBeNull()
+    expect(screen.queryByTestId('goal-lift-card-due')).toBeNull()
   })
 
-  it('renders the unit and the due week', () => {
+  it('reads the block off the props the card already had', () => {
     render(<GoalLiftCard {...baseProps} />)
-    expect(screen.getByText('lb')).toBeInTheDocument()
-    expect(screen.getByTestId('goal-lift-card-due')).toHaveTextContent('in week 8')
+    const summary = screen.getByTestId('goal-milestone-summary')
+    // Week 5 is the last reading's week, 8 the milestone's due week.
+    expect(within(summary).getByTestId('goal-milestone-week-count')).toHaveTextContent(
+      'Week 5 of 8'
+    )
+    // The facts row lays out a hidden measuring copy beside the visible one.
+    expect(within(summary).getAllByText('8 x 100 lb').length).toBeGreaterThan(0)
+    expect(within(summary).getAllByText('8 x 105 lb').length).toBeGreaterThan(0)
+  })
+
+  it('carries a week cell per week of the block, on the chart it sits over', () => {
+    // The cells belong to the compact chart now, which needs a measured width.
+    render(<GoalLiftCard {...baseProps} chartWidth={408} />)
+    expect(screen.getAllByTestId(/goal-milestone-week-fill-/)).toHaveLength(8)
+    expect(screen.getByTestId('goal-week-columns-chart')).toBeInTheDocument()
+    // One row of cells, not two: the summary above hands them to the chart.
+    expect(screen.getAllByTestId('goal-milestone-week-strip')).toHaveLength(1)
+  })
+
+  it('takes an explicit best set over the one derived from the readings', () => {
+    render(<GoalLiftCard {...baseProps} latest={{ reps: 6, load: 102.5 }} />)
+    expect(screen.getAllByText('6 x 102.5 lb').length).toBeGreaterThan(0)
   })
 
   it('renders the exercise name', () => {
     render(<GoalLiftCard {...baseProps} />)
-    expect(screen.getByTestId('goal-lift-card-name')).toHaveTextContent('BENCH PRESS')
+    expect(screen.getByTestId('goal-card-title')).toHaveTextContent('BENCH PRESS')
   })
 
   describe('the PR mark', () => {
     it('renders when the target holds a record', () => {
       render(<GoalLiftCard {...baseProps} isPR />)
-      expect(screen.getByTestId('goal-lift-card-pr')).toBeInTheDocument()
+      expect(screen.getByTestId('pr-badge-star')).toBeInTheDocument()
     })
 
     it('is absent by default', () => {
       render(<GoalLiftCard {...baseProps} />)
-      expect(screen.queryByTestId('goal-lift-card-pr')).toBeNull()
+      expect(screen.queryByTestId('pr-badge-star')).toBeNull()
     })
 
     /**
-     * NOT a layout assertion. jsdom has no layout engine, so this compares the
-     * unit Text's OWN style and nothing about where it lands on screen. It
-     * catches a regression that restyles the unit; it would NOT catch the star
-     * being put back into normal flow, which is what actually pushed the unit
-     * down. That invariant is pinned by the `Widths` story in the browser.
+     * The star sits in the title row beside the status affordance now that the
+     * hero it used to hang over is gone, so it no longer needs to be taken out
+     * of flow: nothing below it can be displaced by it.
      */
-    it('leaves the unit element unstyled by the presence of a PR', () => {
-      const { rerender } = render(<GoalLiftCard {...baseProps} />)
-      const withoutPR = screen.getByText('lb').getAttribute('style')
-      rerender(<GoalLiftCard {...baseProps} isPR />)
-      expect(screen.getByText('lb').getAttribute('style')).toBe(withoutPR)
-    })
-
-    it('takes the star out of flow, so it cannot displace the unit', () => {
-      // The mechanism behind the alignment invariant above, which IS assertable:
-      // absolute positioning is why a PR card and a non-PR card stay level.
-      render(<GoalLiftCard {...baseProps} isPR />)
-      expect(screen.getByTestId('goal-lift-card-pr')).toHaveStyle({ position: 'absolute' })
+    it('sits in the title row, beside the status affordance', () => {
+      render(<GoalLiftCard {...baseProps} isPR statusForm="pill" />)
+      const row = screen.getByTestId('pr-badge-star').parentElement
+      expect(row).toContainElement(screen.getByTestId('goal-card-status'))
     })
   })
 
   describe('the status affordance', () => {
     it('is a pill at a comfortable width', () => {
       render(<GoalLiftCard {...baseProps} statusForm="pill" />)
-      expect(screen.getByTestId('goal-lift-card-status-pill')).toHaveTextContent('On track')
-      expect(screen.queryByTestId('goal-lift-card-status-dot')).toBeNull()
+      expect(screen.getByTestId('goal-card-status')).toHaveTextContent('On track')
+      expect(screen.queryByTestId('goal-card-status-light')).toBeNull()
     })
 
     it('collapses to its light below the collapse width', () => {
       render(<GoalLiftCard {...baseProps} statusForm="dot" />)
-      expect(screen.getByTestId('goal-lift-card-status-dot')).toBeInTheDocument()
-      expect(screen.queryByTestId('goal-lift-card-status-pill')).toBeNull()
+      expect(screen.getByTestId('goal-card-status-light')).toBeInTheDocument()
+      expect(screen.queryByTestId('goal-card-status')).toBeNull()
     })
 
     it('collapses at the compact density without being asked', () => {
       render(<GoalLiftCard {...baseProps} density="compact" />)
-      expect(screen.getByTestId('goal-lift-card-status-dot')).toBeInTheDocument()
+      expect(screen.getByTestId('goal-card-status-light')).toBeInTheDocument()
     })
 
     it('never disappears — the collapsed form keeps an accessible name', () => {
@@ -101,21 +115,47 @@ describe('GoalLiftCard', () => {
       ['deload_week', 'Deload week'],
       ['calibrating', 'Calibrating'],
       ['stalled', 'Stalled'],
+      // The read model's outcome statuses (voltras-mcp VW-400).
+      ['goal_met', 'Goal met'],
+      ['beyond_goal', 'Beyond goal'],
     ]
 
     for (const [status, label] of cases) {
       it(`labels ${status} as "${label}"`, () => {
         render(<GoalLiftCard {...baseProps} status={status} statusForm="pill" />)
-        expect(screen.getByTestId('goal-lift-card-status-pill')).toHaveTextContent(label)
+        expect(screen.getByTestId('goal-card-status')).toHaveTextContent(label)
         expect(goalLiftStatusLabel(status)).toBe(label)
       })
     }
+
+    it('tells the summary what the read model ruled, so the hero agrees', () => {
+      // These readings are still 5 lb short; the status says the goal was met.
+      render(<GoalLiftCard {...baseProps} status="goal_met" />)
+      expect(screen.getAllByTestId('goal-milestone-hero')[0]).toHaveTextContent('Reached goal')
+      expect(screen.getAllByTestId('goal-milestone-hero')[0]).not.toHaveTextContent('to goal')
+    })
+
+    it('tones the two outcomes as the derived verdict already did', () => {
+      const dark = getSemanticColors('dark')
+      const heroColor = () =>
+        screen.getAllByTestId('goal-milestone-hero')[0].style.color.replace(/\s/g, '')
+      const rgb = (hex: string) => {
+        const n = parseInt(hex.slice(1), 16)
+        return `rgb(${String((n >> 16) & 255)},${String((n >> 8) & 255)},${String(n & 255)})`
+      }
+      const { unmount } = render(<GoalLiftCard {...baseProps} status="goal_met" />)
+      expect(heroColor()).toBe(rgb(dark['status-success']))
+      unmount()
+
+      render(<GoalLiftCard {...baseProps} status="beyond_goal" />)
+      expect(heroColor()).toBe(rgb(dark['status-info']))
+    })
   })
 
   describe('the trend', () => {
     it('renders a chart box', () => {
       render(<GoalLiftCard {...baseProps} />)
-      expect(screen.getByTestId('goal-lift-card-trend')).toBeInTheDocument()
+      expect(screen.getByTestId('goal-card-trend')).toBeInTheDocument()
     })
 
     it('renders nothing inside it with no readings', () => {
@@ -124,6 +164,16 @@ describe('GoalLiftCard', () => {
       render(<GoalLiftCard {...baseProps} actuals={[]} />)
       expect(screen.queryByTestId('sparkline')).toBeNull()
     })
+  })
+
+  it('says the same thing in the badge as in the hero', () => {
+    // The band's committed edge (102.5) is not the block's target (105): the
+    // badge follows the target, so it cannot read "Hit" over "5 lb to goal".
+    render(<GoalLiftCard {...baseProps} />)
+    expect(screen.getByTestId('goal-card-status')).toHaveTextContent('On track')
+
+    render(<GoalLiftCard {...baseProps} latest={{ reps: 8, load: 110 }} />)
+    expect(screen.getAllByTestId('goal-card-status')[1]).toHaveTextContent('Beyond goal')
   })
 
   it('names itself for assistive tech', () => {
@@ -139,7 +189,7 @@ describe('GoalLiftCard', () => {
    */
   it('leaves a long name unclamped, so it can wrap rather than truncate', () => {
     render(<GoalLiftCard {...baseProps} name="SINGLE-ARM DUMBBELL ROW" />)
-    const name = screen.getByTestId('goal-lift-card-name')
+    const name = screen.getByTestId('goal-card-title')
     expect(name).toHaveTextContent('SINGLE-ARM DUMBBELL ROW')
     expect(name.getAttribute('style') ?? '').not.toContain('line-clamp')
   })

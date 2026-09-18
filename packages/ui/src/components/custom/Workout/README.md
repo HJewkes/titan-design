@@ -17,7 +17,7 @@ VelocityStrip · DualVelocityStrip · SetRow · TempoDisplay · RestTimer · Mes
 WeekRow · WorkoutCard · SetStrip · ExerciseHeading · ExerciseCardHeading
 
 **Organisms** — full features, often with their own data contract:
-ExerciseCard · SessionRail · MesoCard · MesoStatusCard · GoalLiftCard · GoalMuscleCard · PrHistoryModal ·
+ExerciseCard · SessionRail · MesoCard · MesoStatusCard · GoalCard (GoalLiftCard · PrimaryGoalCard) · GoalMuscleCard · PrHistoryModal ·
 ReadinessCheck · StrengthTrendChart · CapacityBandChart · BodyMap · BodyMapDetailPanel
 
 **Pages** — phone-shaped reference screens (whole-screen compositions):
@@ -47,31 +47,125 @@ split.
 
 ## Notes
 
-- **GoalLiftCard (VW-386)** — one lift's goal state at card scale, replacing the
-  `#/goals` per-lift row whose label and data sat at opposite edges of the viewport.
+- **GoalLiftCard (VW-386, merged into GoalCard in VW-385 round 5)** — the per-lift
+  grid cell, now `GoalCard size="compact"` under the name the SPA already imports.
+  It maps the lift-shaped props onto the merged card and adds nothing of its own.
 
-  _composes ↓_ `Card` (elevation 1) · `Pill` / `Indicator` · `Typography` ·
-  `StarIcon` · `Sparkline`. _used-by ↑_ voltras-mcp `#/goals` `PerLiftTable`.
+  **Its chart is `GoalWeekColumnsChart` (D1), not a `Sparkline`.** The compact
+  card's summary hands its week cells to the chart, which stands them on its own
+  plane over its own week columns — one row that is both the week history and the
+  x axis. The `Sparkline` went because it was a second chart vocabulary on the
+  same page as `GoalTrajectoryChart`; the other variants (plane-only, ticked,
+  inset) are in `REJECTED.md`.
+
+  _used-by ↑_ voltras-mcp `#/goals` `PerLiftTable`.
+
+  **It leads with the meso target block, not its own hero.** The hand-rolled
+  `reps x load` figure and its `in week 8` line said less in more space and said
+  it in a second vocabulary. `milestoneBlock()` adapts the card's own props onto
+  the summary's — the target is the milestone, the block runs to its due week, and
+  the best set is the last reading at the target's reps, because
+  `top_load_at_reps` is a load AT those reps. A caller holding the real set passes
+  `latest`.
+
+  **The PR star sits in the title row** beside the status affordance, in the order
+  every goal card uses. It used to hang over the hero, absolutely positioned so it
+  could not push the unit down; with the hero gone there is nothing to displace.
 
   Its props map 1:1 onto `GoalProgressView`: `status` is `GoalProgressStatus`
   verbatim, and `milestone` takes the structured `reps` / `load` / `unit` /
   `goalWeek` that voltras-mcp #433 added to `GoalMilestone` — the card never
   parses the milestone `label`.
 
-  Three things that are decisions, not accidents:
+  Two things that are decisions, not accidents:
   - **The status mark collapses on measured WIDTH, not density.** Below
     `STATUS_COLLAPSE_WIDTH` (320) the pill becomes its `Indicator`. Keying it to
     density alone left a narrow comfortable cell rendering a full pill, which
     shoved the title into a wrap. The mark is never absent, only reshaped.
-  - **The PR star is absolutely positioned** over the unit. In normal flow it
-    pushes the unit down, and a PR card then sits a line off every non-PR card
-    beside it in the same grid row.
-  - **The hero is `body1` plus the heading face, not `h4`.** `h1`-`h6` emit
-    `accessibilityRole="header"` (gotcha #11b) and a milestone number is not a
-    heading; a four-column grid would have put eight bogus headings on the page.
+  - **The block's hero is `body1` plus the heading face, not `h4`.** `h1`-`h6`
+    emit `accessibilityRole="header"` (gotcha #11b) and a milestone number is not
+    a heading; a four-column grid would have put eight bogus headings on the page.
 
   `onLayout` does not fire under jsdom, so the width collapse is covered by the
   explicit `statusForm` override in tests and by the `Widths` story live.
+
+- **GoalCard (VW-385 unit 1)** — one goal at card scale, in two sizes.
+  `PrimaryGoalCard` is `size="full"`, `GoalLiftCard` is `size="compact"`; both
+  names are kept as presets because voltras-mcp imports them.
+
+  _composes ↓_ `Card` (elevation 1) · `GoalPriorityIcon` · `Pill` + `TipTrigger` ·
+  `PrBadge` · `GoalMilestoneSummary` · `GoalTrajectoryChart` (full) · `Sparkline`
+  (compact) · `Typography`. _used-by ↑_ voltras-mcp `#/goals`.
+
+  **One title row for both sizes** (round 5): the lift on the left, then the
+  priority mark, the PR star and the status badge FURTHEST RIGHT. Two cards on one
+  page ordering their marks differently is the kind of thing a design system
+  exists to prevent.
+
+  **It deletes a block rather than restyling it.** The old header printed the
+  week, the priority word, the status basis, committed, stretch and the next
+  milestone as text above the chart — every one of which the chart already shows
+  or can show (human call, 2026-09-17). The week is the chart's axis and the
+  summary's facts line; committed and stretch are its rules; next week is the
+  hollow marker; the basis and its RP citation are the status pill's tip; the
+  priority word is `GoalPriorityIcon`.
+
+  **The week cells stand on the chart's columns, and they are the week labels.**
+  They share the plot's x-scale through `trajectoryWeekScale` — not a second copy
+  of the arithmetic — so the full card passes `showWeekLabels={false}` and the
+  axis stops printing every week a second time a row lower. A cell is the header
+  of its week's column, which is only true if it is over that column at every
+  width; `PrimaryGoalCard.test.tsx` asserts the centres at 1888 and 328.
+
+  **The axis insets by half a column PLUS half a gap.** Half a column alone put
+  the n columns exactly edge to edge, which left the outer cells `gap / 2` of air
+  against the plane while their neighbours had `gap` — and that read as the end
+  cells being clipped. Nothing was ever clipped: measured in the browser, every
+  cell was the same width and no ancestor carried an overflow rule (VW-385 round
+  6). `WEEK_COLUMN_GAP` lives in the geometry module because the inset that
+  evens the rhythm is what has to know it.
+
+  **The badge reads the milestone's verdict, not the band's.** A band's committed
+  edge and the block's target are different numbers, and judging the badge by the
+  band printed "Hit" over a hero reading "2.5 lb to goal". Both now come from
+  `milestoneReach`.
+
+  **The fold left the tile behind.** An inset plane inside a card that already
+  has one (the chart's) read as two unrelated wells; the summary now sits
+  straight on the card. `GoalMilestoneTile` still exists for anything that wants
+  the framed form — it is that same summary in its plane.
+
+  `onLayout` does not fire under jsdom, so `chartWidth` pins the measured width
+  for tests. Without it the full card renders its title row and nothing else,
+  which is also what one frame of a real mount looks like.
+
+- **GoalPriorityIcon (VW-385 unit 1)** — specialize / maintain / deprioritize as
+  a mark, sized and placed like `PrBadge`'s compact star.
+
+  _composes ↓_ `TargetIcon` / `EqualIcon` / `ChevronsDownIcon` (new, shared) ·
+  `TipTrigger` · `Typography`. _used-by ↑_ `PrimaryGoalCard`.
+
+  **Priority is not pace, so it never takes a `status-*` tone.** The accent goes
+  to the one level worth the attention; the other two step back through the text
+  ramp. A test asserts none of the three is a status colour.
+
+- **The goal verdict has one definition** — `valueReach` / `milestoneReach` in
+  `goalMilestone.ts`, unless the read model states it. `goal_met` and
+  `beyond_goal` are outcome statuses (voltras-mcp VW-400): `outcomeReach()` turns
+  one into the verdict directly, and only a pace status falls through to the
+  comparison. Its committed value and ours can differ, and it is the one that
+  knows. A reading short of the committed target leaves the pace
+  tone alone; exactly on it is success green with the hit label; past it is the
+  `ahead` blue labelled `Beyond goal`. `GoalTrajectoryChart` (line, pill),
+  `GoalMilestoneSummary` (hero), `GoalMilestoneTile` (hit mark) and
+  `PrimaryGoalCard` (header pill) all read it off that helper — the maths is not
+  duplicated anywhere.
+
+- **GoalMilestoneSummary vs GoalMilestoneTile** — the summary is the content
+  (hero, facts row, week cells); the tile is the summary in its inset plane, with
+  the header and the Hit/Missed mark. The folded card composes the summary; the
+  per-lift slot composes the tile (`layout="compact"`, which carries the week
+  cells at the phone scale). Add behaviour to the summary, not to both.
 
 - **GoalMuscleCard (VW-386)** — a muscle priority's goal state at card scale:
   the figure lit by its status, the lifts-on-track count beneath it as a label,

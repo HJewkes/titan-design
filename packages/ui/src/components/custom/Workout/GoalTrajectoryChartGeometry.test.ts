@@ -14,6 +14,9 @@ import {
   bandColumns,
   BAND_COLUMN_STEP,
   cappedTicks,
+  trajectoryWeekScale,
+  weekInset,
+  WEEK_COLUMN_GAP,
   type GoalExpectedPoint,
   type GoalTrajectoryWeek,
 } from './GoalTrajectoryChartGeometry'
@@ -232,8 +235,10 @@ describe('deriveTrajectoryGeometry', () => {
       })
       expect(g.boundaries.map((b) => b.weekIndex)).toEqual([1, 4, 6])
       g.boundaries.forEach((b) => expect(b.x).toBeCloseTo(g.toX(b.weekIndex)))
-      expect(g.boundaries[0].x).toBeCloseTo(g.plot.left + WEEK_INSET)
-      expect(g.boundaries[2].x).toBeCloseTo(g.plot.right - WEEK_INSET)
+      // Half a column in from each edge, so week one's column is whole.
+      const inset = weekInset(g.plot.right - g.plot.left, 6)
+      expect(g.boundaries[0].x).toBeCloseTo(g.plot.left + inset)
+      expect(g.boundaries[2].x).toBeCloseTo(g.plot.right - inset)
     })
 
     it('puts the committed rule below the stretch rule for a gain goal', () => {
@@ -661,5 +666,88 @@ describe('deriveTrajectoryGeometry', () => {
     it('draws no columns without a band', () => {
       expect(bandColumns(g.bandSlices.slice(0, 1))).toEqual([])
     })
+  })
+})
+
+describe('next-target marker', () => {
+  const base = {
+    expected: gainExpected,
+    committed: 185,
+    stretch: 195,
+    actuals: [
+      { weekIndex: 1, value: 175 },
+      { weekIndex: 2, value: 178 },
+    ],
+    weeks,
+    width: 600,
+    height: 300,
+  }
+
+  it('places the marker on the week and value it names', () => {
+    const g = deriveTrajectoryGeometry({
+      ...base,
+      nextTarget: { weekIndex: 3, value: 181, label: 'next week: 181 x 8' },
+    })
+    expect(g.nextTarget).not.toBeNull()
+    expect(g.nextTarget?.x).toBeCloseTo(g.toX(3), 6)
+    expect(g.nextTarget?.y).toBeCloseTo(g.toY(181), 6)
+  })
+
+  it('runs the lead from the latest reading to the marker', () => {
+    const g = deriveTrajectoryGeometry({
+      ...base,
+      nextTarget: { weekIndex: 3, value: 181, label: 'next week: 181 x 8' },
+    })
+    const last = g.actuals[g.actuals.length - 1]
+    expect(g.nextTarget?.leadPath).toBe(
+      `M${String(last.x)},${String(last.y)}L${String(g.nextTarget?.x)},${String(g.nextTarget?.y)}`
+    )
+  })
+
+  it('draws no lead when nothing has been measured yet', () => {
+    const g = deriveTrajectoryGeometry({
+      ...base,
+      actuals: [],
+      nextTarget: { weekIndex: 3, value: 181, label: 'next week: 181 x 8' },
+    })
+    expect(g.nextTarget?.leadPath).toBe('')
+  })
+
+  it('is null when the caller passes none', () => {
+    expect(deriveTrajectoryGeometry(base).nextTarget).toBeNull()
+  })
+
+  it('keeps a marker above every other value inside the plane', () => {
+    const g = deriveTrajectoryGeometry({
+      ...base,
+      nextTarget: { weekIndex: 3, value: 240, label: 'next week: 240 x 8' },
+    })
+    expect(g.nextTarget?.y).toBeGreaterThanOrEqual(g.plot.top + MARKER_CLEARANCE - 0.5)
+    expect(g.nextTarget?.y).toBeLessThanOrEqual(g.plot.bottom)
+  })
+
+  it('extends the week axis to a marker past the last planned week', () => {
+    const g = deriveTrajectoryGeometry({
+      ...base,
+      nextTarget: { weekIndex: 8, value: 190, label: 'next week: 190 x 8' },
+    })
+    // Eight columns now, and the marker owns the last one.
+    const inset = weekInset(g.plot.right - g.plot.left, 8)
+    expect(g.nextTarget?.x).toBeCloseTo(g.plot.right - inset, 6)
+  })
+
+  it('stands the outer cells off the plane by the gap they stand off each other', () => {
+    const g = deriveTrajectoryGeometry(base)
+    const scale = trajectoryWeekScale({
+      expected: gainExpected,
+      weeks,
+      actuals: base.actuals,
+      width: base.width,
+    })
+    const cell = scale.span - WEEK_COLUMN_GAP
+    expect(scale.toX(1) - cell / 2).toBeCloseTo(g.plot.left + WEEK_COLUMN_GAP, 6)
+    expect(scale.toX(6) + cell / 2).toBeCloseTo(g.plot.right - WEEK_COLUMN_GAP, 6)
+    // And the air between two neighbours is that same gap.
+    expect(scale.toX(2) - cell / 2 - (scale.toX(1) + cell / 2)).toBeCloseTo(WEEK_COLUMN_GAP, 6)
   })
 })

@@ -70,7 +70,7 @@ them, and the survivors are marked as presets below.
 | `tile`           | atom     | —               | FileActivityDetail, FileHistoryExplorer, MetricTiles, ScheduleTiles — **deprecated**, use a Card stat preset                                                   | 4       | 0        |
 | `toast`          | molecule | Surface         | —                                                                                                                                                              | 0       | 0        |
 | `toolbar-button` | molecule | Surface         | —                                                                                                                                                              | 0       | 0        |
-| `tooltip`        | molecule | Surface         | FatigueLights, SessionDetail, SessionListItem, Table, TaskRow, ZoneTrack                                                                                       | 8       | 1        |
+| `tooltip`        | molecule | Surface         | FatigueLights, GoalMilestoneWeekStrip, GoalPriorityIcon, GoalTrajectoryChart, PrimaryGoalCard, SessionDetail, SessionListItem, Table, TaskRow, ZoneTrack       | 8       | 1        |
 
 Two roots carry the family: **`surface`** (15 in-repo consumers — every floating
 and raised plane) and **`pill`** (11 — every pill-shaped label since decision 3).

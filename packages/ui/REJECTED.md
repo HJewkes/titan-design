@@ -24,6 +24,41 @@ that someone can tell whether a future change invalidates the reasoning.
 
 ---
 
+## Compact goal-chart variants A, D2, D3 and the Sparkline — rejected 2026-09-18
+
+**Tried:** four shapes for the per-lift card's chart slot (VW-385 ideation).
+**A** — `GoalTrajectoryMini` on its own: the inset plane, the monotone line,
+points and a faint committed rule, with the week cells left in the summary above.
+**D2** — the D1 cells plus a hairline from each cell down to its point.
+**D3** — the cells inside the plane, so the lit current-week column runs from the
+cell to the floor. And the incumbent, the **`Sparkline`** the compact card drew
+before any of this, with dashed committed/stretch reference lines.
+
+**Chosen instead:** **D1** — the week cells standing on the plane's top edge, on
+the chart's own week columns; the current week's column lit at
+`WEEK_COLUMN.tintAlpha`; the line recessed to `lineAlpha` so the points lead; no
+ticks. It ships as the body of `GoalCard size="compact"`.
+
+**Why:** the cells and the chart were saying the same thing in two rows — the
+summary's week strip sat directly above a chart plotting those same weeks. D1
+collapses them into one row that is both: the cell IS the column header, which is
+only honest because both come from `trajectoryWeekScale`. A was rejected for
+keeping the two rows; D2's ticks re-drew what the column tint already says and
+added a hairline per point at card scale; D3 bought a taller card for a longer lit
+column and pushed the plot down to make room. The `Sparkline` went because it was
+a second chart vocabulary on the same page as `GoalTrajectoryChart` — its own
+line, its own reference lines, its own labels — for data the big chart already
+knows how to draw.
+
+**Code:** deleted. `GoalTrajectoryMini` remains, but only in its D1 form (no
+`variant` prop). `Lab/Decisions/Compact Goal Chart` keeps the decision as a
+record, rendering the chosen shape through the shipped card.
+
+B (a stretch rule plus left-hand values) and C (no plane at all) were dropped
+during the ideation round, before either was built.
+
+---
+
 ## Dual at the session-rail level — rejected 2026-07-25
 
 **Tried:** `DualSessionRail` — a rail that split into left/right slot columns,

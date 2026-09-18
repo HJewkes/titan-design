@@ -14,7 +14,13 @@
 import { area, curveMonotoneX, line } from 'd3-shape'
 import { scaleLinear } from 'd3-scale'
 
-/** Read-model status vocabulary (plan §2d). */
+/**
+ * Read-model status vocabulary (plan §2d). The first seven are PACE — how the
+ * work is going against the plan. `goal_met` and `beyond_goal` are OUTCOMES: the
+ * read model saying the target was reached or beaten (voltras-mcp VW-400), which
+ * the UI used to have to work out for itself by comparing the best reading with
+ * the committed value.
+ */
 export type GoalTrajectoryStatus =
   | 'on_track'
   | 'ahead'
@@ -23,6 +29,8 @@ export type GoalTrajectoryStatus =
   | 'deload_week'
   | 'calibrating'
   | 'stalled'
+  | 'goal_met'
+  | 'beyond_goal'
 
 /** Which way "better" points. `down` is a loss goal (bodyweight, fat loss). */
 export type GoalDirection = 'up' | 'down'
@@ -53,6 +61,24 @@ export interface GoalTrajectoryWeek {
   startDate?: string
 }
 
+/**
+ * The week the plan asks for next, and what it asks for. Drawn as a hollow dot
+ * joined to the latest actual by a dashed segment: a claim, not a reading.
+ */
+export interface GoalNextTarget {
+  weekIndex: number
+  value: number
+  /** Tooltip text, e.g. "next week: 105 x 8". The chart never derives it. */
+  label: string
+}
+
+export interface NextTargetCoord extends GeometryPoint {
+  weekIndex: number
+  value: number
+  /** Dashed run from the latest actual to the marker; empty when there is none. */
+  leadPath: string
+}
+
 export interface GoalTrajectoryGeometryInput {
   expected: GoalExpectedPoint[]
   committed: number
@@ -68,6 +94,18 @@ export interface GoalTrajectoryGeometryInput {
   bandCurve?: BandCurve
   /** Rule label font size in px; the y-domain pads so those labels clear the plane. */
   labelFont?: number
+  /** The next planned waypoint, drawn ahead of the actual line. */
+  nextTarget?: GoalNextTarget
+  /** Gutters around the plot. Defaults to {@link DEFAULT_PLOT_INSETS}, the axis-bearing chart's. */
+  insets?: PlotInsets
+}
+
+/** Gutters between the canvas edge and the plot, in px. */
+export interface PlotInsets {
+  left: number
+  right: number
+  top: number
+  bottom: number
 }
 
 export type BandCurve = 'linear' | 'monotone'
@@ -141,6 +179,8 @@ export interface GoalTrajectoryGeometry {
   committedY: number
   stretchY: number
   actuals: ActualCoord[]
+  /** The next planned waypoint in px, or null when the caller passed none. */
+  nextTarget: NextTargetCoord | null
   prStars: ActualCoord[]
   deloadRects: DeloadRect[]
   boundaries: BoundaryRule[]
@@ -159,8 +199,33 @@ export const PLOT_BOTTOM = 20
 export const PLANE_OVERHANG = 6
 /** The y-domain floor rounds down to a multiple of this, in the goal's unit. */
 export const VALUE_STEP = 5
-/** Keeps the first and last week's dot and ring inside the rounded plane. */
+/** Floor on the week inset: keeps the first and last dot and ring inside the rounded plane. */
 export const WEEK_INSET = 8
+
+/**
+ * The air between two week cells, and therefore the air the outer two owe the
+ * plane's edges. It lives here, with the axis maths, because the inset that
+ * makes the rhythm even has to know it — a strip that only knew it itself would
+ * leave the end cells half a gap from the edge.
+ */
+export const WEEK_COLUMN_GAP = 5
+
+/**
+ * Half a column plus half a gap, so every week's COLUMN — not just its dot —
+ * sits whole inside the plot AND the outer cells stand the same distance off the
+ * plane's edges as they do off each other.
+ *
+ * Round 5 insetted by half a column, which put n columns exactly edge to edge:
+ * the end cells then had `gap / 2` of air outside them against `gap` between
+ * them, and read as cut off (VW-385 round 6, measured — nothing was clipped; the
+ * padding was uneven). Solving `first cell left = plot.left + gap` gives
+ * `span = (w - gap) / n` and this inset. It cannot go below {@link WEEK_INSET},
+ * which a block long enough to make a column narrower than a marker would do.
+ */
+export function weekInset(plotWidth: number, columns: number): number {
+  const span = (plotWidth - WEEK_COLUMN_GAP) / Math.max(1, columns)
+  return Math.max(WEEK_INSET, (span + WEEK_COLUMN_GAP) / 2)
+}
 export const DEFAULT_TICK_COUNT = 5
 export const CHART_FONT = 11
 /** Rule labels sit this far above their rule (baseline to rule). */
@@ -173,6 +238,12 @@ export const LABEL_DESCENT = 0.24
 export const LABEL_CLEARANCE = 6
 /** Room a marker (r=4 dot plus 2px ring, or the star) needs inside the plane. */
 export const MARKER_CLEARANCE = 8
+export const DEFAULT_PLOT_INSETS: PlotInsets = {
+  left: PLOT_LEFT,
+  right: PLOT_RIGHT,
+  top: PLOT_TOP,
+  bottom: PLOT_BOTTOM,
+}
 /** Upper bound on how many value steps the floor may drop to clear the bottom edge. */
 const MAX_FLOOR_STEPS = 10
 
@@ -383,12 +454,12 @@ function placeActuals(input: GoalTrajectoryGeometryInput) {
     .sort((a, b) => a.week - b.week)
 }
 
-function plotRect(width: number, height: number): PlotRect {
+function plotRect(width: number, height: number, insets = DEFAULT_PLOT_INSETS): PlotRect {
   return {
-    left: PLOT_LEFT,
-    right: Math.max(PLOT_LEFT + 1, width - PLOT_RIGHT),
-    top: PLOT_TOP,
-    bottom: Math.max(PLOT_TOP + 1, height - PLOT_BOTTOM),
+    left: insets.left,
+    right: Math.max(insets.left + 1, width - insets.right),
+    top: insets.top,
+    bottom: Math.max(insets.top + 1, height - insets.bottom),
   }
 }
 
@@ -595,6 +666,76 @@ const actualLine = line<ActualCoord>()
   .y((d) => d.y)
   .curve(curveMonotoneX)
 
+/** What a week column is worth in px, and where each column's centre sits. */
+export interface TrajectoryWeekScale {
+  /** Centre x of a week column, in the chart's own coordinate space. */
+  toX: (weekIndex: number) => number
+  /** Width of one week column in px. */
+  span: number
+  /** The week indices the axis spans, ascending. */
+  weeks: number[]
+  /** The plot's left and right edges — where the chart clips its week columns. */
+  plot: { left: number; right: number }
+}
+
+export interface TrajectoryWeekScaleInput {
+  expected: GoalExpectedPoint[]
+  weeks: GoalTrajectoryWeek[]
+  actuals: GoalActualPoint[]
+  nextTarget?: GoalNextTarget
+  width: number
+  insets?: PlotInsets
+}
+
+/**
+ * The chart's week axis on its own, for anything that has to line up with the
+ * columns from outside the SVG — the folded card's week cells sit directly above
+ * the plot and must share its x positions exactly, so they share this function
+ * rather than a second copy of the same arithmetic.
+ */
+export function trajectoryWeekScale(input: TrajectoryWeekScaleInput): TrajectoryWeekScale {
+  const plot = plotRect(input.width, 1, input.insets)
+  const placed = placeActuals({ ...input, committed: 0, stretch: 0, height: 1 })
+  const wks = weekDomain(input.expected, input.weeks, [
+    ...placed.map((p) => p.week),
+    ...(input.nextTarget ? [input.nextTarget.weekIndex] : []),
+  ])
+  const steps = Math.max(1, wks.max - wks.min)
+  const inset = weekInset(plot.right - plot.left, steps + 1)
+  const xScale = scaleLinear()
+    .domain([wks.min, wks.max])
+    .range([plot.left + inset, plot.right - inset])
+  return {
+    toX: (weekIndex: number) => xScale(weekIndex),
+    span: (plot.right - plot.left - 2 * inset) / steps,
+    weeks: Array.from({ length: Math.round(steps) + 1 }, (_, i) => wks.min + i),
+    plot: { left: plot.left, right: plot.right },
+  }
+}
+
+/**
+ * The next waypoint in px, with the dashed run that joins it to the latest
+ * reading. The run is a straight segment on purpose: the actual line is a
+ * monotone curve through measured points, and this is a plan, not a measurement.
+ */
+function nextTargetCoord(
+  next: GoalNextTarget,
+  actuals: ActualCoord[],
+  toX: (weekIndex: number) => number,
+  toY: (value: number) => number
+): NextTargetCoord {
+  const x = toX(next.weekIndex)
+  const y = toY(next.value)
+  const last = actuals[actuals.length - 1]
+  return {
+    x,
+    y,
+    weekIndex: next.weekIndex,
+    value: next.value,
+    leadPath: last ? `M${String(last.x)},${String(last.y)}L${String(x)},${String(y)}` : '',
+  }
+}
+
 /**
  * Map a goal-progress payload onto chart pixels: the expected-band path, the
  * committed and stretch rules, y gridlines, the actual line with its PR stars,
@@ -612,30 +753,32 @@ export function deriveTrajectoryGeometry(
   const { committed, stretch, weeks, mesoBoundaries = [], width, height } = input
   const expected = flattenDeloadWeeks(input.expected, weeks)
   const placed = placeActuals(input)
-  const plot = plotRect(width, height)
+  const plot = plotRect(width, height, input.insets)
 
-  const wks = weekDomain(
-    expected,
-    weeks,
-    placed.map((p) => p.week)
-  )
+  const next = input.nextTarget
   const values = [
     ...expected.flatMap((p) => [p.low, p.high]),
     ...placed.map((p) => p.actual.value),
+    ...(next ? [next.value] : []),
   ].filter((v) => Number.isFinite(v))
   const rules = [committed, stretch].filter((v) => Number.isFinite(v))
-  const xScale = scaleLinear()
-    .domain([wks.min, wks.max])
-    .range([plot.left + WEEK_INSET, plot.right - WEEK_INSET])
+  const week = trajectoryWeekScale({
+    expected,
+    weeks,
+    actuals: input.actuals,
+    ...(next ? { nextTarget: next } : {}),
+    width,
+    ...(input.insets ? { insets: input.insets } : {}),
+  })
   const yScale = valueScale({ values, rules, plot, font: input.labelFont ?? CHART_FONT })
-  const toX = (weekIndex: number): number => xScale(weekIndex)
+  const toX = week.toX
   const toY = (value: number): number => yScale(value)
   const [domainMin, domainMax] = yScale.domain()
 
   const slices = bandSlices(expected, toX, toY)
   const hasBand = slices.length >= 2
   const actuals = actualCoords(placed, toX, toY)
-  const weekSpan = (plot.right - plot.left - 2 * WEEK_INSET) / Math.max(1, wks.max - wks.min)
+  const weekSpan = week.span
 
   return {
     hasBand,
@@ -658,6 +801,7 @@ export function deriveTrajectoryGeometry(
     committedY: toY(committed),
     stretchY: toY(stretch),
     actuals,
+    nextTarget: next ? nextTargetCoord(next, actuals, toX, toY) : null,
     prStars: actuals.filter((a) => a.isPR),
     deloadRects: deloadRects(weeks, plot, weekSpan, toX),
     boundaries: mesoBoundaries.map((weekIndex) => ({ weekIndex, x: toX(weekIndex) })),
