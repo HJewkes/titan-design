@@ -24,6 +24,37 @@ that someone can tell whether a future change invalidates the reasoning.
 
 ---
 
+## Calibrating chart treatments v0, A, B and C — rejected 2026-09-18
+
+**Tried:** five ways to draw a calibrating goal, the state with too little history
+for a band, where the planned ramp stands in (VW-433 round 1). Each was shown in the
+full `GoalCard` with the week-2 reading above, on and below the ramp.
+**v0** — the rendering until then: the reading as a PR star, a dashed run from it
+to the next target (sloping down whenever the reading sat above the ramp), a
+solid ramp. **A** — plain dots, no run and no next-target marker, nothing added.
+**B** — the ramp as a dashed ghost labelled "Planned ramp" on the plane, and a
+flat dashed rule labelled "Next week: 105" in place of the run. **C** — A plus a
+sentence under the plot saying what the dots and the line are.
+
+**Chosen instead:** **D with B's dashed ramp** — plain dots, the next target as a
+hollow dot with no run, the ramp dashed, and the weeks after the latest reading
+hatched with the reason there is no band written in them. The human's words:
+"the calibrating chart just doesn't make sense to me, the PR star and dashed line
+are weird"; round 1 answers: no PR star in calibrating, "hollow dot only", and
+D "but use the dashed blue line from B instead of solid".
+
+**Why:** a first reading is not an achievement, so the star claimed something
+false; the run joined a measurement to a plan and read as a trend. A removed the
+confusion but explained nothing. B's words crowded the plane and needed two label
+moves to stop colliding with the ramp. C explained the marks from outside the
+chart, where D writes the explanation into the empty weeks it is about.
+
+**Code:** deleted — the `calibratingTreatment` prop and every treatment but D.
+`Lab/Decisions/Calibrating Goal Chart` keeps the decision as a record, rendering
+the shipped card.
+
+---
+
 ## PinnedLiveStrip long-rest treatments v0, v1 and v2 — rejected 2026-09-18
 
 **Tried:** four treatments for rest seconds of 100 or more (VW-429 round 7), measured in Chrome.
@@ -723,3 +754,21 @@ propose it, only wrong to treat it as settled.
 **The lab is now empty of this unit.** `src/lab/goal-cards/` kept only
 `SURVEY.md`; the kit, the specimen sheets and the lab `MuscleGlyph` are deleted,
 the last of them promoted to `custom/Workout/MuscleGlyph`.
+
+---
+
+## Calibrating chart "Planned ramp" label — rejected 2026-09-18
+
+**Tried:** in VW-433 round 2, the chosen calibrating chart (the dashed ramp, the
+weeks after the latest reading hatched with a note in them) with "Planned ramp"
+written under the ramp, a third of the way along it.
+
+**Chosen instead:** the ramp unlabelled. The human picked "unlabelled" and signed
+off.
+
+**Why:** the note in the hatched weeks already names the line ("Until then the line
+is the planned ramp from your start lift"), so the label said it a second time on
+the plane.
+
+**Code:** deleted: the `showRampLabel` prop and its story. `Lab/Decisions/Calibrating
+Goal Chart` keeps the chosen chart as its only story.

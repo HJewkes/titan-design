@@ -19,6 +19,10 @@ export const BAND_OPACITY = 0.28
 /** Stroke width of the degenerate band's centre edge (VW-414). */
 export const BAND_EDGE_WIDTH = 1.5
 
+/** The calibrating ramp's dash and opacity (VW-433 round 1, variant B's line). */
+export const DASHED_EDGE = '5 4'
+export const DASHED_EDGE_OPACITY = 0.85
+
 export const EDGE_OPACITY: Record<Exclude<BandFade, 'none'>, number> = {
   'centre-20': 0.2,
   'centre-14': 0.14,
@@ -30,6 +34,11 @@ interface BandLayerProps {
   hue: string
   fade: BandFade
   curve: BandCurve
+  /**
+   * Dash the degenerate band's edge. A calibrating goal's ramp is a plan with no
+   * history behind it yet (VW-433); a band with area is never dashed.
+   */
+  dashed?: boolean
 }
 
 function useBandIds() {
@@ -114,7 +123,7 @@ function Fill(props: BandLayerProps) {
  * rejected: 2px of a centre-to-edge gradient shows only its 14% edge stops, which
  * is not legible from across the room, and it would lie about the band's width.
  */
-function BandEdge({ geometry, hue }: BandLayerProps) {
+function BandEdge({ geometry, hue, dashed }: BandLayerProps) {
   return (
     <path
       data-testid="goal-trajectory-chart-band-edge"
@@ -123,6 +132,7 @@ function BandEdge({ geometry, hue }: BandLayerProps) {
       stroke={hue}
       strokeWidth={BAND_EDGE_WIDTH}
       strokeLinecap="round"
+      {...(dashed ? { strokeDasharray: DASHED_EDGE, strokeOpacity: DASHED_EDGE_OPACITY } : {})}
     />
   )
 }
