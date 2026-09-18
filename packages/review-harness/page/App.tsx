@@ -81,6 +81,7 @@ function GeneralBlock({
     <Stop
       index={index}
       active={state.active === index}
+      follow={state.follow}
       dispatch={dispatch}
       className="question"
       testId="general"
@@ -123,6 +124,7 @@ function Form({
             draft={state.draft.variants[v.key]}
             index={i}
             active={state.active === i}
+            follow={state.follow}
             annotate={state.annotate}
             focusPin={state.focusPin}
             dispatch={dispatch}
@@ -138,6 +140,7 @@ function Form({
           draft={state.draft.answers[q.id]}
           index={n + i}
           active={state.active === n + i}
+          follow={state.follow}
           dispatch={dispatch}
         />
       ))}

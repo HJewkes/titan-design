@@ -12,6 +12,8 @@ export type Screen = 'form' | 'review' | 'sending' | 'sent'
 export interface ReviewState {
   draft: ReviewDraft
   active: number
+  /** The active stop was reached by keyboard navigation, so the page follows it. */
+  follow: boolean
   annotate: boolean
   singleColumn: boolean
   screen: Screen
@@ -62,6 +64,7 @@ export function initialState(manifest: Manifest): ReviewState {
   return {
     draft: emptyDraft(manifest),
     active: 0,
+    follow: true,
     annotate: false,
     singleColumn: false,
     screen: 'form',
@@ -152,10 +155,10 @@ export function createReducer(manifest: Manifest) {
   return function reduce(state: ReviewState, action: Action): ReviewState {
     switch (action.type) {
       case 'activate':
-        return { ...state, active: action.index, focusPin: null }
+        return { ...state, active: action.index, follow: false, focusPin: null }
       case 'advance':
         return state.active + 1 < stopCount
-          ? { ...state, active: state.active + 1, focusPin: null }
+          ? { ...state, active: state.active + 1, follow: true, focusPin: null }
           : { ...state, screen: 'review', errors: [] }
       case 'addPin':
         return addPin(state, action)

@@ -3,20 +3,20 @@ import { existsSync } from 'node:fs'
 import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 import { FeedbackSchema, MANIFEST_SCHEMA_ID, type ManifestInput } from '../src/schema.ts'
 import { isolatedStorybook, type RunningStorybook } from './storybook.ts'
 
 const CLI = new URL('../src/cli.ts', import.meta.url).pathname
 
-function round(storybookUrl: string): ManifestInput {
+function round(storybookUrl: string, height = 700): ManifestInput {
   return {
     schema: MANIFEST_SCHEMA_ID,
     unit: 'vw-419-e2e',
     round: 1,
     storybookUrl,
     widths: [360],
-    height: 700,
+    height,
     variants: [
       { key: 'A', storyId: 'lab-decisions-goal-milestone-tiles--phone', label: 'Tiles' },
       { key: 'B', storyId: 'lab-decisions-compact-goal-chart--phone', label: 'Chart' },
@@ -39,6 +39,17 @@ function startCli(manifestPath: string, outDir: string) {
   })
   const exit = new Promise<number | null>((resolve) => child.once('exit', resolve))
   return { child, url, exit, stdout: () => stdout }
+}
+
+/** Enter scrolls smoothly to the next stop; measure only once the page has stopped moving. */
+async function scrollSettled(page: Page): Promise<number> {
+  let last = -1
+  for (;;) {
+    const y = await page.evaluate(() => window.scrollY)
+    if (y === last) return y
+    last = y
+    await page.waitForTimeout(150)
+  }
 }
 
 let storybook: RunningStorybook
@@ -73,6 +84,7 @@ test('a keyboard pick, a comment and a pin come back as feedback.json', async ({
   await page.keyboard.press('1')
 
   await page.keyboard.press('a')
+  await scrollSettled(page)
   const box = await caption.boundingBox()
   const overlay = page.getByTestId('overlay-A-360')
   const origin = await overlay.boundingBox()
@@ -104,4 +116,27 @@ test('a keyboard pick, a comment and a pin come back as feedback.json', async ({
   })
   expect(existsSync(join(dir, '360-A-phone.png'))).toBe(true)
   expect(existsSync(join(dir, '360-B-phone.png'))).toBe(true)
+})
+
+test('clicking into a tall variant leaves the page where it is', async ({ page }) => {
+  const dir = await mkdtemp(join(tmpdir(), 'titan-review-e2e-'))
+  const manifestPath = join(dir, 'round.json')
+  await writeFile(manifestPath, JSON.stringify(round(storybook.url, 1600)))
+  const run = startCli(manifestPath, dir)
+  cli = run.child
+
+  await page.goto(await run.url)
+  const card = page.getByTestId('variant-B')
+  const comment = card.getByLabel('Comment on B')
+  await comment.evaluate((el) => el.scrollIntoView({ block: 'center' }))
+  const before = await scrollSettled(page)
+  expect((await card.boundingBox())!.y, 'the card top is above the viewport').toBeLessThan(0)
+
+  await comment.click()
+  await comment.pressSequentially('stays put')
+
+  await expect(card).toHaveAttribute('data-active', 'true')
+  await expect(comment).toBeFocused()
+  expect(await scrollSettled(page)).toBe(before)
+  run.child.kill()
 })
