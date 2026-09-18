@@ -90,6 +90,15 @@ const [reads, writes, edits] = categoricalPalette.default
 Take colours **in order from the front**. Hand-picking indices to "look nicer" breaks the CVD
 guarantee and the nested-stability property in one move.
 
+**This palette is authoritative inside titan.** It has seven hues, and the first six
+(`CATEGORICAL_CVD_SAFE_MAX`) are safe for colour-vision deficiency. A chart that needs more than six
+series does not invent a hue. It folds the series past the sixth into one "Other" series, or it splits
+into small multiples (facets). The 7th slot is for the rare seventh series that must stay distinct,
+with a legend. `getCategoricalColor` wraps past the end, so an 8th series silently repeats blue.
+External skills and references that suggest 8 or 9 categorical hues (the `color-system-derivation`
+worked example, the `dataviz` skill's rule) do not override this. Use them for method, not for
+palette size.
+
 ---
 
 ## 3. Resolving a colour in code

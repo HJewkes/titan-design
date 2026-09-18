@@ -8,7 +8,9 @@ Cross-platform React + React Native design system built on Gluestack UI, NativeW
 - **Monorepo**: pnpm workspaces + Turborepo
 - **Node**: Use `pnpm` (v9.15.0) for all package management
 - **Build**: `pnpm build` (tsup, outputs ESM + CJS + DTS to `dist/`)
-- **Test**: `pnpm test` (Vitest + Testing Library + jest-axe)
+- **Test**: `pnpm test` (Vitest + Testing Library + jest-axe). Inside `packages/ui` the script is
+  bare `vitest`, which watches; for one run use `pnpm exec vitest run [path]` there, or
+  `pnpm test -- -- --run` from the root (see _CI and scripts_)
 - **Storybook**: `pnpm storybook` (Storybook 10, locked to port 6006 — see below)
 - **Lint**: `pnpm lint` (ESLint 9)
 
@@ -56,6 +58,14 @@ quietly comes up one port over.
 **Verify provenance by something unique to the tree you meant to shoot** — a story that
 only exists there, or a rendered detail only that commit produces. Never by story IDs alone.
 
+**Stop only the servers you started, by PID.** Record the PID of any server you start (Storybook,
+Vite, `pnpm review`) and stop that PID when you are done. Never kill by name pattern
+(`pkill -f storybook`, `killall node`): other sessions run servers in this repo at the same time,
+and in September 2026 a name-pattern kill took down the Storybook behind a live review round. To
+list what is running, use `pnpm storybook:ports`; `pnpm storybook:reap` stops orphans only. Plain
+`pnpm storybook` replaces a foreign server on 6006, so use `pnpm storybook:isolated` when another
+session may be using 6006.
+
 ## Architecture
 
 ### Cross-Platform First
@@ -78,6 +88,11 @@ All components use React Native primitives - never HTML elements directly:
 - Never use inline styles except for dynamic values that can't be expressed in Tailwind
 - Use semantic token classes (e.g., `bg-surface-elevated`) not raw colors (`bg-gray-800`)
 - Platform modifiers: `web:`, `native:`, `ios:`, `android:` for platform-specific styles
+- Tailwind is **v3** (`tailwindcss ^3.4`, configured in `tailwind.config.js`). Guidance written for
+  Tailwind v4 (CSS-first `@theme`, `@import "tailwindcss"`) does not apply here.
+- Inside titan, composing the existing tokens and primitives outranks any general design guidance
+  to make a component look distinctive. A component that needs a new colour, hue or primitive
+  raises it with the owner; it does not add one inline.
 
 ### Dark Mode
 
@@ -109,7 +124,9 @@ src/components/ui/{component-name}/
   index.ts                    # Barrel export
 ```
 
-Custom components go in `src/components/custom/` with PascalCase directories.
+Custom components go in `src/components/custom/` with PascalCase directories. Add the new export to
+the family barrel (`src/components/ui/index.ts` or `src/components/custom/index.ts`) as well as the
+component's own `index.ts`.
 
 ### Props Conventions
 
@@ -130,6 +147,12 @@ Custom components go in `src/components/custom/` with PascalCase directories.
 - Use `accessibilityRole`, `accessibilityLabel`, `accessibilityState` on custom components
 - Gluestack components have accessibility built in - don't remove ARIA attributes
 - Every component test file must include an accessibility test
+
+### State Coverage
+
+Every component documents and stories its loading, empty, error and disabled states, or says why a
+state does not apply. The checklist is `docs/component-states.md`. A new line chart follows the
+structure described under _Line charts_ in `src/components/custom/charts/README.md`.
 
 ### Testing Pattern
 
@@ -152,20 +175,56 @@ describe("ComponentName", () => {
 
 ### Storybook Pattern
 
+One `Default` story per component, driven by `args` and `argTypes`. Variants, colours, sizes and
+states are controls on that story, not separate `AllVariants` / `AllColors` / `AllSizes` stories
+(roadmap E4, `packages/ui/docs/library-roadmap.md`). Many older `ui/*` stories (Button, Input,
+Chip, …) still export `AllVariants`-style stories until E4 thins them; do not copy them. From
+`src/components/shell/workout/SessionStatePill.stories.tsx`:
+
 ```tsx
 import type { Meta, StoryObj } from "@storybook/react-vite"; // NOT @storybook/react
+import { SessionStatePill } from "./SessionStatePill";
 
-const meta: Meta<typeof Component> = {
-  title: "Components/ComponentName", // or 'Custom/Name', 'Design Tokens/Name'
-  component: Component,
-  tags: ["autodocs"],
+const meta: Meta<typeof SessionStatePill> = {
+  title: "Shell/Workout/SessionStatePill",
+  component: SessionStatePill,
+  tags: ["autodocs", "status:candidate", "!status:review"],
+  args: { state: "live" },
   argTypes: {
-    /* controls */
+    state: { control: "select", options: ["live", "rest", "idle"] },
+    label: { control: "text" },
+  },
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "**Molecule** (= the ledger’s reusable StatusPill — also used by the Live-view header). Composes " +
+          "[Indicator](?path=/docs/components-atoms-indicator--docs) (pulse `ping` + vivid color for live) + " +
+          "[Typography](?path=/docs/foundations-typography--docs) (`monoLabel`). Use the `state` control to switch.",
+      },
+    },
   },
 };
 export default meta;
-type Story = StoryObj<typeof Component>;
+type Story = StoryObj<typeof SessionStatePill>;
+
+export const Default: Story = {};
 ```
+
+`shell/workout/DeviceMenu.stories.tsx` shows the same shape for a component that takes data and
+callbacks: an `object` control for the fixture, `control: false` for handlers, and a decorator on
+`meta` that gives the component room to open.
+
+- **Title** follows the six groups of roadmap decision 14: `Foundations/`,
+  `Components/Atoms|Molecules|Organisms/` (`ui/*` only), `Custom/<Family>/`, `Shell/`, `Pages/`,
+  and `Lab/<Family>/` (`src/lab` only).
+- **Tags**: `autodocs`, plus a status tag derived by the rule in `packages/ui/MATURITY.md`. A
+  story that sets a status also negates the inherited default with `!status:review`.
+- **Composes line**: `parameters.docs.description.component` names the tier and links each story
+  the component composes, so the docs pages navigate down the tree.
+- **Hooks in `render`** need a named PascalCase function (`render: function Render(args) { … }`).
+  An anonymous arrow fails `react-hooks/rules-of-hooks`.
+- **JSX text** escapes quotes (`&apos;`, `&quot;`); `react/no-unescaped-entities` is on.
 
 **Critical**: Storybook uses `@storybook/react-native-web-vite` with `jsxImportSource: 'nativewind'`. Without this NativeWind classes won't work.
 
@@ -206,6 +265,12 @@ Four files must be updated in order:
 3. `global.css` - Add CSS custom property (both `:root` and `.light`)
 4. `tailwind.config.js` - Add Tailwind color reference
 
+Colour properties are named `--color-{category}-{name}`, and the Tailwind entry is
+`'var(--color-{category}-{name})'`. `theme/config.ts` lists every colour property by hand in
+`darkThemeCSSVars` and `lightThemeCSSVars`; `config.completeness.test.ts` fails until the new
+property is added there too. If `Foundations/Color/Palettes` lists the category's swatches by hand,
+add the new one.
+
 **Spacing and sizing tokens skip step 3's hand-editing.** Their numbers live once, in `space` /
 `size` in `semantic.ts`; `tokens/spacing-vars.ts` derives the `--space-*` / `--size-*` properties,
 `theme/config.ts` spreads them into both theme maps, and `tailwind.config.js` references the property
@@ -221,6 +286,22 @@ Levels -2 to +5 with calculated surface colors and shadows:
 - **0**: Base level
 - **1-3**: Cards, panels
 - **4-5**: Modals, overlays
+
+## CI and scripts
+
+`.github/workflows/ci.yml` runs one job on Node 20 and 22: install, `pnpm lint`, `pnpm type-check`,
+`pnpm format:check`, the arch-graph freshness test, `pnpm build`, then
+`pnpm test -- -- --run --coverage`. Every step blocks; none is `continue-on-error`.
+
+- **Argument passthrough.** Root scripts are `turbo run <task>`, so arguments need a second `--`:
+  the first passes through pnpm, the second through Turbo (`pnpm test -- -- --run --coverage`).
+- **Registering a script CI runs.** Add it to the package's `package.json`, add a
+  `turbo run <task>` passthrough to the root `package.json`, and register the task in `turbo.json`.
+  Without the `turbo.json` entry, the root script fails. `arch:graph` and `review` are deliberate
+  exceptions: both call `node` directly and CI never runs them.
+- **Coverage thresholds** live in `packages/ui/vitest.config.ts` (80% across the board, scoped to
+  `src/components/**`). Set them from measured coverage (`pnpm exec vitest run --coverage` in
+  `packages/ui`), not from a target, and raise them as coverage grows.
 
 ## Key Files
 
