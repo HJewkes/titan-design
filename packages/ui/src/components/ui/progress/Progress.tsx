@@ -95,6 +95,7 @@ export function Progress({
   trackWidth,
   customColor,
   className,
+  accessibilityLabel,
   ...props
 }: ProgressProps) {
   const percentage = Math.min(Math.max((value / max) * 100, 0), 100)
@@ -121,6 +122,8 @@ export function Progress({
         )}
         style={trackWidth ? { width: trackWidth } : undefined}
         accessibilityRole="progressbar"
+        // The track carries the role, so it carries the name; RNW drops a label on the plain wrapper.
+        accessibilityLabel={accessibilityLabel ?? label}
         accessibilityValue={{
           min: 0,
           max: max,

@@ -27,6 +27,17 @@ describe('Progress', () => {
     expect(screen.getByText('Uploading...')).toBeInTheDocument()
   })
 
+  it('names the bar from a visible label', () => {
+    render(<Progress value={50} label="Uploading..." />)
+    expect(screen.getByRole('progressbar', { name: 'Uploading...' })).toBeInTheDocument()
+  })
+
+  it('names the bar from accessibilityLabel without rendering a visible label', () => {
+    render(<Progress value={50} accessibilityLabel="Rest remaining" />)
+    expect(screen.getByRole('progressbar', { name: 'Rest remaining' })).toBeInTheDocument()
+    expect(screen.queryByText('Rest remaining')).toBeNull()
+  })
+
   it('renders with value display', () => {
     render(<Progress value={50} showValue />)
     expect(screen.getByText('50%')).toBeInTheDocument()

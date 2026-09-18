@@ -78,8 +78,11 @@ export interface SetBarGeometry {
 export interface SetBarChartProps {
   /** Ordered cells — performed reps + any set-type window stubs. */
   slots: SetSlot[]
-  /** value → bar fill color. Reps only; window stubs use the fixed set-type tones. */
-  colorFor: (value: number) => string
+  /**
+   * value → bar fill color. Reps only; window stubs use the fixed set-type tones. The rep index is
+   * passed too, for callers whose colour is per-rep data rather than a function of the value.
+   */
+  colorFor: (value: number, repIndex: number) => string
   /** Plot height (px). Bars scale into this (minus the value-label headroom when labels show). */
   height: number
   /**
@@ -485,7 +488,7 @@ export function SetBarChart({
           const repIndex = repIndices[i]
           const value = slot.value ?? 0
           const isLive = liveRepIndex === repIndex
-          const color = colorFor(value)
+          const color = colorFor(value, repIndex)
           // Bar height: `expandProgress` morphs flat↔value in place; else the live-rep grow; else static.
           const barHeightStyle = expandProgress
             ? expandProgress.interpolate({

@@ -188,6 +188,15 @@ export function ChevronsDownIcon(props: IconProps) {
   )
 }
 
+/** Chevron-right glyph (mirrors lucide-react `ChevronRight`). Go-to affordance, e.g. back to live. */
+export function ChevronRightIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="m9 18 6-6-6-6" />
+    </SvgIcon>
+  )
+}
+
 // ---------------------------------------------------------------------------
 // AW-132 · App brand marks — the mark half of a `BrandLockup` for each app that
 // is likely to mount the shell. Sized 14 by default, like `VoltrasMark`.
