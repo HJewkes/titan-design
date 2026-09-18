@@ -194,9 +194,11 @@ export const DeloadWeek: Story = {
 }
 
 /**
- * The payload the voltras-mcp wall actually sent for a calibrating Cable Chest Press
- * goal (captured 2026-09-17). The plan's committed and stretch edges are the same
- * number every week, so the band has no area and both rules land on one line.
+ * The voltras-mcp wall's calibrating Cable Chest Press goal, on the calendar-week
+ * grid the read model uses since VW-421: the start lift on week 1 where the ramp
+ * starts, and the 110 lb reading in week 2. The plan's committed and stretch
+ * edges are the same number every week, so the band has no area and both rules
+ * land on one line.
  *
  * VW-414: on 0.17.0 this rendered as an empty plane with the two labels overprinted
  * into "ConStretcled 128". The band's centre line is now stroked so the 100 → 127.5

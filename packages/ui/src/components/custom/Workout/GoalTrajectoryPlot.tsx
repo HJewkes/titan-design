@@ -20,6 +20,11 @@ import type {
 import { CHART_FONT, ruleLabelLayout, type BandCurve } from './GoalTrajectoryChartGeometry'
 import { BAND_OPACITY, BandLayer, type BandFade } from './GoalTrajectoryBand'
 import {
+  CalibratingHatch,
+  CalibratingLabels,
+  type CalibratingMarks,
+} from './GoalTrajectoryCalibrating'
+import {
   ENTRANCE,
   drawStyle,
   fadeStyle,
@@ -566,6 +571,8 @@ export interface GoalTrajectoryPlotProps extends LayerProps {
   showYLabels: boolean
   style: PlotStyle
   entrance: EntranceState
+  /** A calibrating goal's hatch and note; null for every other status. */
+  calibrating?: CalibratingMarks | null
 }
 
 export function GoalTrajectoryPlot(props: GoalTrajectoryPlotProps) {
@@ -585,11 +592,13 @@ export function GoalTrajectoryPlot(props: GoalTrajectoryPlotProps) {
       <Gridlines {...layer} showLabels={props.showYLabels} baseline={style.baseline} />
       <g clipPath={`url(#${ids.clip})`}>
         <DeloadAndBoundaries {...layer} height={height} />
+        {props.calibrating && <CalibratingHatch marks={props.calibrating} {...layer} />}
         <BandLayer
           geometry={geometry}
           hue={palette.bandHue}
           fade={style.bandFade}
           curve={style.bandCurve}
+          dashed={Boolean(props.calibrating)}
         />
         <TargetRules {...layer} />
         <ActualLine
@@ -617,6 +626,7 @@ export function GoalTrajectoryPlot(props: GoalTrajectoryPlotProps) {
         side={style.referenceLabelSide}
       />
       <WeekAxis {...layer} weeks={props.weeks} stride={props.weekStride} />
+      {props.calibrating && <CalibratingLabels marks={props.calibrating} palette={palette} />}
     </svg>
   )
 }

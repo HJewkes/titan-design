@@ -25,6 +25,7 @@ import {
   type ReferenceLabelSide,
 } from './GoalTrajectoryPlot'
 import { useTrajectoryEntrance } from './goalTrajectoryMotion'
+import { DEFAULT_CALIBRATING_NOTE, calibratingMarks } from './GoalTrajectoryCalibrating'
 import type { BandFade } from './GoalTrajectoryBand'
 import type { BandCurve } from './GoalTrajectoryChartGeometry'
 import type { PlotBaseline } from './GoalTrajectoryPlot'
@@ -164,7 +165,26 @@ export interface GoalTrajectoryChartProps extends ViewProps {
    * a goal that is going well, and the labels sat on top of it.
    */
   referenceLabelSide?: ReferenceLabelSide
+  /**
+   * Calibrating only: the first line of the note in the hatched weeks. The
+   * consumer supplies it because only the read model knows what calibration is
+   * still waiting on; the default claims nothing.
+   */
+  calibratingNote?: string
   className?: string
+}
+
+/**
+ * A calibrating chart (VW-433): readings are plain dots, because a first reading
+ * is not an achievement, and the next target is its hollow dot with no dashed run.
+ */
+function withoutRecords(actuals: GoalActualPoint[]): GoalActualPoint[] {
+  return actuals.map((actual) => ({ ...actual, isPR: false }))
+}
+
+function withoutLead(geometry: GoalTrajectoryGeometry): GoalTrajectoryGeometry {
+  const next = geometry.nextTarget
+  return next ? { ...geometry, nextTarget: { ...next, leadPath: '' } } : geometry
 }
 
 function summarize(
@@ -235,6 +255,7 @@ export function GoalTrajectoryChart({
   bandFade = 'centre-14',
   bandCurve = 'monotone',
   referenceLabelSide = 'left',
+  calibratingNote = DEFAULT_CALIBRATING_NOTE,
   className,
   ...props
 }: GoalTrajectoryChartProps) {
@@ -246,14 +267,19 @@ export function GoalTrajectoryChart({
   const palette = trajectoryPalette(surface.mode, surface.level, toneStatus)
   const density = width >= WALL_BREAKPOINT ? DENSITY.wall : DENSITY.phone
   const entrance = useTrajectoryEntrance(animate)
+  const calibrating = status === 'calibrating'
+  const plotted = useMemo(
+    () => (calibrating ? withoutRecords(actuals) : actuals),
+    [actuals, calibrating]
+  )
 
-  const geometry = useMemo(
+  const derived = useMemo(
     () =>
       deriveTrajectoryGeometry({
         expected,
         committed,
         stretch,
-        actuals,
+        actuals: plotted,
         weeks,
         mesoBoundaries,
         nextTarget,
@@ -266,7 +292,7 @@ export function GoalTrajectoryChart({
       expected,
       committed,
       stretch,
-      actuals,
+      plotted,
       weeks,
       mesoBoundaries,
       nextTarget,
@@ -276,6 +302,14 @@ export function GoalTrajectoryChart({
       bandCurve,
     ]
   )
+  const geometry = calibrating ? withoutLead(derived) : derived
+  const marks = calibrating
+    ? calibratingMarks({
+        geometry,
+        wall: width >= WALL_BREAKPOINT,
+        note: calibratingNote,
+      })
+    : null
 
   if (!geometry.hasBand && !geometry.hasActuals) {
     return (
@@ -323,6 +357,7 @@ export function GoalTrajectoryChart({
             referenceLabelSide,
           }}
           entrance={entrance}
+          calibrating={marks}
         />
       </View>
       {geometry.nextTarget && nextTarget && (

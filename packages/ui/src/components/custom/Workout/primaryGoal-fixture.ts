@@ -7,7 +7,7 @@ import type {
   GoalTrajectoryWeek,
 } from './GoalTrajectoryChartGeometry'
 import type { GoalWeekEntry } from './goalMilestone'
-import { calibratingGoal } from './goalTrajectoryCalibratingFixture'
+import { calibratingGoalAt, type CalibratingPlacement } from './goalTrajectoryCalibratingFixture'
 
 type Scenario = Omit<PrimaryGoalCardProps, 'layout' | 'chartWidth' | 'chartHeight'>
 
@@ -92,34 +92,61 @@ function bench({ status, currentWeek, loads, outcomes, prWeek, basis }: BenchInp
   }
 }
 
-/** The wall's own calibrating payload (captured 2026-09-17), as the card composes it. */
-const calibrating: Scenario = {
-  title: 'Cable chest press',
-  priority: 'specialize',
-  status: 'calibrating',
-  basis:
-    'Calibrating: the band is the programmed execution ramp, which is a claim about completing the work rather than about strength gained.',
-  citation: 'rp:rp-s5-load-increment-by-exercise-type',
-  goal: {
-    expected: calibratingGoal.expected,
-    committed: calibratingGoal.committed,
-    stretch: calibratingGoal.stretch,
-    actuals: [...calibratingGoal.actuals],
-    weeks: calibratingGoal.weeks,
-    direction: 'up',
-    unit: 'lb',
-    animate: false,
-    nextTarget: { weekIndex: 3, value: 105, label: 'next week: 105 x 8' },
-  },
-  milestone: {
-    target: { metric: 'top_load_at_reps', reps: 8, load: 127.5, unit: 'lb' },
-    weekCount: 12,
-    currentWeek: 2,
-    latest: { reps: 8, load: 110 },
-    status: 'calibrating',
-    weeks: [{ outcome: 'on_track', reading: { reps: 8, load: 110 } }],
-  },
+const CALIBRATING_OUTCOME: Record<CalibratingPlacement, GoalWeekEntry['outcome']> = {
+  start: 'on_track',
+  above: 'ahead',
+  on: 'on_track',
+  below: 'missed',
 }
+
+/**
+ * The wall's calibrating goal on the calendar-week grid (VW-421), as the card
+ * composes it: the start lift in week 1, one more reading in week 2 at
+ * `placement` against the ramp unless `start`, and the following week's ramp
+ * value as the next target.
+ */
+export function calibratingScenario(placement: CalibratingPlacement): Scenario {
+  const goal = calibratingGoalAt(placement)
+  const currentWeek = goal.actuals.length
+  const best = Math.max(...goal.actuals.map((a) => a.value))
+  const next = goal.expected[currentWeek]
+  return {
+    title: 'Cable chest press',
+    priority: 'specialize',
+    status: 'calibrating',
+    basis:
+      'Calibrating: the band is the programmed execution ramp, which is a claim about completing the work rather than about strength gained.',
+    citation: 'rp:rp-s5-load-increment-by-exercise-type',
+    goal: {
+      expected: goal.expected,
+      committed: goal.committed,
+      stretch: goal.stretch,
+      actuals: goal.actuals,
+      weeks: goal.weeks,
+      direction: 'up',
+      unit: 'lb',
+      animate: false,
+      nextTarget: {
+        weekIndex: next.weekIndex,
+        value: next.low,
+        label: `next week: ${String(next.low)} x 8`,
+      },
+    },
+    milestone: {
+      target: { metric: 'top_load_at_reps', reps: 8, load: 127.5, unit: 'lb' },
+      weekCount: 12,
+      currentWeek,
+      latest: { reps: 8, load: best },
+      status: 'calibrating',
+      weeks: goal.actuals.map((actual, i) => ({
+        outcome: i === 0 ? 'on_track' : CALIBRATING_OUTCOME[placement],
+        reading: { reps: 8, load: actual.value },
+      })),
+    },
+  }
+}
+
+const calibrating = calibratingScenario('above')
 
 /** The states the design round compares, all on one bench block but calibrating. */
 export const PRIMARY_GOAL_SCENARIOS = {
