@@ -7,6 +7,26 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## 0.18.1
+
+### Fixed
+
+- A `className` that overrides a `Typography` variant (size, weight, leading,
+  family) now wins in consumers of the published build, as it always has in
+  Storybook. The dist is compiled with titan's own JSX runtime
+  (`src/web-jsx/`), which turned `className` into a react-native-web `$$css`
+  style object at every call site, titan's own composites included. `Typography`
+  therefore never saw the caller's classes, its `cn()` could not drop the
+  variant's, both sets reached the DOM, and the consumer's stylesheet order
+  picked the winner. The runtime now merges a `className` with the `$$css`
+  classes it already built, caller last (VW-420). Found on the Voltras wall,
+  where the goal hero rendered 16px/400 instead of 40px/700.
+
+  **Consumers will see a visual change.** 72 existing overrides in 31 files
+  start applying, and the same defect affected non-Typography components that
+  take a sizing `className` (a `Divider` given `h-4` rendered 0px tall). Nothing
+  was redesigned: these are the styles the components were written with.
+
 ## 0.18.0
 
 ### Added
