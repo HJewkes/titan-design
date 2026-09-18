@@ -60,11 +60,25 @@ describe('PinnedLiveStrip', () => {
   })
 
   describe('fatigue', () => {
-    it('signals fatigue with the strip colour: the error wash is on only when fatigued', () => {
+    it('signals fatigue with the red edge and the red wash, only when fatigued', () => {
       const { rerender } = render(<PinnedLiveStrip {...S.fatigue} layout="wall" />)
+      expect(screen.getByTestId('live-strip-plane')).toHaveStyle({
+        borderLeftColor: resolveColor('status-error'),
+      })
       expect(screen.getByTestId('live-strip-fatigue-wash')).toBeInTheDocument()
+
       rerender(<PinnedLiveStrip {...S.fatigue} isFatigued={false} layout="wall" />)
+      expect(screen.getByTestId('live-strip-plane')).toHaveStyle({
+        borderLeftColor: resolveColor('status-live'),
+      })
       expect(screen.queryByTestId('live-strip-fatigue-wash')).toBeNull()
+    })
+
+    it('keeps the normal live tag: fatigue does not turn the tag red', () => {
+      renderStrip({ ...S.fatigue, layout: 'wall' })
+      expect(screen.getByText('Live set')).toHaveStyle({ color: resolveColor('status-success') })
+      const dot = screen.getByTestId('live-strip-tag-dot').lastElementChild
+      expect(dot).toHaveStyle({ backgroundColor: resolveColor('status-live') })
     })
 
     it.each(['wall', 'phone'] as const)(
@@ -121,6 +135,19 @@ describe('PinnedLiveStrip', () => {
       expect(screen.getByTestId('live-strip-title')).toHaveTextContent('Cable Chest Press')
       expect(screen.getByText('Set 2/3')).toBeInTheDocument()
       expect(screen.queryByText('Back to live')).toBeNull()
+    })
+
+    it('wraps a long title to two lines and puts the set count and chevron after it', () => {
+      render(<PinnedLiveStrip {...S.longName} layout="phone" />)
+      const title = screen.getByTestId('live-strip-title')
+      expect(title).toHaveTextContent('Single-Arm Half-Kneeling Cable Row')
+      expect(title).toHaveStyle({ WebkitLineClamp: '2' })
+      const row = screen.getByTestId('live-strip-title-row')
+      const meta = screen.getByTestId('live-strip-meta')
+      // jsdom has no layout; the drop to the next line is shot in Lab/Decisions LongName at 360.
+      expect([...row.children].indexOf(meta)).toBe(1)
+      expect(meta).toHaveTextContent('Set 2/3')
+      expect(meta.querySelector('svg')).toBeInTheDocument()
     })
 
     it('shows the next set during rest', () => {

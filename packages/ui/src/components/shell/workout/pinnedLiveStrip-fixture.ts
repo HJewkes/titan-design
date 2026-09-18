@@ -37,7 +37,7 @@ const BASE = {
   targetReps: 8,
 }
 
-export type LiveStripScenario = 'set' | 'rest' | 'fatigue' | 'idle'
+export type LiveStripScenario = 'set' | 'rest' | 'fatigue' | 'idle' | 'longName'
 
 export const LIVE_STRIP_SCENARIOS: Record<LiveStripScenario, PinnedLiveStripProps> = {
   set: { ...BASE, state: 'set', setNumber: 2, reps: SET_REPS },
@@ -51,4 +51,11 @@ export const LIVE_STRIP_SCENARIOS: Record<LiveStripScenario, PinnedLiveStripProp
   },
   fatigue: { ...BASE, state: 'set', setNumber: 2, reps: FATIGUE_REPS, isFatigued: true },
   idle: { ...BASE, state: 'idle', setNumber: 2, reps: [] },
+  longName: {
+    ...BASE,
+    exerciseName: 'Single-Arm Half-Kneeling Cable Row',
+    state: 'set',
+    setNumber: 2,
+    reps: SET_REPS,
+  },
 }

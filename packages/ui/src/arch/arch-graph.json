@@ -3706,13 +3706,13 @@
       "exports": [
         "PinnedLiveStrip",
         "PinnedLiveStripLayout",
-        "PinnedLiveStripWallSize",
         "PinnedLiveStripProps",
         "PINNED_LIVE_STRIP_PHONE_MAX",
         "toneOf",
         "setLine",
-        "StateTag",
-        "onLayout"
+        "Velocity",
+        "colorFor",
+        "cn"
       ],
       "libDependents": 1,
       "storyRefs": 2,
@@ -3720,8 +3720,8 @@
         "mobile": 0,
         "mcp": 0,
         "dash": 0,
-        "audiobook": 0,
-        "total": 0
+        "audiobook": 4,
+        "total": 4
       },
       "dependsOn": [
         "Indicator",
@@ -3732,15 +3732,15 @@
         "icons"
       ],
       "leak": {
-        "rawView": 12,
+        "rawView": 15,
         "rawText": 8,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 346,
-        "score": 22
+        "loc": 378,
+        "score": 25
       },
       "tier": "organism",
-      "verdict": "keep-internal",
+      "verdict": "keep-core",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false

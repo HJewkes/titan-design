@@ -1,6 +1,13 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useState, type ReactNode } from 'react'
-import { View, Text, Pressable, type LayoutChangeEvent } from 'react-native'
+import {
+  View,
+  Text,
+  Pressable,
+  Platform,
+  type LayoutChangeEvent,
+  type ViewStyle,
+} from 'react-native'
 import { cn } from '../../../utils/cn'
 import { resolveColor } from '../../../theme/resolve-color'
 import { formatDuration } from '../../../hooks/useTimer'
@@ -13,8 +20,11 @@ import { ChevronRightIcon } from '../../icons'
 import { SetBarChart, type SetSlot } from '../../custom/charts/SetBarChart'
 import { LIVE_STRIP_ZONE_TOKEN, type LiveStripRep, type LiveStripState } from './liveStripModel'
 
+// The wall row is fixed (round 2 chose 72px); the phone form grows when a long title wraps.
+const WALL_HEIGHT = 72
+const PHONE_MIN_HEIGHT = 88
+
 export type PinnedLiveStripLayout = 'wall' | 'phone'
-export type PinnedLiveStripWallSize = 'standard' | 'trimmed'
 
 export interface PinnedLiveStripProps {
   /** `set` while reps are being logged, `rest` while the rest timer runs, `idle` renders nothing. */
@@ -28,7 +38,7 @@ export interface PinnedLiveStripProps {
   /** Performed reps of the current set (in `rest`, of the set just finished), zones from analytics. */
   reps: readonly LiveStripRep[]
   targetReps: number
-  /** Analytics says the set has fatigued past its cut-off. Shown by colour only, never text. */
+  /** Analytics says the set has fatigued past its cut-off. Shown by the strip's edge and wash, never text. */
   isFatigued?: boolean
   /** `rest` only: time left and the rest's full length, in ms. */
   restRemainingMs?: number
@@ -37,16 +47,13 @@ export interface PinnedLiveStripProps {
   onPress?: () => void
   /** Force a layout. Omitted: measured from the strip's own width. */
   layout?: PinnedLiveStripLayout
-  /** Wall row height: `standard` 88px (the round-1 pick) or `trimmed` 72px. */
-  wallSize?: PinnedLiveStripWallSize
   className?: string
 }
 
-/** Below this container width the strip stacks into its two-line phone form. */
+/** Below this container width the strip stacks into its phone form. */
 export const PINNED_LIVE_STRIP_PHONE_MAX = 640
 
 interface Scale {
-  height: number
   title: string
   sub: string
   hero: string
@@ -57,45 +64,39 @@ interface Scale {
 }
 
 // Type steps come from the tailwind scale; no Typography variant reaches the wall's numeral sizes.
-const SCALES: Record<PinnedLiveStripWallSize | 'phone', Scale> = {
-  standard: {
-    height: 88,
-    title: 'text-2xl',
-    sub: 'text-lg',
-    hero: 'text-6xl',
-    heroUnit: 'text-3xl',
-    velocity: 'text-5xl',
-    barHeight: 60,
-    barPitch: 28,
-  },
-  trimmed: {
-    height: 72,
+const SCALES: Record<PinnedLiveStripLayout, Scale> = {
+  wall: {
     title: 'text-xl',
     sub: 'text-base',
     hero: 'text-4xl',
     heroUnit: 'text-xl',
     velocity: 'text-3xl',
-    barHeight: 48,
+    barHeight: 40,
     barPitch: 24,
   },
   phone: {
-    height: 88,
     title: 'text-base',
     sub: 'text-sm',
     hero: 'text-3xl',
     heroUnit: 'text-lg',
     velocity: 'text-2xl',
-    barHeight: 30,
+    barHeight: 26,
     barPitch: 12,
   },
 }
 
 type Tone = 'live' | 'rest' | 'fatigue'
 
+const LIVE_TAG = { dot: 'status-live', text: 'status-success', label: 'Live set' } as const
+
+// Fatigue changes only the edge and the wash; its tag stays the live tag (VW-429 round 2).
 const TONE = {
-  live: { border: 'border-status-live', dot: 'live', text: 'success', label: 'Live set' },
-  rest: { border: 'border-brand-primary', dot: 'primary', text: 'warning', label: 'Resting' },
-  fatigue: { border: 'border-status-error', dot: 'error', text: 'error', label: 'Live set' },
+  live: { edge: 'status-live', tag: LIVE_TAG },
+  rest: {
+    edge: 'brand-primary',
+    tag: { dot: 'brand-primary', text: 'status-warning', label: 'Resting' },
+  },
+  fatigue: { edge: 'status-error', tag: LIVE_TAG },
 } as const
 
 const NUMERAL = 'font-heading font-bold text-text-primary'
@@ -118,23 +119,28 @@ function setLine(props: PinnedLiveStripProps, short: boolean): string {
 }
 
 function StateTag({ tone }: { tone: Tone }) {
-  const t = TONE[tone]
+  const t = TONE[tone].tag
   return (
-    <View className="flex-row items-center gap-inline-sm" testID="live-strip-tag">
-      <Indicator size="md" color={t.dot} pulse={tone === 'rest' ? false : 'ping'} />
-      <Typography variant="overline" color={t.text}>
+    <View className="flex-row items-baseline gap-inline-sm" testID="live-strip-tag">
+      <Indicator
+        size="md"
+        customColor={resolveColor(t.dot)}
+        pulse={tone === 'rest' ? false : 'ping'}
+        testID="live-strip-tag-dot"
+      />
+      <Typography variant="overline" style={{ color: resolveColor(t.text) }}>
         {t.label}
       </Typography>
     </View>
   )
 }
 
-function Title({ name, scale, grow }: { name: string; scale: Scale; grow?: boolean }) {
+function Title({ name, scale, lines }: { name: string; scale: Scale; lines: number }) {
   return (
     <Text
       testID="live-strip-title"
-      numberOfLines={1}
-      className={cn('font-heading font-bold text-text-primary', scale.title, grow && 'flex-1')}
+      numberOfLines={lines}
+      className={cn('font-heading font-bold text-text-primary', scale.title)}
     >
       {name}
     </Text>
@@ -151,6 +157,12 @@ function Labelled({ label, children }: { label: string; children: ReactNode }) {
     </View>
   )
 }
+
+// Each column's LAST line (value, set line) sits on the bars' foot; Tailwind has no class for it.
+const LAST_BASELINE = Platform.select<ViewStyle>({
+  web: { alignItems: 'last baseline' as ViewStyle['alignItems'] },
+  default: { alignItems: 'flex-end' },
+})
 
 function HeroNumeral({ state, reps, targetReps, restRemainingMs = 0, scale }: Parts) {
   const isRest = state === 'rest'
@@ -184,7 +196,10 @@ function RepBars({ reps, targetReps, scale, fill }: Parts & { fill?: boolean }) 
   const colorFor = (_value: number, repIndex: number) =>
     resolveColor(LIVE_STRIP_ZONE_TOKEN[reps[repIndex].zone])
   return (
-    <View style={fill ? { flex: 1 } : { width: targetReps * scale.barPitch }}>
+    <View
+      testID="live-strip-bars-frame"
+      style={fill ? { flex: 1, minWidth: 0 } : { width: targetReps * scale.barPitch }}
+    >
       <SetBarChart
         slots={slots}
         colorFor={colorFor}
@@ -214,22 +229,28 @@ function WallRow(props: Parts) {
   const isRest = state === 'rest'
   return (
     <View className="flex-1 flex-row items-center gap-section-md px-gutter-md">
-      <View className="flex-1 gap-stack-sm">
-        <Title name={exerciseName} scale={scale} />
-        <View className="flex-row items-center gap-inline-lg">
-          <StateTag tone={tone} />
-          <Text className={cn('font-body text-text-secondary', scale.sub)}>
-            {setLine(props, false)}
-          </Text>
+      <View
+        testID="live-strip-baseline-row"
+        className="flex-1 flex-row gap-section-md"
+        style={LAST_BASELINE}
+      >
+        <View className="flex-1 gap-stack-sm">
+          <Title name={exerciseName} scale={scale} lines={1} />
+          <View className="flex-row items-baseline gap-inline-lg">
+            <StateTag tone={tone} />
+            <Text className={cn('font-body text-text-secondary', scale.sub)}>
+              {setLine(props, false)}
+            </Text>
+          </View>
         </View>
+        <Labelled label={isRest ? 'Rest left' : 'Reps'}>
+          <HeroNumeral {...props} />
+        </Labelled>
+        <Labelled label={isRest && setNumber > 1 ? `Last rep, set ${setNumber - 1}` : 'Last rep'}>
+          <Velocity {...props} showUnit />
+        </Labelled>
+        <RepBars {...props} />
       </View>
-      <Labelled label={isRest ? 'Rest left' : 'Reps'}>
-        <HeroNumeral {...props} />
-      </Labelled>
-      <Labelled label={isRest && setNumber > 1 ? `Last rep, set ${setNumber - 1}` : 'Last rep'}>
-        <Velocity {...props} showUnit />
-      </Labelled>
-      <RepBars {...props} />
       <BackToLive />
     </View>
   )
@@ -238,15 +259,23 @@ function WallRow(props: Parts) {
 function PhoneRows(props: Parts) {
   const { exerciseName, scale } = props
   return (
-    <View className="flex-1 justify-center gap-stack-sm px-inset-md">
-      <View className="flex-row items-center gap-inline-lg">
-        <Title name={exerciseName} scale={scale} grow />
-        <Text className={cn('font-body text-text-secondary', scale.sub)}>
-          {setLine(props, true)}
-        </Text>
-        <ChevronRightIcon size={20} color={resolveColor('text-primary')} />
+    <View className="justify-center gap-stack-sm px-inset-md py-inset-sm">
+      {/* The meta group wraps under the title only when the title would not fit beside it. */}
+      <View
+        testID="live-strip-title-row"
+        className="flex-row flex-wrap items-baseline gap-x-inline-lg"
+      >
+        <View className="shrink grow">
+          <Title name={exerciseName} scale={scale} lines={2} />
+        </View>
+        <View testID="live-strip-meta" className="flex-row items-center gap-inline-sm">
+          <Text className={cn('font-body text-text-secondary', scale.sub)}>
+            {setLine(props, true)}
+          </Text>
+          <ChevronRightIcon size={20} color={resolveColor('text-primary')} />
+        </View>
       </View>
-      <View className="flex-row items-end gap-inline-lg">
+      <View testID="live-strip-baseline-row" className="flex-row items-baseline gap-inline-lg">
         <HeroNumeral {...props} />
         <Velocity {...props} showUnit={false} />
         <RepBars {...props} fill />
@@ -257,11 +286,11 @@ function PhoneRows(props: Parts) {
 
 function StripPlane({
   tone,
-  height,
+  isPhone,
   children,
 }: {
   tone: Tone
-  height: number
+  isPhone: boolean
   children: ReactNode
 }) {
   return (
@@ -269,8 +298,11 @@ function StripPlane({
       elevation={4}
       rounded
       testID="live-strip-plane"
-      className={cn('overflow-hidden rounded-xl border-l-4', TONE[tone].border)}
-      style={{ height }}
+      className="overflow-hidden rounded-xl border-l-4"
+      style={[
+        { borderLeftColor: resolveColor(TONE[tone].edge) },
+        isPhone ? { minHeight: PHONE_MIN_HEIGHT } : { height: WALL_HEIGHT },
+      ]}
     >
       {tone === 'fatigue' ? (
         <View
@@ -311,16 +343,16 @@ function accessibleName(props: PinnedLiveStripProps): string {
 /**
  * Shell · PinnedLiveStrip (VW-429): the row pinned atop every non-live page while a set or rest
  * runs, so the lifter never loses the live set. The whole strip is the link back to live.
- * Zone colour is per-rep analytics data; fatigue is carried by the strip colour and the bars,
- * never by text, so the exercise title keeps its full width in every state.
+ * Zone colour is per-rep analytics data; fatigue is carried by the strip's edge and wash, never by
+ * text, so the exercise title keeps its full width in every state.
  */
 export function PinnedLiveStrip(props: PinnedLiveStripProps) {
-  const { state, isFatigued = false, onPress, layout, wallSize = 'standard', className } = props
+  const { state, isFatigued = false, onPress, layout, className } = props
   const [measured, setMeasured] = useState<PinnedLiveStripLayout>('wall')
   if (state === 'idle') return null
   const isPhone = (layout ?? measured) === 'phone'
   const tone = toneOf(state, isFatigued)
-  const scale = SCALES[isPhone ? 'phone' : wallSize]
+  const scale = SCALES[isPhone ? 'phone' : 'wall']
   const onLayout = (e: LayoutChangeEvent) =>
     setMeasured(e.nativeEvent.layout.width < PINNED_LIVE_STRIP_PHONE_MAX ? 'phone' : 'wall')
   return (
@@ -332,7 +364,7 @@ export function PinnedLiveStrip(props: PinnedLiveStripProps) {
       testID="pinned-live-strip"
       className={cn('w-full', className)}
     >
-      <StripPlane tone={tone} height={scale.height}>
+      <StripPlane tone={tone} isPhone={isPhone}>
         {isPhone ? (
           <PhoneRows {...props} scale={scale} tone={tone} />
         ) : (

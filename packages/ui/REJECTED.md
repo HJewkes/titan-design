@@ -24,6 +24,18 @@ that someone can tell whether a future change invalidates the reasoning.
 
 ---
 
+## PinnedLiveStrip 88px wall row and red fatigue tag — rejected 2026-09-18
+
+**Tried:** VW-429 round 2 offered `PinnedLiveStrip` at two wall heights: the 88px row from the
+round-1 mocks (variant B) and a 72px `trimmed` row. The fatigue state also turned the "Live set"
+tag red, alongside the red left edge and red wash.
+**Chosen:** the 72px row is the only wall height, and the `wallSize` prop is gone. Fatigue keeps the
+red edge and wash; the tag keeps its live colour. The rep bars keep their analytics zone colours.
+**Why:** the human found 88px "a bit beefy on the wall size board" and picked 72px in the round-2
+review. For fatigue cues they kept only "red left edge" and "red wash over the strip" and rated the
+signal 4/5 readable without text. A 64px row was also tried in round 3: its value labels clipped
+at the top and the rest bar touched the text baseline, so 72px is the floor for this content.
+
 ## Compact goal-chart variants A, D2, D3 and the Sparkline — rejected 2026-09-18
 
 **Tried:** four shapes for the per-lift card's chart slot (VW-385 ideation).

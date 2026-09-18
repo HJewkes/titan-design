@@ -35,17 +35,16 @@ const meta: Meta<PinnedLiveStripProps> = {
   argTypes: {
     state: { control: 'inline-radio', options: ['set', 'rest', 'idle'] },
     isFatigued: { control: 'boolean' },
-    wallSize: { control: 'inline-radio', options: ['standard', 'trimmed'] },
     layout: { control: 'inline-radio', options: [undefined, 'wall', 'phone'] },
     reps: { control: 'object' },
   },
-  args: { ...S.set, wallSize: 'standard' },
+  args: S.set,
 }
 export default meta
 
 type Story = StoryObj<PinnedLiveStripProps>
 
-/** A set in progress. Switch `state`, `isFatigued` and `wallSize` from the controls. */
+/** A set in progress. Switch `state` and `isFatigued` from the controls. */
 export const Default: Story = {}
 
 /** Resting: the countdown takes the hero and a time bar runs along the bottom. */

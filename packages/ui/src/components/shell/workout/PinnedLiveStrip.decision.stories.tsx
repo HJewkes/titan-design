@@ -3,15 +3,20 @@ import { View } from 'react-native'
 import { Surface } from '../../ui/surface'
 import { Typography } from '../../custom/Typography'
 import { WorkoutShell } from './WorkoutShell'
-import { PinnedLiveStrip, type PinnedLiveStripWallSize } from './PinnedLiveStrip'
+import { PinnedLiveStrip } from './PinnedLiveStrip'
 import { LIVE_STRIP_SCENARIOS as S, type LiveStripScenario } from './pinnedLiveStrip-fixture'
 
 interface DecisionArgs {
   scenario: LiveStripScenario
-  wallSize: PinnedLiveStripWallSize
 }
 
-const SHELL_STATE = { set: 'live', fatigue: 'live', rest: 'rest', idle: 'idle' } as const
+const SHELL_STATE = {
+  set: 'live',
+  fatigue: 'live',
+  longName: 'live',
+  rest: 'rest',
+  idle: 'idle',
+} as const
 
 /** A neutral stand-in for whichever non-live page the lifter navigated to. */
 function PageBody() {
@@ -21,7 +26,7 @@ function PageBody() {
         <Surface
           key={heading}
           raise={1}
-          className="p-inset-xl gap-stack-md"
+          className="gap-stack-md p-inset-xl"
           style={{ minHeight: 180 }}
         >
           <Typography variant="h6">{heading}</Typography>
@@ -35,22 +40,25 @@ function PageBody() {
 }
 
 /**
- * VW-429 round 2: the pinned live strip as a titan component, in the wall shell.
+ * VW-429: the pinned live strip, CHOSEN design, in the wall shell.
  *
- * Round 1 chose variant B (88px) and dropped the velocity-loss text: fatigue is the strip's
- * colour and the rep bars. `wallSize: trimmed` is the 72px alternative offered because the
- * wall row felt beefy; the phone form is the same in both. Canvas width drives the layout
- * (below 640px the strip stacks), so shoot at 1920 and 360. Dark only (VW-397).
+ * Round 1 (mocks) chose variant B and dropped the velocity-loss text. Round 2 CHOSE the 72px
+ * trimmed wall row; the 88px row is NOT CHOSEN and deleted (REJECTED.md). Fatigue keeps the red
+ * edge and wash; the tag stays the live tag. On a phone a long title wraps to two lines and the
+ * set count drops under it. Canvas width drives the layout (below 640px the strip stacks), so
+ * shoot at 1920 and 360. Dark only (VW-397).
  */
 const meta: Meta<DecisionArgs> = {
   title: 'Lab/Decisions/Pinned Live Strip',
   tags: ['status:lab'],
   parameters: { layout: 'fullscreen' },
   argTypes: {
-    scenario: { control: 'inline-radio', options: ['set', 'rest', 'fatigue', 'idle'] },
-    wallSize: { control: 'inline-radio', options: ['standard', 'trimmed'] },
+    scenario: {
+      control: 'inline-radio',
+      options: ['set', 'rest', 'fatigue', 'idle', 'longName'],
+    },
   },
-  render: ({ scenario, wallSize }) => (
+  render: ({ scenario }) => (
     <WorkoutShell
       activeKey="program"
       liveKey={scenario === 'idle' ? null : 'live'}
@@ -58,7 +66,7 @@ const meta: Meta<DecisionArgs> = {
       subtitle="planning"
     >
       <View className="flex-1 gap-section-sm p-gutter-sm" testID="page-content">
-        <PinnedLiveStrip {...S[scenario]} wallSize={wallSize} />
+        <PinnedLiveStrip {...S[scenario]} />
         <PageBody />
       </View>
     </WorkoutShell>
@@ -68,23 +76,17 @@ export default meta
 
 type Story = StoryObj<DecisionArgs>
 
-/** Set in progress, rep 5 of 8, standard 88px wall row. */
-export const Set: Story = { args: { scenario: 'set', wallSize: 'standard' } }
+/** Set in progress, rep 5 of 8. */
+export const Set: Story = { args: { scenario: 'set' } }
 
-/** Resting, 0:47 of 1:30 left. */
-export const Rest: Story = { args: { scenario: 'rest', wallSize: 'standard' } }
+/** Resting, 0:47 of 1:30 left; the time bar runs out of the left edge. */
+export const Rest: Story = { args: { scenario: 'rest' } }
 
-/** Fatigued past the cut-off: strip colour and bars only, no text. */
-export const Fatigue: Story = { args: { scenario: 'fatigue', wallSize: 'standard' } }
+/** Fatigued past the cut-off: red edge and wash only, no text. */
+export const Fatigue: Story = { args: { scenario: 'fatigue' } }
 
 /** Idle: no strip; the page starts at the top. */
-export const Idle: Story = { args: { scenario: 'idle', wallSize: 'standard' } }
+export const Idle: Story = { args: { scenario: 'idle' } }
 
-/** The trimmed 72px wall row, set in progress. */
-export const SetTrimmed: Story = { args: { scenario: 'set', wallSize: 'trimmed' } }
-
-/** The trimmed 72px wall row, resting. */
-export const RestTrimmed: Story = { args: { scenario: 'rest', wallSize: 'trimmed' } }
-
-/** The trimmed 72px wall row, fatigued. */
-export const FatigueTrimmed: Story = { args: { scenario: 'fatigue', wallSize: 'trimmed' } }
+/** A long exercise name: on a phone it wraps and the set count moves under it. */
+export const LongName: Story = { args: { scenario: 'longName' } }
