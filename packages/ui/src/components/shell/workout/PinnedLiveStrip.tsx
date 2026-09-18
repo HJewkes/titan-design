@@ -76,6 +76,8 @@ interface Scale {
   secondsSlot: number
   /** Gap between numeral, velocity and bars. */
   valueGap: string
+  /** Line-height for the numerals: the wall drops the leading so its overline row fits above them. */
+  leading: string
   /** Slot widths (px) measured in the heading face for the rep count, by digits. */
   slot: { oneDigitReps: number; twoDigitReps: number }
   velocity: string
@@ -94,9 +96,10 @@ const SCALES: Record<PinnedLiveStripLayout, Scale> = {
     reducedRest: { size: 'text-3xl', unit: 'text-lg', px: 36 },
     secondsSlot: 83,
     valueGap: 'gap-section-md',
+    leading: 'leading-none',
     slot: { oneDigitReps: 56, twoDigitReps: 101 },
     velocity: 'text-3xl',
-    barHeight: 40,
+    barHeight: 48,
     barPitch: 24,
   },
   phone: {
@@ -108,9 +111,10 @@ const SCALES: Record<PinnedLiveStripLayout, Scale> = {
     reducedRest: { size: 'text-2xl', unit: 'text-base', px: 32 },
     secondsSlot: 71,
     valueGap: 'gap-inline-md',
+    leading: '',
     slot: { oneDigitReps: 43, twoDigitReps: 76 },
     velocity: 'text-2xl',
-    barHeight: 26,
+    barHeight: 32,
     barPitch: 12,
   },
 }
@@ -192,13 +196,31 @@ function Title({ name, scale, lines }: { name: string; scale: Scale; lines: numb
   )
 }
 
-function Labelled({ label, children }: { label: string; children: ReactNode }) {
+function Overline({ label, width }: { label: string; width?: number }) {
   return (
-    <View>
-      <Typography variant="overline" color="tertiary">
+    <View style={width != null ? { width } : null}>
+      <Typography variant="overline" color="tertiary" className="leading-none" numberOfLines={1}>
         {label}
       </Typography>
-      {children}
+    </View>
+  )
+}
+
+/** The wall's readouts: one overline row above one numeral row, so both labels share a line. */
+function WallValues(props: Parts) {
+  const { state, setNumber, scale } = props
+  const isRest = state === 'rest'
+  return (
+    // No gap: the numerals' own leading spaces them from the overlines.
+    <View testID="live-strip-values">
+      <View testID="live-strip-overlines" className={cn('flex-row', scale.valueGap)}>
+        <Overline label={isRest ? 'Rest left' : 'Reps'} width={heroSlotWidth(props)} />
+        <Overline label={isRest && setNumber > 1 ? `Last rep, set ${setNumber - 1}` : 'Last rep'} />
+      </View>
+      <View className={cn('flex-row', scale.valueGap)} style={LAST_BASELINE}>
+        <HeroNumeral {...props} />
+        <Velocity {...props} showUnit />
+      </View>
     </View>
   )
 }
@@ -220,7 +242,7 @@ function HeroValue({ state, reps, targetReps, scale, restRemainingMs = 0 }: Part
     return (
       <Text testID="live-strip-hero-value">
         {reps.length}
-        <Text className={cn(UNIT, scale.heroUnit)}>/{targetReps}</Text>
+        <Text className={cn(UNIT, scale.heroUnit, scale.leading)}>/{targetReps}</Text>
       </Text>
     )
   }
@@ -230,8 +252,8 @@ function HeroValue({ state, reps, targetReps, scale, restRemainingMs = 0 }: Part
       testID="live-strip-hero-value"
       style={raisePx ? { position: 'relative', top: -raisePx } : null}
     >
-      <Text className={size}>{seconds}</Text>
-      <Text className={cn(UNIT, unit)}>s</Text>
+      <Text className={cn(size, scale.leading)}>{seconds}</Text>
+      <Text className={cn(UNIT, unit, scale.leading)}>s</Text>
     </Text>
   )
 }
@@ -242,7 +264,7 @@ function HeroNumeral(props: Parts) {
     <Text
       testID="live-strip-hero"
       numberOfLines={1}
-      className={cn(NUMERAL, props.scale.hero)}
+      className={cn(NUMERAL, props.scale.hero, props.scale.leading)}
       style={[TABULAR, { width: heroSlotWidth(props) }]}
     >
       <HeroValue {...props} />
@@ -263,11 +285,11 @@ function Velocity({
   return (
     <Text
       testID="live-strip-velocity"
-      className={cn(NUMERAL, scale.velocity)}
+      className={cn(NUMERAL, scale.velocity, scale.leading)}
       style={[TABULAR, { color }]}
     >
       {formatVelocity(last.velocity)}
-      {showUnit ? <Text className={cn(UNIT, scale.heroUnit)}> m/s</Text> : null}
+      {showUnit ? <Text className={cn(UNIT, scale.heroUnit, scale.leading)}> m/s</Text> : null}
     </Text>
   )
 }
@@ -308,8 +330,7 @@ function BackToLive() {
 }
 
 function WallRow(props: Parts) {
-  const { state, setNumber, exerciseName, scale, tone } = props
-  const isRest = state === 'rest'
+  const { exerciseName, scale, tone } = props
   return (
     <View className="flex-1 flex-row items-center gap-section-md px-gutter-md">
       <View
@@ -326,12 +347,7 @@ function WallRow(props: Parts) {
             </Text>
           </View>
         </View>
-        <Labelled label={isRest ? 'Rest left' : 'Reps'}>
-          <HeroNumeral {...props} />
-        </Labelled>
-        <Labelled label={isRest && setNumber > 1 ? `Last rep, set ${setNumber - 1}` : 'Last rep'}>
-          <Velocity {...props} showUnit />
-        </Labelled>
+        <WallValues {...props} />
         <RepBars {...props} />
       </View>
       <BackToLive />

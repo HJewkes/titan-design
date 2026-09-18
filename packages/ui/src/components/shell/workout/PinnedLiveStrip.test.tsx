@@ -224,6 +224,32 @@ describe('PinnedLiveStrip', () => {
     })
   })
 
+  describe('wall readouts', () => {
+    // jsdom has no layout: the shared line and the bar clearances are measured in the captures.
+    it.each([
+      ['set', S.set, 'Reps', 'Last rep'],
+      ['rest', S.rest, 'Rest left', 'Last rep, set 2'],
+    ] as const)(
+      'puts both %s overlines in one row, the first as wide as the hero slot',
+      (_, props, a, b) => {
+        render(<PinnedLiveStrip {...props} layout="wall" />)
+        const row = screen.getByTestId('live-strip-overlines')
+        expect(row).toHaveTextContent(`${a}${b}`)
+        expect(row.firstElementChild).toHaveStyle({
+          width: screen.getByTestId('live-strip-hero').style.width,
+        })
+      }
+    )
+
+    it.each([
+      ['wall', 48],
+      ['phone', 32],
+    ] as const)('gives the %s bars a %ipx plot', (layout, height) => {
+      render(<PinnedLiveStrip {...S.set} layout={layout} />)
+      expect(screen.getByTestId('live-strip-bars')).toHaveStyle({ height: `${height}px` })
+    })
+  })
+
   describe('hero slot', () => {
     // jsdom has no layout, so the no-shift property is asserted on the slot width here and
     // measured in the Lab/Decisions RestPair* captures.

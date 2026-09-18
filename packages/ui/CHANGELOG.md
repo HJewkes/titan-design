@@ -13,6 +13,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
   (`barColor="loss"`), the same as the live hero (VW-429 colour round). The
   0.19.0 behaviour, per-rep zone colour, is `barColor="zone"`. The last-rep
   velocity follows the same colour.
+- `PinnedLiveStrip` wall row: the "Reps" / "Rest left" and "Last rep" overlines
+  share one line above the numerals and clear the strip's top edge. The bars are
+  taller (wall 40 to 48px, phone 26 to 32px) and still stand on the shared
+  baseline.
 - `LiveStripRep.zone` is optional. Under `barColor="zone"` a rep without a zone
   falls back to its loss colour.
 - `VelocityLossBands`: when the amber and red decision lines sit closer than a

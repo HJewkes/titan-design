@@ -14,8 +14,8 @@ const meta: Meta<PinnedLiveStripProps> = {
       description: {
         component:
           '**Organism (VW-429).** Pinned atop every non-live page while a set or rest runs; the whole ' +
-          'strip links back to live. Resize the canvas below 640px for the phone form. Zone colour is ' +
-          'per-rep data from workout-analytics; fatigue shows as strip colour only. Composes ' +
+          'strip links back to live. Resize the canvas below 640px for the phone form. Bars colour by ' +
+          'loss from the set best like the live hero (`barColor="zone"` for per-rep zones); fatigue shows as strip colour only. Composes ' +
           '[Surface](?path=/docs/components-surface--docs) + ' +
           '[Indicator](?path=/docs/components-indicator--docs) + ' +
           '[Progress](?path=/docs/components-progress--docs) + ' +
