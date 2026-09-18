@@ -426,7 +426,7 @@ function TitleRow({
  * happens to be above a chart.
  */
 function FullBody({ props, width }: { props: GoalCardProps; width: number }) {
-  const { goal, milestone, status, title, chartHeight } = props
+  const { goal, status, title, chartHeight } = props
   if (!goal) return null
   return (
     <View className="gap-stack-sm" testID="goal-card-fold">
