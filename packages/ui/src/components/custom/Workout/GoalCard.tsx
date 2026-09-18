@@ -363,6 +363,11 @@ function StatusAffordance({
  * One title row for both sizes (VW-385 round 5, human: "make the title
  * consistent between the primary goal card and goal card"): the lift on the
  * left, then priority, PR and the status badge furthest right.
+ *
+ * At phone width the marks never cost the name its letters (VW-432): when the
+ * name and the marks do not fit one row, the row wraps and the marks drop to a
+ * left-aligned line under the name; only a name wider than the whole card
+ * breaks onto a second line. It is pure flex wrap, so web and native agree.
  */
 function TitleRow({
   title,
@@ -391,17 +396,17 @@ function TitleRow({
       // later sibling wins on paint order whatever the tip's own z-index says.
       style={{
         flexDirection: 'row',
+        flexWrap: 'wrap',
         alignItems: 'center',
         justifyContent: 'space-between',
         zIndex: 10,
       }}
-      className="gap-inline-md"
+      className="gap-x-inline-md gap-y-stack-sm"
+      testID="goal-card-title-row"
     >
-      {/* No maxLines on the compact title: a long exercise name breaks to a
-          second line in a narrow cell rather than truncating. */}
       <View style={{ flexShrink: 1, minWidth: 0 }}>
         {size === 'full' ? (
-          <Typography variant="h5" maxLines={2} testID="goal-card-title">
+          <Typography variant="h5" testID="goal-card-title">
             {title}
           </Typography>
         ) : (
@@ -410,7 +415,11 @@ function TitleRow({
           </Typography>
         )}
       </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }} className="gap-inline-sm">
+      <View
+        style={{ flexDirection: 'row', alignItems: 'center', flexShrink: 0 }}
+        className="gap-inline-sm"
+        testID="goal-card-marks"
+      >
         {priority && <GoalPriorityIcon priority={priority} size={markSize} />}
         {isPR && <PrBadge type="weight" compact animate={false} iconSize={markSize} />}
         <StatusAffordance badge={badge} collapsed={collapsed} basis={basis} citation={citation} />
