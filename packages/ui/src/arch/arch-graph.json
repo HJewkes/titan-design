@@ -3706,12 +3706,12 @@
       "exports": [
         "PinnedLiveStrip",
         "PinnedLiveStripLayout",
-        "PinnedLiveStripRestNumeral",
         "PinnedLiveStripProps",
         "PINNED_LIVE_STRIP_PHONE_MAX",
         "toneOf",
         "setLine",
-        "Countdown",
+        "StateTag",
+        "colorFor",
         "cn"
       ],
       "libDependents": 1,
@@ -3736,7 +3736,7 @@
         "rawText": 9,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 442,
+        "loc": 414,
         "score": 26
       },
       "tier": "organism",

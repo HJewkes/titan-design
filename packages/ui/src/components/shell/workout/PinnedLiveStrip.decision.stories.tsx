@@ -3,24 +3,26 @@ import { View } from 'react-native'
 import { Surface } from '../../ui/surface'
 import { Typography } from '../../custom/Typography'
 import { WorkoutShell } from './WorkoutShell'
-import { PinnedLiveStrip, type PinnedLiveStripRestNumeral } from './PinnedLiveStrip'
+import { PinnedLiveStrip } from './PinnedLiveStrip'
 import { LIVE_STRIP_SCENARIOS as S, type LiveStripScenario } from './pinnedLiveStrip-fixture'
 
-type DecisionScenario = LiveStripScenario | 'pair' | 'pairLong'
+type DecisionScenario = LiveStripScenario | 'pair' | 'pairTwoDigit'
 
 interface DecisionArgs {
   scenario: DecisionScenario
-  restNumeral?: PinnedLiveStripRestNumeral
+  /** `pair` only: the rest's seconds left. */
+  restSeconds?: number
 }
 
 const SHELL_STATE: Record<DecisionScenario, 'live' | 'rest' | 'idle'> = {
   set: 'live',
   fatigue: 'live',
   longName: 'live',
+  setTwoDigit: 'live',
   rest: 'rest',
-  restLong: 'rest',
+  restTwoDigit: 'rest',
   pair: 'rest',
-  pairLong: 'rest',
+  pairTwoDigit: 'rest',
   idle: 'idle',
 }
 
@@ -46,15 +48,25 @@ function PageBody() {
 }
 
 /** The set strip above its rest strip, so a shift between the two is visible. */
-function Strips({ scenario, restNumeral }: DecisionArgs) {
-  if (scenario !== 'pair' && scenario !== 'pairLong') {
-    return <PinnedLiveStrip {...S[scenario]} restNumeral={restNumeral} />
+function Strips({ scenario, restSeconds = 47 }: DecisionArgs) {
+  if (scenario === 'pairTwoDigit') {
+    return (
+      <View className="gap-stack-md" testID="live-strip-pair">
+        <PinnedLiveStrip {...S.setTwoDigit} />
+        <PinnedLiveStrip {...S.restTwoDigit} />
+      </View>
+    )
   }
-  const rest = scenario === 'pair' ? S.rest : S.restLong
+  if (scenario !== 'pair') return <PinnedLiveStrip {...S[scenario]} />
+  const restMs = restSeconds * 1000
   return (
     <View className="gap-stack-md" testID="live-strip-pair">
-      <PinnedLiveStrip {...S.set} restNumeral={restNumeral} />
-      <PinnedLiveStrip {...rest} restNumeral={restNumeral} />
+      <PinnedLiveStrip {...S.set} />
+      <PinnedLiveStrip
+        {...S.rest}
+        restRemainingMs={restMs}
+        restDurationMs={Math.max(90_000, restMs * 1.2)}
+      />
     </View>
   )
 }
@@ -65,7 +77,9 @@ function Strips({ scenario, restNumeral }: DecisionArgs) {
  * CHOSEN so far: the 72px wall row (88px NOT CHOSEN, round 2); fatigue as red edge and wash only;
  * the rest line running into the left edge; on a phone "Set 2/3" and the chevron stay pinned top
  * right while the title wraps (round 4; "drop under" and "chevron only" NOT CHOSEN, REJECTED.md).
- * Round 5 compares rest numerals as set/rest PAIRS (`restNumeral`): clock, smallClock, seconds.
+ * Round 5 CHOSE seconds only ("47s") for the rest countdown (m:ss at full and at reduced size NOT
+ * CHOSEN). Round 6: from 100s the seconds step down one type size inside the set's slot, shown as
+ * set/rest PAIRS at 47s, 99s, 100s, 150s, 999s and on a 12-rep target.
  * Canvas width drives the layout (below 640px the strip stacks), so shoot at 1920 and 360.
  * Dark only (VW-397).
  */
@@ -76,9 +90,9 @@ const meta: Meta<DecisionArgs> = {
   argTypes: {
     scenario: {
       control: 'select',
-      options: ['set', 'rest', 'restLong', 'fatigue', 'idle', 'longName', 'pair', 'pairLong'],
+      options: ['set', 'rest', 'fatigue', 'idle', 'longName', 'pair', 'pairTwoDigit'],
     },
-    restNumeral: { control: 'inline-radio', options: ['clock', 'smallClock', 'seconds'] },
+    restSeconds: { control: { type: 'number', min: 0, max: 999 } },
   },
   render: (args) => (
     <WorkoutShell
@@ -113,14 +127,20 @@ export const Idle: Story = { args: { scenario: 'idle' } }
 /** A long exercise name: on a phone it wraps beside the pinned "Set 2/3" and chevron. */
 export const LongName: Story = { args: { scenario: 'longName' } }
 
-/** r1: m:ss at the hero size in a slot that always fits "12/12" (the round-4 build). */
-export const RestPairClock: Story = { args: { scenario: 'pair', restNumeral: 'clock' } }
+/** 47s left: full size. */
+export const RestPair47: Story = { args: { scenario: 'pair', restSeconds: 47 } }
 
-/** r2: m:ss at the velocity size; the slot fits the set's rep count and the smaller clock. */
-export const RestPairSmallClock: Story = { args: { scenario: 'pair', restNumeral: 'smallClock' } }
+/** 99s left: the widest value at full size. */
+export const RestPair99: Story = { args: { scenario: 'pair', restSeconds: 99 } }
 
-/** r3: seconds only ("47s") at the hero size; the slot fits two-digit seconds. */
-export const RestPairSeconds: Story = { args: { scenario: 'pair', restNumeral: 'seconds' } }
+/** 100s left: the first value at the reduced size. */
+export const RestPair100: Story = { args: { scenario: 'pair', restSeconds: 100 } }
 
-/** r3 above 99s: "150s" needs a three-digit slot, so the velocity and bars shift at set to rest. */
-export const RestPairSecondsLong: Story = { args: { scenario: 'pairLong', restNumeral: 'seconds' } }
+/** 150s left: reduced size, same slot. */
+export const RestPair150: Story = { args: { scenario: 'pair', restSeconds: 150 } }
+
+/** 999s left: the widest value the strip supports. */
+export const RestPair999: Story = { args: { scenario: 'pair', restSeconds: 999 } }
+
+/** A 12-rep target with 150s of rest: the two-digit rep slot and the reduced seconds together. */
+export const RestPairTwoDigitTarget: Story = { args: { scenario: 'pairTwoDigit' } }

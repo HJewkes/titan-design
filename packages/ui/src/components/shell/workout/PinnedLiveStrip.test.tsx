@@ -39,7 +39,7 @@ describe('PinnedLiveStrip', () => {
   describe('rest', () => {
     it('replaces the rep readout with the countdown and names the next set', () => {
       render(<PinnedLiveStrip {...S.rest} layout="wall" />)
-      expect(screen.getByTestId('live-strip-hero')).toHaveTextContent('0:47')
+      expect(screen.getByTestId('live-strip-hero')).toHaveTextContent('47s')
       expect(screen.getByText('Rest left')).toBeInTheDocument()
       expect(screen.getByText('Next: set 3 of 3 · 140 lb')).toBeInTheDocument()
       expect(screen.getByText('Last rep, set 2')).toBeInTheDocument()
@@ -160,21 +160,40 @@ describe('PinnedLiveStrip', () => {
     it('shows the next set during rest', () => {
       render(<PinnedLiveStrip {...S.rest} layout="phone" />)
       expect(screen.getByText('Next 3/3')).toBeInTheDocument()
-      expect(screen.getByTestId('live-strip-hero')).toHaveTextContent('0:47')
+      expect(screen.getByTestId('live-strip-hero')).toHaveTextContent('47s')
     })
   })
 
   describe('hero slot', () => {
-    it.each(['clock', 'smallClock', 'seconds'] as const)(
-      'keeps one width from set to rest (%s), so nothing beside it moves',
-      (restNumeral) => {
-        const set = render(<PinnedLiveStrip {...S.set} layout="wall" restNumeral={restNumeral} />)
-        const setWidth = screen.getByTestId('live-strip-hero').style.width
-        set.unmount()
-        render(<PinnedLiveStrip {...S.rest} layout="wall" restNumeral={restNumeral} />)
-        expect(screen.getByTestId('live-strip-hero').style.width).toBe(setWidth)
-      }
-    )
+    // jsdom has no layout, so the no-shift property is asserted on the slot width here and
+    // measured in the Lab/Decisions RestPair* captures.
+    it.each([
+      ['a short rest', S.set, S.rest],
+      ['a long rest', S.set, { ...S.rest, restRemainingMs: 150_000, restDurationMs: 180_000 }],
+      ['the longest rest', S.set, { ...S.rest, restRemainingMs: 999_000, restDurationMs: 999_000 }],
+      ['a 12-rep target', S.setTwoDigit, S.restTwoDigit],
+    ] as const)('keeps one width from set to rest with %s', (_, set, rest) => {
+      const first = render(<PinnedLiveStrip {...set} layout="wall" />)
+      const setWidth = screen.getByTestId('live-strip-hero').style.width
+      first.unmount()
+      render(<PinnedLiveStrip {...rest} layout="wall" />)
+      expect(screen.getByTestId('live-strip-hero').style.width).toBe(setWidth)
+    })
+
+    it('widens only for a two-digit rep target', () => {
+      const one = render(<PinnedLiveStrip {...S.set} layout="phone" />)
+      const oneDigit = parseFloat(screen.getByTestId('live-strip-hero').style.width)
+      one.unmount()
+      render(<PinnedLiveStrip {...S.setTwoDigit} layout="phone" />)
+      expect(parseFloat(screen.getByTestId('live-strip-hero').style.width)).toBeGreaterThan(
+        oneDigit
+      )
+    })
+
+    it('reads a long rest in seconds, never m:ss', () => {
+      render(<PinnedLiveStrip {...S.rest} restRemainingMs={150_000} layout="wall" />)
+      expect(screen.getByTestId('live-strip-hero')).toHaveTextContent('150s')
+    })
   })
 
   it('has no accessibility violations', async () => {

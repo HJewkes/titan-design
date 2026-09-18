@@ -30,6 +30,12 @@ const FATIGUE_REPS: LiveStripRep[] = [
   { velocity: 0.55, zone: 'strengthSpeed' },
 ]
 
+// A 12-rep target set, where the rep count and a long rest both press on the numeral slot.
+const TWO_DIGIT_REPS: LiveStripRep[] = Array.from({ length: 11 }, (_, i) => ({
+  velocity: 0.9 - i * 0.03,
+  zone: i < 6 ? 'power' : 'strengthSpeed',
+}))
+
 const BASE = {
   exerciseName: 'Cable Chest Press',
   setCount: 3,
@@ -37,7 +43,14 @@ const BASE = {
   targetReps: 8,
 }
 
-export type LiveStripScenario = 'set' | 'rest' | 'restLong' | 'fatigue' | 'idle' | 'longName'
+export type LiveStripScenario =
+  | 'set'
+  | 'rest'
+  | 'fatigue'
+  | 'idle'
+  | 'longName'
+  | 'setTwoDigit'
+  | 'restTwoDigit'
 
 export const LIVE_STRIP_SCENARIOS: Record<LiveStripScenario, PinnedLiveStripProps> = {
   set: { ...BASE, state: 'set', setNumber: 2, reps: SET_REPS },
@@ -49,15 +62,17 @@ export const LIVE_STRIP_SCENARIOS: Record<LiveStripScenario, PinnedLiveStripProp
     restRemainingMs: 47_000,
     restDurationMs: 90_000,
   },
-  restLong: {
+  fatigue: { ...BASE, state: 'set', setNumber: 2, reps: FATIGUE_REPS, isFatigued: true },
+  setTwoDigit: { ...BASE, state: 'set', setNumber: 2, targetReps: 12, reps: TWO_DIGIT_REPS },
+  restTwoDigit: {
     ...BASE,
     state: 'rest',
     setNumber: 3,
-    reps: REST_REPS,
+    targetReps: 12,
+    reps: TWO_DIGIT_REPS,
     restRemainingMs: 150_000,
     restDurationMs: 180_000,
   },
-  fatigue: { ...BASE, state: 'set', setNumber: 2, reps: FATIGUE_REPS, isFatigued: true },
   idle: { ...BASE, state: 'idle', setNumber: 2, reps: [] },
   longName: {
     ...BASE,

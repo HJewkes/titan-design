@@ -24,6 +24,19 @@ that someone can tell whether a future change invalidates the reasoning.
 
 ---
 
+## PinnedLiveStrip m:ss rest countdown (full and reduced size) — rejected 2026-09-18
+
+**Tried:** VW-429 round 5 compared three rest numerals in the rep count's slot, shown as set/rest
+pairs. **r1**: "0:47" at the hero size, in a slot that always fits "12/12" (108px wall / 82px
+phone). **r2**: "0:47" at the velocity size (80 / 72px).
+**Chosen:** **r3**, seconds only ("47s") at the hero size, in a slot sized by the set's target
+digits (75 / 57px for a one-digit target). From 100s the digits step down one type size inside the
+same slot (`liveStripRestReadout`), so a long rest never widens it.
+**Why:** the human wanted to buy back space for the strip and picked seconds ("r3: seconds
+(47s)"). On the phone it frees the most room: the bars grow from 65px (r1) to 90px. For long rests
+they asked to "try shrinking the text when the value is above a certain size so it still fits the
+old space", which the step rule does.
+
 ## PinnedLiveStrip phone title rows "drop under" and "chevron only" — rejected 2026-09-18
 
 **Tried:** three phone title rows for a long exercise name (VW-429 round 4). **a**: the title

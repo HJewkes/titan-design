@@ -26,3 +26,18 @@ export const LIVE_STRIP_ZONE_TOKEN: Record<LiveStripZone, ColorToken> = {
   maximalStrength: 'dataviz-sequential-4',
   grinding: 'dataviz-sequential-5',
 }
+
+/** The longest rest the strip counts; a longer one reads "999s" (over 16 minutes). */
+export const LIVE_STRIP_REST_MAX_SECONDS = 999
+
+/** `full` fits "99s" in the numeral slot; `reduced` is the one smaller step that fits "999s". */
+export type LiveStripRestStep = 'full' | 'reduced'
+
+/** The rest readout: whole seconds left (rounded up) and the type step chosen by that value. */
+export function liveStripRestReadout(remainingMs: number): {
+  seconds: number
+  step: LiveStripRestStep
+} {
+  const seconds = Math.min(LIVE_STRIP_REST_MAX_SECONDS, Math.max(0, Math.ceil(remainingMs / 1000)))
+  return { seconds, step: seconds >= 100 ? 'reduced' : 'full' }
+}

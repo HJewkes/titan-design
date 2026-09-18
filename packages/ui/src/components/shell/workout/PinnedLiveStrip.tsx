@@ -10,7 +10,6 @@ import {
 } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { resolveColor } from '../../../theme/resolve-color'
-import { formatDuration } from '../../../hooks/useTimer'
 import { formatVelocity } from '../../../utils/workout-format'
 import { Surface } from '../../ui/surface'
 import { Indicator } from '../../ui/indicator'
@@ -18,14 +17,18 @@ import { Progress } from '../../ui/progress'
 import { Typography } from '../../custom/Typography'
 import { ChevronRightIcon } from '../../icons'
 import { SetBarChart, type SetSlot } from '../../custom/charts/SetBarChart'
-import { LIVE_STRIP_ZONE_TOKEN, type LiveStripRep, type LiveStripState } from './liveStripModel'
+import {
+  LIVE_STRIP_ZONE_TOKEN,
+  liveStripRestReadout,
+  type LiveStripRep,
+  type LiveStripState,
+} from './liveStripModel'
 
 // The wall row is fixed (round 2 chose 72px); the phone form grows when a long title wraps.
 const WALL_HEIGHT = 72
 const PHONE_MIN_HEIGHT = 88
 
 export type PinnedLiveStripLayout = 'wall' | 'phone'
-export type PinnedLiveStripRestNumeral = 'clock' | 'smallClock' | 'seconds'
 
 export interface PinnedLiveStripProps {
   /** `set` while reps are being logged, `rest` while the rest timer runs, `idle` renders nothing. */
@@ -48,12 +51,6 @@ export interface PinnedLiveStripProps {
   onPress?: () => void
   /** Force a layout. Omitted: measured from the strip's own width. */
   layout?: PinnedLiveStripLayout
-  /**
-   * Rest countdown treatment, under review (VW-429 round 5): `clock` m:ss at the hero size in a slot
-   * that always fits "12/12"; `smallClock` m:ss at the velocity size; `seconds` "47s" at the hero
-   * size. The last two size the slot by the set's target digits. Unchosen values go after the pick.
-   */
-  restNumeral?: PinnedLiveStripRestNumeral
   className?: string
 }
 
@@ -65,15 +62,11 @@ interface Scale {
   sub: string
   hero: string
   heroUnit: string
-  /** Slot widths (px), measured in the heading face: see `heroSlotWidth`. */
-  slot: {
-    clock: number
-    smallClock: number
-    seconds: number
-    longSeconds: number
-    oneDigitReps: number
-    twoDigitReps: number
-  }
+  /** The rest countdown's smaller step, for 100s and over (see liveStripRestReadout). */
+  heroReduced: string
+  heroReducedUnit: string
+  /** Slot widths (px) measured in the heading face: two-digit seconds, and the rep count by digits. */
+  slot: { seconds: number; oneDigitReps: number; twoDigitReps: number }
   velocity: string
   barHeight: number
   barPitch: number
@@ -86,14 +79,9 @@ const SCALES: Record<PinnedLiveStripLayout, Scale> = {
     sub: 'text-base',
     hero: 'text-4xl',
     heroUnit: 'text-xl',
-    slot: {
-      clock: 108,
-      smallClock: 80,
-      seconds: 75,
-      longSeconds: 104,
-      oneDigitReps: 56,
-      twoDigitReps: 101,
-    },
+    heroReduced: 'text-2xl',
+    heroReducedUnit: 'text-lg',
+    slot: { seconds: 75, oneDigitReps: 56, twoDigitReps: 101 },
     velocity: 'text-3xl',
     barHeight: 40,
     barPitch: 24,
@@ -103,14 +91,9 @@ const SCALES: Record<PinnedLiveStripLayout, Scale> = {
     sub: 'text-sm',
     hero: 'text-3xl',
     heroUnit: 'text-lg',
-    slot: {
-      clock: 82,
-      smallClock: 72,
-      seconds: 57,
-      longSeconds: 79,
-      oneDigitReps: 43,
-      twoDigitReps: 76,
-    },
+    heroReduced: 'text-xl',
+    heroReducedUnit: 'text-base',
+    slot: { seconds: 57, oneDigitReps: 43, twoDigitReps: 76 },
     velocity: 'text-2xl',
     barHeight: 26,
     barPitch: 12,
@@ -196,41 +179,30 @@ const LAST_BASELINE = Platform.select<ViewStyle>({
   default: { alignItems: 'flex-end' },
 })
 
-// One width for the whole set and its rest, so switching between them never moves anything.
-function heroSlotWidth(props: Parts): number {
-  const { reps, targetReps, scale, restNumeral = 'clock', restDurationMs = 0 } = props
-  if (restNumeral === 'clock') return scale.slot.clock
+// One width for the whole set and its rest: a long rest steps its type down rather than widen it.
+function heroSlotWidth({ reps, targetReps, scale }: Parts): number {
   const twoDigits = Math.max(reps.length, targetReps) >= 10
-  const repSlot = twoDigits ? scale.slot.twoDigitReps : scale.slot.oneDigitReps
-  // A rest of 100s or more needs three digits; during the set its length is not known yet.
-  const longRest = restNumeral === 'seconds' && restDurationMs >= 100_000
-  return Math.max(repSlot, longRest ? scale.slot.longSeconds : scale.slot[restNumeral])
-}
-
-function Countdown({ restRemainingMs = 0, restNumeral = 'clock', scale }: Parts) {
-  if (restNumeral !== 'seconds') return <>{formatDuration(restRemainingMs)}</>
-  const seconds = Math.max(0, Math.ceil(restRemainingMs / 1000))
-  return (
-    <>
-      {seconds}
-      <Text className={cn(UNIT, scale.heroUnit)}>s</Text>
-    </>
-  )
+  return Math.max(twoDigits ? scale.slot.twoDigitReps : scale.slot.oneDigitReps, scale.slot.seconds)
 }
 
 function HeroNumeral(props: Parts) {
-  const { state, reps, targetReps, scale, restNumeral = 'clock' } = props
-  const isRest = state === 'rest'
-  const size = isRest && restNumeral === 'smallClock' ? scale.velocity : scale.hero
+  const { state, reps, targetReps, scale, restRemainingMs = 0 } = props
+  const rest = state === 'rest' ? liveStripRestReadout(restRemainingMs) : null
+  const reduced = rest?.step === 'reduced'
+  // The outer text keeps the full size so its line box, and so the row's baseline, never moves.
   return (
     <Text
       testID="live-strip-hero"
       numberOfLines={1}
-      className={cn(NUMERAL, size)}
+      className={cn(NUMERAL, scale.hero)}
       style={[TABULAR, { width: heroSlotWidth(props) }]}
     >
-      {isRest ? <Countdown {...props} /> : reps.length}
-      {isRest ? null : <Text className={cn(UNIT, scale.heroUnit)}>/{targetReps}</Text>}
+      <Text testID="live-strip-hero-value" className={reduced ? scale.heroReduced : undefined}>
+        {rest ? rest.seconds : reps.length}
+      </Text>
+      <Text className={cn(UNIT, reduced ? scale.heroReducedUnit : scale.heroUnit)}>
+        {rest ? 's' : `/${targetReps}`}
+      </Text>
     </Text>
   )
 }
@@ -399,7 +371,7 @@ function accessibleName(props: PinnedLiveStripProps): string {
   const { state, exerciseName, reps, targetReps, restRemainingMs = 0 } = props
   const progress =
     state === 'rest'
-      ? `${formatDuration(restRemainingMs)} rest left`
+      ? `${liveStripRestReadout(restRemainingMs).seconds} seconds rest left`
       : `${reps.length} of ${targetReps} reps`
   return `Back to live: ${exerciseName}, ${setLine(props, false)}, ${progress}`
 }
