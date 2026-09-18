@@ -24,6 +24,7 @@ import {
   GoalTrajectoryPlot,
   starPoints,
   trajectoryPalette,
+  type ReferenceLabelSide,
   type TrajectoryPalette,
 } from './GoalTrajectoryPlot'
 import { useTrajectoryEntrance } from './goalTrajectoryMotion'
@@ -56,7 +57,7 @@ const STATUS_LABEL: Record<GoalTrajectoryStatus, string> = {
  * `ahead` blue. Both tones and both words are shared with `GoalMilestoneTile`,
  * which derives the same verdict from the same helper.
  */
-const REACH_STATUS = { met: 'on_track', beyond: 'ahead' } as const satisfies Record<
+export const REACH_STATUS = { met: 'on_track', beyond: 'ahead' } as const satisfies Record<
   Exclude<GoalReach, 'short'>,
   GoalTrajectoryStatus
 >
@@ -158,6 +159,8 @@ export interface GoalTrajectoryChartProps extends ViewProps {
   bandFade?: BandFade
   /** Band edge interpolation. Locked: `monotone`; `linear` was not chosen. */
   bandCurve?: BandCurve
+  /** Which plot edge the committed/stretch labels anchor to. `left` is on trial (VW-385). */
+  referenceLabelSide?: ReferenceLabelSide
   className?: string
 }
 
@@ -223,6 +226,7 @@ export function GoalTrajectoryChart({
   baseline = 'lip',
   bandFade = 'centre-14',
   bandCurve = 'monotone',
+  referenceLabelSide = 'right',
   className,
   ...props
 }: GoalTrajectoryChartProps) {
@@ -308,6 +312,7 @@ export function GoalTrajectoryChart({
             baseline,
             bandFade,
             bandCurve,
+            referenceLabelSide,
           }}
           entrance={entrance}
         />
