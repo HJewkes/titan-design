@@ -88,6 +88,11 @@ All components use React Native primitives - never HTML elements directly:
 - Never use inline styles except for dynamic values that can't be expressed in Tailwind
 - Use semantic token classes (e.g., `bg-surface-elevated`) not raw colors (`bg-gray-800`)
 - Platform modifiers: `web:`, `native:`, `ios:`, `android:` for platform-specific styles
+- Tailwind is **v3** (`tailwindcss ^3.4`, configured in `tailwind.config.js`). Guidance written for
+  Tailwind v4 (CSS-first `@theme`, `@import "tailwindcss"`) does not apply here.
+- Inside titan, composing the existing tokens and primitives outranks any general design guidance
+  to make a component look distinctive. A component that needs a new colour, hue or primitive
+  raises it with the owner; it does not add one inline.
 
 ### Dark Mode
 
