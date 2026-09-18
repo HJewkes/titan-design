@@ -48,6 +48,28 @@ describe('round manifest', () => {
     expect(issues({ ...base(), extra: 1 })).toEqual([''])
     expect(issues({ ...base(), storybookUrl: 'file:///tmp' })).toEqual(['storybookUrl'])
   })
+
+  it('rejects a storybookUrl on a non-loopback host', () => {
+    expect(issues({ ...base(), storybookUrl: 'http://evil.example.com:6006' })).toEqual([
+      'storybookUrl',
+    ])
+  })
+
+  it.each(['http://127.0.0.1:6100', 'http://localhost:6100', 'http://[::1]:6100'])(
+    'accepts a loopback storybookUrl %s',
+    (url) => {
+      expect(issues({ ...base(), storybookUrl: url })).toEqual([])
+    }
+  )
+
+  it.each(['../../x--y', 'a--../b'])(
+    'rejects a storyId that is not shaped component--story: %s',
+    (storyId) => {
+      const m = base()
+      m.variants[0].storyId = storyId
+      expect(issues(m)).toEqual(['variants.0.storyId'])
+    }
+  )
 })
 
 describe('feedback', () => {

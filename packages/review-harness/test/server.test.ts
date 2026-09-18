@@ -156,4 +156,13 @@ describe('titan-review CLI', () => {
     expect(code).toBe(2)
     expect(out.stderr.join('\n')).toContain('storybook-launch.mjs --isolated')
   })
+
+  it('exits 2 when --storybook overrides to a non-loopback host', async () => {
+    const code = await runCli(
+      [join(dir, 'round.json'), '--storybook', 'http://evil.example.com:6006'],
+      io(new AbortController().signal, () => {})
+    )
+    expect(code).toBe(2)
+    expect(out.stderr.join('\n')).toContain('loopback')
+  })
 })

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { captureFileName } from '../src/capture.ts'
 import { buildFeedback, emptyDraft } from '../src/feedback.ts'
 import { feedbackProblems, questionScope, storyUrl, urlParamProblems } from '../src/round.ts'
 import { FeedbackSchema } from '../src/schema.ts'
@@ -29,6 +30,13 @@ describe('story urls', () => {
       'variant A args.label = "a/b"',
       'variant B globals key "bad key!"',
     ])
+  })
+})
+
+describe('capture file names', () => {
+  it('names a normal variant <width>-<key>-<story-name>.png', () => {
+    const variant = { key: 'A', storyId: 'lab-x--wall', label: 'x' }
+    expect(captureFileName(variant, 1920)).toBe('1920-A-wall.png')
   })
 })
 

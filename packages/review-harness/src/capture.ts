@@ -1,4 +1,4 @@
-import { join } from 'node:path'
+import { join, resolve, sep } from 'node:path'
 import { chromium, type Page } from '@playwright/test'
 import type { Manifest, Variant } from './schema.ts'
 import { storyUrl } from './round.ts'
@@ -7,6 +7,15 @@ const SETTLE_MS = 1500
 
 export function captureFileName(variant: Variant, width: number): string {
   return `${width}-${variant.key}-${variant.storyId.split('--').pop()}.png`
+}
+
+/** Defence in depth: the schema already constrains key/storyId, but never write outside outDir. */
+function assertInsideOutDir(file: string, outDir: string): string {
+  const resolvedOutDir = resolve(outDir)
+  const resolvedFile = resolve(file)
+  if (resolvedFile !== resolvedOutDir && !resolvedFile.startsWith(resolvedOutDir + sep))
+    throw new Error(`refusing to write capture outside outDir: ${resolvedFile}`)
+  return resolvedFile
 }
 
 async function shoot(page: Page, url: string, file: string): Promise<void> {
@@ -34,7 +43,7 @@ export async function captureRound(
     for (const variant of manifest.variants) {
       for (const width of manifest.widths) {
         await page.setViewportSize({ width, height: manifest.height })
-        const file = join(outDir, captureFileName(variant, width))
+        const file = assertInsideOutDir(join(outDir, captureFileName(variant, width)), outDir)
         await shoot(page, storyUrl(storybookUrl, variant), file)
         files.push(file)
       }

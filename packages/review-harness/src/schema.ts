@@ -7,10 +7,36 @@ const id = z.string().regex(/^[A-Za-z0-9_-]{1,32}$/, 'letters, digits, _ and - o
 const argValue = z.union([z.string(), z.number(), z.boolean()])
 const scope = z.enum(['variant', 'round'])
 
+const LOOPBACK_HOSTS = new Set(['127.0.0.1', 'localhost', '[::1]'])
+
+/** True only for http(s) URLs whose host is the local machine (any port). */
+export function isLoopbackUrl(url: string): boolean {
+  try {
+    const { protocol, hostname } = new URL(url)
+    return (protocol === 'http:' || protocol === 'https:') && LOOPBACK_HOSTS.has(hostname)
+  } catch {
+    return false
+  }
+}
+
+// Storybook story ids are always `<component>--<story>` (Storybook docs: toId).
+const storyId = z.string().regex(/^[a-z0-9-]+--[a-z0-9-]+$/, 'storybook id shape: component--story')
+
+// Skips the loopback check when the url itself already failed z.url(), so an invalid
+// url reports once, not twice.
+const storybookUrl = z.url({ protocol: /^https?$/ }).check((ctx) => {
+  if (ctx.issues.length === 0 && !isLoopbackUrl(ctx.value))
+    ctx.issues.push({
+      code: 'custom',
+      message: `only loopback Storybook hosts (127.0.0.1, localhost, [::1]) are allowed: ${ctx.value}`,
+      input: ctx.value,
+    })
+})
+
 export const VariantSchema = z
   .object({
     key: id,
-    storyId: z.string().min(1),
+    storyId,
     label: z.string().min(1),
     args: z.record(z.string(), argValue).optional(),
     globals: z.record(z.string(), argValue).optional(),
@@ -57,7 +83,7 @@ export const ManifestSchema = z
     schema: z.literal(MANIFEST_SCHEMA_ID),
     unit: z.string().min(1),
     round: z.number().int().min(1),
-    storybookUrl: z.url({ protocol: /^https?$/ }),
+    storybookUrl,
     context: z.string().optional(),
     widths: z.array(z.number().int().min(200).max(3840)).min(1),
     height: z.number().int().min(200).max(4000).default(900),
@@ -142,8 +168,19 @@ export type VariantFeedback = Feedback['variants'][number]
 export type Annotation = z.infer<typeof AnnotationSchema>
 export type Verdict = z.infer<typeof VerdictSchema>
 
+// zod can't express the object-level loopback superRefine as JSON Schema; a pattern
+// on the field is the closest honest approximation for schema consumers.
+const LOOPBACK_URL_PATTERN = '^https?://(127\\.0\\.0\\.1|localhost|\\[::1\\])(:[0-9]+)?(/.*)?$'
+
 export function manifestJsonSchema(): unknown {
-  return z.toJSONSchema(ManifestSchema, { io: 'input', unrepresentable: 'any' })
+  const schema = z.toJSONSchema(ManifestSchema, {
+    io: 'input',
+    unrepresentable: 'any',
+  }) as unknown as {
+    properties: { storybookUrl: Record<string, unknown> }
+  }
+  schema.properties.storybookUrl.pattern = LOOPBACK_URL_PATTERN
+  return schema
 }
 
 export function feedbackJsonSchema(): unknown {

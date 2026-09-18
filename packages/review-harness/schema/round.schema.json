@@ -17,7 +17,8 @@
     },
     "storybookUrl": {
       "type": "string",
-      "format": "uri"
+      "format": "uri",
+      "pattern": "^https?://(127\\.0\\.0\\.1|localhost|\\[::1\\])(:[0-9]+)?(/.*)?$"
     },
     "context": {
       "type": "string"
@@ -50,7 +51,7 @@
           },
           "storyId": {
             "type": "string",
-            "minLength": 1
+            "pattern": "^[a-z0-9-]+--[a-z0-9-]+$"
           },
           "label": {
             "type": "string",

@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { ManifestSchema, type Feedback, type Manifest } from './schema.ts'
+import { ManifestSchema, isLoopbackUrl, type Feedback, type Manifest } from './schema.ts'
 import { urlParamProblems } from './round.ts'
 import { startReviewServer, type PageHandler } from './server.ts'
 
@@ -39,6 +39,10 @@ export async function loadRound(path: string, storybookOverride?: string): Promi
   if (stripped.length)
     throw new ReviewError(
       `Storybook would drop these URL args; give each variant its own story:\n  ${stripped.join('\n  ')}`
+    )
+  if (storybookOverride && !isLoopbackUrl(storybookOverride))
+    throw new ReviewError(
+      `only loopback Storybook hosts (127.0.0.1, localhost, [::1]) are allowed: ${storybookOverride}`
     )
   const manifestSha256 = createHash('sha256').update(raw).digest('hex')
   const storybookUrl = (storybookOverride ?? parsed.data.storybookUrl).replace(/\/$/, '')
