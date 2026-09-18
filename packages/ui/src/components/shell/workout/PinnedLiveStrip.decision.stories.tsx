@@ -18,7 +18,12 @@ function PageBody() {
   return (
     <View className="gap-section-sm">
       {['Planning', 'Per-lift', 'Whole body'].map((heading) => (
-        <Surface key={heading} raise={1} className="p-inset-xl gap-stack-md" style={{ minHeight: 180 }}>
+        <Surface
+          key={heading}
+          raise={1}
+          className="p-inset-xl gap-stack-md"
+          style={{ minHeight: 180 }}
+        >
           <Typography variant="h6">{heading}</Typography>
           <Typography variant="body2" color="tertiary">
             Page content scrolls under the pinned strip.
@@ -46,7 +51,12 @@ const meta: Meta<DecisionArgs> = {
     wallSize: { control: 'inline-radio', options: ['standard', 'trimmed'] },
   },
   render: ({ scenario, wallSize }) => (
-    <WorkoutShell activeKey="program" liveKey={scenario === "idle" ? null : "live"} state={SHELL_STATE[scenario]} subtitle="planning">
+    <WorkoutShell
+      activeKey="program"
+      liveKey={scenario === 'idle' ? null : 'live'}
+      state={SHELL_STATE[scenario]}
+      subtitle="planning"
+    >
       <View className="flex-1 gap-section-sm p-gutter-sm" testID="page-content">
         <PinnedLiveStrip {...S[scenario]} wallSize={wallSize} />
         <PageBody />

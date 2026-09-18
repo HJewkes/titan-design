@@ -99,6 +99,20 @@ describe('SetBarChart bars', () => {
     expect(screen.getByTestId('t-bar-1')).toHaveStyle({ backgroundColor: '#D14343' })
   })
 
+  it('lets a caller colour equal-valued reps differently by their rep index', () => {
+    const perRep = ['#2ED573', '#D14343']
+    render(
+      <SetBarChart
+        slots={reps([0.6, 0.6])}
+        colorFor={(_v, repIndex) => perRep[repIndex]}
+        height={200}
+        testIDPrefix="t"
+      />
+    )
+    expect(screen.getByTestId('t-bar-0')).toHaveStyle({ backgroundColor: '#2ED573' })
+    expect(screen.getByTestId('t-bar-1')).toHaveStyle({ backgroundColor: '#D14343' })
+  })
+
   it('shows a per-bar value label only when showValueLabels is on', () => {
     const { rerender } = render(
       <SetBarChart slots={reps([0.9])} colorFor={silver} height={200} testIDPrefix="t" />

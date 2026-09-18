@@ -241,7 +241,9 @@ function PhoneRows(props: Parts) {
     <View className="flex-1 justify-center gap-stack-sm px-inset-lg">
       <View className="flex-row items-center gap-inline-lg">
         <Title name={exerciseName} scale={scale} grow />
-        <Text className={cn('font-body text-text-secondary', scale.sub)}>{setLine(props, true)}</Text>
+        <Text className={cn('font-body text-text-secondary', scale.sub)}>
+          {setLine(props, true)}
+        </Text>
         <ChevronRightIcon size={20} color={resolveColor('text-primary')} />
       </View>
       <View className="flex-row items-end gap-inline-lg">
@@ -253,7 +255,15 @@ function PhoneRows(props: Parts) {
   )
 }
 
-function StripPlane({ tone, height, children }: { tone: Tone; height: number; children: ReactNode }) {
+function StripPlane({
+  tone,
+  height,
+  children,
+}: {
+  tone: Tone
+  height: number
+  children: ReactNode
+}) {
   return (
     <Surface
       elevation={4}
