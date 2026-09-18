@@ -152,20 +152,55 @@ describe("ComponentName", () => {
 
 ### Storybook Pattern
 
+One `Default` story per component, driven by `args` and `argTypes`. Variants, colours, sizes and
+states are controls on that story, not separate `AllVariants` / `AllColors` / `AllSizes` stories
+(roadmap E4, `packages/ui/docs/library-roadmap.md`). From
+`src/components/shell/workout/SessionStatePill.stories.tsx`:
+
 ```tsx
 import type { Meta, StoryObj } from "@storybook/react-vite"; // NOT @storybook/react
+import { SessionStatePill } from "./SessionStatePill";
 
-const meta: Meta<typeof Component> = {
-  title: "Components/ComponentName", // or 'Custom/Name', 'Design Tokens/Name'
-  component: Component,
-  tags: ["autodocs"],
+const meta: Meta<typeof SessionStatePill> = {
+  title: "Shell/Workout/SessionStatePill",
+  component: SessionStatePill,
+  tags: ["autodocs", "status:candidate", "!status:review"],
+  args: { state: "live" },
   argTypes: {
-    /* controls */
+    state: { control: "select", options: ["live", "rest", "idle"] },
+    label: { control: "text" },
+  },
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "**Molecule** (= the ledger’s reusable StatusPill — also used by the Live-view header). Composes " +
+          "[Indicator](?path=/docs/components-atoms-indicator--docs) (pulse `ping` + vivid color for live) + " +
+          "[Typography](?path=/docs/foundations-typography--docs) (`monoLabel`). Use the `state` control to switch.",
+      },
+    },
   },
 };
 export default meta;
-type Story = StoryObj<typeof Component>;
+type Story = StoryObj<typeof SessionStatePill>;
+
+export const Default: Story = {};
 ```
+
+`shell/workout/DeviceMenu.stories.tsx` shows the same shape for a component that takes data and
+callbacks: an `object` control for the fixture, `control: false` for handlers, and a decorator on
+`meta` that gives the component room to open.
+
+- **Title** follows the six groups of roadmap decision 14: `Foundations/`,
+  `Components/Atoms|Molecules|Organisms/` (`ui/*` only), `Custom/<Family>/`, `Shell/`, `Pages/`,
+  and `Lab/<Family>/` (`src/lab` only).
+- **Tags**: `autodocs`, plus a status tag derived by the rule in `packages/ui/MATURITY.md`. A
+  story that sets a status also negates the inherited default with `!status:review`.
+- **Composes line**: `parameters.docs.description.component` names the tier and links each story
+  the component composes, so the docs pages navigate down the tree.
+- **Hooks in `render`** need a named PascalCase function (`render: function Render(args) { … }`).
+  An anonymous arrow fails `react-hooks/rules-of-hooks`.
+- **JSX text** escapes quotes (`&apos;`, `&quot;`); `react/no-unescaped-entities` is on.
 
 **Critical**: Storybook uses `@storybook/react-native-web-vite` with `jsxImportSource: 'nativewind'`. Without this NativeWind classes won't work.
 
