@@ -126,16 +126,19 @@ Rank highest confidence first, then walk the list as the protocol above says.
 
 ## Generic primitives (`Components/Atoms|Molecules|Organisms`)
 
-The **38** generic primitives (Button, Card, Input, Modal, Table, …) are a
+The **39** generic primitives (Button, Card, Input, Modal, Table, …) are a
 separate foundation tier and are out of scope for the Voltras-workout review
 pass. This file used to say "~52": that number predated the `ui/` reorganisation
-and was never recounted. It is `ls -d src/components/ui/*/ | wc -l` — 38
-directories, one per primitive — and it is the same 38 the
-[family README](src/components/ui/README.md) indexes.
+and was never recounted. It is `ls -d src/components/ui/*/ | wc -l` — 39
+directories, one per primitive — and `src/arch/arch-graph.json` lists all 39
+too. The 39th is `trigger` (`TriggerSurface`, added in #176), an internal helper
+that `Menu`, `Popover` and `Tooltip` compose. It is not exported from the `ui`
+barrel and has no story.
 
-They no longer default to `status:review`: the tagging rule above resolves all
-38 (31 `stable`, 2 `candidate` for the deprecated `HelpTip` and `Tile`, 5 held
-open). Their assessment happened by rule, not by session.
+The 38 with stories no longer default to `status:review`: the tagging rule
+above resolves them (31 `stable`, 2 `candidate` for the deprecated `HelpTip` and
+`Tile`, 5 held open). Their assessment happened by rule, not by session.
+`TriggerSurface` has no story, so it carries no status tag.
 
 ## Related
 

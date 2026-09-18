@@ -39,6 +39,10 @@ Ctrl-C before sending exits 130 and writes nothing. A bad manifest, an unreachab
 Storybook, or a story id that port does not serve (another worktree's server) exits 2 before
 anything opens.
 
+`pnpm review` is a root script that calls `node` directly, and it is deliberately not a task in
+`turbo.json`. It is interactive, it blocks until a human sends, and its output depends on that
+human, so there is nothing for Turbo to cache or orchestrate and CI never runs it.
+
 Quote `comment`, `note` and `text` verbatim when acting on them. `verdict` maps onto the
 Lab/Decisions CHOSEN / NOT CHOSEN marks. Reject feedback whose `manifestSha256` is not the
 sha256 of the manifest you wrote.

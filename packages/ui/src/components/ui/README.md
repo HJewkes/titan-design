@@ -1,6 +1,6 @@
 # `ui/*` — the generic primitive family
 
-The domain-free foundation tier: 38 primitives that know nothing about workouts,
+The domain-free foundation tier: 39 primitives that know nothing about workouts,
 sessions or initiatives. Everything in `custom/*` and `shell/*` is built on this
 layer, and `ui/*` may not import from either of them — the tier order is
 `theme → icons → ui → custom → shell → pages`.
@@ -75,6 +75,10 @@ them, and the survivors are marked as presets below.
 Two roots carry the family: **`surface`** (15 in-repo consumers — every floating
 and raised plane) and **`pill`** (11 — every pill-shaped label since decision 3).
 Nothing else in `ui/*` is composed by more than six.
+
+`trigger` (`TriggerSurface`) has no row. It is an internal helper, not exported
+from the barrel and without a story, that `Menu`, `Popover` and `Tooltip` use to
+hand interaction to a composed child instead of nesting a second `Pressable`.
 
 ## Reuse audit — where `ui/*` still hand-rolls
 
