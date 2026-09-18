@@ -13,13 +13,15 @@ import { LEFT_LABEL_INSET } from './GoalTrajectoryPlot'
 import {
   GoalTrajectoryMini,
   MINI_INSETS,
+  MINI_PLANE_TOP,
   miniGeometryInput,
-  miniRuleLabelYs,
-  weekDividerXs,
   miniWeekAxis,
+  tickSpan,
+  withPlaneTop,
   type GoalTrajectoryMiniData,
   type MiniTrajectoryVariant,
 } from './GoalTrajectoryMini'
+import { GoalWeekColumnsChart, cellReadingText, cellsRowTop } from './GoalWeekColumnsChart'
 
 const dark = getSemanticColors('dark')
 
@@ -33,12 +35,11 @@ const actuals: GoalActualPoint[] = [
 const data: GoalTrajectoryMiniData = {
   actuals,
   committed: 102.5,
-  stretch: 110,
   goalWeek: 8,
   nextTarget: { weekIndex: 5, value: 102.5, label: 'next week: 102.5 x 8' },
 }
 
-const VARIANTS: MiniTrajectoryVariant[] = ['plane', 'plane-rules', 'on-card', 'week-columns']
+const VARIANTS: MiniTrajectoryVariant[] = ['plane', 'cells', 'cells-ticks', 'cells-inset']
 
 function renderMini(
   variant: MiniTrajectoryVariant,
@@ -73,7 +74,7 @@ describe('shared geometry insets', () => {
   })
 
   it('places the week strip on the same columns the chart plots on', () => {
-    const g = deriveTrajectoryGeometry(miniGeometryInput(data, 'week-columns', 400, 64))
+    const g = deriveTrajectoryGeometry(miniGeometryInput(data, 'cells', 400, 64))
     const axis = miniWeekAxis(data, 400)
     ;[1, 4, 8].forEach((week) => expect(axis.x(week)).toBeCloseTo(g.toX(week)))
     expect(axis.span).toBeCloseTo(g.toX(2) - g.toX(1))
@@ -87,11 +88,15 @@ describe('shared geometry insets', () => {
     expect(flush.toX(1)).toBeLessThan(wide.toX(1))
   })
 
-  it('leaves an undrawn stretch rule out of the value range', () => {
-    const plane = deriveTrajectoryGeometry(miniGeometryInput(data, 'plane', 400, 64))
-    const rules = deriveTrajectoryGeometry(miniGeometryInput(data, 'plane-rules', 400, 64))
-    expect(plane.domain.max).toBeLessThan(110)
-    expect(rules.domain.max).toBeGreaterThanOrEqual(110)
+  it('lowers the plot for cells-inset but keeps its plane starting where the others do', () => {
+    const plane = withPlaneTop(deriveTrajectoryGeometry(miniGeometryInput(data, 'plane', 400, 74)))
+    const inset = withPlaneTop(
+      deriveTrajectoryGeometry(miniGeometryInput(data, 'cells-inset', 400, 74))
+    )
+    expect(inset.plot.top).toBeGreaterThan(plane.plot.top)
+    expect(inset.plane.y).toBe(MINI_PLANE_TOP)
+    expect(plane.plane.y).toBe(MINI_PLANE_TOP)
+    expect(inset.plane.y + inset.plane.height).toBe(inset.plot.bottom)
   })
 })
 
@@ -107,62 +112,35 @@ describe('GoalTrajectoryMini', () => {
     })
   })
 
-  it('drops the plane only for the on-card variant', () => {
+  it('lights the current week column only in the cells variants', () => {
     VARIANTS.forEach((variant) => {
       const { unmount } = renderMini(variant)
-      expect(screen.queryByTestId('goal-trajectory-mini-plane') !== null).toBe(
-        variant !== 'on-card'
-      )
+      const lit = screen.queryByTestId('goal-trajectory-mini-current-week') !== null
+      expect(lit).toBe(variant !== 'plane')
       unmount()
     })
   })
 
-  it('labels both rules on the left only in the plane-rules variant', () => {
-    renderMini('plane-rules')
-    const committed = screen.getByTestId('goal-trajectory-mini-committed-label')
-    expect(committed.textContent).toBe('102.5')
-    expect(committed.getAttribute('text-anchor')).toBe('start')
-    expect(screen.getByTestId('goal-trajectory-mini-stretch-label').textContent).toBe('110')
+  it('recesses the line in the cells variants so the points lead', () => {
+    renderMini('cells')
+    const stroke = screen.getByTestId('goal-trajectory-mini-line').getAttribute('stroke')
+    expect(stroke).not.toBe(dark['status-success'])
+    expect(stroke).toMatch(/^rgba\(/)
   })
 
-  it('keeps both labels above their rules when the rules sit well apart', () => {
-    const ys = miniRuleLabelYs(40, 10)
-    expect(ys.committed).toBeLessThan(40)
-    expect(ys.stretch).toBeLessThan(10)
+  it('ticks every reading and the next target only in cells-ticks', () => {
+    renderMini('cells-ticks')
+    expect(screen.getAllByTestId('goal-trajectory-mini-tick')).toHaveLength(5)
   })
 
-  it('drops the lower label under its rule when the upper rule would strike it', () => {
-    const ys = miniRuleLabelYs(30, 22)
-    expect(ys.committed).toBeGreaterThan(30)
-    expect(ys.stretch).toBeLessThan(22)
+  it('draws no ticks outside cells-ticks', () => {
+    renderMini('cells')
+    expect(screen.queryByTestId('goal-trajectory-mini-tick')).toBeNull()
   })
 
-  it('drops the stretch label instead when a loss goal puts stretch lower', () => {
-    const ys = miniRuleLabelYs(22, 30)
-    expect(ys.stretch).toBeGreaterThan(30)
-    expect(ys.committed).toBeLessThan(22)
-  })
-
-  it('draws no stretch rule and no labels in the plane variant', () => {
-    renderMini('plane')
-    expect(screen.queryByTestId('goal-trajectory-mini-stretch-line')).toBeNull()
-    expect(screen.queryByTestId('goal-trajectory-mini-committed-label')).toBeNull()
-  })
-
-  it('tints the current week and rules each column edge only in the week-columns variant', () => {
-    renderMini('week-columns')
-    expect(screen.getByTestId('goal-trajectory-mini-current-week')).toBeTruthy()
-    expect(screen.getAllByTestId('goal-trajectory-mini-week-divider')).toHaveLength(7)
-  })
-
-  it('draws no week columns outside the week-columns variant', () => {
-    renderMini('plane')
-    expect(screen.queryByTestId('goal-trajectory-mini-current-week')).toBeNull()
-    expect(screen.queryByTestId('goal-trajectory-mini-week-divider')).toBeNull()
-  })
-
-  it('puts each column edge halfway between two week centres', () => {
-    expect(weekDividerXs((w) => w * 10, 3)).toEqual([15, 25])
+  it('stops a tick short of its mark, and drops one with no room to run', () => {
+    expect(tickSpan(2, 40)).toEqual({ y1: 2, y2: 35 })
+    expect(tickSpan(2, 6)).toBeNull()
   })
 
   it('paints a reading past the committed target in the beyond-goal blue', () => {
@@ -180,7 +158,52 @@ describe('GoalTrajectoryMini', () => {
   })
 
   it('has no accessibility violations', async () => {
-    const { container } = renderMini('plane-rules')
+    const { container } = renderMini('cells')
+    expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+describe('GoalWeekColumnsChart', () => {
+  it('stands the cells row on the plane top edge, or inside the plane for cells-inset', () => {
+    expect(cellsRowTop('cells') + 8).toBe(MINI_PLANE_TOP)
+    expect(cellsRowTop('cells-inset')).toBeGreaterThan(MINI_PLANE_TOP)
+  })
+
+  it('renders one cell per week over the chart', () => {
+    render(
+      <GoalWeekColumnsChart
+        {...data}
+        variant="cells"
+        status="on_track"
+        width={400}
+        height={64}
+        currentWeek={5}
+        animate={false}
+      />
+    )
+    expect(screen.getAllByTestId(/^goal-milestone-week-cell-/)).toHaveLength(8)
+    expect(screen.getByTestId('goal-trajectory-mini')).toBeTruthy()
+  })
+
+  it('writes a week tip as reps x load, and nothing for a week without a set', () => {
+    expect(cellReadingText({ outcome: 'on_track', reading: { reps: 8, load: 100 } }, 'lb')).toBe(
+      '8 x 100 lb'
+    )
+    expect(cellReadingText({ outcome: 'none' }, 'lb')).toBe('')
+  })
+
+  it('has no accessibility violations', async () => {
+    const { container } = render(
+      <GoalWeekColumnsChart
+        {...data}
+        variant="cells-inset"
+        status="on_track"
+        width={400}
+        height={74}
+        currentWeek={5}
+        animate={false}
+      />
+    )
     expect(await axe(container)).toHaveNoViolations()
   })
 })

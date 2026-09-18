@@ -7,15 +7,13 @@
 import { useMemo } from 'react'
 import { View, type ViewProps } from 'react-native'
 import { useSurface } from '../../ui/surface'
-import { surfaceBackground } from '../../../theme/surface-planes'
 import { alpha } from '../../../utils/colors'
 import { formatMilestoneLoad } from '../../../utils/workout-format'
 import {
-  LABEL_ASCENT,
-  RULE_LABEL_LIFT,
+  PLANE_OVERHANG,
   deriveTrajectoryGeometry,
-  ruleLabelLayout,
   trajectoryWeekScale,
+  type ActualCoord,
   type GoalActualPoint,
   type GoalDirection,
   type GoalNextTarget,
@@ -31,12 +29,10 @@ import {
   PlaneLip,
   PlotDefs,
   planeBox,
-  ruleLabelX,
   starPoints,
   trajectoryPalette,
   useDefIds,
   type LayerProps,
-  type TrajectoryPalette,
 } from './GoalTrajectoryPlot'
 import { REACH_STATUS, trajectoryReach } from './GoalTrajectoryChart'
 import {
@@ -49,29 +45,37 @@ import {
 } from './goalTrajectoryMotion'
 
 /**
- * - `plane`: the inset plane, line, points and a faint unlabelled committed rule.
- * - `plane-rules`: `plane` plus the stretch rule and tiny left-anchored values.
- * - `on-card`: no plane; the card's own surface, with the lip kept as a baseline.
- * - `week-columns`: `plane` pinned under the week cells, points leading, line recessed.
+ * - `plane` (A): the inset plane, line, points and a faint unlabelled committed rule.
+ * - `cells` (D1): the week cells sit on the plane's top edge; the current week's column is lit.
+ * - `cells-ticks` (D2): D1 plus a hairline from the plane's top edge down to each point.
+ * - `cells-inset` (D3): the cells sit inside the plane, so the lit column runs cell to floor.
  */
-export type MiniTrajectoryVariant = 'plane' | 'plane-rules' | 'on-card' | 'week-columns'
+export type MiniTrajectoryVariant = 'plane' | 'cells' | 'cells-ticks' | 'cells-inset'
 
 /** The big chart's marks at card scale: stroke, dot and star all step down together. */
-export const MINI_MARKS = { stroke: 2, dot: 3.5, ring: 1.5, star: 5.5, labelFont: 9 } as const
+export const MINI_MARKS = { stroke: 2, dot: 3.5, ring: 1.5, star: 5.5 } as const
 
 /** No axis gutters: the plane runs edge to edge and its lip sits on the canvas floor. */
 export const MINI_INSETS: PlotInsets = { left: 0, right: 0, top: 8, bottom: 1 }
 
-/** Recessed line alpha for `week-columns`, where the points carry the reading. */
-export const RECESSED_LINE_ALPHA = 0.4
+/** Where the plane starts in every variant, so the cells row can sit exactly on it. */
+export const MINI_PLANE_TOP = MINI_INSETS.top - PLANE_OVERHANG
 
-/** `week-columns` column treatment: a visible current-week tint and hairline dividers under each cell gap. */
-export const WEEK_COLUMN = { tintAlpha: 0.12, dividerAlpha: 0.1 } as const
+/** Height of the cells band inside the plane for `cells-inset`: cell height plus air above and below. */
+export const INSET_CELL_BAND = { top: 4, cell: 8, bottom: 4 } as const
+
+/** `cells-inset` pushes the plot down below the band; the plane still starts at {@link MINI_PLANE_TOP}. */
+export const INSET_INSETS: PlotInsets = {
+  ...MINI_INSETS,
+  top: MINI_PLANE_TOP + INSET_CELL_BAND.top + INSET_CELL_BAND.cell + INSET_CELL_BAND.bottom,
+}
+
+/** The D family: the lit column's alpha, the recessed line's, and the point ticks'. */
+export const WEEK_COLUMN = { tintAlpha: 0.2, lineAlpha: 0.45, tickAlpha: 0.35 } as const
 
 export interface GoalTrajectoryMiniData {
   actuals: GoalActualPoint[]
   committed: number
-  stretch: number
   /** The goal week; the x axis runs from week 1 to here. */
   goalWeek: number
   nextTarget?: GoalNextTarget
@@ -83,26 +87,26 @@ export interface GoalTrajectoryMiniProps extends GoalTrajectoryMiniData, ViewPro
   width: number
   height: number
   direction?: GoalDirection
-  /** 1-based; `week-columns` tints its column so the cell above reads as its header. */
+  /** 1-based; the D variants light this week's column. */
   currentWeek?: number
   animate?: boolean
   unit?: string
   metricLabel?: string
 }
 
+export function isCellsVariant(variant: MiniTrajectoryVariant): boolean {
+  return variant !== 'plane'
+}
+
 export function miniWeeks(goalWeek: number): GoalTrajectoryWeek[] {
   return Array.from({ length: Math.max(1, goalWeek) }, (_, i) => ({ index: i + 1 }))
 }
 
-/** Does this variant draw the stretch rule? Without it, stretch stays out of the value range. */
-export function showsStretch(variant: MiniTrajectoryVariant): boolean {
-  return variant === 'plane-rules'
+export function miniInsets(variant: MiniTrajectoryVariant): PlotInsets {
+  return variant === 'cells-inset' ? INSET_INSETS : MINI_INSETS
 }
 
-/**
- * The shared geometry input: no band, compact insets, and the stretch rule only
- * where it is drawn, so an undrawn rule never squeezes the line flat.
- */
+/** The shared geometry input: no band, compact insets, and only the committed rule. */
 export function miniGeometryInput(
   data: GoalTrajectoryMiniData,
   variant: MiniTrajectoryVariant,
@@ -112,15 +116,26 @@ export function miniGeometryInput(
   return {
     expected: [],
     committed: data.committed,
-    stretch: showsStretch(variant) ? data.stretch : data.committed,
+    stretch: data.committed,
     actuals: data.actuals,
     weeks: miniWeeks(data.goalWeek),
     width,
     height,
-    insets: MINI_INSETS,
-    labelFont: showsStretch(variant) ? MINI_MARKS.labelFont : 0,
+    insets: miniInsets(variant),
+    labelFont: 0,
     ...(data.nextTarget ? { nextTarget: data.nextTarget } : {}),
   }
+}
+
+/**
+ * The geometry with its plane raised to {@link MINI_PLANE_TOP}. `cells-inset`
+ * lowers the plot to make room for the cells, but the plane has to hold them.
+ */
+export function withPlaneTop(geometry: GoalTrajectoryGeometry): GoalTrajectoryGeometry {
+  const { plane } = geometry
+  const rise = plane.y - MINI_PLANE_TOP
+  if (rise <= 0) return geometry
+  return { ...geometry, plane: { ...plane, y: MINI_PLANE_TOP, height: plane.height + rise } }
 }
 
 /** The mini chart's week columns, for a week strip that has to sit exactly over them. */
@@ -138,7 +153,6 @@ export function miniWeekAxis(data: GoalTrajectoryMiniData, width: number) {
 
 interface MiniLayer extends LayerProps {
   variant: MiniTrajectoryVariant
-  ring: string
 }
 
 function CommittedRule({ geometry, palette }: LayerProps) {
@@ -156,136 +170,49 @@ function CommittedRule({ geometry, palette }: LayerProps) {
   )
 }
 
-function StretchRule({ geometry, palette }: LayerProps) {
-  const { plot, stretchY } = geometry
+function CurrentWeekColumn({ geometry, palette, week }: LayerProps & { week: number }) {
+  const span = geometry.toX(2) - geometry.toX(1)
+  const { plane } = geometry
   return (
-    <line
-      data-testid="goal-trajectory-mini-stretch-line"
-      x1={plot.left}
-      x2={plot.right}
-      y1={stretchY}
-      y2={stretchY}
-      stroke={alpha(palette.rule, 0.45)}
-      strokeWidth={1}
-      strokeDasharray="3 4"
+    <rect
+      data-testid="goal-trajectory-mini-current-week"
+      x={geometry.toX(week) - span / 2}
+      y={plane.y}
+      width={span}
+      height={plane.height}
+      fill={alpha(palette.rule, WEEK_COLUMN.tintAlpha)}
     />
   )
 }
 
-function MiniLabel({
-  palette,
-  x,
-  y,
-  id,
-  text,
-}: {
-  palette: TrajectoryPalette
-  x: number
-  y: number
-  id: string
-  text: string
-}) {
-  return (
-    <text
-      data-testid={`goal-trajectory-mini-${id}`}
-      x={x}
-      y={y}
-      fill={palette.axis}
-      fontSize={MINI_MARKS.labelFont}
-      fontFamily="Inter, sans-serif"
-      textAnchor="start"
-    >
-      {text}
-    </text>
-  )
+/** A tick's run: from the plane's top edge to just above the mark it points at. */
+export function tickSpan(top: number, markY: number): { y1: number; y2: number } | null {
+  const y2 = markY - MINI_MARKS.dot - MINI_MARKS.ring
+  return y2 > top ? { y1: top, y2 } : null
 }
 
-/**
- * Label baselines for the two rules. A label lifted above the lower rule would be
- * struck through by the upper one, so when the rules sit closer than a label's
- * lift the lower label drops under its own rule instead.
- */
-export function miniRuleLabelYs(
-  committedY: number,
-  stretchY: number,
-  font: number = MINI_MARKS.labelFont
-): { committed: number; stretch: number } {
-  const lift = RULE_LABEL_LIFT + font * LABEL_ASCENT
-  const struck = Math.abs(committedY - stretchY) < lift
-  const place = (y: number, isLower: boolean) =>
-    struck && isLower ? y + lift : y - RULE_LABEL_LIFT
-  return {
-    committed: place(committedY, committedY > stretchY),
-    stretch: place(stretchY, stretchY > committedY),
-  }
-}
-
-/** Bare values, left-anchored: the big chart's `referenceLabelSide="left"` at card scale. */
-function RuleValues({
-  geometry,
-  palette,
-  committed,
-  stretch,
-}: LayerProps & { committed: number; stretch: number }) {
-  const x = ruleLabelX(geometry.plot, 'left')
-  const { merged } = ruleLabelLayout(geometry.committedY, geometry.stretchY, MINI_MARKS.labelFont)
-  const ys = miniRuleLabelYs(geometry.committedY, geometry.stretchY)
-  const c = formatMilestoneLoad(committed)
-  if (merged) {
-    return <MiniLabel palette={palette} x={x} y={ys.committed} id="merged-label" text={c} />
-  }
+function PointTicks({ geometry, palette }: LayerProps) {
+  const marks: { x: number; y: number }[] = [
+    ...geometry.actuals,
+    ...(geometry.nextTarget ? [geometry.nextTarget] : []),
+  ]
   return (
     <>
-      <MiniLabel palette={palette} x={x} y={ys.committed} id="committed-label" text={c} />
-      <MiniLabel
-        palette={palette}
-        x={x}
-        y={ys.stretch}
-        id="stretch-label"
-        text={formatMilestoneLoad(stretch)}
-      />
-    </>
-  )
-}
-
-/** Column edges between weeks, so each week cell above reads as its column's header. */
-export function weekDividerXs(toX: (week: number) => number, weekCount: number): number[] {
-  return Array.from({ length: Math.max(0, weekCount - 1) }, (_, i) => (toX(i + 1) + toX(i + 2)) / 2)
-}
-
-function WeekColumns({
-  geometry,
-  palette,
-  week,
-  weekCount,
-}: LayerProps & { week?: number; weekCount: number }) {
-  const span = geometry.toX(2) - geometry.toX(1)
-  const { plane } = geometry
-  const ink = palette.rule
-  return (
-    <>
-      {week !== undefined && (
-        <rect
-          data-testid="goal-trajectory-mini-current-week"
-          x={geometry.toX(week) - span / 2}
-          y={plane.y}
-          width={span}
-          height={plane.height}
-          fill={alpha(ink, WEEK_COLUMN.tintAlpha)}
-        />
-      )}
-      {weekDividerXs(geometry.toX, weekCount).map((x) => (
-        <line
-          key={x}
-          data-testid="goal-trajectory-mini-week-divider"
-          x1={x}
-          x2={x}
-          y1={plane.y}
-          y2={plane.y + plane.height}
-          stroke={alpha(ink, WEEK_COLUMN.dividerAlpha)}
-          strokeWidth={1}
-        />
-      ))}
+      {marks.map((mark) => {
+        const span = tickSpan(geometry.plane.y, mark.y)
+        if (!span) return null
+        return (
+          <line
+            key={mark.x}
+            data-testid="goal-trajectory-mini-tick"
+            x1={mark.x}
+            x2={mark.x}
+            {...span}
+            stroke={alpha(palette.rule, WEEK_COLUMN.tickAlpha)}
+            strokeWidth={1}
+          />
+        )
+      })}
     </>
   )
 }
@@ -298,11 +225,11 @@ function MiniLine({
   entrance,
 }: MiniLayer & { shadowId: string; entrance: EntranceState }) {
   if (!geometry.linePath) return null
-  const recessed = variant === 'week-columns'
+  const recessed = isCellsVariant(variant)
   const common = {
     d: geometry.linePath,
     fill: 'none',
-    stroke: recessed ? alpha(palette.status, RECESSED_LINE_ALPHA) : palette.status,
+    stroke: recessed ? alpha(palette.status, WEEK_COLUMN.lineAlpha) : palette.status,
     strokeWidth: MINI_MARKS.stroke,
     strokeLinejoin: 'round' as const,
     strokeLinecap: 'round' as const,
@@ -355,36 +282,36 @@ function MiniNextTarget({ geometry, palette }: LayerProps) {
   )
 }
 
-function MiniPoints({
-  geometry,
-  palette,
-  ring,
-  entrance,
-}: MiniLayer & { entrance: EntranceState }) {
+function MiniPoint({ coord, palette }: { coord: ActualCoord; palette: LayerProps['palette'] }) {
+  if (coord.isPR) {
+    return (
+      <polygon
+        data-testid="goal-trajectory-mini-pr-star"
+        points={starPoints(coord.x, coord.y, MINI_MARKS.star)}
+        fill={palette.star}
+      />
+    )
+  }
+  return (
+    <circle
+      data-testid="goal-trajectory-mini-dot"
+      cx={coord.x}
+      cy={coord.y}
+      r={MINI_MARKS.dot}
+      fill={coord.matched ? palette.status : palette.plane}
+      stroke={coord.matched ? palette.plane : palette.status}
+      strokeWidth={MINI_MARKS.ring}
+    />
+  )
+}
+
+function MiniPoints({ geometry, palette, entrance }: LayerProps & { entrance: EntranceState }) {
   return (
     <g style={popStyle(entrance)}>
       <MiniNextTarget geometry={geometry} palette={palette} />
-      {geometry.actuals.map((coord) =>
-        coord.isPR ? (
-          <polygon
-            key={coord.index}
-            data-testid="goal-trajectory-mini-pr-star"
-            points={starPoints(coord.x, coord.y, MINI_MARKS.star)}
-            fill={palette.star}
-          />
-        ) : (
-          <circle
-            key={coord.index}
-            data-testid="goal-trajectory-mini-dot"
-            cx={coord.x}
-            cy={coord.y}
-            r={MINI_MARKS.dot}
-            fill={coord.matched ? palette.status : ring}
-            stroke={coord.matched ? ring : palette.status}
-            strokeWidth={MINI_MARKS.ring}
-          />
-        )
-      )}
+      {geometry.actuals.map((coord) => (
+        <MiniPoint key={coord.index} coord={coord} palette={palette} />
+      ))}
     </g>
   )
 }
@@ -408,35 +335,28 @@ function PlaneFill({ geometry, palette, ids }: LayerProps & { ids: ReturnType<ty
 interface MiniPlotProps extends MiniLayer {
   width: number
   height: number
-  committed: number
-  stretch: number
   currentWeek?: number
-  weekCount: number
   entrance: EntranceState
 }
 
 function MiniPlot(props: MiniPlotProps) {
-  const { geometry, palette, variant, width, height } = props
+  const { geometry, palette, variant, width, height, currentWeek } = props
   const ids = useDefIds()
   const layer = { geometry, palette }
-  const hasPlane = variant !== 'on-card'
   return (
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} aria-hidden="true">
       <PlotDefs ids={ids} {...layer} leftShadowSpread={DEFAULT_LEFT_SHADOW_SPREAD} />
       <g clipPath={`url(#${ids.clip})`}>
-        {hasPlane && <PlaneFill {...layer} ids={ids} />}
-        {variant === 'week-columns' && (
-          <WeekColumns {...layer} week={props.currentWeek} weekCount={props.weekCount} />
+        <PlaneFill {...layer} ids={ids} />
+        {isCellsVariant(variant) && currentWeek !== undefined && (
+          <CurrentWeekColumn {...layer} week={currentWeek} />
         )}
         <CommittedRule {...layer} />
-        {showsStretch(variant) && <StretchRule {...layer} />}
+        {variant === 'cells-ticks' && <PointTicks {...layer} />}
         <MiniLine {...props} shadowId={ids.shadow} />
-        <MiniPoints {...props} />
+        <MiniPoints {...layer} entrance={props.entrance} />
         <PlaneLip {...layer} />
       </g>
-      {showsStretch(variant) && (
-        <RuleValues {...layer} committed={props.committed} stretch={props.stretch} />
-      )}
     </svg>
   )
 }
@@ -454,16 +374,16 @@ function miniSummary(
 
 /**
  * A lift's trajectory at card scale: the big chart's inset plane, monotone line,
- * points, PR star and next-target marker, without axes, band or gridlines.
+ * points, PR star and next-target marker, without axes, band or gridlines. The
+ * D variants expect {@link GoalWeekColumnsChart} to lay the week cells over them.
  *
  * @example
- * <GoalTrajectoryMini variant="plane" status="on_track" committed={102.5} stretch={110}
+ * <GoalTrajectoryMini variant="plane" status="on_track" committed={102.5}
  *   goalWeek={8} actuals={[{ weekIndex: 1, value: 92.5 }]} width={408} height={64} />
  */
 export function GoalTrajectoryMini({
   actuals,
   committed,
-  stretch,
   goalWeek,
   nextTarget,
   status,
@@ -479,26 +399,13 @@ export function GoalTrajectoryMini({
 }: GoalTrajectoryMiniProps) {
   const surface = useSurface()
   const reach = trajectoryReach(committed, actuals, direction)
-  const palette = trajectoryPalette(
-    surface.mode,
-    surface.level,
-    reach === 'short' ? status : REACH_STATUS[reach]
-  )
-  const ring =
-    variant === 'on-card' ? surfaceBackground(surface.level, surface.mode) : palette.plane
+  const tone = reach === 'short' ? status : REACH_STATUS[reach]
+  const palette = trajectoryPalette(surface.mode, surface.level, tone)
   const entrance = useTrajectoryEntrance(animate)
-  const geometry = useMemo(
-    () =>
-      deriveTrajectoryGeometry(
-        miniGeometryInput(
-          { actuals, committed, stretch, goalWeek, ...(nextTarget ? { nextTarget } : {}) },
-          variant,
-          width,
-          height
-        )
-      ),
-    [actuals, committed, stretch, goalWeek, nextTarget, variant, width, height]
-  )
+  const geometry = useMemo(() => {
+    const data = { actuals, committed, goalWeek, ...(nextTarget ? { nextTarget } : {}) }
+    return withPlaneTop(deriveTrajectoryGeometry(miniGeometryInput(data, variant, width, height)))
+  }, [actuals, committed, goalWeek, nextTarget, variant, width, height])
   return (
     <View
       style={{ width, height }}
@@ -511,12 +418,8 @@ export function GoalTrajectoryMini({
         geometry={geometry}
         palette={palette}
         variant={variant}
-        ring={ring}
         width={width}
         height={height}
-        committed={committed}
-        stretch={stretch}
-        weekCount={goalWeek}
         {...(currentWeek !== undefined ? { currentWeek } : {})}
         entrance={entrance}
       />

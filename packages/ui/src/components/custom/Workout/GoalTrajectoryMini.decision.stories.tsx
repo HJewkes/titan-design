@@ -7,15 +7,12 @@ import { Card } from '../../ui/card'
 import { Surface } from '../../ui/surface'
 import { useMeasuredWidth } from '../Table/column-fit'
 import { Typography } from '../Typography'
+import { space } from '../../../theme/tokens/semantic'
 import { GoalLiftCard, milestoneBlock, type GoalLiftCardProps } from './GoalLiftCard'
 import { GoalMilestoneSummary } from './GoalMilestoneSummary'
 import { GoalTrajectoryChart } from './GoalTrajectoryChart'
-import {
-  GoalTrajectoryMini,
-  miniWeekAxis,
-  type GoalTrajectoryMiniData,
-  type MiniTrajectoryVariant,
-} from './GoalTrajectoryMini'
+import { GoalTrajectoryMini, type GoalTrajectoryMiniData } from './GoalTrajectoryMini'
+import { GoalWeekColumnsChart, type WeekColumnsVariant } from './GoalWeekColumnsChart'
 import { PRIMARY_GOAL_SCENARIOS } from './primaryGoal-fixture'
 
 type Lift = Omit<GoalLiftCardProps, 'density' | 'statusForm'> & { prWeek?: number }
@@ -85,13 +82,16 @@ const LIFTS: Lift[] = [
 ]
 
 const MINI_HEIGHT = 64
+/** `cells-inset` holds the cells inside the plane, so it is taller by the cells band. */
+const INSET_HEIGHT = 74
+const CURRENT_WEEK = 5
+const CARD_PAD = space.inset.lg
 
 function miniData(lift: Lift): GoalTrajectoryMiniData {
   const last = lift.actuals[lift.actuals.length - 1]
   return {
     actuals: lift.actuals.map((a) => ({ ...a, isPR: a.weekIndex === lift.prWeek })),
     committed: lift.committed,
-    stretch: lift.stretch,
     goalWeek: lift.milestone.goalWeek,
     nextTarget: {
       weekIndex: last.weekIndex + 1,
@@ -101,50 +101,59 @@ function miniData(lift: Lift): GoalTrajectoryMiniData {
   }
 }
 
+type Variant = 'plane' | WeekColumnsVariant
+
+function MiniChart({ lift, variant, width }: { lift: Lift; variant: Variant; width: number }) {
+  const common = {
+    ...miniData(lift),
+    status: lift.status,
+    width,
+    currentWeek: CURRENT_WEEK,
+    metricLabel: lift.name,
+  }
+  if (variant === 'plane') {
+    return <GoalTrajectoryMini {...common} variant="plane" height={MINI_HEIGHT} />
+  }
+  return (
+    <GoalWeekColumnsChart
+      {...common}
+      variant={variant}
+      height={variant === 'cells-inset' ? INSET_HEIGHT : MINI_HEIGHT}
+      {...(lift.weeks ? { weeks: lift.weeks } : {})}
+    />
+  )
+}
+
 /** A stand-in for GoalLiftCard with the chart slot swapped; the card itself is untouched. */
-function MiniLiftCard({ lift, variant }: { lift: Lift; variant: MiniTrajectoryVariant }) {
+function MiniLiftCard({ lift, variant }: { lift: Lift; variant: Variant }) {
   const { width, onLayout } = useMeasuredWidth()
-  const data = miniData(lift)
-  const axis = variant === 'week-columns' && width ? miniWeekAxis(data, width) : undefined
   return (
     <Card elevation={1} role="article" aria-label={`${lift.name} goal`}>
-      <View className="p-inset-lg gap-stack-lg">
+      <View className="p-inset-lg gap-stack-lg" onLayout={onLayout}>
         <View className="gap-stack-sm">
           <Typography variant="overline" color="tertiary">
             {lift.name}
           </Typography>
-          <View onLayout={onLayout}>
-            <GoalMilestoneSummary
-              {...milestoneBlock({ ...lift, currentWeek: 5 })}
-              {...(axis ? { axis } : {})}
-              scale="phone"
-            />
-          </View>
-        </View>
-        {width ? (
-          <GoalTrajectoryMini
-            {...data}
-            status={lift.status}
-            variant={variant}
-            width={width}
-            height={MINI_HEIGHT}
-            currentWeek={5}
-            metricLabel={lift.name}
+          <GoalMilestoneSummary
+            {...milestoneBlock({ ...lift, currentWeek: CURRENT_WEEK })}
+            showWeeks={variant === 'plane'}
+            scale="phone"
           />
-        ) : null}
+        </View>
+        {width ? <MiniChart lift={lift} variant={variant} width={width - 2 * CARD_PAD} /> : null}
       </View>
     </Card>
   )
 }
 
-const VARIANTS: { key: MiniTrajectoryVariant; letter: string; name: string }[] = [
+const VARIANTS: { key: Variant; letter: string; name: string }[] = [
   { key: 'plane', letter: 'A', name: 'Mini trajectory: plane, line, points, faint committed rule' },
-  { key: 'plane-rules', letter: 'B', name: 'A plus the stretch rule and left-side values' },
-  { key: 'on-card', letter: 'C', name: 'No plane: the card surface, the lip kept as a baseline' },
+  { key: 'cells', letter: 'D1', name: 'Cells on the plane top edge, current-week column lit' },
+  { key: 'cells-ticks', letter: 'D2', name: 'D1 plus a hairline from each cell down to its point' },
   {
-    key: 'week-columns',
-    letter: 'D',
-    name: 'Week cells as the x axis: points lead, line recessed',
+    key: 'cells-inset',
+    letter: 'D3',
+    name: 'Cells inside the plane: the lit column runs from the cell to the floor',
   },
 ]
 
@@ -241,8 +250,11 @@ interface DecisionArgs {
  * point per reading, the PR star, the hollow next-target marker, the status tones
  * (hit green, beyond-goal blue) and the 1 s draw. Dropped: axes, band, gridlines.
  *
- * Row E is the big chart with its committed/stretch labels moved to the left edge,
- * the side the compact B variant puts its values on. Dark only (VW-397).
+ * Round 2 pursues D, the week cells as the chart's x axis, sharing the header's
+ * half-column week scale: D1 stands the cells on the plane, D2 ticks each cell
+ * down to its point, D3 sits the cells inside the plane. B (stretch rule plus
+ * left values) and C (no plane) were dropped. Row E is the big chart with its
+ * committed/stretch labels on the left, now decided. Dark only (VW-397).
  */
 const meta: Meta<DecisionArgs> = {
   title: 'Lab/Decisions/Compact Goal Chart',
