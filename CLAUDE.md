@@ -135,6 +135,12 @@ component's own `index.ts`.
 - Gluestack components have accessibility built in - don't remove ARIA attributes
 - Every component test file must include an accessibility test
 
+### State Coverage
+
+Every component documents and stories its loading, empty, error and disabled states, or says why a
+state does not apply. The checklist is `docs/component-states.md`. A new line chart follows the
+structure described under _Line charts_ in `src/components/custom/charts/README.md`.
+
 ### Testing Pattern
 
 ```tsx
