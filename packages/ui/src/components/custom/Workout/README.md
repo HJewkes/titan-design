@@ -103,12 +103,20 @@ split.
   hollow marker; the basis and its RP citation are the status pill's tip; the
   priority word is `GoalPriorityIcon`.
 
-  **The week cells stand on the chart's columns.** They share the plot's x-scale
-  through `trajectoryWeekScale` — not a second copy of the arithmetic — and the
-  axis insets by half a column so the first and last COLUMN sit whole inside the
-  plot. A cell is the header of its week's column, which is only true if it is
-  over that column at every width; `PrimaryGoalCard.test.tsx` asserts the centres
-  at 1888 and 328, and that the end cells are not clipped.
+  **The week cells stand on the chart's columns, and they are the week labels.**
+  They share the plot's x-scale through `trajectoryWeekScale` — not a second copy
+  of the arithmetic — so the full card passes `showWeekLabels={false}` and the
+  axis stops printing every week a second time a row lower. A cell is the header
+  of its week's column, which is only true if it is over that column at every
+  width; `PrimaryGoalCard.test.tsx` asserts the centres at 1888 and 328.
+
+  **The axis insets by half a column PLUS half a gap.** Half a column alone put
+  the n columns exactly edge to edge, which left the outer cells `gap / 2` of air
+  against the plane while their neighbours had `gap` — and that read as the end
+  cells being clipped. Nothing was ever clipped: measured in the browser, every
+  cell was the same width and no ancestor carried an overflow rule (VW-385 round
+  6). `WEEK_COLUMN_GAP` lives in the geometry module because the inset that
+  evens the rhythm is what has to know it.
 
   **The badge reads the milestone's verdict, not the band's.** A band's committed
   edge and the block's target are different numbers, and judging the badge by the
