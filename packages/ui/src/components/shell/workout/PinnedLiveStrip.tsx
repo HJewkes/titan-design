@@ -62,9 +62,9 @@ const SCALES: Record<PinnedLiveStripWallSize | 'phone', Scale> = {
     height: 88,
     title: 'text-2xl',
     sub: 'text-lg',
-    hero: 'text-5xl',
-    heroUnit: 'text-2xl',
-    velocity: 'text-4xl',
+    hero: 'text-6xl',
+    heroUnit: 'text-3xl',
+    velocity: 'text-5xl',
     barHeight: 60,
     barPitch: 28,
   },
@@ -80,7 +80,7 @@ const SCALES: Record<PinnedLiveStripWallSize | 'phone', Scale> = {
   },
   phone: {
     height: 88,
-    title: 'text-lg',
+    title: 'text-base',
     sub: 'text-sm',
     hero: 'text-3xl',
     heroUnit: 'text-lg',
@@ -238,7 +238,7 @@ function WallRow(props: Parts) {
 function PhoneRows(props: Parts) {
   const { exerciseName, scale } = props
   return (
-    <View className="flex-1 justify-center gap-stack-sm px-inset-lg">
+    <View className="flex-1 justify-center gap-stack-sm px-inset-md">
       <View className="flex-row items-center gap-inline-lg">
         <Title name={exerciseName} scale={scale} grow />
         <Text className={cn('font-body text-text-secondary', scale.sub)}>
