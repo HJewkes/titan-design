@@ -129,7 +129,7 @@ export function calibratingScenario(placement: CalibratingPlacement): Scenario {
       target: { metric: 'top_load_at_reps', reps: 8, load: 127.5, unit: 'lb' },
       weekCount: 12,
       currentWeek: 2,
-      latest: set(reading.value),
+      latest: set(Math.max(start.value, reading.value)),
       status: 'calibrating',
       weeks: [
         { outcome: 'on_track', reading: set(start.value) },
