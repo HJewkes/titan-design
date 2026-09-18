@@ -14,6 +14,7 @@ A cross-platform React design system built on NativeWind (Tailwind CSS for React
 ## Packages
 
 - **[@titan-design/react-ui](./packages/ui)** - Core component library
+- **[@titan-design/review-harness](./packages/review-harness)** - `titan-review`, a local design-review page over Storybook (private, not published; added in VW-419)
 
 ## Quick Start
 
