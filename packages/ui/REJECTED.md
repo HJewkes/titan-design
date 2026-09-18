@@ -24,6 +24,23 @@ that someone can tell whether a future change invalidates the reasoning.
 
 ---
 
+## PinnedLiveStrip long-rest treatments v0, v1 and v2 — rejected 2026-09-18
+
+**Tried:** four treatments for rest seconds of 100 or more (VW-429 round 7), measured in Chrome.
+Each was shown with its set strip above its rest strip; none moved the velocity or the bars.
+- **v0:** the reduced digits on the shared baseline. Wall 32px in a 75px slot, phone 24px in 57px,
+  phone gap 12px, phone bars 90px.
+- **v1:** v0 with the digits centred on the full-size digits (raised 5.6px wall, 4.2px phone).
+- **v2:** centred, with the wall at 36px in an 83px slot (the flex title gives up the 8px).
+  The phone stays 24px, with an 8px gap and 98px bars: no size on the type scale between 24px and
+  32px fits, and "999s" at 32px measures 69px against the 65px the gap frees.
+
+**Chosen:** **v3**: v2's wall, plus 32px centred digits on the phone in a 71px slot (raised 1.4px),
+an 8px value gap and 84px bars.
+**Why:** the human wanted the long-rest digits "center[ed] vertically" and "a bit bigger", and
+picked v3. They accepted the 8px phone gap in the everyday set state. v3 bends the bar width by 6px
+rather than going off the type scale.
+
 ## PinnedLiveStrip m:ss rest countdown (full and reduced size) — rejected 2026-09-18
 
 **Tried:** VW-429 round 5 compared three rest numerals in the rep count's slot, shown as set/rest

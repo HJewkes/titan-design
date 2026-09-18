@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { Surface } from '../../ui/surface'
 import { Typography } from '../../custom/Typography'
 import { WorkoutShell } from './WorkoutShell'
-import { PinnedLiveStrip, type PinnedLiveStripLongRest } from './PinnedLiveStrip'
+import { PinnedLiveStrip } from './PinnedLiveStrip'
 import { LIVE_STRIP_SCENARIOS as S, type LiveStripScenario } from './pinnedLiveStrip-fixture'
 
 type DecisionScenario = LiveStripScenario | 'pair' | 'pairTwoDigit'
@@ -12,7 +12,6 @@ interface DecisionArgs {
   scenario: DecisionScenario
   /** `pair` only: the rest's seconds left. */
   restSeconds?: number
-  longRest?: PinnedLiveStripLongRest
 }
 
 const SHELL_STATE: Record<DecisionScenario, 'live' | 'rest' | 'idle'> = {
@@ -49,12 +48,12 @@ function PageBody() {
 }
 
 /** The set strip above its rest strip, so a shift between the two is visible. */
-function Strips({ scenario, restSeconds = 47, longRest }: DecisionArgs) {
+function Strips({ scenario, restSeconds = 47 }: DecisionArgs) {
   if (scenario === 'pairTwoDigit') {
     return (
       <View className="gap-stack-md" testID="live-strip-pair">
-        <PinnedLiveStrip {...S.setTwoDigit} longRest={longRest} />
-        <PinnedLiveStrip {...S.restTwoDigit} longRest={longRest} />
+        <PinnedLiveStrip {...S.setTwoDigit} />
+        <PinnedLiveStrip {...S.restTwoDigit} />
       </View>
     )
   }
@@ -62,10 +61,9 @@ function Strips({ scenario, restSeconds = 47, longRest }: DecisionArgs) {
   const restMs = restSeconds * 1000
   return (
     <View className="gap-stack-md" testID="live-strip-pair">
-      <PinnedLiveStrip {...S.set} longRest={longRest} />
+      <PinnedLiveStrip {...S.set} />
       <PinnedLiveStrip
         {...S.rest}
-        longRest={longRest}
         restRemainingMs={restMs}
         restDurationMs={Math.max(90_000, restMs * 1.2)}
       />
@@ -76,13 +74,12 @@ function Strips({ scenario, restSeconds = 47, longRest }: DecisionArgs) {
 /**
  * VW-429: the pinned live strip, CHOSEN design, in the wall shell.
  *
- * CHOSEN so far: the 72px wall row (88px NOT CHOSEN, round 2); fatigue as red edge and wash only;
- * the rest line running into the left edge; on a phone "Set 2/3" and the chevron stay pinned top
- * right while the title wraps (round 4; "drop under" and "chevron only" NOT CHOSEN, REJECTED.md).
- * Round 5 CHOSE seconds only ("47s") for the rest countdown (m:ss at full and at reduced size NOT
- * CHOSEN). Round 6: from 100s the seconds step down one type size inside the set's slot, shown as
- * set/rest PAIRS at 47s, 99s, 100s, 150s, 999s and on a 12-rep target. Round 7 compares long-rest
- * treatments (`longRest`): v0 on the baseline, v1 centred, v2 centred and larger, v3 larger phone.
+ * CHOSEN: the 72px wall row (88px NOT CHOSEN, round 2); fatigue as red edge and wash only; the
+ * rest line running into the left edge; on a phone "Set 2/3" and the chevron pinned top right while
+ * the title wraps (round 4). Rest reads seconds only (round 5; m:ss NOT CHOSEN) in the set's slot;
+ * from 100s the digits step down one size, centred on the full-size digits: 36px wall, 32px phone
+ * with an 8px value gap (round 7; baseline-aligned and smaller steps NOT CHOSEN). See REJECTED.md.
+ * The RestPair stories show the set strip above its rest strip: nothing moves between them.
  * Canvas width drives the layout (below 640px the strip stacks), so shoot at 1920 and 360.
  * Dark only (VW-397).
  */
@@ -96,7 +93,6 @@ const meta: Meta<DecisionArgs> = {
       options: ['set', 'rest', 'fatigue', 'idle', 'longName', 'pair', 'pairTwoDigit'],
     },
     restSeconds: { control: { type: 'number', min: 0, max: 999 } },
-    longRest: { control: 'inline-radio', options: ['v0', 'v1', 'v2', 'v3'] },
   },
   render: (args) => (
     <WorkoutShell
@@ -148,48 +144,3 @@ export const RestPair999: Story = { args: { scenario: 'pair', restSeconds: 999 }
 
 /** A 12-rep target with 150s of rest: the two-digit rep slot and the reduced seconds together. */
 export const RestPairTwoDigitTarget: Story = { args: { scenario: 'pairTwoDigit' } }
-
-/** v0 at 150s: reduced digits on the shared baseline (the round-6 build). */
-export const LongRestBaseline150: Story = {
-  args: { scenario: 'pair', restSeconds: 150, longRest: 'v0' },
-}
-
-/** v0 at 999s. */
-export const LongRestBaseline999: Story = {
-  args: { scenario: 'pair', restSeconds: 999, longRest: 'v0' },
-}
-
-/** v1 at 150s: the reduced digits centred on the full-size digits. */
-export const LongRestCentred150: Story = {
-  args: { scenario: 'pair', restSeconds: 150, longRest: 'v1' },
-}
-
-/** v1 at 999s. */
-export const LongRestCentred999: Story = {
-  args: { scenario: 'pair', restSeconds: 999, longRest: 'v1' },
-}
-
-/** v2 at 150s: centred, wall step 36px in an 83px slot, phone gap 8px. */
-export const LongRestLarger150: Story = {
-  args: { scenario: 'pair', restSeconds: 150, longRest: 'v2' },
-}
-
-/** v2 at 999s. */
-export const LongRestLarger999: Story = {
-  args: { scenario: 'pair', restSeconds: 999, longRest: 'v2' },
-}
-
-/** v2 on a 12-rep target: the narrower phone gap beside "11/12". */
-export const LongRestLargerTwelveReps: Story = {
-  args: { scenario: 'pairTwoDigit', longRest: 'v2' },
-}
-
-/** v3 at 150s: as v2, plus a 32px phone step bought with 6px of bar width. */
-export const LongRestPhoneLarge150: Story = {
-  args: { scenario: 'pair', restSeconds: 150, longRest: 'v3' },
-}
-
-/** v3 at 999s. */
-export const LongRestPhoneLarge999: Story = {
-  args: { scenario: 'pair', restSeconds: 999, longRest: 'v3' },
-}

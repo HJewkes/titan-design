@@ -3704,14 +3704,16 @@
       "dir": "shell",
       "family": "shell",
       "exports": [
+        "liveStripRestType",
         "PinnedLiveStrip",
         "PinnedLiveStripLayout",
-        "PinnedLiveStripLongRest",
         "PinnedLiveStripProps",
         "PINNED_LIVE_STRIP_PHONE_MAX",
-        "longRestOf",
+        "layoutOf",
         "toneOf",
         "setLine",
+        "StateTag",
+        "HeroValue",
         "cn"
       ],
       "libDependents": 1,
@@ -3736,7 +3738,7 @@
         "rawText": 12,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 493,
+        "loc": 454,
         "score": 29
       },
       "tier": "organism",

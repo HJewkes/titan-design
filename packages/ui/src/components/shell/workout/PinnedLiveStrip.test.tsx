@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { resolveColor } from '../../../theme/resolve-color'
-import { PinnedLiveStrip, type PinnedLiveStripProps } from './PinnedLiveStrip'
+import { PinnedLiveStrip, liveStripRestType, type PinnedLiveStripProps } from './PinnedLiveStrip'
 import { LIVE_STRIP_ZONE_TOKEN, type LiveStripRep } from './liveStripModel'
 import { LIVE_STRIP_SCENARIOS as S } from './pinnedLiveStrip-fixture'
 
@@ -193,6 +193,24 @@ describe('PinnedLiveStrip', () => {
     it('reads a long rest in seconds, never m:ss', () => {
       render(<PinnedLiveStrip {...S.rest} restRemainingMs={150_000} layout="wall" />)
       expect(screen.getByTestId('live-strip-hero')).toHaveTextContent('150s')
+    })
+  })
+
+  describe('rest type', () => {
+    // The rule, value to size token; the fit and the centring are measured in the RestPair captures.
+    it.each([
+      ['wall', 47_000, 'text-4xl', 0],
+      ['wall', 99_000, 'text-4xl', 0],
+      ['wall', 150_000, 'text-3xl', 4.2],
+      ['wall', 999_000, 'text-3xl', 4.2],
+      ['phone', 47_000, 'text-3xl', 0],
+      ['phone', 99_000, 'text-3xl', 0],
+      ['phone', 150_000, 'text-2xl', 1.4],
+      ['phone', 999_000, 'text-2xl', 1.4],
+    ] as const)('%s at %ims reads at %s, raised %fpx', (layout, ms, size, raise) => {
+      const type = liveStripRestType(layout, ms)
+      expect(type.size).toBe(size)
+      expect(type.raisePx).toBeCloseTo(raise)
     })
   })
 

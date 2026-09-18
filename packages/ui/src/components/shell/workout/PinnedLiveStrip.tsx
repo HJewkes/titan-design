@@ -29,7 +29,6 @@ const WALL_HEIGHT = 72
 const PHONE_MIN_HEIGHT = 88
 
 export type PinnedLiveStripLayout = 'wall' | 'phone'
-export type PinnedLiveStripLongRest = 'v0' | 'v1' | 'v2' | 'v3'
 
 export interface PinnedLiveStripProps {
   /** `set` while reps are being logged, `rest` while the rest timer runs, `idle` renders nothing. */
@@ -52,12 +51,6 @@ export interface PinnedLiveStripProps {
   onPress?: () => void
   /** Force a layout. Omitted: measured from the strip's own width. */
   layout?: PinnedLiveStripLayout
-  /**
-   * Long-rest treatment, under review (VW-429 round 7): `v0` reduced digits on the baseline;
-   * `v1` centred; `v2` centred and larger; `v3` also larger on the phone at the bars' expense.
-   * The unchosen values are removed after the pick.
-   */
-  longRest?: PinnedLiveStripLongRest
   className?: string
 }
 
@@ -71,6 +64,12 @@ interface Scale {
   heroUnit: string
   /** The hero's font size in px, for centring the reduced rest digits. */
   heroPx: number
+  /** Rest seconds from 100s: one smaller step, centred on the full-size digits (VW-429 round 7). */
+  reducedRest: { size: string; unit: string; px: number }
+  /** Fits "99s" at full size and "999s" at the reduced size (measured: 83 / 71px). */
+  secondsSlot: number
+  /** Gap between numeral, velocity and bars. */
+  valueGap: string
   /** Slot widths (px) measured in the heading face for the rep count, by digits. */
   slot: { oneDigitReps: number; twoDigitReps: number }
   velocity: string
@@ -86,6 +85,9 @@ const SCALES: Record<PinnedLiveStripLayout, Scale> = {
     hero: 'text-4xl',
     heroUnit: 'text-xl',
     heroPx: 48,
+    reducedRest: { size: 'text-3xl', unit: 'text-lg', px: 36 },
+    secondsSlot: 83,
+    valueGap: 'gap-section-md',
     slot: { oneDigitReps: 56, twoDigitReps: 101 },
     velocity: 'text-3xl',
     barHeight: 40,
@@ -97,6 +99,9 @@ const SCALES: Record<PinnedLiveStripLayout, Scale> = {
     hero: 'text-3xl',
     heroUnit: 'text-lg',
     heroPx: 36,
+    reducedRest: { size: 'text-2xl', unit: 'text-base', px: 32 },
+    secondsSlot: 71,
+    valueGap: 'gap-inline-md',
     slot: { oneDigitReps: 43, twoDigitReps: 76 },
     velocity: 'text-2xl',
     barHeight: 26,
@@ -104,49 +109,19 @@ const SCALES: Record<PinnedLiveStripLayout, Scale> = {
   },
 }
 
-interface LongRestSpec {
-  /** Fits "99s" at full size and "999s" at the reduced size. */
-  secondsSlot: number
-  reduced: string
-  reducedUnit: string
-  reducedPx: number
-  centred: boolean
-  /** Phone only: `gap-inline-md` instead of `gap-inline-lg` between numeral, velocity and bars. */
-  tightGap: boolean
-}
-
-const WALL_REDUCED = { reduced: 'text-2xl', reducedUnit: 'text-lg', reducedPx: 32 }
-const WALL_RAISED = { reduced: 'text-3xl', reducedUnit: 'text-lg', reducedPx: 36 }
-const PHONE_REDUCED = { reduced: 'text-xl', reducedUnit: 'text-base', reducedPx: 24 }
-
-// Slots come from measured "999s" widths: 32px 71, 36px 78 (wall); 24px 55, 32px 69 (phone).
-const LONG_REST: Record<PinnedLiveStripLayout, Record<PinnedLiveStripLongRest, LongRestSpec>> = {
-  wall: {
-    v0: { secondsSlot: 75, ...WALL_REDUCED, centred: false, tightGap: false },
-    v1: { secondsSlot: 75, ...WALL_REDUCED, centred: true, tightGap: false },
-    v2: { secondsSlot: 83, ...WALL_RAISED, centred: true, tightGap: false },
-    v3: { secondsSlot: 83, ...WALL_RAISED, centred: true, tightGap: false },
-  },
-  phone: {
-    v0: { secondsSlot: 57, ...PHONE_REDUCED, centred: false, tightGap: false },
-    v1: { secondsSlot: 57, ...PHONE_REDUCED, centred: true, tightGap: false },
-    v2: { secondsSlot: 57, ...PHONE_REDUCED, centred: true, tightGap: true },
-    v3: {
-      secondsSlot: 71,
-      reduced: 'text-2xl',
-      reducedUnit: 'text-base',
-      reducedPx: 32,
-      centred: true,
-      tightGap: true,
-    },
-  },
-}
-
 // Digit ink spans 0.714em above the baseline to 0.014em below it, so its centre sits 0.35em up.
 const DIGIT_INK_CENTRE_EM = 0.35
 
-function longRestOf({ scale, longRest = 'v0' }: Parts): LongRestSpec {
-  return LONG_REST[scale === SCALES.phone ? 'phone' : 'wall'][longRest]
+const layoutOf = (scale: Scale): PinnedLiveStripLayout =>
+  scale === SCALES.phone ? 'phone' : 'wall'
+
+/** The rest readout's type: seconds, their size and unit classes, and the raise that centres them. */
+export function liveStripRestType(layout: PinnedLiveStripLayout, remainingMs: number) {
+  const scale = SCALES[layout]
+  const { seconds, step } = liveStripRestReadout(remainingMs)
+  if (step === 'full') return { seconds, size: scale.hero, unit: scale.heroUnit, raisePx: 0 }
+  const { size, unit, px } = scale.reducedRest
+  return { seconds, size, unit, raisePx: DIGIT_INK_CENTRE_EM * (scale.heroPx - px) }
 }
 
 type Tone = 'live' | 'rest' | 'fatigue'
@@ -229,53 +204,42 @@ const LAST_BASELINE = Platform.select<ViewStyle>({
 })
 
 // One width for the whole set and its rest: a long rest steps its type down rather than widen it.
-function heroSlotWidth(props: Parts): number {
-  const { reps, targetReps, scale } = props
+function heroSlotWidth({ reps, targetReps, scale }: Parts): number {
   const twoDigits = Math.max(reps.length, targetReps) >= 10
-  const repSlot = twoDigits ? scale.slot.twoDigitReps : scale.slot.oneDigitReps
-  return Math.max(repSlot, longRestOf(props).secondsSlot)
+  return Math.max(twoDigits ? scale.slot.twoDigitReps : scale.slot.oneDigitReps, scale.secondsSlot)
 }
 
-function RestValue({
-  seconds,
-  spec,
-  heroPx,
-}: {
-  seconds: number
-  spec: LongRestSpec
-  heroPx: number
-}) {
-  const raise = spec.centred ? DIGIT_INK_CENTRE_EM * (heroPx - spec.reducedPx) : 0
+function HeroValue({ state, reps, targetReps, scale, restRemainingMs = 0 }: Parts) {
+  if (state !== 'rest') {
+    return (
+      <Text testID="live-strip-hero-value">
+        {reps.length}
+        <Text className={cn(UNIT, scale.heroUnit)}>/{targetReps}</Text>
+      </Text>
+    )
+  }
+  const { seconds, size, unit, raisePx } = liveStripRestType(layoutOf(scale), restRemainingMs)
   return (
     <Text
       testID="live-strip-hero-value"
-      style={raise ? { position: 'relative', top: -raise } : null}
+      style={raisePx ? { position: 'relative', top: -raisePx } : null}
     >
-      <Text className={spec.reduced}>{seconds}</Text>
-      <Text className={cn(UNIT, spec.reducedUnit)}>s</Text>
+      <Text className={size}>{seconds}</Text>
+      <Text className={cn(UNIT, unit)}>s</Text>
     </Text>
   )
 }
 
 function HeroNumeral(props: Parts) {
-  const { state, reps, targetReps, scale, restRemainingMs = 0 } = props
-  const rest = state === 'rest' ? liveStripRestReadout(restRemainingMs) : null
   // The outer text keeps the full size so its line box, and so the row's baseline, never moves.
   return (
     <Text
       testID="live-strip-hero"
       numberOfLines={1}
-      className={cn(NUMERAL, scale.hero)}
+      className={cn(NUMERAL, props.scale.hero)}
       style={[TABULAR, { width: heroSlotWidth(props) }]}
     >
-      {rest?.step === 'reduced' ? (
-        <RestValue seconds={rest.seconds} spec={longRestOf(props)} heroPx={scale.heroPx} />
-      ) : (
-        <Text testID="live-strip-hero-value">
-          {rest ? rest.seconds : reps.length}
-          <Text className={cn(UNIT, scale.heroUnit)}>{rest ? 's' : `/${targetReps}`}</Text>
-        </Text>
-      )}
+      <HeroValue {...props} />
     </Text>
   )
 }
@@ -337,7 +301,7 @@ function WallRow(props: Parts) {
     <View className="flex-1 flex-row items-center gap-section-md px-gutter-md">
       <View
         testID="live-strip-baseline-row"
-        className="flex-1 flex-row gap-section-md"
+        className={cn('flex-1 flex-row', scale.valueGap)}
         style={LAST_BASELINE}
       >
         <View className="flex-1 gap-stack-sm">
@@ -386,10 +350,7 @@ function PhoneRows(props: Parts) {
       <PhoneTitleRow {...props} />
       <View
         testID="live-strip-baseline-row"
-        className={cn(
-          'flex-row items-baseline',
-          longRestOf(props).tightGap ? 'gap-inline-md' : 'gap-inline-lg'
-        )}
+        className={cn('flex-row items-baseline', props.scale.valueGap)}
       >
         <HeroNumeral {...props} />
         <Velocity {...props} showUnit={false} />
