@@ -2,13 +2,8 @@ import { describe, it, expect } from 'vitest'
 import { render, screen, fireEvent, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 
-import {
-  PrimaryGoalCard,
-  FIXED_CHART_WIDTH,
-  chartWidthFor,
-  goalStatusBadge,
-  markSizeFor,
-} from './PrimaryGoalCard'
+import { PrimaryGoalCard, goalStatusBadge, markSizeFor } from './PrimaryGoalCard'
+import { trajectoryWeekScale } from './GoalTrajectoryChartGeometry'
 import { PRIMARY_GOAL_SCENARIOS as S } from './primaryGoal-fixture'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 
@@ -25,10 +20,10 @@ describe('PrimaryGoalCard', () => {
       expect(screen.getByTestId('primary-goal-card-status')).toHaveTextContent('Calibrating')
     })
 
-    it('draws the chart and the meso target tile', () => {
+    it('draws the chart and the meso target summary', () => {
       render(<PrimaryGoalCard {...S.calibrating} chartWidth={WALL} />)
       expect(screen.getByTestId('goal-trajectory-chart-canvas')).toBeInTheDocument()
-      expect(screen.getByTestId('goal-milestone-tile')).toBeInTheDocument()
+      expect(screen.getByTestId('goal-milestone-summary')).toBeInTheDocument()
     })
 
     it('drops the old header block: no subtitle line, no metric cells', () => {
@@ -38,10 +33,10 @@ describe('PrimaryGoalCard', () => {
       expect(screen.queryByText('STRETCH')).toBeNull()
     })
 
-    it('leaves the week count to the milestone tile, where it already lived', () => {
+    it('leaves the week count to the folded summary, where it already lived', () => {
       render(<PrimaryGoalCard {...S.calibrating} chartWidth={WALL} />)
-      const tile = screen.getByTestId('goal-milestone-tile')
-      expect(within(tile).getAllByText('Week 2 of 12').length).toBeGreaterThan(0)
+      const summary = screen.getByTestId('goal-milestone-summary')
+      expect(within(summary).getAllByText('Week 2 of 12').length).toBeGreaterThan(0)
       expect(within(screen.getByTestId('primary-goal-card-title')).queryByText(/Week/)).toBeNull()
     })
 
@@ -100,34 +95,33 @@ describe('PrimaryGoalCard', () => {
     })
   })
 
-  describe('layout', () => {
-    it('A fills the width it is given', () => {
-      render(<PrimaryGoalCard {...S.onTrack} layout="fill" chartWidth={900} />)
+  describe('the fold', () => {
+    it('is one card: the milestone content has no plane or frame of its own', () => {
+      render(<PrimaryGoalCard {...S.onTrack} chartWidth={WALL} />)
+      expect(screen.getByTestId('goal-milestone-summary')).toBeInTheDocument()
+      expect(screen.queryByTestId('goal-milestone-tile')).toBeNull()
+      expect(screen.queryByTestId('goal-milestone-plane')).toBeNull()
+    })
+
+    it('puts the summary above the chart', () => {
+      render(<PrimaryGoalCard {...S.onTrack} chartWidth={WALL} />)
+      const fold = screen.getByTestId('primary-goal-card-fold')
+      const summary = screen.getByTestId('goal-milestone-summary')
+      const chart = screen.getByTestId('goal-trajectory-chart-canvas')
+      expect(fold).toContainElement(summary)
+      expect(fold).toContainElement(chart)
+      expect(summary.compareDocumentPosition(chart) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    })
+
+    it('fills the width it is given', () => {
+      render(<PrimaryGoalCard {...S.onTrack} chartWidth={900} />)
       expect(screen.getByTestId('goal-trajectory-chart-canvas')).toHaveStyle({ width: '900px' })
     })
 
-    it('B caps the chart at 1200 when the card is wider', () => {
-      render(<PrimaryGoalCard {...S.onTrack} layout="fixed" chartWidth={1888} />)
-      expect(screen.getByTestId('goal-trajectory-chart-canvas')).toHaveStyle({
-        width: `${FIXED_CHART_WIDTH}px`,
-      })
-    })
-
-    it('B is a cap, not a pin: a narrower card gets a chart that fits it', () => {
-      expect(chartWidthFor('fixed', 900)).toBe(900)
-      expect(chartWidthFor('fixed', 1888)).toBe(FIXED_CHART_WIDTH)
-      expect(chartWidthFor('fill', 1888)).toBe(1888)
-    })
-
-    it('B renders inside a 360 card rather than overflowing it', () => {
-      render(<PrimaryGoalCard {...S.onTrack} layout="fixed" chartWidth={360} />)
-      expect(screen.getByTestId('goal-trajectory-chart-canvas')).toHaveStyle({ width: '360px' })
-    })
-
-    it('draws no chart until the fill layout has been measured', () => {
-      render(<PrimaryGoalCard {...S.onTrack} layout="fill" />)
-      expect(screen.queryByTestId('goal-trajectory-chart-canvas')).toBeNull()
-      expect(screen.getByTestId('goal-milestone-tile')).toBeInTheDocument()
+    it('draws nothing below the header until the card has been measured', () => {
+      render(<PrimaryGoalCard {...S.onTrack} />)
+      expect(screen.queryByTestId('primary-goal-card-fold')).toBeNull()
+      expect(screen.getByTestId('primary-goal-card-title')).toBeInTheDocument()
     })
 
     it('sizes the header marks off the same density flag the chart uses', () => {
@@ -148,8 +142,61 @@ describe('PrimaryGoalCard', () => {
     })
 
     it('takes the phone chart height under the wall breakpoint', () => {
-      render(<PrimaryGoalCard {...S.onTrack} layout="fill" chartWidth={360} />)
+      render(<PrimaryGoalCard {...S.onTrack} chartWidth={360} />)
       expect(screen.getByTestId('goal-trajectory-chart-canvas')).toHaveStyle({ height: '220px' })
+    })
+  })
+
+  describe('week cells stand on the chart columns', () => {
+    /**
+     * A cell's centre in the CHART's coordinates: the strip is inset to the plot,
+     * so its own left edge is the plot's, and the cell's x adds back from there.
+     */
+    function cellCentre(week: number, plotLeft: number): number {
+      const style = screen.getByTestId(`goal-milestone-week-cell-${week}`).style
+      return plotLeft + parseFloat(style.left) + parseFloat(style.width) / 2
+    }
+
+    function expectAligned(width: number, scenario: typeof S.onTrack) {
+      const { unmount } = render(<PrimaryGoalCard {...scenario} chartWidth={width} />)
+      const scale = trajectoryWeekScale({
+        expected: scenario.goal.expected,
+        weeks: scenario.goal.weeks,
+        actuals: scenario.goal.actuals,
+        ...(scenario.goal.nextTarget ? { nextTarget: scenario.goal.nextTarget } : {}),
+        width,
+      })
+      for (const week of scale.weeks) {
+        expect(cellCentre(week, scale.plot.left)).toBeCloseTo(scale.toX(week), 3)
+      }
+      unmount()
+    }
+
+    it('lines every cell up with its week at 1920', () => {
+      expectAligned(1888, S.onTrack)
+    })
+
+    it('lines every cell up with its week at 360', () => {
+      expectAligned(328, S.onTrack)
+    })
+
+    it('holds for a twelve-week block whose marker runs past the readings', () => {
+      expectAligned(1888, S.calibrating)
+    })
+
+    it('keeps the current week taller than the weeks behind it', () => {
+      render(<PrimaryGoalCard {...S.onTrack} chartWidth={WALL} />)
+      const height = (week: number) =>
+        parseFloat(screen.getByTestId(`goal-milestone-week-cell-${week}`).style.height)
+      expect(height(4)).toBeGreaterThan(height(1))
+    })
+
+    it('still opens a week tip card', () => {
+      render(<PrimaryGoalCard {...S.onTrack} chartWidth={WALL} />)
+
+      fireEvent.mouseEnter(screen.getByTestId('goal-milestone-week-1'))
+
+      expect(screen.getByText('Week 1')).toBeInTheDocument()
     })
   })
 

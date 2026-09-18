@@ -74,28 +74,35 @@ split.
   explicit `statusForm` override in tests and by the `Widths` story live.
 
 - **PrimaryGoalCard (VW-385 unit 1)** — the lead priority at the top of the
-  `#/goals` wall: the lift, its priority mark and its verdict in one row, then
-  the trajectory chart and the meso target tile.
+  `#/goals` wall, as ONE card: the title row (lift, priority mark, status pill,
+  PR star), the meso target's summary, and the chart on its inset plane.
 
   _composes ↓_ `Card` (elevation 1) · `GoalPriorityIcon` · `Pill` + `TipTrigger` ·
-  `PrBadge` · `GoalTrajectoryChart` · `GoalMilestoneTile` · `Typography`.
+  `PrBadge` · `GoalMilestoneSummary` · `GoalTrajectoryChart` · `Typography`.
   _used-by ↑_ voltras-mcp `#/goals` `PrimaryGoalCard` (a later ticket ports it).
 
   **It deletes a block rather than restyling it.** The old header printed the
   week, the priority word, the status basis, committed, stretch and the next
   milestone as text above the chart — every one of which the chart already shows
   or can show (human call, 2026-09-17). The week is the chart's axis and the
-  tile's summary line; committed and stretch are its rules; next week is the
+  summary's facts line; committed and stretch are its rules; next week is the
   hollow marker; the basis and its RP citation are the status pill's tip; the
   priority word is `GoalPriorityIcon`.
 
-  **Two layouts, one prop.** `fill` (A) measures the card and hands the chart its
-  whole width, capped at 340 high, with the tile beneath. `fixed` (B) pins the
-  chart to 1200 and gives the tile the right column. B is what the wall shipped;
-  A exists because 1200 left a dead zone on a 1920 wall.
+  **The week cells stand on the chart's columns.** They share the plot's x-scale
+  through `trajectoryWeekScale` — not a second copy of the arithmetic — and the
+  strip is inset to the plot and clipped there, so the end cells trim at the
+  plane edge exactly as the chart trims its own deload columns. A cell is the
+  header of its week's column, which is only true if it is over that column at
+  every width; `PrimaryGoalCard.test.tsx` asserts the centres at 1888 and 328.
+
+  **The fold left the tile behind.** An inset plane inside a card that already
+  has one (the chart's) read as two unrelated wells; the summary now sits
+  straight on the card. `GoalMilestoneTile` still exists for the per-lift slot —
+  it is that same summary in its plane.
 
   `onLayout` does not fire under jsdom, so `chartWidth` pins the measured width
-  for tests. Without it the `fill` layout renders its tile and no chart, which is
+  for tests. Without it the card renders its title row and nothing else, which is
   also what one frame of a real mount looks like.
 
 - **GoalPriorityIcon (VW-385 unit 1)** — specialize / maintain / deprioritize as
@@ -112,8 +119,15 @@ split.
   `goalMilestone.ts`. A reading short of the committed target leaves the pace
   tone alone; exactly on it is success green with the hit label; past it is the
   `ahead` blue labelled `Beyond goal`. `GoalTrajectoryChart` (line, pill),
-  `GoalMilestoneTile` (hero) and `PrimaryGoalCard` (header pill) all read it off
-  that helper — the maths is not duplicated anywhere.
+  `GoalMilestoneSummary` (hero), `GoalMilestoneTile` (hit mark) and
+  `PrimaryGoalCard` (header pill) all read it off that helper — the maths is not
+  duplicated anywhere.
+
+- **GoalMilestoneSummary vs GoalMilestoneTile** — the summary is the content
+  (hero, facts row, week cells); the tile is the summary in its inset plane, with
+  the header and the Hit/Missed mark. The folded card composes the summary; the
+  per-lift slot composes the tile (`layout="compact"`, which carries the week
+  cells at the phone scale). Add behaviour to the summary, not to both.
 
 - **GoalMuscleCard (VW-386)** — a muscle priority's goal state at card scale:
   the figure lit by its status, the lifts-on-track count beneath it as a label,

@@ -617,6 +617,51 @@ const actualLine = line<ActualCoord>()
   .y((d) => d.y)
   .curve(curveMonotoneX)
 
+/** What a week column is worth in px, and where each column's centre sits. */
+export interface TrajectoryWeekScale {
+  /** Centre x of a week column, in the chart's own coordinate space. */
+  toX: (weekIndex: number) => number
+  /** Width of one week column in px. */
+  span: number
+  /** The week indices the axis spans, ascending. */
+  weeks: number[]
+  /** The plot's left and right edges — where the chart clips its week columns. */
+  plot: { left: number; right: number }
+}
+
+export interface TrajectoryWeekScaleInput {
+  expected: GoalExpectedPoint[]
+  weeks: GoalTrajectoryWeek[]
+  actuals: GoalActualPoint[]
+  nextTarget?: GoalNextTarget
+  width: number
+}
+
+/**
+ * The chart's week axis on its own, for anything that has to line up with the
+ * columns from outside the SVG — the folded card's week cells sit directly above
+ * the plot and must share its x positions exactly, so they share this function
+ * rather than a second copy of the same arithmetic.
+ */
+export function trajectoryWeekScale(input: TrajectoryWeekScaleInput): TrajectoryWeekScale {
+  const plot = plotRect(input.width, 1)
+  const placed = placeActuals({ ...input, committed: 0, stretch: 0, height: 1 })
+  const wks = weekDomain(input.expected, input.weeks, [
+    ...placed.map((p) => p.week),
+    ...(input.nextTarget ? [input.nextTarget.weekIndex] : []),
+  ])
+  const xScale = scaleLinear()
+    .domain([wks.min, wks.max])
+    .range([plot.left + WEEK_INSET, plot.right - WEEK_INSET])
+  const steps = Math.max(1, wks.max - wks.min)
+  return {
+    toX: (weekIndex: number) => xScale(weekIndex),
+    span: (plot.right - plot.left - 2 * WEEK_INSET) / steps,
+    weeks: Array.from({ length: Math.round(steps) + 1 }, (_, i) => wks.min + i),
+    plot: { left: plot.left, right: plot.right },
+  }
+}
+
 /**
  * The next waypoint in px, with the dashed run that joins it to the latest
  * reading. The run is a straight segment on purpose: the actual line is a
@@ -660,28 +705,28 @@ export function deriveTrajectoryGeometry(
   const plot = plotRect(width, height)
 
   const next = input.nextTarget
-  const wks = weekDomain(expected, weeks, [
-    ...placed.map((p) => p.week),
-    ...(next ? [next.weekIndex] : []),
-  ])
   const values = [
     ...expected.flatMap((p) => [p.low, p.high]),
     ...placed.map((p) => p.actual.value),
     ...(next ? [next.value] : []),
   ].filter((v) => Number.isFinite(v))
   const rules = [committed, stretch].filter((v) => Number.isFinite(v))
-  const xScale = scaleLinear()
-    .domain([wks.min, wks.max])
-    .range([plot.left + WEEK_INSET, plot.right - WEEK_INSET])
+  const week = trajectoryWeekScale({
+    expected,
+    weeks,
+    actuals: input.actuals,
+    ...(next ? { nextTarget: next } : {}),
+    width,
+  })
   const yScale = valueScale({ values, rules, plot, font: input.labelFont ?? CHART_FONT })
-  const toX = (weekIndex: number): number => xScale(weekIndex)
+  const toX = week.toX
   const toY = (value: number): number => yScale(value)
   const [domainMin, domainMax] = yScale.domain()
 
   const slices = bandSlices(expected, toX, toY)
   const hasBand = slices.length >= 2
   const actuals = actualCoords(placed, toX, toY)
-  const weekSpan = (plot.right - plot.left - 2 * WEEK_INSET) / Math.max(1, wks.max - wks.min)
+  const weekSpan = week.span
 
   return {
     hasBand,

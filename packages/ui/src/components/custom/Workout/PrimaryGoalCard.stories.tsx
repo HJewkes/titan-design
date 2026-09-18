@@ -15,18 +15,14 @@ const meta: Meta<typeof PrimaryGoalCard> = {
     docs: {
       description: {
         component:
-          'The lead priority at the top of the `#/goals` wall. Composes `Card`, ' +
-          '`GoalPriorityIcon`, `Pill` + `TipTrigger`, `PrBadge`, `GoalTrajectoryChart` ' +
-          'and `GoalMilestoneTile`.',
+          'The lead priority at the top of the `#/goals` wall, as one card: the meso ' +
+          "target folded in above the chart, its week cells standing on the chart's own " +
+          'week columns. Composes `Card`, `GoalPriorityIcon`, `Pill` + `TipTrigger`, ' +
+          '`PrBadge`, `GoalMilestoneSummary` and `GoalTrajectoryChart`.',
       },
     },
   },
   argTypes: {
-    layout: {
-      control: 'inline-radio',
-      options: ['fill', 'fixed'],
-      description: 'A: chart fills the card. B: chart pinned to 1200 with the tile beside it.',
-    },
     priority: { control: 'inline-radio', options: ['specialize', 'maintain', 'deprioritize'] },
     chartWidth: {
       control: { type: 'range', min: 320, max: 1800, step: 20 },
@@ -50,29 +46,26 @@ export default meta
 type Story = StoryObj<typeof PrimaryGoalCard>
 
 /** The wall's own calibrating payload, captured from the SPA on 2026-09-17. */
-export const Calibrating: Story = { args: { ...S.calibrating, layout: 'fill' } }
+export const Calibrating: Story = { args: { ...S.calibrating } }
 
-export const OnTrack: Story = { args: { ...S.onTrack, layout: 'fill' } }
+export const OnTrack: Story = { args: { ...S.onTrack } }
 
-export const Behind: Story = { args: { ...S.behind, layout: 'fill' } }
+export const Behind: Story = { args: { ...S.behind } }
 
-export const Ahead: Story = { args: { ...S.ahead, layout: 'fill' } }
+export const Ahead: Story = { args: { ...S.ahead } }
 
 /** A reading exactly on the committed target: success green, the hit label. */
-export const HitExact: Story = { args: { ...S.hitExact, layout: 'fill' } }
+export const HitExact: Story = { args: { ...S.hitExact } }
 
-/** A reading past the target: the `ahead` blue on the line, the tile and the pill. */
-export const BeyondGoal: Story = { args: { ...S.beyondGoal, layout: 'fill' } }
-
-/** Layout B: the chart pinned to 1200 with the milestone tile in a right column. */
-export const FixedChartWithSideTile: Story = { args: { ...S.onTrack, layout: 'fixed' } }
+/** A reading past the target: the `ahead` blue on the line, the hero and the pill. */
+export const BeyondGoal: Story = { args: { ...S.beyondGoal } }
 
 /**
  * Phone width. The card still fills its container — the container is what is
  * 360 wide — and the chart drops to its 220px phone density under 720px.
  */
 export const Phone: Story = {
-  args: { ...S.onTrack, layout: 'fill' },
+  args: { ...S.onTrack },
   decorators: [
     (Story) => (
       <Surface

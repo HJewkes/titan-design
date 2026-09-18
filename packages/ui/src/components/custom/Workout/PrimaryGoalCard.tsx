@@ -8,7 +8,7 @@ import { TipTrigger } from '../../ui/tooltip'
 import { useMeasuredWidth } from '../Table/column-fit'
 import { Typography } from '../Typography'
 import { GOAL_STATUS_LABEL, GOAL_STATUS_TONE } from './GoalLiftCard'
-import { GoalMilestoneTile, type GoalMilestoneTileProps } from './GoalMilestoneTile'
+import { GoalMilestoneSummary, type GoalMilestoneSummaryProps } from './GoalMilestoneSummary'
 import { GoalPriorityIcon, type GoalPriority } from './GoalPriorityIcon'
 import {
   GoalTrajectoryChart,
@@ -17,6 +17,8 @@ import {
   type GoalTrajectoryChartProps,
   type GoalTrajectoryStatus,
 } from './GoalTrajectoryChart'
+import { trajectoryWeekScale } from './GoalTrajectoryChartGeometry'
+import type { GoalMilestoneWeekAxis } from './GoalMilestoneWeekStrip'
 import type { GoalReach } from './goalMilestone'
 import { PrBadge } from './PrBadge'
 
@@ -26,21 +28,8 @@ export type PrimaryGoalChart = Omit<
   'width' | 'height' | 'status' | 'metricLabel'
 >
 
-/**
- * Where the milestone tile sits: `fill` puts it under a chart measured to the
- * card's width, `fixed` beside a chart pinned to {@link FIXED_CHART_WIDTH}.
- */
-export type PrimaryGoalCardLayout = 'fill' | 'fixed'
-
-/** The wall chart's original width, before the card started measuring its own. */
-export const FIXED_CHART_WIDTH = 1200
-/** Narrowest the tile reads at in the right column. */
-export const TILE_MIN_WIDTH = 320
-/**
- * Tip cards need a width of their own: an in-flow tip is laid out against its
- * trigger's box, so a pill-width container would wrap the basis one word a line.
- */
-const TIP_WIDTH = 280
+/** The meso target's content, as the fold composes it: no plane, no frame. */
+export type PrimaryGoalMilestone = Omit<GoalMilestoneSummaryProps, 'axis' | 'className'>
 
 export interface PrimaryGoalCardProps extends ViewProps {
   /** The lift this goal is about, e.g. "Cable chest press". */
@@ -52,12 +41,10 @@ export interface PrimaryGoalCardProps extends ViewProps {
   /** What the basis rests on, e.g. `rp:rp-s5-load-increment-by-exercise-type`. */
   citation?: string
   goal: PrimaryGoalChart
-  milestone: GoalMilestoneTileProps
-  layout?: PrimaryGoalCardLayout
+  milestone: PrimaryGoalMilestone
   /**
    * Pins the measured content width, which `onLayout` cannot supply under jsdom.
-   * It is what the card has to spend, not what the chart takes: `fixed` still
-   * caps the chart at {@link FIXED_CHART_WIDTH}.
+   * Unset, the card takes whatever its container gives it.
    */
   chartWidth?: number
   /** Chart height. Defaults to 340 at wall width, 220 below it. */
@@ -71,15 +58,46 @@ interface StatusBadgeSpec {
 }
 
 /**
+ * Tip cards need a width of their own: an in-flow tip is laid out against its
+ * trigger's box, so a pill-width container would wrap the basis one word a line.
+ */
+const TIP_WIDTH = 280
+
+/**
  * Pace until a reading reaches the committed target, then the result: reaching
  * it is the hit label in success green, going past it is `Beyond goal` in the
  * `ahead` blue. Same verdict, words and tones as the chart's own pill and the
- * milestone tile — all three read it off `trajectoryReach`.
+ * milestone summary — all three read it off `trajectoryReach`.
  */
 export function goalStatusBadge(status: GoalTrajectoryStatus, reach: GoalReach): StatusBadgeSpec {
   if (reach === 'beyond') return { label: 'Beyond goal', tone: 'info' }
   if (reach === 'met') return { label: 'Hit', tone: 'success' }
   return { label: GOAL_STATUS_LABEL[status], tone: GOAL_STATUS_TONE[status] }
+}
+
+/**
+ * The header marks take the chart's own density flag: a 14px star reads as a
+ * speck across a room beside a wall-scale title, and a 20px one crowds a phone.
+ */
+export function markSizeFor(width: number | null): number {
+  return width !== null && width >= WALL_BREAKPOINT ? 20 : 14
+}
+
+/** 340 across a room, 220 on a phone — the two heights the chart was drawn for. */
+function chartHeightFor(width: number): number {
+  return width >= WALL_BREAKPOINT ? 340 : 220
+}
+
+/** The week columns the cells must sit over, read off the chart's own scale. */
+function weekAxisFor(goal: PrimaryGoalChart, width: number): GoalMilestoneWeekAxis {
+  const scale = trajectoryWeekScale({
+    expected: goal.expected,
+    weeks: goal.weeks,
+    actuals: goal.actuals,
+    ...(goal.nextTarget ? { nextTarget: goal.nextTarget } : {}),
+    width,
+  })
+  return { x: scale.toX, span: scale.span, left: scale.plot.left, right: scale.plot.right }
 }
 
 function BasisTip({ basis, citation }: { basis: string; citation?: string }) {
@@ -153,7 +171,7 @@ function Header({
 }) {
   return (
     <View
-      // The row is raised so an open tip paints over the chart beneath it: a
+      // The row is raised so an open tip paints over the fold beneath it: a
       // later sibling wins on paint order whatever the tip's own z-index says.
       style={{
         flexDirection: 'row',
@@ -177,67 +195,40 @@ function Header({
   )
 }
 
-/** 340 across a room, 220 on a phone — the two heights the chart was drawn for. */
-function chartHeightFor(width: number): number {
-  return width >= WALL_BREAKPOINT ? 340 : 220
-}
-
 /**
- * The header marks take the chart's own density flag: a 14px star reads as a
- * speck across a room beside a wall-scale title, and a 20px one crowds a phone.
+ * The summary over the plot: hero, facts, then the week cells sitting directly
+ * on the chart's columns. The gap between the cells and the plane is the tight
+ * one on purpose — a cell is the header of its week's column, not a strip that
+ * happens to be above a chart.
  */
-export function markSizeFor(width: number | null): number {
-  return width !== null && width >= WALL_BREAKPOINT ? 20 : 14
-}
-
-/**
- * `fill` hands the chart the whole content width. `fixed` caps it at 1200 —
- * caps, not pins: a container narrower than that gets a chart that fits it,
- * because a fixed 1200 inside a 1200 canvas is a horizontal scrollbar.
- */
-export function chartWidthFor(layout: PrimaryGoalCardLayout, content: number): number {
-  return layout === 'fixed' ? Math.min(FIXED_CHART_WIDTH, content) : content
-}
-
-function Body({ props, content }: { props: PrimaryGoalCardProps; content: number | null }) {
-  const { goal, milestone, status, title, layout = 'fill', chartHeight } = props
-  const side = layout === 'fixed'
-  const width = content === null ? null : chartWidthFor(layout, content)
+function Fold({ props, width }: { props: PrimaryGoalCardProps; width: number }) {
+  const { goal, milestone, status, title, chartHeight } = props
   return (
-    <View
-      // The row wraps: once the chart has taken its cap there may be less than a
-      // tile's width left, and a tile crushed to 90px is worse than one below.
-      style={
-        side ? { flexDirection: 'row', alignItems: 'flex-start', flexWrap: 'wrap' } : undefined
-      }
-      className={side ? 'gap-inline-lg gap-y-stack-lg' : 'gap-stack-lg'}
-    >
-      <View testID="primary-goal-card-chart">
-        {width !== null && (
-          <GoalTrajectoryChart
-            {...goal}
-            status={status}
-            metricLabel={title}
-            width={width}
-            height={chartHeight ?? chartHeightFor(width)}
-          />
-        )}
-      </View>
-      <View style={side ? { flexGrow: 1, flexBasis: TILE_MIN_WIDTH, minWidth: 0 } : undefined}>
-        <GoalMilestoneTile {...milestone} />
-      </View>
+    <View className="gap-stack-sm" testID="primary-goal-card-fold">
+      <GoalMilestoneSummary {...milestone} axis={weekAxisFor(goal, width)} />
+      <GoalTrajectoryChart
+        {...goal}
+        status={status}
+        metricLabel={title}
+        width={width}
+        height={chartHeight ?? chartHeightFor(width)}
+      />
     </View>
   )
 }
 
 /**
- * The lead priority at the top of the `#/goals` wall: the lift, its priority
- * mark and status in one row, then the trajectory and the meso target.
+ * The lead priority at the top of the `#/goals` wall, as ONE card: the lift, its
+ * priority mark and its verdict in the title row, the meso target folded in
+ * above the chart, and the block's weeks as cells standing on the chart's own
+ * week columns.
  *
- * Everything the old header block spelled out is now carried by something that
- * was already on screen (VW-385, human call 2026-09-17): the week comes off the
- * chart's axis, committed and stretch off its rules, the next week off its
- * hollow marker, and the status basis off the pill's tip.
+ * Everything the old header block spelled out is carried by something that was
+ * already on screen (VW-385, human calls 2026-09-17): the week comes off the
+ * chart's axis and the summary's facts line, committed and stretch off the
+ * chart's rules, next week off its hollow marker, and the status basis off the
+ * pill's tip. The milestone tile's own inset plane went with the fold — the
+ * chart's plane is the only inset the card has.
  *
  * @example
  * <PrimaryGoalCard
@@ -280,7 +271,7 @@ export function PrimaryGoalCard(props: PrimaryGoalCardProps) {
           isPR={goal.actuals.some((actual) => actual.isPR)}
           markSize={markSizeFor(measured.width)}
         />
-        <Body props={props} content={measured.width} />
+        {measured.width !== null && <Fold props={props} width={measured.width} />}
       </View>
     </Card>
   )

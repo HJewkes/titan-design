@@ -10,16 +10,26 @@ project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 - `PrimaryGoalCard` (`status:candidate`) — the lead priority at the top of the
-  `#/goals` wall: the lift, its priority mark, its verdict and a PR badge in one
-  header row, then `GoalTrajectoryChart` and `GoalMilestoneTile`. It deletes the
+  `#/goals` wall as ONE card: the lift, its priority mark, its verdict and a PR
+  badge in the title row, the meso target folded in above the chart, and the
+  block's weeks as cells standing on the chart's own week columns. It deletes the
   old header block rather than restyling it (VW-385 unit 1, human call
-  2026-09-17): the week reads off the chart axis and the tile's summary line,
+  2026-09-17): the week reads off the chart axis and the summary's facts line,
   committed and stretch off the chart's rules, next week off the new hollow
   marker, the status basis and its RP citation off the status pill's tip, and the
-  priority word off `GoalPriorityIcon`. Two layouts under one `layout` prop —
-  `fill` measures the card and hands the chart its whole width (capped 340 high)
-  with the tile beneath, `fixed` pins the chart to 1200 and gives the tile the
-  right column.
+  priority word off `GoalPriorityIcon`. The milestone tile's own inset plane went
+  with the fold — the chart's plane is the only inset the card has. The card
+  measures its container, so its one layout follows whatever width it is given.
+- `GoalMilestoneSummary` — the meso target's content (hero, facts row, week
+  cells) with no plane or frame of its own. `GoalMilestoneTile` is now that
+  summary in its inset plane, and `PrimaryGoalCard` composes it directly, so the
+  gap, surplus and outcome maths has exactly one home.
+- `GoalMilestoneWeekStrip` takes an `axis`, which pins each week cell to a chart
+  column instead of sharing the width evenly, and clips the row to the plot so the
+  first and last cells trim at the plane edge as the chart's own columns do.
+- `trajectoryWeekScale` — the chart's week axis as a pure function, so anything
+  lining up with the columns from outside the SVG shares them rather than
+  re-deriving them.
 - `GoalPriorityIcon` (`status:candidate`) — specialize / maintain / deprioritize
   as a mark beside the status pill, with the level's meaning on hover, focus or
   press. Priority is not pace, so it never borrows a `status-*` tone: the accent

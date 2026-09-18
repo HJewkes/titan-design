@@ -2,6 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 
 import { GoalLiftCard } from './GoalLiftCard'
+import { GoalMilestoneTile } from './GoalMilestoneTile'
+import { GOAL_MILESTONE_SCENARIOS as S } from './goalMilestone-fixture'
 import { Surface } from '../../ui/surface'
 
 const meta: Meta<typeof GoalLiftCard> = {
@@ -114,6 +116,48 @@ export const Widths: Story = {
       {[459, 616, 200].map((width) => (
         <View key={width} style={{ width }}>
           <GoalLiftCard {...args} name={width === 200 ? WRAPPING_NAME : args.name} />
+        </View>
+      ))}
+    </View>
+  ),
+}
+
+/** Four lifts at the wall's 4-up cell width, each carrying the compact meso block. */
+const GRID_LIFTS = [
+  { name: 'BENCH PRESS', scenario: 'onTrack' },
+  { name: 'BACK SQUAT', scenario: 'ahead' },
+  { name: 'DEADLIFT', scenario: 'behind' },
+  { name: 'OVERHEAD PRESS', scenario: 'hitExact' },
+] as const
+
+/**
+ * The per-lift grid with the compact milestone block under each card: hero, the
+ * week/best/goal facts line, and the block's week cells with their tip cards, at
+ * the tile's phone scale.
+ *
+ * A composition preview, not a `GoalLiftCard` prop — whether the block belongs
+ * INSIDE the lift card or beside it is the open question (VW-385 round 3).
+ */
+export const WithCompactMilestone: Story = {
+  parameters: { layout: 'fullscreen' },
+  decorators: [
+    (Story) => (
+      <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-md">
+        <Story />
+      </Surface>
+    ),
+  ],
+  render: (args) => (
+    // `width: max-content` because the meta decorator cages every story in a
+    // 459px cell (the 4-up width) and a wrapping row would stack inside it.
+    <View
+      style={{ flexDirection: 'row', alignItems: 'flex-start', width: 'max-content' }}
+      className="gap-section-sm"
+    >
+      {GRID_LIFTS.map((lift) => (
+        <View key={lift.name} style={{ width: 440 }} className="gap-stack-sm">
+          <GoalLiftCard {...args} name={lift.name} />
+          <GoalMilestoneTile {...S[lift.scenario]} layout="compact" />
         </View>
       ))}
     </View>

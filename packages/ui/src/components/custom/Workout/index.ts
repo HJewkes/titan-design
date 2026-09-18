@@ -159,6 +159,8 @@ export {
   deriveTrajectoryGeometry,
   flattenDeloadWeeks,
   resolveActualWeek,
+  trajectoryWeekScale,
+  type TrajectoryWeekScale,
   type GoalTrajectoryGeometry,
   type GoalTrajectoryGeometryInput,
   type NextTargetCoord,
@@ -191,16 +193,18 @@ export {
 export {
   PrimaryGoalCard,
   goalStatusBadge,
-  FIXED_CHART_WIDTH as PRIMARY_GOAL_FIXED_CHART_WIDTH,
+  markSizeFor as primaryGoalMarkSize,
   type PrimaryGoalCardProps,
-  type PrimaryGoalCardLayout,
   type PrimaryGoalChart,
+  type PrimaryGoalMilestone,
 } from './PrimaryGoalCard'
+export { GoalMilestoneSummary, type GoalMilestoneSummaryProps } from './GoalMilestoneSummary'
 export {
   GoalMilestoneWeekStrip,
   WEEK_OUTCOME_LABEL,
   weekSegments,
   type GoalMilestoneWeekStripProps,
+  type GoalMilestoneWeekAxis,
 } from './GoalMilestoneWeekStrip'
 export {
   deriveMilestoneState,

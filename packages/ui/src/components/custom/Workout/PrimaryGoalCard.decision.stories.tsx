@@ -6,7 +6,7 @@ import { View } from 'react-native'
 import { Surface } from '../../ui/surface'
 import { Typography } from '../Typography'
 import { GoalPriorityIcon, GOAL_PRIORITY_LABEL, type GoalPriority } from './GoalPriorityIcon'
-import { PrimaryGoalCard, type PrimaryGoalCardLayout } from './PrimaryGoalCard'
+import { PrimaryGoalCard } from './PrimaryGoalCard'
 import { PRIMARY_GOAL_SCENARIOS as S, type PrimaryGoalScenario } from './primaryGoal-fixture'
 
 /**
@@ -66,12 +66,12 @@ function PriorityRow() {
   )
 }
 
-function Board({ layout }: { layout: PrimaryGoalCardLayout }) {
+function Board() {
   return (
     <View className="gap-section-sm">
       {STATES.map(({ key, name }) => (
         <Cell key={key} id={key} name={name}>
-          <PrimaryGoalCard {...S[key]} layout={layout} />
+          <PrimaryGoalCard {...S[key]} />
         </Cell>
       ))}
     </View>
@@ -80,34 +80,29 @@ function Board({ layout }: { layout: PrimaryGoalCardLayout }) {
 
 interface DecisionArgs {
   width: WidthChoice
-  layout: PrimaryGoalCardLayout
 }
 
 /**
- * VW-385 unit 1 — the two layouts the human chooses between, at whatever width
- * the canvas is.
+ * VW-385 unit 1 — the folded card, at whatever width the canvas is.
  *
- * **A (`fill`)**: the chart takes the card's whole content width, capped at 340
- * high, with the milestone tile under it. **B (`fixed`)**: the chart caps at 1200
- * and the tile takes the right column, wrapping under the chart when what is left
- * is narrower than a tile.
+ * One card, two zones: the meso target's summary (gap hero, the week/best/goal
+ * facts line, the block's week cells) and, directly under the cells, the chart on
+ * its inset plane. Each cell stands on its own week column — same x as the axis
+ * label below the plot — so a cell reads as the header of that week.
  *
  * Nothing here is a fixed frame: the card is 100% of its container and the chart
  * measures its own box, so `width: fill` follows the Storybook pane. The pinned
  * widths are for judging the same card at 1920, 1440, 1200 and 360.
  *
- * The old header block is gone in both: the week reads off the chart's axis,
- * committed and stretch off its rules, next week off the hollow marker, and the
- * status basis off the pill's tip. Dark only (VW-397).
+ * The old header block is gone: the week reads off the chart's axis and the facts
+ * line, committed and stretch off the chart's rules, next week off the hollow
+ * marker, and the status basis off the pill's tip. Dark only (VW-397).
  */
 const meta: Meta<DecisionArgs> = {
   title: 'Lab/Decisions/Primary Goal Card',
   tags: ['autodocs', 'status:lab'],
   parameters: { layout: 'fullscreen' },
-  argTypes: {
-    width: { control: 'inline-radio', options: WIDTHS },
-    layout: { control: 'inline-radio', options: ['fill', 'fixed'] },
-  },
+  argTypes: { width: { control: 'inline-radio', options: WIDTHS } },
   render: (args) => (
     <Surface
       level="base"
@@ -115,18 +110,14 @@ const meta: Meta<DecisionArgs> = {
       className="p-gutter-sm gap-section-sm"
     >
       <View className="gap-stack-sm">
-        <Typography variant="h6">
-          {args.layout === 'fill'
-            ? 'Layout A — the chart takes the card'
-            : 'Layout B — the chart caps at 1200'}
-        </Typography>
+        <Typography variant="h6">The folded goal card</Typography>
         <Typography variant="body2" color="secondary">
           Hover, focus or press the status pill for its basis, the priority mark for its meaning,
           and the hollow marker for next week&apos;s target.
         </Typography>
         <PriorityRow />
       </View>
-      <Board layout={args.layout} />
+      <Board />
     </Surface>
   ),
 }
@@ -134,20 +125,17 @@ export default meta
 
 type Story = StoryObj<DecisionArgs>
 
-/** Layout A at the canvas width — resize the pane and the cards follow. */
-export const LayoutA: Story = { args: { width: 'fill', layout: 'fill' } }
+/** The canvas width — resize the pane and the cards follow. */
+export const Responsive: Story = { args: { width: 'fill' } }
 
-/** Layout B at the canvas width. */
-export const LayoutB: Story = { args: { width: 'fill', layout: 'fixed' } }
+/** Pinned to the wall's 1920. */
+export const Wall: Story = { args: { width: '1920' } }
 
-/** Layout A pinned to the wall's 1920. */
-export const LayoutAWall: Story = { args: { width: '1920', layout: 'fill' } }
+/** Pinned to 1440. */
+export const Laptop: Story = { args: { width: '1440' } }
 
-/** Layout B pinned to the wall's 1920: 1200 of chart, the tile in what is left. */
-export const LayoutBWall: Story = { args: { width: '1920', layout: 'fixed' } }
+/** Pinned to 1200, the width the wall chart used to be. */
+export const Narrow: Story = { args: { width: '1200' } }
 
-/** Layout A at 360. */
-export const LayoutAPhone: Story = { args: { width: '360', layout: 'fill' } }
-
-/** Layout B at 360, where the cap has nothing left to give the tile a column. */
-export const LayoutBPhone: Story = { args: { width: '360', layout: 'fixed' } }
+/** Pinned to 360: the summary stacks and the chart drops to phone density. */
+export const Phone: Story = { args: { width: '360' } }

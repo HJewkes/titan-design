@@ -2,6 +2,7 @@
 import type { ReactNode } from 'react'
 import { View } from 'react-native'
 
+import { SET_LEVEL_FLAT_BAR } from '../charts/flatBarGeometry'
 import { Pill, type PillTone } from '../../ui/pill'
 import { useSurfaceMode } from '../../ui/surface'
 import { TipTrigger } from '../../ui/tooltip'
@@ -16,6 +17,17 @@ import {
   type GoalWeekOutcome,
 } from './goalMilestone'
 
+/** Where a week's column sits, when the strip has to line up with a chart. */
+export interface GoalMilestoneWeekAxis {
+  /** Centre x of a week's column, in the chart's coordinate space. */
+  x: (week: number) => number
+  /** Column width in px. */
+  span: number
+  /** The plot's edges. The strip sits between them and clips there, as the plot does. */
+  left: number
+  right: number
+}
+
 export interface GoalMilestoneWeekStripProps {
   weekCount: number
   currentWeek?: number
@@ -25,6 +37,12 @@ export interface GoalMilestoneWeekStripProps {
   readingText: (entry: GoalWeekEntry) => string
   /** Height of the current week's cell in px; every other week sits shorter. */
   cellHeight?: number
+  /**
+   * Pins each cell to a chart column instead of sharing the width evenly. The
+   * folded card puts the strip directly above the plot, where a cell is the
+   * header of its week's column and has to sit exactly over it.
+   */
+  axis?: GoalMilestoneWeekAxis
 }
 
 type Palette = ReturnType<typeof getSemanticColors>
@@ -115,6 +133,56 @@ function WeekCellTrigger({
   )
 }
 
+/**
+ * One column-aligned cell. Same paint as a `SegmentedBar` slot — fill, outline,
+ * ring, short-for-a-past-week — laid out by absolute x rather than by flex,
+ * because a flex gap drifts a cell off its column by half a gap per step.
+ */
+function AlignedCell({
+  cell,
+  segment,
+  axis,
+  cellHeight,
+  readingText,
+}: {
+  cell: GoalWeekCell
+  segment: SegmentedBarSegment
+  axis: GoalMilestoneWeekAxis
+  cellHeight: number
+  readingText: (entry: GoalWeekEntry) => string
+}) {
+  const width = Math.max(2, axis.span - SET_LEVEL_FLAT_BAR.gap)
+  const height = cellHeight * (segment.heightFraction ?? 1)
+  return (
+    <View
+      style={{
+        position: 'absolute',
+        // Chart coordinates, less the strip's own offset into them.
+        left: axis.x(cell.week) - axis.left - width / 2,
+        bottom: 0,
+        width,
+        height,
+      }}
+      testID={`goal-milestone-week-cell-${cell.week}`}
+    >
+      <WeekCellTrigger cell={cell} readingText={readingText}>
+        <View
+          style={{
+            width: '100%',
+            height: '100%',
+            borderRadius: SET_LEVEL_FLAT_BAR.radius,
+            backgroundColor: segment.outline ? 'transparent' : segment.color,
+            borderWidth: segment.outline || segment.ringColor ? 1 : undefined,
+            borderColor: segment.ringColor ?? segment.color,
+          }}
+          accessibilityElementsHidden
+          testID={`goal-milestone-week-fill-${cell.week}`}
+        />
+      </WeekCellTrigger>
+    </View>
+  )
+}
+
 function stripSummary(cells: GoalWeekCell[]): string {
   const current = cells.find((c) => c.phase === 'current')
   const now = current ? `Week ${current.week} of ${cells.length}` : `${cells.length} weeks`
@@ -137,9 +205,40 @@ export function GoalMilestoneWeekStrip({
   weeks,
   readingText,
   cellHeight = 8,
+  axis,
 }: GoalMilestoneWeekStripProps) {
   const t = getSemanticColors(useSurfaceMode())
   const cells = weekStripCells(weekCount, currentWeek, weeks)
+  const segments = weekSegments(cells, t)
+  if (axis) {
+    return (
+      <View
+        role="group"
+        aria-label={stripSummary(cells)}
+        testID="goal-milestone-week-strip"
+        // Clipped to the plot, so the first and last columns are trimmed at the
+        // plane's edge exactly as the chart trims its own deload columns.
+        style={{
+          marginLeft: axis.left,
+          width: axis.right - axis.left,
+          height: cellHeight,
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        {cells.map((cell, i) => (
+          <AlignedCell
+            key={cell.week}
+            cell={cell}
+            segment={segments[i]}
+            axis={axis}
+            cellHeight={cellHeight}
+            readingText={readingText}
+          />
+        ))}
+      </View>
+    )
+  }
   return (
     <View
       role="group"
@@ -149,7 +248,7 @@ export function GoalMilestoneWeekStrip({
     >
       <SegmentedBar
         height={cellHeight}
-        segments={weekSegments(cells, t)}
+        segments={segments}
         segmentTestID={(_seg, i) => `goal-milestone-week-fill-${i + 1}`}
         renderSegment={(slot, _seg, i) => (
           <WeekCellTrigger cell={cells[i]} readingText={readingText}>
