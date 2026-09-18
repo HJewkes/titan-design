@@ -8,7 +8,9 @@ Cross-platform React + React Native design system built on Gluestack UI, NativeW
 - **Monorepo**: pnpm workspaces + Turborepo
 - **Node**: Use `pnpm` (v9.15.0) for all package management
 - **Build**: `pnpm build` (tsup, outputs ESM + CJS + DTS to `dist/`)
-- **Test**: `pnpm test` (Vitest + Testing Library + jest-axe)
+- **Test**: `pnpm test` (Vitest + Testing Library + jest-axe). Inside `packages/ui` the script is
+  bare `vitest`, which watches; for one run use `pnpm exec vitest run [path]` there, or
+  `pnpm test -- -- --run` from the root (see _CI and scripts_)
 - **Storybook**: `pnpm storybook` (Storybook 10, locked to port 6006 — see below)
 - **Lint**: `pnpm lint` (ESLint 9)
 
@@ -109,7 +111,9 @@ src/components/ui/{component-name}/
   index.ts                    # Barrel export
 ```
 
-Custom components go in `src/components/custom/` with PascalCase directories.
+Custom components go in `src/components/custom/` with PascalCase directories. Add the new export to
+the family barrel (`src/components/ui/index.ts` or `src/components/custom/index.ts`) as well as the
+component's own `index.ts`.
 
 ### Props Conventions
 
@@ -154,7 +158,8 @@ describe("ComponentName", () => {
 
 One `Default` story per component, driven by `args` and `argTypes`. Variants, colours, sizes and
 states are controls on that story, not separate `AllVariants` / `AllColors` / `AllSizes` stories
-(roadmap E4, `packages/ui/docs/library-roadmap.md`). From
+(roadmap E4, `packages/ui/docs/library-roadmap.md`). Many older `ui/*` stories (Button, Input,
+Chip, …) still export `AllVariants`-style stories until E4 thins them; do not copy them. From
 `src/components/shell/workout/SessionStatePill.stories.tsx`:
 
 ```tsx
@@ -241,6 +246,12 @@ Four files must be updated in order:
 3. `global.css` - Add CSS custom property (both `:root` and `.light`)
 4. `tailwind.config.js` - Add Tailwind color reference
 
+Colour properties are named `--color-{category}-{name}`, and the Tailwind entry is
+`'var(--color-{category}-{name})'`. `theme/config.ts` lists every colour property by hand in
+`darkThemeCSSVars` and `lightThemeCSSVars`; `config.completeness.test.ts` fails until the new
+property is added there too. If `Foundations/Color/Palettes` lists the category's swatches by hand,
+add the new one.
+
 **Spacing and sizing tokens skip step 3's hand-editing.** Their numbers live once, in `space` /
 `size` in `semantic.ts`; `tokens/spacing-vars.ts` derives the `--space-*` / `--size-*` properties,
 `theme/config.ts` spreads them into both theme maps, and `tailwind.config.js` references the property
@@ -256,6 +267,22 @@ Levels -2 to +5 with calculated surface colors and shadows:
 - **0**: Base level
 - **1-3**: Cards, panels
 - **4-5**: Modals, overlays
+
+## CI and scripts
+
+`.github/workflows/ci.yml` runs one job on Node 20 and 22: install, `pnpm lint`, `pnpm type-check`,
+`pnpm format:check`, the arch-graph freshness test, `pnpm build`, then
+`pnpm test -- -- --run --coverage`. Every step blocks; none is `continue-on-error`.
+
+- **Argument passthrough.** Root scripts are `turbo run <task>`, so arguments need a second `--`:
+  the first passes through pnpm, the second through Turbo (`pnpm test -- -- --run --coverage`).
+- **Registering a script CI runs.** Add it to the package's `package.json`, add a
+  `turbo run <task>` passthrough to the root `package.json`, and register the task in `turbo.json`.
+  Without the `turbo.json` entry, the root script fails. `arch:graph` and `review` are deliberate
+  exceptions: both call `node` directly and CI never runs them.
+- **Coverage thresholds** live in `packages/ui/vitest.config.ts` (80% across the board, scoped to
+  `src/components/**`). Set them from measured coverage (`pnpm exec vitest run --coverage` in
+  `packages/ui`), not from a target, and raise them as coverage grows.
 
 ## Key Files
 
