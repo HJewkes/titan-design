@@ -44,9 +44,9 @@ export interface PinnedLiveStripProps {
   /** Performed reps of the current set (in `rest`, of the set just finished), zones from analytics. */
   reps: readonly LiveStripRep[]
   targetReps: number
-  /** `zone` (default) colours each bar by its rep's zone; `loss` by its loss from the set's best, as the live hero does. */
+  /** `loss` (default) colours each bar by its loss from the set's best, as the live hero does; `zone` by the rep's zone. */
   barColor?: LiveStripBarColor
-  /** `loss` only: loss (%) where bars turn yellow, orange and red. Default 10/20/30, as the hero. */
+  /** `loss` only: loss (%) where bars turn yellow, orange and red. Pass the hero's thresholds so both agree. Default 10/20/30, as the hero. */
   lossThresholds?: VelocityLossThresholds
   /** Analytics says the set has fatigued past its cut-off. Shown by the strip's edge and wash, never text. */
   isFatigued?: boolean
@@ -275,7 +275,7 @@ function Velocity({
 function RepBars(props: Parts & { fill?: boolean }) {
   const { reps, targetReps, scale, fill, barColor, lossThresholds } = props
   const slots: SetSlot[] = reps.map((rep) => ({ kind: 'rep', value: rep.velocity }))
-  // Colour is looked up by rep, never derived from the value: the zone is analytics' call.
+  // Colour is looked up by rep index, so zone mode uses analytics' zone and never the value.
   const colorFor = (_value: number, repIndex: number) =>
     resolveColor(liveStripRepToken(reps, repIndex, barColor, lossThresholds))
   return (
@@ -432,8 +432,8 @@ function accessibleName(props: PinnedLiveStripProps): string {
 /**
  * Shell · PinnedLiveStrip (VW-429): the row pinned atop every non-live page while a set or rest
  * runs, so the lifter never loses the live set. The whole strip is the link back to live.
- * Zone colour is per-rep analytics data; fatigue is carried by the strip's edge and wash, never by
- * text, so the exercise title keeps its full width in every state.
+ * Bars colour by loss from the set's best like the live hero (or by per-rep zone); fatigue is carried
+ * by the strip's edge and wash, never by text, so the exercise title keeps its full width in every state.
  */
 export function PinnedLiveStrip(props: PinnedLiveStripProps) {
   const { state, isFatigued = false, onPress, layout, className } = props

@@ -7,6 +7,23 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- `PinnedLiveStrip` now colours bars by loss from the set's best by default
+  (`barColor="loss"`), the same as the live hero (VW-429 colour round). The
+  0.19.0 behaviour, per-rep zone colour, is `barColor="zone"`. The last-rep
+  velocity follows the same colour.
+- `VelocityLossBands`: when the amber and red decision lines sit closer than a
+  label height, only the red (stop) line is labelled.
+
+### Added
+
+- `lossThresholds` (`[yellow, orange, red]` loss %, default `[10, 20, 30]`) on
+  `VelocityStrip`, `VelocityHero`, `LiveFatiguePanel` (`velocity.lossThresholds`)
+  and `PinnedLiveStrip`. It moves the bar colour bands and the hero's amber and
+  red decision lines. Pass the same thresholds to the strip and the hero and
+  their bars match. titan does not derive them; the caller does.
+
 ## 0.19.0
 
 ### Added

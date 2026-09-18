@@ -14,7 +14,7 @@ type ColorToken = Parameters<typeof resolveColor>[0]
  */
 export type LiveStripZone = 'grinding' | 'maximalStrength' | 'strengthSpeed' | 'power' | 'speed'
 
-/** One performed rep: its mean concentric velocity (m/s) and the zone analytics assigned it. */
+/** One performed rep: its mean concentric velocity (m/s) and the zone analytics assigned it (used by `barColor="zone"`). */
 export interface LiveStripRep {
   velocity: number
   zone: LiveStripZone
@@ -47,7 +47,7 @@ const LIVE_STRIP_LOSS_TOKEN: readonly ColorToken[] = [
 export function liveStripRepToken(
   reps: readonly LiveStripRep[],
   index: number,
-  barColor: LiveStripBarColor = 'zone',
+  barColor: LiveStripBarColor = 'loss',
   lossThresholds?: VelocityLossThresholds
 ): ColorToken {
   const rep = reps[index]

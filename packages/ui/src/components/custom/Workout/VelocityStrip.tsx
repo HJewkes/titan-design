@@ -588,7 +588,9 @@ export function VelocityLossBands({
   // The label sits ~90% along the threshold, with the dashed line breaking around it (a long segment
   // before + a short stub after) — near the quiet right end where a declining set has room. Below the
   // label threshold the line spans full width with no text.
-  const threshold = (v: number, color: string, label: string) => (
+  // Lines closer than one label height would overprint, so only the stop line keeps its label.
+  const amberLabelFits = yOf(vl20) - yOf(vl30) >= vlFont
+  const threshold = (v: number, color: string, label: string | null) => (
     <View
       style={{
         position: 'absolute',
@@ -604,7 +606,7 @@ export function VelocityLossBands({
       }}
     >
       <View style={{ flex: 9, borderTopWidth: 1, borderStyle: 'dashed', borderColor: color }} />
-      {showLabels ? (
+      {showLabels && label ? (
         <>
           <Text
             className="mx-1.5"
@@ -633,7 +635,11 @@ export function VelocityLossBands({
       {band(0, vl30, alpha(vl['status-error'], 0.09))}
       {hasAmber && band(vl30, vl20, alpha(vl['status-warning'], 0.08))}
       {hasAmber &&
-        threshold(vl20, alpha(vl['status-warning'], 0.75), `VL ${Math.round(amberPct)}%`)}
+        threshold(
+          vl20,
+          alpha(vl['status-warning'], 0.75),
+          amberLabelFits ? `VL ${Math.round(amberPct)}%` : null
+        )}
       {threshold(vl30, alpha(vl['status-error'], 0.75), `VL ${Math.round(redPct)}%`)}
     </View>
   )
