@@ -7,6 +7,29 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## 0.19.0
+
+### Added
+
+- `PinnedLiveStrip` (`shell/workout`): a one-row strip for every page that is not
+  the live page, shown while a set or a rest timer runs (VW-429). `state` is
+  `set`, `rest` or `idle` (`idle` renders nothing). The set state shows the rep
+  count against the target, the last rep's mean velocity and one bar per rep;
+  the rest state shows the seconds left in the same slot, so nothing moves
+  between a set and its rest. Bar colour comes from the caller's per-rep zone id
+  (`LiveStripRep.zone`), never from the velocity. `isFatigued` turns the edge red
+  and adds a wash; it never adds text. The layout is `wall` (72px row) or
+  `phone`, measured from the strip's own width (`PINNED_LIVE_STRIP_PHONE_MAX`)
+  unless `layout` forces one. Rests of 100 to 999 seconds step the digits down
+  once and centre them (`liveStripRestReadout`, `liveStripRestType`); a longer
+  rest holds at "999s". Every choice went through titan-review rounds with the
+  human; the rejected variants and their measured numbers are in `REJECTED.md`.
+- `ChevronRightIcon`.
+- `SetBarChart`: `colorFor` receives the rep index as a second argument, so a
+  caller can colour a bar from data it holds per rep. Existing one-argument
+  callbacks are unaffected.
+- `Progress`: `accessibilityLabel` names the `progressbar` role.
+
 ## 0.18.1
 
 ### Fixed
