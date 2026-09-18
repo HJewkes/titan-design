@@ -137,17 +137,24 @@ describe('PinnedLiveStrip', () => {
       expect(screen.queryByText('Back to live')).toBeNull()
     })
 
-    it('wraps a long title to two lines and puts the set count and chevron after it', () => {
+    it.each([
+      ['short', S.set],
+      ['long', S.longName],
+    ] as const)('keeps "Set 2/3" and the chevron pinned after a %s title', (_, scenario) => {
+      render(<PinnedLiveStrip {...scenario} layout="phone" />)
+      const row = screen.getByTestId('live-strip-title-row')
+      const meta = screen.getByTestId('live-strip-meta')
+      expect(row.lastElementChild).toBe(meta)
+      expect(row.children).toHaveLength(2)
+      expect(meta).toHaveTextContent('Set 2/3')
+      expect(meta.querySelector('svg')).toBeInTheDocument()
+    })
+
+    it('wraps a long title to two lines instead of truncating it at one', () => {
       render(<PinnedLiveStrip {...S.longName} layout="phone" />)
       const title = screen.getByTestId('live-strip-title')
       expect(title).toHaveTextContent('Single-Arm Half-Kneeling Cable Row')
       expect(title).toHaveStyle({ WebkitLineClamp: '2' })
-      const row = screen.getByTestId('live-strip-title-row')
-      const meta = screen.getByTestId('live-strip-meta')
-      // jsdom has no layout; the drop to the next line is shot in Lab/Decisions LongName at 360.
-      expect([...row.children].indexOf(meta)).toBe(1)
-      expect(meta).toHaveTextContent('Set 2/3')
-      expect(meta.querySelector('svg')).toBeInTheDocument()
     })
 
     it('shows the next set during rest', () => {
@@ -155,6 +162,19 @@ describe('PinnedLiveStrip', () => {
       expect(screen.getByText('Next 3/3')).toBeInTheDocument()
       expect(screen.getByTestId('live-strip-hero')).toHaveTextContent('0:47')
     })
+  })
+
+  describe('hero slot', () => {
+    it.each(['clock', 'smallClock', 'seconds'] as const)(
+      'keeps one width from set to rest (%s), so nothing beside it moves',
+      (restNumeral) => {
+        const set = render(<PinnedLiveStrip {...S.set} layout="wall" restNumeral={restNumeral} />)
+        const setWidth = screen.getByTestId('live-strip-hero').style.width
+        set.unmount()
+        render(<PinnedLiveStrip {...S.rest} layout="wall" restNumeral={restNumeral} />)
+        expect(screen.getByTestId('live-strip-hero').style.width).toBe(setWidth)
+      }
+    )
   })
 
   it('has no accessibility violations', async () => {

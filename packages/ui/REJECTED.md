@@ -24,6 +24,17 @@ that someone can tell whether a future change invalidates the reasoning.
 
 ---
 
+## PinnedLiveStrip phone title rows "drop under" and "chevron only" — rejected 2026-09-18
+
+**Tried:** three phone title rows for a long exercise name (VW-429 round 4). **a**: the title
+wraps and "Set 2/3" + chevron drop under it when they cannot share its line. **b**: only the
+chevron stays top right; the set count is hidden and the title wraps beside it.
+**Chosen:** **c**: "Set 2/3" + chevron stay pinned top right for every name, and the title wraps to
+at most two lines in the width left over.
+**Why:** the human picked c ("c. set count and chevron pinned top right"), keeping the set count
+visible without moving it between short and long names. a moved the set count depending on the
+name's length; b lost the set count on the phone entirely.
+
 ## PinnedLiveStrip 88px wall row and red fatigue tag — rejected 2026-09-18
 
 **Tried:** VW-429 round 2 offered `PinnedLiveStrip` at two wall heights: the 88px row from the

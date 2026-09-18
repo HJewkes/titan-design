@@ -3,21 +3,26 @@ import { View } from 'react-native'
 import { Surface } from '../../ui/surface'
 import { Typography } from '../../custom/Typography'
 import { WorkoutShell } from './WorkoutShell'
-import { PinnedLiveStrip, type PinnedLiveStripPhoneMeta } from './PinnedLiveStrip'
+import { PinnedLiveStrip, type PinnedLiveStripRestNumeral } from './PinnedLiveStrip'
 import { LIVE_STRIP_SCENARIOS as S, type LiveStripScenario } from './pinnedLiveStrip-fixture'
 
+type DecisionScenario = LiveStripScenario | 'pair' | 'pairLong'
+
 interface DecisionArgs {
-  scenario: LiveStripScenario
-  phoneMeta?: PinnedLiveStripPhoneMeta
+  scenario: DecisionScenario
+  restNumeral?: PinnedLiveStripRestNumeral
 }
 
-const SHELL_STATE = {
+const SHELL_STATE: Record<DecisionScenario, 'live' | 'rest' | 'idle'> = {
   set: 'live',
   fatigue: 'live',
   longName: 'live',
   rest: 'rest',
+  restLong: 'rest',
+  pair: 'rest',
+  pairLong: 'rest',
   idle: 'idle',
-} as const
+}
 
 /** A neutral stand-in for whichever non-live page the lifter navigated to. */
 function PageBody() {
@@ -40,14 +45,29 @@ function PageBody() {
   )
 }
 
+/** The set strip above its rest strip, so a shift between the two is visible. */
+function Strips({ scenario, restNumeral }: DecisionArgs) {
+  if (scenario !== 'pair' && scenario !== 'pairLong') {
+    return <PinnedLiveStrip {...S[scenario]} restNumeral={restNumeral} />
+  }
+  const rest = scenario === 'pair' ? S.rest : S.restLong
+  return (
+    <View className="gap-stack-md" testID="live-strip-pair">
+      <PinnedLiveStrip {...S.set} restNumeral={restNumeral} />
+      <PinnedLiveStrip {...rest} restNumeral={restNumeral} />
+    </View>
+  )
+}
+
 /**
  * VW-429: the pinned live strip, CHOSEN design, in the wall shell.
  *
- * Round 1 (mocks) chose variant B and dropped the velocity-loss text. Round 2 CHOSE the 72px
- * trimmed wall row; the 88px row is NOT CHOSEN and deleted (REJECTED.md). Fatigue keeps the red
- * edge and wash; the tag stays the live tag. The countdown takes the rep count's fixed slot.
- * Round 4 compares three phone title rows (`phoneMeta`): flow, chevron-only, and pinned. Canvas width drives the layout (below 640px the strip stacks), so
- * shoot at 1920 and 360. Dark only (VW-397).
+ * CHOSEN so far: the 72px wall row (88px NOT CHOSEN, round 2); fatigue as red edge and wash only;
+ * the rest line running into the left edge; on a phone "Set 2/3" and the chevron stay pinned top
+ * right while the title wraps (round 4; "drop under" and "chevron only" NOT CHOSEN, REJECTED.md).
+ * Round 5 compares rest numerals as set/rest PAIRS (`restNumeral`): clock, smallClock, seconds.
+ * Canvas width drives the layout (below 640px the strip stacks), so shoot at 1920 and 360.
+ * Dark only (VW-397).
  */
 const meta: Meta<DecisionArgs> = {
   title: 'Lab/Decisions/Pinned Live Strip',
@@ -55,20 +75,20 @@ const meta: Meta<DecisionArgs> = {
   parameters: { layout: 'fullscreen' },
   argTypes: {
     scenario: {
-      control: 'inline-radio',
-      options: ['set', 'rest', 'fatigue', 'idle', 'longName'],
+      control: 'select',
+      options: ['set', 'rest', 'restLong', 'fatigue', 'idle', 'longName', 'pair', 'pairLong'],
     },
-    phoneMeta: { control: 'inline-radio', options: ['flow', 'chevron', 'pinned'] },
+    restNumeral: { control: 'inline-radio', options: ['clock', 'smallClock', 'seconds'] },
   },
-  render: ({ scenario, phoneMeta }) => (
+  render: (args) => (
     <WorkoutShell
       activeKey="program"
-      liveKey={scenario === 'idle' ? null : 'live'}
-      state={SHELL_STATE[scenario]}
+      liveKey={args.scenario === 'idle' ? null : 'live'}
+      state={SHELL_STATE[args.scenario]}
       subtitle="planning"
     >
       <View className="flex-1 gap-section-sm p-gutter-sm" testID="page-content">
-        <PinnedLiveStrip {...S[scenario]} phoneMeta={phoneMeta} />
+        <Strips {...args} />
         <PageBody />
       </View>
     </WorkoutShell>
@@ -90,17 +110,17 @@ export const Fatigue: Story = { args: { scenario: 'fatigue' } }
 /** Idle: no strip; the page starts at the top. */
 export const Idle: Story = { args: { scenario: 'idle' } }
 
-/** Option a (flow): the long title wraps and "Set 2/3" + chevron drop under it. */
-export const LongName: Story = { args: { scenario: 'longName', phoneMeta: 'flow' } }
+/** A long exercise name: on a phone it wraps beside the pinned "Set 2/3" and chevron. */
+export const LongName: Story = { args: { scenario: 'longName' } }
 
-/** Option b (chevron): the chevron stays top right, the set count is hidden, the title wraps. */
-export const LongNameChevron: Story = { args: { scenario: 'longName', phoneMeta: 'chevron' } }
+/** r1: m:ss at the hero size in a slot that always fits "12/12" (the round-4 build). */
+export const RestPairClock: Story = { args: { scenario: 'pair', restNumeral: 'clock' } }
 
-/** Option c (pinned): "Set 2/3" + chevron stay top right, the title wraps beside them. */
-export const LongNamePinned: Story = { args: { scenario: 'longName', phoneMeta: 'pinned' } }
+/** r2: m:ss at the velocity size; the slot fits the set's rep count and the smaller clock. */
+export const RestPairSmallClock: Story = { args: { scenario: 'pair', restNumeral: 'smallClock' } }
 
-/** Option b with a short name. */
-export const ShortNameChevron: Story = { args: { scenario: 'set', phoneMeta: 'chevron' } }
+/** r3: seconds only ("47s") at the hero size; the slot fits two-digit seconds. */
+export const RestPairSeconds: Story = { args: { scenario: 'pair', restNumeral: 'seconds' } }
 
-/** Option c with a short name. */
-export const ShortNamePinned: Story = { args: { scenario: 'set', phoneMeta: 'pinned' } }
+/** r3 above 99s: "150s" needs a three-digit slot, so the velocity and bars shift at set to rest. */
+export const RestPairSecondsLong: Story = { args: { scenario: 'pairLong', restNumeral: 'seconds' } }

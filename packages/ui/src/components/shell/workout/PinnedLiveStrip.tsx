@@ -25,7 +25,7 @@ const WALL_HEIGHT = 72
 const PHONE_MIN_HEIGHT = 88
 
 export type PinnedLiveStripLayout = 'wall' | 'phone'
-export type PinnedLiveStripPhoneMeta = 'flow' | 'chevron' | 'pinned'
+export type PinnedLiveStripRestNumeral = 'clock' | 'smallClock' | 'seconds'
 
 export interface PinnedLiveStripProps {
   /** `set` while reps are being logged, `rest` while the rest timer runs, `idle` renders nothing. */
@@ -49,11 +49,11 @@ export interface PinnedLiveStripProps {
   /** Force a layout. Omitted: measured from the strip's own width. */
   layout?: PinnedLiveStripLayout
   /**
-   * Phone title row, under review (VW-429 round 4): `flow` drops the set count under a title too
-   * long to share its line; `chevron` pins only the chevron and hides the set count; `pinned` pins
-   * set count and chevron. The unchosen values are removed after the pick.
+   * Rest countdown treatment, under review (VW-429 round 5): `clock` m:ss at the hero size in a slot
+   * that always fits "12/12"; `smallClock` m:ss at the velocity size; `seconds` "47s" at the hero
+   * size. The last two size the slot by the set's target digits. Unchosen values go after the pick.
    */
-  phoneMeta?: PinnedLiveStripPhoneMeta
+  restNumeral?: PinnedLiveStripRestNumeral
   className?: string
 }
 
@@ -65,8 +65,15 @@ interface Scale {
   sub: string
   hero: string
   heroUnit: string
-  /** Fits both "12/12" and "0:00" at the hero size, so set and rest share one slot. */
-  heroSlot: number
+  /** Slot widths (px), measured in the heading face: see `heroSlotWidth`. */
+  slot: {
+    clock: number
+    smallClock: number
+    seconds: number
+    longSeconds: number
+    oneDigitReps: number
+    twoDigitReps: number
+  }
   velocity: string
   barHeight: number
   barPitch: number
@@ -79,7 +86,14 @@ const SCALES: Record<PinnedLiveStripLayout, Scale> = {
     sub: 'text-base',
     hero: 'text-4xl',
     heroUnit: 'text-xl',
-    heroSlot: 108,
+    slot: {
+      clock: 108,
+      smallClock: 80,
+      seconds: 75,
+      longSeconds: 104,
+      oneDigitReps: 56,
+      twoDigitReps: 101,
+    },
     velocity: 'text-3xl',
     barHeight: 40,
     barPitch: 24,
@@ -89,7 +103,14 @@ const SCALES: Record<PinnedLiveStripLayout, Scale> = {
     sub: 'text-sm',
     hero: 'text-3xl',
     heroUnit: 'text-lg',
-    heroSlot: 82,
+    slot: {
+      clock: 82,
+      smallClock: 72,
+      seconds: 57,
+      longSeconds: 79,
+      oneDigitReps: 43,
+      twoDigitReps: 76,
+    },
     velocity: 'text-2xl',
     barHeight: 26,
     barPitch: 12,
@@ -175,16 +196,40 @@ const LAST_BASELINE = Platform.select<ViewStyle>({
   default: { alignItems: 'flex-end' },
 })
 
-function HeroNumeral({ state, reps, targetReps, restRemainingMs = 0, scale }: Parts) {
+// One width for the whole set and its rest, so switching between them never moves anything.
+function heroSlotWidth(props: Parts): number {
+  const { reps, targetReps, scale, restNumeral = 'clock', restDurationMs = 0 } = props
+  if (restNumeral === 'clock') return scale.slot.clock
+  const twoDigits = Math.max(reps.length, targetReps) >= 10
+  const repSlot = twoDigits ? scale.slot.twoDigitReps : scale.slot.oneDigitReps
+  // A rest of 100s or more needs three digits; during the set its length is not known yet.
+  const longRest = restNumeral === 'seconds' && restDurationMs >= 100_000
+  return Math.max(repSlot, longRest ? scale.slot.longSeconds : scale.slot[restNumeral])
+}
+
+function Countdown({ restRemainingMs = 0, restNumeral = 'clock', scale }: Parts) {
+  if (restNumeral !== 'seconds') return <>{formatDuration(restRemainingMs)}</>
+  const seconds = Math.max(0, Math.ceil(restRemainingMs / 1000))
+  return (
+    <>
+      {seconds}
+      <Text className={cn(UNIT, scale.heroUnit)}>s</Text>
+    </>
+  )
+}
+
+function HeroNumeral(props: Parts) {
+  const { state, reps, targetReps, scale, restNumeral = 'clock' } = props
   const isRest = state === 'rest'
-  // A fixed slot: switching set to rest must not move the velocity or the bars.
+  const size = isRest && restNumeral === 'smallClock' ? scale.velocity : scale.hero
   return (
     <Text
       testID="live-strip-hero"
-      className={cn(NUMERAL, scale.hero)}
-      style={[TABULAR, { width: scale.heroSlot }]}
+      numberOfLines={1}
+      className={cn(NUMERAL, size)}
+      style={[TABULAR, { width: heroSlotWidth(props) }]}
     >
-      {isRest ? formatDuration(restRemainingMs) : reps.length}
+      {isRest ? <Countdown {...props} /> : reps.length}
       {isRest ? null : <Text className={cn(UNIT, scale.heroUnit)}>/{targetReps}</Text>}
     </Text>
   )
@@ -272,35 +317,20 @@ function WallRow(props: Parts) {
   )
 }
 
-function PhoneMeta({ props, scale, showSet }: { props: Parts; scale: Scale; showSet: boolean }) {
+function PhoneTitleRow(props: Parts) {
+  const { exerciseName, scale } = props
+  // The set count and chevron stay pinned top right; the title wraps in the width left over.
   return (
-    <View testID="live-strip-meta" className="shrink-0 flex-row items-center gap-inline-sm">
-      {showSet ? (
+    <View testID="live-strip-title-row" className="flex-row items-start gap-inline-lg">
+      <View className="flex-1">
+        <Title name={exerciseName} scale={scale} lines={2} />
+      </View>
+      <View testID="live-strip-meta" className="shrink-0 flex-row items-center gap-inline-sm">
         <Text className={cn('font-body text-text-secondary', scale.sub)}>
           {setLine(props, true)}
         </Text>
-      ) : null}
-      <ChevronRightIcon size={20} color={resolveColor('text-primary')} />
-    </View>
-  )
-}
-
-function PhoneTitleRow(props: Parts) {
-  const { exerciseName, scale, phoneMeta = 'flow' } = props
-  const isFlow = phoneMeta === 'flow'
-  // flow wraps the meta group under the title only when both cannot share the line.
-  return (
-    <View
-      testID="live-strip-title-row"
-      className={cn(
-        'flex-row gap-x-inline-lg',
-        isFlow ? 'flex-wrap items-baseline' : 'items-start'
-      )}
-    >
-      <View className={isFlow ? 'shrink grow' : 'flex-1'}>
-        <Title name={exerciseName} scale={scale} lines={2} />
+        <ChevronRightIcon size={20} color={resolveColor('text-primary')} />
       </View>
-      <PhoneMeta props={props} scale={scale} showSet={phoneMeta !== 'chevron'} />
     </View>
   )
 }
