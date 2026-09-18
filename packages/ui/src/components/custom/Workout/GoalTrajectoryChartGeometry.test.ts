@@ -14,6 +14,8 @@ import {
   bandColumns,
   BAND_COLUMN_STEP,
   cappedTicks,
+  trajectoryWeekScale,
+  weekInset,
   type GoalExpectedPoint,
   type GoalTrajectoryWeek,
 } from './GoalTrajectoryChartGeometry'
@@ -232,8 +234,10 @@ describe('deriveTrajectoryGeometry', () => {
       })
       expect(g.boundaries.map((b) => b.weekIndex)).toEqual([1, 4, 6])
       g.boundaries.forEach((b) => expect(b.x).toBeCloseTo(g.toX(b.weekIndex)))
-      expect(g.boundaries[0].x).toBeCloseTo(g.plot.left + WEEK_INSET)
-      expect(g.boundaries[2].x).toBeCloseTo(g.plot.right - WEEK_INSET)
+      // Half a column in from each edge, so week one's column is whole.
+      const inset = weekInset(g.plot.right - g.plot.left, 6)
+      expect(g.boundaries[0].x).toBeCloseTo(g.plot.left + inset)
+      expect(g.boundaries[2].x).toBeCloseTo(g.plot.right - inset)
     })
 
     it('puts the committed rule below the stretch rule for a gain goal', () => {
@@ -726,6 +730,20 @@ describe('next-target marker', () => {
       ...base,
       nextTarget: { weekIndex: 8, value: 190, label: 'next week: 190 x 8' },
     })
-    expect(g.nextTarget?.x).toBeCloseTo(g.plot.right - WEEK_INSET, 6)
+    // Eight columns now, and the marker owns the last one.
+    const inset = weekInset(g.plot.right - g.plot.left, 8)
+    expect(g.nextTarget?.x).toBeCloseTo(g.plot.right - inset, 6)
+  })
+
+  it('leaves the first and last column whole inside the plot', () => {
+    const g = deriveTrajectoryGeometry(base)
+    const scale = trajectoryWeekScale({
+      expected: gainExpected,
+      weeks,
+      actuals: base.actuals,
+      width: base.width,
+    })
+    expect(scale.toX(1) - scale.span / 2).toBeCloseTo(g.plot.left, 6)
+    expect(scale.toX(6) + scale.span / 2).toBeCloseTo(g.plot.right, 6)
   })
 })

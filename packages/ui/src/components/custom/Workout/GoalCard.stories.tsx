@@ -3,26 +3,29 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 
 import { Surface } from '../../ui/surface'
-import { PrimaryGoalCard } from './PrimaryGoalCard'
+import { GoalCard } from './GoalCard'
 import { PRIMARY_GOAL_SCENARIOS as S } from './primaryGoal-fixture'
 
-const meta: Meta<typeof PrimaryGoalCard> = {
-  title: 'Custom/Workout/Goals/PrimaryGoalCard',
-  component: PrimaryGoalCard,
+const meta: Meta<typeof GoalCard> = {
+  title: 'Custom/Workout/Goals/GoalCard',
+  component: GoalCard,
   tags: ['autodocs', 'status:candidate'],
   parameters: {
     layout: 'fullscreen',
     docs: {
       description: {
         component:
-          'The lead priority at the top of the `#/goals` wall, as one card: the meso ' +
-          "target folded in above the chart, its week cells standing on the chart's own " +
-          'week columns. Composes `Card`, `GoalPriorityIcon`, `Pill` + `TipTrigger`, ' +
-          '`PrBadge`, `GoalMilestoneSummary` and `GoalTrajectoryChart`.',
+          "One goal at card scale, in two sizes. `full` is the wall's lead card — the " +
+          "meso target's summary folded over a trajectory chart, its week cells standing " +
+          "on the chart's own week columns. `compact` is a cell in the per-lift grid: the " +
+          'same title row and summary over a sparkline (see `GoalLiftCard`, the preset). ' +
+          'Composes `Card`, `GoalPriorityIcon`, `Pill` + `TipTrigger`, `PrBadge`, ' +
+          '`GoalMilestoneSummary`, `GoalTrajectoryChart` and `Sparkline`.',
       },
     },
   },
   argTypes: {
+    size: { control: 'inline-radio', options: ['full', 'compact'] },
     priority: { control: 'inline-radio', options: ['specialize', 'maintain', 'deprioritize'] },
     chartWidth: {
       control: { type: 'range', min: 320, max: 1800, step: 20 },
@@ -43,7 +46,7 @@ const meta: Meta<typeof PrimaryGoalCard> = {
 }
 export default meta
 
-type Story = StoryObj<typeof PrimaryGoalCard>
+type Story = StoryObj<typeof GoalCard>
 
 /** The wall's own calibrating payload, captured from the SPA on 2026-09-17. */
 export const Calibrating: Story = { args: { ...S.calibrating } }
@@ -74,6 +77,40 @@ export const Phone: Story = {
         className="p-gutter-sm"
       >
         <Story />
+      </Surface>
+    ),
+  ],
+}
+
+/**
+ * `compact`: the same title row and summary over the sparkline, which is what a
+ * per-lift grid cell renders. `GoalLiftCard` is this size under the name the SPA
+ * already calls it by.
+ */
+export const Compact: Story = {
+  args: {
+    ...S.onTrack,
+    size: 'compact',
+    goal: undefined,
+    trend: {
+      committed: 185,
+      stretch: 195,
+      goalWeek: 6,
+      unit: 'lb',
+      actuals: [
+        { weekIndex: 1, value: 175 },
+        { weekIndex: 2, value: 178 },
+        { weekIndex: 3, value: 181 },
+        { weekIndex: 4, value: 184 },
+      ],
+    },
+  },
+  decorators: [
+    (Story) => (
+      <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-sm">
+        <View style={{ width: 440 }}>
+          <Story />
+        </View>
       </Surface>
     ),
   ],

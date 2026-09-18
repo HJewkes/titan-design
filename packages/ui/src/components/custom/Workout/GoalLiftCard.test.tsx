@@ -50,18 +50,18 @@ describe('GoalLiftCard', () => {
 
   it('renders the exercise name', () => {
     render(<GoalLiftCard {...baseProps} />)
-    expect(screen.getByTestId('goal-lift-card-name')).toHaveTextContent('BENCH PRESS')
+    expect(screen.getByTestId('goal-card-title')).toHaveTextContent('BENCH PRESS')
   })
 
   describe('the PR mark', () => {
     it('renders when the target holds a record', () => {
       render(<GoalLiftCard {...baseProps} isPR />)
-      expect(screen.getByTestId('goal-lift-card-pr')).toBeInTheDocument()
+      expect(screen.getByTestId('pr-badge-star')).toBeInTheDocument()
     })
 
     it('is absent by default', () => {
       render(<GoalLiftCard {...baseProps} />)
-      expect(screen.queryByTestId('goal-lift-card-pr')).toBeNull()
+      expect(screen.queryByTestId('pr-badge-star')).toBeNull()
     })
 
     /**
@@ -71,27 +71,27 @@ describe('GoalLiftCard', () => {
      */
     it('sits in the title row, beside the status affordance', () => {
       render(<GoalLiftCard {...baseProps} isPR statusForm="pill" />)
-      const row = screen.getByTestId('goal-lift-card-pr').parentElement
-      expect(row).toContainElement(screen.getByTestId('goal-lift-card-status-pill'))
+      const row = screen.getByTestId('pr-badge-star').parentElement
+      expect(row).toContainElement(screen.getByTestId('goal-card-status'))
     })
   })
 
   describe('the status affordance', () => {
     it('is a pill at a comfortable width', () => {
       render(<GoalLiftCard {...baseProps} statusForm="pill" />)
-      expect(screen.getByTestId('goal-lift-card-status-pill')).toHaveTextContent('On track')
-      expect(screen.queryByTestId('goal-lift-card-status-dot')).toBeNull()
+      expect(screen.getByTestId('goal-card-status')).toHaveTextContent('On track')
+      expect(screen.queryByTestId('goal-card-status-light')).toBeNull()
     })
 
     it('collapses to its light below the collapse width', () => {
       render(<GoalLiftCard {...baseProps} statusForm="dot" />)
-      expect(screen.getByTestId('goal-lift-card-status-dot')).toBeInTheDocument()
-      expect(screen.queryByTestId('goal-lift-card-status-pill')).toBeNull()
+      expect(screen.getByTestId('goal-card-status-light')).toBeInTheDocument()
+      expect(screen.queryByTestId('goal-card-status')).toBeNull()
     })
 
     it('collapses at the compact density without being asked', () => {
       render(<GoalLiftCard {...baseProps} density="compact" />)
-      expect(screen.getByTestId('goal-lift-card-status-dot')).toBeInTheDocument()
+      expect(screen.getByTestId('goal-card-status-light')).toBeInTheDocument()
     })
 
     it('never disappears — the collapsed form keeps an accessible name', () => {
@@ -115,7 +115,7 @@ describe('GoalLiftCard', () => {
     for (const [status, label] of cases) {
       it(`labels ${status} as "${label}"`, () => {
         render(<GoalLiftCard {...baseProps} status={status} statusForm="pill" />)
-        expect(screen.getByTestId('goal-lift-card-status-pill')).toHaveTextContent(label)
+        expect(screen.getByTestId('goal-card-status')).toHaveTextContent(label)
         expect(goalLiftStatusLabel(status)).toBe(label)
       })
     }
@@ -124,7 +124,7 @@ describe('GoalLiftCard', () => {
   describe('the trend', () => {
     it('renders a chart box', () => {
       render(<GoalLiftCard {...baseProps} />)
-      expect(screen.getByTestId('goal-lift-card-trend')).toBeInTheDocument()
+      expect(screen.getByTestId('goal-card-trend')).toBeInTheDocument()
     })
 
     it('renders nothing inside it with no readings', () => {
@@ -133,6 +133,16 @@ describe('GoalLiftCard', () => {
       render(<GoalLiftCard {...baseProps} actuals={[]} />)
       expect(screen.queryByTestId('sparkline')).toBeNull()
     })
+  })
+
+  it('says the same thing in the badge as in the hero', () => {
+    // The band's committed edge (102.5) is not the block's target (105): the
+    // badge follows the target, so it cannot read "Hit" over "5 lb to goal".
+    render(<GoalLiftCard {...baseProps} />)
+    expect(screen.getByTestId('goal-card-status')).toHaveTextContent('On track')
+
+    render(<GoalLiftCard {...baseProps} latest={{ reps: 8, load: 110 }} />)
+    expect(screen.getAllByTestId('goal-card-status')[1]).toHaveTextContent('Beyond goal')
   })
 
   it('names itself for assistive tech', () => {
@@ -148,7 +158,7 @@ describe('GoalLiftCard', () => {
    */
   it('leaves a long name unclamped, so it can wrap rather than truncate', () => {
     render(<GoalLiftCard {...baseProps} name="SINGLE-ARM DUMBBELL ROW" />)
-    const name = screen.getByTestId('goal-lift-card-name')
+    const name = screen.getByTestId('goal-card-title')
     expect(name).toHaveTextContent('SINGLE-ARM DUMBBELL ROW')
     expect(name.getAttribute('style') ?? '').not.toContain('line-clamp')
   })

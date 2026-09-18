@@ -181,8 +181,20 @@ export const PLOT_BOTTOM = 20
 export const PLANE_OVERHANG = 6
 /** The y-domain floor rounds down to a multiple of this, in the goal's unit. */
 export const VALUE_STEP = 5
-/** Keeps the first and last week's dot and ring inside the rounded plane. */
+/** Floor on the week inset: keeps the first and last dot and ring inside the rounded plane. */
 export const WEEK_INSET = 8
+
+/**
+ * Half a column, so the first and last week's COLUMN — not just its dot — sits
+ * whole inside the plot. `w / (2n)` is the inset for which the span comes to
+ * `w / n`, i.e. n columns exactly filling the plot (VW-385 round 5: a half-width
+ * first cell "looks weird", and the same half-width applied to a week-one
+ * deload). It cannot go below {@link WEEK_INSET}, which a block long enough to
+ * make a column narrower than a marker would otherwise do.
+ */
+export function weekInset(plotWidth: number, columns: number): number {
+  return Math.max(WEEK_INSET, plotWidth / (2 * Math.max(1, columns)))
+}
 export const DEFAULT_TICK_COUNT = 5
 export const CHART_FONT = 11
 /** Rule labels sit this far above their rule (baseline to rule). */
@@ -650,13 +662,14 @@ export function trajectoryWeekScale(input: TrajectoryWeekScaleInput): Trajectory
     ...placed.map((p) => p.week),
     ...(input.nextTarget ? [input.nextTarget.weekIndex] : []),
   ])
+  const steps = Math.max(1, wks.max - wks.min)
+  const inset = weekInset(plot.right - plot.left, steps + 1)
   const xScale = scaleLinear()
     .domain([wks.min, wks.max])
-    .range([plot.left + WEEK_INSET, plot.right - WEEK_INSET])
-  const steps = Math.max(1, wks.max - wks.min)
+    .range([plot.left + inset, plot.right - inset])
   return {
     toX: (weekIndex: number) => xScale(weekIndex),
-    span: (plot.right - plot.left - 2 * WEEK_INSET) / steps,
+    span: (plot.right - plot.left - 2 * inset) / steps,
     weeks: Array.from({ length: Math.round(steps) + 1 }, (_, i) => wks.min + i),
     plot: { left: plot.left, right: plot.right },
   }

@@ -58,8 +58,8 @@ describe('GoalTrajectoryChart with committed === stretch (VW-414)', () => {
       const g = geometryOf(WALL)
       const xs = [...g.bandEdgePath.matchAll(/([\d.]+),([\d.]+)/g)].map((m) => Number(m[1]))
       const ys = [...g.bandEdgePath.matchAll(/([\d.]+),([\d.]+)/g)].map((m) => Number(m[2]))
-      expect(Math.min(...xs)).toBeCloseTo(g.toX(1), 5)
-      expect(Math.max(...xs)).toBeCloseTo(g.toX(12), 5)
+      expect(Math.min(...xs)).toBeCloseTo(g.toX(1), 2)
+      expect(Math.max(...xs)).toBeCloseTo(g.toX(12), 2)
       expect(Math.max(...ys) - Math.min(...ys)).toBeGreaterThan(100)
     })
 

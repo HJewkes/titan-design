@@ -44,9 +44,13 @@ const KNOWN_TYPE_ONLY_BARE_NAMES = new Set([
   // tile now both re-export the milestone types): every one is an interface or a
   // type alias in `GoalTrajectoryChartGeometry.ts` / `goalMilestone.ts`.
   'GoalActualPoint',
+  'GoalCardChart',
+  'GoalCardMilestone',
+  'GoalCardProps',
   'GoalDirection',
   'GoalExpectedPoint',
   'GoalMilestoneReading',
+  'GoalMilestoneSummaryProps',
   'GoalMilestoneState',
   'GoalMilestoneTarget',
   'GoalNextTarget',
@@ -56,6 +60,7 @@ const KNOWN_TYPE_ONLY_BARE_NAMES = new Set([
   'GoalWeekCell',
   'GoalWeekEntry',
   'GoalWeekOutcome',
+  'IndicatorColor', // components/ui/indicator/Indicator.tsx: type alias
   'LiftOptions', // theme/lift.ts: interface
   'SetRowProps', // components/custom/Workout/SetRow.tsx: type alias
   'SetStripSet', // components/custom/Workout/SetBar.tsx: type alias
