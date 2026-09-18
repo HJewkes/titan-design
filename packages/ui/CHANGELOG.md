@@ -51,6 +51,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
   carry a 20px mark and a phone the original 14px.
 - `valueReach` / `milestoneReach` (`goalMilestone.ts`) — one definition of where
   a reading landed against its target.
+- `GoalTrajectoryMini` (`status:lab`) — compact goal-chart variants for the grid
+  cell, with a Lab decision story. Folded in from #255; the variant is still the
+  human's choice to make.
 
 ### Changed
 
@@ -60,14 +63,23 @@ project adheres to [Semantic Versioning](https://semver.org/).
   once the SPA moves to `GoalCard size="compact"`. Their test hooks moved onto the
   merged card: `goal-card-title`, `goal-card-status`, `goal-card-status-light`,
   `goal-card-trend`, `goal-card-content`, `goal-card-fold`.
+- `GoalTrajectoryChart` takes `showWeekLabels` (default on). The full goal card
+  passes it off: its week cells stand on those very columns, so the axis was
+  printing every week a second time a row lower.
+- The committed and stretch rule labels anchor to the LEFT edge by default
+  (`referenceLabelSide`, folded in from #255). A goal that is going well ends its
+  line at the right edge, under the labels that used to anchor there.
+- The week axis insets by half a column plus half a gap, so the outer cells stand
+  the same distance off the plane's edges as they do off each other. Round 5's
+  half-column inset left them with half that air, which read as clipping —
+  measured in the browser, nothing was ever clipped.
 - `GoalTrajectoryChart` draws no legend at all (human: "way too chunky and I think
   unnecessary"). Every rule already labels itself on the plane, and the status is
   said once, in the card's title row. The pill, the swatches and their density
   knobs are deleted rather than hidden behind a prop.
-- The week axis insets by half a column, so the first and last week's COLUMN — not
-  just its dot — sits whole inside the plot. A half-width first cell "looks weird",
-  and the same half-width applied to a week-one deload column. Cells are their full
-  column again, less the shared strip gap: 60% was tried and rejected.
+- Cells are their full column again, less the shared gap: 60% was tried and
+  rejected. Every week's COLUMN — not just its dot — now sits whole inside the
+  plot, which also un-halves a week-one deload column.
 - The card's status badge reads the MILESTONE's verdict, the same one the summary's
   hero shows. A band's committed edge and the block's target are different numbers,
   so judging the badge by the band could print "Hit" over "2.5 lb to goal".

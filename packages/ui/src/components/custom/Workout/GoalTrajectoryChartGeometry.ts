@@ -88,6 +88,16 @@ export interface GoalTrajectoryGeometryInput {
   labelFont?: number
   /** The next planned waypoint, drawn ahead of the actual line. */
   nextTarget?: GoalNextTarget
+  /** Gutters around the plot. Defaults to {@link DEFAULT_PLOT_INSETS}, the axis-bearing chart's. */
+  insets?: PlotInsets
+}
+
+/** Gutters between the canvas edge and the plot, in px. */
+export interface PlotInsets {
+  left: number
+  right: number
+  top: number
+  bottom: number
 }
 
 export type BandCurve = 'linear' | 'monotone'
@@ -220,6 +230,12 @@ export const LABEL_DESCENT = 0.24
 export const LABEL_CLEARANCE = 6
 /** Room a marker (r=4 dot plus 2px ring, or the star) needs inside the plane. */
 export const MARKER_CLEARANCE = 8
+export const DEFAULT_PLOT_INSETS: PlotInsets = {
+  left: PLOT_LEFT,
+  right: PLOT_RIGHT,
+  top: PLOT_TOP,
+  bottom: PLOT_BOTTOM,
+}
 /** Upper bound on how many value steps the floor may drop to clear the bottom edge. */
 const MAX_FLOOR_STEPS = 10
 
@@ -430,12 +446,12 @@ function placeActuals(input: GoalTrajectoryGeometryInput) {
     .sort((a, b) => a.week - b.week)
 }
 
-function plotRect(width: number, height: number): PlotRect {
+function plotRect(width: number, height: number, insets = DEFAULT_PLOT_INSETS): PlotRect {
   return {
-    left: PLOT_LEFT,
-    right: Math.max(PLOT_LEFT + 1, width - PLOT_RIGHT),
-    top: PLOT_TOP,
-    bottom: Math.max(PLOT_TOP + 1, height - PLOT_BOTTOM),
+    left: insets.left,
+    right: Math.max(insets.left + 1, width - insets.right),
+    top: insets.top,
+    bottom: Math.max(insets.top + 1, height - insets.bottom),
   }
 }
 
@@ -660,6 +676,7 @@ export interface TrajectoryWeekScaleInput {
   actuals: GoalActualPoint[]
   nextTarget?: GoalNextTarget
   width: number
+  insets?: PlotInsets
 }
 
 /**
@@ -669,7 +686,7 @@ export interface TrajectoryWeekScaleInput {
  * rather than a second copy of the same arithmetic.
  */
 export function trajectoryWeekScale(input: TrajectoryWeekScaleInput): TrajectoryWeekScale {
-  const plot = plotRect(input.width, 1)
+  const plot = plotRect(input.width, 1, input.insets)
   const placed = placeActuals({ ...input, committed: 0, stretch: 0, height: 1 })
   const wks = weekDomain(input.expected, input.weeks, [
     ...placed.map((p) => p.week),
@@ -728,7 +745,7 @@ export function deriveTrajectoryGeometry(
   const { committed, stretch, weeks, mesoBoundaries = [], width, height } = input
   const expected = flattenDeloadWeeks(input.expected, weeks)
   const placed = placeActuals(input)
-  const plot = plotRect(width, height)
+  const plot = plotRect(width, height, input.insets)
 
   const next = input.nextTarget
   const values = [
@@ -743,6 +760,7 @@ export function deriveTrajectoryGeometry(
     actuals: input.actuals,
     ...(next ? { nextTarget: next } : {}),
     width,
+    ...(input.insets ? { insets: input.insets } : {}),
   })
   const yScale = valueScale({ values, rules, plot, font: input.labelFont ?? CHART_FONT })
   const toX = week.toX
