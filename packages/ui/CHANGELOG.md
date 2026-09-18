@@ -7,6 +7,8 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## 0.18.0
+
 ### Added
 
 - `GoalCard` (`status:candidate`) — one goal at card scale in two sizes. `full`
@@ -38,9 +40,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
   its inset plane, `PrimaryGoalCard` folds it onto the card, and `GoalLiftCard`
   leads with it, so the gap, surplus and outcome maths has exactly one home.
 - `GoalMilestoneWeekStrip` takes an `axis`, which pins each week cell to a chart
-  column instead of sharing the width evenly, and clips the row to the plot so the
-  first and last cells trim at the plane edge as the chart's own columns do. A
-  cell covers 60% of its column, centred, in both modes.
+  column instead of sharing the width evenly. The axis insets by half a column
+  plus half a gap, so every cell is whole and the air at both ends matches the
+  gap between cells (the human read the earlier half-column inset as clipping).
 - `trajectoryWeekScale` — the chart's week axis as a pure function, so anything
   lining up with the columns from outside the SVG shares them rather than
   re-deriving them.
