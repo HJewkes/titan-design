@@ -61,6 +61,14 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- `GoalTrajectoryStatus` and `GoalLiftStatus` accept two OUTCOME statuses beside
+  the seven pace ones: `goal_met` (success green, "Goal met") and `beyond_goal`
+  (the `ahead` blue, "Beyond goal"), which voltras-mcp's goal read model now
+  sends instead of leaving the UI to compare the best reading with the committed
+  value (VW-400). Where a card or the chart derived that verdict itself, an
+  incoming outcome status wins and the derivation stays as the fallback for
+  callers still sending pace. The derived "met" verdict now prints "Goal met"
+  too, so one state has one word whoever decided it — it read "Hit" before.
 - `PrimaryGoalCard` and `GoalLiftCard` are now presets of `GoalCard` (`full` and
   `compact`). **Renamed, not removed**: both names still export and take the props
   they took, so voltras-mcp's `#/goals` needs no change; `GoalLiftCard` can retire

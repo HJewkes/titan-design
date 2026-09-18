@@ -150,7 +150,11 @@ split.
   ramp. A test asserts none of the three is a status colour.
 
 - **The goal verdict has one definition** — `valueReach` / `milestoneReach` in
-  `goalMilestone.ts`. A reading short of the committed target leaves the pace
+  `goalMilestone.ts`, unless the read model states it. `goal_met` and
+  `beyond_goal` are outcome statuses (voltras-mcp VW-400): `outcomeReach()` turns
+  one into the verdict directly, and only a pace status falls through to the
+  comparison. Its committed value and ours can differ, and it is the one that
+  knows. A reading short of the committed target leaves the pace
   tone alone; exactly on it is success green with the hit label; past it is the
   `ahead` blue labelled `Beyond goal`. `GoalTrajectoryChart` (line, pill),
   `GoalMilestoneSummary` (hero), `GoalMilestoneTile` (hit mark) and

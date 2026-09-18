@@ -30,6 +30,7 @@ import {
   milestoneReach,
   milestoneSurplus,
   type GoalMilestoneReading,
+  type GoalReach,
   type GoalMilestoneState,
   type GoalMilestoneTarget,
   type GoalWeekEntry,
@@ -49,6 +50,13 @@ export interface GoalMilestoneSummaryProps {
   direction?: GoalDirection
   /** Overrides the derived state when the read model already knows it. */
   state?: GoalMilestoneState
+  /**
+   * The verdict, when the read model states it rather than leaving it to be
+   * derived from the numbers (`goal_met` / `beyond_goal`). It settles both the
+   * state and whether the target was merely reached or beaten, so the hero
+   * cannot disagree with a badge reading off the same status.
+   */
+  reach?: GoalReach
   /** The goal's pace; colours the hero while the target is open. */
   status: GoalTrajectoryStatus
   /** One entry per week of the block, aligned to week 1. */
@@ -149,13 +157,19 @@ function heroFor(
       beyond: false,
     }
   }
-  const { target, latest, direction } = props
-  const beyond = latest ? milestoneReach(target, latest, direction) === 'beyond' : false
+  const { target, latest, direction, reach } = props
+  const beyond = reach
+    ? reach === 'beyond'
+    : latest
+      ? milestoneReach(target, latest, direction) === 'beyond'
+      : false
   const surplus = beyond && latest ? milestoneSurplus(target, latest, direction) : null
   const over = surplus ? surplusText(props, surplus) : null
+  // `beyond` survives a missing surplus FIGURE: a stated `beyond_goal` knows the
+  // target was beaten even when the readings we hold cannot say by how much.
   return over
     ? { hero: `+${over}`, heroSuffix: 'beyond goal', beyond: true }
-    : { hero: 'Reached goal', heroSuffix: null, beyond: false }
+    : { hero: 'Reached goal', heroSuffix: null, beyond }
 }
 
 function surplusText(props: GoalMilestoneSummaryProps, surplus: GoalMilestoneGap): string | null {
@@ -168,8 +182,12 @@ function surplusText(props: GoalMilestoneSummaryProps, surplus: GoalMilestoneGap
 }
 
 export function resolveTile(props: GoalMilestoneSummaryProps, t: Palette): ResolvedTile {
-  const { target, latest, direction, currentWeek, weekCount } = props
-  const met = latest ? milestoneGap(target, latest, direction)?.kind === 'none' : false
+  const { target, latest, direction, currentWeek, weekCount, reach } = props
+  const met = reach
+    ? reach !== 'short'
+    : latest
+      ? milestoneGap(target, latest, direction)?.kind === 'none'
+      : false
   const state = deriveMilestoneState({ state: props.state, met, currentWeek, goalWeek: weekCount })
   const gap = state === 'hit' ? null : gapAmountText(props)
   const heroParts = heroFor(state, props, gap)

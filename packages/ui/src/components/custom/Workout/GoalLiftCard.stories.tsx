@@ -63,6 +63,8 @@ const meta: Meta<typeof GoalLiftCard> = {
         'deload_week',
         'calibrating',
         'stalled',
+        'goal_met',
+        'beyond_goal',
       ],
     },
     density: { control: 'select', options: ['comfortable', 'compact'] },
@@ -212,6 +214,30 @@ export const PerLiftGrid: Story = {
             committed={lift.milestone.load - 2.5}
             stretch={lift.milestone.load + 5}
           />
+        </View>
+      ))}
+    </View>
+  ),
+}
+
+/** The read model's outcome statuses, side by side (voltras-mcp VW-400). */
+export const OutcomeStatuses: Story = {
+  parameters: { layout: 'fullscreen' },
+  decorators: [
+    (Story) => (
+      <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-md">
+        <Story />
+      </Surface>
+    ),
+  ],
+  render: (args) => (
+    <View
+      style={{ flexDirection: 'row', alignItems: 'flex-start', width: 'max-content' }}
+      className="gap-section-sm"
+    >
+      {(['goal_met', 'beyond_goal'] as const).map((status) => (
+        <View key={status} style={{ width: 440 }}>
+          <GoalLiftCard {...args} status={status} />
         </View>
       ))}
     </View>

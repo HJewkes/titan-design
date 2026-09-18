@@ -14,6 +14,7 @@ import { GoalPriorityIcon, type GoalPriority } from './GoalPriorityIcon'
 import {
   GoalTrajectoryChart,
   WALL_BREAKPOINT,
+  outcomeReach,
   trajectoryReach,
   type GoalNextTarget,
   type GoalTrajectoryChartProps,
@@ -40,6 +41,8 @@ export type GoalLiftStatus =
   | 'deload_week'
   | 'calibrating'
   | 'stalled'
+  | 'goal_met'
+  | 'beyond_goal'
 
 /** One reading placed on the meso's week axis. */
 export interface GoalLiftActual {
@@ -166,6 +169,8 @@ export const GOAL_STATUS_LABEL: Record<GoalLiftStatus, string> = {
   deload_week: 'Deload week',
   calibrating: 'Calibrating',
   stalled: 'Stalled',
+  goal_met: 'Goal met',
+  beyond_goal: 'Beyond goal',
 }
 
 /**
@@ -180,6 +185,8 @@ export const GOAL_STATUS_TONE: Record<GoalLiftStatus, PillTone & IndicatorColor>
   deload_week: 'info',
   behind: 'warning',
   stalled: 'warning',
+  goal_met: 'success',
+  beyond_goal: 'info',
 }
 
 /**
@@ -254,8 +261,8 @@ const TIP_WIDTH = 280
  * both read it off `trajectoryReach`.
  */
 export function goalStatusBadge(status: GoalLiftStatus, reach: GoalReach): StatusBadgeSpec {
-  if (reach === 'beyond') return { label: 'Beyond goal', tone: 'info' }
-  if (reach === 'met') return { label: 'Hit', tone: 'success' }
+  if (reach === 'beyond') return { label: GOAL_STATUS_LABEL.beyond_goal, tone: 'info' }
+  if (reach === 'met') return { label: GOAL_STATUS_LABEL.goal_met, tone: 'success' }
   return { label: GOAL_STATUS_LABEL[status], tone: GOAL_STATUS_TONE[status] }
 }
 
@@ -423,7 +430,7 @@ function FullBody({ props, width }: { props: GoalCardProps; width: number }) {
   if (!goal) return null
   return (
     <View className="gap-stack-sm" testID="goal-card-fold">
-      <GoalMilestoneSummary {...milestone} axis={weekAxisFor(goal, width)} />
+      <GoalMilestoneSummary {...statedMilestone(props)} axis={weekAxisFor(goal, width)} />
       <GoalTrajectoryChart
         {...goal}
         status={status}
@@ -456,7 +463,7 @@ function CompactBody({
   const { trend, milestone, status } = props
   return (
     <View className="gap-stack-md">
-      <GoalMilestoneSummary {...milestone} scale="phone" showWeeks={false} />
+      <GoalMilestoneSummary {...statedMilestone(props)} scale="phone" showWeeks={false} />
       <View style={{ minHeight: height }} testID="goal-card-trend">
         {trend && width !== null && (
           <GoalWeekColumnsChart
@@ -478,13 +485,28 @@ function CompactBody({
 }
 
 /**
- * The verdict the badge carries. It is the MILESTONE's, which is the one the
+ * The summary, told what the read model already knows. Without this the hero
+ * reads "5 lb to goal" under a badge reading "Goal met" whenever the numbers we
+ * hold trail the outcome the read model has ruled on — the card contradicting
+ * itself, which is the thing the shared verdict exists to prevent.
+ */
+function statedMilestone(props: GoalCardProps): GoalCardMilestone {
+  const { milestone } = props
+  const stated = outcomeReach(props.status)
+  return stated && !milestone.reach ? { ...milestone, reach: stated } : milestone
+}
+
+/**
+ * The verdict the badge carries. An outcome status states it outright, so the
+ * read model wins; otherwise it is the MILESTONE's, which is the one the
  * summary's hero shows — a badge reading "Hit" over a hero reading "2.5 lb to
  * goal" is the card disagreeing with itself, and it can, because a band's
  * committed edge and the block's target are different numbers. The chart's own
  * committed value is the fallback for a card whose milestone has no reading yet.
  */
 function cardReach(props: GoalCardProps): GoalReach {
+  const stated = outcomeReach(props.status)
+  if (stated) return stated
   const { target, latest, direction } = props.milestone
   if (latest) return milestoneReach(target, latest, direction) ?? 'short'
   if (props.goal) {

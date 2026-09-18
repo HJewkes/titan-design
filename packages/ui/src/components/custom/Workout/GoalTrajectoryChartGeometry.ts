@@ -14,7 +14,13 @@
 import { area, curveMonotoneX, line } from 'd3-shape'
 import { scaleLinear } from 'd3-scale'
 
-/** Read-model status vocabulary (plan §2d). */
+/**
+ * Read-model status vocabulary (plan §2d). The first seven are PACE — how the
+ * work is going against the plan. `goal_met` and `beyond_goal` are OUTCOMES: the
+ * read model saying the target was reached or beaten (voltras-mcp VW-400), which
+ * the UI used to have to work out for itself by comparing the best reading with
+ * the committed value.
+ */
 export type GoalTrajectoryStatus =
   | 'on_track'
   | 'ahead'
@@ -23,6 +29,8 @@ export type GoalTrajectoryStatus =
   | 'deload_week'
   | 'calibrating'
   | 'stalled'
+  | 'goal_met'
+  | 'beyond_goal'
 
 /** Which way "better" points. `down` is a loss goal (bodyweight, fat loss). */
 export type GoalDirection = 'up' | 'down'

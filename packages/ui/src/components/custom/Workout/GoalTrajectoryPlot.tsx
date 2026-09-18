@@ -56,6 +56,10 @@ export const STATUS_TOKEN = {
   deload_week: 'result-neutral',
   calibrating: 'result-inconclusive',
   stalled: 'status-error',
+  // The outcomes take the tones the derived verdict already used: reaching the
+  // goal is success green, beating it is the `ahead` blue.
+  goal_met: 'status-success',
+  beyond_goal: 'status-info',
 } as const satisfies Record<GoalTrajectoryStatus, ColorToken>
 
 /** The locked depth recipe (2026-09-17): line shadow "1a" and the plane's inner shadows. */

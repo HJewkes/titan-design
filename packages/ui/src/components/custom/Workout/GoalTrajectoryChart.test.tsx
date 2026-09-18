@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen, within, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { GoalTrajectoryChart, trajectoryReach } from './GoalTrajectoryChart'
+import { GoalTrajectoryChart, outcomeReach, trajectoryReach } from './GoalTrajectoryChart'
 import type {
   GoalActualPoint,
   GoalExpectedPoint,
@@ -456,7 +456,7 @@ describe('GoalTrajectoryChart goal reach', () => {
   it('keeps success green for a reading exactly on the target', () => {
     render(<GoalTrajectoryChart {...baseProps} actuals={reaching(185)} status="behind" />)
     expect(lineStroke()).toBe(dark['status-success'])
-    expect(summary()).toContain('Status: Hit')
+    expect(summary()).toContain('Status: Goal met')
   })
 
   it('reports pace while every reading is short of the target', () => {
@@ -472,5 +472,49 @@ describe('GoalTrajectoryChart goal reach', () => {
     ]
     expect(trajectoryReach(180, cut, 'down')).toBe('beyond')
     expect(trajectoryReach(180, cut.slice(0, 1), 'down')).toBe('short')
+  })
+})
+
+describe('GoalTrajectoryChart outcome statuses', () => {
+  const shortOfIt: GoalActualPoint[] = [
+    { weekIndex: 1, value: 175 },
+    { weekIndex: 2, value: 178 },
+  ]
+
+  function lineStrokeFor(status: GoalTrajectoryStatus): string | null {
+    const { unmount } = render(
+      <GoalTrajectoryChart {...baseProps} actuals={shortOfIt} status={status} />
+    )
+    const stroke = screen.getByTestId('goal-trajectory-chart-actual-line').getAttribute('stroke')
+    unmount()
+    return stroke
+  }
+
+  it('paints goal_met success green and beyond_goal the ahead blue', () => {
+    expect(lineStrokeFor('goal_met')).toBe(dark['status-success'])
+    expect(lineStrokeFor('beyond_goal')).toBe(dark['status-info'])
+  })
+
+  it('names them in the accessible summary', () => {
+    const summaryFor = (status: GoalTrajectoryStatus) => {
+      const { unmount } = render(
+        <GoalTrajectoryChart {...baseProps} actuals={shortOfIt} status={status} />
+      )
+      const label =
+        screen.getByTestId('goal-trajectory-chart-canvas').getAttribute('aria-label') ?? ''
+      unmount()
+      return label
+    }
+    expect(summaryFor('goal_met')).toContain('Status: Goal met')
+    expect(summaryFor('beyond_goal')).toContain('Status: Beyond goal')
+  })
+
+  it('believes the read model over its own comparison', () => {
+    // Every reading is short of the committed target, and the status still wins.
+    expect(outcomeReach('goal_met')).toBe('met')
+    expect(outcomeReach('beyond_goal')).toBe('beyond')
+    expect(outcomeReach('behind')).toBeNull()
+    expect(trajectoryReach(baseProps.committed, shortOfIt)).toBe('short')
+    expect(lineStrokeFor('goal_met')).toBe(dark['status-success'])
   })
 })

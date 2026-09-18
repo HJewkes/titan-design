@@ -75,8 +75,28 @@ describe('PrimaryGoalCard', () => {
     })
 
     it('is success green exactly at the goal and blue past it', () => {
-      expect(goalStatusBadge('on_track', 'met')).toEqual({ label: 'Hit', tone: 'success' })
+      expect(goalStatusBadge('on_track', 'met')).toEqual({ label: 'Goal met', tone: 'success' })
       expect(goalStatusBadge('behind', 'beyond')).toEqual({ label: 'Beyond goal', tone: 'info' })
+    })
+
+    it("takes the read model's own outcome statuses at their word", () => {
+      // One vocabulary: the status the read model sends and the verdict the card
+      // derives print the same words and wear the same tones.
+      expect(goalStatusBadge('goal_met', 'short')).toEqual({ label: 'Goal met', tone: 'success' })
+      expect(goalStatusBadge('beyond_goal', 'short')).toEqual({
+        label: 'Beyond goal',
+        tone: 'info',
+      })
+    })
+
+    it('prefers an outcome status over its own comparison', () => {
+      // The milestone here is still 1 lb short; the read model says otherwise.
+      render(<PrimaryGoalCard {...S.onTrack} status="goal_met" chartWidth={WALL} />)
+      expect(screen.getByTestId('goal-card-status')).toHaveTextContent('Goal met')
+      expect(screen.getByTestId('goal-trajectory-chart-actual-line')).toHaveAttribute(
+        'stroke',
+        dark['status-success']
+      )
     })
 
     it('paints the chart line blue for a card that beat its goal', () => {
@@ -90,7 +110,7 @@ describe('PrimaryGoalCard', () => {
 
     it('keeps success green for a card exactly on its goal', () => {
       render(<PrimaryGoalCard {...S.hitExact} chartWidth={WALL} />)
-      expect(screen.getByTestId('goal-card-status')).toHaveTextContent('Hit')
+      expect(screen.getByTestId('goal-card-status')).toHaveTextContent('Goal met')
       expect(screen.getByTestId('goal-trajectory-chart-actual-line')).toHaveAttribute(
         'stroke',
         dark['status-success']

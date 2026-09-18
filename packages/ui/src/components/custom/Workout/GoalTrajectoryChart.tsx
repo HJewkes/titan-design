@@ -46,6 +46,8 @@ const STATUS_LABEL: Record<GoalTrajectoryStatus, string> = {
   deload_week: 'Deload week',
   calibrating: 'Calibrating',
   stalled: 'Stalled',
+  goal_met: 'Goal met',
+  beyond_goal: 'Beyond goal',
 }
 
 /**
@@ -59,7 +61,19 @@ export const REACH_STATUS = { met: 'on_track', beyond: 'ahead' } as const satisf
   GoalTrajectoryStatus
 >
 
-const REACH_LABEL = { met: 'Hit', beyond: 'Beyond goal' } as const
+const REACH_LABEL = { met: 'Goal met', beyond: 'Beyond goal' } as const
+
+/**
+ * The read model's own outcome words. When it sends one, the UI prints it rather
+ * than re-deriving the same verdict from the numbers — its committed value and
+ * ours can differ, and the read model is the one that knows.
+ */
+const OUTCOME_REACH = { goal_met: 'met', beyond_goal: 'beyond' } as const
+
+/** The reach a status already states, or null when it only states pace. */
+export function outcomeReach(status: GoalTrajectoryStatus): GoalReach | null {
+  return status === 'goal_met' || status === 'beyond_goal' ? OUTCOME_REACH[status] : null
+}
 
 /** The best reading in the goal's direction, judged against the committed target. */
 export function trajectoryReach(
@@ -226,7 +240,7 @@ export function GoalTrajectoryChart({
 }: GoalTrajectoryChartProps) {
   const surface = useSurface()
   const axisColor = useOnSurfaceColor('tertiary')
-  const reach = trajectoryReach(committed, actuals, direction)
+  const reach = outcomeReach(status) ?? trajectoryReach(committed, actuals, direction)
   const toneStatus = reach === 'short' ? status : REACH_STATUS[reach]
   const statusLabel = reach === 'short' ? STATUS_LABEL[status] : REACH_LABEL[reach]
   const palette = trajectoryPalette(surface.mode, surface.level, toneStatus)

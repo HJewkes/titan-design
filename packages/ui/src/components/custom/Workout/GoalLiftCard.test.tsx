@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 import { GoalLiftCard, goalLiftStatusLabel, type GoalLiftCardProps } from './GoalLiftCard'
 
@@ -114,6 +115,9 @@ describe('GoalLiftCard', () => {
       ['deload_week', 'Deload week'],
       ['calibrating', 'Calibrating'],
       ['stalled', 'Stalled'],
+      // The read model's outcome statuses (voltras-mcp VW-400).
+      ['goal_met', 'Goal met'],
+      ['beyond_goal', 'Beyond goal'],
     ]
 
     for (const [status, label] of cases) {
@@ -123,6 +127,29 @@ describe('GoalLiftCard', () => {
         expect(goalLiftStatusLabel(status)).toBe(label)
       })
     }
+
+    it('tells the summary what the read model ruled, so the hero agrees', () => {
+      // These readings are still 5 lb short; the status says the goal was met.
+      render(<GoalLiftCard {...baseProps} status="goal_met" />)
+      expect(screen.getAllByTestId('goal-milestone-hero')[0]).toHaveTextContent('Reached goal')
+      expect(screen.getAllByTestId('goal-milestone-hero')[0]).not.toHaveTextContent('to goal')
+    })
+
+    it('tones the two outcomes as the derived verdict already did', () => {
+      const dark = getSemanticColors('dark')
+      const heroColor = () =>
+        screen.getAllByTestId('goal-milestone-hero')[0].style.color.replace(/\s/g, '')
+      const rgb = (hex: string) => {
+        const n = parseInt(hex.slice(1), 16)
+        return `rgb(${String((n >> 16) & 255)},${String((n >> 8) & 255)},${String(n & 255)})`
+      }
+      const { unmount } = render(<GoalLiftCard {...baseProps} status="goal_met" />)
+      expect(heroColor()).toBe(rgb(dark['status-success']))
+      unmount()
+
+      render(<GoalLiftCard {...baseProps} status="beyond_goal" />)
+      expect(heroColor()).toBe(rgb(dark['status-info']))
+    })
   })
 
   describe('the trend', () => {

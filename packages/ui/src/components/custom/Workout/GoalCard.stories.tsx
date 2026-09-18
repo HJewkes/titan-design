@@ -26,6 +26,20 @@ const meta: Meta<typeof GoalCard> = {
   },
   argTypes: {
     size: { control: 'inline-radio', options: ['full', 'compact'] },
+    status: {
+      control: 'select',
+      options: [
+        'on_track',
+        'ahead',
+        'behind',
+        'tolerated',
+        'deload_week',
+        'calibrating',
+        'stalled',
+        'goal_met',
+        'beyond_goal',
+      ],
+    },
     priority: { control: 'inline-radio', options: ['specialize', 'maintain', 'deprioritize'] },
     chartWidth: {
       control: { type: 'range', min: 320, max: 1800, step: 20 },
@@ -62,6 +76,16 @@ export const HitExact: Story = { args: { ...S.hitExact } }
 
 /** A reading past the target: the `ahead` blue on the line, the hero and the pill. */
 export const BeyondGoal: Story = { args: { ...S.beyondGoal } }
+
+/**
+ * `status="goal_met"` — the read model's own outcome word (voltras-mcp VW-400).
+ * The readings here are still a pound short of the block's target; the card
+ * prints what it was told rather than re-deriving the verdict from the numbers.
+ */
+export const StatusGoalMet: Story = { args: { ...S.onTrack, status: 'goal_met' } }
+
+/** `status="beyond_goal"` — the same, for a target the read model says was beaten. */
+export const StatusBeyondGoal: Story = { args: { ...S.onTrack, status: 'beyond_goal' } }
 
 /**
  * Phone width. The card still fills its container — the container is what is
