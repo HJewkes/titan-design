@@ -138,48 +138,63 @@ module.exports = {
 
 ## Story File Format
 
-Stories should import types from `@storybook/react-vite`:
+Each component has one `Default` story driven by `args` and `argTypes`. Variants, colours, sizes
+and states are controls on that story rather than separate `Primary`, `AllVariants` or
+`AllSizes` stories (roadmap E4 in `packages/ui/docs/library-roadmap.md`). Stories import types
+from `@storybook/react-vite`. From `src/components/shell/workout/DeviceMenu.stories.tsx`:
 
 ```tsx
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
-import { Button, ButtonText } from './Button'
+import { DeviceMenu } from './DeviceMenu'
+import { type Device } from './DeviceRow'
 
-const meta: Meta<typeof Button> = {
-  title: 'Components/Button',
-  component: Button,
-  tags: ['autodocs'],
+const DEVICES: Device[] = [
+  { id: 'Voltra-A3F2', nickname: 'Left Cable', slot: 'L', state: 'connected' },
+  { id: 'Voltra-9B1C', nickname: 'Right Cable', slot: 'R', state: 'connected' },
+  { id: 'Voltra-77E0', nickname: 'Spare', slot: null, state: 'available' },
+]
+
+const meta: Meta<typeof DeviceMenu> = {
+  title: 'Shell/Workout/DeviceMenu',
+  component: DeviceMenu,
+  tags: ['autodocs', 'status:candidate', '!status:review'],
+  args: { devices: DEVICES, isOpen: false },
   argTypes: {
-    variant: {
-      control: 'select',
-      options: ['solid', 'outline', 'ghost', 'link'],
-    },
-    color: {
-      control: 'select',
-      options: ['primary', 'secondary', 'success', 'error', 'warning', 'info'],
-    },
-    size: {
-      control: 'select',
-      options: ['sm', 'md', 'lg'],
+    devices: { control: 'object' },
+    isOpen: { control: 'boolean' },
+    onOpenChange: { control: false },
+    onSelectDevice: { control: false },
+  },
+  decorators: [
+    (Story) => (
+      <View className="flex-row p-4 pb-48">
+        <Story />
+      </View>
+    ),
+  ],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '**Organism.** The device glyph + its dropdown. Composes ' +
+          '[Popover](?path=/docs/components-molecules-popover--docs) + ' +
+          '[DeviceIndicator](?path=/docs/shell-deviceindicator--docs) (trigger) + ' +
+          '[DeviceRow](?path=/docs/shell-devicerow--docs) (list) + ' +
+          '[Typography](?path=/docs/foundations-typography--docs) (header). Aggregates the bound devices ' +
+          '(worst-of) for the glyph state. Click the glyph, or toggle the `isOpen` control.',
+      },
     },
   },
 }
-
 export default meta
-type Story = StoryObj<typeof Button>
+type Story = StoryObj<typeof DeviceMenu>
 
-export const Primary: Story = {
-  args: {
-    variant: 'solid',
-    color: 'primary',
-  },
-  render: (args) => (
-    <Button {...args}>
-      <ButtonText>Primary Button</ButtonText>
-    </Button>
-  ),
-}
+export const Default: Story = {}
 ```
+
+The title groups, status tags, the "Composes" line and the lint rules that apply to stories are
+listed in `CLAUDE.md` under _Storybook Pattern_.
 
 ## Global CSS Structure
 
@@ -289,11 +304,9 @@ Use the background switcher to test dark/light modes:
 
 ### Interactive Testing
 
-Components respond to controls in the "Controls" panel. Use these to test:
-- All variant combinations
-- Disabled states
-- Loading states
-- Size variations
+Components respond to controls in the "Controls" panel. The `Default` story's controls are how
+you check variant combinations, disabled and loading states, and sizes. Resize the canvas to check
+widths.
 
 ## Organizing Stories
 
@@ -320,6 +333,7 @@ src/
 1. **Use `tags: ['autodocs']`** - Enables automatic documentation generation
 2. **Define argTypes** - Provides controls for all configurable props
 3. **Create render functions** - For compound components, explicit render functions work better
-4. **Group related stories** - Use consistent naming: `Components/Button`, `Design Tokens/Colors`
-5. **Document variants** - Create stories for all visual variants (Primary, Secondary, Outline, etc.)
+4. **Group related stories** - Use the six title groups in `CLAUDE.md`, for example
+   `Components/Molecules/Popover`, `Custom/Workout/SetRow`, `Foundations/Typography`
+5. **One `Default` story** - Show variants through controls, not one story per variant
 6. **Show composition** - Create stories that show components working together

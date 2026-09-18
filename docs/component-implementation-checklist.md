@@ -4,8 +4,16 @@ The per-component "done" gate for the HTML-to-React extraction pipeline. Walk
 this list once per component (or per component in a batch) before considering
 it complete. Every box must be checked and every gate green.
 
-This checklist is the **definition of done**; it does not restate _how_ to
-implement. For the implementation prompt and its DO/DO NOT rules use the agent
+> **Scope.** This checklist applies only when you port a **frozen HTML
+> prototype** that has pixel-parity requirements: a manifest extracted from the
+> prototype, and computed-style parity against it. Every other component follows
+> Gate 2 of the `titan-component-workflow` skill instead: the operator validates
+> the final rendered Storybook state before merge. That includes exploratory and
+> greenfield components and anything without an HTML prototype. If there is no
+> frozen prototype to extract a manifest from, this checklist does not apply.
+
+Within that scope, this checklist is the **definition of done**; it does not
+restate _how_ to implement. For the implementation prompt and its DO/DO NOT rules use the agent
 prompt template, `docs/agent-prompts/component-implementation.md` (TD-06.03).
 For the sign-off/design-freeze process that follows a green checklist, see the
 design-freeze workflow (TD-06.04).

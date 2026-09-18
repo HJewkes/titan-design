@@ -55,6 +55,59 @@ the shipped card.
 
 ---
 
+## PinnedLiveStrip long-rest treatments v0, v1 and v2 — rejected 2026-09-18
+
+**Tried:** four treatments for rest seconds of 100 or more (VW-429 round 7), measured in Chrome.
+Each was shown with its set strip above its rest strip; none moved the velocity or the bars.
+- **v0:** the reduced digits on the shared baseline. Wall 32px in a 75px slot, phone 24px in 57px,
+  phone gap 12px, phone bars 90px.
+- **v1:** v0 with the digits centred on the full-size digits (raised 5.6px wall, 4.2px phone).
+- **v2:** centred, with the wall at 36px in an 83px slot (the flex title gives up the 8px).
+  The phone stays 24px, with an 8px gap and 98px bars: no size on the type scale between 24px and
+  32px fits, and "999s" at 32px measures 69px against the 65px the gap frees.
+
+**Chosen:** **v3**: v2's wall, plus 32px centred digits on the phone in a 71px slot (raised 1.4px),
+an 8px value gap and 84px bars.
+**Why:** the human wanted the long-rest digits "center[ed] vertically" and "a bit bigger", and
+picked v3. They accepted the 8px phone gap in the everyday set state. v3 bends the bar width by 6px
+rather than going off the type scale.
+
+## PinnedLiveStrip m:ss rest countdown (full and reduced size) — rejected 2026-09-18
+
+**Tried:** VW-429 round 5 compared three rest numerals in the rep count's slot, shown as set/rest
+pairs. **r1**: "0:47" at the hero size, in a slot that always fits "12/12" (108px wall / 82px
+phone). **r2**: "0:47" at the velocity size (80 / 72px).
+**Chosen:** **r3**, seconds only ("47s") at the hero size, in a slot sized by the set's target
+digits (75 / 57px for a one-digit target). From 100s the digits step down one type size inside the
+same slot (`liveStripRestReadout`), so a long rest never widens it.
+**Why:** the human wanted to buy back space for the strip and picked seconds ("r3: seconds
+(47s)"). On the phone it frees the most room: the bars grow from 65px (r1) to 90px. For long rests
+they asked to "try shrinking the text when the value is above a certain size so it still fits the
+old space", which the step rule does.
+
+## PinnedLiveStrip phone title rows "drop under" and "chevron only" — rejected 2026-09-18
+
+**Tried:** three phone title rows for a long exercise name (VW-429 round 4). **a**: the title
+wraps and "Set 2/3" + chevron drop under it when they cannot share its line. **b**: only the
+chevron stays top right; the set count is hidden and the title wraps beside it.
+**Chosen:** **c**: "Set 2/3" + chevron stay pinned top right for every name, and the title wraps to
+at most two lines in the width left over.
+**Why:** the human picked c ("c. set count and chevron pinned top right"), keeping the set count
+visible without moving it between short and long names. a moved the set count depending on the
+name's length; b lost the set count on the phone entirely.
+
+## PinnedLiveStrip 88px wall row and red fatigue tag — rejected 2026-09-18
+
+**Tried:** VW-429 round 2 offered `PinnedLiveStrip` at two wall heights: the 88px row from the
+round-1 mocks (variant B) and a 72px `trimmed` row. The fatigue state also turned the "Live set"
+tag red, alongside the red left edge and red wash.
+**Chosen:** the 72px row is the only wall height, and the `wallSize` prop is gone. Fatigue keeps the
+red edge and wash; the tag keeps its live colour. The rep bars keep their analytics zone colours.
+**Why:** the human found 88px "a bit beefy on the wall size board" and picked 72px in the round-2
+review. For fatigue cues they kept only "red left edge" and "red wash over the strip" and rated the
+signal 4/5 readable without text. A 64px row was also tried in round 3: its value labels clipped
+at the top and the rest bar touched the text baseline, so 72px is the floor for this content.
+
 ## Compact goal-chart variants A, D2, D3 and the Sparkline — rejected 2026-09-18
 
 **Tried:** four shapes for the per-lift card's chart slot (VW-385 ideation).
