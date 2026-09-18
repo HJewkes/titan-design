@@ -6,11 +6,7 @@
  * from. The dashed ramp itself is `BandLayer`'s `dashed` edge.
  */
 import { useId } from 'react'
-import {
-  CHART_FONT,
-  type GoalExpectedPoint,
-  type GoalTrajectoryGeometry,
-} from './GoalTrajectoryChartGeometry'
+import { CHART_FONT, type GoalTrajectoryGeometry } from './GoalTrajectoryChartGeometry'
 import type { TrajectoryPalette } from './GoalTrajectoryPlot'
 
 /**
@@ -30,7 +26,7 @@ interface TextMark {
   x: number
   y: number
   text: string
-  anchor: 'start' | 'end'
+  anchor: 'end'
 }
 
 /** The calibrating layer in the chart's own pixels. */
@@ -38,29 +34,14 @@ export interface CalibratingMarks {
   /** Left edge of the hatch: the far side of the latest reading's week column. */
   hatchX: number
   lines: TextMark[]
-  rampLabel: TextMark | null
 }
 
 const LABEL_OFFSET = 6
 
-/** A third of the way along the ramp, under it, reading rightwards as the ramp climbs away. */
-function rampLabel(expected: GoalExpectedPoint[], g: GoalTrajectoryGeometry): TextMark | null {
-  const point = expected[Math.floor(expected.length / 3)]
-  if (!point) return null
-  return {
-    x: g.toX(point.weekIndex),
-    y: g.toY(point.low) + CHART_FONT + LABEL_OFFSET,
-    text: 'Planned ramp',
-    anchor: 'start',
-  }
-}
-
 export interface CalibratingMarksInput {
   geometry: GoalTrajectoryGeometry
-  expected: GoalExpectedPoint[]
   wall: boolean
   note: string
-  showRampLabel: boolean
 }
 
 export function calibratingMarks(input: CalibratingMarksInput): CalibratingMarks {
@@ -77,7 +58,6 @@ export function calibratingMarks(input: CalibratingMarksInput): CalibratingMarks
       text,
       anchor: 'end',
     })),
-    rampLabel: input.showRampLabel ? rampLabel(input.expected, g) : null,
   }
 }
 
@@ -126,11 +106,10 @@ export function CalibratingHatch({ marks, geometry, palette }: LayerArgs) {
   )
 }
 
-/** Over the plane, unclipped: the note and, when asked for, the ramp's name. */
+/** Over the plane, unclipped: the note. The ramp itself carries no label (VW-433 round 2). */
 export function CalibratingLabels({ marks, palette }: Omit<LayerArgs, 'geometry'>) {
   return (
     <>
-      {marks.rampLabel && <ChartText mark={marks.rampLabel} fill={palette.axis} id="ramp-label" />}
       {marks.lines.map((line, i) => (
         <ChartText
           key={line.text}

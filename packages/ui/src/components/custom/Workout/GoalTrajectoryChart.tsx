@@ -171,11 +171,6 @@ export interface GoalTrajectoryChartProps extends ViewProps {
    * still waiting on; the default claims nothing.
    */
   calibratingNote?: string
-  /**
-   * Calibrating only: name the dashed ramp on the plane. Open in VW-433 round 2,
-   * where the human compares the chart with and without it.
-   */
-  showRampLabel?: boolean
   className?: string
 }
 
@@ -261,7 +256,6 @@ export function GoalTrajectoryChart({
   bandCurve = 'monotone',
   referenceLabelSide = 'left',
   calibratingNote = DEFAULT_CALIBRATING_NOTE,
-  showRampLabel = false,
   className,
   ...props
 }: GoalTrajectoryChartProps) {
@@ -312,10 +306,8 @@ export function GoalTrajectoryChart({
   const marks = calibrating
     ? calibratingMarks({
         geometry,
-        expected,
         wall: width >= WALL_BREAKPOINT,
         note: calibratingNote,
-        showRampLabel,
       })
     : null
 

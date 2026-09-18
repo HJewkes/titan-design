@@ -72,12 +72,11 @@ describe('a calibrating goal chart', () => {
     expect(screen.getByText('Calibrating: 1 more session')).toBeInTheDocument()
   })
 
-  it('names the ramp only when asked to', () => {
-    const { unmount } = renderAt('on')
-    expect(screen.queryByText('Planned ramp')).not.toBeInTheDocument()
-    unmount()
-    renderAt('on', { showRampLabel: true })
-    expect(screen.getByText('Planned ramp')).toBeInTheDocument()
+  it.each(PLACEMENTS)('leaves the ramp unlabelled; the note names it (%s)', (placement) => {
+    renderAt(placement)
+    expect(screen.queryByText(/planned ramp$/i)).not.toBeInTheDocument()
+    expect(screen.queryByTestId('goal-trajectory-chart-calibrating-ramp-label')).toBeNull()
+    expect(screen.getByText(/the line is the planned ramp/)).toBeInTheDocument()
   })
 
   it('shortens the note to two lines on a phone', () => {
@@ -110,7 +109,7 @@ function markup(status: GoalTrajectoryStatus, extra: object = {}): string {
 
 describe('every other status', () => {
   it.each(OTHER_STATUSES)('ignores the calibrating props (%s)', (status) => {
-    expect(markup(status, { calibratingNote: 'x', showRampLabel: true })).toBe(markup(status))
+    expect(markup(status, { calibratingNote: 'x' })).toBe(markup(status))
   })
 
   it.each(OTHER_STATUSES)('keeps its PR star, dashed run and no hatch (%s)', (status) => {

@@ -15,11 +15,7 @@ const PLACEMENTS: { key: CalibratingPlacement; name: string }[] = [
   { key: 'below', name: 'Week-2 reading BELOW the ramp (97.5 against 102.5)' },
 ]
 
-interface DecisionArgs {
-  showRampLabel: boolean
-}
-
-function CalibratingCards({ showRampLabel }: DecisionArgs) {
+function CalibratingCards() {
   return (
     <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-sm gap-section-sm">
       {PLACEMENTS.map(({ key, name }) => {
@@ -29,7 +25,7 @@ function CalibratingCards({ showRampLabel }: DecisionArgs) {
             <Typography variant="caption" color="tertiary">
               {name}
             </Typography>
-            <GoalCard {...scenario} goal={{ ...scenario.goal!, showRampLabel }} />
+            <GoalCard {...scenario} />
           </View>
         )
       })}
@@ -45,30 +41,21 @@ function CalibratingCards({ showRampLabel }: DecisionArgs) {
  * the next target is a hollow dot with no dashed run.
  *
  * Not chosen and deleted (see `REJECTED.md`): today's rendering (PR star and a
- * dashed run to the next target), A plain, B labelled marks and C caption.
+ * dashed run to the next target), A plain, B labelled marks and C caption; and,
+ * in round 2, a "Planned ramp" label on the dashed ramp.
  *
- * Still open in round 2: whether the ramp also carries a "Planned ramp" label.
- * Every card is the real full-size `GoalCard` on the calendar-week grid (VW-421).
+ * A record, not a menu: every card is the real full-size `GoalCard`, on the
+ * calendar-week grid (VW-421), for each place a reading can sit.
  */
-const meta: Meta<DecisionArgs> = {
+const meta: Meta = {
   title: 'Lab/Decisions/Calibrating Goal Chart',
   tags: ['autodocs', 'status:lab'],
   parameters: { layout: 'fullscreen' },
-  argTypes: { showRampLabel: { control: 'boolean' } },
-  render: (args) => <CalibratingCards {...args} />,
+  render: () => <CalibratingCards />,
 }
 export default meta
 
-type Story = StoryObj<DecisionArgs>
+type Story = StoryObj
 
-/** The dashed ramp with no label: the note in the hatched weeks names it. */
-export const RampUnlabelled: Story = {
-  name: 'Dashed ramp, no label',
-  args: { showRampLabel: false },
-}
-
-/** The same, with "Planned ramp" written under the ramp. */
-export const RampLabelled: Story = {
-  name: 'Dashed ramp, labelled',
-  args: { showRampLabel: true },
-}
+/** CHOSEN: the dashed ramp, unlabelled; the note in the hatched weeks names it. */
+export const Chosen: Story = {}

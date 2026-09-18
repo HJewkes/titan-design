@@ -719,3 +719,21 @@ propose it, only wrong to treat it as settled.
 **The lab is now empty of this unit.** `src/lab/goal-cards/` kept only
 `SURVEY.md`; the kit, the specimen sheets and the lab `MuscleGlyph` are deleted,
 the last of them promoted to `custom/Workout/MuscleGlyph`.
+
+---
+
+## Calibrating chart "Planned ramp" label — rejected 2026-09-18
+
+**Tried:** in VW-433 round 2, the chosen calibrating chart (the dashed ramp, the
+weeks after the latest reading hatched with a note in them) with "Planned ramp"
+written under the ramp, a third of the way along it.
+
+**Chosen instead:** the ramp unlabelled. The human picked "unlabelled" and signed
+off.
+
+**Why:** the note in the hatched weeks already names the line ("Until then the line
+is the planned ramp from your start lift"), so the label said it a second time on
+the plane.
+
+**Code:** deleted: the `showRampLabel` prop and its story. `Lab/Decisions/Calibrating
+Goal Chart` keeps the chosen chart as its only story.
