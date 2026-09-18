@@ -33,6 +33,15 @@ describe('keyboard model', () => {
     expect(reduce(state, { type: 'advance' }).screen).toBe('review')
   })
 
+  it('follows keyboard navigation but not a stop the human clicked into', () => {
+    const advanced = reduce(initialState(m), { type: 'advance' })
+    expect(advanced).toMatchObject({ active: 1, follow: true })
+    expect(reduce(advanced, { type: 'activate', index: 4 })).toMatchObject({
+      active: 4,
+      follow: false,
+    })
+  })
+
   it('numbers pins per variant and focuses the new one', () => {
     const pin = { width: 360, x: 1, y: 2, xPct: 0, yPct: 0 }
     let state = reduce(initialState(m), { type: 'addPin', key: 'A', pin })

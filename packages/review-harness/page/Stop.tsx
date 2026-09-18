@@ -4,6 +4,8 @@ import type { Action } from './state.ts'
 interface StopProps {
   index: number
   active: boolean
+  /** Move focus and scroll here on activation; false when the human clicked or focused into it. */
+  follow: boolean
   dispatch: Dispatch<Action>
   className: string
   testId: string
@@ -11,17 +13,17 @@ interface StopProps {
 }
 
 /** One keyboard stop: Enter moves focus here, and focusing anything inside activates it. */
-export function Stop({ index, active, dispatch, className, testId, children }: StopProps) {
+export function Stop({ index, active, follow, dispatch, className, testId, children }: StopProps) {
   const ref = useRef<HTMLElement>(null)
   const mounted = useRef(false)
   useEffect(() => {
     const el = ref.current
     const firstRender = !mounted.current
     mounted.current = true
-    if (!active || !el || el.contains(document.activeElement)) return
+    if (!active || !follow || !el || el.contains(document.activeElement)) return
     el.focus({ preventScroll: true })
     if (!firstRender) el.scrollIntoView({ block: 'start', behavior: 'smooth' })
-  }, [active])
+  }, [active, follow])
   return (
     <section
       ref={ref}

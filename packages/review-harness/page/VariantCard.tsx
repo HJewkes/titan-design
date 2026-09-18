@@ -18,6 +18,7 @@ interface VariantCardProps {
   draft: VariantDraft
   index: number
   active: boolean
+  follow: boolean
   annotate: boolean
   focusPin: string | null
   dispatch: Dispatch<Action>
@@ -56,6 +57,7 @@ export function VariantCard(props: VariantCardProps) {
     <Stop
       index={index}
       active={active}
+      follow={props.follow}
       dispatch={dispatch}
       className="variant"
       testId={`variant-${variant.key}`}

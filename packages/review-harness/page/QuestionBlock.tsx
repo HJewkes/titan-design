@@ -10,6 +10,7 @@ interface QuestionBlockProps {
   draft: AnswerDraft
   index: number
   active: boolean
+  follow: boolean
   dispatch: Dispatch<Action>
 }
 
@@ -68,6 +69,7 @@ export function QuestionBlock(props: QuestionBlockProps) {
     <Stop
       index={index}
       active={active}
+      follow={props.follow}
       dispatch={dispatch}
       className="question"
       testId={`question-${question.id}`}
