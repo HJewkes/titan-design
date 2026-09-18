@@ -51,9 +51,13 @@ project adheres to [Semantic Versioning](https://semver.org/).
   carry a 20px mark and a phone the original 14px.
 - `valueReach` / `milestoneReach` (`goalMilestone.ts`) — one definition of where
   a reading landed against its target.
-- `GoalTrajectoryMini` (`status:lab`) — compact goal-chart variants for the grid
-  cell, with a Lab decision story. Folded in from #255; the variant is still the
-  human's choice to make.
+- `GoalTrajectoryMini` and `GoalWeekColumnsChart` — the compact goal chart, and
+  the body of `GoalCard size="compact"`. The block's week cells stand on the
+  chart's plane, on its own week columns, so a cell heads the column its point
+  sits in; the current week's column is lit, and the line is recessed so the
+  points lead. It runs through the big chart's own `deriveTrajectoryGeometry`, so
+  the curve, the value floor, the week columns and the marks come from one place.
+  Folded in from #255.
 
 ### Changed
 
@@ -63,6 +67,12 @@ project adheres to [Semantic Versioning](https://semver.org/).
   once the SPA moves to `GoalCard size="compact"`. Their test hooks moved onto the
   merged card: `goal-card-title`, `goal-card-status`, `goal-card-status-light`,
   `goal-card-trend`, `goal-card-content`, `goal-card-fold`.
+- The compact card draws the goal chart instead of a `Sparkline`, and the
+  summary above it no longer draws its own week cells — the chart's row is the
+  card's row. A second chart vocabulary on the same page as
+  `GoalTrajectoryChart`, and two rows of the same weeks, both went (VW-385
+  ideation round 2, D1 chosen; A, D2, D3 and the `Sparkline` path are deleted and
+  recorded in `REJECTED.md`).
 - `GoalTrajectoryChart` takes `showWeekLabels` (default on). The full goal card
   passes it off: its week cells stand on those very columns, so the axis was
   printing every week a second time a row lower.

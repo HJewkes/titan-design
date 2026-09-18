@@ -38,9 +38,13 @@ describe('GoalLiftCard', () => {
     expect(within(summary).getAllByText('8 x 105 lb').length).toBeGreaterThan(0)
   })
 
-  it('carries a week cell per week of the block', () => {
-    render(<GoalLiftCard {...baseProps} />)
+  it('carries a week cell per week of the block, on the chart it sits over', () => {
+    // The cells belong to the compact chart now, which needs a measured width.
+    render(<GoalLiftCard {...baseProps} chartWidth={408} />)
     expect(screen.getAllByTestId(/goal-milestone-week-fill-/)).toHaveLength(8)
+    expect(screen.getByTestId('goal-week-columns-chart')).toBeInTheDocument()
+    // One row of cells, not two: the summary above hands them to the chart.
+    expect(screen.getAllByTestId('goal-milestone-week-strip')).toHaveLength(1)
   })
 
   it('takes an explicit best set over the one derived from the readings', () => {

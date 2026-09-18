@@ -1,13 +1,10 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { useCallback, useState } from 'react'
-import { View, type LayoutChangeEvent, type ViewProps } from 'react-native'
+import { View, type ViewProps } from 'react-native'
 
 import { cn } from '../../../utils/cn'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { Card } from '../../ui/card'
 import { Indicator, type IndicatorColor } from '../../ui/indicator'
 import { Pill, type PillTone } from '../../ui/pill'
-import { useSurfaceMode } from '../../ui/surface'
 import { TipTrigger } from '../../ui/tooltip'
 import { useMeasuredWidth as useMeasuredBox } from '../Table/column-fit'
 import { Typography } from '../Typography'
@@ -18,6 +15,7 @@ import {
   GoalTrajectoryChart,
   WALL_BREAKPOINT,
   trajectoryReach,
+  type GoalNextTarget,
   type GoalTrajectoryChartProps,
 } from './GoalTrajectoryChart'
 import { trajectoryWeekScale } from './GoalTrajectoryChartGeometry'
@@ -28,7 +26,7 @@ import {
   type GoalWeekEntry,
 } from './goalMilestone'
 import { PrBadge } from './PrBadge'
-import { Sparkline } from './Sparkline'
+import { GoalWeekColumnsChart } from './GoalWeekColumnsChart'
 
 /**
  * The seven words the goals read model may say about a target. Mirrors
@@ -71,9 +69,11 @@ export interface GoalCardTrend {
   stretch: number
   /** Readings oldest first; they occupy only the elapsed part of the chart. */
   actuals: GoalLiftActual[]
-  /** The week the target is due; also the sparkline's right edge. */
+  /** The week the target is due; also the chart's right edge. */
   goalWeek: number
   unit: string
+  /** The next planned waypoint, drawn as the hollow marker. */
+  nextTarget?: GoalNextTarget
 }
 
 /** Everything the trajectory chart needs except its box, status and metric name. */
@@ -199,19 +199,6 @@ export function goalLiftStatusLabel(status: GoalLiftStatus): string {
   return GOAL_STATUS_LABEL[status]
 }
 
-/** A regressing trend paints `result-degrade` rather than `result-improve`. */
-function isRegressing(status: GoalLiftStatus): boolean {
-  return status === 'behind' || status === 'stalled'
-}
-
-function useMeasuredWidth(): [number, (event: LayoutChangeEvent) => void] {
-  const [width, setWidth] = useState(0)
-  const onLayout = useCallback((event: LayoutChangeEvent) => {
-    setWidth(Math.round(event.nativeEvent.layout.width))
-  }, [])
-  return [width, onLayout]
-}
-
 /**
  * The card's own props as the milestone block reads them: the target is the
  * milestone, the block runs to its due week, and the best set is the last
@@ -245,59 +232,6 @@ export function milestoneBlock({
     ...(reading ? { latest: reading } : {}),
     ...(weeks ? { weeks } : {}),
   }
-}
-
-function GoalTrend({
-  actuals,
-  committed,
-  stretch,
-  goalWeek,
-  unit,
-  status,
-  height,
-}: {
-  actuals: GoalLiftActual[]
-  committed: number
-  stretch: number
-  goalWeek: number
-  unit: string
-  status: GoalLiftStatus
-  height: number
-}) {
-  const [width, onLayout] = useMeasuredWidth()
-  const mode = useSurfaceMode()
-  const t = getSemanticColors(mode)
-  const edge = t['text-tertiary']
-
-  // The y range spans the readings AND both targets, so a target above every
-  // reading still lands inside the box. The x range runs to the goal week, so
-  // the distance left to close reads as distance.
-  const values = [...actuals.map((a) => a.value), committed, stretch]
-  const lo = Math.min(...values)
-  const hi = Math.max(...values)
-  const pad = (hi - lo || 1) * 0.08
-
-  return (
-    <View style={{ height }} onLayout={onLayout} testID="goal-card-trend">
-      {width > 0 && actuals.length > 0 && (
-        <Sparkline
-          data={actuals.map((a) => a.value)}
-          xValues={actuals.map((a) => a.weekIndex)}
-          domain={{ x: [1, Math.max(goalWeek, 1)], y: [lo - pad, hi + pad] }}
-          band={{ from: committed, to: stretch }}
-          width={width}
-          height={height}
-          highlightLast
-          referenceLabelPlacement="left"
-          color={isRegressing(status) ? t['result-degrade'] : t['result-improve']}
-          referenceLines={[
-            { value: committed, color: edge, dashed: true, label: `${committed}${unit}` },
-            { value: stretch, color: edge, dashed: true, label: `${stretch}${unit}` },
-          ]}
-        />
-      )}
-    </View>
-  )
 }
 
 /** The title row's marks, in one order for every size: priority, PR, status. */
@@ -504,23 +438,41 @@ function FullBody({ props, width }: { props: GoalCardProps; width: number }) {
   )
 }
 
-/** The grid cell's body: the same summary, over the sparkline. */
-function CompactBody({ props, height }: { props: GoalCardProps; height: number }) {
+/**
+ * The grid cell's body: the summary WITHOUT its own week cells, over the compact
+ * chart — which carries that one cells row itself, standing on its plane's top
+ * edge so each cell heads the column its point sits in (D1, VW-385 ideation
+ * round 2). Two rows of the same cells is what the fold already refused upstairs.
+ */
+function CompactBody({
+  props,
+  height,
+  width,
+}: {
+  props: GoalCardProps
+  height: number
+  width: number | null
+}) {
   const { trend, milestone, status } = props
   return (
     <View className="gap-stack-md">
-      <GoalMilestoneSummary {...milestone} scale="phone" />
-      {trend && (
-        <GoalTrend
-          actuals={trend.actuals}
-          committed={trend.committed}
-          stretch={trend.stretch}
-          goalWeek={trend.goalWeek}
-          unit={trend.unit}
-          status={status}
-          height={height}
-        />
-      )}
+      <GoalMilestoneSummary {...milestone} scale="phone" showWeeks={false} />
+      <View style={{ minHeight: height }} testID="goal-card-trend">
+        {trend && width !== null && (
+          <GoalWeekColumnsChart
+            actuals={trend.actuals}
+            committed={trend.committed}
+            goalWeek={trend.goalWeek}
+            unit={trend.unit}
+            status={status}
+            width={width}
+            height={height}
+            {...(milestone.currentWeek !== undefined ? { currentWeek: milestone.currentWeek } : {})}
+            {...(milestone.weeks ? { weeks: milestone.weeks } : {})}
+            {...(trend.nextTarget ? { nextTarget: trend.nextTarget } : {})}
+          />
+        )}
+      </View>
     </View>
   )
 }
@@ -627,7 +579,7 @@ export function GoalCard(props: GoalCardProps) {
           markSize={markSizeFor(measured.width)}
         />
         {size === 'compact' ? (
-          <CompactBody props={props} height={d.chartHeight} />
+          <CompactBody props={props} height={d.chartHeight} width={measured.width} />
         ) : (
           measured.width !== null && <FullBody props={props} width={measured.width} />
         )}

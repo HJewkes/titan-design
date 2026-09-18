@@ -51,6 +51,13 @@ split.
   grid cell, now `GoalCard size="compact"` under the name the SPA already imports.
   It maps the lift-shaped props onto the merged card and adds nothing of its own.
 
+  **Its chart is `GoalWeekColumnsChart` (D1), not a `Sparkline`.** The compact
+  card's summary hands its week cells to the chart, which stands them on its own
+  plane over its own week columns — one row that is both the week history and the
+  x axis. The `Sparkline` went because it was a second chart vocabulary on the
+  same page as `GoalTrajectoryChart`; the other variants (plane-only, ticked,
+  inset) are in `REJECTED.md`.
+
   _used-by ↑_ voltras-mcp `#/goals` `PerLiftTable`.
 
   **It leads with the meso target block, not its own hero.** The hand-rolled
