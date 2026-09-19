@@ -7,6 +7,24 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- `tokens.css` and its generator now carry depth and material values for plain-HTML
+  consumers: `--elevation-1..5-surface` (aliases onto the surface tokens),
+  `--lift-1..5`, `--material-paper-grain`, `--material-paper-shadow`,
+  `--material-inset-shadow` and `--glow-tight|subtle|medium|strong`. A glow is brand
+  primary by default; set `--glow-rgb` on an element to retint it. Each value is
+  read from `lift`, `elevation`, and `materials`, so a retune there reaches the CSS.
+- New package entries `@titan-design/react-ui/theme/tokens-css` (the
+  `generateTokensCss()` function, loadable in plain Node) and
+  `@titan-design/react-ui/tokens.css` (the built stylesheet).
+
+### Fixed
+
+- `dist/tokens.css` was missing from every published tarball: `prepublishOnly` re-ran
+  `tsup`, which cleans `dist/`, without re-running the CSS codegen. It now runs the
+  full build.
+
 ## 0.20.0
 
 ### Changed

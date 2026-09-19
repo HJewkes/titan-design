@@ -13,6 +13,7 @@
  */
 
 import { darkThemeCSSVars, lightThemeCSSVars } from './config'
+import { depthCSSVars } from './depth-css-vars'
 
 type CSSVarMap = Record<string, string>
 
@@ -27,10 +28,15 @@ function formatBlock(selector: string, vars: CSSVarMap): string {
 
 /**
  * Build the full `tokens.css` contents: a default (dark) `:root` block plus a
- * `.light` override block, driven entirely by the exported token maps.
+ * `.light` override block, driven entirely by the exported token maps. Depth and
+ * material vars follow the theme tokens in each block; they have no `global.css`
+ * counterpart because the app reads them through the style helpers instead.
  */
 export function generateTokensCss(): string {
-  const root = formatBlock(':root', darkThemeCSSVars)
-  const light = formatBlock('.light, :root.light', lightThemeCSSVars)
+  const root = formatBlock(':root', { ...darkThemeCSSVars, ...depthCSSVars('dark') })
+  const light = formatBlock('.light, :root.light', {
+    ...lightThemeCSSVars,
+    ...depthCSSVars('light'),
+  })
   return `${GENERATED_HEADER}\n\n${root}\n\n${light}\n`
 }
