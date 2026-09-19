@@ -17,6 +17,11 @@ project adheres to [Semantic Versioning](https://semver.org/).
   and moves each off the readings, the tip targets and the other label. The
   accessible name keeps the words. Defaults are unchanged, pending the owner's
   pick in titan-0201 round 3.
+- `GoalMilestoneSummary` `heroLeading` (`default`; `tight`), reachable through
+  `GoalCard`'s `milestone` and `GoalMilestoneTile`. `tight` sets the hero
+  numeral's line height to its font size, taking the empty leading above the
+  "1 lb" off every milestone surface. Default unchanged, pending titan-0201
+  round 3.
 
 ### Changed
 

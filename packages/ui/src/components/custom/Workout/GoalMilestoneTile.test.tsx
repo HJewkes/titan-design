@@ -102,6 +102,16 @@ describe('GoalMilestoneTile', () => {
       expect(capturedClassNames.get('goal-milestone-week-count')).not.toContain('leading-normal')
     })
 
+    it("keeps the hero numeral on its type step's own leading by default", () => {
+      render(<GoalMilestoneTile {...base} />)
+      expect(capturedClassNames.get('goal-milestone-hero')).not.toContain('leading-none')
+    })
+
+    it("sets the hero numeral's leading to its font size when tight", () => {
+      render(<GoalMilestoneTile {...base} heroLeading="tight" />)
+      expect(capturedClassNames.get('goal-milestone-hero')).toContain('leading-none')
+    })
+
     it('dashes the best cell when nothing has matched yet', () => {
       render(<GoalMilestoneTile {...base} latest={undefined} />)
 
