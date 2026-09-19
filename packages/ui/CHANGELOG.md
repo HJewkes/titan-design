@@ -42,6 +42,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
   in it until the first `onLayout`. On React Native the first frame is empty;
   server-rendered HTML carries only the empty frame, and the strip appears once
   the client measures it. Passing `layout` draws at once, as before.
+- `PinnedLiveStrip` no longer redraws its bar plot on every rest tick. The plot
+  redraws only when `reps` (by identity), `targetReps`, the thresholds (by value)
+  or the layout change.
 
 
 ## 0.21.0

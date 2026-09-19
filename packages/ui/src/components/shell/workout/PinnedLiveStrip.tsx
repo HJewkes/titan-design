@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { useState, type ReactNode } from 'react'
+import { memo, useState, type ReactNode } from 'react'
 import {
   View,
   Text,
@@ -47,7 +47,7 @@ export interface PinnedLiveStripProps {
   setCount: number
   /** Pre-formatted load, e.g. "140 lb". */
   loadLabel?: string
-  /** Performed reps of the current set (in `rest`, of the set just finished), zones from analytics. */
+  /** Performed reps of the current set (in `rest`, of the set just finished), zones from analytics. Pass the same array while it is unchanged: the bar plot redraws only when it, the target, the thresholds or the layout change. */
   reps: readonly LiveStripRep[]
   targetReps: number
   /** `loss` (default) colours each bar by its loss from the set's best, as the live hero does; `zone` by the rep's zone. */
@@ -302,7 +302,26 @@ function Velocity({
   )
 }
 
-function RepBars(props: Parts & { fill?: boolean }) {
+type RepBarsProps = Pick<Parts, 'reps' | 'targetReps' | 'scale' | 'barColor' | 'lossThresholds'> & {
+  fill?: boolean
+}
+
+const sameThresholds = (a?: VelocityLossThresholds, b?: VelocityLossThresholds) =>
+  a === b || (a != null && b != null && a.every((t, i) => t === b[i]))
+
+// The plot depends only on these, so a consumer ticking the rest countdown never redraws it.
+function sameBars(a: RepBarsProps, b: RepBarsProps): boolean {
+  return (
+    a.reps === b.reps &&
+    a.targetReps === b.targetReps &&
+    a.scale === b.scale &&
+    a.barColor === b.barColor &&
+    a.fill === b.fill &&
+    sameThresholds(a.lossThresholds, b.lossThresholds)
+  )
+}
+
+const RepBars = memo(function RepBars(props: RepBarsProps) {
   const { reps, targetReps, scale, fill, barColor, lossThresholds } = props
   const slots: SetSlot[] = reps.map((rep) => ({ kind: 'rep', value: rep.velocity }))
   // Without a plan the frame is as wide as the reps done, so the bars never collapse to nothing.
@@ -328,7 +347,16 @@ function RepBars(props: Parts & { fill?: boolean }) {
       />
     </View>
   )
-}
+}, sameBars)
+
+/** The props the bar plot reads, and nothing that changes as the rest counts down. */
+const barsOf = ({ reps, targetReps, scale, barColor, lossThresholds }: Parts): RepBarsProps => ({
+  reps,
+  targetReps,
+  scale,
+  barColor,
+  lossThresholds,
+})
 
 function BackToLive() {
   return (
@@ -358,7 +386,7 @@ function WallRow(props: Parts) {
           </View>
         </View>
         <WallValues {...props} />
-        <RepBars {...props} />
+        <RepBars {...barsOf(props)} />
       </View>
       {props.isLink ? <BackToLive /> : null}
     </View>
@@ -393,7 +421,7 @@ function PhoneRows(props: Parts) {
       >
         <HeroNumeral {...props} />
         <Velocity {...props} showUnit={false} />
-        <RepBars {...props} fill />
+        <RepBars {...barsOf(props)} fill />
       </View>
     </View>
   )
