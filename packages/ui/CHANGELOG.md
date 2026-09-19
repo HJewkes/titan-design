@@ -49,6 +49,13 @@ project adheres to [Semantic Versioning](https://semver.org/).
   them, one step tighter than the `stack-sm` that separates them from the hero
   and the chart, and on a normal line height (18px) instead of the caption's
   loose 24px, so the three read as one block. The one-row layout is unchanged.
+- `GoalTrajectoryChart`'s next-target tip grows its hit area from 24px to 44px
+  under a touch pointer (coarse `pointer` media query, and on native), like the
+  calibrating info target, and follows the pointer when it changes. Both boxes
+  stay inside the chart, and the info target keeps clear of the next-target
+  tip's real box. A calibrating chart whose info target hangs under the plot
+  grows by the overhang, so the target stays inside the card. On a fine
+  pointer nothing changes.
 
 ### Fixed
 
@@ -85,7 +92,6 @@ project adheres to [Semantic Versioning](https://semver.org/).
   ("Calibrating") logs a development-only console warning, since the card's
   pill already says it. The note still draws as given; production builds skip
   the check.
-
 
 ## 0.21.0
 

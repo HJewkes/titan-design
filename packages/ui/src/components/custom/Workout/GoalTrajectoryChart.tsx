@@ -11,7 +11,6 @@ import {
   deriveTrajectoryGeometry,
   type GoalActualPoint,
   type GoalNextTarget,
-  type NextTargetCoord,
   type GoalDirection,
   type GoalExpectedPoint,
   type GoalTrajectoryGeometry,
@@ -30,6 +29,7 @@ import {
   calibratingMarks,
   resolveCalibratingNote,
 } from './GoalTrajectoryCalibrating'
+import { hitBoxAround, useHitTargetSize, type HitBox } from './goalTrajectoryTargets'
 import type { BandFade } from './GoalTrajectoryBand'
 import type { BandCurve } from './GoalTrajectoryChartGeometry'
 import type { PlotBaseline } from './GoalTrajectoryPlot'
@@ -272,6 +272,7 @@ export function GoalTrajectoryChart({
   ...props
 }: GoalTrajectoryChartProps) {
   const surface = useSurface()
+  const targetSize = useHitTargetSize()
   const axisColor = useOnSurfaceColor('tertiary')
   const reach = outcomeReach(status) ?? trajectoryReach(committed, actuals, direction)
   const toneStatus = reach === 'short' ? status : REACH_STATUS[reach]
@@ -319,7 +320,13 @@ export function GoalTrajectoryChart({
     calibratingNote,
     calibrating ? STATUS_LABEL.calibrating : undefined
   )
-  const marks = calibrating ? calibratingMarks({ geometry }) : null
+  const nextTargetBox =
+    geometry.nextTarget && nextTarget
+      ? hitBoxAround(geometry.nextTarget, targetSize, width, height)
+      : null
+  const marks = calibrating ? calibratingMarks({ geometry, targetSize, nextTargetBox }) : null
+  // A target hung under the plot may reach past the canvas; the chart grows to hold it.
+  const overhang = marks ? Math.max(0, marks.target.y + marks.target.size - height) : 0
   const label =
     summarize(statusLabel, geometry, committed, stretch, unit, metricLabel) +
     (calibrating ? calibratingSummary(note) : '')
@@ -373,33 +380,35 @@ export function GoalTrajectoryChart({
           calibrating={marks}
         />
       </View>
+      {overhang > 0 && (
+        <View style={{ height: overhang }} testID="goal-trajectory-chart-overhang" />
+      )}
       {marks && <CalibratingInfo marks={marks} note={note} palette={palette} />}
-      {geometry.nextTarget && nextTarget && (
-        <NextTargetTip point={geometry.nextTarget} label={nextTarget.label} />
+      {nextTargetBox && nextTarget && (
+        <NextTargetTip box={nextTargetBox} label={nextTarget.label} />
       )}
     </View>
   )
 }
 
-/** Side of the square hit area the next-target tip opens from. */
-const TIP_HIT = 24
-
 /**
  * The marker's words, one hover away: a hit target over the plane rather than a
  * label on it. Absolute against the chart's own box, whose origin is the canvas.
+ * The box is 24px, 44px under a touch pointer, and kept inside the chart.
  */
-function NextTargetTip({ point, label }: { point: NextTargetCoord; label: string }) {
+function NextTargetTip({ box, label }: { box: HitBox; label: string }) {
+  const square = { width: box.size, height: box.size }
   return (
     <View
-      style={{ position: 'absolute', left: point.x - TIP_HIT / 2, top: point.y - TIP_HIT / 2 }}
+      style={{ position: 'absolute', left: box.x, top: box.y }}
       testID="goal-trajectory-chart-next-target-tip"
     >
       <TipTrigger
         label="Next target"
         content={<Typography variant="body2">{label}</Typography>}
-        style={{ width: TIP_HIT, height: TIP_HIT }}
+        style={square}
       >
-        <View style={{ width: TIP_HIT, height: TIP_HIT }} />
+        <View style={square} />
       </TipTrigger>
     </View>
   )

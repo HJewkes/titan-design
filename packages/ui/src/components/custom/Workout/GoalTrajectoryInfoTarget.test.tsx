@@ -4,17 +4,22 @@
  * between the chart's left edge and the target.
  */
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { act, render, renderHook, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { GoalTrajectoryChart } from './GoalTrajectoryChart'
 import {
   CALIBRATING_TIP_LABEL,
-  INFO_TARGET_POINTER,
-  INFO_TARGET_TOUCH,
   calibratingMarks,
   calibratingTipWidth,
-  infoTargetSize,
 } from './GoalTrajectoryCalibrating'
+import {
+  HIT_TARGET_POINTER as INFO_TARGET_POINTER,
+  HIT_TARGET_TOUCH as INFO_TARGET_TOUCH,
+  boxesTouch,
+  hitBoxAround,
+  hitTargetSize,
+  useHitTargetSize,
+} from './goalTrajectoryTargets'
 import {
   deriveTrajectoryGeometry,
   type GeometryPoint,
@@ -129,14 +134,93 @@ describe('the info target', () => {
 describe('the hit size', () => {
   afterEach(() => vi.unstubAllGlobals())
 
+  function stubPointer(coarse: boolean) {
+    const listeners = new Set<() => void>()
+    const query = {
+      matches: coarse,
+      addEventListener: (_: string, fn: () => void) => listeners.add(fn),
+      removeEventListener: (_: string, fn: () => void) => listeners.delete(fn),
+    }
+    vi.stubGlobal('matchMedia', () => query)
+    return {
+      switchTo(next: boolean) {
+        query.matches = next
+        listeners.forEach((fn) => fn())
+      },
+      listeners,
+    }
+  }
+
   it('is 24px under a fine pointer', () => {
-    vi.stubGlobal('matchMedia', () => ({ matches: false }))
-    expect(infoTargetSize()).toBe(INFO_TARGET_POINTER)
+    stubPointer(false)
+    expect(hitTargetSize()).toBe(INFO_TARGET_POINTER)
   })
 
   it('is 44px when the main pointer is touch', () => {
-    vi.stubGlobal('matchMedia', () => ({ matches: true }))
-    expect(infoTargetSize()).toBe(INFO_TARGET_TOUCH)
+    stubPointer(true)
+    expect(hitTargetSize()).toBe(INFO_TARGET_TOUCH)
+  })
+
+  it('follows the main pointer when it changes, and stops listening on unmount', () => {
+    const pointer = stubPointer(false)
+    const { result, unmount } = renderHook(() => useHitTargetSize())
+    expect(result.current).toBe(INFO_TARGET_POINTER)
+    act(() => pointer.switchTo(true))
+    expect(result.current).toBe(INFO_TARGET_TOUCH)
+    unmount()
+    expect(pointer.listeners.size).toBe(0)
+  })
+})
+
+describe('the info target and the next-target tip', () => {
+  // The next target walked through the right-hand corners of an early goal's plot, 2px apart.
+  it.each([
+    [INFO_TARGET_POINTER, 360, 220],
+    [INFO_TARGET_TOUCH, 360, 220],
+    [INFO_TARGET_TOUCH, 320, 220],
+    [INFO_TARGET_TOUCH, 1920, 340],
+  ])('never touch at %ipx on a %ix%i chart', (size, width, height) => {
+    const base = deriveTrajectoryGeometry({ ...calibratingGoalAt('start'), width, height })
+    const { plot } = base
+    for (let x = plot.right - 80; x <= plot.right; x += 2) {
+      for (const y of [
+        ...Array.from({ length: 40 }, (_, i) => plot.bottom - i * 2),
+        ...Array.from({ length: 40 }, (_, i) => plot.top + i * 2),
+      ]) {
+        const point = { x, y }
+        const geometry = { ...base, nextTarget: { ...point, weekIndex: 3, value: 0, leadPath: '' } }
+        const nextTargetBox = hitBoxAround(point, size, width, height)
+        const { target } = calibratingMarks({ geometry, targetSize: size, nextTargetBox })
+        expect(boxesTouch(target, nextTargetBox)).toBe(false)
+        expect(target.x).toBeGreaterThanOrEqual(0)
+        expect(target.x + target.size).toBeLessThanOrEqual(width)
+        expect(nextTargetBox.x + nextTargetBox.size).toBeLessThanOrEqual(width)
+        expect(nextTargetBox.y + nextTargetBox.size).toBeLessThanOrEqual(height)
+      }
+    }
+  })
+
+  it('keeps a grown next-target tip inside the chart at its right edge', () => {
+    expect(hitBoxAround({ x: 318, y: 5 }, 44, 320, 220)).toEqual({ x: 276, y: 0, size: 44 })
+  })
+})
+
+describe('a target hung under the plot', () => {
+  afterEach(() => vi.unstubAllGlobals())
+
+  it('grows the chart so a 44px target stays inside it, and so inside the card', () => {
+    vi.stubGlobal('matchMedia', () => ({
+      matches: true,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+    }))
+    const goal = goalWithLatest(8, 90)
+    render(<GoalTrajectoryChart {...goal} width={296} height={220} animate={false} />)
+    const g = deriveTrajectoryGeometry({ ...goal, width: 296, height: 220 })
+    const { target } = calibratingMarks({ geometry: g, targetSize: INFO_TARGET_TOUCH })
+    expect(target.corner).toBe('below')
+    const overhang = screen.getByTestId('goal-trajectory-chart-overhang')
+    expect(overhang).toHaveStyle({ height: `${target.y + target.size - 220}px` })
   })
 })
 
