@@ -19,6 +19,7 @@ import { ChevronRightIcon } from '../../icons'
 import { SetBarChart, type SetSlot } from '../../custom/charts/SetBarChart'
 import {
   normalizeLossThresholds,
+  velocityLossForRep,
   type VelocityLossThresholds,
 } from '../../custom/Workout/VelocityStrip'
 import {
@@ -53,7 +54,7 @@ export interface PinnedLiveStripProps {
   barColor?: LiveStripBarColor
   /** `loss` only: loss (%) where bars turn yellow, orange and red. Pass the hero's thresholds so both agree. Default 10/20/30, as the hero. */
   lossThresholds?: VelocityLossThresholds
-  /** Analytics says the set has fatigued past its cut-off. Shown by the strip's edge and wash, never text. */
+  /** Analytics says the set has fatigued past its cut-off. Shown by the strip's edge and wash, never visible text; the accessible name says "fatigued". */
   isFatigued?: boolean
   /** `rest` only: time left and the rest's full length, in ms. */
   restRemainingMs?: number
@@ -446,15 +447,33 @@ function RestBar({ restRemainingMs, restDurationMs }: PinnedLiveStripProps) {
   )
 }
 
+function progressPhrase({ state, reps, targetReps, restRemainingMs }: Parts): string {
+  if (state === 'rest') return `${liveStripRestReadout(restRemainingMs).seconds} seconds rest left`
+  return targetReps > 0 ? `${reps.length} of ${targetReps} reps` : `${reps.length} reps`
+}
+
+/** The last rep as the numeral and bars show it: velocity, and its loss from the set's best. */
+function lastRepPhrase(reps: readonly LiveStripRep[]): string | null {
+  const last = reps[reps.length - 1]
+  if (!last) return null
+  const best = Math.max(...reps.map((r) => r.velocity))
+  const loss = Math.round(velocityLossForRep(last.velocity, best))
+  return `last rep ${formatVelocity(last.velocity)} m/s, ${loss}% loss from best`
+}
+
+/** What a sighted lifter reads off the strip, colour included: fatigue is said, not only shown. */
 function accessibleName(props: Parts): string {
-  const { state, exerciseName, reps, targetReps, restRemainingMs, isLink } = props
-  const progress =
-    state === 'rest'
-      ? `${liveStripRestReadout(restRemainingMs).seconds} seconds rest left`
-      : targetReps > 0
-        ? `${reps.length} of ${targetReps} reps`
-        : `${reps.length} reps`
-  const summary = `${exerciseName}, ${setLine(props, false)}, ${progress}`
+  const { exerciseName, tone, isLink } = props
+  const summary = [
+    TONE[tone].tag.label,
+    exerciseName,
+    setLine(props, false),
+    progressPhrase(props),
+    lastRepPhrase(props.reps),
+    tone === 'fatigue' ? 'fatigued' : null,
+  ]
+    .filter(Boolean)
+    .join(', ')
   return isLink ? `Back to live: ${summary}` : summary
 }
 

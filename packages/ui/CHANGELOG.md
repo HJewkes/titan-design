@@ -33,6 +33,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
   longer gives the bar frame a negative or NaN width. The strip draws the whole
   reps of a fractional target; without a usable target it draws the reps done,
   reads "4" rather than "4/0", and names "4 reps".
+- `PinnedLiveStrip`'s accessible name now carries what the strip shows only in
+  colour: it opens with the state ("Live set" or "Resting") and ends with the
+  last rep's velocity, its loss from the set's best as a whole percent, and
+  "fatigued" when the strip shows fatigue. The visible text is unchanged.
 
 
 ## 0.21.0
