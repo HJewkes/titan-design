@@ -1,6 +1,7 @@
 import { emptyDraft, type ReviewDraft } from '../src/feedback.ts'
 import { questionScope } from '../src/round.ts'
 import type { Annotation, Manifest, Question, Verdict } from '../src/schema.ts'
+import { loadDraft, type DraftStorage } from './draftStore.ts'
 
 export type Stop =
   | { kind: 'variant'; key: string }
@@ -71,6 +72,17 @@ export function initialState(manifest: Manifest): ReviewState {
     errors: [],
     focusPin: null,
   }
+}
+
+/** The fresh state, carrying the unsent draft a reload of this same manifest left behind. */
+export function restoredState(
+  manifest: Manifest,
+  manifestSha256: string,
+  storage: DraftStorage | null
+): ReviewState {
+  const state = initialState(manifest)
+  const draft = loadDraft(storage, manifest, manifestSha256)
+  return draft ? { ...state, draft } : state
 }
 
 function nextPinId(key: string, pins: Annotation[]): string {
