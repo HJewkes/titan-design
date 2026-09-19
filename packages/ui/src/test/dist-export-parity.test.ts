@@ -49,11 +49,15 @@ const KNOWN_TYPE_ONLY_BARE_NAMES = new Set([
   'GoalCardProps',
   'GoalDirection',
   'GoalExpectedPoint',
+  // VW-455's WholeBodyCard and GoalPriorityIndex add a hop to these two: a type alias in
+  // `GoalCard.tsx` and one in `GoalPriorityIcon.tsx`.
+  'GoalLiftStatus',
   'GoalMilestoneReading',
   'GoalMilestoneSummaryProps',
   'GoalMilestoneState',
   'GoalMilestoneTarget',
   'GoalNextTarget',
+  'GoalPriority',
   'GoalReach',
   'GoalTrajectoryStatus',
   'GoalTrajectoryWeek',
