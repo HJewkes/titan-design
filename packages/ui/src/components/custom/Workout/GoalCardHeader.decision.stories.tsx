@@ -82,3 +82,11 @@ export const FullPastedNoMarks: Story = {
   args: { ...fullCard(NAMES.pasted), priority: undefined, isPR: false },
 }
 export const CompactPasted: Story = { args: compactCard(NAMES.pasted) }
+
+/** The facts stacked, as a narrow grid column lays them out (the consumer's per-lift page at 360). */
+function withStackedFacts(card: GoalCardProps): GoalCardProps {
+  return { ...card, milestone: { ...card.milestone, summaryFit: 'stacked' } }
+}
+
+export const FullStackedFacts: Story = { args: withStackedFacts(fullCard(NAMES.medium)) }
+export const CompactStackedFacts: Story = { args: withStackedFacts(compactCard(NAMES.medium)) }

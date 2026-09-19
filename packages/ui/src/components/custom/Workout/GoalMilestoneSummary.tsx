@@ -231,20 +231,25 @@ function Hero({ tile, scale }: { tile: ResolvedTile; scale: GoalMilestoneTileSca
   )
 }
 
+// The caption's own leading is loose (24px on 12px text); stacked facts take normal (18px).
+const STACKED_LEADING = 'leading-normal'
+
 /** One fact: a muted word and its figure, the figure bold and bright. */
 function Fact({
   label,
   value,
   align,
+  leading,
 }: {
   label: string
   value: string
   align: 'left' | 'center' | 'right'
+  leading?: string
 }) {
   return (
-    <Typography variant="caption" color="tertiary" align={align} maxLines={1}>
+    <Typography variant="caption" color="tertiary" align={align} maxLines={1} className={leading}>
       {`${label} `}
-      <Typography variant="caption" color="primary" className="font-bold">
+      <Typography variant="caption" color="primary" className={cn('font-bold', leading)}>
         {value}
       </Typography>
     </Typography>
@@ -252,9 +257,9 @@ function Fact({
 }
 
 /** The week reads as one muted phrase, so it takes no bold figure of its own. */
-function WeekFact({ text, testID }: { text: string; testID?: string }) {
+function WeekFact({ text, testID, leading }: { text: string; testID?: string; leading?: string }) {
   return (
-    <Typography variant="caption" color="tertiary" maxLines={1} testID={testID}>
+    <Typography variant="caption" color="tertiary" maxLines={1} testID={testID} className={leading}>
       {text}
     </Typography>
   )
@@ -265,20 +270,34 @@ function FactItems({
   tile,
   spread,
   measuring = false,
+  leading,
 }: {
   tile: ResolvedTile
   spread: boolean
   /** The hidden copy carries no test hooks: one row owns them. */
   measuring?: boolean
+  /** Stacked: a line box nearer the text's own height, so the three read as one block. */
+  leading?: string
 }) {
   return (
     <>
       <WeekFact
         text={tile.weekText ?? ''}
         testID={measuring ? undefined : 'goal-milestone-week-count'}
+        leading={leading}
       />
-      <Fact label="Best" value={tile.bestText ?? '—'} align={spread ? 'center' : 'left'} />
-      <Fact label="Goal" value={targetText(tile.props.target)} align={spread ? 'right' : 'left'} />
+      <Fact
+        label="Best"
+        value={tile.bestText ?? '—'}
+        align={spread ? 'center' : 'left'}
+        leading={leading}
+      />
+      <Fact
+        label="Goal"
+        value={targetText(tile.props.target)}
+        align={spread ? 'right' : 'left'}
+        leading={leading}
+      />
     </>
   )
 }
@@ -314,10 +333,11 @@ function SummaryRow({ tile }: { tile: ResolvedTile }) {
             ? undefined
             : { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' }
         }
-        className={stacked ? 'gap-stack-sm' : 'gap-inline-lg'}
+        // Stacked, the facts sit one step tighter than the blocks around them (stack-sm), as one group.
+        className={stacked ? 'gap-0' : 'gap-inline-lg'}
         testID="goal-milestone-facts"
       >
-        <FactItems tile={tile} spread={!stacked} />
+        <FactItems tile={tile} spread={!stacked} leading={stacked ? STACKED_LEADING : undefined} />
       </View>
     </View>
   )
