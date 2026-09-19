@@ -226,6 +226,13 @@ const zoneHexMap: Record<string, string> = {
  * Velocity loss for a set, as a whole percentage. Uses the running-best rep as
  * the reference (matching WA-02.05 / brain WA-D01): `(vBest − vLast) / vBest`,
  * clamped to ≥ 0 so a set that ends on its best rep reports 0 loss.
+ *
+ * **Rounded to the nearest percent.** Do not band this value or show it beside a
+ * loss colour: a 19.96 percent loss rounds to 20 and would read "20%" beside a bar
+ * that {@link getVelocityLossColor} colours below a 20 threshold. Band the exact
+ * loss from {@link velocityLossForRep} and show it through {@link shownVelocityLoss}.
+ *
+ * @see shownVelocityLoss
  */
 export function calculateVelocityLoss(velocities: number[]): number {
   if (velocities.length < 2) return 0
