@@ -124,6 +124,19 @@ kbd {
   display: block;
 }
 
+.frame-dead {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-stack-md);
+  padding: var(--space-inset-md);
+  text-align: center;
+  background: var(--color-surface-base);
+  color: var(--color-status-error);
+}
+
 .overlay {
   position: absolute;
   inset: 0;

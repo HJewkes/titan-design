@@ -1,13 +1,14 @@
-import { useMemo, useReducer, useState, type Dispatch } from 'react'
+import { useEffect, useMemo, useReducer, useState, type Dispatch } from 'react'
 import { buildFeedback } from '../src/feedback.ts'
 import { feedbackProblems } from '../src/round.ts'
 import type { Manifest } from '../src/schema.ts'
 import { QuestionBlock } from './QuestionBlock.tsx'
 import { ReviewScreen } from './ReviewScreen.tsx'
+import { browserStorage, clearDraft, saveDraft, type DraftStorage } from './draftStore.ts'
 import {
   createReducer,
-  initialState,
   orderedQuestions,
+  restoredState,
   type Action,
   type ReviewState,
 } from './state.ts'
@@ -156,9 +157,22 @@ function Form({
   )
 }
 
+/** Keeps the unsent draft across a reload; a sent round leaves nothing behind. */
+function useDraftBackup(storage: DraftStorage | null, manifestSha256: string, state: ReviewState) {
+  const { draft, screen } = state
+  useEffect(() => {
+    if (screen === 'sent') clearDraft(storage, manifestSha256)
+    else saveDraft(storage, manifestSha256, draft)
+  }, [storage, manifestSha256, draft, screen])
+}
+
 export function App({ manifest, manifestSha256 }: AppProps) {
   const reducer = useMemo(() => createReducer(manifest), [manifest])
-  const [state, dispatch] = useReducer(reducer, manifest, initialState)
+  const storage = useMemo(() => browserStorage(), [])
+  const [state, dispatch] = useReducer(reducer, manifest, (m) =>
+    restoredState(m, manifestSha256, storage)
+  )
+  useDraftBackup(storage, manifestSha256, state)
   const [hitTesting, setHitTesting] = useState<boolean | null>(null)
   const feedback = buildFeedback(manifest, manifestSha256, state.draft, new Date())
   const problems = feedbackProblems(feedback, manifest)

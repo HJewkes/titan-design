@@ -56,6 +56,38 @@ function sameOriginDocument(iframe: HTMLIFrameElement | null): Document | null {
   }
 }
 
+/** The harness proxy answers a dead Storybook with a text page, which has no story root. */
+export function reachedStorybook(doc: Pick<Document, 'getElementById'> | null): boolean {
+  return doc === null || doc.getElementById('storybook-root') !== null
+}
+
+/** Whether the last load reached Storybook, and a retry that remounts the iframe. */
+function useFrameHealth(onHitTesting: (sameOrigin: boolean) => void) {
+  const [attempt, setAttempt] = useState(0)
+  const [dead, setDead] = useState(false)
+  const onLoad = (iframe: HTMLIFrameElement) => {
+    const doc = sameOriginDocument(iframe)
+    onHitTesting(Boolean(doc))
+    setDead(!reachedStorybook(doc))
+  }
+  const retry = () => {
+    setDead(false)
+    setAttempt((n) => n + 1)
+  }
+  return { attempt, dead, onLoad, retry }
+}
+
+function DeadFrame({ testId, onRetry }: { testId: string; onRetry: () => void }) {
+  return (
+    <div className="frame-dead" role="alert" data-testid={testId}>
+      <p>Preview unreachable: Storybook did not answer for this story.</p>
+      <button type="button" onClick={onRetry}>
+        Retry
+      </button>
+    </div>
+  )
+}
+
 function hitTarget(iframe: HTMLIFrameElement | null, x: number, y: number) {
   const hit = sameOriginDocument(iframe)?.elementFromPoint(x, y) as HTMLElement | null | undefined
   if (!hit) return undefined
@@ -70,6 +102,7 @@ export function Frame(props: FrameProps) {
   const { ref: fitRef, scale } = useFitScale(width)
   const { ref: lazyRef, near } = useNearViewport()
   const iframe = useRef<HTMLIFrameElement>(null)
+  const health = useFrameHealth(props.onHitTesting)
 
   const onOverlayClick = (e: MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect()
@@ -91,12 +124,13 @@ export function Frame(props: FrameProps) {
       >
         {near && (
           <iframe
+            key={health.attempt}
             ref={iframe}
             title={`${variant.key} · ${variant.label} at ${width}px`}
             src={storyUrl('', variant)}
             tabIndex={-1}
             style={{ width, height, transform: `scale(${scale})` }}
-            onLoad={(e) => props.onHitTesting(Boolean(e.currentTarget.contentDocument))}
+            onLoad={(e) => health.onLoad(e.currentTarget)}
           />
         )}
         <div
@@ -112,6 +146,9 @@ export function Frame(props: FrameProps) {
               </span>
             ))}
         </div>
+        {health.dead && (
+          <DeadFrame testId={`dead-${variant.key}-${width}`} onRetry={health.retry} />
+        )}
       </div>
     </figure>
   )
