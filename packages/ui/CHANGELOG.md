@@ -7,6 +7,42 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- `PinnedLiveStrip` now colours bars by loss from the set's best by default
+  (`barColor="loss"`), the same as the live hero (VW-429 colour round). The
+  0.19.0 behaviour, per-rep zone colour, is `barColor="zone"`. The last-rep
+  velocity follows the same colour.
+- `PinnedLiveStrip` wall row: the "Reps" / "Rest left" and "Last rep" overlines
+  share one line above the numerals and clear the strip's top edge. The bars are
+  taller (wall 40 to 48px, phone 26 to 32px) and still stand on the shared
+  baseline.
+- `VelocityStrip`'s "Loss" text turns orange and red at the same thresholds as
+  the bars (it used fixed 20 and 25 percent cut-offs).
+- `LiveStripRep.zone` is optional. Under `barColor="zone"` a rep without a zone
+  falls back to its loss colour.
+- `VelocityLossBands`: when the amber and red decision lines sit closer than a
+  label height, only the red (stop) line is labelled.
+
+### Added
+
+- `lossThresholds` (`[yellow, orange, red]` loss %, default `[10, 20, 30]`) on
+  `VelocityStrip`, `VelocityHero`, `LiveFatiguePanel` (`velocity.lossThresholds`)
+  and `PinnedLiveStrip`. It moves the bar colour bands and the hero's amber and
+  red decision lines. Pass the same thresholds to the strip and the hero and
+  their bars match. titan does not derive them; the caller does. Parity holds on
+  dark surfaces; in light mode the hero's fixed colours and the strip's theme
+  tokens still differ.
+- `DualVelocityStrip` takes `lossThresholds` and passes it to both wings in every
+  variant.
+- `normalizeLossThresholds`: thresholds are taken as three finite numbers,
+  clamped to 0..100 and sorted; anything else falls back to 10/20/30 with a
+  dev-only warning. Every surface applies it, and a 0 percent loss is always
+  green.
+- Exported from the barrel: `VelocityLossThresholds`, `VelocityLossBand`,
+  `velocityLossBand`, `velocityLossForRep`, `getVelocityLossColor` and
+  `normalizeLossThresholds`.
+
 ## 0.19.0
 
 ### Added

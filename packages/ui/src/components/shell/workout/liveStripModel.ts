@@ -1,4 +1,9 @@
 import { type resolveColor } from '../../../theme/resolve-color'
+import {
+  velocityLossBand,
+  velocityLossForRep,
+  type VelocityLossThresholds,
+} from '../../custom/Workout/VelocityStrip'
 
 type ColorToken = Parameters<typeof resolveColor>[0]
 
@@ -9,10 +14,10 @@ type ColorToken = Parameters<typeof resolveColor>[0]
  */
 export type LiveStripZone = 'grinding' | 'maximalStrength' | 'strengthSpeed' | 'power' | 'speed'
 
-/** One performed rep: its mean concentric velocity (m/s) and the zone analytics assigned it. */
+/** One performed rep: its mean concentric velocity (m/s) and the zone analytics assigned it (used by `barColor="zone"`). */
 export interface LiveStripRep {
   velocity: number
-  zone: LiveStripZone
+  zone?: LiveStripZone
 }
 
 /** The session phase the strip mirrors. `idle` renders nothing. */
@@ -25,6 +30,32 @@ export const LIVE_STRIP_ZONE_TOKEN: Record<LiveStripZone, ColorToken> = {
   strengthSpeed: 'dataviz-sequential-3',
   maximalStrength: 'dataviz-sequential-4',
   grinding: 'dataviz-sequential-5',
+}
+
+/** How the strip colours its bars: the rep's absolute zone, or its loss from the set's best. */
+export type LiveStripBarColor = 'zone' | 'loss'
+
+/** Loss bands green, yellow, orange, red: the zone tokens that match VelocityStrip's loss hues. */
+const LIVE_STRIP_LOSS_TOKEN: readonly ColorToken[] = [
+  LIVE_STRIP_ZONE_TOKEN.speed,
+  LIVE_STRIP_ZONE_TOKEN.power,
+  LIVE_STRIP_ZONE_TOKEN.strengthSpeed,
+  LIVE_STRIP_ZONE_TOKEN.maximalStrength,
+]
+
+/** The colour token for one rep, by zone or by its loss from the best rep of `reps`; a rep without a zone uses its loss. */
+export function liveStripRepToken(
+  reps: readonly LiveStripRep[],
+  index: number,
+  barColor: LiveStripBarColor = 'loss',
+  lossThresholds?: VelocityLossThresholds
+): ColorToken {
+  const rep = reps[index]
+  if (barColor === 'zone' && rep.zone) return LIVE_STRIP_ZONE_TOKEN[rep.zone]
+  const best = Math.max(...reps.map((r) => r.velocity))
+  return LIVE_STRIP_LOSS_TOKEN[
+    velocityLossBand(velocityLossForRep(rep.velocity, best), lossThresholds)
+  ]
 }
 
 /** The longest rest the strip counts; a longer one reads "999s" (over 16 minutes). */

@@ -340,6 +340,41 @@ grey ramp, so every "which warmth curve" story argues about an axis the system
 no longer has. `surface-lab-shared.tsx` stays — the North Star file imports it,
 and `surface.contract.test.ts` carries a verbatim copy of its `lstar()`.
 
+
+## Live bar colour v0, v1, v3 and v4 — rejected 2026-09-18
+
+**Tried:** five treatments for how the pinned strip and the live hero colour their rep bars (VW-429
+colour round 1). Each story showed the strip above the hero for the same set, for three sets that all
+end at or past their intent's stop, so every frame had the red strip edge and the red stop aura:
+strength (stop 20%) 0.52 to 0.40 m/s ending 23%, power (stop 10%) 0.95 to 0.84 ending 12%, and
+hypertrophy (stop 30%) 0.62 to 0.42 ending 32%. Bars below are left to right; g green, y yellow,
+o orange, r red.
+- **v0, today:** strip by absolute zone (0.35 / 0.5 / 0.75 / 1.0 m/s), hero by loss at fixed
+  10/20/30. Strength: strip o o r r r r, hero g g g y y o. Power: strip y y y y y, hero g g g g y.
+  Hypertrophy: strip o o o o o r r r, hero g g g y y o o r. The two surfaces disagreed on every set.
+  The last bar was orange (strength) or yellow (power) under a red stop.
+- **v1, strip follows the hero:** both by loss at fixed 10/20/30. Strength g g g y y o, power
+  g g g g y, hypertrophy g g g y y o o r. The two surfaces agreed, but the strength and power bars
+  still ended below red while the set was at stop.
+- **v3, hero follows the strip:** both by absolute zone. Strength o o r r r r, power y y y y y,
+  hypertrophy o o o o o r r r. The hero lost the within-set decay, and the power set read as one flat
+  yellow.
+- **v4, three steps like the aura** (the implementer's idea): both by loss, green under half the
+  stop, yellow up to it, red from it, no orange. Strength g g g y y r, power g g g y r, hypertrophy
+  g g g g y y y r.
+
+**Chosen:** **v2**. Both surfaces colour by loss from the set's best against one caller-supplied
+`lossThresholds`. The stories scale them to the intent's stop in thirds, giving strength g g g y o r,
+power g g y o r and hypertrophy g g g y y o o r. `PinnedLiveStrip` defaults to `barColor="loss"` like
+the hero; `zone` is opt-in.
+**Why:** the human's requirements were that "the hero chart and the velocity strip are aligned in
+behavior" and that "the thresholds used are configurable" so a research-backed source can drive them
+later, possibly per user velocity profile, per exercise, or tied to how RPE is computed ("We
+shouldn't call something RPE 10 or RPE 5 and have it be yellow"). So titan takes the thresholds as
+given and never derives them from an intent or a stop. v0 and v3 fail the alignment requirement or
+lose the decay. v1 aligns but hard-codes the numbers. v4's three steps were not picked; the
+thresholds prop can still express it (`[s/2, s, s]`) if a research source asks for it.
+
 ---
 
 # Backfill — the ten archived directions and three retired token sets (2026-09-10)

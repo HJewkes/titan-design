@@ -10,6 +10,8 @@ import {
   calculateVelocityLoss,
   calculateMeanVelocity,
   getVelocityLossColor,
+  normalizeLossThresholds,
+  velocityLossBand,
 } from './VelocityStrip'
 import { FIXED_MAX_VALUE } from '../charts/SetBarChart'
 
@@ -820,5 +822,100 @@ describe('VelocityStrip chrome resolves to the spacing tokens', () => {
   it('leaves the bar geometry constants alone', () => {
     expect(source).toContain('COMPACT_FOLD_GAP')
     expect(source).toContain('chart geometry')
+  })
+})
+
+describe('VelocityStrip lossThresholds', () => {
+  // Best 1.0 m/s: the reps lose 0, 5, 12 and 20 percent.
+  const set = [1.0, 0.95, 0.88, 0.8]
+
+  it('bands the bars at the thresholds given, here a 20 percent stop split in thirds', () => {
+    render(
+      <VelocityStrip velocities={set} variant="compact" lossThresholds={[20 / 3, 40 / 3, 20]} />
+    )
+    expect(screen.getByTestId('velocity-bar-0')).toHaveStyle({ backgroundColor: VL_GREEN })
+    expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ backgroundColor: VL_GREEN })
+    expect(screen.getByTestId('velocity-bar-2')).toHaveStyle({ backgroundColor: VL_YELLOW })
+    expect(screen.getByTestId('velocity-bar-3')).toHaveStyle({ backgroundColor: VL_RED })
+  })
+
+  it('skips orange when two thresholds are equal', () => {
+    expect(getVelocityLossColor(15, [10, 20, 20])).toBe(VL_YELLOW)
+    expect(getVelocityLossColor(20, [10, 20, 20])).toBe(VL_RED)
+  })
+
+  it('moves the hero decision bands to the second and third thresholds', () => {
+    render(
+      <VelocityStrip velocities={set} variant="hero" height={300} lossThresholds={[5, 10, 15]} />
+    )
+    expect(screen.getByText('VL 10%')).toBeInTheDocument()
+    expect(screen.getByText('VL 15%')).toBeInTheDocument()
+    expect(screen.queryByText('VL 20%')).not.toBeInTheDocument()
+  })
+
+  it('draws only the red band when the amber and red thresholds meet', () => {
+    render(
+      <VelocityStrip velocities={set} variant="hero" height={300} lossThresholds={[5, 10, 10]} />
+    )
+    expect(screen.getAllByText('VL 10%')).toHaveLength(1)
+  })
+})
+
+describe('VelocityStrip loss text', () => {
+  it.each([
+    ['default thresholds, 25 percent', [1.0, 0.75], undefined, VL_ORANGE],
+    ['default thresholds, 30 percent', [1.0, 0.7], undefined, VL_RED],
+    ['a 10 percent stop, 12 percent', [1.0, 0.88], [10 / 3, 20 / 3, 10] as const, VL_RED],
+  ] as const)('colours "Loss" like the last bar with %s', (_, velocities, lossThresholds, hex) => {
+    render(<VelocityStrip velocities={[...velocities]} lossThresholds={lossThresholds} />)
+    const last = screen.getByTestId(`velocity-bar-${velocities.length - 1}`)
+    expect(last).toHaveStyle({ backgroundColor: hex })
+    expect(screen.getByText(/^Loss:/)).toHaveStyle({ color: hex })
+  })
+
+  it('leaves the loss text unstyled while the last bar is green or yellow', () => {
+    render(<VelocityStrip velocities={[1.0, 0.88]} />)
+    expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ backgroundColor: VL_YELLOW })
+    expect(screen.getByText(/^Loss:/)).not.toHaveStyle({ color: VL_YELLOW })
+  })
+})
+
+describe('normalizeLossThresholds', () => {
+  afterEach(() => vi.restoreAllMocks())
+
+  it('passes well-formed thresholds through and defaults when none are given', () => {
+    expect(normalizeLossThresholds([5, 10, 15])).toEqual([5, 10, 15])
+    expect(normalizeLossThresholds(undefined)).toEqual([10, 20, 30])
+  })
+
+  it('sorts descending thresholds, so 15 percent against [30, 20, 10] is yellow', () => {
+    expect(normalizeLossThresholds([30, 20, 10])).toEqual([10, 20, 30])
+    expect(velocityLossBand(15, [30, 20, 10])).toBe(1)
+  })
+
+  it('clamps to 0..100 and keeps a 0 percent loss green', () => {
+    expect(normalizeLossThresholds([-10, 20, 150])).toEqual([0, 20, 100])
+    expect(velocityLossBand(0, [-10, 20, 30])).toBe(0)
+  })
+
+  it.each([
+    ['NaN', [Number.NaN, 20, 30]],
+    ['Infinity', [10, Number.POSITIVE_INFINITY, 30]],
+    ['two values', [10, 20]],
+    ['strings', ['10', '20', '30']],
+    ['an object', { a: 1 }],
+  ])('falls back to 10/20/30 for %s, with one dev warning', (_, input) => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    expect(normalizeLossThresholds(input)).toEqual([10, 20, 30])
+    normalizeLossThresholds(input)
+    expect(warn).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not warn in production', () => {
+    vi.stubEnv('NODE_ENV', 'production')
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    normalizeLossThresholds([1, 2, 'x'])
+    expect(warn).not.toHaveBeenCalled()
+    vi.unstubAllEnvs()
   })
 })

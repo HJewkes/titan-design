@@ -697,3 +697,36 @@ describe('DualVelocityStrip accessibility', () => {
     expect(await axe(container)).toHaveNoViolations()
   })
 })
+
+describe('DualVelocityStrip lossThresholds', () => {
+  const GREEN_BAND = '#2ED573'
+  const YELLOW_BAND = '#F9B415'
+  const ORANGE_BAND = '#FF7900'
+  const RED_BAND = '#D14343'
+  // A 10 percent stop in thirds. Left loses 0, 1, 4, 7 and 12 percent; right 0, 2 and 6.
+  const thresholds = [10 / 3, 20 / 3, 10] as const
+  const left = [0.95, 0.94, 0.91, 0.88, 0.84]
+  const right = [0.9, 0.88, 0.85]
+
+  it.each(['hero', 'dual-expanded', 'compact'] as const)(
+    'bands both %s wings at the thresholds given, as a single strip does',
+    (variant) => {
+      render(
+        <DualVelocityStrip
+          variant={variant}
+          left={{ velocities: left }}
+          right={{ velocities: right }}
+          lossThresholds={thresholds}
+        />
+      )
+      const up = [GREEN_BAND, GREEN_BAND, YELLOW_BAND, ORANGE_BAND, RED_BAND]
+      const down = [GREEN_BAND, GREEN_BAND, YELLOW_BAND]
+      up.forEach((hex, i) =>
+        expect(wingUp().getByTestId(`velocity-bar-${i}`)).toHaveStyle({ backgroundColor: hex })
+      )
+      down.forEach((hex, i) =>
+        expect(wingDown().getByTestId(`velocity-bar-${i}`)).toHaveStyle({ backgroundColor: hex })
+      )
+    }
+  )
+})

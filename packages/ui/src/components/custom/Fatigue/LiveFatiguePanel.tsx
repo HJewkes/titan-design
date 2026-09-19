@@ -23,7 +23,7 @@ import { useState } from 'react'
 import { View, Text, type LayoutChangeEvent } from 'react-native'
 import { LiveAuraFrame, type LiveAuraCategory } from '../Workout/LiveAuraFrame'
 import { useOnSurfaceColor } from '../../ui/surface'
-import { VelocityHero } from './VelocityHero'
+import { VelocityHero, type VelocityHeroProps } from './VelocityHero'
 import { LiveFatigueCard } from './LiveFatigueCard'
 import { FONT_MONO, auraForVerdict } from './fatigue-tokens'
 import { panelLayout, panelBodySplit } from './panel-layout'
@@ -34,6 +34,8 @@ export interface LiveFatiguePanelVelocity {
   velocities: number[]
   targetReps?: number
   liveRepIndex?: number
+  /** The hero's bar-colour thresholds, e.g. scaled to the exercise's stop threshold. */
+  lossThresholds?: VelocityHeroProps['lossThresholds']
 }
 
 export interface LiveFatiguePanelProps {
@@ -106,6 +108,7 @@ export function LiveFatiguePanel({
               velocities={velocity.velocities}
               targetReps={velocity.targetReps}
               liveRepIndex={velocity.liveRepIndex}
+              lossThresholds={velocity.lossThresholds}
               height={heroHeight}
             />
           </View>

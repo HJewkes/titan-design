@@ -19,6 +19,19 @@ describe('VelocityHero', () => {
     expect(screen.getByText('VL 30%')).toBeInTheDocument()
   })
 
+  it('moves its decision bands with the loss thresholds it is given', () => {
+    render(
+      <VelocityHero
+        velocities={MOCK_MEAN_VELOCITIES}
+        width={800}
+        height={300}
+        lossThresholds={[10 / 3, 20 / 3, 10]}
+      />
+    )
+    expect(screen.getByText('VL 7%')).toBeInTheDocument()
+    expect(screen.getByText('VL 10%')).toBeInTheDocument()
+  })
+
   it('draws no bands when there is no data', () => {
     render(<VelocityHero velocities={[]} width={800} height={300} />)
     expect(screen.queryByText('VL 20%')).not.toBeInTheDocument()
