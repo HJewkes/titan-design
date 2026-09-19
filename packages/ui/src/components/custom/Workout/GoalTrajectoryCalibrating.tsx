@@ -11,12 +11,13 @@
  * data mark there.
  */
 import { useId } from 'react'
-import { Platform, View } from 'react-native'
+import { View } from 'react-native'
 import { InfoIcon } from '../../icons'
 import { TipTrigger } from '../../ui/tooltip'
 import { Typography } from '../Typography'
 import type { GeometryPoint, GoalTrajectoryGeometry } from './GoalTrajectoryChartGeometry'
 import type { TrajectoryPalette } from './GoalTrajectoryPlot'
+import { boxesTouch, type HitBox } from './goalTrajectoryTargets'
 
 /**
  * The note's first line when the consumer supplies none. It claims no count,
@@ -72,30 +73,15 @@ export interface CalibratingMarks {
   target: { x: number; y: number; size: number; corner: InfoTargetCorner }
 }
 
-/** Hit area: 24px for a pointer, 44px for touch (WCAG 2.5.8 and the platform minimums). */
-export const INFO_TARGET_POINTER = 24
-export const INFO_TARGET_TOUCH = 44
-
-/** The hit size for this device: touch on native, and on a web page whose main pointer is coarse. */
-export function infoTargetSize(): number {
-  if (Platform.OS !== 'web') return INFO_TARGET_TOUCH
-  const coarse = typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches
-  return coarse ? INFO_TARGET_TOUCH : INFO_TARGET_POINTER
-}
-
 const CORNER_INSET = 4
+// Room kept between the info target and the next-target tip, so a finger never lands on both.
+const TARGET_GAP = 4
 // A reading or the next target is a 4px dot with a 2px ring; the ramp is a 1.5px dashed line.
 const DOT_REACH = 6
 const LINE_REACH = 2
 const LINE_SAMPLES = 12
 
-interface Box {
-  x: number
-  y: number
-  size: number
-}
-
-function reaches(box: Box, p: GeometryPoint, radius: number): boolean {
+function reaches(box: HitBox, p: GeometryPoint, radius: number): boolean {
   const dx = Math.max(box.x - p.x, 0, p.x - (box.x + box.size))
   const dy = Math.max(box.y - p.y, 0, p.y - (box.y + box.size))
   return dx * dx + dy * dy < radius * radius
@@ -113,8 +99,12 @@ function alongLine(points: GeometryPoint[]): GeometryPoint[] {
   return out
 }
 
-/** True when the box would cover a reading, the line between readings, the next target or the ramp. */
-function coversMark(g: GoalTrajectoryGeometry, box: Box): boolean {
+/**
+ * True when the box would cover a reading, the line between readings, the next target or the
+ * ramp, or come within reach of the next-target tip's own hit box.
+ */
+function coversMark(g: GoalTrajectoryGeometry, box: HitBox, nextTip: HitBox | null): boolean {
+  if (nextTip && boxesTouch(box, nextTip, TARGET_GAP)) return true
   const dots = g.nextTarget ? [...g.actuals, g.nextTarget] : g.actuals
   if (dots.some((p) => reaches(box, p, DOT_REACH))) return true
   const lines = [...alongLine(g.actuals), ...alongLine(g.bandPolygon)]
@@ -122,31 +112,44 @@ function coversMark(g: GoalTrajectoryGeometry, box: Box): boolean {
 }
 
 /** The lower-right corner of the plot, else its upper-right, else hanging just under the plot. */
-function placeTarget(g: GoalTrajectoryGeometry, size: number): CalibratingMarks['target'] {
+function placeTarget(
+  g: GoalTrajectoryGeometry,
+  size: number,
+  nextTip: HitBox | null
+): CalibratingMarks['target'] {
   const x = g.plot.right - CORNER_INSET - size
   const corners: [InfoTargetCorner, number][] = [
     ['bottom-right', g.plot.bottom - CORNER_INSET - size],
     ['top-right', g.plot.top + CORNER_INSET],
   ]
   for (const [corner, y] of corners) {
-    if (!coversMark(g, { x, y, size })) return { x, y, size, corner }
+    if (!coversMark(g, { x, y, size }, nextTip)) return { x, y, size, corner }
   }
-  return { x, y: g.plot.bottom + CORNER_INSET, size, corner: 'below' }
+  // Under the plot, sliding left from the corner until the next-target tip is clear of it.
+  const below = g.plot.bottom + CORNER_INSET
+  for (let left = x; left >= g.plot.left; left -= CORNER_INSET) {
+    if (!coversMark(g, { x: left, y: below, size }, nextTip)) {
+      return { x: left, y: below, size, corner: 'below' }
+    }
+  }
+  return { x, y: below, size, corner: 'below' }
 }
 
 export interface CalibratingMarksInput {
   geometry: GoalTrajectoryGeometry
-  /** Hit size in px; {@link infoTargetSize} by default. */
-  targetSize?: number
+  /** Hit size in px, from `useHitTargetSize`. */
+  targetSize: number
+  /** The next-target tip's hit box at its real size, which the info target must stay clear of. */
+  nextTargetBox?: HitBox | null
 }
 
 export function calibratingMarks(input: CalibratingMarksInput): CalibratingMarks {
-  const { geometry: g, targetSize = infoTargetSize() } = input
+  const { geometry: g, targetSize, nextTargetBox = null } = input
   const latest = g.actuals[g.actuals.length - 1]
   const span = Math.abs(g.toX(2) - g.toX(1))
   return {
     hatchX: latest ? latest.x + span / 2 : g.plot.left,
-    target: placeTarget(g, targetSize),
+    target: placeTarget(g, targetSize, nextTargetBox),
   }
 }
 
