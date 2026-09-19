@@ -19,6 +19,7 @@ import {
   TargetIcon,
   EqualIcon,
   ChevronsDownIcon,
+  ChevronLeftIcon,
   ChevronRightIcon,
 } from './icons'
 
@@ -134,6 +135,11 @@ export const All: Story = {
       <Swatch label="ChevronsDownIcon">
         <View className="text-text-tertiary">
           <ChevronsDownIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="ChevronLeftIcon">
+        <View className="text-text-primary">
+          <ChevronLeftIcon size={28} />
         </View>
       </Swatch>
       <Swatch label="ChevronRightIcon">

@@ -188,6 +188,15 @@ export function ChevronsDownIcon(props: IconProps) {
   )
 }
 
+/** Chevron-left glyph (mirrors lucide-react `ChevronLeft`). Go-back affordance, e.g. a carousel's previous card. */
+export function ChevronLeftIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="m15 18-6-6 6-6" />
+    </SvgIcon>
+  )
+}
+
 /** Chevron-right glyph (mirrors lucide-react `ChevronRight`). Go-to affordance, e.g. back to live. */
 export function ChevronRightIcon(props: IconProps) {
   return (

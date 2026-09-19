@@ -19,6 +19,7 @@ import {
   TargetIcon,
   EqualIcon,
   ChevronsDownIcon,
+  ChevronLeftIcon,
   ChevronRightIcon,
 } from './icons'
 import { SvgIcon } from './SvgIcon'
@@ -43,6 +44,7 @@ describe('icon primitives', () => {
       TargetIcon,
       EqualIcon,
       ChevronsDownIcon,
+      ChevronLeftIcon,
       ChevronRightIcon,
     ].forEach((Icon) => {
       const { container, unmount } = render(<Icon />)
