@@ -7,6 +7,17 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- `GoalTrajectoryChart` `yAxisLabels` (default on) and `ruleLabelText`
+  (`named`, the default; `numeric`; `none`), also reachable through a
+  `GoalCard`'s `goal`. Without the y axis the plot takes back the label gutter,
+  and a `GoalCard` keeps its week cells on the plot's columns. `numeric` shows
+  the committed and stretch values alone, in the rule's colour inside the plot,
+  and moves each off the readings, the tip targets and the other label. The
+  accessible name keeps the words. Defaults are unchanged, pending the owner's
+  pick in titan-0201 round 3.
+
 ### Changed
 
 - Loss-coloured bars band on the exact loss from the set's best, not on the loss
