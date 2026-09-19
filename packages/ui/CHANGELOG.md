@@ -31,7 +31,8 @@ project adheres to [Semantic Versioning](https://semver.org/).
 - `GoalTrajectoryChart`, calibrating state: **the note is no longer written on
   the plane.** An info target sits in the plot's lower-right corner, inside the
   hatch, and its tip carries `calibratingNote` (or "No band yet" when it is empty
-  or blank) followed by the two explanation lines at every width. The target is
+  or blank) followed by the two explanation lines at every width, set on a normal
+  18px line height. The target is
   a button named "Why is there no band?". It opens on hover, keyboard focus and
   press, closes on blur, Escape and a press outside, and has a 24px hit area
   (44px under a touch pointer). It never covers a reading, the line between
