@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
 
 import { GoalCard, type GoalCardProps, type GoalCardSize } from './GoalCard'
 import { PRIMARY_GOAL_SCENARIOS as S } from './primaryGoal-fixture'
@@ -66,5 +67,18 @@ describe.each<GoalCardSize>(['full', 'compact'])('the %s title row at phone widt
   it('has no accessibility violations', async () => {
     const { container } = render(<GoalCard {...card(size)} />)
     expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+describe('the gap under the title row', () => {
+  // className never reaches the DOM under vitest; setup.ts captures it per testID.
+  it('is stack-md (8px) on the compact card, whose name and hero read as one header', () => {
+    render(<GoalCard {...card('compact')} />)
+    expect(resolveAll(spacingClassesOf('goal-card-content'))).toEqual(['8px'])
+  })
+
+  it('stays stack-lg (16px) on the full card', () => {
+    render(<GoalCard {...card('full')} />)
+    expect(resolveAll(spacingClassesOf('goal-card-content'))).toEqual(['16px'])
   })
 })
