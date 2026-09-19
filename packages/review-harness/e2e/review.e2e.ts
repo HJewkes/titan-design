@@ -52,6 +52,22 @@ async function scrollSettled(page: Page): Promise<number> {
   }
 }
 
+function storedDrafts(page: Page): Promise<string[]> {
+  return page.evaluate(() =>
+    Object.keys(localStorage).filter((k) => k.startsWith('titan-review:draft:'))
+  )
+}
+
+async function openRound(page: Page, height?: number) {
+  const dir = await mkdtemp(join(tmpdir(), 'titan-review-e2e-'))
+  const manifestPath = join(dir, 'round.json')
+  await writeFile(manifestPath, JSON.stringify(round(storybook.url, height)))
+  const run = startCli(manifestPath, dir)
+  cli = run.child
+  await page.goto(await run.url)
+  return run
+}
+
 let storybook: RunningStorybook
 let cli: ChildProcess | undefined
 
@@ -114,6 +130,7 @@ test('a keyboard pick, a comment and a pin come back as feedback.json', async ({
     testId: 'state-onTrack',
     text: 'Upcoming, on track',
   })
+  expect(await storedDrafts(page), 'a sent round leaves no draft behind').toEqual([])
   expect(existsSync(join(dir, '360-A-phone.png'))).toBe(true)
   expect(existsSync(join(dir, '360-B-phone.png'))).toBe(true)
 })
@@ -138,5 +155,51 @@ test('clicking into a tall variant leaves the page where it is', async ({ page }
   await expect(card).toHaveAttribute('data-active', 'true')
   await expect(comment).toBeFocused()
   expect(await scrollSettled(page)).toBe(before)
+  run.child.kill()
+})
+
+test('a reload keeps the unsent verdicts, comments, pins and answers', async ({ page }) => {
+  const run = await openRound(page)
+  const verdictA = page.getByRole('radiogroup', { name: 'Verdict for A' })
+  await verdictA.getByRole('radio', { name: /chosen/i }).click()
+  const commentA = page.getByLabel('Comment on A')
+  await commentA.fill('Tiles read better')
+  await commentA.blur()
+  await page.keyboard.press('a')
+  await page.getByTestId('overlay-A-360').click({ position: { x: 40, y: 40 } })
+  await page.keyboard.type('too faint')
+  await page.keyboard.press('Escape')
+  const pickB = page.getByTestId('question-q1').getByRole('radio').nth(1)
+  await pickB.click()
+  await page.getByLabel('General notes').fill('light mode next')
+  await expect.poll(() => storedDrafts(page)).toHaveLength(1)
+
+  await page.reload()
+
+  await expect(verdictA.getByRole('radio', { checked: true })).toHaveText(/chosen/i)
+  await expect(commentA).toHaveValue('Tiles read better')
+  await expect(page.getByTestId('overlay-A-360').locator('.pin')).toHaveCount(1)
+  await expect(page.getByLabel('Note for pin A-1')).toHaveValue('too faint')
+  await expect(pickB).toHaveAttribute('aria-checked', 'true')
+  await expect(page.getByLabel('General notes')).toHaveValue('light mode next')
+  run.child.kill()
+})
+
+test('a frame Storybook does not answer says so and retries', async ({ page }) => {
+  const dead = '**/iframe.html?id=lab-decisions-compact-goal-chart--phone*'
+  await page.route(dead, (route) =>
+    route.fulfill({ status: 502, contentType: 'text/plain', body: 'unreachable' })
+  )
+  const run = await openRound(page)
+  const notice = page.getByTestId('dead-B-360')
+  await expect(notice).toContainText('Preview unreachable')
+  await expect(page.getByTestId('dead-A-360')).toHaveCount(0)
+
+  await page.unroute(dead)
+  await notice.getByRole('button', { name: 'Retry' }).click()
+
+  await expect(notice).toHaveCount(0)
+  const chart = page.frameLocator('[data-testid="variant-B"] iframe').first()
+  await expect(chart.locator('#storybook-root')).not.toBeEmpty()
   run.child.kill()
 })
