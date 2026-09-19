@@ -2,6 +2,7 @@ import { useContext } from 'react'
 import { View, Text, Pressable } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { TableContext } from './TableContext'
+import { selectionState } from './useTableState'
 
 export interface TableSelectAllCellProps {
   className?: string
@@ -15,8 +16,9 @@ export function TableSelectAllCell({ className }: TableSelectAllCellProps) {
 
   if (!selectable) return null
 
-  const allSelected = allRowIds.length > 0 && allRowIds.every((id) => selectedRows.has(id))
-  const someSelected = allRowIds.some((id) => selectedRows.has(id)) && !allSelected
+  const selection = selectionState(allRowIds, selectedRows)
+  const allSelected = selection === 'all'
+  const someSelected = selection === 'some'
 
   return (
     <View className={cn('w-12 px-4 py-3 items-center justify-center', className)}>

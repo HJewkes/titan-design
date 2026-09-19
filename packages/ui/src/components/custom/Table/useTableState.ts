@@ -9,8 +9,6 @@ export type SortDirection = 'asc' | 'desc' | null
  */
 export type TableComparator<T> = (a: T, b: T) => number
 
-const isBlank = (v: unknown): boolean => v === null || v === undefined
-
 export interface UseTableOptions<T> {
   data: T[]
   defaultPageSize?: number
@@ -39,8 +37,108 @@ export interface UseTableReturn<T> {
   handleSort: (column: string) => void
 }
 
+const isBlank = (v: unknown): boolean => v === null || v === undefined
+
+function compareField<T extends Record<string, unknown>>(column: string, sign: 1 | -1) {
+  return (a: T, b: T): number => {
+    // Raw fields compare in JavaScript's relational order, whatever their type.
+    const aVal = a[column] as string | number
+    const bVal = b[column] as string | number
+
+    // Blanks rank last in BOTH directions — outside the sign, so a missing
+    // value never masquerades as the smallest one when the column flips.
+    const blanks = isBlank(aVal) ? (isBlank(bVal) ? 0 : 1) : isBlank(bVal) ? -1 : 0
+    if (blanks !== 0) return blanks
+
+    if (aVal === bVal) return 0
+    return sign * (aVal < bVal ? -1 : 1)
+  }
+}
+
+/** Rows ordered by one column; `data` itself while unsorted, otherwise a stable sorted copy. */
+export function sortRows<T extends Record<string, unknown>>(
+  data: T[],
+  column: string | undefined,
+  direction: SortDirection,
+  comparators?: UseTableOptions<T>['comparators']
+): T[] {
+  if (!column || !direction) return data
+
+  // Invert rather than reverse: reversing an already-sorted array also flips
+  // tied rows, so equal values would shuffle every time direction changed.
+  const sign = direction === 'asc' ? 1 : -1
+  const custom = comparators?.[column]
+  const compare = custom ? (a: T, b: T) => sign * custom(a, b) : compareField<T>(column, sign)
+  return [...data].sort(compare)
+}
+
+/** The header sort cycle on one column: asc, desc, then unsorted. */
+export function nextSortDirection(current: SortDirection): SortDirection {
+  if (current === 'asc') return 'desc'
+  if (current === 'desc') return null
+  return 'asc'
+}
+
+export function pageSlice<T>(rows: T[], page: number, pageSize: number): T[] {
+  const start = page * pageSize
+  return rows.slice(start, start + pageSize)
+}
+
+export interface PageRange {
+  /** 1-based index of the first row on the page */
+  startItem: number
+  /** 1-based index of the last row on the page */
+  endItem: number
+  canGoPrevious: boolean
+  canGoNext: boolean
+}
+
+export function pageRange(page: number, pageSize: number, totalItems: number): PageRange {
+  const totalPages = Math.ceil(totalItems / pageSize)
+  return {
+    startItem: page * pageSize + 1,
+    endItem: Math.min((page + 1) * pageSize, totalItems),
+    canGoPrevious: page > 0,
+    canGoNext: page < totalPages - 1,
+  }
+}
+
+export type SelectionState = 'all' | 'some' | 'none'
+
+/** How much of `rowIds` is selected. An empty table is never `all`. */
+export function selectionState(rowIds: string[], selected: Set<string>): SelectionState {
+  if (rowIds.length > 0 && rowIds.every((id) => selected.has(id))) return 'all'
+  return rowIds.some((id) => selected.has(id)) ? 'some' : 'none'
+}
+
+export interface ColumnSortState {
+  isSorted: boolean
+  isSortable: boolean
+  ariaSort: 'ascending' | 'descending' | 'none'
+  glyph: '↑' | '↓' | '↕'
+}
+
+/** What one header shows for the table's current sort. */
+export function columnSortState(
+  sortKey: string | undefined,
+  sortColumn: string | undefined,
+  sortDirection: SortDirection,
+  canSort: boolean
+): ColumnSortState {
+  // The sort cycle ends at direction null with the column still set; that is unsorted, not "still descending".
+  const isSorted = !!sortKey && sortColumn === sortKey && sortDirection != null
+  if (!isSorted) return { isSorted, isSortable: !!sortKey && canSort, ariaSort: 'none', glyph: '↕' }
+  const asc = sortDirection === 'asc'
+  return {
+    isSorted,
+    isSortable: canSort,
+    ariaSort: asc ? 'ascending' : 'descending',
+    glyph: asc ? '↑' : '↓',
+  }
+}
+
 /**
- * Hook for managing table sorting and pagination state.
+ * Hook for managing table sorting and pagination state. Exported publicly as `useTable`.
  *
  * @example
  * const {
@@ -53,7 +151,7 @@ export interface UseTableReturn<T> {
  *   defaultPageSize: 10,
  * })
  */
-export function useTable<T extends Record<string, any>>({
+export function useTableState<T extends Record<string, any>>({
   data,
   defaultPageSize = 10,
   defaultSortColumn,
@@ -65,49 +163,28 @@ export function useTable<T extends Record<string, any>>({
   const [sortColumn, setSortColumn] = useState<string | undefined>(defaultSortColumn)
   const [sortDirection, setSortDirection] = useState<SortDirection>(defaultSortDirection)
 
-  const sortedData = useMemo(() => {
-    if (!sortColumn || !sortDirection) return data
-
-    const custom = comparators?.[sortColumn]
-    // Invert rather than reverse: reversing an already-sorted array also flips
-    // tied rows, so equal values would shuffle every time direction changed.
-    const sign = sortDirection === 'asc' ? 1 : -1
-
-    if (custom) return [...data].sort((a, b) => sign * custom(a, b))
-
-    return [...data].sort((a, b) => {
-      const aVal = a[sortColumn]
-      const bVal = b[sortColumn]
-
-      // Blanks rank last in BOTH directions — outside the sign, so a missing
-      // value never masquerades as the smallest one when the column flips.
-      const blanks = isBlank(aVal) ? (isBlank(bVal) ? 0 : 1) : isBlank(bVal) ? -1 : 0
-      if (blanks !== 0) return blanks
-
-      if (aVal === bVal) return 0
-      return sign * (aVal < bVal ? -1 : 1)
-    })
-  }, [data, sortColumn, sortDirection, comparators])
-
-  const paginatedData = useMemo(() => {
-    const start = page * pageSize
-    return sortedData.slice(start, start + pageSize)
-  }, [sortedData, page, pageSize])
+  const sortedData = useMemo(
+    () => sortRows(data, sortColumn, sortDirection, comparators),
+    [data, sortColumn, sortDirection, comparators]
+  )
+  const paginatedData = useMemo(
+    () => pageSlice(sortedData, page, pageSize),
+    [sortedData, page, pageSize]
+  )
 
   const handleSort = (column: string) => {
     if (sortColumn === column) {
-      // Cycle: asc -> desc -> null
-      setSortDirection((prev) => (prev === 'asc' ? 'desc' : prev === 'desc' ? null : 'asc'))
+      setSortDirection(nextSortDirection)
     } else {
       setSortColumn(column)
       setSortDirection('asc')
     }
-    setPage(0) // Reset to first page on sort change
+    setPage(0)
   }
 
   const handlePageSizeChange = (newSize: number) => {
     setPageSize(newSize)
-    setPage(0) // Reset to first page on page size change
+    setPage(0)
   }
 
   return {

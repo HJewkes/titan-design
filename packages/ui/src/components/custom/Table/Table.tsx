@@ -16,7 +16,7 @@ export {
 } from './TableSelection'
 export { TableEmptyState, type TableEmptyStateProps } from './TableEmptyState'
 export {
-  useTable,
+  useTableState as useTable,
   type SortDirection,
   type TableComparator,
   type UseTableOptions,
