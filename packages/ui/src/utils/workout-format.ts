@@ -59,6 +59,20 @@ export function formatSignedPct(ratio: number): string {
   return `${pct > 0 ? '+' : ''}${pct}%`
 }
 
+/** A bodyweight to one decimal, always shown: `196.8`, `200.0`. */
+export function formatBodyweight(value: number): string {
+  return (Math.round(value * 10) / 10).toFixed(1)
+}
+
+/** A weekly rate in percent, signed, to at most two places and at least one: `-0.6`, `+0.25`, `0.0`. */
+export function formatSignedRate(pctPerWeek: number): string {
+  const rounded = Math.round(pctPerWeek * 100) / 100
+  const digits = String(Math.abs(rounded))
+  const text = digits.includes('.') ? digits : `${digits}.0`
+  if (rounded > 0) return `+${text}`
+  return rounded < 0 ? `-${text}` : text
+}
+
 /**
  * Rep-range label, e.g. `"8–10"`. `"8"` when the bounds are equal or only one is
  * given; `null` when neither is set. Shared by {@link formatPrescription} and the
