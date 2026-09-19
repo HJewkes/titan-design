@@ -198,8 +198,15 @@ function TipBody({ note, width }: { note: string; width: number }) {
   return (
     <View style={{ width }} className="gap-stack-sm" testID="goal-trajectory-chart-calibrating-tip">
       <Typography variant="body2">{note}</Typography>
-      {CALIBRATING_EXPLANATION.map((line) => (
-        <Typography key={line} variant="caption" color="secondary">
+      {CALIBRATING_EXPLANATION.map((line, i) => (
+        // The caption's own leading (24px on 12px) leaves a wrapped line gappy in a tip.
+        <Typography
+          key={line}
+          variant="caption"
+          color="secondary"
+          className="leading-normal"
+          testID={`goal-trajectory-chart-calibrating-tip-line-${String(i)}`}
+        >
           {line}
         </Typography>
       ))}

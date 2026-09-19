@@ -5,6 +5,7 @@
  */
 import { describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
+import { capturedClassNames } from '../../../test/classname-capture'
 import { GoalTrajectoryChart, type GoalTrajectoryStatus } from './GoalTrajectoryChart'
 import { DASHED_EDGE } from './GoalTrajectoryBand'
 import {
@@ -83,6 +84,16 @@ describe('a calibrating goal chart', () => {
     open(screen.getByRole('button', { name: CALIBRATING_TIP_LABEL }))
     const tip = screen.getByTestId('goal-trajectory-chart-calibrating-tip')
     expect(tip).toHaveTextContent(`1 more comparable session${CALIBRATING_EXPLANATION.join('')}`)
+  })
+
+  it("sets the explanation lines on a normal line height, not the caption's loose one", () => {
+    renderAt('above')
+    fireEvent.focus(screen.getByRole('button', { name: CALIBRATING_TIP_LABEL }))
+    for (const i of [0, 1]) {
+      expect(capturedClassNames.get(`goal-trajectory-chart-calibrating-tip-line-${i}`)).toContain(
+        'leading-normal'
+      )
+    }
   })
 
   it('closes the tip on Escape and on blur', () => {
