@@ -15,8 +15,8 @@ project adheres to [Semantic Versioning](https://semver.org/).
 - `GoalMilestoneSummary` `heroLeading` (`default`; `tight`), reachable through
   `GoalCard`'s `milestone` and `GoalMilestoneTile`. `tight` sets the hero
   numeral's line height to its font size, taking the empty leading above the
-  "1 lb". The compact `GoalCard` uses `tight`; the full card and the tile keep
-  their own.
+  "1 lb". `GoalCard` uses `tight` at both sizes (a `milestone` can still ask for
+  `default`); `GoalMilestoneTile` keeps the default.
 - `liveStripMs` and `liveStripTarget`, the pinned strip's input guards (a
   non-finite duration reads 0; a rep target is floored, and 0 when unusable),
   are exported beside the other `liveStripModel` helpers.
@@ -83,8 +83,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
   nothing changes.
 - `GoalCard size="compact"` (and `GoalLiftCard`): the gap between the name row
   and the hero ("1 lb to goal") is `stack-md` (8px) instead of `stack-lg`
-  (16px), and the hero numeral sits on a line as tall as its font, so the
-  header reads as one block. The full card is unchanged.
+  (16px), so the header reads as one block.
+- `GoalCard` (full and compact, and `GoalLiftCard`): the hero numeral ("1 lb")
+  sits on a line as tall as its font, taking the empty leading above it.
 
 ### Fixed
 

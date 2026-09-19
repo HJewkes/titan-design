@@ -90,8 +90,14 @@ describe('the hero numeral', () => {
     expect(capturedClassNames.get('goal-milestone-hero')).toContain('leading-none')
   })
 
-  it('keeps its own line height on the full card', () => {
+  it('sits on a tight line height on the full card', () => {
     render(<GoalCard {...card('full')} />)
+    expect(capturedClassNames.get('goal-milestone-hero')).toContain('leading-none')
+  })
+
+  it('still takes a milestone that asks for the default', () => {
+    const base = card('full')
+    render(<GoalCard {...base} milestone={{ ...base.milestone, heroLeading: 'default' }} />)
     expect(capturedClassNames.get('goal-milestone-hero')).not.toContain('leading-none')
   })
 })

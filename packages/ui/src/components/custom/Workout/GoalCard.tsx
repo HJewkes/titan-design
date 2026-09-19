@@ -456,7 +456,11 @@ function FullBody({ props, width }: { props: GoalCardProps; width: number }) {
   if (!goal) return null
   return (
     <View className="gap-stack-sm" testID="goal-card-fold">
-      <GoalMilestoneSummary {...statedMilestone(props)} axis={weekAxisFor(goal, width)} />
+      <GoalMilestoneSummary
+        heroLeading="tight"
+        {...statedMilestone(props)}
+        axis={weekAxisFor(goal, width)}
+      />
       <GoalTrajectoryChart
         {...goal}
         status={status}
@@ -490,7 +494,6 @@ function CompactBody({
   return (
     <View className="gap-stack-md">
       <GoalMilestoneSummary
-        // Round 3 chose the tight hero for the compact card; the full card keeps its own.
         heroLeading="tight"
         {...statedMilestone(props)}
         scale="phone"
