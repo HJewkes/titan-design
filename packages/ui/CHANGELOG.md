@@ -22,6 +22,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
   numeral's line height to its font size, taking the empty leading above the
   "1 lb" off every milestone surface. Default unchanged, pending titan-0201
   round 3.
+- `liveStripMs` and `liveStripTarget`, the pinned strip's input guards (a
+  non-finite duration reads 0; a rep target is floored, and 0 when unusable),
+  are exported beside the other `liveStripModel` helpers.
 
 ### Changed
 
