@@ -4,7 +4,7 @@ import { darkThemeCSSVars } from './config'
 import { liftShadow } from './lift-shadow'
 import { getElevationSurface } from './elevation'
 import { getSemanticColors } from './tokens/semantic'
-import { grainForTone } from './materials'
+import { grainForTone, insetWell, paperSheet } from './materials'
 
 describe('depthCSSVars', () => {
   const dark = depthCSSVars('dark')
@@ -17,8 +17,10 @@ describe('depthCSSVars', () => {
   })
 
   it('carries the lift shadow the style helpers produce, per mode', () => {
-    expect(dark['--lift-2']).toBe(liftShadow(2, 'dark'))
-    expect(depthCSSVars('light')['--lift-2']).toBe(liftShadow(2, 'light'))
+    for (const step of [1, 2, 3, 4, 5] as const) {
+      expect(dark[`--lift-${step}`]).toBe(liftShadow(step, 'dark'))
+      expect(depthCSSVars('light')[`--lift-${step}`]).toBe(liftShadow(step, 'light'))
+    }
   })
 
   it('gives content lifts a shadow, not only floating ones', () => {
@@ -28,6 +30,11 @@ describe('depthCSSVars', () => {
   it('grains the paper for the raised tone of the active mode', () => {
     const lightRaised = getSemanticColors('light')['surface-raised']
     expect(depthCSSVars('light')['--material-paper-grain']).toBe(grainForTone(lightRaised))
+  })
+
+  it('carries the material shadows the style helpers produce', () => {
+    expect(dark['--material-paper-shadow']).toBe((paperSheet() as { boxShadow: string }).boxShadow)
+    expect(dark['--material-inset-shadow']).toBe((insetWell() as { boxShadow: string }).boxShadow)
   })
 
   it('lets a caller retint a glow through --glow-rgb', () => {
