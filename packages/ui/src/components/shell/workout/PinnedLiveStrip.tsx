@@ -17,7 +17,10 @@ import { Progress } from '../../ui/progress'
 import { Typography } from '../../custom/Typography'
 import { ChevronRightIcon } from '../../icons'
 import { SetBarChart, type SetSlot } from '../../custom/charts/SetBarChart'
-import type { VelocityLossThresholds } from '../../custom/Workout/VelocityStrip'
+import {
+  normalizeLossThresholds,
+  type VelocityLossThresholds,
+} from '../../custom/Workout/VelocityStrip'
 import {
   liveStripRepToken,
   liveStripRestReadout,
@@ -458,6 +461,12 @@ export function PinnedLiveStrip(props: PinnedLiveStripProps) {
   const isPhone = (layout ?? measured) === 'phone'
   const tone = toneOf(state, isFatigued)
   const scale = SCALES[isPhone ? 'phone' : 'wall']
+  const parts = {
+    ...props,
+    lossThresholds: normalizeLossThresholds(props.lossThresholds),
+    scale,
+    tone,
+  }
   const onLayout = (e: LayoutChangeEvent) =>
     setMeasured(e.nativeEvent.layout.width < PINNED_LIVE_STRIP_PHONE_MAX ? 'phone' : 'wall')
   return (
@@ -470,11 +479,7 @@ export function PinnedLiveStrip(props: PinnedLiveStripProps) {
       className={cn('w-full', className)}
     >
       <StripPlane tone={tone} isPhone={isPhone}>
-        {isPhone ? (
-          <PhoneRows {...props} scale={scale} tone={tone} />
-        ) : (
-          <WallRow {...props} scale={scale} tone={tone} />
-        )}
+        {isPhone ? <PhoneRows {...parts} /> : <WallRow {...parts} />}
         {state === 'rest' ? <RestBar {...props} /> : null}
       </StripPlane>
     </Pressable>

@@ -60,7 +60,7 @@ function renderBoth(set: IntentSet) {
   )
 }
 
-describe('bar colour parity between the pinned strip and the live hero', () => {
+describe('bar colour parity between the pinned strip and the live hero on dark surfaces', () => {
   it.each(INTENT_SETS.map((set) => [set.intent, set] as const))(
     'colours the %s set identically on both surfaces from the same thresholds',
     (intent, set) => {

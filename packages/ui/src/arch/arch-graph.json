@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:c67dbb96a1d8f37971e8f25c6fa28af20d311d2d32a78d5ff2b4fc4b8bbfc22e",
+  "componentBarrelHash": "sha256:d2b7ef1b65eb83957947050593d3c9bf9582fbe2c922f0c64a08dd9dfdb534a7",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -1961,7 +1961,7 @@
         "StatusAffordance"
       ],
       "libDependents": 2,
-      "storyRefs": 3,
+      "storyRefs": 5,
       "xproj": {
         "mobile": 0,
         "mcp": 5,
@@ -1987,7 +1987,7 @@
         "rawText": 0,
         "inlineStyle": 5,
         "rawHex": 0,
-        "loc": 656,
+        "loc": 665,
         "score": 18
       },
       "tier": "organism",
@@ -2258,6 +2258,8 @@
         "BandFade",
         "BAND_OPACITY",
         "BAND_EDGE_WIDTH",
+        "DASHED_EDGE",
+        "DASHED_EDGE_OPACITY",
         "EDGE_OPACITY",
         "useBandIds"
       ],
@@ -2276,10 +2278,50 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 135,
+        "loc": 145,
         "score": 0
       },
       "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "GoalTrajectoryCalibrating",
+      "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryCalibrating.tsx",
+      "dir": "workout",
+      "family": "custom/Workout",
+      "exports": [
+        "calibratingMarks",
+        "CalibratingHatch",
+        "CalibratingLabels",
+        "DEFAULT_CALIBRATING_NOTE",
+        "CalibratingMarks",
+        "CalibratingMarksInput",
+        "ChartText"
+      ],
+      "libDependents": 2,
+      "storyRefs": 0,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "GoalTrajectoryPlot"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 124,
+        "score": 0
+      },
+      "tier": "molecule",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -2297,6 +2339,8 @@
         "REACH_STATUS",
         "WALL_BREAKPOINT",
         "GoalTrajectoryChartProps",
+        "withoutRecords",
+        "withoutLead",
         "summarize"
       ],
       "libDependents": 2,
@@ -2310,6 +2354,7 @@
       },
       "dependsOn": [
         "GoalTrajectoryBand",
+        "GoalTrajectoryCalibrating",
         "GoalTrajectoryPlot",
         "TipTrigger",
         "Typography"
@@ -2319,7 +2364,7 @@
         "rawText": 1,
         "inlineStyle": 8,
         "rawHex": 0,
-        "loc": 358,
+        "loc": 393,
         "score": 22
       },
       "tier": "organism",
@@ -2407,7 +2452,7 @@
         "isBaseline",
         "Gridline"
       ],
-      "libDependents": 4,
+      "libDependents": 5,
       "storyRefs": 0,
       "xproj": {
         "mobile": 0,
@@ -2417,17 +2462,18 @@
         "total": 0
       },
       "dependsOn": [
-        "GoalTrajectoryBand"
+        "GoalTrajectoryBand",
+        "GoalTrajectoryCalibrating"
       ],
       "leak": {
         "rawView": 0,
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 623,
+        "loc": 633,
         "score": 0
       },
-      "tier": "molecule",
+      "tier": "organism",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -2999,7 +3045,7 @@
         "LiveAuraFrameProps"
       ],
       "libDependents": 3,
-      "storyRefs": 2,
+      "storyRefs": 3,
       "xproj": {
         "mobile": 0,
         "mcp": 3,
@@ -3090,7 +3136,7 @@
         "rawText": 1,
         "inlineStyle": 4,
         "rawHex": 0,
-        "loc": 123,
+        "loc": 126,
         "score": 12
       },
       "tier": "organism",
@@ -3713,11 +3759,10 @@
         "toneOf",
         "setLine",
         "StateTag",
-        "HeroValue",
         "cn"
       ],
       "libDependents": 1,
-      "storyRefs": 2,
+      "storyRefs": 3,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
@@ -3731,15 +3776,16 @@
         "SetBarChart",
         "Surface",
         "Typography",
+        "VelocityStrip",
         "icons"
       ],
       "leak": {
-        "rawView": 15,
+        "rawView": 18,
         "rawText": 12,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 454,
-        "score": 29
+        "loc": 488,
+        "score": 32
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -5554,7 +5600,7 @@
         "SurfaceProps"
       ],
       "libDependents": 17,
-      "storyRefs": 59,
+      "storyRefs": 61,
       "xproj": {
         "mobile": 22,
         "mcp": 12,
@@ -6297,7 +6343,7 @@
         "OverlineProps"
       ],
       "libDependents": 48,
-      "storyRefs": 17,
+      "storyRefs": 19,
       "xproj": {
         "mobile": 0,
         "mcp": 10,
@@ -6406,7 +6452,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 47,
+        "loc": 51,
         "score": 1
       },
       "tier": "organism",
@@ -6425,16 +6471,21 @@
         "getVelocityZoneName",
         "calculateVelocityLoss",
         "calculateMeanVelocity",
+        "normalizeLossThresholds",
+        "velocityLossBand",
         "getVelocityLossColor",
+        "velocityLossForRep",
         "VelocityLossBands",
         "DualVelocityStrip",
         "VelocityStrip",
         "VelocityZoneBandProp",
         "VelocityStripProps",
+        "VelocityLossThresholds",
+        "VelocityLossBand",
         "VelocitySet",
         "DualVelocityStream",
         "DualVelocityStripProps",
-        "velocityLossForRep",
+        "warnMalformedThresholds",
         "classifyBand",
         "bandColor",
         "makeBarColorFor",
@@ -6449,8 +6500,8 @@
         "wing",
         "barColorFor"
       ],
-      "libDependents": 9,
-      "storyRefs": 11,
+      "libDependents": 12,
+      "storyRefs": 12,
       "xproj": {
         "mobile": 0,
         "mcp": 3,
@@ -6466,7 +6517,7 @@
         "rawText": 4,
         "inlineStyle": 15,
         "rawHex": 0,
-        "loc": 1494,
+        "loc": 1587,
         "score": 50
       },
       "tier": "molecule",
@@ -7555,6 +7606,10 @@
       "Typography"
     ],
     [
+      "GoalTrajectoryCalibrating",
+      "GoalTrajectoryPlot"
+    ],
+    [
       "GoalTrajectoryChart",
       "TipTrigger"
     ],
@@ -7565,6 +7620,10 @@
     [
       "GoalTrajectoryChart",
       "GoalTrajectoryPlot"
+    ],
+    [
+      "GoalTrajectoryChart",
+      "GoalTrajectoryCalibrating"
     ],
     [
       "GoalTrajectoryChart",
@@ -7581,6 +7640,10 @@
     [
       "GoalTrajectoryPlot",
       "GoalTrajectoryBand"
+    ],
+    [
+      "GoalTrajectoryPlot",
+      "GoalTrajectoryCalibrating"
     ],
     [
       "GoalWeekColumnsChart",
@@ -7999,6 +8062,10 @@
       "SetBarChart"
     ],
     [
+      "PinnedLiveStrip",
+      "VelocityStrip"
+    ],
+    [
       "SessionStatePill",
       "Indicator"
     ],
@@ -8128,7 +8195,7 @@
     ]
   ],
   "summary": {
-    "total": 168,
+    "total": 169,
     "dead": [
       "Autocomplete",
       "Avatar",
@@ -8558,7 +8625,7 @@
         "rawText": 4,
         "inlineStyle": 15,
         "rawHex": 0,
-        "loc": 1494,
+        "loc": 1587,
         "score": 50
       },
       {

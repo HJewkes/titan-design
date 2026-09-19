@@ -255,12 +255,46 @@ export type VelocityLossThresholds = readonly [number, number, number]
 /** A loss's band: 0 green, 1 yellow, 2 orange, 3 red. */
 export type VelocityLossBand = 0 | 1 | 2 | 3
 
+// Bundlers replace `process.env.NODE_ENV` literally; the DTS build has no Node types.
+declare const process: { env: { NODE_ENV?: string } }
+
+const warnedThresholds = new Set<string>()
+
+function warnMalformedThresholds(input: unknown) {
+  const key = JSON.stringify(input) ?? String(input)
+  if (typeof process === 'undefined' || process.env.NODE_ENV === 'production') return
+  if (warnedThresholds.has(key)) return
+  warnedThresholds.add(key)
+  console.warn(`titan: lossThresholds ${key} is not three finite numbers; using 10/20/30.`)
+}
+
+/**
+ * The thresholds as the band classifier needs them: three finite numbers, each clamped to 0..100,
+ * ascending. Anything else (they arrive from a server) falls back to 10/20/30, with a dev warning.
+ */
+export function normalizeLossThresholds(input?: unknown): VelocityLossThresholds {
+  if (input == null) return VL_LOSS_THRESHOLDS
+  const valid =
+    Array.isArray(input) &&
+    input.length === 3 &&
+    input.every((t) => typeof t === 'number' && Number.isFinite(t))
+  if (!valid) {
+    warnMalformedThresholds(input)
+    return VL_LOSS_THRESHOLDS
+  }
+  const [a, b, c] = (input as number[])
+    .map((t) => Math.min(100, Math.max(0, t)))
+    .sort((x, y) => x - y)
+  return [a, b, c]
+}
+
 export function velocityLossBand(
   lossPct: number,
-  thresholds: VelocityLossThresholds = VL_LOSS_THRESHOLDS
+  thresholds?: VelocityLossThresholds
 ): VelocityLossBand {
-  const [t1, t2, t3] = thresholds
-  if (lossPct < t1) return 0
+  const [t1, t2, t3] = normalizeLossThresholds(thresholds)
+  // The set's best rep is never a warning, even when a threshold is 0.
+  if (lossPct <= 0 || lossPct < t1) return 0
   if (lossPct < t2) return 1
   if (lossPct < t3) return 2
   return 3
@@ -277,10 +311,7 @@ const LOSS_BAND_COLORS = [VEL_COLORS.green, VEL_COLORS.yellow, VEL_COLORS.orange
  * band), past VL30 reads red, so a fatiguing set reads green→red by LOSS
  * regardless of how slow its absolute velocity is.
  */
-export function getVelocityLossColor(
-  lossPct: number,
-  thresholds: VelocityLossThresholds = VL_LOSS_THRESHOLDS
-): string {
+export function getVelocityLossColor(lossPct: number, thresholds?: VelocityLossThresholds): string {
   return LOSS_BAND_COLORS[velocityLossBand(lossPct, thresholds)]
 }
 
@@ -325,10 +356,13 @@ function makeBarColorFor(zones?: readonly VelocityZoneBandProp[]): (v: number) =
     hasZones ? bandColor(classifyBand(v, zones)!) : zoneHexMap[getVelocityZoneColor(v)]
 }
 
-function getLossStyle(loss: number): Record<string, string> | null {
-  if (loss > 25) return { color: VEL_COLORS.red }
-  if (loss > 20) return { color: VEL_COLORS.orange }
-  return null
+/** The info row's loss text: orange and red at the same thresholds as the bars, else unstyled. */
+function getLossStyle(
+  loss: number,
+  thresholds?: VelocityLossThresholds
+): Record<string, string> | null {
+  const band = velocityLossBand(loss, thresholds)
+  return band >= 2 ? { color: LOSS_BAND_COLORS[band] } : null
 }
 
 // --- Set-type slot model -----------------------------------------------------
@@ -564,7 +598,7 @@ export function VelocityLossBands({
   const vl = getSemanticColors(useSurfaceMode())
   if (best <= 0 || scaleDenom <= 0 || plotHeight <= 0) return null
   const yOf = (v: number): number => (v / scaleDenom) * plotHeight
-  const [, amberPct, redPct] = thresholds
+  const [, amberPct, redPct] = normalizeLossThresholds(thresholds)
   const vl20 = best * (1 - amberPct / 100)
   const vl30 = best * (1 - redPct / 100)
   const hasAmber = amberPct < redPct
@@ -733,6 +767,8 @@ export interface DualVelocityStripProps extends ViewProps {
    * encoded by hue either way.
    */
   barColor?: 'zone' | 'loss'
+  /** `loss` only: the thresholds both wings band at, as on {@link VelocityStrip}. Default 10/20/30. */
+  lossThresholds?: VelocityLossThresholds
   /**
    * Planned rep count. Reps beyond a side's performed count draw as mirrored dashed
    * todo stubs (same "3 of 8 done" read as the single hero), on both wings.
@@ -868,6 +904,7 @@ interface DualChartProps {
   rightLabel?: string
   zones?: readonly VelocityZoneBandProp[]
   barColor: 'zone' | 'loss'
+  lossThresholds?: VelocityLossThresholds
   /** Shared across BOTH wings: `peak` (the pair's max +headroom) or `fixed` (a cross-set ceiling). */
   scale: 'peak' | 'fixed'
   targetReps?: number
@@ -896,6 +933,7 @@ function DualVelocityHero({
   rightLabel,
   zones,
   barColor,
+  lossThresholds,
   scale,
   targetReps,
   liveRepIndex,
@@ -931,6 +969,7 @@ function DualVelocityHero({
       scale={scale}
       scaleMax={scale === 'fixed' ? undefined : sharedMax}
       barColor={barColor}
+      lossThresholds={lossThresholds}
       zones={zones}
       liveRepIndex={liveRepIndex}
       height={plotHalf}
@@ -987,6 +1026,7 @@ function DualVelocityRail({
   rightStream,
   zones,
   barColor,
+  lossThresholds,
   scale,
   targetReps,
   liveRepIndex,
@@ -1023,6 +1063,7 @@ function DualVelocityRail({
       scale={scale}
       scaleMax={scale === 'fixed' ? undefined : sharedMax}
       barColor={barColor}
+      lossThresholds={lossThresholds}
       zones={zones}
       liveRepIndex={liveRepIndex}
       height={plotHalf}
@@ -1066,6 +1107,7 @@ function DualVelocityCompactStrip({
   rightStream,
   zones,
   barColor,
+  lossThresholds,
   targetReps,
   height,
   className,
@@ -1092,6 +1134,7 @@ function DualVelocityCompactStrip({
       velocities={done}
       columnSlots={columns}
       barColor={barColor}
+      lossThresholds={lossThresholds}
       zones={zones}
       height={half}
     />
@@ -1129,6 +1172,7 @@ export function DualVelocityStrip({
   right,
   zones,
   barColor = 'loss',
+  lossThresholds,
   targetReps,
   liveRepIndex,
   variant = 'hero',
@@ -1165,6 +1209,7 @@ export function DualVelocityStrip({
     rightLabel: right.label,
     zones,
     barColor,
+    lossThresholds,
     scale,
     targetReps,
     height: resolvedHeight,
@@ -1186,7 +1231,7 @@ export function VelocityStrip({
   set,
   zones,
   barColor = 'loss',
-  lossThresholds,
+  lossThresholds: lossThresholdsInput,
   showLossBands,
   orientation = 'up',
   scaleMax,
@@ -1209,6 +1254,7 @@ export function VelocityStrip({
   // Bands default on with the loss bar-fill (the two halves of the loss language),
   // off for the absolute zone scale; an explicit prop always wins.
   const lossBandsOn = showLossBands ?? barColor === 'loss'
+  const lossThresholds = normalizeLossThresholds(lossThresholdsInput)
   // A `set` descriptor derives its own done-velocity array; the legacy
   // `velocities` path stays the source of truth otherwise. Every summary calc
   // (mean / loss / zone) runs on this one array so the info row works either way.
@@ -1510,7 +1556,11 @@ export function VelocityStrip({
           </Text>
           <Text
             className="text-text-secondary"
-            style={{ fontSize: 10, fontFamily: 'Inter, sans-serif', ...getLossStyle(loss) }}
+            style={{
+              fontSize: 10,
+              fontFamily: 'Inter, sans-serif',
+              ...getLossStyle(loss, lossThresholds),
+            }}
           >
             Loss: {loss}%
           </Text>
