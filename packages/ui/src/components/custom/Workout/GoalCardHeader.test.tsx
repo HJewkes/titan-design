@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
+import { capturedClassNames } from '../../../test/classname-capture'
 
 import { GoalCard, type GoalCardProps, type GoalCardSize } from './GoalCard'
 import { PRIMARY_GOAL_SCENARIOS as S } from './primaryGoal-fixture'
@@ -80,5 +81,17 @@ describe('the gap under the title row', () => {
   it('stays stack-lg (16px) on the full card', () => {
     render(<GoalCard {...card('full')} />)
     expect(resolveAll(spacingClassesOf('goal-card-content'))).toEqual(['16px'])
+  })
+})
+
+describe('the hero numeral', () => {
+  it('sits on a tight line height on the compact card', () => {
+    render(<GoalCard {...card('compact')} />)
+    expect(capturedClassNames.get('goal-milestone-hero')).toContain('leading-none')
+  })
+
+  it('keeps its own line height on the full card', () => {
+    render(<GoalCard {...card('full')} />)
+    expect(capturedClassNames.get('goal-milestone-hero')).not.toContain('leading-none')
   })
 })
