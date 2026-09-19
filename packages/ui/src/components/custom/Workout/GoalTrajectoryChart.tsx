@@ -26,7 +26,7 @@ import {
 } from './GoalTrajectoryPlot'
 import { useTrajectoryEntrance } from './goalTrajectoryMotion'
 import {
-  CalibratingCaption,
+  CalibratingInfo,
   calibratingMarks,
   resolveCalibratingNote,
 } from './GoalTrajectoryCalibrating'
@@ -170,11 +170,11 @@ export interface GoalTrajectoryChartProps extends ViewProps {
    */
   referenceLabelSide?: ReferenceLabelSide
   /**
-   * Calibrating only: the first line of the note in the hatched weeks. The
-   * consumer supplies it because only the read model knows what calibration is
-   * still waiting on; empty or omitted, the default claims nothing. It wraps to
-   * two lines; where the hatch has no room it moves under the plot, and past two
-   * lines of that it ends in an ellipsis. The accessible name always carries it whole.
+   * Calibrating only: the first line of the tip behind the info target in the
+   * plot's lower-right corner. The consumer supplies it because only the read
+   * model knows what calibration is still waiting on; empty or omitted, the
+   * default claims nothing. A full sentence is fine: the tip wraps it. The
+   * chart's accessible name carries it too.
    */
   calibratingNote?: string
   className?: string
@@ -319,9 +319,7 @@ export function GoalTrajectoryChart({
     calibratingNote,
     calibrating ? STATUS_LABEL.calibrating : undefined
   )
-  const marks = calibrating
-    ? calibratingMarks({ geometry, wall: width >= WALL_BREAKPOINT, note })
-    : null
+  const marks = calibrating ? calibratingMarks({ geometry }) : null
   const label =
     summarize(statusLabel, geometry, committed, stretch, unit, metricLabel) +
     (calibrating ? calibratingSummary(note) : '')
@@ -375,7 +373,7 @@ export function GoalTrajectoryChart({
           calibrating={marks}
         />
       </View>
-      {marks && <CalibratingCaption marks={marks} palette={palette} />}
+      {marks && <CalibratingInfo marks={marks} note={note} palette={palette} />}
       {geometry.nextTarget && nextTarget && (
         <NextTargetTip point={geometry.nextTarget} label={nextTarget.label} />
       )}
