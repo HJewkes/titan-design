@@ -47,8 +47,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
   "fatigued" when the strip shows fatigue. The visible text is unchanged.
 - `PinnedLiveStrip` without a `layout` prop no longer paints the wall form for
   one frame on a phone. It keeps its measuring frame mounted and draws nothing
-  in it until the first `onLayout`. On React Native the first frame is empty;
-  server-rendered HTML carries only the empty frame, and the strip appears once
+  in it until it has measured itself: on the web before the first paint, on
+  React Native at the first `onLayout` (so the first frame is empty).
+  Server-rendered HTML carries only the empty frame, and the strip appears once
   the client measures it. Passing `layout` draws at once, as before.
 - `PinnedLiveStrip` no longer redraws its bar plot on every rest tick. The plot
   redraws only when `reps` (by identity), `targetReps`, the thresholds (by value)

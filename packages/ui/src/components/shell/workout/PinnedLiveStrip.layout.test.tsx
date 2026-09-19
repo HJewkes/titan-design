@@ -71,3 +71,21 @@ describe('PinnedLiveStrip before its first measurement', () => {
     expect(await axe(container)).toHaveNoViolations()
   })
 })
+
+describe('PinnedLiveStrip measured before its first paint (web)', () => {
+  // The visual job pauses the clock, so react-native-web's timer-deferred onLayout never fires.
+  it.each([
+    [1920, false],
+    [360, true],
+  ] as const)('draws its form at %ipx with timers paused and no onLayout', (px, isPhone) => {
+    vi.useFakeTimers()
+    const rect = vi
+      .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+      .mockReturnValue({ width: px } as DOMRect)
+    render(<PinnedLiveStrip {...S.set} />)
+    expect(screen.getByTestId('live-strip-plane')).toBeInTheDocument()
+    expect(screen.queryByTestId('live-strip-title-row') != null).toBe(isPhone)
+    rect.mockRestore()
+    vi.useRealTimers()
+  })
+})
