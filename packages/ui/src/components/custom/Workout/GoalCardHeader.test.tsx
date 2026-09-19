@@ -6,6 +6,8 @@ import { GoalCard, type GoalCardProps, type GoalCardSize } from './GoalCard'
 import { PRIMARY_GOAL_SCENARIOS as S } from './primaryGoal-fixture'
 
 const LONG_NAME = 'Single-Arm Half-Kneeling Cable Row'
+// Pasted garbage: one 120-character token with no break opportunity.
+const GARBAGE = 'X'.repeat(120)
 
 function card(size: GoalCardSize): GoalCardProps {
   const base = { ...S.onTrack, title: LONG_NAME, priority: 'specialize', isPR: true } as const
@@ -37,11 +39,28 @@ describe.each<GoalCardSize>(['full', 'compact'])('the %s title row at phone widt
     expect(styleOf('goal-card-marks')).toContain('flex-shrink: 0')
   })
 
-  it('never clamps the name, so a long one wraps rather than truncates', () => {
+  it('wraps a long name whole, clamped only at the four-line garbage guard', () => {
     render(<GoalCard {...card(size)} />)
     const title = screen.getByTestId('goal-card-title')
     expect(title).toHaveTextContent(LONG_NAME, { normalizeWhitespace: true })
-    expect(styleOf('goal-card-title')).not.toMatch(/line-clamp|text-overflow|ellipsis/)
+    expect(title).toHaveStyle({ WebkitLineClamp: '4' })
+  })
+
+  it.each([
+    ['with every mark', card(size)],
+    ['with no priority or PR mark', { ...card(size), priority: undefined, isPR: false }],
+  ])('breaks one unbroken pasted token inside the card %s', (_, props) => {
+    render(<GoalCard {...props} title={GARBAGE} />)
+    expect(screen.getByTestId('goal-card-title')).toHaveTextContent(GARBAGE)
+    expect(styleOf('goal-card-title')).toContain('overflow-wrap: anywhere')
+    expect(screen.getByTestId('goal-card-title')).toHaveStyle({ WebkitLineClamp: '4' })
+  })
+
+  it('keeps only the status in the marks when there is no priority or PR', () => {
+    render(<GoalCard {...card(size)} priority={undefined} isPR={false} title={GARBAGE} />)
+    const marks = screen.getByTestId('goal-card-marks')
+    expect(marks.children).toHaveLength(1)
+    expect(marks).toContainElement(screen.getByTestId('goal-card-status'))
   })
 
   it('has no accessibility violations', async () => {
