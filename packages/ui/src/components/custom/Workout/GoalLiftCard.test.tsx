@@ -187,11 +187,11 @@ describe('GoalLiftCard', () => {
    * mechanism that permits the wrap; the `Widths` story at 200px is where the
    * result is verified.
    */
-  it('leaves a long name unclamped, so it can wrap rather than truncate', () => {
+  it('lets a long name wrap, clamped only at the four-line garbage guard', () => {
     render(<GoalLiftCard {...baseProps} name="SINGLE-ARM DUMBBELL ROW" />)
     const name = screen.getByTestId('goal-card-title')
     expect(name).toHaveTextContent('SINGLE-ARM DUMBBELL ROW')
-    expect(name.getAttribute('style') ?? '').not.toContain('line-clamp')
+    expect(name).toHaveStyle({ WebkitLineClamp: '4' })
   })
 
   describe('accessibility', () => {

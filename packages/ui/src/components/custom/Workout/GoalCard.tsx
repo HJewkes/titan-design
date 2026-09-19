@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { View, type ViewProps } from 'react-native'
+import { Platform, View, type TextStyle, type ViewProps } from 'react-native'
 
 import { cn } from '../../../utils/cn'
 import { Card } from '../../ui/card'
@@ -369,6 +369,21 @@ function StatusAffordance({
  * left-aligned line under the name; only a name wider than the whole card
  * breaks onto a second line. It is pure flex wrap, so web and native agree.
  */
+/**
+ * The name wraps and is never truncated (VW-432). This only guards against pasted garbage: one
+ * unbroken token breaks inside the card instead of pushing past its edge (native Text already does),
+ * and a clamp no real exercise name reaches stops a runaway string growing the card without end.
+ */
+const GOAL_CARD_TITLE_MAX_LINES = 4
+
+const TITLE_GUARD = {
+  maxLines: GOAL_CARD_TITLE_MAX_LINES,
+  style: Platform.select<TextStyle>({
+    web: { overflowWrap: 'anywhere' } as TextStyle,
+    default: {},
+  }),
+}
+
 function TitleRow({
   title,
   size,
@@ -406,11 +421,11 @@ function TitleRow({
     >
       <View style={{ flexShrink: 1, minWidth: 0 }}>
         {size === 'full' ? (
-          <Typography variant="h5" testID="goal-card-title">
+          <Typography variant="h5" testID="goal-card-title" {...TITLE_GUARD}>
             {title}
           </Typography>
         ) : (
-          <Typography variant="overline" color="tertiary" testID="goal-card-title">
+          <Typography variant="overline" color="tertiary" testID="goal-card-title" {...TITLE_GUARD}>
             {title}
           </Typography>
         )}

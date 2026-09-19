@@ -45,6 +45,11 @@ project adheres to [Semantic Versioning](https://semver.org/).
 - `PinnedLiveStrip` no longer redraws its bar plot on every rest tick. The plot
   redraws only when `reps` (by identity), `targetReps`, the thresholds (by value)
   or the layout change.
+- `GoalCard` title: one long unbroken token (pasted garbage, not a real name)
+  breaks inside the card instead of pushing past its edge, and a four-line
+  safety clamp stops a runaway string growing the card. No real exercise name
+  reaches four lines; names still wrap and are not truncated. `GoalLiftCard`
+  and `PrimaryGoalCard` inherit it.
 
 
 ## 0.21.0
