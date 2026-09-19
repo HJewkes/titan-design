@@ -22,6 +22,7 @@ import {
   type VelocityLossThresholds,
 } from '../../custom/Workout/VelocityStrip'
 import {
+  liveStripMs,
   liveStripRepToken,
   liveStripRestReadout,
   type LiveStripBarColor,
@@ -129,7 +130,7 @@ const layoutOf = (scale: Scale): PinnedLiveStripLayout =>
   scale === SCALES.phone ? 'phone' : 'wall'
 
 /** The rest readout's type: seconds, their size and unit classes, and the raise that centres them. */
-export function liveStripRestType(layout: PinnedLiveStripLayout, remainingMs: number) {
+export function liveStripRestType(layout: PinnedLiveStripLayout, remainingMs: number | undefined) {
   const scale = SCALES[layout]
   const { seconds, step } = liveStripRestReadout(remainingMs)
   if (step === 'full') return { seconds, size: scale.hero, unit: scale.heroUnit, raisePx: 0 }
@@ -240,7 +241,7 @@ function heroSlotWidth({ reps, targetReps, scale }: Parts): number {
   return Math.max(twoDigits ? scale.slot.twoDigitReps : scale.slot.oneDigitReps, scale.secondsSlot)
 }
 
-function HeroValue({ state, reps, targetReps, scale, restRemainingMs = 0 }: Parts) {
+function HeroValue({ state, reps, targetReps, scale, restRemainingMs }: Parts) {
   if (state !== 'rest') {
     return (
       <Text testID="live-strip-hero-value">
@@ -424,13 +425,14 @@ function StripPlane({
   )
 }
 
-function RestBar({ restRemainingMs = 0, restDurationMs }: PinnedLiveStripProps) {
-  if (!restDurationMs) return null
+function RestBar({ restRemainingMs, restDurationMs }: PinnedLiveStripProps) {
+  const max = liveStripMs(restDurationMs)
+  if (max === 0) return null
   return (
     <View className="absolute bottom-0 left-0 right-0" pointerEvents="none">
       <Progress
-        value={restRemainingMs}
-        max={restDurationMs}
+        value={Math.min(max, liveStripMs(restRemainingMs))}
+        max={max}
         size="sm"
         accessibilityLabel="Rest remaining"
         testID="live-strip-rest-bar"
@@ -440,7 +442,7 @@ function RestBar({ restRemainingMs = 0, restDurationMs }: PinnedLiveStripProps) 
 }
 
 function accessibleName(props: PinnedLiveStripProps): string {
-  const { state, exerciseName, reps, targetReps, restRemainingMs = 0 } = props
+  const { state, exerciseName, reps, targetReps, restRemainingMs } = props
   const progress =
     state === 'rest'
       ? `${liveStripRestReadout(restRemainingMs).seconds} seconds rest left`

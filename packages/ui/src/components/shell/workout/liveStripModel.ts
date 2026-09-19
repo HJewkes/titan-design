@@ -64,11 +64,17 @@ export const LIVE_STRIP_REST_MAX_SECONDS = 999
 /** `full` fits "99s" in the numeral slot; `reduced` is the one smaller step that fits "999s". */
 export type LiveStripRestStep = 'full' | 'reduced'
 
+/** A duration in ms as the strip reads it: anything non-finite or negative is 0. */
+export function liveStripMs(ms: number | undefined): number {
+  return ms != null && Number.isFinite(ms) ? Math.max(0, ms) : 0
+}
+
 /** The rest readout: whole seconds left (rounded up) and the type step chosen by that value. */
-export function liveStripRestReadout(remainingMs: number): {
+export function liveStripRestReadout(remainingMs: number | undefined): {
   seconds: number
   step: LiveStripRestStep
 } {
-  const seconds = Math.min(LIVE_STRIP_REST_MAX_SECONDS, Math.max(0, Math.ceil(remainingMs / 1000)))
+  const ms = liveStripMs(remainingMs)
+  const seconds = Math.min(LIVE_STRIP_REST_MAX_SECONDS, Math.ceil(ms / 1000))
   return { seconds, step: seconds >= 100 ? 'reduced' : 'full' }
 }

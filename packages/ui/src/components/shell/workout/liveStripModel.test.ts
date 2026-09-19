@@ -18,6 +18,13 @@ describe('liveStripRestReadout', () => {
     expect(liveStripRestReadout(-500)).toEqual({ seconds: 0, step: 'full' })
   })
 
+  it.each([Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY, undefined])(
+    'reads a non-finite remaining time (%s) as 0s, never NaN',
+    (ms) => {
+      expect(liveStripRestReadout(ms)).toEqual({ seconds: 0, step: 'full' })
+    }
+  )
+
   it('holds at the longest supported rest instead of growing a fourth digit', () => {
     expect(liveStripRestReadout(1_500_000)).toEqual({
       seconds: LIVE_STRIP_REST_MAX_SECONDS,

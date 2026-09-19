@@ -53,6 +53,25 @@ describe('PinnedLiveStrip', () => {
       expect(bar.firstElementChild).toHaveStyle({ width: `${(47 / 90) * 100}%` })
     })
 
+    it.each([Number.NaN, Number.POSITIVE_INFINITY, undefined])(
+      'reads a non-finite remaining time (%s) as 0s in the numeral and the name',
+      (restRemainingMs) => {
+        render(<PinnedLiveStrip {...S.rest} restRemainingMs={restRemainingMs} layout="wall" />)
+        expect(screen.getByTestId('live-strip-hero')).toHaveTextContent(/^0s$/)
+        expect(screen.getByRole('link').getAttribute('aria-label')).toContain('0 seconds')
+        expect(document.body.textContent).not.toMatch(/NaN|Infinity/)
+        expect(screen.getByRole('progressbar').firstElementChild).toHaveStyle({ width: '0%' })
+      }
+    )
+
+    it.each([Number.NaN, Number.POSITIVE_INFINITY, 0, -1])(
+      'draws no time bar for a rest length of %s',
+      (restDurationMs) => {
+        render(<PinnedLiveStrip {...S.rest} restDurationMs={restDurationMs} layout="wall" />)
+        expect(screen.queryByRole('progressbar')).toBeNull()
+      }
+    )
+
     it('has no time bar outside rest', () => {
       render(<PinnedLiveStrip {...S.set} layout="wall" />)
       expect(screen.queryByRole('progressbar')).toBeNull()
