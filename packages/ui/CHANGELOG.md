@@ -44,6 +44,11 @@ project adheres to [Semantic Versioning](https://semver.org/).
   tips, the week strip, the chart's next-target tip) now also closes on Escape
   and on a press outside its trigger on the web, and the open tip is the
   trigger's accessible description (`aria-describedby`).
+- `GoalMilestoneSummary` (and so `GoalCard`, full and compact): when week, best
+  and goal cannot share a line and stack, they now sit with no gap between
+  them, one step tighter than the `stack-sm` that separates them from the hero
+  and the chart, and on a normal line height (18px) instead of the caption's
+  loose 24px, so the three read as one block. The one-row layout is unchanged.
 
 ### Fixed
 
