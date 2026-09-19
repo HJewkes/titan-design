@@ -25,6 +25,7 @@ import {
   liveStripMs,
   liveStripRepToken,
   liveStripRestReadout,
+  liveStripTarget,
   type LiveStripBarColor,
   type LiveStripRep,
   type LiveStripState,
@@ -246,7 +247,9 @@ function HeroValue({ state, reps, targetReps, scale, restRemainingMs }: Parts) {
     return (
       <Text testID="live-strip-hero-value">
         {reps.length}
-        <Text className={cn(UNIT, scale.heroUnit, scale.leading)}>/{targetReps}</Text>
+        {targetReps > 0 ? (
+          <Text className={cn(UNIT, scale.heroUnit, scale.leading)}>/{targetReps}</Text>
+        ) : null}
       </Text>
     )
   }
@@ -301,13 +304,15 @@ function Velocity({
 function RepBars(props: Parts & { fill?: boolean }) {
   const { reps, targetReps, scale, fill, barColor, lossThresholds } = props
   const slots: SetSlot[] = reps.map((rep) => ({ kind: 'rep', value: rep.velocity }))
+  // Without a plan the frame is as wide as the reps done, so the bars never collapse to nothing.
+  const columns = targetReps > 0 ? targetReps : reps.length
   // Colour is looked up by rep index, so zone mode uses analytics' zone and never the value.
   const colorFor = (_value: number, repIndex: number) =>
     resolveColor(liveStripRepToken(reps, repIndex, barColor, lossThresholds))
   return (
     <View
       testID="live-strip-bars-frame"
-      style={fill ? { flex: 1, minWidth: 0 } : { width: targetReps * scale.barPitch }}
+      style={fill ? { flex: 1, minWidth: 0 } : { width: columns * scale.barPitch }}
     >
       <SetBarChart
         slots={slots}
@@ -446,7 +451,9 @@ function accessibleName(props: PinnedLiveStripProps): string {
   const progress =
     state === 'rest'
       ? `${liveStripRestReadout(restRemainingMs).seconds} seconds rest left`
-      : `${reps.length} of ${targetReps} reps`
+      : targetReps > 0
+        ? `${reps.length} of ${targetReps} reps`
+        : `${reps.length} reps`
   return `Back to live: ${exerciseName}, ${setLine(props, false)}, ${progress}`
 }
 
@@ -465,6 +472,7 @@ export function PinnedLiveStrip(props: PinnedLiveStripProps) {
   const scale = SCALES[isPhone ? 'phone' : 'wall']
   const parts = {
     ...props,
+    targetReps: liveStripTarget(props.targetReps),
     lossThresholds: normalizeLossThresholds(props.lossThresholds),
     scale,
     tone,
@@ -474,7 +482,7 @@ export function PinnedLiveStrip(props: PinnedLiveStripProps) {
   return (
     <Pressable
       accessibilityRole="link"
-      accessibilityLabel={accessibleName(props)}
+      accessibilityLabel={accessibleName(parts)}
       onPress={onPress}
       onLayout={onLayout}
       testID="pinned-live-strip"

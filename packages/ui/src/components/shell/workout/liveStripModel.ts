@@ -78,3 +78,8 @@ export function liveStripRestReadout(remainingMs: number | undefined): {
   const seconds = Math.min(LIVE_STRIP_REST_MAX_SECONDS, Math.ceil(ms / 1000))
   return { seconds, step: seconds >= 100 ? 'reduced' : 'full' }
 }
+
+/** The planned rep count as the strip draws it: a whole number, and 0 when missing, negative or non-finite. */
+export function liveStripTarget(targetReps: number): number {
+  return Number.isFinite(targetReps) && targetReps > 0 ? Math.floor(targetReps) : 0
+}
