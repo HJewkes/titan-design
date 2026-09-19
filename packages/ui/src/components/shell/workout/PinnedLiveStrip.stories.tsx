@@ -4,6 +4,9 @@ import { Surface } from '../../ui/surface'
 import { PinnedLiveStrip, type PinnedLiveStripProps } from './PinnedLiveStrip'
 import { LIVE_STRIP_SCENARIOS as S } from './pinnedLiveStrip-fixture'
 
+// Stands in for the consumer's navigation, so the stories show the strip as the link it is in the app.
+const goLive = () => undefined
+
 const meta: Meta<PinnedLiveStripProps> = {
   title: 'Shell/Workout/PinnedLiveStrip',
   component: PinnedLiveStrip,
@@ -13,8 +16,8 @@ const meta: Meta<PinnedLiveStripProps> = {
     docs: {
       description: {
         component:
-          '**Organism (VW-429).** Pinned atop every non-live page while a set or rest runs; the whole ' +
-          'strip links back to live. Resize the canvas below 640px for the phone form. Bars colour by ' +
+          '**Organism (VW-429).** Pinned atop every non-live page while a set or rest runs; given ' +
+          '`onPress`, the whole strip links back to live (without it, a status region with no chevron). Resize the canvas below 640px for the phone form. Bars colour by ' +
           'loss from the set best like the live hero (`barColor="zone"` for per-rep zones); fatigue shows as strip colour only. Composes ' +
           '[Surface](?path=/docs/components-surface--docs) + ' +
           '[Indicator](?path=/docs/components-indicator--docs) + ' +
@@ -37,8 +40,9 @@ const meta: Meta<PinnedLiveStripProps> = {
     isFatigued: { control: 'boolean' },
     layout: { control: 'inline-radio', options: [undefined, 'wall', 'phone'] },
     reps: { control: 'object' },
+    onPress: { control: false },
   },
-  args: S.set,
+  args: { ...S.set, onPress: goLive },
 }
 export default meta
 
@@ -48,4 +52,4 @@ type Story = StoryObj<PinnedLiveStripProps>
 export const Default: Story = {}
 
 /** Resting: the countdown takes the hero and a time bar runs along the bottom. */
-export const Rest: Story = { args: S.rest }
+export const Rest: Story = { args: { ...S.rest, onPress: goLive } }

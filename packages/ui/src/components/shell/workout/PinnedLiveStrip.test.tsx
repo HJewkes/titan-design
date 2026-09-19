@@ -36,6 +36,36 @@ describe('PinnedLiveStrip', () => {
     })
   })
 
+  describe('without onPress', () => {
+    it.each(['wall', 'phone'] as const)(
+      'is a labelled status region with no link, button or chevron (%s)',
+      (layout) => {
+        render(<PinnedLiveStrip {...S.set} layout={layout} />)
+        expect(screen.queryByRole('link')).toBeNull()
+        expect(screen.queryByRole('button')).toBeNull()
+        expect(screen.queryByText('Back to live')).toBeNull()
+        expect(screen.getByTestId('pinned-live-strip').querySelector('svg')).toBeNull()
+        const region = screen.getByRole('region')
+        expect(region.getAttribute('aria-label')).toMatch(/^Cable Chest Press, Set 2 of 3/)
+      }
+    )
+
+    it.each(['wall', 'phone'] as const)(
+      'gains the link role and its chevron once onPress is given (%s)',
+      (layout) => {
+        render(<PinnedLiveStrip {...S.set} layout={layout} onPress={vi.fn()} />)
+        expect(screen.queryByRole('region')).toBeNull()
+        const link = screen.getByRole('link', { name: /^Back to live: Cable Chest Press/ })
+        expect(link.querySelector('svg')).toBeInTheDocument()
+      }
+    )
+
+    it('has no accessibility violations', async () => {
+      const { container } = render(<PinnedLiveStrip {...S.rest} layout="wall" />)
+      expect(await axe(container)).toHaveNoViolations()
+    })
+  })
+
   describe('rest', () => {
     it('replaces the rep readout with the countdown and names the next set', () => {
       render(<PinnedLiveStrip {...S.rest} layout="wall" />)
@@ -58,7 +88,9 @@ describe('PinnedLiveStrip', () => {
       (restRemainingMs) => {
         render(<PinnedLiveStrip {...S.rest} restRemainingMs={restRemainingMs} layout="wall" />)
         expect(screen.getByTestId('live-strip-hero')).toHaveTextContent(/^0s$/)
-        expect(screen.getByRole('link').getAttribute('aria-label')).toContain('0 seconds')
+        expect(screen.getByTestId('pinned-live-strip').getAttribute('aria-label')).toContain(
+          '0 seconds'
+        )
         expect(document.body.textContent).not.toMatch(/NaN|Infinity/)
         expect(screen.getByRole('progressbar').firstElementChild).toHaveStyle({ width: '0%' })
       }
@@ -125,7 +157,9 @@ describe('PinnedLiveStrip', () => {
         expect(screen.getByTestId('live-strip-bars-frame')).toHaveStyle({ width: `${reps * 24}px` })
         expect(screen.getAllByTestId(/^live-strip-bar-\d+$/)).toHaveLength(reps)
         expect(screen.getByTestId('live-strip-hero')).toHaveTextContent(new RegExp(`^${reps}$`))
-        expect(screen.getByRole('link').getAttribute('aria-label')).toContain(`${reps} reps`)
+        expect(screen.getByTestId('pinned-live-strip').getAttribute('aria-label')).toContain(
+          `${reps} reps`
+        )
         expect(document.body.textContent).not.toMatch(/NaN|Infinity|-3/)
       }
     )
@@ -269,7 +303,7 @@ describe('PinnedLiveStrip', () => {
       ['short', S.set],
       ['long', S.longName],
     ] as const)('keeps "Set 2/3" and the chevron pinned after a %s title', (_, scenario) => {
-      render(<PinnedLiveStrip {...scenario} layout="phone" />)
+      render(<PinnedLiveStrip {...scenario} layout="phone" onPress={vi.fn()} />)
       const row = screen.getByTestId('live-strip-title-row')
       const meta = screen.getByTestId('live-strip-meta')
       expect(row.lastElementChild).toBe(meta)
