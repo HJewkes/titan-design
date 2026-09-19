@@ -30,6 +30,7 @@ function IntentFrame({ set }: { set: IntentSet }) {
         targetReps={set.targetReps}
         isFatigued={isStop}
         lossThresholds={lossThresholds}
+        onPress={() => undefined}
       />
       <LiveAuraFrame category={isStop ? 'stop' : 'productive'} pulse={false}>
         <View className="p-inset-md">

@@ -58,7 +58,7 @@ export interface PinnedLiveStripProps {
   /** `rest` only: time left and the rest's full length, in ms. */
   restRemainingMs?: number
   restDurationMs?: number
-  /** Return to the live page. */
+  /** Return to the live page. Omitted: the strip is a status region with no link, button or chevron. */
   onPress?: () => void
   /** Force a layout. Omitted: measured from the strip's own width. */
   layout?: PinnedLiveStripLayout
@@ -157,7 +157,7 @@ const NUMERAL = 'font-heading font-bold text-text-primary'
 const UNIT = 'font-medium text-text-secondary'
 const TABULAR = { fontVariant: ['tabular-nums' as const] }
 
-type Parts = PinnedLiveStripProps & { scale: Scale; tone: Tone }
+type Parts = PinnedLiveStripProps & { scale: Scale; tone: Tone; isLink: boolean }
 
 function toneOf(state: LiveStripState, isFatigued: boolean): Tone {
   if (state === 'rest') return 'rest'
@@ -359,7 +359,7 @@ function WallRow(props: Parts) {
         <WallValues {...props} />
         <RepBars {...props} />
       </View>
-      <BackToLive />
+      {props.isLink ? <BackToLive /> : null}
     </View>
   )
 }
@@ -376,7 +376,7 @@ function PhoneTitleRow(props: Parts) {
         <Text className={cn('font-body text-text-secondary', scale.sub)}>
           {setLine(props, true)}
         </Text>
-        <ChevronRightIcon size={20} color={resolveColor('text-primary')} />
+        {props.isLink ? <ChevronRightIcon size={20} color={resolveColor('text-primary')} /> : null}
       </View>
     </View>
   )
@@ -446,20 +446,21 @@ function RestBar({ restRemainingMs, restDurationMs }: PinnedLiveStripProps) {
   )
 }
 
-function accessibleName(props: PinnedLiveStripProps): string {
-  const { state, exerciseName, reps, targetReps, restRemainingMs } = props
+function accessibleName(props: Parts): string {
+  const { state, exerciseName, reps, targetReps, restRemainingMs, isLink } = props
   const progress =
     state === 'rest'
       ? `${liveStripRestReadout(restRemainingMs).seconds} seconds rest left`
       : targetReps > 0
         ? `${reps.length} of ${targetReps} reps`
         : `${reps.length} reps`
-  return `Back to live: ${exerciseName}, ${setLine(props, false)}, ${progress}`
+  const summary = `${exerciseName}, ${setLine(props, false)}, ${progress}`
+  return isLink ? `Back to live: ${summary}` : summary
 }
 
 /**
  * Shell · PinnedLiveStrip (VW-429): the row pinned atop every non-live page while a set or rest
- * runs, so the lifter never loses the live set. The whole strip is the link back to live.
+ * runs, so the lifter never loses the live set. Given `onPress`, the whole strip is the link back to live.
  * Bars colour by loss from the set's best like the live hero (or by per-rep zone); fatigue is carried
  * by the strip's edge and wash, never by text, so the exercise title keeps its full width in every state.
  */
@@ -470,8 +471,9 @@ export function PinnedLiveStrip(props: PinnedLiveStripProps) {
   const isPhone = (layout ?? measured) === 'phone'
   const tone = toneOf(state, isFatigued)
   const scale = SCALES[isPhone ? 'phone' : 'wall']
-  const parts = {
+  const parts: Parts = {
     ...props,
+    isLink: onPress != null,
     targetReps: liveStripTarget(props.targetReps),
     lossThresholds: normalizeLossThresholds(props.lossThresholds),
     scale,
@@ -479,19 +481,26 @@ export function PinnedLiveStrip(props: PinnedLiveStripProps) {
   }
   const onLayout = (e: LayoutChangeEvent) =>
     setMeasured(e.nativeEvent.layout.width < PINNED_LIVE_STRIP_PHONE_MAX ? 'phone' : 'wall')
-  return (
-    <Pressable
-      accessibilityRole="link"
-      accessibilityLabel={accessibleName(parts)}
-      onPress={onPress}
-      onLayout={onLayout}
-      testID="pinned-live-strip"
-      className={cn('w-full', className)}
-    >
-      <StripPlane tone={tone} isPhone={isPhone}>
-        {isPhone ? <PhoneRows {...parts} /> : <WallRow {...parts} />}
-        {state === 'rest' ? <RestBar {...props} /> : null}
-      </StripPlane>
+  const plane = (
+    <StripPlane tone={tone} isPhone={isPhone}>
+      {isPhone ? <PhoneRows {...parts} /> : <WallRow {...parts} />}
+      {state === 'rest' ? <RestBar {...props} /> : null}
+    </StripPlane>
+  )
+  const frame = {
+    accessibilityLabel: accessibleName(parts),
+    onLayout,
+    testID: 'pinned-live-strip',
+    className: cn('w-full', className),
+  }
+  // Without somewhere to go the strip is a labelled status region: no link role, button or chevron.
+  return onPress ? (
+    <Pressable accessibilityRole="link" onPress={onPress} {...frame}>
+      {plane}
     </Pressable>
+  ) : (
+    <View accessible accessibilityRole="summary" {...frame}>
+      {plane}
+    </View>
   )
 }

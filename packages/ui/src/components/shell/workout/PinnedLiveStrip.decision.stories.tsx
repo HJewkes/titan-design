@@ -6,7 +6,7 @@ import { WorkoutShell } from './WorkoutShell'
 import { PinnedLiveStrip } from './PinnedLiveStrip'
 import { LIVE_STRIP_SCENARIOS as S, type LiveStripScenario } from './pinnedLiveStrip-fixture'
 
-type DecisionScenario = LiveStripScenario | 'pair' | 'pairTwoDigit'
+type DecisionScenario = LiveStripScenario | 'pair' | 'pairTwoDigit' | 'noLink'
 
 interface DecisionArgs {
   scenario: DecisionScenario
@@ -23,6 +23,7 @@ const SHELL_STATE: Record<DecisionScenario, 'live' | 'rest' | 'idle'> = {
   restTwoDigit: 'rest',
   pair: 'rest',
   pairTwoDigit: 'rest',
+  noLink: 'live',
   idle: 'idle',
 }
 
@@ -48,22 +49,37 @@ function PageBody() {
 }
 
 /** The set strip above its rest strip, so a shift between the two is visible. */
+// Stands in for the consumer's navigation: every strip here is the link back to live but `noLink`.
+const goLive = () => undefined
+
+/** A consumer with nowhere to navigate: a status region, no button and no chevron, set over rest. */
+function NoLinkStrips() {
+  return (
+    <View className="gap-stack-md" testID="live-strip-no-link">
+      <PinnedLiveStrip {...S.set} />
+      <PinnedLiveStrip {...S.rest} />
+    </View>
+  )
+}
+
 function Strips({ scenario, restSeconds = 47 }: DecisionArgs) {
+  if (scenario === 'noLink') return <NoLinkStrips />
   if (scenario === 'pairTwoDigit') {
     return (
       <View className="gap-stack-md" testID="live-strip-pair">
-        <PinnedLiveStrip {...S.setTwoDigit} />
-        <PinnedLiveStrip {...S.restTwoDigit} />
+        <PinnedLiveStrip {...S.setTwoDigit} onPress={goLive} />
+        <PinnedLiveStrip {...S.restTwoDigit} onPress={goLive} />
       </View>
     )
   }
-  if (scenario !== 'pair') return <PinnedLiveStrip {...S[scenario]} />
+  if (scenario !== 'pair') return <PinnedLiveStrip {...S[scenario]} onPress={goLive} />
   const restMs = restSeconds * 1000
   return (
     <View className="gap-stack-md" testID="live-strip-pair">
-      <PinnedLiveStrip {...S.set} />
+      <PinnedLiveStrip {...S.set} onPress={goLive} />
       <PinnedLiveStrip
         {...S.rest}
+        onPress={goLive}
         restRemainingMs={restMs}
         restDurationMs={Math.max(90_000, restMs * 1.2)}
       />
@@ -90,7 +106,7 @@ const meta: Meta<DecisionArgs> = {
   argTypes: {
     scenario: {
       control: 'select',
-      options: ['set', 'rest', 'fatigue', 'idle', 'longName', 'pair', 'pairTwoDigit'],
+      options: ['set', 'rest', 'fatigue', 'idle', 'longName', 'pair', 'pairTwoDigit', 'noLink'],
     },
     restSeconds: { control: { type: 'number', min: 0, max: 999 } },
   },
@@ -144,3 +160,6 @@ export const RestPair999: Story = { args: { scenario: 'pair', restSeconds: 999 }
 
 /** A 12-rep target with 150s of rest: the two-digit rep slot and the reduced seconds together. */
 export const RestPairTwoDigitTarget: Story = { args: { scenario: 'pairTwoDigit' } }
+
+/** No `onPress` (functional review A4): a status region, set over rest, with no "Back to live" and no chevron. */
+export const NoLink: Story = { args: { scenario: 'noLink' } }

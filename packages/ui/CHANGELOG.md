@@ -19,6 +19,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
   returns the unrounded loss; round it yourself where you display it.
   `calculateVelocityLoss` still returns a whole percent, and the "Loss" text
   still shows one, but its colour follows the exact loss.
+- `PinnedLiveStrip` without `onPress` is no longer a link: it has no link role,
+  no "Back to live" button and no chevron, and reads as a labelled status region
+  (`accessibilityRole="summary"`, a `region` on the web). Its accessible name
+  drops the "Back to live:" prefix. **Pass `onPress` to keep the 0.20.0 look.**
 
 ### Fixed
 
