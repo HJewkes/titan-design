@@ -48,7 +48,7 @@ export interface PinnedLiveStripProps {
   setCount: number
   /** Pre-formatted load, e.g. "140 lb". */
   loadLabel?: string
-  /** Performed reps of the current set (in `rest`, of the set just finished), zones from analytics. Pass the same array while it is unchanged: the bar plot redraws only when it, the target, the thresholds or the layout change. */
+  /** Performed reps of the current set (in `rest`, of the set just finished), zones from analytics. */
   reps: readonly LiveStripRep[]
   targetReps: number
   /** `loss` (default) colours each bar by its loss from the set's best, as the live hero does; `zone` by the rep's zone. */
@@ -310,10 +310,16 @@ type RepBarsProps = Pick<Parts, 'reps' | 'targetReps' | 'scale' | 'barColor' | '
 const sameThresholds = (a?: VelocityLossThresholds, b?: VelocityLossThresholds) =>
   a === b || (a != null && b != null && a.every((t, i) => t === b[i]))
 
+// By value: a consumer rebuilds the reps array every render, and a set is 30 reps at most.
+const sameReps = (a: readonly LiveStripRep[], b: readonly LiveStripRep[]) =>
+  a === b ||
+  (a.length === b.length &&
+    a.every((rep, i) => rep.velocity === b[i].velocity && rep.zone === b[i].zone))
+
 // The plot depends only on these, so a consumer ticking the rest countdown never redraws it.
 function sameBars(a: RepBarsProps, b: RepBarsProps): boolean {
   return (
-    a.reps === b.reps &&
+    sameReps(a.reps, b.reps) &&
     a.targetReps === b.targetReps &&
     a.scale === b.scale &&
     a.barColor === b.barColor &&

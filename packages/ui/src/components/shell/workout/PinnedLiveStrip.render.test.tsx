@@ -44,6 +44,21 @@ describe('PinnedLiveStrip re-rendering', () => {
     expect(plots.count).toBe(afterMount)
   })
 
+  it('does not redraw the bar plot for a new reps array with the same reps', () => {
+    const { rerender } = render(ticking(47_000))
+    const afterMount = plots.count
+    rerender(ticking(46_000, { reps: S.rest.reps.map((rep) => ({ ...rep })) }))
+    expect(plots.count).toBe(afterMount)
+  })
+
+  it('redraws the bar plot when one rep changes its zone', () => {
+    const { rerender } = render(ticking(47_000))
+    const afterMount = plots.count
+    const reps = S.rest.reps.map((rep, i) => (i === 0 ? { ...rep, zone: 'speed' as const } : rep))
+    rerender(ticking(46_000, { reps }))
+    expect(plots.count).toBe(afterMount + 1)
+  })
+
   it('redraws the bar plot when the reps change', () => {
     const { rerender } = render(ticking(47_000))
     const afterMount = plots.count
