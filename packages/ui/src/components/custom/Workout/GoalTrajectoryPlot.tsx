@@ -19,11 +19,7 @@ import type {
 } from './GoalTrajectoryChartGeometry'
 import { CHART_FONT, ruleLabelLayout, type BandCurve } from './GoalTrajectoryChartGeometry'
 import { BAND_OPACITY, BandLayer, type BandFade } from './GoalTrajectoryBand'
-import {
-  CalibratingHatch,
-  CalibratingLabels,
-  type CalibratingMarks,
-} from './GoalTrajectoryCalibrating'
+import { CalibratingHatch, type CalibratingMarks } from './GoalTrajectoryCalibrating'
 import {
   ENTRANCE,
   drawStyle,
@@ -571,7 +567,7 @@ export interface GoalTrajectoryPlotProps extends LayerProps {
   showYLabels: boolean
   style: PlotStyle
   entrance: EntranceState
-  /** A calibrating goal's hatch and note; null for every other status. */
+  /** A calibrating goal's hatch; null for every other status. */
   calibrating?: CalibratingMarks | null
 }
 
@@ -626,7 +622,6 @@ export function GoalTrajectoryPlot(props: GoalTrajectoryPlotProps) {
         side={style.referenceLabelSide}
       />
       <WeekAxis {...layer} weeks={props.weeks} stride={props.weekStride} />
-      {props.calibrating && <CalibratingLabels marks={props.calibrating} palette={palette} />}
     </svg>
   )
 }

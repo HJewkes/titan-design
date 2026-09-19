@@ -59,6 +59,7 @@ the shipped card.
 
 **Tried:** four treatments for rest seconds of 100 or more (VW-429 round 7), measured in Chrome.
 Each was shown with its set strip above its rest strip; none moved the velocity or the bars.
+
 - **v0:** the reduced digits on the shared baseline. Wall 32px in a 75px slot, phone 24px in 57px,
   phone gap 12px, phone bars 90px.
 - **v1:** v0 with the digits centred on the full-size digits (raised 5.6px wall, 4.2px phone).
@@ -340,7 +341,6 @@ grey ramp, so every "which warmth curve" story argues about an axis the system
 no longer has. `surface-lab-shared.tsx` stays — the North Star file imports it,
 and `surface.contract.test.ts` carries a verbatim copy of its `lstar()`.
 
-
 ## Live bar colour v0, v1, v3 and v4 — rejected 2026-09-18
 
 **Tried:** five treatments for how the pinned strip and the live hero colour their rep bars (VW-429
@@ -349,6 +349,7 @@ end at or past their intent's stop, so every frame had the red strip edge and th
 strength (stop 20%) 0.52 to 0.40 m/s ending 23%, power (stop 10%) 0.95 to 0.84 ending 12%, and
 hypertrophy (stop 30%) 0.62 to 0.42 ending 32%. Bars below are left to right; g green, y yellow,
 o orange, r red.
+
 - **v0, today:** strip by absolute zone (0.35 / 0.5 / 0.75 / 1.0 m/s), hero by loss at fixed
   10/20/30. Strength: strip o o r r r r, hero g g g y y o. Power: strip y y y y y, hero g g g g y.
   Hypertrophy: strip o o o o o r r r, hero g g g y y o o r. The two surfaces disagreed on every set.
@@ -772,3 +773,30 @@ the plane.
 
 **Code:** deleted: the `showRampLabel` prop and its story. `Lab/Decisions/Calibrating
 Goal Chart` keeps the chosen chart as its only story.
+
+---
+
+## Calibrating note written on the plot, fitted into the hatch or a caption — rejected 2026-09-19
+
+**Tried:** in titan-0201 round 1, the calibrating chart's note drawn as text in the
+plot. The consumer's note wrapped to at most two lines and sat in the hatched weeks,
+at their lower-right corner or else their upper-right one, kept clear of the
+readings, the line between them, the next-target dot and the dashed ramp. When the
+hatch had no room for the whole block (a late reading, a narrow phone), the note and
+its explanation lines became a caption under the plot, cut with an ellipsis past two
+lines. Widths came from a conservative Inter width estimate, since the chart has no
+DOM to measure.
+
+**Chosen instead:** an info target in the plot's lower-right corner whose tip carries
+the note and the explanation lines.
+
+**Why:** the human answered "no" to "Is the calibrating note fit right?" and wrote:
+"Lets move to a info hover tip target in the lower right corner of the chart that we
+can then put whatever text we need into it". A tip takes any length of text, so the
+consumer no longer has to squeeze its note, and nothing is drawn over the plot.
+
+**Code:** deleted: `calibratingNoteFit.ts` (the width estimate, the word wrap and
+ellipsis, the collision test) and its tests, the caption path
+(`CalibratingCaption`), the in-plot `CalibratingLabels`, and the
+`Lab/Decisions/Calibrating Note Fit` stories, which became
+`Lab/Decisions/Calibrating Info Tip`.

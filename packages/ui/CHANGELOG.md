@@ -28,14 +28,18 @@ project adheres to [Semantic Versioning](https://semver.org/).
   no "Back to live" button and no chevron, and reads as a labelled status region
   (`accessibilityRole="summary"`, a `region` on the web). Its accessible name
   drops the "Back to live:" prefix. **Pass `onPress` to keep the 0.20.0 look.**
-- `GoalTrajectoryChart`, calibrating state: the note fits the chart. It wraps to
-  at most two lines and stays inside the hatched weeks, at their lower-right
-  corner or else their upper-right one, clear of the readings, the line between
-  them, the next-target dot and the dashed ramp. When the hatch has no room for
-  the whole block (a late reading, a narrow phone), the note and its explanation
-  move to a caption under the plot, and a note longer than two caption lines
-  ends in an ellipsis. An empty or blank `calibratingNote` falls back to "No band
-  yet". The default note on an early-block goal renders as in 0.20.0.
+- `GoalTrajectoryChart`, calibrating state: **the note is no longer written on
+  the plane.** An info target sits in the plot's lower-right corner, inside the
+  hatch, and its tip carries `calibratingNote` (or "No band yet" when it is empty
+  or blank) followed by the two explanation lines at every width. The target is
+  a button named "Why is there no band?". It opens on hover, keyboard focus and
+  press, closes on blur, Escape and a press outside, and has a 24px hit area
+  (44px under a touch pointer). It never covers a reading, the line between
+  them, the next target or the ramp: when low readings fill that corner in the
+  last weeks, it hangs just under the plot. The tip opens in flow, right-aligned
+  to the target, so it stays inside the card at every width. `calibratingNote`
+  may now be a full sentence: the old in-plot fit no longer limits it.
+  **Consumers will see a visual change** on calibrating goals.
 - `TipTrigger` (and every tip built on it: the goal card's status and priority
   tips, the week strip, the chart's next-target tip) now also closes on Escape
   and on a press outside its trigger on the web, and the open tip is the
@@ -69,9 +73,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
   safety clamp stops a runaway string growing the card. No real exercise name
   reaches four lines; names still wrap and are not truncated. `GoalLiftCard`
   and `PrimaryGoalCard` inherit it.
-- `GoalTrajectoryChart`, calibrating state: the accessible name now carries the
-  note, whole even where the drawn note is cut, and says the line is the planned
-  ramp from the start lift, not an expected band.
+- `GoalTrajectoryChart`, calibrating state: the chart's accessible name now
+  carries the whole note and says the line is the planned ramp from the start
+  lift, not an expected band.
 - `GoalTrajectoryChart`: a `calibratingNote` that opens with the status label
   ("Calibrating") logs a development-only console warning, since the card's
   pill already says it. The note still draws as given; production builds skip

@@ -1,27 +1,22 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 /**
  * What a calibrating chart adds to the plot (VW-433, human's pick D with B's
- * dashed ramp): the weeks after the latest reading hatched, with the reason there
- * is no band yet written in their lower-right corner, which the ramp climbs away
- * from. The dashed ramp itself is `BandLayer`'s `dashed` edge.
+ * dashed ramp): the weeks after the latest reading hatched. The dashed ramp itself
+ * is `BandLayer`'s `dashed` edge.
  *
- * The note block fits itself (functional review C2): the consumer's note wraps to
- * two lines at most, and the block stays inside the hatch and clear of the
- * readings, the next-target dot and the ramp. When it cannot, it becomes a caption under the plot.
+ * The reason there is no band lives in a tip, not on the plane (titan-0201 round 1,
+ * human: "Lets move to a info hover tip target in the lower right corner of the
+ * chart that we can then put whatever text we need into it"). The target sits in
+ * the plot's lower-right corner, which the hatch always reaches, and moves off any
+ * data mark there.
  */
 import { useId } from 'react'
-import { Text, View } from 'react-native'
-import { CHART_FONT, type GoalTrajectoryGeometry } from './GoalTrajectoryChartGeometry'
+import { Platform, View } from 'react-native'
+import { InfoIcon } from '../../icons'
+import { TipTrigger } from '../../ui/tooltip'
+import { Typography } from '../Typography'
+import type { GeometryPoint, GoalTrajectoryGeometry } from './GoalTrajectoryChartGeometry'
 import type { TrajectoryPalette } from './GoalTrajectoryPlot'
-import {
-  collides,
-  fitNote,
-  marksAlong,
-  textWidth,
-  wrapWords,
-  type PlottedMark,
-  type Rect,
-} from './calibratingNoteFit'
 
 /**
  * The note's first line when the consumer supplies none. It claims no count,
@@ -30,11 +25,14 @@ import {
  */
 export const DEFAULT_CALIBRATING_NOTE = 'No band yet'
 
-const WALL_EXPLANATION = [
+/** What the tip says under the consumer's note, at every width. */
+export const CALIBRATING_EXPLANATION = [
   'Your band appears here once there is enough history',
   'Until then the line is the planned ramp from your start lift',
 ]
-const PHONE_EXPLANATION = ['Your band appears here']
+
+/** The info target's accessible name. */
+export const CALIBRATING_TIP_LABEL = 'Why is there no band?'
 
 // Bundlers replace `process.env.NODE_ENV` literally; the DTS build has no Node types.
 declare const process: { env: { NODE_ENV?: string } }
@@ -51,8 +49,8 @@ function warnRepeatedStatus(note: string, statusLabel: string) {
 }
 
 /**
- * The note to draw: the consumer's, trimmed, or the default when it is empty. Given the
- * status label, a note that opens with it draws as given, with a dev-only warning.
+ * The note to show: the consumer's, trimmed, or the default when it is empty. Given the
+ * status label, a note that opens with it shows as given, with a dev-only warning.
  */
 export function resolveCalibratingNote(note: string | undefined, statusLabel?: string): string {
   const trimmed = note?.trim() ?? ''
@@ -63,117 +61,94 @@ export function resolveCalibratingNote(note: string | undefined, statusLabel?: s
   return trimmed
 }
 
-export interface NoteLine {
-  text: string
-  kind: 'note' | 'explanation'
-}
-
-/** Inside the hatch, at its lower or upper right corner, or as a caption under the plot. */
-export type NotePlacement = 'hatch-bottom' | 'hatch-top' | 'below'
+/** Where the info target sits: the plot's lower-right corner, its upper-right one, or under the plot. */
+export type InfoTargetCorner = 'bottom-right' | 'top-right' | 'below'
 
 /** The calibrating layer in the chart's own pixels. */
 export interface CalibratingMarks {
   /** Left edge of the hatch: the far side of the latest reading's week column. */
   hatchX: number
-  placement: NotePlacement
-  lines: NoteLine[]
-  /** Hatch placements: the lines' right edge and the first line's baseline. */
-  anchor: { x: number; y: number }
-  /** `below` only: the caption's box, the plot's width under the plot. */
-  caption: { left: number; width: number }
+  /** The info target's hit box and the corner it took. */
+  target: { x: number; y: number; size: number; corner: InfoTargetCorner }
 }
 
-const LABEL_OFFSET = 6
-const LINE_HEIGHT = CHART_FONT + 5
-// Dot radius plus its ring, and a gap, so no line touches a reading or the next target.
-const MARK_CLEARANCE = 8
-const LINE_CLEARANCE = 4
+/** Hit area: 24px for a pointer, 44px for touch (WCAG 2.5.8 and the platform minimums). */
+export const INFO_TARGET_POINTER = 24
+export const INFO_TARGET_TOUCH = 44
+
+/** The hit size for this device: touch on native, and on a web page whose main pointer is coarse. */
+export function infoTargetSize(): number {
+  if (Platform.OS !== 'web') return INFO_TARGET_TOUCH
+  const coarse = typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches
+  return coarse ? INFO_TARGET_TOUCH : INFO_TARGET_POINTER
+}
+
+const CORNER_INSET = 4
+// A reading or the next target is a 4px dot with a 2px ring; the ramp is a 1.5px dashed line.
+const DOT_REACH = 6
+const LINE_REACH = 2
+const LINE_SAMPLES = 12
+
+interface Box {
+  x: number
+  y: number
+  size: number
+}
+
+function reaches(box: Box, p: GeometryPoint, radius: number): boolean {
+  const dx = Math.max(box.x - p.x, 0, p.x - (box.x + box.size))
+  const dy = Math.max(box.y - p.y, 0, p.y - (box.y + box.size))
+  return dx * dx + dy * dy < radius * radius
+}
+
+function alongLine(points: GeometryPoint[]): GeometryPoint[] {
+  const out = [...points]
+  for (let i = 1; i < points.length; i++) {
+    const [a, b] = [points[i - 1], points[i]]
+    for (let s = 1; s < LINE_SAMPLES; s++) {
+      const t = s / LINE_SAMPLES
+      out.push({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t })
+    }
+  }
+  return out
+}
+
+/** True when the box would cover a reading, the line between readings, the next target or the ramp. */
+function coversMark(g: GoalTrajectoryGeometry, box: Box): boolean {
+  const dots = g.nextTarget ? [...g.actuals, g.nextTarget] : g.actuals
+  if (dots.some((p) => reaches(box, p, DOT_REACH))) return true
+  const lines = [...alongLine(g.actuals), ...alongLine(g.bandPolygon)]
+  return lines.some((p) => reaches(box, p, LINE_REACH))
+}
+
+/** The lower-right corner of the plot, else its upper-right, else hanging just under the plot. */
+function placeTarget(g: GoalTrajectoryGeometry, size: number): CalibratingMarks['target'] {
+  const x = g.plot.right - CORNER_INSET - size
+  const corners: [InfoTargetCorner, number][] = [
+    ['bottom-right', g.plot.bottom - CORNER_INSET - size],
+    ['top-right', g.plot.top + CORNER_INSET],
+  ]
+  for (const [corner, y] of corners) {
+    if (!coversMark(g, { x, y, size })) return { x, y, size, corner }
+  }
+  return { x, y: g.plot.bottom + CORNER_INSET, size, corner: 'below' }
+}
 
 export interface CalibratingMarksInput {
   geometry: GoalTrajectoryGeometry
-  wall: boolean
-  note: string
+  /** Hit size in px; {@link infoTargetSize} by default. */
+  targetSize?: number
 }
-
-/** The readings and the line between them, the next target, and the dashed ramp the note explains. */
-function plottedMarks(g: GoalTrajectoryGeometry): PlottedMark[] {
-  const readings = marksAlong(g.actuals, MARK_CLEARANCE, LINE_CLEARANCE)
-  const ramp = marksAlong(g.bandPolygon, LINE_CLEARANCE, LINE_CLEARANCE)
-  const next = g.nextTarget ? [{ ...g.nextTarget, radius: MARK_CLEARANCE }] : []
-  return [...readings, ...ramp, ...next]
-}
-
-// Space kept clear around the text, so a slanted line never grazes its ascenders.
-const BLOCK_PAD = 4
-
-function blockRect(right: number, firstBaseline: number, lines: string[]): Rect {
-  const width = Math.max(...lines.map((l) => textWidth(l, CHART_FONT)))
-  const lastBaseline = firstBaseline + (lines.length - 1) * LINE_HEIGHT
-  return {
-    left: right - width - BLOCK_PAD,
-    right: right + BLOCK_PAD,
-    top: firstBaseline - CHART_FONT - BLOCK_PAD,
-    bottom: lastBaseline + 3 + BLOCK_PAD,
-  }
-}
-
-/** The block's first baseline in each hatch corner. */
-function cornerBaselines(g: GoalTrajectoryGeometry, count: number) {
-  const bottom = g.plot.bottom - LABEL_OFFSET * 2 - (count - 1) * LINE_HEIGHT
-  return { 'hatch-bottom': bottom, 'hatch-top': g.plot.top + LABEL_OFFSET + CHART_FONT }
-}
-
-/** The first hatch corner where the whole block fits untruncated and clear of every mark. */
-function hatchPlacement(g: GoalTrajectoryGeometry, hatchX: number, note: string, wall: boolean) {
-  const right = g.plot.right - LABEL_OFFSET * 2
-  const width = right - (hatchX + LABEL_OFFSET)
-  const explanation = wall ? WALL_EXPLANATION : PHONE_EXPLANATION
-  const noteLines = wrapWords(note, width, CHART_FONT, 2)
-  if (!noteLines || explanation.some((l) => textWidth(l, CHART_FONT) > width)) return null
-  const lines = [...noteLines, ...explanation]
-  const marks = plottedMarks(g)
-  const corners = cornerBaselines(g, lines.length)
-  for (const placement of ['hatch-bottom', 'hatch-top'] as const) {
-    if (!collides(blockRect(right, corners[placement], lines), marks)) {
-      return { placement, noteLines, anchor: { x: right, y: corners[placement] } }
-    }
-  }
-  return null
-}
-
-const asLines = (note: string[], wall: boolean): NoteLine[] => [
-  ...note.map((text) => ({ text, kind: 'note' as const })),
-  ...(wall ? WALL_EXPLANATION : PHONE_EXPLANATION).map((text) => ({
-    text,
-    kind: 'explanation' as const,
-  })),
-]
 
 export function calibratingMarks(input: CalibratingMarksInput): CalibratingMarks {
-  const { geometry: g, wall, note } = input
+  const { geometry: g, targetSize = infoTargetSize() } = input
   const latest = g.actuals[g.actuals.length - 1]
   const span = Math.abs(g.toX(2) - g.toX(1))
-  const hatchX = latest ? latest.x + span / 2 : g.plot.left
-  const caption = { left: g.plot.left, width: g.plot.right - g.plot.left }
-  const inHatch = hatchPlacement(g, hatchX, note, wall)
-  if (inHatch) {
-    const { placement, noteLines, anchor } = inHatch
-    return { hatchX, placement, lines: asLines(noteLines, wall), anchor, caption }
-  }
-  const fitted = fitNote(note, caption.width - LABEL_OFFSET * 2, CHART_FONT)
   return {
-    hatchX,
-    placement: 'below',
-    lines: asLines(fitted, wall),
-    anchor: { x: 0, y: 0 },
-    caption,
+    hatchX: latest ? latest.x + span / 2 : g.plot.left,
+    target: placeTarget(g, targetSize),
   }
 }
-
-const lineTestId = (i: number) => `goal-trajectory-chart-calibrating-note-${String(i)}`
-
-const lineFill = (line: NoteLine, palette: TrajectoryPalette) =>
-  line.kind === 'note' ? palette.rule : palette.axis
 
 interface LayerArgs {
   marks: CalibratingMarks
@@ -204,55 +179,61 @@ export function CalibratingHatch({ marks, geometry, palette }: LayerArgs) {
   )
 }
 
-/** Over the plane, unclipped: the note, when it sits in the hatch. The ramp carries no label (VW-433 round 2). */
-export function CalibratingLabels({ marks, palette }: Omit<LayerArgs, 'geometry'>) {
-  if (marks.placement === 'below') return null
+/** The widest the tip text gets, the room kept from the chart's left edge, and the tip's own padding. */
+const TIP_MAX_WIDTH = 280
+const TIP_EDGE = 8
+// Tooltip's Surface pads its content with px-inset-md: 12px a side.
+const TIP_PADDING = 24
+const ICON_SIZE = 16
+
+/** The tip's text box: the whole tip fits between the chart's left edge and the target's right edge. */
+export function calibratingTipWidth(targetRight: number): number {
+  return Math.max(0, Math.min(TIP_MAX_WIDTH, targetRight - TIP_EDGE - TIP_PADDING))
+}
+
+function TipBody({ note, width }: { note: string; width: number }) {
   return (
-    <>
-      {marks.lines.map((line, i) => (
-        <text
-          key={`${String(i)}-${line.text}`}
-          data-testid={lineTestId(i)}
-          data-placement={marks.placement}
-          x={marks.anchor.x}
-          y={marks.anchor.y + i * LINE_HEIGHT}
-          fill={lineFill(line, palette)}
-          fontSize={CHART_FONT}
-          fontFamily="Inter, sans-serif"
-          textAnchor="end"
-        >
-          {line.text}
-        </text>
+    <View style={{ width }} className="gap-stack-sm" testID="goal-trajectory-chart-calibrating-tip">
+      <Typography variant="body2">{note}</Typography>
+      {CALIBRATING_EXPLANATION.map((line) => (
+        <Typography key={line} variant="caption" color="secondary">
+          {line}
+        </Typography>
       ))}
-    </>
+    </View>
   )
 }
 
-/** Under the plot, right-aligned to it: the note when the hatch has no room for it. */
-export function CalibratingCaption({ marks, palette }: Omit<LayerArgs, 'geometry'>) {
-  if (marks.placement !== 'below') return null
-  const { left, width } = marks.caption
+interface CalibratingInfoProps {
+  marks: CalibratingMarks
+  note: string
+  palette: TrajectoryPalette
+}
+
+/**
+ * The info target over the plot, absolute against the chart's own box. The tip opens in flow,
+ * right-aligned to the target, so the card's clipping never cuts it and it never leaves the card.
+ */
+export function CalibratingInfo({ marks, note, palette }: CalibratingInfoProps) {
+  const { x, y, size, corner } = marks.target
+  const box = { width: size, height: size }
   return (
     <View
-      testID="goal-trajectory-chart-calibrating-caption"
-      style={{ marginLeft: left, width, paddingHorizontal: LABEL_OFFSET }}
+      style={{ position: 'absolute', left: x, top: y }}
+      testID={`goal-trajectory-chart-calibrating-info-${corner}`}
     >
-      {marks.lines.map((line, i) => (
-        <Text
-          key={`${String(i)}-${line.text}`}
-          testID={lineTestId(i)}
-          numberOfLines={1}
-          style={{
-            color: lineFill(line, palette),
-            fontSize: CHART_FONT,
-            lineHeight: LINE_HEIGHT,
-            fontFamily: 'Inter, sans-serif',
-            textAlign: 'right',
-          }}
-        >
-          {line.text}
-        </Text>
-      ))}
+      <TipTrigger
+        label={CALIBRATING_TIP_LABEL}
+        content={<TipBody note={note} width={calibratingTipWidth(x + size)} />}
+        placement={corner === 'top-right' ? 'bottom-end' : 'top-end'}
+        usePortal={false}
+        style={box}
+        testID="goal-trajectory-chart-calibrating-target"
+      >
+        <View style={box} className="items-center justify-center">
+          <InfoIcon size={ICON_SIZE} color={palette.axis} />
+        </View>
+      </TipTrigger>
     </View>
   )
 }
