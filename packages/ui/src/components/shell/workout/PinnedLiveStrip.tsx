@@ -61,7 +61,7 @@ export interface PinnedLiveStripProps {
   restDurationMs?: number
   /** Return to the live page. Omitted: the strip is a status region with no link, button or chevron. */
   onPress?: () => void
-  /** Force a layout. Omitted: measured from the strip's own width. */
+  /** Force a layout. Omitted: measured from the strip's own width, and nothing is drawn until it is. */
   layout?: PinnedLiveStripLayout
   className?: string
 }
@@ -477,6 +477,29 @@ function accessibleName(props: Parts): string {
   return isLink ? `Back to live: ${summary}` : summary
 }
 
+function Plane(parts: Parts) {
+  const isPhone = parts.scale === SCALES.phone
+  return (
+    <StripPlane tone={parts.tone} isPhone={isPhone}>
+      {isPhone ? <PhoneRows {...parts} /> : <WallRow {...parts} />}
+      {parts.state === 'rest' ? <RestBar {...parts} /> : null}
+    </StripPlane>
+  )
+}
+
+/**
+ * The forced layout, else the measured one; null until the first measurement, so the strip never
+ * paints the wall form for a frame on a phone. On React Native that first frame is empty rather
+ * than wrong, and `onLayout` fires on the next. Server-rendered HTML carries only the empty frame,
+ * because layout needs a browser: the strip appears once the client has measured it.
+ */
+function useStripLayout(forced?: PinnedLiveStripLayout) {
+  const [measured, setMeasured] = useState<PinnedLiveStripLayout | null>(null)
+  const onLayout = (e: LayoutChangeEvent) =>
+    setMeasured(e.nativeEvent.layout.width < PINNED_LIVE_STRIP_PHONE_MAX ? 'phone' : 'wall')
+  return { layout: forced ?? measured, onLayout }
+}
+
 /**
  * Shell · PinnedLiveStrip (VW-429): the row pinned atop every non-live page while a set or rest
  * runs, so the lifter never loses the live set. Given `onPress`, the whole strip is the link back to live.
@@ -484,34 +507,26 @@ function accessibleName(props: Parts): string {
  * by the strip's edge and wash, never by text, so the exercise title keeps its full width in every state.
  */
 export function PinnedLiveStrip(props: PinnedLiveStripProps) {
-  const { state, isFatigued = false, onPress, layout, className } = props
-  const [measured, setMeasured] = useState<PinnedLiveStripLayout>('wall')
+  const { state, isFatigued = false, onPress, className } = props
+  const { layout, onLayout } = useStripLayout(props.layout)
   if (state === 'idle') return null
-  const isPhone = (layout ?? measured) === 'phone'
   const tone = toneOf(state, isFatigued)
-  const scale = SCALES[isPhone ? 'phone' : 'wall']
   const parts: Parts = {
     ...props,
     isLink: onPress != null,
     targetReps: liveStripTarget(props.targetReps),
     lossThresholds: normalizeLossThresholds(props.lossThresholds),
-    scale,
+    scale: SCALES[layout ?? 'wall'],
     tone,
   }
-  const onLayout = (e: LayoutChangeEvent) =>
-    setMeasured(e.nativeEvent.layout.width < PINNED_LIVE_STRIP_PHONE_MAX ? 'phone' : 'wall')
-  const plane = (
-    <StripPlane tone={tone} isPhone={isPhone}>
-      {isPhone ? <PhoneRows {...parts} /> : <WallRow {...parts} />}
-      {state === 'rest' ? <RestBar {...props} /> : null}
-    </StripPlane>
-  )
   const frame = {
     accessibilityLabel: accessibleName(parts),
     onLayout,
     testID: 'pinned-live-strip',
     className: cn('w-full', className),
   }
+  // Until the first measurement the frame is empty: it measures, but paints nothing.
+  const plane = layout ? <Plane {...parts} /> : null
   // Without somewhere to go the strip is a labelled status region: no link role, button or chevron.
   return onPress ? (
     <Pressable accessibilityRole="link" onPress={onPress} {...frame}>
