@@ -119,11 +119,17 @@ function readingLine(points: GeometryPoint[]): GeometryPoint[] {
   return out
 }
 
-/** True when a label box would sit on a reading, the line between them, the next target or a tip target. */
+/** The lines a label must stay off: between the readings, and the ramp when the band has no area. */
+function markLines(g: GoalTrajectoryGeometry): GeometryPoint[] {
+  const ramp = g.bandIsDegenerate ? readingLine(g.bandPolygon) : []
+  return [...readingLine(g.actuals), ...ramp]
+}
+
+/** True when a label box would sit on a reading, a marked line, the next target or a tip target. */
 function blocked(g: GoalTrajectoryGeometry, r: Rect, boxes: HitBox[], taken: Rect[]): boolean {
   const dots = g.nextTarget ? [...g.actuals, g.nextTarget] : g.actuals
   if (dots.some((p) => near(r, p, DOT_REACH))) return true
-  if (readingLine(g.actuals).some((p) => near(r, p, LINE_REACH))) return true
+  if (markLines(g).some((p) => near(r, p, LINE_REACH))) return true
   const asRect = (b: HitBox): Rect => ({
     left: b.x,
     right: b.x + b.size,
@@ -197,6 +203,10 @@ export interface GridLabelInput {
   boxes?: HitBox[]
 }
 
+// A gridline number never straddles the committed or stretch line.
+const crossesRule = (g: GoalTrajectoryGeometry, r: Rect) =>
+  [g.committedY, g.stretchY].some((y) => r.top - LINE_REACH < y && y < r.bottom + LINE_REACH)
+
 const inside = (g: GoalTrajectoryGeometry, r: Rect) =>
   r.top >= g.plot.top &&
   r.bottom <= g.plot.bottom &&
@@ -220,7 +230,10 @@ export function gridLabelSpecs(input: GridLabelInput): RuleLabelSpec[] {
     const id = `grid-label-${text}` as const
     const spot = candidates(g, tick.y, 'left', 'above')
       .map((c) => ({ id, text, ...c }))
-      .find((c) => inside(g, rectOf(c)) && !blocked(g, rectOf(c), boxes, taken))
+      .find((c) => {
+        const r = rectOf(c)
+        return inside(g, r) && !crossesRule(g, r) && !blocked(g, r, boxes, taken)
+      })
     if (!spot) continue
     taken.push(rectOf(spot))
     placed.push(spot)

@@ -27,6 +27,7 @@ import {
 } from './goalTrajectoryRuleLabels'
 import type { HitBox } from './goalTrajectoryTargets'
 import { PRIMARY_GOAL_SCENARIOS as S } from './primaryGoal-fixture'
+import { calibratingGoalAt } from './goalTrajectoryCalibratingFixture'
 
 const GOAL = S.onTrack.goal!
 const SIZES = [
@@ -335,6 +336,67 @@ describe('gridline numbers inside the plot', () => {
     expect(a.right <= b.left || b.right <= a.left || a.bottom <= b.top || b.bottom <= a.top).toBe(
       true
     )
+  })
+
+  it('never straddle a goal line', () => {
+    for (const size of SIZES) {
+      for (const [committed, stretch] of [
+        [185, 195],
+        [183, 187],
+        [128, 128],
+      ]) {
+        const { g, grid } = place({ committed, stretch }, size)
+        for (const r of grid.map(rectOf)) {
+          for (const y of [g.committedY, g.stretchY]) {
+            expect(r.bottom <= y - 3 || r.top >= y + 3).toBe(true)
+          }
+        }
+      }
+    }
+  })
+
+  it('stay off a calibrating ramp', () => {
+    const g = deriveTrajectoryGeometry({ ...calibratingGoalAt('above'), width: 296, height: 220 })
+    const rules = ruleLabelSpecs({
+      geometry: g,
+      committed: 127.5,
+      stretch: 127.5,
+      text: 'numeric',
+      side: 'left',
+    })
+    const grid = gridLabelSpecs({ geometry: g, ruleLabels: rules, ruleValues: [127.5] })
+    const ramp = g.bandPolygon.flatMap((a, i) => {
+      const b = g.bandPolygon[i + 1]
+      if (!b) return [a]
+      return Array.from({ length: 24 }, (_, k) => ({
+        x: a.x + ((b.x - a.x) * k) / 24,
+        y: a.y + ((b.y - a.y) * k) / 24,
+      }))
+    })
+    for (const r of [...rules, ...grid].map(rectOf)) {
+      for (const p of ramp) expect(gap(r, p)).toBeGreaterThanOrEqual(2.5)
+    }
+  })
+
+  it('move off a ramp running where the number would sit', () => {
+    // A flat degenerate band 2px above a gridline: the number's first spot, above the line, is on it.
+    const base = geometryFor({})
+    const g = {
+      ...base,
+      actuals: [],
+      nextTarget: null,
+      committedY: base.plot.bottom - 2,
+      stretchY: base.plot.bottom - 2,
+      bandIsDegenerate: true,
+      bandPolygon: [
+        { x: base.plot.left, y: 60 },
+        { x: base.plot.right, y: 60 },
+      ],
+      yTicks: [{ value: 150, y: 62 }],
+    }
+    const [label] = gridLabelSpecs({ geometry: g, ruleLabels: [], ruleValues: [] })
+    const r = rectOf(label)
+    expect(r.top >= 63 || r.bottom <= 57).toBe(true)
   })
 
   it('drop a number with no clear spot rather than cover a tip target', () => {
