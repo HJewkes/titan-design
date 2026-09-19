@@ -45,7 +45,7 @@ describe('PinnedLiveStrip', () => {
       render(<PinnedLiveStrip {...S.set} layout="wall" onPress={vi.fn()} />)
       expect(nameOf()).toBe(
         'Back to live: Live set, Cable Chest Press, Set 2 of 3 · 140 lb, 5 of 8 reps, ' +
-          'last rep 0.74 m/s, 12% loss from best'
+          'last rep 0.74 m/s, 11% loss from best'
       )
     })
 
@@ -53,7 +53,7 @@ describe('PinnedLiveStrip', () => {
       render(<PinnedLiveStrip {...S.fatigue} layout="wall" />)
       expect(nameOf()).toBe(
         'Live set, Cable Chest Press, Set 2 of 3 · 140 lb, 6 of 8 reps, ' +
-          'last rep 0.55 m/s, 35% loss from best, fatigued'
+          'last rep 0.55 m/s, 34% loss from best, fatigued'
       )
       expect(screen.queryByText(/fatigue/i)).toBeNull()
     })
@@ -64,6 +64,30 @@ describe('PinnedLiveStrip', () => {
         'Resting, Cable Chest Press, Next: set 3 of 3 · 140 lb, 47 seconds rest left, ' +
           'last rep 0.71 m/s, 17% loss from best'
       )
+    })
+
+    // Colour follows the exact loss; the number is that loss rounded down, never up to a threshold.
+    it.each([
+      [0.8004, '19% loss from best', 2],
+      [0.8, '20% loss from best', 3],
+      [0.8667, '13% loss from best', 2],
+    ] as const)('reads a last rep of %f as "%s" beside band %i', (last, phrase, band) => {
+      const token = [
+        LIVE_STRIP_ZONE_TOKEN.speed,
+        LIVE_STRIP_ZONE_TOKEN.power,
+        LIVE_STRIP_ZONE_TOKEN.strengthSpeed,
+        LIVE_STRIP_ZONE_TOKEN.maximalStrength,
+      ][band]
+      render(
+        <PinnedLiveStrip
+          {...S.set}
+          reps={[{ velocity: 1.0 }, { velocity: last }]}
+          lossThresholds={[6.7, 13.3, 20]}
+          layout="wall"
+        />
+      )
+      expect(nameOf()).toContain(phrase)
+      expect(screen.getByTestId('live-strip-velocity')).toHaveStyle({ color: resolveColor(token) })
     })
 
     it('leaves the last rep out before the first rep', () => {

@@ -19,6 +19,7 @@ import { ChevronRightIcon } from '../../icons'
 import { SetBarChart, type SetSlot } from '../../custom/charts/SetBarChart'
 import {
   normalizeLossThresholds,
+  shownVelocityLoss,
   velocityLossForRep,
   type VelocityLossThresholds,
 } from '../../custom/Workout/VelocityStrip'
@@ -485,7 +486,7 @@ function lastRepPhrase(reps: readonly LiveStripRep[]): string | null {
   const last = reps[reps.length - 1]
   if (!last) return null
   const best = Math.max(...reps.map((r) => r.velocity))
-  const loss = Math.round(velocityLossForRep(last.velocity, best))
+  const loss = shownVelocityLoss(velocityLossForRep(last.velocity, best))
   return `last rep ${formatVelocity(last.velocity)} m/s, ${loss}% loss from best`
 }
 
