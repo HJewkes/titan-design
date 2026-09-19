@@ -1,5 +1,7 @@
 import {
+  createContext,
   useCallback,
+  useContext,
   useEffect,
   useId,
   useRef,
@@ -30,6 +32,13 @@ export interface TipTriggerProps {
   testID?: string
   children: ReactNode
 }
+
+/**
+ * Story and test seam, deliberately left out of the package barrel: the TipTrigger whose `label`
+ * matches is open from the first paint and stays open whatever the pointer or focus does. Review
+ * frames need a tip open by state; a simulated focus is lost as soon as another frame takes focus.
+ */
+export const PinnedTipContext = createContext<string | null>(null)
 
 /** On the web, close an open tip on Escape and on a press outside its trigger. */
 function useDismissOnWeb(open: boolean, close: () => void, trigger: RefObject<View | null>) {
@@ -73,11 +82,13 @@ export function TipTrigger({
   testID,
   children,
 }: TipTriggerProps) {
-  const [open, setOpen] = useState(false)
+  const [focusedOpen, setOpen] = useState(false)
+  const pinned = useContext(PinnedTipContext) === label
+  const open = pinned || focusedOpen
   const trigger = useRef<View>(null)
   const tipId = `tip-${useId().replace(/[^a-zA-Z0-9]/g, '')}`
   const close = useCallback(() => setOpen(false), [])
-  useDismissOnWeb(open, close, trigger)
+  useDismissOnWeb(focusedOpen, close, trigger)
   return (
     <Tooltip
       isOpen={open}

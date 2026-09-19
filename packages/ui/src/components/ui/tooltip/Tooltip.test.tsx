@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { Text } from 'react-native'
 import { axe } from 'jest-axe'
 import { Tooltip } from './Tooltip'
-import { TipTrigger } from './TipTrigger'
+import { PinnedTipContext, TipTrigger } from './TipTrigger'
 import { Modal } from '../modal'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 
@@ -407,5 +407,37 @@ describe('TipTrigger', () => {
   it('has no accessibility violations', async () => {
     const { container } = renderTip()
     expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+describe('PinnedTipContext', () => {
+  function renderPinned() {
+    return render(
+      <PinnedTipContext.Provider value="Goal status: Behind">
+        <TipTrigger label="Goal status: Behind" content={<Text>Under the band</Text>} testID="tip">
+          <Text>Behind</Text>
+        </TipTrigger>
+        <TipTrigger label="Priority" content={<Text>Specialize</Text>} testID="other">
+          <Text>P</Text>
+        </TipTrigger>
+      </PinnedTipContext.Provider>
+    )
+  }
+
+  it('opens the tip with the matching label from the first paint, and only that one', () => {
+    renderPinned()
+    expect(screen.getByText('Under the band')).toBeInTheDocument()
+    expect(screen.queryByText('Specialize')).toBeNull()
+  })
+
+  it('keeps it open through a stray press, Escape, blur and hover out', () => {
+    renderPinned()
+    const trigger = screen.getByTestId('tip')
+    fireEvent.pointerDown(document.body)
+    fireEvent.keyDown(document, { key: 'Escape' })
+    fireEvent.focus(trigger)
+    fireEvent.blur(trigger)
+    fireEvent.mouseLeave(trigger)
+    expect(screen.getByText('Under the band')).toBeInTheDocument()
   })
 })

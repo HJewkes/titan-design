@@ -2,6 +2,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
 import { Surface } from '../../ui/surface'
+import { PinnedTipContext } from '../../ui/tooltip/TipTrigger'
 import { GoalCard } from './GoalCard'
 import type { GoalActualPoint } from './GoalTrajectoryChartGeometry'
 import { CALIBRATING_TIP_LABEL } from './GoalTrajectoryCalibrating'
@@ -27,7 +28,7 @@ interface InfoTipArgs {
    * that moves the target under the plot. `onTrack`: not calibrating, so no target at all.
    */
   scene: Scene
-  /** Open the tip (the story focuses the target, as a keyboard user would). */
+  /** Show the tip open, pinned by state so a click in the frame does not close it. */
   open: boolean
 }
 
@@ -86,12 +87,15 @@ function sceneOf(scene: Scene) {
   return calibratingScenario('above')
 }
 
-function InfoTipCard({ note, scene }: InfoTipArgs) {
+function InfoTipCard({ note, scene, open }: InfoTipArgs) {
   const scenario = sceneOf(scene)
+  // Open by state, not by a simulated focus, which another review frame would take away.
   return (
-    <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-sm">
-      <GoalCard {...scenario} goal={{ ...scenario.goal!, calibratingNote: NOTES[note] }} />
-    </Surface>
+    <PinnedTipContext.Provider value={open ? CALIBRATING_TIP_LABEL : null}>
+      <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-sm">
+        <GoalCard {...scenario} goal={{ ...scenario.goal!, calibratingNote: NOTES[note] }} />
+      </Surface>
+    </PinnedTipContext.Provider>
   )
 }
 
@@ -105,7 +109,7 @@ function InfoTipCard({ note, scene }: InfoTipArgs) {
  * When low readings run to the last week and fill that corner, the target hangs just under
  * the plot. Non-calibrating charts have no target.
  *
- * Shoot at 1920, 360 and 320, closed and open.
+ * Shoot at 1920, 360 and 320, closed and open. The open frames pin the tip open by state.
  */
 const meta: Meta<InfoTipArgs> = {
   title: 'Lab/Decisions/Calibrating Info Tip',
@@ -118,16 +122,6 @@ const meta: Meta<InfoTipArgs> = {
   },
   args: { note: 'short', scene: 'early', open: false },
   render: (args) => <InfoTipCard {...args} />,
-  play: async ({ args, canvasElement }) => {
-    if (!args.open) return
-    // The card draws its chart only once it has measured itself, so wait for the target.
-    const selector = `[aria-label="${CALIBRATING_TIP_LABEL}"]`
-    for (let tries = 0; tries < 50; tries++) {
-      const target = canvasElement.querySelector<HTMLElement>(selector)
-      if (target) return target.focus()
-      await new Promise((resolve) => setTimeout(resolve, 50))
-    }
-  },
 }
 export default meta
 
