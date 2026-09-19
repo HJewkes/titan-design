@@ -1,4 +1,5 @@
-// The arithmetic and the wording behind WholeBodyCard (VW-455). Pure: no React, no clock.
+// The arithmetic and the wording behind BodyweightGoalCard and SessionsGoalCard (VW-455).
+// Pure: no React, no clock.
 import { formatBodyweight, formatSignedRate } from '../../../utils/workout-format'
 import type { GoalLiftStatus } from './GoalCard'
 
@@ -50,14 +51,11 @@ export interface WholeBodySessionsRow {
   agingOutNext7d: number | null
 }
 
-/** The three sessions renders round 1 compares. */
-export type WholeBodySessionsVisual = 'segments' | 'progress' | 'number'
-
-/** Wall reads the rows side by side; phone stacks them. */
+/** A card lays out for the wall or for a phone. */
 export type WholeBodyScale = 'wall' | 'phone'
 
-/** The narrowest content box that still lays a row out side by side. */
-export const WHOLE_BODY_WALL_MIN_WIDTH = 720
+/** The narrowest card content box that still takes the wall's type and track sizes. */
+export const WHOLE_BODY_WALL_MIN_WIDTH = 560
 
 /** The scale a measured box gets, unless the caller pins one. Unmeasured renders phone, the safe first paint. */
 export function wholeBodyScale(width: number | null, pinned?: WholeBodyScale): WholeBodyScale {
@@ -65,41 +63,96 @@ export function wholeBodyScale(width: number | null, pinned?: WholeBodyScale): W
   return width !== null && width >= WHOLE_BODY_WALL_MIN_WIDTH ? 'wall' : 'phone'
 }
 
+/** One line of detail under a card's main figure. `key` lets a caller choose which one leads. */
+export interface CaptionLine {
+  key: string
+  text: string
+}
+
+/** The line shown beside the figure, and the lines the detail tip holds. */
+export interface LeadCaption {
+  lead: CaptionLine | null
+  rest: CaptionLine[]
+}
+
+/** Leads with the preferred line when it exists, else the first; every other line goes to the tip. */
+export function leadCaption(lines: readonly CaptionLine[], preferred: string): LeadCaption {
+  const lead = lines.find((line) => line.key === preferred) ?? lines[0] ?? null
+  return { lead, rest: lines.filter((line) => line !== lead) }
+}
+
+/** Which weight caption leads. Round-2 comparison (VW-455). */
+export type WeightCaptionKey = 'band' | 'rate'
+
+/** The weight card's detail lines: this week's band, then the rate. None before the first weigh-in. */
+export function weightCaptions(row: WholeBodyWeightRow): CaptionLine[] {
+  if (row.latest === null) return []
+  const rate = rateCaption(row)
+  return [
+    { key: 'band', text: bandCaption(row) },
+    ...(rate === null ? [] : [{ key: 'rate', text: rate }]),
+  ]
+}
+
 /** Past this many cells a segment is too thin to read at phone width, so the bar falls back. */
 export const SESSION_SEGMENT_LIMIT = 20
 
-/** The render the sessions row actually gets: segments fall back to a plain bar past the limit. */
-export function sessionsVisualFor(
-  requested: WholeBodySessionsVisual,
-  committed: number
-): WholeBodySessionsVisual {
-  return requested === 'segments' && committed > SESSION_SEGMENT_LIMIT ? 'progress' : requested
+/** How days past the commitment are drawn. Round-2 comparison (VW-455). */
+export type SessionsPastCommitment = 'append' | 'cap'
+
+/** One cell of the sessions bar: a trained day, a day past the commitment, or a day still open. */
+export type SessionCell = 'done' | 'extra' | 'open'
+
+/**
+ * The sessions bar as cells, or `null` when there are too many to draw and the
+ * card falls back to a plain bar. `append` adds a cell per day past the
+ * commitment; `cap` stops at the commitment.
+ */
+export function sessionCells(
+  row: WholeBodySessionsRow,
+  pastCommitment: SessionsPastCommitment
+): SessionCell[] | null {
+  const extra = pastCommitment === 'append' ? Math.max(0, row.counted - row.committed) : 0
+  const total = row.committed + extra
+  if (total > SESSION_SEGMENT_LIMIT) return null
+  return Array.from({ length: total }, (_, i) => {
+    if (i >= row.committed) return 'extra'
+    return i < row.counted ? 'done' : 'open'
+  })
 }
 
-/** The due-by-now marker as a 0..1 position, or `null` once the window is full (the marker would sit at the end). */
-export function dueMarkerPosition(row: WholeBodySessionsRow): number | null {
-  if (row.committed <= 0 || row.dueByNow >= row.committed) return null
-  return Math.max(0, row.dueByNow / row.committed)
+/** The due-by-now marker as a 0..1 position along `cellCount` cells, or `null` once the window is full. */
+export function dueMarkerPosition(
+  row: WholeBodySessionsRow,
+  cellCount = row.committed
+): number | null {
+  if (row.committed <= 0 || cellCount <= 0 || row.dueByNow >= row.committed) return null
+  return Math.max(0, row.dueByNow / cellCount)
 }
 
 function plural(n: number, one: string, many: string): string {
   return `${n} ${n === 1 ? one : many}`
 }
 
-/** The count's sub-line: how far the window has filled, and what the next 7 days take away. */
-export function sessionsCaption(row: WholeBodySessionsRow): string[] {
-  const lines: string[] = []
-  if (row.dueByNow <= 0) lines.push('Window started today')
-  else if (row.dueByNow < row.committed) lines.push(`${Math.round(row.dueByNow)} due by now`)
+/** Which sessions caption leads. Round-2 comparison (VW-455). */
+export type SessionsCaptionKey = 'due' | 'leaving'
+
+/** The sessions card's detail lines: what is due, anything past the commitment, what leaves this week. */
+export function sessionCaptions(row: WholeBodySessionsRow): CaptionLine[] {
+  const lines: CaptionLine[] = []
+  if (row.dueByNow <= 0) lines.push({ key: 'due', text: 'Window started today' })
+  else if (row.dueByNow < row.committed) {
+    lines.push({ key: 'due', text: `${Math.round(row.dueByNow)} due by now` })
+  }
   if (row.counted > row.committed) {
-    lines.push(`${row.counted - row.committed} over your commitment`)
+    lines.push({ key: 'over', text: `${row.counted - row.committed} over your commitment` })
   }
   if (row.agingOutNext7d !== null) {
-    lines.push(
+    const text =
       row.agingOutNext7d === 0
         ? 'None leave the window this week'
         : `${plural(row.agingOutNext7d, 'day leaves', 'days leave')} the window this week`
-    )
+    lines.push({ key: 'leaving', text })
   }
   return lines
 }

@@ -110,6 +110,17 @@ project adheres to [Semantic Versioning](https://semver.org/).
   (16px), so the header reads as one block.
 - `GoalCard` (full and compact, and `GoalLiftCard`): the hero numeral ("1 lb")
   sits on a line as tall as its font, taking the empty leading above it.
+- `BodyweightGoalCard` and `SessionsGoalCard` (custom/Workout): the goals page's two
+  non-lift goals, as sibling cards the page grid places. Bodyweight shows the latest
+  weight, one detail line beside it, and the weigh-in against this week's band in the
+  goal chart's band colour. Sessions shows training days in the rolling 28-day window
+  as one cell per committed day, with a due-by-now marker, and falls back to a plain
+  bar past 20 cells. Each card holds its other detail lines in a tip. The pure logic
+  is exported from `wholeBody.ts` (VW-455).
+- `GoalPriorityIndex` (custom/Workout): every declared priority on one wrapping line,
+  grouped by level, naming the ones nothing tracks (VW-455).
+- `formatBodyweight` and `formatSignedRate` in `utils/workout-format`.
+- `Metric` takes `valueClassName`, merged onto the value text.
 
 ### Fixed
 

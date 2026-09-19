@@ -6,33 +6,62 @@ import {
   bandDomain,
   bandPosition,
   dueMarkerPosition,
+  leadCaption,
   phaseLabel,
   rateCaption,
-  sessionsCaption,
-  sessionsVisualFor,
+  sessionCaptions,
+  sessionCells,
   weighInDate,
+  weightCaptions,
   wholeBodyScale,
 } from './wholeBody'
 import { WHOLE_BODY_SESSIONS as S, WHOLE_BODY_WEIGHT as W } from './wholeBody-fixture'
 
-describe('sessionsVisualFor', () => {
-  it('keeps segments up to the segment limit', () => {
-    expect(sessionsVisualFor('segments', SESSION_SEGMENT_LIMIT)).toBe('segments')
+describe('sessionCells', () => {
+  it('draws one cell per committed day, trained days first', () => {
+    const cells = sessionCells(S.underPace, 'append')
+    expect(cells).toHaveLength(12)
+    expect(cells?.filter((cell) => cell === 'done')).toHaveLength(9)
+    expect(cells?.slice(9)).toEqual(['open', 'open', 'open'])
+  })
+
+  it('appends a cell per day past the commitment', () => {
+    expect(sessionCells(S.overCommitment, 'append')?.slice(10)).toEqual([
+      'done',
+      'done',
+      'extra',
+      'extra',
+    ])
+  })
+
+  it('stops at the commitment when capped', () => {
+    expect(sessionCells(S.overCommitment, 'cap')).toHaveLength(12)
+  })
+
+  it('keeps cells up to the segment limit', () => {
+    const atLimit = { ...S.underPace, committed: SESSION_SEGMENT_LIMIT }
+    expect(sessionCells(atLimit, 'append')).toHaveLength(SESSION_SEGMENT_LIMIT)
   })
 
   it('falls back to a plain bar past the segment limit (F5)', () => {
-    expect(sessionsVisualFor('segments', S.largeCommitment.committed)).toBe('progress')
+    expect(sessionCells(S.largeCommitment, 'append')).toBeNull()
   })
 
-  it('leaves the other renders alone at any size', () => {
-    expect(sessionsVisualFor('number', 40)).toBe('number')
-    expect(sessionsVisualFor('progress', 3)).toBe('progress')
+  it('falls back when appended days carry it past the limit', () => {
+    expect(sessionCells({ ...S.overCommitment, committed: 18, counted: 22 }, 'append')).toBeNull()
+    expect(sessionCells({ ...S.overCommitment, committed: 18, counted: 22 }, 'cap')).toHaveLength(
+      18
+    )
   })
 })
 
 describe('dueMarkerPosition', () => {
   it('places the due-by-now marker while the first window fills', () => {
     expect(dueMarkerPosition(S.underPace)).toBeCloseTo(10 / 12)
+  })
+
+  it('places the marker along appended cells too', () => {
+    expect(dueMarkerPosition({ ...S.underPace, counted: 14 }, 14)).toBeCloseTo(10 / 14)
   })
 
   it('draws no marker once the window is full', () => {
@@ -48,37 +77,64 @@ describe('dueMarkerPosition', () => {
   })
 })
 
-describe('sessionsCaption', () => {
+describe('sessionCaptions', () => {
+  const texts = (row: typeof S.underPace) => sessionCaptions(row).map((line) => line.text)
+
   it('says the window started today instead of "0 due" (F3)', () => {
-    expect(sessionsCaption(S.windowStarted)).toEqual([
+    expect(texts(S.windowStarted)).toEqual([
       'Window started today',
       'None leave the window this week',
     ])
   })
 
   it('names what is due and what leaves while under pace (F4)', () => {
-    expect(sessionsCaption(S.underPace)).toEqual([
-      '10 due by now',
-      '3 days leave the window this week',
-    ])
+    expect(texts(S.underPace)).toEqual(['10 due by now', '3 days leave the window this week'])
   })
 
   it('says nothing is due once the window is full', () => {
-    expect(sessionsCaption(S.atCommitment)).toEqual(['3 days leave the window this week'])
+    expect(texts(S.atCommitment)).toEqual(['3 days leave the window this week'])
   })
 
   it('counts training days over the commitment', () => {
-    expect(sessionsCaption({ ...S.atCommitment, counted: 14 })).toContain('2 over your commitment')
+    expect(texts(S.overCommitment)).toContain('2 over your commitment')
   })
 
   it('uses the singular for one day leaving', () => {
-    expect(sessionsCaption({ ...S.atCommitment, agingOutNext7d: 1 })).toContain(
+    expect(texts({ ...S.atCommitment, agingOutNext7d: 1 })).toContain(
       '1 day leaves the window this week'
     )
   })
 
   it('omits the leaving line when it is unknown', () => {
-    expect(sessionsCaption({ ...S.atCommitment, agingOutNext7d: null })).toEqual([])
+    expect(texts({ ...S.atCommitment, agingOutNext7d: null })).toEqual([])
+  })
+})
+
+describe('leadCaption', () => {
+  it('leads with the preferred line and tips the rest', () => {
+    const { lead, rest } = leadCaption(sessionCaptions(S.underPace), 'leaving')
+    expect(lead?.text).toBe('3 days leave the window this week')
+    expect(rest.map((line) => line.text)).toEqual(['10 due by now'])
+  })
+
+  it('falls back to the first line when the preferred one is absent', () => {
+    const { lead, rest } = leadCaption(sessionCaptions(S.atCommitment), 'due')
+    expect(lead?.text).toBe('3 days leave the window this week')
+    expect(rest).toEqual([])
+  })
+
+  it('has no lead with no lines', () => {
+    expect(leadCaption([], 'due')).toEqual({ lead: null, rest: [] })
+  })
+})
+
+describe('weightCaptions', () => {
+  it('gives the band then the rate (F6)', () => {
+    expect(weightCaptions(W.cut).map((line) => line.key)).toEqual(['band', 'rate'])
+  })
+
+  it('has no lines before the first weigh-in (F12)', () => {
+    expect(weightCaptions(W.noReadings)).toEqual([])
   })
 })
 
@@ -119,8 +175,12 @@ describe('bandCaption', () => {
     expect(bandCaption(W.outsideHold)).toBe('Hold 176.4 to 183.6 lb. 0.5 lb above the corridor')
   })
 
-  it('prints one number for a zero-width band (F10)', () => {
-    expect(bandCaption(W.slowLoss)).toBe('Week 4 of 8: 186.2 lb. 0.1 lb above the band')
+  it('names a slow-loss band like any other (F10)', () => {
+    expect(bandCaption(W.slowLoss)).toBe('Week 4 of 8: 186.2 to 188.1 lb')
+  })
+
+  it('prints one number for the server’s zero-width slow-loss line', () => {
+    expect(bandCaption(W.slowLossOneLine)).toBe('Week 4 of 8: 186.2 lb. 0.1 lb above the band')
   })
 })
 
@@ -153,8 +213,12 @@ describe('rateCaption', () => {
     expect(rateCaption(W.hold)).toBe('+0.1 %/wk, no target rate for a hold')
   })
 
-  it('prints one rate for slow loss (F10)', () => {
-    expect(rateCaption(W.slowLoss)).toBe('-0.5 %/wk against -0.5 for this recomp')
+  it('reads a slow-loss rate against its band (F10)', () => {
+    expect(rateCaption(W.slowLoss)).toBe('-0.4 %/wk against -0.25 to -0.5 for this recomp')
+  })
+
+  it('prints one rate for the server’s slow-loss line', () => {
+    expect(rateCaption(W.slowLossOneLine)).toBe('-0.5 %/wk against -0.5 for this recomp')
   })
 
   it('waits for a second week with one weigh-in (F11)', () => {
@@ -189,8 +253,8 @@ describe('weighInDate', () => {
 describe('wholeBodyScale', () => {
   it('stacks until the box is measured, then lays out by width', () => {
     expect(wholeBodyScale(null)).toBe('phone')
-    expect(wholeBodyScale(719)).toBe('phone')
-    expect(wholeBodyScale(720)).toBe('wall')
+    expect(wholeBodyScale(559)).toBe('phone')
+    expect(wholeBodyScale(560)).toBe('wall')
   })
 
   it('honours a pinned scale', () => {

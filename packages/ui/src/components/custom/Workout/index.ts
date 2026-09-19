@@ -212,16 +212,19 @@ export {
   type GoalPriorityIndexGroup,
   type GoalPriorityIndexProps,
 } from './GoalPriorityIndex'
-export { WholeBodyCard, type WholeBodyCardProps } from './WholeBodyCard'
+export { BodyweightGoalCard, type BodyweightGoalCardProps } from './BodyweightGoalCard'
+export { SessionsGoalCard, type SessionsGoalCardProps } from './SessionsGoalCard'
 export {
   SESSION_SEGMENT_LIMIT,
   WHOLE_BODY_WALL_MIN_WIDTH,
+  type SessionsCaptionKey,
+  type SessionsPastCommitment,
+  type WeightCaptionKey,
   type WholeBodyDietPhase,
   type WholeBodyDirection,
   type WholeBodyRate,
   type WholeBodyScale,
   type WholeBodySessionsRow,
-  type WholeBodySessionsVisual,
   type WholeBodyWeightRow,
 } from './wholeBody'
 export {
