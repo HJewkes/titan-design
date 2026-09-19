@@ -489,7 +489,13 @@ function CompactBody({
   const { trend, milestone, status } = props
   return (
     <View className="gap-stack-md">
-      <GoalMilestoneSummary {...statedMilestone(props)} scale="phone" showWeeks={false} />
+      <GoalMilestoneSummary
+        // Round 3 chose the tight hero for the compact card; the full card keeps its own.
+        heroLeading="tight"
+        {...statedMilestone(props)}
+        scale="phone"
+        showWeeks={false}
+      />
       <View style={{ minHeight: height }} testID="goal-card-trend">
         {trend && width !== null && (
           <GoalWeekColumnsChart
