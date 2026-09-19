@@ -155,7 +155,15 @@ function CaptionWithTip(props: { lead: CaptionLine | null; tip: ReactNode; testI
   if (props.lead === null && props.tip === null) return null
   return (
     <View
-      style={{ flexDirection: 'row', alignItems: 'center', flexShrink: 1, minWidth: 0 }}
+      // `marginLeft: auto` keeps it at the right edge when it wraps under the figure,
+      // so the tip, which opens leftward from the glyph, stays inside the card.
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        flexShrink: 1,
+        minWidth: 0,
+        marginLeft: 'auto',
+      }}
       className="gap-inline-sm"
     >
       {props.lead !== null && (
