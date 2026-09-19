@@ -31,8 +31,102 @@ describe('PinnedLiveStrip', () => {
       const onPress = vi.fn()
       render(<PinnedLiveStrip {...S.set} layout="wall" onPress={onPress} />)
       expect(screen.getByText('Back to live')).toBeInTheDocument()
-      fireEvent.click(screen.getByRole('link', { name: /Back to live: Cable Chest Press/ }))
+      fireEvent.click(
+        screen.getByRole('link', { name: /^Back to live: Live set, Cable Chest Press/ })
+      )
       expect(onPress).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('accessible name', () => {
+    const nameOf = () => screen.getByTestId('pinned-live-strip').getAttribute('aria-label')
+
+    it('says the state, set, reps, last rep velocity and its loss from the best', () => {
+      render(<PinnedLiveStrip {...S.set} layout="wall" onPress={vi.fn()} />)
+      expect(nameOf()).toBe(
+        'Back to live: Live set, Cable Chest Press, Set 2 of 3 · 140 lb, 5 of 8 reps, ' +
+          'last rep 0.74 m/s, 11% loss from best'
+      )
+    })
+
+    it('says "fatigued" when the strip shows fatigue, which it never writes', () => {
+      render(<PinnedLiveStrip {...S.fatigue} layout="wall" />)
+      expect(nameOf()).toBe(
+        'Live set, Cable Chest Press, Set 2 of 3 · 140 lb, 6 of 8 reps, ' +
+          'last rep 0.55 m/s, 34% loss from best, fatigued'
+      )
+      expect(screen.queryByText(/fatigue/i)).toBeNull()
+    })
+
+    it("says the rest seconds and the finished set's last rep in rest", () => {
+      render(<PinnedLiveStrip {...S.rest} layout="phone" />)
+      expect(nameOf()).toBe(
+        'Resting, Cable Chest Press, Next: set 3 of 3 · 140 lb, 47 seconds rest left, ' +
+          'last rep 0.71 m/s, 17% loss from best'
+      )
+    })
+
+    // Colour follows the exact loss; the number is that loss rounded down, never up to a threshold.
+    it.each([
+      [0.8004, '19% loss from best', 2],
+      [0.8, '20% loss from best', 3],
+      [0.8667, '13% loss from best', 2],
+    ] as const)('reads a last rep of %f as "%s" beside band %i', (last, phrase, band) => {
+      const token = [
+        LIVE_STRIP_ZONE_TOKEN.speed,
+        LIVE_STRIP_ZONE_TOKEN.power,
+        LIVE_STRIP_ZONE_TOKEN.strengthSpeed,
+        LIVE_STRIP_ZONE_TOKEN.maximalStrength,
+      ][band]
+      render(
+        <PinnedLiveStrip
+          {...S.set}
+          reps={[{ velocity: 1.0 }, { velocity: last }]}
+          lossThresholds={[6.7, 13.3, 20]}
+          layout="wall"
+        />
+      )
+      expect(nameOf()).toContain(phrase)
+      expect(screen.getByTestId('live-strip-velocity')).toHaveStyle({ color: resolveColor(token) })
+    })
+
+    it('leaves the last rep out before the first rep', () => {
+      render(<PinnedLiveStrip {...S.set} reps={[]} layout="wall" />)
+      expect(nameOf()).toBe('Live set, Cable Chest Press, Set 2 of 3 · 140 lb, 0 of 8 reps')
+    })
+  })
+
+  describe('without onPress', () => {
+    it.each(['wall', 'phone'] as const)(
+      'is a labelled status region with no link, button or chevron (%s)',
+      (layout) => {
+        render(<PinnedLiveStrip {...S.set} layout={layout} />)
+        expect(screen.queryByRole('link')).toBeNull()
+        expect(screen.queryByRole('button')).toBeNull()
+        expect(screen.queryByText('Back to live')).toBeNull()
+        expect(screen.getByTestId('pinned-live-strip').querySelector('svg')).toBeNull()
+        const region = screen.getByRole('region')
+        expect(region.getAttribute('aria-label')).toMatch(
+          /^Live set, Cable Chest Press, Set 2 of 3/
+        )
+      }
+    )
+
+    it.each(['wall', 'phone'] as const)(
+      'gains the link role and its chevron once onPress is given (%s)',
+      (layout) => {
+        render(<PinnedLiveStrip {...S.set} layout={layout} onPress={vi.fn()} />)
+        expect(screen.queryByRole('region')).toBeNull()
+        const link = screen.getByRole('link', {
+          name: /^Back to live: Live set, Cable Chest Press/,
+        })
+        expect(link.querySelector('svg')).toBeInTheDocument()
+      }
+    )
+
+    it('has no accessibility violations', async () => {
+      const { container } = render(<PinnedLiveStrip {...S.rest} layout="wall" />)
+      expect(await axe(container)).toHaveNoViolations()
     })
   })
 
@@ -52,6 +146,27 @@ describe('PinnedLiveStrip', () => {
       // 47 s left of 90 s: the fill is the remaining fraction.
       expect(bar.firstElementChild).toHaveStyle({ width: `${(47 / 90) * 100}%` })
     })
+
+    it.each([Number.NaN, Number.POSITIVE_INFINITY, undefined])(
+      'reads a non-finite remaining time (%s) as 0s in the numeral and the name',
+      (restRemainingMs) => {
+        render(<PinnedLiveStrip {...S.rest} restRemainingMs={restRemainingMs} layout="wall" />)
+        expect(screen.getByTestId('live-strip-hero')).toHaveTextContent(/^0s$/)
+        expect(screen.getByTestId('pinned-live-strip').getAttribute('aria-label')).toContain(
+          '0 seconds'
+        )
+        expect(document.body.textContent).not.toMatch(/NaN|Infinity/)
+        expect(screen.getByRole('progressbar').firstElementChild).toHaveStyle({ width: '0%' })
+      }
+    )
+
+    it.each([Number.NaN, Number.POSITIVE_INFINITY, 0, -1])(
+      'draws no time bar for a rest length of %s',
+      (restDurationMs) => {
+        render(<PinnedLiveStrip {...S.rest} restDurationMs={restDurationMs} layout="wall" />)
+        expect(screen.queryByRole('progressbar')).toBeNull()
+      }
+    )
 
     it('has no time bar outside rest', () => {
       render(<PinnedLiveStrip {...S.set} layout="wall" />)
@@ -97,6 +212,29 @@ describe('PinnedLiveStrip', () => {
     )
   })
 
+  describe('a missing or malformed rep target', () => {
+    it.each([-3, 0, Number.NaN, Number.POSITIVE_INFINITY])(
+      'targetReps %s draws the reps done at a non-negative width, with no "/target"',
+      (targetReps) => {
+        render(<PinnedLiveStrip {...S.set} targetReps={targetReps} layout="wall" />)
+        const reps = S.set.reps.length
+        expect(screen.getByTestId('live-strip-bars-frame')).toHaveStyle({ width: `${reps * 24}px` })
+        expect(screen.getAllByTestId(/^live-strip-bar-\d+$/)).toHaveLength(reps)
+        expect(screen.getByTestId('live-strip-hero')).toHaveTextContent(new RegExp(`^${reps}$`))
+        expect(screen.getByTestId('pinned-live-strip').getAttribute('aria-label')).toContain(
+          `${reps} reps`
+        )
+        expect(document.body.textContent).not.toMatch(/NaN|Infinity|-3/)
+      }
+    )
+
+    it('draws a fractional target as its whole reps', () => {
+      render(<PinnedLiveStrip {...S.set} targetReps={8.6} layout="wall" />)
+      expect(screen.getByTestId('live-strip-bars-frame')).toHaveStyle({ width: `${8 * 24}px` })
+      expect(screen.getByTestId('live-strip-hero')).toHaveTextContent(/\/8$/)
+    })
+  })
+
   describe('idle', () => {
     it('renders nothing when the session is idle', () => {
       const { container } = render(<PinnedLiveStrip {...S.idle} />)
@@ -136,6 +274,34 @@ describe('PinnedLiveStrip', () => {
         color: resolveColor(LIVE_STRIP_ZONE_TOKEN.maximalStrength),
       })
     })
+  })
+
+  describe('loss banding at fractional thresholds', () => {
+    // Best 1.0 m/s against [6.7, 13.3, 20]: exact losses 6.6, 6.7, 13.29, 13.3, 13.33, 19.96, 20.
+    const velocities = [1.0, 0.934, 0.933, 0.8671, 0.867, 0.8667, 0.8004, 0.8]
+    const bands = [0, 0, 1, 1, 2, 2, 2, 3]
+    const token = [
+      LIVE_STRIP_ZONE_TOKEN.speed,
+      LIVE_STRIP_ZONE_TOKEN.power,
+      LIVE_STRIP_ZONE_TOKEN.strengthSpeed,
+      LIVE_STRIP_ZONE_TOKEN.maximalStrength,
+    ]
+
+    it.each(bands.map((band, i) => [i, band]))(
+      'bands rep %i as band %i on its exact loss; a loss on a threshold takes the higher band',
+      (index, band) => {
+        renderStrip({
+          state: 'set',
+          reps: velocities.map((velocity) => ({ velocity })),
+          targetReps: 10,
+          lossThresholds: [6.7, 13.3, 20],
+          layout: 'wall',
+        })
+        expect(screen.getByTestId(`live-strip-bar-${index}`)).toHaveStyle({
+          backgroundColor: resolveColor(token[band]),
+        })
+      }
+    )
   })
 
   describe('reps without a zone', () => {
@@ -201,7 +367,7 @@ describe('PinnedLiveStrip', () => {
       ['short', S.set],
       ['long', S.longName],
     ] as const)('keeps "Set 2/3" and the chevron pinned after a %s title', (_, scenario) => {
-      render(<PinnedLiveStrip {...scenario} layout="phone" />)
+      render(<PinnedLiveStrip {...scenario} layout="phone" onPress={vi.fn()} />)
       const row = screen.getByTestId('live-strip-title-row')
       const meta = screen.getByTestId('live-strip-meta')
       expect(row.lastElementChild).toBe(meta)

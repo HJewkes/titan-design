@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { View, type ViewProps } from 'react-native'
+import { Platform, View, type TextStyle, type ViewProps } from 'react-native'
 
 import { cn } from '../../../utils/cn'
 import { Card } from '../../ui/card'
@@ -19,7 +19,7 @@ import {
   type GoalNextTarget,
   type GoalTrajectoryChartProps,
 } from './GoalTrajectoryChart'
-import { trajectoryWeekScale } from './GoalTrajectoryChartGeometry'
+import { trajectoryInsets, trajectoryWeekScale } from './GoalTrajectoryChartGeometry'
 import {
   milestoneReach,
   type GoalMilestoneReading,
@@ -197,8 +197,9 @@ export const GOAL_STATUS_TONE: Record<GoalLiftStatus, PillTone & IndicatorColor>
  */
 export const STATUS_COLLAPSE_WIDTH = 320
 
+// The compact card's name and its hero read as one header: stack-md between them, not the full card's stack-lg.
 const DENSITY = {
-  comfortable: { pad: 'p-inset-lg', gap: 'gap-stack-lg', chartHeight: 56 },
+  comfortable: { pad: 'p-inset-lg', gap: 'gap-stack-md', chartHeight: 56 },
   compact: { pad: 'p-inset-md', gap: 'gap-stack-md', chartHeight: 42 },
 } as const
 
@@ -287,6 +288,7 @@ function weekAxisFor(goal: GoalCardChart, width: number): GoalMilestoneWeekAxis 
     actuals: goal.actuals,
     ...(goal.nextTarget ? { nextTarget: goal.nextTarget } : {}),
     width,
+    insets: trajectoryInsets(goal.yAxisLabels ?? false),
   })
   return { x: scale.toX, span: scale.span, left: scale.plot.left, right: scale.plot.right }
 }
@@ -360,6 +362,21 @@ function StatusAffordance({
 }
 
 /**
+ * Guards against pasted garbage, which no real exercise name reaches: one unbroken token breaks
+ * inside the card instead of pushing past its edge (native Text already does), and a four-line
+ * clamp stops a runaway string growing the card without end.
+ */
+const GOAL_CARD_TITLE_MAX_LINES = 4
+
+const TITLE_GUARD = {
+  maxLines: GOAL_CARD_TITLE_MAX_LINES,
+  style: Platform.select<TextStyle>({
+    web: { overflowWrap: 'anywhere' } as TextStyle,
+    default: {},
+  }),
+}
+
+/**
  * One title row for both sizes (VW-385 round 5, human: "make the title
  * consistent between the primary goal card and goal card"): the lift on the
  * left, then priority, PR and the status badge furthest right.
@@ -406,11 +423,11 @@ function TitleRow({
     >
       <View style={{ flexShrink: 1, minWidth: 0 }}>
         {size === 'full' ? (
-          <Typography variant="h5" testID="goal-card-title">
+          <Typography variant="h5" testID="goal-card-title" {...TITLE_GUARD}>
             {title}
           </Typography>
         ) : (
-          <Typography variant="overline" color="tertiary" testID="goal-card-title">
+          <Typography variant="overline" color="tertiary" testID="goal-card-title" {...TITLE_GUARD}>
             {title}
           </Typography>
         )}
@@ -439,7 +456,11 @@ function FullBody({ props, width }: { props: GoalCardProps; width: number }) {
   if (!goal) return null
   return (
     <View className="gap-stack-sm" testID="goal-card-fold">
-      <GoalMilestoneSummary {...statedMilestone(props)} axis={weekAxisFor(goal, width)} />
+      <GoalMilestoneSummary
+        heroLeading="tight"
+        {...statedMilestone(props)}
+        axis={weekAxisFor(goal, width)}
+      />
       <GoalTrajectoryChart
         {...goal}
         status={status}
@@ -472,7 +493,12 @@ function CompactBody({
   const { trend, milestone, status } = props
   return (
     <View className="gap-stack-md">
-      <GoalMilestoneSummary {...statedMilestone(props)} scale="phone" showWeeks={false} />
+      <GoalMilestoneSummary
+        heroLeading="tight"
+        {...statedMilestone(props)}
+        scale="phone"
+        showWeeks={false}
+      />
       <View style={{ minHeight: height }} testID="goal-card-trend">
         {trend && width !== null && (
           <GoalWeekColumnsChart

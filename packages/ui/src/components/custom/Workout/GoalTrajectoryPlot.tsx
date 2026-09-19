@@ -11,19 +11,16 @@ import { alpha } from '../../../utils/colors'
 import { LIFT_RIM_ALPHA } from '../../../theme/lift'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { roundWeight } from '../../../utils/workout-format'
+import type { RuleLabelSpec } from './goalTrajectoryRuleLabels'
 import type {
   ActualCoord,
   GoalTrajectoryGeometry,
   GoalTrajectoryStatus,
   GoalTrajectoryWeek,
 } from './GoalTrajectoryChartGeometry'
-import { CHART_FONT, ruleLabelLayout, type BandCurve } from './GoalTrajectoryChartGeometry'
+import { CHART_FONT, type BandCurve } from './GoalTrajectoryChartGeometry'
 import { BAND_OPACITY, BandLayer, type BandFade } from './GoalTrajectoryBand'
-import {
-  CalibratingHatch,
-  CalibratingLabels,
-  type CalibratingMarks,
-} from './GoalTrajectoryCalibrating'
+import { CalibratingHatch, type CalibratingMarks } from './GoalTrajectoryCalibrating'
 import {
   ENTRANCE,
   drawStyle,
@@ -103,6 +100,8 @@ export function trajectoryPalette(
     lip: alpha(primitiveColors.white, LIFT_RIM_ALPHA[mode]),
     rule: t['text-secondary'],
     grid: alpha(t['text-primary'], 0.12),
+    // The gridline's own hue, stronger than the 12% line so its value still reads.
+    gridLabel: alpha(t['text-primary'], 0.3),
     axis: t['text-tertiary'],
     star: t['status-warning'],
     deload: alpha(t['text-primary'], 0.05),
@@ -351,36 +350,6 @@ function TargetRules({ geometry, palette }: LayerProps) {
   )
 }
 
-function RuleLabel({
-  palette,
-  x,
-  y,
-  id,
-  side,
-  children,
-}: {
-  palette: TrajectoryPalette
-  x: number
-  y: number
-  id: string
-  side: ReferenceLabelSide
-  children: string
-}) {
-  return (
-    <text
-      data-testid={`goal-trajectory-chart-${id}`}
-      x={x}
-      y={y}
-      fill={palette.rule}
-      fontSize={CHART_FONT}
-      fontFamily={FONT_FAMILY}
-      textAnchor={side === 'left' ? 'start' : 'end'}
-    >
-      {children}
-    </text>
-  )
-}
-
 /** The x a rule label anchors at for a given side. */
 export function ruleLabelX(
   plot: { left: number; right: number },
@@ -389,36 +358,24 @@ export function ruleLabelX(
   return side === 'left' ? plot.left + LEFT_LABEL_INSET : plot.right
 }
 
-/**
- * One label per rule, except when the two rules coincide: a calibrating goal has
- * committed === stretch, and two labels on one baseline print as one unreadable
- * word (VW-414). Then they merge into a single label.
- */
-function RuleLabels({
-  geometry,
-  palette,
-  committed,
-  stretch,
-  side,
-}: LayerProps & { committed: number; stretch: number; side: ReferenceLabelSide }) {
-  const x = ruleLabelX(geometry.plot, side)
-  const label = { palette, x, side }
-  const layout = ruleLabelLayout(geometry.committedY, geometry.stretchY)
-  if (layout.merged) {
-    return (
-      <RuleLabel {...label} y={layout.committed.y} id="merged-rule-label">
-        {`Committed = Stretch ${String(roundWeight(committed))}`}
-      </RuleLabel>
-    )
-  }
+/** Text marks laid out by `ruleLabelSpecs` or `gridLabelSpecs`, in one fill. */
+function PlacedLabels({ fill, labels }: { fill: string; labels: RuleLabelSpec[] }) {
   return (
     <>
-      <RuleLabel {...label} y={layout.committed.y} id="committed-label">
-        {`Committed ${String(roundWeight(committed))}`}
-      </RuleLabel>
-      <RuleLabel {...label} y={layout.stretch.y} id="stretch-label">
-        {`Stretch ${String(roundWeight(stretch))}`}
-      </RuleLabel>
+      {labels.map((label) => (
+        <text
+          key={label.id}
+          data-testid={`goal-trajectory-chart-${label.id}`}
+          x={label.x}
+          y={label.y}
+          fill={fill}
+          fontSize={CHART_FONT}
+          fontFamily={FONT_FAMILY}
+          textAnchor={label.anchor}
+        >
+          {label.text}
+        </text>
+      ))}
     </>
   )
 }
@@ -564,14 +521,16 @@ function WeekAxis({
 export interface GoalTrajectoryPlotProps extends LayerProps {
   width: number
   height: number
-  committed: number
-  stretch: number
+  /** The committed and stretch labels, from `ruleLabelSpecs`. */
+  ruleLabels: RuleLabelSpec[]
+  /** In-plot gridline values, from `gridLabelSpecs`; empty when the y axis is shown. */
+  gridLabels: RuleLabelSpec[]
   weeks: GoalTrajectoryWeek[]
   weekStride: number
   showYLabels: boolean
   style: PlotStyle
   entrance: EntranceState
-  /** A calibrating goal's hatch and note; null for every other status. */
+  /** A calibrating goal's hatch; null for every other status. */
   calibrating?: CalibratingMarks | null
 }
 
@@ -619,14 +578,9 @@ export function GoalTrajectoryPlot(props: GoalTrajectoryPlotProps) {
         <rect data-testid="goal-trajectory-chart-inner-left" {...box} fill={`url(#${ids.left})`} />
         {style.baseline === 'lip' && <PlaneLip {...layer} />}
       </g>
-      <RuleLabels
-        {...layer}
-        committed={props.committed}
-        stretch={props.stretch}
-        side={style.referenceLabelSide}
-      />
+      <PlacedLabels fill={palette.gridLabel} labels={props.gridLabels} />
+      <PlacedLabels fill={palette.rule} labels={props.ruleLabels} />
       <WeekAxis {...layer} weeks={props.weeks} stride={props.weekStride} />
-      {props.calibrating && <CalibratingLabels marks={props.calibrating} palette={palette} />}
     </svg>
   )
 }

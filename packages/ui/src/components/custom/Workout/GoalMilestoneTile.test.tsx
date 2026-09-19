@@ -1,6 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen, fireEvent, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
+import { capturedClassNames } from '../../../test/classname-capture'
+import { SCALE } from './GoalMilestoneSummary'
 
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import {
@@ -82,6 +85,31 @@ describe('GoalMilestoneTile', () => {
       expect(facts()).toHaveTextContent('Week 4 of 6')
       expect(facts()).toHaveTextContent('Best 8 x 100 lb')
       expect(facts()).toHaveTextContent('Goal 8 x 105 lb')
+    })
+
+    // className never reaches the DOM under vitest; setup.ts captures it per testID.
+    it('pulls stacked facts one step tighter than the blocks around them', () => {
+      render(<GoalMilestoneTile {...base} summaryFit="stacked" />)
+      const stackedGap = resolveAll(spacingClassesOf('goal-milestone-facts'))
+      expect(stackedGap).toEqual(['0'])
+      expect(resolveAll([SCALE.phone.gap])).toEqual(['4px'])
+      expect(capturedClassNames.get('goal-milestone-week-count')).toContain('leading-normal')
+    })
+
+    it('leaves the one-row facts as they were', () => {
+      render(<GoalMilestoneTile {...base} summaryFit="row" />)
+      expect(resolveAll(spacingClassesOf('goal-milestone-facts'))).toEqual(['12px'])
+      expect(capturedClassNames.get('goal-milestone-week-count')).not.toContain('leading-normal')
+    })
+
+    it("keeps the hero numeral on its type step's own leading by default", () => {
+      render(<GoalMilestoneTile {...base} />)
+      expect(capturedClassNames.get('goal-milestone-hero')).not.toContain('leading-none')
+    })
+
+    it("sets the hero numeral's leading to its font size when tight", () => {
+      render(<GoalMilestoneTile {...base} heroLeading="tight" />)
+      expect(capturedClassNames.get('goal-milestone-hero')).toContain('leading-none')
     })
 
     it('dashes the best cell when nothing has matched yet', () => {
