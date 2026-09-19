@@ -3,7 +3,7 @@
  * target as a hollow dot with no dashed run, the ramp dashed, and the weeks after
  * the latest reading hatched with a note the consumer words.
  */
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { GoalTrajectoryChart, type GoalTrajectoryStatus } from './GoalTrajectoryChart'
 import { DASHED_EDGE } from './GoalTrajectoryBand'
@@ -68,8 +68,32 @@ describe('a calibrating goal chart', () => {
   })
 
   it('writes the note the consumer supplies', () => {
-    renderAt('above', { calibratingNote: 'Calibrating: 1 more session' })
-    expect(screen.getByText('Calibrating: 1 more session')).toBeInTheDocument()
+    renderAt('above', { calibratingNote: '1 more session' })
+    expect(screen.getByText('1 more session')).toBeInTheDocument()
+  })
+
+  it('warns in development when the note repeats the status, and still draws it', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    renderAt('above', { calibratingNote: 'Calibrating: 2 more sessions' })
+    expect(screen.getByText('Calibrating: 2 more sessions')).toBeInTheDocument()
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('status pill already says'))
+    warn.mockRestore()
+  })
+
+  it('does not warn for a note that only mentions calibration later on', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    renderAt('above', { calibratingNote: '2 sessions until calibrating ends' })
+    expect(warn).not.toHaveBeenCalled()
+    warn.mockRestore()
+  })
+
+  it('stays silent in production', () => {
+    vi.stubEnv('NODE_ENV', 'production')
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    renderAt('above', { calibratingNote: 'calibrating, 3 more sessions' })
+    expect(warn).not.toHaveBeenCalled()
+    warn.mockRestore()
+    vi.unstubAllEnvs()
   })
 
   it.each(PLACEMENTS)('leaves the ramp unlabelled; the note names it (%s)', (placement) => {

@@ -61,6 +61,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
 - `GoalTrajectoryChart`, calibrating state: the accessible name now carries the
   note, whole even where the drawn note is cut, and says the line is the planned
   ramp from the start lift, not an expected band.
+- `GoalTrajectoryChart`: a `calibratingNote` that opens with the status label
+  ("Calibrating") logs a development-only console warning, since the card's
+  pill already says it. The note still draws as given; production builds skip
+  the check.
 
 
 ## 0.21.0
