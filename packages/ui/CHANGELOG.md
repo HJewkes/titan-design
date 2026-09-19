@@ -23,6 +23,14 @@ project adheres to [Semantic Versioning](https://semver.org/).
   no "Back to live" button and no chevron, and reads as a labelled status region
   (`accessibilityRole="summary"`, a `region` on the web). Its accessible name
   drops the "Back to live:" prefix. **Pass `onPress` to keep the 0.20.0 look.**
+- `GoalTrajectoryChart`, calibrating state: the note fits the chart. It wraps to
+  at most two lines and stays inside the hatched weeks, at their lower-right
+  corner or else their upper-right one, clear of the readings, the line between
+  them, the next-target dot and the dashed ramp. When the hatch has no room for
+  the whole block (a late reading, a narrow phone), the note and its explanation
+  move to a caption under the plot, and a note longer than two caption lines
+  ends in an ellipsis. An empty or blank `calibratingNote` falls back to "No band
+  yet". The default note on an early-block goal renders as in 0.20.0.
 
 ### Fixed
 

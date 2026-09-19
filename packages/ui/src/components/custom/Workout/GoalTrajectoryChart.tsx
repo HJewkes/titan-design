@@ -25,7 +25,11 @@ import {
   type ReferenceLabelSide,
 } from './GoalTrajectoryPlot'
 import { useTrajectoryEntrance } from './goalTrajectoryMotion'
-import { DEFAULT_CALIBRATING_NOTE, calibratingMarks } from './GoalTrajectoryCalibrating'
+import {
+  CalibratingCaption,
+  calibratingMarks,
+  resolveCalibratingNote,
+} from './GoalTrajectoryCalibrating'
 import type { BandFade } from './GoalTrajectoryBand'
 import type { BandCurve } from './GoalTrajectoryChartGeometry'
 import type { PlotBaseline } from './GoalTrajectoryPlot'
@@ -168,7 +172,9 @@ export interface GoalTrajectoryChartProps extends ViewProps {
   /**
    * Calibrating only: the first line of the note in the hatched weeks. The
    * consumer supplies it because only the read model knows what calibration is
-   * still waiting on; the default claims nothing.
+   * still waiting on; empty or omitted, the default claims nothing. It wraps to
+   * two lines; where the hatch has no room it moves under the plot, and past two
+   * lines of that it ends in an ellipsis. The accessible name always carries it whole.
    */
   calibratingNote?: string
   className?: string
@@ -255,7 +261,7 @@ export function GoalTrajectoryChart({
   bandFade = 'centre-14',
   bandCurve = 'monotone',
   referenceLabelSide = 'left',
-  calibratingNote = DEFAULT_CALIBRATING_NOTE,
+  calibratingNote,
   className,
   ...props
 }: GoalTrajectoryChartProps) {
@@ -307,7 +313,7 @@ export function GoalTrajectoryChart({
     ? calibratingMarks({
         geometry,
         wall: width >= WALL_BREAKPOINT,
-        note: calibratingNote,
+        note: resolveCalibratingNote(calibratingNote),
       })
     : null
 
@@ -360,6 +366,7 @@ export function GoalTrajectoryChart({
           calibrating={marks}
         />
       </View>
+      {marks && <CalibratingCaption marks={marks} palette={palette} />}
       {geometry.nextTarget && nextTarget && (
         <NextTargetTip point={geometry.nextTarget} label={nextTarget.label} />
       )}
