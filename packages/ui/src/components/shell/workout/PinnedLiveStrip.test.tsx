@@ -116,6 +116,27 @@ describe('PinnedLiveStrip', () => {
     )
   })
 
+  describe('a missing or malformed rep target', () => {
+    it.each([-3, 0, Number.NaN, Number.POSITIVE_INFINITY])(
+      'targetReps %s draws the reps done at a non-negative width, with no "/target"',
+      (targetReps) => {
+        render(<PinnedLiveStrip {...S.set} targetReps={targetReps} layout="wall" />)
+        const reps = S.set.reps.length
+        expect(screen.getByTestId('live-strip-bars-frame')).toHaveStyle({ width: `${reps * 24}px` })
+        expect(screen.getAllByTestId(/^live-strip-bar-\d+$/)).toHaveLength(reps)
+        expect(screen.getByTestId('live-strip-hero')).toHaveTextContent(new RegExp(`^${reps}$`))
+        expect(screen.getByRole('link').getAttribute('aria-label')).toContain(`${reps} reps`)
+        expect(document.body.textContent).not.toMatch(/NaN|Infinity|-3/)
+      }
+    )
+
+    it('draws a fractional target as its whole reps', () => {
+      render(<PinnedLiveStrip {...S.set} targetReps={8.6} layout="wall" />)
+      expect(screen.getByTestId('live-strip-bars-frame')).toHaveStyle({ width: `${8 * 24}px` })
+      expect(screen.getByTestId('live-strip-hero')).toHaveTextContent(/\/8$/)
+    })
+  })
+
   describe('idle', () => {
     it('renders nothing when the session is idle', () => {
       const { container } = render(<PinnedLiveStrip {...S.idle} />)

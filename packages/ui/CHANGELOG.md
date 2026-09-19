@@ -25,6 +25,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
 - `PinnedLiveStrip`: a non-finite `restRemainingMs` (NaN, Infinity or
   undefined) reads "0s" in the numeral and the accessible name instead of
   "NaNs", and a non-finite or non-positive `restDurationMs` draws no time bar.
+- `PinnedLiveStrip`: a zero, negative, fractional or non-finite `targetReps` no
+  longer gives the bar frame a negative or NaN width. The strip draws the whole
+  reps of a fractional target; without a usable target it draws the reps done,
+  reads "4" rather than "4/0", and names "4 reps".
 
 
 ## 0.21.0
