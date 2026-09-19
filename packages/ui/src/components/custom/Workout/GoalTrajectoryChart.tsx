@@ -9,6 +9,7 @@ import { Typography } from '../../ui/typography'
 import { valueReach, type GoalReach } from './goalMilestone'
 import {
   deriveTrajectoryGeometry,
+  trajectoryInsets,
   type GoalActualPoint,
   type GoalNextTarget,
   type GoalDirection,
@@ -30,6 +31,7 @@ import {
   resolveCalibratingNote,
 } from './GoalTrajectoryCalibrating'
 import { hitBoxAround, useHitTargetSize, type HitBox } from './goalTrajectoryTargets'
+import { ruleLabelSpecs, type RuleLabelText } from './goalTrajectoryRuleLabels'
 import type { BandFade } from './GoalTrajectoryBand'
 import type { BandCurve } from './GoalTrajectoryChartGeometry'
 import type { PlotBaseline } from './GoalTrajectoryPlot'
@@ -177,6 +179,17 @@ export interface GoalTrajectoryChartProps extends ViewProps {
    * chart's accessible name carries it too.
    */
   calibratingNote?: string
+  /**
+   * The y-axis value labels. Default on. Off, the plot takes back their gutter; a
+   * GoalCard lines its week cells up with the plot either way.
+   */
+  yAxisLabels?: boolean
+  /**
+   * The committed and stretch labels: `named` ("Committed 185", the default),
+   * `numeric` ("185", placed clear of the readings and tip targets) or `none`. The
+   * accessible name keeps the words in every case.
+   */
+  ruleLabelText?: RuleLabelText
   className?: string
 }
 
@@ -268,6 +281,8 @@ export function GoalTrajectoryChart({
   bandCurve = 'monotone',
   referenceLabelSide = 'left',
   calibratingNote,
+  yAxisLabels = true,
+  ruleLabelText = 'named',
   className,
   ...props
 }: GoalTrajectoryChartProps) {
@@ -300,6 +315,7 @@ export function GoalTrajectoryChart({
         height,
         tickCount: density.tickCount,
         bandCurve,
+        insets: trajectoryInsets(yAxisLabels),
       }),
     [
       expected,
@@ -313,6 +329,7 @@ export function GoalTrajectoryChart({
       height,
       density,
       bandCurve,
+      yAxisLabels,
     ]
   )
   const geometry = calibrating ? withoutLead(derived) : derived
@@ -325,6 +342,14 @@ export function GoalTrajectoryChart({
       ? hitBoxAround(geometry.nextTarget, targetSize, width, height)
       : null
   const marks = calibrating ? calibratingMarks({ geometry, targetSize, nextTargetBox }) : null
+  const ruleLabels = ruleLabelSpecs({
+    geometry,
+    committed,
+    stretch,
+    text: ruleLabelText,
+    side: referenceLabelSide,
+    boxes: [nextTargetBox, marks?.target].filter((b): b is HitBox => b != null),
+  })
   // A target hung under the plot may reach past the canvas; the chart grows to hold it.
   const overhang = marks ? Math.max(0, marks.target.y + marks.target.size - height) : 0
   const label =
@@ -362,11 +387,10 @@ export function GoalTrajectoryChart({
           palette={palette}
           width={width}
           height={height}
-          committed={committed}
-          stretch={stretch}
+          ruleLabels={ruleLabels}
           weeks={showWeekLabels ? axisWeeks : []}
           weekStride={Math.max(1, Math.ceil(axisWeeks.length / density.maxWeekLabels))}
-          showYLabels={density.showYLabels}
+          showYLabels={density.showYLabels && yAxisLabels}
           style={{
             stroke: density.stroke,
             star: density.star,
