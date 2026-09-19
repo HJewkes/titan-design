@@ -13,56 +13,56 @@ project adheres to [Semantic Versioning](https://semver.org/).
   rounded to a whole percent. This applies to `VelocityStrip` (every variant),
   `DualVelocityStrip` and `PinnedLiveStrip`, which share `velocityLossForRep`.
   With thresholds `[6.7, 13.3, 20]`, a rep at 13.33 percent now reads orange, as
-  the consumer's unrounded check does; 0.20.0 banded it as 13 and read yellow. A
+  the consumer's unrounded check does; 0.21.0 banded it as 13 and read yellow. A
   loss equal to a threshold takes the higher band. **Bars within half a percent
-  of a band edge can change colour against 0.20.0.** `velocityLossForRep` now
+  of a band edge can change colour against 0.21.0.** `velocityLossForRep` now
   returns the unrounded loss. The rule on every surface: **colour follows the
   exact loss; the number shown is the exact loss rounded down**
   (`shownVelocityLoss`), so a number never reads at or past a threshold the
   colour has not reached. With thresholds `[6.7, 13.3, 20]`, a 19.96 percent
-  loss reads "Loss: 19%" beside an orange bar, and 20.0 reads "20%" beside a
-  red one. `VelocityStrip`'s "Loss" text and `PinnedLiveStrip`'s accessible
-  name can therefore read one percent lower than 0.20.0, which rounded.
+  loss reads "Loss: 19%" beside an orange bar, and 20.0 reads "20%" beside a red
+  one. `VelocityStrip`'s "Loss" text and `PinnedLiveStrip`'s accessible name can
+  therefore read one percent lower than 0.21.0, which rounded.
   `calculateVelocityLoss` is unchanged and still rounds.
 - `PinnedLiveStrip` without `onPress` is no longer a link: it has no link role,
   no "Back to live" button and no chevron, and reads as a labelled status region
   (`accessibilityRole="summary"`, a `region` on the web). Its accessible name
-  drops the "Back to live:" prefix. **Pass `onPress` to keep the 0.20.0 look.**
+  drops the "Back to live:" prefix. **Pass `onPress` to keep the 0.21.0 look.**
 - `GoalTrajectoryChart`, calibrating state: **the note is no longer written on
   the plane.** An info target sits in the plot's lower-right corner, inside the
-  hatch, and its tip carries `calibratingNote` (or "No band yet" when it is empty
-  or blank) followed by the two explanation lines at every width, set on a normal
-  18px line height. The target is
-  a button named "Why is there no band?". It opens on hover, keyboard focus and
-  press, closes on blur, Escape and a press outside, and has a 24px hit area
-  (44px under a touch pointer). It never covers a reading, the line between
-  them, the next target or the ramp: when low readings fill that corner in the
-  last weeks, it hangs just under the plot. The tip opens in flow, right-aligned
-  to the target, so it stays inside the card at every width. `calibratingNote`
-  may now be a full sentence: the old in-plot fit no longer limits it.
-  **Consumers will see a visual change** on calibrating goals.
+  hatch, and its tip carries `calibratingNote` (or "No band yet" when it is
+  empty or blank) followed by the two explanation lines at every width, set on a
+  normal 18px line height. The target is a button named "Why is there no band?".
+  It opens on hover, keyboard focus and press, closes on blur, Escape and a
+  press outside, and has a 24px hit area (44px under a touch pointer). It never
+  covers a reading, the line between them, the next target or the ramp: when low
+  readings fill that corner in the last weeks, it hangs just under the plot. The
+  tip opens in flow, right-aligned to the target, so it stays inside the card at
+  every width. `calibratingNote` may now be a full sentence: the old in-plot fit
+  no longer limits it. **Consumers will see a visual change** on calibrating
+  goals.
 - `TipTrigger` (and every tip built on it: the goal card's status and priority
   tips, the week strip, the chart's next-target tip) now also closes on Escape
   and on a press outside its trigger on the web, and the open tip is the
   trigger's accessible description (`aria-describedby`).
 - `GoalMilestoneSummary` (and so `GoalCard`, full and compact): when week, best
-  and goal cannot share a line and stack, they now sit with no gap between
-  them, one step tighter than the `stack-sm` that separates them from the hero
-  and the chart, and on a normal line height (18px) instead of the caption's
-  loose 24px, so the three read as one block. The one-row layout is unchanged.
+  and goal cannot share a line and stack, they now sit with no gap between them,
+  one step tighter than the `stack-sm` that separates them from the hero and the
+  chart, and on a normal line height (18px) instead of the caption's loose 24px,
+  so the three read as one block. The one-row layout is unchanged.
 - `GoalTrajectoryChart`'s next-target tip grows its hit area from 24px to 44px
   under a touch pointer (coarse `pointer` media query, and on native), like the
   calibrating info target, and follows the pointer when it changes. Both boxes
   stay inside the chart, and the info target keeps clear of the next-target
   tip's real box. A calibrating chart whose info target hangs under the plot
-  grows by the overhang, so the target stays inside the card. On a fine
-  pointer nothing changes.
+  grows by the overhang, so the target stays inside the card. On a fine pointer
+  nothing changes.
 
 ### Fixed
 
-- `PinnedLiveStrip`: a non-finite `restRemainingMs` (NaN, Infinity or
-  undefined) reads "0s" in the numeral and the accessible name instead of
-  "NaNs", and a non-finite or non-positive `restDurationMs` draws no time bar.
+- `PinnedLiveStrip`: a non-finite `restRemainingMs` (NaN, Infinity or undefined)
+  reads "0s" in the numeral and the accessible name instead of "NaNs", and a
+  non-finite or non-positive `restDurationMs` draws no time bar.
 - `PinnedLiveStrip`: a zero, negative, fractional or non-finite `targetReps` no
   longer gives the bar frame a negative or NaN width. The strip draws the whole
   reps of a fractional target; without a usable target it draws the reps done,
@@ -78,21 +78,21 @@ project adheres to [Semantic Versioning](https://semver.org/).
   Server-rendered HTML carries only the empty frame, and the strip appears once
   the client measures it. Passing `layout` draws at once, as before.
 - `PinnedLiveStrip` no longer redraws its bar plot on every rest tick. The plot
-  redraws only when a rep's velocity or zone, `targetReps`, the thresholds or the
-  layout change. It compares by value, so a consumer that rebuilds `reps` each
-  render still skips the redraw.
+  redraws only when a rep's velocity or zone, `targetReps`, the thresholds or
+  the layout change. It compares by value, so a consumer that rebuilds `reps`
+  each render still skips the redraw.
 - `GoalCard` title: one long unbroken token (pasted garbage, not a real name)
   breaks inside the card instead of pushing past its edge, and a four-line
   safety clamp stops a runaway string growing the card. No real exercise name
-  reaches four lines; names still wrap and are not truncated. `GoalLiftCard`
-  and `PrimaryGoalCard` inherit it.
+  reaches four lines; names still wrap and are not truncated. `GoalLiftCard` and
+  `PrimaryGoalCard` inherit it.
 - `GoalTrajectoryChart`, calibrating state: the chart's accessible name now
   carries the whole note and says the line is the planned ramp from the start
   lift, not an expected band.
 - `GoalTrajectoryChart`: a `calibratingNote` that opens with the status label
-  ("Calibrating") logs a development-only console warning, since the card's
-  pill already says it. The note still draws as given; production builds skip
-  the check.
+  ("Calibrating") logs a development-only console warning, since the card's pill
+  already says it. The note still draws as given; production builds skip the
+  check.
 
 ## 0.21.0
 
