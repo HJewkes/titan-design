@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:da8d862c3ca7f697fb477f0fa86b127b68d8324d63cb54a81e33bdb9e7cb48b7",
+  "componentBarrelHash": "sha256:3f7ce86168bdc026708570b3f03d0608be2af6a2eca97cdc78b793b41ba10f10",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -415,6 +415,48 @@
       "standard": false
     },
     {
+      "name": "BodyweightGoalCard",
+      "file": "packages/ui/src/components/custom/Workout/BodyweightGoalCard.tsx",
+      "dir": "workout",
+      "family": "custom/Workout",
+      "exports": [
+        "BodyweightGoalCard",
+        "BodyweightGoalCardProps",
+        "bandTicks",
+        "WeightTrack",
+        "formatBodyweight"
+      ],
+      "libDependents": 0,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Card",
+        "GoalTrajectoryBand",
+        "Typography",
+        "ZoneTrack",
+        "wholeBodyCardParts"
+      ],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 2,
+        "rawHex": 0,
+        "loc": 143,
+        "score": 6
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "BrandLockup",
       "file": "packages/ui/src/components/shell/BrandLockup.tsx",
       "dir": "shell",
@@ -637,7 +679,7 @@
         "CardInsetProps",
         "useCardDepth"
       ],
-      "libDependents": 13,
+      "libDependents": 14,
       "storyRefs": 11,
       "xproj": {
         "mobile": 69,
@@ -1092,7 +1134,7 @@
         "DividerOrientation",
         "DividerProps"
       ],
-      "libDependents": 6,
+      "libDependents": 5,
       "storyRefs": 2,
       "xproj": {
         "mobile": 0,
@@ -1960,7 +2002,7 @@
         "BasisTip",
         "StatusAffordance"
       ],
-      "libDependents": 4,
+      "libDependents": 5,
       "storyRefs": 6,
       "xproj": {
         "mobile": 0,
@@ -2261,7 +2303,7 @@
         "GoalPriorityIndexProps"
       ],
       "libDependents": 1,
-      "storyRefs": 2,
+      "storyRefs": 1,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
@@ -2694,7 +2736,7 @@
         "BotIcon",
         "BrainIcon"
       ],
-      "libDependents": 12,
+      "libDependents": 13,
       "storyRefs": 7,
       "xproj": {
         "mobile": 0,
@@ -3430,7 +3472,7 @@
         "rawText": 4,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 78,
+        "loc": 81,
         "score": 9
       },
       "tier": "atom",
@@ -4759,6 +4801,48 @@
       "standard": false
     },
     {
+      "name": "SessionsGoalCard",
+      "file": "packages/ui/src/components/custom/Workout/SessionsGoalCard.tsx",
+      "dir": "workout",
+      "family": "custom/Workout",
+      "exports": [
+        "SessionsGoalCard",
+        "SessionsGoalCardProps",
+        "progressTone",
+        "useCellColors",
+        "SessionsBar"
+      ],
+      "libDependents": 0,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Card",
+        "GoalCard",
+        "Progress",
+        "SegmentedBar",
+        "wholeBodyCardParts"
+      ],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 2,
+        "rawHex": 0,
+        "loc": 146,
+        "score": 6
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "SessionStatePill",
       "file": "packages/ui/src/components/shell/workout/SessionStatePill.tsx",
       "dir": "shell",
@@ -5639,7 +5723,7 @@
         "SurfaceProps"
       ],
       "libDependents": 17,
-      "storyRefs": 64,
+      "storyRefs": 65,
       "xproj": {
         "mobile": 22,
         "mcp": 12,
@@ -6199,7 +6283,7 @@
         "TipTrigger",
         "TipTriggerProps"
       ],
-      "libDependents": 4,
+      "libDependents": 5,
       "storyRefs": 0,
       "xproj": {
         "mobile": 0,
@@ -6323,7 +6407,7 @@
         "show",
         "hide"
       ],
-      "libDependents": 10,
+      "libDependents": 11,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -6527,7 +6611,7 @@
         "LabelProps",
         "OverlineProps"
       ],
-      "libDependents": 50,
+      "libDependents": 51,
       "storyRefs": 20,
       "xproj": {
         "mobile": 0,
@@ -6861,49 +6945,45 @@
       "standard": false
     },
     {
-      "name": "WholeBodyCard",
-      "file": "packages/ui/src/components/custom/Workout/WholeBodyCard.tsx",
+      "name": "wholeBodyCardParts",
+      "file": "packages/ui/src/components/custom/Workout/wholeBodyCardParts.tsx",
       "dir": "workout",
       "family": "custom/Workout",
       "exports": [
-        "WholeBodyCard",
-        "WholeBodyCardProps",
         "useStatusColor",
-        "StatusPill"
+        "GoalCardHeader",
+        "FigureLine"
       ],
-      "libDependents": 0,
-      "storyRefs": 2,
+      "libDependents": 2,
+      "storyRefs": 0,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
         "dash": 0,
-        "audiobook": 1,
-        "total": 1
+        "audiobook": 0,
+        "total": 0
       },
       "dependsOn": [
-        "Card",
-        "Divider",
         "GoalCard",
-        "GoalTrajectoryBand",
         "GoalTrajectoryPlot",
         "Metric",
         "Pill",
-        "Progress",
-        "SegmentedBar",
+        "TipTrigger",
+        "Tooltip",
         "Typography",
-        "ZoneTrack"
+        "icons"
       ],
       "leak": {
-        "rawView": 9,
+        "rawView": 6,
         "rawText": 0,
-        "inlineStyle": 4,
+        "inlineStyle": 6,
         "rawHex": 0,
-        "loc": 315,
-        "score": 17
+        "loc": 177,
+        "score": 18
       },
       "tier": "organism",
-      "verdict": "keep-app",
-      "deadByAssociation": false,
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
       "audited": "unaudited",
       "standard": false
     },
@@ -7622,6 +7702,26 @@
       "StrengthTrendChart"
     ],
     [
+      "BodyweightGoalCard",
+      "Card"
+    ],
+    [
+      "BodyweightGoalCard",
+      "Typography"
+    ],
+    [
+      "BodyweightGoalCard",
+      "GoalTrajectoryBand"
+    ],
+    [
+      "BodyweightGoalCard",
+      "ZoneTrack"
+    ],
+    [
+      "BodyweightGoalCard",
+      "wholeBodyCardParts"
+    ],
+    [
       "ExerciseCard",
       "VelocityStrip"
     ],
@@ -8070,6 +8170,26 @@
       "ExerciseIndicator"
     ],
     [
+      "SessionsGoalCard",
+      "Card"
+    ],
+    [
+      "SessionsGoalCard",
+      "Progress"
+    ],
+    [
+      "SessionsGoalCard",
+      "GoalCard"
+    ],
+    [
+      "SessionsGoalCard",
+      "SegmentedBar"
+    ],
+    [
+      "SessionsGoalCard",
+      "wholeBodyCardParts"
+    ],
+    [
       "SetBar",
       "SegmentedBar"
     ],
@@ -8170,50 +8290,6 @@
       "BaseBadge"
     ],
     [
-      "WholeBodyCard",
-      "Card"
-    ],
-    [
-      "WholeBodyCard",
-      "Divider"
-    ],
-    [
-      "WholeBodyCard",
-      "Pill"
-    ],
-    [
-      "WholeBodyCard",
-      "Progress"
-    ],
-    [
-      "WholeBodyCard",
-      "Metric"
-    ],
-    [
-      "WholeBodyCard",
-      "Typography"
-    ],
-    [
-      "WholeBodyCard",
-      "GoalCard"
-    ],
-    [
-      "WholeBodyCard",
-      "GoalTrajectoryBand"
-    ],
-    [
-      "WholeBodyCard",
-      "GoalTrajectoryPlot"
-    ],
-    [
-      "WholeBodyCard",
-      "SegmentedBar"
-    ],
-    [
-      "WholeBodyCard",
-      "ZoneTrack"
-    ],
-    [
       "WorkoutCard",
       "Card"
     ],
@@ -8244,6 +8320,38 @@
     [
       "velocity-story-kit",
       "VelocityStrip"
+    ],
+    [
+      "wholeBodyCardParts",
+      "icons"
+    ],
+    [
+      "wholeBodyCardParts",
+      "Pill"
+    ],
+    [
+      "wholeBodyCardParts",
+      "TipTrigger"
+    ],
+    [
+      "wholeBodyCardParts",
+      "Tooltip"
+    ],
+    [
+      "wholeBodyCardParts",
+      "Metric"
+    ],
+    [
+      "wholeBodyCardParts",
+      "Typography"
+    ],
+    [
+      "wholeBodyCardParts",
+      "GoalCard"
+    ],
+    [
+      "wholeBodyCardParts",
+      "GoalTrajectoryPlot"
     ],
     [
       "icons",
@@ -8487,10 +8595,11 @@
     ]
   ],
   "summary": {
-    "total": 176,
+    "total": 178,
     "dead": [
       "Autocomplete",
       "Avatar",
+      "BodyweightGoalCard",
       "Breadcrumbs",
       "GoalLiftCard",
       "IconBox",
@@ -8501,6 +8610,7 @@
       "ReadinessCheck",
       "SessionDetail",
       "SessionList",
+      "SessionsGoalCard",
       "Switch",
       "TableEmptyState",
       "TablePagination",
@@ -8524,7 +8634,8 @@
       "Sparkline",
       "SupersetWrapper",
       "WeekRow",
-      "WorkoutCard"
+      "WorkoutCard",
+      "wholeBodyCardParts"
     ],
     "auditedCount": 0,
     "standardCoverage": [
@@ -9017,9 +9128,9 @@
     "substitution": {
       "library(titan)": {
         "Text": 76,
-        "View": 147,
+        "View": 149,
         "TouchableOpacity": 0,
-        "Pressable": 58,
+        "Pressable": 59,
         "TextInput": 3,
         "ActivityIndicator": 2,
         "Switch": 0,
