@@ -63,6 +63,13 @@ export interface GoalMilestoneSummaryProps {
   weeks?: readonly GoalWeekEntry[]
   /** Pins the summary row's branch; defaults to the measured fit. */
   summaryFit?: 'row' | 'stacked'
+  /**
+   * The hero numeral's line height. `default` is its type step's own (40px on the
+   * phone's 32px numeral); `tight` sets it to the font size, taking the empty
+   * leading above the "1 lb" off every milestone surface. Pending the owner's pick in
+   * titan-0201 round 3.
+   */
+  heroLeading?: 'default' | 'tight'
   showWeeks?: boolean
   /**
    * Pins the week cells to a chart's columns. Set by the folded card, where the
@@ -216,7 +223,11 @@ function Hero({ tile, scale }: { tile: ResolvedTile; scale: GoalMilestoneTileSca
     <Typography
       variant="body1"
       color="inherit"
-      className={cn('font-heading font-bold', SCALE[scale].hero)}
+      className={cn(
+        'font-heading font-bold',
+        SCALE[scale].hero,
+        tile.props.heroLeading === 'tight' && 'leading-none'
+      )}
       style={{ color: tile.color }}
       maxLines={1}
       testID="goal-milestone-hero"
