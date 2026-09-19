@@ -36,10 +36,31 @@ const WALL_EXPLANATION = [
 ]
 const PHONE_EXPLANATION = ['Your band appears here']
 
-/** The note to draw: the consumer's, trimmed, or the default when it is empty. */
-export function resolveCalibratingNote(note: string | undefined): string {
+// Bundlers replace `process.env.NODE_ENV` literally; the DTS build has no Node types.
+declare const process: { env: { NODE_ENV?: string } }
+
+const warnedNotes = new Set<string>()
+
+function warnRepeatedStatus(note: string, statusLabel: string) {
+  if (typeof process === 'undefined' || process.env.NODE_ENV === 'production') return
+  if (warnedNotes.has(note)) return
+  warnedNotes.add(note)
+  console.warn(
+    `titan: calibratingNote "${note}" starts with "${statusLabel}", which the status pill already says.`
+  )
+}
+
+/**
+ * The note to draw: the consumer's, trimmed, or the default when it is empty. Given the
+ * status label, a note that opens with it draws as given, with a dev-only warning.
+ */
+export function resolveCalibratingNote(note: string | undefined, statusLabel?: string): string {
   const trimmed = note?.trim() ?? ''
-  return trimmed === '' ? DEFAULT_CALIBRATING_NOTE : trimmed
+  if (trimmed === '') return DEFAULT_CALIBRATING_NOTE
+  if (statusLabel && trimmed.toLowerCase().startsWith(statusLabel.toLowerCase())) {
+    warnRepeatedStatus(trimmed, statusLabel)
+  }
+  return trimmed
 }
 
 export interface NoteLine {

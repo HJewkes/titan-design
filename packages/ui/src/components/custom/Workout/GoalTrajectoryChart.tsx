@@ -315,7 +315,10 @@ export function GoalTrajectoryChart({
     ]
   )
   const geometry = calibrating ? withoutLead(derived) : derived
-  const note = resolveCalibratingNote(calibratingNote)
+  const note = resolveCalibratingNote(
+    calibratingNote,
+    calibrating ? STATUS_LABEL.calibrating : undefined
+  )
   const marks = calibrating
     ? calibratingMarks({ geometry, wall: width >= WALL_BREAKPOINT, note })
     : null
