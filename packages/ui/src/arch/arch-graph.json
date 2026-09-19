@@ -5702,59 +5702,205 @@
         "TableHeader",
         "TableBody",
         "TableRow",
-        "TableHeaderCell",
-        "TableCell",
-        "TablePagination",
-        "useTable",
-        "TableSelectAllCell",
-        "TableSelectCell",
-        "TableEmptyState",
-        "SortDirection",
-        "TableDensity",
         "TableProps",
         "TableHeaderProps",
         "TableBodyProps",
-        "TableRowProps",
-        "TableHeaderCellProps",
-        "TableCellProps",
-        "TablePaginationProps",
-        "TableComparator",
-        "UseTableOptions",
-        "UseTableReturn",
-        "TableSelectAllCellProps",
-        "TableSelectCellProps",
-        "TableEmptyStateProps",
-        "handlePress",
-        "withTooltip",
-        "handleSort",
-        "handlePageSizeChange",
-        "cn"
+        "TableRowProps"
       ],
       "libDependents": 2,
       "storyRefs": 2,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
-        "dash": 12,
-        "audiobook": 4,
-        "total": 16
+        "dash": 8,
+        "audiobook": 0,
+        "total": 8
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 9,
+        "rawText": 0,
+        "inlineStyle": 1,
+        "rawHex": 0,
+        "loc": 242,
+        "score": 11
+      },
+      "tier": "atom",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
+      "name": "TableCell",
+      "file": "packages/ui/src/components/custom/Table/TableCell.tsx",
+      "dir": "custom",
+      "family": "custom/Table",
+      "exports": [
+        "TableCell",
+        "TableCellProps"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 2,
+        "audiobook": 0,
+        "total": 2
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 1,
+        "rawText": 1,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 50,
+        "score": 2
+      },
+      "tier": "atom",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "TableEmptyState",
+      "file": "packages/ui/src/components/custom/Table/TableEmptyState.tsx",
+      "dir": "custom",
+      "family": "custom/Table",
+      "exports": [
+        "TableEmptyState",
+        "TableEmptyStateProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 2,
+        "rawText": 2,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 37,
+        "score": 4
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "TableHeaderCell",
+      "file": "packages/ui/src/components/custom/Table/TableHeaderCell.tsx",
+      "dir": "custom",
+      "family": "custom/Table",
+      "exports": [
+        "TableHeaderCell",
+        "TableHeaderCellProps",
+        "handlePress",
+        "withTooltip"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 2,
+        "audiobook": 0,
+        "total": 2
       },
       "dependsOn": [
         "Tooltip"
       ],
       "leak": {
-        "rawView": 21,
-        "rawText": 12,
-        "inlineStyle": 2,
+        "rawView": 2,
+        "rawText": 2,
+        "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 805,
-        "score": 37
+        "loc": 145,
+        "score": 6
       },
       "tier": "organism",
       "verdict": "keep-core",
       "deadByAssociation": false,
       "audited": "unaudited",
-      "standard": true
+      "standard": false
+    },
+    {
+      "name": "TablePagination",
+      "file": "packages/ui/src/components/custom/Table/TablePagination.tsx",
+      "dir": "custom",
+      "family": "custom/Table",
+      "exports": [
+        "TablePagination",
+        "TablePaginationProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 5,
+        "rawText": 5,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 121,
+        "score": 10
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "TableSelection",
+      "file": "packages/ui/src/components/custom/Table/TableSelection.tsx",
+      "dir": "custom",
+      "family": "custom/Table",
+      "exports": [
+        "TableSelectAllCell",
+        "TableSelectCell",
+        "TableSelectAllCellProps",
+        "TableSelectCellProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 2,
+        "rawText": 2,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 78,
+        "score": 4
+      },
+      "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Tabs",
@@ -5828,6 +5974,7 @@
         "Pill",
         "SeverityLabel",
         "Table",
+        "TableCell",
         "TaskTable",
         "Tooltip",
         "Typography"
@@ -5875,6 +6022,7 @@
         "Eyebrow",
         "SeverityLabel",
         "Table",
+        "TableHeaderCell",
         "TaskRow",
         "Typography"
       ],
@@ -7215,6 +7363,10 @@
     ],
     [
       "TaskRow",
+      "TableCell"
+    ],
+    [
+      "TaskRow",
       "Table"
     ],
     [
@@ -7232,6 +7384,10 @@
     [
       "TaskTable",
       "Table"
+    ],
+    [
+      "TaskTable",
+      "TableHeaderCell"
     ],
     [
       "TaskTable",
@@ -7330,7 +7486,7 @@
       "Typography"
     ],
     [
-      "Table",
+      "TableHeaderCell",
       "Tooltip"
     ],
     [
@@ -8195,7 +8351,7 @@
     ]
   ],
   "summary": {
-    "total": 169,
+    "total": 174,
     "dead": [
       "Autocomplete",
       "Avatar",
@@ -8210,6 +8366,9 @@
       "SessionDetail",
       "SessionList",
       "Switch",
+      "TableEmptyState",
+      "TablePagination",
+      "TableSelection",
       "Toast",
       "Treemap",
       "VolumeLandmarkBar",
@@ -8659,16 +8818,6 @@
         "score": 41
       },
       {
-        "name": "Table",
-        "tier": "organism",
-        "rawView": 21,
-        "rawText": 12,
-        "inlineStyle": 2,
-        "rawHex": 0,
-        "loc": 805,
-        "score": 37
-      },
-      {
         "name": "ActiveWorkoutPage",
         "tier": "page",
         "rawView": 11,
@@ -8717,14 +8866,24 @@
         "rawHex": 0,
         "loc": 390,
         "score": 34
+      },
+      {
+        "name": "ReadinessCheck",
+        "tier": "organism",
+        "rawView": 7,
+        "rawText": 7,
+        "inlineStyle": 9,
+        "rawHex": 0,
+        "loc": 278,
+        "score": 32
       }
     ],
     "substitution": {
       "library(titan)": {
-        "Text": 72,
-        "View": 140,
+        "Text": 76,
+        "View": 145,
         "TouchableOpacity": 0,
-        "Pressable": 56,
+        "Pressable": 58,
         "TextInput": 3,
         "ActivityIndicator": 2,
         "Switch": 0,
