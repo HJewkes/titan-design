@@ -231,8 +231,7 @@ export function calculateVelocityLoss(velocities: number[]): number {
   if (velocities.length < 2) return 0
   const best = Math.max(...velocities)
   if (best <= 0) return 0
-  const last = velocities[velocities.length - 1]
-  return Math.max(0, Math.round(((best - last) / best) * 100))
+  return Math.round(velocityLossForRep(velocities[velocities.length - 1], best))
 }
 
 /** Arithmetic mean of the per-rep mean-concentric velocities. */
@@ -315,18 +314,24 @@ export function getVelocityLossColor(lossPct: number, thresholds?: VelocityLossT
   return LOSS_BAND_COLORS[velocityLossBand(lossPct, thresholds)]
 }
 
+// A billionth of a percent: far below any threshold a coach sets, far above double rounding error.
+const FLOAT_NOISE = 1e9
+
 /**
  * A single rep's velocity loss (%) relative to the set's own best rep, clamped to
  * ≥ 0 (a best-so-far rep, or a set with no positive best, reports 0 loss — green).
- * Rounded (matching {@link calculateVelocityLoss}'s convention) so a rep that is
- * arithmetically the set's best — or lands exactly on a VL threshold — doesn't drift
- * across a color-band boundary on floating-point noise (e.g. `1.0 − 0.9` ≈ `0.0999…998`).
- * Feeds `barColor="loss"` bar coloring; distinct from {@link calculateVelocityLoss},
- * which reports only the set's FINAL loss (last rep vs best) as a single summary number.
+ * NOT rounded to a whole percent: every surface bands this exact value, so a 13.33%
+ * loss against a 13.3% threshold takes the higher band, as the consumer's own
+ * unrounded check does. Only floating-point noise is removed (`1.0 − 0.9` is
+ * `0.0999…998`), so a rep that lands exactly on a threshold takes the higher band.
+ * Round only what you display. Feeds `barColor="loss"` bar coloring on the hero, the
+ * dual strips and PinnedLiveStrip; {@link calculateVelocityLoss} is its rounded,
+ * last-rep-vs-best summary.
  */
 export function velocityLossForRep(velocity: number, best: number): number {
-  if (best <= 0) return 0
-  return Math.max(0, Math.round(((best - velocity) / best) * 100))
+  if (!(best > 0)) return 0
+  const loss = ((best - velocity) / best) * 100
+  return Math.max(0, Math.round(loss * FLOAT_NOISE) / FLOAT_NOISE)
 }
 
 /** Classify a velocity into its band (slow → fast, min inclusive / max exclusive). */
@@ -1263,6 +1268,8 @@ export function VelocityStrip({
   const maxVelocity = Math.max(...doneVelocities, 0)
   const meanVelocity = calculateMeanVelocity(doneVelocities)
   const loss = calculateVelocityLoss(doneVelocities)
+  // The text shows the rounded loss; its colour bands the exact one, like the last bar.
+  const lastLoss = velocityLossForRep(doneVelocities[doneVelocities.length - 1] ?? 0, maxVelocity)
 
   // The framed chart (raised box, labels, info) vs the bare spotlight strip is the
   // only fork in the `expanded` variant — keyed by whether any chrome is requested.
@@ -1559,7 +1566,7 @@ export function VelocityStrip({
             style={{
               fontSize: 10,
               fontFamily: 'Inter, sans-serif',
-              ...getLossStyle(loss, lossThresholds),
+              ...getLossStyle(lastLoss, lossThresholds),
             }}
           >
             Loss: {loss}%
