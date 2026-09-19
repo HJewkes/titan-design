@@ -213,3 +213,29 @@ describe('calibratingMarks placement', () => {
     expect(marks.placement).toBe('hatch-top')
   })
 })
+
+describe('the calibrating accessible name', () => {
+  const nameOf = () =>
+    screen.getByTestId('goal-trajectory-chart-canvas').getAttribute('aria-label') ?? ''
+
+  it('says the note and that the line is the planned ramp, not a band', () => {
+    renderAt(360, '')
+    expect(nameOf()).toContain('Status: Calibrating.')
+    expect(nameOf()).toContain(
+      `${DEFAULT_CALIBRATING_NOTE}. The line is the planned ramp from the start lift, not an expected band.`
+    )
+  })
+
+  it('carries the whole note even where the drawn note ends in an ellipsis', () => {
+    renderAt(320, RUNAWAY)
+    expect(noteLines()[1].textContent?.endsWith('…')).toBe(true)
+    expect(nameOf()).toContain(`${RUNAWAY}.`)
+  })
+
+  it('says nothing about a ramp for a goal that is not calibrating', () => {
+    render(
+      <GoalTrajectoryChart {...calibratingGoalAt('above')} {...SIZES[360]} status="on_track" />
+    )
+    expect(nameOf()).not.toMatch(/planned ramp|No band yet/)
+  })
+})
