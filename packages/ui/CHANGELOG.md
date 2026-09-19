@@ -20,6 +20,12 @@ project adheres to [Semantic Versioning](https://semver.org/).
   `calculateVelocityLoss` still returns a whole percent, and the "Loss" text
   still shows one, but its colour follows the exact loss.
 
+### Fixed
+
+- `PinnedLiveStrip`: a non-finite `restRemainingMs` (NaN, Infinity or
+  undefined) reads "0s" in the numeral and the accessible name instead of
+  "NaNs", and a non-finite or non-positive `restDurationMs` draws no time bar.
+
 
 ## 0.21.0
 
