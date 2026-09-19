@@ -7,8 +7,22 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## 0.20.0
+
 ### Changed
 
+- `GoalTrajectoryChart`, calibrating state (VW-433): readings are plain dots with
+  no PR star on the chart, the next target is a hollow dot with no dashed run,
+  the programmed ramp is a dashed unlabelled line (only a zero-width ramp is
+  dashed; a band with area never is), and the weeks after the latest reading are
+  hatched with a short note in their lower-right corner. Every other status
+  renders exactly as before. **Consumers will see a visual change** on
+  calibrating goals. The rejected treatments are in `REJECTED.md`.
+- `GoalCard` at narrow widths (VW-432): when the name does not fit beside the
+  priority icon, PR star and status badge, the marks drop to a left-aligned row
+  under the name first, and then the name wraps. It is never truncated: the full
+  title no longer has a two-line clamp. Wide layouts are pixel-identical.
+  `GoalLiftCard` and `PrimaryGoalCard` inherit it.
 - `PinnedLiveStrip` now colours bars by loss from the set's best by default
   (`barColor="loss"`), the same as the live hero (VW-429 colour round). The
   0.19.0 behaviour, per-rep zone colour, is `barColor="zone"`. The last-rep
@@ -26,6 +40,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- `GoalTrajectoryChart` `calibratingNote`: the first line of the calibrating
+  note, supplied by the consumer (default "No band yet"). The chart never
+  states a session count of its own and never repeats the status word.
 - `lossThresholds` (`[yellow, orange, red]` loss %, default `[10, 20, 30]`) on
   `VelocityStrip`, `VelocityHero`, `LiveFatiguePanel` (`velocity.lossThresholds`)
   and `PinnedLiveStrip`. It moves the bar colour bands and the hero's amber and
