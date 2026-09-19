@@ -5,6 +5,8 @@
 import { useEffect, useState } from 'react'
 import { Animated, Easing } from 'react-native'
 
+import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion'
+
 const ANIMATION_EASING = Easing.bezier(0.22, 1, 0.36, 1)
 
 /**
@@ -16,24 +18,7 @@ const ANIMATION_EASING = Easing.bezier(0.22, 1, 0.36, 1)
  */
 const PEAK_OVERSHOOT = 1.12
 
-function getReducedMotionPreference(): boolean {
-  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
-}
-
-/** Track the OS "reduce motion" preference; falls back to `false` (jsdom/SSR). */
-export function usePrefersReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(getReducedMotionPreference)
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const handler = () => setReduced(mq.matches)
-    handler()
-    mq.addEventListener?.('change', handler)
-    return () => mq.removeEventListener?.('change', handler)
-  }, [])
-  return reduced
-}
+export { usePrefersReducedMotion }
 
 /**
  * The newest-rep entrance shared by SetBarChart and the framed / bare `expanded` charts:
