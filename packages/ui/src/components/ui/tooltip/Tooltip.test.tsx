@@ -1,9 +1,10 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { Text } from 'react-native'
 import { axe } from 'jest-axe'
 import { Tooltip } from './Tooltip'
 import { TipTrigger } from './TipTrigger'
+import { Modal } from '../modal'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 
 function hoverTrigger(triggerText: string) {
@@ -356,6 +357,42 @@ describe('TipTrigger', () => {
     fireEvent.pointerDown(trigger)
     expect(screen.getByText('Under the band')).toBeInTheDocument()
     fireEvent.pointerDown(document.body)
+    expect(screen.queryByText('Under the band')).toBeNull()
+  })
+
+  // Records current behaviour: the tip closes on Escape keydown, RNW's Modal on the keyup of
+  // the same press, so one Escape closes both. A tip-first Escape would need a follow-up.
+  it('closes both the tip and the modal holding it on one Escape press', () => {
+    const onClose = vi.fn()
+    render(
+      <Modal isOpen onClose={onClose} animationType="none">
+        <TipTrigger label="Goal status: Behind" content={<Text>Under the band</Text>} testID="tip">
+          <Text>Behind</Text>
+        </TipTrigger>
+      </Modal>
+    )
+    fireEvent.focus(screen.getByTestId('tip'))
+    fireEvent.keyDown(document, { key: 'Escape' })
+    fireEvent.keyUp(document, { key: 'Escape' })
+    expect(screen.queryByText('Under the band')).toBeNull()
+    expect(onClose).toHaveBeenCalledTimes(1)
+  })
+
+  // Records current behaviour: in-flow tip content has pointerEvents none, so a press on the
+  // visible tip lands outside the trigger and closes it.
+  it('closes when the visible tip itself is pressed', () => {
+    render(
+      <TipTrigger
+        label="Goal status: Behind"
+        content={<Text>Under the band</Text>}
+        usePortal={false}
+        testID="tip"
+      >
+        <Text>Behind</Text>
+      </TipTrigger>
+    )
+    fireEvent.focus(screen.getByTestId('tip'))
+    fireEvent.pointerDown(screen.getByText('Under the band'))
     expect(screen.queryByText('Under the band')).toBeNull()
   })
 
