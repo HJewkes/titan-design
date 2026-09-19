@@ -138,6 +138,34 @@ describe('PinnedLiveStrip', () => {
     })
   })
 
+  describe('loss banding at fractional thresholds', () => {
+    // Best 1.0 m/s against [6.7, 13.3, 20]: exact losses 6.6, 6.7, 13.29, 13.3, 13.33, 19.96, 20.
+    const velocities = [1.0, 0.934, 0.933, 0.8671, 0.867, 0.8667, 0.8004, 0.8]
+    const bands = [0, 0, 1, 1, 2, 2, 2, 3]
+    const token = [
+      LIVE_STRIP_ZONE_TOKEN.speed,
+      LIVE_STRIP_ZONE_TOKEN.power,
+      LIVE_STRIP_ZONE_TOKEN.strengthSpeed,
+      LIVE_STRIP_ZONE_TOKEN.maximalStrength,
+    ]
+
+    it.each(bands.map((band, i) => [i, band]))(
+      'bands rep %i as band %i on its exact loss; a loss on a threshold takes the higher band',
+      (index, band) => {
+        renderStrip({
+          state: 'set',
+          reps: velocities.map((velocity) => ({ velocity })),
+          targetReps: 10,
+          lossThresholds: [6.7, 13.3, 20],
+          layout: 'wall',
+        })
+        expect(screen.getByTestId(`live-strip-bar-${index}`)).toHaveStyle({
+          backgroundColor: resolveColor(token[band]),
+        })
+      }
+    )
+  })
+
   describe('reps without a zone', () => {
     // Loss from the 1.0 m/s best: 0, 12 and 25 percent.
     const reps: LiveStripRep[] = [{ velocity: 1.0 }, { velocity: 0.88 }, { velocity: 0.75 }]

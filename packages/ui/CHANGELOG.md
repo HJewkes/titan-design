@@ -7,6 +7,20 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- Loss-coloured bars band on the exact loss from the set's best, not on the loss
+  rounded to a whole percent. This applies to `VelocityStrip` (every variant),
+  `DualVelocityStrip` and `PinnedLiveStrip`, which share `velocityLossForRep`.
+  With thresholds `[6.7, 13.3, 20]`, a rep at 13.33 percent now reads orange, as
+  the consumer's unrounded check does; 0.20.0 banded it as 13 and read yellow. A
+  loss equal to a threshold takes the higher band. **Bars within half a percent
+  of a band edge can change colour against 0.20.0.** `velocityLossForRep` now
+  returns the unrounded loss; round it yourself where you display it.
+  `calculateVelocityLoss` still returns a whole percent, and the "Loss" text
+  still shows one, but its colour follows the exact loss.
+
+
 ## 0.21.0
 
 ### Added
