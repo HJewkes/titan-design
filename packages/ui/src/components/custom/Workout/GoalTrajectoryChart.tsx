@@ -213,6 +213,12 @@ function summarize(
   )
 }
 
+/** What the hatch and the dashed ramp say to a sighted reader: the whole note, and what the line is. */
+function calibratingSummary(note: string): string {
+  const sentence = /[.!?]$/.test(note) ? note : `${note}.`
+  return ` ${sentence} The line is the planned ramp from the start lift, not an expected band.`
+}
+
 /**
  * Goal trajectory over a block: the coach's expected band as a shaded polygon,
  * the committed and stretch rules, the athlete's actual line with PR stars,
@@ -309,13 +315,13 @@ export function GoalTrajectoryChart({
     ]
   )
   const geometry = calibrating ? withoutLead(derived) : derived
+  const note = resolveCalibratingNote(calibratingNote)
   const marks = calibrating
-    ? calibratingMarks({
-        geometry,
-        wall: width >= WALL_BREAKPOINT,
-        note: resolveCalibratingNote(calibratingNote),
-      })
+    ? calibratingMarks({ geometry, wall: width >= WALL_BREAKPOINT, note })
     : null
+  const label =
+    summarize(statusLabel, geometry, committed, stretch, unit, metricLabel) +
+    (calibrating ? calibratingSummary(note) : '')
 
   if (!geometry.hasBand && !geometry.hasActuals) {
     return (
@@ -340,7 +346,7 @@ export function GoalTrajectoryChart({
       <View
         style={{ width, height }}
         accessibilityRole="image"
-        accessibilityLabel={summarize(statusLabel, geometry, committed, stretch, unit, metricLabel)}
+        accessibilityLabel={label}
         testID="goal-trajectory-chart-canvas"
       >
         <GoalTrajectoryPlot

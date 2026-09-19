@@ -58,6 +58,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
   safety clamp stops a runaway string growing the card. No real exercise name
   reaches four lines; names still wrap and are not truncated. `GoalLiftCard`
   and `PrimaryGoalCard` inherit it.
+- `GoalTrajectoryChart`, calibrating state: the accessible name now carries the
+  note, whole even where the drawn note is cut, and says the line is the planned
+  ramp from the start lift, not an expected band.
 
 
 ## 0.21.0
