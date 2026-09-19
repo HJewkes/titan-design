@@ -197,6 +197,12 @@ function sessionSegments(
   )
 }
 
+/** The pill's tone as a `Progress` colour, so the bar's track is the same hue as its fill. */
+function progressTone(status: GoalLiftStatus): 'success' | 'warning' | 'info' {
+  const tone = GOAL_STATUS_TONE[status]
+  return tone === 'success' || tone === 'warning' ? tone : 'info'
+}
+
 function SessionsBar(props: {
   row: WholeBodySessionsRow
   visual: WholeBodySessionsVisual
@@ -212,7 +218,7 @@ function SessionsBar(props: {
         value={Math.min(row.counted, row.committed)}
         max={row.committed}
         size={scale === 'wall' ? 'lg' : 'md'}
-        customColor={fill}
+        color={progressTone(row.status)}
         accessibilityLabel={`${row.counted} of ${row.committed} training days`}
         testID="whole-body-sessions-progress"
       />
