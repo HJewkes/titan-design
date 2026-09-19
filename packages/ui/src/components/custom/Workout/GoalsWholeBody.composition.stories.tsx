@@ -6,11 +6,11 @@ import { View } from 'react-native'
 import { Surface } from '../../ui/surface'
 import { Typography } from '../Typography'
 import { GoalCard, type GoalCardProps } from './GoalCard'
-import { GoalPriorityIndex } from './GoalPriorityIndex'
-import { WholeBodyCard, type WholeBodyCardProps } from './WholeBodyCard'
-import { NINE_PRIORITIES } from './goalPriorityIndex-fixture'
+import { BodyweightGoalCard } from './BodyweightGoalCard'
+import { SessionsGoalCard } from './SessionsGoalCard'
 import { PRIMARY_GOAL_SCENARIOS as P } from './primaryGoal-fixture'
 import { WHOLE_BODY_SESSIONS as S, WHOLE_BODY_WEIGHT as W } from './wholeBody-fixture'
+import type { WholeBodySessionsRow, WholeBodyWeightRow } from './wholeBody'
 
 /** The compact grid cell's chart data, shared by the three per-lift cards. */
 const TREND: GoalCardProps['trend'] = {
@@ -53,15 +53,19 @@ function CardGrid({ children }: { children: ReactNode }) {
   )
 }
 
-interface GoalsPageProps {
-  withPriorityIndex: boolean
-  wholeBody: WholeBodyCardProps
+/** One grid cell: no narrower than 420px on the wall, the full width on a phone. */
+function GridCell({ children }: { children: ReactNode }) {
+  return <View style={{ flexGrow: 1, flexShrink: 1, flexBasis: 420, minWidth: 0 }}>{children}</View>
 }
 
-function GoalsPage({ withPriorityIndex, wholeBody }: GoalsPageProps) {
+interface GoalsPageProps {
+  bodyweight: WholeBodyWeightRow | null
+  sessions: WholeBodySessionsRow | null
+}
+
+function GoalsPage({ bodyweight, sessions }: GoalsPageProps) {
   return (
     <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-md gap-stack-xl">
-      {withPriorityIndex && <GoalPriorityIndex priorities={NINE_PRIORITIES} />}
       <GoalCard {...P.onTrack} title="BENCH PRESS" priority="specialize" />
       <PageSection title="Per-lift">
         <CardGrid>
@@ -75,9 +79,22 @@ function GoalsPage({ withPriorityIndex, wholeBody }: GoalsPageProps) {
           ))}
         </CardGrid>
       </PageSection>
-      <PageSection title="Whole body">
-        <WholeBodyCard {...wholeBody} />
-      </PageSection>
+      {(bodyweight || sessions) && (
+        <PageSection title="Whole body">
+          <CardGrid>
+            {bodyweight && (
+              <GridCell>
+                <BodyweightGoalCard goal={bodyweight} />
+              </GridCell>
+            )}
+            {sessions && (
+              <GridCell>
+                <SessionsGoalCard goal={sessions} />
+              </GridCell>
+            )}
+          </CardGrid>
+        </PageSection>
+      )}
     </Surface>
   )
 }
@@ -91,34 +108,32 @@ const meta: Meta<typeof GoalsPage> = {
     docs: {
       description: {
         component:
-          'The whole-body card in its page (VW-455): the lead goal card, the per-lift grid ' +
-          'titled on the page background (voltras-mcp PR 454), then Whole body. With and ' +
-          'without the priorities index at the top. Composition is approved here, not on ' +
+          'The whole-body cards in their page (VW-455): the lead goal card, the per-lift grid, ' +
+          'then Whole body as two cards under one title on the page background, the way ' +
+          'voltras-mcp PR 454 titles Per-lift. Side by side on the wall, stacked on a phone; ' +
+          'with neither goal the section is not drawn. Composition is approved here, not on ' +
           'the isolated stories. The muscle grid is left out: it ships from the `/bodymap` ' +
-          'subpath.',
+          'subpath. The priorities index waits for the mesocycle header (its own Round 0).',
       },
     },
   },
-  args: {
-    withPriorityIndex: false,
-    wholeBody: { bodyweight: W.cut, sessions: S.underPace, sessionsVisual: 'segments' },
-  },
+  args: { bodyweight: W.cut, sessions: S.underPace },
   argTypes: {
-    withPriorityIndex: { control: 'boolean' },
-    wholeBody: { control: 'object' },
+    bodyweight: { control: 'object' },
+    sessions: { control: 'object' },
   },
 }
 export default meta
 
 type Story = StoryObj<typeof GoalsPage>
 
-/** The page as the owner will see it: no index, whole body last. */
+/** A cut and sessions under pace. */
 export const Default: Story = {}
 
-/** The same page with the priorities index above the lead card. */
-export const WithPriorityIndex: Story = { args: { withPriorityIndex: true } }
-
-/** A hold goal and a window started today, the two rows most likely to misread. */
+/** A hold goal and a window started today, the two cards most likely to misread. */
 export const HoldAndNewWindow: Story = {
-  args: { wholeBody: { bodyweight: W.hold, sessions: S.windowStarted } },
+  args: { bodyweight: W.hold, sessions: S.windowStarted },
 }
+
+/** Only a sessions goal: one card, no empty half. */
+export const SessionsOnly: Story = { args: { bodyweight: null } }

@@ -64,6 +64,8 @@ export const WHOLE_BODY_SESSIONS = {
   underPace: sessions({ status: 'behind', counted: 9, committed: 12, dueByNow: 10 }),
   /** F5: a daily commitment, past the segment limit. */
   largeCommitment: sessions({ counted: 25, committed: 28, dueByNow: 24, agingOutNext7d: 7 }),
+  /** Two training days past a commitment of 12. */
+  overCommitment: sessions({ counted: 14, committed: 12, dueByNow: 12, agingOutNext7d: 4 }),
   /** A full window at the commitment, for the both-goals case. */
   atCommitment: sessions({ counted: 12, committed: 12, dueByNow: 12, agingOutNext7d: 3 }),
 } satisfies Record<string, WholeBodySessionsRow>
@@ -106,8 +108,29 @@ export const WHOLE_BODY_WEIGHT = {
       vetoed: false,
     },
   },
-  /** F10: slow-loss recomposition: one line, committed equals stretch. */
+  /**
+   * F10: slow-loss recomposition, drawn with a band. voltras-mcp pins both edges at
+   * -0.5 %/wk today; this fixture's -0.25 to -0.5 %/wk band is a stand-in until
+   * the server gives the phase a real band.
+   */
   slowLoss: {
+    ...CUT,
+    basis: 'On track: inside the slow-loss band.',
+    phase: { name: 'recomposition', weeksInPhase: 4, slowLoss: true },
+    latest: { value: 186.9, ts: '2026-09-18T07:10:00Z' },
+    week: { index: 4, of: 8, low: 188.1, high: 186.2 },
+    committed: 186.2,
+    stretch: 182.4,
+    rate: {
+      observedPctPerWeek: -0.4,
+      bandLowPctPerWeek: -0.25,
+      bandHighPctPerWeek: -0.5,
+      weeksOutsideBand: 0,
+      vetoed: false,
+    },
+  },
+  /** The server's rule today: both edges at -0.5 %/wk, so the band is one line (the round-1 render). */
+  slowLossOneLine: {
     ...CUT,
     basis: 'On track: on the slow-loss line.',
     phase: { name: 'recomposition', weeksInPhase: 4, slowLoss: true },
