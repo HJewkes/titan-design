@@ -33,11 +33,7 @@ export interface TipTriggerProps {
   children: ReactNode
 }
 
-/**
- * Story and test seam, deliberately left out of the package barrel: the TipTrigger whose `label`
- * matches is open from the first paint and stays open whatever the pointer or focus does. Review
- * frames need a tip open by state; a simulated focus is lost as soon as another frame takes focus.
- */
+// Review stories pin a tip open by label; outside the package barrel, and inert with no provider.
 export const PinnedTipContext = createContext<string | null>(null)
 
 /** On the web, close an open tip on Escape and on a press outside its trigger. */

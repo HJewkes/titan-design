@@ -424,6 +424,26 @@ describe('PinnedTipContext', () => {
     )
   }
 
+  it('is inert without a provider: closed at first paint, and closes as before', () => {
+    render(
+      <TipTrigger label="Goal status: Behind" content={<Text>Under the band</Text>} testID="tip">
+        <Text>Behind</Text>
+      </TipTrigger>
+    )
+    const trigger = screen.getByTestId('tip')
+    expect(screen.queryByText('Under the band')).toBeNull()
+    fireEvent.focus(trigger)
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(screen.queryByText('Under the band')).toBeNull()
+  })
+
+  it('is not exported from the package', async () => {
+    const pkg = await import('../../../index')
+    const tooltip = await import('./index')
+    expect(Object.keys(pkg)).not.toContain('PinnedTipContext')
+    expect(Object.keys(tooltip)).not.toContain('PinnedTipContext')
+  })
+
   it('opens the tip with the matching label from the first paint, and only that one', () => {
     renderPinned()
     expect(screen.getByText('Under the band')).toBeInTheDocument()
