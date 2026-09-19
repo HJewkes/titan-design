@@ -13,7 +13,7 @@ import {
   CALIBRATING_TIP_LABEL,
   DEFAULT_CALIBRATING_NOTE,
 } from './GoalTrajectoryCalibrating'
-import { deriveTrajectoryGeometry } from './GoalTrajectoryChartGeometry'
+import { deriveTrajectoryGeometry, trajectoryInsets } from './GoalTrajectoryChartGeometry'
 import { calibratingGoalAt, type CalibratingPlacement } from './goalTrajectoryCalibratingFixture'
 import { PRIMARY_GOAL_SCENARIOS as S } from './primaryGoal-fixture'
 
@@ -57,7 +57,11 @@ describe('a calibrating goal chart', () => {
     ['above', 2],
   ])('starts the hatch after the last reading week (%s, week %d)', (placement, lastWeek) => {
     renderAt(placement)
-    const g = deriveTrajectoryGeometry({ ...calibratingGoalAt(placement), ...WALL })
+    const g = deriveTrajectoryGeometry({
+      ...calibratingGoalAt(placement),
+      ...WALL,
+      insets: trajectoryInsets(false),
+    })
     const span = g.toX(2) - g.toX(1)
     const hatch = screen.getByTestId('goal-trajectory-chart-calibrating-hatch')
     expect(Number(hatch.getAttribute('x'))).toBeCloseTo(g.toX(lastWeek) + span / 2, 5)

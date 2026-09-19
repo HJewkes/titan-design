@@ -21,7 +21,7 @@ import type { HitBox } from './goalTrajectoryTargets'
 export type RuleLabelText = 'named' | 'numeric' | 'none'
 
 export interface RuleLabelSpec {
-  id: 'committed-label' | 'stretch-label' | 'merged-rule-label'
+  id: 'committed-label' | 'stretch-label' | 'merged-rule-label' | `grid-label-${string}`
   text: string
   x: number
   y: number
@@ -186,4 +186,44 @@ function numeric(input: RuleLabelInput): RuleLabelSpec[] {
 export function ruleLabelSpecs(input: RuleLabelInput): RuleLabelSpec[] {
   if (input.text === 'none') return []
   return input.text === 'named' ? named(input) : numeric(input)
+}
+
+export interface GridLabelInput {
+  geometry: GoalTrajectoryGeometry
+  /** The rule labels already placed; a gridline number never sits on one. */
+  ruleLabels: RuleLabelSpec[]
+  /** The committed and stretch values: a gridline at either says nothing new. */
+  ruleValues: number[]
+  boxes?: HitBox[]
+}
+
+const inside = (g: GoalTrajectoryGeometry, r: Rect) =>
+  r.top >= g.plot.top &&
+  r.bottom <= g.plot.bottom &&
+  r.left >= g.plot.left &&
+  r.right <= g.plot.right
+
+/**
+ * Each gridline's value inside the plot (titan-0201 round 3, human: "where the current y
+ * axis might show 180 to the left of the chart move that label to be inside the chart in
+ * the same color as the line"). Placed like a numeric rule label, after the rule labels;
+ * a number with no clear spot, or at a committed or stretch value, is dropped.
+ */
+export function gridLabelSpecs(input: GridLabelInput): RuleLabelSpec[] {
+  const { geometry: g, ruleLabels, boxes = [] } = input
+  const ruleValues = new Set(input.ruleValues.map((v) => roundWeight(v)))
+  const taken = ruleLabels.map(rectOf)
+  const placed: RuleLabelSpec[] = []
+  for (const tick of g.yTicks) {
+    const text = String(roundWeight(tick.value))
+    if (ruleValues.has(roundWeight(tick.value))) continue
+    const id = `grid-label-${text}` as const
+    const spot = candidates(g, tick.y, 'left', 'above')
+      .map((c) => ({ id, text, ...c }))
+      .find((c) => inside(g, rectOf(c)) && !blocked(g, rectOf(c), boxes, taken))
+    if (!spot) continue
+    taken.push(rectOf(spot))
+    placed.push(spot)
+  }
+  return placed
 }

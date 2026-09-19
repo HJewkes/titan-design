@@ -3,7 +3,7 @@ import { render, screen, fireEvent, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 
 import { PrimaryGoalCard, goalStatusBadge, markSizeFor } from './PrimaryGoalCard'
-import { trajectoryWeekScale } from './GoalTrajectoryChartGeometry'
+import { trajectoryInsets, trajectoryWeekScale } from './GoalTrajectoryChartGeometry'
 import { CELL_GAP } from './GoalMilestoneWeekStrip'
 
 /** The chart's own week scale for a scenario, at the width the card is given. */
@@ -14,6 +14,7 @@ function weekScaleOf(scenario: (typeof S)[keyof typeof S], width: number) {
     actuals: scenario.goal.actuals,
     ...(scenario.goal.nextTarget ? { nextTarget: scenario.goal.nextTarget } : {}),
     width,
+    insets: trajectoryInsets(false),
   })
 }
 import { PRIMARY_GOAL_SCENARIOS as S } from './primaryGoal-fixture'
