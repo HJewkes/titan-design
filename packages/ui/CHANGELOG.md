@@ -57,6 +57,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
   tip's real box. A calibrating chart whose info target hangs under the plot
   grows by the overhang, so the target stays inside the card. On a fine pointer
   nothing changes.
+- `GoalCard size="compact"` (and `GoalLiftCard`): the gap between the name row
+  and the hero ("1 lb to goal") is `stack-md` (8px) instead of `stack-lg`
+  (16px), so the header reads as one block. The full card is unchanged.
 
 ### Fixed
 

@@ -197,8 +197,9 @@ export const GOAL_STATUS_TONE: Record<GoalLiftStatus, PillTone & IndicatorColor>
  */
 export const STATUS_COLLAPSE_WIDTH = 320
 
+// The compact card's name and its hero read as one header: stack-md between them, not the full card's stack-lg.
 const DENSITY = {
-  comfortable: { pad: 'p-inset-lg', gap: 'gap-stack-lg', chartHeight: 56 },
+  comfortable: { pad: 'p-inset-lg', gap: 'gap-stack-md', chartHeight: 56 },
   compact: { pad: 'p-inset-md', gap: 'gap-stack-md', chartHeight: 42 },
 } as const
 
