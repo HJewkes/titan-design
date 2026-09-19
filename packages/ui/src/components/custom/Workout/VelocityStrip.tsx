@@ -324,7 +324,7 @@ const FLOAT_NOISE = 1e9
  * loss against a 13.3% threshold takes the higher band, as the consumer's own
  * unrounded check does. Only floating-point noise is removed (`1.0 − 0.9` is
  * `0.0999…998`), so a rep that lands exactly on a threshold takes the higher band.
- * Round only what you display. Feeds `barColor="loss"` bar coloring on the hero, the
+ * Show it through {@link shownVelocityLoss}. Feeds `barColor="loss"` bar coloring on the hero, the
  * dual strips and PinnedLiveStrip; {@link calculateVelocityLoss} is its rounded,
  * last-rep-vs-best summary.
  */
@@ -332,6 +332,14 @@ export function velocityLossForRep(velocity: number, best: number): number {
   if (!(best > 0)) return 0
   const loss = ((best - velocity) / best) * 100
   return Math.max(0, Math.round(loss * FLOAT_NOISE) / FLOAT_NOISE)
+}
+
+/**
+ * A loss as a whole percent to show beside its colour: rounded DOWN, so the number never reads
+ * at or past a threshold the colour (banded on the exact loss) has not reached. 19.96 reads 19.
+ */
+export function shownVelocityLoss(lossPct: number): number {
+  return Math.floor(lossPct)
 }
 
 /** Classify a velocity into its band (slow → fast, min inclusive / max exclusive). */
@@ -1267,9 +1275,9 @@ export function VelocityStrip({
 
   const maxVelocity = Math.max(...doneVelocities, 0)
   const meanVelocity = calculateMeanVelocity(doneVelocities)
-  const loss = calculateVelocityLoss(doneVelocities)
-  // The text shows the rounded loss; its colour bands the exact one, like the last bar.
+  // The colour bands the last rep's exact loss, like its bar; the number is that loss rounded down.
   const lastLoss = velocityLossForRep(doneVelocities[doneVelocities.length - 1] ?? 0, maxVelocity)
+  const loss = shownVelocityLoss(lastLoss)
 
   // The framed chart (raised box, labels, info) vs the bare spotlight strip is the
   // only fork in the `expanded` variant — keyed by whether any chrome is requested.

@@ -16,9 +16,14 @@ project adheres to [Semantic Versioning](https://semver.org/).
   the consumer's unrounded check does; 0.20.0 banded it as 13 and read yellow. A
   loss equal to a threshold takes the higher band. **Bars within half a percent
   of a band edge can change colour against 0.20.0.** `velocityLossForRep` now
-  returns the unrounded loss; round it yourself where you display it.
-  `calculateVelocityLoss` still returns a whole percent, and the "Loss" text
-  still shows one, but its colour follows the exact loss.
+  returns the unrounded loss. The rule on every surface: **colour follows the
+  exact loss; the number shown is the exact loss rounded down**
+  (`shownVelocityLoss`), so a number never reads at or past a threshold the
+  colour has not reached. With thresholds `[6.7, 13.3, 20]`, a 19.96 percent
+  loss reads "Loss: 19%" beside an orange bar, and 20.0 reads "20%" beside a
+  red one. `VelocityStrip`'s "Loss" text and `PinnedLiveStrip`'s accessible
+  name can therefore read one percent lower than 0.20.0, which rounded.
+  `calculateVelocityLoss` is unchanged and still rounds.
 - `PinnedLiveStrip` without `onPress` is no longer a link: it has no link role,
   no "Back to live" button and no chevron, and reads as a labelled status region
   (`accessibilityRole="summary"`, a `region` on the web). Its accessible name
@@ -43,7 +48,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
   reads "4" rather than "4/0", and names "4 reps".
 - `PinnedLiveStrip`'s accessible name now carries what the strip shows only in
   colour: it opens with the state ("Live set" or "Resting") and ends with the
-  last rep's velocity, its loss from the set's best as a whole percent, and
+  last rep's velocity, its loss from the set's best (rounded down), and
   "fatigued" when the strip shows fatigue. The visible text is unchanged.
 - `PinnedLiveStrip` without a `layout` prop no longer paints the wall form for
   one frame on a phone. It keeps its measuring frame mounted and draws nothing

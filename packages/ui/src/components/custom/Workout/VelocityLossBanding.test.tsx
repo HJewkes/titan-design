@@ -7,7 +7,12 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { DualVelocityStrip, VelocityStrip, velocityLossForRep } from './VelocityStrip'
+import {
+  DualVelocityStrip,
+  VelocityStrip,
+  shownVelocityLoss,
+  velocityLossForRep,
+} from './VelocityStrip'
 
 const THRESHOLDS = [6.7, 13.3, 20] as const
 
@@ -38,6 +43,17 @@ describe('velocityLossForRep', () => {
   it('reads a non-positive or non-finite best as no loss', () => {
     expect(velocityLossForRep(0.5, 0)).toBe(0)
     expect(velocityLossForRep(0.5, Number.NaN)).toBe(0)
+  })
+})
+
+describe('shownVelocityLoss', () => {
+  it.each([
+    [19.96, 19],
+    [20, 20],
+    [13.33, 13],
+    [0, 0],
+  ])('shows %f as %i', (exact, shown) => {
+    expect(shownVelocityLoss(exact)).toBe(shown)
   })
 })
 
@@ -82,9 +98,15 @@ describe('the dual strips', () => {
 })
 
 describe('the loss text', () => {
-  it('shows the rounded loss and colours it by the exact one', () => {
-    render(<VelocityStrip velocities={[1.0, 0.8004]} lossThresholds={THRESHOLDS} />)
-    expect(screen.getByText('Loss: 20%')).toHaveStyle({ color: HEX[2] })
+  // Colour follows the exact loss; the number is that loss rounded down, never up to a threshold.
+  it.each([
+    [0.8004, '19.96', 'Loss: 19%', 2],
+    [0.8, '20.0', 'Loss: 20%', 3],
+    [0.8667, '13.33', 'Loss: 13%', 2],
+  ])('reads %f (%s percent) as "%s" in band %i', (last, _exact, text, band) => {
+    render(<VelocityStrip velocities={[1.0, last]} lossThresholds={THRESHOLDS} />)
+    expect(screen.getByText(text)).toHaveStyle({ color: HEX[band] })
+    expect(screen.getByTestId('velocity-bar-1')).toHaveStyle({ backgroundColor: HEX[band] })
   })
 
   it('has no accessibility violations', async () => {
