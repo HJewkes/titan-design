@@ -44,7 +44,7 @@ function PageSection({ title, children }: { title: string; children: ReactNode }
   )
 }
 
-/** Cards no narrower than 420px, one column on a phone. */
+/** Cards no narrower than 420px, one column on a phone. Each cell shrinks below 420 so a phone never clips it (VW-454). */
 function CardGrid({ children }: { children: ReactNode }) {
   return (
     <View style={{ flexDirection: 'row', flexWrap: 'wrap' }} className="gap-stack-md">
@@ -66,7 +66,10 @@ function GoalsPage({ withPriorityIndex, wholeBody }: GoalsPageProps) {
       <PageSection title="Per-lift">
         <CardGrid>
           {PER_LIFT.map((card) => (
-            <View key={card.title} style={{ flexGrow: 1, flexBasis: 420, minWidth: 0 }}>
+            <View
+              key={card.title}
+              style={{ flexGrow: 1, flexShrink: 1, flexBasis: 420, minWidth: 0 }}
+            >
               <GoalCard {...card} />
             </View>
           ))}

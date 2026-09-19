@@ -59,7 +59,13 @@ export function GoalPriorityIndex({ priorities, className, ...props }: GoalPrior
       {groups.map((group) => (
         <View
           key={group.level}
-          style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}
+          style={{
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            flexShrink: 1,
+            minWidth: 0,
+          }}
           className="gap-inline-sm"
           testID="goal-priority-index-group"
         >
@@ -67,7 +73,9 @@ export function GoalPriorityIndex({ priorities, className, ...props }: GoalPrior
           <Typography variant="overline" color="tertiary">
             {GOAL_PRIORITY_LABEL[group.level]}
           </Typography>
-          <Typography variant="body2">{group.names.join(', ')}</Typography>
+          <View style={{ flexShrink: 1, minWidth: 0 }}>
+            <Typography variant="body2">{group.names.join(', ')}</Typography>
+          </View>
         </View>
       ))}
     </View>
