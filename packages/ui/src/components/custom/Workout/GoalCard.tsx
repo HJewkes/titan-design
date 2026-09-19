@@ -360,19 +360,9 @@ function StatusAffordance({
 }
 
 /**
- * One title row for both sizes (VW-385 round 5, human: "make the title
- * consistent between the primary goal card and goal card"): the lift on the
- * left, then priority, PR and the status badge furthest right.
- *
- * At phone width the marks never cost the name its letters (VW-432): when the
- * name and the marks do not fit one row, the row wraps and the marks drop to a
- * left-aligned line under the name; only a name wider than the whole card
- * breaks onto a second line. It is pure flex wrap, so web and native agree.
- */
-/**
- * The name wraps and is never truncated (VW-432). This only guards against pasted garbage: one
- * unbroken token breaks inside the card instead of pushing past its edge (native Text already does),
- * and a clamp no real exercise name reaches stops a runaway string growing the card without end.
+ * Guards against pasted garbage, which no real exercise name reaches: one unbroken token breaks
+ * inside the card instead of pushing past its edge (native Text already does), and a four-line
+ * clamp stops a runaway string growing the card without end.
  */
 const GOAL_CARD_TITLE_MAX_LINES = 4
 
@@ -384,6 +374,16 @@ const TITLE_GUARD = {
   }),
 }
 
+/**
+ * One title row for both sizes (VW-385 round 5, human: "make the title
+ * consistent between the primary goal card and goal card"): the lift on the
+ * left, then priority, PR and the status badge furthest right.
+ *
+ * At phone width the marks never cost the name its letters (VW-432): when the
+ * name and the marks do not fit one row, the row wraps and the marks drop to a
+ * left-aligned line under the name; only a name wider than the whole card
+ * breaks onto a second line. It is pure flex wrap, so web and native agree.
+ */
 function TitleRow({
   title,
   size,

@@ -42,7 +42,8 @@ function compactCard(title: string): GoalCardProps {
  * VW-432 — the title row at phone width. Order of preference: the name beside
  * the priority mark, PR star and status badge on one row; if that does not fit,
  * the marks drop to a left-aligned line under the name; only a name wider than
- * the card itself wraps. The name never truncates, in either size.
+ * the card itself wraps. In either size a real exercise name wraps whole and
+ * never reaches the four-line guard below.
  *
  * The `Pasted` stories are the functional review's guard, not a design: one
  * unbroken token breaks inside the card, and a four-line clamp no real exercise
