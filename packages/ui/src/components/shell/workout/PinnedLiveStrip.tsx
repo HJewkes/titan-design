@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { memo, useState, type ReactNode } from 'react'
+import { memo, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import {
   View,
   Text,
@@ -515,17 +515,33 @@ function Plane(parts: Parts) {
   )
 }
 
+// Server rendering has no layout to read, and React 18 warns on a server-side useLayoutEffect.
+const useLayoutEffectOnClient = typeof window === 'undefined' ? useEffect : useLayoutEffect
+
+const layoutFor = (width: number): PinnedLiveStripLayout =>
+  width < PINNED_LIVE_STRIP_PHONE_MAX ? 'phone' : 'wall'
+
 /**
  * The forced layout, else the measured one; null until the first measurement, so the strip never
- * paints the wall form for a frame on a phone. On React Native that first frame is empty rather
- * than wrong, and `onLayout` fires on the next. Server-rendered HTML carries only the empty frame,
- * because layout needs a browser: the strip appears once the client has measured it.
+ * paints the wall form for a frame on a phone. On the web the frame is measured before the first
+ * paint, and `onLayout` (which react-native-web defers to a timer) follows resizes. On React
+ * Native the first frame is empty rather than wrong, and `onLayout` fires on the next.
+ * Server-rendered HTML carries only the empty frame: the strip appears once the client measures it.
  */
 function useStripLayout(forced?: PinnedLiveStripLayout) {
+  const ref = useRef<View>(null)
   const [measured, setMeasured] = useState<PinnedLiveStripLayout | null>(null)
-  const onLayout = (e: LayoutChangeEvent) =>
-    setMeasured(e.nativeEvent.layout.width < PINNED_LIVE_STRIP_PHONE_MAX ? 'phone' : 'wall')
-  return { layout: forced ?? measured, onLayout }
+  // A zero width is a frame not laid out yet (jsdom, display: none), not a phone.
+  const measure = (width: number) => {
+    if (width > 0) setMeasured(layoutFor(width))
+  }
+  useLayoutEffectOnClient(() => {
+    if (Platform.OS !== 'web' || forced || measured) return
+    const node = ref.current as unknown as HTMLElement | null
+    measure(node?.getBoundingClientRect().width ?? 0)
+  })
+  const onLayout = (e: LayoutChangeEvent) => measure(e.nativeEvent.layout.width)
+  return { layout: forced ?? measured, onLayout, ref }
 }
 
 /**
@@ -536,7 +552,7 @@ function useStripLayout(forced?: PinnedLiveStripLayout) {
  */
 export function PinnedLiveStrip(props: PinnedLiveStripProps) {
   const { state, isFatigued = false, onPress, className } = props
-  const { layout, onLayout } = useStripLayout(props.layout)
+  const { layout, onLayout, ref } = useStripLayout(props.layout)
   if (state === 'idle') return null
   const tone = toneOf(state, isFatigued)
   const parts: Parts = {
@@ -548,6 +564,7 @@ export function PinnedLiveStrip(props: PinnedLiveStripProps) {
     tone,
   }
   const frame = {
+    ref,
     accessibilityLabel: accessibleName(parts),
     onLayout,
     testID: 'pinned-live-strip',
