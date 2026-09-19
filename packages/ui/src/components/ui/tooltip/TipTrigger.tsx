@@ -1,5 +1,13 @@
-import { useState, type ReactNode } from 'react'
-import { Pressable, type StyleProp, type ViewStyle } from 'react-native'
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type ReactNode,
+  type RefObject,
+} from 'react'
+import { Platform, Pressable, View, type StyleProp, type ViewStyle } from 'react-native'
 
 import { Tooltip, type TooltipPlacement } from './Tooltip'
 
@@ -23,10 +31,32 @@ export interface TipTriggerProps {
   children: ReactNode
 }
 
+/** On the web, close an open tip on Escape and on a press outside its trigger. */
+function useDismissOnWeb(open: boolean, close: () => void, trigger: RefObject<View | null>) {
+  useEffect(() => {
+    if (!open || Platform.OS !== 'web' || typeof document === 'undefined') return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close()
+    }
+    const onPointer = (e: PointerEvent) => {
+      const node = trigger.current as unknown as Node | null
+      if (node && !node.contains(e.target as Node)) close()
+    }
+    document.addEventListener('keydown', onKey)
+    document.addEventListener('pointerdown', onPointer)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.removeEventListener('pointerdown', onPointer)
+    }
+  }, [open, close, trigger])
+}
+
 /**
  * One tip that opens on hover (web), focus (keyboard) and press (native) — the
  * three affordances share a single open state, because RNW ends a wrapper's
- * hover the moment a nested Pressable claims the pointer.
+ * hover the moment a nested Pressable claims the pointer. On the web it also
+ * closes on Escape and on a press outside the trigger, and the open tip
+ * describes the trigger for screen readers.
  *
  * @example
  * <TipTrigger label="Goal status: behind" content={<Basis />}>
@@ -44,17 +74,23 @@ export function TipTrigger({
   children,
 }: TipTriggerProps) {
   const [open, setOpen] = useState(false)
+  const trigger = useRef<View>(null)
+  const tipId = `tip-${useId().replace(/[^a-zA-Z0-9]/g, '')}`
+  const close = useCallback(() => setOpen(false), [])
+  useDismissOnWeb(open, close, trigger)
   return (
     <Tooltip
       isOpen={open}
       placement={placement}
       usePortal={usePortal}
       style={style}
-      content={content}
+      content={<View nativeID={tipId}>{content}</View>}
     >
       <Pressable
+        ref={trigger}
         accessibilityRole="button"
         accessibilityLabel={label}
+        aria-describedby={open ? tipId : undefined}
         onHoverIn={() => setOpen(true)}
         onHoverOut={() => setOpen(false)}
         onFocus={() => setOpen(true)}

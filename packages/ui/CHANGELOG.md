@@ -36,6 +36,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
   move to a caption under the plot, and a note longer than two caption lines
   ends in an ellipsis. An empty or blank `calibratingNote` falls back to "No band
   yet". The default note on an early-block goal renders as in 0.20.0.
+- `TipTrigger` (and every tip built on it: the goal card's status and priority
+  tips, the week strip, the chart's next-target tip) now also closes on Escape
+  and on a press outside its trigger on the web, and the open tip is the
+  trigger's accessible description (`aria-describedby`).
 
 ### Fixed
 

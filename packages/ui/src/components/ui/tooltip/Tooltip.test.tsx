@@ -342,6 +342,31 @@ describe('TipTrigger', () => {
     expect(screen.queryByText('Under the band')).toBeNull()
   })
 
+  it('closes on Escape', () => {
+    renderTip()
+    fireEvent.focus(screen.getByTestId('tip'))
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(screen.queryByText('Under the band')).toBeNull()
+  })
+
+  it('closes on a press outside the trigger, not on one inside it', () => {
+    renderTip()
+    const trigger = screen.getByTestId('tip')
+    fireEvent.focus(trigger)
+    fireEvent.pointerDown(trigger)
+    expect(screen.getByText('Under the band')).toBeInTheDocument()
+    fireEvent.pointerDown(document.body)
+    expect(screen.queryByText('Under the band')).toBeNull()
+  })
+
+  it("names the open tip as the trigger's description", () => {
+    renderTip()
+    const trigger = screen.getByTestId('tip')
+    expect(trigger).not.toHaveAttribute('aria-describedby')
+    fireEvent.focus(trigger)
+    expect(trigger).toHaveAccessibleDescription('Under the band')
+  })
+
   it('has no accessibility violations', async () => {
     const { container } = renderTip()
     expect(await axe(container)).toHaveNoViolations()
