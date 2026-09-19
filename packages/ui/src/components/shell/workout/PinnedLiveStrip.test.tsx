@@ -31,8 +31,44 @@ describe('PinnedLiveStrip', () => {
       const onPress = vi.fn()
       render(<PinnedLiveStrip {...S.set} layout="wall" onPress={onPress} />)
       expect(screen.getByText('Back to live')).toBeInTheDocument()
-      fireEvent.click(screen.getByRole('link', { name: /Back to live: Cable Chest Press/ }))
+      fireEvent.click(
+        screen.getByRole('link', { name: /^Back to live: Live set, Cable Chest Press/ })
+      )
       expect(onPress).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('accessible name', () => {
+    const nameOf = () => screen.getByTestId('pinned-live-strip').getAttribute('aria-label')
+
+    it('says the state, set, reps, last rep velocity and its loss from the best', () => {
+      render(<PinnedLiveStrip {...S.set} layout="wall" onPress={vi.fn()} />)
+      expect(nameOf()).toBe(
+        'Back to live: Live set, Cable Chest Press, Set 2 of 3 · 140 lb, 5 of 8 reps, ' +
+          'last rep 0.74 m/s, 12% loss from best'
+      )
+    })
+
+    it('says "fatigued" when the strip shows fatigue, which it never writes', () => {
+      render(<PinnedLiveStrip {...S.fatigue} layout="wall" />)
+      expect(nameOf()).toBe(
+        'Live set, Cable Chest Press, Set 2 of 3 · 140 lb, 6 of 8 reps, ' +
+          'last rep 0.55 m/s, 35% loss from best, fatigued'
+      )
+      expect(screen.queryByText(/fatigue/i)).toBeNull()
+    })
+
+    it("says the rest seconds and the finished set's last rep in rest", () => {
+      render(<PinnedLiveStrip {...S.rest} layout="phone" />)
+      expect(nameOf()).toBe(
+        'Resting, Cable Chest Press, Next: set 3 of 3 · 140 lb, 47 seconds rest left, ' +
+          'last rep 0.71 m/s, 17% loss from best'
+      )
+    })
+
+    it('leaves the last rep out before the first rep', () => {
+      render(<PinnedLiveStrip {...S.set} reps={[]} layout="wall" />)
+      expect(nameOf()).toBe('Live set, Cable Chest Press, Set 2 of 3 · 140 lb, 0 of 8 reps')
     })
   })
 
@@ -46,7 +82,9 @@ describe('PinnedLiveStrip', () => {
         expect(screen.queryByText('Back to live')).toBeNull()
         expect(screen.getByTestId('pinned-live-strip').querySelector('svg')).toBeNull()
         const region = screen.getByRole('region')
-        expect(region.getAttribute('aria-label')).toMatch(/^Cable Chest Press, Set 2 of 3/)
+        expect(region.getAttribute('aria-label')).toMatch(
+          /^Live set, Cable Chest Press, Set 2 of 3/
+        )
       }
     )
 
@@ -55,7 +93,9 @@ describe('PinnedLiveStrip', () => {
       (layout) => {
         render(<PinnedLiveStrip {...S.set} layout={layout} onPress={vi.fn()} />)
         expect(screen.queryByRole('region')).toBeNull()
-        const link = screen.getByRole('link', { name: /^Back to live: Cable Chest Press/ })
+        const link = screen.getByRole('link', {
+          name: /^Back to live: Live set, Cable Chest Press/,
+        })
         expect(link.querySelector('svg')).toBeInTheDocument()
       }
     )
