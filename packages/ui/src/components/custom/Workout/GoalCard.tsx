@@ -288,7 +288,7 @@ function weekAxisFor(goal: GoalCardChart, width: number): GoalMilestoneWeekAxis 
     actuals: goal.actuals,
     ...(goal.nextTarget ? { nextTarget: goal.nextTarget } : {}),
     width,
-    insets: trajectoryInsets(goal.yAxisLabels ?? true),
+    insets: trajectoryInsets(goal.yAxisLabels ?? false),
   })
   return { x: scale.toX, span: scale.span, left: scale.plot.left, right: scale.plot.right }
 }

@@ -31,7 +31,7 @@ import {
   resolveCalibratingNote,
 } from './GoalTrajectoryCalibrating'
 import { hitBoxAround, useHitTargetSize, type HitBox } from './goalTrajectoryTargets'
-import { ruleLabelSpecs, type RuleLabelText } from './goalTrajectoryRuleLabels'
+import { gridLabelSpecs, ruleLabelSpecs, type RuleLabelText } from './goalTrajectoryRuleLabels'
 import type { BandFade } from './GoalTrajectoryBand'
 import type { BandCurve } from './GoalTrajectoryChartGeometry'
 import type { PlotBaseline } from './GoalTrajectoryPlot'
@@ -180,14 +180,15 @@ export interface GoalTrajectoryChartProps extends ViewProps {
    */
   calibratingNote?: string
   /**
-   * The y-axis value labels. Default on. Off, the plot takes back their gutter; a
-   * GoalCard lines its week cells up with the plot either way.
+   * The y-axis value labels outside the plot. Default off (titan-0201 round 3): each
+   * gridline carries its value inside the plot instead, and the plot takes back the
+   * gutter. A GoalCard lines its week cells up with the plot either way.
    */
   yAxisLabels?: boolean
   /**
-   * The committed and stretch labels: `named` ("Committed 185", the default),
-   * `numeric` ("185", placed clear of the readings and tip targets) or `none`. The
-   * accessible name keeps the words in every case.
+   * The committed and stretch labels: `numeric` ("185", the default since titan-0201
+   * round 3, placed clear of the readings and tip targets), `named` ("Committed 185")
+   * or `none`. The accessible name keeps the words in every case.
    */
   ruleLabelText?: RuleLabelText
   className?: string
@@ -281,8 +282,8 @@ export function GoalTrajectoryChart({
   bandCurve = 'monotone',
   referenceLabelSide = 'left',
   calibratingNote,
-  yAxisLabels = true,
-  ruleLabelText = 'named',
+  yAxisLabels = false,
+  ruleLabelText = 'numeric',
   className,
   ...props
 }: GoalTrajectoryChartProps) {
@@ -350,6 +351,14 @@ export function GoalTrajectoryChart({
     side: referenceLabelSide,
     boxes: [nextTargetBox, marks?.target].filter((b): b is HitBox => b != null),
   })
+  const gridLabels = yAxisLabels
+    ? []
+    : gridLabelSpecs({
+        geometry,
+        ruleLabels,
+        ruleValues: ruleLabelText === 'none' ? [] : [committed, stretch],
+        boxes: [nextTargetBox, marks?.target].filter((b): b is HitBox => b != null),
+      })
   // A target hung under the plot may reach past the canvas; the chart grows to hold it.
   const overhang = marks ? Math.max(0, marks.target.y + marks.target.size - height) : 0
   const label =
@@ -388,6 +397,7 @@ export function GoalTrajectoryChart({
           width={width}
           height={height}
           ruleLabels={ruleLabels}
+          gridLabels={gridLabels}
           weeks={showWeekLabels ? axisWeeks : []}
           weekStride={Math.max(1, Math.ceil(axisWeeks.length / density.maxWeekLabels))}
           showYLabels={density.showYLabels && yAxisLabels}

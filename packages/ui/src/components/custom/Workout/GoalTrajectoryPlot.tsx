@@ -100,6 +100,8 @@ export function trajectoryPalette(
     lip: alpha(primitiveColors.white, LIFT_RIM_ALPHA[mode]),
     rule: t['text-secondary'],
     grid: alpha(t['text-primary'], 0.12),
+    // The gridline's own hue, stronger than the 12% line so its value still reads.
+    gridLabel: alpha(t['text-primary'], 0.3),
     axis: t['text-tertiary'],
     star: t['status-warning'],
     deload: alpha(t['text-primary'], 0.05),
@@ -356,8 +358,8 @@ export function ruleLabelX(
   return side === 'left' ? plot.left + LEFT_LABEL_INSET : plot.right
 }
 
-/** The committed and stretch labels, laid out by `ruleLabelSpecs`. */
-function RuleLabels({ palette, labels }: { palette: TrajectoryPalette; labels: RuleLabelSpec[] }) {
+/** Text marks laid out by `ruleLabelSpecs` or `gridLabelSpecs`, in one fill. */
+function PlacedLabels({ fill, labels }: { fill: string; labels: RuleLabelSpec[] }) {
   return (
     <>
       {labels.map((label) => (
@@ -366,7 +368,7 @@ function RuleLabels({ palette, labels }: { palette: TrajectoryPalette; labels: R
           data-testid={`goal-trajectory-chart-${label.id}`}
           x={label.x}
           y={label.y}
-          fill={palette.rule}
+          fill={fill}
           fontSize={CHART_FONT}
           fontFamily={FONT_FAMILY}
           textAnchor={label.anchor}
@@ -521,6 +523,8 @@ export interface GoalTrajectoryPlotProps extends LayerProps {
   height: number
   /** The committed and stretch labels, from `ruleLabelSpecs`. */
   ruleLabels: RuleLabelSpec[]
+  /** In-plot gridline values, from `gridLabelSpecs`; empty when the y axis is shown. */
+  gridLabels: RuleLabelSpec[]
   weeks: GoalTrajectoryWeek[]
   weekStride: number
   showYLabels: boolean
@@ -574,7 +578,8 @@ export function GoalTrajectoryPlot(props: GoalTrajectoryPlotProps) {
         <rect data-testid="goal-trajectory-chart-inner-left" {...box} fill={`url(#${ids.left})`} />
         {style.baseline === 'lip' && <PlaneLip {...layer} />}
       </g>
-      <RuleLabels palette={palette} labels={props.ruleLabels} />
+      <PlacedLabels fill={palette.gridLabel} labels={props.gridLabels} />
+      <PlacedLabels fill={palette.rule} labels={props.ruleLabels} />
       <WeekAxis {...layer} weeks={props.weeks} stride={props.weekStride} />
     </svg>
   )

@@ -61,8 +61,9 @@ function LabelCards({ yAxisLabels, ruleLabelText }: LabelArgs) {
  * color as the lines themselves" and "Lets drop the literal committed / stretch text
  * and just show the numeric labels".
  *
- * Four options, each on a normal block, a slow block whose rules nearly meet, and a
- * hold whose rules coincide. Numeric labels sit in the rule's colour inside the
+ * CHOSEN in round 3 for every width: NoAxisNumeric, now the default, with each
+ * gridline's value inside the plot as well. The others remain for comparison, each on
+ * a normal block, a slow block whose rules nearly meet, and a hold whose rules coincide. Numeric labels sit in the rule's colour inside the
  * plot and move off any reading, the next-target tip and each other. The chart's
  * accessible name keeps the words "committed" and "stretch" in every option.
  */

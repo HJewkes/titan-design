@@ -9,14 +9,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- `GoalTrajectoryChart` `yAxisLabels` (default on) and `ruleLabelText`
-  (`named`, the default; `numeric`; `none`), also reachable through a
-  `GoalCard`'s `goal`. Without the y axis the plot takes back the label gutter,
-  and a `GoalCard` keeps its week cells on the plot's columns. `numeric` shows
-  the committed and stretch values alone, in the rule's colour inside the plot,
-  and moves each off the readings, the tip targets and the other label. The
-  accessible name keeps the words. Defaults are unchanged, pending the owner's
-  pick in titan-0201 round 3.
+- `GoalTrajectoryChart` `yAxisLabels` and `ruleLabelText` (`numeric`, `named`,
+  `none`), also reachable through a `GoalCard`'s `goal`, to bring back the 0.21.0
+  axis (`yAxisLabels`) and words (`ruleLabelText="named"`).
 - `GoalMilestoneSummary` `heroLeading` (`default`; `tight`), reachable through
   `GoalCard`'s `milestone` and `GoalMilestoneTile`. `tight` sets the hero
   numeral's line height to its font size, taking the empty leading above the
@@ -28,6 +23,16 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- `GoalTrajectoryChart` (and every `GoalCard` and `PrimaryGoalCard` chart) drops
+  the y-axis value labels by default and takes back their gutter: each gridline
+  carries its value inside the plot, in the gridline's own hue (text at 30% where
+  the line is 12%). The committed and stretch labels show their values alone
+  ("185", not "Committed 185") in the rule's colour. Every in-plot number is placed
+  clear of the readings, the tip targets and the other numbers; a gridline number
+  at a committed or stretch value, or with no clear spot, is left out. The
+  accessible name is unchanged and keeps the words. A `GoalCard`'s week cells
+  follow the wider plot. **Consumers will see a visual change** on every goal
+  chart.
 - Loss-coloured bars band on the exact loss from the set's best, not on the loss
   rounded to a whole percent. This applies to `VelocityStrip` (every variant),
   `DualVelocityStrip` and `PinnedLiveStrip`, which share `velocityLossForRep`.

@@ -19,7 +19,12 @@ import {
   type GeometryPoint,
   type GoalTrajectoryGeometry,
 } from './GoalTrajectoryChartGeometry'
-import { numericLabelWidth, ruleLabelSpecs, type RuleLabelSpec } from './goalTrajectoryRuleLabels'
+import {
+  gridLabelSpecs,
+  numericLabelWidth,
+  ruleLabelSpecs,
+  type RuleLabelSpec,
+} from './goalTrajectoryRuleLabels'
 import type { HitBox } from './goalTrajectoryTargets'
 import { PRIMARY_GOAL_SCENARIOS as S } from './primaryGoal-fixture'
 
@@ -224,5 +229,130 @@ describe('the chart without its y axis', () => {
       />
     )
     expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+describe('gridline numbers inside the plot', () => {
+  function place(extra: object, size = SIZES[1], boxes: HitBox[] = []) {
+    const g = geometryFor(extra, size)
+    const { committed, stretch } = { committed: 185, stretch: 195, ...extra } as {
+      committed: number
+      stretch: number
+    }
+    const rules = ruleLabelSpecs({
+      geometry: g,
+      committed,
+      stretch,
+      text: 'numeric',
+      side: 'left',
+      boxes,
+    })
+    const grid = gridLabelSpecs({
+      geometry: g,
+      ruleLabels: rules,
+      ruleValues: [committed, stretch],
+      boxes,
+    })
+    return { g, rules, grid }
+  }
+
+  it('drop a gridline at a committed or stretch value, which its rule label already says', () => {
+    const { g, grid } = place({})
+    expect(g.yTicks.map((t) => t.value)).toContain(185)
+    expect(grid.map((l) => l.text)).not.toContain('185')
+    expect(grid.map((l) => l.text)).not.toContain('195')
+  })
+
+  describe.each(SIZES)('at $width', (size) => {
+    it.each([
+      ['far apart', 185, 195],
+      ['close', 185, 186],
+      ['equal', 185, 185],
+    ])(
+      'sit inside the plot and clear the readings, rule labels and each other (%s)',
+      (_, committed, stretch) => {
+        for (const value of [172, 175, 180, 185]) {
+          const actuals = [
+            { weekIndex: 1, value },
+            { weekIndex: 2, value: committed },
+          ]
+          const { g, rules, grid } = place({ committed, stretch, actuals }, size)
+          assertClear(g, grid, [])
+          const all = [...rules, ...grid].map(rectOf)
+          for (let i = 0; i < all.length; i++) {
+            const r = all[i]
+            if (i >= rules.length) {
+              expect(r.left).toBeGreaterThanOrEqual(g.plot.left)
+              expect(r.right).toBeLessThanOrEqual(g.plot.right)
+              expect(r.top).toBeGreaterThanOrEqual(g.plot.top)
+              expect(r.bottom).toBeLessThanOrEqual(g.plot.bottom)
+            }
+            for (let j = i + 1; j < all.length; j++) {
+              const o = all[j]
+              const apart =
+                r.right <= o.left || o.right <= r.left || r.bottom <= o.top || o.bottom <= r.top
+              expect(apart).toBe(true)
+            }
+          }
+        }
+      }
+    )
+  })
+
+  it('move off a rule label sitting where the number would go', () => {
+    const { g } = place({})
+    const tick = g.yTicks.find((t) => t.value !== 185 && t.value !== 195)!
+    const first = gridLabelSpecs({ geometry: g, ruleLabels: [], ruleValues: [] }).find(
+      (l) => l.text === String(tick.value)
+    )!
+    const blocker: RuleLabelSpec = { ...first, id: 'committed-label', text: '888' }
+    const moved = gridLabelSpecs({ geometry: g, ruleLabels: [blocker], ruleValues: [] }).find(
+      (l) => l.text === String(tick.value)
+    )
+    if (moved) {
+      const [a, b] = [rectOf(moved), rectOf(blocker)]
+      expect(a.right <= b.left || b.right <= a.left || a.bottom <= b.top || b.bottom <= a.top).toBe(
+        true
+      )
+    }
+  })
+
+  it('keep two crowded gridline numbers apart', () => {
+    const base = geometryFor({})
+    const y = (base.plot.top + base.plot.bottom) / 2
+    const g = {
+      ...base,
+      actuals: [],
+      nextTarget: null,
+      yTicks: [
+        { value: 180, y },
+        { value: 181, y: y + 2 },
+      ],
+    }
+    const grid = gridLabelSpecs({ geometry: g, ruleLabels: [], ruleValues: [] })
+    expect(grid).toHaveLength(2)
+    const [a, b] = grid.map(rectOf)
+    expect(a.right <= b.left || b.right <= a.left || a.bottom <= b.top || b.bottom <= a.top).toBe(
+      true
+    )
+  })
+
+  it('drop a number with no clear spot rather than cover a tip target', () => {
+    const { g } = place({})
+    const wall = { x: g.plot.left, y: g.plot.top, size: g.plot.right - g.plot.left }
+    const grid = gridLabelSpecs({ geometry: g, ruleLabels: [], ruleValues: [], boxes: [wall] })
+    expect(grid).toEqual([])
+  })
+
+  it('are drawn by default in the gridline hue, and not with the y axis', () => {
+    const { unmount } = render(
+      <GoalTrajectoryChart {...GOAL} width={360} height={220} status="on_track" />
+    )
+    const labels = screen.getAllByTestId(/^goal-trajectory-chart-grid-label-/)
+    expect(labels.length).toBeGreaterThan(0)
+    expect(labels[0].getAttribute('fill')).toMatch(/rgba\(.*0\.3\)/)
+    unmount()
+    render(<GoalTrajectoryChart {...GOAL} width={360} height={220} status="on_track" yAxisLabels />)
+    expect(screen.queryAllByTestId(/^goal-trajectory-chart-grid-label-/)).toHaveLength(0)
   })
 })
