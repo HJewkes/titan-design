@@ -17,7 +17,7 @@ come from [`src/arch/arch-graph.json`](../../../arch/arch-graph.json).
 | ----------------- | ------ | ----------------------------------------------- | ------------------------------------------------------ | ------------ |
 | `SparkBars`       | atom   | `resolveColor`, `cn`                            | FileActivityDetail, FileActivityRow (ActiveWork)       | yes          |
 | `SetBarChart`     | atom   | `barPaper`, `SurfaceContext`, `live-rep-growth` | RomProgressionChart (Fatigue), VelocityStrip (Workout) | no — by path |
-| `live-rep-growth` | hook   | `Animated`, `Easing`                            | SetBarChart, VelocityStrip                             | no — by path |
+| `live-rep-growth` | hook   | `Animated`, `Easing`, `usePrefersReducedMotion` | SetBarChart, VelocityStrip                             | no — by path |
 | `flatBarGeometry` | module | —                                               | SegmentedBar (Workout), SetBarChart                    | no — by path |
 
 `SetBarChart` and `live-rep-growth` are deliberately absent from `index.ts`: they
@@ -40,7 +40,8 @@ as a series, and `maxBars` because a sparkline is a recent-history glance.
 
 **`live-rep-growth`** is the newest-rep entrance, promoted out of `VelocityStrip`
 so every value-height family animates the live rep identically. It carries the
-12% `PEAK_OVERSHOOT` for a new-peak bar and honours `prefers-reduced-motion`.
+12% `PEAK_OVERSHOOT` for a new-peak bar and honours `prefers-reduced-motion` through
+`usePrefersReducedMotion` from [`src/hooks`](../../../hooks/usePrefersReducedMotion.ts).
 
 **`flatBarGeometry`** is the single source for the default height/gap/radius
 `SegmentedBar` (set-level) and `SetBarChart` (rep-level) each declare, documented
@@ -103,7 +104,7 @@ differ, so the older chart's choices are not copied by accident.
 | Marks           | One DOM `<svg>` in `GoalTrajectoryPlot.tsx` that only paints paths from the geometry.                                                                                                                                    | React Native `View`s: each segment is a rotated `View`, revealed by an `Animated.View` width.                                                                        |
 | Colour          | Resolved at render time from the nearest `Surface`: `useSurface()` feeds `trajectoryPalette(mode, level, status)`, which reads `getSemanticColors(mode)` and makes washes with `alpha()`.                                | Dark palette frozen at module scope (`getSemanticColors('dark')`). It is grandfathered in `eslint-rules/frozen-theme-baseline.json`; do not copy it.                 |
 | Responsive      | Above `WALL_BREAKPOINT` (720 px) a `DENSITY` table raises stroke width, star size, gridline count and the week-label budget.                                                                                             | None; width only stretches the x axis.                                                                                                                               |
-| Motion          | `useTrajectoryEntrance` honours `prefers-reduced-motion` through `usePrefersReducedMotion` from `live-rep-growth`.                                                                                                       | `Animated.timing` for 600 ms, with no reduced-motion check.                                                                                                          |
+| Motion          | `useTrajectoryEntrance` honours `prefers-reduced-motion` through `usePrefersReducedMotion` from `src/hooks`.                                                                                                             | `Animated.timing` for 600 ms, with no reduced-motion check.                                                                                                          |
 | Degenerate data | Non-finite values are dropped. A band needs at least two slices; a band thinner than `BAND_MIN_THICKNESS` is flagged `bandIsDegenerate`. `GoalTrajectoryDegenerate.test.tsx` covers committed equal to stretch (VW-414). | Empty when `data` is empty, even if a projection exists. A single timestamp widens the x domain by 1 ms; a flat series uses `max(1, 10% of the value)` as its range. |
 | Interaction     | The next-target marker opens a `TipTrigger`.                                                                                                                                                                             | Each point is a `Pressable` with a label and opens a tooltip.                                                                                                        |
 
