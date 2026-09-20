@@ -28,15 +28,14 @@ interface MarksArgs {
 }
 
 /** The label of a week's target, so the story can pin that tip open. */
-function weekLabel(week: number, currentWeek: number): string {
+function weekLabel(week: number, goal: typeof GOAL): string {
   const size = { width: 296, height: 220 }
-  const input = { ...GOAL, ...size, insets: trajectoryInsets(false), currentWeek }
+  const input = { ...goal, ...size, insets: trajectoryInsets(false) }
   const tips = weekTips({
     geometry: deriveTrajectoryGeometry(input),
-    weeks: GOAL.weeks,
-    expected: GOAL.expected,
-    ...(GOAL.nextTarget ? { nextTarget: GOAL.nextTarget } : {}),
-    currentWeek,
+    weeks: goal.weeks,
+    expected: goal.expected,
+    ...(goal.nextTarget ? { nextTarget: goal.nextTarget } : {}),
     unit: 'lb',
     width: size.width,
     height: size.height,
@@ -45,10 +44,25 @@ function weekLabel(week: number, currentWeek: number): string {
   return tips.find((t) => t.week === week)?.label ?? ''
 }
 
-function card(currentWeek: number): GoalCardProps {
+const DELOAD_WEEK = GOAL.weeks.find((w) => w.isDeload)!.index
+
+/** The same block, with the deload week lifted and a record set on it. */
+function withReadingOnDeload(): typeof GOAL {
+  const plan = GOAL.expected.find((p) => p.weekIndex === DELOAD_WEEK)
+  return {
+    ...GOAL,
+    actuals: [
+      ...GOAL.actuals,
+      { weekIndex: DELOAD_WEEK, value: plan?.high ?? 186, isPR: true, matched: true },
+    ],
+  }
+}
+
+function card(currentWeek: number, readingOnDeload = false): GoalCardProps {
   return {
     ...S.onTrack,
     title: 'Cable Chest Press',
+    goal: readingOnDeload ? withReadingOnDeload() : GOAL,
     milestone: { ...S.onTrack.milestone, currentWeek },
   }
 }
@@ -56,7 +70,7 @@ function card(currentWeek: number): GoalCardProps {
 function MarksFrame({ openWeek, currentWeek, tipLayout, readingOnDeload }: MarksArgs) {
   const props = card(currentWeek, readingOnDeload)
   return (
-    <PinnedTipContext.Provider value={openWeek ? weekLabel(openWeek, currentWeek) : null}>
+    <PinnedTipContext.Provider value={openWeek ? weekLabel(openWeek, props.goal!) : null}>
       <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-sm">
         <GoalCard {...props} goal={{ ...props.goal!, weekTipLayout: tipLayout }} />
       </Surface>
