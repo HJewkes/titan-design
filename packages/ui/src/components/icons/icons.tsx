@@ -131,6 +131,28 @@ export function TrendingDownIcon(props: IconProps) {
   )
 }
 
+/** Up-trend glyph (mirrors lucide-react `TrendingUp`). The gain phase's mark (VW-455). */
+export function TrendingUpIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="M16 7h6v6" />
+      <path d="m22 7-8.5 8.5-5-5L2 17" />
+    </SvgIcon>
+  )
+}
+
+/** Two-arrow cycle glyph (mirrors lucide-react `Repeat`). The recomposition phase's mark (VW-455). */
+export function RepeatIcon(props: IconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="m17 2 4 4-4 4" />
+      <path d="M3 11v-1a4 4 0 0 1 4-4h14" />
+      <path d="m7 22-4-4 4-4" />
+      <path d="M21 13v1a4 4 0 0 1-4 4H3" />
+    </SvgIcon>
+  )
+}
+
 /** Slashed-circle glyph (mirrors lucide-react `CircleSlash`). ExerciseIndicator → `missed-reps`. */
 export function CircleSlashIcon(props: IconProps) {
   return (

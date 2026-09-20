@@ -33,10 +33,17 @@ const meta: Meta<typeof SessionsGoalCard> = {
       },
     },
   },
-  args: { goal: S.underPace, lead: 'due', pastCommitment: 'append', isTipOpen: false },
+  args: {
+    goal: S.underPace,
+    lead: 'due',
+    leadStyle: 'fact',
+    pastCommitment: 'append',
+    isTipOpen: false,
+  },
   argTypes: {
     goal: { control: 'object' },
     lead: { control: 'inline-radio', options: ['due', 'leaving'] },
+    leadStyle: { control: 'inline-radio', options: ['plain', 'fact', 'strong'] },
     pastCommitment: { control: 'inline-radio', options: ['append', 'cap'] },
     scale: { control: 'inline-radio', options: [undefined, 'wall', 'phone'] },
     isTipOpen: { control: 'boolean' },
@@ -55,8 +62,14 @@ export default meta
 
 type Story = StoryObj<typeof SessionsGoalCard>
 
-/** F4: under pace while the first window fills. */
+/** F4: under pace while the first window fills, the lead as a muted word and a bold figure. */
 export const Default: Story = {}
+
+/** The same lead at body size. Round-4 proposal. */
+export const LeadStrong: Story = { args: { leadStyle: 'strong' } }
+
+/** The round-3 setting: the whole sentence in the caption's muted grey. */
+export const LeadPlain: Story = { args: { leadStyle: 'plain' } }
 
 /** F2: the owner's real history is one training day, so a goal made today reads 1 of 1. */
 export const RealHistory: Story = { args: { goal: S.realHistory } }

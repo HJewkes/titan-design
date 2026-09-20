@@ -15,7 +15,9 @@ import {
   CardTrackRow,
   FigureLine,
   GoalCardHeader,
+  PHASE_TAG_COLLAPSE_WIDTH,
   useStatusColor,
+  type LeadStyle,
   type TrackLabel,
 } from './wholeBodyCardParts'
 import {
@@ -24,6 +26,7 @@ import {
   trackFraction,
   leadCaption,
   phaseLabel,
+  phaseTipText,
   weighInDate,
   weightCaptions,
   wholeBodyScale,
@@ -37,8 +40,17 @@ export interface BodyweightGoalCardProps extends ViewProps {
   goal: WholeBodyWeightRow
   /** Which detail line sits beside the weight; the rest move into the tip. The owner picked the rate. */
   lead?: WeightCaptionKey
-  /** How much of the rate line the lead carries. Round-3 comparison (VW-455); the strings are proposals. */
+  /** How much of the rate line the lead carries. The owner picked the percent alone. */
   rateLength?: RateLength
+  /** How the lead line is set. Round-4 comparison (VW-455). */
+  leadStyle?: LeadStyle
+  /**
+   * Pins the phase tag's collapse. Omitted, the card measures its own box:
+   * `onLayout` never fires in jsdom, so a test or a story says it outright.
+   */
+  tagCollapsed?: boolean
+  /** Pins the phase tag's tip open, for review frames and tests. */
+  isTagTipOpen?: boolean
   /** Pins the layout. Omitted, the card measures itself: wall sizes from a 560px content box. */
   scale?: WholeBodyScale
   /** Pins the detail tip open, for review frames and tests. */
@@ -111,8 +123,11 @@ export function BodyweightGoalCard({
   goal,
   lead = 'rate',
   rateLength = 'percent',
+  leadStyle = 'fact',
   scale,
   isTipOpen,
+  tagCollapsed,
+  isTagTipOpen,
   className,
   style,
   ...props
@@ -137,7 +152,15 @@ export function BodyweightGoalCard({
         <View style={{ zIndex: 10 }}>
           <GoalCardHeader
             label="Bodyweight"
-            tag={phaseLabel(goal.phase)}
+            tag={{
+              phase: goal.phase.name,
+              text: phaseLabel(goal.phase),
+              tipText: phaseTipText(goal.phase),
+            }}
+            tagCollapsed={
+              tagCollapsed ?? (measured.width !== null && measured.width < PHASE_TAG_COLLAPSE_WIDTH)
+            }
+            isTagTipOpen={isTagTipOpen}
             status={goal.status}
             testID="bodyweight-goal-header"
           />
@@ -153,6 +176,7 @@ export function BodyweightGoalCard({
               label={`Weighed ${weighInDate(goal.latest.ts)}`}
               lead={captions.lead}
               rest={captions.rest}
+              leadStyle={leadStyle}
               tipLabel="Bodyweight details"
               isTipOpen={isTipOpen}
               testID="bodyweight-goal-value"

@@ -102,6 +102,28 @@ function GoalsPage({ bodyweight, sessions }: GoalsPageProps) {
   )
 }
 
+/** The WHOLE BODY section on its own, in the page's grid: the two section stories share it. */
+function renderSection(args: GoalsPageProps) {
+  return (
+    <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-md">
+      <PageSection title="Whole body">
+        <CardGrid>
+          {args.bodyweight && (
+            <GridCell>
+              <BodyweightGoalCard goal={args.bodyweight} style={{ height: '100%' }} />
+            </GridCell>
+          )}
+          {args.sessions && (
+            <GridCell>
+              <SessionsGoalCard goal={args.sessions} style={{ height: '100%' }} />
+            </GridCell>
+          )}
+        </CardGrid>
+      </PageSection>
+    </Surface>
+  )
+}
+
 const meta: Meta<typeof GoalsPage> = {
   title: 'Pages/Goals/Whole Body',
   component: GoalsPage,
@@ -132,6 +154,18 @@ type Story = StoryObj<typeof GoalsPage>
 
 /** A cut and sessions under pace. */
 export const Default: Story = {}
+
+/**
+ * The WHOLE BODY section alone, in the page's own grid. It is the page story cropped
+ * to the section under review, so a review frame does not have to be a page tall.
+ */
+export const SectionOnly: Story = { render: renderSection }
+
+/** The same section with a hold goal and a window started today. */
+export const SectionOnlyHold: Story = {
+  render: renderSection,
+  args: { bodyweight: W.hold, sessions: S.windowStarted },
+}
 
 /** A hold goal and a window started today, the two cards most likely to misread. */
 export const HoldAndNewWindow: Story = {

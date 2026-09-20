@@ -12,27 +12,49 @@ describe('BodyweightGoalCard', () => {
     expect(screen.getByTestId('bodyweight-goal-value')).toHaveTextContent('196.8')
   })
 
-  it('tags the phase and never the priority level', () => {
+  it('tags the phase without its week, and never the priority level', () => {
     render(<BodyweightGoalCard goal={W.cut} />)
-    expect(screen.getByText('Cut · week 3')).toBeInTheDocument()
+    expect(screen.getByTestId('phase-tag')).toHaveTextContent('Cut')
+    expect(screen.getByTestId('phase-tag')).not.toHaveTextContent('week')
     expect(screen.queryByText(/specialize/i)).toBeNull()
   })
 
-  describe('the caption beside the weight', () => {
-    it('leads with the rate at its shortest by default', () => {
+  describe('the phase tag', () => {
+    it('keeps its words at a wide container', () => {
       render(<BodyweightGoalCard goal={W.cut} />)
+      expect(screen.getByTestId('phase-tag')).toHaveTextContent('Cut')
+      expect(screen.queryByTestId('phase-tag-tip')).toBeNull()
+    })
+
+    it('puts the words in a pinned-open tip when it has collapsed', () => {
+      render(<BodyweightGoalCard goal={W.cut} tagCollapsed isTagTipOpen />)
+      expect(screen.getByText('Cut, week 3 of this phase')).toBeInTheDocument()
+    })
+  })
+
+  describe('the caption beside the weight', () => {
+    it('leads with the rate at its shortest, as a muted word and a bold figure', () => {
+      render(<BodyweightGoalCard goal={W.cut} />)
+      expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent(
+        'Rate -0.6 %/wk'
+      )
+    })
+
+    it('drops the word in the plain treatment', () => {
+      render(<BodyweightGoalCard goal={W.cut} leadStyle="plain" />)
       expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent('-0.6 %/wk')
+      expect(screen.getByTestId('bodyweight-goal-value-caption')).not.toHaveTextContent('Rate')
     })
 
     it('leads with the longer rate line when asked', () => {
-      render(<BodyweightGoalCard goal={W.cut} rateLength="full" />)
+      render(<BodyweightGoalCard goal={W.cut} rateLength="full" leadStyle="plain" />)
       expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent(
         '-0.6 %/wk against -0.5 to -1.0 for a cut'
       )
     })
 
     it('leads with this week’s band when asked', () => {
-      render(<BodyweightGoalCard goal={W.cut} lead="band" />)
+      render(<BodyweightGoalCard goal={W.cut} lead="band" leadStyle="plain" />)
       expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent(
         'Week 3 of 8: 194.0 to 197.0 lb'
       )

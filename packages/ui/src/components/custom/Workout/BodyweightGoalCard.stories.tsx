@@ -38,11 +38,21 @@ const meta: Meta<typeof BodyweightGoalCard> = {
       },
     },
   },
-  args: { goal: W.cut, lead: 'rate', rateLength: 'percent', isTipOpen: false },
+  args: {
+    goal: W.cut,
+    lead: 'rate',
+    rateLength: 'percent',
+    leadStyle: 'fact',
+    isTipOpen: false,
+    isTagTipOpen: false,
+  },
   argTypes: {
     goal: { control: 'object' },
     lead: { control: 'inline-radio', options: ['band', 'rate'] },
     rateLength: { control: 'inline-radio', options: ['percent', 'verdict', 'full'] },
+    leadStyle: { control: 'inline-radio', options: ['plain', 'fact', 'strong'] },
+    tagCollapsed: { control: 'boolean' },
+    isTagTipOpen: { control: 'boolean' },
     scale: { control: 'inline-radio', options: [undefined, 'wall', 'phone'] },
     isTipOpen: { control: 'boolean' },
   },
@@ -63,11 +73,20 @@ type Story = StoryObj<typeof BodyweightGoalCard>
 /** F6: a cut from 200 lb, week 3 of 8, leading with the rate at its shortest. */
 export const Default: Story = {}
 
+/** The rate as a muted word and a bold figure, at body size. Round-4 proposal. */
+export const RateStrong: Story = { args: { leadStyle: 'strong' } }
+
+/** The round-3 setting: the figure with no word, in the caption's muted grey. */
+export const RatePlain: Story = { args: { leadStyle: 'plain' } }
+
+/** The phase tag collapsed to its glyph, with the words in a pinned-open tip. */
+export const TagCollapsed: Story = { args: { tagCollapsed: true, isTagTipOpen: true } }
+
 /** The rate with a word for where it sits against the phase's band. Proposed wording. */
-export const RateVerdict: Story = { args: { rateLength: 'verdict' } }
+export const RateVerdict: Story = { args: { rateLength: 'verdict', leadStyle: 'plain' } }
 
 /** The round-2 sentence, which the owner called far too long. Kept for the comparison. */
-export const RateFull: Story = { args: { rateLength: 'full' } }
+export const RateFull: Story = { args: { rateLength: 'full', leadStyle: 'plain' } }
 
 /** F7: a gain from 170 lb, week 2 of 8. */
 export const Gain: Story = { args: { goal: W.gain } }

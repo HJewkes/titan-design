@@ -3,7 +3,14 @@
 import type { ReactNode } from 'react'
 import { Pressable, View } from 'react-native'
 
-import { InfoIcon } from '../../icons'
+import {
+  EqualIcon,
+  InfoIcon,
+  RepeatIcon,
+  TrendingDownIcon,
+  TrendingUpIcon,
+  type IconProps,
+} from '../../icons'
 import { Pill } from '../../ui/pill'
 import { useSurfaceMode } from '../../ui/surface'
 import { TipTrigger, Tooltip } from '../../ui/tooltip'
@@ -12,7 +19,7 @@ import { Typography } from '../Typography'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { GOAL_STATUS_LABEL, GOAL_STATUS_TONE, type GoalLiftStatus } from './GoalCard'
 import { STATUS_TOKEN } from './GoalTrajectoryPlot'
-import type { CaptionLine, WholeBodyScale } from './wholeBody'
+import type { CaptionLine, WholeBodyDietPhase, WholeBodyScale } from './wholeBody'
 
 /** Tip cards need a width of their own, or an in-flow tip wraps to its trigger's width. */
 const TIP_WIDTH = 280
@@ -24,16 +31,104 @@ export function useStatusColor(status: GoalLiftStatus): string {
   return getSemanticColors(useSurfaceMode())[STATUS_TOKEN[status]]
 }
 
+/**
+ * One glyph per diet phase, PROPOSED (VW-455 round 4): the owner picks the set.
+ * `Lab/Decisions/Diet Phase Icons` renders these and the alternates large.
+ */
+export const DIET_PHASE_ICON: Record<WholeBodyDietPhase, (props: IconProps) => JSX.Element> = {
+  'fat-loss': TrendingDownIcon,
+  gain: TrendingUpIcon,
+  maintenance: EqualIcon,
+  recomposition: RepeatIcon,
+  unknown: EqualIcon,
+}
+
+/**
+ * Below this CONTAINER width the phase tag drops its words and keeps its glyph,
+ * with the words one press or hover away. It is the rule
+ * `GoalCard`'s `StatusAffordance` already uses for its status pill
+ * (`STATUS_COLLAPSE_WIDTH`), measured on the card's own box rather than the
+ * viewport (SIZE-D01, container-driven).
+ */
+export const PHASE_TAG_COLLAPSE_WIDTH = 360
+
+const TAG_ICON_SIZE = 13
+
+/** The phase tag: glyph and words, or the glyph alone with the words in a tip. */
+function PhaseTag(props: {
+  phase: WholeBodyDietPhase
+  text: string
+  tipText: string
+  collapsed: boolean
+  isTipOpen?: boolean
+}) {
+  const Glyph = DIET_PHASE_ICON[props.phase]
+  const icon = <Glyph size={TAG_ICON_SIZE} />
+  if (!props.collapsed) {
+    return (
+      <Pill tone="neutral" variant="outline" size="sm" leading={icon} testID="phase-tag">
+        {props.text}
+      </Pill>
+    )
+  }
+  const pill = (
+    <Pill tone="neutral" variant="outline" size="sm" testID="phase-tag">
+      {icon}
+    </Pill>
+  )
+  const label = props.tipText
+  if (props.isTipOpen) {
+    return (
+      <Tooltip isOpen placement="bottom-end" usePortal={false} content={<TipText text={label} />}>
+        <Pressable accessibilityRole="button" accessibilityLabel={label} testID="phase-tag-tip">
+          {pill}
+        </Pressable>
+      </Tooltip>
+    )
+  }
+  return (
+    <TipTrigger
+      label={label}
+      content={<TipText text={label} />}
+      placement="bottom-end"
+      usePortal={false}
+      testID="phase-tag-tip"
+    >
+      {pill}
+    </TipTrigger>
+  )
+}
+
+/** An in-flow tip is laid out against its trigger, so a pill-width box wraps one word a line. */
+const TAG_TIP_WIDTH = 190
+
+function TipText({ text }: { text: string }) {
+  return (
+    <View style={{ width: TAG_TIP_WIDTH }}>
+      <Typography variant="caption" className="leading-normal">
+        {text}
+      </Typography>
+    </View>
+  )
+}
+
 /** Label, optional tag, and the status furthest right; wraps under the label when narrow. */
 export function GoalCardHeader(props: {
   label: string
-  tag?: string
+  /** The diet-phase tag, when the card has one. */
+  tag?: { phase: WholeBodyDietPhase; text: string; tipText: string }
+  /** True below `PHASE_TAG_COLLAPSE_WIDTH`: the tag keeps its glyph and tips its words. */
+  tagCollapsed?: boolean
+  /** Pins the tag's tip open, for review frames and tests. */
+  isTagTipOpen?: boolean
   status: GoalLiftStatus
   testID: string
 }) {
   return (
     <View
-      style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}
+      // Above the figure row, which is itself raised over the track: the tag's tip
+      // opens downward across both, and a later sibling would otherwise win.
+      style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', zIndex: 20 }}
       className="justify-between gap-x-inline-md gap-y-stack-sm"
       testID={props.testID}
     >
@@ -43,9 +138,13 @@ export function GoalCardHeader(props: {
       {/* The tag sits with the status at the right, not beside the label (owner, round 2). */}
       <View style={{ flexDirection: 'row', alignItems: 'center' }} className="gap-inline-sm">
         {props.tag !== undefined && (
-          <Pill tone="neutral" variant="outline" size="sm">
-            {props.tag}
-          </Pill>
+          <PhaseTag
+            phase={props.tag.phase}
+            text={props.tag.text}
+            tipText={props.tag.tipText}
+            collapsed={props.tagCollapsed === true}
+            isTipOpen={props.isTagTipOpen}
+          />
         )}
         <Pill tone={GOAL_STATUS_TONE[props.status]} variant="subtle" size="sm" leading="dot">
           {GOAL_STATUS_LABEL[props.status]}
@@ -156,6 +255,36 @@ export function CardTrackRow(props: {
 }
 
 /**
+ * How the lead line is set. Round-4 comparison (VW-455): the owner asked for the
+ * rate to read "more robust, like goal/best weight on the goal cards", which are
+ * `GoalMilestoneSummary`'s facts — a muted word and a bold figure.
+ */
+export type LeadStyle = 'plain' | 'fact' | 'strong'
+
+/** A muted word and its figure, the figure bold and bright: `GoalMilestoneSummary`'s `Fact`. */
+function FactCaption(props: { label: string; value: string; strong: boolean; testID: string }) {
+  return (
+    <Typography
+      variant={props.strong ? 'body2' : 'caption'}
+      color="tertiary"
+      align="right"
+      className="leading-normal"
+      maxLines={1}
+      testID={props.testID}
+    >
+      {`${props.label} `}
+      <Typography
+        variant={props.strong ? 'body2' : 'caption'}
+        color="primary"
+        className="font-bold leading-normal"
+      >
+        {props.value}
+      </Typography>
+    </Typography>
+  )
+}
+
+/**
  * The main figure with its label, and one caption right-aligned on the label's
  * line. Every other detail line sits in the tip beside that caption.
  */
@@ -166,6 +295,7 @@ export function FigureLine(props: {
   label: string
   lead: CaptionLine | null
   rest: CaptionLine[]
+  leadStyle?: LeadStyle
   tipLabel: string
   isTipOpen?: boolean
   testID: string
@@ -189,6 +319,7 @@ export function FigureLine(props: {
       />
       <CaptionWithTip
         lead={props.lead}
+        leadStyle={props.leadStyle ?? 'plain'}
         tip={
           tipLines.length === 0 ? null : (
             <DetailTip
@@ -205,7 +336,12 @@ export function FigureLine(props: {
   )
 }
 
-function CaptionWithTip(props: { lead: CaptionLine | null; tip: ReactNode; testID: string }) {
+function CaptionWithTip(props: {
+  lead: CaptionLine | null
+  leadStyle: LeadStyle
+  tip: ReactNode
+  testID: string
+}) {
   if (props.lead === null && props.tip === null) return null
   return (
     <View
@@ -222,14 +358,23 @@ function CaptionWithTip(props: { lead: CaptionLine | null; tip: ReactNode; testI
     >
       {props.lead !== null && (
         <View style={{ flexShrink: 1, minWidth: 0 }}>
-          <Typography
-            variant="caption"
-            color="secondary"
-            className="leading-normal text-right"
-            testID={props.testID}
-          >
-            {props.lead.text}
-          </Typography>
+          {props.leadStyle !== 'plain' && props.lead.label && props.lead.value ? (
+            <FactCaption
+              label={props.lead.label}
+              value={props.lead.value}
+              strong={props.leadStyle === 'strong'}
+              testID={props.testID}
+            />
+          ) : (
+            <Typography
+              variant="caption"
+              color="secondary"
+              className="leading-normal text-right"
+              testID={props.testID}
+            >
+              {props.lead.text}
+            </Typography>
+          )}
         </View>
       )}
       {props.tip}

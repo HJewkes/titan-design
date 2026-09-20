@@ -18,13 +18,18 @@ describe('SessionsGoalCard', () => {
   })
 
   describe('the caption beside the count', () => {
-    it('leads with what is due by default', () => {
+    it('leads with what is due, as a muted word and a bold figure', () => {
       render(<SessionsGoalCard goal={S.underPace} />)
+      expect(screen.getByTestId('sessions-goal-value-caption')).toHaveTextContent('Due by now 10')
+    })
+
+    it('prints the whole sentence in the plain treatment', () => {
+      render(<SessionsGoalCard goal={S.underPace} leadStyle="plain" />)
       expect(screen.getByTestId('sessions-goal-value-caption')).toHaveTextContent('10 due by now')
     })
 
     it('leads with what leaves the window when asked', () => {
-      render(<SessionsGoalCard goal={S.underPace} lead="leaving" />)
+      render(<SessionsGoalCard goal={S.underPace} lead="leaving" leadStyle="plain" />)
       expect(screen.getByTestId('sessions-goal-value-caption')).toHaveTextContent(
         '3 leave this week'
       )

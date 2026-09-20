@@ -14,6 +14,7 @@ import {
   FigureLine,
   GoalCardHeader,
   useStatusColor,
+  type LeadStyle,
   type TrackLabel,
 } from './wholeBodyCardParts'
 import {
@@ -35,6 +36,8 @@ export interface SessionsGoalCardProps extends ViewProps {
   lead?: SessionsCaptionKey
   /** Days past the commitment: `append` adds a cell for each, `cap` stops at the commitment. Round-2 comparison. */
   pastCommitment?: SessionsPastCommitment
+  /** How the lead line is set. Round-4 comparison (VW-455). */
+  leadStyle?: LeadStyle
   /** Pins the layout. Omitted, the card measures itself: wall sizes from a 560px content box. */
   scale?: WholeBodyScale
   /** Pins the detail tip open, for review frames and tests. */
@@ -111,6 +114,7 @@ function SessionsBar(props: {
 export function SessionsGoalCard({
   goal,
   lead = 'due',
+  leadStyle = 'fact',
   pastCommitment = 'append',
   scale,
   isTipOpen,
@@ -148,6 +152,7 @@ export function SessionsGoalCard({
             label="Training days"
             lead={captions.lead}
             rest={captions.rest}
+            leadStyle={leadStyle}
             tipLabel="Training days details"
             isTipOpen={isTipOpen}
             testID="sessions-goal-value"

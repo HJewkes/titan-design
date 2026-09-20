@@ -8,6 +8,7 @@ import {
   dueMarkerPosition,
   leadCaption,
   phaseLabel,
+  phaseTipText,
   rateBandCaption,
   rateCaption,
   sessionCaptions,
@@ -189,14 +190,19 @@ describe('bandCaption', () => {
 })
 
 describe('phaseLabel', () => {
-  it('names the phase and how long it has run', () => {
-    expect(phaseLabel(W.cut.phase)).toBe('Cut · week 3')
-    expect(phaseLabel(W.hold.phase)).toBe('Hold · week 5')
+  it('names the phase in one word, without the week (owner, round 3)', () => {
+    expect(phaseLabel(W.cut.phase)).toBe('Cut')
+    expect(phaseLabel(W.hold.phase)).toBe('Hold')
   })
 
   it('names a recomposition by its declared mode', () => {
-    expect(phaseLabel(W.slowLoss.phase)).toBe('Recomp, slow loss · week 4')
-    expect(phaseLabel({ name: 'recomposition', weeksInPhase: 2 })).toBe('Recomp, hold · week 2')
+    expect(phaseLabel(W.slowLoss.phase)).toBe('Recomp, slow loss')
+    expect(phaseLabel({ name: 'recomposition', weeksInPhase: 2 })).toBe('Recomp, hold')
+  })
+
+  it('keeps the week for the tip the tag collapses into', () => {
+    expect(phaseTipText(W.cut.phase)).toBe('Cut, week 3 of this phase')
+    expect(phaseTipText({ name: 'fat-loss', weeksInPhase: 0 })).toBe('Cut')
   })
 
   it('says when no phase is declared', () => {

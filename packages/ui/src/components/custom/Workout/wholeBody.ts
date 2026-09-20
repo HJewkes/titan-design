@@ -63,10 +63,16 @@ export function wholeBodyScale(width: number | null, pinned?: WholeBodyScale): W
   return width !== null && width >= WHOLE_BODY_WALL_MIN_WIDTH ? 'wall' : 'phone'
 }
 
-/** One line of detail under a card's main figure. `key` lets a caller choose which one leads. */
+/**
+ * One line of detail beside or under a card's main figure. `key` lets a caller
+ * choose which one leads. A line that splits into a muted word and a figure
+ * carries `label` and `value` too, which is what the fact treatments set.
+ */
 export interface CaptionLine {
   key: string
   text: string
+  label?: string
+  value?: string
 }
 
 /** The line shown beside the figure, and the lines the detail tip holds. */
@@ -164,7 +170,7 @@ export function weightCaptions(
   const rate = rateCaption(row, length)
   const rateBand = length === 'full' ? null : rateBandCaption(row)
   return [
-    ...(rate === null ? [] : [{ key: 'rate', text: rate }]),
+    ...(rate === null ? [] : [{ key: 'rate', text: rate, label: 'Rate', value: rate }]),
     { key: 'band', text: bandCaption(row) },
     ...(rateBand === null ? [] : [{ key: 'rateBand', text: rateBand }]),
   ]
@@ -218,7 +224,12 @@ export function sessionCaptions(row: WholeBodySessionsRow): CaptionLine[] {
   const lines: CaptionLine[] = []
   if (row.dueByNow <= 0) lines.push({ key: 'due', text: 'Window started today' })
   else if (row.dueByNow < row.committed) {
-    lines.push({ key: 'due', text: `${Math.round(row.dueByNow)} due by now` })
+    lines.push({
+      key: 'due',
+      text: `${Math.round(row.dueByNow)} due by now`,
+      label: 'Due by now',
+      value: `${Math.round(row.dueByNow)}`,
+    })
   }
   if (row.counted > row.committed) {
     lines.push({ key: 'over', text: `${row.counted - row.committed} over your commitment` })
@@ -289,14 +300,22 @@ const PHASE_WORD: Record<WholeBodyDietPhase, string> = {
   unknown: 'No phase declared',
 }
 
-/** The phase tag: the phase in one word, and how long it has run. */
+/**
+ * The phase tag's own words. The week is NOT here: it reads off the page's title
+ * line, and printing it twice was noise (owner, round 3).
+ */
 export function phaseLabel(phase: WholeBodyWeightRow['phase']): string {
   if (phase.name === 'unknown') return PHASE_WORD.unknown
-  const word =
-    phase.name === 'recomposition'
-      ? `Recomp, ${phase.slowLoss === true ? 'slow loss' : 'hold'}`
-      : PHASE_WORD[phase.name]
-  return phase.weeksInPhase > 0 ? `${word} · week ${phase.weeksInPhase}` : word
+  return phase.name === 'recomposition'
+    ? `Recomp, ${phase.slowLoss === true ? 'slow loss' : 'hold'}`
+    : PHASE_WORD[phase.name]
+}
+
+/** The tag's full sentence, for the tip it collapses into. */
+export function phaseTipText(phase: WholeBodyWeightRow['phase']): string {
+  const weeks = phase.weeksInPhase
+  const label = phaseLabel(phase)
+  return weeks > 0 ? `${label}, week ${weeks} of this phase` : label
 }
 
 const PHASE_NOUN: Record<WholeBodyDietPhase, string> = {
