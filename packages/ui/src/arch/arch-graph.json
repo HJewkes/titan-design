@@ -5804,9 +5804,7 @@
       "family": "custom/Table",
       "exports": [
         "TableHeaderCell",
-        "TableHeaderCellProps",
-        "handlePress",
-        "withTooltip"
+        "TableHeaderCellProps"
       ],
       "libDependents": 1,
       "storyRefs": 1,
