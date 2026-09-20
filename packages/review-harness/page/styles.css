@@ -113,7 +113,8 @@ kbd {
   color: var(--color-text-secondary);
 }
 
-.see-also a {
+.see-also a,
+.prompts a {
   color: var(--color-brand-primary);
   margin-right: var(--space-inline-sm);
 }
@@ -124,7 +125,6 @@ kbd {
   z-index: 1;
   display: grid;
   gap: 2px;
-  padding-bottom: 2px;
   background: var(--color-surface-elevated);
 }
 

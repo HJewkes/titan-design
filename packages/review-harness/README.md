@@ -7,12 +7,15 @@ as JSON on stdout and in `feedback.json`. Private workspace tool, not published.
 ## The human's flow
 
 1. The agent runs `pnpm review <round-dir>/round.json`; a browser tab opens.
-2. Every variant renders live at every manifest width (wide frames scaled to fit, phone at 1:1).
+2. Every variant renders live at every manifest width (wide frames scaled to fit, phone at 1:1),
+   each frame sized to its story unless the round fixed a height.
 3. The active card has an orange border. `1` chosen, `2` rejected, `3` maybe, `0` clears.
 4. `Tab` jumps to that card's comment box. `Enter` moves to the next card or question.
 5. `a` turns pins on: click a spot on any frame, type a note. `Esc` turns pins off.
 6. On a question, `1`-`9` pick its options; the scale takes its value directly.
 7. The last box is for general notes. `l` toggles one column per variant.
+   A sectioned round asks each group's question above that group's frames, and every frame
+   carries the question it belongs to in its (sticky) header.
 8. `Cmd+Enter` opens the final check, which lists every answer and anything missing.
 9. `Cmd+Enter` again sends. The tab says "Sent", and the agent is already iterating.
 10. Nothing leaves the Mac: the page binds 127.0.0.1 and loads no external resources.
@@ -24,6 +27,7 @@ as JSON on stdout and in `feedback.json`. Private workspace tool, not published.
 node scripts/storybook-launch.mjs --isolated          # prints its port, e.g. 6107
 
 pnpm review --example --storybook http://127.0.0.1:6107 > <round-dir>/round.json   # a starting point
+pnpm review --example --sections --storybook http://127.0.0.1:6107                # the same, grouped
 pnpm review <round-dir>/round.json [--storybook <url>] [--out <dir>] [--no-open] [--no-capture]
 ```
 
@@ -53,17 +57,127 @@ sha256 of the manifest you wrote.
 `src/schema.ts` (`pnpm --filter @titan-design/review-harness schema`; a test fails if they drift).
 
 - Manifest `titan-review/round@1`: `unit`, `round`, `storybookUrl`, `context?`, `widths[]`,
-  `height` (default 900), `variants[{key, storyId, label, args?, globals?}]`,
-  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?}]`.
+  `height` (a number of px or `"auto"`, default `"auto"`), `maxHeight` (default 1200),
+  `variants[{key, storyId, label, args?, globals?, height?}]`,
+  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?}]`,
+  `sections?[{id, title, context?, questionIds[], variantKeys[], seeAlso?[], height?}]`.
   A question over variant keys is variant-scoped and sits right under the variants; set
   `scope` to override. Args and globals go in the Storybook URL, so keys and values are
   limited to letters, digits, space, `_` and `-` (numbers and booleans are fine); anything
   else is refused, because Storybook would silently drop it. Give such a variant its own story.
 - Feedback `titan-review/feedback@1`: `manifestSha256`, `submittedAt`,
-  `answers[{questionId, pick | picks | value | text, comment?}]`,
-  `variants[{key, storyId, verdict: chosen|rejected|maybe|null, comment, annotations[]}]`,
+  `answers[{questionId, pick | picks | value | text, comment?, variantComments?}]`,
+  `variants[{key, storyId, verdict: chosen|rejected|maybe|null, comment, annotations[], relatedQuestionIds?}]`,
   `general`. Each annotation has `width`, `x`/`y` in CSS px of the story frame, `xPct`/`yPct`
   as fractions of it, a `note`, and `target {testId?, role?, text?}` from element hit-testing.
+  `variantComments[{key, comment}]` repeats, under the answer, every comment left on a frame
+  that question's section showed; `relatedQuestionIds` is the same link from the frame's side.
+  Both appear only in a sectioned round. Everything else is unchanged and means what it always did.
+
+## Writing a sectioned round (VW-530)
+
+Without `sections` the page renders exactly as it always has: all frames, then all questions.
+With them, it renders group by group, each group's QUESTION FIRST and then the frames that
+answer it, so the human knows what he is being asked before he looks.
+
+```json
+{
+  "schema": "titan-review/round@1",
+  "unit": "vw-455-whole-body",
+  "round": 4,
+  "storybookUrl": "http://127.0.0.1:6107",
+  "widths": [1920, 360],
+  "height": "auto",
+  "variants": [
+    { "key": "R-pct", "storyId": "custom-...--default", "label": "Rate: the percent alone" },
+    { "key": "R-word", "storyId": "custom-...--rate-verdict", "label": "Rate: percent plus word" },
+    {
+      "key": "Page",
+      "storyId": "pages-goals-whole-body--default",
+      "label": "Both cards on the page",
+      "height": 1100
+    }
+  ],
+  "questions": [
+    {
+      "id": "rate-length",
+      "kind": "pick-one",
+      "prompt": "How long is the rate line?",
+      "options": ["R-pct", "R-word"],
+      "required": true
+    },
+    {
+      "id": "alignment",
+      "kind": "pick-one",
+      "prompt": "Do the two cards end level?",
+      "options": ["Right", "No, see my comments"],
+      "required": true
+    },
+    {
+      "id": "sign-off",
+      "kind": "pick-one",
+      "prompt": "Round outcome",
+      "options": ["Lock it", "Another round"],
+      "required": true
+    }
+  ],
+  "sections": [
+    {
+      "id": "rate",
+      "title": "How long is the rate line?",
+      "context": "Same card, two lengths. Your comment on a card lands on this question too.",
+      "questionIds": ["rate-length"],
+      "variantKeys": ["R-pct", "R-word"]
+    },
+    {
+      "id": "page",
+      "title": "The two cards on the page",
+      "questionIds": ["alignment"],
+      "variantKeys": ["Page"],
+      "seeAlso": ["R-pct"]
+    }
+  ]
+}
+```
+
+Rules worth knowing:
+
+- **Options that are variant keys become the pick.** Inside a section, choosing `R-word`
+  answers the question AND marks that frame chosen, and marking the frame chosen answers the
+  question. One action, not two. When the options are prose, spell the link out with
+  `optionVariants: {"the shorter one": "R-pct"}` on the question.
+- **A comment on a frame reaches the question.** It is still written on the variant, and it is
+  repeated under the section's answers as `variantComments`, so nothing has to be retyped or
+  moved. This is why the frames belong under their question rather than in one long wall.
+- **Leftovers have a home.** A variant in no section renders under "Other frames"; a question in
+  no section renders under "Overall", which is where sign-off belongs.
+- **One frame per section.** A frame that also bears on another group goes in that group's
+  `seeAlso`, which renders a link to it instead of a second iframe. Validation refuses a variant
+  or question claimed by two sections, and refuses an unknown key with the id in the message.
+- **Sections are optional.** A round that does not need them should not have them.
+
+### Heights
+
+`height` may be a number of CSS px or `"auto"`, at three levels: the variant, its section, then
+the round. The most specific wins, and the default when nothing says otherwise is `"auto"`.
+
+`"auto"` measures the story itself and sizes the frame to it. The iframes are same-origin (the
+harness proxies Storybook on its own origin), so the page reads the story's own elements after
+load, after `fonts.ready` and on every reflow, and never reads the frame's own box, which is
+what it is sizing. A story taller than `maxHeight` (default 1200) stops there and scrolls
+inside its frame. A frame the page cannot measure stays at 900 px, which is also what it shows
+until the first measurement lands. Widths are unchanged.
+
+Give a fixed number when the frame should be a page-sized box on purpose (a `Pages/*` story),
+or when a story sets its own `100vh` and would otherwise grow to the cap. Prefer `"auto"`
+everywhere else: a card in a 1500 px box was the complaint that produced this.
+
+### Open-tip stories are open by STATE
+
+A story whose tip, popover or menu must be visible in the round is a story that renders open,
+not a story the human has to hover. Write the open state into the story (a separate
+`--tip-open` story or a `play` function), not into the manifest: the harness never interacts
+with a frame before he does, and args in the URL are limited to plain letters and digits.
 
 ## How it works
 
@@ -76,7 +190,10 @@ token custom properties, generated from `@titan-design/react-ui` source at serve
 ## Tests
 
 - `pnpm --filter @titan-design/review-harness test`: schemas, feedback building, the
-  keyboard model, and the server's proxy, submit and exit paths against a fake Storybook.
+  keyboard model, the section layout and the pick-to-verdict link, the fitted-height maths,
+  the page's markup for a sectioned and an unsectioned round (`react-dom/server`), and the
+  server's proxy, submit and exit paths against a fake Storybook. `test/fixtures/rounds/`
+  holds four real rounds, copied verbatim, that must keep parsing.
 - `pnpm --filter @titan-design/review-harness test:e2e`: a real isolated Storybook (or
   `TITAN_REVIEW_STORYBOOK=<url>`), a keyboard pick, a comment, a pin, send, then asserts the
   written JSON and PNGs. Local only; it needs Storybook and Chromium.
