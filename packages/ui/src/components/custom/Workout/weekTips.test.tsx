@@ -4,7 +4,7 @@
  * focus and press all open it; the group is one tab stop and the arrows rove between weeks.
  */
 import { describe, expect, it } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { GoalTrajectoryChart } from './GoalTrajectoryChart'
 import { nextRovingWeek } from './GoalTrajectoryWeekTips'
@@ -127,5 +127,50 @@ describe('the week group', () => {
       expect(t.box.y).toBeGreaterThanOrEqual(0)
       expect(t.box.y + t.box.size).toBeLessThanOrEqual(SIZE.height)
     }
+  })
+})
+
+describe('the tip layouts', () => {
+  const open = (week: number) => fireEvent.mouseEnter(target(week))
+
+  it('figure (default) leads with the reading as a figure, then labelled rows', () => {
+    renderChart()
+    open(3)
+    const body = tip(3)!
+    expect(body).toHaveTextContent('Week 3')
+    // The figure layout leads with Metric: the amount and its unit are separate marks.
+    expect(within(body).getByText('181')).toBeInTheDocument()
+    expect(within(body).getByText('lb')).toBeInTheDocument()
+    expect(within(body).getByText('Plan')).toBeInTheDocument()
+  })
+
+  it('rows labels every fact, the reading among them', () => {
+    renderChart({ weekTipLayout: 'rows' })
+    open(3)
+    const body = tip(3)!
+    expect(within(body).getByText('Lifted')).toBeInTheDocument()
+    expect(within(body).getByText('181 lb')).toBeInTheDocument()
+    expect(within(body).queryByText('181')).toBeNull()
+  })
+
+  it.each(['figure', 'rows'] as const)('badges the record and the deload week (%s)', (layout) => {
+    renderChart({ weekTipLayout: layout })
+    open(3)
+    expect(within(tip(3)!).getByTestId('pr-badge-star')).toBeInTheDocument()
+    open(5)
+    expect(within(tip(5)!).getByText('Deload')).toBeInTheDocument()
+  })
+
+  it.each(['figure', 'rows'] as const)('leaves the accessible name as it was (%s)', (layout) => {
+    renderChart({ weekTipLayout: layout })
+    expect(target(3).getAttribute('aria-label')).toBe(
+      'Week 3, 181 lb, Personal record, Plan 179 to 183 lb'
+    )
+  })
+
+  it('says so when a week has no reading yet, in both layouts', () => {
+    renderChart()
+    open(6)
+    expect(within(tip(6)!).getByText('No reading yet')).toBeInTheDocument()
   })
 })

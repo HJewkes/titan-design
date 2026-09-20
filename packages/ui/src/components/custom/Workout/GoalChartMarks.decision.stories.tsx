@@ -10,6 +10,7 @@ import { Typography } from '../Typography'
 import { GoalCard, type GoalCardProps } from './GoalCard'
 import { PrBadge } from './PrBadge'
 import { weekTips } from './weekTipModel'
+import type { WeekTipLayout } from './GoalTrajectoryWeekTips'
 import { deriveTrajectoryGeometry, trajectoryInsets } from './GoalTrajectoryChartGeometry'
 import { HIT_TARGET_POINTER } from './goalTrajectoryTargets'
 import { PRIMARY_GOAL_SCENARIOS as S } from './primaryGoal-fixture'
@@ -20,6 +21,10 @@ interface MarksArgs {
   /** Which week's tip is held open, by state. */
   openWeek?: number
   currentWeek: number
+  /** How the open tip lays its facts out. */
+  tipLayout: WeekTipLayout
+  /** Put a reading and a PR on the deload week, so the marks sit over the purple. */
+  readingOnDeload?: boolean
 }
 
 /** The label of a week's target, so the story can pin that tip open. */
@@ -48,11 +53,12 @@ function card(currentWeek: number): GoalCardProps {
   }
 }
 
-function MarksFrame({ openWeek, currentWeek }: MarksArgs) {
+function MarksFrame({ openWeek, currentWeek, tipLayout, readingOnDeload }: MarksArgs) {
+  const props = card(currentWeek, readingOnDeload)
   return (
     <PinnedTipContext.Provider value={openWeek ? weekLabel(openWeek, currentWeek) : null}>
       <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-sm">
-        <GoalCard {...card(currentWeek)} />
+        <GoalCard {...props} goal={{ ...props.goal!, weekTipLayout: tipLayout }} />
       </Surface>
     </PinnedTipContext.Provider>
   )
@@ -71,8 +77,10 @@ const meta: Meta<MarksArgs> = {
   argTypes: {
     openWeek: { control: { type: 'number', min: 1, max: 6 } },
     currentWeek: { control: { type: 'number', min: 1, max: 6 } },
+    tipLayout: { control: 'inline-radio', options: ['figure', 'rows'] },
+    readingOnDeload: { control: 'boolean' },
   },
-  args: { currentWeek: 4 },
+  args: { currentWeek: 4, tipLayout: 'figure' },
   render: (args) => <MarksFrame {...args} />,
 }
 export default meta
@@ -99,13 +107,13 @@ export const StarBesideIcon: Story = {
   ),
 }
 
-/** A past week's tip, held open by state: its reading, the plan, and the record. */
-export const TipPastWeek: Story = { args: { openWeek: 3 } }
-/** The current week's tip: it says "Current week", and its column is outlined. */
-export const TipCurrentWeek: Story = { args: { openWeek: 4 } }
-/** A future week's tip: no reading yet, and the deload week says so. */
-export const TipFutureWeek: Story = { args: { openWeek: 5 } }
-/** The band and the cells agreeing on week 2. */
-export const CurrentWeekTwo: Story = { args: { currentWeek: 2 } }
-/** The band and the cells agreeing on week 5, which is also the deload week. */
-export const CurrentWeekFiveDeload: Story = { args: { currentWeek: 5 } }
+/** The star in place on a chart, so it is judged where it lives. */
+export const StarInPlace: Story = {}
+/** Tip layout A, figure-led: the reading as the lead figure, then labelled rows. */
+export const TipFigureLayout: Story = { args: { openWeek: 3 } }
+/** Tip layout B, rows: every fact labelled, the reading among them. */
+export const TipRowsLayout: Story = { args: { openWeek: 3, tipLayout: 'rows' } }
+/** The deload week in the product's deload magenta, with no reading on it. */
+export const DeloadColumn: Story = { args: { openWeek: 5 } }
+/** The deload column carrying a reading and a PR star, so the marks sit over the purple. */
+export const DeloadWithReading: Story = { args: { readingOnDeload: true } }

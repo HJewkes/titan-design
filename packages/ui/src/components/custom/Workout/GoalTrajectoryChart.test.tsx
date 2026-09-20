@@ -430,7 +430,8 @@ describe('GoalTrajectoryChart next target', () => {
       screen.getByTestId(`goal-trajectory-chart-week-target-${String(nextTarget.weekIndex)}`)
     )
 
-    expect(screen.getByText(`Next target: ${nextTarget.label}`)).toBeInTheDocument()
+    expect(screen.getByText('Next target')).toBeInTheDocument()
+    expect(screen.getByText(nextTarget.label)).toBeInTheDocument()
   })
 
   it('draws nothing when the caller passes no next target', () => {

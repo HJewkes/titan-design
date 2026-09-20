@@ -7,24 +7,90 @@
 import { useRef, useState } from 'react'
 import { View } from 'react-native'
 import { Typography } from '../Typography'
+import { Metric } from '../Metric'
+import { Pill } from '../../ui/pill'
 import { TipTrigger } from '../../ui/tooltip'
+import { PrBadge } from './PrBadge'
 import type { WeekTip } from './weekTipModel'
 
 const TIP_WIDTH = 220
 
-function WeekTipBody({ tip }: { tip: WeekTip }) {
+/** How a week's tip lays its facts out. `figure` leads with the reading; `rows` labels every fact. */
+export type WeekTipLayout = 'figure' | 'rows'
+
+/** Week number, then a badge for each thing that is true of the week. */
+function TipHeader({ tip }: { tip: WeekTip }) {
+  const { isPR, isDeload } = tip.facts
+  return (
+    <View className="flex-row items-center gap-inline-sm">
+      <Typography variant="overline" color="tertiary">
+        {`Week ${String(tip.week)}`}
+      </Typography>
+      {isPR && <PrBadge type="weight" compact animate={false} iconSize={12} />}
+      {isDeload && (
+        <Pill tone="brand" variant="subtle" size="sm">
+          Deload
+        </Pill>
+      )}
+    </View>
+  )
+}
+
+function TipRow({ label, value }: { label: string; value: string }) {
+  return (
+    <View className="flex-row items-baseline justify-between gap-inline-md">
+      <Typography variant="caption" color="tertiary" className="leading-normal">
+        {label}
+      </Typography>
+      <Typography variant="caption" className="leading-normal">
+        {value}
+      </Typography>
+    </View>
+  )
+}
+
+/** The reading as the lead figure, then the plan and the next target as labelled rows. */
+function FigureBody({ tip }: { tip: WeekTip }) {
+  const { reading, plan, next } = tip.facts
+  return (
+    <>
+      {reading ? (
+        <Metric value={reading.amount} unit={reading.unit} label="Lifted" size="sm" />
+      ) : (
+        <Typography variant="caption" color="tertiary">
+          No reading yet
+        </Typography>
+      )}
+      {plan !== undefined && <TipRow label="Plan" value={plan} />}
+      {next !== undefined && <TipRow label="Next target" value={next} />}
+    </>
+  )
+}
+
+/** Every fact as a labelled row, the reading among them. */
+function RowsBody({ tip }: { tip: WeekTip }) {
+  const { reading, plan, next } = tip.facts
+  return (
+    <>
+      <TipRow
+        label="Lifted"
+        value={reading ? `${reading.amount} ${reading.unit}` : 'No reading yet'}
+      />
+      {plan !== undefined && <TipRow label="Plan" value={plan} />}
+      {next !== undefined && <TipRow label="Next target" value={next} />}
+    </>
+  )
+}
+
+function WeekTipBody({ tip, layout }: { tip: WeekTip; layout: WeekTipLayout }) {
   return (
     <View
       style={{ width: TIP_WIDTH }}
       className="gap-stack-sm"
       testID={`goal-trajectory-chart-week-tip-${String(tip.week)}`}
     >
-      <Typography variant="body2">{`Week ${String(tip.week)}`}</Typography>
-      {tip.lines.map((line) => (
-        <Typography key={line} variant="caption" color="secondary" className="leading-normal">
-          {line}
-        </Typography>
-      ))}
+      <TipHeader tip={tip} />
+      {layout === 'figure' ? <FigureBody tip={tip} /> : <RowsBody tip={tip} />}
     </View>
   )
 }
@@ -43,10 +109,12 @@ export function GoalTrajectoryWeekTips({
   tips,
   width,
   height,
+  layout = 'figure',
 }: {
   tips: WeekTip[]
   width: number
   height: number
+  layout?: WeekTipLayout
 }) {
   const [active, setActive] = useState(0)
   const group = useRef<View>(null)
@@ -76,7 +144,7 @@ export function GoalTrajectoryWeekTips({
         >
           <TipTrigger
             label={tip.label}
-            content={<WeekTipBody tip={tip} />}
+            content={<WeekTipBody tip={tip} layout={layout} />}
             placement="top"
             usePortal={false}
             style={{ width: tip.box.size, height: tip.box.size }}

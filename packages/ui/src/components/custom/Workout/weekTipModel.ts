@@ -12,12 +12,25 @@ import type {
 } from './GoalTrajectoryChartGeometry'
 import { hitBoxAround, type HitBox } from './goalTrajectoryTargets'
 
+/** A week's facts, for a tip to lay out however it likes. */
+export interface WeekFacts {
+  /** The reading, split so a layout can lead with the figure. Absent before the week is lifted. */
+  reading?: { amount: string; unit: string }
+  isPR: boolean
+  isDeload: boolean
+  /** The planned band for the week, already worded ("179 to 183 lb"). */
+  plan?: string
+  /** The next target's label, on its week. */
+  next?: string
+}
+
 export interface WeekTip {
   week: number
   /** The hit box, clamped inside the chart. */
   box: HitBox
-  /** What the tip says, first line first. */
+  /** What the tip says, first line first. The accessible name is built from these. */
   lines: string[]
+  facts: WeekFacts
   /** The target's accessible name, which carries the same facts for a screen reader. */
   label: string
 }
@@ -35,11 +48,11 @@ export interface WeekTipInput {
 
 const amount = (value: number, unit: string) => `${String(roundWeight(value))} ${unit}`
 
-function planLine(point: GoalExpectedPoint | undefined, unit: string): string | null {
-  if (!point) return null
+function planOf(point: GoalExpectedPoint | undefined, unit: string): string | undefined {
+  if (!point) return undefined
   return point.low === point.high
-    ? `Plan ${amount(point.low, unit)}`
-    : `Plan ${String(roundWeight(point.low))} to ${amount(point.high, unit)}`
+    ? amount(point.low, unit)
+    : `${String(roundWeight(point.low))} to ${amount(point.high, unit)}`
 }
 
 function readingLines(
@@ -58,11 +71,18 @@ export function weekTips(input: WeekTipInput): WeekTip[] {
     const reading = g.actuals.find((a) => Math.round(a.weekIndex) === week)
     const plan = expected.find((p) => p.weekIndex === week)
     const isNext = nextTarget?.weekIndex === week
+    const facts: WeekFacts = {
+      ...(reading ? { reading: { amount: String(roundWeight(reading.value)), unit } } : {}),
+      isPR: reading?.isPR === true,
+      isDeload: weeks.find((w) => w.index === week)?.isDeload === true,
+      ...(planOf(plan, unit) !== undefined ? { plan: planOf(plan, unit) } : {}),
+      ...(isNext && nextTarget ? { next: nextTarget.label } : {}),
+    }
     const lines = [
       ...readingLines(reading, unit),
-      planLine(plan, unit),
-      weeks.find((w) => w.index === week)?.isDeload === true ? 'Deload week' : null,
-      isNext && nextTarget ? `Next target: ${nextTarget.label}` : null,
+      facts.plan === undefined ? null : `Plan ${facts.plan}`,
+      facts.isDeload ? 'Deload week' : null,
+      facts.next === undefined ? null : `Next target: ${facts.next}`,
     ].filter((line): line is string => line != null)
     const y =
       reading?.y ??
@@ -72,6 +92,7 @@ export function weekTips(input: WeekTipInput): WeekTip[] {
       week,
       box: hitBoxAround({ x: g.toX(week), y }, size, width, height),
       lines,
+      facts,
       label: `Week ${String(week)}, ${lines.join(', ')}`,
     }
   })
