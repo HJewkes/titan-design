@@ -20,9 +20,15 @@ project adheres to [Semantic Versioning](https://semver.org/).
 - `liveStripMs` and `liveStripTarget`, the pinned strip's input guards (a
   non-finite duration reads 0; a rep target is floored, and 0 when unusable),
   are exported beside the other `liveStripModel` helpers.
+- `STAR_ICON_PATH` and `STAR_ICON_BOX` (the star glyph's path and its ink box in
+  the icon viewBox) and `ICON_VIEWBOX`, so a chart can draw the same star as the
+  PR badge from one source.
 
 ### Changed
 
+- `GoalTrajectoryChart` and `GoalTrajectoryMini` draw the PR star from the PR
+  icon's own path instead of a hand-rolled polygon, so the chart mark and the
+  badge cannot diverge. The star keeps its size and centre.
 - `GoalTrajectoryChart` (and every `GoalCard` and `PrimaryGoalCard` chart) drops
   the y-axis value labels by default and takes back their gutter: each gridline
   carries its value inside the plot, in the gridline's own hue (text at 30% where

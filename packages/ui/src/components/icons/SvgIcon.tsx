@@ -23,6 +23,9 @@ export interface SvgIconProps extends IconProps {
  * `aria-hidden`) and `currentColor` inheritance. Icons pass their paths as
  * children plus their stroke/fill defaults.
  */
+/** Every icon is drawn in this box; a chart scaling an icon's path reads it from here. */
+export const ICON_VIEWBOX = 24
+
 export function SvgIcon({
   size = 24,
   color = 'currentColor',
@@ -35,7 +38,7 @@ export function SvgIcon({
     <svg
       width={size}
       height={size}
-      viewBox="0 0 24 24"
+      viewBox={`0 0 ${String(ICON_VIEWBOX)} ${String(ICON_VIEWBOX)}`}
       fill={fill}
       stroke={color}
       strokeWidth={strokeWidth}

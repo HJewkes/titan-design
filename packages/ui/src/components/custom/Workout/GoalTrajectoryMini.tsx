@@ -29,7 +29,7 @@ import {
   PlaneLip,
   PlotDefs,
   planeBox,
-  starPoints,
+  starMark,
   trajectoryPalette,
   useDefIds,
   type LayerProps,
@@ -197,9 +197,9 @@ function MiniNextTarget({ geometry, palette }: LayerProps) {
 function MiniPoint({ coord, palette }: { coord: ActualCoord; palette: LayerProps['palette'] }) {
   if (coord.isPR) {
     return (
-      <polygon
+      <path
         data-testid="goal-trajectory-mini-pr-star"
-        points={starPoints(coord.x, coord.y, MINI_MARKS.star)}
+        {...starMark(coord.x, coord.y, MINI_MARKS.star)}
         fill={palette.star}
       />
     )

@@ -11,6 +11,7 @@ import { alpha } from '../../../utils/colors'
 import { LIFT_RIM_ALPHA } from '../../../theme/lift'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { roundWeight } from '../../../utils/workout-format'
+import { STAR_ICON_BOX, STAR_ICON_PATH } from '../../icons'
 import type { RuleLabelSpec } from './goalTrajectoryRuleLabels'
 import type {
   ActualCoord,
@@ -414,14 +415,22 @@ function ActualLine({
   )
 }
 
-/** Five-point star centred on (cx, cy), so it sits on the line like a dot does. */
-export function starPoints(cx: number, cy: number, outer: number): string {
-  const inner = outer * 0.45
-  return Array.from({ length: 10 }, (_, i) => {
-    const r = i % 2 === 0 ? outer : inner
-    const a = -Math.PI / 2 + (i * Math.PI) / 5
-    return `${String(cx + r * Math.cos(a))},${String(cy + r * Math.sin(a))}`
-  }).join(' ')
+/**
+ * The PR star, drawn from the icon's own path so the chart and the PR badge can never
+ * diverge. `outer` is the star's radius, as the hand-drawn polygon's was, and the glyph
+ * is scaled from the icon's ink box to that width and centred on (cx, cy).
+ */
+export function starMark(cx: number, cy: number, outer: number) {
+  const box = STAR_ICON_BOX
+  // A five-point star of radius r spans 1.902r across, which is the width the polygon drew.
+  const scale = (1.902 * outer) / box.width
+  const centre = { x: box.x + box.width / 2, y: box.y + box.height / 2 }
+  return {
+    d: STAR_ICON_PATH,
+    transform:
+      `translate(${String(cx)} ${String(cy)}) scale(${String(scale)}) ` +
+      `translate(${String(-centre.x)} ${String(-centre.y)})`,
+  }
 }
 
 function ActualPoint({
@@ -435,9 +444,9 @@ function ActualPoint({
 }) {
   if (coord.isPR) {
     return (
-      <polygon
+      <path
         data-testid="goal-trajectory-chart-pr-star"
-        points={starPoints(coord.x, coord.y, star)}
+        {...starMark(coord.x, coord.y, star)}
         fill={palette.star}
       />
     )

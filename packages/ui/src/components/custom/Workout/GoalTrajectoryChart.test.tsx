@@ -102,8 +102,10 @@ describe('GoalTrajectoryChart', () => {
       const filledPaths = drawn.filter(
         (el) => el.tagName.toLowerCase() === 'path' && el.getAttribute('fill') !== 'none'
       )
-      expect(filledPaths.map((el) => el.getAttribute('data-testid'))).toEqual([
+      // The PR star is a filled path since it took the icon's own glyph; the line is not.
+      expect(filledPaths.map((el) => el.getAttribute('data-testid')).sort()).toEqual([
         'goal-trajectory-chart-lip',
+        'goal-trajectory-chart-pr-star',
       ])
       expect(drawn.filter((el) => el.getAttribute('fill') === dark['status-success'])).toEqual([])
     })
