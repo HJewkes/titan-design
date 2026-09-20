@@ -1,0 +1,22 @@
+{
+  "schema": "titan-review/round@1",
+  "unit": "titan-0201-hardening",
+  "round": 4,
+  "storybookUrl": "http://127.0.0.1:6104",
+  "context": "Your round-3 picks, applied as the defaults. No y axis. Goal lines carry their values in the line's colour. Each faint reference line carries its value inside the plot in the same faint hue: the text is at 30% where the line is 12%, so it stays readable. Numbers move off readings, the ramp, the goal lines, tips and each other. A reference line at a goal value, or one with no clear spot, shows no number. The full and compact cards both set '1 lb' on a tight line. The frame height fits the tallest story, the three-card label set at 1920.",
+  "widths": [1920, 360],
+  "height": 1730,
+  "variants": [
+    { "key": "labels", "storyId": "lab-decisions-goal-chart-labels--no-axis-numeric", "label": "Final labels on three blocks: normal, close goal lines, equal goal lines" },
+    { "key": "full-card", "storyId": "lab-decisions-goal-card-header--full-medium", "label": "Full card: final labels and the tight '1 lb' line" },
+    { "key": "compact-card", "storyId": "lab-decisions-goal-card-header--compact-medium", "label": "Compact card: halved gap and the tight '1 lb' line" },
+    { "key": "tip", "storyId": "lab-decisions-calibrating-info-tip--late-low-open", "label": "Regression check: calibrating tip open, reading low in week 5 of 8" }
+  ],
+  "questions": [
+    { "id": "q1", "kind": "pick-one", "prompt": "The labels frame shows numbers on the goal lines and faint numbers on the reference lines inside the plot (30% text on a 12% line), on a normal block, a close pair and an equal pair. Is the reference-line number colour right?", "options": ["yes", "fainter", "stronger"], "required": true },
+    { "id": "q2", "kind": "pick-one", "prompt": "Across all four frames, do the in-plot numbers read clearly and stay off the data?", "options": ["yes", "no"], "required": true },
+    { "id": "q3", "kind": "pick-one", "prompt": "The full-card and compact-card frames set '1 lb' on a tight line. Is it right on both?", "options": ["yes", "no"], "required": true },
+    { "id": "q4", "kind": "pick-one", "prompt": "Sign off for merge and the 0.21.1 patch?", "options": ["yes", "no, another round"], "required": true },
+    { "id": "q5", "kind": "text", "prompt": "Anything else you would change?" }
+  ]
+}

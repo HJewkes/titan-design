@@ -47,3 +47,26 @@ export function exampleManifest(storybookUrl: string): ManifestInput {
     ],
   }
 }
+
+/**
+ * The same round written question-first, for `titan-review --example --sections`: each
+ * group asks its question above its frames, and picking an option picks the frame.
+ */
+export function sectionedExampleManifest(storybookUrl: string): ManifestInput {
+  const base = exampleManifest(storybookUrl)
+  return {
+    ...base,
+    height: 'auto',
+    maxHeight: 1200,
+    variants: base.variants.map((v) => (v.key === 'C' ? { ...v, height: 420 } : v)),
+    sections: [
+      {
+        id: 'lead',
+        title: 'Which card leads the page?',
+        context: 'Same data in all three; judge weight, not content.',
+        questionIds: ['q1', 'q2'],
+        variantKeys: ['A', 'B', 'C'],
+      },
+    ],
+  }
+}

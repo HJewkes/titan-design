@@ -2,11 +2,18 @@ import { join, resolve, sep } from 'node:path'
 import { chromium, type Page } from '@playwright/test'
 import type { Manifest, Variant } from './schema.ts'
 import { storyUrl } from './round.ts'
+import { AUTO_FALLBACK_HEIGHT, frameHeight, isAuto } from './sections.ts'
 
 const SETTLE_MS = 1500
 
 export function captureFileName(variant: Variant, width: number): string {
   return `${width}-${variant.key}-${variant.storyId.split('--').pop()}.png`
+}
+
+/** The canvas a story is rendered on; the shot itself is cropped to `#storybook-root`. */
+export function captureViewportHeight(manifest: Manifest, variant: Variant): number {
+  const height = frameHeight(manifest, variant)
+  return isAuto(height) ? AUTO_FALLBACK_HEIGHT : height
 }
 
 /** Defence in depth: the schema already constrains key/storyId, but never write outside outDir. */
@@ -42,7 +49,7 @@ export async function captureRound(
     const page = await browser.newPage({ deviceScaleFactor: 2 })
     for (const variant of manifest.variants) {
       for (const width of manifest.widths) {
-        await page.setViewportSize({ width, height: manifest.height })
+        await page.setViewportSize({ width, height: captureViewportHeight(manifest, variant) })
         const file = assertInsideOutDir(join(outDir, captureFileName(variant, width)), outDir)
         await shoot(page, storyUrl(storybookUrl, variant), file)
         files.push(file)

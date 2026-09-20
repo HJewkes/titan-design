@@ -1,0 +1,47 @@
+{
+  "schema": "titan-review/round@1",
+  "unit": "vw-467-carousel",
+  "round": 2,
+  "storybookUrl": "http://127.0.0.1:6101",
+  "context": "Round 2 of the phone carousel (VW-467). Settled in round 1 and unchanged here: 40 px arrow glyphs, a 24 px peek, the controls centred under the cards on the page background, cards stretched to the tallest, a single card as a plain card, cards capped at 480 px between phone and wall, and the wall grid at 1920. Two things are new. (1) Swipe: a mouse or trackpad drag now moves the cards, on top of the touch drag the platform already gives a phone; a quick flick moves exactly one card and a slow drag lands on the card it is left nearest. A static frame cannot show a drag, so the evidence is three named captures beside this manifest (swipe-1-start-360.png, swipe-2-mid-drag-360.png, swipe-3-after-release-360.png), and every frame here is draggable in Storybook if you want to try it. (2) The gap between the cards and the controls row: A is round 1's spacing, B is one rung tighter (the new default), C removes it. The arrow glyph stays at the 40 px you picked; its invisible box is 44 px so it meets the touch-target floor without moving the layout. Verified in dark mode only (VW-397).",
+  "widths": [1920, 360],
+  "height": 1580,
+  "variants": [
+    { "key": "A", "storyId": "custom-workout-goals-carousel-sections--default", "label": "Gap as round 1 (8 px, stack-md)", "args": { "cards": "nine", "controlsGap": "md" } },
+    { "key": "B", "storyId": "custom-workout-goals-carousel-sections--default", "label": "Gap one rung tighter (4 px, stack-sm)", "args": { "cards": "nine", "controlsGap": "sm" } },
+    { "key": "C", "storyId": "custom-workout-goals-carousel-sections--default", "label": "No gap (0)", "args": { "cards": "nine", "controlsGap": "none" } },
+    { "key": "D", "storyId": "custom-workout-goals-carousel-sections--default", "label": "Opened on a middle card, both arrows live", "args": { "cards": "nine", "startAt": "middle" } },
+    { "key": "E", "storyId": "pages-goals-carousel--default", "label": "Goals page: wall grid at 1920, carousels at 360" },
+    { "key": "F", "storyId": "pages-goals-carousel--default", "label": "Goals page in an 850 px column, cards capped at 480 px", "args": { "frame": "w850", "slideCap": "c480" } }
+  ],
+  "questions": [
+    {
+      "id": "gap",
+      "kind": "pick-one",
+      "prompt": "Space between the cards and the arrows. A is round 1's spacing, B is one rung tighter, C removes it. Which?",
+      "options": ["A", "B", "C"],
+      "required": true
+    },
+    {
+      "id": "swipe",
+      "kind": "pick-one",
+      "prompt": "Swipe. The three swipe-*.png captures beside this manifest show a drag: at rest, mid-drag with the cards following the hand, and after release snapped to the next card. A quick flick moves one card; a slow drag lands on the nearest; a mostly vertical drag scrolls the page instead and leaves the carousel where it was; a drag that ends on a card does not press it; under reduce-motion a release jumps instead of gliding. Every frame here is draggable in Storybook. Does the swipe behave as you wanted?",
+      "options": ["Yes, as described", "Change it (comment)"],
+      "required": true
+    },
+    {
+      "id": "hit-target",
+      "kind": "pick-one",
+      "prompt": "Arrow hit target. The glyph is the 40 px you chose. Its pressable box is 44 px, which is the touch-target floor, and the box is invisible so the layout does not move. Keep that?",
+      "options": ["Keep 40 px glyph with a 44 px box", "Make the glyph 44 px too", "Other (comment)"],
+      "required": true
+    },
+    {
+      "id": "sign-off",
+      "kind": "pick-one",
+      "prompt": "Sign-off. D opens on a middle card with both arrows live; E and F show the page (the wall grid at 1920 is unchanged).",
+      "options": ["Lock it", "Direction is right, refine in round 3", "Rethink (comment)"],
+      "required": true
+    }
+  ]
+}

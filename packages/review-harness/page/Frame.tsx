@@ -1,18 +1,29 @@
-import { useEffect, useRef, useState, type MouseEvent } from 'react'
-import type { Annotation, Variant } from '../src/schema.ts'
+import { useCallback, useEffect, useRef, useState, type MouseEvent } from 'react'
+import type { Annotation, FrameHeight, Variant } from '../src/schema.ts'
 import { storyUrl } from '../src/round.ts'
+import { isAuto } from '../src/sections.ts'
+import {
+  AUTO_FALLBACK_HEIGHT,
+  nextFrameHeight,
+  storyContentHeight,
+  type MeasurableDoc,
+} from './autoHeight.ts'
 
 type PinInput = Omit<Annotation, 'id' | 'note'>
 
 interface FrameProps {
   variant: Variant
   width: number
-  height: number
+  height: FrameHeight
+  maxHeight: number
   annotate: boolean
   pins: Annotation[]
   onPin: (pin: PinInput) => void
   onHitTesting: (sameOrigin: boolean) => void
 }
+
+/** Remeasures after a load and whenever the story reflows; the frame ends up its size. */
+const MAX_MEASUREMENTS = 12
 
 const round = (n: number, places: number) => Number(n.toFixed(places))
 
@@ -61,6 +72,52 @@ export function reachedStorybook(doc: Pick<Document, 'getElementById'> | null): 
   return doc === null || doc.getElementById('storybook-root') !== null
 }
 
+/**
+ * Sizes an `auto` frame to its story. The iframes are same-origin (the harness proxies
+ * Storybook on its own origin), so the page measures the story directly; a frame it
+ * cannot read, or one that never renders, stays at the fallback height.
+ */
+function useFittedHeight(height: FrameHeight, maxHeight: number) {
+  const [fitted, setFitted] = useState(AUTO_FALLBACK_HEIGHT)
+  const applied = useRef(AUTO_FALLBACK_HEIGHT)
+  const measurements = useRef(0)
+  const observer = useRef<{ disconnect: () => void } | null>(null)
+  const auto = isAuto(height)
+
+  const measure = useCallback(
+    (doc: MeasurableDoc | null) => {
+      if (!auto || measurements.current >= MAX_MEASUREMENTS) return
+      const next = nextFrameHeight(applied.current, storyContentHeight(doc), maxHeight)
+      if (next === applied.current) return
+      measurements.current += 1
+      applied.current = next
+      setFitted(next)
+    },
+    [auto, maxHeight]
+  )
+
+  const watch = useCallback(
+    (iframe: HTMLIFrameElement) => {
+      observer.current?.disconnect()
+      observer.current = null
+      if (!auto) return
+      const doc = sameOriginDocument(iframe)
+      const win = iframe.contentWindow as (Window & typeof globalThis) | null
+      measure(doc)
+      doc?.fonts?.ready.then(() => measure(doc)).catch(() => {})
+      const root = doc?.getElementById('storybook-root')
+      if (!root || !win?.ResizeObserver) return
+      const resize = new win.ResizeObserver(() => measure(doc))
+      resize.observe(root)
+      observer.current = resize
+    },
+    [auto, measure]
+  )
+
+  useEffect(() => () => observer.current?.disconnect(), [])
+  return { height: auto ? fitted : height, watch }
+}
+
 /** Whether the last load reached Storybook, and a retry that remounts the iframe. */
 function useFrameHealth(onHitTesting: (sameOrigin: boolean) => void) {
   const [attempt, setAttempt] = useState(0)
@@ -98,11 +155,12 @@ function hitTarget(iframe: HTMLIFrameElement | null, x: number, y: number) {
 }
 
 export function Frame(props: FrameProps) {
-  const { variant, width, height, annotate, pins } = props
+  const { variant, width, annotate, pins } = props
   const { ref: fitRef, scale } = useFitScale(width)
   const { ref: lazyRef, near } = useNearViewport()
   const iframe = useRef<HTMLIFrameElement>(null)
   const health = useFrameHealth(props.onHitTesting)
+  const { height, watch } = useFittedHeight(props.height, props.maxHeight)
 
   const onOverlayClick = (e: MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect()
@@ -116,6 +174,7 @@ export function Frame(props: FrameProps) {
     <figure className="frame" data-width={width} ref={fitRef}>
       <figcaption>
         {width}px{scale < 1 ? ` · shown at ${Math.round(scale * 100)}%` : ''}
+        {isAuto(props.height) ? ' · fitted' : ''}
       </figcaption>
       <div
         className="frame-box"
@@ -130,7 +189,10 @@ export function Frame(props: FrameProps) {
             src={storyUrl('', variant)}
             tabIndex={-1}
             style={{ width, height, transform: `scale(${scale})` }}
-            onLoad={(e) => health.onLoad(e.currentTarget)}
+            onLoad={(e) => {
+              health.onLoad(e.currentTarget)
+              watch(e.currentTarget)
+            }}
           />
         )}
         <div

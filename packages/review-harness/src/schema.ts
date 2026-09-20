@@ -33,6 +33,11 @@ const storybookUrl = z.url({ protocol: /^https?$/ }).check((ctx) => {
     })
 })
 
+export const AUTO_HEIGHT = 'auto'
+
+/** A frame height in CSS px, or "auto" to size the frame to its story's content. */
+const frameHeight = z.union([z.number().int().min(120).max(4000), z.literal(AUTO_HEIGHT)])
+
 export const VariantSchema = z
   .object({
     key: id,
@@ -40,6 +45,7 @@ export const VariantSchema = z
     label: z.string().min(1),
     args: z.record(z.string(), argValue).optional(),
     globals: z.record(z.string(), argValue).optional(),
+    height: frameHeight.optional(),
   })
   .strict()
 
@@ -50,11 +56,24 @@ const questionBase = {
   scope: scope.optional(),
 }
 
+/** Which variant each option stands for, so one click answers and picks the variant. */
+const optionVariants = z.record(z.string(), id).optional()
+
 const PickOneSchema = z
-  .object({ ...questionBase, kind: z.literal('pick-one'), options: z.array(z.string()).min(2) })
+  .object({
+    ...questionBase,
+    kind: z.literal('pick-one'),
+    options: z.array(z.string()).min(2),
+    optionVariants,
+  })
   .strict()
 const PickManySchema = z
-  .object({ ...questionBase, kind: z.literal('pick-many'), options: z.array(z.string()).min(1) })
+  .object({
+    ...questionBase,
+    kind: z.literal('pick-many'),
+    options: z.array(z.string()).min(1),
+    optionVariants,
+  })
   .strict()
 const ScaleSchema = z
   .object({
@@ -74,8 +93,68 @@ export const QuestionSchema = z.discriminatedUnion('kind', [
   TextSchema,
 ])
 
+/** One group of frames with the question(s) those frames answer, in reading order. */
+export const SectionSchema = z
+  .object({
+    id,
+    title: z.string().min(1),
+    context: z.string().optional(),
+    questionIds: z.array(id).default([]),
+    variantKeys: z.array(id).default([]),
+    /** Frames shown elsewhere that also bear on this section; rendered as a link, not a copy. */
+    seeAlso: z.array(id).default([]),
+    height: frameHeight.optional(),
+  })
+  .strict()
+
 function duplicates(values: string[]): string[] {
   return values.filter((v, i) => values.indexOf(v) !== i)
+}
+
+function sectionProblems(m: {
+  variants: { key: string }[]
+  questions: { id: string }[]
+  sections?: { id: string; variantKeys: string[]; questionIds: string[]; seeAlso: string[] }[]
+}): string[] {
+  if (!m.sections) return []
+  const keys = new Set(m.variants.map((v) => v.key))
+  const ids = new Set(m.questions.map((q) => q.id))
+  const unknown = m.sections.flatMap((s) => [
+    ...s.variantKeys
+      .filter((k) => !keys.has(k))
+      .map((k) => `section ${s.id}: unknown variant ${k}`),
+    ...s.seeAlso.filter((k) => !keys.has(k)).map((k) => `section ${s.id}: unknown variant ${k}`),
+    ...s.questionIds
+      .filter((q) => !ids.has(q))
+      .map((q) => `section ${s.id}: unknown question ${q}`),
+  ])
+  const claimedTwice = [
+    ...duplicates(m.sections.flatMap((s) => s.variantKeys)).map(
+      (k) => `variant ${k} is in two sections`
+    ),
+    ...duplicates(m.sections.flatMap((s) => s.questionIds)).map(
+      (q) => `question ${q} is in two sections`
+    ),
+  ]
+  const dupeIds = duplicates(m.sections.map((s) => s.id)).map((s) => `duplicate section id ${s}`)
+  return [...unknown, ...claimedTwice, ...dupeIds]
+}
+
+function optionVariantProblems(m: {
+  variants: { key: string }[]
+  questions: { id: string; options?: string[]; optionVariants?: Record<string, string> }[]
+}): string[] {
+  const keys = new Set(m.variants.map((v) => v.key))
+  return m.questions.flatMap((q) =>
+    Object.entries(q.optionVariants ?? {}).flatMap(([option, key]) => [
+      ...(q.options?.includes(option)
+        ? []
+        : [`question ${q.id}: "${option}" is not one of its options`]),
+      ...(keys.has(key)
+        ? []
+        : [`question ${q.id}: optionVariants points at unknown variant ${key}`]),
+    ])
+  )
 }
 
 export const ManifestSchema = z
@@ -86,9 +165,12 @@ export const ManifestSchema = z
     storybookUrl,
     context: z.string().optional(),
     widths: z.array(z.number().int().min(200).max(3840)).min(1),
-    height: z.number().int().min(200).max(4000).default(900),
+    height: frameHeight.default(AUTO_HEIGHT),
+    /** The ceiling an auto-sized frame stops at; taller stories scroll inside the frame. */
+    maxHeight: z.number().int().min(120).max(4000).default(1200),
     variants: z.array(VariantSchema).min(1).max(12),
     questions: z.array(QuestionSchema),
+    sections: z.array(SectionSchema).min(1).optional(),
   })
   .strict()
   .superRefine((m, ctx) => {
@@ -99,7 +181,14 @@ export const ManifestSchema = z
     report('variants', duplicates(m.variants.map((v) => v.key)))
     report('questions', duplicates(m.questions.map((q) => q.id)))
     report('widths', duplicates(m.widths.map(String)))
+    for (const message of sectionProblems(m))
+      ctx.addIssue({ code: 'custom', path: ['sections'], message })
+    for (const message of optionVariantProblems(m))
+      ctx.addIssue({ code: 'custom', path: ['questions'], message })
   })
+
+/** A comment the human left on a frame that a section pointed at this question. */
+const variantCommentSchema = z.object({ key: z.string(), comment: z.string() }).strict()
 
 const answerSchema = z
   .object({
@@ -109,6 +198,7 @@ const answerSchema = z
     value: z.number().optional(),
     text: z.string().optional(),
     comment: z.string().optional(),
+    variantComments: z.array(variantCommentSchema).optional(),
   })
   .strict()
 
@@ -142,6 +232,8 @@ const variantFeedbackSchema = z
     verdict: VerdictSchema,
     comment: z.string(),
     annotations: z.array(AnnotationSchema),
+    /** The questions whose section showed this frame, so a comment on it has an address. */
+    relatedQuestionIds: z.array(z.string()).optional(),
   })
   .strict()
 
@@ -162,6 +254,8 @@ export type ManifestInput = z.input<typeof ManifestSchema>
 export type Manifest = z.output<typeof ManifestSchema>
 export type Variant = Manifest['variants'][number]
 export type Question = Manifest['questions'][number]
+export type Section = z.output<typeof SectionSchema>
+export type FrameHeight = number | typeof AUTO_HEIGHT
 export type Feedback = z.infer<typeof FeedbackSchema>
 export type Answer = Feedback['answers'][number]
 export type VariantFeedback = Feedback['variants'][number]

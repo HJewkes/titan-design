@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useReducer, useState, type Dispatch } from 'react'
 import { buildFeedback } from '../src/feedback.ts'
 import { feedbackProblems } from '../src/round.ts'
-import type { Manifest } from '../src/schema.ts'
+import { roundLayout, type ResolvedSection } from '../src/sections.ts'
+import type { Manifest, Question, Variant } from '../src/schema.ts'
 import { QuestionBlock } from './QuestionBlock.tsx'
 import { ReviewScreen } from './ReviewScreen.tsx'
 import { browserStorage, clearDraft, saveDraft, type DraftStorage } from './draftStore.ts'
@@ -9,6 +10,7 @@ import {
   createReducer,
   orderedQuestions,
   restoredState,
+  stopIndexes,
   type Action,
   type ReviewState,
 } from './state.ts'
@@ -49,11 +51,21 @@ function Header({
         {manifest.unit} <span>round {manifest.round}</span>
       </h1>
       {manifest.context && <p>{manifest.context}</p>}
-      <ol className="prompts">
-        {orderedQuestions(manifest).map((q) => (
-          <li key={q.id}>{q.prompt}</li>
-        ))}
-      </ol>
+      {manifest.sections ? (
+        <ol className="prompts">
+          {manifest.sections.map((s) => (
+            <li key={s.id}>
+              <a href={`#section-${s.id}`}>{s.title}</a>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <ol className="prompts">
+          {orderedQuestions(manifest).map((q) => (
+            <li key={q.id}>{q.prompt}</li>
+          ))}
+        </ol>
+      )}
       <p className="keys">
         <kbd>1</kbd>-<kbd>9</kbd> pick · <kbd>Tab</kbd> comment · <kbd>Enter</kbd> next ·{' '}
         <kbd>a</kbd> pins {state.annotate ? 'ON' : 'off'} · <kbd>l</kbd> layout · <kbd>⌘ Enter</kbd>{' '}
@@ -98,54 +110,116 @@ function GeneralBlock({
   )
 }
 
-function Form({
-  manifest,
-  state,
-  dispatch,
-  onHitTesting,
-}: {
+interface PartProps {
   manifest: Manifest
   state: ReviewState
   dispatch: Dispatch<Action>
   onHitTesting: (on: boolean) => void
-}) {
-  const questions = orderedQuestions(manifest)
-  const n = manifest.variants.length
+  indexes: ReturnType<typeof stopIndexes>
+}
+
+function Variants({ variants, ...props }: PartProps & { variants: Variant[] }) {
+  const { manifest, state, dispatch, indexes } = props
   return (
-    <main>
-      <div
-        className={state.singleColumn ? 'variants single' : 'variants'}
-        data-annotating={state.annotate || undefined}
-      >
-        {manifest.variants.map((v, i) => (
-          <VariantCard
-            key={v.key}
-            manifest={manifest}
-            variant={v}
-            draft={state.draft.variants[v.key]}
-            index={i}
-            active={state.active === i}
-            follow={state.follow}
-            annotate={state.annotate}
-            focusPin={state.focusPin}
-            dispatch={dispatch}
-            onHitTesting={onHitTesting}
-          />
-        ))}
-      </div>
-      {questions.map((q, i) => (
+    <div
+      className={state.singleColumn ? 'variants single' : 'variants'}
+      data-annotating={state.annotate || undefined}
+    >
+      {variants.map((v) => (
+        <VariantCard
+          key={v.key}
+          manifest={manifest}
+          variant={v}
+          draft={state.draft.variants[v.key]}
+          index={indexes.variant(v.key)}
+          active={state.active === indexes.variant(v.key)}
+          follow={state.follow}
+          annotate={state.annotate}
+          focusPin={state.focusPin}
+          dispatch={dispatch}
+          onHitTesting={props.onHitTesting}
+        />
+      ))}
+    </div>
+  )
+}
+
+function Questions({ questions, ...props }: PartProps & { questions: Question[] }) {
+  const { manifest, state, dispatch, indexes } = props
+  return (
+    <>
+      {questions.map((q) => (
         <QuestionBlock
           key={q.id}
           manifest={manifest}
           question={q}
           draft={state.draft.answers[q.id]}
-          index={n + i}
-          active={state.active === n + i}
+          index={indexes.question(q.id)}
+          active={state.active === indexes.question(q.id)}
           follow={state.follow}
           dispatch={dispatch}
         />
       ))}
-      <GeneralBlock index={n + questions.length} state={state} dispatch={dispatch} />
+    </>
+  )
+}
+
+/** The question(s) first, then the frames they are asked about. */
+function SectionBlock({ section, ...props }: PartProps & { section: ResolvedSection }) {
+  return (
+    <section
+      className="round-section"
+      id={`section-${section.id}`}
+      data-testid={`section-${section.id}`}
+    >
+      <header className="section-head">
+        <h2>{section.title}</h2>
+        {section.context && <p>{section.context}</p>}
+        {section.seeAlso.length > 0 && (
+          <p className="see-also">
+            See also{' '}
+            {section.seeAlso.map((v) => (
+              <a key={v.key} href={`#variant-${v.key}`}>
+                {v.key} · {v.label}
+              </a>
+            ))}
+          </p>
+        )}
+      </header>
+      <Questions {...props} questions={section.questions} />
+      <Variants {...props} variants={section.variants} />
+    </section>
+  )
+}
+
+function Form(props: Omit<PartProps, 'indexes'>) {
+  const { manifest, state, dispatch } = props
+  const layout = roundLayout(manifest)
+  const indexes = stopIndexes(manifest)
+  const parts = { ...props, indexes }
+  return (
+    <main>
+      {layout.sections.map((s) => (
+        <SectionBlock key={s.id} {...parts} section={s} />
+      ))}
+      {layout.otherVariants.length > 0 &&
+        (layout.sections.length === 0 ? (
+          <Variants {...parts} variants={layout.otherVariants} />
+        ) : (
+          <section className="round-section" data-testid="other-frames">
+            <header className="section-head">
+              <h2>Other frames</h2>
+            </header>
+            <Variants {...parts} variants={layout.otherVariants} />
+          </section>
+        ))}
+      {layout.sections.length > 0 && layout.overallQuestions.length > 0 && (
+        <header className="section-head" data-testid="overall">
+          <h2>Overall</h2>
+        </header>
+      )}
+      <Questions {...parts} questions={layout.overallQuestions} />
+      <GeneralBlock index={indexes.general} state={state} dispatch={dispatch} />
       <button
         type="button"
         className="primary"

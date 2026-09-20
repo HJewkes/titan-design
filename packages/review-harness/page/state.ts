@@ -1,7 +1,9 @@
 import { emptyDraft, type ReviewDraft } from '../src/feedback.ts'
-import { questionScope } from '../src/round.ts'
-import type { Annotation, Manifest, Question, Verdict } from '../src/schema.ts'
+import { linksForVariant, optionVariants, orderedQuestions, roundLayout } from '../src/sections.ts'
+import type { Annotation, Manifest, Verdict } from '../src/schema.ts'
 import { loadDraft, type DraftStorage } from './draftStore.ts'
+
+export { orderedQuestions }
 
 export type Stop =
   | { kind: 'variant'; key: string }
@@ -46,19 +48,29 @@ export const VERDICT_KEYS: Record<string, Verdict> = {
   '0': null,
 }
 
-/** Variant-scoped questions sit right under the variants; round-scoped ones follow. */
-export function orderedQuestions(manifest: Manifest): Question[] {
-  const byScope = (s: 'variant' | 'round') =>
-    manifest.questions.filter((q) => questionScope(q, manifest) === s)
-  return [...byScope('variant'), ...byScope('round')]
-}
-
+/** Every stop in the order the page renders it: per section, its questions then its frames. */
 export function stopsFor(manifest: Manifest): Stop[] {
+  const layout = roundLayout(manifest)
   return [
-    ...manifest.variants.map((v): Stop => ({ kind: 'variant', key: v.key })),
-    ...orderedQuestions(manifest).map((q): Stop => ({ kind: 'question', id: q.id })),
+    ...layout.sections.flatMap((s): Stop[] => [
+      ...s.questions.map((q): Stop => ({ kind: 'question', id: q.id })),
+      ...s.variants.map((v): Stop => ({ kind: 'variant', key: v.key })),
+    ]),
+    ...layout.otherVariants.map((v): Stop => ({ kind: 'variant', key: v.key })),
+    ...layout.overallQuestions.map((q): Stop => ({ kind: 'question', id: q.id })),
     { kind: 'general' },
   ]
+}
+
+/** Where each stop sits in that order, so every block knows its own index. */
+export function stopIndexes(manifest: Manifest) {
+  const stops = stopsFor(manifest)
+  const at = (match: (s: Stop) => boolean) => stops.findIndex(match)
+  return {
+    variant: (key: string) => at((s) => s.kind === 'variant' && s.key === key),
+    question: (id: string) => at((s) => s.kind === 'question' && s.id === id),
+    general: stops.length - 1,
+  }
 }
 
 export function initialState(manifest: Manifest): ReviewState {
@@ -134,6 +146,60 @@ function reduceVariant(draft: ReviewDraft, action: Action): ReviewDraft {
   }
 }
 
+function setVerdict(draft: ReviewDraft, key: string, verdict: Verdict): ReviewDraft {
+  return draft.variants[key] ? updateVariant(draft, key, () => ({ verdict })) : draft
+}
+
+/** A pick on a mapped question also sets its frame's verdict; the others stop being chosen. */
+function linkPick(
+  manifest: Manifest,
+  draft: ReviewDraft,
+  action: Extract<Action, { type: 'pick' }>
+): ReviewDraft {
+  const question = manifest.questions.find((q) => q.id === action.id)
+  const map = question ? optionVariants(manifest, question) : new Map<string, string>()
+  const key = map.get(action.option)
+  if (!key) return draft
+  const answer = draft.answers[action.id] ?? { comment: '' }
+  const on = action.many
+    ? (answer.picks ?? []).includes(action.option)
+    : answer.pick === action.option
+  const cleared = action.many
+    ? draft
+    : [...map].reduce(
+        (d, [option, other]) =>
+          option !== action.option && d.variants[other]?.verdict === 'chosen'
+            ? setVerdict(d, other, null)
+            : d,
+        draft
+      )
+  if (on) return setVerdict(cleared, key, 'chosen')
+  return cleared.variants[key]?.verdict === 'chosen' ? setVerdict(cleared, key, null) : cleared
+}
+
+/** Choosing a frame answers the question it stands for; un-choosing clears that pick. */
+function linkVerdict(
+  manifest: Manifest,
+  draft: ReviewDraft,
+  action: Extract<Action, { type: 'verdict' }>
+): ReviewDraft {
+  return linksForVariant(manifest, action.key).reduce((d, { question, option }) => {
+    const many = question.kind === 'pick-many'
+    const answer = d.answers[question.id] ?? { comment: '' }
+    if (action.verdict === 'chosen')
+      return many
+        ? updateAnswer(d, question.id, (a) => ({
+            picks: (a.picks ?? []).includes(option) ? a.picks : [...(a.picks ?? []), option],
+          }))
+        : updateAnswer(d, question.id, () => ({ pick: option }))
+    if (many)
+      return updateAnswer(d, question.id, (a) => ({
+        picks: (a.picks ?? []).filter((p) => p !== option),
+      }))
+    return answer.pick === option ? updateAnswer(d, question.id, () => ({ pick: undefined })) : d
+  }, draft)
+}
+
 function reduceAnswer(draft: ReviewDraft, action: Action): ReviewDraft {
   switch (action.type) {
     case 'pick':
@@ -162,6 +228,14 @@ function addPin(state: ReviewState, action: Extract<Action, { type: 'addPin' }>)
   return { ...state, draft, focusPin: pin.id }
 }
 
+/** Keeps a pick and the verdict of the frame it stands for in step, in one action. */
+function reduceLinked(manifest: Manifest, draft: ReviewDraft, action: Action): ReviewDraft {
+  const next = reduceAnswer(draft, action)
+  if (action.type === 'pick') return linkPick(manifest, next, action)
+  if (action.type === 'verdict') return linkVerdict(manifest, next, action)
+  return next
+}
+
 export function createReducer(manifest: Manifest) {
   const stopCount = stopsFor(manifest).length
   return function reduce(state: ReviewState, action: Action): ReviewState {
@@ -181,7 +255,7 @@ export function createReducer(manifest: Manifest) {
       case 'screen':
         return { ...state, screen: action.screen, errors: action.errors ?? [] }
       default:
-        return { ...state, draft: reduceAnswer(state.draft, action) }
+        return { ...state, draft: reduceLinked(manifest, state.draft, action) }
     }
   }
 }

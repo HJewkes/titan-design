@@ -1,0 +1,25 @@
+{
+  "schema": "titan-review/round@1",
+  "unit": "titan-0201-hardening",
+  "round": 5,
+  "storybookUrl": "http://127.0.0.1:6104",
+  "context": "Your three round-4 notes, built. THE STAR: the chart now draws the PR badge's own glyph, so the two cannot drift apart; the first frame puts the icon, the badge and the chart star together. EVERY WEEK HAS A TIP: hover, tap, or tab to the chart and use the arrow keys. Each tip says the week's reading, 'Personal record' on a record, the plan, 'Deload week', 'Current week', and the next target's label on its week. The tip frames are held open by state so you can look at them. THE HIGHLIGHTED BAND: what you saw highlighted was the DELOAD week's shading; the chart had no current-week mark at all, which is why it never matched the cells. The chart now outlines the current week's column, taken from the same single value the cells ring, so they cannot disagree; the deload week keeps its softer fill, so the two marks read as different things. Two frames show different current weeks, and one has the current week ON the deload week so you see both marks on one column.",
+  "widths": [1920, 360],
+  "height": 610,
+  "variants": [
+    { "key": "star", "storyId": "lab-decisions-goal-chart-marks--star-beside-icon", "label": "The star: icon, PR badge and the chart's mark, all one glyph at 22px" },
+    { "key": "tip-past", "storyId": "lab-decisions-goal-chart-marks--tip-past-week", "label": "Tip open on a PAST week (week 3: reading, personal record, plan)" },
+    { "key": "tip-current", "storyId": "lab-decisions-goal-chart-marks--tip-current-week", "label": "Tip open on the CURRENT week (week 4)" },
+    { "key": "tip-future", "storyId": "lab-decisions-goal-chart-marks--tip-future-week", "label": "Tip open on a FUTURE week (week 5, the deload)" },
+    { "key": "current-2", "storyId": "lab-decisions-goal-chart-marks--current-week-two", "label": "Current week 2: the chart's outline and the cells' ring on the same column" },
+    { "key": "current-5", "storyId": "lab-decisions-goal-chart-marks--current-week-five-deload", "label": "Current week 5, which is also the deload week: outline and fill on one column" }
+  ],
+  "questions": [
+    { "id": "q1", "kind": "pick-one", "prompt": "The star frame shows the icon, the PR badge and the chart's star at one size. Do they match?", "options": ["yes", "no"], "required": true },
+    { "id": "q2", "kind": "pick-one", "prompt": "The three tip frames show a past week, the current week and a future week. Is the tip's content right for each?", "options": ["yes", "no"], "required": true },
+    { "id": "q3", "kind": "pick-one", "prompt": "In current-2 and current-5 the chart outlines the current week's column and the cells above ring the same week. Do they read as aligned now?", "options": ["yes", "no"], "required": true },
+    { "id": "q4", "kind": "pick-one", "prompt": "In current-5 the current week IS the deload week: an outline for 'current' over the softer deload fill. Do the two marks read as different things?", "options": ["yes", "no"], "required": true },
+    { "id": "q5", "kind": "pick-one", "prompt": "Sign off for merge and the 0.21.1 patch?", "options": ["yes", "no, another round"], "required": true },
+    { "id": "q6", "kind": "text", "prompt": "Anything else you would change?" }
+  ]
+}

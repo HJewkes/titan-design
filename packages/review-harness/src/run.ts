@@ -1,6 +1,6 @@
 import { dirname, resolve } from 'node:path'
 import { parseArgs } from 'node:util'
-import { exampleManifest } from './example.ts'
+import { exampleManifest, sectionedExampleManifest } from './example.ts'
 import {
   EXIT_INTERRUPTED,
   EXIT_INVALID,
@@ -27,6 +27,7 @@ width, prints the feedback JSON on stdout and exits 0. Ctrl-C exits 130, writing
   --no-open          Print the page url instead of opening the browser
   --no-capture       Skip the post-submit PNGs
   --example          Print a sample manifest built from Lab/Decisions stories
+  --sections         With --example, print the question-first sectioned shape
   --help             Print this help`
 
 export interface CliIo extends Omit<ReviewDeps, 'onReady'> {
@@ -47,6 +48,7 @@ function parseCli(argv: string[]) {
       'no-open': { type: 'boolean' },
       'no-capture': { type: 'boolean' },
       example: { type: 'boolean' },
+      sections: { type: 'boolean' },
       help: { type: 'boolean' },
     },
   })
@@ -95,7 +97,8 @@ async function dispatch(parsed: Parsed, io: CliIo): Promise<number> {
   }
   if (parsed.values.example) {
     const sb = parsed.values.storybook ?? 'http://127.0.0.1:6100'
-    io.stdout(`${JSON.stringify(exampleManifest(sb), null, 2)}\n`)
+    const build = parsed.values.sections ? sectionedExampleManifest : exampleManifest
+    io.stdout(`${JSON.stringify(build(sb), null, 2)}\n`)
     return EXIT_OK
   }
   if (parsed.positionals.length !== 1) throw new ReviewError(`expected one manifest\n\n${USAGE}`)

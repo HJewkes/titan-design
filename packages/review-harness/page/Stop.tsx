@@ -2,6 +2,7 @@ import { useEffect, useRef, type Dispatch, type ReactNode } from 'react'
 import type { Action } from './state.ts'
 
 interface StopProps {
+  id?: string
   index: number
   active: boolean
   /** Move focus and scroll here on activation; false when the human clicked or focused into it. */
@@ -13,7 +14,16 @@ interface StopProps {
 }
 
 /** One keyboard stop: Enter moves focus here, and focusing anything inside activates it. */
-export function Stop({ index, active, follow, dispatch, className, testId, children }: StopProps) {
+export function Stop({
+  id,
+  index,
+  active,
+  follow,
+  dispatch,
+  className,
+  testId,
+  children,
+}: StopProps) {
   const ref = useRef<HTMLElement>(null)
   const mounted = useRef(false)
   useEffect(() => {
@@ -27,6 +37,7 @@ export function Stop({ index, active, follow, dispatch, className, testId, child
   return (
     <section
       ref={ref}
+      id={id}
       tabIndex={-1}
       data-testid={testId}
       data-active={active || undefined}
