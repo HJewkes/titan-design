@@ -39,7 +39,15 @@ export function nextRovingWeek(key: string, index: number, count: number): numbe
 }
 
 /** The week targets over the plot, absolute against the chart's own box. */
-export function GoalTrajectoryWeekTips({ tips }: { tips: WeekTip[] }) {
+export function GoalTrajectoryWeekTips({
+  tips,
+  width,
+  height,
+}: {
+  tips: WeekTip[]
+  width: number
+  height: number
+}) {
   const [active, setActive] = useState(0)
   const group = useRef<View>(null)
 
@@ -53,7 +61,13 @@ export function GoalTrajectoryWeekTips({ tips }: { tips: WeekTip[] }) {
   }
 
   return (
-    <View ref={group} testID="goal-trajectory-chart-week-targets">
+    // Laid over the canvas, which is the box the tips' coordinates are measured in.
+    <View
+      ref={group}
+      style={{ position: 'absolute', left: 0, top: 0, width, height }}
+      pointerEvents="box-none"
+      testID="goal-trajectory-chart-week-targets"
+    >
       {tips.map((tip, index) => (
         <View
           key={tip.week}

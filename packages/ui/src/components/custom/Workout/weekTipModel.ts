@@ -46,7 +46,7 @@ export function warnUnknownCurrentWeek(currentWeek: number, axis: number[]) {
   if (axis.includes(currentWeek) || warnedWeeks.has(currentWeek)) return
   warnedWeeks.add(currentWeek)
   console.warn(
-    `titan: currentWeek ${String(currentWeek)} is not a week of this block (${String(axis[0])} to ${String(axis.at(-1))}).`
+    `titan: currentWeek ${String(currentWeek)} is not a week of this block (${String(axis[0])} to ${String(axis[axis.length - 1])}).`
   )
 }
 

@@ -439,7 +439,7 @@ export function GoalTrajectoryChart({
         <View style={{ height: overhang }} testID="goal-trajectory-chart-overhang" />
       )}
       {marks && <CalibratingInfo marks={marks} note={note} palette={palette} />}
-      <GoalTrajectoryWeekTips tips={tips} />
+      <GoalTrajectoryWeekTips tips={tips} width={width} height={height} />
     </View>
   )
 }
