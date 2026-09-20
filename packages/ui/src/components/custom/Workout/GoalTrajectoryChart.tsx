@@ -32,6 +32,8 @@ import {
 } from './GoalTrajectoryCalibrating'
 import { hitBoxAround, useHitTargetSize, type HitBox } from './goalTrajectoryTargets'
 import { gridLabelSpecs, ruleLabelSpecs, type RuleLabelText } from './goalTrajectoryRuleLabels'
+import { weekTips } from './weekTipModel'
+import { GoalTrajectoryWeekTips } from './GoalTrajectoryWeekTips'
 import type { BandFade } from './GoalTrajectoryBand'
 import type { BandCurve } from './GoalTrajectoryChartGeometry'
 import type { PlotBaseline } from './GoalTrajectoryPlot'
@@ -383,6 +385,16 @@ export function GoalTrajectoryChart({
   }
 
   const axisWeeks = weeks.length > 0 ? weeks : expected.map((p) => ({ index: p.weekIndex }))
+  const tips = weekTips({
+    geometry,
+    weeks: axisWeeks,
+    expected,
+    ...(nextTarget ? { nextTarget } : {}),
+    unit,
+    width,
+    height,
+    size: targetSize,
+  })
   return (
     <View style={{ width }} className={cn(className)} testID="goal-trajectory-chart" {...props}>
       <View
@@ -418,32 +430,7 @@ export function GoalTrajectoryChart({
         <View style={{ height: overhang }} testID="goal-trajectory-chart-overhang" />
       )}
       {marks && <CalibratingInfo marks={marks} note={note} palette={palette} />}
-      {nextTargetBox && nextTarget && (
-        <NextTargetTip box={nextTargetBox} label={nextTarget.label} />
-      )}
-    </View>
-  )
-}
-
-/**
- * The marker's words, one hover away: a hit target over the plane rather than a
- * label on it. Absolute against the chart's own box, whose origin is the canvas.
- * The box is 24px, 44px under a touch pointer, and kept inside the chart.
- */
-function NextTargetTip({ box, label }: { box: HitBox; label: string }) {
-  const square = { width: box.size, height: box.size }
-  return (
-    <View
-      style={{ position: 'absolute', left: box.x, top: box.y }}
-      testID="goal-trajectory-chart-next-target-tip"
-    >
-      <TipTrigger
-        label="Next target"
-        content={<Typography variant="body2">{label}</Typography>}
-        style={square}
-      >
-        <View style={square} />
-      </TipTrigger>
+      <GoalTrajectoryWeekTips tips={tips} />
     </View>
   )
 }

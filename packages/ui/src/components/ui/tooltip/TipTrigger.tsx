@@ -30,6 +30,10 @@ export interface TipTriggerProps {
    */
   usePortal?: boolean
   testID?: string
+  /** Tab order of the trigger; -1 keeps it reachable by script while a group roves focus. */
+  tabIndex?: 0 | -1
+  /** Keys the trigger does not handle itself, for a group that moves focus between triggers. */
+  onKeyDown?: (event: { key: string; preventDefault: () => void }) => void
   children: ReactNode
 }
 
@@ -76,6 +80,8 @@ export function TipTrigger({
   pressableStyle,
   usePortal = true,
   testID,
+  tabIndex,
+  onKeyDown,
   children,
 }: TipTriggerProps) {
   const [focusedOpen, setOpen] = useState(false)
@@ -103,6 +109,8 @@ export function TipTrigger({
         onFocus={() => setOpen(true)}
         onBlur={() => setOpen(false)}
         onPress={() => setOpen((wasOpen) => !wasOpen)}
+        {...(tabIndex !== undefined ? { tabIndex } : {})}
+        {...(onKeyDown ? { onKeyDown } : {})}
         style={pressableStyle ?? style}
         testID={testID}
       >

@@ -423,12 +423,14 @@ describe('GoalTrajectoryChart next target', () => {
     expect(screen.queryByText(nextTarget.label)).not.toBeInTheDocument()
   })
 
-  it('opens the label as a tip on hover', () => {
+  it('opens the label in its own week\'s tip on hover', () => {
     render(<GoalTrajectoryChart {...baseProps} status="on_track" nextTarget={nextTarget} />)
 
-    fireEvent.mouseEnter(screen.getByRole('button', { name: 'Next target' }))
+    fireEvent.mouseEnter(
+      screen.getByTestId(`goal-trajectory-chart-week-target-${String(nextTarget.weekIndex)}`)
+    )
 
-    expect(screen.getByText(nextTarget.label)).toBeInTheDocument()
+    expect(screen.getByText(`Next target: ${nextTarget.label}`)).toBeInTheDocument()
   })
 
   it('draws nothing when the caller passes no next target', () => {

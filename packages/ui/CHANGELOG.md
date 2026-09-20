@@ -23,9 +23,19 @@ project adheres to [Semantic Versioning](https://semver.org/).
 - `STAR_ICON_PATH` and `STAR_ICON_BOX` (the star glyph's path and its ink box in
   the icon viewBox) and `ICON_VIEWBOX`, so a chart can draw the same star as the
   PR badge from one source.
+- `TipTrigger` takes `tabIndex` and `onKeyDown`, so a group of triggers can rove
+  focus between them.
 
 ### Changed
 
+- `GoalTrajectoryChart`: every week of the block opens a tip, not only the next
+  target. Each says the week's reading (or "No reading yet"), "Personal record"
+  on a record, the planned band, "Deload week" on a deload column and the next
+  target's label on its week. Hover, keyboard focus and press open it; blur,
+  Escape and a press outside close it. The week targets are ONE tab stop with a
+  roving tabindex (arrows move, Home and End jump), because a goals page shows
+  several charts. The separate next-target tip is gone; its label now sits in
+  that week's tip.
 - `GoalTrajectoryChart` and `GoalTrajectoryMini` draw the PR star from the PR
   icon's own path instead of a hand-rolled polygon, so the chart mark and the
   badge cannot diverge. The star keeps its size and centre.
