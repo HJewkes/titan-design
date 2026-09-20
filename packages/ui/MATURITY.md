@@ -37,13 +37,18 @@ in this order:
 
 1. Under `src/lab/**` → **`status:lab`**. No exceptions; lab is excluded from
    publish builds (`package.json` `files` carries `!src/lab`).
-2. Under `src/components/ui/<dir>/` and **all four** hold → **`status:stable`**:
+2. Under `src/components/ui/<dir>/`, where `<dir>` is the component's own directory (for charts,
+   `ui/charts/<dir>/`), and the clauses below hold (all five once clause 5 is live, clauses 1 to 4 until then), it is **`status:stable`**:
    - a test file in `<dir>` whose source contains `axe`;
    - `<dir>` has its own `README.md`, **or** its story carries a `Composes:`
      line, **or** it has a row in the
      [`ui/*` family README](src/components/ui/README.md) dependency map;
    - no heading in [`REJECTED.md`](REJECTED.md) names one of its exports;
-   - no row in [`DEPRECATIONS.md`](DEPRECATIONS.md) names one of its exports.
+   - no row in [`DEPRECATIONS.md`](DEPRECATIONS.md) names one of its exports;
+   - Clause 5 takes effect when TD-26 lands; TD-26 creates `stable-layers-baseline.json` from the
+     components that are stable on that day, so no component loses stable on the day the rule
+     starts. Until then clauses 1 to 4 alone derive the list (31 stable, 2 candidate as of this
+     revision).
 3. Anything else under `src/components` → **`status:candidate`**.
 
 Clause 2's fourth condition is an addition made when this rule was written
@@ -57,10 +62,12 @@ Consequences worth stating out loud:
 
 - **Adding a `ui/*` primitive without a row in the family README leaves it
   `candidate`.** The README is load-bearing, not decoration.
-- **`custom/*` and `shell/*` cannot reach `stable` under this rule.** They are
-  `candidate` by construction until the rule grows a clause for them, which is a
-  deliberate deferral: the Voltras-workout review pass (below) is where that
-  clause gets written.
+- **`custom/*` and `shell/*` cannot reach `stable` under this rule. Placement
+  follows the rule in `CLAUDE.md` (Placement): `ui/` is the domain-free tier, so
+  eligibility follows from what a component knows.** They are `candidate` by
+  construction until the rule grows a clause for them, which is a deliberate
+  deferral: the Voltras-workout review pass (below) is where that clause gets
+  written.
 - **Deprecating an export demotes it** on the next pass. That is the intent.
 
 ## Promoting a component
@@ -129,9 +136,9 @@ Rank highest confidence first, then walk the list as the protocol above says.
 The **39** generic primitives (Button, Card, Input, Modal, Table, …) are a
 separate foundation tier and are out of scope for the Voltras-workout review
 pass. This file used to say "~52": that number predated the `ui/` reorganisation
-and was never recounted. It is `ls -d src/components/ui/*/ | wc -l` — 39
-directories, one per primitive — and `src/arch/arch-graph.json` lists all 39
-too. The 39th is `trigger` (`TriggerSurface`, added in #176), an internal helper
+and was never recounted. The count is `ls -d src/components/ui/*/ src/components/ui/charts/*/`, less
+`charts` and `kit`: 39 directories today, one per primitive, and `src/arch/arch-graph.json` lists
+all 39 too. The 39th is `trigger` (`TriggerSurface`, added in #176), an internal helper
 that `Menu`, `Popover` and `Tooltip` compose. It is not exported from the `ui`
 barrel and has no story.
 

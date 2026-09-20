@@ -37,7 +37,7 @@ deferred to its own pass.
 | 6 | Theme source | `SurfaceContext`/`ThemeProvider` only. `utils/useTheme.ts` is deleted (Card no longer uses it after #166). |
 | 7 | Workout/Fatigue dark-only? | No. Full theme-correct port (E3), in the batches below. |
 | 8 | Colour math | One `theme/color-math.ts` with CIELAB L* as the sanctioned metric; duplicate `hexToRgb` ×4, `mixHex` ×4, luminance ×3, test `lstar` ×3 deleted. |
-| 9 | Typography | `Typography` and `Eyebrow` move into `ui/`; re-export shims stay in `custom/`. |
+| 9 | Typography | `Typography` and `Eyebrow` move into `ui/`; re-export shims stay in `custom/`. Scheduled by the 2026-09-19 decision below (M2); not yet landed. |
 | 10 | Dot | `Indicator` survives. `StatusDot`'s consumers migrate; its inline glows route through `getGlowShadow`. Fatigue README corrected. |
 | 11 | Metric | One `Metric` with size / align / trend. `MetricTiles` becomes a preset (one external site); `MetricCell` deleted (no consumers). |
 | 12 | paperSheet | Stays hero-only. Cards use the lift (rim 0.12); grain is not on ordinary cards. |
@@ -97,3 +97,50 @@ deferred to its own pass.
 ## Consumer follow-ups (one task per repo when E2 lands)
 
 audiobook/frontend (Badge, Chip, StatusPill) · voltras-mcp (Pill, Badge, PrBadge, MuscleGroupChip, MetricTiles, StatusPill type) · voltras mobile (Card, Metric, Section, SectionHeader, `getSemanticColors`/`alpha`) · codewatch (Badge, Metric) · voltras-mcp-wave0 and codewatch-wt-c76 (stale forks: retire or repoint).
+
+## Decision, 2026-09-19: component placement and migration
+
+Placement is decided by what a component knows, not by how much it composes (`CLAUDE.md`,
+Placement). `ui/` is domain-free at any size and may compose `ui/` siblings, `theme`, `utils`,
+`hooks` and `icons`; `custom/<Family>/` knows one domain's vocabulary; `shell/` is the application
+frame; `src/lab/` is unpublished. The chart substrate is `ui/charts/<chart>/` with a shared `kit/`;
+`d3-*` imports are legal only there. Stable eligibility stays coupled to placement: only `ui/*` is
+eligible, and once TD-26 lands its test layers become a fifth condition (`MATURITY.md`, clause 2).
+
+Thirteen `custom/` directories plus `ActiveWork/Eyebrow` are domain-free and move to `ui/` over
+time (`custom/README.md`, "Generic directories awaiting a move to `ui/`"). In-repo importer counts
+are grep counts against `src/` at merge time, excluding the directory's own files.
+
+| #   | Move                                                                                                                | In-repo importers        | When                                      |
+| --- | ------------------------------------------------------------------------------------------------------------------- | ------------------------ | ----------------------------------------- |
+| M1  | `usePrefersReducedMotion` to `src/hooks/usePrefersReducedMotion.ts`                                                 | 3                        | now                                       |
+| M2  | Typography to `ui/typography`, Eyebrow to `ui/eyebrow`, with a one-release re-export shim in `custom/Typography`; marks decision 9 landed when its PR merges | Typography 68, Eyebrow 8 | now                                       |
+| M3  | EmptyState to `ui/empty-state`                                                                                      | 1                        | now                                       |
+| M5  | Create `ui/charts/` with its README; move SparkBars; add a `d3-*`-import lint scoped to `ui/charts/**`              | 2                        | now                                       |
+| M4  | Table (headless `useTableState` plus a styled shell, TD-29, #271) to `ui/table`                                     | 8                        | now that TD-29 has landed                 |
+| M6  | Generic singles: Metric (2), DateTime (8), Prose (5), Sidebar (1), stepper (1), TimerReadout (2), CircularTimer (2) | 21 total                 | behind the shrinking baseline, follows M2 |
+| M7  | Charts that are already generic: Scatter (1), Gauge (1), Treemap (3), into `ui/charts/`                             | 5 total                  | behind the shrinking baseline             |
+
+M1, M2, M3 and M5 land as separate PRs on disjoint files and can run in parallel. M4 was gated on
+TD-29, which has since landed (#271); it is now unblocked. M6 and M7 have no deadline;
+`custom-families.baseline.json` (the placement lint, below) tracks the ten directories so they are
+not forgotten.
+
+**Placement lint (new epic, tracked as a follow-up task, not implemented by this decision's docs
+PR).** A separate tooling PR adds, each ratcheted with a committed baseline in the repo's existing
+pattern (`eslint-rules/*-baseline.json`):
+
+- `no-upward-tier-import`'s failure message names the fix: "move the shared code to `ui/` (see
+  Placement in `CLAUDE.md`); use a slot only for consumer vocabulary."
+- `no-upward-tier-import`'s `tierOf` classifies `hooks/` and `utils/` as a foundation tier beside
+  `theme`, so they cannot import `components/`.
+- A `custom-families.test.ts` structure test: a top-level `custom/` directory must be a declared
+  domain family (`Workout`, `Fatigue`, `ActiveWork`, `charts`) or appear in the committed baseline
+  of misplaced generics, which may only shrink. Baseline: the 13 directories above plus
+  `ActiveWork/Eyebrow`. A new generic directory in `custom/` fails.
+- `story-title-prefix` restricts `Components/` to `ui/*` and `Custom/` to `custom/*`, ratcheted
+  against the nine `custom/` stories already titled `Components/...`.
+- A `no-restricted-imports` block confines `d3-*` to `src/components/ui/charts/**`, baselining
+  today's one exception (`GoalTrajectoryChartGeometry.ts` and its test, outside `custom/charts`).
+- `shell/` is forbidden from importing `shell/<app>/`, baselining the barrel (exempt by design) and
+  `SideNav.stories.tsx`.

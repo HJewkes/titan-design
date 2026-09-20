@@ -1,9 +1,8 @@
 # `ui/*` — the generic primitive family
 
-The domain-free foundation tier: 39 primitives that know nothing about workouts,
-sessions or initiatives. Everything in `custom/*` and `shell/*` is built on this
-layer, and `ui/*` may not import from either of them — the tier order is
-`theme → icons → ui → custom → shell → pages`.
+The domain-free tier: components of any size, atom to organism, that know nothing about workouts,
+sessions or initiatives. `ui/*` may import `theme`, `utils`, `hooks`, `icons` and `ui/*` siblings,
+and never `custom/*` or `shell/*`. Placement rule: `CLAUDE.md`, Placement.
 
 This README is the **index**. It maps each primitive's dependencies
 (**composes ↓**) and its consumers (**used-by ↑**) so the tree navigates in both
