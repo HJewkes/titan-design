@@ -107,8 +107,6 @@ export function trajectoryPalette(
     // The PR badge's own colour: one mark, one token (titan-0201 round 5).
     star: t['brand-primary'],
     deload: alpha(t['text-primary'], 0.05),
-    // The current week is an OUTLINE, the same ring the card's week cell takes; deload is a fill.
-    currentWeek: t['text-primary'],
     boundary: alpha(t['text-tertiary'], 0.35),
     plane: surfaceBackground(pressedLevel(level), mode),
     shade,
@@ -309,19 +307,6 @@ function DeloadAndBoundaries({ geometry, palette, height }: LayerProps & { heigh
           fill={palette.deload}
         />
       ))}
-      {geometry.currentWeekColumn && (
-        <rect
-          data-testid="goal-trajectory-chart-current-week"
-          x={geometry.currentWeekColumn.x + 0.5}
-          y={plane.y + 0.5}
-          width={Math.max(0, geometry.currentWeekColumn.width - 1)}
-          height={Math.max(0, plane.height - 1)}
-          fill="none"
-          stroke={palette.currentWeek}
-          strokeWidth={1}
-          rx={2}
-        />
-      )}
       {geometry.boundaries.map((boundary) => (
         <line
           key={`boundary-${boundary.weekIndex}`}

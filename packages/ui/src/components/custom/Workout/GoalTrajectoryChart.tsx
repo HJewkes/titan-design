@@ -4,8 +4,6 @@ import { View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { roundWeight } from '../../../utils/workout-format'
 import { useSurface, useOnSurfaceColor } from '../../ui/surface'
-import { TipTrigger } from '../../ui/tooltip'
-import { Typography } from '../../ui/typography'
 import { valueReach, type GoalReach } from './goalMilestone'
 import {
   deriveTrajectoryGeometry,
@@ -187,11 +185,6 @@ export interface GoalTrajectoryChartProps extends ViewProps {
    * gridline carries its value inside the plot instead, and the plot takes back the
    * gutter. A GoalCard lines its week cells up with the plot either way.
    */
-  /**
-   * The block's current week. The chart outlines that column, the same week a card's
-   * cells ring, so the two cannot disagree. A `GoalCard` supplies it; its `goal` omits it.
-   */
-  currentWeek?: number
   yAxisLabels?: boolean
   /**
    * The committed and stretch labels: `numeric` ("185", the default since titan-0201
@@ -290,7 +283,6 @@ export function GoalTrajectoryChart({
   bandCurve = 'monotone',
   referenceLabelSide = 'left',
   calibratingNote,
-  currentWeek,
   yAxisLabels = false,
   ruleLabelText = 'numeric',
   className,
@@ -326,7 +318,6 @@ export function GoalTrajectoryChart({
         tickCount: density.tickCount,
         bandCurve,
         insets: trajectoryInsets(yAxisLabels),
-        ...(currentWeek === undefined ? {} : { currentWeek }),
       }),
     [
       expected,
@@ -341,7 +332,6 @@ export function GoalTrajectoryChart({
       density,
       bandCurve,
       yAxisLabels,
-      currentWeek,
     ]
   )
   const geometry = calibrating ? withoutLead(derived) : derived
@@ -399,7 +389,6 @@ export function GoalTrajectoryChart({
     weeks: axisWeeks,
     expected,
     ...(nextTarget ? { nextTarget } : {}),
-    ...(currentWeek === undefined ? {} : { currentWeek }),
     unit,
     width,
     height,

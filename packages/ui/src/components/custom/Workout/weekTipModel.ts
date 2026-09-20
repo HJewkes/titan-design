@@ -27,27 +27,10 @@ export interface WeekTipInput {
   weeks: readonly GoalTrajectoryWeek[]
   expected: readonly GoalExpectedPoint[]
   nextTarget?: GoalNextTarget
-  /** The block's current week, the same value the card's week cells ring. */
-  currentWeek?: number
   unit: string
   width: number
   height: number
   size: number
-}
-
-// Bundlers replace `process.env.NODE_ENV` literally; the DTS build has no Node types.
-declare const process: { env: { NODE_ENV?: string } }
-
-const warnedWeeks = new Set<number>()
-
-/** Dev-only: a current week outside the block means two sources of truth crept back in. */
-export function warnUnknownCurrentWeek(currentWeek: number, axis: number[]) {
-  if (typeof process === 'undefined' || process.env.NODE_ENV === 'production') return
-  if (axis.includes(currentWeek) || warnedWeeks.has(currentWeek)) return
-  warnedWeeks.add(currentWeek)
-  console.warn(
-    `titan: currentWeek ${String(currentWeek)} is not a week of this block (${String(axis[0])} to ${String(axis[axis.length - 1])}).`
-  )
 }
 
 const amount = (value: number, unit: string) => `${String(roundWeight(value))} ${unit}`
@@ -69,9 +52,8 @@ function readingLines(
 
 /** Every week's tip: what it says, and the hit box it opens from. */
 export function weekTips(input: WeekTipInput): WeekTip[] {
-  const { geometry: g, weeks, expected, nextTarget, currentWeek, unit, width, height, size } = input
+  const { geometry: g, weeks, expected, nextTarget, unit, width, height, size } = input
   const axis = weeks.length > 0 ? weeks.map((w) => w.index) : expected.map((p) => p.weekIndex)
-  if (currentWeek !== undefined) warnUnknownCurrentWeek(currentWeek, axis)
   return axis.map((week) => {
     const reading = g.actuals.find((a) => Math.round(a.weekIndex) === week)
     const plan = expected.find((p) => p.weekIndex === week)
@@ -80,7 +62,6 @@ export function weekTips(input: WeekTipInput): WeekTip[] {
       ...readingLines(reading, unit),
       planLine(plan, unit),
       weeks.find((w) => w.index === week)?.isDeload === true ? 'Deload week' : null,
-      currentWeek === week ? 'Current week' : null,
       isNext && nextTarget ? `Next target: ${nextTarget.label}` : null,
     ].filter((line): line is string => line != null)
     const y =

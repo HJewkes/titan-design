@@ -74,10 +74,6 @@ describe('a week tip', () => {
     expect(entry.lines).toContain('Deload week')
   })
 
-  it('says "Current week" on the current week', () => {
-    expect(model({ currentWeek: 4 }).find((t) => t.week === 4)!.lines).toContain('Current week')
-  })
-
   it("carries the same facts in the target's accessible name", () => {
     renderChart()
     expect(target(4).getAttribute('aria-label')).toMatch(/^Week 4, 184 lb, Plan /)
