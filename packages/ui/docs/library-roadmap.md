@@ -113,7 +113,7 @@ are grep counts against `src/` at merge time, excluding the directory's own file
 
 | #   | Move                                                                                                                | In-repo importers        | When                                      |
 | --- | ------------------------------------------------------------------------------------------------------------------- | ------------------------ | ----------------------------------------- |
-| M1  | `usePrefersReducedMotion` to `src/hooks/usePrefersReducedMotion.ts`                                                 | 3                        | now                                       |
+| M1  | `usePrefersReducedMotion` to `src/hooks/usePrefersReducedMotion.ts`                                                 | 3                        | Landed in #276                            |
 | M2  | Typography to `ui/typography`, Eyebrow to `ui/eyebrow`, with a one-release re-export shim in `custom/Typography`; marks decision 9 landed when its PR merges | Typography 68, Eyebrow 8 | now                                       |
 | M3  | EmptyState to `ui/empty-state`                                                                                      | 1                        | now                                       |
 | M5  | Create `ui/charts/` with its README; move SparkBars; add a `d3-*`-import lint scoped to `ui/charts/**`              | 2                        | now                                       |
