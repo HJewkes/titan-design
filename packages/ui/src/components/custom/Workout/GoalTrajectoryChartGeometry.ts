@@ -825,9 +825,7 @@ export function deriveTrajectoryGeometry(
     prStars: actuals.filter((a) => a.isPR),
     deloadRects: deloadRects(weeks, plot, weekSpan, toX),
     currentWeekColumn:
-      input.currentWeek === undefined
-        ? null
-        : weekColumn(input.currentWeek, plot, weekSpan, toX),
+      input.currentWeek === undefined ? null : weekColumn(input.currentWeek, plot, weekSpan, toX),
     boundaries: mesoBoundaries.map((weekIndex) => ({ weekIndex, x: toX(weekIndex) })),
     plot,
     plane: planeRect(plot),
