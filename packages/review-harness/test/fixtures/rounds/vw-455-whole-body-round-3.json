@@ -1,0 +1,31 @@
+{
+  "schema": "titan-review/round@1",
+  "unit": "vw-455-whole-body",
+  "round": 3,
+  "storybookUrl": "http://127.0.0.1:6100",
+  "context": "Round 3. Settled in round 2 and not reopened: the weight line is the rate, the sessions line is what is due, days past the commitment append, the header gap, the slow-loss band, two cards. This round asks three things. (1) How short the rate line should be: the percent alone, the percent plus a word for where it sits, or the round-2 sentence. Every string is a PROPOSAL, wording is yours. Whatever the line drops sits in the tip, which these frames pin open. (2) The page: the phase tag has moved right, beside the status. (3) Alignment: both cards now put their track in one row template with fixed track and label heights, so the two cards end level and their tracks share a line. Measured on the page story: both cards 192 px tall at 1920 and 1440, both tracks centred on the same line; 155 px each at 360. The band numbers moved out of the track into that shared label row, and the sessions bar labels where the count due by now falls. The sessions tip line is now \"3 leave this week\" rather than \"3 days leave the window this week\".",
+  "widths": [1920, 360],
+  "height": 1500,
+  "variants": [
+    { "key": "R-pct", "storyId": "custom-workout-goals-bodyweightgoalcard--default", "label": "Rate: the percent alone (tip open)", "args": { "isTipOpen": true } },
+    { "key": "R-word", "storyId": "custom-workout-goals-bodyweightgoalcard--rate-verdict", "label": "Rate: the percent plus where it sits against the band (tip open)", "args": { "isTipOpen": true } },
+    { "key": "R-full", "storyId": "custom-workout-goals-bodyweightgoalcard--rate-full", "label": "Rate: the round-2 sentence, for comparison (tip open)", "args": { "isTipOpen": true } },
+    { "key": "S-tip", "storyId": "custom-workout-goals-sessionsgoalcard--default", "label": "Sessions: the shortened line in the tip (tip open)", "args": { "isTipOpen": true } },
+    { "key": "W-hold", "storyId": "custom-workout-goals-bodyweightgoalcard--hold", "label": "Bodyweight: a hold, which has no rate band" },
+    { "key": "W-slow", "storyId": "custom-workout-goals-bodyweightgoalcard--slow-loss", "label": "Bodyweight: slow-loss recomposition" },
+    { "key": "W-veto", "storyId": "custom-workout-goals-bodyweightgoalcard--rate-vetoed", "label": "Bodyweight: a week the rate is not judged" },
+    { "key": "W-one", "storyId": "custom-workout-goals-bodyweightgoalcard--one-reading", "label": "Bodyweight: one weigh-in, no rate yet" },
+    { "key": "S-append", "storyId": "custom-workout-goals-sessionsgoalcard--over-commitment", "label": "Sessions 14 of 12, with the appended days" },
+    { "key": "S-large", "storyId": "custom-workout-goals-sessionsgoalcard--large-commitment", "label": "Sessions 25 of 28: past 20 cells, a plain bar" },
+    { "key": "Page", "storyId": "pages-goals-whole-body--default", "label": "Page: a cut and sessions under pace" },
+    { "key": "Page-hold", "storyId": "pages-goals-whole-body--hold-and-new-window", "label": "Page: a hold and a window started today" }
+  ],
+  "questions": [
+    { "id": "rate-length", "kind": "pick-one", "prompt": "How long is the rate line?", "options": ["R-pct", "R-word", "R-full"], "required": true },
+    { "id": "rate-wording", "kind": "text", "prompt": "The strings are proposals. Change any wording here." },
+    { "id": "tag-right", "kind": "pick-one", "prompt": "The phase tag beside the status:", "options": ["Right", "No, see my comments"], "required": true },
+    { "id": "alignment", "kind": "pick-one", "prompt": "The two cards ending level, with their tracks on one line:", "options": ["Right", "No, see my comments"], "required": true },
+    { "id": "track-labels", "kind": "pick-one", "prompt": "The band numbers under the track, and \"due\" under the sessions bar:", "options": ["Keep both", "Drop the sessions \"due\" mark", "Drop the band numbers", "Drop both"], "required": true },
+    { "id": "sign-off", "kind": "pick-one", "prompt": "Round 3 outcome", "options": ["Lock this direction", "Another round"], "required": true }
+  ]
+}

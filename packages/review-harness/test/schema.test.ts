@@ -22,9 +22,9 @@ describe('round manifest', () => {
     expect(parsed.variants.map((v) => v.key)).toEqual(['A', 'B', 'C'])
   })
 
-  it('defaults the frame height when the manifest leaves it out', () => {
+  it('fits frames to their stories when the manifest leaves the height out', () => {
     const { height: _height, ...rest } = base()
-    expect(ManifestSchema.parse(rest).height).toBe(900)
+    expect(ManifestSchema.parse(rest).height).toBe('auto')
   })
 
   it('rejects duplicate variant keys, question ids and widths', () => {

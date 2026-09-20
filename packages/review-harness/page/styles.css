@@ -90,9 +90,52 @@ kbd {
   margin-bottom: var(--space-stack-lg);
 }
 
-.variant-head {
+.round-section {
+  display: block;
+  margin-bottom: var(--space-section-sm);
+  scroll-margin-top: var(--space-gutter-md);
+}
+
+.section-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   display: grid;
   gap: 2px;
+  padding: var(--space-squish-y-sm) 0;
+  margin-bottom: var(--space-stack-md);
+  background: var(--color-background-base);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.section-head p {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.see-also a {
+  color: var(--color-brand-primary);
+  margin-right: var(--space-inline-sm);
+}
+
+.variant-head {
+  position: sticky;
+  top: var(--space-section-sm);
+  z-index: 1;
+  display: grid;
+  gap: 2px;
+  padding-bottom: 2px;
+  background: var(--color-surface-elevated);
+}
+
+.variant-question {
+  margin: 0;
+  font-size: 12px;
+  color: var(--color-brand-primary);
+}
+
+.stop:target {
+  border-color: var(--color-status-warning);
 }
 
 .key {

@@ -1,5 +1,6 @@
 import type { Dispatch } from 'react'
 import type { VariantDraft } from '../src/feedback.ts'
+import { frameHeight, questionsForVariant } from '../src/sections.ts'
 import type { Manifest, Variant, Verdict } from '../src/schema.ts'
 import { Frame } from './Frame.tsx'
 import { PinList } from './PinList.tsx'
@@ -51,10 +52,21 @@ function VerdictControl({ variant, draft, dispatch }: Omit<VariantCardProps, 'ma
   )
 }
 
+/** What this frame is being asked about, kept on screen while the frame is. */
+function answersLine(manifest: Manifest, variantKey: string): string {
+  const ids = questionsForVariant(manifest, variantKey)
+  const prompts = ids
+    .map((id) => manifest.questions.find((q) => q.id === id)?.prompt)
+    .filter((p): p is string => !!p)
+  return prompts.length ? `Answers: ${prompts.join(' · ')}` : ''
+}
+
 export function VariantCard(props: VariantCardProps) {
   const { manifest, variant, draft, index, active, dispatch } = props
+  const answers = answersLine(manifest, variant.key)
   return (
     <Stop
+      id={`variant-${variant.key}`}
       index={index}
       active={active}
       follow={props.follow}
@@ -67,6 +79,7 @@ export function VariantCard(props: VariantCardProps) {
           <span className="key">{variant.key}</span> {variant.label}
         </h3>
         <code>{variant.storyId}</code>
+        {answers && <p className="variant-question">{answers}</p>}
       </header>
       <div className="frames">
         {manifest.widths.map((width) => (
@@ -74,7 +87,8 @@ export function VariantCard(props: VariantCardProps) {
             key={width}
             variant={variant}
             width={width}
-            height={manifest.height}
+            height={frameHeight(manifest, variant)}
+            maxHeight={manifest.maxHeight}
             annotate={props.annotate}
             pins={draft.annotations}
             onHitTesting={props.onHitTesting}

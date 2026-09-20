@@ -48,6 +48,25 @@
           },
           "comment": {
             "type": "string"
+          },
+          "variantComments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "comment": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "key",
+                "comment"
+              ],
+              "additionalProperties": false
+            }
           }
         },
         "required": [
@@ -143,6 +162,12 @@
                 "note"
               ],
               "additionalProperties": false
+            }
+          },
+          "relatedQuestionIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
             }
           }
         },
