@@ -2,8 +2,10 @@
 
 Two marks and one hook, extracted so every value-height bar family in the library
 draws the same bar rather than each re-rolling geometry and entrance animation.
-This is a substrate family: it holds no domain knowledge, and colour, reference
-overlays and labels are passed in by the consumer.
+`SetBarChart` and `live-rep-growth` carry workout vocabulary (the set-type slot,
+mesocycle framing) and stay in this family for that reason (`CLAUDE.md`,
+Placement); colour, reference overlays and labels are still passed in by the
+consumer rather than hard-coded.
 
 This README is the **index**: **composes ↓** and **used-by ↑** for each member,
 so the tree navigates both ways and a hand-rolled bar shows up as a gap. Counts
@@ -11,12 +13,12 @@ come from [`src/arch/arch-graph.json`](../../../arch/arch-graph.json).
 
 ## Dependency map
 
-| Member            | Kind | Composes ↓                                      | Used-by ↑                                              | Exported     |
-| ----------------- | ---- | ----------------------------------------------- | ------------------------------------------------------ | ------------ |
-| `SparkBars`       | atom | `resolveColor`, `cn`                            | FileActivityDetail, FileActivityRow (ActiveWork)       | yes          |
-| `SetBarChart`     | atom | `barPaper`, `SurfaceContext`, `live-rep-growth` | RomProgressionChart (Fatigue), VelocityStrip (Workout) | no — by path |
-| `live-rep-growth` | hook | `Animated`, `Easing`                            | SetBarChart, VelocityStrip                             | no — by path |
-| `flatBarGeometry` | module | —                                              | SegmentedBar (Workout), SetBarChart                    | no — by path |
+| Member            | Kind   | Composes ↓                                      | Used-by ↑                                              | Exported     |
+| ----------------- | ------ | ----------------------------------------------- | ------------------------------------------------------ | ------------ |
+| `SparkBars`       | atom   | `resolveColor`, `cn`                            | FileActivityDetail, FileActivityRow (ActiveWork)       | yes          |
+| `SetBarChart`     | atom   | `barPaper`, `SurfaceContext`, `live-rep-growth` | RomProgressionChart (Fatigue), VelocityStrip (Workout) | no — by path |
+| `live-rep-growth` | hook   | `Animated`, `Easing`                            | SetBarChart, VelocityStrip                             | no — by path |
+| `flatBarGeometry` | module | —                                               | SegmentedBar (Workout), SetBarChart                    | no — by path |
 
 `SetBarChart` and `live-rep-growth` are deliberately absent from `index.ts`: they
 are workout-internal and imported by path, so the public barrel stays one mark
