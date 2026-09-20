@@ -35,6 +35,21 @@ export interface WeekTipInput {
   size: number
 }
 
+// Bundlers replace `process.env.NODE_ENV` literally; the DTS build has no Node types.
+declare const process: { env: { NODE_ENV?: string } }
+
+const warnedWeeks = new Set<number>()
+
+/** Dev-only: a current week outside the block means two sources of truth crept back in. */
+export function warnUnknownCurrentWeek(currentWeek: number, axis: number[]) {
+  if (typeof process === 'undefined' || process.env.NODE_ENV === 'production') return
+  if (axis.includes(currentWeek) || warnedWeeks.has(currentWeek)) return
+  warnedWeeks.add(currentWeek)
+  console.warn(
+    `titan: currentWeek ${String(currentWeek)} is not a week of this block (${String(axis[0])} to ${String(axis.at(-1))}).`
+  )
+}
+
 const amount = (value: number, unit: string) => `${String(roundWeight(value))} ${unit}`
 
 function planLine(point: GoalExpectedPoint | undefined, unit: string): string | null {
@@ -56,6 +71,7 @@ function readingLines(
 export function weekTips(input: WeekTipInput): WeekTip[] {
   const { geometry: g, weeks, expected, nextTarget, currentWeek, unit, width, height, size } = input
   const axis = weeks.length > 0 ? weeks.map((w) => w.index) : expected.map((p) => p.weekIndex)
+  if (currentWeek !== undefined) warnUnknownCurrentWeek(currentWeek, axis)
   return axis.map((week) => {
     const reading = g.actuals.find((a) => Math.round(a.weekIndex) === week)
     const plan = expected.find((p) => p.weekIndex === week)

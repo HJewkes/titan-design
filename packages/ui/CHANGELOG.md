@@ -25,9 +25,18 @@ project adheres to [Semantic Versioning](https://semver.org/).
   PR badge from one source.
 - `TipTrigger` takes `tabIndex` and `onKeyDown`, so a group of triggers can rove
   focus between them.
+- `GoalTrajectoryChart` `currentWeek` (additive and optional, which is fine for
+  a patch on a pre-1.0 package).
 
 ### Changed
 
+- `GoalTrajectoryChart` marks the block's current week with an outlined column,
+  the same week a `GoalCard`'s cells ring. The card is the only writer: its
+  `goal` type omits `currentWeek`, so the chart's column and the cells' ring
+  come from one value and cannot disagree. The deload weeks keep their fill, so
+  the two marks read as different kinds, and a week's tip says "Deload week"
+  and "Current week" when both apply. Before this, the chart had no current-week
+  mark at all and the deload fill was the only highlighted column.
 - `GoalTrajectoryChart`: every week of the block opens a tip, not only the next
   target. Each says the week's reading (or "No reading yet"), "Personal record"
   on a record, the planned band, "Deload week" on a deload column and the next

@@ -80,9 +80,14 @@ export interface GoalCardTrend {
 }
 
 /** Everything the trajectory chart needs except its box, status and metric name. */
+/**
+ * The chart's props a card's `goal` may carry. `currentWeek` is omitted on purpose: the
+ * card is the only writer, so the chart's current-week column and the week cells' ring
+ * always come from one value (titan-0201 round 4).
+ */
 export type GoalCardChart = Omit<
   GoalTrajectoryChartProps,
-  'width' | 'height' | 'status' | 'metricLabel'
+  'width' | 'height' | 'status' | 'metricLabel' | 'currentWeek'
 >
 
 /** The meso target's content, as a card composes it: no plane, no frame. */
@@ -451,6 +456,12 @@ function TitleRow({
  * one on purpose — a cell is the header of its week's column, not a strip that
  * happens to be above a chart.
  */
+/** The card's one current week, the value its cells ring, for the chart's column. */
+function currentWeekOf(props: GoalCardProps): { currentWeek?: number } {
+  const { currentWeek } = statedMilestone(props)
+  return currentWeek === undefined ? {} : { currentWeek }
+}
+
 function FullBody({ props, width }: { props: GoalCardProps; width: number }) {
   const { goal, status, title, chartHeight } = props
   if (!goal) return null
@@ -463,6 +474,8 @@ function FullBody({ props, width }: { props: GoalCardProps; width: number }) {
       />
       <GoalTrajectoryChart
         {...goal}
+        // One value drives both marks: this column and the week cells' ring above it.
+        {...currentWeekOf(props)}
         status={status}
         metricLabel={title}
         width={width}

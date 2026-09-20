@@ -96,6 +96,8 @@ export interface GoalTrajectoryGeometryInput {
   labelFont?: number
   /** The next planned waypoint, drawn ahead of the actual line. */
   nextTarget?: GoalNextTarget
+  /** The block's current week; the chart marks its column. One value drives this and the card's week cells. */
+  currentWeek?: number
   /** Gutters around the plot. Defaults to {@link DEFAULT_PLOT_INSETS}, the axis-bearing chart's. */
   insets?: PlotInsets
 }
@@ -188,6 +190,8 @@ export interface GoalTrajectoryGeometry {
   nextTarget: NextTargetCoord | null
   prStars: ActualCoord[]
   deloadRects: DeloadRect[]
+  /** The current week's column, or null when the caller names no current week. */
+  currentWeekColumn: DeloadRect | null
   boundaries: BoundaryRule[]
   plot: PlotRect
   /** The lowered plane behind the plot; it overhangs the plot top by PLANE_OVERHANG. */
@@ -478,20 +482,26 @@ function planeRect(plot: PlotRect): PlaneRect {
   return { x: plot.left, y, width: plot.right - plot.left, height: plot.bottom - y }
 }
 
+/** One week's column, clipped to the plot. */
+function weekColumn(
+  weekIndex: number,
+  plot: PlotRect,
+  weekSpan: number,
+  toX: (weekIndex: number) => number
+): DeloadRect {
+  const centre = toX(weekIndex)
+  const left = Math.max(plot.left, centre - weekSpan / 2)
+  const right = Math.min(plot.right, centre + weekSpan / 2)
+  return { weekIndex, x: left, width: Math.max(0, right - left) }
+}
+
 function deloadRects(
   weeks: GoalTrajectoryWeek[],
   plot: PlotRect,
   weekSpan: number,
   toX: (weekIndex: number) => number
 ): DeloadRect[] {
-  return weeks
-    .filter((w) => w.isDeload)
-    .map((w) => {
-      const centre = toX(w.index)
-      const left = Math.max(plot.left, centre - weekSpan / 2)
-      const right = Math.min(plot.right, centre + weekSpan / 2)
-      return { weekIndex: w.index, x: left, width: Math.max(0, right - left) }
-    })
+  return weeks.filter((w) => w.isDeload).map((w) => weekColumn(w.index, plot, weekSpan, toX))
 }
 
 export interface BandSlice {
@@ -814,6 +824,10 @@ export function deriveTrajectoryGeometry(
     nextTarget: next ? nextTargetCoord(next, actuals, toX, toY) : null,
     prStars: actuals.filter((a) => a.isPR),
     deloadRects: deloadRects(weeks, plot, weekSpan, toX),
+    currentWeekColumn:
+      input.currentWeek === undefined
+        ? null
+        : weekColumn(input.currentWeek, plot, weekSpan, toX),
     boundaries: mesoBoundaries.map((weekIndex) => ({ weekIndex, x: toX(weekIndex) })),
     plot,
     plane: planeRect(plot),
