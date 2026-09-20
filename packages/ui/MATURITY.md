@@ -139,7 +139,7 @@ pass. This file used to say "~52": that number predated the `ui/` reorganisation
 and was never recounted. The count is `ls -d src/components/ui/*/ src/components/ui/charts/*/`, less
 `charts` and `kit`: 41 directories today, one per primitive, and `src/arch/arch-graph.json` lists
 them all too. `typography` and `eyebrow` are the newest, moved in from `custom/` by
-migration M2 (#PRNUM). One of the 41 is `trigger` (`TriggerSurface`, added in #176), an
+migration M2 (#277). One of the 41 is `trigger` (`TriggerSurface`, added in #176), an
 internal helper that `Menu`, `Popover` and `Tooltip` compose. It is not exported from the
 `ui` barrel and has no story.
 

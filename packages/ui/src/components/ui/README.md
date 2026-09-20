@@ -90,7 +90,7 @@ Pattern), and seven in-repo autodocs links already point at `foundations-typogra
 
 | Leaf                                                     | Should compose                    | Status                                                                                                                                                                             |
 | -------------------------------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Text runs (79 raw `<Text>` in 27 files)                  | `Typography`                      | **Unblocked** (#PRNUM), not yet done. Migration M2 moved `Typography` into `ui/typography`, so the import is legal now; the 79 runs are still hand-styled.                          |
+| Text runs (79 raw `<Text>` in 27 files)                  | `Typography`                      | **Unblocked** (#277), not yet done. Migration M2 moved `Typography` into `ui/typography`, so the import is legal now; the 79 runs are still hand-styled.                          |
 | Pill-shaped labels                                       | `Pill`                            | **Closed** (#172). `Badge` and `Chip` now render `<Pill>`; the six folded-in variants are in `DEPRECATIONS.md`.                                                                    |
 | Status dots                                              | `Indicator`                       | **Closed** for `ui/*`. `StatusDot` (Workout) is deprecated toward `Indicator` (decision 10).                                                                                       |
 | Raised / floating planes                                 | `Surface` (`raise` / `elevation`) | **Closed** (#166, #173). Eleven molecules compose `Surface` rather than setting `bg-surface-*` themselves.                                                                         |
@@ -99,7 +99,7 @@ Pattern), and seven in-repo autodocs links already point at `foundations-typogra
 
 ## Watch list
 
-- **`Typography` can be composed here now.** Migration M2 (#PRNUM) moved it to
+- **`Typography` can be composed here now.** Migration M2 (#277) moved it to
   `ui/typography` and `Eyebrow` to `ui/eyebrow`, so the tier order no longer forbids
   the import. The 79 raw `<Text>` runs above are unblocked, not fixed — converting
   them is its own task.
