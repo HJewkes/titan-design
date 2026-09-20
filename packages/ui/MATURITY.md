@@ -45,8 +45,10 @@ in this order:
      [`ui/*` family README](src/components/ui/README.md) dependency map;
    - no heading in [`REJECTED.md`](REJECTED.md) names one of its exports;
    - no row in [`DEPRECATIONS.md`](DEPRECATIONS.md) names one of its exports;
-   - the directory is in `stable-layers-baseline.json` (the primitives promoted before 2026-09-19), or
-     its functional review gate has passed and the TD-26 test layers exist for it.
+   - Clause 5 takes effect when TD-26 lands; TD-26 creates `stable-layers-baseline.json` from the
+     components that are stable on that day, so no component loses stable on the day the rule
+     starts. Until then clauses 1 to 4 alone derive the list (31 stable, 2 candidate as of this
+     revision).
 3. Anything else under `src/components` → **`status:candidate`**.
 
 Clause 2's fourth condition is an addition made when this rule was written

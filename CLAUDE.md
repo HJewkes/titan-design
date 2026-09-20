@@ -139,23 +139,24 @@ A tier is decided by what the component knows, not by how much it composes.
 
 Deciding a new component's home, top to bottom, first match wins:
 
-| Question                                                                                       | Home                                           |
-| ---------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| Is it an exploration that must not publish?                                                    | `src/lab/<family>/`                            |
-| Does any prop, type or label name a domain concept (set, rep, mesocycle, initiative, fatigue)? | `custom/<Family>/` of that domain              |
-| Is it application frame (band, rail, brand, page region)?                                      | `shell/`, or `shell/<app>/` if it names an app |
-| Does it paint data marks from a scale?                                                         | `ui/charts/<name>/`                            |
-| Is it a hook or pure function with no JSX?                                                     | `src/hooks/` or `src/utils/`                   |
-| Otherwise                                                                                      | `ui/<name>/`                                   |
+| Question                                                                                       | Home                                                                                                                                        |
+| ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Is it an exploration that must not publish?                                                    | `src/lab/<family>/`                                                                                                                         |
+| Does any prop, type or label name a domain concept (set, rep, mesocycle, initiative, fatigue)? | `custom/<Family>/` of that domain                                                                                                           |
+| Does it know the app's own chrome (its routes, its brand, its page regions)?                   | `shell/`, or `shell/<app>/` if it names an app. A generic sidebar, rail, or band that takes its content as props (e.g. `Sidebar`) is `ui/`. |
+| Does it paint data marks from a scale?                                                         | `ui/charts/<name>/`                                                                                                                         |
+| Is it a hook or pure function with no JSX?                                                     | `src/hooks/` or `src/utils/`                                                                                                                |
+| Otherwise                                                                                      | `ui/<name>/`                                                                                                                                |
 
 If the component you want to compose sits in a higher tier, run the table on that component. If it
 lands lower, move it first.
 
 Import order is theme, utils and hooks, icons, ui, custom, shell, pages; a lower tier never imports a
-higher one (`titan/no-upward-tier-import`). `ui/` components may compose `ui/` siblings. If the
-component you need sits in a higher tier and is domain-free, move it down first; do not copy it and do
-not replace it with a slot. Generic directories still in `custom/` are listed in
-`custom-families.baseline.json`, which only shrinks.
+higher one (`titan/no-upward-tier-import`). The rule enforces the ui/, custom/, shell/ order today;
+hooks and utils join it in the placement lint task (roadmap decision of 2026-09-19, appendix E).
+`ui/` components may compose `ui/` siblings. If the component you need sits in a higher tier and is
+domain-free, move it down first; do not copy it and do not replace it with a slot. Generic directories
+still in `custom/` are listed in `custom-families.baseline.json`, which only shrinks.
 
 Slots: import what is fixed anatomy (Typography, Skeleton, Tooltip, Surface); take a named `ReactNode`
 slot for consumer vocabulary (wording, headers, actions); give every state slot (`emptyState`, ...) a

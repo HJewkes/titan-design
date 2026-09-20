@@ -1,4 +1,4 @@
-# `custom/charts` — shared chart substrate
+# `custom/charts`: workout bar marks
 
 Two marks and one hook, extracted so every value-height bar family in the library
 draws the same bar rather than each re-rolling geometry and entrance animation.
@@ -106,3 +106,5 @@ differ, so the older chart's choices are not copied by accident.
 | Motion          | `useTrajectoryEntrance` honours `prefers-reduced-motion` through `usePrefersReducedMotion` from `live-rep-growth`.                                                                                                       | `Animated.timing` for 600 ms, with no reduced-motion check.                                                                                                          |
 | Degenerate data | Non-finite values are dropped. A band needs at least two slices; a band thinner than `BAND_MIN_THICKNESS` is flagged `bandIsDegenerate`. `GoalTrajectoryDegenerate.test.tsx` covers committed equal to stretch (VW-414). | Empty when `data` is empty, even if a projection exists. A single timestamp widens the x domain by 1 ms; a flat series uses `max(1, 10% of the value)` as its range. |
 | Interaction     | The next-target marker opens a `TipTrigger`.                                                                                                                                                                             | Each point is a `Pressable` with a label and opens a tooltip.                                                                                                        |
+
+This section moves to `ui/charts/README.md` when M5 lands (roadmap decision of 2026-09-19).
