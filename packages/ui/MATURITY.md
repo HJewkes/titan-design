@@ -38,7 +38,7 @@ in this order:
 1. Under `src/lab/**` → **`status:lab`**. No exceptions; lab is excluded from
    publish builds (`package.json` `files` carries `!src/lab`).
 2. Under `src/components/ui/<dir>/`, where `<dir>` is the component's own directory (for charts,
-   `ui/charts/<dir>/`), and **all five** hold, it is **`status:stable`**:
+   `ui/charts/<dir>/`), and the clauses below hold (all five once clause 5 is live, clauses 1 to 4 until then), it is **`status:stable`**:
    - a test file in `<dir>` whose source contains `axe`;
    - `<dir>` has its own `README.md`, **or** its story carries a `Composes:`
      line, **or** it has a row in the
