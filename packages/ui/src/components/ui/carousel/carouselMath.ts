@@ -10,16 +10,23 @@ export interface SlideGeometry {
   step: number
   /** The largest scroll offset the content allows. */
   maxOffset: number
+  /** Content inset at both ends, so a centred first and last slide can reach the middle. */
+  padding: number
+  align: SlideAlign
 }
+
+/** Where a slide rests: at the leading edge, or centred with a hint on both sides. */
+export type SlideAlign = 'start' | 'center'
 
 export interface SlideGeometryInput {
   viewportWidth: number
   count: number
-  /** How much of the next slide shows at the trailing edge. */
+  /** How much of the neighbouring slide shows. */
   peek: number
   gap: number
   /** Caps a slide on a wide column, so more of the next one shows. */
   maxSlideWidth?: number
+  align?: SlideAlign
 }
 
 /** Slide size and scroll range for a viewport: one slide per view, the next one peeking. */
@@ -29,13 +36,16 @@ export function slideGeometry({
   peek,
   gap,
   maxSlideWidth,
+  align = 'start',
 }: SlideGeometryInput): SlideGeometry {
   const viewport = Math.max(0, viewportWidth)
-  const room = count > 1 ? viewport - peek - gap : viewport
+  const hints = align === 'center' ? 2 : 1
+  const room = count > 1 ? viewport - hints * (peek + gap) : viewport
   const slideWidth = Math.max(0, Math.min(room, maxSlideWidth ?? Infinity))
   const step = slideWidth + gap
-  const contentWidth = count * slideWidth + Math.max(0, count - 1) * gap
-  return { slideWidth, step, maxOffset: Math.max(0, contentWidth - viewport) }
+  const padding = align === 'center' ? Math.max(0, (viewport - slideWidth) / 2) : 0
+  const contentWidth = count * slideWidth + Math.max(0, count - 1) * gap + 2 * padding
+  return { slideWidth, step, maxOffset: Math.max(0, contentWidth - viewport), padding, align }
 }
 
 /** Keep an index inside `[0, count - 1]`; an empty set has only index 0. */
@@ -120,4 +130,51 @@ export function flickTarget({ startIndex, offset, velocity, count, geometry }: F
     return clampIndex(startIndex + Math.sign(velocity), count)
   }
   return indexAtOffset(offset, count, geometry)
+}
+
+/** Looping needs a copy of the last slide before the first and of the first after the last. */
+export const MIN_SLIDES_TO_CLONE = 3
+
+export interface SlideSlot {
+  /** Index of the slide this slot shows. */
+  index: number
+  /** A copy at one end, there only so the real end has a neighbour to hint at. */
+  isClone: boolean
+}
+
+/** Whether this many slides can loop with clones without a clone duplicating a visible slide. */
+export function canClone(count: number): boolean {
+  return count >= MIN_SLIDES_TO_CLONE
+}
+
+/** The render order: the last slide, every slide, then the first slide. */
+export function slideSlots(count: number, cloned: boolean): SlideSlot[] {
+  const real = Array.from({ length: count }, (_, index) => ({ index, isClone: false }))
+  if (!cloned || count === 0) return real
+  return [{ index: count - 1, isClone: true }, ...real, { index: 0, isClone: true }]
+}
+
+/** Where a slide sits in the rendered order. */
+export function positionOf(index: number, cloned: boolean): number {
+  return cloned ? index + 1 : index
+}
+
+/** The real slide a rendered position shows; a clone reports the slide it copies. */
+export function indexAtPosition(position: number, count: number, cloned: boolean): number {
+  if (count === 0) return 0
+  if (!cloned) return clampIndex(position, count)
+  if (position <= 0) return count - 1
+  if (position >= count + 1) return 0
+  return position - 1
+}
+
+/** True when the rendered position is one of the two copies. */
+export function isClonePosition(position: number, count: number, cloned: boolean): boolean {
+  return cloned && (position <= 0 || position >= count + 1)
+}
+
+/** One step with wrapping: forward from the last slide lands on the first. */
+export function wrapIndex(index: number, delta: number, count: number): number {
+  if (count <= 0) return 0
+  return (((index + delta) % count) + count) % count
 }

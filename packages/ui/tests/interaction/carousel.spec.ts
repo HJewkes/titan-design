@@ -38,6 +38,14 @@ async function openDefault(page: Page) {
   await page.waitForTimeout(500)
 }
 
+/** Distance between a slide's centre and the viewport's, in px. */
+async function slideCentre(page: Page, name: string): Promise<number> {
+  const scroller = await page.getByTestId('carousel-viewport').first().boundingBox()
+  const slide = await page.getByTestId(`carousel-slide-${name}`).boundingBox()
+  const centre = (box: { x: number; width: number } | null) => (box?.x ?? 0) + (box?.width ?? 0) / 2
+  return Math.abs(centre(slide) - centre(scroller))
+}
+
 /** Distance of a slide's leading edge from the viewport's, in px. */
 async function slideOffset(page: Page, name: string): Promise<number> {
   const scroller = await page.getByTestId('carousel-viewport').boundingBox()
@@ -86,9 +94,10 @@ test('a real horizontal swipe snaps to a card and commits it', async ({ page }) 
 })
 
 const DRAG_STORY = 'components-molecules-carousel-interactions--drag-playground'
+const LOOP_STORY = 'components-molecules-carousel-interactions--drag-playground-looping'
 
-async function openDragStory(page: Page) {
-  await page.goto(`/iframe.html?id=${DRAG_STORY}&viewMode=story`)
+async function openDragStory(page: Page, id: string = DRAG_STORY) {
+  await page.goto(`/iframe.html?id=${id}&viewMode=story`)
   await page.waitForLoadState('networkidle')
   await expect(page.getByTestId('carousel-position')).toBeVisible()
   await page.waitForTimeout(500)
@@ -169,4 +178,40 @@ test('a flick jumps instead of gliding under reduced motion', async ({ page }) =
   await page.evaluate(() => new Promise(requestAnimationFrame))
   expect(await slideOffset(page, 'Back squat')).toBeLessThan(1)
   await expect(page.getByTestId('carousel-position')).toHaveText('2 of 9')
+})
+
+test('a flick back from the first card wraps to the last', async ({ page }) => {
+  await openDragStory(page, LOOP_STORY)
+  await expect(page.getByTestId('carousel-position')).toHaveText('1 of 9')
+  await drag(page, 150, 0, 0, 3)
+  await expect(page.getByTestId('carousel-position')).toHaveText('9 of 9')
+  await expect.poll(() => slideCentre(page, 'Cable chest press')).toBeLessThan(2)
+})
+
+test('the wrap is a jump under reduced motion, and still one card', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await openDragStory(page, LOOP_STORY)
+  await page.getByRole('button', { name: 'Previous slide' }).click()
+  await expect(page.getByTestId('carousel-position')).toHaveText('9 of 9')
+  await expect.poll(() => slideCentre(page, 'Cable chest press')).toBeLessThan(2)
+})
+
+test('neither arrow is ever disabled while it loops', async ({ page }) => {
+  await openDragStory(page, LOOP_STORY)
+  for (const name of ['Previous slide', 'Next slide']) {
+    await expect(page.getByRole('button', { name })).not.toHaveAttribute('aria-disabled', 'true')
+  }
+})
+
+test('the copies at each end are hidden from assistive technology and unfocusable', async ({
+  page,
+}) => {
+  await openDragStory(page, LOOP_STORY)
+  const clones = page.locator('[data-testid^="carousel-clone-"]')
+  await expect(clones).toHaveCount(2)
+  for (const clone of await clones.all()) {
+    await expect(clone).toHaveAttribute('aria-hidden', 'true')
+    expect(await clone.evaluate((el) => (el as HTMLElement & { inert: boolean }).inert)).toBe(true)
+  }
+  await expect(page.getByRole('group')).toHaveCount(9)
 })

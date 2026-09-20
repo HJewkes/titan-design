@@ -9,12 +9,15 @@ import {
   type CarouselControlsGap,
   type CarouselControlsSize,
   type CarouselPeek,
+  type CarouselPeekSides,
 } from './Carousel'
 
 interface StoryArgs {
   count: number
   unequal: boolean
   peek: CarouselPeek
+  peekSides: CarouselPeekSides
+  loop: boolean
   controlsSize: CarouselControlsSize
   controlsGap: CarouselControlsGap
 }
@@ -73,13 +76,22 @@ const meta: Meta<StoryArgs> = {
       },
     },
   },
-  args: { count: 9, unequal: false, peek: 'md', controlsSize: 'lg' },
+  args: {
+    count: 9,
+    unequal: false,
+    peek: 'md',
+    peekSides: 'trailing',
+    loop: false,
+    controlsSize: 'lg',
+  },
   argTypes: {
     count: { control: { type: 'range', min: 0, max: 9, step: 1 } },
     unequal: { control: 'boolean' },
-    peek: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    peek: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg'] },
+    peekSides: { control: 'inline-radio', options: ['trailing', 'both'] },
+    loop: { control: 'boolean' },
     controlsSize: { control: 'inline-radio', options: ['md', 'lg'] },
-    controlsGap: { control: 'inline-radio', options: ['none', 'sm', 'md'] },
+    controlsGap: { control: 'inline-radio', options: ['none', 'xs', 'sm'] },
   },
   decorators: [
     (Story) => (
@@ -90,8 +102,15 @@ const meta: Meta<StoryArgs> = {
       </Surface>
     ),
   ],
-  render: ({ count, unequal, peek, controlsSize, controlsGap }) => (
-    <Carousel label="Per-lift" peek={peek} controlsSize={controlsSize} controlsGap={controlsGap}>
+  render: ({ count, unequal, peek, peekSides, loop, controlsSize, controlsGap }) => (
+    <Carousel
+      label="Per-lift"
+      peek={peek}
+      peekSides={peekSides}
+      loop={loop}
+      controlsSize={controlsSize}
+      controlsGap={controlsGap}
+    >
       {NAMES.slice(0, count).map((name, index) => (
         <CarouselSlide key={name} value={name} label={name}>
           <ExampleCard name={name} lines={extraLines(index, unequal)} />

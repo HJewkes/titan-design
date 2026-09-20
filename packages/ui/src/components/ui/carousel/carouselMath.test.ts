@@ -2,8 +2,14 @@ import { describe, expect, it } from 'vitest'
 import fc from 'fast-check'
 
 import {
+  canClone,
   clampIndex,
   flickTarget,
+  indexAtPosition,
+  isClonePosition,
+  positionOf,
+  slideSlots,
+  wrapIndex,
   indexAtOffset,
   offsetForIndex,
   positionText,
@@ -29,6 +35,8 @@ describe('slideGeometry', () => {
       slideWidth: 290,
       step: 302,
       maxOffset: 0,
+      padding: 0,
+      align: 'start',
     })
   })
 
@@ -222,6 +230,97 @@ describe('flickTarget', () => {
           expect(Math.abs(index - startIndex)).toBeLessThanOrEqual(Math.abs(velocity) > 0.8 ? 1 : 8)
         }
       )
+    )
+  })
+})
+
+describe('a hint on both sides', () => {
+  const centred = slideGeometry({ ...PHONE, count: 9, align: 'center' })
+
+  it('takes a hint and a gap off each side and insets the content so the ends can centre', () => {
+    expect(centred.slideWidth).toBe(290 - 2 * (24 + 12))
+    expect(centred.padding).toBe((290 - centred.slideWidth) / 2)
+  })
+
+  it('centres every slide, first and last included', () => {
+    for (const index of [0, 4, 8]) {
+      expect(indexAtOffset(offsetForIndex(index, 9, centred), 9, centred)).toBe(index)
+    }
+    expect(offsetForIndex(0, 9, centred)).toBe(0)
+    expect(offsetForIndex(8, 9, centred)).toBe(centred.maxOffset)
+  })
+})
+
+describe('looping', () => {
+  it('needs three slides before a copy stops duplicating a visible one', () => {
+    expect(canClone(2)).toBe(false)
+    expect(canClone(3)).toBe(true)
+  })
+
+  it('renders the last slide before the first and the first after the last', () => {
+    expect(slideSlots(3, true)).toEqual([
+      { index: 2, isClone: true },
+      { index: 0, isClone: false },
+      { index: 1, isClone: false },
+      { index: 2, isClone: false },
+      { index: 0, isClone: true },
+    ])
+  })
+
+  it('leaves the order alone when it cannot clone', () => {
+    expect(slideSlots(3, false)).toEqual([
+      { index: 0, isClone: false },
+      { index: 1, isClone: false },
+      { index: 2, isClone: false },
+    ])
+  })
+
+  it('reads a copy as the slide it copies, so the counter never names a copy', () => {
+    expect(indexAtPosition(0, 3, true)).toBe(2)
+    expect(indexAtPosition(4, 3, true)).toBe(0)
+    expect(indexAtPosition(2, 3, true)).toBe(1)
+    expect(indexAtPosition(2, 3, false)).toBe(2)
+  })
+
+  it('knows which positions are copies', () => {
+    expect(isClonePosition(0, 3, true)).toBe(true)
+    expect(isClonePosition(4, 3, true)).toBe(true)
+    expect(isClonePosition(1, 3, true)).toBe(false)
+    expect(isClonePosition(0, 3, false)).toBe(false)
+  })
+
+  it('puts a slide one place later once a copy leads', () => {
+    expect(positionOf(0, true)).toBe(1)
+    expect(positionOf(0, false)).toBe(0)
+  })
+
+  it('wraps both ways', () => {
+    expect(wrapIndex(8, 1, 9)).toBe(0)
+    expect(wrapIndex(0, -1, 9)).toBe(8)
+    expect(wrapIndex(3, 1, 9)).toBe(4)
+  })
+
+  it('always names a slide that exists, whatever the step', () => {
+    fc.assert(
+      fc.property(
+        fc.integer({ min: 1, max: 20 }),
+        fc.nat(),
+        fc.integer({ min: -5, max: 5 }),
+        (count, raw, delta) => {
+          const index = wrapIndex(raw % count, delta, count)
+          expect(index).toBeGreaterThanOrEqual(0)
+          expect(index).toBeLessThan(count)
+        }
+      )
+    )
+  })
+
+  it('a copy at either end maps back to a real slide for any slide count', () => {
+    fc.assert(
+      fc.property(fc.integer({ min: 3, max: 20 }), (count) => {
+        expect(indexAtPosition(0, count, true)).toBe(count - 1)
+        expect(indexAtPosition(count + 1, count, true)).toBe(0)
+      })
     )
   })
 })

@@ -4,6 +4,7 @@ export {
   type CarouselProps,
   type CarouselSlideProps,
   type CarouselPeek,
+  type CarouselPeekSides,
   type CarouselControlsSize,
   type CarouselControlsGap,
 } from './Carousel'

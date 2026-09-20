@@ -120,6 +120,50 @@ describe('Carousel', () => {
     expect(screen.getByText('A')).toBeInTheDocument()
   })
 
+  it('copies each end card when it loops, as scenery only', () => {
+    renderCarousel(LIFTS, { loop: true })
+
+    const clones = screen.getAllByTestId(/^carousel-clone-/)
+    expect(clones).toHaveLength(2)
+    clones.forEach((clone) => {
+      expect(clone).toHaveAttribute('aria-hidden', 'true')
+      expect(clone).not.toHaveAttribute('role', 'group')
+    })
+    expect(screen.getAllByRole('group')).toHaveLength(3)
+  })
+
+  it('never disables an arrow while it loops', () => {
+    renderCarousel(LIFTS, { loop: true })
+
+    expect(screen.getByRole('button', { name: 'Previous slide' })).not.toHaveAttribute(
+      'aria-disabled',
+      'true'
+    )
+    expect(screen.getByRole('button', { name: 'Next slide' })).not.toHaveAttribute(
+      'aria-disabled',
+      'true'
+    )
+  })
+
+  it('does not copy two cards, which would put the same card on screen twice', () => {
+    renderCarousel(LIFTS.slice(0, 2), { loop: true })
+
+    expect(screen.queryAllByTestId(/^carousel-clone-/)).toHaveLength(0)
+    expect(screen.getByTestId('carousel-position')).toHaveTextContent('1 of 2')
+  })
+
+  it('counts only the real cards while looping', () => {
+    renderCarousel(LIFTS, { loop: true })
+
+    expect(screen.getByTestId('carousel-position')).toHaveTextContent('1 of 3')
+  })
+
+  it('has no accessibility violations while looping', async () => {
+    const { container } = renderCarousel(LIFTS, { loop: true })
+
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
   it('has no accessibility violations with several cards', async () => {
     const { container } = renderCarousel()
 

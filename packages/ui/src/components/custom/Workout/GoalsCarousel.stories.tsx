@@ -7,6 +7,7 @@ import {
   type CarouselControlsGap,
   type CarouselControlsSize,
   type CarouselPeek,
+  type CarouselPeekSides,
 } from '../../ui/carousel'
 import { Surface } from '../../ui/surface'
 import { Tooltip } from '../../ui/tooltip'
@@ -31,6 +32,8 @@ interface StoryArgs {
   cards: Cards
   startAt: StartAt
   peek: CarouselPeek
+  peekSides: CarouselPeekSides
+  loop: boolean
   controlsSize: CarouselControlsSize
   controlsGap: CarouselControlsGap
   tip: Tip
@@ -88,7 +91,16 @@ function startValue(slides: ReturnType<typeof slidesFor>, startAt: StartAt): str
   return slides[index]?.props.value
 }
 
-function CarouselStory({ cards, startAt, peek, controlsSize, controlsGap, tip }: StoryArgs) {
+function CarouselStory({
+  cards,
+  startAt,
+  peek,
+  peekSides,
+  loop,
+  controlsSize,
+  controlsGap,
+  tip,
+}: StoryArgs) {
   const slides = slidesFor(cards)
   const withTip = tip === 'none' ? slides : [tipSlide(tip), ...slides.slice(1)]
   return (
@@ -100,6 +112,8 @@ function CarouselStory({ cards, startAt, peek, controlsSize, controlsGap, tip }:
         label={SECTION_TITLE[cards]}
         defaultValue={startValue(withTip, startAt)}
         peek={peek}
+        peekSides={peekSides}
+        loop={loop}
         controlsSize={controlsSize}
         controlsGap={controlsGap}
       >
@@ -130,16 +144,20 @@ const meta: Meta<StoryArgs> = {
     cards: 'nine',
     startAt: 'first',
     peek: 'md',
+    peekSides: 'trailing',
+    loop: false,
     controlsSize: 'md',
-    controlsGap: 'sm',
+    controlsGap: 'none',
     tip: 'none',
   },
   argTypes: {
     cards: { control: 'select', options: ['one', 'two', 'nine', 'unequal', 'long-names'] },
     startAt: { control: 'inline-radio', options: ['first', 'middle', 'last'] },
-    peek: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
+    peek: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg'] },
+    peekSides: { control: 'inline-radio', options: ['trailing', 'both'] },
+    loop: { control: 'boolean' },
     controlsSize: { control: 'inline-radio', options: ['md', 'lg'] },
-    controlsGap: { control: 'inline-radio', options: ['none', 'sm', 'md'] },
+    controlsGap: { control: 'inline-radio', options: ['none', 'xs', 'sm'] },
     tip: { control: 'inline-radio', options: ['none', 'in-flow', 'portal'] },
   },
   decorators: [

@@ -25,6 +25,7 @@ const NAMES = [
 
 interface Args {
   count: number
+  loop: boolean
   onValueChange: (value: string, index: number) => void
 }
 
@@ -41,7 +42,7 @@ function slides(names: string[], onCardPress: () => void) {
   ))
 }
 
-function Refreshing({ count, onValueChange }: Args) {
+function Refreshing({ count, loop, onValueChange }: Args) {
   const [names, setNames] = useState(NAMES.slice(0, count))
   const [presses, setPresses] = useState(0)
   return (
@@ -52,7 +53,12 @@ function Refreshing({ count, onValueChange }: Args) {
       <Text className="font-body text-sm text-text-secondary" testID="press-count">
         {String(presses)}
       </Text>
-      <Carousel label="Per-lift" onValueChange={onValueChange}>
+      <Carousel
+        label="Per-lift"
+        loop={loop}
+        peekSides={loop ? 'both' : 'trailing'}
+        onValueChange={onValueChange}
+      >
         {slides(names, () => setPresses((n) => n + 1))}
       </Carousel>
     </View>
@@ -63,7 +69,7 @@ const meta: Meta<Args> = {
   title: 'Components/Molecules/Carousel/Interactions',
   tags: ['!dev', '!autodocs', 'interaction', 'play'],
   parameters: { layout: 'fullscreen' },
-  args: { count: 9, onValueChange: fn() },
+  args: { count: 9, loop: false, onValueChange: fn() },
   decorators: [
     (Story) => (
       <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-sm">
@@ -98,18 +104,17 @@ function viewport(canvas: HTMLElement): HTMLElement {
   return within(canvas).getByTestId('carousel-viewport')
 }
 
-/** Whether the named slide sits at the viewport's leading edge (or its end, for the last). */
+/** The named slide rests where the layout puts it: leading edge, centred, or at the end. */
 async function expectInView(canvas: HTMLElement, name: string) {
   const scroller = viewport(canvas)
   const slide = within(canvas).getByTestId(`carousel-slide-${name}`)
   await waitFor(() => {
-    const leading = Math.abs(
-      slide.getBoundingClientRect().left - scroller.getBoundingClientRect().left
-    )
-    const trailing = Math.abs(
-      slide.getBoundingClientRect().right - scroller.getBoundingClientRect().right
-    )
-    expect(Math.min(leading, trailing)).toBeLessThan(2)
+    const view = scroller.getBoundingClientRect()
+    const box = slide.getBoundingClientRect()
+    const leading = Math.abs(box.left - view.left)
+    const trailing = Math.abs(box.right - view.right)
+    const centred = Math.abs((box.left + box.right) / 2 - (view.left + view.right) / 2)
+    expect(Math.min(leading, trailing, centred)).toBeLessThan(2)
   })
 }
 
@@ -223,3 +228,47 @@ export const OneCardHasNoControls: Story = {
 
 /** No play function: the Playwright spec drags this one with a real mouse. */
 export const DragPlayground: Story = { tags: ['!play'] }
+
+/** The same, wrapping, with a hint of both neighbours. */
+export const DragPlaygroundLooping: Story = { args: { loop: true }, tags: ['!play'] }
+
+export const LoopForwardFromTheLastCard: Story = {
+  args: { loop: true },
+  play: marked(async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await measuredStep(canvasElement)
+    for (let i = 0; i < 8; i += 1)
+      await userEvent.click(canvas.getByRole('button', { name: 'Next slide' }))
+    await expectPosition(canvasElement, '9 of 9')
+    await userEvent.click(canvas.getByRole('button', { name: 'Next slide' }))
+    await expectPosition(canvasElement, '1 of 9')
+    await expectInView(canvasElement, NAMES[0])
+  }),
+}
+
+export const LoopBackFromTheFirstCard: Story = {
+  args: { loop: true },
+  play: marked(async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await measuredStep(canvasElement)
+    await expectPosition(canvasElement, '1 of 9')
+    await userEvent.click(canvas.getByRole('button', { name: 'Previous slide' }))
+    await expectPosition(canvasElement, '9 of 9')
+    await expectInView(canvasElement, NAMES[8])
+  }),
+}
+
+export const CopiesAreSceneryOnly: Story = {
+  args: { loop: true },
+  play: marked(async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const clones = canvas.getAllByTestId(/^carousel-clone-/)
+    await expect(clones).toHaveLength(2)
+    for (const clone of clones) {
+      await expect(clone).toHaveAttribute('aria-hidden', 'true')
+      await expect(clone as HTMLElement & { inert: boolean }).toHaveProperty('inert', true)
+    }
+    await expect(canvas.getAllByRole('group')).toHaveLength(9)
+    await expect(canvas.getByTestId('carousel-position')).toHaveTextContent('1 of 9')
+  }),
+}
