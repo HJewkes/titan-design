@@ -74,6 +74,8 @@ export const DEPTH = {
 
 export const DEFAULT_LEFT_SHADOW_SPREAD = 0.04
 const FONT_FAMILY = 'Inter, sans-serif'
+/** How much of the deload magenta the column carries over the plane. */
+export const DELOAD_WASH = 0.22
 const LABEL_GAP = 8
 export const PLANE_RADIUS = 6
 export const DOT_RADIUS = 4
@@ -106,7 +108,9 @@ export function trajectoryPalette(
     axis: t['text-tertiary'],
     // The PR badge's own colour: one mark, one token (titan-0201 round 5).
     star: t['brand-primary'],
-    deload: alpha(t['text-primary'], 0.05),
+    // Deload's own magenta (titan-0201 round 5), not a grey tint. 0.22 reads as purple and
+    // still leaves the marks over it their contrast: readings 6.9, star 5.1, ramp 2.8.
+    deload: alpha(t['status-deload'], DELOAD_WASH),
     boundary: alpha(t['text-tertiary'], 0.35),
     plane: surfaceBackground(pressedLevel(level), mode),
     shade,

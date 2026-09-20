@@ -103,6 +103,10 @@ export const semanticColorsLight = {
   'status-live': ramp.green[300],
   'status-live-muted': ramp.green[500],
 
+  // Deload: the magenta WorkoutPill and WeekRow have washed by hand since VW-0; a role of
+  // its own, so a deload week reads the same wherever it is drawn. Callers alpha it.
+  'status-deload': ramp.magenta[600],
+
   'status-error': ramp.red[600],
   'status-error-light': ramp.red[500],
   'status-error-dark': ramp.red[700],
@@ -337,6 +341,10 @@ export const semanticColorsDark = {
   // Live-session accent — its OWN role, decoupled from success so the two can diverge
   'status-live': ramp.green[300],
   'status-live-muted': ramp.green[500],
+
+  // Deload: the magenta WorkoutPill and WeekRow have washed by hand since VW-0; a role of
+  // its own, so a deload week reads the same wherever it is drawn. Callers alpha it.
+  'status-deload': ramp.magenta[600],
 
   'status-error': ramp.red[600],
   'status-error-light': ramp.red[500],

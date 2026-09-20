@@ -625,6 +625,7 @@ export const StatusColors: StoryObj = {
           'status-warning',
           'status-info',
           'status-live',
+          'status-deload',
         ]}
         palette={semanticColorsLight}
       />

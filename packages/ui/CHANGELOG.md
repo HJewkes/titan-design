@@ -160,8 +160,18 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## 0.20.0
 
+- `status-deload`, the deload magenta as a semantic token in both themes (it was
+  a bare ramp pin, `WORKOUT_PILL_DELOAD`, washed by hand in `WorkoutPill` and
+  `WeekRow`; those two should adopt the token next, and `ColorPalettes`'s deload
+  swatch with them).
+
 ### Changed
 
+- `GoalTrajectoryChart` shades a deload week in the product's deload magenta
+  (`status-deload` at 0.22) instead of a grey tint, so a deload week reads the
+  same on the chart as it does on a `WorkoutPill` or a `WeekRow`. Measured in
+  dark mode over the column: readings 6.9:1, the PR star 5.1:1, the goal lines
+  and their numbers 5.1:1, a calibrating ramp 2.8:1.
 - `GoalTrajectoryChart`, calibrating state (VW-433): readings are plain dots with
   no PR star on the chart, the next target is a hollow dot with no dashed run,
   the programmed ramp is a dashed unlabelled line (only a zero-width ramp is

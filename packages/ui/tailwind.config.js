@@ -137,6 +137,8 @@ module.exports = {
             DEFAULT: 'var(--color-status-live)',
             muted: 'var(--color-status-live-muted)',
           },
+          // A deload week, wherever it is drawn
+          deload: 'var(--color-status-deload)',
           error: {
             DEFAULT: 'var(--color-status-error)',
             light: 'var(--color-status-error-light)',
