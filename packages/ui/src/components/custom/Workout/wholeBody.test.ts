@@ -8,6 +8,7 @@ import {
   dueMarkerPosition,
   leadCaption,
   phaseLabel,
+  rateBandCaption,
   rateCaption,
   sessionCaptions,
   sessionCells,
@@ -81,18 +82,15 @@ describe('sessionCaptions', () => {
   const texts = (row: typeof S.underPace) => sessionCaptions(row).map((line) => line.text)
 
   it('says the window started today instead of "0 due" (F3)', () => {
-    expect(texts(S.windowStarted)).toEqual([
-      'Window started today',
-      'None leave the window this week',
-    ])
+    expect(texts(S.windowStarted)).toEqual(['Window started today', 'None leave this week'])
   })
 
   it('names what is due and what leaves while under pace (F4)', () => {
-    expect(texts(S.underPace)).toEqual(['10 due by now', '3 days leave the window this week'])
+    expect(texts(S.underPace)).toEqual(['10 due by now', '3 leave this week'])
   })
 
   it('says nothing is due once the window is full', () => {
-    expect(texts(S.atCommitment)).toEqual(['3 days leave the window this week'])
+    expect(texts(S.atCommitment)).toEqual(['3 leave this week'])
   })
 
   it('counts training days over the commitment', () => {
@@ -100,9 +98,7 @@ describe('sessionCaptions', () => {
   })
 
   it('uses the singular for one day leaving', () => {
-    expect(texts({ ...S.atCommitment, agingOutNext7d: 1 })).toContain(
-      '1 day leaves the window this week'
-    )
+    expect(texts({ ...S.atCommitment, agingOutNext7d: 1 })).toContain('1 leaves this week')
   })
 
   it('omits the leaving line when it is unknown', () => {
@@ -113,13 +109,13 @@ describe('sessionCaptions', () => {
 describe('leadCaption', () => {
   it('leads with the preferred line and tips the rest', () => {
     const { lead, rest } = leadCaption(sessionCaptions(S.underPace), 'leaving')
-    expect(lead?.text).toBe('3 days leave the window this week')
+    expect(lead?.text).toBe('3 leave this week')
     expect(rest.map((line) => line.text)).toEqual(['10 due by now'])
   })
 
   it('falls back to the first line when the preferred one is absent', () => {
     const { lead, rest } = leadCaption(sessionCaptions(S.atCommitment), 'due')
-    expect(lead?.text).toBe('3 days leave the window this week')
+    expect(lead?.text).toBe('3 leave this week')
     expect(rest).toEqual([])
   })
 
@@ -129,8 +125,16 @@ describe('leadCaption', () => {
 })
 
 describe('weightCaptions', () => {
-  it('gives the band then the rate (F6)', () => {
-    expect(weightCaptions(W.cut).map((line) => line.key)).toEqual(['band', 'rate'])
+  it('leads with the rate, then the band, then the phase band it dropped (F6)', () => {
+    expect(weightCaptions(W.cut, 'percent').map((line) => line.key)).toEqual([
+      'rate',
+      'band',
+      'rateBand',
+    ])
+  })
+
+  it('keeps the phase band out of the tip when the full line already carries it', () => {
+    expect(weightCaptions(W.cut, 'full').map((line) => line.key)).toEqual(['rate', 'band'])
   })
 
   it('has no lines before the first weigh-in (F12)', () => {
@@ -205,6 +209,38 @@ describe('rateCaption', () => {
     expect(rateCaption(W.cut)).toBe('-0.6 %/wk against -0.5 to -1.0 for a cut')
   })
 
+  it('shortens to the percent alone', () => {
+    expect(rateCaption(W.cut, 'percent')).toBe('-0.6 %/wk')
+  })
+
+  it('adds a word for where the rate sits against its band', () => {
+    expect(rateCaption(W.cut, 'verdict')).toBe('-0.6 %/wk, in band')
+    expect(
+      rateCaption({ ...W.cut, rate: { ...W.cut.rate, observedPctPerWeek: -0.2 } }, 'verdict')
+    ).toBe('-0.2 %/wk, behind band')
+    expect(
+      rateCaption({ ...W.cut, rate: { ...W.cut.rate, observedPctPerWeek: -1.4 } }, 'verdict')
+    ).toBe('-1.4 %/wk, ahead of band')
+  })
+
+  it('reads a gain band in its own direction', () => {
+    expect(
+      rateCaption({ ...W.gain, rate: { ...W.gain.rate, observedPctPerWeek: 0.1 } }, 'verdict')
+    ).toBe('+0.1 %/wk, behind band')
+    expect(
+      rateCaption({ ...W.gain, rate: { ...W.gain.rate, observedPctPerWeek: 0.8 } }, 'verdict')
+    ).toBe('+0.8 %/wk, ahead of band')
+  })
+
+  it('drops the verdict when the phase has no rate band (F8)', () => {
+    expect(rateCaption(W.hold, 'verdict')).toBe('+0.1 %/wk')
+  })
+
+  it('keeps a vetoed week unjudged at every length (F13)', () => {
+    expect(rateCaption(W.rateVetoed, 'percent')).toBe('-0.9 %/wk')
+    expect(rateCaption(W.rateVetoed, 'verdict')).toBe('-0.9 %/wk, not judged this week')
+  })
+
   it('signs a gain rate', () => {
     expect(rateCaption(W.gain)).toBe('+0.3 %/wk against +0.25 to +0.5 for a gain')
   })
@@ -237,6 +273,20 @@ describe('rateCaption', () => {
     expect(
       rateCaption({ ...W.cut, rate: { ...W.cut.rate, observedPctPerWeek: -0.7000001 } })
     ).toMatch(/^-0\.7 %\/wk/)
+  })
+})
+
+describe('rateBandCaption', () => {
+  it('names the phase band for the tip (F6)', () => {
+    expect(rateBandCaption(W.cut)).toBe('Cut band -0.5 to -1.0 %/wk')
+  })
+
+  it('has none for a hold, which has no rate band (F8)', () => {
+    expect(rateBandCaption(W.hold)).toBeNull()
+  })
+
+  it('has none in a vetoed week (F13)', () => {
+    expect(rateBandCaption(W.rateVetoed)).toBeNull()
   })
 })
 

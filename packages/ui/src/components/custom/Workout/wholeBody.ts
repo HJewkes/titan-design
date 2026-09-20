@@ -81,16 +81,92 @@ export function leadCaption(lines: readonly CaptionLine[], preferred: string): L
   return { lead, rest: lines.filter((line) => line !== lead) }
 }
 
-/** Which weight caption leads. Round-2 comparison (VW-455). */
+/** Which weight caption leads. The owner picked the rate in round 2. */
 export type WeightCaptionKey = 'band' | 'rate'
 
-/** The weight card's detail lines: this week's band, then the rate. None before the first weigh-in. */
-export function weightCaptions(row: WholeBodyWeightRow): CaptionLine[] {
+/**
+ * How much of the rate line the card shows. Round-3 comparison (VW-455): the owner
+ * called the full sentence "far too long" and asked whether the percent alone is
+ * enough, with the band in the tip. Every string here is a PROPOSAL.
+ */
+export type RateLength = 'percent' | 'verdict' | 'full'
+
+/**
+ * Where the observed rate sits against the phase's rate band, IN THE GOAL'S OWN
+ * direction: a cut's band runs -0.5 (committed) to -1 (stretch) %/wk, so losing
+ * 0.2 %/wk is numerically above the band and behind the goal.
+ */
+export type RatePosition = 'inside' | 'behind' | 'ahead'
+
+export function ratePosition(rate: WholeBodyRate): RatePosition | null {
+  const { observedPctPerWeek: observed, bandLowPctPerWeek: low, bandHighPctPerWeek: high } = rate
+  if (observed === null || low === null || high === null) return null
+  const falling = high < low
+  if (falling ? observed < high : observed > high) return 'ahead'
+  if (falling ? observed > low : observed < low) return 'behind'
+  return 'inside'
+}
+
+/** The phase's rate band as a range, or one number when both edges agree. */
+function rateBandText(rate: WholeBodyRate): string | null {
+  const { bandLowPctPerWeek: low, bandHighPctPerWeek: high } = rate
+  if (low === null || high === null) return null
+  return low === high
+    ? formatSignedRate(low)
+    : `${formatSignedRate(low)} to ${formatSignedRate(high)}`
+}
+
+/** PROPOSED wording for the `verdict` length (VW-455 round 3). */
+const RATE_VERDICT: Record<RatePosition, string> = {
+  inside: 'in band',
+  behind: 'behind band',
+  ahead: 'ahead of band',
+}
+
+/** The rate line at the asked-for length, or why there is no rate yet. */
+export function rateCaption(row: WholeBodyWeightRow, length: RateLength = 'full'): string | null {
+  const rate = row.rate
+  if (row.latest === null) return null
+  if (rate === null || rate.observedPctPerWeek === null) {
+    return 'Rate shows after a second week of weigh-ins'
+  }
+  const observed = `${formatSignedRate(rate.observedPctPerWeek)} %/wk`
+  if (rate.vetoed) return length === 'percent' ? observed : `${observed}, not judged this week`
+  if (length === 'percent') return observed
+  const position = ratePosition(rate)
+  if (length === 'verdict') {
+    return position === null ? observed : `${observed}, ${RATE_VERDICT[position]}`
+  }
+  const band = rateBandText(rate)
+  if (band === null) return `${observed}, no target rate for ${PHASE_NOUN[row.phase.name]}`
+  return `${observed} against ${band} for ${PHASE_NOUN[row.phase.name]}`
+}
+
+/** The phase's rate band as its own tip line, for the lengths that drop it from the lead. */
+export function rateBandCaption(row: WholeBodyWeightRow): string | null {
+  if (row.rate === null || row.rate.vetoed) return null
+  const band = rateBandText(row.rate)
+  if (band === null) return null
+  const phase = row.phase.name === 'unknown' ? 'Target' : PHASE_WORD[row.phase.name]
+  return `${phase} band ${band} %/wk`
+}
+
+/**
+ * The weight card's detail lines: the rate at the asked-for length, this week's band,
+ * and — when the lead does not carry it — the phase's rate band. None before the
+ * first weigh-in.
+ */
+export function weightCaptions(
+  row: WholeBodyWeightRow,
+  length: RateLength = 'full'
+): CaptionLine[] {
   if (row.latest === null) return []
-  const rate = rateCaption(row)
+  const rate = rateCaption(row, length)
+  const rateBand = length === 'full' ? null : rateBandCaption(row)
   return [
-    { key: 'band', text: bandCaption(row) },
     ...(rate === null ? [] : [{ key: 'rate', text: rate }]),
+    { key: 'band', text: bandCaption(row) },
+    ...(rateBand === null ? [] : [{ key: 'rateBand', text: rateBand }]),
   ]
 }
 
@@ -150,8 +226,8 @@ export function sessionCaptions(row: WholeBodySessionsRow): CaptionLine[] {
   if (row.agingOutNext7d !== null) {
     const text =
       row.agingOutNext7d === 0
-        ? 'None leave the window this week'
-        : `${plural(row.agingOutNext7d, 'day leaves', 'days leave')} the window this week`
+        ? 'None leave this week'
+        : `${plural(row.agingOutNext7d, 'leaves', 'leave')} this week`
     lines.push({ key: 'leaving', text })
   }
   return lines
@@ -173,6 +249,12 @@ export function bandDomain(
 }
 
 export type BandPosition = 'inside' | 'above' | 'below'
+
+/** Where a value sits along a domain, 0..1, clamped. The track and its labels share it. */
+export function trackFraction(value: number, min: number, max: number): number {
+  if (max <= min) return 0
+  return Math.min(1, Math.max(0, (value - min) / (max - min)))
+}
 
 /** Where the weigh-in sits against the week's band, whichever edge is numerically higher. */
 export function bandPosition(value: number, low: number, high: number): BandPosition {
@@ -223,25 +305,6 @@ const PHASE_NOUN: Record<WholeBodyDietPhase, string> = {
   maintenance: 'a hold',
   recomposition: 'this recomp',
   unknown: 'this phase',
-}
-
-/** The rate line: the observed %/wk against the phase's rate, or why there is none yet. */
-export function rateCaption(row: WholeBodyWeightRow): string | null {
-  const rate = row.rate
-  if (row.latest === null) return null
-  if (rate === null || rate.observedPctPerWeek === null) {
-    return 'Rate shows after a second week of weigh-ins'
-  }
-  const observed = `${formatSignedRate(rate.observedPctPerWeek)} %/wk`
-  if (rate.vetoed) return `${observed}, not judged this week`
-  if (rate.bandLowPctPerWeek === null || rate.bandHighPctPerWeek === null) {
-    return `${observed}, no target rate for ${PHASE_NOUN[row.phase.name]}`
-  }
-  const band =
-    rate.bandLowPctPerWeek === rate.bandHighPctPerWeek
-      ? formatSignedRate(rate.bandLowPctPerWeek)
-      : `${formatSignedRate(rate.bandLowPctPerWeek)} to ${formatSignedRate(rate.bandHighPctPerWeek)}`
-  return `${observed} against ${band} for ${PHASE_NOUN[row.phase.name]}`
 }
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']

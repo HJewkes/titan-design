@@ -116,7 +116,8 @@ project adheres to [Semantic Versioning](https://semver.org/).
   goal chart's band colour. Sessions shows training days in the rolling 28-day window
   as one cell per committed day, with a due-by-now marker, and falls back to a plain
   bar past 20 cells. Each card holds its other detail lines in a tip. The pure logic
-  is exported from `wholeBody.ts` (VW-455).
+  is exported from `wholeBody.ts` (VW-455). Both cards share one track-row template, so
+  two of them in a grid row line their tracks up and end level.
 - `GoalPriorityIndex` (custom/Workout): every declared priority on one wrapping line,
   grouped by level, naming the ones nothing tracks (VW-455).
 - `formatBodyweight` and `formatSignedRate` in `utils/workout-format`.
@@ -157,6 +158,8 @@ project adheres to [Semantic Versioning](https://semver.org/).
   ("Calibrating") logs a development-only console warning, since the card's pill
   already says it. The note still draws as given; production builds skip the
   check.
+- `ZoneTrack` reserved a tick-label row even when no tick carried a label, which pushed
+  its track up by the height of an empty row.
 
 ## 0.21.0
 

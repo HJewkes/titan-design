@@ -47,7 +47,10 @@ function PageSection({ title, children }: { title: string; children: ReactNode }
 /** Cards no narrower than 420px, one column on a phone. Each cell shrinks below 420 so a phone never clips it (VW-454). */
 function CardGrid({ children }: { children: ReactNode }) {
   return (
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap' }} className="gap-stack-md">
+    <View
+      style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'stretch' }}
+      className="gap-stack-md"
+    >
       {children}
     </View>
   )
@@ -84,12 +87,12 @@ function GoalsPage({ bodyweight, sessions }: GoalsPageProps) {
           <CardGrid>
             {bodyweight && (
               <GridCell>
-                <BodyweightGoalCard goal={bodyweight} />
+                <BodyweightGoalCard goal={bodyweight} style={{ height: '100%' }} />
               </GridCell>
             )}
             {sessions && (
               <GridCell>
-                <SessionsGoalCard goal={sessions} />
+                <SessionsGoalCard goal={sessions} style={{ height: '100%' }} />
               </GridCell>
             )}
           </CardGrid>

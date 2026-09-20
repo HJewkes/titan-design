@@ -9,7 +9,13 @@ import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { cn } from '../../../utils/cn'
 import { GOAL_STATUS_TONE, type GoalLiftStatus } from './GoalCard'
 import { SegmentedBar, type SegmentedBarSegment } from './SegmentedBar'
-import { FigureLine, GoalCardHeader, useStatusColor } from './wholeBodyCardParts'
+import {
+  CardTrackRow,
+  FigureLine,
+  GoalCardHeader,
+  useStatusColor,
+  type TrackLabel,
+} from './wholeBodyCardParts'
 import {
   dueMarkerPosition,
   leadCaption,
@@ -49,6 +55,13 @@ function useCellColors(status: GoalLiftStatus): Record<SessionCell, SegmentedBar
     extra: { color: t['status-success-muted'] },
     open: { color: t['text-tertiary'], outline: true },
   }
+}
+
+/** One label under the bar: where the count due by now falls. The row keeps its height without it. */
+function dueLabels(row: WholeBodySessionsRow): TrackLabel[] {
+  const cells = sessionCells(row, 'append')
+  const marker = dueMarkerPosition(row, cells?.length ?? row.committed)
+  return marker === null ? [] : [{ fraction: marker, text: 'due' }]
 }
 
 function SessionsBar(props: {
@@ -102,6 +115,7 @@ export function SessionsGoalCard({
   scale,
   isTipOpen,
   className,
+  style,
   ...props
 }: SessionsGoalCardProps) {
   const measured = useMeasuredWidth()
@@ -114,11 +128,12 @@ export function SessionsGoalCard({
       role="article"
       aria-label="Training days goal"
       // Card clips by default; nothing here reaches its rounded edge, and the detail tip must escape it.
-      style={{ overflow: 'visible' }}
+      // A caller's own style still applies: a page grid passes `height: '100%'` to level two cards.
+      style={[{ overflow: 'visible' }, style]}
       testID="sessions-goal-card"
       {...props}
     >
-      <View className="gap-stack-md" onLayout={measured.onLayout}>
+      <View className="gap-stack-md" style={{ flex: 1 }} onLayout={measured.onLayout}>
         {/* Raised over the track below: every RNW View is its own stacking context. */}
         <View style={{ zIndex: 10 }}>
           <GoalCardHeader
@@ -138,7 +153,9 @@ export function SessionsGoalCard({
             testID="sessions-goal-value"
           />
         </View>
-        <SessionsBar row={goal} pastCommitment={pastCommitment} scale={resolved} />
+        <CardTrackRow scale={resolved} labels={dueLabels(goal)} testID="sessions-goal-track">
+          <SessionsBar row={goal} pastCommitment={pastCommitment} scale={resolved} />
+        </CardTrackRow>
       </View>
     </Card>
   )

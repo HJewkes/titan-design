@@ -19,17 +19,22 @@ describe('BodyweightGoalCard', () => {
   })
 
   describe('the caption beside the weight', () => {
-    it('leads with this week’s band by default', () => {
+    it('leads with the rate at its shortest by default', () => {
       render(<BodyweightGoalCard goal={W.cut} />)
+      expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent('-0.6 %/wk')
+    })
+
+    it('leads with the longer rate line when asked', () => {
+      render(<BodyweightGoalCard goal={W.cut} rateLength="full" />)
       expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent(
-        'Week 3 of 8: 194.0 to 197.0 lb'
+        '-0.6 %/wk against -0.5 to -1.0 for a cut'
       )
     })
 
-    it('leads with the rate when asked', () => {
-      render(<BodyweightGoalCard goal={W.cut} lead="rate" />)
+    it('leads with this week’s band when asked', () => {
+      render(<BodyweightGoalCard goal={W.cut} lead="band" />)
       expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent(
-        '-0.6 %/wk against -0.5 to -1.0 for a cut'
+        'Week 3 of 8: 194.0 to 197.0 lb'
       )
     })
 
@@ -38,9 +43,25 @@ describe('BodyweightGoalCard', () => {
       expect(capturedClassNames.get('bodyweight-goal-value-caption')).toContain('leading-normal')
     })
 
-    it('holds the rate in a pinned-open tip', () => {
+    it('holds the band and the phase band in a pinned-open tip', () => {
       render(<BodyweightGoalCard goal={W.cut} isTipOpen />)
-      expect(screen.getByText('-0.6 %/wk against -0.5 to -1.0 for a cut')).toBeInTheDocument()
+      expect(screen.getByText('Week 3 of 8: 194.0 to 197.0 lb')).toBeInTheDocument()
+      expect(screen.getByText('Cut band -0.5 to -1.0 %/wk')).toBeInTheDocument()
+    })
+  })
+
+  describe('the track row', () => {
+    it('labels the band edges under the track, not inside it', () => {
+      render(<BodyweightGoalCard goal={W.cut} />)
+      const row = screen.getByTestId('bodyweight-goal-track')
+      expect(row).toHaveTextContent('194.0')
+      expect(row).toHaveTextContent('197.0')
+      expect(screen.queryByTestId('zone-track-tick-label')).toBeNull()
+    })
+
+    it('labels a zero-width band once', () => {
+      render(<BodyweightGoalCard goal={W.slowLossOneLine} />)
+      expect(screen.getByTestId('bodyweight-goal-track')).toHaveTextContent('186.2')
     })
   })
 

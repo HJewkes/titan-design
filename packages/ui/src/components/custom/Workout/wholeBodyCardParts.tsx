@@ -37,19 +37,20 @@ export function GoalCardHeader(props: {
       className="justify-between gap-x-inline-md gap-y-stack-sm"
       testID={props.testID}
     >
+      <Typography variant="overline" color="tertiary">
+        {props.label}
+      </Typography>
+      {/* The tag sits with the status at the right, not beside the label (owner, round 2). */}
       <View style={{ flexDirection: 'row', alignItems: 'center' }} className="gap-inline-sm">
-        <Typography variant="overline" color="tertiary">
-          {props.label}
-        </Typography>
         {props.tag !== undefined && (
           <Pill tone="neutral" variant="outline" size="sm">
             {props.tag}
           </Pill>
         )}
+        <Pill tone={GOAL_STATUS_TONE[props.status]} variant="subtle" size="sm" leading="dot">
+          {GOAL_STATUS_LABEL[props.status]}
+        </Pill>
       </View>
-      <Pill tone={GOAL_STATUS_TONE[props.status]} variant="subtle" size="sm" leading="dot">
-        {GOAL_STATUS_LABEL[props.status]}
-      </Pill>
     </View>
   )
 }
@@ -98,6 +99,59 @@ function DetailTip(props: { lines: string[]; label: string; isOpen?: boolean; te
     >
       {glyph}
     </TipTrigger>
+  )
+}
+
+/**
+ * The row template both cards' bodies use: a fixed track box and a fixed label row
+ * under it, per scale. Fixed heights are what make two cards in one grid row line
+ * their tracks up and end level, whatever text sits above them (owner, round 2:
+ * "ideally the two cards are the same height as one another").
+ */
+export const TRACK_ROW = {
+  wall: { track: 34, labels: 26, font: 13 },
+  phone: { track: 22, labels: 20, font: 11 },
+} as const
+
+/** One label under the track, placed at its own fraction of the track's width. */
+export interface TrackLabel {
+  /** 0..1 along the track. */
+  fraction: number
+  text: string
+}
+
+export function CardTrackRow(props: {
+  scale: WholeBodyScale
+  labels: TrackLabel[]
+  children: ReactNode
+  testID?: string
+}) {
+  const row = TRACK_ROW[props.scale]
+  return (
+    <View style={{ marginTop: 'auto' }} testID={props.testID}>
+      <View style={{ height: row.track, justifyContent: 'center' }}>{props.children}</View>
+      <View style={{ height: row.labels }}>
+        {props.labels.map((label) => (
+          <View
+            key={`${label.fraction}-${label.text}`}
+            style={{
+              position: 'absolute',
+              left: `${label.fraction * 100}%`,
+              transform: [{ translateX: '-50%' }],
+            }}
+          >
+            <Typography
+              variant="caption"
+              color="tertiary"
+              className="leading-normal"
+              style={{ fontSize: row.font }}
+            >
+              {label.text}
+            </Typography>
+          </View>
+        ))}
+      </View>
+    </View>
   )
 }
 

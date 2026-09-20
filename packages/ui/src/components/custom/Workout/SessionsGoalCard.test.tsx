@@ -26,7 +26,7 @@ describe('SessionsGoalCard', () => {
     it('leads with what leaves the window when asked', () => {
       render(<SessionsGoalCard goal={S.underPace} lead="leaving" />)
       expect(screen.getByTestId('sessions-goal-value-caption')).toHaveTextContent(
-        '3 days leave the window this week'
+        '3 leave this week'
       )
     })
 
@@ -37,7 +37,7 @@ describe('SessionsGoalCard', () => {
 
     it('holds the other lines in a pinned-open tip', () => {
       render(<SessionsGoalCard goal={S.underPace} isTipOpen />)
-      expect(screen.getByText('3 days leave the window this week')).toBeInTheDocument()
+      expect(screen.getByText('3 leave this week')).toBeInTheDocument()
     })
 
     it('draws no tip when there is only one line', () => {
@@ -60,6 +60,16 @@ describe('SessionsGoalCard', () => {
     it('stops at the commitment when capped', () => {
       render(<SessionsGoalCard goal={S.overCommitment} pastCommitment="cap" />)
       expect(screen.getAllByTestId('segmented-bar-segment')).toHaveLength(12)
+    })
+
+    it('marks where the count due by now falls', () => {
+      render(<SessionsGoalCard goal={S.underPace} />)
+      expect(screen.getByTestId('sessions-goal-track')).toHaveTextContent('due')
+    })
+
+    it('drops the due mark once the window is full', () => {
+      render(<SessionsGoalCard goal={S.atCommitment} />)
+      expect(screen.getByTestId('sessions-goal-track')).not.toHaveTextContent('due')
     })
 
     it('falls back to a plain bar past the segment limit (F5)', () => {

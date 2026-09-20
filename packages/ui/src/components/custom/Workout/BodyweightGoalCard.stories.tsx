@@ -27,6 +27,9 @@ const meta: Meta<typeof BodyweightGoalCard> = {
           '[Pill](?path=/docs/components-atoms-pill--docs), ' +
           '[ZoneTrack](?path=/docs/custom-workout-zonetrack--docs) (the band in the goal ' +
           "chart's own band colour) and a Tooltip with an InfoIcon.\n\n" +
+          'The lead line is the rate; the lengths (`percent`, `verdict`, `full`) are a round-3 ' +
+          'comparison and every string in them is a PROPOSAL. Whatever the lead drops — this ' +
+          "week's band, the phase's rate band — sits in the tip.\n\n" +
           'Bodyweight numbers come from the band constants: the store holds no weigh-ins yet. ' +
           'The slow-loss band (-0.25 to -0.5 %/wk) is a stand-in: voltras-mcp pins both edges ' +
           'at -0.5 %/wk today, and a server task will give the phase a real band. No loading ' +
@@ -35,10 +38,11 @@ const meta: Meta<typeof BodyweightGoalCard> = {
       },
     },
   },
-  args: { goal: W.cut, lead: 'band', isTipOpen: false },
+  args: { goal: W.cut, lead: 'rate', rateLength: 'percent', isTipOpen: false },
   argTypes: {
     goal: { control: 'object' },
     lead: { control: 'inline-radio', options: ['band', 'rate'] },
+    rateLength: { control: 'inline-radio', options: ['percent', 'verdict', 'full'] },
     scale: { control: 'inline-radio', options: [undefined, 'wall', 'phone'] },
     isTipOpen: { control: 'boolean' },
   },
@@ -56,8 +60,14 @@ export default meta
 
 type Story = StoryObj<typeof BodyweightGoalCard>
 
-/** F6: a cut from 200 lb, week 3 of 8. */
+/** F6: a cut from 200 lb, week 3 of 8, leading with the rate at its shortest. */
 export const Default: Story = {}
+
+/** The rate with a word for where it sits against the phase's band. Proposed wording. */
+export const RateVerdict: Story = { args: { rateLength: 'verdict' } }
+
+/** The round-2 sentence, which the owner called far too long. Kept for the comparison. */
+export const RateFull: Story = { args: { rateLength: 'full' } }
 
 /** F7: a gain from 170 lb, week 2 of 8. */
 export const Gain: Story = { args: { goal: W.gain } }

@@ -11,15 +11,23 @@ import { cn } from '../../../utils/cn'
 import { formatBodyweight } from '../../../utils/workout-format'
 import { BAND_OPACITY } from './GoalTrajectoryBand'
 import { ZoneTrack, type ZoneTrackTick } from './ZoneTrack'
-import { FigureLine, GoalCardHeader, useStatusColor } from './wholeBodyCardParts'
+import {
+  CardTrackRow,
+  FigureLine,
+  GoalCardHeader,
+  useStatusColor,
+  type TrackLabel,
+} from './wholeBodyCardParts'
 import {
   bandCaption,
   bandDomain,
+  trackFraction,
   leadCaption,
   phaseLabel,
   weighInDate,
   weightCaptions,
   wholeBodyScale,
+  type RateLength,
   type WeightCaptionKey,
   type WholeBodyScale,
   type WholeBodyWeightRow,
@@ -27,8 +35,10 @@ import {
 
 export interface BodyweightGoalCardProps extends ViewProps {
   goal: WholeBodyWeightRow
-  /** Which detail line sits beside the weight; the other moves into the tip. Round-2 comparison (VW-455). */
+  /** Which detail line sits beside the weight; the rest move into the tip. The owner picked the rate. */
   lead?: WeightCaptionKey
+  /** How much of the rate line the lead carries. Round-3 comparison (VW-455); the strings are proposals. */
+  rateLength?: RateLength
   /** Pins the layout. Omitted, the card measures itself: wall sizes from a 560px content box. */
   scale?: WholeBodyScale
   /** Pins the detail tip open, for review frames and tests. */
@@ -36,17 +46,28 @@ export interface BodyweightGoalCardProps extends ViewProps {
   className?: string
 }
 
-/** Tick labels at the band's edges; a zero-width band is one emphasised line instead. */
+/**
+ * Lines at the band's edges, with NO labels of their own: the labels sit in the
+ * shared track row below, which is what lets this card's track line up with the
+ * sessions card's bar. A zero-width band is one emphasised line instead.
+ */
 function bandTicks(row: WholeBodyWeightRow, lineColor: string): ZoneTrackTick[] {
   const lo = Math.min(row.week.low, row.week.high)
   const hi = Math.max(row.week.low, row.week.high)
-  if (lo === hi) {
-    return [{ value: lo, label: formatBodyweight(lo), color: lineColor, emphasized: true }]
-  }
-  return [
-    { value: lo, label: formatBodyweight(lo) },
-    { value: hi, label: formatBodyweight(hi) },
-  ]
+  if (lo === hi) return [{ value: lo, color: lineColor, emphasized: true }]
+  return [{ value: lo }, { value: hi }]
+}
+
+/** The band's two numbers, each under its own edge. */
+function bandLabels(row: WholeBodyWeightRow): TrackLabel[] {
+  const { min, max } = bandDomain(row.week.low, row.week.high, row.latest?.value ?? null)
+  const lo = Math.min(row.week.low, row.week.high)
+  const hi = Math.max(row.week.low, row.week.high)
+  const edges = lo === hi ? [lo] : [lo, hi]
+  return edges.map((edge) => ({
+    fraction: trackFraction(edge, min, max),
+    text: formatBodyweight(edge),
+  }))
 }
 
 function WeightTrack({ row, scale }: { row: WholeBodyWeightRow; scale: WholeBodyScale }) {
@@ -88,15 +109,17 @@ function WeightTrack({ row, scale }: { row: WholeBodyWeightRow; scale: WholeBody
  */
 export function BodyweightGoalCard({
   goal,
-  lead = 'band',
+  lead = 'rate',
+  rateLength = 'percent',
   scale,
   isTipOpen,
   className,
+  style,
   ...props
 }: BodyweightGoalCardProps) {
   const measured = useMeasuredWidth()
   const resolved = wholeBodyScale(measured.width, scale)
-  const captions = leadCaption(weightCaptions(goal), lead)
+  const captions = leadCaption(weightCaptions(goal, rateLength), lead)
   return (
     <Card
       elevation={1}
@@ -104,11 +127,12 @@ export function BodyweightGoalCard({
       role="article"
       aria-label="Bodyweight goal"
       // Card clips by default; nothing here reaches its rounded edge, and the detail tip must escape it.
-      style={{ overflow: 'visible' }}
+      // A caller's own style still applies: a page grid passes `height: '100%'` to level two cards.
+      style={[{ overflow: 'visible' }, style]}
       testID="bodyweight-goal-card"
       {...props}
     >
-      <View className="gap-stack-md" onLayout={measured.onLayout}>
+      <View className="gap-stack-md" style={{ flex: 1 }} onLayout={measured.onLayout}>
         {/* Raised over the track below: every RNW View is its own stacking context. */}
         <View style={{ zIndex: 10 }}>
           <GoalCardHeader
@@ -135,7 +159,11 @@ export function BodyweightGoalCard({
             />
           )}
         </View>
-        {goal.latest !== null && <WeightTrack row={goal} scale={resolved} />}
+        {goal.latest !== null && (
+          <CardTrackRow scale={resolved} labels={bandLabels(goal)} testID="bodyweight-goal-track">
+            <WeightTrack row={goal} scale={resolved} />
+          </CardTrackRow>
+        )}
       </View>
     </Card>
   )
