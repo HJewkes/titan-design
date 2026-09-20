@@ -11,7 +11,7 @@ import { alpha } from '../../../utils/colors'
 import { LIFT_RIM_ALPHA } from '../../../theme/lift'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { roundWeight } from '../../../utils/workout-format'
-import { STAR_ICON_BOX, STAR_ICON_PATH } from '../../icons'
+import { ICON_VIEWBOX, STAR_ICON_BOX, STAR_ICON_PATH } from '../../icons'
 import type { RuleLabelSpec } from './goalTrajectoryRuleLabels'
 import type {
   ActualCoord,
@@ -104,7 +104,8 @@ export function trajectoryPalette(
     // The gridline's own hue, stronger than the 12% line so its value still reads.
     gridLabel: alpha(t['text-primary'], 0.3),
     axis: t['text-tertiary'],
-    star: t['status-warning'],
+    // The PR badge's own colour: one mark, one token (titan-0201 round 5).
+    star: t['brand-primary'],
     deload: alpha(t['text-primary'], 0.05),
     // The current week is an OUTLINE, the same ring the card's week cell takes; deload is a fill.
     currentWeek: t['text-primary'],
@@ -432,13 +433,12 @@ function ActualLine({
 
 /**
  * The PR star, drawn from the icon's own path so the chart and the PR badge can never
- * diverge. `outer` is the star's radius, as the hand-drawn polygon's was, and the glyph
- * is scaled from the icon's ink box to that width and centred on (cx, cy).
+ * diverge. `size` is the icon size the badge would be given, so a chart star and a badge
+ * star of the same size render identically; the glyph is centred on (cx, cy).
  */
-export function starMark(cx: number, cy: number, outer: number) {
+export function starMark(cx: number, cy: number, size: number) {
   const box = STAR_ICON_BOX
-  // A five-point star of radius r spans 1.902r across, which is the width the polygon drew.
-  const scale = (1.902 * outer) / box.width
+  const scale = size / ICON_VIEWBOX
   const centre = { x: box.x + box.width / 2, y: box.y + box.height / 2 }
   return {
     d: STAR_ICON_PATH,

@@ -42,8 +42,11 @@ import {
   type EntranceState,
 } from './goalTrajectoryMotion'
 
-/** The big chart's marks at card scale: stroke, dot and star all step down together. */
-export const MINI_MARKS = { stroke: 2, dot: 3.5, ring: 1.5, star: 5.5 } as const
+/**
+ * The big chart's marks at card scale: stroke, dot and star all step down together. The
+ * star is an icon size, one step under the phone chart's 14 because every mini mark is.
+ */
+export const MINI_MARKS = { stroke: 2, dot: 3.5, ring: 1.5, star: 12 } as const
 
 /** No axis gutters: the plane runs edge to edge and its lip sits on the canvas floor. */
 export const MINI_INSETS: PlotInsets = { left: 0, right: 0, top: 8, bottom: 1 }

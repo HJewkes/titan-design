@@ -109,8 +109,9 @@ interface Density {
 
 // Phone drops to three gridlines; its y labels stay because the plot has the gutter.
 const DENSITY: Record<'phone' | 'wall', Density> = {
-  phone: { stroke: 2, star: 6, tickCount: 3, showYLabels: true, maxWeekLabels: 6 },
-  wall: { stroke: 3, star: 7.5, tickCount: 5, showYLabels: true, maxWeekLabels: 12 },
+  // `star` is an icon size, the same the card's PR badge takes at that width (markSizeFor).
+  phone: { stroke: 2, star: 14, tickCount: 3, showYLabels: true, maxWeekLabels: 6 },
+  wall: { stroke: 3, star: 20, tickCount: 5, showYLabels: true, maxWeekLabels: 12 },
 }
 
 export interface GoalTrajectoryChartProps extends ViewProps {

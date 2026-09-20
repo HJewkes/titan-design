@@ -22,7 +22,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
   are exported beside the other `liveStripModel` helpers.
 - `STAR_ICON_PATH` and `STAR_ICON_BOX` (the star glyph's path and its ink box in
   the icon viewBox) and `ICON_VIEWBOX`, so a chart can draw the same star as the
-  PR badge from one source.
+  PR badge, at the same size, from one source.
 - `TipTrigger` takes `tabIndex` and `onKeyDown`, so a group of triggers can rove
   focus between them.
 - `GoalTrajectoryChart` `currentWeek` (additive and optional, which is fine for
@@ -46,8 +46,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
   several charts. The separate next-target tip is gone; its label now sits in
   that week's tip.
 - `GoalTrajectoryChart` and `GoalTrajectoryMini` draw the PR star from the PR
-  icon's own path instead of a hand-rolled polygon, so the chart mark and the
-  badge cannot diverge. The star keeps its size and centre.
+  icon's own path instead of a hand-rolled polygon, in the badge's own
+  `brand-primary` (it was `status-warning`) and at the badge's size: 20px on the
+  wall and 14px on a phone, the sizes a card's own PR badge takes there. The
+  mini chart keeps its smaller mark scale at 12px.
 - `GoalTrajectoryChart` (and every `GoalCard` and `PrimaryGoalCard` chart) drops
   the y-axis value labels by default and takes back their gutter: each gridline
   carries its value inside the plot, in the gridline's own hue (text at 30% where
