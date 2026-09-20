@@ -5,7 +5,7 @@ import { Typography } from '../Typography'
 import { resolveColor } from '../../../theme/resolve-color'
 import { WORKOUT_PILL_DELOAD } from '../../../theme/extracted-colors-dataviz'
 import { alpha } from '../../../utils/colors'
-import { usePrefersReducedMotion } from '../charts/live-rep-growth'
+import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion'
 import { cn } from '../../../utils/cn'
 
 // The deload role has no semantic tokens at all, so its wash and rim are derived from

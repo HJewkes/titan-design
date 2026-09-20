@@ -83,6 +83,23 @@ removes):
 `SessionStatePill` keeps its own AW-127 `@deprecated` tag (use `Pill`); it moved
 directory but its export is unchanged.
 
+## Migration M1 — `usePrefersReducedMotion` moved to `src/hooks/`
+
+The hook now lives at `src/hooks/usePrefersReducedMotion.ts` so `ui/`-tier
+components can honour reduced motion without importing `custom/`, which
+`titan/no-upward-tier-import` forbids (roadmap decision of 2026-09-19, M1). The
+body is unchanged; only its home moved.
+
+| Export                                                    | Replacement                                            | Known consumers    | Task |
+| --------------------------------------------------------- | ------------------------------------------------------ | ------------------ | ---- |
+| `usePrefersReducedMotion` from `custom/charts/live-rep-growth` | the same name from `@/hooks/usePrefersReducedMotion` | in-repo `custom/` only | TD-37 |
+
+No consumer import path changes: `live-rep-growth` was never on a barrel, so the
+hook was never part of the published API, and it is not added to the `hooks`
+barrel by this move either (see the PR for why). The re-export on
+`live-rep-growth` is tagged `@deprecated` for one release and **disappears in
+0.23.0**; all three in-repo importers already use the new path.
+
 ## Fatigue tokens — `TONE_COLOR` replaced by `TONE_TOKEN` (VW-316)
 
 **Breaking, no alias possible.** `TONE_COLOR` held colours resolved at import

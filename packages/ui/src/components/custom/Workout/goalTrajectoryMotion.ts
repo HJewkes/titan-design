@@ -1,7 +1,7 @@
 // The GoalTrajectoryChart entrance (VW-385): band, rules and gridlines are there from
 // the first frame; the line draws left to right, then its shadow and the points arrive.
 import { useEffect, useState, type CSSProperties } from 'react'
-import { usePrefersReducedMotion } from '../charts/live-rep-growth'
+import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion'
 
 const EASE_OUT = 'cubic-bezier(0.22, 1, 0.36, 1)'
 
