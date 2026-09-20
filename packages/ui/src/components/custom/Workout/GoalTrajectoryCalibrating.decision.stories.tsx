@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 
 import { Surface } from '../../ui/surface'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { GoalCard } from './GoalCard'
 import type { CalibratingPlacement } from './goalTrajectoryCalibratingFixture'
 import { calibratingScenario } from './primaryGoal-fixture'

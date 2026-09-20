@@ -5,7 +5,7 @@ import { cn } from '../../../utils/cn'
 import { roundWeight } from '../../../utils/workout-format'
 import { useSurface, useOnSurfaceColor } from '../../ui/surface'
 import { TipTrigger } from '../../ui/tooltip'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { valueReach, type GoalReach } from './goalMilestone'
 import {
   deriveTrajectoryGeometry,

@@ -4,7 +4,7 @@ import { Card } from '../../ui/card'
 import { Pill } from '../../ui/pill'
 import { StatusDot, type StatusDotVariant } from '../Workout/StatusDot'
 import { SegmentedBar, type SegmentedBarSegment } from '../Workout/SegmentedBar'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { SEVERITY_BAR_COLOR, SEVERITY_ORDER, type TaskSeverity } from './SeverityLabel'
 
 export type InitiativeState = 'focused' | 'backburner' | 'paused' | 'done'

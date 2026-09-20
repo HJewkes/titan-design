@@ -45,6 +45,7 @@ them, and the survivors are marked as presets below.
 | `data-row`       | atom     | —               | FileActivityDetail, VolumeLandmarkBar                                                                                                                          | 2       | 2        |
 | `divider`        | atom     | —               | FileHistoryExplorer, OpenLoops, SessionDetail, SessionList, TopBar                                                                                             | 5       | 2        |
 | `drawer`         | molecule | Surface         | PrHistoryModal                                                                                                                                                 | 1       | 6        |
+| `eyebrow`        | molecule | Typography      | FileActivityDetail, FileHistoryExplorer, InitiativeBrief, OpenLoops, PortfolioOverview, SessionList, TaskTable                                                 | 8       | 0        |
 | `form-field`     | atom     | —               | examples                                                                                                                                                       | 1       | 0        |
 | `help-tip`       | molecule | Surface         | — **deprecated**, use Tooltip                                                                                                                                  | 0       | 0        |
 | `icon-box`       | atom     | —               | —                                                                                                                                                              | 0       | 0        |
@@ -70,6 +71,7 @@ them, and the survivors are marked as presets below.
 | `toast`          | molecule | Surface         | —                                                                                                                                                              | 0       | 0        |
 | `toolbar-button` | molecule | Surface         | —                                                                                                                                                              | 0       | 0        |
 | `tooltip`        | molecule | Surface         | FatigueLights, GoalMilestoneWeekStrip, GoalPriorityIcon, GoalTrajectoryChart, PrimaryGoalCard, SessionDetail, SessionListItem, Table, TaskRow, ZoneTrack       | 8       | 1        |
+| `typography`     | atom     | —               | Every family — 49 in-repo call sites across `custom/`, `shell/` and `lab/`                                                                                     | 49      | 11       |
 
 Two roots carry the family: **`surface`** (15 in-repo consumers — every floating
 and raised plane) and **`pill`** (11 — every pill-shaped label since decision 3).
@@ -79,11 +81,16 @@ Nothing else in `ui/*` is composed by more than six.
 from the barrel and without a story, that `Menu`, `Popover` and `Tooltip` use to
 hand interaction to a composed child instead of nesting a second `Pressable`.
 
+`typography` keeps the story title `Foundations/Typography` rather than moving under
+`Components/`. It is a foundation in the six-group taxonomy (`CLAUDE.md`, Storybook
+Pattern), and seven in-repo autodocs links already point at `foundations-typography--docs`.
+`eyebrow` was already titled `Components/Molecules/Eyebrow` before the move.
+
 ## Reuse audit — where `ui/*` still hand-rolls
 
 | Leaf                                                     | Should compose                    | Status                                                                                                                                                                             |
 | -------------------------------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Text runs (79 raw `<Text>` in 27 files)                  | `Typography`                      | **Open.** `Typography` is in `custom/`, which `ui/*` may not import. Roadmap decision 9 moves it into `ui/`; until then every heading and label here is hand-styled.               |
+| Text runs (79 raw `<Text>` in 27 files)                  | `Typography`                      | **Unblocked** (#PRNUM), not yet done. Migration M2 moved `Typography` into `ui/typography`, so the import is legal now; the 79 runs are still hand-styled.                          |
 | Pill-shaped labels                                       | `Pill`                            | **Closed** (#172). `Badge` and `Chip` now render `<Pill>`; the six folded-in variants are in `DEPRECATIONS.md`.                                                                    |
 | Status dots                                              | `Indicator`                       | **Closed** for `ui/*`. `StatusDot` (Workout) is deprecated toward `Indicator` (decision 10).                                                                                       |
 | Raised / floating planes                                 | `Surface` (`raise` / `elevation`) | **Closed** (#166, #173). Eleven molecules compose `Surface` rather than setting `bg-surface-*` themselves.                                                                         |
@@ -92,9 +99,10 @@ hand interaction to a composed child instead of nesting a second `Pressable`.
 
 ## Watch list
 
-- **`Typography` cannot be composed here.** The tier order forbids the import, so
-  the 79 raw `<Text>` runs above cannot be fixed inside this family. Blocked on
-  roadmap E3 moving `Typography` and `Eyebrow` into `ui/`.
+- **`Typography` can be composed here now.** Migration M2 (#PRNUM) moved it to
+  `ui/typography` and `Eyebrow` to `ui/eyebrow`, so the tier order no longer forbids
+  the import. The 79 raw `<Text>` runs above are unblocked, not fixed — converting
+  them is its own task.
 - **Fourteen primitives read as dead** — `autocomplete`, `avatar`, `breadcrumbs`,
   `chip`, `help-tip`, `icon-box`, `link`, `menu`, `modal`, `skeleton`, `switch`,
   `tabs`, `toast`, `toolbar-button`. That is not automatically a delete: the graph

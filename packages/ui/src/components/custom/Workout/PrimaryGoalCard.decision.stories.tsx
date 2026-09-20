@@ -4,7 +4,7 @@ import type { ReactNode } from 'react'
 import { View } from 'react-native'
 
 import { Surface } from '../../ui/surface'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { GoalPriorityIcon, GOAL_PRIORITY_LABEL, type GoalPriority } from './GoalPriorityIcon'
 import { PrimaryGoalCard } from './PrimaryGoalCard'
 import { PRIMARY_GOAL_SCENARIOS as S, type PrimaryGoalScenario } from './primaryGoal-fixture'

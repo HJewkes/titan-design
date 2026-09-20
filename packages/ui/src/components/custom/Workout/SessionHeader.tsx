@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
 import { Surface, onSurfaceColors, useSurfaceMode } from '../../ui/surface'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { TimerReadout } from '../TimerReadout'
 import { SegmentedProgressBar } from './SegmentedProgressBar'
 import { MetricTiles, type MetricTileData } from './MetricTiles'

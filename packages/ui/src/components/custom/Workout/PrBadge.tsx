@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { View, Animated, Easing, type ViewProps } from 'react-native'
 import { StarIcon } from './icons'
 import { BaseBadge } from './BaseBadge'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { resolveColor } from '../../../theme/resolve-color'
 
 export type PRType = 'e1rm' | 'weight' | 'reps' | 'volume' | 'velocity'

@@ -37,7 +37,7 @@ deferred to its own pass.
 | 6 | Theme source | `SurfaceContext`/`ThemeProvider` only. `utils/useTheme.ts` is deleted (Card no longer uses it after #166). |
 | 7 | Workout/Fatigue dark-only? | No. Full theme-correct port (E3), in the batches below. |
 | 8 | Colour math | One `theme/color-math.ts` with CIELAB L* as the sanctioned metric; duplicate `hexToRgb` ×4, `mixHex` ×4, luminance ×3, test `lstar` ×3 deleted. |
-| 9 | Typography | `Typography` and `Eyebrow` move into `ui/`; re-export shims stay in `custom/`. Scheduled by the 2026-09-19 decision below (M2); not yet landed. |
+| 9 | Typography | `Typography` and `Eyebrow` move into `ui/`; re-export shims stay in `custom/`. Scheduled by the 2026-09-19 decision below (M2). Landed in #PRNUM. |
 | 10 | Dot | `Indicator` survives. `StatusDot`'s consumers migrate; its inline glows route through `getGlowShadow`. Fatigue README corrected. |
 | 11 | Metric | One `Metric` with size / align / trend. `MetricTiles` becomes a preset (one external site); `MetricCell` deleted (no consumers). |
 | 12 | paperSheet | Stays hero-only. Cards use the lift (rim 0.12); grain is not on ordinary cards. |
@@ -114,7 +114,7 @@ are grep counts against `src/` at merge time, excluding the directory's own file
 | #   | Move                                                                                                                | In-repo importers        | When                                      |
 | --- | ------------------------------------------------------------------------------------------------------------------- | ------------------------ | ----------------------------------------- |
 | M1  | `usePrefersReducedMotion` to `src/hooks/usePrefersReducedMotion.ts`                                                 | 3                        | Landed in #276                            |
-| M2  | Typography to `ui/typography`, Eyebrow to `ui/eyebrow`, with a one-release re-export shim in `custom/Typography`; marks decision 9 landed when its PR merges | Typography 68, Eyebrow 8 | now                                       |
+| M2  | Typography to `ui/typography`, Eyebrow to `ui/eyebrow`, with a one-release re-export shim in `custom/Typography`; marks decision 9 landed when its PR merges | Typography 68, Eyebrow 8 | Landed in #PRNUM                          |
 | M3  | EmptyState to `ui/empty-state`                                                                                      | 1                        | now                                       |
 | M5  | Create `ui/charts/` with its README; move SparkBars; add a `d3-*`-import lint scoped to `ui/charts/**`              | 2                        | now                                       |
 | M4  | Table (headless `useTableState` plus a styled shell, TD-29, #271) to `ui/table`                                     | 8                        | now that TD-29 has landed                 |
@@ -136,10 +136,12 @@ pattern (`eslint-rules/*-baseline.json`):
   `theme`, so they cannot import `components/`.
 - A `custom-families.test.ts` structure test: a top-level `custom/` directory must be a declared
   domain family (`Workout`, `Fatigue`, `ActiveWork`, `charts`) or appear in the committed baseline
-  of misplaced generics, which may only shrink. Baseline: the 13 directories above plus
-  `ActiveWork/Eyebrow`. A new generic directory in `custom/` fails.
+  of misplaced generics, which may only shrink. Baseline: whatever is left of the 13 directories
+  above plus `ActiveWork/Eyebrow` when the lint lands — `custom/README.md` carries the live list,
+  which M2 has already shortened. A new generic directory in `custom/` fails.
 - `story-title-prefix` restricts `Components/` to `ui/*` and `Custom/` to `custom/*`, ratcheted
-  against the nine `custom/` stories already titled `Components/...`.
+  against the `custom/` stories already titled `Components/...` — nine at the decision, eight after
+  M2 moved `Eyebrow` into `ui/`.
 - A `no-restricted-imports` block confines `d3-*` to `src/components/ui/charts/**`, baselining
   today's one exception (`GoalTrajectoryChartGeometry.ts` and its test, outside `custom/charts`).
 - `shell/` is forbidden from importing `shell/<app>/`, baselining the barrel (exempt by design) and

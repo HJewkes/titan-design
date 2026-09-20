@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { primitiveRamps } from '../../../theme/tokens/primitives'
 import { SessionRail, type SessionRailExercise } from './SessionRail'
 import { Surface } from '../../ui/surface'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 
 /**
  * `SessionRail` (shell organism) — the live-workout exercise list: a flat raised

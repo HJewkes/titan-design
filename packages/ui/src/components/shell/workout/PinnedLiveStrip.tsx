@@ -14,7 +14,7 @@ import { formatVelocity } from '../../../utils/workout-format'
 import { Surface } from '../../ui/surface'
 import { Indicator } from '../../ui/indicator'
 import { Progress } from '../../ui/progress'
-import { Typography } from '../../custom/Typography'
+import { Typography } from '../../ui/typography'
 import { ChevronRightIcon } from '../../icons'
 import { SetBarChart, type SetSlot } from '../../custom/charts/SetBarChart'
 import {

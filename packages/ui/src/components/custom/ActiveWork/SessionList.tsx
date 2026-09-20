@@ -3,8 +3,8 @@ import { useMemo } from 'react'
 import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Divider } from '../../ui/divider'
-import { Typography } from '../Typography'
-import { Eyebrow } from './Eyebrow'
+import { Typography } from '../../ui/typography'
+import { Eyebrow } from '../../ui/eyebrow'
 import { SessionListItem, type SessionSummary } from './SessionListItem'
 
 // React Native's `Role` union omits `'listbox'` and `'group'`, even though RNW

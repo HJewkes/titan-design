@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SupersetWrapper } from './SupersetWrapper'
 import { ExerciseCard } from './ExerciseCard'
 import { Card } from '../../ui/card'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { Surface } from '../../ui/surface'
 import { resolveColor } from '../../../theme/resolve-color'
 

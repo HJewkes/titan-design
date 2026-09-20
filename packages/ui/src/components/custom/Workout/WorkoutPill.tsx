@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useEffect, useState } from 'react'
 import { View, Pressable, Animated, Easing, type ViewProps } from 'react-native'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { resolveColor } from '../../../theme/resolve-color'
 import { WORKOUT_PILL_DELOAD } from '../../../theme/extracted-colors-dataviz'
 import { alpha } from '../../../utils/colors'

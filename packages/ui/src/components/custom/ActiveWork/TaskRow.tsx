@@ -4,7 +4,7 @@ import { Pill } from '../../ui/pill'
 import { Tooltip } from '../../ui/tooltip'
 import { formatDateTime } from '../DateTime'
 import { TableCell, TableRow } from '../Table'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { SEVERITY_META, SeverityLabel, type TaskSeverity } from './SeverityLabel'
 import type { TaskColumnKey } from './TaskTable'
 

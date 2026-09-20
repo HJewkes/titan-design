@@ -3,7 +3,7 @@ import { useMemo, type ReactNode } from 'react'
 import { Pressable, View } from 'react-native'
 import { Tooltip, useHoverState } from '../../ui/tooltip'
 import { DateTime } from '../DateTime'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { formatSessionDuration, formatTaskAge } from './format-time'
 import { extractTaskRefs } from './session-linkers'
 

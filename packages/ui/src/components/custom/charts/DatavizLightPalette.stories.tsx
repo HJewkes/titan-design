@@ -9,7 +9,7 @@ import {
   type OnSurfaceRole,
 } from '../../ui/surface'
 import { Pill } from '../../ui/pill'
-import { Typography, type TypographyVariant } from '../Typography'
+import { Typography, type TypographyVariant } from '../../ui/typography'
 import { Treemap, type TreemapDatum } from '../Treemap'
 import { MuscleGroupChip } from '../Workout/MuscleGroupChip'
 import type { VolumeStatus } from '../Workout/muscleTaxonomy'

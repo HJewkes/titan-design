@@ -4,7 +4,7 @@
  */
 import { View } from 'react-native'
 import { cn } from '../../utils/cn'
-import { Typography } from '../../components/custom/Typography'
+import { Typography } from '../../components/ui/typography'
 import { Indicator } from '../../components/ui/indicator'
 import type { InitiativeState, TaskSeverity } from './data/aw-data'
 

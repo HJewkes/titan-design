@@ -1,26 +1,19 @@
-// Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import type { ReactNode } from 'react'
-import { cn } from '../../../utils/cn'
-import { Typography } from '../Typography'
-
-export interface EyebrowProps {
-  children: ReactNode
-  className?: string
-}
+// Shim for migration M2. `Eyebrow` lives in `ui/eyebrow` now; this file keeps the
+// old import path alive for one release. The re-exports import the bindings first
+// and export them with no `from` clause on purpose: `deprecated-export-registry.js`
+// unifies a re-export identity only when the statement carries a source, so
+// `export { X } from '…'` would mark the NEW definition deprecated too (M1, #276).
+import { Eyebrow } from '../../ui/eyebrow'
+import type { EyebrowProps } from '../../ui/eyebrow'
 
 /**
- * Eyebrow — an uppercase micro-label used above a value or a section of
- * content (e.g. "Focused · by rank", a stat tile's caption). Composes
- * {@link Typography}'s `overline` variant; never hand-roll the letter-spacing.
+ * @deprecated Moved to `ui/eyebrow` (migration M2); it was never active-work-specific.
+ * Import from `@titan-design/react-ui` as before, or from `@/components/ui/eyebrow` by
+ * path. This re-export is removed in 0.23.0.
  */
-export function Eyebrow({ children, className }: EyebrowProps) {
-  return (
-    <Typography
-      variant="overline"
-      color="inherit"
-      className={cn('text-xs font-semibold uppercase tracking-wider text-text-tertiary', className)}
-    >
-      {children}
-    </Typography>
-  )
-}
+export { Eyebrow }
+
+/**
+ * @deprecated Moved to `ui/eyebrow` (migration M2). This re-export is removed in 0.23.0.
+ */
+export type { EyebrowProps }

@@ -4,7 +4,7 @@ import { cn } from '../../../utils/cn'
 import { Pill } from '../../ui/pill'
 import { StatusDot } from '../Workout/StatusDot'
 import { DateTime } from '../DateTime'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { INITIATIVE_STATE_META, type InitiativeState } from './InitiativeCard'
 
 export interface InitiativeHeaderProps {

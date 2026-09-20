@@ -2,7 +2,7 @@
 import { type ReactNode } from 'react'
 import { View } from 'react-native'
 import { VelocityStrip, type VelocityZoneBandProp } from './VelocityStrip'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { roundWeight, roundRpe } from '../../../utils/workout-format'
 import { resolveColor } from '../../../theme/resolve-color'
 

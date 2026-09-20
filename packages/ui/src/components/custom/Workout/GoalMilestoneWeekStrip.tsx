@@ -8,7 +8,7 @@ import { Pill, type PillTone } from '../../ui/pill'
 import { useSurfaceMode } from '../../ui/surface'
 import { TipTrigger } from '../../ui/tooltip'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { SegmentedBar, type SegmentedBarSegment } from './SegmentedBar'
 import { STATUS_TOKEN } from './GoalTrajectoryPlot'
 import {

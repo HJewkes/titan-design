@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { Pressable, View } from 'react-native'
 import { cn } from '../../utils/cn'
-import { Typography } from '../custom/Typography'
+import { Typography } from '../ui/typography'
 
 export interface NavItemProps {
   /** The nav glyph (an icon from `components/icons`, rendered ~20px via `currentColor`). */

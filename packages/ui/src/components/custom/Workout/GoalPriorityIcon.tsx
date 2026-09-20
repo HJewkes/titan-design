@@ -6,7 +6,7 @@ import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { ChevronsDownIcon, EqualIcon, TargetIcon, type IconProps } from '../../icons'
 import { useSurfaceMode } from '../../ui/surface'
 import { TipTrigger } from '../../ui/tooltip'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 
 /** What the block asks of a lift. Mirrors `GoalPriority.level` in voltras-mcp. */
 export type GoalPriority = 'specialize' | 'maintain' | 'deprioritize'

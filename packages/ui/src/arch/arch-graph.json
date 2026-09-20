@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:d2b7ef1b65eb83957947050593d3c9bf9582fbe2c922f0c64a08dd9dfdb534a7",
+  "componentBarrelHash": "sha256:13648013d7dad2dc3b71f726914473204996d467616a7f6fd84a838ad5ca19db",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -1465,11 +1465,43 @@
       "file": "packages/ui/src/components/custom/ActiveWork/Eyebrow.tsx",
       "dir": "custom",
       "family": "custom/ActiveWork",
+      "exports": [],
+      "libDependents": 0,
+      "storyRefs": 0,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 20,
+        "score": 0
+      },
+      "tier": "molecule",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Eyebrow",
+      "file": "packages/ui/src/components/ui/eyebrow/Eyebrow.tsx",
+      "dir": "ui",
+      "family": "ui/eyebrow",
       "exports": [
         "Eyebrow",
         "EyebrowProps"
       ],
-      "libDependents": 7,
+      "libDependents": 8,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -3048,10 +3080,10 @@
       "storyRefs": 3,
       "xproj": {
         "mobile": 0,
-        "mcp": 3,
+        "mcp": 2,
         "dash": 0,
         "audiobook": 0,
-        "total": 3
+        "total": 2
       },
       "dependsOn": [],
       "leak": {
@@ -3765,10 +3797,10 @@
       "storyRefs": 3,
       "xproj": {
         "mobile": 0,
-        "mcp": 0,
+        "mcp": 1,
         "dash": 0,
         "audiobook": 4,
-        "total": 4
+        "total": 5
       },
       "dependsOn": [
         "Indicator",
@@ -5447,10 +5479,10 @@
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
-        "mcp": 1,
+        "mcp": 0,
         "dash": 0,
         "audiobook": 1,
-        "total": 2
+        "total": 1
       },
       "dependsOn": [
         "Pill",
@@ -6061,10 +6093,10 @@
       "storyRefs": 2,
       "xproj": {
         "mobile": 0,
-        "mcp": 2,
+        "mcp": 3,
         "dash": 0,
         "audiobook": 0,
-        "total": 2
+        "total": 3
       },
       "dependsOn": [
         "metricText"
@@ -6288,10 +6320,10 @@
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
-        "mcp": 1,
+        "mcp": 2,
         "dash": 0,
         "audiobook": 1,
-        "total": 2
+        "total": 3
       },
       "dependsOn": [
         "Surface",
@@ -6467,9 +6499,9 @@
     },
     {
       "name": "Typography",
-      "file": "packages/ui/src/components/custom/Typography/Typography.tsx",
-      "dir": "custom",
-      "family": "custom/Typography",
+      "file": "packages/ui/src/components/ui/typography/Typography.tsx",
+      "dir": "ui",
+      "family": "ui/typography",
       "exports": [
         "Typography",
         "Heading",
@@ -6488,7 +6520,7 @@
         "LabelProps",
         "OverlineProps"
       ],
-      "libDependents": 48,
+      "libDependents": 49,
       "storyRefs": 19,
       "xproj": {
         "mobile": 0,
@@ -6650,10 +6682,10 @@
       "storyRefs": 12,
       "xproj": {
         "mobile": 0,
-        "mcp": 3,
+        "mcp": 2,
         "dash": 0,
         "audiobook": 0,
-        "total": 3
+        "total": 2
       },
       "dependsOn": [
         "SetBarChart"
@@ -7078,10 +7110,6 @@
     [
       "CoChangeChip",
       "FilePathLabel"
-    ],
-    [
-      "Eyebrow",
-      "Typography"
     ],
     [
       "FileActivityDetail",
@@ -8300,6 +8328,10 @@
       "Surface"
     ],
     [
+      "Eyebrow",
+      "Typography"
+    ],
+    [
       "HelpTip",
       "Surface"
     ],
@@ -8349,11 +8381,12 @@
     ]
   ],
   "summary": {
-    "total": 174,
+    "total": 175,
     "dead": [
       "Autocomplete",
       "Avatar",
       "Breadcrumbs",
+      "Eyebrow",
       "GoalLiftCard",
       "IconBox",
       "InitiativeHeader",
@@ -8898,8 +8931,8 @@
         "Modal": 5
       },
       "mcp": {
-        "Text": 8,
-        "View": 7,
+        "Text": 10,
+        "View": 8,
         "TouchableOpacity": 0,
         "Pressable": 1,
         "TextInput": 0,

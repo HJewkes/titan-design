@@ -5,7 +5,7 @@ import { greyRamp } from '../../../theme/tokens/primitives'
 import { useSurfaceMode } from '../../ui/surface/SurfaceContext'
 import { ZoneTrack } from './ZoneTrack'
 import { DataRow } from '../../ui/data-row/DataRow'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import type { VolumeLandmarks } from './muscleTaxonomy'
 
 // The muted, un-reached track colour — the same grey step ZoneTrack defaults

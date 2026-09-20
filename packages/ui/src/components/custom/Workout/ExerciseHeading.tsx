@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import type { ReactNode } from 'react'
 import { View, Pressable } from 'react-native'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { cn } from '../../../utils/cn'
 import { roundWeight } from '../../../utils/workout-format'
 import { useSurfaceMode } from '../../ui/surface/SurfaceContext'

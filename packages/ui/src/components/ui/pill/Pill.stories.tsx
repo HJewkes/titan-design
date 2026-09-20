@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { Pill } from './Pill'
 import { Indicator } from '../indicator'
 import { Surface } from '../surface'
-import { Typography } from '../../custom/Typography'
+import { Typography } from '../typography'
 
 const meta: Meta<typeof Pill> = {
   title: 'Components/Atoms/Pill',

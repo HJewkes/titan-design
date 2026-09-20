@@ -2,7 +2,7 @@
 import { View, type ViewProps } from 'react-native'
 import { WorkoutPill, type WorkoutPillStatus } from './WorkoutPill'
 import { IntensityBar } from './IntensityBar'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { resolveColor } from '../../../theme/resolve-color'
 import { WORKOUT_PILL_DELOAD } from '../../../theme/extracted-colors-dataviz'
 import { alpha } from '../../../utils/colors'

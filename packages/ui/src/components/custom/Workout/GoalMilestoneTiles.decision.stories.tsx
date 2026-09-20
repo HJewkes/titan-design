@@ -5,7 +5,7 @@ import { View } from 'react-native'
 
 import { Card } from '../../ui/card'
 import { Surface } from '../../ui/surface'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { GoalMilestoneTile } from './GoalMilestoneTile'
 import { GOAL_MILESTONE_SCENARIOS as S, type GoalMilestoneScenario } from './goalMilestone-fixture'
 

@@ -2,7 +2,7 @@ import { type ReactNode } from 'react'
 import { View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { useTimer, formatDuration, type TimerMode } from '../../../hooks/useTimer'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { useOnSurfaceColor } from '../../ui/surface'
 import { primitiveRamps } from '../../../theme/tokens/primitives'
 

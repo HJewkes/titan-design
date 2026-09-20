@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import React from 'react'
 import { View } from 'react-native'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { resolveColor } from '../../../theme/resolve-color'
 
 export interface SupersetWrapperProps {

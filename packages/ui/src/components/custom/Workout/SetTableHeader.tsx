@@ -1,6 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View } from 'react-native'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { cn } from '../../../utils/cn'
 
 // One header column: its label and its fixed width (PREV is the lone flex column,

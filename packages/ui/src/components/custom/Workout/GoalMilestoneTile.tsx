@@ -10,7 +10,7 @@ import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { Indicator } from '../../ui/indicator'
 import { Surface, useSurfaceMode } from '../../ui/surface'
 import { useMeasuredWidth } from '../Table/column-fit'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import {
   GoalMilestoneSummary,
   SCALE,
