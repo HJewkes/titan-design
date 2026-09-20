@@ -4,6 +4,7 @@ import { View } from 'react-native'
 import {
   Carousel,
   CarouselSlide,
+  type CarouselControlsGap,
   type CarouselControlsSize,
   type CarouselPeek,
 } from '../../ui/carousel'
@@ -28,6 +29,7 @@ interface StoryArgs {
   cards: Cards
   peek: CarouselPeek
   controlsSize: CarouselControlsSize
+  controlsGap: CarouselControlsGap
   tip: Tip
 }
 
@@ -76,7 +78,7 @@ function tipSlide(tip: Exclude<Tip, 'none'>) {
   )
 }
 
-function CarouselStory({ cards, peek, controlsSize, tip }: StoryArgs) {
+function CarouselStory({ cards, peek, controlsSize, controlsGap, tip }: StoryArgs) {
   const slides = slidesFor(cards)
   const withTip = tip === 'none' ? slides : [tipSlide(tip), ...slides.slice(1)]
   return (
@@ -84,7 +86,12 @@ function CarouselStory({ cards, peek, controlsSize, tip }: StoryArgs) {
       <Typography variant="h6" style={{ textTransform: 'uppercase' }}>
         {SECTION_TITLE[cards]}
       </Typography>
-      <Carousel label={SECTION_TITLE[cards]} peek={peek} controlsSize={controlsSize}>
+      <Carousel
+        label={SECTION_TITLE[cards]}
+        peek={peek}
+        controlsSize={controlsSize}
+        controlsGap={controlsGap}
+      >
         {withTip}
       </Carousel>
     </View>
@@ -108,11 +115,12 @@ const meta: Meta<StoryArgs> = {
       },
     },
   },
-  args: { cards: 'nine', peek: 'md', controlsSize: 'lg', tip: 'none' },
+  args: { cards: 'nine', peek: 'md', controlsSize: 'md', controlsGap: 'sm', tip: 'none' },
   argTypes: {
     cards: { control: 'select', options: ['one', 'two', 'nine', 'unequal', 'long-names'] },
     peek: { control: 'inline-radio', options: ['sm', 'md', 'lg'] },
     controlsSize: { control: 'inline-radio', options: ['md', 'lg'] },
+    controlsGap: { control: 'inline-radio', options: ['none', 'sm', 'md'] },
     tip: { control: 'inline-radio', options: ['none', 'in-flow', 'portal'] },
   },
   decorators: [

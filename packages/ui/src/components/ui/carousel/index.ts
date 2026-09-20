@@ -5,6 +5,7 @@ export {
   type CarouselSlideProps,
   type CarouselPeek,
   type CarouselControlsSize,
+  type CarouselControlsGap,
 } from './Carousel'
 export {
   useCarouselState,

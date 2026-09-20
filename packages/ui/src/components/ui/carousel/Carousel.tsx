@@ -15,6 +15,7 @@ import { space } from '../../../theme/tokens/semantic'
 import { ChevronLeftIcon, ChevronRightIcon } from '../../icons'
 import { Button, ButtonIcon } from '../button'
 import {
+  flickTarget,
   indexAtOffset,
   offsetForIndex,
   positionText,
@@ -22,10 +23,12 @@ import {
   slideLabel,
   type SlideGeometry,
 } from './carouselMath'
+import { useDragToScroll, type DragRelease } from './useDragToScroll'
 import { useCarouselState, type CarouselState } from './useCarouselState'
 
 export type CarouselPeek = 'sm' | 'md' | 'lg'
 export type CarouselControlsSize = 'md' | 'lg'
+export type CarouselControlsGap = 'none' | 'sm' | 'md'
 
 const PEEK_PX: Record<CarouselPeek, number> = {
   sm: space.gutter.sm,
@@ -36,6 +39,15 @@ const PEEK_PX: Record<CarouselPeek, number> = {
 const SLIDE_GAP = space.inline.lg
 
 const ICON_PX: Record<CarouselControlsSize, number> = { md: 20, lg: 24 }
+
+const GAP_CLASS: Record<CarouselControlsGap, string> = {
+  none: 'gap-0',
+  sm: 'gap-stack-sm',
+  md: 'gap-stack-md',
+}
+
+// The arrow's box is the 44pt touch target; its glyph stays at the chosen size.
+const HIT_TARGET_CLASS = 'w-11 h-11'
 
 /** How long the scroll must rest before the slide under it becomes current. */
 const SETTLE_MS = 150
@@ -53,8 +65,10 @@ export interface CarouselProps extends ViewProps {
   peek?: CarouselPeek
   /** Caps a slide on a wide column, so more of the next one shows. */
   maxSlideWidth?: number
-  /** Size of the previous and next arrows. `lg` meets the 44pt hit-target floor. */
+  /** Size of the previous and next arrow glyphs; both sizes keep a 44pt hit target. */
   controlsSize?: CarouselControlsSize
+  /** Space between the cards and the controls row. */
+  controlsGap?: CarouselControlsGap
   className?: string
   /** `CarouselSlide` elements, directly or through an array. */
   children?: React.ReactNode
@@ -117,7 +131,8 @@ export function Carousel({
   onValueChange,
   peek = 'md',
   maxSlideWidth,
-  controlsSize = 'lg',
+  controlsSize = 'md',
+  controlsGap = 'sm',
   className,
   children,
   ...props
@@ -145,6 +160,7 @@ export function Carousel({
         peek={PEEK_PX[peek]}
         maxSlideWidth={maxSlideWidth}
         controlsSize={controlsSize}
+        controlsGap={controlsGap}
       />
     </View>
   )
@@ -156,10 +172,19 @@ interface CarouselTrackProps {
   peek: number
   maxSlideWidth?: number
   controlsSize: CarouselControlsSize
+  controlsGap: CarouselControlsGap
 }
 
-function CarouselTrack({ slides, state, peek, maxSlideWidth, controlsSize }: CarouselTrackProps) {
+function CarouselTrack({
+  slides,
+  state,
+  peek,
+  maxSlideWidth,
+  controlsSize,
+  controlsGap,
+}: CarouselTrackProps) {
   const { width, onLayout } = useMeasuredWidth()
+  const wrapperRef = useRef<View>(null)
   const count = slides.length
   const geometry = useMemo(
     () => slideGeometry({ viewportWidth: width ?? 0, count, peek, gap: SLIDE_GAP, maxSlideWidth }),
@@ -167,9 +192,14 @@ function CarouselTrack({ slides, state, peek, maxSlideWidth, controlsSize }: Car
   )
   const scrollRef = useRef<ScrollView>(null)
   const sync = useScrollSync(scrollRef, state, geometry, width !== null)
+  useDragToScroll(wrapperRef, sync.onDragStart, sync.onDragRelease)
   return (
-    <View className="gap-stack-md">
-      <View onLayout={onLayout} style={width === null ? { opacity: 0 } : undefined}>
+    <View className={GAP_CLASS[controlsGap]}>
+      <View
+        ref={wrapperRef}
+        onLayout={onLayout}
+        style={width === null ? { opacity: 0 } : undefined}
+      >
         <ScrollView
           ref={scrollRef}
           horizontal
@@ -222,6 +252,8 @@ type TimerRef = React.MutableRefObject<ReturnType<typeof setTimeout> | null>
 
 interface ScrollSync {
   visibleIndex: number
+  onDragStart: () => void
+  onDragRelease: (release: DragRelease) => void
   onScroll: (event: NativeSyntheticEvent<NativeScrollEvent>) => void
   onSettle: () => void
   focusSlide: (index: number) => void
@@ -240,6 +272,7 @@ function useScrollSync(
   measured: boolean
 ): ScrollSync {
   const offset = useRef(0)
+  const dragStartIndex = useRef(0)
   const animateNext = useRef(false)
   // True while a glide we started is running, so its frames do not drive the counter.
   const gliding = useRef(false)
@@ -276,6 +309,27 @@ function useScrollSync(
     select(index)
   }, [scrollRef, count, geometry, select])
 
+  const onDragRelease = useCallback(
+    ({ offset: released, velocity }: DragRelease) => {
+      offset.current = released
+      animateNext.current = true
+      select(
+        flickTarget({
+          startIndex: dragStartIndex.current,
+          offset: released,
+          velocity,
+          count,
+          geometry,
+        })
+      )
+    },
+    [count, geometry, select]
+  )
+
+  const onDragStart = useCallback(() => {
+    dragStartIndex.current = activeIndex
+  }, [activeIndex])
+
   const onScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
       offset.current = event.nativeEvent.contentOffset.x
@@ -303,7 +357,15 @@ function useScrollSync(
     [step]
   )
 
-  return { visibleIndex: swipeIndex ?? activeIndex, onScroll, onSettle, focusSlide, stepAnimated }
+  return {
+    visibleIndex: swipeIndex ?? activeIndex,
+    onDragStart,
+    onDragRelease,
+    onScroll,
+    onSettle,
+    focusSlide,
+    stepAnimated,
+  }
 }
 
 function clearSettleTimer(timer: TimerRef) {
@@ -329,6 +391,7 @@ function CarouselControls({ index, state, size, onStep }: CarouselControlsProps)
         isDisabled={!state.canPrevious}
         onPress={() => onStep(-1)}
         accessibilityLabel="Previous slide"
+        className={HIT_TARGET_CLASS}
         testID="carousel-previous"
       >
         <ButtonIcon as={ChevronLeftIcon} size={ICON_PX[size]} />
@@ -345,6 +408,7 @@ function CarouselControls({ index, state, size, onStep }: CarouselControlsProps)
         isDisabled={!state.canNext}
         onPress={() => onStep(1)}
         accessibilityLabel="Next slide"
+        className={HIT_TARGET_CLASS}
         testID="carousel-next"
       >
         <ButtonIcon as={ChevronRightIcon} size={ICON_PX[size]} />

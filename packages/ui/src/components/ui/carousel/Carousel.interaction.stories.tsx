@@ -28,12 +28,12 @@ interface Args {
   onValueChange: (value: string, index: number) => void
 }
 
-function slides(names: string[]) {
+function slides(names: string[], onCardPress: () => void) {
   return names.map((name) => (
     <CarouselSlide key={name} value={name} label={name}>
       <Card className="flex-1 gap-stack-sm p-inset-lg">
         <Text className="font-heading text-lg text-text-primary">{name}</Text>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onPress={onCardPress}>
           <ButtonText>{`Open ${name}`}</ButtonText>
         </Button>
       </Card>
@@ -43,13 +43,17 @@ function slides(names: string[]) {
 
 function Refreshing({ count, onValueChange }: Args) {
   const [names, setNames] = useState(NAMES.slice(0, count))
+  const [presses, setPresses] = useState(0)
   return (
     <View className="gap-stack-md">
       <Button variant="ghost" size="sm" onPress={() => setNames((all) => all.slice(1))}>
         <ButtonText>Drop first card</ButtonText>
       </Button>
+      <Text className="font-body text-sm text-text-secondary" testID="press-count">
+        {String(presses)}
+      </Text>
       <Carousel label="Per-lift" onValueChange={onValueChange}>
-        {slides(names)}
+        {slides(names, () => setPresses((n) => n + 1))}
       </Carousel>
     </View>
   )
@@ -57,7 +61,7 @@ function Refreshing({ count, onValueChange }: Args) {
 
 const meta: Meta<Args> = {
   title: 'Components/Molecules/Carousel/Interactions',
-  tags: ['!dev', '!autodocs', 'interaction'],
+  tags: ['!dev', '!autodocs', 'interaction', 'play'],
   parameters: { layout: 'fullscreen' },
   args: { count: 9, onValueChange: fn() },
   decorators: [
@@ -142,20 +146,23 @@ export const StopsAtBothEnds: Story = {
   }),
 }
 
-/** The distance between two slide starts, once the carousel has measured itself. */
+/** The distance between two slide starts, once two polls in a row agree the layout has settled. */
 async function measuredStep(canvas: HTMLElement): Promise<number> {
   const left = (name: string) =>
     within(canvas).getByTestId(`carousel-slide-${name}`).getBoundingClientRect().left
-  let step = 0
+  let previous = 0
   await waitFor(() => {
-    step = left(NAMES[1]) - left(NAMES[0])
-    expect(step).toBeGreaterThan(100)
+    const step = left(NAMES[1]) - left(NAMES[0])
+    const settled = step > 100 && step === previous
+    previous = step
+    expect(settled).toBe(true)
   })
-  return step
+  return previous
 }
 
 export const SwipeCommitsWhenTheScrollRests: Story = {
   play: marked(async ({ canvasElement, args }) => {
+    await expectPosition(canvasElement, '1 of 9')
     const step = await measuredStep(canvasElement)
     // react-native-web replaces the node's scrollTo with its own {x, y} one; set the offset as a swipe would.
     viewport(canvasElement).scrollLeft = step * 3
@@ -213,3 +220,6 @@ export const OneCardHasNoControls: Story = {
     await expect(canvas.queryByRole('button', { name: 'Next slide' })).toBeNull()
   }),
 }
+
+/** No play function: the Playwright spec drags this one with a real mouse. */
+export const DragPlayground: Story = { tags: ['!play'] }

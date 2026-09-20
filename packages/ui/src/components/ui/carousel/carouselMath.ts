@@ -95,3 +95,29 @@ export function slideLabel(index: number, count: number, label: string): string 
   const position = positionText(index, count)
   return label === '' ? position : `${position}: ${label}`
 }
+
+/** Faster than 800 px/s reads as a flick; a deliberate drag runs well under it. */
+const FLICK_PX_PER_MS = 0.8
+
+export interface FlickInput {
+  /** The slide the drag started on. */
+  startIndex: number
+  /** Where the scroll rests now. */
+  offset: number
+  /** Horizontal speed at release, px/ms; positive scrolls towards later slides. */
+  velocity: number
+  count: number
+  geometry: SlideGeometry
+}
+
+/**
+ * The slide a released drag lands on: a flick moves exactly one slide from where
+ * it began, the way `disableIntervalMomentum` does on native; a slow drag lands
+ * on whichever slide it was left nearest.
+ */
+export function flickTarget({ startIndex, offset, velocity, count, geometry }: FlickInput): number {
+  if (Math.abs(velocity) > FLICK_PX_PER_MS) {
+    return clampIndex(startIndex + Math.sign(velocity), count)
+  }
+  return indexAtOffset(offset, count, geometry)
+}

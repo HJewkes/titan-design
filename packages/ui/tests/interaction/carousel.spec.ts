@@ -13,7 +13,7 @@ async function interactionStories(page: Page): Promise<string[]> {
   const response = await page.request.get('/index.json')
   const index = (await response.json()) as { entries: Record<string, IndexEntry> }
   return Object.values(index.entries)
-    .filter((e) => e.type === 'story' && INTERACTIONS.test(e.id) && e.tags?.includes('interaction'))
+    .filter((e) => e.type === 'story' && INTERACTIONS.test(e.id) && e.tags?.includes('play'))
     .map((e) => e.id)
 }
 
@@ -83,4 +83,90 @@ test('a real horizontal swipe snaps to a card and commits it', async ({ page }) 
   await page.mouse.wheel(700, 0)
   await expect(page.getByTestId('carousel-position')).toHaveText('3 of 9')
   await expect.poll(() => slideOffset(page, 'Romanian deadlift')).toBeLessThan(1)
+})
+
+const DRAG_STORY = 'components-molecules-carousel-interactions--drag-playground'
+
+async function openDragStory(page: Page) {
+  await page.goto(`/iframe.html?id=${DRAG_STORY}&viewMode=story`)
+  await page.waitForLoadState('networkidle')
+  await expect(page.getByTestId('carousel-position')).toBeVisible()
+  await page.waitForTimeout(500)
+}
+
+/** A mouse drag across the cards, in `steps` moves over `ms`, so the speed is deliberate. */
+async function drag(page: Page, dx: number, dy: number, ms: number, steps = 20) {
+  const box = await page.getByTestId('carousel-viewport').first().boundingBox()
+  const x = (box?.x ?? 0) + (box?.width ?? 0) / 2
+  const y = (box?.y ?? 0) + 30
+  await page.mouse.move(x, y)
+  await page.mouse.down()
+  for (let i = 1; i <= steps; i += 1) {
+    await page.mouse.move(x + (dx * i) / steps, y + (dy * i) / steps)
+    await page.waitForTimeout(ms / steps)
+  }
+  await page.mouse.up()
+}
+
+test('a quick flick of the mouse moves exactly one card', async ({ page }) => {
+  await openDragStory(page)
+  await drag(page, -150, 0, 0, 3)
+  await expect(page.getByTestId('carousel-position')).toHaveText('2 of 9')
+  await expect.poll(() => slideOffset(page, 'Back squat')).toBeLessThan(1)
+})
+
+test('a slow drag lands on the card it was left nearest', async ({ page }) => {
+  await openDragStory(page)
+  await drag(page, -560, 0, 900)
+  await expect(page.getByTestId('carousel-position')).toHaveText('3 of 9')
+  await expect.poll(() => slideOffset(page, 'Romanian deadlift')).toBeLessThan(1)
+})
+
+test('a vertical drag scrolls the page and leaves the carousel where it was', async ({ page }) => {
+  await page.goto(`/iframe.html?id=pages-goals-carousel--default&viewMode=story`)
+  await page.waitForLoadState('networkidle')
+  await page.waitForTimeout(800)
+  const before = await page
+    .getByTestId('carousel-viewport')
+    .first()
+    .evaluate((el) => el.scrollLeft)
+  await drag(page, 0, -300, 300)
+  const after = await page
+    .getByTestId('carousel-viewport')
+    .first()
+    .evaluate((el) => el.scrollLeft)
+  expect(after).toBe(before)
+})
+
+test('dragging off a card does not press it, and a plain click still does', async ({ page }) => {
+  await openDragStory(page)
+  const button = page.getByRole('button', { name: 'Open Bench press' })
+  const box = await button.boundingBox()
+  await page.mouse.move((box?.x ?? 0) + 10, (box?.y ?? 0) + 10)
+  await page.mouse.down()
+  for (let i = 1; i <= 5; i += 1)
+    await page.mouse.move((box?.x ?? 0) + 10 - i * 24, (box?.y ?? 0) + 10)
+  await page.mouse.up()
+  await expect(page.getByTestId('press-count')).toHaveText('0')
+
+  await page.getByRole('button', { name: 'Open Back squat' }).click()
+  await expect(page.getByTestId('press-count')).toHaveText('1')
+})
+
+test('each arrow keeps a 44 px hit target', async ({ page }) => {
+  await openDefault(page)
+  for (const name of ['Previous slide', 'Next slide']) {
+    const box = await page.getByRole('button', { name }).boundingBox()
+    expect(box?.width ?? 0).toBeGreaterThanOrEqual(44)
+    expect(box?.height ?? 0).toBeGreaterThanOrEqual(44)
+  }
+})
+
+test('a flick jumps instead of gliding under reduced motion', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await openDragStory(page)
+  await drag(page, -150, 0, 0, 3)
+  await page.evaluate(() => new Promise(requestAnimationFrame))
+  expect(await slideOffset(page, 'Back squat')).toBeLessThan(1)
+  await expect(page.getByTestId('carousel-position')).toHaveText('2 of 9')
 })

@@ -3,6 +3,7 @@ import fc from 'fast-check'
 
 import {
   clampIndex,
+  flickTarget,
   indexAtOffset,
   offsetForIndex,
   positionText,
@@ -187,5 +188,40 @@ describe('text', () => {
   it('clamps nonsense indexes rather than print a slide that does not exist', () => {
     expect(clampIndex(Number.NaN, 3)).toBe(0)
     expect(positionText(12, 3)).toBe('3 of 3')
+  })
+})
+
+describe('flickTarget', () => {
+  const nine = slideGeometry({ ...PHONE, count: 9 })
+  const release = (startIndex: number, offset: number, velocity: number) =>
+    flickTarget({ startIndex, offset, velocity, count: 9, geometry: nine })
+
+  it('moves exactly one card on a flick, however far the hand threw it', () => {
+    expect(release(2, 700, 2.4)).toBe(3)
+    expect(release(2, 500, -2.4)).toBe(1)
+  })
+
+  it('stays where a slow drag left it', () => {
+    expect(release(2, 266 * 4 + 10, 0.6)).toBe(4)
+  })
+
+  it('does not run off either end', () => {
+    expect(release(0, 0, -3)).toBe(0)
+    expect(release(8, nine.maxOffset, 3)).toBe(8)
+  })
+
+  it('never leaves the set, for any hand speed', () => {
+    fc.assert(
+      fc.property(
+        fc.integer({ min: 0, max: 8 }),
+        fc.double({ min: -20, max: 20, noNaN: true }),
+        (startIndex, velocity) => {
+          const index = release(startIndex, 500, velocity)
+          expect(index).toBeGreaterThanOrEqual(0)
+          expect(index).toBeLessThan(9)
+          expect(Math.abs(index - startIndex)).toBeLessThanOrEqual(Math.abs(velocity) > 0.8 ? 1 : 8)
+        }
+      )
+    )
   })
 })
