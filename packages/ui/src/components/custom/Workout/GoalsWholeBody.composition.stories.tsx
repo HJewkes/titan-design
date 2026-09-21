@@ -4,7 +4,7 @@ import type { ReactNode } from 'react'
 import { View } from 'react-native'
 
 import { Surface } from '../../ui/surface'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { GoalCard, type GoalCardProps } from './GoalCard'
 import { BodyweightGoalCard } from './BodyweightGoalCard'
 import { SessionsGoalCard } from './SessionsGoalCard'

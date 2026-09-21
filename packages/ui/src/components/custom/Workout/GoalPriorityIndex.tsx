@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
 
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { cn } from '../../../utils/cn'
 import { GOAL_PRIORITY_LABEL, GoalPriorityIcon, type GoalPriority } from './GoalPriorityIcon'
 

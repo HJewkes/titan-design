@@ -3,7 +3,7 @@ import { View, type ViewProps } from 'react-native'
 
 import { Card } from '../../ui/card'
 import { useSurfaceMode } from '../../ui/surface'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { useMeasuredWidth } from '../Table/column-fit'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { alpha } from '../../../utils/colors'

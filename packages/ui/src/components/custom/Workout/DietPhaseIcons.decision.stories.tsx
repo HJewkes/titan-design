@@ -17,7 +17,7 @@ import {
 } from '../../icons'
 import { Pill } from '../../ui/pill'
 import { Surface } from '../../ui/surface'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 
 type Glyph = (props: IconProps) => JSX.Element
 
