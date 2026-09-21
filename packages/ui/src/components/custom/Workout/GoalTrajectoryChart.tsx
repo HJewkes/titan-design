@@ -31,7 +31,7 @@ import {
 import { hitBoxAround, useHitTargetSize, type HitBox } from './goalTrajectoryTargets'
 import { gridLabelSpecs, ruleLabelSpecs, type RuleLabelText } from './goalTrajectoryRuleLabels'
 import { weekTips } from './weekTipModel'
-import { GoalTrajectoryWeekTips, type WeekTipLayout } from './GoalTrajectoryWeekTips'
+import { GoalTrajectoryWeekTips } from './GoalTrajectoryWeekTips'
 import type { BandFade } from './GoalTrajectoryBand'
 import type { BandCurve } from './GoalTrajectoryChartGeometry'
 import type { PlotBaseline } from './GoalTrajectoryPlot'
@@ -185,8 +185,6 @@ export interface GoalTrajectoryChartProps extends ViewProps {
    * gridline carries its value inside the plot instead, and the plot takes back the
    * gutter. A GoalCard lines its week cells up with the plot either way.
    */
-  /** How a week's tip lays out: `figure` leads with the reading, `rows` labels every fact. */
-  weekTipLayout?: WeekTipLayout
   yAxisLabels?: boolean
   /**
    * The committed and stretch labels: `numeric` ("185", the default since titan-0201
@@ -285,7 +283,6 @@ export function GoalTrajectoryChart({
   bandCurve = 'monotone',
   referenceLabelSide = 'left',
   calibratingNote,
-  weekTipLayout = 'figure',
   yAxisLabels = false,
   ruleLabelText = 'numeric',
   className,
@@ -432,7 +429,7 @@ export function GoalTrajectoryChart({
         <View style={{ height: overhang }} testID="goal-trajectory-chart-overhang" />
       )}
       {marks && <CalibratingInfo marks={marks} note={note} palette={palette} />}
-      <GoalTrajectoryWeekTips tips={tips} width={width} height={height} layout={weekTipLayout} />
+      <GoalTrajectoryWeekTips tips={tips} width={width} height={height} />
     </View>
   )
 }

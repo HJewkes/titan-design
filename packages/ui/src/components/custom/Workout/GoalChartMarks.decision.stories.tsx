@@ -10,7 +10,6 @@ import { Typography } from '../../ui/typography'
 import { GoalCard, type GoalCardProps } from './GoalCard'
 import { PrBadge } from './PrBadge'
 import { weekTips } from './weekTipModel'
-import type { WeekTipLayout } from './GoalTrajectoryWeekTips'
 import { deriveTrajectoryGeometry, trajectoryInsets } from './GoalTrajectoryChartGeometry'
 import { HIT_TARGET_POINTER } from './goalTrajectoryTargets'
 import { PRIMARY_GOAL_SCENARIOS as S } from './primaryGoal-fixture'
@@ -21,8 +20,6 @@ interface MarksArgs {
   /** Which week's tip is held open, by state. */
   openWeek?: number
   currentWeek: number
-  /** How the open tip lays its facts out. */
-  tipLayout: WeekTipLayout
   /** Put a reading and a PR on the deload week, so the marks sit over the purple. */
   readingOnDeload?: boolean
 }
@@ -67,28 +64,21 @@ function card(currentWeek: number, readingOnDeload = false): GoalCardProps {
   }
 }
 
-function MarksFrame({ openWeek, currentWeek, tipLayout, readingOnDeload }: MarksArgs) {
+function MarksFrame({ openWeek, currentWeek, readingOnDeload }: MarksArgs) {
   const props = card(currentWeek, readingOnDeload)
   return (
     <PinnedTipContext.Provider value={openWeek ? weekLabel(openWeek, props.goal!) : null}>
       <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-sm">
-        <GoalCard
-          {...props}
-          goal={{
-            ...props.goal!,
-            weekTipLayout: tipLayout,
-          }}
-        />
+        <GoalCard {...props} />
       </Surface>
     </PinnedTipContext.Provider>
   )
 }
 
 /**
- * titan-0201 round 5. Three marks on the goal chart: the PR star is now the PR icon's own
- * glyph, every week opens a tip (not only the next target), and the current week is an
- * outlined column that comes from the same value as the card's week cells. The deload week
- * keeps its fill, which is what the owner saw highlighted in round 4.
+ * CHOSEN, titan-0201 rounds 5 to 7, signed off 2026-09-21. The PR star is the PR icon's own
+ * glyph; every week opens a tip, figure-led, its badges upper right; the deload week is washed
+ * in `status-deload` at 0.12. Every story renders the shipped chart. Rejected: REJECTED.md.
  */
 const meta: Meta<MarksArgs> = {
   title: 'Lab/Decisions/Goal Chart Marks',
@@ -97,10 +87,9 @@ const meta: Meta<MarksArgs> = {
   argTypes: {
     openWeek: { control: { type: 'number', min: 1, max: 6 } },
     currentWeek: { control: { type: 'number', min: 1, max: 6 } },
-    tipLayout: { control: 'inline-radio', options: ['figure', 'rows'] },
     readingOnDeload: { control: 'boolean' },
   },
-  args: { currentWeek: 4, tipLayout: 'figure' },
+  args: { currentWeek: 4 },
   render: (args) => <MarksFrame {...args} />,
 }
 export default meta
@@ -129,10 +118,8 @@ export const StarBesideIcon: Story = {
 
 /** The star in place on a chart, so it is judged where it lives. */
 export const StarInPlace: Story = {}
-/** Tip layout A, figure-led: the reading as the lead figure, then labelled rows. */
+/** The chosen tip, figure-led, on a record week: the PR badge upper right. */
 export const TipFigureLayout: Story = { args: { openWeek: 3 } }
-/** Tip layout B, rows: every fact labelled, the reading among them. */
-export const TipRowsLayout: Story = { args: { openWeek: 3, tipLayout: 'rows' } }
 /** The deload week in the product's deload magenta, with no reading on it. */
 export const DeloadColumn: Story = { args: { openWeek: 5 } }
 /** The deload column carrying a reading and a PR star, so the marks sit over the purple. */

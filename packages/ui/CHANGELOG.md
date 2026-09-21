@@ -29,8 +29,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
   target. Each says the week's reading (or "No reading yet"), "Personal record"
   on a record, the planned band, "Deload week" on a deload column and the next
   target's label on its week. The tip is laid out, not stacked text: the week
-  and badges for a record and a deload week as its header, then the reading and
-  the planned band. Hover, keyboard focus and press open it; blur, Escape and a
+  and badges for a record and a deload week in its upper right, then the reading
+  as a figure and the planned band. A tip near an edge of the chart aligns to its
+  week's edge instead of centring, so a phone does not cut it. Hover, keyboard focus and press open it; blur, Escape and a
   press outside close it. The week targets are ONE tab stop with a
   roving tabindex (arrows move, Home and End jump), because a goals page shows
   several charts. The separate next-target tip is gone; its label now sits in
@@ -166,8 +167,6 @@ project adheres to [Semantic Versioning](https://semver.org/).
   a bare ramp pin, `WORKOUT_PILL_DELOAD`, washed by hand in `WorkoutPill` and
   `WeekRow`; those two should adopt the token next, and `ColorPalettes`'s deload
   swatch with them).
-- `GoalTrajectoryChart` `weekTipLayout` (`figure`, the default, or `rows`): how a
-  week's tip lays its facts out, pending the owner's pick in titan-0201 round 6.
 
 ### Changed
 

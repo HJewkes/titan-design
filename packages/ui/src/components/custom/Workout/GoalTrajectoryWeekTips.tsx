@@ -20,9 +20,6 @@ const TIP_WIDTH = 220
 /** The tip's outer width: its body plus the tooltip's `px-inset-md` on each side. */
 const TIP_OUTER_WIDTH = TIP_WIDTH + 2 * 12
 
-/** How a week's tip lays its facts out. `figure` leads with the reading; `rows` labels every fact. */
-export type WeekTipLayout = 'figure' | 'rows'
-
 /** The deload badge carries the deload token, the colour its column is washed in. */
 function useDeloadBadge() {
   const deload = getSemanticColors(useSurfaceMode())['status-deload']
@@ -82,22 +79,7 @@ function FigureBody({ tip }: { tip: WeekTip }) {
   )
 }
 
-/** Every fact as a labelled row, the reading among them. */
-function RowsBody({ tip }: { tip: WeekTip }) {
-  const { reading, plan, next } = tip.facts
-  return (
-    <>
-      <TipRow
-        label="Lifted"
-        value={reading ? `${reading.amount} ${reading.unit}` : 'No reading yet'}
-      />
-      {plan !== undefined && <TipRow label="Plan" value={plan} />}
-      {next !== undefined && <TipRow label="Next target" value={next} />}
-    </>
-  )
-}
-
-function WeekTipBody({ tip, layout }: { tip: WeekTip; layout: WeekTipLayout }) {
+function WeekTipBody({ tip }: { tip: WeekTip }) {
   return (
     <View
       style={{ width: TIP_WIDTH }}
@@ -105,7 +87,7 @@ function WeekTipBody({ tip, layout }: { tip: WeekTip; layout: WeekTipLayout }) {
       testID={`goal-trajectory-chart-week-tip-${String(tip.week)}`}
     >
       <TipHeader tip={tip} />
-      {layout === 'figure' ? <FigureBody tip={tip} /> : <RowsBody tip={tip} />}
+      <FigureBody tip={tip} />
     </View>
   )
 }
@@ -146,12 +128,10 @@ export function GoalTrajectoryWeekTips({
   tips,
   width,
   height,
-  layout = 'figure',
 }: {
   tips: WeekTip[]
   width: number
   height: number
-  layout?: WeekTipLayout
 }) {
   const [active, setActive] = useState(0)
   const group = useRef<View>(null)
@@ -181,7 +161,7 @@ export function GoalTrajectoryWeekTips({
         >
           <TipTrigger
             label={tip.label}
-            content={<WeekTipBody tip={tip} layout={layout} />}
+            content={<WeekTipBody tip={tip} />}
             placement={weekTipPlacement(tip.box, width)}
             usePortal={false}
             style={{ width: tip.box.size, height: tip.box.size }}

@@ -24,6 +24,22 @@ that someone can tell whether a future change invalidates the reasoning.
 
 ---
 
+## Goal chart week tip "rows" layout — rejected 2026-09-21
+
+**Tried:** two bodies for a week's tip (titan-0201 round 6). **A, figure**: the reading as a
+lead figure (`Metric`), then labelled rows for the plan and the next target. **B, rows**: every
+fact as a labelled row, the reading among them.
+
+**Chosen:** A, figure. The owner picked it in round 6 and signed it off in round 7.
+
+**Why:** the owner's pick, with no stated reason. The figure makes the week's reading the first
+thing read, as the card's own hero does.
+
+**Code:** deleted — the `weekTipLayout` chart prop, the `WeekTipLayout` type and the rows body.
+`Lab/Decisions/Goal Chart Marks` renders the shipped tip.
+
+---
+
 ## Goal chart deload wash 0.22, 0.16 and 0.08 — rejected 2026-09-21
 
 **Tried:** the deload column's magenta (`status-deload`) at four strengths, each on a plain
