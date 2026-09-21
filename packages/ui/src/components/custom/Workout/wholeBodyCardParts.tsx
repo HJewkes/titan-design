@@ -100,11 +100,22 @@ function PhaseTag(props: {
 }
 
 /** An in-flow tip is laid out against its trigger, so a pill-width box wraps one word a line. */
-const TAG_TIP_WIDTH = 190
+const TAG_TIP_MAX_WIDTH = 190
+
+/**
+ * The tip hugs its words: a one-word phase ("Cut") in a 190 px box covered the
+ * figure beside it. An in-flow tip cannot shrink-to-fit past its trigger, so the
+ * width is set from the words, at the caption's average glyph advance.
+ */
+const CAPTION_GLYPH_ADVANCE = 7
+
+function tagTipWidth(text: string): number {
+  return Math.min(TAG_TIP_MAX_WIDTH, Math.ceil(text.length * CAPTION_GLYPH_ADVANCE) + 4)
+}
 
 function TipText({ text }: { text: string }) {
   return (
-    <View style={{ width: TAG_TIP_WIDTH }}>
+    <View style={{ width: tagTipWidth(text) }}>
       <Typography variant="caption" className="leading-normal">
         {text}
       </Typography>
