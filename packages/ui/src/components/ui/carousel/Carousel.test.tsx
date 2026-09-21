@@ -5,6 +5,9 @@ import { Text, View } from 'react-native'
 
 import { Carousel, CarouselSlide, type CarouselProps } from './Carousel'
 
+/** A slide's name is its position; the scroller's group is named after the carousel. */
+const SLIDE_NAME = /^\d+ of \d+/
+
 const LIFTS = ['Bench press', 'Back squat', 'Cable overhead tricep extension']
 
 function renderCarousel(names: string[] = LIFTS, props: Partial<CarouselProps> = {}) {
@@ -36,7 +39,7 @@ describe('Carousel', () => {
   it('keeps every slide in the accessibility tree, not only the one in view', () => {
     renderCarousel()
 
-    expect(screen.getAllByRole('group')).toHaveLength(3)
+    expect(screen.getAllByRole('group', { name: SLIDE_NAME })).toHaveLength(3)
     screen
       .getAllByRole('group')
       .forEach((slide) => expect(slide).not.toHaveAttribute('aria-hidden'))
@@ -129,7 +132,7 @@ describe('Carousel', () => {
       expect(clone).toHaveAttribute('aria-hidden', 'true')
       expect(clone).not.toHaveAttribute('role', 'group')
     })
-    expect(screen.getAllByRole('group')).toHaveLength(3)
+    expect(screen.getAllByRole('group', { name: SLIDE_NAME })).toHaveLength(3)
   })
 
   it('never disables an arrow while it loops', () => {
@@ -162,6 +165,14 @@ describe('Carousel', () => {
     const { container } = renderCarousel(LIFTS, { loop: true })
 
     expect(await axe(container)).toHaveNoViolations()
+  })
+
+  it('puts the arrows before the slides in the document, so Tab reaches them first', () => {
+    renderCarousel()
+
+    const next = screen.getByRole('button', { name: 'Next slide' })
+    const firstSlide = screen.getAllByRole('group', { name: SLIDE_NAME })[0]
+    expect(next.compareDocumentPosition(firstSlide) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
   it('reads slides inside a fragment', () => {

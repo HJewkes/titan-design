@@ -190,7 +190,7 @@ export function Carousel({
   }
   return (
     <View role="region" aria-label={label} {...regionRole} className={className} {...props}>
-      <CarouselTrack slides={slides} state={state} loop={loop} maxSlideWidth={cap} />
+      <CarouselTrack slides={slides} state={state} loop={loop} maxSlideWidth={cap} label={label} />
     </View>
   )
 }
@@ -200,9 +200,10 @@ interface CarouselTrackProps {
   state: CarouselState
   loop: boolean
   maxSlideWidth?: number
+  label: string
 }
 
-function CarouselTrack({ slides, state, loop, maxSlideWidth }: CarouselTrackProps) {
+function CarouselTrack({ slides, state, loop, maxSlideWidth, label }: CarouselTrackProps) {
   const { width, onLayout } = useMeasuredWidth()
   const wrapperRef = useRef<View>(null)
   const scrollRef = useRef<ScrollView>(null)
@@ -232,9 +233,17 @@ function CarouselTrack({ slides, state, loop, maxSlideWidth }: CarouselTrackProp
     measured: width !== null,
   })
   useDragToScroll(wrapperRef, sync.onDragStart, sync.onDragRelease, sync.onUserScroll)
-  useScrollerFocus(wrapperRef, slides)
+  useScrollerFocus(wrapperRef, slides, label)
+  // The controls come first in the DOM so Tab reaches them before the cards (the APG
+  // order; owner, S7), and `flex-col-reverse` still draws them below the cards.
   return (
-    <View>
+    <View className="flex-col-reverse">
+      <CarouselControls
+        index={sync.visibleIndex}
+        state={state}
+        loop={loop}
+        onStep={sync.stepAnimated}
+      />
       <View
         ref={wrapperRef}
         onLayout={onLayout}
@@ -269,12 +278,6 @@ function CarouselTrack({ slides, state, loop, maxSlideWidth }: CarouselTrackProp
           ))}
         </ScrollView>
       </View>
-      <CarouselControls
-        index={sync.visibleIndex}
-        state={state}
-        loop={loop}
-        onStep={sync.stepAnimated}
-      />
     </View>
   )
 }
@@ -336,15 +339,27 @@ const FOCUSABLE = 'a[href], button, input, select, textarea, [tabindex]:not([tab
  * holds anything focusable, the scroller itself takes a Tab stop; when one does,
  * it stays out of the order, since Tab already walks the cards.
  */
-function useScrollerFocus(wrapperRef: React.RefObject<View | null>, slides: SlideEntry[]) {
+function useScrollerFocus(
+  wrapperRef: React.RefObject<View | null>,
+  slides: SlideEntry[],
+  label: string
+) {
   useEffect(() => {
     if (Platform.OS !== 'web') return
     const scroller = (wrapperRef.current as unknown as HTMLElement | null)?.firstElementChild
     if (!(scroller instanceof HTMLElement)) return
     const reachable = [...scroller.querySelectorAll(FOCUSABLE)].some((el) => !el.closest('[inert]'))
-    if (reachable) scroller.removeAttribute('tabindex')
-    else scroller.setAttribute('tabindex', '0')
-  }, [wrapperRef, slides])
+    if (reachable) {
+      scroller.removeAttribute('tabindex')
+      scroller.removeAttribute('role')
+      scroller.removeAttribute('aria-label')
+      return
+    }
+    // A Tab stop needs a role and a name, or a screen reader announces an unnamed element.
+    scroller.setAttribute('tabindex', '0')
+    scroller.setAttribute('role', 'group')
+    scroller.setAttribute('aria-label', `${label} cards`)
+  }, [wrapperRef, slides, label])
 }
 
 /** `inert` has no React Native prop, and a clone must not be tabbable. */

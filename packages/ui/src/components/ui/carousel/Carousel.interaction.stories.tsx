@@ -181,9 +181,9 @@ export const TabBringsTheFocusedSlideIntoView: Story = {
   play: marked(async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     canvas.getByRole('button', { name: 'Drop first card' }).focus()
-    await userEvent.tab()
-    await userEvent.tab()
-    await userEvent.tab()
+    // The arrows come first in the tab order, then the cards; without a loop the
+    // Previous arrow starts disabled and out of the order, so Next is the only one.
+    for (let i = 0; i < 4; i += 1) await userEvent.tab()
     await expect(canvas.getByRole('button', { name: `Open ${NAMES[2]}` })).toHaveFocus()
     await expectPosition(canvasElement, '3 of 9')
     await expectInView(canvasElement, NAMES[2])

@@ -248,6 +248,11 @@ test('the copies at each end are hidden from assistive technology and unfocusabl
 test('Tab walks the real cards in order and never lands in a copy', async ({ page }) => {
   await openDragStory(page, LOOP_STORY)
   await page.getByRole('button', { name: 'Drop first card' }).focus()
+  // The arrows come first in the tab order (owner, S7), then the cards.
+  for (const name of ['Previous slide', 'Next slide']) {
+    await page.keyboard.press('Tab')
+    expect(await page.evaluate(() => document.activeElement?.getAttribute('aria-label'))).toBe(name)
+  }
   const expected = ['Bench press', 'Back squat', 'Romanian deadlift']
   for (const name of expected) {
     await page.keyboard.press('Tab')
@@ -367,4 +372,42 @@ test('axe in a real browser finds no unfocusable scroll region', async ({ page }
     })
     expect(violations, id).toEqual([])
   }
+})
+
+test('Tab reaches both arrows before the first card, while they are still drawn below the cards', async ({
+  page,
+}) => {
+  await openDragStory(page, LOOP_STORY)
+  await page.getByRole('button', { name: 'Drop first card' }).focus()
+  const stops: string[] = []
+  for (let i = 0; i < 3; i += 1) {
+    await page.keyboard.press('Tab')
+    stops.push(
+      await page.evaluate(
+        () =>
+          document.activeElement?.getAttribute('aria-label') ??
+          document.activeElement?.textContent ??
+          ''
+      )
+    )
+  }
+  expect(stops).toEqual(['Previous slide', 'Next slide', 'Open Bench press'])
+  const arrow = await page.getByTestId('carousel-previous').boundingBox()
+  const cards = await page.getByTestId('carousel-viewport').boundingBox()
+  expect(arrow?.y ?? 0).toBeGreaterThanOrEqual((cards?.y ?? 0) + (cards?.height ?? 0) - 1)
+})
+
+test('a scroller that takes a Tab stop has a role and a name; one with focusable cards does not', async ({
+  page,
+}) => {
+  await openDefault(page)
+  const bare = page.getByTestId('carousel-viewport')
+  await expect(bare).toHaveAttribute('tabindex', '0')
+  await expect(bare).toHaveAttribute('role', 'group')
+  await expect(bare).toHaveAttribute('aria-label', 'Per-lift cards')
+
+  await openDragStory(page, LOOP_STORY)
+  const withButtons = page.getByTestId('carousel-viewport')
+  await expect(withButtons).not.toHaveAttribute('tabindex', '0')
+  await expect(withButtons).not.toHaveAttribute('role', 'group')
 })
