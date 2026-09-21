@@ -74,8 +74,8 @@ export const DEPTH = {
 
 export const DEFAULT_LEFT_SHADOW_SPREAD = 0.04
 const FONT_FAMILY = 'Inter, sans-serif'
-/** How much of the deload magenta the column carries over the plane. */
-export const DELOAD_WASH = 0.22
+/** How much of the deload magenta the column carries over the plane: the owner's pick, round 7. */
+export const DELOAD_WASH = 0.12
 const LABEL_GAP = 8
 export const PLANE_RADIUS = 6
 export const DOT_RADIUS = 4
@@ -91,8 +91,7 @@ function tokenAlpha(color: string): number {
 export function trajectoryPalette(
   mode: ThemeMode,
   level: SurfaceLevel,
-  status: GoalTrajectoryStatus,
-  deloadWash: number = DELOAD_WASH
+  status: GoalTrajectoryStatus
 ) {
   const t = getSemanticColors(mode)
   const shade = t['scrim-default']
@@ -109,9 +108,9 @@ export function trajectoryPalette(
     axis: t['text-tertiary'],
     // The PR badge's own colour: one mark, one token (titan-0201 round 5).
     star: t['brand-primary'],
-    // Deload's own magenta (titan-0201 round 5), not a grey tint. 0.22 reads as purple and
-    // still leaves the marks over it their contrast: readings 6.9, star 5.1, ramp 2.8.
-    deload: alpha(t['status-deload'], deloadWash),
+    // Deload's own magenta (titan-0201 round 5), not a grey tint. At 0.12 the marks over it
+    // keep their contrast: readings 7.5, star 5.5, ramp 3.0.
+    deload: alpha(t['status-deload'], DELOAD_WASH),
     boundary: alpha(t['text-tertiary'], 0.35),
     plane: surfaceBackground(pressedLevel(level), mode),
     shade,

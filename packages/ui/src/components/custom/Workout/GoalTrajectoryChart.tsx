@@ -185,11 +185,6 @@ export interface GoalTrajectoryChartProps extends ViewProps {
    * gridline carries its value inside the plot instead, and the plot takes back the
    * gutter. A GoalCard lines its week cells up with the plot either way.
    */
-  /**
-   * How much of the deload magenta a deload column carries. Default {@link DELOAD_WASH};
-   * a round-7 control while the owner picks its strength.
-   */
-  deloadWash?: number
   /** How a week's tip lays out: `figure` leads with the reading, `rows` labels every fact. */
   weekTipLayout?: WeekTipLayout
   yAxisLabels?: boolean
@@ -291,7 +286,6 @@ export function GoalTrajectoryChart({
   referenceLabelSide = 'left',
   calibratingNote,
   weekTipLayout = 'figure',
-  deloadWash,
   yAxisLabels = false,
   ruleLabelText = 'numeric',
   className,
@@ -303,7 +297,7 @@ export function GoalTrajectoryChart({
   const reach = outcomeReach(status) ?? trajectoryReach(committed, actuals, direction)
   const toneStatus = reach === 'short' ? status : REACH_STATUS[reach]
   const statusLabel = reach === 'short' ? STATUS_LABEL[status] : REACH_LABEL[reach]
-  const palette = trajectoryPalette(surface.mode, surface.level, toneStatus, deloadWash)
+  const palette = trajectoryPalette(surface.mode, surface.level, toneStatus)
   const density = width >= WALL_BREAKPOINT ? DENSITY.wall : DENSITY.phone
   const entrance = useTrajectoryEntrance(animate)
   const calibrating = status === 'calibrating'

@@ -44,8 +44,9 @@ describe('the deload column', () => {
     expect(contrast(rgb(dark['brand-primary']), column)).toBeGreaterThan(4.5)
     expect(contrast(rgb(palette.rule), column)).toBeGreaterThan(4.5)
     expect(contrast(rgb(palette.bandHue), column)).toBeGreaterThan(2.5)
-    // Visible as a column, and never so strong that it reads as a filled block.
-    expect(contrast(column, plane)).toBeGreaterThan(1.1)
+    // Visible as a column, and never so strong that it reads as a filled block. The floor
+    // fits the owner's round-7 pick of 0.12 (1.086); 0.08 at 1.047 was too faint to pick.
+    expect(contrast(column, plane)).toBeGreaterThan(1.08)
     expect(contrast(column, plane)).toBeLessThan(1.5)
   })
 })

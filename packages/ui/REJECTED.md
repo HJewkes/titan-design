@@ -24,6 +24,26 @@ that someone can tell whether a future change invalidates the reasoning.
 
 ---
 
+## Goal chart deload wash 0.22, 0.16 and 0.08 — rejected 2026-09-21
+
+**Tried:** the deload column's magenta (`status-deload`) at four strengths, each on a plain
+block and with a reading and a PR star on the deload week (titan-0201 round 7). Round 6 shipped
+0.22; the owner asked for it "vs a couple softer versions". Contrast in dark mode over the
+column at 0.22 / 0.16 / 0.12 / 0.08: readings 6.9 / 7.3 / 7.5 / 7.8, PR star and goal lines
+5.1 / 5.3 / 5.5 / 5.7, ramp 2.8 / 3.0 / 3.0 / 3.2, column against the plot 1.18 / 1.12 / 1.09 /
+1.05.
+
+**Chosen:** 0.12 (`DELOAD_WASH`), picked by the owner in the round-7 review with no comment.
+
+**Why:** in round 6 the owner judged 0.22 and answered "softer"; a softer wash also gives every mark more contrast.
+At 0.08 the column nearly disappears (1.05 against the plot). `deloadWash.test.ts` pins the
+floor at 1.08 to fit the pick.
+
+**Code:** deleted — the `deloadWash` chart prop and the `Wash*` stories. `Lab/Decisions/Goal
+Chart Marks` keeps the decision as a record, rendering the shipped chart.
+
+---
+
 ## Calibrating chart treatments v0, A, B and C — rejected 2026-09-18
 
 **Tried:** five ways to draw a calibrating goal, the state with too little history
