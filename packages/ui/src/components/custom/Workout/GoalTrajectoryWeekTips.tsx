@@ -134,6 +134,8 @@ export function GoalTrajectoryWeekTips({
   height: number
 }) {
   const [active, setActive] = useState(0)
+  // A block that loses weeks under a live chart must still leave one tab stop.
+  const stop = Math.min(active, tips.length - 1)
   const group = useRef<View>(null)
 
   const focusWeek = (index: number) => {
@@ -165,7 +167,7 @@ export function GoalTrajectoryWeekTips({
             placement={weekTipPlacement(tip.box, width)}
             usePortal={false}
             style={{ width: tip.box.size, height: tip.box.size }}
-            tabIndex={index === active ? 0 : -1}
+            tabIndex={index === stop ? 0 : -1}
             onKeyDown={(event) => {
               const next = nextRovingWeek(event.key, index, tips.length)
               if (next === null) return

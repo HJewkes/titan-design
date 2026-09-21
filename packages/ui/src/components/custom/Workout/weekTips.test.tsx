@@ -104,6 +104,19 @@ describe('the week group', () => {
     expect(target(1).getAttribute('tabindex')).toBe('0')
   })
 
+  it('keeps one tab stop when the block loses weeks under a live chart', () => {
+    const { rerender } = renderChart()
+    fireEvent.keyDown(target(1), { key: 'End' })
+    const shorter = {
+      weeks: GOAL.weeks.slice(0, 3),
+      expected: GOAL.expected.filter((p) => p.weekIndex <= 3),
+      actuals: GOAL.actuals.filter((a) => a.weekIndex <= 3),
+    }
+    rerender(<GoalTrajectoryChart {...GOAL} {...SIZE} {...shorter} status="on_track" />)
+    const stops = shorter.weeks.map((w) => target(w.index).getAttribute('tabindex'))
+    expect(stops.filter((t) => t === '0')).toHaveLength(1)
+  })
+
   it.each([
     ['ArrowRight', 1, 6, 2],
     ['ArrowDown', 1, 6, 2],
