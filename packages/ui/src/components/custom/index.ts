@@ -1,5 +1,4 @@
 // Custom components
-export * from './Typography'
 export * from './Sidebar'
 export * from './Table'
 export * from './EmptyState'

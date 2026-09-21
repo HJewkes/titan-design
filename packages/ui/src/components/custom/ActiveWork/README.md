@@ -84,7 +84,6 @@ Initiative reader (no organism: the host composes the pieces)
 | `TaskTable`           | organism | Table, useTable, TableHeader/Row/HeaderCell, TaskRow, SeverityLabel, Eyebrow | app root (`Custom/ActiveWork/TaskTable`)                                           |
 | `TaskRow`             | row      | TableRow, TableCell, SeverityLabel, Pill, Typography                         | TaskTable                                                                          |
 | `SeverityLabel`       | molecule | Indicator, Typography (`caption`)                                            | TaskRow, TaskTable (legend), InitiativeCard (vocabulary)                           |
-| `Eyebrow`             | molecule | Typography (`overline`)                                                      | PortfolioOverview, FileHistoryExplorer, FileActivityDetail, TaskTable, SessionList |
 | `SessionList`         | list     | Eyebrow, SessionListItem                                                     | host composition (`Custom/ActiveWork/SessionReader` story)                        |
 | `SessionListItem`     | row      | DateTime, Pill, Typography                                                   | SessionList                                                                        |
 | `SessionDetail`       | card     | Card, Divider, Pill, DateTime, MarkdownProse (+ `sessionLinkers`)            | host composition (`Custom/ActiveWork/SessionReader` story)                        |
@@ -110,9 +109,10 @@ model.
 
 ## Shared substrates introduced here (reusable beyond this family)
 
-- **`Eyebrow`** — a generic uppercase micro-label. Not active-work-specific; exported at
-  `Components/Molecules/Eyebrow` (not nested under `ActiveWork/`) so any family can reach for it instead of
-  hand-rolling `Typography` + tracking/uppercase classes again.
+- **`Eyebrow`** — a generic uppercase micro-label. First written here, but not active-work-specific,
+  so migration M2 moved it to [`ui/eyebrow`](../../ui/eyebrow); its story stays at
+  `Components/Molecules/Eyebrow` and its row is now in the [`ui/*` family README](../../ui/README.md).
+  Reach for it instead of hand-rolling `Typography` + tracking/uppercase classes again.
 - **`SparkBars`** (`components/custom/charts`, `Custom/Charts/SparkBars`) — a bar-mark sparkline for a
   signed series, the counterpart to `Sparkline`'s line mark. Domain-neutral and exported top-level, not
   nested under `ActiveWork/`. `custom/charts` gained an `index.ts` that deliberately exports **only**

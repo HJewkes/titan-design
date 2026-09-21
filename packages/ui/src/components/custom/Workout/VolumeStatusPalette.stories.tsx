@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 import { Surface, surfaceBackground } from '../../ui/surface'
 import { Pill } from '../../ui/pill'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { BodyMap, type BodyMapData } from './BodyMap'
 import { MuscleGroupChip } from './MuscleGroupChip'
 import {

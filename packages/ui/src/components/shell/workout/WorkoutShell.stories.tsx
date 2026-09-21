@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 import { WorkoutShell } from './WorkoutShell'
 import { Surface } from '../../ui/surface'
-import { Typography } from '../../custom/Typography'
+import { Typography } from '../../ui/typography'
 
 /**
  * `Pages/WorkoutShell` — the workout wall-dashboard chrome as one registered surface.

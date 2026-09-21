@@ -14,8 +14,8 @@ import {
   type TableColumnFit,
   type TableComparator,
 } from '../Table'
-import { Typography } from '../Typography'
-import { Eyebrow } from './Eyebrow'
+import { Typography } from '../../ui/typography'
+import { Eyebrow } from '../../ui/eyebrow'
 import { SeverityLabel, SEVERITY_ORDER, severityRank, type TaskSeverity } from './SeverityLabel'
 import { TaskRow, TASK_COLUMN_WIDTHS, type TaskListItem } from './TaskRow'
 

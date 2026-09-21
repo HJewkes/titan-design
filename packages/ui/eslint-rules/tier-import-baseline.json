@@ -1,9 +1,6 @@
 {
-  "src/components/ui/pill/Pill.stories.tsx": {
-    "../../custom/Typography": 1
-  },
   "src/theme/ChoosingTokens.stories.tsx": {
-    "../components/custom/Typography": 1
+    "../components/ui/typography": 1
   },
   "src/theme/ColorPalettes.stories.tsx": {
     "../components/custom/Fatigue/fatigue-tokens": 1

@@ -2,8 +2,8 @@
 import { View, type ViewProps } from 'react-native'
 import { Card } from '../../ui/card'
 import { Metric } from '../Metric'
-import { Typography } from '../Typography'
-import { Eyebrow } from './Eyebrow'
+import { Typography } from '../../ui/typography'
+import { Eyebrow } from '../../ui/eyebrow'
 import { InitiativeCard, type InitiativeCardProps } from './InitiativeCard'
 
 export interface PortfolioOverviewStat {

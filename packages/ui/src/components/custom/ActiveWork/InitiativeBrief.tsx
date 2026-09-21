@@ -2,9 +2,9 @@
 import { useMemo, useState } from 'react'
 import { Pressable, View } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { MarkdownProse, type ProseLinker } from '../Prose'
-import { Eyebrow } from './Eyebrow'
+import { Eyebrow } from '../../ui/eyebrow'
 
 /** An initiative's durable brief, as the reader consumes it. */
 export interface InitiativeBriefData {

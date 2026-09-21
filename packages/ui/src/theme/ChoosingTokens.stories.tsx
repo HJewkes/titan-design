@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import tokensDoc from '../../TOKENS.md?raw'
-import { Typography } from '../components/custom/Typography'
+import { Typography } from '../components/ui/typography'
 
 /**
  * Rendered straight from `packages/ui/TOKENS.md` via Vite's `?raw`, deliberately

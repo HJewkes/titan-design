@@ -2,7 +2,7 @@
 import { useMemo, type ReactNode } from 'react'
 import { Text, View } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 
 /** How a linked reference reads: brand for the domain's own ids, link for cross-references, muted for asides. */
 export type ProseLinkTone = 'brand' | 'link' | 'muted'

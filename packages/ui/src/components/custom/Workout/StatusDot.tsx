@@ -1,6 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps, type ViewStyle } from 'react-native'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { resolveColor } from '../../../theme/resolve-color'
 import { semanticColorsDark } from '../../../theme/tokens/semantic'
 import { greyRamp } from '../../../theme/tokens/primitives'

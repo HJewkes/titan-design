@@ -2,7 +2,7 @@
 import { View } from 'react-native'
 import { Card } from '../../ui/card'
 import { Pill } from '../../ui/pill'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { FilePathLabel } from './FilePathLabel'
 
 export interface CoChangeChipProps {

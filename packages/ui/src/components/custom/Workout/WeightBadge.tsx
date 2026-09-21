@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { DumbbellIcon } from './icons'
 import {
   BaseBadge,

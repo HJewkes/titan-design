@@ -6,7 +6,7 @@
 import type { ReactNode } from 'react'
 import { View, ScrollView, Pressable } from 'react-native'
 import { cn } from '../../utils/cn'
-import { Typography } from '../../components/custom/Typography'
+import { Typography } from '../../components/ui/typography'
 import { Indicator } from '../../components/ui/indicator'
 import { ActivityIcon, LayersIcon, HistoryIcon, AwardIcon, ScaleIcon } from '../../components/icons'
 

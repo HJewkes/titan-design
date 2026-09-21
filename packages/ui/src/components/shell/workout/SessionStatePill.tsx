@@ -1,7 +1,7 @@
 import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Indicator, type IndicatorColor, type IndicatorPulse } from '../../ui/indicator'
-import { Typography, type TypographyColor } from '../../custom/Typography'
+import { Typography, type TypographyColor } from '../../ui/typography'
 
 export type SessionState = 'live' | 'rest' | 'idle'
 

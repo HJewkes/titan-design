@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { resolveColor } from '../../../theme/resolve-color'
 import { Indicator } from '../../ui/indicator'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 
 /** How much a task hurts if left undone. Ordered worst-first by {@link SEVERITY_RANK}. */
 export type TaskSeverity = 'critical' | 'high' | 'medium' | 'low'

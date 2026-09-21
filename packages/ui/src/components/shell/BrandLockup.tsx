@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { View, type ViewProps } from 'react-native'
 import { cn } from '../../utils/cn'
-import { Typography } from '../custom/Typography'
+import { Typography } from '../ui/typography'
 import { brandPresets, type BrandKey } from './brands'
 
 export interface BrandLockupProps extends ViewProps {

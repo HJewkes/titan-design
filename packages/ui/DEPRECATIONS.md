@@ -100,6 +100,31 @@ barrel by this move either (see the PR for why). The re-export on
 `live-rep-growth` is tagged `@deprecated` for one release and **disappears in
 0.23.0**; all three in-repo importers already use the new path.
 
+## Migration M2 — `Typography` and `Eyebrow` moved to `ui/`
+
+Both are domain-free, so by the placement rule (`CLAUDE.md`, Placement) their home
+is `ui/`: `Typography` in `ui/typography`, `Eyebrow` in `ui/eyebrow` (roadmap
+decision 9, scheduled as M2 by the 2026-09-19 decision). `ui/*` may not import
+`custom/*`, which is why the 79 raw `<Text>` runs in `ui/` could not compose
+`Typography` before. Component bodies are unchanged; only their home moved.
+
+| Export                                                                                                              | Replacement                         | Known consumers                     | Task  |
+| ------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ----------------------------------- | ----- |
+| `Typography`, `Heading`, `Paragraph`, `Caption`, `Label`, `Overline` (+ their props types) from `custom/Typography` | the same names from `ui/typography` | in-repo `custom/`, `shell/`, `lab/` | TD-37 |
+| `Eyebrow` (+ `EyebrowProps`) from `custom/ActiveWork/Eyebrow`                                                       | the same names from `ui/eyebrow`    | in-repo `ActiveWork` only           | TD-37 |
+
+**No published API change.** Every name above still comes off the package root
+barrel, just through `components/ui` instead of `components/custom`; a consumer
+importing from `@titan-design/react-ui` sees nothing. Only a deep relative import
+of `components/custom/Typography` or `components/custom/ActiveWork/Eyebrow` hits
+the shim. Both shims are tagged `@deprecated` for one release and **disappear in
+0.23.0**; every in-repo importer already uses the new path.
+
+While these rows exist, `MATURITY.md` clause 2's fourth condition (no row in
+`DEPRECATIONS.md` names one of its exports) keeps `typography` and `eyebrow` at
+`status:candidate` even though `ui/*` placement now makes them stable-eligible.
+They become promotable when the shims are deleted in 0.23.0.
+
 ## Fatigue tokens — `TONE_COLOR` replaced by `TONE_TOKEN` (VW-316)
 
 **Breaking, no alias possible.** `TONE_COLOR` held colours resolved at import

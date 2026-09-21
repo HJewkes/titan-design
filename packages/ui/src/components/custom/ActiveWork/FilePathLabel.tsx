@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 
 /** Split a path into its directory prefix (trailing slash kept) and basename. */
 export function splitPath(path: string): { dir: string; base: string } {

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
-import { Typography } from '../../custom/Typography'
+import { Typography } from '../../ui/typography'
 import { LiveAuraFrame } from '../../custom/Workout/LiveAuraFrame'
 import { VelocityStrip, calculateVelocityLoss } from '../../custom/Workout/VelocityStrip'
 import { PinnedLiveStrip } from './PinnedLiveStrip'

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { View, Pressable } from 'react-native'
-import { Typography } from '../../components/custom/Typography'
+import { Typography } from '../../components/ui/typography'
 import { Card } from '../../components/ui/card'
 import { Pill } from '../../components/ui/pill'
 import { Divider } from '../../components/ui/divider'

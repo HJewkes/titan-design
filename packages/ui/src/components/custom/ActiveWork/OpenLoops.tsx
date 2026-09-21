@@ -3,9 +3,9 @@ import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Divider } from '../../ui/divider'
 import { Pill, type PillColor } from '../../ui/pill'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { MarkdownProse, type ProseLinker } from '../Prose'
-import { Eyebrow } from './Eyebrow'
+import { Eyebrow } from '../../ui/eyebrow'
 import { formatTaskAge } from './format-time'
 
 // RN's Role union omits 'list'/'listitem'; RNW passes them through to the DOM.

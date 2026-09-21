@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Text, type TextProps } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { Typography, type TypographyVariant } from '../Typography'
+import { Typography, type TypographyVariant } from '../../ui/typography'
 
 export type DateTimeFormat =
   | 'date' // 2024-01-15

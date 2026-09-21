@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 import { Surface } from '../../ui/surface'
-import { Typography } from '../../custom/Typography'
+import { Typography } from '../../ui/typography'
 import { WorkoutShell } from './WorkoutShell'
 import { PinnedLiveStrip } from './PinnedLiveStrip'
 import { LIVE_STRIP_SCENARIOS as S, type LiveStripScenario } from './pinnedLiveStrip-fixture'
