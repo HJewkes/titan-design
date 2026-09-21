@@ -25,6 +25,8 @@ interface MarksArgs {
   tipLayout: WeekTipLayout
   /** Put a reading and a PR on the deload week, so the marks sit over the purple. */
   readingOnDeload?: boolean
+  /** How much of the deload magenta the column carries; the chart's default when unset. */
+  deloadWash?: number
 }
 
 /** The label of a week's target, so the story can pin that tip open. */
@@ -67,12 +69,19 @@ function card(currentWeek: number, readingOnDeload = false): GoalCardProps {
   }
 }
 
-function MarksFrame({ openWeek, currentWeek, tipLayout, readingOnDeload }: MarksArgs) {
+function MarksFrame({ openWeek, currentWeek, tipLayout, readingOnDeload, deloadWash }: MarksArgs) {
   const props = card(currentWeek, readingOnDeload)
   return (
     <PinnedTipContext.Provider value={openWeek ? weekLabel(openWeek, props.goal!) : null}>
       <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-sm">
-        <GoalCard {...props} goal={{ ...props.goal!, weekTipLayout: tipLayout }} />
+        <GoalCard
+          {...props}
+          goal={{
+            ...props.goal!,
+            weekTipLayout: tipLayout,
+            ...(deloadWash === undefined ? {} : { deloadWash }),
+          }}
+        />
       </Surface>
     </PinnedTipContext.Provider>
   )
@@ -93,6 +102,7 @@ const meta: Meta<MarksArgs> = {
     currentWeek: { control: { type: 'number', min: 1, max: 6 } },
     tipLayout: { control: 'inline-radio', options: ['figure', 'rows'] },
     readingOnDeload: { control: 'boolean' },
+    deloadWash: { control: { type: 'range', min: 0, max: 0.4, step: 0.02 } },
   },
   args: { currentWeek: 4, tipLayout: 'figure' },
   render: (args) => <MarksFrame {...args} />,
@@ -131,3 +141,14 @@ export const TipRowsLayout: Story = { args: { openWeek: 3, tipLayout: 'rows' } }
 export const DeloadColumn: Story = { args: { openWeek: 5 } }
 /** The deload column carrying a reading and a PR star, so the marks sit over the purple. */
 export const DeloadWithReading: Story = { args: { readingOnDeload: true } }
+
+/** Round 7: the deload wash at the shipped 0.22, then three softer, on a plain block. */
+export const Wash22: Story = { args: { deloadWash: 0.22 } }
+export const Wash16: Story = { args: { deloadWash: 0.16 } }
+export const Wash12: Story = { args: { deloadWash: 0.12 } }
+export const Wash08: Story = { args: { deloadWash: 0.08 } }
+/** Round 7: the same four washes with a reading and a PR star on the deload column. */
+export const Wash22WithReading: Story = { args: { deloadWash: 0.22, readingOnDeload: true } }
+export const Wash16WithReading: Story = { args: { deloadWash: 0.16, readingOnDeload: true } }
+export const Wash12WithReading: Story = { args: { deloadWash: 0.12, readingOnDeload: true } }
+export const Wash08WithReading: Story = { args: { deloadWash: 0.08, readingOnDeload: true } }
