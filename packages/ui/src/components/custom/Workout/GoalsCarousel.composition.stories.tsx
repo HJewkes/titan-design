@@ -13,7 +13,7 @@ import {
   wholeBodySlides,
 } from './goalCarousel-fixture'
 import { Surface } from '../../ui/surface'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { GoalCard } from './GoalCard'
 import { PRIMARY_GOAL_SCENARIOS as S } from './primaryGoal-fixture'
 

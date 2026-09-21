@@ -3,7 +3,7 @@ import { View } from 'react-native'
 
 import { Card } from '../../ui/card'
 import { Metric } from '../Metric'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { GoalCard, type GoalCardProps } from './GoalCard'
 import { GoalMuscleCard, type GoalMuscleCardProps } from './GoalMuscleCard'
 import { MuscleGroup } from './muscleTaxonomy'

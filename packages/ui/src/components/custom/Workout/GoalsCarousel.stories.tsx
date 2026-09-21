@@ -4,7 +4,7 @@ import { View } from 'react-native'
 import { Carousel, CarouselSlide } from '../../ui/carousel'
 import { Surface } from '../../ui/surface'
 import { Tooltip } from '../../ui/tooltip'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import {
   LONG_NAME_LIFTS,
   MUSCLES,
