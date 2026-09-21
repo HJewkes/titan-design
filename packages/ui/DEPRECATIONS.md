@@ -125,6 +125,27 @@ While these rows exist, `MATURITY.md` clause 2's fourth condition (no row in
 `status:candidate` even though `ui/*` placement now makes them stable-eligible.
 They become promotable when the shims are deleted in 0.23.0.
 
+## Migration M3 — `EmptyState` moved to `ui/`
+
+`EmptyState` is domain-free, so by the placement rule (`CLAUDE.md`, Placement) its
+home is `ui/empty-state` (scheduled as M3 by the 2026-09-19 decision). The component
+body, test and story are unchanged; only their home moved.
+
+| Export                                                      | Replacement                          | Known consumers     | Task  |
+| ----------------------------------------------------------- | ------------------------------------ | ------------------- | ----- |
+| `EmptyState` (+ `EmptyStateProps`) from `custom/EmptyState` | the same names from `ui/empty-state` | in-repo `lab/` only | TD-37 |
+
+**No published API change.** Both names still come off the package root barrel,
+just through `components/ui` instead of `components/custom`; a consumer importing
+from `@titan-design/react-ui` sees nothing. Only a deep relative import of
+`components/custom/EmptyState` hits the shim. The shim is tagged `@deprecated` for
+one release and **disappears in 0.23.0**; the one in-repo importer
+(`lab/north-star/EmptyLiveView`) already imports through the barrel.
+
+While this row exists, `MATURITY.md` clause 2's fourth condition keeps
+`empty-state` at `status:candidate`; it becomes promotable when the shim is deleted
+in 0.23.0.
+
 ## Fatigue tokens — `TONE_COLOR` replaced by `TONE_TOKEN` (VW-316)
 
 **Breaking, no alias possible.** `TONE_COLOR` held colours resolved at import
