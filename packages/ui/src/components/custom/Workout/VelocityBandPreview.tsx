@@ -28,6 +28,8 @@ export interface VelocityBandPreviewProps {
 }
 
 const LOW_CONFIDENCE_FILL_OPACITY = 0.45
+/** Bars after a setting change recede so the change mark's label reads over them. */
+const SUSPENDED_FILL_OPACITY = 0.35
 
 /**
  * The band overlay on a real `SetBarChart`, for stories and review rounds only. Integration into
@@ -47,6 +49,7 @@ export function VelocityBandPreview({
   const slots: SetSlot[] = velocities.map((value) => ({ kind: 'rep', value }))
   const colorFor = (_value: number, repIndex: number): string => {
     const tone = barTone(scale, repIndex)
+    if (tone.suspended) return alpha(neutral, SUSPENDED_FILL_OPACITY)
     if (tone.band == null) return neutral
     const fill = palette[tone.band]
     return tone.lowConfidence ? alpha(fill, LOW_CONFIDENCE_FILL_OPACITY) : fill

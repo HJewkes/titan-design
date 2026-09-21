@@ -61,8 +61,13 @@ const BAND_INK = [
 /** Lifts the over layer above the bar columns; every react-native-web View sits at zIndex 0. */
 const ABOVE_BARS = 1
 const LABEL_HEIGHT = 14
+/** Keeps the zone label clear of its own end line. */
+const LABEL_INSET = 4
 const ZONE_TINT_OPACITY = 0.1
 const TICK_HEIGHT = 10
+const BRACKET_DEPTH = 6
+/** The rendered height of one `caption` line. */
+const CAPTION_ROW = 24
 const PAST_CUE_LIFT = 6
 
 interface Inks {
@@ -89,17 +94,33 @@ function ZoneUnder({
   style: VelocityBandTreatment['zone']
   inks: Inks
 }) {
-  const fill =
-    style === 'tint'
-      ? { left: zone.x0, width: zone.x1 - zone.x0, height: plotHeight }
-      : { left: zone.tickX, width: zone.endX - zone.tickX, height: 3 }
-  const color = style === 'tint' ? alpha(inks.faint, ZONE_TINT_OPACITY) : inks.faint
   return (
     <>
-      <View
-        testID={`band-zone-${style}`}
-        style={absolute({ ...fill, bottom: 0, backgroundColor: color })}
-      />
+      {style === 'tint' ? (
+        <View
+          testID="band-zone-tint"
+          style={absolute({
+            left: zone.x0,
+            width: zone.x1 - zone.x0,
+            bottom: 0,
+            height: plotHeight,
+            backgroundColor: alpha(inks.faint, ZONE_TINT_OPACITY),
+          })}
+        />
+      ) : (
+        <View
+          testID="band-zone-bracket"
+          style={absolute({
+            left: zone.tickX,
+            width: zone.endX - zone.tickX,
+            bottom: plotHeight - CAPTION_ROW - BRACKET_DEPTH,
+            height: BRACKET_DEPTH,
+            borderTopWidth: 1,
+            borderLeftWidth: 1,
+            borderColor: inks.ink,
+          })}
+        />
+      )}
       <View
         testID="band-zone-tick"
         style={absolute({
@@ -139,7 +160,7 @@ function ZoneOver({
       <Label
         text={zone.label}
         color={inks.ink}
-        style={{ top: 0, right: 0, maxWidth: zone.endX }}
+        style={{ top: 0, left: 0, width: Math.max(0, zone.endX - LABEL_INSET) }}
         testID="band-zone-label"
         alignRight
       />
@@ -261,16 +282,16 @@ function SuspensionMark({
           bottom: 0,
           height: plotHeight,
           width: 0,
-          borderLeftWidth: 1,
-          borderLeftColor: inks.faint,
-          borderStyle: 'dotted',
+          borderLeftWidth: 1.5,
+          borderLeftColor: inks.ink,
+          borderStyle: 'dashed',
         })}
       />
       {mark.label ? (
         <Label
           text={mark.label}
-          color={inks.faint}
-          style={{ left: mark.x + 4, top: LABEL_HEIGHT + 2 }}
+          color={inks.ink}
+          style={{ left: mark.x + LABEL_INSET, top: 0 }}
           testID="band-suspension-label"
         />
       ) : null}
