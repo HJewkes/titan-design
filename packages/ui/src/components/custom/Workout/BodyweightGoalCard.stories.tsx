@@ -103,8 +103,11 @@ export const SlowLoss: Story = { args: { goal: W.slowLoss } }
 /** The server's slow-loss rule today: both edges at -0.5 %/wk, so one line. */
 export const SlowLossOneLine: Story = { args: { goal: W.slowLossOneLine } }
 
-/** F11: one weigh-in. The rate waits for a second week. */
+/** F11: one weigh-in. The rate reads N/A and the reason sits in the tip. */
 export const OneReading: Story = { args: { goal: W.oneReading } }
+
+/** F11 with its tip pinned open by state, so the reason behind N/A is visible. */
+export const OneReadingTip: Story = { args: { goal: W.oneReading, isTipOpen: true } }
 
 /** F12: an accepted goal with no weigh-in yet. */
 export const NoReadings: Story = { args: { goal: W.noReadings } }
