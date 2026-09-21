@@ -10,32 +10,19 @@ import { useCarouselState, type CarouselState } from './useCarouselState'
 import { useDragToScroll } from './useDragToScroll'
 import { useScrollSync } from './useScrollSync'
 
-export type CarouselPeek = 'xs' | 'sm' | 'md' | 'lg'
-export type CarouselPeekSides = 'trailing' | 'both'
-export type CarouselControlsSize = 'md' | 'lg'
-export type CarouselControlsGap = 'none' | 'xs' | 'sm'
-
-const PEEK_PX: Record<CarouselPeek, number> = {
-  xs: space.inset.md,
-  sm: space.gutter.sm,
-  md: space.gutter.md,
-  lg: space.section.md,
-}
+/** How much of each neighbour shows beside the current slide (owner, round 3). */
+const HINT_PX = space.inset.md
 
 const SLIDE_GAP = space.inline.lg
 
-const ICON_PX: Record<CarouselControlsSize, number> = { md: 20, lg: 24 }
+const ICON_PX = 20
 
 /**
- * The arrow keeps a 44pt box for the finger while its glyph sits at the top of
- * it, so the space a reader sees between the cards and the arrow is the gap
- * they chose, not half of the leftover box. The pair adds up to the box height.
+ * The arrow keeps a 44pt box for the finger while its glyph sits near the top
+ * of it, so the space a reader sees between the cards and the arrow is 4px
+ * (owner, round 3) rather than half the leftover box. The pair adds up to 44.
  */
-const LEAD_IN_CLASS: Record<CarouselControlsGap, string> = {
-  none: 'pt-0 pb-6',
-  xs: 'pt-1 pb-5',
-  sm: 'pt-2 pb-4',
-}
+const LEAD_IN_CLASS = 'pt-1 pb-5'
 
 const HIT_TARGET_CLASS = 'w-11 h-11'
 
@@ -48,18 +35,10 @@ export interface CarouselProps extends ViewProps {
   defaultValue?: string
   /** Fires when a slide becomes current: a settled swipe, an arrow, or focus moving in. */
   onValueChange?: (value: string, index: number) => void
-  /** How much of the neighbouring slide shows. */
-  peek?: CarouselPeek
-  /** A hint of the next slide only, or of both neighbours with the current slide centred. */
-  peekSides?: CarouselPeekSides
   /** Wrap around: forward from the last slide lands on the first, and back again. */
   loop?: boolean
-  /** Caps a slide on a wide column, so more of the next one shows. */
+  /** Caps a slide on a wide column, so more of each neighbour shows. */
   maxSlideWidth?: number
-  /** Size of the previous and next arrow glyphs; both sizes keep a 44pt hit target. */
-  controlsSize?: CarouselControlsSize
-  /** Visible space between the cards and the arrows: 0, 4 or 8 px. */
-  controlsGap?: CarouselControlsGap
   className?: string
   /** `CarouselSlide` elements, directly or through an array. */
   children?: React.ReactNode
@@ -110,7 +89,7 @@ const slideRole = { 'aria-roledescription': 'slide' } as ViewProps
  * counter always names the real slide.
  *
  * @example
- * <Carousel label="Per-lift" peek="sm" peekSides="both" loop>
+ * <Carousel label="Per-lift">
  *   {lifts.map((lift) => (
  *     <CarouselSlide key={lift.id} value={lift.id} label={lift.name}>
  *       <GoalCard size="compact" className="flex-1" {...lift.card} />
@@ -123,12 +102,8 @@ export function Carousel({
   value,
   defaultValue,
   onValueChange,
-  peek = 'md',
-  peekSides = 'trailing',
-  loop = false,
+  loop = true,
   maxSlideWidth,
-  controlsSize = 'md',
-  controlsGap = 'none',
   className,
   children,
   ...props
@@ -150,16 +125,7 @@ export function Carousel({
   }
   return (
     <View role="region" aria-label={label} {...regionRole} className={className} {...props}>
-      <CarouselTrack
-        slides={slides}
-        state={state}
-        peek={PEEK_PX[peek]}
-        peekSides={peekSides}
-        loop={loop}
-        maxSlideWidth={maxSlideWidth}
-        controlsSize={controlsSize}
-        controlsGap={controlsGap}
-      />
+      <CarouselTrack slides={slides} state={state} loop={loop} maxSlideWidth={maxSlideWidth} />
     </View>
   )
 }
@@ -167,42 +133,28 @@ export function Carousel({
 interface CarouselTrackProps {
   slides: SlideEntry[]
   state: CarouselState
-  peek: number
-  peekSides: CarouselPeekSides
   loop: boolean
   maxSlideWidth?: number
-  controlsSize: CarouselControlsSize
-  controlsGap: CarouselControlsGap
 }
 
-function CarouselTrack({
-  slides,
-  state,
-  peek,
-  peekSides,
-  loop,
-  maxSlideWidth,
-  controlsSize,
-  controlsGap,
-}: CarouselTrackProps) {
+function CarouselTrack({ slides, state, loop, maxSlideWidth }: CarouselTrackProps) {
   const { width, onLayout } = useMeasuredWidth()
   const wrapperRef = useRef<View>(null)
   const scrollRef = useRef<ScrollView>(null)
   const count = slides.length
   const cloned = loop && canClone(count)
   const slots = useMemo(() => slideSlots(count, cloned), [count, cloned])
-  const align = peekSides === 'both' ? 'center' : 'start'
   const geometry = useMemo(
     () =>
       slideGeometry({
         viewportWidth: width ?? 0,
         count: slots.length,
-        peek,
+        peek: HINT_PX,
         gap: SLIDE_GAP,
         maxSlideWidth,
-        align,
+        align: 'center',
       }),
-    [width, slots.length, peek, maxSlideWidth, align]
+    [width, slots.length, maxSlideWidth]
   )
   const sync = useScrollSync({
     scrollRef,
@@ -226,7 +178,7 @@ function CarouselTrack({
           ref={scrollRef}
           horizontal
           snapToInterval={Platform.OS === 'web' ? undefined : geometry.step}
-          snapToAlignment={align}
+          snapToAlignment="center"
           decelerationRate="fast"
           disableIntervalMomentum
           showsHorizontalScrollIndicator={false}
@@ -255,8 +207,6 @@ function CarouselTrack({
         index={sync.visibleIndex}
         state={state}
         loop={loop}
-        size={controlsSize}
-        gap={controlsGap}
         onStep={sync.stepAnimated}
       />
     </View>
@@ -323,24 +273,19 @@ interface CarouselControlsProps {
   index: number
   state: CarouselState
   loop: boolean
-  size: CarouselControlsSize
-  gap: CarouselControlsGap
   onStep: (delta: number) => void
 }
 
 /** Previous arrow, "2 of 9", next arrow: centred under the slides, on the page plane. */
-function CarouselControls({ index, state, loop, size, gap, onStep }: CarouselControlsProps) {
-  const lead = LEAD_IN_CLASS[gap]
+function CarouselControls({ index, state, loop, onStep }: CarouselControlsProps) {
   return (
     <View className="flex-row items-start justify-center gap-inline-md">
       <CarouselArrow
         direction="previous"
         isDisabled={!loop && !state.canPrevious}
-        size={size}
-        lead={lead}
         onPress={() => onStep(-1)}
       />
-      <View aria-live="polite" aria-atomic className={lead}>
+      <View aria-live="polite" aria-atomic className={LEAD_IN_CLASS}>
         <Text
           className="font-body text-sm leading-5 text-text-secondary"
           testID="carousel-position"
@@ -351,8 +296,6 @@ function CarouselControls({ index, state, loop, size, gap, onStep }: CarouselCon
       <CarouselArrow
         direction="next"
         isDisabled={!loop && !state.canNext}
-        size={size}
-        lead={lead}
         onPress={() => onStep(1)}
       />
     </View>
@@ -366,25 +309,22 @@ function positionLabel(index: number, count: number): string {
 interface CarouselArrowProps {
   direction: 'previous' | 'next'
   isDisabled: boolean
-  size: CarouselControlsSize
-  lead: string
   onPress: () => void
 }
 
-function CarouselArrow({ direction, isDisabled, size, lead, onPress }: CarouselArrowProps) {
+function CarouselArrow({ direction, isDisabled, onPress }: CarouselArrowProps) {
   const isPrevious = direction === 'previous'
   return (
     <Button
       variant="ghost"
-      size={size}
       isIconButton
       isDisabled={isDisabled}
       onPress={onPress}
       accessibilityLabel={isPrevious ? 'Previous slide' : 'Next slide'}
-      className={`${HIT_TARGET_CLASS} ${lead}`}
+      className={`${HIT_TARGET_CLASS} ${LEAD_IN_CLASS}`}
       testID={`carousel-${direction}`}
     >
-      <ButtonIcon as={isPrevious ? ChevronLeftIcon : ChevronRightIcon} size={ICON_PX[size]} />
+      <ButtonIcon as={isPrevious ? ChevronLeftIcon : ChevronRightIcon} size={ICON_PX} />
     </Button>
   )
 }

@@ -1,13 +1,4 @@
-export {
-  Carousel,
-  CarouselSlide,
-  type CarouselProps,
-  type CarouselSlideProps,
-  type CarouselPeek,
-  type CarouselPeekSides,
-  type CarouselControlsSize,
-  type CarouselControlsGap,
-} from './Carousel'
+export { Carousel, CarouselSlide, type CarouselProps, type CarouselSlideProps } from './Carousel'
 export {
   useCarouselState,
   type CarouselState,

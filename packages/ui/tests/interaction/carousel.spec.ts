@@ -46,33 +46,26 @@ async function slideCentre(page: Page, name: string): Promise<number> {
   return Math.abs(centre(slide) - centre(scroller))
 }
 
-/** Distance of a slide's leading edge from the viewport's, in px. */
-async function slideOffset(page: Page, name: string): Promise<number> {
-  const scroller = await page.getByTestId('carousel-viewport').boundingBox()
-  const slide = await page.getByTestId(`carousel-slide-${name}`).boundingBox()
-  return Math.abs((slide?.x ?? 0) - (scroller?.x ?? 0))
-}
-
 test('an arrow press glides to the next card, and jumps under reduced motion', async ({ page }) => {
   await openDefault(page)
   await page.getByRole('button', { name: 'Next slide' }).click()
-  expect(await slideOffset(page, 'Back squat')).toBeGreaterThan(2)
-  await expect.poll(() => slideOffset(page, 'Back squat')).toBeLessThan(2)
+  expect(await slideCentre(page, 'Back squat')).toBeGreaterThan(2)
+  await expect.poll(() => slideCentre(page, 'Back squat')).toBeLessThan(2)
 
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await openDefault(page)
   await page.getByRole('button', { name: 'Next slide' }).click()
   await page.evaluate(() => new Promise(requestAnimationFrame))
-  expect(await slideOffset(page, 'Back squat')).toBeLessThan(2)
+  expect(await slideCentre(page, 'Back squat')).toBeLessThan(2)
 })
 
 test('a width change keeps the same card at the leading edge', async ({ page }) => {
   await openDefault(page)
   for (let i = 0; i < 3; i += 1) await page.getByRole('button', { name: 'Next slide' }).click()
-  await expect.poll(() => slideOffset(page, 'Cable overhead tricep extension')).toBeLessThan(2)
+  await expect.poll(() => slideCentre(page, 'Cable overhead tricep extension')).toBeLessThan(2)
 
   await page.setViewportSize({ width: 340, height: 844 })
-  await expect.poll(() => slideOffset(page, 'Cable overhead tricep extension')).toBeLessThan(2)
+  await expect.poll(() => slideCentre(page, 'Cable overhead tricep extension')).toBeLessThan(2)
   await expect(page.getByTestId('carousel-position')).toHaveText('4 of 9')
 })
 
@@ -90,7 +83,7 @@ test('a real horizontal swipe snaps to a card and commits it', async ({ page }) 
   await page.mouse.move((box?.x ?? 0) + 100, (box?.y ?? 0) + 20)
   await page.mouse.wheel(700, 0)
   await expect(page.getByTestId('carousel-position')).toHaveText('3 of 9')
-  await expect.poll(() => slideOffset(page, 'Romanian deadlift')).toBeLessThan(1)
+  await expect.poll(() => slideCentre(page, 'Romanian deadlift')).toBeLessThan(1)
 })
 
 const DRAG_STORY = 'components-molecules-carousel-interactions--drag-playground'
@@ -121,14 +114,14 @@ test('a quick flick of the mouse moves exactly one card', async ({ page }) => {
   await openDragStory(page)
   await drag(page, -150, 0, 0, 3)
   await expect(page.getByTestId('carousel-position')).toHaveText('2 of 9')
-  await expect.poll(() => slideOffset(page, 'Back squat')).toBeLessThan(1)
+  await expect.poll(() => slideCentre(page, 'Back squat')).toBeLessThan(1)
 })
 
 test('a slow drag lands on the card it was left nearest', async ({ page }) => {
   await openDragStory(page)
   await drag(page, -560, 0, 900)
   await expect(page.getByTestId('carousel-position')).toHaveText('3 of 9')
-  await expect.poll(() => slideOffset(page, 'Romanian deadlift')).toBeLessThan(1)
+  await expect.poll(() => slideCentre(page, 'Romanian deadlift')).toBeLessThan(1)
 })
 
 test('a vertical drag scrolls the page and leaves the carousel where it was', async ({ page }) => {
@@ -176,7 +169,7 @@ test('a flick jumps instead of gliding under reduced motion', async ({ page }) =
   await openDragStory(page)
   await drag(page, -150, 0, 0, 3)
   await page.evaluate(() => new Promise(requestAnimationFrame))
-  expect(await slideOffset(page, 'Back squat')).toBeLessThan(1)
+  expect(await slideCentre(page, 'Back squat')).toBeLessThan(1)
   await expect(page.getByTestId('carousel-position')).toHaveText('2 of 9')
 })
 

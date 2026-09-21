@@ -53,12 +53,7 @@ function Refreshing({ count, loop, onValueChange }: Args) {
       <Text className="font-body text-sm text-text-secondary" testID="press-count">
         {String(presses)}
       </Text>
-      <Carousel
-        label="Per-lift"
-        loop={loop}
-        peekSides={loop ? 'both' : 'trailing'}
-        onValueChange={onValueChange}
-      >
+      <Carousel label="Per-lift" loop={loop} onValueChange={onValueChange}>
         {slides(names, () => setPresses((n) => n + 1))}
       </Carousel>
     </View>
@@ -69,7 +64,7 @@ const meta: Meta<Args> = {
   title: 'Components/Molecules/Carousel/Interactions',
   tags: ['!dev', '!autodocs', 'interaction', 'play'],
   parameters: { layout: 'fullscreen' },
-  args: { count: 9, loop: false, onValueChange: fn() },
+  args: { count: 9, loop: true, onValueChange: fn() },
   decorators: [
     (Story) => (
       <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-sm">
@@ -134,6 +129,7 @@ export const ArrowsStepOneSlide: Story = {
 }
 
 export const StopsAtBothEnds: Story = {
+  args: { loop: false },
   play: marked(async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.getByRole('button', { name: 'Previous slide' })).toHaveAttribute(
@@ -227,7 +223,7 @@ export const OneCardHasNoControls: Story = {
 }
 
 /** No play function: the Playwright spec drags this one with a real mouse. */
-export const DragPlayground: Story = { tags: ['!play'] }
+export const DragPlayground: Story = { args: { loop: false }, tags: ['!play'] }
 
 /** The same, wrapping, with a hint of both neighbours. */
 export const DragPlaygroundLooping: Story = { args: { loop: true }, tags: ['!play'] }

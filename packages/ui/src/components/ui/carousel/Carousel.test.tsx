@@ -50,9 +50,9 @@ describe('Carousel', () => {
     expect(position.parentElement).toHaveAttribute('aria-live', 'polite')
   })
 
-  it('moves one slide per arrow press and stops at the ends', () => {
+  it('moves one slide per arrow press and, without a loop, stops at the ends', () => {
     const onValueChange = vi.fn()
-    renderCarousel(LIFTS, { onValueChange })
+    renderCarousel(LIFTS, { onValueChange, loop: false })
     const previous = screen.getByRole('button', { name: 'Previous slide' })
     const next = screen.getByRole('button', { name: 'Next slide' })
 

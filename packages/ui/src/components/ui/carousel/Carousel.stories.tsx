@@ -3,23 +3,12 @@ import { Text, View } from 'react-native'
 
 import { Card } from '../card'
 import { Surface } from '../surface'
-import {
-  Carousel,
-  CarouselSlide,
-  type CarouselControlsGap,
-  type CarouselControlsSize,
-  type CarouselPeek,
-  type CarouselPeekSides,
-} from './Carousel'
+import { Carousel, CarouselSlide } from './Carousel'
 
 interface StoryArgs {
   count: number
   unequal: boolean
-  peek: CarouselPeek
-  peekSides: CarouselPeekSides
   loop: boolean
-  controlsSize: CarouselControlsSize
-  controlsGap: CarouselControlsGap
 }
 
 const NAMES = [
@@ -79,19 +68,13 @@ const meta: Meta<StoryArgs> = {
   args: {
     count: 9,
     unequal: false,
-    peek: 'md',
-    peekSides: 'trailing',
     loop: false,
     controlsSize: 'lg',
   },
   argTypes: {
     count: { control: { type: 'range', min: 0, max: 9, step: 1 } },
     unequal: { control: 'boolean' },
-    peek: { control: 'inline-radio', options: ['xs', 'sm', 'md', 'lg'] },
-    peekSides: { control: 'inline-radio', options: ['trailing', 'both'] },
     loop: { control: 'boolean' },
-    controlsSize: { control: 'inline-radio', options: ['md', 'lg'] },
-    controlsGap: { control: 'inline-radio', options: ['none', 'xs', 'sm'] },
   },
   decorators: [
     (Story) => (
@@ -102,15 +85,8 @@ const meta: Meta<StoryArgs> = {
       </Surface>
     ),
   ],
-  render: ({ count, unequal, peek, peekSides, loop, controlsSize, controlsGap }) => (
-    <Carousel
-      label="Per-lift"
-      peek={peek}
-      peekSides={peekSides}
-      loop={loop}
-      controlsSize={controlsSize}
-      controlsGap={controlsGap}
-    >
+  render: ({ count, unequal, loop }) => (
+    <Carousel label="Per-lift" loop={loop}>
       {NAMES.slice(0, count).map((name, index) => (
         <CarouselSlide key={name} value={name} label={name}>
           <ExampleCard name={name} lines={extraLines(index, unequal)} />
