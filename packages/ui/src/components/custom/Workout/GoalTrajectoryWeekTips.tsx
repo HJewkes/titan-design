@@ -6,7 +6,7 @@
  */
 import { useRef, useState } from 'react'
 import { View } from 'react-native'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { Metric } from '../Metric'
 import { Pill } from '../../ui/pill'
 import { alpha } from '../../../utils/colors'

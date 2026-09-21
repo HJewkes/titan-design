@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 
 import { Surface } from '../../ui/surface'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { GoalCard, type GoalCardProps } from './GoalCard'
 import type { RuleLabelText } from './goalTrajectoryRuleLabels'
 import { PRIMARY_GOAL_SCENARIOS as S } from './primaryGoal-fixture'
