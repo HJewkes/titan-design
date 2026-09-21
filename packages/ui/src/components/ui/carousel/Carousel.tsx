@@ -1,11 +1,19 @@
-import React, { useMemo, useRef } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import { Platform, ScrollView, Text, View, type ViewProps } from 'react-native'
 
 import { useMeasuredWidth } from '../../../hooks/useMeasuredWidth'
 import { space } from '../../../theme/tokens/semantic'
 import { ChevronLeftIcon, ChevronRightIcon } from '../../icons'
 import { Button, ButtonIcon } from '../button'
-import { canClone, slideGeometry, slideLabel, slideSlots, type SlideGeometry } from './carouselMath'
+import { cn } from '../../../utils/cn'
+import {
+  canClone,
+  positionText,
+  slideGeometry,
+  slideLabel,
+  slideSlots,
+  type SlideGeometry,
+} from './carouselMath'
 import { useCarouselState, type CarouselState } from './useCarouselState'
 import { useDragToScroll } from './useDragToScroll'
 import { useScrollSync } from './useScrollSync'
@@ -33,7 +41,12 @@ export interface CarouselProps extends ViewProps {
   value?: string
   /** Uncontrolled starting slide; the first slide when omitted. */
   defaultValue?: string
-  /** Fires when a slide becomes current: a settled swipe, an arrow, or focus moving in. */
+  /**
+   * Fires when a slide becomes current: a settled swipe, an arrow, or focus moving in.
+   * Also fires when `value` names no slide, or the current slide is removed, with the
+   * slide shown instead. A controlled carousel whose owner ignores the call scrolls
+   * back to `value` once the swipe rests.
+   */
   onValueChange?: (value: string, index: number) => void
   /** Wrap around: forward from the last slide lands on the first, and back again. */
   loop?: boolean
@@ -64,12 +77,56 @@ interface SlideEntry {
   node: React.ReactNode
 }
 
+/**
+ * The slides among the children: direct, in arrays, or inside fragments. Anything
+ * else is dropped, and so is a second slide with a value already taken, since two
+ * slides with one value cannot be told apart; both drops warn in development.
+ */
 function collectSlides(children: React.ReactNode): SlideEntry[] {
-  return React.Children.toArray(children).flatMap((child) =>
-    React.isValidElement<CarouselSlideProps>(child) && child.type === CarouselSlide
-      ? [{ value: child.props.value, label: child.props.label, node: child.props.children }]
-      : []
-  )
+  const slides: SlideEntry[] = []
+  collectInto(children, slides, new Set<string>())
+  return slides
+}
+
+function collectInto(children: React.ReactNode, slides: SlideEntry[], seen: Set<string>) {
+  React.Children.forEach(children, (child) => {
+    if (!React.isValidElement(child)) return
+    if (child.type === React.Fragment) {
+      collectInto((child.props as { children?: React.ReactNode }).children, slides, seen)
+      return
+    }
+    if (child.type !== CarouselSlide) {
+      warnOnce(
+        `Carousel dropped a <${typeName(child.type)}> child; wrap each card in <CarouselSlide>.`
+      )
+      return
+    }
+    const { value, label, children: node } = child.props as CarouselSlideProps
+    if (seen.has(value)) {
+      warnOnce(`Carousel has two slides with the value "${value}"; the later one is dropped.`)
+      return
+    }
+    seen.add(value)
+    slides.push({ value, label: label.trim(), node })
+  })
+}
+
+function typeName(type: unknown): string {
+  if (typeof type === 'string') return type
+  const named = type as { displayName?: string; name?: string }
+  return named.displayName ?? named.name ?? 'Unknown'
+}
+
+// Bundlers replace `process.env.NODE_ENV` literally; the DTS build has no Node types.
+declare const process: { env: { NODE_ENV?: string } }
+const warned = new Set<string>()
+
+/** Warn once per message in development; the page re-renders on a poll. */
+function warnOnce(message: string) {
+  if (typeof process === 'undefined' || process.env.NODE_ENV === 'production') return
+  if (warned.has(message)) return
+  warned.add(message)
+  console.warn(`titan: ${message}`)
 }
 
 const regionRole = { 'aria-roledescription': 'carousel' } as ViewProps
@@ -87,6 +144,13 @@ const slideRole = { 'aria-roledescription': 'slide' } as ViewProps
  * slide renders at the other end so the first card can hint at the last; the
  * copies are hidden from assistive technology and cannot take focus, and the
  * counter always names the real slide.
+ *
+ * Slides are matched by element type, so pass `CarouselSlide` elements (in an
+ * array or a fragment is fine); a component that returns one is dropped with a
+ * development warning. Values are strings: stringify numeric ids. Slide content
+ * should keep no state of its own, because a copy renders the same card again.
+ * To stretch a card to the tallest slide, give it and any wrapper between it and
+ * the slide `flex-1`.
  *
  * @example
  * <Carousel label="Per-lift">
@@ -109,6 +173,7 @@ export function Carousel({
   ...props
 }: CarouselProps) {
   const slides = collectSlides(children)
+  const cap = maxSlideWidth !== undefined && maxSlideWidth > 0 ? maxSlideWidth : undefined
   const state = useCarouselState({
     keys: slides.map((slide) => slide.value),
     value,
@@ -125,7 +190,7 @@ export function Carousel({
   }
   return (
     <View role="region" aria-label={label} {...regionRole} className={className} {...props}>
-      <CarouselTrack slides={slides} state={state} loop={loop} maxSlideWidth={maxSlideWidth} />
+      <CarouselTrack slides={slides} state={state} loop={loop} maxSlideWidth={cap} />
     </View>
   )
 }
@@ -166,7 +231,8 @@ function CarouselTrack({ slides, state, loop, maxSlideWidth }: CarouselTrackProp
     loop,
     measured: width !== null,
   })
-  useDragToScroll(wrapperRef, sync.onDragStart, sync.onDragRelease)
+  useDragToScroll(wrapperRef, sync.onDragStart, sync.onDragRelease, sync.onUserScroll)
+  useScrollerFocus(wrapperRef, slides)
   return (
     <View>
       <View
@@ -263,6 +329,24 @@ function CarouselSlideBox({
   )
 }
 
+const FOCUSABLE = 'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+
+/**
+ * A scroll region a keyboard cannot reach fails WCAG 2.1.1. When no real card
+ * holds anything focusable, the scroller itself takes a Tab stop; when one does,
+ * it stays out of the order, since Tab already walks the cards.
+ */
+function useScrollerFocus(wrapperRef: React.RefObject<View | null>, slides: SlideEntry[]) {
+  useEffect(() => {
+    if (Platform.OS !== 'web') return
+    const scroller = (wrapperRef.current as unknown as HTMLElement | null)?.firstElementChild
+    if (!(scroller instanceof HTMLElement)) return
+    const reachable = [...scroller.querySelectorAll(FOCUSABLE)].some((el) => !el.closest('[inert]'))
+    if (reachable) scroller.removeAttribute('tabindex')
+    else scroller.setAttribute('tabindex', '0')
+  }, [wrapperRef, slides])
+}
+
 /** `inert` has no React Native prop, and a clone must not be tabbable. */
 function markInert(node: View | null) {
   if (Platform.OS !== 'web' || node === null) return
@@ -278,32 +362,45 @@ interface CarouselControlsProps {
 
 /** Previous arrow, "2 of 9", next arrow: centred under the slides, on the page plane. */
 function CarouselControls({ index, state, loop, onStep }: CarouselControlsProps) {
+  const previousRef = useRef<View>(null)
+  const nextRef = useRef<View>(null)
+  // A native disabled button drops focus to the page; when a press reaches the
+  // end, hand focus to the other arrow first (APG keeps focus on a control).
+  const press = (delta: number) => {
+    const lands = state.activeIndex + delta
+    const atEnd = !loop && (lands <= 0 || lands >= state.count - 1)
+    if (atEnd) focusWeb(delta > 0 ? previousRef : nextRef)
+    onStep(delta)
+  }
   return (
     <View className="flex-row items-start justify-center gap-inline-md">
       <CarouselArrow
+        ref={previousRef}
         direction="previous"
         isDisabled={!loop && !state.canPrevious}
-        onPress={() => onStep(-1)}
+        onPress={() => press(-1)}
       />
-      <View aria-live="polite" aria-atomic className={LEAD_IN_CLASS}>
+      <View aria-live="polite" className={LEAD_IN_CLASS}>
         <Text
           className="font-body text-sm leading-5 text-text-secondary"
           testID="carousel-position"
         >
-          {positionLabel(index, state.count)}
+          {positionText(index, state.count)}
         </Text>
       </View>
       <CarouselArrow
+        ref={nextRef}
         direction="next"
         isDisabled={!loop && !state.canNext}
-        onPress={() => onStep(1)}
+        onPress={() => press(1)}
       />
     </View>
   )
 }
 
-function positionLabel(index: number, count: number): string {
-  return `${String(index + 1)} of ${String(count)}`
+function focusWeb(ref: React.RefObject<View | null>) {
+  if (Platform.OS !== 'web') return
+  ;(ref.current as unknown as HTMLElement | null)?.focus()
 }
 
 interface CarouselArrowProps {
@@ -312,19 +409,23 @@ interface CarouselArrowProps {
   onPress: () => void
 }
 
-function CarouselArrow({ direction, isDisabled, onPress }: CarouselArrowProps) {
+const CarouselArrow = React.forwardRef<View, CarouselArrowProps>(function CarouselArrow(
+  { direction, isDisabled, onPress },
+  ref
+) {
   const isPrevious = direction === 'previous'
   return (
     <Button
+      ref={ref}
       variant="ghost"
       isIconButton
       isDisabled={isDisabled}
       onPress={onPress}
       accessibilityLabel={isPrevious ? 'Previous slide' : 'Next slide'}
-      className={`${HIT_TARGET_CLASS} ${LEAD_IN_CLASS}`}
+      className={cn(HIT_TARGET_CLASS, LEAD_IN_CLASS)}
       testID={`carousel-${direction}`}
     >
       <ButtonIcon as={isPrevious ? ChevronLeftIcon : ChevronRightIcon} size={ICON_PX} />
     </Button>
   )
-}
+})

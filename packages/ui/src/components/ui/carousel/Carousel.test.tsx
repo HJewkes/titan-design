@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Text, View } from 'react-native'
@@ -162,6 +162,78 @@ describe('Carousel', () => {
     const { container } = renderCarousel(LIFTS, { loop: true })
 
     expect(await axe(container)).toHaveNoViolations()
+  })
+
+  it('reads slides inside a fragment', () => {
+    render(
+      <Carousel label="Fragments">
+        <>
+          <CarouselSlide value="a" label="A">
+            <Text>A</Text>
+          </CarouselSlide>
+          <CarouselSlide value="b" label="B">
+            <Text>B</Text>
+          </CarouselSlide>
+        </>
+      </Carousel>
+    )
+
+    expect(screen.getByTestId('carousel-position')).toHaveTextContent('1 of 2')
+  })
+
+  describe('bad children', () => {
+    afterEach(() => vi.restoreAllMocks())
+
+    it('keeps the first of two slides that share a value, and says so', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+      render(
+        <Carousel label="Duplicates">
+          {['a', 'b', 'a', 'c'].map((value, i) => (
+            <CarouselSlide key={i} value={value} label={`${value}${String(i)}`}>
+              <Text>{`${value}${String(i)}`}</Text>
+            </CarouselSlide>
+          ))}
+        </Carousel>
+      )
+
+      expect(screen.getByTestId('carousel-position')).toHaveTextContent('1 of 3')
+      expect(screen.queryByText('a2')).toBeNull()
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining('"a"'))
+    })
+
+    it('says when it drops a child that is not a slide', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+      function LiftSlide() {
+        return (
+          <CarouselSlide value="x" label="X">
+            <Text>X</Text>
+          </CarouselSlide>
+        )
+      }
+      render(
+        <Carousel label="Wrapped">
+          <LiftSlide />
+        </Carousel>
+      )
+
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining('<LiftSlide>'))
+    })
+  })
+
+  it('trims a slide label before naming the slide', () => {
+    render(
+      <Carousel label="Trim">
+        <CarouselSlide value="a" label="  Bench press  ">
+          <Text>A</Text>
+        </CarouselSlide>
+        <CarouselSlide value="b" label="   ">
+          <Text>B</Text>
+        </CarouselSlide>
+      </Carousel>
+    )
+
+    expect(screen.getByRole('group', { name: '1 of 2: Bench press' })).toBeInTheDocument()
+    expect(screen.getByRole('group', { name: '2 of 2' })).toBeInTheDocument()
   })
 
   it('has no accessibility violations with several cards', async () => {

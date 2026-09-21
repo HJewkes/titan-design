@@ -37,6 +37,8 @@ export interface ScrollSync {
   visibleIndex: number
   onDragStart: () => void
   onDragRelease: (release: DragRelease) => void
+  /** A finger or wheel took the scroll: stop treating it as ours. */
+  onUserScroll: () => void
   onScroll: (event: NativeSyntheticEvent<NativeScrollEvent>) => void
   onSettle: () => void
   focusSlide: (index: number) => void
@@ -45,10 +47,14 @@ export interface ScrollSync {
 
 /**
  * Keeps the scroller and the current slide in step, in rendered positions so a
- * clone is just another position. A swipe updates the counter live and commits
- * once the scroll rests; a committed change the scroller did not make (an arrow,
- * focus, a width or data change) scrolls to it; resting on a clone hands over to
- * the real slide it copies, without animation, so a loop never rewinds.
+ * copy is just another position.
+ *
+ * The rule: the current slide is always committed first, and the scroll follows
+ * it. An arrow commits its slide at once, even across the wrap; the glide onto
+ * the copy at that end is scenery. When the scroll rests, whatever is under it
+ * is committed, and the scroll is then lined up with the committed slide: that
+ * one step hands a copy over to its original, lands an interrupted glide
+ * exactly, and snaps a controlled carousel back when its owner declines a change.
  */
 export function useScrollSync(input: ScrollSyncInput): ScrollSync {
   const { scrollRef, state, geometry, total, count, cloned, loop, measured } = input
@@ -56,18 +62,21 @@ export function useScrollSync(input: ScrollSyncInput): ScrollSync {
   const offset = useRef(0)
   const dragStart = useRef(0)
   const animateNext = useRef(false)
+  // The copy a wrap glides onto before the hand-over; consumed by the next alignment.
+  const wrapVia = useRef<number | null>(null)
+  // While a wrap glide is over the copies, the offset of the same view over the originals.
+  const wrapShift = useRef(0)
   // Where a scroll we started is heading; its frames must not drive the counter.
   const glideTarget = useRef<number | null>(null)
-  // A wrap glide must survive a settle left over from the glide before it.
-  const pendingPosition = useRef<number | null>(null)
   const settleTimer: TimerRef = useRef(null)
   const reducedMotion = usePrefersReducedMotion()
   const [swipeIndex, setSwipeIndex] = useState<number | null>(null)
+  const [settled, setSettled] = useState(0)
   const activePosition = positionOf(activeIndex, cloned)
 
   const scrollTo = useCallback(
     (target: number, animated: boolean) => {
-      glideTarget.current = target
+      glideTarget.current = animated ? target : null
       scrollRef.current?.scrollTo({ x: target, animated })
       offset.current = target
     },
@@ -76,37 +85,28 @@ export function useScrollSync(input: ScrollSyncInput): ScrollSync {
 
   useEffect(() => {
     if (!measured) return
-    const target = offsetForIndex(activePosition, total, geometry)
+    const position = wrapVia.current ?? activePosition
+    // Any alignment that is not a wrap (a data or width change, a settle) ends the wrap.
+    if (wrapVia.current === null) wrapShift.current = 0
+    wrapVia.current = null
+    const target = offsetForIndex(position, total, geometry)
     if (Math.abs(offset.current - target) > 0.5) {
       scrollTo(target, animateNext.current && !reducedMotion)
     }
     animateNext.current = false
-  }, [activePosition, total, geometry, measured, reducedMotion, scrollTo])
+  }, [activePosition, total, geometry, measured, reducedMotion, scrollTo, settled])
 
   useEffect(() => () => clearSettleTimer(settleTimer), [])
 
-  const onSettle = useCallback(
-    function settle() {
-      clearSettleTimer(settleTimer)
-      glideTarget.current = null
-      setSwipeIndex(null)
-      const position = pendingPosition.current ?? indexAtOffset(offset.current, total, geometry)
-      if (pendingPosition.current !== null) {
-        const target = offsetForIndex(pendingPosition.current, total, geometry)
-        if (Math.abs(offset.current - target) > 0.5) {
-          settleTimer.current = setTimeout(settle, SETTLE_MS)
-          return
-        }
-        pendingPosition.current = null
-      }
-      const index = indexAtPosition(position, count, cloned)
-      const landing = offsetForIndex(positionOf(index, cloned), total, geometry)
-      // A clone hands over to its original, and an interrupted glide lands exactly.
-      if (Math.abs(offset.current - landing) > 0.5) scrollTo(landing, false)
-      select(index)
-    },
-    [cloned, count, geometry, scrollTo, select, total]
-  )
+  const onSettle = useCallback(() => {
+    clearSettleTimer(settleTimer)
+    glideTarget.current = null
+    wrapShift.current = 0
+    setSwipeIndex(null)
+    select(indexAtPosition(indexAtOffset(offset.current, total, geometry), count, cloned))
+    // Re-run the alignment even when the committed slide did not change.
+    setSettled((n) => n + 1)
+  }, [cloned, count, geometry, select, total])
 
   const onScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -123,21 +123,43 @@ export function useScrollSync(input: ScrollSyncInput): ScrollSync {
     [cloned, count, geometry, onSettle, total]
   )
 
-  const glideToPosition = useCallback(
-    (position: number) => {
-      pendingPosition.current = position
-      scrollTo(offsetForIndex(position, total, geometry), !reducedMotion)
-      clearSettleTimer(settleTimer)
-      settleTimer.current = setTimeout(onSettle, SETTLE_MS)
-    },
-    [geometry, onSettle, reducedMotion, scrollTo, total]
+  const shiftFor = useCallback(
+    (position: number) => (position <= 0 ? count : -count) * geometry.step,
+    [count, geometry.step]
   )
 
-  const onDragStart = useCallback(() => {
-    pendingPosition.current = null
+  // Mid-wrap the view may be over the copies; move it onto the originals, which look identical.
+  const leaveCopy = useCallback(() => {
+    const position = indexAtOffset(offset.current, total, geometry)
+    const shift =
+      wrapShift.current !== 0
+        ? wrapShift.current
+        : isClonePosition(position, count, cloned)
+          ? shiftFor(position)
+          : 0
+    wrapShift.current = 0
+    if (shift !== 0) scrollTo(offset.current + shift, false)
+  }, [cloned, count, geometry, scrollTo, shiftFor, total])
+
+  const onUserScroll = useCallback(() => {
     glideTarget.current = null
-    dragStart.current = activePosition
-  }, [activePosition])
+    wrapVia.current = null
+    wrapShift.current = 0
+  }, [])
+
+  const onDragStart = useCallback(() => {
+    leaveCopy()
+    onUserScroll()
+    dragStart.current = indexAtOffset(offset.current, total, geometry)
+  }, [geometry, leaveCopy, onUserScroll, total])
+
+  const wrapThrough = useCallback(
+    (position: number) => {
+      wrapVia.current = position
+      wrapShift.current = shiftFor(position)
+    },
+    [shiftFor]
+  )
 
   const onDragRelease = useCallback(
     ({ offset: released, velocity }: DragRelease) => {
@@ -149,13 +171,13 @@ export function useScrollSync(input: ScrollSyncInput): ScrollSync {
         count: total,
         geometry,
       })
-      if (isClonePosition(position, count, cloned)) glideToPosition(position)
-      else {
-        animateNext.current = true
-        select(indexAtPosition(position, count, cloned))
-      }
+      if (isClonePosition(position, count, cloned)) wrapThrough(position)
+      animateNext.current = true
+      select(indexAtPosition(position, count, cloned))
+      // A flick back onto the slide it started from changes nothing, so align explicitly.
+      setSettled((n) => n + 1)
     },
-    [cloned, count, geometry, glideToPosition, select, total]
+    [cloned, count, geometry, select, total, wrapThrough]
   )
 
   const focusSlide = useCallback(
@@ -171,23 +193,24 @@ export function useScrollSync(input: ScrollSyncInput): ScrollSync {
     (delta: number) => {
       const next = activeIndex + delta
       if (next >= 0 && next < count) {
+        leaveCopy()
         animateNext.current = true
         select(next)
-      } else if (loop && cloned) {
-        // Glide onto the copy at this end; settling there hands over to the real slide.
-        glideToPosition(activePosition + delta)
       } else if (loop) {
+        // Commit the wrapped slide now; with copies, glide onto the copy at this end first.
+        if (cloned) wrapThrough(activePosition + delta)
         animateNext.current = true
         select(wrapIndex(activeIndex, delta, count))
       }
     },
-    [activeIndex, activePosition, cloned, count, glideToPosition, loop, select]
+    [activeIndex, activePosition, cloned, count, leaveCopy, loop, select, wrapThrough]
   )
 
   return {
     visibleIndex: swipeIndex ?? activeIndex,
     onDragStart,
     onDragRelease,
+    onUserScroll,
     onScroll,
     onSettle,
     focusSlide,

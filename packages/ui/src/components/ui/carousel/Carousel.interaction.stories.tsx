@@ -272,3 +272,15 @@ export const CopiesAreSceneryOnly: Story = {
     await expect(canvas.getByTestId('carousel-position')).toHaveTextContent('1 of 9')
   }),
 }
+
+/** A controlled carousel whose owner never accepts a change: the view must return to `value`. */
+export const ControlledIgnoringChanges: Story = {
+  tags: ['!play'],
+  render: function Render() {
+    return (
+      <Carousel label="Per-lift" value={NAMES[0]} onValueChange={() => undefined}>
+        {slides(NAMES, () => undefined)}
+      </Carousel>
+    )
+  },
+}

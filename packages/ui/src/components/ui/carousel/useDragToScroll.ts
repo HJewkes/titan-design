@@ -46,21 +46,31 @@ function velocityOf(samples: Sample[]): number {
 export function useDragToScroll(
   wrapperRef: RefObject<View | null>,
   onStart: () => void,
-  onRelease: (release: DragRelease) => void
+  onRelease: (release: DragRelease) => void,
+  onUserScroll: () => void
 ): void {
-  const handlers = useRef({ onStart, onRelease })
+  const handlers = useRef({ onStart, onRelease, onUserScroll })
   useEffect(() => {
-    handlers.current = { onStart, onRelease }
-  }, [onStart, onRelease])
+    handlers.current = { onStart, onRelease, onUserScroll }
+  }, [onStart, onRelease, onUserScroll])
 
   useEffect(() => {
     if (Platform.OS !== 'web') return
     const scroller = scrollerOf(wrapperRef.current)
     if (scroller === null) return
-    return attachDrag(scroller, {
+    const detachDrag = attachDrag(scroller, {
       onStart: () => handlers.current.onStart(),
       onRelease: (release) => handlers.current.onRelease(release),
     })
+    // A finger or a wheel takes over whatever scroll the carousel started.
+    const takeOver = () => handlers.current.onUserScroll()
+    scroller.addEventListener('touchstart', takeOver, { passive: true })
+    scroller.addEventListener('wheel', takeOver, { passive: true })
+    return () => {
+      detachDrag()
+      scroller.removeEventListener('touchstart', takeOver)
+      scroller.removeEventListener('wheel', takeOver)
+    }
   }, [wrapperRef])
 }
 

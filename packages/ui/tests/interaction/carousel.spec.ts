@@ -88,6 +88,42 @@ test('a real horizontal swipe snaps to a card and commits it', async ({ page }) 
 
 const DRAG_STORY = 'components-molecules-carousel-interactions--drag-playground'
 const LOOP_STORY = 'components-molecules-carousel-interactions--drag-playground-looping'
+const CONTROLLED_STORY = 'components-molecules-carousel-interactions--controlled-ignoring-changes'
+
+/** Count the carousel's 150 ms settle timers, so a leak at rest shows. */
+async function countSettleTimers(page: Page) {
+  await page.addInitScript(() => {
+    const w = window as unknown as { __settleTimers: number; setTimeout: typeof setTimeout }
+    w.__settleTimers = 0
+    const original = window.setTimeout.bind(window)
+    w.setTimeout = ((handler: TimerHandler, ms?: number, ...rest: unknown[]) => {
+      if (ms === 150) w.__settleTimers += 1
+      return original(handler, ms, ...rest)
+    }) as typeof setTimeout
+  })
+}
+
+const settleTimers = (page: Page) =>
+  page.evaluate(() => (window as unknown as { __settleTimers: number }).__settleTimers)
+
+/** The counter's number and the name of the centred real slide agree. */
+async function centredMatchesCounter(page: Page) {
+  return page.evaluate(() => {
+    const view = document.querySelector('[data-testid=carousel-viewport]') as HTMLElement
+    const vb = view.getBoundingClientRect()
+    const centre = (vb.left + vb.right) / 2
+    const slides = [
+      ...document.querySelectorAll('[data-testid^="carousel-slide-"]'),
+    ] as HTMLElement[]
+    const centred = slides.find((el) => {
+      const b = el.getBoundingClientRect()
+      return Math.abs((b.left + b.right) / 2 - centre) < 1.5
+    })
+    const counter = document.querySelector('[data-testid=carousel-position]')?.textContent ?? ''
+    const name = centred?.getAttribute('aria-label') ?? ''
+    return { counter, name, agree: name.startsWith(`${counter}:`) }
+  })
+}
 
 async function openDragStory(page: Page, id: string = DRAG_STORY) {
   await page.goto(`/iframe.html?id=${id}&viewMode=story`)
@@ -227,4 +263,108 @@ test('Tab walks the real cards in order and never lands in a copy', async ({ pag
   }
   await expect(page.getByTestId('carousel-position')).toHaveText('3 of 9')
   await expect.poll(() => slideCentre(page, 'Romanian deadlift')).toBeLessThan(2)
+})
+
+test('dropping a card mid-wrap leaves the counter and the centred card agreeing, with no timer left running', async ({
+  page,
+}) => {
+  await countSettleTimers(page)
+  await openDragStory(page, LOOP_STORY)
+  await page.getByRole('button', { name: 'Previous slide' }).click()
+  await page.waitForTimeout(80)
+  await page.getByRole('button', { name: 'Drop first card' }).click()
+  await page.waitForTimeout(1500)
+  const state = await centredMatchesCounter(page)
+  expect(state.agree, JSON.stringify(state)).toBe(true)
+  expect(state.counter).toBe('8 of 8')
+  const before = await settleTimers(page)
+  await page.waitForTimeout(1000)
+  expect(await settleTimers(page)).toBe(before)
+})
+
+test('a width change mid-wrap still lands centred on the card it committed', async ({ page }) => {
+  await countSettleTimers(page)
+  await openDragStory(page, LOOP_STORY)
+  await page.getByRole('button', { name: 'Previous slide' }).click()
+  await page.waitForTimeout(80)
+  await page.setViewportSize({ width: 340, height: 844 })
+  await page.waitForTimeout(1500)
+  const state = await centredMatchesCounter(page)
+  expect(state.agree, JSON.stringify(state)).toBe(true)
+  expect(state.counter).toBe('9 of 9')
+  const before = await settleTimers(page)
+  await page.waitForTimeout(1000)
+  expect(await settleTimers(page)).toBe(before)
+})
+
+test('a wheel that takes over a wrap glide ends with the counter naming the centred card', async ({
+  page,
+}) => {
+  await openDragStory(page, LOOP_STORY)
+  const box = await page.getByTestId('carousel-viewport').boundingBox()
+  await page.mouse.move((box?.x ?? 0) + 100, (box?.y ?? 0) + 20)
+  await page.getByRole('button', { name: 'Previous slide' }).click()
+  await page.waitForTimeout(60)
+  await page.mouse.move((box?.x ?? 0) + 100, (box?.y ?? 0) + 20)
+  await page.mouse.wheel(700, 0)
+  await page.waitForTimeout(1500)
+  const state = await centredMatchesCounter(page)
+  expect(state.agree, JSON.stringify(state)).toBe(true)
+})
+
+test('three quick presses back across the wrap land three cards back', async ({ page }) => {
+  await openDragStory(page, LOOP_STORY)
+  for (let i = 0; i < 3; i += 1) {
+    await page.getByRole('button', { name: 'Previous slide' }).click()
+    await page.waitForTimeout(200)
+  }
+  await expect(page.getByTestId('carousel-position')).toHaveText('7 of 9')
+  await expect.poll(() => slideCentre(page, 'Incline dumbbell press')).toBeLessThan(2)
+})
+
+test('a controlled carousel whose owner declines a swipe returns to its value', async ({
+  page,
+}) => {
+  await page.goto(`/iframe.html?id=${CONTROLLED_STORY}&viewMode=story`)
+  await page.waitForLoadState('networkidle')
+  await expect(page.getByTestId('carousel-position')).toBeVisible()
+  await page.waitForTimeout(500)
+  const box = await page.getByTestId('carousel-viewport').boundingBox()
+  await page.mouse.move((box?.x ?? 0) + 100, (box?.y ?? 0) + 20)
+  await page.mouse.wheel(700, 0)
+  await page.waitForTimeout(1500)
+  await expect(page.getByTestId('carousel-position')).toHaveText('1 of 9')
+  await expect.poll(() => slideCentre(page, 'Bench press')).toBeLessThan(2)
+})
+
+test('without a loop, focus stays on an arrow after the last press disables it', async ({
+  page,
+}) => {
+  await openDragStory(page)
+  await page.getByRole('button', { name: 'Next slide' }).focus()
+  for (let i = 0; i < 8; i += 1) await page.keyboard.press('Enter')
+  await expect(page.getByTestId('carousel-position')).toHaveText('9 of 9')
+  const focused = await page.evaluate(() => document.activeElement?.getAttribute('aria-label'))
+  expect(focused).toBe('Previous slide')
+})
+
+test('axe in a real browser finds no unfocusable scroll region', async ({ page }) => {
+  // axe-core arrives through jest-axe; resolve it from there rather than add a dependency.
+  const axePath = require.resolve('axe-core/axe.min.js', { paths: [require.resolve('jest-axe')] })
+  for (const id of ['components-molecules-carousel--default', 'pages-goals-carousel--default']) {
+    await page.goto(`/iframe.html?id=${id}&viewMode=story`)
+    await page.waitForLoadState('networkidle')
+    await page.waitForTimeout(800)
+    await page.addScriptTag({ path: axePath })
+    const violations = await page.evaluate(async () => {
+      const axe = (
+        window as unknown as {
+          axe: { run: (o: object) => Promise<{ violations: { id: string }[] }> }
+        }
+      ).axe
+      const result = await axe.run({ runOnly: ['scrollable-region-focusable'] })
+      return result.violations.map((v) => v.id)
+    })
+    expect(violations, id).toEqual([])
+  }
 })
