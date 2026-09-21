@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest'
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { GoalTrajectoryChart } from './GoalTrajectoryChart'
-import { nextRovingWeek } from './GoalTrajectoryWeekTips'
+import { nextRovingWeek, weekTipPlacement } from './GoalTrajectoryWeekTips'
 import { weekTips } from './weekTipModel'
 import { deriveTrajectoryGeometry, trajectoryInsets } from './GoalTrajectoryChartGeometry'
 import { HIT_TARGET_POINTER } from './goalTrajectoryTargets'
@@ -172,5 +172,26 @@ describe('the tip layouts', () => {
     renderChart()
     open(6)
     expect(within(tip(6)!).getByText('No reading yet')).toBeInTheDocument()
+  })
+})
+
+describe('where a week tip opens', () => {
+  const box = (centre: number) => ({ x: centre - 22, y: 80, size: 44 })
+
+  it('centres over the week when the chart has room either side', () => {
+    expect(weekTipPlacement(box(900), 1900)).toBe('top')
+  })
+
+  it('aligns to the right edge near the chart end, so a phone does not cut it', () => {
+    // The 360 frame's deload week: centred, the tip would spill 56px past a 272px chart.
+    expect(weekTipPlacement(box(202), 272)).toBe('top-end')
+  })
+
+  it('aligns to the left edge near the chart start', () => {
+    expect(weekTipPlacement(box(30), 1900)).toBe('top-start')
+  })
+
+  it('stays centred when that spills least, even on a narrow chart', () => {
+    expect(weekTipPlacement(box(113), 272)).toBe('top')
   })
 })

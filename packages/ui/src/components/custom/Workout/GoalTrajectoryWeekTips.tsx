@@ -12,22 +12,24 @@ import { Pill } from '../../ui/pill'
 import { alpha } from '../../../utils/colors'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
-import { TipTrigger } from '../../ui/tooltip'
+import { TipTrigger, type TooltipPlacement } from '../../ui/tooltip'
 import { PrBadge } from './PrBadge'
 import type { WeekTip } from './weekTipModel'
 
 const TIP_WIDTH = 220
+/** The tip's outer width: its body plus the tooltip's `px-inset-md` on each side. */
+const TIP_OUTER_WIDTH = TIP_WIDTH + 2 * 12
 
 /** How a week's tip lays its facts out. `figure` leads with the reading; `rows` labels every fact. */
 export type WeekTipLayout = 'figure' | 'rows'
 
-/** Week number, then a badge for each thing that is true of the week. */
 /** The deload badge carries the deload token, the colour its column is washed in. */
 function useDeloadBadge() {
   const deload = getSemanticColors(useSurfaceMode())['status-deload']
   return { style: { backgroundColor: alpha(deload, 0.22) }, className: 'text-status-deload' }
 }
 
+/** Week number, then a badge for each thing that is true of the week. */
 function TipHeader({ tip }: { tip: WeekTip }) {
   const { isPR, isDeload } = tip.facts
   const deloadBadge = useDeloadBadge()
@@ -117,6 +119,28 @@ export function nextRovingWeek(key: string, index: number, count: number): numbe
   return null
 }
 
+const TIP_PLACEMENTS = ['top', 'top-end', 'top-start'] as const
+
+/**
+ * Where a week's tip opens: centred over the week unless an edge of the chart would cut it,
+ * then aligned to the target's own edge, whichever spills least (titan-0201 round 7, the
+ * deload tip ran off a phone's right edge).
+ */
+export function weekTipPlacement(
+  box: WeekTip['box'],
+  chartWidth: number,
+  tipWidth: number = TIP_OUTER_WIDTH
+): TooltipPlacement {
+  const centre = box.x + box.size / 2
+  const lefts = {
+    top: centre - tipWidth / 2,
+    'top-end': box.x + box.size - tipWidth,
+    'top-start': box.x,
+  }
+  const spill = (left: number) => Math.max(0, -left) + Math.max(0, left + tipWidth - chartWidth)
+  return TIP_PLACEMENTS.reduce((best, p) => (spill(lefts[p]) < spill(lefts[best]) ? p : best))
+}
+
 /** The week targets over the plot, absolute against the chart's own box. */
 export function GoalTrajectoryWeekTips({
   tips,
@@ -158,7 +182,7 @@ export function GoalTrajectoryWeekTips({
           <TipTrigger
             label={tip.label}
             content={<WeekTipBody tip={tip} layout={layout} />}
-            placement="top"
+            placement={weekTipPlacement(tip.box, width)}
             usePortal={false}
             style={{ width: tip.box.size, height: tip.box.size }}
             tabIndex={index === active ? 0 : -1}
