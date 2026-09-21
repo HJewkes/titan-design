@@ -208,3 +208,23 @@ test('the copies at each end are hidden from assistive technology and unfocusabl
   }
   await expect(page.getByRole('group')).toHaveCount(9)
 })
+
+test('Tab walks the real cards in order and never lands in a copy', async ({ page }) => {
+  await openDragStory(page, LOOP_STORY)
+  await page.getByRole('button', { name: 'Drop first card' }).focus()
+  const expected = ['Bench press', 'Back squat', 'Romanian deadlift']
+  for (const name of expected) {
+    await page.keyboard.press('Tab')
+    const focus = await page.evaluate(() => {
+      const active = document.activeElement
+      return {
+        text: active?.textContent ?? '',
+        inCopy: active?.closest('[data-testid^="carousel-clone-"]') !== null,
+      }
+    })
+    expect(focus.inCopy).toBe(false)
+    expect(focus.text).toBe(`Open ${name}`)
+  }
+  await expect(page.getByTestId('carousel-position')).toHaveText('3 of 9')
+  await expect.poll(() => slideCentre(page, 'Romanian deadlift')).toBeLessThan(2)
+})

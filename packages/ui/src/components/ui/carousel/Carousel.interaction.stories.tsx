@@ -166,14 +166,18 @@ export const SwipeCommitsWhenTheScrollRests: Story = {
     await expectPosition(canvasElement, '1 of 9')
     const step = await measuredStep(canvasElement)
     // react-native-web replaces the node's scrollTo with its own {x, y} one; set the offset as a swipe would.
-    viewport(canvasElement).scrollLeft = step * 3
+    // Looping puts a copy of the last card first, so card 4 is the fifth position.
+    viewport(canvasElement).scrollLeft = step * 4
     await expectPosition(canvasElement, '4 of 9')
     await waitFor(() => expect(args.onValueChange).toHaveBeenLastCalledWith(NAMES[3], 3))
     await expect(args.onValueChange).toHaveBeenCalledTimes(1)
   }),
 }
 
+// user-event computes its own tab order and does not honour `inert`, so the looping case
+// (copies must never take focus) is a real-keyboard test in tests/interaction instead.
 export const TabBringsTheFocusedSlideIntoView: Story = {
+  args: { loop: false },
   play: marked(async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     canvas.getByRole('button', { name: 'Drop first card' }).focus()
