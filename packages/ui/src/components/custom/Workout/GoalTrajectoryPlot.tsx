@@ -91,7 +91,8 @@ function tokenAlpha(color: string): number {
 export function trajectoryPalette(
   mode: ThemeMode,
   level: SurfaceLevel,
-  status: GoalTrajectoryStatus
+  status: GoalTrajectoryStatus,
+  deloadWash: number = DELOAD_WASH
 ) {
   const t = getSemanticColors(mode)
   const shade = t['scrim-default']
@@ -110,7 +111,7 @@ export function trajectoryPalette(
     star: t['brand-primary'],
     // Deload's own magenta (titan-0201 round 5), not a grey tint. 0.22 reads as purple and
     // still leaves the marks over it their contrast: readings 6.9, star 5.1, ramp 2.8.
-    deload: alpha(t['status-deload'], DELOAD_WASH),
+    deload: alpha(t['status-deload'], deloadWash),
     boundary: alpha(t['text-tertiary'], 0.35),
     plane: surfaceBackground(pressedLevel(level), mode),
     shade,

@@ -9,6 +9,9 @@ import { View } from 'react-native'
 import { Typography } from '../Typography'
 import { Metric } from '../Metric'
 import { Pill } from '../../ui/pill'
+import { alpha } from '../../../utils/colors'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../ui/surface'
 import { TipTrigger } from '../../ui/tooltip'
 import { PrBadge } from './PrBadge'
 import type { WeekTip } from './weekTipModel'
@@ -19,19 +22,29 @@ const TIP_WIDTH = 220
 export type WeekTipLayout = 'figure' | 'rows'
 
 /** Week number, then a badge for each thing that is true of the week. */
+/** The deload badge carries the deload token, the colour its column is washed in. */
+function useDeloadBadge() {
+  const deload = getSemanticColors(useSurfaceMode())['status-deload']
+  return { style: { backgroundColor: alpha(deload, 0.22) }, className: 'text-status-deload' }
+}
+
 function TipHeader({ tip }: { tip: WeekTip }) {
   const { isPR, isDeload } = tip.facts
+  const deloadBadge = useDeloadBadge()
   return (
-    <View className="flex-row items-center gap-inline-sm">
+    // Week on the left, badges pinned to the upper right (titan-0201 round 6).
+    <View className="flex-row items-center justify-between gap-inline-md">
       <Typography variant="overline" color="tertiary">
         {`Week ${String(tip.week)}`}
       </Typography>
-      {isPR && <PrBadge type="weight" compact animate={false} iconSize={12} />}
-      {isDeload && (
-        <Pill tone="brand" variant="subtle" size="sm">
-          Deload
-        </Pill>
-      )}
+      <View className="flex-row items-center gap-inline-sm">
+        {isDeload && (
+          <Pill tone="neutral" variant="subtle" size="sm" {...deloadBadge}>
+            Deload
+          </Pill>
+        )}
+        {isPR && <PrBadge type="weight" compact animate={false} iconSize={12} />}
+      </View>
     </View>
   )
 }

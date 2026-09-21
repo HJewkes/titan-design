@@ -46,6 +46,15 @@ export interface WeekTipInput {
   size: number
 }
 
+/**
+ * The next target's own words, minus a "next week:" lead-in: the row that carries it is
+ * already labelled "Next target" (titan-0201 round 6).
+ */
+function nextValue(label: string): string {
+  const stripped = label.replace(/^\s*next\s+week\s*:\s*/i, '')
+  return stripped === '' ? label : stripped
+}
+
 const amount = (value: number, unit: string) => `${String(roundWeight(value))} ${unit}`
 
 function planOf(point: GoalExpectedPoint | undefined, unit: string): string | undefined {
@@ -76,7 +85,7 @@ export function weekTips(input: WeekTipInput): WeekTip[] {
       isPR: reading?.isPR === true,
       isDeload: weeks.find((w) => w.index === week)?.isDeload === true,
       ...(planOf(plan, unit) !== undefined ? { plan: planOf(plan, unit) } : {}),
-      ...(isNext && nextTarget ? { next: nextTarget.label } : {}),
+      ...(isNext && nextTarget ? { next: nextValue(nextTarget.label) } : {}),
     }
     const lines = [
       ...readingLines(reading, unit),

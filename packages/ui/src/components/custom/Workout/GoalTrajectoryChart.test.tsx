@@ -431,7 +431,8 @@ describe('GoalTrajectoryChart next target', () => {
     )
 
     expect(screen.getByText('Next target')).toBeInTheDocument()
-    expect(screen.getByText(nextTarget.label)).toBeInTheDocument()
+    // The row is already labelled, so the value drops the label's own "next week:" lead-in.
+    expect(screen.getByText(nextTarget.label.replace(/^next week: /, ''))).toBeInTheDocument()
   })
 
   it('draws nothing when the caller passes no next target', () => {
