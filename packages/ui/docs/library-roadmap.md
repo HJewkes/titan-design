@@ -115,7 +115,7 @@ are grep counts against `src/` at merge time, excluding the directory's own file
 | --- | ------------------------------------------------------------------------------------------------------------------- | ------------------------ | ----------------------------------------- |
 | M1  | `usePrefersReducedMotion` to `src/hooks/usePrefersReducedMotion.ts`                                                 | 3                        | Landed in #276                            |
 | M2  | Typography to `ui/typography`, Eyebrow to `ui/eyebrow`, with a one-release re-export shim in `custom/Typography`; marks decision 9 landed when its PR merges | Typography 68, Eyebrow 8 | Landed in #277                          |
-| M3  | EmptyState to `ui/empty-state`                                                                                      | 1                        | Landed in #<n>                            |
+| M3  | EmptyState to `ui/empty-state`                                                                                      | 1                        | Landed in #279                            |
 | M5  | Create `ui/charts/` with its README; move SparkBars; add a `d3-*`-import lint scoped to `ui/charts/**`              | 2                        | now                                       |
 | M4  | Table (headless `useTableState` plus a styled shell, TD-29, #271) to `ui/table`                                     | 8                        | now that TD-29 has landed                 |
 | M6  | Generic singles: Metric (2), DateTime (8), Prose (5), Sidebar (1), stepper (1), TimerReadout (2), CircularTimer (2) | 21 total                 | behind the shrinking baseline, follows M2 |

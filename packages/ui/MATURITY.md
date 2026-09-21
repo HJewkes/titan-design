@@ -138,7 +138,7 @@ separate foundation tier and are out of scope for the Voltras-workout review
 pass. This file used to say "~52": that number predated the `ui/` reorganisation
 and was never recounted. The count is `ls -d src/components/ui/*/ src/components/ui/charts/*/`, less
 `charts` and `kit`: 42 directories today, one per primitive, and `src/arch/arch-graph.json` lists
-them all too. `empty-state` is the newest, moved in from `custom/` by migration M3 (#<n>);
+them all too. `empty-state` is the newest, moved in from `custom/` by migration M3 (#279);
 `typography` and `eyebrow` came in by migration M2 (#277). One of the 42 is `trigger`
 (`TriggerSurface`, added in #176), an internal helper that `Menu`, `Popover` and `Tooltip`
 compose. It is not exported from the `ui` barrel and has no story.
