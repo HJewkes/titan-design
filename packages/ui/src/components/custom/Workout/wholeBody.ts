@@ -129,14 +129,21 @@ const RATE_VERDICT: Record<RatePosition, string> = {
   ahead: 'ahead of band',
 }
 
+/** What the card says when no rate can be computed yet, and why (owner, round 4: "Just do N/A"). */
+export const NO_RATE_VALUE = 'N/A'
+export const NO_RATE_REASON = 'Rate shows after a second week of weigh-ins'
+
+/** True while the target has a reading but no rate to judge. */
+export function hasRate(row: WholeBodyWeightRow): boolean {
+  return row.rate !== null && row.rate.observedPctPerWeek !== null
+}
+
 /** The rate line at the asked-for length, or why there is no rate yet. */
 export function rateCaption(row: WholeBodyWeightRow, length: RateLength = 'full'): string | null {
   const rate = row.rate
   if (row.latest === null) return null
-  if (rate === null || rate.observedPctPerWeek === null) {
-    return 'Rate shows after a second week of weigh-ins'
-  }
-  const observed = `${formatSignedRate(rate.observedPctPerWeek)} %/wk`
+  if (rate === null || rate.observedPctPerWeek === null) return NO_RATE_REASON
+  const observed = `${formatSignedRate(rate.observedPctPerWeek)}%/wk`
   if (rate.vetoed) return length === 'percent' ? observed : `${observed}, not judged this week`
   if (length === 'percent') return observed
   const position = ratePosition(rate)
@@ -154,7 +161,7 @@ export function rateBandCaption(row: WholeBodyWeightRow): string | null {
   const band = rateBandText(row.rate)
   if (band === null) return null
   const phase = row.phase.name === 'unknown' ? 'Target' : PHASE_WORD[row.phase.name]
-  return `${phase} band ${band} %/wk`
+  return `${phase} band ${band}%/wk`
 }
 
 /**
@@ -169,8 +176,15 @@ export function weightCaptions(
   if (row.latest === null) return []
   const rate = rateCaption(row, length)
   const rateBand = length === 'full' ? null : rateBandCaption(row)
+  // No rate yet reads as a figure of its own, with the reason one tip away.
+  const lead = hasRate(row)
+    ? [{ key: 'rate', text: rate ?? '', label: 'Rate', value: rate ?? '' }]
+    : [
+        { key: 'rate', text: NO_RATE_VALUE, label: 'Rate', value: NO_RATE_VALUE },
+        { key: 'rateWhy', text: NO_RATE_REASON },
+      ]
   return [
-    ...(rate === null ? [] : [{ key: 'rate', text: rate, label: 'Rate', value: rate }]),
+    ...(rate === null ? [] : lead),
     { key: 'band', text: bandCaption(row) },
     ...(rateBand === null ? [] : [{ key: 'rateBand', text: rateBand }]),
   ]

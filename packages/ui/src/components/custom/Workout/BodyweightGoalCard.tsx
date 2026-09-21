@@ -123,7 +123,7 @@ export function BodyweightGoalCard({
   goal,
   lead = 'rate',
   rateLength = 'percent',
-  leadStyle = 'fact',
+  leadStyle = 'strong',
   scale,
   isTipOpen,
   tagCollapsed,

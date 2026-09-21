@@ -114,7 +114,7 @@ function SessionsBar(props: {
 export function SessionsGoalCard({
   goal,
   lead = 'due',
-  leadStyle = 'fact',
+  leadStyle = 'strong',
   pastCommitment = 'append',
   scale,
   isTipOpen,

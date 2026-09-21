@@ -212,63 +212,69 @@ describe('phaseLabel', () => {
 
 describe('rateCaption', () => {
   it('reads the observed rate against the phase rate (F6)', () => {
-    expect(rateCaption(W.cut)).toBe('-0.6 %/wk against -0.5 to -1.0 for a cut')
+    expect(rateCaption(W.cut)).toBe('-0.6%/wk against -0.5 to -1.0 for a cut')
   })
 
   it('shortens to the percent alone', () => {
-    expect(rateCaption(W.cut, 'percent')).toBe('-0.6 %/wk')
+    expect(rateCaption(W.cut, 'percent')).toBe('-0.6%/wk')
   })
 
   it('adds a word for where the rate sits against its band', () => {
-    expect(rateCaption(W.cut, 'verdict')).toBe('-0.6 %/wk, in band')
+    expect(rateCaption(W.cut, 'verdict')).toBe('-0.6%/wk, in band')
     expect(
       rateCaption({ ...W.cut, rate: { ...W.cut.rate, observedPctPerWeek: -0.2 } }, 'verdict')
-    ).toBe('-0.2 %/wk, behind band')
+    ).toBe('-0.2%/wk, behind band')
     expect(
       rateCaption({ ...W.cut, rate: { ...W.cut.rate, observedPctPerWeek: -1.4 } }, 'verdict')
-    ).toBe('-1.4 %/wk, ahead of band')
+    ).toBe('-1.4%/wk, ahead of band')
   })
 
   it('reads a gain band in its own direction', () => {
     expect(
       rateCaption({ ...W.gain, rate: { ...W.gain.rate, observedPctPerWeek: 0.1 } }, 'verdict')
-    ).toBe('+0.1 %/wk, behind band')
+    ).toBe('+0.1%/wk, behind band')
     expect(
       rateCaption({ ...W.gain, rate: { ...W.gain.rate, observedPctPerWeek: 0.8 } }, 'verdict')
-    ).toBe('+0.8 %/wk, ahead of band')
+    ).toBe('+0.8%/wk, ahead of band')
   })
 
   it('drops the verdict when the phase has no rate band (F8)', () => {
-    expect(rateCaption(W.hold, 'verdict')).toBe('+0.1 %/wk')
+    expect(rateCaption(W.hold, 'verdict')).toBe('+0.1%/wk')
   })
 
   it('keeps a vetoed week unjudged at every length (F13)', () => {
-    expect(rateCaption(W.rateVetoed, 'percent')).toBe('-0.9 %/wk')
-    expect(rateCaption(W.rateVetoed, 'verdict')).toBe('-0.9 %/wk, not judged this week')
+    expect(rateCaption(W.rateVetoed, 'percent')).toBe('-0.9%/wk')
+    expect(rateCaption(W.rateVetoed, 'verdict')).toBe('-0.9%/wk, not judged this week')
   })
 
   it('signs a gain rate', () => {
-    expect(rateCaption(W.gain)).toBe('+0.3 %/wk against +0.25 to +0.5 for a gain')
+    expect(rateCaption(W.gain)).toBe('+0.3%/wk against +0.25 to +0.5 for a gain')
   })
 
   it('says a hold has no target rate (F8)', () => {
-    expect(rateCaption(W.hold)).toBe('+0.1 %/wk, no target rate for a hold')
+    expect(rateCaption(W.hold)).toBe('+0.1%/wk, no target rate for a hold')
   })
 
   it('reads a slow-loss rate against its band (F10)', () => {
-    expect(rateCaption(W.slowLoss)).toBe('-0.4 %/wk against -0.25 to -0.5 for this recomp')
+    expect(rateCaption(W.slowLoss)).toBe('-0.4%/wk against -0.25 to -0.5 for this recomp')
   })
 
   it('prints one rate for the server’s slow-loss line', () => {
-    expect(rateCaption(W.slowLossOneLine)).toBe('-0.5 %/wk against -0.5 for this recomp')
+    expect(rateCaption(W.slowLossOneLine)).toBe('-0.5%/wk against -0.5 for this recomp')
   })
 
   it('waits for a second week with one weigh-in (F11)', () => {
     expect(rateCaption(W.oneReading)).toBe('Rate shows after a second week of weigh-ins')
   })
 
+  it('leads that weigh-in with N/A and keeps the reason for the tip (F11)', () => {
+    const lines = weightCaptions(W.oneReading, 'percent')
+    expect(lines[0]).toEqual({ key: 'rate', text: 'N/A', label: 'Rate', value: 'N/A' })
+    expect(lines.map((line) => line.key)).toContain('rateWhy')
+  })
+
   it('says a vetoed week is not judged (F13)', () => {
-    expect(rateCaption(W.rateVetoed)).toBe('-0.9 %/wk, not judged this week')
+    expect(rateCaption(W.rateVetoed)).toBe('-0.9%/wk, not judged this week')
   })
 
   it('says nothing before the first weigh-in (F12)', () => {
@@ -278,13 +284,13 @@ describe('rateCaption', () => {
   it('rounds a noisy rate without float drift', () => {
     expect(
       rateCaption({ ...W.cut, rate: { ...W.cut.rate, observedPctPerWeek: -0.7000001 } })
-    ).toMatch(/^-0\.7 %\/wk/)
+    ).toMatch(/^-0\.7%\/wk/)
   })
 })
 
 describe('rateBandCaption', () => {
   it('names the phase band for the tip (F6)', () => {
-    expect(rateBandCaption(W.cut)).toBe('Cut band -0.5 to -1.0 %/wk')
+    expect(rateBandCaption(W.cut)).toBe('Cut band -0.5 to -1.0%/wk')
   })
 
   it('has none for a hold, which has no rate band (F8)', () => {

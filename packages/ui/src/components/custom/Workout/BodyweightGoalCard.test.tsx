@@ -35,21 +35,19 @@ describe('BodyweightGoalCard', () => {
   describe('the caption beside the weight', () => {
     it('leads with the rate at its shortest, as a muted word and a bold figure', () => {
       render(<BodyweightGoalCard goal={W.cut} />)
-      expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent(
-        'Rate -0.6 %/wk'
-      )
+      expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent('Rate -0.6%/wk')
     })
 
     it('drops the word in the plain treatment', () => {
       render(<BodyweightGoalCard goal={W.cut} leadStyle="plain" />)
-      expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent('-0.6 %/wk')
+      expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent('-0.6%/wk')
       expect(screen.getByTestId('bodyweight-goal-value-caption')).not.toHaveTextContent('Rate')
     })
 
     it('leads with the longer rate line when asked', () => {
       render(<BodyweightGoalCard goal={W.cut} rateLength="full" leadStyle="plain" />)
       expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent(
-        '-0.6 %/wk against -0.5 to -1.0 for a cut'
+        '-0.6%/wk against -0.5 to -1.0 for a cut'
       )
     })
 
@@ -65,10 +63,16 @@ describe('BodyweightGoalCard', () => {
       expect(capturedClassNames.get('bodyweight-goal-value-caption')).toContain('leading-normal')
     })
 
+    it('says N/A with the reason in the tip when no rate can be computed (F11)', () => {
+      render(<BodyweightGoalCard goal={W.oneReading} isTipOpen />)
+      expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent('Rate N/A')
+      expect(screen.getByText('Rate shows after a second week of weigh-ins')).toBeInTheDocument()
+    })
+
     it('holds the band and the phase band in a pinned-open tip', () => {
       render(<BodyweightGoalCard goal={W.cut} isTipOpen />)
       expect(screen.getByText('Week 3 of 8: 194.0 to 197.0 lb')).toBeInTheDocument()
-      expect(screen.getByText('Cut band -0.5 to -1.0 %/wk')).toBeInTheDocument()
+      expect(screen.getByText('Cut band -0.5 to -1.0%/wk')).toBeInTheDocument()
     })
   })
 
