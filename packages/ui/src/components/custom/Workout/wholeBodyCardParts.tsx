@@ -255,28 +255,34 @@ export function CardTrackRow(props: {
 }
 
 /**
- * How the lead line is set. Round-4 comparison (VW-455): the owner asked for the
- * rate to read "more robust, like goal/best weight on the goal cards", which are
- * `GoalMilestoneSummary`'s facts — a muted word and a bold figure.
+ * The one text size for the figure's label line: the label under the figure
+ * ("Weighed Sep 18") and the lead beside it share it at every width and in every
+ * rendering (owner, round 5). `Metric` sizes its own label by the figure's size
+ * (14 px at wall scale, 12 px at phone), so the line pins it rather than inherit.
  */
-export type LeadStyle = 'plain' | 'fact' | 'strong'
+export const FIGURE_LINE_TEXT = 'text-sm'
+
+/** The lead's word, with the colon the owner asked for when it is set. */
+export function leadWord(label: string, colon: boolean): string {
+  return colon ? `${label}:` : label
+}
 
 /** A muted word and its figure, the figure bold and bright: `GoalMilestoneSummary`'s `Fact`. */
-function FactCaption(props: { label: string; value: string; strong: boolean; testID: string }) {
+function FactCaption(props: { label: string; value: string; testID: string }) {
   return (
     <Typography
-      variant={props.strong ? 'body2' : 'caption'}
+      variant="body2"
       color="tertiary"
       align="right"
-      className="leading-normal"
+      className={`${FIGURE_LINE_TEXT} leading-normal`}
       maxLines={1}
       testID={props.testID}
     >
       {`${props.label} `}
       <Typography
-        variant={props.strong ? 'body2' : 'caption'}
+        variant="body2"
         color="primary"
-        className="font-bold leading-normal"
+        className={`${FIGURE_LINE_TEXT} font-bold leading-normal`}
       >
         {props.value}
       </Typography>
@@ -295,7 +301,8 @@ export function FigureLine(props: {
   label: string
   lead: CaptionLine | null
   rest: CaptionLine[]
-  leadStyle?: LeadStyle
+  /** Colon after the lead's word ("Rate: -0.6%/wk"). A line marked `colon` always takes one. */
+  leadColon?: boolean
   tipLabel: string
   isTipOpen?: boolean
   testID: string
@@ -315,11 +322,12 @@ export function FigureLine(props: {
         label={props.label}
         className="items-start"
         valueClassName="leading-none"
+        labelClassName={FIGURE_LINE_TEXT}
         testID={props.testID}
       />
       <CaptionWithTip
         lead={props.lead}
-        leadStyle={props.leadStyle ?? 'plain'}
+        colon={props.leadColon ?? true}
         tip={
           tipLines.length === 0 ? null : (
             <DetailTip
@@ -336,9 +344,32 @@ export function FigureLine(props: {
   )
 }
 
+function LeadText(props: { lead: CaptionLine; colon: boolean; testID: string }) {
+  const { lead } = props
+  if (lead.label && lead.value) {
+    return (
+      <FactCaption
+        label={leadWord(lead.label, props.colon || lead.colon === true)}
+        value={lead.value}
+        testID={props.testID}
+      />
+    )
+  }
+  return (
+    <Typography
+      variant="body2"
+      color="secondary"
+      className={`${FIGURE_LINE_TEXT} leading-normal text-right`}
+      testID={props.testID}
+    >
+      {lead.text}
+    </Typography>
+  )
+}
+
 function CaptionWithTip(props: {
   lead: CaptionLine | null
-  leadStyle: LeadStyle
+  colon: boolean
   tip: ReactNode
   testID: string
 }) {
@@ -358,23 +389,7 @@ function CaptionWithTip(props: {
     >
       {props.lead !== null && (
         <View style={{ flexShrink: 1, minWidth: 0 }}>
-          {props.leadStyle !== 'plain' && props.lead.label && props.lead.value ? (
-            <FactCaption
-              label={props.lead.label}
-              value={props.lead.value}
-              strong={props.leadStyle === 'strong'}
-              testID={props.testID}
-            />
-          ) : (
-            <Typography
-              variant="caption"
-              color="secondary"
-              className="leading-normal text-right"
-              testID={props.testID}
-            >
-              {props.lead.text}
-            </Typography>
-          )}
+          <LeadText lead={props.lead} colon={props.colon} testID={props.testID} />
         </View>
       )}
       {props.tip}

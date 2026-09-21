@@ -108,8 +108,14 @@ lines "add excess padding. lets pick one to be important enough to be right alig
 on the text line below the main metric, and move the rest to a tool tip hover". The
 cells were picked over the bar and the bare number (the owner chose S-seg).
 
+**Rounds 3 to 5 (same unit):** the lead line's `leadStyle` comparison is gone. The owner
+picked the body-size fact ("F-strong") over the caption-size fact and round 3's grey line,
+and in round 5 asked that the figure's label and its lead share one text size at every
+width; one fixed size is what `FIGURE_LINE_TEXT` now owns. The story that pinned the phase
+tag collapsed at every width is gone too: it showed a collapse the measured rule never makes.
+
 **Code:** deleted in the same pull request, before merge: `WholeBodyCard` and its
-`sessionsVisual` prop. The priorities index explored beside it, `GoalPriorityIndex`,
+`sessionsVisual` prop, then `leadStyle` and the pinned `TagCollapsed` story. The priorities index explored beside it, `GoalPriorityIndex`,
 is kept for the mesocycle header, which has its own Round 0.
 
 ---

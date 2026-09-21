@@ -17,7 +17,6 @@ import {
   GoalCardHeader,
   PHASE_TAG_COLLAPSE_WIDTH,
   useStatusColor,
-  type LeadStyle,
   type TrackLabel,
 } from './wholeBodyCardParts'
 import {
@@ -26,7 +25,6 @@ import {
   trackFraction,
   leadCaption,
   phaseLabel,
-  phaseTipText,
   weighInDate,
   weightCaptions,
   wholeBodyScale,
@@ -42,8 +40,11 @@ export interface BodyweightGoalCardProps extends ViewProps {
   lead?: WeightCaptionKey
   /** How much of the rate line the lead carries. The owner picked the percent alone. */
   rateLength?: RateLength
-  /** How the lead line is set. Round-4 comparison (VW-455). */
-  leadStyle?: LeadStyle
+  /**
+   * A colon after the lead's word: "Rate: -0.6%/wk". Round-6 comparison (VW-455): the
+   * owner asked for "Rate: N/A", which always takes one; this sets the populated form.
+   */
+  leadColon?: boolean
   /**
    * Pins the phase tag's collapse. Omitted, the card measures its own box:
    * `onLayout` never fires in jsdom, so a test or a story says it outright.
@@ -123,7 +124,7 @@ export function BodyweightGoalCard({
   goal,
   lead = 'rate',
   rateLength = 'percent',
-  leadStyle = 'strong',
+  leadColon = true,
   scale,
   isTipOpen,
   tagCollapsed,
@@ -155,7 +156,7 @@ export function BodyweightGoalCard({
             tag={{
               phase: goal.phase.name,
               text: phaseLabel(goal.phase),
-              tipText: phaseTipText(goal.phase),
+              tipText: phaseLabel(goal.phase),
             }}
             tagCollapsed={
               tagCollapsed ?? (measured.width !== null && measured.width < PHASE_TAG_COLLAPSE_WIDTH)
@@ -176,7 +177,7 @@ export function BodyweightGoalCard({
               label={`Weighed ${weighInDate(goal.latest.ts)}`}
               lead={captions.lead}
               rest={captions.rest}
-              leadStyle={leadStyle}
+              leadColon={leadColon}
               tipLabel="Bodyweight details"
               isTipOpen={isTipOpen}
               testID="bodyweight-goal-value"

@@ -73,6 +73,8 @@ export interface CaptionLine {
   text: string
   label?: string
   value?: string
+  /** Always set with a colon after its word, whatever the card's own setting ("Rate: N/A"). */
+  colon?: boolean
 }
 
 /** The line shown beside the figure, and the lines the detail tip holds. */
@@ -180,7 +182,7 @@ export function weightCaptions(
   const lead = hasRate(row)
     ? [{ key: 'rate', text: rate ?? '', label: 'Rate', value: rate ?? '' }]
     : [
-        { key: 'rate', text: NO_RATE_VALUE, label: 'Rate', value: NO_RATE_VALUE },
+        { key: 'rate', text: NO_RATE_VALUE, label: 'Rate', value: NO_RATE_VALUE, colon: true },
         { key: 'rateWhy', text: NO_RATE_REASON },
       ]
   return [
@@ -323,13 +325,6 @@ export function phaseLabel(phase: WholeBodyWeightRow['phase']): string {
   return phase.name === 'recomposition'
     ? `Recomp, ${phase.slowLoss === true ? 'slow loss' : 'hold'}`
     : PHASE_WORD[phase.name]
-}
-
-/** The tag's full sentence, for the tip it collapses into. */
-export function phaseTipText(phase: WholeBodyWeightRow['phase']): string {
-  const weeks = phase.weeksInPhase
-  const label = phaseLabel(phase)
-  return weeks > 0 ? `${label}, week ${weeks} of this phase` : label
 }
 
 const PHASE_NOUN: Record<WholeBodyDietPhase, string> = {

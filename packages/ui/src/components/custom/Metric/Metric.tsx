@@ -13,6 +13,8 @@ export interface MetricProps extends ViewProps {
   className?: string
   /** Merged onto the value text, e.g. `leading-none` to sit the figure tight under a header. */
   valueClassName?: string
+  /** Merged onto the label text, e.g. to hold it at one size whatever the figure's `size`. */
+  labelClassName?: string
 }
 
 const sizeConfig = {
@@ -41,18 +43,25 @@ export function Metric({
   size = 'md',
   className,
   valueClassName,
+  labelClassName,
+  testID,
   ...props
 }: MetricProps) {
   const styles = sizeConfig[size]
 
   return (
-    <View className={cn('items-center', className)} {...props}>
+    <View className={cn('items-center', className)} testID={testID} {...props}>
       <View className="flex-row items-baseline gap-1">
         <Text className={cn(styles.value, 'text-text-primary', valueClassName)}>{value}</Text>
         {unit && <Text className={cn(styles.unit, 'text-text-tertiary')}>{unit}</Text>}
         {trend && <Text className={cn(styles.unit, trendColors[trend])}>{trendArrows[trend]}</Text>}
       </View>
-      <Text className={cn(styles.label, 'text-text-secondary mt-1')}>{label}</Text>
+      <Text
+        className={cn(styles.label, 'text-text-secondary mt-1', labelClassName)}
+        testID={testID ? `${testID}-label` : undefined}
+      >
+        {label}
+      </Text>
     </View>
   )
 }

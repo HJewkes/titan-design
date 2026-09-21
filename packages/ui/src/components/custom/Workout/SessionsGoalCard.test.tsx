@@ -4,6 +4,7 @@ import { axe } from 'jest-axe'
 
 import { capturedClassNames } from '../../../test/classname-capture'
 import { SessionsGoalCard } from './SessionsGoalCard'
+import { FIGURE_LINE_TEXT } from './wholeBodyCardParts'
 import { WHOLE_BODY_SESSIONS as S } from './wholeBody-fixture'
 
 describe('SessionsGoalCard', () => {
@@ -20,16 +21,22 @@ describe('SessionsGoalCard', () => {
   describe('the caption beside the count', () => {
     it('leads with what is due, as a muted word and a bold figure', () => {
       render(<SessionsGoalCard goal={S.underPace} />)
+      expect(screen.getByTestId('sessions-goal-value-caption')).toHaveTextContent('Due by now: 10')
+    })
+
+    it('drops the colon when asked', () => {
+      render(<SessionsGoalCard goal={S.underPace} leadColon={false} />)
       expect(screen.getByTestId('sessions-goal-value-caption')).toHaveTextContent('Due by now 10')
     })
 
-    it('prints the whole sentence in the plain treatment', () => {
-      render(<SessionsGoalCard goal={S.underPace} leadStyle="plain" />)
-      expect(screen.getByTestId('sessions-goal-value-caption')).toHaveTextContent('10 due by now')
+    it('sets the label and the lead on one text size', () => {
+      render(<SessionsGoalCard goal={S.underPace} scale="phone" />)
+      expect(capturedClassNames.get('sessions-goal-value-label')).toContain(FIGURE_LINE_TEXT)
+      expect(capturedClassNames.get('sessions-goal-value-caption')).toContain(FIGURE_LINE_TEXT)
     })
 
     it('leads with what leaves the window when asked', () => {
-      render(<SessionsGoalCard goal={S.underPace} lead="leaving" leadStyle="plain" />)
+      render(<SessionsGoalCard goal={S.underPace} lead="leaving" />)
       expect(screen.getByTestId('sessions-goal-value-caption')).toHaveTextContent(
         '3 leave this week'
       )

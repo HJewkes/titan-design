@@ -8,7 +8,6 @@ import {
   dueMarkerPosition,
   leadCaption,
   phaseLabel,
-  phaseTipText,
   rateBandCaption,
   rateCaption,
   sessionCaptions,
@@ -200,11 +199,6 @@ describe('phaseLabel', () => {
     expect(phaseLabel({ name: 'recomposition', weeksInPhase: 2 })).toBe('Recomp, hold')
   })
 
-  it('keeps the week for the tip the tag collapses into', () => {
-    expect(phaseTipText(W.cut.phase)).toBe('Cut, week 3 of this phase')
-    expect(phaseTipText({ name: 'fat-loss', weeksInPhase: 0 })).toBe('Cut')
-  })
-
   it('says when no phase is declared', () => {
     expect(phaseLabel({ name: 'unknown', weeksInPhase: 0 })).toBe('No phase declared')
   })
@@ -269,7 +263,7 @@ describe('rateCaption', () => {
 
   it('leads that weigh-in with N/A and keeps the reason for the tip (F11)', () => {
     const lines = weightCaptions(W.oneReading, 'percent')
-    expect(lines[0]).toEqual({ key: 'rate', text: 'N/A', label: 'Rate', value: 'N/A' })
+    expect(lines[0]).toEqual({ key: 'rate', text: 'N/A', label: 'Rate', value: 'N/A', colon: true })
     expect(lines.map((line) => line.key)).toContain('rateWhy')
   })
 

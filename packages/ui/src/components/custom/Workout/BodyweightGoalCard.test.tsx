@@ -4,6 +4,7 @@ import { axe } from 'jest-axe'
 
 import { capturedClassNames } from '../../../test/classname-capture'
 import { BodyweightGoalCard } from './BodyweightGoalCard'
+import { FIGURE_LINE_TEXT } from './wholeBodyCardParts'
 import { WHOLE_BODY_WEIGHT as W } from './wholeBody-fixture'
 
 describe('BodyweightGoalCard', () => {
@@ -26,33 +27,54 @@ describe('BodyweightGoalCard', () => {
       expect(screen.queryByTestId('phase-tag-tip')).toBeNull()
     })
 
-    it('puts the words in a pinned-open tip when it has collapsed', () => {
+    it('puts the phase alone in a pinned-open tip when it has collapsed, no week (owner, round 5)', () => {
       render(<BodyweightGoalCard goal={W.cut} tagCollapsed isTagTipOpen />)
-      expect(screen.getByText('Cut, week 3 of this phase')).toBeInTheDocument()
+      expect(screen.getByText('Cut')).toBeInTheDocument()
+      expect(screen.queryByText(/week/)).toBeNull()
     })
   })
 
   describe('the caption beside the weight', () => {
     it('leads with the rate at its shortest, as a muted word and a bold figure', () => {
       render(<BodyweightGoalCard goal={W.cut} />)
+      expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent(
+        'Rate: -0.6%/wk'
+      )
+    })
+
+    it('drops the colon from the populated lead when asked', () => {
+      render(<BodyweightGoalCard goal={W.cut} leadColon={false} />)
       expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent('Rate -0.6%/wk')
     })
 
-    it('drops the word in the plain treatment', () => {
-      render(<BodyweightGoalCard goal={W.cut} leadStyle="plain" />)
-      expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent('-0.6%/wk')
-      expect(screen.getByTestId('bodyweight-goal-value-caption')).not.toHaveTextContent('Rate')
+    it('keeps the colon on N/A whatever the setting (owner, round 5)', () => {
+      render(<BodyweightGoalCard goal={W.oneReading} leadColon={false} />)
+      expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent('Rate: N/A')
+    })
+
+    it('sets the label and the lead on one text size, whatever the figure size (owner, round 5)', () => {
+      for (const scale of ['wall', 'phone'] as const) {
+        const { unmount } = render(<BodyweightGoalCard goal={W.cut} scale={scale} />)
+        expect(capturedClassNames.get('bodyweight-goal-value-label')).toContain(FIGURE_LINE_TEXT)
+        expect(capturedClassNames.get('bodyweight-goal-value-caption')).toContain(FIGURE_LINE_TEXT)
+        unmount()
+      }
+    })
+
+    it('keeps that size on a lead with no word of its own', () => {
+      render(<BodyweightGoalCard goal={W.cut} lead="band" scale="phone" />)
+      expect(capturedClassNames.get('bodyweight-goal-value-caption')).toContain(FIGURE_LINE_TEXT)
     })
 
     it('leads with the longer rate line when asked', () => {
-      render(<BodyweightGoalCard goal={W.cut} rateLength="full" leadStyle="plain" />)
+      render(<BodyweightGoalCard goal={W.cut} rateLength="full" />)
       expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent(
         '-0.6%/wk against -0.5 to -1.0 for a cut'
       )
     })
 
     it('leads with this week’s band when asked', () => {
-      render(<BodyweightGoalCard goal={W.cut} lead="band" leadStyle="plain" />)
+      render(<BodyweightGoalCard goal={W.cut} lead="band" />)
       expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent(
         'Week 3 of 8: 194.0 to 197.0 lb'
       )
@@ -65,7 +87,7 @@ describe('BodyweightGoalCard', () => {
 
     it('says N/A with the reason in the tip when no rate can be computed (F11)', () => {
       render(<BodyweightGoalCard goal={W.oneReading} isTipOpen />)
-      expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent('Rate N/A')
+      expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent('Rate: N/A')
       expect(screen.getByText('Rate shows after a second week of weigh-ins')).toBeInTheDocument()
     })
 

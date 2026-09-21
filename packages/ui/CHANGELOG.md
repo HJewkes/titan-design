@@ -121,7 +121,8 @@ project adheres to [Semantic Versioning](https://semver.org/).
 - `GoalPriorityIndex` (custom/Workout): every declared priority on one wrapping line,
   grouped by level, naming the ones nothing tracks (VW-455).
 - `formatBodyweight` and `formatSignedRate` in `utils/workout-format`.
-- `Metric` takes `valueClassName`, merged onto the value text.
+- `Metric` takes `valueClassName` and `labelClassName`, merged onto the value and label
+  text, and names its label `${testID}-label`.
 
 ### Fixed
 
