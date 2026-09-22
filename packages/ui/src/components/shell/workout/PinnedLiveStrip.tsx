@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { useState, type ReactNode } from 'react'
+import { memo, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import {
   View,
   Text,
@@ -19,11 +19,15 @@ import { ChevronRightIcon } from '../../icons'
 import { SetBarChart, type SetSlot } from '../../custom/charts/SetBarChart'
 import {
   normalizeLossThresholds,
+  shownVelocityLoss,
+  velocityLossForRep,
   type VelocityLossThresholds,
 } from '../../custom/Workout/VelocityStrip'
 import {
+  liveStripMs,
   liveStripRepToken,
   liveStripRestReadout,
+  liveStripTarget,
   type LiveStripBarColor,
   type LiveStripRep,
   type LiveStripState,
@@ -51,14 +55,14 @@ export interface PinnedLiveStripProps {
   barColor?: LiveStripBarColor
   /** `loss` only: loss (%) where bars turn yellow, orange and red. Pass the hero's thresholds so both agree. Default 10/20/30, as the hero. */
   lossThresholds?: VelocityLossThresholds
-  /** Analytics says the set has fatigued past its cut-off. Shown by the strip's edge and wash, never text. */
+  /** Analytics says the set has fatigued past its cut-off. Shown by the strip's edge and wash, never visible text; the accessible name says "fatigued". */
   isFatigued?: boolean
   /** `rest` only: time left and the rest's full length, in ms. */
   restRemainingMs?: number
   restDurationMs?: number
-  /** Return to the live page. */
+  /** Return to the live page. Omitted: the strip is a status region with no link, button or chevron. */
   onPress?: () => void
-  /** Force a layout. Omitted: measured from the strip's own width. */
+  /** Force a layout. Omitted: measured from the strip's own width, and nothing is drawn until it is. */
   layout?: PinnedLiveStripLayout
   className?: string
 }
@@ -129,7 +133,7 @@ const layoutOf = (scale: Scale): PinnedLiveStripLayout =>
   scale === SCALES.phone ? 'phone' : 'wall'
 
 /** The rest readout's type: seconds, their size and unit classes, and the raise that centres them. */
-export function liveStripRestType(layout: PinnedLiveStripLayout, remainingMs: number) {
+export function liveStripRestType(layout: PinnedLiveStripLayout, remainingMs: number | undefined) {
   const scale = SCALES[layout]
   const { seconds, step } = liveStripRestReadout(remainingMs)
   if (step === 'full') return { seconds, size: scale.hero, unit: scale.heroUnit, raisePx: 0 }
@@ -155,7 +159,7 @@ const NUMERAL = 'font-heading font-bold text-text-primary'
 const UNIT = 'font-medium text-text-secondary'
 const TABULAR = { fontVariant: ['tabular-nums' as const] }
 
-type Parts = PinnedLiveStripProps & { scale: Scale; tone: Tone }
+type Parts = PinnedLiveStripProps & { scale: Scale; tone: Tone; isLink: boolean }
 
 function toneOf(state: LiveStripState, isFatigued: boolean): Tone {
   if (state === 'rest') return 'rest'
@@ -240,12 +244,14 @@ function heroSlotWidth({ reps, targetReps, scale }: Parts): number {
   return Math.max(twoDigits ? scale.slot.twoDigitReps : scale.slot.oneDigitReps, scale.secondsSlot)
 }
 
-function HeroValue({ state, reps, targetReps, scale, restRemainingMs = 0 }: Parts) {
+function HeroValue({ state, reps, targetReps, scale, restRemainingMs }: Parts) {
   if (state !== 'rest') {
     return (
       <Text testID="live-strip-hero-value">
         {reps.length}
-        <Text className={cn(UNIT, scale.heroUnit, scale.leading)}>/{targetReps}</Text>
+        {targetReps > 0 ? (
+          <Text className={cn(UNIT, scale.heroUnit, scale.leading)}>/{targetReps}</Text>
+        ) : null}
       </Text>
     )
   }
@@ -297,16 +303,43 @@ function Velocity({
   )
 }
 
-function RepBars(props: Parts & { fill?: boolean }) {
+type RepBarsProps = Pick<Parts, 'reps' | 'targetReps' | 'scale' | 'barColor' | 'lossThresholds'> & {
+  fill?: boolean
+}
+
+const sameThresholds = (a?: VelocityLossThresholds, b?: VelocityLossThresholds) =>
+  a === b || (a != null && b != null && a.every((t, i) => t === b[i]))
+
+// By value: a consumer rebuilds the reps array every render, and a set is 30 reps at most.
+const sameReps = (a: readonly LiveStripRep[], b: readonly LiveStripRep[]) =>
+  a === b ||
+  (a.length === b.length &&
+    a.every((rep, i) => rep.velocity === b[i].velocity && rep.zone === b[i].zone))
+
+// The plot depends only on these, so a consumer ticking the rest countdown never redraws it.
+function sameBars(a: RepBarsProps, b: RepBarsProps): boolean {
+  return (
+    sameReps(a.reps, b.reps) &&
+    a.targetReps === b.targetReps &&
+    a.scale === b.scale &&
+    a.barColor === b.barColor &&
+    a.fill === b.fill &&
+    sameThresholds(a.lossThresholds, b.lossThresholds)
+  )
+}
+
+const RepBars = memo(function RepBars(props: RepBarsProps) {
   const { reps, targetReps, scale, fill, barColor, lossThresholds } = props
   const slots: SetSlot[] = reps.map((rep) => ({ kind: 'rep', value: rep.velocity }))
+  // Without a plan the frame is as wide as the reps done, so the bars never collapse to nothing.
+  const columns = targetReps > 0 ? targetReps : reps.length
   // Colour is looked up by rep index, so zone mode uses analytics' zone and never the value.
   const colorFor = (_value: number, repIndex: number) =>
     resolveColor(liveStripRepToken(reps, repIndex, barColor, lossThresholds))
   return (
     <View
       testID="live-strip-bars-frame"
-      style={fill ? { flex: 1, minWidth: 0 } : { width: targetReps * scale.barPitch }}
+      style={fill ? { flex: 1, minWidth: 0 } : { width: columns * scale.barPitch }}
     >
       <SetBarChart
         slots={slots}
@@ -321,7 +354,16 @@ function RepBars(props: Parts & { fill?: boolean }) {
       />
     </View>
   )
-}
+}, sameBars)
+
+/** The props the bar plot reads, and nothing that changes as the rest counts down. */
+const barsOf = ({ reps, targetReps, scale, barColor, lossThresholds }: Parts): RepBarsProps => ({
+  reps,
+  targetReps,
+  scale,
+  barColor,
+  lossThresholds,
+})
 
 function BackToLive() {
   return (
@@ -351,9 +393,9 @@ function WallRow(props: Parts) {
           </View>
         </View>
         <WallValues {...props} />
-        <RepBars {...props} />
+        <RepBars {...barsOf(props)} />
       </View>
-      <BackToLive />
+      {props.isLink ? <BackToLive /> : null}
     </View>
   )
 }
@@ -370,7 +412,7 @@ function PhoneTitleRow(props: Parts) {
         <Text className={cn('font-body text-text-secondary', scale.sub)}>
           {setLine(props, true)}
         </Text>
-        <ChevronRightIcon size={20} color={resolveColor('text-primary')} />
+        {props.isLink ? <ChevronRightIcon size={20} color={resolveColor('text-primary')} /> : null}
       </View>
     </View>
   )
@@ -386,7 +428,7 @@ function PhoneRows(props: Parts) {
       >
         <HeroNumeral {...props} />
         <Velocity {...props} showUnit={false} />
-        <RepBars {...props} fill />
+        <RepBars {...barsOf(props)} fill />
       </View>
     </View>
   )
@@ -424,13 +466,14 @@ function StripPlane({
   )
 }
 
-function RestBar({ restRemainingMs = 0, restDurationMs }: PinnedLiveStripProps) {
-  if (!restDurationMs) return null
+function RestBar({ restRemainingMs, restDurationMs }: PinnedLiveStripProps) {
+  const max = liveStripMs(restDurationMs)
+  if (max === 0) return null
   return (
     <View className="absolute bottom-0 left-0 right-0" pointerEvents="none">
       <Progress
-        value={restRemainingMs}
-        max={restDurationMs}
+        value={Math.min(max, liveStripMs(restRemainingMs))}
+        max={max}
         size="sm"
         accessibilityLabel="Rest remaining"
         testID="live-strip-rest-bar"
@@ -439,49 +482,111 @@ function RestBar({ restRemainingMs = 0, restDurationMs }: PinnedLiveStripProps) 
   )
 }
 
-function accessibleName(props: PinnedLiveStripProps): string {
-  const { state, exerciseName, reps, targetReps, restRemainingMs = 0 } = props
-  const progress =
-    state === 'rest'
-      ? `${liveStripRestReadout(restRemainingMs).seconds} seconds rest left`
-      : `${reps.length} of ${targetReps} reps`
-  return `Back to live: ${exerciseName}, ${setLine(props, false)}, ${progress}`
+function progressPhrase({ state, reps, targetReps, restRemainingMs }: Parts): string {
+  if (state === 'rest') return `${liveStripRestReadout(restRemainingMs).seconds} seconds rest left`
+  return targetReps > 0 ? `${reps.length} of ${targetReps} reps` : `${reps.length} reps`
+}
+
+/** The last rep as the numeral and bars show it: velocity, and its loss from the set's best. */
+function lastRepPhrase(reps: readonly LiveStripRep[]): string | null {
+  const last = reps[reps.length - 1]
+  if (!last) return null
+  const best = Math.max(...reps.map((r) => r.velocity))
+  const loss = shownVelocityLoss(velocityLossForRep(last.velocity, best))
+  return `last rep ${formatVelocity(last.velocity)} m/s, ${loss}% loss from best`
+}
+
+/** What a sighted lifter reads off the strip, colour included: fatigue is said, not only shown. */
+function accessibleName(props: Parts): string {
+  const { exerciseName, tone, isLink } = props
+  const summary = [
+    TONE[tone].tag.label,
+    exerciseName,
+    setLine(props, false),
+    progressPhrase(props),
+    lastRepPhrase(props.reps),
+    tone === 'fatigue' ? 'fatigued' : null,
+  ]
+    .filter(Boolean)
+    .join(', ')
+  return isLink ? `Back to live: ${summary}` : summary
+}
+
+function Plane(parts: Parts) {
+  const isPhone = parts.scale === SCALES.phone
+  return (
+    <StripPlane tone={parts.tone} isPhone={isPhone}>
+      {isPhone ? <PhoneRows {...parts} /> : <WallRow {...parts} />}
+      {parts.state === 'rest' ? <RestBar {...parts} /> : null}
+    </StripPlane>
+  )
+}
+
+// Server rendering has no layout to read, and React 18 warns on a server-side useLayoutEffect.
+const useLayoutEffectOnClient = typeof window === 'undefined' ? useEffect : useLayoutEffect
+
+const layoutFor = (width: number): PinnedLiveStripLayout =>
+  width < PINNED_LIVE_STRIP_PHONE_MAX ? 'phone' : 'wall'
+
+/**
+ * The forced layout, else the measured one; null until the first measurement, so the strip never
+ * paints the wall form for a frame on a phone. On the web the frame is measured before the first
+ * paint, and `onLayout` (which react-native-web defers to a timer) follows resizes. On React
+ * Native the first frame is empty rather than wrong, and `onLayout` fires on the next.
+ * Server-rendered HTML carries only the empty frame: the strip appears once the client measures it.
+ */
+function useStripLayout(forced?: PinnedLiveStripLayout) {
+  const ref = useRef<View>(null)
+  const [measured, setMeasured] = useState<PinnedLiveStripLayout | null>(null)
+  // A zero width is a frame not laid out yet (jsdom, display: none), not a phone.
+  const measure = (width: number) => {
+    if (width > 0) setMeasured(layoutFor(width))
+  }
+  useLayoutEffectOnClient(() => {
+    if (Platform.OS !== 'web' || forced || measured) return
+    const node = ref.current as unknown as HTMLElement | null
+    measure(node?.getBoundingClientRect().width ?? 0)
+  })
+  const onLayout = (e: LayoutChangeEvent) => measure(e.nativeEvent.layout.width)
+  return { layout: forced ?? measured, onLayout, ref }
 }
 
 /**
  * Shell · PinnedLiveStrip (VW-429): the row pinned atop every non-live page while a set or rest
- * runs, so the lifter never loses the live set. The whole strip is the link back to live.
+ * runs, so the lifter never loses the live set. Given `onPress`, the whole strip is the link back to live.
  * Bars colour by loss from the set's best like the live hero (or by per-rep zone); fatigue is carried
  * by the strip's edge and wash, never by text, so the exercise title keeps its full width in every state.
  */
 export function PinnedLiveStrip(props: PinnedLiveStripProps) {
-  const { state, isFatigued = false, onPress, layout, className } = props
-  const [measured, setMeasured] = useState<PinnedLiveStripLayout>('wall')
+  const { state, isFatigued = false, onPress, className } = props
+  const { layout, onLayout, ref } = useStripLayout(props.layout)
   if (state === 'idle') return null
-  const isPhone = (layout ?? measured) === 'phone'
   const tone = toneOf(state, isFatigued)
-  const scale = SCALES[isPhone ? 'phone' : 'wall']
-  const parts = {
+  const parts: Parts = {
     ...props,
+    isLink: onPress != null,
+    targetReps: liveStripTarget(props.targetReps),
     lossThresholds: normalizeLossThresholds(props.lossThresholds),
-    scale,
+    scale: SCALES[layout ?? 'wall'],
     tone,
   }
-  const onLayout = (e: LayoutChangeEvent) =>
-    setMeasured(e.nativeEvent.layout.width < PINNED_LIVE_STRIP_PHONE_MAX ? 'phone' : 'wall')
-  return (
-    <Pressable
-      accessibilityRole="link"
-      accessibilityLabel={accessibleName(props)}
-      onPress={onPress}
-      onLayout={onLayout}
-      testID="pinned-live-strip"
-      className={cn('w-full', className)}
-    >
-      <StripPlane tone={tone} isPhone={isPhone}>
-        {isPhone ? <PhoneRows {...parts} /> : <WallRow {...parts} />}
-        {state === 'rest' ? <RestBar {...props} /> : null}
-      </StripPlane>
+  const frame = {
+    ref,
+    accessibilityLabel: accessibleName(parts),
+    onLayout,
+    testID: 'pinned-live-strip',
+    className: cn('w-full', className),
+  }
+  // Until the first measurement the frame is empty: it measures, but paints nothing.
+  const plane = layout ? <Plane {...parts} /> : null
+  // Without somewhere to go the strip is a labelled status region: no link role, button or chevron.
+  return onPress ? (
+    <Pressable accessibilityRole="link" onPress={onPress} {...frame}>
+      {plane}
     </Pressable>
+  ) : (
+    <View accessible accessibilityRole="summary" {...frame}>
+      {plane}
+    </View>
   )
 }

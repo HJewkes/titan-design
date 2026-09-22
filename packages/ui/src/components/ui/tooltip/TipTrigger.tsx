@@ -1,5 +1,15 @@
-import { useState, type ReactNode } from 'react'
-import { Pressable, type StyleProp, type ViewStyle } from 'react-native'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type ReactNode,
+  type RefObject,
+} from 'react'
+import { Platform, Pressable, View, type StyleProp, type ViewStyle } from 'react-native'
 
 import { Tooltip, type TooltipPlacement } from './Tooltip'
 
@@ -20,13 +30,42 @@ export interface TipTriggerProps {
    */
   usePortal?: boolean
   testID?: string
+  /** Tab order of the trigger; -1 keeps it reachable by script while a group roves focus. */
+  tabIndex?: 0 | -1
+  /** Keys the trigger does not handle itself, for a group that moves focus between triggers. */
+  onKeyDown?: (event: { key: string; preventDefault: () => void }) => void
   children: ReactNode
+}
+
+// Review stories pin a tip open by label; outside the package barrel, and inert with no provider.
+export const PinnedTipContext = createContext<string | null>(null)
+
+/** On the web, close an open tip on Escape and on a press outside its trigger. */
+function useDismissOnWeb(open: boolean, close: () => void, trigger: RefObject<View | null>) {
+  useEffect(() => {
+    if (!open || Platform.OS !== 'web' || typeof document === 'undefined') return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close()
+    }
+    const onPointer = (e: PointerEvent) => {
+      const node = trigger.current as unknown as Node | null
+      if (node && !node.contains(e.target as Node)) close()
+    }
+    document.addEventListener('keydown', onKey)
+    document.addEventListener('pointerdown', onPointer)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.removeEventListener('pointerdown', onPointer)
+    }
+  }, [open, close, trigger])
 }
 
 /**
  * One tip that opens on hover (web), focus (keyboard) and press (native) — the
  * three affordances share a single open state, because RNW ends a wrapper's
- * hover the moment a nested Pressable claims the pointer.
+ * hover the moment a nested Pressable claims the pointer. On the web it also
+ * closes on Escape and on a press outside the trigger, and the open tip
+ * describes the trigger for screen readers.
  *
  * @example
  * <TipTrigger label="Goal status: behind" content={<Basis />}>
@@ -41,25 +80,37 @@ export function TipTrigger({
   pressableStyle,
   usePortal = true,
   testID,
+  tabIndex,
+  onKeyDown,
   children,
 }: TipTriggerProps) {
-  const [open, setOpen] = useState(false)
+  const [focusedOpen, setOpen] = useState(false)
+  const pinned = useContext(PinnedTipContext) === label
+  const open = pinned || focusedOpen
+  const trigger = useRef<View>(null)
+  const tipId = `tip-${useId().replace(/[^a-zA-Z0-9]/g, '')}`
+  const close = useCallback(() => setOpen(false), [])
+  useDismissOnWeb(focusedOpen, close, trigger)
   return (
     <Tooltip
       isOpen={open}
       placement={placement}
       usePortal={usePortal}
       style={style}
-      content={content}
+      content={<View nativeID={tipId}>{content}</View>}
     >
       <Pressable
+        ref={trigger}
         accessibilityRole="button"
         accessibilityLabel={label}
+        aria-describedby={open ? tipId : undefined}
         onHoverIn={() => setOpen(true)}
         onHoverOut={() => setOpen(false)}
         onFocus={() => setOpen(true)}
         onBlur={() => setOpen(false)}
         onPress={() => setOpen((wasOpen) => !wasOpen)}
+        {...(tabIndex !== undefined ? { tabIndex } : {})}
+        {...(onKeyDown ? { onKeyDown } : {})}
         style={pressableStyle ?? style}
         testID={testID}
       >

@@ -4,14 +4,12 @@ import { View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { roundWeight } from '../../../utils/workout-format'
 import { useSurface, useOnSurfaceColor } from '../../ui/surface'
-import { TipTrigger } from '../../ui/tooltip'
-import { Typography } from '../../ui/typography'
 import { valueReach, type GoalReach } from './goalMilestone'
 import {
   deriveTrajectoryGeometry,
+  trajectoryInsets,
   type GoalActualPoint,
   type GoalNextTarget,
-  type NextTargetCoord,
   type GoalDirection,
   type GoalExpectedPoint,
   type GoalTrajectoryGeometry,
@@ -25,7 +23,15 @@ import {
   type ReferenceLabelSide,
 } from './GoalTrajectoryPlot'
 import { useTrajectoryEntrance } from './goalTrajectoryMotion'
-import { DEFAULT_CALIBRATING_NOTE, calibratingMarks } from './GoalTrajectoryCalibrating'
+import {
+  CalibratingInfo,
+  calibratingMarks,
+  resolveCalibratingNote,
+} from './GoalTrajectoryCalibrating'
+import { hitBoxAround, useHitTargetSize, type HitBox } from './goalTrajectoryTargets'
+import { gridLabelSpecs, ruleLabelSpecs, type RuleLabelText } from './goalTrajectoryRuleLabels'
+import { weekTips } from './weekTipModel'
+import { GoalTrajectoryWeekTips } from './GoalTrajectoryWeekTips'
 import type { BandFade } from './GoalTrajectoryBand'
 import type { BandCurve } from './GoalTrajectoryChartGeometry'
 import type { PlotBaseline } from './GoalTrajectoryPlot'
@@ -101,8 +107,9 @@ interface Density {
 
 // Phone drops to three gridlines; its y labels stay because the plot has the gutter.
 const DENSITY: Record<'phone' | 'wall', Density> = {
-  phone: { stroke: 2, star: 6, tickCount: 3, showYLabels: true, maxWeekLabels: 6 },
-  wall: { stroke: 3, star: 7.5, tickCount: 5, showYLabels: true, maxWeekLabels: 12 },
+  // `star` is an icon size, the same the card's PR badge takes at that width (markSizeFor).
+  phone: { stroke: 2, star: 14, tickCount: 3, showYLabels: true, maxWeekLabels: 6 },
+  wall: { stroke: 3, star: 20, tickCount: 5, showYLabels: true, maxWeekLabels: 12 },
 }
 
 export interface GoalTrajectoryChartProps extends ViewProps {
@@ -166,11 +173,25 @@ export interface GoalTrajectoryChartProps extends ViewProps {
    */
   referenceLabelSide?: ReferenceLabelSide
   /**
-   * Calibrating only: the first line of the note in the hatched weeks. The
-   * consumer supplies it because only the read model knows what calibration is
-   * still waiting on; the default claims nothing.
+   * Calibrating only: the first line of the tip behind the info target in the
+   * plot's lower-right corner. The consumer supplies it because only the read
+   * model knows what calibration is still waiting on; empty or omitted, the
+   * default claims nothing. A full sentence is fine: the tip wraps it. The
+   * chart's accessible name carries it too.
    */
   calibratingNote?: string
+  /**
+   * The y-axis value labels outside the plot. Default off (titan-0201 round 3): each
+   * gridline carries its value inside the plot instead, and the plot takes back the
+   * gutter. A GoalCard lines its week cells up with the plot either way.
+   */
+  yAxisLabels?: boolean
+  /**
+   * The committed and stretch labels: `numeric` ("185", the default since titan-0201
+   * round 3, placed clear of the readings and tip targets), `named` ("Committed 185")
+   * or `none`. The accessible name keeps the words in every case.
+   */
+  ruleLabelText?: RuleLabelText
   className?: string
 }
 
@@ -205,6 +226,12 @@ function summarize(
     `Committed ${String(roundWeight(committed))} ${unit}, stretch ${String(roundWeight(stretch))} ${unit}. ` +
     `${current} ${String(prs)} personal record${prs === 1 ? '' : 's'}.`
   )
+}
+
+/** What the hatch and the dashed ramp say to a sighted reader: the whole note, and what the line is. */
+function calibratingSummary(note: string): string {
+  const sentence = /[.!?]$/.test(note) ? note : `${note}.`
+  return ` ${sentence} The line is the planned ramp from the start lift, not an expected band.`
 }
 
 /**
@@ -255,11 +282,14 @@ export function GoalTrajectoryChart({
   bandFade = 'centre-14',
   bandCurve = 'monotone',
   referenceLabelSide = 'left',
-  calibratingNote = DEFAULT_CALIBRATING_NOTE,
+  calibratingNote,
+  yAxisLabels = false,
+  ruleLabelText = 'numeric',
   className,
   ...props
 }: GoalTrajectoryChartProps) {
   const surface = useSurface()
+  const targetSize = useHitTargetSize()
   const axisColor = useOnSurfaceColor('tertiary')
   const reach = outcomeReach(status) ?? trajectoryReach(committed, actuals, direction)
   const toneStatus = reach === 'short' ? status : REACH_STATUS[reach]
@@ -287,6 +317,7 @@ export function GoalTrajectoryChart({
         height,
         tickCount: density.tickCount,
         bandCurve,
+        insets: trajectoryInsets(yAxisLabels),
       }),
     [
       expected,
@@ -300,16 +331,40 @@ export function GoalTrajectoryChart({
       height,
       density,
       bandCurve,
+      yAxisLabels,
     ]
   )
   const geometry = calibrating ? withoutLead(derived) : derived
-  const marks = calibrating
-    ? calibratingMarks({
+  const note = resolveCalibratingNote(
+    calibratingNote,
+    calibrating ? STATUS_LABEL.calibrating : undefined
+  )
+  const nextTargetBox =
+    geometry.nextTarget && nextTarget
+      ? hitBoxAround(geometry.nextTarget, targetSize, width, height)
+      : null
+  const marks = calibrating ? calibratingMarks({ geometry, targetSize, nextTargetBox }) : null
+  const ruleLabels = ruleLabelSpecs({
+    geometry,
+    committed,
+    stretch,
+    text: ruleLabelText,
+    side: referenceLabelSide,
+    boxes: [nextTargetBox, marks?.target].filter((b): b is HitBox => b != null),
+  })
+  const gridLabels = yAxisLabels
+    ? []
+    : gridLabelSpecs({
         geometry,
-        wall: width >= WALL_BREAKPOINT,
-        note: calibratingNote,
+        ruleLabels,
+        ruleValues: ruleLabelText === 'none' ? [] : [committed, stretch],
+        boxes: [nextTargetBox, marks?.target].filter((b): b is HitBox => b != null),
       })
-    : null
+  // A target hung under the plot may reach past the canvas; the chart grows to hold it.
+  const overhang = marks ? Math.max(0, marks.target.y + marks.target.size - height) : 0
+  const label =
+    summarize(statusLabel, geometry, committed, stretch, unit, metricLabel) +
+    (calibrating ? calibratingSummary(note) : '')
 
   if (!geometry.hasBand && !geometry.hasActuals) {
     return (
@@ -329,12 +384,22 @@ export function GoalTrajectoryChart({
   }
 
   const axisWeeks = weeks.length > 0 ? weeks : expected.map((p) => ({ index: p.weekIndex }))
+  const tips = weekTips({
+    geometry,
+    weeks: axisWeeks,
+    expected,
+    ...(nextTarget ? { nextTarget } : {}),
+    unit,
+    width,
+    height,
+    size: targetSize,
+  })
   return (
     <View style={{ width }} className={cn(className)} testID="goal-trajectory-chart" {...props}>
       <View
         style={{ width, height }}
         accessibilityRole="image"
-        accessibilityLabel={summarize(statusLabel, geometry, committed, stretch, unit, metricLabel)}
+        accessibilityLabel={label}
         testID="goal-trajectory-chart-canvas"
       >
         <GoalTrajectoryPlot
@@ -342,11 +407,11 @@ export function GoalTrajectoryChart({
           palette={palette}
           width={width}
           height={height}
-          committed={committed}
-          stretch={stretch}
+          ruleLabels={ruleLabels}
+          gridLabels={gridLabels}
           weeks={showWeekLabels ? axisWeeks : []}
           weekStride={Math.max(1, Math.ceil(axisWeeks.length / density.maxWeekLabels))}
-          showYLabels={density.showYLabels}
+          showYLabels={density.showYLabels && yAxisLabels}
           style={{
             stroke: density.stroke,
             star: density.star,
@@ -360,33 +425,11 @@ export function GoalTrajectoryChart({
           calibrating={marks}
         />
       </View>
-      {geometry.nextTarget && nextTarget && (
-        <NextTargetTip point={geometry.nextTarget} label={nextTarget.label} />
+      {overhang > 0 && (
+        <View style={{ height: overhang }} testID="goal-trajectory-chart-overhang" />
       )}
-    </View>
-  )
-}
-
-/** Side of the square hit area the next-target tip opens from. */
-const TIP_HIT = 24
-
-/**
- * The marker's words, one hover away: a hit target over the plane rather than a
- * label on it. Absolute against the chart's own box, whose origin is the canvas.
- */
-function NextTargetTip({ point, label }: { point: NextTargetCoord; label: string }) {
-  return (
-    <View
-      style={{ position: 'absolute', left: point.x - TIP_HIT / 2, top: point.y - TIP_HIT / 2 }}
-      testID="goal-trajectory-chart-next-target-tip"
-    >
-      <TipTrigger
-        label="Next target"
-        content={<Typography variant="body2">{label}</Typography>}
-        style={{ width: TIP_HIT, height: TIP_HIT }}
-      >
-        <View style={{ width: TIP_HIT, height: TIP_HIT }} />
-      </TipTrigger>
+      {marks && <CalibratingInfo marks={marks} note={note} palette={palette} />}
+      <GoalTrajectoryWeekTips tips={tips} width={width} height={height} />
     </View>
   )
 }

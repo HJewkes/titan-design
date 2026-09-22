@@ -6,7 +6,7 @@ import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { LIFT_RIM_ALPHA } from '../../../theme/lift'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { alpha } from '../../../utils/colors'
-import { BAND_COLUMN_STEP, PLOT_LEFT } from './GoalTrajectoryChartGeometry'
+import { BAND_COLUMN_STEP, trajectoryInsets } from './GoalTrajectoryChartGeometry'
 
 const props = {
   expected: [
@@ -93,7 +93,7 @@ describe('GoalTrajectoryChart baseline (locked: lip)', () => {
   it('keeps the NOT CHOSEN inset floor rule clear of the rounded corners', () => {
     render(<GoalTrajectoryChart {...props} baseline="inset-rule" />)
     const baseline = screen.getByTestId('goal-trajectory-chart-baseline')
-    expect(Number(baseline.getAttribute('x1'))).toBe(PLOT_LEFT + 6)
+    expect(Number(baseline.getAttribute('x1'))).toBe(trajectoryInsets(false).left + 6)
     expect(screen.queryByTestId('goal-trajectory-chart-lip')).not.toBeInTheDocument()
   })
 })

@@ -9,6 +9,7 @@ import {
   deriveTrajectoryGeometry,
   trajectoryWeekScale,
   type GoalActualPoint,
+  trajectoryInsets,
 } from './GoalTrajectoryChartGeometry'
 import { LEFT_LABEL_INSET } from './GoalTrajectoryPlot'
 import {
@@ -211,7 +212,7 @@ describe('GoalTrajectoryChart referenceLabelSide', () => {
     ;['committed-label', 'stretch-label'].forEach((id) => {
       const label = screen.getByTestId(`goal-trajectory-chart-${id}`)
       expect(label.getAttribute('text-anchor')).toBe('start')
-      expect(label.getAttribute('x')).toBe(String(DEFAULT_PLOT_INSETS.left + LEFT_LABEL_INSET))
+      expect(label.getAttribute('x')).toBe(String(trajectoryInsets(false).left + LEFT_LABEL_INSET))
     })
   })
 
@@ -227,7 +228,7 @@ describe('GoalTrajectoryChart referenceLabelSide', () => {
     ;['committed-label', 'stretch-label'].forEach((id) => {
       const label = screen.getByTestId(`goal-trajectory-chart-${id}`)
       expect(label.getAttribute('text-anchor')).toBe('start')
-      expect(label.getAttribute('x')).toBe(String(DEFAULT_PLOT_INSETS.left + LEFT_LABEL_INSET))
+      expect(label.getAttribute('x')).toBe(String(trajectoryInsets(false).left + LEFT_LABEL_INSET))
     })
   })
 

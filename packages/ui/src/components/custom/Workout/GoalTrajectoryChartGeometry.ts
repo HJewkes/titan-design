@@ -100,6 +100,11 @@ export interface GoalTrajectoryGeometryInput {
   insets?: PlotInsets
 }
 
+/** The plot's gutters for a chart with or without its y-axis value labels. */
+export function trajectoryInsets(yAxisLabels: boolean): PlotInsets {
+  return yAxisLabels ? DEFAULT_PLOT_INSETS : { ...DEFAULT_PLOT_INSETS, left: PLOT_RIGHT }
+}
+
 /** Gutters between the canvas edge and the plot, in px. */
 export interface PlotInsets {
   left: number
@@ -365,6 +370,11 @@ function below(ruleY: number, font: number): RuleLabelPlacement {
   return { y: ruleY + RULE_LABEL_LIFT + font * LABEL_ASCENT, side: 'below' }
 }
 
+/** A rule label's baseline just above its rule, or just below it. */
+export function ruleLabelBaseline(ruleY: number, side: 'above' | 'below', font = CHART_FONT) {
+  return side === 'above' ? above(ruleY).y : below(ruleY, font).y
+}
+
 /**
  * Lay the two rule labels out so they never overprint: coincident rules merge into
  * one label, and rules closer than a label's height push the LOWER label under its
@@ -468,20 +478,26 @@ function planeRect(plot: PlotRect): PlaneRect {
   return { x: plot.left, y, width: plot.right - plot.left, height: plot.bottom - y }
 }
 
+/** One week's column, clipped to the plot. */
+function weekColumn(
+  weekIndex: number,
+  plot: PlotRect,
+  weekSpan: number,
+  toX: (weekIndex: number) => number
+): DeloadRect {
+  const centre = toX(weekIndex)
+  const left = Math.max(plot.left, centre - weekSpan / 2)
+  const right = Math.min(plot.right, centre + weekSpan / 2)
+  return { weekIndex, x: left, width: Math.max(0, right - left) }
+}
+
 function deloadRects(
   weeks: GoalTrajectoryWeek[],
   plot: PlotRect,
   weekSpan: number,
   toX: (weekIndex: number) => number
 ): DeloadRect[] {
-  return weeks
-    .filter((w) => w.isDeload)
-    .map((w) => {
-      const centre = toX(w.index)
-      const left = Math.max(plot.left, centre - weekSpan / 2)
-      const right = Math.min(plot.right, centre + weekSpan / 2)
-      return { weekIndex: w.index, x: left, width: Math.max(0, right - left) }
-    })
+  return weeks.filter((w) => w.isDeload).map((w) => weekColumn(w.index, plot, weekSpan, toX))
 }
 
 export interface BandSlice {

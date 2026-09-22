@@ -1,9 +1,10 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { Text } from 'react-native'
 import { axe } from 'jest-axe'
 import { Tooltip } from './Tooltip'
-import { TipTrigger } from './TipTrigger'
+import { PinnedTipContext, TipTrigger } from './TipTrigger'
+import { Modal } from '../modal'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 
 function hoverTrigger(triggerText: string) {
@@ -342,8 +343,121 @@ describe('TipTrigger', () => {
     expect(screen.queryByText('Under the band')).toBeNull()
   })
 
+  it('closes on Escape', () => {
+    renderTip()
+    fireEvent.focus(screen.getByTestId('tip'))
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(screen.queryByText('Under the band')).toBeNull()
+  })
+
+  it('closes on a press outside the trigger, not on one inside it', () => {
+    renderTip()
+    const trigger = screen.getByTestId('tip')
+    fireEvent.focus(trigger)
+    fireEvent.pointerDown(trigger)
+    expect(screen.getByText('Under the band')).toBeInTheDocument()
+    fireEvent.pointerDown(document.body)
+    expect(screen.queryByText('Under the band')).toBeNull()
+  })
+
+  // Records current behaviour: the tip closes on Escape keydown, RNW's Modal on the keyup of
+  // the same press, so one Escape closes both. A tip-first Escape would need a follow-up.
+  it('closes both the tip and the modal holding it on one Escape press', () => {
+    const onClose = vi.fn()
+    render(
+      <Modal isOpen onClose={onClose} animationType="none">
+        <TipTrigger label="Goal status: Behind" content={<Text>Under the band</Text>} testID="tip">
+          <Text>Behind</Text>
+        </TipTrigger>
+      </Modal>
+    )
+    fireEvent.focus(screen.getByTestId('tip'))
+    fireEvent.keyDown(document, { key: 'Escape' })
+    fireEvent.keyUp(document, { key: 'Escape' })
+    expect(screen.queryByText('Under the band')).toBeNull()
+    expect(onClose).toHaveBeenCalledTimes(1)
+  })
+
+  // Records current behaviour: in-flow tip content has pointerEvents none, so a press on the
+  // visible tip lands outside the trigger and closes it.
+  it('closes when the visible tip itself is pressed', () => {
+    render(
+      <TipTrigger
+        label="Goal status: Behind"
+        content={<Text>Under the band</Text>}
+        usePortal={false}
+        testID="tip"
+      >
+        <Text>Behind</Text>
+      </TipTrigger>
+    )
+    fireEvent.focus(screen.getByTestId('tip'))
+    fireEvent.pointerDown(screen.getByText('Under the band'))
+    expect(screen.queryByText('Under the band')).toBeNull()
+  })
+
+  it("names the open tip as the trigger's description", () => {
+    renderTip()
+    const trigger = screen.getByTestId('tip')
+    expect(trigger).not.toHaveAttribute('aria-describedby')
+    fireEvent.focus(trigger)
+    expect(trigger).toHaveAccessibleDescription('Under the band')
+  })
+
   it('has no accessibility violations', async () => {
     const { container } = renderTip()
     expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+describe('PinnedTipContext', () => {
+  function renderPinned() {
+    return render(
+      <PinnedTipContext.Provider value="Goal status: Behind">
+        <TipTrigger label="Goal status: Behind" content={<Text>Under the band</Text>} testID="tip">
+          <Text>Behind</Text>
+        </TipTrigger>
+        <TipTrigger label="Priority" content={<Text>Specialize</Text>} testID="other">
+          <Text>P</Text>
+        </TipTrigger>
+      </PinnedTipContext.Provider>
+    )
+  }
+
+  it('is inert without a provider: closed at first paint, and closes as before', () => {
+    render(
+      <TipTrigger label="Goal status: Behind" content={<Text>Under the band</Text>} testID="tip">
+        <Text>Behind</Text>
+      </TipTrigger>
+    )
+    const trigger = screen.getByTestId('tip')
+    expect(screen.queryByText('Under the band')).toBeNull()
+    fireEvent.focus(trigger)
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(screen.queryByText('Under the band')).toBeNull()
+  })
+
+  it('is not exported from the package', async () => {
+    const pkg = await import('../../../index')
+    const tooltip = await import('./index')
+    expect(Object.keys(pkg)).not.toContain('PinnedTipContext')
+    expect(Object.keys(tooltip)).not.toContain('PinnedTipContext')
+  })
+
+  it('opens the tip with the matching label from the first paint, and only that one', () => {
+    renderPinned()
+    expect(screen.getByText('Under the band')).toBeInTheDocument()
+    expect(screen.queryByText('Specialize')).toBeNull()
+  })
+
+  it('keeps it open through a stray press, Escape, blur and hover out', () => {
+    renderPinned()
+    const trigger = screen.getByTestId('tip')
+    fireEvent.pointerDown(document.body)
+    fireEvent.keyDown(document, { key: 'Escape' })
+    fireEvent.focus(trigger)
+    fireEvent.blur(trigger)
+    fireEvent.mouseLeave(trigger)
+    expect(screen.getByText('Under the band')).toBeInTheDocument()
   })
 })

@@ -14,8 +14,8 @@ import {
   ruleLabelLayout,
   ruleLabelTop,
   CHART_FONT,
-  PLOT_LEFT,
   PLOT_RIGHT,
+  trajectoryInsets,
 } from './GoalTrajectoryChartGeometry'
 import { BAND_EDGE_WIDTH } from './GoalTrajectoryBand'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
@@ -25,7 +25,7 @@ const WALL = { width: 1200, height: 340 }
 const PHONE = { width: 360, height: 220 }
 const dark = getSemanticColors('dark')
 
-const wall = { ...calibratingWallCapture, ...WALL, animate: false }
+const wall = { ...calibratingWallCapture, ...WALL, animate: false, ruleLabelText: 'named' as const }
 
 const geometryOf = (size: { width: number; height: number }) =>
   deriveTrajectoryGeometry({
@@ -35,6 +35,7 @@ const geometryOf = (size: { width: number; height: number }) =>
     actuals: [...calibratingWallCapture.actuals],
     weeks: [...calibratingWallCapture.weeks],
     bandCurve: 'monotone',
+    insets: trajectoryInsets(false),
     ...size,
   })
 
@@ -138,7 +139,7 @@ describe('GoalTrajectoryChart with committed === stretch (VW-414)', () => {
       const g = geometryOf(size)
       ;['committed-line', 'stretch-line'].forEach((id) => {
         const rule = screen.getByTestId(`goal-trajectory-chart-${id}`)
-        expect(Number(rule.getAttribute('x1'))).toBe(PLOT_LEFT)
+        expect(Number(rule.getAttribute('x1'))).toBe(trajectoryInsets(false).left)
         expect(Number(rule.getAttribute('x2'))).toBe(size.width - PLOT_RIGHT)
         expect(Number(rule.getAttribute('y1'))).toBeCloseTo(g.committedY, 5)
       })
@@ -155,7 +156,7 @@ describe('GoalTrajectoryChart with committed === stretch (VW-414)', () => {
       )
       const committed = screen.getByTestId('goal-trajectory-chart-committed-line')
       expect(Number(committed.getAttribute('x2')) - Number(committed.getAttribute('x1'))).toBe(
-        WALL.width - PLOT_RIGHT - PLOT_LEFT
+        WALL.width - PLOT_RIGHT - trajectoryInsets(false).left
       )
       expect(screen.getByTestId('goal-trajectory-chart-stretch-line')).toBeInTheDocument()
     })
@@ -181,6 +182,7 @@ describe('GoalTrajectoryChart with committed === stretch (VW-414)', () => {
         stretch: calibratingWallCapture.stretch,
         actuals: [wild, calibratingWallCapture.actuals[1]],
         weeks: [...calibratingWallCapture.weeks],
+        insets: trajectoryInsets(false),
         ...WALL,
       })
       expect(g.actuals).toHaveLength(1)

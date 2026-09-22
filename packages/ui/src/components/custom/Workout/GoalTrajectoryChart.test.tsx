@@ -71,7 +71,7 @@ describe('GoalTrajectoryChart', () => {
     })
 
     it('renders the committed and stretch rules with their values', () => {
-      render(<GoalTrajectoryChart {...baseProps} status="on_track" />)
+      render(<GoalTrajectoryChart {...baseProps} status="on_track" ruleLabelText="named" />)
       expect(screen.getByTestId('goal-trajectory-chart-committed-line')).toBeInTheDocument()
       expect(screen.getByTestId('goal-trajectory-chart-stretch-line')).toBeInTheDocument()
       expect(screen.getByText('Committed 185')).toBeInTheDocument()
@@ -102,8 +102,10 @@ describe('GoalTrajectoryChart', () => {
       const filledPaths = drawn.filter(
         (el) => el.tagName.toLowerCase() === 'path' && el.getAttribute('fill') !== 'none'
       )
-      expect(filledPaths.map((el) => el.getAttribute('data-testid'))).toEqual([
+      // The PR star is a filled path since it took the icon's own glyph; the line is not.
+      expect(filledPaths.map((el) => el.getAttribute('data-testid')).sort()).toEqual([
         'goal-trajectory-chart-lip',
+        'goal-trajectory-chart-pr-star',
       ])
       expect(drawn.filter((el) => el.getAttribute('fill') === dark['status-success'])).toEqual([])
     })
@@ -267,12 +269,14 @@ describe('GoalTrajectoryChart', () => {
 
     it('draws no legend at either density: each rule labels itself on the plane', () => {
       const { unmount } = render(
-        <GoalTrajectoryChart {...baseProps} width={1200} status="on_track" />
+        <GoalTrajectoryChart {...baseProps} width={1200} status="on_track" ruleLabelText="named" />
       )
       expect(screen.queryByTestId('goal-trajectory-chart-legend')).toBeNull()
       expect(screen.getByText('Committed 185')).toBeInTheDocument()
       unmount()
-      render(<GoalTrajectoryChart {...baseProps} width={360} status="on_track" />)
+      render(
+        <GoalTrajectoryChart {...baseProps} width={360} status="on_track" ruleLabelText="named" />
+      )
       expect(screen.queryByTestId('goal-trajectory-chart-legend')).toBeNull()
       expect(screen.getByText('Committed 185')).toBeInTheDocument()
     })
@@ -284,18 +288,18 @@ describe('GoalTrajectoryChart', () => {
 
     it('draws three gridlines on the phone and more on the wall', () => {
       const { unmount } = render(
-        <GoalTrajectoryChart {...baseProps} width={360} status="on_track" />
+        <GoalTrajectoryChart {...baseProps} width={360} status="on_track" yAxisLabels />
       )
       expect(screen.getAllByTestId('goal-trajectory-chart-y-label')).toHaveLength(3)
       unmount()
-      render(<GoalTrajectoryChart {...baseProps} width={1200} status="on_track" />)
+      render(<GoalTrajectoryChart {...baseProps} width={1200} status="on_track" yAxisLabels />)
       expect(screen.getAllByTestId('goal-trajectory-chart-y-label').length).toBeGreaterThan(3)
     })
   })
 
   describe('axis and plane', () => {
     it('labels each gridline 8px left of the plot, right-aligned', () => {
-      render(<GoalTrajectoryChart {...baseProps} width={1200} status="on_track" />)
+      render(<GoalTrajectoryChart {...baseProps} width={1200} status="on_track" yAxisLabels />)
       const labels = screen.getAllByTestId('goal-trajectory-chart-y-label')
       expect(labels.map((l) => l.textContent)).toEqual(['170', '175', '180', '185', '190', '195'])
       labels.forEach((label) => {
@@ -419,12 +423,16 @@ describe('GoalTrajectoryChart next target', () => {
     expect(screen.queryByText(nextTarget.label)).not.toBeInTheDocument()
   })
 
-  it('opens the label as a tip on hover', () => {
+  it("opens the label in its own week's tip on hover", () => {
     render(<GoalTrajectoryChart {...baseProps} status="on_track" nextTarget={nextTarget} />)
 
-    fireEvent.mouseEnter(screen.getByRole('button', { name: 'Next target' }))
+    fireEvent.mouseEnter(
+      screen.getByTestId(`goal-trajectory-chart-week-target-${String(nextTarget.weekIndex)}`)
+    )
 
-    expect(screen.getByText(nextTarget.label)).toBeInTheDocument()
+    expect(screen.getByText('Next target')).toBeInTheDocument()
+    // The row is already labelled, so the value drops the label's own "next week:" lead-in.
+    expect(screen.getByText(nextTarget.label.replace(/^next week: /, ''))).toBeInTheDocument()
   })
 
   it('draws nothing when the caller passes no next target', () => {

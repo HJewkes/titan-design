@@ -10,6 +10,8 @@ const NAMES = {
   short: 'Cable Row',
   medium: 'Cable Chest Press',
   long: 'Single-Arm Half-Kneeling Cable Row',
+  // Pasted garbage, not a name: one unbroken token longer than four lines of any card.
+  pasted: 'BenchPressPastedFromTheSpreadsheetWithNoSpaces'.repeat(4),
 } as const
 
 // Every mark the header can carry, so each name competes with the widest group.
@@ -40,7 +42,12 @@ function compactCard(title: string): GoalCardProps {
  * VW-432 — the title row at phone width. Order of preference: the name beside
  * the priority mark, PR star and status badge on one row; if that does not fit,
  * the marks drop to a left-aligned line under the name; only a name wider than
- * the card itself wraps. The name never truncates, in either size.
+ * the card itself wraps. In either size a real exercise name wraps whole and
+ * never reaches the four-line guard below.
+ *
+ * The `Pasted` stories are the functional review's guard, not a design: one
+ * unbroken token breaks inside the card, and a four-line clamp no real exercise
+ * name reaches stops it growing the card without end.
  *
  * The full card fills the canvas. The compact card is a grid cell, 440px at
  * most (the width of the `Compact` story), and the canvas width below that.
@@ -70,3 +77,16 @@ export const FullLong: Story = { args: fullCard(NAMES.long) }
 export const CompactShort: Story = { args: compactCard(NAMES.short) }
 export const CompactMedium: Story = { args: compactCard(NAMES.medium) }
 export const CompactLong: Story = { args: compactCard(NAMES.long) }
+export const FullPasted: Story = { args: fullCard(NAMES.pasted) }
+export const FullPastedNoMarks: Story = {
+  args: { ...fullCard(NAMES.pasted), priority: undefined, isPR: false },
+}
+export const CompactPasted: Story = { args: compactCard(NAMES.pasted) }
+
+/** The facts stacked, as a narrow grid column lays them out (the consumer's per-lift page at 360). */
+function withStackedFacts(card: GoalCardProps): GoalCardProps {
+  return { ...card, milestone: { ...card.milestone, summaryFit: 'stacked' } }
+}
+
+export const FullStackedFacts: Story = { args: withStackedFacts(fullCard(NAMES.medium)) }
+export const CompactStackedFacts: Story = { args: withStackedFacts(compactCard(NAMES.medium)) }

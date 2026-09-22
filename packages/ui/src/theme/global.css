@@ -44,6 +44,7 @@
     --color-status-success-muted: rgba(46, 213, 115, 0.30);
     --color-status-success-strong: rgba(46, 213, 115, 0.50);
     --color-status-live: #2ED573;
+    --color-status-deload: #BA2996;
     --color-status-live-muted: #22A444;
     --color-status-error: #D14343;
     --color-status-error-light: #E05254;
@@ -303,6 +304,7 @@
     --color-status-success-muted: rgba(46, 213, 115, 0.30);
     --color-status-success-strong: rgba(46, 213, 115, 0.50);
     --color-status-live: #2ED573;
+    --color-status-deload: #BA2996;
     --color-status-live-muted: #22A444;
     --color-status-error: #D14343;
     --color-status-error-light: #E05254;

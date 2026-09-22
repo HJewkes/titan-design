@@ -36,10 +36,20 @@ export function DumbbellIcon(props: IconProps) {
 }
 
 /** Star glyph (mirrors lucide-react `Star`). Pass `fill` for a solid star. */
+/**
+ * The star glyph's path, in the icon viewBox. Exported so a chart can draw the SAME star
+ * as the PR badge from one source instead of a second hand-drawn polygon.
+ */
+export const STAR_ICON_PATH =
+  'M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z'
+
+/** Ink box of {@link STAR_ICON_PATH} inside the viewBox, measured once in Chromium. */
+export const STAR_ICON_BOX = { x: 1.998, y: 2, width: 20.002, height: 19.072 }
+
 export function StarIcon(props: IconProps) {
   return (
     <SvgIcon {...props}>
-      <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
+      <path d={STAR_ICON_PATH} />
     </SvgIcon>
   )
 }

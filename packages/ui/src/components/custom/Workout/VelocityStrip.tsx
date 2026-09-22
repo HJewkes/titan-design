@@ -226,13 +226,19 @@ const zoneHexMap: Record<string, string> = {
  * Velocity loss for a set, as a whole percentage. Uses the running-best rep as
  * the reference (matching WA-02.05 / brain WA-D01): `(vBest − vLast) / vBest`,
  * clamped to ≥ 0 so a set that ends on its best rep reports 0 loss.
+ *
+ * **Rounded to the nearest percent.** Do not band this value or show it beside a
+ * loss colour: a 19.96 percent loss rounds to 20 and would read "20%" beside a bar
+ * that {@link getVelocityLossColor} colours below a 20 threshold. Band the exact
+ * loss from {@link velocityLossForRep} and show it through {@link shownVelocityLoss}.
+ *
+ * @see shownVelocityLoss
  */
 export function calculateVelocityLoss(velocities: number[]): number {
   if (velocities.length < 2) return 0
   const best = Math.max(...velocities)
   if (best <= 0) return 0
-  const last = velocities[velocities.length - 1]
-  return Math.max(0, Math.round(((best - last) / best) * 100))
+  return Math.round(velocityLossForRep(velocities[velocities.length - 1], best))
 }
 
 /** Arithmetic mean of the per-rep mean-concentric velocities. */
@@ -315,18 +321,32 @@ export function getVelocityLossColor(lossPct: number, thresholds?: VelocityLossT
   return LOSS_BAND_COLORS[velocityLossBand(lossPct, thresholds)]
 }
 
+// A billionth of a percent: far below any threshold a coach sets, far above double rounding error.
+const FLOAT_NOISE = 1e9
+
 /**
  * A single rep's velocity loss (%) relative to the set's own best rep, clamped to
  * ≥ 0 (a best-so-far rep, or a set with no positive best, reports 0 loss — green).
- * Rounded (matching {@link calculateVelocityLoss}'s convention) so a rep that is
- * arithmetically the set's best — or lands exactly on a VL threshold — doesn't drift
- * across a color-band boundary on floating-point noise (e.g. `1.0 − 0.9` ≈ `0.0999…998`).
- * Feeds `barColor="loss"` bar coloring; distinct from {@link calculateVelocityLoss},
- * which reports only the set's FINAL loss (last rep vs best) as a single summary number.
+ * NOT rounded to a whole percent: every surface bands this exact value, so a 13.33%
+ * loss against a 13.3% threshold takes the higher band, as the consumer's own
+ * unrounded check does. Only floating-point noise is removed (`1.0 − 0.9` is
+ * `0.0999…998`), so a rep that lands exactly on a threshold takes the higher band.
+ * Show it through {@link shownVelocityLoss}. Feeds `barColor="loss"` bar coloring on the hero, the
+ * dual strips and PinnedLiveStrip; {@link calculateVelocityLoss} is its rounded,
+ * last-rep-vs-best summary.
  */
 export function velocityLossForRep(velocity: number, best: number): number {
-  if (best <= 0) return 0
-  return Math.max(0, Math.round(((best - velocity) / best) * 100))
+  if (!(best > 0)) return 0
+  const loss = ((best - velocity) / best) * 100
+  return Math.max(0, Math.round(loss * FLOAT_NOISE) / FLOAT_NOISE)
+}
+
+/**
+ * A loss as a whole percent to show beside its colour: rounded DOWN, so the number never reads
+ * at or past a threshold the colour (banded on the exact loss) has not reached. 19.96 reads 19.
+ */
+export function shownVelocityLoss(lossPct: number): number {
+  return Math.floor(lossPct)
 }
 
 /** Classify a velocity into its band (slow → fast, min inclusive / max exclusive). */
@@ -1262,7 +1282,9 @@ export function VelocityStrip({
 
   const maxVelocity = Math.max(...doneVelocities, 0)
   const meanVelocity = calculateMeanVelocity(doneVelocities)
-  const loss = calculateVelocityLoss(doneVelocities)
+  // The colour bands the last rep's exact loss, like its bar; the number is that loss rounded down.
+  const lastLoss = velocityLossForRep(doneVelocities[doneVelocities.length - 1] ?? 0, maxVelocity)
+  const loss = shownVelocityLoss(lastLoss)
 
   // The framed chart (raised box, labels, info) vs the bare spotlight strip is the
   // only fork in the `expanded` variant — keyed by whether any chrome is requested.
@@ -1559,7 +1581,7 @@ export function VelocityStrip({
             style={{
               fontSize: 10,
               fontFamily: 'Inter, sans-serif',
-              ...getLossStyle(loss, lossThresholds),
+              ...getLossStyle(lastLoss, lossThresholds),
             }}
           >
             Loss: {loss}%

@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:713f0a1cfc7216584882ff47e07519f445b7f05d144f19a25db08018d4949112",
+  "componentBarrelHash": "sha256:a97eb90f53e33165d5f90c7ece5b3970c3fdf6ff533aef91a578874bd5fd40f7",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -1993,7 +1993,7 @@
         "StatusAffordance"
       ],
       "libDependents": 2,
-      "storyRefs": 5,
+      "storyRefs": 9,
       "xproj": {
         "mobile": 0,
         "mcp": 5,
@@ -2019,7 +2019,7 @@
         "rawText": 0,
         "inlineStyle": 5,
         "rawHex": 0,
-        "loc": 665,
+        "loc": 691,
         "score": 18
       },
       "tier": "organism",
@@ -2078,10 +2078,7 @@
         "readingText",
         "gapAmountText",
         "heroFor",
-        "surplusText",
-        "Hero",
-        "cn",
-        "Fact"
+        "surplusText"
       ],
       "libDependents": 2,
       "storyRefs": 0,
@@ -2089,8 +2086,8 @@
         "mobile": 0,
         "mcp": 0,
         "dash": 0,
-        "audiobook": 4,
-        "total": 4
+        "audiobook": 0,
+        "total": 0
       },
       "dependsOn": [
         "GoalMilestoneWeekStrip",
@@ -2102,11 +2099,11 @@
         "rawText": 0,
         "inlineStyle": 2,
         "rawHex": 0,
-        "loc": 382,
+        "loc": 413,
         "score": 8
       },
       "tier": "organism",
-      "verdict": "keep-core",
+      "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -2122,7 +2119,7 @@
         "GoalMilestoneTileProps"
       ],
       "libDependents": 1,
-      "storyRefs": 2,
+      "storyRefs": 3,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
@@ -2325,16 +2322,26 @@
       "dir": "workout",
       "family": "custom/Workout",
       "exports": [
+        "resolveCalibratingNote",
         "calibratingMarks",
         "CalibratingHatch",
-        "CalibratingLabels",
+        "calibratingTipWidth",
+        "CalibratingInfo",
         "DEFAULT_CALIBRATING_NOTE",
+        "CALIBRATING_EXPLANATION",
+        "CALIBRATING_TIP_LABEL",
+        "InfoTargetCorner",
         "CalibratingMarks",
         "CalibratingMarksInput",
-        "ChartText"
+        "warnRepeatedStatus",
+        "reaches",
+        "alongLine",
+        "coversMark",
+        "placeTarget",
+        "TipBody"
       ],
       "libDependents": 2,
-      "storyRefs": 0,
+      "storyRefs": 1,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
@@ -2343,17 +2350,20 @@
         "total": 0
       },
       "dependsOn": [
-        "GoalTrajectoryPlot"
+        "GoalTrajectoryPlot",
+        "TipTrigger",
+        "Typography",
+        "icons"
       ],
       "leak": {
-        "rawView": 0,
+        "rawView": 3,
         "rawText": 0,
-        "inlineStyle": 0,
+        "inlineStyle": 2,
         "rawHex": 0,
-        "loc": 124,
-        "score": 0
+        "loc": 250,
+        "score": 7
       },
-      "tier": "molecule",
+      "tier": "organism",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -2373,7 +2383,8 @@
         "GoalTrajectoryChartProps",
         "withoutRecords",
         "withoutLead",
-        "summarize"
+        "summarize",
+        "calibratingSummary"
       ],
       "libDependents": 2,
       "storyRefs": 1,
@@ -2388,16 +2399,15 @@
         "GoalTrajectoryBand",
         "GoalTrajectoryCalibrating",
         "GoalTrajectoryPlot",
-        "TipTrigger",
-        "Typography"
+        "GoalTrajectoryWeekTips"
       ],
       "leak": {
-        "rawView": 5,
+        "rawView": 4,
         "rawText": 1,
-        "inlineStyle": 8,
+        "inlineStyle": 6,
         "rawHex": 0,
-        "loc": 393,
-        "score": 22
+        "loc": 436,
+        "score": 17
       },
       "tier": "organism",
       "verdict": "keep-internal",
@@ -2422,8 +2432,7 @@
         "WEEK_COLUMN",
         "GoalTrajectoryMiniData",
         "GoalTrajectoryMiniProps",
-        "alpha",
-        "starPoints"
+        "alpha"
       ],
       "libDependents": 1,
       "storyRefs": 0,
@@ -2443,7 +2452,7 @@
         "rawText": 0,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 339,
+        "loc": 342,
         "score": 3
       },
       "tier": "organism",
@@ -2464,11 +2473,12 @@
         "planeBox",
         "PlaneLip",
         "ruleLabelX",
-        "starPoints",
+        "starMark",
         "GoalTrajectoryPlot",
         "STATUS_TOKEN",
         "DEPTH",
         "DEFAULT_LEFT_SHADOW_SPREAD",
+        "DELOAD_WASH",
         "PLANE_RADIUS",
         "DOT_RADIUS",
         "DOT_RING",
@@ -2484,7 +2494,7 @@
         "isBaseline",
         "Gridline"
       ],
-      "libDependents": 5,
+      "libDependents": 7,
       "storyRefs": 0,
       "xproj": {
         "mobile": 0,
@@ -2495,15 +2505,60 @@
       },
       "dependsOn": [
         "GoalTrajectoryBand",
-        "GoalTrajectoryCalibrating"
+        "GoalTrajectoryCalibrating",
+        "SvgIcon",
+        "icons"
       ],
       "leak": {
         "rawView": 0,
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 633,
+        "loc": 600,
         "score": 0
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "GoalTrajectoryWeekTips",
+      "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryWeekTips.tsx",
+      "dir": "workout",
+      "family": "custom/Workout",
+      "exports": [
+        "nextRovingWeek",
+        "weekTipPlacement",
+        "GoalTrajectoryWeekTips",
+        "useDeloadBadge",
+        "spill"
+      ],
+      "libDependents": 1,
+      "storyRefs": 0,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Metric",
+        "Pill",
+        "PrBadge",
+        "TipTrigger",
+        "Tooltip",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 8,
+        "rawText": 0,
+        "inlineStyle": 5,
+        "rawHex": 0,
+        "loc": 186,
+        "score": 18
       },
       "tier": "organism",
       "verdict": "keep-internal",
@@ -2685,10 +2740,12 @@
         "HeadphonesIcon",
         "KanbanIcon",
         "BotIcon",
-        "BrainIcon"
+        "BrainIcon",
+        "STAR_ICON_PATH",
+        "STAR_ICON_BOX"
       ],
-      "libDependents": 12,
-      "storyRefs": 7,
+      "libDependents": 14,
+      "storyRefs": 8,
       "xproj": {
         "mobile": 0,
         "mcp": 7,
@@ -2704,7 +2761,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 250,
+        "loc": 260,
         "score": 0
       },
       "tier": "molecule",
@@ -3408,7 +3465,7 @@
         "MetricProps",
         "MetricGroupProps"
       ],
-      "libDependents": 3,
+      "libDependents": 4,
       "storyRefs": 1,
       "xproj": {
         "mobile": 8,
@@ -3752,7 +3809,7 @@
         "PillProps",
         "resolveSize"
       ],
-      "libDependents": 14,
+      "libDependents": 15,
       "storyRefs": 7,
       "xproj": {
         "mobile": 0,
@@ -3791,7 +3848,8 @@
         "toneOf",
         "setLine",
         "StateTag",
-        "cn"
+        "cn",
+        "colorFor"
       ],
       "libDependents": 1,
       "storyRefs": 3,
@@ -3812,12 +3870,12 @@
         "icons"
       ],
       "leak": {
-        "rawView": 18,
+        "rawView": 20,
         "rawText": 12,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 488,
-        "score": 32
+        "loc": 593,
+        "score": 34
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -3954,8 +4012,8 @@
         "PRType",
         "PrBadgeProps"
       ],
-      "libDependents": 4,
-      "storyRefs": 2,
+      "libDependents": 5,
+      "storyRefs": 3,
       "xproj": {
         "mobile": 0,
         "mcp": 2,
@@ -5632,7 +5690,7 @@
         "SurfaceProps"
       ],
       "libDependents": 17,
-      "storyRefs": 61,
+      "storyRefs": 65,
       "xproj": {
         "mobile": 22,
         "mcp": 12,
@@ -5663,9 +5721,10 @@
       "exports": [
         "SvgIcon",
         "IconProps",
-        "SvgIconProps"
+        "SvgIconProps",
+        "ICON_VIEWBOX"
       ],
-      "libDependents": 4,
+      "libDependents": 5,
       "storyRefs": 0,
       "xproj": {
         "mobile": 0,
@@ -5680,7 +5739,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 51,
+        "loc": 54,
         "score": 0
       },
       "tier": "atom",
@@ -6190,10 +6249,14 @@
       "family": "ui/tooltip",
       "exports": [
         "TipTrigger",
-        "TipTriggerProps"
+        "TipTriggerProps",
+        "PinnedTipContext",
+        "useDismissOnWeb",
+        "onKey",
+        "onPointer"
       ],
-      "libDependents": 4,
-      "storyRefs": 0,
+      "libDependents": 5,
+      "storyRefs": 2,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
@@ -6205,12 +6268,12 @@
         "Tooltip"
       ],
       "leak": {
-        "rawView": 0,
+        "rawView": 3,
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 71,
-        "score": 0
+        "loc": 122,
+        "score": 3
       },
       "tier": "organism",
       "verdict": "keep-internal",
@@ -6316,7 +6379,7 @@
         "show",
         "hide"
       ],
-      "libDependents": 10,
+      "libDependents": 11,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -6520,8 +6583,8 @@
         "LabelProps",
         "OverlineProps"
       ],
-      "libDependents": 49,
-      "storyRefs": 19,
+      "libDependents": 50,
+      "storyRefs": 21,
       "xproj": {
         "mobile": 0,
         "mcp": 10,
@@ -6653,6 +6716,7 @@
         "velocityLossBand",
         "getVelocityLossColor",
         "velocityLossForRep",
+        "shownVelocityLoss",
         "VelocityLossBands",
         "DualVelocityStrip",
         "VelocityStrip",
@@ -6695,7 +6759,7 @@
         "rawText": 4,
         "inlineStyle": 15,
         "rawHex": 0,
-        "loc": 1587,
+        "loc": 1609,
         "score": 50
       },
       "tier": "molecule",
@@ -7789,15 +7853,19 @@
     ],
     [
       "GoalTrajectoryCalibrating",
-      "GoalTrajectoryPlot"
+      "icons"
     ],
     [
-      "GoalTrajectoryChart",
+      "GoalTrajectoryCalibrating",
       "TipTrigger"
     ],
     [
-      "GoalTrajectoryChart",
+      "GoalTrajectoryCalibrating",
       "Typography"
+    ],
+    [
+      "GoalTrajectoryCalibrating",
+      "GoalTrajectoryPlot"
     ],
     [
       "GoalTrajectoryChart",
@@ -7806,6 +7874,10 @@
     [
       "GoalTrajectoryChart",
       "GoalTrajectoryCalibrating"
+    ],
+    [
+      "GoalTrajectoryChart",
+      "GoalTrajectoryWeekTips"
     ],
     [
       "GoalTrajectoryChart",
@@ -7821,11 +7893,43 @@
     ],
     [
       "GoalTrajectoryPlot",
+      "SvgIcon"
+    ],
+    [
+      "GoalTrajectoryPlot",
+      "icons"
+    ],
+    [
+      "GoalTrajectoryPlot",
       "GoalTrajectoryBand"
     ],
     [
       "GoalTrajectoryPlot",
       "GoalTrajectoryCalibrating"
+    ],
+    [
+      "GoalTrajectoryWeekTips",
+      "Typography"
+    ],
+    [
+      "GoalTrajectoryWeekTips",
+      "Metric"
+    ],
+    [
+      "GoalTrajectoryWeekTips",
+      "Pill"
+    ],
+    [
+      "GoalTrajectoryWeekTips",
+      "TipTrigger"
+    ],
+    [
+      "GoalTrajectoryWeekTips",
+      "Tooltip"
+    ],
+    [
+      "GoalTrajectoryWeekTips",
+      "PrBadge"
     ],
     [
       "GoalWeekColumnsChart",
@@ -8381,7 +8485,7 @@
     ]
   ],
   "summary": {
-    "total": 175,
+    "total": 176,
     "dead": [
       "Autocomplete",
       "Avatar",
@@ -8815,7 +8919,7 @@
         "rawText": 4,
         "inlineStyle": 15,
         "rawHex": 0,
-        "loc": 1587,
+        "loc": 1609,
         "score": 50
       },
       {
@@ -8899,20 +9003,20 @@
         "score": 34
       },
       {
-        "name": "ReadinessCheck",
+        "name": "PinnedLiveStrip",
         "tier": "organism",
-        "rawView": 7,
-        "rawText": 7,
-        "inlineStyle": 9,
+        "rawView": 20,
+        "rawText": 12,
+        "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 278,
-        "score": 32
+        "loc": 593,
+        "score": 34
       }
     ],
     "substitution": {
       "library(titan)": {
         "Text": 76,
-        "View": 145,
+        "View": 148,
         "TouchableOpacity": 0,
         "Pressable": 58,
         "TextInput": 3,

@@ -29,7 +29,7 @@ import {
   PlaneLip,
   PlotDefs,
   planeBox,
-  starPoints,
+  starMark,
   trajectoryPalette,
   useDefIds,
   type LayerProps,
@@ -42,8 +42,11 @@ import {
   type EntranceState,
 } from './goalTrajectoryMotion'
 
-/** The big chart's marks at card scale: stroke, dot and star all step down together. */
-export const MINI_MARKS = { stroke: 2, dot: 3.5, ring: 1.5, star: 5.5 } as const
+/**
+ * The big chart's marks at card scale: stroke, dot and star all step down together. The
+ * star is an icon size, one step under the phone chart's 14 because every mini mark is.
+ */
+export const MINI_MARKS = { stroke: 2, dot: 3.5, ring: 1.5, star: 12 } as const
 
 /** No axis gutters: the plane runs edge to edge and its lip sits on the canvas floor. */
 export const MINI_INSETS: PlotInsets = { left: 0, right: 0, top: 8, bottom: 1 }
@@ -197,9 +200,9 @@ function MiniNextTarget({ geometry, palette }: LayerProps) {
 function MiniPoint({ coord, palette }: { coord: ActualCoord; palette: LayerProps['palette'] }) {
   if (coord.isPR) {
     return (
-      <polygon
+      <path
         data-testid="goal-trajectory-mini-pr-star"
-        points={starPoints(coord.x, coord.y, MINI_MARKS.star)}
+        {...starMark(coord.x, coord.y, MINI_MARKS.star)}
         fill={palette.star}
       />
     )
