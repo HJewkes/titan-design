@@ -63,38 +63,28 @@ describe('VelocityBandOverlay', () => {
     expect(screen.getByText('VL 30%')).toBeTruthy()
   })
 
-  it('counts the reps past the cue, as a bracket or as a badge', () => {
-    const { unmount } = renderOverlay(TIER_B_PAST_CUE)
-    expect(screen.getByTestId('band-past-cue-bracket')).toBeTruthy()
+  it('counts the reps past the cue as a badge, with no bracket (round 2)', () => {
+    renderOverlay(TIER_B_PAST_CUE)
+    expect(screen.getByTestId('band-past-cue')).toBeTruthy()
     expect(screen.getByText('+2')).toBeTruthy()
-    unmount()
-    renderOverlay(TIER_B_PAST_CUE, { pastCue: 'badge' })
     expect(screen.queryByTestId('band-past-cue-bracket')).toBeNull()
-    expect(screen.getByText('+2')).toBeTruthy()
   })
 
-  it('prints the tier a fallback label verbatim', () => {
+  it('keeps the target-RPE fallback off the chart; the zone reads its range (round 2)', () => {
     renderOverlay(TIER_A_TARGET_RPE_FALLBACK)
-    expect(screen.getByText('RPE 8 · by reps until calibrated')).toBeTruthy()
+    expect(screen.getByText('8 to 12')).toBeTruthy()
+    expect(screen.queryByText(/RPE 8/)).toBeNull()
   })
 
-  it('outlines only the low-confidence bars, and only when asked', () => {
-    const { unmount } = renderOverlay(TIER_B_LOW_CONFIDENCE)
-    expect(screen.getByTestId('band-low-confidence-9')).toBeTruthy()
-    expect(screen.getByTestId('band-low-confidence-10')).toBeTruthy()
-    expect(screen.queryByTestId('band-low-confidence-8')).toBeNull()
-    unmount()
-    renderOverlay(TIER_B_LOW_CONFIDENCE, { lowConfidence: 'fade' })
-    expect(screen.queryByTestId('band-low-confidence-9')).toBeNull()
+  it('adds no mark over a low-confidence bar; the chart only fades it (round 2)', () => {
+    const { container } = renderOverlay(TIER_B_LOW_CONFIDENCE)
+    expect(container.querySelector('[data-testid^="band-low-confidence"]')).toBeNull()
   })
 
-  it('marks a setting change with the caller label, or leaves it unmarked', () => {
-    const { unmount } = renderOverlay(TIER_B_SUSPENDED_TAIL)
+  it('always marks a setting change with the caller label (round 2)', () => {
+    renderOverlay(TIER_B_SUSPENDED_TAIL)
     expect(screen.getByTestId('band-suspension')).toBeTruthy()
     expect(screen.getByText('Setting changed')).toBeTruthy()
-    unmount()
-    renderOverlay(TIER_B_SUSPENDED_TAIL, { suspension: 'none' })
-    expect(screen.queryByTestId('band-suspension')).toBeNull()
   })
 
   it('draws nothing but its layers before the plot is measured', () => {

@@ -32,10 +32,12 @@ Markers:
   always neutral ink.** In tier a every line is neutral.
 - **The cue.** Strictly one ending cue per set. The guard may fire before `repsLow`. The marker whose
   condition fired it is drawn solid and heavier; a condition that became true later is drawn solid
-  without the extra weight. Reps after the cue are counted as `+n`. Nothing ends the set.
+  without the extra weight. Reps after the cue are counted as a `+n` badge (round 2). Nothing ends the set.
 - **A mid-set setting change** suspends the bands from that rep to the end of the set. Those bars
-  draw neutral; the rep count carries on.
-- **Low confidence.** A tier b reading outside the fitted RIR span keeps its band, drawn faded.
+  draw neutral and dimmed, behind a labelled mark at the change (round 2); the rep count carries
+  on, and an effort line keeps spanning the chart.
+- **Low confidence.** A tier b reading outside the fitted RIR span keeps its band, drawn faded
+  (round 2: faded fill only, no outline).
 
 Resistance families reach titan only as data: chains and eccentric overload arrive as tier a
 (`velocity_loss`, no RPE); damper as `velocity_loss` with a guard only for a typed percent;
@@ -102,8 +104,8 @@ New in this PR, all under `custom/Workout`, none in the barrel yet:
 - `velocityBandGeometry.ts`: `velocityBandGeometry(scale, layout)`, pure, no colour. Also
   `bandSlotCount`, `barTone`, `lineBand` (the colour rule: tier a all neutral, loss guard neutral).
 - `VelocityBandOverlay.tsx`: paints the geometry from `renderReference`, an under layer (zone
-  tint) and an over layer (lines, labels, `+n`, marks). `treatment` holds the round options and
-  collapses to the owner's picks.
+  tint) and an over layer (lines, labels, `+n`, marks). `treatment` holds only the options still
+  open after round 2 (the zone style).
 - `VelocityBandPreview.tsx`: `SetBarChart` plus the overlay, for stories only until step E.
 
 ## 4. Fixtures
@@ -111,7 +113,8 @@ New in this PR, all under `custom/Workout`, none in the barrel yet:
 `velocityBandScale-fixture.ts`, hand-copied from resolver output for one tier b profile (0.30 m/s at
 RIR 0, 0.06 m/s per RIR) and ten reps slowing from 0.66 to 0.40 m/s: tier b 8 to 12 with an RPE 9
 cap; tier a with a planned VL 30% guard that fired on rep 8, two reps past; tier b with both guards;
-tier b two reps past a rep-count cue; tier a `target_rpe` falling back to reps; tier b low
+tier b two reps past a rep-count cue; tier a `target_rpe` falling back to reps, with the hero
+eyebrow `RPE 8 · 8-12 reps` (round 2; the separator is a round 3 question); tier b low
 confidence on the last two reps; tier b with a setting change on rep 6; tier a with no loss number;
 and the degenerate **no reps yet** set. Geometry tests add: an unmeasured plot, a line above the
 plot (clamped), a loss line with no best rep yet (not drawn), three guards (two drawn), an inverted

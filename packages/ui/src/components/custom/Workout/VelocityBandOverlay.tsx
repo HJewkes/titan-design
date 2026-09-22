@@ -16,24 +16,17 @@ import {
 import type { VelocityBandIndex, VelocityBandScale } from './VelocityBandScale'
 
 /**
- * Round options under review (VW-448 round 1). Each collapses to the owner's pick afterwards.
- * `zone`: tint the target slots, or a bracket along the baseline. `lowConfidence`: `fade-outline`
- * adds a dashed outline to the faded bar the chart already draws. `pastCue`: a bracket over the
- * reps past the cue, or a badge over the last one. `suspension`: a dotted mark at the change.
+ * Options still under review (VW-448 round 1): `zone` tints the target slots or brackets them.
+ * Round 2 fixed the rest: the past-cue count is a badge, a low-confidence bar is only faded by the
+ * chart, and a setting change always gets its labelled mark.
  */
 export interface VelocityBandTreatment {
   zone: 'tint' | 'bracket'
-  lowConfidence: 'fade' | 'fade-outline'
-  pastCue: 'bracket' | 'badge'
-  suspension: 'mark' | 'none'
   showEdges: boolean
 }
 
 export const DEFAULT_BAND_TREATMENT: VelocityBandTreatment = {
   zone: 'tint',
-  lowConfidence: 'fade-outline',
-  pastCue: 'bracket',
-  suspension: 'mark',
   showEdges: false,
 }
 
@@ -162,7 +155,7 @@ function ZoneOver({
         color={inks.ink}
         style={{ top: 0, left: 0, width: Math.max(0, zone.endX - LABEL_INSET) }}
         testID="band-zone-label"
-        alignRight
+        align="right"
       />
     </>
   )
@@ -173,17 +166,17 @@ function Label({
   color,
   style,
   testID,
-  alignRight = false,
+  align = 'left',
 }: {
   text: string
   color: string
   style: ViewStyle
   testID: string
-  alignRight?: boolean
+  align?: 'left' | 'center' | 'right'
 }) {
   return (
     <View style={absolute(style)} testID={testID}>
-      <Typography variant="caption" style={{ color, textAlign: alignRight ? 'right' : 'left' }}>
+      <Typography variant="caption" style={{ color, textAlign: align }}>
         {text}
       </Typography>
     </View>
@@ -213,54 +206,21 @@ function GuardLine({ line, inks }: { line: BandLineGeometry; inks: Inks }) {
         color={color}
         style={{ right: 0, bottom: Math.max(0, labelBottom) }}
         testID={`band-line-label-${line.key}`}
-        alignRight
+        align="right"
       />
     </>
   )
 }
 
-function PastCueMark({
-  past,
-  style,
-  inks,
-}: {
-  past: BandPastCueGeometry
-  style: VelocityBandTreatment['pastCue']
-  inks: Inks
-}) {
-  const bottom = past.top + PAST_CUE_LIFT
-  if (style === 'badge') {
-    return (
-      <Label
-        text={past.label}
-        color={inks.ink}
-        style={{ left: past.x0, width: past.x1 - past.x0, bottom }}
-        testID="band-past-cue"
-      />
-    )
-  }
+function PastCueBadge({ past, inks }: { past: BandPastCueGeometry; inks: Inks }) {
   return (
-    <>
-      <View
-        testID="band-past-cue-bracket"
-        style={absolute({
-          left: past.x0,
-          width: past.x1 - past.x0,
-          bottom,
-          height: 4,
-          borderTopWidth: 1,
-          borderLeftWidth: 1,
-          borderRightWidth: 1,
-          borderColor: inks.ink,
-        })}
-      />
-      <Label
-        text={past.label}
-        color={inks.ink}
-        style={{ left: past.x0, bottom: bottom + 4 }}
-        testID="band-past-cue"
-      />
-    </>
+    <Label
+      text={past.label}
+      color={inks.ink}
+      style={{ left: past.x0, width: past.x1 - past.x0, bottom: past.top + PAST_CUE_LIFT }}
+      testID="band-past-cue"
+      align="center"
+    />
   )
 }
 
@@ -295,30 +255,6 @@ function SuspensionMark({
           testID="band-suspension-label"
         />
       ) : null}
-    </>
-  )
-}
-
-function LowConfidenceOutlines({ geometry }: { geometry: VelocityBandGeometry }) {
-  return (
-    <>
-      {geometry.bars
-        .filter((bar) => bar.lowConfidence && bar.band != null)
-        .map((bar) => (
-          <View
-            key={bar.repNumber}
-            testID={`band-low-confidence-${bar.repNumber}`}
-            style={absolute({
-              left: bar.x,
-              width: bar.width,
-              bottom: 0,
-              height: bar.height,
-              borderWidth: 1.5,
-              borderStyle: 'dashed',
-              borderColor: BAND_INK[bar.band!],
-            })}
-          />
-        ))}
     </>
   )
 }
@@ -367,22 +303,17 @@ function UnderMarks({ geometry, plotHeight, treatment, inks }: MarksProps) {
   )
 }
 
-function OverMarks({ geometry, plotHeight, treatment, inks }: MarksProps) {
+function OverMarks({ geometry, plotHeight, inks }: MarksProps) {
   return (
     <>
       {geometry.zone ? <ZoneOver zone={geometry.zone} plotHeight={plotHeight} inks={inks} /> : null}
-      {treatment.suspension === 'mark' && geometry.suspension ? (
+      {geometry.suspension ? (
         <SuspensionMark mark={geometry.suspension} plotHeight={plotHeight} inks={inks} />
-      ) : null}
-      {treatment.lowConfidence === 'fade-outline' ? (
-        <LowConfidenceOutlines geometry={geometry} />
       ) : null}
       {geometry.lines.map((line) => (
         <GuardLine key={line.key} line={line} inks={inks} />
       ))}
-      {geometry.pastCue ? (
-        <PastCueMark past={geometry.pastCue} style={treatment.pastCue} inks={inks} />
-      ) : null}
+      {geometry.pastCue ? <PastCueBadge past={geometry.pastCue} inks={inks} /> : null}
     </>
   )
 }

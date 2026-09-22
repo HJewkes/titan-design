@@ -24,6 +24,22 @@ that someone can tell whether a future change invalidates the reasoning.
 
 ---
 
+## Effort-band overlay: past-cue bracket, low-confidence outline, unmarked setting change, and the on-chart calibration fallback — rejected 2026-09-21
+
+**Tried:** four pairs of treatments for `VelocityBandOverlay` (VW-448 round 2, `Lab/Decisions/Effort Bands`, 1920 and 360, dark). The sets were tier b 8 to 10 with two reps past the rep cue; tier a with an RPE 8 target cueing by reps; tier b with the last two reps outside the fitted RIR range; and tier b with a setting change on rep 6.
+- **Past cue as a bracket (Cb):** a thin bracket over the reps after the cue with `+2` above it.
+- **Low confidence as faded fill plus a dashed outline (Lo):** a dashed box in the band colour around each faded bar.
+- **Setting change with dimmed bars only (Sn):** the later bars dimmed and no mark or label.
+- **The fallback on the chart:** the zone label read `RPE 8 · by reps until calibrated`.
+
+**Chosen:** the `+2` badge over the reps past the cue (Cg); the faded fill alone (Lf); dimmed bars plus a labelled mark at the change (Sm); and the fallback in the hero eyebrow, naming the target and the range that is really cueing. The owner's words on the fallback: "If we're cueing by reps, show RPE 8 * 8-12 reps instead of "by reps until calibrated"". The RPE line keeps spanning the chart after a setting change ("keep across").
+
+**Why:** the owner's picks. None came with a stated reason, so these are recorded as preferences. Re-open them only against a rendered alternative, not an argument. The fallback ruling does carry its own reason: say what is cueing (the rep range) rather than why effort is unavailable.
+
+**Code:** deleted. The `pastCue`, `lowConfidence` and `suspension` options on `VelocityBandTreatment`, the bracket and outline marks, and their tests. `Lab/Decisions/Effort Bands` keeps a `Round2Chosen` story rendering the shipped overlay. The separator in `RPE 8 · 8-12 reps` is still an open question for round 3.
+
+---
+
 ## Goal chart week tip "rows" layout — rejected 2026-09-21
 
 **Tried:** two bodies for a week's tip (titan-0201 round 6). **A, figure**: the reading as a

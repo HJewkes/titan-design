@@ -9,8 +9,10 @@ import type { VelocityBandScale } from './VelocityBandScale'
  * band edges (RIR 2.5, 1.5, 0.5) sit at 0.45, 0.39 and 0.33 m/s and an RPE 9 cap (RIR 1) at 0.36.
  */
 export interface BandScaleFixture {
-  /** What the set is, for the story frame's eyebrow. */
+  /** What the set is, for the story frame's heading. */
   title: string
+  /** What the hero eyebrow prints above the chart, when the set needs one. */
+  eyebrow?: string
   velocities: number[]
   scale: VelocityBandScale
 }
@@ -113,17 +115,18 @@ export const TIER_B_PAST_CUE: BandScaleFixture = {
   },
 }
 
-/** A target_rpe row before a profile exists: the rep range cues, and the label says so. */
+/**
+ * A target_rpe row before a profile exists: the rep range cues. The hero eyebrow names the target
+ * and the range that is really cueing (round 2); the zone keeps its plain range label.
+ */
 export const TIER_A_TARGET_RPE_FALLBACK: BandScaleFixture = {
   title: 'Tier a · RPE 8 target, cueing by reps',
+  eyebrow: 'RPE 8 · 8-12 reps',
   velocities: TEN_REPS.slice(0, 7),
   scale: {
     meaning: 'velocity_loss',
     repBands: TEN_REPS_LOSS.slice(0, 7),
-    markers: {
-      goal: { ...repRange8to12, label: 'RPE 8 · by reps until calibrated' },
-      guards: [],
-    },
+    markers: { goal: repRange8to12, guards: [] },
     cue: { atRep: null, repsPast: 0 },
   },
 }

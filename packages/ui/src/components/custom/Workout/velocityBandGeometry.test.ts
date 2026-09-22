@@ -165,10 +165,14 @@ describe('rep-range zone', () => {
     expect(g.zone).toMatchObject({ repsLow: 8, repsHigh: 12 })
   })
 
-  it('carries the tier a fallback label verbatim', () => {
-    expect(geometryOf(TIER_A_TARGET_RPE_FALLBACK).zone!.label).toBe(
-      'RPE 8 · by reps until calibrated'
-    )
+  it('carries the caller label verbatim', () => {
+    const goal = TIER_A_TARGET_RPE_FALLBACK.scale.markers.goal as VelocityBandRepMarker
+    const scale: VelocityBandScale = {
+      ...TIER_A_TARGET_RPE_FALLBACK.scale,
+      markers: { goal: { ...goal, label: '8–12 · any wording' }, guards: [] },
+    }
+    const g = velocityBandGeometry(scale, layoutFor(TIER_A_TARGET_RPE_FALLBACK))
+    expect(g.zone!.label).toBe('8–12 · any wording')
   })
 
   it('draws no horizontal line for a rep-range goal', () => {
