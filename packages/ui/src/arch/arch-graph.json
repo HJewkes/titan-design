@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:a97eb90f53e33165d5f90c7ece5b3970c3fdf6ff533aef91a578874bd5fd40f7",
+  "componentBarrelHash": "sha256:f4cf4b1fa80648e2daa5b36fe5ca1c298630f4479ab998b06b698c64159cbdc0",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -541,8 +541,8 @@
         "ButtonIconProps",
         "ButtonSpinnerProps"
       ],
-      "libDependents": 1,
-      "storyRefs": 13,
+      "libDependents": 2,
+      "storyRefs": 14,
       "xproj": {
         "mobile": 14,
         "mcp": 1,
@@ -637,8 +637,8 @@
         "CardInsetProps",
         "useCardDepth"
       ],
-      "libDependents": 12,
-      "storyRefs": 11,
+      "libDependents": 13,
+      "storyRefs": 13,
       "xproj": {
         "mobile": 69,
         "mcp": 3,
@@ -662,6 +662,47 @@
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": true
+    },
+    {
+      "name": "Carousel",
+      "file": "packages/ui/src/components/ui/carousel/Carousel.tsx",
+      "dir": "ui",
+      "family": "ui/carousel",
+      "exports": [
+        "CarouselSlide",
+        "Carousel",
+        "CarouselPeek",
+        "CarouselControlsSize",
+        "CarouselProps",
+        "CarouselSlideProps",
+        "collectSlides"
+      ],
+      "libDependents": 1,
+      "storyRefs": 4,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Button",
+        "icons"
+      ],
+      "leak": {
+        "rawView": 12,
+        "rawText": 1,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 447,
+        "score": 13
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Checkbox",
@@ -926,7 +967,7 @@
         "loc": 276,
         "score": 1
       },
-      "tier": "molecule",
+      "tier": "atom",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -1206,39 +1247,6 @@
       "standard": false
     },
     {
-      "name": "EmptyState",
-      "file": "packages/ui/src/components/ui/empty-state/EmptyState.tsx",
-      "dir": "ui",
-      "family": "ui/empty-state",
-      "exports": [
-        "EmptyState",
-        "EmptyStateProps"
-      ],
-      "libDependents": 2,
-      "storyRefs": 1,
-      "xproj": {
-        "mobile": 1,
-        "mcp": 5,
-        "dash": 4,
-        "audiobook": 1,
-        "total": 11
-      },
-      "dependsOn": [],
-      "leak": {
-        "rawView": 3,
-        "rawText": 2,
-        "inlineStyle": 0,
-        "rawHex": 0,
-        "loc": 55,
-        "score": 5
-      },
-      "tier": "atom",
-      "verdict": "keep-core",
-      "deadByAssociation": false,
-      "audited": "unaudited",
-      "standard": true
-    },
-    {
       "name": "ExerciseCard",
       "file": "packages/ui/src/components/custom/Workout/ExerciseCard.tsx",
       "dir": "workout",
@@ -1465,9 +1473,12 @@
       "file": "packages/ui/src/components/custom/ActiveWork/Eyebrow.tsx",
       "dir": "custom",
       "family": "custom/ActiveWork",
-      "exports": [],
-      "libDependents": 0,
-      "storyRefs": 0,
+      "exports": [
+        "Eyebrow",
+        "EyebrowProps"
+      ],
+      "libDependents": 7,
+      "storyRefs": 1,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
@@ -1486,42 +1497,7 @@
         "loc": 20,
         "score": 0
       },
-      "tier": "molecule",
-      "verdict": "dead",
-      "deadByAssociation": false,
-      "audited": "unaudited",
-      "standard": false
-    },
-    {
-      "name": "Eyebrow",
-      "file": "packages/ui/src/components/ui/eyebrow/Eyebrow.tsx",
-      "dir": "ui",
-      "family": "ui/eyebrow",
-      "exports": [
-        "Eyebrow",
-        "EyebrowProps"
-      ],
-      "libDependents": 8,
-      "storyRefs": 1,
-      "xproj": {
-        "mobile": 0,
-        "mcp": 0,
-        "dash": 0,
-        "audiobook": 0,
-        "total": 0
-      },
-      "dependsOn": [
-        "Typography"
-      ],
-      "leak": {
-        "rawView": 0,
-        "rawText": 0,
-        "inlineStyle": 0,
-        "rawHex": 0,
-        "loc": 27,
-        "score": 0
-      },
-      "tier": "molecule",
+      "tier": "atom",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -1684,7 +1660,7 @@
         "loc": 131,
         "score": 7
       },
-      "tier": "organism",
+      "tier": "molecule",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -1766,7 +1742,7 @@
         "loc": 64,
         "score": 1
       },
-      "tier": "molecule",
+      "tier": "atom",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -1992,8 +1968,8 @@
         "BasisTip",
         "StatusAffordance"
       ],
-      "libDependents": 2,
-      "storyRefs": 9,
+      "libDependents": 3,
+      "storyRefs": 6,
       "xproj": {
         "mobile": 0,
         "mcp": 5,
@@ -2024,6 +2000,56 @@
       },
       "tier": "organism",
       "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "goalCarousel-fixture",
+      "file": "packages/ui/src/components/custom/Workout/goalCarousel-fixture.tsx",
+      "dir": "workout",
+      "family": "custom/Workout",
+      "exports": [
+        "LiftCard",
+        "liftSlides",
+        "muscleSlides",
+        "WholeBodyStandIn",
+        "wholeBodySlides",
+        "LiftFixture",
+        "NINE_LIFTS",
+        "LONG_NAME_LIFTS",
+        "NOTED_LIFTS",
+        "MuscleFixture",
+        "MUSCLES",
+        "liftCardProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Card",
+        "Carousel",
+        "GoalCard",
+        "GoalMuscleCard",
+        "Metric",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 199,
+        "score": 1
+      },
+      "tier": "organism",
+      "verdict": "dead",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -2078,7 +2104,10 @@
         "readingText",
         "gapAmountText",
         "heroFor",
-        "surplusText"
+        "surplusText",
+        "Hero",
+        "cn",
+        "Fact"
       ],
       "libDependents": 2,
       "storyRefs": 0,
@@ -2086,8 +2115,8 @@
         "mobile": 0,
         "mcp": 0,
         "dash": 0,
-        "audiobook": 0,
-        "total": 0
+        "audiobook": 4,
+        "total": 4
       },
       "dependsOn": [
         "GoalMilestoneWeekStrip",
@@ -2103,7 +2132,7 @@
         "score": 8
       },
       "tier": "organism",
-      "verdict": "keep-internal",
+      "verdict": "keep-core",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -2119,7 +2148,7 @@
         "GoalMilestoneTileProps"
       ],
       "libDependents": 1,
-      "storyRefs": 3,
+      "storyRefs": 2,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
@@ -2203,7 +2232,7 @@
         "GoalMuscleCardProps",
         "useStatusColor"
       ],
-      "libDependents": 0,
+      "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -2229,7 +2258,7 @@
         "score": 22
       },
       "tier": "organism",
-      "verdict": "keep-app",
+      "verdict": "keep-core",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -2322,26 +2351,16 @@
       "dir": "workout",
       "family": "custom/Workout",
       "exports": [
-        "resolveCalibratingNote",
         "calibratingMarks",
         "CalibratingHatch",
-        "calibratingTipWidth",
-        "CalibratingInfo",
+        "CalibratingLabels",
         "DEFAULT_CALIBRATING_NOTE",
-        "CALIBRATING_EXPLANATION",
-        "CALIBRATING_TIP_LABEL",
-        "InfoTargetCorner",
         "CalibratingMarks",
         "CalibratingMarksInput",
-        "warnRepeatedStatus",
-        "reaches",
-        "alongLine",
-        "coversMark",
-        "placeTarget",
-        "TipBody"
+        "ChartText"
       ],
       "libDependents": 2,
-      "storyRefs": 1,
+      "storyRefs": 0,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
@@ -2350,10 +2369,7 @@
         "total": 0
       },
       "dependsOn": [
-        "GoalTrajectoryPlot",
-        "TipTrigger",
-        "Typography",
-        "icons"
+        "GoalTrajectoryPlot"
       ],
       "leak": {
         "rawView": 3,
@@ -2363,7 +2379,7 @@
         "loc": 250,
         "score": 7
       },
-      "tier": "organism",
+      "tier": "molecule",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -2383,8 +2399,7 @@
         "GoalTrajectoryChartProps",
         "withoutRecords",
         "withoutLead",
-        "summarize",
-        "calibratingSummary"
+        "summarize"
       ],
       "libDependents": 2,
       "storyRefs": 1,
@@ -2399,7 +2414,8 @@
         "GoalTrajectoryBand",
         "GoalTrajectoryCalibrating",
         "GoalTrajectoryPlot",
-        "GoalTrajectoryWeekTips"
+        "TipTrigger",
+        "Typography"
       ],
       "leak": {
         "rawView": 4,
@@ -2432,7 +2448,8 @@
         "WEEK_COLUMN",
         "GoalTrajectoryMiniData",
         "GoalTrajectoryMiniProps",
-        "alpha"
+        "alpha",
+        "starPoints"
       ],
       "libDependents": 1,
       "storyRefs": 0,
@@ -2473,12 +2490,11 @@
         "planeBox",
         "PlaneLip",
         "ruleLabelX",
-        "starMark",
+        "starPoints",
         "GoalTrajectoryPlot",
         "STATUS_TOKEN",
         "DEPTH",
         "DEFAULT_LEFT_SHADOW_SPREAD",
-        "DELOAD_WASH",
         "PLANE_RADIUS",
         "DOT_RADIUS",
         "DOT_RING",
@@ -2494,7 +2510,7 @@
         "isBaseline",
         "Gridline"
       ],
-      "libDependents": 7,
+      "libDependents": 5,
       "storyRefs": 0,
       "xproj": {
         "mobile": 0,
@@ -2505,9 +2521,7 @@
       },
       "dependsOn": [
         "GoalTrajectoryBand",
-        "GoalTrajectoryCalibrating",
-        "SvgIcon",
-        "icons"
+        "GoalTrajectoryCalibrating"
       ],
       "leak": {
         "rawView": 0,
@@ -2516,49 +2530,6 @@
         "rawHex": 0,
         "loc": 600,
         "score": 0
-      },
-      "tier": "organism",
-      "verdict": "keep-internal",
-      "deadByAssociation": false,
-      "audited": "unaudited",
-      "standard": false
-    },
-    {
-      "name": "GoalTrajectoryWeekTips",
-      "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryWeekTips.tsx",
-      "dir": "workout",
-      "family": "custom/Workout",
-      "exports": [
-        "nextRovingWeek",
-        "weekTipPlacement",
-        "GoalTrajectoryWeekTips",
-        "useDeloadBadge",
-        "spill"
-      ],
-      "libDependents": 1,
-      "storyRefs": 0,
-      "xproj": {
-        "mobile": 0,
-        "mcp": 0,
-        "dash": 0,
-        "audiobook": 0,
-        "total": 0
-      },
-      "dependsOn": [
-        "Metric",
-        "Pill",
-        "PrBadge",
-        "TipTrigger",
-        "Tooltip",
-        "Typography"
-      ],
-      "leak": {
-        "rawView": 8,
-        "rawText": 0,
-        "inlineStyle": 5,
-        "rawHex": 0,
-        "loc": 186,
-        "score": 18
       },
       "tier": "organism",
       "verdict": "keep-internal",
@@ -2736,16 +2707,15 @@
         "TargetIcon",
         "EqualIcon",
         "ChevronsDownIcon",
+        "ChevronLeftIcon",
         "ChevronRightIcon",
         "HeadphonesIcon",
         "KanbanIcon",
         "BotIcon",
-        "BrainIcon",
-        "STAR_ICON_PATH",
-        "STAR_ICON_BOX"
+        "BrainIcon"
       ],
-      "libDependents": 14,
-      "storyRefs": 8,
+      "libDependents": 13,
+      "storyRefs": 7,
       "xproj": {
         "mobile": 0,
         "mcp": 7,
@@ -2761,7 +2731,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 260,
+        "loc": 269,
         "score": 0
       },
       "tier": "molecule",
@@ -2841,7 +2811,7 @@
         "loc": 183,
         "score": 5
       },
-      "tier": "organism",
+      "tier": "molecule",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -3276,7 +3246,7 @@
         "loc": 202,
         "score": 7
       },
-      "tier": "molecule",
+      "tier": "atom",
       "verdict": "keep-core",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -3745,7 +3715,7 @@
         "loc": 96,
         "score": 4
       },
-      "tier": "molecule",
+      "tier": "atom",
       "verdict": "keep-core",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -3787,7 +3757,7 @@
         "loc": 108,
         "score": 5
       },
-      "tier": "organism",
+      "tier": "molecule",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -3809,7 +3779,7 @@
         "PillProps",
         "resolveSize"
       ],
-      "libDependents": 15,
+      "libDependents": 14,
       "storyRefs": 7,
       "xproj": {
         "mobile": 0,
@@ -3848,8 +3818,7 @@
         "toneOf",
         "setLine",
         "StateTag",
-        "cn",
-        "colorFor"
+        "cn"
       ],
       "libDependents": 1,
       "storyRefs": 3,
@@ -4012,8 +3981,8 @@
         "PRType",
         "PrBadgeProps"
       ],
-      "libDependents": 5,
-      "storyRefs": 3,
+      "libDependents": 4,
+      "storyRefs": 2,
       "xproj": {
         "mobile": 0,
         "mcp": 2,
@@ -4441,7 +4410,7 @@
         "loc": 68,
         "score": 0
       },
-      "tier": "organism",
+      "tier": "molecule",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -5165,7 +5134,7 @@
         "loc": 77,
         "score": 3
       },
-      "tier": "molecule",
+      "tier": "atom",
       "verdict": "keep-core",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -5290,7 +5259,7 @@
         "loc": 75,
         "score": 1
       },
-      "tier": "organism",
+      "tier": "molecule",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -5407,7 +5376,7 @@
         "loc": 248,
         "score": 19
       },
-      "tier": "molecule",
+      "tier": "atom",
       "verdict": "keep-internal",
       "deadByAssociation": true,
       "audited": "unaudited",
@@ -5516,7 +5485,7 @@
         "loc": 195,
         "score": 6
       },
-      "tier": "molecule",
+      "tier": "atom",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -5554,7 +5523,7 @@
         "loc": 78,
         "score": 1
       },
-      "tier": "organism",
+      "tier": "molecule",
       "verdict": "keep-app",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -5674,7 +5643,7 @@
         "loc": 57,
         "score": 6
       },
-      "tier": "molecule",
+      "tier": "atom",
       "verdict": "keep-internal",
       "deadByAssociation": true,
       "audited": "unaudited",
@@ -5721,10 +5690,9 @@
       "exports": [
         "SvgIcon",
         "IconProps",
-        "SvgIconProps",
-        "ICON_VIEWBOX"
+        "SvgIconProps"
       ],
-      "libDependents": 5,
+      "libDependents": 4,
       "storyRefs": 0,
       "xproj": {
         "mobile": 0,
@@ -6236,7 +6204,7 @@
         "loc": 75,
         "score": 12
       },
-      "tier": "molecule",
+      "tier": "atom",
       "verdict": "keep-core",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -6249,14 +6217,10 @@
       "family": "ui/tooltip",
       "exports": [
         "TipTrigger",
-        "TipTriggerProps",
-        "PinnedTipContext",
-        "useDismissOnWeb",
-        "onKey",
-        "onPointer"
+        "TipTriggerProps"
       ],
-      "libDependents": 5,
-      "storyRefs": 2,
+      "libDependents": 4,
+      "storyRefs": 0,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
@@ -6379,8 +6343,8 @@
         "show",
         "hide"
       ],
-      "libDependents": 11,
-      "storyRefs": 1,
+      "libDependents": 10,
+      "storyRefs": 2,
       "xproj": {
         "mobile": 0,
         "mcp": 2,
@@ -6561,53 +6525,6 @@
       "standard": false
     },
     {
-      "name": "Typography",
-      "file": "packages/ui/src/components/ui/typography/Typography.tsx",
-      "dir": "ui",
-      "family": "ui/typography",
-      "exports": [
-        "Typography",
-        "Heading",
-        "Paragraph",
-        "Caption",
-        "Label",
-        "Overline",
-        "TypographyVariant",
-        "TypographyColor",
-        "TypographyAlign",
-        "TypographyMarginBottom",
-        "TypographyProps",
-        "HeadingProps",
-        "ParagraphProps",
-        "CaptionProps",
-        "LabelProps",
-        "OverlineProps"
-      ],
-      "libDependents": 50,
-      "storyRefs": 21,
-      "xproj": {
-        "mobile": 0,
-        "mcp": 10,
-        "dash": 1,
-        "audiobook": 0,
-        "total": 11
-      },
-      "dependsOn": [],
-      "leak": {
-        "rawView": 0,
-        "rawText": 1,
-        "inlineStyle": 0,
-        "rawHex": 0,
-        "loc": 230,
-        "score": 1
-      },
-      "tier": "atom",
-      "verdict": "keep-core",
-      "deadByAssociation": false,
-      "audited": "unaudited",
-      "standard": true
-    },
-    {
       "name": "velocity-story-kit",
       "file": "packages/ui/src/components/custom/Workout/velocity-story-kit.tsx",
       "dir": "workout",
@@ -6716,7 +6633,6 @@
         "velocityLossBand",
         "getVelocityLossColor",
         "velocityLossForRep",
-        "shownVelocityLoss",
         "VelocityLossBands",
         "DualVelocityStrip",
         "VelocityStrip",
@@ -6872,7 +6788,7 @@
         "loc": 143,
         "score": 9
       },
-      "tier": "organism",
+      "tier": "molecule",
       "verdict": "keep-internal",
       "deadByAssociation": true,
       "audited": "unaudited",
@@ -7027,7 +6943,7 @@
         "loc": 215,
         "score": 7
       },
-      "tier": "molecule",
+      "tier": "atom",
       "verdict": "keep-core",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -7174,6 +7090,10 @@
     [
       "CoChangeChip",
       "FilePathLabel"
+    ],
+    [
+      "Eyebrow",
+      "Typography"
     ],
     [
       "FileActivityDetail",
@@ -7853,19 +7773,15 @@
     ],
     [
       "GoalTrajectoryCalibrating",
-      "icons"
+      "GoalTrajectoryPlot"
     ],
     [
-      "GoalTrajectoryCalibrating",
+      "GoalTrajectoryChart",
       "TipTrigger"
     ],
     [
-      "GoalTrajectoryCalibrating",
+      "GoalTrajectoryChart",
       "Typography"
-    ],
-    [
-      "GoalTrajectoryCalibrating",
-      "GoalTrajectoryPlot"
     ],
     [
       "GoalTrajectoryChart",
@@ -7874,10 +7790,6 @@
     [
       "GoalTrajectoryChart",
       "GoalTrajectoryCalibrating"
-    ],
-    [
-      "GoalTrajectoryChart",
-      "GoalTrajectoryWeekTips"
     ],
     [
       "GoalTrajectoryChart",
@@ -7893,43 +7805,11 @@
     ],
     [
       "GoalTrajectoryPlot",
-      "SvgIcon"
-    ],
-    [
-      "GoalTrajectoryPlot",
-      "icons"
-    ],
-    [
-      "GoalTrajectoryPlot",
       "GoalTrajectoryBand"
     ],
     [
       "GoalTrajectoryPlot",
       "GoalTrajectoryCalibrating"
-    ],
-    [
-      "GoalTrajectoryWeekTips",
-      "Typography"
-    ],
-    [
-      "GoalTrajectoryWeekTips",
-      "Metric"
-    ],
-    [
-      "GoalTrajectoryWeekTips",
-      "Pill"
-    ],
-    [
-      "GoalTrajectoryWeekTips",
-      "TipTrigger"
-    ],
-    [
-      "GoalTrajectoryWeekTips",
-      "Tooltip"
-    ],
-    [
-      "GoalTrajectoryWeekTips",
-      "PrBadge"
     ],
     [
       "GoalWeekColumnsChart",
@@ -8232,6 +8112,30 @@
       "Tooltip"
     ],
     [
+      "goalCarousel-fixture",
+      "Card"
+    ],
+    [
+      "goalCarousel-fixture",
+      "Metric"
+    ],
+    [
+      "goalCarousel-fixture",
+      "Typography"
+    ],
+    [
+      "goalCarousel-fixture",
+      "GoalCard"
+    ],
+    [
+      "goalCarousel-fixture",
+      "GoalMuscleCard"
+    ],
+    [
+      "goalCarousel-fixture",
+      "Carousel"
+    ],
+    [
       "setHeadingKit",
       "TempoDisplay"
     ],
@@ -8424,16 +8328,20 @@
       "Surface"
     ],
     [
+      "Carousel",
+      "icons"
+    ],
+    [
+      "Carousel",
+      "Button"
+    ],
+    [
       "Chip",
       "Pill"
     ],
     [
       "Drawer",
       "Surface"
-    ],
-    [
-      "Eyebrow",
-      "Typography"
     ],
     [
       "HelpTip",
@@ -8485,12 +8393,11 @@
     ]
   ],
   "summary": {
-    "total": 176,
+    "total": 174,
     "dead": [
       "Autocomplete",
       "Avatar",
       "Breadcrumbs",
-      "Eyebrow",
       "GoalLiftCard",
       "IconBox",
       "InitiativeHeader",
@@ -8507,12 +8414,14 @@
       "Toast",
       "Treemap",
       "VolumeLandmarkBar",
+      "goalCarousel-fixture",
       "velocity-story-kit"
     ],
     "deadByAssociation": [
       "BodyMap",
       "BodyMapDetailPanel",
       "CapacityBandChart",
+      "Carousel",
       "InitiativeCard",
       "InputBar",
       "IntensityBar",
@@ -8750,10 +8659,8 @@
       {
         "name": "EmptyState",
         "category": "Feedback",
-        "status": "present",
-        "have": [
-          "EmptyState"
-        ]
+        "status": "missing",
+        "have": []
       },
       {
         "name": "Card",
@@ -8823,10 +8730,8 @@
       {
         "name": "Typography",
         "category": "Layout",
-        "status": "present",
-        "have": [
-          "Typography"
-        ]
+        "status": "missing",
+        "have": []
       },
       {
         "name": "Stack",
@@ -9015,7 +8920,7 @@
     ],
     "substitution": {
       "library(titan)": {
-        "Text": 76,
+        "Text": 75,
         "View": 148,
         "TouchableOpacity": 0,
         "Pressable": 58,
