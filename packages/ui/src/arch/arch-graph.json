@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:13648013d7dad2dc3b71f726914473204996d467616a7f6fd84a838ad5ca19db",
+  "componentBarrelHash": "sha256:713f0a1cfc7216584882ff47e07519f445b7f05d144f19a25db08018d4949112",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -1207,14 +1207,14 @@
     },
     {
       "name": "EmptyState",
-      "file": "packages/ui/src/components/custom/EmptyState/EmptyState.tsx",
-      "dir": "custom",
-      "family": "custom/EmptyState",
+      "file": "packages/ui/src/components/ui/empty-state/EmptyState.tsx",
+      "dir": "ui",
+      "family": "ui/empty-state",
       "exports": [
         "EmptyState",
         "EmptyStateProps"
       ],
-      "libDependents": 1,
+      "libDependents": 2,
       "storyRefs": 1,
       "xproj": {
         "mobile": 1,

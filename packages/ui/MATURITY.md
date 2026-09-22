@@ -133,21 +133,21 @@ Rank highest confidence first, then walk the list as the protocol above says.
 
 ## Generic primitives (`Components/Atoms|Molecules|Organisms`)
 
-The **41** generic primitives (Button, Card, Input, Modal, Table, …) are a
+The **42** generic primitives (Button, Card, Input, Modal, Table, …) are a
 separate foundation tier and are out of scope for the Voltras-workout review
 pass. This file used to say "~52": that number predated the `ui/` reorganisation
 and was never recounted. The count is `ls -d src/components/ui/*/ src/components/ui/charts/*/`, less
-`charts` and `kit`: 41 directories today, one per primitive, and `src/arch/arch-graph.json` lists
-them all too. `typography` and `eyebrow` are the newest, moved in from `custom/` by
-migration M2 (#277). One of the 41 is `trigger` (`TriggerSurface`, added in #176), an
-internal helper that `Menu`, `Popover` and `Tooltip` compose. It is not exported from the
-`ui` barrel and has no story.
+`charts` and `kit`: 42 directories today, one per primitive, and `src/arch/arch-graph.json` lists
+them all too. `empty-state` is the newest, moved in from `custom/` by migration M3 (#279);
+`typography` and `eyebrow` came in by migration M2 (#277). One of the 42 is `trigger`
+(`TriggerSurface`, added in #176), an internal helper that `Menu`, `Popover` and `Tooltip`
+compose. It is not exported from the `ui` barrel and has no story.
 
-The 40 with stories no longer default to `status:review`: the tagging rule
-above resolves them (31 `stable`, 4 `candidate`, 5 held open). Their assessment
-happened by rule, not by session. `typography` and `eyebrow` are `ui/*` and so
-became stable-**eligible** on the move, but clause 2's fourth condition holds
-them at `candidate` while the M2 shim rows sit in `DEPRECATIONS.md`; they are
+The 41 with stories no longer default to `status:review`: the tagging rule
+above resolves them (31 `stable`, 5 `candidate`, 5 held open). Their assessment
+happened by rule, not by session. `typography`, `eyebrow` and `empty-state` are `ui/*`
+and so became stable-**eligible** on the move, but clause 2's fourth condition holds
+them at `candidate` while the M2 and M3 shim rows sit in `DEPRECATIONS.md`; they are
 promotable once the shims go in 0.23.0. The other two `candidate` rows are the
 deprecated `HelpTip` and `Tile`.
 `TriggerSurface` has no story, so it carries no status tag.
