@@ -285,9 +285,13 @@ export function phaseLabel(phase: WholeBodyWeightRow['phase']): string {
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
+const DATE_ONLY = /^(\d{4})-(\d{2})-(\d{2})$/
+
 /** A weigh-in's timestamp as `Sep 18`, on the lifter's own calendar: an evening weigh-in keeps its day. */
 export function weighInDate(ts: string): string {
-  const date = new Date(ts)
+  // A bare date is already a calendar day; `new Date` would read it as UTC midnight.
+  const day = DATE_ONLY.exec(ts)
+  const date = day ? new Date(Number(day[1]), Number(day[2]) - 1, Number(day[3])) : new Date(ts)
   if (Number.isNaN(date.getTime())) return ''
   return `${MONTHS[date.getMonth()]} ${date.getDate()}`
 }

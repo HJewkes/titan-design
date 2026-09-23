@@ -276,6 +276,18 @@ describe('weighInDate', () => {
     }
   })
 
+  // Gate N9: a bare date parsed as UTC midnight and printed the day before west of UTC.
+  it('keeps a bare date on its own day', () => {
+    const zone = process.env.TZ
+    process.env.TZ = 'America/Los_Angeles'
+    try {
+      expect(weighInDate('2026-09-18')).toBe('Sep 18')
+    } finally {
+      if (zone === undefined) delete process.env.TZ
+      else process.env.TZ = zone
+    }
+  })
+
   it('returns an empty string for a bad timestamp', () => {
     expect(weighInDate('not a date')).toBe('')
   })
