@@ -28,23 +28,12 @@ import {
   weighInDate,
   weightCaptions,
   wholeBodyScale,
-  type RateLength,
-  type WeightCaptionKey,
   type WholeBodyScale,
   type WholeBodyWeightRow,
 } from './wholeBody'
 
 export interface BodyweightGoalCardProps extends ViewProps {
   goal: WholeBodyWeightRow
-  /** Which detail line sits beside the weight; the rest move into the tip. The owner picked the rate. */
-  lead?: WeightCaptionKey
-  /** How much of the rate line the lead carries. The owner picked the percent alone. */
-  rateLength?: RateLength
-  /**
-   * A colon after the lead's word: "Rate: -0.6%/wk". Round-6 comparison (VW-455): the
-   * owner asked for "Rate: N/A", which always takes one; this sets the populated form.
-   */
-  leadColon?: boolean
   /**
    * Pins the phase tag's collapse. Omitted, the card measures its own box:
    * `onLayout` never fires in jsdom, so a test or a story says it outright.
@@ -107,10 +96,9 @@ function WeightTrack({ row, scale }: { row: WholeBodyWeightRow; scale: WholeBody
 }
 
 /**
- * A bodyweight goal on `#/goals`: the latest weight, one detail line beside it
- * (this week's band or the rate `goal.weekly_review` judges; the other sits in
- * the tip), then the weigh-in against this week's band in the goal chart's own
- * band colour. A hold draws its ±2 % corridor. Before the first weigh-in it
+ * A bodyweight goal on `#/goals`: the latest weight, its rate this week beside it
+ * ("Rate: -0.6%/wk", or "Rate: N/A" before there is one; the bands sit in the tip),
+ * then the weigh-in against this week's band in the goal chart's own band colour. A hold draws its ±2 % corridor. Before the first weigh-in it
  * says so and draws no track.
  *
  * A sibling of `SessionsGoalCard`, not a row of one card: the page's card grid
@@ -122,9 +110,6 @@ function WeightTrack({ row, scale }: { row: WholeBodyWeightRow; scale: WholeBody
  */
 export function BodyweightGoalCard({
   goal,
-  lead = 'rate',
-  rateLength = 'percent',
-  leadColon = true,
   scale,
   isTipOpen,
   tagCollapsed,
@@ -135,7 +120,7 @@ export function BodyweightGoalCard({
 }: BodyweightGoalCardProps) {
   const measured = useMeasuredWidth()
   const resolved = wholeBodyScale(measured.width, scale)
-  const captions = leadCaption(weightCaptions(goal, rateLength), lead)
+  const captions = leadCaption(weightCaptions(goal), 'rate')
   return (
     <Card
       elevation={1}
@@ -177,7 +162,6 @@ export function BodyweightGoalCard({
               label={`Weighed ${weighInDate(goal.latest.ts)}`}
               lead={captions.lead}
               rest={captions.rest}
-              leadColon={leadColon}
               tipLabel="Bodyweight details"
               isTipOpen={isTipOpen}
               testID="bodyweight-goal-value"

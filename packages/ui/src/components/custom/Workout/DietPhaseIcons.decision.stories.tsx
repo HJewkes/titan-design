@@ -1,58 +1,26 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import type { ReactNode } from 'react'
 import { View } from 'react-native'
 
-import {
-  ActivityIcon,
-  ChevronsDownIcon,
-  CircleSlashIcon,
-  EqualIcon,
-  HistoryIcon,
-  LayersIcon,
-  RepeatIcon,
-  ScaleIcon,
-  TrendingDownIcon,
-  TrendingUpIcon,
-  type IconProps,
-} from '../../icons'
 import { Pill } from '../../ui/pill'
 import { Surface } from '../../ui/surface'
 import { Typography } from '../../ui/typography'
+import { DIET_PHASE_ICON } from './wholeBodyCardParts'
+import type { WholeBodyDietPhase } from './wholeBody'
 
-type Glyph = (props: IconProps) => JSX.Element
-
-interface PhaseRow {
-  phase: string
-  proposed: Glyph
-  alternate: Glyph
-  alternateName: string
-}
-
-/**
- * The four phases and their glyphs. `proposed` is what the cards draw today;
- * `alternate` is the nearest other candidate already in the icon module.
- */
-const ROWS: PhaseRow[] = [
-  {
-    phase: 'Cut',
-    proposed: TrendingDownIcon,
-    alternate: ChevronsDownIcon,
-    alternateName: 'ChevronsDown',
-  },
-  { phase: 'Bulk', proposed: TrendingUpIcon, alternate: ActivityIcon, alternateName: 'Activity' },
-  {
-    phase: 'Maintenance',
-    proposed: EqualIcon,
-    alternate: CircleSlashIcon,
-    alternateName: 'CircleSlash',
-  },
-  { phase: 'Recomp', proposed: RepeatIcon, alternate: HistoryIcon, alternateName: 'History' },
+/** The four declared phases, as the owner named them in round 4. */
+const PHASES: { phase: WholeBodyDietPhase; name: string }[] = [
+  { phase: 'fat-loss', name: 'Cut' },
+  { phase: 'gain', name: 'Bulk' },
+  { phase: 'maintenance', name: 'Maintenance' },
+  { phase: 'recomposition', name: 'Recomp' },
 ]
 
 const LARGE = 48
 const PILL_ICON = 13
 
-function Column({ title, children }: { title: string; children: React.ReactNode }) {
+function Column({ title, children }: { title: string; children: ReactNode }) {
   return (
     <View className="gap-stack-sm" style={{ alignItems: 'center', width: 150 }}>
       <Typography variant="overline" color="tertiary">
@@ -63,28 +31,25 @@ function Column({ title, children }: { title: string; children: React.ReactNode 
   )
 }
 
-function Row({ row }: { row: PhaseRow }) {
-  const { proposed: Proposed, alternate: Alternate } = row
+function Row({ phase, name }: { phase: WholeBodyDietPhase; name: string }) {
+  const Glyph = DIET_PHASE_ICON[phase]
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center' }} className="gap-inline-lg">
       <View style={{ width: 150 }}>
-        <Typography variant="body1">{row.phase}</Typography>
+        <Typography variant="body1">{name}</Typography>
       </View>
-      <Column title="Proposed">
-        <Proposed size={LARGE} />
+      <Column title="Glyph">
+        <Glyph size={LARGE} />
       </Column>
       <Column title="In the pill">
-        <Pill tone="neutral" variant="outline" size="sm" leading={<Proposed size={PILL_ICON} />}>
-          {row.phase}
+        <Pill tone="neutral" variant="outline" size="sm" leading={<Glyph size={PILL_ICON} />}>
+          {name}
         </Pill>
       </Column>
       <Column title="Collapsed">
         <Pill tone="neutral" variant="outline" size="sm">
-          <Proposed size={PILL_ICON} />
+          <Glyph size={PILL_ICON} />
         </Pill>
-      </Column>
-      <Column title={`Alternate: ${row.alternateName}`}>
-        <Alternate size={LARGE} />
       </Column>
     </View>
   )
@@ -92,19 +57,10 @@ function Row({ row }: { row: PhaseRow }) {
 
 function DietPhaseIcons() {
   return (
-    <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-md gap-stack-xl">
-      <View className="gap-stack-md">
-        {ROWS.map((row) => (
-          <Row key={row.phase} row={row} />
-        ))}
-      </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }} className="gap-inline-lg">
-        <Typography variant="caption" color="tertiary">
-          Bodyweight, for scale
-        </Typography>
-        <ScaleIcon size={LARGE} />
-        <LayersIcon size={LARGE} />
-      </View>
+    <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-md gap-stack-md">
+      {PHASES.map((row) => (
+        <Row key={row.phase} phase={row.phase} name={row.name} />
+      ))}
     </Surface>
   )
 }
@@ -118,11 +74,11 @@ const meta: Meta<typeof DietPhaseIcons> = {
     docs: {
       description: {
         component:
-          'PROPOSED glyphs for the four diet phases (VW-455 round 4), each shown large, inside ' +
-          'its pill, and collapsed to the glyph alone, with the nearest alternate from the icon ' +
-          'module beside it. The icon choice is the owner’s. `TrendingUp` and `Repeat` are ' +
-          'new to the icon module, mirrored from lucide the same way every other glyph here is; ' +
-          'adding them widens the `foundations-icons--all` baseline, which is refreshed from CI.',
+          'CHOSEN (VW-455 round 4, owner: "All four work"): the glyph each diet phase carries ' +
+          'on the bodyweight card, drawn from the shipped `DIET_PHASE_ICON` map so this record ' +
+          'cannot drift from the card. Shown large, inside its pill, and collapsed to the glyph ' +
+          'alone, as a narrow card draws it. The alternates shown in round 4 are recorded in ' +
+          'REJECTED.md.',
       },
     },
   },
@@ -131,5 +87,5 @@ export default meta
 
 type Story = StoryObj<typeof DietPhaseIcons>
 
-/** All four phases, proposed and alternate. */
+/** The four phases and their chosen glyphs. */
 export const Default: Story = {}

@@ -20,39 +20,27 @@ import { WHOLE_BODY_SESSIONS as S, WHOLE_BODY_WEIGHT as W } from './wholeBody-fi
 
 describe('sessionCells', () => {
   it('draws one cell per committed day, trained days first', () => {
-    const cells = sessionCells(S.underPace, 'append')
+    const cells = sessionCells(S.underPace)
     expect(cells).toHaveLength(12)
     expect(cells?.filter((cell) => cell === 'done')).toHaveLength(9)
     expect(cells?.slice(9)).toEqual(['open', 'open', 'open'])
   })
 
-  it('appends a cell per day past the commitment', () => {
-    expect(sessionCells(S.overCommitment, 'append')?.slice(10)).toEqual([
-      'done',
-      'done',
-      'extra',
-      'extra',
-    ])
-  })
-
-  it('stops at the commitment when capped', () => {
-    expect(sessionCells(S.overCommitment, 'cap')).toHaveLength(12)
+  it('appends a darker cell per day past the commitment (owner, round 2)', () => {
+    expect(sessionCells(S.overCommitment)?.slice(10)).toEqual(['done', 'done', 'extra', 'extra'])
   })
 
   it('keeps cells up to the segment limit', () => {
     const atLimit = { ...S.underPace, committed: SESSION_SEGMENT_LIMIT }
-    expect(sessionCells(atLimit, 'append')).toHaveLength(SESSION_SEGMENT_LIMIT)
+    expect(sessionCells(atLimit)).toHaveLength(SESSION_SEGMENT_LIMIT)
   })
 
   it('falls back to a plain bar past the segment limit (F5)', () => {
-    expect(sessionCells(S.largeCommitment, 'append')).toBeNull()
+    expect(sessionCells(S.largeCommitment)).toBeNull()
   })
 
   it('falls back when appended days carry it past the limit', () => {
-    expect(sessionCells({ ...S.overCommitment, committed: 18, counted: 22 }, 'append')).toBeNull()
-    expect(sessionCells({ ...S.overCommitment, committed: 18, counted: 22 }, 'cap')).toHaveLength(
-      18
-    )
+    expect(sessionCells({ ...S.overCommitment, committed: 18, counted: 22 })).toBeNull()
   })
 })
 
@@ -125,16 +113,14 @@ describe('leadCaption', () => {
 })
 
 describe('weightCaptions', () => {
-  it('leads with the rate, then the band, then the phase band it dropped (F6)', () => {
-    expect(weightCaptions(W.cut, 'percent').map((line) => line.key)).toEqual([
-      'rate',
-      'band',
-      'rateBand',
-    ])
+  it('leads with the rate, then the band, then the phase band (F6)', () => {
+    expect(weightCaptions(W.cut).map((line) => line.key)).toEqual(['rate', 'band', 'rateBand'])
   })
 
-  it('keeps the phase band out of the tip when the full line already carries it', () => {
-    expect(weightCaptions(W.cut, 'full').map((line) => line.key)).toEqual(['rate', 'band'])
+  it('leads a weigh-in with no rate with N/A and keeps the reason for the tip (F11)', () => {
+    const lines = weightCaptions(W.oneReading)
+    expect(lines[0]).toEqual({ key: 'rate', text: 'N/A', label: 'Rate', value: 'N/A' })
+    expect(lines.map((line) => line.key)).toContain('rateWhy')
   })
 
   it('has no lines before the first weigh-in (F12)', () => {
@@ -205,80 +191,34 @@ describe('phaseLabel', () => {
 })
 
 describe('rateCaption', () => {
-  it('reads the observed rate against the phase rate (F6)', () => {
-    expect(rateCaption(W.cut)).toBe('-0.6%/wk against -0.5 to -1.0 for a cut')
-  })
-
-  it('shortens to the percent alone', () => {
-    expect(rateCaption(W.cut, 'percent')).toBe('-0.6%/wk')
-  })
-
-  it('adds a word for where the rate sits against its band', () => {
-    expect(rateCaption(W.cut, 'verdict')).toBe('-0.6%/wk, in band')
-    expect(
-      rateCaption({ ...W.cut, rate: { ...W.cut.rate, observedPctPerWeek: -0.2 } }, 'verdict')
-    ).toBe('-0.2%/wk, behind band')
-    expect(
-      rateCaption({ ...W.cut, rate: { ...W.cut.rate, observedPctPerWeek: -1.4 } }, 'verdict')
-    ).toBe('-1.4%/wk, ahead of band')
-  })
-
-  it('reads a gain band in its own direction', () => {
-    expect(
-      rateCaption({ ...W.gain, rate: { ...W.gain.rate, observedPctPerWeek: 0.1 } }, 'verdict')
-    ).toBe('+0.1%/wk, behind band')
-    expect(
-      rateCaption({ ...W.gain, rate: { ...W.gain.rate, observedPctPerWeek: 0.8 } }, 'verdict')
-    ).toBe('+0.8%/wk, ahead of band')
-  })
-
-  it('drops the verdict when the phase has no rate band (F8)', () => {
-    expect(rateCaption(W.hold, 'verdict')).toBe('+0.1%/wk')
-  })
-
-  it('keeps a vetoed week unjudged at every length (F13)', () => {
-    expect(rateCaption(W.rateVetoed, 'percent')).toBe('-0.9%/wk')
-    expect(rateCaption(W.rateVetoed, 'verdict')).toBe('-0.9%/wk, not judged this week')
+  it('is the percent this week alone (owner, round 3)', () => {
+    expect(rateCaption(W.cut)).toBe('-0.6%/wk')
   })
 
   it('signs a gain rate', () => {
-    expect(rateCaption(W.gain)).toBe('+0.3%/wk against +0.25 to +0.5 for a gain')
+    expect(rateCaption(W.gain)).toBe('+0.3%/wk')
   })
 
-  it('says a hold has no target rate (F8)', () => {
-    expect(rateCaption(W.hold)).toBe('+0.1%/wk, no target rate for a hold')
+  it('reads a hold, which has no rate band, the same way (F8)', () => {
+    expect(rateCaption(W.hold)).toBe('+0.1%/wk')
   })
 
-  it('reads a slow-loss rate against its band (F10)', () => {
-    expect(rateCaption(W.slowLoss)).toBe('-0.4%/wk against -0.25 to -0.5 for this recomp')
+  it('reads a vetoed week the same way; its phase band leaves the tip (F13)', () => {
+    expect(rateCaption(W.rateVetoed)).toBe('-0.9%/wk')
   })
 
-  it('prints one rate for the server’s slow-loss line', () => {
-    expect(rateCaption(W.slowLossOneLine)).toBe('-0.5%/wk against -0.5 for this recomp')
+  it('has none with one weigh-in, where the card says N/A (F11)', () => {
+    expect(rateCaption(W.oneReading)).toBeNull()
   })
 
-  it('waits for a second week with one weigh-in (F11)', () => {
-    expect(rateCaption(W.oneReading)).toBe('Rate shows after a second week of weigh-ins')
-  })
-
-  it('leads that weigh-in with N/A and keeps the reason for the tip (F11)', () => {
-    const lines = weightCaptions(W.oneReading, 'percent')
-    expect(lines[0]).toEqual({ key: 'rate', text: 'N/A', label: 'Rate', value: 'N/A', colon: true })
-    expect(lines.map((line) => line.key)).toContain('rateWhy')
-  })
-
-  it('says a vetoed week is not judged (F13)', () => {
-    expect(rateCaption(W.rateVetoed)).toBe('-0.9%/wk, not judged this week')
-  })
-
-  it('says nothing before the first weigh-in (F12)', () => {
+  it('has none before the first weigh-in (F12)', () => {
     expect(rateCaption(W.noReadings)).toBeNull()
   })
 
   it('rounds a noisy rate without float drift', () => {
-    expect(
-      rateCaption({ ...W.cut, rate: { ...W.cut.rate, observedPctPerWeek: -0.7000001 } })
-    ).toMatch(/^-0\.7%\/wk/)
+    expect(rateCaption({ ...W.cut, rate: { ...W.cut.rate, observedPctPerWeek: -0.7000001 } })).toBe(
+      '-0.7%/wk'
+    )
   })
 })
 

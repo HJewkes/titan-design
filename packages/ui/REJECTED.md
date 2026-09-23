@@ -114,8 +114,18 @@ and in round 5 asked that the figure's label and its lead share one text size at
 width; one fixed size is what `FIGURE_LINE_TEXT` now owns. The story that pinned the phase
 tag collapsed at every width is gone too: it showed a collapse the measured rule never makes.
 
+**Locked in round 6 (2026-09-22), and every rung the owner did not pick removed:** the
+band as the weight's lead (round 2 picked the rate), the rate's `verdict` and `full`
+lengths (round 3 picked the percent alone: the sentence was "far too long"), "what leaves
+the window" as the sessions lead ("too wordy"; round 2 picked what is due), capping days
+past the commitment (round 2 picked appended cells), the populated lead without a colon
+(round 6 picked "Rate: -0.6%/wk"), and the round-4 glyph alternates (ChevronsDown, Activity,
+CircleSlash, History; the owner said "All four work" of TrendingDown, TrendingUp, Equal and
+Repeat).
+
 **Code:** deleted in the same pull request, before merge: `WholeBodyCard` and its
-`sessionsVisual` prop, then `leadStyle` and the pinned `TagCollapsed` story. The priorities index explored beside it, `GoalPriorityIndex`,
+`sessionsVisual` prop, then `leadStyle` and the pinned `TagCollapsed` story, then the
+`lead`, `rateLength`, `leadColon` and `pastCommitment` props with their types. The priorities index explored beside it, `GoalPriorityIndex`,
 is kept for the mesocycle header, which has its own Round 0.
 
 ---

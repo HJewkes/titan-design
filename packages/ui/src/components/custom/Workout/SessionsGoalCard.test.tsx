@@ -24,22 +24,10 @@ describe('SessionsGoalCard', () => {
       expect(screen.getByTestId('sessions-goal-value-caption')).toHaveTextContent('Due by now: 10')
     })
 
-    it('drops the colon when asked', () => {
-      render(<SessionsGoalCard goal={S.underPace} leadColon={false} />)
-      expect(screen.getByTestId('sessions-goal-value-caption')).toHaveTextContent('Due by now 10')
-    })
-
     it('sets the label and the lead on one text size', () => {
       render(<SessionsGoalCard goal={S.underPace} scale="phone" />)
       expect(capturedClassNames.get('sessions-goal-value-label')).toContain(FIGURE_LINE_TEXT)
       expect(capturedClassNames.get('sessions-goal-value-caption')).toContain(FIGURE_LINE_TEXT)
-    })
-
-    it('leads with what leaves the window when asked', () => {
-      render(<SessionsGoalCard goal={S.underPace} lead="leaving" />)
-      expect(screen.getByTestId('sessions-goal-value-caption')).toHaveTextContent(
-        '3 leave this week'
-      )
     })
 
     it('sets the caption on normal leading, not the caption’s loose 24px', () => {
@@ -67,11 +55,6 @@ describe('SessionsGoalCard', () => {
     it('appends a cell per day past the commitment', () => {
       render(<SessionsGoalCard goal={S.overCommitment} />)
       expect(screen.getAllByTestId('segmented-bar-segment')).toHaveLength(14)
-    })
-
-    it('stops at the commitment when capped', () => {
-      render(<SessionsGoalCard goal={S.overCommitment} pastCommitment="cap" />)
-      expect(screen.getAllByTestId('segmented-bar-segment')).toHaveLength(12)
     })
 
     it('marks where the count due by now falls', () => {

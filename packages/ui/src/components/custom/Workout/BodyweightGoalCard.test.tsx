@@ -42,13 +42,8 @@ describe('BodyweightGoalCard', () => {
       )
     })
 
-    it('drops the colon from the populated lead when asked', () => {
-      render(<BodyweightGoalCard goal={W.cut} leadColon={false} />)
-      expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent('Rate -0.6%/wk')
-    })
-
-    it('keeps the colon on N/A whatever the setting (owner, round 5)', () => {
-      render(<BodyweightGoalCard goal={W.oneReading} leadColon={false} />)
+    it('reads Rate: N/A with the colon (owner, round 5)', () => {
+      render(<BodyweightGoalCard goal={W.oneReading} />)
       expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent('Rate: N/A')
     })
 
@@ -59,25 +54,6 @@ describe('BodyweightGoalCard', () => {
         expect(capturedClassNames.get('bodyweight-goal-value-caption')).toContain(FIGURE_LINE_TEXT)
         unmount()
       }
-    })
-
-    it('keeps that size on a lead with no word of its own', () => {
-      render(<BodyweightGoalCard goal={W.cut} lead="band" scale="phone" />)
-      expect(capturedClassNames.get('bodyweight-goal-value-caption')).toContain(FIGURE_LINE_TEXT)
-    })
-
-    it('leads with the longer rate line when asked', () => {
-      render(<BodyweightGoalCard goal={W.cut} rateLength="full" />)
-      expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent(
-        '-0.6%/wk against -0.5 to -1.0 for a cut'
-      )
-    })
-
-    it('leads with this week’s band when asked', () => {
-      render(<BodyweightGoalCard goal={W.cut} lead="band" />)
-      expect(screen.getByTestId('bodyweight-goal-value-caption')).toHaveTextContent(
-        'Week 3 of 8: 194.0 to 197.0 lb'
-      )
     })
 
     it('sets the caption on normal leading', () => {

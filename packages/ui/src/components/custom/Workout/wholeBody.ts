@@ -66,15 +66,13 @@ export function wholeBodyScale(width: number | null, pinned?: WholeBodyScale): W
 /**
  * One line of detail beside or under a card's main figure. `key` lets a caller
  * choose which one leads. A line that splits into a muted word and a figure
- * carries `label` and `value` too, which is what the fact treatments set.
+ * carries `label` and `value` too, and the card sets it as a word and a figure.
  */
 export interface CaptionLine {
   key: string
   text: string
   label?: string
   value?: string
-  /** Always set with a colon after its word, whatever the card's own setting ("Rate: N/A"). */
-  colon?: boolean
 }
 
 /** The line shown beside the figure, and the lines the detail tip holds. */
@@ -89,32 +87,6 @@ export function leadCaption(lines: readonly CaptionLine[], preferred: string): L
   return { lead, rest: lines.filter((line) => line !== lead) }
 }
 
-/** Which weight caption leads. The owner picked the rate in round 2. */
-export type WeightCaptionKey = 'band' | 'rate'
-
-/**
- * How much of the rate line the card shows. Round-3 comparison (VW-455): the owner
- * called the full sentence "far too long" and asked whether the percent alone is
- * enough, with the band in the tip. Every string here is a PROPOSAL.
- */
-export type RateLength = 'percent' | 'verdict' | 'full'
-
-/**
- * Where the observed rate sits against the phase's rate band, IN THE GOAL'S OWN
- * direction: a cut's band runs -0.5 (committed) to -1 (stretch) %/wk, so losing
- * 0.2 %/wk is numerically above the band and behind the goal.
- */
-export type RatePosition = 'inside' | 'behind' | 'ahead'
-
-export function ratePosition(rate: WholeBodyRate): RatePosition | null {
-  const { observedPctPerWeek: observed, bandLowPctPerWeek: low, bandHighPctPerWeek: high } = rate
-  if (observed === null || low === null || high === null) return null
-  const falling = high < low
-  if (falling ? observed < high : observed > high) return 'ahead'
-  if (falling ? observed > low : observed < low) return 'behind'
-  return 'inside'
-}
-
 /** The phase's rate band as a range, or one number when both edges agree. */
 function rateBandText(rate: WholeBodyRate): string | null {
   const { bandLowPctPerWeek: low, bandHighPctPerWeek: high } = rate
@@ -122,13 +94,6 @@ function rateBandText(rate: WholeBodyRate): string | null {
   return low === high
     ? formatSignedRate(low)
     : `${formatSignedRate(low)} to ${formatSignedRate(high)}`
-}
-
-/** PROPOSED wording for the `verdict` length (VW-455 round 3). */
-const RATE_VERDICT: Record<RatePosition, string> = {
-  inside: 'in band',
-  behind: 'behind band',
-  ahead: 'ahead of band',
 }
 
 /** What the card says when no rate can be computed yet, and why (owner, round 4: "Just do N/A"). */
@@ -140,24 +105,17 @@ export function hasRate(row: WholeBodyWeightRow): boolean {
   return row.rate !== null && row.rate.observedPctPerWeek !== null
 }
 
-/** The rate line at the asked-for length, or why there is no rate yet. */
-export function rateCaption(row: WholeBodyWeightRow, length: RateLength = 'full'): string | null {
-  const rate = row.rate
-  if (row.latest === null) return null
-  if (rate === null || rate.observedPctPerWeek === null) return NO_RATE_REASON
-  const observed = `${formatSignedRate(rate.observedPctPerWeek)}%/wk`
-  if (rate.vetoed) return length === 'percent' ? observed : `${observed}, not judged this week`
-  if (length === 'percent') return observed
-  const position = ratePosition(rate)
-  if (length === 'verdict') {
-    return position === null ? observed : `${observed}, ${RATE_VERDICT[position]}`
-  }
-  const band = rateBandText(rate)
-  if (band === null) return `${observed}, no target rate for ${PHASE_NOUN[row.phase.name]}`
-  return `${observed} against ${band} for ${PHASE_NOUN[row.phase.name]}`
+/**
+ * The rate as the card leads with it: the percent this week alone (owner, round 3),
+ * or `null` before the first weigh-in or while there is no rate to judge.
+ */
+export function rateCaption(row: WholeBodyWeightRow): string | null {
+  const observed = row.rate?.observedPctPerWeek ?? null
+  if (row.latest === null || observed === null) return null
+  return `${formatSignedRate(observed)}%/wk`
 }
 
-/** The phase's rate band as its own tip line, for the lengths that drop it from the lead. */
+/** The phase's rate band, which the tip holds because the lead no longer carries it. */
 export function rateBandCaption(row: WholeBodyWeightRow): string | null {
   if (row.rate === null || row.rate.vetoed) return null
   const band = rateBandText(row.rate)
@@ -167,26 +125,23 @@ export function rateBandCaption(row: WholeBodyWeightRow): string | null {
 }
 
 /**
- * The weight card's detail lines: the rate at the asked-for length, this week's band,
- * and — when the lead does not carry it — the phase's rate band. None before the
- * first weigh-in.
+ * The weight card's detail lines: the rate (or N/A and why), this week's band, and
+ * the phase's rate band. None before the first weigh-in. The rate leads; the rest
+ * sit in the tip.
  */
-export function weightCaptions(
-  row: WholeBodyWeightRow,
-  length: RateLength = 'full'
-): CaptionLine[] {
+export function weightCaptions(row: WholeBodyWeightRow): CaptionLine[] {
   if (row.latest === null) return []
-  const rate = rateCaption(row, length)
-  const rateBand = length === 'full' ? null : rateBandCaption(row)
-  // No rate yet reads as a figure of its own, with the reason one tip away.
-  const lead = hasRate(row)
-    ? [{ key: 'rate', text: rate ?? '', label: 'Rate', value: rate ?? '' }]
-    : [
-        { key: 'rate', text: NO_RATE_VALUE, label: 'Rate', value: NO_RATE_VALUE, colon: true },
-        { key: 'rateWhy', text: NO_RATE_REASON },
-      ]
+  const rate = rateCaption(row)
+  const rateBand = rateBandCaption(row)
+  const lead: CaptionLine[] =
+    rate === null
+      ? [
+          { key: 'rate', text: NO_RATE_VALUE, label: 'Rate', value: NO_RATE_VALUE },
+          { key: 'rateWhy', text: NO_RATE_REASON },
+        ]
+      : [{ key: 'rate', text: rate, label: 'Rate', value: rate }]
   return [
-    ...(rate === null ? [] : lead),
+    ...lead,
     { key: 'band', text: bandCaption(row) },
     ...(rateBand === null ? [] : [{ key: 'rateBand', text: rateBand }]),
   ]
@@ -195,22 +150,16 @@ export function weightCaptions(
 /** Past this many cells a segment is too thin to read at phone width, so the bar falls back. */
 export const SESSION_SEGMENT_LIMIT = 20
 
-/** How days past the commitment are drawn. Round-2 comparison (VW-455). */
-export type SessionsPastCommitment = 'append' | 'cap'
-
 /** One cell of the sessions bar: a trained day, a day past the commitment, or a day still open. */
 export type SessionCell = 'done' | 'extra' | 'open'
 
 /**
  * The sessions bar as cells, or `null` when there are too many to draw and the
- * card falls back to a plain bar. `append` adds a cell per day past the
- * commitment; `cap` stops at the commitment.
+ * card falls back to a plain bar. A day past the commitment adds a cell of its
+ * own (owner, round 2).
  */
-export function sessionCells(
-  row: WholeBodySessionsRow,
-  pastCommitment: SessionsPastCommitment
-): SessionCell[] | null {
-  const extra = pastCommitment === 'append' ? Math.max(0, row.counted - row.committed) : 0
+export function sessionCells(row: WholeBodySessionsRow): SessionCell[] | null {
+  const extra = Math.max(0, row.counted - row.committed)
   const total = row.committed + extra
   if (total > SESSION_SEGMENT_LIMIT) return null
   return Array.from({ length: total }, (_, i) => {
@@ -231,9 +180,6 @@ export function dueMarkerPosition(
 function plural(n: number, one: string, many: string): string {
   return `${n} ${n === 1 ? one : many}`
 }
-
-/** Which sessions caption leads. Round-2 comparison (VW-455). */
-export type SessionsCaptionKey = 'due' | 'leaving'
 
 /** The sessions card's detail lines: what is due, anything past the commitment, what leaves this week. */
 export function sessionCaptions(row: WholeBodySessionsRow): CaptionLine[] {
@@ -325,14 +271,6 @@ export function phaseLabel(phase: WholeBodyWeightRow['phase']): string {
   return phase.name === 'recomposition'
     ? `Recomp, ${phase.slowLoss === true ? 'slow loss' : 'hold'}`
     : PHASE_WORD[phase.name]
-}
-
-const PHASE_NOUN: Record<WholeBodyDietPhase, string> = {
-  'fat-loss': 'a cut',
-  gain: 'a gain',
-  maintenance: 'a hold',
-  recomposition: 'this recomp',
-  unknown: 'this phase',
 }
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']

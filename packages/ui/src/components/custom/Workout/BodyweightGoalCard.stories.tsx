@@ -18,8 +18,8 @@ const meta: Meta<typeof BodyweightGoalCard> = {
     docs: {
       description: {
         component:
-          '**Organism.** A bodyweight goal on `#/goals` (VW-455): the latest weight, one ' +
-          'detail line beside it with the rest in a tip, then the weigh-in against this ' +
+          '**Organism.** A bodyweight goal on `#/goals` (VW-455): the latest weight, its rate ' +
+          'this week beside it ("Rate: -0.6%/wk") with the bands in a tip, then the weigh-in against this ' +
           "week's band. Sibling of [SessionsGoalCard](?path=/docs/custom-workout-goals-sessionsgoalcard--docs); " +
           'the page grid places the two. Composes ' +
           '[Card](?path=/docs/components-molecules-card--docs), ' +
@@ -27,9 +27,8 @@ const meta: Meta<typeof BodyweightGoalCard> = {
           '[Pill](?path=/docs/components-atoms-pill--docs), ' +
           '[ZoneTrack](?path=/docs/custom-workout-zonetrack--docs) (the band in the goal ' +
           "chart's own band colour) and a Tooltip with an InfoIcon.\n\n" +
-          'The lead line is the rate; the lengths (`percent`, `verdict`, `full`) are a round-3 ' +
-          'comparison and every string in them is a PROPOSAL. Whatever the lead drops — this ' +
-          "week's band, the phase's rate band — sits in the tip.\n\n" +
+          'Locked with the owner in round 6: the rate as a percent with a colon, one text size ' +
+          'on the figure line, and the phase tag collapsing to its glyph on a narrow card.\n\n' +
           'Bodyweight numbers come from the band constants: the store holds no weigh-ins yet. ' +
           'The slow-loss band (-0.25 to -0.5 %/wk) is a stand-in: voltras-mcp pins both edges ' +
           'at -0.5 %/wk today, and a server task will give the phase a real band. No loading ' +
@@ -40,17 +39,11 @@ const meta: Meta<typeof BodyweightGoalCard> = {
   },
   args: {
     goal: W.cut,
-    lead: 'rate',
-    rateLength: 'percent',
-    leadColon: true,
     isTipOpen: false,
     isTagTipOpen: false,
   },
   argTypes: {
     goal: { control: 'object' },
-    lead: { control: 'inline-radio', options: ['band', 'rate'] },
-    rateLength: { control: 'inline-radio', options: ['percent', 'verdict', 'full'] },
-    leadColon: { control: 'boolean' },
     isTagTipOpen: { control: 'boolean' },
     scale: { control: 'inline-radio', options: [undefined, 'wall', 'phone'] },
     isTipOpen: { control: 'boolean' },
@@ -69,11 +62,8 @@ export default meta
 
 type Story = StoryObj<typeof BodyweightGoalCard>
 
-/** F6: a cut from 200 lb, week 3 of 8, leading with the rate at its shortest. */
+/** F6: a cut from 200 lb, week 3 of 8. */
 export const Default: Story = {}
-
-/** The populated lead without its colon, beside the N/A form that always has one. Round 6. */
-export const NoColon: Story = { args: { leadColon: false } }
 
 /**
  * The phase tag's tip, pinned open by state. The tag collapses ONLY when the card's
@@ -81,12 +71,6 @@ export const NoColon: Story = { args: { leadColon: false } }
  * the tip at a narrow one. Nothing here pins the collapse.
  */
 export const TagTip: Story = { args: { isTagTipOpen: true } }
-
-/** The rate with a word for where it sits against the phase's band. Proposed wording. */
-export const RateVerdict: Story = { args: { rateLength: 'verdict' } }
-
-/** The round-2 sentence, which the owner called far too long. Kept for the comparison. */
-export const RateFull: Story = { args: { rateLength: 'full' } }
 
 /** F7: a gain from 170 lb, week 2 of 8. */
 export const Gain: Story = { args: { goal: W.gain } }

@@ -217,11 +217,6 @@ export { SessionsGoalCard, type SessionsGoalCardProps } from './SessionsGoalCard
 export {
   SESSION_SEGMENT_LIMIT,
   WHOLE_BODY_WALL_MIN_WIDTH,
-  type RateLength,
-  type RatePosition,
-  type SessionsCaptionKey,
-  type SessionsPastCommitment,
-  type WeightCaptionKey,
   type WholeBodyDietPhase,
   type WholeBodyDirection,
   type WholeBodyRate,

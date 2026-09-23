@@ -273,9 +273,9 @@ export function CardTrackRow(props: {
  */
 export const FIGURE_LINE_TEXT = 'text-sm'
 
-/** The lead's word, with the colon the owner asked for when it is set. */
-export function leadWord(label: string, colon: boolean): string {
-  return colon ? `${label}:` : label
+/** The lead's word, with the colon the owner locked in round 6: "Rate: -0.6%/wk", "Rate: N/A". */
+export function leadWord(label: string): string {
+  return `${label}:`
 }
 
 /** A muted word and its figure, the figure bold and bright: `GoalMilestoneSummary`'s `Fact`. */
@@ -312,8 +312,6 @@ export function FigureLine(props: {
   label: string
   lead: CaptionLine | null
   rest: CaptionLine[]
-  /** Colon after the lead's word ("Rate: -0.6%/wk"). A line marked `colon` always takes one. */
-  leadColon?: boolean
   tipLabel: string
   isTipOpen?: boolean
   testID: string
@@ -338,7 +336,6 @@ export function FigureLine(props: {
       />
       <CaptionWithTip
         lead={props.lead}
-        colon={props.leadColon ?? true}
         tip={
           tipLines.length === 0 ? null : (
             <DetailTip
@@ -355,16 +352,10 @@ export function FigureLine(props: {
   )
 }
 
-function LeadText(props: { lead: CaptionLine; colon: boolean; testID: string }) {
+function LeadText(props: { lead: CaptionLine; testID: string }) {
   const { lead } = props
   if (lead.label && lead.value) {
-    return (
-      <FactCaption
-        label={leadWord(lead.label, props.colon || lead.colon === true)}
-        value={lead.value}
-        testID={props.testID}
-      />
-    )
+    return <FactCaption label={leadWord(lead.label)} value={lead.value} testID={props.testID} />
   }
   return (
     <Typography
@@ -378,12 +369,7 @@ function LeadText(props: { lead: CaptionLine; colon: boolean; testID: string }) 
   )
 }
 
-function CaptionWithTip(props: {
-  lead: CaptionLine | null
-  colon: boolean
-  tip: ReactNode
-  testID: string
-}) {
+function CaptionWithTip(props: { lead: CaptionLine | null; tip: ReactNode; testID: string }) {
   if (props.lead === null && props.tip === null) return null
   return (
     <View
@@ -400,7 +386,7 @@ function CaptionWithTip(props: {
     >
       {props.lead !== null && (
         <View style={{ flexShrink: 1, minWidth: 0 }}>
-          <LeadText lead={props.lead} colon={props.colon} testID={props.testID} />
+          <LeadText lead={props.lead} testID={props.testID} />
         </View>
       )}
       {props.tip}

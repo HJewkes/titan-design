@@ -23,20 +23,12 @@ import {
   sessionCells,
   wholeBodyScale,
   type SessionCell,
-  type SessionsCaptionKey,
-  type SessionsPastCommitment,
   type WholeBodyScale,
   type WholeBodySessionsRow,
 } from './wholeBody'
 
 export interface SessionsGoalCardProps extends ViewProps {
   goal: WholeBodySessionsRow
-  /** Which detail line sits beside the count; the others move into the tip. Round-2 comparison (VW-455). */
-  lead?: SessionsCaptionKey
-  /** Days past the commitment: `append` adds a cell for each, `cap` stops at the commitment. Round-2 comparison. */
-  pastCommitment?: SessionsPastCommitment
-  /** A colon after the lead's word: "Due by now: 10". Round-6 comparison, matched to the bodyweight card. */
-  leadColon?: boolean
   /** Pins the layout. Omitted, the card measures itself: wall sizes from a 560px content box. */
   scale?: WholeBodyScale
   /** Pins the detail tip open, for review frames and tests. */
@@ -61,20 +53,16 @@ function useCellColors(status: GoalLiftStatus): Record<SessionCell, SegmentedBar
 
 /** One label under the bar: where the count due by now falls. The row keeps its height without it. */
 function dueLabels(row: WholeBodySessionsRow): TrackLabel[] {
-  const cells = sessionCells(row, 'append')
+  const cells = sessionCells(row)
   const marker = dueMarkerPosition(row, cells?.length ?? row.committed)
   return marker === null ? [] : [{ fraction: marker, text: 'due' }]
 }
 
-function SessionsBar(props: {
-  row: WholeBodySessionsRow
-  pastCommitment: SessionsPastCommitment
-  scale: WholeBodyScale
-}) {
+function SessionsBar(props: { row: WholeBodySessionsRow; scale: WholeBodyScale }) {
   const { row, scale } = props
   const t = getSemanticColors(useSurfaceMode())
   const colors = useCellColors(row.status)
-  const cells = sessionCells(row, props.pastCommitment)
+  const cells = sessionCells(row)
   if (cells === null) {
     return (
       <Progress
@@ -100,9 +88,8 @@ function SessionsBar(props: {
 
 /**
  * A training-days goal on `#/goals`: the count in the rolling window against the
- * commitment, one detail line beside it (what is due, or what leaves the window
- * this week; the rest sit in the tip), then one cell per committed day with a
- * marker at the count due by now. Past `SESSION_SEGMENT_LIMIT` cells it falls
+ * commitment, what is due beside it (the rest sit in the tip), then one cell per
+ * committed day, a darker cell per day past it, and a marker at the count due by now. Past `SESSION_SEGMENT_LIMIT` cells it falls
  * back to a plain bar. Never a streak.
  *
  * A sibling of `BodyweightGoalCard`; the page's card grid places the two.
@@ -112,9 +99,6 @@ function SessionsBar(props: {
  */
 export function SessionsGoalCard({
   goal,
-  lead = 'due',
-  leadColon = true,
-  pastCommitment = 'append',
   scale,
   isTipOpen,
   className,
@@ -123,7 +107,7 @@ export function SessionsGoalCard({
 }: SessionsGoalCardProps) {
   const measured = useMeasuredWidth()
   const resolved = wholeBodyScale(measured.width, scale)
-  const captions = leadCaption(sessionCaptions(goal), lead)
+  const captions = leadCaption(sessionCaptions(goal), 'due')
   return (
     <Card
       elevation={1}
@@ -151,14 +135,13 @@ export function SessionsGoalCard({
             label="Training days"
             lead={captions.lead}
             rest={captions.rest}
-            leadColon={leadColon}
             tipLabel="Training days details"
             isTipOpen={isTipOpen}
             testID="sessions-goal-value"
           />
         </View>
         <CardTrackRow scale={resolved} labels={dueLabels(goal)} testID="sessions-goal-track">
-          <SessionsBar row={goal} pastCommitment={pastCommitment} scale={resolved} />
+          <SessionsBar row={goal} scale={resolved} />
         </CardTrackRow>
       </View>
     </Card>

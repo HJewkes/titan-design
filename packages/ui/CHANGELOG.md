@@ -112,15 +112,17 @@ project adheres to [Semantic Versioning](https://semver.org/).
   sits on a line as tall as its font, taking the empty leading above it.
 - `BodyweightGoalCard` and `SessionsGoalCard` (custom/Workout): the goals page's two
   non-lift goals, as sibling cards the page grid places. Bodyweight shows the latest
-  weight, one detail line beside it, and the weigh-in against this week's band in the
-  goal chart's band colour. Sessions shows training days in the rolling 28-day window
-  as one cell per committed day, with a due-by-now marker, and falls back to a plain
-  bar past 20 cells. Each card holds its other detail lines in a tip. The pure logic
-  is exported from `wholeBody.ts` (VW-455). Both cards share one track-row template, so
+  weight, its rate this week ("Rate: -0.6%/wk", or "Rate: N/A"), a diet-phase tag that
+  collapses to its glyph on a narrow card, and the weigh-in against this week's band in
+  the goal chart's band colour. Sessions shows training days in the rolling 28-day
+  window as one cell per committed day and a darker cell per day past it, with a
+  due-by-now marker, and falls back to a plain bar past 20 cells. Each card holds its
+  other detail lines in a tip. The pure logic is in `wholeBody.ts` (VW-455). Both cards share one track-row template, so
   two of them in a grid row line their tracks up and end level.
 - `GoalPriorityIndex` (custom/Workout): every declared priority on one wrapping line,
   grouped by level, naming the ones nothing tracks (VW-455).
 - `formatBodyweight` and `formatSignedRate` in `utils/workout-format`.
+- `TrendingUpIcon` and `RepeatIcon`, the bulk and recomposition phase glyphs.
 - `Metric` takes `valueClassName` and `labelClassName`, merged onto the value and label
   text, and names its label `${testID}-label`.
 
