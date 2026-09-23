@@ -237,8 +237,16 @@ describe('rateBandCaption', () => {
 })
 
 describe('weighInDate', () => {
-  it('formats in UTC so the date does not move with the machine', () => {
-    expect(weighInDate('2026-09-18T23:30:00Z')).toBe('Sep 18')
+  // The server stamps readings in UTC; 11:30 pm Pacific on the 18th is 06:30Z on the 19th.
+  it('names the day the lifter weighed in, not the UTC day', () => {
+    const zone = process.env.TZ
+    process.env.TZ = 'America/Los_Angeles'
+    try {
+      expect(weighInDate('2026-09-19T06:30:00Z')).toBe('Sep 18')
+    } finally {
+      if (zone === undefined) delete process.env.TZ
+      else process.env.TZ = zone
+    }
   })
 
   it('returns an empty string for a bad timestamp', () => {
