@@ -7,6 +7,8 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## 0.21.1
+
 ### Added
 
 - `GoalTrajectoryChart` `yAxisLabels` and `ruleLabelText` (`numeric`, `named`,
