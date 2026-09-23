@@ -24,6 +24,37 @@ that someone can tell whether a future change invalidates the reasoning.
 
 ---
 
+## Effort-band overlay: tier a blue dark to light, effort colours in tier a, and the zone bracket — rejected 2026-09-23
+
+**Tried:** three alternatives in VW-448 round 1 (`Lab/Decisions/Effort Bands`, 1920 and 360, dark). The palette variants were shown on the same ten reps, tier a with a planned VL 30% guard, beside the tier b effort scale as a reference.
+- **Pa2, blue dark to light:** blue 800, 600, 400, 200, so the slowest reps were the brightest.
+- **Pa3, effort colours in tier a:** green to red cut by thirds of the reference loss, relying on the `VL` labels to say what the colour means. The resolver design recommended against it (s.2.3).
+- **Zb, the zone as a bracket:** a thin bracket above the target slots, from the tick before `repsLow` to the line after `repsHigh`, with no tint.
+
+**Chosen:** **Pa1**, blue 200, 400, 600, 800, light to dark, so the fastest rep is brightest and slowing reps sink toward the plane. **Zt**, a tint over the target slots. The owner also judged that the guard colour rule reads: the effort cap is coloured by the effort it targets, the loss guard is neutral ink, and the line that fired the cue is heavier. Wording stands as proposed (`8 to 12`, `RPE 9`, `VL 30%`).
+
+**Why:** the owner's picks, with no reasons given, so they are recorded as preferences. Pa3 fails the reasoning the design gave: a loss band cannot claim effort. Green to red would mean "at this set's stop" before a profile exists and "at failure" after one, so the same colour would change meaning the day a profile lands.
+
+**Code:** deleted. The `palette` and `zone` round options, `VelocityBandTreatment` itself (only `showEdges` survives, as a plain prop), the bracket mark and the two unchosen palettes. `Lab/Decisions/Effort Bands` keeps a `Round1Chosen` story. `velocityBandPalette.test.ts` pins the chosen steps. The `dataviz-slowing-0..3` token is deferred to the integration PR.
+
+---
+
+## Effort-band overlay: past-cue bracket, low-confidence outline, unmarked setting change, and the on-chart calibration fallback — rejected 2026-09-21
+
+**Tried:** four pairs of treatments for `VelocityBandOverlay` (VW-448 round 2, `Lab/Decisions/Effort Bands`, 1920 and 360, dark). The sets were tier b 8 to 10 with two reps past the rep cue; tier a with an RPE 8 target cueing by reps; tier b with the last two reps outside the fitted RIR range; and tier b with a setting change on rep 6.
+- **Past cue as a bracket (Cb):** a thin bracket over the reps after the cue with `+2` above it.
+- **Low confidence as faded fill plus a dashed outline (Lo):** a dashed box in the band colour around each faded bar.
+- **Setting change with dimmed bars only (Sn):** the later bars dimmed and no mark or label.
+- **The fallback on the chart:** the zone label read `RPE 8 · by reps until calibrated`.
+
+**Chosen:** the `+2` badge over the reps past the cue (Cg); the faded fill alone (Lf); dimmed bars plus a labelled mark at the change (Sm); and the fallback in the hero eyebrow, naming the target and the range that is really cueing. The owner's words on the fallback: "If we're cueing by reps, show RPE 8 * 8-12 reps instead of "by reps until calibrated"". The RPE line keeps spanning the chart after a setting change ("keep across").
+
+**Why:** the owner's picks. None came with a stated reason, so these are recorded as preferences. Re-open them only against a rendered alternative, not an argument. The fallback ruling does carry its own reason: say what is cueing (the rep range) rather than why effort is unavailable.
+
+**Code:** deleted. The `pastCue`, `lowConfidence` and `suspension` options on `VelocityBandTreatment`, the bracket and outline marks, and their tests. `Lab/Decisions/Effort Bands` keeps a `Round2Chosen` story rendering the shipped overlay. The separator in `RPE 8 · 8-12 reps` is still an open question for round 3.
+
+---
+
 ## Goal chart week tip "rows" layout — rejected 2026-09-21
 
 **Tried:** two bodies for a week's tip (titan-0201 round 6). **A, figure**: the reading as a

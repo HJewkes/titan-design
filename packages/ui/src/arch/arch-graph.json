@@ -541,8 +541,8 @@
         "ButtonIconProps",
         "ButtonSpinnerProps"
       ],
-      "libDependents": 2,
-      "storyRefs": 14,
+      "libDependents": 1,
+      "storyRefs": 13,
       "xproj": {
         "mobile": 14,
         "mcp": 1,
@@ -637,8 +637,8 @@
         "CardInsetProps",
         "useCardDepth"
       ],
-      "libDependents": 13,
-      "storyRefs": 13,
+      "libDependents": 12,
+      "storyRefs": 11,
       "xproj": {
         "mobile": 69,
         "mcp": 3,
@@ -662,47 +662,6 @@
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": true
-    },
-    {
-      "name": "Carousel",
-      "file": "packages/ui/src/components/ui/carousel/Carousel.tsx",
-      "dir": "ui",
-      "family": "ui/carousel",
-      "exports": [
-        "CarouselSlide",
-        "Carousel",
-        "CarouselPeek",
-        "CarouselControlsSize",
-        "CarouselProps",
-        "CarouselSlideProps",
-        "collectSlides"
-      ],
-      "libDependents": 1,
-      "storyRefs": 4,
-      "xproj": {
-        "mobile": 0,
-        "mcp": 0,
-        "dash": 0,
-        "audiobook": 0,
-        "total": 0
-      },
-      "dependsOn": [
-        "Button",
-        "icons"
-      ],
-      "leak": {
-        "rawView": 12,
-        "rawText": 1,
-        "inlineStyle": 0,
-        "rawHex": 0,
-        "loc": 447,
-        "score": 13
-      },
-      "tier": "organism",
-      "verdict": "keep-internal",
-      "deadByAssociation": true,
-      "audited": "unaudited",
-      "standard": false
     },
     {
       "name": "Checkbox",
@@ -967,7 +926,7 @@
         "loc": 276,
         "score": 1
       },
-      "tier": "atom",
+      "tier": "molecule",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -1473,12 +1432,9 @@
       "file": "packages/ui/src/components/custom/ActiveWork/Eyebrow.tsx",
       "dir": "custom",
       "family": "custom/ActiveWork",
-      "exports": [
-        "Eyebrow",
-        "EyebrowProps"
-      ],
-      "libDependents": 7,
-      "storyRefs": 1,
+      "exports": [],
+      "libDependents": 0,
+      "storyRefs": 0,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
@@ -1497,7 +1453,42 @@
         "loc": 20,
         "score": 0
       },
-      "tier": "atom",
+      "tier": "molecule",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Eyebrow",
+      "file": "packages/ui/src/components/ui/eyebrow/Eyebrow.tsx",
+      "dir": "ui",
+      "family": "ui/eyebrow",
+      "exports": [
+        "Eyebrow",
+        "EyebrowProps"
+      ],
+      "libDependents": 8,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 27,
+        "score": 0
+      },
+      "tier": "molecule",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -1660,7 +1651,7 @@
         "loc": 131,
         "score": 7
       },
-      "tier": "molecule",
+      "tier": "organism",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -1742,7 +1733,7 @@
         "loc": 64,
         "score": 1
       },
-      "tier": "atom",
+      "tier": "molecule",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -1968,8 +1959,8 @@
         "BasisTip",
         "StatusAffordance"
       ],
-      "libDependents": 3,
-      "storyRefs": 6,
+      "libDependents": 2,
+      "storyRefs": 5,
       "xproj": {
         "mobile": 0,
         "mcp": 5,
@@ -2000,56 +1991,6 @@
       },
       "tier": "organism",
       "verdict": "keep-core",
-      "deadByAssociation": false,
-      "audited": "unaudited",
-      "standard": false
-    },
-    {
-      "name": "goalCarousel-fixture",
-      "file": "packages/ui/src/components/custom/Workout/goalCarousel-fixture.tsx",
-      "dir": "workout",
-      "family": "custom/Workout",
-      "exports": [
-        "LiftCard",
-        "liftSlides",
-        "muscleSlides",
-        "WholeBodyStandIn",
-        "wholeBodySlides",
-        "LiftFixture",
-        "NINE_LIFTS",
-        "LONG_NAME_LIFTS",
-        "NOTED_LIFTS",
-        "MuscleFixture",
-        "MUSCLES",
-        "liftCardProps"
-      ],
-      "libDependents": 0,
-      "storyRefs": 2,
-      "xproj": {
-        "mobile": 0,
-        "mcp": 0,
-        "dash": 0,
-        "audiobook": 0,
-        "total": 0
-      },
-      "dependsOn": [
-        "Card",
-        "Carousel",
-        "GoalCard",
-        "GoalMuscleCard",
-        "Metric",
-        "Typography"
-      ],
-      "leak": {
-        "rawView": 1,
-        "rawText": 0,
-        "inlineStyle": 0,
-        "rawHex": 0,
-        "loc": 199,
-        "score": 1
-      },
-      "tier": "organism",
-      "verdict": "dead",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -2232,7 +2173,7 @@
         "GoalMuscleCardProps",
         "useStatusColor"
       ],
-      "libDependents": 1,
+      "libDependents": 0,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -2258,7 +2199,7 @@
         "score": 22
       },
       "tier": "organism",
-      "verdict": "keep-core",
+      "verdict": "keep-app",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -2707,14 +2648,13 @@
         "TargetIcon",
         "EqualIcon",
         "ChevronsDownIcon",
-        "ChevronLeftIcon",
         "ChevronRightIcon",
         "HeadphonesIcon",
         "KanbanIcon",
         "BotIcon",
         "BrainIcon"
       ],
-      "libDependents": 13,
+      "libDependents": 12,
       "storyRefs": 7,
       "xproj": {
         "mobile": 0,
@@ -2811,7 +2751,7 @@
         "loc": 183,
         "score": 5
       },
-      "tier": "molecule",
+      "tier": "organism",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -3246,7 +3186,7 @@
         "loc": 202,
         "score": 7
       },
-      "tier": "atom",
+      "tier": "molecule",
       "verdict": "keep-core",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -3435,7 +3375,7 @@
         "MetricProps",
         "MetricGroupProps"
       ],
-      "libDependents": 4,
+      "libDependents": 3,
       "storyRefs": 1,
       "xproj": {
         "mobile": 8,
@@ -3715,7 +3655,7 @@
         "loc": 96,
         "score": 4
       },
-      "tier": "atom",
+      "tier": "molecule",
       "verdict": "keep-core",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -3757,7 +3697,7 @@
         "loc": 108,
         "score": 5
       },
-      "tier": "molecule",
+      "tier": "organism",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -4410,7 +4350,7 @@
         "loc": 68,
         "score": 0
       },
-      "tier": "molecule",
+      "tier": "organism",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -4898,7 +4838,7 @@
         "onPlotLayout",
         "showBarLabel"
       ],
-      "libDependents": 3,
+      "libDependents": 6,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -5134,7 +5074,7 @@
         "loc": 77,
         "score": 3
       },
-      "tier": "atom",
+      "tier": "molecule",
       "verdict": "keep-core",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -5259,7 +5199,7 @@
         "loc": 75,
         "score": 1
       },
-      "tier": "molecule",
+      "tier": "organism",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -5376,7 +5316,7 @@
         "loc": 248,
         "score": 19
       },
-      "tier": "atom",
+      "tier": "molecule",
       "verdict": "keep-internal",
       "deadByAssociation": true,
       "audited": "unaudited",
@@ -5485,7 +5425,7 @@
         "loc": 195,
         "score": 6
       },
-      "tier": "atom",
+      "tier": "molecule",
       "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -5523,7 +5463,7 @@
         "loc": 78,
         "score": 1
       },
-      "tier": "molecule",
+      "tier": "organism",
       "verdict": "keep-app",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -5643,7 +5583,7 @@
         "loc": 57,
         "score": 6
       },
-      "tier": "atom",
+      "tier": "molecule",
       "verdict": "keep-internal",
       "deadByAssociation": true,
       "audited": "unaudited",
@@ -5659,7 +5599,7 @@
         "SurfaceProps"
       ],
       "libDependents": 17,
-      "storyRefs": 65,
+      "storyRefs": 61,
       "xproj": {
         "mobile": 22,
         "mcp": 12,
@@ -6204,7 +6144,7 @@
         "loc": 75,
         "score": 12
       },
-      "tier": "atom",
+      "tier": "molecule",
       "verdict": "keep-core",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -6344,7 +6284,7 @@
         "hide"
       ],
       "libDependents": 10,
-      "storyRefs": 2,
+      "storyRefs": 1,
       "xproj": {
         "mobile": 0,
         "mcp": 2,
@@ -6525,6 +6465,53 @@
       "standard": false
     },
     {
+      "name": "Typography",
+      "file": "packages/ui/src/components/ui/typography/Typography.tsx",
+      "dir": "ui",
+      "family": "ui/typography",
+      "exports": [
+        "Typography",
+        "Heading",
+        "Paragraph",
+        "Caption",
+        "Label",
+        "Overline",
+        "TypographyVariant",
+        "TypographyColor",
+        "TypographyAlign",
+        "TypographyMarginBottom",
+        "TypographyProps",
+        "HeadingProps",
+        "ParagraphProps",
+        "CaptionProps",
+        "LabelProps",
+        "OverlineProps"
+      ],
+      "libDependents": 50,
+      "storyRefs": 20,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 10,
+        "dash": 1,
+        "audiobook": 0,
+        "total": 11
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 0,
+        "rawText": 1,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 230,
+        "score": 1
+      },
+      "tier": "atom",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": true
+    },
+    {
       "name": "velocity-story-kit",
       "file": "packages/ui/src/components/custom/Workout/velocity-story-kit.tsx",
       "dir": "workout",
@@ -6580,6 +6567,85 @@
       },
       "tier": "organism",
       "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "VelocityBandOverlay",
+      "file": "packages/ui/src/components/custom/Workout/VelocityBandOverlay.tsx",
+      "dir": "workout",
+      "family": "custom/Workout",
+      "exports": [
+        "VelocityBandOverlay",
+        "VelocityBandTreatment",
+        "DEFAULT_BAND_TREATMENT",
+        "VelocityBandOverlayProps",
+        "lineInk",
+        "absolute"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "SetBarChart",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 9,
+        "rawText": 0,
+        "inlineStyle": 1,
+        "rawHex": 0,
+        "loc": 295,
+        "score": 11
+      },
+      "tier": "molecule",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "VelocityBandPreview",
+      "file": "packages/ui/src/components/custom/Workout/VelocityBandPreview.tsx",
+      "dir": "workout",
+      "family": "custom/Workout",
+      "exports": [
+        "VelocityBandPreview",
+        "VelocityBandPalette",
+        "EFFORT_BAND_PALETTE",
+        "VelocityBandPreviewProps",
+        "colorFor"
+      ],
+      "libDependents": 1,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "SetBarChart",
+        "VelocityBandOverlay"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 68,
+        "score": 0
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -6788,7 +6854,7 @@
         "loc": 143,
         "score": 9
       },
-      "tier": "molecule",
+      "tier": "organism",
       "verdict": "keep-internal",
       "deadByAssociation": true,
       "audited": "unaudited",
@@ -6943,7 +7009,7 @@
         "loc": 215,
         "score": 7
       },
-      "tier": "atom",
+      "tier": "molecule",
       "verdict": "keep-core",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -7090,10 +7156,6 @@
     [
       "CoChangeChip",
       "FilePathLabel"
-    ],
-    [
-      "Eyebrow",
-      "Typography"
     ],
     [
       "FileActivityDetail",
@@ -8048,6 +8110,22 @@
       "MesoStatusCard"
     ],
     [
+      "VelocityBandOverlay",
+      "Typography"
+    ],
+    [
+      "VelocityBandOverlay",
+      "SetBarChart"
+    ],
+    [
+      "VelocityBandPreview",
+      "SetBarChart"
+    ],
+    [
+      "VelocityBandPreview",
+      "VelocityBandOverlay"
+    ],
+    [
       "VelocityStrip",
       "SetBarChart"
     ],
@@ -8110,30 +8188,6 @@
     [
       "ZoneTrack",
       "Tooltip"
-    ],
-    [
-      "goalCarousel-fixture",
-      "Card"
-    ],
-    [
-      "goalCarousel-fixture",
-      "Metric"
-    ],
-    [
-      "goalCarousel-fixture",
-      "Typography"
-    ],
-    [
-      "goalCarousel-fixture",
-      "GoalCard"
-    ],
-    [
-      "goalCarousel-fixture",
-      "GoalMuscleCard"
-    ],
-    [
-      "goalCarousel-fixture",
-      "Carousel"
     ],
     [
       "setHeadingKit",
@@ -8328,20 +8382,16 @@
       "Surface"
     ],
     [
-      "Carousel",
-      "icons"
-    ],
-    [
-      "Carousel",
-      "Button"
-    ],
-    [
       "Chip",
       "Pill"
     ],
     [
       "Drawer",
       "Surface"
+    ],
+    [
+      "Eyebrow",
+      "Typography"
     ],
     [
       "HelpTip",
@@ -8393,11 +8443,12 @@
     ]
   ],
   "summary": {
-    "total": 174,
+    "total": 176,
     "dead": [
       "Autocomplete",
       "Avatar",
       "Breadcrumbs",
+      "Eyebrow",
       "GoalLiftCard",
       "IconBox",
       "InitiativeHeader",
@@ -8414,14 +8465,12 @@
       "Toast",
       "Treemap",
       "VolumeLandmarkBar",
-      "goalCarousel-fixture",
       "velocity-story-kit"
     ],
     "deadByAssociation": [
       "BodyMap",
       "BodyMapDetailPanel",
       "CapacityBandChart",
-      "Carousel",
       "InitiativeCard",
       "InputBar",
       "IntensityBar",
@@ -8730,8 +8779,10 @@
       {
         "name": "Typography",
         "category": "Layout",
-        "status": "missing",
-        "have": []
+        "status": "present",
+        "have": [
+          "Typography"
+        ]
       },
       {
         "name": "Stack",
@@ -8921,7 +8972,7 @@
     "substitution": {
       "library(titan)": {
         "Text": 75,
-        "View": 148,
+        "View": 147,
         "TouchableOpacity": 0,
         "Pressable": 58,
         "TextInput": 3,
