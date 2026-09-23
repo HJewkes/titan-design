@@ -105,7 +105,7 @@ export const NO_RATE_REASON = 'Rate shows after a second week of weigh-ins'
  */
 export function rateCaption(row: WholeBodyWeightRow): string | null {
   const observed = row.rate?.observedPctPerWeek ?? null
-  if (row.latest === null || observed === null) return null
+  if (row.latest === null || observed === null || !Number.isFinite(observed)) return null
   return `${formatSignedRate(observed)}%/wk`
 }
 

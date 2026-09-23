@@ -7,6 +7,7 @@ import {
   bandPosition,
   dueMarkerPosition,
   leadCaption,
+  NO_RATE_VALUE,
   phaseLabel,
   rateBandCaption,
   rateCaption,
@@ -115,6 +116,14 @@ describe('leadCaption', () => {
 })
 
 describe('weightCaptions', () => {
+  // Gate N1: a non-finite rate printed "Rate: NaN.0%/wk".
+  it('reads N/A for a rate that is not a finite number', () => {
+    for (const observed of [NaN, Infinity]) {
+      const row = { ...W.cut, rate: { ...W.cut.rate!, observedPctPerWeek: observed } }
+      expect(weightCaptions(row)[0]).toMatchObject({ key: 'rate', value: NO_RATE_VALUE })
+    }
+  })
+
   it('leads with the rate, then the band, then the phase band (F6)', () => {
     expect(weightCaptions(W.cut).map((line) => line.key)).toEqual(['rate', 'band', 'rateBand'])
   })
