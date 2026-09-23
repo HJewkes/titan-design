@@ -1,6 +1,6 @@
 # VelocityBandScale: Round 0 contract (VW-448, task 7, steps A and B)
 
-Status: for owner confirmation before round 1. New files only; no existing component changes until
+Status: rounds 1 and 2 locked (2026-09-21, 2026-09-23); see `Lab/Decisions/Effort Bands`. New files only; no existing component changes until
 #269 merges and 0.21.1 is released (build plan s.3.2).
 
 Sources: `voltras-workspace/sources/design/2026-09-19-vw-448-effort-resolver-design.md` s.2.3, s.3.2,
@@ -19,7 +19,7 @@ The band means one of two things, and the scale says which:
   Band 0 is RIR 2.5 or more, band 3 is under RIR 0.5. The green-to-red scale. RPE may be shown.
 - **`velocity_loss` (tier a, no trusted profile).** Slowing, in thirds of the set's reference loss.
   It says nothing about effort. **No RPE anywhere** (owner ruling). The palette must not read as
-  danger, so it is a separate single-hue palette (section 6).
+  danger, so it is a separate single-hue palette: blue 200, 400, 600, 800, light to dark (round 1).
 
 Markers:
 
@@ -104,9 +104,10 @@ New in this PR, all under `custom/Workout`, none in the barrel yet:
 - `velocityBandGeometry.ts`: `velocityBandGeometry(scale, layout)`, pure, no colour. Also
   `bandSlotCount`, `barTone`, `lineBand` (the colour rule: tier a all neutral, loss guard neutral).
 - `VelocityBandOverlay.tsx`: paints the geometry from `renderReference`, an under layer (zone
-  tint) and an over layer (lines, labels, `+n`, marks). `treatment` holds only the options still
-  open after round 2 (the zone style).
-- `VelocityBandPreview.tsx`: `SetBarChart` plus the overlay, for stories only until step E.
+  tint) and an over layer (lines, labels, `+n`, marks). No round options remain; `showEdges` is
+  off by default and was not reviewed.
+- `VelocityBandPreview.tsx`: `SetBarChart` plus the overlay, for stories only until step E. It
+  also holds `EFFORT_BAND_PALETTE`, `SLOWING_BAND_PALETTE` and `paletteFor(meaning)`.
 
 ## 4. Fixtures
 
@@ -133,10 +134,10 @@ range, and two crowded labels.
 
 No single-hue sequential token exists. `dataviz-sequential-*` is the effort ramp (green to red), so
 it carries the meaning tier a must avoid. Proposed: **`dataviz-slowing-0` to `dataviz-slowing-3`**,
-one hue, four steps, band 0 (fastest) to band 3 (at the reference loss), dark and light columns. The
-round shows two candidate hues built from existing `primitiveRamps` steps in a Lab story, beside the
-tier b palette and the traffic-light alternative the design did not recommend. The owner picks; the
-four-file token chain lands in the integration PR, not here.
+one hue, four steps, band 0 (fastest) to band 3 (at the reference loss). **Round 1 chose blue 200,
+400, 600, 800, light to dark** (Pa1). Until the token exists the palette is `SLOWING_BAND_PALETTE`,
+built from `primitiveRamps` steps and pinned by `velocityBandPalette.test.ts`. The four-file token
+chain, with a light column, lands in the integration PR (owner, 2026-09-23).
 
 ## 7. What waits
 

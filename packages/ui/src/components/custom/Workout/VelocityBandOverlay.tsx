@@ -15,21 +15,6 @@ import {
 } from './velocityBandGeometry'
 import type { VelocityBandIndex, VelocityBandScale } from './VelocityBandScale'
 
-/**
- * Options still under review (VW-448 round 1): `zone` tints the target slots or brackets them.
- * Round 2 fixed the rest: the past-cue count is a badge, a low-confidence bar is only faded by the
- * chart, and a setting change always gets its labelled mark.
- */
-export interface VelocityBandTreatment {
-  zone: 'tint' | 'bracket'
-  showEdges: boolean
-}
-
-export const DEFAULT_BAND_TREATMENT: VelocityBandTreatment = {
-  zone: 'tint',
-  showEdges: false,
-}
-
 export interface VelocityBandOverlayProps {
   scale: VelocityBandScale
   /** Measured mean velocity per performed rep, the same array the bars are drawn from. */
@@ -38,7 +23,8 @@ export interface VelocityBandOverlayProps {
   slotCount: number
   /** The geometry `SetBarChart` hands its `renderReference` painter. */
   chart: Pick<SetBarGeometry, 'scaleDenom' | 'plotHeight'>
-  treatment?: Partial<VelocityBandTreatment>
+  /** Draw faint rules at the band edges the scale carries. Not reviewed yet; off by default. */
+  showEdges?: boolean
   /** Plot width in px. Measured from layout when omitted. */
   plotWidth?: number
   testID?: string
@@ -58,9 +44,6 @@ const LABEL_HEIGHT = 14
 const LABEL_INSET = 4
 const ZONE_TINT_OPACITY = 0.1
 const TICK_HEIGHT = 10
-const BRACKET_DEPTH = 6
-/** The rendered height of one `caption` line. */
-const CAPTION_ROW = 24
 const PAST_CUE_LIFT = 6
 
 interface Inks {
@@ -79,41 +62,24 @@ function absolute(style: ViewStyle): ViewStyle {
 function ZoneUnder({
   zone,
   plotHeight,
-  style,
   inks,
 }: {
   zone: BandZoneGeometry
   plotHeight: number
-  style: VelocityBandTreatment['zone']
   inks: Inks
 }) {
   return (
     <>
-      {style === 'tint' ? (
-        <View
-          testID="band-zone-tint"
-          style={absolute({
-            left: zone.x0,
-            width: zone.x1 - zone.x0,
-            bottom: 0,
-            height: plotHeight,
-            backgroundColor: alpha(inks.faint, ZONE_TINT_OPACITY),
-          })}
-        />
-      ) : (
-        <View
-          testID="band-zone-bracket"
-          style={absolute({
-            left: zone.tickX,
-            width: zone.endX - zone.tickX,
-            bottom: plotHeight - CAPTION_ROW - BRACKET_DEPTH,
-            height: BRACKET_DEPTH,
-            borderTopWidth: 1,
-            borderLeftWidth: 1,
-            borderColor: inks.ink,
-          })}
-        />
-      )}
+      <View
+        testID="band-zone-tint"
+        style={absolute({
+          left: zone.x0,
+          width: zone.x1 - zone.x0,
+          bottom: 0,
+          height: plotHeight,
+          backgroundColor: alpha(inks.faint, ZONE_TINT_OPACITY),
+        })}
+      />
       <View
         testID="band-zone-tick"
         style={absolute({
@@ -282,22 +248,17 @@ function Edges({ geometry, inks }: { geometry: VelocityBandGeometry; inks: Inks 
 interface MarksProps {
   geometry: VelocityBandGeometry
   plotHeight: number
-  treatment: VelocityBandTreatment
+  showEdges: boolean
   inks: Inks
 }
 
 /** Drawn before the bar columns, so the bars sit on top of the tint. */
-function UnderMarks({ geometry, plotHeight, treatment, inks }: MarksProps) {
+function UnderMarks({ geometry, plotHeight, showEdges, inks }: MarksProps) {
   return (
     <>
-      {treatment.showEdges ? <Edges geometry={geometry} inks={inks} /> : null}
+      {showEdges ? <Edges geometry={geometry} inks={inks} /> : null}
       {geometry.zone ? (
-        <ZoneUnder
-          zone={geometry.zone}
-          plotHeight={plotHeight}
-          style={treatment.zone}
-          inks={inks}
-        />
+        <ZoneUnder zone={geometry.zone} plotHeight={plotHeight} inks={inks} />
       ) : null}
     </>
   )
@@ -344,7 +305,7 @@ export function VelocityBandOverlay({
   velocities,
   slotCount,
   chart,
-  treatment,
+  showEdges = false,
   plotWidth: plotWidthProp,
   testID = 'velocity-band-overlay',
 }: VelocityBandOverlayProps) {
@@ -362,7 +323,7 @@ export function VelocityBandOverlay({
   const marks: MarksProps = {
     geometry,
     plotHeight: chart.plotHeight,
-    treatment: { ...DEFAULT_BAND_TREATMENT, ...treatment },
+    showEdges,
     inks,
   }
   return (

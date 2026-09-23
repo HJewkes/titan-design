@@ -24,6 +24,21 @@ that someone can tell whether a future change invalidates the reasoning.
 
 ---
 
+## Effort-band overlay: tier a blue dark to light, effort colours in tier a, and the zone bracket — rejected 2026-09-23
+
+**Tried:** three alternatives in VW-448 round 1 (`Lab/Decisions/Effort Bands`, 1920 and 360, dark). The palette variants were shown on the same ten reps, tier a with a planned VL 30% guard, beside the tier b effort scale as a reference.
+- **Pa2, blue dark to light:** blue 800, 600, 400, 200, so the slowest reps were the brightest.
+- **Pa3, effort colours in tier a:** green to red cut by thirds of the reference loss, relying on the `VL` labels to say what the colour means. The resolver design recommended against it (s.2.3).
+- **Zb, the zone as a bracket:** a thin bracket above the target slots, from the tick before `repsLow` to the line after `repsHigh`, with no tint.
+
+**Chosen:** **Pa1**, blue 200, 400, 600, 800, light to dark, so the fastest rep is brightest and slowing reps sink toward the plane. **Zt**, a tint over the target slots. The owner also judged that the guard colour rule reads: the effort cap is coloured by the effort it targets, the loss guard is neutral ink, and the line that fired the cue is heavier. Wording stands as proposed (`8 to 12`, `RPE 9`, `VL 30%`).
+
+**Why:** the owner's picks, with no reasons given, so they are recorded as preferences. Pa3 fails the reasoning the design gave: a loss band cannot claim effort. Green to red would mean "at this set's stop" before a profile exists and "at failure" after one, so the same colour would change meaning the day a profile lands.
+
+**Code:** deleted. The `palette` and `zone` round options, `VelocityBandTreatment` itself (only `showEdges` survives, as a plain prop), the bracket mark and the two unchosen palettes. `Lab/Decisions/Effort Bands` keeps a `Round1Chosen` story. `velocityBandPalette.test.ts` pins the chosen steps. The `dataviz-slowing-0..3` token is deferred to the integration PR.
+
+---
+
 ## Effort-band overlay: past-cue bracket, low-confidence outline, unmarked setting change, and the on-chart calibration fallback — rejected 2026-09-21
 
 **Tried:** four pairs of treatments for `VelocityBandOverlay` (VW-448 round 2, `Lab/Decisions/Effort Bands`, 1920 and 360, dark). The sets were tier b 8 to 10 with two reps past the rep cue; tier a with an RPE 8 target cueing by reps; tier b with the last two reps outside the fitted RIR range; and tier b with a setting change on rep 6.

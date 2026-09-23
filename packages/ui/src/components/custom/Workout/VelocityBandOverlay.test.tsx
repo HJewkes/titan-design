@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
 import { describe, expect, it } from 'vitest'
-import { VelocityBandOverlay, type VelocityBandTreatment } from './VelocityBandOverlay'
+import { VelocityBandOverlay } from './VelocityBandOverlay'
 import { EFFORT_BAND_PALETTE, VelocityBandPreview } from './VelocityBandPreview'
 import { bandSlotCount } from './velocityBandGeometry'
 import {
@@ -17,7 +17,7 @@ import {
 
 expect.extend(toHaveNoViolations)
 
-function renderOverlay(fixture: BandScaleFixture, treatment?: Partial<VelocityBandTreatment>) {
+function renderOverlay(fixture: BandScaleFixture, showEdges = false) {
   return render(
     <VelocityBandOverlay
       scale={fixture.scale}
@@ -25,7 +25,7 @@ function renderOverlay(fixture: BandScaleFixture, treatment?: Partial<VelocityBa
       slotCount={bandSlotCount(fixture.scale, fixture.velocities.length)}
       chart={{ scaleDenom: 1, plotHeight: 200 }}
       plotWidth={600}
-      treatment={treatment}
+      showEdges={showEdges}
     />
   )
 }
@@ -39,10 +39,19 @@ describe('VelocityBandOverlay', () => {
     expect(screen.getByText('8 to 12')).toBeTruthy()
   })
 
-  it('draws the zone as a baseline bracket when asked', () => {
-    renderOverlay(TIER_A_NO_GUARD, { zone: 'bracket' })
-    expect(screen.getByTestId('band-zone-bracket')).toBeTruthy()
-    expect(screen.queryByTestId('band-zone-tint')).toBeNull()
+  it('tints the zone and draws no bracket (round 1)', () => {
+    renderOverlay(TIER_A_NO_GUARD)
+    expect(screen.getByTestId('band-zone-tint')).toBeTruthy()
+    expect(screen.queryByTestId('band-zone-bracket')).toBeNull()
+  })
+
+  it('draws the band edges only when asked', () => {
+    const { unmount } = renderOverlay(TIER_B_TWO_GUARDS)
+    expect(screen.queryByTestId('band-edge-1')).toBeNull()
+    unmount()
+    renderOverlay(TIER_B_TWO_GUARDS, true)
+    expect(screen.getByTestId('band-edge-1')).toBeTruthy()
+    expect(screen.getByTestId('band-edge-3')).toBeTruthy()
   })
 
   it('shows the zone before the first rep', () => {
