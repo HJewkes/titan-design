@@ -375,6 +375,29 @@ describe('label placement (functional gate S1 to S4)', () => {
     expectClearLabels(g.labels, 1888, 240)
   })
 
+  it('keeps a +1 badge over the last of 20 columns clear of the line label (S1 re-verification)', () => {
+    const twenty: BandScaleFixture = {
+      title: 'twenty',
+      velocities: Array.from({ length: 20 }, (_, i) => 0.66 - i * 0.015),
+      scale: {
+        ...TIER_B_PAST_CUE.scale,
+        repBands: Array(20).fill(0),
+        markers: {
+          goal: {
+            ...(TIER_B_PAST_CUE.scale.markers.goal as VelocityBandRepMarker),
+            repsLow: 15,
+            repsHigh: 19,
+          },
+          guards: TIER_B_PAST_CUE.scale.markers.guards,
+        },
+        cue: { atRep: 19, repsPast: 1 },
+      },
+    }
+    const g = velocityBandGeometry(twenty.scale, chartLayout(twenty, 328, 150))
+    expect(g.labels.map((l) => l.key)).toContain('past-cue')
+    expectClearLabels(g.labels, 328, 150)
+  })
+
   it('names every mark once, zone first', () => {
     const g = velocityBandGeometry(lateChange.scale, chartLayout(lateChange, 1888, 240))
     expect(g.labels.map((l) => l.key)).toEqual(['zone', 'line-guard-0', 'suspension'])

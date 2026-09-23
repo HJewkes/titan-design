@@ -73,37 +73,79 @@ function clampIntoPlot(r: BandLabelRect, plotWidth: number, plotHeight: number):
   return { ...r, x, y }
 }
 
+function overlapArea(a: BandLabelRect, b: BandLabelRect): number {
+  const w = Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x)
+  const h = Math.min(a.y + a.height, b.y + b.height) - Math.max(a.y, b.y)
+  return w > 0 && h > 0 ? w * h : 0
+}
+
+/** Each candidate slides sideways into the plot first: a label a hair past the edge still fits. */
+function candidateRects(request: BandLabelRequest, width: number, plot: PlotBox, height: number) {
+  return request.candidates.map((spot) => {
+    const rect = rectAt(spot, width, height)
+    const x = Math.min(Math.max(0, rect.x), Math.max(0, plot.width - width))
+    return { spot, rect: { ...rect, x } }
+  })
+}
+
+interface PlotBox {
+  width: number
+  height: number
+}
+
+type Candidate = ReturnType<typeof candidateRects>[number]
+
+/** The free candidate, or else the one that covers the least of what is already placed. */
+function chooseCandidate(options: Candidate[], placed: BandLabel[], plot: PlotBox) {
+  const free = options.find(
+    ({ rect }) =>
+      insidePlot(rect, plot.width, plot.height) && placed.every((p) => !intersects(rect, p))
+  )
+  if (free) return { ...free, crowded: false }
+  const cost = (c: Candidate) => {
+    const rect = clampIntoPlot(c.rect, plot.width, plot.height)
+    return placed.reduce((sum, p) => sum + overlapArea(rect, p), 0)
+  }
+  const least = options.reduce<Candidate | null>(
+    (best, c) => (best == null || cost(c) < cost(best) ? c : best),
+    null
+  )
+  return (
+    least && {
+      spot: least.spot,
+      rect: clampIntoPlot(least.rect, plot.width, plot.height),
+      crowded: true,
+    }
+  )
+}
+
 /**
  * Place labels in the order given, each at its first candidate that lies inside the plot and
- * clear of every label placed before it. A label with no free candidate keeps its first choice,
- * clamped into the plot, and is marked `crowded` so a test can see it.
+ * clear of every label placed before it. A label with no free candidate takes the one that
+ * overlaps least, clamped into the plot, and is marked `crowded` so a test can see it.
  */
 export function placeBandLabels(
   requests: readonly BandLabelRequest[],
-  plot: { width: number; height: number },
+  plot: PlotBox,
   metrics: BandLabelMetrics = BAND_LABEL_METRICS
 ): BandLabel[] {
   const placed: BandLabel[] = []
   for (const request of requests) {
     const width = Math.min(estimateLabelWidth(request.text, metrics), plot.width)
-    const rects = request.candidates.map((spot) => ({
-      spot,
-      rect: rectAt(spot, width, metrics.height),
-    }))
-    const free = rects.find(
-      ({ rect }) =>
-        insidePlot(rect, plot.width, plot.height) && placed.every((p) => !intersects(rect, p))
+    const chosen = chooseCandidate(
+      candidateRects(request, width, plot, metrics.height),
+      placed,
+      plot
     )
-    const chosen = free ?? rects[0]
     if (chosen == null) continue
-    const rect = free ? chosen.rect : clampIntoPlot(chosen.rect, plot.width, plot.height)
+    const { key, text, ink } = request
     placed.push({
-      ...rect,
-      key: request.key,
-      text: request.text,
+      ...chosen.rect,
+      key,
+      text,
+      ink,
       align: chosen.spot.align,
-      ink: request.ink,
-      crowded: free == null,
+      crowded: chosen.crowded,
     })
   }
   return placed
