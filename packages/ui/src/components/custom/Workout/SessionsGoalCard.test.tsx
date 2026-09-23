@@ -74,6 +74,24 @@ describe('SessionsGoalCard', () => {
     })
   })
 
+  // Gate S6: the segmented bar had no name or role, and its "due" label read as stray text.
+  it('names the segmented bar as a progressbar with its count and what is due', () => {
+    render(<SessionsGoalCard goal={S.underPace} />)
+    const bar = screen.getByRole('progressbar', {
+      name: '9 of 12 training days, 10 due by now',
+    })
+    expect(bar).toHaveAttribute('aria-valuenow', '9')
+    expect(bar).toHaveAttribute('aria-valuemax', '12')
+    expect(screen.getByText('due').closest('[aria-hidden="true"]')).not.toBeNull()
+  })
+
+  it('names the fallback bar the same way', () => {
+    render(<SessionsGoalCard goal={S.largeCommitment} />)
+    expect(
+      screen.getByRole('progressbar', { name: '25 of 28 training days, 24 due by now' })
+    ).toBeInTheDocument()
+  })
+
   it('tips the status pill with the basis', () => {
     const goal = { ...S.underPace, basis: 'Behind: 9 of the 10 due by now.' }
     render(<SessionsGoalCard goal={goal} />)

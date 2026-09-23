@@ -181,6 +181,13 @@ export function dueMarkerPosition(
   return Math.max(0, row.dueByNow / cellCount)
 }
 
+/** The sessions bar's accessible name: the count against the commitment, and what is due while the window fills. */
+export function sessionsBarLabel(row: WholeBodySessionsRow): string {
+  const count = `${row.counted} of ${row.committed} training days`
+  const marker = dueMarkerPosition(row)
+  return marker === null ? count : `${count}, ${Math.round(row.dueByNow)} due by now`
+}
+
 function plural(n: number, one: string, many: string): string {
   return `${n} ${n === 1 ? one : many}`
 }

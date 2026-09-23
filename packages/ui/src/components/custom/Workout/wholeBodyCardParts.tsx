@@ -276,7 +276,13 @@ export function CardTrackRow(props: {
   return (
     <View style={{ marginTop: 'auto' }} testID={props.testID}>
       <View style={{ height: row.track, justifyContent: 'center' }}>{props.children}</View>
-      <View style={{ height: row.labels }}>
+      {/* Hidden from screen readers: the figure line and the track's own name already carry these numbers. */}
+      <View
+        style={{ height: row.labels }}
+        aria-hidden
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+      >
         {props.labels.map((label) => (
           <View
             key={`${label.fraction}-${label.text}`}

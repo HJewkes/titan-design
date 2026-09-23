@@ -21,6 +21,7 @@ import {
   leadCaption,
   sessionCaptions,
   sessionCells,
+  sessionsBarLabel,
   wholeBodyScale,
   type SessionCell,
   type WholeBodyScale,
@@ -70,19 +71,28 @@ function SessionsBar(props: { row: WholeBodySessionsRow; scale: WholeBodyScale }
         max={row.committed}
         size={scale === 'wall' ? 'lg' : 'md'}
         color={progressTone(row.status)}
-        accessibilityLabel={`${row.counted} of ${row.committed} training days`}
+        accessibilityLabel={sessionsBarLabel(row)}
         testID="sessions-goal-progress"
       />
     )
   }
   const marker = dueMarkerPosition(row, cells.length)
   return (
-    <SegmentedBar
-      segments={cells.map((cell) => colors[cell])}
-      height={scale === 'wall' ? 16 : 10}
-      marker={marker === null ? null : { position: marker, color: t['text-primary'] }}
-      testID="sessions-goal-segments"
-    />
+    <View
+      accessibilityRole="progressbar"
+      accessibilityLabel={sessionsBarLabel(row)}
+      aria-valuenow={row.counted}
+      aria-valuemin={0}
+      aria-valuemax={row.committed}
+      testID="sessions-goal-bar"
+    >
+      <SegmentedBar
+        segments={cells.map((cell) => colors[cell])}
+        height={scale === 'wall' ? 16 : 10}
+        marker={marker === null ? null : { position: marker, color: t['text-primary'] }}
+        testID="sessions-goal-segments"
+      />
+    </View>
   )
 }
 

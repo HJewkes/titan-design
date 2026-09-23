@@ -108,6 +108,11 @@ describe('BodyweightGoalCard', () => {
       expect(screen.queryByTestId('zone-track-tick-label')).toBeNull()
     })
 
+    it('hides the edge labels from screen readers, which the track name already reads', () => {
+      render(<BodyweightGoalCard goal={W.cut} />)
+      expect(screen.getByText('194.0').closest('[aria-hidden="true"]')).not.toBeNull()
+    })
+
     it('labels a zero-width band once', () => {
       render(<BodyweightGoalCard goal={W.slowLossOneLine} />)
       expect(screen.getByTestId('bodyweight-goal-track')).toHaveTextContent('186.2')
