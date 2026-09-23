@@ -7,6 +7,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- `Carousel` for multi-card goal sections on a phone: 24 px peek, 40 px arrow glyphs in 44 px hit boxes drawn below the cards but first in the tab order, swipe, looping, and a plain card when a section holds one item (VW-467, #274).
+
 ## 0.21.1
 
 ### Added
