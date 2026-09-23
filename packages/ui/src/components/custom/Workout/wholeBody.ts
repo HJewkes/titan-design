@@ -206,7 +206,14 @@ export function sessionCaptions(row: WholeBodySessionsRow): CaptionLine[] {
   return lines
 }
 
-/** The domain a band track spans: the band in the middle third, widened so an outlying weigh-in stays on the track. */
+/**
+ * How far past each band edge the track may widen for an outlying weigh-in, in band
+ * spans. Beyond it the needle pins to the track's end and the caption carries the gap,
+ * so a typo such as 1968 for 196.8 cannot squeeze the band and its labels together.
+ */
+const BAND_DOMAIN_MAX_SPANS = 3
+
+/** The domain a band track spans: the band in the middle third, widened (up to a cap) so an outlying weigh-in stays on the track. */
 export function bandDomain(
   low: number,
   high: number,
@@ -216,8 +223,9 @@ export function bandDomain(
   const hi = Math.max(low, high)
   const span = Math.max(hi - lo, ((lo + hi) / 2) * 0.01)
   const pad = span * 0.25
-  const min = Math.min(lo - span, latest === null ? lo : latest - pad)
-  const max = Math.max(hi + span, latest === null ? hi : latest + pad)
+  const reach = span * BAND_DOMAIN_MAX_SPANS
+  const min = Math.max(lo - reach, Math.min(lo - span, latest === null ? lo : latest - pad))
+  const max = Math.min(hi + reach, Math.max(hi + span, latest === null ? hi : latest + pad))
   return { min: round1(min), max: round1(max) }
 }
 

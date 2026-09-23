@@ -12,6 +12,7 @@ import {
   rateCaption,
   sessionCaptions,
   sessionCells,
+  trackFraction,
   weighInDate,
   weightCaptions,
   wholeBodyScale,
@@ -136,6 +137,16 @@ describe('bandDomain', () => {
   it('widens to keep an outlying weigh-in on the track (F9)', () => {
     const { max } = bandDomain(176.4, 183.6, 195)
     expect(max).toBeGreaterThan(195)
+  })
+
+  // Gate S2: a 1968-for-196.8 typo shrank the band to 0.6 px and stacked its two labels.
+  it('keeps the band at least a seventh of the track however far out the weigh-in is', () => {
+    for (const latest of [1968, 19.68, 166.8]) {
+      const { min, max } = bandDomain(197, 194, latest)
+      expect(trackFraction(197, min, max) - trackFraction(194, min, max)).toBeGreaterThanOrEqual(
+        1 / 7
+      )
+    }
   })
 
   it('gives a zero-width band a track to sit on (F10)', () => {
