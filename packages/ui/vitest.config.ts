@@ -16,6 +16,12 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.test.{ts,tsx}'],
     exclude: ['src/**/*.visual.test.{ts,tsx}', 'node_modules'],
+    // Threads, not forks: a forked worker per core loads its own jsdom plus
+    // react-native-web (about 4.5 GB each, 13 on a 14-core Mac, orphaned if the
+    // parent dies). Threads share the process and die with it. Same fix as brain #97.
+    pool: 'threads',
+    poolOptions: { threads: { minThreads: 1, maxThreads: 4 } },
+    teardownTimeout: 30_000,
     // Inline react-native-svg so its relative imports run through the resolver
     // plugin above and resolve to the `.web.js` implementations instead of
     // being externalized to Node (which would load the native Flow sources).
