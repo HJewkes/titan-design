@@ -27,6 +27,16 @@ describe('BodyweightGoalCard', () => {
       expect(screen.queryByTestId('phase-tag-tip')).toBeNull()
     })
 
+    // Gate S4: an undeclared phase collapsed to the Hold glyph while the band read as a cut.
+    it('keeps "No phase declared" in words on a narrow card, with no glyph', () => {
+      const goal = { ...W.cut, phase: { name: 'unknown' as const, weeksInPhase: 0 } }
+      render(<BodyweightGoalCard goal={goal} tagCollapsed />)
+      const tag = screen.getByTestId('phase-tag')
+      expect(tag).toHaveTextContent('No phase declared')
+      expect(tag.querySelector('svg')).toBeNull()
+      expect(screen.queryByTestId('phase-tag-tip')).toBeNull()
+    })
+
     it('puts the phase alone in a pinned-open tip when it has collapsed, no week (owner, round 5)', () => {
       render(<BodyweightGoalCard goal={W.cut} tagCollapsed isTagTipOpen />)
       expect(screen.getByText('Cut')).toBeInTheDocument()

@@ -31,16 +31,19 @@ export function useStatusColor(status: GoalLiftStatus): string {
   return getSemanticColors(useSurfaceMode())[STATUS_TOKEN[status]]
 }
 
+/** A phase the lifter has declared: the four the owner gave glyphs. */
+export type DeclaredDietPhase = Exclude<WholeBodyDietPhase, 'unknown'>
+
 /**
- * One glyph per diet phase, PROPOSED (VW-455 round 4): the owner picks the set.
- * `Lab/Decisions/Diet Phase Icons` renders these and the alternates large.
+ * One glyph per declared diet phase (owner, round 4: "All four work").
+ * `Lab/Decisions/Diet Phase Icons` renders them large. An undeclared phase has
+ * none, so it never borrows a phase's mark.
  */
-export const DIET_PHASE_ICON: Record<WholeBodyDietPhase, (props: IconProps) => JSX.Element> = {
+export const DIET_PHASE_ICON: Record<DeclaredDietPhase, (props: IconProps) => JSX.Element> = {
   'fat-loss': TrendingDownIcon,
   gain: TrendingUpIcon,
   maintenance: EqualIcon,
   recomposition: RepeatIcon,
-  unknown: EqualIcon,
 }
 
 /**
@@ -54,7 +57,10 @@ export const PHASE_TAG_COLLAPSE_WIDTH = 360
 
 const TAG_ICON_SIZE = 13
 
-/** The phase tag: glyph and words, or the glyph alone with the words in a tip. */
+/**
+ * The phase tag: glyph and words, or the glyph alone with the words in a tip.
+ * An undeclared phase keeps its words at every width, having no glyph to collapse to.
+ */
 function PhaseTag(props: {
   phase: WholeBodyDietPhase
   text: string
@@ -62,6 +68,13 @@ function PhaseTag(props: {
   collapsed: boolean
   isTipOpen?: boolean
 }) {
+  if (props.phase === 'unknown') {
+    return (
+      <Pill tone="neutral" variant="outline" size="sm" testID="phase-tag">
+        {props.text}
+      </Pill>
+    )
+  }
   const Glyph = DIET_PHASE_ICON[props.phase]
   const icon = <Glyph size={TAG_ICON_SIZE} />
   if (!props.collapsed) {

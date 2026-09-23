@@ -6,11 +6,10 @@ import { View } from 'react-native'
 import { Pill } from '../../ui/pill'
 import { Surface } from '../../ui/surface'
 import { Typography } from '../../ui/typography'
-import { DIET_PHASE_ICON } from './wholeBodyCardParts'
-import type { WholeBodyDietPhase } from './wholeBody'
+import { DIET_PHASE_ICON, type DeclaredDietPhase } from './wholeBodyCardParts'
 
 /** The four declared phases, as the owner named them in round 4. */
-const PHASES: { phase: WholeBodyDietPhase; name: string }[] = [
+const PHASES: { phase: DeclaredDietPhase; name: string }[] = [
   { phase: 'fat-loss', name: 'Cut' },
   { phase: 'gain', name: 'Bulk' },
   { phase: 'maintenance', name: 'Maintenance' },
@@ -31,7 +30,7 @@ function Column({ title, children }: { title: string; children: ReactNode }) {
   )
 }
 
-function Row({ phase, name }: { phase: WholeBodyDietPhase; name: string }) {
+function Row({ phase, name }: { phase: DeclaredDietPhase; name: string }) {
   const Glyph = DIET_PHASE_ICON[phase]
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center' }} className="gap-inline-lg">
