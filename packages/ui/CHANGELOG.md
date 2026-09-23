@@ -31,6 +31,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 - `ZoneTrack` reserved a tick-label row even when no tick carried a label, which pushed
   its track up by the height of an empty row.
+- `TipTrigger` closed on the first tap: the tap focused the trigger, which opened the
+  tip, and the press then toggled it shut. A press now only opens; Escape, blur, hover
+  out and a press outside still close it.
 
 ## 0.21.1
 
