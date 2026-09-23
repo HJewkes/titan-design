@@ -337,7 +337,8 @@ export function ZoneTrack({
         })}
       </View>
 
-      {ticks != null && ticks.length > 0 && (
+      {/* Only labels earn the row: a caller that passes lines alone (VW-455) gets no dead space. */}
+      {ticks != null && ticks.some((tick) => tick.label != null) && (
         <View
           style={{ position: 'relative', height: s.labelRowHeight, marginTop: s.labelMarginTop }}
         >

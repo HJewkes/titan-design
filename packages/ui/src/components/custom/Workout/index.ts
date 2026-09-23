@@ -206,6 +206,25 @@ export {
   type GoalPriorityIconProps,
 } from './GoalPriorityIcon'
 export {
+  GoalPriorityIndex,
+  groupPriorities,
+  type GoalPriorityIndexEntry,
+  type GoalPriorityIndexGroup,
+  type GoalPriorityIndexProps,
+} from './GoalPriorityIndex'
+export { BodyweightGoalCard, type BodyweightGoalCardProps } from './BodyweightGoalCard'
+export { SessionsGoalCard, type SessionsGoalCardProps } from './SessionsGoalCard'
+export {
+  SESSION_SEGMENT_LIMIT,
+  WHOLE_BODY_WALL_MIN_WIDTH,
+  type WholeBodyDietPhase,
+  type WholeBodyDirection,
+  type WholeBodyRate,
+  type WholeBodyScale,
+  type WholeBodySessionsRow,
+  type WholeBodyWeightRow,
+} from './wholeBody'
+export {
   PrimaryGoalCard,
   type PrimaryGoalCardProps,
   type PrimaryGoalChart,

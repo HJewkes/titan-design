@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
+  formatBodyweight,
+  formatSignedRate,
   roundRpe,
   rpeColor,
   roundWeight,
@@ -130,5 +132,25 @@ describe('formatPrescription', () => {
     expect(formatPrescription(null)).toBeNull()
     expect(formatPrescription(undefined)).toBeNull()
     expect(formatPrescription({})).toBeNull()
+  })
+})
+
+describe('formatBodyweight', () => {
+  it('always shows one decimal', () => {
+    expect(formatBodyweight(200)).toBe('200.0')
+    expect(formatBodyweight(196.84)).toBe('196.8')
+  })
+})
+
+describe('formatSignedRate', () => {
+  it('signs a rate and keeps at least one decimal', () => {
+    expect(formatSignedRate(-0.6)).toBe('-0.6')
+    expect(formatSignedRate(0.25)).toBe('+0.25')
+    expect(formatSignedRate(-1)).toBe('-1.0')
+    expect(formatSignedRate(0)).toBe('0.0')
+  })
+
+  it('rounds float noise to two places', () => {
+    expect(formatSignedRate(-0.7000001)).toBe('-0.7')
   })
 })

@@ -332,15 +332,33 @@ describe('TipTrigger', () => {
     expect(screen.getByText('Under the band')).toBeInTheDocument()
   })
 
-  it('toggles on press, for touch', () => {
+  it('opens on press, for touch', () => {
+    renderTip()
+
+    fireEvent.click(screen.getByTestId('tip'))
+
+    expect(screen.getByText('Under the band')).toBeInTheDocument()
+  })
+
+  // A tap focuses the trigger and then presses it; the press used to toggle the tip shut again.
+  it('stays open when one tap both focuses and presses the trigger', () => {
     renderTip()
     const trigger = screen.getByTestId('tip')
 
+    fireEvent.focus(trigger)
     fireEvent.click(trigger)
-    expect(screen.getByText('Under the band')).toBeInTheDocument()
 
+    expect(screen.getByText('Under the band')).toBeInTheDocument()
+  })
+
+  it('stays open when a hovered trigger is clicked', () => {
+    renderTip()
+    const trigger = screen.getByTestId('tip')
+
+    fireEvent.mouseEnter(trigger)
     fireEvent.click(trigger)
-    expect(screen.queryByText('Under the band')).toBeNull()
+
+    expect(screen.getByText('Under the band')).toBeInTheDocument()
   })
 
   it('closes on Escape', () => {
@@ -402,6 +420,12 @@ describe('TipTrigger', () => {
     expect(trigger).not.toHaveAttribute('aria-describedby')
     fireEvent.focus(trigger)
     expect(trigger).toHaveAccessibleDescription('Under the band')
+  })
+
+  it('gives the open tip the tooltip role', () => {
+    renderTip()
+    fireEvent.focus(screen.getByTestId('tip'))
+    expect(screen.getByRole('tooltip')).toHaveTextContent('Under the band')
   })
 
   it('has no accessibility violations', async () => {

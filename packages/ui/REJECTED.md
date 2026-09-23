@@ -88,6 +88,45 @@ floor at 1.08 to fit the pick.
 
 **Code:** deleted — the `deloadWash` chart prop and the `Wash*` stories. `Lab/Decisions/Goal
 Chart Marks` keeps the decision as a record, rendering the shipped chart.
+## One whole-body card with two rows, and two sessions renders — rejected 2026-09-19
+
+**Tried:** VW-455 round 1 drew the goals page's two non-lift goals as one
+`WholeBodyCard`: a bodyweight row and a sessions row, divided, with every detail line
+stacked under each figure. The sessions row came in three renders: one cell per
+committed day with a due-by-now marker, a plain `Progress` bar, and the number alone.
+
+**Chosen instead:** two sibling cards, `BodyweightGoalCard` and `SessionsGoalCard`,
+placed by the page's own card grid under one "Whole body" title, side by side on the
+wall and stacked on a phone. Each shows one detail line beside its figure and holds
+the rest in a tip. Sessions keep the cells; a plain bar remains only as the fallback
+past 20 cells.
+
+**Why:** the owner, round 1: "I'd just make the whole body cards be separated". One
+card made the phone a long single column and tied two unrelated goals to one frame,
+and the page already owns card placement for the per-lift grid. The stacked detail
+lines "add excess padding. lets pick one to be important enough to be right aligned
+on the text line below the main metric, and move the rest to a tool tip hover". The
+cells were picked over the bar and the bare number (the owner chose S-seg).
+
+**Rounds 3 to 5 (same unit):** the lead line's `leadStyle` comparison is gone. The owner
+picked the body-size fact ("F-strong") over the caption-size fact and round 3's grey line,
+and in round 5 asked that the figure's label and its lead share one text size at every
+width; one fixed size is what `FIGURE_LINE_TEXT` now owns. The story that pinned the phase
+tag collapsed at every width is gone too: it showed a collapse the measured rule never makes.
+
+**Locked in round 6 (2026-09-22), and every rung the owner did not pick removed:** the
+band as the weight's lead (round 2 picked the rate), the rate's `verdict` and `full`
+lengths (round 3 picked the percent alone: the sentence was "far too long"), "what leaves
+the window" as the sessions lead ("too wordy"; round 2 picked what is due), capping days
+past the commitment (round 2 picked appended cells), the populated lead without a colon
+(round 6 picked "Rate: -0.6%/wk"), and the round-4 glyph alternates (ChevronsDown, Activity,
+CircleSlash, History; the owner said "All four work" of TrendingDown, TrendingUp, Equal and
+Repeat).
+
+**Code:** deleted in the same pull request, before merge: `WholeBodyCard` and its
+`sessionsVisual` prop, then `leadStyle` and the pinned `TagCollapsed` story, then the
+`lead`, `rateLength`, `leadColon` and `pastCommitment` props with their types. The priorities index explored beside it, `GoalPriorityIndex`,
+is kept for the mesocycle header, which has its own Round 0.
 
 ---
 

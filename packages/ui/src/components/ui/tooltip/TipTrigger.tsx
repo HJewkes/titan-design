@@ -63,9 +63,9 @@ function useDismissOnWeb(open: boolean, close: () => void, trigger: RefObject<Vi
 /**
  * One tip that opens on hover (web), focus (keyboard) and press (native) — the
  * three affordances share a single open state, because RNW ends a wrapper's
- * hover the moment a nested Pressable claims the pointer. On the web it also
- * closes on Escape and on a press outside the trigger, and the open tip
- * describes the trigger for screen readers.
+ * hover the moment a nested Pressable claims the pointer. A press only opens;
+ * on the web the tip closes on Escape, blur, hover out and a press outside the
+ * trigger, and the open tip describes the trigger for screen readers.
  *
  * @example
  * <TipTrigger label="Goal status: behind" content={<Basis />}>
@@ -97,7 +97,11 @@ export function TipTrigger({
       placement={placement}
       usePortal={usePortal}
       style={style}
-      content={<View nativeID={tipId}>{content}</View>}
+      content={
+        <View nativeID={tipId} role="tooltip">
+          {content}
+        </View>
+      }
     >
       <Pressable
         ref={trigger}
@@ -108,7 +112,8 @@ export function TipTrigger({
         onHoverOut={() => setOpen(false)}
         onFocus={() => setOpen(true)}
         onBlur={() => setOpen(false)}
-        onPress={() => setOpen((wasOpen) => !wasOpen)}
+        // Opens and never toggles: a tap focuses the trigger first, so a toggle shut the tip it had just opened.
+        onPress={() => setOpen(true)}
         {...(tabIndex !== undefined ? { tabIndex } : {})}
         {...(onKeyDown ? { onKeyDown } : {})}
         style={pressableStyle ?? style}
