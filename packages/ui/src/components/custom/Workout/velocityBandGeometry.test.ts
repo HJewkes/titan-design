@@ -1,12 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import {
-  LINE_LABEL_CLEARANCE,
+  MAX_EMPTY_PLACES,
+  barTone,
   bandSlotCount,
   bandSlots,
   lineBand,
   velocityBandGeometry,
   type BandBarLayout,
 } from './velocityBandGeometry'
+import { labelsOverlap, type BandLabel } from './velocityBandLabels'
 import {
   EMPTY_SET,
   TIER_A_NO_GUARD,
@@ -224,16 +226,6 @@ describe('guard lines', () => {
     expect(line).toMatchObject({ y: 200, clamped: true })
   })
 
-  it('moves the lower of two crowded labels under its line', () => {
-    const near = { ...lossLine, velocityMps: 0.36 + (LINE_LABEL_CLEARANCE - 2) / 200 }
-    const scale: VelocityBandScale = {
-      ...TIER_B_TWO_GUARDS.scale,
-      markers: { goal: null, guards: [TIER_B_REP_RANGE_ONE_GUARD.scale.markers.guards[0], near] },
-    }
-    const lines = velocityBandGeometry(scale, layoutFor(TIER_B_TWO_GUARDS)).lines
-    expect(lines.map((l) => l.labelSide)).toEqual(['above', 'below'])
-  })
-
   it('marks the guard that fired the cue', () => {
     const lines = geometryOf(TIER_B_TWO_GUARDS).lines
     expect(lines.find((l) => l.firedCue)?.condition).toBe('velocity_loss')
@@ -299,5 +291,180 @@ describe('band edges', () => {
 
   it('has none in tier a, where the scale carries no edges', () => {
     expect(geometryOf(TIER_A_NO_GUARD).edges).toEqual([])
+  })
+})
+
+/** The chart's own `peak` scale: the best rep with 3% headroom. */
+function chartLayout(fixture: BandScaleFixture, plotWidth: number, plotHeight: number) {
+  const best = Math.max(...fixture.velocities)
+  return {
+    plotWidth,
+    plotHeight,
+    slotCount: bandSlotCount(fixture.scale, fixture.velocities.length),
+    velocities: fixture.velocities,
+    scaleDenom: best * 1.03,
+  }
+}
+
+function expectClearLabels(labels: BandLabel[], plotWidth: number, plotHeight: number) {
+  expect(labelsOverlap(labels)).toBe(false)
+  for (const l of labels) {
+    expect(l.crowded).toBe(false)
+    expect(l.x).toBeGreaterThanOrEqual(0)
+    expect(l.x + l.width).toBeLessThanOrEqual(plotWidth)
+    expect(l.y).toBeGreaterThanOrEqual(0)
+    expect(l.y + l.height).toBeLessThanOrEqual(plotHeight)
+  }
+}
+
+const PHONE = [328, 150] as const
+const WALL = [1888, 240] as const
+
+const heavySet: BandScaleFixture = {
+  title: 'heavy',
+  velocities: [0.4, 0.39, 0.38, 0.37, 0.36],
+  scale: {
+    ...TIER_B_REP_RANGE_ONE_GUARD.scale,
+    repBands: [1, 1, 1, 2, 2],
+  },
+}
+
+const lateChange: BandScaleFixture = {
+  ...TIER_B_SUSPENDED_TAIL,
+  velocities: [...TIER_B_SUSPENDED_TAIL.velocities, 0.6, 0.58, 0.55],
+  scale: { ...TIER_B_SUSPENDED_TAIL.scale, settingChangedAtRep: 10 },
+}
+
+describe('label placement (functional gate S1 to S4)', () => {
+  const cases: [string, BandScaleFixture][] = [
+    ['past cue under a line (S1)', TIER_B_PAST_CUE],
+    ['setting change late in the set (S2)', lateChange],
+    ['heavy set, line near the plot top (S3)', heavySet],
+    ['two guards', TIER_B_TWO_GUARDS],
+    ['fallback eyebrow set', TIER_A_TARGET_RPE_FALLBACK],
+  ]
+  for (const [name, fixture] of cases) {
+    for (const [w, h] of [PHONE, WALL]) {
+      it(`keeps every label clear and inside the plot: ${name} at ${w}x${h}`, () => {
+        const g = velocityBandGeometry(fixture.scale, chartLayout(fixture, w, h))
+        expectClearLabels(g.labels, w, h)
+      })
+    }
+  }
+
+  it('stacks three lines within one label height without overlap (S4)', () => {
+    const three: VelocityBandScale = {
+      ...TIER_B_TWO_GUARDS.scale,
+      markers: {
+        goal: {
+          ...lossLine,
+          role: 'goal',
+          condition: 'effort',
+          velocityMps: 0.4,
+          band: 1,
+          label: 'RPE 8',
+        },
+        guards: [
+          { ...lossLine, condition: 'effort', velocityMps: 0.39, band: 2, label: 'RPE 9' },
+          { ...lossLine, velocityMps: 0.38, label: 'VL 30%' },
+        ],
+      },
+    }
+    const g = velocityBandGeometry(three, chartLayout(TIER_B_TWO_GUARDS, 1888, 240))
+    expect(g.labels.filter((l) => l.key.startsWith('line-'))).toHaveLength(3)
+    expectClearLabels(g.labels, 1888, 240)
+  })
+
+  it('names every mark once, zone first', () => {
+    const g = velocityBandGeometry(lateChange.scale, chartLayout(lateChange, 1888, 240))
+    expect(g.labels.map((l) => l.key)).toEqual(['zone', 'line-guard-0', 'suspension'])
+  })
+
+  it('colours a line label like its line', () => {
+    const g = geometryOf(TIER_B_TWO_GUARDS)
+    const inks = Object.fromEntries(g.labels.map((l) => [l.text, l.ink]))
+    expect(inks).toMatchObject({ 'RPE 9': 2, 'VL 30%': 'ink', '8 to 12': 'ink', '+2': 'ink' })
+  })
+})
+
+describe('hostile input (functional gate S8 to S10, N1 to N3, N8)', () => {
+  it('drops a band outside 0 to 3 instead of drawing it (S8)', () => {
+    const scale = { ...TIER_B_REP_RANGE_ONE_GUARD.scale, repBands: [7, -1, 0.5, 2] as never }
+    expect([0, 1, 2, 3].map((i) => barTone(scale, i).band)).toEqual([null, null, null, 2])
+  })
+
+  it('pads no columns for a non-finite bound, rounds a fractional one, and caps the padding (S8, N3)', () => {
+    const withHigh = (repsHigh: number): VelocityBandScale => ({
+      ...TIER_A_NO_GUARD.scale,
+      markers: {
+        goal: { ...(TIER_A_NO_GUARD.scale.markers.goal as VelocityBandRepMarker), repsHigh },
+        guards: [],
+      },
+    })
+    expect(bandSlotCount(withHigh(Infinity), 5)).toBe(5)
+    expect(bandSlotCount(withHigh(NaN), 5)).toBe(5)
+    expect(bandSlotCount(withHigh(11.6), 5)).toBe(12)
+    expect(bandSlotCount(withHigh(200), 5)).toBe(5 + MAX_EMPTY_PLACES)
+  })
+
+  it('skips the zone, not the lines, when a bound is not finite (S8)', () => {
+    const scale: VelocityBandScale = {
+      ...TIER_B_REP_RANGE_ONE_GUARD.scale,
+      markers: {
+        goal: { ...(TIER_A_NO_GUARD.scale.markers.goal as VelocityBandRepMarker), repsHigh: NaN },
+        guards: TIER_B_REP_RANGE_ONE_GUARD.scale.markers.guards,
+      },
+    }
+    const g = velocityBandGeometry(scale, layoutFor(TIER_B_REP_RANGE_ONE_GUARD))
+    expect(g.zone).toBeNull()
+    expect(g.lines).toHaveLength(1)
+  })
+
+  it('draws no line or edge when the height scale is not finite (S9)', () => {
+    const layout = { ...layoutFor(TIER_B_TWO_GUARDS), scaleDenom: NaN }
+    const g = velocityBandGeometry(TIER_B_TWO_GUARDS.scale, layout)
+    expect(g.lines).toEqual([])
+    expect(g.edges).toEqual([])
+    expect(g.labels.some((l) => l.key.startsWith('line-'))).toBe(false)
+  })
+
+  it('keeps every bar and line neutral when the scale means none (S10)', () => {
+    const scale: VelocityBandScale = { ...TIER_B_TWO_GUARDS.scale, meaning: 'none' }
+    const g = velocityBandGeometry(scale, layoutFor(TIER_B_TWO_GUARDS))
+    expect(g.bars.every((b) => b.band === null)).toBe(true)
+    expect(g.lines.every((l) => l.band === null)).toBe(true)
+    expect(g.zone).not.toBeNull()
+  })
+
+  it('draws no line at a zero or negative velocity (N1)', () => {
+    const scale: VelocityBandScale = {
+      ...TIER_B_TWO_GUARDS.scale,
+      markers: {
+        goal: null,
+        guards: [
+          { ...lossLine, velocityMps: -1 },
+          { ...lossLine, velocityMps: 0 },
+        ],
+      },
+    }
+    expect(velocityBandGeometry(scale, layoutFor(TIER_B_TWO_GUARDS)).lines).toEqual([])
+  })
+
+  it('draws no zone below rep 1 or past the columns the caller drew (N2)', () => {
+    const goal = TIER_A_NO_GUARD.scale.markers.goal as VelocityBandRepMarker
+    const zero: VelocityBandScale = {
+      ...TIER_A_NO_GUARD.scale,
+      markers: { goal: { ...goal, repsLow: 0, repsHigh: 0 }, guards: [] },
+    }
+    expect(velocityBandGeometry(zero, layoutFor(TIER_A_NO_GUARD)).zone).toBeNull()
+    const short = { ...layoutFor(TIER_A_NO_GUARD), slotCount: 5 }
+    expect(velocityBandGeometry(TIER_A_NO_GUARD.scale, short).zone).toBeNull()
+  })
+
+  it('treats a setting change before rep 1 as no change (N8)', () => {
+    const scale: VelocityBandScale = { ...TIER_B_SUSPENDED_TAIL.scale, settingChangedAtRep: 0 }
+    const g = velocityBandGeometry(scale, layoutFor(TIER_B_SUSPENDED_TAIL))
+    expect(g.suspension).toBeNull()
+    expect(g.bars[0].band).toBe(0)
   })
 })

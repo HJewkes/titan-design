@@ -74,7 +74,7 @@ describe('VelocityBandOverlay', () => {
 
   it('counts the reps past the cue as a badge, with no bracket (round 2)', () => {
     renderOverlay(TIER_B_PAST_CUE)
-    expect(screen.getByTestId('band-past-cue')).toBeTruthy()
+    expect(screen.getByTestId('band-label-past-cue')).toBeTruthy()
     expect(screen.getByText('+2')).toBeTruthy()
     expect(screen.queryByTestId('band-past-cue-bracket')).toBeNull()
   })
@@ -107,6 +107,48 @@ describe('VelocityBandOverlay', () => {
     )
     expect(screen.getByTestId('velocity-band-overlay')).toBeTruthy()
     expect(screen.queryByTestId('band-line-guard-0')).toBeNull()
+  })
+
+  it('hides both layers from assistive technology on web (S7)', () => {
+    renderOverlay(TIER_B_TWO_GUARDS)
+    for (const id of ['velocity-band-overlay', 'velocity-band-overlay-over']) {
+      expect(screen.getByTestId(id).getAttribute('aria-hidden')).toBe('true')
+    }
+  })
+
+  it('counter-flips every label in a down wing (S5)', () => {
+    render(
+      <VelocityBandOverlay
+        scale={TIER_B_TWO_GUARDS.scale}
+        velocities={TIER_B_TWO_GUARDS.velocities}
+        slotCount={12}
+        chart={{ scaleDenom: 1, plotHeight: 200, flip: true }}
+        plotWidth={600}
+      />
+    )
+    const label = screen.getByTestId('band-label-line-guard-0')
+    expect(label.getAttribute('style') ?? '').toMatch(/scaleY\(-1\)/)
+  })
+
+  it('renders a chart whose bands, bounds and velocities are corrupt without throwing (S8, S9)', () => {
+    const corrupt = {
+      ...TIER_B_TWO_GUARDS.scale,
+      repBands: [7, -1, 0, 1] as never,
+      markers: {
+        goal: { ...(EMPTY_SET.scale.markers.goal as object), repsHigh: Infinity } as never,
+        guards: [],
+      },
+    }
+    render(
+      <VelocityBandPreview
+        velocities={[0.6, NaN, Infinity, 0.5]}
+        scale={corrupt}
+        palette={EFFORT_BAND_PALETTE}
+        height={200}
+        accessibilityLabel="corrupt set"
+      />
+    )
+    expect(screen.getByRole('img', { name: 'corrupt set' })).toBeTruthy()
   })
 
   it('has no accessibility violations on a chart', async () => {

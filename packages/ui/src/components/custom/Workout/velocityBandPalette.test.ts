@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { primitiveRamps as ramp } from '../../../theme/tokens/primitives'
-import { EFFORT_BAND_PALETTE, SLOWING_BAND_PALETTE, paletteFor } from './VelocityBandPreview'
+import { EFFORT_BAND_PALETTE, SLOWING_BAND_PALETTE, paletteFor } from './velocityBandPalette'
 
 describe('effort band palettes (VW-448 round 1)', () => {
   it('pins tier a to blue 200, 400, 600 and 800, light to dark', () => {

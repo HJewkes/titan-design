@@ -16,8 +16,10 @@ export type VelocityBandIndex = 0 | 1 | 2 | 3
  * What the colours mean, which also picks the palette. `effort` (tier b): absolute effort from a
  * trusted profile, the green-to-red scale. `velocity_loss` (tier a): slowing, in thirds of the set's
  * reference loss; it claims nothing about effort, so no marker in it carries an effort colour.
+ * `none` (the resolver's `bandMeaning: null`, e.g. isokinetic): every bar and line is neutral, and
+ * the rep-range zone still draws.
  */
-export type VelocityBandMeaning = 'effort' | 'velocity_loss'
+export type VelocityBandMeaning = 'effort' | 'velocity_loss' | 'none'
 
 export type VelocityBandConfidence = 'high' | 'low'
 
@@ -26,7 +28,7 @@ export type VelocityBandCondition = 'reps' | 'effort' | 'velocity_loss'
 
 interface VelocityBandMarkerCommon {
   role: 'goal' | 'guard'
-  /** Caller-supplied wording, drawn verbatim. */
+  /** Caller-supplied wording, drawn verbatim on one line; the caller keeps it short. */
   label: string
   /** The condition has become true in this set. */
   reached: boolean
@@ -39,9 +41,11 @@ interface VelocityBandMarkerCommon {
  * no effort; the type has no colour to set.
  */
 export interface VelocityBandRepMarker extends VelocityBandMarkerCommon {
+  /** Only a goal is a rep range; the resolver's guards are always velocity lines. */
+  role: 'goal'
   axis: 'rep'
   condition: 'reps'
-  /** 1-based rep numbers, inclusive. */
+  /** 1-based rep numbers, inclusive. A non-finite bound (an open-ended range) draws no zone. */
   repsLow: number
   repsHigh: number
 }
@@ -83,6 +87,6 @@ export interface VelocityBandScale {
   cue?: VelocityBandCue | null
   /** 1-based rep from which a mid-set setting change suspended the bands. Sticky to the set end. */
   settingChangedAtRep?: number | null
-  /** Wording beside the suspension mark. */
+  /** Wording beside the suspension mark. Omitted, the mark draws unlabelled. */
   settingChangedLabel?: string
 }

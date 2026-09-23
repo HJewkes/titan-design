@@ -1,4 +1,11 @@
 import { BAR_MAX_WIDTH, GAP_RATIO, computeBarLayout } from '../charts/SetBarChart'
+import {
+  BAND_LABEL_METRICS,
+  placeBandLabels,
+  type BandLabel,
+  type BandLabelMetrics,
+  type BandLabelRequest,
+} from './velocityBandLabels'
 import type {
   VelocityBandCondition,
   VelocityBandIndex,
@@ -58,8 +65,6 @@ export interface BandLineGeometry {
   clamped: boolean
   band: VelocityBandIndex | null
   label: string
-  /** Where the label sits so two close lines do not print over each other. */
-  labelSide: 'above' | 'below'
   reached: boolean
   firedCue: boolean
 }
@@ -87,19 +92,26 @@ export interface VelocityBandGeometry {
   edges: { band: 1 | 2 | 3; y: number }[]
   pastCue: BandPastCueGeometry | null
   suspension: BandSuspensionGeometry | null
+  /** Every label, placed so none overlaps another or leaves the plot. */
+  labels: BandLabel[]
 }
 
 /** `SetBarChart`'s minimum drawn bar height, so a near-zero rep still reads as a rep. */
 const MIN_BAR_HEIGHT = 4
-/** Two line labels closer than this (px) would overlap, so the lower one moves under its line. */
-export const LINE_LABEL_CLEARANCE = 14
 const MAX_GUARDS = 2
+/** A bad plan cannot pad the chart with more empty places than this past the performed reps. */
+export const MAX_EMPTY_PLACES = 20
+
+/** A rep bound the zone can use: finite, rounded, and at least rep 1. */
+function repBound(rep: number): number | null {
+  return Number.isFinite(rep) && Math.round(rep) >= 1 ? Math.round(rep) : null
+}
 
 /** How many columns the chart needs: every performed rep, and empty places up to the zone's top. */
 export function bandSlotCount(scale: VelocityBandScale | undefined, performed: number): number {
   const goal = scale?.markers.goal
-  const zoneTop = goal?.axis === 'rep' ? Math.max(goal.repsLow, goal.repsHigh) : 0
-  return Math.max(performed, zoneTop)
+  const high = goal?.axis === 'rep' ? repBound(Math.max(goal.repsLow, goal.repsHigh)) : null
+  return Math.max(performed, Math.min(high ?? 0, performed + MAX_EMPTY_PLACES))
 }
 
 /** Column positions exactly as `SetBarChart`'s flex row places them (left-aligned, width-capped). */
@@ -112,8 +124,13 @@ export function bandSlots(layout: BandBarLayout): { slots: BandSlotGeometry[]; g
   return { slots, gap }
 }
 
+/** A non-finite or empty height scale means the chart cannot say where any velocity sits. */
+function scaleIsValid(layout: BandBarLayout): boolean {
+  return Number.isFinite(layout.scaleDenom) && layout.scaleDenom > 0
+}
+
 function yFor(velocity: number, layout: BandBarLayout): { y: number; clamped: boolean } {
-  const raw = layout.scaleDenom > 0 ? (velocity / layout.scaleDenom) * layout.plotHeight : 0
+  const raw = scaleIsValid(layout) ? (velocity / layout.scaleDenom) * layout.plotHeight : 0
   const y = Math.min(layout.plotHeight, Math.max(0, raw))
   return { y, clamped: y !== raw }
 }
@@ -124,11 +141,18 @@ export interface BandBarTone {
   suspended: boolean
 }
 
-/** How one performed rep (0-based) is toned. A rep at or after a setting change has no band. */
+function validBand(band: unknown): VelocityBandIndex | null {
+  return band === 0 || band === 1 || band === 2 || band === 3 ? band : null
+}
+
+/**
+ * How one performed rep (0-based) is toned. A rep at or after a setting change has no band, nor
+ * does any rep when the scale means `none`. A band outside 0 to 3 is dropped, not drawn.
+ */
 export function barTone(scale: VelocityBandScale, repIndex: number): BandBarTone {
   const from = scale.settingChangedAtRep
-  const suspended = from != null && repIndex + 1 >= from
-  const band = suspended ? null : (scale.repBands[repIndex] ?? null)
+  const suspended = from != null && from >= 1 && repIndex + 1 >= from
+  const band = suspended || scale.meaning === 'none' ? null : validBand(scale.repBands[repIndex])
   return {
     band,
     lowConfidence: band != null && scale.repConfidence?.[repIndex] === 'low',
@@ -155,10 +179,11 @@ function zoneGeometry(
   gap: number,
   plotWidth: number
 ): BandZoneGeometry | null {
-  if (slots.length === 0) return null
-  const clampRep = (rep: number) => Math.min(slots.length, Math.max(1, Math.round(rep)))
-  const repsLow = clampRep(Math.min(marker.repsLow, marker.repsHigh))
-  const repsHigh = clampRep(Math.max(marker.repsLow, marker.repsHigh))
+  const low = repBound(Math.min(marker.repsLow, marker.repsHigh))
+  const high = repBound(Math.max(marker.repsLow, marker.repsHigh))
+  if (low == null || high == null || high > slots.length) return null
+  const repsLow = low
+  const repsHigh = high
   const first = slots[repsLow - 1]
   const last = slots[repsHigh - 1]
   return {
@@ -182,7 +207,7 @@ export function lineBand(
   marker: VelocityBandLineMarker,
   meaning: VelocityBandScale['meaning']
 ): VelocityBandIndex | null {
-  if (meaning === 'velocity_loss') return null
+  if (meaning !== 'effort') return null
   if (marker.role === 'guard' && marker.condition === 'velocity_loss') return null
   return marker.band
 }
@@ -193,8 +218,9 @@ function lineGeometry(
   meaning: VelocityBandScale['meaning'],
   layout: BandBarLayout
 ): BandLineGeometry | null {
-  if (marker.velocityMps == null || !Number.isFinite(marker.velocityMps)) return null
-  const { y, clamped } = yFor(marker.velocityMps, layout)
+  const mps = marker.velocityMps
+  if (mps == null || !Number.isFinite(mps) || mps <= 0) return null
+  const { y, clamped } = yFor(mps, layout)
   return {
     key,
     role: marker.role,
@@ -203,20 +229,9 @@ function lineGeometry(
     clamped,
     band: lineBand(marker, meaning),
     label: marker.label,
-    labelSide: 'above',
     reached: marker.reached,
     firedCue: marker.firedCue ?? false,
   }
-}
-
-/** Top line keeps its label above; each next line within the clearance flips its label below. */
-function separateLabels(lines: BandLineGeometry[]): BandLineGeometry[] {
-  const sorted = [...lines].sort((a, b) => b.y - a.y)
-  return sorted.map((line, i) => {
-    const prev = sorted[i - 1]
-    const crowded = prev != null && prev.y - line.y < LINE_LABEL_CLEARANCE
-    return crowded ? { ...line, labelSide: 'below' as const } : line
-  })
 }
 
 function allLines(scale: VelocityBandScale, layout: BandBarLayout): BandLineGeometry[] {
@@ -228,7 +243,7 @@ function allLines(scale: VelocityBandScale, layout: BandBarLayout): BandLineGeom
   const lines = entries.flatMap(([marker, key]) =>
     marker?.axis === 'velocity' ? [lineGeometry(marker, key, scale.meaning, layout)] : []
   )
-  return separateLabels(lines.filter((l): l is BandLineGeometry => l != null))
+  return lines.filter((l): l is BandLineGeometry => l != null).sort((a, b) => b.y - a.y)
 }
 
 function edgeGeometry(scale: VelocityBandScale, layout: BandBarLayout) {
@@ -274,21 +289,88 @@ function suspensionGeometry(
   }
 }
 
+type Spot = BandLabelRequest['candidates'][number]
+
+function zoneLabel(zone: BandZoneGeometry, m: BandLabelMetrics, top: number): BandLabelRequest {
+  const right = zone.endX - m.inset
+  const candidates: Spot[] = [top, top - m.height].flatMap((y) => [
+    { x: right, y, align: 'right' as const },
+    { x: zone.x0 + m.inset, y, align: 'left' as const },
+  ])
+  return { key: 'zone', text: zone.label, ink: 'ink', candidates }
+}
+
+function lineLabel(
+  line: BandLineGeometry,
+  plotWidth: number,
+  m: BandLabelMetrics
+): BandLabelRequest {
+  const above = line.y + 2
+  const below = line.y - m.height - 2
+  const candidates: Spot[] = [above, below, above + m.height, below - m.height].flatMap((y) => [
+    { x: plotWidth, y, align: 'right' as const },
+    { x: 0, y, align: 'left' as const },
+  ])
+  return { key: `line-${line.key}`, text: line.label, ink: line.band ?? 'ink', candidates }
+}
+
+function suspensionLabel(
+  mark: BandSuspensionGeometry,
+  m: BandLabelMetrics,
+  top: number
+): BandLabelRequest | null {
+  if (mark.label == null) return null
+  const candidates: Spot[] = [top, top - m.height, top - 2 * m.height].flatMap((y) => [
+    { x: mark.x + m.inset, y, align: 'left' as const },
+    { x: mark.x - m.inset, y, align: 'right' as const },
+  ])
+  return { key: 'suspension', text: mark.label, ink: 'ink', candidates }
+}
+
+function pastCueLabel(past: BandPastCueGeometry, m: BandLabelMetrics): BandLabelRequest {
+  const centre = (past.x0 + past.x1) / 2
+  const lifts = [0, 1, 2, 3, 4].map((step) => past.top + 6 + step * m.height)
+  const candidates: Spot[] = lifts.map((y) => ({ x: centre, y, align: 'center' as const }))
+  return { key: 'past-cue', text: past.label, ink: 'ink', candidates }
+}
+
+/** Every label, most important first: the zone, the lines top to bottom, the change, the count. */
+function labelRequests(
+  parts: Omit<VelocityBandGeometry, 'labels'>,
+  layout: BandBarLayout,
+  m: BandLabelMetrics
+): BandLabelRequest[] {
+  const top = layout.plotHeight - m.height
+  return [
+    parts.zone ? zoneLabel(parts.zone, m, top) : null,
+    ...parts.lines.map((line) => lineLabel(line, layout.plotWidth, m)),
+    parts.suspension ? suspensionLabel(parts.suspension, m, top) : null,
+    parts.pastCue ? pastCueLabel(parts.pastCue, m) : null,
+  ].filter((r): r is BandLabelRequest => r != null)
+}
+
 /** Turn a band scale and a bar layout into everything the overlay paints. Pure; no colour. */
 export function velocityBandGeometry(
   scale: VelocityBandScale,
-  layout: BandBarLayout
+  layout: BandBarLayout,
+  metrics: BandLabelMetrics = BAND_LABEL_METRICS
 ): VelocityBandGeometry {
   const { slots, gap } = bandSlots(layout)
   const bars = barGeometry(scale, layout, slots)
   const goal = scale.markers.goal
-  return {
+  const measurable = slots.length > 0 && scaleIsValid(layout)
+  const parts = {
     slots,
     bars,
-    zone: goal?.axis === 'rep' ? zoneGeometry(goal, slots, gap, layout.plotWidth) : null,
-    lines: slots.length === 0 ? [] : allLines(scale, layout),
-    edges: slots.length === 0 ? [] : edgeGeometry(scale, layout),
+    zone:
+      goal?.axis === 'rep' && slots.length > 0
+        ? zoneGeometry(goal, slots, gap, layout.plotWidth)
+        : null,
+    lines: measurable ? allLines(scale, layout) : [],
+    edges: measurable ? edgeGeometry(scale, layout) : [],
     pastCue: pastCueGeometry(scale, bars),
     suspension: suspensionGeometry(scale, bars, gap),
   }
+  const plot = { width: layout.plotWidth, height: layout.plotHeight }
+  return { ...parts, labels: placeBandLabels(labelRequests(parts, layout, metrics), plot, metrics) }
 }

@@ -41,7 +41,12 @@ Markers:
 
 Resistance families reach titan only as data: chains and eccentric overload arrive as tier a
 (`velocity_loss`, no RPE); damper as `velocity_loss` with a guard only for a typed percent;
-isokinetic as `null` bands and no velocity line. titan needs no family field.
+isokinetic as `meaning: 'none'` (the resolver's `bandMeaning: null`): neutral bars, neutral lines,
+and the rep-range zone still draws. titan needs no family field.
+
+Labels are placed by one pass in `velocityBandLabels.ts` against a 16 px line box, so no two
+overlap and none leaves the plot or enters the chart's value-label row (functional gate,
+2026-09-23).
 
 ## 2. Considered existing
 
@@ -59,7 +64,7 @@ contract goes one step further and takes the bands as given).
 
 ```ts
 type VelocityBandIndex = 0 | 1 | 2 | 3
-type VelocityBandMeaning = 'effort' | 'velocity_loss'
+type VelocityBandMeaning = 'effort' | 'velocity_loss' | 'none' // none = bandMeaning null
 
 type VelocityBandMarker =
   | {

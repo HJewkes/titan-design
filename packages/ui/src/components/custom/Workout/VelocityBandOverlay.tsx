@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { View, type LayoutChangeEvent, type ViewStyle } from 'react-native'
-import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { alpha } from '../../../utils/colors'
 import { Typography } from '../../ui/typography'
 import { useOnSurfaceColor } from '../../ui/surface'
@@ -8,12 +7,13 @@ import type { SetBarGeometry } from '../charts/SetBarChart'
 import {
   velocityBandGeometry,
   type BandLineGeometry,
-  type BandPastCueGeometry,
   type BandSuspensionGeometry,
   type BandZoneGeometry,
   type VelocityBandGeometry,
 } from './velocityBandGeometry'
-import type { VelocityBandIndex, VelocityBandScale } from './VelocityBandScale'
+import { EFFORT_BAND_PALETTE } from './velocityBandPalette'
+import { BAND_LABEL_METRICS, type BandLabel, type BandLabelInk } from './velocityBandLabels'
+import type { VelocityBandScale } from './VelocityBandScale'
 
 export interface VelocityBandOverlayProps {
   scale: VelocityBandScale
@@ -21,8 +21,11 @@ export interface VelocityBandOverlayProps {
   velocities: readonly number[]
   /** Columns the chart draws, from `bandSlotCount`. */
   slotCount: number
-  /** The geometry `SetBarChart` hands its `renderReference` painter. */
-  chart: Pick<SetBarGeometry, 'scaleDenom' | 'plotHeight'>
+  /**
+   * The geometry `SetBarChart` hands its `renderReference` painter. `flip` (a `down` wing)
+   * counter-flips the labels; the top row then sits on the wing's outer edge.
+   */
+  chart: Pick<SetBarGeometry, 'scaleDenom' | 'plotHeight' | 'flip'>
   /** Draw faint rules at the band edges the scale carries. Not reviewed yet; off by default. */
   showEdges?: boolean
   /** Plot width in px. Measured from layout when omitted. */
@@ -30,44 +33,35 @@ export interface VelocityBandOverlayProps {
   testID?: string
 }
 
-const BAND_INK = [
-  WORKOUT_TOKENS.scale.green,
-  WORKOUT_TOKENS.scale.yellow,
-  WORKOUT_TOKENS.scale.orange,
-  WORKOUT_TOKENS.scale.red,
-] as const
-
 /** Lifts the over layer above the bar columns; every react-native-web View sits at zIndex 0. */
 const ABOVE_BARS = 1
-const LABEL_HEIGHT = 14
-/** Keeps the zone label clear of its own end line. */
-const LABEL_INSET = 4
 const ZONE_TINT_OPACITY = 0.1
 const TICK_HEIGHT = 10
-const PAST_CUE_LIFT = 6
 
 interface Inks {
   ink: string
   faint: string
 }
 
-function lineInk(band: VelocityBandIndex | null, inks: Inks): string {
-  return band == null ? inks.ink : BAND_INK[band]
+interface PlotSize {
+  width: number
+  height: number
+}
+
+function inkFor(ink: BandLabelInk, inks: Inks): string {
+  return ink === 'ink' || ink === 'faint' ? inks[ink] : EFFORT_BAND_PALETTE[ink]
 }
 
 function absolute(style: ViewStyle): ViewStyle {
   return { position: 'absolute', ...style }
 }
 
-function ZoneUnder({
-  zone,
-  plotHeight,
-  inks,
-}: {
-  zone: BandZoneGeometry
-  plotHeight: number
-  inks: Inks
-}) {
+/** A vertical rule centred on `x`, kept wholly inside the plot. */
+function verticalRule(x: number, width: number, plotWidth: number): ViewStyle {
+  return { left: Math.max(0, Math.min(x - width / 2, plotWidth - width)), width }
+}
+
+function ZoneUnder({ zone, plot, inks }: { zone: BandZoneGeometry; plot: PlotSize; inks: Inks }) {
   return (
     <>
       <View
@@ -76,7 +70,7 @@ function ZoneUnder({
           left: zone.x0,
           width: zone.x1 - zone.x0,
           bottom: 0,
-          height: plotHeight,
+          height: plot.height,
           backgroundColor: alpha(inks.faint, ZONE_TINT_OPACITY),
         })}
       />
@@ -94,134 +88,60 @@ function ZoneUnder({
   )
 }
 
-function ZoneOver({
-  zone,
-  plotHeight,
-  inks,
-}: {
-  zone: BandZoneGeometry
-  plotHeight: number
-  inks: Inks
-}) {
-  const endWidth = zone.firedCue ? 2 : 1
+function ZoneEnd({ zone, plot, inks }: { zone: BandZoneGeometry; plot: PlotSize; inks: Inks }) {
+  const width = zone.firedCue ? 2 : 1
   return (
-    <>
-      <View
-        testID="band-zone-end"
-        style={absolute({
-          left: zone.endX - endWidth / 2,
-          width: endWidth,
-          bottom: 0,
-          height: plotHeight,
-          backgroundColor: inks.ink,
-        })}
-      />
-      <Label
-        text={zone.label}
-        color={inks.ink}
-        style={{ top: 0, left: 0, width: Math.max(0, zone.endX - LABEL_INSET) }}
-        testID="band-zone-label"
-        align="right"
-      />
-    </>
-  )
-}
-
-function Label({
-  text,
-  color,
-  style,
-  testID,
-  align = 'left',
-}: {
-  text: string
-  color: string
-  style: ViewStyle
-  testID: string
-  align?: 'left' | 'center' | 'right'
-}) {
-  return (
-    <View style={absolute(style)} testID={testID}>
-      <Typography variant="caption" style={{ color, textAlign: align }}>
-        {text}
-      </Typography>
-    </View>
+    <View
+      testID="band-zone-end"
+      style={absolute({
+        ...verticalRule(zone.endX, width, plot.width),
+        bottom: 0,
+        height: plot.height,
+        backgroundColor: inks.ink,
+      })}
+    />
   )
 }
 
 function GuardLine({ line, inks }: { line: BandLineGeometry; inks: Inks }) {
-  const color = lineInk(line.band, inks)
   const weight = line.firedCue ? 2 : 1.5
-  const labelBottom = line.labelSide === 'above' ? line.y + 2 : line.y - LABEL_HEIGHT - 2
   return (
-    <>
-      <View
-        testID={`band-line-${line.key}`}
-        style={absolute({
-          left: 0,
-          right: 0,
-          bottom: line.y - weight / 2,
-          height: 0,
-          borderTopWidth: weight,
-          borderTopColor: color,
-          borderStyle: line.reached ? 'solid' : 'dashed',
-        })}
-      />
-      <Label
-        text={line.label}
-        color={color}
-        style={{ right: 0, bottom: Math.max(0, labelBottom) }}
-        testID={`band-line-label-${line.key}`}
-        align="right"
-      />
-    </>
-  )
-}
-
-function PastCueBadge({ past, inks }: { past: BandPastCueGeometry; inks: Inks }) {
-  return (
-    <Label
-      text={past.label}
-      color={inks.ink}
-      style={{ left: past.x0, width: past.x1 - past.x0, bottom: past.top + PAST_CUE_LIFT }}
-      testID="band-past-cue"
-      align="center"
+    <View
+      testID={`band-line-${line.key}`}
+      style={absolute({
+        left: 0,
+        right: 0,
+        bottom: line.y - weight / 2,
+        height: 0,
+        borderTopWidth: weight,
+        borderTopColor: inkFor(line.band ?? 'ink', inks),
+        borderStyle: line.reached ? 'solid' : 'dashed',
+      })}
     />
   )
 }
 
 function SuspensionMark({
   mark,
-  plotHeight,
+  plot,
   inks,
 }: {
   mark: BandSuspensionGeometry
-  plotHeight: number
+  plot: PlotSize
   inks: Inks
 }) {
   return (
-    <>
-      <View
-        testID="band-suspension"
-        style={absolute({
-          left: mark.x,
-          bottom: 0,
-          height: plotHeight,
-          width: 0,
-          borderLeftWidth: 1.5,
-          borderLeftColor: inks.ink,
-          borderStyle: 'dashed',
-        })}
-      />
-      {mark.label ? (
-        <Label
-          text={mark.label}
-          color={inks.ink}
-          style={{ left: mark.x + LABEL_INSET, top: 0 }}
-          testID="band-suspension-label"
-        />
-      ) : null}
-    </>
+    <View
+      testID="band-suspension"
+      style={absolute({
+        ...verticalRule(mark.x, 1.5, plot.width),
+        bottom: 0,
+        height: plot.height,
+        borderLeftWidth: 1.5,
+        borderLeftColor: inks.ink,
+        borderStyle: 'dashed',
+      })}
+    />
   )
 }
 
@@ -245,52 +165,88 @@ function Edges({ geometry, inks }: { geometry: VelocityBandGeometry; inks: Inks 
   )
 }
 
+const COUNTER_FLIP: ViewStyle = { transform: [{ scaleY: -1 }] }
+
+function Label({ label, inks, flip }: { label: BandLabel; inks: Inks; flip: boolean }) {
+  const { fontSize, height } = BAND_LABEL_METRICS
+  return (
+    <View
+      testID={`band-label-${label.key}`}
+      style={absolute({
+        left: label.x,
+        bottom: label.y,
+        width: label.width,
+        height: label.height,
+        ...(flip ? COUNTER_FLIP : null),
+      })}
+    >
+      <Typography
+        variant="caption"
+        numberOfLines={1}
+        style={{
+          color: inkFor(label.ink, inks),
+          fontSize,
+          lineHeight: height,
+          textAlign: label.align,
+        }}
+      >
+        {label.text}
+      </Typography>
+    </View>
+  )
+}
+
 interface MarksProps {
   geometry: VelocityBandGeometry
-  plotHeight: number
+  plot: PlotSize
   showEdges: boolean
+  flip: boolean
   inks: Inks
 }
 
 /** Drawn before the bar columns, so the bars sit on top of the tint. */
-function UnderMarks({ geometry, plotHeight, showEdges, inks }: MarksProps) {
+function UnderMarks({ geometry, plot, showEdges, inks }: MarksProps) {
   return (
     <>
       {showEdges ? <Edges geometry={geometry} inks={inks} /> : null}
-      {geometry.zone ? (
-        <ZoneUnder zone={geometry.zone} plotHeight={plotHeight} inks={inks} />
-      ) : null}
+      {geometry.zone ? <ZoneUnder zone={geometry.zone} plot={plot} inks={inks} /> : null}
     </>
   )
 }
 
-function OverMarks({ geometry, plotHeight, inks }: MarksProps) {
+function OverMarks({ geometry, plot, flip, inks }: MarksProps) {
   return (
     <>
-      {geometry.zone ? <ZoneOver zone={geometry.zone} plotHeight={plotHeight} inks={inks} /> : null}
+      {geometry.zone ? <ZoneEnd zone={geometry.zone} plot={plot} inks={inks} /> : null}
       {geometry.suspension ? (
-        <SuspensionMark mark={geometry.suspension} plotHeight={plotHeight} inks={inks} />
+        <SuspensionMark mark={geometry.suspension} plot={plot} inks={inks} />
       ) : null}
       {geometry.lines.map((line) => (
         <GuardLine key={line.key} line={line} inks={inks} />
       ))}
-      {geometry.pastCue ? <PastCueBadge past={geometry.pastCue} inks={inks} /> : null}
+      {geometry.labels.map((label) => (
+        <Label key={label.key} label={label} inks={inks} flip={flip} />
+      ))}
     </>
   )
 }
 
-/** The marks restate what the chart's own label says; screen readers skip them. */
+/**
+ * The marks restate what the chart's own label says, so screen readers skip them. react-native-web
+ * maps only `aria-hidden` to the DOM; the two native props cover iOS and Android.
+ */
 const DECORATIVE = {
+  'aria-hidden': true,
   accessibilityElementsHidden: true,
   importantForAccessibility: 'no-hide-descendants',
 } as const
 
+/** Pinned to the baseline at the plot's own height, so nothing reaches the value-label row. */
 const FILL: ViewStyle = {
   pointerEvents: 'none',
   position: 'absolute',
   left: 0,
   right: 0,
-  top: 0,
   bottom: 0,
 }
 
@@ -310,28 +266,27 @@ export function VelocityBandOverlay({
   testID = 'velocity-band-overlay',
 }: VelocityBandOverlayProps) {
   const [measured, setMeasured] = useState(0)
-  const onLayout = (e: LayoutChangeEvent) => setMeasured(e.nativeEvent.layout.width)
+  const onLayout =
+    plotWidthProp == null
+      ? (e: LayoutChangeEvent) => setMeasured(e.nativeEvent.layout.width)
+      : undefined
   const inks = { ink: useOnSurfaceColor('secondary'), faint: useOnSurfaceColor('tertiary') }
-  const plotWidth = plotWidthProp ?? measured
+  const plot = { width: plotWidthProp ?? measured, height: chart.plotHeight }
   const geometry = velocityBandGeometry(scale, {
-    plotWidth,
-    plotHeight: chart.plotHeight,
+    plotWidth: plot.width,
+    plotHeight: plot.height,
     slotCount,
     velocities,
     scaleDenom: chart.scaleDenom,
   })
-  const marks: MarksProps = {
-    geometry,
-    plotHeight: chart.plotHeight,
-    showEdges,
-    inks,
-  }
+  const marks: MarksProps = { geometry, plot, showEdges, flip: chart.flip ?? false, inks }
+  const layer = [FILL, { height: plot.height }]
   return (
     <>
-      <View testID={testID} onLayout={onLayout} {...DECORATIVE} style={FILL}>
+      <View testID={testID} onLayout={onLayout} {...DECORATIVE} style={layer}>
         <UnderMarks {...marks} />
       </View>
-      <View testID={`${testID}-over`} {...DECORATIVE} style={[FILL, { zIndex: ABOVE_BARS }]}>
+      <View testID={`${testID}-over`} {...DECORATIVE} style={[...layer, { zIndex: ABOVE_BARS }]}>
         <OverMarks {...marks} />
       </View>
     </>
