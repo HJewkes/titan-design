@@ -1,0 +1,107 @@
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { Text, View } from 'react-native'
+
+import { Card } from '../card'
+import { Surface } from '../surface'
+import { Carousel, CarouselSlide } from './Carousel'
+
+interface StoryArgs {
+  count: number
+  unequal: boolean
+  loop: boolean
+}
+
+const NAMES = [
+  'Bench press',
+  'Back squat',
+  'Romanian deadlift',
+  'Cable overhead tricep extension',
+  'Seated cable row',
+  'Lat pulldown',
+  'Incline dumbbell press',
+  'Leg press',
+  'Cable chest press',
+]
+
+/** The nine lift names, then numbered cards for a stress case above the contract's size. */
+function namesFor(count: number): string[] {
+  return Array.from({ length: count }, (_, i) => NAMES[i] ?? `Card ${String(i + 1)}`)
+}
+
+/** Every third card carries extra lines, so the slides differ in height. */
+function extraLines(index: number, unequal: boolean): number {
+  return unequal && index % 3 === 1 ? 4 : 0
+}
+
+function ExampleCard({ name, lines }: { name: string; lines: number }) {
+  return (
+    <Card className="flex-1 gap-stack-sm p-inset-lg">
+      <Text className="font-heading text-lg text-text-primary">{name}</Text>
+      <Text className="font-body text-sm text-text-secondary">Committed 185 x 8 by week 6</Text>
+      {Array.from({ length: lines }, (_, i) => (
+        <Text key={i} className="font-body text-sm text-text-tertiary">
+          {`Extra detail line ${String(i + 1)}`}
+        </Text>
+      ))}
+    </Card>
+  )
+}
+
+const meta: Meta<StoryArgs> = {
+  title: 'Components/Molecules/Carousel',
+  tags: ['autodocs', 'status:candidate', '!status:review'],
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: {
+        component:
+          '**Molecule.** A row of peer cards for a phone column: the current card centred ' +
+          'with a 12 px hint of each neighbour, swiped instead of scrolled past, with ' +
+          'previous and next arrows and the position between them 4 px under the cards on ' +
+          'the page plane. Loops by default: a copy of each end card lets card 1 hint at the ' +
+          'last, and the copies are hidden from assistive technology and cannot take focus. ' +
+          'Follows the WAI-ARIA APG carousel pattern (basic, never rotating); every real ' +
+          'slide stays in the accessibility tree. The current slide is tracked by key, so a ' +
+          'refresh that adds or removes a card keeps the same card in view. One card renders ' +
+          'plainly; none renders nothing. Composes ' +
+          '[Button](?path=/docs/components-molecules-button--docs) + ' +
+          '[Icons](?path=/docs/foundations-icons--docs) over a React Native `ScrollView` ' +
+          '(CSS scroll-snap on web, `snapToInterval` on native). Give each card `flex-1` ' +
+          'to stretch it to the tallest slide. On real goal cards: ' +
+          '[Carousel Sections](?path=/docs/custom-workout-goals-carousel-sections--docs).',
+      },
+    },
+  },
+  args: {
+    count: 9,
+    unequal: false,
+    loop: true,
+  },
+  argTypes: {
+    count: { control: { type: 'range', min: 0, max: 50, step: 1 } },
+    unequal: { control: 'boolean' },
+    loop: { control: 'boolean' },
+  },
+  decorators: [
+    (Story) => (
+      <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-sm">
+        <View style={{ width: '100%', maxWidth: 390, alignSelf: 'center' }}>
+          <Story />
+        </View>
+      </Surface>
+    ),
+  ],
+  render: ({ count, unequal, loop }) => (
+    <Carousel label="Per-lift" loop={loop}>
+      {namesFor(count).map((name, index) => (
+        <CarouselSlide key={name} value={name} label={name}>
+          <ExampleCard name={name} lines={extraLines(index, unequal)} />
+        </CarouselSlide>
+      ))}
+    </Carousel>
+  ),
+}
+export default meta
+type Story = StoryObj<StoryArgs>
+
+export const Default: Story = {}
