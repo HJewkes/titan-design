@@ -74,6 +74,12 @@ describe('BodyweightGoalCard', () => {
     })
   })
 
+  it('names the detail button once, with no second named image inside it', () => {
+    render(<BodyweightGoalCard goal={W.cut} />)
+    const button = screen.getByRole('button', { name: 'Bodyweight details' })
+    expect(button.querySelector('[role="img"]')).toBeNull()
+  })
+
   describe('the track row', () => {
     it('labels the band edges under the track, not inside it', () => {
       render(<BodyweightGoalCard goal={W.cut} />)

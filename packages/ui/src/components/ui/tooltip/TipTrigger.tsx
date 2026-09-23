@@ -97,7 +97,11 @@ export function TipTrigger({
       placement={placement}
       usePortal={usePortal}
       style={style}
-      content={<View nativeID={tipId}>{content}</View>}
+      content={
+        <View nativeID={tipId} role="tooltip">
+          {content}
+        </View>
+      }
     >
       <Pressable
         ref={trigger}

@@ -184,7 +184,8 @@ function DetailTipContent({ lines }: { lines: string[] }) {
  */
 function DetailTip(props: { lines: string[]; label: string; isOpen?: boolean; testID: string }) {
   const color = getSemanticColors(useSurfaceMode())['text-tertiary']
-  const glyph = <InfoIcon size={INFO_ICON_SIZE} color={color} title={props.label} />
+  // Decorative: the button around it already carries the name.
+  const glyph = <InfoIcon size={INFO_ICON_SIZE} color={color} />
   const content = <DetailTipContent lines={props.lines} />
   if (props.isOpen) {
     return (

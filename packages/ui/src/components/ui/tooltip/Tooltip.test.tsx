@@ -422,6 +422,12 @@ describe('TipTrigger', () => {
     expect(trigger).toHaveAccessibleDescription('Under the band')
   })
 
+  it('gives the open tip the tooltip role', () => {
+    renderTip()
+    fireEvent.focus(screen.getByTestId('tip'))
+    expect(screen.getByRole('tooltip')).toHaveTextContent('Under the band')
+  })
+
   it('has no accessibility violations', async () => {
     const { container } = renderTip()
     expect(await axe(container)).toHaveNoViolations()

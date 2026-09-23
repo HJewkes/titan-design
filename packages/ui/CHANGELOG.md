@@ -34,6 +34,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
 - `TipTrigger` closed on the first tap: the tap focused the trigger, which opened the
   tip, and the press then toggled it shut. A press now only opens; Escape, blur, hover
   out and a press outside still close it.
+- `TipTrigger` gives its open tip `role="tooltip"`.
 
 ## 0.21.1
 
