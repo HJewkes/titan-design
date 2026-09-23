@@ -148,6 +148,7 @@ export function BodyweightGoalCard({
             }
             isTagTipOpen={isTagTipOpen}
             status={goal.status}
+            basis={goal.basis}
             testID="bodyweight-goal-header"
           />
           {goal.latest === null ? (

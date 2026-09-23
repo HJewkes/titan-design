@@ -96,6 +96,9 @@ function rateBandText(rate: WholeBodyRate): string | null {
     : `${formatSignedRate(low)} to ${formatSignedRate(high)}`
 }
 
+/** The tip line for a week whose verdict the review held (noise floor, settling window). */
+export const VETOED_RATE_NOTE = 'Verdict held this week'
+
 /** What the card says when no rate can be computed yet, and why (owner, round 4: "Just do N/A"). */
 export const NO_RATE_VALUE = 'N/A'
 export const NO_RATE_REASON = 'Rate shows after a second week of weigh-ins'
@@ -144,6 +147,7 @@ export function weightCaptions(row: WholeBodyWeightRow): CaptionLine[] {
     ...lead,
     { key: 'band', text: bandCaption(row) },
     ...(rateBand === null ? [] : [{ key: 'rateBand', text: rateBand }]),
+    ...(row.rate?.vetoed === true ? [{ key: 'veto', text: VETOED_RATE_NOTE }] : []),
   ]
 }
 

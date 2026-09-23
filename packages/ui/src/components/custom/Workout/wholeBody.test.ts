@@ -13,6 +13,7 @@ import {
   sessionCaptions,
   sessionCells,
   trackFraction,
+  VETOED_RATE_NOTE,
   weighInDate,
   weightCaptions,
   wholeBodyScale,
@@ -116,6 +117,12 @@ describe('leadCaption', () => {
 describe('weightCaptions', () => {
   it('leads with the rate, then the band, then the phase band (F6)', () => {
     expect(weightCaptions(W.cut).map((line) => line.key)).toEqual(['rate', 'band', 'rateBand'])
+  })
+
+  // Gate S3: a held verdict read exactly like a judged one.
+  it('says the verdict was held when the review vetoed the week (F13)', () => {
+    expect(weightCaptions(W.rateVetoed).map((line) => line.text)).toContain(VETOED_RATE_NOTE)
+    expect(weightCaptions(W.cut).map((line) => line.key)).not.toContain('veto')
   })
 
   it('leads a weigh-in with no rate with N/A and keeps the reason for the tip (F11)', () => {

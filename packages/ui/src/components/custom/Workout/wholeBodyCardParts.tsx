@@ -146,6 +146,8 @@ export function GoalCardHeader(props: {
   /** Pins the tag's tip open, for review frames and tests. */
   isTagTipOpen?: boolean
   status: GoalLiftStatus
+  /** Which rule set the status; the pill tips it, as `GoalCard`'s does. */
+  basis?: string
   testID: string
 }) {
   return (
@@ -170,11 +172,31 @@ export function GoalCardHeader(props: {
             isTipOpen={props.isTagTipOpen}
           />
         )}
-        <Pill tone={GOAL_STATUS_TONE[props.status]} variant="subtle" size="sm" leading="dot">
-          {GOAL_STATUS_LABEL[props.status]}
-        </Pill>
+        <StatusPill status={props.status} basis={props.basis} testID={props.testID} />
       </View>
     </View>
+  )
+}
+
+/** The status pill, with its basis one hover, focus or tap away when the goal has one. */
+function StatusPill(props: { status: GoalLiftStatus; basis?: string; testID: string }) {
+  const label = GOAL_STATUS_LABEL[props.status]
+  const pill = (
+    <Pill tone={GOAL_STATUS_TONE[props.status]} variant="subtle" size="sm" leading="dot">
+      {label}
+    </Pill>
+  )
+  if (!props.basis) return pill
+  return (
+    <TipTrigger
+      label={`Goal status: ${label}`}
+      content={<DetailTipContent lines={[props.basis]} />}
+      placement="bottom-end"
+      usePortal={false}
+      testID={`${props.testID}-status-tip`}
+    >
+      {pill}
+    </TipTrigger>
   )
 }
 

@@ -126,6 +126,7 @@ export function SessionsGoalCard({
           <GoalCardHeader
             label={`Sessions · ${goal.windowDays} days`}
             status={goal.status}
+            basis={goal.basis}
             testID="sessions-goal-header"
           />
           <FigureLine

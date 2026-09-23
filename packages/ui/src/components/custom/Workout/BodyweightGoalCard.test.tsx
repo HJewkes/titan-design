@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 
 import { capturedClassNames } from '../../../test/classname-capture'
@@ -82,6 +82,15 @@ describe('BodyweightGoalCard', () => {
       expect(screen.getByText('Week 3 of 8: 194.0 to 197.0 lb')).toBeInTheDocument()
       expect(screen.getByText('Cut band -0.5 to -1.0%/wk')).toBeInTheDocument()
     })
+  })
+
+  // Gate S3: the page's lift cards explain their status; these did not.
+  it('tips the status pill with the basis', () => {
+    render(<BodyweightGoalCard goal={W.rateVetoed} />)
+    fireEvent.focus(screen.getByRole('button', { name: 'Goal status: Tolerated' }))
+    expect(
+      screen.getByText('Tolerated: inside the settling window after a phase change.')
+    ).toBeInTheDocument()
   })
 
   it('names the detail button once, with no second named image inside it', () => {

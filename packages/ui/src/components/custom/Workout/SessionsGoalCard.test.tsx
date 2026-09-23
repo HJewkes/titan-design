@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 
 import { capturedClassNames } from '../../../test/classname-capture'
@@ -72,6 +72,18 @@ describe('SessionsGoalCard', () => {
       expect(screen.queryByTestId('sessions-goal-segments')).toBeNull()
       expect(screen.getByTestId('sessions-goal-progress')).toBeInTheDocument()
     })
+  })
+
+  it('tips the status pill with the basis', () => {
+    const goal = { ...S.underPace, basis: 'Behind: 9 of the 10 due by now.' }
+    render(<SessionsGoalCard goal={goal} />)
+    fireEvent.focus(screen.getByRole('button', { name: 'Goal status: Behind' }))
+    expect(screen.getByText('Behind: 9 of the 10 due by now.')).toBeInTheDocument()
+  })
+
+  it('keeps a plain status pill when there is no basis', () => {
+    render(<SessionsGoalCard goal={S.underPace} />)
+    expect(screen.queryByRole('button', { name: /^Goal status/ })).toBeNull()
   })
 
   it('has no accessibility violations', async () => {
