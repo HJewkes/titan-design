@@ -117,8 +117,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
   the goal chart's band colour. Sessions shows training days in the rolling 28-day
   window as one cell per committed day and a darker cell per day past it, with a
   due-by-now marker, and falls back to a plain bar past 20 cells. Each card holds its
-  other detail lines in a tip. The pure logic is in `wholeBody.ts` (VW-455). Both cards share one track-row template, so
-  two of them in a grid row line their tracks up and end level.
+  other detail lines in a tip. The pure logic is in `wholeBody.ts` (VW-455). Both
+  cards share one track-row template, so two of them in a grid row line their tracks
+  up and end level.
 - `GoalPriorityIndex` (custom/Workout): every declared priority on one wrapping line,
   grouped by level, naming the ones nothing tracks (VW-455).
 - `formatBodyweight` and `formatSignedRate` in `utils/workout-format`.
