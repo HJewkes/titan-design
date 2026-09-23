@@ -102,7 +102,9 @@ function SessionsBar(props: { row: WholeBodySessionsRow; scale: WholeBodyScale }
  * committed day, a darker cell per day past it, and a marker at the count due by now. Past `SESSION_SEGMENT_LIMIT` cells it falls
  * back to a plain bar. Never a streak.
  *
- * A sibling of `BodyweightGoalCard`; the page's card grid places the two.
+ * A sibling of `BodyweightGoalCard`; the page's card grid places the two, each
+ * with `style={{ height: '100%' }}` so they end level. `dueByNow` equals
+ * `committed` once the first window is full; below it the marker and the lead show.
  *
  * No loading state: the page fetches first. No error state: the page shows a
  * failed fetch. No disabled state: only the detail tip is pressable.

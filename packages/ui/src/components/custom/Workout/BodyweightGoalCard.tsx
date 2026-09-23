@@ -103,7 +103,9 @@ function WeightTrack({ row, scale }: { row: WholeBodyWeightRow; scale: WholeBody
  *
  * A sibling of `SessionsGoalCard`, not a row of one card: the page's card grid
  * places the two, side by side on the wall and stacked on a phone (VW-455
- * round 1, owner: "make the whole body cards be separated").
+ * round 1, owner: "make the whole body cards be separated"). Give both
+ * `style={{ height: '100%' }}` in a grid row and they end level with their tracks
+ * on one line. Pass `scale` when the width is known, to skip the phone-sized first paint.
  *
  * No loading state: the page fetches first. No error state: the page shows a
  * failed fetch. No disabled state: only the detail tip is pressable.

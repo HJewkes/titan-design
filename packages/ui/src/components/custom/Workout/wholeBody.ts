@@ -16,7 +16,6 @@ export interface WholeBodyRate {
   bandLowPctPerWeek: number | null
   /** The stretch edge's rate. */
   bandHighPctPerWeek: number | null
-  weeksOutsideBand: number
   /** The review held its verdict this week (noise floor, settling window). */
   vetoed: boolean
 }
@@ -27,14 +26,11 @@ export interface WholeBodyWeightRow {
   basis?: string
   unit: 'lb' | 'kg'
   direction: WholeBodyDirection
-  phase: { name: WholeBodyDietPhase; weeksInPhase: number; slowLoss?: boolean }
+  phase: { name: WholeBodyDietPhase; slowLoss?: boolean }
   /** `null` until the first weigh-in. */
   latest: { value: number; ts: string } | null
-  readingCount: number
   /** This week of the block and its band. `low` is the committed edge, so a cut's `low` is the higher number. */
   week: { index: number; of: number; low: number; high: number }
-  committed: number
-  stretch: number
   rate: WholeBodyRate | null
 }
 
@@ -102,11 +98,6 @@ export const VETOED_RATE_NOTE = 'Verdict held this week'
 /** What the card says when no rate can be computed yet, and why (owner, round 4: "Just do N/A"). */
 export const NO_RATE_VALUE = 'N/A'
 export const NO_RATE_REASON = 'Rate shows after a second week of weigh-ins'
-
-/** True while the target has a reading but no rate to judge. */
-export function hasRate(row: WholeBodyWeightRow): boolean {
-  return row.rate !== null && row.rate.observedPctPerWeek !== null
-}
 
 /**
  * The rate as the card leads with it: the percent this week alone (owner, round 3),

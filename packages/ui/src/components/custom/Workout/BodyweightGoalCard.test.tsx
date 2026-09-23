@@ -29,7 +29,7 @@ describe('BodyweightGoalCard', () => {
 
     // Gate S4: an undeclared phase collapsed to the Hold glyph while the band read as a cut.
     it('keeps "No phase declared" in words on a narrow card, with no glyph', () => {
-      const goal = { ...W.cut, phase: { name: 'unknown' as const, weeksInPhase: 0 } }
+      const goal = { ...W.cut, phase: { name: 'unknown' as const } }
       render(<BodyweightGoalCard goal={goal} tagCollapsed />)
       const tag = screen.getByTestId('phase-tag')
       expect(tag).toHaveTextContent('No phase declared')

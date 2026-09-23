@@ -200,11 +200,11 @@ describe('phaseLabel', () => {
 
   it('names a recomposition by its declared mode', () => {
     expect(phaseLabel(W.slowLoss.phase)).toBe('Recomp, slow loss')
-    expect(phaseLabel({ name: 'recomposition', weeksInPhase: 2 })).toBe('Recomp, hold')
+    expect(phaseLabel({ name: 'recomposition' })).toBe('Recomp, hold')
   })
 
   it('says when no phase is declared', () => {
-    expect(phaseLabel({ name: 'unknown', weeksInPhase: 0 })).toBe('No phase declared')
+    expect(phaseLabel({ name: 'unknown' })).toBe('No phase declared')
   })
 })
 
