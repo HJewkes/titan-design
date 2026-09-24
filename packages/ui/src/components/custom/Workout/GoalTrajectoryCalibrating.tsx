@@ -26,11 +26,9 @@ import { boxesTouch, type HitBox } from './goalTrajectoryTargets'
  */
 export const DEFAULT_CALIBRATING_NOTE = 'No band yet'
 
-/** What the tip says under the consumer's note, at every width. */
-export const CALIBRATING_EXPLANATION = [
-  'Your band appears here once there is enough history',
-  'Until then the line is the planned ramp from your start lift',
-]
+/** What the tip says under the consumer's note, at every width: one running caption. */
+export const CALIBRATING_EXPLANATION =
+  'Your band appears here once there is enough history. Until then the line is the planned ramp from your start lift.'
 
 /** The info target's accessible name. */
 export const CALIBRATING_TIP_LABEL = 'Why is there no band?'
@@ -198,18 +196,15 @@ function TipBody({ note, width }: { note: string; width: number }) {
   return (
     <View style={{ width }} className="gap-stack-sm" testID="goal-trajectory-chart-calibrating-tip">
       <Typography variant="body2">{note}</Typography>
-      {CALIBRATING_EXPLANATION.map((line, i) => (
-        // The caption's own leading (24px on 12px) leaves a wrapped line gappy in a tip.
-        <Typography
-          key={line}
-          variant="caption"
-          color="secondary"
-          className="leading-normal"
-          testID={`goal-trajectory-chart-calibrating-tip-line-${String(i)}`}
-        >
-          {line}
-        </Typography>
-      ))}
+      {/* The caption's own leading (24px on 12px) leaves a wrapped line gappy in a tip. */}
+      <Typography
+        variant="caption"
+        color="secondary"
+        className="leading-normal"
+        testID="goal-trajectory-chart-calibrating-tip-explanation"
+      >
+        {CALIBRATING_EXPLANATION}
+      </Typography>
     </View>
   )
 }
