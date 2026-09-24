@@ -88,9 +88,9 @@ describe('a calibrating goal chart', () => {
     open(screen.getByRole('button', { name: CALIBRATING_TIP_LABEL }))
     const tip = screen.getByTestId('goal-trajectory-chart-calibrating-tip')
     expect(tip).toHaveTextContent(`1 more comparable session${CALIBRATING_EXPLANATION}`)
-    expect(screen.getByTestId('goal-trajectory-chart-calibrating-tip-explanation')).toHaveTextContent(
-      /history\. Until then/
-    )
+    expect(
+      screen.getByTestId('goal-trajectory-chart-calibrating-tip-explanation')
+    ).toHaveTextContent(/history\. Until then/)
   })
 
   it("sets the explanation on a normal line height, not the caption's loose one", () => {
