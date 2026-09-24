@@ -29,6 +29,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- `GoalTrajectoryChart`'s calibrating tip runs its two explanation sentences together,
+  separated by a period and wrapping naturally, instead of stacking them on two lines
+  (VW-559).
 - `ZoneTrack` reserved a tick-label row even when no tick carried a label, which pushed
   its track up by the height of an empty row.
 - `TipTrigger` closed on the first tap: the tap focused the trigger, which opened the

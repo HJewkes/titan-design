@@ -83,21 +83,22 @@ describe('a calibrating goal chart', () => {
     ['focus', (el: HTMLElement) => fireEvent.focus(el)],
     ['hover', (el: HTMLElement) => fireEvent.mouseEnter(el)],
     ['press', (el: HTMLElement) => fireEvent.click(el)],
-  ])('opens the tip on %s: the note, then both explanation lines', (_, open) => {
+  ])('opens the tip on %s: the note, then the explanation as running sentences', (_, open) => {
     renderAt('above', { calibratingNote: '1 more comparable session' })
     open(screen.getByRole('button', { name: CALIBRATING_TIP_LABEL }))
     const tip = screen.getByTestId('goal-trajectory-chart-calibrating-tip')
-    expect(tip).toHaveTextContent(`1 more comparable session${CALIBRATING_EXPLANATION.join('')}`)
+    expect(tip).toHaveTextContent(`1 more comparable session${CALIBRATING_EXPLANATION}`)
+    expect(screen.getByTestId('goal-trajectory-chart-calibrating-tip-explanation')).toHaveTextContent(
+      /history\. Until then/
+    )
   })
 
-  it("sets the explanation lines on a normal line height, not the caption's loose one", () => {
+  it("sets the explanation on a normal line height, not the caption's loose one", () => {
     renderAt('above')
     fireEvent.focus(screen.getByRole('button', { name: CALIBRATING_TIP_LABEL }))
-    for (const i of [0, 1]) {
-      expect(capturedClassNames.get(`goal-trajectory-chart-calibrating-tip-line-${i}`)).toContain(
-        'leading-normal'
-      )
-    }
+    expect(capturedClassNames.get('goal-trajectory-chart-calibrating-tip-explanation')).toContain(
+      'leading-normal'
+    )
   })
 
   it('closes the tip on Escape and on blur', () => {
