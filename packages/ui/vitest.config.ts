@@ -8,6 +8,8 @@ import {
   webResolveExtensions,
 } from './vite-rn-svg-plugins'
 
+const LOCAL_TIME_TEST_FILE = './src/components/custom/Workout/wholeBody.test.ts'
+
 export default defineConfig({
   plugins: [reactNativeSvgWebResolver(), reactNativeBodyHighlighterEsm(), react()],
   test: {
@@ -21,6 +23,10 @@ export default defineConfig({
     // parent dies). Threads share the process and die with it. Same fix as brain #97.
     pool: 'threads',
     poolOptions: { threads: { minThreads: 1, maxThreads: 4 } },
+    // A worker thread cannot change its zone after start (Node reads TZ once per
+    // process), so the test that pins `process.env.TZ` runs on a fork of its own.
+    // An absolute path, because `**` skips dot directories such as `.worktrees/`.
+    poolMatchGlobs: [[fileURLToPath(new URL(LOCAL_TIME_TEST_FILE, import.meta.url)), 'forks']],
     teardownTimeout: 30_000,
     // Inline react-native-svg so its relative imports run through the resolver
     // plugin above and resolve to the `.web.js` implementations instead of
