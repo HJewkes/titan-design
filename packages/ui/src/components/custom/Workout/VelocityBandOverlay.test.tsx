@@ -2,7 +2,8 @@ import { render, screen } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
 import { describe, expect, it } from 'vitest'
 import { VelocityBandOverlay } from './VelocityBandOverlay'
-import { EFFORT_BAND_PALETTE, VelocityBandPreview } from './VelocityBandPreview'
+import { VelocityBandChart } from './VelocityBandChart'
+import { EFFORT_BAND_PALETTE } from './velocityBandPalette'
 import { bandSlotCount } from './velocityBandGeometry'
 import {
   EMPTY_SET,
@@ -140,7 +141,7 @@ describe('VelocityBandOverlay', () => {
       },
     }
     render(
-      <VelocityBandPreview
+      <VelocityBandChart
         velocities={[0.6, NaN, Infinity, 0.5]}
         scale={corrupt}
         palette={EFFORT_BAND_PALETTE}
@@ -153,7 +154,7 @@ describe('VelocityBandOverlay', () => {
 
   it('has no accessibility violations on a chart', async () => {
     const { container } = render(
-      <VelocityBandPreview
+      <VelocityBandChart
         velocities={TIER_B_TWO_GUARDS.velocities}
         scale={TIER_B_TWO_GUARDS.scale}
         palette={EFFORT_BAND_PALETTE}
