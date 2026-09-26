@@ -22,6 +22,7 @@ const meta: Meta<ChartStoryArgs> = {
     orientation: { control: 'inline-radio', options: ['up', 'down'] },
   },
   parameters: {
+    layout: 'fullscreen',
     docs: {
       description: {
         component:
