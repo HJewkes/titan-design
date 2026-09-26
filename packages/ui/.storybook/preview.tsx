@@ -2,6 +2,7 @@ import type { Preview } from '@storybook/react'
 import { withThemeByClassName } from '@storybook/addon-themes'
 import React from 'react'
 import '../src/theme/global.css'
+import { withSurfaceTheme } from './withSurfaceTheme'
 
 // Sidebar information architecture (TD Storybook reorg).
 //
@@ -72,6 +73,7 @@ const preview: Preview = {
       defaultTheme: 'dark',
       parentSelector: 'html', // Apply class to html element
     }),
+    withSurfaceTheme,
     (Story) => (
       <div
         className="font-sans text-text-primary"
