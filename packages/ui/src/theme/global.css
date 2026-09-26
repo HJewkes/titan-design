@@ -130,6 +130,11 @@
     --color-dataviz-sequential-4: #D14343;
     --color-dataviz-sequential-5: #A4221C;
 
+    --color-dataviz-slowing-0: #ACDBFF;
+    --color-dataviz-slowing-1: #3CA8FF;
+    --color-dataviz-slowing-2: #1072CB;
+    --color-dataviz-slowing-3: #14407E;
+
     --color-dataviz-categorical-0: #2196F3;
     --color-dataviz-categorical-1: #D548AF;
     --color-dataviz-categorical-2: #E05254;
@@ -388,6 +393,11 @@
     --color-dataviz-sequential-3: #DA5F00;
     --color-dataviz-sequential-4: #A4221C;
     --color-dataviz-sequential-5: #7E1002;
+
+    --color-dataviz-slowing-0: #ACDBFF;
+    --color-dataviz-slowing-1: #3CA8FF;
+    --color-dataviz-slowing-2: #1072CB;
+    --color-dataviz-slowing-3: #14407E;
 
     --color-dataviz-categorical-0: #2196F3;
     --color-dataviz-categorical-1: #BA2996;

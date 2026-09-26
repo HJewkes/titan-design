@@ -183,6 +183,10 @@ export const lightThemeCSSVars = {
   '--color-dataviz-sequential-3': semanticColorsLight['dataviz-sequential-3'],
   '--color-dataviz-sequential-4': semanticColorsLight['dataviz-sequential-4'],
   '--color-dataviz-sequential-5': semanticColorsLight['dataviz-sequential-5'],
+  '--color-dataviz-slowing-0': semanticColorsLight['dataviz-slowing-0'],
+  '--color-dataviz-slowing-1': semanticColorsLight['dataviz-slowing-1'],
+  '--color-dataviz-slowing-2': semanticColorsLight['dataviz-slowing-2'],
+  '--color-dataviz-slowing-3': semanticColorsLight['dataviz-slowing-3'],
 
   '--color-dataviz-categorical-0': semanticColorsLight['dataviz-categorical-0'],
   '--color-dataviz-categorical-1': semanticColorsLight['dataviz-categorical-1'],
@@ -362,6 +366,10 @@ export const darkThemeCSSVars = {
   '--color-dataviz-sequential-3': semanticColorsDark['dataviz-sequential-3'],
   '--color-dataviz-sequential-4': semanticColorsDark['dataviz-sequential-4'],
   '--color-dataviz-sequential-5': semanticColorsDark['dataviz-sequential-5'],
+  '--color-dataviz-slowing-0': semanticColorsDark['dataviz-slowing-0'],
+  '--color-dataviz-slowing-1': semanticColorsDark['dataviz-slowing-1'],
+  '--color-dataviz-slowing-2': semanticColorsDark['dataviz-slowing-2'],
+  '--color-dataviz-slowing-3': semanticColorsDark['dataviz-slowing-3'],
 
   '--color-dataviz-categorical-0': semanticColorsDark['dataviz-categorical-0'],
   '--color-dataviz-categorical-1': semanticColorsDark['dataviz-categorical-1'],

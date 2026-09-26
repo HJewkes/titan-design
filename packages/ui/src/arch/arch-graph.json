@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:88de7f73af1583c6dbc29b06f8f2915063c9f421d091af6670e317ee3cfbbcbd",
+  "componentBarrelHash": "sha256:9bd118e3daab77570aa821c3ee816d1abdcadab7129afb0fbb1e5ac2e4f96543",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -437,10 +437,10 @@
       "storyRefs": 2,
       "xproj": {
         "mobile": 0,
-        "mcp": 0,
+        "mcp": 1,
         "dash": 0,
         "audiobook": 0,
-        "total": 0
+        "total": 1
       },
       "dependsOn": [
         "Card",
@@ -458,7 +458,7 @@
         "score": 8
       },
       "tier": "organism",
-      "verdict": "dead",
+      "verdict": "keep-app",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -2472,10 +2472,10 @@
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
-        "mcp": 0,
+        "mcp": 2,
         "dash": 0,
         "audiobook": 0,
-        "total": 0
+        "total": 2
       },
       "dependsOn": [
         "GoalPriorityIcon",
@@ -2490,7 +2490,7 @@
         "score": 9
       },
       "tier": "organism",
-      "verdict": "keep-internal",
+      "verdict": "keep-core",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -3786,10 +3786,10 @@
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
-        "mcp": 7,
+        "mcp": 5,
         "dash": 0,
         "audiobook": 0,
-        "total": 7
+        "total": 5
       },
       "dependsOn": [
         "Stack",
@@ -4063,10 +4063,10 @@
       "storyRefs": 8,
       "xproj": {
         "mobile": 0,
-        "mcp": 2,
+        "mcp": 1,
         "dash": 0,
         "audiobook": 0,
-        "total": 2
+        "total": 1
       },
       "dependsOn": [],
       "leak": {
@@ -5114,10 +5114,10 @@
       "storyRefs": 2,
       "xproj": {
         "mobile": 0,
-        "mcp": 0,
+        "mcp": 1,
         "dash": 0,
         "audiobook": 0,
-        "total": 0
+        "total": 1
       },
       "dependsOn": [
         "Card",
@@ -5135,7 +5135,7 @@
         "score": 9
       },
       "tier": "organism",
-      "verdict": "dead",
+      "verdict": "keep-app",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -5276,7 +5276,7 @@
         "rawText": 2,
         "inlineStyle": 8,
         "rawHex": 0,
-        "loc": 702,
+        "loc": 704,
         "score": 29
       },
       "tier": "atom",
@@ -7015,6 +7015,43 @@
       "standard": false
     },
     {
+      "name": "VelocityBandChart",
+      "file": "packages/ui/src/components/custom/Workout/VelocityBandChart.tsx",
+      "dir": "workout",
+      "family": "custom/Workout",
+      "exports": [
+        "VelocityBandChart",
+        "VelocityBandChartProps",
+        "VelocityBandChart.colorFor"
+      ],
+      "libDependents": 0,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "SetBarChart",
+        "VelocityBandOverlay"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 78,
+        "score": 0
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "VelocityBandOverlay",
       "file": "packages/ui/src/components/custom/Workout/VelocityBandOverlay.tsx",
       "dir": "workout",
@@ -7058,43 +7095,6 @@
       "tier": "molecule",
       "verdict": "keep-internal",
       "deadByAssociation": true,
-      "audited": "unaudited",
-      "standard": false
-    },
-    {
-      "name": "VelocityBandPreview",
-      "file": "packages/ui/src/components/custom/Workout/VelocityBandPreview.tsx",
-      "dir": "workout",
-      "family": "custom/Workout",
-      "exports": [
-        "VelocityBandPreview",
-        "VelocityBandPreviewProps",
-        "VelocityBandPreview.colorFor"
-      ],
-      "libDependents": 0,
-      "storyRefs": 2,
-      "xproj": {
-        "mobile": 0,
-        "mcp": 0,
-        "dash": 0,
-        "audiobook": 0,
-        "total": 0
-      },
-      "dependsOn": [
-        "SetBarChart",
-        "VelocityBandOverlay"
-      ],
-      "leak": {
-        "rawView": 0,
-        "rawText": 0,
-        "inlineStyle": 0,
-        "rawHex": 0,
-        "loc": 68,
-        "score": 0
-      },
-      "tier": "organism",
-      "verdict": "dead",
-      "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
     },
@@ -8718,20 +8718,20 @@
       "MesoStatusCard"
     ],
     [
+      "VelocityBandChart",
+      "VelocityBandOverlay"
+    ],
+    [
+      "VelocityBandChart",
+      "SetBarChart"
+    ],
+    [
       "VelocityBandOverlay",
       "SetBarChart"
     ],
     [
       "VelocityBandOverlay",
       "Typography"
-    ],
-    [
-      "VelocityBandPreview",
-      "VelocityBandOverlay"
-    ],
-    [
-      "VelocityBandPreview",
-      "SetBarChart"
     ],
     [
       "VelocityStrip",
@@ -9123,7 +9123,6 @@
     "dead": [
       "Autocomplete",
       "Avatar",
-      "BodyweightGoalCard",
       "Breadcrumbs",
       "Eyebrow",
       "GoalLiftCard",
@@ -9136,7 +9135,6 @@
       "ReadinessCheck",
       "SessionDetail",
       "SessionList",
-      "SessionsGoalCard",
       "Switch",
       "TableEmptyState",
       "TablePagination",
@@ -9145,7 +9143,7 @@
       "Toast",
       "ToolbarButton",
       "Treemap",
-      "VelocityBandPreview",
+      "VelocityBandChart",
       "VolumeLandmarkBar",
       "goalCarousel-fixture",
       "velocity-story-kit"

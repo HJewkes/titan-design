@@ -3,10 +3,7 @@ import { useState } from 'react'
 import { View, type LayoutChangeEvent } from 'react-native'
 import { Eyebrow } from '../../components/ui/eyebrow'
 import { Typography } from '../../components/ui/typography'
-import {
-  VelocityBandPreview,
-  paletteFor,
-} from '../../components/custom/Workout/VelocityBandPreview'
+import { VelocityBandChart } from '../../components/custom/Workout/VelocityBandChart'
 import {
   BAND_SCALE_FIXTURES,
   type BandScaleFixtureKey,
@@ -36,10 +33,9 @@ function RoundFrame({ fixture }: FrameArgs) {
         {set.title}
       </Typography>
       {set.eyebrow ? <Eyebrow>{set.eyebrow}</Eyebrow> : null}
-      <VelocityBandPreview
+      <VelocityBandChart
         velocities={set.velocities}
         scale={set.scale}
-        palette={paletteFor(set.scale.meaning)}
         height={height}
         accessibilityLabel={`${set.title}: ${set.velocities.length} reps`}
       />

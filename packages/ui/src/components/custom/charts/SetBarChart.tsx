@@ -346,7 +346,9 @@ export function SetBarChart({
       : slots
 
   const repValues = cells.filter(isRep).map((s) => s.value ?? 0)
-  const best = repValues.length > 0 ? Math.max(...repValues) : 0
+  // One non-finite reading must not flatten the set: the scale reads the finite reps only.
+  const finiteValues = repValues.filter(Number.isFinite)
+  const best = finiteValues.length > 0 ? Math.max(...finiteValues) : 0
 
   // The whole plot mirrors for `down`; text nodes counter-flip so they read upright.
   const flip = orientation === 'down'
@@ -385,7 +387,7 @@ export function SetBarChart({
   const flatBarHeight = Math.max(MIN_BAR_HEIGHT, FLAT_BAR_FRACTION * plotHeight)
   const compactBarHeight = Math.max(MIN_BAR_HEIGHT, plotHeight)
   const valueBarHeight = (value: number): number =>
-    scaleDenom > 0
+    scaleDenom > 0 && Number.isFinite(value)
       ? Math.max(MIN_BAR_HEIGHT, Math.min(1, value / scaleDenom) * plotHeight)
       : MIN_BAR_HEIGHT
   const barHeight = (value: number): number => (flat ? compactBarHeight : valueBarHeight(value))
@@ -524,9 +526,9 @@ export function SetBarChart({
                     bottom: labelBottom,
                     ...(flipLabel ? { right: 0 } : { left: 0, right: 0 }),
                     alignItems: flipLabel ? 'flex-end' : 'center',
+                    pointerEvents: 'none',
                     ...(expandProgress ? { opacity: expandProgress } : null),
                   }}
-                  pointerEvents="none"
                 >
                   <Text
                     className="text-text-secondary"
