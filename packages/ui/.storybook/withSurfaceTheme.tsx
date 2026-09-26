@@ -5,7 +5,6 @@
 // SurfaceContext, whose runtime default is dark, so without this provider light
 // mode painted dark planes under light-mode text.
 import type { Decorator } from '@storybook/react-vite'
-import React from 'react'
 import { SurfaceContext } from '../src/components/ui/surface/SurfaceContext'
 import type { ThemeMode } from '../src/theme/tokens/semantic'
 
