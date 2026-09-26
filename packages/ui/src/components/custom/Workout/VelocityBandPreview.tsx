@@ -6,7 +6,7 @@ import { bandSlotCount, barTone } from './velocityBandGeometry'
 import type { VelocityBandPalette } from './velocityBandPalette'
 import type { VelocityBandScale } from './VelocityBandScale'
 
-export { EFFORT_BAND_PALETTE, SLOWING_BAND_PALETTE, paletteFor } from './velocityBandPalette'
+export { EFFORT_BAND_PALETTE, paletteFor, slowingBandPalette } from './velocityBandPalette'
 export type { VelocityBandPalette } from './velocityBandPalette'
 
 export interface VelocityBandPreviewProps {

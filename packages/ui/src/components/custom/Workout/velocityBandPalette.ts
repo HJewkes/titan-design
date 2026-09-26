@@ -1,4 +1,4 @@
-import { primitiveRamps as ramp } from '../../../theme/tokens/primitives'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import type { VelocityBandMeaning } from './VelocityBandScale'
 
@@ -13,18 +13,21 @@ export const EFFORT_BAND_PALETTE: VelocityBandPalette = [
   WORKOUT_TOKENS.scale.red,
 ]
 
-/**
- * Tier a: one blue, light to dark, band 0 fastest to band 3 at the reference loss (VW-448 round 1,
- * Pa1). Ramp steps until the integration PR adds the `dataviz-slowing-0..3` token.
- */
-export const SLOWING_BAND_PALETTE: VelocityBandPalette = [
-  ramp.blue[200],
-  ramp.blue[400],
-  ramp.blue[600],
-  ramp.blue[800],
-]
+/** Tier a: the `dataviz-slowing-0..3` tokens, band 0 fastest to band 3 at the reference loss. */
+export function slowingBandPalette(mode: ThemeMode = 'dark'): VelocityBandPalette {
+  const colors = getSemanticColors(mode)
+  return [
+    colors['dataviz-slowing-0'],
+    colors['dataviz-slowing-1'],
+    colors['dataviz-slowing-2'],
+    colors['dataviz-slowing-3'],
+  ]
+}
 
 /** Effort colours only when the scale means effort; `none` has no bands, so either would do. */
-export function paletteFor(meaning: VelocityBandMeaning): VelocityBandPalette {
-  return meaning === 'effort' ? EFFORT_BAND_PALETTE : SLOWING_BAND_PALETTE
+export function paletteFor(
+  meaning: VelocityBandMeaning,
+  mode: ThemeMode = 'dark'
+): VelocityBandPalette {
+  return meaning === 'effort' ? EFFORT_BAND_PALETTE : slowingBandPalette(mode)
 }
