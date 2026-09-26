@@ -345,6 +345,17 @@ export const sequentialEffort = [
 ] as const
 
 /**
+ * Sequential "slowing" scale: one blue, light to dark, for velocity-loss bands that say nothing
+ * about effort (VW-448 round 1, Pa1). Band 0 is the fastest, band 3 is at the reference loss.
+ */
+export const sequentialSlowing = [
+  primitiveRamps.blue[200],
+  primitiveRamps.blue[400],
+  primitiveRamps.blue[600],
+  primitiveRamps.blue[800],
+] as const
+
+/**
  * Best-contrast text color (black or white) for a solid fill — for labels sitting
  * on categorical/diverging/effort swatches. Uses the WCAG relative-luminance ratio.
  */

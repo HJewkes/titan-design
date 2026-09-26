@@ -186,6 +186,13 @@ const SEQUENTIAL_TOKENS = [
   'dataviz-sequential-5',
 ] as const
 
+const SLOWING_TOKENS = [
+  'dataviz-slowing-0',
+  'dataviz-slowing-1',
+  'dataviz-slowing-2',
+  'dataviz-slowing-3',
+] as const
+
 const CATEGORICAL_TOKENS = [
   'dataviz-categorical-0',
   'dataviz-categorical-1',
@@ -405,6 +412,7 @@ export const SequentialEffortScale: StoryObj = {
       </View>
 
       <DatavizRoleRow tokens={SEQUENTIAL_TOKENS} />
+      <DatavizRoleRow tokens={SLOWING_TOKENS} />
     </View>
   ),
 }

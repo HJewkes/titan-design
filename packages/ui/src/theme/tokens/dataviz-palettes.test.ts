@@ -1,6 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import { getSemanticColors } from './semantic'
-import { divergingScale, sequentialEffort, categoricalPalette } from './primitives'
+import {
+  divergingScale,
+  sequentialEffort,
+  sequentialSlowing,
+  categoricalPalette,
+} from './primitives'
 
 /**
  * VW-371 pins for the three chart palettes as semantic roles.
@@ -15,6 +20,7 @@ import { divergingScale, sequentialEffort, categoricalPalette } from './primitiv
 const PALETTES = [
   ['diverging', divergingScale],
   ['sequential', sequentialEffort],
+  ['slowing', sequentialSlowing],
   ['categorical', categoricalPalette.default],
 ] as const
 
@@ -35,13 +41,13 @@ describe('dataviz-* semantic roles (VW-371)', () => {
     })
   }
 
-  it('both modes expose the same 18 roles', () => {
+  it('both modes expose the same 22 roles', () => {
     const roles = (mode: 'dark' | 'light') =>
       Object.keys(getSemanticColors(mode))
         .filter((k) => k.startsWith('dataviz-'))
         .sort()
 
-    expect(roles('dark')).toHaveLength(18)
+    expect(roles('dark')).toHaveLength(22)
     expect(roles('light')).toEqual(roles('dark'))
   })
 

@@ -250,6 +250,12 @@ module.exports = {
             4: 'var(--color-dataviz-sequential-4)',
             5: 'var(--color-dataviz-sequential-5)',
           },
+          slowing: {
+            0: 'var(--color-dataviz-slowing-0)',
+            1: 'var(--color-dataviz-slowing-1)',
+            2: 'var(--color-dataviz-slowing-2)',
+            3: 'var(--color-dataviz-slowing-3)',
+          },
           categorical: {
             0: 'var(--color-dataviz-categorical-0)',
             1: 'var(--color-dataviz-categorical-1)',
