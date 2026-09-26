@@ -268,6 +268,28 @@ describe('SetBarChart reference overlay', () => {
     // plotHeight = height − (label-row height 16 + label gap 3) when labels show.
     expect(captured!.plotHeight).toBe(181)
   })
+
+  it('measures best over finite reps only, so one bad reading does not flatten the set', () => {
+    let captured: { best: number; scaleDenom: number; lineAt: number } | null = null
+    render(
+      <SetBarChart
+        slots={reps([0.6, Number.NaN, 1.0, Number.POSITIVE_INFINITY, 0.5])}
+        colorFor={silver}
+        height={200}
+        renderReference={(g) => {
+          captured = { best: g.best, scaleDenom: g.scaleDenom, lineAt: g.yOf(0.5) }
+          return null
+        }}
+        testIDPrefix="t"
+      />
+    )
+    expect(captured!.best).toBe(1.0)
+    expect(captured!.scaleDenom).toBeCloseTo(1.0 * PEAK_HEADROOM)
+    expect(captured!.lineAt).toBeCloseTo((0.5 / PEAK_HEADROOM) * 200)
+    expect(parseFloat(screen.getByTestId('t-bar-2').style.height)).toBeCloseTo(200 / PEAK_HEADROOM)
+    expect(screen.getByTestId('t-bar-1')).toHaveStyle({ height: '4px' })
+    expect(screen.getByTestId('t-bar-3')).toHaveStyle({ height: '4px' })
+  })
 })
 
 describe('SetBarChart shared side-rail (label gutter)', () => {
