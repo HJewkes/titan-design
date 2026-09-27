@@ -102,6 +102,12 @@ const MAX_GUARDS = 2
 /** A bad plan cannot pad the chart with more empty places than this past the performed reps. */
 export const MAX_EMPTY_PLACES = 20
 
+/** What the zone draws from: a rep range with its label and cue state. */
+type ZoneRange = Pick<
+  VelocityBandRepMarker,
+  'repsLow' | 'repsHigh' | 'label' | 'reached' | 'firedCue'
+>
+
 /** A rep bound the zone can use: finite, rounded, and at least rep 1. */
 function repBound(rep: number): number | null {
   return Number.isFinite(rep) && Math.round(rep) >= 1 ? Math.round(rep) : null
@@ -109,8 +115,8 @@ function repBound(rep: number): number | null {
 
 /** How many columns the chart needs: every performed rep, and empty places up to the zone's top. */
 export function bandSlotCount(scale: VelocityBandScale | undefined, performed: number): number {
-  const goal = scale?.markers.goal
-  const high = goal?.axis === 'rep' ? repBound(Math.max(goal.repsLow, goal.repsHigh)) : null
+  const range = scale ? zoneRange(scale.markers.goal, performed) : null
+  const high = range ? repBound(Math.max(range.repsLow, range.repsHigh)) : null
   return Math.max(performed, Math.min(high ?? 0, performed + MAX_EMPTY_PLACES))
 }
 
@@ -173,8 +179,17 @@ function barGeometry(
   }))
 }
 
+/** The goal's rep range, whatever the goal's kind: a rep-range goal, or a line goal's `repRange`. */
+function zoneRange(goal: VelocityBandMarker | null, performed: number): ZoneRange | null {
+  if (goal == null) return null
+  if (goal.axis === 'rep') return goal
+  const range = goal.repRange
+  if (range == null) return null
+  return { ...range, reached: performed >= range.repsLow, firedCue: false }
+}
+
 function zoneGeometry(
-  marker: VelocityBandRepMarker,
+  marker: ZoneRange,
   slots: BandSlotGeometry[],
   gap: number,
   plotWidth: number
@@ -357,15 +372,13 @@ export function velocityBandGeometry(
 ): VelocityBandGeometry {
   const { slots, gap } = bandSlots(layout)
   const bars = barGeometry(scale, layout, slots)
-  const goal = scale.markers.goal
+  const zone = zoneRange(scale.markers.goal, bars.length)
   const measurable = slots.length > 0 && scaleIsValid(layout)
   const parts = {
     slots,
     bars,
     zone:
-      goal?.axis === 'rep' && slots.length > 0
-        ? zoneGeometry(goal, slots, gap, layout.plotWidth)
-        : null,
+      zone != null && slots.length > 0 ? zoneGeometry(zone, slots, gap, layout.plotWidth) : null,
     lines: measurable ? allLines(scale, layout) : [],
     edges: measurable ? edgeGeometry(scale, layout) : [],
     pastCue: pastCueGeometry(scale, bars),

@@ -26,6 +26,8 @@ Markers:
   marked as the target zone, and a full line after `repsHigh`. Unperformed slots up to `repsHigh`
   show as empty places. A rep-count marker is **always neutral ink**: it targets no effort. An effort
   goal or a loss goal is a horizontal line.
+- **A velocity goal with a rep range** (a tier b `target_rpe` row, "RPE 8, 8 to 12") draws the
+  range as the same neutral zone beside its line (owner, 2026-09-27). The zone never fires the cue.
 - **Guards.** 0 to 2 horizontal lines in the resolver's tie order (effort first, then loss). An
   effort cap is coloured by the band of the effort it targets (RPE 9 is orange). **A loss guard is
   always neutral ink.** In tier a every line is neutral.
@@ -82,6 +84,7 @@ type VelocityBandMarker =
       condition: 'effort' | 'velocity_loss'
       velocityMps: number | null
       band: VelocityBandIndex | null
+      repRange?: { repsLow: number; repsHigh: number; label: string } | null // goal only
       label: string
       reached: boolean
       firedCue?: boolean

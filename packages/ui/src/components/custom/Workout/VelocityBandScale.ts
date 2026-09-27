@@ -51,6 +51,17 @@ export interface VelocityBandRepMarker extends VelocityBandMarkerCommon {
 }
 
 /**
+ * The row's rep range beside a velocity goal (a tier b `target_rpe` row, "RPE 8, 8 to 12"). It
+ * draws the same zone as a rep-range goal, in neutral ink, and never fires the cue itself.
+ */
+export interface VelocityBandRepRange {
+  /** 1-based rep numbers, inclusive. A non-finite bound draws no zone. */
+  repsLow: number
+  repsHigh: number
+  label: string
+}
+
+/**
  * A horizontal line at a velocity: an effort cap, an effort goal, or a loss line. `band` is the
  * effort the line targets; `null` draws neutral ink. A loss GUARD is always drawn neutral.
  */
@@ -60,6 +71,8 @@ export interface VelocityBandLineMarker extends VelocityBandMarkerCommon {
   /** Null before a best rep exists for a loss line; the line is then not drawn. */
   velocityMps: number | null
   band: VelocityBandIndex | null
+  /** The row's rep range, when it has one. Read on the goal only; the zone draws from it. */
+  repRange?: VelocityBandRepRange | null
 }
 
 export type VelocityBandMarker = VelocityBandRepMarker | VelocityBandLineMarker

@@ -48,6 +48,7 @@ export type {
   VelocityBandMarker,
   VelocityBandRepMarker,
   VelocityBandLineMarker,
+  VelocityBandRepRange,
   VelocityBandCue,
   VelocityBandIndex,
   VelocityBandMeaning,

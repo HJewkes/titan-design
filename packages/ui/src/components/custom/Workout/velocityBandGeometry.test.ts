@@ -18,6 +18,7 @@ import {
   TIER_B_PAST_CUE,
   TIER_B_REP_RANGE_ONE_GUARD,
   TIER_B_SUSPENDED_TAIL,
+  TIER_B_TARGET_RPE_WITH_REPS,
   TIER_B_TWO_GUARDS,
   type BandScaleFixture,
 } from './velocityBandScale-fixture'
@@ -179,6 +180,32 @@ describe('rep-range zone', () => {
 
   it('draws no horizontal line for a rep-range goal', () => {
     expect(geometryOf(TIER_A_NO_GUARD).lines).toEqual([])
+  })
+})
+
+describe('rep-range zone beside a velocity goal (owner, 2026-09-27)', () => {
+  it('draws the row rep range as the zone under a target RPE line', () => {
+    const g = geometryOf(TIER_B_TARGET_RPE_WITH_REPS)
+    expect(g.slots).toHaveLength(12)
+    expect(g.zone).toMatchObject({ repsLow: 8, repsHigh: 12, label: '8 to 12', firedCue: false })
+    expect(g.zone!.x0).toBe(g.slots[7].x)
+    expect(g.lines.map((l) => l.label)).toEqual(['RPE 8', 'RPE 9'])
+  })
+
+  it('says the range is reached once the set gets to its low rep', () => {
+    const early = { ...TIER_B_TARGET_RPE_WITH_REPS, velocities: [0.66, 0.64] }
+    expect(geometryOf(early).zone!.reached).toBe(false)
+    expect(geometryOf(TIER_B_TARGET_RPE_WITH_REPS).zone!.reached).toBe(true)
+  })
+
+  it('draws no zone for a velocity goal without a rep range', () => {
+    const goal = TIER_B_TARGET_RPE_WITH_REPS.scale.markers.goal as VelocityBandLineMarker
+    const scale: VelocityBandScale = {
+      ...TIER_B_TARGET_RPE_WITH_REPS.scale,
+      markers: { goal: { ...goal, repRange: null }, guards: [] },
+    }
+    expect(bandSlotCount(scale, 9)).toBe(9)
+    expect(velocityBandGeometry(scale, layoutFor(TIER_B_TARGET_RPE_WITH_REPS)).zone).toBeNull()
   })
 })
 
