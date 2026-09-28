@@ -376,3 +376,15 @@ import "@titan-design/react-ui/theme/global.css";
 // Tailwind config (for extending in consuming apps)
 const tailwindConfig = require("@titan-design/react-ui/tailwind.config.js");
 ```
+
+## Gotchas
+
+- Check `packages/ui/REJECTED.md` before treating a component as a reference; a rejected exploration can still sit on `main`, tested and exported.
+- `src/lab/` is excluded from the published package (`"!src/lab"` in `files`), so a change there never reaches consumers.
+- Releases publish from CI on a `v*` tag push (`publish.yml`, OIDC provenance). Never run `npm publish` locally, and push the release commit to `main` before the tag.
+- `resolveColor` returns `var(--color-…)` on web, and tests alias `react-native` to `react-native-web`, so a test asserting a literal hex breaks; use `getSemanticColors('dark')[token]` where the value must be a hex.
+- `tsconfig.json` excludes `*.stories.tsx`, and `stories-smoke.test.tsx` globs only `components/**`, so a broken story (especially under `src/theme/`) passes every gate. An unchanged test count after adding stories is the tell.
+- Layer-1 visual baselines exist only as `*-chromium-linux.png`. Run that suite only in the pinned Playwright container, and refresh baselines from the `visual` workflow's `component-visual-baselines` artifact, not local Docker.
+- `global.css` is prettier-ignored (its hex case mirrors `config.ts`), but `semantic.ts` is format-checked: edit token files additively with single-space `// ` trailing comments, and never run prettier over a whole token file.
+- `titan/no-raw-color` also flags bare CSS colour keywords such as `'white'`, not only hex.
+- When a barrel export changes, update only `componentBarrelHash` in `src/arch/arch-graph.json` (from `packages/ui/scripts/barrel-hash.mjs`); a full `arch-graph.mjs --reindex` rewrites metrics for untouched components.
