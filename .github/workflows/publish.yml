@@ -19,6 +19,7 @@ jobs:
       - run: pnpm lint
       - run: pnpm type-check
       - run: pnpm build
+      - run: pnpm check:package
       - run: pnpm test -- -- --run
 
   publish:
@@ -47,6 +48,10 @@ jobs:
             exit 1
           fi
           echo "Version verified: $PKG_VERSION"
+
+      # Checks the tarball this job is about to publish, not the one validate built.
+      - name: Package shape
+        run: pnpm --filter @titan-design/react-ui check:package
 
       - name: Publish to npm
         run: npx npm@latest publish --provenance --access public

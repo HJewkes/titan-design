@@ -24,6 +24,9 @@
       "outputs": ["storybook-static/**"]
     },
     "type-check": {},
+    "check:package": {
+      "dependsOn": ["build"]
+    },
     "format:check": {}
   }
 }
