@@ -15,6 +15,13 @@ project adheres to [Semantic Versioning](https://semver.org/).
   OFL licences under `src/theme/fonts/`. The package grows by 392 KB; a single-file build that
   inlines its assets grows by about 500 KB (TD-36).
 
+### Fixed
+
+- The export map nests `types` under `import` and `require`, so an ESM consumer resolving with
+  `moduleResolution: node16` gets the `.d.mts` declarations instead of the CJS `.d.ts`. All six
+  TypeScript subpaths were "Masquerading as CJS" under attw; the `react-native` condition is
+  unchanged (TD-40).
+
 ## 0.21.2
 
 ### Added

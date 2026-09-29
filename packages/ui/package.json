@@ -21,38 +21,68 @@
   "exports": {
     ".": {
       "react-native": "./src/index.ts",
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
     },
     "./bodymap": {
       "react-native": "./src/bodymap.ts",
-      "types": "./dist/bodymap.d.ts",
-      "import": "./dist/bodymap.mjs",
-      "require": "./dist/bodymap.js"
+      "import": {
+        "types": "./dist/bodymap.d.mts",
+        "default": "./dist/bodymap.mjs"
+      },
+      "require": {
+        "types": "./dist/bodymap.d.ts",
+        "default": "./dist/bodymap.js"
+      }
     },
     "./pages": {
       "react-native": "./src/pages.ts",
-      "types": "./dist/pages.d.ts",
-      "import": "./dist/pages.mjs",
-      "require": "./dist/pages.js"
+      "import": {
+        "types": "./dist/pages.d.mts",
+        "default": "./dist/pages.mjs"
+      },
+      "require": {
+        "types": "./dist/pages.d.ts",
+        "default": "./dist/pages.js"
+      }
     },
     "./theme": {
       "react-native": "./src/theme/index.ts",
-      "types": "./dist/theme/index.d.ts",
-      "import": "./dist/theme/index.mjs",
-      "require": "./dist/theme/index.js"
+      "import": {
+        "types": "./dist/theme/index.d.mts",
+        "default": "./dist/theme/index.mjs"
+      },
+      "require": {
+        "types": "./dist/theme/index.d.ts",
+        "default": "./dist/theme/index.js"
+      }
     },
     "./theme/tokens": {
       "react-native": "./src/theme/tokens/index.ts",
-      "types": "./dist/theme/tokens.d.ts",
-      "import": "./dist/theme/tokens.mjs",
-      "require": "./dist/theme/tokens.js"
+      "import": {
+        "types": "./dist/theme/tokens.d.mts",
+        "default": "./dist/theme/tokens.mjs"
+      },
+      "require": {
+        "types": "./dist/theme/tokens.d.ts",
+        "default": "./dist/theme/tokens.js"
+      }
     },
     "./theme/tokens-css": {
-      "types": "./dist/theme/tokens-css.d.ts",
-      "import": "./dist/theme/tokens-css.mjs",
-      "require": "./dist/theme/tokens-css.js"
+      "import": {
+        "types": "./dist/theme/tokens-css.d.mts",
+        "default": "./dist/theme/tokens-css.mjs"
+      },
+      "require": {
+        "types": "./dist/theme/tokens-css.d.ts",
+        "default": "./dist/theme/tokens-css.js"
+      }
     },
     "./theme/global.css": "./src/theme/global.css",
     "./tokens.css": "./dist/tokens.css",
