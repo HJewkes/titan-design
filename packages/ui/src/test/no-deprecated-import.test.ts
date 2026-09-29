@@ -1,7 +1,12 @@
 import path from 'node:path'
+import { createRequire } from 'node:module'
 import { RuleTester } from 'eslint'
 import rule from '../../eslint-rules/no-deprecated-import'
-import { registryFor } from '../../eslint-rules/deprecated-export-registry'
+
+// The rule loads the registry through Node's require; an ESM import here gets a second instance with its own cache.
+const { registryFor } = createRequire(import.meta.url)(
+  '../../eslint-rules/deprecated-export-registry'
+)
 
 const ruleTester = new RuleTester({
   languageOptions: { ecmaVersion: 2022, sourceType: 'module' },
