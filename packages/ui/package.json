@@ -185,7 +185,7 @@
     "fast-check": "^3.23.2",
     "jest-axe": "^9.0.0",
     "jsdom": "^25.0.0",
-    "madge": "^8.0.0",
+    "madge": "8.0.0",
     "nativewind": "^4.2.1",
     "prettier": "^3.8.1",
     "publint": "0.3.24",

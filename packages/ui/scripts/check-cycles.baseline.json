@@ -1,4 +1,4 @@
 [
-  "components/custom/Workout/GoalTrajectoryPlot.tsx > components/custom/Workout/GoalTrajectoryCalibrating.tsx",
+  "components/custom/Workout/GoalTrajectoryCalibrating.tsx > components/custom/Workout/GoalTrajectoryPlot.tsx",
   "components/custom/Workout/GoalTrajectoryPlot.tsx > components/custom/Workout/goalTrajectoryRuleLabels.ts"
 ]

@@ -2,8 +2,13 @@
 import { readFileSync } from 'node:fs'
 import madge from 'madge'
 
+// madge rotates a cycle by traversal start; start at the smallest path so the key is stable, keeping direction.
+const key = (cycle) => {
+  const start = cycle.indexOf([...cycle].sort()[0])
+  return [...cycle.slice(start), ...cycle.slice(0, start)].join(' > ')
+}
+
 const baseline = JSON.parse(readFileSync(new URL('./check-cycles.baseline.json', import.meta.url), 'utf8'))
-const key = (cycle) => cycle.join(' > ')
 
 const result = await madge('src', {
   fileExtensions: ['ts', 'tsx'],
