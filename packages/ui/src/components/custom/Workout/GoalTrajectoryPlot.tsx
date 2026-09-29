@@ -585,7 +585,9 @@ export function GoalTrajectoryPlot(props: GoalTrajectoryPlotProps) {
       <Gridlines {...layer} showLabels={props.showYLabels} baseline={style.baseline} />
       <g clipPath={`url(#${ids.clip})`}>
         <DeloadAndBoundaries {...layer} height={height} />
-        {props.currentWeek !== undefined && <CurrentWeekColumn {...layer} week={props.currentWeek} />}
+        {props.currentWeek !== undefined && (
+          <CurrentWeekColumn {...layer} week={props.currentWeek} />
+        )}
         {props.calibrating && <CalibratingHatch marks={props.calibrating} {...layer} />}
         <BandLayer
           geometry={geometry}
