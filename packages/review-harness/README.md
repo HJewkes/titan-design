@@ -186,6 +186,9 @@ proxies every other path, websockets included, to Storybook. The story iframes a
 same-origin with the page, which lets a pin read the element under it
 (`elementFromPoint`, nearest `data-testid`, role and text). The page's colours are titan's
 token custom properties, generated from `@titan-design/react-ui` source at serve time.
+A click inside a story moves keyboard focus into its iframe, so each loaded frame hands its
+keys back to the page; the shortcuts, `Cmd+Enter` included, work wherever focus sits. A story's
+own text field keeps its typing, except `Cmd+Enter`.
 
 ## Tests
 

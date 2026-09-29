@@ -309,6 +309,7 @@ input:focus {
 
 .review {
   display: grid;
+  outline: none;
   gap: var(--space-stack-lg);
   max-width: 880px;
 }

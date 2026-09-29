@@ -8,6 +8,7 @@ import {
   storyContentHeight,
   type MeasurableDoc,
 } from './autoHeight.ts'
+import { forwardFrameKeys } from './frameKeys.ts'
 
 type PinInput = Omit<Annotation, 'id' | 'note'>
 
@@ -134,6 +135,20 @@ function useFrameHealth(onHitTesting: (sameOrigin: boolean) => void) {
   return { attempt, dead, onLoad, retry }
 }
 
+/** Keeps the page's shortcuts alive while focus is inside the story; re-attached per load. */
+function useFrameKeys() {
+  const detach = useRef<(() => void) | null>(null)
+  const attach = useCallback((iframe: HTMLIFrameElement) => {
+    detach.current?.()
+    detach.current =
+      sameOriginDocument(iframe) && iframe.contentWindow
+        ? forwardFrameKeys(iframe.contentWindow)
+        : null
+  }, [])
+  useEffect(() => () => detach.current?.(), [])
+  return attach
+}
+
 function DeadFrame({ testId, onRetry }: { testId: string; onRetry: () => void }) {
   return (
     <div className="frame-dead" role="alert" data-testid={testId}>
@@ -161,6 +176,7 @@ export function Frame(props: FrameProps) {
   const iframe = useRef<HTMLIFrameElement>(null)
   const health = useFrameHealth(props.onHitTesting)
   const { height, watch } = useFittedHeight(props.height, props.maxHeight)
+  const attachKeys = useFrameKeys()
 
   const onOverlayClick = (e: MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect()
@@ -192,6 +208,7 @@ export function Frame(props: FrameProps) {
             onLoad={(e) => {
               health.onLoad(e.currentTarget)
               watch(e.currentTarget)
+              attachKeys(e.currentTarget)
             }}
           />
         )}
