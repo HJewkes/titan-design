@@ -1,6 +1,7 @@
 import path from 'node:path'
 import { RuleTester } from 'eslint'
 import rule from '../../eslint-rules/no-deprecated-import'
+import { registryFor } from '../../eslint-rules/deprecated-export-registry'
 
 const ruleTester = new RuleTester({
   languageOptions: { ecmaVersion: 2022, sourceType: 'module' },
@@ -15,8 +16,12 @@ const srcRoot = path.resolve(__dirname, '..')
 const newUiConsumer = path.join(srcRoot, 'components/ui/newthing/NewThing.tsx')
 const newCustomConsumer = path.join(srcRoot, 'components/custom/newthing/NewThing.tsx')
 
-// The first case pays the registry's cold scan of src, which takes 5-8 s on a CI runner.
-describe('no-deprecated-import', { timeout: 30_000 }, () => {
+describe('no-deprecated-import', () => {
+  // The registry's cold scan of src takes 5-8 s on a CI runner; pay it here, not in the first case.
+  beforeAll(() => {
+    registryFor(srcRoot)
+  }, 30_000)
+
   ruleTester.run('no-deprecated-import', rule as never, {
     valid: [
       // A live (non-deprecated) component is untouched.

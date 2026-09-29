@@ -8,7 +8,12 @@ import {
   webResolveExtensions,
 } from './vite-rn-svg-plugins'
 
-const LOCAL_TIME_TEST_FILE = './src/components/custom/Workout/wholeBody.test.ts'
+const LOCAL_TIME_TEST_PATH = fileURLToPath(
+  new URL('./src/components/custom/Workout/wholeBody.test.ts', import.meta.url)
+)
+
+const TEST_GLOB = ['src/**/*.test.{ts,tsx}']
+const TEST_EXCLUDE = ['src/**/*.visual.test.{ts,tsx}', 'node_modules']
 
 export default defineConfig({
   plugins: [reactNativeSvgWebResolver(), reactNativeBodyHighlighterEsm(), react()],
@@ -16,18 +21,34 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
-    include: ['src/**/*.test.{ts,tsx}'],
-    exclude: ['src/**/*.visual.test.{ts,tsx}', 'node_modules'],
     // Threads, not forks: a forked worker per core loads its own jsdom plus
     // react-native-web (about 4.5 GB each, 13 on a 14-core Mac, orphaned if the
     // parent dies). Threads share the process and die with it. Same fix as brain #97.
     pool: 'threads',
     poolOptions: { threads: { minThreads: 1, maxThreads: 4 } },
-    // A worker thread cannot change its zone after start (Node reads TZ once per
-    // process), so the test that pins `process.env.TZ` runs on a fork of its own.
-    // An absolute path, because `**` skips dot directories such as `.worktrees/`.
-    poolMatchGlobs: [[fileURLToPath(new URL(LOCAL_TIME_TEST_FILE, import.meta.url)), 'forks']],
     teardownTimeout: 30_000,
+    // A worker thread cannot change its zone after start (Node reads TZ once per
+    // process), so the test that pins `process.env.TZ` runs in a fork project of its own.
+    // An absolute path, because `**` skips dot directories such as `.worktrees/`.
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: 'threads',
+          include: TEST_GLOB,
+          exclude: [...TEST_EXCLUDE, LOCAL_TIME_TEST_PATH],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'local-time',
+          include: [LOCAL_TIME_TEST_PATH],
+          exclude: TEST_EXCLUDE,
+          pool: 'forks',
+        },
+      },
+    ],
     // Inline react-native-svg so its relative imports run through the resolver
     // plugin above and resolve to the `.web.js` implementations instead of
     // being externalized to Node (which would load the native Flow sources).
