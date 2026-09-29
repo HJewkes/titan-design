@@ -27,6 +27,7 @@ const storyModules = import.meta.glob<StoryModule>('../components/**/*.stories.t
 
 // VolumeStatusPalette › Compare mounts every palette at once and takes 5-6 s on a CI runner.
 const SLOW_STORY_TIMEOUT = 30_000
+const SLOW_STORY_IDS = new Set(['lab-decisions-volume-status-palette--compare'])
 
 describe('storybook stories render (composeStories smoke)', () => {
   const entries = Object.entries(storyModules)
@@ -39,8 +40,7 @@ describe('storybook stories render (composeStories smoke)', () => {
     const label = file.replace('../components/', '')
     const composed = composeStories(mod)
     for (const [name, Story] of Object.entries(composed)) {
-      const timeout =
-        label.includes('VolumeStatusPalette') && name === 'Compare' ? SLOW_STORY_TIMEOUT : undefined
+      const timeout = SLOW_STORY_IDS.has(Story.id) ? SLOW_STORY_TIMEOUT : undefined
       it(`${label} › ${name} renders`, { timeout }, () => {
         // Smoke level: every story must MOUNT without throwing. `firstChild` is
         // not asserted — portal/modal organisms (PrHistoryModal) render into
