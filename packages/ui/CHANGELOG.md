@@ -28,6 +28,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
   `moduleResolution: node16` gets the `.d.mts` declarations instead of the CJS `.d.ts`. All six
   TypeScript subpaths were "Masquerading as CJS" under attw; the `react-native` condition is
   unchanged (TD-40).
+- `ZoneTrack` resolves its default track colour from `border-prominent` for the enclosing
+  surface, so the track on `BodyweightGoalCard`, `FatigueMeter` and other callers that take the
+  default turns light in light mode. Dark mode keeps the same grey, and an explicit `trackColor`
+  still overrides it (TD-39).
 
 ## 0.21.2
 
