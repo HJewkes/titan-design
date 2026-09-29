@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import fc from 'fast-check'
 
+import { fcAssert } from '@/test/property'
+
 import {
   canClone,
   clampIndex,
@@ -99,7 +101,7 @@ const phoneGeometry = fc.record({
 
 describe('properties', () => {
   it('an uncapped slide at its own offset reads back as itself', () => {
-    fc.assert(
+    fcAssert(
       fc.property(phoneGeometry, fc.nat(), (input, raw) => {
         const geometry = slideGeometry(input)
         const index = raw % input.count
@@ -111,7 +113,7 @@ describe('properties', () => {
   })
 
   it('any offset, however hostile, reads as a slide that exists', () => {
-    fc.assert(
+    fcAssert(
       fc.property(phoneGeometry, fc.double({ noNaN: false }), (input, offset) => {
         const index = indexAtOffset(offset, input.count, slideGeometry(input))
         expect(index).toBeGreaterThanOrEqual(0)
@@ -122,7 +124,7 @@ describe('properties', () => {
   })
 
   it('stepping never leaves the set and never wraps', () => {
-    fc.assert(
+    fcAssert(
       fc.property(
         fc.integer({ min: 1, max: 40 }),
         fc.nat(),
@@ -137,7 +139,7 @@ describe('properties', () => {
   })
 
   it('the current key survives any change that keeps it', () => {
-    fc.assert(
+    fcAssert(
       fc.property(
         fc.uniqueArray(fc.string({ minLength: 1 }), { minLength: 1, maxLength: 20 }),
         fc.nat(),
@@ -153,7 +155,7 @@ describe('properties', () => {
   })
 
   it('a removed current key hands over to a slide within one position of where it was', () => {
-    fc.assert(
+    fcAssert(
       fc.property(
         fc.uniqueArray(fc.string({ minLength: 1 }), { minLength: 2, maxLength: 20 }),
         fc.nat(),
@@ -219,7 +221,7 @@ describe('flickTarget', () => {
   })
 
   it('never leaves the set, for any hand speed', () => {
-    fc.assert(
+    fcAssert(
       fc.property(
         fc.integer({ min: 0, max: 8 }),
         fc.double({ min: -20, max: 20, noNaN: true }),
@@ -301,7 +303,7 @@ describe('looping', () => {
   })
 
   it('always names a slide that exists, whatever the step', () => {
-    fc.assert(
+    fcAssert(
       fc.property(
         fc.integer({ min: 1, max: 20 }),
         fc.nat(),
@@ -316,7 +318,7 @@ describe('looping', () => {
   })
 
   it('a copy at either end maps back to a real slide for any slide count', () => {
-    fc.assert(
+    fcAssert(
       fc.property(fc.integer({ min: 3, max: 20 }), (count) => {
         expect(indexAtPosition(0, count, true)).toBe(count - 1)
         expect(indexAtPosition(count + 1, count, true)).toBe(0)
