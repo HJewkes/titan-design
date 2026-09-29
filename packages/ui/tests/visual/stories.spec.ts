@@ -1,4 +1,5 @@
-import { test, expect } from '@playwright/test'
+import fs from 'node:fs'
+import { test, expect, type Page, type TestInfo } from '@playwright/test'
 
 /**
  * Storybook story visual-regression baselines.
@@ -36,9 +37,7 @@ test('storybook story baselines (shell + icons)', async ({ page, request }) => {
   const index = (await (await request.get('/index.json')).json()) as {
     entries: Record<string, { id: string; type: string; title: string }>
   }
-  const stories = Object.values(index.entries).filter(
-    (e) => e.type === 'story' && SCOPE.test(e.id)
-  )
+  const stories = Object.values(index.entries).filter((e) => e.type === 'story' && SCOPE.test(e.id))
 
   expect(stories.length, 'in-scope stories were found').toBeGreaterThan(0)
 
@@ -51,3 +50,65 @@ test('storybook story baselines (shell + icons)', async ({ page, request }) => {
       .toHaveScreenshot(`${story.id}.png`, { animations: 'disabled', caret: 'hide' })
   }
 })
+
+/**
+ * Sensitivity proof for the 0.02 threshold (TD-3 S1). PR #178 changed
+ * MesoProgressBar's track alphas and every gate passed under the default 0.2.
+ * These tests override the upcoming track token `--color-hairline-subtle`
+ * (rgba 255/255/255 at 0.10) on the story root and assert that the committed
+ * baseline rejects the render with a pixel diff. 0.50 is the #178-sized change;
+ * 0.13 pins the threshold floor. They live in this file to share its snapshots.
+ */
+const SENSITIVITY_STORY = 'custom-workout-mesoprogressbar--default'
+const SENSITIVITY_BASELINE = `${SENSITIVITY_STORY}.png`
+const SHOT_OPTIONS = { animations: 'disabled', caret: 'hide' } as const
+
+function guardSensitivityBaseline(testInfo: TestInfo) {
+  test.skip(process.platform !== 'linux', 'baselines exist only as *-chromium-linux.png')
+  const update = testInfo.config.updateSnapshots
+  test.skip(
+    update === 'all' || update === 'changed',
+    'a mutated render must never be written over the baseline'
+  )
+  const baseline = testInfo.snapshotPath(SENSITIVITY_BASELINE)
+  expect(fs.existsSync(baseline), `baseline ${baseline} must exist`).toBe(true)
+}
+
+async function renderSensitivityStory(page: Page, testInfo: TestInfo) {
+  guardSensitivityBaseline(testInfo)
+  await page.clock.install({ time: FIXED_TIME })
+  await page.clock.pauseAt(FIXED_TIME)
+  await page.goto(`/iframe.html?id=${SENSITIVITY_STORY}&viewMode=story`)
+  await page.waitForLoadState('networkidle')
+  await page.evaluate(() => document.fonts.ready)
+  return page.locator('#storybook-root')
+}
+
+test('sensitivity: unmutated MesoProgressBar matches its baseline', async ({ page }, testInfo) => {
+  const root = await renderSensitivityStory(page, testInfo)
+  await expect(root).toHaveScreenshot(SENSITIVITY_BASELINE, SHOT_OPTIONS)
+  console.log('[sensitivity] unmutated 0.10: matches baseline')
+})
+
+for (const alpha of ['0.50', '0.13']) {
+  test(`sensitivity: hairline-subtle track 0.10 to ${alpha} fails the gate`, async ({
+    page,
+  }, testInfo) => {
+    const root = await renderSensitivityStory(page, testInfo)
+    await root.evaluate((el, value) => {
+      el.style.setProperty('--color-hairline-subtle', value)
+    }, `rgba(255, 255, 255, ${alpha})`)
+
+    const error = await expect(root)
+      .toHaveScreenshot(SENSITIVITY_BASELINE, { ...SHOT_OPTIONS, timeout: 3000 })
+      .then(
+        () => null,
+        (e: Error) => e
+      )
+
+    // Any other error (a bad path, a timeout) would make the rejection vacuous.
+    const diffLine = error?.message.split('\n').find((line) => /pixels \(ratio/.test(line))
+    expect(diffLine, `a 0.10 to ${alpha} track change must fail with a pixel diff`).toBeDefined()
+    console.log(`[sensitivity] 0.10 -> ${alpha}: ${diffLine?.trim()}`)
+  })
+}
