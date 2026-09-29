@@ -10,7 +10,9 @@ import type {
 } from './GoalTrajectoryChart'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { pressedLevel, surfaceBackground } from '../../../theme/surface-planes'
+import { alpha } from '../../../utils/colors'
 import { PLOT_LEFT } from './GoalTrajectoryChartGeometry'
+import { GoalWeekColumnsChart } from './GoalWeekColumnsChart'
 
 const dark = getSemanticColors('dark')
 
@@ -524,5 +526,48 @@ describe('GoalTrajectoryChart outcome statuses', () => {
     expect(outcomeReach('behind')).toBeNull()
     expect(trajectoryReach(baseProps.committed, shortOfIt)).toBe('short')
     expect(lineStrokeFor('goal_met')).toBe(dark['status-success'])
+  })
+})
+
+describe('GoalTrajectoryChart current week', () => {
+  const tintOf = (root: HTMLElement) =>
+    within(root).getByTestId('goal-trajectory-chart-current-week').getAttribute('fill')
+
+  it('tints the column exactly as the compact chart does: same token, same alpha', () => {
+    const full = render(
+      <GoalTrajectoryChart {...baseProps} status="on_track" currentWeek={4} animate={false} />
+    )
+    const compact = render(
+      <GoalWeekColumnsChart
+        actuals={actuals}
+        committed={baseProps.committed}
+        goalWeek={6}
+        currentWeek={4}
+        status="on_track"
+        width={400}
+        height={64}
+        animate={false}
+      />
+    )
+    expect(tintOf(full.container)).toBe(alpha(dark['text-secondary'], 0.2))
+    expect(tintOf(full.container)).toBe(tintOf(compact.container))
+  })
+
+  it("centres the column on that week's reading, one week wide", () => {
+    const { container } = render(
+      <GoalTrajectoryChart {...baseProps} status="on_track" currentWeek={4} animate={false} />
+    )
+    const column = within(container).getByTestId('goal-trajectory-chart-current-week')
+    const dots = within(container).getAllByTestId('goal-trajectory-chart-actual-dot')
+    const week4 = Number(dots[dots.length - 1]!.getAttribute('cx'))
+    const x = Number(column.getAttribute('x'))
+    const width = Number(column.getAttribute('width'))
+    expect(x + width / 2).toBeCloseTo(week4, 6)
+    expect(width).toBeGreaterThan(0)
+  })
+
+  it('lights no column when no week is current', () => {
+    render(<GoalTrajectoryChart {...baseProps} status="on_track" animate={false} />)
+    expect(screen.queryByTestId('goal-trajectory-chart-current-week')).toBeNull()
   })
 })

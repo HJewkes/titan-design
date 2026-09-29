@@ -24,6 +24,8 @@ import {
   type PlotInsets,
 } from './GoalTrajectoryChartGeometry'
 import {
+  CURRENT_WEEK_TINT,
+  CurrentWeekColumn,
   DEFAULT_LEFT_SHADOW_SPREAD,
   PLANE_RADIUS,
   PlaneLip,
@@ -58,7 +60,7 @@ export const MINI_PLANE_TOP = MINI_INSETS.top - PLANE_OVERHANG
 export const MINI_CELL_HEIGHT = 8
 
 /** The lit current-week column's alpha, and the recessed line's. */
-export const WEEK_COLUMN = { tintAlpha: 0.2, lineAlpha: 0.45 } as const
+export const WEEK_COLUMN = { tintAlpha: CURRENT_WEEK_TINT, lineAlpha: 0.45 } as const
 
 export interface GoalTrajectoryMiniData {
   actuals: GoalActualPoint[]
@@ -128,21 +130,6 @@ function CommittedRule({ geometry, palette }: LayerProps) {
       y2={committedY}
       stroke={alpha(palette.rule, 0.45)}
       strokeWidth={1}
-    />
-  )
-}
-
-function CurrentWeekColumn({ geometry, palette, week }: LayerProps & { week: number }) {
-  const span = geometry.toX(2) - geometry.toX(1)
-  const { plane } = geometry
-  return (
-    <rect
-      data-testid="goal-trajectory-mini-current-week"
-      x={geometry.toX(week) - span / 2}
-      y={plane.y}
-      width={span}
-      height={plane.height}
-      fill={alpha(palette.rule, WEEK_COLUMN.tintAlpha)}
     />
   )
 }

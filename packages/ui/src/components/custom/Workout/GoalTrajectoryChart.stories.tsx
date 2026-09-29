@@ -84,6 +84,10 @@ const meta: Meta<typeof GoalTrajectoryChart> = {
     actuals: { description: 'Measured values; `isPR` adds a star' },
     weeks: { description: 'Planned weeks; `isDeload` flattens the band and shades the column' },
     mesoBoundaries: { description: 'Week indices where a mesocycle boundary falls' },
+    currentWeek: {
+      control: { type: 'number', min: 1, max: 6, step: 1 },
+      description: "1-based; lights this week's column in the compact chart's tint",
+    },
     animate: {
       control: 'boolean',
       description: 'Play the entrance (line draw, then shadow and points). Remount to replay.',
@@ -125,8 +129,9 @@ const meta: Meta<typeof GoalTrajectoryChart> = {
 export default meta
 type Story = StoryObj<typeof GoalTrajectoryChart>
 
+/** Week 4 is current, lit in the same tint the compact chart uses (VW-423). */
 export const OnTrack: Story = {
-  args: { ...bench, ...WALL, actuals: onTrackActuals, status: 'on_track' },
+  args: { ...bench, ...WALL, actuals: onTrackActuals, status: 'on_track', currentWeek: 4 },
 }
 
 /**
@@ -293,7 +298,7 @@ export const EmptyCalibrating: Story = {
 
 /** The same on-track block at phone width: 2px line and three gridlines. */
 export const PhoneOnTrack: Story = {
-  args: { ...bench, ...PHONE, actuals: onTrackActuals, status: 'on_track' },
+  args: { ...bench, ...PHONE, actuals: onTrackActuals, status: 'on_track', currentWeek: 4 },
 }
 
 /** The loss goal at phone width. */
