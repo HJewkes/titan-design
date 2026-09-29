@@ -69,9 +69,8 @@ describe('token-only subpath export (TP-16)', () => {
     const pkg = JSON.parse(fs.readFileSync(path.join(uiRoot, 'package.json'), 'utf8'))
     expect(pkg.exports['./theme/tokens']).toEqual({
       'react-native': './src/theme/tokens/index.ts',
-      types: './dist/theme/tokens.d.ts',
-      import: './dist/theme/tokens.mjs',
-      require: './dist/theme/tokens.js',
+      import: { types: './dist/theme/tokens.d.mts', default: './dist/theme/tokens.mjs' },
+      require: { types: './dist/theme/tokens.d.ts', default: './dist/theme/tokens.js' },
     })
   })
 
