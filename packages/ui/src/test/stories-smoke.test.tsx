@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { render } from '@testing-library/react'
-import { composeStories } from '@storybook/react'
+import { composedStories, storyModuleCount, storyTimeout } from './composed-stories'
 
 /**
  * Storybook → render-test bridge (TD-04.11 / VW-20).
@@ -18,38 +18,20 @@ import { composeStories } from '@storybook/react'
  * them avoids importing global.css / addon-themes into the test env.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type StoryModule = Record<string, any>
-
-const storyModules = import.meta.glob<StoryModule>('../components/**/*.stories.tsx', {
-  eager: true,
-})
-
-// VolumeStatusPalette › Compare mounts every palette at once and takes 5-6 s on a CI runner.
-const SLOW_STORY_TIMEOUT = 30_000
-const SLOW_STORY_IDS = new Set(['lab-decisions-volume-status-palette--compare'])
-
 describe('storybook stories render (composeStories smoke)', () => {
-  const entries = Object.entries(storyModules)
-
   it('discovers a non-trivial number of story modules', () => {
-    expect(entries.length).toBeGreaterThan(10)
+    expect(storyModuleCount()).toBeGreaterThan(10)
   })
 
-  for (const [file, mod] of entries) {
-    const label = file.replace('../components/', '')
-    const composed = composeStories(mod)
-    for (const [name, Story] of Object.entries(composed)) {
-      const timeout = SLOW_STORY_IDS.has(Story.id) ? SLOW_STORY_TIMEOUT : undefined
-      it(`${label} › ${name} renders`, { timeout }, () => {
-        // Smoke level: every story must MOUNT without throwing. `firstChild` is
-        // not asserted — portal/modal organisms (PrHistoryModal) render into
-        // document.body, and empty-state stories legitimately render null; the
-        // hand-written per-organism tests own the detailed output assertions.
-        const result = render(<Story />)
-        expect(result.unmount).toBeTypeOf('function')
-        result.unmount()
-      })
-    }
+  for (const { file, name, id, Story } of composedStories()) {
+    it(`${file} › ${name} renders`, { timeout: storyTimeout(id) }, () => {
+      // Smoke level: every story must MOUNT without throwing. `firstChild` is
+      // not asserted — portal/modal organisms (PrHistoryModal) render into
+      // document.body, and empty-state stories legitimately render null; the
+      // hand-written per-organism tests own the detailed output assertions.
+      const result = render(<Story />)
+      expect(result.unmount).toBeTypeOf('function')
+      result.unmount()
+    })
   }
 })
