@@ -23,7 +23,7 @@ import { test, expect } from '@playwright/test'
  * that are gitignored and never gate.
  */
 
-const SCOPE = /^(shell-|foundations-icons--)/
+const SCOPE = /^(shell-|foundations-icons--|custom-workout-mesoprogressbar--)/
 
 const FIXED_TIME = new Date('2024-01-01T16:12:07')
 

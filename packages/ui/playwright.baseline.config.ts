@@ -7,8 +7,9 @@ import { defineConfig } from '@playwright/test'
  * pixel-snapshot comparison.
  *
  * Baselines are committed as `*-chromium-linux.png` and are generated inside the
- * pinned Playwright Linux image so they match CI byte-for-byte. A tiny tolerance
- * absorbs sub-pixel anti-aliasing without masking real regressions.
+ * pinned Playwright Linux image so they match CI byte-for-byte, so no pixel may
+ * differ. The per-pixel `threshold` of 0.02 (about 5 of 255 luminance levels,
+ * TD-3 §2) sees a ~0.03 alpha step on a hairline; Playwright's default 0.2 does not.
  */
 export default defineConfig({
   testDir: './specimen/baseline',
@@ -18,7 +19,8 @@ export default defineConfig({
   retries: 0,
   expect: {
     toHaveScreenshot: {
-      maxDiffPixelRatio: 0.01,
+      threshold: 0.02,
+      maxDiffPixels: 0,
     },
   },
   use: {
