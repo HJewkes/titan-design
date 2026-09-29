@@ -8,13 +8,13 @@ import {
   type LayoutChangeEvent,
 } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { primitiveColors, greyRamp } from '../../../theme/tokens/primitives'
+import { primitiveColors } from '../../../theme/tokens/primitives'
 import { getGlowShadow } from '../../../theme/elevation'
 import { Tooltip } from '../../ui/tooltip/Tooltip'
 import { useSurfaceMode } from '../../ui/surface'
 
-/** Muted, un-reached track colour — a grey step, matches the IntensityBar track family. */
-const DEFAULT_TRACK_COLOR = greyRamp[800]
+/** Muted, un-reached track token — resolved per render so the track follows the theme. */
+const TRACK_TOKEN = 'border-prominent'
 /** Default needle / fill-marker colour. */
 const DEFAULT_MARKER_COLOR = primitiveColors.white
 /** Tick mark + tick label token — resolved per render so ticks follow the theme. */
@@ -139,7 +139,7 @@ export interface ZoneTrackProps extends ViewProps {
   trackHeight?: number
   /** How far a needle marker overhangs the track top + bottom, in px. Overrides the `size` default (6 default / 9 wall). */
   needleOverhang?: number
-  /** Muted colour of the track behind / beyond the fill. Default a grey step. */
+  /** Muted colour of the track behind / beyond the fill. Default the theme's `border-prominent`. */
   trackColor?: string
   className?: string
 }
@@ -173,7 +173,7 @@ export function ZoneTrack({
   size = 'default',
   trackHeight: trackHeightProp,
   needleOverhang: needleOverhangProp,
-  trackColor = DEFAULT_TRACK_COLOR,
+  trackColor: trackColorProp,
   className,
   style,
   accessibilityLabel,
@@ -181,6 +181,7 @@ export function ZoneTrack({
 }: ZoneTrackProps) {
   const t = getSemanticColors(useSurfaceMode())
   const tickColor = t[TICK_TOKEN]
+  const trackColor = trackColorProp ?? t[TRACK_TOKEN]
   const s = ZONE_SIZES[size]
   const trackHeight = trackHeightProp ?? s.trackHeight
   const needleOverhang = needleOverhangProp ?? s.needleOverhang
