@@ -7,6 +7,13 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- `pnpm check:package` runs `publint --strict` and `attw --pack --profile node16` on the built
+  package. CI runs it on every PR, and the publish workflow runs it before `npm publish`, so an
+  export map that regresses to "Masquerading as CJS" fails before a release. Only the two CSS
+  subpaths and `tailwind.config.js` are excluded from attw, since none is a TypeScript entry (TD-41).
+
 ### Changed
 
 - `global.css` self-hosts Inter, Nunito Sans and Space Grotesk instead of importing them from

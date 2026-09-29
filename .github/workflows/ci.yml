@@ -36,6 +36,10 @@ jobs:
       - name: Verify
         run: pnpm verify
 
+      # publint --strict plus attw on the packed tarball, so an export-map regression fails before a tag exists.
+      - name: Package shape
+        run: pnpm check:package
+
   # Job id stays `visual`: the ruleset requires a status of exactly that name.
   visual:
     runs-on: ubuntu-latest
