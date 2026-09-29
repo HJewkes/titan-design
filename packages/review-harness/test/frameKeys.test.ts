@@ -14,6 +14,7 @@ const press = (key: string, target: unknown, mods: { metaKey?: boolean } = {}) =
 })
 
 const storyBody = { tagName: 'BODY', isContentEditable: false }
+const storyButton = { tagName: 'BUTTON', isContentEditable: false }
 const storyInput = { tagName: 'INPUT', isContentEditable: false }
 
 describe('a key pressed inside a story frame', () => {
@@ -37,5 +38,13 @@ describe('a key pressed inside a story frame', () => {
 
   it('still sends from a story field, because Cmd+Enter types nothing', () => {
     expect(forwardedKey(press('Enter', storyInput, { metaKey: true }))).not.toBeNull()
+  })
+
+  it('leaves plain Enter to a story button so the button still activates', () => {
+    expect(forwardedKey(press('Enter', storyButton))).toBeNull()
+  })
+
+  it('still sends with Cmd+Enter from a story button', () => {
+    expect(forwardedKey(press('Enter', storyButton, { metaKey: true }))).not.toBeNull()
   })
 })

@@ -32,9 +32,9 @@ const STORIES = [
   'lab-decisions-compact-goal-chart--phone',
 ]
 
-/** The shape of the vw-448 round 2 that would not send: 7 variants, 14 frames, 4 sections, auto heights. */
+/** A synthetic sectioned round: 7 variants, 14 frames, 4 sections, auto heights. */
 function sectionedRound(storybookUrl: string): ManifestInput {
-  const keys = ['Cb', 'Cg', 'F', 'Lf', 'Lo', 'Sm', 'Sn']
+  const keys = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
   const pick = (id: string, options: string[]) =>
     ({ id, kind: 'pick-one', prompt: `Pick for ${id}?`, options, required: true }) as const
   const text = (id: string) => ({ id, kind: 'text', prompt: `Wording for ${id}?` }) as const
@@ -46,27 +46,27 @@ function sectionedRound(storybookUrl: string): ManifestInput {
     widths: [1920, 360],
     variants: keys.map((key, i) => ({ key, storyId: STORIES[i % 2], label: `Frame ${key}` })),
     questions: [
-      pick('past', ['Cb', 'Cg']),
-      text('past-label'),
-      pick('fallback-place', ['on the chart', 'in the hero eyebrow']),
-      pick('lowconf', ['Lf', 'Lo']),
-      pick('suspension', ['Sm', 'Sn']),
+      pick('q1', ['A', 'B']),
+      text('q1-text'),
+      pick('q2', ['on the chart', 'in the hero eyebrow']),
+      pick('q3', ['D', 'E']),
+      pick('q4', ['F', 'G']),
       text('overall'),
     ],
     sections: [
-      { id: 'past', title: 'Past', questionIds: ['past', 'past-label'], variantKeys: ['Cb', 'Cg'] },
-      { id: 'fallback', title: 'Fallback', questionIds: ['fallback-place'], variantKeys: ['F'] },
+      { id: 's1', title: 'First', questionIds: ['q1', 'q1-text'], variantKeys: ['A', 'B'] },
+      { id: 's2', title: 'Second', questionIds: ['q2'], variantKeys: ['C'] },
       {
-        id: 'lowconf',
-        title: 'Low confidence',
-        questionIds: ['lowconf'],
-        variantKeys: ['Lf', 'Lo'],
+        id: 's3',
+        title: 'Third',
+        questionIds: ['q3'],
+        variantKeys: ['D', 'E'],
       },
       {
-        id: 'suspension',
-        title: 'Suspension',
-        questionIds: ['suspension'],
-        variantKeys: ['Sm', 'Sn'],
+        id: 's4',
+        title: 'Fourth',
+        questionIds: ['q4'],
+        variantKeys: ['F', 'G'],
       },
     ],
   }
@@ -240,7 +240,7 @@ test('a sectioned round scrolls to the end and sends with focus left in a story'
   cli = run.child
   await page.goto(await run.url)
 
-  for (const id of ['past', 'fallback-place', 'lowconf', 'suspension'])
+  for (const id of ['q1', 'q2', 'q3', 'q4'])
     await page.getByTestId(`question-${id}`).getByRole('radio').first().click()
   const review = page.getByRole('button', { name: /Review answers/ })
   await page.mouse.move(700, 500)
@@ -253,8 +253,9 @@ test('a sectioned round scrolls to the end and sends with focus left in a story'
   await expect(review).toBeInViewport()
   expect(await page.locator('[data-width] iframe').count()).toBe(14)
 
-  const story = page.getByTestId('variant-Sn').locator('iframe').last()
-  await expect(story.contentFrame().locator('#storybook-root')).not.toBeEmpty()
+  const story = page.getByTestId('variant-G').locator('iframe').last()
+  // A cold Storybook compiles the story on first request, which can outlast the 5 s default.
+  await expect(story.contentFrame().locator('#storybook-root')).not.toBeEmpty({ timeout: 30_000 })
   await expect
     .poll(() => story.evaluate((f: HTMLIFrameElement) => f.contentDocument?.readyState))
     .toBe('complete')
@@ -270,12 +271,7 @@ test('a sectioned round scrolls to the end and sends with focus left in a story'
   const written = FeedbackSchema.parse(
     JSON.parse(await readFile(join(dir, 'feedback.json'), 'utf8'))
   )
-  expect(written.answers.map((a) => a.questionId)).toEqual([
-    'past',
-    'fallback-place',
-    'lowconf',
-    'suspension',
-  ])
+  expect(written.answers.map((a) => a.questionId)).toEqual(['q1', 'q2', 'q3', 'q4'])
 })
 
 test('a frame Storybook does not answer says so and retries', async ({ page }) => {
