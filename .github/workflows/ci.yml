@@ -62,6 +62,11 @@ jobs:
       - name: Layer 3 — HTML vs React parity
         run: pnpm --filter @titan-design/react-ui test:visual:compare
 
+      # A single-file consumer of global.css, opened over file:// with the network
+      # blocked, must still load every titan font face (TD-36).
+      - name: Offline fonts — single-file consumer
+        run: pnpm --filter @titan-design/react-ui test:offline-fonts
+
       # Layer 1 — component screenshot baselines. Any pixel diff against the
       # committed baselines exits non-zero and fails the build.
       - name: Layer 1 — component screenshot baselines

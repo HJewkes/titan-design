@@ -85,6 +85,7 @@
     "test:visual:stories": "playwright test stories.spec.ts",
     "test:visual:stories:update": "playwright test stories.spec.ts --update-snapshots",
     "test:interaction": "playwright test --config playwright.interaction.config.ts",
+    "test:offline-fonts": "playwright test --config playwright.offline-fonts.config.ts",
     "prepublishOnly": "pnpm build && vitest --run",
     "lint:colors:baseline": "node scripts/update-raw-color-baseline.mjs",
     "storybook:isolated": "node scripts/storybook-launch.mjs --isolated",
@@ -165,6 +166,7 @@
     "typescript": "^5.7.0",
     "typescript-eslint": "^8.55.0",
     "vite": "^6.0.0",
+    "vite-plugin-singlefile": "2.2.0",
     "vitest": "^3.2.6"
   },
   "files": [

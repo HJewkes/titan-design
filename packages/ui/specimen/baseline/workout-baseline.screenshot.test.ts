@@ -32,8 +32,8 @@ test('workout component screenshot baselines', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/comparison.html')
   await page.waitForLoadState('networkidle')
-  // Web fonts (Inter / Nunito Sans / Space Grotesk) load from the CDN; block on
-  // them so text metrics are stable before any pixel is captured.
+  // Web fonts (Inter / Nunito Sans / Space Grotesk) load from global.css's
+  // self-hosted files; block on them so text metrics are stable before any pixel is captured.
   await page.evaluate(() => document.fonts.ready)
 
   const testIds = await page

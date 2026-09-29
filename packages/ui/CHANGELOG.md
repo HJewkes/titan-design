@@ -7,6 +7,14 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- `global.css` self-hosts Inter, Nunito Sans and Space Grotesk instead of importing them from
+  Google Fonts, so a single-file build opened from disk renders with no network. The woff2
+  files are the ones Google Fonts served, with the same subsets and weights, and ship with their
+  OFL licences under `src/theme/fonts/`. The package grows by 392 KB; a single-file build that
+  inlines its assets grows by about 500 KB (TD-36).
+
 ## 0.21.2
 
 ### Added
