@@ -27,8 +27,53 @@ function round(storybookUrl: string, height = 700): ManifestInput {
   }
 }
 
-function startCli(manifestPath: string, outDir: string) {
-  const child = spawn('node', [CLI, manifestPath, '--no-open', '--out', outDir])
+const STORIES = [
+  'lab-decisions-goal-milestone-tiles--phone',
+  'lab-decisions-compact-goal-chart--phone',
+]
+
+/** A synthetic sectioned round: 7 variants, 14 frames, 4 sections, auto heights. */
+function sectionedRound(storybookUrl: string): ManifestInput {
+  const keys = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+  const pick = (id: string, options: string[]) =>
+    ({ id, kind: 'pick-one', prompt: `Pick for ${id}?`, options, required: true }) as const
+  const text = (id: string) => ({ id, kind: 'text', prompt: `Wording for ${id}?` }) as const
+  return {
+    schema: MANIFEST_SCHEMA_ID,
+    unit: 'vw-545-e2e',
+    round: 2,
+    storybookUrl,
+    widths: [1920, 360],
+    variants: keys.map((key, i) => ({ key, storyId: STORIES[i % 2], label: `Frame ${key}` })),
+    questions: [
+      pick('q1', ['A', 'B']),
+      text('q1-text'),
+      pick('q2', ['on the chart', 'in the hero eyebrow']),
+      pick('q3', ['D', 'E']),
+      pick('q4', ['F', 'G']),
+      text('overall'),
+    ],
+    sections: [
+      { id: 's1', title: 'First', questionIds: ['q1', 'q1-text'], variantKeys: ['A', 'B'] },
+      { id: 's2', title: 'Second', questionIds: ['q2'], variantKeys: ['C'] },
+      {
+        id: 's3',
+        title: 'Third',
+        questionIds: ['q3'],
+        variantKeys: ['D', 'E'],
+      },
+      {
+        id: 's4',
+        title: 'Fourth',
+        questionIds: ['q4'],
+        variantKeys: ['F', 'G'],
+      },
+    ],
+  }
+}
+
+function startCli(manifestPath: string, outDir: string, ...flags: string[]) {
+  const child = spawn('node', [CLI, manifestPath, '--no-open', '--out', outDir, ...flags])
   let stdout = ''
   child.stdout.on('data', (c: Buffer) => (stdout += c.toString()))
   const url = new Promise<string>((resolve) => {
@@ -183,6 +228,50 @@ test('a reload keeps the unsent verdicts, comments, pins and answers', async ({ 
   await expect(pickB).toHaveAttribute('aria-checked', 'true')
   await expect(page.getByLabel('General notes')).toHaveValue('light mode next')
   run.child.kill()
+})
+
+test('a sectioned round scrolls to the end and sends with focus left in a story', async ({
+  page,
+}) => {
+  const dir = await mkdtemp(join(tmpdir(), 'titan-review-e2e-'))
+  const manifestPath = join(dir, 'round.json')
+  await writeFile(manifestPath, JSON.stringify(sectionedRound(storybook.url)))
+  const run = startCli(manifestPath, dir, '--no-capture')
+  cli = run.child
+  await page.goto(await run.url)
+
+  for (const id of ['q1', 'q2', 'q3', 'q4'])
+    await page.getByTestId(`question-${id}`).getByRole('radio').first().click()
+  const review = page.getByRole('button', { name: /Review answers/ })
+  await page.mouse.move(700, 500)
+  for (
+    let i = 0;
+    i < 40 && !((await review.isVisible()) && (await review.boundingBox())!.y < 1000);
+    i++
+  )
+    await page.mouse.wheel(0, 600)
+  await expect(review).toBeInViewport()
+  expect(await page.locator('[data-width] iframe').count()).toBe(14)
+
+  const story = page.getByTestId('variant-G').locator('iframe').last()
+  // A cold Storybook compiles the story on first request, which can outlast the 5 s default.
+  await expect(story.contentFrame().locator('#storybook-root')).not.toBeEmpty({ timeout: 30_000 })
+  await expect
+    .poll(() => story.evaluate((f: HTMLIFrameElement) => f.contentDocument?.readyState))
+    .toBe('complete')
+  await story.click({ position: { x: 20, y: 20 }, force: true })
+  await expect(story, 'a click in a story moves focus into its iframe').toBeFocused()
+
+  await page.keyboard.press('Meta+Enter')
+  await expect(page.getByTestId('review-screen'), 'focus leaves the hidden form').toBeFocused()
+  await page.keyboard.press('Meta+Enter')
+  await expect(page.getByTestId('sent')).toBeVisible()
+
+  expect(await run.exit).toBe(0)
+  const written = FeedbackSchema.parse(
+    JSON.parse(await readFile(join(dir, 'feedback.json'), 'utf8'))
+  )
+  expect(written.answers.map((a) => a.questionId)).toEqual(['q1', 'q2', 'q3', 'q4'])
 })
 
 test('a frame Storybook does not answer says so and retries', async ({ page }) => {

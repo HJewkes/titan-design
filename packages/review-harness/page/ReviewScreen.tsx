@@ -1,4 +1,4 @@
-import type { Dispatch } from 'react'
+import { useEffect, useRef, type Dispatch } from 'react'
 import type { Feedback, Manifest } from '../src/schema.ts'
 import { optionLabel } from './QuestionBlock.tsx'
 import type { Action } from './state.ts'
@@ -59,8 +59,17 @@ function Variants({ manifest, feedback }: Pick<ReviewScreenProps, 'manifest' | '
 
 export function ReviewScreen(props: ReviewScreenProps) {
   const { manifest, feedback, problems, sending, dispatch } = props
+  const ref = useRef<HTMLElement>(null)
+  // Focus left in the now-hidden form (a story iframe above all) would swallow this screen's keys.
+  useEffect(() => ref.current?.focus({ preventScroll: true }), [])
   return (
-    <section className="review" data-testid="review-screen" aria-labelledby="review-title">
+    <section
+      ref={ref}
+      tabIndex={-1}
+      className="review"
+      data-testid="review-screen"
+      aria-labelledby="review-title"
+    >
       <h2 id="review-title">Check before sending</h2>
       <Variants manifest={manifest} feedback={feedback} />
       <Answers manifest={manifest} feedback={feedback} />
