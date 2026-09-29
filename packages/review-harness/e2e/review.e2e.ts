@@ -27,8 +27,53 @@ function round(storybookUrl: string, height = 700): ManifestInput {
   }
 }
 
-function startCli(manifestPath: string, outDir: string) {
-  const child = spawn('node', [CLI, manifestPath, '--no-open', '--out', outDir])
+const STORIES = [
+  'lab-decisions-goal-milestone-tiles--phone',
+  'lab-decisions-compact-goal-chart--phone',
+]
+
+/** The shape of the vw-448 round 2 that would not send: 7 variants, 14 frames, 4 sections, auto heights. */
+function sectionedRound(storybookUrl: string): ManifestInput {
+  const keys = ['Cb', 'Cg', 'F', 'Lf', 'Lo', 'Sm', 'Sn']
+  const pick = (id: string, options: string[]) =>
+    ({ id, kind: 'pick-one', prompt: `Pick for ${id}?`, options, required: true }) as const
+  const text = (id: string) => ({ id, kind: 'text', prompt: `Wording for ${id}?` }) as const
+  return {
+    schema: MANIFEST_SCHEMA_ID,
+    unit: 'vw-545-e2e',
+    round: 2,
+    storybookUrl,
+    widths: [1920, 360],
+    variants: keys.map((key, i) => ({ key, storyId: STORIES[i % 2], label: `Frame ${key}` })),
+    questions: [
+      pick('past', ['Cb', 'Cg']),
+      text('past-label'),
+      pick('fallback-place', ['on the chart', 'in the hero eyebrow']),
+      pick('lowconf', ['Lf', 'Lo']),
+      pick('suspension', ['Sm', 'Sn']),
+      text('overall'),
+    ],
+    sections: [
+      { id: 'past', title: 'Past', questionIds: ['past', 'past-label'], variantKeys: ['Cb', 'Cg'] },
+      { id: 'fallback', title: 'Fallback', questionIds: ['fallback-place'], variantKeys: ['F'] },
+      {
+        id: 'lowconf',
+        title: 'Low confidence',
+        questionIds: ['lowconf'],
+        variantKeys: ['Lf', 'Lo'],
+      },
+      {
+        id: 'suspension',
+        title: 'Suspension',
+        questionIds: ['suspension'],
+        variantKeys: ['Sm', 'Sn'],
+      },
+    ],
+  }
+}
+
+function startCli(manifestPath: string, outDir: string, ...flags: string[]) {
+  const child = spawn('node', [CLI, manifestPath, '--no-open', '--out', outDir, ...flags])
   let stdout = ''
   child.stdout.on('data', (c: Buffer) => (stdout += c.toString()))
   const url = new Promise<string>((resolve) => {
@@ -183,6 +228,54 @@ test('a reload keeps the unsent verdicts, comments, pins and answers', async ({ 
   await expect(pickB).toHaveAttribute('aria-checked', 'true')
   await expect(page.getByLabel('General notes')).toHaveValue('light mode next')
   run.child.kill()
+})
+
+test('a sectioned round scrolls to the end and sends with focus left in a story', async ({
+  page,
+}) => {
+  const dir = await mkdtemp(join(tmpdir(), 'titan-review-e2e-'))
+  const manifestPath = join(dir, 'round.json')
+  await writeFile(manifestPath, JSON.stringify(sectionedRound(storybook.url)))
+  const run = startCli(manifestPath, dir, '--no-capture')
+  cli = run.child
+  await page.goto(await run.url)
+
+  for (const id of ['past', 'fallback-place', 'lowconf', 'suspension'])
+    await page.getByTestId(`question-${id}`).getByRole('radio').first().click()
+  const review = page.getByRole('button', { name: /Review answers/ })
+  await page.mouse.move(700, 500)
+  for (
+    let i = 0;
+    i < 40 && !((await review.isVisible()) && (await review.boundingBox())!.y < 1000);
+    i++
+  )
+    await page.mouse.wheel(0, 600)
+  await expect(review).toBeInViewport()
+  expect(await page.locator('[data-width] iframe').count()).toBe(14)
+
+  const story = page.getByTestId('variant-Sn').locator('iframe').last()
+  await expect(story.contentFrame().locator('#storybook-root')).not.toBeEmpty()
+  await expect
+    .poll(() => story.evaluate((f: HTMLIFrameElement) => f.contentDocument?.readyState))
+    .toBe('complete')
+  await story.click({ position: { x: 20, y: 20 }, force: true })
+  await expect(story, 'a click in a story moves focus into its iframe').toBeFocused()
+
+  await page.keyboard.press('Meta+Enter')
+  await expect(page.getByTestId('review-screen'), 'focus leaves the hidden form').toBeFocused()
+  await page.keyboard.press('Meta+Enter')
+  await expect(page.getByTestId('sent')).toBeVisible()
+
+  expect(await run.exit).toBe(0)
+  const written = FeedbackSchema.parse(
+    JSON.parse(await readFile(join(dir, 'feedback.json'), 'utf8'))
+  )
+  expect(written.answers.map((a) => a.questionId)).toEqual([
+    'past',
+    'fallback-place',
+    'lowconf',
+    'suspension',
+  ])
 })
 
 test('a frame Storybook does not answer says so and retries', async ({ page }) => {
