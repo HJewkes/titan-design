@@ -97,7 +97,7 @@
     "lint": "eslint src/",
     "lint:borders": "bash scripts/check-border-classes.sh",
     "check:package": "bash scripts/check-package.sh",
-    "check:cycles": "madge --circular --extensions ts,tsx --ts-config tsconfig.json src",
+    "check:cycles": "node scripts/check-cycles.mjs",
     "type-check": "tsc --noEmit",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\"",
     "test": "vitest",
