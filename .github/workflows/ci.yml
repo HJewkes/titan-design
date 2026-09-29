@@ -36,10 +36,98 @@ jobs:
       - name: Verify
         run: pnpm verify
 
+  # Job id stays `visual`: the ruleset requires a status of exactly that name.
+  visual:
+    runs-on: ubuntu-latest
+    # Pinned to the Playwright version in packages/ui (@playwright/test 1.58.2)
+    # so the browser + font rendering matches the committed *-chromium-linux.png
+    # Layer-1 baselines byte-for-byte. Browsers ship preinstalled in this image.
+    container:
+      image: mcr.microsoft.com/playwright:v1.58.2-noble
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Layer 3 — HTML-vs-React parity (computed-style compare). Boots the
+      # specimen dev server; a computed-style mismatch fails the run.
+      - name: Layer 3 — HTML vs React parity
+        run: pnpm --filter @titan-design/react-ui test:visual:compare
+
+      # Layer 1 — component screenshot baselines. Any pixel diff against the
+      # committed baselines exits non-zero and fails the build.
+      - name: Layer 1 — component screenshot baselines
+        run: pnpm --filter @titan-design/react-ui test:visual:baseline
+
+      # Layer 1 — REGEN (refresh): regenerate the Layer-1 baselines IN this pinned
+      # container and upload them, so a drifted baseline can be refreshed byte-exact.
+      # Runs even when the gate above fails (`if: always()`). Because it renders in
+      # the same container as the gate, UNCHANGED baselines come back byte-identical
+      # (git shows no diff) and only genuinely-changed components differ — no local
+      # env noise. To refresh: download the `component-visual-baselines` artifact and
+      # commit the changed *-chromium-linux.png under packages/ui/specimen/baseline/.
+      - name: Layer 1 — regenerate baselines (refresh)
+        if: always()
+        run: pnpm --filter @titan-design/react-ui test:visual:baseline:update
+      - name: Upload regenerated component baselines
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: component-visual-baselines
+          path: packages/ui/specimen/baseline/**/*-chromium-linux.png
+          retention-days: 7
+
+      # Layer 2 — Storybook story baselines (shell + icons; clock-frozen so
+      # live/animated stories are deterministic). Any pixel drift against the
+      # committed *-chromium-linux.png under
+      # packages/ui/tests/visual/reference/stories.spec.ts-snapshots/ fails the build.
+      - name: Layer 2 — Storybook story baselines
+        run: pnpm --filter @titan-design/react-ui test:visual:stories
+
+      # Layer 2 — REGEN (refresh): same pattern as Layer 1. Runs even when the
+      # gate fails, renders in the same container, so unchanged stories come
+      # back byte-identical and only real drift (or a newly in-scope story with
+      # no baseline yet) shows up in git. To refresh: download the
+      # `storybook-visual-baselines` artifact and commit the changed PNGs.
+      - name: Layer 2 — regenerate story baselines (refresh)
+        if: always()
+        run: pnpm --filter @titan-design/react-ui test:visual:stories:update
+      - name: Upload regenerated Storybook baselines
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: storybook-visual-baselines
+          path: packages/ui/tests/visual/reference/stories.spec.ts-snapshots/
+          retention-days: 7
+
+      # No html reporter is configured, so the diagnostics are the per-test
+      # -actual/-diff/-expected PNGs: Layer 2 writes to tests/visual/results
+      # (playwright.config.ts outputDir), Layers 1 and 3 to Playwright's default
+      # test-results. Uploading a directory that never exists made every failed
+      # gate undiagnosable from CI (titan PR #245 was the first casualty).
+      - name: Upload Playwright failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-failure-diagnostics
+          path: |
+            packages/ui/tests/visual/results/
+            packages/ui/test-results/
+          if-no-files-found: warn
+          retention-days: 7
+
   # The aggregator the ruleset will require; all-green also fails if a job here is missing from needs.
   check:
     if: always()
-    needs: [build]
+    needs: [build, visual]
     runs-on: ubuntu-latest
     steps:
       - uses: HJewkes/ci/actions/all-green@v1

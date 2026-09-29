@@ -79,8 +79,8 @@ pnpm type-check
 ## Visual Regression
 
 The workout components are guarded by a Playwright visual suite that runs on
-every PR via the **Visual Regression** workflow
-(`.github/workflows/visual.yml`). It boots the specimen dev server and runs two
+every PR via the `visual` job of the **CI** workflow
+(`.github/workflows/ci.yml`). It boots the specimen dev server and runs two
 layers, failing the build on any regression:
 
 - **Layer 3 — parity** (`pnpm --filter @titan-design/react-ui test:visual:compare`):
