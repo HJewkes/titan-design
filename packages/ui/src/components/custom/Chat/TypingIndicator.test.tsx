@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest'
+import { afterEach, describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { AccessibilityInfo, Platform } from 'react-native'
 
 import { TypingIndicator } from './TypingIndicator'
 import { ATHLETE, COACH } from './coach-thread-fixture'
@@ -35,6 +36,26 @@ describe('TypingIndicator', () => {
     rerender(<TypingIndicator participants={[COACH]} />)
     expect(screen.getByTestId('chat-typing-region')).toBe(region)
     expect(region).toContainElement(screen.getByText('Coach is typing'))
+  })
+
+  describe('on iOS', () => {
+    const originalOS = Platform.OS
+    afterEach(() => {
+      Platform.OS = originalOS
+      vi.restoreAllMocks()
+    })
+
+    it('announces through AccessibilityInfo when someone starts typing', () => {
+      Platform.OS = 'ios'
+      const announce = vi
+        .spyOn(AccessibilityInfo, 'announceForAccessibility')
+        .mockImplementation(() => undefined)
+      const { rerender } = render(<TypingIndicator participants={[]} />)
+      rerender(<TypingIndicator participants={[COACH]} />)
+      rerender(<TypingIndicator participants={[COACH]} />)
+      rerender(<TypingIndicator participants={[]} />)
+      expect(announce.mock.calls).toEqual([['Coach is typing']])
+    })
   })
 
   it('has no accessibility violations', async () => {

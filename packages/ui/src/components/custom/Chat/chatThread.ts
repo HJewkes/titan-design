@@ -32,6 +32,25 @@ export function messageBody(message: ChatMessage): string {
     .join('\n\n')
 }
 
+const INLINE_MARKUP: ReadonlyArray<[RegExp, string]> = [
+  [/`([^`]+)`/g, '$1'],
+  [/!?\[([^\]]*)\]\([^)]*\)/g, '$1'],
+  [/(\*\*|__)(.+?)\1/g, '$2'],
+  [/\*([^*\s][^*]*?)\*/g, '$1'],
+  [/(^|\W)_([^_]+)_(?!\w)/g, '$1$2'],
+]
+const LINE_MARKER = /^(?:#{1,6}\s+|>\s?|[-*+]\s+|\d+[.)]\s+)/
+
+/** Markdown reduced to one line of plain text, for a screen reader to speak. */
+export function plainText(markdown: string): string {
+  const lines = markdown.split('\n').map((line) => line.trim().replace(LINE_MARKER, ''))
+  const joined = lines.filter(Boolean).join(' ')
+  return INLINE_MARKUP.reduce(
+    (text, [pattern, replacement]) => text.replace(pattern, replacement),
+    joined
+  )
+}
+
 export function isStreaming(message: ChatMessage): boolean {
   return message.parts.some((part) => isTextPart(part) && part.state === 'streaming')
 }

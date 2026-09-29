@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import type { ChatMessage } from '@titan-design/chat-protocol'
 
-import { aggregateDelivery, buildThreadRows, messageBody } from './chatThread'
+import { aggregateDelivery, buildThreadRows, messageBody, plainText } from './chatThread'
 import { ATHLETE, COACH, COACH_THREAD, chatMessage, localIso } from './coach-thread-fixture'
 
 function rowSummary(messages: ChatMessage[]) {
@@ -84,5 +84,29 @@ describe('messageBody', () => {
       { type: 'text', text: 'Second' },
     ])
     expect(messageBody(message)).toBe('First\n\nSecond')
+  })
+})
+
+describe('plainText', () => {
+  it('drops bold and italic markers', () => {
+    expect(plainText('moved at **0.52 m/s**, __fast__')).toBe('moved at 0.52 m/s, fast')
+    expect(plainText('a *light* _easy_ day')).toBe('a light easy day')
+  })
+
+  it('keeps underscores inside words', () => {
+    expect(plainText('see top_set_velocity')).toBe('see top_set_velocity')
+  })
+
+  it('unwraps inline code', () => {
+    expect(plainText('run `pnpm test` first')).toBe('run pnpm test first')
+  })
+
+  it('keeps link text and drops the target', () => {
+    expect(plainText('read [the plan](https://example.com/plan) today')).toBe('read the plan today')
+  })
+
+  it('drops list, heading and quote markers and joins lines', () => {
+    const body = '## Plan\n\n- Bench 3x5\n* Rows\n1. Rest\n> stay calm'
+    expect(plainText(body)).toBe('Plan Bench 3x5 Rows Rest stay calm')
   })
 })

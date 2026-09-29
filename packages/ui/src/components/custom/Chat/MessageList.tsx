@@ -4,7 +4,14 @@ import type { ChatMessage, Participant } from '@titan-design/chat-protocol'
 import { cn } from '../../../utils/cn'
 import { Button, ButtonText } from '../../ui/button'
 import type { ProseLinker } from '../Prose'
-import { buildThreadRows, findParticipant, messageBody, type ThreadRow } from './chatThread'
+import { announceOnIOS } from './announceOnIOS'
+import {
+  buildThreadRows,
+  findParticipant,
+  messageBody,
+  plainText,
+  type ThreadRow,
+} from './chatThread'
 import { DateSeparator } from './DateSeparator'
 import { MessageBubble, type DataPartRenderer } from './MessageBubble'
 import { TypingIndicator } from './TypingIndicator'
@@ -59,19 +66,40 @@ function useWindow(messages: readonly ChatMessage[], pageSize: number) {
   return { visible, hasEarlier: start > 0, showEarlier: () => setPages((count) => count + 1) }
 }
 
+/**
+ * The newest incoming message after `lastSeenId`. Nothing when the newest message is
+ * unchanged (older history was prepended) or `lastSeenId` left the thread (it was replaced).
+ */
+function newestIncomingSince(
+  messages: readonly ChatMessage[],
+  lastSeenId: string | undefined,
+  viewerId: string
+): ChatMessage | undefined {
+  const start = lastSeenId === undefined ? 0 : messages.findIndex(({ id }) => id === lastSeenId) + 1
+  if (start === 0 && lastSeenId !== undefined) return undefined
+  return messages
+    .slice(start)
+    .filter((message) => message.authorId !== viewerId)
+    .pop()
+}
+
+function newestId(messages: readonly ChatMessage[]): string | undefined {
+  return messages[messages.length - 1]?.id
+}
+
 /** Text for a polite live region: only the newest incoming message that arrives after mount. */
 function useIncomingAnnouncement(props: MessageListProps): string {
   const { messages, participants, viewerId } = props
-  const seenRef = useRef(messages.length)
+  const lastSeenRef = useRef(newestId(messages))
   const [announcement, setAnnouncement] = useState('')
   useEffect(() => {
-    const fresh = messages.slice(seenRef.current)
-    seenRef.current = messages.length
-    const incoming = fresh.filter((message) => message.authorId !== viewerId).pop()
+    const incoming = newestIncomingSince(messages, lastSeenRef.current, viewerId)
+    lastSeenRef.current = newestId(messages)
     if (incoming === undefined) return
-    const author = findParticipant(participants, incoming.authorId)
-    const name = author?.displayName ?? 'Unknown'
-    setAnnouncement(`${name}: ${messageBody(incoming)}`)
+    const name = findParticipant(participants, incoming.authorId)?.displayName ?? 'Unknown'
+    const text = `${name}: ${plainText(messageBody(incoming))}`
+    setAnnouncement(text)
+    announceOnIOS(text)
   }, [messages, participants, viewerId])
   return announcement
 }
@@ -80,20 +108,12 @@ function ThreadScroll(props: MessageListProps) {
   const { messages, viewerId, typing = [], pageSize = 50 } = props
   const { visible, hasEarlier, showEarlier } = useWindow(messages, pageSize)
   const rows = useMemo(() => buildThreadRows(visible), [visible])
-  const announcement = useIncomingAnnouncement(props)
   const { scrollRef, onScroll, onContentSizeChange, unseen, jumpToNewest } = useStickToBottom(
     messages,
     viewerId
   )
   return (
     <View className="flex-1 min-h-0">
-      <View
-        accessibilityLiveRegion="polite"
-        className="absolute h-px w-px overflow-hidden"
-        testID="chat-message-announcer"
-      >
-        <Text>{announcement}</Text>
-      </View>
       <ScrollView
         ref={scrollRef}
         onScroll={onScroll}
@@ -130,8 +150,16 @@ function ThreadScroll(props: MessageListProps) {
 export function MessageList(props: MessageListProps) {
   const { messages, composer, emptyState, className } = props
   const isEmpty = messages.length === 0 && emptyState != null
+  const announcement = useIncomingAnnouncement(props)
   return (
     <View className={cn('flex-1 min-h-0', className)} testID="chat-message-list">
+      <View
+        accessibilityLiveRegion="polite"
+        className="absolute h-px w-px overflow-hidden"
+        testID="chat-message-announcer"
+      >
+        <Text>{announcement}</Text>
+      </View>
       {isEmpty ? <View className="flex-1">{emptyState}</View> : <ThreadScroll {...props} />}
       {composer}
     </View>

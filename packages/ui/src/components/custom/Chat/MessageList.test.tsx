@@ -1,7 +1,7 @@
-import { describe, it, expect, vi } from 'vitest'
+import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest'
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { Text } from 'react-native'
+import { AccessibilityInfo, Platform, Text } from 'react-native'
 import type { ChatMessage } from '@titan-design/chat-protocol'
 
 import { MessageList } from './MessageList'
@@ -160,6 +160,50 @@ describe('MessageList', () => {
       const { rerender } = renderList(COACH_THREAD)
       rerender([...COACH_THREAD, reply('a'), reply('b')])
       expect(announcer()).toHaveTextContent('Coach: reply b')
+    })
+
+    it('announces markdown as plain text', () => {
+      const { rerender } = renderList(COACH_THREAD.slice(1))
+      rerender([...COACH_THREAD.slice(1), COACH_THREAD[0]])
+      expect(announcer()).toHaveTextContent(
+        'Coach: Good session. Your top bench set moved at 0.52 m/s, right on target.'
+      )
+    })
+
+    it('does not re-announce the tail when older history is prepended', () => {
+      const { rerender } = renderList(COACH_THREAD.slice(3))
+      rerender(COACH_THREAD)
+      expect(announcer()).toHaveTextContent('')
+    })
+
+    it('announces the first incoming message after the empty state', () => {
+      const { rerender } = renderList([], { emptyState: <Text>No messages yet</Text> })
+      rerender([reply('first')])
+      expect(announcer()).toHaveTextContent('Coach: reply first')
+    })
+
+    describe('on iOS', () => {
+      const originalOS = Platform.OS
+      beforeEach(() => {
+        Platform.OS = 'ios'
+      })
+      afterEach(() => {
+        Platform.OS = originalOS
+        vi.restoreAllMocks()
+      })
+
+      it('announces each qualifying message once through AccessibilityInfo', () => {
+        const announce = vi
+          .spyOn(AccessibilityInfo, 'announceForAccessibility')
+          .mockImplementation(() => undefined)
+        const { rerender } = renderList(COACH_THREAD)
+        const first = [...COACH_THREAD, reply('a'), reply('b')]
+        rerender(first)
+        rerender([...first])
+        rerender([...first, reply('mine', ATHLETE)])
+        rerender([...first, reply('mine', ATHLETE), reply('c')])
+        expect(announce.mock.calls).toEqual([['Coach: reply b'], ['Coach: reply c']])
+      })
     })
   })
 })

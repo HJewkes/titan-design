@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Animated, Platform, View } from 'react-native'
 import type { Participant } from '@titan-design/chat-protocol'
 import { cn } from '../../../utils/cn'
 import { Indicator } from '../../ui/indicator'
 import { Surface } from '../../ui/surface'
 import { Typography } from '../../ui/typography'
+import { announceOnIOS } from './announceOnIOS'
 
 export interface TypingIndicatorProps {
   /** Who is composing. Renders nothing when empty. */
@@ -51,8 +52,18 @@ function PulsingDot({ index }: { index: number }) {
   )
 }
 
+/** Speaks a changed, non-empty label on iOS, where the live region below is silent. */
+function useTypingAnnouncement(label: string) {
+  const previousRef = useRef(label)
+  useEffect(() => {
+    if (label !== previousRef.current && label !== '') announceOnIOS(label)
+    previousRef.current = label
+  }, [label])
+}
+
 /** Three staggered dots in a small bubble, plus who is composing. Composes Surface + Indicator + Typography. */
 export function TypingIndicator({ participants, className }: TypingIndicatorProps) {
+  useTypingAnnouncement(participants.length === 0 ? '' : typingLabel(participants))
   return (
     <View accessibilityLiveRegion="polite" testID="chat-typing-region">
       {participants.length === 0 ? null : (
