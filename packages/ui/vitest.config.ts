@@ -48,6 +48,14 @@ export default defineConfig({
           pool: 'forks',
         },
       },
+      {
+        extends: true,
+        test: {
+          name: 'types',
+          include: [],
+          typecheck: { enabled: true, include: ['src/**/*.test-d.ts'], only: true },
+        },
+      },
     ],
     // Inline react-native-svg so its relative imports run through the resolver
     // plugin above and resolve to the `.web.js` implementations instead of
