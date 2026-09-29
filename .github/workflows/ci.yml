@@ -136,7 +136,7 @@ jobs:
         with:
           node-version: 22
 
-      - run: pnpm audit --audit-level=critical
+      - run: scripts/audit-retry.sh
 
   # The aggregator the ruleset will require; all-green also fails if a job here is missing from needs.
   check:
