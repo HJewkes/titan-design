@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import fc from 'fast-check'
 
-import { fcAssert } from '@/test/property'
+import { fcAssert } from '../../../test/property'
 
 import {
   canClone,
