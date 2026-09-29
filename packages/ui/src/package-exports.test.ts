@@ -18,7 +18,7 @@ const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8')) as {
 }
 
 const objectEntries = Object.entries(pkg.exports).filter(
-  (entry): entry is [string, Record<string, string | Target>] => typeof entry[1] === 'object',
+  (entry): entry is [string, Record<string, string | Target>] => typeof entry[1] === 'object'
 )
 
 describe('package.json exports', () => {
