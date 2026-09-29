@@ -569,13 +569,13 @@ export const primitiveSizing = {
 } as const
 
 export const primitiveBorderRadius = {
-  none: '0',
+  none: '0px',
   sm: '4px',
   DEFAULT: '8px',
   md: '8px',
   lg: '12px',
   xl: '16px',
-  '2xl': '24px',
+  '2xl': '1rem',
   full: '9999px',
 } as const
 
