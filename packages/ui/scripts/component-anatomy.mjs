@@ -1,9 +1,11 @@
 /**
  * The component anatomy detector behind `src/arch/component-anatomy.test.ts`.
  *
- * A unit is one `ui/<dir>/`, or one PascalCase `.tsx` stem that its directory
- * `index.ts` re-exports under `custom/**` or `shell/**`. An unexported stem is an
- * internal part, not a unit. `icons/` is generated and excluded.
+ * A ui unit is any directory under `ui/`, at any depth (`ui/charts/<name>`), that
+ * directly holds a component `.tsx` (not a story or test). A grouping dir such as
+ * `ui/charts`, or a dir of only `.ts`/`.md` fixtures, is not a unit. Under
+ * `custom/**` and `shell/**` a unit is one PascalCase `.tsx` stem that its directory
+ * `index.ts` exports; an unexported stem is an internal part. `icons/` is excluded.
  *
  * Every function here except `readComponentTree` is pure over a tree: an object
  * mapping a path relative to `src/components` to that file's source. The test
@@ -70,12 +72,14 @@ export function barrelExports(source) {
   return names
 }
 
+const isComponentFile = (file) => file.endsWith('.tsx') && !/\.(stories|test)\.tsx$/.test(file)
+
 function uiUnits(tree) {
   const dirs = new Set()
   for (const file of Object.keys(tree)) {
-    const parts = file.split('/')
-    if (parts[0] === 'ui' && parts.length > 2) dirs.add(`ui/${parts[1]}`)
+    if (file.startsWith('ui/') && isComponentFile(file)) dirs.add(dirOf(file))
   }
+  dirs.delete('ui')
   return [...dirs].map((dir) => ({ path: dir, dir, stem: null }))
 }
 

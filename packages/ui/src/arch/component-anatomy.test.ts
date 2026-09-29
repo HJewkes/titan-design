@@ -119,6 +119,37 @@ describe('component anatomy detector', () => {
     expect(units).toEqual(['custom/Fam/Foo'])
   })
 
+  it('makes a nested ui dir that holds a component its own unit', () => {
+    const tree = { 'ui/charts/foo/Foo.tsx': 'export const Foo = () => null' }
+
+    const units = (findUnits(tree) as { path: string }[]).map((unit) => unit.path)
+
+    expect(units).toEqual(['ui/charts/foo'])
+  })
+
+  it('does not treat a ui grouping dir with only subdirs as a unit', () => {
+    const tree = {
+      'ui/charts/README.md': '# Charts',
+      'ui/charts/kit/scale.ts': 'export const scale = 1',
+      'ui/charts/foo/Foo.tsx': 'export const Foo = () => null',
+    }
+
+    const units = (findUnits(tree) as { path: string }[]).map((unit) => unit.path)
+
+    expect(units).not.toContain('ui/charts')
+    expect(units).not.toContain('ui/charts/kit')
+  })
+
+  it('does not treat a ui dir of only fixtures and notes as a unit yet', () => {
+    const tree = {
+      'ui/charts/matrix/fixtures.ts': 'export const rows = []',
+      'ui/charts/matrix/fixtures.test.ts': "it('has rows', () => {})",
+      'ui/charts/matrix/NOTE.md': '# Note',
+    }
+
+    expect(findUnits(tree)).toEqual([])
+  })
+
   it('finds the real component library, not an empty glob', () => {
     const units = (findUnits(readComponentTree(PKG_ROOT)) as { path: string }[]).map((u) => u.path)
 
