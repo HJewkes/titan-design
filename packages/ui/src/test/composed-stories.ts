@@ -12,9 +12,8 @@ export interface ComposedStoryEntry {
   Story: ComponentType
 }
 
-const storyModules = import.meta.glob<StoryModule>('../components/**/*.stories.tsx', {
-  eager: true,
-})
+// Lazy, so a caller that needs part of the tree imports only those modules.
+const storyModules = import.meta.glob<StoryModule>('../components/**/*.stories.tsx')
 
 // VolumeStatusPalette › Compare mounts every palette at once and takes 5-6 s on a CI runner.
 export const SLOW_STORY_TIMEOUT = 30_000
@@ -28,11 +27,23 @@ export function storyModuleCount(): number {
   return Object.keys(storyModules).length
 }
 
-/** Every story under `src/components/`, composed without project annotations. */
-export function composedStories(): ComposedStoryEntry[] {
-  return Object.entries(storyModules).flatMap(([path, mod]) => {
-    const file = path.replace('../components/', '')
+/** Stories under `src/components/` whose file passes `include`, composed without project annotations. */
+export async function loadComposedStories(
+  include: (file: string) => boolean = () => true
+): Promise<ComposedStoryEntry[]> {
+  const files = Object.keys(storyModules).filter((path) => include(toFile(path)))
+  const modules = await Promise.all(files.map((path) => storyModules[path]()))
+  return modules.flatMap((mod, index) => {
     const composed: Record<string, ComponentType & { id: string }> = composeStories(mod)
-    return Object.entries(composed).map(([name, Story]) => ({ file, name, id: Story.id, Story }))
+    return Object.entries(composed).map(([name, Story]) => ({
+      file: toFile(files[index]),
+      name,
+      id: Story.id,
+      Story,
+    }))
   })
+}
+
+function toFile(path: string): string {
+  return path.replace('../components/', '')
 }

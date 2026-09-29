@@ -2,7 +2,7 @@ import type { ComponentType } from 'react'
 import { describe, it, expect } from 'vitest'
 import { render } from '@testing-library/react'
 import { configureAxe } from 'jest-axe'
-import { composedStories, type ComposedStoryEntry } from './composed-stories'
+import type { ComposedStoryEntry } from './composed-stories'
 
 /**
  * Axe on every composed story (TD-26 S2), under the same jsdom pipeline as the smoke test.
@@ -80,7 +80,7 @@ export type AxeShard = keyof typeof AXE_SHARDS
 export function describeAxeShard(
   shard: AxeShard,
   baseline: AxeBaseline,
-  stories: ComposedStoryEntry[] = composedStories()
+  stories: ComposedStoryEntry[]
 ): void {
   describe(`axe on every composed story (${shard})`, () => {
     for (const { file, name, id, Story } of stories.filter((s) => AXE_SHARDS[shard](s.file))) {

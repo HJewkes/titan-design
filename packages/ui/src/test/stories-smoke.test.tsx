@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { render } from '@testing-library/react'
-import { composedStories, storyModuleCount, storyTimeout } from './composed-stories'
+import { loadComposedStories, storyModuleCount, storyTimeout } from './composed-stories'
 
 /**
  * Storybook → render-test bridge (TD-04.11 / VW-20).
@@ -18,12 +18,14 @@ import { composedStories, storyModuleCount, storyTimeout } from './composed-stor
  * them avoids importing global.css / addon-themes into the test env.
  */
 
+const stories = await loadComposedStories()
+
 describe('storybook stories render (composeStories smoke)', () => {
   it('discovers a non-trivial number of story modules', () => {
     expect(storyModuleCount()).toBeGreaterThan(10)
   })
 
-  for (const { file, name, id, Story } of composedStories()) {
+  for (const { file, name, id, Story } of stories) {
     it(`${file} › ${name} renders`, { timeout: storyTimeout(id) }, () => {
       // Smoke level: every story must MOUNT without throwing. `firstChild` is
       // not asserted — portal/modal organisms (PrHistoryModal) render into

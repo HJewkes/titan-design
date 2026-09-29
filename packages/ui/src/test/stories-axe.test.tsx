@@ -3,7 +3,7 @@ import { composeStory } from '@storybook/react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Pressable } from 'react-native'
 import baseline from './stories-axe-baseline.json'
-import { composedStories } from './composed-stories'
+import { loadComposedStories } from './composed-stories'
 import {
   AXE_SHARDS,
   BASELINE_FILE,
@@ -13,7 +13,7 @@ import {
   violatedRules,
 } from './stories-axe-suite'
 
-const stories = composedStories()
+const stories = await loadComposedStories()
 
 describeAxeShard('core', baseline, stories)
 
