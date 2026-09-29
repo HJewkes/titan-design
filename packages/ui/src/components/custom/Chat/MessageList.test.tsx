@@ -30,6 +30,11 @@ function reply(id: string, author = COACH): ChatMessage {
   return chatMessage(id, author, localIso(0, 8, 30), [{ type: 'text', text: `reply ${id}` }])
 }
 
+function streamed(id: string, text: string, isDone = false): ChatMessage {
+  const state = isDone ? 'done' : 'streaming'
+  return chatMessage(id, COACH, localIso(0, 8, 30), [{ type: 'text', text, state }])
+}
+
 // jsdom has no layout, so the scroll geometry the list reads is stubbed onto the node.
 function scrollAwayFromEnd() {
   const node = screen.getByTestId('chat-message-scroll')
@@ -163,11 +168,37 @@ describe('MessageList', () => {
     })
 
     it('announces markdown as plain text', () => {
-      const { rerender } = renderList(COACH_THREAD.slice(1))
-      rerender([...COACH_THREAD.slice(1), COACH_THREAD[0]])
-      expect(announcer()).toHaveTextContent(
-        'Coach: Good session. Your top bench set moved at 0.52 m/s, right on target.'
-      )
+      const { rerender } = renderList(COACH_THREAD)
+      const body = '## Today\n\n- Bench at **0.52 m/s**\n- Run `rest` after'
+      rerender([
+        ...COACH_THREAD,
+        chatMessage('md', COACH, localIso(0, 8, 30), [{ type: 'text', text: body }]),
+      ])
+      expect(announcer()).toHaveTextContent('Coach: Today Bench at 0.52 m/s Run rest after')
+    })
+
+    it('stays silent while a reply streams and announces its final text once', () => {
+      const { rerender } = renderList(COACH_THREAD)
+      rerender([...COACH_THREAD, streamed('s', 'Rest')])
+      rerender([...COACH_THREAD, streamed('s', 'Rest two')])
+      expect(announcer()).toHaveTextContent('')
+
+      rerender([...COACH_THREAD, streamed('s', 'Rest two days.', true)])
+      expect(announcer()).toHaveTextContent('Coach: Rest two days.')
+      rerender([...COACH_THREAD, streamed('s', 'Rest two days.', true)])
+      expect(screen.getAllByText('Coach: Rest two days.')).toHaveLength(1)
+    })
+
+    it('does not announce a stream that a newer message replaced before it ended', () => {
+      const { rerender } = renderList(COACH_THREAD)
+      rerender([...COACH_THREAD, streamed('s', 'Rest')])
+      expect(announcer()).toHaveTextContent('')
+      rerender([...COACH_THREAD, streamed('s', 'Rest two'), reply('n')])
+      expect(announcer()).toHaveTextContent('Coach: reply n')
+
+      rerender([...COACH_THREAD, streamed('s', 'Rest two days.', true), reply('n')])
+      expect(announcer()).toHaveTextContent('Coach: reply n')
+      expect(screen.queryByText(/Coach: Rest/)).not.toBeInTheDocument()
     })
 
     it('does not re-announce the tail when older history is prepended', () => {
@@ -203,6 +234,18 @@ describe('MessageList', () => {
         rerender([...first, reply('mine', ATHLETE)])
         rerender([...first, reply('mine', ATHLETE), reply('c')])
         expect(announce.mock.calls).toEqual([['Coach: reply b'], ['Coach: reply c']])
+      })
+
+      it('announces a streamed reply once, when it ends', () => {
+        const announce = vi
+          .spyOn(AccessibilityInfo, 'announceForAccessibility')
+          .mockImplementation(() => undefined)
+        const { rerender } = renderList(COACH_THREAD)
+        rerender([...COACH_THREAD, streamed('s', 'Rest')])
+        rerender([...COACH_THREAD, streamed('s', 'Rest two')])
+        rerender([...COACH_THREAD, streamed('s', 'Rest two days.', true)])
+        rerender([...COACH_THREAD, streamed('s', 'Rest two days.', true)])
+        expect(announce.mock.calls).toEqual([['Coach: Rest two days.']])
       })
     })
   })

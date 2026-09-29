@@ -88,25 +88,40 @@ describe('messageBody', () => {
 })
 
 describe('plainText', () => {
-  it('drops bold and italic markers', () => {
-    expect(plainText('moved at **0.52 m/s**, __fast__')).toBe('moved at 0.52 m/s, fast')
-    expect(plainText('a *light* _easy_ day')).toBe('a light easy day')
-  })
-
-  it('keeps underscores inside words', () => {
-    expect(plainText('see top_set_velocity')).toBe('see top_set_velocity')
+  it('drops the bold markers the bubble renders', () => {
+    expect(plainText('moved at **0.52 m/s**, on target')).toBe('moved at 0.52 m/s, on target')
   })
 
   it('unwraps inline code', () => {
     expect(plainText('run `pnpm test` first')).toBe('run pnpm test first')
   })
 
-  it('keeps link text and drops the target', () => {
-    expect(plainText('read [the plan](https://example.com/plan) today')).toBe('read the plan today')
+  it('drops heading and bullet markers and joins lines', () => {
+    const body = '## Plan\n\n- Bench 3x5\n* Rows\nthen rest'
+    expect(plainText(body)).toBe('Plan Bench 3x5 Rows then rest')
   })
 
-  it('drops list, heading and quote markers and joins lines', () => {
-    const body = '## Plan\n\n- Bench 3x5\n* Rows\n1. Rest\n> stay calm'
-    expect(plainText(body)).toBe('Plan Bench 3x5 Rows Rest stay calm')
+  it('keeps single asterisks the bubble shows literally', () => {
+    expect(plainText('2*3*4')).toBe('2*3*4')
+  })
+
+  it('keeps a quote marker the bubble shows literally', () => {
+    expect(plainText('> 5 reps')).toBe('> 5 reps')
+  })
+
+  it('keeps numbered prefixes the bubble shows literally', () => {
+    expect(plainText('1. Squat')).toBe('1. Squat')
+    expect(plainText('2026. A good year')).toBe('2026. A good year')
+  })
+
+  it('keeps italics, underscores and links the bubble shows literally', () => {
+    const body = 'a _light_ day, see top_set_velocity and [the plan](https://example.com)'
+    expect(plainText(body)).toBe(body)
+  })
+
+  it('stays linear on unclosed markup', () => {
+    const started = performance.now()
+    plainText('[a('.repeat(80_000) + '**a'.repeat(80_000) + '`a'.repeat(80_000))
+    expect(performance.now() - started).toBeLessThan(200)
   })
 })

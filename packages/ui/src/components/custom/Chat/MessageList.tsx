@@ -8,6 +8,7 @@ import { announceOnIOS } from './announceOnIOS'
 import {
   buildThreadRows,
   findParticipant,
+  isStreaming,
   messageBody,
   plainText,
   type ThreadRow,
@@ -87,17 +88,38 @@ function newestId(messages: readonly ChatMessage[]): string | undefined {
   return messages[messages.length - 1]?.id
 }
 
+interface SeenState {
+  lastSeenId: string | undefined
+  /** An incoming reply still streaming; it is announced once, with its final text. */
+  streamingId?: string
+}
+
+/** The message to announce now, if any, and what has been seen after it. */
+function nextAnnouncement(
+  messages: readonly ChatMessage[],
+  seen: SeenState,
+  viewerId: string
+): { seen: SeenState; message?: ChatMessage } {
+  const lastSeenId = newestId(messages)
+  const candidate =
+    newestIncomingSince(messages, seen.lastSeenId, viewerId) ??
+    messages.find(({ id }) => id === seen.streamingId)
+  if (candidate === undefined) return { seen: { lastSeenId } }
+  if (isStreaming(candidate)) return { seen: { lastSeenId, streamingId: candidate.id } }
+  return { seen: { lastSeenId }, message: candidate }
+}
+
 /** Text for a polite live region: only the newest incoming message that arrives after mount. */
 function useIncomingAnnouncement(props: MessageListProps): string {
   const { messages, participants, viewerId } = props
-  const lastSeenRef = useRef(newestId(messages))
+  const seenRef = useRef<SeenState>({ lastSeenId: newestId(messages) })
   const [announcement, setAnnouncement] = useState('')
   useEffect(() => {
-    const incoming = newestIncomingSince(messages, lastSeenRef.current, viewerId)
-    lastSeenRef.current = newestId(messages)
-    if (incoming === undefined) return
-    const name = findParticipant(participants, incoming.authorId)?.displayName ?? 'Unknown'
-    const text = `${name}: ${plainText(messageBody(incoming))}`
+    const { seen, message } = nextAnnouncement(messages, seenRef.current, viewerId)
+    seenRef.current = seen
+    if (message === undefined) return
+    const name = findParticipant(participants, message.authorId)?.displayName ?? 'Unknown'
+    const text = `${name}: ${plainText(messageBody(message))}`
     setAnnouncement(text)
     announceOnIOS(text)
   }, [messages, participants, viewerId])
