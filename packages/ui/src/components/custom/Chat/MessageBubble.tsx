@@ -4,7 +4,7 @@ import type { ChatMessage, DataPart, Participant } from '@titan-design/chat-prot
 import { cn } from '../../../utils/cn'
 import { Avatar } from '../../ui/avatar'
 import { Surface } from '../../ui/surface'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { DateTime } from '../DateTime'
 import { MarkdownProse, type ProseLinker } from '../Prose'
 import {

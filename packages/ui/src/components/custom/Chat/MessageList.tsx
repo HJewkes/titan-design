@@ -1,10 +1,10 @@
-import { useMemo, useState, type ReactNode } from 'react'
-import { ScrollView, View } from 'react-native'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { ScrollView, Text, View } from 'react-native'
 import type { ChatMessage, Participant } from '@titan-design/chat-protocol'
 import { cn } from '../../../utils/cn'
 import { Button, ButtonText } from '../../ui/button'
 import type { ProseLinker } from '../Prose'
-import { buildThreadRows, findParticipant, type ThreadRow } from './chatThread'
+import { buildThreadRows, findParticipant, messageBody, type ThreadRow } from './chatThread'
 import { DateSeparator } from './DateSeparator'
 import { MessageBubble, type DataPartRenderer } from './MessageBubble'
 import { TypingIndicator } from './TypingIndicator'
@@ -59,16 +59,41 @@ function useWindow(messages: readonly ChatMessage[], pageSize: number) {
   return { visible, hasEarlier: start > 0, showEarlier: () => setPages((count) => count + 1) }
 }
 
+/** Text for a polite live region: only the newest incoming message that arrives after mount. */
+function useIncomingAnnouncement(props: MessageListProps): string {
+  const { messages, participants, viewerId } = props
+  const seenRef = useRef(messages.length)
+  const [announcement, setAnnouncement] = useState('')
+  useEffect(() => {
+    const fresh = messages.slice(seenRef.current)
+    seenRef.current = messages.length
+    const incoming = fresh.filter((message) => message.authorId !== viewerId).pop()
+    if (incoming === undefined) return
+    const author = findParticipant(participants, incoming.authorId)
+    const name = author?.displayName ?? 'Unknown'
+    setAnnouncement(`${name}: ${messageBody(incoming)}`)
+  }, [messages, participants, viewerId])
+  return announcement
+}
+
 function ThreadScroll(props: MessageListProps) {
   const { messages, viewerId, typing = [], pageSize = 50 } = props
   const { visible, hasEarlier, showEarlier } = useWindow(messages, pageSize)
   const rows = useMemo(() => buildThreadRows(visible), [visible])
+  const announcement = useIncomingAnnouncement(props)
   const { scrollRef, onScroll, onContentSizeChange, unseen, jumpToNewest } = useStickToBottom(
     messages,
     viewerId
   )
   return (
     <View className="flex-1 min-h-0">
+      <View
+        accessibilityLiveRegion="polite"
+        className="absolute h-px w-px overflow-hidden"
+        testID="chat-message-announcer"
+      >
+        <Text>{announcement}</Text>
+      </View>
       <ScrollView
         ref={scrollRef}
         onScroll={onScroll}

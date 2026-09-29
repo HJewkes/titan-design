@@ -4,13 +4,11 @@ import type { Participant } from '@titan-design/chat-protocol'
 import { cn } from '../../../utils/cn'
 import { Indicator } from '../../ui/indicator'
 import { Surface } from '../../ui/surface'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 
 export interface TypingIndicatorProps {
   /** Who is composing. Renders nothing when empty. */
   participants: readonly Participant[]
-  /** Hide the "… is typing" caption and keep only the dots. */
-  dotsOnly?: boolean
   className?: string
 }
 
@@ -54,17 +52,20 @@ function PulsingDot({ index }: { index: number }) {
 }
 
 /** Three staggered dots in a small bubble, plus who is composing. Composes Surface + Indicator + Typography. */
-export function TypingIndicator({
-  participants,
-  dotsOnly = false,
-  className,
-}: TypingIndicatorProps) {
-  if (participants.length === 0) return null
-  const label = typingLabel(participants)
+export function TypingIndicator({ participants, className }: TypingIndicatorProps) {
+  return (
+    <View accessibilityLiveRegion="polite" testID="chat-typing-region">
+      {participants.length === 0 ? null : (
+        <TypingContent participants={participants} className={className} />
+      )}
+    </View>
+  )
+}
+
+function TypingContent({ participants, className }: TypingIndicatorProps) {
   return (
     <View
       className={cn('flex-row items-center gap-inline-md', className)}
-      accessibilityLiveRegion="polite"
       testID="chat-typing-indicator"
     >
       <Surface raise={1} className="flex-row items-center gap-inline-sm px-inset-md py-inset-sm">
@@ -72,11 +73,9 @@ export function TypingIndicator({
           <PulsingDot key={index} index={index} />
         ))}
       </Surface>
-      {dotsOnly ? null : (
-        <Typography variant="caption" color="tertiary">
-          {label}
-        </Typography>
-      )}
+      <Typography variant="caption" color="tertiary">
+        {typingLabel(participants)}
+      </Typography>
     </View>
   )
 }

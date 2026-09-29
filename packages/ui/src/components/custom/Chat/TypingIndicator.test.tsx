@@ -27,10 +27,14 @@ describe('TypingIndicator', () => {
     expect(screen.getByText('3 people are typing')).toBeInTheDocument()
   })
 
-  it('keeps only the dots when asked', () => {
-    render(<TypingIndicator participants={[COACH]} dotsOnly />)
-    expect(screen.getByTestId('chat-typing-indicator')).toBeInTheDocument()
-    expect(screen.queryByText('Coach is typing')).toBeNull()
+  it('keeps its polite live region mounted while nobody is typing', () => {
+    const { rerender } = render(<TypingIndicator participants={[]} />)
+    const region = screen.getByTestId('chat-typing-region')
+    expect(region).toHaveAttribute('aria-live', 'polite')
+
+    rerender(<TypingIndicator participants={[COACH]} />)
+    expect(screen.getByTestId('chat-typing-region')).toBe(region)
+    expect(region).toContainElement(screen.getByText('Coach is typing'))
   })
 
   it('has no accessibility violations', async () => {

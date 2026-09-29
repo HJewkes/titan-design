@@ -8,7 +8,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../../ui/c
 import { Pill } from '../../ui/pill'
 import { Surface } from '../../ui/surface'
 import { DateTime } from '../DateTime'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { Composer } from './Composer'
 import { MessageList } from './MessageList'
 import {

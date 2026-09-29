@@ -19,7 +19,7 @@ const meta: Meta<typeof TypingIndicator> = {
       },
     },
   },
-  args: { participants: [COACH], dotsOnly: false },
+  args: { participants: [COACH] },
   decorators: [
     (Story) => (
       <Surface level="base" className="p-gutter-sm">

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { View } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Divider } from '../../ui/divider'
-import { Typography } from '../Typography'
+import { Typography } from '../../ui/typography'
 import { DateTime } from '../DateTime'
 import { dayKey } from './chatThread'
 

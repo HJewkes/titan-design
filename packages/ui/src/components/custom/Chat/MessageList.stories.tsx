@@ -4,7 +4,7 @@ import { View } from 'react-native'
 
 import { Button, ButtonText } from '../../ui/button'
 import { Surface } from '../../ui/surface'
-import { EmptyState } from '../EmptyState'
+import { EmptyState } from '../../ui/empty-state'
 import { MessageList, type MessageListProps } from './MessageList'
 import {
   ATHLETE,

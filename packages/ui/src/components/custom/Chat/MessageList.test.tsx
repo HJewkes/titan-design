@@ -125,4 +125,41 @@ describe('MessageList', () => {
     const { container } = renderList(COACH_THREAD, { typing: [COACH] })
     expect(await axe(container)).toHaveNoViolations()
   })
+
+  describe('live announcements', () => {
+    const announcer = () => screen.getByTestId('chat-message-announcer')
+
+    it('exposes a polite live region', () => {
+      renderList(COACH_THREAD)
+      expect(announcer()).toHaveAttribute('aria-live', 'polite')
+    })
+
+    it('does not announce the history present on mount', () => {
+      renderList(COACH_THREAD)
+      expect(announcer()).toHaveTextContent('')
+    })
+
+    it('announces a new incoming message once', () => {
+      const { rerender } = renderList(COACH_THREAD)
+      const next = [...COACH_THREAD, reply('new-1')]
+      rerender(next)
+      expect(announcer()).toHaveTextContent('Coach: reply new-1')
+      expect(screen.getAllByText('Coach: reply new-1')).toHaveLength(1)
+
+      rerender([...next])
+      expect(screen.getAllByText('Coach: reply new-1')).toHaveLength(1)
+    })
+
+    it('does not announce the viewer’s own message', () => {
+      const { rerender } = renderList(COACH_THREAD)
+      rerender([...COACH_THREAD, reply('mine-1', ATHLETE)])
+      expect(announcer()).toHaveTextContent('')
+    })
+
+    it('announces only the newest incoming message of a batch', () => {
+      const { rerender } = renderList(COACH_THREAD)
+      rerender([...COACH_THREAD, reply('a'), reply('b')])
+      expect(announcer()).toHaveTextContent('Coach: reply b')
+    })
+  })
 })
