@@ -18,6 +18,8 @@
     "build-storybook": "turbo run build-storybook",
     "type-check": "turbo run type-check",
     "format:check": "turbo run format:check",
+    "arch:check": "pnpm --filter @titan-design/react-ui exec vitest run src/arch/arch-graph.freshness.test.ts",
+    "verify": "pnpm format:check && pnpm lint && pnpm type-check && pnpm build && turbo run test -- --run --coverage && pnpm arch:check",
     "arch:graph": "node scripts/arch-graph.mjs",
     "review": "node packages/review-harness/src/cli.ts"
   },
