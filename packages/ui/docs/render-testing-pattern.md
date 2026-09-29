@@ -44,7 +44,7 @@ DOM/behavior contract holds.
 ## The three visual layers, and when to reach for each
 
 Titan runs `@playwright/test` `^1.58.2` (`packages/ui/package.json`) against four
-configs. Three are wired into `.github/workflows/visual.yml`; the fourth is a local-only
+configs. Three are wired into the `visual` job in `.github/workflows/ci.yml`; the fourth is a local-only
 dev harness (see below).
 
 | Layer                              | Config                               | Script                 | What it actually checks                                                                                                                                                                                                                                                                                                                                                                              |
@@ -69,7 +69,7 @@ specimen harness.
 
 ## Do the visual layers actually run on pull requests?
 
-**Partially.** `.github/workflows/visual.yml` triggers on `push`/`pull_request` to
+**Partially.** The `visual` job in `.github/workflows/ci.yml` triggers on `push`/`pull_request` to
 `main`, and Layers 1 and 3 run their real gating scripts (`test:visual:baseline`,
 `test:visual:compare`) — a pixel or computed-style mismatch fails the PR. **Layer 2 does
 not currently gate anything**: the CI step runs `test:visual:stories:update` (the
@@ -111,7 +111,7 @@ into per-component (Layer 1) or per-story-scope (Layer 2), and per hand-written 
 ## How the visual baselines are updated, and what a moved baseline means in review
 
 - **Layer 1** (`test:visual:baseline:update`) regenerates `*-chromium-linux.png` under
-  `specimen/baseline/**/*.screenshot.test.ts-snapshots/`. `visual.yml` always runs this
+  `specimen/baseline/**/*.screenshot.test.ts-snapshots/`. The `visual` job always runs this
   step (`if: always()`) in the same pinned container as the gate and uploads the result
   as the `component-visual-baselines` artifact, so a genuinely-changed component's
   baseline comes back different while every unchanged one is byte-identical — no local

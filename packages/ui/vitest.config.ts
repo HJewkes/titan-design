@@ -9,7 +9,7 @@ import {
 } from './vite-rn-svg-plugins'
 
 const LOCAL_TIME_TEST_PATH = fileURLToPath(
-  new URL('./src/components/custom/Workout/wholeBody.test.ts', import.meta.url),
+  new URL('./src/components/custom/Workout/wholeBody.test.ts', import.meta.url)
 )
 
 const TEST_GLOB = ['src/**/*.test.{ts,tsx}']
@@ -33,11 +33,20 @@ export default defineConfig({
     projects: [
       {
         extends: true,
-        test: { name: 'threads', include: TEST_GLOB, exclude: [...TEST_EXCLUDE, LOCAL_TIME_TEST_PATH] },
+        test: {
+          name: 'threads',
+          include: TEST_GLOB,
+          exclude: [...TEST_EXCLUDE, LOCAL_TIME_TEST_PATH],
+        },
       },
       {
         extends: true,
-        test: { name: 'local-time', include: [LOCAL_TIME_TEST_PATH], exclude: TEST_EXCLUDE, pool: 'forks' },
+        test: {
+          name: 'local-time',
+          include: [LOCAL_TIME_TEST_PATH],
+          exclude: TEST_EXCLUDE,
+          pool: 'forks',
+        },
       },
     ],
     // Inline react-native-svg so its relative imports run through the resolver
