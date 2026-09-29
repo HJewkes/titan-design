@@ -4,9 +4,8 @@ import { RuleTester } from 'eslint'
 import rule from '../../eslint-rules/no-deprecated-import'
 
 // The rule loads the registry through Node's require; an ESM import here gets a second instance with its own cache.
-const { registryFor } = createRequire(import.meta.url)(
-  '../../eslint-rules/deprecated-export-registry'
-)
+const nativeRequire = createRequire(import.meta.url)
+const { registryFor } = nativeRequire('../../eslint-rules/deprecated-export-registry')
 
 const ruleTester = new RuleTester({
   languageOptions: { ecmaVersion: 2022, sourceType: 'module' },
@@ -22,6 +21,13 @@ const newUiConsumer = path.join(srcRoot, 'components/ui/newthing/NewThing.tsx')
 const newCustomConsumer = path.join(srcRoot, 'components/custom/newthing/NewThing.tsx')
 
 describe('no-deprecated-import', () => {
+  it('shares the registry instance the rule loads', () => {
+    const ruleRequire = createRequire(
+      nativeRequire.resolve('../../eslint-rules/no-deprecated-import')
+    )
+    expect(registryFor).toBe(ruleRequire('./deprecated-export-registry').registryFor)
+  })
+
   // The registry's cold scan of src takes 5-8 s on a CI runner; pay it here, not in the first case.
   beforeAll(() => {
     registryFor(srcRoot)

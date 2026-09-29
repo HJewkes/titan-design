@@ -3,7 +3,7 @@
 set -uo pipefail
 
 export npm_config_fetch_retries=0
-delays=(10 30)
+delays=(20 60)
 
 for attempt in 1 2 3; do
   out=$(pnpm audit --audit-level=critical 2>&1)
