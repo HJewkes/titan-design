@@ -213,6 +213,36 @@ Raw sizes, when a variant genuinely does not fit:
 
 `text-[11px]` is not a size the system has. Round to the scale.
 
+### Font files are self-hosted (TD-36)
+
+`global.css` declares the three families with `@font-face` rules that point at woff2 files in
+`src/theme/fonts/`. It makes no request to Google Fonts, so a consumer built as one HTML file and
+opened from disk (titan-platform's code-report) renders with no network.
+
+| Family (`font-*` class)        | Weights | Subsets                                                                |
+| ------------------------------ | ------- | ---------------------------------------------------------------------- |
+| Inter (`font-sans`)            | 400–700 | latin, latin-ext, cyrillic, cyrillic-ext, greek, greek-ext, vietnamese |
+| Nunito Sans (`font-body`)      | 400–700 | latin, latin-ext, cyrillic, cyrillic-ext, vietnamese                   |
+| Space Grotesk (`font-heading`) | 600–700 | latin, latin-ext, vietnamese                                           |
+
+- **The files are Google Fonts' own.** They are the variable woff2 subsets that
+  `fonts.googleapis.com/css2` served to Chrome in September 2026 (Inter v20, Nunito Sans v19, Space
+  Grotesk v22), with the same `unicode-range` split, so rendering matches the old CDN import.
+- **One rule per subset, with a weight range.** Google repeats each file once per requested weight.
+  Titan declares `font-weight: 400 700` once instead, because a single-file build inlines every
+  `url()` it meets and the repeats would quadruple the inlined bytes. Weights outside the range
+  clamp to it, as the discrete rules did.
+- **Cost.** 392 KB of woff2 in the package. A single-file build that imports `global.css` grows by
+  about 500 KB of base64. A normal build emits the files as hashed assets and the browser fetches only
+  the subsets a page uses.
+- **Licence.** All three are SIL Open Font License 1.1; each directory carries its `OFL.txt`.
+- **Native.** NativeWind ignores `@font-face`; native apps still register fonts themselves.
+- **Proof.** `pnpm test:offline-fonts` builds a single-file consumer, opens it over `file://` with
+  every http(s) request aborted, and checks that each family and weight loads.
+
+To refresh the files, fetch the `css2` URL for the same families with a desktop Chrome user agent,
+download each distinct woff2, and keep one rule per family and subset.
+
 ---
 
 ## 5. Spacing and radius

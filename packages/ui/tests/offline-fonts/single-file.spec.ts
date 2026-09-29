@@ -65,6 +65,11 @@ test('a single-file consumer loads every titan font face without a network reque
     return results.filter((result) => !result.loaded).map((result) => result.face)
   }, FACES)
 
-  expect.soft(networkRequests, 'no request to fonts.googleapis.com, fonts.gstatic.com or any other host').toEqual([])
+  expect
+    .soft(
+      networkRequests,
+      'no request to fonts.googleapis.com, fonts.gstatic.com or any other host'
+    )
+    .toEqual([])
   expect(unloadedFaces, 'every family and weight resolves from the bundle').toEqual([])
 })

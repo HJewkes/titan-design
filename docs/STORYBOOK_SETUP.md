@@ -201,8 +201,12 @@ listed in `CLAUDE.md` under _Storybook Pattern_.
 The `global.css` file must be structured correctly:
 
 ```css
-/* Font imports MUST be at top level (not inside @layer) */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* Self-hosted @font-face rules sit at top level (not inside @layer); see TOKENS.md */
+@font-face {
+  font-family: 'Inter';
+  font-weight: 400 700;
+  src: url('./fonts/inter/latin.woff2') format('woff2');
+}
 
 @tailwind base;
 @tailwind components;
