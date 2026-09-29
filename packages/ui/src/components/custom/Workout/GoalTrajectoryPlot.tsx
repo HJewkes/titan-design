@@ -76,6 +76,8 @@ export const DEFAULT_LEFT_SHADOW_SPREAD = 0.04
 const FONT_FAMILY = 'Inter, sans-serif'
 /** How much of the deload magenta the column carries over the plane: the owner's pick, round 7. */
 export const DELOAD_WASH = 0.12
+/** How much of the rule colour lights the current week's column, on the full and compact charts alike. */
+export const CURRENT_WEEK_TINT = 0.2
 const LABEL_GAP = 8
 export const PLANE_RADIUS = 6
 export const DOT_RADIUS = 4
@@ -111,6 +113,7 @@ export function trajectoryPalette(
     // Deload's own magenta (titan-0201 round 5), not a grey tint. At 0.12 the marks over it
     // keep their contrast: readings 7.5, star 5.5, ramp 3.0.
     deload: alpha(t['status-deload'], DELOAD_WASH),
+    currentWeek: alpha(t['text-secondary'], CURRENT_WEEK_TINT),
     boundary: alpha(t['text-tertiary'], 0.35),
     plane: surfaceBackground(pressedLevel(level), mode),
     shade,
@@ -325,6 +328,22 @@ function DeloadAndBoundaries({ geometry, palette, height }: LayerProps & { heigh
         />
       ))}
     </>
+  )
+}
+
+/** The current week's column, lit behind the marks; one week's span wide, the plane's height. */
+export function CurrentWeekColumn({ geometry, palette, week }: LayerProps & { week: number }) {
+  const span = geometry.toX(2) - geometry.toX(1)
+  const { plane } = geometry
+  return (
+    <rect
+      data-testid="goal-trajectory-chart-current-week"
+      x={geometry.toX(week) - span / 2}
+      y={plane.y}
+      width={span}
+      height={plane.height}
+      fill={palette.currentWeek}
+    />
   )
 }
 
@@ -545,6 +564,8 @@ export interface GoalTrajectoryPlotProps extends LayerProps {
   entrance: EntranceState
   /** A calibrating goal's hatch; null for every other status. */
   calibrating?: CalibratingMarks | null
+  /** 1-based; this week's column is lit behind the marks. */
+  currentWeek?: number
 }
 
 export function GoalTrajectoryPlot(props: GoalTrajectoryPlotProps) {
@@ -564,6 +585,7 @@ export function GoalTrajectoryPlot(props: GoalTrajectoryPlotProps) {
       <Gridlines {...layer} showLabels={props.showYLabels} baseline={style.baseline} />
       <g clipPath={`url(#${ids.clip})`}>
         <DeloadAndBoundaries {...layer} height={height} />
+        {props.currentWeek !== undefined && <CurrentWeekColumn {...layer} week={props.currentWeek} />}
         {props.calibrating && <CalibratingHatch marks={props.calibrating} {...layer} />}
         <BandLayer
           geometry={geometry}

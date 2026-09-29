@@ -13,6 +13,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
   package. CI runs it on every PR, and the publish workflow runs it before `npm publish`, so an
   export map that regresses to "Masquerading as CJS" fails before a release. Only the two CSS
   subpaths and `tailwind.config.js` are excluded from attw, since none is a TypeScript entry (TD-41).
+- `GoalTrajectoryChart` takes `currentWeek` and lights that week's column in the compact
+  chart's tint (`text-secondary` at 0.2). Both charts draw it from one `CurrentWeekColumn`
+  in the shared plot layer, and `GoalCard` passes its milestone's current week to the full
+  chart as it already did to the compact one (VW-423).
 
 ### Changed
 

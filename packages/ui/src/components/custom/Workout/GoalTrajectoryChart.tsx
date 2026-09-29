@@ -148,6 +148,11 @@ export interface GoalTrajectoryChartProps extends ViewProps {
    * so you have a built in labeling scheme there").
    */
   showWeekLabels?: boolean
+  /**
+   * 1-based; this week's column is lit behind the marks, in the same tint as the
+   * compact chart's (VW-423).
+   */
+  currentWeek?: number
   /** Metric name for the accessible summary, e.g. "Bench top load". */
   metricLabel?: string
   /**
@@ -275,6 +280,7 @@ export function GoalTrajectoryChart({
   height,
   unit = 'lbs',
   showWeekLabels = true,
+  currentWeek,
   metricLabel = 'Goal',
   leftShadowSpread = DEFAULT_LEFT_SHADOW_SPREAD,
   animate = true,
@@ -423,6 +429,7 @@ export function GoalTrajectoryChart({
           }}
           entrance={entrance}
           calibrating={marks}
+          {...(currentWeek !== undefined ? { currentWeek } : {})}
         />
       </View>
       {overhang > 0 && (
