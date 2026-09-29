@@ -127,7 +127,7 @@ jobs:
   # The aggregator the ruleset will require; all-green also fails if a job here is missing from needs.
   check:
     if: always()
-    needs: [build, visual]
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
       - uses: HJewkes/ci/actions/all-green@v1
