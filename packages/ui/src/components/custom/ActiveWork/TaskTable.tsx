@@ -20,14 +20,12 @@ import { SeverityLabel, SEVERITY_ORDER, severityRank, type TaskSeverity } from '
 import { TaskRow, TASK_COLUMN_WIDTHS, type TaskListItem } from './TaskRow'
 
 import { formatTaskAge } from './format-time'
+import type { TaskColumnKey, TaskSortKey } from './task-columns'
 
 // Kept on this module's surface: the session reader shares the helper now, but callers imported it from here first.
 export { formatTaskAge }
 
-type TaskSortKey = 'slug' | 'id' | 'title' | 'severity' | 'priority' | 'estimate' | 'updated'
-
-/** Any column the table can leave out; `title` is the one column that always renders. */
-export type TaskColumnKey = Exclude<TaskSortKey, 'title'> | 'tags'
+export type { TaskColumnKey }
 
 interface TaskColumn extends TableColumnFit {
   key: TaskSortKey | 'tags'

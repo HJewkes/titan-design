@@ -6,7 +6,7 @@ import { formatDateTime } from '../DateTime'
 import { TableCell, TableRow } from '../Table'
 import { Typography } from '../../ui/typography'
 import { SEVERITY_META, SeverityLabel, type TaskSeverity } from './SeverityLabel'
-import type { TaskColumnKey } from './TaskTable'
+import type { TaskColumnKey } from './task-columns'
 
 /** One open task, as the task list renders it. */
 export interface TaskListItem {
