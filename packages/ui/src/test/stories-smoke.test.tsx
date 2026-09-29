@@ -25,7 +25,8 @@ const storyModules = import.meta.glob<StoryModule>('../components/**/*.stories.t
   eager: true,
 })
 
-describe('storybook stories render (composeStories smoke)', () => {
+// VolumeStatusPalette › Compare mounts every palette at once and takes 5-6 s on a CI runner.
+describe('storybook stories render (composeStories smoke)', { timeout: 30_000 }, () => {
   const entries = Object.entries(storyModules)
 
   it('discovers a non-trivial number of story modules', () => {

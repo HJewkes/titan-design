@@ -15,7 +15,8 @@ const srcRoot = path.resolve(__dirname, '..')
 const newUiConsumer = path.join(srcRoot, 'components/ui/newthing/NewThing.tsx')
 const newCustomConsumer = path.join(srcRoot, 'components/custom/newthing/NewThing.tsx')
 
-describe('no-deprecated-import', () => {
+// The first case pays the registry's cold scan of src, which takes 5-8 s on a CI runner.
+describe('no-deprecated-import', { timeout: 30_000 }, () => {
   ruleTester.run('no-deprecated-import', rule as never, {
     valid: [
       // A live (non-deprecated) component is untouched.
