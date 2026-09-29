@@ -36,7 +36,7 @@ const alwaysFails = fc.property(fc.nat(), () => {
 
 describe('fcAssert', () => {
   it('runs the fixed default number of runs when FC_NUM_RUNS is unset', () => {
-    vi.stubEnv('FC_NUM_RUNS', '')
+    vi.stubEnv('FC_NUM_RUNS', undefined)
 
     expect(countRuns()).toBe(DEFAULT_NUM_RUNS)
   })
@@ -48,13 +48,13 @@ describe('fcAssert', () => {
   })
 
   it('prints the seed of a failure so it can be replayed', () => {
-    vi.stubEnv('FC_SEED', '')
+    vi.stubEnv('FC_SEED', undefined)
 
     expect(failureMessage(alwaysFails)).toMatch(/Replay with FC_SEED=-?\d+/)
   })
 
   it('reproduces the same failing input when FC_SEED is set to a reported seed', () => {
-    vi.stubEnv('FC_SEED', '')
+    vi.stubEnv('FC_SEED', undefined)
     const flaky = () =>
       fc.property(fc.integer({ min: 0, max: 1000 }), (n) => {
         if (n >= 400) throw new Error(`fails at ${n}`)
@@ -77,6 +77,30 @@ describe('fcAssert', () => {
     vi.stubEnv('FC_SEED', 'abc')
 
     expect(() => fcAssert(fc.property(fc.nat(), () => true))).toThrow(/FC_SEED must be an integer/)
+  })
+
+  it.each(['0', '-5', '', ' ', '  ', '1.5', 'abc', '1e3', '+5', '007', ' 5'])(
+    'rejects FC_NUM_RUNS=%j instead of running a vacuous or misleading check',
+    (value) => {
+      vi.stubEnv('FC_NUM_RUNS', value)
+
+      expect(() => fcAssert(fc.property(fc.nat(), () => true))).toThrow(/FC_NUM_RUNS/)
+    }
+  )
+
+  it.each(['', ' ', '1.5', 'abc', '1e3', '+5', '007', '2147483648', '-2147483649'])(
+    'rejects FC_SEED=%j',
+    (value) => {
+      vi.stubEnv('FC_SEED', value)
+
+      expect(() => fcAssert(fc.property(fc.nat(), () => true))).toThrow(/FC_SEED/)
+    }
+  )
+
+  it.each(['0', '-7', '2147483647', '-2147483648'])('accepts FC_SEED=%s', (value) => {
+    vi.stubEnv('FC_SEED', value)
+
+    expect(() => fcAssert(fc.property(fc.nat(), () => true))).not.toThrow()
   })
 
   it('lets a call override the run count', () => {

@@ -36,8 +36,12 @@ Both live in `packages/ui/src/test/`.
 
 Use it in place of `fc.assert`. It applies one run config to every property test.
 
-- `FC_NUM_RUNS` sets the run count. The default is 100.
-- `FC_SEED` pins the seed. A non-integer value throws instead of being ignored.
+- `FC_NUM_RUNS` sets the run count. The default is 100. Set it only to an integer of 1 or more.
+- `FC_SEED` pins the seed to any 32-bit integer. It applies to every property in the run, so use it
+  with a path filter to replay one failing file.
+- Unset means the default. Any other value must be a canonical integer, or `fcAssert` throws naming
+  the variable. `0`, negatives, blank, whitespace, `1.5`, `abc` and `1e3` are all rejected, so the
+  environment can make a check stricter but never vacuous.
 - A failure ends with `Replay with FC_SEED=<seed>`. Set it and rerun to get the same counterexample.
 - A per-call `fc.Parameters` argument overrides both.
 
@@ -58,7 +62,7 @@ expectBoundedMount({
 ```
 
 It renders, counts nodes matching `selector`, and fails above `max`. It never measures time, so it
-does not flake. It also fails when the selector matches nothing, since a bound on zero nodes proves
+does not flake. It throws on a `max` that is negative or not finite. It also fails when the selector matches nothing, since a bound on zero nodes proves
 nothing. Feed it a list large enough that an unwindowed render would blow the bound (1,000 items
 against a bound of a few dozen). `src/test/scale.test.tsx` proves the helper on a synthetic list.
 No windowed component is on `main` yet.

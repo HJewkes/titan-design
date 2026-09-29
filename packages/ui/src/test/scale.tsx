@@ -14,6 +14,9 @@ export function expectBoundedMount({
   selector,
   max,
 }: BoundedMountOptions): number {
+  if (!Number.isFinite(max) || max < 0) {
+    throw new Error(`max must be a finite number of at least 0, got ${max}`)
+  }
   const { container, unmount } = render(element())
   const mounted = container.querySelectorAll(selector).length
   unmount()

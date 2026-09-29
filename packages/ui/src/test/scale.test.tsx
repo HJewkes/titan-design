@@ -58,4 +58,10 @@ describe('expectBoundedMount', () => {
       expectBoundedMount({ render: () => <UnwindowedList />, selector: '.no-such-row', max: 40 })
     ).toThrow(/matched nothing/)
   })
+
+  it.each([Number.NaN, Number.POSITIVE_INFINITY, -1])('rejects a bound of %s', (max) => {
+    expect(() =>
+      expectBoundedMount({ render: () => <WindowedList />, selector: ROW, max })
+    ).toThrow(/max must be a finite number/)
+  })
 })
