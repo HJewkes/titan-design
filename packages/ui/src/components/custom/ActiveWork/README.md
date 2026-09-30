@@ -292,7 +292,7 @@ hardening it; see TOKENS.md §6.
   presence and the all-zero-severity case (T1); on controlled-vs-uncontrolled selection, unmatched
   `selectedPath`, empty `files`, empty `coEdges`, missing touch dates, no-co-change, net-negative growth, and
   `maxRows` / `maxCoEdges` capping (F1).
-- Fixtures: `file-history-fixture.ts` — a small hand-trimmed slice of a real mine with fixed values (no
+- Fixtures: `file-history-fixture.ts` — a small hand-written file history with fixed values (no
   `Date.now()`, no randomness) so visual baselines stay deterministic. `session-fixture.ts` likewise: five
   synthetic canonical session logs in session-log markdown (so the linkers meet task, wiki and PR
   references) plus one ad-hoc session, paired with `SESSION_NOW`.
