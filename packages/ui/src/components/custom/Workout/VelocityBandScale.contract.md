@@ -1,7 +1,6 @@
 # VelocityBandScale: Round 0 contract (VW-448, task 7, steps A and B)
 
-Status: rounds 1 and 2 locked (2026-09-21, 2026-09-23); see `Lab/Decisions/Effort Bands`. New files only; no existing component changes until
-#269 merges and 0.21.1 is released (build plan s.3.2).
+Status: rounds 1 and 2 locked (2026-09-21, 2026-09-23); see `Lab/Decisions/Effort Bands`. Step E (titan half) wired the scale into an exported `VelocityBandChart`.
 
 Sources: `voltras-workspace/sources/design/2026-09-19-vw-448-effort-resolver-design.md` s.2.3, s.3.2,
 s.4.3; its amendment s.4 to s.6; `2026-09-20-vw-448-wiring-build-plan.md` s.3 and s.4; the as-built
@@ -27,6 +26,8 @@ Markers:
   marked as the target zone, and a full line after `repsHigh`. Unperformed slots up to `repsHigh`
   show as empty places. A rep-count marker is **always neutral ink**: it targets no effort. An effort
   goal or a loss goal is a horizontal line.
+- **A velocity goal with a rep range** (a tier b `target_rpe` row, "RPE 8, 8 to 12") draws the
+  range as the same neutral zone beside its line (owner, 2026-09-27). The zone never fires the cue.
 - **Guards.** 0 to 2 horizontal lines in the resolver's tie order (effort first, then loss). An
   effort cap is coloured by the band of the effort it targets (RPE 9 is orange). **A loss guard is
   always neutral ink.** In tier a every line is neutral.
@@ -83,6 +84,7 @@ type VelocityBandMarker =
       condition: 'effort' | 'velocity_loss'
       velocityMps: number | null
       band: VelocityBandIndex | null
+      repRange?: { repsLow: number; repsHigh: number; label: string } | null // goal only
       label: string
       reached: boolean
       firedCue?: boolean
@@ -111,8 +113,8 @@ New in this PR, all under `custom/Workout`, none in the barrel yet:
 - `VelocityBandOverlay.tsx`: paints the geometry from `renderReference`, an under layer (zone
   tint) and an over layer (lines, labels, `+n`, marks). No round options remain; `showEdges` is
   off by default and was not reviewed.
-- `VelocityBandPreview.tsx`: `SetBarChart` plus the overlay, for stories only until step E. It
-  also holds `EFFORT_BAND_PALETTE`, `SLOWING_BAND_PALETTE` and `paletteFor(meaning)`.
+- `VelocityBandChart.tsx` (step E, exported): `SetBarChart` plus the overlay, bars coloured by
+  band. The palette defaults to `paletteFor(meaning, mode)` from `velocityBandPalette.ts`.
 
 ## 4. Fixtures
 
@@ -140,12 +142,14 @@ range, and two crowded labels.
 No single-hue sequential token exists. `dataviz-sequential-*` is the effort ramp (green to red), so
 it carries the meaning tier a must avoid. Proposed: **`dataviz-slowing-0` to `dataviz-slowing-3`**,
 one hue, four steps, band 0 (fastest) to band 3 (at the reference loss). **Round 1 chose blue 200,
-400, 600, 800, light to dark** (Pa1). Until the token exists the palette is `SLOWING_BAND_PALETTE`,
-built from `primitiveRamps` steps and pinned by `velocityBandPalette.test.ts`. The four-file token
-chain, with a light column, lands in the integration PR (owner, 2026-09-23).
+400, 600, 800, light to dark** (Pa1). Step E landed the chain: `sequentialSlowing` in
+`primitives.ts`, `dataviz-slowing-0..3` in both themes, read by `slowingBandPalette(mode)`. The
+light column reuses the dark steps until the owner picks light values.
 
 ## 7. What waits
 
-Wiring `bandScale` into `VelocityStrip`, `VelocityHero`, `LiveFatiguePanelVelocity`,
-`PinnedLiveStrip` and each `DualVelocityStream` wing; the RPE readout colour from `set.band`; the
-`rpeColor` edge move; the token chain; the 0.22.0 release. All after #269 and 0.21.1 (step E).
+Step E's titan half shipped the token chain, `VelocityBandChart` and the `SetBarChart` fixes
+(`best` over finite reps; `pointerEvents` in style). Still waiting: threading `bandScale` through
+`VelocityStrip`, `VelocityHero`, `LiveFatiguePanelVelocity`, `PinnedLiveStrip` and each
+`DualVelocityStream` wing; the RPE readout colour from `set.band`; the `rpeColor` edge move; the
+0.22.0 release.

@@ -116,6 +116,34 @@ export const TIER_B_PAST_CUE: BandScaleFixture = {
 }
 
 /**
+ * A target_rpe row with a trusted profile: the RPE 8 line cues, and the row's rep range still draws
+ * as the zone (owner, 2026-09-27). RPE 8 is RIR 2 on the fixture profile: 0.30 + 2 x 0.06 m/s.
+ */
+export const TIER_B_TARGET_RPE_WITH_REPS: BandScaleFixture = {
+  title: 'Tier b · RPE 8 target · 8 to 12',
+  velocities: TEN_REPS.slice(0, 9),
+  scale: {
+    meaning: 'effort',
+    repBands: TEN_REPS_EFFORT.slice(0, 9),
+    edgesMps: TIER_B_EDGES,
+    markers: {
+      goal: {
+        role: 'goal',
+        axis: 'velocity',
+        condition: 'effort',
+        velocityMps: 0.42,
+        band: 1,
+        label: 'RPE 8',
+        reached: false,
+        repRange: { repsLow: 8, repsHigh: 12, label: '8 to 12' },
+      },
+      guards: [effortCapRpe9],
+    },
+    cue: { atRep: null, repsPast: 0 },
+  },
+}
+
+/**
  * A target_rpe row before a profile exists: the rep range cues. The hero eyebrow names the target
  * and the range that is really cueing (round 2); the zone keeps its plain range label.
  */
@@ -193,6 +221,7 @@ export const BAND_SCALE_FIXTURES = {
   tierBTwoGuards: TIER_B_TWO_GUARDS,
   tierBPastCue: TIER_B_PAST_CUE,
   tierATargetRpeFallback: TIER_A_TARGET_RPE_FALLBACK,
+  tierBTargetRpeWithReps: TIER_B_TARGET_RPE_WITH_REPS,
   tierBLowConfidence: TIER_B_LOW_CONFIDENCE,
   tierBSuspendedTail: TIER_B_SUSPENDED_TAIL,
   tierANoGuard: TIER_A_NO_GUARD,

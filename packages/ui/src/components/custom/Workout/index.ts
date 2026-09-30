@@ -42,6 +42,23 @@ export {
   type DualVelocityStripProps,
   type DualVelocityStream,
 } from './VelocityStrip'
+export { VelocityBandChart, type VelocityBandChartProps } from './VelocityBandChart'
+export type {
+  VelocityBandScale,
+  VelocityBandMarker,
+  VelocityBandRepMarker,
+  VelocityBandLineMarker,
+  VelocityBandRepRange,
+  VelocityBandCue,
+  VelocityBandIndex,
+  VelocityBandMeaning,
+  VelocityBandConfidence,
+  VelocityBandCondition,
+} from './VelocityBandScale'
+export {
+  paletteFor as velocityBandPaletteFor,
+  type VelocityBandPalette,
+} from './velocityBandPalette'
 export { MuscleGroupChip, type MuscleGroupChipProps, type VolumeStatus } from './MuscleGroupChip'
 export { MuscleStrip, type MuscleStripProps, type MuscleStripMuscleData } from './MuscleStrip'
 export { Sparkline, type SparklineProps } from './Sparkline'

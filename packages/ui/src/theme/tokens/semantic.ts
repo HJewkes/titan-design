@@ -30,6 +30,7 @@ import {
   categoricalPalette,
   divergingScale,
   sequentialEffort,
+  sequentialSlowing,
 } from './primitives'
 
 /**
@@ -217,6 +218,13 @@ export const semanticColorsLight = {
   'dataviz-sequential-3': ramp.orange[500], // dark: orange[400]
   'dataviz-sequential-4': ramp.red[700], // dark: red[600]
   'dataviz-sequential-5': ramp.red[800], // dark: red[700]
+
+  // Slowing (VW-448 round 1, Pa1): tier a's single-hue bands, band 0 fastest to
+  // band 3 at the reference loss. The owner picked the dark steps; light reuses them.
+  'dataviz-slowing-0': ramp.blue[200], // dark: same step
+  'dataviz-slowing-1': ramp.blue[400], // dark: same step
+  'dataviz-slowing-2': ramp.blue[600], // dark: same step
+  'dataviz-slowing-3': ramp.blue[800], // dark: same step
 
   // Categorical, set B: the `default` variant's hues, with red and green taking
   // the darker slots so orange[400] keeps its brightness. The palette's `dark`
@@ -449,6 +457,11 @@ export const semanticColorsDark = {
   'dataviz-sequential-3': sequentialEffort[3],
   'dataviz-sequential-4': sequentialEffort[4],
   'dataviz-sequential-5': sequentialEffort[5],
+
+  'dataviz-slowing-0': sequentialSlowing[0],
+  'dataviz-slowing-1': sequentialSlowing[1],
+  'dataviz-slowing-2': sequentialSlowing[2],
+  'dataviz-slowing-3': sequentialSlowing[3],
 
   'dataviz-categorical-0': categoricalPalette.default[0],
   'dataviz-categorical-1': categoricalPalette.default[1],

@@ -13,7 +13,7 @@ DeviationBar · IntensityBar · WorkoutPill · MuscleGroupChip · Sparkline · M
 SupersetWrapper · InputBar · MetricCell · SetsRepsLoad · ExerciseIndicator · SetBar
 
 **Molecules** — compose atoms, own a little local state:
-VelocityStrip · DualVelocityStrip · SetRow · TempoDisplay · RestTimer · MesoProgressBar ·
+VelocityStrip · DualVelocityStrip · VelocityBandChart · SetRow · TempoDisplay · RestTimer · MesoProgressBar ·
 WeekRow · WorkoutCard · SetStrip · ExerciseHeading · ExerciseCardHeading
 
 **Organisms** — full features, often with their own data contract:
@@ -378,6 +378,12 @@ Modalities`** (each card carries a `Collapse` accordion; promoted from the
   narrows the rest — currently snaps; smooth overflow reflow is a deferred
   follow-up). Documented by the `HeroPlayground` / `Hero*` stories on the wall
   background.
+- **VelocityBandChart** (molecule, VW-448) — one set on `SetBarChart`, each bar coloured by
+  the band the effort resolver decided (tier b effort colours, tier a `dataviz-slowing` blues),
+  under `VelocityBandOverlay` (rep-range zone, up to two guard lines, the `+n` past-cue badge,
+  the setting-change mark). `composes ↓` `SetBarChart`, `VelocityBandOverlay`,
+  `velocityBandGeometry`. Every label is the caller's. Contract: `VelocityBandScale.contract.md`.
+  Not yet threaded through `VelocityStrip`, the hero or the fatigue panel.
 - **DualVelocityStrip** (molecule) — the two-device (LEFT + RIGHT voltra) **diverging**
   wall/rail chart. `composes ↓` the `VelocityStrip` machinery in the same file
   (`buildSlots`/`VelocitySlot` slot model, the `makeBarColorFor` zone scale, the hero
