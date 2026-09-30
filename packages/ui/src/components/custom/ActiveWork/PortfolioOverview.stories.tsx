@@ -42,14 +42,14 @@ const meta: Meta<typeof PortfolioOverview> = {
         heading: 'Focused · by rank',
         items: [
           {
-            title: 'active-work — durable workspace state',
-            slug: 'active-work',
+            title: 'alpha-project — sample workspace tracker',
+            slug: 'alpha-project',
             state: 'focused',
             rank: 1,
             shipTarget: '2026-Q3',
             openCount: 4,
             severityCounts: { critical: 0, high: 1, medium: 2, low: 1 },
-            topTask: { id: 'AW-6', title: 'Linear / Jira / Slack discovery sources' },
+            topTask: { id: 'AP-6', title: 'Calendar / email / notes import sources' },
           },
         ],
       },
@@ -57,12 +57,12 @@ const meta: Meta<typeof PortfolioOverview> = {
         heading: 'Backburner',
         items: [
           {
-            title: 'Computer organization — review legacy project dirs',
-            slug: 'computer-organization',
+            title: 'Garden shed — plan the spring build and materials',
+            slug: 'garden-shed',
             state: 'backburner',
             openCount: 2,
             severityCounts: { critical: 0, high: 0, medium: 0, low: 2 },
-            topTask: { id: 'CO-1', title: 'Review ~/Documents/projects/agents-skills' },
+            topTask: { id: 'GS-1', title: 'Price lumber for /home/example/projects/garden-shed' },
           },
         ],
       },
@@ -88,8 +88,8 @@ export const NoOpenWork: Story = {
         heading: 'Backburner',
         items: [
           {
-            title: 'Audiobook app',
-            slug: 'audiobook',
+            title: 'Reading list',
+            slug: 'reading-list',
             state: 'backburner',
             openCount: 0,
             severityCounts: { critical: 0, high: 0, medium: 0, low: 0 },
