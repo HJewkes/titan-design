@@ -216,7 +216,14 @@ export function resolveTile(props: GoalMilestoneSummaryProps, t: Palette): Resol
  * green, beating it is the `ahead` blue. A green HIT over a blue hero said two
  * different things about one result (VW-385 round 2).
  */
-function Hero({ tile, scale }: { tile: ResolvedTile; scale: GoalMilestoneTileScale }) {
+/** The hero figure and its muted suffix, from one resolved milestone. */
+export function MilestoneHero({
+  tile,
+  scale,
+}: {
+  tile: ResolvedTile
+  scale: GoalMilestoneTileScale
+}) {
   const suffix = tile.heroSuffix
   return (
     // body1 plus the heading face: a heading variant would emit role=heading.
@@ -320,7 +327,7 @@ function FactItems({
  * width, and the visible row reports the width it has. `onLayout` never fires
  * under jsdom, so `summaryFit` pins the branch for tests.
  */
-function SummaryRow({ tile }: { tile: ResolvedTile }) {
+export function MilestoneFacts({ tile }: { tile: ResolvedTile }) {
   const [natural, setNatural] = useState<number | null>(null)
   const [available, setAvailable] = useState<number | null>(null)
   const measuredStack = natural !== null && available !== null && natural > available
@@ -354,23 +361,38 @@ function SummaryRow({ tile }: { tile: ResolvedTile }) {
   )
 }
 
-function SummaryBody({ tile, scale }: { tile: ResolvedTile; scale: GoalMilestoneTileScale }) {
+/** The week cells, sized for `scale`; `axis` pins them to a chart's columns. */
+export function MilestoneWeekStrip({
+  tile,
+  scale,
+}: {
+  tile: ResolvedTile
+  scale: GoalMilestoneTileScale
+}) {
   const { props } = tile
-  const showWeeks = props.showWeeks ?? true
+  return (
+    <GoalMilestoneWeekStrip
+      weekCount={props.weekCount}
+      currentWeek={props.currentWeek}
+      weeks={props.weeks}
+      cellHeight={SCALE[scale].cell}
+      {...(props.axis ? { axis: props.axis } : {})}
+      readingText={(entry) => (entry.reading ? readingText(props.target, entry.reading) : '')}
+    />
+  )
+}
+
+/** Resolves the state, tone, hero and texts once, for the parts to share. */
+export function useResolvedMilestone(props: GoalMilestoneSummaryProps): ResolvedTile {
+  return resolveTile(props, getSemanticColors(useSurfaceMode()))
+}
+
+function SummaryBody({ tile, scale }: { tile: ResolvedTile; scale: GoalMilestoneTileScale }) {
   return (
     <>
-      <Hero tile={tile} scale={scale} />
-      <SummaryRow tile={tile} />
-      {showWeeks && (
-        <GoalMilestoneWeekStrip
-          weekCount={props.weekCount}
-          currentWeek={props.currentWeek}
-          weeks={props.weeks}
-          cellHeight={SCALE[scale].cell}
-          {...(props.axis ? { axis: props.axis } : {})}
-          readingText={(entry) => (entry.reading ? readingText(props.target, entry.reading) : '')}
-        />
-      )}
+      <MilestoneHero tile={tile} scale={scale} />
+      <MilestoneFacts tile={tile} />
+      {(tile.props.showWeeks ?? true) && <MilestoneWeekStrip tile={tile} scale={scale} />}
     </>
   )
 }
@@ -396,10 +418,9 @@ export function accessibleSummary(tile: ResolvedTile): string {
  * />
  */
 export function GoalMilestoneSummary(props: GoalMilestoneSummaryProps) {
-  const t = getSemanticColors(useSurfaceMode())
+  const tile = useResolvedMilestone(props)
   const measured = useMeasuredWidth()
   const scale = props.scale ?? ((measured.width ?? 0) >= WALL_MIN_WIDTH ? 'wall' : 'phone')
-  const tile = resolveTile(props, t)
   return (
     <View
       className={cn(SCALE[scale].gap, props.className)}

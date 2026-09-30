@@ -110,8 +110,7 @@
   "custom/Workout/GoalMilestoneSummary": [
     "a11y",
     "status",
-    "story",
-    "test"
+    "story"
   ],
   "custom/Workout/GoalMilestoneWeekStrip": [
     "a11y",
