@@ -4,7 +4,14 @@ import { axe } from 'jest-axe'
 import { Text } from 'react-native'
 
 import { MessageBubble } from './MessageBubble'
-import { ATHLETE, COACH, COACH_THREAD, chatMessage, localIso } from './coach-thread-fixture'
+import {
+  ATHLETE,
+  COACH,
+  COACH_THREAD,
+  ENDORSEMENT_THREAD,
+  chatMessage,
+  localIso,
+} from './coach-thread-fixture'
 
 const [coachMessage, ownMessage] = COACH_THREAD
 const checkinMessage = COACH_THREAD[3]
@@ -18,32 +25,91 @@ describe('MessageBubble', () => {
     expect(screen.queryByText(/\*\*/)).toBeNull()
   })
 
-  it("names the other party's first message in a run", () => {
+  it('carries no name or avatar in a direct thread', () => {
     render(<MessageBubble message={coachMessage} author={COACH} />)
-    expect(screen.getByTestId('chat-message-author')).toHaveTextContent('Coach')
-    expect(screen.getByRole('img', { name: 'Coach' })).toBeInTheDocument()
-  })
-
-  it('drops the name and avatar for a follow-on message', () => {
-    render(<MessageBubble message={coachMessage} author={COACH} startsGroup={false} />)
     expect(screen.queryByTestId('chat-message-author')).toBeNull()
     expect(screen.queryByRole('img')).toBeNull()
   })
 
-  it('falls back to the author id when the participant is unknown', () => {
-    render(<MessageBubble message={coachMessage} />)
-    expect(screen.getByTestId('chat-message-author')).toHaveTextContent('coach')
+  it("names the other party's first message in a group thread", () => {
+    render(<MessageBubble message={coachMessage} author={COACH} layout="group" />)
+    expect(screen.getByTestId('chat-message-author')).toHaveTextContent('Coach')
   })
 
-  it('shows delivery state on the viewer’s own message', () => {
-    render(<MessageBubble message={ownMessage} author={ATHLETE} isOwn />)
-    expect(screen.getByTestId('chat-message-delivery')).toHaveTextContent('Read')
+  it('puts the group avatar on the last message of a run by default', () => {
+    const { rerender } = render(
+      <MessageBubble message={coachMessage} author={COACH} layout="group" endsGroup={false} />
+    )
+    expect(screen.queryByRole('img')).toBeNull()
+    rerender(<MessageBubble message={coachMessage} author={COACH} layout="group" />)
+    expect(screen.getByRole('img', { name: 'Coach' })).toBeInTheDocument()
+  })
+
+  it('moves the group avatar to the first message when asked', () => {
+    render(
+      <MessageBubble
+        message={coachMessage}
+        author={COACH}
+        layout="group"
+        groupAvatarAt="first"
+        startsGroup={false}
+      />
+    )
+    expect(screen.queryByRole('img')).toBeNull()
+  })
+
+  it('drops the group name for a follow-on message', () => {
+    render(
+      <MessageBubble message={coachMessage} author={COACH} layout="group" startsGroup={false} />
+    )
     expect(screen.queryByTestId('chat-message-author')).toBeNull()
   })
 
-  it("never shows delivery state on the other party's message", () => {
-    render(<MessageBubble message={ownMessage} author={ATHLETE} />)
+  it('falls back to the author id when a group participant is unknown', () => {
+    render(<MessageBubble message={coachMessage} layout="group" />)
+    expect(screen.getByTestId('chat-message-author')).toHaveTextContent('coach')
+  })
+
+  it('shows delivery state on the newest own message only when told to', () => {
+    const { rerender } = render(<MessageBubble message={ownMessage} author={ATHLETE} isOwn />)
     expect(screen.queryByTestId('chat-message-delivery')).toBeNull()
+    rerender(<MessageBubble message={ownMessage} author={ATHLETE} isOwn showDelivery />)
+    expect(screen.getByTestId('chat-message-delivery')).toHaveTextContent('Read')
+  })
+
+  it("never shows delivery state on the other party's message", () => {
+    render(<MessageBubble message={ownMessage} author={ATHLETE} showDelivery />)
+    expect(screen.queryByTestId('chat-message-delivery')).toBeNull()
+  })
+
+  it('draws the own bubble solid by default and as a tint on request', () => {
+    const { rerender } = render(<MessageBubble message={ownMessage} author={ATHLETE} isOwn />)
+    expect(screen.getByTestId('chat-own-bubble-solid')).toBeInTheDocument()
+    rerender(<MessageBubble message={ownMessage} author={ATHLETE} isOwn ownFill="tint" />)
+    expect(screen.getByTestId('chat-own-bubble-tint')).toBeInTheDocument()
+    expect(screen.queryByTestId('chat-own-bubble-solid')).toBeNull()
+  })
+
+  describe('endorsement', () => {
+    const [plain, endorsed] = ENDORSEMENT_THREAD
+
+    it.each(['outline', 'fill', 'emphasis'] as const)(
+      'marks an endorsed message with the %s treatment',
+      (endorsement) => {
+        render(<MessageBubble message={endorsed} author={COACH} endorsement={endorsement} />)
+        expect(screen.getByTestId(`chat-endorsed-bubble-${endorsement}`)).toBeInTheDocument()
+      }
+    )
+
+    it('draws an endorsed message plainly when no treatment is chosen', () => {
+      render(<MessageBubble message={endorsed} author={COACH} />)
+      expect(screen.queryByTestId(/chat-endorsed-bubble/)).toBeNull()
+    })
+
+    it('leaves an unendorsed message alone whatever the treatment', () => {
+      render(<MessageBubble message={plain} author={COACH} endorsement="outline" />)
+      expect(screen.queryByTestId(/chat-endorsed-bubble/)).toBeNull()
+    })
   })
 
   it('flags an undeliverable message', () => {

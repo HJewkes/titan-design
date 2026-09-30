@@ -13,19 +13,21 @@ function sendButton() {
 }
 
 describe('Composer', () => {
-  it('blocks sending an empty draft', () => {
-    const onSend = vi.fn()
-    render(<Composer onSend={onSend} />)
-    expect(sendButton()).toHaveAttribute('aria-disabled', 'true')
-    fireEvent.click(sendButton())
-    expect(onSend).not.toHaveBeenCalled()
+  it('shows no send button until there is text', () => {
+    render(<Composer onSend={vi.fn()} />)
+    expect(screen.queryByTestId('chat-composer-send')).toBeNull()
+    type('hi')
+    expect(sendButton()).toBeInTheDocument()
+    type('')
+    expect(screen.queryByTestId('chat-composer-send')).toBeNull()
   })
 
-  it('blocks sending a whitespace-only draft', () => {
+  it('shows no send button for a whitespace-only draft', () => {
     const onSend = vi.fn()
     render(<Composer onSend={onSend} />)
     type('   ')
-    fireEvent.click(sendButton())
+    expect(screen.queryByTestId('chat-composer-send')).toBeNull()
+    fireEvent.keyDown(screen.getByTestId('chat-composer-input'), { key: 'Enter' })
     expect(onSend).not.toHaveBeenCalled()
   })
 

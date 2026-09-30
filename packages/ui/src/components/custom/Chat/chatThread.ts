@@ -8,13 +8,16 @@ import type {
 } from '@titan-design/chat-protocol'
 import { parseProseBlocks } from '../Prose'
 
-/** Consecutive messages from one author closer than this share one avatar and name. */
+/** Consecutive messages from one author closer than this form one run. */
 export const GROUP_WINDOW_MS = 5 * 60 * 1000
 
-/** A rendered row in the thread: either a day boundary or a message with its grouping. */
+/** A gap longer than this opens a time row, the way Messages marks a pause in the thread. */
+export const TIME_BREAK_MS = 60 * 60 * 1000
+
+/** A rendered row in the thread: a time or day boundary, or a message with its run position. */
 export type ThreadRow =
-  | { kind: 'date'; key: string; at: string }
-  | { kind: 'message'; key: string; message: ChatMessage; startsGroup: boolean }
+  | { kind: 'date'; key: string; at: string; showDay: boolean }
+  | { kind: 'message'; key: string; message: ChatMessage; startsGroup: boolean; endsGroup: boolean }
 
 export function isTextPart(part: ChatPart): part is TextPart {
   return part.type === 'text'
@@ -53,26 +56,38 @@ export function dayKey(iso: string): string {
   return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
 }
 
-function startsGroup(previous: ChatMessage | undefined, message: ChatMessage): boolean {
-  if (!previous || previous.authorId !== message.authorId) return true
-  const gap = Date.parse(message.createdAt) - Date.parse(previous.createdAt)
-  return gap > GROUP_WINDOW_MS
+function gapMs(previous: ChatMessage, message: ChatMessage): number {
+  return Date.parse(message.createdAt) - Date.parse(previous.createdAt)
 }
 
-/** Interleaves day separators and marks where each author run begins. */
+function opensRun(previous: ChatMessage | undefined, message: ChatMessage): boolean {
+  if (!previous || previous.authorId !== message.authorId) return true
+  return gapMs(previous, message) > GROUP_WINDOW_MS
+}
+
+function dateRow(previous: ChatMessage | undefined, message: ChatMessage): ThreadRow | null {
+  const newDay = !previous || dayKey(previous.createdAt) !== dayKey(message.createdAt)
+  const paused = previous !== undefined && gapMs(previous, message) > TIME_BREAK_MS
+  if (!newDay && !paused) return null
+  const key = newDay ? `date-${dayKey(message.createdAt)}` : `break-${message.id}`
+  return { kind: 'date', key, at: message.createdAt, showDay: newDay }
+}
+
+/** Interleaves time rows and marks where each author run begins and ends. */
 export function buildThreadRows(messages: readonly ChatMessage[]): ThreadRow[] {
   const rows: ThreadRow[] = []
   messages.forEach((message, index) => {
     const previous = messages[index - 1]
-    const newDay = !previous || dayKey(previous.createdAt) !== dayKey(message.createdAt)
-    if (newDay) {
-      rows.push({ kind: 'date', key: `date-${dayKey(message.createdAt)}`, at: message.createdAt })
-    }
+    const next = messages[index + 1]
+    const date = dateRow(previous, message)
+    if (date) rows.push(date)
+    const nextDate = next ? dateRow(message, next) : null
     rows.push({
       kind: 'message',
       key: message.id,
       message,
-      startsGroup: newDay || startsGroup(previous, message),
+      startsGroup: date !== null || opensRun(previous, message),
+      endsGroup: nextDate !== null || !next || opensRun(message, next),
     })
   })
   return rows

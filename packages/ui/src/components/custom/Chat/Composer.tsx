@@ -50,7 +50,8 @@ function useDraft(value: string | undefined, onChangeText?: (text: string) => vo
 /**
  * The message input bar. It sits in normal flow at the bottom of its container,
  * so it stays above the keyboard without KeyboardAvoidingView (a no-op on web).
- * Composes Surface + Input + Button.
+ * The send button appears inside the field once there is text to send, as in Messages,
+ * so the field keeps the full width until then. Composes Surface + Input + Button.
  */
 export function Composer({
   onSend,
@@ -75,14 +76,15 @@ export function Composer({
     event.preventDefault?.()
     send()
   }
+  const showSend = draft.trim().length > 0
   return (
     <Surface
       raise={1}
       rounded={false}
-      className={cn('flex-row items-end gap-inline-md px-inset-md py-inset-sm', className)}
+      className={cn('px-inset-md py-inset-sm', className)}
       testID="chat-composer"
     >
-      <View className="flex-1">
+      <View className="justify-center">
         <Input
           value={draft}
           onChangeText={setDraft}
@@ -93,19 +95,24 @@ export function Composer({
           maxLength={maxLength}
           multiline
           numberOfLines={1}
-          inputClassName="min-h-control-md max-h-40"
+          inputClassName={cn('min-h-control-md max-h-40', showSend && 'pr-20')}
           testID="chat-composer-input"
         />
+        {showSend ? (
+          <View className="absolute right-inset-sm">
+            <Button
+              size="sm"
+              onPress={send}
+              isDisabled={!canSend}
+              isLoading={isSending}
+              accessibilityLabel={sendLabel}
+              testID="chat-composer-send"
+            >
+              <ButtonText>{sendLabel}</ButtonText>
+            </Button>
+          </View>
+        ) : null}
       </View>
-      <Button
-        onPress={send}
-        isDisabled={!canSend}
-        isLoading={isSending}
-        accessibilityLabel={sendLabel}
-        testID="chat-composer-send"
-      >
-        <ButtonText>{sendLabel}</ButtonText>
-      </Button>
     </Surface>
   )
 }

@@ -22,7 +22,17 @@ export const ATHLETE: Participant = {
   address: { scheme: 'telegram', value: 'alex' },
 }
 
+export const PHYSIO: Participant = {
+  id: 'physio',
+  role: 'user',
+  displayName: 'Sam Okafor',
+  kind: 'human',
+  address: { scheme: 'telegram', value: 'sam' },
+}
+
 export const PARTICIPANTS: Participant[] = [COACH, ATHLETE]
+
+export const GROUP_PARTICIPANTS: Participant[] = [COACH, ATHLETE, PHYSIO]
 
 /** The reader's frozen clock: 09:00 today. */
 export const NOW = localIso(0, 9, 0)
@@ -66,9 +76,11 @@ export function chatMessage(
   author: Participant,
   createdAt: string,
   parts: ChatPart[],
-  delivery?: DeliveryState[]
+  delivery?: DeliveryState[],
+  extra: Partial<ChatMessage> = {}
 ): ChatMessage {
   return {
+    ...extra,
     id,
     threadId: THREAD_ID,
     authorId: author.id,
@@ -105,4 +117,62 @@ export const COACH_THREAD: ChatMessage[] = [
     [text('Works for me.')],
     [{ participantId: COACH.id, status: 'accepted', at: localIso(0, 8, 14) }]
   ),
+]
+
+/** A coach message a human read and approved, as the broker stamps it. */
+const ENDORSED = { authored: 'agent', endorsedBy: 'human', attestedBy: 'maria' } as const
+
+/** One plain coach message, one endorsed, one reply: each treatment shows against a control. */
+export const ENDORSEMENT_THREAD: ChatMessage[] = [
+  chatMessage('e1', COACH, localIso(0, 8, 0), [
+    text('Your top bench set moved at **0.52 m/s**, right on target.'),
+  ]),
+  chatMessage(
+    'e2',
+    COACH,
+    localIso(0, 8, 1),
+    [text('Approved: add **2.5 kg** to squat on Thursday.')],
+    undefined,
+    { provenance: ENDORSED }
+  ),
+  chatMessage('e3', ATHLETE, localIso(0, 8, 6), [text('Will do.')], read(localIso(0, 8, 7))),
+]
+
+/** A three-party thread for the group layout: a coach, a physio and the athlete. */
+export const GROUP_THREAD: ChatMessage[] = [
+  chatMessage('g1', COACH, localIso(0, 8, 0), [text('Sam, how is the left shoulder?')]),
+  chatMessage('g2', COACH, localIso(0, 8, 1), [text('Alex wants to add overhead work.')]),
+  chatMessage('g3', PHYSIO, localIso(0, 8, 4), [
+    text('Fine to start light. No pain above **90°**.'),
+  ]),
+  chatMessage('g4', PHYSIO, localIso(0, 8, 5), [text('Stop if it pinches.')]),
+  chatMessage(
+    'g5',
+    ATHLETE,
+    localIso(0, 8, 9),
+    [text('Got it, starting at 20 kg.')],
+    read(localIso(0, 8, 10))
+  ),
+]
+
+/** A day with two pauses of more than an hour, so the thread shows time rows. */
+export const BREAKS_THREAD: ChatMessage[] = [
+  chatMessage('b1', COACH, localIso(0, 7, 0), [text('Session plan is up for today.')]),
+  chatMessage('b2', ATHLETE, localIso(0, 7, 4), [text('Thanks.')], read(localIso(0, 7, 5))),
+  chatMessage(
+    'b3',
+    ATHLETE,
+    localIso(0, 7, 5),
+    [text('Heading in at noon.')],
+    read(localIso(0, 7, 6))
+  ),
+  chatMessage('b4', COACH, localIso(0, 12, 40), [text('How did the warm-up feel?')]),
+  chatMessage(
+    'b5',
+    ATHLETE,
+    localIso(0, 12, 42),
+    [text('Loose. Starting bench.')],
+    read(localIso(0, 12, 43))
+  ),
+  chatMessage('b6', COACH, localIso(0, 15, 10), [text('Nice work today. Rest up.')]),
 ]

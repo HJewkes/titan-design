@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Text } from 'react-native'
 
 import { Surface } from '../../ui/surface'
+import { renderCoachPart } from './coach-cards'
 import { MessageBubble } from './MessageBubble'
 import { ATHLETE, COACH, COACH_THREAD, chatMessage, localIso } from './coach-thread-fixture'
 
@@ -14,19 +14,34 @@ const meta: Meta<typeof MessageBubble> = {
       description: {
         component:
           '**Molecule.** One message: markdown prose in a bubble, caller-rendered `data-*` ' +
-          'parts beneath it, and a time and delivery line. Composes ' +
+          'parts beneath it. A group thread names the author and shows a small avatar. Composes ' +
           '[Surface](?path=/docs/components-surface--docs) + ' +
           '[Avatar](?path=/docs/components-avatar--docs) + ' +
           '[MarkdownProse](?path=/docs/custom-prose-markdownprose--docs) + ' +
           '[DateTime](?path=/docs/custom-datetime--docs) + ' +
-          '[Typography](?path=/docs/custom-typography--docs).',
+          '[Typography](?path=/docs/foundations-typography--docs).',
       },
     },
   },
-  args: { message: COACH_THREAD[0], author: COACH, isOwn: false, startsGroup: true },
+  args: {
+    message: COACH_THREAD[0],
+    author: COACH,
+    isOwn: false,
+    layout: 'direct',
+    startsGroup: true,
+    endsGroup: true,
+    groupAvatarAt: 'last',
+    ownFill: 'solid',
+    endorsement: 'none',
+  },
   argTypes: {
     isOwn: { control: 'boolean' },
     startsGroup: { control: 'boolean' },
+    endsGroup: { control: 'boolean' },
+    layout: { control: 'select', options: ['direct', 'group'] },
+    groupAvatarAt: { control: 'select', options: ['first', 'last'] },
+    ownFill: { control: 'select', options: ['solid', 'tint'] },
+    endorsement: { control: 'select', options: ['none', 'outline', 'fill', 'emphasis'] },
     message: { control: 'object' },
   },
   decorators: [
@@ -70,6 +85,6 @@ export const Streaming: Story = {
 export const WithDataPart: Story = {
   args: {
     message: COACH_THREAD[3],
-    renderDataPart: (part) => <Text className="text-text-secondary">{`<${part.type} card>`}</Text>,
+    renderDataPart: renderCoachPart,
   },
 }

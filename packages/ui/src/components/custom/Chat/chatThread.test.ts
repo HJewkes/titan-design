@@ -5,32 +5,49 @@ import { aggregateDelivery, buildThreadRows, messageBody, plainText } from './ch
 import { ATHLETE, COACH, COACH_THREAD, chatMessage, localIso } from './coach-thread-fixture'
 
 function rowSummary(messages: ChatMessage[]) {
-  return buildThreadRows(messages).map((row) =>
-    row.kind === 'date' ? 'date' : `${row.message.id}${row.startsGroup ? '*' : ''}`
-  )
+  return buildThreadRows(messages).map((row) => {
+    if (row.kind === 'date') return row.showDay ? 'day' : 'time'
+    return `${row.message.id}${row.startsGroup ? '^' : ''}${row.endsGroup ? '$' : ''}`
+  })
 }
 
 describe('buildThreadRows', () => {
-  it('opens each calendar day with a separator and starts a group on every new day', () => {
+  it('opens each calendar day with a day row and starts a run on every new day', () => {
     expect(rowSummary(COACH_THREAD)).toEqual([
-      'date',
-      'm1*',
-      'm2*',
-      'm3*',
-      'date',
-      'm4*',
-      'm5',
-      'm6*',
+      'day',
+      'm1^$',
+      'm2^$',
+      'm3^$',
+      'day',
+      'm4^',
+      'm5$',
+      'm6^$',
     ])
   })
 
-  it('starts a new group when the same author pauses longer than five minutes', () => {
+  it('splits a run when the same author pauses longer than five minutes', () => {
     const messages = [
       chatMessage('a', COACH, localIso(0, 8, 0), []),
       chatMessage('b', COACH, localIso(0, 8, 5), []),
       chatMessage('c', COACH, localIso(0, 8, 11), []),
     ]
-    expect(rowSummary(messages)).toEqual(['date', 'a*', 'b', 'c*'])
+    expect(rowSummary(messages)).toEqual(['day', 'a^', 'b$', 'c^$'])
+  })
+
+  it('opens a time row, without a day, after a pause of more than an hour in one day', () => {
+    const messages = [
+      chatMessage('a', COACH, localIso(0, 8, 0), []),
+      chatMessage('b', COACH, localIso(0, 9, 30), []),
+    ]
+    expect(rowSummary(messages)).toEqual(['day', 'a^$', 'time', 'b^$'])
+  })
+
+  it('keeps a pause of exactly an hour inside the thread without a time row', () => {
+    const messages = [
+      chatMessage('a', ATHLETE, localIso(0, 8, 0), []),
+      chatMessage('b', COACH, localIso(0, 9, 0), []),
+    ]
+    expect(rowSummary(messages)).toEqual(['day', 'a^$', 'b^$'])
   })
 
   it('returns no rows for an empty thread', () => {

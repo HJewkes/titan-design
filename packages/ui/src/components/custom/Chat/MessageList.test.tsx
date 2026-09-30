@@ -8,7 +8,10 @@ import { MessageList } from './MessageList'
 import {
   ATHLETE,
   COACH,
+  BREAKS_THREAD,
   COACH_THREAD,
+  GROUP_PARTICIPANTS,
+  GROUP_THREAD,
   NOW,
   PARTICIPANTS,
   chatMessage,
@@ -56,13 +59,68 @@ describe('MessageList', () => {
     expect(screen.getByText('Today')).toBeInTheDocument()
   })
 
-  it("resolves authors and marks the viewer's messages as their own", () => {
+  it('heads a direct thread with who it is with and names no author per message', () => {
     renderList(COACH_THREAD)
-    expect(screen.getAllByTestId('chat-message-author')[0]).toHaveTextContent('Coach')
+    expect(screen.getByTestId('chat-conversation-identity')).toHaveTextContent('Coach')
+    expect(screen.queryAllByTestId('chat-message-author')).toHaveLength(0)
+  })
+
+  it('uses the header slot in place of the default identity', () => {
+    renderList(COACH_THREAD, { header: <Text>Custom header</Text> })
+    expect(screen.getByText('Custom header')).toBeInTheDocument()
+    expect(screen.queryByTestId('chat-conversation-identity')).toBeNull()
+  })
+
+  it('names authors and shows one avatar per run in a group thread', () => {
+    renderList(GROUP_THREAD, { participants: GROUP_PARTICIPANTS })
+    expect(screen.queryByTestId('chat-conversation-identity')).toBeNull()
+    expect(screen.getAllByTestId('chat-message-author').map((el) => el.textContent)).toEqual([
+      'Coach',
+      'Sam Okafor',
+    ])
+    expect(screen.getAllByRole('img').map((el) => el.getAttribute('aria-label'))).toEqual([
+      'Coach',
+      'Sam Okafor',
+    ])
+  })
+
+  it('shows delivery state on the newest own message only', () => {
+    renderList(COACH_THREAD)
     expect(screen.getAllByTestId('chat-message-delivery').map((el) => el.textContent)).toEqual([
-      'Read',
       'Sent',
     ])
+  })
+
+  it('opens a day row with the day and its time', () => {
+    renderList(COACH_THREAD)
+    const separators = screen.getAllByTestId('chat-date-separator')
+    expect(separators[0]).toHaveTextContent(/Yesterday.*6:02/)
+    expect(separators[1]).toHaveTextContent(/Today.*8:00/)
+  })
+
+  it('opens a time-only row after a pause of more than an hour within a day', () => {
+    renderList(BREAKS_THREAD)
+    const separators = screen.getAllByTestId('chat-date-separator')
+    expect(separators).toHaveLength(3)
+    expect(separators[1]).toHaveTextContent(/12:40/)
+    expect(separators[1]).not.toHaveTextContent('Today')
+  })
+
+  it('keeps every message time in the tree for the drag reveal', () => {
+    renderList(BREAKS_THREAD)
+    expect(screen.getAllByTestId('chat-line-time')).toHaveLength(BREAKS_THREAD.length)
+  })
+
+  it('holds the thread open on the times when told to', () => {
+    renderList(BREAKS_THREAD, { revealTimes: true })
+    const row = screen.getAllByTestId('chat-reveal-row')[0].firstElementChild as HTMLElement
+    expect(row.style.transform).toContain('translateX(-64px)')
+  })
+
+  it('rests with the thread in place', () => {
+    renderList(BREAKS_THREAD)
+    const row = screen.getAllByTestId('chat-reveal-row')[0].firstElementChild as HTMLElement
+    expect(row.style.transform).toMatch(/translateX\(-?0(px)?\)/)
   })
 
   it('passes data parts through to the renderer', () => {

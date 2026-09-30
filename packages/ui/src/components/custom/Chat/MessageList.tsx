@@ -14,7 +14,16 @@ import {
   type ThreadRow,
 } from './chatThread'
 import { DateSeparator } from './DateSeparator'
-import { MessageBubble, type DataPartRenderer } from './MessageBubble'
+import { ConversationIdentity } from './ConversationIdentity'
+import {
+  MessageBubble,
+  type DataPartRenderer,
+  type Endorsement,
+  type GroupAvatarAt,
+  type OwnFill,
+  type ThreadLayout,
+} from './MessageBubble'
+import { RevealProvider, RevealRow, useRevealGesture } from './RevealRow'
 import { TypingIndicator } from './TypingIndicator'
 import { UnreadBadge } from './UnreadBadge'
 import { useStickToBottom } from './useStickToBottom'
@@ -26,6 +35,15 @@ export interface MessageListProps {
   /** The reader. Their messages align to the end and pull the list down when sent. */
   viewerId: string
   renderDataPart?: DataPartRenderer
+  /** `direct` heads the thread with who it is with; `group` names authors and shows avatars. Defaults from the participant count. */
+  layout?: ThreadLayout
+  /** Top of the thread. A direct thread defaults to the other party's name and avatar. */
+  header?: ReactNode
+  ownFill?: OwnFill
+  endorsement?: Endorsement
+  groupAvatarAt?: GroupAvatarAt
+  /** Hold every message's time revealed, as if the thread were dragged left. */
+  revealTimes?: boolean
   /** Participants composing right now, shown under the newest message. */
   typing?: readonly Participant[]
   /** The reader's "now" for day separators. Fix it in stories and tests. */
@@ -43,21 +61,53 @@ export interface MessageListProps {
 interface RowProps {
   row: ThreadRow
   props: MessageListProps
+  layout: ThreadLayout
+  newestOwnId: string | undefined
 }
 
-function Row({ row, props }: RowProps) {
-  if (row.kind === 'date') return <DateSeparator date={row.at} now={props.now} />
-  const { message, startsGroup } = row
+function Row({ row, props, layout, newestOwnId }: RowProps) {
+  if (row.kind === 'date') {
+    return (
+      <View className="px-gutter-sm">
+        <DateSeparator date={row.at} now={props.now} showDay={row.showDay} showTime />
+      </View>
+    )
+  }
+  const { message } = row
   return (
-    <MessageBubble
-      message={message}
-      author={findParticipant(props.participants, message.authorId)}
-      isOwn={message.authorId === props.viewerId}
-      startsGroup={startsGroup}
-      renderDataPart={props.renderDataPart}
-      linkers={props.linkers}
-    />
+    <RevealRow at={message.createdAt}>
+      <MessageBubble
+        message={message}
+        author={findParticipant(props.participants, message.authorId)}
+        isOwn={message.authorId === props.viewerId}
+        layout={layout}
+        startsGroup={row.startsGroup}
+        endsGroup={row.endsGroup}
+        groupAvatarAt={props.groupAvatarAt}
+        ownFill={props.ownFill}
+        endorsement={props.endorsement}
+        showDelivery={message.id === newestOwnId}
+        renderDataPart={props.renderDataPart}
+        linkers={props.linkers}
+        className="px-gutter-sm"
+      />
+    </RevealRow>
   )
+}
+
+function resolveLayout(props: MessageListProps): ThreadLayout {
+  return props.layout ?? (props.participants.length > 2 ? 'group' : 'direct')
+}
+
+function ThreadHeader({ props, layout }: { props: MessageListProps; layout: ThreadLayout }) {
+  if (props.header !== undefined) return <View className="px-gutter-sm">{props.header}</View>
+  const other = props.participants.find(({ id }) => id !== props.viewerId)
+  if (layout !== 'direct' || !other) return null
+  return <ConversationIdentity participant={other} />
+}
+
+function newestOwnMessageId(messages: readonly ChatMessage[], viewerId: string) {
+  return [...messages].reverse().find((message) => message.authorId === viewerId)?.id
 }
 
 function useWindow(messages: readonly ChatMessage[], pageSize: number) {
@@ -130,6 +180,9 @@ function ThreadScroll(props: MessageListProps) {
   const { messages, viewerId, typing = [], pageSize = 50 } = props
   const { visible, hasEarlier, showEarlier } = useWindow(messages, pageSize)
   const rows = useMemo(() => buildThreadRows(visible), [visible])
+  const layout = resolveLayout(props)
+  const newestOwnId = newestOwnMessageId(messages, viewerId)
+  const { offset, panHandlers } = useRevealGesture(props.revealTimes ?? false)
   const { scrollRef, onScroll, onContentSizeChange, unseen, jumpToNewest } = useStickToBottom(
     messages,
     viewerId
@@ -143,17 +196,26 @@ function ThreadScroll(props: MessageListProps) {
         scrollEventThrottle={32}
         testID="chat-message-scroll"
       >
-        <View className="gap-stack-md px-gutter-sm py-inset-md">
-          {hasEarlier ? (
-            <Button variant="ghost" size="sm" onPress={showEarlier} className="self-center">
-              <ButtonText>Show earlier</ButtonText>
-            </Button>
-          ) : null}
-          {rows.map((row) => (
-            <Row key={row.key} row={row} props={props} />
-          ))}
-          <TypingIndicator participants={typing} className="pl-10" />
-        </View>
+        <RevealProvider offset={offset}>
+          <View className="gap-stack-md py-inset-md" {...panHandlers}>
+            <ThreadHeader props={props} layout={layout} />
+            {hasEarlier ? (
+              <Button variant="ghost" size="sm" onPress={showEarlier} className="self-center">
+                <ButtonText>Show earlier</ButtonText>
+              </Button>
+            ) : null}
+            {rows.map((row) => (
+              <Row
+                key={row.key}
+                row={row}
+                props={props}
+                layout={layout}
+                newestOwnId={newestOwnId}
+              />
+            ))}
+            <TypingIndicator participants={typing} className="px-gutter-sm" />
+          </View>
+        </RevealProvider>
       </ScrollView>
       <View className="absolute bottom-inset-md self-center pointer-events-box-none">
         <UnreadBadge count={unseen} onPress={jumpToNewest} size="md" />

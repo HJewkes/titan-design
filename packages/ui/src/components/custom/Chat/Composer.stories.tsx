@@ -42,6 +42,9 @@ type Story = StoryObj<typeof Composer>
 
 export const Default: Story = {}
 
+/** Once there is text, the send button appears inside the field. */
+export const Typed: Story = { args: { value: 'Works for me.' } }
+
 export const Sending: Story = { args: { value: 'Works for me.', isSending: true } }
 
 export const Disabled: Story = { args: { isDisabled: true, placeholder: 'Chat is read-only' } }

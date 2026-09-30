@@ -6,10 +6,15 @@ import { Button, ButtonText } from '../../ui/button'
 import { Surface } from '../../ui/surface'
 import { EmptyState } from '../../ui/empty-state'
 import { MessageList, type MessageListProps } from './MessageList'
+import { renderCoachPart } from './coach-cards'
 import {
   ATHLETE,
+  BREAKS_THREAD,
   COACH,
   COACH_THREAD,
+  ENDORSEMENT_THREAD,
+  GROUP_PARTICIPANTS,
+  GROUP_THREAD,
   NOW,
   PARTICIPANTS,
   chatMessage,
@@ -28,6 +33,7 @@ const meta: Meta<typeof MessageList> = {
           '[MessageBubble](?path=/docs/custom-chat-messagelist-messagebubble--docs) + ' +
           '[DateSeparator](?path=/docs/custom-chat-messagelist-dateseparator--docs) + ' +
           '[TypingIndicator](?path=/docs/custom-chat-messagelist-typingindicator--docs) + ' +
+          '[ConversationIdentity](?path=/docs/custom-chat-conversationidentity--docs) + ' +
           '[UnreadBadge](?path=/docs/custom-chat-messagelist-unreadbadge--docs).',
       },
     },
@@ -39,10 +45,20 @@ const meta: Meta<typeof MessageList> = {
     now: NOW,
     typing: [],
     pageSize: 50,
+    renderDataPart: renderCoachPart,
+    ownFill: 'solid',
+    endorsement: 'none',
+    groupAvatarAt: 'last',
+    revealTimes: false,
   },
   argTypes: {
     viewerId: { control: 'select', options: [ATHLETE.id, COACH.id] },
     pageSize: { control: { type: 'number', min: 1 } },
+    layout: { control: 'select', options: ['direct', 'group'] },
+    ownFill: { control: 'select', options: ['solid', 'tint'] },
+    endorsement: { control: 'select', options: ['none', 'outline', 'fill', 'emphasis'] },
+    groupAvatarAt: { control: 'select', options: ['first', 'last'] },
+    revealTimes: { control: 'boolean' },
   },
   decorators: [
     (Story) => (
@@ -56,7 +72,54 @@ export default meta
 
 type Story = StoryObj<typeof MessageList>
 
+/** A direct thread: who it is with sits once at the top, and bubbles carry no name or avatar. */
 export const Default: Story = {}
+
+/** Own bubble, option 1: a solid brand fill with on-brand text. */
+export const OwnSolid: Story = { args: { ownFill: 'solid' } }
+
+/** Own bubble, option 2: the stronger brand tint with primary text. */
+export const OwnTint: Story = { args: { ownFill: 'tint' } }
+
+/** A group thread, option 1: author name over the first message, a small avatar beside the last. */
+export const Group: Story = {
+  args: {
+    messages: GROUP_THREAD,
+    participants: GROUP_PARTICIPANTS,
+    groupAvatarAt: 'last',
+  },
+}
+
+/** A group thread, option 2: the small avatar beside the first message of a run, next to the name. */
+export const GroupAvatarFirst: Story = {
+  args: {
+    messages: GROUP_THREAD,
+    participants: GROUP_PARTICIPANTS,
+    groupAvatarAt: 'first',
+  },
+}
+
+/** Times appear only after a pause of more than an hour, and the day when it changes. */
+export const TimeBreaks: Story = { args: { messages: BREAKS_THREAD } }
+
+/** The same thread as if dragged left: every message's own time, as in Messages. */
+export const RevealedTimes: Story = { args: { messages: BREAKS_THREAD, revealTimes: true } }
+
+/** Endorsed agent message, control: drawn like any other. */
+export const EndorsedNone: Story = { args: { messages: ENDORSEMENT_THREAD, endorsement: 'none' } }
+
+/** Endorsed agent message, option 1: a brand outline on the bubble. */
+export const EndorsedOutline: Story = {
+  args: { messages: ENDORSEMENT_THREAD, endorsement: 'outline' },
+}
+
+/** Endorsed agent message, option 2: a brand-tinted bubble fill. */
+export const EndorsedFill: Story = { args: { messages: ENDORSEMENT_THREAD, endorsement: 'fill' } }
+
+/** Endorsed agent message, option 3: an accent edge on the bubble. */
+export const EndorsedEmphasis: Story = {
+  args: { messages: ENDORSEMENT_THREAD, endorsement: 'emphasis' },
+}
 
 export const Typing: Story = { args: { typing: [COACH] } }
 

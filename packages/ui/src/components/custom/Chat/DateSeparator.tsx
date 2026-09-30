@@ -11,6 +11,10 @@ export interface DateSeparatorProps {
   date: string | Date | number
   /** The reader's "now", for Today / Yesterday. Pass a fixed value to freeze stories and tests. */
   now?: string | Date | number
+  /** Name the day. Turn it off for a pause within a day, which shows only the time. */
+  showDay?: boolean
+  /** Add the clock time, as Messages does when it opens a day or follows a long pause. */
+  showTime?: boolean
   className?: string
 }
 
@@ -24,26 +28,39 @@ function relativeDayName(date: Date, now: Date): string | null {
 }
 
 /**
- * A hairline with the day's name in the middle, opening each calendar day of a
- * thread. Composes Divider + Typography, and DateTime for days older than yesterday.
+ * A hairline with the day's name and, optionally, the time in the middle. It opens each
+ * calendar day of a thread and marks a long pause within one. Composes Divider + Typography,
+ * and DateTime for days older than yesterday and for the time.
  */
-export function DateSeparator({ date, now, className }: DateSeparatorProps) {
+function DayLabel({ at, now }: { at: Date; now: Date }) {
+  const dayName = relativeDayName(at, now)
+  if (dayName) {
+    return (
+      <Typography variant="caption" color="tertiary">
+        {dayName}
+      </Typography>
+    )
+  }
+  return <DateTime value={at} format="medium" variant="caption" color="tertiary" />
+}
+
+export function DateSeparator({
+  date,
+  now,
+  showDay = true,
+  showTime = false,
+  className,
+}: DateSeparatorProps) {
   const [renderedAt] = useState(() => Date.now())
   const at = new Date(date)
-  const dayName = relativeDayName(at, new Date(now ?? renderedAt))
   return (
     <View
       className={cn('flex-row items-center gap-inline-md py-stack-md', className)}
       testID="chat-date-separator"
     >
       <Divider className="flex-1" />
-      {dayName ? (
-        <Typography variant="caption" color="tertiary">
-          {dayName}
-        </Typography>
-      ) : (
-        <DateTime value={at} format="medium" variant="caption" color="tertiary" />
-      )}
+      {showDay ? <DayLabel at={at} now={new Date(now ?? renderedAt)} /> : null}
+      {showTime ? <DateTime value={at} format="time" variant="caption" color="tertiary" /> : null}
       <Divider className="flex-1" />
     </View>
   )
