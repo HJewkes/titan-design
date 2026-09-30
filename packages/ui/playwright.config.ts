@@ -11,6 +11,13 @@ export default defineConfig({
   // (goto + networkidle + screenshot each), so its runtime scales with the
   // story count. Give it well past the 30s default as the shell family grows.
   timeout: 120_000,
+  // Same floor as the Layer-1 baseline config: see playwright.baseline.config.ts.
+  expect: {
+    toHaveScreenshot: {
+      threshold: 0.02,
+      maxDiffPixels: 0,
+    },
+  },
   use: {
     baseURL: 'http://localhost:6006',
     screenshot: 'only-on-failure',

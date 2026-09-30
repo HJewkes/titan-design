@@ -1,11 +1,18 @@
 import { describe, it, expect } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { composeStories } from '@storybook/react-vite'
+
+import preview from '../../../../.storybook/preview'
+import { greyRamp } from '../../../theme/tokens/primitives'
 
 import { capturedClassNames } from '../../../test/classname-capture'
 import { BodyweightGoalCard } from './BodyweightGoalCard'
 import { FIGURE_LINE_TEXT } from './wholeBodyCardParts'
 import { WHOLE_BODY_WEIGHT as W } from './wholeBody-fixture'
+import * as stories from './BodyweightGoalCard.stories'
+
+const { Default, Light } = composeStories(stories, { decorators: preview.decorators })
 
 describe('BodyweightGoalCard', () => {
   it('leads with the weight', () => {
@@ -143,5 +150,18 @@ describe('BodyweightGoalCard', () => {
   it('has no accessibility violations with no weigh-in yet', async () => {
     const { container } = render(<BodyweightGoalCard goal={W.noReadings} scale="phone" />)
     expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+// TD-39: the track sat on a dark grey step in both themes.
+describe('the weight track in its stories', () => {
+  it('paints a light track under the light theme', () => {
+    render(<Light />)
+    expect(screen.getByTestId('zone-track-track')).toHaveStyle({ backgroundColor: greyRamp[400] })
+  })
+
+  it('keeps the dark track under the dark theme', () => {
+    render(<Default />)
+    expect(screen.getByTestId('zone-track-track')).toHaveStyle({ backgroundColor: greyRamp[800] })
   })
 })

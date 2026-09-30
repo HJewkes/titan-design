@@ -470,6 +470,9 @@ function FullBody({ props, width }: { props: GoalCardProps; width: number }) {
         // The week cells directly above the plot stand on these very columns, so
         // the axis would print each week a second time, a row lower.
         showWeekLabels={goal.showWeekLabels ?? false}
+        {...(props.milestone.currentWeek !== undefined
+          ? { currentWeek: props.milestone.currentWeek }
+          : {})}
       />
     </View>
   )

@@ -32,3 +32,5 @@ export {
   formatPrescription,
 } from './workout-format'
 export type { PrescriptionInput } from './workout-format'
+export { computeWindow } from './fixed-window'
+export type { FixedWindow, FixedWindowInput } from './fixed-window'

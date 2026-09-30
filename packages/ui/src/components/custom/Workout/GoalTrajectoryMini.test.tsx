@@ -101,14 +101,14 @@ describe('GoalTrajectoryMini', () => {
 
   it('lights the current week column behind the line', () => {
     renderMini()
-    expect(screen.getByTestId('goal-trajectory-mini-current-week')).toBeTruthy()
+    expect(screen.getByTestId('goal-trajectory-chart-current-week')).toBeTruthy()
   })
 
   it('leaves it dark when no week is current', () => {
     render(
       <GoalTrajectoryMini {...data} status="on_track" width={400} height={64} animate={false} />
     )
-    expect(screen.queryByTestId('goal-trajectory-mini-current-week')).toBeNull()
+    expect(screen.queryByTestId('goal-trajectory-chart-current-week')).toBeNull()
   })
 
   it('recesses the line so the points lead, and gives it no shadow', () => {

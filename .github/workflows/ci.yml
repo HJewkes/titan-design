@@ -40,6 +40,9 @@ jobs:
       - name: Package shape
         run: pnpm check:package
 
+      - name: Import cycles
+        run: pnpm --filter @titan-design/react-ui check:cycles
+
   # Job id stays `visual`: the ruleset requires a status of exactly that name.
   visual:
     runs-on: ubuntu-latest
