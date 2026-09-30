@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:d3336906f929d887d28f5eef51169d47cda6c3e8099b97e36f7924fcd61ff376",
+  "componentBarrelHash": "sha256:1ded8eeae025593caeccd8537113a32fe460db8eadc678e546ae830a89d7e882",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -3690,9 +3690,7 @@
         "ProseBlock",
         "MarkdownProseProps",
         "ProseSize",
-        "ProseTone",
         "parseProseBlocks.flush",
-        "textClass",
         "anchored",
         "buildTokenizer",
         "LinkedRef",
@@ -3717,7 +3715,7 @@
         "rawText": 5,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 240,
+        "loc": 221,
         "score": 7
       },
       "tier": "molecule",
@@ -3910,10 +3908,7 @@
       "exports": [
         "MessageBubble",
         "DataPartRenderer",
-        "OwnFill",
-        "Endorsement",
         "ThreadLayout",
-        "GroupAvatarAt",
         "MessageBubbleProps",
         "isEndorsed",
         "BubbleBody",
@@ -3941,7 +3936,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 228,
+        "loc": 182,
         "score": 6
       },
       "tier": "organism",
@@ -3993,7 +3988,7 @@
         "rawText": 1,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 252,
+        "loc": 238,
         "score": 9
       },
       "tier": "organism",
