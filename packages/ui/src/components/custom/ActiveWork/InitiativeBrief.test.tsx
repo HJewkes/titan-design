@@ -24,16 +24,16 @@ describe('InitiativeBrief', () => {
   it('opens only the first section, showing its body and the others as headings', () => {
     render(<InitiativeBrief brief={INITIATIVE_BRIEF_FIXTURE} />)
     expect(screen.getByText('Why this exists')).toBeInTheDocument()
-    expect(screen.getByText(/Engineering work spans days/)).toBeInTheDocument()
+    expect(screen.getByText(/Projects span weeks/)).toBeInTheDocument()
     expect(screen.getByText('Stakeholders')).toBeInTheDocument()
-    expect(screen.queryByText(/@hjewkes/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/@example-owner/)).not.toBeInTheDocument()
   })
 
   it('opens a section on its heading and closes the previously open one', () => {
     render(<InitiativeBrief brief={INITIATIVE_BRIEF_FIXTURE} />)
     fireEvent.click(screen.getByText('Stakeholders'))
-    expect(screen.getByText(/@hjewkes/)).toBeInTheDocument()
-    expect(screen.queryByText(/Engineering work spans days/)).not.toBeInTheDocument()
+    expect(screen.getByText(/@example-owner/)).toBeInTheDocument()
+    expect(screen.queryByText(/Projects span weeks/)).not.toBeInTheDocument()
   })
 
   it('steps through the sections with the prev/next controls', () => {
@@ -41,10 +41,10 @@ describe('InitiativeBrief', () => {
     expect(screen.getByText(/1 \//)).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Next section' }))
     // The second section is now open; the first's body is gone.
-    expect(screen.queryByText(/Engineering work spans days/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Projects span weeks/)).not.toBeInTheDocument()
     expect(screen.getByText(/2 \//)).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Previous section' }))
-    expect(screen.getByText(/Engineering work spans days/)).toBeInTheDocument()
+    expect(screen.getByText(/Projects span weeks/)).toBeInTheDocument()
   })
 
   it('disables prev on the first section', () => {
