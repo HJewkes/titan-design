@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:a598ba5bdf71587ac1a10de2ad9e4f8eea1a88f4ddaf24708536a164f26d7e46",
+  "componentBarrelHash": "sha256:d3336906f929d887d28f5eef51169d47cda6c3e8099b97e36f7924fcd61ff376",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -188,7 +188,7 @@
         "AvatarBadgeProps",
         "AvatarGroupProps"
       ],
-      "libDependents": 0,
+      "libDependents": 2,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -207,8 +207,8 @@
         "score": 8
       },
       "tier": "atom",
-      "verdict": "dead",
-      "deadByAssociation": false,
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
       "audited": "unaudited",
       "standard": true
     },
@@ -437,10 +437,10 @@
       "storyRefs": 2,
       "xproj": {
         "mobile": 0,
-        "mcp": 0,
+        "mcp": 1,
         "dash": 0,
         "audiobook": 0,
-        "total": 0
+        "total": 1
       },
       "dependsOn": [
         "Card",
@@ -458,7 +458,7 @@
         "score": 8
       },
       "tier": "organism",
-      "verdict": "dead",
+      "verdict": "keep-app",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -590,8 +590,8 @@
         "ButtonIconProps",
         "ButtonSpinnerProps"
       ],
-      "libDependents": 2,
-      "storyRefs": 14,
+      "libDependents": 5,
+      "storyRefs": 15,
       "xproj": {
         "mobile": 14,
         "mcp": 1,
@@ -689,7 +689,7 @@
         "useCardDepth",
         "SkeletonBody"
       ],
-      "libDependents": 15,
+      "libDependents": 16,
       "storyRefs": 13,
       "xproj": {
         "mobile": 69,
@@ -757,6 +757,45 @@
         "rawHex": 0,
         "loc": 447,
         "score": 13
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "ChatCard",
+      "file": "packages/ui/src/components/custom/Chat/ChatCard.tsx",
+      "dir": "custom",
+      "family": "custom/Chat",
+      "exports": [
+        "ChatCard",
+        "ChatCardAction",
+        "ChatCardProps",
+        "ActionRow"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Button",
+        "Card",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 85,
+        "score": 0
       },
       "tier": "organism",
       "verdict": "keep-internal",
@@ -876,6 +915,44 @@
       "standard": false
     },
     {
+      "name": "coach-cards",
+      "file": "packages/ui/src/components/custom/Chat/coach-cards.tsx",
+      "dir": "custom",
+      "family": "custom/Chat",
+      "exports": [
+        "CheckinCard",
+        "renderCoachPart"
+      ],
+      "libDependents": 0,
+      "storyRefs": 4,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "ChatCard",
+        "DateTime",
+        "Pill",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 41,
+        "score": 0
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "CoChangeChip",
       "file": "packages/ui/src/components/custom/ActiveWork/CoChangeChip.tsx",
       "dir": "custom",
@@ -961,6 +1038,84 @@
       "standard": true
     },
     {
+      "name": "Composer",
+      "file": "packages/ui/src/components/custom/Chat/Composer.tsx",
+      "dir": "custom",
+      "family": "custom/Chat",
+      "exports": [
+        "Composer",
+        "ComposerProps",
+        "isSubmitKey",
+        "useDraft",
+        "useDraft.setDraft",
+        "Composer.send",
+        "Composer.onKeyPress"
+      ],
+      "libDependents": 0,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Button",
+        "Input",
+        "Surface"
+      ],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 121,
+        "score": 2
+      },
+      "tier": "molecule",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "ConversationIdentity",
+      "file": "packages/ui/src/components/custom/Chat/ConversationIdentity.tsx",
+      "dir": "custom",
+      "family": "custom/Chat",
+      "exports": [
+        "ConversationIdentity",
+        "ConversationIdentityProps"
+      ],
+      "libDependents": 1,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Avatar",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 39,
+        "score": 1
+      },
+      "tier": "molecule",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "DataRow",
       "file": "packages/ui/src/components/ui/data-row/DataRow.tsx",
       "dir": "ui",
@@ -994,6 +1149,45 @@
       "standard": false
     },
     {
+      "name": "DateSeparator",
+      "file": "packages/ui/src/components/custom/Chat/DateSeparator.tsx",
+      "dir": "custom",
+      "family": "custom/Chat",
+      "exports": [
+        "DateSeparator",
+        "DateSeparatorProps",
+        "relativeDayName",
+        "DayLabel"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "DateTime",
+        "Divider",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 68,
+        "score": 1
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "DateTime",
       "file": "packages/ui/src/components/custom/DateTime/DateTime.tsx",
       "dir": "custom",
@@ -1006,7 +1200,7 @@
         "formatDate",
         "getRelativeTime"
       ],
-      "libDependents": 7,
+      "libDependents": 10,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -1190,7 +1384,7 @@
         "DividerOrientation",
         "DividerProps"
       ],
-      "libDependents": 5,
+      "libDependents": 6,
       "storyRefs": 2,
       "xproj": {
         "mobile": 0,
@@ -1312,7 +1506,7 @@
         "EmptyStateProps"
       ],
       "libDependents": 2,
-      "storyRefs": 1,
+      "storyRefs": 2,
       "xproj": {
         "mobile": 1,
         "mcp": 5,
@@ -2134,7 +2328,7 @@
         "rawText": 0,
         "inlineStyle": 5,
         "rawHex": 0,
-        "loc": 691,
+        "loc": 694,
         "score": 18
       },
       "tier": "organism",
@@ -2231,12 +2425,12 @@
       "exports": [
         "milestoneToneToken",
         "resolveTile",
-        "accessibleSummary",
-        "GoalMilestoneSummary",
         "MilestoneHero",
         "MilestoneFacts",
         "MilestoneWeekStrip",
         "useResolvedMilestone",
+        "accessibleSummary",
+        "GoalMilestoneSummary",
         "GoalMilestoneTileScale",
         "GoalMilestoneSummaryProps",
         "WALL_MIN_WIDTH",
@@ -2272,7 +2466,7 @@
         "rawText": 0,
         "inlineStyle": 2,
         "rawHex": 0,
-        "loc": 413,
+        "loc": 434,
         "score": 8
       },
       "tier": "organism",
@@ -2474,10 +2668,10 @@
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
-        "mcp": 0,
+        "mcp": 2,
         "dash": 0,
         "audiobook": 0,
-        "total": 0
+        "total": 2
       },
       "dependsOn": [
         "GoalPriorityIcon",
@@ -2492,7 +2686,7 @@
         "score": 9
       },
       "tier": "organism",
-      "verdict": "keep-internal",
+      "verdict": "keep-core",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -2630,7 +2824,7 @@
         "rawText": 1,
         "inlineStyle": 6,
         "rawHex": 0,
-        "loc": 436,
+        "loc": 443,
         "score": 17
       },
       "tier": "organism",
@@ -2657,7 +2851,6 @@
         "GoalTrajectoryMiniData",
         "GoalTrajectoryMiniProps",
         "CommittedRule",
-        "CurrentWeekColumn",
         "MiniLine",
         "MiniNextTarget",
         "MiniPoint",
@@ -2684,7 +2877,7 @@
         "rawText": 0,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 342,
+        "loc": 329,
         "score": 3
       },
       "tier": "organism",
@@ -2704,6 +2897,7 @@
         "PlotDefs",
         "planeBox",
         "PlaneLip",
+        "CurrentWeekColumn",
         "ruleLabelX",
         "starMark",
         "GoalTrajectoryPlot",
@@ -2711,6 +2905,7 @@
         "DEPTH",
         "DEFAULT_LEFT_SHADOW_SPREAD",
         "DELOAD_WASH",
+        "CURRENT_WEEK_TINT",
         "PLANE_RADIUS",
         "DOT_RADIUS",
         "DOT_RING",
@@ -2755,7 +2950,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 600,
+        "loc": 624,
         "score": 0
       },
       "tier": "organism",
@@ -3031,7 +3226,7 @@
         "IndicatorProps",
         "glowColors"
       ],
-      "libDependents": 10,
+      "libDependents": 11,
       "storyRefs": 3,
       "xproj": {
         "mobile": 0,
@@ -3197,7 +3392,7 @@
         "<anonymous>.handleBlur",
         "<anonymous>.toggleVisibility"
       ],
-      "libDependents": 1,
+      "libDependents": 2,
       "storyRefs": 3,
       "xproj": {
         "mobile": 0,
@@ -3494,7 +3689,10 @@
         "ProseBlockType",
         "ProseBlock",
         "MarkdownProseProps",
+        "ProseSize",
+        "ProseTone",
         "parseProseBlocks.flush",
+        "textClass",
         "anchored",
         "buildTokenizer",
         "LinkedRef",
@@ -3502,7 +3700,7 @@
         "Block",
         "MarkdownProse.inline"
       ],
-      "libDependents": 4,
+      "libDependents": 7,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -3519,7 +3717,7 @@
         "rawText": 5,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 202,
+        "loc": 240,
         "score": 7
       },
       "tier": "molecule",
@@ -3705,6 +3903,106 @@
       "standard": false
     },
     {
+      "name": "MessageBubble",
+      "file": "packages/ui/src/components/custom/Chat/MessageBubble.tsx",
+      "dir": "custom",
+      "family": "custom/Chat",
+      "exports": [
+        "MessageBubble",
+        "DataPartRenderer",
+        "OwnFill",
+        "Endorsement",
+        "ThreadLayout",
+        "GroupAvatarAt",
+        "MessageBubbleProps",
+        "isEndorsed",
+        "BubbleBody",
+        "MessageMeta",
+        "AvatarSlot",
+        "DataParts"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Avatar",
+        "MarkdownProse",
+        "Surface",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 6,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 228,
+        "score": 6
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "MessageList",
+      "file": "packages/ui/src/components/custom/Chat/MessageList.tsx",
+      "dir": "custom",
+      "family": "custom/Chat",
+      "exports": [
+        "MessageList",
+        "MessageListProps",
+        "Row",
+        "resolveLayout",
+        "ThreadHeader",
+        "newestOwnMessageId",
+        "useWindow",
+        "newestIncomingSince",
+        "newestId",
+        "nextAnnouncement",
+        "useIncomingAnnouncement",
+        "ThreadScroll"
+      ],
+      "libDependents": 0,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Button",
+        "ConversationIdentity",
+        "DateSeparator",
+        "MarkdownProse",
+        "MessageBubble",
+        "RevealRow",
+        "TypingIndicator",
+        "UnreadBadge"
+      ],
+      "leak": {
+        "rawView": 8,
+        "rawText": 1,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 252,
+        "score": 9
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "Metric",
       "file": "packages/ui/src/components/custom/Metric/Metric.tsx",
       "dir": "custom",
@@ -3788,10 +4086,10 @@
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
-        "mcp": 7,
+        "mcp": 5,
         "dash": 0,
         "audiobook": 0,
-        "total": 7
+        "total": 5
       },
       "dependsOn": [
         "Stack",
@@ -4061,14 +4359,14 @@
         "containerClasses",
         "PillContent"
       ],
-      "libDependents": 16,
-      "storyRefs": 8,
+      "libDependents": 18,
+      "storyRefs": 9,
       "xproj": {
         "mobile": 0,
-        "mcp": 2,
+        "mcp": 1,
         "dash": 0,
         "audiobook": 0,
-        "total": 2
+        "total": 1
       },
       "dependsOn": [],
       "leak": {
@@ -4618,6 +4916,44 @@
       "standard": false
     },
     {
+      "name": "RevealRow",
+      "file": "packages/ui/src/components/custom/Chat/RevealRow.tsx",
+      "dir": "custom",
+      "family": "custom/Chat",
+      "exports": [
+        "revealOffset",
+        "useRevealGesture",
+        "RevealProvider",
+        "RevealRow",
+        "REVEAL_PX"
+      ],
+      "libDependents": 2,
+      "storyRefs": 0,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "DateTime"
+      ],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 2,
+        "rawHex": 0,
+        "loc": 75,
+        "score": 6
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "RomProgressionChart",
       "file": "packages/ui/src/components/custom/Fatigue/RomProgressionChart.tsx",
       "dir": "custom",
@@ -4855,7 +5191,7 @@
         "Select.getDisplayValue",
         "Select.clearValue"
       ],
-      "libDependents": 2,
+      "libDependents": 3,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -5116,10 +5452,10 @@
       "storyRefs": 2,
       "xproj": {
         "mobile": 0,
-        "mcp": 0,
+        "mcp": 1,
         "dash": 0,
         "audiobook": 0,
-        "total": 0
+        "total": 1
       },
       "dependsOn": [
         "Card",
@@ -5137,7 +5473,7 @@
         "score": 9
       },
       "tier": "organism",
-      "verdict": "dead",
+      "verdict": "keep-app",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -5546,7 +5882,7 @@
       },
       "tier": "molecule",
       "verdict": "keep-internal",
-      "deadByAssociation": false,
+      "deadByAssociation": true,
       "audited": "unaudited",
       "standard": false
     },
@@ -6026,8 +6362,8 @@
         "Surface",
         "SurfaceProps"
       ],
-      "libDependents": 17,
-      "storyRefs": 74,
+      "libDependents": 20,
+      "storyRefs": 83,
       "xproj": {
         "mobile": 22,
         "mcp": 12,
@@ -6406,7 +6742,6 @@
         "SeverityLabel",
         "Table",
         "TableCell",
-        "TaskTable",
         "Tooltip",
         "Typography"
       ],
@@ -6420,7 +6755,7 @@
       },
       "tier": "organism",
       "verdict": "keep-internal",
-      "deadByAssociation": false,
+      "deadByAssociation": true,
       "audited": "unaudited",
       "standard": false
     },
@@ -6431,7 +6766,6 @@
       "family": "custom/ActiveWork",
       "exports": [
         "TaskTable",
-        "TaskColumnKey",
         "SeverityDisplay",
         "COMPACT_SEVERITY_BELOW",
         "TaskTableProps",
@@ -6440,7 +6774,7 @@
         "SeverityLegend",
         "useFittedColumns"
       ],
-      "libDependents": 2,
+      "libDependents": 1,
       "storyRefs": 2,
       "xproj": {
         "mobile": 0,
@@ -6462,12 +6796,12 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 322,
+        "loc": 320,
         "score": 5
       },
       "tier": "organism",
       "verdict": "keep-internal",
-      "deadByAssociation": false,
+      "deadByAssociation": true,
       "audited": "unaudited",
       "standard": false
     },
@@ -6910,6 +7244,48 @@
       "standard": false
     },
     {
+      "name": "TypingIndicator",
+      "file": "packages/ui/src/components/custom/Chat/TypingIndicator.tsx",
+      "dir": "custom",
+      "family": "custom/Chat",
+      "exports": [
+        "typingLabel",
+        "TypingIndicator",
+        "TypingIndicatorProps",
+        "useStaggeredPulse",
+        "PulsingDot",
+        "useTypingAnnouncement",
+        "TypingContent"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Indicator",
+        "Surface",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 1,
+        "rawHex": 0,
+        "loc": 93,
+        "score": 4
+      },
+      "tier": "molecule",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "Typography",
       "file": "packages/ui/src/components/ui/typography/Typography.tsx",
       "dir": "ui",
@@ -6932,8 +7308,8 @@
         "LabelProps",
         "OverlineProps"
       ],
-      "libDependents": 55,
-      "storyRefs": 26,
+      "libDependents": 61,
+      "storyRefs": 28,
       "xproj": {
         "mobile": 0,
         "mcp": 11,
@@ -6955,6 +7331,43 @@
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": true
+    },
+    {
+      "name": "UnreadBadge",
+      "file": "packages/ui/src/components/custom/Chat/UnreadBadge.tsx",
+      "dir": "custom",
+      "family": "custom/Chat",
+      "exports": [
+        "unreadCountLabel",
+        "UnreadBadge",
+        "UnreadBadgeProps",
+        "jumpLabel"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Pill"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 52,
+        "score": 0
+      },
+      "tier": "molecule",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "velocity-story-kit",
@@ -7652,7 +8065,7 @@
         "rawText": 1,
         "inlineStyle": 11,
         "rawHex": 0,
-        "loc": 391,
+        "loc": 392,
         "score": 34
       },
       "tier": "organism",
@@ -7949,10 +8362,6 @@
     ],
     [
       "TaskRow",
-      "TaskTable"
-    ],
-    [
-      "TaskRow",
       "DateTime"
     ],
     [
@@ -7997,6 +8406,134 @@
     ],
     [
       "TaskTable",
+      "Typography"
+    ],
+    [
+      "ChatCard",
+      "Button"
+    ],
+    [
+      "ChatCard",
+      "Card"
+    ],
+    [
+      "ChatCard",
+      "Typography"
+    ],
+    [
+      "Composer",
+      "Button"
+    ],
+    [
+      "Composer",
+      "Input"
+    ],
+    [
+      "Composer",
+      "Surface"
+    ],
+    [
+      "ConversationIdentity",
+      "Avatar"
+    ],
+    [
+      "ConversationIdentity",
+      "Typography"
+    ],
+    [
+      "DateSeparator",
+      "DateTime"
+    ],
+    [
+      "DateSeparator",
+      "Divider"
+    ],
+    [
+      "DateSeparator",
+      "Typography"
+    ],
+    [
+      "MessageBubble",
+      "MarkdownProse"
+    ],
+    [
+      "MessageBubble",
+      "Avatar"
+    ],
+    [
+      "MessageBubble",
+      "Surface"
+    ],
+    [
+      "MessageBubble",
+      "Typography"
+    ],
+    [
+      "MessageList",
+      "ConversationIdentity"
+    ],
+    [
+      "MessageList",
+      "DateSeparator"
+    ],
+    [
+      "MessageList",
+      "MessageBubble"
+    ],
+    [
+      "MessageList",
+      "RevealRow"
+    ],
+    [
+      "MessageList",
+      "TypingIndicator"
+    ],
+    [
+      "MessageList",
+      "UnreadBadge"
+    ],
+    [
+      "MessageList",
+      "MarkdownProse"
+    ],
+    [
+      "MessageList",
+      "Button"
+    ],
+    [
+      "RevealRow",
+      "DateTime"
+    ],
+    [
+      "TypingIndicator",
+      "Indicator"
+    ],
+    [
+      "TypingIndicator",
+      "Surface"
+    ],
+    [
+      "TypingIndicator",
+      "Typography"
+    ],
+    [
+      "UnreadBadge",
+      "Pill"
+    ],
+    [
+      "coach-cards",
+      "ChatCard"
+    ],
+    [
+      "coach-cards",
+      "DateTime"
+    ],
+    [
+      "coach-cards",
+      "Pill"
+    ],
+    [
+      "coach-cards",
       "Typography"
     ],
     [
@@ -9121,24 +9658,23 @@
     ]
   ],
   "summary": {
-    "total": 184,
+    "total": 194,
     "dead": [
       "Autocomplete",
-      "Avatar",
-      "BodyweightGoalCard",
       "Breadcrumbs",
+      "Composer",
       "Eyebrow",
       "GoalLiftCard",
       "HelpTip",
       "IconBox",
       "InitiativeHeader",
       "Menu",
+      "MessageList",
       "PortfolioOverview",
       "PrHistoryModal",
       "ReadinessCheck",
       "SessionDetail",
       "SessionList",
-      "SessionsGoalCard",
       "Switch",
       "TableEmptyState",
       "TablePagination",
@@ -9149,22 +9685,34 @@
       "Treemap",
       "VelocityBandPreview",
       "VolumeLandmarkBar",
+      "coach-cards",
       "goalCarousel-fixture",
       "velocity-story-kit"
     ],
     "deadByAssociation": [
+      "Avatar",
       "BodyMap",
       "BodyMapDetailPanel",
       "CapacityBandChart",
       "Carousel",
+      "ChatCard",
+      "ConversationIdentity",
+      "DateSeparator",
       "InitiativeCard",
       "InputBar",
       "IntensityBar",
       "MesoCard",
       "MesoProgressBar",
+      "MessageBubble",
+      "RevealRow",
       "SessionListItem",
+      "SeverityLabel",
       "Sparkline",
       "SupersetWrapper",
+      "TaskRow",
+      "TaskTable",
+      "TypingIndicator",
+      "UnreadBadge",
       "VelocityBandOverlay",
       "WeekRow",
       "WorkoutCard",
@@ -9654,14 +10202,14 @@
         "rawText": 1,
         "inlineStyle": 11,
         "rawHex": 0,
-        "loc": 391,
+        "loc": 392,
         "score": 34
       }
     ],
     "substitution": {
       "library(titan)": {
-        "Text": 77,
-        "View": 155,
+        "Text": 78,
+        "View": 162,
         "TouchableOpacity": 0,
         "Pressable": 59,
         "TextInput": 3,
