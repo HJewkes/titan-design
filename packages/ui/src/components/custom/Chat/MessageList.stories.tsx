@@ -76,10 +76,10 @@ type Story = StoryObj<typeof MessageList>
 export const Default: Story = {}
 
 /** Own bubble, option 1: a solid brand fill with on-brand text. */
-export const OwnSolid: Story = { args: { ownFill: 'solid' } }
+export const OwnSolid: Story = { args: { messages: COACH_THREAD.slice(0, 3), ownFill: 'solid' } }
 
 /** Own bubble, option 2: the stronger brand tint with primary text. */
-export const OwnTint: Story = { args: { ownFill: 'tint' } }
+export const OwnTint: Story = { args: { messages: COACH_THREAD.slice(0, 3), ownFill: 'tint' } }
 
 /** A group thread, option 1: author name over the first message, a small avatar beside the last. */
 export const Group: Story = {
