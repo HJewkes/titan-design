@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:88de7f73af1583c6dbc29b06f8f2915063c9f421d091af6670e317ee3cfbbcbd",
+  "componentBarrelHash": "sha256:a598ba5bdf71587ac1a10de2ad9e4f8eea1a88f4ddaf24708536a164f26d7e46",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -2233,6 +2233,10 @@
         "resolveTile",
         "accessibleSummary",
         "GoalMilestoneSummary",
+        "MilestoneHero",
+        "MilestoneFacts",
+        "MilestoneWeekStrip",
+        "useResolvedMilestone",
         "GoalMilestoneTileScale",
         "GoalMilestoneSummaryProps",
         "WALL_MIN_WIDTH",
@@ -2244,11 +2248,9 @@
         "gapAmountText",
         "heroFor",
         "surplusText",
-        "Hero",
         "Fact",
         "WeekFact",
         "FactItems",
-        "SummaryRow",
         "SummaryBody"
       ],
       "libDependents": 2,

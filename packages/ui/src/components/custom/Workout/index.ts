@@ -230,7 +230,14 @@ export {
   type PrimaryGoalChart,
   type PrimaryGoalMilestone,
 } from './PrimaryGoalCard'
-export { GoalMilestoneSummary, type GoalMilestoneSummaryProps } from './GoalMilestoneSummary'
+export {
+  GoalMilestoneSummary,
+  MilestoneHero,
+  MilestoneFacts,
+  MilestoneWeekStrip,
+  useResolvedMilestone,
+  type GoalMilestoneSummaryProps,
+} from './GoalMilestoneSummary'
 export {
   GoalMilestoneWeekStrip,
   WEEK_OUTCOME_LABEL,

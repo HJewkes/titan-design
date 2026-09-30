@@ -9,6 +9,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- `MilestoneHero`, `MilestoneFacts`, `MilestoneWeekStrip` and `useResolvedMilestone` are exported
+  from `GoalMilestoneSummary`, so a card can place each part in its own slot and share one copy
+  of the gap, surplus and outcome maths. `GoalMilestoneSummary` renders as their composition
+  with no visible change (VW-627).
 - `pnpm check:package` runs `publint --strict` and `attw --pack --profile node16` on the built
   package. CI runs it on every PR, and the publish workflow runs it before `npm publish`, so an
   export map that regresses to "Masquerading as CJS" fails before a release. Only the two CSS
