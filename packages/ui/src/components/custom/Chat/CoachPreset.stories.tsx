@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
+import { View, type ViewStyle } from 'react-native'
 import type { ChatMessage, Participant } from '@titan-design/chat-protocol'
 
 import { Surface } from '../../ui/surface'
@@ -50,16 +50,16 @@ interface CoachPresetArgs {
   replyDelayMs: number
 }
 
-const FRAME_CLASS: Record<CoachPresetArgs['layout'], string> = {
-  phone: 'w-[390px] max-w-full h-[760px]',
-  drawer: 'w-full max-w-[480px] h-[800px]',
-  wide: 'w-full max-w-[760px] h-[800px] self-center',
+const FRAME_STYLE: Record<CoachPresetArgs['layout'], ViewStyle> = {
+  phone: { width: 390, maxWidth: '100%', height: 760 },
+  drawer: { width: '100%', maxWidth: 480, height: 800 },
+  wide: { width: '100%', maxWidth: 760, height: 800, alignSelf: 'center' },
 }
 
-function CoachThread({ replyDelayMs, className }: { replyDelayMs: number; className: string }) {
+function CoachThread({ replyDelayMs, style }: { replyDelayMs: number; style: ViewStyle }) {
   const { messages, typing, send } = useCoachReplies(replyDelayMs)
   return (
-    <Surface level="base" rounded className={`overflow-hidden ${className}`}>
+    <Surface level="base" rounded className="overflow-hidden" style={style}>
       <MessageList
         messages={messages}
         participants={PARTICIPANTS}
@@ -91,7 +91,7 @@ function WallBackdrop() {
 }
 
 function CoachPreset({ layout, replyDelayMs }: CoachPresetArgs) {
-  const thread = <CoachThread replyDelayMs={replyDelayMs} className={FRAME_CLASS[layout]} />
+  const thread = <CoachThread replyDelayMs={replyDelayMs} style={FRAME_STYLE[layout]} />
   if (layout === 'drawer') {
     return (
       <Surface level="background" className="w-full flex-row p-gutter-sm">
@@ -115,6 +115,7 @@ const meta: Meta<CoachPresetArgs> = {
   component: CoachPreset,
   tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
+    layout: 'fullscreen',
     docs: {
       description: {
         component:
