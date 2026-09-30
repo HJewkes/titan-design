@@ -98,3 +98,6 @@ export const NoReadings: Story = { args: { goal: W.noReadings } }
 
 /** F13: week 1 after a phase change. The review holds its verdict. */
 export const RateVetoed: Story = { args: { goal: W.rateVetoed } }
+
+/** F6 under the light theme: the track follows the surface to a light grey (TD-39). */
+export const Light: Story = { globals: { theme: 'light' } }
