@@ -75,6 +75,11 @@ describe('Composer', () => {
     expect(onSend).not.toHaveBeenCalled()
   })
 
+  it('says Sending on the button while a send is in flight', () => {
+    render(<Composer onSend={vi.fn()} value="x" isSending />)
+    expect(sendButton()).toHaveTextContent('Sending…')
+  })
+
   it('has no accessibility violations', async () => {
     const { container } = render(<Composer onSend={() => {}} placeholder="Message Coach" />)
     expect(await axe(container)).toHaveNoViolations()

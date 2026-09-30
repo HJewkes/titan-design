@@ -18,10 +18,12 @@ export interface ComposerProps {
   onChangeText?: (text: string) => void
   placeholder?: string
   isDisabled?: boolean
-  /** Shows the send button busy and blocks a second send. */
+  /** Shows the send button as sending and blocks a second send. */
   isSending?: boolean
   maxLength?: number
   sendLabel?: string
+  /** Shown on the send button while `isSending`, in place of a spinner. */
+  sendingLabel?: string
   className?: string
 }
 
@@ -62,6 +64,7 @@ export function Composer({
   isSending = false,
   maxLength,
   sendLabel = 'Send',
+  sendingLabel = 'Sending…',
   className,
 }: ComposerProps) {
   const { draft, setDraft } = useDraft(value, onChangeText)
@@ -104,11 +107,10 @@ export function Composer({
               size="sm"
               onPress={send}
               isDisabled={!canSend}
-              isLoading={isSending}
               accessibilityLabel={sendLabel}
               testID="chat-composer-send"
             >
-              <ButtonText>{sendLabel}</ButtonText>
+              <ButtonText>{isSending ? sendingLabel : sendLabel}</ButtonText>
             </Button>
           </View>
         ) : null}
