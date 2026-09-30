@@ -36,14 +36,11 @@ export interface MarkdownProseProps {
   linkers?: ProseLinker[]
   /** `md` is one step up from the dense default, in primary text colour. */
   size?: ProseSize
-  /** `on-brand` sets the text for a brand-filled surface, such as the viewer's own bubble. */
-  tone?: ProseTone
   className?: string
   testID?: string
 }
 
 export type ProseSize = 'sm' | 'md'
-export type ProseTone = 'default' | 'on-brand'
 
 const BOLD = /\*\*[^*]+\*\*/
 const CODE = /`[^`]+`/
@@ -97,14 +94,6 @@ const BODY_TEXT: Record<ProseSize, string> = {
   sm: 'text-xs leading-5 text-text-secondary',
   md: 'text-sm leading-5 text-text-primary',
 }
-const ON_BRAND_TEXT: Record<ProseSize, string> = {
-  sm: 'text-xs leading-5 text-on-brand-primary',
-  md: 'text-sm leading-5 text-on-brand-primary',
-}
-
-const textClass = (size: ProseSize, tone: ProseTone) =>
-  tone === 'on-brand' ? ON_BRAND_TEXT[size] : BODY_TEXT[size]
-
 const TONE_CLASS: Record<ProseLinkTone, string> = {
   brand: 'font-semibold text-brand-primary',
   link: 'font-medium text-text-link',
@@ -136,12 +125,7 @@ function LinkedRef({ linker, value }: { linker: ProseLinker; value: string }) {
   )
 }
 
-function renderInline(
-  text: string,
-  linkers: ProseLinker[],
-  tokenizer: RegExp,
-  emphasis: string
-): ReactNode[] {
+function renderInline(text: string, linkers: ProseLinker[], tokenizer: RegExp): ReactNode[] {
   const anchoredLinkers = linkers.map((l) => ({ linker: l, test: anchored(l.pattern) }))
   return text
     .split(tokenizer)
@@ -149,14 +133,14 @@ function renderInline(
     .map((piece, i) => {
       if (anchored(BOLD).test(piece)) {
         return (
-          <Text key={i} className={cn('font-semibold', emphasis)}>
+          <Text key={i} className="font-semibold text-text-primary">
             {piece.slice(2, -2)}
           </Text>
         )
       }
       if (anchored(CODE).test(piece)) {
         return (
-          <Text key={i} className={cn('font-mono', emphasis)}>
+          <Text key={i} className="font-mono text-text-primary">
             {piece.slice(1, -1)}
           </Text>
         )
@@ -171,11 +155,10 @@ interface BlockProps {
   block: ProseBlock
   inline: (text: string) => ReactNode[]
   size: ProseSize
-  tone: ProseTone
 }
 
-function Block({ block, inline, size, tone }: BlockProps) {
-  const body = textClass(size, tone)
+function Block({ block, inline, size }: BlockProps) {
+  const body = BODY_TEXT[size]
   if (block.type === 'h1' || block.type === 'h2') {
     return (
       <Typography variant={block.type === 'h1' ? 'h5' : 'h6'} className="mt-1.5 text-text-primary">
@@ -193,7 +176,7 @@ function Block({ block, inline, size, tone }: BlockProps) {
   if (block.type === 'li') {
     return (
       <View className="flex-row gap-2 pl-1">
-        <Text className={cn(body, tone === 'default' && 'text-brand-primary')}>•</Text>
+        <Text className={cn(body, 'text-brand-primary')}>•</Text>
         <Typography variant="body2" className={cn('flex-1', body)}>
           {inline(block.text)}
         </Typography>
@@ -221,18 +204,16 @@ export function MarkdownProse({
   body,
   linkers = [],
   size = 'sm',
-  tone = 'default',
   className,
   testID,
 }: MarkdownProseProps) {
   const blocks = useMemo(() => parseProseBlocks(body), [body])
   const tokenizer = useMemo(() => buildTokenizer(linkers), [linkers])
-  const emphasis = tone === 'on-brand' ? 'text-on-brand-primary' : 'text-text-primary'
-  const inline = (text: string) => renderInline(text, linkers, tokenizer, emphasis)
+  const inline = (text: string) => renderInline(text, linkers, tokenizer)
   return (
     <View className={cn('gap-2', className)} testID={testID}>
       {blocks.map((block, i) => (
-        <Block key={i} block={block} inline={inline} size={size} tone={tone} />
+        <Block key={i} block={block} inline={inline} size={size} />
       ))}
     </View>
   )

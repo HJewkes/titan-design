@@ -46,14 +46,13 @@ function useCoachReplies(replyDelayMs: number) {
 }
 
 interface CoachPresetArgs {
-  layout: 'phone' | 'drawer' | 'wide'
+  layout: 'phone' | 'drawer'
   replyDelayMs: number
 }
 
 const FRAME_STYLE: Record<CoachPresetArgs['layout'], ViewStyle> = {
   phone: { width: 390, maxWidth: '100%', height: 760 },
   drawer: { width: '100%', maxWidth: 480, height: 800 },
-  wide: { width: '100%', maxWidth: 760, height: 800, alignSelf: 'center' },
 }
 
 function CoachThread({ replyDelayMs, style }: { replyDelayMs: number; style: ViewStyle }) {
@@ -100,13 +99,6 @@ function CoachPreset({ layout, replyDelayMs }: CoachPresetArgs) {
       </Surface>
     )
   }
-  if (layout === 'wide') {
-    return (
-      <Surface level="background" className="w-full p-gutter-sm">
-        {thread}
-      </Surface>
-    )
-  }
   return thread
 }
 
@@ -130,7 +122,7 @@ const meta: Meta<CoachPresetArgs> = {
     },
   },
   argTypes: {
-    layout: { control: 'select', options: ['phone', 'drawer', 'wide'] },
+    layout: { control: 'select', options: ['phone', 'drawer'] },
     replyDelayMs: { control: { type: 'number' } },
   },
   args: { layout: 'phone', replyDelayMs: 1500 },
@@ -142,8 +134,5 @@ type Story = StoryObj<CoachPresetArgs>
 /** Phone-width PWA. */
 export const Phone: Story = {}
 
-/** Wall size, option 1: the thread stays a phone-shaped drawer, capped at 480 px beside the dashboard. */
+/** Wall size: the thread stays a phone-shaped drawer, capped at 480 px beside the dashboard. */
 export const WallDrawer: Story = { args: { layout: 'drawer' } }
-
-/** Wall size, option 2: the thread takes a real wide layout, a reading column capped at 760 px. */
-export const WallWide: Story = { args: { layout: 'wide' } }

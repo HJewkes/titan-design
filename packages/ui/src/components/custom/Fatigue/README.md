@@ -87,13 +87,13 @@ under jsdom, gotcha 6). `LiveFatiguePanel` measures its own width (`SIZE-D01`:
 container-driven, not a `size` prop) and calls it; `containerWidth` overrides the
 measurement for tests and for a consumer that already knows the width.
 
-| tier | width | layout | padding · gap | card width |
-| --- | --- | --- | --- | --- |
-| `xs` | < 600 | stacked | 16 · 12 | full content width |
-| `sm` | 600–999 | stacked | 20 · 14 | full content width |
-| `md` | 1000–1199 | row | 24 · 18 | 318 |
-| `lg` | 1200–1919 | row | 24 · 18 | 318 |
-| `xl` | ≥ 1920 | row | 24 · 18 | `0.22 × width`, clamped to 318–460 |
+| tier | width     | layout  | padding · gap | card width                         |
+| ---- | --------- | ------- | ------------- | ---------------------------------- |
+| `xs` | < 600     | stacked | 16 · 12       | full content width                 |
+| `sm` | 600–999   | stacked | 20 · 14       | full content width                 |
+| `md` | 1000–1199 | row     | 24 · 18       | 318                                |
+| `lg` | 1200–1919 | row     | 24 · 18       | 318                                |
+| `xl` | ≥ 1920    | row     | 24 · 18       | `0.22 × width`, clamped to 318–460 |
 
 The edges are titan's own `primitiveBreakpoints`, asserted by identity in
 `panel-layout.test.ts` so nobody can quietly swap in a hand-picked set. Padding and gap

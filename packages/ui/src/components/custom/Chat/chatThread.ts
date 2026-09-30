@@ -17,7 +17,7 @@ export const TIME_BREAK_MS = 60 * 60 * 1000
 /** A rendered row in the thread: a time or day boundary, or a message with its run position. */
 export type ThreadRow =
   | { kind: 'date'; key: string; at: string; showDay: boolean }
-  | { kind: 'message'; key: string; message: ChatMessage; startsGroup: boolean; endsGroup: boolean }
+  | { kind: 'message'; key: string; message: ChatMessage; startsGroup: boolean }
 
 export function isTextPart(part: ChatPart): part is TextPart {
   return part.type === 'text'
@@ -73,21 +73,18 @@ function dateRow(previous: ChatMessage | undefined, message: ChatMessage): Threa
   return { kind: 'date', key, at: message.createdAt, showDay: newDay }
 }
 
-/** Interleaves time rows and marks where each author run begins and ends. */
+/** Interleaves time rows and marks where each author run begins. */
 export function buildThreadRows(messages: readonly ChatMessage[]): ThreadRow[] {
   const rows: ThreadRow[] = []
   messages.forEach((message, index) => {
     const previous = messages[index - 1]
-    const next = messages[index + 1]
     const date = dateRow(previous, message)
     if (date) rows.push(date)
-    const nextDate = next ? dateRow(message, next) : null
     rows.push({
       kind: 'message',
       key: message.id,
       message,
       startsGroup: date !== null || opensRun(previous, message),
-      endsGroup: nextDate !== null || !next || opensRun(message, next),
     })
   })
   return rows

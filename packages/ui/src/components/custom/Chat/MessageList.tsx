@@ -15,14 +15,7 @@ import {
 } from './chatThread'
 import { DateSeparator } from './DateSeparator'
 import { ConversationIdentity } from './ConversationIdentity'
-import {
-  MessageBubble,
-  type DataPartRenderer,
-  type Endorsement,
-  type GroupAvatarAt,
-  type OwnFill,
-  type ThreadLayout,
-} from './MessageBubble'
+import { MessageBubble, type DataPartRenderer, type ThreadLayout } from './MessageBubble'
 import { RevealProvider, RevealRow, useRevealGesture } from './RevealRow'
 import { TypingIndicator } from './TypingIndicator'
 import { UnreadBadge } from './UnreadBadge'
@@ -39,9 +32,6 @@ export interface MessageListProps {
   layout?: ThreadLayout
   /** Top of the thread. A direct thread defaults to the other party's name and avatar. */
   header?: ReactNode
-  ownFill?: OwnFill
-  endorsement?: Endorsement
-  groupAvatarAt?: GroupAvatarAt
   /** Hold every message's time revealed, as if the thread were dragged left. */
   revealTimes?: boolean
   /** Participants composing right now, shown under the newest message. */
@@ -82,10 +72,6 @@ function Row({ row, props, layout, newestOwnId }: RowProps) {
         isOwn={message.authorId === props.viewerId}
         layout={layout}
         startsGroup={row.startsGroup}
-        endsGroup={row.endsGroup}
-        groupAvatarAt={props.groupAvatarAt}
-        ownFill={props.ownFill}
-        endorsement={props.endorsement}
         showDelivery={message.id === newestOwnId}
         renderDataPart={props.renderDataPart}
         linkers={props.linkers}

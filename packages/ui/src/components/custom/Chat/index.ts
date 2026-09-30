@@ -3,9 +3,6 @@ export {
   MessageBubble,
   type MessageBubbleProps,
   type DataPartRenderer,
-  type Endorsement,
-  type GroupAvatarAt,
-  type OwnFill,
   type ThreadLayout,
 } from './MessageBubble'
 export { ChatCard, type ChatCardAction, type ChatCardProps } from './ChatCard'

@@ -36,24 +36,13 @@ describe('MessageBubble', () => {
     expect(screen.getByTestId('chat-message-author')).toHaveTextContent('Coach')
   })
 
-  it('puts the group avatar on the last message of a run by default', () => {
+  it('puts the group avatar on the first message of a run only', () => {
     const { rerender } = render(
-      <MessageBubble message={coachMessage} author={COACH} layout="group" endsGroup={false} />
+      <MessageBubble message={coachMessage} author={COACH} layout="group" />
     )
-    expect(screen.queryByRole('img')).toBeNull()
-    rerender(<MessageBubble message={coachMessage} author={COACH} layout="group" />)
     expect(screen.getByRole('img', { name: 'Coach' })).toBeInTheDocument()
-  })
-
-  it('moves the group avatar to the first message when asked', () => {
-    render(
-      <MessageBubble
-        message={coachMessage}
-        author={COACH}
-        layout="group"
-        groupAvatarAt="first"
-        startsGroup={false}
-      />
+    rerender(
+      <MessageBubble message={coachMessage} author={COACH} layout="group" startsGroup={false} />
     )
     expect(screen.queryByRole('img')).toBeNull()
   })
@@ -82,34 +71,17 @@ describe('MessageBubble', () => {
     expect(screen.queryByTestId('chat-message-delivery')).toBeNull()
   })
 
-  it('draws the own bubble solid by default and as a tint on request', () => {
-    const { rerender } = render(<MessageBubble message={ownMessage} author={ATHLETE} isOwn />)
-    expect(screen.getByTestId('chat-own-bubble-solid')).toBeInTheDocument()
-    rerender(<MessageBubble message={ownMessage} author={ATHLETE} isOwn ownFill="tint" />)
-    expect(screen.getByTestId('chat-own-bubble-tint')).toBeInTheDocument()
-    expect(screen.queryByTestId('chat-own-bubble-solid')).toBeNull()
+  it('draws the own bubble in the brand tint', () => {
+    render(<MessageBubble message={ownMessage} author={ATHLETE} isOwn />)
+    expect(screen.getByTestId('chat-own-bubble')).toBeInTheDocument()
   })
 
-  describe('endorsement', () => {
+  it('marks an endorsed coach message', () => {
     const [plain, endorsed] = ENDORSEMENT_THREAD
-
-    it.each(['outline', 'fill', 'emphasis'] as const)(
-      'marks an endorsed message with the %s treatment',
-      (endorsement) => {
-        render(<MessageBubble message={endorsed} author={COACH} endorsement={endorsement} />)
-        expect(screen.getByTestId(`chat-endorsed-bubble-${endorsement}`)).toBeInTheDocument()
-      }
-    )
-
-    it('draws an endorsed message plainly when no treatment is chosen', () => {
-      render(<MessageBubble message={endorsed} author={COACH} />)
-      expect(screen.queryByTestId(/chat-endorsed-bubble/)).toBeNull()
-    })
-
-    it('leaves an unendorsed message alone whatever the treatment', () => {
-      render(<MessageBubble message={plain} author={COACH} endorsement="outline" />)
-      expect(screen.queryByTestId(/chat-endorsed-bubble/)).toBeNull()
-    })
+    const { rerender } = render(<MessageBubble message={plain} author={COACH} />)
+    expect(screen.queryByTestId('chat-endorsed-bubble')).toBeNull()
+    rerender(<MessageBubble message={endorsed} author={COACH} />)
+    expect(screen.getByTestId('chat-endorsed-bubble')).toBeInTheDocument()
   })
 
   it('flags an undeliverable message', () => {

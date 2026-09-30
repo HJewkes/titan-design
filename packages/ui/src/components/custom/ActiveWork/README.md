@@ -72,24 +72,24 @@ Initiative reader (no organism: the host composes the pieces)
 
 ## Dependency map
 
-| Component             | Tier     | Composes ↓                                                                   | Used-by ↑                                                                          |
-| --------------------- | -------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `PortfolioOverview`   | organism | Card, Metric, Eyebrow, InitiativeCard                                        | app root (`Custom/ActiveWork/PortfolioOverview`)                            |
-| `InitiativeCard`      | card     | Card, Pill, StatusDot, SegmentedBar, Typography                              | PortfolioOverview                                                                  |
-| `FileHistoryExplorer` | organism | Card, Tile, Divider, Eyebrow, FileActivityRow/Detail, CoChangeChip           | app root (`Custom/ActiveWork/FileHistoryExplorer`)                         |
-| `FileActivityDetail`  | card     | Card, Tile, Pill, DataRow, DateTime, SparkBars, FilePathLabel, Eyebrow       | FileHistoryExplorer                                                                |
-| `FileActivityRow`     | row      | FilePathLabel, SparkBars, Typography                                         | FileHistoryExplorer                                                                |
-| `CoChangeChip`        | molecule | Card, Pill, FilePathLabel, Typography                                        | FileHistoryExplorer                                                                |
-| `FilePathLabel`       | molecule | Typography (`mono`)                                                          | FileActivityRow, FileActivityDetail, CoChangeChip                                  |
-| `TaskTable`           | organism | Table, useTable, TableHeader/Row/HeaderCell, TaskRow, SeverityLabel, Eyebrow | app root (`Custom/ActiveWork/TaskTable`)                                           |
-| `TaskRow`             | row      | TableRow, TableCell, SeverityLabel, Pill, Typography                         | TaskTable                                                                          |
-| `SeverityLabel`       | molecule | Indicator, Typography (`caption`)                                            | TaskRow, TaskTable (legend), InitiativeCard (vocabulary)                           |
-| `SessionList`         | list     | Eyebrow, SessionListItem                                                     | host composition (`Custom/ActiveWork/SessionReader` story)                        |
-| `SessionListItem`     | row      | DateTime, Pill, Typography                                                   | SessionList                                                                        |
-| `SessionDetail`       | card     | Card, Divider, Pill, DateTime, MarkdownProse (+ `sessionLinkers`)            | host composition (`Custom/ActiveWork/SessionReader` story)                        |
-| `InitiativeHeader`    | molecule | StatusDot, Pill, DateTime, Typography (+ `INITIATIVE_STATE_META`)            | host composition (`Custom/ActiveWork/InitiativeReader` story)                     |
-| `OpenLoops`           | list     | Eyebrow, Pill, Divider, MarkdownProse                                        | host composition (`Custom/ActiveWork/InitiativeReader` story)                     |
-| `InitiativeBrief`     | card     | Eyebrow, Typography, MarkdownProse                                           | host composition (`Custom/ActiveWork/InitiativeReader` story)                     |
+| Component             | Tier     | Composes ↓                                                                   | Used-by ↑                                                     |
+| --------------------- | -------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `PortfolioOverview`   | organism | Card, Metric, Eyebrow, InitiativeCard                                        | app root (`Custom/ActiveWork/PortfolioOverview`)              |
+| `InitiativeCard`      | card     | Card, Pill, StatusDot, SegmentedBar, Typography                              | PortfolioOverview                                             |
+| `FileHistoryExplorer` | organism | Card, Tile, Divider, Eyebrow, FileActivityRow/Detail, CoChangeChip           | app root (`Custom/ActiveWork/FileHistoryExplorer`)            |
+| `FileActivityDetail`  | card     | Card, Tile, Pill, DataRow, DateTime, SparkBars, FilePathLabel, Eyebrow       | FileHistoryExplorer                                           |
+| `FileActivityRow`     | row      | FilePathLabel, SparkBars, Typography                                         | FileHistoryExplorer                                           |
+| `CoChangeChip`        | molecule | Card, Pill, FilePathLabel, Typography                                        | FileHistoryExplorer                                           |
+| `FilePathLabel`       | molecule | Typography (`mono`)                                                          | FileActivityRow, FileActivityDetail, CoChangeChip             |
+| `TaskTable`           | organism | Table, useTable, TableHeader/Row/HeaderCell, TaskRow, SeverityLabel, Eyebrow | app root (`Custom/ActiveWork/TaskTable`)                      |
+| `TaskRow`             | row      | TableRow, TableCell, SeverityLabel, Pill, Typography                         | TaskTable                                                     |
+| `SeverityLabel`       | molecule | Indicator, Typography (`caption`)                                            | TaskRow, TaskTable (legend), InitiativeCard (vocabulary)      |
+| `SessionList`         | list     | Eyebrow, SessionListItem                                                     | host composition (`Custom/ActiveWork/SessionReader` story)    |
+| `SessionListItem`     | row      | DateTime, Pill, Typography                                                   | SessionList                                                   |
+| `SessionDetail`       | card     | Card, Divider, Pill, DateTime, MarkdownProse (+ `sessionLinkers`)            | host composition (`Custom/ActiveWork/SessionReader` story)    |
+| `InitiativeHeader`    | molecule | StatusDot, Pill, DateTime, Typography (+ `INITIATIVE_STATE_META`)            | host composition (`Custom/ActiveWork/InitiativeReader` story) |
+| `OpenLoops`           | list     | Eyebrow, Pill, Divider, MarkdownProse                                        | host composition (`Custom/ActiveWork/InitiativeReader` story) |
+| `InitiativeBrief`     | card     | Eyebrow, Typography, MarkdownProse                                           | host composition (`Custom/ActiveWork/InitiativeReader` story) |
 
 ## Surfaces and depth
 

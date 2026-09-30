@@ -7,7 +7,7 @@ import { ATHLETE, COACH, COACH_THREAD, chatMessage, localIso } from './coach-thr
 function rowSummary(messages: ChatMessage[]) {
   return buildThreadRows(messages).map((row) => {
     if (row.kind === 'date') return row.showDay ? 'day' : 'time'
-    return `${row.message.id}${row.startsGroup ? '^' : ''}${row.endsGroup ? '$' : ''}`
+    return `${row.message.id}${row.startsGroup ? '^' : ''}`
   })
 }
 
@@ -15,13 +15,13 @@ describe('buildThreadRows', () => {
   it('opens each calendar day with a day row and starts a run on every new day', () => {
     expect(rowSummary(COACH_THREAD)).toEqual([
       'day',
-      'm1^$',
-      'm2^$',
-      'm3^$',
+      'm1^',
+      'm2^',
+      'm3^',
       'day',
       'm4^',
-      'm5$',
-      'm6^$',
+      'm5',
+      'm6^',
     ])
   })
 
@@ -31,7 +31,7 @@ describe('buildThreadRows', () => {
       chatMessage('b', COACH, localIso(0, 8, 5), []),
       chatMessage('c', COACH, localIso(0, 8, 11), []),
     ]
-    expect(rowSummary(messages)).toEqual(['day', 'a^', 'b$', 'c^$'])
+    expect(rowSummary(messages)).toEqual(['day', 'a^', 'b', 'c^'])
   })
 
   it('opens a time row, without a day, after a pause of more than an hour in one day', () => {
@@ -39,7 +39,7 @@ describe('buildThreadRows', () => {
       chatMessage('a', COACH, localIso(0, 8, 0), []),
       chatMessage('b', COACH, localIso(0, 9, 30), []),
     ]
-    expect(rowSummary(messages)).toEqual(['day', 'a^$', 'time', 'b^$'])
+    expect(rowSummary(messages)).toEqual(['day', 'a^', 'time', 'b^'])
   })
 
   it('keeps a pause of exactly an hour inside the thread without a time row', () => {
@@ -47,7 +47,7 @@ describe('buildThreadRows', () => {
       chatMessage('a', ATHLETE, localIso(0, 8, 0), []),
       chatMessage('b', COACH, localIso(0, 9, 0), []),
     ]
-    expect(rowSummary(messages)).toEqual(['day', 'a^$', 'b^$'])
+    expect(rowSummary(messages)).toEqual(['day', 'a^', 'b^'])
   })
 
   it('returns no rows for an empty thread', () => {
