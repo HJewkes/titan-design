@@ -73,6 +73,28 @@ describe('PinnedLiveStrip re-rendering', () => {
     expect(plots.count).toBe(afterMount + 1)
   })
 
+  it('relabels the set line, not the bar plot, when the target source changes', () => {
+    const { rerender } = render(ticking(47_000))
+    const afterMount = plots.count
+    rerender(ticking(46_000, { targetSource: 'last-time' }))
+    expect(screen.getByText('Next: set 3 of 3 · last time · 140 lb')).toBeInTheDocument()
+    expect(screen.getByTestId('pinned-live-strip')).toHaveAccessibleName(
+      /, targets from last time$/
+    )
+    expect(plots.count).toBe(afterMount)
+  })
+
+  it('renders "plan" byte for byte as an omitted target source', () => {
+    const omitted = render(ticking(47_000)).container.innerHTML
+    const plan = render(ticking(47_000, { targetSource: 'plan' })).container.innerHTML
+    expect(plan).toBe(omitted)
+  })
+
+  it('has no accessibility violations with last-time targets', async () => {
+    const { container } = render(ticking(47_000, { targetSource: 'last-time' }))
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
   it('has no accessibility violations', async () => {
     const { container } = render(ticking(47_000))
     expect(await axe(container)).toHaveNoViolations()

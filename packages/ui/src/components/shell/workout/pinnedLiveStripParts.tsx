@@ -106,13 +106,18 @@ export interface SetLineProps {
   setNumber: number
   setCount: number
   loadLabel?: string
+  targetSource?: LiveStripTargetSource
 }
 
+/** Where the set's targets came from: the lifter's plan, or derived from last time's sets. */
+export type LiveStripTargetSource = 'plan' | 'last-time'
+
 export function setLine(props: SetLineProps, short: boolean): string {
-  const { state, setNumber, setCount, loadLabel } = props
+  const { state, setNumber, setCount, loadLabel, targetSource } = props
   const isRest = state === 'rest'
-  if (short) return `${isRest ? 'Next' : 'Set'} ${setNumber}/${setCount}`
-  const base = `${isRest ? 'Next: set' : 'Set'} ${setNumber} of ${setCount}`
+  const source = targetSource === 'last-time' ? ' · last time' : ''
+  if (short) return `${isRest ? 'Next' : 'Set'} ${setNumber}/${setCount}${source}`
+  const base = `${isRest ? 'Next: set' : 'Set'} ${setNumber} of ${setCount}${source}`
   return loadLabel ? `${base} · ${loadLabel}` : base
 }
 

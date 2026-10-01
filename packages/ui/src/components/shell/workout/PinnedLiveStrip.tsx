@@ -32,6 +32,7 @@ import {
   Title,
   TONE,
   useStripLayout,
+  type LiveStripTargetSource,
   type PinnedLiveStripLayout,
   type Scale,
   type Tone,
@@ -40,6 +41,7 @@ import {
 export {
   liveStripRestType,
   PINNED_LIVE_STRIP_PHONE_MAX,
+  type LiveStripTargetSource,
   type PinnedLiveStripLayout,
 } from './pinnedLiveStripParts'
 
@@ -52,6 +54,8 @@ export interface PinnedLiveStripProps {
   setCount: number
   /** Pre-formatted load, e.g. "140 lb". */
   loadLabel?: string
+  /** `last-time` labels targets derived from the lifter's last session; `plan` (default) adds no label. */
+  targetSource?: LiveStripTargetSource
   /** Performed reps of the current set (in `rest`, of the set just finished), zones from analytics. */
   reps: readonly LiveStripRep[]
   targetReps: number
@@ -321,6 +325,7 @@ function accessibleName(props: Parts): string {
     progressPhrase(props),
     lastRepPhrase(props.reps),
     tone === 'fatigue' ? 'fatigued' : null,
+    props.targetSource === 'last-time' ? 'targets from last time' : null,
   ]
     .filter(Boolean)
     .join(', ')

@@ -15,6 +15,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
   strip's 72px wall row. The wall names each side and its load; below 640px the phone marks the
   sides by position. Rest is one countdown beside the finished set. A fatigued side reddens the
   strip and its name; a dropped side (`isConnected: false`) stays with its wing faded (VW-439).
+- `PinnedLiveStrip` takes an optional `targetSource` (`'plan' | 'last-time'`), exported as
+  `LiveStripTargetSource`. With `'last-time'` the set line reads "Set 2 of 3 · last time · 140 lb"
+  on the wall and "Set 2/3 · last time" on the phone, and the accessible name ends ", targets from
+  last time". `'plan'` or omitted renders exactly as before (VW-644).
 - `DualVelocityStream` takes `isDimmed`, which fades that side's wing in every dual variant (VW-439).
 - A `Chat` family under `custom/`: `MessageList`, `MessageBubble`, `Composer`, `ChatCard`,
   `ConversationIdentity`, `DateSeparator`, `TypingIndicator` and `UnreadBadge`. A thread has a
