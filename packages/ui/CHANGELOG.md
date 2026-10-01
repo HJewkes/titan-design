@@ -56,6 +56,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
   type scales and layout hook move to an internal `pinnedLiveStripParts` module, so a second
   strip form can share them. The strip renders the same, and `liveStripRestType`,
   `PINNED_LIVE_STRIP_PHONE_MAX` and `PinnedLiveStripLayout` are still exported from it (VW-634).
+- `WorkoutPill`'s deload wash, rim and label and `WeekRow`'s deload row wash read the
+  `status-deload` token for the surface's mode instead of the `WORKOUT_PILL_DELOAD` ramp pin. Both
+  modes resolve to the same magenta, so nothing renders differently today (VW-531).
 
 ### Fixed
 

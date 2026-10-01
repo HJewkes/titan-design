@@ -4,15 +4,10 @@ import { WorkoutPill, type WorkoutPillStatus } from './WorkoutPill'
 import { IntensityBar } from './IntensityBar'
 import { Typography } from '../../ui/typography'
 import { resolveColor } from '../../../theme/resolve-color'
-import { WORKOUT_PILL_DELOAD } from '../../../theme/extracted-colors-dataviz'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { alpha } from '../../../utils/colors'
 import { cn } from '../../../utils/cn'
-
-// Deload magenta has no semantic token — it is a ramp pin shared with WorkoutPill
-// (`extracted-colors-dataviz`). The row wash must track the pill exactly, so it
-// is derived from the same pin rather than mixed independently. FINDING for E3:
-// the deload role needs a `-subtle` token like every other status.
-const DELOAD_ROW_WASH = alpha(WORKOUT_PILL_DELOAD, 0.06)
+import { useSurfaceMode } from '../../ui/surface'
 
 export interface WeekRowWorkout {
   name: string
@@ -67,10 +62,11 @@ export function WeekRow({
   ...props
 }: WeekRowProps) {
   const brandPrimary = resolveColor('brand-primary')
+  const deload = getSemanticColors(useSurfaceMode())['status-deload']
   const rowStyle: Record<string, unknown> = {}
 
   if (isDeload) {
-    rowStyle.backgroundColor = DELOAD_ROW_WASH
+    rowStyle.backgroundColor = alpha(deload, 0.06)
   }
 
   // Current wins over deload: the active week keeps the brand rail and wash.

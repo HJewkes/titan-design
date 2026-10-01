@@ -10,8 +10,21 @@ import { axe } from 'jest-axe'
 import { WeekRow } from './WeekRow'
 import type { WeekRowWorkout } from './WeekRow'
 import { resolveColor } from '../../../theme/resolve-color'
-import { WORKOUT_PILL_DELOAD } from '../../../theme/extracted-colors-dataviz'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { alpha } from '../../../utils/colors'
+import { Surface } from '../../ui/surface'
+
+// Light status-deload equals dark, so light is swapped for another token to prove the mode is read.
+vi.mock('../../../theme/tokens/semantic', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../../theme/tokens/semantic')>()
+  const light = actual.getSemanticColors('light')
+  const probeLight = { ...light, 'status-deload': light['status-info'] }
+  return {
+    ...actual,
+    getSemanticColors: (mode: 'dark' | 'light') =>
+      mode === 'light' ? probeLight : actual.getSemanticColors(mode),
+  }
+})
 
 const workouts: WeekRowWorkout[] = [
   { name: 'Upper', status: 'completed' },
@@ -80,10 +93,23 @@ describe('WeekRow', () => {
       expect(screen.getAllByLabelText(/workout, deload/)).toHaveLength(3)
     })
 
-    it('washes the row with the same deload pin WorkoutPill uses', () => {
+    it('washes the row with the dark status-deload token by default', () => {
       render(<WeekRow {...baseProps} isDeload />)
       const style = screen.getByTestId('week-row').getAttribute('style') ?? ''
-      expect(style).toContain(`background-color: ${alpha(WORKOUT_PILL_DELOAD, 0.06)}`)
+      const deload = getSemanticColors('dark')['status-deload']
+      expect(style).toContain(`background-color: ${alpha(deload, 0.06)}`)
+    })
+
+    it('washes the row with the light status-deload token on a light surface', () => {
+      render(
+        <Surface theme="light">
+          <WeekRow {...baseProps} isDeload />
+        </Surface>
+      )
+      const style = screen.getByTestId('week-row').getAttribute('style') ?? ''
+      const deload = getSemanticColors('light')['status-deload']
+      expect(deload).not.toBe(getSemanticColors('dark')['status-deload'])
+      expect(style).toContain(`background-color: ${alpha(deload, 0.06)}`)
     })
 
     it('lets a current deload week keep the brand rail over the deload wash', () => {
