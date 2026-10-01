@@ -70,12 +70,15 @@ sha256 of the manifest you wrote.
   (a static PNG, for app-level screens Storybook cannot render). `image` is a path relative to
   the round file, with no `..` segments. Load time follows symlinks and refuses an image that is
   missing, is not a PNG, or resolves outside the round's directory. The page draws it in the same
-  card, with the same verdict, comment, pin and keyboard controls, at each declared width; an
-  `"auto"` frame is as tall as the image at that width, and a number crops it to that height.
-  Pins carry no `target`, since there is no DOM to hit-test. `args` and `globals` are refused on
-  an image variant. Feedback echoes `image` where a story variant echoes `storyId`. Capture copies
-  the PNG to `<out>/<key>-image.png` instead of shooting it, and a round whose variants are all
-  images needs no Storybook running (`storybookUrl` is still required).
+  card, with the same verdict, comment, pin and keyboard controls, at each declared width.
+  Heights follow the same rules as a story frame (see _Heights_): an `"auto"` frame is as tall
+  as the image at that width up to the cap, a section or variant number fixes the frame, and an
+  image taller than its frame scrolls inside it. Pins carry no `target`, since there is no DOM
+  to hit-test. `args` and `globals` are refused on an image variant. Feedback echoes `image`
+  where a story variant echoes `storyId`. Capture copies the PNG to `<out>/<key>-image.png`
+  instead of shooting it (`<key>-image-2.png` and so on if that name is one of the round's
+  source images; capture never writes over a source), and a round whose variants are all images
+  needs no Storybook running (`storybookUrl` is still required).
 - Feedback `titan-review/feedback@1`: `manifestSha256`, `submittedAt`,
   `answers[{questionId, pick | picks | value | text, comment?, variantComments?}]`,
   `variants[{key, storyId | image, verdict: chosen|rejected|maybe|null, comment, annotations[], relatedQuestionIds?}]`,

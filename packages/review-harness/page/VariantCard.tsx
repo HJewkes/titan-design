@@ -99,7 +99,14 @@ export function VariantCard(props: VariantCardProps) {
           const pins = draft.annotations
           if (isImageVariant(variant))
             return (
-              <ImageFrame key={width} {...shared} variant={variant} pins={pins} onPin={onPin} />
+              <ImageFrame
+                key={width}
+                {...shared}
+                variant={variant}
+                maxHeight={sizing.maxHeight}
+                pins={pins}
+                onPin={onPin}
+              />
             )
           return (
             isStoryVariant(variant) && (

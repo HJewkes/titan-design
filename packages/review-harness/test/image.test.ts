@@ -99,6 +99,11 @@ describe('serving an image variant', () => {
   it.each(['A', 'nope', '..%2Fround.json', 'toString'])('answers 404 for %s', async (key) => {
     expect((await fetch(`${server.url}api/image/${key}`)).status).toBe(404)
   })
+
+  it('answers 404 for a malformed escape and stays up', async () => {
+    expect((await fetch(`${server.url}api/image/%E0%A4%A`)).status).toBe(404)
+    expect((await fetch(`${server.url}api/image/C`)).status).toBe(200)
+  })
 })
 
 describe('the page and the record for an image variant', () => {
@@ -131,12 +136,58 @@ describe('the page and the record for an image variant', () => {
     expect(feedback.variants[0]).toMatchObject({ key: 'A', storyId: manifest.variants[0].storyId })
   })
 
-  it('copies the PNG into the capture directory without starting a browser', async () => {
-    const { path } = await roundDir(imageRound('shots/wall.png', true))
+  it('caps an auto image frame at the round cap and fixes a numbered one, scrolling past either', () => {
+    const capped = ManifestSchema.parse({ ...imageRound(), height: 'auto', maxHeight: 600 })
+    capped.variants[0] = { ...capped.variants[2], key: 'D', height: 300 }
+    const markup = renderToStaticMarkup(
+      createElement(App, { manifest: capped, manifestSha256: SHA })
+    )
+    const frames = (key: string) =>
+      markup
+        .slice(markup.indexOf(`data-testid="variant-${key}"`))
+        .match(/class="frame-box image-box" style="[^"]*"/)?.[0]
+    expect(frames('C')).toContain('max-height:600px')
+    expect(frames('D')).toContain('height:300px')
+    expect(frames('D')).not.toContain('max-height')
+  })
+})
+
+describe('capturing an image variant', () => {
+  const capture = async (manifest: ManifestInput, setup?: (dir: string) => Promise<void>) => {
+    const { dir, path } = await roundDir(manifest)
+    await setup?.(dir)
     const round = await loadRound(path)
-    const out = await mkdtemp(join(tmpdir(), 'titan-review-out-'))
-    const files = await captureRound(round.manifest, round.storybookUrl, out, round.images)
+    const out = await realpath(dir)
+    return { out, run: () => captureRound(round.manifest, round.storybookUrl, out, round.images) }
+  }
+
+  it('copies the PNG into the capture directory without starting a browser', async () => {
+    const { run, out } = await capture(imageRound('shots/wall.png', true))
+    const files = await run()
     expect(files).toEqual([join(out, 'C-image.png')])
     expect((await readFile(files[0])).equals(PNG)).toBe(true)
+  })
+
+  it("renames a copy that would land on another variant's source PNG", async () => {
+    const original = Buffer.concat([PNG, Buffer.from('B source')])
+    const manifest = {
+      ...imageRound('shots/wall.png', true),
+      variants: [
+        { key: 'A', image: 'shots/wall.png', label: 'A' },
+        { key: 'B', image: 'A-image.png', label: 'B' },
+      ],
+      questions: [],
+    }
+    const { run, out } = await capture(manifest, (dir) =>
+      writeFile(join(dir, 'A-image.png'), original)
+    )
+    expect(await run()).toEqual([join(out, 'A-image-2.png'), join(out, 'B-image.png')])
+    expect((await readFile(join(out, 'A-image.png'))).equals(original)).toBe(true)
+  })
+
+  it("refuses a story shot that would land on an image variant's source, before any browser", async () => {
+    const m = imageRound('1920-A-responsive.png')
+    const { run } = await capture(m, (dir) => writeFile(join(dir, '1920-A-responsive.png'), PNG))
+    await expect(run()).rejects.toThrow(/refusing to overwrite the round's source image/)
   })
 })

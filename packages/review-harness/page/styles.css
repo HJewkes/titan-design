@@ -357,7 +357,15 @@ button.primary kbd {
   border-color: currentColor;
 }
 
-.frame-box img {
+.image-box {
+  overflow: hidden auto;
+}
+
+.image-content {
+  position: relative;
+}
+
+.image-content img {
   display: block;
   height: auto;
 }
