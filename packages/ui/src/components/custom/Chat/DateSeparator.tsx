@@ -1,0 +1,67 @@
+import { useState } from 'react'
+import { View } from 'react-native'
+import { cn } from '../../../utils/cn'
+import { Divider } from '../../ui/divider'
+import { Typography } from '../../ui/typography'
+import { DateTime } from '../DateTime'
+import { dayKey } from './chatThread'
+
+export interface DateSeparatorProps {
+  /** Any instant on the day this separator opens (ISO string, Date or epoch ms). */
+  date: string | Date | number
+  /** The reader's "now", for Today / Yesterday. Pass a fixed value to freeze stories and tests. */
+  now?: string | Date | number
+  /** Name the day. Turn it off for a pause within a day, which shows only the time. */
+  showDay?: boolean
+  /** Add the clock time, as Messages does when it opens a day or follows a long pause. */
+  showTime?: boolean
+  className?: string
+}
+
+const DAY_MS = 24 * 60 * 60 * 1000
+
+function relativeDayName(date: Date, now: Date): string | null {
+  const iso = date.toISOString()
+  if (dayKey(iso) === dayKey(now.toISOString())) return 'Today'
+  const yesterday = new Date(now.getTime() - DAY_MS).toISOString()
+  return dayKey(iso) === dayKey(yesterday) ? 'Yesterday' : null
+}
+
+/**
+ * A hairline with the day's name and, optionally, the time in the middle. It opens each
+ * calendar day of a thread and marks a long pause within one. Composes Divider + Typography,
+ * and DateTime for days older than yesterday and for the time.
+ */
+function DayLabel({ at, now }: { at: Date; now: Date }) {
+  const dayName = relativeDayName(at, now)
+  if (dayName) {
+    return (
+      <Typography variant="caption" color="tertiary">
+        {dayName}
+      </Typography>
+    )
+  }
+  return <DateTime value={at} format="medium" variant="caption" color="tertiary" />
+}
+
+export function DateSeparator({
+  date,
+  now,
+  showDay = true,
+  showTime = false,
+  className,
+}: DateSeparatorProps) {
+  const [renderedAt] = useState(() => Date.now())
+  const at = new Date(date)
+  return (
+    <View
+      className={cn('flex-row items-center gap-inline-md py-stack-md', className)}
+      testID="chat-date-separator"
+    >
+      <Divider className="flex-1" />
+      {showDay ? <DayLabel at={at} now={new Date(now ?? renderedAt)} /> : null}
+      {showTime ? <DateTime value={at} format="time" variant="caption" color="tertiary" /> : null}
+      <Divider className="flex-1" />
+    </View>
+  )
+}

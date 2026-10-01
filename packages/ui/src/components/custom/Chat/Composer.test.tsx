@@ -1,0 +1,88 @@
+import { describe, it, expect, vi } from 'vitest'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { axe } from 'jest-axe'
+
+import { Composer } from './Composer'
+
+function type(text: string) {
+  fireEvent.change(screen.getByTestId('chat-composer-input'), { target: { value: text } })
+}
+
+function sendButton() {
+  return screen.getByTestId('chat-composer-send')
+}
+
+describe('Composer', () => {
+  it('shows no send button until there is text', () => {
+    render(<Composer onSend={vi.fn()} />)
+    expect(screen.queryByTestId('chat-composer-send')).toBeNull()
+    type('hi')
+    expect(sendButton()).toBeInTheDocument()
+    type('')
+    expect(screen.queryByTestId('chat-composer-send')).toBeNull()
+  })
+
+  it('shows no send button for a whitespace-only draft', () => {
+    const onSend = vi.fn()
+    render(<Composer onSend={onSend} />)
+    type('   ')
+    expect(screen.queryByTestId('chat-composer-send')).toBeNull()
+    fireEvent.keyDown(screen.getByTestId('chat-composer-input'), { key: 'Enter' })
+    expect(onSend).not.toHaveBeenCalled()
+  })
+
+  it('sends the trimmed draft and clears itself', () => {
+    const onSend = vi.fn()
+    render(<Composer onSend={onSend} />)
+    type('  Works for me. ')
+    fireEvent.click(sendButton())
+    expect(onSend).toHaveBeenCalledWith('Works for me.')
+    expect(screen.getByTestId('chat-composer-input')).toHaveValue('')
+  })
+
+  it('sends on Enter', () => {
+    const onSend = vi.fn()
+    render(<Composer onSend={onSend} />)
+    type('ok')
+    fireEvent.keyDown(screen.getByTestId('chat-composer-input'), { key: 'Enter' })
+    expect(onSend).toHaveBeenCalledWith('ok')
+  })
+
+  it('keeps Shift+Enter for a line break', () => {
+    const onSend = vi.fn()
+    render(<Composer onSend={onSend} />)
+    type('ok')
+    fireEvent.keyDown(screen.getByTestId('chat-composer-input'), { key: 'Enter', shiftKey: true })
+    expect(onSend).not.toHaveBeenCalled()
+  })
+
+  it('leaves a controlled draft to its owner and reports the clear', () => {
+    const onSend = vi.fn()
+    const onChangeText = vi.fn()
+    render(<Composer onSend={onSend} value="draft" onChangeText={onChangeText} />)
+    fireEvent.click(sendButton())
+    expect(onSend).toHaveBeenCalledWith('draft')
+    expect(onChangeText).toHaveBeenLastCalledWith('')
+    expect(screen.getByTestId('chat-composer-input')).toHaveValue('draft')
+  })
+
+  it('refuses to send while disabled or already sending', () => {
+    const onSend = vi.fn()
+    const { rerender } = render(<Composer onSend={onSend} value="x" isDisabled />)
+    fireEvent.click(sendButton())
+    rerender(<Composer onSend={onSend} value="x" isSending />)
+    fireEvent.click(sendButton())
+    expect(onSend).not.toHaveBeenCalled()
+  })
+
+  it('says Sending on the button while a send is in flight', () => {
+    render(<Composer onSend={vi.fn()} value="x" isSending />)
+    expect(sendButton()).toHaveTextContent('Sending…')
+    expect(sendButton()).toHaveAccessibleName('Sending…')
+  })
+
+  it('has no accessibility violations', async () => {
+    const { container } = render(<Composer onSend={() => {}} placeholder="Message Coach" />)
+    expect(await axe(container)).toHaveNoViolations()
+  })
+})
