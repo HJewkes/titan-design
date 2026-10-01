@@ -22,7 +22,6 @@ import {
 import {
   BackToLive,
   liveStripRestType,
-  Overline,
   RestBar,
   SCALES,
   setLine,
@@ -48,8 +47,8 @@ export interface LiveStripSlot {
   isConnected?: boolean
 }
 
-/** Round 2 only (VW-439): what marks each side on a phone, where the name and load are dropped. */
-export type DualStripPhoneMarker = 'none' | 'letter'
+/** Round 3 only (VW-439): wall rest shows the countdown and chart alone, or keeps the sides too. */
+export type DualStripRestDetail = 'overall' | 'sides'
 
 export interface DualPinnedLiveStripProps {
   state: LiveStripState
@@ -66,7 +65,7 @@ export interface DualPinnedLiveStripProps {
   className?: string
   left: LiveStripSlot
   right: LiveStripSlot
-  phoneMarker?: DualStripPhoneMarker
+  restDetail?: DualStripRestDetail
 }
 
 type Side = 'left' | 'right'
@@ -85,16 +84,24 @@ interface Sizes {
   reps: string
   unit: string
   velocity: string
+  /** Both lanes; each lane is half. */
   chart: number
+  gap: string
 }
 
 // The wall holds the single strip's 72px row; the phone row grows to fit.
 const SIZES: Record<PinnedLiveStripLayout, Sizes> = {
-  wall: { reps: 'text-2xl', unit: 'text-base', velocity: 'text-xl', chart: 56 },
-  phone: { reps: 'text-xl', unit: 'text-sm', velocity: 'text-lg', chart: 56 },
+  wall: {
+    reps: 'text-2xl',
+    unit: 'text-base',
+    velocity: 'text-xl',
+    chart: 64,
+    gap: 'gap-section-sm',
+  },
+  phone: { reps: 'text-xl', unit: 'text-sm', velocity: 'text-lg', chart: 64, gap: 'gap-inline-lg' },
 }
 
-const BAR_PITCH = { wall: 24, phone: 12 }
+const BAR_PITCH = { wall: 24, phone: 10 }
 const NUMERAL = 'font-heading font-bold leading-none'
 const UNIT = 'font-medium text-text-secondary leading-none'
 const TABULAR = { fontVariant: ['tabular-nums' as const] }
@@ -109,7 +116,6 @@ type Parts = Omit<DualPinnedLiveStripProps, 'left' | 'right'> & {
 }
 
 const SIDE_NAME: Record<Side, string> = { left: 'Left', right: 'Right' }
-const SIDE_LETTER: Record<Side, string> = { left: 'L', right: 'R' }
 
 function slotView(side: Side, slot: LiveStripSlot, state: LiveStripState): SlotView {
   const isDropped = slot.isConnected === false
@@ -129,14 +135,9 @@ function slotColor(slot: SlotView): string {
   return resolveColor('text-secondary')
 }
 
-/** Wall: "name · load". Phone: the side's letter, or nothing; position carries the side. */
-function SlotName({ slot, parts }: { slot: SlotView; parts: Parts }) {
-  const isPhone = parts.layout === 'phone'
-  const text = isPhone
-    ? SIDE_LETTER[slot.side]
-    : slot.loadLabel
-      ? `${slot.name} · ${slot.loadLabel}`
-      : slot.name
+/** Wall only: "name · load". The phone has no room; position carries the side. */
+function SlotName({ slot }: { slot: SlotView }) {
+  const text = slot.loadLabel ? `${slot.name} · ${slot.loadLabel}` : slot.name
   return (
     <Typography
       variant="overline"
@@ -182,13 +183,12 @@ function SlotVelocity({ slot, parts }: { slot: SlotView; parts: Parts }) {
   )
 }
 
-/** The shared countdown, in the rep count's place: the sides keep their velocity and bars. */
+/** One countdown for the session, in the rep counts' place; the Resting tag already names it. */
 function RestReadout(parts: Parts) {
   const { seconds, size, unit, raisePx } = liveStripRestType(parts.layout, parts.restRemainingMs)
   const scale = SCALES[parts.layout]
   return (
-    <View testID="dual-strip-rest">
-      <Overline label="Rest left" />
+    <View testID="dual-strip-rest" className="justify-center">
       <Text
         testID="live-strip-hero"
         className={cn(NUMERAL, 'text-text-primary', scale.hero)}
@@ -201,11 +201,14 @@ function RestReadout(parts: Parts) {
   )
 }
 
-const hasName = (parts: Parts) => parts.layout === 'wall' || parts.phoneMarker === 'letter'
+const isRest = (parts: Parts) => parts.state === 'rest'
+// The phone has no names to label the sides, so its rest is always the countdown and the chart.
+const showsSides = (parts: Parts) =>
+  !isRest(parts) || (parts.layout === 'wall' && parts.restDetail === 'sides')
 
 /** Left above Right, column by column so the numerals align, beside one chart. */
 function Lanes(parts: Parts) {
-  const { slots, sizes, state } = parts
+  const { slots, sizes } = parts
   const laneHeight = sizes.chart / 2
   const isPhone = parts.layout === 'phone'
   const column = (cell: (slot: SlotView) => ReactNode, key: string) => (
@@ -220,19 +223,14 @@ function Lanes(parts: Parts) {
   return (
     <View
       testID="dual-strip-lanes"
-      className={cn(
-        'flex-row items-center',
-        isPhone ? 'min-w-0 flex-1 gap-inline-sm' : 'gap-inline-lg px-inset-xs'
-      )}
+      className={cn('flex-row items-center', sizes.gap, isPhone ? 'min-w-0 flex-1' : 'px-inset-xs')}
     >
-      {hasName(parts) ? column((slot) => <SlotName slot={slot} parts={parts} />, 'name') : null}
-      {state === 'rest' ? null : column((slot) => <SlotReps slot={slot} parts={parts} />, 'reps')}
-      {column(
-        (slot) => (
-          <SlotVelocity slot={slot} parts={parts} />
-        ),
-        'velocity'
-      )}
+      {!isPhone && showsSides(parts) ? column((slot) => <SlotName slot={slot} />, 'name') : null}
+      {isRest(parts) ? <RestReadout {...parts} /> : null}
+      {isRest(parts) ? null : column((slot) => <SlotReps slot={slot} parts={parts} />, 'reps')}
+      {showsSides(parts)
+        ? column((slot) => <SlotVelocity slot={slot} parts={parts} />, 'velocity')
+        : null}
       <DualBars {...barsOf(parts, isPhone)} />
     </View>
   )
@@ -324,7 +322,6 @@ function WallRow(parts: Parts) {
   return (
     <View className="flex-1 flex-row items-center gap-section-md px-gutter-md">
       <TitleBlock {...parts} />
-      {parts.state === 'rest' ? <RestReadout {...parts} /> : null}
       <Lanes {...parts} />
       {parts.isLink ? <BackToLive /> : null}
     </View>
@@ -352,10 +349,7 @@ function PhoneRows(parts: Parts) {
   return (
     <View className="justify-center gap-stack-sm px-inset-md py-inset-sm">
       <PhoneTitleRow {...parts} />
-      <View className="flex-row items-center gap-inline-md">
-        {parts.state === 'rest' ? <RestReadout {...parts} /> : null}
-        <Lanes {...parts} />
-      </View>
+      <Lanes {...parts} />
     </View>
   )
 }

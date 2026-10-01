@@ -24,7 +24,7 @@ const BASE = {
 }
 
 const ARMS = { left: 'Left arm', right: 'Right arm' }
-const OWNER = { left: 'Henry L', right: 'Henry R' }
+const BENCH = { left: 'Bench L', right: 'Bench R' }
 // The longest name in the set, about 20 characters, as a lifter might name a unit.
 const LONG = { left: 'Garage Voltra North', right: 'Garage Voltra South' }
 
@@ -78,24 +78,26 @@ export const DUAL_STRIP_SCENARIOS: Record<DualStripScenario, DualPinnedLiveStrip
     ...BASE,
     state: 'set',
     setNumber: 3,
-    left: slot(OWNER.left, '145 lb', LEFT_SET),
-    right: { ...slot(OWNER.right, '140 lb', RIGHT_FATIGUED), isFatigued: true },
+    left: slot(BENCH.left, '145 lb', LEFT_SET),
+    right: { ...slot(BENCH.right, '140 lb', RIGHT_FATIGUED), isFatigued: true },
   },
   rightDropped: {
     ...BASE,
     state: 'set',
     setNumber: 2,
-    left: slot(OWNER.left, '145 lb', LEFT_SET),
-    right: { ...slot(OWNER.right, '140 lb', RIGHT_SET.slice(0, 3)), isConnected: false },
+    left: slot(BENCH.left, '145 lb', LEFT_SET),
+    right: { ...slot(BENCH.right, '140 lb', RIGHT_SET.slice(0, 3)), isConnected: false },
   },
-  // The rest ceiling, with the widest load beside a light one.
+  // The rest ceiling after a 12-rep set, long names, the widest load beside a light one.
   longRest: {
     ...BASE,
+    exerciseName: 'Single-Arm Half-Kneeling Cable Row',
     state: 'rest',
-    setNumber: 2,
+    setNumber: 3,
+    targetReps: 12,
     restRemainingMs: 999_000,
     restDurationMs: 999_000,
-    left: slot(ARMS.left, '202.5 lb', LEFT_DONE),
-    right: slot(ARMS.right, '95 lb', RIGHT_DONE),
+    left: slot(LONG.left, '202.5 lb', reps(LEFT_TWELVE)),
+    right: slot(LONG.right, '95 lb', reps(RIGHT_TWELVE)),
   },
 }

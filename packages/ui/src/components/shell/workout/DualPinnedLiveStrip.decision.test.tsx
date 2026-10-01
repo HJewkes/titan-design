@@ -11,14 +11,14 @@ const composed = composeStories(stories, { decorators: preview.decorators })
 
 const strips = () => screen.queryAllByTestId(/^(dual-)?pinned-live-strip$/)
 
-describe('DualPinnedLiveStrip round 2 stories', () => {
+describe('DualPinnedLiveStrip round 3 stories', () => {
   it.each(Object.entries(composed))('%s renders its strips', (_name, Story) => {
     render(<Story />)
     expect(strips().length).toBeGreaterThanOrEqual(3)
   })
 })
 
-describe('DualPinnedLiveStrip round 2 specimen', () => {
+describe('DualPinnedLiveStrip round 3 specimen', () => {
   it('draws each side under the name the lifter gave it, with its own load, at the wall', () => {
     render(<DualPinnedLiveStrip {...S.set} layout="wall" />)
     expect(screen.getByTestId('dual-strip-name-left')).toHaveTextContent('Left arm · 145 lb')
@@ -40,17 +40,33 @@ describe('DualPinnedLiveStrip round 2 specimen', () => {
     )
   })
 
-  it('marks each phone lane with its side letter when asked', () => {
-    render(<DualPinnedLiveStrip {...S.set} layout="phone" phoneMarker="letter" />)
-    expect(screen.getByTestId('dual-strip-name-left')).toHaveTextContent(/^L$/)
-    expect(screen.getByTestId('dual-strip-name-right')).toHaveTextContent(/^R$/)
+  it('draws one rest countdown with no label, and only the chart beside it', () => {
+    render(<DualPinnedLiveStrip {...S.rest} layout="wall" />)
+    expect(screen.getAllByTestId('live-strip-hero')).toHaveLength(1)
+    expect(screen.queryByText(/rest left/i)).not.toBeInTheDocument()
+    expect(screen.queryByTestId('dual-strip-name-left')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('dual-strip-velocity-left')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('dual-strip-reps-left')).not.toBeInTheDocument()
+    expect(screen.getByTestId('dual-velocity-strip')).toBeInTheDocument()
+  })
+
+  it("keeps each side's name and velocity in rest when asked", () => {
+    render(<DualPinnedLiveStrip {...S.rest} layout="wall" restDetail="sides" />)
+    expect(screen.getAllByTestId('live-strip-hero')).toHaveLength(1)
+    expect(screen.getByTestId('dual-strip-name-right')).toHaveTextContent('Right arm · 140 lb')
+    expect(screen.getByTestId('dual-strip-velocity-right')).toHaveTextContent('0.66')
+  })
+
+  it('keeps a phone rest to the countdown and the chart even when the wall keeps the sides', () => {
+    render(<DualPinnedLiveStrip {...S.rest} layout="phone" restDetail="sides" />)
+    expect(screen.queryByTestId('dual-strip-velocity-right')).not.toBeInTheDocument()
   })
 
   it('says which side fatigued in its accessible name and reddens the whole strip', () => {
     render(<DualPinnedLiveStrip {...S.fatigueRight} layout="wall" />)
     const name = screen.getByTestId('dual-pinned-live-strip').getAttribute('aria-label')
-    expect(name).toMatch(/Henry R 140 lb 5 of 8 reps last rep 0\.55 m\/s fatigued/)
-    expect(name).not.toMatch(/Henry L[^,]*fatigued/)
+    expect(name).toMatch(/Bench R 140 lb 5 of 8 reps last rep 0\.55 m\/s fatigued/)
+    expect(name).not.toMatch(/Bench L[^,]*fatigued/)
     expect(screen.getByTestId('live-strip-fatigue-wash')).toBeInTheDocument()
   })
 
@@ -59,7 +75,7 @@ describe('DualPinnedLiveStrip round 2 specimen', () => {
     expect(screen.getByTestId('dual-velocity-wing-down')).toHaveStyle({ opacity: '0.35' })
     expect(screen.getByTestId('dual-velocity-wing-up')).not.toHaveStyle({ opacity: '0.35' })
     expect(screen.getByTestId('dual-pinned-live-strip').getAttribute('aria-label')).toMatch(
-      /Henry R .*disconnected/
+      /Bench R .*disconnected/
     )
   })
 

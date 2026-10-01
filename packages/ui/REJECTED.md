@@ -24,6 +24,20 @@ that someone can tell whether a future change invalidates the reasoning.
 
 ---
 
+## Dual pinned live strip: an "L" / "R" letter on each phone lane, and a labelled "Rest left" readout — rejected 2026-09-30
+
+**Tried:** in VW-439 round 2 (`Lab/Decisions/Dual Pinned Live Strip`, 360, dark), with each side's name and load already dropped on a phone:
+- **P-letter:** a small overline "L" / "R" before each lane, turning red on a fatigued side.
+- **The rest readout:** a "Rest left" overline above the shared countdown, beside each side's velocity.
+
+**Chosen:** **P-none**: position alone marks the side on a phone (Left lane on top; the chart's left wing grows up). Rest is one overall countdown with no label, in the rep counts' place; the Resting tag and the rest bar already say what it counts. The owner's words: "Rest shouldn't be per arm it should be overall so no need for "rest left"".
+
+**Why:** P-none is the owner's pick, given without a reason, so it is recorded as a preference. On the rest label, the owner read "Rest left" as one arm's rest; a countdown shared by both sides should carry no label that names a side.
+
+**Code:** deleted. The `phoneMarker` round prop and the side letters; the `Overline` above the dual strip's countdown.
+
+---
+
 ## Dual pinned live strip: side-by-side groups, natural wall height, the per-side fatigue wash, and the single-strip fallback on a drop — rejected 2026-09-30
 
 **Tried:** four pairs in VW-439 round 1 (`Lab/Decisions/Dual Pinned Live Strip`, 1920 and 360, dark).

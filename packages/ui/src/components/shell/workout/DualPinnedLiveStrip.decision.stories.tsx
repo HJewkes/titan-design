@@ -6,7 +6,7 @@ import { WorkoutShell } from './WorkoutShell'
 import {
   DualPinnedLiveStrip,
   type DualPinnedLiveStripProps,
-  type DualStripPhoneMarker,
+  type DualStripRestDetail,
 } from './DualPinnedLiveStrip'
 import { DUAL_STRIP_SCENARIOS as S, type DualStripScenario } from './dualPinnedLiveStrip-fixture'
 
@@ -14,7 +14,7 @@ type Frame = 'chosen' | 'stress'
 
 interface DecisionArgs {
   frame: Frame
-  phoneMarker: DualStripPhoneMarker
+  restDetail: DualStripRestDetail
 }
 
 // Each frame stacks its strips, top to bottom.
@@ -59,22 +59,23 @@ function Strips({ frame, ...variant }: DecisionArgs) {
 }
 
 /**
- * VW-439 round 2: the pinned live strip for a two-Voltra session, in the wall shell.
+ * VW-439 round 3: the pinned live strip for a two-Voltra session, in the wall shell.
  *
- * Locked in round 1: lanes (Left above Right beside one diverging chart) in the single strip's 72px
- * wall row; a fatigued side reddens the whole strip and its name (F1); a dropped side stays and its
- * wing dims (D2). The wall carries each side's name and load; the phone drops both, and
- * `phoneMarker` asks whether the phone marks each lane with "L" / "R" or by position alone.
+ * Locked: lanes (Left above Right beside one diverging chart) in the single strip's 72px wall row;
+ * F1, the whole strip reddens with the fatigued side's name; D2, a dropped side stays and its wing
+ * fades; each side's name and load at the wall only, position alone on a phone. Round 3 gives the
+ * mid-set numerals more room and makes rest one overall countdown with no label; `restDetail` asks
+ * whether rest shows only the countdown and the chart, or keeps each side's name and velocity.
  * Canvas width drives the layout, so shoot at 1920 and 360. Dark only (VW-397).
  */
 const meta: Meta<DecisionArgs> = {
   title: 'Lab/Decisions/Dual Pinned Live Strip',
   tags: ['status:lab'],
   parameters: { layout: 'fullscreen' },
-  args: { frame: 'chosen', phoneMarker: 'none' },
+  args: { frame: 'chosen', restDetail: 'overall' },
   argTypes: {
     frame: { control: 'select', options: ['chosen', 'stress'] },
-    phoneMarker: { control: 'inline-radio', options: ['none', 'letter'] },
+    restDetail: { control: 'inline-radio', options: ['overall', 'sides'] },
   },
   render: (args) => (
     <WorkoutShell activeKey="program" liveKey="live" state="live" subtitle="planning">
@@ -92,5 +93,5 @@ type Story = StoryObj<DecisionArgs>
 /** The round 1 picks: a set, its rest, the right side fatigued, the right Voltra dropped mid-set. */
 export const ChosenPair: Story = {}
 
-/** A 12-rep target with 19-character names, one side at zero reps with no names set, 999 s rest. */
+/** A 12-rep target with 19-character names, one side at zero reps with no names set, 999 s rest after 12. */
 export const StressPair: Story = { args: { frame: 'stress' } }
