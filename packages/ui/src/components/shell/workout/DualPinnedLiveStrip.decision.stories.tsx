@@ -82,7 +82,7 @@ export default meta
 
 type Story = StoryObj<DecisionArgs>
 
-/** The round 1 picks: a set, its rest, the right side fatigued, the right Voltra dropped mid-set. */
+/** The round 3 picks: a set, its rest, the right side fatigued, the right Voltra dropped mid-set. */
 export const ChosenPair: Story = {}
 
 /** A 12-rep target with 19-character names, one side at zero reps with no names set, 999 s rest after 12. */

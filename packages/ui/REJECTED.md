@@ -24,7 +24,7 @@ that someone can tell whether a future change invalidates the reasoning.
 
 ---
 
-## Dual pinned live strip: each side's name and velocity kept beside the rest countdown — rejected 2026-10-01
+## Dual pinned live strip: each side's name and velocity kept beside the rest countdown — rejected 2026-09-30
 
 **Tried:** R-sides in VW-439 round 3 (`Lab/Decisions/Dual Pinned Live Strip`, 1920, dark): at the wall, the rest strip kept each side's name, load and last-rep velocity in its lane, with the countdown in the rep counts' place. The phone never had it: with the velocities, a 999 s rest after a 12-rep set overflowed the 360 row by 11px.
 

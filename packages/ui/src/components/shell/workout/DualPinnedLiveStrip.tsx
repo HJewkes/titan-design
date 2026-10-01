@@ -40,10 +40,14 @@ export interface LiveStripSlot {
   label?: string
   /** Pre-formatted load on this side, e.g. "140 lb". */
   loadLabel?: string
-  /** This side's reps of the current set (in `rest`, of the set just finished). */
-  reps: readonly LiveStripRep[]
+  /** This side's reps of the current set (in `rest`, of the set just finished). Default `[]`. */
+  reps?: readonly LiveStripRep[]
+  /** Marks this side during a set. Not shown in `rest`. */
   isFatigued?: boolean
-  /** `false` once this Voltra has dropped mid-session. */
+  /**
+   * `false` once this Voltra has dropped mid-session. A slot bound to a Voltra passes the device's
+   * connected state; omitted reads as connected, so pass `false` only for a bound Voltra that dropped.
+   */
   isConnected?: boolean
 }
 
@@ -60,8 +64,10 @@ export interface DualPinnedLiveStripProps {
   onPress?: () => void
   layout?: PinnedLiveStripLayout
   className?: string
-  left: LiveStripSlot
-  right: LiveStripSlot
+  /** The left Voltra. Omitted while the slot is not yet bound: an empty side named "Left". */
+  left?: LiveStripSlot
+  /** The right Voltra. Omitted while the slot is not yet bound: an empty side named "Right". */
+  right?: LiveStripSlot
 }
 
 type Side = 'left' | 'right'
@@ -112,14 +118,15 @@ type Parts = Omit<DualPinnedLiveStripProps, 'left' | 'right'> & {
 }
 
 const SIDE_NAME: Record<Side, string> = { left: 'Left', right: 'Right' }
+const NO_REPS: readonly LiveStripRep[] = []
 
-function slotView(side: Side, slot: LiveStripSlot, state: LiveStripState): SlotView {
+function slotView(side: Side, slot: LiveStripSlot = {}, state: LiveStripState): SlotView {
   const isDropped = slot.isConnected === false
   return {
     side,
     name: slot.label?.trim() || SIDE_NAME[side],
     loadLabel: slot.loadLabel,
-    reps: slot.reps,
+    reps: slot.reps ?? NO_REPS,
     isDropped,
     isMarked: state === 'set' && !isDropped && slot.isFatigued === true,
   }
@@ -161,9 +168,15 @@ function SlotReps({ slot, parts }: { slot: SlotView; parts: Parts }) {
   )
 }
 
-function SlotVelocity({ slot, parts }: { slot: SlotView; parts: Parts }) {
+/** The last rep's velocity, or `null` when there is none or it is not a finite number. */
+function lastVelocity(slot: SlotView): number | null {
   const last = slot.reps[slot.reps.length - 1]
-  if (!last) return <Text className={cn(NUMERAL, parts.sizes.velocity)}> </Text>
+  return last && Number.isFinite(last.velocity) ? last.velocity : null
+}
+
+function SlotVelocity({ slot, parts }: { slot: SlotView; parts: Parts }) {
+  const velocity = lastVelocity(slot)
+  if (velocity == null) return <Text className={cn(NUMERAL, parts.sizes.velocity)}> </Text>
   const token = slot.isDropped
     ? 'text-tertiary'
     : liveStripRepToken(slot.reps, slot.reps.length - 1, parts.barColor, parts.lossThresholds)
@@ -173,7 +186,7 @@ function SlotVelocity({ slot, parts }: { slot: SlotView; parts: Parts }) {
       className={cn(NUMERAL, parts.sizes.velocity)}
       style={[TABULAR, { color: resolveColor(token) }]}
     >
-      {formatVelocity(last.velocity)}
+      {formatVelocity(velocity)}
       {parts.layout === 'wall' ? <Text className={cn(UNIT, parts.sizes.unit)}> m/s</Text> : null}
     </Text>
   )
@@ -276,8 +289,13 @@ function sameBars(a: DualBarsProps, b: DualBarsProps): boolean {
 
 const DualBars = memo(function DualBars(props: DualBarsProps) {
   const { left, right, targetReps, height, width, minWidth, dimmed } = props
+  // The strip's own accessible name already reads every count; the chart's labels would repeat it.
   return (
-    <View testID="dual-strip-bars-frame" style={width != null ? { width } : { flex: 1, minWidth }}>
+    <View
+      testID="dual-strip-bars-frame"
+      aria-hidden
+      style={width != null ? { width } : { flex: 1, minWidth }}
+    >
       <DualVelocityStrip
         left={{ velocities: left.map((r) => r.velocity), isDimmed: dimmed === 'left' }}
         right={{ velocities: right.map((r) => r.velocity), isDimmed: dimmed === 'right' }}
@@ -362,7 +380,7 @@ function PhoneRows(parts: Parts) {
 }
 
 function slotPhrase(slot: SlotView, parts: Parts): string {
-  const last = slot.reps[slot.reps.length - 1]
+  const velocity = lastVelocity(slot)
   const count =
     parts.state === 'rest'
       ? null
@@ -373,7 +391,7 @@ function slotPhrase(slot: SlotView, parts: Parts): string {
     slot.name,
     slot.loadLabel,
     count,
-    last ? `last rep ${formatVelocity(last.velocity)} m/s` : null,
+    velocity == null ? null : `last rep ${formatVelocity(velocity)} m/s`,
     slot.isDropped ? 'disconnected' : null,
     slot.isMarked ? 'fatigued' : null,
   ]

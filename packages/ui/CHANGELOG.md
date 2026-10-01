@@ -54,6 +54,11 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- `DualPinnedLiveStrip` takes an omitted `left` or `right` as a not-yet-bound slot and draws it as
+  an empty side under its fallback name, and a slot's `reps` defaults to `[]`; either used to
+  throw. A last rep whose velocity is not a finite number shows no velocity, in the numeral and
+  the accessible name alike, instead of "NaN m/s". The chart inside the strip is hidden from
+  assistive tech, so a screen reader reads the rep counts once (VW-638).
 - The export map nests `types` under `import` and `require`, so an ESM consumer resolving with
   `moduleResolution: node16` gets the `.d.mts` declarations instead of the CJS `.d.ts`. All six
   TypeScript subpaths were "Masquerading as CJS" under attw; the `react-native` condition is
