@@ -2,6 +2,8 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { CapacityBandChart } from './CapacityBandChart'
+import { Surface } from '../../ui/surface'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import type { CapacityBandDataPoint, CapacityBandProjection, WorkoutDot } from './CapacityBandChart'
 
 const band: CapacityBandDataPoint[] = [
@@ -88,6 +90,18 @@ describe('CapacityBandChart', () => {
         height: '8px',
         borderTopColor: '#F9F6F3', // text-primary (VW-82 grey snap, was #F3F4F6)
       })
+    })
+
+    it('outlines dots with the light text-primary inside a light Surface', () => {
+      const light = getSemanticColors('light')['text-primary']
+      expect(light).not.toBe(getSemanticColors('dark')['text-primary'])
+      render(
+        <Surface theme="light">
+          <CapacityBandChart {...baseProps} />
+        </Surface>
+      )
+      const dots = screen.getAllByTestId('capacity-band-chart-dot')
+      expect(dots[0]).toHaveStyle({ borderTopColor: light })
     })
 
     it('does not render dots as buttons without onWorkoutPress', () => {

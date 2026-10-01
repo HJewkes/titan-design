@@ -751,3 +751,67 @@ describe('next-target marker', () => {
     expect(scale.toX(2) - cell / 2 - (scale.toX(1) + cell / 2)).toBeCloseTo(WEEK_COLUMN_GAP, 6)
   })
 })
+
+describe('current-week point', () => {
+  const next = { weekIndex: 5, value: 184, label: 'next week: 184 x 8' }
+  const base = {
+    expected: gainExpected,
+    committed: 185,
+    stretch: 195,
+    actuals: [
+      { weekIndex: 1, value: 175 },
+      { weekIndex: 2, value: 178 },
+    ],
+    weeks,
+    width: 600,
+    height: 300,
+    nextTarget: next,
+  }
+
+  it('is null when the current week has a reading, so its filled point stands for now', () => {
+    const g = deriveTrajectoryGeometry({
+      ...base,
+      actuals: [...base.actuals, { weekIndex: 3, value: 181 }],
+      currentWeek: 3,
+    })
+    expect(g.currentWeekPoint).toBeNull()
+  })
+
+  it('sits on the dashed lead at the interpolated value when the week has no reading', () => {
+    const g = deriveTrajectoryGeometry({ ...base, currentWeek: 3 })
+    // Week 3 is a third of the way from week 2 (178) to week 5 (184).
+    expect(g.currentWeekPoint?.value).toBeCloseTo(180, 6)
+    expect(g.currentWeekPoint?.x).toBeCloseTo(g.toX(3), 6)
+    expect(g.currentWeekPoint?.y).toBeCloseTo(g.toY(180), 6)
+    const [from, to] = pathVertices(g.nextTarget?.leadPath ?? '')
+    const t = ((g.currentWeekPoint?.x ?? 0) - from.x) / (to.x - from.x)
+    expect(g.currentWeekPoint?.y).toBeCloseTo(from.y + t * (to.y - from.y), 6)
+  })
+
+  it('is null when the current week is the last reading week', () => {
+    expect(deriveTrajectoryGeometry({ ...base, currentWeek: 2 }).currentWeekPoint).toBeNull()
+  })
+
+  it('is null with no readings at all, because there is no lead to sit on', () => {
+    const g = deriveTrajectoryGeometry({ ...base, actuals: [], currentWeek: 3 })
+    expect(g.currentWeekPoint).toBeNull()
+  })
+
+  it('is null without a next target, because there is no lead to sit on', () => {
+    const { nextTarget: _omit, ...withoutNext } = base
+    const g = deriveTrajectoryGeometry({ ...withoutNext, currentWeek: 3 })
+    expect(g.currentWeekPoint).toBeNull()
+  })
+
+  it("is null on the next target's week, which already carries the target's hollow dot", () => {
+    expect(deriveTrajectoryGeometry({ ...base, currentWeek: 5 }).currentWeekPoint).toBeNull()
+  })
+
+  it("never extrapolates past the lead when the current week is beyond the next target's", () => {
+    expect(deriveTrajectoryGeometry({ ...base, currentWeek: 6 }).currentWeekPoint).toBeNull()
+  })
+
+  it('is null when the caller passes no current week', () => {
+    expect(deriveTrajectoryGeometry(base).currentWeekPoint).toBeNull()
+  })
+})

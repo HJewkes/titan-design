@@ -17,6 +17,7 @@ import {
   type GoalTrajectoryWeek,
 } from './GoalTrajectoryChartGeometry'
 import {
+  CURRENT_WEEK_NO_READING,
   DEFAULT_LEFT_SHADOW_SPREAD,
   GoalTrajectoryPlot,
   trajectoryPalette,
@@ -210,7 +211,9 @@ function withoutRecords(actuals: GoalActualPoint[]): GoalActualPoint[] {
 
 function withoutLead(geometry: GoalTrajectoryGeometry): GoalTrajectoryGeometry {
   const next = geometry.nextTarget
-  return next ? { ...geometry, nextTarget: { ...next, leadPath: '' } } : geometry
+  return next
+    ? { ...geometry, nextTarget: { ...next, leadPath: '' }, currentWeekPoint: null }
+    : geometry
 }
 
 function summarize(
@@ -225,11 +228,14 @@ function summarize(
   const current = latest
     ? `Latest ${String(roundWeight(latest.value))} ${unit} at week ${String(Math.round(latest.weekIndex))}.`
     : 'No measured values yet.'
+  const now = geometry.currentWeekPoint
+    ? ` ${CURRENT_WEEK_NO_READING} (week ${String(geometry.currentWeekPoint.weekIndex)}).`
+    : ''
   const prs = geometry.prStars.length
   return (
     `${metricLabel} trajectory chart. Status: ${statusLabel}. ` +
     `Committed ${String(roundWeight(committed))} ${unit}, stretch ${String(roundWeight(stretch))} ${unit}. ` +
-    `${current} ${String(prs)} personal record${prs === 1 ? '' : 's'}.`
+    `${current}${now} ${String(prs)} personal record${prs === 1 ? '' : 's'}.`
   )
 }
 
@@ -324,6 +330,7 @@ export function GoalTrajectoryChart({
         tickCount: density.tickCount,
         bandCurve,
         insets: trajectoryInsets(yAxisLabels),
+        currentWeek,
       }),
     [
       expected,
@@ -338,6 +345,7 @@ export function GoalTrajectoryChart({
       density,
       bandCurve,
       yAxisLabels,
+      currentWeek,
     ]
   )
   const geometry = calibrating ? withoutLead(derived) : derived

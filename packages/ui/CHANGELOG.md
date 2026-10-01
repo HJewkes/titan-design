@@ -68,6 +68,12 @@ project adheres to [Semantic Versioning](https://semver.org/).
 - `VelocityStrip`'s `zones` colours resolve the five zone ids through the same `dataviz-sequential`
   tokens as `PinnedLiveStrip`, so the hero follows the theme in light mode. Dark output is unchanged (VW-749).
 - `SegmentedBar`'s pulsing segments hold full opacity, and the `to` colour of a `pulseColor`, when the OS asks for reduced motion, instead of breathing (VW-325).
+- `GoalTrajectoryChart` no longer leaves the current week unmarked when it has no reading. If
+  `currentWeek` falls after the last reading and before `nextTarget`'s week, a hollow point in the
+  status tone sits on the dashed lead at the value the lead passes through that week, and the
+  accessible summary says "Current week, no reading yet (week N)". A current week with a reading
+  draws as before. `deriveTrajectoryGeometry` takes `currentWeek` and returns `currentWeekPoint`
+  (VW-422).
 - `DualPinnedLiveStrip` takes an omitted `left` or `right` as a not-yet-bound slot and draws it as
   an empty side under its fallback name, and a slot's `reps` defaults to `[]`; either used to
   throw. A last rep whose velocity is not a finite number shows no velocity, in the numeral and
@@ -81,6 +87,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
   surface, so the track on `BodyweightGoalCard`, `FatigueMeter` and other callers that take the
   default turns light in light mode. Dark mode keeps the same grey, and an explicit `trackColor`
   still overrides it (TD-39).
+- `Gauge`, `CapacityBandChart`, `ExerciseDetailPage`, `MesoStatusCard` and `StrengthTrendChart` resolve their colours for the enclosing surface's theme at render time, so `CapacityBandChart`'s dot outline turns dark on a light surface. Dark output is unchanged (VW-316).
 
 ### Security
 
@@ -91,6 +98,8 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Internal
 
+- `titan/no-deprecated-import` follows `export * from` re-exports, so a deprecated export
+  imported through a barrel such as `@/components/ui` is flagged (VW-322).
 - `TempoDisplay` takes its fill percent, number tone and readout text from
   `custom/Fatigue/tempo-pacing` (`phaseFillPercent`, `pacingNumberTone`, `liveReadoutText`)
   instead of private copies. No visual change (VW-678).

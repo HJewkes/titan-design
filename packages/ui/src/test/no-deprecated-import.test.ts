@@ -1,3 +1,5 @@
+import fs from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
 import { createRequire } from 'node:module'
 import { RuleTester } from 'eslint'
@@ -41,6 +43,10 @@ describe('no-deprecated-import', () => {
       // ALIAS in favour of using `IconProps` directly — the real `IconProps`
       // in `components/icons` must not be caught by that propagation.
       { code: "import { IconProps } from '../../icons'", filename: newCustomConsumer },
+      // Positive control for `export *`: a live export through the same top-level barrel.
+      { code: "import { Card } from '@/components/ui'", filename: newCustomConsumer },
+      // The alias regression again, two `export *` hops up where both names are reachable.
+      { code: "import { IconProps } from '@/components'", filename: newCustomConsumer },
     ],
     invalid: [
       // Positive control: BaseBadge's tag sits on its own declaration —
@@ -66,6 +72,65 @@ describe('no-deprecated-import', () => {
         filename: newUiConsumer,
         errors: [{ messageId: 'deprecated' }],
       },
+      // VW-322: `ui/index.ts` reaches Tile only through `export * from './tile'`.
+      {
+        code: "import { Tile } from '@/components/ui'",
+        filename: newCustomConsumer,
+        errors: [{ messageId: 'deprecated' }],
+      },
+      // Two `export *` hops, ending on StatusDot's tag on the `custom/Workout` barrel.
+      {
+        code: "import { StatusDot } from '@/components'",
+        filename: newUiConsumer,
+        errors: [{ messageId: 'deprecated' }],
+      },
     ],
+  })
+})
+
+describe('deprecated-export-registry export * semantics', () => {
+  let fixtureRoot: string
+
+  function writeFixture(files: Record<string, string>) {
+    for (const [rel, text] of Object.entries(files)) {
+      const abs = path.join(fixtureRoot, rel)
+      fs.mkdirSync(path.dirname(abs), { recursive: true })
+      fs.writeFileSync(abs, text)
+    }
+  }
+
+  beforeEach(() => {
+    fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'deprecated-registry-'))
+  })
+
+  afterEach(() => {
+    fs.rmSync(fixtureRoot, { recursive: true, force: true })
+  })
+
+  it('lets a name the barrel exports itself shadow a deprecated star re-export', () => {
+    writeFixture({
+      'components/old.ts': '/** @deprecated */\nexport const Thing = 1\nexport const Other = 2\n',
+      'components/fresh.ts': 'export const Thing = 3\n',
+      'components/index.ts': "export * from './old'\nexport { Thing } from './fresh'\n",
+    })
+
+    const registry = registryFor(fixtureRoot)
+
+    expect(registry.isDeprecated('components/index.ts', 'Thing')).toBe(false)
+    expect(registry.isDeprecated('components/old.ts', 'Thing')).toBe(true)
+  })
+
+  it('terminates on an export * cycle and still finds a tag inside it', () => {
+    writeFixture({
+      'components/a.ts': "export * from './b'\n",
+      'components/b.ts': "export * from './a'\nexport * from './c'\n",
+      'components/c.ts': '/** @deprecated */\nexport const Gone = 1\nexport const Live = 2\n',
+    })
+
+    const registry = registryFor(fixtureRoot)
+
+    expect(registry.isDeprecated('components/a.ts', 'Gone')).toBe(true)
+    expect(registry.isDeprecated('components/a.ts', 'Live')).toBe(false)
+    expect(registry.isDeprecated('components/a.ts', 'Missing')).toBe(false)
   })
 })

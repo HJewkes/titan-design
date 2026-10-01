@@ -3,25 +3,33 @@ import { useEffect, useMemo, useState } from 'react'
 import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { resolveColor } from '../../../theme/resolve-color'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../ui/surface'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { alpha } from '../../../utils/colors'
 import { roundWeight } from '../../../utils/workout-format'
 
-const sem = getSemanticColors('dark')
-
-const BRAND_PRIMARY = sem['brand-primary']
 // Line/border color for the dashed projection, used where a className cannot
 // apply (passed as a prop into an inline style, and a per-edge borderTopColor).
 const PROJECTION_LINE_COLOR = resolveColor('text-tertiary')
-const STATUS_SUCCESS = sem['status-success']
-const STATUS_ERROR = sem['status-error']
-const STATUS_WARNING = sem['status-warning']
 const GRID_LINE = alpha(primitiveColors.white, 0.06)
-const SUCCESS_PILL_BG = alpha(STATUS_SUCCESS, 0.1)
-const SUCCESS_PILL_BORDER = alpha(STATUS_SUCCESS, 0.2)
-const ERROR_PILL_BG = alpha(STATUS_ERROR, 0.1)
-const ERROR_PILL_BORDER = alpha(STATUS_ERROR, 0.2)
+
+/** The chart's brand and status colours in the given theme. */
+function chartColors(mode: ThemeMode) {
+  const sem = getSemanticColors(mode)
+  const success = sem['status-success']
+  const error = sem['status-error']
+  return {
+    brandPrimary: sem['brand-primary'],
+    success,
+    error,
+    warning: sem['status-warning'],
+    successPillBg: alpha(success, 0.1),
+    successPillBorder: alpha(success, 0.2),
+    errorPillBg: alpha(error, 0.1),
+    errorPillBorder: alpha(error, 0.2),
+  }
+}
 
 /** Left gutter reserved for y-axis value labels. */
 const PLOT_LEFT = 26
@@ -260,6 +268,7 @@ export function StrengthTrendChart({
   className,
   ...props
 }: StrengthTrendChartProps) {
+  const colors = chartColors(useSurfaceMode())
   const geometry = useMemo(
     () => buildGeometry(data, projection, mesoBoundaries, width, height),
     [data, projection, mesoBoundaries, width, height]
@@ -404,7 +413,7 @@ export function StrengthTrendChart({
               />
               <ChartLine
                 coords={geometry.actual}
-                color={BRAND_PRIMARY}
+                color={colors.brandPrimary}
                 strokeWidth={2.5}
                 testID="strength-trend-chart-actual-segment"
               />
@@ -422,7 +431,7 @@ export function StrengthTrendChart({
                   left: c.x - 7,
                   top: c.y - 20,
                   fontSize: 12,
-                  color: STATUS_WARNING,
+                  color: colors.warning,
                 }}
               >
                 ★
@@ -455,7 +464,7 @@ export function StrengthTrendChart({
                   width: 8,
                   height: 8,
                   borderRadius: 1,
-                  backgroundColor: BRAND_PRIMARY,
+                  backgroundColor: colors.brandPrimary,
                 }}
               />
             )
@@ -507,8 +516,8 @@ export function StrengthTrendChart({
                   fontFamily: 'Inter, sans-serif',
                   color:
                     selectedCoord.point.e1rm - geometry.actual[selected - 1].point.e1rm >= 0
-                      ? STATUS_SUCCESS
-                      : STATUS_ERROR,
+                      ? colors.success
+                      : colors.error,
                 }}
               >
                 {`${
@@ -561,8 +570,8 @@ export function StrengthTrendChart({
           style={{
             borderRadius: 4,
             borderWidth: 1,
-            backgroundColor: trend.positive ? SUCCESS_PILL_BG : ERROR_PILL_BG,
-            borderColor: trend.positive ? SUCCESS_PILL_BORDER : ERROR_PILL_BORDER,
+            backgroundColor: trend.positive ? colors.successPillBg : colors.errorPillBg,
+            borderColor: trend.positive ? colors.successPillBorder : colors.errorPillBorder,
           }}
         >
           <Text
@@ -570,7 +579,7 @@ export function StrengthTrendChart({
               fontSize: 11,
               fontFamily: 'Inter, sans-serif',
               fontWeight: '600',
-              color: trend.positive ? STATUS_SUCCESS : STATUS_ERROR,
+              color: trend.positive ? colors.success : colors.error,
             }}
           >
             {trendText}
@@ -585,7 +594,12 @@ export function StrengthTrendChart({
       >
         <View className="flex-row items-center gap-inline-sm">
           <View
-            style={{ width: 14, height: 2.5, borderRadius: 1.5, backgroundColor: BRAND_PRIMARY }}
+            style={{
+              width: 14,
+              height: 2.5,
+              borderRadius: 1.5,
+              backgroundColor: colors.brandPrimary,
+            }}
           />
           <Text
             className="text-text-secondary"
@@ -612,7 +626,7 @@ export function StrengthTrendChart({
           </Text>
         </View>
         <View className="flex-row items-center gap-inline-sm">
-          <Text style={{ fontSize: 12, color: STATUS_WARNING }}>★</Text>
+          <Text style={{ fontSize: 12, color: colors.warning }}>★</Text>
           <Text
             className="text-text-secondary"
             style={{ fontSize: 10, fontFamily: 'Inter, sans-serif' }}

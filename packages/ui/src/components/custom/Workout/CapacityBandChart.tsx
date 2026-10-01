@@ -1,21 +1,31 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useEffect, useState, useMemo } from 'react'
 import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-native'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../ui/surface'
 import { alpha } from '../../../utils/colors'
 import { formatChartDate } from '../../../utils/workout-format'
 
-const t = getSemanticColors('dark')
-
-const STATUS_SUCCESS = t['status-success']
-const STATUS_WARNING = t['status-warning']
-const STATUS_INFO = t['status-info']
-/** Dot outline: near-white ring so load dots read on the band fill and any
- *  surface (matches the MesoStatusCard gauge-marker convention). */
-const DOT_BORDER = t['text-primary']
-const BAND_FILL = alpha(STATUS_SUCCESS, 0.1)
-const BAND_EDGE = alpha(STATUS_SUCCESS, 0.45)
-const PROJECTION_FILL = alpha(STATUS_SUCCESS, 0.05)
+/** The chart's colours in the given theme. */
+function chartColors(mode: ThemeMode) {
+  const t = getSemanticColors(mode)
+  const success = t['status-success']
+  return {
+    success,
+    info: t['status-info'],
+    /** Dot outline: text-primary ring so load dots read on the band fill and any
+     *  surface (matches the MesoStatusCard gauge-marker convention). */
+    dotBorder: t['text-primary'],
+    bandFill: alpha(success, 0.1),
+    bandEdge: alpha(success, 0.45),
+    projectionFill: alpha(success, 0.05),
+    dots: {
+      within: success,
+      above: t['status-warning'],
+      below: t['status-info'],
+    } satisfies Record<WorkoutDotStatus, string>,
+  }
+}
 
 const PADDING_LEFT = 28
 const PADDING_RIGHT = 10
@@ -70,12 +80,6 @@ interface PixelPoint {
   x: number
   yHigh: number
   yLow: number
-}
-
-const DOT_COLORS: Record<WorkoutDotStatus, string> = {
-  within: STATUS_SUCCESS,
-  above: STATUS_WARNING,
-  below: STATUS_INFO,
 }
 
 const STATUS_PHRASES: Record<WorkoutDotStatus, string> = {
@@ -192,6 +196,7 @@ export function CapacityBandChart({
   className,
   ...props
 }: CapacityBandChartProps) {
+  const colors = chartColors(useSurfaceMode())
   const [reveal] = useState(() => new Animated.Value(0))
   const dotAnims = useMemo(
     () => Array.from({ length: workouts.length }, () => new Animated.Value(0)),
@@ -355,35 +360,35 @@ export function CapacityBandChart({
               <View testID="capacity-band-chart-projection">
                 {renderColumns(
                   buildColumns(trainingPixels, COLUMN_STEP),
-                  PROJECTION_FILL,
+                  colors.projectionFill,
                   'capacity-band-chart-projection-fill'
                 )}
                 {renderColumns(
                   buildColumns(restPixels, COLUMN_STEP),
-                  PROJECTION_FILL,
+                  colors.projectionFill,
                   'capacity-band-chart-projection-fill'
                 )}
                 {renderEdges(
                   buildEdges(trainingPixels, 'yHigh'),
-                  STATUS_SUCCESS,
+                  colors.success,
                   true,
                   'capacity-band-chart-projection-training'
                 )}
                 {renderEdges(
                   buildEdges(trainingPixels, 'yLow'),
-                  STATUS_SUCCESS,
+                  colors.success,
                   true,
                   'capacity-band-chart-projection-training'
                 )}
                 {renderEdges(
                   buildEdges(restPixels, 'yHigh'),
-                  STATUS_INFO,
+                  colors.info,
                   true,
                   'capacity-band-chart-projection-rest'
                 )}
                 {renderEdges(
                   buildEdges(restPixels, 'yLow'),
-                  STATUS_INFO,
+                  colors.info,
                   true,
                   'capacity-band-chart-projection-rest'
                 )}
@@ -394,7 +399,7 @@ export function CapacityBandChart({
                     top: trainingPixels[trainingPixels.length - 1]?.yHigh - 12,
                     fontSize: 9,
                     fontFamily: 'Inter, sans-serif',
-                    color: STATUS_SUCCESS,
+                    color: colors.success,
                   }}
                   testID="capacity-band-chart-projection-training-label"
                 >
@@ -407,7 +412,7 @@ export function CapacityBandChart({
                     top: restPixels[restPixels.length - 1]?.yLow + 2,
                     fontSize: 9,
                     fontFamily: 'Inter, sans-serif',
-                    color: STATUS_INFO,
+                    color: colors.info,
                   }}
                   testID="capacity-band-chart-projection-rest-label"
                 >
@@ -417,10 +422,10 @@ export function CapacityBandChart({
             )}
 
             <View testID="capacity-band-chart-band">
-              {renderColumns(columns, BAND_FILL, 'capacity-band-chart-band-cell')}
+              {renderColumns(columns, colors.bandFill, 'capacity-band-chart-band-cell')}
             </View>
-            {renderEdges(topEdge, BAND_EDGE, false, 'capacity-band-chart-edge-top')}
-            {renderEdges(bottomEdge, BAND_EDGE, false, 'capacity-band-chart-edge-bottom')}
+            {renderEdges(topEdge, colors.bandEdge, false, 'capacity-band-chart-edge-top')}
+            {renderEdges(bottomEdge, colors.bandEdge, false, 'capacity-band-chart-edge-bottom')}
           </View>
         </Animated.View>
 
@@ -474,14 +479,14 @@ export function CapacityBandChart({
       {workouts.map((workout, i) => {
         const cx = toX(workout.date)
         const cy = toY(workout.load)
-        const color = DOT_COLORS[workout.status]
+        const color = colors.dots[workout.status]
         const dotStyle = {
           width: DOT_SIZE,
           height: DOT_SIZE,
           borderRadius: DOT_SIZE / 2,
           backgroundColor: color,
           borderWidth: 2,
-          borderColor: DOT_BORDER,
+          borderColor: colors.dotBorder,
         }
         const label = `Workout on ${formatChartDate(workout.date)}, load ${workout.load}, ${
           STATUS_PHRASES[workout.status]
