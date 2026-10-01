@@ -72,6 +72,48 @@ describe('round manifest', () => {
   )
 })
 
+describe('image variants', () => {
+  const withC = (variant: Record<string, unknown>) => {
+    const m = base() as { variants: Record<string, unknown>[] }
+    m.variants[2] = { key: 'C', label: 'Wall screenshot', ...variant }
+    return m
+  }
+
+  it.each(['wall.png', 'shots/wall-1920.PNG', 'a..b.png'])(
+    'accepts an image path relative to the round file: %s',
+    (image) => {
+      expect(issues(withC({ image, height: 'auto' }))).toEqual([])
+    }
+  )
+
+  it('rejects a variant with both a storyId and an image, and one with neither', () => {
+    expect(issues(withC({ image: 'wall.png', storyId: 'lab-x--wall' }))).toEqual(['variants.2'])
+    expect(issues(withC({}))).toEqual(['variants.2'])
+  })
+
+  it.each(['/tmp/wall.png', '../wall.png', 'shots/../../wall.png', 'C:\\wall.png', 'wall.jpg'])(
+    'rejects an image path that is absolute, climbs out or is not a png: %s',
+    (image) => {
+      expect(issues(withC({ image }))).toEqual(['variants.2.image'])
+    }
+  )
+
+  it('rejects args and globals on an image variant, since only a story URL carries them', () => {
+    expect(
+      issues(withC({ image: 'wall.png', args: { a: 1 }, globals: { theme: 'light' } }))
+    ).toEqual(['variants.2.args', 'variants.2.globals'])
+  })
+
+  it('states the either-or rule in the exported JSON Schema too', () => {
+    const items = (manifestJsonSchema() as { properties: { variants: { items: object } } })
+      .properties.variants.items
+    expect(items).toMatchObject({
+      required: ['key', 'label'],
+      oneOf: [{ required: ['storyId'] }, { required: ['image'] }],
+    })
+  })
+})
+
 describe('feedback', () => {
   it('parses a complete submission', () => {
     expect(FeedbackSchema.parse(validFeedback())).toEqual(validFeedback())

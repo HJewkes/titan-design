@@ -1,7 +1,15 @@
 import { createHash } from 'node:crypto'
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
-import { ManifestSchema, isLoopbackUrl, type Feedback, type Manifest } from './schema.ts'
+import { mkdir, open, readFile, realpath, writeFile } from 'node:fs/promises'
+import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
+import {
+  ManifestSchema,
+  isImageVariant,
+  isLoopbackUrl,
+  isStoryVariant,
+  type Feedback,
+  type ImageVariant,
+  type Manifest,
+} from './schema.ts'
 import { urlParamProblems } from './round.ts'
 import { startReviewServer, type PageHandler } from './server.ts'
 
@@ -18,6 +26,44 @@ export interface LoadedRound {
   manifest: Manifest
   manifestSha256: string
   storybookUrl: string
+  /** Absolute path of each image variant's PNG, by variant key. */
+  images: Record<string, string>
+}
+
+const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])
+
+async function startsWithPngSignature(file: string): Promise<boolean> {
+  const handle = await open(file)
+  try {
+    const { buffer, bytesRead } = await handle.read(Buffer.alloc(8), 0, 8, 0)
+    return bytesRead === 8 && buffer.equals(PNG_SIGNATURE)
+  } finally {
+    await handle.close()
+  }
+}
+
+/** Resolves an image against the round's directory, following symlinks, and refuses escapes. */
+async function resolveImage(roundDir: string, variant: ImageVariant): Promise<string> {
+  const where = `variant ${variant.key}: image ${variant.image}`
+  const file = await realpath(resolve(roundDir, variant.image)).catch(() => {
+    throw new ReviewError(`${where} does not exist (paths resolve against ${roundDir})`)
+  })
+  const inside = relative(roundDir, file)
+  if (inside === '..' || inside.startsWith(`..${sep}`) || isAbsolute(inside))
+    throw new ReviewError(`${where} resolves outside the round directory ${roundDir}`)
+  if (!(await startsWithPngSignature(file).catch(() => false)))
+    throw new ReviewError(`${where} is not a PNG file`)
+  return file
+}
+
+async function resolveImages(path: string, manifest: Manifest): Promise<Record<string, string>> {
+  const roundDir = await realpath(dirname(resolve(path)))
+  const entries = await Promise.all(
+    manifest.variants
+      .filter(isImageVariant)
+      .map(async (v) => [v.key, await resolveImage(roundDir, v)] as const)
+  )
+  return Object.fromEntries(entries)
 }
 
 export async function loadRound(path: string, storybookOverride?: string): Promise<LoadedRound> {
@@ -44,16 +90,20 @@ export async function loadRound(path: string, storybookOverride?: string): Promi
     throw new ReviewError(
       `only loopback Storybook hosts (127.0.0.1, localhost, [::1]) are allowed: ${storybookOverride}`
     )
+  const images = await resolveImages(path, parsed.data)
   const manifestSha256 = createHash('sha256').update(raw).digest('hex')
   const storybookUrl = (storybookOverride ?? parsed.data.storybookUrl).replace(/\/$/, '')
-  return { manifest: parsed.data, manifestSha256, storybookUrl }
+  return { manifest: parsed.data, manifestSha256, storybookUrl, images }
 }
 
+/** An image-only round never touches Storybook, so it needs none running. */
 export async function assertStoriesExist(round: LoadedRound): Promise<void> {
+  const storyIds = round.manifest.variants.filter(isStoryVariant).map((v) => v.storyId)
+  if (storyIds.length === 0) return
   const res = await fetch(`${round.storybookUrl}/index.json`).catch(() => null)
   if (!res?.ok) throw new ReviewError(`no Storybook at ${round.storybookUrl}; ${LAUNCH_HINT}`)
   const entries = ((await res.json()) as { entries?: Record<string, unknown> }).entries ?? {}
-  const unknown = round.manifest.variants.map((v) => v.storyId).filter((id) => !(id in entries))
+  const unknown = storyIds.filter((id) => !(id in entries))
   if (unknown.length)
     throw new ReviewError(
       `unknown story ids on ${round.storybookUrl} (wrong worktree's port?): ${unknown.join(', ')}`

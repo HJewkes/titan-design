@@ -59,16 +59,29 @@ sha256 of the manifest you wrote.
 - Manifest `titan-review/round@1`: `unit`, `round`, `storybookUrl`, `context?`, `widths[]`,
   `height` (a number of px or `"auto"`, default `"auto"`; at round level a number caps every
   frame), `maxHeight` (default 1200, the cap when the round's `height` is `"auto"`),
-  `variants[{key, storyId, label, args?, globals?, height?}]`,
+  `variants[{key, storyId | image, label, args?, globals?, height?}]`,
   `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?}]`,
   `sections?[{id, title, context?, questionIds[], variantKeys[], seeAlso?[], height?}]`.
   A question over variant keys is variant-scoped and sits right under the variants; set
   `scope` to override. Args and globals go in the Storybook URL, so keys and values are
   limited to letters, digits, space, `_` and `-` (numbers and booleans are fine); anything
   else is refused, because Storybook would silently drop it. Give such a variant its own story.
+- Image variants: a variant names exactly one of `storyId` (a live Storybook story) or `image`
+  (a static PNG, for app-level screens Storybook cannot render). `image` is a path relative to
+  the round file, with no `..` segments. Load time follows symlinks and refuses an image that is
+  missing, is not a PNG, or resolves outside the round's directory. The page draws it in the same
+  card, with the same verdict, comment, pin and keyboard controls, at each declared width.
+  Heights follow the same rules as a story frame (see _Heights_): an `"auto"` frame is as tall
+  as the image at that width up to the cap, a section or variant number fixes the frame, and an
+  image taller than its frame scrolls inside it. Pins carry no `target`, since there is no DOM
+  to hit-test. `args` and `globals` are refused on an image variant. Feedback echoes `image`
+  where a story variant echoes `storyId`. Capture copies the PNG to `<out>/<key>-image.png`
+  instead of shooting it (`<key>-image-2.png` and so on if that name is one of the round's
+  source images; capture never writes over a source), and a round whose variants are all images
+  needs no Storybook running (`storybookUrl` is still required).
 - Feedback `titan-review/feedback@1`: `manifestSha256`, `submittedAt`,
   `answers[{questionId, pick | picks | value | text, comment?, variantComments?}]`,
-  `variants[{key, storyId, verdict: chosen|rejected|maybe|null, comment, annotations[], relatedQuestionIds?}]`,
+  `variants[{key, storyId | image, verdict: chosen|rejected|maybe|null, comment, annotations[], relatedQuestionIds?}]`,
   `general`. Each annotation has `width`, `x`/`y` in CSS px of the story frame, `xPct`/`yPct`
   as fractions of it, a `note`, and `target {testId?, role?, text?}` from element hit-testing.
   `variantComments[{key, comment}]` repeats, under the answer, every comment left on a frame

@@ -1,3 +1,4 @@
+import { createReadStream } from 'node:fs'
 import http from 'node:http'
 import type { AddressInfo } from 'node:net'
 import type { Duplex } from 'node:stream'
@@ -21,6 +22,8 @@ export interface ReviewServerOptions {
   storybookUrl: string
   page: PageHandler
   port?: number
+  /** Absolute PNG path by variant key; served at `api/image/<key>`, never by path. Keys need no decoding. */
+  images?: Record<string, string>
 }
 
 export interface ReviewServer {
@@ -71,6 +74,17 @@ function createSubmitHandler(opts: ReviewServerOptions, accept: Accept) {
   }
 }
 
+function sendImage(opts: ReviewServerOptions, key: string, res: http.ServerResponse): void {
+  const file = Object.hasOwn(opts.images ?? {}, key) ? opts.images?.[key] : undefined
+  if (!file) return sendJson(res, 404, { errors: [`no image variant ${key}`] })
+  createReadStream(file)
+    .once('open', () =>
+      res.writeHead(200, { 'content-type': 'image/png', 'cache-control': 'no-store' })
+    )
+    .once('error', () => (res.headersSent ? res.destroy() : sendJson(res, 404, {})))
+    .pipe(res)
+}
+
 function createRouter(opts: ReviewServerOptions, accept: Accept): http.RequestListener {
   const upstream = new URL(opts.storybookUrl)
   const submit = createSubmitHandler(opts, accept)
@@ -83,6 +97,8 @@ function createRouter(opts: ReviewServerOptions, accept: Accept): http.RequestLi
     if (path === `${API}round` && req.method === 'GET')
       return sendJson(res, 200, { manifest: opts.manifest, manifestSha256: opts.manifestSha256 })
     if (path === `${API}submit` && req.method === 'POST') return void submit(req, res)
+    if (path.startsWith(`${API}image/`) && req.method === 'GET')
+      return sendImage(opts, path.slice(`${API}image/`.length), res)
     if (path.startsWith(API)) return sendJson(res, 404, { errors: ['unknown endpoint'] })
     if (path.startsWith(PAGE_BASE)) return opts.page(req, res, () => sendJson(res, 404, {}))
     proxyRequest(upstream, req, res)
