@@ -57,7 +57,8 @@ sha256 of the manifest you wrote.
 `src/schema.ts` (`pnpm --filter @titan-design/review-harness schema`; a test fails if they drift).
 
 - Manifest `titan-review/round@1`: `unit`, `round`, `storybookUrl`, `context?`, `widths[]`,
-  `height` (a number of px or `"auto"`, default `"auto"`), `maxHeight` (default 1200),
+  `height` (a number of px or `"auto"`, default `"auto"`; at round level a number caps every
+  frame), `maxHeight` (default 1200, the cap when the round's `height` is `"auto"`),
   `variants[{key, storyId | image, label, args?, globals?, height?}]`,
   `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?}]`,
   `sections?[{id, title, context?, questionIds[], variantKeys[], seeAlso?[], height?}]`.
@@ -169,18 +170,27 @@ Rules worth knowing:
 ### Heights
 
 `height` may be a number of CSS px or `"auto"`, at three levels: the variant, its section, then
-the round. The most specific wins, and the default when nothing says otherwise is `"auto"`.
+the round. A number means something different at each level:
+
+- **Round: a cap.** Every frame still fits its own story, and none grows past the number. A
+  round with `height: 1300` shows a short card in a short frame and a tall page at 1300.
+- **Section or variant: a fixed box.** The frame is exactly that tall, whatever the story
+  draws. The more specific level wins.
+
+With no number anywhere, every frame is `"auto"` and the cap is `maxHeight` (default 1200).
+Set the round's `height` or `maxHeight`, not both; when both are set, `height` is the cap.
 
 `"auto"` measures the story itself and sizes the frame to it. The iframes are same-origin (the
 harness proxies Storybook on its own origin), so the page reads the story's own elements after
 load, after `fonts.ready` and on every reflow, and never reads the frame's own box, which is
-what it is sizing. A story taller than `maxHeight` (default 1200) stops there and scrolls
-inside its frame. A frame the page cannot measure stays at 900 px, which is also what it shows
-until the first measurement lands. Widths are unchanged.
+what it is sizing. A story taller than the cap stops there and scrolls inside its frame. A
+frame the page cannot measure stays at 900 px (or the cap, if lower), which is also what it
+shows until the first measurement lands. Widths are unchanged.
 
-Give a fixed number when the frame should be a page-sized box on purpose (a `Pages/*` story),
-or when a story sets its own `100vh` and would otherwise grow to the cap. Prefer `"auto"`
-everywhere else: a card in a 1500 px box was the complaint that produced this.
+Do not set the round's height to fit the tallest story; omit it, or treat it as the most any
+frame may take. Give a section or variant a fixed number only when the frame should be a
+page-sized box on purpose (a `Pages/*` story), or when a story sets its own `100vh` and would
+otherwise grow to the cap. A card in a 1500 px box was the complaint that produced this.
 
 ### Open-tip stories are open by STATE
 
@@ -209,4 +219,5 @@ own text field keeps its typing, except `Cmd+Enter`.
   holds four real rounds, copied verbatim, that must keep parsing.
 - `pnpm --filter @titan-design/review-harness test:e2e`: a real isolated Storybook (or
   `TITAN_REVIEW_STORYBOOK=<url>`), a keyboard pick, a comment, a pin, send, then asserts the
-  written JSON and PNGs. Local only; it needs Storybook and Chromium.
+  written JSON and PNGs; it also checks that a round-level height caps fitted frames while a
+  variant height stays fixed. Local only; it needs Storybook and Chromium.

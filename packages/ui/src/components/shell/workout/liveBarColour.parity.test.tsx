@@ -3,7 +3,8 @@ import { render, screen } from '@testing-library/react'
 import { VelocityStrip } from '../../custom/Workout/VelocityStrip'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { resolveColor } from '../../../theme/resolve-color'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { SurfaceContext } from '../../ui/surface/SurfaceContext'
 import { PinnedLiveStrip } from './PinnedLiveStrip'
 import {
   INTENT_SETS,
@@ -35,10 +36,10 @@ const cssColour = (hex: string) => {
   return probe.style.backgroundColor
 }
 
-function renderBoth(set: IntentSet) {
+function renderBoth(set: IntentSet, mode: ThemeMode = 'dark') {
   const lossThresholds = thresholdsFromStop(set.stopPct)
   render(
-    <>
+    <SurfaceContext.Provider value={{ mode, level: 'base' }}>
       <PinnedLiveStrip
         state="set"
         layout="wall"
@@ -56,21 +57,32 @@ function renderBoth(set: IntentSet) {
         height={180}
         lossThresholds={lossThresholds}
       />
-    </>
+    </SurfaceContext.Provider>
   )
 }
 
-describe('bar colour parity between the pinned strip and the live hero on dark surfaces', () => {
-  it.each(INTENT_SETS.map((set) => [set.intent, set] as const))(
-    'colours the %s set identically on both surfaces from the same thresholds',
-    (intent, set) => {
-      renderBoth(set)
+const MODES: ThemeMode[] = ['dark', 'light']
+const CASES = MODES.flatMap((mode) => INTENT_SETS.map((set) => [set.intent, mode, set] as const))
+
+describe('bar colour parity between the pinned strip and the live hero', () => {
+  it.each(CASES)(
+    'colours the %s set identically on both surfaces from the same thresholds (%s)',
+    (intent, mode, set) => {
+      renderBoth(set, mode)
+      const themed = getSemanticColors(mode)
       EXPECTED[intent].forEach((band, i) => {
         expect(colourOf(`live-strip-bar-${i}`)).toBe(resolveColor(STRIP_TOKEN[band]))
-        expect(colourOf(`velocity-bar-${i}`)).toBe(cssColour(HERO_HEX[band]))
+        expect(colourOf(`velocity-bar-${i}`)).toBe(cssColour(themed[STRIP_TOKEN[band]]))
       })
     }
   )
+
+  it('gives the light hero the light token, not the dark hex, where the two differ', () => {
+    const light = getSemanticColors('light')
+    renderBoth(INTENT_SETS[0], 'light')
+    expect(light[STRIP_TOKEN.red]).not.toBe(HERO_HEX.red)
+    expect(colourOf('velocity-bar-5')).toBe(cssColour(light[STRIP_TOKEN.red]))
+  })
 
   it('resolves each strip band token to the hero hex on the dark wall', () => {
     const dark = getSemanticColors('dark')
