@@ -41,6 +41,13 @@ project adheres to [Semantic Versioning](https://semver.org/).
   default turns light in light mode. Dark mode keeps the same grey, and an explicit `trackColor`
   still overrides it (TD-39).
 
+### Security
+
+- The ActiveWork fixtures (`session-fixture.ts`, `initiative-fixture.ts`) and the
+  `PortfolioOverview` and `InitiativeBrief` tests and stories now use synthetic data. The shipped
+  copies in 0.21.2 carried a home-directory path and personal initiative names. The unpublished lab
+  data under `src/lab/active-work/data/` is synthetic too.
+
 ## 0.21.2
 
 ### Added

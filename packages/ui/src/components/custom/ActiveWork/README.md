@@ -292,10 +292,10 @@ hardening it; see TOKENS.md §6.
   presence and the all-zero-severity case (T1); on controlled-vs-uncontrolled selection, unmatched
   `selectedPath`, empty `files`, empty `coEdges`, missing touch dates, no-co-change, net-negative growth, and
   `maxRows` / `maxCoEdges` capping (F1).
-- Fixtures: `file-history-fixture.ts` — a small hand-trimmed slice of a real mine with fixed values (no
+- Fixtures: `file-history-fixture.ts` — a small hand-written file history with fixed values (no
   `Date.now()`, no randomness) so visual baselines stay deterministic. `session-fixture.ts` likewise: five
-  real session logs (their real markdown, so the linkers meet real references) plus one synthesized ad-hoc
-  session, paired with `SESSION_NOW`.
+  synthetic canonical session logs in session-log markdown (so the linkers meet task, wiki and PR
+  references) plus one ad-hoc session, paired with `SESSION_NOW`.
 - Visual: not yet added to `tests/visual/stories.spec.ts` — see follow-up in the PR description.
 - Lint guardrails: the token-pure rule set above; no
   re-implemented status dot, segmented bar, or sparkline.
