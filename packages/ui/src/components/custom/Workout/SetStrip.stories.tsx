@@ -66,6 +66,27 @@ export const InProgress: Story = {
   },
 }
 
+export const ActiveRangeSet: Story = {
+  name: 'Active range set',
+  args: {
+    height: 8,
+    sets: [
+      { status: 'range', floor: 15, max: 20, doneVels: decay(17, 0.85) },
+      { status: 'range', floor: 15, max: 20, doneVels: decay(9, 0.8), isActive: true },
+      { status: 'range', floor: 15, max: 20, doneVels: [] },
+    ],
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'A live variable-range set (`isActive`): its done reps pulse exactly as a planned ' +
+          "active set's do, while the committed grey and variable cyan zones stay still.",
+      },
+    },
+  },
+}
+
 export const Upcoming: Story = {
   args: {
     height: 8,

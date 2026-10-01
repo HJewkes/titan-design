@@ -85,6 +85,19 @@ describe('SetStrip', () => {
     ).toBeInTheDocument()
   })
 
+  it('pulses the live range set and counts it in progress before its first rep (VW-576)', () => {
+    const sets: SetStripSet[] = [
+      { status: 'range', floor: 3, max: 5, doneVels: [0.9, 0.8], isActive: true },
+      { status: 'range', floor: 3, max: 5, doneVels: [], isActive: true },
+      { status: 'range', floor: 3, max: 5, doneVels: [] },
+    ]
+    render(<SetStrip sets={sets} />)
+    expect(screen.getAllByTestId('set-strip-pulse')).toHaveLength(2)
+    expect(
+      screen.getByLabelText('Set progress: 0 done, 2 in progress, 1 upcoming')
+    ).toBeInTheDocument()
+  })
+
   it('renders one bar per set across mixed set-type variants', () => {
     const sets: SetStripSet[] = [
       { status: 'drop', subloads: [[0.8, 0.7], [0.6]] },

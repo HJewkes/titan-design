@@ -1,8 +1,16 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { SetBar, velocityZoneColor, SET_STRIP_ZONES, SET_STRIP_VARIABLE_COLOR } from './SetBar'
+import { Animated } from 'react-native'
+import {
+  SetBar,
+  velocityZoneColor,
+  SET_STRIP_ZONES,
+  SET_STRIP_VARIABLE_COLOR,
+  type SetStripSet,
+} from './SetBar'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
+import { primitiveRamps } from '../../../theme/tokens/primitives'
 import { resolveColor } from '../../../theme/resolve-color'
 
 /** The slot wrapper (carrier of the leading-gap margin) is a fill segment's parent. */
@@ -83,6 +91,71 @@ describe('SetBar', () => {
       expect(screen.getByTestId('set-strip-variable')).toHaveStyle({
         backgroundColor: SET_STRIP_VARIABLE_COLOR,
       })
+    })
+  })
+
+  describe('live pulse on an active range set (VW-576)', () => {
+    const activeRange: SetStripSet = {
+      status: 'range',
+      floor: 4,
+      max: 6,
+      doneVels: [0.9, 0.6],
+      isActive: true,
+    }
+
+    function stubReducedMotion(matches: boolean) {
+      vi.stubGlobal(
+        'matchMedia',
+        vi.fn(() => ({ matches, addEventListener: vi.fn(), removeEventListener: vi.fn() }))
+      )
+    }
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+      vi.unstubAllGlobals()
+    })
+
+    it('starts the pulse loop and pulses only the done reps, not the floor..max band', () => {
+      const loop = vi.spyOn(Animated, 'loop')
+      render(<SetBar set={activeRange} />)
+      expect(loop).toHaveBeenCalledTimes(1)
+      expect(screen.getAllByTestId('set-strip-pulse')).toHaveLength(2)
+      expect(screen.getAllByTestId('set-strip-empty')).toHaveLength(2)
+      expect(screen.getAllByTestId('set-strip-variable')).toHaveLength(2)
+    })
+
+    it('pulses a done rep with the same colours as a planned active set', () => {
+      render(<SetBar set={activeRange} />)
+      const rangePulse = screen.getAllByTestId('set-strip-pulse').map((el) => el.style.cssText)
+      render(<SetBar set={{ status: 'active', velocities: [0.9, 0.6], planned: 6 }} />)
+      const plannedPulse = screen
+        .getAllByTestId('set-strip-pulse')
+        .slice(2)
+        .map((el) => el.style.cssText)
+      expect(rangePulse).toEqual(plannedPulse)
+    })
+
+    it('starts no pulse loop for a todo range set', () => {
+      const loop = vi.spyOn(Animated, 'loop')
+      render(<SetBar set={{ status: 'range', floor: 4, max: 6, doneVels: [0.9, 0.6] }} />)
+      expect(loop).not.toHaveBeenCalled()
+      expect(screen.queryByTestId('set-strip-pulse')).not.toBeInTheDocument()
+    })
+
+    it.each<[string, SetStripSet]>([
+      ['an active range set', activeRange],
+      ['a planned active set', { status: 'active', velocities: [0.9, 0.6], planned: 6 }],
+    ])('holds %s at full opacity on its end colour with no loop under reduced motion', (_, set) => {
+      stubReducedMotion(true)
+      const loop = vi.spyOn(Animated, 'loop')
+      render(<SetBar set={set} />)
+      expect(loop).not.toHaveBeenCalled()
+      const live = screen.getAllByTestId('set-strip-pulse')
+      expect(live).toHaveLength(2)
+      // The colour pulse never sets opacity, so an empty inline value is full opacity.
+      for (const rep of live) expect(rep.style.opacity).toBe('')
+      expect(live[0]).toHaveStyle({ backgroundColor: primitiveRamps.amber[400] })
+      expect(live[1]).toHaveStyle({ backgroundColor: primitiveRamps.orange[500] })
     })
   })
 
