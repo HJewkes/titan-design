@@ -101,6 +101,7 @@ export interface ExpectedRepsRange {
  * - `range` — variable rep-range (e.g. 15–20): `max` segments; committed zone
  *   `0..floor` (done = velocity, todo = grey), variable zone `floor..max` (done =
  *   velocity, todo = the variable/opportunity cyan). `doneVels` may run past `floor`.
+ *   `isActive` marks the live set: its done reps pulse exactly as an `active` set's do.
  * - `drop` — one set, no rest: `subloads` butted internally, split by 2px notches.
  * - `myo` — done rest-pause: `activation` chunk + `clusters`, split by 3px cluster gaps.
  * - `myo-upcoming` — planned myo, length unknown: grey activation (`activationLen`) +
@@ -123,7 +124,7 @@ export type SetStripSet =
       repsHigh?: number
       expectedRange?: ExpectedRepsRange
     }
-  | { status: 'range'; floor: number; max: number; doneVels: number[] }
+  | { status: 'range'; floor: number; max: number; doneVels: number[]; isActive?: boolean }
   | { status: 'drop'; subloads: number[][] }
   | { status: 'myo'; activation: number[]; clusters: number[][] }
   | { status: 'myo-upcoming'; activationLen: number; clusterCount?: number }
@@ -138,11 +139,20 @@ function chunkedSegments(chunks: number[][], gap: number): SegmentedBarSegment[]
   )
 }
 
+/** A performed rep of the live set, on the shared active pulse. */
+function liveRepSegment(v: number): SegmentedBarSegment {
+  const color = velocityZoneColor(v)
+  return { color, pulse: true, pulseColor: PULSE_RANGE[color] }
+}
+
 /** The variable rep-range's `max` segments: velocity where done, else grey (committed) / cyan (variable). */
-function rangeSegments(floor: number, max: number, doneVels: number[]): SegmentedBarSegment[] {
-  return Array.from({ length: max }, (_, i) => {
-    if (i < doneVels.length) return { color: velocityZoneColor(doneVels[i]) }
-    return { color: i < floor ? TODO_COLOR : SET_STRIP_VARIABLE_COLOR }
+function rangeSegments(set: Extract<SetStripSet, { status: 'range' }>): SegmentedBarSegment[] {
+  return Array.from({ length: set.max }, (_, i) => {
+    const v = set.doneVels[i]
+    if (i < set.doneVels.length) {
+      return set.isActive ? liveRepSegment(v) : { color: velocityZoneColor(v) }
+    }
+    return { color: i < set.floor ? TODO_COLOR : SET_STRIP_VARIABLE_COLOR }
   })
 }
 
@@ -168,7 +178,7 @@ function setSegments(set: SetStripSet): SegmentedBarSegment[] {
     return set.velocities.map((v) => ({ color: velocityZoneColor(v) }))
   }
   if (set.status === 'range') {
-    return rangeSegments(set.floor, set.max, set.doneVels)
+    return rangeSegments(set)
   }
   if (set.status === 'drop') {
     return chunkedSegments(set.subloads, NOTCH_GAP)
@@ -179,10 +189,7 @@ function setSegments(set: SetStripSet): SegmentedBarSegment[] {
   if (set.status === 'myo-upcoming') {
     return myoUpcomingSegments(set.activationLen, set.clusterCount ?? MYO_UPCOMING_CLUSTERS)
   }
-  const performed = set.velocities.map((v) => {
-    const color = velocityZoneColor(v)
-    return { color, pulse: true, pulseColor: PULSE_RANGE[color] }
-  })
+  const performed = set.velocities.map(liveRepSegment)
   const remaining = Math.max(0, set.planned - set.velocities.length)
   return [...performed, ...Array.from({ length: remaining }, () => ({ color: TODO_COLOR }))]
 }

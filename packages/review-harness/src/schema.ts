@@ -38,16 +38,34 @@ export const AUTO_HEIGHT = 'auto'
 /** A frame height in CSS px, or "auto" to size the frame to its story's content. */
 const frameHeight = z.union([z.number().int().min(120).max(4000), z.literal(AUTO_HEIGHT)])
 
+// Relative to the round file, never absolute and never through `..`; load time checks the rest.
+const imagePath = z
+  .string()
+  .regex(
+    /^(?![/\\]|[A-Za-z]:)(?!(.*[/\\])?\.\.([/\\]|$)).+\.[Pp][Nn][Gg]$/,
+    'a .png path relative to the round file, without .. segments'
+  )
+
+/** A frame is a Storybook story or a static PNG: exactly one of `storyId` and `image`. */
 export const VariantSchema = z
   .object({
     key: id,
-    storyId,
+    storyId: storyId.optional(),
+    image: imagePath.optional(),
     label: z.string().min(1),
     args: z.record(z.string(), argValue).optional(),
     globals: z.record(z.string(), argValue).optional(),
     height: frameHeight.optional(),
   })
   .strict()
+  .superRefine((v, ctx) => {
+    if ((v.storyId === undefined) === (v.image === undefined))
+      ctx.addIssue({ code: 'custom', message: 'a variant has either storyId or image, not both' })
+    if (v.image === undefined) return
+    for (const field of ['args', 'globals'] as const)
+      if (v[field] !== undefined)
+        ctx.addIssue({ code: 'custom', path: [field], message: `${field} need a storyId variant` })
+  })
 
 const questionBase = {
   id,
@@ -228,7 +246,9 @@ export const VerdictSchema = z.enum(['chosen', 'rejected', 'maybe']).nullable()
 const variantFeedbackSchema = z
   .object({
     key: z.string(),
-    storyId: z.string(),
+    /** Echoes the frame's source: `storyId` for a story variant, `image` for an image one. */
+    storyId: z.string().optional(),
+    image: z.string().optional(),
     verdict: VerdictSchema,
     comment: z.string(),
     annotations: z.array(AnnotationSchema),
@@ -253,6 +273,8 @@ export const FeedbackSchema = z
 export type ManifestInput = z.input<typeof ManifestSchema>
 export type Manifest = z.output<typeof ManifestSchema>
 export type Variant = Manifest['variants'][number]
+export type StoryVariant = Variant & { storyId: string }
+export type ImageVariant = Variant & { image: string }
 export type Question = Manifest['questions'][number]
 export type Section = z.output<typeof SectionSchema>
 export type FrameHeight = number | typeof AUTO_HEIGHT
@@ -262,18 +284,38 @@ export type VariantFeedback = Feedback['variants'][number]
 export type Annotation = z.infer<typeof AnnotationSchema>
 export type Verdict = z.infer<typeof VerdictSchema>
 
+export function isStoryVariant(variant: Variant): variant is StoryVariant {
+  return variant.storyId !== undefined
+}
+
+export function isImageVariant(variant: Variant): variant is ImageVariant {
+  return variant.image !== undefined
+}
+
 // zod can't express the object-level loopback superRefine as JSON Schema; a pattern
 // on the field is the closest honest approximation for schema consumers.
 const LOOPBACK_URL_PATTERN = '^https?://(127\\.0\\.0\\.1|localhost|\\[::1\\])(:[0-9]+)?(/.*)?$'
+
+// The variant superRefine (exactly one source; args only on stories), as JSON Schema.
+const VARIANT_SOURCE = {
+  oneOf: [
+    { required: ['storyId'] },
+    { required: ['image'], not: { anyOf: [{ required: ['args'] }, { required: ['globals'] }] } },
+  ],
+}
 
 export function manifestJsonSchema(): unknown {
   const schema = z.toJSONSchema(ManifestSchema, {
     io: 'input',
     unrepresentable: 'any',
   }) as unknown as {
-    properties: { storybookUrl: Record<string, unknown> }
+    properties: {
+      storybookUrl: Record<string, unknown>
+      variants: { items: Record<string, unknown> }
+    }
   }
   schema.properties.storybookUrl.pattern = LOOPBACK_URL_PATTERN
+  Object.assign(schema.properties.variants.items, VARIANT_SOURCE)
   return schema
 }
 

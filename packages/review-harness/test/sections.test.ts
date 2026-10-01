@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { buildFeedback, emptyDraft } from '../src/feedback.ts'
 import {
   frameHeight,
+  frameSizing,
   linksForVariant,
   optionVariants,
   questionsForVariant,
@@ -72,6 +73,47 @@ describe('frame heights', () => {
     input.variants[0].height = 'auto'
     const m = ManifestSchema.parse(input)
     expect(frameHeight(m, m.variants[0])).toBe('auto')
+  })
+})
+
+describe('frame sizing on the page', () => {
+  it('caps every frame at a round-level number instead of fixing it there', () => {
+    const input = sectionedInput()
+    input.height = 700
+    const m = ManifestSchema.parse(input)
+    expect(m.variants.map((v) => frameSizing(m, v))).toEqual([
+      { height: 'auto', maxHeight: 700 },
+      { height: 'auto', maxHeight: 700 },
+      { height: 'auto', maxHeight: 700 },
+    ])
+  })
+
+  it('keeps a section-level number as a fixed frame', () => {
+    const input = sectionedInput()
+    input.height = 700
+    input.sections![0].height = 500
+    const m = ManifestSchema.parse(input)
+    expect(frameSizing(m, m.variants[0])).toEqual({ height: 500, maxHeight: 700 })
+    expect(frameSizing(m, m.variants[2])).toEqual({ height: 'auto', maxHeight: 700 })
+  })
+
+  it('keeps a variant-level number as a fixed frame', () => {
+    const input = sectionedInput()
+    input.height = 700
+    input.sections![0].height = 500
+    input.variants[0].height = 300
+    const m = ManifestSchema.parse(input)
+    expect(frameSizing(m, m.variants[0])).toEqual({ height: 300, maxHeight: 700 })
+  })
+
+  it('fits every frame under the round maxHeight when no height is given anywhere', () => {
+    const { height: _height, ...rest } = sectionedInput()
+    const m = ManifestSchema.parse({ ...rest, maxHeight: 1400 })
+    expect(m.variants.map((v) => frameSizing(m, v))).toEqual([
+      { height: 'auto', maxHeight: 1400 },
+      { height: 'auto', maxHeight: 1400 },
+      { height: 'auto', maxHeight: 1400 },
+    ])
   })
 })
 

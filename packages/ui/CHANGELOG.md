@@ -9,6 +9,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- A `range` set in `SetBar`/`SetStrip` takes `isActive`; its done reps pulse like an active set's (VW-576).
 - `DualPinnedLiveStrip` (`shell/workout`), the pinned live strip for a two-Voltra session, with
   its `LiveStripSlot` type. Exercise, set and rest draw once; each side draws its reps, last-rep
   velocity and bars in a lane (left above right) beside one `DualVelocityStrip`, in the single
@@ -58,6 +59,12 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- `VelocityStrip`'s loss and default zone colours resolve through the `dataviz-sequential` tokens
+  for the surface's theme, like `PinnedLiveStrip`, so a light surface no longer gets the dark hexes.
+  `getVelocityLossColor` takes an optional `mode` (default `'dark'`). Dark output is unchanged (VW-450).
+- `VelocityStrip`'s `zones` colours resolve the five zone ids through the same `dataviz-sequential`
+  tokens as `PinnedLiveStrip`, so the hero follows the theme in light mode. Dark output is unchanged (VW-749).
+- `SegmentedBar`'s pulsing segments hold full opacity, and the `to` colour of a `pulseColor`, when the OS asks for reduced motion, instead of breathing (VW-325).
 - `GoalTrajectoryChart` no longer leaves the current week unmarked when it has no reading. If
   `currentWeek` falls after the last reading and before `nextTarget`'s week, a hollow point in the
   status tone sits on the dashed lead at the value the lead passes through that week, and the
@@ -84,6 +91,12 @@ project adheres to [Semantic Versioning](https://semver.org/).
   `PortfolioOverview` and `InitiativeBrief` tests and stories now use synthetic data. The shipped
   copies in 0.21.2 carried a home-directory path and personal initiative names. The unpublished lab
   data under `src/lab/active-work/data/` is synthetic too.
+
+### Internal
+
+- `TempoDisplay` takes its fill percent, number tone and readout text from
+  `custom/Fatigue/tempo-pacing` (`phaseFillPercent`, `pacingNumberTone`, `liveReadoutText`)
+  instead of private copies. No visual change (VW-678).
 
 ## 0.21.2
 

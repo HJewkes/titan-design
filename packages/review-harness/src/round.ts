@@ -1,4 +1,4 @@
-import type { Feedback, Manifest, Question, Variant } from './schema.ts'
+import type { Feedback, Manifest, Question, StoryVariant } from './schema.ts'
 
 // Storybook drops URL arg keys and values outside these (docs: writing-stories/args).
 const URL_SAFE_VALUE = /^[A-Za-z0-9 _-]*$/
@@ -24,7 +24,7 @@ function encodeArgMap(map: ArgMap): string {
     .join(';')
 }
 
-export function storyUrl(base: string, variant: Variant): string {
+export function storyUrl(base: string, variant: StoryVariant): string {
   const params = new URLSearchParams({
     id: variant.storyId,
     viewMode: 'story',

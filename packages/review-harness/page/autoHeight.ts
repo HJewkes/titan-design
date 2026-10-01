@@ -40,6 +40,11 @@ export function storyContentHeight(doc: MeasurableDoc | null): number | null {
   return height > 0 ? Math.ceil(height) + STORY_GUTTER : null
 }
 
+/** What an auto frame shows before its first measurement: the fallback, held under the cap. */
+export function initialFrameHeight(max: number): number {
+  return Math.min(AUTO_FALLBACK_HEIGHT, max)
+}
+
 /** What the frame should be after a measurement: the applied height when nothing changed. */
 export function nextFrameHeight(applied: number, measured: number | null, max: number): number {
   if (measured === null) return applied

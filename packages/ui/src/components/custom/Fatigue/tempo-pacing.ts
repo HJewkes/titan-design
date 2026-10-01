@@ -8,11 +8,10 @@
  * to use success/warning/error without the two colliding. Anything that paints a phase
  * should take its identity colour from `PHASE_AXIS_COLOR` and its pacing colour from here.
  *
- * ⚠️ `TempoDisplay` currently carries its own private copy of this logic
- * (`getTempoFillPct` / `activeNumberTone`). The two agree today and this module is the
- * canonical one; migrating TempoDisplay onto it is deliberately left out of the change
- * that introduced this file, so its rendering is untouched.
+ * `TempoDisplay` consumes this module for its fill percent, number tone and readout text, so
+ * there is one timing model (VW-678).
  */
+import { formatTenths } from '../../../utils/number-format'
 import { PACING_TONE } from './fatigue-tokens'
 import type { SamplePhase, PhaseSegment } from './fatigue-model'
 
@@ -34,10 +33,24 @@ export function phaseFillFraction(elapsedMs: number, targetMs: number | null): n
   return Math.min(1, Math.max(0, elapsedMs / targetMs))
 }
 
+/** Where a phase stands against its target: short of it, within the window, or past it. */
+export type PacingStatus = 'ahead' | 'onPace' | 'over'
+
+/**
+ * Pacing status keyed on time REMAINING, so it reads the same whether the phase is in flight
+ * or finished. `null` when there is no target to pace against.
+ */
+export function pacingStatus(elapsedMs: number, targetMs: number | null): PacingStatus | null {
+  if (targetMs == null || targetMs <= 0) return null
+  const remainingMs = targetMs - elapsedMs
+  if (remainingMs > ON_TARGET_MS) return 'ahead'
+  if (remainingMs >= -ON_TARGET_MS) return 'onPace'
+  return 'over'
+}
+
 /**
  * Pacing tone for a phase's LABEL: still short of target → ahead; within ±100 ms → on pace;
- * past target → over. Keyed on time REMAINING, so it reads the same whether the phase is in
- * flight or finished.
+ * past target → over.
  *
  * Takes {@link PACING_TONE} rather than the `status-*` semantic tokens — the label sits on a
  * saturated phase fill, where `status-error` measures 1.88:1. See the token's note.
@@ -47,11 +60,45 @@ export function phaseFillFraction(elapsedMs: number, targetMs: number | null): n
  * `text-primary` here, which is the VW-316 pattern.
  */
 export function pacingTone(elapsedMs: number, targetMs: number | null): string | null {
-  if (targetMs == null || targetMs <= 0) return null
-  const remainingMs = targetMs - elapsedMs
-  if (remainingMs > ON_TARGET_MS) return PACING_TONE.ahead
-  if (remainingMs >= -ON_TARGET_MS) return PACING_TONE.onPace
-  return PACING_TONE.over
+  const status = pacingStatus(elapsedMs, targetMs)
+  return status == null ? null : PACING_TONE[status]
+}
+
+/** The colours a caller supplies to tone a number: one per pacing status, plus the no-target fallback. */
+export interface PacingNumberPalette extends Record<PacingStatus, string> {
+  noTarget: string
+}
+
+/**
+ * Pacing tone for a phase's NUMBER, from the caller's own palette. TempoDisplay paints the
+ * number on its chip surface (not on a saturated fill), so it passes theme-aware `status-*`
+ * colours instead of {@link PACING_TONE}.
+ */
+export function pacingNumberTone(
+  elapsedMs: number,
+  targetMs: number | null,
+  palette: PacingNumberPalette
+): string {
+  const status = pacingStatus(elapsedMs, targetMs)
+  return status == null ? palette.noTarget : palette[status]
+}
+
+/** Percent (0–100) of the target a phase has run, capped at 100. No target reads full. */
+export function phaseFillPercent(elapsedMs: number, targetMs: number | null): number {
+  return phaseFillFraction(elapsedMs, targetMs) * 100
+}
+
+/** Live readout style: `countdown` remaining to 0.0 (then −), or `countup` elapsed to target. */
+export type TempoLiveReadout = 'countdown' | 'countup'
+
+/** The live number for a phase, to 0.1 s. */
+export function liveReadoutText(
+  elapsedMs: number,
+  targetMs: number,
+  readout: TempoLiveReadout
+): string {
+  const seconds = readout === 'countup' ? elapsedMs / 1000 : (targetMs - elapsedMs) / 1000
+  return formatTenths(seconds)
 }
 
 /**

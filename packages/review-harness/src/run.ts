@@ -17,9 +17,10 @@ import {
 export const USAGE = `titan-review <round.json> [options]
 titan-review --example [--storybook <url>]
 
-Serves one review round (live Storybook iframes, picks, comments, pins) on 127.0.0.1,
-blocks until the human submits, writes <out>/feedback.json plus one PNG per variant per
-width, prints the feedback JSON on stdout and exits 0. Ctrl-C exits 130, writing nothing.
+Serves one review round (live Storybook iframes or static PNGs, picks, comments, pins) on
+127.0.0.1, blocks until the human submits, writes <out>/feedback.json plus one PNG per story
+variant per width and a copy of each image variant's PNG, prints the feedback JSON on stdout
+and exits 0. Ctrl-C exits 130, writing nothing.
 
   --storybook <url>  Storybook base url (default: the manifest's storybookUrl)
   --out <dir>        Where feedback.json and PNGs go (default: the manifest's directory)

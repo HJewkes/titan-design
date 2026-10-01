@@ -55,6 +55,29 @@ export const Active: Story = {
   },
 }
 
+export const ActiveRangeSet: Story = {
+  name: 'Active range set',
+  args: {
+    height: 8,
+    set: {
+      status: 'range',
+      floor: 15,
+      max: 20,
+      doneVels: decay(9, 0.8),
+      isActive: true,
+    } as SetStripSet,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'A live variable-range set: done reps pulse like the Active story; the committed ' +
+          'grey and variable cyan zones stay still.',
+      },
+    },
+  },
+}
+
 export const Todo: Story = {
   args: { height: 8, set: { status: 'todo', planned: 10 } as SetStripSet },
 }

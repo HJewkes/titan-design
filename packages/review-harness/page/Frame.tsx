@@ -1,19 +1,19 @@
 import { useCallback, useEffect, useRef, useState, type MouseEvent } from 'react'
-import type { Annotation, FrameHeight, Variant } from '../src/schema.ts'
+import type { Annotation, FrameHeight, StoryVariant } from '../src/schema.ts'
 import { storyUrl } from '../src/round.ts'
 import { isAuto } from '../src/sections.ts'
 import {
-  AUTO_FALLBACK_HEIGHT,
+  initialFrameHeight,
   nextFrameHeight,
   storyContentHeight,
   type MeasurableDoc,
 } from './autoHeight.ts'
 import { forwardFrameKeys } from './frameKeys.ts'
 
-type PinInput = Omit<Annotation, 'id' | 'note'>
+export type PinInput = Omit<Annotation, 'id' | 'note'>
 
 interface FrameProps {
-  variant: Variant
+  variant: StoryVariant
   width: number
   height: FrameHeight
   maxHeight: number
@@ -29,7 +29,7 @@ const MAX_MEASUREMENTS = 12
 const round = (n: number, places: number) => Number(n.toFixed(places))
 
 /** Scale that fits `width` into the space the card gives it; never enlarges. */
-function useFitScale(width: number) {
+export function useFitScale(width: number) {
   const ref = useRef<HTMLDivElement>(null)
   const [scale, setScale] = useState(1)
   useEffect(() => {
@@ -79,8 +79,8 @@ export function reachedStorybook(doc: Pick<Document, 'getElementById'> | null): 
  * cannot read, or one that never renders, stays at the fallback height.
  */
 function useFittedHeight(height: FrameHeight, maxHeight: number) {
-  const [fitted, setFitted] = useState(AUTO_FALLBACK_HEIGHT)
-  const applied = useRef(AUTO_FALLBACK_HEIGHT)
+  const [fitted, setFitted] = useState(() => initialFrameHeight(maxHeight))
+  const applied = useRef(fitted)
   const measurements = useRef(0)
   const observer = useRef<{ disconnect: () => void } | null>(null)
   const auto = isAuto(height)
@@ -160,6 +160,46 @@ function DeadFrame({ testId, onRetry }: { testId: string; onRetry: () => void })
   )
 }
 
+/** Where a click on a frame's overlay lands, in the frame's own CSS px. */
+export function pointerPin(
+  e: MouseEvent<HTMLDivElement>,
+  scale: number,
+  width: number,
+  height: number
+): PinInput {
+  const rect = e.currentTarget.getBoundingClientRect()
+  const x = round((e.clientX - rect.left) / scale, 0)
+  const y = round((e.clientY - rect.top) / scale, 0)
+  return { width, x, y, xPct: round(x / width, 4), yPct: round(y / height, 4) }
+}
+
+interface PinOverlayProps {
+  variantKey: string
+  width: number
+  scale: number
+  annotate: boolean
+  pins: Annotation[]
+  onClick: (e: MouseEvent<HTMLDivElement>) => void
+}
+
+export function PinOverlay({ variantKey, width, scale, annotate, pins, onClick }: PinOverlayProps) {
+  return (
+    <div
+      className={annotate ? 'overlay annotating' : 'overlay'}
+      data-testid={`overlay-${variantKey}-${width}`}
+      onClick={annotate ? onClick : undefined}
+    >
+      {pins
+        .filter((p) => p.width === width)
+        .map((p) => (
+          <span key={p.id} className="pin" style={{ left: p.x * scale, top: p.y * scale }}>
+            {p.id.split('-').pop()}
+          </span>
+        ))}
+    </div>
+  )
+}
+
 function hitTarget(iframe: HTMLIFrameElement | null, x: number, y: number) {
   const hit = sameOriginDocument(iframe)?.elementFromPoint(x, y) as HTMLElement | null | undefined
   if (!hit) return undefined
@@ -179,11 +219,8 @@ export function Frame(props: FrameProps) {
   const attachKeys = useFrameKeys()
 
   const onOverlayClick = (e: MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    const x = round((e.clientX - rect.left) / scale, 0)
-    const y = round((e.clientY - rect.top) / scale, 0)
-    const target = hitTarget(iframe.current, x, y)
-    props.onPin({ width, x, y, xPct: round(x / width, 4), yPct: round(y / height, 4), target })
+    const pin = pointerPin(e, scale, width, height)
+    props.onPin({ ...pin, target: hitTarget(iframe.current, pin.x, pin.y) })
   }
 
   return (
@@ -212,19 +249,14 @@ export function Frame(props: FrameProps) {
             }}
           />
         )}
-        <div
-          className={annotate ? 'overlay annotating' : 'overlay'}
-          data-testid={`overlay-${variant.key}-${width}`}
-          onClick={annotate ? onOverlayClick : undefined}
-        >
-          {pins
-            .filter((p) => p.width === width)
-            .map((p) => (
-              <span key={p.id} className="pin" style={{ left: p.x * scale, top: p.y * scale }}>
-                {p.id.split('-').pop()}
-              </span>
-            ))}
-        </div>
+        <PinOverlay
+          variantKey={variant.key}
+          width={width}
+          scale={scale}
+          annotate={annotate}
+          pins={pins}
+          onClick={onOverlayClick}
+        />
         {health.dead && (
           <DeadFrame testId={`dead-${variant.key}-${width}`} onRetry={health.retry} />
         )}
