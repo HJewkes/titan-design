@@ -9,6 +9,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- A `range` set in `SetBar`/`SetStrip` takes `isActive`; its done reps pulse like an active set's (VW-576).
 - `DualPinnedLiveStrip` (`shell/workout`), the pinned live strip for a two-Voltra session, with
   its `LiveStripSlot` type. Exercise, set and rest draw once; each side draws its reps, last-rep
   velocity and bars in a lane (left above right) beside one `DualVelocityStrip`, in the single
