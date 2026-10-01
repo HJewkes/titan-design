@@ -8,6 +8,7 @@ import { BodyMap, type BodyMapData } from './BodyMap'
 import { MuscleGroupChip } from './MuscleGroupChip'
 import {
   MuscleGroup,
+  VOLUME_STATUSES,
   VOLUME_STATUS_DATAVIZ_TOKEN,
   getHeatmapColor,
   type VolumeStatus,
@@ -18,13 +19,14 @@ import { formatTrimmedDecimal } from '../../../utils/number-format'
 
 type ColorToken = keyof ReturnType<typeof getSemanticColors>
 
-/** The six rungs of the shipped status. A rejected 5-value ladder leaves one out. */
+/** The seven rungs of the shipped status. A rejected ladder leaves some out. */
 type Rung = VolumeStatus
 
-const RUNG_ORDER: Rung[] = ['untrained', 'behind', 'ontrack', 'target', 'approaching', 'over']
+const RUNG_ORDER: readonly Rung[] = VOLUME_STATUSES
 
 const RUNG_LABEL: Record<Rung, string> = {
   untrained: 'Untrained',
+  noverdict: 'No Verdict',
   behind: 'Behind Plan',
   ontrack: 'On Track',
   target: 'Target Met',
@@ -34,6 +36,7 @@ const RUNG_LABEL: Record<Rung, string> = {
 
 const RUNG_ZONE: Record<Rung, string> = {
   untrained: '0 sets logged',
+  noverdict: 'MEV withheld',
   behind: 'below MEV',
   ontrack: 'MEV - MAV',
   target: 'MAV - MRV',
@@ -65,6 +68,7 @@ function dsIndex(value: string): number | null {
  */
 const FIGURE: Record<Rung, Paint> = {
   untrained: { literal: getHeatmapColor('untrained', 'dark'), label: 'no-data fill' },
+  noverdict: { token: 'result-neutral', label: 'result-neutral' },
   behind: { token: 'dataviz-diverging-0', label: 'dataviz-diverging-0' },
   ontrack: { token: 'dataviz-diverging-1', label: 'dataviz-diverging-1' },
   target: { token: 'dataviz-diverging-2', label: 'dataviz-diverging-2' },
@@ -88,6 +92,7 @@ const CHIP_BEFORE: Partial<Record<Rung, Paint>> = {
 /** What the chip paints now — the figure's scale, via the one shared map. */
 const SHIPPED: Record<Rung, Paint> = {
   untrained: { token: 'text-tertiary', label: 'text-tertiary' },
+  noverdict: { token: 'result-neutral', label: 'result-neutral (ring)' },
   behind: { token: VOLUME_STATUS_DATAVIZ_TOKEN.behind, label: VOLUME_STATUS_DATAVIZ_TOKEN.behind },
   ontrack: {
     token: VOLUME_STATUS_DATAVIZ_TOKEN.ontrack,
@@ -179,6 +184,20 @@ const BACK: BodyMapData[] = [
   },
   { muscleGroup: MuscleGroup.TRICEPS, intensity: 0.25, volumeStatus: 'behind', weeklySets: 3 },
   { muscleGroup: MuscleGroup.GLUTES, intensity: 0.9, volumeStatus: 'approaching', weeklySets: 14 },
+  { muscleGroup: MuscleGroup.HAMSTRINGS, intensity: 1, volumeStatus: 'over', weeklySets: 18 },
+]
+
+/** The VW-741 case: glutes and back trained, but their MEV is withheld. */
+const NO_VERDICT_BACK: BodyMapData[] = [
+  { muscleGroup: MuscleGroup.LATS, intensity: 0.6, volumeStatus: 'noverdict', weeklySets: 11 },
+  {
+    muscleGroup: MuscleGroup.UPPER_BACK,
+    intensity: 0.45,
+    volumeStatus: 'noverdict',
+    weeklySets: 8,
+  },
+  { muscleGroup: MuscleGroup.TRICEPS, intensity: 0.25, volumeStatus: 'behind', weeklySets: 3 },
+  { muscleGroup: MuscleGroup.GLUTES, intensity: 0.9, volumeStatus: 'noverdict', weeklySets: 14 },
   { muscleGroup: MuscleGroup.HAMSTRINGS, intensity: 1, volumeStatus: 'over', weeklySets: 18 },
 ]
 
@@ -492,15 +511,19 @@ function Figures({
   mode,
   title,
   note,
+  front = FRONT,
+  back = BACK,
 }: DecisionArgs & { mode: ThemeMode } & {
   title: string
   note: string
+  front?: BodyMapData[]
+  back?: BodyMapData[]
 }) {
   return (
     <Panel title={title} note={note} backdrop={backdrop} mode={mode}>
       <View style={{ flexDirection: 'row', gap: 12 }}>
-        <BodyMap data={FRONT} view="front" mode="simple" />
-        <BodyMap data={BACK} view="back" mode="simple" />
+        <BodyMap data={front} view="front" mode="simple" />
+        <BodyMap data={back} view="back" mode="simple" />
       </View>
     </Panel>
   )
@@ -556,6 +579,29 @@ function VolumeStatusPaletteDecision({ backdrop, mode }: DecisionArgs & { mode: 
           <View style={{ gap: 8 }}>
             <Measurements ladder={DECIDED} mode={mode} />
           </View>
+        </Row>
+
+        <Row label="D — no verdict (VW-741): trained, MEV withheld">
+          <Figures
+            backdrop={backdrop}
+            mode={mode}
+            title="figure"
+            note="lats, upper back and glutes paint result-neutral"
+            back={NO_VERDICT_BACK}
+          />
+          <Panel
+            title="chips"
+            note="no verdict is a ring; untrained stays a solid dot"
+            backdrop={backdrop}
+            mode={mode}
+          >
+            <View style={{ gap: 6 }} testID="no-verdict-chips">
+              <MuscleGroupChip name="Glutes" volumeStatus="noverdict" />
+              <MuscleGroupChip name="Lats" volumeStatus="noverdict" />
+              <MuscleGroupChip name="Rear Delts" volumeStatus="untrained" />
+              <MuscleGroupChip name="Chest" volumeStatus="ontrack" />
+            </View>
+          </Panel>
         </Row>
 
         {REJECTED.map((ladder) => (
@@ -658,6 +704,13 @@ function VolumeStatusPaletteDecision({ backdrop, mode }: DecisionArgs & { mode: 
  * floor; `blue-700` clears CVD at 8.3 but contrasts 1.62:1 against the outline
  * fill), and two greens split by lightness (`status-success-dark` collides with
  * `status-error` at ΔE 4.9 — the classic dark-green/mid-red deuteranopia pair).
+ *
+ * ## Added later: `noverdict` (VW-741)
+ *
+ * A trained muscle whose MEV is withheld has sets but no verdict. It paints
+ * `result-neutral` on both surfaces, off the diverging scale, and the chip draws
+ * it as a ring so it never reads as the solid `untrained` dot. Row D shows it;
+ * the shipped measurements above now include it, so they move from the table.
  *
  * Full record, including the tables the decision was taken from, in
  * `VolumeStatusPalette.decision.md`.

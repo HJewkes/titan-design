@@ -200,8 +200,25 @@ export type VolumeLandmarkZone = 'under' | 'maintenance' | 'productive' | 'over'
  * every legend over them (VW-333). Before it existed, the figure keyed off the
  * landmark zone and the chip off a five-value union of its own, so one muscle
  * could render two different hues.
+ *
+ * `noverdict` (VW-741) marks a trained muscle whose landmarks are withheld, so its
+ * week has sets but no verdict. It paints result-neutral, never a diverging stop.
  */
-export type VolumeStatus = 'untrained' | 'behind' | 'ontrack' | 'target' | 'approaching' | 'over'
+export type VolumeStatus = (typeof VOLUME_STATUSES)[number]
+
+/** Every status in severity order; the union derives from it, so tests can iterate it whole. */
+export const VOLUME_STATUSES = [
+  'untrained',
+  'noverdict',
+  'behind',
+  'ontrack',
+  'target',
+  'approaching',
+  'over',
+] as const
+
+/** Statuses with no stop on the diverging scale. */
+type OffScaleStatus = 'untrained' | 'noverdict'
 
 /**
  * Intensity at or above which a muscle inside the productive band reads as
@@ -231,6 +248,7 @@ export function landmarkZoneToStatus(zone: VolumeLandmarkZone, intensity = 0): V
 /** Readable label per status for a11y descriptions. */
 export const VOLUME_STATUS_LABELS: Record<VolumeStatus, string> = {
   untrained: 'untrained',
+  noverdict: 'no verdict',
   behind: 'behind plan',
   ontrack: 'on track',
   target: 'target met',
@@ -246,7 +264,8 @@ export const VOLUME_STATUS_LABELS: Record<VolumeStatus, string> = {
  * `untrained` is absent on purpose. It is not a stop on the diverging scale, and
  * the two surfaces answer it differently: the figure has no data to paint (the
  * muscle is simply missing from `data` and keeps the outline fill), while the
- * chip shows a muted `text-tertiary` dot.
+ * chip shows a muted `text-tertiary` dot. `noverdict` is absent too: it has sets
+ * but no landmarks to place them against, so both surfaces paint `result-neutral`.
  */
 export const VOLUME_STATUS_DATAVIZ_TOKEN = {
   behind: 'dataviz-diverging-0',
@@ -254,7 +273,7 @@ export const VOLUME_STATUS_DATAVIZ_TOKEN = {
   target: 'dataviz-diverging-2',
   approaching: 'dataviz-diverging-3',
   over: 'dataviz-diverging-4',
-} as const satisfies Record<Exclude<VolumeStatus, 'untrained'>, string>
+} as const satisfies Record<Exclude<VolumeStatus, OffScaleStatus>, string>
 
 /**
  * Severity ranking — higher wins when several muscle groups share an SVG slug.
@@ -262,14 +281,16 @@ export const VOLUME_STATUS_DATAVIZ_TOKEN = {
  * `approaching` outranks `target` (VW-333). Before the split they were one
  * status and the tie resolved by data order, so two productive muscles on the
  * same slug painted whichever colour came last. The ranking makes it definite.
+ * `noverdict` is the lowest painted rung: any verdict on a shared slug outranks it.
  */
 const STATUS_SEVERITY: Record<VolumeStatus, number> = {
   untrained: 0,
-  behind: 1,
-  ontrack: 2,
-  target: 3,
-  approaching: 4,
-  over: 5,
+  noverdict: 1,
+  behind: 2,
+  ontrack: 3,
+  target: 4,
+  approaching: 5,
+  over: 6,
 }
 
 /**
@@ -286,6 +307,8 @@ const STATUS_SEVERITY: Record<VolumeStatus, number> = {
 export function getHeatmapColor(status: VolumeStatus | null | undefined, mode: ThemeMode): string {
   const heatmap = heatmapColors(mode)
   switch (status) {
+    case 'noverdict':
+      return heatmap.noverdict
     case 'behind':
       return heatmap.under
     case 'ontrack':
@@ -308,6 +331,8 @@ export function getHeatmapColor(status: VolumeStatus | null | undefined, mode: T
  * so a muscle is one colour on both surfaces. `untrained` is the one rung where
  * they differ on purpose: the figure has no data to paint and keeps its no-data
  * fill, while a chip still has to show something, so it takes the muted text role.
+ * `noverdict` takes `result-neutral`, the same role the figure paints; the chip
+ * draws it as a ring (see {@link isVolumeStatusDotRing}) so it never reads as untrained.
  *
  * A function of `mode` for the same reason `getHeatmapColor` is — `MuscleGroupChip`
  * is token-pure and cannot call `getSemanticColors` itself, so it passes
@@ -319,7 +344,13 @@ export function volumeStatusDotColor(
 ): string {
   const colors = getSemanticColors(mode)
   if (!status || status === 'untrained') return colors['text-tertiary']
+  if (status === 'noverdict') return colors['result-neutral']
   return colors[VOLUME_STATUS_DATAVIZ_TOKEN[status]]
+}
+
+/** True when a status's dot draws as a hollow ring rather than a solid fill. */
+export function isVolumeStatusDotRing(status: VolumeStatus | null | undefined): boolean {
+  return status === 'noverdict'
 }
 
 /** True when one status is at least as severe as another. */
