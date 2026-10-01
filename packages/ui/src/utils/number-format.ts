@@ -20,3 +20,8 @@ export function formatSignedCompact(n: number): string {
 export function formatTrimmedDecimal(n: number, decimals: number): string {
   return Number.isInteger(n) ? `${n}` : n.toFixed(decimals)
 }
+
+/** A value to one decimal place, always shown: `1.5`, `0.0`, `-0.6`. */
+export function formatTenths(n: number): string {
+  return n.toFixed(1)
+}

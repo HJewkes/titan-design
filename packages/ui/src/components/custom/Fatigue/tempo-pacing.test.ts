@@ -5,6 +5,10 @@ import {
   phaseTargetsMs,
   prescribedSegments,
   ON_TARGET_MS,
+  pacingStatus,
+  pacingNumberTone,
+  phaseFillPercent,
+  liveReadoutText,
 } from './tempo-pacing'
 import {
   PACING_TONE,
@@ -176,5 +180,57 @@ describe('phaseTargetsMs', () => {
   it('treats a rep that opens on the concentric as having a TOP hold after it', () => {
     const phases: SamplePhase[] = ['concentric', 'hold']
     expect(phaseTargetsMs(phases, TEMPO)).toEqual([950, 280])
+  })
+})
+
+describe('moved TempoDisplay helpers (VW-678)', () => {
+  // The pre-move TempoDisplay implementations, kept here only to prove parity.
+  const legacyFillPct = (e: number, t: number | null) => (!t ? 100 : Math.min(100, (e / t) * 100))
+  const legacyTone = (e: number, t: number | null, p: Record<string, string>) => {
+    if (t == null) return p.noTarget
+    const r = t - e
+    if (r > 100) return p.ahead
+    if (r >= -100) return p.onPace
+    return p.over
+  }
+  const palette = { ahead: 'A', onPace: 'P', over: 'O', noTarget: 'N' }
+  const elapsedSamples = [0, 1, 99, 500, 1899, 1900, 2000, 2100, 2101, 5000]
+  const targetSamples = [null, 500, 2000, 4000]
+
+  it('phaseFillPercent matches the legacy percent for every reachable input', () => {
+    for (const t of targetSamples)
+      for (const e of elapsedSamples)
+        expect(phaseFillPercent(e, t)).toBeCloseTo(legacyFillPct(e, t))
+  })
+
+  it('phaseFillPercent caps at 100 and reads full without a target', () => {
+    expect(phaseFillPercent(9000, 2000)).toBe(100)
+    expect(phaseFillPercent(500, null)).toBe(100)
+  })
+
+  it('pacingNumberTone matches the legacy tone for every reachable input', () => {
+    for (const t of targetSamples)
+      for (const e of elapsedSamples)
+        expect(pacingNumberTone(e, t, palette)).toBe(legacyTone(e, t, palette))
+  })
+
+  it('pacingNumberTone falls back to the palette when there is no target', () => {
+    expect(pacingNumberTone(500, null, palette)).toBe('N')
+  })
+
+  it('pacingStatus switches at the ±100 ms window edges', () => {
+    expect(pacingStatus(1899, 2000)).toBe('ahead')
+    expect(pacingStatus(1900, 2000)).toBe('onPace')
+    expect(pacingStatus(2100, 2000)).toBe('onPace')
+    expect(pacingStatus(2101, 2000)).toBe('over')
+    expect(pacingStatus(0, null)).toBeNull()
+    expect(pacingStatus(0, 0)).toBeNull()
+  })
+
+  it('liveReadoutText counts down to zero then negative, or counts up', () => {
+    expect(liveReadoutText(500, 2000, 'countdown')).toBe('1.5')
+    expect(liveReadoutText(2000, 2000, 'countdown')).toBe('0.0')
+    expect(liveReadoutText(2600, 2000, 'countdown')).toBe('-0.6')
+    expect(liveReadoutText(500, 2000, 'countup')).toBe('0.5')
   })
 })

@@ -214,19 +214,16 @@ split.
   one chip: the static phase-coloured **prescription** and, with the `live` prop, the
   running tempo (per-phase countdown/count-up to 0.1s, a bottom-anchored phase-progress
   fill, semantic pacing tones, and banked/frozen finals). Its internal parts —
-  `LiveTempoRow`, `LiveTempoCell`, `CellFill` (the fill behind a number), and the
-  `activeNumberTone` pacing helper — are **TempoDisplay-private with no second consumer**,
-  so per the ≥2-consumer rule they stay internal rather than becoming top-level primitives.
+  `LiveTempoRow`, `LiveTempoCell` and `CellFill` (the fill behind a number) — are
+  **TempoDisplay-private with no second consumer**. Its pacing logic (fill percent, number
+  tone, readout text) lives in `Fatigue/tempo-pacing`, shared with `GhostBand` (VW-678). Per the ≥2-consumer rule they stay internal rather than becoming top-level primitives.
   The only already-shared primitive is `MetricCell`.
 
   **If reuse emerges, decompose along these seams** (in likely order):
   1. **`CellFill` → a shared `ProgressCell`/`FillBehind` primitive** — the moment a
      second component needs "a bottom-anchored progress fill behind centred text" (e.g. a
      generic timer/meter cell). Cleanest extraction; pure presentation, no tempo semantics.
-  2. **`activeNumberTone` + `ON_TARGET_MS` → a `tempo-pacing` util** — if another surface
-     needs the same yellow/green/red "time-to-target" tone (a coach card, a rep-tempo
-     summary). It is pure logic, trivially portable.
-  3. **`LiveTempoRow` → a `TempoLiveRow` molecule** — only if a consumer wants the running
+  2. **`LiveTempoRow` → a `TempoLiveRow` molecule** — only if a consumer wants the running
      row _without_ the chip chrome (label/background/padding). Until then the chrome and the
      row belong together as one component with a `live` prop, not two.
 

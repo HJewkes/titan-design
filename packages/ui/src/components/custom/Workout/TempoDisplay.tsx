@@ -7,6 +7,15 @@ import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semanti
 import { useSurfaceMode } from '../../ui/surface'
 import { primitiveRamps } from '../../../theme/tokens/primitives'
 import { MetricCell } from './metricText'
+import {
+  liveReadoutText,
+  pacingNumberTone,
+  phaseFillPercent,
+  type PacingNumberPalette,
+  type TempoLiveReadout,
+} from '../Fatigue/tempo-pacing'
+
+export type { TempoLiveReadout }
 
 /** The four tempo phases, in the order the display renders them. */
 export type TempoLivePhase = 'eccentric' | 'pauseBottom' | 'concentric' | 'pauseTop'
@@ -84,36 +93,10 @@ function tempoColors(mode: ThemeMode) {
   }
 }
 
-/** Live active-phase readout: `countdown` remaining to 0.0, or `countup` elapsed to target. */
-export type TempoLiveReadout = 'countdown' | 'countup'
-
-/** ± this window (ms) around the target still counts as on target (0.0 ± 0.1s). */
-const ON_TARGET_MS = 100
-
-/** Phase-progress fill percent (0–100): how far the active phase has run toward its target. */
-function getTempoFillPct(elapsedMs: number, targetMs: number | null): number {
-  if (!targetMs) return 100
-  return Math.min(100, (elapsedMs / targetMs) * 100)
-}
-
-/**
- * Semantic pacing tone for the active/completed phase's NUMBER (the fill bar carries phase
- * identity, so the number is free to carry pacing). Keyed on time remaining to target:
- * ahead of target (still counting) → warning; within ±0.1s of 0.0 → success; over → error.
- */
-function activeNumberTone(elapsedMs: number, targetMs: number | null, mode: ThemeMode): string {
+/** The active number's tone: pacing status mapped onto the theme's status colours. */
+function numberPalette(mode: ThemeMode): PacingNumberPalette {
   const c = tempoColors(mode)
-  if (targetMs == null) return c.textPrimary
-  const remainingMs = targetMs - elapsedMs
-  if (remainingMs > ON_TARGET_MS) return c.ahead
-  if (remainingMs >= -ON_TARGET_MS) return c.onTarget
-  return c.slow
-}
-
-/** The active number: `countup` elapsed (→ target) or `countdown` remaining (→ 0.0, then −). */
-function liveReadoutText(elapsedMs: number, targetMs: number, readout: TempoLiveReadout): string {
-  const seconds = readout === 'countup' ? elapsedMs / 1000 : (targetMs - elapsedMs) / 1000
-  return seconds.toFixed(1)
+  return { ahead: c.ahead, onPace: c.onTarget, over: c.slow, noTarget: c.textPrimary }
 }
 
 function TempoValue({
@@ -215,7 +198,8 @@ function LiveTempoCell({
   if (status === 'done') {
     const finalMs = completedMs ?? targetMs ?? 0
     const finalText = targetMs != null ? liveReadoutText(finalMs, targetMs, readout) : String(value)
-    const finalTone = targetMs != null ? activeNumberTone(finalMs, targetMs, mode) : color
+    const finalTone =
+      targetMs != null ? pacingNumberTone(finalMs, targetMs, numberPalette(mode)) : color
     return (
       <View style={wrap} testID="tempo-live-done">
         <CellFill color={color} pct={100} />
@@ -226,8 +210,8 @@ function LiveTempoCell({
 
   // Active: the phase-hued fill grows with the phase; the number reads the live time
   // (countdown/countup) to 0.1s, coloured SEMANTICALLY by pacing (neutral/on-target/behind).
-  const numberTone = activeNumberTone(phaseElapsedMs, targetMs, mode)
-  const fillPct = getTempoFillPct(phaseElapsedMs, targetMs)
+  const numberTone = pacingNumberTone(phaseElapsedMs, targetMs, numberPalette(mode))
+  const fillPct = phaseFillPercent(phaseElapsedMs, targetMs)
   const activeText =
     targetMs != null ? liveReadoutText(phaseElapsedMs, targetMs, readout) : String(value)
   return (
