@@ -23,7 +23,7 @@ export function ConversationIdentity({
 }: ConversationIdentityProps) {
   return (
     <View
-      className={cn('items-center gap-stack-sm py-inset-sm', className)}
+      className={cn('items-center gap-stack-sm pb-0 pt-inset-xs', className)}
       testID="chat-conversation-identity"
     >
       <Avatar size="lg" colorFromName={participant.displayName} alt={participant.displayName} />

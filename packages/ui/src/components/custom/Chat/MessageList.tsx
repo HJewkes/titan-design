@@ -89,7 +89,7 @@ function ThreadHeader({ props, layout }: { props: MessageListProps; layout: Thre
   if (props.header !== undefined) return <View className="px-gutter-sm">{props.header}</View>
   const other = props.participants.find(({ id }) => id !== props.viewerId)
   if (layout !== 'direct' || !other) return null
-  return <ConversationIdentity participant={other} />
+  return <ConversationIdentity participant={other} className="-mb-stack-md" />
 }
 
 function newestOwnMessageId(messages: readonly ChatMessage[], viewerId: string) {
