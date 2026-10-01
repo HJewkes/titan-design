@@ -1,9 +1,9 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
 
-import { Card } from '../../ui/card'
 import { Indicator } from '../../ui/indicator'
 import { Pill } from '../../ui/pill'
+import { StatCard, StatCardHeader, type StatCardInset } from '../../ui/stat-card'
 import { useSurfaceMode } from '../../ui/surface'
 import { Typography } from '../../ui/typography'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
@@ -53,10 +53,7 @@ export interface GoalMuscleCardProps extends ViewProps {
   className?: string
 }
 
-const DENSITY = {
-  comfortable: { pad: 'p-inset-lg', gap: 'gap-stack-lg' },
-  compact: { pad: 'p-inset-md', gap: 'gap-stack-md' },
-} as const
+const INSET: Record<GoalLiftCardDensity, StatCardInset> = { comfortable: 'lg', compact: 'md' }
 
 /**
  * A contributing lift's text. The week shows ONLY when this lift's goal week
@@ -102,6 +99,72 @@ function LiftRow({ lift, commonGoalWeek }: { lift: GoalMuscleLift; commonGoalWee
   )
 }
 
+/** The rollup's verdict: a pill at comfortable density, its light alone at compact. */
+function StatusMark({ status, density }: { status: GoalLiftStatus; density: GoalLiftCardDensity }) {
+  if (density === 'compact') {
+    return (
+      <Indicator
+        color={GOAL_STATUS_TONE[status]}
+        size="md"
+        accessibilityRole="image"
+        accessibilityLabel={GOAL_STATUS_LABEL[status]}
+        testID="goal-muscle-card-status-dot"
+      />
+    )
+  }
+  return (
+    <Pill
+      tone={GOAL_STATUS_TONE[status]}
+      variant="subtle"
+      size="sm"
+      leading="dot"
+      testID="goal-muscle-card-status-pill"
+    >
+      {GOAL_STATUS_LABEL[status]}
+    </Pill>
+  )
+}
+
+/**
+ * The figure column beside the lift list. Rows are TOP-aligned against the figure
+ * column (locked 2026-09-15): centred left the figure floating mid-card whenever a
+ * muscle had one contributing lift — see REJECTED.md.
+ */
+function RollupBody({
+  muscle,
+  side,
+  litColor,
+  liftsOnTrack,
+  liftsTotal,
+  commonGoalWeek,
+  lifts,
+}: Pick<
+  GoalMuscleCardProps,
+  'muscle' | 'side' | 'liftsOnTrack' | 'liftsTotal' | 'commonGoalWeek' | 'lifts'
+> & { litColor: string }) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'flex-start' }} className="gap-inline-lg">
+      <View
+        style={{ alignItems: 'center' }}
+        className="gap-stack-sm"
+        testID="goal-muscle-card-figure"
+      >
+        <MuscleGlyph muscle={muscle} side={side} litColor={litColor} />
+        {/* A label, not a top-line value. */}
+        <Typography variant="caption" color="tertiary" testID="goal-muscle-card-count">
+          {`${liftsOnTrack}/${liftsTotal} on track`}
+        </Typography>
+      </View>
+
+      <View style={{ flex: 1, minWidth: 0 }} className="gap-stack-md">
+        {lifts.map((lift) => (
+          <LiftRow key={lift.name} lift={lift} commonGoalWeek={commonGoalWeek} />
+        ))}
+      </View>
+    </View>
+  )
+}
+
 /**
  * A muscle priority's goal state at card scale: the figure with this muscle lit
  * by its status, the lifts-on-track count beneath it as a label, and every
@@ -114,7 +177,7 @@ function LiftRow({ lift, commonGoalWeek }: { lift: GoalMuscleLift; commonGoalWee
  * `react-native-body-highlighter` — which lives behind the `/bodymap` subpath
  * precisely so the root barrel stays free of it.
  *
- * Composes `Card`, `Pill` / `Indicator`, `Typography` and `MuscleGlyph`.
+ * Composes `StatCard` (no lead figure), `Pill` / `Indicator`, `Typography` and `MuscleGlyph`.
  *
  * @example
  * <GoalMuscleCard
@@ -141,76 +204,36 @@ export function GoalMuscleCard({
   className,
   ...props
 }: GoalMuscleCardProps) {
-  const d = DENSITY[density]
   const litColor = useStatusColor(status)
+  const header = (
+    <StatCardHeader
+      title={
+        <View style={{ flexShrink: 1, minWidth: 0 }}>
+          <Typography variant="overline" color="tertiary" testID="goal-muscle-card-name">
+            {name}
+          </Typography>
+        </View>
+      }
+      trailing={<StatusMark status={status} density={density} />}
+    />
+  )
 
   return (
-    <Card
+    <StatCard
       elevation={1}
+      inset={INSET[density]}
       className={className}
       role="article"
       aria-label={`${name} goal rollup, ${GOAL_STATUS_LABEL[status]}`}
       testID="goal-muscle-card"
+      header={header}
+      body={
+        <RollupBody
+          litColor={litColor}
+          {...{ muscle, side, liftsOnTrack, liftsTotal, commonGoalWeek, lifts }}
+        />
+      }
       {...props}
-    >
-      <View className={`${d.pad} ${d.gap}`}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
-          }}
-          className="gap-inline-sm"
-        >
-          <View style={{ flexShrink: 1, minWidth: 0 }}>
-            <Typography variant="overline" color="tertiary" testID="goal-muscle-card-name">
-              {name}
-            </Typography>
-          </View>
-          {density === 'compact' ? (
-            <Indicator
-              color={GOAL_STATUS_TONE[status]}
-              size="md"
-              accessibilityRole="image"
-              accessibilityLabel={GOAL_STATUS_LABEL[status]}
-              testID="goal-muscle-card-status-dot"
-            />
-          ) : (
-            <Pill
-              tone={GOAL_STATUS_TONE[status]}
-              variant="subtle"
-              size="sm"
-              leading="dot"
-              testID="goal-muscle-card-status-pill"
-            >
-              {GOAL_STATUS_LABEL[status]}
-            </Pill>
-          )}
-        </View>
-
-        {/* Rows are TOP-aligned against the figure column (locked 2026-09-15).
-            Centred left the figure floating mid-card whenever a muscle had one
-            contributing lift — see REJECTED.md. */}
-        <View style={{ flexDirection: 'row', alignItems: 'flex-start' }} className="gap-inline-lg">
-          <View
-            style={{ alignItems: 'center' }}
-            className="gap-stack-sm"
-            testID="goal-muscle-card-figure"
-          >
-            <MuscleGlyph muscle={muscle} side={side} litColor={litColor} />
-            {/* A label, not a top-line value. */}
-            <Typography variant="caption" color="tertiary" testID="goal-muscle-card-count">
-              {`${liftsOnTrack}/${liftsTotal} on track`}
-            </Typography>
-          </View>
-
-          <View style={{ flex: 1, minWidth: 0 }} className="gap-stack-md">
-            {lifts.map((lift) => (
-              <LiftRow key={lift.name} lift={lift} commonGoalWeek={commonGoalWeek} />
-            ))}
-          </View>
-        </View>
-      </View>
-    </Card>
+    />
   )
 }

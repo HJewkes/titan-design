@@ -2,17 +2,20 @@
 import type { ReactNode } from 'react'
 import { View } from 'react-native'
 
-import { cn } from '../../../utils/cn'
 import { alpha } from '../../../utils/colors'
 import { LIFT_RIM_ALPHA } from '../../../theme/lift'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { Indicator } from '../../ui/indicator'
+import { StatCard, StatCardHeader } from '../../ui/stat-card'
 import { Surface, useSurfaceMode } from '../../ui/surface'
 import { useMeasuredWidth } from '../Table/column-fit'
 import { Typography } from '../../ui/typography'
 import {
   GoalMilestoneSummary,
+  MilestoneFacts,
+  MilestoneHero,
+  MilestoneWeekStrip,
   SCALE,
   WALL_MIN_WIDTH,
   accessibleSummary,
@@ -55,20 +58,6 @@ function StateMark({ tile }: { tile: ResolvedTile }) {
   )
 }
 
-function Header({ label, tile }: { label: string; tile: ResolvedTile }) {
-  return (
-    <View
-      style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
-      className="gap-inline-md"
-    >
-      <Typography variant="overline" color="tertiary">
-        {label}
-      </Typography>
-      <StateMark tile={tile} />
-    </View>
-  )
-}
-
 /** The plane's bottom lip: the card rim's white, as the chart's inset plane wears it. */
 function Plane({ children, pad }: { children: ReactNode; pad: string }) {
   const mode = useSurfaceMode()
@@ -85,9 +74,11 @@ function Plane({ children, pad }: { children: ReactNode; pad: string }) {
 
 /**
  * The goal's meso target — the block's committed value, due in its last week —
- * on its own inset plane: {@link GoalMilestoneSummary} in the frame the per-lift
- * slot wants. The folded `PrimaryGoalCard` composes the summary directly instead,
- * so the maths behind the hero, the facts and the week cells has one home.
+ * in the frame the per-lift slot wants. Framed, it is a `StatCard` like its
+ * siblings: the label and state mark as the header, the hero as the figure, the
+ * facts under it and the week cells as the body. Unframed, it is
+ * {@link GoalMilestoneSummary} on its own inset plane. Both read one resolved
+ * milestone, so the maths behind the hero, the facts and the week cells has one home.
  *
  * @example
  * <GoalMilestoneTile
@@ -105,9 +96,7 @@ export function GoalMilestoneTile(allProps: GoalMilestoneTileProps) {
   const measured = useMeasuredWidth()
   const scale = allProps.scale ?? ((measured.width ?? 0) >= WALL_MIN_WIDTH ? 'wall' : 'phone')
   const tile = resolveTile(allProps, t)
-  const pad = SCALE[scale].pad
   const a11y = { role: 'article' as const, 'aria-label': accessibleSummary(tile) }
-  const body = <GoalMilestoneSummary {...allProps} scale={scale} className={undefined} />
   if (!framed) {
     return (
       <View
@@ -116,20 +105,32 @@ export function GoalMilestoneTile(allProps: GoalMilestoneTileProps) {
         testID="goal-milestone-tile"
         {...a11y}
       >
-        <Plane pad={pad}>{body}</Plane>
+        <Plane pad={SCALE[scale].pad}>
+          <GoalMilestoneSummary {...allProps} scale={scale} className={undefined} />
+        </Plane>
       </View>
     )
   }
   return (
-    <Surface
-      raise={1}
-      className={cn(pad, SCALE[scale].gap, className)}
+    <StatCard
+      elevation={1}
+      inset={scale === 'wall' ? 'lg' : 'md'}
+      className={className}
       onLayout={measured.onLayout}
       testID="goal-milestone-tile"
       {...a11y}
-    >
-      <Header label={label} tile={tile} />
-      <Plane pad={pad}>{body}</Plane>
-    </Surface>
+      header={
+        <StatCardHeader
+          title={label}
+          {...(tile.state === 'upcoming' ? {} : { trailing: <StateMark tile={tile} /> })}
+        />
+      }
+      figure={<MilestoneHero tile={tile} scale={scale} />}
+      caption={<MilestoneFacts tile={tile} />}
+      captionPlacement="below"
+      {...((allProps.showWeeks ?? true)
+        ? { body: <MilestoneWeekStrip tile={tile} scale={scale} /> }
+        : {})}
+    />
   )
 }

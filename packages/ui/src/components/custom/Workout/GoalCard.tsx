@@ -1,14 +1,22 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { Platform, View, type TextStyle, type ViewProps } from 'react-native'
 
-import { cn } from '../../../utils/cn'
-import { Card } from '../../ui/card'
 import { Indicator, type IndicatorColor } from '../../ui/indicator'
 import { Pill, type PillTone } from '../../ui/pill'
+import { StatCard, StatCardHeader, type StatCardInset } from '../../ui/stat-card'
 import { TipTrigger } from '../../ui/tooltip'
 import { useMeasuredWidth as useMeasuredBox } from '../Table/column-fit'
 import { Typography } from '../../ui/typography'
-import { GoalMilestoneSummary, type GoalMilestoneSummaryProps } from './GoalMilestoneSummary'
+import {
+  MilestoneFacts,
+  MilestoneHero,
+  MilestoneWeekStrip,
+  WALL_MIN_WIDTH,
+  useResolvedMilestone,
+  type GoalMilestoneSummaryProps,
+  type GoalMilestoneTileScale,
+  type ResolvedTile,
+} from './GoalMilestoneSummary'
 import type { GoalMilestoneWeekAxis } from './GoalMilestoneWeekStrip'
 import { GoalPriorityIcon, type GoalPriority } from './GoalPriorityIcon'
 import {
@@ -197,11 +205,10 @@ export const GOAL_STATUS_TONE: Record<GoalLiftStatus, PillTone & IndicatorColor>
  */
 export const STATUS_COLLAPSE_WIDTH = 320
 
-// The compact card's name and its hero read as one header: stack-md between them, not the full card's stack-lg.
-const DENSITY = {
-  comfortable: { pad: 'p-inset-lg', gap: 'gap-stack-md', chartHeight: 56 },
-  compact: { pad: 'p-inset-md', gap: 'gap-stack-md', chartHeight: 42 },
-} as const
+const DENSITY: Record<GoalLiftCardDensity, { inset: StatCardInset; chartHeight: number }> = {
+  comfortable: { inset: 'lg', chartHeight: 56 },
+  compact: { inset: 'md', chartHeight: 42 },
+}
 
 export function goalLiftStatusLabel(status: GoalLiftStatus): string {
   return GOAL_STATUS_LABEL[status]
@@ -407,60 +414,59 @@ function TitleRow({
   isPR: boolean
   markSize: number
 }) {
+  const variant = size === 'full' ? 'h5' : 'overline'
   return (
-    <View
-      // The row is raised so an open tip paints over the body beneath it: a
-      // later sibling wins on paint order whatever the tip's own z-index says.
-      style={{
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        zIndex: 10,
-      }}
-      className="gap-x-inline-md gap-y-stack-sm"
+    <StatCardHeader
+      title={
+        <View style={{ flexShrink: 1, minWidth: 0 }}>
+          <Typography
+            variant={variant}
+            {...(size === 'full' ? {} : { color: 'tertiary' as const })}
+            testID="goal-card-title"
+            {...TITLE_GUARD}
+          >
+            {title}
+          </Typography>
+        </View>
+      }
+      trailing={
+        <View
+          style={{ flexDirection: 'row', alignItems: 'center', flexShrink: 0 }}
+          className="gap-inline-sm"
+          testID="goal-card-marks"
+        >
+          {priority && <GoalPriorityIcon priority={priority} size={markSize} />}
+          {isPR && <PrBadge type="weight" compact animate={false} iconSize={markSize} />}
+          <StatusAffordance badge={badge} collapsed={collapsed} basis={basis} citation={citation} />
+        </View>
+      }
       testID="goal-card-title-row"
-    >
-      <View style={{ flexShrink: 1, minWidth: 0 }}>
-        {size === 'full' ? (
-          <Typography variant="h5" testID="goal-card-title" {...TITLE_GUARD}>
-            {title}
-          </Typography>
-        ) : (
-          <Typography variant="overline" color="tertiary" testID="goal-card-title" {...TITLE_GUARD}>
-            {title}
-          </Typography>
-        )}
-      </View>
-      <View
-        style={{ flexDirection: 'row', alignItems: 'center', flexShrink: 0 }}
-        className="gap-inline-sm"
-        testID="goal-card-marks"
-      >
-        {priority && <GoalPriorityIcon priority={priority} size={markSize} />}
-        {isPR && <PrBadge type="weight" compact animate={false} iconSize={markSize} />}
-        <StatusAffordance badge={badge} collapsed={collapsed} basis={basis} citation={citation} />
-      </View>
-    </View>
+    />
   )
 }
 
 /**
- * The summary over the plot: hero, facts, then the week cells sitting directly
- * on the chart's columns. The gap between the cells and the plane is the tight
- * one on purpose — a cell is the header of its week's column, not a strip that
- * happens to be above a chart.
+ * The full card's body: the week cells sitting directly on the chart's columns.
+ * The gap between the cells and the plane is the tight one on purpose — a cell
+ * is the header of its week's column, not a strip that happens to be above a chart.
  */
-function FullBody({ props, width }: { props: GoalCardProps; width: number }) {
-  const { goal, status, title, chartHeight } = props
-  if (!goal) return null
+function FullBody({
+  props,
+  goal,
+  tile,
+  scale,
+  width,
+}: {
+  props: GoalCardProps
+  goal: GoalCardChart
+  tile: ResolvedTile
+  scale: GoalMilestoneTileScale
+  width: number
+}) {
+  const { status, title, chartHeight } = props
   return (
     <View className="gap-stack-sm" testID="goal-card-fold">
-      <GoalMilestoneSummary
-        heroLeading="tight"
-        {...statedMilestone(props)}
-        axis={weekAxisFor(goal, width)}
-      />
+      {(tile.props.showWeeks ?? true) && <MilestoneWeekStrip tile={tile} scale={scale} />}
       <GoalTrajectoryChart
         {...goal}
         status={status}
@@ -479,10 +485,10 @@ function FullBody({ props, width }: { props: GoalCardProps; width: number }) {
 }
 
 /**
- * The grid cell's body: the summary WITHOUT its own week cells, over the compact
- * chart — which carries that one cells row itself, standing on its plane's top
- * edge so each cell heads the column its point sits in (D1, VW-385 ideation
- * round 2). Two rows of the same cells is what the fold already refused upstairs.
+ * The grid cell's body: the compact chart, which carries the one cells row
+ * itself, standing on its plane's top edge so each cell heads the column its
+ * point sits in (D1, VW-385 ideation round 2). Two rows of the same cells is
+ * what the fold already refused upstairs.
  */
 function CompactBody({
   props,
@@ -495,29 +501,21 @@ function CompactBody({
 }) {
   const { trend, milestone, status } = props
   return (
-    <View className="gap-stack-md">
-      <GoalMilestoneSummary
-        heroLeading="tight"
-        {...statedMilestone(props)}
-        scale="phone"
-        showWeeks={false}
-      />
-      <View style={{ minHeight: height }} testID="goal-card-trend">
-        {trend && width !== null && (
-          <GoalWeekColumnsChart
-            actuals={trend.actuals}
-            committed={trend.committed}
-            goalWeek={trend.goalWeek}
-            unit={trend.unit}
-            status={status}
-            width={width}
-            height={height}
-            {...(milestone.currentWeek !== undefined ? { currentWeek: milestone.currentWeek } : {})}
-            {...(milestone.weeks ? { weeks: milestone.weeks } : {})}
-            {...(trend.nextTarget ? { nextTarget: trend.nextTarget } : {})}
-          />
-        )}
-      </View>
+    <View style={{ minHeight: height }} testID="goal-card-trend">
+      {trend && width !== null && (
+        <GoalWeekColumnsChart
+          actuals={trend.actuals}
+          committed={trend.committed}
+          goalWeek={trend.goalWeek}
+          unit={trend.unit}
+          status={status}
+          width={width}
+          height={height}
+          {...(milestone.currentWeek !== undefined ? { currentWeek: milestone.currentWeek } : {})}
+          {...(milestone.weeks ? { weeks: milestone.weeks } : {})}
+          {...(trend.nextTarget ? { nextTarget: trend.nextTarget } : {})}
+        />
+      )}
     </View>
   )
 }
@@ -604,29 +602,26 @@ export function GoalCard(props: GoalCardProps) {
       : size === 'compact' &&
         (density === 'compact' ||
           (measured.width !== null && measured.width < STATUS_COLLAPSE_WIDTH))
-  const { goal, trend, milestone, chartWidth, chartHeight, isPR, ...viewProps } = rest
+  const { goal, trend, milestone, chartWidth, chartHeight, isPR, testID, ...viewProps } = rest
   void goal
   void trend
   void milestone
   void chartWidth
   void chartHeight
   void isPR
+  const slots = useGoalCardSlots(props, size, measured.width, d.chartHeight)
   return (
-    <Card
+    <StatCard
       elevation={1}
-      // The inset lives on the card, so the measured box below it is exactly the
+      // The inset lives on the card, so the measured content box is exactly the
       // width its content has to spend — the chart's width, with nothing to subtract.
-      className={cn(size === 'full' ? 'p-inset-lg' : d.pad, className)}
+      inset={size === 'full' ? 'lg' : d.inset}
+      className={className}
       role="article"
       aria-label={`${title} goal, ${badge.label}`}
-      testID="goal-card"
-      {...viewProps}
-    >
-      <View
-        className={size === 'full' ? 'gap-stack-lg' : d.gap}
-        onLayout={measured.onLayout}
-        testID="goal-card-content"
-      >
+      testID={testID ?? 'goal-card'}
+      onContentLayout={measured.onLayout}
+      header={
         <TitleRow
           title={title}
           size={size}
@@ -638,14 +633,44 @@ export function GoalCard(props: GoalCardProps) {
           isPR={hasRecord(props)}
           markSize={markSizeFor(measured.width)}
         />
-        {size === 'compact' ? (
-          <CompactBody props={props} height={d.chartHeight} width={measured.width} />
-        ) : (
-          measured.width !== null && <FullBody props={props} width={measured.width} />
-        )}
-      </View>
-    </Card>
+      }
+      {...slots}
+      {...viewProps}
+    />
   )
+}
+
+/**
+ * The milestone's parts in the template's slots: hero as the figure, the facts
+ * row under it as the caption, the chart (and, full, its week cells) as the body.
+ * The full card draws nothing below the header until it has been measured: its
+ * week cells and chart are laid out on the measured width.
+ */
+function useGoalCardSlots(
+  props: GoalCardProps,
+  size: GoalCardSize,
+  width: number | null,
+  compactChartHeight: number
+) {
+  const { goal } = props
+  const full = size === 'full' && goal && width !== null ? { goal, width } : null
+  const scale: GoalMilestoneTileScale = full && full.width >= WALL_MIN_WIDTH ? 'wall' : 'phone'
+  const tile = useResolvedMilestone({
+    heroLeading: 'tight',
+    ...statedMilestone(props),
+    ...(full ? { axis: weekAxisFor(full.goal, full.width) } : {}),
+  })
+  if (size === 'full' && !full) return {}
+  return {
+    figure: <MilestoneHero tile={tile} scale={scale} />,
+    caption: <MilestoneFacts tile={tile} />,
+    captionPlacement: 'below' as const,
+    body: full ? (
+      <FullBody props={props} goal={full.goal} tile={tile} scale={scale} width={full.width} />
+    ) : (
+      <CompactBody props={props} height={compactChartHeight} width={width} />
+    ),
+  }
 }
 
 /**
