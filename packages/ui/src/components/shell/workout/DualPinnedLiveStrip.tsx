@@ -291,7 +291,11 @@ const DualBars = memo(function DualBars(props: DualBarsProps) {
   const { left, right, targetReps, height, width, minWidth, dimmed } = props
   // The strip's own accessible name already reads every count; the chart's labels would repeat it.
   return (
-    <View testID="dual-strip-bars-frame" aria-hidden style={width != null ? { width } : { flex: 1, minWidth }}>
+    <View
+      testID="dual-strip-bars-frame"
+      aria-hidden
+      style={width != null ? { width } : { flex: 1, minWidth }}
+    >
       <DualVelocityStrip
         left={{ velocities: left.map((r) => r.velocity), isDimmed: dimmed === 'left' }}
         right={{ velocities: right.map((r) => r.velocity), isDimmed: dimmed === 'right' }}
