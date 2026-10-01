@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useEffect, useState, type ReactNode } from 'react'
 import { View, Animated, Easing, type ViewProps, type DimensionValue } from 'react-native'
+import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion'
 import { SET_LEVEL_FLAT_BAR } from '../charts/flatBarGeometry'
 
 /** ~1.9s full cycle: a pulsing segment eases up then back down (2 × half). */
@@ -77,12 +78,17 @@ export interface SegmentedBarProps extends ViewProps {
   renderSegment?: (slot: ReactNode, segment: SegmentedBarSegment, index: number) => ReactNode
 }
 
-/** The shared active-pulse loop: a single 0→1→0 value driving every pulsing segment. */
+/** The shared active-pulse loop: a single 0→1→0 value driving every pulsing segment. Held at 1 (full opacity) under reduced motion. */
 function usePulse(active: boolean): Animated.Value {
-  const [value] = useState(() => new Animated.Value(0))
+  const prefersReducedMotion = usePrefersReducedMotion()
+  const [value] = useState(() => new Animated.Value(prefersReducedMotion ? 1 : 0))
 
   useEffect(() => {
-    if (!active) return
+    if (!active || prefersReducedMotion) {
+      value.setValue(1)
+      return
+    }
+    value.setValue(0)
     const loop = Animated.loop(
       Animated.sequence([
         Animated.timing(value, {
@@ -101,7 +107,7 @@ function usePulse(active: boolean): Animated.Value {
     )
     loop.start()
     return () => loop.stop()
-  }, [active, value])
+  }, [active, prefersReducedMotion, value])
 
   return value
 }
