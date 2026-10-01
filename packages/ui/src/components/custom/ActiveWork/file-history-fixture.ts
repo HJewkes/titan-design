@@ -2,9 +2,9 @@ import type { FileActivityDetailData } from './FileActivityDetail'
 import type { CoChangeEdge, FileHistoryStat } from './FileHistoryExplorer'
 
 /**
- * A small, hand-trimmed slice of a real session-history mine, used by the
- * ActiveWork file-history stories and tests. Fixed values (no `Date.now()`, no
- * randomness) so visual baselines stay deterministic.
+ * A small hand-written file history for the ActiveWork file-history stories and
+ * tests: generic relative paths, rounded counts, no session ids. Fixed values
+ * (no `Date.now()`, no randomness) so visual baselines stay deterministic.
  */
 export const FILE_HISTORY_FILES: FileActivityDetailData[] = [
   {

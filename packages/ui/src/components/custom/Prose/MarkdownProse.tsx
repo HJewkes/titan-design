@@ -34,9 +34,13 @@ export interface MarkdownProseProps {
   body: string
   /** Reference patterns to auto-link, tried in order. */
   linkers?: ProseLinker[]
+  /** `md` is one step up from the dense default, in primary text colour. */
+  size?: ProseSize
   className?: string
   testID?: string
 }
+
+export type ProseSize = 'sm' | 'md'
 
 const BOLD = /\*\*[^*]+\*\*/
 const CODE = /`[^`]+`/
@@ -86,8 +90,10 @@ export function parseProseBlocks(body: string): ProseBlock[] {
 }
 
 // One step denser than body2, with a 20px line so long logs stay readable at that size.
-const BODY_TEXT = 'text-xs leading-5 text-text-secondary'
-
+const BODY_TEXT: Record<ProseSize, string> = {
+  sm: 'text-xs leading-5 text-text-secondary',
+  md: 'text-sm leading-5 text-text-primary',
+}
 const TONE_CLASS: Record<ProseLinkTone, string> = {
   brand: 'font-semibold text-brand-primary',
   link: 'font-medium text-text-link',
@@ -145,7 +151,14 @@ function renderInline(text: string, linkers: ProseLinker[], tokenizer: RegExp): 
     })
 }
 
-function Block({ block, inline }: { block: ProseBlock; inline: (text: string) => ReactNode[] }) {
+interface BlockProps {
+  block: ProseBlock
+  inline: (text: string) => ReactNode[]
+  size: ProseSize
+}
+
+function Block({ block, inline, size }: BlockProps) {
+  const body = BODY_TEXT[size]
   if (block.type === 'h1' || block.type === 'h2') {
     return (
       <Typography variant={block.type === 'h1' ? 'h5' : 'h6'} className="mt-1.5 text-text-primary">
@@ -163,15 +176,15 @@ function Block({ block, inline }: { block: ProseBlock; inline: (text: string) =>
   if (block.type === 'li') {
     return (
       <View className="flex-row gap-2 pl-1">
-        <Text className="text-xs leading-5 text-brand-primary">•</Text>
-        <Typography variant="body2" className={cn('flex-1', BODY_TEXT)}>
+        <Text className={cn(body, 'text-brand-primary')}>•</Text>
+        <Typography variant="body2" className={cn('flex-1', body)}>
           {inline(block.text)}
         </Typography>
       </View>
     )
   }
   return (
-    <Typography variant="body2" className={BODY_TEXT}>
+    <Typography variant="body2" className={body}>
       {inline(block.text)}
     </Typography>
   )
@@ -187,14 +200,20 @@ function Block({ block, inline }: { block: ProseBlock; inline: (text: string) =>
  * Composes {@link Typography}. Used by `SessionDetail` (session logs) and the
  * initiative reader (brief and handoff prose).
  */
-export function MarkdownProse({ body, linkers = [], className, testID }: MarkdownProseProps) {
+export function MarkdownProse({
+  body,
+  linkers = [],
+  size = 'sm',
+  className,
+  testID,
+}: MarkdownProseProps) {
   const blocks = useMemo(() => parseProseBlocks(body), [body])
   const tokenizer = useMemo(() => buildTokenizer(linkers), [linkers])
   const inline = (text: string) => renderInline(text, linkers, tokenizer)
   return (
     <View className={cn('gap-2', className)} testID={testID}>
       {blocks.map((block, i) => (
-        <Block key={i} block={block} inline={inline} />
+        <Block key={i} block={block} inline={inline} size={size} />
       ))}
     </View>
   )

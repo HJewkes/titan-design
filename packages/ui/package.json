@@ -154,6 +154,7 @@
   "dependencies": {
     "@gluestack-style/react": "^1.0.0",
     "@gluestack-ui/themed": "^1.1.0",
+    "@titan-design/chat-protocol": "0.1.0",
     "clsx": "^2.1.0",
     "d3-scale": "^4",
     "d3-shape": "^3",
@@ -208,6 +209,7 @@
     "dist",
     "src",
     "!src/lab",
+    "!src/**/ROUND-*.md",
     "docs",
     "tailwind.config.js",
     "CHANGELOG.md"

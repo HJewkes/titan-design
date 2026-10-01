@@ -9,6 +9,12 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- A `Chat` family under `custom/`: `MessageList`, `MessageBubble`, `Composer`, `ChatCard`,
+  `ConversationIdentity`, `DateSeparator`, `TypingIndicator` and `UnreadBadge`. A thread has a
+  direct and a group layout, time rows with a drag reveal, an accent edge for endorsed messages
+  and a windowed "Show earlier" page. It depends on the new `@titan-design/chat-protocol` package
+  for its message and participant types (VW-393).
+- `MarkdownProse` takes a `size` prop (VW-393).
 - `MilestoneHero`, `MilestoneFacts`, `MilestoneWeekStrip` and `useResolvedMilestone` are exported
   from `GoalMilestoneSummary`, so a card can place each part in its own slot and share one copy
   of the gap, surplus and outcome maths. `GoalMilestoneSummary` renders as their composition
@@ -44,6 +50,13 @@ project adheres to [Semantic Versioning](https://semver.org/).
   surface, so the track on `BodyweightGoalCard`, `FatigueMeter` and other callers that take the
   default turns light in light mode. Dark mode keeps the same grey, and an explicit `trackColor`
   still overrides it (TD-39).
+
+### Security
+
+- The ActiveWork fixtures (`session-fixture.ts`, `initiative-fixture.ts`) and the
+  `PortfolioOverview` and `InitiativeBrief` tests and stories now use synthetic data. The shipped
+  copies in 0.21.2 carried a home-directory path and personal initiative names. The unpublished lab
+  data under `src/lab/active-work/data/` is synthetic too.
 
 ## 0.21.2
 

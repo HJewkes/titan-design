@@ -13,13 +13,13 @@ const sections = [
     heading: 'Focused · by rank',
     items: [
       {
-        title: 'active-work — durable workspace state',
-        slug: 'active-work',
+        title: 'alpha-project — sample workspace tracker',
+        slug: 'alpha-project',
         state: 'focused' as const,
         rank: 1,
         openCount: 4,
         severityCounts: { critical: 0, high: 1, medium: 2, low: 1 },
-        topTask: { id: 'AW-6', title: 'Discovery sources' },
+        topTask: { id: 'AP-6', title: 'Import sources' },
       },
     ],
   },
@@ -27,8 +27,8 @@ const sections = [
     heading: 'Backburner',
     items: [
       {
-        title: 'Denver Rezzy',
-        slug: 'denver-rezzy',
+        title: 'Garden Shed',
+        slug: 'garden-shed',
         state: 'backburner' as const,
         openCount: 0,
         severityCounts: { critical: 0, high: 0, medium: 0, low: 0 },
@@ -58,8 +58,8 @@ describe('PortfolioOverview', () => {
     expect(screen.getByText('Focused · by rank')).toBeInTheDocument()
     // "Backburner" appears twice: the section eyebrow and the card's StatusDot label.
     expect(screen.getAllByText('Backburner').length).toBeGreaterThanOrEqual(2)
-    expect(screen.getByText('active-work — durable workspace state')).toBeInTheDocument()
-    expect(screen.getByText('Denver Rezzy')).toBeInTheDocument()
+    expect(screen.getByText('alpha-project — sample workspace tracker')).toBeInTheDocument()
+    expect(screen.getByText('Garden Shed')).toBeInTheDocument()
   })
 
   it('renders with no sections at all', () => {

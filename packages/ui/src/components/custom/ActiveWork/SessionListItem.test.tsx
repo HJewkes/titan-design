@@ -17,11 +17,11 @@ describe('SessionListItem', () => {
 
   it('shows the exact end time when the age is hovered', () => {
     render(<SessionListItem session={session} now={SESSION_NOW} />)
-    expect(screen.queryByText('07/12/2026, 02:52 PM')).not.toBeInTheDocument()
+    expect(screen.queryByText('07/12/2026, 02:25 PM')).not.toBeInTheDocument()
     fireEvent.pointerEnter(screen.getByTestId('session-age'))
-    expect(screen.getByText('07/12/2026, 02:52 PM')).toBeInTheDocument()
+    expect(screen.getByText('07/12/2026, 02:25 PM')).toBeInTheDocument()
     fireEvent.pointerLeave(screen.getByTestId('session-age'))
-    expect(screen.queryByText('07/12/2026, 02:52 PM')).not.toBeInTheDocument()
+    expect(screen.queryByText('07/12/2026, 02:25 PM')).not.toBeInTheDocument()
   })
 
   it('lists the task ids when the count is hovered', () => {
