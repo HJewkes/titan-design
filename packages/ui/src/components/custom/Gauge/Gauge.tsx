@@ -1,11 +1,10 @@
 import { View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../ui/surface'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { alpha } from '../../../utils/colors'
 import { formatTrimmedDecimal } from '../../../utils/number-format'
-
-const sem = getSemanticColors('dark')
 
 export interface GaugeThreshold {
   /** Band start, in the gauge's value units. */
@@ -36,17 +35,17 @@ export interface GaugeProps extends Omit<ViewProps, 'children'> {
   className?: string
 }
 
-const STATUS_SUCCESS = sem['status-success']
-const STATUS_WARNING = sem['status-warning']
-const STATUS_ERROR = sem['status-error']
 const TRACK = alpha(primitiveColors.white, 0.08)
 
-/** Titan status-token bands for a 0–100 score. */
-const DEFAULT_THRESHOLDS: GaugeThreshold[] = [
-  { value: 0, color: STATUS_ERROR },
-  { value: 60, color: STATUS_WARNING },
-  { value: 80, color: STATUS_SUCCESS },
-]
+/** Titan status-token bands for a 0–100 score, in the given theme. */
+function defaultThresholds(mode: ThemeMode): GaugeThreshold[] {
+  const sem = getSemanticColors(mode)
+  return [
+    { value: 0, color: sem['status-error'] },
+    { value: 60, color: sem['status-warning'] },
+    { value: 80, color: sem['status-success'] },
+  ]
+}
 
 const ARC_START = 135
 const ARC_SWEEP = 270
@@ -58,10 +57,14 @@ function clamp01(n: number): number {
 }
 
 /** Color of the highest band whose start value the fraction reaches. */
-function bandColor(fraction: number, bands: GaugeThreshold[], min: number, max: number): string {
-  const value = min + fraction * (max - min)
+function bandColor(
+  fraction: number,
+  bands: GaugeThreshold[],
+  range: { min: number; max: number; fallback: string }
+): string {
+  const value = range.min + fraction * (range.max - range.min)
   const sorted = [...bands].sort((a, b) => a.value - b.value)
-  let color = sorted[0]?.color ?? STATUS_SUCCESS
+  let color = sorted[0]?.color ?? range.fallback
   for (const band of sorted) {
     if (value >= band.value) color = band.color
   }
@@ -108,16 +111,19 @@ export function Gauge({
   size = 160,
   label,
   unit,
-  thresholds = DEFAULT_THRESHOLDS,
+  thresholds,
   color,
   className,
   ...props
 }: GaugeProps) {
+  const mode = useSurfaceMode()
+  const bands = thresholds ?? defaultThresholds(mode)
+  const range = { min, max, fallback: getSemanticColors(mode)['status-success'] }
   const span = max - min || 1
   const fill = clamp01((value - min) / span)
-  const activeColor = (f: number) => color ?? bandColor(f, thresholds, min, max)
+  const activeColor = (f: number) => color ?? bandColor(f, bands, range)
   const ticks = buildTicks(fill, size, activeColor)
-  const displayColor = color ?? bandColor(fill, thresholds, min, max)
+  const displayColor = activeColor(fill)
   const tickLength = size * 0.11
   const tickThickness = Math.max(2, (size * 0.9) / SEGMENTS)
 
