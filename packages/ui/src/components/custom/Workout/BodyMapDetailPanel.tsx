@@ -60,6 +60,7 @@ const FOCUSABLE_SELECTOR =
  */
 const STATUS_BADGE_COLOR: Record<VolumeStatus, BadgeColor> = {
   untrained: 'default',
+  noverdict: 'default',
   behind: 'info',
   ontrack: 'warning',
   target: 'success',

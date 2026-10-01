@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
-import { MuscleGroupChip, type VolumeStatus } from './MuscleGroupChip'
+import { MuscleGroupChip } from './MuscleGroupChip'
+import { VOLUME_STATUSES } from './muscleTaxonomy'
 
 const meta: Meta<typeof MuscleGroupChip> = {
   title: 'Custom/Workout/MuscleGroupChip',
@@ -13,9 +14,9 @@ const meta: Meta<typeof MuscleGroupChip> = {
     },
     volumeStatus: {
       control: 'select',
-      options: [undefined, 'untrained', 'behind', 'ontrack', 'target', 'approaching', 'over'],
+      options: [undefined, ...VOLUME_STATUSES],
       description:
-        'Volume status. The dot paints the same `dataviz-diverging-*` scale as the BodyMap figure (VW-333).',
+        'Volume status. The dot paints the same `dataviz-diverging-*` scale as the BodyMap figure (VW-333). `noverdict` draws a `result-neutral` ring (VW-741).',
     },
     onPress: {
       action: 'pressed',
@@ -38,6 +39,14 @@ export const Untrained: Story = {
   args: {
     name: 'Rear Delts',
     volumeStatus: 'untrained',
+  },
+}
+
+/** Trained, but the muscle's MEV is withheld: a hollow `result-neutral` ring (VW-741). */
+export const NoVerdict: Story = {
+  args: {
+    name: 'Glutes',
+    volumeStatus: 'noverdict',
   },
 }
 
@@ -90,19 +99,10 @@ export const Tappable: Story = {
   },
 }
 
-const allStatuses: VolumeStatus[] = [
-  'untrained',
-  'behind',
-  'ontrack',
-  'target',
-  'approaching',
-  'over',
-]
-
 export const AllStatuses: Story = {
   render: () => (
     <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-      {allStatuses.map((status) => (
+      {VOLUME_STATUSES.map((status) => (
         <MuscleGroupChip
           key={status}
           name={status.charAt(0).toUpperCase() + status.slice(1)}
@@ -123,6 +123,7 @@ export const MuscleGroups: Story = {
       <MuscleGroupChip name="Side Delts" volumeStatus="behind" />
       <MuscleGroupChip name="Glutes" volumeStatus="approaching" />
       <MuscleGroupChip name="Abs" volumeStatus="untrained" />
+      <MuscleGroupChip name="Lats" volumeStatus="noverdict" />
     </View>
   ),
 }

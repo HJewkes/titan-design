@@ -66,6 +66,7 @@ describe('deriveTrainingSummary', () => {
     expect(summary.trackedMuscles).toBe(4)
     expect(summary.statusCounts).toEqual({
       untrained: 0,
+      noverdict: 0,
       behind: 1,
       ontrack: 0,
       target: 2,
@@ -80,6 +81,7 @@ describe('deriveTrainingSummary', () => {
     expect(summary.trackedMuscles).toBe(0)
     expect(summary.statusCounts).toEqual({
       untrained: 0,
+      noverdict: 0,
       behind: 0,
       ontrack: 0,
       target: 0,

@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { MuscleStrip, type MuscleStripMuscleData } from './MuscleStrip'
-import { MuscleGroup, MUSCLE_DISPLAY_NAMES, type VolumeStatus } from './muscleTaxonomy'
+import { MuscleGroup, MUSCLE_DISPLAY_NAMES, VOLUME_STATUSES } from './muscleTaxonomy'
 
 const ALL_MUSCLES = Object.values(MuscleGroup)
 
@@ -87,16 +87,7 @@ describe('MuscleStrip', () => {
   })
 
   describe('status per muscle', () => {
-    const statuses: VolumeStatus[] = [
-      'untrained',
-      'behind',
-      'ontrack',
-      'target',
-      'approaching',
-      'over',
-    ]
-
-    it.each(statuses)('renders the %s status on a single muscle', (status) => {
+    it.each(VOLUME_STATUSES)('renders the %s status on a single muscle', (status) => {
       render(
         <MuscleStrip
           data={buildData({

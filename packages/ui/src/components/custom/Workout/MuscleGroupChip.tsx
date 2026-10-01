@@ -3,7 +3,7 @@ import { View, type ViewProps } from 'react-native'
 import { Pill } from '../../ui/pill'
 import { useSurfaceMode } from '../../ui/surface/SurfaceContext'
 import { cn } from '../../../utils/cn'
-import { volumeStatusDotColor, type VolumeStatus } from './muscleTaxonomy'
+import { isVolumeStatusDotRing, volumeStatusDotColor, type VolumeStatus } from './muscleTaxonomy'
 
 // The one status, shared with the BodyMap figure (VW-333). Re-exported so the
 // root barrel keeps publishing `VolumeStatus` from where it always has.
@@ -37,6 +37,10 @@ export function MuscleGroupChip({
   const testID = onPress ? 'muscle-group-chip-pressable' : 'muscle-group-chip'
   // Resolved at render from the nearest Surface, never frozen at module scope.
   const dotColor = volumeStatusDotColor(volumeStatus, useSurfaceMode())
+  // A ring keeps "no verdict" apart from the solid untrained dot (VW-741).
+  const dotStyle = isVolumeStatusDotRing(volumeStatus)
+    ? { borderWidth: 1.5, borderColor: dotColor }
+    : { backgroundColor: dotColor }
 
   return (
     <Pill
@@ -49,7 +53,7 @@ export function MuscleGroupChip({
       leading={
         <View
           className="w-1.5 h-1.5 rounded-full shrink-0"
-          style={{ backgroundColor: dotColor }}
+          style={dotStyle}
           accessibilityElementsHidden
           testID={`${testID}-dot`}
         />

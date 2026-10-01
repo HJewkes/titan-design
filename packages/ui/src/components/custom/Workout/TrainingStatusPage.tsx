@@ -18,7 +18,14 @@ import {
 } from './muscleTaxonomy'
 
 /** Volume statuses in display order for the legend and summary cards. */
-const STATUS_ORDER: VolumeStatus[] = ['behind', 'ontrack', 'target', 'approaching', 'over']
+const STATUS_ORDER: VolumeStatus[] = [
+  'noverdict',
+  'behind',
+  'ontrack',
+  'target',
+  'approaching',
+  'over',
+]
 
 /** One muscle's full volume picture — feeds the body maps and the detail panel. */
 export interface TrainingStatusMuscle {
@@ -72,6 +79,7 @@ export interface TrainingStatusPageProps extends ViewProps {
 export function deriveTrainingSummary(muscles: TrainingStatusMuscle[]): TrainingStatusSummary {
   const statusCounts: Record<VolumeStatus, number> = {
     untrained: 0,
+    noverdict: 0,
     behind: 0,
     ontrack: 0,
     target: 0,

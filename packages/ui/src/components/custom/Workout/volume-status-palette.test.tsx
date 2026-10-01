@@ -11,13 +11,19 @@
  * `titan/no-raw-color` along with every other test.
  */
 import { describe, it, expect } from 'vitest'
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { BodyMap, type BodyMapData } from './BodyMap'
+import { BodyMapDetailPanel } from './BodyMapDetailPanel'
 import { MuscleGroupChip } from './MuscleGroupChip'
+import { deriveTrainingSummary } from './TrainingStatusPage'
 import {
   MuscleGroup,
   landmarkZoneToStatus,
   getHeatmapColor,
+  isMoreSevere,
+  volumeStatusDotColor,
+  VOLUME_STATUSES,
+  VOLUME_STATUS_LABELS,
   VOLUME_STATUS_DATAVIZ_TOKEN,
   type VolumeLandmarkZone,
   type VolumeStatus,
@@ -78,7 +84,7 @@ describe('BodyMap fill is byte-identical across the VW-333 status unification', 
 })
 
 describe('the chip dot reads the same diverging scale as the figure', () => {
-  const painted: Array<Exclude<VolumeStatus, 'untrained'>> = [
+  const painted: Array<Exclude<VolumeStatus, 'untrained' | 'noverdict'>> = [
     'behind',
     'ontrack',
     'target',
@@ -131,5 +137,96 @@ describe('landmarkZoneToStatus', () => {
 
   it('treats a missing intensity as the middle of the productive band', () => {
     expect(landmarkZoneToStatus('productive')).toBe('target')
+  })
+})
+
+describe('noverdict: trained, but the landmarks are withheld (VW-741)', () => {
+  it('fills the figure with result-neutral in both modes, never a diverging stop', () => {
+    expect(getHeatmapColor('noverdict', 'dark')).toBe('#A29F9D')
+    expect(getHeatmapColor('noverdict', 'light')).toBe('#72716F')
+    for (const mode of ['dark', 'light'] as const) {
+      expect(getHeatmapColor('noverdict', mode)).toBe(getSemanticColors(mode)['result-neutral'])
+    }
+  })
+
+  it('paints the no-verdict fill into the SVG', () => {
+    const data: BodyMapData[] = [
+      { muscleGroup: MuscleGroup.GLUTES, intensity: 0.7, volumeStatus: 'noverdict', weeklySets: 9 },
+    ]
+    const { container } = render(<BodyMap data={data} view="back" />)
+    const fills = Array.from(container.querySelectorAll('path')).map((p) => p.getAttribute('fill'))
+    expect(fills).toContain('#A29F9D')
+  })
+
+  it('draws the chip dot as a result-neutral ring, unlike the solid untrained dot', () => {
+    const { getByTestId, rerender } = render(
+      <MuscleGroupChip name="Glutes" volumeStatus="noverdict" />
+    )
+    const ring = getByTestId('muscle-group-chip-dot')
+    expect(ring).toHaveStyle({ borderTopColor: '#A29F9D', borderTopWidth: '1.5px' })
+    expect(ring.style.backgroundColor).toBe('')
+
+    rerender(<MuscleGroupChip name="Glutes" volumeStatus="untrained" />)
+    const dot = getByTestId('muscle-group-chip-dot')
+    expect(dot).toHaveStyle({ backgroundColor: '#888684' })
+    expect(dot.style.borderTopWidth).toBe('')
+  })
+
+  it('names the status "no verdict" in the chip label and the detail badge', () => {
+    render(<MuscleGroupChip name="Glutes" volumeStatus="noverdict" />)
+    expect(screen.getByLabelText('Glutes, volume status: noverdict')).toBeInTheDocument()
+    expect(VOLUME_STATUS_LABELS.noverdict).toBe('no verdict')
+  })
+
+  it('gives the detail badge the same default colour as untrained', () => {
+    const props = {
+      muscleGroup: MuscleGroup.GLUTES,
+      displayName: 'Glutes',
+      weeklySets: 9,
+      landmarks: { mev: 4, mav: 10, mrv: 16 },
+      isOpen: true,
+      onClose: () => {},
+    }
+    const badgeStyle = () =>
+      screen.getByTestId('body-map-detail-panel-status-badge').getAttribute('style')
+    const { rerender } = render(<BodyMapDetailPanel {...props} volumeStatus="noverdict" />)
+    expect(screen.getByTestId('body-map-detail-panel-status-badge')).toHaveTextContent('no verdict')
+    const noVerdict = badgeStyle()
+    rerender(<BodyMapDetailPanel {...props} volumeStatus="untrained" />)
+    expect(noVerdict).toBe(badgeStyle())
+  })
+
+  it('ranks above untrained and below every verdict on a shared slug', () => {
+    expect(isMoreSevere('noverdict', 'untrained')).toBe(true)
+    expect(isMoreSevere('untrained', 'noverdict')).toBe(false)
+    for (const verdict of ['behind', 'ontrack', 'target', 'approaching', 'over'] as const) {
+      expect(isMoreSevere('noverdict', verdict)).toBe(false)
+      expect(isMoreSevere(verdict, 'noverdict')).toBe(true)
+    }
+  })
+})
+
+describe('every consumer handles every status', () => {
+  const noDataFill = getHeatmapColor(undefined, 'dark')
+
+  it.each(VOLUME_STATUSES)('%s has a label, a dot colour and a summary count', (status) => {
+    expect(VOLUME_STATUS_LABELS[status]).toBeTruthy()
+    expect(volumeStatusDotColor(status, 'dark')).toMatch(/^#/)
+    const summary = deriveTrainingSummary([])
+    expect(summary.statusCounts[status]).toBe(0)
+  })
+
+  it.each(VOLUME_STATUSES.filter((status) => status !== 'untrained'))(
+    '%s paints a figure fill of its own, not the no-data fallback',
+    (status) => {
+      expect(getHeatmapColor(status, 'dark')).not.toBe(noDataFill)
+    }
+  )
+
+  it('gives every painted status a distinct figure fill', () => {
+    const fills = VOLUME_STATUSES.filter((status) => status !== 'untrained').map((status) =>
+      getHeatmapColor(status, 'dark')
+    )
+    expect(new Set(fills).size).toBe(fills.length)
   })
 })

@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { MuscleGroupChip } from './MuscleGroupChip'
+import { VOLUME_STATUSES } from './muscleTaxonomy'
 
 describe('MuscleGroupChip', () => {
   it('renders muscle group name', () => {
@@ -52,9 +53,8 @@ describe('MuscleGroupChip', () => {
   })
 
   it('renders all volume status variants without error', () => {
-    const statuses = ['untrained', 'behind', 'ontrack', 'target', 'approaching', 'over'] as const
     const { rerender } = render(<MuscleGroupChip name="Test" volumeStatus="untrained" />)
-    for (const status of statuses) {
+    for (const status of VOLUME_STATUSES) {
       rerender(<MuscleGroupChip name="Test" volumeStatus={status} />)
       expect(screen.getByText('Test')).toBeInTheDocument()
     }
