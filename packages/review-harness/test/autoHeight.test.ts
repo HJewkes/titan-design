@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   AUTO_FALLBACK_HEIGHT,
   MIN_FRAME_HEIGHT,
+  initialFrameHeight,
   STORY_GUTTER,
   nextFrameHeight,
   storyContentHeight,
@@ -10,6 +11,7 @@ import {
 } from '../page/autoHeight.ts'
 import { captureViewportHeight } from '../src/capture.ts'
 import { ManifestSchema } from '../src/schema.ts'
+import { frameSizing } from '../src/sections.ts'
 import { sectionedInput } from './fixtures.ts'
 
 function storyDoc(boxes: { top: number; bottom: number }[] | null): MeasurableDoc {
@@ -50,6 +52,11 @@ describe('fitting a frame to its story', () => {
     )
   })
 
+  it('starts a capped frame no taller than its cap before any measurement', () => {
+    expect(initialFrameHeight(1200)).toBe(AUTO_FALLBACK_HEIGHT)
+    expect(initialFrameHeight(610)).toBe(610)
+  })
+
   it('caps a tall story, floors a tiny one, and ignores a measurement that barely moved', () => {
     expect(nextFrameHeight(900, 4000, 1200)).toBe(1200)
     expect(nextFrameHeight(900, 20, 1200)).toBe(MIN_FRAME_HEIGHT)
@@ -84,5 +91,14 @@ describe('the rounds already reviewed', () => {
     expect(parsed.variants.map((v) => v.key)).toEqual(
       raw.variants.map((v: { key: string }) => v.key)
     )
+  })
+
+  it.each(files)('resolves every frame of %s to auto, capped at the round height', (file) => {
+    const raw = JSON.parse(readFileSync(new URL(file, dir), 'utf8'))
+    const m = ManifestSchema.parse(raw)
+    expect(typeof raw.height).toBe('number')
+    for (const variant of m.variants) {
+      expect(frameSizing(m, variant)).toEqual({ height: 'auto', maxHeight: raw.height })
+    }
   })
 })
