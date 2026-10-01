@@ -3,7 +3,7 @@ import type { Annotation, FrameHeight, Variant } from '../src/schema.ts'
 import { storyUrl } from '../src/round.ts'
 import { isAuto } from '../src/sections.ts'
 import {
-  AUTO_FALLBACK_HEIGHT,
+  initialFrameHeight,
   nextFrameHeight,
   storyContentHeight,
   type MeasurableDoc,
@@ -79,8 +79,8 @@ export function reachedStorybook(doc: Pick<Document, 'getElementById'> | null): 
  * cannot read, or one that never renders, stays at the fallback height.
  */
 function useFittedHeight(height: FrameHeight, maxHeight: number) {
-  const [fitted, setFitted] = useState(AUTO_FALLBACK_HEIGHT)
-  const applied = useRef(AUTO_FALLBACK_HEIGHT)
+  const [fitted, setFitted] = useState(() => initialFrameHeight(maxHeight))
+  const applied = useRef(fitted)
   const measurements = useRef(0)
   const observer = useRef<{ disconnect: () => void } | null>(null)
   const auto = isAuto(height)

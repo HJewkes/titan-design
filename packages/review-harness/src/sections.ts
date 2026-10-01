@@ -69,6 +69,18 @@ export function frameHeight(manifest: Manifest, variant: Variant): FrameHeight {
   return variant.height ?? sectionOf(manifest, variant.key)?.height ?? manifest.height
 }
 
+export interface FrameSizing {
+  height: FrameHeight
+  maxHeight: number
+}
+
+/** The page's sizing: a round-level number caps fitted frames; a variant or section one fixes them. */
+export function frameSizing(manifest: Manifest, variant: Variant): FrameSizing {
+  const own = variant.height ?? sectionOf(manifest, variant.key)?.height
+  const cap = isAuto(manifest.height) ? manifest.maxHeight : manifest.height
+  return { height: own ?? AUTO_HEIGHT, maxHeight: cap }
+}
+
 /** The questions whose section shows this frame, so a comment on it has an address. */
 export function questionsForVariant(manifest: Manifest, variantKey: string): string[] {
   return sectionOf(manifest, variantKey)?.questionIds ?? []

@@ -1,6 +1,6 @@
 import type { Dispatch } from 'react'
 import type { VariantDraft } from '../src/feedback.ts'
-import { frameHeight, questionsForVariant } from '../src/sections.ts'
+import { frameSizing, questionsForVariant } from '../src/sections.ts'
 import type { Manifest, Variant, Verdict } from '../src/schema.ts'
 import { Frame } from './Frame.tsx'
 import { PinList } from './PinList.tsx'
@@ -64,6 +64,7 @@ function answersLine(manifest: Manifest, variantKey: string): string {
 export function VariantCard(props: VariantCardProps) {
   const { manifest, variant, draft, index, active, dispatch } = props
   const answers = answersLine(manifest, variant.key)
+  const sizing = frameSizing(manifest, variant)
   return (
     <Stop
       id={`variant-${variant.key}`}
@@ -87,8 +88,8 @@ export function VariantCard(props: VariantCardProps) {
             key={width}
             variant={variant}
             width={width}
-            height={frameHeight(manifest, variant)}
-            maxHeight={manifest.maxHeight}
+            height={sizing.height}
+            maxHeight={sizing.maxHeight}
             annotate={props.annotate}
             pins={draft.annotations}
             onHitTesting={props.onHitTesting}
