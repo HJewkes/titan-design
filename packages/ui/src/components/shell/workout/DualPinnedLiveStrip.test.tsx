@@ -127,6 +127,43 @@ describe('DualPinnedLiveStrip fatigue and drops', () => {
   })
 })
 
+describe('DualPinnedLiveStrip unbound slots and bad velocity', () => {
+  it.each(['left', 'right'] as const)(
+    'draws an unbound %s slot as an empty side under its fallback name',
+    (side) => {
+      render(<DualPinnedLiveStrip {...S.set} {...{ [side]: undefined }} layout="wall" />)
+      const fallback = side === 'left' ? 'Left' : 'Right'
+      expect(screen.getByTestId(`dual-strip-name-${side}`)).toHaveTextContent(fallback)
+      expect(screen.getByTestId(`dual-strip-reps-${side}`)).toHaveTextContent('0/8')
+      expect(screen.queryByTestId(`dual-strip-velocity-${side}`)).not.toBeInTheDocument()
+    }
+  )
+
+  it('reads a slot with no reps as zero reps', () => {
+    render(<DualPinnedLiveStrip {...S.set} left={{}} right={{ label: 'Bench R' }} layout="phone" />)
+    expect(screen.getByTestId('dual-strip-reps-left')).toHaveTextContent('0/8')
+    expect(nameOf()).toMatch(/Left 0 of 8 reps, Bench R 0 of 8 reps$/)
+  })
+
+  it.each([NaN, Infinity, -Infinity])(
+    'shows no last-rep velocity for %s, in the numeral or the name',
+    (velocity) => {
+      const reps = [...S.set.left!.reps!, { velocity, zone: 'power' as const }]
+      render(<DualPinnedLiveStrip {...S.set} left={{ ...S.set.left, reps }} layout="wall" />)
+      expect(screen.getByTestId('dual-strip-reps-left')).toHaveTextContent('6/8')
+      expect(screen.queryByTestId('dual-strip-velocity-left')).not.toBeInTheDocument()
+      expect(nameOf()).not.toMatch(/NaN|Infinity/)
+      expect(nameOf()).toMatch(/Left arm 145 lb 6 of 8 reps, Right arm/)
+    }
+  )
+
+  it('hides the chart from assistive tech so the strip is read once', () => {
+    render(<DualPinnedLiveStrip {...S.set} layout="wall" />)
+    expect(screen.getByTestId('dual-strip-bars-frame')).toHaveAttribute('aria-hidden', 'true')
+    expect(screen.queryAllByRole('img')).toHaveLength(0)
+  })
+})
+
 describe('DualPinnedLiveStrip roles', () => {
   it('renders nothing when idle', () => {
     render(<DualPinnedLiveStrip {...S.set} state="idle" layout="wall" />)
