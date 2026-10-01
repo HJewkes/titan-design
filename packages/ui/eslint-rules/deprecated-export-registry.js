@@ -24,6 +24,24 @@
  * the tag. A RENAME (`export { IconProps as WorkoutIconProps }`) does NOT
  * unify — it deprecates the alias in favour of the source's own name, the
  * opposite relationship, so `IconProps` itself must stay clean.
+ *
+ * `export * from './x'` (VW-322) is followed ONE way: `(barrel, X)` leads to
+ * `(x, X)` for every name, so `import { Tile } from '@/components/ui'` reaches
+ * Tile.tsx's tag through `ui/index.ts` -> `ui/tile` -> `Tile.tsx`. It is not an
+ * identity edge, because a star line names nothing a tag could sit on. As in
+ * ES, a name the barrel exports itself (declared or `export { X }`) shadows its
+ * star re-exports, and `default` is never star-forwarded. The walk keeps a
+ * seen-set, so an `export *` cycle terminates.
+ *
+ * Known limits:
+ *   - `export * as ns from './x'` is out of scope: `ns` counts as an explicit
+ *     export, and `ns.Tile` member access is never checked.
+ *   - Two star sources exporting the same name is an ambiguity ES drops; here
+ *     the name is deprecated if either source's copy is.
+ *   - Only `src/theme` and `src/components` are scanned, so `src/index.ts`,
+ *     `hooks/` and `utils/` barrels are not followed, and bare package
+ *     specifiers (`@titan-design/react-ui`) are not resolved.
+ *   - A tag directly on an `export *` line is ignored.
  */
 
 const fs = require('node:fs')
@@ -110,6 +128,57 @@ function addEdge(edges, a, b) {
   edges.get(b).add(a)
 }
 
+function addTo(map, key, value) {
+  if (!map.has(key)) map.set(key, new Set())
+  map.get(key).add(value)
+}
+
+function indexNamedExport(registry, source, comments, node, file) {
+  const { tagged, edges, explicit } = registry
+  const deprecated = hasLeadingDeprecated(source, comments, node)
+  if (node.declaration) {
+    for (const name of declaredNames(node.declaration)) {
+      addTo(explicit, file.rel, name)
+      if (deprecated) tagged.add(`${file.rel}::${name}`)
+    }
+    return
+  }
+  // Re-export edges are recorded regardless of whether THIS statement is
+  // tagged — an untagged barrel forwarding a tagged export (Tile via
+  // ui/tile's index.ts) still needs to reach it.
+  for (const specifier of node.specifiers ?? []) {
+    const reExportKey = `${file.rel}::${specifier.exported.name}`
+    addTo(explicit, file.rel, specifier.exported.name)
+    if (deprecated) tagged.add(reExportKey)
+    if (node.source && specifier.local.name === specifier.exported.name) {
+      const target = resolveModule(node.source.value, file.abs, file.srcRoot)
+      if (target) addEdge(edges, reExportKey, `${target}::${specifier.local.name}`)
+    }
+  }
+}
+
+function indexFile(registry, file) {
+  const source = fs.readFileSync(file.abs, 'utf8')
+  let ast
+  try {
+    ast = parse(source, { loc: true, range: true, comment: true, jsx: file.abs.endsWith('x') })
+  } catch {
+    return // unparseable file contributes no registry entries
+  }
+  for (const node of ast.body) {
+    if (node.type === 'ExportNamedDeclaration') {
+      indexNamedExport(registry, source, ast.comments ?? [], node, file)
+    } else if (node.type === 'ExportDefaultDeclaration') {
+      addTo(registry.explicit, file.rel, 'default')
+    } else if (node.type === 'ExportAllDeclaration' && node.exported) {
+      addTo(registry.explicit, file.rel, node.exported.name) // `export * as ns` is out of scope
+    } else if (node.type === 'ExportAllDeclaration') {
+      const target = resolveModule(node.source.value, file.abs, file.srcRoot)
+      if (target) addTo(registry.stars, file.rel, target)
+    }
+  }
+}
+
 function buildRegistry(srcRoot) {
   const files = []
   for (const root of SCAN_ROOTS) {
@@ -117,57 +186,40 @@ function buildRegistry(srcRoot) {
     if (fs.existsSync(dir)) walk(dir, files)
   }
 
-  const tagged = new Set() // `${srcRelativeFile}::${name}` directly carries @deprecated
-  const edges = new Map() // same-name-forwarding identity graph, both directions
-
-  for (const absFile of files) {
-    const rel = path.relative(srcRoot, absFile).split(path.sep).join('/')
-    if (SKIP_FILE.test(rel)) continue
-
-    const source = fs.readFileSync(absFile, 'utf8')
-    let ast
-    try {
-      ast = parse(source, { loc: true, range: true, comment: true, jsx: absFile.endsWith('x') })
-    } catch {
-      continue // unparseable file contributes no registry entries
-    }
-    const comments = ast.comments ?? []
-
-    for (const node of ast.body) {
-      if (node.type !== 'ExportNamedDeclaration') continue
-      const deprecated = hasLeadingDeprecated(source, comments, node)
-
-      if (node.declaration) {
-        if (deprecated) {
-          for (const name of declaredNames(node.declaration)) tagged.add(`${rel}::${name}`)
-        }
-        continue
-      }
-      // Re-export edges are recorded regardless of whether THIS statement is
-      // tagged — an untagged barrel forwarding a tagged export (Tile via
-      // ui/tile's index.ts) still needs to reach it.
-      for (const specifier of node.specifiers ?? []) {
-        const reExportKey = `${rel}::${specifier.exported.name}`
-        if (deprecated) tagged.add(reExportKey)
-        if (node.source && specifier.local.name === specifier.exported.name) {
-          const target = resolveModule(node.source.value, absFile, srcRoot)
-          if (target) addEdge(edges, reExportKey, `${target}::${specifier.local.name}`)
-        }
-      }
-    }
+  const registry = {
+    tagged: new Set(), // `${srcRelativeFile}::${name}` directly carries @deprecated
+    edges: new Map(), // same-name-forwarding identity graph, both directions
+    explicit: new Map(), // file -> names it exports itself, which shadow its `export *`
+    stars: new Map(), // file -> files it `export * from`, followed one way only
   }
-  return { tagged, edges }
+  for (const abs of files) {
+    const rel = path.relative(srcRoot, abs).split(path.sep).join('/')
+    if (!SKIP_FILE.test(rel)) indexFile(registry, { abs, rel, srcRoot })
+  }
+  return registry
 }
 
-/** BFS over the identity graph: deprecated if any connected node carries the tag. */
-function isDeprecated({ tagged, edges }, file, name) {
+/** Where `file::name` leads: its identity edges, plus its `export *` sources unless it exports `name` itself. */
+function neighborsOf({ edges, explicit, stars }, key) {
+  const neighbors = [...(edges.get(key) ?? [])]
+  const sep = key.lastIndexOf('::')
+  const file = key.slice(0, sep)
+  const name = key.slice(sep + 2)
+  if (name !== 'default' && !explicit.get(file)?.has(name)) {
+    for (const target of stars.get(file) ?? []) neighbors.push(`${target}::${name}`)
+  }
+  return neighbors
+}
+
+/** Graph walk: deprecated if any reachable node carries the tag; `seen` guards `export *` cycles. */
+function isDeprecated(registry, file, name) {
   const start = `${file}::${name}`
   const seen = new Set([start])
   const stack = [start]
   while (stack.length) {
     const key = stack.pop()
-    if (tagged.has(key)) return true
-    for (const neighbor of edges.get(key) ?? []) {
+    if (registry.tagged.has(key)) return true
+    for (const neighbor of neighborsOf(registry, key)) {
       if (!seen.has(neighbor)) {
         seen.add(neighbor)
         stack.push(neighbor)
