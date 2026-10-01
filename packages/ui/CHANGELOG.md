@@ -58,6 +58,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- `SegmentedBar`'s pulsing segments hold full opacity, and the `to` colour of a `pulseColor`, when the OS asks for reduced motion, instead of breathing (VW-325).
 - `DualPinnedLiveStrip` takes an omitted `left` or `right` as a not-yet-bound slot and draws it as
   an empty side under its fallback name, and a slot's `reps` defaults to `[]`; either used to
   throw. A last rep whose velocity is not a finite number shows no velocity, in the numeral and
