@@ -2358,10 +2358,11 @@
         "CompactBody",
         "statedMilestone",
         "cardReach",
-        "hasRecord"
+        "hasRecord",
+        "useGoalCardSlots"
       ],
-      "libDependents": 6,
-      "storyRefs": 11,
+      "libDependents": 7,
+      "storyRefs": 12,
       "xproj": {
         "mobile": 0,
         "mcp": 5,
@@ -2370,7 +2371,6 @@
         "total": 5
       },
       "dependsOn": [
-        "Card",
         "GoalMilestoneSummary",
         "GoalMilestoneWeekStrip",
         "GoalPriorityIcon",
@@ -2379,16 +2379,17 @@
         "Indicator",
         "Pill",
         "PrBadge",
+        "StatCard",
         "TipTrigger",
         "Typography"
       ],
       "leak": {
-        "rawView": 8,
+        "rawView": 5,
         "rawText": 0,
-        "inlineStyle": 5,
+        "inlineStyle": 4,
         "rawHex": 0,
-        "loc": 694,
-        "score": 18
+        "loc": 719,
+        "score": 13
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -2506,7 +2507,7 @@
         "FactItems",
         "SummaryBody"
       ],
-      "libDependents": 2,
+      "libDependents": 4,
       "storyRefs": 0,
       "xproj": {
         "mobile": 0,
@@ -2544,11 +2545,10 @@
         "GoalMilestoneTileLayout",
         "GoalMilestoneTileProps",
         "StateMark",
-        "Header",
         "Plane"
       ],
       "libDependents": 1,
-      "storyRefs": 3,
+      "storyRefs": 4,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
@@ -2559,16 +2559,17 @@
       "dependsOn": [
         "GoalMilestoneSummary",
         "Indicator",
+        "StatCard",
         "Surface",
         "Typography"
       ],
       "leak": {
-        "rawView": 3,
+        "rawView": 2,
         "rawText": 0,
-        "inlineStyle": 3,
+        "inlineStyle": 2,
         "rawHex": 0,
-        "loc": 136,
-        "score": 9
+        "loc": 137,
+        "score": 6
       },
       "tier": "organism",
       "verdict": "keep-internal",
@@ -2594,7 +2595,7 @@
         "AlignedCell",
         "stripSummary"
       ],
-      "libDependents": 3,
+      "libDependents": 4,
       "storyRefs": 0,
       "xproj": {
         "mobile": 0,
@@ -2635,10 +2636,12 @@
         "GoalMuscleLift",
         "GoalMuscleCardProps",
         "useStatusColor",
-        "LiftRow"
+        "LiftRow",
+        "StatusMark",
+        "RollupBody"
       ],
       "libDependents": 1,
-      "storyRefs": 1,
+      "storyRefs": 2,
       "xproj": {
         "mobile": 0,
         "mcp": 1,
@@ -2647,20 +2650,20 @@
         "total": 1
       },
       "dependsOn": [
-        "Card",
         "GoalCard",
         "Indicator",
         "MuscleGlyph",
         "Pill",
+        "StatCard",
         "Typography"
       ],
       "leak": {
-        "rawView": 8,
+        "rawView": 6,
         "rawText": 0,
-        "inlineStyle": 7,
+        "inlineStyle": 6,
         "rawHex": 0,
-        "loc": 217,
-        "score": 22
+        "loc": 240,
+        "score": 18
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -2682,7 +2685,7 @@
         "Glyph",
         "Tip"
       ],
-      "libDependents": 2,
+      "libDependents": 3,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -2863,7 +2866,7 @@
         "summarize",
         "calibratingSummary"
       ],
-      "libDependents": 2,
+      "libDependents": 3,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -3077,7 +3080,7 @@
         "GoalWeekColumnsChartProps",
         "CELLS_ROW_TOP"
       ],
-      "libDependents": 1,
+      "libDependents": 2,
       "storyRefs": 0,
       "xproj": {
         "mobile": 0,
@@ -3285,7 +3288,7 @@
         "IndicatorProps",
         "glowColors"
       ],
-      "libDependents": 11,
+      "libDependents": 14,
       "storyRefs": 3,
       "xproj": {
         "mobile": 0,
@@ -4222,7 +4225,7 @@
         "MuscleGlyph",
         "MuscleGlyphProps"
       ],
-      "libDependents": 1,
+      "libDependents": 2,
       "storyRefs": 0,
       "xproj": {
         "mobile": 0,
@@ -4413,7 +4416,7 @@
         "containerClasses",
         "PillContent"
       ],
-      "libDependents": 18,
+      "libDependents": 20,
       "storyRefs": 10,
       "xproj": {
         "mobile": 0,
@@ -4679,7 +4682,7 @@
         "PRType",
         "PrBadgeProps"
       ],
-      "libDependents": 5,
+      "libDependents": 6,
       "storyRefs": 3,
       "xproj": {
         "mobile": 0,
@@ -6264,7 +6267,7 @@
         "FigureRow",
         "StatCard.part"
       ],
-      "libDependents": 3,
+      "libDependents": 6,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -6497,8 +6500,8 @@
         "Surface",
         "SurfaceProps"
       ],
-      "libDependents": 20,
-      "storyRefs": 85,
+      "libDependents": 21,
+      "storyRefs": 86,
       "xproj": {
         "mobile": 22,
         "mcp": 12,
@@ -7069,7 +7072,7 @@
         "useDismissOnWeb.<anonymous>.onKey",
         "useDismissOnWeb.<anonymous>.onPointer"
       ],
-      "libDependents": 6,
+      "libDependents": 7,
       "storyRefs": 2,
       "xproj": {
         "mobile": 0,
@@ -7443,7 +7446,7 @@
         "LabelProps",
         "OverlineProps"
       ],
-      "libDependents": 63,
+      "libDependents": 66,
       "storyRefs": 30,
       "xproj": {
         "mobile": 0,
@@ -8944,15 +8947,15 @@
     ],
     [
       "GoalCard",
-      "Card"
-    ],
-    [
-      "GoalCard",
       "Indicator"
     ],
     [
       "GoalCard",
       "Pill"
+    ],
+    [
+      "GoalCard",
+      "StatCard"
     ],
     [
       "GoalCard",
@@ -8981,6 +8984,10 @@
     [
       "GoalMilestoneTile",
       "Indicator"
+    ],
+    [
+      "GoalMilestoneTile",
+      "StatCard"
     ],
     [
       "GoalMilestoneTile",
@@ -9020,15 +9027,15 @@
     ],
     [
       "GoalMuscleCard",
-      "Card"
-    ],
-    [
-      "GoalMuscleCard",
       "Indicator"
     ],
     [
       "GoalMuscleCard",
       "Pill"
+    ],
+    [
+      "GoalMuscleCard",
+      "StatCard"
     ],
     [
       "GoalMuscleCard",
