@@ -356,3 +356,8 @@ button.primary kbd {
   color: inherit;
   border-color: currentColor;
 }
+
+.frame-box img {
+  display: block;
+  height: auto;
+}

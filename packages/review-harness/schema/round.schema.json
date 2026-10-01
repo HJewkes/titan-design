@@ -67,6 +67,10 @@
             "type": "string",
             "pattern": "^[a-z0-9-]+--[a-z0-9-]+$"
           },
+          "image": {
+            "type": "string",
+            "pattern": "^(?![/\\\\]|[A-Za-z]:)(?!(.*[/\\\\])?\\.\\.([/\\\\]|$)).+\\.[Pp][Nn][Gg]$"
+          },
           "label": {
             "type": "string",
             "minLength": 1
@@ -125,10 +129,35 @@
         },
         "required": [
           "key",
-          "storyId",
           "label"
         ],
-        "additionalProperties": false
+        "additionalProperties": false,
+        "oneOf": [
+          {
+            "required": [
+              "storyId"
+            ]
+          },
+          {
+            "required": [
+              "image"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "args"
+                  ]
+                },
+                {
+                  "required": [
+                    "globals"
+                  ]
+                }
+              ]
+            }
+          }
+        ]
       }
     },
     "questions": {

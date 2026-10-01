@@ -86,6 +86,9 @@
           "storyId": {
             "type": "string"
           },
+          "image": {
+            "type": "string"
+          },
           "verdict": {
             "anyOf": [
               {
@@ -173,7 +176,6 @@
         },
         "required": [
           "key",
-          "storyId",
           "verdict",
           "comment",
           "annotations"

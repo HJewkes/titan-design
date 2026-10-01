@@ -1,8 +1,15 @@
 import type { Dispatch } from 'react'
 import type { VariantDraft } from '../src/feedback.ts'
 import { frameSizing, questionsForVariant } from '../src/sections.ts'
-import type { Manifest, Variant, Verdict } from '../src/schema.ts'
-import { Frame } from './Frame.tsx'
+import {
+  isImageVariant,
+  isStoryVariant,
+  type Manifest,
+  type Variant,
+  type Verdict,
+} from '../src/schema.ts'
+import { Frame, type PinInput } from './Frame.tsx'
+import { ImageFrame } from './ImageFrame.tsx'
 import { PinList } from './PinList.tsx'
 import type { Action } from './state.ts'
 import { Stop } from './Stop.tsx'
@@ -65,6 +72,10 @@ export function VariantCard(props: VariantCardProps) {
   const { manifest, variant, draft, index, active, dispatch } = props
   const answers = answersLine(manifest, variant.key)
   const sizing = frameSizing(manifest, variant)
+  const onPin = (pin: PinInput) => {
+    dispatch({ type: 'activate', index })
+    dispatch({ type: 'addPin', key: variant.key, pin })
+  }
   return (
     <Stop
       id={`variant-${variant.key}`}
@@ -79,26 +90,31 @@ export function VariantCard(props: VariantCardProps) {
         <h3>
           <span className="key">{variant.key}</span> {variant.label}
         </h3>
-        <code>{variant.storyId}</code>
+        <code>{variant.storyId ?? variant.image}</code>
         {answers && <p className="variant-question">{answers}</p>}
       </header>
       <div className="frames">
-        {manifest.widths.map((width) => (
-          <Frame
-            key={width}
-            variant={variant}
-            width={width}
-            height={sizing.height}
-            maxHeight={sizing.maxHeight}
-            annotate={props.annotate}
-            pins={draft.annotations}
-            onHitTesting={props.onHitTesting}
-            onPin={(pin) => {
-              dispatch({ type: 'activate', index })
-              dispatch({ type: 'addPin', key: variant.key, pin })
-            }}
-          />
-        ))}
+        {manifest.widths.map((width) => {
+          const shared = { width, height: sizing.height, annotate: props.annotate }
+          const pins = draft.annotations
+          if (isImageVariant(variant))
+            return (
+              <ImageFrame key={width} {...shared} variant={variant} pins={pins} onPin={onPin} />
+            )
+          return (
+            isStoryVariant(variant) && (
+              <Frame
+                key={width}
+                {...shared}
+                variant={variant}
+                maxHeight={sizing.maxHeight}
+                pins={pins}
+                onPin={onPin}
+                onHitTesting={props.onHitTesting}
+              />
+            )
+          )
+        })}
       </div>
       <VerdictControl {...props} />
       <textarea

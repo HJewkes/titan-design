@@ -84,7 +84,7 @@ export function buildFeedback(
       const related = questionsForVariant(manifest, v.key)
       return {
         key: v.key,
-        storyId: v.storyId,
+        ...(v.storyId !== undefined ? { storyId: v.storyId } : { image: v.image }),
         ...(draft.variants[v.key] ?? { verdict: null, comment: '', annotations: [] }),
         ...(related.length ? { relatedQuestionIds: related } : {}),
       }
