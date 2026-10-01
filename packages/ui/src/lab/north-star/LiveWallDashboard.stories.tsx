@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
-import { DashboardShell, type Device } from '../../components'
+import { WorkoutShell, type Device } from '../../components'
 import { LivePage, type LivePageVariant } from './LivePage'
 import { dashboardFixture } from './fixtures'
 
@@ -13,7 +13,7 @@ const noTempoModel = {
 /**
  * `Lab/North Star/Live Wall Dashboard` — the north-star wall-dashboard specimen.
  *
- * A LAB specimen: it COMPOSES existing production components ({@link DashboardShell}
+ * A LAB specimen: it COMPOSES existing production components ({@link WorkoutShell}
  * around a lab-scoped `LivePage`) into the target surface. It is NOT a published
  * library component — nothing here is added to a package barrel.
  *
@@ -53,7 +53,7 @@ const meta: Meta<WallArgs> = {
       variant === 'no-device'
     const state = empty ? 'idle' : variant === 'rest' ? 'rest' : 'live'
     return (
-      <DashboardShell
+      <WorkoutShell
         activeKey="live"
         state={state}
         liveKey={variant === 'rest' ? 'live' : null}
@@ -61,7 +61,7 @@ const meta: Meta<WallArgs> = {
         subtitle="wall dashboard"
       >
         <LivePage variant={variant} model={tempo ? dashboardFixture : noTempoModel} />
-      </DashboardShell>
+      </WorkoutShell>
     )
   },
   decorators: [
@@ -77,7 +77,7 @@ const meta: Meta<WallArgs> = {
       description: {
         component:
           '**North Star wall dashboard** (lab specimen). Composes ' +
-          '[DashboardShell](?path=/docs/pages-dashboardshell--docs) around a lab `LivePage` ' +
+          '[WorkoutShell](?path=/docs/pages-workoutshell--docs) around a lab `LivePage` ' +
           '(SessionRail + a Live/Rest stage). Toggle **variant** to switch between the ' +
           'mid-set live read-out and the between-sets rest read-out. Tier-C slots render ' +
           'their base component as a labelled stub.',
