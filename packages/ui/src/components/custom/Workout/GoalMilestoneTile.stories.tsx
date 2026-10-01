@@ -16,8 +16,9 @@ const meta: Meta<typeof GoalMilestoneTile> = {
           "**Molecule.** A goal's meso target (the block's committed value, due in its last " +
           'week), led by what is still short. The gap leads with the week count under it, best ' +
           'and goal on its line, and the week cells carry each past week, with a tip card each. Open targets take ' +
-          "the chart's pace colour; hit is success; missed is muted, never red. Composes " +
-          '[Surface](?path=/docs/components-surface--docs) + ' +
+          "the chart's pace colour; hit is success; missed is muted, never red. Framed, it composes " +
+          '[StatCard](?path=/docs/components-molecules-statcard--docs); unframed, a pressed ' +
+          '[Surface](?path=/docs/components-surface--docs) plane. Both compose ' +
           '[Indicator](?path=/docs/components-indicator--docs) + ' +
           '[Typography](?path=/docs/custom-typography--docs) + `GoalMilestoneWeekStrip`.\n\n' +
           'The type scale follows the measured width (`wall` from 420px). See ' +
