@@ -296,6 +296,22 @@ export const EmptyCalibrating: Story = {
   },
 }
 
+/**
+ * Week 4 is current but not lifted yet (VW-422): a hollow point marks it on the
+ * dashed lead from week 3's reading to the next target, so "now" is never a gap.
+ */
+export const CurrentWeekWithoutReading: Story = {
+  name: 'Current week without a reading',
+  args: {
+    ...bench,
+    ...WALL,
+    actuals: onTrackActuals.slice(0, 3),
+    status: 'on_track',
+    currentWeek: 4,
+    nextTarget: { weekIndex: 6, value: 187, label: 'next week: 187 x 8' },
+  },
+}
+
 /** The same on-track block at phone width: 2px line and three gridlines. */
 export const PhoneOnTrack: Story = {
   args: { ...bench, ...PHONE, actuals: onTrackActuals, status: 'on_track', currentWeek: 4 },
