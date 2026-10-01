@@ -390,6 +390,58 @@ describe('PinnedLiveStrip', () => {
     })
   })
 
+  describe('target source', () => {
+    const nameOf = () => screen.getByTestId('pinned-live-strip').getAttribute('aria-label')
+    const setLineOf = (layout: 'wall' | 'phone', targetSource?: 'plan' | 'last-time') => {
+      const { unmount } = render(
+        <PinnedLiveStrip {...S.set} layout={layout} targetSource={targetSource} />
+      )
+      const line = screen.getByText(/^Set 2/).textContent
+      const name = nameOf()
+      unmount()
+      return { line, name }
+    }
+
+    it('labels last-time targets in the wall set line, before the load', () => {
+      render(<PinnedLiveStrip {...S.set} layout="wall" targetSource="last-time" />)
+      expect(screen.getByText('Set 2 of 3 · last time · 140 lb')).toBeInTheDocument()
+    })
+
+    it('labels last-time targets in the phone set line', () => {
+      render(<PinnedLiveStrip {...S.set} layout="phone" targetSource="last-time" />)
+      expect(screen.getByTestId('live-strip-meta')).toHaveTextContent(/^Set 2\/3 · last time$/)
+    })
+
+    it('labels last-time targets in the rest set line', () => {
+      render(<PinnedLiveStrip {...S.rest} layout="wall" targetSource="last-time" />)
+      expect(screen.getByText('Next: set 3 of 3 · last time · 140 lb')).toBeInTheDocument()
+    })
+
+    it('says the targets come from last time in the accessible name', () => {
+      render(<PinnedLiveStrip {...S.set} layout="wall" targetSource="last-time" />)
+      expect(nameOf()).toBe(
+        'Live set, Cable Chest Press, Set 2 of 3 · last time · 140 lb, 5 of 8 reps, ' +
+          'last rep 0.74 m/s, 11% loss from best, targets from last time'
+      )
+    })
+
+    it.each(['wall', 'phone'] as const)(
+      'keeps the %s set line and accessible name unchanged when omitted',
+      (layout) => {
+        const omitted = setLineOf(layout)
+        expect(omitted.line).toBe(layout === 'wall' ? 'Set 2 of 3 · 140 lb' : 'Set 2/3')
+        expect(omitted.name).toBe(
+          'Live set, Cable Chest Press, Set 2 of 3 · 140 lb, 5 of 8 reps, ' +
+            'last rep 0.74 m/s, 11% loss from best'
+        )
+      }
+    )
+
+    it.each(['wall', 'phone'] as const)('renders "plan" exactly as omitted on the %s', (layout) => {
+      expect(setLineOf(layout, 'plan')).toEqual(setLineOf(layout))
+    })
+  })
+
   describe('wall readouts', () => {
     // jsdom has no layout: the shared line and the bar clearances are measured in the captures.
     it.each([

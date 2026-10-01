@@ -39,6 +39,7 @@ const meta: Meta<PinnedLiveStripProps> = {
     state: { control: 'inline-radio', options: ['set', 'rest', 'idle'] },
     isFatigued: { control: 'boolean' },
     layout: { control: 'inline-radio', options: [undefined, 'wall', 'phone'] },
+    targetSource: { control: 'inline-radio', options: [undefined, 'plan', 'last-time'] },
     reps: { control: 'object' },
     onPress: { control: false },
   },
@@ -53,3 +54,22 @@ export const Default: Story = {}
 
 /** Resting: the countdown takes the hero and a time bar runs along the bottom. */
 export const Rest: Story = { args: { ...S.rest, onPress: goLive } }
+
+/**
+ * Targets derived from the lifter's last session, not a plan: the set line says "last time".
+ * The strip measures its own width, so it is drawn at 1920 (wall) and at 360 (phone).
+ */
+export const TargetsFromLastTime: Story = {
+  name: 'Targets from last time',
+  args: { targetSource: 'last-time' },
+  render: (args) => (
+    <View className="gap-section-sm">
+      <View testID="last-time-wall" style={{ width: 1920 }}>
+        <PinnedLiveStrip {...args} />
+      </View>
+      <View testID="last-time-phone" style={{ width: 360 }}>
+        <PinnedLiveStrip {...args} />
+      </View>
+    </View>
+  ),
+}
