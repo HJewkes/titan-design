@@ -97,7 +97,7 @@ jobs:
           path: packages/ui/specimen/baseline/**/*-chromium-linux.png
           retention-days: 7
 
-      # Layer 2 — Storybook story baselines (shell + icons; clock-frozen so
+      # Layer 2 — Storybook story baselines (shell + icons + chat; clock-frozen so
       # live/animated stories are deterministic). Any pixel drift against the
       # committed *-chromium-linux.png under
       # packages/ui/tests/visual/reference/stories.spec.ts-snapshots/ fails the build.

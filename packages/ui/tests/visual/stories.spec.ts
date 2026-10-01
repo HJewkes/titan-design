@@ -13,8 +13,8 @@ import { test, expect, type Page, type TestInfo } from '@playwright/test'
  * animated stories snapshot stably.
  *
  * Scope: the shell family + the icon foundation story (`Foundations/Icons`,
- * whose Storybook id is `foundations-icons--*`). Widen `SCOPE` to cover more
- * of the library as baselines are seeded.
+ * whose Storybook id is `foundations-icons--*`), plus the Chat stories named in
+ * `CHAT_STORIES`. Widen `SCOPE` to cover more of the library as baselines are seeded.
  *
  * Baselines must be generated in the pinned Playwright Linux container
  * (`mcr.microsoft.com/playwright:v1.58.2-noble`) so the committed PNGs are
@@ -26,9 +26,23 @@ import { test, expect, type Page, type TestInfo } from '@playwright/test'
 
 const SCOPE = /^(shell-|foundations-icons--|custom-workout-mesoprogressbar--)/
 
+// The owner-locked Chat design (VW-393), listed by id so the interactive stories stay out.
+const CHAT_STORIES = new Set([
+  'custom-chat-coachpreset--phone',
+  'custom-chat-coachpreset--wall-drawer',
+  'custom-chat-messagelist--direct',
+  'custom-chat-messagelist--group',
+  'custom-chat-messagelist--endorsed',
+  'custom-chat-messagelist--revealed-times',
+  'custom-chat-messagelist--windowed',
+  'custom-chat-composer--typed',
+])
+
+const inScope = (id: string) => SCOPE.test(id) || CHAT_STORIES.has(id)
+
 const FIXED_TIME = new Date('2024-01-01T16:12:07')
 
-test('storybook story baselines (shell + icons)', async ({ page, request }) => {
+test('storybook story baselines (shell + icons + chat)', async ({ page, request }) => {
   // install() alone keeps ticking from FIXED_TIME in real time, so any story
   // rendered more than 53 s into the run showed 16:13 instead of 16:12 (#250).
   await page.clock.install({ time: FIXED_TIME })
@@ -37,9 +51,11 @@ test('storybook story baselines (shell + icons)', async ({ page, request }) => {
   const index = (await (await request.get('/index.json')).json()) as {
     entries: Record<string, { id: string; type: string; title: string }>
   }
-  const stories = Object.values(index.entries).filter((e) => e.type === 'story' && SCOPE.test(e.id))
+  const stories = Object.values(index.entries).filter((e) => e.type === 'story' && inScope(e.id))
 
   expect(stories.length, 'in-scope stories were found').toBeGreaterThan(0)
+  const chatIds = stories.map((s) => s.id).filter((id) => CHAT_STORIES.has(id))
+  expect(chatIds.sort(), 'every listed Chat story exists').toEqual([...CHAT_STORIES].sort())
 
   for (const story of stories) {
     await page.goto(`/iframe.html?id=${story.id}&viewMode=story`)
