@@ -24,6 +24,22 @@ that someone can tell whether a future change invalidates the reasoning.
 
 ---
 
+## Dual pinned live strip: side-by-side groups, natural wall height, the per-side fatigue wash, and the single-strip fallback on a drop — rejected 2026-09-30
+
+**Tried:** four pairs in VW-439 round 1 (`Lab/Decisions/Dual Pinned Live Strip`, 1920 and 360, dark).
+- **B, side by side:** one group per side, the single strip's label-over-numeral row repeated, then one chart.
+- **Natural wall height:** the wall row grew past 72px to fit (A 104px, B 97 to 109px), with larger numerals and the name stacked over the load.
+- **F2, a per-side fatigue mark:** a red edge and a red wash behind the fatigued side's lane and wing only.
+- **D1, fall back to single:** when one Voltra drops mid-set, the strip became the single `PinnedLiveStrip` of the side left.
+
+**Chosen:** **A at 72px**: Left above Right in lanes beside one diverging chart, in the single strip's 72px wall row, name and load on one line. **F1**: the whole strip reddens and so does the fatigued side's name. **D2**: both sides stay and the dropped side's wing fades. The owner also dropped each side's name and load on a phone: "I don't think the name and load are practical at the narrow layout, I think keep for the wall but drop for the phone".
+
+**Why:** the owner's picks, given without reasons, so they are recorded as preferences. Natural height cost B a 12px jump between set and rest; both 72px forms held their content without clipping.
+
+**Code:** deleted. The `arrangement`, `wallHeight`, `fatigueMark` and `dropMode` round props, the side-by-side groups, the slot wash, the single-strip fallback, and `StripPlane`'s round-1 `grow` and `wash` props. D2's round-1 scrim painted a faint rectangle over the chart's empty plot; `DualVelocityStream.isDimmed` fades the wing itself instead.
+
+---
+
 ## Effort-band overlay: tier a blue dark to light, effort colours in tier a, and the zone bracket — rejected 2026-09-23
 
 **Tried:** three alternatives in VW-448 round 1 (`Lab/Decisions/Effort Bands`, 1920 and 360, dark). The palette variants were shown on the same ten reps, tier a with a planned VL 30% guard, beside the tier b effort scale as a reference.

@@ -6,28 +6,21 @@ import { WorkoutShell } from './WorkoutShell'
 import {
   DualPinnedLiveStrip,
   type DualPinnedLiveStripProps,
-  type DualStripArrangement,
-  type DualStripDropMode,
-  type DualStripFatigueMark,
-  type DualStripWallHeight,
+  type DualStripPhoneMarker,
 } from './DualPinnedLiveStrip'
 import { DUAL_STRIP_SCENARIOS as S, type DualStripScenario } from './dualPinnedLiveStrip-fixture'
 
-type Frame = 'layout' | 'fatigue' | 'drop'
+type Frame = 'chosen' | 'stress'
 
 interface DecisionArgs {
   frame: Frame
-  arrangement: DualStripArrangement
-  wallHeight: DualStripWallHeight
-  fatigueMark: DualStripFatigueMark
-  dropMode: DualStripDropMode
+  phoneMarker: DualStripPhoneMarker
 }
 
-// Each frame stacks the strips it compares, top to bottom.
+// Each frame stacks its strips, top to bottom.
 const FRAME_STRIPS: Record<Frame, readonly DualStripScenario[]> = {
-  layout: ['set', 'rest', 'longNames', 'noNames'],
-  fatigue: ['fatigueRight', 'fatigueBoth'],
-  drop: ['beforeDrop', 'rightDropped'],
+  chosen: ['set', 'rest', 'fatigueRight', 'rightDropped'],
+  stress: ['longNames', 'noNames', 'longRest'],
 }
 
 // Stands in for the consumer's navigation back to the live page.
@@ -66,34 +59,22 @@ function Strips({ frame, ...variant }: DecisionArgs) {
 }
 
 /**
- * VW-439 round 1: the pinned live strip for a two-Voltra session, in the wall shell.
+ * VW-439 round 2: the pinned live strip for a two-Voltra session, in the wall shell.
  *
- * Layout: A stacks Left over Right in lanes beside one diverging chart; B keeps the single strip's
- * overline-over-numeral row with one group per side. `wallHeight` shows each at its natural height
- * or forced into the single strip's 72px row. Each side carries the name the lifter gave the
- * Voltra and its own load; with no name set the side reads "Left" / "Right".
- * Fatigue: F1 reddens the whole strip and the fatigued side's name; F2 keeps a red edge and washes
- * only that side's lane and wing. Drop: D1 falls back to the single strip of the side left; D2
- * keeps both sides and dims the dropped one. Canvas width drives the layout, so shoot at 1920 and
- * 360. Dark only (VW-397).
+ * Locked in round 1: lanes (Left above Right beside one diverging chart) in the single strip's 72px
+ * wall row; a fatigued side reddens the whole strip and its name (F1); a dropped side stays and its
+ * wing dims (D2). The wall carries each side's name and load; the phone drops both, and
+ * `phoneMarker` asks whether the phone marks each lane with "L" / "R" or by position alone.
+ * Canvas width drives the layout, so shoot at 1920 and 360. Dark only (VW-397).
  */
 const meta: Meta<DecisionArgs> = {
   title: 'Lab/Decisions/Dual Pinned Live Strip',
   tags: ['status:lab'],
   parameters: { layout: 'fullscreen' },
-  args: {
-    frame: 'layout',
-    arrangement: 'lanes',
-    wallHeight: 'natural',
-    fatigueMark: 'strip',
-    dropMode: 'single',
-  },
+  args: { frame: 'chosen', phoneMarker: 'none' },
   argTypes: {
-    frame: { control: 'select', options: ['layout', 'fatigue', 'drop'] },
-    arrangement: { control: 'inline-radio', options: ['lanes', 'side-by-side'] },
-    wallHeight: { control: 'inline-radio', options: ['natural', 'fixed'] },
-    fatigueMark: { control: 'inline-radio', options: ['strip', 'slot'] },
-    dropMode: { control: 'inline-radio', options: ['single', 'dimmed'] },
+    frame: { control: 'select', options: ['chosen', 'stress'] },
+    phoneMarker: { control: 'inline-radio', options: ['none', 'letter'] },
   },
   render: (args) => (
     <WorkoutShell activeKey="program" liveKey="live" state="live" subtitle="planning">
@@ -108,20 +89,8 @@ export default meta
 
 type Story = StoryObj<DecisionArgs>
 
-/** A: lanes. Set (5 and 4 of 8), its rest, long Voltra names with a 12-rep target, no names set. */
-export const LanesPair: Story = { args: { arrangement: 'lanes' } }
+/** The round 1 picks: a set, its rest, the right side fatigued, the right Voltra dropped mid-set. */
+export const ChosenPair: Story = {}
 
-/** B: side by side, the same four strips. */
-export const SideBySidePair: Story = { args: { arrangement: 'side-by-side' } }
-
-/** F1 on A: right fatigued, then both. The whole strip reddens and so does the fatigued name. */
-export const FatigueOneSideStrip: Story = { args: { frame: 'fatigue', fatigueMark: 'strip' } }
-
-/** F2 on A: right fatigued, then both. A red edge, and a wash behind the fatigued lane and wing. */
-export const FatigueOneSideSlot: Story = { args: { frame: 'fatigue', fatigueMark: 'slot' } }
-
-/** D1: both sides lifting, then the right Voltra drops and the strip becomes the left's single strip. */
-export const DropFallsBackToSingle: Story = { args: { frame: 'drop', dropMode: 'single' } }
-
-/** D2: both sides lifting, then the right Voltra drops; both sides stay, the right one dimmed. */
-export const DropKeepsDualDimmed: Story = { args: { frame: 'drop', dropMode: 'dimmed' } }
+/** A 12-rep target with 19-character names, one side at zero reps with no names set, 999 s rest. */
+export const StressPair: Story = { args: { frame: 'stress' } }

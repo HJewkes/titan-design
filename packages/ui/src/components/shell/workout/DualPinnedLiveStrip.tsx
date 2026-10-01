@@ -11,7 +11,6 @@ import {
   normalizeLossThresholds,
   type VelocityLossThresholds,
 } from '../../custom/Workout/VelocityStrip'
-import { PinnedLiveStrip } from './PinnedLiveStrip'
 import {
   liveStripRepToken,
   liveStripRestReadout,
@@ -49,11 +48,8 @@ export interface LiveStripSlot {
   isConnected?: boolean
 }
 
-/** Round 1 only (VW-439): the variant props the harden slice deletes. */
-export type DualStripArrangement = 'lanes' | 'side-by-side'
-export type DualStripFatigueMark = 'strip' | 'slot'
-export type DualStripDropMode = 'single' | 'dimmed'
-export type DualStripWallHeight = 'natural' | 'fixed'
+/** Round 2 only (VW-439): what marks each side on a phone, where the name and load are dropped. */
+export type DualStripPhoneMarker = 'none' | 'letter'
 
 export interface DualPinnedLiveStripProps {
   state: LiveStripState
@@ -70,10 +66,7 @@ export interface DualPinnedLiveStripProps {
   className?: string
   left: LiveStripSlot
   right: LiveStripSlot
-  arrangement?: DualStripArrangement
-  fatigueMark?: DualStripFatigueMark
-  dropMode?: DualStripDropMode
-  wallHeight?: DualStripWallHeight
+  phoneMarker?: DualStripPhoneMarker
 }
 
 type Side = 'left' | 'right'
@@ -93,31 +86,12 @@ interface Sizes {
   unit: string
   velocity: string
   chart: number
-  /** Name above load (true) or "name · load" on one line. */
-  stacked: boolean
-  /** Phone lanes: the name column's cap, past which a long Voltra name truncates. */
-  nameMax?: number
 }
 
-// Lanes trade numeral size for height; side by side keeps the single strip's numeral row.
-const SIZES: Record<DualStripArrangement, Record<DualStripWallHeight | 'phone', Sizes>> = {
-  lanes: {
-    fixed: { reps: 'text-2xl', unit: 'text-base', velocity: 'text-xl', chart: 56, stacked: false },
-    natural: { reps: 'text-3xl', unit: 'text-lg', velocity: 'text-2xl', chart: 88, stacked: true },
-    phone: {
-      reps: 'text-xl',
-      unit: 'text-sm',
-      velocity: 'text-lg',
-      chart: 64,
-      stacked: true,
-      nameMax: 80,
-    },
-  },
-  'side-by-side': {
-    fixed: { reps: 'text-3xl', unit: 'text-lg', velocity: 'text-2xl', chart: 48, stacked: false },
-    natural: { reps: 'text-4xl', unit: 'text-xl', velocity: 'text-3xl', chart: 64, stacked: true },
-    phone: { reps: 'text-xl', unit: 'text-sm', velocity: 'text-lg', chart: 40, stacked: true },
-  },
+// The wall holds the single strip's 72px row; the phone row grows to fit.
+const SIZES: Record<PinnedLiveStripLayout, Sizes> = {
+  wall: { reps: 'text-2xl', unit: 'text-base', velocity: 'text-xl', chart: 56 },
+  phone: { reps: 'text-xl', unit: 'text-sm', velocity: 'text-lg', chart: 56 },
 }
 
 const BAR_PITCH = { wall: 24, phone: 12 }
@@ -135,6 +109,7 @@ type Parts = Omit<DualPinnedLiveStripProps, 'left' | 'right'> & {
 }
 
 const SIDE_NAME: Record<Side, string> = { left: 'Left', right: 'Right' }
+const SIDE_LETTER: Record<Side, string> = { left: 'L', right: 'R' }
 
 function slotView(side: Side, slot: LiveStripSlot, state: LiveStripState): SlotView {
   const isDropped = slot.isConnected === false
@@ -148,31 +123,28 @@ function slotView(side: Side, slot: LiveStripSlot, state: LiveStripState): SlotV
   }
 }
 
-function slotColor(slot: SlotView, fatigueMark: DualStripFatigueMark): string {
+function slotColor(slot: SlotView): string {
   if (slot.isDropped) return resolveColor('text-tertiary')
-  if (slot.isMarked && fatigueMark === 'strip') return resolveColor('status-error')
+  if (slot.isMarked) return resolveColor('status-error')
   return resolveColor('text-secondary')
 }
 
+/** Wall: "name · load". Phone: the side's letter, or nothing; position carries the side. */
 function SlotName({ slot, parts }: { slot: SlotView; parts: Parts }) {
-  const color = slotColor(slot, parts.fatigueMark ?? 'strip')
-  const load = slot.loadLabel
-  const testID = `dual-strip-name-${slot.side}`
-  if (parts.sizes.stacked) {
-    return (
-      <View testID={testID} style={{ maxWidth: parts.sizes.nameMax }}>
-        <Typography variant="overline" numberOfLines={1} style={{ color }}>
-          {slot.name}
-        </Typography>
-        {load ? (
-          <Text className="font-body text-sm leading-tight text-text-tertiary">{load}</Text>
-        ) : null}
-      </View>
-    )
-  }
+  const isPhone = parts.layout === 'phone'
+  const text = isPhone
+    ? SIDE_LETTER[slot.side]
+    : slot.loadLabel
+      ? `${slot.name} · ${slot.loadLabel}`
+      : slot.name
   return (
-    <Typography variant="overline" numberOfLines={1} style={{ color }} testID={testID}>
-      {load ? `${slot.name} · ${load}` : slot.name}
+    <Typography
+      variant="overline"
+      numberOfLines={1}
+      style={{ color: slotColor(slot) }}
+      testID={`dual-strip-name-${slot.side}`}
+    >
+      {text}
     </Typography>
   )
 }
@@ -229,28 +201,15 @@ function RestReadout(parts: Parts) {
   )
 }
 
-/** A red band behind one side: the "slot" fatigue mark. */
-function SlotWash({ half }: { half?: 'bottom' | 'top' }) {
-  const position =
-    half === 'bottom' ? 'top-1/2 bottom-0' : half === 'top' ? 'top-0 bottom-1/2' : 'inset-y-0'
-  return (
-    <View
-      pointerEvents="none"
-      testID="dual-strip-slot-wash"
-      className={cn('absolute left-0 right-0 rounded-md bg-status-error-subtle', position)}
-    />
-  )
-}
+const hasName = (parts: Parts) => parts.layout === 'wall' || parts.phoneMarker === 'letter'
 
-const markedHalf = (slot: SlotView) => (slot.side === 'left' ? 'top' : 'bottom')
-
-/** Lanes: Left above Right, column by column so the numerals align, beside one chart. */
+/** Left above Right, column by column so the numerals align, beside one chart. */
 function Lanes(parts: Parts) {
-  const { slots, sizes, state, fatigueMark } = parts
+  const { slots, sizes, state } = parts
   const laneHeight = sizes.chart / 2
   const isPhone = parts.layout === 'phone'
   const column = (cell: (slot: SlotView) => ReactNode, key: string) => (
-    <View key={key}>
+    <View key={key} className="shrink-0">
       {slots.map((slot) => (
         <View key={slot.side} className="justify-center" style={{ height: laneHeight }}>
           {cell(slot)}
@@ -262,19 +221,11 @@ function Lanes(parts: Parts) {
     <View
       testID="dual-strip-lanes"
       className={cn(
-        'flex-row items-center px-inset-xs',
-        isPhone ? 'flex-1 gap-inline-sm' : 'gap-inline-lg'
+        'flex-row items-center',
+        isPhone ? 'min-w-0 flex-1 gap-inline-sm' : 'gap-inline-lg px-inset-xs'
       )}
     >
-      {fatigueMark === 'slot'
-        ? slots.filter((s) => s.isMarked).map((s) => <SlotWash key={s.side} half={markedHalf(s)} />)
-        : null}
-      {column(
-        (slot) => (
-          <SlotName slot={slot} parts={parts} />
-        ),
-        'name'
-      )}
+      {hasName(parts) ? column((slot) => <SlotName slot={slot} parts={parts} />, 'name') : null}
       {state === 'rest' ? null : column((slot) => <SlotReps slot={slot} parts={parts} />, 'reps')}
       {column(
         (slot) => (
@@ -282,40 +233,7 @@ function Lanes(parts: Parts) {
         ),
         'velocity'
       )}
-      <DualBars {...barsOf(parts, isPhone)} wash={undefined} />
-    </View>
-  )
-}
-
-/** Side by side: one group per side, a name row over a numeral row, then one chart. */
-function SideGroup({ slot, parts }: { slot: SlotView; parts: Parts }) {
-  return (
-    <View
-      testID={`dual-strip-group-${slot.side}`}
-      className={cn('gap-stack-xs px-inset-xs', parts.layout === 'phone' ? 'min-w-0 flex-1' : null)}
-    >
-      {slot.isMarked && parts.fatigueMark === 'slot' ? <SlotWash /> : null}
-      <SlotName slot={slot} parts={parts} />
-      <View className="flex-row items-baseline gap-inline-md">
-        {parts.state === 'rest' ? null : <SlotReps slot={slot} parts={parts} />}
-        <SlotVelocity slot={slot} parts={parts} />
-      </View>
-    </View>
-  )
-}
-
-function SideGroups(parts: Parts) {
-  return (
-    <View
-      testID="dual-strip-groups"
-      className={cn(
-        'flex-row items-end',
-        parts.layout === 'phone' ? 'min-w-0 flex-1 gap-inline-md' : 'gap-section-sm'
-      )}
-    >
-      {parts.slots.map((slot) => (
-        <SideGroup key={slot.side} slot={slot} parts={parts} />
-      ))}
+      <DualBars {...barsOf(parts, isPhone)} />
     </View>
   )
 }
@@ -325,11 +243,12 @@ interface DualBarsProps {
   right: readonly LiveStripRep[]
   targetReps: number
   height: number
+  /** Wall: a fixed width from the rep count. Phone: fills the row, never below `minWidth`. */
   width?: number
+  minWidth?: number
   barColor?: LiveStripBarColor
   lossThresholds: VelocityLossThresholds
   dimmed?: Side
-  wash?: Side
 }
 
 const sameReps = (a: readonly LiveStripRep[], b: readonly LiveStripRep[]) =>
@@ -343,25 +262,20 @@ function sameBars(a: DualBarsProps, b: DualBarsProps): boolean {
     a.targetReps === b.targetReps &&
     a.height === b.height &&
     a.width === b.width &&
+    a.minWidth === b.minWidth &&
     a.barColor === b.barColor &&
     a.dimmed === b.dimmed &&
-    a.wash === b.wash &&
     a.lossThresholds.every((t, i) => t === b.lossThresholds[i])
   )
 }
 
 const DualBars = memo(function DualBars(props: DualBarsProps) {
-  const { left, right, targetReps, height, width, dimmed, wash } = props
-  const half = (side: Side) => (side === 'left' ? 'top' : 'bottom')
+  const { left, right, targetReps, height, width, minWidth, dimmed } = props
   return (
-    <View
-      testID="dual-strip-bars-frame"
-      style={width != null ? { width } : { flex: 1, minWidth: 0 }}
-    >
-      {wash ? <SlotWash half={half(wash)} /> : null}
+    <View testID="dual-strip-bars-frame" style={width != null ? { width } : { flex: 1, minWidth }}>
       <DualVelocityStrip
-        left={{ velocities: left.map((r) => r.velocity) }}
-        right={{ velocities: right.map((r) => r.velocity) }}
+        left={{ velocities: left.map((r) => r.velocity), isDimmed: dimmed === 'left' }}
+        right={{ velocities: right.map((r) => r.velocity), isDimmed: dimmed === 'right' }}
         variant="dual-expanded"
         scale="fixed"
         barColor={props.barColor}
@@ -369,35 +283,25 @@ const DualBars = memo(function DualBars(props: DualBarsProps) {
         targetReps={targetReps}
         height={height}
       />
-      {dimmed ? (
-        <View
-          pointerEvents="none"
-          testID="dual-strip-dimmed-wing"
-          className={cn(
-            'absolute left-0 right-0 bg-surface-elevated opacity-60',
-            half(dimmed) === 'top' ? 'top-0 bottom-1/2' : 'top-1/2 bottom-0'
-          )}
-        />
-      ) : null}
     </View>
   )
 }, sameBars)
 
 function barsOf(parts: Parts, fill = false): DualBarsProps {
   const [left, right] = parts.slots
-  const marked = parts.fatigueMark === 'slot' ? parts.slots.find((s) => s.isMarked) : undefined
   const columns =
     parts.targetReps > 0 ? parts.targetReps : Math.max(left.reps.length, right.reps.length)
+  const span = Math.max(columns, 1) * BAR_PITCH[parts.layout]
   return {
     left: left.reps,
     right: right.reps,
     targetReps: parts.targetReps,
     height: parts.sizes.chart,
-    width: fill ? undefined : Math.max(columns, 1) * BAR_PITCH[parts.layout],
+    width: fill ? undefined : span,
+    minWidth: fill ? span : undefined,
     barColor: parts.barColor,
     lossThresholds: parts.lossThresholds,
     dimmed: parts.slots.find((s) => s.isDropped)?.side,
-    wash: marked?.side,
   }
 }
 
@@ -417,18 +321,11 @@ function TitleBlock(parts: Parts) {
 }
 
 function WallRow(parts: Parts) {
-  const isLanes = parts.arrangement !== 'side-by-side'
   return (
-    <View
-      className={cn(
-        'flex-1 flex-row items-center gap-section-md px-gutter-md',
-        parts.wallHeight === 'fixed' ? null : 'py-inset-sm'
-      )}
-    >
+    <View className="flex-1 flex-row items-center gap-section-md px-gutter-md">
       <TitleBlock {...parts} />
       {parts.state === 'rest' ? <RestReadout {...parts} /> : null}
-      {isLanes ? <Lanes {...parts} /> : <SideGroups {...parts} />}
-      {isLanes ? null : <DualBars {...barsOf(parts)} />}
+      <Lanes {...parts} />
       {parts.isLink ? <BackToLive /> : null}
     </View>
   )
@@ -452,25 +349,13 @@ function PhoneTitleRow(parts: Parts) {
 }
 
 function PhoneRows(parts: Parts) {
-  const isLanes = parts.arrangement !== 'side-by-side'
-  const rest = parts.state === 'rest' ? <RestReadout {...parts} /> : null
   return (
     <View className="justify-center gap-stack-sm px-inset-md py-inset-sm">
       <PhoneTitleRow {...parts} />
-      {isLanes ? (
-        <View className="flex-row items-center gap-inline-md">
-          {rest}
-          <Lanes {...parts} />
-        </View>
-      ) : (
-        <>
-          <View className="flex-row items-end gap-inline-md">
-            {rest}
-            <SideGroups {...parts} />
-          </View>
-          <DualBars {...barsOf(parts, true)} />
-        </>
-      )}
+      <View className="flex-row items-center gap-inline-md">
+        {parts.state === 'rest' ? <RestReadout {...parts} /> : null}
+        <Lanes {...parts} />
+      </View>
     </View>
   )
 }
@@ -514,14 +399,8 @@ function accessibleName(parts: Parts): string {
 
 function Plane(parts: Parts) {
   const isPhone = parts.layout === 'phone'
-  const washWhole = parts.tone === 'fatigue' && parts.fatigueMark !== 'slot'
   return (
-    <StripPlane
-      tone={parts.tone}
-      isPhone={isPhone}
-      grow={parts.wallHeight !== 'fixed'}
-      wash={washWhole}
-    >
+    <StripPlane tone={parts.tone} isPhone={isPhone}>
       {isPhone ? <PhoneRows {...parts} /> : <WallRow {...parts} />}
       {parts.state === 'rest' ? <RestBar {...parts} /> : null}
     </StripPlane>
@@ -533,49 +412,16 @@ function toneOf(state: LiveStripState, slots: readonly SlotView[]): Tone {
   return slots.some((s) => s.isMarked) ? 'fatigue' : 'live'
 }
 
-/** D1: one side dropped and the round's rule falls back to the single strip of the side left. */
-function fallbackSlot(props: DualPinnedLiveStripProps): LiveStripSlot | null {
-  if (props.dropMode !== 'single') return null
-  const leftUp = props.left.isConnected !== false
-  const rightUp = props.right.isConnected !== false
-  if (leftUp === rightUp) return null
-  return leftUp ? props.left : props.right
-}
-
-function SingleFallback({ props, slot }: { props: DualPinnedLiveStripProps; slot: LiveStripSlot }) {
-  const {
-    left: _l,
-    right: _r,
-    arrangement: _a,
-    fatigueMark: _f,
-    dropMode: _d,
-    wallHeight: _w,
-    ...shared
-  } = props
-  return (
-    <PinnedLiveStrip
-      {...shared}
-      loadLabel={slot.loadLabel}
-      reps={slot.reps}
-      isFatigued={slot.isFatigued}
-    />
-  )
-}
-
 function partsOf(props: DualPinnedLiveStripProps, layout: PinnedLiveStripLayout): Parts {
-  const { arrangement = 'lanes', wallHeight = 'natural' } = props
   const slots = [
     slotView('left', props.left, props.state),
     slotView('right', props.right, props.state),
   ] as const
   return {
     ...props,
-    arrangement,
-    wallHeight,
-    fatigueMark: props.fatigueMark ?? 'strip',
     layout,
     slots,
-    sizes: SIZES[arrangement][layout === 'phone' ? 'phone' : wallHeight],
+    sizes: SIZES[layout],
     tone: toneOf(props.state, slots),
     isLink: props.onPress != null,
     targetReps: liveStripTarget(props.targetReps),
@@ -584,15 +430,14 @@ function partsOf(props: DualPinnedLiveStripProps, layout: PinnedLiveStripLayout)
 }
 
 /**
- * Shell · DualPinnedLiveStrip (VW-439, round 1 specimen): the pinned live strip for a two-Voltra
- * session. Exercise, set and rest are drawn once; each side's name, load, reps, velocity and bars
- * are drawn per side, with one diverging chart (left up, right down).
+ * Shell · DualPinnedLiveStrip (VW-439, round 2 specimen): the pinned live strip for a two-Voltra
+ * session. Exercise, set and rest are drawn once; each side's reps, velocity and bars are drawn per
+ * side in lanes (left above right) beside one diverging chart. The wall adds each side's name and
+ * load; the phone drops them. A fatigued side reddens the strip and its name; a dropped side dims.
  */
 export function DualPinnedLiveStrip(props: DualPinnedLiveStripProps) {
   const { layout: measured, onLayout, ref } = useStripLayout(props.layout)
-  const fallback = fallbackSlot(props)
   if (props.state === 'idle') return null
-  if (fallback) return <SingleFallback props={props} slot={fallback} />
   const parts = partsOf(props, measured ?? 'wall')
   const frame = {
     ref,

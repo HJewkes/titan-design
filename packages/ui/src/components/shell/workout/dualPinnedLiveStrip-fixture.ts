@@ -14,7 +14,6 @@ const RIGHT_SET = reps([0.81, 0.78, 0.76, 0.71])
 const LEFT_DONE = reps([0.86, 0.84, 0.83, 0.8, 0.78, 0.76, 0.73, 0.71])
 const RIGHT_DONE = reps([0.83, 0.81, 0.78, 0.76, 0.72, 0.69, 0.66])
 const RIGHT_FATIGUED = reps([0.82, 0.76, 0.69, 0.61, 0.55])
-const LEFT_FATIGUED = reps([0.84, 0.77, 0.7, 0.63, 0.58, 0.54])
 const LEFT_TWELVE = Array.from({ length: 11 }, (_, i) => 0.9 - i * 0.03)
 const RIGHT_TWELVE = Array.from({ length: 9 }, (_, i) => 0.88 - i * 0.035)
 
@@ -39,9 +38,8 @@ export type DualStripScenario =
   | 'longNames'
   | 'noNames'
   | 'fatigueRight'
-  | 'fatigueBoth'
-  | 'beforeDrop'
   | 'rightDropped'
+  | 'longRest'
 
 export const DUAL_STRIP_SCENARIOS: Record<DualStripScenario, DualPinnedLiveStripProps> = {
   set: {
@@ -83,25 +81,21 @@ export const DUAL_STRIP_SCENARIOS: Record<DualStripScenario, DualPinnedLiveStrip
     left: slot(OWNER.left, '145 lb', LEFT_SET),
     right: { ...slot(OWNER.right, '140 lb', RIGHT_FATIGUED), isFatigued: true },
   },
-  fatigueBoth: {
-    ...BASE,
-    state: 'set',
-    setNumber: 3,
-    left: { ...slot(OWNER.left, '145 lb', LEFT_FATIGUED), isFatigued: true },
-    right: { ...slot(OWNER.right, '140 lb', RIGHT_FATIGUED), isFatigued: true },
-  },
-  beforeDrop: {
-    ...BASE,
-    state: 'set',
-    setNumber: 2,
-    left: slot(OWNER.left, '145 lb', LEFT_SET.slice(0, 3)),
-    right: slot(OWNER.right, '140 lb', RIGHT_SET.slice(0, 3)),
-  },
   rightDropped: {
     ...BASE,
     state: 'set',
     setNumber: 2,
     left: slot(OWNER.left, '145 lb', LEFT_SET),
     right: { ...slot(OWNER.right, '140 lb', RIGHT_SET.slice(0, 3)), isConnected: false },
+  },
+  // The rest ceiling, with the widest load beside a light one.
+  longRest: {
+    ...BASE,
+    state: 'rest',
+    setNumber: 2,
+    restRemainingMs: 999_000,
+    restDurationMs: 999_000,
+    left: slot(ARMS.left, '202.5 lb', LEFT_DONE),
+    right: slot(ARMS.right, '95 lb', RIGHT_DONE),
   },
 }

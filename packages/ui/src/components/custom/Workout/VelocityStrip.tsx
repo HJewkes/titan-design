@@ -767,7 +767,15 @@ export interface DualVelocityStream {
    * absent or empty, that side renders no label.
    */
   label?: string
+  /** Fade this side's wing, e.g. once its voltra has disconnected mid-set. */
+  isDimmed?: boolean
 }
+
+const DIMMED_WING_OPACITY = 0.35
+
+/** A wing's own opacity; a scrim would paint its empty plot area over the parent's surface. */
+const wingStyle = (stream: DualVelocityStream | undefined) =>
+  stream?.isDimmed ? { opacity: DIMMED_WING_OPACITY } : undefined
 
 export interface DualVelocityStripProps extends ViewProps {
   /** The up-wing stream — drawn growing UP from the centre axis; its edge name comes from `left.label`. */
@@ -1020,10 +1028,18 @@ function DualVelocityHero({
       {/* The two composed heroes, separated by the shared wing gap (no centre-axis rule). Their own
           labels are redundant with the dual's summary label, so the wings are a11y-hidden. */}
       <View style={{ flex: 1, gap: DUAL_WING_GAP }}>
-        <View accessibilityElementsHidden testID="dual-velocity-wing-up">
+        <View
+          accessibilityElementsHidden
+          testID="dual-velocity-wing-up"
+          style={wingStyle(leftStream)}
+        >
           {wing('up', aligned.left, leftDone)}
         </View>
-        <View accessibilityElementsHidden testID="dual-velocity-wing-down">
+        <View
+          accessibilityElementsHidden
+          testID="dual-velocity-wing-down"
+          style={wingStyle(rightStream)}
+        >
           {wing('down', aligned.right, rightDone)}
         </View>
       </View>
@@ -1101,10 +1117,18 @@ function DualVelocityRail({
     >
       {/* No gutter, side labels or centre axis at rail scale — the wings read as two rows via the
           shared gap alone. Their own labels would duplicate the dual's summary label. */}
-      <View accessibilityElementsHidden testID="dual-velocity-wing-up">
+      <View
+        accessibilityElementsHidden
+        testID="dual-velocity-wing-up"
+        style={wingStyle(leftStream)}
+      >
         {wing('up', aligned.left, leftDone)}
       </View>
-      <View accessibilityElementsHidden testID="dual-velocity-wing-down">
+      <View
+        accessibilityElementsHidden
+        testID="dual-velocity-wing-down"
+        style={wingStyle(rightStream)}
+      >
         {wing('down', aligned.right, rightDone)}
       </View>
     </View>
@@ -1169,10 +1193,18 @@ function DualVelocityCompactStrip({
       testID="dual-velocity-strip"
       {...restProps}
     >
-      <View accessibilityElementsHidden testID="dual-velocity-wing-up">
+      <View
+        accessibilityElementsHidden
+        testID="dual-velocity-wing-up"
+        style={wingStyle(leftStream)}
+      >
         {wing('up', aligned.left, leftDone)}
       </View>
-      <View accessibilityElementsHidden testID="dual-velocity-wing-down">
+      <View
+        accessibilityElementsHidden
+        testID="dual-velocity-wing-down"
+        style={wingStyle(rightStream)}
+      >
         {wing('down', aligned.right, rightDone)}
       </View>
     </View>
