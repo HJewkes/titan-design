@@ -22,7 +22,7 @@ export interface ReviewServerOptions {
   storybookUrl: string
   page: PageHandler
   port?: number
-  /** Absolute PNG path by variant key; served at `api/image/<key>`, never by path. */
+  /** Absolute PNG path by variant key; served at `api/image/<key>`, never by path. Keys need no decoding. */
   images?: Record<string, string>
 }
 
@@ -98,7 +98,7 @@ function createRouter(opts: ReviewServerOptions, accept: Accept): http.RequestLi
       return sendJson(res, 200, { manifest: opts.manifest, manifestSha256: opts.manifestSha256 })
     if (path === `${API}submit` && req.method === 'POST') return void submit(req, res)
     if (path.startsWith(`${API}image/`) && req.method === 'GET')
-      return sendImage(opts, decodeURIComponent(path.slice(`${API}image/`.length)), res)
+      return sendImage(opts, path.slice(`${API}image/`.length), res)
     if (path.startsWith(API)) return sendJson(res, 404, { errors: ['unknown endpoint'] })
     if (path.startsWith(PAGE_BASE)) return opts.page(req, res, () => sendJson(res, 404, {}))
     proxyRequest(upstream, req, res)
