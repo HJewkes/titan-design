@@ -9,6 +9,13 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- `DualPinnedLiveStrip` (`shell/workout`), the pinned live strip for a two-Voltra session, with
+  its `LiveStripSlot` type. Exercise, set and rest draw once; each side draws its reps, last-rep
+  velocity and bars in a lane (left above right) beside one `DualVelocityStrip`, in the single
+  strip's 72px wall row. The wall names each side and its load; below 640px the phone marks the
+  sides by position. Rest is one countdown beside the finished set. A fatigued side reddens the
+  strip and its name; a dropped side (`isConnected: false`) stays with its wing faded (VW-439).
+- `DualVelocityStream` takes `isDimmed`, which fades that side's wing in every dual variant (VW-439).
 - A `Chat` family under `custom/`: `MessageList`, `MessageBubble`, `Composer`, `ChatCard`,
   `ConversationIdentity`, `DateSeparator`, `TypingIndicator` and `UnreadBadge`. A thread has a
   direct and a group layout, time rows with a drag reveal, an accent edge for endorsed messages
@@ -35,6 +42,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
   files are the ones Google Fonts served, with the same subsets and weights, and ship with their
   OFL licences under `src/theme/fonts/`. The package grows by 392 KB; a single-file build that
   inlines its assets grows by about 500 KB (TD-36).
+- `PinnedLiveStrip`'s plane, title, state tag, overline, rest bar, "Back to live" link, set line,
+  type scales and layout hook move to an internal `pinnedLiveStripParts` module, so a second
+  strip form can share them. The strip renders the same, and `liveStripRestType`,
+  `PINNED_LIVE_STRIP_PHONE_MAX` and `PinnedLiveStripLayout` are still exported from it (VW-634).
 
 ### Fixed
 

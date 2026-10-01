@@ -24,6 +24,48 @@ that someone can tell whether a future change invalidates the reasoning.
 
 ---
 
+## Dual pinned live strip: each side's name and velocity kept beside the rest countdown — rejected 2026-10-01
+
+**Tried:** R-sides in VW-439 round 3 (`Lab/Decisions/Dual Pinned Live Strip`, 1920, dark): at the wall, the rest strip kept each side's name, load and last-rep velocity in its lane, with the countdown in the rep counts' place. The phone never had it: with the velocities, a 999 s rest after a 12-rep set overflowed the 360 row by 11px.
+
+**Chosen:** **R-overall**: rest is one unlabelled countdown beside the finished set's chart, at the wall and on the phone. The owner approved the rendered round 3 with that pick.
+
+**Why:** the owner's pick, given without a reason. It follows their round 2 note that rest "should be overall", not per arm; per-side numerals beside the countdown read as per-arm rest.
+
+**Code:** deleted. The `restDetail` round prop and the branch that kept the sides in rest.
+
+---
+
+## Dual pinned live strip: an "L" / "R" letter on each phone lane, and a labelled "Rest left" readout — rejected 2026-09-30
+
+**Tried:** in VW-439 round 2 (`Lab/Decisions/Dual Pinned Live Strip`, 360, dark), with each side's name and load already dropped on a phone:
+- **P-letter:** a small overline "L" / "R" before each lane, turning red on a fatigued side.
+- **The rest readout:** a "Rest left" overline above the shared countdown, beside each side's velocity.
+
+**Chosen:** **P-none**: position alone marks the side on a phone (Left lane on top; the chart's left wing grows up). Rest is one overall countdown with no label, in the rep counts' place; the Resting tag and the rest bar already say what it counts. The owner's words: "Rest shouldn't be per arm it should be overall so no need for "rest left"".
+
+**Why:** P-none is the owner's pick, given without a reason, so it is recorded as a preference. On the rest label, the owner read "Rest left" as one arm's rest; a countdown shared by both sides should carry no label that names a side.
+
+**Code:** deleted. The `phoneMarker` round prop and the side letters; the `Overline` above the dual strip's countdown.
+
+---
+
+## Dual pinned live strip: side-by-side groups, natural wall height, the per-side fatigue wash, and the single-strip fallback on a drop — rejected 2026-09-30
+
+**Tried:** four pairs in VW-439 round 1 (`Lab/Decisions/Dual Pinned Live Strip`, 1920 and 360, dark).
+- **B, side by side:** one group per side, the single strip's label-over-numeral row repeated, then one chart.
+- **Natural wall height:** the wall row grew past 72px to fit (A 104px, B 97 to 109px), with larger numerals and the name stacked over the load.
+- **F2, a per-side fatigue mark:** a red edge and a red wash behind the fatigued side's lane and wing only.
+- **D1, fall back to single:** when one Voltra drops mid-set, the strip became the single `PinnedLiveStrip` of the side left.
+
+**Chosen:** **A at 72px**: Left above Right in lanes beside one diverging chart, in the single strip's 72px wall row, name and load on one line. **F1**: the whole strip reddens and so does the fatigued side's name. **D2**: both sides stay and the dropped side's wing fades. The owner also dropped each side's name and load on a phone: "I don't think the name and load are practical at the narrow layout, I think keep for the wall but drop for the phone".
+
+**Why:** the owner's picks, given without reasons, so they are recorded as preferences. Natural height cost B a 12px jump between set and rest; both 72px forms held their content without clipping.
+
+**Code:** deleted. The `arrangement`, `wallHeight`, `fatigueMark` and `dropMode` round props, the side-by-side groups, the slot wash, the single-strip fallback, and `StripPlane`'s round-1 `grow` and `wash` props. D2's round-1 scrim painted a faint rectangle over the chart's empty plot; `DualVelocityStream.isDimmed` fades the wing itself instead.
+
+---
+
 ## Effort-band overlay: tier a blue dark to light, effort colours in tier a, and the zone bracket — rejected 2026-09-23
 
 **Tried:** three alternatives in VW-448 round 1 (`Lab/Decisions/Effort Bands`, 1920 and 360, dark). The palette variants were shown on the same ten reps, tier a with a planned VL 30% guard, beside the tier b effort scale as a reference.
