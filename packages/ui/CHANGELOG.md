@@ -78,6 +78,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
   surface, so the track on `BodyweightGoalCard`, `FatigueMeter` and other callers that take the
   default turns light in light mode. Dark mode keeps the same grey, and an explicit `trackColor`
   still overrides it (TD-39).
+- `Gauge`, `CapacityBandChart`, `ExerciseDetailPage`, `MesoStatusCard` and `StrengthTrendChart` resolve their colours for the enclosing surface's theme at render time, so `CapacityBandChart`'s dot outline turns dark on a light surface. Dark output is unchanged (VW-316).
 
 ### Security
 

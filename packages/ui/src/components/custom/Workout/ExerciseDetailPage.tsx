@@ -23,11 +23,10 @@ import {
 } from './VelocityStrip'
 import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../ui/surface'
 import { cn } from '../../../utils/cn'
 import { alpha } from '../../../utils/colors'
 import { formatVelocity } from '../../../utils/workout-format'
-
-const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
 
 /** Inner plot width: page width 390 − 16 page padding − 12 card padding on each side. */
 const CHART_WIDTH = 326
@@ -190,6 +189,7 @@ interface TabBarProps {
 }
 
 function TabBar({ active, onSelect }: TabBarProps) {
+  const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
   return (
     <View
       className="flex-row"
@@ -213,7 +213,7 @@ function TabBar({ active, onSelect }: TabBarProps) {
               flex: 1,
               alignItems: 'center',
               borderBottomWidth: 2,
-              borderBottomColor: isActive ? BRAND_PRIMARY : 'transparent',
+              borderBottomColor: isActive ? brandPrimary : 'transparent',
             }}
             testID={`exercise-detail-page-tab-${key}`}
           >
@@ -483,6 +483,7 @@ export function ExerciseDetailPage({
   className,
   ...props
 }: ExerciseDetailPageProps) {
+  const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
   const [tab, setTab] = useState<ExerciseDetailTab>('progress')
   const [expandedProgressId, setExpandedProgressId] = useState<string | null>(null)
   const [expandedHistoryId, setExpandedHistoryId] = useState<string | null>(null)
@@ -537,9 +538,9 @@ export function ExerciseDetailPage({
               className="py-squish-y-md px-2.5"
               style={{
                 borderRadius: 6,
-                backgroundColor: alpha(BRAND_PRIMARY, 0.1),
+                backgroundColor: alpha(brandPrimary, 0.1),
                 borderWidth: 1,
-                borderColor: alpha(BRAND_PRIMARY, 0.25),
+                borderColor: alpha(brandPrimary, 0.25),
               }}
               testID="exercise-detail-page-e1rm"
             >
@@ -560,7 +561,7 @@ export function ExerciseDetailPage({
                   fontSize: 15,
                   fontFamily: '"Space Grotesk", sans-serif',
                   fontWeight: '700',
-                  color: BRAND_PRIMARY,
+                  color: brandPrimary,
                 }}
               >
                 {`${exercise.currentE1rm} ${exercise.unit}`}

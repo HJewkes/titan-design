@@ -1,23 +1,8 @@
 {
-  "src/components/custom/Gauge/Gauge.tsx": {
-    "dark": 1
-  },
   "src/components/custom/Workout/BodyMap.tsx": {
     "dark": 1
   },
   "src/components/custom/Workout/BodyMapDetailPanel.tsx": {
-    "dark": 1
-  },
-  "src/components/custom/Workout/CapacityBandChart.tsx": {
-    "dark": 1
-  },
-  "src/components/custom/Workout/ExerciseDetailPage.tsx": {
-    "dark": 1
-  },
-  "src/components/custom/Workout/MesoStatusCard.tsx": {
-    "dark": 1
-  },
-  "src/components/custom/Workout/StrengthTrendChart.tsx": {
     "dark": 1
   }
 }
