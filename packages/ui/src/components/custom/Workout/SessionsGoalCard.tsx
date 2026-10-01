@@ -1,17 +1,17 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
 
-import { Card } from '../../ui/card'
 import { Progress } from '../../ui/progress'
+import { StatCard } from '../../ui/stat-card'
 import { useSurfaceMode } from '../../ui/surface'
 import { useMeasuredWidth } from '../Table/column-fit'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { cn } from '../../../utils/cn'
 import { GOAL_STATUS_TONE, type GoalLiftStatus } from './GoalCard'
 import { SegmentedBar, type SegmentedBarSegment } from './SegmentedBar'
 import {
   CardTrackRow,
-  FigureLine,
+  FigureCaption,
+  FigureValue,
   GoalCardHeader,
   useStatusColor,
   type TrackLabel,
@@ -121,42 +121,47 @@ export function SessionsGoalCard({
   const resolved = wholeBodyScale(measured.width, scale)
   const captions = leadCaption(sessionCaptions(goal), 'due')
   return (
-    <Card
+    <StatCard
       elevation={1}
-      className={cn('p-inset-lg', className)}
+      className={className}
       role="article"
       aria-label="Training days goal"
-      // Card clips by default; nothing here reaches its rounded edge, and the detail tip must escape it.
-      // A caller's own style still applies: a page grid passes `height: '100%'` to level two cards.
-      style={[{ overflow: 'visible' }, style]}
+      // A page grid passes `height: '100%'` to level two cards.
+      style={style}
       testID="sessions-goal-card"
-      {...props}
-    >
-      <View className="gap-stack-md" style={{ flex: 1 }} onLayout={measured.onLayout}>
-        {/* Raised over the track below: every RNW View is its own stacking context. */}
-        <View style={{ zIndex: 10 }}>
-          <GoalCardHeader
-            label={`Sessions · ${goal.windowDays} days`}
-            status={goal.status}
-            basis={goal.basis}
-            testID="sessions-goal-header"
-          />
-          <FigureLine
-            scale={resolved}
-            value={`${goal.counted}`}
-            unit={`of ${goal.committed}`}
-            label="Training days"
-            lead={captions.lead}
-            rest={captions.rest}
-            tipLabel="Training days details"
-            isTipOpen={isTipOpen}
-            testID="sessions-goal-value"
-          />
-        </View>
+      onContentLayout={measured.onLayout}
+      header={
+        <GoalCardHeader
+          label={`Sessions · ${goal.windowDays} days`}
+          status={goal.status}
+          basis={goal.basis}
+          testID="sessions-goal-header"
+        />
+      }
+      figure={
+        <FigureValue
+          scale={resolved}
+          value={`${goal.counted}`}
+          unit={`of ${goal.committed}`}
+          label="Training days"
+          testID="sessions-goal-value"
+        />
+      }
+      caption={
+        <FigureCaption
+          lead={captions.lead}
+          rest={captions.rest}
+          tipLabel="Training days details"
+          isTipOpen={isTipOpen}
+          testID="sessions-goal-value"
+        />
+      }
+      body={
         <CardTrackRow scale={resolved} labels={dueLabels(goal)} testID="sessions-goal-track">
           <SessionsBar row={goal} scale={resolved} />
         </CardTrackRow>
-      </View>
-    </Card>
+      }
+      {...props}
+    />
   )
 }

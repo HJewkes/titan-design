@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:fdeec799c3ba158eb7a8ac1b07cdc5c4d38fbda905bdbe4717af4a3a48557ddf",
+  "componentBarrelHash": "sha256:46beec56f0481e9ae72a6a3f92b9a88d3fc3473e33ef615567664c6840187bf0",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -443,19 +443,19 @@
         "total": 1
       },
       "dependsOn": [
-        "Card",
         "GoalTrajectoryBand",
+        "StatCard",
         "Typography",
         "ZoneTrack",
         "wholeBodyCardParts"
       ],
       "leak": {
-        "rawView": 2,
+        "rawView": 0,
         "rawText": 0,
-        "inlineStyle": 3,
+        "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 183,
-        "score": 8
+        "loc": 191,
+        "score": 2
       },
       "tier": "organism",
       "verdict": "keep-app",
@@ -689,7 +689,7 @@
         "useCardDepth",
         "SkeletonBody"
       ],
-      "libDependents": 16,
+      "libDependents": 15,
       "storyRefs": 13,
       "xproj": {
         "mobile": 69,
@@ -794,7 +794,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 85,
+        "loc": 91,
         "score": 0
       },
       "tier": "organism",
@@ -1492,6 +1492,65 @@
       },
       "tier": "organism",
       "verdict": "keep-app",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "DualPinnedLiveStrip",
+      "file": "packages/ui/src/components/shell/workout/DualPinnedLiveStrip.tsx",
+      "dir": "shell",
+      "family": "shell",
+      "exports": [
+        "DualPinnedLiveStrip",
+        "LiveStripSlot",
+        "DualPinnedLiveStripProps",
+        "slotView",
+        "slotColor",
+        "SlotName",
+        "SlotReps",
+        "SlotVelocity",
+        "RestReadout",
+        "Lanes",
+        "Lanes.column",
+        "sameReps",
+        "sameBars",
+        "barsOf",
+        "TitleBlock",
+        "WallRow",
+        "PhoneTitleRow",
+        "PhoneRows",
+        "slotPhrase",
+        "accessibleName",
+        "Plane",
+        "toneOf",
+        "partsOf"
+      ],
+      "libDependents": 1,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Typography",
+        "VelocityStrip",
+        "icons",
+        "pinnedLiveStripParts"
+      ],
+      "leak": {
+        "rawView": 13,
+        "rawText": 10,
+        "inlineStyle": 2,
+        "rawHex": 0,
+        "loc": 462,
+        "score": 27
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -3187,7 +3246,7 @@
         "STAR_ICON_PATH",
         "STAR_ICON_BOX"
       ],
-      "libDependents": 16,
+      "libDependents": 18,
       "storyRefs": 8,
       "xproj": {
         "mobile": 0,
@@ -3936,7 +3995,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 182,
+        "loc": 187,
         "score": 6
       },
       "tier": "organism",
@@ -3955,7 +4014,7 @@
         "MessageListProps",
         "Row",
         "resolveLayout",
-        "ThreadHeader",
+        "threadHeader",
         "newestOwnMessageId",
         "useWindow",
         "newestIncomingSince",
@@ -3984,12 +4043,12 @@
         "UnreadBadge"
       ],
       "leak": {
-        "rawView": 8,
+        "rawView": 10,
         "rawText": 1,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 238,
-        "score": 9
+        "loc": 243,
+        "score": 11
       },
       "tier": "organism",
       "verdict": "dead",
@@ -4355,7 +4414,7 @@
         "PillContent"
       ],
       "libDependents": 18,
-      "storyRefs": 9,
+      "storyRefs": 10,
       "xproj": {
         "mobile": 0,
         "mcp": 1,
@@ -4384,17 +4443,10 @@
       "dir": "shell",
       "family": "shell",
       "exports": [
-        "liveStripRestType",
         "PinnedLiveStrip",
-        "PinnedLiveStripLayout",
         "PinnedLiveStripProps",
-        "PINNED_LIVE_STRIP_PHONE_MAX",
         "layoutOf",
         "toneOf",
-        "setLine",
-        "StateTag",
-        "Title",
-        "Overline",
         "WallValues",
         "heroSlotWidth",
         "HeroValue",
@@ -4405,46 +4457,92 @@
         "sameBars",
         "<anonymous>.colorFor",
         "barsOf",
-        "BackToLive",
         "WallRow",
         "PhoneTitleRow",
         "PhoneRows",
-        "StripPlane",
-        "RestBar",
         "progressPhrase",
         "lastRepPhrase",
         "accessibleName",
-        "Plane",
-        "layoutFor",
-        "useStripLayout",
-        "useStripLayout.measure",
-        "useStripLayout.onLayout"
+        "Plane"
       ],
       "libDependents": 1,
       "storyRefs": 3,
       "xproj": {
         "mobile": 0,
-        "mcp": 2,
+        "mcp": 1,
         "dash": 0,
         "audiobook": 0,
-        "total": 2
+        "total": 1
+      },
+      "dependsOn": [
+        "SetBarChart",
+        "VelocityStrip",
+        "icons",
+        "pinnedLiveStripParts"
+      ],
+      "leak": {
+        "rawView": 14,
+        "rawText": 10,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 379,
+        "score": 24
+      },
+      "tier": "organism",
+      "verdict": "keep-core",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "pinnedLiveStripParts",
+      "file": "packages/ui/src/components/shell/workout/pinnedLiveStripParts.tsx",
+      "dir": "shell",
+      "family": "shell",
+      "exports": [
+        "liveStripRestType",
+        "setLine",
+        "StateTag",
+        "Title",
+        "Overline",
+        "BackToLive",
+        "StripPlane",
+        "RestBar",
+        "useStripLayout",
+        "PinnedLiveStripLayout",
+        "PINNED_LIVE_STRIP_PHONE_MAX",
+        "Scale",
+        "SCALES",
+        "Tone",
+        "TONE",
+        "SetLineProps",
+        "layoutFor",
+        "useStripLayout.measure",
+        "useStripLayout.onLayout"
+      ],
+      "libDependents": 2,
+      "storyRefs": 0,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 1,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 1
       },
       "dependsOn": [
         "Indicator",
         "Progress",
-        "SetBarChart",
         "Surface",
         "Typography",
-        "VelocityStrip",
         "icons"
       ],
       "leak": {
-        "rawView": 20,
-        "rawText": 12,
+        "rawView": 6,
+        "rawText": 2,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 593,
-        "score": 34
+        "loc": 249,
+        "score": 10
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -4767,7 +4865,7 @@
         "ProgressStepsProps"
       ],
       "libDependents": 3,
-      "storyRefs": 3,
+      "storyRefs": 4,
       "xproj": {
         "mobile": 2,
         "mcp": 0,
@@ -5453,19 +5551,19 @@
         "total": 1
       },
       "dependsOn": [
-        "Card",
         "GoalCard",
         "Progress",
         "SegmentedBar",
+        "StatCard",
         "wholeBodyCardParts"
       ],
       "leak": {
-        "rawView": 3,
+        "rawView": 1,
         "rawText": 0,
-        "inlineStyle": 3,
+        "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 163,
-        "score": 9
+        "loc": 168,
+        "score": 3
       },
       "tier": "organism",
       "verdict": "keep-app",
@@ -6152,6 +6250,48 @@
       "standard": true
     },
     {
+      "name": "StatCard",
+      "file": "packages/ui/src/components/ui/stat-card/StatCard.tsx",
+      "dir": "ui",
+      "family": "ui/stat-card",
+      "exports": [
+        "StatCard",
+        "StatCardHeader",
+        "StatCardCaptionPlacement",
+        "StatCardInset",
+        "StatCardProps",
+        "StatCardHeaderProps",
+        "FigureRow",
+        "StatCard.part"
+      ],
+      "libDependents": 3,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Card",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 9,
+        "rawText": 0,
+        "inlineStyle": 9,
+        "rawHex": 0,
+        "loc": 169,
+        "score": 27
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "StatusDot",
       "file": "packages/ui/src/components/custom/Workout/StatusDot.tsx",
       "dir": "workout",
@@ -6358,7 +6498,7 @@
         "SurfaceProps"
       ],
       "libDependents": 20,
-      "storyRefs": 83,
+      "storyRefs": 85,
       "xproj": {
         "mobile": 22,
         "mcp": 12,
@@ -7303,8 +7443,8 @@
         "LabelProps",
         "OverlineProps"
       ],
-      "libDependents": 61,
-      "storyRefs": 28,
+      "libDependents": 63,
+      "storyRefs": 30,
       "xproj": {
         "mobile": 0,
         "mcp": 11,
@@ -7582,6 +7722,7 @@
         "VelocityLossBands.band",
         "VelocityLossBands.threshold",
         "velocityReferenceOverlay",
+        "wingStyle",
         "streamDone",
         "streamNaturalSlots",
         "mergeColumnKind",
@@ -7595,7 +7736,7 @@
         "DualVelocityCompactStrip.wing",
         "VelocityStrip.barColorFor"
       ],
-      "libDependents": 12,
+      "libDependents": 13,
       "storyRefs": 12,
       "xproj": {
         "mobile": 0,
@@ -7612,7 +7753,7 @@
         "rawText": 4,
         "inlineStyle": 15,
         "rawHex": 0,
-        "loc": 1609,
+        "loc": 1641,
         "score": 50
       },
       "tier": "molecule",
@@ -7779,7 +7920,8 @@
         "GoalCardHeader",
         "CardTrackRow",
         "leadWord",
-        "FigureLine",
+        "FigureValue",
+        "FigureCaption",
         "DeclaredDietPhase",
         "DIET_PHASE_ICON",
         "PHASE_TAG_COLLAPSE_WIDTH",
@@ -7810,6 +7952,7 @@
         "GoalTrajectoryPlot",
         "Metric",
         "Pill",
+        "StatCard",
         "SvgIcon",
         "TipTrigger",
         "Tooltip",
@@ -7817,12 +7960,12 @@
         "icons"
       ],
       "leak": {
-        "rawView": 11,
+        "rawView": 8,
         "rawText": 0,
-        "inlineStyle": 12,
+        "inlineStyle": 8,
         "rawHex": 0,
-        "loc": 438,
-        "score": 35
+        "loc": 436,
+        "score": 24
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -7957,7 +8100,7 @@
         "DashboardShellProps"
       ],
       "libDependents": 0,
-      "storyRefs": 3,
+      "storyRefs": 4,
       "xproj": {
         "mobile": 0,
         "mcp": 1,
@@ -8677,7 +8820,7 @@
     ],
     [
       "BodyweightGoalCard",
-      "Card"
+      "StatCard"
     ],
     [
       "BodyweightGoalCard",
@@ -9185,11 +9328,11 @@
     ],
     [
       "SessionsGoalCard",
-      "Card"
+      "Progress"
     ],
     [
       "SessionsGoalCard",
-      "Progress"
+      "StatCard"
     ],
     [
       "SetBar",
@@ -9389,6 +9532,10 @@
     ],
     [
       "wholeBodyCardParts",
+      "StatCard"
+    ],
+    [
+      "wholeBodyCardParts",
       "TipTrigger"
     ],
     [
@@ -9484,6 +9631,22 @@
       "Typography"
     ],
     [
+      "DualPinnedLiveStrip",
+      "VelocityStrip"
+    ],
+    [
+      "DualPinnedLiveStrip",
+      "icons"
+    ],
+    [
+      "DualPinnedLiveStrip",
+      "pinnedLiveStripParts"
+    ],
+    [
+      "DualPinnedLiveStrip",
+      "Typography"
+    ],
+    [
       "PinnedLiveStrip",
       "VelocityStrip"
     ],
@@ -9497,19 +9660,7 @@
     ],
     [
       "PinnedLiveStrip",
-      "Indicator"
-    ],
-    [
-      "PinnedLiveStrip",
-      "Progress"
-    ],
-    [
-      "PinnedLiveStrip",
-      "Surface"
-    ],
-    [
-      "PinnedLiveStrip",
-      "Typography"
+      "pinnedLiveStripParts"
     ],
     [
       "SessionStatePill",
@@ -9558,6 +9709,26 @@
     [
       "WorkoutTopBar",
       "SessionStatePill"
+    ],
+    [
+      "pinnedLiveStripParts",
+      "icons"
+    ],
+    [
+      "pinnedLiveStripParts",
+      "Indicator"
+    ],
+    [
+      "pinnedLiveStripParts",
+      "Progress"
+    ],
+    [
+      "pinnedLiveStripParts",
+      "Surface"
+    ],
+    [
+      "pinnedLiveStripParts",
+      "Typography"
     ],
     [
       "workoutNavItems",
@@ -9632,6 +9803,14 @@
       "Surface"
     ],
     [
+      "StatCard",
+      "Card"
+    ],
+    [
+      "StatCard",
+      "Typography"
+    ],
+    [
       "Toast",
       "Surface"
     ],
@@ -9653,7 +9832,7 @@
     ]
   ],
   "summary": {
-    "total": 194,
+    "total": 197,
     "dead": [
       "Autocomplete",
       "Breadcrumbs",
@@ -10107,7 +10286,7 @@
         "rawText": 4,
         "inlineStyle": 15,
         "rawHex": 0,
-        "loc": 1609,
+        "loc": 1641,
         "score": 50
       },
       {
@@ -10181,16 +10360,6 @@
         "score": 36
       },
       {
-        "name": "wholeBodyCardParts",
-        "tier": "organism",
-        "rawView": 11,
-        "rawText": 0,
-        "inlineStyle": 12,
-        "rawHex": 0,
-        "loc": 438,
-        "score": 35
-      },
-      {
         "name": "ZoneTrack",
         "tier": "organism",
         "rawView": 11,
@@ -10199,14 +10368,24 @@
         "rawHex": 0,
         "loc": 392,
         "score": 34
+      },
+      {
+        "name": "ReadinessCheck",
+        "tier": "organism",
+        "rawView": 7,
+        "rawText": 7,
+        "inlineStyle": 9,
+        "rawHex": 0,
+        "loc": 278,
+        "score": 32
       }
     ],
     "substitution": {
       "library(titan)": {
-        "Text": 78,
-        "View": 162,
+        "Text": 80,
+        "View": 164,
         "TouchableOpacity": 0,
-        "Pressable": 59,
+        "Pressable": 60,
         "TextInput": 3,
         "ActivityIndicator": 2,
         "Switch": 0,

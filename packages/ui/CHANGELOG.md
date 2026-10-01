@@ -22,6 +22,11 @@ project adheres to [Semantic Versioning](https://semver.org/).
   and a windowed "Show earlier" page. It depends on the new `@titan-design/chat-protocol` package
   for its message and participant types (VW-393).
 - `MarkdownProse` takes a `size` prop (VW-393).
+- `StatCard` and `StatCardHeader` in `ui/stat-card`: a card template with header, figure,
+  caption (`beside` or `below`), and a body pinned to the bottom. It sets the inset (`md` or
+  `lg`), every gap between the slots, `overflow: visible` and the tip paint order in one place,
+  and `onContentLayout` reports the content box. `BodyweightGoalCard` and `SessionsGoalCard`
+  render through it with no visible change (VW-626).
 - `MilestoneHero`, `MilestoneFacts`, `MilestoneWeekStrip` and `useResolvedMilestone` are exported
   from `GoalMilestoneSummary`, so a card can place each part in its own slot and share one copy
   of the gap, surplus and outcome maths. `GoalMilestoneSummary` renders as their composition

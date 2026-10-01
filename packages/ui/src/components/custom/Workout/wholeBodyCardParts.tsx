@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-// The pieces BodyweightGoalCard and SessionsGoalCard share: header, figure line and detail tip.
+// The pieces BodyweightGoalCard and SessionsGoalCard put in StatCard's slots: header, figure, caption and track row.
 import type { ReactNode } from 'react'
 import { Pressable, View } from 'react-native'
 
@@ -12,6 +12,7 @@ import {
   type IconProps,
 } from '../../icons'
 import { Pill } from '../../ui/pill'
+import { StatCardHeader } from '../../ui/stat-card'
 import { useSurfaceMode } from '../../ui/surface'
 import { TipTrigger, Tooltip } from '../../ui/tooltip'
 import { Metric } from '../Metric'
@@ -136,7 +137,7 @@ function TipText({ text }: { text: string }) {
   )
 }
 
-/** Label, optional tag, and the status furthest right; wraps under the label when narrow. */
+/** Label, optional tag, and the status furthest right; `StatCardHeader` wraps them under the label when narrow. */
 export function GoalCardHeader(props: {
   label: string
   /** The diet-phase tag, when the card has one. */
@@ -151,30 +152,25 @@ export function GoalCardHeader(props: {
   testID: string
 }) {
   return (
-    <View
-      // Above the figure row, which is itself raised over the track: the tag's tip
-      // opens downward across both, and a later sibling would otherwise win.
-      style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', zIndex: 20 }}
-      className="justify-between gap-x-inline-md gap-y-stack-sm"
+    <StatCardHeader
+      title={props.label}
+      // The tag sits with the status at the right, not beside the label (owner, round 2).
+      trailing={
+        <>
+          {props.tag !== undefined && (
+            <PhaseTag
+              phase={props.tag.phase}
+              text={props.tag.text}
+              tipText={props.tag.tipText}
+              collapsed={props.tagCollapsed === true}
+              isTipOpen={props.isTagTipOpen}
+            />
+          )}
+          <StatusPill status={props.status} basis={props.basis} testID={props.testID} />
+        </>
+      }
       testID={props.testID}
-    >
-      <Typography variant="overline" color="tertiary">
-        {props.label}
-      </Typography>
-      {/* The tag sits with the status at the right, not beside the label (owner, round 2). */}
-      <View style={{ flexDirection: 'row', alignItems: 'center' }} className="gap-inline-sm">
-        {props.tag !== undefined && (
-          <PhaseTag
-            phase={props.tag.phase}
-            text={props.tag.text}
-            tipText={props.tag.tipText}
-            collapsed={props.tagCollapsed === true}
-            isTipOpen={props.isTagTipOpen}
-          />
-        )}
-        <StatusPill status={props.status} basis={props.basis} testID={props.testID} />
-      </View>
-    </View>
+    />
   )
 }
 
@@ -274,7 +270,7 @@ export function CardTrackRow(props: {
 }) {
   const row = TRACK_ROW[props.scale]
   return (
-    <View style={{ marginTop: 'auto' }} testID={props.testID}>
+    <View testID={props.testID}>
       <View style={{ height: row.track, justifyContent: 'center' }}>{props.children}</View>
       {/* Hidden from screen readers: the figure line and the track's own name already carry these numbers. */}
       <View
@@ -343,54 +339,56 @@ function FactCaption(props: { label: string; value: string; testID: string }) {
   )
 }
 
-/**
- * The main figure with its label, and one caption right-aligned on the label's
- * line. Every other detail line sits in the tip beside that caption.
- */
-export function FigureLine(props: {
+/** The main figure with its label: a `StatCard`'s figure slot. */
+export function FigureValue(props: {
   scale: WholeBodyScale
   value: string
   unit: string
   label: string
+  testID: string
+}) {
+  return (
+    <Metric
+      size={props.scale === 'wall' ? 'lg' : 'md'}
+      value={props.value}
+      unit={props.unit}
+      label={props.label}
+      className="items-start"
+      valueClassName="leading-none"
+      labelClassName={FIGURE_LINE_TEXT}
+      testID={props.testID}
+    />
+  )
+}
+
+/**
+ * One caption, right-aligned on the figure's label line: a `StatCard`'s caption
+ * slot. Every other detail line sits in the tip beside it.
+ */
+export function FigureCaption(props: {
   lead: CaptionLine | null
   rest: CaptionLine[]
   tipLabel: string
   isTipOpen?: boolean
+  /** The figure's testID; the caption and tip take it as their prefix. */
   testID: string
 }) {
   const tipLines = props.rest.map((line) => line.text)
   return (
-    <View
-      // Raised so an open tip paints over the track beneath it: a later sibling
-      // wins on paint order whatever the tip's own z-index says (as GoalCard's title row).
-      style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-end', zIndex: 10 }}
-      className="justify-between gap-x-inline-md gap-y-stack-sm"
-    >
-      <Metric
-        size={props.scale === 'wall' ? 'lg' : 'md'}
-        value={props.value}
-        unit={props.unit}
-        label={props.label}
-        className="items-start"
-        valueClassName="leading-none"
-        labelClassName={FIGURE_LINE_TEXT}
-        testID={props.testID}
-      />
-      <CaptionWithTip
-        lead={props.lead}
-        tip={
-          tipLines.length === 0 ? null : (
-            <DetailTip
-              lines={tipLines}
-              label={props.tipLabel}
-              isOpen={props.isTipOpen}
-              testID={`${props.testID}-tip`}
-            />
-          )
-        }
-        testID={`${props.testID}-caption`}
-      />
-    </View>
+    <CaptionWithTip
+      lead={props.lead}
+      tip={
+        tipLines.length === 0 ? null : (
+          <DetailTip
+            lines={tipLines}
+            label={props.tipLabel}
+            isOpen={props.isTipOpen}
+            testID={`${props.testID}-tip`}
+          />
+        )
+      }
+      testID={`${props.testID}-caption`}
+    />
   )
 }
 
