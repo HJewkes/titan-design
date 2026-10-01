@@ -1,4 +1,4 @@
-import { copyFile } from 'node:fs/promises'
+import { copyFile, realpath } from 'node:fs/promises'
 import { join, resolve, sep } from 'node:path'
 import { chromium, type Page } from '@playwright/test'
 import {
@@ -45,9 +45,18 @@ async function shoot(page: Page, url: string, file: string): Promise<void> {
   await page.locator('#storybook-root').first().screenshot({ path: file, animations: 'disabled' })
 }
 
-/** An image variant's record is its own PNG, copied once; the page showed it unchanged at every width. */
-export function imageCopyName(variant: ImageVariant): string {
-  return `${variant.key}-image.png`
+/** The first of `<key>-image.png`, `<key>-image-2.png`, ... that is not one of the round's source PNGs. */
+export function imageCopyName(variant: ImageVariant, outDir: string, sources: Set<string>): string {
+  for (let n = 1; ; n++) {
+    const name = n === 1 ? `${variant.key}-image.png` : `${variant.key}-image-${n}.png`
+    if (!sources.has(join(outDir, name))) return name
+  }
+}
+
+/** Never write over a source PNG: the human's screenshot outranks a record of it. */
+function assertNotSource(file: string, sources: Set<string>): string {
+  if (sources.has(file)) throw new Error(`refusing to overwrite the round's source image ${file}`)
+  return file
 }
 
 async function copyImages(
@@ -55,49 +64,61 @@ async function copyImages(
   images: Record<string, string>,
   outDir: string
 ): Promise<string[]> {
+  const sources = new Set(Object.values(images))
   const files: string[] = []
   for (const variant of manifest.variants.filter(isImageVariant)) {
-    const source = resolve(images[variant.key])
-    const file = assertInsideOutDir(join(outDir, imageCopyName(variant)), outDir)
-    if (file !== source) await copyFile(source, file)
+    const name = imageCopyName(variant, outDir, sources)
+    const file = assertInsideOutDir(join(outDir, name), outDir)
+    await copyFile(images[variant.key], file)
     files.push(file)
   }
   return files
 }
 
-async function shootStories(
-  stories: StoryVariant[],
-  manifest: Manifest,
-  storybookUrl: string,
-  outDir: string
-): Promise<string[]> {
-  if (stories.length === 0) return []
+interface Shot {
+  variant: StoryVariant
+  width: number
+  file: string
+}
+
+/** Every story shot's file, checked before a browser starts, so a refusal writes nothing. */
+function plannedShots(manifest: Manifest, outDir: string, sources: Set<string>): Shot[] {
+  return manifest.variants.filter(isStoryVariant).flatMap((variant) =>
+    manifest.widths.map((width) => {
+      const file = assertInsideOutDir(join(outDir, captureFileName(variant, width)), outDir)
+      return { variant, width, file: assertNotSource(file, sources) }
+    })
+  )
+}
+
+async function shootStories(shots: Shot[], manifest: Manifest, storybookUrl: string) {
+  if (shots.length === 0) return []
   const browser = await chromium.launch()
-  const files: string[] = []
   try {
     const page = await browser.newPage({ deviceScaleFactor: 2 })
-    for (const variant of stories) {
-      for (const width of manifest.widths) {
-        await page.setViewportSize({ width, height: captureViewportHeight(manifest, variant) })
-        const file = assertInsideOutDir(join(outDir, captureFileName(variant, width)), outDir)
-        await shoot(page, storyUrl(storybookUrl, variant), file)
-        files.push(file)
-      }
+    for (const { variant, width, file } of shots) {
+      await page.setViewportSize({ width, height: captureViewportHeight(manifest, variant) })
+      await shoot(page, storyUrl(storybookUrl, variant), file)
     }
   } finally {
     await browser.close()
   }
-  return files
+  return shots.map((s) => s.file)
 }
 
-/** The round's post-submit record: one PNG per story variant per width, plus each image variant's PNG. */
+/**
+ * The round's post-submit record: one PNG per story variant per width, plus a copy of each
+ * image variant's PNG. `images` holds real paths (loadRound), so outDir is compared as one too.
+ */
 export async function captureRound(
   manifest: Manifest,
   storybookUrl: string,
   outDir: string,
   images: Record<string, string> = {}
 ): Promise<string[]> {
-  const stories = manifest.variants.filter(isStoryVariant)
-  const shots = await shootStories(stories, manifest, storybookUrl, outDir)
-  return [...shots, ...(await copyImages(manifest, images, outDir))]
+  const dir = await realpath(outDir).catch(() => resolve(outDir))
+  const sources = new Set(Object.values(images))
+  const shots = plannedShots(manifest, dir, sources)
+  const files = await shootStories(shots, manifest, storybookUrl)
+  return [...files, ...(await copyImages(manifest, images, dir))]
 }
