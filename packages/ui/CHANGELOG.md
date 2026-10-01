@@ -62,6 +62,8 @@ project adheres to [Semantic Versioning](https://semver.org/).
 - `VelocityStrip`'s loss and default zone colours resolve through the `dataviz-sequential` tokens
   for the surface's theme, like `PinnedLiveStrip`, so a light surface no longer gets the dark hexes.
   `getVelocityLossColor` takes an optional `mode` (default `'dark'`). Dark output is unchanged (VW-450).
+- `VelocityStrip`'s `zones` colours resolve the five zone ids through the same `dataviz-sequential`
+  tokens as `PinnedLiveStrip`, so the hero follows the theme in light mode. Dark output is unchanged (VW-749).
 - `SegmentedBar`'s pulsing segments hold full opacity, and the `to` colour of a `pulseColor`, when the OS asks for reduced motion, instead of breathing (VW-325).
 - `DualPinnedLiveStrip` takes an omitted `left` or `right` as a not-yet-bound slot and draws it as
   an empty side under its fallback name, and a slot's `reps` defaults to `[]`; either used to
