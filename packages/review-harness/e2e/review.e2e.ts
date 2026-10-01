@@ -274,6 +274,66 @@ test('a sectioned round scrolls to the end and sends with focus left in a story'
   expect(written.answers.map((a) => a.questionId)).toEqual(['q1', 'q2', 'q3', 'q4'])
 })
 
+/** Two auto variants about 450 px apart in content, and one tall story in a fixed box. */
+function mixedHeightRound(storybookUrl: string): ManifestInput {
+  return {
+    ...round(storybookUrl, 1300),
+    unit: 'vw-695-e2e',
+    variants: [
+      { key: 'A', storyId: 'lab-decisions-compact-goal-chart--phone', label: 'Chart' },
+      { key: 'B', storyId: 'custom-workout-goals-goalcard--phone', label: 'Card' },
+      { key: 'C', storyId: STORIES[0], label: 'Tiles', height: 500 },
+    ],
+  }
+}
+
+/** The story's drawn height, measured the way page/autoHeight.ts measures it. */
+function drawnHeight(page: Page, key: string): Promise<number> {
+  const story = page.getByTestId(`variant-${key}`).locator('iframe').contentFrame()
+  return story.locator('#storybook-root').evaluate((root) => {
+    const boxes = Array.from(root.children).map((c) => c.getBoundingClientRect())
+    return Math.ceil(Math.max(...boxes.map((b) => b.bottom)) - Math.min(...boxes.map((b) => b.top)))
+  })
+}
+
+async function frameBoxHeight(page: Page, key: string): Promise<number> {
+  return (await page.getByTestId(`variant-${key}`).locator('.frame-box').boundingBox())!.height
+}
+
+test("a round with mixed story heights fits each frame under the round's height", async ({
+  page,
+}) => {
+  test.setTimeout(120_000)
+  const dir = await mkdtemp(join(tmpdir(), 'titan-review-e2e-'))
+  const manifestPath = join(dir, 'round.json')
+  await writeFile(manifestPath, JSON.stringify(mixedHeightRound(storybook.url)))
+  const run = startCli(manifestPath, dir, '--no-capture')
+  cli = run.child
+  await page.goto(await run.url)
+
+  const fitted: number[] = []
+  for (const key of ['A', 'B']) {
+    const card = page.getByTestId(`variant-${key}`)
+    await card.scrollIntoViewIfNeeded()
+    const root = card.locator('iframe').contentFrame().locator('#storybook-root')
+    await expect(root).not.toBeEmpty({ timeout: 30_000 })
+    const offFit = async () =>
+      Math.abs((await frameBoxHeight(page, key)) - ((await drawnHeight(page, key)) + 32))
+    await expect.poll(offFit, `frame ${key} fits its story`).toBeLessThanOrEqual(8)
+    const box = await frameBoxHeight(page, key)
+    expect(box, `frame ${key} sits under the round's height`).toBeLessThan(1300)
+    fitted.push(box)
+  }
+  expect(
+    Math.abs(fitted[0] - fitted[1]),
+    'the two auto frames fit different stories'
+  ).toBeGreaterThan(40)
+
+  await page.getByTestId('variant-C').scrollIntoViewIfNeeded()
+  expect(await frameBoxHeight(page, 'C')).toBe(500)
+  run.child.kill()
+})
+
 test('a frame Storybook does not answer says so and retries', async ({ page }) => {
   const dead = '**/iframe.html?id=lab-decisions-compact-goal-chart--phone*'
   await page.route(dead, (route) =>
