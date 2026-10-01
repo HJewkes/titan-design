@@ -462,9 +462,23 @@ describe('PinnedTipContext', () => {
     expect(screen.queryByText('Under the band')).toBeNull()
   })
 
-  // The tooltip barrel is the only route to the package; importing the package itself timed out on cold CI.
-  it('is not exported from the package', () => {
+  it('is not exported from the tooltip barrel', () => {
     expect(Object.keys(tooltipBarrel)).not.toContain('PinnedTipContext')
+  })
+
+  // Cold import of every published entry: median 1365 ms, max 2588 ms locally, 5022 ms on CI at the 5000 ms default.
+  it('is not exported from any published entry', { timeout: 30_000 }, async () => {
+    const entries = {
+      index: await import('../../../index'),
+      bodymap: await import('../../../bodymap'),
+      pages: await import('../../../pages'),
+      theme: await import('../../../theme/index'),
+      tokens: await import('../../../theme/tokens/index'),
+      tokensCss: await import('../../../theme/tokens-css'),
+    }
+    for (const [name, entry] of Object.entries(entries)) {
+      expect(Object.keys(entry), name).not.toContain('PinnedTipContext')
+    }
   })
 
   it('opens the tip with the matching label from the first paint, and only that one', () => {
