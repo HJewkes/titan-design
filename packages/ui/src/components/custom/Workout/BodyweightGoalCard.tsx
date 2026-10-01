@@ -1,19 +1,19 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { View, type ViewProps } from 'react-native'
+import type { ViewProps } from 'react-native'
 
-import { Card } from '../../ui/card'
+import { StatCard } from '../../ui/stat-card'
 import { useSurfaceMode } from '../../ui/surface'
 import { Typography } from '../../ui/typography'
 import { useMeasuredWidth } from '../Table/column-fit'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { alpha } from '../../../utils/colors'
-import { cn } from '../../../utils/cn'
 import { formatBodyweight } from '../../../utils/workout-format'
 import { BAND_OPACITY } from './GoalTrajectoryBand'
 import { ZoneTrack, type ZoneTrackTick } from './ZoneTrack'
 import {
   CardTrackRow,
-  FigureLine,
+  FigureCaption,
+  FigureValue,
   GoalCardHeader,
   PHASE_TAG_COLLAPSE_WIDTH,
   useStatusColor,
@@ -123,60 +123,68 @@ export function BodyweightGoalCard({
   const measured = useMeasuredWidth()
   const resolved = wholeBodyScale(measured.width, scale)
   const captions = leadCaption(weightCaptions(goal), 'rate')
+  const hasWeighIn = goal.latest !== null
   return (
-    <Card
+    <StatCard
       elevation={1}
-      className={cn('p-inset-lg', className)}
+      className={className}
       role="article"
       aria-label="Bodyweight goal"
-      // Card clips by default; nothing here reaches its rounded edge, and the detail tip must escape it.
-      // A caller's own style still applies: a page grid passes `height: '100%'` to level two cards.
-      style={[{ overflow: 'visible' }, style]}
+      // A page grid passes `height: '100%'` to level two cards.
+      style={style}
       testID="bodyweight-goal-card"
-      {...props}
-    >
-      <View className="gap-stack-md" style={{ flex: 1 }} onLayout={measured.onLayout}>
-        {/* Raised over the track below: every RNW View is its own stacking context. */}
-        <View style={{ zIndex: 10 }}>
-          <GoalCardHeader
-            label="Bodyweight"
-            tag={{
-              phase: goal.phase.name,
-              text: phaseLabel(goal.phase),
-              tipText: phaseLabel(goal.phase),
-            }}
-            tagCollapsed={
-              tagCollapsed ?? (measured.width !== null && measured.width < PHASE_TAG_COLLAPSE_WIDTH)
-            }
-            isTagTipOpen={isTagTipOpen}
-            status={goal.status}
-            basis={goal.basis}
-            testID="bodyweight-goal-header"
+      onContentLayout={measured.onLayout}
+      header={
+        <GoalCardHeader
+          label="Bodyweight"
+          tag={{
+            phase: goal.phase.name,
+            text: phaseLabel(goal.phase),
+            tipText: phaseLabel(goal.phase),
+          }}
+          tagCollapsed={
+            tagCollapsed ?? (measured.width !== null && measured.width < PHASE_TAG_COLLAPSE_WIDTH)
+          }
+          isTagTipOpen={isTagTipOpen}
+          status={goal.status}
+          basis={goal.basis}
+          testID="bodyweight-goal-header"
+        />
+      }
+      figure={
+        goal.latest === null ? (
+          <Typography variant="body2" color="secondary" testID="bodyweight-goal-empty">
+            No weigh-in yet. Log one to start this goal.
+          </Typography>
+        ) : (
+          <FigureValue
+            scale={resolved}
+            value={formatBodyweight(goal.latest.value)}
+            unit={goal.unit}
+            label={`Weighed ${weighInDate(goal.latest.ts)}`}
+            testID="bodyweight-goal-value"
           />
-          {goal.latest === null ? (
-            <Typography variant="body2" color="secondary" testID="bodyweight-goal-empty">
-              No weigh-in yet. Log one to start this goal.
-            </Typography>
-          ) : (
-            <FigureLine
-              scale={resolved}
-              value={formatBodyweight(goal.latest.value)}
-              unit={goal.unit}
-              label={`Weighed ${weighInDate(goal.latest.ts)}`}
-              lead={captions.lead}
-              rest={captions.rest}
-              tipLabel="Bodyweight details"
-              isTipOpen={isTipOpen}
-              testID="bodyweight-goal-value"
-            />
-          )}
-        </View>
-        {goal.latest !== null && (
+        )
+      }
+      caption={
+        hasWeighIn ? (
+          <FigureCaption
+            lead={captions.lead}
+            rest={captions.rest}
+            tipLabel="Bodyweight details"
+            isTipOpen={isTipOpen}
+            testID="bodyweight-goal-value"
+          />
+        ) : undefined
+      }
+      body={
+        hasWeighIn ? (
           <CardTrackRow scale={resolved} labels={bandLabels(goal)} testID="bodyweight-goal-track">
             <WeightTrack row={goal} scale={resolved} />
           </CardTrackRow>
-        )}
-      </View>
-    </Card>
+        ) : undefined
+      }
+      {...props}
+    />
   )
 }
