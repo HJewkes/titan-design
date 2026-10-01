@@ -124,9 +124,6 @@
     "WeightBadge": 1,
     "WorkoutPill": 1
   },
-  "src/lab/north-star/LiveWallDashboard.stories.tsx": {
-    "DashboardShell": 1
-  },
   "src/stories/PresetShowcase.stories.tsx": {
     "applyThemePreset": 1,
     "audiobookPreset": 1,

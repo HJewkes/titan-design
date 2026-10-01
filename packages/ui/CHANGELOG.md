@@ -98,6 +98,8 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Internal
 
+- The `Lab/North Star/Live Wall Dashboard` story composes `WorkoutShell` instead of the deprecated
+  `DashboardShell`; the deprecated-import baseline drops from 60 to 59 (VW-752).
 - `titan/no-deprecated-import` follows `export * from` re-exports, so a deprecated export
   imported through a barrel such as `@/components/ui` is flagged (VW-322).
 - `TempoDisplay` takes its fill percent, number tone and readout text from
