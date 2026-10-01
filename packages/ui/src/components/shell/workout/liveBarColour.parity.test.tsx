@@ -6,6 +6,7 @@ import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { SurfaceContext } from '../../ui/surface/SurfaceContext'
 import { PinnedLiveStrip } from './PinnedLiveStrip'
+import { LIVE_STRIP_ZONE_TOKEN, type LiveStripZone } from './liveStripModel'
 import {
   INTENT_SETS,
   stripRepsOf,
@@ -89,6 +90,63 @@ describe('bar colour parity between the pinned strip and the live hero', () => {
     for (const band of Object.keys(STRIP_TOKEN) as Band[]) {
       expect(dark[STRIP_TOKEN[band]]).toBe(HERO_HEX[band])
     }
+  })
+})
+
+describe('zone-mode hero colours follow the theme like the pinned strip', () => {
+  const ZONES = [
+    { id: 'grinding', label: 'Grinding', min: 0, max: 0.35 },
+    { id: 'maximalStrength', label: 'Max strength', min: 0.35, max: 0.5 },
+    { id: 'strengthSpeed', label: 'Strength-speed', min: 0.5, max: 0.75 },
+    { id: 'power', label: 'Power', min: 0.75, max: 1.0 },
+    { id: 'speed', label: 'Speed', min: 1.0, max: null },
+  ] as const
+  const ZONE_IDS = ZONES.map((z) => z.id) as LiveStripZone[]
+  const VELOCITY: Record<LiveStripZone, number> = {
+    grinding: 0.3,
+    maximalStrength: 0.4,
+    strengthSpeed: 0.6,
+    power: 0.9,
+    speed: 1.1,
+  }
+
+  function renderZones(mode: ThemeMode, velocities: number[], zones = ZONES) {
+    render(
+      <SurfaceContext.Provider value={{ mode, level: 'base' }}>
+        <VelocityStrip
+          variant="hero"
+          velocities={velocities}
+          targetReps={velocities.length}
+          height={180}
+          barColor="zone"
+          zones={zones}
+        />
+      </SurfaceContext.Provider>
+    )
+  }
+
+  it.each(MODES)('resolves each zone id through its strip token (%s)', (mode) => {
+    renderZones(
+      mode,
+      ZONE_IDS.map((id) => VELOCITY[id])
+    )
+    const themed = getSemanticColors(mode)
+    ZONE_IDS.forEach((id, i) => {
+      expect(colourOf(`velocity-bar-${i}`)).toBe(cssColour(themed[LIVE_STRIP_ZONE_TOKEN[id]]))
+    })
+  })
+
+  it.each(MODES)('colours an unknown zone id with the speed token (%s)', (mode) => {
+    renderZones(mode, [0.8], [{ id: 'future-band', label: 'Future', min: 0, max: null }] as never)
+    expect(colourOf('velocity-bar-0')).toBe(
+      cssColour(getSemanticColors(mode)[LIVE_STRIP_ZONE_TOKEN.speed])
+    )
+  })
+
+  it('moves a zone bar off its dark hex in light mode', () => {
+    renderZones('light', [VELOCITY.maximalStrength])
+    const dark = getSemanticColors('dark')[LIVE_STRIP_ZONE_TOKEN.maximalStrength]
+    expect(colourOf('velocity-bar-0')).not.toBe(cssColour(dark))
   })
 })
 
