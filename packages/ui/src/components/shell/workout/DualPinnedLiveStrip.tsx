@@ -47,9 +47,6 @@ export interface LiveStripSlot {
   isConnected?: boolean
 }
 
-/** Round 3 only (VW-439): wall rest shows the countdown and chart alone, or keeps the sides too. */
-export type DualStripRestDetail = 'overall' | 'sides'
-
 export interface DualPinnedLiveStripProps {
   state: LiveStripState
   exerciseName: string
@@ -65,7 +62,6 @@ export interface DualPinnedLiveStripProps {
   className?: string
   left: LiveStripSlot
   right: LiveStripSlot
-  restDetail?: DualStripRestDetail
 }
 
 type Side = 'left' | 'right'
@@ -201,12 +197,10 @@ function RestReadout(parts: Parts) {
   )
 }
 
-const isRest = (parts: Parts) => parts.state === 'rest'
-// The phone has no names to label the sides, so its rest is always the countdown and the chart.
-const showsSides = (parts: Parts) =>
-  !isRest(parts) || (parts.layout === 'wall' && parts.restDetail === 'sides')
-
-/** Left above Right, column by column so the numerals align, beside one chart. */
+/**
+ * Left above Right, column by column so the numerals align, beside one chart. In rest the one
+ * countdown takes the columns' place: rest is the session's, not a side's.
+ */
 function Lanes(parts: Parts) {
   const { slots, sizes } = parts
   const laneHeight = sizes.chart / 2
@@ -225,12 +219,25 @@ function Lanes(parts: Parts) {
       testID="dual-strip-lanes"
       className={cn('flex-row items-center', sizes.gap, isPhone ? 'min-w-0 flex-1' : 'px-inset-xs')}
     >
-      {!isPhone && showsSides(parts) ? column((slot) => <SlotName slot={slot} />, 'name') : null}
-      {isRest(parts) ? <RestReadout {...parts} /> : null}
-      {isRest(parts) ? null : column((slot) => <SlotReps slot={slot} parts={parts} />, 'reps')}
-      {showsSides(parts)
-        ? column((slot) => <SlotVelocity slot={slot} parts={parts} />, 'velocity')
-        : null}
+      {parts.state === 'rest' ? (
+        <RestReadout {...parts} />
+      ) : (
+        <>
+          {isPhone ? null : column((slot) => <SlotName slot={slot} />, 'name')}
+          {column(
+            (slot) => (
+              <SlotReps slot={slot} parts={parts} />
+            ),
+            'reps'
+          )}
+          {column(
+            (slot) => (
+              <SlotVelocity slot={slot} parts={parts} />
+            ),
+            'velocity'
+          )}
+        </>
+      )}
       <DualBars {...barsOf(parts, isPhone)} />
     </View>
   )
@@ -424,10 +431,11 @@ function partsOf(props: DualPinnedLiveStripProps, layout: PinnedLiveStripLayout)
 }
 
 /**
- * Shell · DualPinnedLiveStrip (VW-439, round 2 specimen): the pinned live strip for a two-Voltra
- * session. Exercise, set and rest are drawn once; each side's reps, velocity and bars are drawn per
- * side in lanes (left above right) beside one diverging chart. The wall adds each side's name and
- * load; the phone drops them. A fatigued side reddens the strip and its name; a dropped side dims.
+ * Shell · DualPinnedLiveStrip (VW-439): the pinned live strip for a two-Voltra session. Exercise,
+ * set and rest are drawn once; each side's reps, velocity and bars are drawn per side in lanes (left
+ * above right) beside one diverging chart. The wall adds each side's name and load; the phone marks
+ * the sides by position. Rest is one countdown beside the finished set's chart. A fatigued side
+ * reddens the strip and its name; a dropped side stays, its wing faded.
  */
 export function DualPinnedLiveStrip(props: DualPinnedLiveStripProps) {
   const { layout: measured, onLayout, ref } = useStripLayout(props.layout)

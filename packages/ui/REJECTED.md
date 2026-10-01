@@ -24,6 +24,18 @@ that someone can tell whether a future change invalidates the reasoning.
 
 ---
 
+## Dual pinned live strip: each side's name and velocity kept beside the rest countdown — rejected 2026-10-01
+
+**Tried:** R-sides in VW-439 round 3 (`Lab/Decisions/Dual Pinned Live Strip`, 1920, dark): at the wall, the rest strip kept each side's name, load and last-rep velocity in its lane, with the countdown in the rep counts' place. The phone never had it: with the velocities, a 999 s rest after a 12-rep set overflowed the 360 row by 11px.
+
+**Chosen:** **R-overall**: rest is one unlabelled countdown beside the finished set's chart, at the wall and on the phone. The owner approved the rendered round 3 with that pick.
+
+**Why:** the owner's pick, given without a reason. It follows their round 2 note that rest "should be overall", not per arm; per-side numerals beside the countdown read as per-arm rest.
+
+**Code:** deleted. The `restDetail` round prop and the branch that kept the sides in rest.
+
+---
+
 ## Dual pinned live strip: an "L" / "R" letter on each phone lane, and a labelled "Rest left" readout — rejected 2026-09-30
 
 **Tried:** in VW-439 round 2 (`Lab/Decisions/Dual Pinned Live Strip`, 360, dark), with each side's name and load already dropped on a phone:

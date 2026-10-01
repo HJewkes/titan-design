@@ -3,18 +3,13 @@ import { View } from 'react-native'
 import { Surface } from '../../ui/surface'
 import { Typography } from '../../ui/typography'
 import { WorkoutShell } from './WorkoutShell'
-import {
-  DualPinnedLiveStrip,
-  type DualPinnedLiveStripProps,
-  type DualStripRestDetail,
-} from './DualPinnedLiveStrip'
+import { DualPinnedLiveStrip } from './DualPinnedLiveStrip'
 import { DUAL_STRIP_SCENARIOS as S, type DualStripScenario } from './dualPinnedLiveStrip-fixture'
 
 type Frame = 'chosen' | 'stress'
 
 interface DecisionArgs {
   frame: Frame
-  restDetail: DualStripRestDetail
 }
 
 // Each frame stacks its strips, top to bottom.
@@ -47,35 +42,32 @@ function PageBody() {
   )
 }
 
-function Strips({ frame, ...variant }: DecisionArgs) {
+function Strips({ frame }: DecisionArgs) {
   return (
     <View className="gap-stack-md" testID="dual-strip-frame">
-      {FRAME_STRIPS[frame].map((key) => {
-        const props: DualPinnedLiveStripProps = { ...S[key], ...variant }
-        return <DualPinnedLiveStrip key={key} {...props} onPress={goLive} />
-      })}
+      {FRAME_STRIPS[frame].map((key) => (
+        <DualPinnedLiveStrip key={key} {...S[key]} onPress={goLive} />
+      ))}
     </View>
   )
 }
 
 /**
- * VW-439 round 3: the pinned live strip for a two-Voltra session, in the wall shell.
+ * VW-439, CHOSEN (locked in round 3): the shipped `DualPinnedLiveStrip` in the wall shell.
  *
- * Locked: lanes (Left above Right beside one diverging chart) in the single strip's 72px wall row;
- * F1, the whole strip reddens with the fatigued side's name; D2, a dropped side stays and its wing
- * fades; each side's name and load at the wall only, position alone on a phone. Round 3 gives the
- * mid-set numerals more room and makes rest one overall countdown with no label; `restDetail` asks
- * whether rest shows only the countdown and the chart, or keeps each side's name and velocity.
- * Canvas width drives the layout, so shoot at 1920 and 360. Dark only (VW-397).
+ * Lanes, Left above Right beside one diverging chart, in the single strip's 72px wall row. F1: a
+ * fatigued side reddens the whole strip and its name. D2: a dropped side stays, its wing faded. Each
+ * side's name and load at the wall only; the phone marks the sides by position (P-none). Rest is one
+ * unlabelled countdown beside the finished set's chart (R-overall). The rejected variants are in
+ * `REJECTED.md`. Canvas width drives the layout, so view at 1920 and 360. Dark only (VW-397).
  */
 const meta: Meta<DecisionArgs> = {
   title: 'Lab/Decisions/Dual Pinned Live Strip',
   tags: ['status:lab'],
   parameters: { layout: 'fullscreen' },
-  args: { frame: 'chosen', restDetail: 'overall' },
+  args: { frame: 'chosen' },
   argTypes: {
     frame: { control: 'select', options: ['chosen', 'stress'] },
-    restDetail: { control: 'inline-radio', options: ['overall', 'sides'] },
   },
   render: (args) => (
     <WorkoutShell activeKey="program" liveKey="live" state="live" subtitle="planning">

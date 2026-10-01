@@ -9,6 +9,13 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- `DualPinnedLiveStrip` (`shell/workout`), the pinned live strip for a two-Voltra session, with
+  its `LiveStripSlot` type. Exercise, set and rest draw once; each side draws its reps, last-rep
+  velocity and bars in a lane (left above right) beside one `DualVelocityStrip`, in the single
+  strip's 72px wall row. The wall names each side and its load; below 640px the phone marks the
+  sides by position. Rest is one countdown beside the finished set. A fatigued side reddens the
+  strip and its name; a dropped side (`isConnected: false`) stays with its wing faded (VW-439).
+- `DualVelocityStream` takes `isDimmed`, which fades that side's wing in every dual variant (VW-439).
 - A `Chat` family under `custom/`: `MessageList`, `MessageBubble`, `Composer`, `ChatCard`,
   `ConversationIdentity`, `DateSeparator`, `TypingIndicator` and `UnreadBadge`. A thread has a
   direct and a group layout, time rows with a drag reveal, an accent edge for endorsed messages
