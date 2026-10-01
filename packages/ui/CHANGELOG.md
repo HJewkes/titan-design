@@ -88,6 +88,8 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Internal
 
+- `titan/no-deprecated-import` follows `export * from` re-exports, so a deprecated export
+  imported through a barrel such as `@/components/ui` is flagged (VW-322).
 - `TempoDisplay` takes its fill percent, number tone and readout text from
   `custom/Fatigue/tempo-pacing` (`phaseFillPercent`, `pacingNumberTone`, `liveReadoutText`)
   instead of private copies. No visual change (VW-678).
