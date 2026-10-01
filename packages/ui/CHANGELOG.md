@@ -79,6 +79,12 @@ project adheres to [Semantic Versioning](https://semver.org/).
   copies in 0.21.2 carried a home-directory path and personal initiative names. The unpublished lab
   data under `src/lab/active-work/data/` is synthetic too.
 
+### Internal
+
+- `TempoDisplay` takes its fill percent, number tone and readout text from
+  `custom/Fatigue/tempo-pacing` (`phaseFillPercent`, `pacingNumberTone`, `liveReadoutText`)
+  instead of private copies. No visual change (VW-678).
+
 ## 0.21.2
 
 ### Added
