@@ -443,6 +443,59 @@ describe('GoalTrajectoryChart next target', () => {
   })
 })
 
+describe('GoalTrajectoryChart current week without a reading', () => {
+  const nextTarget = { weekIndex: 5, value: 186, label: 'next week: 186 x 8' }
+  const throughWeek3 = actuals.slice(0, 3)
+
+  function summary(): string {
+    return screen.getByTestId('goal-trajectory-chart-canvas').getAttribute('aria-label') ?? ''
+  }
+
+  it('marks the current week with a labelled hollow point on the dashed lead', () => {
+    render(
+      <GoalTrajectoryChart
+        {...baseProps}
+        actuals={throughWeek3}
+        status="on_track"
+        nextTarget={nextTarget}
+        currentWeek={4}
+      />
+    )
+    const point = screen.getByTestId('goal-trajectory-chart-current-week-point')
+    expect(point.getAttribute('fill')).toBe('none')
+    expect(point.getAttribute('stroke')).toBe(dark['status-success'])
+    expect(point.getAttribute('aria-label')).toBe('Current week, no reading yet')
+    expect(screen.getByTestId('goal-trajectory-chart-next-target-lead')).toBeInTheDocument()
+    expect(summary()).toContain('Current week, no reading yet (week 4).')
+  })
+
+  it('draws no hollow point when the current week has a reading', () => {
+    render(
+      <GoalTrajectoryChart
+        {...baseProps}
+        status="on_track"
+        nextTarget={nextTarget}
+        currentWeek={4}
+      />
+    )
+    expect(screen.queryByTestId('goal-trajectory-chart-current-week-point')).not.toBeInTheDocument()
+    expect(summary()).not.toContain('Current week')
+  })
+
+  it('draws no hollow point on a calibrating chart, which has no lead', () => {
+    render(
+      <GoalTrajectoryChart
+        {...baseProps}
+        actuals={throughWeek3}
+        status="calibrating"
+        nextTarget={nextTarget}
+        currentWeek={4}
+      />
+    )
+    expect(screen.queryByTestId('goal-trajectory-chart-current-week-point')).not.toBeInTheDocument()
+  })
+})
+
 describe('GoalTrajectoryChart goal reach', () => {
   const reaching = (value: number): GoalActualPoint[] => [
     { weekIndex: 1, value: 175 },

@@ -98,6 +98,14 @@ export interface GoalTrajectoryGeometryInput {
   nextTarget?: GoalNextTarget
   /** Gutters around the plot. Defaults to {@link DEFAULT_PLOT_INSETS}, the axis-bearing chart's. */
   insets?: PlotInsets
+  /** 1-based week the athlete is in; marked on the lead when it has no reading yet. */
+  currentWeek?: number
+}
+
+/** The current week's hollow point on the dashed lead, in px and in the goal's unit. */
+export interface CurrentWeekPoint extends GeometryPoint {
+  weekIndex: number
+  value: number
 }
 
 /** The plot's gutters for a chart with or without its y-axis value labels. */
@@ -186,6 +194,8 @@ export interface GoalTrajectoryGeometry {
   actuals: ActualCoord[]
   /** The next planned waypoint in px, or null when the caller passed none. */
   nextTarget: NextTargetCoord | null
+  /** The current week's point on the lead when it has no reading, else null ({@link currentWeekPoint}). */
+  currentWeekPoint: CurrentWeekPoint | null
   prStars: ActualCoord[]
   deloadRects: DeloadRect[]
   boundaries: BoundaryRule[]
@@ -753,6 +763,29 @@ function nextTargetCoord(
 }
 
 /**
+ * Where "now" sits when the current week has no reading (VW-422): on the dashed
+ * lead, at the value the lead passes through that week. Null when the week has a
+ * reading (its filled point is "now"), when there is no lead to sit on, and from
+ * the next target's week on: that week already has the target's hollow dot, and
+ * a later week would extrapolate past the end of the lead.
+ */
+export function currentWeekPoint(
+  currentWeek: number | undefined,
+  actuals: readonly ActualCoord[],
+  next: GoalNextTarget | undefined,
+  toX: (weekIndex: number) => number,
+  toY: (value: number) => number
+): CurrentWeekPoint | null {
+  const last = actuals[actuals.length - 1]
+  if (currentWeek === undefined || !last || !next) return null
+  if (actuals.some((a) => Math.round(a.weekIndex) === currentWeek)) return null
+  if (currentWeek <= last.weekIndex || currentWeek >= next.weekIndex) return null
+  const t = (currentWeek - last.weekIndex) / (next.weekIndex - last.weekIndex)
+  const value = last.value + t * (next.value - last.value)
+  return { x: toX(currentWeek), y: toY(value), weekIndex: currentWeek, value }
+}
+
+/**
  * Map a goal-progress payload onto chart pixels: the expected-band path, the
  * committed and stretch rules, y gridlines, the actual line with its PR stars,
  * deload shading and meso boundary rules.
@@ -818,6 +851,7 @@ export function deriveTrajectoryGeometry(
     stretchY: toY(stretch),
     actuals,
     nextTarget: next ? nextTargetCoord(next, actuals, toX, toY) : null,
+    currentWeekPoint: currentWeekPoint(input.currentWeek, actuals, next, toX, toY),
     prStars: actuals.filter((a) => a.isPR),
     deloadRects: deloadRects(weeks, plot, weekSpan, toX),
     boundaries: mesoBoundaries.map((weekIndex) => ({ weekIndex, x: toX(weekIndex) })),

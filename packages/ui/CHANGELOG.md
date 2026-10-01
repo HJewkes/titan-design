@@ -65,6 +65,12 @@ project adheres to [Semantic Versioning](https://semver.org/).
 - `VelocityStrip`'s `zones` colours resolve the five zone ids through the same `dataviz-sequential`
   tokens as `PinnedLiveStrip`, so the hero follows the theme in light mode. Dark output is unchanged (VW-749).
 - `SegmentedBar`'s pulsing segments hold full opacity, and the `to` colour of a `pulseColor`, when the OS asks for reduced motion, instead of breathing (VW-325).
+- `GoalTrajectoryChart` no longer leaves the current week unmarked when it has no reading. If
+  `currentWeek` falls after the last reading and before `nextTarget`'s week, a hollow point in the
+  status tone sits on the dashed lead at the value the lead passes through that week, and the
+  accessible summary says "Current week, no reading yet (week N)". A current week with a reading
+  draws as before. `deriveTrajectoryGeometry` takes `currentWeek` and returns `currentWeekPoint`
+  (VW-422).
 - `DualPinnedLiveStrip` takes an omitted `left` or `right` as a not-yet-bound slot and draws it as
   an empty side under its fallback name, and a slot's `reps` defaults to `[]`; either used to
   throw. A last rep whose velocity is not a finite number shows no velocity, in the numeral and
