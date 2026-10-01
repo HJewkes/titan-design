@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { View, Text, Pressable, Animated, type ViewProps, type ViewStyle } from 'react-native'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { sequentialEffort, greyRamp } from '../../../theme/tokens/primitives'
-import { getSemanticColors, space } from '../../../theme/tokens/semantic'
+import { getSemanticColors, space, type ThemeMode } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
 import { alpha } from '../../../utils/colors'
 import { formatVelocity } from '../../../utils/workout-format'
@@ -172,13 +172,23 @@ export interface VelocityStripProps extends ViewProps {
   className?: string
 }
 
-// Canonical 4-color performance scale shared with SetRow's RPE color
-// (see theme/workout-tokens.ts). green = fastest, red = slowest/grinding.
-const VEL_COLORS = WORKOUT_TOKENS.scale
+// The 4-color performance scale as the dataviz-sequential tokens PinnedLiveStrip uses; dark mode equals WORKOUT_TOKENS.scale.
+const VEL_SCALE_TOKEN = {
+  green: 'dataviz-sequential-0',
+  yellow: 'dataviz-sequential-2',
+  orange: 'dataviz-sequential-3',
+  red: 'dataviz-sequential-4',
+} as const
+
+type VelScaleToken = (typeof VEL_SCALE_TOKEN)[keyof typeof VEL_SCALE_TOKEN]
+
+function velScaleColor(token: VelScaleToken, mode: ThemeMode): string {
+  return getSemanticColors(mode)[token]
+}
 
 /**
  * Map a velocity-zone id (WA's 5-band taxonomy) directly onto the 6-stop
- * `sequentialEffort` ramp. The default strip uses the 4-color {@link VEL_COLORS}
+ * `sequentialEffort` ramp. The default strip uses the 4-color {@link VEL_SCALE_TOKEN}
  * scale (a subsample of the same ramp), but the 5-band taxonomy has one more
  * level than that scale carries, so it samples 5 stops: the top four align with
  * the default scale (speed/power/strengthSpeed/maximalStrength = green/gold/
@@ -215,11 +225,11 @@ export function getVelocityZoneName(velocity: number): string {
   return 'Strength'
 }
 
-const zoneHexMap: Record<string, string> = {
-  'vel-green': VEL_COLORS.green,
-  'vel-yellow': VEL_COLORS.yellow,
-  'vel-orange': VEL_COLORS.orange,
-  'vel-red': VEL_COLORS.red,
+const zoneTokenMap: Record<string, VelScaleToken> = {
+  'vel-green': VEL_SCALE_TOKEN.green,
+  'vel-yellow': VEL_SCALE_TOKEN.yellow,
+  'vel-orange': VEL_SCALE_TOKEN.orange,
+  'vel-red': VEL_SCALE_TOKEN.red,
 }
 
 /**
@@ -306,19 +316,28 @@ export function velocityLossBand(
   return 3
 }
 
-const LOSS_BAND_COLORS = [VEL_COLORS.green, VEL_COLORS.yellow, VEL_COLORS.orange, VEL_COLORS.red]
+const LOSS_BAND_TOKENS: readonly VelScaleToken[] = [
+  VEL_SCALE_TOKEN.green,
+  VEL_SCALE_TOKEN.yellow,
+  VEL_SCALE_TOKEN.orange,
+  VEL_SCALE_TOKEN.red,
+]
 
 /**
  * Map a per-rep velocity LOSS (%, from the set's own best — see {@link
  * velocityLossForRep}) onto the same green→gold→orange→red scale as the absolute
- * zone scale ({@link VEL_COLORS}), banded at the {@link VL_LOSS_THRESHOLDS}
+ * zone scale ({@link VEL_SCALE_TOKEN}), banded at the {@link VL_LOSS_THRESHOLDS}
  * VL10/VL20/VL30 cues. Past VL20 reads orange ("past VL20 = amber" in coaching
  * terms — this scale's amber/gold band is the yellow stop, orange is the VL20+
  * band), past VL30 reads red, so a fatiguing set reads green→red by LOSS
- * regardless of how slow its absolute velocity is.
+ * regardless of how slow its absolute velocity is. `mode` picks the theme's hex (default dark).
  */
-export function getVelocityLossColor(lossPct: number, thresholds?: VelocityLossThresholds): string {
-  return LOSS_BAND_COLORS[velocityLossBand(lossPct, thresholds)]
+export function getVelocityLossColor(
+  lossPct: number,
+  thresholds?: VelocityLossThresholds,
+  mode: ThemeMode = 'dark'
+): string {
+  return velScaleColor(LOSS_BAND_TOKENS[velocityLossBand(lossPct, thresholds)], mode)
 }
 
 // A billionth of a percent: far below any threshold a coach sets, far above double rounding error.
@@ -361,7 +380,7 @@ function classifyBand(
 }
 
 function bandColor(band: VelocityZoneBandProp): string {
-  return bandIdToEffortColor[band.id] ?? VEL_COLORS.green
+  return bandIdToEffortColor[band.id] ?? WORKOUT_TOKENS.scale.green
 }
 
 /**
@@ -370,19 +389,25 @@ function bandColor(band: VelocityZoneBandProp): string {
  * {@link bandColor}; the default (no-zones) path uses the built-in 4-color scale.
  * Color is ALWAYS the velocity zone — never the voltra side.
  */
-function makeBarColorFor(zones?: readonly VelocityZoneBandProp[]): (v: number) => string {
+function makeBarColorFor(
+  zones: readonly VelocityZoneBandProp[] | undefined,
+  mode: ThemeMode
+): (v: number) => string {
   const hasZones = zones != null && zones.length > 0
   return (v: number): string =>
-    hasZones ? bandColor(classifyBand(v, zones)!) : zoneHexMap[getVelocityZoneColor(v)]
+    hasZones
+      ? bandColor(classifyBand(v, zones)!)
+      : velScaleColor(zoneTokenMap[getVelocityZoneColor(v)], mode)
 }
 
 /** The info row's loss text: orange and red at the same thresholds as the bars, else unstyled. */
 function getLossStyle(
   loss: number,
-  thresholds?: VelocityLossThresholds
+  thresholds: VelocityLossThresholds,
+  mode: ThemeMode
 ): Record<string, string> | null {
   const band = velocityLossBand(loss, thresholds)
-  return band >= 2 ? { color: LOSS_BAND_COLORS[band] } : null
+  return band >= 2 ? { color: velScaleColor(LOSS_BAND_TOKENS[band], mode) } : null
 }
 
 // --- Set-type slot model -----------------------------------------------------
@@ -1326,10 +1351,11 @@ export function VelocityStrip({
   // Single-sourced zone resolver (diverging-hero) wrapped with the loss-relative mode: `barColor="loss"`
   // colors each rep by its velocity loss from the set's own best, else the shared zone scale. Every
   // variant hands this `colorFor` to SetBarChart, so all variants color identically.
-  const zoneColorFor = makeBarColorFor(zones)
+  const mode = useSurfaceMode()
+  const zoneColorFor = makeBarColorFor(zones, mode)
   const barColorFor = (v: number): string =>
     barColor === 'loss'
-      ? getVelocityLossColor(velocityLossForRep(v, maxVelocity), lossThresholds)
+      ? getVelocityLossColor(velocityLossForRep(v, maxVelocity), lossThresholds, mode)
       : zoneColorFor(v)
   const meanZone = hasZones
     ? (classifyBand(meanVelocity, zones)?.label ?? '')
@@ -1613,7 +1639,7 @@ export function VelocityStrip({
             style={{
               fontSize: 10,
               fontFamily: 'Inter, sans-serif',
-              ...getLossStyle(lastLoss, lossThresholds),
+              ...getLossStyle(lastLoss, lossThresholds, mode),
             }}
           >
             Loss: {loss}%
