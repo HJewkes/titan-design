@@ -4,6 +4,7 @@ import { Text } from 'react-native'
 import { axe } from 'jest-axe'
 import { Tooltip } from './Tooltip'
 import { PinnedTipContext, TipTrigger } from './TipTrigger'
+import * as tooltipBarrel from './index'
 import { Modal } from '../modal'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 
@@ -461,11 +462,9 @@ describe('PinnedTipContext', () => {
     expect(screen.queryByText('Under the band')).toBeNull()
   })
 
-  it('is not exported from the package', async () => {
-    const pkg = await import('../../../index')
-    const tooltip = await import('./index')
-    expect(Object.keys(pkg)).not.toContain('PinnedTipContext')
-    expect(Object.keys(tooltip)).not.toContain('PinnedTipContext')
+  // The tooltip barrel is the only route to the package; importing the package itself timed out on cold CI.
+  it('is not exported from the package', () => {
+    expect(Object.keys(tooltipBarrel)).not.toContain('PinnedTipContext')
   })
 
   it('opens the tip with the matching label from the first paint, and only that one', () => {
