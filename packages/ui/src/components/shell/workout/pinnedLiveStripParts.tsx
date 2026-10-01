@@ -164,13 +164,24 @@ export function BackToLive() {
   )
 }
 
+function planeHeight(isPhone: boolean, grow: boolean) {
+  if (isPhone) return { minHeight: PHONE_MIN_HEIGHT }
+  return grow ? { minHeight: WALL_HEIGHT } : { height: WALL_HEIGHT }
+}
+
 export function StripPlane({
   tone,
   isPhone,
+  grow = false,
+  wash = tone === 'fatigue',
   children,
 }: {
   tone: Tone
   isPhone: boolean
+  /** Wall only: let the row grow past 72px to fit its content. */
+  grow?: boolean
+  /** Paint the fatigue wash over the whole plane; default on for the fatigue tone. */
+  wash?: boolean
   children: ReactNode
 }) {
   return (
@@ -179,12 +190,9 @@ export function StripPlane({
       rounded
       testID="live-strip-plane"
       className="overflow-hidden rounded-xl border-l-4"
-      style={[
-        { borderLeftColor: resolveColor(TONE[tone].edge) },
-        isPhone ? { minHeight: PHONE_MIN_HEIGHT } : { height: WALL_HEIGHT },
-      ]}
+      style={[{ borderLeftColor: resolveColor(TONE[tone].edge) }, planeHeight(isPhone, grow)]}
     >
-      {tone === 'fatigue' ? (
+      {wash ? (
         <View
           testID="live-strip-fatigue-wash"
           pointerEvents="none"
