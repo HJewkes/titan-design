@@ -85,11 +85,11 @@ function resolveLayout(props: MessageListProps): ThreadLayout {
   return props.layout ?? (props.participants.length > 2 ? 'group' : 'direct')
 }
 
-function ThreadHeader({ props, layout }: { props: MessageListProps; layout: ThreadLayout }) {
+function threadHeader(props: MessageListProps, layout: ThreadLayout): ReactNode {
   if (props.header !== undefined) return <View className="px-gutter-sm">{props.header}</View>
   const other = props.participants.find(({ id }) => id !== props.viewerId)
   if (layout !== 'direct' || !other) return null
-  return <ConversationIdentity participant={other} className="-mb-stack-md" />
+  return <ConversationIdentity participant={other} />
 }
 
 function newestOwnMessageId(messages: readonly ChatMessage[], viewerId: string) {
@@ -167,6 +167,7 @@ function ThreadScroll(props: MessageListProps) {
   const { visible, hasEarlier, showEarlier } = useWindow(messages, pageSize)
   const rows = useMemo(() => buildThreadRows(visible), [visible])
   const layout = resolveLayout(props)
+  const header = threadHeader(props, layout)
   const newestOwnId = newestOwnMessageId(messages, viewerId)
   const { offset, panHandlers } = useRevealGesture(props.revealTimes ?? false)
   const { scrollRef, onScroll, onContentSizeChange, unseen, jumpToNewest } = useStickToBottom(
@@ -183,23 +184,27 @@ function ThreadScroll(props: MessageListProps) {
         testID="chat-message-scroll"
       >
         <RevealProvider offset={offset}>
-          <View className="gap-stack-md py-inset-md" {...panHandlers}>
-            <ThreadHeader props={props} layout={layout} />
-            {hasEarlier ? (
-              <Button variant="ghost" size="sm" onPress={showEarlier} className="self-center">
-                <ButtonText>Show earlier</ButtonText>
-              </Button>
-            ) : null}
-            {rows.map((row) => (
-              <Row
-                key={row.key}
-                row={row}
-                props={props}
-                layout={layout}
-                newestOwnId={newestOwnId}
-              />
-            ))}
-            <TypingIndicator participants={typing} className="px-gutter-sm" />
+          <View {...panHandlers}>
+            {header ? <View className="pt-inset-md">{header}</View> : null}
+            <View
+              className={cn('gap-stack-md pb-inset-md', (!header || hasEarlier) && 'pt-inset-md')}
+            >
+              {hasEarlier ? (
+                <Button variant="ghost" size="sm" onPress={showEarlier} className="self-center">
+                  <ButtonText>Show earlier</ButtonText>
+                </Button>
+              ) : null}
+              {rows.map((row) => (
+                <Row
+                  key={row.key}
+                  row={row}
+                  props={props}
+                  layout={layout}
+                  newestOwnId={newestOwnId}
+                />
+              ))}
+              <TypingIndicator participants={typing} className="px-gutter-sm" />
+            </View>
           </View>
         </RevealProvider>
       </ScrollView>

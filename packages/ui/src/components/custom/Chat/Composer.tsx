@@ -107,7 +107,7 @@ export function Composer({
               size="sm"
               onPress={send}
               isDisabled={!canSend}
-              accessibilityLabel={sendLabel}
+              accessibilityLabel={isSending ? sendingLabel : sendLabel}
               testID="chat-composer-send"
             >
               <ButtonText>{isSending ? sendingLabel : sendLabel}</ButtonText>

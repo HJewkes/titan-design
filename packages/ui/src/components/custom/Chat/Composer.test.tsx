@@ -78,6 +78,7 @@ describe('Composer', () => {
   it('says Sending on the button while a send is in flight', () => {
     render(<Composer onSend={vi.fn()} value="x" isSending />)
     expect(sendButton()).toHaveTextContent('Sending…')
+    expect(sendButton()).toHaveAccessibleName('Sending…')
   })
 
   it('has no accessibility violations', async () => {

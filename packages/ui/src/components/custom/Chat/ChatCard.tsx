@@ -66,7 +66,13 @@ export function ChatCard({
       <CardHeader className="gap-stack-sm pb-inset-sm">
         {status}
         <CardTitle>{title}</CardTitle>
-        {subtitle}
+        {typeof subtitle === 'string' ? (
+          <Typography variant="body2" color="secondary">
+            {subtitle}
+          </Typography>
+        ) : (
+          subtitle
+        )}
       </CardHeader>
       {children || footnote ? (
         <CardContent className="gap-stack-sm py-inset-sm">

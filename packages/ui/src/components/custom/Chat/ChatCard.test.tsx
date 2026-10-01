@@ -21,6 +21,14 @@ describe('ChatCard', () => {
     expect(card).toHaveTextContent('From this week')
   })
 
+  it('renders a string subtitle without a bare text node in a View', () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+    render(<ChatCard title="Plan change" subtitle="Thursday" />)
+    expect(screen.getByText('Thursday')).toBeInTheDocument()
+    expect(error).not.toHaveBeenCalled()
+    error.mockRestore()
+  })
+
   it('runs each action when pressed', () => {
     const onAccept = vi.fn()
     render(

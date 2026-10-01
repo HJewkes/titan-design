@@ -9,6 +9,12 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- A `Chat` family under `custom/`: `MessageList`, `MessageBubble`, `Composer`, `ChatCard`,
+  `ConversationIdentity`, `DateSeparator`, `TypingIndicator` and `UnreadBadge`. A thread has a
+  direct and a group layout, time rows with a drag reveal, an accent edge for endorsed messages
+  and a windowed "Show earlier" page. It depends on the new `@titan-design/chat-protocol` package
+  for its message and participant types (VW-393).
+- `MarkdownProse` takes a `size` prop (VW-393).
 - `MilestoneHero`, `MilestoneFacts`, `MilestoneWeekStrip` and `useResolvedMilestone` are exported
   from `GoalMilestoneSummary`, so a card can place each part in its own slot and share one copy
   of the gap, surplus and outcome maths. `GoalMilestoneSummary` renders as their composition

@@ -82,6 +82,8 @@ describe('MessageBubble', () => {
     expect(screen.queryByTestId('chat-endorsed-bubble')).toBeNull()
     rerender(<MessageBubble message={endorsed} author={COACH} />)
     expect(screen.getByTestId('chat-endorsed-bubble')).toBeInTheDocument()
+    expect(screen.getByTestId('chat-endorsed-bubble')).toHaveTextContent('Endorsed')
+    expect(screen.queryByText('Endorsed')).not.toBeNull()
   })
 
   it('flags an undeliverable message', () => {

@@ -70,6 +70,11 @@ function BubbleBody({ body, isOwn, isEndorsed, linkers }: BubbleBodyProps) {
       )}
       testID={isEndorsed ? 'chat-endorsed-bubble' : undefined}
     >
+      {isEndorsed ? (
+        <Typography variant="caption" className="absolute h-px w-px overflow-hidden opacity-0">
+          Endorsed
+        </Typography>
+      ) : null}
       {prose}
     </Surface>
   )

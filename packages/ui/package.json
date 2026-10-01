@@ -209,6 +209,7 @@
     "dist",
     "src",
     "!src/lab",
+    "!src/**/ROUND-*.md",
     "docs",
     "tailwind.config.js",
     "CHANGELOG.md"
