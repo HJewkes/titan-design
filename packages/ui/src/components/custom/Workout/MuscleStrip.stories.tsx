@@ -106,7 +106,7 @@ export const OneOfEachStatus: Story = {
       [MuscleGroup.ABS]: { sets: 8, target: 8, volumeStatus: 'target' },
       [MuscleGroup.GLUTES]: { sets: 9, target: 10, volumeStatus: 'approaching' },
       [MuscleGroup.SIDE_DELTS]: { sets: 18, target: 14, volumeStatus: 'over' },
-      [MuscleGroup.UPPER_BACK]: { sets: 8, target: 0, volumeStatus: 'noverdict' },
+      [MuscleGroup.UPPER_BACK]: { sets: 8, target: 12, volumeStatus: 'noverdict' },
     }),
   },
 }
@@ -116,9 +116,9 @@ export const NoVerdict: Story = {
   args: {
     data: {
       ...WEEK_DATA,
-      [MuscleGroup.LATS]: { sets: 6, target: 0, volumeStatus: 'noverdict' },
-      [MuscleGroup.UPPER_BACK]: { sets: 10, target: 0, volumeStatus: 'noverdict' },
-      [MuscleGroup.GLUTES]: { sets: 9, target: 0, volumeStatus: 'noverdict' },
+      [MuscleGroup.LATS]: { sets: 6, target: 14, volumeStatus: 'noverdict' },
+      [MuscleGroup.UPPER_BACK]: { sets: 10, target: 12, volumeStatus: 'noverdict' },
+      [MuscleGroup.GLUTES]: { sets: 9, target: 10, volumeStatus: 'noverdict' },
     },
   },
 }
