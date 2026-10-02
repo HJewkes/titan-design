@@ -100,6 +100,8 @@ const config: StorybookConfig = {
       ...(cfg.optimizeDeps.include ?? []),
       'react-native-svg',
       'react-native-body-highlighter',
+      'react-native-body-highlighter/dist/assets/bodyFront.js',
+      'react-native-body-highlighter/dist/assets/bodyBack.js',
     ]
     cfg.optimizeDeps.esbuildOptions = {
       ...(cfg.optimizeDeps.esbuildOptions ?? {}),
