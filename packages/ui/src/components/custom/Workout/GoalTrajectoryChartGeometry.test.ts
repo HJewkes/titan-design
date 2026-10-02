@@ -815,3 +815,22 @@ describe('current-week point', () => {
     expect(deriveTrajectoryGeometry(base).currentWeekPoint).toBeNull()
   })
 })
+
+describe('week scale on a plot narrower than two insets', () => {
+  const narrow = { ...base, width: 20, expected: gainExpected, committed: 185, stretch: 195 }
+
+  it('never gives a column a negative span', () => {
+    const scale = trajectoryWeekScale(narrow)
+    expect(scale.span).toBeGreaterThanOrEqual(0)
+  })
+
+  it('keeps the week columns in ascending x order', () => {
+    const g = deriveTrajectoryGeometry(narrow)
+    expect(g.toX(2) - g.toX(1)).toBeGreaterThanOrEqual(0)
+  })
+
+  it('gives every deload column a non-negative width', () => {
+    const g = deriveTrajectoryGeometry(narrow)
+    g.deloadRects.forEach((rect) => expect(rect.width).toBeGreaterThanOrEqual(0))
+  })
+})
