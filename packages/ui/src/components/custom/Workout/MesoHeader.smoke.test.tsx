@@ -6,13 +6,26 @@ import { MesoHeader } from './MesoHeader'
 import {
   MESO_HEADER_FIXTURES,
   mesoHeaderPropsFrom,
+  PROGRAM_CYCLE,
   type MesoHeaderFixtureKey,
 } from './mesoHeader-fixture'
+import type { MesoHeaderShape } from './MesoHeader'
 
 expect.extend(toHaveNoViolations)
 
-function renderCase(key: MesoHeaderFixtureKey, layout: 'wall' | 'phone' = 'wall') {
-  return render(<MesoHeader {...mesoHeaderPropsFrom(MESO_HEADER_FIXTURES[key])} layout={layout} />)
+function renderCase(
+  key: MesoHeaderFixtureKey,
+  layout: 'wall' | 'phone' = 'wall',
+  shape: MesoHeaderShape = 'band'
+) {
+  return render(
+    <MesoHeader
+      {...mesoHeaderPropsFrom(MESO_HEADER_FIXTURES[key])}
+      layout={layout}
+      shape={shape}
+      cycle={PROGRAM_CYCLE}
+    />
+  )
 }
 
 describe('MesoHeader specimen (shape A)', () => {
@@ -82,10 +95,45 @@ describe('MesoHeader specimen (shape A)', () => {
     expect(screen.queryByTestId('meso-header-priorities-trigger')).toBeNull()
   })
 
+  it('draws the program cycle under the block row in shape B', () => {
+    renderCase('m3Current', 'wall', 'cycle')
+    expect(screen.getByText('Spring Strength › Block 2 of 3 · Foundation')).toBeTruthy()
+    expect(screen.getByText('Block 3 · Intensification')).toBeTruthy()
+    expect(screen.getByTestId('meso-header-cycle').getAttribute('aria-label')).toContain(
+      'Foundation, 2 weeks (current)'
+    )
+  })
+
+  it('labels the phone cycle by block number in shape B', () => {
+    renderCase('m3Current', 'phone', 'cycle')
+    expect(screen.getByText('B2')).toBeTruthy()
+    expect(screen.getByText('Priorities · 3')).toBeTruthy()
+  })
+
+  it('labels every week and marks today in shape C', () => {
+    renderCase('m3Current', 'wall', 'spine')
+    expect(screen.getByText('W1 Load finding')).toBeTruthy()
+    expect(screen.getByText('W2 Confirm')).toBeTruthy()
+    expect(screen.getByTestId('segmented-bar-marker')).toBeTruthy()
+  })
+
+  it('drops the week text and long labels on the phone in shape C', () => {
+    renderCase('m12SixteenWeeks', 'phone', 'spine')
+    expect(screen.queryByTestId('meso-header-position')).toBeNull()
+    expect(screen.queryByTestId('meso-header-segment-labels')).toBeNull()
+  })
+
   it('has no accessibility violations in either form', async () => {
     const wall = renderCase('m3Current')
     expect(await axe(wall.container)).toHaveNoViolations()
     const phone = renderCase('m3Current', 'phone')
     expect(await axe(phone.container)).toHaveNoViolations()
+  })
+
+  it('has no accessibility violations in shapes B and C', async () => {
+    const cycle = renderCase('m3Current', 'wall', 'cycle')
+    expect(await axe(cycle.container)).toHaveNoViolations()
+    const spine = renderCase('m3Current', 'phone', 'spine')
+    expect(await axe(spine.container)).toHaveNoViolations()
   })
 })

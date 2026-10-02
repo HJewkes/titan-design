@@ -2,7 +2,7 @@
 // contract's M-cases. Each case is the `mesocycle` field of the goals payload plus the priorities.
 import type { GoalPriorityIndexEntry } from './GoalPriorityIndex'
 import { NINE_PRIORITIES, THREE_PRIORITIES } from './goalPriorityIndex-fixture'
-import type { MesoHeaderProps } from './MesoHeader'
+import type { MesoHeaderCycleBlock, MesoHeaderProps } from './MesoHeader'
 
 /** The `mesocycle` field of `GET /api/goals`, field for field. */
 export interface GoalsPayloadMesocycle {
@@ -91,6 +91,16 @@ const SIX_WEEKS_DELOAD_LAST: GoalsPayloadMesocycle = {
 }
 
 const ENDED: GoalsPayloadMesocycle = { ...TWO_WEEK_BLOCK, state: 'ended', week: null }
+
+/**
+ * Shape B only: the program's blocks around M3's block 2 of 3. The goals payload does not carry
+ * them today; shape B winning would add them.
+ */
+export const PROGRAM_CYCLE: MesoHeaderCycleBlock[] = [
+  { name: 'Re-entry', weeks: 3 },
+  { name: 'Foundation', weeks: 2 },
+  { name: 'Intensification', weeks: 4 },
+]
 
 export const MESO_HEADER_FIXTURES = {
   m2Upcoming: {
