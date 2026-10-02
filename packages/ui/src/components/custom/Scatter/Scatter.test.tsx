@@ -144,6 +144,61 @@ describe('Scatter', () => {
     })
   })
 
+  describe('selected ring', () => {
+    const ring = (theme: 'dark' | 'light') => {
+      const { unmount } = render(
+        <Surface theme={theme}>
+          <Scatter {...base} selectedId="b" />
+        </Surface>
+      )
+      const color = getComputedStyle(screen.getByTestId('scatter-point-b')).borderTopColor
+      unmount()
+      return color
+    }
+
+    /** WCAG 2.1 contrast ratio between two opaque hex colours. */
+    const contrastRatio = (a: string, b: string): number => {
+      const lum = (hex: string): number => {
+        const h = hex.replace('#', '')
+        const [r, g, bl] = [0, 2, 4].map((i) => {
+          const c = parseInt(h.slice(i, i + 2), 16) / 255
+          return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)
+        })
+        return 0.2126 * r + 0.7152 * g + 0.0722 * bl
+      }
+      const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x)
+      return (hi + 0.05) / (lo + 0.05)
+    }
+
+    it('draws a different ring on a light surface than on a dark one', () => {
+      expect(ring('light')).not.toBe(ring('dark'))
+    })
+
+    it('resolves the ring from the text-primary token per mode', () => {
+      const probe = document.createElement('div')
+      const resolve = (c: string) => {
+        probe.style.borderTopColor = c
+        return probe.style.borderTopColor
+      }
+      expect(ring('light')).toBe(resolve(getSemanticColors('light')['text-primary']))
+      expect(ring('dark')).toBe(resolve(getSemanticColors('dark')['text-primary']))
+    })
+
+    it.each(['light', 'dark'] as const)('keeps the %s ring at 3:1 against its surface', (mode) => {
+      const t = getSemanticColors(mode)
+      expect(contrastRatio(t['text-primary'], t['surface-base'])).toBeGreaterThanOrEqual(3)
+    })
+
+    it('clears 3:1 against the light surface with the colour actually painted', () => {
+      const light = getSemanticColors('light')
+      const probe = document.createElement('div')
+      probe.style.borderTopColor = ring('light')
+      const [r, g, b] = probe.style.borderTopColor.match(/\d+/g)!.map(Number)
+      const hex = '#' + [r, g, b].map((n) => n.toString(16).padStart(2, '0')).join('')
+      expect(contrastRatio(hex, light['surface-base'])).toBeGreaterThanOrEqual(3)
+    })
+  })
+
   describe('accessibility', () => {
     it('labels the canvas as an image', () => {
       render(<Scatter {...base} axis={{ xLabel: 'I', yLabel: 'A' }} />)
