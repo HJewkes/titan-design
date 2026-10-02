@@ -20,6 +20,7 @@ import { promisify } from 'node:util';
 import readline from 'node:readline';
 import path from 'node:path';
 import os from 'node:os';
+import { defaultOutPath, prepareOutPath, runMain } from './output-guard.mjs';
 
 const pexec = promisify(execFile);
 
@@ -703,8 +704,8 @@ async function main() {
     console.error('usage: node mine-session-signals.mjs --repo <absoluteRepoPath> [--top N] [--out file.ts]');
     process.exit(2);
   }
+  const outPath = prepareOutPath(out ?? defaultOutPath('session-signals.ts'));
   const data = await mine({ repo, topN: top });
-  const outPath = out ?? path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'data', 'session-signals.ts');
   await fs.writeFile(outPath, toTs(data), 'utf8');
 
   const m = data.metrics;
@@ -737,7 +738,4 @@ async function main() {
   console.log(`\nwrote ${outPath}`);
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+runMain(main);
