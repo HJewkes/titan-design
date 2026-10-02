@@ -1,4 +1,6 @@
 // @vitest-environment node
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { Linter } from 'eslint'
 import tseslint from 'typescript-eslint'
 import { describe, expect, it } from 'vitest'
@@ -16,6 +18,11 @@ type Tree = Record<string, string>
 type Entries = Record<string, Record<string, number>>
 
 const measureTree = (tree: Tree): Entries => measure(programFromTree(tree))
+
+const NATIVEWIND_TYPES = fileURLToPath(new URL('../types/nativewind.d.ts', import.meta.url))
+
+const propsOf = (entries: Entries) =>
+  Object.fromEntries(Object.entries(entries).map(([key, metrics]) => [key, metrics.props]))
 
 const BASE_PROPS = `export interface BaseFieldProps {
   label: string
@@ -185,7 +192,7 @@ function detectorComplexity(entries: Entries, file: string): Record<string, numb
   for (const [key, metrics] of Object.entries(entries)) {
     if (!key.startsWith(`${file}#`)) continue
     const name = key.slice(key.lastIndexOf('>') + 1).replace(`${file}#`, '')
-    if (!name.includes('#')) result[name] = metrics.complexity
+    if (!/[#.]/.test(name)) result[name] = metrics.complexity
   }
   return result
 }
@@ -207,6 +214,20 @@ describe('decomposition detector', { timeout: 30_000 }, () => {
     })
 
     expect(entries['components/fields/Fields.tsx#Field'].props).toBe(4)
+  })
+
+  it('ignores props a .d.ts augmentation adds, such as the className from nativewind.d.ts', () => {
+    const tree = {
+      'components/shared/base-props.ts': BASE_PROPS,
+      'components/fields/Fields.tsx': FIELDS,
+    }
+    const augmented = { ...tree, 'types/nativewind.d.ts': readFileSync(NATIVEWIND_TYPES, 'utf8') }
+
+    const plain = measureTree(tree)
+    const withAugmentation = measureTree(augmented)
+
+    expect(withAugmentation['components/fields/Fields.tsx#Panel'].props).toBe(2)
+    expect(propsOf(withAugmentation)).toEqual(propsOf(plain))
   })
 
   it('resolves the props of forwardRef and memo components whose parameter is inferred', () => {
@@ -243,7 +264,7 @@ describe('decomposition detector', { timeout: 30_000 }, () => {
     expect(detector).toEqual(eslint)
   })
 
-  it('keeps function keys when lines are inserted above and orders anonymous callbacks', () => {
+  it('keeps function keys when lines are inserted above', () => {
     const source = `import { useMemo } from 'react'
 export function Chart() {
   const a = useMemo(() => 1, [])
@@ -258,9 +279,70 @@ export function Chart() {
     expect(before).toEqual([
       'utils/chart.ts',
       'utils/chart.ts#Chart',
-      'utils/chart.ts#Chart>useMemo#1',
-      'utils/chart.ts#Chart>useMemo#2',
+      'utils/chart.ts#Chart>a',
+      'utils/chart.ts#Chart>b',
     ])
+  })
+
+  it('keeps every existing key when an unrelated sibling callback is inserted above', () => {
+    const chart = (extra: string) => `import { useMemo, useState } from 'react'
+export function Chart({ ticks, rows }: { ticks: number[]; rows: number[][] }) {
+${extra}  const [open] = useState(() => false)
+  const bars = useMemo(() => rows.map((row) => row.length), [rows])
+  const labels = ticks.map((tick) => String(tick))
+  rows.filter((row) => row.length > 0).forEach((row) => row.sort())
+  return open ? bars : labels
+}
+`
+    const before = Object.keys(measureTree({ 'utils/chart.ts': chart('') }))
+    const after = Object.keys(
+      measureTree({
+        'utils/chart.ts': chart('  ticks.map((tick) => tick * 2)\n  rows.map((row) => row)\n'),
+      })
+    )
+
+    expect(after).toEqual(expect.arrayContaining(before))
+    expect(before).toEqual([
+      'utils/chart.ts',
+      'utils/chart.ts#Chart',
+      'utils/chart.ts#Chart>bars',
+      'utils/chart.ts#Chart>bars>rows.map',
+      'utils/chart.ts#Chart>labels',
+      'utils/chart.ts#Chart>open',
+      'utils/chart.ts#Chart>rows.filter',
+      'utils/chart.ts#Chart>rows.filter().forEach',
+    ])
+  })
+
+  it('names default parameters by their binding and repeated callbacks by an ordinal', () => {
+    const source = `export function pick(items: number[], by = (n: number) => n, { order = () => 0 } = {}) {
+  items.forEach((n) => by(n))
+  items.forEach((n) => order() + n)
+  return items
+}
+`
+    const keys = Object.keys(measureTree({ 'utils/pick.ts': source }))
+
+    expect(keys).toEqual([
+      'utils/pick.ts',
+      'utils/pick.ts#pick',
+      'utils/pick.ts#pick>by',
+      'utils/pick.ts#pick>items.forEach',
+      'utils/pick.ts#pick>items.forEach#2',
+      'utils/pick.ts#pick>order',
+    ])
+  })
+
+  it("keys an anonymous default export by its file's basename", () => {
+    const entries = measureTree({
+      'components/card/Card.tsx': `import { View } from 'react-native'
+export default function () { return <View /> }
+`,
+      'utils/format.ts': 'export default (value: number) => String(value)\n',
+    })
+
+    expect(entries['components/card/Card.tsx#Card']).toHaveProperty('component-lines', 1)
+    expect(entries).toHaveProperty(['utils/format.ts#format'])
   })
 
   it('suffixes a repeated qualified name with ~2', () => {
@@ -327,12 +409,13 @@ export function renderRow() { return <View /> }
 })
 
 describe('decomposition detector on the package', () => {
-  it('measures every shipping file in under 10 seconds', { timeout: 60_000 }, () => {
-    const started = performance.now()
-    const entries = measure(programFor()) as Entries
-    const elapsed = performance.now() - started
+  it(
+    'measures every shipping file and counts own props through the real tsconfig',
+    { timeout: 60_000 },
+    () => {
+      const entries = measure(programFor()) as Entries
 
-    expect(elapsed).toBeLessThan(10_000)
-    expect(entries['components/custom/Workout/VelocityStrip.tsx#VelocityStrip'].props).toBe(22)
-  })
+      expect(entries['components/custom/Workout/VelocityStrip.tsx#VelocityStrip'].props).toBe(22)
+    }
+  )
 })

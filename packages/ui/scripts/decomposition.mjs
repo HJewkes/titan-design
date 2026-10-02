@@ -6,7 +6,7 @@
  *
  *   file-lines       code lines of a file
  *   component-lines  code lines of a component: a PascalCase function that contains JSX
- *   props            props of a component's first parameter that are declared under `src/`
+ *   props            props of a component's first parameter declared in a `src/` source, not a `.d.ts`
  *   complexity       ESLint's classic `complexity` rule, per function
  *   function-lines   code lines of a function, every function
  *
@@ -14,8 +14,11 @@
  *
  * Keys never hold line numbers: a file is `<path relative to src>` and a function is
  * `<path>#<QualifiedName>`. QualifiedName chains the enclosing functions with `>`. An
- * anonymous callback is named by its callee or JSX attribute plus an ordinal per parent
- * (`SetBarChart>useMemo#2`), and a repeated name gets `~2`.
+ * anonymous callback takes the binding its call is assigned to (`SetBarChart>bars` for
+ * `const bars = useMemo(() => ...)`), else its callee with receiver (`ticks.map`) or JSX
+ * attribute (`onPress`). An anonymous default export takes the file's basename. A repeat
+ * among siblings gets `#2` when anonymous and `~2` when declared. A class field
+ * initializer is measured only when it is a function.
  */
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -216,36 +219,32 @@ const isFunction = (node) => FUNCTION_KINDS.has(node.kind) && node.body !== unde
 function collectFunctions(sourceFile) {
   const found = []
   const taken = new Map()
+  const context = { basename: path.basename(sourceFile.fileName).replace(/\.tsx?$/, '') }
   const visit = (node, parent) => {
     let scope = parent
     if (isFunction(node)) {
-      scope = childScope(parent, segmentOf(node), taken)
-      found.push({ node, name: scope.name, ownName: declaredName(node) })
+      scope = childScope(parent, segmentOf(node, context), taken)
+      found.push({ node, name: scope.name, ownName: declaredName(node, context) })
     } else if (ts.isClassDeclaration(node) && node.name) {
       scope = childScope(parent, { base: node.name.text }, taken)
     }
     ts.forEachChild(node, (child) => visit(child, scope))
   }
-  visit(sourceFile, { name: null, ordinals: new Map() })
+  visit(sourceFile, { name: null })
   return found
 }
 
+/** A repeat of a qualified name gets `#n` when it is anonymous and `~n` when it is declared. */
 function childScope(parent, { base, anonymous = false }, taken) {
-  let segment = base
-  if (anonymous) {
-    const ordinal = (parent.ordinals.get(base) ?? 0) + 1
-    parent.ordinals.set(base, ordinal)
-    segment = `${base}#${ordinal}`
-  }
-  const qualified = parent.name === null ? segment : `${parent.name}>${segment}`
+  const qualified = parent.name === null ? base : `${parent.name}>${base}`
   const seen = (taken.get(qualified) ?? 0) + 1
   taken.set(qualified, seen)
-  const name = seen === 1 ? qualified : `${qualified}~${seen}`
-  return { name, ordinals: new Map() }
+  if (seen === 1) return { name: qualified }
+  return { name: `${qualified}${anonymous ? '#' : '~'}${seen}` }
 }
 
-function segmentOf(node) {
-  const name = declaredName(node)
+function segmentOf(node, context) {
+  const name = declaredName(node, context)
   return name === null ? { base: anonymousBase(node), anonymous: true } : { base: name }
 }
 
@@ -268,19 +267,37 @@ function holderOf(node) {
   }
 }
 
-function declaredName(node) {
+function isDefaultExport(node, holder) {
+  if (ts.isExportAssignment(holder)) return true
+  const modifiers = ts.canHaveModifiers(node) ? (ts.getModifiers(node) ?? []) : []
+  return modifiers.some((modifier) => modifier.kind === ts.SyntaxKind.DefaultKeyword)
+}
+
+function declaredName(node, { basename }) {
   if (ts.isConstructorDeclaration(node)) return 'constructor'
   if (node.name) return propertyNameText(node.name)
   const holder = holderOf(node)
-  if (ts.isExportAssignment(holder)) return 'default'
+  if (isDefaultExport(node, holder)) return basename
+  return bindingName(holder)
+}
+
+/** The name a value takes from a const, let, property, field or default parameter. */
+function bindingName(holder) {
   const named =
     ts.isVariableDeclaration(holder) ||
     ts.isPropertyAssignment(holder) ||
-    ts.isPropertyDeclaration(holder)
+    ts.isPropertyDeclaration(holder) ||
+    ts.isParameter(holder) ||
+    ts.isBindingElement(holder)
   return named ? propertyNameText(holder.name) : null
 }
 
+/** A destructuring takes its first name, so `const [open, setOpen] = useState(...)` is `open`. */
 function propertyNameText(name) {
+  if (ts.isArrayBindingPattern(name) || ts.isObjectBindingPattern(name)) {
+    const first = name.elements.find((element) => !ts.isOmittedExpression(element))
+    return first === undefined ? null : propertyNameText(first.name)
+  }
   if (ts.isIdentifier(name) || ts.isPrivateIdentifier(name)) return name.text
   if (ts.isStringLiteral(name) || ts.isNumericLiteral(name)) return name.text
   return null
@@ -293,9 +310,26 @@ function calleeName(call) {
   return 'call'
 }
 
+/** A callee's text with call arguments and element indexes dropped: `rows.filter().map`. */
+function calleeText(expression) {
+  if (ts.isIdentifier(expression)) return expression.text
+  if (expression.kind === ts.SyntaxKind.ThisKeyword) return 'this'
+  if (ts.isArrayLiteralExpression(expression)) return '[]'
+  if (TRANSPARENT_PARENTS.has(expression.kind)) return calleeText(expression.expression)
+  if (ts.isCallExpression(expression)) return `${calleeText(expression.expression)}()`
+  if (ts.isElementAccessExpression(expression)) return `${calleeText(expression.expression)}[]`
+  if (ts.isPropertyAccessExpression(expression)) {
+    return `${calleeText(expression.expression)}.${expression.name.text}`
+  }
+  return 'call'
+}
+
+/** A callback takes the binding its call is assigned to, else the callee or JSX attribute. */
 function anonymousBase(node) {
   const holder = holderOf(node)
-  if (ts.isCallExpression(holder) || ts.isNewExpression(holder)) return calleeName(holder)
+  if (ts.isCallExpression(holder) || ts.isNewExpression(holder)) {
+    return bindingName(holderOf(holder)) ?? calleeText(holder.expression)
+  }
   if (ts.isJsxExpression(holder) && ts.isJsxAttribute(holder.parent)) {
     return holder.parent.name.getText()
   }
@@ -366,7 +400,13 @@ function containsJsx(node) {
   return ts.forEachChild(node, containsJsx) === true
 }
 
-/** Props of the first parameter's type that have a declaration under `src`. */
+/** A declaration in a `.ts`/`.tsx` source under `src`; `.d.ts` augmentation such as NativeWind's is not own. */
+function isOwnDeclaration(declaration, srcDir) {
+  const sourceFile = declaration.getSourceFile()
+  return !sourceFile.isDeclarationFile && relativeTo(srcDir, sourceFile.fileName) !== null
+}
+
+/** Props of the first parameter's type that have an own declaration. */
 function ownProps(fn, checker, srcDir) {
   const param = fn.parameters[0]
   if (param === undefined) return 0
@@ -375,7 +415,7 @@ function ownProps(fn, checker, srcDir) {
   for (const member of type.isUnion() ? type.types : [type]) {
     for (const prop of checker.getPropertiesOfType(member)) {
       const declarations = prop.declarations ?? []
-      if (declarations.some((d) => relativeTo(srcDir, d.getSourceFile().fileName) !== null)) {
+      if (declarations.some((declaration) => isOwnDeclaration(declaration, srcDir))) {
         names.add(prop.name)
       }
     }
