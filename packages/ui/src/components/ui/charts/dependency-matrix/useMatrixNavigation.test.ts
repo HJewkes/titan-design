@@ -63,6 +63,26 @@ describe('useMatrixNavigation', () => {
     expect(result.current.activeCell).toEqual(activeCell)
   })
 
+  it('keeps no state of its own while controlled, so releasing control returns to the start', () => {
+    const { result, rerender } = setup({ activeCell: { from: 'b', to: 'b' } })
+
+    act(() => {
+      result.current.handleKey('ArrowDown')
+    })
+    rerender({ items, direction: 'row-depends-on-column', pageRows: 2, activeCell: undefined })
+
+    expect(result.current.activeCell).toEqual({ from: 'a', to: 'a' })
+  })
+
+  it('keeps the same key handler across renders that do not move', () => {
+    const { result, rerender } = setup()
+    const first = result.current.handleKey
+
+    rerender({ items, direction: 'row-depends-on-column', pageRows: 2 })
+
+    expect(result.current.handleKey).toBe(first)
+  })
+
   it('follows the controlled value when the parent changes it', () => {
     const { result, rerender } = setup({ activeCell: { from: 'a', to: 'a' } })
 

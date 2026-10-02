@@ -50,18 +50,19 @@ export function useMatrixNavigation(options: UseMatrixNavigationOptions): Matrix
     [isControlled, onActiveCellChange]
   )
 
+  const row = position?.row ?? -1
+  const col = position?.col ?? -1
   const handleKey = useCallback(
     (key: string, ctrlKey = false): boolean => {
-      if (!position) return false
+      if (row < 0) return false
       const size = { rows: items.length, cols: items.length }
-      const next = nextCell({ key, ctrlKey, position, size, pageRows })
+      const next = nextCell({ key, ctrlKey, position: { row, col }, size, pageRows })
       if (!next) return false
       const ref = refAt(items, next, direction)
-      const moved = next.row !== position.row || next.col !== position.col
-      if (ref && moved) setActiveCell(ref)
+      if (ref && (next.row !== row || next.col !== col)) setActiveCell(ref)
       return true
     },
-    [position, items, pageRows, direction, setActiveCell]
+    [row, col, items, pageRows, direction, setActiveCell]
   )
 
   return { activeCell: current, position, handleKey, setActiveCell }

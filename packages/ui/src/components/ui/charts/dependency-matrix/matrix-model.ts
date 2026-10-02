@@ -9,6 +9,7 @@ import type {
 } from './types'
 
 export const DEFAULT_MAX_ITEMS = 60
+/** Id of the "+M more" item; it can reach `onActiveCellChange` like any displayed item. */
 export const FOLD_ITEM_ID = '\u0000more'
 export const STEP_COUNT = 4
 
@@ -91,7 +92,8 @@ const normalizeMaxItems = (maxItems: number): number =>
 
 /**
  * Keeps the first `maxItems` items and folds the rest into one "+M more" item whose cells sum the
- * tail. Total weight is preserved; a cell inside the tail becomes the fold item's self-reference.
+ * tail. A cell inside the tail becomes the fold item's self-reference. Cells naming an id outside
+ * `items` are dropped; every other weight is preserved. Expects unique ids, as `indexCells` returns.
  */
 export function foldItems(
   items: MatrixItem[],
@@ -99,13 +101,15 @@ export function foldItems(
   maxItems: number = DEFAULT_MAX_ITEMS
 ): { items: MatrixItem[]; cells: MatrixCell[] } {
   const keep = normalizeMaxItems(maxItems)
-  if (items.length <= keep) return { items, cells }
+  const allIds = new Set(items.map((item) => item.id))
+  const known = cells.filter((cell) => allIds.has(cell.from) && allIds.has(cell.to))
+  if (items.length <= keep) return { items, cells: known }
   const kept = items.slice(0, keep)
   const keptIds = new Set(kept.map((item) => item.id))
   const fold: MatrixItem = { id: FOLD_ITEM_ID, label: `+${items.length - keep} more` }
   const remap = (id: string): string => (keptIds.has(id) ? id : FOLD_ITEM_ID)
   const merged = new Map<string, MatrixCell>()
-  for (const cell of cells) {
+  for (const cell of known) {
     const from = remap(cell.from)
     const to = remap(cell.to)
     mergeInto(merged, cellKey(from, to), { ...cell, from, to })
@@ -269,7 +273,7 @@ export function cellLabel(
   if (!cell) {
     return rowFirst
       ? `${from.label} has no dependency on ${to.label}`
-      : `${to.label} is no dependency of ${from.label}`
+      : `${to.label} is not a dependency of ${from.label}`
   }
   const sentence = rowFirst
     ? `${from.label} depends on ${to.label}`

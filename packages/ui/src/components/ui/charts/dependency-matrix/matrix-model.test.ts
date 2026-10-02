@@ -28,6 +28,8 @@ const byName = (name: string) => {
 const itemsOf = (count: number): MatrixItem[] =>
   Array.from({ length: count }, (_, i) => ({ id: `item-${i}`, label: `item ${i}` }))
 
+const itemIds = (count: number): Set<string> => new Set(itemsOf(count).map((item) => item.id))
+
 const totalWeight = (cells: MatrixCell[]): number =>
   cells.reduce((sum, cell) => sum + (cell.value ?? 0), 0)
 
@@ -80,14 +82,14 @@ describe('foldItems', () => {
     expect(foldItems(items, cells, 3)).toEqual({ items, cells })
   })
 
-  it('preserves total weight for any list and limit', () => {
+  it('preserves the weight of every cell naming known items, for any list and limit', () => {
     const arbitrary = fc.integer({ min: 0, max: 30 }).chain((count) =>
       fc.tuple(
         fc.constant(count),
         fc.array(
           fc.record({
-            from: fc.nat({ max: Math.max(count - 1, 0) }),
-            to: fc.nat({ max: Math.max(count - 1, 0) }),
+            from: fc.nat({ max: count + 2 }),
+            to: fc.nat({ max: count + 2 }),
             value: fc.option(fc.integer({ min: 0, max: 1000 })),
           }),
           { maxLength: 60 }
@@ -104,7 +106,8 @@ describe('foldItems', () => {
           value: c.value,
         }))
         const folded = foldItems(items, cells, maxItems)
-        expect(totalWeight(folded.cells)).toBe(totalWeight(cells))
+        const known = cells.filter((c) => itemIds(count).has(c.from) && itemIds(count).has(c.to))
+        expect(totalWeight(folded.cells)).toBe(totalWeight(known))
         expect(folded.items.length).toBeLessThanOrEqual(Math.max(maxItems, 0) + 1)
       })
     )
@@ -305,7 +308,7 @@ describe('cellLabel', () => {
       'alpha has no dependency on beta'
     )
     expect(cellLabel(a, b, undefined, 'column-depends-on-row')).toBe(
-      'beta is no dependency of alpha'
+      'beta is not a dependency of alpha'
     )
   })
 
@@ -320,7 +323,7 @@ describe('cellLabel', () => {
 })
 
 describe('hostile input', () => {
-  it('never throws through the whole model pipeline', () => {
+  it('never throws and leaves only finite, non-negative or unknown weights', () => {
     const value = fc.oneof(fc.double(), fc.constant(null), fc.integer())
     const id = fc.constantFrom('a', 'b', 'c', 'missing', '')
     const rawCell = fc.record({ from: id, to: id, value })
@@ -335,7 +338,13 @@ describe('hostile input', () => {
         const folded = foldItems(index.items, [...index.cells.values()], maxItems)
         mutualPairs(folded.cells)
         groupBands(folded.items)
-        for (const c of folded.cells) binValue(c.value, maxItems)
+        for (const c of folded.cells) {
+          binValue(c.value, maxItems)
+          expect(c.value === null || (Number.isFinite(c.value) && c.value >= 0)).toBe(true)
+        }
+        for (const c of index.diagonal.values()) {
+          expect(c.value === null || (Number.isFinite(c.value) && c.value >= 0)).toBe(true)
+        }
       })
     )
   })
