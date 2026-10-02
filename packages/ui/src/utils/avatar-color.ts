@@ -1,13 +1,25 @@
-import { AVATAR_CATEGORICAL_COLORS } from '../theme/extracted-colors-ui'
+import { getSemanticColors, type ThemeMode } from '../theme/tokens/semantic'
 
-const AVATAR_COLORS = AVATAR_CATEGORICAL_COLORS
+const SLOT_COUNT = 7
 
-export function avatarColor(name: string): string {
+export function avatarColorSlot(name: string): number {
   let hash = 0
   for (let i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash)
   }
-  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length]
+  return Math.abs(hash) % SLOT_COUNT
+}
+
+export function avatarColors(mode: ThemeMode): string[] {
+  const colors = getSemanticColors(mode)
+  return Array.from(
+    { length: SLOT_COUNT },
+    (_, slot) => colors[`dataviz-categorical-${slot}` as keyof typeof colors] as string
+  )
+}
+
+export function avatarColor(name: string, mode: ThemeMode): string {
+  return avatarColors(mode)[avatarColorSlot(name)]
 }
 
 export function getInitials(name: string): string {
@@ -16,5 +28,3 @@ export function getInitials(name: string): string {
   if (parts.length === 1) return parts[0][0]?.toUpperCase() ?? '?'
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
 }
-
-export { AVATAR_COLORS }
