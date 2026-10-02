@@ -7,6 +7,16 @@
  * only shrink, the same ratchet as the stories-axe baseline.
  */
 
+import {
+  UnreadableMeta,
+  hasGenericExport,
+  hasPlayFunction,
+  metaTags,
+  parse,
+  readMetaLayers,
+  usesAnyName,
+} from './story-source'
+
 export const LAYERS = ['logic', 'keyboard', 'axe', 'visual', 'types', 'scale'] as const
 export type Layer = (typeof LAYERS)[number]
 
@@ -21,14 +31,9 @@ export type StableLayersBaseline = Record<string, string[]>
 export const STABLE_BASELINE_FILE = 'packages/ui/src/test/stable-layers-baseline.json'
 
 const STABLE_TAG = /tags:\s*\[[^\]]*['"]status:stable['"]/
-const PLAY_TAG = /tags:\s*\[[^\]]*['"]play['"]/
-const PLAY_FUNCTION = /\bplay\s*:/
 const PROPERTY_IMPORT = /from\s+['"]fast-check['"]|\bfcAssert\b/
-const TAKES_FOCUS = /\b(Pressable|TextInput|focusable|tabIndex)\b/
-const GENERIC_EXPORT = /export\s+(function\s+\w+\s*<|const\s+\w+\s*=\s*<[A-Z])/
+const FOCUS_NAMES = ['Pressable', 'TextInput', 'focusable', 'tabIndex']
 const WINDOWS = /\b(FlatList|SectionList|VirtualizedList)\b|fixed-window/
-const LAYERS_PARAMETER = /layers:\s*\{([^}]*)\}/
-const DECLARATION = /(\w+)\s*:\s*(['"`])(.*?)\2/g
 const NOT_APPLICABLE = /^n\/a: \S/
 
 const isStory = (file: string) => file.endsWith('.stories.tsx')
@@ -36,10 +41,12 @@ const isTest = (file: string) => /\.test\.tsx?$/.test(file)
 const isSource = (file: string) =>
   /\.tsx?$/.test(file) && !isStory(file) && !isTest(file) && !file.endsWith('.test-d.ts')
 
+function entries(dir: ComponentDir, keep: (file: string) => boolean): [string, string][] {
+  return Object.entries(dir.files).filter(([file]) => keep(file))
+}
+
 function sources(dir: ComponentDir, keep: (file: string) => boolean): string[] {
-  return Object.entries(dir.files)
-    .filter(([file]) => keep(file))
-    .map(([, source]) => source)
+  return entries(dir, keep).map(([, source]) => source)
 }
 
 export function isStable(dir: ComponentDir): boolean {
@@ -64,6 +71,13 @@ function hasAxe(dir: ComponentDir, axeBaseline: Record<string, string[]>): boole
   return !Object.keys(axeBaseline).some((id) => prefixes.some((prefix) => id.startsWith(prefix)))
 }
 
+function hasKeyboardStory(dir: ComponentDir): boolean {
+  return sources(dir, isStory).some((source) => {
+    const file = parse(source)
+    return metaTags(file).includes('play') && hasPlayFunction(file)
+  })
+}
+
 interface LayerRule {
   applies: (dir: ComponentDir) => boolean
   present: (dir: ComponentDir, axeBaseline: Record<string, string[]>) => boolean
@@ -79,13 +93,13 @@ const RULES: Partial<Record<Layer, LayerRule>> = {
     present: (dir) => any(dir, (file) => file.endsWith('.test.ts'), PROPERTY_IMPORT),
   },
   keyboard: {
-    applies: (dir) => any(dir, isSource, TAKES_FOCUS),
-    present: (dir) =>
-      sources(dir, isStory).some((source) => PLAY_TAG.test(source) && PLAY_FUNCTION.test(source)),
+    applies: (dir) =>
+      sources(dir, isSource).some((source) => usesAnyName(parse(source), FOCUS_NAMES)),
+    present: hasKeyboardStory,
   },
   axe: { applies: () => true, present: hasAxe },
   types: {
-    applies: (dir) => any(dir, isSource, GENERIC_EXPORT),
+    applies: (dir) => sources(dir, isSource).some((source) => hasGenericExport(parse(source))),
     present: (dir) => Object.keys(dir.files).some((file) => file.endsWith('.test-d.ts')),
   },
   scale: {
@@ -94,15 +108,29 @@ const RULES: Partial<Record<Layer, LayerRule>> = {
   },
 }
 
-function declarations(dir: ComponentDir): [string, string][] {
-  return sources(dir, isStory).flatMap((source) => {
-    const body = LAYERS_PARAMETER.exec(source)?.[1] ?? ''
-    return [...body.matchAll(DECLARATION)].map((match): [string, string] => [match[1], match[3]])
-  })
+interface Declarations {
+  declared: [string, string][]
+  unreadable: string[]
+}
+
+function readDeclarations(dir: ComponentDir): Declarations {
+  const result: Declarations = { declared: [], unreadable: [] }
+  for (const [file, source] of entries(dir, isStory)) {
+    try {
+      result.declared.push(...readMetaLayers(parse(source)))
+    } catch (error) {
+      if (!(error instanceof UnreadableMeta)) throw error
+      result.unreadable.push(
+        `${dir.name}/${file}: cannot read the meta's parameters.layers (${error.message}). ` +
+          "Write it as an object literal of string entries, layer: 'n/a: <reason>'."
+      )
+    }
+  }
+  return result
 }
 
 function declaredNotApplicable(dir: ComponentDir): Set<string> {
-  const valid = declarations(dir).filter(([, value]) => NOT_APPLICABLE.test(value))
+  const valid = readDeclarations(dir).declared.filter(([, value]) => NOT_APPLICABLE.test(value))
   return new Set(valid.map(([layer]) => layer))
 }
 
@@ -116,14 +144,55 @@ export function missingLayers(dir: ComponentDir, axeBaseline: Record<string, str
   })
 }
 
-/** A `parameters.layers` entry that names no layer or gives no reason. */
-export function declarationProblems(dir: ComponentDir): string[] {
-  return declarations(dir).flatMap(([layer, value]) => {
-    if (!(LAYERS as readonly string[]).includes(layer)) {
-      return [`${dir.name} declares layers.${layer}, which is not a layer (${LAYERS.join(', ')}).`]
-    }
-    if (NOT_APPLICABLE.test(value)) return []
+function declarationProblem(
+  dir: ComponentDir,
+  [layer, value]: [string, string],
+  axeBaseline: Record<string, string[]>
+): string[] {
+  if (!(LAYERS as readonly string[]).includes(layer)) {
+    return [`${dir.name} declares layers.${layer}, which is not a layer (${LAYERS.join(', ')}).`]
+  }
+  if (!NOT_APPLICABLE.test(value)) {
     return [`${dir.name} declares layers.${layer} = '${value}'; it needs 'n/a: <reason>'.`]
+  }
+  if (RULES[layer as Layer]?.present(dir, axeBaseline)) {
+    return [
+      `${dir.name} declares layers.${layer} n/a, but the layer exists. Remove the declaration.`,
+    ]
+  }
+  return []
+}
+
+/** A meta it cannot read, or a `parameters.layers` entry that names no layer, gives no reason, or is stale. */
+export function declarationProblems(
+  dir: ComponentDir,
+  axeBaseline: Record<string, string[]>
+): string[] {
+  const { declared, unreadable } = readDeclarations(dir)
+  return [
+    ...unreadable,
+    ...declared.flatMap((declaration) => declarationProblem(dir, declaration, axeBaseline)),
+  ]
+}
+
+/** Entries or layers in `current` that `original` (the day-one baseline) did not have. */
+export function baselineGrowth(
+  current: StableLayersBaseline,
+  original: Readonly<StableLayersBaseline>
+): string[] {
+  return Object.entries(current).flatMap(([name, layers]) => {
+    const allowed = original[name]
+    if (!allowed) {
+      return [
+        `${name} is not in the baseline clause 5 started with, and ${STABLE_BASELINE_FILE} may ` +
+          "only shrink. Add the missing layers or declare them 'n/a: <reason>'.",
+      ]
+    }
+    const gained = layers.filter((layer) => !allowed.includes(layer))
+    if (gained.length === 0) return []
+    return [
+      `${name} gained layer(s) ${gained.join(', ')} in ${STABLE_BASELINE_FILE}, which may only shrink.`,
+    ]
   })
 }
 

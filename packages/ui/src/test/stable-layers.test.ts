@@ -5,6 +5,7 @@ import axeBaseline from './stories-axe-baseline.json'
 import baseline from './stable-layers-baseline.json'
 import {
   STABLE_BASELINE_FILE,
+  baselineGrowth,
   declarationProblems,
   isStable,
   missingLayers,
@@ -42,6 +43,41 @@ function isSorted(values: string[]): boolean {
 }
 
 const ratchet: StableLayersBaseline = baseline
+
+// The baseline as clause 5 started (TD-93). The live file may drop entries and layers, never add them.
+const ORIGINAL_BASELINE: Readonly<StableLayersBaseline> = Object.freeze({
+  alert: ['keyboard', 'logic'],
+  autocomplete: ['keyboard', 'logic', 'types'],
+  avatar: ['logic'],
+  badge: ['logic'],
+  breadcrumbs: ['keyboard', 'logic'],
+  button: ['axe', 'keyboard', 'logic'],
+  card: ['keyboard', 'logic'],
+  checkbox: ['axe', 'keyboard', 'logic'],
+  chip: ['keyboard', 'logic'],
+  collapse: ['keyboard', 'logic'],
+  'data-row': ['logic'],
+  divider: ['logic'],
+  drawer: ['keyboard', 'logic'],
+  'form-field': ['logic'],
+  'icon-box': ['logic'],
+  indicator: ['logic'],
+  input: ['keyboard', 'logic'],
+  link: ['keyboard', 'logic'],
+  'list-item': ['keyboard', 'logic'],
+  pill: ['keyboard', 'logic'],
+  progress: ['axe', 'logic'],
+  radio: ['axe', 'keyboard', 'logic'],
+  section: ['logic'],
+  skeleton: ['axe', 'logic'],
+  spinner: ['axe', 'logic'],
+  stack: ['logic'],
+  surface: ['logic'],
+  switch: ['axe', 'keyboard', 'logic'],
+  tabs: ['axe', 'keyboard', 'logic'],
+  toast: ['keyboard', 'logic'],
+  'toolbar-button': ['keyboard', 'logic'],
+})
 const stable = componentDirs().filter(isStable)
 
 describe('stable-layers (MATURITY clause 5)', () => {
@@ -60,7 +96,7 @@ describe('stable-layers (MATURITY clause 5)', () => {
     '%s has every applicable layer or a baselined gap',
     (name, dir) => {
       const problems = [
-        ...declarationProblems(dir),
+        ...declarationProblems(dir, axeBaseline),
         ...stableBaselineProblems(name, missingLayers(dir, axeBaseline), ratchet[name]),
       ]
       expect(problems).toEqual([])
@@ -71,6 +107,10 @@ describe('stable-layers (MATURITY clause 5)', () => {
     const names = new Set(stable.map((dir) => dir.name))
     const gone = Object.keys(ratchet).filter((name) => !names.has(name))
     expect(gone, `Remove these entries from ${STABLE_BASELINE_FILE}`).toEqual([])
+  })
+
+  it('only shrinks from the baseline clause 5 started with', () => {
+    expect(baselineGrowth(ratchet, ORIGINAL_BASELINE)).toEqual([])
   })
 
   it('is sorted with no empty entries, so a diff shows exactly what changed', () => {
@@ -94,6 +134,10 @@ const FOCUSABLE_SOURCE = `import { Pressable } from 'react-native'
 export function Fixture() { return <Pressable /> }`
 
 const PROPERTY_TEST = `import { fcAssert } from '../../../test/property'`
+
+const KEYBOARD_STORY = `const meta = { title: 'X', tags: ['play'] }
+export default meta
+export const Tab = { play: async () => {} }`
 
 function fixture(files: Record<string, string>): ComponentDir {
   return { name: 'fixture', files }
@@ -124,7 +168,7 @@ describe('stable-layers failure paths', () => {
     })
 
     expect(missingLayers(dir, {})).toEqual([])
-    expect(declarationProblems(dir)).toEqual([])
+    expect(declarationProblems(dir, {})).toEqual([])
   })
 
   it('fails an n/a declaration with an empty reason', () => {
@@ -134,7 +178,7 @@ describe('stable-layers failure paths', () => {
       'fixtureMath.test.ts': PROPERTY_TEST,
     })
 
-    expect(declarationProblems(dir)).toEqual([
+    expect(declarationProblems(dir, {})).toEqual([
       expect.stringMatching(/fixture declares layers\.keyboard .* needs 'n\/a: <reason>'/),
     ])
     expect(missingLayers(dir, {})).toEqual(['keyboard'])
@@ -150,8 +194,7 @@ describe('stable-layers failure paths', () => {
     const dir = fixture({
       'Fixture.tsx': FOCUSABLE_SOURCE,
       'Fixture.stories.tsx': STABLE_STORY(),
-      'Fixture.interaction.stories.tsx': `const meta = { title: 'X', tags: ['play'] }
-export const Tab = { play: async () => {} }`,
+      'Fixture.interaction.stories.tsx': KEYBOARD_STORY,
       'fixtureMath.test.ts': PROPERTY_TEST,
     })
 
@@ -179,5 +222,130 @@ export function Fixture<T extends string>() { return <FlatList /> }`,
     expect(
       missingLayers(dir, { 'components-molecules-fixture--default': ['button-name'] })
     ).toEqual(['axe'])
+  })
+})
+
+describe('stable-layers baseline ratchet', () => {
+  const original = { button: ['axe', 'keyboard', 'logic'] }
+
+  it('fails a newly baselined component', () => {
+    expect(baselineGrowth({ ...original, select: ['logic'] }, original)).toEqual([
+      expect.stringMatching(/select is not in the baseline clause 5 started with/),
+    ])
+  })
+
+  it('fails a layer added to an existing entry', () => {
+    expect(baselineGrowth({ button: ['axe', 'keyboard', 'logic', 'types'] }, original)).toEqual([
+      expect.stringMatching(/button gained layer\(s\) types/),
+    ])
+  })
+
+  it('accepts an entry that shrank or went away', () => {
+    expect(baselineGrowth({ button: ['logic'] }, original)).toEqual([])
+    expect(baselineGrowth({}, original)).toEqual([])
+  })
+})
+
+describe('stable-layers n/a declarations', () => {
+  it('fails an n/a declared for a layer that exists as stale', () => {
+    const dir = fixture({
+      'Fixture.tsx': FOCUSABLE_SOURCE,
+      'Fixture.stories.tsx': STABLE_STORY("parameters: { layers: { keyboard: 'n/a: no focus' } },"),
+      'Fixture.interaction.stories.tsx': KEYBOARD_STORY,
+      'fixtureMath.test.ts': PROPERTY_TEST,
+    })
+
+    expect(declarationProblems(dir, {})).toEqual([
+      expect.stringMatching(/fixture declares layers\.keyboard n\/a, but the layer exists/),
+    ])
+  })
+
+  it('ignores parameters.layers on a story export, outside the meta', () => {
+    const dir = fixture({
+      'Fixture.tsx': FOCUSABLE_SOURCE,
+      'Fixture.stories.tsx': `${STABLE_STORY()}
+export const Default = { parameters: { layers: { keyboard: 'n/a: dodged' } } }`,
+      'fixtureMath.test.ts': PROPERTY_TEST,
+    })
+
+    expect(missingLayers(dir, {})).toEqual(['keyboard'])
+  })
+
+  it('reads every entry of the meta layers object, braces in a reason included', () => {
+    const dir = fixture({
+      'Fixture.tsx': `import { Pressable } from 'react-native'
+export function Fixture<T extends string>() { return <Pressable /> }`,
+      'Fixture.stories.tsx': STABLE_STORY(
+        "parameters: { docs: { source: { code: '{}' } }, layers: { keyboard: 'n/a: it\\'s in {Button}', types: 'n/a: T is internal' } },"
+      ),
+      'fixtureMath.test.ts': PROPERTY_TEST,
+    })
+
+    expect(declarationProblems(dir, {})).toEqual([])
+    expect(missingLayers(dir, {})).toEqual([])
+  })
+
+  it.each([
+    ['a spread in layers', 'parameters: { layers: { ...shared } },'],
+    ['a non-literal value', 'parameters: { layers: { keyboard: REASON } },'],
+    ['a non-literal parameters', 'parameters: shared,'],
+    ['a template with a substitution', 'parameters: { layers: { keyboard: `n/a: ${why}` } },'],
+  ])('fails closed on %s, naming the file', (_label, parameters) => {
+    const dir = fixture({
+      'Fixture.tsx': FOCUSABLE_SOURCE,
+      'Fixture.stories.tsx': STABLE_STORY(parameters),
+      'fixtureMath.test.ts': PROPERTY_TEST,
+    })
+
+    expect(declarationProblems(dir, {})).toEqual([
+      expect.stringMatching(
+        /fixture\/Fixture\.stories\.tsx: cannot read the meta's parameters\.layers/
+      ),
+    ])
+  })
+})
+
+describe('stable-layers source reading', () => {
+  it('does not count a play story that exists only in a comment', () => {
+    const dir = fixture({
+      'Fixture.tsx': FOCUSABLE_SOURCE,
+      'Fixture.stories.tsx': `${STABLE_STORY()}
+// export const Tab = { tags: ['play'], play: async () => {} }`,
+      'fixtureMath.test.ts': PROPERTY_TEST,
+    })
+
+    expect(missingLayers(dir, {})).toEqual(['keyboard'])
+  })
+
+  it('does not count a focus primitive named only in a comment', () => {
+    const dir = fixture({
+      'Fixture.tsx': `// Not a Pressable: the parent owns focus. /* TextInput */
+export function Fixture() { return null }`,
+      'Fixture.stories.tsx': STABLE_STORY(),
+      'fixtureMath.test.ts': PROPERTY_TEST,
+    })
+
+    expect(missingLayers(dir, {})).toEqual([])
+  })
+
+  it('does not count a generic export inside a comment', () => {
+    const dir = fixture({
+      'Fixture.tsx': `/* export function Fixture<T>() {} */
+export function Fixture() { return null }`,
+      'Fixture.stories.tsx': STABLE_STORY(),
+      'fixtureMath.test.ts': PROPERTY_TEST,
+    })
+
+    expect(missingLayers(dir, {})).toEqual([])
+  })
+
+  it('counts a generic default export', () => {
+    const dir = fixture({
+      'Fixture.tsx': 'export default function Fixture<T extends string>() { return null }',
+      'Fixture.stories.tsx': STABLE_STORY(),
+      'fixtureMath.test.ts': PROPERTY_TEST,
+    })
+
+    expect(missingLayers(dir, {})).toEqual(['types'])
   })
 })

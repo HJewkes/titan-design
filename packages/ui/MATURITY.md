@@ -68,7 +68,9 @@ parameters: { layers: { keyboard: 'n/a: focus belongs to the wrapped Button' } }
 ```
 
 The value must start `n/a: ` and give a non-empty reason. An empty reason, or a key that names no
-layer, fails the detector. The [test-layers doc](../../docs/test-layers.md) says how to write each
+layer, fails the detector. So does an n/a for a layer that exists: remove the declaration. Only
+the default-exported `meta` counts, and its `parameters.layers` must be an object literal of string
+entries; a spread or a non-literal value fails closed. The [test-layers doc](../../docs/test-layers.md) says how to write each
 layer.
 
 | Layer      | Applies when                                         | Exists when                                                             |
@@ -87,7 +89,7 @@ overrides a reading that is wrong for one component.
 `src/test/stable-layers.test.ts` derives the layers by reading files, with no Storybook boot.
 `src/test/stable-layers-baseline.json` lists the layers each stable component lacked on the
 day clause 5 started: all 31 stable components, so none lost `stable` that day. It may only
-shrink. A gap it does not list fails the test, and a listed layer that now exists fails as stale
+shrink, and the test pins that day's entries: a new component or a new layer in it fails. A gap it does not list fails the test, and a listed layer that now exists fails as stale
 until someone removes it. A component that lacks a layer and has no baseline entry cannot be
 promoted until it adds the layer or declares it n/a.
 
