@@ -38,6 +38,8 @@ export interface SelectProps<T = string> extends ViewProps {
   onChangeMulti?: (values: T[]) => void
   /** Enable multi-select */
   isMulti?: boolean
+  /** Accessible name for the combobox; `accessibilityLabel` takes precedence */
+  label?: string
   /** Placeholder text */
   placeholder?: string
   /** Whether the select is disabled */
@@ -80,6 +82,8 @@ export function Select<T extends string = string>({
   onChange,
   onChangeMulti,
   isMulti = false,
+  label,
+  accessibilityLabel,
   placeholder = 'Select...',
   isDisabled = false,
   isInvalid = false,
@@ -127,6 +131,7 @@ export function Select<T extends string = string>({
     }
   }
 
+  const accessibleName = accessibilityLabel ?? label
   const hasValue = isMulti ? values.length > 0 : value !== null && value !== undefined
 
   return (
@@ -137,6 +142,7 @@ export function Select<T extends string = string>({
           onPress={() => !isDisabled && setIsOpen(!isOpen)}
           disabled={isDisabled}
           accessibilityRole="combobox"
+          accessibilityLabel={accessibleName}
           accessibilityState={{ expanded: isOpen, disabled: isDisabled }}
           className={cn(
             'flex-row items-center justify-between px-4 py-2.5 rounded-md border',
@@ -161,6 +167,8 @@ export function Select<T extends string = string>({
                   e.stopPropagation?.()
                   clearValue()
                 }}
+                accessibilityRole="button"
+                accessibilityLabel={accessibleName ? `Clear ${accessibleName}` : 'Clear selection'}
                 className="p-1"
               >
                 <Text className="text-text-secondary text-xs">×</Text>

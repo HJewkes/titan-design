@@ -166,6 +166,29 @@ describe('Select', () => {
       expect(results).toHaveNoViolations()
     })
 
+    it('names the combobox and clear button when labelled', async () => {
+      const { container } = render(<Select options={defaultOptions} value="1" label="Fruit" />)
+      const results = await axe(container, { rules: { 'aria-required-attr': { enabled: false } } })
+      expect(results).toHaveNoViolations()
+      expect(screen.getByRole('combobox', { name: /Fruit/ })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Clear Fruit' })).toBeInTheDocument()
+    })
+
+    it('prefers accessibilityLabel over label', () => {
+      render(<Select options={defaultOptions} value="1" label="Fruit" accessibilityLabel="Pick" />)
+      expect(screen.getByRole('combobox', { name: /Pick/ })).toBeInTheDocument()
+    })
+
+    it('labels the clear button from accessibilityLabel', () => {
+      render(<Select options={defaultOptions} value="1" accessibilityLabel="Pick" />)
+      expect(screen.getByRole('button', { name: 'Clear Pick' })).toBeInTheDocument()
+    })
+
+    it('falls back to a generic clear label', () => {
+      render(<Select options={defaultOptions} value="1" />)
+      expect(screen.getByRole('button', { name: 'Clear selection' })).toBeInTheDocument()
+    })
+
     it('has combobox role on trigger', () => {
       render(<Select options={defaultOptions} />)
       expect(screen.getByRole('combobox')).toBeInTheDocument()
