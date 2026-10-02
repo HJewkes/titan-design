@@ -15,7 +15,7 @@ const LOCAL_TIME_TEST_PATH = fileURLToPath(
 
 const STORYBOOK_CONFIG_DIR = fileURLToPath(new URL('./.storybook', import.meta.url))
 
-const TEST_GLOB = ['src/**/*.test.{ts,tsx}']
+const TEST_GLOB = ['src/**/*.test.{ts,tsx}', 'scripts/**/*.test.mjs']
 const TEST_EXCLUDE = ['src/**/*.visual.test.{ts,tsx}', 'node_modules']
 
 export default defineConfig({
