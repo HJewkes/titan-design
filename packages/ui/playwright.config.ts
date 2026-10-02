@@ -31,6 +31,20 @@ export default defineConfig({
         viewport: { width: 1280, height: 720 },
       },
     },
+    // Behaviour and keyboard tests for stories tagged `interaction`; they assert, never screenshot.
+    {
+      name: 'interaction',
+      testDir: './tests/interaction',
+      outputDir: './tests/interaction/results',
+      // One worker: parallel first loads of the dev server made the scroll timings flaky.
+      fullyParallel: false,
+      workers: 1,
+      timeout: 60_000,
+      use: {
+        browserName: 'chromium',
+        viewport: { width: 390, height: 844 },
+      },
+    },
   ],
   webServer: {
     command: 'pnpm storybook --ci',

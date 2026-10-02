@@ -117,7 +117,6 @@
     "test:visual:tokens": "playwright test --config playwright.tokens.config.ts",
     "test:visual:stories": "playwright test stories.spec.ts",
     "test:visual:stories:update": "playwright test stories.spec.ts --update-snapshots",
-    "test:interaction": "playwright test --config playwright.interaction.config.ts",
     "test:offline-fonts": "playwright test --config playwright.offline-fonts.config.ts",
     "prepublishOnly": "pnpm build && vitest --run --project threads --project local-time --project types",
     "lint:colors:baseline": "node scripts/update-raw-color-baseline.mjs",
