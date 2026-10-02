@@ -2,8 +2,61 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Avatar, AvatarBadge, AvatarGroup } from './Avatar'
+import { Surface } from '../surface'
+import { avatarColors, avatarColorSlot } from '../../../utils/avatar-color'
+import { bestTextColor } from '../../../theme/tokens/primitives'
+
+function luminance(hex: string): number {
+  const [r, g, b] = [0, 2, 4].map((i) => {
+    const c = parseInt(hex.slice(1).slice(i, i + 2), 16) / 255
+    return c >= 0.04045 ? ((c + 0.055) / 1.055) ** 2.4 : c / 12.92
+  })
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+
+function contrast(a: string, b: string): number {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x)
+  return (hi + 0.05) / (lo + 0.05)
+}
+
+function findName(slot: number): string {
+  for (let i = 0; ; i++) {
+    if (avatarColorSlot(`Name${i}`) === slot) return `Name${i}`
+  }
+}
+
+function hexToRgb(hex: string): string {
+  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
+  return `rgb(${r}, ${g}, ${b})`
+}
 
 describe('Avatar', () => {
+  it('initials clear 4.5:1 on every light name colour', () => {
+    for (let slot = 0; slot < 7; slot++) {
+      const name = findName(slot)
+      const { unmount } = render(
+        <Surface theme="light">
+          <Avatar colorFromName={name} />
+        </Surface>
+      )
+      const fill = avatarColors('light')[slot]
+      const ink = bestTextColor(fill)
+      expect(screen.getAllByText(/./).at(-1)).toHaveStyle({ color: ink })
+      expect(contrast(fill, ink)).toBeGreaterThanOrEqual(4.5)
+      unmount()
+    }
+  })
+
+  it('paints the name colour from the light palette under a light Surface', () => {
+    render(
+      <Surface theme="light">
+        <Avatar colorFromName="Alice Brown" />
+      </Surface>
+    )
+    const fills = avatarColors('light').map(hexToRgb)
+    expect(fills).toContain(screen.getByRole('img').style.backgroundColor)
+  })
+
   it('renders correctly with default props', () => {
     render(<Avatar />)
     expect(screen.getByRole('img')).toBeInTheDocument()

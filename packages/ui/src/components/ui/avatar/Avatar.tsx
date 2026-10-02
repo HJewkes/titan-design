@@ -2,6 +2,8 @@ import React from 'react'
 import { View, Text, Image, type ViewProps, type ImageSourcePropType } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { avatarColor, getInitials } from '../../../utils/avatar-color'
+import { bestTextColor } from '../../../theme/tokens/primitives'
+import { useSurfaceMode } from '../surface'
 
 export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
 
@@ -55,11 +57,12 @@ export function Avatar({
   className,
   ...props
 }: AvatarProps) {
+  const mode = useSurfaceMode()
   const styles = sizeStyles[size]
   const hasImage = source !== undefined
 
   const resolvedFallback = fallback ?? (colorFromName ? getInitials(colorFromName) : undefined)
-  const nameColor = colorFromName ? avatarColor(colorFromName) : undefined
+  const nameColor = colorFromName ? avatarColor(colorFromName, mode) : undefined
 
   return (
     <View
@@ -81,7 +84,10 @@ export function Avatar({
           accessibilityLabel={alt}
         />
       ) : resolvedFallback ? (
-        <Text className={cn('font-semibold text-text-inverse', styles.text)}>
+        <Text
+          className={cn('font-semibold', !nameColor && 'text-text-inverse', styles.text)}
+          style={nameColor ? { color: bestTextColor(nameColor) } : undefined}
+        >
           {resolvedFallback}
         </Text>
       ) : (
