@@ -58,6 +58,39 @@ have been promoted on the same day they were marked for retirement. It is the
 only clause not derivable from the original taxonomy — flag it if you disagree
 with it rather than quietly tagging around it.
 
+### Clause 5: every applicable test layer
+
+Clause 5 is live as of TD-26 slice S6 (TD-93). A `ui/` component is stable only if each
+applicable layer below exists in `<dir>`, or its story `meta` declares the layer not applicable:
+
+```ts
+parameters: { layers: { keyboard: 'n/a: focus belongs to the wrapped Button' } },
+```
+
+The value must start `n/a: ` and give a non-empty reason. An empty reason, or a key that names no
+layer, fails the detector. The [test-layers doc](../../docs/test-layers.md) says how to write each
+layer.
+
+| Layer      | Applies when                                         | Exists when                                                             |
+| ---------- | ---------------------------------------------------- | ----------------------------------------------------------------------- |
+| `logic`    | always                                               | a `*.test.ts` in `<dir>` imports `fast-check` or calls `fcAssert`       |
+| `keyboard` | the component takes focus (`Pressable`, `TextInput`) | a story file in `<dir>` tagged `play` has a `play` function             |
+| `axe`      | always                                               | no story id of the component is in `src/test/stories-axe-baseline.json` |
+| `visual`   | n/a until TD-46                                      | an entry in TD-46's visual manifest, once it lands on `main`            |
+| `types`    | the component exports a generic                      | a `*.test-d.ts` in `<dir>`                                              |
+| `scale`    | the component windows its items (a `FlatList`)       | a test in `<dir>` calls `expectBoundedMount`                            |
+
+A `play`-tagged story is one the `storybook` Vitest browser project runs. "Takes focus",
+"exports a generic" and "windows" are read from the component's own source; a declaration
+overrides a reading that is wrong for one component.
+
+`src/test/stable-layers.test.ts` derives the layers by reading files, with no Storybook boot.
+`src/test/stable-layers-baseline.json` lists the layers each stable component lacked on the
+day clause 5 started: all 31 stable components, so none lost `stable` that day. It may only
+shrink. A gap it does not list fails the test, and a listed layer that now exists fails as stale
+until someone removes it. A component that lacks a layer and has no baseline entry cannot be
+promoted until it adds the layer or declares it n/a.
+
 Consequences worth stating out loud:
 
 - **Adding a `ui/*` primitive without a row in the family README leaves it
