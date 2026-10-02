@@ -101,7 +101,7 @@
     "type-check": "tsc --noEmit",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\"",
     "test": "vitest --project threads --project local-time --project types",
-    "test:storybook": "vitest run --project storybook",
+    "test:storybook": "vitest run --project storybook --reporter=default --reporter=json --outputFile.json=.vitest-storybook-report.json && node scripts/check-play-count.mjs .vitest-storybook-report.json",
     "test:coverage": "vitest --project threads --project local-time --project types --coverage",
     "storybook": "node scripts/storybook-launch.mjs",
     "build-storybook": "storybook build",
