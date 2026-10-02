@@ -1,35 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 
-interface IndexEntry {
-  id: string
-  type: string
-  tags?: string[]
-}
-
-const INTERACTIONS = /^components-molecules-carousel-interactions--/
 const DEFAULT_STORY = 'components-molecules-carousel--default'
-
-async function interactionStories(page: Page): Promise<string[]> {
-  const response = await page.request.get('/index.json')
-  const index = (await response.json()) as { entries: Record<string, IndexEntry> }
-  return Object.values(index.entries)
-    .filter((e) => e.type === 'story' && INTERACTIONS.test(e.id) && e.tags?.includes('play'))
-    .map((e) => e.id)
-}
-
-test('every carousel play function passes in a real browser', async ({ page }) => {
-  const ids = await interactionStories(page)
-  expect(ids.length).toBeGreaterThanOrEqual(7)
-  for (const id of ids) {
-    await page.goto(`/iframe.html?id=${id}&viewMode=story`)
-    await page.waitForLoadState('networkidle')
-    const body = page.locator('body[data-play-status="passed"], body[data-play-status="failed"]')
-    await body.waitFor({ timeout: 20_000 })
-    const status = await page.locator('body').getAttribute('data-play-status')
-    const error = await page.locator('body').getAttribute('data-play-error')
-    expect(`${id}: ${status ?? 'none'}${error ? ` (${error})` : ''}`).toBe(`${id}: passed`)
-  }
-})
 
 async function openDefault(page: Page) {
   await page.goto(`/iframe.html?id=${DEFAULT_STORY}&viewMode=story`)

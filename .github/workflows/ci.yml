@@ -120,6 +120,11 @@ jobs:
           path: packages/ui/tests/visual/reference/stories.spec.ts-snapshots/
           retention-days: 7
 
+      # Interaction — carousel behaviour and keyboard tests, the `interaction` project of
+      # playwright.config.ts. They assert on the DOM and never screenshot.
+      - name: Interaction — carousel behaviour
+        run: pnpm --filter @titan-design/react-ui exec playwright test --project=interaction
+
       # No html reporter is configured, so the diagnostics are the per-test
       # -actual/-diff/-expected PNGs: Layer 2 writes to tests/visual/results
       # (playwright.config.ts outputDir), Layers 1 and 3 to Playwright's default
@@ -132,6 +137,7 @@ jobs:
           name: playwright-failure-diagnostics
           path: |
             packages/ui/tests/visual/results/
+            packages/ui/tests/interaction/results/
             packages/ui/test-results/
           if-no-files-found: warn
           retention-days: 7
