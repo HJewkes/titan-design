@@ -3,6 +3,13 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Text, View } from 'react-native'
 
+const layout = vi.hoisted(() => ({ width: null as number | null }))
+
+// jsdom never lays out, so a test that needs real slide geometry pins the width here.
+vi.mock('../../../hooks/useMeasuredWidth', () => ({
+  useMeasuredWidth: () => ({ width: layout.width, onLayout: () => undefined }),
+}))
+
 import { Carousel, CarouselSlide, type CarouselProps } from './Carousel'
 
 /** A slide's name is its position; the scroller's group is named after the carousel. */
@@ -190,6 +197,28 @@ describe('Carousel', () => {
     )
 
     expect(screen.getByTestId('carousel-position')).toHaveTextContent('1 of 2')
+  })
+
+  describe('after unmount', () => {
+    afterEach(() => {
+      vi.useRealTimers()
+      layout.width = null
+    })
+
+    it('stays silent when react-native-web delivers a late scroll event', () => {
+      vi.useFakeTimers()
+      layout.width = 300
+      const onValueChange = vi.fn()
+      const { unmount } = renderCarousel(LIFTS, { onValueChange })
+      const viewport = screen.getByTestId('carousel-viewport')
+      viewport.scrollLeft = 520
+      fireEvent.scroll(viewport)
+
+      unmount()
+      vi.advanceTimersByTime(1000)
+
+      expect(onValueChange).not.toHaveBeenCalled()
+    })
   })
 
   describe('bad children', () => {
