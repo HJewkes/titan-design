@@ -160,7 +160,7 @@
   "components/custom/Workout/RestTimer.tsx#RestTimer": {
     "function-lines": 115
   },
-  "components/custom/Workout/SegmentedBar.tsx#SegmentedBar>map#1": {
+  "components/custom/Workout/SegmentedBar.tsx#SegmentedBar>segments.map": {
     "complexity": 17
   },
   "components/custom/Workout/Sparkline.tsx#Sparkline": {
@@ -224,7 +224,7 @@
   "components/custom/Workout/velocityBandGeometry.ts": {
     "file-lines": 318
   },
-  "components/custom/Workout/weekTipModel.ts#weekTips>map#3": {
+  "components/custom/Workout/weekTipModel.ts#weekTips>axis.map": {
     "complexity": 17
   },
   "components/custom/Workout/wholeBodyCardParts.tsx": {
@@ -242,7 +242,7 @@
     "function-lines": 197,
     "props": 28
   },
-  "components/custom/charts/SetBarChart.tsx#SetBarChart>map#2": {
+  "components/custom/charts/SetBarChart.tsx#SetBarChart>cells.map": {
     "complexity": 18
   },
   "components/shell/workout/DualPinnedLiveStrip.tsx": {
