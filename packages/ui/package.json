@@ -94,7 +94,7 @@
   "scripts": {
     "build": "tsup && node scripts/generate-tokens-css.mjs",
     "dev": "tsup --watch",
-    "lint": "eslint src/",
+    "lint": "eslint src/ && pnpm lint:borders",
     "lint:borders": "bash scripts/check-border-classes.sh",
     "check:package": "bash scripts/check-package.sh",
     "check:cycles": "node scripts/check-cycles.mjs",

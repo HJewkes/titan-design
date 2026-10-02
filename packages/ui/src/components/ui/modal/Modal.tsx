@@ -92,7 +92,7 @@ export function Modal({
       onPress={handleBackdropPress}
       className={cn(
         'flex-1 items-center justify-center',
-        backdropBlur ? 'bg-scrim-subtle web:backdrop-blur-sm' : 'bg-scrim-default',
+        backdropBlur ? 'bg-scrim-subtle web:backdrop-blur-sm' : 'bg-scrim',
         backdropClassName
       )}
     >

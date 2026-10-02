@@ -103,7 +103,7 @@ export function Drawer({
     <Modal visible={isOpen} transparent animationType="fade" onRequestClose={onClose}>
       <View className="flex-1">
         {/* Backdrop */}
-        <Pressable onPress={handleOverlayPress} className="absolute inset-0 bg-scrim-default" />
+        <Pressable onPress={handleOverlayPress} className="absolute inset-0 bg-scrim" />
 
         {/* Drawer Panel — floating: overlay plane + lift, no ring. */}
         <Surface
