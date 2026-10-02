@@ -120,8 +120,9 @@ jobs:
           path: packages/ui/tests/visual/reference/stories.spec.ts-snapshots/
           retention-days: 7
 
-      # Interaction — carousel behaviour and keyboard tests, the `interaction` project of
-      # playwright.config.ts. They assert on the DOM and never screenshot.
+      # Interaction — carousel behaviour and keyboard tests, the `interaction`
+      # project of playwright.config.ts. They assert on the DOM and never
+      # screenshot.
       - name: Interaction — carousel behaviour
         run: pnpm --filter @titan-design/react-ui exec playwright test --project=interaction
 
