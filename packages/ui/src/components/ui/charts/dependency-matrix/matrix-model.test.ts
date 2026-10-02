@@ -75,6 +75,18 @@ describe('foldItems', () => {
     expect(totalWeight(folded.cells)).toBe(totalWeight(cells))
   })
 
+  it('saturates rather than overflowing when folded weights are huge', () => {
+    const items = itemsOf(2)
+    const cells = [
+      { from: 'item-0', to: 'item-1', value: Number.MAX_VALUE },
+      { from: 'item-1', to: 'item-0', value: Number.MAX_VALUE },
+    ]
+
+    expect(foldItems(items, cells, 0).cells).toEqual([
+      { from: FOLD_ITEM_ID, to: FOLD_ITEM_ID, value: Number.MAX_VALUE },
+    ])
+  })
+
   it('leaves a list at the limit untouched', () => {
     const items = itemsOf(3)
     const cells = [{ from: 'item-0', to: 'item-2', value: 1 }]

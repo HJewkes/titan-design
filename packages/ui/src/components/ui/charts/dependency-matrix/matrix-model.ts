@@ -45,8 +45,9 @@ export const cellKey = (from: string, to: string): string => `${from}\u0000${to}
 const sanitizeValue = (value: number | null): number | null =>
   typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : null
 
+/** Saturates at `Number.MAX_VALUE` so merging huge weights never yields `Infinity`. */
 const addValues = (a: number | null, b: number | null): number | null =>
-  a === null ? b : b === null ? a : a + b
+  a === null ? b : b === null ? a : Math.min(a + b, Number.MAX_VALUE)
 
 function mergeInto(map: Map<string, MatrixCell>, key: string, cell: MatrixCell): void {
   const existing = map.get(key)
