@@ -181,10 +181,16 @@ pass 3:1 in dark mode. Against the capsule fill, which is the adjacent colour, t
 fails on every plane (1.93 to 2.87), and it fails on the bare `surface-raised` and
 `surface-overlay` planes as well (2.88, 2.64).
 
-The dot is redundant with the level word, so WCAG 1.4.11 does not bind it. This follows the owner's
-standing preference for vivid chroma over contrast floors when the failure is printed: these tables
-are that printing, and the S2 story docs repeat them. The low dot in dark mode is the weakest signal
-in the set; Q1 is where the owner can change it.
+Three dots fall below 3:1 against the capsule. The weakest are the light success dot (1.41 to 1.69)
+and the light warning dot (1.33 to 1.59). The dark error dot (1.93 to 2.87) is next. The light error
+dot (3.34 to 4.00) and the dark success and warning dots (4.58 to 7.23) pass.
+
+The dot is redundant with the level word, so WCAG 1.4.11 does not bind it. That holds only while the
+label shows the level word (Q2). If Q2 drops the visible level word, the dot carries the level
+alone, 1.4.11 binds, and every failure above must be fixed before the badge ships. This follows the
+owner's standing preference for vivid chroma over contrast floors when the failure is printed: these
+tables are that printing, and the S2 story docs repeat them. Q1 is where the owner can change the
+low tone.
 
 Out of scope (a titan defect to file separately, not part of VW-161): the light-mode subtle Pill
 tones above and the light-mode solid success and warning labels fail AA, and
@@ -234,9 +240,13 @@ Baseline "Not assessed" (`evaluable: false`) is a distinct visual state with its
 
 1. **Tone for `low`.** Default: **an error-red dot on the neutral capsule.** Model calibration reads
    low on every profile-estimate set, so the low dot will be common. The alternative, a warning dot
-   for both medium and low, loses the distinction between them.
+   for both medium and low, loses the distinction between them. Every dot below 3:1 against the
+   capsule (section 5): light success 1.41 to 1.69, light warning 1.33 to 1.59, dark error 1.93 to
+   2.87. The light error dot (3.34 to 4.00) passes.
 2. **Visible text.** Default: **axis plus level ("Model · Low").** Three level-only badges would be
-   indistinguishable without a hover, which breaks "axis always named, never implied".
+   indistinguishable without a hover, which breaks "axis always named, never implied". Dropping the
+   level word makes the dot the only visual carrier of the level, so WCAG 1.4.11 then binds the dot
+   and the failures listed under Q1 must be fixed.
 3. **Axis names in the RIR row.** Default: **"Model", "This rep" and "Your baseline".** The wire names
    are engineering words.
 4. **`improvementPath` copy that names MCP tools in backticks** (for example "Re-run
