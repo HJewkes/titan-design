@@ -156,32 +156,16 @@ describe('Select', () => {
 
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
-      const { container } = render(<Select options={defaultOptions} value="1" />)
-      const results = await axe(container, {
-        rules: {
-          'aria-input-field-name': { enabled: false },
-          'aria-required-attr': { enabled: false },
-        },
-      })
-      expect(results).toHaveNoViolations()
+      const { container } = render(
+        <Select options={defaultOptions} value="1" accessibilityLabel="Fruit" />
+      )
+      expect(await axe(container)).toHaveNoViolations()
     })
 
-    it('names the combobox and clear button when labelled', async () => {
-      const { container } = render(<Select options={defaultOptions} value="1" label="Fruit" />)
-      const results = await axe(container, { rules: { 'aria-required-attr': { enabled: false } } })
-      expect(results).toHaveNoViolations()
+    it('names the combobox and clear button from accessibilityLabel', () => {
+      render(<Select options={defaultOptions} value="1" accessibilityLabel="Fruit" />)
       expect(screen.getByRole('combobox', { name: /Fruit/ })).toBeInTheDocument()
       expect(screen.getByRole('button', { name: 'Clear Fruit' })).toBeInTheDocument()
-    })
-
-    it('prefers accessibilityLabel over label', () => {
-      render(<Select options={defaultOptions} value="1" label="Fruit" accessibilityLabel="Pick" />)
-      expect(screen.getByRole('combobox', { name: /Pick/ })).toBeInTheDocument()
-    })
-
-    it('labels the clear button from accessibilityLabel', () => {
-      render(<Select options={defaultOptions} value="1" accessibilityLabel="Pick" />)
-      expect(screen.getByRole('button', { name: 'Clear Pick' })).toBeInTheDocument()
     })
 
     it('falls back to a generic clear label', () => {
@@ -197,11 +181,10 @@ describe('Select', () => {
     it('communicates expanded state', () => {
       render(<Select options={defaultOptions} />)
       const trigger = screen.getByRole('combobox')
-      // react-native-web does not map accessibilityState.expanded to aria-expanded
-      expect(trigger).toBeInTheDocument()
+      expect(trigger).toHaveAttribute('aria-expanded', 'false')
 
       fireEvent.click(trigger)
-      // Verify dropdown opened by checking for options
+      expect(trigger).toHaveAttribute('aria-expanded', 'true')
       expect(screen.getByText('Option 1')).toBeInTheDocument()
     })
 
