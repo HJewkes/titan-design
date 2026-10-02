@@ -88,6 +88,7 @@ export const Switch = forwardRef<View, SwitchProps>(function Switch(
       onPress={handlePress}
       accessibilityRole="switch"
       accessibilityState={{ checked: isChecked, disabled: isDisabled }}
+      aria-checked={isChecked}
       accessibilityLabel={label}
       className={cn('flex-row items-center gap-2', isDisabled && 'opacity-50', className)}
       {...props}
