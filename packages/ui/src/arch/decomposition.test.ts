@@ -3,19 +3,32 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { Linter } from 'eslint'
 import tseslint from 'typescript-eslint'
-import { describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect, it } from 'vitest'
 import {
   LIMITS,
+  compareToBaseline,
+  describeEntry,
   isInScope,
   measure,
+  mergeBaseline,
   overLimit,
   programFor,
   programFromTree,
-  // @ts-expect-error — plain-ESM build tooling, shared with the decomposition ratchet
+  // @ts-expect-error — plain-ESM build tooling, shared with scripts/update-decomposition-baseline.mjs
 } from '../../scripts/decomposition.mjs'
+import baseline from './decomposition-baseline.json'
 
 type Tree = Record<string, string>
 type Entries = Record<string, Record<string, number>>
+type Kind = 'added' | 'grown' | 'stale'
+interface Entry {
+  key: string
+  metric: string
+  value: number | null
+  limit: number
+  baseline: number | null
+}
+type Comparison = Record<Kind, Entry[]>
 
 const measureTree = (tree: Tree): Entries => measure(programFromTree(tree))
 
@@ -418,4 +431,207 @@ describe('decomposition detector on the package', () => {
       expect(entries['components/custom/Workout/VelocityStrip.tsx#VelocityStrip'].props).toBe(22)
     }
   )
+})
+
+const describeAll = (entries: Entry[], kind: Kind): string =>
+  entries.map((entry) => describeEntry(entry, kind)).join('\n')
+
+describe('decomposition ratchet', () => {
+  let comparison: Comparison
+
+  beforeAll(() => {
+    comparison = compareToBaseline(measure(programFor()), baseline)
+  }, 60_000)
+
+  it('finds no over-limit metric that the baseline does not list', () => {
+    expect(comparison.added, describeAll(comparison.added, 'added')).toEqual([])
+  })
+
+  it('finds no baselined metric that has grown', () => {
+    expect(comparison.grown, describeAll(comparison.grown, 'grown')).toEqual([])
+  })
+
+  it('finds no baselined metric that has shrunk or gone', () => {
+    expect(comparison.stale, describeAll(comparison.stale, 'stale')).toEqual([])
+  })
+
+  it('commits the baseline with keys and metrics sorted', () => {
+    const keys = Object.keys(baseline)
+
+    expect(keys).toEqual([...keys].sort())
+    for (const metrics of Object.values(baseline)) {
+      const names = Object.keys(metrics)
+      expect(names).toEqual([...names].sort())
+    }
+  })
+})
+
+const codeLines = (count: number): string =>
+  Array.from({ length: count }, (_, i) => `export const v${i} = ${i}\n`).join('')
+
+const propsComponent = (count: number): string => {
+  const props = Array.from({ length: count }, (_, i) => `  p${i}?: string`).join('\n')
+  return `import { View } from 'react-native'
+export interface WideProps {
+${props}
+}
+export function Wide(props: WideProps) { return <View>{String(props)}</View> }
+`
+}
+
+const LONG_FILE = 'utils/long.ts'
+const LONG_BASELINE = { [LONG_FILE]: { 'file-lines': 230 } }
+
+describe('decomposition ratchet on fixtures', { timeout: 30_000 }, () => {
+  it('reports a new component over the props limit as added', () => {
+    const live = measureTree({ 'components/wide/Wide.tsx': propsComponent(14) })
+
+    const { added } = compareToBaseline(live, {}) as Comparison
+
+    expect(added).toEqual([
+      {
+        key: 'components/wide/Wide.tsx#Wide',
+        metric: 'props',
+        value: 14,
+        limit: 13,
+        baseline: null,
+      },
+    ])
+  })
+
+  it('reports a baselined file one line longer as grown', () => {
+    const live = measureTree({ [LONG_FILE]: codeLines(231) })
+
+    const comparison = compareToBaseline(live, LONG_BASELINE) as Comparison
+
+    expect(comparison).toEqual({
+      added: [],
+      grown: [{ key: LONG_FILE, metric: 'file-lines', value: 231, limit: 225, baseline: 230 }],
+      stale: [],
+    })
+  })
+
+  it('reports a baselined file one line shorter as stale', () => {
+    const live = measureTree({ [LONG_FILE]: codeLines(229) })
+
+    const { grown, stale } = compareToBaseline(live, LONG_BASELINE) as Comparison
+
+    expect(grown).toEqual([])
+    expect(stale).toEqual([
+      { key: LONG_FILE, metric: 'file-lines', value: 229, limit: 225, baseline: 230 },
+    ])
+  })
+
+  it('reports a baselined file that was deleted as stale', () => {
+    const live = measureTree({ 'utils/other.ts': codeLines(1) })
+
+    const { stale } = compareToBaseline(live, LONG_BASELINE) as Comparison
+
+    expect(stale).toEqual([
+      { key: LONG_FILE, metric: 'file-lines', value: null, limit: 225, baseline: 230 },
+    ])
+  })
+
+  it('passes a baselined file whose value is unchanged', () => {
+    const live = measureTree({ [LONG_FILE]: codeLines(230) })
+
+    expect(compareToBaseline(live, LONG_BASELINE)).toEqual({ added: [], grown: [], stale: [] })
+  })
+})
+
+const FIX_TEXT: Record<string, string> = {
+  props: 'Group related props into one object prop',
+  'component-lines': 'Extract a part component',
+  'file-lines': 'Move pure helpers into a sibling `.ts` module',
+  complexity: 'Replace branches with a lookup table or early returns',
+  'function-lines': 'Split into named helpers.',
+}
+const REGEN = '`node packages/ui/scripts/update-decomposition-baseline.mjs'
+
+describe('decomposition failure messages', () => {
+  it.each(Object.keys(FIX_TEXT))(
+    'names key, metric, value, limit, baseline, the %s fix and the command',
+    (metric) => {
+      const entry = {
+        key: 'utils/a.ts#f',
+        metric,
+        value: 120,
+        limit: LIMITS[metric],
+        baseline: 110,
+      }
+
+      const message = describeEntry(entry, 'grown')
+
+      expect(message).toContain(
+        `\`utils/a.ts#f\` ${metric} is 120 (limit ${LIMITS[metric]}, baseline 110).`
+      )
+      expect(message).toContain(FIX_TEXT[metric])
+      expect(message).toContain(`${REGEN} --allow-increase\` and say why in the PR.`)
+      expect(message).not.toContain('\n')
+    }
+  )
+
+  it('marks an added entry as having no baseline', () => {
+    const entry = {
+      key: 'utils/a.ts',
+      metric: 'file-lines',
+      value: 230,
+      limit: 225,
+      baseline: null,
+    }
+
+    expect(describeEntry(entry, 'added')).toContain('is 230 (limit 225, baseline none).')
+  })
+
+  it('tells a stale entry to lock in the progress with the plain regen command', () => {
+    const entry = {
+      key: 'utils/a.ts',
+      metric: 'file-lines',
+      value: null,
+      limit: 225,
+      baseline: 230,
+    }
+
+    expect(describeEntry(entry, 'stale')).toBe(
+      `\`utils/a.ts\` file-lines is gone (limit 225, baseline 230). Lock in the progress: run ${REGEN}\`.`
+    )
+  })
+})
+
+describe('decomposition baseline regen', () => {
+  const previous = { 'a.ts': { 'file-lines': 230 } }
+  const grownLive = { 'a.ts': { 'file-lines': 231 } }
+  const addedLive = { 'a.ts': { 'file-lines': 230 }, 'b.ts#f': { complexity: 20 } }
+
+  it('refuses an added or grown entry unless the increase is allowed', () => {
+    expect(mergeBaseline(previous, addedLive)).toMatchObject({ ok: false, baseline: previous })
+    expect(mergeBaseline(previous, grownLive)).toMatchObject({ ok: false, baseline: previous })
+  })
+
+  it('accepts an added or grown entry with allowIncrease', () => {
+    expect(mergeBaseline(previous, addedLive, { allowIncrease: true })).toMatchObject({
+      ok: true,
+      baseline: { 'a.ts': { 'file-lines': 230 }, 'b.ts#f': { complexity: 20 } },
+    })
+    expect(mergeBaseline(previous, grownLive, { allowIncrease: true })).toMatchObject({
+      ok: true,
+      baseline: grownLive,
+    })
+  })
+
+  it('drops shrunk and under-limit metrics and sorts keys and metrics', () => {
+    const live = {
+      'z.ts#g': { 'function-lines': 120, complexity: 18 },
+      'a.ts': { 'file-lines': 200 },
+    }
+
+    const before = { ...previous, 'z.ts#g': { complexity: 19, 'function-lines': 120 } }
+
+    const { ok, baseline: merged } = mergeBaseline(before, live)
+
+    expect(ok).toBe(true)
+    expect(JSON.stringify(merged)).toBe(
+      JSON.stringify({ 'z.ts#g': { complexity: 18, 'function-lines': 120 } })
+    )
+  })
 })
