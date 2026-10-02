@@ -146,6 +146,31 @@ While this row exists, `MATURITY.md` clause 2's fourth condition keeps
 `empty-state` at `status:candidate`; it becomes promotable when the shim is deleted
 in 0.23.0.
 
+## Migration M4 — `Table` moved to `ui/`
+
+`Table` is domain-free, so by the placement rule (`CLAUDE.md`, Placement) its home is
+`ui/table` (scheduled as M4 by the 2026-09-19 decision, gated on TD-29). The family's
+components, hooks, tests, README and story are unchanged; only their home moved.
+
+| Export                                                                                          | Replacement                    | Known consumers                  | Task   |
+| ----------------------------------------------------------------------------------------------- | ------------------------------ | -------------------------------- | ------ |
+| Every `Table*` component, `useTable` and their types from `custom/Table`                        | the same names from `ui/table` | none in-repo                     | TD-37  |
+| `fitColumns`, `useColumnFit`, `useMeasuredWidth` and their types from `custom/Table/column-fit` | `ui/table/column-fit`          | five `custom/Workout` goal cards | TD-170 |
+
+**No published API change.** Every name still comes off the package root barrel, just
+through `components/ui` instead of `components/custom`; a consumer importing from
+`@titan-design/react-ui` sees nothing. Only a deep relative import of
+`components/custom/Table` hits the shim. That shim is tagged `@deprecated` for one
+release and **disappears in 0.23.0**; `ActiveWork`'s `TaskTable` and `TaskRow` now
+import from `ui/table`.
+
+`custom/Table/column-fit.ts` is a plain re-export, not tagged `@deprecated`, because
+five `custom/Workout` components still deep-import `useMeasuredWidth` from it. TD-170
+repoints them to `hooks/useMeasuredWidth`; the file goes with the shim in 0.23.0.
+
+While this row exists, `MATURITY.md` clause 2's fourth condition keeps `table` at
+`status:candidate`; it becomes promotable when the shim is deleted in 0.23.0.
+
 ## Fatigue tokens — `TONE_COLOR` replaced by `TONE_TOKEN` (VW-316)
 
 **Breaking, no alias possible.** `TONE_COLOR` held colours resolved at import

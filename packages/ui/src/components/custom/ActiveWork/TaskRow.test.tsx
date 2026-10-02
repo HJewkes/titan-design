@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { Table, TableBody } from '../Table'
+import { Table, TableBody } from '../../ui/table'
 import { TaskRow } from './TaskRow'
 import type { TaskListItem } from './TaskRow'
 
