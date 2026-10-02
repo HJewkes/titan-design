@@ -1,6 +1,6 @@
 // Behaviour and keyboard tests as play functions. Hidden from the sidebar and docs (`!dev`,
-// `!autodocs`); `tests/interaction/carousel.spec.ts` runs them in Chromium and reads the
-// `data-play-status` marker each one leaves on <body>.
+// `!autodocs`). The `!play` playground stories are opened by `tests/interaction/carousel.spec.ts`,
+// which drives them in Chromium and asserts on the DOM.
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { Text, View } from 'react-native'
