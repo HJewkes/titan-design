@@ -136,6 +136,28 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
+  # Runs the Storybook play functions in the `storybook` vitest browser project; the image
+  # ships Chromium, and addon-vitest compiles stories itself, so nothing builds or serves Storybook.
+  storybook-play:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.58.2-noble
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Storybook play functions
+        run: pnpm test:storybook
+
   # pnpm audit reads the lockfile only, so the job needs no install.
   audit:
     runs-on: ubuntu-latest
@@ -153,7 +175,7 @@ jobs:
   # The aggregator the ruleset will require; all-green also fails if a job here is missing from needs.
   check:
     if: always()
-    needs: [build, visual, audit]
+    needs: [build, visual, storybook-play, audit]
     runs-on: ubuntu-latest
     steps:
       - uses: HJewkes/ci/actions/all-green@v1
