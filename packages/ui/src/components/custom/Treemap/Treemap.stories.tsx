@@ -61,3 +61,14 @@ export const Truncated: Story = {
     maxTiles: 40,
   },
 }
+
+/** The categorical fallback under the light theme; each label picks black or white ink. */
+export const Light: Story = {
+  globals: { theme: 'light' },
+  args: {
+    data: sample.slice(0, 7).map(({ color: _color, ...d }) => d),
+    width: 560,
+    height: 300,
+    scale: 'sqrt',
+  },
+}

@@ -124,3 +124,12 @@ export const Empty: Story = {
     },
   },
 }
+
+/** The categorical fallback under the light theme. */
+export const Light: Story = {
+  globals: { theme: 'light' },
+  args: {
+    ...Default.args,
+    data: mainSequence.map(({ color: _color, ...d }) => d),
+  },
+}

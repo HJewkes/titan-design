@@ -1,8 +1,7 @@
-import React from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { DATAVIZ_CATEGORICAL_PALETTE } from '../../../theme/extracted-colors-dataviz'
-import { primitiveColors } from '../../../theme/tokens/primitives'
+import { DATAVIZ_CATEGORICAL_ROLES } from '../../../theme/extracted-colors-dataviz'
+import { bestTextColor, primitiveColors } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
 
@@ -39,8 +38,12 @@ export interface TreemapProps extends Omit<ViewProps, 'children'> {
   className?: string
 }
 
-/** Titan categorical fallback palette (see extracted-colors-dataviz). */
-const PALETTE = DATAVIZ_CATEGORICAL_PALETTE
+const HEX_FILL = /^#[0-9a-f]{6}$/i
+
+/** Black or white ink for a hex fill; a var() or named fill keeps the on-data-strong ink. */
+function labelInk(fill: string | undefined, fallback: string): string {
+  return fill && HEX_FILL.test(fill) ? bestTextColor(fill) : fallback
+}
 
 interface Rect {
   x: number
@@ -135,11 +138,13 @@ export function Treemap({
   className,
   ...props
 }: TreemapProps) {
-  const overflowFill = getSemanticColors(useSurfaceMode())['surface-overlay']
+  const colors = getSemanticColors(useSurfaceMode())
+  const palette = DATAVIZ_CATEGORICAL_ROLES.map((role) => colors[role])
+  const overflowFill = colors['surface-overlay']
   const clean = data
     .filter((d) => d.value > 0)
     .sort((a, b) => b.value - a.value)
-    .map((d, i) => ({ ...d, color: d.color ?? PALETTE[i % PALETTE.length] }))
+    .map((d, i) => ({ ...d, color: d.color ?? palette[i % palette.length] }))
 
   let tiles = clean
   if (clean.length > maxTiles) {
@@ -187,7 +192,12 @@ export function Treemap({
             }}
           >
             {labelFits && (
-              <Text numberOfLines={2} className="text-[10px] font-semibold text-on-data-strong">
+              <Text
+                testID={`treemap-label-${r.datum.id}`}
+                numberOfLines={2}
+                className="text-[10px] font-semibold"
+                style={{ color: labelInk(r.datum.color, colors['on-data-strong']) }}
+              >
                 {r.datum.label ?? r.datum.id}
               </Text>
             )}
