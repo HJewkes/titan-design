@@ -104,6 +104,46 @@ describe('Scatter', () => {
     })
   })
 
+  describe('reference lines', () => {
+    const strokes = (theme: 'dark' | 'light') => {
+      const { unmount } = render(
+        <Surface theme={theme}>
+          <Scatter {...base} diagonal />
+        </Surface>
+      )
+      const bg = (id: string) => getComputedStyle(screen.getAllByTestId(id)[0]).backgroundColor
+      const result = {
+        grid: bg('scatter-gridline-y'),
+        axis: bg('scatter-axis-x'),
+        diagonal: getComputedStyle(screen.getByTestId('scatter-diagonal')).borderTopColor,
+      }
+      unmount()
+      return result
+    }
+
+    it('resolves grid, axis and diagonal strokes from the hairline tokens per mode', () => {
+      const light = getSemanticColors('light')
+      const probe = document.createElement('div')
+      const resolve = (c: string) => {
+        probe.style.backgroundColor = c
+        return probe.style.backgroundColor
+      }
+      expect(strokes('light')).toEqual({
+        grid: resolve(light['hairline-subtle']),
+        axis: resolve(light['hairline-default']),
+        diagonal: resolve(light['hairline-strong']),
+      })
+    })
+
+    it('draws different strokes on a light surface than on a dark one', () => {
+      const dark = strokes('dark')
+      const light = strokes('light')
+      expect(light.grid).not.toBe(dark.grid)
+      expect(light.axis).not.toBe(dark.axis)
+      expect(light.diagonal).not.toBe(dark.diagonal)
+    })
+  })
+
   describe('accessibility', () => {
     it('labels the canvas as an image', () => {
       render(<Scatter {...base} axis={{ xLabel: 'I', yLabel: 'A' }} />)

@@ -4,7 +4,6 @@ import { DATAVIZ_CATEGORICAL_ROLES } from '../../../theme/extracted-colors-datav
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
-import { alpha } from '../../../utils/colors'
 import { formatTrimmedDecimal } from '../../../utils/number-format'
 
 export interface ScatterDatum {
@@ -51,9 +50,6 @@ export interface ScatterProps extends Omit<ViewProps, 'children'> {
   className?: string
 }
 
-const GRID_LINE = alpha(primitiveColors.white, 0.07)
-const AXIS_LINE = alpha(primitiveColors.white, 0.18)
-const DIAGONAL_LINE = alpha(primitiveColors.white, 0.28)
 const DEFAULT_R = 6
 
 const PLOT_LEFT = 40
@@ -194,7 +190,7 @@ export function Scatter({
                 width: innerW,
                 top: y,
                 height: 1,
-                backgroundColor: GRID_LINE,
+                backgroundColor: colors['hairline-subtle'],
               }}
             >
               <Text
@@ -225,7 +221,7 @@ export function Scatter({
                 height: innerH,
                 left: x,
                 width: 1,
-                backgroundColor: GRID_LINE,
+                backgroundColor: colors['hairline-subtle'],
               }}
             >
               <Text
@@ -247,31 +243,33 @@ export function Scatter({
         {/* Axis frame (left + bottom). */}
         <View
           accessibilityElementsHidden
+          testID="scatter-axis-y"
           style={{
             position: 'absolute',
             left: PLOT_LEFT,
             top: PLOT_TOP,
             width: 1,
             height: innerH,
-            backgroundColor: AXIS_LINE,
+            backgroundColor: colors['hairline-default'],
           }}
         />
         <View
           accessibilityElementsHidden
+          testID="scatter-axis-x"
           style={{
             position: 'absolute',
             left: PLOT_LEFT,
             top: PLOT_TOP + innerH,
             width: innerW,
             height: 1,
-            backgroundColor: AXIS_LINE,
+            backgroundColor: colors['hairline-default'],
           }}
         />
 
         {diagonal && (
           <LineSegment
             testID="scatter-diagonal"
-            color={DIAGONAL_LINE}
+            color={colors['hairline-strong']}
             x1={toX(xd.min)}
             y1={toY(1 - xd.min)}
             x2={toX(xd.max)}
