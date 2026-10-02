@@ -69,6 +69,8 @@ export function useScrollSync(input: ScrollSyncInput): ScrollSync {
   // Where a scroll we started is heading; its frames must not drive the counter.
   const glideTarget = useRef<number | null>(null)
   const settleTimer: TimerRef = useRef(null)
+  // react-native-web fires a scroll-end onScroll 100 ms after the last scroll, even after unmount.
+  const unmounted = useRef(false)
   const reducedMotion = usePrefersReducedMotion()
   const [swipeIndex, setSwipeIndex] = useState<number | null>(null)
   const [settled, setSettled] = useState(0)
@@ -96,9 +98,16 @@ export function useScrollSync(input: ScrollSyncInput): ScrollSync {
     animateNext.current = false
   }, [activePosition, total, geometry, measured, reducedMotion, scrollTo, settled])
 
-  useEffect(() => () => clearSettleTimer(settleTimer), [])
+  useEffect(() => {
+    unmounted.current = false
+    return () => {
+      unmounted.current = true
+      clearSettleTimer(settleTimer)
+    }
+  }, [])
 
   const onSettle = useCallback(() => {
+    if (unmounted.current) return
     clearSettleTimer(settleTimer)
     glideTarget.current = null
     wrapShift.current = 0
@@ -110,6 +119,7 @@ export function useScrollSync(input: ScrollSyncInput): ScrollSync {
 
   const onScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      if (unmounted.current) return
       offset.current = event.nativeEvent.contentOffset.x
       const target = glideTarget.current
       if (target !== null && Math.abs(offset.current - target) <= 1) glideTarget.current = null
