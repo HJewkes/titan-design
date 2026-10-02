@@ -36,6 +36,11 @@ const meta: Meta<typeof Alert> = {
     },
     message: { control: 'text' },
     showIcon: { control: 'boolean' },
+    eyebrow: { control: 'text' },
+    action: { control: false },
+    footer: { control: false },
+    dismissLabel: { control: 'text' },
+    onClose: { control: false },
   },
 }
 

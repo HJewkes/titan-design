@@ -1,6 +1,8 @@
 import React from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { Button, ButtonText } from '../button'
+import { Eyebrow } from '../eyebrow'
 
 export type AlertStatus = 'success' | 'info' | 'warning' | 'error'
 export type AlertVariant = 'subtle' | 'outline' | 'solid'
@@ -27,6 +29,14 @@ export interface AlertProps extends ViewProps {
    * which stay available for richer content.
    */
   message?: string
+  /** Consumer label above the title or message ("Suggested", "Insight"), in the status text colour. */
+  eyebrow?: React.ReactNode
+  /** Trailing slot after the content and before dismiss, e.g. one `Button size="sm"` or a `Pill`. */
+  action?: React.ReactNode
+  /** Full-width row below the content, inside the content column. */
+  footer?: React.ReactNode
+  /** With {@link onClose}, renders a text link button with this label in place of the `×`. */
+  dismissLabel?: string
   /** Custom icon element */
   icon?: React.ReactNode
   /** Whether to show the default icon */
@@ -103,8 +113,105 @@ const defaultIcons: Record<AlertStatus, string> = {
   error: '✕',
 }
 
+type StatusTone = (typeof statusColors)[AlertStatus]
+
+interface ToneProps {
+  status: AlertStatus
+  variant: AlertVariant
+}
+
+/** The status text class for a variant: on-colour on solid, readable ink on subtle, the status hue on outline. */
+function toneClass(colors: StatusTone, variant: AlertVariant, outline: string) {
+  if (variant === 'solid') return colors.onSolid
+  return variant === 'subtle' ? colors.subtleText : outline
+}
+
+function alertFrameClass({ status, variant }: ToneProps, isCompact: boolean, className?: string) {
+  const colors = statusColors[status]
+  return cn(
+    isCompact
+      ? 'flex-row items-center px-inset-md py-inset-sm rounded-lg'
+      : 'flex-row items-start p-inset-lg rounded-lg',
+    colors[variant],
+    // A compact `subtle` pill gets a hairline status border so it reads as a
+    // defined cue on a dark wall (the CueFlag look); other variants carry their own.
+    isCompact && variant === 'subtle' && cn('border', colors.border),
+    className
+  )
+}
+
+interface AlertGlyphProps extends ToneProps {
+  isCompact: boolean
+  icon?: React.ReactNode
+}
+
+function AlertGlyph({ status, variant, isCompact, icon }: AlertGlyphProps) {
+  const colors = statusColors[status]
+  return (
+    <View className={isCompact ? 'mr-2' : 'mr-3 mt-0.5'}>
+      {icon || (
+        <Text
+          className={cn(
+            'font-bold',
+            isCompact ? 'text-base' : 'text-lg',
+            toneClass(colors, variant, colors.icon)
+          )}
+        >
+          {defaultIcons[status]}
+        </Text>
+      )}
+    </View>
+  )
+}
+
+type AlertContentProps = ToneProps & Pick<AlertProps, 'eyebrow' | 'message' | 'footer' | 'children'>
+
+function AlertContent({ status, variant, eyebrow, message, footer, children }: AlertContentProps) {
+  const colors = statusColors[status]
+  const textClass = toneClass(colors, variant, colors.text)
+  return (
+    <View className="flex-1 gap-stack-sm">
+      {eyebrow != null && <Eyebrow className={textClass}>{eyebrow}</Eyebrow>}
+      {message != null && (
+        <Text className={cn('text-sm font-semibold', textClass)} testID="alert-message">
+          {message}
+        </Text>
+      )}
+      {children}
+      {footer}
+    </View>
+  )
+}
+
+type AlertDismissProps = ToneProps & Pick<AlertProps, 'onClose' | 'dismissLabel'>
+
+function AlertDismiss({ status, variant, onClose, dismissLabel }: AlertDismissProps) {
+  if (!onClose) return null
+  if (dismissLabel) {
+    return (
+      <Button variant="link" size="sm" onPress={onClose} className="ml-3 self-center">
+        <ButtonText>{dismissLabel}</ButtonText>
+      </Button>
+    )
+  }
+  const solidClass = variant === 'solid' ? cn(statusColors[status].onSolid, 'opacity-70') : null
+  return (
+    <Pressable
+      onPress={onClose}
+      accessibilityRole="button"
+      accessibilityLabel="Close alert"
+      className="ml-2 p-1 rounded web:hover:bg-scrim-press active:bg-scrim-press-strong"
+    >
+      <Text className={cn('text-lg', solidClass ?? 'text-text-secondary')}>×</Text>
+    </Pressable>
+  )
+}
+
 /**
  * Alert component for displaying status messages.
+ *
+ * `accessibilityRole` defaults to `alert`; pass `role="status"` for a non-urgent suggestion so a
+ * screen reader does not interrupt (`summary` renders a `section` that fails axe on web).
  *
  * @example
  * <Alert status="success">
@@ -120,81 +227,27 @@ export function Alert({
   status = 'info',
   variant = 'subtle',
   size = 'default',
-  message,
   icon,
   showIcon = true,
+  action,
   onClose,
+  dismissLabel,
   className,
-  children,
   ...props
 }: AlertProps) {
-  const colors = statusColors[status]
-  const isSolid = variant === 'solid'
+  const tone = { status, variant }
   const isCompact = size === 'compact'
-
+  const { eyebrow, message, footer, children, ...viewProps } = props
   return (
     <View
       accessibilityRole="alert"
-      className={cn(
-        isCompact
-          ? 'flex-row items-center px-inset-md py-inset-sm rounded-lg'
-          : 'flex-row items-start p-inset-lg rounded-lg',
-        colors[variant],
-        // A compact `subtle` pill gets a hairline status border so it reads as a
-        // defined cue on a dark wall (the CueFlag look); other variants carry their own.
-        isCompact && variant === 'subtle' && cn('border', colors.border),
-        className
-      )}
-      {...props}
+      className={alertFrameClass(tone, isCompact, className)}
+      {...viewProps}
     >
-      {showIcon && (
-        <View className={isCompact ? 'mr-2' : 'mr-3 mt-0.5'}>
-          {icon || (
-            <Text
-              className={cn(
-                'font-bold',
-                isCompact ? 'text-base' : 'text-lg',
-                isSolid ? colors.onSolid : variant === 'subtle' ? colors.subtleText : colors.icon
-              )}
-            >
-              {defaultIcons[status]}
-            </Text>
-          )}
-        </View>
-      )}
-
-      <View className="flex-1 gap-stack-sm">
-        {message != null && (
-          <Text
-            className={cn(
-              'text-sm font-semibold',
-              isSolid ? colors.onSolid : variant === 'subtle' ? colors.subtleText : colors.text
-            )}
-            testID="alert-message"
-          >
-            {message}
-          </Text>
-        )}
-        {children}
-      </View>
-
-      {onClose && (
-        <Pressable
-          onPress={onClose}
-          accessibilityRole="button"
-          accessibilityLabel="Close alert"
-          className="ml-2 p-1 rounded web:hover:bg-scrim-press active:bg-scrim-press-strong"
-        >
-          <Text
-            className={cn(
-              'text-lg',
-              isSolid ? cn(colors.onSolid, 'opacity-70') : 'text-text-secondary'
-            )}
-          >
-            ×
-          </Text>
-        </Pressable>
-      )}
+      {showIcon && <AlertGlyph {...tone} isCompact={isCompact} icon={icon} />}
+      <AlertContent {...tone} {...{ eyebrow, message, footer, children }} />
+      {action != null && <View className="ml-3 self-center">{action}</View>}
+      <AlertDismiss {...tone} onClose={onClose} dismissLabel={dismissLabel} />
     </View>
   )
 }

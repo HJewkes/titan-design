@@ -5,4 +5,5 @@ export type {
   AlertDescriptionProps,
   AlertStatus,
   AlertVariant,
+  AlertSize,
 } from './Alert'
