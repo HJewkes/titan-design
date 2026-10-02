@@ -252,7 +252,7 @@ export const CopiesAreSceneryOnly: Story = {
       await expect(clone).toHaveAttribute('aria-hidden', 'true')
       await expect(clone as HTMLElement & { inert: boolean }).toHaveProperty('inert', true)
     }
-    await expect(canvas.getAllByRole('group')).toHaveLength(9)
+    await expect(canvas.getAllByRole('group')).toHaveLength(10)
     await expect(canvas.getByTestId('carousel-position')).toHaveTextContent('1 of 9')
   },
 }
