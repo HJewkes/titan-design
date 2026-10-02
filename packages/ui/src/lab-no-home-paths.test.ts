@@ -12,7 +12,7 @@ const SKIPPED_DIRS = new Set(['node_modules', '.private-out'])
 const BINARY_EXT = /\.(png|jpe?g|gif|webp|ico|woff2?|ttf|otf|pdf|zip)$/i
 
 // `example` is the only user name the synthetic fixtures may carry, in every form.
-const NAME = String.raw`(?!example\b)[^/\\\s'"\x60]+`
+const NAME = String.raw`(?!example(?:[/\\\s'"\x60]|$))[^/\\\s'"\x60]+`
 const ENCODED_NAME = String.raw`(?!example-)[^-\s/'"\x60]+`
 const HOME_PATH = new RegExp(
   [
@@ -79,7 +79,11 @@ describe('lab sources', () => {
     expect(HOME_PATH.test(sample)).toBe(false)
   })
 
-  it('does not treat a longer name as the placeholder', () => {
-    expect(HOME_PATH.test(`${H}/examples/work`)).toBe(true)
-  })
+  it.each([['examples'], ['example-jane'], ['example.jane']])(
+    'does not treat %s as the placeholder',
+    (name) => {
+      expect(HOME_PATH.test(`${H}/${name}/work`)).toBe(true)
+      expect(HOME_PATH.test(`${U}/${name}/work`)).toBe(true)
+    }
+  )
 })

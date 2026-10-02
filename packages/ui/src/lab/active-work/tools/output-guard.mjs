@@ -42,7 +42,7 @@ function assertIgnoredOrOutsideRepo(realTarget, existingParent) {
 /** Returns the resolved path, creating its directory, or throws if the write could reach a committable file. */
 export function prepareOutPath(target) {
   const abs = path.resolve(target);
-  if (existsSync(abs) && lstatSync(abs).isSymbolicLink()) refuse('target is a symlink', abs);
+  if (lstatSync(abs, { throwIfNoEntry: false })?.isSymbolicLink()) refuse('target is a symlink', abs);
   const parent = nearestExisting(path.dirname(abs));
   const realTarget = path.join(realpathSync(parent), path.relative(parent, abs));
   assertIgnoredOrOutsideRepo(realTarget, realpathSync(parent));

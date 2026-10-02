@@ -1,5 +1,13 @@
 import { execFileSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, realpathSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  realpathSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -47,6 +55,14 @@ describe('exporter output guard', () => {
     const link = path.join(elsewhere, 'link.ts')
     symlinkSync(path.join(repo, 'data', 'tracked.ts'), link)
     expect(() => prepareOutPath(link)).toThrow(/symlink/)
+  })
+
+  it('refuses a dangling symlink outside the repo that points at a missing file inside it', () => {
+    const link = path.join(elsewhere, 'dangling.ts')
+    const missing = path.join(repo, 'data', 'leak.ts')
+    symlinkSync(missing, link)
+    expect(() => prepareOutPath(link)).toThrow(/symlink/)
+    expect(existsSync(missing)).toBe(false)
   })
 
   it('refuses a symlink planted inside an ignored directory', () => {
