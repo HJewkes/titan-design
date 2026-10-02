@@ -1,4 +1,10 @@
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+
 import { defineConfig } from '@playwright/test'
+
+// Outside Storybook's watched root: trace files written inside it make Vite reload the page mid-test.
+const INTERACTION_OUTPUT_DIR = join(tmpdir(), 'titan-ui-playwright-interaction')
 
 export default defineConfig({
   testDir: './tests/visual',
@@ -35,7 +41,7 @@ export default defineConfig({
     {
       name: 'interaction',
       testDir: './tests/interaction',
-      outputDir: './tests/interaction/results',
+      outputDir: INTERACTION_OUTPUT_DIR,
       // One worker: parallel first loads of the dev server made the scroll timings flaky.
       fullyParallel: false,
       workers: 1,
