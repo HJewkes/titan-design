@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { buildStorybookArgs, refuseWithoutLsof, resolveLsof } from './storybook-launch.mjs'
+import { createServer } from 'node:net'
+import {
+  buildStorybookArgs,
+  isEntryPoint,
+  isPortFree,
+  pickFreePort,
+  refuseWithoutLsof,
+  resolveLsof,
+} from './storybook-launch.mjs'
 
 describe('buildStorybookArgs', () => {
   it('passes --ci and --exact-port on the chosen port', () => {
@@ -31,17 +39,71 @@ describe('resolveLsof', () => {
 })
 
 describe('refuseWithoutLsof', () => {
-  it('prints a reason and exits 1 when lsof is missing', () => {
+  const run = (lsof, args) => {
     const lines = []
     const codes = []
-    refuseWithoutLsof(null, { error: (l) => lines.push(l), exit: (c) => codes.push(c) })
-    expect(codes).toEqual([1])
-    expect(lines.join('\n')).toMatch(/lsof was not found/)
+    refuseWithoutLsof(lsof, args, { error: (l) => lines.push(l), exit: (c) => codes.push(c) })
+    return { lines: lines.join('\n'), codes }
+  }
+
+  it.each([['--list'], ['--reap'], ['--reap=foreign'], ['--reap-all']])(
+    'refuses %s with a printed reason when lsof is missing',
+    (flag) => {
+      const { lines, codes } = run(null, [flag])
+      expect(codes).toEqual([1])
+      expect(lines).toMatch(/lsof was not found/)
+    }
+  )
+
+  it('lets a plain or isolated launch through when lsof is missing', () => {
+    expect(run(null, []).codes).toEqual([])
+    expect(run(null, ['--isolated']).codes).toEqual([])
   })
 
   it('does nothing when lsof resolved', () => {
-    const codes = []
-    refuseWithoutLsof('/usr/sbin/lsof', { error: () => {}, exit: (c) => codes.push(c) })
-    expect(codes).toEqual([])
+    expect(run('/usr/sbin/lsof', ['--list']).codes).toEqual([])
+  })
+})
+
+describe('pickFreePort', () => {
+  it('picks the first port when the probe says it is free', async () => {
+    expect(await pickFreePort([6100, 6102], { isFree: async () => true })).toBe(6100)
+  })
+
+  it('skips ports the inventory lists as busy', async () => {
+    const port = await pickFreePort([6100, 6102], {
+      busy: new Set([6100]),
+      isFree: async () => true,
+    })
+    expect(port).toBe(6101)
+  })
+
+  it('returns null when every port is taken', async () => {
+    expect(await pickFreePort([6100, 6101], { isFree: async () => false })).toBeNull()
+  })
+
+  it('skips a port held open by a real listener (default bind probe)', async () => {
+    const holder = createServer()
+    await new Promise((ok) => holder.listen(0, '127.0.0.1', ok))
+    const held = holder.address().port
+    try {
+      expect(await isPortFree(held)).toBe(false)
+      const port = await pickFreePort([held, held + 1])
+      expect(port).not.toBe(held)
+    } finally {
+      await new Promise((ok) => holder.close(ok))
+    }
+  })
+})
+
+describe('isEntryPoint', () => {
+  it('matches when argv[1] is a symlink to the script', () => {
+    const real = (p) => (p === '/link/launch.mjs' ? '/pkg/scripts/launch.mjs' : p)
+    expect(isEntryPoint('file:///pkg/scripts/launch.mjs', '/link/launch.mjs', real)).toBe(true)
+  })
+
+  it('does not match another entry file or a missing one', () => {
+    expect(isEntryPoint('file:///pkg/scripts/launch.mjs', '/other.mjs', (p) => p)).toBe(false)
+    expect(isEntryPoint('file:///pkg/scripts/launch.mjs', undefined)).toBe(false)
   })
 })

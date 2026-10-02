@@ -28,9 +28,10 @@
  * Anything not understood is forwarded to `storybook dev`.
  */
 import { execFileSync, spawn } from 'node:child_process'
-import { existsSync } from 'node:fs'
+import { existsSync, realpathSync } from 'node:fs'
+import { createServer } from 'node:net'
 import { resolve, dirname, delimiter, join } from 'node:path'
-import { fileURLToPath, pathToFileURL } from 'node:url'
+import { fileURLToPath } from 'node:url'
 
 /** THE port. Everything non-isolated uses it, so a stale server is a bug, not a fork. */
 const LOCKED_PORT = 6006
@@ -89,17 +90,26 @@ export function resolveLsof({
 const LSOF = resolveLsof()
 
 /**
- * Best-effort shell out. Swallowing the error is deliberate for "ran and found nothing"
- * (lsof exits 1 on an empty match). A missing lsof is NOT tolerated: `main` refuses to
- * launch without it, because an empty inventory would then be a guess.
+ * Best-effort shell out. lsof exits 1 with no output when nothing matches, and that is
+ * tolerated. Any other lsof failure is reported once, so a broken lsof is not mistaken
+ * for an empty inventory. Without lsof at all, `main` falls back to a bind probe.
  */
+let warnedLsofFailure = false
 const sh = (cmd, args) => {
+  const isLsof = cmd === 'lsof'
+  if (isLsof && !LSOF) return ''
   try {
-    return execFileSync(cmd === 'lsof' ? (LSOF ?? cmd) : cmd, args, {
+    return execFileSync(isLsof ? LSOF : cmd, args, {
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'ignore'],
     })
-  } catch {
+  } catch (err) {
+    if (isLsof && err.status !== 1 && !warnedLsofFailure) {
+      warnedLsofFailure = true
+      console.warn(
+        `  Warning: lsof failed (${err.code ?? `exit ${err.status}`}); inventory may be incomplete.`
+      )
+    }
     return ''
   }
 }
@@ -230,9 +240,24 @@ function killPid(pid, why) {
   return true
 }
 
-function pickIsolatedPort(entries) {
-  const busy = new Set(entries.map((e) => e.port))
-  for (let p = ISOLATED_RANGE[0]; p <= ISOLATED_RANGE[1]; p++) if (!busy.has(p)) return p
+/** True when nothing holds the port on loopback. Works on every platform, no lsof needed. */
+export function isPortFree(port, host = '127.0.0.1') {
+  return new Promise((done) => {
+    const server = createServer()
+    server.once('error', () => done(false))
+    server.listen(port, host, () => server.close(() => done(true)))
+  })
+}
+
+/** First port in `range` that is neither listed busy nor failing the bind probe. */
+export async function pickFreePort([lo, hi], { busy = new Set(), isFree = isPortFree } = {}) {
+  for (let p = lo; p <= hi; p++) if (!busy.has(p) && (await isFree(p))) return p
+  return null
+}
+
+async function pickIsolatedPort(entries) {
+  const port = await pickFreePort(ISOLATED_RANGE, { busy: new Set(entries.map((e) => e.port)) })
+  if (port != null) return port
   console.error(`\n  No free port in ${ISOLATED_RANGE.join('-')}. Clean some up.\n`)
   process.exit(1)
 }
@@ -266,19 +291,45 @@ function launch(port) {
   child.on('exit', (code) => process.exit(code ?? 0))
 }
 
-/** Exits with a printed reason when lsof is missing; an empty inventory would be a guess. */
-export function refuseWithoutLsof(lsof, { error = console.error, exit = process.exit } = {}) {
-  if (lsof) return
+/** Commands that need lsof's inventory; everything else can run on the bind probe alone. */
+export function needsInventory(argvList) {
+  return argvList.some(
+    (a) => a === '--list' || a === '--reap' || a === '--reap-all' || a.startsWith('--reap=')
+  )
+}
+
+/** Exits with a printed reason when an inventory command runs without lsof. */
+export function refuseWithoutLsof(
+  lsof,
+  argvList,
+  { error = console.error, exit = process.exit } = {}
+) {
+  if (lsof || !needsInventory(argvList)) return
   error('\n  lsof was not found in /usr/sbin, /usr/bin or on PATH.')
-  error('  Without it the launcher cannot tell which ports are busy, so it refuses to guess.')
+  error('  --list and --reap need its server inventory, so they refuse to guess.')
   error('  Install lsof or add its directory to PATH.\n')
   exit(1)
 }
 
+/** True when this file is the process entry point, even when invoked through a symlink. */
+export function isEntryPoint(metaUrl, entry, real = realpathSync) {
+  if (!entry) return false
+  try {
+    return real(fileURLToPath(metaUrl)) === real(entry)
+  } catch {
+    return false
+  }
+}
+
 // --- main --------------------------------------------------------------------
 
-function main() {
-  refuseWithoutLsof(LSOF)
+async function main() {
+  refuseWithoutLsof(LSOF, argv)
+  if (!LSOF) {
+    console.warn(
+      '  Warning: lsof not found, so the server inventory is unavailable. Using a bind probe.'
+    )
+  }
   let entries = inventory()
   printInventory(entries)
 
@@ -296,7 +347,7 @@ function main() {
   if (has('--list')) process.exit(0)
 
   if (has('--isolated')) {
-    const port = pickIsolatedPort(entries)
+    const port = await pickIsolatedPort(entries)
     console.log(`  ISOLATED launch — this port is yours alone.`)
     console.log(`  http://127.0.0.1:${port}\n`)
     launch(port)
@@ -335,4 +386,4 @@ function main() {
   }
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main()
+if (isEntryPoint(import.meta.url, process.argv[1])) main()
