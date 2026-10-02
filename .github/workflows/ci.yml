@@ -155,9 +155,8 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # Loose env mode lets the image's PLAYWRIGHT_BROWSERS_PATH through Turbo's strict env filter.
       - name: Storybook play functions
-        run: pnpm test:storybook --env-mode=loose
+        run: pnpm test:storybook
 
   # pnpm audit reads the lockfile only, so the job needs no install.
   audit:
