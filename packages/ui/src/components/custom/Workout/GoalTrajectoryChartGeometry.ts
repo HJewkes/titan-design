@@ -727,7 +727,8 @@ export function trajectoryWeekScale(input: TrajectoryWeekScaleInput): Trajectory
     ...(input.nextTarget ? [input.nextTarget.weekIndex] : []),
   ])
   const steps = Math.max(1, wks.max - wks.min)
-  const inset = weekInset(plot.right - plot.left, steps + 1)
+  // The WEEK_INSET floor must not exceed half the plot, or the range inverts and spans go negative.
+  const inset = Math.min(weekInset(plot.right - plot.left, steps + 1), (plot.right - plot.left) / 2)
   const xScale = scaleLinear()
     .domain([wks.min, wks.max])
     .range([plot.left + inset, plot.right - inset])
