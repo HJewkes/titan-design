@@ -1,7 +1,9 @@
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { DATAVIZ_CATEGORICAL_PALETTE } from '../../../theme/extracted-colors-dataviz'
+import { DATAVIZ_CATEGORICAL_ROLES } from '../../../theme/extracted-colors-dataviz'
 import { primitiveColors } from '../../../theme/tokens/primitives'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../ui/surface'
 import { alpha } from '../../../utils/colors'
 import { formatTrimmedDecimal } from '../../../utils/number-format'
 
@@ -48,9 +50,6 @@ export interface ScatterProps extends Omit<ViewProps, 'children'> {
   selectedId?: string
   className?: string
 }
-
-/** Titan categorical fallback palette (see extracted-colors-dataviz). */
-const PALETTE = DATAVIZ_CATEGORICAL_PALETTE
 
 const GRID_LINE = alpha(primitiveColors.white, 0.07)
 const AXIS_LINE = alpha(primitiveColors.white, 0.18)
@@ -145,6 +144,8 @@ export function Scatter({
   className,
   ...props
 }: ScatterProps) {
+  const colors = getSemanticColors(useSurfaceMode())
+  const palette = DATAVIZ_CATEGORICAL_ROLES.map((role) => colors[role])
   const innerW = Math.max(1, width - PLOT_LEFT - PLOT_RIGHT)
   const innerH = Math.max(1, height - PLOT_TOP - PLOT_BOTTOM)
   const xd = domainOf(
@@ -166,7 +167,7 @@ export function Scatter({
     cx: toX(d.x),
     cy: toY(d.y),
     radius: d.r ?? DEFAULT_R,
-    color: d.color ?? PALETTE[i % PALETTE.length],
+    color: d.color ?? palette[i % palette.length],
   }))
 
   const ariaLabel = `Scatter plot of ${axis.xLabel ?? 'x'} versus ${axis.yLabel ?? 'y'}, ${data.length} point${data.length === 1 ? '' : 's'}`

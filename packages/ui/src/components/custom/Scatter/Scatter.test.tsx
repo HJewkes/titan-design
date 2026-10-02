@@ -2,6 +2,8 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Scatter, type ScatterDatum } from './Scatter'
+import { Surface } from '../../ui/surface'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 const data: ScatterDatum[] = [
   { id: 'a', x: 0.1, y: 0.9, label: 'core' },
@@ -77,6 +79,29 @@ describe('Scatter', () => {
       />
     )
     expect(screen.getByTestId('scatter-point-big')).toBeInTheDocument()
+  })
+
+  describe('theme', () => {
+    it('paints the default series with the dark categorical role by default', () => {
+      render(<Scatter {...base} />)
+      expect(screen.getByTestId('scatter-point-b')).toHaveStyle({
+        backgroundColor: getSemanticColors('dark')['dataviz-categorical-1'],
+      })
+    })
+
+    it('paints the default series with the light categorical role under a light Surface', () => {
+      const light = getSemanticColors('light')
+      render(
+        <Surface theme="light">
+          <Scatter {...base} />
+        </Surface>
+      )
+      data.forEach((d, i) => {
+        expect(screen.getByTestId(`scatter-point-${d.id}`)).toHaveStyle({
+          backgroundColor: light[`dataviz-categorical-${i}` as const],
+        })
+      })
+    })
   })
 
   describe('accessibility', () => {
