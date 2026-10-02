@@ -8,9 +8,7 @@ const a11yOff = { parameters: { a11y: { test: 'off' } } }
 
 setProjectAnnotations([a11yAddonAnnotations, previewAnnotations, a11yOff])
 
-// Stories share one page here, unlike Storybook's per-story iframe. react-native-web's
-// scroll-end timer (100 ms) and the carousel's settle timer (150 ms) can outlive an
-// unmount, so let them fire before the next story clears its mocks.
+// Unmounted carousels' scroll timers leak into the next story's mocks; VW-756 fixes Carousel and deletes this drain.
 const STRAY_TIMER_DRAIN_MS = 400
 
 afterEach(() => new Promise<void>((resolve) => setTimeout(resolve, STRAY_TIMER_DRAIN_MS)))
