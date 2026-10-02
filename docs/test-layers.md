@@ -6,7 +6,7 @@ fail for the reason you care about.
 | Layer              | Question it answers                                                            | File pattern                                                    | Runs in                                                                     |
 | ------------------ | ------------------------------------------------------------------------------ | --------------------------------------------------------------- | --------------------------------------------------------------------------- |
 | Unit and component | Does the component render and behave, with no axe violation?                   | `packages/ui/src/**/*.test.{ts,tsx}`                            | `build` job, `pnpm verify:unit` (`turbo run test:unit -- --run --coverage`) |
-| Stories axe        | Does every composed story pass axe, or match its shrinking baseline?           | `packages/ui/src/test/stories-axe*.test.tsx`                    | `stories-axe` job, `pnpm test:axe`                                          |
+| Stories axe        | Does every composed story pass axe, or match its shrinking baseline?           | `packages/ui/src/test/stories-axe{,.*}.test.tsx`                | `stories-axe` job, `pnpm test:axe`                                          |
 | Property (logic)   | Does a pure function hold its invariant for any input?                         | `*Math.test.ts`, `*-model.test.ts`, hook tests using `fcAssert` | same Vitest run                                                             |
 | Scale              | Does a windowed component mount a bounded number of nodes?                     | `*.test.tsx` calling `expectBoundedMount`                       | same Vitest run                                                             |
 | Source guards      | Does the source obey a lint-like rule (raw colour, raw spacing, tier imports)? | `packages/ui/src/test/no-*.test.ts`                             | same Vitest run                                                             |
@@ -19,7 +19,7 @@ fail for the reason you care about.
 | Offline fonts      | Does a single-file consumer load every font face with no network?              | `packages/ui/tests/offline-fonts/*.spec.ts`                     | `visual` job, `test:offline-fonts`                                          |
 | Dependency audit   | Does the lockfile carry a known advisory?                                      | `scripts/audit-retry.sh`                                        | `audit` job                                                                 |
 
-The `check` job aggregates `build`, `visual` and `audit`. Layer-1 baselines exist only as
+The `check` job aggregates `build`, `stories-axe`, `visual`, `storybook-play` and `audit`. Layer-1 baselines exist only as
 `*-chromium-linux.png`, so run the visual layers only in the pinned Playwright container.
 
 To run the interaction project locally, use `pnpm --filter @titan-design/react-ui exec playwright test --project=interaction`.
