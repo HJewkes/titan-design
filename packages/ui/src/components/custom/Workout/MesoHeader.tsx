@@ -185,7 +185,12 @@ function WeekBar({ weeks, state, current, width }: WeekBarProps) {
       style={{ width, flexGrow: width === undefined ? 1 : 0, minWidth: 0 }}
       testID="meso-header-weeks"
     >
-      <SegmentedBar segments={weekCells(weeks, state, current, t)} height={BAR_HEIGHT} />
+      {/* Without a renderSegment the slot flexes to full height and ignores heightFraction. */}
+      <SegmentedBar
+        segments={weekCells(weeks, state, current, t)}
+        height={BAR_HEIGHT}
+        renderSegment={(slot) => slot}
+      />
     </View>
   )
 }
@@ -228,7 +233,7 @@ function WallBand(props: BandProps) {
   return (
     <View
       style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}
-      className="gap-x-inline-xl gap-y-stack-sm"
+      className="gap-x-section-sm gap-y-stack-sm"
       testID="meso-header-wall"
     >
       <View style={{ flexDirection: 'row', alignItems: 'center' }} className="gap-inline-sm">
