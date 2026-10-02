@@ -29,7 +29,7 @@
  */
 import { execFileSync, spawn } from 'node:child_process'
 import { existsSync, realpathSync } from 'node:fs'
-import { createServer } from 'node:net'
+import { connect, createServer } from 'node:net'
 import { resolve, dirname, delimiter, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -180,9 +180,13 @@ function category(entry) {
 
 const isOrphan = (entry) => category(entry) === 'orphan'
 
-function printInventory(entries) {
+export function printInventory(entries, { lsof = LSOF, log = console.log } = {}) {
+  if (!lsof) {
+    log('\n  Inventory needs lsof; the port probe is the only check in this run.\n')
+    return
+  }
   if (entries.length === 0) {
-    console.log(`\n  Nothing listening in ${SCAN_RANGE[0]}-${SCAN_RANGE[1]}.\n`)
+    log(`\n  Nothing listening in ${SCAN_RANGE[0]}-${SCAN_RANGE[1]}.\n`)
     return
   }
   console.log(`\n  Listening in ${SCAN_RANGE[0]}-${SCAN_RANGE[1]}:\n`)
@@ -240,13 +244,32 @@ function killPid(pid, why) {
   return true
 }
 
-/** True when nothing holds the port on loopback. Works on every platform, no lsof needed. */
-export function isPortFree(port, host = '127.0.0.1') {
+/** True when a listener answers a connect to the port on this host. */
+function isListening(port, host) {
+  return new Promise((done) => {
+    const socket = connect({ port, host })
+    socket.once('connect', () => (socket.destroy(), done(true)))
+    socket.once('error', () => done(false))
+  })
+}
+
+/** True when a wildcard bind succeeds, which fails if any host already holds the port. */
+function canBindAll(port) {
   return new Promise((done) => {
     const server = createServer()
     server.once('error', () => done(false))
-    server.listen(port, host, () => server.close(() => done(true)))
+    server.listen(port, () => server.close(() => done(true)))
   })
+}
+
+/**
+ * True when nothing holds the port on 127.0.0.1, ::1 or 0.0.0.0. No lsof needed.
+ * A 127.0.0.1-only bind misses ::1 and 0.0.0.0 listeners on macOS, so connect probes back it up.
+ */
+export async function isPortFree(port) {
+  if (await isListening(port, '127.0.0.1')) return false
+  if (await isListening(port, '::1')) return false
+  return canBindAll(port)
 }
 
 /** First port in `range` that is neither listed busy nor failing the bind probe. */
