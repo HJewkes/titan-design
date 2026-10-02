@@ -6,6 +6,8 @@
  * `ui/charts`, or a dir of only `.ts`/`.md` fixtures, is not a unit. Under
  * `custom/**` and `shell/**` a unit is one PascalCase `.tsx` stem that its directory
  * `index.ts` exports; an unexported stem is an internal part. `icons/` is excluded.
+ * An exported stem whose name extends another exported stem of its directory and that has no
+ * story or test of its own is a part of that component (`TableCell` of `Table`), not a unit.
  *
  * Every function here except `readComponentTree` is pure over a tree: an object
  * mapping a path relative to `src/components` to that file's source. The test
@@ -16,8 +18,10 @@
  *   a11y    one of those tests runs `await axe(` and asserts `.toHaveNoViolations()`
  *   doc     MATURITY.md clause 2b: a README in the dir, `Composes` in a story, or a
  *           `ui/README.md` row whose first cell is the backticked dir name
- *   status  a story meta's `tags` holds `status:stable` or `status:candidate` together
- *           with `!status:review`; the inherited default and an explicit `status:review` fail
+ *   status  every story file in the unit, except those tagged `!dev`, has a meta `tags` that
+ *           holds `status:stable` or `status:candidate` together with `!status:review`
+ *           (MATURITY.md is per story file); the inherited default and an explicit
+ *           `status:review` fail, and so does a unit whose stories are all `!dev`
  */
 import fs from 'node:fs'
 import path from 'node:path'
@@ -83,6 +87,18 @@ function uiUnits(tree) {
   return [...dirs].map((dir) => ({ path: dir, dir, stem: null }))
 }
 
+function hasOwnStoryOrTest(tree, dir, stem) {
+  return filesIn(tree, dir).some((file) => {
+    const name = baseOf(file)
+    return name.split('.')[0] === stem && /\.(stories|test)\.tsx?$/.test(name)
+  })
+}
+
+function isPartOfExportedParent(tree, dir, stem, exported) {
+  const hasParent = [...exported].some((other) => other !== stem && stem.startsWith(other))
+  return hasParent && !hasOwnStoryOrTest(tree, dir, stem)
+}
+
 function familyUnits(tree) {
   const units = []
   for (const barrel of Object.keys(tree)) {
@@ -91,9 +107,9 @@ function familyUnits(tree) {
     const exported = barrelExports(tree[barrel])
     for (const file of filesIn(tree, dir)) {
       const stem = baseOf(file).replace(/\.tsx$/, '')
-      if (file.endsWith('.tsx') && PASCAL_STEM.test(stem) && exported.has(stem)) {
+      if (!file.endsWith('.tsx') || !PASCAL_STEM.test(stem) || !exported.has(stem)) continue
+      if (!isPartOfExportedParent(tree, dir, stem, exported))
         units.push({ path: `${dir}/${stem}`, dir, stem })
-      }
     }
   }
   return units
@@ -125,9 +141,32 @@ export function hasExplicitStatus(source) {
   return settled && tags.includes('!status:review')
 }
 
-export function assertsAxe(source) {
-  return /await\s+axe\(/.test(source) && source.includes('.toHaveNoViolations()')
+const SKIP_CALL = /\b(?:it|test|describe)\.skip\s*\(/g
+
+/** `source` without the argument list of every `it.skip(`, `test.skip(` and `describe.skip(` call. */
+function stripSkipped(source) {
+  let out = ''
+  let from = 0
+  for (const match of source.matchAll(SKIP_CALL)) {
+    if (match.index < from) continue
+    out += source.slice(from, match.index)
+    let depth = 1
+    let i = match.index + match[0].length
+    for (; i < source.length && depth > 0; i++) {
+      if (source[i] === '(') depth++
+      else if (source[i] === ')') depth--
+    }
+    from = i
+  }
+  return out + source.slice(from)
 }
+
+export function assertsAxe(source) {
+  const live = stripSkipped(stripComments(source))
+  return /await\s+axe\(/.test(live) && live.includes('.toHaveNoViolations()')
+}
+
+const isDevOnly = (source) => metaTags(source).includes('!dev')
 
 function hasUiReadmeRow(tree, unit) {
   const readme = tree['ui/README.md']
@@ -142,6 +181,11 @@ function hasDoc(tree, unit, stories) {
   return hasUiReadmeRow(tree, unit)
 }
 
+function statusPasses(tree, stories) {
+  const shown = stories.filter((file) => !isDevOnly(tree[file]))
+  return shown.length > 0 && shown.every((file) => hasExplicitStatus(tree[file]))
+}
+
 /** The checks one unit fails, in `CHECKS` order. */
 export function unitGaps(tree, unit) {
   const stories = unitFiles(tree, unit, /\.stories\.tsx$/)
@@ -151,7 +195,7 @@ export function unitGaps(tree, unit) {
     test: tests.length > 0,
     a11y: tests.some((file) => assertsAxe(tree[file])),
     doc: hasDoc(tree, unit, stories),
-    status: stories.some((file) => hasExplicitStatus(tree[file])),
+    status: statusPasses(tree, stories),
   }
   return CHECKS.filter((check) => !passes[check])
 }

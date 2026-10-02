@@ -34,24 +34,6 @@
   "custom/Scatter/Scatter": [
     "doc"
   ],
-  "custom/Table/TableCell": [
-    "a11y",
-    "status",
-    "story",
-    "test"
-  ],
-  "custom/Table/TableHeaderCell": [
-    "a11y",
-    "status",
-    "story",
-    "test"
-  ],
-  "custom/Table/TablePagination": [
-    "a11y",
-    "status",
-    "story",
-    "test"
-  ],
   "custom/TimerReadout/TimerReadout": [
     "a11y"
   ],
@@ -274,6 +256,9 @@
   ],
   "shell/workout/DeviceRow": [
     "a11y"
+  ],
+  "shell/workout/DualPinnedLiveStrip": [
+    "status"
   ],
   "shell/workout/PinnedLiveStrip": [
     "status"
