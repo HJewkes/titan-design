@@ -193,10 +193,11 @@ describe('component anatomy detector', () => {
     expect(gapsOf(tree, 'ui/widget')).toEqual(['status'])
   })
 
-  it('treats an exported part with no story or test of its own as part of its parent', () => {
+  it('treats an exported part that its parent story references as part of that parent', () => {
     const tree = familyTree({
       'custom/Fam/index.ts': "export { Foo, FooCell } from './Foo'\n",
       'custom/Fam/FooCell.tsx': 'export const FooCell = () => null',
+      'custom/Fam/Foo.stories.tsx': `${PASSING_STORY}\n// renders FooCell`,
     })
 
     const units = (findUnits(tree) as { path: string }[]).map((unit) => unit.path)
@@ -204,10 +205,40 @@ describe('component anatomy detector', () => {
     expect(units).toEqual(['custom/Fam/Foo'])
   })
 
+  it('keeps a new component as a unit when the only prefix match is an exported type', () => {
+    const tree = familyTree({
+      'custom/Fam/index.ts':
+        "export { Foo, MesoTimeline } from './Foo'\nexport type Meso = string\n",
+      'custom/Fam/MesoTimeline.tsx': 'export const MesoTimeline = () => null',
+    })
+
+    expect(gapsOf(tree, 'custom/Fam/MesoTimeline')).toContain('story')
+  })
+
+  it('keeps a stem that continues the parent name without a word boundary as a unit', () => {
+    const tree = familyTree({
+      'custom/Fam/index.ts': "export { Foo, Foonly } from './Foo'\n",
+      'custom/Fam/Foonly.tsx': 'export const Foonly = () => null',
+      'custom/Fam/Foo.stories.tsx': `${PASSING_STORY}\n// Foonly`,
+    })
+
+    expect(gapsOf(tree, 'custom/Fam/Foonly')).toContain('story')
+  })
+
+  it('keeps an exported part as a unit when its parent never references it', () => {
+    const tree = familyTree({
+      'custom/Fam/index.ts': "export { Foo, FooCell } from './Foo'\n",
+      'custom/Fam/FooCell.tsx': 'export const FooCell = () => null',
+    })
+
+    expect(gapsOf(tree, 'custom/Fam/FooCell')).toContain('story')
+  })
+
   it('keeps a part that has its own story as a unit', () => {
     const tree = familyTree({
       'custom/Fam/index.ts': "export { Foo, FooCell } from './Foo'\n",
       'custom/Fam/FooCell.tsx': 'export const FooCell = () => null',
+      'custom/Fam/Foo.stories.tsx': `${PASSING_STORY}\n// FooCell`,
       'custom/Fam/FooCell.stories.tsx': PASSING_STORY,
     })
 
@@ -216,7 +247,7 @@ describe('component anatomy detector', () => {
     expect(units).toEqual(['custom/Fam/Foo', 'custom/Fam/FooCell'])
   })
 
-  it('keeps an exported stem that merely shares no prefix with another as a unit', () => {
+  it('keeps an exported stem that only ends with another stem name as a unit', () => {
     const tree = familyTree({
       'custom/Fam/index.ts': "export { Foo, BarFoo } from './Foo'\n",
       'custom/Fam/BarFoo.tsx': 'export const BarFoo = () => null',
@@ -225,6 +256,25 @@ describe('component anatomy detector', () => {
     const units = (findUnits(tree) as { path: string }[]).map((unit) => unit.path)
 
     expect(units).toEqual(['custom/Fam/BarFoo', 'custom/Fam/Foo'])
+  })
+
+  it('reads the status from the meta tags, not from a commented-out tags line', () => {
+    const tree = familyTree({
+      'custom/Fam/Foo.stories.tsx':
+        "// tags: ['status:candidate', '!status:review']\nconst meta = { tags: ['autodocs'] }",
+    })
+
+    expect(gapsOf(tree, 'custom/Fam/Foo')).toEqual(['status'])
+  })
+
+  it('ignores an axe assertion inside xit and it.skip.each', () => {
+    const body = 'async () => { expect(await axe(container)).toHaveNoViolations() }'
+    const skipped = ["xit('a', " + body + ')', "it.skip.each([1])('a', " + body + ')']
+
+    for (const source of skipped) {
+      const tree = familyTree({ 'custom/Fam/Foo.test.tsx': source })
+      expect(gapsOf(tree, 'custom/Fam/Foo')).toEqual(['a11y'])
+    }
   })
 
   it('ignores an axe assertion that sits in a comment', () => {

@@ -6,8 +6,9 @@
  * `ui/charts`, or a dir of only `.ts`/`.md` fixtures, is not a unit. Under
  * `custom/**` and `shell/**` a unit is one PascalCase `.tsx` stem that its directory
  * `index.ts` exports; an unexported stem is an internal part. `icons/` is excluded.
- * An exported stem whose name extends another exported stem of its directory and that has no
- * story or test of its own is a part of that component (`TableCell` of `Table`), not a unit.
+ * An exported stem is a part, not a unit, when it extends another exported component stem of its
+ * directory at a word boundary, that component's story or test references it, and it has no story
+ * or test of its own (`TableCell` of `Table`).
  *
  * Every function here except `readComponentTree` is pure over a tree: an object
  * mapping a path relative to `src/components` to that file's source. The test
@@ -87,6 +88,8 @@ function uiUnits(tree) {
   return [...dirs].map((dir) => ({ path: dir, dir, stem: null }))
 }
 
+const PART_SUFFIX = /^[A-Z]/
+
 function hasOwnStoryOrTest(tree, dir, stem) {
   return filesIn(tree, dir).some((file) => {
     const name = baseOf(file)
@@ -94,9 +97,30 @@ function hasOwnStoryOrTest(tree, dir, stem) {
   })
 }
 
+function parentReferencesPart(tree, dir, parent, stem) {
+  const mention = new RegExp(`\\b${stem}\\b`)
+  return filesIn(tree, dir).some((file) => {
+    const name = baseOf(file)
+    return (
+      name.split('.')[0] === parent &&
+      /\.(stories|test)\.tsx?$/.test(name) &&
+      mention.test(tree[file])
+    )
+  })
+}
+
+/** A part extends an exported component's name at a word boundary and that component's story or test renders it. */
 function isPartOfExportedParent(tree, dir, stem, exported) {
-  const hasParent = [...exported].some((other) => other !== stem && stem.startsWith(other))
-  return hasParent && !hasOwnStoryOrTest(tree, dir, stem)
+  if (hasOwnStoryOrTest(tree, dir, stem)) return false
+  return [...exported].some(
+    (parent) =>
+      parent !== stem &&
+      PASCAL_STEM.test(parent) &&
+      tree[`${dir}/${parent}.tsx`] !== undefined &&
+      stem.startsWith(parent) &&
+      PART_SUFFIX.test(stem.slice(parent.length)) &&
+      parentReferencesPart(tree, dir, parent, stem)
+  )
 }
 
 function familyUnits(tree) {
@@ -130,7 +154,7 @@ function unitFiles(tree, unit, suffix) {
 
 /** The story meta's tags: the first `tags: [...]` in the file, which is the meta's by convention. */
 export function metaTags(source) {
-  const match = /\btags\s*:\s*\[([^\]]*)\]/.exec(source)
+  const match = /\btags\s*:\s*\[([^\]]*)\]/.exec(stripComments(source))
   if (!match) return []
   return [...match[1].matchAll(/['"]([^'"]+)['"]/g)].map((m) => m[1])
 }
@@ -141,7 +165,8 @@ export function hasExplicitStatus(source) {
   return settled && tags.includes('!status:review')
 }
 
-const SKIP_CALL = /\b(?:it|test|describe)\.skip\s*\(/g
+const SKIP_CALL =
+  /\b(?:(?:it|test|describe)\.skip(?:\.each\s*(?:\([^)]*\)|`[^`]*`))?|xit|xtest|xdescribe)\s*\(/g
 
 /** `source` without the argument list of every `it.skip(`, `test.skip(` and `describe.skip(` call. */
 function stripSkipped(source) {
