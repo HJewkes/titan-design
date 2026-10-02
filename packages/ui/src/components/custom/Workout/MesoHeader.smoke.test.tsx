@@ -2,7 +2,8 @@ import { render, screen } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
 import { describe, expect, it } from 'vitest'
 
-import { MesoHeader } from './MesoHeader'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { MesoHeader, weekCells } from './MesoHeader'
 import {
   MESO_HEADER_FIXTURES,
   mesoHeaderPropsFrom,
@@ -78,6 +79,13 @@ describe('MesoHeader specimen (shape A)', () => {
   it('marks a deload week with a pill', () => {
     renderCase('m8Deload')
     expect(screen.getByText('Deload')).toBeTruthy()
+  })
+
+  it('keeps a deload cell short and ringed when it is the current week', () => {
+    const { weeks } = MESO_HEADER_FIXTURES.m8Deload.mesocycle
+    const cells = weekCells(weeks, 'current', 6, getSemanticColors('dark'))
+    expect(cells[5].heightFraction).toBeLessThan(cells[4].heightFraction ?? 1)
+    expect(cells[5].ringColor).toBeDefined()
   })
 
   it('names held and extended weeks in the week bar label', () => {

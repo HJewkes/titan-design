@@ -133,7 +133,7 @@ function cellPhase(
   return week.index < current ? 'past' : 'future'
 }
 
-/** One cell per week: past weeks filled, the current one ringed and full height, deloads short. */
+/** One cell per week: past weeks filled, the current one ringed and full height; deloads stay short even when current. */
 export function weekCells(
   weeks: readonly MesoHeaderWeek[],
   state: MesoHeaderState,
@@ -150,7 +150,7 @@ export function weekCells(
       outline: week.skipped === 'extend',
       opacity: week.skipped === 'hold' ? HELD_OPACITY : undefined,
       ringColor: phase === 'current' ? t['text-primary'] : undefined,
-      heightFraction: phase === 'current' ? 1 : short ? SHORT_CELL : QUIET_CELL,
+      heightFraction: short ? SHORT_CELL : phase === 'current' ? 1 : QUIET_CELL,
     }
   })
 }
