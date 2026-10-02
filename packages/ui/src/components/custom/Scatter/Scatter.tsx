@@ -1,7 +1,6 @@
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { DATAVIZ_CATEGORICAL_ROLES } from '../../../theme/extracted-colors-dataviz'
-import { primitiveColors } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
 import { formatTrimmedDecimal } from '../../../utils/number-format'
@@ -336,7 +335,7 @@ export function Scatter({
                 backgroundColor: p.color,
                 opacity: selected ? 1 : 0.82,
                 borderWidth: selected ? 2 : 0,
-                borderColor: primitiveColors.white,
+                borderColor: colors['text-primary'],
               }}
             >
               {showLabel && (
