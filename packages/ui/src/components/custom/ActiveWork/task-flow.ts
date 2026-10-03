@@ -42,7 +42,7 @@ export function taskKey(task: Pick<TaskListItem, 'slug' | 'id'>): string {
   return `${task.slug}/${task.id}`
 }
 
-/** Splits on the last `/`, so a slug may contain one. */
+/** Splits on the last `/`, so a slug may contain one. An id containing `/` does not round-trip. */
 export function parseTaskKey(key: string): { slug: string; id: string } | undefined {
   const at = key.lastIndexOf('/')
   if (at < 1 || at === key.length - 1) return undefined
@@ -60,6 +60,11 @@ function finiteOr(value: number, fallback: number): number {
 function compareText(a: string, b: string): number {
   const collated = a.localeCompare(b, 'en', { numeric: true })
   return collated || (a < b ? -1 : a > b ? 1 : 0)
+}
+
+/** An unknown severity ranks as unset: `severityRank` is undefined for it, which compares equal to everything. */
+function rankOrUnset(severity: TaskSeverity | undefined): number {
+  return finiteOr(severityRank(severity), severityRank(undefined))
 }
 
 function updatedTime(task: TaskFlowItem): number {
@@ -83,7 +88,7 @@ export function compareTaskFlow(a: TaskFlowItem, b: TaskFlowItem): number {
     if (byUpdated) return byUpdated
   }
   return (
-    compareNumbers(severityRank(a.severity), severityRank(b.severity)) ||
+    compareNumbers(rankOrUnset(a.severity), rankOrUnset(b.severity)) ||
     compareNumbers(finiteOr(a.priority, Infinity), finiteOr(b.priority, Infinity)) ||
     compareText(a.slug, b.slug) ||
     compareText(a.id, b.id)

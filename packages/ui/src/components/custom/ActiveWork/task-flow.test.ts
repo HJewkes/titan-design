@@ -9,7 +9,8 @@ import {
   taskKey,
   type TaskFlowItem,
 } from './task-flow'
-import { TASK_STAGE_ORDER } from './task-stage'
+import { TASK_STAGE_ORDER, type TaskStage } from './task-stage'
+import type { TaskSeverity } from './SeverityLabel'
 import { TASK_FLOW_DEFAULT, TASK_FLOW_HOSTILE, TASK_FLOW_ONE } from './task-flow-fixture'
 
 const taskArb: fc.Arbitrary<TaskFlowItem> = fc.record(
@@ -17,8 +18,11 @@ const taskArb: fc.Arbitrary<TaskFlowItem> = fc.record(
     slug: fc.constantFrom('garden', 'kiln', 'a/b'),
     id: fc.constantFrom('GDN-2', 'GDN-10', 'GDN-1', 'KLN-1'),
     title: fc.string(),
-    stage: fc.constantFrom(...TASK_STAGE_ORDER),
-    severity: fc.constantFrom('critical', 'high', 'medium', 'low'),
+    stage: fc.oneof(fc.constantFrom(...TASK_STAGE_ORDER), fc.constant('purgatory' as TaskStage)),
+    severity: fc.oneof(
+      fc.constantFrom('critical', 'high', 'medium', 'low'),
+      fc.constant('catastrophic' as TaskSeverity)
+    ),
     priority: fc.oneof(fc.integer({ min: 0, max: 3 }), fc.constant(Number.NaN)),
     updated: fc.oneof(
       fc
@@ -51,6 +55,16 @@ describe('compareTaskFlow', () => {
         }
       })
     )
+  })
+
+  it('orders an unknown severity as unset, so mixed severities cannot form a cycle', () => {
+    const base = { ...TASK_FLOW_ONE[0], stage: 'ready' as const }
+    const a = { ...base, id: 'A-1', severity: 'critical' as const, priority: 5 }
+    const c = { ...base, id: 'C-1', severity: 'low' as const, priority: 1 }
+    const b = { ...base, id: 'B-1', severity: 'catastrophic' as TaskSeverity, priority: 3 }
+    expect(compareTaskFlow(a, c)).toBeLessThan(0)
+    expect(compareTaskFlow(c, b)).toBeLessThan(0)
+    expect(compareTaskFlow(a, b)).toBeLessThan(0)
   })
 
   it('ranks severity before priority and collates ids numerically', () => {
