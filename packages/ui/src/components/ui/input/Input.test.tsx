@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Input } from './Input'
-import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
+import { resolveAll, siblingSource, sizeClasses } from '../../../test/spacing-resolver'
 
 describe('Input', () => {
   it('renders correctly', () => {
@@ -96,4 +96,35 @@ describe('Input geometry resolves to the spacing tokens', () => {
       expect(resolveAll(spacing)).toEqual([...pixels])
     }
   )
+})
+
+/**
+ * Input's single-line sizes sit on Button's control tokens (TD-275), so an
+ * Input and a Button of the same size line up in one row. Heights match the
+ * old `h-8/10/12`; horizontal padding grew from 12/16/16 to 16/20/24.
+ */
+describe('Input single-line sizes resolve to the control tokens', () => {
+  const source = siblingSource(import.meta.url, 'Input.tsx')
+  const buttonSource = siblingSource(import.meta.url, '../button/Button.tsx')
+  const geometryFor = (level: string) =>
+    sizeClasses(source, 'sizeStyles', level).filter((c) => resolveAll([c])[0] !== undefined)
+  const heightKey = (classes: string[]) =>
+    classes.find((c) => /^(min-)?h-/.test(c))?.replace(/^(min-)?h-/, '')
+
+  const shipped = [
+    ['sm', ['h-control-sm', 'px-control-x-sm'], ['32px', '16px']],
+    ['md', ['h-control-md', 'px-control-x-md'], ['40px', '20px']],
+    ['lg', ['h-control-lg', 'px-control-x-lg'], ['48px', '24px']],
+  ] as const
+
+  it.each(shipped)('%s uses the control tokens', (level, classes, pixels) => {
+    expect(geometryFor(level)).toEqual([...classes])
+    expect(resolveAll(geometryFor(level))).toEqual([...pixels])
+  })
+
+  it.each(['sm', 'md', 'lg'])('%s shares its control height token with Button', (level) => {
+    const buttonHeight = heightKey(sizeClasses(buttonSource, 'sizeStyles', level))
+    expect(buttonHeight).toBe(`control-${level}`)
+    expect(heightKey(geometryFor(level))).toBe(buttonHeight)
+  })
 })
