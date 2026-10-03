@@ -18,13 +18,21 @@ function contrastRatio(a: string, b: string): number {
 const PLANES = ['surface-base', 'surface-raised', 'surface-elevated', 'surface-overlay'] as const
 
 describe('text-error contrast', () => {
-  describe.each(['dark', 'light'] as const)('%s theme', (theme) => {
-    const colors = getSemanticColors(theme)
+  describe('light theme', () => {
+    const colors = getSemanticColors('light')
 
     it.each(PLANES)('clears 4.5:1 on %s', (plane) => {
       const ratio = contrastRatio(colors['text-error'], colors[plane])
-      console.info(`${theme} text-error on ${plane}: ${ratio.toFixed(2)}`)
+      console.info(`light text-error on ${plane}: ${ratio.toFixed(2)}`)
       expect(ratio).toBeGreaterThanOrEqual(4.5)
+    })
+  })
+
+  // Dark misses 4.5:1 on every plane; the primitive audit (TD-490) owns the fix.
+  describe('dark theme', () => {
+    it('keeps the status-error red, as decided at Gate 2', () => {
+      const colors = getSemanticColors('dark')
+      expect(colors['text-error']).toBe(colors['status-error'])
     })
   })
 })

@@ -472,7 +472,7 @@ export const semanticColorsDark = {
   'text-tertiary': greyRamp[500],
   'text-disabled': 'rgba(255, 255, 255, 0.38)',
   'text-inverse': greyRamp[950],
-  'text-error': ramp.red[300], // red[400] is 4.35:1 on surface-overlay
+  'text-error': ramp.red[600], // matches dark status-error on main, by owner decision at Gate 2
   'text-link': semanticPins.focusIndigoDark,
   'text-link-hover': ramp.blue[400],
 

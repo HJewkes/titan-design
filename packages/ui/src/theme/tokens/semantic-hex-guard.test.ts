@@ -341,7 +341,7 @@ const resolvedBeforeFixture = {
     'text-tertiary': '#888684',
     'text-disabled': 'rgba(255, 255, 255, 0.38)',
     'text-inverse': '#1C1916',
-    'text-error': '#FF9A9D',
+    'text-error': '#D14343',
     'text-link': '#828DF8',
     'text-link-hover': '#3CA8FF',
     'surface-base': '#252321',

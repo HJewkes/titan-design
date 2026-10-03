@@ -23,7 +23,7 @@ describe('Typography', () => {
     expect(screen.getByText('Secondary text')).toBeInTheDocument()
   })
 
-  it('paints error text with the dark-safe text-error token, not the status fill', () => {
+  it('error text uses the text-error token, not the status-error class', () => {
     render(
       <Typography color="error" testID="error-text">
         Something went wrong
