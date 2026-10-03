@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { describe, it, expect, vi, afterEach } from 'vitest'
+import { render, screen, fireEvent, act } from '@testing-library/react'
 import { Text } from 'react-native'
 import { axe } from 'jest-axe'
 import { Tooltip } from './Tooltip'
@@ -101,6 +101,32 @@ describe('Tooltip', () => {
 
       hoverTrigger('Trigger')
       expect(screen.queryByText('Disabled tooltip')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('open delay', () => {
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    it('shows the tooltip only after openDelay has passed', () => {
+      vi.useFakeTimers()
+      render(
+        <Tooltip label="Delayed tooltip" openDelay={300}>
+          <button>Hover me</button>
+        </Tooltip>
+      )
+
+      hoverTrigger('Hover me')
+      act(() => {
+        vi.advanceTimersByTime(299)
+      })
+      expect(screen.queryByText('Delayed tooltip')).not.toBeInTheDocument()
+
+      act(() => {
+        vi.advanceTimersByTime(1)
+      })
+      expect(screen.getByText('Delayed tooltip')).toBeInTheDocument()
     })
   })
 
