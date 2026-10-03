@@ -49,7 +49,7 @@ const meta: Meta<typeof FacetBar> = {
     docs: {
       description: {
         component:
-          '**Molecule.** Composes [Chip](?path=/docs/components-atoms-chip--docs) and the label atom. ' +
+          '**Molecule.** Composes [Chip](?path=/docs/components-atoms-chip--docs) and [Eyebrow](?path=/docs/components-molecules-eyebrow--docs). ' +
           'A labelled group of toggle buttons (`aria-pressed`). No loading or error state: the consumer ' +
           'passes loaded options and renders its own failure. Empty options render nothing. Use the ' +
           '`fixture` control for the degenerate cases.',

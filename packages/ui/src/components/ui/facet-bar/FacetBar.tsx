@@ -94,13 +94,14 @@ export function FacetBar<T extends string = string>(props: FacetBarProps<T>) {
   const unique = uniqueOptions(options)
   if (unique.length === 0) return null
 
-  const selected = selectedSet<T>(selectionMode, current)
+  const active = coerceToMode<T>(selectionMode, current)
+  const selected = selectedSet<T>(selectionMode, active)
   const press = (pressed: T) =>
     setCurrent(
       isSingle
-        ? toggleSingle(current as T | null, pressed)
+        ? toggleSingle(active as T | null, pressed)
         : toggleMultiple(
-            current as ReadonlyArray<T>,
+            active as T[],
             pressed,
             unique.map((option) => option.value)
           )

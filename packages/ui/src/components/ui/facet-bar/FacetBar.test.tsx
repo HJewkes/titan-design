@@ -144,6 +144,29 @@ describe('FacetBar', () => {
     expect(pressed('Two, 3')).toHaveAttribute('aria-pressed', 'true')
   })
 
+  it('switching single to multiple keeps the value as one entry, never characters', () => {
+    const onValueChange = vi.fn()
+    const props = { label: 'Record', options, defaultValue: 'notes', onValueChange }
+    const { rerender } = render(<FacetBar {...props} selectionMode="single" />)
+    rerender(<FacetBar {...props} selectionMode="multiple" defaultValue={undefined} />)
+    expect(pressed('Notes, 128')).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getAllByRole('button').filter((b) => b.ariaPressed === 'true')).toHaveLength(1)
+    fireEvent.click(pressed('Notes, 128'))
+    expect(onValueChange).toHaveBeenLastCalledWith([])
+  })
+
+  it('switching multiple to single shows only the first value pressed', () => {
+    const base = { label: 'Record', options }
+    const { rerender } = render(
+      <FacetBar {...base} selectionMode="multiple" defaultValue={['notes', 'sources']} />
+    )
+    rerender(<FacetBar {...base} selectionMode="single" />)
+    const on = screen
+      .getAllByRole('button')
+      .filter((b) => b.getAttribute('aria-pressed') === 'true')
+    expect(on.map((b) => b.getAttribute('aria-label'))).toEqual(['Notes, 128'])
+  })
+
   it('empty options render nothing', () => {
     const { container } = render(<FacetBar label="Kind" options={[]} />)
     expect(container).toBeEmptyDOMElement()

@@ -7,12 +7,28 @@ export function uniqueOptions<O extends { value: string }>(options: ReadonlyArra
   })
 }
 
+type FacetMode = 'single' | 'multiple'
+
+/** A value held under the other mode becomes the nearest value of this one. */
+export function coerceToMode<T>(
+  mode: FacetMode,
+  value: ReadonlyArray<T> | T | null
+): T[] | T | null {
+  if (mode === 'single') {
+    if (!Array.isArray(value)) return value as T | null
+    return value.length > 0 ? (value[0] as T) : null
+  }
+  if (Array.isArray(value)) return [...value] as T[]
+  return value === null ? [] : [value as T]
+}
+
 export function selectedSet<T>(
-  mode: 'single' | 'multiple',
+  mode: FacetMode,
   value: ReadonlyArray<T> | T | null
 ): ReadonlySet<T> {
-  if (mode === 'single') return value === null ? new Set<T>() : new Set<T>([value as T])
-  return new Set<T>(value as ReadonlyArray<T>)
+  const coerced = coerceToMode(mode, value)
+  if (mode === 'single') return coerced === null ? new Set<T>() : new Set<T>([coerced as T])
+  return new Set<T>(coerced as T[])
 }
 
 /** Known values follow `order`; values with no option keep their order after them. */
