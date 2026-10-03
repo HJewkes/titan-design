@@ -27,7 +27,7 @@ const meta: Meta<typeof FileActivityDetail> = {
           '[DataRow](?path=/docs/components-molecules-datarow--docs), ' +
           '[DateTime](?path=/docs/custom-datetime--docs), ' +
           '[SparkBars](?path=/docs/custom-charts-sparkbars--docs), ' +
-          '[FilePathLabel](?path=/docs/custom-activework-filepathlabel--docs) and ' +
+          '[FilePathLabel](?path=/docs/components-atoms-filepathlabel--docs) and ' +
           '[Eyebrow](?path=/docs/components-molecules-eyebrow--docs).',
       },
     },

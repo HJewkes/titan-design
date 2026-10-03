@@ -8,7 +8,7 @@ import { DataRow } from '../../ui/data-row'
 import { DateTime } from '../DateTime'
 import { Typography } from '../../ui/typography'
 import { Eyebrow } from '../../ui/eyebrow'
-import { FilePathLabel, splitPath } from './FilePathLabel'
+import { FilePathLabel, splitPath } from '../../ui/file-path-label'
 import { GrowthWell } from './FileActivityGrowthWell'
 import { FILE_EVENT_COLOR, type FileEventColors, type FileActivity } from './FileActivityRow'
 
