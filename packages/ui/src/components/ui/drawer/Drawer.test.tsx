@@ -15,6 +15,12 @@ function renderDrawer(props: Partial<React.ComponentProps<typeof Drawer>> = {}) 
   )
 }
 
+// react-native-web grants its Modal the dialog role once the open animation ends.
+function finishOpenAnimation() {
+  const focusTrap = document.querySelector('[aria-modal="true"]')!.parentElement!
+  fireEvent.animationEnd(focusTrap.parentElement!)
+}
+
 describe('Drawer', () => {
   it('renders when isOpen is true', () => {
     renderDrawer({ isOpen: true })
@@ -41,12 +47,30 @@ describe('Drawer', () => {
     expect(screen.queryByLabelText('Close drawer')).not.toBeInTheDocument()
   })
 
-  it('exposes the open drawer panel as a dialog', () => {
-    renderDrawer({ isOpen: true })
+  describe('dialog semantics', () => {
+    it('exposes exactly one dialog, named by the title', () => {
+      renderDrawer({ isOpen: true, title: 'Settings' })
+      finishOpenAnimation()
 
-    const dialog = screen.getByRole('dialog')
+      const dialogs = screen.getAllByRole('dialog')
 
-    expect(dialog).toHaveTextContent('Drawer body content')
+      expect(dialogs).toHaveLength(1)
+      expect(screen.getByRole('dialog', { name: 'Settings' })).toHaveTextContent(
+        'Drawer body content'
+      )
+    })
+
+    it('marks the title as a heading', () => {
+      renderDrawer({ isOpen: true, title: 'Settings' })
+
+      expect(screen.getByRole('heading', { name: 'Settings' })).toBeInTheDocument()
+    })
+
+    it('exposes the close control as a button', () => {
+      renderDrawer({ isOpen: true })
+
+      expect(screen.getByRole('button', { name: 'Close drawer' })).toBeInTheDocument()
+    })
   })
 
   it('renders title', () => {

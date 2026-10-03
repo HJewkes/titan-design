@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react'
+import React, { createContext, useContext, useEffect, useId, useState } from 'react'
 import {
   Modal as RNModal,
   View,
@@ -17,6 +17,8 @@ interface ModalContextType {
   onClose?: () => void
   size: ModalSize
   scrollBehavior: ModalScrollBehavior
+  titleId?: string
+  setHasTitle?: (hasTitle: boolean) => void
 }
 
 const ModalContext = createContext<ModalContextType>({ size: 'md', scrollBehavior: 'outside' })
@@ -81,6 +83,9 @@ export function Modal({
   children,
   ...props
 }: ModalProps) {
+  const titleId = useId()
+  const [hasTitle, setHasTitle] = useState(false)
+
   const handleBackdropPress = () => {
     if (closeOnOverlayClick && onClose) {
       onClose()
@@ -101,12 +106,13 @@ export function Modal({
   )
 
   return (
-    <ModalContext.Provider value={{ onClose, size, scrollBehavior }}>
+    <ModalContext.Provider value={{ onClose, size, scrollBehavior, titleId, setHasTitle }}>
       <RNModal
         visible={isOpen}
         transparent
         animationType={animationType}
         onRequestClose={onClose}
+        aria-labelledby={hasTitle ? titleId : undefined}
         {...props}
       >
         {scrollBehavior === 'outside' ? (
@@ -176,11 +182,19 @@ export interface ModalTitleProps {
 }
 
 /**
- * Title for modal header.
+ * Title for modal header. It also names the dialog for assistive technology.
  */
 export function ModalTitle({ children, className }: ModalTitleProps) {
+  const { titleId, setHasTitle } = useContext(ModalContext)
+
+  useEffect(() => {
+    setHasTitle?.(true)
+    return () => setHasTitle?.(false)
+  }, [setHasTitle])
+
   return (
     <Text
+      id={titleId}
       accessibilityRole="header"
       className={cn('text-lg font-semibold text-text-primary font-heading', className)}
     >
