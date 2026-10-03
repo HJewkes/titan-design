@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Pill } from '../../ui/pill'
 import { StatusDot } from '../Workout/StatusDot'
-import { DateTime } from '../DateTime'
+import { DateTime } from '../../ui/date-time'
 import { Typography } from '../../ui/typography'
 import { INITIATIVE_STATE_META, type InitiativeState } from './InitiativeCard'
 

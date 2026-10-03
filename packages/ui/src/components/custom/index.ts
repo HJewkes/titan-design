@@ -1,7 +1,6 @@
 // Custom components
 export * from './Sidebar'
 export * from './stepper'
-export * from './DateTime'
 export * from './TimerReadout'
 export * from './CircularTimer'
 export * from './Metric'

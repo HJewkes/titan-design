@@ -11,12 +11,6 @@
   "components/custom/CircularTimer/CircularTimer.tsx#CircularTimer": {
     "complexity": 21
   },
-  "components/custom/DateTime/DateTime.tsx#formatDate": {
-    "complexity": 17
-  },
-  "components/custom/DateTime/DateTime.tsx#getRelativeTime": {
-    "complexity": 23
-  },
   "components/custom/Fatigue/DualGhostSpark.tsx#DualGhostSpark": {
     "function-lines": 106
   },
@@ -314,6 +308,12 @@
   },
   "components/ui/checkbox/Checkbox.tsx#Checkbox": {
     "complexity": 19
+  },
+  "components/ui/date-time/DateTime.tsx#formatDate": {
+    "complexity": 17
+  },
+  "components/ui/date-time/DateTime.tsx#getRelativeTime": {
+    "complexity": 23
   },
   "components/ui/form-field/FormField.tsx#FormField": {
     "complexity": 20

@@ -206,6 +206,27 @@ which is tagged `@deprecated` for one release and **disappears in 0.23.0**.
 While this row exists, `MATURITY.md` clause 2's fourth condition keeps `file-path-label` at
 `status:candidate`; it becomes promotable when the shim is deleted in 0.23.0.
 
+## Migration M7 — `DateTime` moved to `ui/date-time`, `live` renamed `isLive`
+
+`DateTime` is domain-free (a formatted date or clock is not an active-work, chat or workout
+concept) and ten files across `ActiveWork`, `Chat`, `Workout` and `shell` use it, so by the placement
+rule (`CLAUDE.md`, Placement) its home is `ui/date-time`. Markup and class names are unchanged. The
+story title was already `Components/Molecules/DateTime`, so story ids do not change.
+
+| Export                                                                                 | Replacement                        | Known consumers                                   | Task   |
+| -------------------------------------------------------------------------------------- | ---------------------------------- | ------------------------------------------------- | ------ |
+| `DateTime`, `formatDateTime`, `DateTimeProps`, `DateTimeFormat` from `custom/DateTime` | the same names from `ui/date-time` | none in-repo (all ten importers use the new path) | TD-428 |
+| `<DateTime live>`                                                                      | `<DateTime isLive>`                | none in-repo (`TopBar` passes `isLive`)           | TD-428 |
+
+**No published API change.** `DateTime` still comes off the package root barrel, now through
+`components/ui`. Only a deep relative import of `custom/DateTime` hits the shim, which is tagged
+`@deprecated` for one release and **disappears in 0.23.0**. `live` stays as a `@deprecated` alias
+that maps to `isLive`; the two render identically, and `isLive` wins when both are passed. The alias
+is removed in 0.23.0 with the shim.
+
+While this row exists, `MATURITY.md` clause 2's fourth condition keeps `date-time` at
+`status:candidate`; it becomes promotable when the shim is deleted in 0.23.0.
+
 ## Fatigue tokens — `TONE_COLOR` replaced by `TONE_TOKEN` (VW-316)
 
 **Breaking, no alias possible.** `TONE_COLOR` held colours resolved at import
