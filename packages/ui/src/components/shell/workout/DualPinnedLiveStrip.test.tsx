@@ -8,6 +8,7 @@ import type { ThemeMode } from '../../../theme/tokens/semantic'
 import { SurfaceContext } from '../../ui/surface/SurfaceContext'
 import { DualPinnedLiveStrip } from './DualPinnedLiveStrip'
 import { DUAL_STRIP_SCENARIOS as S } from './dualPinnedLiveStrip-fixture'
+import { LIVE_STRIP_GAP_COLOR } from './liveStripModel'
 import * as stories from './DualPinnedLiveStrip.stories'
 
 const charts = vi.hoisted(() => ({ count: 0 }))
@@ -197,32 +198,46 @@ const hexOf = (css: string) =>
     .map((n) => Number(n).toString(16).padStart(2, '0'))
     .join('')
 
-function renderIn(mode: ThemeMode) {
+function renderIn(mode: ThemeMode, scenario: 'set' | 'rest' = 'set') {
   render(
     <SurfaceContext.Provider value={{ mode, level: 'base' }}>
-      <DualPinnedLiveStrip {...S.set} layout="phone" />
+      <DualPinnedLiveStrip {...S[scenario]} layout="phone" />
     </SurfaceContext.Provider>
   )
-  return getComputedStyle(screen.getByTestId('live-strip-plane')).backgroundColor
+  return hexOf(getComputedStyle(screen.getByTestId('live-strip-plane')).backgroundColor)
 }
 
-// Owner Gate 2 round 1 (VW-877): the right arm's missed fifth rep was a near-white slot on white.
-describe('DualPinnedLiveStrip missed rep', () => {
-  it.each(['light', 'dark'] as const)('rings it at 3:1 against the card (%s)', (mode) => {
-    const card = hexOf(renderIn(mode))
-    const [missed] = screen.getAllByTestId('velocity-slot-empty')
-    const ring = getComputedStyle(missed)
-    expect(parseFloat(ring.borderTopWidth)).toBeGreaterThanOrEqual(1)
-    expect(contrast(hexOf(ring.borderTopColor), card)).toBeGreaterThanOrEqual(3)
+const gapStub = () => getComputedStyle(screen.getAllByTestId('velocity-slot-empty')[0])
+
+// Owner Gate 2 rounds 1 and 2 (VW-877, VW-879): the right arm's missing rep vanished on white, and
+// the ring that fixed it was rejected for a filled stub; behind mid-set and missed at the end differ.
+describe('DualPinnedLiveStrip gap stubs', () => {
+  it.each(['light', 'dark'] as const)('fills a missed rep at 3:1 on the card (%s)', (mode) => {
+    const card = renderIn(mode, 'rest')
+    const stub = gapStub()
+    expect(stub.borderTopWidth).toBe('0px')
+    expect(hexOf(stub.backgroundColor)).toBe(LIVE_STRIP_GAP_COLOR.missed[mode].toLowerCase())
+    expect(contrast(hexOf(stub.backgroundColor), card)).toBeGreaterThanOrEqual(3)
   })
+
+  it.each(['light', 'dark'] as const)(
+    'fills a rep still to come in its own colour (%s)',
+    (mode) => {
+      const card = renderIn(mode, 'set')
+      const fill = hexOf(gapStub().backgroundColor)
+      expect(fill).toBe(LIVE_STRIP_GAP_COLOR.behind[mode].toLowerCase())
+      expect(fill).not.toBe(LIVE_STRIP_GAP_COLOR.missed[mode].toLowerCase())
+      expect(contrast(fill, card)).toBeGreaterThanOrEqual(3)
+    }
+  )
 })
 
 describe('DualPinnedLiveStrip bar shadow', () => {
   const shadowOf = () => screen.getAllByTestId('velocity-bar-0')[0].style.boxShadow
 
-  it('keeps only a contact shadow on a light card', () => {
+  it('keeps a short soft shadow on a light card', () => {
     renderIn('light')
-    expect(shadowOf()).toMatch(/^0 1px 2px rgba\(0, ?0, ?0, ?0\.12\)$/)
+    expect(shadowOf()).toMatch(/^0 2px 5px rgba\(0, ?0, ?0, ?0\.2\)$/)
   })
 
   it('keeps the paper drop shadow on a dark card', () => {

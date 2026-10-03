@@ -13,10 +13,13 @@ import {
 } from '../../custom/Workout/VelocityStrip'
 import { SetBarTreatmentContext, type SetBarTreatment } from '../../custom/charts/setBarTones'
 import {
+  LIVE_STRIP_GAP_COLOR,
+  liveStripGap,
   liveStripRepToken,
   liveStripRestReadout,
   liveStripTarget,
   type LiveStripBarColor,
+  type LiveStripGap,
   type LiveStripRep,
   type LiveStripState,
 } from './liveStripModel'
@@ -268,10 +271,15 @@ interface DualBarsProps {
   barColor?: LiveStripBarColor
   lossThresholds: VelocityLossThresholds
   dimmed?: Side
+  gap: LiveStripGap
 }
 
-// The paper's drop shadow smudged on the light card, and a side's missed rep vanished there (VW-877).
-const STRIP_BARS: SetBarTreatment = { emptyVariant: 'outline', lightPaper: 'soft' }
+// The paper's drop shadow smudged on the light card, and a side's missed rep vanished there
+// (VW-877); a rep still to come reads apart from one that never came (VW-879).
+const STRIP_BARS: Record<LiveStripGap, SetBarTreatment> = {
+  behind: { emptyColor: LIVE_STRIP_GAP_COLOR.behind, lightPaper: 'soft' },
+  missed: { emptyColor: LIVE_STRIP_GAP_COLOR.missed, lightPaper: 'soft' },
+}
 
 const sameReps = (a: readonly LiveStripRep[], b: readonly LiveStripRep[]) =>
   a === b || (a.length === b.length && a.every((rep, i) => rep.velocity === b[i].velocity))
@@ -287,6 +295,7 @@ function sameBars(a: DualBarsProps, b: DualBarsProps): boolean {
     a.minWidth === b.minWidth &&
     a.barColor === b.barColor &&
     a.dimmed === b.dimmed &&
+    a.gap === b.gap &&
     a.lossThresholds.every((t, i) => t === b.lossThresholds[i])
   )
 }
@@ -300,7 +309,7 @@ const DualBars = memo(function DualBars(props: DualBarsProps) {
       aria-hidden
       style={width != null ? { width } : { flex: 1, minWidth }}
     >
-      <SetBarTreatmentContext.Provider value={STRIP_BARS}>
+      <SetBarTreatmentContext.Provider value={STRIP_BARS[props.gap]}>
         <DualVelocityStrip
           left={{ velocities: left.map((r) => r.velocity), isDimmed: dimmed === 'left' }}
           right={{ velocities: right.map((r) => r.velocity), isDimmed: dimmed === 'right' }}
@@ -331,6 +340,7 @@ function barsOf(parts: Parts, fill = false): DualBarsProps {
     barColor: parts.barColor,
     lossThresholds: parts.lossThresholds,
     dimmed: parts.slots.find((s) => s.isDropped)?.side,
+    gap: liveStripGap(parts.state),
   }
 }
 

@@ -1,4 +1,6 @@
 import { type resolveColor } from '../../../theme/resolve-color'
+import { greyRamp, primitiveRamps } from '../../../theme/tokens/primitives'
+import type { ThemeMode } from '../../../theme/tokens/semantic'
 import {
   velocityLossBand,
   velocityLossForRep,
@@ -56,6 +58,26 @@ export function liveStripRepToken(
   return LIVE_STRIP_LOSS_TOKEN[
     velocityLossBand(velocityLossForRep(rep.velocity, best), lossThresholds)
   ]
+}
+
+/**
+ * Why one side has no bar in a column the other side filled: mid-set the rep may still come
+ * (`behind`); once the set has ended it never will (`missed`).
+ */
+export type LiveStripGap = 'behind' | 'missed'
+
+export function liveStripGap(state: LiveStripState): LiveStripGap {
+  return state === 'set' ? 'behind' : 'missed'
+}
+
+/**
+ * Filled stubs for each gap, from the ramps' mark steps (600 light, 400 dark): 3:1 or more on every
+ * plane in both modes. Grey for a miss, an absence; blue for behind, a rep still pending. Neither
+ * hue is one of the loss or zone bar colours.
+ */
+export const LIVE_STRIP_GAP_COLOR: Record<LiveStripGap, Readonly<Record<ThemeMode, string>>> = {
+  behind: { light: primitiveRamps.blue[600], dark: primitiveRamps.blue[400] },
+  missed: { light: greyRamp[600], dark: greyRamp[400] },
 }
 
 /** The longest rest the strip counts; a longer one reads "999s" (over 16 minutes). */
