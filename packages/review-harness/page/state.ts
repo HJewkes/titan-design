@@ -1,5 +1,11 @@
 import { emptyDraft, type ReviewDraft } from '../src/feedback.ts'
-import { linksForVariant, optionVariants, orderedQuestions, roundLayout } from '../src/sections.ts'
+import {
+  linksForVariant,
+  optionVariants,
+  orderedQuestions,
+  roundLayout,
+  type ResolvedSection,
+} from '../src/sections.ts'
 import type { Annotation, Manifest, Verdict } from '../src/schema.ts'
 import { loadDraft, type DraftStorage } from './draftStore.ts'
 
@@ -8,6 +14,7 @@ export { orderedQuestions }
 export type Stop =
   | { kind: 'variant'; key: string }
   | { kind: 'question'; id: string }
+  | { kind: 'section'; id: string }
   | { kind: 'general' }
 
 export type Screen = 'form' | 'review' | 'sending' | 'sent'
@@ -49,14 +56,20 @@ export const VERDICT_KEYS: Record<string, Verdict> = {
   '0': null,
 }
 
+/** A section with nothing to answer still gets one stop, so its page can be reached. */
+function sectionStops(s: ResolvedSection): Stop[] {
+  const stops: Stop[] = [
+    ...s.questions.map((q): Stop => ({ kind: 'question', id: q.id })),
+    ...s.variants.map((v): Stop => ({ kind: 'variant', key: v.key })),
+  ]
+  return stops.length ? stops : [{ kind: 'section', id: s.id }]
+}
+
 /** Every stop in the order the page renders it: per section, its questions then its frames. */
 export function stopsFor(manifest: Manifest): Stop[] {
   const layout = roundLayout(manifest)
   return [
-    ...layout.sections.flatMap((s): Stop[] => [
-      ...s.questions.map((q): Stop => ({ kind: 'question', id: q.id })),
-      ...s.variants.map((v): Stop => ({ kind: 'variant', key: v.key })),
-    ]),
+    ...layout.sections.flatMap(sectionStops),
     ...layout.otherVariants.map((v): Stop => ({ kind: 'variant', key: v.key })),
     ...layout.overallQuestions.map((q): Stop => ({ kind: 'question', id: q.id })),
     { kind: 'general' },
@@ -96,7 +109,7 @@ export function pagesFor(manifest: Manifest): Page[] {
     ...layout.sections.map((s) => ({
       id: s.id,
       title: s.title,
-      size: s.questions.length + s.variants.length,
+      size: sectionStops(s).length,
     })),
     { id: OTHER_PAGE, title: 'Other frames', size: layout.otherVariants.length },
   ].filter((p) => p.size > 0)

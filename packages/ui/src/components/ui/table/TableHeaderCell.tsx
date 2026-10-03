@@ -8,7 +8,7 @@ import {
   type ViewStyle,
 } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { Tooltip } from '../../ui/tooltip'
+import { Tooltip } from '../tooltip'
 import { CELL_PADDING, FLEX_CELL, TableContext } from './TableContext'
 import { columnSortState, type ColumnSortState } from './useTableState'
 

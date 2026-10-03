@@ -183,7 +183,8 @@ above resolves them (31 `stable`, 5 `candidate`, 5 held open). Their assessment
 happened by rule, not by session. `typography`, `eyebrow` and `empty-state` are `ui/*`
 and so became stable-**eligible** on the move, but clause 2's fourth condition holds
 them at `candidate` while the M2 and M3 shim rows sit in `DEPRECATIONS.md`; they are
-promotable once the shims go in 0.23.0. The other two `candidate` rows are the
+promotable once the shims go in 0.23.0. `table` joined them by migration M4 (#367) and is
+held the same way. The other two `candidate` rows are the
 deprecated `HelpTip` and `Tile`.
 `TriggerSurface` has no story, so it carries no status tag.
 

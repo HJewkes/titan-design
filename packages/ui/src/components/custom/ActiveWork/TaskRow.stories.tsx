@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Surface } from '../../ui/surface'
-import { Table, TableBody } from '../Table'
+import { Table, TableBody } from '../../ui/table'
 import { TaskRow } from './TaskRow'
 import { TASK_LIST_FIXTURE } from './task-list-fixture'
 
