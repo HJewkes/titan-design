@@ -115,7 +115,7 @@ export function Drawer({
             sizeStyles[placement][size],
             className
           )}
-          accessibilityRole={'dialog' as any}
+          accessibilityRole={'dialog' as ViewProps['accessibilityRole']}
           {...props}
         >
           {/* Header */}
