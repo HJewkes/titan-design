@@ -198,9 +198,32 @@ describe('Page', () => {
     expect(band.compareDocumentPosition(scroller) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
-  it('isHeaderPinned without a header renders no band', () => {
-    render(<Page isHeaderPinned>{body()}</Page>)
-    expect(screen.queryByTestId('page-header-band')).toBeNull()
+  it.each([[undefined], [null], [false], ['']])(
+    'isHeaderPinned with header %j renders no band',
+    (header) => {
+      render(
+        <Page isHeaderPinned header={header as React.ReactNode}>
+          {body()}
+        </Page>
+      )
+      expect(screen.queryByTestId('page-header-band')).toBeNull()
+    }
+  )
+
+  it('a pinned band and its scroller both reserve the scrollbar gutter on web', () => {
+    const { container } = render(
+      <Page isHeaderPinned header={<Text>Header content</Text>}>
+        {body()}
+      </Page>
+    )
+    const scroller = container.querySelector('[data-testid="page-scroll"]')
+    expect(cls(screen.getByTestId('page-header-band'))).toContain('web:[scrollbar-gutter:stable]')
+    expect(cls(scroller)).toContain('web:[scrollbar-gutter:stable]')
+  })
+
+  it('an unpinned page reserves no scrollbar gutter', () => {
+    const { container } = render(<Page header={<Text>Header content</Text>}>{body()}</Page>)
+    expect(container.innerHTML).not.toContain('scrollbar-gutter')
   })
 
   it('PageHeader pulls its row up by the cap offset', () => {

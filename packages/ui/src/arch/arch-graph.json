@@ -1189,9 +1189,9 @@
     },
     {
       "name": "DateTime",
-      "file": "packages/ui/src/components/custom/DateTime/DateTime.tsx",
-      "dir": "custom",
-      "family": "custom/DateTime",
+      "file": "packages/ui/src/components/ui/date-time/DateTime.tsx",
+      "dir": "ui",
+      "family": "ui/date-time",
       "exports": [
         "DateTime",
         "formatDateTime",
@@ -2175,9 +2175,9 @@
     },
     {
       "name": "Gauge",
-      "file": "packages/ui/src/components/custom/Gauge/Gauge.tsx",
-      "dir": "custom",
-      "family": "custom/Gauge",
+      "file": "packages/ui/src/components/ui/charts/gauge/Gauge.tsx",
+      "dir": "ui",
+      "family": "ui/charts/gauge",
       "exports": [
         "Gauge",
         "GaugeThreshold",
@@ -5085,9 +5085,9 @@
     },
     {
       "name": "Scatter",
-      "file": "packages/ui/src/components/custom/Scatter/Scatter.tsx",
-      "dir": "custom",
-      "family": "custom/Scatter",
+      "file": "packages/ui/src/components/ui/charts/scatter/Scatter.tsx",
+      "dir": "ui",
+      "family": "ui/charts/scatter",
       "exports": [
         "Scatter",
         "ScatterDatum",
@@ -7308,9 +7308,9 @@
     },
     {
       "name": "Treemap",
-      "file": "packages/ui/src/components/custom/Treemap/Treemap.tsx",
-      "dir": "custom",
-      "family": "custom/Treemap",
+      "file": "packages/ui/src/components/ui/charts/treemap/Treemap.tsx",
+      "dir": "ui",
+      "family": "ui/charts/treemap",
       "exports": [
         "Treemap",
         "TreemapDatum",

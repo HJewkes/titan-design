@@ -34,6 +34,9 @@ const maxWidthClasses: Record<PageMaxWidth, string> = {
   full: '',
 }
 
+// Web only: reserves the classic scrollbar's width so the band and the body share one horizontal box.
+const SCROLLBAR_GUTTER = 'web:[scrollbar-gutter:stable]'
+
 export function Page({
   header,
   children,
@@ -47,7 +50,7 @@ export function Page({
 }: PageProps) {
   const fill = !isScrollable && 'flex-1'
   const inner = cn('w-full', maxWidthClasses[maxWidth], maxWidth !== 'full' && 'self-center')
-  const pinned = isHeaderPinned && header != null
+  const pinned = isHeaderPinned && Boolean(header)
   const column = (
     <View className={cn('w-full', gutterClasses[gutter], fill, contentClassName)}>
       <View className={cn(inner, 'gap-section-sm', fill)}>
@@ -62,12 +65,23 @@ export function Page({
       {pinned ? (
         <View
           testID="page-header-band"
-          className={cn('w-full border-b border-hairline-strong', gutterClasses[gutter])}
+          className={cn(
+            'w-full border-b border-hairline-strong',
+            gutterClasses[gutter],
+            SCROLLBAR_GUTTER,
+            'web:overflow-y-hidden'
+          )}
         >
           <View className={inner}>{header}</View>
         </View>
       ) : null}
-      {isScrollable ? <ScrollView testID="page-scroll">{column}</ScrollView> : column}
+      {isScrollable ? (
+        <ScrollView testID="page-scroll" className={cn(pinned && SCROLLBAR_GUTTER)}>
+          {column}
+        </ScrollView>
+      ) : (
+        column
+      )}
     </View>
   )
 }
