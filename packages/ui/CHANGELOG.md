@@ -82,6 +82,12 @@ project adheres to [Semantic Versioning](https://semver.org/).
   contact shadow instead of the paper's drop shadow; dark bars are unchanged. The strip sets both
   through `SetBarTreatmentContext` (`custom/charts/setBarTones.ts`, internal, not exported), which
   `SetBarChart` reads. A chart outside the provider is unchanged (VW-877).
+- `DualPinnedLiveStrip`: a side's missing rep is a filled stub again, no ring. Once the set ends it
+  is missed, grey (`greyRamp` 600 light, 400 dark: 4.88:1 and 4.58:1 on the card); mid-set it is
+  behind, blue (`blue` 600 light, 400 dark: 4.89:1 and 4.73:1). `liveStripGap` and
+  `LIVE_STRIP_GAP_COLOR` in `liveStripModel` decide it from the strip's state. The light bars'
+  shadow is `0 2px 5px` at 0.2 alpha, between the paper's drop shadow and the 1px contact shadow.
+  `SetBarTreatment`'s `emptyVariant` is replaced by `emptyColor` (VW-879).
 - `Drawer`'s overlay and the non-blur `Modal` backdrop use `bg-scrim`, the scrim scale's DEFAULT class. `bg-scrim-default` compiled to no rule, so web painted no scrim. A test now compiles both backdrop class strings, and `lint:borders` runs in `lint` and `verify` (TD-191).
 - `VelocityStrip`'s loss and default zone colours resolve through the `dataviz-sequential` tokens
   for the surface's theme, like `PinnedLiveStrip`, so a light surface no longer gets the dark hexes.
