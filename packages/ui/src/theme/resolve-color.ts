@@ -1,7 +1,7 @@
 import { Platform } from 'react-native'
 import { getSemanticColors, type ThemeMode } from './tokens/semantic'
 
-type ColorToken = keyof ReturnType<typeof getSemanticColors>
+export type ColorToken = keyof ReturnType<typeof getSemanticColors>
 
 /**
  * Resolve a semantic color token for an inline style where a nativewind
