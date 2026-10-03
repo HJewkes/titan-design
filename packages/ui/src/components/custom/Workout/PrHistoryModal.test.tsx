@@ -105,6 +105,8 @@ describe('PrHistoryModal', () => {
   describe('accessibility', () => {
     it('exposes a dialog role labelled with the exercise', () => {
       render(<PrHistoryModal {...baseProps} />)
+      const focusTrap = document.querySelector('[aria-modal="true"]')!.parentElement!
+      fireEvent.animationEnd(focusTrap.parentElement!)
       const dialog = screen.getByRole('dialog')
       expect(dialog).toHaveAttribute('aria-label', 'Bench Press PR history')
     })
