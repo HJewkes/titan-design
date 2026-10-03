@@ -7,6 +7,7 @@ const noDeviceInternals = require('./eslint-rules/no-device-internals')
 const noFrozenTheme = require('./eslint-rules/no-frozen-theme')
 const noLocalFormatter = require('./eslint-rules/no-local-formatter')
 const noRawColor = require('./eslint-rules/no-raw-color')
+const noRawComposition = require('./eslint-rules/no-raw-composition')
 const noRawDeviceDataInChat = require('./eslint-rules/no-raw-device-data-in-chat')
 const noRawSpacing = require('./eslint-rules/no-raw-spacing')
 const noUpwardTierImport = require('./eslint-rules/no-upward-tier-import')
@@ -99,6 +100,7 @@ module.exports = tseslint.config(
           'no-frozen-theme': noFrozenTheme,
           'no-local-formatter': noLocalFormatter,
           'no-raw-color': noRawColor,
+          'no-raw-composition': noRawComposition,
           'no-raw-device-data-in-chat': noRawDeviceDataInChat,
           'no-raw-spacing': noRawSpacing,
           'no-upward-tier-import': noUpwardTierImport,
@@ -505,6 +507,21 @@ module.exports = tseslint.config(
     ],
     rules: {
       'titan/no-upward-tier-import': 'error',
+    },
+  },
+
+  // Compose titan's primitives instead of reaching past them (TD-24 S4): no raw
+  // <button> in components, and d3 only under src/components/ui/charts. The rule
+  // scopes itself (tests and stories may render a <button>; src/lab is exempt),
+  // so one glob covers it.
+  //
+  // Errored, but RATCHETED like no-upward-tier-import: existing occurrences are
+  // recorded per file and messageId in composition-baseline.json, and only
+  // occurrences beyond that allowance fail.
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    rules: {
+      'titan/no-raw-composition': 'error',
     },
   },
 
