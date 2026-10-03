@@ -60,9 +60,21 @@ describe('Skeleton', () => {
     expect(container.firstChild).toBeInTheDocument()
   })
 
-  it('has accessibility label of Loading...', () => {
+  it('is hidden from assistive tech and carries no label by default', () => {
     const { container } = render(<Skeleton />)
-    expect(container.firstChild).toHaveAttribute('aria-label', 'Loading...')
+    expect(container.firstChild).toHaveAttribute('aria-hidden', 'true')
+    expect(container.firstChild).not.toHaveAttribute('aria-label')
+    expect(container.firstChild).not.toHaveAttribute('role')
+  })
+
+  it('exposes a labelled progressbar when accessibilityLabel is given', () => {
+    render(<Skeleton accessibilityLabel="Loading profile" />)
+    expect(screen.getByRole('progressbar', { name: 'Loading profile' })).toBeInTheDocument()
+  })
+
+  it('does not announce Loading... once per bar in composites', () => {
+    render(<SkeletonText />)
+    expect(screen.queryByLabelText('Loading...')).not.toBeInTheDocument()
   })
 
   describe('SkeletonText', () => {
@@ -137,26 +149,22 @@ describe('Skeleton', () => {
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const { container } = render(<Skeleton />)
-      const results = await axe(container, {
-        rules: { 'aria-prohibited-attr': { enabled: false } },
-      })
-      expect(results).toHaveNoViolations()
+      expect(await axe(container)).toHaveNoViolations()
+    })
+
+    it('has no accessibility violations when labelled', async () => {
+      const { container } = render(<Skeleton accessibilityLabel="Loading profile" />)
+      expect(await axe(container)).toHaveNoViolations()
     })
 
     it('has no accessibility violations for SkeletonText', async () => {
       const { container } = render(<SkeletonText />)
-      const results = await axe(container, {
-        rules: { 'aria-prohibited-attr': { enabled: false } },
-      })
-      expect(results).toHaveNoViolations()
+      expect(await axe(container)).toHaveNoViolations()
     })
 
     it('has no accessibility violations for SkeletonCard', async () => {
       const { container } = render(<SkeletonCard />)
-      const results = await axe(container, {
-        rules: { 'aria-prohibited-attr': { enabled: false } },
-      })
-      expect(results).toHaveNoViolations()
+      expect(await axe(container)).toHaveNoViolations()
     })
   })
 })
