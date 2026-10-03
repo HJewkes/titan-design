@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import type { TooltipPlacement } from './Tooltip'
-import { arrowStyles, portalPosition, tooltipPositionStyles } from './tooltipPosition'
+import {
+  arrowStyles,
+  portalPosition,
+  tooltipPositionStyles,
+  type TooltipPlacement,
+} from './tooltipPosition'
 
 const rect = { top: 100, left: 200, bottom: 140, right: 280, width: 80, height: 40 }
 

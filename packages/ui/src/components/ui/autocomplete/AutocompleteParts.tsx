@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Text, Pressable, ScrollView } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Surface } from '../surface'
-import type { AutocompleteOption, AutocompleteProps } from './Autocomplete'
+import type { AutocompleteOption } from './autocompleteFilter'
 
 export function AutocompleteLabel({ label, isRequired }: { label: string; isRequired: boolean }) {
   return (
@@ -52,7 +52,7 @@ interface AutocompleteOptionRowProps<T> {
   option: AutocompleteOption<T>
   isHighlighted: boolean
   isSelected: boolean
-  renderOption: AutocompleteProps<T>['renderOption']
+  renderOption?: (option: AutocompleteOption<T>, isHighlighted: boolean) => React.ReactNode
   onSelect: (option: AutocompleteOption<T>) => void
 }
 

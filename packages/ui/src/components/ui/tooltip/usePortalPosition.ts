@@ -1,7 +1,6 @@
 import { useState, useEffect, type RefObject } from 'react'
 import type { View } from 'react-native'
-import type { TooltipPlacement } from './Tooltip'
-import { portalPosition, type PortalPosition } from './tooltipPosition'
+import { portalPosition, type PortalPosition, type TooltipPlacement } from './tooltipPosition'
 
 /** Measures the trigger on the next frame while a portalled tooltip is visible. */
 export function usePortalPosition(

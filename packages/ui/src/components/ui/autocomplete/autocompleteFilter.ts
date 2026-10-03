@@ -1,4 +1,9 @@
-import type { AutocompleteOption } from './Autocomplete'
+export interface AutocompleteOption<T = string> {
+  value: T
+  label: string
+  description?: string
+  isDisabled?: boolean
+}
 
 export type AutocompleteFilterFn<T> = (option: AutocompleteOption<T>, inputValue: string) => boolean
 

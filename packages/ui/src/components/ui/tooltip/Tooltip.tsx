@@ -3,20 +3,12 @@ import { View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Surface } from '../surface'
 import { TriggerSurface } from '../trigger'
-import { arrowStyles, tooltipPositionStyles } from './tooltipPosition'
+import { arrowStyles, tooltipPositionStyles, type TooltipPlacement } from './tooltipPosition'
 import { canPortal, TooltipPortal } from './TooltipParts'
 import { usePortalPosition } from './usePortalPosition'
 import { useTooltipVisibility } from './useTooltipVisibility'
 
-export type TooltipPlacement =
-  | 'top'
-  | 'top-start'
-  | 'top-end'
-  | 'bottom'
-  | 'bottom-start'
-  | 'bottom-end'
-  | 'left'
-  | 'right'
+export type { TooltipPlacement }
 
 export interface TooltipProps extends ViewProps {
   /** Plain-text tooltip content */

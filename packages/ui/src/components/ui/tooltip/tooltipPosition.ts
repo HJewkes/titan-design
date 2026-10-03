@@ -1,4 +1,12 @@
-import type { TooltipPlacement } from './Tooltip'
+export type TooltipPlacement =
+  | 'top'
+  | 'top-start'
+  | 'top-end'
+  | 'bottom'
+  | 'bottom-start'
+  | 'bottom-end'
+  | 'left'
+  | 'right'
 
 export type PortalPosition = { top: number; left: number; transform: string }
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, TextInput, type ViewProps, type TextInputProps } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { defaultFilterFn, dropdownContent } from './autocompleteFilter'
+import { defaultFilterFn, dropdownContent, type AutocompleteOption } from './autocompleteFilter'
 import {
   AutocompleteClearButton,
   AutocompleteDropdown,
@@ -13,12 +13,7 @@ import {
 } from './AutocompleteParts'
 import { useAutocompleteState } from './useAutocompleteState'
 
-export interface AutocompleteOption<T = string> {
-  value: T
-  label: string
-  description?: string
-  isDisabled?: boolean
-}
+export type { AutocompleteOption }
 
 export interface AutocompleteProps<T = string> extends ViewProps {
   /** Available options */

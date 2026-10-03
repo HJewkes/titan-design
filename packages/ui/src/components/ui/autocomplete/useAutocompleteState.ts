@@ -1,6 +1,9 @@
 import { useState, useCallback, useMemo } from 'react'
-import type { AutocompleteOption } from './Autocomplete'
-import { filterOptions, type AutocompleteFilterFn } from './autocompleteFilter'
+import {
+  filterOptions,
+  type AutocompleteFilterFn,
+  type AutocompleteOption,
+} from './autocompleteFilter'
 
 export interface AutocompleteStateInput<T> {
   options: AutocompleteOption<T>[]
