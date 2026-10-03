@@ -16,7 +16,7 @@ import {
   useTable,
 } from './Table'
 import { useColumnFit, type TableColumnFit } from './column-fit'
-import { Button, ButtonText } from '../../ui/button/Button'
+import { Button, ButtonText } from '../button/Button'
 
 interface User {
   id: string
