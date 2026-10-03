@@ -9,6 +9,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- `ui/charts/network-graph` model and layouts: `GraphLayout` (`{ key, compute }`), `layeredLayout`, `suppliedLayout`, graph cleaning, traversal and summary, and seeded fixtures at 5, 30 and 150 nodes. Pure `.ts`, not yet exported; the component follows (TP-1040).
 - `DateTime` and `formatDateTime` moved to `ui/date-time` (`Components/Molecules/DateTime`); still exported from the package root. The `custom/DateTime` path is a deprecated shim removed in 0.23.0. `DateTime` takes `isLive`; `live` is a deprecated alias for it (TD-428).
 - `FilePathLabel` and `splitPath` moved to `ui/file-path-label` (`Components/Atoms/FilePathLabel`); still exported from the package root. The `custom/ActiveWork/FilePathLabel` path is a deprecated shim removed in 0.23.0 (TD-418).
 - `Popover` and `Menu` take `defaultIsOpen`; `Tooltip` takes `defaultIsOpen` and `onOpenChange`. All three share the new internal `useControllableState` hook (TD-268).
