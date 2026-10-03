@@ -30,11 +30,48 @@ function useCloseOnEscape(isOpen: boolean, close: () => void) {
   }, [isOpen])
 }
 
+interface Visibility {
+  show: () => void
+  hide: () => void
+}
+
+/**
+ * Hover and keyboard focus each hold the tip open; it closes once neither does.
+ * Focus that a pointer press caused is no hold, and a press closes the tip.
+ */
+function useHolds(isDisabled: boolean, { show, hide }: Visibility) {
+  const holds = useRef({ hover: false, focus: false, pointerDown: false })
+  useEffect(() => {
+    if (isDisabled) holds.current = { hover: false, focus: false, pointerDown: false }
+  }, [isDisabled])
+  const hold = (source: 'hover' | 'focus', isHeld: boolean) => {
+    holds.current[source] = isHeld
+    if (isHeld) show()
+    else if (!holds.current.hover && !holds.current.focus) hide()
+  }
+  return {
+    onHoverIn: () => hold('hover', true),
+    onHoverOut: () => hold('hover', false),
+    onMouseDown: () => {
+      holds.current.pointerDown = true
+    },
+    onFocus: () => {
+      if (!holds.current.pointerDown) hold('focus', true)
+    },
+    onBlur: () => hold('focus', false),
+    onLongPress: show,
+    onPressOut: () => {
+      holds.current.pointerDown = false
+      hide()
+    },
+  }
+}
+
 /**
  * Open state for a hover card or tooltip: hover or keyboard focus opens after
- * `openDelay`; it closes after `closeDelay` once neither hover nor focus holds
- * it, and Escape closes at once. Long press opens, for touch. Spread
- * `triggerProps` on the trigger's own Pressable so it adds no tab stop.
+ * `openDelay` and holds it open; it closes after `closeDelay` once neither holds
+ * it, and a press closes it. Escape closes at once. Long press opens, for touch.
+ * Spread `triggerProps` on the trigger's own Pressable so it adds no tab stop.
  *
  * @example
  * const { isOpen, triggerProps } = useHoverFocusState({ openDelay: 300 })
@@ -47,32 +84,14 @@ export function useHoverFocusState({
   defaultIsOpen,
   onOpenChange,
 }: HoverFocusStateOptions = {}) {
-  const { hovered, show, hide, dismiss } = useTooltipVisibility({
+  const visibility = useTooltipVisibility({
     isDisabled,
     openDelay,
     closeDelay,
     defaultIsOpen,
     onOpenChange,
   })
-  const holds = useRef({ hover: false, focus: false })
-  const hold = (source: 'hover' | 'focus', isHeld: boolean) => {
-    holds.current[source] = isHeld
-    if (isHeld) show()
-    else if (!holds.current.hover && !holds.current.focus) hide()
-  }
-  const release = () => {
-    if (!holds.current.hover && !holds.current.focus) hide()
-  }
-  useCloseOnEscape(hovered, dismiss)
-  return {
-    isOpen: hovered,
-    triggerProps: {
-      onHoverIn: () => hold('hover', true),
-      onHoverOut: () => hold('hover', false),
-      onFocus: () => hold('focus', true),
-      onBlur: () => hold('focus', false),
-      onLongPress: show,
-      onPressOut: release,
-    },
-  }
+  const triggerProps = useHolds(isDisabled, visibility)
+  useCloseOnEscape(visibility.hovered, visibility.dismiss)
+  return { isOpen: visibility.hovered, triggerProps }
 }

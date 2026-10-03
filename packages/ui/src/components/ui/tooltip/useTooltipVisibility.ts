@@ -19,7 +19,7 @@ export function useTooltipVisibility({
 }: TooltipVisibilityInput) {
   const [hovered, setHovered] = useControllableState({
     value: undefined,
-    defaultValue: defaultIsOpen,
+    defaultValue: defaultIsOpen && !isDisabled,
     onChange: onOpenChange,
   })
   const openTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)

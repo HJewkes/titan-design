@@ -373,6 +373,20 @@ describe('keyboard focus on a focusable trigger', () => {
     expect(screen.queryByText('Saves the draft')).not.toBeInTheDocument()
   })
 
+  it('closes after a mouse click and stays closed when the pointer leaves', () => {
+    const { button } = renderButtonTip()
+    fireEvent.mouseEnter(button)
+    expect(screen.getByText('Saves the draft')).toBeInTheDocument()
+
+    fireEvent.mouseDown(button, { button: 0, detail: 1 })
+    fireEvent.focus(button)
+    fireEvent.mouseUp(button, { button: 0, detail: 1 })
+    fireEvent.click(button, { button: 0, detail: 1 })
+    fireEvent.mouseLeave(button)
+
+    expect(screen.queryByText('Saves the draft')).not.toBeInTheDocument()
+  })
+
   it('adds no tab stop and no second button around the trigger', () => {
     const { container } = renderButtonTip()
 

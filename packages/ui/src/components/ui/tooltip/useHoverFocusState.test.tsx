@@ -16,6 +16,14 @@ function HoverCard({ onPress, ...options }: HoverFocusStateOptions & { onPress?:
   )
 }
 
+/** A pointer press as a browser orders it: the trigger takes focus between down and up. */
+function pressWithPointer(element: Element) {
+  fireEvent.mouseDown(element, { button: 0, detail: 1 })
+  fireEvent.focus(element)
+  fireEvent.mouseUp(element, { button: 0, detail: 1 })
+  fireEvent.click(element, { button: 0, detail: 1 })
+}
+
 beforeEach(() => {
   vi.useFakeTimers()
 })
@@ -105,20 +113,41 @@ describe('useHoverFocusState', () => {
     expect(screen.getByText('Card')).toBeInTheDocument()
   })
 
-  it('stays open while focused when the trigger is pressed and released', () => {
+  it('closes after a pointer press, even while the pointer stays over the trigger', () => {
     const onPress = vi.fn()
     render(<HoverCard onPress={onPress} />)
     const trigger = screen.getByTestId('trigger')
-    fireEvent.focus(trigger)
+    fireEvent.mouseEnter(trigger)
 
-    fireEvent.mouseDown(trigger, { button: 0, detail: 1 })
-    fireEvent.mouseUp(trigger, { button: 0, detail: 1 })
-    fireEvent.click(trigger, { button: 0, detail: 1 })
+    pressWithPointer(trigger)
 
     expect(onPress).toHaveBeenCalledTimes(1)
-    expect(screen.getByText('Card')).toBeInTheDocument()
+    expect(screen.queryByText('Card')).toBeNull()
   })
 
+  it('stays closed when the pointer leaves after a press that focused the trigger', () => {
+    render(<HoverCard />)
+    const trigger = screen.getByTestId('trigger')
+    fireEvent.mouseEnter(trigger)
+    pressWithPointer(trigger)
+
+    fireEvent.mouseLeave(trigger)
+
+    expect(screen.queryByText('Card')).toBeNull()
+  })
+
+  it('stays open on keyboard focus, with no pointer, until Escape', () => {
+    render(<HoverCard closeDelay={200} />)
+    fireEvent.focus(screen.getByTestId('trigger'))
+
+    act(() => vi.advanceTimersByTime(1000))
+    expect(screen.getByText('Card')).toBeInTheDocument()
+    fireEvent.keyDown(document, { key: 'Escape' })
+
+    expect(screen.queryByText('Card')).toBeNull()
+  })
+
+  // A guard, not a regression test: the shared-flag code also passed it.
   it('closes on blur once the pointer has already left', () => {
     render(<HoverCard />)
     const trigger = screen.getByTestId('trigger')
@@ -174,6 +203,28 @@ describe('useHoverFocusState', () => {
 
     expect(screen.queryByText('Card')).toBeNull()
     expect(onOpenChange.mock.calls).toEqual([[true], [false]])
+  })
+
+  it('drops a hover hold when it becomes disabled, so a later blur still closes', () => {
+    const { rerender } = render(<HoverCard />)
+    const trigger = screen.getByTestId('trigger')
+    fireEvent.mouseEnter(trigger)
+    rerender(<HoverCard isDisabled />)
+    rerender(<HoverCard />)
+
+    fireEvent.focus(trigger)
+    fireEvent.blur(trigger)
+
+    expect(screen.queryByText('Card')).toBeNull()
+  })
+
+  it('starts closed and silent when disabled, despite defaultIsOpen', () => {
+    const onOpenChange = vi.fn()
+
+    render(<HoverCard defaultIsOpen isDisabled onOpenChange={onOpenChange} />)
+
+    expect(screen.queryByText('Card')).toBeNull()
+    expect(onOpenChange).not.toHaveBeenCalled()
   })
 
   it('has no accessibility violations while open', async () => {
