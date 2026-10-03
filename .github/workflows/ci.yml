@@ -31,10 +31,10 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # verify is format, lint, type-check, build, tests with coverage, then arch-graph
-      # freshness (arch:check): the same gate as a local run.
+      # verify:unit is format, lint, type-check, build, tests with coverage, then arch-graph
+      # freshness (arch:check): local `pnpm verify` minus stories-axe, which runs in its own job.
       - name: Verify
-        run: pnpm verify
+        run: pnpm verify:unit
 
       # publint --strict plus attw on the packed tarball, so an export-map regression fails before a tag exists.
       - name: Package shape
@@ -166,6 +166,25 @@ jobs:
       - name: Storybook play functions
         run: pnpm test:storybook
 
+  # Axe on every story under jsdom, parallel to build. One Node version: jsdom and axe-core
+  # are plain JS, and build still runs every other test on Node 20 and 22.
+  stories-axe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Stories axe
+        run: pnpm test:axe
+
   # pnpm audit reads the lockfile only, so the job needs no install.
   audit:
     runs-on: ubuntu-latest
@@ -183,7 +202,7 @@ jobs:
   # The aggregator the ruleset will require; all-green also fails if a job here is missing from needs.
   check:
     if: always()
-    needs: [build, visual, storybook-play, audit]
+    needs: [build, stories-axe, visual, storybook-play, audit]
     runs-on: ubuntu-latest
     steps:
       - uses: HJewkes/ci/actions/all-green@v1
