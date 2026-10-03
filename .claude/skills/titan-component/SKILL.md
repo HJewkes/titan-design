@@ -93,5 +93,10 @@ tested and exported looks like finished work to the next reader.
 - `references/story.md`: ordered checklist for stories, docs lines and the family README.
 - `references/token.md`: ordered checklist for adding or choosing a token.
 - `references/verify.md`: ordered checklist for tests, visual layers and the final gates.
+- `references/compose-primitives.md`: the reuse, domain-number and prior-art rules, and which primitive to compose.
+- `references/round0-contract.md`: the Round 0 contract, the functional gate and the evidence rules.
+- `references/review-rounds.md`: one review round step by step, and the show-not-describe rule.
+- `references/coordinator-checklist.md`: the coordinator's showing, asking, merging and release steps.
+- `references/gotchas.md`: code and tooling traps that CLAUDE.md > Gotchas does not cover.
 - `templates/`: starter component, test, story and family README, repaired to match `CLAUDE.md`.
 - `tools/`: `measure-render.mjs` (measure a story against a reference) and `round-capture.mjs` (named screenshots for a review round); each prints usage with `--help`.
