@@ -9,6 +9,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- `Popover` and `Menu` take `defaultIsOpen`; `Tooltip` takes `defaultIsOpen` and `onOpenChange`. All three share the new internal `useControllableState` hook (TD-268).
 - `src/arch/component-catalog.json`, a generated catalog of every component: name, file, family,
   tier, maturity status, composed components and story ids, with the files it leaves out and why.
   `pnpm catalog` regenerates it; a freshness test fails when it is stale (TD-68).

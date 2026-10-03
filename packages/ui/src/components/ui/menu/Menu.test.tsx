@@ -359,3 +359,21 @@ describe('Menu geometry resolves to the spacing tokens', () => {
     expect(resolveAll(spacing)).toEqual([...pixels])
   })
 })
+
+describe('Menu defaultIsOpen', () => {
+  it('shows the list on first render and closes on a trigger press', () => {
+    render(
+      <Menu defaultIsOpen>
+        <MenuTrigger>
+          <button>Options</button>
+        </MenuTrigger>
+        <MenuList>
+          <MenuItem>Edit</MenuItem>
+        </MenuList>
+      </Menu>
+    )
+    expect(screen.getByText('Edit')).toBeInTheDocument()
+    fireEvent.click(screen.getByText('Options'))
+    expect(screen.queryByText('Edit')).not.toBeInTheDocument()
+  })
+})
