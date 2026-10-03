@@ -6,7 +6,7 @@ import { TriggerSurface } from '../trigger'
 import { arrowStyles, tooltipPositionStyles, type TooltipPlacement } from './tooltipPosition'
 import { canPortal, TooltipPortal } from './TooltipParts'
 import { usePortalPosition } from './usePortalPosition'
-import { useTooltipVisibility } from './useTooltipVisibility'
+import { useHoverFocusState } from './useHoverFocusState'
 
 export type { TooltipPlacement }
 
@@ -55,7 +55,8 @@ export function useHoverState() {
 /**
  * Tooltip component for showing additional information on hover/press.
  *
- * Note: On native, tooltips appear on long press. On web, they appear on hover.
+ * Note: On native, tooltips appear on long press. On web, they appear on hover
+ * and on keyboard focus of a focusable trigger, and Escape closes them.
  *
  * @example
  * // String-only tooltip
@@ -84,7 +85,7 @@ export function Tooltip({
   onOpenChange,
   ...props
 }: TooltipProps) {
-  const { hovered, show, hide } = useTooltipVisibility({
+  const { isOpen: hovered, triggerProps } = useHoverFocusState({
     isDisabled,
     openDelay,
     closeDelay,
@@ -108,11 +109,7 @@ export function Tooltip({
   return (
     <View className="relative" ref={triggerRef} {...props}>
       {isOpen === undefined ? (
-        <TriggerSurface
-          handlers={{ onHoverIn: show, onHoverOut: hide, onLongPress: show, onPressOut: hide }}
-        >
-          {children}
-        </TriggerSurface>
+        <TriggerSurface handlers={triggerProps}>{children}</TriggerSurface>
       ) : (
         children
       )}
