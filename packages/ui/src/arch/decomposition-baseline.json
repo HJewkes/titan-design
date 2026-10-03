@@ -350,8 +350,9 @@
     "complexity": 21
   },
   "components/ui/select/Select.tsx#Select": {
-    "complexity": 20,
-    "function-lines": 115
+    "complexity": 21,
+    "component-lines": 122,
+    "function-lines": 122
   },
   "components/ui/stat-card/StatCard.tsx#StatCard": {
     "props": 20
