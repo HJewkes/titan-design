@@ -549,6 +549,9 @@ describe('NetworkGraph states', () => {
   })
 })
 
+// axe on Medium takes about 4 s on a CI runner under coverage, against a 5 s default.
+const AXE_TIMEOUT = 30_000
+
 describe('NetworkGraph accessibility', () => {
   const cases: [string, Partial<NetworkGraphProps>, GraphFixture][] = [
     ['Small', { showLegend: true }, smallFixture],
@@ -560,7 +563,8 @@ describe('NetworkGraph accessibility', () => {
     ['disabled', { isDisabled: true }, smallFixture],
   ]
 
-  it.each(cases)('has no axe violations for %s', async (_, props, fixture) => {
+  it.each(cases)('has no axe violations for %s', { timeout: AXE_TIMEOUT }, async (...args) => {
+    const [, props, fixture] = args
     const { container } = renderGraph(props, fixture)
     expect(await axe(container)).toHaveNoViolations()
   })
@@ -568,7 +572,7 @@ describe('NetworkGraph accessibility', () => {
   it.each([
     ['node', []],
     ['edge', ['ArrowRight']],
-  ])('has no axe violations with an active %s', async (_, keys) => {
+  ])('has no axe violations with an active %s', { timeout: AXE_TIMEOUT }, async (_, keys) => {
     const { container } = renderGraph()
     focusRoot()
     keys.forEach(press)
