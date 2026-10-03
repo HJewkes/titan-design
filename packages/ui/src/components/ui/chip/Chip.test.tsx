@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Chip } from './Chip'
+import { capturedClassNames } from '../../../test/classname-capture'
 import { resolveAll, siblingSource, sizeClasses } from '../../../test/spacing-resolver'
 
 describe('Chip', () => {
@@ -146,5 +147,96 @@ describe('Chip geometry resolves to the squish tokens', () => {
 
   it.each(ramp)('%s measures what Chip shipped before the tokens', (level, pixels) => {
     expect(resolveAll(classes(level).slice(0, 2))).toEqual([...pixels])
+  })
+})
+
+describe('Chip isSelected and rightElement', () => {
+  const classesOf = (testID: string) => (capturedClassNames.get(testID) ?? '').split(/\s+/)
+
+  it('a pressable chip with isSelected reports aria-pressed true', () => {
+    render(
+      <Chip onPress={() => {}} isSelected>
+        Notes
+      </Chip>
+    )
+    expect(screen.getByRole('button', { name: 'Notes' })).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('isSelected false reports aria-pressed false', () => {
+    render(
+      <Chip onPress={() => {}} isSelected={false}>
+        Notes
+      </Chip>
+    )
+    expect(screen.getByRole('button', { name: 'Notes' })).toHaveAttribute('aria-pressed', 'false')
+  })
+
+  it('a pressable chip without isSelected has no aria-pressed attribute', () => {
+    render(<Chip onPress={() => {}}>Notes</Chip>)
+    expect(screen.getByRole('button', { name: 'Notes' })).not.toHaveAttribute('aria-pressed')
+  })
+
+  it('isSelected without onPress renders no button and no aria-pressed', () => {
+    const { container } = render(<Chip isSelected>Notes</Chip>)
+    expect(screen.queryByRole('button')).not.toBeInTheDocument()
+    expect(container.querySelector('[aria-pressed]')).toBeNull()
+  })
+
+  it('a selected chip carries the solid face of its colour, and both states carry the border class', () => {
+    render(
+      <>
+        <Chip testID="on" color="primary" variant="outline" onPress={() => {}} isSelected>
+          On
+        </Chip>
+        <Chip testID="off" color="primary" variant="outline" onPress={() => {}} isSelected={false}>
+          Off
+        </Chip>
+        <Chip testID="off-subtle" color="primary" onPress={() => {}} isSelected={false}>
+          Off
+        </Chip>
+      </>
+    )
+    expect(classesOf('on')).toContain('bg-brand-primary-solid')
+    expect(classesOf('off')).not.toContain('bg-brand-primary-solid')
+    for (const id of ['on', 'off', 'off-subtle']) {
+      expect(classesOf(id)).toContain('border')
+      expect(classesOf(id)).not.toContain('border-0')
+    }
+  })
+
+  it('a disabled selected chip keeps aria-pressed true and does not fire onPress', () => {
+    const onPress = vi.fn()
+    render(
+      <Chip onPress={onPress} isSelected isDisabled>
+        Notes
+      </Chip>
+    )
+    const button = screen.getByRole('button', { name: 'Notes' })
+    expect(button).toHaveAttribute('aria-pressed', 'true')
+    fireEvent.click(button)
+    expect(onPress).not.toHaveBeenCalled()
+  })
+
+  it('rightElement renders after the label and before the delete button', () => {
+    render(
+      <Chip rightElement={<span data-testid="count">12</span>} onDelete={() => {}}>
+        Notes
+      </Chip>
+    )
+    const label = screen.getByText('Notes')
+    const count = screen.getByTestId('count')
+    const remove = screen.getByLabelText('Remove')
+    expect(label.compareDocumentPosition(count) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(count.compareDocumentPosition(remove) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
+  it.each([
+    ['selected', { onPress: () => {}, isSelected: true }],
+    ['unselected', { onPress: () => {}, isSelected: false }],
+    ['selected and disabled', { onPress: () => {}, isSelected: true, isDisabled: true }],
+    ['selected without onPress', { isSelected: true }],
+  ])('has no axe violations when %s', async (_, props) => {
+    const { container } = render(<Chip {...props}>Notes</Chip>)
+    expect(await axe(container)).toHaveNoViolations()
   })
 })
