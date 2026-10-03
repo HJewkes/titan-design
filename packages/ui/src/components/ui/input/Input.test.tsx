@@ -99,11 +99,11 @@ describe('Input geometry resolves to the spacing tokens', () => {
 })
 
 /**
- * Input's single-line sizes sit on Button's control tokens (TD-275), so an
- * Input and a Button of the same size line up in one row. Heights match the
- * old `h-8/10/12`; horizontal padding grew from 12/16/16 to 16/20/24.
+ * Input's single-line heights sit on Button's control tokens (TD-275), so an
+ * Input and a Button of the same size line up in one row. Horizontal padding
+ * stays at 12/16/16, narrower than Button's, by the Gate 2 decision.
  */
-describe('Input single-line sizes resolve to the control tokens', () => {
+describe('Input single-line sizes', () => {
   const source = siblingSource(import.meta.url, 'Input.tsx')
   const buttonSource = siblingSource(import.meta.url, '../button/Button.tsx')
   const geometryFor = (level: string) =>
@@ -112,12 +112,12 @@ describe('Input single-line sizes resolve to the control tokens', () => {
     classes.find((c) => /^(min-)?h-/.test(c))?.replace(/^(min-)?h-/, '')
 
   const shipped = [
-    ['sm', ['h-control-sm', 'px-control-x-sm'], ['32px', '16px']],
-    ['md', ['h-control-md', 'px-control-x-md'], ['40px', '20px']],
-    ['lg', ['h-control-lg', 'px-control-x-lg'], ['48px', '24px']],
+    ['sm', ['h-control-sm', 'px-3'], ['32px', '12px']],
+    ['md', ['h-control-md', 'px-4'], ['40px', '16px']],
+    ['lg', ['h-control-lg', 'px-4'], ['48px', '16px']],
   ] as const
 
-  it.each(shipped)('%s uses the control tokens', (level, classes, pixels) => {
+  it.each(shipped)('%s pins its height and padding', (level, classes, pixels) => {
     expect(geometryFor(level)).toEqual([...classes])
     expect(resolveAll(geometryFor(level))).toEqual([...pixels])
   })
