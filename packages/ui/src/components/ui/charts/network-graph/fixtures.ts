@@ -3,6 +3,7 @@ import { suppliedLayout } from './layouts/supplied-layout-model'
 import type {
   GraphEdge,
   GraphEdgeKind,
+  GraphGroup,
   GraphKind,
   GraphLayout,
   GraphNode,
@@ -18,6 +19,10 @@ export interface GraphFixture {
   layout?: GraphLayout
   /** Viewport override for fixtures that probe size handling. */
   width?: number
+  /** The node an ego view of this fixture centres on. */
+  focusId?: string
+  /** Region order and labels for a clustered view of this fixture. */
+  groups?: GraphGroup[]
 }
 
 const NODE_KINDS: GraphKind[] = [
@@ -109,6 +114,8 @@ function buildMedium(): GraphFixture {
   )
 }
 
+const LARGE_GROUPS = ['alpha', 'beta', 'gamma', 'delta', 'epsilon']
+
 function buildLarge(): GraphFixture {
   const random = seededRandom(150)
   const roots = Array.from({ length: 5 }, (_, i) => `lead-${pad(i + 1)}`)
@@ -122,8 +129,13 @@ function buildLarge(): GraphFixture {
     levels.set(id, (levels.get(parent) ?? 0) + 1)
   }
   const ids = [...levels.keys()]
+  const rootOf = new Map(roots.map((id) => [id, id]))
+  for (const edge of spawns) rootOf.set(edge.target, rootOf.get(edge.source) as string)
   return fixture(
-    ids.map((id) => node(id, id.startsWith('lead') ? 'lead' : 'worker')),
+    ids.map((id) => ({
+      ...node(id, id.startsWith('lead') ? 'lead' : 'worker'),
+      group: LARGE_GROUPS[roots.indexOf(rootOf.get(id) as string)],
+    })),
     [...spawns, ...seededMessages(ids, 150, random)]
   )
 }
@@ -185,7 +197,8 @@ function buildTwoComponents(): GraphFixture {
     members.slice(1).map((id, i) => spawn(members[i] as string, id))
   return fixture(
     [...first, ...second, ...ids(3, 14)].map((id) => node(id, 'worker')),
-    [...chain(first), spawn(first[0] as string, first[4] as string), ...chain(second)]
+    [...chain(first), spawn(first[0] as string, first[4] as string), ...chain(second)],
+    { focusId: 'alpha-01' }
   )
 }
 
@@ -197,6 +210,87 @@ function buildMutualPair(): GraphFixture {
       message('alpha-02', 'alpha-01', 3),
       message('alpha-01', 'alpha-02', 8),
     ]
+  )
+}
+
+const chainSpawns = (ids: readonly string[]) =>
+  ids.slice(1).map((id, i) => spawn(ids[i] as string, id))
+const inGroup = (ids: readonly string[], group?: string): GraphNode[] =>
+  ids.map((id) => ({ ...node(id, 'worker'), ...(group === undefined ? {} : { group }) }))
+const series = (prefix: string, count: number, from = 1) =>
+  Array.from({ length: count }, (_, i) => `${prefix}-${pad(from + i)}`)
+
+export const groupedGroups: GraphGroup[] = [
+  { id: 'alpha', label: 'Alpha' },
+  { id: 'beta', label: 'Beta' },
+  { id: 'gamma', label: 'Gamma' },
+  { id: 'delta', label: 'Delta' },
+]
+
+/** Seeded edges between nodes of different groups, never repeating a pair. */
+function crossEdges(groupById: ReadonlyMap<string, string>, count: number, random: () => number) {
+  const ids = [...groupById.keys()]
+  const seen = new Set<string>()
+  const edges: GraphEdge[] = []
+  while (edges.length < count) {
+    const from = ids[Math.floor(random() * ids.length)] as string
+    const to = ids[Math.floor(random() * ids.length)] as string
+    if (groupById.get(from) === groupById.get(to) || seen.has(`${from}>${to}`)) continue
+    seen.add(`${from}>${to}`)
+    edges.push(message(from, to, 1 + Math.floor(random() * 20)))
+  }
+  return edges
+}
+
+/** Groups of 12, 10, 8 and 5, five ungrouped nodes (three with no group, two with ''). */
+function buildGrouped(): GraphFixture {
+  const random = seededRandom(40)
+  const sizes = [12, 10, 8, 5]
+  const extras = [4, 4, 3, 2]
+  const members = groupedGroups.map((group, i) => series(group.id, sizes[i] as number))
+  const ungrouped = series('solo', 5)
+  const nodes = [
+    ...members.flatMap((ids, i) => inGroup(ids, groupedGroups[i]?.id)),
+    ...inGroup(ungrouped.slice(0, 3)),
+    ...inGroup(ungrouped.slice(3), ''),
+  ]
+  const inner = members.flatMap((ids, i) => {
+    const chain = chainSpawns(ids)
+    return [...chain, ...seededMessages(ids, extras[i] as number, random, chain)]
+  })
+  const groupById = new Map(nodes.map((n) => [n.id, n.group || n.id]))
+  return fixture(nodes, [...inner, ...crossEdges(groupById, 9, random)], {
+    focusId: 'alpha-01',
+    groups: groupedGroups,
+  })
+}
+
+function buildHubAndSpokes(): GraphFixture {
+  const random = seededRandom(24)
+  const spokes = series('spoke', 24)
+  const leaves: GraphEdge[] = []
+  for (const spoke of spokes) {
+    const count = Math.floor(random() * 3)
+    for (let i = 0; i < count; i += 1) leaves.push(spawn(spoke, `leaf-${pad(leaves.length + 1)}`))
+  }
+  return fixture(
+    [node('hub-01', 'lead'), ...inGroup(spokes), ...inGroup(leaves.map((e) => e.target))],
+    [...spokes.map((id) => spawn('hub-01', id)), ...leaves],
+    { focusId: 'hub-01' }
+  )
+}
+
+function buildManyGroups(): GraphFixture {
+  const groups = series('group', 14)
+  let next = 1
+  const members = groups.map((_, i) => {
+    const ids = series('alpha', (i % 3) + 1, next)
+    next += ids.length
+    return ids
+  })
+  return fixture(
+    members.flatMap((ids, i) => inGroup(ids, groups[i])),
+    members.flatMap(chainSpawns)
   )
 }
 
@@ -244,11 +338,19 @@ function buildHostile(): GraphFixture {
   }
 }
 
-/** Options for the force layout, not data: each value must clamp or fall back, never throw. */
+/** Options for the layouts, not data: each value must clamp or fall back, never throw. */
 export const hostileLayoutOptions = {
   seeds: [Number.NaN, -1, 1.5, 2 ** 40],
   iterations: [0, Number.NaN, 1e9],
   width: 0,
+  focusIds: [null, 'alpha-99'],
+  hops: [Number.NaN, -1, 2.5],
+  /** An unknown id and a repeated id; the first label of a repeated id wins. */
+  groups: [
+    { id: 'zeta', label: 'Zeta' },
+    { id: 'alpha', label: 'Alpha' },
+    { id: 'alpha', label: 'Alpha again' },
+  ],
 } as const
 
 export const smallFixture = buildSmall()
@@ -284,4 +386,11 @@ export const networkGraphFixtures = {
   Hostile: hostileFixture,
   'Two components': buildTwoComponents(),
   'Mutual pair': buildMutualPair(),
+  'Grouped (40)': buildGrouped(),
+  'Hub and spokes': buildHubAndSpokes(),
+  'Directed chain': fixture(inGroup(series('alpha', 6)), chainSpawns(series('alpha', 6)), {
+    focusId: 'alpha-03',
+  }),
+  'One group': fixture(inGroup(series('alpha', 10), 'alpha'), chainSpawns(series('alpha', 10))),
+  'Many groups': buildManyGroups(),
 } satisfies Record<string, GraphFixture>

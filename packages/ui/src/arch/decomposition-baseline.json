@@ -215,19 +215,19 @@
     "file-lines": 335
   },
   "components/custom/charts/SetBarChart.tsx": {
-    "file-lines": 428
+    "file-lines": 406
   },
   "components/custom/charts/SetBarChart.tsx#SetBarChart": {
     "complexity": 32,
-    "component-lines": 197,
-    "function-lines": 197,
+    "component-lines": 194,
+    "function-lines": 194,
     "props": 28
   },
   "components/custom/charts/SetBarChart.tsx#SetBarChart>cells.map": {
     "complexity": 18
   },
   "components/shell/workout/DualPinnedLiveStrip.tsx": {
-    "file-lines": 415
+    "file-lines": 419
   },
   "components/shell/workout/DualPinnedLiveStrip.tsx#DualPinnedLiveStrip": {
     "props": 14

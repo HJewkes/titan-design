@@ -8,9 +8,12 @@ Cross-platform React + React Native design system built on Gluestack UI, NativeW
 - **Monorepo**: pnpm workspaces + Turborepo
 - **Node**: Use `pnpm` (v9.15.0) for all package management
 - **Build**: `pnpm build` (tsup, outputs ESM + CJS + DTS to `dist/`)
-- **Test**: `pnpm test` (Vitest + Testing Library + jest-axe). Inside `packages/ui` the script is
-  bare `vitest`, which watches; for one run use `pnpm exec vitest run [path]` there, or
-  `pnpm test -- -- --run` from the root (see _CI and scripts_)
+- **Test**: `pnpm test` (Vitest + Testing Library + jest-axe, jsdom only). Inside `packages/ui` the script is
+  `vitest --project threads --project local-time --project types --project stories-axe`, which watches; for one
+  run use `pnpm exec vitest run --project threads [path]` there, or `pnpm test -- -- --run` from the root (see
+  _CI and scripts_). `pnpm test:unit` skips `stories-axe`; `pnpm test:axe` runs only it. Bare `vitest` also starts
+  the `storybook` browser project. `pnpm test:storybook` runs the Storybook play functions (stories tagged `play`)
+  in headless Chromium, then checks the play count.
 - **Storybook**: `pnpm storybook` (Storybook 10, locked to port 6006 — see below)
 - **Lint**: `pnpm lint` (ESLint 9)
 

@@ -93,13 +93,13 @@ function stepForces(
   }
 }
 
-/** Unframed, unrounded positions in id order. The inputs are never mutated. */
+/** Unframed, unrounded positions in id order, one per distinct id. The inputs are never mutated. */
 export function simulateForces(
   nodes: readonly Pick<GraphNode, 'id'>[],
   edges: readonly GraphEdge[],
   { seed, iterations }: SimulateOptions
 ): Record<string, GraphPoint> {
-  const ids = nodes.map((node) => node.id).sort(compareText)
+  const ids = [...new Set(nodes.map((node) => node.id))].sort(compareText)
   const random = seededRandom(toSeed(seed))
   const bodies = startingBodies(ids, random)
   stepForces(bodies, simulationLinks(new Set(ids), edges), iterations, random)

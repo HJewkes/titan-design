@@ -126,7 +126,7 @@ titan-design/
 - **[Architecture](./docs/ARCHITECTURE.md)** - Technical architecture and design decisions
 - **[Storybook Setup](./docs/STORYBOOK_SETUP.md)** - Storybook configuration guide
 - **[CLAUDE.md](./CLAUDE.md)** - Component patterns, tokens, and development conventions
-- **[Component Implementation Checklist](./docs/component-implementation-checklist.md)** - Per-component "done" gate for porting a frozen HTML prototype with pixel parity; other components follow the `titan-component-workflow` skill's Gate 2
+- **[Component Implementation Checklist](./docs/component-implementation-checklist.md)** - Per-component "done" gate for porting a frozen HTML prototype with pixel parity; other components follow the `titan-component` skill (`.claude/skills/titan-component`)'s Gate 2
 - **[Component States](./docs/component-states.md)** - The loading, empty, error and disabled checklist every component meets or explains
 - **[Line Charts](./packages/ui/src/components/custom/charts/README.md#line-charts)** - The structure a new line chart copies from `GoalTrajectoryChart`, and where `StrengthTrendChart` differs
 - **[Choosing Tokens](./packages/ui/TOKENS.md)** - Which colour, categorical palette, type, spacing and radius token a component should use; also rendered in Storybook as Foundations → Choosing Tokens

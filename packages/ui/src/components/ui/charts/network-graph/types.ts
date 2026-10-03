@@ -54,6 +54,25 @@ export interface GraphLayoutInput {
   height: number
 }
 
+export interface GraphGroup {
+  id: string
+  label: string
+}
+
+/** A circle a layout asks to be drawn under the nodes: a cluster's region or an ego hop ring. */
+export interface GraphGroupRegion {
+  id: string
+  /** Drawn at the region and added to each member's accessible name. */
+  label: string
+  nodeIds: readonly string[]
+  cx: number
+  cy: number
+  /** A radius of 0 is not painted. */
+  radius: number
+  /** `region`: a disc (clustered); `ring`: an outline (ego hop distance). */
+  variant: 'region' | 'ring'
+}
+
 export interface GraphLayoutResult {
   /** A node without a position is not drawn. */
   positions: Readonly<Record<string, GraphPoint>>
@@ -66,6 +85,7 @@ export interface GraphLayoutResult {
   edgeShape?: 'horizontal' | 'arc'
   /** Default 'all'. */
   labelMode?: 'all' | 'declutter'
+  groups?: readonly GraphGroupRegion[]
 }
 
 export interface GraphLayout {

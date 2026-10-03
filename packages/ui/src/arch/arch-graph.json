@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:77af633a602427fb7e7436752e411a3038354556a61f426faae837304e4f4b97",
+  "componentBarrelHash": "sha256:79e9b0db960aab4cf99d92b4eaf4cb7d028cfb95aca4c0b91db1698d122067a5",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -2175,9 +2175,9 @@
     },
     {
       "name": "Gauge",
-      "file": "packages/ui/src/components/custom/Gauge/Gauge.tsx",
-      "dir": "custom",
-      "family": "custom/Gauge",
+      "file": "packages/ui/src/components/ui/charts/gauge/Gauge.tsx",
+      "dir": "ui",
+      "family": "ui/charts/gauge",
       "exports": [
         "Gauge",
         "GaugeThreshold",
@@ -5085,9 +5085,9 @@
     },
     {
       "name": "Scatter",
-      "file": "packages/ui/src/components/custom/Scatter/Scatter.tsx",
-      "dir": "custom",
-      "family": "custom/Scatter",
+      "file": "packages/ui/src/components/ui/charts/scatter/Scatter.tsx",
+      "dir": "ui",
+      "family": "ui/charts/scatter",
       "exports": [
         "Scatter",
         "ScatterDatum",
@@ -7308,9 +7308,9 @@
     },
     {
       "name": "Treemap",
-      "file": "packages/ui/src/components/custom/Treemap/Treemap.tsx",
-      "dir": "custom",
-      "family": "custom/Treemap",
+      "file": "packages/ui/src/components/ui/charts/treemap/Treemap.tsx",
+      "dir": "ui",
+      "family": "ui/charts/treemap",
       "exports": [
         "Treemap",
         "TreemapDatum",
