@@ -124,6 +124,26 @@ describe('GoalMuscleCard', () => {
     })
   })
 
+  describe.each(['comfortable', 'compact'] as const)(
+    'the StatCard template at %s density',
+    (density) => {
+      it('renders the name and status as the header and the figure and lifts as the body', () => {
+        render(<GoalMuscleCard {...baseProps} density={density} />)
+        const header = screen.getByTestId('goal-muscle-card-stat-card-header')
+        const body = screen.getByTestId('goal-muscle-card-stat-card-body')
+        expect(header).toContainElement(screen.getByTestId('goal-muscle-card-name'))
+        expect(body).toContainElement(screen.getByTestId('goal-muscle-card-figure'))
+        expect(body).toContainElement(screen.getAllByTestId('goal-muscle-card-lift')[0])
+      })
+
+      // VW-529 Q5 default: the count stays a label beside the glyph, not a lead figure.
+      it('has no lead figure', () => {
+        render(<GoalMuscleCard {...baseProps} density={density} />)
+        expect(screen.queryByTestId('goal-muscle-card-stat-card-figure')).toBeNull()
+      })
+    }
+  )
+
   it('names itself for assistive tech', () => {
     render(<GoalMuscleCard {...baseProps} />)
     expect(screen.getByLabelText('BACK goal rollup, Ahead')).toBeInTheDocument()

@@ -21,15 +21,15 @@ const baseProps: GoalLiftCardProps = {
 describe('GoalLiftCard', () => {
   it('leads with the meso target block, not a hand-rolled hero', () => {
     render(<GoalLiftCard {...baseProps} />)
-    const summary = screen.getByTestId('goal-milestone-summary')
-    expect(within(summary).getByTestId('goal-milestone-hero')).toHaveTextContent('5 lb')
+    const figure = screen.getByTestId('goal-lift-card-stat-card-figure')
+    expect(within(figure).getByTestId('goal-milestone-hero')).toHaveTextContent('5 lb')
     expect(screen.queryByTestId('goal-lift-card-hero')).toBeNull()
     expect(screen.queryByTestId('goal-lift-card-due')).toBeNull()
   })
 
   it('reads the block off the props the card already had', () => {
     render(<GoalLiftCard {...baseProps} />)
-    const summary = screen.getByTestId('goal-milestone-summary')
+    const summary = screen.getByTestId('goal-lift-card-stat-card-figure')
     // Week 5 is the last reading's week, 8 the milestone's due week.
     expect(within(summary).getByTestId('goal-milestone-week-count')).toHaveTextContent(
       'Week 5 of 8'

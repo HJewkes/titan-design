@@ -36,7 +36,7 @@ describe('PrimaryGoalCard', () => {
     it('draws the chart and the meso target summary', () => {
       render(<PrimaryGoalCard {...S.calibrating} chartWidth={WALL} />)
       expect(screen.getByTestId('goal-trajectory-chart-canvas')).toBeInTheDocument()
-      expect(screen.getByTestId('goal-milestone-summary')).toBeInTheDocument()
+      expect(screen.getByTestId('goal-milestone-hero')).toBeInTheDocument()
     })
 
     it('drops the old header block: no subtitle line, no metric cells', () => {
@@ -48,8 +48,8 @@ describe('PrimaryGoalCard', () => {
 
     it('leaves the week count to the folded summary, where it already lived', () => {
       render(<PrimaryGoalCard {...S.calibrating} chartWidth={WALL} />)
-      const summary = screen.getByTestId('goal-milestone-summary')
-      expect(within(summary).getAllByText('Week 2 of 12').length).toBeGreaterThan(0)
+      const facts = screen.getByTestId('goal-milestone-facts')
+      expect(within(facts).getAllByText('Week 2 of 12').length).toBeGreaterThan(0)
       expect(within(screen.getByTestId('goal-card-title')).queryByText(/Week/)).toBeNull()
     })
 
@@ -131,19 +131,22 @@ describe('PrimaryGoalCard', () => {
   describe('the fold', () => {
     it('is one card: the milestone content has no plane or frame of its own', () => {
       render(<PrimaryGoalCard {...S.onTrack} chartWidth={WALL} />)
-      expect(screen.getByTestId('goal-milestone-summary')).toBeInTheDocument()
+      expect(screen.getByTestId('primary-goal-card-stat-card-figure')).toContainElement(
+        screen.getByTestId('goal-milestone-hero')
+      )
       expect(screen.queryByTestId('goal-milestone-tile')).toBeNull()
       expect(screen.queryByTestId('goal-milestone-plane')).toBeNull()
     })
 
-    it('puts the summary above the chart', () => {
+    it('puts the summary above the chart, the week cells on the chart in the body', () => {
       render(<PrimaryGoalCard {...S.onTrack} chartWidth={WALL} />)
-      const fold = screen.getByTestId('goal-card-fold')
-      const summary = screen.getByTestId('goal-milestone-summary')
+      const figure = screen.getByTestId('primary-goal-card-stat-card-figure')
+      const body = screen.getByTestId('primary-goal-card-stat-card-body')
       const chart = screen.getByTestId('goal-trajectory-chart-canvas')
-      expect(fold).toContainElement(summary)
-      expect(fold).toContainElement(chart)
-      expect(summary.compareDocumentPosition(chart) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+      expect(figure).toContainElement(screen.getByTestId('goal-milestone-facts'))
+      expect(body).toContainElement(screen.getByTestId('goal-milestone-week-strip'))
+      expect(body).toContainElement(chart)
+      expect(figure.compareDocumentPosition(chart) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     })
 
     it('leaves the week numbers to the cells: the axis does not repeat them', () => {

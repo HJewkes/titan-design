@@ -17,7 +17,7 @@ const meta: Meta<typeof GoalMuscleCard> = {
           'with this muscle lit by its status, the lifts-on-track count beneath it as a ' +
           'label, and every contributing lift to its right. Maps 1:1 onto a row of the ' +
           '`#/goals` muscle-rollup panel plus the targets under that priority (VW-386). ' +
-          'Composes [Card](?path=/docs/components-card--docs) + ' +
+          'Composes [StatCard](?path=/docs/components-molecules-statcard--docs) (no lead figure) + ' +
           '[Pill](?path=/docs/components-pill--docs) / ' +
           '[Indicator](?path=/docs/components-indicator--docs) + ' +
           '[Typography](?path=/docs/custom-typography--docs) + ' +

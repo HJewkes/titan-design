@@ -303,6 +303,46 @@ describe('GoalMilestoneTile', () => {
     })
   })
 
+  describe('the framed layout', () => {
+    it('is one StatCard: label and mark as the header, hero and facts as the figure, cells as the body', () => {
+      render(<GoalMilestoneTile {...base} currentWeek={7} />)
+
+      const header = screen.getByTestId('goal-milestone-tile-stat-card-header')
+      const figure = screen.getByTestId('goal-milestone-tile-stat-card-figure')
+      expect(within(header).getByText('Meso target')).toBeInTheDocument()
+      expect(header).toContainElement(screen.getByTestId('goal-milestone-state'))
+      expect(figure).toContainElement(hero())
+      expect(figure).toContainElement(facts())
+      expect(screen.getByTestId('goal-milestone-tile-stat-card-body')).toContainElement(
+        screen.getByTestId('goal-milestone-week-strip')
+      )
+    })
+
+    // VW-529 Q3 default: the framed tile drops its inner pressed plane.
+    it('has no pressed plane inside the card', () => {
+      render(<GoalMilestoneTile {...base} />)
+
+      expect(screen.queryByTestId('goal-milestone-plane')).toBeNull()
+    })
+
+    it('has no body when the week cells are left out', () => {
+      render(<GoalMilestoneTile {...base} showWeeks={false} />)
+
+      expect(screen.queryByTestId('goal-milestone-tile-stat-card-body')).toBeNull()
+    })
+  })
+
+  describe('the unframed layout', () => {
+    it('keeps its pressed plane and renders no StatCard slot', () => {
+      render(<GoalMilestoneTile {...base} layout="compact" />)
+
+      expect(screen.getByTestId('goal-milestone-plane')).toBeInTheDocument()
+      expect(screen.queryByTestId('goal-milestone-tile-stat-card-header')).toBeNull()
+      expect(screen.queryByTestId('goal-milestone-tile-stat-card-figure')).toBeNull()
+      expect(screen.queryByTestId('goal-milestone-tile-stat-card-body')).toBeNull()
+    })
+  })
+
   it('summarises target, week and distance for assistive tech', () => {
     render(<GoalMilestoneTile {...base} />)
 

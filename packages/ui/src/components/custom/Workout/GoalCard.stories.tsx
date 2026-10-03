@@ -19,8 +19,10 @@ const meta: Meta<typeof GoalCard> = {
           "meso target's summary folded over a trajectory chart, its week cells standing " +
           "on the chart's own week columns. `compact` is a cell in the per-lift grid: the " +
           'same title row and summary over a sparkline (see `GoalLiftCard`, the preset). ' +
-          'Composes `Card`, `GoalPriorityIcon`, `Pill` + `TipTrigger`, `PrBadge`, ' +
-          '`GoalMilestoneSummary`, `GoalTrajectoryChart` and `Sparkline`.',
+          'Composes [StatCard](?path=/docs/components-molecules-statcard--docs) (title row as the ' +
+          'header, the milestone hero as the figure, its facts below it, the chart as the body), ' +
+          '`GoalPriorityIcon`, `Pill` + `TipTrigger`, `PrBadge`, the `GoalMilestoneSummary` parts, ' +
+          '`GoalTrajectoryChart` and `GoalWeekColumnsChart`.',
       },
     },
   },

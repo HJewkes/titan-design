@@ -50,6 +50,13 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- `GoalCard` (and `PrimaryGoalCard`, `GoalLiftCard`), the framed `GoalMilestoneTile` and
+  `GoalMuscleCard` render through `StatCard`, so the template sets their inset and slot gaps. The
+  title row and the milestone hero now touch (16px to 0 on the full card, 8px to 0 on compact);
+  the facts sit 4px under the hero; the full card's week cells move to the body, 8px under the
+  facts. The framed tile is one `Card` with no pressed inner plane; the unframed tile is
+  unchanged. `GoalMuscleCard`'s header to body gap goes from 16px to 8px at comfortable density.
+  No props change (VW-628, VW-629, VW-630).
 - `global.css` self-hosts Inter, Nunito Sans and Space Grotesk instead of importing them from
   Google Fonts, so a single-file build opened from disk renders with no network. The woff2
   files are the ones Google Fonts served, with the same subsets and weights, and ship with their
