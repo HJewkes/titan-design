@@ -350,17 +350,21 @@ describe('NetworkGraph keyboard', () => {
     expect(activeName()).toBe(seen[12])
   })
 
-  it('scrolls the active item into view after a key, and never after a hover', () => {
+  it('scrolls the active item into view when focus enters and after a key, and never after a hover', () => {
     renderGraph()
     const scrolled: string[] = []
     Element.prototype.scrollIntoView = function scrollIntoView(this: Element) {
       scrolled.push(this.getAttribute('aria-label') ?? '')
     }
     focusRoot()
+    expect(scrolled).toEqual(['lead-01, Lead, 1 incoming, 5 outgoing'])
     fireEvent.pointerEnter(nodeButton('worker-03'))
-    expect(scrolled).toEqual([])
+    fireEvent.pointerLeave(nodeButton('worker-03'))
+    expect(scrolled).toHaveLength(1)
     press('ArrowUp')
-    expect(scrolled).toEqual(['worker-04, Worker, 1 incoming, 1 outgoing'])
+    expect(scrolled[1]).toBe('worker-04, Worker, 1 incoming, 1 outgoing')
+    press('ArrowRight')
+    expect(scrolled[2]).toBe('worker-04 to lead-01, Messaged, weight 11')
     delete (Element.prototype as { scrollIntoView?: unknown }).scrollIntoView
   })
 })
