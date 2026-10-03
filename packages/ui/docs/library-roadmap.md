@@ -49,7 +49,7 @@ deferred to its own pass.
 ## Epics, in order
 
 **E1 · Depth follow-ups** (after #166; starts now)
-- 13 `ui/*` overlays (autocomplete, drawer, help-tip, indicator, menu, modal, popover, select, switch, tabs, toast, toolbar-button, tooltip) move from Tailwind `shadow-*` + hairline ring to the floating lift recipe. Done when `grep -rE "shadow-(sm|md|lg|xl|2xl)" src/components/ui` is empty.
+- 13 `ui/*` overlays (autocomplete, drawer, help-tip, indicator, menu, modal, popover, select, switch, tabs, toast, toolbar-button, tooltip) move from Tailwind `shadow-*` + hairline ring to the floating lift recipe. Done when `src/arch/raw-shadow.test.ts` passes: it finds no `shadow-(sm|md|lg|xl|2xl|inner)` or `shadow-[` in `src/components`.
 - Delete `utils/useTheme.ts`.
 - Replace literal-hex pins in `Surface.test.tsx`, `surface.contract.test.ts`, `Card.test.tsx`, `elevation.test.ts` with `greyRamp[...]` references.
 - Purge stale comments: `SessionRail.stories.tsx:40`, `utils/colors.ts:4`, `SessionRail.tsx:16-17`, the skill's `gotchas.md` "Neumorphic depth" section.
