@@ -1,4 +1,5 @@
-import { emptyDraft, type ReviewDraft } from '../src/feedback.ts'
+import { emptyDraft, type AnswerDraft, type ReviewDraft } from '../src/feedback.ts'
+import { isAnswered } from '../src/round.ts'
 import {
   linksForVariant,
   optionVariants,
@@ -6,7 +7,7 @@ import {
   roundLayout,
   type ResolvedSection,
 } from '../src/sections.ts'
-import type { Annotation, Manifest, Verdict } from '../src/schema.ts'
+import type { Annotation, Manifest, Question, Verdict } from '../src/schema.ts'
 import { loadDraft, type DraftStorage } from './draftStore.ts'
 
 export { orderedQuestions }
@@ -135,6 +136,19 @@ export function pageStepAction(manifest: Manifest, active: number, delta: number
   const pages = pagesFor(manifest)
   const target = pages[pageOf(pages, active) + delta]
   return target ? { type: 'jump', index: target.first } : null
+}
+
+/** A recommendation stays hidden until its question is answered, so it cannot anchor the pick. */
+export function recommendationVisible(
+  manifest: Manifest,
+  question: Question,
+  draft: AnswerDraft
+): boolean {
+  if (question.kind === 'text' || !question.recommendation) return false
+  return (
+    manifest.recommendations === 'shown' ||
+    isAnswered(question, { ...draft, questionId: question.id })
+  )
 }
 
 export function initialState(manifest: Manifest): ReviewState {
