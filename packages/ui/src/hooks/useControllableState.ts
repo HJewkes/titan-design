@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useInsertionEffect, useRef, useState } from 'react'
 
 export interface ControllableStateOptions<T> {
   /** Controlled value; `undefined` means uncontrolled. */
@@ -16,9 +16,12 @@ export function useControllableState<T>({
   const [internal, setInternal] = useState<T>(defaultValue)
   const current = value === undefined ? internal : value
   const currentRef = useRef(current)
-  useEffect(() => {
+  const onChangeRef = useRef(onChange)
+  // Insertion effects run before layout effects, so a setter called there sees the new value.
+  useInsertionEffect(() => {
     currentRef.current = current
-  }, [current])
+    onChangeRef.current = onChange
+  })
   const isControlled = value !== undefined
 
   const setValue = useCallback(
@@ -28,9 +31,9 @@ export function useControllableState<T>({
         currentRef.current = next
         setInternal(next)
       }
-      onChange?.(next)
+      onChangeRef.current?.(next)
     },
-    [isControlled, onChange]
+    [isControlled]
   )
 
   return [current, setValue]

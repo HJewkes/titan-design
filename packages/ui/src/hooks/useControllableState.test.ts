@@ -1,5 +1,6 @@
+import React, { useLayoutEffect } from 'react'
 import { describe, it, expect, vi } from 'vitest'
-import { renderHook, act } from '@testing-library/react'
+import { render, renderHook, act } from '@testing-library/react'
 import { useControllableState } from './useControllableState'
 
 describe('useControllableState', () => {
@@ -42,5 +43,37 @@ describe('useControllableState', () => {
     expect(result.current[0]).toBe(true)
     rerender({ value: false })
     expect(result.current[0]).toBe(false)
+  })
+
+  it('reports a close requested from a layout effect right after the value changes', () => {
+    const onChange = vi.fn()
+    function Child({ open, setOpen }: { open: boolean; setOpen: (next: boolean) => void }) {
+      useLayoutEffect(() => {
+        if (open) setOpen(false)
+      }, [open, setOpen])
+      return null
+    }
+    function Parent({ value }: { value: boolean }) {
+      const [open, setOpen] = useControllableState({ value, defaultValue: false, onChange })
+      return React.createElement(Child, { open, setOpen })
+    }
+    const { rerender } = render(React.createElement(Parent, { value: false }))
+    rerender(React.createElement(Parent, { value: true }))
+    expect(onChange.mock.calls).toEqual([[false]])
+  })
+
+  it('calls the latest onChange from a setter captured earlier', () => {
+    const first = vi.fn()
+    const second = vi.fn()
+    const { result, rerender } = renderHook(
+      ({ onChange }: { onChange: (next: boolean) => void }) =>
+        useControllableState({ value: undefined, defaultValue: false, onChange }),
+      { initialProps: { onChange: first } }
+    )
+    const captured = result.current[1]
+    rerender({ onChange: second })
+    act(() => captured(true))
+    expect(first).not.toHaveBeenCalled()
+    expect(second).toHaveBeenCalledWith(true)
   })
 })
