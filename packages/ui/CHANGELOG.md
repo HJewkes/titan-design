@@ -62,6 +62,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- `Drawer`'s overlay and the non-blur `Modal` backdrop use `bg-scrim`, the scrim scale's DEFAULT class. `bg-scrim-default` compiled to no rule, so web painted no scrim. A test now compiles both backdrop class strings, and `lint:borders` runs in `lint` and `verify` (TD-191).
 - `VelocityStrip`'s loss and default zone colours resolve through the `dataviz-sequential` tokens
   for the surface's theme, like `PinnedLiveStrip`, so a light surface no longer gets the dark hexes.
   `getVelocityLossColor` takes an optional `mode` (default `'dark'`). Dark output is unchanged (VW-450).
