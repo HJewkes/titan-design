@@ -24,16 +24,16 @@ FileHistoryExplorer .............. organism
 ├─ Card + Divider ................ (existing primitives)
 ├─ Eyebrow ....................... molecule
 ├─ FileActivityRow ............... row          (listbox `option`)
-│  ├─ FilePathLabel .............. molecule → Typography (mono)
+│  ├─ FilePathLabel .............. atom → Typography (mono)  (Components/Atoms)
 │  └─ SparkBars .................. atom         (Custom/Charts — new shared primitive)
 ├─ FileActivityDetail ............ card
 │  ├─ Tile / Pill / DataRow / DateTime .... (existing primitives)
 │  ├─ SparkBars .................. atom
-│  ├─ FilePathLabel .............. molecule
+│  ├─ FilePathLabel .............. atom
 │  └─ Eyebrow .................... molecule
 └─ CoChangeChip .................. molecule
    ├─ Card + Pill ................ (existing primitives)
-   └─ FilePathLabel .............. molecule
+   └─ FilePathLabel .............. atom
 
 TaskTable ........................ organism
 ├─ Eyebrow ....................... molecule
@@ -80,7 +80,7 @@ Initiative reader (no organism: the host composes the pieces)
 | `FileActivityDetail`  | card     | Card, Tile, Pill, DataRow, DateTime, SparkBars, FilePathLabel, Eyebrow       | FileHistoryExplorer                                           |
 | `FileActivityRow`     | row      | FilePathLabel, SparkBars, Typography                                         | FileHistoryExplorer                                           |
 | `CoChangeChip`        | molecule | Card, Pill, FilePathLabel, Typography                                        | FileHistoryExplorer                                           |
-| `FilePathLabel`       | molecule | Typography (`mono`)                                                          | FileActivityRow, FileActivityDetail, CoChangeChip             |
+| `FilePathLabel`       | atom     | Typography (`mono`) — moved to `ui/file-path-label` (TD-418)                 | FileActivityRow, FileActivityDetail, CoChangeChip             |
 | `TaskTable`           | organism | Table, useTable, TableHeader/Row/HeaderCell, TaskRow, SeverityLabel, Eyebrow | app root (`Custom/ActiveWork/TaskTable`)                      |
 | `TaskRow`             | row      | TableRow, TableCell, SeverityLabel, Pill, Typography                         | TaskTable                                                     |
 | `SeverityLabel`       | molecule | Indicator, Typography (`caption`)                                            | TaskRow, TaskTable (legend), InitiativeCard (vocabulary)      |
@@ -269,8 +269,8 @@ hardening it; see TOKENS.md §6.
 - The live data wiring (active-work → `PortfolioOverview` / `FileHistoryExplorer` props) still lives only in
   the `titan-aw-dashboard` Lab specimen story files, not in a shared adapter. Promoting that mapping out of
   the specimens is a follow-up, not part of this unit.
-- `FilePathLabel` is domain-neutral (a file path is not an active-work concept) but every consumer today is
-  in this family, so it stays here. Promote it top-level the moment a second family needs it.
+- `FilePathLabel` is domain-neutral, so it moved to `ui/file-path-label` (migration M6, TD-418); the old
+  path is a deprecated shim.
 - The KPI strip now uses bare `Tile` while `PortfolioOverview` still uses `Card` + `Metric`. The family is
   internally inconsistent until T1 is revisited — deliberate, since changing T1 is out of this unit's scope.
 

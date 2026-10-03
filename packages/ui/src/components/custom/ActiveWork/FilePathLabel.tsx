@@ -1,63 +1,23 @@
-// Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { View, type ViewProps } from 'react-native'
-import { cn } from '../../../utils/cn'
-import { Typography } from '../../ui/typography'
-
-/** Split a path into its directory prefix (trailing slash kept) and basename. */
-export function splitPath(path: string): { dir: string; base: string } {
-  const i = path.lastIndexOf('/')
-  return i === -1 ? { dir: '', base: path } : { dir: path.slice(0, i + 1), base: path.slice(i + 1) }
-}
-
-/** Basename size on the type scale, with the directory one step quieter. */
-export type FilePathLabelSize = 'sm' | 'md'
-
-const SIZE_CLASS: Record<FilePathLabelSize, { base: string; dir: string }> = {
-  sm: { base: 'text-xs', dir: 'text-xs' },
-  md: { base: 'text-sm', dir: 'text-xs' },
-}
-
-export interface FilePathLabelProps extends ViewProps {
-  /** A repo-relative path, e.g. `src/commands/open.ts`. */
-  path: string
-  /** `md` for standalone rows, `sm` for dense contexts like chips. */
-  size?: FilePathLabelSize
-  /** Render only the basename, dropping the directory prefix. */
-  baseOnly?: boolean
-  className?: string
-}
+// Shim for migration M6. FilePathLabel lives in `ui/file-path-label` now; this file keeps the
+// old import path alive for one release. It imports the bindings first and exports them with no
+// `from` clause on purpose, so the deprecation tag does not mark the new definition
+// (`eslint-rules/deprecated-export-registry.js`, lesson from migration M1, #276).
+import { FilePathLabel, splitPath } from '../../ui/file-path-label'
+import type { FilePathLabelProps, FilePathLabelSize } from '../../ui/file-path-label'
 
 /**
- * FilePathLabel — a file path with the directory dimmed and the basename bright.
- *
- * In a list of paths the basename is the identifier and the directory is
- * disambiguation, so they get different weight rather than one flat string. The
- * directory shrinks first under width pressure; the basename never truncates.
+ * @deprecated Moved to `ui/file-path-label` (migration M6). Import from
+ * `@titan-design/react-ui` as before, or from `@/components/ui/file-path-label` by path.
+ * This re-export is removed in 0.23.0.
  */
-export function FilePathLabel({
-  path,
-  size = 'md',
-  baseOnly = false,
-  className,
-  ...props
-}: FilePathLabelProps) {
-  const { dir, base } = splitPath(path)
-  const cls = SIZE_CLASS[size]
+export { FilePathLabel }
 
-  return (
-    <View className={cn('flex-row items-center', className)} {...props}>
-      {dir && !baseOnly ? (
-        <Typography
-          variant="mono"
-          numberOfLines={1}
-          className={cn('shrink text-text-tertiary', cls.dir)}
-        >
-          {dir}
-        </Typography>
-      ) : null}
-      <Typography variant="mono" className={cn('text-text-primary', cls.base)}>
-        {base}
-      </Typography>
-    </View>
-  )
-}
+/**
+ * @deprecated Moved to `ui/file-path-label` (migration M6). This re-export is removed in 0.23.0.
+ */
+export { splitPath }
+
+/**
+ * @deprecated Moved to `ui/file-path-label` (migration M6). This re-export is removed in 0.23.0.
+ */
+export type { FilePathLabelProps, FilePathLabelSize }
