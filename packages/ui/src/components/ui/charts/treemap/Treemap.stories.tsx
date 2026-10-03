@@ -1,13 +1,23 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Treemap, type TreemapDatum } from './Treemap'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getSemanticColors } from '../../../../theme/tokens/semantic'
 
 const t = getSemanticColors('dark')
 
 const meta: Meta<typeof Treemap> = {
-  title: 'Custom/Charts/Treemap',
+  title: 'Components/Atoms/Treemap',
   component: Treemap,
   tags: ['autodocs', 'status:candidate', '!status:review'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '**Atom.** A domain-free squarified treemap: tiles sized by `value` on a linear, sqrt or log ' +
+          'scale, with ink picked per fill for contrast. Composes no other component: tiles are ' +
+          '`View`s and `Pressable`s, and theme colours come through `useSurfaceMode` and `getSemanticColors`.',
+      },
+    },
+  },
   argTypes: {
     width: { control: { type: 'range', min: 200, max: 900, step: 20 } },
     height: { control: { type: 'range', min: 120, max: 600, step: 20 } },

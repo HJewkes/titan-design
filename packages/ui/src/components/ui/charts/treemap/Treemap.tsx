@@ -1,9 +1,9 @@
 import { View, Text, Pressable, type ViewProps } from 'react-native'
-import { cn } from '../../../utils/cn'
-import { DATAVIZ_CATEGORICAL_ROLES } from '../../../theme/extracted-colors-dataviz'
-import { bestTextColor, primitiveColors } from '../../../theme/tokens/primitives'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { useSurfaceMode } from '../../ui/surface'
+import { cn } from '../../../../utils/cn'
+import { DATAVIZ_CATEGORICAL_ROLES } from '../../../../theme/extracted-colors-dataviz'
+import { bestTextColor, primitiveColors } from '../../../../theme/tokens/primitives'
+import { getSemanticColors } from '../../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../surface'
 
 export interface TreemapDatum {
   /** Stable identity — returned by onPress and used as the React key. */
@@ -187,6 +187,7 @@ export function Treemap({
               opacity: selected ? 1 : 0.9,
               borderWidth: selected ? 2 : 0,
               borderColor: primitiveColors.white,
+              // optical: label inset inside a tile whose box is computed per render; kept from custom/Treemap (TD-471)
               padding: 4,
               overflow: 'hidden',
             }}

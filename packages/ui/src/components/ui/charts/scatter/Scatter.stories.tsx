@@ -1,13 +1,23 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Scatter, type ScatterDatum } from './Scatter'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getSemanticColors } from '../../../../theme/tokens/semantic'
 
 const t = getSemanticColors('dark')
 
 const meta: Meta<typeof Scatter> = {
-  title: 'Custom/Charts/Scatter',
+  title: 'Components/Atoms/Scatter',
   component: Scatter,
   tags: ['autodocs', 'status:candidate', '!status:review'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '**Atom.** A domain-free scatter plot: points placed on two linear axes, sized by `r` and ' +
+          'coloured per datum. Composes no other component: the frame, gridlines and point marks are ' +
+          '`View`s, `Text`s and `Pressable`s, and theme colours come through `useSurfaceMode` and `getSemanticColors`.',
+      },
+    },
+  },
   argTypes: {
     width: { control: { type: 'range', min: 240, max: 800, step: 20 } },
     height: { control: { type: 'range', min: 180, max: 600, step: 20 } },

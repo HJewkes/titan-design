@@ -2,8 +2,8 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Scatter, type ScatterDatum } from './Scatter'
-import { Surface } from '../../ui/surface'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { Surface } from '../../surface'
+import { getSemanticColors } from '../../../../theme/tokens/semantic'
 
 const data: ScatterDatum[] = [
   { id: 'a', x: 0.1, y: 0.9, label: 'core' },
